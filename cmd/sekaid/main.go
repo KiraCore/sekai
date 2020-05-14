@@ -13,7 +13,7 @@ import (
 	tmtypes "github.com/tendermint/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/kira/hub/app"
+	"github.com/KiraCore/sekai/app"
 
 	"github.com/KiraCore/cosmos-sdk/baseapp"
 	"github.com/KiraCore/cosmos-sdk/client/debug"

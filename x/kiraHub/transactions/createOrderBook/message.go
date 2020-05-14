@@ -5,7 +5,7 @@ import (
 	errors "github.com/KiraCore/cosmos-sdk/types/errors"
 	"github.com/asaskevich/govalidator"
 
-	"github.com/KiraCore/playground/hub/x/kiraHub/constants"
+	"github.com/KiraCore/sekai/x/kiraHub/constants"
 )
 
 type Message struct {

@@ -24,7 +24,7 @@ import (
 	"github.com/tendermint/go-amino"
 	"github.com/tendermint/tendermint/libs/cli"
 
-	"github.com/kira/hub/app"
+	"github.com/KiraCore/sekai/app"
 
 )
 

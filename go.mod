@@ -1,4 +1,4 @@
-module github.com/KiraCore/playground/hub
+module github.com/KiraCore/sekai
 
 go 1.14
 
