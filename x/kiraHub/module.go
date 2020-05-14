@@ -1,4 +1,4 @@
-package createorderboook
+package kiraHub
 
 import (
 	"encoding/json"
@@ -6,14 +6,13 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 
-	abci "github.com/tendermint/tendermint/abci/types"
+	abciTypes "github.com/tendermint/tendermint/abci/types"
+	constants "github.com/KiraCore/sekai/x/kiraHub/constants"
 
 	"github.com/KiraCore/cosmos-sdk/client/context"
 	"github.com/KiraCore/cosmos-sdk/codec"
-	sdk "github.com/KiraCore/cosmos-sdk/types"
+	sdkTypes "github.com/KiraCore/cosmos-sdk/types"
 	"github.com/KiraCore/cosmos-sdk/types/module"
-	"github.com/kira/kiraHub/x/createorderboook/client/cli"
-	"github.com/kira/kiraHub/x/createorderboook/client/rest"
 )
 
 var (
@@ -21,122 +20,72 @@ var (
 	_ module.AppModuleBasic = AppModuleBasic{}
 )
 
-// AppModuleBasic defines the basic application module used by the createorderboook module.
-type AppModuleBasic struct{}
+type AppModuleBasic struct {
+}
 
-var _ module.AppModuleBasic = AppModuleBasic{}
-
-// Name returns the createorderboook module's name.
 func (AppModuleBasic) Name() string {
-	return ModuleName
+	return constants.ModuleName
 }
-
-// RegisterCodec registers the createorderboook module's types for the given codec.
-func (AppModuleBasic) RegisterCodec(cdc *codec.Codec) {
-	RegisterCodec(cdc)
+func (AppModuleBasic) RegisterCodec(codec *codec.Codec) {
+	RegisterCodec(codec)
 }
-
-// DefaultGenesis returns default genesis state as raw bytes for the createorderboook
-// module.
-func (AppModuleBasic) DefaultGenesis() json.RawMessage {
-	return ModuleCdc.MustMarshalJSON(DefaultGenesisState())
+func (AppModuleBasic) DefaultGenesis(jsonMarshaler codec.JSONMarshaler) json.RawMessage {
+	return jsonMarshaler.MustMarshalJSON(DefaultGenesisState())
 }
-
-// ValidateGenesis performs genesis state validation for the createorderboook module.
-func (AppModuleBasic) ValidateGenesis(bz json.RawMessage) error {
-	var data GenesisState
-	err := ModuleCdc.UnmarshalJSON(bz, &data)
-	if err != nil {
-		return err
+func (AppModuleBasic) ValidateGenesis(jsonMarshaler codec.JSONMarshaler, rawMessage json.RawMessage) error {
+	var genesisState GenesisState
+	Error := jsonMarshaler.UnmarshalJSON(rawMessage, &genesisState)
+	if Error != nil {
+		return Error
 	}
-	return ValidateGenesis(data)
+	return ValidateGenesis(genesisState)
+}
+func (AppModuleBasic) RegisterRESTRoutes(cliContext context.CLIContext, router *mux.Router) {
+	RegisterRESTRoutes(cliContext, router)
+}
+func (AppModuleBasic) GetTxCmd(codec *codec.Codec) *cobra.Command {
+	return GetCLIRootTransactionCommand(codec)
+}
+func (AppModuleBasic) GetQueryCmd(codec *codec.Codec) *cobra.Command {
+	return GetCLIRootQueryCommand(codec)
 }
 
-// RegisterRESTRoutes registers the REST routes for the createorderboook module.
-func (AppModuleBasic) RegisterRESTRoutes(ctx context.CLIContext, rtr *mux.Router) {
-	rest.RegisterRoutes(ctx, rtr)
-}
-
-// GetTxCmd returns the root tx command for the createorderboook module.
-func (AppModuleBasic) GetTxCmd(cdc *codec.Codec) *cobra.Command {
-	return cli.GetTxCmd(cdc)
-}
-
-// GetQueryCmd returns no root query command for the createorderboook module.
-func (AppModuleBasic) GetQueryCmd(cdc *codec.Codec) *cobra.Command {
-	return cli.GetQueryCmd(StoreKey, cdc)
-}
-
-//____________________________________________________________________________
-
-// AppModule implements an application module for the createorderboook module.
 type AppModule struct {
 	AppModuleBasic
-
 	keeper Keeper
-	// TODO: Add keepers that your application depends on
 }
 
-// NewAppModule creates a new AppModule object
-func NewAppModule(k Keeper /*TODO: Add Keepers that your application depends on*/) AppModule {
-	return AppModule{
-		AppModuleBasic: AppModuleBasic{},
-		keeper:         k,
-		// TODO: Add keepers that your application depends on
-	}
+func NewAppModule(keeper Keeper) AppModule {
+	return AppModule{keeper: keeper}
 }
-
-// Name returns the createorderboook module's name.
 func (AppModule) Name() string {
 	return ModuleName
 }
-
-// RegisterInvariants registers the createorderboook module invariants.
-func (am AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
-
-// Route returns the message routing key for the createorderboook module.
+func (appModule AppModule) RegisterInvariants(_ sdkTypes.InvariantRegistry) {}
 func (AppModule) Route() string {
-	return RouterKey
+	return TransactionRoute
 }
-
-// NewHandler returns an sdk.Handler for the createorderboook module.
-func (am AppModule) NewHandler() sdk.Handler {
-	return NewHandler(am.keeper)
+func (appModule AppModule) NewHandler() sdkTypes.Handler {
+	return NewHandler(appModule.keeper)
 }
-
-// QuerierRoute returns the createorderboook module's querier route name.
 func (AppModule) QuerierRoute() string {
 	return QuerierRoute
 }
-
-// NewQuerierHandler returns the createorderboook module sdk.Querier.
-func (am AppModule) NewQuerierHandler() sdk.Querier {
-	return NewQuerier(am.keeper)
+func (appModule AppModule) NewQuerierHandler() sdkTypes.Querier {
+	return NewQuerier(appModule.keeper)
 }
-
-// InitGenesis performs genesis initialization for the createorderboook module. It returns
-// no validator updates.
-func (am AppModule) InitGenesis(ctx sdk.Context, data json.RawMessage) []abci.ValidatorUpdate {
+func (appModule AppModule) InitGenesis(context sdkTypes.Context, jsonMarshaler codec.JSONMarshaler, rawMessage json.RawMessage) []abciTypes.ValidatorUpdate {
 	var genesisState GenesisState
-	ModuleCdc.MustUnmarshalJSON(data, &genesisState)
-	InitGenesis(ctx, am.keeper, genesisState)
-	return []abci.ValidatorUpdate{}
+	jsonMarshaler.MustUnmarshalJSON(rawMessage, &genesisState)
+	InitializeGenesisState(context, appModule.keeper, genesisState)
+	return []abciTypes.ValidatorUpdate{}
 }
-
-// ExportGenesis returns the exported genesis state as raw bytes for the createorderboook
-// module.
-func (am AppModule) ExportGenesis(ctx sdk.Context) json.RawMessage {
-	gs := ExportGenesis(ctx, am.keeper)
-	return ModuleCdc.MustMarshalJSON(gs)
+func (appModule AppModule) ExportGenesis(context sdkTypes.Context, jsonMarshaler codec.JSONMarshaler) json.RawMessage {
+	gs := ExportGenesis(context, appModule.keeper)
+	return jsonMarshaler.MustMarshalJSON(gs)
 }
+func (AppModule) BeginBlock(_ sdkTypes.Context, _ abciTypes.RequestBeginBlock) {}
 
-// BeginBlock returns the begin blocker for the createorderboook module.
-func (am AppModule) BeginBlock(ctx sdk.Context, req abci.RequestBeginBlock) {
-	BeginBlocker(ctx, req, am.keeper)
-}
-
-// EndBlock returns the end blocker for the createorderboook module. It returns no validator
-// updates.
-func (AppModule) EndBlock(_ sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
-	return []abci.ValidatorUpdate{}
+func (AppModule) EndBlock(_ sdkTypes.Context, _ abciTypes.RequestEndBlock) []abciTypes.ValidatorUpdate {
+	return []abciTypes.ValidatorUpdate{}
 }

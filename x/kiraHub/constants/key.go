@@ -10,8 +10,8 @@ const (
   // RouterKey to be used for routing msgs
   RouterKey = ModuleName
 
-  // QuerierRoute to be used for querierer msgs
 	QuerierRoute = ModuleName
+	TransactionRoute = ModuleName
 
 	CreateOrderBookTransaction = "createorderbook"
 )

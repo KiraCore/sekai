@@ -1,4 +1,4 @@
-package types
+package kiraHub
 
 import (
 	"github.com/KiraCore/cosmos-sdk/codec"

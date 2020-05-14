@@ -13,6 +13,7 @@ import (
 	sdk "github.com/KiraCore/cosmos-sdk/types"
 	"github.com/KiraCore/cosmos-sdk/version"
 	"github.com/KiraCore/cosmos-sdk/x/auth"
+	authclient "github.com/KiraCore/cosmos-sdk/x/auth/client"
 	authcmd "github.com/KiraCore/cosmos-sdk/x/auth/client/cli"
 	authrest "github.com/KiraCore/cosmos-sdk/x/auth/client/rest"
 	"github.com/KiraCore/cosmos-sdk/x/bank"
@@ -25,15 +26,19 @@ import (
 	"github.com/tendermint/tendermint/libs/cli"
 
 	"github.com/KiraCore/sekai/app"
-
 )
+
+var (
+	appCodec, cdc = app.MakeCodec()
+)
+
+func init() {
+	authclient.Codec = appCodec
+}
 
 func main() {
 	// Configure cobra to sort commands
 	cobra.EnableCommandSorting = false
-
-	// Instantiate the codec for the command line application
-	cdc := app.MakeCodec()
 
 	// Read in the configuration file for the sdk
 	config := sdk.GetConfig()
@@ -47,8 +52,8 @@ func main() {
 	// with the cdc
 
 	rootCmd := &cobra.Command{
-		Use:   "sekaicli",
-		Short: "Command line interface for interacting with appd",
+		Use:   "gaiacli",
+		Short: "Command line interface for interacting with gaiad",
 	}
 
 	// Add --chain-id to persistent flags and mark it required
@@ -72,8 +77,8 @@ func main() {
 		flags.NewCompletionCmd(rootCmd, true),
 	)
 
-	// Add flags and prefix all env exposed with AA
-	executor := cli.PrepareMainCmd(rootCmd, "AA", app.DefaultCLIHome)
+	// Add flags and prefix all env exposed with GA
+	executor := cli.PrepareMainCmd(rootCmd, "GA", app.DefaultCLIHome)
 
 	err := executor.Execute()
 	if err != nil {
@@ -84,9 +89,12 @@ func main() {
 
 func queryCmd(cdc *amino.Codec) *cobra.Command {
 	queryCmd := &cobra.Command{
-		Use:     "query",
-		Aliases: []string{"q"},
-		Short:   "Querying subcommands",
+		Use:                        "query",
+		Aliases:                    []string{"q"},
+		Short:                      "Querying subcommands",
+		DisableFlagParsing:         true,
+		SuggestionsMinimumDistance: 2,
+		RunE:                       client.ValidateCmd,
 	}
 
 	queryCmd.AddCommand(
@@ -107,14 +115,18 @@ func queryCmd(cdc *amino.Codec) *cobra.Command {
 
 func txCmd(cdc *amino.Codec) *cobra.Command {
 	txCmd := &cobra.Command{
-		Use:   "tx",
-		Short: "Transactions subcommands",
+		Use:                        "tx",
+		Short:                      "Transactions subcommands",
+		DisableFlagParsing:         true,
+		SuggestionsMinimumDistance: 2,
+		RunE:                       client.ValidateCmd,
 	}
 
 	txCmd.AddCommand(
 		bankcmd.SendTxCmd(cdc),
 		flags.LineBreak,
 		authcmd.GetSignCommand(cdc),
+		authcmd.GetValidateSignaturesCommand(cdc),
 		authcmd.GetMultiSignCommand(cdc),
 		flags.LineBreak,
 		authcmd.GetBroadcastCommand(cdc),
