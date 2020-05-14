@@ -1,10 +1,5 @@
 package createorderboook
 
-import (
-	"github.com/kira/kiraHub/x/createorderboook/internal/keeper"
-	"github.com/kira/kiraHub/x/createorderboook/internal/types"
-)
-
 const (
 	// TODO: define constants that you would like exposed from the internal package
 

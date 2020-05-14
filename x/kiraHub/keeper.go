@@ -8,7 +8,6 @@ import (
 
 	"github.com/KiraCore/cosmos-sdk/codec"
 	sdk "github.com/KiraCore/cosmos-sdk/types"
-	"github.com/kira/kiraHub/x/createorderboook/internal/types"
 )
 
 // Keeper of the createorderboook store

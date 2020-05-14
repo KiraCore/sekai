@@ -12,8 +12,6 @@ import (
 	"github.com/KiraCore/cosmos-sdk/codec"
 	sdk "github.com/KiraCore/cosmos-sdk/types"
 	"github.com/KiraCore/cosmos-sdk/types/module"
-	"github.com/kira/kiraHub/x/createorderboook/client/cli"
-	"github.com/kira/kiraHub/x/createorderboook/client/rest"
 )
 
 var (
