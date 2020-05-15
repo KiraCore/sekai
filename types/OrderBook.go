@@ -8,7 +8,7 @@ import (
 )
 
 type OrderBook struct {
-	Index int32            `json:"index"`
+	ID string              `json:"id"`
 	Base sdk.Coins		   `json:"base"`
 	Quote sdk.Coins		   `json:"quote"`
 	Mnemonic string 	   `json:"mnemonic"`
@@ -17,7 +17,7 @@ type OrderBook struct {
 
 func NewOrderBook() OrderBook {
 	return OrderBook{
-		Index: nil,
+		Index: "",
 		Base: nil,
 		Quote: nil,
 		Mnemonic: "",
