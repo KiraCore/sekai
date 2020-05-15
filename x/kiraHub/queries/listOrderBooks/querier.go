@@ -14,27 +14,27 @@ func QueryGetOrderBooks(ctx sdk.Context, path []string, req abci.RequestQuery, k
 
 	if path[0] == "ID" {
 
-		queryOutput := keeper.GetOrderBookByID(ctx, path[1])
+		queryOutput = keeper.GetOrderBookByID(ctx, path[1])
 
 	} else if path[0] == "Index" {
 
-		queryOutput := keeper.GetOrderBookByIndex(ctx, path[1])
+		queryOutput = keeper.GetOrderBookByIndex(ctx, path[1])
 
 	} else if path[0] == "Quote" {
 
-		queryOutput := keeper.GetOrderBooksByQuote(ctx, path[1])
+		queryOutput = keeper.GetOrderBooksByQuote(ctx, path[1])
 
 	} else if path[0] == "Base" {
 
-		queryOutput := keeper.GetOrderBooksByBase(ctx, path[1])
+		queryOutput = keeper.GetOrderBooksByBase(ctx, path[1])
 
 	} else if path[0] == "Trading_Pair" {
 
-		queryOutput := keeper.GetOrderBooksByTP(ctx, path[1])
+		queryOutput = keeper.GetOrderBooksByTP(ctx, path[1])
 
 	} else if path[0] == "Curator" {
 
-		queryOutput := keeper.GetOrderBooksByCurator(ctx, path[1])
+		queryOutput = keeper.GetOrderBooksByCurator(ctx, path[1])
 	}
 
 	res, marshalJSONIndentError := codec.MarshalJSONIndent(packageCodec, queryOutput)
@@ -43,4 +43,6 @@ func QueryGetOrderBooks(ctx sdk.Context, path []string, req abci.RequestQuery, k
 	}
 
 	return res, nil
+
+
 }
