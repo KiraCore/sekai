@@ -3,6 +3,7 @@ package createOrderBook
 import (
 	"encoding/hex"
 	"strings"
+	"fmt"
 
 	"github.com/KiraCore/cosmos-sdk/codec"
 	sdk "github.com/KiraCore/cosmos-sdk/types"
@@ -15,6 +16,8 @@ type Keeper struct {
 	cdc *codec.Codec // The wire codec for binary encoding/decoding.
 	storeKey sdk.StoreKey // Unexposed key to access store from sdk.Context
 }
+
+var last_order_book_index = 0
 
 func NewKeeper(cdc *codec.Codec, storeKey sdk.StoreKey) Keeper {
 	return Keeper{
@@ -43,22 +46,25 @@ func (k Keeper) CreateOrderBook(ctx sdk.Context, quote sdk.Coins, base sdk.Coins
 	hashInStringOfCurator := hex.EncodeToString(hashOfCurator[:])
 	idHashInStringOfCurator := hashInStringOfCurator[len(hashInStringOfCurator) - numberOfCharacters:]
 
-	hashOfBase := blake2b.Sum256([]byte(base))
+	hashOfBase := blake2b.Sum256([]byte(base.String()))
 	hashInStringOfBase := hex.EncodeToString(hashOfBase[:])
 	idHashInStringOfBase := hashInStringOfBase[len(hashInStringOfBase) - numberOfCharacters:]
 
-	hashOfQuote := blake2b.Sum256([]byte(quote))
+	hashOfQuote := blake2b.Sum256([]byte(quote.String()))
 	hashInStringOfQuote := hex.EncodeToString(hashOfQuote[:])
 	idHashInStringOfQuote := hashInStringOfQuote[len(hashInStringOfQuote) - numberOfCharacters:]
 
+	idHashInStringOfIndex = fmt.Sprintf("%x", len(last_order_book_index))
 	var ID strings.Builder
 
 	ID.WriteString(idHashInStringOfCurator)
 	ID.WriteString(idHashInStringOfBase)
 	ID.WriteString(idHashInStringOfQuote)
+	ID.WriteString(idHashInStringOfIndex)
 	// Still need to add the functionalities of last_order_book_index
 
 	id := ID.String()
+	orderbook.ID = id
 
 	store := ctx.KVStore(k.storeKey)
 

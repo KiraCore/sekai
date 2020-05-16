@@ -8,6 +8,7 @@ import (
 )
 
 type OrderBook struct {
+	ID string              `json:"id"`
 	Index string           `json:"index"`
 	Base sdk.Coins		   `json:"base"`
 	Quote sdk.Coins		   `json:"quote"`
