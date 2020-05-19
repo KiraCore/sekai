@@ -10,6 +10,8 @@ import (
 	transfer "github.com/KiraCore/cosmos-sdk/x/ibc/20-transfer"
 	"github.com/KiraCore/cosmos-sdk/x/mint"
 	"github.com/KiraCore/cosmos-sdk/x/upgrade"
+	"github.com/KiraCore/sekai/x/kiraHub"
+	constants "github.com/KiraCore/sekai/x/kiraHub/constants"
 	"io"
 	"os"
 
@@ -76,6 +78,8 @@ var (
 		upgrade.AppModuleBasic{},
 		evidence.AppModuleBasic{},
 		transfer.AppModuleBasic{},
+
+		kiraHub.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -124,6 +128,7 @@ type NewApp struct {
 	// keepers
 	accountKeeper    auth.AccountKeeper
 	bankKeeper       bank.Keeper
+	kiraHubKeeper    kiraHub.Keeper
 	capabilityKeeper *capability.Keeper
 	stakingKeeper    staking.Keeper
 	slashingKeeper   slashing.Keeper
@@ -170,7 +175,7 @@ func NewInitApp(
 	keys := sdk.NewKVStoreKeys(auth.StoreKey, bank.StoreKey, staking.StoreKey,
 		mint.StoreKey, distr.StoreKey, slashing.StoreKey,
 		gov.StoreKey, params.StoreKey, ibc.StoreKey, upgrade.StoreKey,
-		evidence.StoreKey, transfer.StoreKey, capability.StoreKey,
+		evidence.StoreKey, transfer.StoreKey, capability.StoreKey, constants.StoreKey,
 	)
 
 	tKeys := sdk.NewTransientStoreKeys(params.TStoreKey)
@@ -248,9 +253,6 @@ func NewInitApp(
 		staking.NewMultiStakingHooks(app.distrKeeper.Hooks(), app.slashingKeeper.Hooks()),
 	)
 
-	// Create IBC Keeper
-	// TODO: remove amino codec dependency once Tendermint version is upgraded with
-	// protobuf changes
 	app.ibcKeeper = ibc.NewKeeper(
 		app.cdc, appCodec, keys[ibc.StoreKey], app.stakingKeeper, scopedIBCKeeper,
 	)
@@ -263,6 +265,8 @@ func NewInitApp(
 		scopedTransferKeeper,
 	)
 	transferModule := transfer.NewAppModule(app.transferKeeper)
+
+	app.kiraHubKeeper = kiraHub.NewKeeper(app.cdc, keys[constants.StoreKey])
 
 	// Create static IBC router, add transfer route, then set and seal it
 	ibcRouter := port.NewRouter()
@@ -284,6 +288,7 @@ func NewInitApp(
 	app.mm = module.NewManager(
 		genutil.NewAppModule(app.accountKeeper, app.stakingKeeper, app.BaseApp.DeliverTx),
 		auth.NewAppModule(appCodec, app.accountKeeper),
+		kiraHub.NewAppModule(app.kiraHubKeeper),
 		bank.NewAppModule(appCodec, app.bankKeeper, app.accountKeeper),
 		capability.NewAppModule(appCodec, *app.capabilityKeeper),
 		crisis.NewAppModule(&app.crisisKeeper),
@@ -334,8 +339,6 @@ func NewInitApp(
 	)
 
 	app.sm.RegisterStoreDecoders()
-
-
 
 	// initialize BaseApp
 	app.SetInitChainer(app.InitChainer)

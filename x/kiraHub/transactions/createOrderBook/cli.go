@@ -6,7 +6,7 @@ import (
 	"github.com/KiraCore/cosmos-sdk/codec"
 	sdk "github.com/KiraCore/cosmos-sdk/types"
 	"github.com/KiraCore/cosmos-sdk/x/auth"
-	"github.com/KiraCore/cosmos-sdk/x/auth/client/"
+	"github.com/KiraCore/cosmos-sdk/x/auth/client"
 	"github.com/spf13/cobra"
 )
 

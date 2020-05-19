@@ -32,7 +32,7 @@ func NewKeeper(cdc *codec.Codec, storeKey sdk.StoreKey) Keeper {
 }
 
 func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, curator string, mnemonic string) {
-	var orderbook = types.OrderBook{}
+	var orderbook = types.NewOrderBook()
 
 
 	orderbook.Quote = quote
