@@ -30,7 +30,7 @@ func QueryGetOrderBooks(ctx sdk.Context, path []string, req abci.RequestQuery, k
 
 	} else if path[0] == "Trading_Pair" {
 
-		queryOutput = keeper.GetOrderBookByTP(ctx, path[1])
+		queryOutput = keeper.GetOrderBookByTP(ctx, path[0], path[1])
 
 	} else if path[0] == "Curator" {
 
