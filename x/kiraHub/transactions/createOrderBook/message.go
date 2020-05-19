@@ -9,11 +9,10 @@ import (
 )
 
 type Message struct {
-	Index int32            `json:"index" yaml:"index" valid:"required~index"`
-	Base sdk.Coins		   `json:"base"  yaml:"base"  valid:"required~base"`
-	Quote sdk.Coins		   `json:"quote" yaml:"quote" valid:"required~quote"`
+	Base string		   	   `json:"base"  yaml:"base"  valid:"required~base"`
+	Quote string		   `json:"quote" yaml:"quote" valid:"required~quote"`
 	Mnemonic string 	   `json:"mnemonic" yaml:"mnemonic" valid:"required~mnemonic"`
-	Curator sdk.AccAddress `json:"curator"  yaml:"curator" valid:"required~curator"`
+	Curator string 		   `json:"curator"  yaml:"curator" valid:"required~curator"`
 }
 
 var _ sdk.Msg = Message{}
@@ -34,5 +33,6 @@ func (message Message) GetSignBytes() []byte {
 }
 
 func (message Message) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{message.Curator}
+	var curator, _ = sdk.AccAddressFromBech32(message.Curator)
+	return []sdk.AccAddress{curator}
 }

@@ -31,8 +31,9 @@ func NewKeeper(cdc *codec.Codec, storeKey sdk.StoreKey) Keeper {
 	}
 }
 
-func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, curator sdk.AccAddress, mnemonic string) {
+func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, curator string, mnemonic string) {
 	var orderbook = types.OrderBook{}
+
 
 	orderbook.Quote = quote
 	orderbook.Base = base
@@ -45,7 +46,7 @@ func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, cura
 
 
 	// Creating the hashes of the parts of the ID
-	hashOfCurator := blake2b.Sum256(curator)
+	hashOfCurator := blake2b.Sum256([]byte(curator))
 	hashInStringOfCurator := hex.EncodeToString(hashOfCurator[:])
 	idHashInStringOfCurator := hashInStringOfCurator[len(hashInStringOfCurator) - numberOfCharacters:]
 

@@ -3,6 +3,8 @@ package kiraHub
 
 import (
 	constants "github.com/KiraCore/sekai/x/kiraHub/constants"
+	"github.com/KiraCore/sekai/x/kiraHub/transactions/createOrderBook"
+	"github.com/KiraCore/sekai/x/kiraHub/queries/listOrderBooks"
 	"github.com/spf13/cobra"
 
 	"github.com/KiraCore/cosmos-sdk/client"
@@ -19,6 +21,7 @@ func GetCLIRootTransactionCommand(codec *codec.Codec) *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 	rootTransactionCommand.AddCommand(flags.PostCommands(
+		createOrderBook.TransactionCommand(codec),
 	)...)
 	return rootTransactionCommand
 }
@@ -32,6 +35,8 @@ func GetCLIRootQueryCommand(codec *codec.Codec) *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 	rootQueryCommand.AddCommand(flags.GetCommands(
+		listOrderBooks.GetOrderBooksCmd(codec),
+		listOrderBooks.GetOrderBooksByTPCmd(codec),
 	)...)
 	return rootQueryCommand
 }

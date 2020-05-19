@@ -3,8 +3,6 @@ package types
 import (
 	"fmt"
 	"strings"
-
-	sdk "github.com/KiraCore/cosmos-sdk/types"
 )
 
 type OrderBook struct {
@@ -13,7 +11,7 @@ type OrderBook struct {
 	Base string		       `json:"base"`
 	Quote string		   `json:"quote"`
 	Mnemonic string 	   `json:"mnemonic"`
-	Curator sdk.AccAddress `json:"curator"`
+	Curator string         `json:"curator"`
 }
 
 func NewOrderBook() OrderBook {

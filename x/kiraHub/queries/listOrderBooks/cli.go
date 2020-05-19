@@ -19,7 +19,7 @@ func GetOrderBooksCmd(cdc *codec.Codec) *cobra.Command {
 
 			//var owner = cliCtx.GetFromAddress()
 
-			res, _, err := cliCtx.QueryWithData(fmt.Sprintf("custom/kiraHub/listOrderBook/%s/%s", args[0], args[1]), nil)
+			res, _, err := cliCtx.QueryWithData(fmt.Sprintf("custom/kiraHub/listOrderBooks/%s/%s", args[0], args[1]), nil)
 			if err != nil {
 				fmt.Printf("could not query. Searching By - %s & Value - %s is invalid. \n", args[0], args[1])
 				return nil
@@ -42,7 +42,7 @@ func GetOrderBooksByTPCmd(cdc *codec.Codec) *cobra.Command {
 
 			//var owner = cliCtx.GetFromAddress()
 
-			res, _, err := cliCtx.QueryWithData(fmt.Sprintf("custom/kiraHub/listOrderBook/%s/%s", args[0], args[1]), nil)
+			res, _, err := cliCtx.QueryWithData(fmt.Sprintf("custom/kiraHub/listOrderBooks/tp/%s/%s", args[0], args[1]), nil)
 			if err != nil {
 				fmt.Printf("could not query. Searching By - %s & Value - %s is invalid. \n", args[0], args[1])
 				return nil
