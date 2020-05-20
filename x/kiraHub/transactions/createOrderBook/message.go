@@ -2,7 +2,7 @@ package createOrderBook
 
 import (
 	sdk "github.com/KiraCore/cosmos-sdk/types"
-	errors "github.com/KiraCore/cosmos-sdk/types/errors"
+	"github.com/KiraCore/cosmos-sdk/types/errors"
 	"github.com/asaskevich/govalidator"
 
 	constants "github.com/KiraCore/sekai/x/kiraHub/constants"

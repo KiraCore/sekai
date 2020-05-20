@@ -2,7 +2,6 @@ package createOrderBook
 
 import (
 	"encoding/hex"
-	"fmt"
 	"strings"
 
 	"github.com/KiraCore/cosmos-sdk/codec"
@@ -52,13 +51,13 @@ func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, cura
 	hashInStringOfQuote := hex.EncodeToString(hashOfQuote[:])
 	idHashInStringOfQuote := hashInStringOfQuote[len(hashInStringOfQuote) - numberOfCharacters:]
 
-	idHashInStringOfIndex = fmt.Sprintf("%x", len(lastOrderBookIndex))
+	//idHashInStringOfIndex = fmt.Sprintf("%x", len(lastOrderBookIndex))
 	var ID strings.Builder
 
 	ID.WriteString(idHashInStringOfCurator)
 	ID.WriteString(idHashInStringOfBase)
 	ID.WriteString(idHashInStringOfQuote)
-	ID.WriteString(idHashInStringOfIndex)
+	//ID.WriteString(idHashInStringOfIndex)
 	// Still need to add the functionalities of lastOrderBookIndex
 
 	id := ID.String()
@@ -108,7 +107,7 @@ func (k Keeper) GetOrderBookByBase(ctx sdk.Context, base string) []types.OrderBo
 	bz := store.Get([]byte("ids"))
 	k.cdc.MustUnmarshalBinaryBare(bz, &idsArray)
 
-	for index, id := range idsArray {
+	for _, id := range idsArray {
 
 		// Matching
 		if idHashInStringOfBase == id[numberOfCharacters: 2 * numberOfCharacters] {
@@ -168,7 +167,7 @@ func (k Keeper) GetOrderBookByTP(ctx sdk.Context, base string, quote string) []t
 	bz := store.Get([]byte("ids"))
 	k.cdc.MustUnmarshalBinaryBare(bz, &idsArray)
 
-	for index, id := range idsArray {
+	for _, id := range idsArray {
 
 		// Matching
 		if idHashInStringOfBase == id[numberOfCharacters: 2 * numberOfCharacters] &&
@@ -197,7 +196,7 @@ func (k Keeper) GetOrderBookByCurator(ctx sdk.Context, curator string) []types.O
 	bz := store.Get([]byte("ids"))
 	k.cdc.MustUnmarshalBinaryBare(bz, &idsArray)
 
-	for index, id := range idsArray {
+	for _, id := range idsArray {
 
 		// Matching
 		if idHashInStringOfCurator == id[0:numberOfCharacters] {

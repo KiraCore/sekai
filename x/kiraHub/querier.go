@@ -2,9 +2,9 @@ package kiraHub
 
 import (
 	sdk "github.com/KiraCore/cosmos-sdk/types"
+	"github.com/KiraCore/cosmos-sdk/types/errors"
 	constants "github.com/KiraCore/sekai/x/kiraHub/constants"
 	"github.com/KiraCore/sekai/x/kiraHub/queries/listOrderBooks"
-	"github.com/KiraCore/cosmos-sdk/types/errors"
 	abciTypes "github.com/tendermint/tendermint/abci/types"
 )
 

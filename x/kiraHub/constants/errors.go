@@ -1,7 +1,7 @@
 package types
 
 import (
-	errors "github.com/KiraCore/cosmos-sdk/types/errors"
+	"github.com/KiraCore/cosmos-sdk/types/errors"
 )
 
 var (

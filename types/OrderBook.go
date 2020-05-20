@@ -17,10 +17,10 @@ type OrderBook struct {
 func NewOrderBook() OrderBook {
 	return OrderBook{
 		Index: "",
-		Base: nil,
-		Quote: nil,
+		Base: "",
+		Quote: "",
 		Mnemonic: "",
-		Curator: nil,
+		Curator: "",
 	}
 }
 
