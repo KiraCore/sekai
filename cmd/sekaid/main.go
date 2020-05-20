@@ -42,8 +42,8 @@ func main() {
 	ctx := server.NewDefaultContext()
 	cobra.EnableCommandSorting = false
 	rootCmd := &cobra.Command{
-		Use:               "gaiad",
-		Short:             "Gaia Daemon (server)",
+		Use:               "sekaid",
+		Short:             "Sekai Daemon (server)",
 		PersistentPreRunE: server.PersistentPreRunEFn(ctx),
 	}
 

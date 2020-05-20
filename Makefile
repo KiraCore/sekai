@@ -1,10 +1,10 @@
 PACKAGES=$(shell go list ./... | grep -v '/simulation')
 
-VERSION := $(shell echo $(shell git describe --tags) | sed 's/^v//')
+VERSION = 1.0.0
 COMMIT := $(shell git log -1 --format='%H')
 
 # TODO: Update the ldflags with the app, client & server names
-ldflags = -X github.com/KiraCore/cosmos-sdk/version.Name=NewApp \
+ldflags = -X github.com/KiraCore/cosmos-sdk/version.Name=sekai \
 	-X github.com/KiraCore/cosmos-sdk/version.ServerName=sekaid \
 	-X github.com/KiraCore/cosmos-sdk/version.ClientName=sekaicli \
 	-X github.com/KiraCore/cosmos-sdk/version.Version=$(VERSION) \

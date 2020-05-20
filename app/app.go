@@ -44,15 +44,12 @@ import (
 	upgradeclient "github.com/KiraCore/cosmos-sdk/x/upgrade/client"
 )
 
-const appName = "app"
+const appName = "Sekai"
 
 var (
-	// TODO: rename your cli
 
 	// DefaultCLIHome default home directories for the application CLI
 	DefaultCLIHome = os.ExpandEnv("$HOME/.sekaicli")
-
-	// TODO: rename your daemon
 
 	// DefaultNodeHome sets the folder where the applcation data and configuration will be stored
 	DefaultNodeHome = os.ExpandEnv("$HOME/.sekaid")
@@ -111,7 +108,7 @@ func MakeCodec() (*std.Codec, *codec.Codec) {
 }
 
 // NewApp extended ABCI application
-type NewApp struct {
+type SekaiApp struct {
 	*bam.BaseApp
 	cdc *codec.Codec
 
@@ -154,7 +151,7 @@ type NewApp struct {
 }
 
 // verify app interface at compile time
-var _ simapp.App = (*NewApp)(nil)
+var _ simapp.App = (*SekaiApp)(nil)
 
 // NewhubApp is a constructor function for hubApp
 func NewInitApp(
@@ -162,7 +159,7 @@ func NewInitApp(
 	invCheckPeriod uint, skipUpgradeHeights map[int64]bool, home string,
 	baseAppOptions ...func(*bam.BaseApp),
 
-) *NewApp {
+) *SekaiApp {
 	// First define the top level codec that will be shared by the different modules
 	appCodec, cdc := MakeCodec()
 
@@ -182,7 +179,7 @@ func NewInitApp(
 	memKeys := sdk.NewMemoryStoreKeys(capability.MemStoreKey)
 
 	// Here you initialize your application with the store keys it requires
-	app := &NewApp{
+	app := &SekaiApp{
 		BaseApp:        bApp,
 		cdc:            cdc,
 		invCheckPeriod: invCheckPeriod,
@@ -381,29 +378,29 @@ func NewDefaultGenesisState() GenesisState {
 }
 
 // InitChainer application update at chain initialization
-func (app *NewApp) InitChainer(ctx sdk.Context, req abci.RequestInitChain) abci.ResponseInitChain {
+func (app *SekaiApp) InitChainer(ctx sdk.Context, req abci.RequestInitChain) abci.ResponseInitChain {
 	var genesisState simapp.GenesisState
 	app.cdc.MustUnmarshalJSON(req.AppStateBytes, &genesisState)
 	return app.mm.InitGenesis(ctx, app.cdc, genesisState)
 }
 
 // BeginBlocker application updates every begin block
-func (app *NewApp) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abci.ResponseBeginBlock {
+func (app *SekaiApp) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abci.ResponseBeginBlock {
 	return app.mm.BeginBlock(ctx, req)
 }
 
 // EndBlocker application updates every end block
-func (app *NewApp) EndBlocker(ctx sdk.Context, req abci.RequestEndBlock) abci.ResponseEndBlock {
+func (app *SekaiApp) EndBlocker(ctx sdk.Context, req abci.RequestEndBlock) abci.ResponseEndBlock {
 	return app.mm.EndBlock(ctx, req)
 }
 
 // LoadHeight loads a particular height
-func (app *NewApp) LoadHeight(height int64) error {
+func (app *SekaiApp) LoadHeight(height int64) error {
 	return app.LoadVersion(height)
 }
 
 // ModuleAccountAddrs returns all the app's module account addresses.
-func (app *NewApp) ModuleAccountAddrs() map[string]bool {
+func (app *SekaiApp) ModuleAccountAddrs() map[string]bool {
 	modAccAddrs := make(map[string]bool)
 	for acc := range maccPerms {
 		modAccAddrs[auth.NewModuleAddress(acc).String()] = true
@@ -413,12 +410,12 @@ func (app *NewApp) ModuleAccountAddrs() map[string]bool {
 }
 
 // Codec returns the application's sealed codec.
-func (app *NewApp) Codec() *codec.Codec {
+func (app *SekaiApp) Codec() *codec.Codec {
 	return app.cdc
 }
 
 // SimulationManager implements the SimulationApp interface
-func (app *NewApp) SimulationManager() *module.SimulationManager {
+func (app *SekaiApp) SimulationManager() *module.SimulationManager {
 	return app.sm
 }
 
@@ -432,7 +429,7 @@ func GetMaccPerms() map[string][]string {
 }
 
 // BlacklistedAccAddrs returns all the app's module account addresses black listed for receiving tokens.
-func (app *NewApp) BlacklistedAccAddrs() map[string]bool {
+func (app *SekaiApp) BlacklistedAccAddrs() map[string]bool {
 	blacklistedAddrs := make(map[string]bool)
 	for acc := range maccPerms {
 		blacklistedAddrs[auth.NewModuleAddress(acc).String()] = !allowedReceivingModAcc[acc]
