@@ -2,8 +2,8 @@ package createOrderBook
 
 import (
 	"encoding/hex"
-	"strings"
 	"fmt"
+	"strings"
 
 	"github.com/KiraCore/cosmos-sdk/codec"
 	sdk "github.com/KiraCore/cosmos-sdk/types"
@@ -17,7 +17,7 @@ type Keeper struct {
 	storeKey sdk.StoreKey // Unexposed key to access store from sdk.Context
 }
 
-var last_order_book_index = 0
+var lastOrderBookIndex = 0
 
 // This is the definitions of the lens of the shortened hashes
 var numberOfBytes = 4
@@ -41,7 +41,7 @@ func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, cura
 	orderbook.Mnemonic = mnemonic
 
 	// ARJUN CHANGE THIS TO THE DYNAMIC INDEX PULLED FROM THE KVSTORE
-	// var last_order_book_index = 1
+	// var lastOrderBookIndex = 1
 
 
 
@@ -58,14 +58,14 @@ func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, cura
 	hashInStringOfQuote := hex.EncodeToString(hashOfQuote[:])
 	idHashInStringOfQuote := hashInStringOfQuote[len(hashInStringOfQuote) - numberOfCharacters:]
 
-	idHashInStringOfIndex = fmt.Sprintf("%x", len(last_order_book_index))
+	idHashInStringOfIndex = fmt.Sprintf("%x", len(lastOrderBookIndex))
 	var ID strings.Builder
 
 	ID.WriteString(idHashInStringOfCurator)
 	ID.WriteString(idHashInStringOfBase)
 	ID.WriteString(idHashInStringOfQuote)
 	ID.WriteString(idHashInStringOfIndex)
-	// Still need to add the functionalities of last_order_book_index
+	// Still need to add the functionalities of lastOrderBookIndex
 
 	id := ID.String()
 	orderbook.ID = id
@@ -141,7 +141,7 @@ func (k Keeper) GetOrderBookByQuote(ctx sdk.Context, quote string) []types.Order
 	bz := store.Get([]byte("ids"))
 	k.cdc.MustUnmarshalBinaryBare(bz, &idsArray)
 
-	for index, id := range idsArray {
+	for _, id := range idsArray {
 
 		// Matching
 		if idHashInStringOfQuote == id[2 * numberOfCharacters: 3 * numberOfCharacters] {
