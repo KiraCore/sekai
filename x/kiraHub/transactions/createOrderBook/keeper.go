@@ -34,16 +34,10 @@ func NewKeeper(cdc *codec.Codec, storeKey sdk.StoreKey) Keeper {
 func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, curator string, mnemonic string) {
 	var orderbook = types.NewOrderBook()
 
-
 	orderbook.Quote = quote
 	orderbook.Base = base
 	orderbook.Curator = curator
 	orderbook.Mnemonic = mnemonic
-
-	// ARJUN CHANGE THIS TO THE DYNAMIC INDEX PULLED FROM THE KVSTORE
-	// var lastOrderBookIndex = 1
-
-
 
 	// Creating the hashes of the parts of the ID
 	hashOfCurator := blake2b.Sum256([]byte(curator))
@@ -103,7 +97,8 @@ func (k Keeper) GetOrderBookByBase(ctx sdk.Context, base string) []types.OrderBo
 	store := ctx.KVStore(k.storeKey)
 
 	var orderbook types.OrderBook
-	var orderbooksQueried = []types.OrderBook{}
+	// var orderbooksQueried = []types.OrderBook{}
+	var orderbooksQueried []types.OrderBook
 	var idsArray []string
 
 	hashOfBase := blake2b.Sum256([]byte(base))
