@@ -9,10 +9,10 @@ import (
 )
 
 type Message struct {
-	Base string		   	   `json:"base"  yaml:"base"  valid:"required~base"`
-	Quote string		   `json:"quote" yaml:"quote" valid:"required~quote"`
-	Mnemonic string 	   `json:"mnemonic" yaml:"mnemonic" valid:"required~mnemonic"`
-	Curator string 		   `json:"curator"  yaml:"curator" valid:"required~curator"`
+	Base string		   	   `json:"base"  yaml:"base"  valid:"required~Base is required"`
+	Quote string		   `json:"quote" yaml:"quote" valid:"required~Quote is required"`
+	Mnemonic string 	   `json:"mnemonic" yaml:"mnemonic" valid:"required~Mnemonic is required"`
+	Curator string 		   `json:"curator"  yaml:"curator" valid:"required~Curator is required"`
 }
 
 var _ sdk.Msg = Message{}
