@@ -52,25 +52,38 @@ func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, cura
 	hashInStringOfQuote := hex.EncodeToString(hashOfQuote[:])
 	idHashInStringOfQuote := hashInStringOfQuote[len(hashInStringOfQuote) - numberOfCharacters:]
 
-	// Quick fix for ID
-	idHashInStringOfIndex := strconv.Itoa(len(strconv.Itoa(lastOrderBookIndex)))
 	var ID strings.Builder
 
 	ID.WriteString(idHashInStringOfCurator)
 	ID.WriteString(idHashInStringOfBase)
 	ID.WriteString(idHashInStringOfQuote)
 	ID.WriteString(idHashInStringOfIndex)
-	// Still need to add the functionalities of lastOrderBookIndex
+
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get([]byte("ids"))
+
+	if len(bz) == 0 {
+		lastOrderBookIndex = 0
+	} else {
+		// Need to get list of all Indices, assuming the list is called listOfIndices
+		for indexInListOfIndices, elementInListOfIndices := range listOfIndeces {
+			if indexInListOfIndices != elementInListOfIndices {
+				lastOrderBookIndex = indexInListOfIndices
+				break
+			}
+		}
+	}
+
+	// Hashing and adding the lastOrderBookIndex to the ID
+	idHashInStringOfIndex := strconv.Itoa(len(strconv.Itoa(lastOrderBookIndex)))
+	ID.WriteString(idHashInStringOfIndex)
 
 	id := ID.String()
 	orderbook.ID = id
 
-	store := ctx.KVStore(k.storeKey)
 	store.Set([]byte(id), k.cdc.MustMarshalBinaryBare(orderbook))
 
 	var idsArray []string
-
-	bz := store.Get([]byte("ids"))
 
 	if len(bz) != 0 {
 		k.cdc.MustUnmarshalBinaryBare(bz, &idsArray)
