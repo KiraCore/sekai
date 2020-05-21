@@ -2,9 +2,9 @@ package listOrderBooks
 
 import (
 	"fmt"
-	"github.com/KiraCore/sekai/types"
 	"github.com/KiraCore/cosmos-sdk/client/context"
 	"github.com/KiraCore/cosmos-sdk/codec"
+	"github.com/KiraCore/sekai/types"
 
 	"github.com/spf13/cobra"
 )

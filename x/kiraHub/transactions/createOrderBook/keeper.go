@@ -2,7 +2,7 @@ package createOrderBook
 
 import (
 	"encoding/hex"
-	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/KiraCore/cosmos-sdk/codec"
@@ -52,7 +52,8 @@ func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, cura
 	hashInStringOfQuote := hex.EncodeToString(hashOfQuote[:])
 	idHashInStringOfQuote := hashInStringOfQuote[len(hashInStringOfQuote) - numberOfCharacters:]
 
-	idHashInStringOfIndex = fmt.Sprintf("%x", len(lastOrderBookIndex))
+	// Quick fix for ID
+	idHashInStringOfIndex := strconv.Itoa(len(strconv.Itoa(lastOrderBookIndex)))
 	var ID strings.Builder
 
 	ID.WriteString(idHashInStringOfCurator)
@@ -97,8 +98,7 @@ func (k Keeper) GetOrderBookByBase(ctx sdk.Context, base string) []types.OrderBo
 	store := ctx.KVStore(k.storeKey)
 
 	var orderbook types.OrderBook
-	// var orderbooksQueried = []types.OrderBook{}
-	var orderbooksQueried []types.OrderBook
+	var orderbooksQueried = []types.OrderBook{}
 	var idsArray []string
 
 	hashOfBase := blake2b.Sum256([]byte(base))
@@ -108,7 +108,7 @@ func (k Keeper) GetOrderBookByBase(ctx sdk.Context, base string) []types.OrderBo
 	bz := store.Get([]byte("ids"))
 	k.cdc.MustUnmarshalBinaryBare(bz, &idsArray)
 
-	for index, id := range idsArray {
+	for _, id := range idsArray {
 
 		// Matching
 		if idHashInStringOfBase == id[numberOfCharacters: 2 * numberOfCharacters] {
@@ -168,7 +168,7 @@ func (k Keeper) GetOrderBookByTP(ctx sdk.Context, base string, quote string) []t
 	bz := store.Get([]byte("ids"))
 	k.cdc.MustUnmarshalBinaryBare(bz, &idsArray)
 
-	for index, id := range idsArray {
+	for _, id := range idsArray {
 
 		// Matching
 		if idHashInStringOfBase == id[numberOfCharacters: 2 * numberOfCharacters] &&
@@ -197,7 +197,7 @@ func (k Keeper) GetOrderBookByCurator(ctx sdk.Context, curator string) []types.O
 	bz := store.Get([]byte("ids"))
 	k.cdc.MustUnmarshalBinaryBare(bz, &idsArray)
 
-	for index, id := range idsArray {
+	for _, id := range idsArray {
 
 		// Matching
 		if idHashInStringOfCurator == id[0:numberOfCharacters] {
