@@ -2,6 +2,7 @@ package createOrderBook
 
 import (
 	"encoding/hex"
+	"strconv"
 	"strings"
 
 	"github.com/KiraCore/cosmos-sdk/codec"
@@ -51,7 +52,8 @@ func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, cura
 	hashInStringOfQuote := hex.EncodeToString(hashOfQuote[:])
 	idHashInStringOfQuote := hashInStringOfQuote[len(hashInStringOfQuote) - numberOfCharacters:]
 
-	//idHashInStringOfIndex = fmt.Sprintf("%x", len(lastOrderBookIndex))
+	// Quick fix for ID
+	idHashInStringOfIndex := strconv.Itoa(len(strconv.Itoa(lastOrderBookIndex)))
 	var ID strings.Builder
 
 	ID.WriteString(idHashInStringOfCurator)
@@ -96,8 +98,7 @@ func (k Keeper) GetOrderBookByBase(ctx sdk.Context, base string) []types.OrderBo
 	store := ctx.KVStore(k.storeKey)
 
 	var orderbook types.OrderBook
-	// var orderbooksQueried = []types.OrderBook{}
-	var orderbooksQueried []types.OrderBook
+	var orderbooksQueried = []types.OrderBook{}
 	var idsArray []string
 
 	hashOfBase := blake2b.Sum256([]byte(base))
