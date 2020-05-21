@@ -17,7 +17,19 @@ type Keeper struct {
 	storeKey sdk.StoreKey // Unexposed key to access store from sdk.Context
 }
 
-var lastOrderBookIndex = 0
+type meta struct {
+	ID string
+	Index uint32
+}
+
+func newMeta(id string, index uint32) meta {
+	return meta{
+		ID: id,
+		Index: index,
+	}
+}
+
+var lastOrderBookIndex uint32 = 0
 
 // This is the definitions of the lens of the shortened hashes
 var numberOfBytes = 4
@@ -59,15 +71,20 @@ func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, cura
 	ID.WriteString(idHashInStringOfQuote)
 
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get([]byte("ids"))
+	bz := store.Get([]byte("meta"))
+
+	var metaData []meta
 
 	if len(bz) == 0 {
 		lastOrderBookIndex = 0
 	} else {
+
+		k.cdc.MustUnmarshalBinaryBare(bz, &metaData)
+
 		// Need to get list of all Indices, assuming the list is called listOfIndices
-		for indexInListOfIndices, elementInListOfIndices := range listOfIndices {
-			if indexInListOfIndices != elementInListOfIndices {
-				lastOrderBookIndex = indexInListOfIndices
+		for indexInListOfIndices, elementInListOfIndices := range metaData {
+			if uint32(indexInListOfIndices) != elementInListOfIndices.Index {
+				lastOrderBookIndex = uint32(indexInListOfIndices)
 				break
 			}
 		}
@@ -85,14 +102,8 @@ func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, cura
 
 	store.Set([]byte(id), k.cdc.MustMarshalBinaryBare(orderbook))
 
-	var idsArray []string
-
-	if len(bz) != 0 {
-		k.cdc.MustUnmarshalBinaryBare(bz, &idsArray)
-	}
-
-	idsArray = append(idsArray, id)
-	store.Set([]byte("ids"), k.cdc.MustMarshalBinaryBare(idsArray))
+	metaData = append(metaData, newMeta(id, lastOrderBookIndex))
+	store.Set([]byte("meta"), k.cdc.MustMarshalBinaryBare(metaData))
 
 }
 
