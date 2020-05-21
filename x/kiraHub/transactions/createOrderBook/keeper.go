@@ -57,7 +57,6 @@ func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, cura
 	ID.WriteString(idHashInStringOfCurator)
 	ID.WriteString(idHashInStringOfBase)
 	ID.WriteString(idHashInStringOfQuote)
-	ID.WriteString(idHashInStringOfIndex)
 
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get([]byte("ids"))
@@ -66,7 +65,7 @@ func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, cura
 		lastOrderBookIndex = 0
 	} else {
 		// Need to get list of all Indices, assuming the list is called listOfIndices
-		for indexInListOfIndices, elementInListOfIndices := range listOfIndeces {
+		for indexInListOfIndices, elementInListOfIndices := range listOfIndices {
 			if indexInListOfIndices != elementInListOfIndices {
 				lastOrderBookIndex = indexInListOfIndices
 				break
@@ -75,8 +74,11 @@ func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, cura
 	}
 
 	// Hashing and adding the lastOrderBookIndex to the ID
-	idHashInStringOfIndex := strconv.Itoa(len(strconv.Itoa(lastOrderBookIndex)))
-	ID.WriteString(idHashInStringOfIndex)
+	lenOfLastOrderBookIndex := strconv.Itoa(len(strconv.Itoa(lastOrderBookIndex)))
+	hashOfLenOfLastOrderBookIndex := blake2b.Sum256([]byte(lenOfLastOrderBookIndex))
+	hashInStringOfLenOfLastOrderBookIndex := hex.EncodeToString(hashOfLenOfLastOrderBookIndex[:])
+
+	ID.WriteString(hashInStringOfLenOfLastOrderBookIndex)
 
 	id := ID.String()
 	orderbook.ID = id
