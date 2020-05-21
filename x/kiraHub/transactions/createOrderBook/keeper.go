@@ -91,7 +91,7 @@ func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, cura
 	}
 
 	// Hashing and adding the lastOrderBookIndex to the ID
-	lenOfLastOrderBookIndex := strconv.Itoa(len(strconv.Itoa(lastOrderBookIndex)))
+	lenOfLastOrderBookIndex := strconv.Itoa(len(strconv.Itoa(int(lastOrderBookIndex))))
 	hashOfLenOfLastOrderBookIndex := blake2b.Sum256([]byte(lenOfLastOrderBookIndex))
 	hashInStringOfLenOfLastOrderBookIndex := hex.EncodeToString(hashOfLenOfLastOrderBookIndex[:])
 
@@ -125,20 +125,20 @@ func (k Keeper) GetOrderBookByBase(ctx sdk.Context, base string) []types.OrderBo
 
 	var orderbook types.OrderBook
 	var orderbooksQueried = []types.OrderBook{}
-	var idsArray []string
+	var metaData []meta
 
 	hashOfBase := blake2b.Sum256([]byte(base))
 	hashInStringOfBase := hex.EncodeToString(hashOfBase[:])
 	idHashInStringOfBase := hashInStringOfBase[len(hashInStringOfBase) - numberOfCharacters:]
 
-	bz := store.Get([]byte("ids"))
-	k.cdc.MustUnmarshalBinaryBare(bz, &idsArray)
+	bz := store.Get([]byte("meta"))
+	k.cdc.MustUnmarshalBinaryBare(bz, &metaData)
 
-	for _, id := range idsArray {
+	for _, element := range metaData {
 
 		// Matching
-		if idHashInStringOfBase == id[numberOfCharacters: 2 * numberOfCharacters] {
-			bz := store.Get([]byte(id))
+		if idHashInStringOfBase == element.ID[numberOfCharacters: 2 * numberOfCharacters] {
+			bz := store.Get([]byte(element.ID))
 			k.cdc.MustUnmarshalBinaryBare(bz, &orderbook)
 			orderbooksQueried = append(orderbooksQueried, orderbook)
 		}
@@ -153,20 +153,20 @@ func (k Keeper) GetOrderBookByQuote(ctx sdk.Context, quote string) []types.Order
 
 	var orderbook types.OrderBook
 	var orderbooksQueried = []types.OrderBook{}
-	var idsArray []string
+	var metaData []meta
 
 	hashOfQuote := blake2b.Sum256([]byte(quote))
 	hashInStringOfQuote := hex.EncodeToString(hashOfQuote[:])
 	idHashInStringOfQuote := hashInStringOfQuote[len(hashInStringOfQuote) - numberOfCharacters:]
 
-	bz := store.Get([]byte("ids"))
-	k.cdc.MustUnmarshalBinaryBare(bz, &idsArray)
+	bz := store.Get([]byte("meta"))
+	k.cdc.MustUnmarshalBinaryBare(bz, &metaData)
 
-	for _, id := range idsArray {
+	for _, element := range metaData {
 
 		// Matching
-		if idHashInStringOfQuote == id[2 * numberOfCharacters: 3 * numberOfCharacters] {
-			bz := store.Get([]byte(id))
+		if idHashInStringOfQuote == element.ID[2 * numberOfCharacters: 3 * numberOfCharacters] {
+			bz := store.Get([]byte(element.ID))
 			k.cdc.MustUnmarshalBinaryBare(bz, &orderbook)
 			orderbooksQueried = append(orderbooksQueried, orderbook)
 		}
@@ -181,7 +181,7 @@ func (k Keeper) GetOrderBookByTP(ctx sdk.Context, base string, quote string) []t
 
 	var orderbook types.OrderBook
 	var orderbooksQueried = []types.OrderBook{}
-	var idsArray []string
+	var metaData []meta
 
 	hashOfBase := blake2b.Sum256([]byte(base))
 	hashInStringOfBase := hex.EncodeToString(hashOfBase[:])
@@ -191,15 +191,15 @@ func (k Keeper) GetOrderBookByTP(ctx sdk.Context, base string, quote string) []t
 	hashInStringOfQuote := hex.EncodeToString(hashOfQuote[:])
 	idHashInStringOfQuote := hashInStringOfQuote[len(hashInStringOfQuote) - numberOfCharacters:]
 
-	bz := store.Get([]byte("ids"))
-	k.cdc.MustUnmarshalBinaryBare(bz, &idsArray)
+	bz := store.Get([]byte("meta"))
+	k.cdc.MustUnmarshalBinaryBare(bz, &metaData)
 
-	for _, id := range idsArray {
+	for _, element := range metaData {
 
 		// Matching
-		if idHashInStringOfBase == id[numberOfCharacters: 2 * numberOfCharacters] &&
-			idHashInStringOfQuote == id[2 * numberOfCharacters: 3 * numberOfCharacters] {
-			bz := store.Get([]byte(id))
+		if idHashInStringOfBase == element.ID[numberOfCharacters: 2 * numberOfCharacters] &&
+			idHashInStringOfQuote == element.ID[2 * numberOfCharacters: 3 * numberOfCharacters] {
+			bz := store.Get([]byte(element.ID))
 			k.cdc.MustUnmarshalBinaryBare(bz, &orderbook)
 			orderbooksQueried = append(orderbooksQueried, orderbook)
 		}
@@ -214,20 +214,20 @@ func (k Keeper) GetOrderBookByCurator(ctx sdk.Context, curator string) []types.O
 
 	var orderbook types.OrderBook
 	var orderbooksQueried = []types.OrderBook{}
-	var idsArray []string
+	var metaData []meta
 
 	hashOfCurator := blake2b.Sum256([]byte(curator))
 	hashInStringOfCurator := hex.EncodeToString(hashOfCurator[:])
 	idHashInStringOfCurator := hashInStringOfCurator[len(hashInStringOfCurator) - numberOfCharacters:]
 
-	bz := store.Get([]byte("ids"))
-	k.cdc.MustUnmarshalBinaryBare(bz, &idsArray)
+	bz := store.Get([]byte("meta"))
+	k.cdc.MustUnmarshalBinaryBare(bz, &metaData)
 
-	for _, id := range idsArray {
+	for _, element := range metaData {
 
 		// Matching
-		if idHashInStringOfCurator == id[0:numberOfCharacters] {
-			bz := store.Get([]byte(id))
+		if idHashInStringOfCurator == element.ID[0:numberOfCharacters] {
+			bz := store.Get([]byte(element.ID))
 			k.cdc.MustUnmarshalBinaryBare(bz, &orderbook)
 			orderbooksQueried = append(orderbooksQueried, orderbook)
 		}
