@@ -59,7 +59,7 @@ func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, cura
 	ID.WriteString(idHashInStringOfCurator)
 	ID.WriteString(idHashInStringOfBase)
 	ID.WriteString(idHashInStringOfQuote)
-	//ID.WriteString(idHashInStringOfIndex)
+	ID.WriteString(idHashInStringOfIndex)
 	// Still need to add the functionalities of lastOrderBookIndex
 
 	id := ID.String()
