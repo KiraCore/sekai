@@ -14,4 +14,5 @@ const (
 	TransactionRoute = ModuleName
 
 	CreateOrderBookTransaction = "createorderbook"
+	CreateOrderTransaction = "createorder"
 )

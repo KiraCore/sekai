@@ -14,7 +14,7 @@ func TransactionCommand(codec *codec.Codec) *cobra.Command {
 
 	return &cobra.Command{
 		Use:   "createOrderBook [base] [quote] [Mnemonic]",
-		Short: "Create and sign transaction to mint an asset",
+		Short: "Create OrderBook",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(command *cobra.Command, args []string) error {
 			bufioReader := bufio.NewReader(command.InOrStdin())
