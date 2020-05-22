@@ -78,7 +78,7 @@ func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, cura
 	if len(bz) == 0 {
 		lastOrderBookIndex = 0
 	} else {
-		var isSlotEmpty := 0
+		var isSlotEmpty = 0
 
 		k.cdc.MustUnmarshalBinaryBare(bz, &metaData)
 
@@ -109,8 +109,19 @@ func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, cura
 
 	store.Set([]byte(id), k.cdc.MustMarshalBinaryBare(orderbook))
 
-	metaData = append(metaData, newMeta(id, lastOrderBookIndex))
-	store.Set([]byte("meta"), k.cdc.MustMarshalBinaryBare(metaData))
+	// To sort metadata
+	var newMetaData []meta
+	for indexInListOfIndices, elementInListOfIndices := range metaData {
+		if unint32(lastOrderBookIndex) != indexInListOfIndices {
+			newMetaData = append(newMetaData, elementInListOfIndices)
+		} else {
+			newMetaData = append(newMetaData, newMeta(id, lastOrderBookIndex))
+		}
+	}
+
+	// metaData = append(metaData, newMeta(id, lastOrderBookIndex))
+	// store.Set([]byte("meta"), k.cdc.MustMarshalBinaryBare(metaData))
+	store.Set([]byte("meta"), k.cdc.MustMarshalBinaryBare(newMetaData))
 
 }
 
