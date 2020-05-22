@@ -111,11 +111,12 @@ func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, cura
 
 	// To sort metadata
 	var newMetaData []meta
-	for indexInListOfIndices, elementInListOfIndices := range metaData {
-		if unint32(lastOrderBookIndex) != indexInListOfIndices {
+	for _, elementInListOfIndices := range metaData {
+		if lastOrderBookIndex != uint32(elementInListOfIndices.Index) {
 			newMetaData = append(newMetaData, elementInListOfIndices)
 		} else {
 			newMetaData = append(newMetaData, newMeta(id, lastOrderBookIndex))
+			newMetaData = append(newMetaData, elementInListOfIndices)
 		}
 	}
 
