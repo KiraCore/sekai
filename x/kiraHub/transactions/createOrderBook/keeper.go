@@ -100,7 +100,8 @@ func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, cura
 	// Hashing and adding the lastOrderBookIndex to the ID
 	lenOfLastOrderBookIndex := strconv.Itoa(len(strconv.Itoa(int(lastOrderBookIndex))))
 	hashOfLenOfLastOrderBookIndex := blake2b.Sum256([]byte(lenOfLastOrderBookIndex))
-	hashInStringOfLenOfLastOrderBookIndex := hex.EncodeToString(hashOfLenOfLastOrderBookIndex[:])
+	hashInStringOfLenOfLastOrderBookIndexLarge := hex.EncodeToString(hashOfLenOfLastOrderBookIndex[:])
+	hashInStringOfLenOfLastOrderBookIndex := hashInStringOfLenOfLastOrderBookIndexLarge[len(hashInStringOfQuote) - numberOfCharacters:]
 
 	ID.WriteString(hashInStringOfLenOfLastOrderBookIndex)
 
