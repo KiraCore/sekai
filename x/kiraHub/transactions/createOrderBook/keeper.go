@@ -78,6 +78,7 @@ func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, cura
 	if len(bz) == 0 {
 		lastOrderBookIndex = 0
 	} else {
+		var isSlotEmpty := 0
 
 		k.cdc.MustUnmarshalBinaryBare(bz, &metaData)
 
@@ -85,8 +86,14 @@ func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, cura
 		for indexInListOfIndices, elementInListOfIndices := range metaData {
 			if uint32(indexInListOfIndices) != elementInListOfIndices.Index {
 				lastOrderBookIndex = uint32(indexInListOfIndices)
+				isSlotEmpty = 1
 				break
 			}
+		}
+
+		// It will come to this loop if none of the slots are empty
+		if isSlotEmpty != 0 {
+			lastOrderBookIndex = uint32(len(metaData)) + 1
 		}
 	}
 
