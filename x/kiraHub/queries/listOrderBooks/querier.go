@@ -1,6 +1,7 @@
 package listOrderBooks
 
 import (
+	"strconv"
 	"github.com/KiraCore/cosmos-sdk/codec"
 	sdk "github.com/KiraCore/cosmos-sdk/types"
 	"github.com/KiraCore/sekai/types"
@@ -18,7 +19,8 @@ func QueryGetOrderBooks(ctx sdk.Context, path []string, req abci.RequestQuery, k
 
 	} else if path[0] == "Index" {
 
-		//queryOutput = keeper.GetOrderBookByIndex(ctx, path[1])
+		var int, _ = strconv.Atoi(path[1])
+		queryOutput = keeper.GetOrderBookByIndex(ctx, uint32(int))
 
 	} else if path[0] == "Quote" {
 

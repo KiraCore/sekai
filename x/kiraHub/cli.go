@@ -14,7 +14,7 @@ import (
 
 func GetCLIRootTransactionCommand(codec *codec.Codec) *cobra.Command {
 	rootTransactionCommand := &cobra.Command{
-		Use:                        "testtoken",
+		Use:                        constants.TransactionRoute,
 		Short:                      "Asset root transaction command.",
 		DisableFlagParsing:         true,
 		SuggestionsMinimumDistance: 2,

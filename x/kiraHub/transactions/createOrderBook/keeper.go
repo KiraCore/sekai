@@ -101,7 +101,7 @@ func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, cura
 	lenOfLastOrderBookIndex := strconv.Itoa(len(strconv.Itoa(int(lastOrderBookIndex))))
 	hashOfLenOfLastOrderBookIndex := blake2b.Sum256([]byte(lenOfLastOrderBookIndex))
 	hashInStringOfLenOfLastOrderBookIndexLarge := hex.EncodeToString(hashOfLenOfLastOrderBookIndex[:])
-	hashInStringOfLenOfLastOrderBookIndex := hashInStringOfLenOfLastOrderBookIndexLarge[len(hashInStringOfQuote) - numberOfCharacters:]
+	hashInStringOfLenOfLastOrderBookIndex := hashInStringOfLenOfLastOrderBookIndexLarge[len(hashInStringOfLenOfLastOrderBookIndexLarge) - numberOfCharacters:]
 
 	ID.WriteString(hashInStringOfLenOfLastOrderBookIndex)
 
@@ -113,7 +113,7 @@ func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, cura
 	// To sort metadata
 	var newMetaData []meta
 	for _, elementInListOfIndices := range metaData {
-		if lastOrderBookIndex != uint32(elementInListOfIndices.Index) {
+		if lastOrderBookIndex != elementInListOfIndices.Index {
 			newMetaData = append(newMetaData, elementInListOfIndices)
 		} else {
 			newMetaData = append(newMetaData, newMeta(id, lastOrderBookIndex))
@@ -136,6 +136,36 @@ func (k Keeper) GetOrderBookByID(ctx sdk.Context, id string) []types.OrderBook {
 	k.cdc.MustUnmarshalBinaryBare(bz, &orderbook)
 
 	var orderbooksQueried = []types.OrderBook{orderbook}
+	return orderbooksQueried
+}
+
+func (k Keeper) GetOrderBookByIndex(ctx sdk.Context, index uint32) []types.OrderBook {
+
+	store := ctx.KVStore(k.storeKey)
+
+	var orderbook types.OrderBook
+	var orderbooksQueried = []types.OrderBook{}
+	var metaData []meta
+
+	lenOfLastOrderBookIndex := strconv.Itoa(len(strconv.Itoa(int(index))))
+	hashOfLenOfLastOrderBookIndex := blake2b.Sum256([]byte(lenOfLastOrderBookIndex))
+	hashInStringOfLenOfLastOrderBookIndexLarge := hex.EncodeToString(hashOfLenOfLastOrderBookIndex[:])
+	hashInStringOfLenOfLastOrderBookIndex := hashInStringOfLenOfLastOrderBookIndexLarge[len(hashInStringOfLenOfLastOrderBookIndexLarge) - numberOfCharacters:]
+
+
+	bz := store.Get([]byte("meta"))
+	k.cdc.MustUnmarshalBinaryBare(bz, &metaData)
+
+	for _, element := range metaData {
+
+		// Matching
+		if hashInStringOfLenOfLastOrderBookIndex == element.ID[3 * numberOfCharacters: 4 * numberOfCharacters] {
+			bz := store.Get([]byte(element.ID))
+			k.cdc.MustUnmarshalBinaryBare(bz, &orderbook)
+			orderbooksQueried = append(orderbooksQueried, orderbook)
+		}
+	}
+
 	return orderbooksQueried
 }
 
