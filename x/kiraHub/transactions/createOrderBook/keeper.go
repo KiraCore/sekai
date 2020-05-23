@@ -43,7 +43,7 @@ func NewKeeper(cdc *codec.Codec, storeKey sdk.StoreKey) Keeper {
 	}
 }
 
-func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, curator string, mnemonic string) {
+func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, curator sdk.AccAddress, mnemonic string) {
 	var orderbook = types.NewOrderBook()
 
 	orderbook.Quote = quote
@@ -52,7 +52,7 @@ func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, cura
 	orderbook.Mnemonic = mnemonic
 
 	// Creating the hashes of the parts of the ID
-	hashOfCurator := blake2b.Sum256([]byte(curator))
+	hashOfCurator := blake2b.Sum256(curator)
 	hashInStringOfCurator := hex.EncodeToString(hashOfCurator[:])
 	idHashInStringOfCurator := hashInStringOfCurator[len(hashInStringOfCurator) - numberOfCharacters:]
 
@@ -82,6 +82,9 @@ func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, cura
 
 		k.cdc.MustUnmarshalBinaryBare(bz, &metaData)
 
+		bz := store.Get([]byte("last_order_book_index"))
+		k.cdc.MustUnmarshalBinaryBare(bz, &lastOrderBookIndex)
+
 		// Need to get list of all Indices, assuming the list is called listOfIndices
 		for indexInListOfIndices, elementInListOfIndices := range metaData {
 			if uint32(indexInListOfIndices) != elementInListOfIndices.Index {
@@ -107,22 +110,35 @@ func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, cura
 
 	id := ID.String()
 	orderbook.ID = id
+	orderbook.Index = lastOrderBookIndex
 
 	store.Set([]byte(id), k.cdc.MustMarshalBinaryBare(orderbook))
+	store.Set([]byte("last_order_book_index"), k.cdc.MustMarshalBinaryBare(lastOrderBookIndex))
 
 	// To sort metadata
 	var newMetaData []meta
-	for _, elementInListOfIndices := range metaData {
-		if lastOrderBookIndex != elementInListOfIndices.Index {
-			newMetaData = append(newMetaData, elementInListOfIndices)
-		} else {
+
+	if len(metaData) == 0 {
+		newMetaData = append(newMetaData, newMeta(id, lastOrderBookIndex))
+	} else {
+		var appendedFlag = 0
+
+		for _, elementInListOfIndices := range metaData {
+			if lastOrderBookIndex != elementInListOfIndices.Index {
+				newMetaData = append(newMetaData, elementInListOfIndices)
+			} else {
+				appendedFlag = 1
+
+				newMetaData = append(newMetaData, newMeta(id, lastOrderBookIndex))
+				newMetaData = append(newMetaData, elementInListOfIndices)
+			}
+		}
+
+		if appendedFlag == 0 {
 			newMetaData = append(newMetaData, newMeta(id, lastOrderBookIndex))
-			newMetaData = append(newMetaData, elementInListOfIndices)
 		}
 	}
 
-	// metaData = append(metaData, newMeta(id, lastOrderBookIndex))
-	// store.Set([]byte("meta"), k.cdc.MustMarshalBinaryBare(metaData))
 	store.Set([]byte("meta"), k.cdc.MustMarshalBinaryBare(newMetaData))
 
 }
@@ -258,7 +274,7 @@ func (k Keeper) GetOrderBookByTP(ctx sdk.Context, base string, quote string) []t
 	return orderbooksQueried
 }
 
-func (k Keeper) GetOrderBookByCurator(ctx sdk.Context, curator string) []types.OrderBook {
+func (k Keeper) GetOrderBookByCurator(ctx sdk.Context, curatorString string) []types.OrderBook {
 
 	store := ctx.KVStore(k.storeKey)
 
@@ -266,7 +282,9 @@ func (k Keeper) GetOrderBookByCurator(ctx sdk.Context, curator string) []types.O
 	var orderbooksQueried = []types.OrderBook{}
 	var metaData []meta
 
-	hashOfCurator := blake2b.Sum256([]byte(curator))
+	var curator, _ = sdk.AccAddressFromBech32(curatorString)
+
+	hashOfCurator := blake2b.Sum256(curator)
 	hashInStringOfCurator := hex.EncodeToString(hashOfCurator[:])
 	idHashInStringOfCurator := hashInStringOfCurator[len(hashInStringOfCurator) - numberOfCharacters:]
 

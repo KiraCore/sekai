@@ -12,7 +12,7 @@ type Message struct {
 	Base string		   	   `json:"base"  yaml:"base"  valid:"required~Base is required"`
 	Quote string		   `json:"quote" yaml:"quote" valid:"required~Quote is required"`
 	Mnemonic string 	   `json:"mnemonic" yaml:"mnemonic" valid:"required~Mnemonic is required"`
-	Curator string 		   `json:"curator"  yaml:"curator" valid:"required~Curator is required"`
+	Curator sdk.AccAddress `json:"curator"  yaml:"curator" valid:"required~Curator is required"`
 }
 
 var _ sdk.Msg = Message{}
@@ -33,6 +33,5 @@ func (message Message) GetSignBytes() []byte {
 }
 
 func (message Message) GetSigners() []sdk.AccAddress {
-	var curator, _ = sdk.AccAddressFromBech32(message.Curator)
-	return []sdk.AccAddress{curator}
+	return []sdk.AccAddress{message.Curator}
 }

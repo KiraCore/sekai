@@ -25,7 +25,7 @@ func GetOrderBooksCmd(cdc *codec.Codec) *cobra.Command {
 				return nil
 			}
 
-			var out types.OrderBook
+			var out []types.OrderBook
 			cdc.MustUnmarshalJSON(res, &out)
 			return cliCtx.PrintOutput(out)
 		},
@@ -34,7 +34,7 @@ func GetOrderBooksCmd(cdc *codec.Codec) *cobra.Command {
 
 func GetOrderBooksByTPCmd(cdc *codec.Codec) *cobra.Command {
 	return &cobra.Command{
-		Use:   "listorderbooks Trading_Pair [base] [quote]",
+		Use:   "listorderbooksTP [base] [quote]",
 		Short: "List order book(s) by Trading_Pair",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -48,7 +48,7 @@ func GetOrderBooksByTPCmd(cdc *codec.Codec) *cobra.Command {
 				return nil
 			}
 
-			var out types.OrderBook
+			var out []types.OrderBook
 			cdc.MustUnmarshalJSON(res, &out)
 			return cliCtx.PrintOutput(out)
 		},

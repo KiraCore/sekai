@@ -13,7 +13,7 @@ import (
 func TransactionCommand(codec *codec.Codec) *cobra.Command {
 
 	return &cobra.Command{
-		Use:   "createOrderBook [base] [quote] [Mnemonic]",
+		Use:   "createOrderBook [base] [quote] [mnemonic]",
 		Short: "Create OrderBook",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(command *cobra.Command, args []string) error {
@@ -22,11 +22,12 @@ func TransactionCommand(codec *codec.Codec) *cobra.Command {
 			cliContext := context.NewCLIContext().WithCodec(codec)
 
 			var curator = cliContext.GetFromAddress()
+
 			message := Message {
 				Base: args[0],
 				Quote: args[1],
 				Mnemonic: args[2],
-				Curator: string(curator),
+				Curator: curator,
 			}
 
 			if err := message.ValidateBasic(); err != nil {
