@@ -25,13 +25,15 @@ func NewKeeper(cdc *codec.Codec, storeKey sdk.StoreKey) Keeper {
 }
 
 type meta struct {
-	ID string
+	OrderBookID string
+	OrderID string
 	Index uint32
 }
 
-func newMeta(id string, index uint32) meta {
+func newMeta(orderBookID string, orderID string, index uint32) meta {
 	return meta{
-		ID: id,
+		OrderBookID: orderBookID,
+		OrderID: orderID,
 		Index: index,
 	}
 }
@@ -78,9 +80,10 @@ func (k Keeper) CreateOrder(ctx sdk.Context, orderBookID string, orderType uint8
 	ID.WriteString(idHashInStringOfType)
 	ID.WriteString(idHashInStringOfPrice)
 
+
 	// Storage Logic
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get([]byte("order_meta"))
+	bz := store.Get([]byte("limit_order_meta"))
 
 	var metaData []meta
 
@@ -118,7 +121,7 @@ func (k Keeper) CreateOrder(ctx sdk.Context, orderBookID string, orderType uint8
 	ID.WriteString(hashInStringOfLenOfLastOrderIndex)
 
 	id := ID.String()
-	limitOrder.ID = id
+	//limitOrder.ID = id
 	limitOrder.Index = lastOrderIndex
 
 	store.Set([]byte(id), k.cdc.MustMarshalBinaryBare(limitOrder))
@@ -128,7 +131,7 @@ func (k Keeper) CreateOrder(ctx sdk.Context, orderBookID string, orderType uint8
 	var newMetaData []meta
 
 	if len(metaData) == 0 {
-		newMetaData = append(newMetaData, newMeta(id, lastOrderIndex))
+		newMetaData = append(newMetaData, newMeta(orderBookID, id, lastOrderIndex))
 	} else {
 		var appendedFlag = 0
 
@@ -138,15 +141,54 @@ func (k Keeper) CreateOrder(ctx sdk.Context, orderBookID string, orderType uint8
 			} else {
 				appendedFlag = 1
 
-				newMetaData = append(newMetaData, newMeta(id, lastOrderIndex))
+				newMetaData = append(newMetaData, newMeta(orderBookID, id, lastOrderIndex))
 				newMetaData = append(newMetaData, elementInListOfIndices)
 			}
 		}
 
 		if appendedFlag == 0 {
-			newMetaData = append(newMetaData, newMeta(id, lastOrderIndex))
+			newMetaData = append(newMetaData, newMeta(id, id, lastOrderIndex))
 		}
 	}
 
-	store.Set([]byte("order_meta"), k.cdc.MustMarshalBinaryBare(newMetaData))
+	store.Set([]byte("limit_order_meta"), k.cdc.MustMarshalBinaryBare(newMetaData))
+}
+
+func (k Keeper) handleOrders (ctx sdk.Context, orderBookID string) {
+
+	// Loading Limit Orders
+
+	var metaData []meta
+	var limitBuy []types.LimitOrder
+	var limitSell []types.LimitOrder
+
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get([]byte("limit_order_meta"))
+	k.cdc.MustUnmarshalBinaryBare(bz, &metaData)
+
+	for _, elementInListOfIndices := range metaData {
+
+		var order types.LimitOrder
+
+		bz := store.Get([]byte(elementInListOfIndices.OrderID))
+		k.cdc.MustUnmarshalBinaryBare(bz, &order)
+
+		if order.OrderType == 1 {
+			limitBuy = append(limitBuy, order)
+		} else if order.OrderType == 2 {
+			limitSell = append(limitSell, order)
+		}
+	}
+
+	// Remove Cancelled & Expired
+
+	// Order By Tx Fee
+
+	// Assign ID
+
+	// Generate Seed
+
+	// Randomize Orders By Seed
+
+
 }
