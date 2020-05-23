@@ -80,7 +80,7 @@ func (k Keeper) CreateOrder(ctx sdk.Context, orderBookID string, orderType uint8
 
 	// Storage Logic
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get([]byte("orders_meta"))
+	bz := store.Get([]byte("order_meta"))
 
 	var metaData []meta
 
@@ -148,5 +148,5 @@ func (k Keeper) CreateOrder(ctx sdk.Context, orderBookID string, orderType uint8
 		}
 	}
 
-	store.Set([]byte("orders_meta"), k.cdc.MustMarshalBinaryBare(newMetaData))
+	store.Set([]byte("order_meta"), k.cdc.MustMarshalBinaryBare(newMetaData))
 }

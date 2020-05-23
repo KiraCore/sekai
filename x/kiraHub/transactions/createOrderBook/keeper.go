@@ -70,7 +70,7 @@ func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, cura
 	ID.WriteString(idHashInStringOfQuote)
 
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get([]byte("meta"))
+	bz := store.Get([]byte("order_book_meta"))
 
 	var metaData []meta
 
@@ -138,7 +138,7 @@ func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, cura
 		}
 	}
 
-	store.Set([]byte("meta"), k.cdc.MustMarshalBinaryBare(newMetaData))
+	store.Set([]byte("order_book_meta"), k.cdc.MustMarshalBinaryBare(newMetaData))
 
 }
 
@@ -168,7 +168,7 @@ func (k Keeper) GetOrderBookByIndex(ctx sdk.Context, index uint32) []types.Order
 	hashInStringOfLenOfLastOrderBookIndex := hashInStringOfLenOfLastOrderBookIndexLarge[len(hashInStringOfLenOfLastOrderBookIndexLarge) - numberOfCharacters:]
 
 
-	bz := store.Get([]byte("meta"))
+	bz := store.Get([]byte("order_book_meta"))
 	k.cdc.MustUnmarshalBinaryBare(bz, &metaData)
 
 	for _, element := range metaData {
@@ -196,7 +196,7 @@ func (k Keeper) GetOrderBookByBase(ctx sdk.Context, base string) []types.OrderBo
 	hashInStringOfBase := hex.EncodeToString(hashOfBase[:])
 	idHashInStringOfBase := hashInStringOfBase[len(hashInStringOfBase) - numberOfCharacters:]
 
-	bz := store.Get([]byte("meta"))
+	bz := store.Get([]byte("order_book_meta"))
 	k.cdc.MustUnmarshalBinaryBare(bz, &metaData)
 
 	for _, element := range metaData {
@@ -224,7 +224,7 @@ func (k Keeper) GetOrderBookByQuote(ctx sdk.Context, quote string) []types.Order
 	hashInStringOfQuote := hex.EncodeToString(hashOfQuote[:])
 	idHashInStringOfQuote := hashInStringOfQuote[len(hashInStringOfQuote) - numberOfCharacters:]
 
-	bz := store.Get([]byte("meta"))
+	bz := store.Get([]byte("order_book_meta"))
 	k.cdc.MustUnmarshalBinaryBare(bz, &metaData)
 
 	for _, element := range metaData {
@@ -256,7 +256,7 @@ func (k Keeper) GetOrderBookByTP(ctx sdk.Context, base string, quote string) []t
 	hashInStringOfQuote := hex.EncodeToString(hashOfQuote[:])
 	idHashInStringOfQuote := hashInStringOfQuote[len(hashInStringOfQuote) - numberOfCharacters:]
 
-	bz := store.Get([]byte("meta"))
+	bz := store.Get([]byte("order_book_meta"))
 	k.cdc.MustUnmarshalBinaryBare(bz, &metaData)
 
 	for _, element := range metaData {
@@ -287,7 +287,7 @@ func (k Keeper) GetOrderBookByCurator(ctx sdk.Context, curatorString string) []t
 	hashInStringOfCurator := hex.EncodeToString(hashOfCurator[:])
 	idHashInStringOfCurator := hashInStringOfCurator[len(hashInStringOfCurator) - numberOfCharacters:]
 
-	bz := store.Get([]byte("meta"))
+	bz := store.Get([]byte("order_book_meta"))
 	k.cdc.MustUnmarshalBinaryBare(bz, &metaData)
 
 	for _, element := range metaData {
