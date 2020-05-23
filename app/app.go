@@ -8,7 +8,6 @@ import (
 	"github.com/KiraCore/cosmos-sdk/x/gov"
 	port "github.com/KiraCore/cosmos-sdk/x/ibc/05-port"
 	transfer "github.com/KiraCore/cosmos-sdk/x/ibc/20-transfer"
-	"github.com/KiraCore/cosmos-sdk/x/mint"
 	"github.com/KiraCore/cosmos-sdk/x/upgrade"
 	"github.com/KiraCore/sekai/x/kiraHub"
 	constants "github.com/KiraCore/sekai/x/kiraHub/constants"
@@ -63,7 +62,6 @@ var (
 		bank.AppModuleBasic{},
 		capability.AppModuleBasic{},
 		staking.AppModuleBasic{},
-		mint.AppModuleBasic{},
 		distr.AppModuleBasic{},
 		gov.NewAppModuleBasic(
 			paramsclient.ProposalHandler, distr.ProposalHandler, upgradeclient.ProposalHandler,
@@ -129,7 +127,6 @@ type SekaiApp struct {
 	capabilityKeeper *capability.Keeper
 	stakingKeeper    staking.Keeper
 	slashingKeeper   slashing.Keeper
-	mintKeeper       mint.Keeper
 	distrKeeper      distr.Keeper
 	govKeeper        gov.Keeper
 	crisisKeeper     crisis.Keeper
@@ -170,7 +167,7 @@ func NewInitApp(
 
 	// TODO: Add the keys that module requires
 	keys := sdk.NewKVStoreKeys(auth.StoreKey, bank.StoreKey, staking.StoreKey,
-		mint.StoreKey, distr.StoreKey, slashing.StoreKey,
+		distr.StoreKey, slashing.StoreKey,
 		gov.StoreKey, params.StoreKey, ibc.StoreKey, upgrade.StoreKey,
 		evidence.StoreKey, transfer.StoreKey, capability.StoreKey, constants.StoreKey,
 	)
@@ -195,7 +192,6 @@ func NewInitApp(
 	app.subspaces[auth.ModuleName] = app.paramsKeeper.Subspace(auth.DefaultParamspace)
 	app.subspaces[bank.ModuleName] = app.paramsKeeper.Subspace(bank.DefaultParamspace)
 	app.subspaces[staking.ModuleName] = app.paramsKeeper.Subspace(staking.DefaultParamspace)
-	app.subspaces[mint.ModuleName] = app.paramsKeeper.Subspace(mint.DefaultParamspace)
 	app.subspaces[distr.ModuleName] = app.paramsKeeper.Subspace(distr.DefaultParamspace)
 	app.subspaces[slashing.ModuleName] = app.paramsKeeper.Subspace(slashing.DefaultParamspace)
 	app.subspaces[gov.ModuleName] = app.paramsKeeper.Subspace(gov.DefaultParamspace).WithKeyTable(gov.ParamKeyTable())
@@ -216,10 +212,6 @@ func NewInitApp(
 	)
 	stakingKeeper := staking.NewKeeper(
 		appCodec, keys[staking.StoreKey], app.accountKeeper, app.bankKeeper, app.subspaces[staking.ModuleName],
-	)
-	app.mintKeeper = mint.NewKeeper(
-		appCodec, keys[mint.StoreKey], app.subspaces[mint.ModuleName], &stakingKeeper,
-		app.accountKeeper, app.bankKeeper, auth.FeeCollectorName,
 	)
 	app.distrKeeper = distr.NewKeeper(
 		appCodec, keys[distr.StoreKey], app.subspaces[distr.ModuleName], app.accountKeeper, app.bankKeeper,
@@ -290,7 +282,6 @@ func NewInitApp(
 		capability.NewAppModule(appCodec, *app.capabilityKeeper),
 		crisis.NewAppModule(&app.crisisKeeper),
 		gov.NewAppModule(appCodec, app.govKeeper, app.accountKeeper, app.bankKeeper),
-		mint.NewAppModule(appCodec, app.mintKeeper, app.accountKeeper),
 		slashing.NewAppModule(appCodec, app.slashingKeeper, app.accountKeeper, app.bankKeeper, app.stakingKeeper),
 		distr.NewAppModule(appCodec, app.distrKeeper, app.accountKeeper, app.bankKeeper, app.stakingKeeper),
 		staking.NewAppModule(appCodec, app.stakingKeeper, app.accountKeeper, app.bankKeeper),
@@ -305,7 +296,7 @@ func NewInitApp(
 	// CanWithdrawInvariant invariant.
 
 	app.mm.SetOrderBeginBlockers(
-		upgrade.ModuleName, mint.ModuleName, distr.ModuleName, slashing.ModuleName,
+		upgrade.ModuleName, distr.ModuleName, slashing.ModuleName,
 		evidence.ModuleName, staking.ModuleName, ibc.ModuleName,
 	)
 	app.mm.SetOrderEndBlockers(crisis.ModuleName, gov.ModuleName, staking.ModuleName)
@@ -315,7 +306,7 @@ func NewInitApp(
 	// properly initialized with tokens from genesis accounts.
 	app.mm.SetOrderInitGenesis(
 		capability.ModuleName, auth.ModuleName, distr.ModuleName, staking.ModuleName, bank.ModuleName,
-		slashing.ModuleName, gov.ModuleName, mint.ModuleName, crisis.ModuleName,
+		slashing.ModuleName, gov.ModuleName, crisis.ModuleName,
 		ibc.ModuleName, genutil.ModuleName, evidence.ModuleName, transfer.ModuleName,
 	)
 
@@ -327,7 +318,6 @@ func NewInitApp(
 		bank.NewAppModule(appCodec, app.bankKeeper, app.accountKeeper),
 		capability.NewAppModule(appCodec, *app.capabilityKeeper),
 		gov.NewAppModule(appCodec, app.govKeeper, app.accountKeeper, app.bankKeeper),
-		mint.NewAppModule(appCodec, app.mintKeeper, app.accountKeeper),
 		staking.NewAppModule(appCodec, app.stakingKeeper, app.accountKeeper, app.bankKeeper),
 		distr.NewAppModule(appCodec, app.distrKeeper, app.accountKeeper, app.bankKeeper, app.stakingKeeper),
 		slashing.NewAppModule(appCodec, app.slashingKeeper, app.accountKeeper, app.bankKeeper, app.stakingKeeper),
