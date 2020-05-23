@@ -17,6 +17,13 @@ type Keeper struct {
 	storeKey sdk.StoreKey // Unexposed key to access store from sdk.Context
 }
 
+func NewKeeper(cdc *codec.Codec, storeKey sdk.StoreKey) Keeper {
+	return Keeper{
+		cdc:        cdc,
+		storeKey:   storeKey,
+	}
+}
+
 type meta struct {
 	ID string
 	Index uint32
@@ -34,14 +41,6 @@ var lastOrderBookIndex uint32 = 0
 // This is the definitions of the lens of the shortened hashes
 var numberOfBytes = 4
 var numberOfCharacters = 2 * numberOfBytes
-
-
-func NewKeeper(cdc *codec.Codec, storeKey sdk.StoreKey) Keeper {
-	return Keeper{
-		cdc:        cdc,
-		storeKey:   storeKey,
-	}
-}
 
 func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, curator sdk.AccAddress, mnemonic string) {
 	var orderbook = types.NewOrderBook()

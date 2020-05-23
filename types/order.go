@@ -6,12 +6,13 @@ import (
 )
 
 type LimitOrder struct {
-	ID string              `json:"id"`
-	OrderBookID string     `json:"order_book_id"`
-	OrderType uint8		   `json:"order_type"`
-	Amount int64		   `json:"amount"`
-	LimitPrice int64 	   `json:"limit_price"`
-	ExpiryTime int64       `json:"curator"`
+	ID          string `json:"id"`
+	OrderBookID string `json:"order_book_id"`
+	OrderType   uint8  `json:"order_type"`
+	Amount      int64  `json:"amount"`
+	LimitPrice  int64  `json:"limit_price"`
+	ExpiryTime  int64  `json:"curator"`
+	Index       uint32	`json:"index"`
 }
 
 func NewLimitOrder() LimitOrder {
