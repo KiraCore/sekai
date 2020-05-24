@@ -13,17 +13,19 @@ type LimitOrder struct {
 	Amount      int64  `json:"amount"`
 	LimitPrice  int64  `json:"limit_price"`
 	ExpiryTime  int64  `json:"curator"`
+	IsCancelled bool   `json:"is_cancelled"`
 }
 
 func NewLimitOrder() LimitOrder {
 	return LimitOrder{
-		ID: "",
-		Index: 0,
+		ID:          "",
+		Index:       0,
 		OrderBookID: "",
-		OrderType: 0,
-		Amount: 0,
-		LimitPrice: 0,
-		ExpiryTime: 0,
+		OrderType:   0,
+		Amount:      0,
+		LimitPrice:  0,
+		ExpiryTime:  0,
+		IsCancelled: false,
 	}
 }
 

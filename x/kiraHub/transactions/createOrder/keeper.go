@@ -154,10 +154,24 @@ func (k Keeper) CreateOrder(ctx sdk.Context, orderBookID string, orderType uint8
 	store.Set([]byte("limit_order_meta"), k.cdc.MustMarshalBinaryBare(newMetaData))
 }
 
+func (k Keeper) cancelOrder (ctx sdk.Context, orderID string) {
+	// Load Order
+	var order types.LimitOrder
+
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get([]byte(orderID))
+	k.cdc.MustUnmarshalBinaryBare(bz, &order)
+
+	// Cancel Order
+	order.IsCancelled = true
+
+	// Store Order
+	store.Set([]byte(orderID), k.cdc.MustMarshalBinaryBare(order))
+}
+
 func (k Keeper) handleOrders (ctx sdk.Context, orderBookID string) {
 
 	// Loading Limit Orders
-
 	var metaData []meta
 	var limitBuy []types.LimitOrder
 	var limitSell []types.LimitOrder
@@ -181,11 +195,22 @@ func (k Keeper) handleOrders (ctx sdk.Context, orderBookID string) {
 	}
 
 	// Remove Cancelled & Expired
+	for i, elementInListOfIndices := range limitBuy {
+		if time.Now().Unix() > elementInListOfIndices.ExpiryTime || elementInListOfIndices.IsCancelled == true {
+			limitBuy = append(limitBuy[:i], limitBuy[i+1:]...)
+		}
+	}
+
+	for i, elementInListOfIndices := range limitSell {
+		if time.Now().Unix() > elementInListOfIndices.ExpiryTime || elementInListOfIndices.IsCancelled == true {
+			limitSell = append(limitSell[:i], limitSell[i+1:]...)
+		}
+	}
 
 	// Order By Tx Fee
 
 	// Assign ID
-
+	
 	// Generate Seed
 
 	// Randomize Orders By Seed
