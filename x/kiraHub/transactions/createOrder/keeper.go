@@ -10,6 +10,7 @@ import (
 	"github.com/KiraCore/cosmos-sdk/codec"
 	sdk "github.com/KiraCore/cosmos-sdk/types"
 	"github.com/KiraCore/sekai/types"
+	"github.com/KiraCore/sekai/x/kiraHub/transactions/createOrderBook"
 )
 
 type Keeper struct {
@@ -175,6 +176,7 @@ func (k Keeper) handleOrders (ctx sdk.Context, orderBookID string) {
 	var metaData []meta
 	var limitBuy []types.LimitOrder
 	var limitSell []types.LimitOrder
+	var orderBooks []types.OrderBook
 
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get([]byte("limit_order_meta"))
@@ -183,6 +185,7 @@ func (k Keeper) handleOrders (ctx sdk.Context, orderBookID string) {
 	for _, elementInListOfIndices := range metaData {
 
 		var order types.LimitOrder
+		var orderBook types.OrderBook
 
 		bz := store.Get([]byte(elementInListOfIndices.OrderID))
 		k.cdc.MustUnmarshalBinaryBare(bz, &order)
@@ -192,6 +195,27 @@ func (k Keeper) handleOrders (ctx sdk.Context, orderBookID string) {
 		} else if order.OrderType == 2 {
 			limitSell = append(limitSell, order)
 		}
+
+		if len(orderBooks) == 0 {
+			bz := store.Get([]byte(elementInListOfIndices.OrderBookID))
+			k.cdc.MustUnmarshalBinaryBare(bz, &orderBook)
+
+		} else {
+			var retrievedFlag = 0
+
+			for _, orderbook := range orderBooks {
+				if orderbook.ID == elementInListOfIndices.OrderBookID {
+					retrievedFlag = 1
+				}
+			}
+
+			if retrievedFlag == 0 {
+				bz := store.Get([]byte(elementInListOfIndices.OrderBookID))
+				k.cdc.MustUnmarshalBinaryBare(bz, &orderBook)
+			}
+		}
+
+		orderBooks = append(orderBooks, orderBook)
 	}
 
 	// Remove Cancelled & Expired
@@ -210,10 +234,43 @@ func (k Keeper) handleOrders (ctx sdk.Context, orderBookID string) {
 	// Order By Tx Fee
 
 	// Assign ID
-	
+	for _, elementInListOfIndices := range metaData {
+
+		for _, buy := range limitBuy {
+			if elementInListOfIndices.Index == buy.Index {
+				buy.ID = elementInListOfIndices.OrderID
+			}
+		}
+
+		for _, sell := range limitSell {
+			if elementInListOfIndices.Index == sell.Index {
+				sell.ID = elementInListOfIndices.OrderID
+			}
+		}
+	}
+
 	// Generate Seed
 
-	// Randomize Orders By Seed
+	// Randomize Orders By
+
+	// Pick Orders
+	for _, buy := range limitBuy {
+		for _, sell := range limitSell {
+			if buy.LimitPrice == sell.LimitPrice {
+				if buy.OrderBookID == sell.OrderBookID {
+					// Matching
+
+				} else {
+					var buyOrderBook = createOrderBook.NewKeeper(k.cdc, k.storeKey).GetOrderBookByID(ctx, buy.OrderBookID)
+					var sellOrderBook = createOrderBook.NewKeeper(k.cdc, k.storeKey).GetOrderBookByID(ctx, sell.OrderBookID)
+
+					if buyOrderBook[0].Base == sellOrderBook[0].Base && buyOrderBook[0].Quote == sellOrderBook[0].Quote {
+						// Matching
+					}
+				}
+			}
+		}
+	}
 
 
 }
