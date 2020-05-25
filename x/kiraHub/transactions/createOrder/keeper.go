@@ -6,6 +6,7 @@ import (
 	"golang.org/x/crypto/blake2b"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/KiraCore/cosmos-sdk/codec"
@@ -308,6 +309,32 @@ func mergesort(s []int) []int {
 		mergesort(s[:middle])
 		mergesort(s[middle:])
 		merge(s, middle)
+	}
+
+	return s
+}
+
+func parallelMergeSort(s []int) []int {
+	len := len(s)
+
+	if len > 1 {
+		middle := len / 2
+
+		var wg sync.WaitGroup
+		wg.Add(2)
+
+		go func() {
+			defer wg.Done()
+			parallelMergeSort(s[:middle])
+		}()
+
+		go func() {
+			defer wg.Done()
+			parallelMergeSort(s[middle:])
+		}()
+
+		wg.Wait()
+		parallelMerge(s, middle)
 	}
 
 	return s
