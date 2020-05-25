@@ -2,6 +2,7 @@ package createOrder
 
 import (
 	"encoding/hex"
+	"fmt"
 	"golang.org/x/crypto/blake2b"
 	"strconv"
 	"strings"
@@ -272,5 +273,50 @@ func (k Keeper) handleOrders (ctx sdk.Context, orderBookID string) {
 		}
 	}
 
+}
 
+func merge(s []int, middle int) {
+	helper := make([]int, len(s))
+	copy(helper, s)
+
+	helperLeft := 0
+	helperRight := middle
+	current := 0
+	high := len(s) - 1
+
+	for helperLeft <= middle-1 && helperRight <= high {
+		if helper[helperLeft] <= helper[helperRight] {
+			s[current] = helper[helperLeft]
+			helperLeft++
+		} else {
+			s[current] = helper[helperRight]
+			helperRight++
+		}
+		current++
+	}
+
+	for helperLeft <= middle-1 {
+		s[current] = helper[helperLeft]
+		current++
+		helperLeft++
+	}
+}
+
+func mergesort(s []int) []int {
+	if len(s) > 1 {
+		middle := len(s) / 2
+		mergesort(s[:middle])
+		mergesort(s[middle:])
+		merge(s, middle)
+	}
+
+	return s
+}
+
+func (k Keeper) sortOrders (ctx sdk.Context, orderParam string) {
+	if orderParam == "buy" {
+		fmt.Println("Buy")
+	} else if orderParam == "Sell" {
+		fmt.Println("Sell")
+	}
 }
