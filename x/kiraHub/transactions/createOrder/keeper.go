@@ -2,11 +2,9 @@ package createOrder
 
 import (
 	"encoding/hex"
-	"fmt"
 	"golang.org/x/crypto/blake2b"
 	"strconv"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/KiraCore/cosmos-sdk/codec"
@@ -276,74 +274,80 @@ func (k Keeper) handleOrders (ctx sdk.Context, orderBookID string) {
 
 }
 
-func merge(s []int, middle int) {
-	helper := make([]int, len(s))
-	copy(helper, s)
+func merge(orderList []types.LimitOrder, middle int, sortBy string) {
+	var helper = orderList
 
 	helperLeft := 0
 	helperRight := middle
 	current := 0
-	high := len(s) - 1
+	high := len(orderList) - 1
 
-	for helperLeft <= middle-1 && helperRight <= high {
-		if helper[helperLeft] <= helper[helperRight] {
-			s[current] = helper[helperLeft]
-			helperLeft++
-		} else {
-			s[current] = helper[helperRight]
-			helperRight++
+	switch sortBy {
+	case "limitPrice":
+		for helperLeft <= middle-1 && helperRight <= high {
+			if helper[helperLeft].LimitPrice <= helper[helperRight].LimitPrice {
+				orderList[current] = helper[helperLeft]
+				helperLeft++
+			} else {
+				orderList[current] = helper[helperRight]
+				helperRight++
+			}
+			current++
 		}
-		current++
+	case "index":
+		for helperLeft <= middle-1 && helperRight <= high {
+			if helper[helperLeft].Index <= helper[helperRight].Index {
+				orderList[current] = helper[helperLeft]
+				helperLeft++
+			} else {
+				orderList[current] = helper[helperRight]
+				helperRight++
+			}
+			current++
+		}
 	}
 
 	for helperLeft <= middle-1 {
-		s[current] = helper[helperLeft]
+		orderList[current] = helper[helperLeft]
 		current++
 		helperLeft++
 	}
 }
 
-func mergesort(s []int) []int {
-	if len(s) > 1 {
-		middle := len(s) / 2
-		mergesort(s[:middle])
-		mergesort(s[middle:])
-		merge(s, middle)
+func mergesort(orderList []types.LimitOrder, sortBy string) []types.LimitOrder {
+	if len(orderList) > 1 {
+		middle := len(orderList) / 2
+		mergesort(orderList[:middle], sortBy)
+		mergesort(orderList[middle:], sortBy)
+		merge(orderList, middle, sortBy)
 	}
 
-	return s
+	return orderList
 }
 
-func parallelMergeSort(s []int) []int {
-	len := len(s)
-
-	if len > 1 {
-		middle := len / 2
-
-		var wg sync.WaitGroup
-		wg.Add(2)
-
-		go func() {
-			defer wg.Done()
-			parallelMergeSort(s[:middle])
-		}()
-
-		go func() {
-			defer wg.Done()
-			parallelMergeSort(s[middle:])
-		}()
-
-		wg.Wait()
-		parallelMerge(s, middle)
-	}
-
-	return s
-}
-
-func (k Keeper) sortOrders (ctx sdk.Context, orderParam string) {
-	if orderParam == "buy" {
-		fmt.Println("Buy")
-	} else if orderParam == "Sell" {
-		fmt.Println("Sell")
-	}
-}
+// Use this instead of mergeSort when Orders exceed a million in number
+//func parallelMergeSort(s []int) []int {
+//	len := len(s)
+//
+//	if len > 1 {
+//		middle := len / 2
+//
+//		var wg sync.WaitGroup
+//		wg.Add(2)
+//
+//		go func() {
+//			defer wg.Done()
+//			parallelMergeSort(s[:middle])
+//		}()
+//
+//		go func() {
+//			defer wg.Done()
+//			parallelMergeSort(s[middle:])
+//		}()
+//
+//		wg.Wait()
+//		parallelMerge(s, middle)
+//	}
+//
+//	return s
+//}
