@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"math/rand"
 
 	"github.com/KiraCore/cosmos-sdk/codec"
 	sdk "github.com/KiraCore/cosmos-sdk/types"
@@ -250,8 +251,15 @@ func (k Keeper) handleOrders (ctx sdk.Context, orderBookID string) {
 	}
 
 	// Generate Seed
+	blockHeader := ctx.BlockHeader().LastBlockId.Hash
+	blockIDHex := hex.EncodeToString(blockHeader[:])
+	blockIDInt, _ := strconv.Atoi(blockIDHex[:])
 
-	// Randomize Orders By
+	rand.Seed(int64(blockIDInt))
+
+	// Randomize Orders
+	newBuy := fisheryatesShuffle(limitBuy)
+	newSell := fisheryatesShuffle(limitSell)
 
 	// Pick Orders
 	for _, buy := range limitBuy {
@@ -351,3 +359,14 @@ func mergesort(orderList []types.LimitOrder, sortBy string) []types.LimitOrder {
 //
 //	return s
 //}
+
+func fisheryatesShuffle(list []types.LimitOrder) []types.LimitOrder {
+	N := len(list)
+	for i := 0; i < N; i++ {
+		// choose index uniformly in [i, N-1]
+		r := i + rand.Intn(N-i)
+		list[r], list[i] = list[i], list[r]
+	}
+
+	return list
+}
