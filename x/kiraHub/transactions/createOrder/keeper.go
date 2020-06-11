@@ -258,7 +258,8 @@ func (k Keeper) handleOrders (ctx sdk.Context, orderBookID string) {
 	rand.Seed(int64(blockIDInt))
 
 	// Randomize Orders
-	// Need to shuffle by fisher yates algo
+	newBuy := fisheryatesShuffle(limitBuy)
+	newSell := fisheryatesShuffle(limitSell)
 
 	// Pick Orders
 	for _, buy := range limitBuy {
@@ -358,3 +359,14 @@ func mergesort(orderList []types.LimitOrder, sortBy string) []types.LimitOrder {
 //
 //	return s
 //}
+
+func fisheryatesShuffle(list []types.LimitOrder) []types.LimitOrder {
+	N := len(list)
+	for i := 0; i < N; i++ {
+		// choose index uniformly in [i, N-1]
+		r := i + rand.Intn(N-i)
+		list[r], list[i] = list[i], list[r]
+	}
+
+	return list
+}
