@@ -4,6 +4,7 @@ import (
 	"encoding/hex"
 	"strconv"
 	"strings"
+	"fmt"
 
 	"github.com/KiraCore/cosmos-sdk/codec"
 	sdk "github.com/KiraCore/cosmos-sdk/types"
@@ -44,6 +45,8 @@ var numberOfCharacters = 2 * numberOfBytes
 
 func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, curator sdk.AccAddress, mnemonic string) {
 	var orderbook = types.NewOrderBook()
+
+	fmt.Println("Last Block ID: ", ctx.BlockHeader().LastBlockId)
 
 	orderbook.Quote = quote
 	orderbook.Base = base

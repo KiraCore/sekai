@@ -23,6 +23,7 @@ func TransactionCommand(codec *codec.Codec) *cobra.Command {
 
 			var curator = cliContext.GetFromAddress()
 
+
 			message := Message {
 				Base: args[0],
 				Quote: args[1],

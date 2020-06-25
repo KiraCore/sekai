@@ -15,4 +15,7 @@ const (
 
 	CreateOrderBookTransaction = "createorderbook"
 	CreateOrderTransaction = "createorder"
+
+	ListOrderBooksQuery = "listOrderBooks"
+	ListOrderBooksQueryByTP = "listOrderBooksByTP"
 )

@@ -1,9 +1,12 @@
 package listOrderBooks
 
 type QueryListOrderBooks struct {
-	index int `json:"owner"`
+	By    string `json:"by"`
+	Value string `json:"value"`
 }
 
-func (r QueryListOrderBooks) String() int {
-	return r.index
+type QueryListOrderBooksByTP struct {
+	Base    string `json:"base"`
+	Quote   string `json:"quote"`
 }
+
