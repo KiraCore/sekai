@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func GetOrdesCmd(cdc *codec.Codec) *cobra.Command {
+func GetOrdersCmd(cdc *codec.Codec) *cobra.Command {
 	return &cobra.Command{
 		Use:   "listorders [id] [max_orders] [min_amount]",
 		Short: "List order(s) by ID",
