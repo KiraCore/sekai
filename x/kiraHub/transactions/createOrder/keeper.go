@@ -19,6 +19,18 @@ type Keeper struct {
 	storeKey sdk.StoreKey // Unexposed key to access store from sdk.Context
 }
 
+func (k Keeper) GetOrders(ctx sdk.Context, id string, max_orders int, min_amount int) []types.OrderBook {
+
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get([]byte(id))
+
+	var orderbook types.OrderBook
+	k.cdc.MustUnmarshalBinaryBare(bz, &orderbook)
+
+	var orderbooksQueried = []types.OrderBook{orderbook}
+	return orderbooksQueried
+}
+
 func NewKeeper(cdc *codec.Codec, storeKey sdk.StoreKey) Keeper {
 	return Keeper{
 		cdc:        cdc,
