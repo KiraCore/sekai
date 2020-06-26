@@ -24,7 +24,7 @@ func (k Keeper) GetOrders(ctx sdk.Context, id string, max_orders int, min_amount
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get([]byte(id))
 
-	// Just testing
+	// Just testing need to put logic for filtering later
 	_ := max_orders + min_amount
 
 	var orders types.LimitOrder
