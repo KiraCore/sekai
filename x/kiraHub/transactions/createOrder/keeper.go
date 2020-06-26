@@ -24,11 +24,14 @@ func (k Keeper) GetOrders(ctx sdk.Context, id string, max_orders int, min_amount
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get([]byte(id))
 
-	var orderbook types.OrderBook
-	k.cdc.MustUnmarshalBinaryBare(bz, &orderbook)
+	// Just testing
+	_ := max_orders + min_amount
 
-	var orderbooksQueried = []types.OrderBook{orderbook}
-	return orderbooksQueried
+	var orders types.LimitOrder
+	k.cdc.MustUnmarshalBinaryBare(bz, &orders)
+
+	var ordersQueried = []types.LimitOrder{orders}
+	return ordersQueried
 }
 
 func NewKeeper(cdc *codec.Codec, storeKey sdk.StoreKey) Keeper {
