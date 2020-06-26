@@ -5,7 +5,6 @@ import (
 	sdk "github.com/KiraCore/cosmos-sdk/types"
 	"github.com/KiraCore/sekai/types"
 	"github.com/KiraCore/sekai/x/kiraHub/transactions/createOrder"
-	"github.com/KiraCore/sekai/x/kiraHub/transactions/createOrderBook"
 	abci "github.com/tendermint/tendermint/abci/types"
 	"strconv"
 )
@@ -17,7 +16,7 @@ func QueryGetOrders(ctx sdk.Context, path []string, req abci.RequestQuery, keepe
 	var int1, _ = strconv.Atoi(path[1])
 	var int2, _ = strconv.Atoi(path[2])
 
-	queryOutput = keeper.GetOrders(ctx, path[0], uint32(int1), uint32(int2))
+	queryOutput = keeper.GetOrders(ctx, path[0], int1, int2)
 
 	res, marshalJSONIndentError := codec.MarshalJSONIndent(packageCodec, queryOutput)
 	if marshalJSONIndentError != nil {

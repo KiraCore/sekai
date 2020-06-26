@@ -2,16 +2,17 @@ package createOrder
 
 import (
 	"encoding/hex"
+	"github.com/KiraCore/sekai/x/kiraHub/transactions/createOrderBook"
 	"golang.org/x/crypto/blake2b"
+	"math/rand"
 	"strconv"
 	"strings"
 	"time"
-	"math/rand"
 
 	"github.com/KiraCore/cosmos-sdk/codec"
 	sdk "github.com/KiraCore/cosmos-sdk/types"
 	"github.com/KiraCore/sekai/types"
-	"github.com/KiraCore/sekai/x/kiraHub/transactions/createOrderBook"
+	"github.com/KiraCore/sekai/x/kiraHub/transactions/createOrder"
 )
 
 type Keeper struct {
@@ -19,13 +20,13 @@ type Keeper struct {
 	storeKey sdk.StoreKey // Unexposed key to access store from sdk.Context
 }
 
-func (k Keeper) GetOrders(ctx sdk.Context, id string, max_orders int, min_amount int) []types.OrderBook {
+func (k Keeper) GetOrders(ctx sdk.Context, id string, maxOrders int, minAmount int) []types.LimitOrder {
 
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get([]byte(id))
 
 	// Just testing need to put logic for filtering later
-	_ := max_orders + min_amount
+	_ := maxOrders + minAmount
 
 	var orders types.LimitOrder
 	k.cdc.MustUnmarshalBinaryBare(bz, &orders)
