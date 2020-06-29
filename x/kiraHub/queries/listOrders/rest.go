@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func GetOrderBooks(cliCtx context.CLIContext) http.HandlerFunc {
+func GetOrders(cliCtx context.CLIContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		id := vars["id"]

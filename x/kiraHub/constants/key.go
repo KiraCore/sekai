@@ -18,4 +18,5 @@ const (
 
 	ListOrderBooksQuery = "listOrderBooks"
 	ListOrderBooksQueryByTP = "listOrderBooksByTP"
+	ListOrders = "listOrders"
 )
