@@ -5,8 +5,8 @@ import (
 	constants "github.com/KiraCore/sekai/x/kiraHub/constants"
 	"github.com/KiraCore/sekai/x/kiraHub/queries/listOrderBooks"
 	"github.com/KiraCore/sekai/x/kiraHub/queries/listOrders"
-	"github.com/KiraCore/sekai/x/kiraHub/transactions/createOrderBook"
 	"github.com/KiraCore/sekai/x/kiraHub/transactions/createOrder"
+	"github.com/KiraCore/sekai/x/kiraHub/transactions/createOrderBook"
 	"github.com/spf13/cobra"
 
 	"github.com/KiraCore/cosmos-sdk/client"

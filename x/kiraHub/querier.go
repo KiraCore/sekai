@@ -5,11 +5,13 @@ import (
 	"github.com/KiraCore/cosmos-sdk/types/errors"
 	constants "github.com/KiraCore/sekai/x/kiraHub/constants"
 	"github.com/KiraCore/sekai/x/kiraHub/queries/listOrderBooks"
+	"github.com/KiraCore/sekai/x/kiraHub/queries/listOrders"
 	abciTypes "github.com/tendermint/tendermint/abci/types"
 )
 
 const (
 	QueryListOrderBooks = "listOrderBooks"
+	QueryListOrders = "listOrders"
 )
 
 func NewQuerier(keeper Keeper) sdk.Querier {
