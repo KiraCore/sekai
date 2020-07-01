@@ -7,6 +7,7 @@ import (
 
 func RegisterCodec(cdc *codec.Codec) {
 	cdc.RegisterConcrete(QueryListOrderBooks{}, "kiraHub/queryOrderBooks", nil)
+	cdc.RegisterConcrete(QueryListOrderBooksByTP{}, "kiraHub/queryOrderBooksByTP", nil)
 }
 
 var packageCodec = codec.New()

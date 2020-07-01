@@ -11,8 +11,8 @@ import (
 
 func GetOrdersCmd(cdc *codec.Codec) *cobra.Command {
 	return &cobra.Command{
-		Use:   "listorders [id] [max_orders] [min_amount]",
-		Short: "List order(s) by ID",
+		Use:   "listorders [order_book_id] [max_orders] [min_amount]",
+		Short: "List order(s) by Order Book ID",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := context.NewCLIContext().WithCodec(cdc)

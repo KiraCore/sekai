@@ -19,19 +19,27 @@ type Keeper struct {
 	storeKey sdk.StoreKey // Unexposed key to access store from sdk.Context
 }
 
-func (k Keeper) GetOrders(ctx sdk.Context, id string, maxOrders int, minAmount int) []types.LimitOrder {
+func (k Keeper) GetOrders(ctx sdk.Context, order_book_id string, maxOrders int, minAmount int) []types.LimitOrder {
+
+	var metaData []meta
+	var queryOutput []types.LimitOrder
+	var order types.LimitOrder
 
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get([]byte(id))
+	bz := store.Get([]byte("limit_order_meta"))
 
-	// Just testing need to put logic for filtering later
-	//testVar := maxOrders + minAmount
+	k.cdc.MustUnmarshalBinaryBare(bz, &metaData)
 
-	var orders types.LimitOrder
-	k.cdc.MustUnmarshalBinaryBare(bz, &orders)
+	for _, elementInListOfIndices := range metaData {
+		if elementInListOfIndices.OrderBookID == order_book_id {
+			bz := store.Get([]byte(elementInListOfIndices.OrderID))
+			k.cdc.MustUnmarshalBinaryBare(bz, &order)
 
-	var ordersQueried = []types.LimitOrder{orders}
-	return ordersQueried
+			queryOutput = append(queryOutput, order)
+		}
+	}
+
+	return queryOutput
 }
 
 func NewKeeper(cdc *codec.Codec, storeKey sdk.StoreKey) Keeper {
@@ -63,12 +71,12 @@ var numberOfCharacters = 2 * numberOfBytes
 
 func (k Keeper) CreateOrder(ctx sdk.Context, orderBookID string, orderType uint8, amount int64, limitPrice int64, curator sdk.AccAddress) {
 
-	var orderBook = createOrderBook.NewKeeper(k.cdc, k.storeKey).GetOrderBookByID(ctx, orderBookID)
+	//var orderBook = createOrderBook.NewKeeper(k.cdc, k.storeKey).GetOrderBookByID(ctx, orderBookID)
 
 	// Validation Check
-	if string(orderBook[0].Curator) != string(curator) {
-		return
-	}
+	//if string(orderBook[0].Curator) != string(curator) {
+	//	return
+	//}
 
 	var limitOrder = types.NewLimitOrder()
 
@@ -76,6 +84,7 @@ func (k Keeper) CreateOrder(ctx sdk.Context, orderBookID string, orderType uint8
 	limitOrder.OrderType = orderType
 	limitOrder.Amount = amount
 	limitOrder.LimitPrice = limitPrice
+	limitOrder.Curator = curator
 
 	// Expiry Time Logic
 

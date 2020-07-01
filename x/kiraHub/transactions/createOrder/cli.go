@@ -30,7 +30,7 @@ func TransactionCommand(codec *codec.Codec) *cobra.Command {
 
 			// Limit Order
 
-			if uint8(orderType) == 1 || uint8(orderType) == 2 {
+			if uint8(orderType) == 0 || uint8(orderType) == 1 {
 
 				var amount, _ = strconv.Atoi(args[2])
 				var limitPrice, _ = strconv.Atoi(args[3])
