@@ -21,6 +21,9 @@ func NewQuerier(keeper Keeper) sdk.Querier {
 		case QueryListOrderBooks:
 			return listOrderBooks.QueryGetOrderBooks(context, path[1:], requestQuery, keeper.getCreateOrderBookKeeper())
 
+		case QueryListOrders:
+			return listOrders.QueryGetOrders(context, path[1:], requestQuery, keeper.getCreateOrderKeeper())
+
 		default:
 			return nil, errors.Wrapf(constants.UnknownQueryCode, "%v", path[0])
 		}

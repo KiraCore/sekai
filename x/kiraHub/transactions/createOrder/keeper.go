@@ -142,7 +142,7 @@ func (k Keeper) CreateOrder(ctx sdk.Context, orderBookID string, orderType uint8
 	limitOrder.Index = lastOrderIndex
 
 	store.Set([]byte(id), k.cdc.MustMarshalBinaryBare(limitOrder))
-	store.Set([]byte("last_order_book_index"), k.cdc.MustMarshalBinaryBare(lastOrderIndex))
+	store.Set([]byte("last_order_index"), k.cdc.MustMarshalBinaryBare(lastOrderIndex))
 
 	// To sort metadata
 	var newMetaData []meta
