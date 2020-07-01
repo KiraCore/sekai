@@ -61,7 +61,14 @@ var lastOrderIndex uint32 = 0
 var numberOfBytes = 4
 var numberOfCharacters = 2 * numberOfBytes
 
-func (k Keeper) CreateOrder(ctx sdk.Context, orderBookID string, orderType uint8, amount int64, limitPrice int64) {
+func (k Keeper) CreateOrder(ctx sdk.Context, orderBookID string, orderType uint8, amount int64, limitPrice int64, curator sdk.AccAddress) {
+
+	var orderBook = createOrderBook.NewKeeper(k.cdc, k.storeKey).GetOrderBookByID(ctx, orderBookID)
+
+	// Validation Check
+	if string(orderBook[0].Curator) != string(curator) {
+		return
+	}
 
 	var limitOrder = types.NewLimitOrder()
 

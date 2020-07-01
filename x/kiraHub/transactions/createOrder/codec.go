@@ -5,7 +5,7 @@ import (
 )
 
 func RegisterCodec(codec *codec.Codec) {
-	codec.RegisterConcrete(Message{}, "kiraHub/createOrderBook", nil)
+	codec.RegisterConcrete(Message{}, "kiraHub/createOrder", nil)
 }
 
 var PackageCodec = codec.New()

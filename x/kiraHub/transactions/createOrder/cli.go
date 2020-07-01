@@ -1,6 +1,7 @@
 package createOrder
 
 import (
+	"fmt"
 	"strconv"
 
 	"bufio"
@@ -24,11 +25,12 @@ func TransactionCommand(codec *codec.Codec) *cobra.Command {
 			transactionBuilder := auth.NewTxBuilderFromCLI(bufioReader).WithTxEncoder(auth.DefaultTxEncoder(codec))
 			cliContext := context.NewCLIContext().WithCodec(codec)
 
+			var curator = cliContext.GetFromAddress()
 			var orderType, _ =  strconv.Atoi(args[1])
 
 			// Limit Order
 
-			if uint(orderType) == 1 || uint8(orderType) == 2 {
+			if uint8(orderType) == 1 || uint8(orderType) == 2 {
 
 				var amount, _ = strconv.Atoi(args[2])
 				var limitPrice, _ = strconv.Atoi(args[3])
@@ -38,6 +40,7 @@ func TransactionCommand(codec *codec.Codec) *cobra.Command {
 					OrderType: uint8(orderType),
 					Amount: int64(amount),
 					LimitPrice: int64(limitPrice),
+					Curator: curator,
 				}
 
 				if err := message.ValidateBasic(); err != nil {
@@ -47,6 +50,8 @@ func TransactionCommand(codec *codec.Codec) *cobra.Command {
 				return client.GenerateOrBroadcastMsgs(cliContext, transactionBuilder, []sdk.Msg{message})
 
 			}
+
+			fmt.Println("did not get in limit order")
 
 			return client.GenerateOrBroadcastMsgs(cliContext, transactionBuilder, []sdk.Msg{})
 		},
