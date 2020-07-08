@@ -3,7 +3,7 @@ module github.com/KiraCore/sekai
 go 1.14
 
 require (
-	github.com/KiraCore/cosmos-sdk v1.0.0
+	github.com/KiraCore/cosmos-sdk v1.0.0-playground
 	github.com/asaskevich/govalidator v0.0.0-20200428143746-21a406dcc535
 	github.com/gorilla/mux v1.7.4
 	github.com/onsi/ginkgo v1.8.0 // indirect
