@@ -19,10 +19,10 @@ type Keeper struct {
 	storeKey sdk.StoreKey // Unexposed key to access store from sdk.Context
 }
 
-func (k Keeper) GetOrders(ctx sdk.Context, order_book_id string, maxOrders int, minAmount int) []types.LimitOrder {
+func (k Keeper) GetOrders(ctx sdk.Context, order_book_id string, maxOrders uint32, minAmount uint32) []types.LimitOrder {
 
 	var metaData []meta
-	var queryOutput []types.LimitOrder
+	var queryOutput = []types.LimitOrder{}
 	var order types.LimitOrder
 
 	store := ctx.KVStore(k.storeKey)

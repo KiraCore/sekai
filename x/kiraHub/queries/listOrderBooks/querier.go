@@ -19,8 +19,8 @@ func QueryGetOrderBooks(ctx sdk.Context, path []string, req abci.RequestQuery, k
 
 	} else if path[0] == "Index" {
 
-		var int, _ = strconv.Atoi(path[1])
-		queryOutput = keeper.GetOrderBookByIndex(ctx, uint32(int))
+		var int1, _ = strconv.Atoi(path[1])
+		queryOutput = keeper.GetOrderBookByIndex(ctx, uint32(int1))
 
 	} else if path[0] == "Quote" {
 
@@ -45,6 +45,4 @@ func QueryGetOrderBooks(ctx sdk.Context, path []string, req abci.RequestQuery, k
 	}
 
 	return res, nil
-
-
 }
