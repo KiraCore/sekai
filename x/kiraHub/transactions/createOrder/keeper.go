@@ -456,6 +456,26 @@ func mergesort(orderList []types.LimitOrder, sortBy string) []types.LimitOrder {
 //	return s
 //}
 
+func findMax(list []types.LimitOrder) int64 {
+	var max int64 = list[0].LimitPrice
+	for _, value := range list {
+		if max < value.LimitPrice {
+			max = value.LimitPrice
+		}
+	}
+	return max
+}
+
+func findMin(list []types.LimitOrder) int64 {
+	var min int64 = list[0].LimitPrice
+	for _, value := range list {
+		if min > value.LimitPrice {
+			min = value.LimitPrice
+		}
+	}
+	return min
+}
+
 func fisheryatesShuffle(list []types.LimitOrder) []types.LimitOrder {
 	N := len(list)
 
