@@ -5,6 +5,7 @@ import (
 	"github.com/KiraCore/sekai/x/kiraHub/transactions/createOrderBook"
 	"github.com/tendermint/go-amino"
 	"golang.org/x/crypto/blake2b"
+	"math"
 	"math/rand"
 	"strconv"
 	"strings"
@@ -313,8 +314,33 @@ func (k Keeper) handleOrders (ctx sdk.Context, orderBookID string) {
 		}
 	}
 
-	// Find orders that increase liquidity
+	var matchBuy []types.LimitOrder
+	var matchSell []types.LimitOrder
 
+	// Find orders that increase liquidity
+	for _, elementInListOfIndices := range metaData {
+
+		var order types.LimitOrder
+
+		bz := store.Get([]byte(elementInListOfIndices.OrderID))
+		k.cdc.MustUnmarshalBinaryBare(bz, &order)
+
+		if order.OrderType == 1 {
+			if order.LimitPrice < max(limitSell.LimitPrice) {
+				limitBuy = append(limitBuy, order)
+			} else {
+				matchBuy = append(matchBuy, order)
+			}
+			limitBuy = append(limitBuy, order)
+		} else if order.OrderType == 2 {
+			if order.LimitPrice > min(limitSell.LimitPrice) {
+				limitSell = append(limitSell, order)
+			} else {
+				matchSell = append(matchSell, order)
+			}
+			limitSell = append(limitSell, order)
+		}
+	}
 
 
 	// Generate Seed
