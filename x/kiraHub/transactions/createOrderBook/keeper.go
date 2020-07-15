@@ -80,27 +80,27 @@ func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, cura
 	if len(bz) == 0 {
 		lastOrderBookIndex = 0
 	} else {
-		//var isSlotEmpty = 0
-		//
-		//k.cdc.MustUnmarshalBinaryBare(bz, &metaData)
-		//
-		//bz := store.Get([]byte("last_order_book_index"))
-		//k.cdc.MustUnmarshalBinaryBare(bz, &lastOrderBookIndex)
-		//
-		//// Need to get list of all Indices, assuming the list is called listOfIndices
-		//for indexInListOfIndices, elementInListOfIndices := range metaData {
-		//	if uint32(indexInListOfIndices) != elementInListOfIndices.Index {
-		//		lastOrderBookIndex = uint32(indexInListOfIndices)
-		//		isSlotEmpty = 1
-		//		break
-		//	}
-		//}
-		//
-		//// It will come to this loop if none of the slots are empty
-		//if isSlotEmpty != 0 {
-		//	lastOrderBookIndex = uint32(len(metaData)) + 1
-		//}
-		lastOrderBookIndex = uint32(len(bz)) + 1
+		var isSlotEmpty = 0
+
+		k.cdc.MustUnmarshalBinaryBare(bz, &metaData)
+
+		bz := store.Get([]byte("last_order_book_index"))
+		k.cdc.MustUnmarshalBinaryBare(bz, &lastOrderBookIndex)
+
+		// Need to get list of all Indices, assuming the list is called listOfIndices
+		for indexInListOfIndices, elementInListOfIndices := range metaData {
+			if uint32(indexInListOfIndices) != elementInListOfIndices.Index {
+				lastOrderBookIndex = uint32(indexInListOfIndices)
+				isSlotEmpty = 1
+				break
+			}
+		}
+
+		// It will come to this loop if none of the slots are empty
+		if isSlotEmpty != 0 {
+			lastOrderBookIndex = uint32(len(metaData)) + 1
+		}
+		// lastOrderBookIndex = uint32(len(bz)) + 1
 	}
 
 	// Hashing and adding the lastOrderBookIndex to the ID
