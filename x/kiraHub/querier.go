@@ -5,11 +5,13 @@ import (
 	"github.com/KiraCore/cosmos-sdk/types/errors"
 	constants "github.com/KiraCore/sekai/x/kiraHub/constants"
 	"github.com/KiraCore/sekai/x/kiraHub/queries/listOrderBooks"
+	"github.com/KiraCore/sekai/x/kiraHub/queries/listOrders"
 	abciTypes "github.com/tendermint/tendermint/abci/types"
 )
 
 const (
 	QueryListOrderBooks = "listOrderBooks"
+	QueryListOrders = "listOrders"
 )
 
 func NewQuerier(keeper Keeper) sdk.Querier {
@@ -18,6 +20,9 @@ func NewQuerier(keeper Keeper) sdk.Querier {
 
 		case QueryListOrderBooks:
 			return listOrderBooks.QueryGetOrderBooks(context, path[1:], requestQuery, keeper.getCreateOrderBookKeeper())
+
+		case QueryListOrders:
+			return listOrders.QueryGetOrders(context, path[1:], requestQuery, keeper.getCreateOrderKeeper())
 
 		default:
 			return nil, errors.Wrapf(constants.UnknownQueryCode, "%v", path[0])

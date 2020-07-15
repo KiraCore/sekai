@@ -2,6 +2,7 @@ package kiraHub
 
 import (
 	constants "github.com/KiraCore/sekai/x/kiraHub/constants"
+	"github.com/KiraCore/sekai/x/kiraHub/transactions/createOrder"
 	"github.com/KiraCore/sekai/x/kiraHub/transactions/createOrderBook"
 	"github.com/pkg/errors"
 
@@ -16,6 +17,9 @@ func NewHandler(keeper Keeper) sdk.Handler {
 		switch message := msg.(type) {
 		case createOrderBook.Message:
 			return createOrderBook.HandleMessage(context, keeper.getCreateOrderBookKeeper(), message)
+
+		case createOrder.Message:
+			return createOrder.HandleMessage(context, keeper.getCreateOrderKeeper(), message)
 
 		default:
 			return nil, errors.Wrapf(constants.UnknownMessageCode, "%T", msg)

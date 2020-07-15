@@ -2,21 +2,44 @@ package createOrder
 
 import (
 	"encoding/hex"
+	"github.com/KiraCore/sekai/x/kiraHub/transactions/createOrderBook"
 	"golang.org/x/crypto/blake2b"
+	"math/rand"
 	"strconv"
 	"strings"
 	"time"
-	"math/rand"
 
 	"github.com/KiraCore/cosmos-sdk/codec"
 	sdk "github.com/KiraCore/cosmos-sdk/types"
 	"github.com/KiraCore/sekai/types"
-	"github.com/KiraCore/sekai/x/kiraHub/transactions/createOrderBook"
 )
 
 type Keeper struct {
 	cdc *codec.Codec // The wire codec for binary encoding/decoding.
 	storeKey sdk.StoreKey // Unexposed key to access store from sdk.Context
+}
+
+func (k Keeper) GetOrders(ctx sdk.Context, order_book_id string, maxOrders uint32, minAmount uint32) []types.LimitOrder {
+
+	var metaData []meta
+	var queryOutput = []types.LimitOrder{}
+	var order types.LimitOrder
+
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get([]byte("limit_order_meta"))
+
+	k.cdc.MustUnmarshalBinaryBare(bz, &metaData)
+
+	for _, elementInListOfIndices := range metaData {
+		if elementInListOfIndices.OrderBookID == order_book_id {
+			bz := store.Get([]byte(elementInListOfIndices.OrderID))
+			k.cdc.MustUnmarshalBinaryBare(bz, &order)
+
+			queryOutput = append(queryOutput, order)
+		}
+	}
+
+	return queryOutput
 }
 
 func NewKeeper(cdc *codec.Codec, storeKey sdk.StoreKey) Keeper {
@@ -46,7 +69,14 @@ var lastOrderIndex uint32 = 0
 var numberOfBytes = 4
 var numberOfCharacters = 2 * numberOfBytes
 
-func (k Keeper) CreateOrder(ctx sdk.Context, orderBookID string, orderType uint8, amount int64, limitPrice int64) {
+func (k Keeper) CreateOrder(ctx sdk.Context, orderBookID string, orderType uint8, amount int64, limitPrice int64, curator sdk.AccAddress) {
+
+	//var orderBook = createOrderBook.NewKeeper(k.cdc, k.storeKey).GetOrderBookByID(ctx, orderBookID)
+
+	// Validation Check
+	//if string(orderBook[0].Curator) != string(curator) {
+	//	return
+	//}
 
 	var limitOrder = types.NewLimitOrder()
 
@@ -54,6 +84,7 @@ func (k Keeper) CreateOrder(ctx sdk.Context, orderBookID string, orderType uint8
 	limitOrder.OrderType = orderType
 	limitOrder.Amount = amount
 	limitOrder.LimitPrice = limitPrice
+	limitOrder.Curator = curator
 
 	// Expiry Time Logic
 
@@ -127,7 +158,7 @@ func (k Keeper) CreateOrder(ctx sdk.Context, orderBookID string, orderType uint8
 	limitOrder.Index = lastOrderIndex
 
 	store.Set([]byte(id), k.cdc.MustMarshalBinaryBare(limitOrder))
-	store.Set([]byte("last_order_book_index"), k.cdc.MustMarshalBinaryBare(lastOrderIndex))
+	store.Set([]byte("last_order_index"), k.cdc.MustMarshalBinaryBare(lastOrderIndex))
 
 	// To sort metadata
 	var newMetaData []meta
@@ -258,8 +289,8 @@ func (k Keeper) handleOrders (ctx sdk.Context, orderBookID string) {
 	rand.Seed(int64(blockIDInt))
 
 	// Randomize Orders
-	newBuy := fisheryatesShuffle(limitBuy)
-	newSell := fisheryatesShuffle(limitSell)
+	//newBuy := fisheryatesShuffle(limitBuy)
+	//newSell := fisheryatesShuffle(limitSell)
 
 	// Pick Orders
 	for _, buy := range limitBuy {

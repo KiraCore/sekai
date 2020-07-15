@@ -4,8 +4,9 @@ package kiraHub
 import (
 	constants "github.com/KiraCore/sekai/x/kiraHub/constants"
 	"github.com/KiraCore/sekai/x/kiraHub/queries/listOrderBooks"
-	"github.com/KiraCore/sekai/x/kiraHub/transactions/createOrderBook"
+	"github.com/KiraCore/sekai/x/kiraHub/queries/listOrders"
 	"github.com/KiraCore/sekai/x/kiraHub/transactions/createOrder"
+	"github.com/KiraCore/sekai/x/kiraHub/transactions/createOrderBook"
 	"github.com/spf13/cobra"
 
 	"github.com/KiraCore/cosmos-sdk/client"
@@ -39,6 +40,7 @@ func GetCLIRootQueryCommand(codec *codec.Codec) *cobra.Command {
 	rootQueryCommand.AddCommand(flags.GetCommands(
 		listOrderBooks.GetOrderBooksCmd(codec),
 		listOrderBooks.GetOrderBooksByTPCmd(codec),
+		listOrders.GetOrdersCmd(codec),
 	)...)
 	return rootQueryCommand
 }

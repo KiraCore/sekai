@@ -1,4 +1,4 @@
-package listOrderBooks
+package listOrders
 
 import (
 	"github.com/KiraCore/cosmos-sdk/codec"
@@ -6,8 +6,7 @@ import (
 
 
 func RegisterCodec(cdc *codec.Codec) {
-	cdc.RegisterConcrete(QueryListOrderBooks{}, "kiraHub/queryOrderBooks", nil)
-	cdc.RegisterConcrete(QueryListOrderBooksByTP{}, "kiraHub/queryOrderBooksByTP", nil)
+	cdc.RegisterConcrete(QueryListOrders{}, "kiraHub/queryOrders", nil)
 }
 
 var packageCodec = codec.New()

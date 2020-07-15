@@ -4,11 +4,13 @@ import (
 	"github.com/KiraCore/cosmos-sdk/codec"
 
 	"github.com/KiraCore/sekai/x/kiraHub/transactions/createOrderBook"
+	"github.com/KiraCore/sekai/x/kiraHub/transactions/createOrder"
 )
 
 // RegisterCodec registers concrete types on codec
 func RegisterCodec(cdc *codec.Codec) {
 	createOrderBook.RegisterCodec(cdc)
+	createOrder.RegisterCodec(cdc)
 }
 
 // ModuleCdc defines the module codec

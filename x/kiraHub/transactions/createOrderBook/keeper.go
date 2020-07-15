@@ -100,6 +100,7 @@ func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, cura
 		if isSlotEmpty != 0 {
 			lastOrderBookIndex = uint32(len(metaData)) + 1
 		}
+		// lastOrderBookIndex = uint32(len(bz)) + 1
 	}
 
 	// Hashing and adding the lastOrderBookIndex to the ID

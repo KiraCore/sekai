@@ -12,6 +12,7 @@ type Message struct {
 	OrderType uint8		   		  `json:"order_type" yaml:"order_type" valid:"required~OrderType is required"`
 	Amount int64 	   			  `json:"amount" yaml:"amount" valid:"required~Amount is required"`
 	LimitPrice int64 		   	  `json:"limit_price"  yaml:"limit_price" valid:"required~Limit Price is required"`
+	Curator sdk.AccAddress 		  `json:"curator"  yaml:"curator" valid:"required~Curator is required"`
 }
 
 var _ sdk.Msg = Message{}
@@ -32,6 +33,5 @@ func (message Message) GetSignBytes() []byte {
 }
 
 func (message Message) GetSigners() []sdk.AccAddress {
-	var orderBookId, _ = sdk.AccAddressFromBech32(message.OrderBookID)
-	return []sdk.AccAddress{orderBookId}
+	return []sdk.AccAddress{message.Curator}
 }
