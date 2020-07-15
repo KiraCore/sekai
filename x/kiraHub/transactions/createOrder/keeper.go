@@ -218,7 +218,7 @@ func (k Keeper) handleOrders (ctx sdk.Context, orderBookID string) {
 	limitBuy = store.Get([]byte("limit_buy"))
 	limitSell = store.Get([]byte("limit_sell"))
 
-	if limitBuy == nil {
+	if limitBuy == nil && limitSell == nil {
 		for _, elementInListOfIndices := range metaData {
 
 			var order types.LimitOrder
