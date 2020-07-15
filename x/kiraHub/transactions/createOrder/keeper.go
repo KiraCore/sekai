@@ -3,6 +3,7 @@ package createOrder
 import (
 	"encoding/hex"
 	"github.com/KiraCore/sekai/x/kiraHub/transactions/createOrderBook"
+	"github.com/tendermint/go-amino"
 	"golang.org/x/crypto/blake2b"
 	"math/rand"
 	"strconv"
@@ -283,7 +284,7 @@ func (k Keeper) handleOrders (ctx sdk.Context, orderBookID string) {
 	}
 
 	// Find orders that increase liquidity
-	
+
 
 	// Generate Seed
 	blockHeader := ctx.BlockHeader().LastBlockId.Hash
@@ -316,8 +317,8 @@ func (k Keeper) handleOrders (ctx sdk.Context, orderBookID string) {
 	}
 
 	// Persist the limitBuy and limitSell
-
-
+	store.Set([]byte("limit_buy"), k.cdc.MustMarshalBinaryBare(limitBuy))
+	store.Set([]byte(limitSell), k.cdc.MustMarshalBinaryBare(limitSell))
 }
 
 func merge(orderList []types.LimitOrder, middle int, sortBy string) {
