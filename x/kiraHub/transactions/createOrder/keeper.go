@@ -3,9 +3,7 @@ package createOrder
 import (
 	"encoding/hex"
 	"github.com/KiraCore/sekai/x/kiraHub/transactions/createOrderBook"
-	"github.com/tendermint/go-amino"
 	"golang.org/x/crypto/blake2b"
-	"math"
 	"math/rand"
 	"strconv"
 	"strings"
@@ -216,8 +214,11 @@ func (k Keeper) handleOrders (ctx sdk.Context, orderBookID string) {
 	bz := store.Get([]byte("limit_order_meta"))
 	k.cdc.MustUnmarshalBinaryBare(bz, &metaData)
 
-	limitBuy = store.Get([]byte("limit_buy"))
-	limitSell = store.Get([]byte("limit_sell"))
+	bz = store.Get([]byte("limit_buy"))
+	k.cdc.MustUnmarshalBinaryBare(bz, &limitBuy)
+
+	bz = store.Get([]byte("limit_sell"))
+	k.cdc.MustUnmarshalBinaryBare(bz, &limitSell)
 
 	if limitBuy == nil && limitSell == nil {
 		for _, elementInListOfIndices := range metaData {
@@ -355,8 +356,8 @@ func (k Keeper) handleOrders (ctx sdk.Context, orderBookID string) {
 	newSell := fisheryatesShuffle(limitSell)
 
 	// Pick Orders
-	for _, buy := range limitBuy {
-		for _, sell := range limitSell {
+	for _, buy := range newBuy {
+		for _, sell := range newSell {
 			if buy.LimitPrice == sell.LimitPrice {
 				if buy.OrderBookID == sell.OrderBookID {
 					// Matching
