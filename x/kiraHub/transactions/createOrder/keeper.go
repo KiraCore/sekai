@@ -326,14 +326,14 @@ func (k Keeper) handleOrders (ctx sdk.Context, orderBookID string) {
 		k.cdc.MustUnmarshalBinaryBare(bz, &order)
 
 		if order.OrderType == 1 {
-			if order.LimitPrice < max(limitSell.LimitPrice) {
+			if order.LimitPrice < findMax(limitBuy) {
 				limitBuy = append(limitBuy, order)
 			} else {
 				matchBuy = append(matchBuy, order)
 			}
 			limitBuy = append(limitBuy, order)
 		} else if order.OrderType == 2 {
-			if order.LimitPrice > min(limitSell.LimitPrice) {
+			if order.LimitPrice > findMin(limitSell) {
 				limitSell = append(limitSell, order)
 			} else {
 				matchSell = append(matchSell, order)
