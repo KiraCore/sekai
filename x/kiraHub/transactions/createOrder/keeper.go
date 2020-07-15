@@ -215,40 +215,70 @@ func (k Keeper) handleOrders (ctx sdk.Context, orderBookID string) {
 	bz := store.Get([]byte("limit_order_meta"))
 	k.cdc.MustUnmarshalBinaryBare(bz, &metaData)
 
-	for _, elementInListOfIndices := range metaData {
+	limitBuy = store.Get([]byte("limit_buy"))
+	limitSell = store.Get([]byte("limit_sell"))
 
-		var order types.LimitOrder
-		var orderBook types.OrderBook
+	if limitBuy == nil {
+		for _, elementInListOfIndices := range metaData {
 
-		bz := store.Get([]byte(elementInListOfIndices.OrderID))
-		k.cdc.MustUnmarshalBinaryBare(bz, &order)
+			var order types.LimitOrder
+			var orderBook types.OrderBook
 
-		if order.OrderType == 1 {
-			limitBuy = append(limitBuy, order)
-		} else if order.OrderType == 2 {
-			limitSell = append(limitSell, order)
-		}
+			bz := store.Get([]byte(elementInListOfIndices.OrderID))
+			k.cdc.MustUnmarshalBinaryBare(bz, &order)
 
-		if len(orderBooks) == 0 {
-			bz := store.Get([]byte(elementInListOfIndices.OrderBookID))
-			k.cdc.MustUnmarshalBinaryBare(bz, &orderBook)
+			if order.OrderType == 1 {
+				limitBuy = append(limitBuy, order)
+			} else if order.OrderType == 2 {
+				limitSell = append(limitSell, order)
+			}
 
-		} else {
-			var retrievedFlag = 0
+			if len(orderBooks) == 0 {
+				bz := store.Get([]byte(elementInListOfIndices.OrderBookID))
+				k.cdc.MustUnmarshalBinaryBare(bz, &orderBook)
 
-			for _, orderbook := range orderBooks {
-				if orderbook.ID == elementInListOfIndices.OrderBookID {
-					retrievedFlag = 1
+			} else {
+				var retrievedFlag = 0
+
+				for _, orderbook := range orderBooks {
+					if orderbook.ID == elementInListOfIndices.OrderBookID {
+						retrievedFlag = 1
+					}
+				}
+
+				if retrievedFlag == 0 {
+					bz := store.Get([]byte(elementInListOfIndices.OrderBookID))
+					k.cdc.MustUnmarshalBinaryBare(bz, &orderBook)
 				}
 			}
 
-			if retrievedFlag == 0 {
+			orderBooks = append(orderBooks, orderBook)
+		}
+	} else {
+		for _, elementInListOfIndices := range metaData {
+			var orderBook types.OrderBook
+
+			if len(orderBooks) == 0 {
 				bz := store.Get([]byte(elementInListOfIndices.OrderBookID))
 				k.cdc.MustUnmarshalBinaryBare(bz, &orderBook)
-			}
-		}
 
-		orderBooks = append(orderBooks, orderBook)
+			} else {
+				var retrievedFlag = 0
+
+				for _, orderbook := range orderBooks {
+					if orderbook.ID == elementInListOfIndices.OrderBookID {
+						retrievedFlag = 1
+					}
+				}
+
+				if retrievedFlag == 0 {
+					bz := store.Get([]byte(elementInListOfIndices.OrderBookID))
+					k.cdc.MustUnmarshalBinaryBare(bz, &orderBook)
+				}
+			}
+
+			orderBooks = append(orderBooks, orderBook)
+		}
 	}
 
 	// Remove Cancelled & Expired
@@ -286,6 +316,7 @@ func (k Keeper) handleOrders (ctx sdk.Context, orderBookID string) {
 	// Find orders that increase liquidity
 
 
+
 	// Generate Seed
 	blockHeader := ctx.BlockHeader().LastBlockId.Hash
 	blockIDHex := hex.EncodeToString(blockHeader[:])
@@ -318,7 +349,7 @@ func (k Keeper) handleOrders (ctx sdk.Context, orderBookID string) {
 
 	// Persist the limitBuy and limitSell
 	store.Set([]byte("limit_buy"), k.cdc.MustMarshalBinaryBare(limitBuy))
-	store.Set([]byte(limitSell), k.cdc.MustMarshalBinaryBare(limitSell))
+	store.Set([]byte("limit_sell"), k.cdc.MustMarshalBinaryBare(limitSell))
 }
 
 func merge(orderList []types.LimitOrder, middle int, sortBy string) {
