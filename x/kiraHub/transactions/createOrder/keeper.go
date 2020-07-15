@@ -264,10 +264,11 @@ func (k Keeper) handleOrders (ctx sdk.Context, orderBookID string) {
 	}
 
 	// Order By Tx Fee
+	limitBuy = mergesort(limitBuy, "limitPrice")
+	limitSell = mergesort(limitSell, "limitPrice")
 
 	// Assign ID
 	for _, elementInListOfIndices := range metaData {
-
 		for _, buy := range limitBuy {
 			if elementInListOfIndices.Index == buy.Index {
 				buy.ID = elementInListOfIndices.OrderID
@@ -281,6 +282,9 @@ func (k Keeper) handleOrders (ctx sdk.Context, orderBookID string) {
 		}
 	}
 
+	// Find orders that increase liquidity
+	
+
 	// Generate Seed
 	blockHeader := ctx.BlockHeader().LastBlockId.Hash
 	blockIDHex := hex.EncodeToString(blockHeader[:])
@@ -289,8 +293,8 @@ func (k Keeper) handleOrders (ctx sdk.Context, orderBookID string) {
 	rand.Seed(int64(blockIDInt))
 
 	// Randomize Orders
-	//newBuy := fisheryatesShuffle(limitBuy)
-	//newSell := fisheryatesShuffle(limitSell)
+	newBuy := fisheryatesShuffle(limitBuy)
+	newSell := fisheryatesShuffle(limitSell)
 
 	// Pick Orders
 	for _, buy := range limitBuy {
@@ -310,6 +314,9 @@ func (k Keeper) handleOrders (ctx sdk.Context, orderBookID string) {
 			}
 		}
 	}
+
+	// Persist the limitBuy and limitSell
+
 
 }
 
@@ -393,6 +400,7 @@ func mergesort(orderList []types.LimitOrder, sortBy string) []types.LimitOrder {
 
 func fisheryatesShuffle(list []types.LimitOrder) []types.LimitOrder {
 	N := len(list)
+
 	for i := 0; i < N; i++ {
 		// choose index uniformly in [i, N-1]
 		r := i + rand.Intn(N-i)
