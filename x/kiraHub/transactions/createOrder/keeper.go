@@ -69,7 +69,7 @@ var lastOrderIndex uint32 = 0
 var numberOfBytes = 4
 var numberOfCharacters = 2 * numberOfBytes
 
-func (k Keeper) CreateOrder(ctx sdk.Context, orderBookID string, orderType uint8, amount int64, limitPrice int64, curator sdk.AccAddress) {
+func (k Keeper) CreateOrder(ctx sdk.Context, orderBookID string, orderType uint8, amount int64, limitPrice int64, expiryTime int64, curator sdk.AccAddress) {
 
 	//var orderBook = createOrderBook.NewKeeper(k.cdc, k.storeKey).GetOrderBookByID(ctx, orderBookID)
 
@@ -85,12 +85,7 @@ func (k Keeper) CreateOrder(ctx sdk.Context, orderBookID string, orderType uint8
 	limitOrder.Amount = amount
 	limitOrder.LimitPrice = limitPrice
 	limitOrder.Curator = curator
-
-	// Expiry Time Logic
-
-	now := time.Now()
-	unix := now.Unix()
-	limitOrder.ExpiryTime = unix
+	limitOrder.ExpiryTime = expiryTime
 
 	// ID Generation Algorithm
 	hashOfIndex := blake2b.Sum256([]byte(orderBookID))
@@ -319,28 +314,14 @@ func (k Keeper) handleOrders (ctx sdk.Context, orderBookID string) {
 	var matchSell []types.LimitOrder
 
 	// Find orders that increase liquidity
-	for _, elementInListOfIndices := range metaData {
+	for index, elementInListOfIndices := range metaData {
 
 		var order types.LimitOrder
 
 		bz := store.Get([]byte(elementInListOfIndices.OrderID))
 		k.cdc.MustUnmarshalBinaryBare(bz, &order)
 
-		if order.OrderType == 1 {
-			if order.LimitPrice < findMax(limitBuy) {
-				limitBuy = append(limitBuy, order)
-			} else {
-				matchBuy = append(matchBuy, order)
-			}
-			limitBuy = append(limitBuy, order)
-		} else if order.OrderType == 2 {
-			if order.LimitPrice > findMin(limitSell) {
-				limitSell = append(limitSell, order)
-			} else {
-				matchSell = append(matchSell, order)
-			}
-			limitSell = append(limitSell, order)
-		}
+		liquidityAdder(order, matchBuy, matchSell, limitBuy, limitSell, index,0)
 	}
 
 
@@ -352,24 +333,165 @@ func (k Keeper) handleOrders (ctx sdk.Context, orderBookID string) {
 	rand.Seed(int64(blockIDInt))
 
 	// Randomize Orders
-	newBuy := fisheryatesShuffle(limitBuy)
-	newSell := fisheryatesShuffle(limitSell)
+	newBuy := fisheryatesShuffle(matchBuy)
+	newSell := fisheryatesShuffle(matchSell)
 
 	// Pick Orders
-	for _, buy := range newBuy {
-		for _, sell := range newSell {
-			if buy.LimitPrice == sell.LimitPrice {
-				if buy.OrderBookID == sell.OrderBookID {
+
+	terminate := 0
+
+	for terminate != 1 {
+
+		var buy types.LimitOrder
+		buyF := 0
+
+		var sell types.LimitOrder
+		sellF := 0
+
+		if len(newBuy) > 1 {
+			buy = newBuy[0]
+			newBuy = newBuy[1:]
+			buyF = 1
+		} else if len(newBuy) == 1 {
+			buy = newBuy[0]
+			buyF = 1
+			terminate = 1
+		} else {
+			buyF = 0
+		}
+
+		if len(newSell) > 1 {
+			buy = newSell[0]
+			newSell = newSell[1:]
+			sellF = 1
+		} else if len(newSell) == 1 {
+			sell = newSell[0]
+			sellF = 1
+			terminate = 1
+		} else {
+			sellF = 0
+		}
+
+		// New Orders Matched
+		if buyF == 1 && sellF == 1 && buy.LimitPrice > sell.LimitPrice {
+			if buy.OrderBookID == sell.OrderBookID {
+
+				if buy.Amount > sell.Amount {
+					buy.Amount -= sell.Amount
+				}
+
+				if buy.Amount < sell.Amount {
+					sell.Amount -= buy.Amount
+				}
+
+			} else {
+				var buyOrderBook = createOrderBook.NewKeeper(k.cdc, k.storeKey).GetOrderBookByID(ctx, buy.OrderBookID)
+				var sellOrderBook = createOrderBook.NewKeeper(k.cdc, k.storeKey).GetOrderBookByID(ctx, sell.OrderBookID)
+
+				if buyOrderBook[0].Base == sellOrderBook[0].Base && buyOrderBook[0].Quote == sellOrderBook[0].Quote {
 					// Matching
+					if buy.Amount > sell.Amount {
+						buy.Amount -= sell.Amount
+					}
 
-				} else {
-					var buyOrderBook = createOrderBook.NewKeeper(k.cdc, k.storeKey).GetOrderBookByID(ctx, buy.OrderBookID)
-					var sellOrderBook = createOrderBook.NewKeeper(k.cdc, k.storeKey).GetOrderBookByID(ctx, sell.OrderBookID)
-
-					if buyOrderBook[0].Base == sellOrderBook[0].Base && buyOrderBook[0].Quote == sellOrderBook[0].Quote {
-						// Matching
+					if buy.Amount < sell.Amount {
+						sell.Amount -= buy.Amount
 					}
 				}
+			}
+		} else {
+
+			// Match With State
+			if sellF == 1 {
+				for index, stateBuy := range limitBuy {
+
+					if stateBuy.LimitPrice > sell.LimitPrice {
+						if stateBuy.OrderBookID == sell.OrderBookID {
+
+							// Order Matched
+							if stateBuy.Amount > sell.Amount {
+								stateBuy.Amount -= sell.Amount
+								break
+							}
+
+							if stateBuy.Amount < sell.Amount {
+								sell.Amount -= stateBuy.Amount
+								limitBuy = append(limitBuy[:index], limitBuy[index+1:]...)
+								continue
+							}
+
+						} else {
+							var buyOrderBook = createOrderBook.NewKeeper(k.cdc, k.storeKey).GetOrderBookByID(ctx, buy.OrderBookID)
+							var sellOrderBook = createOrderBook.NewKeeper(k.cdc, k.storeKey).GetOrderBookByID(ctx, sell.OrderBookID)
+
+							if buyOrderBook[0].Base == sellOrderBook[0].Base && buyOrderBook[0].Quote == sellOrderBook[0].Quote {
+
+								// Order Matched
+								if stateBuy.Amount > sell.Amount {
+									stateBuy.Amount -= sell.Amount
+									break
+								}
+
+								if stateBuy.Amount < sell.Amount {
+									sell.Amount -= stateBuy.Amount
+									limitBuy = append(limitBuy[:index], limitBuy[index+1:]...)
+									continue
+								}
+							}
+						}
+					}
+				}
+			}
+
+			if buyF == 1 {
+				for index, stateSell := range limitSell {
+
+					if stateSell.LimitPrice < buy.LimitPrice {
+						if stateSell.OrderBookID == buy.OrderBookID {
+
+							// Order Matched
+							if stateSell.Amount > buy.Amount {
+								stateSell.Amount -= buy.Amount
+								break
+							}
+
+							if stateSell.Amount < buy.Amount {
+								buy.Amount -= stateSell.Amount
+								limitSell = append(limitSell[:index], limitSell[index+1:]...)
+								continue
+							}
+
+						} else {
+							var buyOrderBook = createOrderBook.NewKeeper(k.cdc, k.storeKey).GetOrderBookByID(ctx, buy.OrderBookID)
+							var sellOrderBook = createOrderBook.NewKeeper(k.cdc, k.storeKey).GetOrderBookByID(ctx, sell.OrderBookID)
+
+							if buyOrderBook[0].Base == sellOrderBook[0].Base && buyOrderBook[0].Quote == sellOrderBook[0].Quote {
+
+								// Order Matched
+								if stateSell.Amount > buy.Amount {
+									stateSell.Amount -= buy.Amount
+									break
+								}
+
+								if stateSell.Amount < buy.Amount {
+									buy.Amount -= stateSell.Amount
+									limitSell = append(limitSell[:index], limitSell[index+1:]...)
+									continue
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		if terminate != 1 {
+			for index, buy := range newBuy {
+				liquidityAdder(buy, newBuy, newSell, limitBuy, limitSell, index, 1)
+			}
+
+			for index, sell := range newSell {
+				liquidityAdder(sell, newBuy, newSell, limitBuy, limitSell, index, 1)
 			}
 		}
 	}
@@ -377,6 +499,34 @@ func (k Keeper) handleOrders (ctx sdk.Context, orderBookID string) {
 	// Persist the limitBuy and limitSell
 	store.Set([]byte("limit_buy"), k.cdc.MustMarshalBinaryBare(limitBuy))
 	store.Set([]byte("limit_sell"), k.cdc.MustMarshalBinaryBare(limitSell))
+}
+
+func liquidityAdder (order types.LimitOrder, matchBuy []types.LimitOrder, matchSell []types.LimitOrder, limitBuy []types.LimitOrder, limitSell []types.LimitOrder, index int, funcType int) {
+	if order.OrderType == 1 {
+		if order.LimitPrice > findMax(limitBuy) {
+			if funcType == 0 {
+				matchBuy = append(matchBuy, order)
+			}
+		} else {
+			limitBuy = append(limitBuy, order)
+			if funcType == 1 {
+				matchBuy = append(matchBuy[:index], matchBuy[index+1:]...)
+			}
+		}
+	} else if order.OrderType == 2 {
+		if order.LimitPrice < findMin(limitSell) {
+			if funcType == 0 {
+				matchSell = append(matchSell, order)
+			}
+		} else {
+			limitSell = append(limitSell, order)
+			if funcType == 1 {
+				matchSell = append(matchSell[:index], matchSell[index+1:]...)
+			}
+		}
+	}
+
+	return
 }
 
 func merge(orderList []types.LimitOrder, middle int, sortBy string) {
