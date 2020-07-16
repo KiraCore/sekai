@@ -378,9 +378,7 @@ func (k Keeper) handleOrders (ctx sdk.Context, orderBookID string) {
 
 				if buy.Amount > sell.Amount {
 					buy.Amount -= sell.Amount
-				}
-
-				if buy.Amount < sell.Amount {
+				} else if buy.Amount < sell.Amount {
 					sell.Amount -= buy.Amount
 				}
 
@@ -392,9 +390,7 @@ func (k Keeper) handleOrders (ctx sdk.Context, orderBookID string) {
 					// Matching
 					if buy.Amount > sell.Amount {
 						buy.Amount -= sell.Amount
-					}
-
-					if buy.Amount < sell.Amount {
+					} else if buy.Amount < sell.Amount {
 						sell.Amount -= buy.Amount
 					}
 				}
@@ -412,9 +408,7 @@ func (k Keeper) handleOrders (ctx sdk.Context, orderBookID string) {
 							if stateBuy.Amount > sell.Amount {
 								stateBuy.Amount -= sell.Amount
 								break
-							}
-
-							if stateBuy.Amount < sell.Amount {
+							} else if stateBuy.Amount < sell.Amount {
 								sell.Amount -= stateBuy.Amount
 								limitBuy = append(limitBuy[:index], limitBuy[index+1:]...)
 								continue
@@ -430,9 +424,7 @@ func (k Keeper) handleOrders (ctx sdk.Context, orderBookID string) {
 								if stateBuy.Amount > sell.Amount {
 									stateBuy.Amount -= sell.Amount
 									break
-								}
-
-								if stateBuy.Amount < sell.Amount {
+								} else if stateBuy.Amount < sell.Amount {
 									sell.Amount -= stateBuy.Amount
 									limitBuy = append(limitBuy[:index], limitBuy[index+1:]...)
 									continue
@@ -453,9 +445,7 @@ func (k Keeper) handleOrders (ctx sdk.Context, orderBookID string) {
 							if stateSell.Amount > buy.Amount {
 								stateSell.Amount -= buy.Amount
 								break
-							}
-
-							if stateSell.Amount < buy.Amount {
+							} else if stateSell.Amount < buy.Amount {
 								buy.Amount -= stateSell.Amount
 								limitSell = append(limitSell[:index], limitSell[index+1:]...)
 								continue
@@ -471,9 +461,7 @@ func (k Keeper) handleOrders (ctx sdk.Context, orderBookID string) {
 								if stateSell.Amount > buy.Amount {
 									stateSell.Amount -= buy.Amount
 									break
-								}
-
-								if stateSell.Amount < buy.Amount {
+								} else if stateSell.Amount < buy.Amount {
 									buy.Amount -= stateSell.Amount
 									limitSell = append(limitSell[:index], limitSell[index+1:]...)
 									continue
