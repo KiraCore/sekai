@@ -503,7 +503,7 @@ func (k Keeper) handleOrders (ctx sdk.Context, orderBookID string) {
 
 func liquidityAdder (order types.LimitOrder, matchBuy []types.LimitOrder, matchSell []types.LimitOrder, limitBuy []types.LimitOrder, limitSell []types.LimitOrder, index int, funcType int) {
 	if order.OrderType == 1 {
-		if order.LimitPrice > findMax(limitBuy) {
+		if order.LimitPrice < findMin(limitSell) {
 			if funcType == 0 {
 				matchBuy = append(matchBuy, order)
 			}
@@ -514,7 +514,7 @@ func liquidityAdder (order types.LimitOrder, matchBuy []types.LimitOrder, matchS
 			}
 		}
 	} else if order.OrderType == 2 {
-		if order.LimitPrice < findMin(limitSell) {
+		if order.LimitPrice > findMax(limitBuy) {
 			if funcType == 0 {
 				matchSell = append(matchSell, order)
 			}
