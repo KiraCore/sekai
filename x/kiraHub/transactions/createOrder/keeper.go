@@ -349,27 +349,27 @@ func (k Keeper) handleOrders (ctx sdk.Context, orderBookID string) {
 		sellF := 0
 
 		if len(newBuy) > 1 {
-			buy = newBuy[0]
-			newBuy = newBuy[1:]
+			buy = newSell[0]
 			buyF = 1
-		} else if len(newBuy) == 1 {
-			buy = newBuy[0]
-			buyF = 1
-			terminate = 1
+			if len(newBuy) > 1 {
+				newBuy = newBuy[1:]
+			}
 		} else {
 			buyF = 0
 		}
 
-		if len(newSell) > 1 {
-			buy = newSell[0]
-			newSell = newSell[1:]
-			sellF = 1
-		} else if len(newSell) == 1 {
+		if len(newSell) >= 1 {
 			sell = newSell[0]
 			sellF = 1
-			terminate = 1
+			if len(newSell) > 1 {
+				newSell = newSell[1:]
+			}
 		} else {
 			sellF = 0
+		}
+
+		if buyF == 0 && sellF == 0 {
+			terminate = 1
 		}
 
 		// New Orders Matched
