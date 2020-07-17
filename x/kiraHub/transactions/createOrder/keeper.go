@@ -487,7 +487,7 @@ func (k Keeper) handleOrders (ctx sdk.Context, orderBookID string) {
 									matchPayout(stateSell.Curator, buy.Curator, buy.LimitPrice, stateSell.Amount)
 
 									limitSell = append(limitSell[:index], limitSell[index+1:]...)
-									
+
 									continue
 								}
 							}
