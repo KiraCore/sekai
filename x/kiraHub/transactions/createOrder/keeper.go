@@ -458,10 +458,15 @@ func (k Keeper) handleOrders (ctx sdk.Context, orderBookID string) {
 							// Order Matched
 							if stateSell.Amount > buy.Amount {
 								stateSell.Amount -= buy.Amount
+								matchPayout(stateSell.Curator, buy.Curator, buy.LimitPrice, buy.Amount)
+
 								break
 							} else if stateSell.Amount < buy.Amount {
 								buy.Amount -= stateSell.Amount
+								matchPayout(stateSell.Curator, buy.Curator, buy.LimitPrice, stateSell.Amount)
+
 								limitSell = append(limitSell[:index], limitSell[index+1:]...)
+
 								continue
 							}
 
@@ -474,10 +479,15 @@ func (k Keeper) handleOrders (ctx sdk.Context, orderBookID string) {
 								// Order Matched
 								if stateSell.Amount > buy.Amount {
 									stateSell.Amount -= buy.Amount
+									matchPayout(stateSell.Curator, buy.Curator, buy.LimitPrice, buy.Amount)
+
 									break
 								} else if stateSell.Amount < buy.Amount {
 									buy.Amount -= stateSell.Amount
+									matchPayout(stateSell.Curator, buy.Curator, buy.LimitPrice, stateSell.Amount)
+
 									limitSell = append(limitSell[:index], limitSell[index+1:]...)
+									
 									continue
 								}
 							}
