@@ -629,8 +629,8 @@ func fisheryatesShuffle(list []types.LimitOrder) []types.LimitOrder {
 	return list
 }
 
-func matchPayout(seller, buyer sdk.AccAddress, amount int64)  {
-	// Seller needs to pay buyer the amount as a tx
+func matchPayout(seller, buyer sdk.AccAddress, price, amount int64)  {
+	// Seller needs to pay buyer the price*amount as a tx
 
 	// Return error if buyer doesnt have enough funds or if theres any other problem in the sellers end
 }
