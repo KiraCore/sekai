@@ -378,8 +378,10 @@ func (k Keeper) handleOrders (ctx sdk.Context, orderBookID string) {
 
 				if buy.Amount > sell.Amount {
 					buy.Amount -= sell.Amount
+					matchPayout(sell.Curator, buy.Curator, buy.LimitPrice, sell.Amount)
 				} else if buy.Amount < sell.Amount {
 					sell.Amount -= buy.Amount
+					matchPayout(sell.Curator, buy.Curator, buy.LimitPrice, buy.Amount)
 				}
 
 			} else {
