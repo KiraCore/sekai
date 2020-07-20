@@ -31,3 +31,12 @@ lint:
 	@echo "--> Running linter"
 	@golangci-lint run
 	@go mod verify
+
+###############################################################################
+###                                Protobuf                                 ###
+###############################################################################
+
+proto-gen:
+	@./scripts/protocgen.sh
+
+.PHONY: proto-all proto-gen proto-lint proto-check-breaking proto-update-deps
