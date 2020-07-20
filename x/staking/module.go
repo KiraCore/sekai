@@ -2,6 +2,7 @@ package staking
 
 import (
 	"github.com/KiraCore/cosmos-sdk/codec"
+	sdk "github.com/KiraCore/cosmos-sdk/types"
 	"github.com/KiraCore/cosmos-sdk/types/module"
 	"github.com/KiraCore/cosmos-sdk/x/auth"
 	"github.com/KiraCore/cosmos-sdk/x/staking"
@@ -15,6 +16,13 @@ var (
 // AppModule extends the cosmos SDK staking.
 type AppModule struct {
 	staking.AppModule
+
+	stakingKeeper staking.Keeper
+}
+
+// NewHandler returns an sdk.Handler for the staking module.
+func (am AppModule) NewHandler() sdk.Handler {
+	return NewHandler(am.stakingKeeper)
 }
 
 // NewAppModule returns a new Custom Staking module.
@@ -25,6 +33,7 @@ func NewAppModule(
 	bk types.BankKeeper,
 ) AppModule {
 	return AppModule{
-		AppModule: staking.NewAppModule(cdc, keeper, ak, bk),
+		AppModule:     staking.NewAppModule(cdc, keeper, ak, bk),
+		stakingKeeper: keeper,
 	}
 }
