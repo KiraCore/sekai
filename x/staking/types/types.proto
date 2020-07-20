@@ -3,7 +3,7 @@ package sekai.staking;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/KiraCore/sekai/x/staking/types";
+option go_package = "/x/staking/types";
 
 // MsgClaimValidatorSeat
 message MsgClaimValidatorSeat {
@@ -25,4 +25,3 @@ message MsgClaimValidatorSeat {
     (gogoproto.moretags) = "yaml:\"delegator_address\""
   ];
 }
-
