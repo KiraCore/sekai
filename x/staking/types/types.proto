@@ -1,0 +1,19 @@
+// MsgClaimValidatorSeat
+message MsgClaimValidatorSeat {
+  option (gogoproto.equal) = true;
+
+  string moniker         = 1 [(gogoproto.nullable) = false];
+  string website         = 2 [(gogoproto.nullable) = false];
+  string social          = 3 [(gogoproto.nullable) = false];
+  string identity        = 4 [(gogoproto.nullable) = false];
+  string comission       = 5 [(gogoproto.nullable) = false];
+  bytes  valkey = 6 [
+    (gogoproto.casttype) = "github.com/KiraCore/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"delegator_address\""
+  ];
+  bytes  pubkey = 7 [
+    (gogoproto.casttype) = "github.com/KiraCore/cosmos-sdk/types.ValAddress",
+    (gogoproto.moretags) = "yaml:\"validator_address\""
+  ];
+}
+
