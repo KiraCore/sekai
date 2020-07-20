@@ -17,6 +17,7 @@ type AppModule struct {
 	staking.AppModule
 }
 
+// NewAppModule returns a new Custom Staking module.
 func NewAppModule(
 	cdc codec.Marshaler,
 	keeper staking.Keeper,
