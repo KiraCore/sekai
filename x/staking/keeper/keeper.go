@@ -19,4 +19,5 @@ func NewKeeper(storeKey sdk.StoreKey, cdc *codec.Codec) *Keeper {
 }
 
 func (k Keeper) AddValidator(ctx sdk.Context, validator types.Validator) {
+
 }
