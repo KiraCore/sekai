@@ -9,6 +9,7 @@ option go_package = "/x/staking/types";
 message MsgClaimValidatorSeat {
   option (gogoproto.equal) = true;
 
+
   string moniker         = 1 [(gogoproto.nullable) = false];
   string website         = 2 [(gogoproto.nullable) = false];
   string social          = 3 [(gogoproto.nullable) = false];
