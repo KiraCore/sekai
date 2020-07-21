@@ -2,6 +2,7 @@ PACKAGES=$(shell go list ./... | grep -v '/simulation')
 
 VERSION = 1.0.0
 COMMIT := $(shell git log -1 --format='%H')
+current_dir = $(shell pwd)
 
 # TODO: Update the ldflags with the app, client & server names
 ldflags = -X github.com/KiraCore/cosmos-sdk/version.Name=sekai \
@@ -31,3 +32,6 @@ lint:
 	@echo "--> Running linter"
 	@golangci-lint run
 	@go mod verify
+
+protoc:
+	 protoc -I "$(current_dir)/x/staking/types" -I "third_party/proto" types.proto --go_out .
