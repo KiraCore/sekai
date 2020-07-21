@@ -2,7 +2,6 @@ PACKAGES=$(shell go list ./... | grep -v '/simulation')
 
 VERSION = 1.0.0
 COMMIT := $(shell git log -1 --format='%H')
-current_dir = $(shell pwd)
 
 # TODO: Update the ldflags with the app, client & server names
 ldflags = -X github.com/KiraCore/cosmos-sdk/version.Name=sekai \
