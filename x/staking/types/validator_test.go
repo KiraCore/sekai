@@ -10,11 +10,10 @@ import (
 )
 
 func TestNewValidator_Errors(t *testing.T) {
-	valAddr, err := types.ValAddressFromHex()
+	valAddr, err := types.ValAddressFromBech32("kiravaloper1q24436yrnettd6v4eu6r4t9gycnnddac9nwqv0")
 	require.NoError(t, err)
 
-	accAddr, err := types.AccAddressFromHex()
-	require.NoError(t, err)
+	accAddr := types.AccAddress(valAddr)
 
 	tests := []struct {
 		name        string
@@ -38,7 +37,74 @@ func TestNewValidator_Errors(t *testing.T) {
 
 				return err
 			},
-			err: nil,
+			err: ErrInvalidMonikerLength,
 		},
+		{
+			name:        "website longer than 64",
+			expectError: true,
+			newVal: func() error {
+				_, err := NewValidator(
+					"the moniker",
+					strings.Repeat("A", 65),
+					"some-web.com",
+					"some-web.com",
+					types.NewDec(1234),
+					valAddr,
+					accAddr,
+				)
+
+				return err
+			},
+			err: ErrInvalidWebsiteLength,
+		},
+		{
+			name:        "social longer than 64",
+			expectError: true,
+			newVal: func() error {
+				_, err := NewValidator(
+					"the moniker",
+					"some-web.com",
+					strings.Repeat("A", 65),
+					"some-web.com",
+					types.NewDec(1234),
+					valAddr,
+					accAddr,
+				)
+
+				return err
+			},
+			err: ErrInvalidSocialLength,
+		},
+		{
+			name:        "identity longer than 64",
+			expectError: true,
+			newVal: func() error {
+				_, err := NewValidator(
+					"the moniker",
+					"some-web.com",
+					"some-web.com",
+					strings.Repeat("A", 65),
+					types.NewDec(1234),
+					valAddr,
+					accAddr,
+				)
+
+				return err
+			},
+			err: ErrInvalidIdentityLength,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			err := tt.newVal()
+
+			if tt.expectError {
+				require.EqualError(t, err, tt.err.Error())
+			} else {
+				require.NoError(t, err)
+			}
+		})
 	}
 }
