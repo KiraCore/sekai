@@ -32,6 +32,3 @@ lint:
 	@echo "--> Running linter"
 	@golangci-lint run
 	@go mod verify
-
-protoc:
-	 protoc -I "$(current_dir)/x/staking/types" -I "third_party/proto" types.proto --go_out .
