@@ -1,19 +1,19 @@
-package keeper
+package keeper_test
 
 import (
 	"testing"
 
-	"github.com/KiraCore/cosmos-sdk/codec"
-	"github.com/KiraCore/cosmos-sdk/store"
-	abci "github.com/tendermint/tendermint/abci/types"
-	dbm "github.com/tendermint/tm-db"
-
 	types2 "github.com/KiraCore/cosmos-sdk/types"
+	"github.com/KiraCore/sekai/simapp"
 	"github.com/KiraCore/sekai/x/staking/types"
 	"github.com/stretchr/testify/require"
+	abci "github.com/tendermint/tendermint/abci/types"
 )
 
 func TestKeeper_AddValidator(t *testing.T) {
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, abci.Header{})
+
 	valAddr, err := types2.ValAddressFromBech32("kiravaloper1q24436yrnettd6v4eu6r4t9gycnnddac9nwqv0")
 	require.NoError(t, err)
 
@@ -30,12 +30,6 @@ func TestKeeper_AddValidator(t *testing.T) {
 	)
 	require.NoError(t, err)
 
-	key := types2.NewKVStoreKey(types.ModuleName)
-	db := dbm.NewMemDB()
-	cms := store.NewCommitMultiStore(db)
-	cms.MountStoreWithDB(key, types2.StoreTypeIAVL, nil)
-	ctx := types2.NewContext(cms, abci.Header{}, false, nil)
-
-	keeper := NewKeeper(key, codec.New())
+	keeper := app.CustomStakingKeeper
 	keeper.AddValidator(ctx, validator)
 }

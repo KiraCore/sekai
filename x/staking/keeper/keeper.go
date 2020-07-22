@@ -14,8 +14,8 @@ type Keeper struct {
 }
 
 // NewKeeper returns new keeper.
-func NewKeeper(storeKey sdk.StoreKey, cdc *codec.Codec) *Keeper {
-	return &Keeper{storeKey: storeKey, cdc: cdc}
+func NewKeeper(storeKey sdk.StoreKey, cdc *codec.Codec) Keeper {
+	return Keeper{storeKey: storeKey, cdc: cdc}
 }
 
 func (k Keeper) AddValidator(ctx sdk.Context, validator *types.Validator) {
