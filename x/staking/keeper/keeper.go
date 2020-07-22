@@ -3,7 +3,7 @@ package keeper
 import (
 	"github.com/KiraCore/cosmos-sdk/codec"
 	sdk "github.com/KiraCore/cosmos-sdk/types"
-
+	"github.com/KiraCore/cosmos-sdk/x/staking"
 	"github.com/KiraCore/sekai/x/staking/types"
 )
 
@@ -18,6 +18,8 @@ func NewKeeper(storeKey sdk.StoreKey, cdc *codec.Codec) *Keeper {
 	return &Keeper{storeKey: storeKey, cdc: cdc}
 }
 
-func (k Keeper) AddValidator(ctx sdk.Context, validator types.Validator) {
-
+func (k Keeper) AddValidator(ctx sdk.Context, validator *types.Validator) {
+	store := ctx.KVStore(k.storeKey)
+	bz := k.cdc.MustMarshalBinaryBare(validator)
+	store.Set(staking.GetValidatorKey(validator.ValKey), bz)
 }
