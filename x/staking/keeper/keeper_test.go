@@ -3,6 +3,8 @@ package keeper_test
 import (
 	"testing"
 
+	"github.com/magiconair/properties/assert"
+
 	types2 "github.com/KiraCore/cosmos-sdk/types"
 	"github.com/KiraCore/sekai/simapp"
 	"github.com/KiraCore/sekai/x/staking/types"
@@ -32,4 +34,8 @@ func TestKeeper_AddValidator(t *testing.T) {
 
 	keeper := app.CustomStakingKeeper
 	keeper.AddValidator(ctx, validator)
+
+	getValidator := keeper.GetValidator(ctx, validator.ValKey)
+
+	assert.Equal(t, validator, getValidator)
 }

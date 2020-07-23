@@ -18,8 +18,18 @@ func NewKeeper(storeKey sdk.StoreKey, cdc *codec.Codec) Keeper {
 	return Keeper{storeKey: storeKey, cdc: cdc}
 }
 
-func (k Keeper) AddValidator(ctx sdk.Context, validator *types.Validator) {
+func (k Keeper) AddValidator(ctx sdk.Context, validator types.Validator) {
 	store := ctx.KVStore(k.storeKey)
 	bz := k.cdc.MustMarshalBinaryBare(validator)
 	store.Set(staking.GetValidatorKey(validator.ValKey), bz)
+}
+
+func (k Keeper) GetValidator(ctx sdk.Context, address sdk.ValAddress) types.Validator {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(staking.GetValidatorKey(address))
+
+	var validator types.Validator
+	k.cdc.MustUnmarshalBinaryBare(bz, &validator)
+
+	return validator
 }

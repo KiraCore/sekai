@@ -17,8 +17,8 @@ type Validator struct {
 }
 
 // NewValidator generates new Validator.
-func NewValidator(moniker string, website string, social string, identity string, comission sdk.Dec, valKey sdk.ValAddress, pubKey sdk.AccAddress) (*Validator, error) {
-	v := &Validator{
+func NewValidator(moniker string, website string, social string, identity string, comission sdk.Dec, valKey sdk.ValAddress, pubKey sdk.AccAddress) (Validator, error) {
+	v := Validator{
 		Moniker:   moniker,
 		Website:   website,
 		Social:    social,
@@ -30,7 +30,7 @@ func NewValidator(moniker string, website string, social string, identity string
 
 	err := v.Validate()
 	if err != nil {
-		return nil, err
+		return v, err
 	}
 
 	return v, nil
