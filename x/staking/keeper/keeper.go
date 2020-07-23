@@ -33,3 +33,18 @@ func (k Keeper) GetValidator(ctx sdk.Context, address sdk.ValAddress) types.Vali
 
 	return validator
 }
+
+func (k Keeper) GetValidatorSet(ctx sdk.Context) []types.Validator {
+	store := ctx.KVStore(k.storeKey)
+
+	iter := store.Iterator(nil, nil)
+
+	var validators []types.Validator
+	for ; iter.Valid(); iter.Next() {
+		var validator types.Validator
+		k.cdc.MustUnmarshalBinaryBare(iter.Value(), &validator)
+		validators = append(validators, validator)
+	}
+
+	return validators
+}

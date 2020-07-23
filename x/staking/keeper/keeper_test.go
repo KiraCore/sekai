@@ -16,10 +16,9 @@ func TestKeeper_AddValidator(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, abci.Header{})
 
-	valAddr, err := types2.ValAddressFromBech32("kiravaloper1q24436yrnettd6v4eu6r4t9gycnnddac9nwqv0")
-	require.NoError(t, err)
-
-	accAddr := types2.AccAddress(valAddr)
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, types2.TokensFromConsensusPower(10))
+	addr1 := addrs[0]
+	valAddr := types2.ValAddress(addr1)
 
 	validator, err := types.NewValidator(
 		"aMoniker",
@@ -28,14 +27,52 @@ func TestKeeper_AddValidator(t *testing.T) {
 		"My Identity",
 		types2.NewDec(1234),
 		valAddr,
-		accAddr,
+		addr1,
 	)
 	require.NoError(t, err)
 
-	keeper := app.CustomStakingKeeper
-	keeper.AddValidator(ctx, validator)
-
-	getValidator := keeper.GetValidator(ctx, validator.ValKey)
+	app.CustomStakingKeeper.AddValidator(ctx, validator)
+	getValidator := app.CustomStakingKeeper.GetValidator(ctx, validator.ValKey)
 
 	assert.Equal(t, validator, getValidator)
+}
+
+func TestKeeper_GetValidatorSet(t *testing.T) {
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, abci.Header{})
+
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, types2.TokensFromConsensusPower(10))
+	addr1 := addrs[0]
+	valAddr1 := types2.ValAddress(addr1)
+
+	addr2 := addrs[1]
+	valAddr2 := types2.ValAddress(addr2)
+
+	validator1, err := types.NewValidator(
+		"validator 1",
+		"some-web.com",
+		"A Social",
+		"My Identity",
+		types2.NewDec(1234),
+		valAddr1,
+		addr1,
+	)
+	require.NoError(t, err)
+
+	validator2, err := types.NewValidator(
+		"validator 2",
+		"some-web.com",
+		"A Social",
+		"My Identity",
+		types2.NewDec(1234),
+		valAddr2,
+		addr2,
+	)
+	require.NoError(t, err)
+
+	app.CustomStakingKeeper.AddValidator(ctx, validator1)
+	app.CustomStakingKeeper.AddValidator(ctx, validator2)
+
+	validatorSet := app.CustomStakingKeeper.GetValidatorSet(ctx)
+	require.Equal(t, 2, len(validatorSet))
 }
