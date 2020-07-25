@@ -4,10 +4,11 @@ import (
 	"testing"
 
 	"github.com/KiraCore/cosmos-sdk/types"
-	"github.com/KiraCore/sekai/simapp"
-	types2 "github.com/KiraCore/sekai/x/staking/types"
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
+
+	"github.com/KiraCore/sekai/simapp"
+	types2 "github.com/KiraCore/sekai/x/staking/types"
 )
 
 func TestNewHandler_MsgClaimValidator_HappyPath(t *testing.T) {
