@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/magiconair/properties/assert"
@@ -47,6 +48,9 @@ func TestKeeper_GetValidatorSet(t *testing.T) {
 
 	addr2 := addrs[1]
 	valAddr2 := types2.ValAddress(addr2)
+
+	fmt.Printf("val addrs %s\n", addr1.String())
+	fmt.Printf("val addrs %s\n", valAddr1.String())
 
 	validator1, err := types.NewValidator(
 		"validator 1",
