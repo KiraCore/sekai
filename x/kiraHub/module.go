@@ -3,13 +3,14 @@ package kiraHub
 import (
 	"encoding/json"
 
+	"github.com/KiraCore/cosmos-sdk/client"
+
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 
 	constants "github.com/KiraCore/sekai/x/kiraHub/constants"
 	abciTypes "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/KiraCore/cosmos-sdk/client/context"
 	"github.com/KiraCore/cosmos-sdk/codec"
 	sdkTypes "github.com/KiraCore/cosmos-sdk/types"
 	"github.com/KiraCore/cosmos-sdk/types/module"
@@ -40,7 +41,7 @@ func (AppModuleBasic) ValidateGenesis(jsonMarshaler codec.JSONMarshaler, rawMess
 	}
 	return ValidateGenesis(genesisState)
 }
-func (AppModuleBasic) RegisterRESTRoutes(cliContext context.CLIContext, router *mux.Router) {
+func (AppModuleBasic) RegisterRESTRoutes(cliContext client.Context, router *mux.Router) {
 	RegisterRESTRoutes(cliContext, router)
 }
 func (AppModuleBasic) GetTxCmd(codec *codec.Codec) *cobra.Command {

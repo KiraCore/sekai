@@ -72,7 +72,6 @@ var (
 		ibc.AppModuleBasic{},
 		upgrade.AppModuleBasic{},
 		evidence.AppModuleBasic{},
-		transfer.AppModuleBasic{},
 
 		kiraHub.AppModuleBasic{},
 	)
