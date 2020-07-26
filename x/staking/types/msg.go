@@ -13,7 +13,7 @@ type MsgClaimValidator struct {
 }
 
 func (m MsgClaimValidator) Route() string {
-	panic("implement me")
+	return ModuleName
 }
 
 func (m MsgClaimValidator) Type() string {

@@ -1,16 +1,15 @@
 package keeper_test
 
 import (
-	"fmt"
 	"testing"
 
-	"github.com/magiconair/properties/assert"
-
 	types2 "github.com/KiraCore/cosmos-sdk/types"
-	"github.com/KiraCore/sekai/simapp"
-	"github.com/KiraCore/sekai/x/staking/types"
+	"github.com/magiconair/properties/assert"
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
+
+	"github.com/KiraCore/sekai/simapp"
+	"github.com/KiraCore/sekai/x/staking/types"
 )
 
 func TestKeeper_AddValidator(t *testing.T) {
@@ -48,9 +47,6 @@ func TestKeeper_GetValidatorSet(t *testing.T) {
 
 	addr2 := addrs[1]
 	valAddr2 := types2.ValAddress(addr2)
-
-	fmt.Printf("val addrs %s\n", addr1.String())
-	fmt.Printf("val addrs %s\n", valAddr1.String())
 
 	validator1, err := types.NewValidator(
 		"validator 1",
