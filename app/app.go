@@ -12,7 +12,6 @@ import (
 
 	bam "github.com/KiraCore/cosmos-sdk/baseapp"
 	"github.com/KiraCore/cosmos-sdk/codec"
-	cdctypes "github.com/KiraCore/cosmos-sdk/codec/types"
 	"github.com/KiraCore/cosmos-sdk/simapp"
 	"github.com/KiraCore/cosmos-sdk/std"
 	sdk "github.com/KiraCore/cosmos-sdk/types"
@@ -39,13 +38,17 @@ import (
 	evidencekeeper "github.com/KiraCore/cosmos-sdk/x/evidence/keeper"
 	evidencetypes "github.com/KiraCore/cosmos-sdk/x/evidence/types"
 	"github.com/KiraCore/cosmos-sdk/x/genutil"
+	genutiltypes "github.com/KiraCore/cosmos-sdk/x/genutil/types"
 	"github.com/KiraCore/cosmos-sdk/x/gov"
 	govkeeper "github.com/KiraCore/cosmos-sdk/x/gov/keeper"
 	govtypes "github.com/KiraCore/cosmos-sdk/x/gov/types"
 	"github.com/KiraCore/cosmos-sdk/x/ibc"
+	transfer "github.com/KiraCore/cosmos-sdk/x/ibc-transfer"
 	ibctransferkeeper "github.com/KiraCore/cosmos-sdk/x/ibc-transfer/keeper"
 	ibctransfertypes "github.com/KiraCore/cosmos-sdk/x/ibc-transfer/types"
 	ibcclient "github.com/KiraCore/cosmos-sdk/x/ibc/02-client"
+	ibcclienttypes "github.com/KiraCore/cosmos-sdk/x/ibc/02-client/types"
+	porttypes "github.com/KiraCore/cosmos-sdk/x/ibc/05-port/types"
 	ibchost "github.com/KiraCore/cosmos-sdk/x/ibc/24-host"
 	ibckeeper "github.com/KiraCore/cosmos-sdk/x/ibc/keeper"
 	minttypes "github.com/KiraCore/cosmos-sdk/x/mint/types"
@@ -64,8 +67,6 @@ import (
 	upgradeclient "github.com/KiraCore/cosmos-sdk/x/upgrade/client"
 	upgradekeeper "github.com/KiraCore/cosmos-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/KiraCore/cosmos-sdk/x/upgrade/types"
-	port "github.com/cosmos/cosmos-sdk/x/ibc/05-port"
-	transfer "github.com/cosmos/cosmos-sdk/x/ibc/20-transfer"
 
 	"github.com/KiraCore/sekai/x/kiraHub"
 	constants "github.com/KiraCore/sekai/x/kiraHub/constants"
@@ -119,19 +120,6 @@ var (
 		distrtypes.ModuleName: true,
 	}
 )
-
-// MakeCodec creates the application codec. The codec is sealed before it is
-// returned.
-func MakeCodec() (*std.Codec, *codec.Codec) {
-	cdc := std.MakeCodec(ModuleBasics)
-	interfaceRegistry := cdctypes.NewInterfaceRegistry()
-	appCodec := std.NewAppCodec(cdc, interfaceRegistry)
-
-	sdk.RegisterInterfaces(interfaceRegistry)
-	ModuleBasics.RegisterInterfaceModules(interfaceRegistry)
-
-	return appCodec, cdc
-}
 
 // NewApp extended ABCI application
 type SekaiApp struct {
@@ -226,7 +214,7 @@ func NewInitApp(
 		appCodec, keys[authtypes.StoreKey], app.GetSubspace(authtypes.ModuleName), authtypes.ProtoBaseAccount, maccPerms,
 	)
 	app.bankKeeper = bankkeeper.NewBaseKeeper(
-		appCodec, keys[banktypes.StoreKey], app.accountKeeper, app.GetSubspace(banktypes.ModuleName), app.BlacklistedAccAddrs(),
+		appCodec, keys[banktypes.StoreKey], app.accountKeeper, app.GetSubspace(banktypes.ModuleName), app.BlockedAddrs(),
 	)
 	stakingKeeper := stakingkeeper.NewKeeper(
 		appCodec, keys[stakingtypes.StoreKey], app.accountKeeper, app.bankKeeper, app.GetSubspace(stakingtypes.ModuleName),
@@ -260,13 +248,13 @@ func NewInitApp(
 		stakingtypes.NewMultiStakingHooks(app.distrKeeper.Hooks(), app.slashingKeeper.Hooks()),
 	)
 
-	app.ibcKeeper = ibc.NewKeeper(
-		app.cdc, appCodec, keys[ibc.StoreKey], app.stakingKeeper, scopedIBCKeeper,
+	app.ibcKeeper = ibckeeper.NewKeeper(
+		app.cdc, appCodec, keys[ibchost.StoreKey], app.stakingKeeper, scopedIBCKeeper,
 	)
 
 	// Create Transfer Keepers
-	app.transferKeeper = transfer.NewKeeper(
-		appCodec, keys[transfer.StoreKey],
+	app.transferKeeper = ibctransferkeeper.NewKeeper(
+		appCodec, keys[ibctransfertypes.StoreKey],
 		app.ibcKeeper.ChannelKeeper, &app.ibcKeeper.PortKeeper,
 		app.accountKeeper, app.bankKeeper,
 		scopedTransferKeeper,
@@ -276,16 +264,16 @@ func NewInitApp(
 	app.kiraHubKeeper = kiraHub.NewKeeper(app.cdc, keys[constants.StoreKey])
 
 	// Create static IBC router, add transfer route, then set and seal it
-	ibcRouter := port.NewRouter()
-	ibcRouter.AddRoute(transfer.ModuleName, transferModule)
+	ibcRouter := porttypes.NewRouter()
+	ibcRouter.AddRoute(ibctransfertypes.ModuleName, transferModule)
 	app.ibcKeeper.SetRouter(ibcRouter)
 
 	// create evidence keeper with router
-	evidenceKeeper := evidence.NewKeeper(
-		appCodec, keys[evidence.StoreKey], &app.stakingKeeper, app.slashingKeeper,
+	evidenceKeeper := evidencekeeper.NewKeeper(
+		appCodec, keys[evidencetypes.StoreKey], &app.stakingKeeper, app.slashingKeeper,
 	)
-	evidenceRouter := evidence.NewRouter().
-		AddRoute(ibcclient.RouterKey, ibcclient.HandlerClientMisbehaviour(app.ibcKeeper.ClientKeeper))
+	evidenceRouter := evidencetypes.NewRouter().
+		AddRoute(ibcclienttypes.RouterKey, ibcclient.HandlerClientMisbehaviour(app.ibcKeeper.ClientKeeper))
 
 	evidenceKeeper.SetRouter(evidenceRouter)
 	app.evidenceKeeper = *evidenceKeeper
@@ -293,7 +281,7 @@ func NewInitApp(
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
 	app.mm = module.NewManager(
-		genutil.NewAppModule(app.accountKeeper, app.stakingKeeper, app.BaseApp.DeliverTx),
+		genutil.NewAppModule(app.accountKeeper, app.stakingKeeper, app.BaseApp.DeliverTx, encodingConfig.TxConfig),
 		auth.NewAppModule(appCodec, app.accountKeeper),
 		kiraHub.NewAppModule(app.kiraHubKeeper),
 		bank.NewAppModule(appCodec, app.bankKeeper, app.accountKeeper),
@@ -314,22 +302,22 @@ func NewInitApp(
 	// CanWithdrawInvariant invariant.
 
 	app.mm.SetOrderBeginBlockers(
-		upgrade.ModuleName, distr.ModuleName, slashing.ModuleName,
-		evidence.ModuleName, staking.ModuleName, ibc.ModuleName,
+		upgradetypes.ModuleName, distrtypes.ModuleName, slashingtypes.ModuleName,
+		evidencetypes.ModuleName, stakingtypes.ModuleName, ibchost.ModuleName,
 	)
-	app.mm.SetOrderEndBlockers(crisis.ModuleName, gov.ModuleName, staking.ModuleName)
+	app.mm.SetOrderEndBlockers(crisistypes.ModuleName, govtypes.ModuleName, stakingtypes.ModuleName)
 
 	// Sets the order of Genesis - Order matters, genutil is to always come last
 	// NOTE: The genutils module must occur after staking so that pools are
 	// properly initialized with tokens from genesis accounts.
 	app.mm.SetOrderInitGenesis(
-		capability.ModuleName, auth.ModuleName, distr.ModuleName, staking.ModuleName, bank.ModuleName,
-		slashing.ModuleName, gov.ModuleName, crisis.ModuleName,
-		ibc.ModuleName, genutil.ModuleName, evidence.ModuleName, transfer.ModuleName,
+		capabilitytypes.ModuleName, authtypes.ModuleName, distrtypes.ModuleName, stakingtypes.ModuleName, banktypes.ModuleName,
+		slashingtypes.ModuleName, govtypes.ModuleName, crisistypes.ModuleName,
+		ibchost.ModuleName, genutiltypes.ModuleName, evidencetypes.ModuleName, ibctransfertypes.ModuleName,
 	)
 
 	app.mm.RegisterInvariants(&app.crisisKeeper)
-	app.mm.RegisterRoutes(app.Router(), app.QueryRouter())
+	app.mm.RegisterRoutes(app.Router(), app.QueryRouter(), codec.NewAminoCodec(encodingConfig.Amino))
 
 	app.sm = module.NewSimulationManager(
 		auth.NewAppModule(appCodec, app.accountKeeper),
@@ -350,8 +338,8 @@ func NewInitApp(
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetAnteHandler(
 		ante.NewAnteHandler(
-			app.accountKeeper, app.bankKeeper, *app.ibcKeeper,
-			ante.DefaultSigVerificationGasConsumer,
+			app.accountKeeper, app.bankKeeper, ante.DefaultSigVerificationGasConsumer,
+			encodingConfig.TxConfig.SignModeHandler(),
 		),
 	)
 	app.SetEndBlocker(app.EndBlocker)
@@ -379,12 +367,6 @@ func NewInitApp(
 // GenesisState represents chain state at the start of the chain. Any initial state (account balances) are stored here.
 type GenesisState map[string]json.RawMessage
 
-// NewDefaultGenesisState generates the default state for the application.
-func NewDefaultGenesisState() GenesisState {
-	cdc := std.MakeCodec(ModuleBasics)
-	return ModuleBasics.DefaultGenesis(cdc)
-}
-
 // InitChainer application update at chain initialization
 func (app *SekaiApp) InitChainer(ctx sdk.Context, req abci.RequestInitChain) abci.ResponseInitChain {
 	var genesisState simapp.GenesisState
@@ -411,7 +393,7 @@ func (app *SekaiApp) LoadHeight(height int64) error {
 func (app *SekaiApp) ModuleAccountAddrs() map[string]bool {
 	modAccAddrs := make(map[string]bool)
 	for acc := range maccPerms {
-		modAccAddrs[auth.NewModuleAddress(acc).String()] = true
+		modAccAddrs[authtypes.NewModuleAddress(acc).String()] = true
 	}
 
 	return modAccAddrs
@@ -444,14 +426,15 @@ func GetMaccPerms() map[string][]string {
 	return modAccPerms
 }
 
-// BlacklistedAccAddrs returns all the app's module account addresses black listed for receiving tokens.
-func (app *SekaiApp) BlacklistedAccAddrs() map[string]bool {
-	blacklistedAddrs := make(map[string]bool)
+// BlockedAddrs returns all the app's module account addresses that are not
+// allowed to receive external tokens.
+func (app *SekaiApp) BlockedAddrs() map[string]bool {
+	blockedAddrs := make(map[string]bool)
 	for acc := range maccPerms {
-		blacklistedAddrs[auth.NewModuleAddress(acc).String()] = !allowedReceivingModAcc[acc]
+		blockedAddrs[authtypes.NewModuleAddress(acc).String()] = !allowedReceivingModAcc[acc]
 	}
 
-	return blacklistedAddrs
+	return blockedAddrs
 }
 
 // initParamsKeeper init params keeper and its subspaces
