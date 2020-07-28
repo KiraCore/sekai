@@ -1,9 +1,14 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"io"
 	"os"
+
+	"github.com/KiraCore/cosmos-sdk/client/keys"
+	"github.com/KiraCore/cosmos-sdk/client/rpc"
+	authcmd "github.com/KiraCore/cosmos-sdk/x/auth/client/cli"
 
 	"github.com/spf13/cast"
 
@@ -30,6 +35,7 @@ import (
 	"github.com/KiraCore/cosmos-sdk/server"
 	"github.com/KiraCore/cosmos-sdk/store"
 	sdk "github.com/KiraCore/cosmos-sdk/types"
+	authclient "github.com/KiraCore/cosmos-sdk/x/auth/client"
 	genutilcli "github.com/KiraCore/cosmos-sdk/x/genutil/client/cli"
 )
 
@@ -60,12 +66,8 @@ var (
 			WithHomeDir(simapp.DefaultNodeHome)
 )
 
-func main() {
-	config := sdk.GetConfig()
-	config.SetBech32PrefixForAccount(sdk.Bech32PrefixAccAddr, sdk.Bech32PrefixAccPub)
-	config.SetBech32PrefixForValidator(sdk.Bech32PrefixValAddr, sdk.Bech32PrefixValPub)
-	config.SetBech32PrefixForConsensusNode(sdk.Bech32PrefixConsAddr, sdk.Bech32PrefixConsPub)
-	config.Seal()
+func init() {
+	authclient.Codec = encodingConfig.Marshaler
 
 	rootCmd.AddCommand(
 		genutilcli.InitCmd(app.ModuleBasics, app.DefaultNodeHome),
@@ -82,14 +84,76 @@ func main() {
 
 	server.AddCommands(rootCmd, newApp, exportAppStateAndTMValidators)
 
-	// prepare and add flags
-	executor := cli.PrepareBaseCmd(rootCmd, "GA", app.DefaultNodeHome)
-	rootCmd.PersistentFlags().UintVar(&invCheckPeriod, flagInvCheckPeriod,
-		0, "Assert registered invariants every N blocks")
-	err := executor.Execute()
+	// add keybase, auxiliary RPC, query, and tx child commands
+	rootCmd.AddCommand(
+		rpc.StatusCommand(),
+		queryCommand(),
+		txCommand(),
+		keys.Commands(simapp.DefaultNodeHome),
+	)
+}
+
+func main() {
+	ctx := context.Background()
+	ctx = context.WithValue(ctx, client.ClientContextKey, &client.Context{})
+	ctx = context.WithValue(ctx, server.ServerContextKey, server.NewDefaultContext())
+
+	executor := cli.PrepareBaseCmd(rootCmd, "", simapp.DefaultNodeHome)
+	err := executor.ExecuteContext(ctx)
 	if err != nil {
 		panic(err)
 	}
+}
+
+func queryCommand() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:                        "query",
+		Aliases:                    []string{"q"},
+		Short:                      "Querying subcommands",
+		DisableFlagParsing:         true,
+		SuggestionsMinimumDistance: 2,
+		RunE:                       client.ValidateCmd,
+	}
+
+	cmd.AddCommand(
+		authcmd.GetAccountCmd(),
+		rpc.ValidatorCommand(),
+		rpc.BlockCommand(),
+		authcmd.QueryTxsByEventsCmd(),
+		authcmd.QueryTxCmd(),
+	)
+
+	simapp.ModuleBasics.AddQueryCommands(cmd)
+	cmd.PersistentFlags().String(flags.FlagChainID, "", "The network chain ID")
+
+	return cmd
+}
+
+func txCommand() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:                        "tx",
+		Short:                      "Transactions subcommands",
+		DisableFlagParsing:         true,
+		SuggestionsMinimumDistance: 2,
+		RunE:                       client.ValidateCmd,
+	}
+
+	cmd.AddCommand(
+		authcmd.GetSignCommand(),
+		authcmd.GetSignBatchCommand(),
+		authcmd.GetMultiSignCommand(),
+		authcmd.GetValidateSignaturesCommand(),
+		flags.LineBreak,
+		authcmd.GetBroadcastCommand(),
+		authcmd.GetEncodeCommand(),
+		authcmd.GetDecodeCommand(),
+		flags.LineBreak,
+	)
+
+	simapp.ModuleBasics.AddTxCommands(cmd)
+	cmd.PersistentFlags().String(flags.FlagChainID, "", "The network chain ID")
+
+	return cmd
 }
 
 func newApp(logger log.Logger, db dbm.DB, traceStore io.Writer, appOpts server.AppOptions) server.Application {

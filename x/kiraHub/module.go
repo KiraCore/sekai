@@ -11,6 +11,7 @@ import (
 	"github.com/spf13/cobra"
 
 	constants "github.com/KiraCore/sekai/x/kiraHub/constants"
+	"github.com/gogo/protobuf/grpc"
 	abciTypes "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/KiraCore/cosmos-sdk/codec"
@@ -98,7 +99,7 @@ func (appModule AppModule) LegacyQuerierHandler(marshaler codec.JSONMarshaler) s
 	panic("implement me")
 }
 
-func (appModule AppModule) RegisterQueryService(g interface{}) {
+func (appModule AppModule) RegisterQueryService(server grpc.Server) {
 	panic("implement me")
 }
 
