@@ -2,11 +2,12 @@ package app
 
 import (
 	"encoding/json"
+	"io"
+	"os"
+
 	"github.com/KiraCore/cosmos-sdk/client/rpc"
 	"github.com/KiraCore/cosmos-sdk/server/api"
 	authrest "github.com/KiraCore/cosmos-sdk/x/auth/client/rest"
-	"io"
-	"os"
 
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/libs/log"
@@ -78,10 +79,6 @@ import (
 const appName = "Sekai"
 
 var (
-
-	// DefaultCLIHome default home directories for the application CLI
-	DefaultCLIHome = os.ExpandEnv("$HOME/.sekaicli")
-
 	// DefaultNodeHome sets the folder where the applcation data and configuration will be stored
 	DefaultNodeHome = os.ExpandEnv("$HOME/.sekaid")
 
@@ -286,7 +283,7 @@ func NewInitApp(
 	app.mm = module.NewManager(
 		genutil.NewAppModule(app.accountKeeper, app.stakingKeeper, app.BaseApp.DeliverTx, encodingConfig.TxConfig),
 		auth.NewAppModule(appCodec, app.accountKeeper),
-		kiraHub.NewAppModule(app.kiraHubKeeper),
+		//kiraHub.NewAppModule(app.kiraHubKeeper),
 		bank.NewAppModule(appCodec, app.bankKeeper, app.accountKeeper),
 		capability.NewAppModule(appCodec, *app.capabilityKeeper),
 		crisis.NewAppModule(&app.crisisKeeper),

@@ -17,7 +17,6 @@ import (
 	"github.com/KiraCore/cosmos-sdk/x/auth/types"
 
 	"github.com/KiraCore/cosmos-sdk/client"
-	"github.com/KiraCore/cosmos-sdk/simapp"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
@@ -39,8 +38,6 @@ import (
 	genutilcli "github.com/KiraCore/cosmos-sdk/x/genutil/client/cli"
 )
 
-const flagInvCheckPeriod = "inv-check-period"
-
 var (
 	invCheckPeriod uint
 	rootCmd        = &cobra.Command{
@@ -55,7 +52,7 @@ var (
 		},
 	}
 
-	encodingConfig = simapp.MakeEncodingConfig()
+	encodingConfig = app.MakeEncodingConfig()
 	initClientCtx  = client.Context{}.
 			WithJSONMarshaler(encodingConfig.Marshaler).
 			WithTxConfig(encodingConfig.TxConfig).
@@ -63,7 +60,7 @@ var (
 			WithInput(os.Stdin).
 			WithAccountRetriever(types.NewAccountRetriever(encodingConfig.Marshaler)).
 			WithBroadcastMode(flags.BroadcastBlock).
-			WithHomeDir(simapp.DefaultNodeHome)
+			WithHomeDir(app.DefaultNodeHome)
 )
 
 func init() {
@@ -89,7 +86,7 @@ func init() {
 		rpc.StatusCommand(),
 		queryCommand(),
 		txCommand(),
-		keys.Commands(simapp.DefaultNodeHome),
+		keys.Commands(app.DefaultNodeHome),
 	)
 }
 
@@ -98,7 +95,7 @@ func main() {
 	ctx = context.WithValue(ctx, client.ClientContextKey, &client.Context{})
 	ctx = context.WithValue(ctx, server.ServerContextKey, server.NewDefaultContext())
 
-	executor := cli.PrepareBaseCmd(rootCmd, "", simapp.DefaultNodeHome)
+	executor := cli.PrepareBaseCmd(rootCmd, "", app.DefaultNodeHome)
 	err := executor.ExecuteContext(ctx)
 	if err != nil {
 		panic(err)
@@ -123,7 +120,7 @@ func queryCommand() *cobra.Command {
 		authcmd.QueryTxCmd(),
 	)
 
-	simapp.ModuleBasics.AddQueryCommands(cmd)
+	app.ModuleBasics.AddQueryCommands(cmd)
 	cmd.PersistentFlags().String(flags.FlagChainID, "", "The network chain ID")
 
 	return cmd
@@ -150,7 +147,7 @@ func txCommand() *cobra.Command {
 		flags.LineBreak,
 	)
 
-	simapp.ModuleBasics.AddTxCommands(cmd)
+	app.ModuleBasics.AddTxCommands(cmd)
 	cmd.PersistentFlags().String(flags.FlagChainID, "", "The network chain ID")
 
 	return cmd
