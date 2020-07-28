@@ -4,23 +4,20 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
-	"github.com/KiraCore/cosmos-sdk/crypto/keyring"
-	"github.com/KiraCore/cosmos-sdk/std"
-	"github.com/KiraCore/cosmos-sdk/x/bank"
-	"github.com/tendermint/go-amino"
+	genutiltypes "github.com/KiraCore/cosmos-sdk/x/genutil/types"
 
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
-
-	"github.com/tendermint/tendermint/libs/cli"
-
+	"github.com/KiraCore/cosmos-sdk/client"
 	"github.com/KiraCore/cosmos-sdk/client/flags"
+	"github.com/KiraCore/cosmos-sdk/codec"
+	"github.com/KiraCore/cosmos-sdk/crypto/keyring"
 	"github.com/KiraCore/cosmos-sdk/server"
 	sdk "github.com/KiraCore/cosmos-sdk/types"
-	"github.com/KiraCore/cosmos-sdk/x/auth"
-	authexported "github.com/KiraCore/cosmos-sdk/x/auth/exported"
-	authvesting "github.com/KiraCore/cosmos-sdk/x/auth/vesting"
+	authtypes "github.com/KiraCore/cosmos-sdk/x/auth/types"
+	authvesting "github.com/KiraCore/cosmos-sdk/x/auth/vesting/types"
+	banktypes "github.com/KiraCore/cosmos-sdk/x/bank/types"
 	"github.com/KiraCore/cosmos-sdk/x/genutil"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 const (
@@ -31,9 +28,7 @@ const (
 )
 
 // AddGenesisAccountCmd returns add-genesis-account cobra Command.
-func AddGenesisAccountCmd(
-	ctx *server.Context, depCdc *amino.Codec, cdc *std.Codec, defaultNodeHome, defaultClientHome string,
-) *cobra.Command {
+func AddGenesisAccountCmd(defaultNodeHome string) *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "add-genesis-account [address_or_key_name] [coin][,[coin]]",
@@ -45,8 +40,14 @@ contain valid denominations. Accounts may optionally be supplied with vesting pa
 `,
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			config := ctx.Config
-			config.SetRoot(viper.GetString(cli.HomeFlag))
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			depCdc := clientCtx.JSONMarshaler
+			cdc := depCdc.(codec.Marshaler)
+
+			serverCtx := server.GetServerContextFromCmd(cmd)
+			config := serverCtx.Config
+
+			config.SetRoot(clientCtx.HomeDir)
 
 			addr, err := sdk.AccAddressFromBech32(args[0])
 			inBuf := bufio.NewReader(cmd.InOrStdin())
@@ -83,10 +84,10 @@ contain valid denominations. Accounts may optionally be supplied with vesting pa
 			}
 
 			// create concrete account type based on input parameters
-			var genAccount authexported.GenesisAccount
+			var genAccount authtypes.GenesisAccount
 
-			balances := bank.Balance{Address: addr, Coins: coins.Sort()}
-			baseAccount := auth.NewBaseAccount(addr, nil, 0, 0)
+			balances := banktypes.Balance{Address: addr, Coins: coins.Sort()}
+			baseAccount := authtypes.NewBaseAccount(addr, nil, 0, 0)
 			if !vestingAmt.IsZero() {
 				baseVestingAccount := authvesting.NewBaseVestingAccount(baseAccount, vestingAmt.Sort(), vestingEnd)
 
@@ -114,13 +115,13 @@ contain valid denominations. Accounts may optionally be supplied with vesting pa
 			}
 
 			genFile := config.GenesisFile()
-			appState, genDoc, err := genutil.GenesisStateFromGenFile(depCdc, genFile)
+			appState, genDoc, err := genutiltypes.GenesisStateFromGenFile(depCdc, genFile)
 			if err != nil {
 				return fmt.Errorf("failed to unmarshal genesis state: %w", err)
 			}
 
-			authGenState := auth.GetGenesisStateFromAppState(cdc, appState)
-			bankGenState := bank.GetGenesisStateFromAppState(depCdc, appState)
+			authGenState := authtypes.GetGenesisStateFromAppState(cdc, appState)
+			bankGenState := banktypes.GetGenesisStateFromAppState(depCdc, appState)
 			if authGenState.Accounts.Contains(addr) {
 				return fmt.Errorf("cannot add account at existing address %s", addr)
 			}
@@ -129,15 +130,15 @@ contain valid denominations. Accounts may optionally be supplied with vesting pa
 				return fmt.Errorf("cannot add account at existing address %s", addr)
 			}
 
-			balance := bank.Balance{Address: addr, Coins: coins}
+			balance := banktypes.Balance{Address: addr, Coins: coins}
 
 			bankGenState.Balances = append(bankGenState.Balances, balance)
-			bankGenState.Balances = bank.SanitizeGenesisBalances(bankGenState.Balances)
+			bankGenState.Balances = banktypes.SanitizeGenesisBalances(bankGenState.Balances)
 
 			// Add the new account to the set of genesis accounts and sanitize the
 			// accounts afterwards.
 			authGenState.Accounts = append(authGenState.Accounts, genAccount)
-			authGenState.Accounts = auth.SanitizeGenesisAccounts(authGenState.Accounts)
+			authGenState.Accounts = authtypes.SanitizeGenesisAccounts(authGenState.Accounts)
 
 			authGenStateBz, err := cdc.MarshalJSON(authGenState)
 			if err != nil {
@@ -149,8 +150,8 @@ contain valid denominations. Accounts may optionally be supplied with vesting pa
 				return fmt.Errorf("failed to marshal bank genesis state: %w", err)
 			}
 
-			appState[auth.ModuleName] = authGenStateBz
-			appState[bank.ModuleName] = bankGenStateBz
+			appState[authtypes.ModuleName] = authGenStateBz
+			appState[banktypes.ModuleName] = bankGenStateBz
 
 			appStateJSON, err := cdc.MarshalJSON(appState)
 			if err != nil {
@@ -162,17 +163,16 @@ contain valid denominations. Accounts may optionally be supplied with vesting pa
 		},
 	}
 
-	cmd.Flags().String(cli.HomeFlag, defaultNodeHome, "node's home directory")
-	cmd.Flags().String(flags.FlagKeyringBackend, flags.DefaultKeyringBackend, "Select keyring's backend (os|file|test)")
-	cmd.Flags().String(flagClientHome, defaultClientHome, "client's home directory")
+	cmd.Flags().String(flags.FlagHome, defaultNodeHome, "node's home directory")
 	cmd.Flags().String(flagVestingAmt, "", "amount of coins for vesting accounts")
 	cmd.Flags().Uint64(flagVestingStart, 0, "schedule start time (unix epoch) for vesting accounts")
 	cmd.Flags().Uint64(flagVestingEnd, 0, "schedule end time (unix epoch) for vesting accounts")
+	flags.AddQueryFlagsToCmd(cmd)
 
 	return cmd
 }
 
-func balancesContains(bal []bank.Balance, addr sdk.AccAddress) bool {
+func balancesContains(bal []banktypes.Balance, addr sdk.AccAddress) bool {
 	for _, b := range bal {
 		if b.Address.Equals(addr) {
 			return true

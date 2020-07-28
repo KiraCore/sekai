@@ -15,6 +15,18 @@ type Message struct {
 	Curator sdk.AccAddress `json:"curator"  yaml:"curator" valid:"required~Curator is required"`
 }
 
+func (message Message) Reset() {
+	panic("implement me")
+}
+
+func (message Message) String() string {
+	panic("implement me")
+}
+
+func (message Message) ProtoMessage() {
+	panic("implement me")
+}
+
 var _ sdk.Msg = Message{}
 
 func (message Message) Route() string { return constants.ModuleName }

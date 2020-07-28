@@ -2,6 +2,9 @@ package app
 
 import (
 	"encoding/json"
+	"github.com/KiraCore/cosmos-sdk/client/rpc"
+	"github.com/KiraCore/cosmos-sdk/server/api"
+	authrest "github.com/KiraCore/cosmos-sdk/x/auth/client/rest"
 	"io"
 	"os"
 
@@ -397,6 +400,14 @@ func (app *SekaiApp) ModuleAccountAddrs() map[string]bool {
 	}
 
 	return modAccAddrs
+}
+
+// RegisterAPIRoutes registers all application module routes with the provided
+// API server.
+func (app *SekaiApp) RegisterAPIRoutes(apiSvr *api.Server) {
+	rpc.RegisterRoutes(apiSvr.ClientCtx, apiSvr.Router)
+	authrest.RegisterTxRoutes(apiSvr.ClientCtx, apiSvr.Router)
+	ModuleBasics.RegisterRESTRoutes(apiSvr.ClientCtx, apiSvr.Router)
 }
 
 // Codec returns the application's sealed codec.

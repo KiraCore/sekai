@@ -10,6 +10,7 @@ require (
 	github.com/onsi/gomega v1.5.0 // indirect
 	github.com/otiai10/copy v1.2.0
 	github.com/pkg/errors v0.9.1
+	github.com/spf13/cast v1.3.1
 	github.com/spf13/cobra v1.0.0
 	github.com/spf13/viper v1.7.0
 	github.com/tendermint/go-amino v0.15.1

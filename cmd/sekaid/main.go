@@ -2,9 +2,17 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/KiraCore/cosmos-sdk/x/bank"
 	"io"
+	"os"
 
+	"github.com/spf13/cast"
+
+	banktypes "github.com/KiraCore/cosmos-sdk/x/bank/types"
+
+	"github.com/KiraCore/cosmos-sdk/x/auth/types"
+
+	"github.com/KiraCore/cosmos-sdk/client"
+	"github.com/KiraCore/cosmos-sdk/simapp"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
@@ -23,47 +31,56 @@ import (
 	"github.com/KiraCore/cosmos-sdk/store"
 	sdk "github.com/KiraCore/cosmos-sdk/types"
 	genutilcli "github.com/KiraCore/cosmos-sdk/x/genutil/client/cli"
-	"github.com/KiraCore/cosmos-sdk/x/staking"
 )
 
 const flagInvCheckPeriod = "inv-check-period"
 
-var invCheckPeriod uint
+var (
+	invCheckPeriod uint
+	rootCmd        = &cobra.Command{
+		Use:   "sekaid",
+		Short: "Sekai Daemon (server)",
+		PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
+			if err := client.SetCmdClientContextHandler(initClientCtx, cmd); err != nil {
+				return err
+			}
+
+			return server.InterceptConfigsPreRunHandler(cmd)
+		},
+	}
+
+	encodingConfig = simapp.MakeEncodingConfig()
+	initClientCtx  = client.Context{}.
+			WithJSONMarshaler(encodingConfig.Marshaler).
+			WithTxConfig(encodingConfig.TxConfig).
+			WithCodec(encodingConfig.Amino).
+			WithInput(os.Stdin).
+			WithAccountRetriever(types.NewAccountRetriever(encodingConfig.Marshaler)).
+			WithBroadcastMode(flags.BroadcastBlock).
+			WithHomeDir(simapp.DefaultNodeHome)
+)
 
 func main() {
-	appCodec, cdc := app.MakeCodec()
-
 	config := sdk.GetConfig()
 	config.SetBech32PrefixForAccount(sdk.Bech32PrefixAccAddr, sdk.Bech32PrefixAccPub)
 	config.SetBech32PrefixForValidator(sdk.Bech32PrefixValAddr, sdk.Bech32PrefixValPub)
 	config.SetBech32PrefixForConsensusNode(sdk.Bech32PrefixConsAddr, sdk.Bech32PrefixConsPub)
 	config.Seal()
 
-	ctx := server.NewDefaultContext()
-	cobra.EnableCommandSorting = false
-	rootCmd := &cobra.Command{
-		Use:               "sekaid",
-		Short:             "Sekai Daemon (server)",
-		PersistentPreRunE: server.PersistentPreRunEFn(ctx),
-	}
-
-	rootCmd.AddCommand(genutilcli.InitCmd(ctx, cdc, app.ModuleBasics, app.DefaultNodeHome))
-	rootCmd.AddCommand(genutilcli.CollectGenTxsCmd(ctx, cdc, bank.GenesisBalancesIterator{}, app.DefaultNodeHome))
-	rootCmd.AddCommand(genutilcli.MigrateGenesisCmd(ctx, cdc))
 	rootCmd.AddCommand(
-		genutilcli.GenTxCmd(
-			ctx, cdc, app.ModuleBasics, staking.AppModuleBasic{},
-			bank.GenesisBalancesIterator{}, app.DefaultNodeHome, app.DefaultCLIHome,
-		),
+		genutilcli.InitCmd(app.ModuleBasics, app.DefaultNodeHome),
+		genutilcli.CollectGenTxsCmd(banktypes.GenesisBalancesIterator{}, app.DefaultNodeHome),
+		genutilcli.MigrateGenesisCmd(),
+		genutilcli.GenTxCmd(app.ModuleBasics, encodingConfig.TxConfig, banktypes.GenesisBalancesIterator{}, app.DefaultNodeHome),
+		genutilcli.ValidateGenesisCmd(app.ModuleBasics, encodingConfig.TxConfig),
+		AddGenesisAccountCmd(app.DefaultNodeHome),
+		cli.NewCompletionCmd(rootCmd, true),
+		testnetCmd(app.ModuleBasics, banktypes.GenesisBalancesIterator{}),
+		replayCmd(),
+		debug.Cmd(),
 	)
-	rootCmd.AddCommand(genutilcli.ValidateGenesisCmd(ctx, cdc, app.ModuleBasics))
-	rootCmd.AddCommand(AddGenesisAccountCmd(ctx, cdc, appCodec, app.DefaultNodeHome, app.DefaultCLIHome))
-	rootCmd.AddCommand(flags.NewCompletionCmd(rootCmd, true))
-	rootCmd.AddCommand(testnetCmd(ctx, cdc, app.ModuleBasics, bank.GenesisBalancesIterator{}))
-	rootCmd.AddCommand(replayCmd())
-	rootCmd.AddCommand(debug.Cmd(cdc))
 
-	server.AddCommands(ctx, cdc, rootCmd, newApp, exportAppStateAndTMValidators)
+	server.AddCommands(rootCmd, newApp, exportAppStateAndTMValidators)
 
 	// prepare and add flags
 	executor := cli.PrepareBaseCmd(rootCmd, "GA", app.DefaultNodeHome)
@@ -75,7 +92,7 @@ func main() {
 	}
 }
 
-func newApp(logger log.Logger, db dbm.DB, traceStore io.Writer) abci.Application {
+func newApp(logger log.Logger, db dbm.DB, traceStore io.Writer, appOpts server.AppOptions) server.Application {
 	var cache sdk.MultiStorePersistentCache
 
 	if viper.GetBool(server.FlagInterBlockCache) {
@@ -87,14 +104,20 @@ func newApp(logger log.Logger, db dbm.DB, traceStore io.Writer) abci.Application
 		skipUpgradeHeights[int64(h)] = true
 	}
 
+	pruningOpts, err := server.GetPruningOptionsFromFlags(appOpts)
+	if err != nil {
+		panic(err)
+	}
+
 	return app.NewInitApp(
 		logger, db, traceStore, true, invCheckPeriod, skipUpgradeHeights,
 		viper.GetString(flags.FlagHome),
-		baseapp.SetPruning(store.NewPruningOptionsFromString(viper.GetString("pruning"))),
+		baseapp.SetPruning(pruningOpts),
 		baseapp.SetMinGasPrices(viper.GetString(server.FlagMinGasPrices)),
 		baseapp.SetHaltHeight(viper.GetUint64(server.FlagHaltHeight)),
 		baseapp.SetHaltTime(viper.GetUint64(server.FlagHaltTime)),
 		baseapp.SetInterBlockCache(cache),
+		baseapp.SetTrace(cast.ToBool(appOpts.Get(server.FlagTrace))),
 	)
 }
 
@@ -115,4 +138,3 @@ func exportAppStateAndTMValidators(
 	sekaiapp := app.NewInitApp(logger, db, traceStore, true, uint(1), map[int64]bool{}, "")
 	return sekaiapp.ExportAppStateAndValidators(forZeroHeight, jailWhiteList)
 }
-

@@ -2,13 +2,14 @@ package listOrders
 
 import (
 	"fmt"
-	"github.com/KiraCore/cosmos-sdk/client/context"
+	"net/http"
+
+	"github.com/KiraCore/cosmos-sdk/client"
 	"github.com/KiraCore/cosmos-sdk/types/rest"
 	"github.com/gorilla/mux"
-	"net/http"
 )
 
-func GetOrders(cliCtx context.CLIContext) http.HandlerFunc {
+func GetOrders(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		id := vars["id"]

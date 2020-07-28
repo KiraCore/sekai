@@ -3,6 +3,8 @@ package kiraHub
 import (
 	"encoding/json"
 
+	"github.com/KiraCore/cosmos-sdk/codec/types"
+
 	"github.com/KiraCore/cosmos-sdk/client"
 
 	"github.com/gorilla/mux"
@@ -24,31 +26,41 @@ var (
 type AppModuleBasic struct {
 }
 
+func (b AppModuleBasic) RegisterInterfaces(registry types.InterfaceRegistry) {
+	panic("implement me")
+}
+
 func (AppModuleBasic) Name() string {
 	return constants.ModuleName
 }
+
 func (AppModuleBasic) RegisterCodec(codec *codec.Codec) {
 	RegisterCodec(codec)
 }
+
 func (AppModuleBasic) DefaultGenesis(jsonMarshaler codec.JSONMarshaler) json.RawMessage {
 	return jsonMarshaler.MustMarshalJSON(DefaultGenesisState())
 }
-func (AppModuleBasic) ValidateGenesis(jsonMarshaler codec.JSONMarshaler, rawMessage json.RawMessage) error {
+
+func (AppModuleBasic) RegisterRESTRoutes(cliContext client.Context, router *mux.Router) {
+	RegisterRESTRoutes(cliContext, router)
+}
+
+func (b AppModuleBasic) ValidateGenesis(marshaler codec.JSONMarshaler, config client.TxEncodingConfig, message json.RawMessage) error {
 	var genesisState GenesisState
-	Error := jsonMarshaler.UnmarshalJSON(rawMessage, &genesisState)
+	Error := marshaler.UnmarshalJSON(message, &genesisState)
 	if Error != nil {
 		return Error
 	}
 	return ValidateGenesis(genesisState)
 }
-func (AppModuleBasic) RegisterRESTRoutes(cliContext client.Context, router *mux.Router) {
-	RegisterRESTRoutes(cliContext, router)
+
+func (AppModuleBasic) GetTxCmd() *cobra.Command {
+	panic("implement me")
 }
-func (AppModuleBasic) GetTxCmd(codec *codec.Codec) *cobra.Command {
-	return GetCLIRootTransactionCommand(codec)
-}
-func (AppModuleBasic) GetQueryCmd(codec *codec.Codec) *cobra.Command {
-	return GetCLIRootQueryCommand(codec)
+
+func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
+	panic("implement me")
 }
 
 type AppModule struct {
@@ -62,10 +74,36 @@ func NewAppModule(keeper Keeper) AppModule {
 func (AppModule) Name() string {
 	return ModuleName
 }
-func (appModule AppModule) RegisterInvariants(_ sdkTypes.InvariantRegistry) {}
-func (AppModule) Route() string {
-	return TransactionRoute
+func (appModule AppModule) RegisterInterfaces(registry types.InterfaceRegistry) {
+	panic("implement me")
 }
+
+func (appModule AppModule) ValidateGenesis(marshaler codec.JSONMarshaler, config client.TxEncodingConfig, message json.RawMessage) error {
+	panic("implement me")
+}
+
+func (appModule AppModule) GetTxCmd() *cobra.Command {
+	panic("implement me")
+}
+
+func (appModule AppModule) GetQueryCmd() *cobra.Command {
+	panic("implement me")
+}
+
+func (appModule AppModule) Route() sdkTypes.Route {
+	return sdkTypes.NewRoute(ModuleName, NewHandler(appModule.keeper))
+}
+
+func (appModule AppModule) LegacyQuerierHandler(marshaler codec.JSONMarshaler) sdkTypes.Querier {
+	panic("implement me")
+}
+
+func (appModule AppModule) RegisterQueryService(g interface{}) {
+	panic("implement me")
+}
+
+func (appModule AppModule) RegisterInvariants(_ sdkTypes.InvariantRegistry) {}
+
 func (appModule AppModule) NewHandler() sdkTypes.Handler {
 	return NewHandler(appModule.keeper)
 }
