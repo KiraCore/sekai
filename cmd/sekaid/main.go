@@ -32,6 +32,7 @@ import (
 	"github.com/KiraCore/cosmos-sdk/client/debug"
 	"github.com/KiraCore/cosmos-sdk/client/flags"
 	"github.com/KiraCore/cosmos-sdk/server"
+	servertypes "github.com/KiraCore/cosmos-sdk/server/types"
 	"github.com/KiraCore/cosmos-sdk/store"
 	sdk "github.com/KiraCore/cosmos-sdk/types"
 	authclient "github.com/KiraCore/cosmos-sdk/x/auth/client"
@@ -153,15 +154,15 @@ func txCommand() *cobra.Command {
 	return cmd
 }
 
-func newApp(logger log.Logger, db dbm.DB, traceStore io.Writer, appOpts server.AppOptions) server.Application {
+func newApp(logger log.Logger, db dbm.DB, traceStore io.Writer, appOpts servertypes.AppOptions) servertypes.Application {
 	var cache sdk.MultiStorePersistentCache
 
-	if viper.GetBool(server.FlagInterBlockCache) {
+	if cast.ToBool(appOpts.Get(server.FlagInterBlockCache)) {
 		cache = store.NewCommitKVStoreCacheManager()
 	}
 
 	skipUpgradeHeights := make(map[int64]bool)
-	for _, h := range viper.GetIntSlice(server.FlagUnsafeSkipUpgrades) {
+	for _, h := range cast.ToIntSlice(appOpts.Get(server.FlagUnsafeSkipUpgrades)) {
 		skipUpgradeHeights[int64(h)] = true
 	}
 
@@ -172,7 +173,7 @@ func newApp(logger log.Logger, db dbm.DB, traceStore io.Writer, appOpts server.A
 
 	return app.NewInitApp(
 		logger, db, traceStore, true, invCheckPeriod, skipUpgradeHeights,
-		viper.GetString(flags.FlagHome),
+		cast.ToString(appOpts.Get(flags.FlagHome)),
 		baseapp.SetPruning(pruningOpts),
 		baseapp.SetMinGasPrices(viper.GetString(server.FlagMinGasPrices)),
 		baseapp.SetHaltHeight(viper.GetUint64(server.FlagHaltHeight)),
