@@ -172,8 +172,8 @@ func newApp(logger log.Logger, db dbm.DB, traceStore io.Writer, appOpts serverty
 	}
 
 	return app.NewInitApp(
-		logger, db, traceStore, true, invCheckPeriod, skipUpgradeHeights,
-		cast.ToString(appOpts.Get(flags.FlagHome)),
+		logger, db, traceStore, true, skipUpgradeHeights, cast.ToString(appOpts.Get(flags.FlagHome)),
+		invCheckPeriod,
 		baseapp.SetPruning(pruningOpts),
 		baseapp.SetMinGasPrices(viper.GetString(server.FlagMinGasPrices)),
 		baseapp.SetHaltHeight(viper.GetUint64(server.FlagHaltHeight)),
@@ -186,17 +186,16 @@ func newApp(logger log.Logger, db dbm.DB, traceStore io.Writer, appOpts serverty
 func exportAppStateAndTMValidators(
 	logger log.Logger, db dbm.DB, traceStore io.Writer, height int64, forZeroHeight bool, jailWhiteList []string,
 ) (json.RawMessage, []tmtypes.GenesisValidator, *abci.ConsensusParams, error) {
-
+	var simApp *app.SekaiApp
 	if height != -1 {
-		sekaiapp := app.NewInitApp(logger, db, traceStore, false, uint(1), map[int64]bool{}, "")
-		err := sekaiapp.LoadHeight(height)
-		if err != nil {
+		simApp = app.NewInitApp(logger, db, traceStore, false, map[int64]bool{}, "", uint(1))
+
+		if err := simApp.LoadHeight(height); err != nil {
 			return nil, nil, nil, err
 		}
-
-		return sekaiapp.ExportAppStateAndValidators(forZeroHeight, jailWhiteList)
+	} else {
+		simApp = app.NewInitApp(logger, db, traceStore, true, map[int64]bool{}, "", uint(1))
 	}
 
-	sekaiapp := app.NewInitApp(logger, db, traceStore, true, uint(1), map[int64]bool{}, "")
-	return sekaiapp.ExportAppStateAndValidators(forZeroHeight, jailWhiteList)
+	return simApp.ExportAppStateAndValidators(forZeroHeight, jailWhiteList)
 }

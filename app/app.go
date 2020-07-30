@@ -5,6 +5,10 @@ import (
 	"io"
 	"os"
 
+	"github.com/KiraCore/cosmos-sdk/testutil/testdata"
+
+	"github.com/KiraCore/cosmos-sdk/codec/types"
+
 	"github.com/KiraCore/cosmos-sdk/client/rpc"
 	"github.com/KiraCore/cosmos-sdk/server/api"
 	authrest "github.com/KiraCore/cosmos-sdk/x/auth/client/rest"
@@ -124,7 +128,9 @@ var (
 // NewApp extended ABCI application
 type SekaiApp struct {
 	*bam.BaseApp
-	cdc *codec.Codec
+	cdc               *codec.Codec
+	appCodec          codec.Marshaler
+	interfaceRegistry types.InterfaceRegistry
 
 	invCheckPeriod uint
 
@@ -163,12 +169,9 @@ type SekaiApp struct {
 // verify app interface at compile time
 var _ simapp.App = (*SekaiApp)(nil)
 
-// NewhubApp is a constructor function for hubApp
 func NewInitApp(
-	logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest bool,
-	invCheckPeriod uint, skipUpgradeHeights map[int64]bool, home string,
-	baseAppOptions ...func(*bam.BaseApp),
-
+	logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest bool, skipUpgradeHeights map[int64]bool,
+	home string, invCheckPeriod uint, baseAppOptions ...func(*bam.BaseApp),
 ) *SekaiApp {
 	// TODO: Remove cdc in favor of appCodec once all modules are migrated.
 	encodingConfig := MakeEncodingConfig()
@@ -193,12 +196,14 @@ func NewInitApp(
 
 	// Here you initialize your application with the store keys it requires
 	app := &SekaiApp{
-		BaseApp:        bApp,
-		cdc:            cdc,
-		invCheckPeriod: invCheckPeriod,
-		keys:           keys,
-		tKeys:          tKeys,
-		memKeys:        memKeys,
+		BaseApp:           bApp,
+		cdc:               cdc,
+		appCodec:          appCodec,
+		interfaceRegistry: interfaceRegistry,
+		invCheckPeriod:    invCheckPeriod,
+		keys:              keys,
+		tKeys:             tKeys,
+		memKeys:           memKeys,
 	}
 
 	app.paramsKeeper = initParamsKeeper(appCodec, keys[paramstypes.StoreKey], tKeys[paramstypes.TStoreKey])
@@ -307,9 +312,11 @@ func NewInitApp(
 	)
 	app.mm.SetOrderEndBlockers(crisistypes.ModuleName, govtypes.ModuleName, stakingtypes.ModuleName)
 
-	// Sets the order of Genesis - Order matters, genutil is to always come last
-	// NOTE: The genutils module must occur after staking so that pools are
+	// NOTE: The genutils moodule must occur after staking so that pools are
 	// properly initialized with tokens from genesis accounts.
+	// NOTE: Capability module must occur first so that it can initialize any capabilities
+	// so that other modules that want to create or claim capabilities afterwards in InitChain
+	// can do so safely.
 	app.mm.SetOrderInitGenesis(
 		capabilitytypes.ModuleName, authtypes.ModuleName, distrtypes.ModuleName, stakingtypes.ModuleName, banktypes.ModuleName,
 		slashingtypes.ModuleName, govtypes.ModuleName, crisistypes.ModuleName,
@@ -318,7 +325,15 @@ func NewInitApp(
 
 	app.mm.RegisterInvariants(&app.crisisKeeper)
 	app.mm.RegisterRoutes(app.Router(), app.QueryRouter(), codec.NewAminoCodec(encodingConfig.Amino))
+	app.mm.RegisterQueryServices(app.GRPCQueryRouter())
 
+	// add test gRPC service for testing gRPC queries in isolation
+	testdata.RegisterTestServiceServer(app.GRPCQueryRouter(), testdata.TestServiceImpl{})
+
+	// create the simulation manager and define the order of the modules for deterministic simulations
+	//
+	// NOTE: this is not required apps that don't use the simulator for fuzz testing
+	// transactions
 	app.sm = module.NewSimulationManager(
 		auth.NewAppModule(appCodec, app.accountKeeper),
 		bank.NewAppModule(appCodec, app.bankKeeper, app.accountKeeper),
@@ -333,6 +348,11 @@ func NewInitApp(
 
 	app.sm.RegisterStoreDecoders()
 
+	// initialize stores
+	app.MountKVStores(keys)
+	app.MountTransientStores(tKeys)
+	app.MountMemoryStores(memKeys)
+
 	// initialize BaseApp
 	app.SetInitChainer(app.InitChainer)
 	app.SetBeginBlocker(app.BeginBlocker)
@@ -344,17 +364,17 @@ func NewInitApp(
 	)
 	app.SetEndBlocker(app.EndBlocker)
 
-	// initialize stores
-	app.MountKVStores(keys)
-	app.MountTransientStores(tKeys)
-	app.MountMemoryStores(memKeys)
-
 	if loadLatest {
 		if err := app.LoadLatestVersion(); err != nil {
 			tmos.Exit(err.Error())
 		}
 	}
 
+	// Initialize and seal the capability keeper so all persistent capabilities
+	// are loaded in-memory and prevent any further modules from creating scoped
+	// sub-keepers.
+	// This must be done during creation of baseapp rather than in InitChain so
+	// that in-memory capabilities get regenerated on app restart
 	ctx := app.BaseApp.NewUncachedContext(true, abci.Header{})
 	app.capabilityKeeper.InitializeAndSeal(ctx)
 
