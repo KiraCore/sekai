@@ -3,6 +3,7 @@ package cli
 import (
 	"github.com/KiraCore/cosmos-sdk/client"
 	"github.com/KiraCore/cosmos-sdk/client/tx"
+	"github.com/KiraCore/cosmos-sdk/types"
 	types2 "github.com/KiraCore/sekai/x/staking/types"
 	"github.com/spf13/cobra"
 )
@@ -28,7 +29,25 @@ func GetTxClaimValidatorCmd() *cobra.Command {
 				return err
 			}
 
-			msg := types2.NewMsgClaimValidator()
+			moniker, _ := cmd.Flags().GetString(flagMoniker)
+			website, _ := cmd.Flags().GetString(flagWebsite)
+			social, _ := cmd.Flags().GetString(flagSocial)
+			identity, _ := cmd.Flags().GetString(flagIdentity)
+			comission, _ := cmd.Flags().GetString(flagComission)
+			valKeyStr, _ := cmd.Flags().GetString(flagValKey)
+			pubKeyStr, _ := cmd.Flags().GetString(flagPubKey)
+
+			comm, err := types.NewDecFromStr(comission)
+			val, err := types.ValAddressFromBech32(valKeyStr)
+			if err != nil {
+				return err
+			}
+			pub, err := types.AccAddressFromBech32(pubKeyStr)
+			if err != nil {
+				return err
+			}
+
+			msg := types2.NewMsgClaimValidator(moniker, website, social, identity, comm, val, pub)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -37,13 +56,13 @@ func GetTxClaimValidatorCmd() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().String(flagMoniker, "", "")
-	cmd.Flags().String(flagWebsite, "", "")
-	cmd.Flags().String(flagSocial, "", "")
-	cmd.Flags().String(flagIdentity, "", "")
-	cmd.Flags().String(flagComission, "", "")
-	cmd.Flags().String(flagValKey, "", "")
-	cmd.Flags().String(flagPubKey, "", "")
+	cmd.Flags().String(flagMoniker, "", "the Moniker")
+	cmd.Flags().String(flagWebsite, "", "the Website")
+	cmd.Flags().String(flagSocial, "", "the social")
+	cmd.Flags().String(flagIdentity, "", "the Identity")
+	cmd.Flags().String(flagComission, "", "the commission")
+	cmd.Flags().String(flagValKey, "", "the validator key")
+	cmd.Flags().String(flagPubKey, "", "the public key")
 
 	return cmd
 }
