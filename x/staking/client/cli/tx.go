@@ -1,7 +1,9 @@
 package cli
 
 import (
+	"github.com/KiraCore/cosmos-sdk/client"
 	"github.com/KiraCore/cosmos-sdk/client/tx"
+	types2 "github.com/KiraCore/sekai/x/staking/types"
 	"github.com/spf13/cobra"
 )
 
@@ -20,8 +22,18 @@ func GetTxClaimValidatorCmd() *cobra.Command {
 		Use:   "claim-validator-seat",
 		Short: "Claim validator seat to become a Validator",
 		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			if err != nil {
+				return err
+			}
 
-			return tx.GenerateOrBroadcastTx(cliCtx, txf, msg)
+			msg := types2.NewMsgClaimValidator()
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
 
