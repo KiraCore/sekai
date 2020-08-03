@@ -47,8 +47,8 @@ func GetTxClaimValidatorCmd() *cobra.Command {
 				return err
 			}
 
-			msg := types2.NewMsgClaimValidator(moniker, website, social, identity, comm, val, pub)
-			if err := msg.ValidateBasic(); err != nil {
+			msg, err := types2.NewMsgClaimValidator(moniker, website, social, identity, comm, val, pub)
+			if err != nil {
 				return err
 			}
 
