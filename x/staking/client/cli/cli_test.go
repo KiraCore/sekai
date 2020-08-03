@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/KiraCore/cosmos-sdk/client/flags"
+
 	"github.com/KiraCore/cosmos-sdk/client"
 	"github.com/KiraCore/cosmos-sdk/testutil"
 
@@ -29,6 +31,8 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.T().Log("setting up integration test suite")
 
 	cfg := network.DefaultConfig()
+	//cfg.Codec = app.MakeEncodingConfig().Marshaler
+
 	cfg.NumValidators = 1
 
 	cfg.AppConstructor = func(val network.Validator) servertypes.Application {
@@ -71,6 +75,7 @@ func (s *IntegrationTestSuite) TestClaimValidatorSet() {
 			fmt.Sprintf("--%s=%s", flagComission, "10"),
 			fmt.Sprintf("--%s=%s", flagPubKey, val.Address.String()),
 			fmt.Sprintf("--%s=%s", flagValKey, val.ValAddress.String()),
+			fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Moniker),
 		},
 	)
 
