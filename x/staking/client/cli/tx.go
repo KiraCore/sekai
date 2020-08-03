@@ -1,6 +1,10 @@
 package cli
 
 import (
+	"fmt"
+
+	"github.com/KiraCore/cosmos-sdk/client/flags"
+
 	"github.com/KiraCore/cosmos-sdk/client"
 	"github.com/KiraCore/cosmos-sdk/client/tx"
 	"github.com/KiraCore/cosmos-sdk/types"
@@ -49,7 +53,7 @@ func GetTxClaimValidatorCmd() *cobra.Command {
 
 			msg, err := types2.NewMsgClaimValidator(moniker, website, social, identity, comm, val, pub)
 			if err != nil {
-				return err
+				return fmt.Errorf("error creating tx: %w", err)
 			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
@@ -63,6 +67,9 @@ func GetTxClaimValidatorCmd() *cobra.Command {
 	cmd.Flags().String(flagComission, "", "the commission")
 	cmd.Flags().String(flagValKey, "", "the validator key")
 	cmd.Flags().String(flagPubKey, "", "the public key")
+	flags.AddTxFlagsToCmd(cmd)
+
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
 }
