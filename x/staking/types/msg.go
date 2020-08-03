@@ -26,7 +26,15 @@ func NewMsgClaimValidator(
 	comission sdk.Dec,
 	valKey sdk.ValAddress,
 	pubKey sdk.AccAddress,
-) MsgClaimValidator {
+) (MsgClaimValidator, error) {
+	if valKey == nil {
+		return MsgClaimValidator{}, fmt.Errorf("validator not set")
+	}
+
+	if pubKey == nil {
+		return MsgClaimValidator{}, fmt.Errorf("public key not set")
+	}
+
 	return MsgClaimValidator{
 		Moniker:   moniker,
 		Website:   website,
@@ -35,7 +43,7 @@ func NewMsgClaimValidator(
 		Comission: comission,
 		ValKey:    valKey,
 		PubKey:    pubKey,
-	}
+	}, nil
 }
 
 func (m MsgClaimValidator) Route() string {
@@ -47,10 +55,6 @@ func (m MsgClaimValidator) Type() string {
 }
 
 func (m MsgClaimValidator) ValidateBasic() error {
-	if m.ValKey == nil {
-		return fmt.Errorf("validator not set")
-	}
-
 	return nil
 }
 
