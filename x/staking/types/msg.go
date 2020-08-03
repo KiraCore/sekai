@@ -1,6 +1,10 @@
 package types
 
-import sdk "github.com/KiraCore/cosmos-sdk/types"
+import (
+	"fmt"
+
+	sdk "github.com/KiraCore/cosmos-sdk/types"
+)
 
 var _ sdk.Msg = MsgClaimValidator{}
 
@@ -22,8 +26,8 @@ func NewMsgClaimValidator(
 	comission sdk.Dec,
 	valKey sdk.ValAddress,
 	pubKey sdk.AccAddress,
-) *MsgClaimValidator {
-	return &MsgClaimValidator{
+) MsgClaimValidator {
+	return MsgClaimValidator{
 		Moniker:   moniker,
 		Website:   website,
 		Social:    social,
@@ -43,7 +47,11 @@ func (m MsgClaimValidator) Type() string {
 }
 
 func (m MsgClaimValidator) ValidateBasic() error {
-	panic("implement me")
+	if m.ValKey == nil {
+		return fmt.Errorf("validator not set")
+	}
+
+	return nil
 }
 
 func (m MsgClaimValidator) GetSignBytes() []byte {
@@ -52,7 +60,7 @@ func (m MsgClaimValidator) GetSignBytes() []byte {
 
 func (m MsgClaimValidator) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{
-		m.PubKey,
+		sdk.AccAddress(m.ValKey),
 	}
 }
 

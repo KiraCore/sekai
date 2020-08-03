@@ -4,8 +4,8 @@ import (
 	"github.com/KiraCore/cosmos-sdk/codec"
 	sdk "github.com/KiraCore/cosmos-sdk/types"
 	"github.com/KiraCore/cosmos-sdk/types/module"
-	"github.com/KiraCore/cosmos-sdk/x/auth"
 	"github.com/KiraCore/cosmos-sdk/x/staking"
+	stakingkeeper "github.com/KiraCore/cosmos-sdk/x/staking/keeper"
 	"github.com/KiraCore/cosmos-sdk/x/staking/types"
 	"github.com/KiraCore/sekai/x/staking/keeper"
 )
@@ -18,7 +18,7 @@ var (
 type AppModule struct {
 	staking.AppModule
 
-	stakingKeeper       staking.Keeper
+	stakingKeeper       stakingkeeper.Keeper
 	customStakingKeeper keeper.Keeper
 }
 
@@ -30,8 +30,8 @@ func (am AppModule) NewHandler() sdk.Handler {
 // NewAppModule returns a new Custom Staking module.
 func NewAppModule(
 	cdc codec.Marshaler,
-	keeper staking.Keeper,
-	ak auth.AccountKeeper,
+	keeper stakingkeeper.Keeper,
+	ak types.AccountKeeper,
 	bk types.BankKeeper,
 ) AppModule {
 	return AppModule{
