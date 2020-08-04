@@ -33,7 +33,7 @@ func (b AppModuleBasic) RegisterInterfaces(registry types2.InterfaceRegistry) {
 }
 
 func (b AppModuleBasic) DefaultGenesis(marshaler codec.JSONMarshaler) json.RawMessage {
-	panic("implement me")
+	return nil
 }
 
 func (b AppModuleBasic) ValidateGenesis(marshaler codec.JSONMarshaler, config client.TxEncodingConfig, message json.RawMessage) error {
