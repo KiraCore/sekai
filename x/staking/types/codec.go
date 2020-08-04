@@ -16,5 +16,5 @@ func init() {
 }
 
 func RegisterCodec(cdc *codec.Codec) {
-	cdc.RegisterConcrete(&MsgClaimValidator{}, "kiraHub/MsgClaimValidator", nil)
+	cdc.RegisterConcrete(MsgClaimValidator{}, "kiraHub/MsgClaimValidator", nil)
 }

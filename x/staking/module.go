@@ -1,7 +1,11 @@
 package staking
 
 import (
+	"encoding/json"
+
+	"github.com/KiraCore/cosmos-sdk/client"
 	"github.com/KiraCore/cosmos-sdk/codec"
+	types2 "github.com/KiraCore/cosmos-sdk/codec/types"
 	sdk "github.com/KiraCore/cosmos-sdk/types"
 	"github.com/KiraCore/cosmos-sdk/types/module"
 	"github.com/KiraCore/cosmos-sdk/x/staking"
@@ -9,6 +13,8 @@ import (
 	"github.com/KiraCore/cosmos-sdk/x/staking/types"
 	"github.com/KiraCore/sekai/x/staking/keeper"
 	cumstomtypes "github.com/KiraCore/sekai/x/staking/types"
+	"github.com/gorilla/mux"
+	"github.com/spf13/cobra"
 )
 
 var (
@@ -17,7 +23,32 @@ var (
 )
 
 type AppModuleBasic struct {
-	staking.AppModuleBasic
+}
+
+func (b AppModuleBasic) Name() string {
+	return cumstomtypes.ModuleName
+}
+
+func (b AppModuleBasic) RegisterInterfaces(registry types2.InterfaceRegistry) {
+}
+
+func (b AppModuleBasic) DefaultGenesis(marshaler codec.JSONMarshaler) json.RawMessage {
+	panic("implement me")
+}
+
+func (b AppModuleBasic) ValidateGenesis(marshaler codec.JSONMarshaler, config client.TxEncodingConfig, message json.RawMessage) error {
+	panic("implement me")
+}
+
+func (b AppModuleBasic) RegisterRESTRoutes(context client.Context, router *mux.Router) {
+}
+
+func (b AppModuleBasic) GetTxCmd() *cobra.Command {
+	panic("implement me")
+}
+
+func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
+	panic("implement me")
 }
 
 // RegisterCodec registers the staking module's types for the given codec.

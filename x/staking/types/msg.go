@@ -59,7 +59,8 @@ func (m MsgClaimValidator) ValidateBasic() error {
 }
 
 func (m MsgClaimValidator) GetSignBytes() []byte {
-	panic("implement me")
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
 }
 
 func (m MsgClaimValidator) GetSigners() []sdk.AccAddress {

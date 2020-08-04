@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/KiraCore/sekai/simapp"
+
 	"github.com/KiraCore/cosmos-sdk/client/flags"
 
 	"github.com/KiraCore/cosmos-sdk/client"
@@ -13,7 +15,6 @@ import (
 	"github.com/KiraCore/cosmos-sdk/baseapp"
 	servertypes "github.com/KiraCore/cosmos-sdk/server/types"
 	"github.com/KiraCore/cosmos-sdk/store/types"
-	"github.com/KiraCore/sekai/app"
 	"github.com/stretchr/testify/suite"
 	dbm "github.com/tendermint/tm-db"
 
@@ -31,12 +32,14 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.T().Log("setting up integration test suite")
 
 	cfg := network.DefaultConfig()
-	//cfg.Codec = app.MakeEncodingConfig().Marshaler
+	encodingConfig := simapp.MakeEncodingConfig()
+	cfg.Codec = encodingConfig.Marshaler
+	cfg.TxConfig = encodingConfig.TxConfig
 
 	cfg.NumValidators = 1
 
 	cfg.AppConstructor = func(val network.Validator) servertypes.Application {
-		return app.NewInitApp(
+		return simapp.NewSimApp(
 			val.Ctx.Logger, dbm.NewMemDB(), nil, true, make(map[int64]bool), val.Ctx.Config.RootDir, 0,
 			baseapp.SetPruning(types.NewPruningOptionsFromString(val.AppConfig.Pruning)),
 			baseapp.SetMinGasPrices(val.AppConfig.MinGasPrices),
@@ -76,6 +79,7 @@ func (s *IntegrationTestSuite) TestClaimValidatorSet() {
 			fmt.Sprintf("--%s=%s", flagPubKey, val.Address.String()),
 			fmt.Sprintf("--%s=%s", flagValKey, val.ValAddress.String()),
 			fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Moniker),
+			fmt.Sprintf("--%s", flags.FlagSkipConfirmation),
 		},
 	)
 
