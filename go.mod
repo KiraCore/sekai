@@ -3,7 +3,7 @@ module github.com/KiraCore/sekai
 go 1.14
 
 require (
-	github.com/KiraCore/cosmos-sdk v1.0.1-0.20200804084441-a967cf45f5dc
+	github.com/KiraCore/cosmos-sdk v1.0.1-0.20200805215229-a258ae25a9ad
 	github.com/asaskevich/govalidator v0.0.0-20200428143746-21a406dcc535
 	github.com/gibson042/canonicaljson-go v1.0.3 // indirect
 	github.com/gogo/protobuf v1.3.1

@@ -29,6 +29,8 @@ github.com/KiraCore/cosmos-sdk v1.0.1-0.20200730102649-a3add9fd156a h1:+xspvoeZL
 github.com/KiraCore/cosmos-sdk v1.0.1-0.20200730102649-a3add9fd156a/go.mod h1:M/M6QlVkVZl9VBpLncIQBDMKnujKVVtGZq/uQO6kXN8=
 github.com/KiraCore/cosmos-sdk v1.0.1-0.20200804084441-a967cf45f5dc h1:03L1BjwgRJ28FIgU9776AFeZgh8rZS8LiIzpnc7uKLY=
 github.com/KiraCore/cosmos-sdk v1.0.1-0.20200804084441-a967cf45f5dc/go.mod h1:YWEaVf47Z/89gG1e8/b+1y13uPLcbMkpqZ8Ul18TlfA=
+github.com/KiraCore/cosmos-sdk v1.0.1-0.20200805215229-a258ae25a9ad h1:kja8pAsu3x6Uq9lNFCjM5cOF0vEXroDobcXPgAT1SRg=
+github.com/KiraCore/cosmos-sdk v1.0.1-0.20200805215229-a258ae25a9ad/go.mod h1:YWEaVf47Z/89gG1e8/b+1y13uPLcbMkpqZ8Ul18TlfA=
 github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible/go.mod h1:r7JcOSlj0wfOMncg0iLm8Leh48TZaKVeNIfJntJ2wa0=
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
 github.com/Shopify/sarama v1.19.0/go.mod h1:FVkBWblsNy7DGZRfXLU0O9RCGt5g3g3yEuWXgklEdEo=
