@@ -6,7 +6,6 @@ COMMIT := $(shell git log -1 --format='%H')
 # TODO: Update the ldflags with the app, client & server names
 ldflags = -X github.com/KiraCore/cosmos-sdk/version.Name=sekai \
 	-X github.com/KiraCore/cosmos-sdk/version.ServerName=sekaid \
-	-X github.com/KiraCore/cosmos-sdk/version.ClientName=sekaicli \
 	-X github.com/KiraCore/cosmos-sdk/version.Version=$(VERSION) \
 	-X github.com/KiraCore/cosmos-sdk/version.Commit=$(COMMIT)
 
