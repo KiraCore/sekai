@@ -15,17 +15,17 @@ func TestMsgClaimValidator_ValidateBasic(t *testing.T) {
 
 	tests := []struct {
 		name        string
-		constructor func() (MsgClaimValidator, error)
+		constructor func() (*MsgClaimValidator, error)
 	}{
 		{
 			name: "nil val key",
-			constructor: func() (MsgClaimValidator, error) {
+			constructor: func() (*MsgClaimValidator, error) {
 				return NewMsgClaimValidator("me", "web", "social", "id", types.NewDec(10), nil, addr1)
 			},
 		},
 		{
 			name: "nil pub key",
-			constructor: func() (MsgClaimValidator, error) {
+			constructor: func() (*MsgClaimValidator, error) {
 				return NewMsgClaimValidator("me", "web", "social", "id", types.NewDec(10), valAddr1, nil)
 			},
 		},

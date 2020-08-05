@@ -1,7 +1,9 @@
-package staking
+package staking_test
 
 import (
 	"testing"
+
+	"github.com/KiraCore/sekai/x/staking"
 
 	"github.com/KiraCore/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
@@ -20,17 +22,18 @@ func TestNewHandler_MsgClaimValidator_HappyPath(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, abci.Header{})
 
-	handler := NewHandler(app.StakingKeeper, app.CustomStakingKeeper)
+	handler := staking.NewHandler(app.StakingKeeper, app.CustomStakingKeeper)
 
-	theMsg := types2.MsgClaimValidator{
-		Moniker:   "aMoniker",
-		Website:   "some-web.com",
-		Social:    "A Social",
-		Identity:  "My Identity",
-		Comission: types.NewDec(1234),
-		ValKey:    valAddr1,
-		PubKey:    addr1,
-	}
+	theMsg, err := types2.NewMsgClaimValidator(
+		"aMoniker",
+		"some-web.com",
+		"A Social",
+		"My Identity",
+		types.NewDec(1234),
+		valAddr1,
+		addr1,
+	)
+	require.NoError(t, err)
 
 	_, err = handler(ctx, theMsg)
 	require.NoError(t, err)
@@ -42,7 +45,7 @@ func TestNewHandler_MsgClaimValidator_HappyPath(t *testing.T) {
 	validatorIsEqualThanClaimMsg(t, val, theMsg)
 }
 
-func validatorIsEqualThanClaimMsg(t *testing.T, val types2.Validator, msg types2.MsgClaimValidator) {
+func validatorIsEqualThanClaimMsg(t *testing.T, val types2.Validator, msg *types2.MsgClaimValidator) {
 	require.Equal(t, msg.Moniker, val.Moniker)
 	require.Equal(t, msg.PubKey, val.PubKey)
 	require.Equal(t, msg.ValKey, val.ValKey)
