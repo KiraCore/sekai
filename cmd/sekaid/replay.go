@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/KiraCore/cosmos-sdk/store/types"
+
 	cpm "github.com/otiai10/copy"
 	"github.com/spf13/cobra"
 
@@ -21,7 +23,6 @@ import (
 
 	"github.com/KiraCore/cosmos-sdk/baseapp"
 	"github.com/KiraCore/cosmos-sdk/server"
-	"github.com/KiraCore/cosmos-sdk/store"
 	sdk "github.com/KiraCore/cosmos-sdk/types"
 )
 
@@ -95,8 +96,8 @@ func replayTxs(rootDir string) error {
 	// Application
 	fmt.Fprintln(os.Stderr, "Creating application")
 	sekaiapp := app.NewInitApp(
-		ctx.Logger, appDB, traceStoreWriter, true, uint(1), map[int64]bool{}, "",
-		baseapp.SetPruning(store.PruneEverything), // nothing
+		ctx.Logger, appDB, traceStoreWriter, true, map[int64]bool{}, "", uint(1),
+		baseapp.SetPruning(types.PruneEverything), // nothing
 	)
 
 	// Genesis

@@ -1,12 +1,14 @@
 package createOrderBook
 
 import (
-	"github.com/KiraCore/cosmos-sdk/client/context"
+	"net/http"
+
+	"github.com/asaskevich/govalidator"
+
+	. "github.com/KiraCore/cosmos-sdk/client"
 	sdk "github.com/KiraCore/cosmos-sdk/types"
 	"github.com/KiraCore/cosmos-sdk/types/rest"
 	"github.com/KiraCore/cosmos-sdk/x/auth/client"
-	"github.com/asaskevich/govalidator"
-	"net/http"
 )
 
 type Request struct {
@@ -17,7 +19,7 @@ type Request struct {
 	Curator  string       `json:"curator"  yaml:"curator"  valid:"required~curator"`
 }
 
-func RestRequestHandler(cliContext context.CLIContext) http.HandlerFunc {
+func RestRequestHandler(cliContext Context) http.HandlerFunc {
 	return func(responseWriter http.ResponseWriter, httpRequest *http.Request) {
 		var request Request
 		if !rest.ReadRESTReq(responseWriter, httpRequest, cliContext.Codec, &request) {
@@ -43,10 +45,10 @@ func RestRequestHandler(cliContext context.CLIContext) http.HandlerFunc {
 		}
 
 		var message = Message{
-			Base: request.Base,
-			Quote: request.Quote,
+			Base:     request.Base,
+			Quote:    request.Quote,
 			Mnemonic: request.Mnemonic,
-			Curator: curator,
+			Curator:  curator,
 		}
 
 		client.WriteGenerateStdTxResponse(responseWriter, cliContext, request.BaseReq, []sdk.Msg{message})

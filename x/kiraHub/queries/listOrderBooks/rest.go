@@ -2,13 +2,13 @@ package listOrderBooks
 
 import (
 	"fmt"
-	"github.com/KiraCore/cosmos-sdk/client/context"
+	"github.com/KiraCore/cosmos-sdk/client"
 	"github.com/KiraCore/cosmos-sdk/types/rest"
 	"github.com/gorilla/mux"
 	"net/http"
 )
 
-func GetOrderBooks(cliCtx context.CLIContext) http.HandlerFunc {
+func GetOrderBooks(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		by := vars["by"]
@@ -24,7 +24,7 @@ func GetOrderBooks(cliCtx context.CLIContext) http.HandlerFunc {
 	}
 }
 
-func GetOrderBooksByTP(cliCtx context.CLIContext) http.HandlerFunc {
+func GetOrderBooksByTP(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		base := vars["base"]
