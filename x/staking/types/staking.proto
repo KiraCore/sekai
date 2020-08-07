@@ -1,0 +1,28 @@
+syntax = "proto3";
+package cosmos.bank;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/KiraCore/cosmos-sdk/x/staking/types";
+
+message MsgClaimValidator {
+  option (gogoproto.equal)            = true;
+
+  string moniker = 1;
+  string website = 2;
+  string social = 3;
+  string identity = 4;
+  string commission = 5 [
+    (gogoproto.customtype) = "github.com/KiraCore/cosmos-sdk/types.Dec",
+    (gogoproto.moretags)   = "yaml:\"commission\""
+  ];
+  bytes val_key = 6 [
+    (gogoproto.casttype) = "github.com/KiraCore/cosmos-sdk/types.ValAddress",
+    (gogoproto.moretags) = "yaml:\"val_key\""
+  ];
+  bytes pub_key = 7 [
+    (gogoproto.casttype) = "github.com/KiraCore/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"pub_key\""
+  ];
+}
+

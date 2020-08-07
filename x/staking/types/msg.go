@@ -6,17 +6,7 @@ import (
 	sdk "github.com/KiraCore/cosmos-sdk/types"
 )
 
-var _ sdk.Msg = MsgClaimValidator{}
-
-type MsgClaimValidator struct {
-	Moniker   string // 64 chars max
-	Website   string // 64 chars max
-	Social    string // 64 chars max
-	Identity  string // 64 chars max
-	Comission sdk.Dec
-	ValKey    sdk.ValAddress
-	PubKey    sdk.AccAddress
-}
+var _ sdk.Msg = &MsgClaimValidator{}
 
 func NewMsgClaimValidator(
 	moniker string,
@@ -36,13 +26,13 @@ func NewMsgClaimValidator(
 	}
 
 	return &MsgClaimValidator{
-		Moniker:   moniker,
-		Website:   website,
-		Social:    social,
-		Identity:  identity,
-		Comission: comission,
-		ValKey:    valKey,
-		PubKey:    pubKey,
+		Moniker:    moniker,
+		Website:    website,
+		Social:     social,
+		Identity:   identity,
+		Commission: &comission,
+		ValKey:     valKey,
+		PubKey:     pubKey,
 	}, nil
 }
 
@@ -67,16 +57,4 @@ func (m MsgClaimValidator) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{
 		sdk.AccAddress(m.ValKey),
 	}
-}
-
-func (m MsgClaimValidator) Reset() {
-	panic("implement me")
-}
-
-func (m MsgClaimValidator) String() string {
-	panic("implement me")
-}
-
-func (m MsgClaimValidator) ProtoMessage() {
-	panic("implement me")
 }
