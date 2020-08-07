@@ -30,7 +30,7 @@ func NewMsgClaimValidator(
 		Website:    website,
 		Social:     social,
 		Identity:   identity,
-		Commission: &comission,
+		Commission: comission,
 		ValKey:     valKey,
 		PubKey:     pubKey,
 	}, nil

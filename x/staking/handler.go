@@ -23,7 +23,7 @@ func NewHandler(k stakingkeeper.Keeper, ck customkeeper.Keeper) sdk.Handler {
 }
 
 func handleMsgClaimValidator(ctx sdk.Context, k customkeeper.Keeper, msg *types.MsgClaimValidator) (*sdk.Result, error) {
-	validator, err := types.NewValidator(msg.Moniker, msg.Website, msg.Social, msg.Identity, msg.Comission, msg.ValKey, msg.PubKey)
+	validator, err := types.NewValidator(msg.Moniker, msg.Website, msg.Social, msg.Identity, msg.Commission, msg.ValKey, msg.PubKey)
 	if err != nil {
 		return nil, err
 	}
