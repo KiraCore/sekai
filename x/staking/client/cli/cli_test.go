@@ -82,6 +82,7 @@ func (s *IntegrationTestSuite) TestClaimValidatorSet() {
 			fmt.Sprintf("--%s=%s", flagValKey, val.ValAddress.String()),
 			fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Moniker),
 			fmt.Sprintf("--%s", flags.FlagSkipConfirmation),
+			fmt.Sprintf("--%s=%s", flags.FlagFees, "2stake"),
 		},
 	)
 
