@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/KiraCore/sekai/app"
+
 	"github.com/KiraCore/sekai/simapp"
 
 	"github.com/KiraCore/cosmos-sdk/client/flags"
@@ -39,7 +41,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	cfg.NumValidators = 1
 
 	cfg.AppConstructor = func(val network.Validator) servertypes.Application {
-		return simapp.NewSimApp(
+		return app.NewInitApp(
 			val.Ctx.Logger, dbm.NewMemDB(), nil, true, make(map[int64]bool), val.Ctx.Config.RootDir, 0,
 			baseapp.SetPruning(types.NewPruningOptionsFromString(val.AppConfig.Pruning)),
 			baseapp.SetMinGasPrices(val.AppConfig.MinGasPrices),
@@ -85,6 +87,14 @@ func (s *IntegrationTestSuite) TestClaimValidatorSet() {
 
 	err := cmd.ExecuteContext(ctx)
 	s.Require().NoError(err)
+
+	height, err := s.network.LatestHeight()
+	s.Require().NoError(err)
+
+	_, err = s.network.WaitForHeight(height + 1)
+	s.Require().NoError(err)
+
+	s.T().Log(out.String())
 }
 
 func TestIntegrationTestSuite(t *testing.T) {

@@ -5,6 +5,8 @@ import (
 	"io"
 	"os"
 
+	customstaking "github.com/KiraCore/sekai/x/staking"
+
 	"github.com/KiraCore/cosmos-sdk/testutil/testdata"
 
 	"github.com/KiraCore/cosmos-sdk/codec/types"
@@ -106,7 +108,7 @@ var (
 		upgrade.AppModuleBasic{},
 		evidence.AppModuleBasic{},
 
-		//customstaking.AppModuleBasic{},
+		customstaking.AppModuleBasic{},
 		//kiraHub.AppModuleBasic{},
 	)
 
@@ -302,6 +304,7 @@ func NewInitApp(
 		ibc.NewAppModule(app.ibcKeeper),
 		params.NewAppModule(app.paramsKeeper),
 		transferModule,
+		customstaking.NewAppModule(appCodec, app.stakingKeeper, app.accountKeeper, app.bankKeeper),
 	)
 	// During begin block slashing happens after distr.BeginBlocker so that
 	// there is nothing left over in the validator fee pool, so as to keep the
