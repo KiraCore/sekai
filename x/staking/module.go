@@ -3,6 +3,8 @@ package staking
 import (
 	"encoding/json"
 
+	"github.com/KiraCore/sekai/x/staking/client/cli"
+
 	"github.com/KiraCore/cosmos-sdk/client"
 	"github.com/KiraCore/cosmos-sdk/codec"
 	types2 "github.com/KiraCore/cosmos-sdk/codec/types"
@@ -38,18 +40,18 @@ func (b AppModuleBasic) DefaultGenesis(marshaler codec.JSONMarshaler) json.RawMe
 }
 
 func (b AppModuleBasic) ValidateGenesis(marshaler codec.JSONMarshaler, config client.TxEncodingConfig, message json.RawMessage) error {
-	panic("implement me")
+	return nil
 }
 
 func (b AppModuleBasic) RegisterRESTRoutes(context client.Context, router *mux.Router) {
 }
 
 func (b AppModuleBasic) GetTxCmd() *cobra.Command {
-	panic("implement me")
+	return cli.GetTxClaimValidatorCmd()
 }
 
 func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
-	panic("implement me")
+	return nil
 }
 
 // RegisterCodec registers the staking module's types for the given codec.

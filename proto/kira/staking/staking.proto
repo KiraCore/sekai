@@ -1,5 +1,5 @@
 syntax = "proto3";
-package cosmos.staking;
+package kira.staking;
 
 import "gogoproto/gogo.proto";
 

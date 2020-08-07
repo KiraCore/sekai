@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"testing"
+	"time"
 
 	"github.com/KiraCore/sekai/app"
 
@@ -96,6 +97,8 @@ func (s *IntegrationTestSuite) TestClaimValidatorSet() {
 	s.Require().NoError(err)
 
 	s.T().Log(out.String())
+
+	time.Sleep(time.Second * 10)
 }
 
 func TestIntegrationTestSuite(t *testing.T) {
