@@ -30,5 +30,5 @@ lint:
 	@go mod verify
 
 proto-gen:
-	./scripts/protocgen.sh
+	@./scripts/protocgen.sh
 
