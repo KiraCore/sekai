@@ -1,0 +1,9 @@
+syntax = "proto3";
+package cosmos.bank;
+
+option go_package = "x/staking/types";
+
+message MsgClaimValidator {
+  int32 test = 1;
+}
+

@@ -8,7 +8,7 @@ import (
 	"github.com/KiraCore/cosmos-sdk/client"
 	"github.com/KiraCore/cosmos-sdk/client/tx"
 	"github.com/KiraCore/cosmos-sdk/types"
-	types2 "github.com/KiraCore/sekai/x/staking/types"
+	cumstomtypes "github.com/KiraCore/sekai/x/staking/types"
 	"github.com/spf13/cobra"
 )
 
@@ -51,7 +51,7 @@ func GetTxClaimValidatorCmd() *cobra.Command {
 				return err
 			}
 
-			msg, err := types2.NewMsgClaimValidator(moniker, website, social, identity, comm, val, pub)
+			msg, err := cumstomtypes.NewMsgClaimValidator(moniker, website, social, identity, comm, val, pub)
 			if err != nil {
 				return fmt.Errorf("error creating tx: %w", err)
 			}
