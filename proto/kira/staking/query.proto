@@ -1,0 +1,20 @@
+syntax = "proto3";
+package kira.staking;
+
+import "staking.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/KiraCore/cosmos-sdk/x/staking/types";
+
+// Query defines the gRPC querier service
+service Query {
+  // Validators queries a validator by address.
+  rpc ValidatorByAddress (ValidatorByAddressRequest) returns (ValidatorByAddressResponse) {}
+}
+
+message ValidatorByAddressRequest {
+}
+
+message ValidatorByAddressResponse {
+  kira.staking.Validator validator = 1 [(gogoproto.nullable) = false];
+}
