@@ -3,7 +3,9 @@ package staking
 import (
 	"encoding/json"
 
-	"github.com/KiraCore/sekai/x/staking/client/cli"
+	"github.com/gogo/protobuf/grpc"
+	"github.com/gorilla/mux"
+	"github.com/spf13/cobra"
 
 	"github.com/KiraCore/cosmos-sdk/client"
 	"github.com/KiraCore/cosmos-sdk/codec"
@@ -15,8 +17,8 @@ import (
 	"github.com/KiraCore/cosmos-sdk/x/staking/types"
 	"github.com/KiraCore/sekai/x/staking/keeper"
 	cumstomtypes "github.com/KiraCore/sekai/x/staking/types"
-	"github.com/gorilla/mux"
-	"github.com/spf13/cobra"
+
+	"github.com/KiraCore/sekai/x/staking/client/cli"
 )
 
 var (
@@ -70,6 +72,13 @@ type AppModule struct {
 // NewHandler returns an sdk.Handler for the staking module.
 func (am AppModule) NewHandler() sdk.Handler {
 	return NewHandler(am.stakingKeeper, am.customStakingKeeper)
+}
+
+// RegisterQueryService registers a GRPC query service to respond to the
+// module-specific GRPC queries.
+func (am AppModule) RegisterQueryService(server grpc.Server) {
+	querier := Querier{}
+	cumstomtypes.RegisterQueryServer(server, querier)
 }
 
 // NewAppModule returns a new Custom Staking module.
