@@ -5,6 +5,10 @@ import (
 	"fmt"
 	"testing"
 
+	types3 "github.com/KiraCore/cosmos-sdk/types"
+
+	types2 "github.com/KiraCore/sekai/x/staking/types"
+
 	"github.com/KiraCore/sekai/x/staking/client/cli"
 
 	"github.com/KiraCore/sekai/app"
@@ -96,8 +100,6 @@ func (s *IntegrationTestSuite) TestClaimValidatorSet() {
 	_, err = s.network.WaitForHeight(height + 2)
 	s.Require().NoError(err)
 
-	s.T().Log(out.String())
-
 	query := cli.GetCmdQueryValidatorByAddress()
 	query.SetArgs(
 		[]string{
@@ -106,10 +108,21 @@ func (s *IntegrationTestSuite) TestClaimValidatorSet() {
 	)
 
 	out.Reset()
+
+	clientCtx = clientCtx.WithOutputFormat("json")
 	err = query.ExecuteContext(ctx)
 	s.Require().NoError(err)
 
-	fmt.Printf("%s\n", out.String())
+	var respValidator types2.Validator
+	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &respValidator)
+
+	s.Require().Equal("Moniker", respValidator.Moniker)
+	s.Require().Equal("Website", respValidator.Website)
+	s.Require().Equal("Social", respValidator.Social)
+	s.Require().Equal("Identity", respValidator.Identity)
+	s.Require().Equal(types3.NewDec(10), respValidator.Commission)
+	s.Require().Equal(val.ValAddress, respValidator.ValKey)
+	s.Require().Equal(val.Address, respValidator.PubKey)
 }
 
 func TestIntegrationTestSuite(t *testing.T) {
