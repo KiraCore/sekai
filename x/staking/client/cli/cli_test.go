@@ -1,10 +1,11 @@
-package cli
+package cli_test
 
 import (
 	"context"
 	"fmt"
 	"testing"
-	"time"
+
+	"github.com/KiraCore/sekai/x/staking/client/cli"
 
 	"github.com/KiraCore/sekai/app"
 
@@ -64,9 +65,8 @@ func (s *IntegrationTestSuite) TearDownSuite() {
 func (s *IntegrationTestSuite) TestClaimValidatorSet() {
 	val := s.network.Validators[0]
 
-	cmd := GetTxClaimValidatorCmd()
+	cmd := cli.GetTxClaimValidatorCmd()
 	_, out := testutil.ApplyMockIO(cmd)
-
 	clientCtx := val.ClientCtx.WithOutput(out)
 
 	ctx := context.Background()
@@ -74,13 +74,13 @@ func (s *IntegrationTestSuite) TestClaimValidatorSet() {
 
 	cmd.SetArgs(
 		[]string{
-			fmt.Sprintf("--%s=%s", flagMoniker, "Moniker"),
-			fmt.Sprintf("--%s=%s", flagWebsite, "Website"),
-			fmt.Sprintf("--%s=%s", flagSocial, "Social"),
-			fmt.Sprintf("--%s=%s", flagIdentity, "Identity"),
-			fmt.Sprintf("--%s=%s", flagComission, "10"),
-			fmt.Sprintf("--%s=%s", flagPubKey, val.Address.String()),
-			fmt.Sprintf("--%s=%s", flagValKey, val.ValAddress.String()),
+			fmt.Sprintf("--%s=%s", cli.FlagMoniker, "Moniker"),
+			fmt.Sprintf("--%s=%s", cli.FlagWebsite, "Website"),
+			fmt.Sprintf("--%s=%s", cli.FlagSocial, "Social"),
+			fmt.Sprintf("--%s=%s", cli.FlagIdentity, "Identity"),
+			fmt.Sprintf("--%s=%s", cli.FlagComission, "10"),
+			fmt.Sprintf("--%s=%s", cli.FlagPubKey, val.Address.String()),
+			fmt.Sprintf("--%s=%s", cli.FlagValKey, val.ValAddress.String()),
 			fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Moniker),
 			fmt.Sprintf("--%s", flags.FlagSkipConfirmation),
 			fmt.Sprintf("--%s=%s", flags.FlagFees, "2stake"),
@@ -93,12 +93,23 @@ func (s *IntegrationTestSuite) TestClaimValidatorSet() {
 	height, err := s.network.LatestHeight()
 	s.Require().NoError(err)
 
-	_, err = s.network.WaitForHeight(height + 1)
+	_, err = s.network.WaitForHeight(height + 2)
 	s.Require().NoError(err)
 
 	s.T().Log(out.String())
 
-	time.Sleep(time.Second * 10)
+	query := cli.GetCmdQueryValidatorByAddress()
+	query.SetArgs(
+		[]string{
+			val.ValAddress.String(),
+		},
+	)
+
+	out.Reset()
+	err = query.ExecuteContext(ctx)
+	s.Require().NoError(err)
+
+	fmt.Printf("%s\n", out.String())
 }
 
 func TestIntegrationTestSuite(t *testing.T) {

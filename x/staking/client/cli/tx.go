@@ -13,13 +13,13 @@ import (
 )
 
 const (
-	flagMoniker   = "moniker"
-	flagWebsite   = "website"
-	flagSocial    = "social"
-	flagIdentity  = "identity"
-	flagComission = "commission"
-	flagValKey    = "validator-key"
-	flagPubKey    = "public-key"
+	FlagMoniker   = "moniker"
+	FlagWebsite   = "website"
+	FlagSocial    = "social"
+	FlagIdentity  = "identity"
+	FlagComission = "commission"
+	FlagValKey    = "validator-key"
+	FlagPubKey    = "public-key"
 )
 
 func GetTxClaimValidatorCmd() *cobra.Command {
@@ -33,13 +33,13 @@ func GetTxClaimValidatorCmd() *cobra.Command {
 				return err
 			}
 
-			moniker, _ := cmd.Flags().GetString(flagMoniker)
-			website, _ := cmd.Flags().GetString(flagWebsite)
-			social, _ := cmd.Flags().GetString(flagSocial)
-			identity, _ := cmd.Flags().GetString(flagIdentity)
-			comission, _ := cmd.Flags().GetString(flagComission)
-			valKeyStr, _ := cmd.Flags().GetString(flagValKey)
-			pubKeyStr, _ := cmd.Flags().GetString(flagPubKey)
+			moniker, _ := cmd.Flags().GetString(FlagMoniker)
+			website, _ := cmd.Flags().GetString(FlagWebsite)
+			social, _ := cmd.Flags().GetString(FlagSocial)
+			identity, _ := cmd.Flags().GetString(FlagIdentity)
+			comission, _ := cmd.Flags().GetString(FlagComission)
+			valKeyStr, _ := cmd.Flags().GetString(FlagValKey)
+			pubKeyStr, _ := cmd.Flags().GetString(FlagPubKey)
 
 			comm, err := types.NewDecFromStr(comission)
 			val, err := types.ValAddressFromBech32(valKeyStr)
@@ -60,13 +60,13 @@ func GetTxClaimValidatorCmd() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().String(flagMoniker, "", "the Moniker")
-	cmd.Flags().String(flagWebsite, "", "the Website")
-	cmd.Flags().String(flagSocial, "", "the social")
-	cmd.Flags().String(flagIdentity, "", "the Identity")
-	cmd.Flags().String(flagComission, "", "the commission")
-	cmd.Flags().String(flagValKey, "", "the validator key")
-	cmd.Flags().String(flagPubKey, "", "the public key")
+	cmd.Flags().String(FlagMoniker, "", "the Moniker")
+	cmd.Flags().String(FlagWebsite, "", "the Website")
+	cmd.Flags().String(FlagSocial, "", "the social")
+	cmd.Flags().String(FlagIdentity, "", "the Identity")
+	cmd.Flags().String(FlagComission, "", "the commission")
+	cmd.Flags().String(FlagValKey, "", "the validator key")
+	cmd.Flags().String(FlagPubKey, "", "the public key")
 	flags.AddTxFlagsToCmd(cmd)
 
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)

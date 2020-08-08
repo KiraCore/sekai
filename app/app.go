@@ -5,6 +5,10 @@ import (
 	"io"
 	"os"
 
+	"github.com/KiraCore/sekai/x/staking/keeper"
+
+	types2 "github.com/KiraCore/sekai/x/staking/types"
+
 	customstaking "github.com/KiraCore/sekai/x/staking"
 
 	"github.com/KiraCore/cosmos-sdk/testutil/testdata"
@@ -158,6 +162,8 @@ type SekaiApp struct {
 	evidenceKeeper   evidencekeeper.Keeper
 	transferKeeper   ibctransferkeeper.Keeper
 
+	customStakingKeeper keeper.Keeper
+
 	// make scoped keepers public for test purposes
 	scopedIBCKeeper      capabilitykeeper.ScopedKeeper
 	scopedTransferKeeper capabilitykeeper.ScopedKeeper
@@ -193,6 +199,7 @@ func NewInitApp(
 		distrtypes.StoreKey, slashingtypes.StoreKey,
 		govtypes.StoreKey, paramstypes.StoreKey, ibchost.StoreKey, upgradetypes.StoreKey,
 		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey, constants.StoreKey,
+		types2.ModuleName,
 	)
 	tKeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
@@ -256,6 +263,8 @@ func NewInitApp(
 		stakingtypes.NewMultiStakingHooks(app.distrKeeper.Hooks(), app.slashingKeeper.Hooks()),
 	)
 
+	app.customStakingKeeper = keeper.NewKeeper(keys[types2.ModuleName], cdc)
+
 	app.ibcKeeper = ibckeeper.NewKeeper(
 		app.cdc, appCodec, keys[ibchost.StoreKey], app.stakingKeeper, scopedIBCKeeper,
 	)
@@ -304,7 +313,7 @@ func NewInitApp(
 		ibc.NewAppModule(app.ibcKeeper),
 		params.NewAppModule(app.paramsKeeper),
 		transferModule,
-		customstaking.NewAppModule(appCodec, app.stakingKeeper, app.accountKeeper, app.bankKeeper),
+		customstaking.NewAppModule(app.customStakingKeeper),
 	)
 	// During begin block slashing happens after distr.BeginBlocker so that
 	// there is nothing left over in the validator fee pool, so as to keep the
@@ -447,15 +456,6 @@ func (app *SekaiApp) GetSubspace(moduleName string) paramstypes.Subspace {
 // SimulationManager implements the SimulationApp interface
 func (app *SekaiApp) SimulationManager() *module.SimulationManager {
 	return app.sm
-}
-
-// GetMaccPerms returns a mapping of the application's module account permissions.
-func GetMaccPerms() map[string][]string {
-	modAccPerms := make(map[string][]string)
-	for k, v := range maccPerms {
-		modAccPerms[k] = v
-	}
-	return modAccPerms
 }
 
 // BlockedAddrs returns all the app's module account addresses that are not

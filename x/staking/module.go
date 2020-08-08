@@ -3,20 +3,17 @@ package staking
 import (
 	"encoding/json"
 
-	"github.com/gogo/protobuf/grpc"
-	"github.com/gorilla/mux"
-	"github.com/spf13/cobra"
-
 	"github.com/KiraCore/cosmos-sdk/client"
 	"github.com/KiraCore/cosmos-sdk/codec"
 	types2 "github.com/KiraCore/cosmos-sdk/codec/types"
 	sdk "github.com/KiraCore/cosmos-sdk/types"
 	"github.com/KiraCore/cosmos-sdk/types/module"
-	"github.com/KiraCore/cosmos-sdk/x/staking"
-	stakingkeeper "github.com/KiraCore/cosmos-sdk/x/staking/keeper"
-	"github.com/KiraCore/cosmos-sdk/x/staking/types"
 	"github.com/KiraCore/sekai/x/staking/keeper"
 	cumstomtypes "github.com/KiraCore/sekai/x/staking/types"
+	"github.com/gogo/protobuf/grpc"
+	"github.com/gorilla/mux"
+	"github.com/spf13/cobra"
+	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/KiraCore/sekai/x/staking/client/cli"
 )
@@ -63,33 +60,84 @@ func (AppModuleBasic) RegisterCodec(cdc *codec.Codec) {
 
 // AppModule extends the cosmos SDK staking.
 type AppModule struct {
-	staking.AppModule
-
-	stakingKeeper       stakingkeeper.Keeper
 	customStakingKeeper keeper.Keeper
 }
 
-// NewHandler returns an sdk.Handler for the staking module.
-func (am AppModule) NewHandler() sdk.Handler {
-	return NewHandler(am.stakingKeeper, am.customStakingKeeper)
+func (am AppModule) RegisterCodec(c *codec.Codec) {
+	panic("implement me")
+}
+
+func (am AppModule) RegisterInterfaces(registry types2.InterfaceRegistry) {
+	panic("implement me")
+}
+
+func (am AppModule) DefaultGenesis(marshaler codec.JSONMarshaler) json.RawMessage {
+	panic("implement me")
+}
+
+func (am AppModule) ValidateGenesis(marshaler codec.JSONMarshaler, config client.TxEncodingConfig, message json.RawMessage) error {
+	panic("implement me")
+}
+
+func (am AppModule) RegisterRESTRoutes(context client.Context, router *mux.Router) {
+	panic("implement me")
+}
+
+func (am AppModule) GetTxCmd() *cobra.Command {
+	panic("implement me")
+}
+
+func (am AppModule) GetQueryCmd() *cobra.Command {
+	panic("implement me")
+}
+
+func (am AppModule) InitGenesis(context sdk.Context, marshaler codec.JSONMarshaler, message json.RawMessage) []abci.ValidatorUpdate {
+	return nil
+}
+
+func (am AppModule) ExportGenesis(context sdk.Context, marshaler codec.JSONMarshaler) json.RawMessage {
+	return nil
+}
+
+func (am AppModule) RegisterInvariants(registry sdk.InvariantRegistry) {
+}
+
+func (am AppModule) QuerierRoute() string {
+	return ""
+}
+
+func (am AppModule) LegacyQuerierHandler(marshaler codec.JSONMarshaler) sdk.Querier {
+	return nil
+}
+
+func (am AppModule) BeginBlock(context sdk.Context, block abci.RequestBeginBlock) {
+}
+
+func (am AppModule) EndBlock(context sdk.Context, block abci.RequestEndBlock) []abci.ValidatorUpdate {
+	return []abci.ValidatorUpdate{}
+}
+
+func (am AppModule) Name() string {
+	return cumstomtypes.ModuleName
+}
+
+// Route returns the message routing key for the staking module.
+func (am AppModule) Route() sdk.Route {
+	return sdk.NewRoute(cumstomtypes.ModuleName, NewHandler(am.customStakingKeeper))
 }
 
 // RegisterQueryService registers a GRPC query service to respond to the
 // module-specific GRPC queries.
 func (am AppModule) RegisterQueryService(server grpc.Server) {
-	querier := Querier{}
+	querier := NewQuerier(am.customStakingKeeper)
 	cumstomtypes.RegisterQueryServer(server, querier)
 }
 
 // NewAppModule returns a new Custom Staking module.
 func NewAppModule(
-	cdc codec.Marshaler,
-	keeper stakingkeeper.Keeper,
-	ak types.AccountKeeper,
-	bk types.BankKeeper,
+	keeper keeper.Keeper,
 ) AppModule {
 	return AppModule{
-		AppModule:     staking.NewAppModule(cdc, keeper, ak, bk),
-		stakingKeeper: keeper,
+		customStakingKeeper: keeper,
 	}
 }
