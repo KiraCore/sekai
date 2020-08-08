@@ -49,7 +49,7 @@ func validatorIsEqualThanClaimMsg(t *testing.T, val types2.Validator, msg *types
 	require.Equal(t, msg.Moniker, val.Moniker)
 	require.Equal(t, msg.PubKey, val.PubKey)
 	require.Equal(t, msg.ValKey, val.ValKey)
-	require.Equal(t, msg.Commission, val.Comission)
+	require.Equal(t, msg.Commission, val.Commission)
 	require.Equal(t, msg.Identity, val.Identity)
 	require.Equal(t, msg.Social, val.Social)
 	require.Equal(t, msg.Website, val.Website)

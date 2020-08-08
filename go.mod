@@ -19,6 +19,7 @@ require (
 	github.com/tendermint/tendermint v0.33.6
 	github.com/tendermint/tm-db v0.5.1
 	golang.org/x/crypto v0.0.0-20200709230013-948cd5f35899
+	google.golang.org/grpc v1.31.0
 )
 
 replace github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.2-alpha.regen.4

@@ -13,6 +13,10 @@ service Query {
 }
 
 message ValidatorByAddressRequest {
+  bytes val_addr = 1 [
+    (gogoproto.casttype) = "github.com/KiraCore/cosmos-sdk/types.ValAddress",
+    (gogoproto.moretags) = "yaml:\"val_addr\""
+  ];
 }
 
 message ValidatorByAddressResponse {
