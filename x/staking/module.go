@@ -50,7 +50,7 @@ func (b AppModuleBasic) GetTxCmd() *cobra.Command {
 }
 
 func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
-	return nil
+	return cli.GetCmdQueryValidatorByAddress()
 }
 
 // RegisterCodec registers the staking module's types for the given codec.
@@ -60,6 +60,7 @@ func (AppModuleBasic) RegisterCodec(cdc *codec.Codec) {
 
 // AppModule extends the cosmos SDK staking.
 type AppModule struct {
+	AppModuleBasic
 	customStakingKeeper keeper.Keeper
 }
 
@@ -68,26 +69,6 @@ func (am AppModule) RegisterCodec(c *codec.Codec) {
 }
 
 func (am AppModule) RegisterInterfaces(registry types2.InterfaceRegistry) {
-	panic("implement me")
-}
-
-func (am AppModule) DefaultGenesis(marshaler codec.JSONMarshaler) json.RawMessage {
-	panic("implement me")
-}
-
-func (am AppModule) ValidateGenesis(marshaler codec.JSONMarshaler, config client.TxEncodingConfig, message json.RawMessage) error {
-	panic("implement me")
-}
-
-func (am AppModule) RegisterRESTRoutes(context client.Context, router *mux.Router) {
-	panic("implement me")
-}
-
-func (am AppModule) GetTxCmd() *cobra.Command {
-	panic("implement me")
-}
-
-func (am AppModule) GetQueryCmd() *cobra.Command {
 	panic("implement me")
 }
 
