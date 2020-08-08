@@ -22,7 +22,7 @@ func TestNewHandler_MsgClaimValidator_HappyPath(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, abci.Header{})
 
-	handler := staking.NewHandler(app.StakingKeeper, app.CustomStakingKeeper)
+	handler := staking.NewHandler(app.CustomStakingKeeper)
 
 	theMsg, err := types2.NewMsgClaimValidator(
 		"aMoniker",
