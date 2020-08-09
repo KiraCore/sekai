@@ -2,8 +2,15 @@ package cli
 
 import (
 	"bufio"
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
+	"io/ioutil"
+	"os"
+	"path/filepath"
+
+	tmos "github.com/tendermint/tendermint/libs/os"
 
 	"github.com/KiraCore/cosmos-sdk/crypto/keyring"
 	authclient "github.com/KiraCore/cosmos-sdk/x/auth/client"
@@ -200,44 +207,44 @@ $ %s gentx my-key-name --home=/path/to/home/dir --keyring-backend=os --chain-id=
 				return authclient.PrintUnsignedStdTx(txBldr, clientCtx, []types.Msg{msg})
 			}
 
-			//// write the unsigned transaction to the buffer
-			//w := bytes.NewBuffer([]byte{})
-			//clientCtx = clientCtx.WithOutput(w)
-			//
-			//if err = authclient.PrintUnsignedStdTx(txBldr, clientCtx, []sdk.Msg{msg}); err != nil {
-			//	return errors.Wrap(err, "failed to print unsigned std tx")
-			//}
-			//
-			//// read the transaction
-			//stdTx, err := readUnsignedGenTxFile(clientCtx, w)
-			//if err != nil {
-			//	return errors.Wrap(err, "failed to read unsigned gen tx file")
-			//}
-			//
-			//// sign the transaction and write it to the output file
-			//txBuilder, err := clientCtx.TxConfig.WrapTxBuilder(stdTx)
-			//if err != nil {
-			//	return fmt.Errorf("error creating tx builder: %w", err)
-			//}
-			//
-			//err = authclient.SignTx(txFactory, clientCtx, name, txBuilder, true)
-			//if err != nil {
-			//	return errors.Wrap(err, "failed to sign std tx")
-			//}
-			//
-			//outputDocument, _ := cmd.Flags().GetString(flags.FlagOutputDocument)
-			//if outputDocument == "" {
-			//	outputDocument, err = makeOutputFilepath(config.RootDir, nodeID)
-			//	if err != nil {
-			//		return errors.Wrap(err, "failed to create output file path")
-			//	}
-			//}
-			//
-			//if err := writeSignedGenTx(clientCtx, outputDocument, stdTx); err != nil {
-			//	return errors.Wrap(err, "failed to write signed gen tx")
-			//}
-			//
-			//cmd.PrintErrf("Genesis transaction written to %q\n", outputDocument)
+			// write the unsigned transaction to the buffer
+			w := bytes.NewBuffer([]byte{})
+			clientCtx = clientCtx.WithOutput(w)
+
+			if err = authclient.PrintUnsignedStdTx(txBldr, clientCtx, []types.Msg{msg}); err != nil {
+				return errors.Wrap(err, "failed to print unsigned std tx")
+			}
+
+			// read the transaction
+			stdTx, err := readUnsignedGenTxFile(clientCtx, w)
+			if err != nil {
+				return errors.Wrap(err, "failed to read unsigned gen tx file")
+			}
+
+			// sign the transaction and write it to the output file
+			txBuilder, err := clientCtx.TxConfig.WrapTxBuilder(stdTx)
+			if err != nil {
+				return fmt.Errorf("error creating tx builder: %w", err)
+			}
+
+			err = authclient.SignTx(txFactory, clientCtx, name, txBuilder, true)
+			if err != nil {
+				return errors.Wrap(err, "failed to sign std tx")
+			}
+
+			outputDocument, _ := cmd.Flags().GetString(flags.FlagOutputDocument)
+			if outputDocument == "" {
+				outputDocument, err = makeOutputFilepath(config.RootDir, nodeID)
+				if err != nil {
+					return errors.Wrap(err, "failed to create output file path")
+				}
+			}
+
+			if err := writeSignedGenTx(clientCtx, outputDocument, stdTx); err != nil {
+				return errors.Wrap(err, "failed to write signed gen tx")
+			}
+
+			cmd.PrintErrf("Genesis transaction written to %q\n", outputDocument)
 			return nil
 		},
 	}
@@ -251,45 +258,45 @@ $ %s gentx my-key-name --home=/path/to/home/dir --keyring-backend=os --chain-id=
 	return cmd
 }
 
-//func makeOutputFilepath(rootDir, nodeID string) (string, error) {
-//	writePath := filepath.Join(rootDir, "config", "gentx")
-//	if err := tmos.EnsureDir(writePath, 0700); err != nil {
-//		return "", err
-//	}
-//
-//	return filepath.Join(writePath, fmt.Sprintf("gentx-%v.json", nodeID)), nil
-//}
-//
-//func readUnsignedGenTxFile(clientCtx client.Context, r io.Reader) (sdk.Tx, error) {
-//	bz, err := ioutil.ReadAll(r)
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	aTx, err := clientCtx.TxConfig.TxJSONDecoder()(bz)
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	return aTx, err
-//}
-//
-//func writeSignedGenTx(clientCtx client.Context, outputDocument string, tx sdk.Tx) error {
-//	outputFile, err := os.OpenFile(outputDocument, os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0644)
-//	if err != nil {
-//		return err
-//	}
-//	defer outputFile.Close()
-//
-//	json, err := clientCtx.TxConfig.TxJSONEncoder()(tx)
-//	if err != nil {
-//		return err
-//	}
-//
-//	_, err = fmt.Fprintf(outputFile, "%s\n", json)
-//
-//	return err
-//}
+func makeOutputFilepath(rootDir, nodeID string) (string, error) {
+	writePath := filepath.Join(rootDir, "config", "gentx")
+	if err := tmos.EnsureDir(writePath, 0700); err != nil {
+		return "", err
+	}
+
+	return filepath.Join(writePath, fmt.Sprintf("gentx-%v.json", nodeID)), nil
+}
+
+func readUnsignedGenTxFile(clientCtx client.Context, r io.Reader) (types.Tx, error) {
+	bz, err := ioutil.ReadAll(r)
+	if err != nil {
+		return nil, err
+	}
+
+	aTx, err := clientCtx.TxConfig.TxJSONDecoder()(bz)
+	if err != nil {
+		return nil, err
+	}
+
+	return aTx, err
+}
+
+func writeSignedGenTx(clientCtx client.Context, outputDocument string, tx types.Tx) error {
+	outputFile, err := os.OpenFile(outputDocument, os.O_CREATE|os.O_EXCL|os.O_WRONLY, 0644)
+	if err != nil {
+		return err
+	}
+	defer outputFile.Close()
+
+	json, err := clientCtx.TxConfig.TxJSONEncoder()(tx)
+	if err != nil {
+		return err
+	}
+
+	_, err = fmt.Fprintf(outputFile, "%s\n", json)
+
+	return err
+}
 
 func BuildClaimValidatorMsg(clientCtx client.Context, config cli.TxCreateValidatorConfig, txBldr tx.Factory, generateOnly bool) (tx.Factory, types.Msg, error) {
 	valAddr := clientCtx.GetFromAddress()
