@@ -76,6 +76,7 @@ func (s *IntegrationTestSuite) TestClaimValidatorSet() {
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, client.ClientContextKey, &clientCtx)
 
+	pubKey := "kiravalconspub1zcjduepqylc5k8r40azmw0xt7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsq4xg7em"
 	cmd.SetArgs(
 		[]string{
 			fmt.Sprintf("--%s=%s", cli.FlagMoniker, "Moniker"),
@@ -83,7 +84,7 @@ func (s *IntegrationTestSuite) TestClaimValidatorSet() {
 			fmt.Sprintf("--%s=%s", cli.FlagSocial, "Social"),
 			fmt.Sprintf("--%s=%s", cli.FlagIdentity, "Identity"),
 			fmt.Sprintf("--%s=%s", cli.FlagComission, "10"),
-			fmt.Sprintf("--%s=%s", cli.FlagPubKey, val.Address.String()),
+			fmt.Sprintf("--%s=%s", cli.FlagPubKey, pubKey),
 			fmt.Sprintf("--%s=%s", cli.FlagValKey, val.ValAddress.String()),
 			fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Moniker),
 			fmt.Sprintf("--%s", flags.FlagSkipConfirmation),
@@ -122,7 +123,7 @@ func (s *IntegrationTestSuite) TestClaimValidatorSet() {
 	s.Require().Equal("Identity", respValidator.Identity)
 	s.Require().Equal(types3.NewDec(10), respValidator.Commission)
 	s.Require().Equal(val.ValAddress, respValidator.ValKey)
-	s.Require().Equal(val.Address, respValidator.PubKey)
+	s.Require().Equal(pubKey, respValidator.PubKey)
 }
 
 func TestIntegrationTestSuite(t *testing.T) {

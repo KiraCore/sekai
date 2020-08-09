@@ -21,10 +21,7 @@ message MsgClaimValidator {
     (gogoproto.casttype) = "github.com/KiraCore/cosmos-sdk/types.ValAddress",
     (gogoproto.moretags) = "yaml:\"val_key\""
   ];
-  bytes pub_key = 7 [
-    (gogoproto.casttype) = "github.com/KiraCore/cosmos-sdk/types.AccAddress",
-    (gogoproto.moretags) = "yaml:\"pub_key\""
-  ];
+  string pub_key = 7;
 }
 
 message Validator {
@@ -41,8 +38,5 @@ message Validator {
     (gogoproto.casttype) = "github.com/KiraCore/cosmos-sdk/types.ValAddress",
     (gogoproto.moretags) = "yaml:\"val_key\""
   ];
-  bytes pub_key = 7 [
-    (gogoproto.casttype) = "github.com/KiraCore/cosmos-sdk/types.AccAddress",
-    (gogoproto.moretags) = "yaml:\"pub_key\""
-  ];
+  string pub_key = 7 [(gogoproto.moretags) = "yaml:\"consensus_pubkey\""];
 }

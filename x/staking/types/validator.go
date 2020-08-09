@@ -2,10 +2,16 @@ package types
 
 import (
 	sdk "github.com/KiraCore/cosmos-sdk/types"
+	"github.com/tendermint/tendermint/crypto"
 )
 
 // NewValidator generates new Validator.
-func NewValidator(moniker string, website string, social string, identity string, comission sdk.Dec, valKey sdk.ValAddress, pubKey sdk.AccAddress) (Validator, error) {
+func NewValidator(moniker string, website string, social string, identity string, comission sdk.Dec, valKey sdk.ValAddress, pubKey crypto.PubKey) (Validator, error) {
+	var pkStr string
+	if pubKey != nil {
+		pkStr = sdk.MustBech32ifyPubKey(sdk.Bech32PubKeyTypeConsPub, pubKey)
+	}
+
 	v := Validator{
 		Moniker:    moniker,
 		Website:    website,
@@ -13,7 +19,7 @@ func NewValidator(moniker string, website string, social string, identity string
 		Identity:   identity,
 		Commission: comission,
 		ValKey:     valKey,
-		PubKey:     pubKey,
+		PubKey:     pkStr,
 	}
 
 	err := v.Validate()

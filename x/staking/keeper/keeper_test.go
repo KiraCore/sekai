@@ -19,6 +19,8 @@ func TestKeeper_AddValidator(t *testing.T) {
 	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, types2.TokensFromConsensusPower(10))
 	addr1 := addrs[0]
 	valAddr := types2.ValAddress(addr1)
+	pubKey, err := types2.GetPubKeyFromBech32(types2.Bech32PubKeyTypeConsPub, "kiravalconspub1zcjduepqylc5k8r40azmw0xt7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsq4xg7em")
+	require.NoError(t, err)
 
 	validator, err := types.NewValidator(
 		"aMoniker",
@@ -27,7 +29,7 @@ func TestKeeper_AddValidator(t *testing.T) {
 		"My Identity",
 		types2.NewDec(1234),
 		valAddr,
-		addr1,
+		pubKey,
 	)
 	require.NoError(t, err)
 
@@ -48,6 +50,9 @@ func TestKeeper_GetValidatorSet(t *testing.T) {
 	addr2 := addrs[1]
 	valAddr2 := types2.ValAddress(addr2)
 
+	pubKey, err := types2.GetPubKeyFromBech32(types2.Bech32PubKeyTypeConsPub, "kiravalconspub1zcjduepqylc5k8r40azmw0xt7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsq4xg7em")
+	require.NoError(t, err)
+
 	validator1, err := types.NewValidator(
 		"validator 1",
 		"some-web.com",
@@ -55,7 +60,7 @@ func TestKeeper_GetValidatorSet(t *testing.T) {
 		"My Identity",
 		types2.NewDec(1234),
 		valAddr1,
-		addr1,
+		pubKey,
 	)
 	require.NoError(t, err)
 
@@ -66,7 +71,7 @@ func TestKeeper_GetValidatorSet(t *testing.T) {
 		"My Identity",
 		types2.NewDec(1234),
 		valAddr2,
-		addr2,
+		pubKey,
 	)
 	require.NoError(t, err)
 

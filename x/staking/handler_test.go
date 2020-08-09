@@ -14,9 +14,10 @@ import (
 )
 
 func TestNewHandler_MsgClaimValidator_HappyPath(t *testing.T) {
-	addr1, err := types.AccAddressFromBech32("kira15ky9du8a2wlstz6fpx3p4mqpjyrm5cgqzp4f3d")
-	require.NoError(t, err)
 	valAddr1, err := types.ValAddressFromBech32("kiravaloper15ky9du8a2wlstz6fpx3p4mqpjyrm5cgq38f2fp")
+	require.NoError(t, err)
+
+	pubKey, err := types.GetPubKeyFromBech32(types.Bech32PubKeyTypeConsPub, "kiravalconspub1zcjduepqylc5k8r40azmw0xt7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsq4xg7em")
 	require.NoError(t, err)
 
 	app := simapp.Setup(false)
@@ -31,7 +32,7 @@ func TestNewHandler_MsgClaimValidator_HappyPath(t *testing.T) {
 		"My Identity",
 		types.NewDec(1234),
 		valAddr1,
-		addr1,
+		pubKey,
 	)
 	require.NoError(t, err)
 

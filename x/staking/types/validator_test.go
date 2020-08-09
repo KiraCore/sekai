@@ -13,7 +13,8 @@ func TestNewValidator_Errors(t *testing.T) {
 	valAddr, err := types.ValAddressFromBech32("kiravaloper1q24436yrnettd6v4eu6r4t9gycnnddac9nwqv0")
 	require.NoError(t, err)
 
-	accAddr := types.AccAddress(valAddr)
+	pubKey, err := types.GetPubKeyFromBech32(types.Bech32PubKeyTypeConsPub, "kiravalconspub1zcjduepqylc5k8r40azmw0xt7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsq4xg7em")
+	require.NoError(t, err)
 
 	tests := []struct {
 		name        string
@@ -32,7 +33,7 @@ func TestNewValidator_Errors(t *testing.T) {
 					"some-web.com",
 					types.NewDec(1234),
 					valAddr,
-					accAddr,
+					pubKey,
 				)
 
 				return err
@@ -50,7 +51,7 @@ func TestNewValidator_Errors(t *testing.T) {
 					"some-web.com",
 					types.NewDec(1234),
 					valAddr,
-					accAddr,
+					pubKey,
 				)
 
 				return err
@@ -68,7 +69,7 @@ func TestNewValidator_Errors(t *testing.T) {
 					"some-web.com",
 					types.NewDec(1234),
 					valAddr,
-					accAddr,
+					pubKey,
 				)
 
 				return err
@@ -86,7 +87,7 @@ func TestNewValidator_Errors(t *testing.T) {
 					strings.Repeat("A", 65),
 					types.NewDec(1234),
 					valAddr,
-					accAddr,
+					pubKey,
 				)
 
 				return err

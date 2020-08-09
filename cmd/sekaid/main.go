@@ -6,6 +6,8 @@ import (
 	"io"
 	"os"
 
+	cli2 "github.com/KiraCore/sekai/x/staking/client/cli"
+
 	"github.com/KiraCore/cosmos-sdk/client/keys"
 	"github.com/KiraCore/cosmos-sdk/client/rpc"
 	authcmd "github.com/KiraCore/cosmos-sdk/x/auth/client/cli"
@@ -72,6 +74,7 @@ func init() {
 		genutilcli.CollectGenTxsCmd(banktypes.GenesisBalancesIterator{}, app.DefaultNodeHome),
 		genutilcli.MigrateGenesisCmd(),
 		genutilcli.GenTxCmd(app.ModuleBasics, encodingConfig.TxConfig, banktypes.GenesisBalancesIterator{}, app.DefaultNodeHome),
+		cli2.GenTxClaimCmd(app.ModuleBasics, encodingConfig.TxConfig, banktypes.GenesisBalancesIterator{}, app.DefaultNodeHome),
 		genutilcli.ValidateGenesisCmd(app.ModuleBasics, encodingConfig.TxConfig),
 		AddGenesisAccountCmd(app.DefaultNodeHome),
 		cli.NewCompletionCmd(rootCmd, true),

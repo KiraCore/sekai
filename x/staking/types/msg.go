@@ -3,6 +3,8 @@ package types
 import (
 	"fmt"
 
+	"github.com/tendermint/tendermint/crypto"
+
 	sdk "github.com/KiraCore/cosmos-sdk/types"
 )
 
@@ -15,7 +17,7 @@ func NewMsgClaimValidator(
 	identity string,
 	comission sdk.Dec,
 	valKey sdk.ValAddress,
-	pubKey sdk.AccAddress,
+	pubKey crypto.PubKey,
 ) (*MsgClaimValidator, error) {
 	if valKey == nil {
 		return nil, fmt.Errorf("validator not set")
@@ -25,6 +27,8 @@ func NewMsgClaimValidator(
 		return nil, fmt.Errorf("public key not set")
 	}
 
+	pkStr := sdk.MustBech32ifyPubKey(sdk.Bech32PubKeyTypeConsPub, pubKey)
+
 	return &MsgClaimValidator{
 		Moniker:    moniker,
 		Website:    website,
@@ -32,7 +36,7 @@ func NewMsgClaimValidator(
 		Identity:   identity,
 		Commission: comission,
 		ValKey:     valKey,
-		PubKey:     pubKey,
+		PubKey:     pkStr,
 	}, nil
 }
 
