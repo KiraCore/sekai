@@ -1,6 +1,7 @@
 package signerkey
 
 import (
+	"errors"
 	"time"
 
 	"github.com/KiraCore/cosmos-sdk/codec"
@@ -47,9 +48,9 @@ func (k Keeper) UpsertSignerKey(ctx sdk.Context,
 	pubKey [4096]byte,
 	keyType types.SignerKeyType,
 	Permissions []int,
-	curator sdk.AccAddress) {
+	curator sdk.AccAddress) error {
 
-	var signerKeys []types.SignerKey
+	var newSignerKeys []types.SignerKey
 	now := time.Now()
 	unix := now.Unix() // TODO: this won't work as every node has little time differece in unix
 
@@ -59,16 +60,29 @@ func (k Keeper) UpsertSignerKey(ctx sdk.Context,
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get([]byte("signer_keys"))
 
+	var signerKeys []types.SignerKey
 	k.cdc.MustUnmarshalBinaryBare(bz, &signerKeys)
-	// TODO: if same one (what is identifier to think as same?) exist, should update it.
-	// TODO: should remove expired keys
-	// TODO: for this we need to create index that will help us quickly identify keys belonging to specific user.
+	// TODO: we need to create index that will help us quickly identify keys belonging to specific user.
 	// TODO: must add a check to make sure that 2 accounts can't have the same sub-key
-	signerKeys = append(signerKeys, signerKey)
+	// TODO: navigating around whole signer keys is inefficient, should update it to efficient and make it by sender
+	for _, sk := range signerKeys {
+		if sk.PubKey == pubKey {
+			if keyType == sk.KeyType {
+				return errors.New("keyType shouldn't be different for same pub key")
+			}
+			if sk.Curator.Equals(curator) {
+				return errors.New("this key is owned by another curator already")
+			}
+			newSignerKeys = append(newSignerKeys, signerKey)
+		} else if sk.ExpiryTime > unix { // TODO: this is not correct as unix is various per node
+			newSignerKeys = append(newSignerKeys, sk)
+		}
+	}
 	// TODO: easily query if sub-key x belongs to account y
 
-	store.Set([]byte("signer_keys"), k.cdc.MustMarshalBinaryBare(signerKeys))
+	store.Set([]byte("signer_keys"), k.cdc.MustMarshalBinaryBare(newSignerKeys))
 	// TODO: should add test for creating / updating after v0.0.5 release.
+	return nil
 }
 
 // TODO: should add deleteSignerKey after discussion but this should create another directory under transactions folder?
