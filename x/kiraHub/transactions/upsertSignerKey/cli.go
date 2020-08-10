@@ -37,8 +37,14 @@ func TransactionCommand(codec *codec.Codec) *cobra.Command {
 			switch keyTypeString {
 			case types.Secp256k1.String():
 				// TODO: should set pubKey from args[0] for Secp256k1
+				// tendermint/PubKeySecp256k1",
+				// "AnzIM9IcLb07Cvwq3hdMJuuRofAgxfDekkD3nJUPPw0w"
+				// Library "github.com/tendermint/tendermint/crypto/secp256k1"
 			case types.Ed25519.String():
 				// TODO: should set pubKey from args[0] for Ed25519
+				// tendermint/PrivKeyEd25519"
+				// "TXgDkmTYpPRwU/PvDbfbhbwiYA7jXMwQgNffHVey1dC644OBBI4OQdf4Tro6hzimT1dHYzPiGZB0aYWJBC2keQ=="
+				// Library "github.com/tendermint/tendermint/crypto/ed25519"
 				keyType = types.Ed25519
 			default:
 				fmt.Println("invalid pubKey type")
