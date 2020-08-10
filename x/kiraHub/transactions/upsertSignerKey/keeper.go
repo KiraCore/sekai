@@ -48,8 +48,8 @@ var lastOrderIndex uint32 = 0
 var numberOfBytes = 4
 var numberOfCharacters = 2 * numberOfBytes
 
-// CreateSignerKey create signer key and put it into the keeper
-func (k Keeper) CreateSignerKey(ctx sdk.Context,
+// UpsertSignerKey create signer key and put it into the keeper
+func (k Keeper) UpsertSignerKey(ctx sdk.Context,
 	pubKey [4096]byte,
 	keyType types.SignerKeyType,
 	Permissions []int,
@@ -66,6 +66,7 @@ func (k Keeper) CreateSignerKey(ctx sdk.Context,
 	bz := store.Get([]byte("signer_keys"))
 
 	k.cdc.MustUnmarshalBinaryBare(bz, &signerKeys)
+	// TODO: if same one (what is identifier to think as same?) exist, should update it.
 	signerKeys = append(signerKeys, signerKey)
 
 	store.Set([]byte("signer_keys"), k.cdc.MustMarshalBinaryBare(signerKeys))

@@ -7,16 +7,17 @@ const (
 	// StoreKey to be used when creating the KVStore
 	StoreKey = ModuleName
 
-  // RouterKey to be used for routing msgs
-  RouterKey = ModuleName
+	// RouterKey to be used for routing msgs
+	RouterKey = ModuleName
 
-	QuerierRoute = ModuleName
+	QuerierRoute     = ModuleName
 	TransactionRoute = ModuleName
 
 	CreateOrderBookTransaction = "createorderbook"
-	CreateOrderTransaction = "createorder"
+	CreateOrderTransaction     = "createorder"
+	UpsertSignerKeyTransaction = "upsertsignerkey"
 
-	ListOrderBooksQuery = "listOrderBooks"
+	ListOrderBooksQuery     = "listOrderBooks"
 	ListOrderBooksQueryByTP = "listOrderBooksByTP"
-	ListOrders = "listOrders"
+	ListOrders              = "listOrders"
 )

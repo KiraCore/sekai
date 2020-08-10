@@ -1,6 +1,8 @@
 package signerkey
 
 import (
+	"errors"
+
 	sdk "github.com/KiraCore/cosmos-sdk/types"
 	"github.com/KiraCore/sekai/types"
 	constants "github.com/KiraCore/sekai/x/kiraHub/constants"
@@ -22,10 +24,17 @@ var _ sdk.Msg = Message{}
 func (message Message) Route() string { return constants.ModuleName }
 
 // Type returns message type to differentiate with other messages on amino codec
-func (message Message) Type() string { return constants.CreateOrderTransaction }
+func (message Message) Type() string { return constants.UpsertSignerKeyTransaction }
 
 // ValidateBasic returns basic validation error
 func (message Message) ValidateBasic() error {
+	// TODO: validate pubkey encoding by key type
+	// TODO: validate expiry time and permissions set
+
+	// validate if curator not empty
+	if message.Curator.Empty() {
+		return errors.New("curator shouldn't be empty")
+	}
 	return nil
 }
 
