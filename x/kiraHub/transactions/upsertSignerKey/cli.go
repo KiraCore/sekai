@@ -58,6 +58,8 @@ func TransactionCommand(codec *codec.Codec) *cobra.Command {
 				return err
 			}
 
+			// TODO: should add readme for sample upsertSignerKey cli and rest
+			// TODO: should add readme for both Secp256k1 and Ed25519
 			return client.GenerateOrBroadcastMsgs(cliContext, transactionBuilder, []sdk.Msg{message})
 		},
 	}
