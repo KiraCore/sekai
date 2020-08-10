@@ -4,11 +4,11 @@ import (
 	constants "github.com/KiraCore/sekai/x/kiraHub/constants"
 	"github.com/KiraCore/sekai/x/kiraHub/transactions/createOrder"
 	"github.com/KiraCore/sekai/x/kiraHub/transactions/createOrderBook"
+	signerkey "github.com/KiraCore/sekai/x/kiraHub/transactions/upsertSignerKey"
 	"github.com/pkg/errors"
 
 	sdk "github.com/KiraCore/cosmos-sdk/types"
 )
-
 
 func NewHandler(keeper Keeper) sdk.Handler {
 	return func(context sdk.Context, msg sdk.Msg) (*sdk.Result, error) {
@@ -21,9 +21,11 @@ func NewHandler(keeper Keeper) sdk.Handler {
 		case createOrder.Message:
 			return createOrder.HandleMessage(context, keeper.getCreateOrderKeeper(), message)
 
+		case signerkey.Message:
+			return signerkey.HandleMessage(context, keeper.getUpsertSignerKeyKeeper(), message)
+
 		default:
 			return nil, errors.Wrapf(constants.UnknownMessageCode, "%T", msg)
 		}
 	}
 }
-
