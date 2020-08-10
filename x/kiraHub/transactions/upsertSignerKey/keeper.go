@@ -42,12 +42,6 @@ func NewKeeper(cdc *codec.Codec, storeKey sdk.StoreKey) Keeper {
 	}
 }
 
-var lastOrderIndex uint32 = 0
-
-// This is the definitions of the lens of the shortened hashes
-var numberOfBytes = 4
-var numberOfCharacters = 2 * numberOfBytes
-
 // UpsertSignerKey create signer key and put it into the keeper
 func (k Keeper) UpsertSignerKey(ctx sdk.Context,
 	pubKey [4096]byte,
@@ -67,9 +61,14 @@ func (k Keeper) UpsertSignerKey(ctx sdk.Context,
 
 	k.cdc.MustUnmarshalBinaryBare(bz, &signerKeys)
 	// TODO: if same one (what is identifier to think as same?) exist, should update it.
+	// TODO: should remove expired keys
+	// TODO: for this we need to create index that will help us quickly identify keys belonging to specific user.
+	// TODO: must add a check to make sure that 2 accounts can't have the same sub-key
 	signerKeys = append(signerKeys, signerKey)
+	// TODO: easily query if sub-key x belongs to account y
 
 	store.Set([]byte("signer_keys"), k.cdc.MustMarshalBinaryBare(signerKeys))
+	// TODO: should add test for creating / updating after v0.0.5 release.
 }
 
-// TODO: should add deleteSignerKey and disableSignerKey after discussion
+// TODO: should add deleteSignerKey after discussion but this should create another directory under transactions folder?
