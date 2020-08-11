@@ -29,7 +29,7 @@ func (e SignerKeyType) String() string {
 
 // SignerKey describes signer public keys with its status
 type SignerKey struct {
-	PubKey      [4096]byte     `json:"pubkey"`      // pubkey - New public key to register (max 4096 Bytes)
+	PubKey      string         `json:"pubkey"`      // pubkey - New public key to register (max 4096 Bytes)
 	KeyType     SignerKeyType  `json:"type"`        // type - Key type enum (e.g. secp256k1, ed25519)
 	ExpiryTime  int64          `json:"expires"`     // expires - UTC time (8 Bytes) when key expires
 	Enabled     bool           `json:"enabled"`     // enabled - boolean field defining if key is use
@@ -39,7 +39,7 @@ type SignerKey struct {
 
 // NewSignerKey returns SignerKey instance
 func NewSignerKey(
-	pubKey [4096]byte,
+	pubKey string,
 	keyType SignerKeyType,
 	expiryTime int64,
 	enabled bool,

@@ -2,6 +2,7 @@ package signerkey
 
 import (
 	"errors"
+	"strings"
 	"time"
 
 	"github.com/KiraCore/cosmos-sdk/codec"
@@ -11,6 +12,9 @@ import (
 
 // KeySignerKeys describes the key where to save in KVStore
 const KeySignerKeys = "signer_keys"
+
+// KeyPubKeyCurator describes the owner of each pubKey
+const KeyPubKeyCurator = "pub_key_curator"
 
 // Keeper is an interface to keep signer keys
 type Keeper struct {
@@ -48,7 +52,7 @@ func NewKeeper(cdc *codec.Codec, storeKey sdk.StoreKey) Keeper {
 
 // UpsertSignerKey create signer key and put it into the keeper
 func (k Keeper) UpsertSignerKey(ctx sdk.Context,
-	pubKey [4096]byte,
+	pubKey string,
 	keyType types.SignerKeyType,
 	Permissions []int,
 	curator sdk.AccAddress) error {
@@ -71,7 +75,7 @@ func (k Keeper) UpsertSignerKey(ctx sdk.Context,
 	// TODO: must add a check to make sure that 2 accounts can't have the same sub-key
 	// TODO: navigating around whole signer keys is inefficient, should update it to efficient and make it by sender
 	for _, sk := range signerKeys {
-		if sk.PubKey == pubKey {
+		if strings.Compare(sk.PubKey, pubKey) == 0 {
 			if keyType == sk.KeyType {
 				return errors.New("keyType shouldn't be different for same pub key")
 			}
@@ -79,6 +83,7 @@ func (k Keeper) UpsertSignerKey(ctx sdk.Context,
 				return errors.New("this key is owned by another curator already")
 			}
 			newSignerKeys = append(newSignerKeys, signerKey)
+			store.Set([]byte(KeyPubKeyCurator), []byte(signerKey.PubKey))
 		} else if sk.ExpiryTime > unix {
 			newSignerKeys = append(newSignerKeys, sk)
 		}

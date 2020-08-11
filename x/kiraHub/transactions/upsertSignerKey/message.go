@@ -10,7 +10,7 @@ import (
 
 // Message defines parameters that user put to create this message
 type Message struct {
-	PubKey      [4096]byte          `json:"pubkey" yaml:"pubkey" valid:"required~PubKey is required"`
+	PubKey      string              `json:"pubkey" yaml:"pubkey" valid:"required~PubKey is required"`
 	KeyType     types.SignerKeyType `json:"type" yaml:"type" valid:"required~Type is required"`
 	ExpiryTime  int64               `json:"expires" yaml:"expires" valid:"required~Expires is required"`
 	Enabled     bool                `json:"enabled" yaml:"enabled" valid:"required~Enabled is required"`

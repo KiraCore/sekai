@@ -33,7 +33,7 @@ func TransactionCommand(codec *codec.Codec) *cobra.Command {
 
 			var curator = cliContext.GetFromAddress()
 			var pubKeyFlag = args[0]
-			var pubKey = [4096]byte{}
+			var pubKey = ""
 			var keyTypeFlag = viper.GetString("key-type")
 			var enabledFlag = viper.GetBool("enabled")
 			var permissionsFlag = viper.GetIntSlice("permissions")
