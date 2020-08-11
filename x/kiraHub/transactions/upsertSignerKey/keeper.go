@@ -9,6 +9,9 @@ import (
 	"github.com/KiraCore/sekai/types"
 )
 
+// KeySignerKeys describes the key where to save in KVStore
+const KeySignerKeys = "signer_keys"
+
 // Keeper is an interface to keep signer keys
 type Keeper struct {
 	cdc      *codec.Codec // The wire codec for binary encoding/decoding.
@@ -22,7 +25,7 @@ func (k Keeper) GetSignerKeys(ctx sdk.Context, curator sdk.AccAddress) []types.S
 	var queryOutput = []types.SignerKey{}
 
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get([]byte("signer_keys")) // TODO: should use iterator instead of this
+	bz := store.Get([]byte(KeySignerKeys)) // TODO: should use iterator instead of this
 
 	k.cdc.MustUnmarshalBinaryBare(bz, &signerKeys)
 
@@ -51,14 +54,16 @@ func (k Keeper) UpsertSignerKey(ctx sdk.Context,
 	curator sdk.AccAddress) error {
 
 	var newSignerKeys []types.SignerKey
-	now := time.Now()
-	unix := now.Unix() // TODO: this won't work as every node has little time differece in unix
+	// TODO: expiry key should be entered from a user or set automatically?
+	// for now, set it to last block's time + 10 days
+	// TODO: order should use block time instead of current timestamp from local computer
+	unix := ctx.BlockHeader().Time.Unix() + time.Hour.Milliseconds()*24*10
 
 	var signerKey = types.NewSignerKey(pubKey, keyType, unix, true, Permissions, curator)
 
 	// Storage Logic
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get([]byte("signer_keys"))
+	bz := store.Get([]byte(KeySignerKeys))
 
 	var signerKeys []types.SignerKey
 	k.cdc.MustUnmarshalBinaryBare(bz, &signerKeys)
@@ -74,13 +79,13 @@ func (k Keeper) UpsertSignerKey(ctx sdk.Context,
 				return errors.New("this key is owned by another curator already")
 			}
 			newSignerKeys = append(newSignerKeys, signerKey)
-		} else if sk.ExpiryTime > unix { // TODO: this is not correct as unix is various per node
+		} else if sk.ExpiryTime > unix {
 			newSignerKeys = append(newSignerKeys, sk)
 		}
 	}
 	// TODO: easily query if sub-key x belongs to account y
 
-	store.Set([]byte("signer_keys"), k.cdc.MustMarshalBinaryBare(newSignerKeys))
+	store.Set([]byte(KeySignerKeys), k.cdc.MustMarshalBinaryBare(newSignerKeys))
 	// TODO: should add test for creating / updating after v0.0.5 release.
 	return nil
 }
