@@ -1,12 +1,12 @@
 package kiraHub
 
-
 import (
 	constants "github.com/KiraCore/sekai/x/kiraHub/constants"
 	"github.com/KiraCore/sekai/x/kiraHub/queries/listOrderBooks"
 	"github.com/KiraCore/sekai/x/kiraHub/queries/listOrders"
 	"github.com/KiraCore/sekai/x/kiraHub/transactions/createOrder"
 	"github.com/KiraCore/sekai/x/kiraHub/transactions/createOrderBook"
+	signerkey "github.com/KiraCore/sekai/x/kiraHub/transactions/upsertSignerKey"
 	"github.com/spf13/cobra"
 
 	"github.com/KiraCore/cosmos-sdk/client"
@@ -25,6 +25,7 @@ func GetCLIRootTransactionCommand(codec *codec.Codec) *cobra.Command {
 	rootTransactionCommand.AddCommand(flags.PostCommands(
 		createOrderBook.TransactionCommand(codec),
 		createOrder.TransactionCommand(codec),
+		signerkey.TransactionCommand(codec),
 	)...)
 	return rootTransactionCommand
 }
