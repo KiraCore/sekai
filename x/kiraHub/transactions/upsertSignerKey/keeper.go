@@ -10,11 +10,11 @@ import (
 	"github.com/KiraCore/sekai/types"
 )
 
-// KeySignerKeys describes the key where to save in KVStore
-const KeySignerKeys = "signer_keys"
+// PrefixKeySignerKeys describes the key where to save in KVStore
+const PrefixKeySignerKeys = "signer_keys"
 
-// KeyPubKeyCurator describes the owner of each pubKey
-const KeyPubKeyCurator = "pub_key_curator"
+// PrefixKeyPubKeyCurator describes the owner of each pubKey
+const PrefixKeyPubKeyCurator = "pub_key_curator"
 
 // Keeper is an interface to keep signer keys
 type Keeper struct {
@@ -26,20 +26,16 @@ type Keeper struct {
 func (k Keeper) GetSignerKeys(ctx sdk.Context, curator sdk.AccAddress) []types.SignerKey {
 
 	var signerKeys []types.SignerKey
-	var queryOutput = []types.SignerKey{}
 
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get([]byte(KeySignerKeys)) // TODO: should use iterator instead of this
+	curatorStoreID := append([]byte(PrefixKeySignerKeys), []byte(curator)...)
 
-	k.cdc.MustUnmarshalBinaryBare(bz, &signerKeys)
-
-	for _, signerKey := range signerKeys {
-		if signerKey.Curator.Equals(curator) {
-			queryOutput = append(queryOutput, signerKey)
-		}
+	if store.Has(curatorStoreID) {
+		bz := store.Get(curatorStoreID)
+		k.cdc.MustUnmarshalBinaryBare(bz, &signerKeys)
 	}
 
-	return queryOutput
+	return signerKeys
 }
 
 // NewKeeper is a utility to create a keeper
@@ -60,39 +56,52 @@ func (k Keeper) UpsertSignerKey(ctx sdk.Context,
 	var newSignerKeys []types.SignerKey
 	// TODO: expiry key should be entered from a user or set automatically?
 	// for now, set it to last block's time + 10 days
-	// TODO: order should use block time instead of current timestamp from local computer
+	// TODO: createOrder/createOrderBook should use block time instead of current timestamp from local computer
 	unix := ctx.BlockHeader().Time.Unix() + time.Hour.Milliseconds()*24*10
 
 	var signerKey = types.NewSignerKey(pubKey, keyType, unix, true, Permissions, curator)
 
+	var signerKeys []types.SignerKey
 	// Storage Logic
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get([]byte(KeySignerKeys))
+	curatorStoreID := append([]byte(PrefixKeySignerKeys), []byte(curator)...)
 
-	var signerKeys []types.SignerKey
-	k.cdc.MustUnmarshalBinaryBare(bz, &signerKeys)
-	// TODO: we need to create index that will help us quickly identify keys belonging to specific user.
-	// TODO: must add a check to make sure that 2 accounts can't have the same sub-key
-	// TODO: navigating around whole signer keys is inefficient, should update it to efficient and make it by sender
+	if store.Has(curatorStoreID) {
+		bz := store.Get(curatorStoreID)
+		k.cdc.MustUnmarshalBinaryBare(bz, &signerKeys)
+	}
+
+	pubKeyStoreID := append([]byte(PrefixKeyPubKeyCurator), []byte(pubKey)...)
+
 	for _, sk := range signerKeys {
 		if strings.Compare(sk.PubKey, pubKey) == 0 {
 			if keyType == sk.KeyType {
 				return errors.New("keyType shouldn't be different for same pub key")
 			}
-			if sk.Curator.Equals(curator) {
-				return errors.New("this key is owned by another curator already")
-			}
 			newSignerKeys = append(newSignerKeys, signerKey)
-			store.Set([]byte(KeyPubKeyCurator), []byte(signerKey.PubKey))
 		} else if sk.ExpiryTime > unix {
 			newSignerKeys = append(newSignerKeys, sk)
+		} else { // Delete pubKey curator when it is expired
+			if !store.Has(pubKeyStoreID) {
+				return errors.New("pubKey to curator mapping is not set properly at the time of expired key cleanup")
+			}
+			store.Delete(pubKeyStoreID)
 		}
 	}
-	// TODO: easily query if sub-key x belongs to account y
+	if !store.Has([]byte(pubKey)) { // when pubKey's owner does not exist
+		newSignerKeys = append(newSignerKeys, signerKey)
+		// Set pubKey curator when pubKey is newly added
+		store.Set(pubKeyStoreID, curator)
+	} else {
+		originCurator := store.Get(pubKeyStoreID)
+		if !curator.Equals(sdk.AccAddress(originCurator)) {
+			return errors.New("this key is owned by another curator already")
+		}
+	}
 
-	store.Set([]byte(KeySignerKeys), k.cdc.MustMarshalBinaryBare(newSignerKeys))
-	// TODO: should add test for creating / updating after v0.0.5 release.
+	store.Set(curatorStoreID, k.cdc.MustMarshalBinaryBare(newSignerKeys))
 	return nil
 }
 
+// TODO: should add test for creating / updating after v0.0.5 release.
 // TODO: should add deleteSignerKey after discussion but this should create another directory under transactions folder?
