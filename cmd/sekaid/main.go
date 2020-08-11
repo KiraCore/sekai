@@ -80,7 +80,7 @@ func init() {
 		debug.Cmd(),
 	)
 
-	server.AddCommands(rootCmd, newApp, exportAppStateAndTMValidators)
+	server.AddCommands(rootCmd, app.DefaultNodeHome, newApp, exportAppStateAndTMValidators)
 
 	// add keybase, auxiliary RPC, query, and tx child commands
 	rootCmd.AddCommand(
