@@ -17,7 +17,7 @@ type OrderBook struct {
 }
 
 func NewOrderBook() OrderBook {
-	return OrderBook{
+	return OrderBook {
 		Index: 0,
 		Base: "",
 		Quote: "",

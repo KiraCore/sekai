@@ -16,10 +16,10 @@ import (
 func TransactionCommand(codec *codec.Codec) *cobra.Command {
 
 	return &cobra.Command{
-		Use:   "createOrder [order_book_id] [type] [amount] [price]",
+		Use:   "createOrder [order_book_id] [type] [amount] [price] [expiry_time]",
 		Short: "Create Order",
 		Long: "0 - Limit Buy, 1 - Limit Sell",
-		Args:  cobra.ExactArgs(4),
+		Args:  cobra.ExactArgs(5),
 		RunE: func(command *cobra.Command, args []string) error {
 			bufioReader := bufio.NewReader(command.InOrStdin())
 			transactionBuilder := auth.NewTxBuilderFromCLI(bufioReader).WithTxEncoder(auth.DefaultTxEncoder(codec))
@@ -34,12 +34,14 @@ func TransactionCommand(codec *codec.Codec) *cobra.Command {
 
 				var amount, _ = strconv.Atoi(args[2])
 				var limitPrice, _ = strconv.Atoi(args[3])
+				var expiryTime, _ = strconv.Atoi(args[4])
 
 				var message = Message {
 					OrderBookID: args[0],
 					OrderType: uint8(orderType),
 					Amount: int64(amount),
 					LimitPrice: int64(limitPrice),
+					ExpiryTime: int64(expiryTime),
 					Curator: curator,
 				}
 
