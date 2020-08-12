@@ -3,8 +3,8 @@ package kiraHub
 import (
 	"github.com/KiraCore/cosmos-sdk/codec"
 
-	"github.com/KiraCore/sekai/x/kiraHub/transactions/createOrderBook"
 	"github.com/KiraCore/sekai/x/kiraHub/transactions/createOrder"
+	"github.com/KiraCore/sekai/x/kiraHub/transactions/createOrderBook"
 )
 
 // RegisterCodec registers concrete types on codec
@@ -19,6 +19,6 @@ var ModuleCdc *codec.Codec
 func init() {
 	ModuleCdc = codec.New()
 	RegisterCodec(ModuleCdc)
-	codec.RegisterCrypto(ModuleCdc)
+	//codec.RegisterCrypto(ModuleCdc)
 	ModuleCdc.Seal()
 }
