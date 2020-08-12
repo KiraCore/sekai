@@ -22,6 +22,10 @@ type Keeper struct {
 	storeKey sdk.StoreKey // Unexposed key to access store from sdk.Context
 }
 
+func (k Keeper) GetCodec() *codec.Codec {
+	return k.cdc
+}
+
 // GetSignerKeys return SignerKeys by a curator
 func (k Keeper) GetSignerKeys(ctx sdk.Context, curator sdk.AccAddress) []types.SignerKey {
 
