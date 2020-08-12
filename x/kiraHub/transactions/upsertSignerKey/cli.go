@@ -92,6 +92,6 @@ func TransactionCommand(codec *codec.Codec) *cobra.Command {
 	cmd.Flags().String("key-type", "Secp256k1", "flag to set pubKey type; Secp256k1 | Ed25519")
 	cmd.Flags().Bool("enabled", true, "flag to enable/disable pubKey")
 	cmd.Flags().IntSlice("permissions", []int{}, "flag to set permissions set for the pubKey")
-	cmd.Flags().Int64("expiry-time", time.Hour.Milliseconds()*24*10, "flag to set permissions set for the pubKey")
+	cmd.Flags().Int64("expiry-time", time.Now().Add(time.Hour*24*10).Unix(), "flag to set permissions set for the pubKey")
 	return cmd
 }

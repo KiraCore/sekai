@@ -2,6 +2,7 @@ package signerkey
 
 import (
 	"errors"
+	"time"
 
 	sdk "github.com/KiraCore/cosmos-sdk/types"
 	"github.com/KiraCore/sekai/types"
@@ -29,7 +30,11 @@ func (message Message) Type() string { return constants.UpsertSignerKeyTransacti
 // ValidateBasic returns basic validation error
 func (message Message) ValidateBasic() error {
 	// TODO: validate pubkey encoding by key type
-	// TODO: validate expiry time and permissions set
+	// TODO: validate permissions set
+
+	if time.Now().Unix() > message.ExpiryTime {
+		return errors.New("expiry time is invalid: now > expiryTime")
+	}
 
 	// validate if curator not empty
 	if message.Curator.Empty() {

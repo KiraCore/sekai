@@ -50,16 +50,15 @@ func NewKeeper(cdc *codec.Codec, storeKey sdk.StoreKey) Keeper {
 func (k Keeper) UpsertSignerKey(ctx sdk.Context,
 	pubKey string,
 	keyType types.SignerKeyType,
+	expiryTime int64,
 	Permissions []int,
 	curator sdk.AccAddress) error {
 
 	var newSignerKeys []types.SignerKey
-	// TODO: expiry key should be entered from a user or set automatically?
-	// for now, set it to last block's time + 10 days
 	// TODO: createOrder/createOrderBook should use block time instead of current timestamp from local computer
-	unix := ctx.BlockHeader().Time.Unix() + time.Hour.Milliseconds()*24*10
+	lastBlockTimestamp := ctx.BlockHeader().Time.Unix() + time.Hour.Milliseconds()*24*10
 
-	var signerKey = types.NewSignerKey(pubKey, keyType, unix, true, Permissions, curator)
+	var signerKey = types.NewSignerKey(pubKey, keyType, expiryTime, true, Permissions, curator)
 
 	var signerKeys []types.SignerKey
 	// Storage Logic
@@ -79,7 +78,7 @@ func (k Keeper) UpsertSignerKey(ctx sdk.Context,
 				return errors.New("keyType shouldn't be different for same pub key")
 			}
 			newSignerKeys = append(newSignerKeys, signerKey)
-		} else if sk.ExpiryTime > unix {
+		} else if sk.ExpiryTime > lastBlockTimestamp { // we use lastBlockTimestamp this is only the time that the nodes can agree on
 			newSignerKeys = append(newSignerKeys, sk)
 		} else { // Delete pubKey curator when it is expired
 			if !store.Has(pubKeyStoreID) {
