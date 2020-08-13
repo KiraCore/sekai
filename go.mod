@@ -8,6 +8,7 @@ require (
 	github.com/gibson042/canonicaljson-go v1.0.3 // indirect
 	github.com/gogo/protobuf v1.3.1
 	github.com/gorilla/mux v1.7.4
+	github.com/magiconair/properties v1.8.1
 	github.com/onsi/ginkgo v1.8.0 // indirect
 	github.com/onsi/gomega v1.5.0 // indirect
 	github.com/otiai10/copy v1.2.0
@@ -15,6 +16,7 @@ require (
 	github.com/spf13/cast v1.3.1
 	github.com/spf13/cobra v1.0.0
 	github.com/spf13/viper v1.7.1
+	github.com/stretchr/testify v1.6.1
 	github.com/tendermint/go-amino v0.15.1
 	github.com/tendermint/tendermint v0.33.7
 	github.com/tendermint/tm-db v0.5.1
