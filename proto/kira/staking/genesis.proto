@@ -1,0 +1,10 @@
+syntax = "proto3";
+package kira.staking;
+
+import "staking.proto";
+
+option go_package = "github.com/KiraCore/cosmos-sdk/x/staking/types";
+
+message GenesisState {
+  repeated Validator validators = 1;
+}
