@@ -266,7 +266,7 @@ func NewInitApp(
 	app.customStakingKeeper = keeper.NewKeeper(keys[types2.ModuleName], cdc)
 
 	app.ibcKeeper = ibckeeper.NewKeeper(
-		app.cdc, appCodec, keys[ibchost.StoreKey], app.stakingKeeper, scopedIBCKeeper,
+		appCodec, keys[ibchost.StoreKey], app.stakingKeeper, scopedIBCKeeper,
 	)
 
 	// Create Transfer Keepers
