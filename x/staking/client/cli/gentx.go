@@ -126,6 +126,7 @@ func GenTxClaimCmd(mbm module.BasicManager, txEncCfg client.TxEncodingConfig, ge
 
 	cmd.Flags().String(flags.FlagHome, defaultNodeHome, "The application home directory")
 	cmd.Flags().String(flags.FlagKeyringBackend, flags.DefaultKeyringBackend, "Select keyring's backend (os|file|kwallet|pass|test)")
+	AddValidatorFlags(cmd)
 
 	return cmd
 }

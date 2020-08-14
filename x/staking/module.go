@@ -9,6 +9,7 @@ import (
 	sdk "github.com/KiraCore/cosmos-sdk/types"
 	"github.com/KiraCore/cosmos-sdk/types/module"
 	"github.com/KiraCore/sekai/x/staking/keeper"
+	"github.com/KiraCore/sekai/x/staking/types"
 	cumstomtypes "github.com/KiraCore/sekai/x/staking/types"
 	"github.com/gogo/protobuf/grpc"
 	"github.com/gorilla/mux"
@@ -72,8 +73,16 @@ func (am AppModule) RegisterInterfaces(registry types2.InterfaceRegistry) {
 	panic("implement me")
 }
 
-func (am AppModule) InitGenesis(context sdk.Context, marshaler codec.JSONMarshaler, message json.RawMessage) []abci.ValidatorUpdate {
-	return nil
+func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONMarshaler, data json.RawMessage) []abci.ValidatorUpdate {
+	var genesisState types.GenesisState
+
+	cdc.MustUnmarshalJSON(data, &genesisState)
+
+	for _, val := range genesisState.Validators {
+		am.customStakingKeeper.AddValidator(ctx, val)
+	}
+
+	return []abci.ValidatorUpdate{}
 }
 
 func (am AppModule) ExportGenesis(context sdk.Context, marshaler codec.JSONMarshaler) json.RawMessage {

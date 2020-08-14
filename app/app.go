@@ -7,7 +7,7 @@ import (
 
 	"github.com/KiraCore/sekai/x/staking/keeper"
 
-	types2 "github.com/KiraCore/sekai/x/staking/types"
+	cumstomtypes "github.com/KiraCore/sekai/x/staking/types"
 
 	customstaking "github.com/KiraCore/sekai/x/staking"
 
@@ -199,7 +199,7 @@ func NewInitApp(
 		distrtypes.StoreKey, slashingtypes.StoreKey,
 		govtypes.StoreKey, paramstypes.StoreKey, ibchost.StoreKey, upgradetypes.StoreKey,
 		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey, constants.StoreKey,
-		types2.ModuleName,
+		cumstomtypes.ModuleName,
 	)
 	tKeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
@@ -263,7 +263,7 @@ func NewInitApp(
 		stakingtypes.NewMultiStakingHooks(app.distrKeeper.Hooks(), app.slashingKeeper.Hooks()),
 	)
 
-	app.customStakingKeeper = keeper.NewKeeper(keys[types2.ModuleName], cdc)
+	app.customStakingKeeper = keeper.NewKeeper(keys[cumstomtypes.ModuleName], cdc)
 
 	app.ibcKeeper = ibckeeper.NewKeeper(
 		appCodec, keys[ibchost.StoreKey], app.stakingKeeper, scopedIBCKeeper,
@@ -334,6 +334,7 @@ func NewInitApp(
 		capabilitytypes.ModuleName, authtypes.ModuleName, distrtypes.ModuleName, stakingtypes.ModuleName, banktypes.ModuleName,
 		slashingtypes.ModuleName, govtypes.ModuleName, crisistypes.ModuleName,
 		ibchost.ModuleName, genutiltypes.ModuleName, evidencetypes.ModuleName, ibctransfertypes.ModuleName,
+		cumstomtypes.ModuleName,
 	)
 
 	app.mm.RegisterInvariants(&app.crisisKeeper)
