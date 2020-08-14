@@ -335,8 +335,8 @@ func New(t *testing.T, cfg Config) *Network {
 		}
 	}
 
-	require.NoError(t, initGenFiles(cfg, genAccounts, genBalances, genFiles))
-	require.NoError(t, collectGenFiles(cfg, network.Validators, network.BaseDir))
+	require.NoError(t, initGenFiles(cfg, network.Validators, genAccounts, genBalances, genFiles))
+	//require.NoError(t, collectGenFiles(cfg, network.Validators, network.BaseDir))
 
 	t.Log("starting test network...")
 	for _, v := range network.Validators {

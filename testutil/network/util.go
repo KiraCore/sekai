@@ -4,6 +4,10 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/pkg/errors"
+
+	types2 "github.com/KiraCore/cosmos-sdk/types"
+
 	tmos "github.com/tendermint/tendermint/libs/os"
 	"github.com/tendermint/tendermint/node"
 	"github.com/tendermint/tendermint/p2p"
@@ -20,6 +24,7 @@ import (
 	banktypes "github.com/KiraCore/cosmos-sdk/x/bank/types"
 	"github.com/KiraCore/cosmos-sdk/x/genutil"
 	genutiltypes "github.com/KiraCore/cosmos-sdk/x/genutil/types"
+	customtypes "github.com/KiraCore/sekai/x/staking/types"
 )
 
 func startInProcess(cfg Config, val *Validator) error {
@@ -130,7 +135,7 @@ func collectGenFiles(cfg Config, vals []*Validator, outputDir string) error {
 	return nil
 }
 
-func initGenFiles(cfg Config, genAccounts []authtypes.GenesisAccount, genBalances []banktypes.Balance, genFiles []string) error {
+func initGenFiles(cfg Config, vals []*Validator, genAccounts []authtypes.GenesisAccount, genBalances []banktypes.Balance, genFiles []string) error {
 
 	// set the accounts in the genesis state
 	var authGenState authtypes.GenesisState
@@ -150,6 +155,16 @@ func initGenFiles(cfg Config, genAccounts []authtypes.GenesisAccount, genBalance
 
 	bankGenState.Balances = genBalances
 	cfg.GenesisState[banktypes.ModuleName] = cfg.Codec.MustMarshalJSON(bankGenState)
+
+	var customStakingGenState customtypes.GenesisState
+	for _, val := range vals {
+		validator, err := customtypes.NewValidator(val.Moniker, "the Website", "The social", "The Identity", types2.NewDec(1), val.ValAddress, val.PubKey)
+		if err != nil {
+			return errors.Wrap(err, "error creating validator")
+		}
+		customStakingGenState.Validators = append(customStakingGenState.Validators, validator)
+	}
+	cfg.GenesisState[customtypes.ModuleName] = cfg.Codec.MustMarshalJSON(customStakingGenState)
 
 	appGenStateJSON, err := codec.MarshalJSONIndent(cfg.Codec, cfg.GenesisState)
 	if err != nil {
