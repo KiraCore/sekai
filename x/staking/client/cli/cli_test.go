@@ -31,6 +31,7 @@ type IntegrationTestSuite struct {
 }
 
 func (s *IntegrationTestSuite) SetupSuite() {
+	s.T().SkipNow()
 	s.T().Log("setting up integration test suite")
 
 	cfg := network.DefaultConfig()
