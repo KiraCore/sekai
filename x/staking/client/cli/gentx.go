@@ -126,6 +126,7 @@ func GenTxClaimCmd(mbm module.BasicManager, txEncCfg client.TxEncodingConfig, ge
 	cmd.Flags().String(flags.FlagHome, defaultNodeHome, "The application home directory")
 	cmd.Flags().String(flags.FlagOutputDocument, "", "Write the genesis transaction JSON document to the given file instead of the default location")
 	cmd.Flags().String(flags.FlagChainID, "", "The network chain ID")
+	cmd.Flags().String(flags.FlagKeyringBackend, flags.DefaultKeyringBackend, "Select keyring's backend (os|file|kwallet|pass|test)")
 
 	return cmd
 }
