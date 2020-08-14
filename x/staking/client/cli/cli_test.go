@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/KiraCore/sekai/testutil/network"
+
 	"github.com/stretchr/testify/suite"
 	dbm "github.com/tendermint/tm-db"
 
@@ -14,7 +16,6 @@ import (
 	servertypes "github.com/KiraCore/cosmos-sdk/server/types"
 	"github.com/KiraCore/cosmos-sdk/store/types"
 	"github.com/KiraCore/cosmos-sdk/testutil"
-	"github.com/KiraCore/cosmos-sdk/testutil/network"
 	sdk "github.com/KiraCore/cosmos-sdk/types"
 
 	"github.com/KiraCore/sekai/app"
@@ -31,7 +32,6 @@ type IntegrationTestSuite struct {
 }
 
 func (s *IntegrationTestSuite) SetupSuite() {
-	s.T().SkipNow()
 	s.T().Log("setting up integration test suite")
 
 	cfg := network.DefaultConfig()
