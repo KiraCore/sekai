@@ -5,6 +5,9 @@ import (
 	"io"
 	"os"
 
+	"github.com/KiraCore/cosmos-sdk/x/crisis"
+	crisiskeeper "github.com/KiraCore/cosmos-sdk/x/crisis/keeper"
+
 	"github.com/KiraCore/sekai/x/staking/keeper"
 
 	cumstomtypes "github.com/KiraCore/sekai/x/staking/types"
@@ -41,8 +44,6 @@ import (
 	"github.com/KiraCore/cosmos-sdk/x/capability"
 	capabilitykeeper "github.com/KiraCore/cosmos-sdk/x/capability/keeper"
 	capabilitytypes "github.com/KiraCore/cosmos-sdk/x/capability/types"
-	"github.com/KiraCore/cosmos-sdk/x/crisis"
-	crisiskeeper "github.com/KiraCore/cosmos-sdk/x/crisis/keeper"
 	crisistypes "github.com/KiraCore/cosmos-sdk/x/crisis/types"
 	distr "github.com/KiraCore/cosmos-sdk/x/distribution"
 	distrclient "github.com/KiraCore/cosmos-sdk/x/distribution/client"
@@ -307,7 +308,7 @@ func NewInitApp(
 		gov.NewAppModule(appCodec, app.govKeeper, app.accountKeeper, app.bankKeeper),
 		slashing.NewAppModule(appCodec, app.slashingKeeper, app.accountKeeper, app.bankKeeper, app.stakingKeeper),
 		distr.NewAppModule(appCodec, app.distrKeeper, app.accountKeeper, app.bankKeeper, app.stakingKeeper),
-		staking.NewAppModule(appCodec, app.stakingKeeper, app.accountKeeper, app.bankKeeper),
+		//staking.NewAppModule(appCodec, app.stakingKeeper, app.accountKeeper, app.bankKeeper),
 		upgrade.NewAppModule(app.upgradeKeeper),
 		evidence.NewAppModule(app.evidenceKeeper),
 		ibc.NewAppModule(app.ibcKeeper),
@@ -321,9 +322,9 @@ func NewInitApp(
 
 	app.mm.SetOrderBeginBlockers(
 		upgradetypes.ModuleName, distrtypes.ModuleName, slashingtypes.ModuleName,
-		evidencetypes.ModuleName, stakingtypes.ModuleName, ibchost.ModuleName,
+		evidencetypes.ModuleName /*stakingtypes.ModuleName,*/, ibchost.ModuleName,
 	)
-	app.mm.SetOrderEndBlockers(crisistypes.ModuleName, govtypes.ModuleName, stakingtypes.ModuleName)
+	app.mm.SetOrderEndBlockers(crisistypes.ModuleName, govtypes.ModuleName /*stakingtypes.ModuleName*/)
 
 	// NOTE: The genutils moodule must occur after staking so that pools are
 	// properly initialized with tokens from genesis accounts.
@@ -331,7 +332,7 @@ func NewInitApp(
 	// so that other modules that want to create or claim capabilities afterwards in InitChain
 	// can do so safely.
 	app.mm.SetOrderInitGenesis(
-		capabilitytypes.ModuleName, authtypes.ModuleName, distrtypes.ModuleName, stakingtypes.ModuleName, banktypes.ModuleName,
+		capabilitytypes.ModuleName, authtypes.ModuleName, distrtypes.ModuleName /*stakingtypes.ModuleName,*/, banktypes.ModuleName,
 		slashingtypes.ModuleName, govtypes.ModuleName, crisistypes.ModuleName,
 		ibchost.ModuleName, genutiltypes.ModuleName, evidencetypes.ModuleName, ibctransfertypes.ModuleName,
 		cumstomtypes.ModuleName,

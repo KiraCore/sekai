@@ -2,9 +2,13 @@ syntax = "proto3";
 package kira.staking;
 
 import "staking.proto";
+import "gogoproto/gogo.proto";
 
 option go_package = "github.com/KiraCore/cosmos-sdk/x/staking/types";
 
 message GenesisState {
-  repeated Validator validators = 1;
+  repeated Validator validators = 1 [
+    (gogoproto.casttype) = "Validator",
+    (gogoproto.nullable) = false
+  ];
 }
