@@ -2,6 +2,13 @@ package cli
 
 import (
 	"fmt"
+
+	"github.com/tendermint/tendermint/crypto"
+
+	"github.com/KiraCore/cosmos-sdk/server"
+
+	"github.com/KiraCore/cosmos-sdk/x/genutil"
+	"github.com/KiraCore/cosmos-sdk/x/staking/client/cli"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 
@@ -19,7 +26,6 @@ const (
 	FlagIdentity  = "identity"
 	FlagComission = "commission"
 	FlagValKey    = "validator-key"
-	FlagPubKey    = "public-key"
 )
 
 func GetTxClaimValidatorCmd() *cobra.Command {
@@ -28,6 +34,7 @@ func GetTxClaimValidatorCmd() *cobra.Command {
 		Short: "Claim validator seat to become a Validator",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
+			serverCtx := server.GetServerContextFromCmd(cmd)
 			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
 			if err != nil {
 				return err
@@ -39,17 +46,25 @@ func GetTxClaimValidatorCmd() *cobra.Command {
 			identity, _ := cmd.Flags().GetString(FlagIdentity)
 			comission, _ := cmd.Flags().GetString(FlagComission)
 			valKeyStr, _ := cmd.Flags().GetString(FlagValKey)
-			pubKeyStr, _ := cmd.Flags().GetString(FlagPubKey)
+
+			// read --pubkey, if empty take it from priv_validator.json
+			var valPubKey crypto.PubKey
+			if valPubKeyString, _ := cmd.Flags().GetString(cli.FlagPubKey); valPubKeyString != "" {
+				valPubKey, err = types.GetPubKeyFromBech32(types.Bech32PubKeyTypeConsPub, valPubKeyString)
+				if err != nil {
+					return errors.Wrap(err, "failed to get consensus node public key")
+				}
+			} else {
+				_, valPubKey, err = genutil.InitializeNodeValidatorFiles(serverCtx.Config)
+				if err != nil {
+					return errors.Wrap(err, "failed to initialize node validator files")
+				}
+			}
 
 			comm, err := types.NewDecFromStr(comission)
 			val, err := types.ValAddressFromBech32(valKeyStr)
 			if err != nil {
 				return err
-			}
-
-			valPubKey, err := types.GetPubKeyFromBech32(types.Bech32PubKeyTypeConsPub, pubKeyStr)
-			if err != nil {
-				return errors.Wrap(err, "failed to get validator public key")
 			}
 
 			msg, err := cumstomtypes.NewMsgClaimValidator(moniker, website, social, identity, comm, val, valPubKey)
@@ -61,17 +76,10 @@ func GetTxClaimValidatorCmd() *cobra.Command {
 		},
 	}
 
-	cmd.Flags().String(FlagMoniker, "", "the Moniker")
-	cmd.Flags().String(FlagWebsite, "", "the Website")
-	cmd.Flags().String(FlagSocial, "", "the social")
-	cmd.Flags().String(FlagIdentity, "", "the Identity")
-	cmd.Flags().String(FlagComission, "", "the commission")
-	cmd.Flags().String(FlagValKey, "", "the validator key")
-	cmd.Flags().String(FlagPubKey, "", "the public key")
+	AddValidatorFlags(cmd)
 	flags.AddTxFlagsToCmd(cmd)
 
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
 }
-

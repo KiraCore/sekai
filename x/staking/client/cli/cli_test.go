@@ -3,6 +3,7 @@ package cli_test
 import (
 	"context"
 	"fmt"
+	"github.com/KiraCore/cosmos-sdk/client/keys"
 	"testing"
 
 	"github.com/KiraCore/sekai/testutil/network"
@@ -79,7 +80,7 @@ func (s *IntegrationTestSuite) TestClaimValidatorSet() {
 			fmt.Sprintf("--%s=%s", cli.FlagSocial, "Social"),
 			fmt.Sprintf("--%s=%s", cli.FlagIdentity, "Identity"),
 			fmt.Sprintf("--%s=%s", cli.FlagComission, "10"),
-			fmt.Sprintf("--%s=%s", cli.FlagPubKey, pubKey),
+			fmt.Sprintf("--%s=%s", keys.FlagPublicKey, pubKey),
 			fmt.Sprintf("--%s=%s", cli.FlagValKey, val.ValAddress.String()),
 			fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Moniker),
 			fmt.Sprintf("--%s", flags.FlagSkipConfirmation),

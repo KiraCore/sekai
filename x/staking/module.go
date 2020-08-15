@@ -109,8 +109,20 @@ func (am AppModule) LegacyQuerierHandler(marshaler codec.JSONMarshaler) sdk.Quer
 
 func (am AppModule) BeginBlock(context sdk.Context, block abci.RequestBeginBlock) {}
 
-func (am AppModule) EndBlock(context sdk.Context, block abci.RequestEndBlock) []abci.ValidatorUpdate {
-	return []abci.ValidatorUpdate{}
+func (am AppModule) EndBlock(ctx sdk.Context, block abci.RequestEndBlock) []abci.ValidatorUpdate {
+	valSet := am.customStakingKeeper.GetValidatorSet(ctx)
+
+	valUpdate := make([]abci.ValidatorUpdate, len(valSet))
+
+	for i, val := range valSet {
+		am.customStakingKeeper.AddValidator(ctx, val)
+		valUpdate[i] = abci.ValidatorUpdate{
+			Power:  1,
+			PubKey: tmtypes.TM2PB.PubKey(val.GetConsPubKey()),
+		}
+	}
+
+	return valUpdate
 }
 
 func (am AppModule) Name() string {

@@ -6,19 +6,7 @@ import (
 	"io"
 	"os"
 
-	cli2 "github.com/KiraCore/sekai/x/staking/client/cli"
-
-	"github.com/KiraCore/cosmos-sdk/client/keys"
-	"github.com/KiraCore/cosmos-sdk/client/rpc"
-	authcmd "github.com/KiraCore/cosmos-sdk/x/auth/client/cli"
-
 	"github.com/spf13/cast"
-
-	banktypes "github.com/KiraCore/cosmos-sdk/x/bank/types"
-
-	"github.com/KiraCore/cosmos-sdk/x/auth/types"
-
-	"github.com/KiraCore/cosmos-sdk/client"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
@@ -28,17 +16,24 @@ import (
 	tmtypes "github.com/tendermint/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/KiraCore/sekai/app"
-
 	"github.com/KiraCore/cosmos-sdk/baseapp"
+	"github.com/KiraCore/cosmos-sdk/client"
 	"github.com/KiraCore/cosmos-sdk/client/debug"
 	"github.com/KiraCore/cosmos-sdk/client/flags"
+	"github.com/KiraCore/cosmos-sdk/client/keys"
+	"github.com/KiraCore/cosmos-sdk/client/rpc"
 	"github.com/KiraCore/cosmos-sdk/server"
 	servertypes "github.com/KiraCore/cosmos-sdk/server/types"
 	"github.com/KiraCore/cosmos-sdk/store"
 	sdk "github.com/KiraCore/cosmos-sdk/types"
 	authclient "github.com/KiraCore/cosmos-sdk/x/auth/client"
+	authcmd "github.com/KiraCore/cosmos-sdk/x/auth/client/cli"
+	"github.com/KiraCore/cosmos-sdk/x/auth/types"
+	banktypes "github.com/KiraCore/cosmos-sdk/x/bank/types"
 	genutilcli "github.com/KiraCore/cosmos-sdk/x/genutil/client/cli"
+
+	"github.com/KiraCore/sekai/app"
+	customstaking "github.com/KiraCore/sekai/x/staking/client/cli"
 )
 
 var (
@@ -74,7 +69,7 @@ func init() {
 		genutilcli.CollectGenTxsCmd(banktypes.GenesisBalancesIterator{}, app.DefaultNodeHome),
 		genutilcli.MigrateGenesisCmd(),
 		genutilcli.GenTxCmd(app.ModuleBasics, encodingConfig.TxConfig, banktypes.GenesisBalancesIterator{}, app.DefaultNodeHome),
-		cli2.GenTxClaimCmd(app.ModuleBasics, encodingConfig.TxConfig, banktypes.GenesisBalancesIterator{}, app.DefaultNodeHome),
+		customstaking.GenTxClaimCmd(app.ModuleBasics, encodingConfig.TxConfig, banktypes.GenesisBalancesIterator{}, app.DefaultNodeHome),
 		genutilcli.ValidateGenesisCmd(app.ModuleBasics, encodingConfig.TxConfig),
 		AddGenesisAccountCmd(app.DefaultNodeHome),
 		cli.NewCompletionCmd(rootCmd, true),
