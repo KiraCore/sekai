@@ -3,7 +3,6 @@ package keeper
 import (
 	"github.com/KiraCore/cosmos-sdk/codec"
 	sdk "github.com/KiraCore/cosmos-sdk/types"
-	stakingtypes "github.com/KiraCore/cosmos-sdk/x/staking/types"
 	"github.com/KiraCore/sekai/x/staking/types"
 )
 
@@ -21,12 +20,12 @@ func NewKeeper(storeKey sdk.StoreKey, cdc *codec.Codec) Keeper {
 func (k Keeper) AddValidator(ctx sdk.Context, validator types.Validator) {
 	store := ctx.KVStore(k.storeKey)
 	bz := k.cdc.MustMarshalBinaryBare(validator)
-	store.Set(stakingtypes.GetValidatorKey(validator.ValKey), bz)
+	store.Set(types.GetValidatorKey(validator.ValKey), bz)
 }
 
 func (k Keeper) GetValidator(ctx sdk.Context, address sdk.ValAddress) types.Validator {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(stakingtypes.GetValidatorKey(address))
+	bz := store.Get(types.GetValidatorKey(address))
 
 	var validator types.Validator
 	k.cdc.MustUnmarshalBinaryBare(bz, &validator)
@@ -37,7 +36,7 @@ func (k Keeper) GetValidator(ctx sdk.Context, address sdk.ValAddress) types.Vali
 func (k Keeper) GetValidatorSet(ctx sdk.Context) []types.Validator {
 	store := ctx.KVStore(k.storeKey)
 
-	iter := store.Iterator(nil, nil)
+	iter := store.Iterator(types.ValidatorsKey, nil)
 
 	var validators []types.Validator
 	for ; iter.Valid(); iter.Next() {
