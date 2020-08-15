@@ -19,6 +19,10 @@ func GetValidatorKey(operatorAddr sdk.ValAddress) []byte {
 	return append(ValidatorsKey, operatorAddr.Bytes()...)
 }
 
+func GetValidatorKeyAcc(address sdk.AccAddress) []byte {
+	return append(ValidatorsKey, address.Bytes()...)
+}
+
 func GetValidatorByMonikerKey(moniker string) []byte {
 	return append(ValidatorsByMonikerKey, []byte(moniker)...)
 }

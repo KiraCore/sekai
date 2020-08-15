@@ -32,9 +32,14 @@ func TestKeeper_AddValidator(t *testing.T) {
 	)
 	require.NoError(t, err)
 
-	// Get By Validator Address.
 	app.CustomStakingKeeper.AddValidator(ctx, validator)
+
+	// Get By Validator Address.
 	getValidator := app.CustomStakingKeeper.GetValidator(ctx, validator.ValKey)
+	require.Equal(t, validator, getValidator)
+
+	// Get by AccAddress.
+	getValidator = app.CustomStakingKeeper.GetValidatorByAccAddress(ctx, addr1)
 	require.Equal(t, validator, getValidator)
 
 	// Get by Moniker.

@@ -27,13 +27,11 @@ func (k Keeper) AddValidator(ctx sdk.Context, validator types.Validator) {
 }
 
 func (k Keeper) GetValidator(ctx sdk.Context, address sdk.ValAddress) types.Validator {
-	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.GetValidatorKey(address))
+	return k.getValidatorByKey(ctx, types.GetValidatorKey(address))
+}
 
-	var validator types.Validator
-	k.cdc.MustUnmarshalBinaryBare(bz, &validator)
-
-	return validator
+func (k Keeper) GetValidatorByAccAddress(ctx sdk.Context, address sdk.AccAddress) types.Validator {
+	return k.getValidatorByKey(ctx, types.GetValidatorKeyAcc(address))
 }
 
 func (k Keeper) GetValidatorByMoniker(ctx sdk.Context, moniker string) types.Validator {
@@ -41,7 +39,13 @@ func (k Keeper) GetValidatorByMoniker(ctx sdk.Context, moniker string) types.Val
 
 	valKey := store.Get(types.GetValidatorByMonikerKey(moniker))
 
-	bz := store.Get(valKey)
+	return k.getValidatorByKey(ctx, valKey)
+}
+
+func (k Keeper) getValidatorByKey(ctx sdk.Context, key []byte) types.Validator {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(key)
+
 	var validator types.Validator
 	k.cdc.MustUnmarshalBinaryBare(bz, &validator)
 
