@@ -9,9 +9,16 @@ const (
 	ClaimValidator = "claim-validator"
 )
 
-var ValidatorsKey = []byte{0x21} // Validators key
+var (
+	ValidatorsKey          = []byte{0x21} // Validators key prefix.
+	ValidatorsByMonikerKey = []byte{0x22} // Validators by moniker prefix.
+)
 
 // GetValidatorKey gets the key for the validator with address
 func GetValidatorKey(operatorAddr sdk.ValAddress) []byte {
 	return append(ValidatorsKey, operatorAddr.Bytes()...)
+}
+
+func GetValidatorByMonikerKey(moniker string) []byte {
+	return append(ValidatorsByMonikerKey, []byte(moniker)...)
 }

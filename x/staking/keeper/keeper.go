@@ -21,6 +21,9 @@ func (k Keeper) AddValidator(ctx sdk.Context, validator types.Validator) {
 	store := ctx.KVStore(k.storeKey)
 	bz := k.cdc.MustMarshalBinaryBare(validator)
 	store.Set(types.GetValidatorKey(validator.ValKey), bz)
+
+	// Save by moniker
+	store.Set(types.GetValidatorByMonikerKey(validator.Moniker), types.GetValidatorKey(validator.ValKey))
 }
 
 func (k Keeper) GetValidator(ctx sdk.Context, address sdk.ValAddress) types.Validator {
@@ -33,10 +36,23 @@ func (k Keeper) GetValidator(ctx sdk.Context, address sdk.ValAddress) types.Vali
 	return validator
 }
 
+func (k Keeper) GetValidatorByMoniker(ctx sdk.Context, moniker string) types.Validator {
+	store := ctx.KVStore(k.storeKey)
+
+	valKey := store.Get(types.GetValidatorByMonikerKey(moniker))
+
+	bz := store.Get(valKey)
+	var validator types.Validator
+	k.cdc.MustUnmarshalBinaryBare(bz, &validator)
+
+	return validator
+}
+
 func (k Keeper) GetValidatorSet(ctx sdk.Context) []types.Validator {
 	store := ctx.KVStore(k.storeKey)
 
-	iter := store.Iterator(types.ValidatorsKey, nil)
+	iter := sdk.KVStorePrefixIterator(store, types.ValidatorsKey)
+	defer iter.Close()
 
 	var validators []types.Validator
 	for ; iter.Valid(); iter.Next() {
