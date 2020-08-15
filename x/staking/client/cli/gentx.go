@@ -118,7 +118,7 @@ func GenTxClaimCmd(mbm module.BasicManager, txEncCfg client.TxEncodingConfig, ge
 				return err
 			}
 
-			fmt.Printf("genesis state updated to include validator")
+			fmt.Printf("genesis state updated to include validator\n")
 
 			return nil
 		},
