@@ -19,7 +19,6 @@ import (
 
 const (
 	FlagValAddr = "val-addr"
-	flagMoniker = "flagMoniker"
 	FlagAddr    = "addr"
 )
 
@@ -68,6 +67,18 @@ func GetCmdQueryValidatorByAddress() *cobra.Command {
 				return clientCtx.PrintOutput(res.Validator)
 			}
 
+			moniker, _ := cmd.Flags().GetString(FlagMoniker)
+			if moniker != "" {
+				params := &cumstomtypes.ValidatorByMonikerRequest{Moniker: moniker}
+
+				queryClient := cumstomtypes.NewQueryClient(clientCtx)
+				res, err := queryClient.ValidatorByMoniker(context.Background(), params)
+				if err != nil {
+					return err
+				}
+
+				return clientCtx.PrintOutput(res.Validator)
+			}
 			return nil
 		},
 	}
@@ -76,7 +87,7 @@ func GetCmdQueryValidatorByAddress() *cobra.Command {
 
 	cmd.Flags().String(FlagAddr, "", "the addres in AccAddress format.")
 	cmd.Flags().String(FlagValAddr, "", "the addres in ValAddress format.")
-	cmd.Flags().String(flagMoniker, "", "the moniker")
+	cmd.Flags().String(FlagMoniker, "", "the moniker")
 
 	return cmd
 }

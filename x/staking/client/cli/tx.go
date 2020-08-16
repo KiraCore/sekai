@@ -20,7 +20,6 @@ import (
 )
 
 const (
-	FlagMoniker   = "flagMoniker"
 	FlagWebsite   = "website"
 	FlagSocial    = "social"
 	FlagIdentity  = "identity"
