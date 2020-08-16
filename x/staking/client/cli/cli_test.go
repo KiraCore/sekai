@@ -3,10 +3,7 @@ package cli_test
 import (
 	"context"
 	"fmt"
-	"github.com/KiraCore/cosmos-sdk/client/keys"
 	"testing"
-
-	"github.com/KiraCore/sekai/testutil/network"
 
 	"github.com/stretchr/testify/suite"
 	dbm "github.com/tendermint/tm-db"
@@ -14,6 +11,7 @@ import (
 	"github.com/KiraCore/cosmos-sdk/baseapp"
 	"github.com/KiraCore/cosmos-sdk/client"
 	"github.com/KiraCore/cosmos-sdk/client/flags"
+	"github.com/KiraCore/cosmos-sdk/client/keys"
 	servertypes "github.com/KiraCore/cosmos-sdk/server/types"
 	"github.com/KiraCore/cosmos-sdk/store/types"
 	"github.com/KiraCore/cosmos-sdk/testutil"
@@ -21,6 +19,7 @@ import (
 
 	"github.com/KiraCore/sekai/app"
 	"github.com/KiraCore/sekai/simapp"
+	"github.com/KiraCore/sekai/testutil/network"
 	"github.com/KiraCore/sekai/x/staking/client/cli"
 	customtypes "github.com/KiraCore/sekai/x/staking/types"
 )
@@ -62,7 +61,7 @@ func (s *IntegrationTestSuite) TearDownSuite() {
 	s.network.Cleanup()
 }
 
-func (s *IntegrationTestSuite) TestClaimValidatorSet() {
+func (s *IntegrationTestSuite) TestClaimValidatorSet_AndQueriers() {
 	val := s.network.Validators[0]
 
 	cmd := cli.GetTxClaimValidatorCmd()
@@ -100,7 +99,7 @@ func (s *IntegrationTestSuite) TestClaimValidatorSet() {
 	query := cli.GetCmdQueryValidatorByAddress()
 	query.SetArgs(
 		[]string{
-			val.ValAddress.String(),
+			fmt.Sprintf("--%s=%s", cli.FlagValAddr, val.ValAddress.String()),
 		},
 	)
 
