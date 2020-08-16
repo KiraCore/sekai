@@ -119,6 +119,30 @@ func (s *IntegrationTestSuite) TestClaimValidatorSet_AndQueriers() {
 	s.Require().Equal(sdk.NewDec(10), respValidator.Commission)
 	s.Require().Equal(val.ValAddress, respValidator.ValKey)
 	s.Require().Equal(pubKey, respValidator.PubKey)
+
+	// Query by Acc Addrs.
+	query = cli.GetCmdQueryValidatorByAddress()
+	query.SetArgs(
+		[]string{
+			fmt.Sprintf("--%s=%s", cli.FlagAddr, val.Address.String()),
+		},
+	)
+
+	out.Reset()
+
+	clientCtx = clientCtx.WithOutputFormat("json")
+	err = query.ExecuteContext(ctx)
+	s.Require().NoError(err)
+
+	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &respValidator)
+
+	s.Require().Equal("Moniker", respValidator.Moniker)
+	s.Require().Equal("Website", respValidator.Website)
+	s.Require().Equal("Social", respValidator.Social)
+	s.Require().Equal("Identity", respValidator.Identity)
+	s.Require().Equal(sdk.NewDec(10), respValidator.Commission)
+	s.Require().Equal(val.ValAddress, respValidator.ValKey)
+	s.Require().Equal(pubKey, respValidator.PubKey)
 }
 
 func TestIntegrationTestSuite(t *testing.T) {

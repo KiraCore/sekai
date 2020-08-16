@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/pkg/errors"
+
 	"github.com/spf13/pflag"
 
 	"github.com/spf13/cobra"
@@ -18,7 +20,7 @@ import (
 const (
 	FlagValAddr = "val-addr"
 	flagMoniker = "flagMoniker"
-	flagAddr    = "addr"
+	FlagAddr    = "addr"
 )
 
 // GetCmdQueryValidatorByAddress the query delegation command.
@@ -39,10 +41,20 @@ func GetCmdQueryValidatorByAddress() *cobra.Command {
 			}
 
 			valAddrStr, _ := cmd.Flags().GetString(FlagValAddr)
-			if valAddrStr != "" {
-				valAddr, err := sdk.ValAddressFromBech32(valAddrStr)
-				if err != nil {
-					return err
+			addr, _ := cmd.Flags().GetString(FlagAddr)
+			if valAddrStr != "" || addr != "" {
+				var valAddr sdk.ValAddress
+				if addr != "" {
+					bechAddr, err := sdk.AccAddressFromBech32(addr)
+					if err != nil {
+						return errors.Wrap(err, "invalid account address")
+					}
+					valAddr = sdk.ValAddress(bechAddr)
+				} else {
+					valAddr, err = sdk.ValAddressFromBech32(valAddrStr)
+					if err != nil {
+						return errors.Wrap(err, "invalid validator address")
+					}
 				}
 
 				params := &cumstomtypes.ValidatorByAddressRequest{ValAddr: valAddr}
@@ -62,7 +74,7 @@ func GetCmdQueryValidatorByAddress() *cobra.Command {
 
 	flags.AddQueryFlagsToCmd(cmd)
 
-	cmd.Flags().String(flagAddr, "", "the addres in AccAddress format.")
+	cmd.Flags().String(FlagAddr, "", "the addres in AccAddress format.")
 	cmd.Flags().String(FlagValAddr, "", "the addres in ValAddress format.")
 	cmd.Flags().String(flagMoniker, "", "the moniker")
 
@@ -75,7 +87,7 @@ func validateQueryValidatorFlags(flagSet *pflag.FlagSet) error {
 	if err != nil {
 		return err
 	}
-	addr, err := flagSet.GetString(flagAddr)
+	addr, err := flagSet.GetString(FlagAddr)
 	if err != nil {
 		return err
 	}
