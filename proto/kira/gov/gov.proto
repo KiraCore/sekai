@@ -1,0 +1,21 @@
+syntax = "proto3";
+package kira.gov;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/KiraCore/cosmos-sdk/x/gov/types";
+
+message NetworkActor {
+  bytes address = 1 [
+    (gogoproto.casttype) = "github.com/KiraCore/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  repeated uint64 roles = 2;
+  uint32 status = 3;
+  repeated uint32 votes = 4;
+}
+
+message Permissions {
+
+}
