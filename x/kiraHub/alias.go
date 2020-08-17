@@ -1,10 +1,7 @@
 package kiraHub
 
-import (
-	constants "github.com/KiraCore/sekai/x/kiraHub/constants"
-)
+import "github.com/KiraCore/sekai/x/kiraHub/types"
 
-const TransactionRoute = constants.TransactionRoute
-const QuerierRoute = constants.QuerierRoute
-const ModuleName = constants.ModuleName
-
+const TransactionRoute = types.TransactionRoute
+const QuerierRoute = types.QuerierRoute
+const ModuleName = types.ModuleName

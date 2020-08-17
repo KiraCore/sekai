@@ -3,14 +3,15 @@ package kiraHub
 import (
 	"encoding/json"
 
-	"github.com/KiraCore/cosmos-sdk/codec/types"
+	cdcTypes "github.com/KiraCore/cosmos-sdk/codec/types"
 
 	"github.com/KiraCore/cosmos-sdk/client"
 
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 
-	constants "github.com/KiraCore/sekai/x/kiraHub/constants"
+	"github.com/KiraCore/sekai/x/kiraHub/keeper"
+	"github.com/KiraCore/sekai/x/kiraHub/types"
 	"github.com/gogo/protobuf/grpc"
 	abciTypes "github.com/tendermint/tendermint/abci/types"
 
@@ -27,16 +28,16 @@ var (
 type AppModuleBasic struct {
 }
 
-func (b AppModuleBasic) RegisterInterfaces(registry types.InterfaceRegistry) {
+func (b AppModuleBasic) RegisterInterfaces(registry cdcTypes.InterfaceRegistry) {
 	panic("implement me")
 }
 
 func (AppModuleBasic) Name() string {
-	return constants.ModuleName
+	return types.ModuleName
 }
 
 func (AppModuleBasic) RegisterCodec(codec *codec.Codec) {
-	RegisterCodec(codec)
+	types.RegisterCodec(codec)
 }
 
 func (AppModuleBasic) DefaultGenesis(jsonMarshaler codec.JSONMarshaler) json.RawMessage {
@@ -66,16 +67,16 @@ func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
 
 type AppModule struct {
 	AppModuleBasic
-	keeper Keeper
+	keeper keeper.Keeper
 }
 
-func NewAppModule(keeper Keeper) AppModule {
+func NewAppModule(keeper keeper.Keeper) AppModule {
 	return AppModule{keeper: keeper}
 }
 func (AppModule) Name() string {
 	return ModuleName
 }
-func (appModule AppModule) RegisterInterfaces(registry types.InterfaceRegistry) {
+func (appModule AppModule) RegisterInterfaces(registry cdcTypes.InterfaceRegistry) {
 	panic("implement me")
 }
 

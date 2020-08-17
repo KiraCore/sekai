@@ -1,31 +1,30 @@
 package kiraHub
 
 import (
-	constants "github.com/KiraCore/sekai/x/kiraHub/constants"
-	"github.com/KiraCore/sekai/x/kiraHub/transactions/createOrder"
-	"github.com/KiraCore/sekai/x/kiraHub/transactions/createOrderBook"
-	signerkey "github.com/KiraCore/sekai/x/kiraHub/transactions/upsertSignerKey"
+	"github.com/KiraCore/sekai/x/kiraHub/handlers"
+	"github.com/KiraCore/sekai/x/kiraHub/keeper"
+	"github.com/KiraCore/sekai/x/kiraHub/types"
 	"github.com/pkg/errors"
 
 	sdk "github.com/KiraCore/cosmos-sdk/types"
 )
 
-func NewHandler(keeper Keeper) sdk.Handler {
+func NewHandler(k keeper.Keeper) sdk.Handler {
 	return func(context sdk.Context, msg sdk.Msg) (*sdk.Result, error) {
 		context = context.WithEventManager(sdk.NewEventManager())
 
 		switch message := msg.(type) {
-		case createOrderBook.Message:
-			return createOrderBook.HandleMessage(context, keeper.getCreateOrderBookKeeper(), message)
+		case *types.MsgCreateOrderBook:
+			return handlers.HandlerMsgCreateOrderBook(context, k, message)
 
-		case createOrder.Message:
-			return createOrder.HandleMessage(context, keeper.getCreateOrderKeeper(), message)
+		case *types.MsgCreateOrder:
+			return handlers.HandlerMsgCreateOrder(context, k, message)
 
-		case signerkey.Message:
-			return signerkey.HandleMessage(context, keeper.getUpsertSignerKeyKeeper(), message)
+		case *types.MsgUpsertSignerKey:
+			return handlers.HandlerMsgUpsertSignerKey(context, k, message)
 
 		default:
-			return nil, errors.Wrapf(constants.UnknownMessageCode, "%T", msg)
+			return nil, errors.Wrapf(types.UnknownMessageCode, "%T", msg)
 		}
 	}
 }

@@ -3,10 +3,9 @@ package kiraHub
 import (
 	sdk "github.com/KiraCore/cosmos-sdk/types"
 	"github.com/KiraCore/cosmos-sdk/types/errors"
-	constants "github.com/KiraCore/sekai/x/kiraHub/constants"
-	"github.com/KiraCore/sekai/x/kiraHub/queries/listOrderBooks"
-	"github.com/KiraCore/sekai/x/kiraHub/queries/listOrders"
-	signerkeys "github.com/KiraCore/sekai/x/kiraHub/queries/listSignerKeys"
+	"github.com/KiraCore/sekai/x/kiraHub/keeper"
+	"github.com/KiraCore/sekai/x/kiraHub/queries"
+	"github.com/KiraCore/sekai/x/kiraHub/types"
 	abciTypes "github.com/tendermint/tendermint/abci/types"
 )
 
@@ -18,21 +17,21 @@ const (
 )
 
 // NewQuerier is a router for different types of querying
-func NewQuerier(keeper Keeper) sdk.Querier {
+func NewQuerier(keeper keeper.Keeper) sdk.Querier {
 	return func(context sdk.Context, path []string, requestQuery abciTypes.RequestQuery) ([]byte, error) {
 		switch path[0] {
 
 		case QueryListOrderBooks:
-			return listOrderBooks.QueryGetOrderBooks(context, path[1:], requestQuery, keeper.getCreateOrderBookKeeper())
+			return queries.QueryGetOrderBooks(context, path[1:], requestQuery, keeper)
 
 		case QueryListOrders:
-			return listOrders.QueryGetOrders(context, path[1:], requestQuery, keeper.getCreateOrderKeeper())
+			return queries.QueryGetOrders(context, path[1:], requestQuery, keeper)
 
 		case QueryListSignerKeys:
-			return signerkeys.QueryListSignerKeys(context, path[1:], requestQuery, keeper.getUpsertSignerKeyKeeper())
+			return queries.QueryListSignerKeys(context, path[1:], requestQuery, keeper)
 
 		default:
-			return nil, errors.Wrapf(constants.UnknownQueryCode, "%v", path[0])
+			return nil, errors.Wrapf(types.UnknownQueryCode, "%v", path[0])
 		}
 	}
 }

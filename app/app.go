@@ -82,8 +82,8 @@ import (
 	upgradekeeper "github.com/KiraCore/cosmos-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/KiraCore/cosmos-sdk/x/upgrade/types"
 
-	"github.com/KiraCore/sekai/x/kiraHub"
-	constants "github.com/KiraCore/sekai/x/kiraHub/constants"
+	kiraHubKeeper "github.com/KiraCore/sekai/x/kiraHub/keeper"
+	kiraHubTypes "github.com/KiraCore/sekai/x/kiraHub/types"
 )
 
 const appName = "Sekai"
@@ -149,7 +149,7 @@ type SekaiApp struct {
 	// keepers
 	accountKeeper    authkeeper.AccountKeeper
 	bankKeeper       bankkeeper.Keeper
-	kiraHubKeeper    kiraHub.Keeper
+	kiraHubKeeper    kiraHubKeeper.Keeper
 	capabilityKeeper *capabilitykeeper.Keeper
 	stakingKeeper    stakingkeeper.Keeper
 	slashingKeeper   slashingkeeper.Keeper
@@ -198,7 +198,7 @@ func NewInitApp(
 	keys := sdk.NewKVStoreKeys(authtypes.StoreKey, banktypes.StoreKey, stakingtypes.StoreKey,
 		distrtypes.StoreKey, slashingtypes.StoreKey,
 		govtypes.StoreKey, paramstypes.StoreKey, ibchost.StoreKey, upgradetypes.StoreKey,
-		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey, constants.StoreKey,
+		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey, kiraHubTypes.StoreKey,
 		types2.ModuleName,
 	)
 	tKeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -278,7 +278,7 @@ func NewInitApp(
 	)
 	transferModule := transfer.NewAppModule(app.transferKeeper)
 
-	app.kiraHubKeeper = kiraHub.NewKeeper(app.cdc, keys[constants.StoreKey])
+	app.kiraHubKeeper = kiraHubKeeper.NewKeeper(keys[kiraHubTypes.StoreKey], app.cdc)
 
 	// Create static IBC router, add transfer route, then set and seal it
 	ibcRouter := porttypes.NewRouter()

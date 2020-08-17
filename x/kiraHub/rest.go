@@ -4,18 +4,16 @@ import (
 	"strings"
 
 	"github.com/KiraCore/cosmos-sdk/client"
+	"github.com/KiraCore/sekai/x/kiraHub/client/rest"
+	"github.com/KiraCore/sekai/x/kiraHub/types"
 	"github.com/gorilla/mux"
-
-	constants "github.com/KiraCore/sekai/x/kiraHub/constants"
-	"github.com/KiraCore/sekai/x/kiraHub/queries/listOrderBooks"
-	"github.com/KiraCore/sekai/x/kiraHub/queries/listOrders"
 )
 
 func RegisterRESTRoutes(cliContext client.Context, router *mux.Router) {
-	//router.HandleFunc(strings.Join([]string{"", TransactionRoute, constants.CreateOrderBookTransaction}, "/"), createOrderBook.RestRequestHandler(cliContext)).Methods("POST")
-	//router.HandleFunc(strings.Join([]string{"", TransactionRoute, constants.CreateOrderTransaction}, "/"), createOrder.RestRequestHandler(cliContext)).Methods("POST")
+	router.HandleFunc(strings.Join([]string{"", TransactionRoute, types.CreateOrderBookTransaction}, "/"), rest.RestCreateOrderRequestHandler(cliContext)).Methods("POST")
+	router.HandleFunc(strings.Join([]string{"", TransactionRoute, types.CreateOrderTransaction}, "/"), rest.RestCreateOrderRequestHandler(cliContext)).Methods("POST")
 
-	router.HandleFunc(strings.Join([]string{"", TransactionRoute, constants.ListOrderBooksQuery}, "/"), listOrderBooks.GetOrderBooks(cliContext)).Methods("GET")
-	router.HandleFunc(strings.Join([]string{"", TransactionRoute, constants.ListOrderBooksQueryByTP}, "/"), listOrderBooks.GetOrderBooksByTP(cliContext)).Methods("GET")
-	router.HandleFunc(strings.Join([]string{"", TransactionRoute, constants.ListOrders}, "/"), listOrders.GetOrders(cliContext)).Methods("GET")
+	router.HandleFunc(strings.Join([]string{"", QuerierRoute, types.ListOrderBooksQuery}, "/"), rest.GetOrderBooks(cliContext)).Methods("GET")
+	router.HandleFunc(strings.Join([]string{"", QuerierRoute, types.ListOrderBooksQueryByTP}, "/"), rest.GetOrderBooksByTP(cliContext)).Methods("GET")
+	router.HandleFunc(strings.Join([]string{"", QuerierRoute, types.ListOrders}, "/"), rest.GetOrders(cliContext)).Methods("GET")
 }
