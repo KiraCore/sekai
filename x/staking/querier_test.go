@@ -3,14 +3,15 @@ package staking_test
 import (
 	"testing"
 
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+
 	"github.com/KiraCore/sekai/x/staking"
 
 	types2 "github.com/KiraCore/sekai/x/staking/types"
 
-	"github.com/cosmos/cosmos-sdk/types"
 	"github.com/KiraCore/sekai/simapp"
+	"github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
-	abci "github.com/tendermint/tendermint/abci/types"
 )
 
 func TestQuerier_ValidatorByAddress(t *testing.T) {
@@ -20,7 +21,7 @@ func TestQuerier_ValidatorByAddress(t *testing.T) {
 	require.NoError(t, err)
 
 	app := simapp.Setup(false)
-	ctx := app.NewContext(false, abci.Header{})
+	ctx := app.NewContext(false, tmproto.Header{})
 
 	val, err := types2.NewValidator("Moniker", "Website", "Social", "identity", types.NewDec(123), valAddr1, pubKey)
 	require.NoError(t, err)

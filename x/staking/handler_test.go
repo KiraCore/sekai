@@ -5,12 +5,11 @@ import (
 
 	"github.com/KiraCore/sekai/x/staking"
 
-	"github.com/cosmos/cosmos-sdk/types"
-	"github.com/stretchr/testify/require"
-	abci "github.com/tendermint/tendermint/abci/types"
-
 	"github.com/KiraCore/sekai/simapp"
 	types2 "github.com/KiraCore/sekai/x/staking/types"
+	"github.com/cosmos/cosmos-sdk/types"
+	"github.com/stretchr/testify/require"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
 
 func TestNewHandler_MsgClaimValidator_HappyPath(t *testing.T) {
@@ -21,7 +20,7 @@ func TestNewHandler_MsgClaimValidator_HappyPath(t *testing.T) {
 	require.NoError(t, err)
 
 	app := simapp.Setup(false)
-	ctx := app.NewContext(false, abci.Header{})
+	ctx := app.NewContext(false, tmproto.Header{})
 
 	handler := staking.NewHandler(app.CustomStakingKeeper)
 

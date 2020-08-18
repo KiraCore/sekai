@@ -3,17 +3,17 @@ package keeper_test
 import (
 	"testing"
 
-	types2 "github.com/cosmos/cosmos-sdk/types"
-	"github.com/stretchr/testify/require"
-	abci "github.com/tendermint/tendermint/abci/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/KiraCore/sekai/simapp"
 	"github.com/KiraCore/sekai/x/staking/types"
+	types2 "github.com/cosmos/cosmos-sdk/types"
+	"github.com/stretchr/testify/require"
 )
 
 func TestKeeper_AddValidator(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.NewContext(false, abci.Header{})
+	ctx := app.NewContext(false, tmproto.Header{})
 
 	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, types2.TokensFromConsensusPower(10))
 	addr1 := addrs[0]
@@ -49,7 +49,7 @@ func TestKeeper_AddValidator(t *testing.T) {
 
 func TestKeeper_GetValidatorSet(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.NewContext(false, abci.Header{})
+	ctx := app.NewContext(false, tmproto.Header{})
 
 	addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, types2.TokensFromConsensusPower(10))
 	addr1 := addrs[0]
