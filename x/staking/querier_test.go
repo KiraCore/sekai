@@ -7,7 +7,7 @@ import (
 
 	types2 "github.com/KiraCore/sekai/x/staking/types"
 
-	"github.com/KiraCore/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types"
 	"github.com/KiraCore/sekai/simapp"
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"

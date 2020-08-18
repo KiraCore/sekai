@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/KiraCore/cosmos-sdk/store/types"
+	"github.com/cosmos/cosmos-sdk/store/types"
 
 	cpm "github.com/otiai10/copy"
 	"github.com/spf13/cobra"
@@ -21,9 +21,9 @@ import (
 
 	"github.com/KiraCore/sekai/app"
 
-	"github.com/KiraCore/cosmos-sdk/baseapp"
-	"github.com/KiraCore/cosmos-sdk/server"
-	sdk "github.com/KiraCore/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/baseapp"
+	"github.com/cosmos/cosmos-sdk/server"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func replayCmd() *cobra.Command {

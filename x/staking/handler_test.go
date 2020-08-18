@@ -5,7 +5,7 @@ import (
 
 	"github.com/KiraCore/sekai/x/staking"
 
-	"github.com/KiraCore/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
 

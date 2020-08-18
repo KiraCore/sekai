@@ -3,7 +3,7 @@ package keeper_test
 import (
 	"testing"
 
-	types2 "github.com/KiraCore/cosmos-sdk/types"
+	types2 "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
 
