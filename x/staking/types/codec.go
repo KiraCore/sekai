@@ -1,17 +1,16 @@
 package types
 
 import (
-	"github.com/KiraCore/cosmos-sdk/codec"
-	"github.com/KiraCore/cosmos-sdk/codec/types"
-	sdk "github.com/KiraCore/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/codec/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func RegisterCodec(cdc *codec.Codec) {
+func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgClaimValidator{}, "kiraHub/MsgClaimValidator", nil)
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {
-
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgClaimValidator{},
 	)
@@ -26,7 +25,7 @@ var (
 	//
 	// The actual codec used for serialization should be provided to x/staking and
 	// defined at the application level.
-	ModuleCdc = codec.NewHybridCodec(amino, types.NewInterfaceRegistry())
+	ModuleCdc = codec.NewAminoCodec(amino)
 )
 
 func init() {

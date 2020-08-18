@@ -7,10 +7,10 @@ echo $proto_dirs
 
 for dir in $proto_dirs; do
   protoc -I "$dir" -I "third_party/proto" --gocosmos_out=plugins=interfacetype+grpc,\
-Mgoogle/protobuf/any.proto=github.com/KiraCore/cosmos-sdk/codec/types:. \
+Mgoogle/protobuf/any.proto=github.com/cosmos/cosmos-sdk/codec/types:. \
   $(find "${dir}" -maxdepth 1 -name '*.proto')
 done
 
 # move proto files to the right places
-cp -r github.com/KiraCore/cosmos-sdk/* ./
+cp -r github.com/cosmos/cosmos-sdk/* ./
 rm -rf github.com

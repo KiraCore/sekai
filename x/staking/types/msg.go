@@ -5,7 +5,7 @@ import (
 
 	"github.com/tendermint/tendermint/crypto"
 
-	sdk "github.com/KiraCore/cosmos-sdk/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 var _ sdk.Msg = &MsgClaimValidator{}
@@ -53,8 +53,9 @@ func (m MsgClaimValidator) ValidateBasic() error {
 }
 
 func (m MsgClaimValidator) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(m)
-	return sdk.MustSortJSON(bz)
+	//bz := ModuleCdc.MustMarshalJSON(m)
+	//return sdk.MustSortJSON(bz)
+	return nil
 }
 
 func (m MsgClaimValidator) GetSigners() []sdk.AccAddress {

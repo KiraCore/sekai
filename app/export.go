@@ -4,34 +4,35 @@ import (
 	"encoding/json"
 	"log"
 
-	slashingtypes "github.com/KiraCore/cosmos-sdk/x/slashing/types"
-	stakingtypes "github.com/KiraCore/cosmos-sdk/x/staking/types"
+	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
-	"github.com/KiraCore/cosmos-sdk/x/staking/exported"
+	"github.com/cosmos/cosmos-sdk/x/staking/exported"
 
 	abci "github.com/tendermint/tendermint/abci/types"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	tmtypes "github.com/tendermint/tendermint/types"
 
-	"github.com/KiraCore/cosmos-sdk/codec"
-	sdk "github.com/KiraCore/cosmos-sdk/types"
-	"github.com/KiraCore/cosmos-sdk/x/staking"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/x/staking"
 )
 
 // ExportAppStateAndValidators export the state of Sekai for a genesis file
 func (app *SekaiApp) ExportAppStateAndValidators(forZeroHeight bool, jailWhiteList []string,
 ) (appState json.RawMessage, validators []tmtypes.GenesisValidator, cp *abci.ConsensusParams, err error) {
 	// as if they could withdraw from the start of the next block
-	ctx := app.NewContext(true, abci.Header{Height: app.LastBlockHeight()})
+	ctx := app.NewContext(true, tmproto.Header{Height: app.LastBlockHeight()})
 
 	if forZeroHeight {
 		app.prepForZeroHeightGenesis(ctx, jailWhiteList)
 	}
 
-	genState := app.mm.ExportGenesis(ctx, app.cdc)
-	appState, err = codec.MarshalJSONIndent(app.cdc, genState)
+	genState := app.mm.ExportGenesis(ctx, app.appCodec)
+	appState, err = json.MarshalIndent(genState, "", "  ")
 	if err != nil {
 		return nil, nil, nil, err
 	}
+
 	validators = staking.WriteValidators(ctx, app.stakingKeeper)
 	return appState, validators, app.BaseApp.GetConsensusParams(ctx), nil
 }

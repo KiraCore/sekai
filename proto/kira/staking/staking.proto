@@ -3,7 +3,7 @@ package kira.staking;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/KiraCore/cosmos-sdk/x/staking/types";
+option go_package = "github.com/cosmos/cosmos-sdk/x/staking/types";
 
 message MsgClaimValidator {
   option (gogoproto.equal)            = true;
@@ -13,12 +13,12 @@ message MsgClaimValidator {
   string social = 3;
   string identity = 4;
   string commission = 5 [
-    (gogoproto.customtype) = "github.com/KiraCore/cosmos-sdk/types.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable)   = false,
     (gogoproto.moretags)   = "yaml:\"commission\""
   ];
   bytes val_key = 6 [
-    (gogoproto.casttype) = "github.com/KiraCore/cosmos-sdk/types.ValAddress",
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.ValAddress",
     (gogoproto.moretags) = "yaml:\"val_key\""
   ];
   string pub_key = 7;
@@ -30,12 +30,12 @@ message Validator {
   string social = 3;
   string identity = 4;
   string commission = 5 [
-    (gogoproto.customtype) = "github.com/KiraCore/cosmos-sdk/types.Dec",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable)   = false,
     (gogoproto.moretags)   = "yaml:\"commission\""
   ];
   bytes val_key = 6 [
-    (gogoproto.casttype) = "github.com/KiraCore/cosmos-sdk/types.ValAddress",
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.ValAddress",
     (gogoproto.moretags) = "yaml:\"val_key\""
   ];
   string pub_key = 7 [(gogoproto.moretags) = "yaml:\"consensus_pubkey\""];

@@ -5,80 +5,80 @@ import (
 	"os"
 
 	customstaking "github.com/KiraCore/sekai/x/staking"
+	types2 "github.com/KiraCore/sekai/x/staking/types"
 
-	"github.com/KiraCore/cosmos-sdk/simapp"
-
+	"github.com/KiraCore/sekai/x/staking/keeper"
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/libs/log"
 	tmos "github.com/tendermint/tendermint/libs/os"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/KiraCore/cosmos-sdk/baseapp"
-	"github.com/KiraCore/cosmos-sdk/client/rpc"
-	"github.com/KiraCore/cosmos-sdk/codec"
-	"github.com/KiraCore/cosmos-sdk/codec/types"
-	"github.com/KiraCore/cosmos-sdk/server/api"
-	"github.com/KiraCore/cosmos-sdk/std"
-	"github.com/KiraCore/cosmos-sdk/testutil/testdata"
-	sdk "github.com/KiraCore/cosmos-sdk/types"
-	"github.com/KiraCore/cosmos-sdk/types/module"
-	"github.com/KiraCore/cosmos-sdk/version"
-	"github.com/KiraCore/cosmos-sdk/x/auth"
-	"github.com/KiraCore/cosmos-sdk/x/auth/ante"
-	authrest "github.com/KiraCore/cosmos-sdk/x/auth/client/rest"
-	authkeeper "github.com/KiraCore/cosmos-sdk/x/auth/keeper"
-	authtypes "github.com/KiraCore/cosmos-sdk/x/auth/types"
-	"github.com/KiraCore/cosmos-sdk/x/bank"
-	bankkeeper "github.com/KiraCore/cosmos-sdk/x/bank/keeper"
-	banktypes "github.com/KiraCore/cosmos-sdk/x/bank/types"
-	"github.com/KiraCore/cosmos-sdk/x/capability"
-	capabilitykeeper "github.com/KiraCore/cosmos-sdk/x/capability/keeper"
-	capabilitytypes "github.com/KiraCore/cosmos-sdk/x/capability/types"
-	"github.com/KiraCore/cosmos-sdk/x/crisis"
-	crisiskeeper "github.com/KiraCore/cosmos-sdk/x/crisis/keeper"
-	crisistypes "github.com/KiraCore/cosmos-sdk/x/crisis/types"
-	distr "github.com/KiraCore/cosmos-sdk/x/distribution"
-	distrclient "github.com/KiraCore/cosmos-sdk/x/distribution/client"
-	distrkeeper "github.com/KiraCore/cosmos-sdk/x/distribution/keeper"
-	distrtypes "github.com/KiraCore/cosmos-sdk/x/distribution/types"
-	"github.com/KiraCore/cosmos-sdk/x/evidence"
-	evidencekeeper "github.com/KiraCore/cosmos-sdk/x/evidence/keeper"
-	evidencetypes "github.com/KiraCore/cosmos-sdk/x/evidence/types"
-	"github.com/KiraCore/cosmos-sdk/x/genutil"
-	genutiltypes "github.com/KiraCore/cosmos-sdk/x/genutil/types"
-	"github.com/KiraCore/cosmos-sdk/x/gov"
-	govkeeper "github.com/KiraCore/cosmos-sdk/x/gov/keeper"
-	govtypes "github.com/KiraCore/cosmos-sdk/x/gov/types"
-	"github.com/KiraCore/cosmos-sdk/x/ibc"
-	transfer "github.com/KiraCore/cosmos-sdk/x/ibc-transfer"
-	ibctransferkeeper "github.com/KiraCore/cosmos-sdk/x/ibc-transfer/keeper"
-	ibctransfertypes "github.com/KiraCore/cosmos-sdk/x/ibc-transfer/types"
-	ibcclient "github.com/KiraCore/cosmos-sdk/x/ibc/02-client"
-	ibcclienttypes "github.com/KiraCore/cosmos-sdk/x/ibc/02-client/types"
-	porttypes "github.com/KiraCore/cosmos-sdk/x/ibc/05-port/types"
-	ibchost "github.com/KiraCore/cosmos-sdk/x/ibc/24-host"
-	ibckeeper "github.com/KiraCore/cosmos-sdk/x/ibc/keeper"
-	"github.com/KiraCore/cosmos-sdk/x/mint"
-	mintkeeper "github.com/KiraCore/cosmos-sdk/x/mint/keeper"
-	minttypes "github.com/KiraCore/cosmos-sdk/x/mint/types"
-	"github.com/KiraCore/cosmos-sdk/x/params"
-	paramsclient "github.com/KiraCore/cosmos-sdk/x/params/client"
-	paramskeeper "github.com/KiraCore/cosmos-sdk/x/params/keeper"
-	paramstypes "github.com/KiraCore/cosmos-sdk/x/params/types"
-	paramproposal "github.com/KiraCore/cosmos-sdk/x/params/types/proposal"
-	"github.com/KiraCore/cosmos-sdk/x/slashing"
-	slashingkeeper "github.com/KiraCore/cosmos-sdk/x/slashing/keeper"
-	slashingtypes "github.com/KiraCore/cosmos-sdk/x/slashing/types"
-	"github.com/KiraCore/cosmos-sdk/x/staking"
-	stakingkeeper "github.com/KiraCore/cosmos-sdk/x/staking/keeper"
-	stakingtypes "github.com/KiraCore/cosmos-sdk/x/staking/types"
-	"github.com/KiraCore/cosmos-sdk/x/upgrade"
-	upgradeclient "github.com/KiraCore/cosmos-sdk/x/upgrade/client"
-	upgradekeeper "github.com/KiraCore/cosmos-sdk/x/upgrade/keeper"
-	upgradetypes "github.com/KiraCore/cosmos-sdk/x/upgrade/types"
-
-	"github.com/KiraCore/sekai/x/staking/keeper"
-	types2 "github.com/KiraCore/sekai/x/staking/types"
+	"github.com/cosmos/cosmos-sdk/baseapp"
+	"github.com/cosmos/cosmos-sdk/client/rpc"
+	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/codec/types"
+	"github.com/cosmos/cosmos-sdk/server/api"
+	"github.com/cosmos/cosmos-sdk/simapp"
+	simappparams "github.com/cosmos/cosmos-sdk/simapp/params"
+	"github.com/cosmos/cosmos-sdk/std"
+	"github.com/cosmos/cosmos-sdk/testutil/testdata"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/module"
+	"github.com/cosmos/cosmos-sdk/version"
+	"github.com/cosmos/cosmos-sdk/x/auth"
+	"github.com/cosmos/cosmos-sdk/x/auth/ante"
+	authrest "github.com/cosmos/cosmos-sdk/x/auth/client/rest"
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/cosmos/cosmos-sdk/x/bank"
+	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	"github.com/cosmos/cosmos-sdk/x/capability"
+	capabilitykeeper "github.com/cosmos/cosmos-sdk/x/capability/keeper"
+	capabilitytypes "github.com/cosmos/cosmos-sdk/x/capability/types"
+	"github.com/cosmos/cosmos-sdk/x/crisis"
+	crisiskeeper "github.com/cosmos/cosmos-sdk/x/crisis/keeper"
+	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
+	distr "github.com/cosmos/cosmos-sdk/x/distribution"
+	distrclient "github.com/cosmos/cosmos-sdk/x/distribution/client"
+	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
+	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
+	"github.com/cosmos/cosmos-sdk/x/evidence"
+	evidencekeeper "github.com/cosmos/cosmos-sdk/x/evidence/keeper"
+	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
+	"github.com/cosmos/cosmos-sdk/x/genutil"
+	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
+	"github.com/cosmos/cosmos-sdk/x/gov"
+	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	"github.com/cosmos/cosmos-sdk/x/ibc"
+	transfer "github.com/cosmos/cosmos-sdk/x/ibc-transfer"
+	ibctransferkeeper "github.com/cosmos/cosmos-sdk/x/ibc-transfer/keeper"
+	ibctransfertypes "github.com/cosmos/cosmos-sdk/x/ibc-transfer/types"
+	ibcclient "github.com/cosmos/cosmos-sdk/x/ibc/02-client"
+	ibcclienttypes "github.com/cosmos/cosmos-sdk/x/ibc/02-client/types"
+	porttypes "github.com/cosmos/cosmos-sdk/x/ibc/05-port/types"
+	ibchost "github.com/cosmos/cosmos-sdk/x/ibc/24-host"
+	ibckeeper "github.com/cosmos/cosmos-sdk/x/ibc/keeper"
+	"github.com/cosmos/cosmos-sdk/x/mint"
+	mintkeeper "github.com/cosmos/cosmos-sdk/x/mint/keeper"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
+	"github.com/cosmos/cosmos-sdk/x/params"
+	paramsclient "github.com/cosmos/cosmos-sdk/x/params/client"
+	paramskeeper "github.com/cosmos/cosmos-sdk/x/params/keeper"
+	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
+	paramproposal "github.com/cosmos/cosmos-sdk/x/params/types/proposal"
+	"github.com/cosmos/cosmos-sdk/x/slashing"
+	slashingkeeper "github.com/cosmos/cosmos-sdk/x/slashing/keeper"
+	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
+	"github.com/cosmos/cosmos-sdk/x/staking"
+	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
+	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	"github.com/cosmos/cosmos-sdk/x/upgrade"
+	upgradeclient "github.com/cosmos/cosmos-sdk/x/upgrade/client"
+	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
+	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 )
 
 const appName = "KiraSimApp"
@@ -136,7 +136,7 @@ var _ simapp.App = (*SimApp)(nil)
 // capabilities aren't needed for testing.
 type SimApp struct {
 	*baseapp.BaseApp
-	cdc               *codec.Codec
+	cdc               *codec.LegacyAmino
 	appCodec          codec.Marshaler
 	interfaceRegistry types.InterfaceRegistry
 
@@ -179,11 +179,10 @@ type SimApp struct {
 // NewSimApp returns a reference to an initialized SimApp.
 func NewSimApp(
 	logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest bool, skipUpgradeHeights map[int64]bool,
-	homePath string, invCheckPeriod uint, baseAppOptions ...func(*baseapp.BaseApp),
+	homePath string, invCheckPeriod uint, encodingConfig simappparams.EncodingConfig, baseAppOptions ...func(*baseapp.BaseApp),
 ) *SimApp {
 
 	// TODO: Remove cdc in favor of appCodec once all modules are migrated.
-	encodingConfig := MakeEncodingConfig()
 	appCodec := encodingConfig.Marshaler
 	cdc := encodingConfig.Amino
 	interfaceRegistry := encodingConfig.InterfaceRegistry
@@ -191,7 +190,7 @@ func NewSimApp(
 	bApp := baseapp.NewBaseApp(appName, logger, db, encodingConfig.TxConfig.TxDecoder(), baseAppOptions...)
 	bApp.SetCommitMultiStoreTracer(traceStore)
 	bApp.SetAppVersion(version.Version)
-	bApp.GRPCQueryRouter().SetAnyUnpacker(interfaceRegistry)
+	bApp.GRPCQueryRouter().SetInterfaceRegistry(interfaceRegistry)
 
 	keys := sdk.NewKVStoreKeys(
 		authtypes.StoreKey, banktypes.StoreKey, stakingtypes.StoreKey,
@@ -214,7 +213,7 @@ func NewSimApp(
 		memKeys:           memKeys,
 	}
 
-	app.ParamsKeeper = initParamsKeeper(appCodec, keys[paramstypes.StoreKey], tkeys[paramstypes.TStoreKey])
+	app.ParamsKeeper = initParamsKeeper(appCodec, cdc, keys[paramstypes.StoreKey], tkeys[paramstypes.TStoreKey])
 
 	// set the BaseApp's parameter store
 	bApp.SetParamStore(app.ParamsKeeper.Subspace(baseapp.Paramspace).WithKeyTable(std.ConsensusParamsKeyTable()))
@@ -278,7 +277,7 @@ func NewSimApp(
 
 	// Create Transfer Keepers
 	app.TransferKeeper = ibctransferkeeper.NewKeeper(
-		appCodec, keys[ibctransfertypes.StoreKey],
+		appCodec, keys[ibctransfertypes.StoreKey], app.GetSubspace(ibctransfertypes.ModuleName),
 		app.IBCKeeper.ChannelKeeper, &app.IBCKeeper.PortKeeper,
 		app.AccountKeeper, app.BankKeeper, scopedTransferKeeper,
 	)
@@ -398,7 +397,7 @@ func NewSimApp(
 	// sub-keepers.
 	// This must be done during creation of baseapp rather than in InitChain so
 	// that in-memory capabilities get regenerated on app restart
-	ctx := app.BaseApp.NewUncachedContext(true, abci.Header{})
+	ctx := app.BaseApp.NewUncachedContext(true, tmproto.Header{})
 	app.CapabilityKeeper.InitializeAndSeal(ctx)
 
 	app.ScopedIBCKeeper = scopedIBCKeeper
@@ -407,10 +406,10 @@ func NewSimApp(
 	return app
 }
 
-// MakeCodecs constructs the *std.Codec and *codec.Codec instances used by
+// MakeCodecs constructs the *std.Codec and *codec.LegacyAmino instances used by
 // simapp. It is useful for tests and clients who do not want to construct the
 // full simapp
-func MakeCodecs() (codec.Marshaler, *codec.Codec) {
+func MakeCodecs() (codec.Marshaler, *codec.LegacyAmino) {
 	config := MakeEncodingConfig()
 	return config.Marshaler, config.Amino
 }
@@ -432,7 +431,7 @@ func (app *SimApp) EndBlocker(ctx sdk.Context, req abci.RequestEndBlock) abci.Re
 func (app *SimApp) InitChainer(ctx sdk.Context, req abci.RequestInitChain) abci.ResponseInitChain {
 	var genesisState GenesisState
 	app.cdc.MustUnmarshalJSON(req.AppStateBytes, &genesisState)
-	return app.mm.InitGenesis(ctx, app.cdc, genesisState)
+	return app.mm.InitGenesis(ctx, app.appCodec, genesisState)
 }
 
 // LoadHeight loads a particular height
@@ -465,7 +464,7 @@ func (app *SimApp) BlockedAddrs() map[string]bool {
 //
 // NOTE: This is solely to be used for testing purposes as it may be desirable
 // for modules to register their own custom testing types.
-func (app *SimApp) Codec() *codec.Codec {
+func (app *SimApp) LegacyAmino() *codec.LegacyAmino {
 	return app.cdc
 }
 
@@ -519,9 +518,12 @@ func (app *SimApp) SimulationManager() *module.SimulationManager {
 // RegisterAPIRoutes registers all application module routes with the provided
 // API server.
 func (app *SimApp) RegisterAPIRoutes(apiSvr *api.Server) {
-	rpc.RegisterRoutes(apiSvr.ClientCtx, apiSvr.Router)
-	authrest.RegisterTxRoutes(apiSvr.ClientCtx, apiSvr.Router)
-	ModuleBasics.RegisterRESTRoutes(apiSvr.ClientCtx, apiSvr.Router)
+	clientCtx := apiSvr.ClientCtx
+	// amino is needed here for backwards compatibility of REST routes
+	clientCtx = clientCtx.WithJSONMarshaler(clientCtx.LegacyAmino)
+	rpc.RegisterRoutes(clientCtx, apiSvr.Router)
+	authrest.RegisterTxRoutes(clientCtx, apiSvr.Router)
+	ModuleBasics.RegisterRESTRoutes(clientCtx, apiSvr.Router)
 }
 
 // GetMaccPerms returns a copy of the module account permissions
@@ -534,8 +536,8 @@ func GetMaccPerms() map[string][]string {
 }
 
 // initParamsKeeper init params keeper and its subspaces
-func initParamsKeeper(appCodec codec.Marshaler, key, tkey sdk.StoreKey) paramskeeper.Keeper {
-	paramsKeeper := paramskeeper.NewKeeper(appCodec, key, tkey)
+func initParamsKeeper(appCodec codec.BinaryMarshaler, legacyAmino *codec.LegacyAmino, key, tkey sdk.StoreKey) paramskeeper.Keeper {
+	paramsKeeper := paramskeeper.NewKeeper(appCodec, legacyAmino, key, tkey)
 
 	paramsKeeper.Subspace(authtypes.ModuleName)
 	paramsKeeper.Subspace(banktypes.ModuleName)
@@ -545,6 +547,7 @@ func initParamsKeeper(appCodec codec.Marshaler, key, tkey sdk.StoreKey) paramske
 	paramsKeeper.Subspace(slashingtypes.ModuleName)
 	paramsKeeper.Subspace(govtypes.ModuleName).WithKeyTable(govtypes.ParamKeyTable())
 	paramsKeeper.Subspace(crisistypes.ModuleName)
+	paramsKeeper.Subspace(ibctransfertypes.ModuleName)
 
 	return paramsKeeper
 }

@@ -1,13 +1,18 @@
-package types
+package types_test
 
 import (
+	"github.com/KiraCore/sekai/app"
 	"strings"
 	"testing"
 
+	types2 "github.com/KiraCore/sekai/x/staking/types"
+
 	"github.com/stretchr/testify/require"
 
-	"github.com/KiraCore/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types"
 )
+
+var _ = app.SetConfig()
 
 func TestNewValidator_Errors(t *testing.T) {
 	valAddr, err := types.ValAddressFromBech32("kiravaloper1q24436yrnettd6v4eu6r4t9gycnnddac9nwqv0")
@@ -26,7 +31,7 @@ func TestNewValidator_Errors(t *testing.T) {
 			name:        "moniker longer than 64",
 			expectError: true,
 			newVal: func() error {
-				_, err := NewValidator(
+				_, err := types2.NewValidator(
 					strings.Repeat("A", 65),
 					"some-web.com",
 					"some-web.com",
@@ -38,13 +43,13 @@ func TestNewValidator_Errors(t *testing.T) {
 
 				return err
 			},
-			err: ErrInvalidMonikerLength,
+			err: types2.ErrInvalidMonikerLength,
 		},
 		{
 			name:        "website longer than 64",
 			expectError: true,
 			newVal: func() error {
-				_, err := NewValidator(
+				_, err := types2.NewValidator(
 					"the moniker",
 					strings.Repeat("A", 65),
 					"some-web.com",
@@ -56,13 +61,13 @@ func TestNewValidator_Errors(t *testing.T) {
 
 				return err
 			},
-			err: ErrInvalidWebsiteLength,
+			err: types2.ErrInvalidWebsiteLength,
 		},
 		{
 			name:        "social longer than 64",
 			expectError: true,
 			newVal: func() error {
-				_, err := NewValidator(
+				_, err := types2.NewValidator(
 					"the moniker",
 					"some-web.com",
 					strings.Repeat("A", 65),
@@ -74,13 +79,13 @@ func TestNewValidator_Errors(t *testing.T) {
 
 				return err
 			},
-			err: ErrInvalidSocialLength,
+			err: types2.ErrInvalidSocialLength,
 		},
 		{
 			name:        "identity longer than 64",
 			expectError: true,
 			newVal: func() error {
-				_, err := NewValidator(
+				_, err := types2.NewValidator(
 					"the moniker",
 					"some-web.com",
 					"some-web.com",
@@ -92,7 +97,7 @@ func TestNewValidator_Errors(t *testing.T) {
 
 				return err
 			},
-			err: ErrInvalidIdentityLength,
+			err: types2.ErrInvalidIdentityLength,
 		},
 	}
 
