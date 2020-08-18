@@ -2,8 +2,12 @@
 Kira Hub
 
 ## Create order book
-```
+```sh
+sekaid tx kiraHub createOrderBook base quote mnemonic --from validator --keyring-backend=test --chain-id testing
+{}
 
+confirm transaction before signing and broadcasting [y/N]: y
+{"height":"2","txhash":"71C1ED0A380EBF22547EEDE4550926D9421E00B250C7FF2D4EE2179E09358AAF","data":"0A110A0F6372656174656F72646572626F6F6B","raw_log":"[{\"events\":[{\"type\":\"message\",\"attributes\":[{\"key\":\"action\",\"value\":\"createorderbook\"}]}]}]","logs":[{"events":[{"type":"message","attributes":[{"key":"action","value":"createorderbook"}]}]}],"gas_wanted":"200000","gas_used":"49486"}
 ```
 
 ## upsertSignerKey

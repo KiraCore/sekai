@@ -302,7 +302,7 @@ func NewInitApp(
 	app.mm = module.NewManager(
 		genutil.NewAppModule(app.accountKeeper, app.stakingKeeper, app.BaseApp.DeliverTx, encodingConfig.TxConfig),
 		auth.NewAppModule(appCodec, app.accountKeeper),
-		//kiraHub.NewAppModule(app.kiraHubKeeper),
+		kiraHub.NewAppModule(app.kiraHubKeeper),
 		bank.NewAppModule(appCodec, app.bankKeeper, app.accountKeeper),
 		capability.NewAppModule(appCodec, *app.capabilityKeeper),
 		crisis.NewAppModule(&app.crisisKeeper),
