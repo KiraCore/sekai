@@ -97,40 +97,16 @@ type AppModule struct {
 	keeper keeper.Keeper
 }
 
-func NewAppModule(keeper keeper.Keeper) AppModule {
-	return AppModule{keeper: keeper}
-}
-func (AppModule) Name() string {
-	return ModuleName
-}
-func (am AppModule) RegisterInterfaces(registry cdcTypes.InterfaceRegistry) {
-	panic("implement me")
-}
-
 func (am AppModule) ValidateGenesis(marshaler codec.JSONMarshaler, config client.TxEncodingConfig, message json.RawMessage) error {
 	return nil
 }
 
-func (am AppModule) Route() sdkTypes.Route {
-	return sdkTypes.NewRoute(ModuleName, NewHandler(am.keeper))
+func (am AppModule) RegisterInterfaces(registry cdcTypes.InterfaceRegistry) {
+	panic("implement me")
 }
-
-func (am AppModule) LegacyQuerierHandler(marshaler codec.JSONMarshaler) sdkTypes.Querier {
-	return nil
-}
-
-func (am AppModule) RegisterQueryService(server grpc.Server) {
-	querier := NewQuerier(am.keeper)
-	types.RegisterQueryServer(server, querier)
-}
-
-func (am AppModule) RegisterInvariants(_ sdkTypes.InvariantRegistry) {}
 
 func (am AppModule) NewHandler() sdkTypes.Handler {
 	return NewHandler(am.keeper)
-}
-func (AppModule) QuerierRoute() string {
-	return QuerierRoute
 }
 func (am AppModule) NewQuerierHandler() sdkTypes.Querier {
 	return NewQuerier(am.keeper)
@@ -145,8 +121,36 @@ func (am AppModule) ExportGenesis(context sdkTypes.Context, jsonMarshaler codec.
 	gs := ExportGenesis(context, am.keeper)
 	return jsonMarshaler.MustMarshalJSON(gs)
 }
-func (AppModule) BeginBlock(_ sdkTypes.Context, _ abciTypes.RequestBeginBlock) {}
 
-func (AppModule) EndBlock(_ sdkTypes.Context, _ abciTypes.RequestEndBlock) []abciTypes.ValidatorUpdate {
+func (am AppModule) RegisterInvariants(_ sdkTypes.InvariantRegistry) {}
+
+func (am AppModule) QuerierRoute() string {
+	return QuerierRoute
+}
+
+func (am AppModule) LegacyQuerierHandler(marshaler codec.JSONMarshaler) sdkTypes.Querier {
+	return nil
+}
+
+func (am AppModule) BeginBlock(_ sdkTypes.Context, _ abciTypes.RequestBeginBlock) {}
+
+func (am AppModule) EndBlock(_ sdkTypes.Context, _ abciTypes.RequestEndBlock) []abciTypes.ValidatorUpdate {
 	return []abciTypes.ValidatorUpdate{}
+}
+
+func (am AppModule) Name() string {
+	return ModuleName
+}
+
+func (am AppModule) Route() sdkTypes.Route {
+	return sdkTypes.NewRoute(ModuleName, NewHandler(am.keeper))
+}
+
+func (am AppModule) RegisterQueryService(server grpc.Server) {
+	querier := NewQuerier(am.keeper)
+	types.RegisterQueryServer(server, querier)
+}
+
+func NewAppModule(keeper keeper.Keeper) AppModule {
+	return AppModule{keeper: keeper}
 }
