@@ -8,6 +8,7 @@ import (
 	"github.com/KiraCore/cosmos-sdk/x/crisis"
 	crisiskeeper "github.com/KiraCore/cosmos-sdk/x/crisis/keeper"
 
+	"github.com/KiraCore/sekai/x/kiraHub"
 	"github.com/KiraCore/sekai/x/staking/keeper"
 
 	cumstomtypes "github.com/KiraCore/sekai/x/staking/types"
@@ -114,7 +115,7 @@ var (
 		evidence.AppModuleBasic{},
 
 		customstaking.AppModuleBasic{},
-		//kiraHub.AppModuleBasic{},
+		kiraHub.AppModuleBasic{},
 	)
 
 	// module account permissions

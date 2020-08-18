@@ -10,6 +10,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 
+	"github.com/KiraCore/sekai/x/kiraHub/client/cli"
 	"github.com/KiraCore/sekai/x/kiraHub/keeper"
 	"github.com/KiraCore/sekai/x/kiraHub/types"
 	"github.com/gogo/protobuf/grpc"
@@ -29,7 +30,7 @@ type AppModuleBasic struct {
 }
 
 func (b AppModuleBasic) RegisterInterfaces(registry cdcTypes.InterfaceRegistry) {
-	panic("implement me")
+	types.RegisterInterfaces(registry)
 }
 
 func (AppModuleBasic) Name() string {
@@ -58,11 +59,37 @@ func (b AppModuleBasic) ValidateGenesis(marshaler codec.JSONMarshaler, config cl
 }
 
 func (AppModuleBasic) GetTxCmd() *cobra.Command {
-	panic("implement me")
+	txCmd := &cobra.Command{
+		Use:   types.RouterKey,
+		Short: "kiraHub transaction subcommands",
+	}
+
+	txCmd.AddCommand(
+		cli.CreateOrderBook(),
+		cli.CreateOrder(),
+		cli.UpsertSignerKey())
+
+	txCmd.PersistentFlags().String("node", "tcp://localhost:26657", "<host>:<port> to Tendermint RPC interface for this chain")
+	txCmd.PersistentFlags().String("keyring-backend", "os", "Select keyring's backend (os|file|test)")
+	txCmd.PersistentFlags().String("from", "", "Name or address of private key with which to sign")
+	txCmd.PersistentFlags().String("broadcast-mode", "sync", "Transaction broadcasting mode (sync|async|block)")
+
+	return txCmd
 }
 
 func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
-	panic("implement me")
+	queryCmd := &cobra.Command{
+		Use:   types.RouterKey,
+		Short: "query commands for the kiraHub module",
+	}
+	queryCmd.AddCommand(
+		cli.GetOrderBooksCmd(),
+		cli.GetOrderBooksByTPCmd(),
+		cli.GetOrdersCmd(),
+		cli.ListSignerKeysCmd())
+
+	queryCmd.PersistentFlags().String("node", "tcp://localhost:26657", "<host>:<port> to Tendermint RPC interface for this chain")
+	return queryCmd
 }
 
 type AppModule struct {
@@ -76,53 +103,46 @@ func NewAppModule(keeper keeper.Keeper) AppModule {
 func (AppModule) Name() string {
 	return ModuleName
 }
-func (appModule AppModule) RegisterInterfaces(registry cdcTypes.InterfaceRegistry) {
+func (am AppModule) RegisterInterfaces(registry cdcTypes.InterfaceRegistry) {
 	panic("implement me")
 }
 
-func (appModule AppModule) ValidateGenesis(marshaler codec.JSONMarshaler, config client.TxEncodingConfig, message json.RawMessage) error {
-	panic("implement me")
+func (am AppModule) ValidateGenesis(marshaler codec.JSONMarshaler, config client.TxEncodingConfig, message json.RawMessage) error {
+	return nil
 }
 
-func (appModule AppModule) GetTxCmd() *cobra.Command {
-	panic("implement me")
+func (am AppModule) Route() sdkTypes.Route {
+	return sdkTypes.NewRoute(ModuleName, NewHandler(am.keeper))
 }
 
-func (appModule AppModule) GetQueryCmd() *cobra.Command {
-	panic("implement me")
+func (am AppModule) LegacyQuerierHandler(marshaler codec.JSONMarshaler) sdkTypes.Querier {
+	return nil
 }
 
-func (appModule AppModule) Route() sdkTypes.Route {
-	return sdkTypes.NewRoute(ModuleName, NewHandler(appModule.keeper))
+func (am AppModule) RegisterQueryService(server grpc.Server) {
+	querier := NewQuerier(am.keeper)
+	types.RegisterQueryServer(server, querier)
 }
 
-func (appModule AppModule) LegacyQuerierHandler(marshaler codec.JSONMarshaler) sdkTypes.Querier {
-	panic("implement me")
-}
+func (am AppModule) RegisterInvariants(_ sdkTypes.InvariantRegistry) {}
 
-func (appModule AppModule) RegisterQueryService(server grpc.Server) {
-	panic("implement me")
-}
-
-func (appModule AppModule) RegisterInvariants(_ sdkTypes.InvariantRegistry) {}
-
-func (appModule AppModule) NewHandler() sdkTypes.Handler {
-	return NewHandler(appModule.keeper)
+func (am AppModule) NewHandler() sdkTypes.Handler {
+	return NewHandler(am.keeper)
 }
 func (AppModule) QuerierRoute() string {
 	return QuerierRoute
 }
-func (appModule AppModule) NewQuerierHandler() sdkTypes.Querier {
-	return NewQuerier(appModule.keeper)
+func (am AppModule) NewQuerierHandler() sdkTypes.Querier {
+	return NewQuerier(am.keeper)
 }
-func (appModule AppModule) InitGenesis(context sdkTypes.Context, jsonMarshaler codec.JSONMarshaler, rawMessage json.RawMessage) []abciTypes.ValidatorUpdate {
+func (am AppModule) InitGenesis(context sdkTypes.Context, jsonMarshaler codec.JSONMarshaler, rawMessage json.RawMessage) []abciTypes.ValidatorUpdate {
 	var genesisState GenesisState
 	jsonMarshaler.MustUnmarshalJSON(rawMessage, &genesisState)
-	InitializeGenesisState(context, appModule.keeper, genesisState)
+	InitializeGenesisState(context, am.keeper, genesisState)
 	return []abciTypes.ValidatorUpdate{}
 }
-func (appModule AppModule) ExportGenesis(context sdkTypes.Context, jsonMarshaler codec.JSONMarshaler) json.RawMessage {
-	gs := ExportGenesis(context, appModule.keeper)
+func (am AppModule) ExportGenesis(context sdkTypes.Context, jsonMarshaler codec.JSONMarshaler) json.RawMessage {
+	gs := ExportGenesis(context, am.keeper)
 	return jsonMarshaler.MustMarshalJSON(gs)
 }
 func (AppModule) BeginBlock(_ sdkTypes.Context, _ abciTypes.RequestBeginBlock) {}

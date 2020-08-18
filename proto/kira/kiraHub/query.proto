@@ -1,0 +1,8 @@
+syntax = "proto3";
+package kira.kiraHub;
+
+option go_package = "github.com/KiraCore/cosmos-sdk/x/kiraHub/types";
+
+// Query defines the gRPC querier service
+service Query {
+}

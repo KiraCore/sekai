@@ -4,6 +4,7 @@ import (
 	"io"
 	"os"
 
+	"github.com/KiraCore/sekai/x/kiraHub"
 	customstaking "github.com/KiraCore/sekai/x/staking"
 
 	"github.com/KiraCore/cosmos-sdk/simapp"
@@ -110,6 +111,7 @@ var (
 		transfer.AppModuleBasic{},
 
 		customstaking.AppModuleBasic{},
+		kiraHub.AppModuleBasic{},
 	)
 
 	// module account permissions
