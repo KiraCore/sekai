@@ -64,7 +64,7 @@ func GetCmdQueryValidatorByAddress() *cobra.Command {
 					return err
 				}
 
-				return clientCtx.PrintOutput(res.Validator)
+				return clientCtx.PrintOutput(&res.Validator)
 			}
 
 			moniker, _ := cmd.Flags().GetString(FlagMoniker)
@@ -77,7 +77,7 @@ func GetCmdQueryValidatorByAddress() *cobra.Command {
 					return err
 				}
 
-				return clientCtx.PrintOutput(res.Validator)
+				return clientCtx.PrintOutput(&res.Validator)
 			}
 			return nil
 		},

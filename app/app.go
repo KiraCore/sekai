@@ -1,14 +1,15 @@
 package app
 
 import (
-	"encoding/json"
 	"io"
 	"os"
+
+	customkeeper "github.com/KiraCore/sekai/x/staking/keeper"
 
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 	crisiskeeper "github.com/cosmos/cosmos-sdk/x/crisis/keeper"
 
-	"github.com/cosmos/cosmos-sdk/x/staking/keeper"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	cumstomtypes "github.com/KiraCore/sekai/x/staking/types"
 
@@ -17,10 +18,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 
 	"github.com/cosmos/cosmos-sdk/codec/types"
-
-	"github.com/cosmos/cosmos-sdk/client/rpc"
-	"github.com/cosmos/cosmos-sdk/server/api"
-	authrest "github.com/cosmos/cosmos-sdk/x/auth/client/rest"
 
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/libs/log"
@@ -135,7 +132,7 @@ var (
 // NewApp extended ABCI application
 type SekaiApp struct {
 	*bam.BaseApp
-	cdc               *codec.Codec
+	cdc               *codec.LegacyAmino
 	appCodec          codec.Marshaler
 	interfaceRegistry types.InterfaceRegistry
 
@@ -162,7 +159,7 @@ type SekaiApp struct {
 	evidenceKeeper   evidencekeeper.Keeper
 	transferKeeper   ibctransferkeeper.Keeper
 
-	customStakingKeeper keeper.Keeper
+	customStakingKeeper customkeeper.Keeper
 
 	// make scoped keepers public for test purposes
 	scopedIBCKeeper      capabilitykeeper.ScopedKeeper
@@ -192,13 +189,13 @@ func NewInitApp(
 	bApp := bam.NewBaseApp(appName, logger, db, encodingConfig.TxConfig.TxDecoder(), baseAppOptions...)
 	bApp.SetCommitMultiStoreTracer(traceStore)
 	bApp.SetAppVersion(version.Version)
-	bApp.GRPCQueryRouter().SetAnyUnpacker(interfaceRegistry)
+	bApp.GRPCQueryRouter().SetInterfaceRegistry(interfaceRegistry)
 
 	// TODO: Add the keys that module requires
 	keys := sdk.NewKVStoreKeys(authtypes.StoreKey, banktypes.StoreKey, stakingtypes.StoreKey,
 		distrtypes.StoreKey, slashingtypes.StoreKey,
 		govtypes.StoreKey, paramstypes.StoreKey, ibchost.StoreKey, upgradetypes.StoreKey,
-		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey, constants.StoreKey,
+		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey,
 		cumstomtypes.ModuleName,
 	)
 	tKeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -216,7 +213,7 @@ func NewInitApp(
 		memKeys:           memKeys,
 	}
 
-	app.paramsKeeper = initParamsKeeper(appCodec, keys[paramstypes.StoreKey], tKeys[paramstypes.TStoreKey])
+	app.paramsKeeper = initParamsKeeper(appCodec, cdc, keys[paramstypes.StoreKey], tKeys[paramstypes.TStoreKey])
 
 	bApp.SetParamStore(app.paramsKeeper.Subspace(bam.Paramspace).WithKeyTable(std.ConsensusParamsKeyTable()))
 
@@ -263,7 +260,7 @@ func NewInitApp(
 		stakingtypes.NewMultiStakingHooks(app.distrKeeper.Hooks(), app.slashingKeeper.Hooks()),
 	)
 
-	app.customStakingKeeper = keeper.NewKeeper(keys[cumstomtypes.ModuleName], cdc)
+	app.customStakingKeeper = customkeeper.NewKeeper(keys[cumstomtypes.ModuleName], cdc)
 
 	app.ibcKeeper = ibckeeper.NewKeeper(
 		appCodec, keys[ibchost.StoreKey], app.stakingKeeper, scopedIBCKeeper,
@@ -271,10 +268,9 @@ func NewInitApp(
 
 	// Create Transfer Keepers
 	app.transferKeeper = ibctransferkeeper.NewKeeper(
-		appCodec, keys[ibctransfertypes.StoreKey],
+		appCodec, keys[ibctransfertypes.StoreKey], app.GetSubspace(ibctransfertypes.ModuleName),
 		app.ibcKeeper.ChannelKeeper, &app.ibcKeeper.PortKeeper,
-		app.accountKeeper, app.bankKeeper,
-		scopedTransferKeeper,
+		app.accountKeeper, app.bankKeeper, scopedTransferKeeper,
 	)
 	transferModule := transfer.NewAppModule(app.transferKeeper)
 
@@ -389,7 +385,7 @@ func NewInitApp(
 	// sub-keepers.
 	// This must be done during creation of baseapp rather than in InitChain so
 	// that in-memory capabilities get regenerated on app restart
-	ctx := app.BaseApp.NewUncachedContext(true, abci.Header{})
+	ctx := app.BaseApp.NewUncachedContext(true, tmproto.Header{})
 	app.capabilityKeeper.InitializeAndSeal(ctx)
 
 	app.scopedIBCKeeper = scopedIBCKeeper
@@ -398,15 +394,16 @@ func NewInitApp(
 	return app
 }
 
-// GenesisState represents chain state at the start of the chain. Any initial state (account balances) are stored here.
-type GenesisState map[string]json.RawMessage
-
-// InitChainer application update at chain initialization
-func (app *SekaiApp) InitChainer(ctx sdk.Context, req abci.RequestInitChain) abci.ResponseInitChain {
-	var genesisState simapp.GenesisState
-	app.cdc.MustUnmarshalJSON(req.AppStateBytes, &genesisState)
-	return app.mm.InitGenesis(ctx, app.cdc, genesisState)
+// MakeCodecs constructs the *std.Codec and *codec.LegacyAmino instances used by
+// simapp. It is useful for tests and clients who do not want to construct the
+// full simapp
+func MakeCodecs() (codec.Marshaler, *codec.LegacyAmino) {
+	config := MakeEncodingConfig()
+	return config.Marshaler, config.Amino
 }
+
+// Name returns the name of the App
+func (app *SekaiApp) Name() string { return app.BaseApp.Name() }
 
 // BeginBlocker application updates every begin block
 func (app *SekaiApp) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abci.ResponseBeginBlock {
@@ -416,6 +413,13 @@ func (app *SekaiApp) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) a
 // EndBlocker application updates every end block
 func (app *SekaiApp) EndBlocker(ctx sdk.Context, req abci.RequestEndBlock) abci.ResponseEndBlock {
 	return app.mm.EndBlock(ctx, req)
+}
+
+// InitChainer application update at chain initialization
+func (app *SekaiApp) InitChainer(ctx sdk.Context, req abci.RequestInitChain) abci.ResponseInitChain {
+	var genesisState GenesisState
+	app.cdc.MustUnmarshalJSON(req.AppStateBytes, &genesisState)
+	return app.mm.InitGenesis(ctx, app.appCodec, genesisState)
 }
 
 // LoadHeight loads a particular height
@@ -433,17 +437,57 @@ func (app *SekaiApp) ModuleAccountAddrs() map[string]bool {
 	return modAccAddrs
 }
 
-// RegisterAPIRoutes registers all application module routes with the provided
-// API server.
-func (app *SekaiApp) RegisterAPIRoutes(apiSvr *api.Server) {
-	rpc.RegisterRoutes(apiSvr.ClientCtx, apiSvr.Router)
-	authrest.RegisterTxRoutes(apiSvr.ClientCtx, apiSvr.Router)
-	ModuleBasics.RegisterRESTRoutes(apiSvr.ClientCtx, apiSvr.Router)
+// BlockedAddrs returns all the app's module account addresses that are not
+// allowed to receive external tokens.
+func (app *SekaiApp) BlockedAddrs() map[string]bool {
+	blockedAddrs := make(map[string]bool)
+	for acc := range maccPerms {
+		blockedAddrs[authtypes.NewModuleAddress(acc).String()] = !allowedReceivingModAcc[acc]
+	}
+
+	return blockedAddrs
 }
 
-// Codec returns the application's sealed codec.
-func (app *SekaiApp) Codec() *codec.Codec {
+// Codec returns SimApp's codec.
+//
+// NOTE: This is solely to be used for testing purposes as it may be desirable
+// for modules to register their own custom testing types.
+func (app *SekaiApp) LegacyAmino() *codec.LegacyAmino {
 	return app.cdc
+}
+
+// AppCodec returns SimApp's app codec.
+//
+// NOTE: This is solely to be used for testing purposes as it may be desirable
+// for modules to register their own custom testing types.
+func (app *SekaiApp) AppCodec() codec.Marshaler {
+	return app.appCodec
+}
+
+// InterfaceRegistry returns SimApp's InterfaceRegistry
+func (app *SekaiApp) InterfaceRegistry() types.InterfaceRegistry {
+	return app.interfaceRegistry
+}
+
+// GetKey returns the KVStoreKey for the provided store key.
+//
+// NOTE: This is solely to be used for testing purposes.
+func (app *SekaiApp) GetKey(storeKey string) *sdk.KVStoreKey {
+	return app.keys[storeKey]
+}
+
+// GetTKey returns the TransientStoreKey for the provided store key.
+//
+// NOTE: This is solely to be used for testing purposes.
+func (app *SekaiApp) GetTKey(storeKey string) *sdk.TransientStoreKey {
+	return app.tKeys[storeKey]
+}
+
+// GetMemKey returns the MemStoreKey for the provided mem key.
+//
+// NOTE: This is solely used for testing purposes.
+func (app *SekaiApp) GetMemKey(storeKey string) *sdk.MemoryStoreKey {
+	return app.memKeys[storeKey]
 }
 
 // GetSubspace returns a param subspace for a given module name.
@@ -459,20 +503,9 @@ func (app *SekaiApp) SimulationManager() *module.SimulationManager {
 	return app.sm
 }
 
-// BlockedAddrs returns all the app's module account addresses that are not
-// allowed to receive external tokens.
-func (app *SekaiApp) BlockedAddrs() map[string]bool {
-	blockedAddrs := make(map[string]bool)
-	for acc := range maccPerms {
-		blockedAddrs[authtypes.NewModuleAddress(acc).String()] = !allowedReceivingModAcc[acc]
-	}
-
-	return blockedAddrs
-}
-
 // initParamsKeeper init params keeper and its subspaces
-func initParamsKeeper(appCodec codec.Marshaler, key, tkey sdk.StoreKey) paramskeeper.Keeper {
-	paramsKeeper := paramskeeper.NewKeeper(appCodec, key, tkey)
+func initParamsKeeper(appCodec codec.BinaryMarshaler, legacyAmino *codec.LegacyAmino, key, tkey sdk.StoreKey) paramskeeper.Keeper {
+	paramsKeeper := paramskeeper.NewKeeper(appCodec, legacyAmino, key, tkey)
 
 	paramsKeeper.Subspace(authtypes.ModuleName)
 	paramsKeeper.Subspace(banktypes.ModuleName)

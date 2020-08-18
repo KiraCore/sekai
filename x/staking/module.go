@@ -3,15 +3,15 @@ package staking
 import (
 	"encoding/json"
 
-	tmtypes "github.com/tendermint/tendermint/types"
+	"github.com/tendermint/tendermint/crypto/encoding"
 
+	"github.com/KiraCore/sekai/x/staking/keeper"
+	"github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	types2 "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/KiraCore/sekai/x/staking/keeper"
-	"github.com/KiraCore/sekai/x/staking/types"
 	"github.com/gogo/protobuf/grpc"
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
@@ -28,12 +28,15 @@ var (
 
 type AppModuleBasic struct{}
 
+func (b AppModuleBasic) RegisterCodec(amino *codec.LegacyAmino) {
+	panic("implement me")
+}
+
 func (b AppModuleBasic) Name() string {
 	return cumstomtypes.ModuleName
 }
 
 func (b AppModuleBasic) RegisterInterfaces(registry types2.InterfaceRegistry) {
-	cumstomtypes.RegisterInterfaces(registry)
 }
 
 func (b AppModuleBasic) DefaultGenesis(marshaler codec.JSONMarshaler) json.RawMessage {
@@ -55,19 +58,10 @@ func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
 	return cli.GetCmdQueryValidatorByAddress()
 }
 
-// RegisterCodec registers the staking module's types for the given codec.
-func (AppModuleBasic) RegisterCodec(cdc *codec.Codec) {
-	cumstomtypes.RegisterCodec(cdc)
-}
-
 // AppModule extends the cosmos SDK staking.
 type AppModule struct {
 	AppModuleBasic
 	customStakingKeeper keeper.Keeper
-}
-
-func (am AppModule) RegisterCodec(c *codec.Codec) {
-	panic("implement me")
 }
 
 func (am AppModule) RegisterInterfaces(registry types2.InterfaceRegistry) {
@@ -86,9 +80,13 @@ func (am AppModule) InitGenesis(
 
 	for i, val := range genesisState.Validators {
 		am.customStakingKeeper.AddValidator(ctx, val)
+		pk, err := encoding.PubKeyToProto(val.GetConsPubKey())
+		if err != nil {
+			panic("invalid key")
+		}
 		valUpdate[i] = abci.ValidatorUpdate{
 			Power:  1,
-			PubKey: tmtypes.TM2PB.PubKey(val.GetConsPubKey()),
+			PubKey: pk,
 		}
 	}
 
@@ -116,9 +114,13 @@ func (am AppModule) EndBlock(ctx sdk.Context, block abci.RequestEndBlock) []abci
 
 	for i, val := range valSet {
 		am.customStakingKeeper.AddValidator(ctx, val)
+		proto, err := encoding.PubKeyToProto(val.GetConsPubKey())
+		if err != nil {
+			panic("invalid key")
+		}
 		valUpdate[i] = abci.ValidatorUpdate{
 			Power:  1,
-			PubKey: tmtypes.TM2PB.PubKey(val.GetConsPubKey()),
+			PubKey: proto,
 		}
 	}
 

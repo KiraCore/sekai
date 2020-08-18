@@ -1,25 +1,25 @@
 package keeper
 
 import (
+	"github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/KiraCore/sekai/x/staking/types"
 )
 
 // Keeper represents the keeper that maintains the Validator Registry.
 type Keeper struct {
 	storeKey sdk.StoreKey
-	cdc codec.BinaryMarshaler
+	cdc      *codec.LegacyAmino
 }
 
 // NewKeeper returns new keeper.
-func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryMarshaler) Keeper {
+func NewKeeper(storeKey sdk.StoreKey, cdc *codec.LegacyAmino) Keeper {
 	return Keeper{storeKey: storeKey, cdc: cdc}
 }
 
 func (k Keeper) AddValidator(ctx sdk.Context, validator types.Validator) {
 	store := ctx.KVStore(k.storeKey)
-	bz := k.cdc.MustMarshalBinaryBare(validator)
+	bz := k.cdc.MustMarshalBinaryBare(&validator)
 	store.Set(types.GetValidatorKey(validator.ValKey), bz)
 
 	// Save by moniker
