@@ -6,10 +6,10 @@ import (
 	"io"
 	"os"
 
+	"github.com/cosmos/cosmos-sdk/codec"
+
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
-
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/libs/cli"
 	"github.com/tendermint/tendermint/libs/log"
@@ -170,12 +170,14 @@ func newApp(logger log.Logger, db dbm.DB, traceStore io.Writer, appOpts serverty
 	}
 
 	return app.NewInitApp(
-		logger, db, traceStore, true, skipUpgradeHeights, cast.ToString(appOpts.Get(flags.FlagHome)),
-		invCheckPeriod,
+		logger, db, traceStore, true, skipUpgradeHeights,
+		cast.ToString(appOpts.Get(flags.FlagHome)),
+		cast.ToUint(appOpts.Get(server.FlagInvCheckPeriod)),
+		app.MakeEncodingConfig(), // Ideally, we would reuse the one created by NewRootCmd.
 		baseapp.SetPruning(pruningOpts),
-		baseapp.SetMinGasPrices(viper.GetString(server.FlagMinGasPrices)),
-		baseapp.SetHaltHeight(viper.GetUint64(server.FlagHaltHeight)),
-		baseapp.SetHaltTime(viper.GetUint64(server.FlagHaltTime)),
+		baseapp.SetMinGasPrices(cast.ToString(appOpts.Get(server.FlagMinGasPrices))),
+		baseapp.SetHaltHeight(cast.ToUint64(appOpts.Get(server.FlagHaltHeight))),
+		baseapp.SetHaltTime(cast.ToUint64(appOpts.Get(server.FlagHaltTime))),
 		baseapp.SetInterBlockCache(cache),
 		baseapp.SetTrace(cast.ToBool(appOpts.Get(server.FlagTrace))),
 	)
@@ -184,15 +186,18 @@ func newApp(logger log.Logger, db dbm.DB, traceStore io.Writer, appOpts serverty
 func exportAppStateAndTMValidators(
 	logger log.Logger, db dbm.DB, traceStore io.Writer, height int64, forZeroHeight bool, jailWhiteList []string,
 ) (json.RawMessage, []tmtypes.GenesisValidator, *abci.ConsensusParams, error) {
+
+	encCfg := app.MakeEncodingConfig() // Ideally, we would reuse the one created by NewRootCmd.
+	encCfg.Marshaler = codec.NewProtoCodec(encCfg.InterfaceRegistry)
 	var simApp *app.SekaiApp
 	if height != -1 {
-		simApp = app.NewInitApp(logger, db, traceStore, false, map[int64]bool{}, "", uint(1))
+		simApp = app.NewInitApp(logger, db, traceStore, false, map[int64]bool{}, "", uint(1), encCfg)
 
 		if err := simApp.LoadHeight(height); err != nil {
 			return nil, nil, nil, err
 		}
 	} else {
-		simApp = app.NewInitApp(logger, db, traceStore, true, map[int64]bool{}, "", uint(1))
+		simApp = app.NewInitApp(logger, db, traceStore, true, map[int64]bool{}, "", uint(1), encCfg)
 	}
 
 	return simApp.ExportAppStateAndValidators(forZeroHeight, jailWhiteList)

@@ -4,6 +4,8 @@ import (
 	"io"
 	"os"
 
+	simappparams "github.com/cosmos/cosmos-sdk/simapp/params"
+
 	"github.com/cosmos/cosmos-sdk/client/rpc"
 	"github.com/cosmos/cosmos-sdk/server/api"
 	authrest "github.com/cosmos/cosmos-sdk/x/auth/client/rest"
@@ -93,7 +95,7 @@ var (
 	// DefaultNodeHome sets the folder where the applcation data and configuration will be stored
 	DefaultNodeHome = os.ExpandEnv("$HOME/.sekaid")
 
-	// ModuleBasics The module BasicManager is in charge of setting up basic,
+	// ModuleBasics defines the module BasicManager is in charge of setting up basic,
 	// non-dependant module elements, such as codec registration
 	// and genesis verification.
 	ModuleBasics = module.NewBasicManager(
@@ -104,7 +106,7 @@ var (
 		staking.AppModuleBasic{},
 		//distr.AppModuleBasic{},
 		gov.NewAppModuleBasic(
-			paramsclient.ProposalHandler, distrclient.ProposalHandler, upgradeclient.ProposalHandler,
+			paramsclient.ProposalHandler, distrclient.ProposalHandler, upgradeclient.ProposalHandler, upgradeclient.CancelProposalHandler,
 		),
 		params.AppModuleBasic{},
 		crisis.AppModuleBasic{},
@@ -112,9 +114,8 @@ var (
 		ibc.AppModuleBasic{},
 		upgrade.AppModuleBasic{},
 		evidence.AppModuleBasic{},
-
+		transfer.AppModuleBasic{},
 		customstaking.AppModuleBasic{},
-		//kiraHub.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -128,6 +129,7 @@ var (
 		ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
 	}
 
+	// module accounts that are allowed to receive tokens
 	allowedReceivingModAcc = map[string]bool{
 		distrtypes.ModuleName: true,
 	}
@@ -181,10 +183,10 @@ var _ simapp.App = (*SekaiApp)(nil)
 
 func NewInitApp(
 	logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest bool, skipUpgradeHeights map[int64]bool,
-	home string, invCheckPeriod uint, baseAppOptions ...func(*bam.BaseApp),
+	homePath string, invCheckPeriod uint, encodingConfig simappparams.EncodingConfig, baseAppOptions ...func(*bam.BaseApp),
 ) *SekaiApp {
+
 	// TODO: Remove cdc in favor of appCodec once all modules are migrated.
-	encodingConfig := MakeEncodingConfig()
 	appCodec := encodingConfig.Marshaler
 	cdc := encodingConfig.Amino
 	interfaceRegistry := encodingConfig.InterfaceRegistry
@@ -219,7 +221,8 @@ func NewInitApp(
 
 	app.paramsKeeper = initParamsKeeper(appCodec, cdc, keys[paramstypes.StoreKey], tKeys[paramstypes.TStoreKey])
 
-	bApp.SetParamStore(app.paramsKeeper.Subspace(bam.Paramspace).WithKeyTable(std.ConsensusParamsKeyTable()))
+	// set the BaseApp's parameter store
+	app.SetParamStore(app.paramsKeeper.Subspace(bam.Paramspace).WithKeyTable(std.ConsensusParamsKeyTable()))
 
 	app.capabilityKeeper = capabilitykeeper.NewKeeper(appCodec, keys[capabilitytypes.StoreKey], memKeys[capabilitytypes.MemStoreKey])
 	scopedIBCKeeper := app.capabilityKeeper.ScopeToModule(ibchost.ModuleName)
@@ -245,7 +248,7 @@ func NewInitApp(
 	app.crisisKeeper = crisiskeeper.NewKeeper(
 		app.GetSubspace(crisistypes.ModuleName), invCheckPeriod, app.bankKeeper, authtypes.FeeCollectorName,
 	)
-	app.upgradeKeeper = upgradekeeper.NewKeeper(skipUpgradeHeights, keys[upgradetypes.StoreKey], appCodec, home)
+	app.upgradeKeeper = upgradekeeper.NewKeeper(skipUpgradeHeights, keys[upgradetypes.StoreKey], appCodec, homePath)
 
 	// register the proposal types
 	govRouter := govtypes.NewRouter()
@@ -539,6 +542,7 @@ func initParamsKeeper(appCodec codec.BinaryMarshaler, legacyAmino *codec.LegacyA
 	paramsKeeper.Subspace(slashingtypes.ModuleName)
 	paramsKeeper.Subspace(govtypes.ModuleName).WithKeyTable(govtypes.ParamKeyTable())
 	paramsKeeper.Subspace(crisistypes.ModuleName)
+	paramsKeeper.Subspace(ibctransfertypes.ModuleName)
 
 	return paramsKeeper
 }

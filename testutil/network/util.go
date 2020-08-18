@@ -1,6 +1,7 @@
 package network
 
 import (
+	"encoding/json"
 	"path/filepath"
 	"time"
 
@@ -17,14 +18,13 @@ import (
 	"github.com/tendermint/tendermint/types"
 	tmtime "github.com/tendermint/tendermint/types/time"
 
-	"github.com/cosmos/cosmos-sdk/codec"
+	customtypes "github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/server/api"
 	servergrpc "github.com/cosmos/cosmos-sdk/server/grpc"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
-	customtypes "github.com/KiraCore/sekai/x/staking/types"
 )
 
 func startInProcess(cfg Config, val *Validator) error {
@@ -147,14 +147,14 @@ func initGenFiles(cfg Config, vals []*Validator, genAccounts []authtypes.Genesis
 	}
 
 	authGenState.Accounts = accounts
-	cfg.GenesisState[authtypes.ModuleName] = cfg.Codec.MustMarshalJSON(authGenState)
+	cfg.GenesisState[authtypes.ModuleName] = cfg.Codec.MustMarshalJSON(&authGenState)
 
 	// set the balances in the genesis state
 	var bankGenState banktypes.GenesisState
 	cfg.Codec.MustUnmarshalJSON(cfg.GenesisState[banktypes.ModuleName], &bankGenState)
 
 	bankGenState.Balances = genBalances
-	cfg.GenesisState[banktypes.ModuleName] = cfg.Codec.MustMarshalJSON(bankGenState)
+	cfg.GenesisState[banktypes.ModuleName] = cfg.Codec.MustMarshalJSON(&bankGenState)
 
 	var customStakingGenState customtypes.GenesisState
 	for _, val := range vals {
@@ -164,9 +164,9 @@ func initGenFiles(cfg Config, vals []*Validator, genAccounts []authtypes.Genesis
 		}
 		customStakingGenState.Validators = append(customStakingGenState.Validators, validator)
 	}
-	cfg.GenesisState[customtypes.ModuleName] = cfg.Codec.MustMarshalJSON(customStakingGenState)
+	cfg.GenesisState[customtypes.ModuleName] = cfg.Codec.MustMarshalJSON(&customStakingGenState)
 
-	appGenStateJSON, err := codec.MarshalJSONIndent(cfg.Codec, cfg.GenesisState)
+	appGenStateJSON, err := json.MarshalIndent(cfg.GenesisState, "", "  ")
 	if err != nil {
 		return err
 	}
