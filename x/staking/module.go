@@ -29,7 +29,7 @@ var (
 type AppModuleBasic struct{}
 
 func (b AppModuleBasic) RegisterCodec(amino *codec.LegacyAmino) {
-	panic("implement me")
+	cumstomtypes.RegisterCodec(amino)
 }
 
 func (b AppModuleBasic) Name() string {
@@ -65,7 +65,7 @@ type AppModule struct {
 }
 
 func (am AppModule) RegisterInterfaces(registry types2.InterfaceRegistry) {
-	panic("implement me")
+	cumstomtypes.RegisterInterfaces(registry)
 }
 
 func (am AppModule) InitGenesis(
