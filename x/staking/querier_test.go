@@ -3,6 +3,8 @@ package staking_test
 import (
 	"testing"
 
+	"github.com/KiraCore/sekai/app"
+
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/KiraCore/sekai/x/staking"
@@ -15,6 +17,8 @@ import (
 )
 
 func TestQuerier_ValidatorByAddress(t *testing.T) {
+	app.SetConfig()
+
 	valAddr1, err := types.ValAddressFromBech32("kiravaloper15ky9du8a2wlstz6fpx3p4mqpjyrm5cgq38f2fp")
 	require.NoError(t, err)
 	pubKey, err := types.GetPubKeyFromBech32(types.Bech32PubKeyTypeConsPub, "kiravalconspub1zcjduepqylc5k8r40azmw0xt7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsq4xg7em")

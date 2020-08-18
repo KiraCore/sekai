@@ -90,6 +90,8 @@ func init() {
 }
 
 func main() {
+	app.SetConfig()
+
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, client.ClientContextKey, &client.Context{})
 	ctx = context.WithValue(ctx, server.ServerContextKey, server.NewDefaultContext())
