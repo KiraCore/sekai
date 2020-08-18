@@ -4,6 +4,10 @@ import (
 	"io"
 	"os"
 
+	"github.com/cosmos/cosmos-sdk/client/rpc"
+	"github.com/cosmos/cosmos-sdk/server/api"
+	authrest "github.com/cosmos/cosmos-sdk/x/auth/client/rest"
+
 	customkeeper "github.com/KiraCore/sekai/x/staking/keeper"
 
 	"github.com/cosmos/cosmos-sdk/x/crisis"
@@ -501,6 +505,26 @@ func (app *SekaiApp) GetSubspace(moduleName string) paramstypes.Subspace {
 // SimulationManager implements the SimulationApp interface
 func (app *SekaiApp) SimulationManager() *module.SimulationManager {
 	return app.sm
+}
+
+// RegisterAPIRoutes registers all application module routes with the provided
+// API server.
+func (app *SekaiApp) RegisterAPIRoutes(apiSvr *api.Server) {
+	clientCtx := apiSvr.ClientCtx
+	// amino is needed here for backwards compatibility of REST routes
+	clientCtx = clientCtx.WithJSONMarshaler(clientCtx.LegacyAmino)
+	rpc.RegisterRoutes(clientCtx, apiSvr.Router)
+	authrest.RegisterTxRoutes(clientCtx, apiSvr.Router)
+	ModuleBasics.RegisterRESTRoutes(clientCtx, apiSvr.Router)
+}
+
+// GetMaccPerms returns a copy of the module account permissions
+func GetMaccPerms() map[string][]string {
+	dupMaccPerms := make(map[string][]string)
+	for k, v := range maccPerms {
+		dupMaccPerms[k] = v
+	}
+	return dupMaccPerms
 }
 
 // initParamsKeeper init params keeper and its subspaces

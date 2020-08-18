@@ -53,10 +53,11 @@ var (
 	encodingConfig = app.MakeEncodingConfig()
 	initClientCtx  = client.Context{}.
 			WithJSONMarshaler(encodingConfig.Marshaler).
+			WithInterfaceRegistry(encodingConfig.InterfaceRegistry).
 			WithTxConfig(encodingConfig.TxConfig).
-			WithCodec(encodingConfig.Amino).
+			WithLegacyAmino(encodingConfig.Amino).
 			WithInput(os.Stdin).
-			WithAccountRetriever(types.NewAccountRetriever(encodingConfig.Marshaler)).
+			WithAccountRetriever(types.AccountRetriever{}).
 			WithBroadcastMode(flags.BroadcastBlock).
 			WithHomeDir(app.DefaultNodeHome)
 )
