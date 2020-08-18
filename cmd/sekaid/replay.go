@@ -97,6 +97,7 @@ func replayTxs(rootDir string) error {
 	fmt.Fprintln(os.Stderr, "Creating application")
 	sekaiapp := app.NewInitApp(
 		ctx.Logger, appDB, traceStoreWriter, true, map[int64]bool{}, "", uint(1),
+		app.MakeEncodingConfig(),                  // Ideally, we would reuse the one created by NewRootCmd.
 		baseapp.SetPruning(types.PruneEverything), // nothing
 	)
 
