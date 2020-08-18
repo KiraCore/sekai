@@ -6,7 +6,8 @@ import (
 )
 
 // NewValidator generates new Validator.
-func NewValidator(moniker string, website string, social string, identity string, comission sdk.Dec, valKey sdk.ValAddress, pubKey crypto.PubKey) (Validator, error) {
+func NewValidator(moniker string, website string, social string,
+	identity string, comission sdk.Dec, valKey sdk.ValAddress, pubKey crypto.PubKey) (Validator, error) {
 	var pkStr string
 	if pubKey != nil {
 		pkStr = sdk.MustBech32ifyPubKey(sdk.Bech32PubKeyTypeConsPub, pubKey)
@@ -51,5 +52,6 @@ func (v Validator) Validate() error {
 	return nil
 }
 
-type ValidatorIdentityRegistry struct {
+func (v Validator) GetConsPubKey() crypto.PubKey {
+	return sdk.MustGetPubKeyFromBech32(sdk.Bech32PubKeyTypeConsPub, v.PubKey)
 }

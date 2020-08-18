@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	types2 "github.com/KiraCore/cosmos-sdk/types"
-	"github.com/magiconair/properties/assert"
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
 
@@ -34,9 +33,18 @@ func TestKeeper_AddValidator(t *testing.T) {
 	require.NoError(t, err)
 
 	app.CustomStakingKeeper.AddValidator(ctx, validator)
-	getValidator := app.CustomStakingKeeper.GetValidator(ctx, validator.ValKey)
 
-	assert.Equal(t, validator, getValidator)
+	// Get By Validator Address.
+	getValidator := app.CustomStakingKeeper.GetValidator(ctx, validator.ValKey)
+	require.Equal(t, validator, getValidator)
+
+	// Get by AccAddress.
+	getValidator = app.CustomStakingKeeper.GetValidatorByAccAddress(ctx, addr1)
+	require.Equal(t, validator, getValidator)
+
+	// Get by Moniker.
+	getValidator = app.CustomStakingKeeper.GetValidatorByMoniker(ctx, validator.Moniker)
+	require.Equal(t, validator, getValidator)
 }
 
 func TestKeeper_GetValidatorSet(t *testing.T) {

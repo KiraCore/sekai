@@ -9,7 +9,10 @@ option go_package = "github.com/KiraCore/cosmos-sdk/x/staking/types";
 // Query defines the gRPC querier service
 service Query {
   // Validators queries a validator by address.
-  rpc ValidatorByAddress (ValidatorByAddressRequest) returns (ValidatorByAddressResponse) {}
+  rpc ValidatorByAddress (ValidatorByAddressRequest) returns (ValidatorResponse) {}
+
+  // Validators queries a validator by moniker.
+  rpc ValidatorByMoniker (ValidatorByMonikerRequest) returns (ValidatorResponse) {}
 }
 
 message ValidatorByAddressRequest {
@@ -19,6 +22,10 @@ message ValidatorByAddressRequest {
   ];
 }
 
-message ValidatorByAddressResponse {
+message ValidatorByMonikerRequest {
+  string moniker = 1;
+}
+
+message ValidatorResponse {
   kira.staking.Validator validator = 1 [(gogoproto.nullable) = false];
 }

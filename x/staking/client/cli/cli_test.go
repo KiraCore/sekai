@@ -11,14 +11,15 @@ import (
 	"github.com/KiraCore/cosmos-sdk/baseapp"
 	"github.com/KiraCore/cosmos-sdk/client"
 	"github.com/KiraCore/cosmos-sdk/client/flags"
+	"github.com/KiraCore/cosmos-sdk/client/keys"
 	servertypes "github.com/KiraCore/cosmos-sdk/server/types"
 	"github.com/KiraCore/cosmos-sdk/store/types"
 	"github.com/KiraCore/cosmos-sdk/testutil"
-	"github.com/KiraCore/cosmos-sdk/testutil/network"
 	sdk "github.com/KiraCore/cosmos-sdk/types"
 
 	"github.com/KiraCore/sekai/app"
 	"github.com/KiraCore/sekai/simapp"
+	"github.com/KiraCore/sekai/testutil/network"
 	"github.com/KiraCore/sekai/x/staking/client/cli"
 	customtypes "github.com/KiraCore/sekai/x/staking/types"
 )
@@ -60,7 +61,7 @@ func (s *IntegrationTestSuite) TearDownSuite() {
 	s.network.Cleanup()
 }
 
-func (s *IntegrationTestSuite) TestClaimValidatorSet() {
+func (s *IntegrationTestSuite) TestClaimValidatorSet_AndQueriers() {
 	val := s.network.Validators[0]
 
 	cmd := cli.GetTxClaimValidatorCmd()
@@ -78,7 +79,7 @@ func (s *IntegrationTestSuite) TestClaimValidatorSet() {
 			fmt.Sprintf("--%s=%s", cli.FlagSocial, "Social"),
 			fmt.Sprintf("--%s=%s", cli.FlagIdentity, "Identity"),
 			fmt.Sprintf("--%s=%s", cli.FlagComission, "10"),
-			fmt.Sprintf("--%s=%s", cli.FlagPubKey, pubKey),
+			fmt.Sprintf("--%s=%s", keys.FlagPublicKey, pubKey),
 			fmt.Sprintf("--%s=%s", cli.FlagValKey, val.ValAddress.String()),
 			fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Moniker),
 			fmt.Sprintf("--%s", flags.FlagSkipConfirmation),
@@ -98,7 +99,7 @@ func (s *IntegrationTestSuite) TestClaimValidatorSet() {
 	query := cli.GetCmdQueryValidatorByAddress()
 	query.SetArgs(
 		[]string{
-			val.ValAddress.String(),
+			fmt.Sprintf("--%s=%s", cli.FlagValAddr, val.ValAddress.String()),
 		},
 	)
 
@@ -109,6 +110,54 @@ func (s *IntegrationTestSuite) TestClaimValidatorSet() {
 	s.Require().NoError(err)
 
 	var respValidator customtypes.Validator
+	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &respValidator)
+
+	s.Require().Equal("Moniker", respValidator.Moniker)
+	s.Require().Equal("Website", respValidator.Website)
+	s.Require().Equal("Social", respValidator.Social)
+	s.Require().Equal("Identity", respValidator.Identity)
+	s.Require().Equal(sdk.NewDec(10), respValidator.Commission)
+	s.Require().Equal(val.ValAddress, respValidator.ValKey)
+	s.Require().Equal(pubKey, respValidator.PubKey)
+
+	// Query by Acc Addrs.
+	query = cli.GetCmdQueryValidatorByAddress()
+	query.SetArgs(
+		[]string{
+			fmt.Sprintf("--%s=%s", cli.FlagAddr, val.Address.String()),
+		},
+	)
+
+	out.Reset()
+
+	clientCtx = clientCtx.WithOutputFormat("json")
+	err = query.ExecuteContext(ctx)
+	s.Require().NoError(err)
+
+	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &respValidator)
+
+	s.Require().Equal("Moniker", respValidator.Moniker)
+	s.Require().Equal("Website", respValidator.Website)
+	s.Require().Equal("Social", respValidator.Social)
+	s.Require().Equal("Identity", respValidator.Identity)
+	s.Require().Equal(sdk.NewDec(10), respValidator.Commission)
+	s.Require().Equal(val.ValAddress, respValidator.ValKey)
+	s.Require().Equal(pubKey, respValidator.PubKey)
+
+	// Query by moniker.
+	query = cli.GetCmdQueryValidatorByAddress()
+	query.SetArgs(
+		[]string{
+			fmt.Sprintf("--%s=%s", cli.FlagMoniker, val.Moniker),
+		},
+	)
+
+	out.Reset()
+
+	clientCtx = clientCtx.WithOutputFormat("json")
+	err = query.ExecuteContext(ctx)
+	s.Require().NoError(err)
+
 	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &respValidator)
 
 	s.Require().Equal("Moniker", respValidator.Moniker)

@@ -3,19 +3,22 @@ package staking
 import (
 	"encoding/json"
 
+	tmtypes "github.com/tendermint/tendermint/types"
+
 	"github.com/KiraCore/cosmos-sdk/client"
 	"github.com/KiraCore/cosmos-sdk/codec"
 	types2 "github.com/KiraCore/cosmos-sdk/codec/types"
 	sdk "github.com/KiraCore/cosmos-sdk/types"
 	"github.com/KiraCore/cosmos-sdk/types/module"
 	"github.com/KiraCore/sekai/x/staking/keeper"
-	cumstomtypes "github.com/KiraCore/sekai/x/staking/types"
+	"github.com/KiraCore/sekai/x/staking/types"
 	"github.com/gogo/protobuf/grpc"
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/KiraCore/sekai/x/staking/client/cli"
+	cumstomtypes "github.com/KiraCore/sekai/x/staking/types"
 )
 
 var (
@@ -23,8 +26,7 @@ var (
 	_ module.AppModuleBasic = AppModuleBasic{}
 )
 
-type AppModuleBasic struct {
-}
+type AppModuleBasic struct{}
 
 func (b AppModuleBasic) Name() string {
 	return cumstomtypes.ModuleName
@@ -72,30 +74,55 @@ func (am AppModule) RegisterInterfaces(registry types2.InterfaceRegistry) {
 	panic("implement me")
 }
 
-func (am AppModule) InitGenesis(context sdk.Context, marshaler codec.JSONMarshaler, message json.RawMessage) []abci.ValidatorUpdate {
-	return nil
+func (am AppModule) InitGenesis(
+	ctx sdk.Context,
+	cdc codec.JSONMarshaler,
+	data json.RawMessage,
+) []abci.ValidatorUpdate {
+	var genesisState types.GenesisState
+	cdc.MustUnmarshalJSON(data, &genesisState)
+
+	valUpdate := make([]abci.ValidatorUpdate, len(genesisState.Validators))
+
+	for i, val := range genesisState.Validators {
+		am.customStakingKeeper.AddValidator(ctx, val)
+		valUpdate[i] = abci.ValidatorUpdate{
+			Power:  1,
+			PubKey: tmtypes.TM2PB.PubKey(val.GetConsPubKey()),
+		}
+	}
+
+	return valUpdate
 }
 
 func (am AppModule) ExportGenesis(context sdk.Context, marshaler codec.JSONMarshaler) json.RawMessage {
 	return nil
 }
 
-func (am AppModule) RegisterInvariants(registry sdk.InvariantRegistry) {
-}
+func (am AppModule) RegisterInvariants(registry sdk.InvariantRegistry) {}
 
-func (am AppModule) QuerierRoute() string {
-	return ""
-}
+func (am AppModule) QuerierRoute() string { return "" }
 
 func (am AppModule) LegacyQuerierHandler(marshaler codec.JSONMarshaler) sdk.Querier {
 	return nil
 }
 
-func (am AppModule) BeginBlock(context sdk.Context, block abci.RequestBeginBlock) {
-}
+func (am AppModule) BeginBlock(context sdk.Context, block abci.RequestBeginBlock) {}
 
-func (am AppModule) EndBlock(context sdk.Context, block abci.RequestEndBlock) []abci.ValidatorUpdate {
-	return []abci.ValidatorUpdate{}
+func (am AppModule) EndBlock(ctx sdk.Context, block abci.RequestEndBlock) []abci.ValidatorUpdate {
+	valSet := am.customStakingKeeper.GetValidatorSet(ctx)
+
+	valUpdate := make([]abci.ValidatorUpdate, len(valSet))
+
+	for i, val := range valSet {
+		am.customStakingKeeper.AddValidator(ctx, val)
+		valUpdate[i] = abci.ValidatorUpdate{
+			Power:  1,
+			PubKey: tmtypes.TM2PB.PubKey(val.GetConsPubKey()),
+		}
+	}
+
+	return valUpdate
 }
 
 func (am AppModule) Name() string {
