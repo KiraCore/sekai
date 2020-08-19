@@ -5,11 +5,11 @@ import (
 	"github.com/KiraCore/sekai/x/kiraHub/types"
 	"github.com/spf13/cobra"
 
-	"github.com/KiraCore/cosmos-sdk/client"
-	"github.com/KiraCore/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/codec"
 )
 
-func GetCLIRootTransactionCommand(codec *codec.Codec) *cobra.Command {
+func GetCLIRootTransactionCommand(codec *codec.LegacyAmino) *cobra.Command {
 	rootTxCmd := &cobra.Command{
 		Use:                        types.TransactionRoute,
 		Short:                      "Asset root transaction command.",
@@ -31,7 +31,7 @@ func GetCLIRootTransactionCommand(codec *codec.Codec) *cobra.Command {
 	return rootTxCmd
 }
 
-func GetCLIRootQueryCommand(codec *codec.Codec) *cobra.Command {
+func GetCLIRootQueryCommand(codec *codec.LegacyAmino) *cobra.Command {
 	rootQueryCmd := &cobra.Command{
 		Use:                        types.QuerierRoute,
 		Short:                      "Asset root query command.",

@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"strings"
 
-	sdk "github.com/KiraCore/cosmos-sdk/types"
 	"github.com/KiraCore/sekai/x/kiraHub/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"golang.org/x/crypto/blake2b"
 )
 

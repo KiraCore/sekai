@@ -1,8 +1,8 @@
 package kiraHub
 
 import (
-	sdk "github.com/KiraCore/cosmos-sdk/types"
 	"github.com/KiraCore/sekai/x/kiraHub/keeper"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 )
 

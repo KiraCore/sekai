@@ -6,7 +6,7 @@ import (
 	"github.com/KiraCore/sekai/x/kiraHub/types"
 	"github.com/pkg/errors"
 
-	sdk "github.com/KiraCore/cosmos-sdk/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func NewHandler(k keeper.Keeper) sdk.Handler {

@@ -5,9 +5,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/KiraCore/cosmos-sdk/codec"
-	sdk "github.com/KiraCore/cosmos-sdk/types"
 	"github.com/KiraCore/sekai/x/kiraHub/types"
+	"github.com/cosmos/cosmos-sdk/codec"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // PrefixKeySignerKeys describes the key where to save in KVStore
@@ -16,7 +16,7 @@ const PrefixKeySignerKeys = "signer_keys"
 // PrefixKeyPubKeyCurator describes the owner of each pubKey
 const PrefixKeyPubKeyCurator = "pub_key_curator"
 
-func (k Keeper) GetCodec() *codec.Codec {
+func (k Keeper) GetCodec() *codec.LegacyAmino {
 	return k.cdc
 }
 

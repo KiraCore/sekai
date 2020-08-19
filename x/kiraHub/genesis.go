@@ -1,8 +1,8 @@
 package kiraHub
 
 import (
-	sdkTypes "github.com/KiraCore/cosmos-sdk/types"
 	"github.com/KiraCore/sekai/x/kiraHub/keeper"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
 )
 
 type GenesisState struct{}

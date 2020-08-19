@@ -3,9 +3,9 @@ package kiraHub
 import (
 	"strings"
 
-	"github.com/KiraCore/cosmos-sdk/client"
 	"github.com/KiraCore/sekai/x/kiraHub/client/rest"
 	"github.com/KiraCore/sekai/x/kiraHub/types"
+	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/gorilla/mux"
 )
 

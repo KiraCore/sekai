@@ -4,20 +4,19 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/KiraCore/cosmos-sdk/codec"
+	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 
-	"github.com/KiraCore/cosmos-sdk/client"
-	"github.com/KiraCore/cosmos-sdk/client/flags"
-	"github.com/KiraCore/cosmos-sdk/server"
-	"github.com/KiraCore/cosmos-sdk/types"
-	"github.com/KiraCore/cosmos-sdk/types/module"
-	types2 "github.com/KiraCore/cosmos-sdk/x/bank/types"
-	"github.com/KiraCore/cosmos-sdk/x/genutil"
-	"github.com/KiraCore/cosmos-sdk/x/staking/client/cli"
 	cumstomtypes "github.com/KiraCore/sekai/x/staking/types"
+	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/cosmos/cosmos-sdk/server"
+	"github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/module"
+	types2 "github.com/cosmos/cosmos-sdk/x/bank/types"
+	"github.com/cosmos/cosmos-sdk/x/genutil"
+	"github.com/cosmos/cosmos-sdk/x/staking/client/cli"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-	tmtypes "github.com/tendermint/tendermint/types"
 )
 
 func GenTxClaimCmd(mbm module.BasicManager, txEncCfg client.TxEncodingConfig, genBalIterator types2.GenesisBalancesIterator, defaultNodeHome string) *cobra.Command {
@@ -46,19 +45,7 @@ func GenTxClaimCmd(mbm module.BasicManager, txEncCfg client.TxEncodingConfig, ge
 				}
 			}
 
-			genDoc, err := tmtypes.GenesisDocFromFile(config.GenesisFile())
-			if err != nil {
-				return errors.Wrapf(err, "failed to read genesis doc file %s", config.GenesisFile())
-			}
-
-			var genesisState map[string]json.RawMessage
-			if err = cdc.UnmarshalJSON(genDoc.AppState, &genesisState); err != nil {
-				return errors.Wrap(err, "failed to unmarshal genesis state")
-			}
-
-			if err = mbm.ValidateGenesis(cdc, txEncCfg, genesisState); err != nil {
-				return errors.Wrap(err, "failed to validate genesis state")
-			}
+			appState, genDoc, err := genutiltypes.GenesisStateFromGenFile(cdc, config.GenesisFile())
 
 			name := args[0]
 			key, err := clientCtx.Keyring.Key(name)
@@ -77,7 +64,7 @@ func GenTxClaimCmd(mbm module.BasicManager, txEncCfg client.TxEncodingConfig, ge
 				return errors.Wrap(err, "failed to parse coins")
 			}
 
-			err = genutil.ValidateAccountInGenesis(genesisState, genBalIterator, key.GetAddress(), coins, cdc)
+			err = genutil.ValidateAccountInGenesis(appState, genBalIterator, key.GetAddress(), coins, cdc)
 			if err != nil {
 				return errors.Wrap(err, "failed to validate account in genesis")
 			}
@@ -100,8 +87,13 @@ func GenTxClaimCmd(mbm module.BasicManager, txEncCfg client.TxEncodingConfig, ge
 			var stakingGenesisState cumstomtypes.GenesisState
 			stakingGenesisState.Validators = append(stakingGenesisState.Validators, validator)
 
-			genesisState[cumstomtypes.ModuleName] = cdc.MustMarshalJSON(stakingGenesisState)
-			appGenStateJSON, err := codec.MarshalJSONIndent(clientCtx.JSONMarshaler, genesisState)
+			bzStakingGen, err := cdc.MarshalJSON(&stakingGenesisState)
+			if err != nil {
+				return fmt.Errorf("failed to marshal staking genesis state: %w", err)
+			}
+
+			appState[cumstomtypes.ModuleName] = bzStakingGen
+			appGenStateJSON, err := json.Marshal(appState)
 			if err != nil {
 				return err
 			}

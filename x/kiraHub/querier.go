@@ -1,37 +1,100 @@
 package kiraHub
 
 import (
-	sdk "github.com/KiraCore/cosmos-sdk/types"
-	"github.com/KiraCore/cosmos-sdk/types/errors"
+	"context"
+
 	"github.com/KiraCore/sekai/x/kiraHub/keeper"
-	"github.com/KiraCore/sekai/x/kiraHub/queries"
 	"github.com/KiraCore/sekai/x/kiraHub/types"
-	abciTypes "github.com/tendermint/tendermint/abci/types"
 )
 
-// define query keys
-const (
-	QueryListOrderBooks = "listOrderBooks"
-	QueryListOrders     = "listOrders"
-	QueryListSignerKeys = "listSignerKeys"
-)
+type Querier struct {
+	keeper keeper.Keeper
+}
 
-// NewQuerier is a router for different types of querying
-func NewQuerier(keeper keeper.Keeper) sdk.Querier {
-	return func(context sdk.Context, path []string, requestQuery abciTypes.RequestQuery) ([]byte, error) {
-		switch path[0] {
+func NewQuerier(keeper keeper.Keeper) types.QueryServer {
+	return &Querier{keeper: keeper}
+}
 
-		case QueryListOrderBooks:
-			return queries.QueryGetOrderBooks(context, path[1:], requestQuery, keeper)
+func (q Querier) GetOrderBooks(ctx context.Context, request *types.HubRequest) (*types.HubResponse, error) {
+	// c := sdk.UnwrapSDKContext(ctx)
+	return &types.HubResponse{}, nil
 
-		case QueryListOrders:
-			return queries.QueryGetOrders(context, path[1:], requestQuery, keeper)
+	// var queryOutput []types.OrderBook
 
-		case QueryListSignerKeys:
-			return queries.QueryListSignerKeys(context, path[1:], requestQuery, keeper)
+	// if path[0] == "ID" {
 
-		default:
-			return nil, errors.Wrapf(types.UnknownQueryCode, "%v", path[0])
-		}
-	}
+	// 	queryOutput = keeper.GetOrderBookByID(ctx, path[1])
+
+	// } else if path[0] == "Index" {
+
+	// 	var int1, _ = strconv.Atoi(path[1])
+	// 	queryOutput = keeper.GetOrderBookByIndex(ctx, uint32(int1))
+
+	// } else if path[0] == "Quote" {
+
+	// 	queryOutput = keeper.GetOrderBookByQuote(ctx, path[1])
+
+	// } else if path[0] == "Base" {
+
+	// 	queryOutput = keeper.GetOrderBookByBase(ctx, path[1])
+
+	// } else if path[0] == "tp" {
+
+	// 	queryOutput = keeper.GetOrderBookByTP(ctx, path[1], path[2])
+
+	// } else if path[0] == "Curator" {
+
+	// 	queryOutput = keeper.GetOrderBookByCurator(ctx, path[1])
+	// }
+
+	// res, err := types.ModuleCdc.MarshalJSON(queryOutput)
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	// return res, nil
+}
+
+func (q Querier) GetOrderBooksByTP(ctx context.Context, request *types.HubRequest) (*types.HubResponse, error) {
+	// c := sdk.UnwrapSDKContext(ctx)
+	return &types.HubResponse{}, nil
+}
+
+func (q Querier) GetOrders(ctx context.Context, request *types.HubRequest) (*types.HubResponse, error) {
+	// c := sdk.UnwrapSDKContext(ctx)
+	return &types.HubResponse{}, nil
+
+	// var queryOutput []types.LimitOrder
+
+	// var int1, _ = strconv.Atoi(path[1])
+	// var int2, _ = strconv.Atoi(path[2])
+
+	// queryOutput = keeper.GetOrders(ctx, path[0], uint32(int1), uint32(int2))
+
+	// res, err := types.ModuleCdc.MarshalJSON(queryOutput)
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	// return res, nil
+}
+
+func (q Querier) ListSignerKeys(ctx context.Context, request *types.HubRequest) (*types.HubResponse, error) {
+	// c := sdk.UnwrapSDKContext(ctx)
+	return &types.HubResponse{}, nil
+
+	// var queryOutput []types.SignerKey
+	// curator, err := sdk.AccAddressFromBech32(path[0])
+	// if err != nil {
+	// 	return []byte{}, fmt.Errorf("Invalid curator address %s: %+v", path[0], err)
+	// }
+
+	// queryOutput = keeper.GetSignerKeys(ctx, curator)
+
+	// res, err := types.ModuleCdc.MarshalJSON(queryOutput)
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	// return res, nil
 }

@@ -5,17 +5,17 @@ import (
 
 	"github.com/tendermint/tendermint/crypto"
 
-	"github.com/KiraCore/cosmos-sdk/server"
+	"github.com/cosmos/cosmos-sdk/server"
 
-	"github.com/KiraCore/cosmos-sdk/x/genutil"
-	"github.com/KiraCore/cosmos-sdk/x/staking/client/cli"
+	"github.com/cosmos/cosmos-sdk/x/genutil"
+	"github.com/cosmos/cosmos-sdk/x/staking/client/cli"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 
-	"github.com/KiraCore/cosmos-sdk/client"
-	"github.com/KiraCore/cosmos-sdk/client/flags"
-	"github.com/KiraCore/cosmos-sdk/client/tx"
-	"github.com/KiraCore/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/cosmos/cosmos-sdk/client/tx"
+	"github.com/cosmos/cosmos-sdk/types"
 	cumstomtypes "github.com/KiraCore/sekai/x/staking/types"
 )
 

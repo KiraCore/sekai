@@ -1,8 +1,8 @@
 package app
 
 import (
-	"github.com/KiraCore/cosmos-sdk/simapp/params"
-	"github.com/KiraCore/cosmos-sdk/std"
+	"github.com/cosmos/cosmos-sdk/simapp/params"
+	"github.com/cosmos/cosmos-sdk/std"
 )
 
 // MakeEncodingConfig creates an EncodingConfig for testing

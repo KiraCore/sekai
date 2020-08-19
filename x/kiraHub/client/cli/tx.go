@@ -6,9 +6,9 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/KiraCore/cosmos-sdk/client"
-	"github.com/KiraCore/cosmos-sdk/client/tx"
 	"github.com/KiraCore/sekai/x/kiraHub/types"
+	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )

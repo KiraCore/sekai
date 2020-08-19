@@ -1,8 +1,8 @@
 package types
 
 import (
-	sdk "github.com/KiraCore/cosmos-sdk/types"
 	"github.com/asaskevich/govalidator"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/pkg/errors"
 )
 

@@ -3,7 +3,7 @@ package staking
 import (
 	"context"
 
-	sdk "github.com/KiraCore/cosmos-sdk/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/KiraCore/sekai/x/staking/keeper"
 	"github.com/KiraCore/sekai/x/staking/types"

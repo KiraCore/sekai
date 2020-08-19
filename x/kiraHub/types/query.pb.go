@@ -9,7 +9,11 @@ import (
 	grpc1 "github.com/gogo/protobuf/grpc"
 	proto "github.com/gogo/protobuf/proto"
 	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
+	io "io"
 	math "math"
+	math_bits "math/bits"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -23,19 +27,101 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+type HubRequest struct {
+}
+
+func (m *HubRequest) Reset()         { *m = HubRequest{} }
+func (m *HubRequest) String() string { return proto.CompactTextString(m) }
+func (*HubRequest) ProtoMessage()    {}
+func (*HubRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5c6ac9b241082464, []int{0}
+}
+func (m *HubRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *HubRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_HubRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *HubRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_HubRequest.Merge(m, src)
+}
+func (m *HubRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *HubRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_HubRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_HubRequest proto.InternalMessageInfo
+
+type HubResponse struct {
+}
+
+func (m *HubResponse) Reset()         { *m = HubResponse{} }
+func (m *HubResponse) String() string { return proto.CompactTextString(m) }
+func (*HubResponse) ProtoMessage()    {}
+func (*HubResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5c6ac9b241082464, []int{1}
+}
+func (m *HubResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *HubResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_HubResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *HubResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_HubResponse.Merge(m, src)
+}
+func (m *HubResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *HubResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_HubResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_HubResponse proto.InternalMessageInfo
+
+func init() {
+	proto.RegisterType((*HubRequest)(nil), "kira.kiraHub.HubRequest")
+	proto.RegisterType((*HubResponse)(nil), "kira.kiraHub.HubResponse")
+}
+
 func init() { proto.RegisterFile("query.proto", fileDescriptor_5c6ac9b241082464) }
 
 var fileDescriptor_5c6ac9b241082464 = []byte{
-	// 131 bytes of a gzipped FileDescriptorProto
+	// 224 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x2e, 0x2c, 0x4d, 0x2d,
 	0xaa, 0xd4, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0xc9, 0xce, 0x2c, 0x4a, 0xd4, 0x03, 0x11,
-	0x1e, 0xa5, 0x49, 0x46, 0xec, 0x5c, 0xac, 0x81, 0x20, 0x49, 0x27, 0x8f, 0x13, 0x8f, 0xe4, 0x18,
-	0x2f, 0x3c, 0x92, 0x63, 0x7c, 0xf0, 0x48, 0x8e, 0x71, 0xc2, 0x63, 0x39, 0x86, 0x0b, 0x8f, 0xe5,
-	0x18, 0x6e, 0x3c, 0x96, 0x63, 0x88, 0xd2, 0x4b, 0xcf, 0x2c, 0xc9, 0x28, 0x4d, 0xd2, 0x4b, 0xce,
-	0xcf, 0xd5, 0xf7, 0xce, 0x2c, 0x4a, 0x74, 0xce, 0x2f, 0x4a, 0xd5, 0x4f, 0xce, 0x2f, 0xce, 0xcd,
-	0x2f, 0xd6, 0x2d, 0x4e, 0xc9, 0xd6, 0xaf, 0xd0, 0x87, 0x1a, 0xa6, 0x5f, 0x52, 0x59, 0x90, 0x5a,
-	0x9c, 0xc4, 0x06, 0xb6, 0xc7, 0x18, 0x10, 0x00, 0x00, 0xff, 0xff, 0x7f, 0xb5, 0xd7, 0xca, 0x76,
-	0x00, 0x00, 0x00,
+	0x1e, 0xa5, 0x49, 0x4a, 0x3c, 0x5c, 0x5c, 0x1e, 0xa5, 0x49, 0x41, 0xa9, 0x85, 0xa5, 0xa9, 0xc5,
+	0x25, 0x4a, 0xbc, 0x5c, 0xdc, 0x60, 0x5e, 0x71, 0x41, 0x7e, 0x5e, 0x71, 0xaa, 0xd1, 0x0a, 0x26,
+	0x2e, 0xd6, 0x40, 0x90, 0x56, 0x21, 0x37, 0x2e, 0x5e, 0xf7, 0xd4, 0x12, 0xff, 0xa2, 0x94, 0xd4,
+	0x22, 0xa7, 0xfc, 0xfc, 0xec, 0x62, 0x21, 0x09, 0x3d, 0x64, 0x63, 0xf4, 0x10, 0x66, 0x48, 0x49,
+	0x62, 0x91, 0x81, 0x98, 0xa7, 0xc4, 0x20, 0xe4, 0xc5, 0x25, 0x88, 0x62, 0x8e, 0x53, 0x65, 0x48,
+	0x00, 0xb9, 0x66, 0x39, 0x71, 0x71, 0xc2, 0xcc, 0x22, 0xdb, 0x3d, 0xee, 0x5c, 0x7c, 0x3e, 0x99,
+	0xc5, 0x25, 0xc1, 0x99, 0xe9, 0x79, 0xa9, 0x45, 0xde, 0xa9, 0x95, 0xe4, 0x1a, 0xe4, 0xe4, 0x76,
+	0xe2, 0x91, 0x1c, 0xe3, 0x85, 0x47, 0x72, 0x8c, 0x0f, 0x1e, 0xc9, 0x31, 0x4e, 0x78, 0x2c, 0xc7,
+	0x70, 0xe1, 0xb1, 0x1c, 0xc3, 0x8d, 0xc7, 0x72, 0x0c, 0x51, 0x3a, 0xe9, 0x99, 0x25, 0x19, 0xa5,
+	0x49, 0x7a, 0xc9, 0xf9, 0xb9, 0xfa, 0xc9, 0xf9, 0xc5, 0xb9, 0xf9, 0xc5, 0x50, 0x4a, 0xb7, 0x38,
+	0x25, 0x5b, 0xbf, 0x42, 0x1f, 0x6a, 0x9e, 0x7e, 0x49, 0x65, 0x41, 0x6a, 0x71, 0x12, 0x1b, 0x38,
+	0x92, 0x8c, 0x01, 0x01, 0x00, 0x00, 0xff, 0xff, 0x28, 0x23, 0x10, 0x08, 0xb3, 0x01, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -50,6 +136,10 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type QueryClient interface {
+	GetOrderBooks(ctx context.Context, in *HubRequest, opts ...grpc.CallOption) (*HubResponse, error)
+	GetOrderBooksByTP(ctx context.Context, in *HubRequest, opts ...grpc.CallOption) (*HubResponse, error)
+	GetOrders(ctx context.Context, in *HubRequest, opts ...grpc.CallOption) (*HubResponse, error)
+	ListSignerKeys(ctx context.Context, in *HubRequest, opts ...grpc.CallOption) (*HubResponse, error)
 }
 
 type queryClient struct {
@@ -60,22 +150,436 @@ func NewQueryClient(cc grpc1.ClientConn) QueryClient {
 	return &queryClient{cc}
 }
 
+func (c *queryClient) GetOrderBooks(ctx context.Context, in *HubRequest, opts ...grpc.CallOption) (*HubResponse, error) {
+	out := new(HubResponse)
+	err := c.cc.Invoke(ctx, "/kira.kiraHub.Query/GetOrderBooks", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) GetOrderBooksByTP(ctx context.Context, in *HubRequest, opts ...grpc.CallOption) (*HubResponse, error) {
+	out := new(HubResponse)
+	err := c.cc.Invoke(ctx, "/kira.kiraHub.Query/GetOrderBooksByTP", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) GetOrders(ctx context.Context, in *HubRequest, opts ...grpc.CallOption) (*HubResponse, error) {
+	out := new(HubResponse)
+	err := c.cc.Invoke(ctx, "/kira.kiraHub.Query/GetOrders", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) ListSignerKeys(ctx context.Context, in *HubRequest, opts ...grpc.CallOption) (*HubResponse, error) {
+	out := new(HubResponse)
+	err := c.cc.Invoke(ctx, "/kira.kiraHub.Query/ListSignerKeys", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 type QueryServer interface {
+	GetOrderBooks(context.Context, *HubRequest) (*HubResponse, error)
+	GetOrderBooksByTP(context.Context, *HubRequest) (*HubResponse, error)
+	GetOrders(context.Context, *HubRequest) (*HubResponse, error)
+	ListSignerKeys(context.Context, *HubRequest) (*HubResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
 type UnimplementedQueryServer struct {
 }
 
+func (*UnimplementedQueryServer) GetOrderBooks(ctx context.Context, req *HubRequest) (*HubResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetOrderBooks not implemented")
+}
+func (*UnimplementedQueryServer) GetOrderBooksByTP(ctx context.Context, req *HubRequest) (*HubResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetOrderBooksByTP not implemented")
+}
+func (*UnimplementedQueryServer) GetOrders(ctx context.Context, req *HubRequest) (*HubResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetOrders not implemented")
+}
+func (*UnimplementedQueryServer) ListSignerKeys(ctx context.Context, req *HubRequest) (*HubResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListSignerKeys not implemented")
+}
+
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
 	s.RegisterService(&_Query_serviceDesc, srv)
+}
+
+func _Query_GetOrderBooks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HubRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).GetOrderBooks(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.kiraHub.Query/GetOrderBooks",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).GetOrderBooks(ctx, req.(*HubRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_GetOrderBooksByTP_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HubRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).GetOrderBooksByTP(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.kiraHub.Query/GetOrderBooksByTP",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).GetOrderBooksByTP(ctx, req.(*HubRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_GetOrders_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HubRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).GetOrders(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.kiraHub.Query/GetOrders",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).GetOrders(ctx, req.(*HubRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_ListSignerKeys_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HubRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).ListSignerKeys(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.kiraHub.Query/ListSignerKeys",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).ListSignerKeys(ctx, req.(*HubRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "kira.kiraHub.Query",
 	HandlerType: (*QueryServer)(nil),
-	Methods:     []grpc.MethodDesc{},
-	Streams:     []grpc.StreamDesc{},
-	Metadata:    "query.proto",
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GetOrderBooks",
+			Handler:    _Query_GetOrderBooks_Handler,
+		},
+		{
+			MethodName: "GetOrderBooksByTP",
+			Handler:    _Query_GetOrderBooksByTP_Handler,
+		},
+		{
+			MethodName: "GetOrders",
+			Handler:    _Query_GetOrders_Handler,
+		},
+		{
+			MethodName: "ListSignerKeys",
+			Handler:    _Query_ListSignerKeys_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "query.proto",
 }
+
+func (m *HubRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *HubRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *HubRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *HubResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *HubResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *HubResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
+	offset -= sovQuery(v)
+	base := offset
+	for v >= 1<<7 {
+		dAtA[offset] = uint8(v&0x7f | 0x80)
+		v >>= 7
+		offset++
+	}
+	dAtA[offset] = uint8(v)
+	return base
+}
+func (m *HubRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *HubResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func sovQuery(x uint64) (n int) {
+	return (math_bits.Len64(x|1) + 6) / 7
+}
+func sozQuery(x uint64) (n int) {
+	return sovQuery(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
+func (m *HubRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: HubRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: HubRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *HubResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: HubResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: HubResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func skipQuery(dAtA []byte) (n int, err error) {
+	l := len(dAtA)
+	iNdEx := 0
+	depth := 0
+	for iNdEx < l {
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return 0, ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return 0, io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		wireType := int(wire & 0x7)
+		switch wireType {
+		case 0:
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return 0, ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return 0, io.ErrUnexpectedEOF
+				}
+				iNdEx++
+				if dAtA[iNdEx-1] < 0x80 {
+					break
+				}
+			}
+		case 1:
+			iNdEx += 8
+		case 2:
+			var length int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return 0, ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return 0, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				length |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if length < 0 {
+				return 0, ErrInvalidLengthQuery
+			}
+			iNdEx += length
+		case 3:
+			depth++
+		case 4:
+			if depth == 0 {
+				return 0, ErrUnexpectedEndOfGroupQuery
+			}
+			depth--
+		case 5:
+			iNdEx += 4
+		default:
+			return 0, fmt.Errorf("proto: illegal wireType %d", wireType)
+		}
+		if iNdEx < 0 {
+			return 0, ErrInvalidLengthQuery
+		}
+		if depth == 0 {
+			return iNdEx, nil
+		}
+	}
+	return 0, io.ErrUnexpectedEOF
+}
+
+var (
+	ErrInvalidLengthQuery        = fmt.Errorf("proto: negative length found during unmarshaling")
+	ErrIntOverflowQuery          = fmt.Errorf("proto: integer overflow")
+	ErrUnexpectedEndOfGroupQuery = fmt.Errorf("proto: unexpected end of group")
+)

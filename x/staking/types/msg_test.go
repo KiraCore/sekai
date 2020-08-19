@@ -1,13 +1,18 @@
-package types
+package types_test
 
 import (
 	"testing"
 
-	"github.com/KiraCore/cosmos-sdk/types"
+	"github.com/KiraCore/sekai/app"
+
+	types2 "github.com/KiraCore/sekai/x/staking/types"
+
+	"github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 )
 
 func TestMsgClaimValidator_ValidateBasic(t *testing.T) {
+	app.SetConfig()
 	valAddr1, err := types.ValAddressFromBech32("kiravaloper15ky9du8a2wlstz6fpx3p4mqpjyrm5cgq38f2fp")
 	require.NoError(t, err)
 
@@ -16,18 +21,18 @@ func TestMsgClaimValidator_ValidateBasic(t *testing.T) {
 
 	tests := []struct {
 		name        string
-		constructor func() (*MsgClaimValidator, error)
+		constructor func() (*types2.MsgClaimValidator, error)
 	}{
 		{
 			name: "nil val key",
-			constructor: func() (*MsgClaimValidator, error) {
-				return NewMsgClaimValidator("me", "web", "social", "id", types.NewDec(10), nil, pubKey)
+			constructor: func() (*types2.MsgClaimValidator, error) {
+				return types2.NewMsgClaimValidator("me", "web", "social", "id", types.NewDec(10), nil, pubKey)
 			},
 		},
 		{
 			name: "nil pub key",
-			constructor: func() (*MsgClaimValidator, error) {
-				return NewMsgClaimValidator("me", "web", "social", "id", types.NewDec(10), valAddr1, nil)
+			constructor: func() (*types2.MsgClaimValidator, error) {
+				return types2.NewMsgClaimValidator("me", "web", "social", "id", types.NewDec(10), valAddr1, nil)
 			},
 		},
 	}

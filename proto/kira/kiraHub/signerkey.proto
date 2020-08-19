@@ -3,7 +3,7 @@ package kira.kiraHub;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/KiraCore/cosmos-sdk/x/kiraHub/types";
+option go_package = "github.com/cosmos/cosmos-sdk/x/kiraHub/types";
 
 enum SignerKeyType {
     Secp256k1 = 0;
@@ -18,7 +18,7 @@ message SignerKey {
     
 	repeated int64 Permissions = 5;
 	bytes Curator = 6 [
-        (gogoproto.casttype) = "github.com/KiraCore/cosmos-sdk/types.AccAddress"
+        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
     ];
 }
 
@@ -29,6 +29,6 @@ message MsgUpsertSignerKey {
 	bool Enabled   = 4;
 	repeated int64 Permissions = 5;
 	bytes Curator = 6 [
-        (gogoproto.casttype) = "github.com/KiraCore/cosmos-sdk/types.AccAddress"
+        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
     ];
 }

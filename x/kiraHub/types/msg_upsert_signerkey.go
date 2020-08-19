@@ -4,7 +4,7 @@ import (
 	"errors"
 	"time"
 
-	sdk "github.com/KiraCore/cosmos-sdk/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 var _ sdk.Msg = &MsgUpsertSignerKey{}

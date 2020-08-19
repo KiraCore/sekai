@@ -3,9 +3,9 @@ package kiraHub
 import (
 	"encoding/json"
 
-	cdcTypes "github.com/KiraCore/cosmos-sdk/codec/types"
+	cdcTypes "github.com/cosmos/cosmos-sdk/codec/types"
 
-	"github.com/KiraCore/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client"
 
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
@@ -16,9 +16,9 @@ import (
 	"github.com/gogo/protobuf/grpc"
 	abciTypes "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/KiraCore/cosmos-sdk/codec"
-	sdkTypes "github.com/KiraCore/cosmos-sdk/types"
-	"github.com/KiraCore/cosmos-sdk/types/module"
+	"github.com/cosmos/cosmos-sdk/codec"
+	sdkTypes "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/module"
 )
 
 var (
@@ -37,7 +37,7 @@ func (AppModuleBasic) Name() string {
 	return types.ModuleName
 }
 
-func (AppModuleBasic) RegisterCodec(codec *codec.Codec) {
+func (AppModuleBasic) RegisterCodec(codec *codec.LegacyAmino) {
 	types.RegisterCodec(codec)
 }
 
@@ -108,9 +108,7 @@ func (am AppModule) RegisterInterfaces(registry cdcTypes.InterfaceRegistry) {
 func (am AppModule) NewHandler() sdkTypes.Handler {
 	return NewHandler(am.keeper)
 }
-func (am AppModule) NewQuerierHandler() sdkTypes.Querier {
-	return NewQuerier(am.keeper)
-}
+
 func (am AppModule) InitGenesis(context sdkTypes.Context, jsonMarshaler codec.JSONMarshaler, rawMessage json.RawMessage) []abciTypes.ValidatorUpdate {
 	var genesisState GenesisState
 	jsonMarshaler.MustUnmarshalJSON(rawMessage, &genesisState)
