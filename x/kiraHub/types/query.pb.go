@@ -89,6 +89,50 @@ func (m *GetOrderBooksRequest) GetQueryValue2() string {
 	return ""
 }
 
+type GetOrderBooksResponse struct {
+	Orderbooks []*OrderBook `protobuf:"bytes,1,rep,name=orderbooks,proto3,casttype=OrderBook" json:"orderbooks,omitempty"`
+}
+
+func (m *GetOrderBooksResponse) Reset()         { *m = GetOrderBooksResponse{} }
+func (m *GetOrderBooksResponse) String() string { return proto.CompactTextString(m) }
+func (*GetOrderBooksResponse) ProtoMessage()    {}
+func (*GetOrderBooksResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5c6ac9b241082464, []int{1}
+}
+func (m *GetOrderBooksResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GetOrderBooksResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GetOrderBooksResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GetOrderBooksResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetOrderBooksResponse.Merge(m, src)
+}
+func (m *GetOrderBooksResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *GetOrderBooksResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetOrderBooksResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetOrderBooksResponse proto.InternalMessageInfo
+
+func (m *GetOrderBooksResponse) GetOrderbooks() []*OrderBook {
+	if m != nil {
+		return m.Orderbooks
+	}
+	return nil
+}
+
 type GetOrderBooksByTPRequest struct {
 	Base  string `protobuf:"bytes,1,opt,name=Base,proto3" json:"Base,omitempty"`
 	Quote string `protobuf:"bytes,2,opt,name=Quote,proto3" json:"Quote,omitempty"`
@@ -98,7 +142,7 @@ func (m *GetOrderBooksByTPRequest) Reset()         { *m = GetOrderBooksByTPReque
 func (m *GetOrderBooksByTPRequest) String() string { return proto.CompactTextString(m) }
 func (*GetOrderBooksByTPRequest) ProtoMessage()    {}
 func (*GetOrderBooksByTPRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5c6ac9b241082464, []int{1}
+	return fileDescriptor_5c6ac9b241082464, []int{2}
 }
 func (m *GetOrderBooksByTPRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -151,7 +195,7 @@ func (m *GetOrdersRequest) Reset()         { *m = GetOrdersRequest{} }
 func (m *GetOrdersRequest) String() string { return proto.CompactTextString(m) }
 func (*GetOrdersRequest) ProtoMessage()    {}
 func (*GetOrdersRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5c6ac9b241082464, []int{2}
+	return fileDescriptor_5c6ac9b241082464, []int{3}
 }
 func (m *GetOrdersRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -201,6 +245,50 @@ func (m *GetOrdersRequest) GetMinAmount() int64 {
 	return 0
 }
 
+type GetOrdersResponse struct {
+	Orders []*LimitOrder `protobuf:"bytes,1,rep,name=orders,proto3,casttype=LimitOrder" json:"orders,omitempty"`
+}
+
+func (m *GetOrdersResponse) Reset()         { *m = GetOrdersResponse{} }
+func (m *GetOrdersResponse) String() string { return proto.CompactTextString(m) }
+func (*GetOrdersResponse) ProtoMessage()    {}
+func (*GetOrdersResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5c6ac9b241082464, []int{4}
+}
+func (m *GetOrdersResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GetOrdersResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GetOrdersResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GetOrdersResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetOrdersResponse.Merge(m, src)
+}
+func (m *GetOrdersResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *GetOrdersResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetOrdersResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetOrdersResponse proto.InternalMessageInfo
+
+func (m *GetOrdersResponse) GetOrders() []*LimitOrder {
+	if m != nil {
+		return m.Orders
+	}
+	return nil
+}
+
 type GetSignerKeysRequest struct {
 	Curator github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,6,opt,name=Curator,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"Curator,omitempty"`
 }
@@ -209,7 +297,7 @@ func (m *GetSignerKeysRequest) Reset()         { *m = GetSignerKeysRequest{} }
 func (m *GetSignerKeysRequest) String() string { return proto.CompactTextString(m) }
 func (*GetSignerKeysRequest) ProtoMessage()    {}
 func (*GetSignerKeysRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5c6ac9b241082464, []int{3}
+	return fileDescriptor_5c6ac9b241082464, []int{5}
 }
 func (m *GetSignerKeysRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -245,21 +333,22 @@ func (m *GetSignerKeysRequest) GetCurator() github_com_cosmos_cosmos_sdk_types.A
 	return nil
 }
 
-type HubResponse struct {
+type GetSignerKeysResponse struct {
+	Signerkeys []*SignerKey `protobuf:"bytes,1,rep,name=signerkeys,proto3,casttype=SignerKey" json:"signerkeys,omitempty"`
 }
 
-func (m *HubResponse) Reset()         { *m = HubResponse{} }
-func (m *HubResponse) String() string { return proto.CompactTextString(m) }
-func (*HubResponse) ProtoMessage()    {}
-func (*HubResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5c6ac9b241082464, []int{4}
+func (m *GetSignerKeysResponse) Reset()         { *m = GetSignerKeysResponse{} }
+func (m *GetSignerKeysResponse) String() string { return proto.CompactTextString(m) }
+func (*GetSignerKeysResponse) ProtoMessage()    {}
+func (*GetSignerKeysResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5c6ac9b241082464, []int{6}
 }
-func (m *HubResponse) XXX_Unmarshal(b []byte) error {
+func (m *GetSignerKeysResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *HubResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *GetSignerKeysResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_HubResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_GetSignerKeysResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -269,57 +358,73 @@ func (m *HubResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return b[:n], nil
 	}
 }
-func (m *HubResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_HubResponse.Merge(m, src)
+func (m *GetSignerKeysResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetSignerKeysResponse.Merge(m, src)
 }
-func (m *HubResponse) XXX_Size() int {
+func (m *GetSignerKeysResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *HubResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_HubResponse.DiscardUnknown(m)
+func (m *GetSignerKeysResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetSignerKeysResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_HubResponse proto.InternalMessageInfo
+var xxx_messageInfo_GetSignerKeysResponse proto.InternalMessageInfo
+
+func (m *GetSignerKeysResponse) GetSignerkeys() []*SignerKey {
+	if m != nil {
+		return m.Signerkeys
+	}
+	return nil
+}
 
 func init() {
 	proto.RegisterType((*GetOrderBooksRequest)(nil), "kira.kiraHub.GetOrderBooksRequest")
+	proto.RegisterType((*GetOrderBooksResponse)(nil), "kira.kiraHub.GetOrderBooksResponse")
 	proto.RegisterType((*GetOrderBooksByTPRequest)(nil), "kira.kiraHub.GetOrderBooksByTPRequest")
 	proto.RegisterType((*GetOrdersRequest)(nil), "kira.kiraHub.GetOrdersRequest")
+	proto.RegisterType((*GetOrdersResponse)(nil), "kira.kiraHub.GetOrdersResponse")
 	proto.RegisterType((*GetSignerKeysRequest)(nil), "kira.kiraHub.GetSignerKeysRequest")
-	proto.RegisterType((*HubResponse)(nil), "kira.kiraHub.HubResponse")
+	proto.RegisterType((*GetSignerKeysResponse)(nil), "kira.kiraHub.GetSignerKeysResponse")
 }
 
 func init() { proto.RegisterFile("query.proto", fileDescriptor_5c6ac9b241082464) }
 
 var fileDescriptor_5c6ac9b241082464 = []byte{
-	// 423 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x93, 0x4d, 0x8f, 0x93, 0x40,
-	0x18, 0xc7, 0x61, 0x57, 0xd7, 0xf4, 0x61, 0xd7, 0xe8, 0xa4, 0x07, 0xdc, 0x98, 0x91, 0x70, 0x30,
-	0x7b, 0x70, 0x21, 0xae, 0x9f, 0xa0, 0xb8, 0xd1, 0x9a, 0x6a, 0x6c, 0xb1, 0x31, 0xc6, 0x1b, 0x2f,
-	0x13, 0x24, 0xb5, 0x0c, 0x9d, 0x17, 0x53, 0xbe, 0x85, 0x1f, 0xcb, 0x63, 0x8f, 0x9e, 0x8c, 0x69,
-	0xbf, 0x85, 0x27, 0xc3, 0x50, 0x28, 0x4d, 0x1b, 0xb2, 0x17, 0x98, 0xf9, 0x3f, 0x0f, 0xbf, 0xe7,
-	0xe5, 0x1f, 0xc0, 0x58, 0x48, 0xc2, 0x0a, 0x27, 0x67, 0x54, 0x50, 0x74, 0x3e, 0x4b, 0x59, 0xe0,
-	0x94, 0x8f, 0xa1, 0x0c, 0x2f, 0xfb, 0x09, 0x4d, 0xa8, 0x0a, 0xb8, 0xe5, 0xa9, 0xca, 0xb1, 0x7f,
-	0x40, 0xff, 0x2d, 0x11, 0x1f, 0x59, 0x4c, 0x98, 0x47, 0xe9, 0x8c, 0xfb, 0x64, 0x21, 0x09, 0x17,
-	0xe8, 0x29, 0xf4, 0x26, 0x25, 0x6a, 0x5a, 0xe4, 0xc4, 0xd4, 0x2d, 0xfd, 0xaa, 0xe7, 0xef, 0x04,
-	0x84, 0x01, 0xd4, 0xe5, 0x73, 0xf0, 0x5d, 0x12, 0xf3, 0x44, 0x85, 0x5b, 0x0a, 0xb2, 0xc0, 0xd8,
-	0xdd, 0x6e, 0xcc, 0x53, 0x95, 0xd0, 0x96, 0xec, 0x5b, 0x30, 0xf7, 0xea, 0x7a, 0xc5, 0x74, 0x5c,
-	0xd7, 0x46, 0x70, 0xcf, 0x0b, 0x78, 0x5d, 0x56, 0x9d, 0x51, 0x1f, 0xee, 0x4f, 0x24, 0x15, 0x75,
-	0xb1, 0xea, 0x62, 0xe7, 0xf0, 0xa8, 0xa6, 0x34, 0x9d, 0x5b, 0x60, 0x34, 0xd8, 0x77, 0xb7, 0x5b,
-	0x48, 0x5b, 0x2a, 0x67, 0xfb, 0x10, 0x2c, 0xab, 0xaf, 0x14, 0xef, 0xd4, 0xdf, 0x09, 0x2a, 0x9a,
-	0x66, 0x83, 0x39, 0x95, 0x99, 0x50, 0x9d, 0x97, 0xd1, 0x5a, 0xb0, 0x23, 0xb5, 0xaf, 0x4f, 0x69,
-	0x92, 0x11, 0x36, 0x22, 0x45, 0x53, 0x75, 0x04, 0x0f, 0x5e, 0x4b, 0x16, 0x08, 0xca, 0xcc, 0x33,
-	0x4b, 0xbf, 0x3a, 0xf7, 0x5e, 0xfe, 0xfb, 0xf3, 0xec, 0x3a, 0x49, 0xc5, 0x37, 0x19, 0x3a, 0x11,
-	0x9d, 0xbb, 0x11, 0xe5, 0x73, 0xca, 0xb7, 0xaf, 0x6b, 0x1e, 0xcf, 0x5c, 0x51, 0xe4, 0x84, 0x3b,
-	0x83, 0x28, 0x1a, 0xc4, 0x31, 0x23, 0x9c, 0xfb, 0x35, 0xc1, 0xbe, 0x00, 0x63, 0x28, 0x43, 0x9f,
-	0xf0, 0x9c, 0x66, 0x9c, 0xdc, 0xac, 0x4e, 0xca, 0xe1, 0x09, 0x2b, 0xd0, 0x18, 0x2e, 0xf6, 0xb6,
-	0x86, 0x6c, 0xa7, 0xed, 0xb1, 0x73, 0xcc, 0xca, 0xcb, 0x27, 0xfb, 0x39, 0x2d, 0xb2, 0xad, 0xa1,
-	0x2f, 0xf0, 0xf8, 0xc0, 0x07, 0xf4, 0xbc, 0x83, 0xda, 0x32, 0xaa, 0x9b, 0x3c, 0x84, 0x5e, 0xe3,
-	0x0d, 0xc2, 0xc7, 0x89, 0x77, 0xeb, 0x71, 0x02, 0x0f, 0xdf, 0xa7, 0xbc, 0xb5, 0xf4, 0x23, 0x63,
-	0x1f, 0x38, 0xd2, 0x89, 0xf4, 0xde, 0xfc, 0x5a, 0x63, 0x7d, 0xb5, 0xc6, 0xfa, 0xdf, 0x35, 0xd6,
-	0x7f, 0x6e, 0xb0, 0xb6, 0xda, 0x60, 0xed, 0xf7, 0x06, 0x6b, 0x5f, 0x5f, 0x74, 0x7a, 0xb6, 0x74,
-	0xb7, 0xbc, 0xca, 0xbd, 0xf0, 0x4c, 0xfd, 0x45, 0xaf, 0xfe, 0x07, 0x00, 0x00, 0xff, 0xff, 0x04,
-	0x67, 0x82, 0x82, 0x78, 0x03, 0x00, 0x00,
+	// 531 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x54, 0xcf, 0x6e, 0xd3, 0x4e,
+	0x10, 0xb6, 0x9b, 0xdf, 0x2f, 0x28, 0xe3, 0xb6, 0xc0, 0x2a, 0x08, 0x2b, 0x42, 0x8e, 0x65, 0x24,
+	0x94, 0x03, 0x75, 0x44, 0x78, 0x01, 0x62, 0xaa, 0x02, 0x6a, 0xf9, 0x53, 0x53, 0x38, 0x94, 0x03,
+	0xb2, 0x9d, 0x55, 0xb0, 0x42, 0xb2, 0xee, 0xae, 0x8d, 0xea, 0xb7, 0xe0, 0xb1, 0x38, 0xf6, 0xc8,
+	0x29, 0x42, 0xc9, 0x2b, 0x70, 0xca, 0x09, 0x79, 0xd7, 0x5e, 0x6f, 0x68, 0x1a, 0x71, 0x49, 0x76,
+	0x66, 0xf6, 0xfb, 0x66, 0xe7, 0xfb, 0x46, 0x06, 0xe3, 0x22, 0xc3, 0x34, 0x77, 0x13, 0x4a, 0x52,
+	0x82, 0x76, 0x27, 0x31, 0x0d, 0xdc, 0xe2, 0xe7, 0x65, 0x16, 0x76, 0x0c, 0x42, 0x47, 0x98, 0x8a,
+	0x52, 0xe7, 0x36, 0x8b, 0xc7, 0x33, 0x4c, 0x27, 0xb8, 0xbc, 0xdb, 0x69, 0x8f, 0xc9, 0x98, 0xf0,
+	0x63, 0xbf, 0x38, 0x89, 0xac, 0xf3, 0x0d, 0xda, 0x2f, 0x70, 0xfa, 0xb6, 0x00, 0x7a, 0x84, 0x4c,
+	0x98, 0x8f, 0x2f, 0x32, 0xcc, 0x52, 0xf4, 0x00, 0x5a, 0xa7, 0x45, 0xa3, 0xb3, 0x3c, 0xc1, 0xa6,
+	0x6e, 0xeb, 0xbd, 0x96, 0x5f, 0x27, 0x90, 0x05, 0xc0, 0x83, 0x8f, 0xc1, 0xd7, 0x0c, 0x9b, 0x3b,
+	0xbc, 0xac, 0x64, 0x90, 0x0d, 0x46, 0x1d, 0x0d, 0xcc, 0x06, 0xbf, 0xa0, 0xa6, 0x9c, 0xcf, 0x70,
+	0xef, 0xaf, 0xbe, 0x2c, 0x21, 0x33, 0x86, 0xd1, 0x11, 0x00, 0x1f, 0x23, 0x2c, 0xb2, 0xa6, 0x6e,
+	0x37, 0x7a, 0xc6, 0xe0, 0xbe, 0xab, 0xce, 0xe9, 0x4a, 0x94, 0xb7, 0xb7, 0x9a, 0x77, 0x5b, 0x32,
+	0xf4, 0x15, 0xa4, 0x73, 0x08, 0xe6, 0x5a, 0x03, 0x2f, 0x3f, 0x7b, 0x57, 0x0d, 0x87, 0xe0, 0x3f,
+	0x2f, 0x60, 0xd5, 0x5c, 0xfc, 0x8c, 0xda, 0xf0, 0xff, 0x69, 0x46, 0xd2, 0x6a, 0x1a, 0x11, 0x38,
+	0x09, 0xdc, 0xa9, 0x58, 0xa4, 0x34, 0x36, 0x18, 0x92, 0xf6, 0xd5, 0x61, 0x49, 0xa2, 0xa6, 0x0a,
+	0xf1, 0x5e, 0x07, 0x97, 0x02, 0xc5, 0xf9, 0x1a, 0x7e, 0x9d, 0xe0, 0xd5, 0x78, 0x36, 0x9c, 0x92,
+	0x6c, 0x96, 0x72, 0x69, 0x8a, 0x6a, 0x95, 0x70, 0x3e, 0xc0, 0x5d, 0xa5, 0x63, 0x29, 0xca, 0x33,
+	0x68, 0x12, 0xc1, 0x26, 0x04, 0x31, 0xd7, 0x05, 0x39, 0x89, 0xa7, 0x71, 0x39, 0xea, 0xfe, 0x6a,
+	0xde, 0x85, 0x3a, 0xf6, 0x4b, 0x9c, 0x13, 0x71, 0x9f, 0xdf, 0xf3, 0x9d, 0x38, 0xc6, 0xb9, 0x1c,
+	0xe6, 0x18, 0x6e, 0x3d, 0xcf, 0x68, 0x90, 0x12, 0x6a, 0x36, 0x6d, 0xbd, 0xb7, 0xeb, 0x3d, 0x59,
+	0xcd, 0xbb, 0x07, 0xe3, 0x38, 0xfd, 0x92, 0x85, 0x6e, 0x44, 0xa6, 0xfd, 0x88, 0xb0, 0x29, 0x61,
+	0xe5, 0xdf, 0x01, 0x1b, 0x4d, 0xfa, 0x69, 0x9e, 0x60, 0xe6, 0x0e, 0xa3, 0x68, 0x38, 0x1a, 0x51,
+	0xcc, 0x98, 0x5f, 0x31, 0x94, 0xa6, 0xaa, 0x4d, 0x6a, 0x53, 0xe5, 0x3a, 0xde, 0x60, 0xaa, 0x44,
+	0x09, 0x53, 0x65, 0xe8, 0x2b, 0xc8, 0xc1, 0xef, 0x9d, 0xc2, 0x25, 0x4c, 0x73, 0x74, 0x0e, 0x7b,
+	0x6b, 0xf6, 0x22, 0x67, 0x9d, 0x6e, 0xd3, 0x52, 0x77, 0x1e, 0x6e, 0xbd, 0x23, 0xde, 0xea, 0x68,
+	0x28, 0xac, 0x2d, 0x90, 0xab, 0x83, 0x1e, 0x6d, 0xc1, 0x2a, 0xbb, 0xf5, 0xaf, 0x3d, 0xde, 0x40,
+	0x4b, 0xda, 0x8c, 0xac, 0xcd, 0x18, 0xf9, 0xee, 0xee, 0x8d, 0x75, 0xc9, 0xf7, 0x09, 0xf6, 0x4f,
+	0x62, 0xa6, 0x68, 0xbf, 0x41, 0x90, 0x6b, 0xee, 0x6f, 0x78, 0xec, 0x75, 0xf3, 0x1c, 0xcd, 0x3b,
+	0xfa, 0xb1, 0xb0, 0xf4, 0xab, 0x85, 0xa5, 0xff, 0x5a, 0x58, 0xfa, 0xf7, 0xa5, 0xa5, 0x5d, 0x2d,
+	0x2d, 0xed, 0xe7, 0xd2, 0xd2, 0xce, 0x1f, 0x6f, 0xdd, 0x94, 0xcb, 0x7e, 0xc9, 0x2c, 0x76, 0x26,
+	0x6c, 0xf2, 0x6f, 0xce, 0xd3, 0x3f, 0x01, 0x00, 0x00, 0xff, 0xff, 0xb5, 0x1d, 0xd7, 0xa7, 0xc4,
+	0x04, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -334,10 +439,10 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type QueryClient interface {
-	GetOrderBooks(ctx context.Context, in *GetOrderBooksRequest, opts ...grpc.CallOption) (*HubResponse, error)
-	GetOrderBooksByTP(ctx context.Context, in *GetOrderBooksByTPRequest, opts ...grpc.CallOption) (*HubResponse, error)
-	GetOrders(ctx context.Context, in *GetOrdersRequest, opts ...grpc.CallOption) (*HubResponse, error)
-	GetSignerKeys(ctx context.Context, in *GetSignerKeysRequest, opts ...grpc.CallOption) (*HubResponse, error)
+	GetOrderBooks(ctx context.Context, in *GetOrderBooksRequest, opts ...grpc.CallOption) (*GetOrderBooksResponse, error)
+	GetOrderBooksByTP(ctx context.Context, in *GetOrderBooksByTPRequest, opts ...grpc.CallOption) (*GetOrderBooksResponse, error)
+	GetOrders(ctx context.Context, in *GetOrdersRequest, opts ...grpc.CallOption) (*GetOrdersResponse, error)
+	GetSignerKeys(ctx context.Context, in *GetSignerKeysRequest, opts ...grpc.CallOption) (*GetSignerKeysResponse, error)
 }
 
 type queryClient struct {
@@ -348,8 +453,8 @@ func NewQueryClient(cc grpc1.ClientConn) QueryClient {
 	return &queryClient{cc}
 }
 
-func (c *queryClient) GetOrderBooks(ctx context.Context, in *GetOrderBooksRequest, opts ...grpc.CallOption) (*HubResponse, error) {
-	out := new(HubResponse)
+func (c *queryClient) GetOrderBooks(ctx context.Context, in *GetOrderBooksRequest, opts ...grpc.CallOption) (*GetOrderBooksResponse, error) {
+	out := new(GetOrderBooksResponse)
 	err := c.cc.Invoke(ctx, "/kira.kiraHub.Query/GetOrderBooks", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -357,8 +462,8 @@ func (c *queryClient) GetOrderBooks(ctx context.Context, in *GetOrderBooksReques
 	return out, nil
 }
 
-func (c *queryClient) GetOrderBooksByTP(ctx context.Context, in *GetOrderBooksByTPRequest, opts ...grpc.CallOption) (*HubResponse, error) {
-	out := new(HubResponse)
+func (c *queryClient) GetOrderBooksByTP(ctx context.Context, in *GetOrderBooksByTPRequest, opts ...grpc.CallOption) (*GetOrderBooksResponse, error) {
+	out := new(GetOrderBooksResponse)
 	err := c.cc.Invoke(ctx, "/kira.kiraHub.Query/GetOrderBooksByTP", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -366,8 +471,8 @@ func (c *queryClient) GetOrderBooksByTP(ctx context.Context, in *GetOrderBooksBy
 	return out, nil
 }
 
-func (c *queryClient) GetOrders(ctx context.Context, in *GetOrdersRequest, opts ...grpc.CallOption) (*HubResponse, error) {
-	out := new(HubResponse)
+func (c *queryClient) GetOrders(ctx context.Context, in *GetOrdersRequest, opts ...grpc.CallOption) (*GetOrdersResponse, error) {
+	out := new(GetOrdersResponse)
 	err := c.cc.Invoke(ctx, "/kira.kiraHub.Query/GetOrders", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -375,8 +480,8 @@ func (c *queryClient) GetOrders(ctx context.Context, in *GetOrdersRequest, opts 
 	return out, nil
 }
 
-func (c *queryClient) GetSignerKeys(ctx context.Context, in *GetSignerKeysRequest, opts ...grpc.CallOption) (*HubResponse, error) {
-	out := new(HubResponse)
+func (c *queryClient) GetSignerKeys(ctx context.Context, in *GetSignerKeysRequest, opts ...grpc.CallOption) (*GetSignerKeysResponse, error) {
+	out := new(GetSignerKeysResponse)
 	err := c.cc.Invoke(ctx, "/kira.kiraHub.Query/GetSignerKeys", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -386,26 +491,26 @@ func (c *queryClient) GetSignerKeys(ctx context.Context, in *GetSignerKeysReques
 
 // QueryServer is the server API for Query service.
 type QueryServer interface {
-	GetOrderBooks(context.Context, *GetOrderBooksRequest) (*HubResponse, error)
-	GetOrderBooksByTP(context.Context, *GetOrderBooksByTPRequest) (*HubResponse, error)
-	GetOrders(context.Context, *GetOrdersRequest) (*HubResponse, error)
-	GetSignerKeys(context.Context, *GetSignerKeysRequest) (*HubResponse, error)
+	GetOrderBooks(context.Context, *GetOrderBooksRequest) (*GetOrderBooksResponse, error)
+	GetOrderBooksByTP(context.Context, *GetOrderBooksByTPRequest) (*GetOrderBooksResponse, error)
+	GetOrders(context.Context, *GetOrdersRequest) (*GetOrdersResponse, error)
+	GetSignerKeys(context.Context, *GetSignerKeysRequest) (*GetSignerKeysResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
 type UnimplementedQueryServer struct {
 }
 
-func (*UnimplementedQueryServer) GetOrderBooks(ctx context.Context, req *GetOrderBooksRequest) (*HubResponse, error) {
+func (*UnimplementedQueryServer) GetOrderBooks(ctx context.Context, req *GetOrderBooksRequest) (*GetOrderBooksResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetOrderBooks not implemented")
 }
-func (*UnimplementedQueryServer) GetOrderBooksByTP(ctx context.Context, req *GetOrderBooksByTPRequest) (*HubResponse, error) {
+func (*UnimplementedQueryServer) GetOrderBooksByTP(ctx context.Context, req *GetOrderBooksByTPRequest) (*GetOrderBooksResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetOrderBooksByTP not implemented")
 }
-func (*UnimplementedQueryServer) GetOrders(ctx context.Context, req *GetOrdersRequest) (*HubResponse, error) {
+func (*UnimplementedQueryServer) GetOrders(ctx context.Context, req *GetOrdersRequest) (*GetOrdersResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetOrders not implemented")
 }
-func (*UnimplementedQueryServer) GetSignerKeys(ctx context.Context, req *GetSignerKeysRequest) (*HubResponse, error) {
+func (*UnimplementedQueryServer) GetSignerKeys(ctx context.Context, req *GetSignerKeysRequest) (*GetSignerKeysResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetSignerKeys not implemented")
 }
 
@@ -554,6 +659,43 @@ func (m *GetOrderBooksRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *GetOrderBooksResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GetOrderBooksResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GetOrderBooksResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Orderbooks) > 0 {
+		for iNdEx := len(m.Orderbooks) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Orderbooks[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
 func (m *GetOrderBooksByTPRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -631,6 +773,43 @@ func (m *GetOrdersRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *GetOrdersResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GetOrdersResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GetOrdersResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Orders) > 0 {
+		for iNdEx := len(m.Orders) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Orders[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
 func (m *GetSignerKeysRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -661,7 +840,7 @@ func (m *GetSignerKeysRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *HubResponse) Marshal() (dAtA []byte, err error) {
+func (m *GetSignerKeysResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -671,16 +850,30 @@ func (m *HubResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *HubResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *GetSignerKeysResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *HubResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *GetSignerKeysResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
+	if len(m.Signerkeys) > 0 {
+		for iNdEx := len(m.Signerkeys) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Signerkeys[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
 	return len(dAtA) - i, nil
 }
 
@@ -712,6 +905,21 @@ func (m *GetOrderBooksRequest) Size() (n int) {
 	l = len(m.QueryValue2)
 	if l > 0 {
 		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *GetOrderBooksResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Orderbooks) > 0 {
+		for _, e := range m.Orderbooks {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
 	}
 	return n
 }
@@ -752,6 +960,21 @@ func (m *GetOrdersRequest) Size() (n int) {
 	return n
 }
 
+func (m *GetOrdersResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Orders) > 0 {
+		for _, e := range m.Orders {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	return n
+}
+
 func (m *GetSignerKeysRequest) Size() (n int) {
 	if m == nil {
 		return 0
@@ -765,12 +988,18 @@ func (m *GetSignerKeysRequest) Size() (n int) {
 	return n
 }
 
-func (m *HubResponse) Size() (n int) {
+func (m *GetSignerKeysResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
+	if len(m.Signerkeys) > 0 {
+		for _, e := range m.Signerkeys {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
 	return n
 }
 
@@ -904,6 +1133,93 @@ func (m *GetOrderBooksRequest) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.QueryValue2 = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GetOrderBooksResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GetOrderBooksResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GetOrderBooksResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Orderbooks", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Orderbooks = append(m.Orderbooks, &OrderBook{})
+			if err := m.Orderbooks[len(m.Orderbooks)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -1169,6 +1485,93 @@ func (m *GetOrdersRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+func (m *GetOrdersResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GetOrdersResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GetOrdersResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Orders", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Orders = append(m.Orders, &LimitOrder{})
+			if err := m.Orders[len(m.Orders)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
 func (m *GetSignerKeysRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1256,7 +1659,7 @@ func (m *GetSignerKeysRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *HubResponse) Unmarshal(dAtA []byte) error {
+func (m *GetSignerKeysResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1279,12 +1682,46 @@ func (m *HubResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: HubResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: GetSignerKeysResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: HubResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: GetSignerKeysResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Signerkeys", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Signerkeys = append(m.Signerkeys, &SignerKey{})
+			if err := m.Signerkeys[len(m.Signerkeys)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuery(dAtA[iNdEx:])

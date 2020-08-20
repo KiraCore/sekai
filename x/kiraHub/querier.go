@@ -15,9 +15,9 @@ func NewQuerier(keeper keeper.Keeper) types.QueryServer {
 	return &Querier{keeper: keeper}
 }
 
-func (q Querier) GetOrderBooks(ctx context.Context, request *types.GetOrderBooksRequest) (*types.HubResponse, error) {
+func (q Querier) GetOrderBooks(ctx context.Context, request *types.GetOrderBooksRequest) (*types.GetOrderBooksResponse, error) {
 	// c := sdk.UnwrapSDKContext(ctx)
-	return &types.HubResponse{}, nil
+	return &types.GetOrderBooksResponse{}, nil
 
 	// var queryOutput []types.OrderBook
 
@@ -55,14 +55,14 @@ func (q Querier) GetOrderBooks(ctx context.Context, request *types.GetOrderBooks
 	// return res, nil
 }
 
-func (q Querier) GetOrderBooksByTP(ctx context.Context, request *types.GetOrderBooksByTPRequest) (*types.HubResponse, error) {
+func (q Querier) GetOrderBooksByTP(ctx context.Context, request *types.GetOrderBooksByTPRequest) (*types.GetOrderBooksResponse, error) {
 	// c := sdk.UnwrapSDKContext(ctx)
-	return &types.HubResponse{}, nil
+	return &types.GetOrderBooksResponse{}, nil
 }
 
-func (q Querier) GetOrders(ctx context.Context, request *types.GetOrdersRequest) (*types.HubResponse, error) {
+func (q Querier) GetOrders(ctx context.Context, request *types.GetOrdersRequest) (*types.GetOrdersResponse, error) {
 	// c := sdk.UnwrapSDKContext(ctx)
-	return &types.HubResponse{}, nil
+	return &types.GetOrdersResponse{}, nil
 
 	// var queryOutput []types.LimitOrder
 
@@ -79,9 +79,9 @@ func (q Querier) GetOrders(ctx context.Context, request *types.GetOrdersRequest)
 	// return res, nil
 }
 
-func (q Querier) GetSignerKeys(ctx context.Context, request *types.GetSignerKeysRequest) (*types.HubResponse, error) {
+func (q Querier) GetSignerKeys(ctx context.Context, request *types.GetSignerKeysRequest) (*types.GetSignerKeysResponse, error) {
 	// c := sdk.UnwrapSDKContext(ctx)
-	return &types.HubResponse{}, nil
+	return &types.GetSignerKeysResponse{}, nil
 
 	// var queryOutput []types.SignerKey
 	// curator, err := sdk.AccAddressFromBech32(path[0])

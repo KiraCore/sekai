@@ -1,21 +1,29 @@
 syntax = "proto3";
 package kira.kiraHub;
 
+import "order.proto";
+import "signerkey.proto";
 import "gogoproto/gogo.proto";
 option go_package = "github.com/cosmos/cosmos-sdk/x/kiraHub/types";
 
 // Query defines the gRPC querier service
 service Query {
-    rpc GetOrderBooks (GetOrderBooksRequest) returns (HubResponse) {}
-    rpc GetOrderBooksByTP (GetOrderBooksByTPRequest) returns (HubResponse) {}
-    rpc GetOrders (GetOrdersRequest) returns (HubResponse) {}
-    rpc ListSignerKeys (GetSignerKeysRequest) returns (HubResponse) {}
+    rpc GetOrderBooks (GetOrderBooksRequest) returns (GetOrderBooksResponse) {}
+    rpc GetOrderBooksByTP (GetOrderBooksByTPRequest) returns (GetOrderBooksResponse) {}
+    rpc GetOrders (GetOrdersRequest) returns (GetOrdersResponse) {}
+    rpc GetSignerKeys (GetSignerKeysRequest) returns (GetSignerKeysResponse) {}
 }
 
 message GetOrderBooksRequest {
     string QueryType = 1;
     string QueryValue = 2;
     string QueryValue2 = 3; // this is only for QueryType = "tp"
+}
+
+message GetOrderBooksResponse {
+    repeated OrderBook orderbooks = 1 [
+        (gogoproto.casttype) = "OrderBook"
+    ];
 }
 
 message GetOrderBooksByTPRequest {
@@ -29,12 +37,21 @@ message GetOrdersRequest {
     int64 MinAmount = 3;
 }
 
+message GetOrdersResponse {
+    repeated LimitOrder orders = 1 [
+        (gogoproto.casttype) = "LimitOrder"
+    ];
+}
+
 message GetSignerKeysRequest {
 	bytes Curator = 6 [
         (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
     ];
 }
 
-message HubResponse {
+message GetSignerKeysResponse {
+    repeated SignerKey signerkeys = 1 [
+        (gogoproto.casttype) = "SignerKey"
+    ];
 }
   
