@@ -26,13 +26,13 @@ func GetOrderBooks(cliContext client.Context) http.HandlerFunc {
 	}
 }
 
-func GetOrderBooksByTP(cliContext client.Context) http.HandlerFunc {
+func GetOrderBooksByTradingPair(cliContext client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		base := vars["base"]
 		quote := vars["quote"]
 
-		// "/kira.kiraHub.Query/GetOrderBooksByTP"
+		// "/kira.kiraHub.Query/GetOrderBooksByTradingPair"
 		res, _, err := cliContext.QueryWithData(fmt.Sprintf("custom/kiraHub/listOrderBooks/tp/%s/%s", base, quote), nil)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusNotFound, err.Error())

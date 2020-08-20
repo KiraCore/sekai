@@ -9,7 +9,7 @@ option go_package = "github.com/cosmos/cosmos-sdk/x/kiraHub/types";
 // Query defines the gRPC querier service
 service Query {
     rpc GetOrderBooks (GetOrderBooksRequest) returns (GetOrderBooksResponse) {}
-    rpc GetOrderBooksByTP (GetOrderBooksByTPRequest) returns (GetOrderBooksResponse) {}
+    rpc GetOrderBooksByTradingPair (GetOrderBooksByTradingPairRequest) returns (GetOrderBooksResponse) {}
     rpc GetOrders (GetOrdersRequest) returns (GetOrdersResponse) {}
     rpc GetSignerKeys (GetSignerKeysRequest) returns (GetSignerKeysResponse) {}
 }
@@ -17,7 +17,7 @@ service Query {
 message GetOrderBooksRequest {
     string QueryType = 1;
     string QueryValue = 2;
-    string QueryValue2 = 3; // this is only for QueryType = "tp"
+    string QueryValue2 = 3; // this is only for QueryType = "TradingPair"
 }
 
 message GetOrderBooksResponse {
@@ -27,7 +27,7 @@ message GetOrderBooksResponse {
     ];
 }
 
-message GetOrderBooksByTPRequest {
+message GetOrderBooksByTradingPairRequest {
     string Base = 1;
     string Quote = 2;
 }

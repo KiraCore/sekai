@@ -32,8 +32,8 @@ func (q Querier) GetOrderBooks(ctx context.Context, request *types.GetOrderBooks
 		queryOutput = q.keeper.GetOrderBookByQuote(c, request.QueryValue)
 	case "Base":
 		queryOutput = q.keeper.GetOrderBookByBase(c, request.QueryValue)
-	case "tp":
-		queryOutput = q.keeper.GetOrderBookByTP(c, request.QueryValue, request.QueryValue2)
+	case "TradingPair":
+		queryOutput = q.keeper.GetOrderBookByTradingPair(c, request.QueryValue, request.QueryValue2)
 	case "Curator":
 		queryOutput = q.keeper.GetOrderBookByCurator(c, request.QueryValue)
 	}
@@ -43,10 +43,10 @@ func (q Querier) GetOrderBooks(ctx context.Context, request *types.GetOrderBooks
 	}, nil
 }
 
-func (q Querier) GetOrderBooksByTP(ctx context.Context, request *types.GetOrderBooksByTPRequest) (*types.GetOrderBooksResponse, error) {
+func (q Querier) GetOrderBooksByTradingPair(ctx context.Context, request *types.GetOrderBooksByTradingPairRequest) (*types.GetOrderBooksResponse, error) {
 	c := sdk.UnwrapSDKContext(ctx)
 	return &types.GetOrderBooksResponse{
-		Orderbooks: q.keeper.GetOrderBookByTP(c, request.Base, request.Quote),
+		Orderbooks: q.keeper.GetOrderBookByTradingPair(c, request.Base, request.Quote),
 	}, nil
 }
 

@@ -17,7 +17,7 @@ const (
 	CreateOrderTransaction     = "createorder"
 	UpsertSignerKeyTransaction = "upsertsignerkey"
 
-	ListOrderBooksQuery     = "listOrderBooks"
-	ListOrderBooksQueryByTP = "listOrderBooksByTP"
-	ListOrders              = "listOrders"
+	ListOrderBooksQuery              = "listOrderBooks"
+	ListOrderBooksQueryByTradingPair = "listOrderBooksByTradingPair"
+	ListOrders                       = "listOrders"
 )

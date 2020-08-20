@@ -229,7 +229,7 @@ func (k Keeper) GetOrderBookByQuote(ctx sdk.Context, quote string) []types.Order
 	return orderbooksQueried
 }
 
-func (k Keeper) GetOrderBookByTP(ctx sdk.Context, base string, quote string) []types.OrderBook {
+func (k Keeper) GetOrderBookByTradingPair(ctx sdk.Context, base string, quote string) []types.OrderBook {
 
 	store := ctx.KVStore(k.storeKey)
 

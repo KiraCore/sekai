@@ -85,7 +85,7 @@ func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
 	}
 	queryCmd.AddCommand(
 		cli.GetOrderBooksCmd(),
-		cli.GetOrderBooksByTPCmd(),
+		cli.GetOrderBooksByTradingPairCmd(),
 		cli.GetOrdersCmd(),
 		cli.GetSignerKeysCmd())
 

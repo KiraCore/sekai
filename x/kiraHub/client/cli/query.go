@@ -39,7 +39,7 @@ func GetOrderBooksCmd() *cobra.Command {
 	}
 }
 
-func GetOrderBooksByTPCmd() *cobra.Command {
+func GetOrderBooksByTradingPairCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "listorderbooksTP [base] [quote]",
 		Short: "List order book(s) by Trading_Pair",
@@ -47,10 +47,10 @@ func GetOrderBooksByTPCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
-			params := &types.GetOrderBooksByTPRequest{}
+			params := &types.GetOrderBooksByTradingPairRequest{}
 			queryClient := types.NewQueryClient(clientCtx)
-			// res, err := queryClient.GetOrderBooksByTP(context.Background(), params)
-			_, err := queryClient.GetOrderBooksByTP(context.Background(), params)
+			// res, err := queryClient.GetOrderBooksByTradingPair(context.Background(), params)
+			_, err := queryClient.GetOrderBooksByTradingPair(context.Background(), params)
 			if err != nil {
 				return err
 			}
