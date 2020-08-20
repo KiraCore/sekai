@@ -2,11 +2,18 @@ syntax = "proto3";
 package kira.kiraHub;
 
 import "order.proto";
+import "signerkey.proto";
 import "gogoproto/gogo.proto";
 option go_package = "github.com/cosmos/cosmos-sdk/x/kiraHub/types";
 
 message GenesisState {
     repeated OrderBook orderBooks = 1 [
         (gogoproto.casttype) = "OrderBook"
+    ];
+    repeated LimitOrder limitOrders = 2 [
+        (gogoproto.casttype) = "LimitOrder"
+    ];
+    repeated SignerKey signerKeys = 3 [
+        (gogoproto.casttype) = "SignerKey"
     ];
 }
