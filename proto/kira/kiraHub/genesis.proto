@@ -1,4 +1,12 @@
 syntax = "proto3";
 package kira.kiraHub;
 
+import "order.proto";
+import "gogoproto/gogo.proto";
 option go_package = "github.com/cosmos/cosmos-sdk/x/kiraHub/types";
+
+message GenesisState {
+    repeated OrderBook orderBooks = 1 [
+        (gogoproto.casttype) = "OrderBook"
+    ];
+}

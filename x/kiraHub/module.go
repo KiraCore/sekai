@@ -30,7 +30,6 @@ type AppModuleBasic struct {
 }
 
 func (b AppModuleBasic) RegisterInterfaces(registry cdcTypes.InterfaceRegistry) {
-	types.RegisterInterfaces(registry)
 }
 
 func (AppModuleBasic) Name() string {
@@ -42,7 +41,8 @@ func (AppModuleBasic) RegisterCodec(codec *codec.LegacyAmino) {
 }
 
 func (AppModuleBasic) DefaultGenesis(jsonMarshaler codec.JSONMarshaler) json.RawMessage {
-	return jsonMarshaler.MustMarshalJSON(DefaultGenesisState())
+	return nil
+	// return jsonMarshaler.MustMarshalJSON(DefaultGenesisState())
 }
 
 func (AppModuleBasic) RegisterRESTRoutes(cliContext client.Context, router *mux.Router) {
@@ -50,12 +50,13 @@ func (AppModuleBasic) RegisterRESTRoutes(cliContext client.Context, router *mux.
 }
 
 func (b AppModuleBasic) ValidateGenesis(marshaler codec.JSONMarshaler, config client.TxEncodingConfig, message json.RawMessage) error {
-	var genesisState GenesisState
-	Error := marshaler.UnmarshalJSON(message, &genesisState)
-	if Error != nil {
-		return Error
-	}
-	return ValidateGenesis(genesisState)
+	// var genesisState types.GenesisState
+	// Error := marshaler.UnmarshalJSON(message, &genesisState)
+	// if Error != nil {
+	// 	return Error
+	// }
+	// return types.ValidateGenesis(genesisState)
+	return nil
 }
 
 func (AppModuleBasic) GetTxCmd() *cobra.Command {
@@ -102,7 +103,7 @@ func (am AppModule) ValidateGenesis(marshaler codec.JSONMarshaler, config client
 }
 
 func (am AppModule) RegisterInterfaces(registry cdcTypes.InterfaceRegistry) {
-	panic("implement me")
+	types.RegisterInterfaces(registry)
 }
 
 func (am AppModule) NewHandler() sdkTypes.Handler {
@@ -110,14 +111,12 @@ func (am AppModule) NewHandler() sdkTypes.Handler {
 }
 
 func (am AppModule) InitGenesis(context sdkTypes.Context, jsonMarshaler codec.JSONMarshaler, rawMessage json.RawMessage) []abciTypes.ValidatorUpdate {
-	var genesisState GenesisState
+	var genesisState types.GenesisState
 	jsonMarshaler.MustUnmarshalJSON(rawMessage, &genesisState)
-	InitializeGenesisState(context, am.keeper, genesisState)
 	return []abciTypes.ValidatorUpdate{}
 }
 func (am AppModule) ExportGenesis(context sdkTypes.Context, jsonMarshaler codec.JSONMarshaler) json.RawMessage {
-	gs := ExportGenesis(context, am.keeper)
-	return jsonMarshaler.MustMarshalJSON(gs)
+	return nil
 }
 
 func (am AppModule) RegisterInvariants(_ sdkTypes.InvariantRegistry) {}
