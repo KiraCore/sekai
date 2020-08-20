@@ -22,7 +22,8 @@ message GetOrderBooksRequest {
 
 message GetOrderBooksResponse {
     repeated OrderBook orderbooks = 1 [
-        (gogoproto.casttype) = "OrderBook"
+        (gogoproto.casttype) = "OrderBook",
+        (gogoproto.nullable) = false
     ];
 }
 
@@ -33,13 +34,14 @@ message GetOrderBooksByTPRequest {
 
 message GetOrdersRequest {
     string OrderBookID = 1;
-    int64 MaxOrders = 2;
-    int64 MinAmount = 3;
+    uint32 MaxOrders = 2;
+    uint32 MinAmount = 3;
 }
 
 message GetOrdersResponse {
     repeated LimitOrder orders = 1 [
-        (gogoproto.casttype) = "LimitOrder"
+        (gogoproto.casttype) = "LimitOrder",
+        (gogoproto.nullable) = false
     ];
 }
 
@@ -51,7 +53,8 @@ message GetSignerKeysRequest {
 
 message GetSignerKeysResponse {
     repeated SignerKey signerkeys = 1 [
-        (gogoproto.casttype) = "SignerKey"
+        (gogoproto.casttype) = "SignerKey",
+        (gogoproto.nullable) = false
     ];
 }
   

@@ -2,9 +2,11 @@ package kiraHub
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/KiraCore/sekai/x/kiraHub/keeper"
 	"github.com/KiraCore/sekai/x/kiraHub/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 type Querier struct {
@@ -16,85 +18,61 @@ func NewQuerier(keeper keeper.Keeper) types.QueryServer {
 }
 
 func (q Querier) GetOrderBooks(ctx context.Context, request *types.GetOrderBooksRequest) (*types.GetOrderBooksResponse, error) {
-	// c := sdk.UnwrapSDKContext(ctx)
-	return &types.GetOrderBooksResponse{}, nil
+	c := sdk.UnwrapSDKContext(ctx)
 
-	// var queryOutput []types.OrderBook
+	var queryOutput []types.OrderBook
 
-	// if path[0] == "ID" {
+	switch request.QueryType {
+	case "ID":
+		queryOutput = q.keeper.GetOrderBookByID(c, request.QueryValue)
+	case "Index":
+		var int1, _ = strconv.Atoi(request.QueryValue)
+		queryOutput = q.keeper.GetOrderBookByIndex(c, uint32(int1))
+	case "Quote":
+		queryOutput = q.keeper.GetOrderBookByQuote(c, request.QueryValue)
+	case "Base":
+		queryOutput = q.keeper.GetOrderBookByBase(c, request.QueryValue)
+	case "tp":
+		queryOutput = q.keeper.GetOrderBookByTP(c, request.QueryValue, request.QueryValue2)
+	case "Curator":
+		queryOutput = q.keeper.GetOrderBookByCurator(c, request.QueryValue)
+	}
 
-	// 	queryOutput = keeper.GetOrderBookByID(ctx, path[1])
-
-	// } else if path[0] == "Index" {
-
-	// 	var int1, _ = strconv.Atoi(path[1])
-	// 	queryOutput = keeper.GetOrderBookByIndex(ctx, uint32(int1))
-
-	// } else if path[0] == "Quote" {
-
-	// 	queryOutput = keeper.GetOrderBookByQuote(ctx, path[1])
-
-	// } else if path[0] == "Base" {
-
-	// 	queryOutput = keeper.GetOrderBookByBase(ctx, path[1])
-
-	// } else if path[0] == "tp" {
-
-	// 	queryOutput = keeper.GetOrderBookByTP(ctx, path[1], path[2])
-
-	// } else if path[0] == "Curator" {
-
-	// 	queryOutput = keeper.GetOrderBookByCurator(ctx, path[1])
-	// }
-
-	// res, err := types.ModuleCdc.MarshalJSON(queryOutput)
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// return res, nil
+	return &types.GetOrderBooksResponse{
+		Orderbooks: queryOutput,
+	}, nil
 }
 
 func (q Querier) GetOrderBooksByTP(ctx context.Context, request *types.GetOrderBooksByTPRequest) (*types.GetOrderBooksResponse, error) {
-	// c := sdk.UnwrapSDKContext(ctx)
-	return &types.GetOrderBooksResponse{}, nil
+	c := sdk.UnwrapSDKContext(ctx)
+	return &types.GetOrderBooksResponse{
+		Orderbooks: q.keeper.GetOrderBookByTP(c, request.Base, request.Quote),
+	}, nil
 }
 
 func (q Querier) GetOrders(ctx context.Context, request *types.GetOrdersRequest) (*types.GetOrdersResponse, error) {
-	// c := sdk.UnwrapSDKContext(ctx)
-	return &types.GetOrdersResponse{}, nil
+	c := sdk.UnwrapSDKContext(ctx)
 
-	// var queryOutput []types.LimitOrder
+	var queryOutput []types.LimitOrder
+	queryOutput = q.keeper.GetOrders(c, request.OrderBookID, request.MaxOrders, request.MinAmount)
 
-	// var int1, _ = strconv.Atoi(path[1])
-	// var int2, _ = strconv.Atoi(path[2])
-
-	// queryOutput = keeper.GetOrders(ctx, path[0], uint32(int1), uint32(int2))
-
-	// res, err := types.ModuleCdc.MarshalJSON(queryOutput)
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// return res, nil
+	return &types.GetOrdersResponse{
+		Orders: queryOutput,
+	}, nil
 }
 
 func (q Querier) GetSignerKeys(ctx context.Context, request *types.GetSignerKeysRequest) (*types.GetSignerKeysResponse, error) {
-	// c := sdk.UnwrapSDKContext(ctx)
-	return &types.GetSignerKeysResponse{}, nil
+	c := sdk.UnwrapSDKContext(ctx)
 
-	// var queryOutput []types.SignerKey
-	// curator, err := sdk.AccAddressFromBech32(path[0])
+	var queryOutput []types.SignerKey
+	// curator, err := sdk.AccAddressFromBech32()
 	// if err != nil {
-	// 	return []byte{}, fmt.Errorf("Invalid curator address %s: %+v", path[0], err)
+	// 	return &types.GetSignerKeysResponse{}, fmt.Errorf("Invalid curator address %s: %+v", path[0], err)
 	// }
 
-	// queryOutput = keeper.GetSignerKeys(ctx, curator)
+	queryOutput = q.keeper.GetSignerKeys(c, request.Curator)
 
-	// res, err := types.ModuleCdc.MarshalJSON(queryOutput)
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// return res, nil
+	return &types.GetSignerKeysResponse{
+		Signerkeys: queryOutput,
+	}, nil
 }

@@ -8,12 +8,15 @@ option go_package = "github.com/cosmos/cosmos-sdk/x/kiraHub/types";
 
 message GenesisState {
     repeated OrderBook orderBooks = 1 [
-        (gogoproto.casttype) = "OrderBook"
+        (gogoproto.casttype) = "OrderBook",
+        (gogoproto.nullable) = false
     ];
     repeated LimitOrder limitOrders = 2 [
-        (gogoproto.casttype) = "LimitOrder"
+        (gogoproto.casttype) = "LimitOrder",
+        (gogoproto.nullable) = false
     ];
     repeated SignerKey signerKeys = 3 [
-        (gogoproto.casttype) = "SignerKey"
+        (gogoproto.casttype) = "SignerKey",
+        (gogoproto.nullable) = false
     ];
 }
