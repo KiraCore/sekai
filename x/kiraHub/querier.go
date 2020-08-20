@@ -15,7 +15,7 @@ func NewQuerier(keeper keeper.Keeper) types.QueryServer {
 	return &Querier{keeper: keeper}
 }
 
-func (q Querier) GetOrderBooks(ctx context.Context, request *types.HubRequest) (*types.HubResponse, error) {
+func (q Querier) GetOrderBooks(ctx context.Context, request *types.GetOrderBooksRequest) (*types.HubResponse, error) {
 	// c := sdk.UnwrapSDKContext(ctx)
 	return &types.HubResponse{}, nil
 
@@ -55,12 +55,12 @@ func (q Querier) GetOrderBooks(ctx context.Context, request *types.HubRequest) (
 	// return res, nil
 }
 
-func (q Querier) GetOrderBooksByTP(ctx context.Context, request *types.HubRequest) (*types.HubResponse, error) {
+func (q Querier) GetOrderBooksByTP(ctx context.Context, request *types.GetOrderBooksByTPRequest) (*types.HubResponse, error) {
 	// c := sdk.UnwrapSDKContext(ctx)
 	return &types.HubResponse{}, nil
 }
 
-func (q Querier) GetOrders(ctx context.Context, request *types.HubRequest) (*types.HubResponse, error) {
+func (q Querier) GetOrders(ctx context.Context, request *types.GetOrdersRequest) (*types.HubResponse, error) {
 	// c := sdk.UnwrapSDKContext(ctx)
 	return &types.HubResponse{}, nil
 
@@ -79,7 +79,7 @@ func (q Querier) GetOrders(ctx context.Context, request *types.HubRequest) (*typ
 	// return res, nil
 }
 
-func (q Querier) ListSignerKeys(ctx context.Context, request *types.HubRequest) (*types.HubResponse, error) {
+func (q Querier) GetSignerKeys(ctx context.Context, request *types.GetSignerKeysRequest) (*types.HubResponse, error) {
 	// c := sdk.UnwrapSDKContext(ctx)
 	return &types.HubResponse{}, nil
 

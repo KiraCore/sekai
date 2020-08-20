@@ -16,7 +16,7 @@ func GetOrderBooksCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
-			params := &types.HubRequest{}
+			params := &types.GetOrderBooksRequest{}
 			queryClient := types.NewQueryClient(clientCtx)
 			// res, err := queryClient.GetOrderBooks(context.Background(), params)
 			_, err := queryClient.GetOrderBooks(context.Background(), params)
@@ -47,7 +47,7 @@ func GetOrderBooksByTPCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
-			params := &types.HubRequest{}
+			params := &types.GetOrderBooksByTPRequest{}
 			queryClient := types.NewQueryClient(clientCtx)
 			// res, err := queryClient.GetOrderBooksByTP(context.Background(), params)
 			_, err := queryClient.GetOrderBooksByTP(context.Background(), params)
@@ -77,7 +77,7 @@ func GetOrdersCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
-			params := &types.HubRequest{}
+			params := &types.GetOrdersRequest{}
 			queryClient := types.NewQueryClient(clientCtx)
 			_, err := queryClient.GetOrders(context.Background(), params)
 			// res, err := queryClient.GetOrders(context.Background(), params)
@@ -100,18 +100,18 @@ func GetOrdersCmd() *cobra.Command {
 	}
 }
 
-func ListSignerKeysCmd() *cobra.Command {
+func GetSignerKeysCmd() *cobra.Command {
 	return &cobra.Command{
-		Use:   "listsignerkeys",
+		Use:   "getsignerkeys",
 		Short: "List signer key(s) by curator address",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
-			params := &types.HubRequest{}
+			params := &types.GetSignerKeysRequest{}
 			queryClient := types.NewQueryClient(clientCtx)
-			_, err := queryClient.ListSignerKeys(context.Background(), params)
-			// res, err := queryClient.ListSignerKeys(context.Background(), params)
+			_, err := queryClient.GetSignerKeys(context.Background(), params)
+			// res, err := queryClient.GetSignerKeys(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -119,7 +119,7 @@ func ListSignerKeysCmd() *cobra.Command {
 			return nil
 			// var owner = clientCtx.GetFromAddress()
 
-			// res, _, err := clientCtx.QueryWithData(fmt.Sprintf("custom/kiraHub/listSignerKeys/%s", owner.String()), nil)
+			// res, _, err := clientCtx.QueryWithData(fmt.Sprintf("custom/kiraHub/getsignerkeys/%s", owner.String()), nil)
 			// if err != nil {
 			// 	fmt.Printf("could not query. Searching By - %s \n", owner.String())
 			// 	return nil

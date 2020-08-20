@@ -58,7 +58,7 @@ func GetOrders(cliContext client.Context) http.HandlerFunc {
 	}
 }
 
-func ListSignerKeys(cliContext client.Context) http.HandlerFunc {
+func GetSignerKeys(cliContext client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		curator := vars["curator"]
