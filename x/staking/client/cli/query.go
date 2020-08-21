@@ -10,9 +10,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/KiraCore/cosmos-sdk/client"
-	"github.com/KiraCore/cosmos-sdk/client/flags"
-	sdk "github.com/KiraCore/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/flags"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	cumstomtypes "github.com/KiraCore/sekai/x/staking/types"
 )
@@ -64,7 +64,7 @@ func GetCmdQueryValidatorByAddress() *cobra.Command {
 					return err
 				}
 
-				return clientCtx.PrintOutput(res.Validator)
+				return clientCtx.PrintOutput(&res.Validator)
 			}
 
 			moniker, _ := cmd.Flags().GetString(FlagMoniker)
@@ -77,8 +77,9 @@ func GetCmdQueryValidatorByAddress() *cobra.Command {
 					return err
 				}
 
-				return clientCtx.PrintOutput(res.Validator)
+				return clientCtx.PrintOutput(&res.Validator)
 			}
+
 			return nil
 		},
 	}

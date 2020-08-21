@@ -6,31 +6,31 @@ import (
 	"io"
 	"os"
 
+	"github.com/cosmos/cosmos-sdk/codec"
+
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
-
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/libs/cli"
 	"github.com/tendermint/tendermint/libs/log"
 	tmtypes "github.com/tendermint/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/KiraCore/cosmos-sdk/baseapp"
-	"github.com/KiraCore/cosmos-sdk/client"
-	"github.com/KiraCore/cosmos-sdk/client/debug"
-	"github.com/KiraCore/cosmos-sdk/client/flags"
-	"github.com/KiraCore/cosmos-sdk/client/keys"
-	"github.com/KiraCore/cosmos-sdk/client/rpc"
-	"github.com/KiraCore/cosmos-sdk/server"
-	servertypes "github.com/KiraCore/cosmos-sdk/server/types"
-	"github.com/KiraCore/cosmos-sdk/store"
-	sdk "github.com/KiraCore/cosmos-sdk/types"
-	authclient "github.com/KiraCore/cosmos-sdk/x/auth/client"
-	authcmd "github.com/KiraCore/cosmos-sdk/x/auth/client/cli"
-	"github.com/KiraCore/cosmos-sdk/x/auth/types"
-	banktypes "github.com/KiraCore/cosmos-sdk/x/bank/types"
-	genutilcli "github.com/KiraCore/cosmos-sdk/x/genutil/client/cli"
+	"github.com/cosmos/cosmos-sdk/baseapp"
+	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/debug"
+	"github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/cosmos/cosmos-sdk/client/keys"
+	"github.com/cosmos/cosmos-sdk/client/rpc"
+	"github.com/cosmos/cosmos-sdk/server"
+	servertypes "github.com/cosmos/cosmos-sdk/server/types"
+	"github.com/cosmos/cosmos-sdk/store"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	authclient "github.com/cosmos/cosmos-sdk/x/auth/client"
+	authcmd "github.com/cosmos/cosmos-sdk/x/auth/client/cli"
+	"github.com/cosmos/cosmos-sdk/x/auth/types"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 
 	"github.com/KiraCore/sekai/app"
 	customstaking "github.com/KiraCore/sekai/x/staking/client/cli"
@@ -53,10 +53,11 @@ var (
 	encodingConfig = app.MakeEncodingConfig()
 	initClientCtx  = client.Context{}.
 			WithJSONMarshaler(encodingConfig.Marshaler).
+			WithInterfaceRegistry(encodingConfig.InterfaceRegistry).
 			WithTxConfig(encodingConfig.TxConfig).
-			WithCodec(encodingConfig.Amino).
+			WithLegacyAmino(encodingConfig.Amino).
 			WithInput(os.Stdin).
-			WithAccountRetriever(types.NewAccountRetriever(encodingConfig.Marshaler)).
+			WithAccountRetriever(types.AccountRetriever{}).
 			WithBroadcastMode(flags.BroadcastBlock).
 			WithHomeDir(app.DefaultNodeHome)
 )
@@ -66,7 +67,6 @@ func init() {
 
 	rootCmd.AddCommand(
 		genutilcli.InitCmd(app.ModuleBasics, app.DefaultNodeHome),
-		genutilcli.CollectGenTxsCmd(banktypes.GenesisBalancesIterator{}, app.DefaultNodeHome),
 		genutilcli.MigrateGenesisCmd(),
 		genutilcli.GenTxCmd(app.ModuleBasics, encodingConfig.TxConfig, banktypes.GenesisBalancesIterator{}, app.DefaultNodeHome),
 		customstaking.GenTxClaimCmd(app.ModuleBasics, encodingConfig.TxConfig, banktypes.GenesisBalancesIterator{}, app.DefaultNodeHome),
@@ -90,6 +90,8 @@ func init() {
 }
 
 func main() {
+	app.SetConfig()
+
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, client.ClientContextKey, &client.Context{})
 	ctx = context.WithValue(ctx, server.ServerContextKey, server.NewDefaultContext())
@@ -170,12 +172,14 @@ func newApp(logger log.Logger, db dbm.DB, traceStore io.Writer, appOpts serverty
 	}
 
 	return app.NewInitApp(
-		logger, db, traceStore, true, skipUpgradeHeights, cast.ToString(appOpts.Get(flags.FlagHome)),
-		invCheckPeriod,
+		logger, db, traceStore, true, skipUpgradeHeights,
+		cast.ToString(appOpts.Get(flags.FlagHome)),
+		cast.ToUint(appOpts.Get(server.FlagInvCheckPeriod)),
+		app.MakeEncodingConfig(), // Ideally, we would reuse the one created by NewRootCmd.
 		baseapp.SetPruning(pruningOpts),
-		baseapp.SetMinGasPrices(viper.GetString(server.FlagMinGasPrices)),
-		baseapp.SetHaltHeight(viper.GetUint64(server.FlagHaltHeight)),
-		baseapp.SetHaltTime(viper.GetUint64(server.FlagHaltTime)),
+		baseapp.SetMinGasPrices(cast.ToString(appOpts.Get(server.FlagMinGasPrices))),
+		baseapp.SetHaltHeight(cast.ToUint64(appOpts.Get(server.FlagHaltHeight))),
+		baseapp.SetHaltTime(cast.ToUint64(appOpts.Get(server.FlagHaltTime))),
 		baseapp.SetInterBlockCache(cache),
 		baseapp.SetTrace(cast.ToBool(appOpts.Get(server.FlagTrace))),
 	)
@@ -184,15 +188,18 @@ func newApp(logger log.Logger, db dbm.DB, traceStore io.Writer, appOpts serverty
 func exportAppStateAndTMValidators(
 	logger log.Logger, db dbm.DB, traceStore io.Writer, height int64, forZeroHeight bool, jailWhiteList []string,
 ) (json.RawMessage, []tmtypes.GenesisValidator, *abci.ConsensusParams, error) {
+
+	encCfg := app.MakeEncodingConfig() // Ideally, we would reuse the one created by NewRootCmd.
+	encCfg.Marshaler = codec.NewProtoCodec(encCfg.InterfaceRegistry)
 	var simApp *app.SekaiApp
 	if height != -1 {
-		simApp = app.NewInitApp(logger, db, traceStore, false, map[int64]bool{}, "", uint(1))
+		simApp = app.NewInitApp(logger, db, traceStore, false, map[int64]bool{}, "", uint(1), encCfg)
 
 		if err := simApp.LoadHeight(height); err != nil {
 			return nil, nil, nil, err
 		}
 	} else {
-		simApp = app.NewInitApp(logger, db, traceStore, true, map[int64]bool{}, "", uint(1))
+		simApp = app.NewInitApp(logger, db, traceStore, true, map[int64]bool{}, "", uint(1), encCfg)
 	}
 
 	return simApp.ExportAppStateAndValidators(forZeroHeight, jailWhiteList)

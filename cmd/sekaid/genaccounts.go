@@ -2,26 +2,26 @@ package main
 
 import (
 	"bufio"
+	"encoding/json"
 	"errors"
 	"fmt"
 
-	genutiltypes "github.com/KiraCore/cosmos-sdk/x/genutil/types"
-
-	"github.com/KiraCore/cosmos-sdk/client"
-	"github.com/KiraCore/cosmos-sdk/client/flags"
-	"github.com/KiraCore/cosmos-sdk/codec"
-	"github.com/KiraCore/cosmos-sdk/crypto/keyring"
-	"github.com/KiraCore/cosmos-sdk/server"
-	sdk "github.com/KiraCore/cosmos-sdk/types"
-	authtypes "github.com/KiraCore/cosmos-sdk/x/auth/types"
-	authvesting "github.com/KiraCore/cosmos-sdk/x/auth/vesting/types"
-	banktypes "github.com/KiraCore/cosmos-sdk/x/bank/types"
-	"github.com/KiraCore/cosmos-sdk/x/genutil"
 	"github.com/spf13/cobra"
+
+	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/crypto/keyring"
+	"github.com/cosmos/cosmos-sdk/server"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	authvesting "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	"github.com/cosmos/cosmos-sdk/x/genutil"
+	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 )
 
 const (
-	flagClientHome   = "home-client"
 	flagVestingStart = "vesting-start-time"
 	flagVestingEnd   = "vesting-end-time"
 	flagVestingAmt   = "vesting-amount"
@@ -141,7 +141,7 @@ contain valid denominations. Accounts may optionally be supplied with vesting pa
 			}
 			authGenState.Accounts = genAccs
 
-			authGenStateBz, err := cdc.MarshalJSON(authGenState)
+			authGenStateBz, err := cdc.MarshalJSON(&authGenState)
 			if err != nil {
 				return fmt.Errorf("failed to marshal auth genesis state: %w", err)
 			}
@@ -159,7 +159,7 @@ contain valid denominations. Accounts may optionally be supplied with vesting pa
 
 			appState[banktypes.ModuleName] = bankGenStateBz
 
-			appStateJSON, err := cdc.MarshalJSON(appState)
+			appStateJSON, err := json.Marshal(appState)
 			if err != nil {
 				return fmt.Errorf("failed to marshal application genesis state: %w", err)
 			}
@@ -176,13 +176,4 @@ contain valid denominations. Accounts may optionally be supplied with vesting pa
 	flags.AddQueryFlagsToCmd(cmd)
 
 	return cmd
-}
-
-func balancesContains(bal []banktypes.Balance, addr sdk.AccAddress) bool {
-	for _, b := range bal {
-		if b.Address.Equals(addr) {
-			return true
-		}
-	}
-	return false
 }
