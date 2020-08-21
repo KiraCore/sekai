@@ -21,3 +21,13 @@ func (k Keeper) SetPermissionsForRole(ctx sdk.Context, role types.Role, permissi
 
 	prefixStore.Set(role, k.cdc.MustMarshalBinaryBare(&permissions))
 }
+
+func (k Keeper) GetPermissionsForRole(ctx sdk.Context, councilor types.Role) types.Permissions {
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixPermissionsRegistry)
+	bz := prefixStore.Get(councilor)
+
+	var perm types.Permissions
+	k.cdc.MustUnmarshalBinaryBare(bz, &perm)
+
+	return perm
+}
