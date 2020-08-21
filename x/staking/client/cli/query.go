@@ -79,6 +79,7 @@ func GetCmdQueryValidatorByAddress() *cobra.Command {
 
 				return clientCtx.PrintOutput(&res.Validator)
 			}
+
 			return nil
 		},
 	}

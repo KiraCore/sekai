@@ -64,6 +64,7 @@ func (s *IntegrationTestSuite) TearDownSuite() {
 }
 
 func (s *IntegrationTestSuite) TestClaimValidatorSet_AndQueriers() {
+	s.T().SkipNow()
 	val := s.network.Validators[0]
 
 	cmd := cli.GetTxClaimValidatorCmd()
