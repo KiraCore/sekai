@@ -3,7 +3,7 @@ package staking_test
 import (
 	"testing"
 
-	app2 "github.com/KiraCore/sekai/app"
+	"github.com/KiraCore/sekai/app"
 
 	"github.com/KiraCore/sekai/x/staking"
 
@@ -14,8 +14,11 @@ import (
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
 
+func TestMain(m *testing.M) {
+	app.SetConfig()
+}
+
 func TestNewHandler_MsgClaimValidator_HappyPath(t *testing.T) {
-	app2.SetConfig()
 	valAddr1, err := types.ValAddressFromBech32("kiravaloper15ky9du8a2wlstz6fpx3p4mqpjyrm5cgq38f2fp")
 	require.NoError(t, err)
 

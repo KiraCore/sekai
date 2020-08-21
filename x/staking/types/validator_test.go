@@ -4,8 +4,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/KiraCore/sekai/app"
-
 	types2 "github.com/KiraCore/sekai/x/staking/types"
 
 	"github.com/stretchr/testify/require"
@@ -14,7 +12,6 @@ import (
 )
 
 func TestNewValidator_Errors(t *testing.T) {
-	app.SetConfig()
 	valAddr, err := types.ValAddressFromBech32("kiravaloper1q24436yrnettd6v4eu6r4t9gycnnddac9nwqv0")
 	require.NoError(t, err)
 
