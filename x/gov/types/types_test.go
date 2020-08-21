@@ -15,4 +15,5 @@ func TestPermissions_IsBlacklisted(t *testing.T) {
 	}
 
 	require.True(t, perms.IsBlacklisted(PermClaimValidator))
+	require.False(t, perms.IsBlacklisted(PermClaimGovernanceSeat))
 }

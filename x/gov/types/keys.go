@@ -10,7 +10,8 @@ var (
 	RoleValidator Role = []byte{0x2}
 	RoleGovLeader Role = []byte{0x3}
 
-	PermClaimValidator PermValue = 1
+	PermClaimValidator      PermValue = 1
+	PermClaimGovernanceSeat PermValue = 2
 )
 
 // Role represents a Role in the registry.

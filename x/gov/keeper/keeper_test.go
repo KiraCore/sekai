@@ -14,12 +14,9 @@ func TestKeeper_SaveGetPermissionsForRole(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	perm := types.Permissions{
-		Blacklist: nil,
-		Whitelist: []uint32{
-			types.PermClaimValidator,
-		},
-	}
+	perm := types.NewPermissions(
+		nil, []types.PermValue{types.PermClaimValidator},
+	)
 
 	app.CustomGovKeeper.SetPermissionsForRole(ctx, types.RoleCouncilor, perm)
 
