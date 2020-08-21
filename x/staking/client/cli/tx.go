@@ -12,11 +12,11 @@ import (
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 
+	cumstomtypes "github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/cosmos/cosmos-sdk/types"
-	cumstomtypes "github.com/KiraCore/sekai/x/staking/types"
 )
 
 const (
@@ -63,7 +63,7 @@ func GetTxClaimValidatorCmd() *cobra.Command {
 			comm, err := types.NewDecFromStr(comission)
 			val, err := types.ValAddressFromBech32(valKeyStr)
 			if err != nil {
-				return err
+				return errors.Wrap(err, "--validator-key param error")
 			}
 
 			msg, err := cumstomtypes.NewMsgClaimValidator(moniker, website, social, identity, comm, val, valPubKey)

@@ -1,7 +1,6 @@
 package types_test
 
 import (
-	"github.com/KiraCore/sekai/app"
 	"strings"
 	"testing"
 
@@ -11,8 +10,6 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/types"
 )
-
-var _ = app.SetConfig()
 
 func TestNewValidator_Errors(t *testing.T) {
 	valAddr, err := types.ValAddressFromBech32("kiravaloper1q24436yrnettd6v4eu6r4t9gycnnddac9nwqv0")
