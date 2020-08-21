@@ -3,6 +3,8 @@ package keeper_test
 import (
 	"testing"
 
+	app2 "github.com/KiraCore/sekai/app"
+
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/KiraCore/sekai/simapp"
@@ -12,6 +14,7 @@ import (
 )
 
 func TestKeeper_AddValidator(t *testing.T) {
+	app2.SetConfig()
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
