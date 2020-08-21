@@ -19,18 +19,10 @@ sekaid query tx ED178AD70244D721495143898488850EF1369CDA9C8DE83A77B3B3FBC85D633D
 ```
 I tried to debug but the only result I got is like below. It seems it's a cosmos-sdk internal bug.
 ```log
-BBBB:: 
-S
-Q
+...
  /kira.kiraHub.MsgCreateOrderBook-
 ?b?3quotmnemonic"i?9Ø?Y=~Qag???G
-+
-#
-!?
-  u^??Z??Toh
-            ??i?G????x?9?%
-??
-  @?z??????32????D`??T?lw?A??T?L?Y??k?I\??.v?Aé???x? /
+...
 goroutine 1 [running]:
 runtime/debug.Stack(0xd4, 0x0, 0x0)
 	/usr/local/Cellar/go/1.14.7/libexec/src/runtime/debug/stack.go:24 +0x9d
