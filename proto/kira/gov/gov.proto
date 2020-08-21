@@ -14,8 +14,11 @@ message NetworkActor {
   repeated uint64 roles = 2;
   uint32 status = 3;
   repeated uint32 votes = 4;
+  Permissions permissions = 5;
+  uint64 skin = 6;
 }
 
 message Permissions {
-
+  repeated uint32 blacklist = 1;
+  repeated uint32 whitelist = 2;
 }
