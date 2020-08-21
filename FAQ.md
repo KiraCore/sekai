@@ -59,3 +59,52 @@ github.com/spf13/cobra.(*Command).ExecuteContext(...)
 main.main()
 	/Users/admin/sekai/cmd/sekaid/main.go:97 +0x158
 ```
+
+## cosmos-sdk simd testing
+
+start node
+```sh
+rm -rf $HOME/.simapp/
+./build/simd init --chain-id=testing testing
+./build/simd keys add validator --keyring-backend=test
+./build/simd add-genesis-account $(./build/simd keys show validator -a --keyring-backend=test) 1000000000stake,1000000000validatortoken --keyring-backend=test
+./build/simd gentx validator --keyring-backend=test --chain-id=testing
+./build/simd collect-gentxs
+./build/simd start
+```
+
+Test bank module.
+```
+./build/simd tx bank send validator cosmos1f339fylyn4czjz06l2s0laxa7377yr72qp880u 1000stake --keyring-backend=test --chain-id=testing
+```
+
+This bank module is common and it's working for sekaid too.
+```
+sekaid tx bank send validator cosmos1f339fylyn4czjz06l2s0laxa7377yr72qp880u 1000stake --keyring-backend=test --chain-id=testing
+```
+
+## guidance project upgrade for Cosmos SDK upgrade
+
+- Check changes for cosmos-sdk/simapp and make following changes for the project.
+- Check module changes for cosmos-sdk/x/bank or cosmos-sdk/x/auth and make following changes for all the modules of the project.
+
+## How to check cosmos-sdk bug on local and report
+[Ref](https://github.com/cosmos/cosmos-sdk/issues/7133)
+
+```sh
+# clone cosmos-sdk
+git clone https://github.com/cosmos/cosmos-sdk
+
+# build and run daemon
+make build-simd
+rm -rf $HOME/.simapp/
+./build/simd init --chain-id=testing testing
+./build/simd keys add validator --keyring-backend=test
+./build/simd add-genesis-account $(./build/simd keys show validator -a --keyring-backend=test) 1000000000stake,1000000000validatortoken --keyring-backend=test
+./build/simd gentx validator --keyring-backend=test --chain-id=testing
+./build/simd collect-gentxs
+./build/simd start
+
+# test cli and check if it work
+./build/simd tx bank send validator cosmos1f339fylyn4czjz06l2s0laxa7377yr72qp880u 1000stake --keyring-backend=test --chain-id=testing
+```
