@@ -5,7 +5,7 @@ import (
 	"os"
 
 	customstaking "github.com/KiraCore/sekai/x/staking"
-	types2 "github.com/KiraCore/sekai/x/staking/types"
+	customstakingtypes "github.com/KiraCore/sekai/x/staking/types"
 
 	"github.com/KiraCore/sekai/x/staking/keeper"
 	abci "github.com/tendermint/tendermint/abci/types"
@@ -79,6 +79,9 @@ import (
 	upgradeclient "github.com/cosmos/cosmos-sdk/x/upgrade/client"
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
+
+	customgov "github.com/KiraCore/sekai/x/gov/keeper"
+	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 )
 
 const appName = "KiraSimApp"
@@ -164,6 +167,7 @@ type SimApp struct {
 	TransferKeeper   ibctransferkeeper.Keeper
 
 	CustomStakingKeeper keeper.Keeper
+	CustomGovKeeper     customgov.Keeper
 
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
@@ -197,7 +201,7 @@ func NewSimApp(
 		minttypes.StoreKey, distrtypes.StoreKey, slashingtypes.StoreKey,
 		govtypes.StoreKey, paramstypes.StoreKey, ibchost.StoreKey, upgradetypes.StoreKey,
 		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey,
-		types2.ModuleName,
+		customstakingtypes.ModuleName, customgovtypes.ModuleName,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
@@ -266,7 +270,8 @@ func NewSimApp(
 		stakingtypes.NewMultiStakingHooks(app.DistrKeeper.Hooks(), app.SlashingKeeper.Hooks()),
 	)
 
-	app.CustomStakingKeeper = keeper.NewKeeper(keys[types2.ModuleName], cdc)
+	app.CustomStakingKeeper = keeper.NewKeeper(keys[customstakingtypes.ModuleName], cdc)
+	app.CustomGovKeeper = customgov.NewKeeper(keys[customgovtypes.ModuleName], appCodec)
 
 	// Create IBC Keeper
 	// TODO: remove amino codec dependency once Tendermint version is upgraded with

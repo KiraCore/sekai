@@ -1,7 +1,9 @@
 package keeper
 
 import (
+	"github.com/KiraCore/sekai/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -10,6 +12,12 @@ type Keeper struct {
 	storeKey sdk.StoreKey
 }
 
-func NewKeeper(cdc codec.BinaryMarshaler, storeKey sdk.StoreKey) *Keeper {
-	return &Keeper{cdc: cdc, storeKey: storeKey}
+func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryMarshaler) Keeper {
+	return Keeper{cdc: cdc, storeKey: storeKey}
+}
+
+func (k Keeper) SetPermissionsForRole(ctx sdk.Context, role types.Role, permissions types.Permissions) {
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixPermissionsRegistry)
+
+	prefixStore.Set(role, k.cdc.MustMarshalBinaryBare(&permissions))
 }
