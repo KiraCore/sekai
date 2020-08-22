@@ -17,3 +17,10 @@ func TestPermissions_IsBlacklisted(t *testing.T) {
 	require.True(t, perms.IsBlacklisted(PermClaimValidator))
 	require.False(t, perms.IsBlacklisted(PermClaimGovernanceSeat))
 }
+
+func TestPermissions_IsWhitelisted(t *testing.T) {
+	perms := NewPermissions([]PermValue{PermClaimGovernanceSeat}, nil)
+
+	require.True(t, perms.IsWhitelisted(PermClaimGovernanceSeat))
+	require.False(t, perms.IsWhitelisted(PermClaimValidator))
+}
