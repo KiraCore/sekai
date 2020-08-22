@@ -23,7 +23,3 @@ func TestKeeper_SaveGetPermissionsForRole(t *testing.T) {
 	savedPerms := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleCouncilor)
 	require.Equal(t, perm, savedPerms)
 }
-
-func TestKeeper_RoleHasPermissionsFor(t *testing.T) {
-
-}
