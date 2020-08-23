@@ -3,6 +3,8 @@ package keeper_test
 import (
 	"testing"
 
+	types2 "github.com/cosmos/cosmos-sdk/types"
+
 	"github.com/stretchr/testify/require"
 
 	"github.com/KiraCore/sekai/simapp"
@@ -22,4 +24,23 @@ func TestKeeper_SaveGetPermissionsForRole(t *testing.T) {
 
 	savedPerms := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleCouncilor)
 	require.Equal(t, perm, savedPerms)
+}
+
+func TestNewKeeper_SaveNetworkActor(t *testing.T) {
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, types2.TokensFromConsensusPower(10))
+	addr := addrs[0]
+
+	networkActor := types.NetworkActor{
+		Address:     addr,
+		Roles:       nil,
+		Status:      0,
+		Votes:       nil,
+		Permissions: nil,
+		Skin:        0,
+	}
+
+	app.CustomGovKeeper.SetNetworkActor(ctx, networkActor)
 }

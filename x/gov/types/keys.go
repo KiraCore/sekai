@@ -6,7 +6,7 @@ const ModuleName = "customgov"
 
 var (
 	KeyPrefixPermissionsRegistry = []byte("permissions_registry")
-	KeyPrefixActors              = []byte("permissions_registry")
+	KeyPrefixActors              = []byte("network_actors")
 
 	// Roles
 	RoleUndefined Role = 0x0
