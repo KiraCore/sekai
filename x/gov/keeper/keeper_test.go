@@ -43,4 +43,8 @@ func TestNewKeeper_SaveNetworkActor(t *testing.T) {
 	}
 
 	app.CustomGovKeeper.SetNetworkActor(ctx, networkActor)
+
+	savedActor := app.CustomGovKeeper.GetNetworkActorByAddress(ctx, networkActor.Address)
+
+	require.Equal(t, networkActor, savedActor)
 }

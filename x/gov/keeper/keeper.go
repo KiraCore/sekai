@@ -38,3 +38,14 @@ func (k Keeper) SetNetworkActor(ctx sdk.Context, actor types.NetworkActor) {
 	bz := k.cdc.MustMarshalBinaryBare(&actor)
 	prefixStore.Set(actor.Address.Bytes(), bz)
 }
+
+func (k Keeper) GetNetworkActorByAddress(ctx sdk.Context, address sdk.AccAddress) types.NetworkActor {
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixActors)
+
+	bz := prefixStore.Get(address.Bytes())
+
+	var na types.NetworkActor
+	k.cdc.MustUnmarshalBinaryBare(bz, &na)
+
+	return na
+}
