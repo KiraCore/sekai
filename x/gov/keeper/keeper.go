@@ -19,7 +19,7 @@ func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryMarshaler) Keeper {
 func (k Keeper) SetPermissionsForRole(ctx sdk.Context, role types.Role, permissions types.Permissions) {
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixPermissionsRegistry)
 
-	prefixStore.Set(role, k.cdc.MustMarshalBinaryBare(&permissions))
+	prefixStore.Set(types.RoleToKey(role), k.cdc.MustMarshalBinaryBare(&permissions))
 }
 
 func (k Keeper) GetPermissionsForRole(ctx sdk.Context, councilor types.Role) types.Permissions {
