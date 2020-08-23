@@ -7,5 +7,5 @@ import "gogoproto/gogo.proto";
 option go_package = "github.com/KiraCore/sekai/x/gov/types";
 
 message GenesisState {
-  map<string, Permissions> permissions = 1 [ (gogoproto.nullable)   = false ];
+  map<uint64, Permissions> permissions = 1 [ (gogoproto.nullable)   = false ];
 }

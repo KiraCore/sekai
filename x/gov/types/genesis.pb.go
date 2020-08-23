@@ -24,7 +24,7 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type GenesisState struct {
-	Permissions map[string]Permissions `protobuf:"bytes,1,rep,name=permissions,proto3" json:"permissions" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	Permissions map[uint64]Permissions `protobuf:"bytes,1,rep,name=permissions,proto3" json:"permissions" protobuf_key:"varint,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 }
 
 func (m *GenesisState) Reset()         { *m = GenesisState{} }
@@ -60,7 +60,7 @@ func (m *GenesisState) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_GenesisState proto.InternalMessageInfo
 
-func (m *GenesisState) GetPermissions() map[string]Permissions {
+func (m *GenesisState) GetPermissions() map[uint64]Permissions {
 	if m != nil {
 		return m.Permissions
 	}
@@ -69,7 +69,7 @@ func (m *GenesisState) GetPermissions() map[string]Permissions {
 
 func init() {
 	proto.RegisterType((*GenesisState)(nil), "kira.gov.GenesisState")
-	proto.RegisterMapType((map[string]Permissions)(nil), "kira.gov.GenesisState.PermissionsEntry")
+	proto.RegisterMapType((map[uint64]Permissions)(nil), "kira.gov.GenesisState.PermissionsEntry")
 }
 
 func init() { proto.RegisterFile("genesis.proto", fileDescriptor_14205810582f3203) }
@@ -84,14 +84,14 @@ var fileDescriptor_14205810582f3203 = []byte{
 	0x7e, 0x5e, 0xb1, 0x04, 0xa3, 0x02, 0xb3, 0x06, 0xb7, 0x91, 0xba, 0x1e, 0xcc, 0x44, 0x3d, 0x64,
 	0xc5, 0x7a, 0x01, 0x08, 0x95, 0xae, 0x79, 0x25, 0x45, 0x95, 0x4e, 0x2c, 0x27, 0xee, 0xc9, 0x33,
 	0x04, 0x21, 0x9b, 0x20, 0x15, 0xca, 0x25, 0x80, 0xae, 0x4c, 0x48, 0x80, 0x8b, 0x39, 0x3b, 0xb5,
-	0x52, 0x82, 0x51, 0x81, 0x51, 0x83, 0x33, 0x08, 0xc4, 0x14, 0xd2, 0xe6, 0x62, 0x2d, 0x4b, 0xcc,
+	0x52, 0x82, 0x51, 0x81, 0x51, 0x83, 0x25, 0x08, 0xc4, 0x14, 0xd2, 0xe6, 0x62, 0x2d, 0x4b, 0xcc,
 	0x29, 0x4d, 0x95, 0x60, 0x52, 0x60, 0xd4, 0xe0, 0x36, 0x12, 0x45, 0x58, 0x88, 0xa4, 0x39, 0x08,
 	0xa2, 0xc6, 0x8a, 0xc9, 0x82, 0xd1, 0xc9, 0xfe, 0xc4, 0x23, 0x39, 0xc6, 0x0b, 0x8f, 0xe4, 0x18,
 	0x1f, 0x3c, 0x92, 0x63, 0x9c, 0xf0, 0x58, 0x8e, 0xe1, 0xc2, 0x63, 0x39, 0x86, 0x1b, 0x8f, 0xe5,
 	0x18, 0xa2, 0x54, 0xd3, 0x33, 0x4b, 0x32, 0x4a, 0x93, 0xf4, 0x92, 0xf3, 0x73, 0xf5, 0xbd, 0x33,
 	0x8b, 0x12, 0x9d, 0xf3, 0x8b, 0x52, 0xf5, 0x8b, 0x53, 0xb3, 0x13, 0x33, 0xf5, 0x2b, 0xf4, 0xd3,
 	0xf3, 0xcb, 0xf4, 0x4b, 0x2a, 0x0b, 0x52, 0x8b, 0x93, 0xd8, 0xc0, 0x01, 0x60, 0x0c, 0x08, 0x00,
-	0x00, 0xff, 0xff, 0x50, 0x1a, 0xdf, 0xe8, 0x3c, 0x01, 0x00, 0x00,
+	0x00, 0xff, 0xff, 0x76, 0x94, 0x51, 0x50, 0x3c, 0x01, 0x00, 0x00,
 }
 
 func (m *GenesisState) Marshal() (dAtA []byte, err error) {
@@ -128,11 +128,9 @@ func (m *GenesisState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			}
 			i--
 			dAtA[i] = 0x12
-			i -= len(k)
-			copy(dAtA[i:], k)
-			i = encodeVarintGenesis(dAtA, i, uint64(len(k)))
+			i = encodeVarintGenesis(dAtA, i, uint64(k))
 			i--
-			dAtA[i] = 0xa
+			dAtA[i] = 0x8
 			i = encodeVarintGenesis(dAtA, i, uint64(baseI-i))
 			i--
 			dAtA[i] = 0xa
@@ -163,7 +161,7 @@ func (m *GenesisState) Size() (n int) {
 			_ = k
 			_ = v
 			l = v.Size()
-			mapEntrySize := 1 + len(k) + sovGenesis(uint64(len(k))) + 1 + l + sovGenesis(uint64(l))
+			mapEntrySize := 1 + sovGenesis(uint64(k)) + 1 + l + sovGenesis(uint64(l))
 			n += mapEntrySize + 1 + sovGenesis(uint64(mapEntrySize))
 		}
 	}
@@ -235,9 +233,9 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.Permissions == nil {
-				m.Permissions = make(map[string]Permissions)
+				m.Permissions = make(map[uint64]Permissions)
 			}
-			var mapkey string
+			var mapkey uint64
 			mapvalue := &Permissions{}
 			for iNdEx < postIndex {
 				entryPreIndex := iNdEx
@@ -258,7 +256,6 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 				}
 				fieldNum := int32(wire >> 3)
 				if fieldNum == 1 {
-					var stringLenmapkey uint64
 					for shift := uint(0); ; shift += 7 {
 						if shift >= 64 {
 							return ErrIntOverflowGenesis
@@ -268,24 +265,11 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 						}
 						b := dAtA[iNdEx]
 						iNdEx++
-						stringLenmapkey |= uint64(b&0x7F) << shift
+						mapkey |= uint64(b&0x7F) << shift
 						if b < 0x80 {
 							break
 						}
 					}
-					intStringLenmapkey := int(stringLenmapkey)
-					if intStringLenmapkey < 0 {
-						return ErrInvalidLengthGenesis
-					}
-					postStringIndexmapkey := iNdEx + intStringLenmapkey
-					if postStringIndexmapkey < 0 {
-						return ErrInvalidLengthGenesis
-					}
-					if postStringIndexmapkey > l {
-						return io.ErrUnexpectedEOF
-					}
-					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
-					iNdEx = postStringIndexmapkey
 				} else if fieldNum == 2 {
 					var mapmsglen int
 					for shift := uint(0); ; shift += 7 {
