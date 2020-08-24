@@ -109,6 +109,17 @@ sekaid query kiraHub listorderbooks_tradingpair base quote1 --chain-id testing
 # response
 {"orderbooks":[]}
 ```
+## Create order
+```sh
+# command
+sekaid tx kiraHub createOrder 36e0cd99f92e157f9f03580291b6e5db 0 0 0 --from validator --keyring-backend=test --chain-id=testing
+{"body":{"messages":[{"@type":"/kira.kiraHub.MsgCreateOrder","OrderBookID":"36e0cd99f92e157f9f03580291b6e5db","OrderType":"limitBuy","Amount":"0","LimitPrice":"0","ExpiryTime":"0","Curator":"kira13n3el7pzynrd3d4mn92k49djktf75kngl2xlc7"}],"memo":"","timeout_height":"0","extension_options":[],"non_critical_extension_options":[]},"auth_info":{"signer_infos":[],"fee":{"amount":[],"gas_limit":"200000"}},"signatures":[]}
+
+confirm transaction before signing and broadcasting [y/N]: y
+
+# response
+{"height":"8","txhash":"97F57E6C73053F3FF0F6838D556F91DCCC133110F30D4B8A72AB87A96B5FFAF0","codespace":"","code":0,"data":"0A0D0A0B6372656174656F72646572","raw_log":"[{\"events\":[{\"type\":\"message\",\"attributes\":[{\"key\":\"action\",\"value\":\"createorder\"}]}]}]","logs":[{"msg_index":0,"log":"","events":[{"type":"message","attributes":[{"key":"action","value":"createorder"}]}]}],"info":"","gas_wanted":"200000","gas_used":"45716","tx":null,"timestamp":""}
+```
 ## upsertSignerKey
 
 - CLI

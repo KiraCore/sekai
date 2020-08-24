@@ -22,6 +22,10 @@ func CreateOrder() *cobra.Command {
 		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
+			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			if err != nil {
+				return err
+			}
 
 			var curator = clientCtx.GetFromAddress()
 			var orderType, _ = strconv.Atoi(args[1])
