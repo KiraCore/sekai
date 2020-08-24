@@ -42,6 +42,16 @@ func (p Permissions) IsWhitelisted(perm PermValue) bool {
 	return false
 }
 
+// AddToWhitelist adds permission to whitelist.
+func (p *Permissions) AddToWhitelist(perm PermValue) {
+	p.Whitelist = append(p.Whitelist, uint32(perm))
+}
+
+// AddToBlacklist adds permission to whitelist.
+func (p *Permissions) AddToBlacklist(perm PermValue) {
+	p.Blacklist = append(p.Blacklist, uint32(perm))
+}
+
 func NewNetworkActor(
 	addr types.AccAddress,
 	roles Roles,
@@ -66,4 +76,8 @@ func (m NetworkActor) HasPermissionFor(perm PermValue) bool {
 	}
 
 	return false
+}
+
+func (m NetworkActor) AddPermission(perm PermValue) {
+	m.Permissions.AddToWhitelist(perm)
 }

@@ -27,6 +27,22 @@ func TestPermissions_IsWhitelisted(t *testing.T) {
 	require.False(t, perms.IsWhitelisted(PermClaimValidator))
 }
 
+func TestPermissions_AddWhitelist(t *testing.T) {
+	perms := NewPermissions(nil, nil)
+
+	require.False(t, perms.IsWhitelisted(PermClaimGovernanceSeat))
+	perms.AddToWhitelist(PermClaimGovernanceSeat)
+	require.True(t, perms.IsWhitelisted(PermClaimGovernanceSeat))
+}
+
+func TestPermissions_AddBlacklist(t *testing.T) {
+	perms := NewPermissions(nil, nil)
+
+	require.False(t, perms.IsBlacklisted(PermClaimGovernanceSeat))
+	perms.AddToBlacklist(PermClaimGovernanceSeat)
+	require.True(t, perms.IsBlacklisted(PermClaimGovernanceSeat))
+}
+
 func TestNewNetworkActor_HasPermission(t *testing.T) {
 	tests := []struct {
 		name             string
@@ -70,4 +86,20 @@ func TestNewNetworkActor_HasPermission(t *testing.T) {
 			require.Equal(t, tt.expectedHasPerm, hasPerm)
 		})
 	}
+}
+
+func TestNetworkActor_AddPermission(t *testing.T) {
+	actor := NewNetworkActor(
+		types.AccAddress("hola"),
+		nil,
+		1,
+		nil,
+		NewPermissions(nil, nil),
+		123,
+	)
+
+	require.False(t, actor.HasPermissionFor(PermClaimGovernanceSeat))
+
+	actor.AddPermission(PermClaimGovernanceSeat)
+	require.True(t, actor.HasPermissionFor(PermClaimGovernanceSeat))
 }
