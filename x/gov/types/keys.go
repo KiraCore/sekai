@@ -16,10 +16,12 @@ var (
 
 	PermClaimValidator      PermValue = 1
 	PermClaimGovernanceSeat PermValue = 2
+	PermAddPermissions      PermValue = 3
 )
 
 // Role represents a Role in the registry.
 type Role uint64
+type Roles []uint64
 
 // PermValue represents a single permission value, like claim-role-validator.
 type PermValue uint32

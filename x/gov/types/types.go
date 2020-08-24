@@ -1,5 +1,7 @@
 package types
 
+import "github.com/cosmos/cosmos-sdk/types"
+
 // NewPermissions generates a new permissions struct.
 func NewPermissions(whitelist []PermValue, blacklist []PermValue) Permissions {
 	var b []uint32
@@ -35,6 +37,32 @@ func (p Permissions) IsWhitelisted(perm PermValue) bool {
 		if bPerm == uint32(perm) {
 			return true
 		}
+	}
+
+	return false
+}
+
+func NewNetworkActor(
+	addr types.AccAddress,
+	roles Roles,
+	status uint32,
+	votes []uint32,
+	perm Permissions,
+	skin uint64,
+) NetworkActor {
+	return NetworkActor{
+		Address:     addr,
+		Roles:       roles,
+		Status:      status,
+		Votes:       votes,
+		Permissions: &perm,
+		Skin:        skin,
+	}
+}
+
+func (m NetworkActor) HasPermissionFor(perm PermValue) bool {
+	if m.Permissions.IsWhitelisted(perm) {
+		return true
 	}
 
 	return false
