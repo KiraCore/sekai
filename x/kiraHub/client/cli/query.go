@@ -26,37 +26,28 @@ func GetOrderBooksCmd() *cobra.Command {
 				return err
 			}
 			return clientCtx.PrintOutput(res)
-
-			// res, _, err := clientCtx.QueryWithData(fmt.Sprintf("custom/kiraHub/listOrderBooks/%s/%s", args[0], args[1]), nil)
-			// if err != nil {
-			// 	fmt.Printf("could not query. Searching By - %s & Value - %s is invalid. \n", args[0], args[1])
-			// 	return nil
-			// }
-
-			// var out []types.OrderBook
-			// cdc.MustUnmarshalJSON(res, &out)
-			// return clientCtx.PrintOutput(out)
 		},
 	}
 }
 
 func GetOrderBooksByTradingPairCmd() *cobra.Command {
 	return &cobra.Command{
-		Use:   "listorderbooksTP [base] [quote]",
-		Short: "List order book(s) by Trading_Pair",
+		Use:   "listorderbooks_tradingpair [base] [quote]",
+		Short: "List order book(s) by trading pair",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
-			params := &types.GetOrderBooksByTradingPairRequest{}
+			params := &types.GetOrderBooksByTradingPairRequest{
+				Base:  args[0],
+				Quote: args[1],
+			}
 			queryClient := types.NewQueryClient(clientCtx)
-			// res, err := queryClient.GetOrderBooksByTradingPair(context.Background(), params)
-			_, err := queryClient.GetOrderBooksByTradingPair(context.Background(), params)
+			res, err := queryClient.GetOrderBooksByTradingPair(context.Background(), params)
 			if err != nil {
 				return err
 			}
-			// return clientCtx.PrintOutput(&res.XXXX)
-			return nil
+			return clientCtx.PrintOutput(res)
 			// res, _, err := clientCtx.QueryWithData(fmt.Sprintf("custom/kiraHub/listOrderBooks/tp/%s/%s", args[0], args[1]), nil)
 			// if err != nil {
 			// 	fmt.Printf("could not query. Searching By - %s & Value - %s is invalid. \n", args[0], args[1])

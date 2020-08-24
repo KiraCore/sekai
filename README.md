@@ -94,6 +94,21 @@ sekaid query kiraHub listorderbooks Base b --chain-id testing
 {"orderbooks":[]}
 ```
 
+- By trading pair
+```sh
+# command
+sekaid query kiraHub listorderbooks_tradingpair base quote --chain-id testing
+
+# response
+{"orderbooks":[{"ID":"36e0cd99f92e157f9f03580291b6e5db","Index":0,"Base":"base","Quote":"quote","Mnemonic":"mnemonic","Curator":"kira1hqvm6nup0kkntgfq9xe0hk7gxnm4wjakmmpae0"}]}
+```
+```sh
+# command
+sekaid query kiraHub listorderbooks_tradingpair base quote1 --chain-id testing
+
+# response
+{"orderbooks":[]}
+```
 ## upsertSignerKey
 
 - CLI
