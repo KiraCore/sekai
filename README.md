@@ -120,6 +120,21 @@ confirm transaction before signing and broadcasting [y/N]: y
 # response
 {"height":"8","txhash":"97F57E6C73053F3FF0F6838D556F91DCCC133110F30D4B8A72AB87A96B5FFAF0","codespace":"","code":0,"data":"0A0D0A0B6372656174656F72646572","raw_log":"[{\"events\":[{\"type\":\"message\",\"attributes\":[{\"key\":\"action\",\"value\":\"createorder\"}]}]}]","logs":[{"msg_index":0,"log":"","events":[{"type":"message","attributes":[{"key":"action","value":"createorder"}]}]}],"info":"","gas_wanted":"200000","gas_used":"45716","tx":null,"timestamp":""}
 ```
+## Query order
+```sh
+# command
+sekaid query kiraHub listorders 36e0cd99f92e157f9f03580291b6e5db 0 0
+
+# response
+{"orders":[{"ID":"","Index":0,"OrderBookID":"36e0cd99f92e157f9f03580291b6e5db","OrderType":"limitBuy","Amount":"0","LimitPrice":"0","ExpiryTime":"0","IsCancelled":false,"Curator":"kira13n3el7pzynrd3d4mn92k49djktf75kngl2xlc7"}]}
+```
+```sh
+# command
+sekaid query kiraHub listorders 36e0cd99f92e157f9f03580291b6e5b 0 0
+
+# response
+{"orders":[]}
+```
 ## upsertSignerKey
 
 - CLI

@@ -2,6 +2,7 @@ package cli
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/KiraCore/sekai/x/kiraHub/types"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -48,15 +49,6 @@ func GetOrderBooksByTradingPairCmd() *cobra.Command {
 				return err
 			}
 			return clientCtx.PrintOutput(res)
-			// res, _, err := clientCtx.QueryWithData(fmt.Sprintf("custom/kiraHub/listOrderBooks/tp/%s/%s", args[0], args[1]), nil)
-			// if err != nil {
-			// 	fmt.Printf("could not query. Searching By - %s & Value - %s is invalid. \n", args[0], args[1])
-			// 	return nil
-			// }
-
-			// var out []types.OrderBook
-			// cdc.MustUnmarshalJSON(res, &out)
-			// return clientCtx.PrintOutput(out)
 		},
 	}
 }
@@ -69,25 +61,26 @@ func GetOrdersCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
-			params := &types.GetOrdersRequest{}
-			queryClient := types.NewQueryClient(clientCtx)
-			_, err := queryClient.GetOrders(context.Background(), params)
-			// res, err := queryClient.GetOrders(context.Background(), params)
+			maxOrders, err := strconv.Atoi(args[1])
 			if err != nil {
 				return err
 			}
-			// return clientCtx.PrintOutput(&res.XXXX)
-			return nil
+			minAmount, err := strconv.Atoi(args[2])
+			if err != nil {
+				return err
+			}
 
-			// res, _, err := clientCtx.QueryWithData(fmt.Sprintf("custom/kiraHub/listOrders/%s/%s/%s", args[0], args[1], args[2]), nil)
-			// if err != nil {
-			// 	fmt.Printf("could not query. Searching By - %s with max_orders - %s and min_amount - %s \n", args[0], args[1], args[2])
-			// 	return nil
-			// }
-
-			// var out []types.LimitOrder
-			// cdc.MustUnmarshalJSON(res, &out)
-			// return clientCtx.PrintOutput(out)
+			params := &types.GetOrdersRequest{
+				OrderBookID: args[0],
+				MaxOrders:   uint32(maxOrders),
+				MinAmount:   uint32(minAmount),
+			}
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.GetOrders(context.Background(), params)
+			if err != nil {
+				return err
+			}
+			return clientCtx.PrintOutput(res)
 		},
 	}
 }
