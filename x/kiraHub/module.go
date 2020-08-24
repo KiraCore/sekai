@@ -30,6 +30,7 @@ type AppModuleBasic struct {
 }
 
 func (b AppModuleBasic) RegisterInterfaces(registry cdcTypes.InterfaceRegistry) {
+	types.RegisterInterfaces(registry)
 }
 
 func (AppModuleBasic) Name() string {

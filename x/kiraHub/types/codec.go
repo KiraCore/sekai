@@ -13,9 +13,11 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {
-	registry.RegisterImplementations((*sdk.Msg)(nil), &MsgCreateOrder{})
-	registry.RegisterImplementations((*sdk.Msg)(nil), &MsgCreateOrderBook{})
-	registry.RegisterImplementations((*sdk.Msg)(nil), &MsgUpsertSignerKey{})
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgCreateOrder{},
+		&MsgCreateOrderBook{},
+		&MsgUpsertSignerKey{},
+	)
 }
 
 var (

@@ -3,11 +3,95 @@ Kira Hub
 
 ## Create order book
 ```sh
+# command
 sekaid tx kiraHub createOrderBook base quote mnemonic --from validator --keyring-backend=test --chain-id testing
-{}
+{"body":{"messages":[{"@type":"/kira.kiraHub.MsgCreateOrderBook","Base":"base","Quote":"quote","Mnemonic":"mnemonic","Curator":"kira17pzan0q4d5acyykygwqass8z0crjvflhjq3qvm"}],"memo":"","timeout_height":"0","extension_options":[],"non_critical_extension_options":[]},"auth_info":{"signer_infos":[],"fee":{"amount":[],"gas_limit":"200000"}},"signatures":[]}
 
 confirm transaction before signing and broadcasting [y/N]: y
-{"height":"2","txhash":"71C1ED0A380EBF22547EEDE4550926D9421E00B250C7FF2D4EE2179E09358AAF","data":"0A110A0F6372656174656F72646572626F6F6B","raw_log":"[{\"events\":[{\"type\":\"message\",\"attributes\":[{\"key\":\"action\",\"value\":\"createorderbook\"}]}]}]","logs":[{"events":[{"type":"message","attributes":[{"key":"action","value":"createorderbook"}]}]}],"gas_wanted":"200000","gas_used":"49486"}
+
+# response
+{"height":"3","txhash":"0C727E276E9808167BEE7C8048704F59EAB81CC78F785D91FFDB1C22B286FD57","codespace":"","code":0,"data":"0A110A0F6372656174656F72646572626F6F6B","raw_log":"[{\"events\":[{\"type\":\"message\",\"attributes\":[{\"key\":\"action\",\"value\":\"createorderbook\"}]}]}]","logs":[{"msg_index":0,"log":"","events":[{"type":"message","attributes":[{"key":"action","value":"createorderbook"}]}]}],"info":"","gas_wanted":"200000","gas_used":"50086","tx":null,"timestamp":""}
+```
+
+## Query order book
+- By ID
+Ex1.
+```sh
+# command
+sekaid query kiraHub listorderbooks ID e6a8fc6cf92e157f9f03580291b6e5db --chain-id testing
+
+# response
+{"orderbooks":[{"ID":"e6a8fc6cf92e157f9f03580291b6e5db","Index":0,"Base":"base","Quote":"quote","Mnemonic":"mnemonic","Curator":"kira17pzan0q4d5acyykygwqass8z0crjvflhjq3qvm"}]}
+```
+Ex2.
+```sh
+# command
+sekaid query kiraHub listorderbooks ID e6a8 --chain-id testing
+
+# response
+{"orderbooks":[{"ID":"","Index":0,"Base":"","Quote":"","Mnemonic":"","Curator":""}]}
+```
+- By curator
+```sh
+# command
+sekaid query kiraHub listorderbooks Curator $(sekaid keys show -a validator --keyring-backend=test) --chain-id testing
+
+# response
+{"orderbooks":[{"ID":"e6a8fc6cf92e157f9f03580291b6e5db","Index":0,"Base":"base","Quote":"quote","Mnemonic":"mnemonic","Curator":"kira17pzan0q4d5acyykygwqass8z0crjvflhjq3qvm"}]}
+```
+- By Index
+
+Ex1.
+```sh
+# command
+sekaid query kiraHub listorderbooks Index 0 --chain-id testing
+
+# response
+{"orderbooks":[{"ID":"e6a8fc6cf92e157f9f03580291b6e5db","Index":0,"Base":"base","Quote":"quote","Mnemonic":"mnemonic","Curator":"kira17pzan0q4d5acyykygwqass8z0crjvflhjq3qvm"}]}
+```
+
+Ex2.
+```sh
+# command
+sekaid query kiraHub listorderbooks Index 10 --chain-id testing
+
+# response
+{"orderbooks":[]}
+```
+
+- By Quote
+Ex1.
+```sh
+# command
+sekaid query kiraHub listorderbooks Quote quote --chain-id testing
+
+# response
+{"orderbooks":[{"ID":"e6a8fc6cf92e157f9f03580291b6e5db","Index":0,"Base":"base","Quote":"quote","Mnemonic":"mnemonic","Curator":"kira17pzan0q4d5acyykygwqass8z0crjvflhjq3qvm"}]}
+```
+Ex2.
+```sh
+# command
+sekaid query kiraHub listorderbooks Quote q --chain-id testing
+
+# response
+{"orderbooks":[]}
+```
+- By Base
+Ex1.
+```sh
+# command
+sekaid query kiraHub listorderbooks Base base --chain-id testing
+
+# response
+{"orderbooks":[{"ID":"e6a8fc6cf92e157f9f03580291b6e5db","Index":0,"Base":"base","Quote":"quote","Mnemonic":"mnemonic","Curator":"kira17pzan0q4d5acyykygwqass8z0crjvflhjq3qvm"}]}
+```
+Ex2.
+```sh
+# command
+sekaid query kiraHub listorderbooks Base b --chain-id testing
+
+# response
+{"orderbooks":[]}
 ```
 
 ## upsertSignerKey

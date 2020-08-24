@@ -16,15 +16,16 @@ func GetOrderBooksCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
-			params := &types.GetOrderBooksRequest{}
+			params := &types.GetOrderBooksRequest{
+				QueryType:  args[0],
+				QueryValue: args[1],
+			}
 			queryClient := types.NewQueryClient(clientCtx)
-			// res, err := queryClient.GetOrderBooks(context.Background(), params)
-			_, err := queryClient.GetOrderBooks(context.Background(), params)
+			res, err := queryClient.GetOrderBooks(context.Background(), params)
 			if err != nil {
 				return err
 			}
-			// return clientCtx.PrintOutput(&res.XXXX)
-			return nil
+			return clientCtx.PrintOutput(res)
 
 			// res, _, err := clientCtx.QueryWithData(fmt.Sprintf("custom/kiraHub/listOrderBooks/%s/%s", args[0], args[1]), nil)
 			// if err != nil {
