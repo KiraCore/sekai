@@ -61,10 +61,10 @@ func (s *IntegrationTestSuite) TearDownSuite() {
 	s.network.Cleanup()
 }
 
-func (s *IntegrationTestSuite) TestClaimValidatorSet_AndQueriers() {
+func (s *IntegrationTestSuite) TestQueryValidator() {
 	val := s.network.Validators[0]
 
-	cmd := cli.GetCmdQueryValidatorByAddress()
+	cmd := cli.GetCmdQueryValidator()
 	cmd.SetArgs(
 		[]string{
 			fmt.Sprintf("--%s=%s", cli.FlagValAddr, val.ValAddress.String()),
@@ -95,7 +95,7 @@ func (s *IntegrationTestSuite) TestClaimValidatorSet_AndQueriers() {
 	s.Require().Equal(val.PubKey, pubkey)
 
 	// Query by Acc Addrs.
-	cmd = cli.GetCmdQueryValidatorByAddress()
+	cmd = cli.GetCmdQueryValidator()
 	cmd.SetArgs(
 		[]string{
 			fmt.Sprintf("--%s=%s", cli.FlagAddr, val.Address.String()),
@@ -122,7 +122,7 @@ func (s *IntegrationTestSuite) TestClaimValidatorSet_AndQueriers() {
 	s.Require().Equal(val.PubKey, pubkey)
 
 	// Query by moniker.
-	cmd = cli.GetCmdQueryValidatorByAddress()
+	cmd = cli.GetCmdQueryValidator()
 	cmd.SetArgs(
 		[]string{
 			fmt.Sprintf("--%s=%s", cli.FlagMoniker, val.Moniker),
@@ -147,6 +147,32 @@ func (s *IntegrationTestSuite) TestClaimValidatorSet_AndQueriers() {
 	pubkey, err = sdk.GetPubKeyFromBech32(sdk.Bech32PubKeyTypeConsPub, respValidator.PubKey)
 	s.Require().NoError(err)
 	s.Require().Equal(val.PubKey, pubkey)
+}
+
+func (s *IntegrationTestSuite) TestQueryValidator_Errors() {
+	val := s.network.Validators[0]
+
+	nonExistingAddr, err := sdk.ValAddressFromBech32("kiravaloper15ky9du8a2wlstz6fpx3p4mqpjyrm5cgpv3al5n")
+	s.Require().NoError(err)
+	cmd := cli.GetCmdQueryValidator()
+	cmd.SetArgs(
+		[]string{
+			fmt.Sprintf("--%s=%s", cli.FlagValAddr, nonExistingAddr.String()),
+		},
+	)
+
+	_, out := testutil.ApplyMockIO(cmd)
+	clientCtx := val.ClientCtx.WithOutput(out).WithOutputFormat("json")
+
+	ctx := context.Background()
+	ctx = context.WithValue(ctx, client.ClientContextKey, &clientCtx)
+
+	err = cmd.ExecuteContext(ctx)
+	s.Require().NoError(err)
+
+	fmt.Printf(out.String())
+	var respValidator customtypes.Validator
+	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &respValidator)
 }
 
 func TestIntegrationTestSuite(t *testing.T) {

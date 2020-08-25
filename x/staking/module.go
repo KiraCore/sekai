@@ -55,7 +55,7 @@ func (b AppModuleBasic) GetTxCmd() *cobra.Command {
 }
 
 func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
-	return cli.GetCmdQueryValidatorByAddress()
+	return cli.GetCmdQueryValidator()
 }
 
 // AppModule extends the cosmos SDK staking.
