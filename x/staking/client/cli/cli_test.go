@@ -168,7 +168,7 @@ func (s *IntegrationTestSuite) TestQueryValidator_Errors() {
 	ctx = context.WithValue(ctx, client.ClientContextKey, &clientCtx)
 
 	err = cmd.ExecuteContext(ctx)
-	s.Require().NoError(err)
+	s.Require().EqualError(err, "")
 
 	fmt.Printf(out.String())
 	var respValidator customtypes.Validator

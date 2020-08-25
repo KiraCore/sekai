@@ -46,7 +46,8 @@ func TestNewHandler_MsgClaimValidator_HappyPath(t *testing.T) {
 
 	validatorSet := app.CustomStakingKeeper.GetValidatorSet(ctx)
 	require.Len(t, validatorSet, 1)
-	val := app.CustomStakingKeeper.GetValidator(ctx, valAddr1)
+	val, err := app.CustomStakingKeeper.GetValidator(ctx, valAddr1)
+	require.NoError(t, err)
 
 	validatorIsEqualThanClaimMsg(t, val, theMsg)
 }
