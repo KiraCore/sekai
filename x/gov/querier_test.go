@@ -16,8 +16,9 @@ func TestQuerier_PermissionsByAddress(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10))
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, sdk.TokensFromConsensusPower(10))
 	addr1 := addrs[0]
+	addr2 := addrs[1]
 
 	permissions := types.NewPermissions(
 		[]types.PermValue{
@@ -43,4 +44,8 @@ func TestQuerier_PermissionsByAddress(t *testing.T) {
 	require.NoError(t, err)
 
 	require.Equal(t, permissions, resp.Permissions)
+
+	// Get permissions by address that is not saved.
+	_, err = querier.PermissionsByAddress(sdk.WrapSDKContext(ctx), &types.PermissionsByAddressRequest{ValAddr: addr2})
+	require.EqualError(t, err, "network actor not found")
 }

@@ -20,7 +20,10 @@ func NewQuerier(keeper keeper.Keeper) types.QueryServer {
 func (q Querier) PermissionsByAddress(ctx context.Context, request *types.PermissionsByAddressRequest) (*types.PermissionsResponse, error) {
 	sdkContext := sdk.UnwrapSDKContext(ctx)
 
-	networkActor := q.keeper.GetNetworkActorByAddress(sdkContext, request.ValAddr)
+	networkActor, err := q.keeper.GetNetworkActorByAddress(sdkContext, request.ValAddr)
+	if err != nil {
+		return nil, err
+	}
 
 	return &types.PermissionsResponse{Permissions: networkActor.Permissions}, nil
 }

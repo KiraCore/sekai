@@ -44,10 +44,19 @@ func TestNewKeeper_SaveNetworkActor(t *testing.T) {
 
 	app.CustomGovKeeper.SetNetworkActor(ctx, networkActor)
 
-	savedActor := app.CustomGovKeeper.GetNetworkActorByAddress(ctx, networkActor.Address)
+	savedActor, err := app.CustomGovKeeper.GetNetworkActorByAddress(ctx, networkActor.Address)
+	require.NoError(t, err)
 
 	require.Equal(t, networkActor, savedActor)
 }
 
-func TestUpdatingNetworkActorPermissions(t *testing.T) {
+func TestKeeper_GetNetworkActorByAddress_FailsIfItDoesNotExist(t *testing.T) {
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, types2.TokensFromConsensusPower(10))
+	addr := addrs[0]
+
+	_, err := app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addr)
+	require.EqualError(t, err, "network actor not found")
 }
