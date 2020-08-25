@@ -123,13 +123,13 @@ confirm transaction before signing and broadcasting [y/N]: y
 ## Cancel order
 ```sh
 # command
-sekaid tx kiraHub cancelOrder 36e0cd99f92e157f9f291b6e5db --chain-id=testing --from validator --keyring-backend=test
-{"body":{"messages":[{"@type":"/kira.kiraHub.MsgCancelOrder","OrderID":"36e0cd99f92e157f9f291b6e5db","Curator":""}],"memo":"","timeout_height":"0","extension_options":[],"non_critical_extension_options":[]},"auth_info":{"signer_infos":[],"fee":{"amount":[],"gas_limit":"200000"}},"signatures":[]}
+sekaid tx kiraHub cancelOrder a991645f855efbb8855efbb891b6e5db --from validator --keyring-backend=test --chain-id=testing
+{"body":{"messages":[{"@type":"/kira.kiraHub.MsgCancelOrder","OrderID":"a991645f855efbb8855efbb891b6e5db","Curator":""}],"memo":"","timeout_height":"0","extension_options":[],"non_critical_extension_options":[]},"auth_info":{"signer_infos":[],"fee":{"amount":[],"gas_limit":"200000"}},"signatures":[]}
 
 confirm transaction before signing and broadcasting [y/N]: y
 
 # response
-{"height":"0","txhash":"8699265A66484F0A0E998C358BA0BDD1F9616B39766CB08304D1B90360A29F2D","codespace":"sdk","code":8,"data":"","raw_log":"pubKey does not match signer address  with signer index: 0: invalid pubkey","logs":[],"info":"","gas_wanted":"200000","gas_used":"11978","tx":null,"timestamp":""}
+{"height":"49","txhash":"D906B3669842655EA834978F9BBA8ADAFCD533AAD4E95B68BAB7435F7C2BEFBC","codespace":"","code":0,"data":"0A0D0A0B6372656174656F72646572","raw_log":"[{\"events\":[{\"type\":\"message\",\"attributes\":[{\"key\":\"action\",\"value\":\"createorder\"}]}]}]","logs":[{"msg_index":0,"log":"","events":[{"type":"message","attributes":[{"key":"action","value":"createorder"}]}]}],"info":"","gas_wanted":"200000","gas_used":"40936","tx":null,"timestamp":""}
 ```
 ## Query order
 ```sh

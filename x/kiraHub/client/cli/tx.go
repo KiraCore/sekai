@@ -101,8 +101,8 @@ func CancelOrder() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			// var curator = clientCtx.GetFromAddress()
-			message, _ := types.NewMsgCancelOrder(args[0])
+			var curator = clientCtx.GetFromAddress()
+			message, _ := types.NewMsgCancelOrder(args[0], curator)
 			if err := message.ValidateBasic(); err != nil {
 				return err
 			}

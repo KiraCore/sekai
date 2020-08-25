@@ -8,9 +8,10 @@ import (
 
 var _ sdk.Msg = &MsgCancelOrder{}
 
-func NewMsgCancelOrder(orderID string) (*MsgCancelOrder, error) {
+func NewMsgCancelOrder(orderID string, curator sdk.AccAddress) (*MsgCancelOrder, error) {
 	return &MsgCancelOrder{
 		OrderID: orderID,
+		Curator: curator,
 	}, nil
 }
 

@@ -130,7 +130,7 @@ func (k Keeper) CreateOrder(ctx sdk.Context, orderBookID string, orderType types
 	ID.WriteString(hashInStringOfLenOfLastOrderIndex)
 
 	id := ID.String()
-	//limitOrder.ID = id
+	limitOrder.ID = id
 	limitOrder.Index = lastOrderIndex
 
 	store.Set([]byte(id), k.cdc.MustMarshalBinaryBare(limitOrder))
