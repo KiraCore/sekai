@@ -8,6 +8,7 @@ import (
 
 var _ sdk.Msg = &MsgCreateOrder{}
 
+// NewMsgCreateOrder create a new message to create an order
 func NewMsgCreateOrder(
 	orderBookID string,
 	orderType LimitOrderType,
@@ -25,9 +26,13 @@ func NewMsgCreateOrder(
 	}, nil
 }
 
+// Route returns route name associated with the message
 func (message MsgCreateOrder) Route() string { return ModuleName }
-func (message MsgCreateOrder) Type() string  { return CreateOrderTransaction }
 
+// Type returns transaction type in string
+func (message MsgCreateOrder) Type() string { return CreateOrderTransaction }
+
+// ValidateBasic do basic validation for message by type
 func (message MsgCreateOrder) ValidateBasic() error {
 	var _, Error = govalidator.ValidateStruct(message)
 	if Error != nil {
@@ -36,10 +41,12 @@ func (message MsgCreateOrder) ValidateBasic() error {
 	return nil
 }
 
+// GetSignBytes returns to sign bytes for this message
 func (message MsgCreateOrder) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(message))
 }
 
+// GetSigners return signers to sign this message before broadcast
 func (message MsgCreateOrder) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{message.Curator}
 }

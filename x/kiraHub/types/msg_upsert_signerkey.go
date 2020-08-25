@@ -9,6 +9,7 @@ import (
 
 var _ sdk.Msg = &MsgUpsertSignerKey{}
 
+// NewMsgUpsertSignerKey create a new message to upsert signer key
 func NewMsgUpsertSignerKey(
 	pubKey string,
 	keyType SignerKeyType,

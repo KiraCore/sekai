@@ -8,6 +8,7 @@ import (
 
 var _ sdk.Msg = &MsgCreateOrderBook{}
 
+// NewMsgCreateOrderBook create a new message to create an orderbook
 func NewMsgCreateOrderBook(
 	base string,
 	quote string,
@@ -22,9 +23,13 @@ func NewMsgCreateOrderBook(
 	}, nil
 }
 
+// Route returns route name associated with the message
 func (message MsgCreateOrderBook) Route() string { return ModuleName }
-func (message MsgCreateOrderBook) Type() string  { return CreateOrderBookTransaction }
 
+// Type returns transaction type in string
+func (message MsgCreateOrderBook) Type() string { return CreateOrderBookTransaction }
+
+// ValidateBasic do basic validation for message by type
 func (message MsgCreateOrderBook) ValidateBasic() error {
 	var _, Error = govalidator.ValidateStruct(message)
 	if Error != nil {
@@ -33,10 +38,12 @@ func (message MsgCreateOrderBook) ValidateBasic() error {
 	return nil
 }
 
+// GetSignBytes returns to sign bytes for this message
 func (message MsgCreateOrderBook) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(message))
 }
 
+// GetSigners return signers to sign this message before broadcast
 func (message MsgCreateOrderBook) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{message.Curator}
 }

@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/KiraCore/sekai/x/kiraHub/types"
-	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -15,10 +14,6 @@ const PrefixKeySignerKeys = "signer_keys"
 
 // PrefixKeyPubKeyCurator describes the owner of each pubKey
 const PrefixKeyPubKeyCurator = "pub_key_curator"
-
-func (k Keeper) GetCodec() *codec.LegacyAmino {
-	return k.cdc
-}
 
 // GetSignerKeys return SignerKeys by a curator
 func (k Keeper) GetSignerKeys(ctx sdk.Context, curator sdk.AccAddress) []types.SignerKey {

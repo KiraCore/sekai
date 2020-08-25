@@ -12,7 +12,8 @@ import (
 	"golang.org/x/crypto/blake2b"
 )
 
-func (k Keeper) GetOrders(ctx sdk.Context, order_book_id string, maxOrders uint32, minAmount uint32) []types.LimitOrder {
+// GetOrders is a function to get orders
+func (k Keeper) GetOrders(ctx sdk.Context, orderBookID string, maxOrders uint32, minAmount uint32) []types.LimitOrder {
 
 	var metaData []orderMeta
 	var queryOutput = []types.LimitOrder{}
@@ -24,7 +25,7 @@ func (k Keeper) GetOrders(ctx sdk.Context, order_book_id string, maxOrders uint3
 	k.cdc.MustUnmarshalBinaryBare(bz, &metaData)
 
 	for _, elementInListOfIndices := range metaData {
-		if elementInListOfIndices.OrderBookID == order_book_id {
+		if elementInListOfIndices.OrderBookID == orderBookID {
 			bz := store.Get([]byte(elementInListOfIndices.OrderID))
 			k.cdc.MustUnmarshalBinaryBare(bz, &order)
 
@@ -51,6 +52,7 @@ func newOrderMeta(orderBookID string, orderID string, index uint32) orderMeta {
 
 var lastOrderIndex uint32 = 0
 
+// CreateOrder is a function to create an order
 func (k Keeper) CreateOrder(ctx sdk.Context, orderBookID string, orderType types.LimitOrderType, amount int64, limitPrice int64, expiryTime int64, curator sdk.AccAddress) {
 
 	//var orderBook = createOrderBook.NewKeeper(k.cdc, k.storeKey).GetOrderBookByID(ctx, orderBookID)
@@ -163,6 +165,7 @@ func (k Keeper) CreateOrder(ctx sdk.Context, orderBookID string, orderType types
 	store.Set([]byte("limit_order_meta"), k.cdc.MustMarshalBinaryBare(newMetaData))
 }
 
+// CancelOrder is a function to cancel an order
 func (k Keeper) CancelOrder(ctx sdk.Context, orderID string) {
 	// Load Order
 	var order types.LimitOrder

@@ -11,6 +11,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/rest"
 )
 
+// CreateOrderRequest describes rest endpoint query params for creating order
 type CreateOrderRequest struct {
 	BaseReq     rest.BaseReq         `json:"base_req"       yaml:"base_req"       valid:"required~base_req"`
 	OrderBookID string               `json:"order_book_id"  yaml:"order_book_id"  valid:"required~order_book_id"`
@@ -20,7 +21,8 @@ type CreateOrderRequest struct {
 	Curator     string               `json:"curator"  yaml:"curator"  valid:"required~curator"`
 }
 
-func RestCreateOrderRequestHandler(cliContext client.Context) http.HandlerFunc {
+// CreateOrderRequestHandler is a function to handle create order command on rest endpoint
+func CreateOrderRequestHandler(cliContext client.Context) http.HandlerFunc {
 	return func(responseWriter http.ResponseWriter, httpRequest *http.Request) {
 		var request CreateOrderRequest
 		if !rest.ReadRESTReq(responseWriter, httpRequest, cliContext.JSONMarshaler, &request) {
@@ -57,6 +59,7 @@ func RestCreateOrderRequestHandler(cliContext client.Context) http.HandlerFunc {
 	}
 }
 
+// CreateOrderBookRequest describes rest endpoint query params for creating orderbook
 type CreateOrderBookRequest struct {
 	BaseReq  rest.BaseReq `json:"base_req" yaml:"base_req" valid:"required~base_req"`
 	Base     string       `json:"base"     yaml:"base"     valid:"required~base"`
@@ -65,7 +68,8 @@ type CreateOrderBookRequest struct {
 	Curator  string       `json:"curator"  yaml:"curator"  valid:"required~curator"`
 }
 
-func RestCreateOrderbookRequestHandler(cliContext client.Context) http.HandlerFunc {
+// CreateOrderbookRequestHandler is a function to handle create orderbook command on rest endpoint
+func CreateOrderbookRequestHandler(cliContext client.Context) http.HandlerFunc {
 	return func(responseWriter http.ResponseWriter, httpRequest *http.Request) {
 		var request CreateOrderBookRequest
 		if !rest.ReadRESTReq(responseWriter, httpRequest, cliContext.JSONMarshaler, &request) {
@@ -112,8 +116,8 @@ type UpsertSignerKeyRequest struct {
 	Curator     sdk.AccAddress      `json:"curator"  yaml:"curator" valid:"required~Curator is required"`
 }
 
-// RestRequestHandler handles rest endpoint
-func RestUpsertSignerKeyRequestHandler(cliContext client.Context) http.HandlerFunc {
+// UpsertSignerKeyRequestHandler is a function to handle upsert signer key request command on rest endpoint
+func UpsertSignerKeyRequestHandler(cliContext client.Context) http.HandlerFunc {
 	return func(responseWriter http.ResponseWriter, httpRequest *http.Request) {
 		var request UpsertSignerKeyRequest
 		if !rest.ReadRESTReq(responseWriter, httpRequest, cliContext.JSONMarshaler, &request) {

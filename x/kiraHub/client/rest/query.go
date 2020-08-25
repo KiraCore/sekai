@@ -9,6 +9,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// GetOrderBooks is a rest endpoint utility for querying orderbooks
 func GetOrderBooks(cliContext client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
@@ -26,6 +27,7 @@ func GetOrderBooks(cliContext client.Context) http.HandlerFunc {
 	}
 }
 
+// GetOrderBooksByTradingPair is a rest endpoint utility for querying orderbooks by trading pair
 func GetOrderBooksByTradingPair(cliContext client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
@@ -43,6 +45,7 @@ func GetOrderBooksByTradingPair(cliContext client.Context) http.HandlerFunc {
 	}
 }
 
+// GetOrders is a rest endpoint utility for querying orders
 func GetOrders(cliContext client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
@@ -61,6 +64,7 @@ func GetOrders(cliContext client.Context) http.HandlerFunc {
 	}
 }
 
+// GetSignerKeys is a rest endpoint utility for querying signer keys per curator
 func GetSignerKeys(cliContext client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)

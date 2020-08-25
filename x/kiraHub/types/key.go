@@ -1,5 +1,6 @@
 package types
 
+// keys
 const (
 	// ModuleName is the name of the module
 	ModuleName = "kiraHub"
@@ -15,6 +16,7 @@ const (
 
 	CreateOrderBookTransaction = "createorderbook"
 	CreateOrderTransaction     = "createorder"
+	CancelOrderTransaction     = "cancelorder"
 	UpsertSignerKeyTransaction = "upsertsignerkey"
 
 	ListOrderBooksQuery              = "listOrderBooks"

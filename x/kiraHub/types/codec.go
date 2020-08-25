@@ -6,6 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+// RegisterCodec register all the messages for amino
 func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgCreateOrder{}, "kiraHub/MsgCreateOrder", nil)
 	cdc.RegisterConcrete(&MsgCancelOrder{}, "kiraHub/MsgCancelOrder", nil)
@@ -13,6 +14,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgUpsertSignerKey{}, "kiraHub/MsgUpsertSignerKey", nil)
 }
 
+// RegisterInterfaces register all messages for sdk.Msg type
 func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgCreateOrder{},

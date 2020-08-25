@@ -4,6 +4,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/errors"
 )
 
+// errors
 var (
 	UnknownMessageCode   = errors.Register(ModuleName, 001, "UnknownMessageCode")
 	IncorrectMessageCode = errors.Register(ModuleName, 002, "IncorrectMessageCode")

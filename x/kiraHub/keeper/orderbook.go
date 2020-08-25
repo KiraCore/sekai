@@ -29,6 +29,7 @@ var lastOrderBookIndex uint32 = 0
 var numberOfBytes = 4
 var numberOfCharacters = 2 * numberOfBytes
 
+// CreateOrderBook is a function to create an orderbook
 func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, curator sdk.AccAddress, mnemonic string) {
 	var orderbook = types.NewOrderBook()
 
@@ -132,6 +133,7 @@ func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, cura
 
 }
 
+// GetOrderBookByID is a function to get an orderbook by ID
 func (k Keeper) GetOrderBookByID(ctx sdk.Context, id string) []types.OrderBook {
 
 	store := ctx.KVStore(k.storeKey)
@@ -144,6 +146,7 @@ func (k Keeper) GetOrderBookByID(ctx sdk.Context, id string) []types.OrderBook {
 	return orderbooksQueried
 }
 
+// GetOrderBookByIndex is a function to get an orderbook by index
 func (k Keeper) GetOrderBookByIndex(ctx sdk.Context, index uint32) []types.OrderBook {
 
 	store := ctx.KVStore(k.storeKey)
@@ -173,6 +176,7 @@ func (k Keeper) GetOrderBookByIndex(ctx sdk.Context, index uint32) []types.Order
 	return orderbooksQueried
 }
 
+// GetOrderBookByBase is a function to get an orderbook by base
 func (k Keeper) GetOrderBookByBase(ctx sdk.Context, base string) []types.OrderBook {
 
 	store := ctx.KVStore(k.storeKey)
@@ -201,6 +205,7 @@ func (k Keeper) GetOrderBookByBase(ctx sdk.Context, base string) []types.OrderBo
 	return orderbooksQueried
 }
 
+// GetOrderBookByQuote is a function to get an orderbook by quote
 func (k Keeper) GetOrderBookByQuote(ctx sdk.Context, quote string) []types.OrderBook {
 
 	store := ctx.KVStore(k.storeKey)
@@ -229,6 +234,7 @@ func (k Keeper) GetOrderBookByQuote(ctx sdk.Context, quote string) []types.Order
 	return orderbooksQueried
 }
 
+// GetOrderBookByTradingPair is a function to get an orderbook by base and quote
 func (k Keeper) GetOrderBookByTradingPair(ctx sdk.Context, base string, quote string) []types.OrderBook {
 
 	store := ctx.KVStore(k.storeKey)
@@ -262,6 +268,7 @@ func (k Keeper) GetOrderBookByTradingPair(ctx sdk.Context, base string, quote st
 	return orderbooksQueried
 }
 
+// GetOrderBookByCurator is a function to get an orderbook by curator
 func (k Keeper) GetOrderBookByCurator(ctx sdk.Context, curatorString string) []types.OrderBook {
 
 	store := ctx.KVStore(k.storeKey)

@@ -15,6 +15,7 @@ const (
 	FlagCurator = "curator"
 )
 
+// GetOrderBooksCmd is a command to query orderbooks
 func GetOrderBooksCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "listorderbooks [by] [value]",
@@ -37,6 +38,7 @@ func GetOrderBooksCmd() *cobra.Command {
 	}
 }
 
+// GetOrderBooksByTradingPairCmd is a command to query orderbooks by trading pair
 func GetOrderBooksByTradingPairCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "listorderbooks_tradingpair [base] [quote]",
@@ -59,6 +61,7 @@ func GetOrderBooksByTradingPairCmd() *cobra.Command {
 	}
 }
 
+// GetOrdersCmd is a command to query orders
 func GetOrdersCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "listorders [order_book_id] [max_orders] [min_amount]",
@@ -91,6 +94,7 @@ func GetOrdersCmd() *cobra.Command {
 	}
 }
 
+// GetSignerKeysCmd is a command to query signer keys
 func GetSignerKeysCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "getsignerkeys",

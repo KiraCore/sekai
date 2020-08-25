@@ -13,6 +13,7 @@ import (
 	"github.com/spf13/viper"
 )
 
+// CreateOrder is a tx command to create order
 func CreateOrder() *cobra.Command {
 
 	return &cobra.Command{
@@ -57,6 +58,7 @@ func CreateOrder() *cobra.Command {
 	}
 }
 
+// CreateOrderBook is a tx command to create orderbook
 func CreateOrderBook() *cobra.Command {
 
 	return &cobra.Command{
@@ -88,6 +90,7 @@ func CreateOrderBook() *cobra.Command {
 	}
 }
 
+// CancelOrder is a tx command to cancel order by id
 func CancelOrder() *cobra.Command {
 
 	return &cobra.Command{
