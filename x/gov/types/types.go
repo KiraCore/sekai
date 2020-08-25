@@ -69,15 +69,3 @@ func NewNetworkActor(
 		Skin:        skin,
 	}
 }
-
-func (m NetworkActor) HasPermissionFor(perm PermValue) bool {
-	if m.Permissions.IsWhitelisted(perm) {
-		return true
-	}
-
-	return false
-}
-
-func (m NetworkActor) AddPermission(perm PermValue) {
-	m.Permissions.AddToWhitelist(perm)
-}
