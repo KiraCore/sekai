@@ -88,6 +88,29 @@ func CreateOrderBook() *cobra.Command {
 	}
 }
 
+func CancelOrder() *cobra.Command {
+
+	return &cobra.Command{
+		Use:   "cancelOrder [order_id]",
+		Short: "Cancel Order",
+		Long:  "Cancel order by id",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			if err != nil {
+				return err
+			}
+			// var curator = clientCtx.GetFromAddress()
+			message, _ := types.NewMsgCancelOrder(args[0])
+			if err := message.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), message)
+		},
+	}
+}
+
 // UpsertSignerKey is a cli command to upsertSignerKey
 func UpsertSignerKey() *cobra.Command {
 

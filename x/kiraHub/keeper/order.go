@@ -163,7 +163,7 @@ func (k Keeper) CreateOrder(ctx sdk.Context, orderBookID string, orderType types
 	store.Set([]byte("limit_order_meta"), k.cdc.MustMarshalBinaryBare(newMetaData))
 }
 
-func (k Keeper) cancelOrder(ctx sdk.Context, orderID string) {
+func (k Keeper) CancelOrder(ctx sdk.Context, orderID string) {
 	// Load Order
 	var order types.LimitOrder
 

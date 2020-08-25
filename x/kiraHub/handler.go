@@ -20,6 +20,9 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 		case *types.MsgCreateOrder:
 			return handlers.HandlerMsgCreateOrder(context, k, message)
 
+		case *types.MsgCancelOrder:
+			return handlers.HandlerMsgCancelOrder(context, k, message)
+
 		case *types.MsgUpsertSignerKey:
 			return handlers.HandlerMsgUpsertSignerKey(context, k, message)
 

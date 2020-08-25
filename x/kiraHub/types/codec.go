@@ -8,6 +8,7 @@ import (
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgCreateOrder{}, "kiraHub/MsgCreateOrder", nil)
+	cdc.RegisterConcrete(&MsgCancelOrder{}, "kiraHub/MsgCancelOrder", nil)
 	cdc.RegisterConcrete(&MsgCreateOrderBook{}, "kiraHub/MsgCreateOrderBook", nil)
 	cdc.RegisterConcrete(&MsgUpsertSignerKey{}, "kiraHub/MsgUpsertSignerKey", nil)
 }
@@ -15,6 +16,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgCreateOrder{},
+		&MsgCancelOrder{},
 		&MsgCreateOrderBook{},
 		&MsgUpsertSignerKey{},
 	)

@@ -54,3 +54,11 @@ message MsgCreateOrder {
         (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
     ];
 }
+
+// https://github.com/KiraCore/docs/blob/master/spec/iteration-0/kip_3.md
+message MsgCancelOrder {
+    string OrderID = 1;
+    bytes Curator = 6 [
+        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
+    ];
+}

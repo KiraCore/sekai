@@ -69,6 +69,7 @@ func (AppModuleBasic) GetTxCmd() *cobra.Command {
 	txCmd.AddCommand(
 		cli.CreateOrderBook(),
 		cli.CreateOrder(),
+		cli.CancelOrder(),
 		cli.UpsertSignerKey())
 
 	txCmd.PersistentFlags().String("node", "tcp://localhost:26657", "<host>:<port> to Tendermint RPC interface for this chain")
