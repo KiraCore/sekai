@@ -154,25 +154,45 @@ func (s *IntegrationTestSuite) TestQueryValidator_Errors() {
 
 	nonExistingAddr, err := sdk.ValAddressFromBech32("kiravaloper15ky9du8a2wlstz6fpx3p4mqpjyrm5cgpv3al5n")
 	s.Require().NoError(err)
-	cmd := cli.GetCmdQueryValidator()
-	cmd.SetArgs(
-		[]string{
-			fmt.Sprintf("--%s=%s", cli.FlagValAddr, nonExistingAddr.String()),
-		},
-	)
 
+	cmd := cli.GetCmdQueryValidator()
 	_, out := testutil.ApplyMockIO(cmd)
 	clientCtx := val.ClientCtx.WithOutput(out).WithOutputFormat("json")
 
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, client.ClientContextKey, &clientCtx)
 
+	cmd.SetArgs(
+		[]string{
+			fmt.Sprintf("--%s=%s", cli.FlagValAddr, nonExistingAddr.String()),
+		},
+	)
 	err = cmd.ExecuteContext(ctx)
-	s.Require().EqualError(err, "")
+	s.Require().EqualError(err, "validator not found: key not found")
 
-	fmt.Printf(out.String())
-	var respValidator customtypes.Validator
-	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &respValidator)
+	// Non existing moniker.
+	cmd = cli.GetCmdQueryValidator()
+	cmd.SetArgs(
+		[]string{
+			fmt.Sprintf("--%s=%s", cli.FlagAddr, sdk.AccAddress(nonExistingAddr).String()),
+		},
+	)
+	out.Reset()
+
+	err = cmd.ExecuteContext(ctx)
+	s.Require().EqualError(err, "validator not found: key not found")
+
+	// Non existing moniker.
+	cmd = cli.GetCmdQueryValidator()
+	cmd.SetArgs(
+		[]string{
+			fmt.Sprintf("--%s=%s", cli.FlagMoniker, "weirdMoniker"),
+		},
+	)
+	out.Reset()
+
+	err = cmd.ExecuteContext(ctx)
+	s.Require().EqualError(err, "validator with moniker weirdMoniker not found: key not found")
 }
 
 func TestIntegrationTestSuite(t *testing.T) {
