@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+
 	"github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -26,30 +28,37 @@ func (k Keeper) AddValidator(ctx sdk.Context, validator types.Validator) {
 	store.Set(types.GetValidatorByMonikerKey(validator.Moniker), types.GetValidatorKey(validator.ValKey))
 }
 
-func (k Keeper) GetValidator(ctx sdk.Context, address sdk.ValAddress) types.Validator {
+func (k Keeper) GetValidator(ctx sdk.Context, address sdk.ValAddress) (types.Validator, error) {
 	return k.getValidatorByKey(ctx, types.GetValidatorKey(address))
 }
 
-func (k Keeper) GetValidatorByAccAddress(ctx sdk.Context, address sdk.AccAddress) types.Validator {
+func (k Keeper) GetValidatorByAccAddress(ctx sdk.Context, address sdk.AccAddress) (types.Validator, error) {
 	return k.getValidatorByKey(ctx, types.GetValidatorKeyAcc(address))
 }
 
-func (k Keeper) GetValidatorByMoniker(ctx sdk.Context, moniker string) types.Validator {
+func (k Keeper) GetValidatorByMoniker(ctx sdk.Context, moniker string) (types.Validator, error) {
 	store := ctx.KVStore(k.storeKey)
 
 	valKey := store.Get(types.GetValidatorByMonikerKey(moniker))
+	if valKey == nil {
+		return types.Validator{}, fmt.Errorf("validator with moniker %s not found", moniker)
+	}
 
 	return k.getValidatorByKey(ctx, valKey)
 }
 
-func (k Keeper) getValidatorByKey(ctx sdk.Context, key []byte) types.Validator {
+func (k Keeper) getValidatorByKey(ctx sdk.Context, key []byte) (types.Validator, error) {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(key)
+
+	if bz == nil {
+		return types.Validator{}, fmt.Errorf("validator not found")
+	}
 
 	var validator types.Validator
 	k.cdc.MustUnmarshalBinaryBare(bz, &validator)
 
-	return validator
+	return validator, nil
 }
 
 func (k Keeper) GetValidatorSet(ctx sdk.Context) []types.Validator {
