@@ -157,6 +157,27 @@ sekaid tx kiraHub upsertSignerKey AnzIM9IcLb07Cvwq3hdMJuuRofAgxfDekkD3nJUPPw0w -
 sekaid tx kiraHub upsertSignerKey AnzIM9IcLb07Cvwq3hdMJuuRofAgxfDekkD3nJUPPw0w --expiry-time=1598247750
 ```
 
+Ex1.
+```sh
+# command
+sekaid tx kiraHub upsertSignerKey AnzIM9IcLb07Cvwq3hdMJuuRofAgxfDekkD3nJUPPw0w --from validator --keyring-backend=test --chain-id=testing
+{"body":{"messages":[{"@type":"/kira.kiraHub.MsgUpsertSignerKey","PubKey":"AnzIM9IcLb07Cvwq3hdMJuuRofAgxfDekkD3nJUPPw0w","KeyType":"Secp256k1","ExpiryTime":"1599186595","Enabled":true,"Permissions":[],"Curator":"kira13n3el7pzynrd3d4mn92k49djktf75kngl2xlc7"}],"memo":"","timeout_height":"0","extension_options":[],"non_critical_extension_options":[]},"auth_info":{"signer_infos":[],"fee":{"amount":[],"gas_limit":"200000"}},"signatures":[]}
+
+confirm transaction before signing and broadcasting [y/N]: y
+
+# response
+{"height":"11543","txhash":"34B0D49958A881D280392644D3CBC358100DCF8353F1DCC26899D3B039CAAF02","codespace":"","code":0,"data":"0A110A0F7570736572747369676E65726B6579","raw_log":"[{\"events\":[{\"type\":\"message\",\"attributes\":[{\"key\":\"action\",\"value\":\"upsertsignerkey\"}]}]}]","logs":[{"msg_index":0,"log":"","events":[{"type":"message","attributes":[{"key":"action","value":"upsertsignerkey"}]}]}],"info":"","gas_wanted":"200000","gas_used":"44086","tx":null,"timestamp":""}
+```
+
+## Query signer keys
+
+```sh
+# command
+sekaid query kiraHub getsignerkeys --curator $(sekaid keys show -a validator --keyring-backend=test)
+
+# response
+{"signerkeys":[{"PubKey":"AnzIM9IcLb07Cvwq3hdMJuuRofAgxfDekkD3nJUPPw0w","KeyType":"Secp256k1","ExpiryTime":"1599187090","Enabled":true,"Permissions":[],"Curator":"kira1xsq0wapm5t975k3hn2rj4y2zhnm5up9d59uhpy"}]}
+```
 - Rest
 
 ```sh

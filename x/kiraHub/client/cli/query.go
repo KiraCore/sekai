@@ -6,7 +6,13 @@ import (
 
 	"github.com/KiraCore/sekai/x/kiraHub/types"
 	"github.com/cosmos/cosmos-sdk/client"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
+)
+
+// flags
+const (
+	FlagCurator = "curator"
 )
 
 func GetOrderBooksCmd() *cobra.Command {
@@ -86,33 +92,33 @@ func GetOrdersCmd() *cobra.Command {
 }
 
 func GetSignerKeysCmd() *cobra.Command {
-	return &cobra.Command{
+	cmd := &cobra.Command{
 		Use:   "getsignerkeys",
 		Short: "List signer key(s) by curator address",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
-
-			params := &types.GetSignerKeysRequest{}
-			queryClient := types.NewQueryClient(clientCtx)
-			_, err := queryClient.GetSignerKeys(context.Background(), params)
-			// res, err := queryClient.GetSignerKeys(context.Background(), params)
+			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
 			if err != nil {
 				return err
 			}
-			// return clientCtx.PrintOutput(&res.XXXX)
-			return nil
-			// var owner = clientCtx.GetFromAddress()
+			curatorText, _ := cmd.Flags().GetString(FlagCurator)
+			curator, err := sdk.AccAddressFromBech32(curatorText)
+			if err != nil {
+				return err
+			}
 
-			// res, _, err := clientCtx.QueryWithData(fmt.Sprintf("custom/kiraHub/getsignerkeys/%s", owner.String()), nil)
-			// if err != nil {
-			// 	fmt.Printf("could not query. Searching By - %s \n", owner.String())
-			// 	return nil
-			// }
-
-			// var out []types.SignerKey
-			// cdc.MustUnmarshalJSON(res, &out)
-			// return clientCtx.PrintOutput(out)
+			params := &types.GetSignerKeysRequest{
+				Curator: curator,
+			}
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.GetSignerKeys(context.Background(), params)
+			if err != nil {
+				return err
+			}
+			return clientCtx.PrintOutput(res)
 		},
 	}
+	cmd.Flags().String(FlagCurator, "", "address to query signer keys")
+	return cmd
 }
