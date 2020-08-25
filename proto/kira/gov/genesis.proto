@@ -2,10 +2,9 @@ syntax = "proto3";
 package kira.gov;
 
 import "gov.proto";
-import "gogoproto/gogo.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/gov/types";
 
 message GenesisState {
-  map<uint64, Permissions> permissions = 1 [ (gogoproto.nullable)   = false ];
+  map<uint64, Permissions> permissions = 1;
 }

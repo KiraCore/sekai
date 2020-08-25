@@ -7,7 +7,7 @@ import (
 )
 
 // NewPermissions generates a new permissions struct.
-func NewPermissions(whitelist []PermValue, blacklist []PermValue) Permissions {
+func NewPermissions(whitelist []PermValue, blacklist []PermValue) *Permissions {
 	var b []uint32
 	for _, bv := range blacklist {
 		b = append(b, uint32(bv))
@@ -18,14 +18,14 @@ func NewPermissions(whitelist []PermValue, blacklist []PermValue) Permissions {
 		w = append(w, uint32(wv))
 	}
 
-	return Permissions{
+	return &Permissions{
 		Blacklist: b,
 		Whitelist: w,
 	}
 }
 
 // IsBlacklisted returns if the perm is blacklisted or not.
-func (p Permissions) IsBlacklisted(perm PermValue) bool {
+func (p *Permissions) IsBlacklisted(perm PermValue) bool {
 	for _, bPerm := range p.Blacklist {
 		if bPerm == uint32(perm) {
 			return true
@@ -36,7 +36,7 @@ func (p Permissions) IsBlacklisted(perm PermValue) bool {
 }
 
 // IsWhitelisted returns if the perm is whitelisted or not.
-func (p Permissions) IsWhitelisted(perm PermValue) bool {
+func (p *Permissions) IsWhitelisted(perm PermValue) bool {
 	for _, bPerm := range p.Whitelist {
 		if bPerm == uint32(perm) {
 			return true
@@ -71,7 +71,7 @@ func NewNetworkActor(
 	roles Roles,
 	status uint32,
 	votes []uint32,
-	perm Permissions,
+	perm *Permissions,
 	skin uint64,
 ) NetworkActor {
 	return NetworkActor{
@@ -79,7 +79,7 @@ func NewNetworkActor(
 		Roles:       roles,
 		Status:      status,
 		Votes:       votes,
-		Permissions: &perm,
+		Permissions: perm,
 		Skin:        skin,
 	}
 }

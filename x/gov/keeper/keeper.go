@@ -16,18 +16,18 @@ func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryMarshaler) Keeper {
 	return Keeper{cdc: cdc, storeKey: storeKey}
 }
 
-func (k Keeper) SetPermissionsForRole(ctx sdk.Context, role types.Role, permissions types.Permissions) {
+func (k Keeper) SetPermissionsForRole(ctx sdk.Context, role types.Role, permissions *types.Permissions) {
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixPermissionsRegistry)
 
-	prefixStore.Set(types.RoleToKey(role), k.cdc.MustMarshalBinaryBare(&permissions))
+	prefixStore.Set(types.RoleToKey(role), k.cdc.MustMarshalBinaryBare(permissions))
 }
 
-func (k Keeper) GetPermissionsForRole(ctx sdk.Context, councilor types.Role) types.Permissions {
+func (k Keeper) GetPermissionsForRole(ctx sdk.Context, councilor types.Role) *types.Permissions {
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixPermissionsRegistry)
 	bz := prefixStore.Get(types.RoleToKey(councilor))
 
-	var perm types.Permissions
-	k.cdc.MustUnmarshalBinaryBare(bz, &perm)
+	perm := new(types.Permissions)
+	k.cdc.MustUnmarshalBinaryBare(bz, perm)
 
 	return perm
 }
