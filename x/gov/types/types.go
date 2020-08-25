@@ -1,6 +1,10 @@
 package types
 
-import "github.com/cosmos/cosmos-sdk/types"
+import (
+	"fmt"
+
+	"github.com/cosmos/cosmos-sdk/types"
+)
 
 // NewPermissions generates a new permissions struct.
 func NewPermissions(whitelist []PermValue, blacklist []PermValue) Permissions {
@@ -43,13 +47,23 @@ func (p Permissions) IsWhitelisted(perm PermValue) bool {
 }
 
 // AddToWhitelist adds permission to whitelist.
-func (p *Permissions) AddToWhitelist(perm PermValue) {
+func (p *Permissions) AddToWhitelist(perm PermValue) error {
+	if p.IsBlacklisted(perm) {
+		return fmt.Errorf("permission is already blacklisted")
+	}
+
 	p.Whitelist = append(p.Whitelist, uint32(perm))
+	return nil
 }
 
 // AddToBlacklist adds permission to whitelist.
-func (p *Permissions) AddToBlacklist(perm PermValue) {
+func (p *Permissions) AddToBlacklist(perm PermValue) error {
+	if p.IsWhitelisted(perm) {
+		return fmt.Errorf("permission is already whitelisted")
+	}
+
 	p.Blacklist = append(p.Blacklist, uint32(perm))
+	return nil
 }
 
 func NewNetworkActor(
