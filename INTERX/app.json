@@ -1,0 +1,15 @@
+{
+  "name": "grpc-gateway",
+  "env": {
+      "SERVE_HTTP": {
+          "description": "Whether to use HTTP to serve, instead of HTTPS",
+          "value": "true",
+          "required": false
+      },
+      "WITH_TRANSPORT_CREDENTIALS": {
+          "description": "Whether to use transport credentials",
+          "value": "true",
+          "required": false
+      }
+  }
+}
