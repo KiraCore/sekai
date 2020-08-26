@@ -47,5 +47,5 @@ func TestQuerier_PermissionsByAddress(t *testing.T) {
 
 	// Get permissions by address that is not saved.
 	_, err = querier.PermissionsByAddress(sdk.WrapSDKContext(ctx), &types.PermissionsByAddressRequest{ValAddr: addr2})
-	require.EqualError(t, err, "network actor not found")
+	require.EqualError(t, err, "network actor not found: key not found")
 }

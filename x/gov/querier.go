@@ -3,6 +3,8 @@ package gov
 import (
 	"context"
 
+	"github.com/cosmos/cosmos-sdk/types/errors"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/KiraCore/sekai/x/gov/keeper"
@@ -22,7 +24,7 @@ func (q Querier) PermissionsByAddress(ctx context.Context, request *types.Permis
 
 	networkActor, err := q.keeper.GetNetworkActorByAddress(sdkContext, request.ValAddr)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(errors.ErrKeyNotFound, err.Error())
 	}
 
 	return &types.PermissionsResponse{Permissions: networkActor.Permissions}, nil
