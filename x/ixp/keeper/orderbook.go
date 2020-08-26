@@ -30,7 +30,7 @@ var numberOfBytes = 4
 var numberOfCharacters = 2 * numberOfBytes
 
 // CreateOrderBook is a function to create an orderbook
-func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, curator sdk.AccAddress, mnemonic string) {
+func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, curator sdk.AccAddress, mnemonic string) (string, error) {
 	var orderbook = types.NewOrderBook()
 
 	fmt.Println("Last Block ID: ", ctx.BlockHeader().LastBlockId)
@@ -130,7 +130,7 @@ func (k Keeper) CreateOrderBook(ctx sdk.Context, quote string, base string, cura
 	}
 
 	store.Set([]byte("order_book_meta"), k.cdc.MustMarshalBinaryBare(newMetaData))
-
+	return id, nil
 }
 
 // GetOrderBookByID is a function to get an orderbook by ID

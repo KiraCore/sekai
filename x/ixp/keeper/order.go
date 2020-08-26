@@ -52,8 +52,8 @@ func newOrderMeta(orderBookID string, orderID string, index uint32) orderMeta {
 
 var lastOrderIndex uint32 = 0
 
-// CreateOrder is a function to create an order
-func (k Keeper) CreateOrder(ctx sdk.Context, orderBookID string, orderType types.LimitOrderType, amount int64, limitPrice int64, expiryTime int64, curator sdk.AccAddress) {
+// CreateOrder is a function to create an order, returns ID of created order
+func (k Keeper) CreateOrder(ctx sdk.Context, orderBookID string, orderType types.LimitOrderType, amount int64, limitPrice int64, expiryTime int64, curator sdk.AccAddress) (string, error) {
 
 	//var orderBook = createOrderBook.NewKeeper(k.cdc, k.storeKey).GetOrderBookByID(ctx, orderBookID)
 
@@ -163,6 +163,7 @@ func (k Keeper) CreateOrder(ctx sdk.Context, orderBookID string, orderType types
 	}
 
 	store.Set([]byte("limit_order_meta"), k.cdc.MustMarshalBinaryBare(newMetaData))
+	return id, nil
 }
 
 // CancelOrder is a function to cancel an order

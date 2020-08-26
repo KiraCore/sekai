@@ -10,8 +10,18 @@ sekaid tx ixp createOrderBook base quote mnemonic --from validator --keyring-bac
 confirm transaction before signing and broadcasting [y/N]: y
 
 # response
-{"height":"3","txhash":"0C727E276E9808167BEE7C8048704F59EAB81CC78F785D91FFDB1C22B286FD57","codespace":"","code":0,"data":"0A110A0F6372656174656F72646572626F6F6B","raw_log":"[{\"events\":[{\"type\":\"message\",\"attributes\":[{\"key\":\"action\",\"value\":\"createorderbook\"}]}]}]","logs":[{"msg_index":0,"log":"","events":[{"type":"message","attributes":[{"key":"action","value":"createorderbook"}]}]}],"info":"","gas_wanted":"200000","gas_used":"50086","tx":null,"timestamp":""}
+{"height":"37","txhash":"86F154FAD24E330906DC8E983324FDC962B5DBEDC86CECF7A7C93CA9ED474D00","codespace":"","code":0,"data":"0A3C0A0F6372656174656F72646572626F6F6B12297B224944223A226635323533383535663932653135376639663033353830323931623665356462227D","raw_log":"[{\"events\":[{\"type\":\"message\",\"attributes\":[{\"key\":\"action\",\"value\":\"createorderbook\"}]}]}]","logs":[{"msg_index":0,"log":"","events":[{"type":"message","attributes":[{"key":"action","value":"createorderbook"}]}]}],"info":"","gas_wanted":"200000","gas_used":"47467","tx":null,"timestamp":""}
 ```
+
+If you parse returned data field, you can get orderbook ID.
+```
+0A3C0A0F6372656174656F72646572626F6F6B12297B224944223A226635323533383535663932653135376639663033353830323931623665356462227D
+```
+is equivalent to
+```
+createorderbook {"ID":"f5253855f92e157f9f03580291b6e5db"}
+```
+Here `"f5253855f92e157f9f03580291b6e5db"` is orderbook ID.
 
 ## Query order book
 - By ID
@@ -129,8 +139,19 @@ sekaid tx ixp cancelOrder a991645f855efbb8855efbb891b6e5db --from validator --ke
 confirm transaction before signing and broadcasting [y/N]: y
 
 # response
-{"height":"49","txhash":"D906B3669842655EA834978F9BBA8ADAFCD533AAD4E95B68BAB7435F7C2BEFBC","codespace":"","code":0,"data":"0A0D0A0B6372656174656F72646572","raw_log":"[{\"events\":[{\"type\":\"message\",\"attributes\":[{\"key\":\"action\",\"value\":\"createorder\"}]}]}]","logs":[{"msg_index":0,"log":"","events":[{"type":"message","attributes":[{"key":"action","value":"createorder"}]}]}],"info":"","gas_wanted":"200000","gas_used":"40936","tx":null,"timestamp":""}
+{"height":"63","txhash":"C8B36D6B608C92A8F0BBDEB5280580DD8D4339B152039C0A8D0B608A48FF8B03","codespace":"","code":0,"data":"0A380A0B6372656174656F7264657212297B224944223A226139393136343566383535656662623838353565666262383931623665356462227D","raw_log":"[{\"events\":[{\"type\":\"message\",\"attributes\":[{\"key\":\"action\",\"value\":\"createorder\"}]}]}]","logs":[{"msg_index":0,"log":"","events":[{"type":"message","attributes":[{"key":"action","value":"createorder"}]}]}],"info":"","gas_wanted":"200000","gas_used":"46696","tx":null,"timestamp":""}
 ```
+
+If you parse returned data field, you can get order ID.
+```
+0A3C0A0F6372656174656F72646572626F6F6B12297B224944223A226635323533383535663932653135376639663033353830323931623665356462227D
+```
+is equivalent to
+```
+createorder {"ID":"a991645f855efbb8855efbb891b6e5db"}
+```
+Here `"a991645f855efbb8855efbb891b6e5db"` is order ID.
+
 ## Query order
 ```sh
 # command
