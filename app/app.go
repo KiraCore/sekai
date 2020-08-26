@@ -10,7 +10,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/server/api"
 	authrest "github.com/cosmos/cosmos-sdk/x/auth/client/rest"
 
-	"github.com/KiraCore/sekai/x/kiraHub"
+	"github.com/KiraCore/sekai/x/ixp"
 	customkeeper "github.com/KiraCore/sekai/x/staking/keeper"
 
 	"github.com/cosmos/cosmos-sdk/x/crisis"
@@ -31,8 +31,8 @@ import (
 	tmos "github.com/tendermint/tendermint/libs/os"
 	dbm "github.com/tendermint/tm-db"
 
-	kirahubkeeper "github.com/KiraCore/sekai/x/kiraHub/keeper"
-	kirahubtypes "github.com/KiraCore/sekai/x/kiraHub/types"
+	ixpkeeper "github.com/KiraCore/sekai/x/ixp/keeper"
+	ixptypes "github.com/KiraCore/sekai/x/ixp/types"
 	bam "github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/simapp"
@@ -117,7 +117,7 @@ var (
 		evidence.AppModuleBasic{},
 		transfer.AppModuleBasic{},
 		customstaking.AppModuleBasic{},
-		kiraHub.AppModuleBasic{},
+		ixp.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -154,7 +154,7 @@ type SekaiApp struct {
 	// keepers
 	accountKeeper    authkeeper.AccountKeeper
 	bankKeeper       bankkeeper.Keeper
-	kirahubkeeper    kirahubkeeper.Keeper
+	ixpkeeper        ixpkeeper.Keeper
 	capabilityKeeper *capabilitykeeper.Keeper
 	stakingKeeper    stakingkeeper.Keeper
 	slashingKeeper   slashingkeeper.Keeper
@@ -203,7 +203,7 @@ func NewInitApp(
 	keys := sdk.NewKVStoreKeys(authtypes.StoreKey, banktypes.StoreKey, stakingtypes.StoreKey,
 		distrtypes.StoreKey, slashingtypes.StoreKey,
 		govtypes.StoreKey, paramstypes.StoreKey, ibchost.StoreKey, upgradetypes.StoreKey,
-		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey, kirahubtypes.StoreKey,
+		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey, ixptypes.StoreKey,
 		cumstomtypes.ModuleName,
 	)
 	tKeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -283,7 +283,7 @@ func NewInitApp(
 	)
 	transferModule := transfer.NewAppModule(app.transferKeeper)
 
-	app.kirahubkeeper = kirahubkeeper.NewKeeper(keys[kirahubtypes.StoreKey], app.cdc)
+	app.ixpkeeper = ixpkeeper.NewKeeper(keys[ixptypes.StoreKey], app.cdc)
 
 	// Create static IBC router, add transfer route, then set and seal it
 	ibcRouter := porttypes.NewRouter()
@@ -305,7 +305,7 @@ func NewInitApp(
 	app.mm = module.NewManager(
 		genutil.NewAppModule(app.accountKeeper, app.stakingKeeper, app.BaseApp.DeliverTx, encodingConfig.TxConfig),
 		auth.NewAppModule(appCodec, app.accountKeeper),
-		kiraHub.NewAppModule(app.kirahubkeeper),
+		ixp.NewAppModule(app.ixpkeeper),
 		bank.NewAppModule(appCodec, app.bankKeeper, app.accountKeeper),
 		capability.NewAppModule(appCodec, *app.capabilityKeeper),
 		crisis.NewAppModule(&app.crisisKeeper),

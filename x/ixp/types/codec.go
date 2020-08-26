@@ -6,13 +6,21 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+// RegisterCodec register all the messages for amino
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgClaimValidator{}, "ixp/MsgClaimValidator", nil)
+	cdc.RegisterConcrete(&MsgCreateOrder{}, "ixp/MsgCreateOrder", nil)
+	cdc.RegisterConcrete(&MsgCancelOrder{}, "ixp/MsgCancelOrder", nil)
+	cdc.RegisterConcrete(&MsgCreateOrderBook{}, "ixp/MsgCreateOrderBook", nil)
+	cdc.RegisterConcrete(&MsgUpsertSignerKey{}, "ixp/MsgUpsertSignerKey", nil)
 }
 
+// RegisterInterfaces register all messages for sdk.Msg type
 func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgClaimValidator{},
+		&MsgCreateOrder{},
+		&MsgCancelOrder{},
+		&MsgCreateOrderBook{},
+		&MsgUpsertSignerKey{},
 	)
 }
 

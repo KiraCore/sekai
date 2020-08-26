@@ -4,7 +4,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/KiraCore/sekai/x/kiraHub"
+	"github.com/KiraCore/sekai/x/ixp"
 	customstaking "github.com/KiraCore/sekai/x/staking"
 	types2 "github.com/KiraCore/sekai/x/staking/types"
 
@@ -111,7 +111,7 @@ var (
 		transfer.AppModuleBasic{},
 
 		customstaking.AppModuleBasic{},
-		kiraHub.AppModuleBasic{},
+		ixp.AppModuleBasic{},
 	)
 
 	// module account permissions

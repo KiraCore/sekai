@@ -20,7 +20,7 @@ sekaid query tx ED178AD70244D721495143898488850EF1369CDA9C8DE83A77B3B3FBC85D633D
 I tried to debug but the only result I got is like below. It seems it's a cosmos-sdk internal bug.
 ```log
 ...
- /kira.kiraHub.MsgCreateOrderBook-
+ /kira.ixp.MsgCreateOrderBook-
 ?b?3quotmnemonic"i?9Ø?Y=~Qag???G
 ...
 goroutine 1 [running]:

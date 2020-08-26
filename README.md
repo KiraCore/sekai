@@ -4,8 +4,8 @@ Kira Hub
 ## Create order book
 ```sh
 # command
-sekaid tx kiraHub createOrderBook base quote mnemonic --from validator --keyring-backend=test --chain-id testing
-{"body":{"messages":[{"@type":"/kira.kiraHub.MsgCreateOrderBook","Base":"base","Quote":"quote","Mnemonic":"mnemonic","Curator":"kira17pzan0q4d5acyykygwqass8z0crjvflhjq3qvm"}],"memo":"","timeout_height":"0","extension_options":[],"non_critical_extension_options":[]},"auth_info":{"signer_infos":[],"fee":{"amount":[],"gas_limit":"200000"}},"signatures":[]}
+sekaid tx ixp createOrderBook base quote mnemonic --from validator --keyring-backend=test --chain-id testing
+{"body":{"messages":[{"@type":"/kira.ixp.MsgCreateOrderBook","Base":"base","Quote":"quote","Mnemonic":"mnemonic","Curator":"kira17pzan0q4d5acyykygwqass8z0crjvflhjq3qvm"}],"memo":"","timeout_height":"0","extension_options":[],"non_critical_extension_options":[]},"auth_info":{"signer_infos":[],"fee":{"amount":[],"gas_limit":"200000"}},"signatures":[]}
 
 confirm transaction before signing and broadcasting [y/N]: y
 
@@ -18,7 +18,7 @@ confirm transaction before signing and broadcasting [y/N]: y
 Ex1.
 ```sh
 # command
-sekaid query kiraHub listorderbooks ID e6a8fc6cf92e157f9f03580291b6e5db --chain-id testing
+sekaid query ixp listorderbooks ID e6a8fc6cf92e157f9f03580291b6e5db --chain-id testing
 
 # response
 {"orderbooks":[{"ID":"e6a8fc6cf92e157f9f03580291b6e5db","Index":0,"Base":"base","Quote":"quote","Mnemonic":"mnemonic","Curator":"kira17pzan0q4d5acyykygwqass8z0crjvflhjq3qvm"}]}
@@ -26,7 +26,7 @@ sekaid query kiraHub listorderbooks ID e6a8fc6cf92e157f9f03580291b6e5db --chain-
 Ex2.
 ```sh
 # command
-sekaid query kiraHub listorderbooks ID e6a8 --chain-id testing
+sekaid query ixp listorderbooks ID e6a8 --chain-id testing
 
 # response
 {"orderbooks":[{"ID":"","Index":0,"Base":"","Quote":"","Mnemonic":"","Curator":""}]}
@@ -34,7 +34,7 @@ sekaid query kiraHub listorderbooks ID e6a8 --chain-id testing
 - By curator
 ```sh
 # command
-sekaid query kiraHub listorderbooks Curator $(sekaid keys show -a validator --keyring-backend=test) --chain-id testing
+sekaid query ixp listorderbooks Curator $(sekaid keys show -a validator --keyring-backend=test) --chain-id testing
 
 # response
 {"orderbooks":[{"ID":"e6a8fc6cf92e157f9f03580291b6e5db","Index":0,"Base":"base","Quote":"quote","Mnemonic":"mnemonic","Curator":"kira17pzan0q4d5acyykygwqass8z0crjvflhjq3qvm"}]}
@@ -44,7 +44,7 @@ sekaid query kiraHub listorderbooks Curator $(sekaid keys show -a validator --ke
 Ex1.
 ```sh
 # command
-sekaid query kiraHub listorderbooks Index 0 --chain-id testing
+sekaid query ixp listorderbooks Index 0 --chain-id testing
 
 # response
 {"orderbooks":[{"ID":"e6a8fc6cf92e157f9f03580291b6e5db","Index":0,"Base":"base","Quote":"quote","Mnemonic":"mnemonic","Curator":"kira17pzan0q4d5acyykygwqass8z0crjvflhjq3qvm"}]}
@@ -53,7 +53,7 @@ sekaid query kiraHub listorderbooks Index 0 --chain-id testing
 Ex2.
 ```sh
 # command
-sekaid query kiraHub listorderbooks Index 10 --chain-id testing
+sekaid query ixp listorderbooks Index 10 --chain-id testing
 
 # response
 {"orderbooks":[]}
@@ -63,7 +63,7 @@ sekaid query kiraHub listorderbooks Index 10 --chain-id testing
 Ex1.
 ```sh
 # command
-sekaid query kiraHub listorderbooks Quote quote --chain-id testing
+sekaid query ixp listorderbooks Quote quote --chain-id testing
 
 # response
 {"orderbooks":[{"ID":"e6a8fc6cf92e157f9f03580291b6e5db","Index":0,"Base":"base","Quote":"quote","Mnemonic":"mnemonic","Curator":"kira17pzan0q4d5acyykygwqass8z0crjvflhjq3qvm"}]}
@@ -71,7 +71,7 @@ sekaid query kiraHub listorderbooks Quote quote --chain-id testing
 Ex2.
 ```sh
 # command
-sekaid query kiraHub listorderbooks Quote q --chain-id testing
+sekaid query ixp listorderbooks Quote q --chain-id testing
 
 # response
 {"orderbooks":[]}
@@ -80,7 +80,7 @@ sekaid query kiraHub listorderbooks Quote q --chain-id testing
 Ex1.
 ```sh
 # command
-sekaid query kiraHub listorderbooks Base base --chain-id testing
+sekaid query ixp listorderbooks Base base --chain-id testing
 
 # response
 {"orderbooks":[{"ID":"e6a8fc6cf92e157f9f03580291b6e5db","Index":0,"Base":"base","Quote":"quote","Mnemonic":"mnemonic","Curator":"kira17pzan0q4d5acyykygwqass8z0crjvflhjq3qvm"}]}
@@ -88,7 +88,7 @@ sekaid query kiraHub listorderbooks Base base --chain-id testing
 Ex2.
 ```sh
 # command
-sekaid query kiraHub listorderbooks Base b --chain-id testing
+sekaid query ixp listorderbooks Base b --chain-id testing
 
 # response
 {"orderbooks":[]}
@@ -97,14 +97,14 @@ sekaid query kiraHub listorderbooks Base b --chain-id testing
 - By trading pair
 ```sh
 # command
-sekaid query kiraHub listorderbooks_tradingpair base quote --chain-id testing
+sekaid query ixp listorderbooks_tradingpair base quote --chain-id testing
 
 # response
 {"orderbooks":[{"ID":"36e0cd99f92e157f9f03580291b6e5db","Index":0,"Base":"base","Quote":"quote","Mnemonic":"mnemonic","Curator":"kira1hqvm6nup0kkntgfq9xe0hk7gxnm4wjakmmpae0"}]}
 ```
 ```sh
 # command
-sekaid query kiraHub listorderbooks_tradingpair base quote1 --chain-id testing
+sekaid query ixp listorderbooks_tradingpair base quote1 --chain-id testing
 
 # response
 {"orderbooks":[]}
@@ -112,8 +112,8 @@ sekaid query kiraHub listorderbooks_tradingpair base quote1 --chain-id testing
 ## Create order
 ```sh
 # command
-sekaid tx kiraHub createOrder 36e0cd99f92e157f9f03580291b6e5db 0 0 0 --from validator --keyring-backend=test --chain-id=testing
-{"body":{"messages":[{"@type":"/kira.kiraHub.MsgCreateOrder","OrderBookID":"36e0cd99f92e157f9f03580291b6e5db","OrderType":"limitBuy","Amount":"0","LimitPrice":"0","ExpiryTime":"0","Curator":"kira13n3el7pzynrd3d4mn92k49djktf75kngl2xlc7"}],"memo":"","timeout_height":"0","extension_options":[],"non_critical_extension_options":[]},"auth_info":{"signer_infos":[],"fee":{"amount":[],"gas_limit":"200000"}},"signatures":[]}
+sekaid tx ixp createOrder 36e0cd99f92e157f9f03580291b6e5db 0 0 0 --from validator --keyring-backend=test --chain-id=testing
+{"body":{"messages":[{"@type":"/kira.ixp.MsgCreateOrder","OrderBookID":"36e0cd99f92e157f9f03580291b6e5db","OrderType":"limitBuy","Amount":"0","LimitPrice":"0","ExpiryTime":"0","Curator":"kira13n3el7pzynrd3d4mn92k49djktf75kngl2xlc7"}],"memo":"","timeout_height":"0","extension_options":[],"non_critical_extension_options":[]},"auth_info":{"signer_infos":[],"fee":{"amount":[],"gas_limit":"200000"}},"signatures":[]}
 
 confirm transaction before signing and broadcasting [y/N]: y
 
@@ -123,8 +123,8 @@ confirm transaction before signing and broadcasting [y/N]: y
 ## Cancel order
 ```sh
 # command
-sekaid tx kiraHub cancelOrder a991645f855efbb8855efbb891b6e5db --from validator --keyring-backend=test --chain-id=testing
-{"body":{"messages":[{"@type":"/kira.kiraHub.MsgCancelOrder","OrderID":"a991645f855efbb8855efbb891b6e5db","Curator":""}],"memo":"","timeout_height":"0","extension_options":[],"non_critical_extension_options":[]},"auth_info":{"signer_infos":[],"fee":{"amount":[],"gas_limit":"200000"}},"signatures":[]}
+sekaid tx ixp cancelOrder a991645f855efbb8855efbb891b6e5db --from validator --keyring-backend=test --chain-id=testing
+{"body":{"messages":[{"@type":"/kira.ixp.MsgCancelOrder","OrderID":"a991645f855efbb8855efbb891b6e5db","Curator":""}],"memo":"","timeout_height":"0","extension_options":[],"non_critical_extension_options":[]},"auth_info":{"signer_infos":[],"fee":{"amount":[],"gas_limit":"200000"}},"signatures":[]}
 
 confirm transaction before signing and broadcasting [y/N]: y
 
@@ -134,14 +134,14 @@ confirm transaction before signing and broadcasting [y/N]: y
 ## Query order
 ```sh
 # command
-sekaid query kiraHub listorders 36e0cd99f92e157f9f03580291b6e5db 0 0
+sekaid query ixp listorders 36e0cd99f92e157f9f03580291b6e5db 0 0
 
 # response
 {"orders":[{"ID":"","Index":0,"OrderBookID":"36e0cd99f92e157f9f03580291b6e5db","OrderType":"limitBuy","Amount":"0","LimitPrice":"0","ExpiryTime":"0","IsCancelled":false,"Curator":"kira13n3el7pzynrd3d4mn92k49djktf75kngl2xlc7"}]}
 ```
 ```sh
 # command
-sekaid query kiraHub listorders 36e0cd99f92e157f9f03580291b6e5b 0 0
+sekaid query ixp listorders 36e0cd99f92e157f9f03580291b6e5b 0 0
 
 # response
 {"orders":[]}
@@ -152,27 +152,27 @@ sekaid query kiraHub listorders 36e0cd99f92e157f9f03580291b6e5b 0 0
 
 ```sh
 # Secp256k1 type
-sekaid tx kiraHub upsertSignerKey AnzIM9IcLb07Cvwq3hdMJuuRofAgxfDekkD3nJUPPw0w
-sekaid tx kiraHub upsertSignerKey AnzIM9IcLb07Cvwq3hdMJuuRofAgxfDekkD3nJUPPw0w --key-type=Secp256k1
+sekaid tx ixp upsertSignerKey AnzIM9IcLb07Cvwq3hdMJuuRofAgxfDekkD3nJUPPw0w
+sekaid tx ixp upsertSignerKey AnzIM9IcLb07Cvwq3hdMJuuRofAgxfDekkD3nJUPPw0w --key-type=Secp256k1
 
 # Ed25519 type
-sekaid tx kiraHub upsertSignerKey TXgDkmTYpPRwU/PvDbfbhbwiYA7jXMwQgNffHVey1dC644OBBI4OQdf4Tro6hzimT1dHYzPiGZB0aYWJBC2keQ== --key-type=Ed25519
+sekaid tx ixp upsertSignerKey TXgDkmTYpPRwU/PvDbfbhbwiYA7jXMwQgNffHVey1dC644OBBI4OQdf4Tro6hzimT1dHYzPiGZB0aYWJBC2keQ== --key-type=Ed25519
 
 # enabled false
-sekaid tx kiraHub upsertSignerKey AnzIM9IcLb07Cvwq3hdMJuuRofAgxfDekkD3nJUPPw0w --enabled=false
+sekaid tx ixp upsertSignerKey AnzIM9IcLb07Cvwq3hdMJuuRofAgxfDekkD3nJUPPw0w --enabled=false
 
 # permissions
-sekaid tx kiraHub upsertSignerKey AnzIM9IcLb07Cvwq3hdMJuuRofAgxfDekkD3nJUPPw0w --permissions=1,2
+sekaid tx ixp upsertSignerKey AnzIM9IcLb07Cvwq3hdMJuuRofAgxfDekkD3nJUPPw0w --permissions=1,2
 
 # expiry-time (set when this key expire if does not set it's automatically set to 10 days after current timestamp)
-sekaid tx kiraHub upsertSignerKey AnzIM9IcLb07Cvwq3hdMJuuRofAgxfDekkD3nJUPPw0w --expiry-time=1598247750
+sekaid tx ixp upsertSignerKey AnzIM9IcLb07Cvwq3hdMJuuRofAgxfDekkD3nJUPPw0w --expiry-time=1598247750
 ```
 
 Ex1.
 ```sh
 # command
-sekaid tx kiraHub upsertSignerKey AnzIM9IcLb07Cvwq3hdMJuuRofAgxfDekkD3nJUPPw0w --from validator --keyring-backend=test --chain-id=testing
-{"body":{"messages":[{"@type":"/kira.kiraHub.MsgUpsertSignerKey","PubKey":"AnzIM9IcLb07Cvwq3hdMJuuRofAgxfDekkD3nJUPPw0w","KeyType":"Secp256k1","ExpiryTime":"1599186595","Enabled":true,"Permissions":[],"Curator":"kira13n3el7pzynrd3d4mn92k49djktf75kngl2xlc7"}],"memo":"","timeout_height":"0","extension_options":[],"non_critical_extension_options":[]},"auth_info":{"signer_infos":[],"fee":{"amount":[],"gas_limit":"200000"}},"signatures":[]}
+sekaid tx ixp upsertSignerKey AnzIM9IcLb07Cvwq3hdMJuuRofAgxfDekkD3nJUPPw0w --from validator --keyring-backend=test --chain-id=testing
+{"body":{"messages":[{"@type":"/kira.ixp.MsgUpsertSignerKey","PubKey":"AnzIM9IcLb07Cvwq3hdMJuuRofAgxfDekkD3nJUPPw0w","KeyType":"Secp256k1","ExpiryTime":"1599186595","Enabled":true,"Permissions":[],"Curator":"kira13n3el7pzynrd3d4mn92k49djktf75kngl2xlc7"}],"memo":"","timeout_height":"0","extension_options":[],"non_critical_extension_options":[]},"auth_info":{"signer_infos":[],"fee":{"amount":[],"gas_limit":"200000"}},"signatures":[]}
 
 confirm transaction before signing and broadcasting [y/N]: y
 
@@ -184,7 +184,7 @@ confirm transaction before signing and broadcasting [y/N]: y
 
 ```sh
 # command
-sekaid query kiraHub getsignerkeys --curator $(sekaid keys show -a validator --keyring-backend=test)
+sekaid query ixp getsignerkeys --curator $(sekaid keys show -a validator --keyring-backend=test)
 
 # response
 {"signerkeys":[{"PubKey":"AnzIM9IcLb07Cvwq3hdMJuuRofAgxfDekkD3nJUPPw0w","KeyType":"Secp256k1","ExpiryTime":"1599187090","Enabled":true,"Permissions":[],"Curator":"kira1xsq0wapm5t975k3hn2rj4y2zhnm5up9d59uhpy"}]}
