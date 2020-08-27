@@ -39,3 +39,7 @@ func TestQuerier_GetOrderBooks(t *testing.T) {
 	require.Equal(t, orderbook.Mnemonic, "mnemonic")
 	require.Equal(t, orderbook.Curator, "curator")
 }
+
+// TODO should add tests for GetOrderBooksByTradingPair
+// TODO should add tests for GetOrders
+// TODO should add tests for GetSignerKeys
