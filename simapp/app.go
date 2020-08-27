@@ -5,9 +5,11 @@ import (
 	"os"
 
 	"github.com/KiraCore/sekai/x/ixp"
+	ixptypes "github.com/KiraCore/sekai/x/ixp/types"
 	customstaking "github.com/KiraCore/sekai/x/staking"
 	types2 "github.com/KiraCore/sekai/x/staking/types"
 
+	ixpkeeper "github.com/KiraCore/sekai/x/ixp/keeper"
 	"github.com/KiraCore/sekai/x/staking/keeper"
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/libs/log"
@@ -166,6 +168,7 @@ type SimApp struct {
 	TransferKeeper   ibctransferkeeper.Keeper
 
 	CustomStakingKeeper keeper.Keeper
+	IxpKeeper           ixpkeeper.Keeper
 
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
@@ -269,6 +272,7 @@ func NewSimApp(
 	)
 
 	app.CustomStakingKeeper = keeper.NewKeeper(keys[types2.ModuleName], cdc)
+	app.IxpKeeper = ixpkeeper.NewKeeper(keys[ixptypes.ModuleName], cdc)
 
 	// Create IBC Keeper
 	// TODO: remove amino codec dependency once Tendermint version is upgraded with
