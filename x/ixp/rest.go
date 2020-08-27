@@ -9,6 +9,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// RegisterRESTRoutes register rest routes
 func RegisterRESTRoutes(cliContext client.Context, router *mux.Router) {
 	router.HandleFunc(strings.Join([]string{"", TransactionRoute, types.CreateOrderBookTransaction}, "/"), rest.CreateOrderbookRequestHandler(cliContext)).Methods("POST")
 	router.HandleFunc(strings.Join([]string{"", TransactionRoute, types.CreateOrderTransaction}, "/"), rest.CreateOrderRequestHandler(cliContext)).Methods("POST")

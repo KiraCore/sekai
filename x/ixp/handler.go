@@ -9,6 +9,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+// NewHandler is router for message handling
 func NewHandler(k keeper.Keeper) sdk.Handler {
 	return func(context sdk.Context, msg sdk.Msg) (*sdk.Result, error) {
 		context = context.WithEventManager(sdk.NewEventManager())
