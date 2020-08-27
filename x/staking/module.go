@@ -3,6 +3,8 @@ package staking
 import (
 	"encoding/json"
 
+	govkeeper "github.com/KiraCore/sekai/x/gov/keeper"
+
 	"github.com/tendermint/tendermint/crypto/encoding"
 
 	"github.com/KiraCore/sekai/x/staking/keeper"
@@ -62,6 +64,7 @@ func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
 type AppModule struct {
 	AppModuleBasic
 	customStakingKeeper keeper.Keeper
+	customGovKeeper     govkeeper.Keeper
 }
 
 func (am AppModule) RegisterInterfaces(registry types2.InterfaceRegistry) {
@@ -133,7 +136,7 @@ func (am AppModule) Name() string {
 
 // Route returns the message routing key for the staking module.
 func (am AppModule) Route() sdk.Route {
-	return sdk.NewRoute(cumstomtypes.ModuleName, NewHandler(am.customStakingKeeper))
+	return sdk.NewRoute(cumstomtypes.ModuleName, NewHandler(am.customStakingKeeper, am.customGovKeeper))
 }
 
 // RegisterQueryService registers a GRPC query service to respond to the
@@ -146,8 +149,10 @@ func (am AppModule) RegisterQueryService(server grpc.Server) {
 // NewAppModule returns a new Custom Staking module.
 func NewAppModule(
 	keeper keeper.Keeper,
+	govKeeper govkeeper.Keeper,
 ) AppModule {
 	return AppModule{
 		customStakingKeeper: keeper,
+		customGovKeeper:     govKeeper,
 	}
 }

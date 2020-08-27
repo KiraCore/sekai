@@ -324,7 +324,7 @@ func NewInitApp(
 		ibc.NewAppModule(app.ibcKeeper),
 		params.NewAppModule(app.paramsKeeper),
 		transferModule,
-		customstaking.NewAppModule(app.customStakingKeeper),
+		customstaking.NewAppModule(app.customStakingKeeper, app.customGovKeeper),
 		customgov.NewAppModule(app.customGovKeeper),
 	)
 	// During begin block slashing happens after distr.BeginBlocker so that
