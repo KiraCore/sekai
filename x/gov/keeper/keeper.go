@@ -34,7 +34,7 @@ func (k Keeper) GetPermissionsForRole(ctx sdk.Context, councilor types.Role) *ty
 	return perm
 }
 
-func (k Keeper) SetNetworkActor(ctx sdk.Context, actor types.NetworkActor) {
+func (k Keeper) SaveNetworkActor(ctx sdk.Context, actor types.NetworkActor) {
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixActors)
 
 	bz := k.cdc.MustMarshalBinaryBare(&actor)

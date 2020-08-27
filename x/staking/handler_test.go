@@ -42,7 +42,7 @@ func TestNewHandler_MsgClaimValidator_HappyPath(t *testing.T) {
 		}, nil),
 		1,
 	)
-	app.CustomGovKeeper.SetNetworkActor(ctx, networkActor)
+	app.CustomGovKeeper.SaveNetworkActor(ctx, networkActor)
 
 	handler := staking.NewHandler(app.CustomStakingKeeper, app.CustomGovKeeper)
 

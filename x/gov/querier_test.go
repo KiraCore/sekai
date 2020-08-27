@@ -36,7 +36,7 @@ func TestQuerier_PermissionsByAddress(t *testing.T) {
 		123,
 	)
 
-	app.CustomGovKeeper.SetNetworkActor(ctx, networkActor)
+	app.CustomGovKeeper.SaveNetworkActor(ctx, networkActor)
 
 	querier := NewQuerier(app.CustomGovKeeper)
 

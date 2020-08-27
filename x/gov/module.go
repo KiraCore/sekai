@@ -72,7 +72,7 @@ func (am AppModule) InitGenesis(
 	cdc.MustUnmarshalJSON(data, &genesisState)
 
 	for _, actor := range genesisState.NetworkActors {
-		am.customGovKeeper.SetNetworkActor(ctx, *actor)
+		am.customGovKeeper.SaveNetworkActor(ctx, *actor)
 	}
 
 	return nil
