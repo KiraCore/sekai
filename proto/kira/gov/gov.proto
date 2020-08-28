@@ -5,6 +5,24 @@ import "gogoproto/gogo.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/gov/types";
 
+message MsgWhitelistPermissions {
+  bytes address = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  repeated uint32 permissions = 2;
+}
+
+message MsgBlacklistPermissions {
+  bytes address = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  repeated uint32 permissions = 2;
+}
+
 message NetworkActor {
   bytes address = 1 [
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
