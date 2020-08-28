@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"os"
 	"testing"
 
 	"github.com/KiraCore/sekai/app"
@@ -14,6 +15,7 @@ import (
 
 func TestMain(m *testing.M) {
 	app.SetConfig()
+	os.Exit(m.Run())
 }
 
 func TestKeeper_CreateOrderBook(t *testing.T) {
@@ -26,5 +28,5 @@ func TestKeeper_CreateOrderBook(t *testing.T) {
 	obID, err := app.IxpKeeper.CreateOrderBook(ctx, "quote", "base", kiraAddr1, "mnemonic")
 	require.NoError(t, err)
 
-	t.Log("obID", obID)
+	require.Equal(t, obID, "f5253855f92e157f9f03580291b6e5db")
 }

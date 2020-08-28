@@ -59,7 +59,7 @@ func (k Keeper) UpsertSignerKey(ctx sdk.Context,
 
 	for _, sk := range signerKeys {
 		if strings.Compare(sk.PubKey, pubKey) == 0 {
-			if keyType == sk.KeyType {
+			if keyType != sk.KeyType {
 				return errors.New("keyType shouldn't be different for same pub key")
 			}
 			newSignerKeys = append(newSignerKeys, signerKey)

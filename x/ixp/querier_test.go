@@ -37,7 +37,7 @@ func TestQuerier_GetOrderBooks(t *testing.T) {
 	require.Equal(t, orderbook.Base, "base")
 	require.Equal(t, orderbook.Quote, "quote")
 	require.Equal(t, orderbook.Mnemonic, "mnemonic")
-	require.Equal(t, orderbook.Curator, "curator")
+	require.Equal(t, orderbook.Curator, kiraAddr1)
 }
 
 // TODO should add tests for GetOrderBooksByTradingPair

@@ -1,6 +1,7 @@
 package ixp_test
 
 import (
+	"os"
 	"testing"
 
 	"github.com/KiraCore/sekai/app"
@@ -15,6 +16,7 @@ import (
 
 func TestMain(m *testing.M) {
 	app.SetConfig()
+	os.Exit(m.Run())
 }
 
 func TestNewHandler_MsgCreateOrderBook_HappyPath(t *testing.T) {
@@ -147,23 +149,44 @@ func TestNewHandler_MsgUpsertSignerKey_HappyPath(t *testing.T) {
 
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
-
 	handler := ixp.NewHandler(app.IxpKeeper)
 
-	theMsg, err := ixptypes.NewMsgUpsertSignerKey(pubKeyText, ixptypes.SignerKeyType_Secp256k1, 0, true, []int64{}, kiraAddr1)
-	require.NoError(t, err)
+	tests := []struct {
+		name        string
+		constructor func() (*ixptypes.MsgUpsertSignerKey, error)
+	}{
+		{
+			name: "one permission test",
+			constructor: func() (*ixptypes.MsgUpsertSignerKey, error) {
+				return ixptypes.NewMsgUpsertSignerKey(pubKeyText, ixptypes.SignerKeyType_Secp256k1, 0, true, []int64{1}, kiraAddr1)
+			},
+		},
+		// {
+		// 	name: "empty permission test",
+		// 	constructor: func() (*ixptypes.MsgUpsertSignerKey, error) {
+		// 		return ixptypes.NewMsgUpsertSignerKey(pubKeyText, ixptypes.SignerKeyType_Secp256k1, 0, true, []int64{}, kiraAddr1)
+		// 	},
+		// },
+		// TODO should use different addresses and pubKey per test
+		// TODO should add case for two pub key creation
+		// TODO should add case for upsert signer key validation
+	}
+	for _, tt := range tests {
+		theMsg, err := tt.constructor()
+		require.NoError(t, err)
 
-	_, err = handler(ctx, theMsg)
-	require.NoError(t, err)
+		_, err = handler(ctx, theMsg)
+		require.NoError(t, err)
 
-	signerkeys := app.IxpKeeper.GetSignerKeys(ctx, kiraAddr1)
-	require.Len(t, signerkeys, 1)
+		signerkeys := app.IxpKeeper.GetSignerKeys(ctx, kiraAddr1)
+		require.Len(t, signerkeys, 1)
 
-	signerkey := signerkeys[0]
+		signerkey := signerkeys[0]
 
-	require.Equal(t, theMsg.PubKey, signerkey.PubKey)
-	require.Equal(t, theMsg.KeyType, signerkey.KeyType)
-	require.Equal(t, theMsg.ExpiryTime, signerkey.ExpiryTime)
-	require.Equal(t, theMsg.Permissions, signerkey.Permissions)
-	require.Equal(t, theMsg.Curator, signerkey.Curator)
+		require.Equal(t, theMsg.PubKey, signerkey.PubKey)
+		require.Equal(t, theMsg.KeyType, signerkey.KeyType)
+		require.Equal(t, theMsg.ExpiryTime, signerkey.ExpiryTime)
+		require.Equal(t, theMsg.Permissions, signerkey.Permissions)
+		require.Equal(t, theMsg.Curator, signerkey.Curator)
+	}
 }

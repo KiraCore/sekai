@@ -1,6 +1,7 @@
 package staking_test
 
 import (
+	"os"
 	"testing"
 
 	"github.com/KiraCore/sekai/app"
@@ -16,6 +17,7 @@ import (
 
 func TestMain(m *testing.M) {
 	app.SetConfig()
+	os.Exit(m.Run())
 }
 
 func TestNewHandler_MsgClaimValidator_HappyPath(t *testing.T) {

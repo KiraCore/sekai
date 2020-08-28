@@ -1,6 +1,7 @@
 package types_test
 
 import (
+	"os"
 	"testing"
 
 	"github.com/KiraCore/sekai/app"
@@ -9,8 +10,12 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestMsgCreateOrderbook_ValidateBasic(t *testing.T) {
+func TestMain(m *testing.M) {
 	app.SetConfig()
+	os.Exit(m.Run())
+}
+
+func TestMsgCreateOrderbook_ValidateBasic(t *testing.T) {
 
 	kiraAddr1, err := types.AccAddressFromBech32("kira1da22wd7slpxpptasczs679mr5c8xtucqdzxc3n")
 	require.NoError(t, err)
