@@ -83,3 +83,21 @@ func NewNetworkActor(
 		Skin:        skin,
 	}
 }
+
+// NewDefaultActor returns a default actor with:
+// - The provided addr.
+// - Roles set to nil
+// - Status set to 0
+// - Votes set to nil
+// - Empty permissions
+// - Skin set to 0
+func NewDefaultActor(addr types.AccAddress) NetworkActor {
+	return NewNetworkActor(
+		addr,
+		nil,
+		0,
+		nil,
+		NewPermissions(nil, nil),
+		0,
+	)
+}

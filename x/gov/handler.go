@@ -25,14 +25,7 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 func handleWhitelistPermissions(ctx sdk.Context, ck keeper.Keeper, msg *types2.MsgWhitelistPermissions) (*sdk.Result, error) {
 	actor, err := ck.GetNetworkActorByAddress(ctx, msg.Address)
 	if err != nil {
-		actor = types2.NewNetworkActor( // Todo Network Actor
-			msg.Address,
-			nil,
-			0,
-			nil,
-			types2.NewPermissions(nil, nil),
-			0,
-		)
+		actor = types2.NewDefaultActor(msg.Address)
 	}
 
 	for _, perm := range msg.Permissions {
