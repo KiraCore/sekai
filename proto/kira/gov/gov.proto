@@ -6,6 +6,8 @@ import "gogoproto/gogo.proto";
 option go_package = "github.com/KiraCore/sekai/x/gov/types";
 
 message MsgWhitelistPermissions {
+  option (gogoproto.equal)            = true;
+
   bytes address = 1 [
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
     (gogoproto.moretags) = "yaml:\"address\""
@@ -15,6 +17,8 @@ message MsgWhitelistPermissions {
 }
 
 message MsgBlacklistPermissions {
+  option (gogoproto.equal)            = true;
+
   bytes address = 1 [
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
     (gogoproto.moretags) = "yaml:\"address\""

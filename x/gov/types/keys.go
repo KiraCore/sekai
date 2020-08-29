@@ -4,6 +4,9 @@ import sdk "github.com/cosmos/cosmos-sdk/types"
 
 const ModuleName = "customgov"
 
+const WhitelistPermissions = "whitelist-permissions"
+const BlacklistPermissions = "blacklist-permissions"
+
 var (
 	KeyPrefixPermissionsRegistry = []byte("permissions_registry")
 	KeyPrefixActors              = []byte("network_actors")
