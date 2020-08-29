@@ -8,23 +8,31 @@ option go_package = "github.com/KiraCore/sekai/x/gov/types";
 message MsgWhitelistPermissions {
   option (gogoproto.equal)            = true;
 
-  bytes address = 1 [
+  bytes proposer = 1 [
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
     (gogoproto.moretags) = "yaml:\"address\""
   ];
 
-  repeated uint32 permissions = 2;
+  bytes address = 2 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  repeated uint32 permissions = 3;
 }
 
 message MsgBlacklistPermissions {
-  option (gogoproto.equal)            = true;
-
-  bytes address = 1 [
+  bytes proposer = 1 [
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
     (gogoproto.moretags) = "yaml:\"address\""
   ];
 
-  repeated uint32 permissions = 2;
+  bytes address = 2 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  repeated uint32 permissions = 3;
 }
 
 message NetworkActor {

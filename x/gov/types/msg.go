@@ -4,23 +4,44 @@ import sdk "github.com/cosmos/cosmos-sdk/types"
 
 var _ sdk.Msg = &MsgWhitelistPermissions{}
 
+func NewMsgWhitelistPermissions(
+	proposer, address sdk.AccAddress,
+	permissions []uint32,
+) *MsgWhitelistPermissions {
+	return &MsgWhitelistPermissions{
+		Proposer:    proposer,
+		Address:     address,
+		Permissions: permissions,
+	}
+}
+
 func (m *MsgWhitelistPermissions) Route() string {
 	return ModuleName
 }
 
 func (m *MsgWhitelistPermissions) Type() string {
-	panic("implement me")
+	return WhitelistPermissions
 }
 
 func (m *MsgWhitelistPermissions) ValidateBasic() error {
-	panic("implement me")
+	if m.Proposer.Empty() {
+		return ErrEmptyProposerAccAddress
+	}
+
+	if m.Address.Empty() {
+		return ErrEmptyPermissionsAccAddress
+	}
+
+	return nil
 }
 
 func (m *MsgWhitelistPermissions) GetSignBytes() []byte {
-	panic("implement me")
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
 }
 
 func (m *MsgWhitelistPermissions) GetSigners() []sdk.AccAddress {
-	panic("implement me")
+	return []sdk.AccAddress{
+		m.Proposer,
+	}
 }
-
