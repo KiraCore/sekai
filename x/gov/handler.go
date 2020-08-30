@@ -23,6 +23,16 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 }
 
 func handleWhitelistPermissions(ctx sdk.Context, ck keeper.Keeper, msg *types2.MsgWhitelistPermissions) (*sdk.Result, error) {
+	// Check if proposer have permissions to SetPermissions.
+	proposer, err := ck.GetNetworkActorByAddress(ctx, msg.Proposer)
+	if err != nil {
+		return nil, errors.Wrap(types2.ErrNotEnoughPermissions, "SetPermissions")
+	}
+
+	if proposer.Permissions.IsBlacklisted(types2.PermAddPermissions) || !proposer.Permissions.IsWhitelisted(types2.PermAddPermissions) {
+		return nil, errors.Wrap(types2.ErrNotEnoughPermissions, "SetPermissions")
+	}
+
 	actor, err := ck.GetNetworkActorByAddress(ctx, msg.Address)
 	if err != nil {
 		actor = types2.NewDefaultActor(msg.Address)
