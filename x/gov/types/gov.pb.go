@@ -26,9 +26,9 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type MsgWhitelistPermissions struct {
-	Proposer    github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=proposer,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"proposer,omitempty" yaml:"address"`
-	Address     github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,2,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
-	Permissions []uint32                                      `protobuf:"varint,3,rep,packed,name=permissions,proto3" json:"permissions,omitempty"`
+	Proposer   github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=proposer,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"proposer,omitempty" yaml:"address"`
+	Address    github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,2,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
+	Permission uint32                                        `protobuf:"varint,3,opt,name=permission,proto3" json:"permission,omitempty"`
 }
 
 func (m *MsgWhitelistPermissions) Reset()         { *m = MsgWhitelistPermissions{} }
@@ -78,17 +78,17 @@ func (m *MsgWhitelistPermissions) GetAddress() github_com_cosmos_cosmos_sdk_type
 	return nil
 }
 
-func (m *MsgWhitelistPermissions) GetPermissions() []uint32 {
+func (m *MsgWhitelistPermissions) GetPermission() uint32 {
 	if m != nil {
-		return m.Permissions
+		return m.Permission
 	}
-	return nil
+	return 0
 }
 
 type MsgBlacklistPermissions struct {
-	Proposer    github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=proposer,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"proposer,omitempty" yaml:"address"`
-	Address     github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,2,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
-	Permissions []uint32                                      `protobuf:"varint,3,rep,packed,name=permissions,proto3" json:"permissions,omitempty"`
+	Proposer   github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=proposer,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"proposer,omitempty" yaml:"address"`
+	Address    github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,2,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
+	Permission uint32                                        `protobuf:"varint,3,opt,name=permission,proto3" json:"permission,omitempty"`
 }
 
 func (m *MsgBlacklistPermissions) Reset()         { *m = MsgBlacklistPermissions{} }
@@ -138,11 +138,11 @@ func (m *MsgBlacklistPermissions) GetAddress() github_com_cosmos_cosmos_sdk_type
 	return nil
 }
 
-func (m *MsgBlacklistPermissions) GetPermissions() []uint32 {
+func (m *MsgBlacklistPermissions) GetPermission() uint32 {
 	if m != nil {
-		return m.Permissions
+		return m.Permission
 	}
-	return nil
+	return 0
 }
 
 type NetworkActor struct {
@@ -291,33 +291,33 @@ func init() {
 func init() { proto.RegisterFile("gov.proto", fileDescriptor_eb02393240bc858d) }
 
 var fileDescriptor_eb02393240bc858d = []byte{
-	// 405 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe4, 0x53, 0xb1, 0xeb, 0xd3, 0x40,
-	0x14, 0xee, 0xfd, 0x9a, 0xd6, 0xf6, 0xda, 0x3a, 0x1c, 0x55, 0x83, 0x48, 0x1a, 0x02, 0x42, 0x96,
-	0x26, 0xa0, 0x83, 0xd0, 0x45, 0xda, 0x4e, 0x22, 0x8a, 0x64, 0x11, 0x04, 0x91, 0x34, 0x3d, 0xd2,
-	0x23, 0x49, 0x5f, 0xb8, 0x77, 0x4d, 0xed, 0xe8, 0x7f, 0xe0, 0x9f, 0xe0, 0x9f, 0xe3, 0xd8, 0xd1,
-	0xa9, 0x48, 0xbb, 0x38, 0x3b, 0x2a, 0x88, 0x24, 0x69, 0x6c, 0xba, 0xeb, 0xe4, 0x94, 0x7b, 0xdf,
-	0x25, 0x5f, 0xbe, 0xef, 0x7b, 0xef, 0xd1, 0x6e, 0x08, 0x99, 0x93, 0x4a, 0x50, 0xc0, 0x3a, 0x91,
-	0x90, 0xbe, 0x13, 0x42, 0x76, 0x7f, 0x18, 0x42, 0x08, 0x05, 0xe8, 0xe6, 0xa7, 0xf2, 0xde, 0xfa,
-	0x70, 0x43, 0xef, 0xbd, 0xc0, 0xf0, 0xf5, 0x4a, 0x28, 0x1e, 0x0b, 0x54, 0xaf, 0xb8, 0x4c, 0x04,
-	0xa2, 0x80, 0x35, 0xb2, 0x77, 0xb4, 0x93, 0x4a, 0x48, 0x01, 0xb9, 0xd4, 0x89, 0x49, 0xec, 0xfe,
-	0x6c, 0xfe, 0xfd, 0x30, 0xba, 0xbd, 0xf3, 0x93, 0x78, 0x62, 0xf9, 0xcb, 0xa5, 0xe4, 0x88, 0xd6,
-	0x8f, 0xc3, 0x68, 0x1c, 0x0a, 0xb5, 0xda, 0x2c, 0x9c, 0x00, 0x12, 0x37, 0x00, 0x4c, 0x00, 0xcf,
-	0x8f, 0x31, 0x2e, 0x23, 0x57, 0xed, 0x52, 0x8e, 0xce, 0x34, 0x08, 0xa6, 0xe5, 0x17, 0xde, 0x1f,
-	0x52, 0xf6, 0x96, 0xde, 0x3a, 0xd3, 0xe8, 0x37, 0x7f, 0x8f, 0xbf, 0xe2, 0x64, 0x26, 0xed, 0xa5,
-	0x17, 0x3b, 0x7a, 0xd3, 0x6c, 0xda, 0x03, 0xaf, 0x0e, 0x4d, 0xb4, 0x6f, 0x9f, 0x46, 0xc4, 0xfa,
-	0x49, 0x8a, 0x0c, 0x66, 0xb1, 0x1f, 0x44, 0xff, 0x5d, 0x06, 0xd6, 0x2f, 0x42, 0xfb, 0x2f, 0xb9,
-	0xda, 0x82, 0x8c, 0xa6, 0x81, 0x82, 0x2b, 0x45, 0xe4, 0x1f, 0x28, 0x1a, 0xd2, 0x96, 0x84, 0x98,
-	0xe7, 0x76, 0x9b, 0xb6, 0xe6, 0x95, 0x05, 0xbb, 0x4b, 0xdb, 0xa8, 0x7c, 0xb5, 0xc9, 0x25, 0x12,
-	0x7b, 0xe0, 0x9d, 0xab, 0xfc, 0xed, 0x0c, 0x14, 0x47, 0x5d, 0x2b, 0x94, 0x97, 0x05, 0x7b, 0x72,
-	0xed, 0xaa, 0x65, 0x12, 0xbb, 0xf7, 0xe8, 0x8e, 0x53, 0xcd, 0xba, 0x53, 0xeb, 0xe0, 0x95, 0x59,
-	0xc6, 0xa8, 0x86, 0x91, 0x58, 0xeb, 0x6d, 0x93, 0xd8, 0x9a, 0x57, 0x9c, 0xad, 0x67, 0xb4, 0x57,
-	0xef, 0xf8, 0x03, 0xda, 0x5d, 0x54, 0x93, 0xa0, 0x93, 0xe2, 0xaf, 0x17, 0x20, 0xbf, 0xdd, 0x56,
-	0xbb, 0x52, 0x38, 0x18, 0x78, 0x17, 0x60, 0xf6, 0xf4, 0xf3, 0xd1, 0x20, 0xfb, 0xa3, 0x41, 0xbe,
-	0x1e, 0x0d, 0xf2, 0xf1, 0x64, 0x34, 0xf6, 0x27, 0xa3, 0xf1, 0xe5, 0x64, 0x34, 0xde, 0x3c, 0xac,
-	0xa5, 0xf5, 0x5c, 0x48, 0x7f, 0x0e, 0x92, 0xbb, 0xc8, 0x23, 0x5f, 0xb8, 0xef, 0xdd, 0x10, 0xb2,
-	0x32, 0xb0, 0x45, 0xbb, 0xd8, 0xca, 0xc7, 0xbf, 0x03, 0x00, 0x00, 0xff, 0xff, 0x53, 0x39, 0xf5,
-	0x85, 0xc2, 0x03, 0x00, 0x00,
+	// 407 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe4, 0x53, 0x4f, 0xeb, 0xd3, 0x40,
+	0x10, 0xed, 0xda, 0xfc, 0xea, 0xaf, 0xdb, 0xd6, 0xc3, 0x52, 0x35, 0x88, 0xa4, 0x21, 0x20, 0xe4,
+	0xd2, 0x04, 0xf4, 0x20, 0xf4, 0x22, 0x6d, 0x4f, 0x22, 0x8a, 0xe4, 0x22, 0x08, 0x22, 0x69, 0xba,
+	0xa4, 0x4b, 0x92, 0x4e, 0xd8, 0xd9, 0xa6, 0xf6, 0x5b, 0xf8, 0x11, 0xfc, 0x38, 0x1e, 0x7b, 0xf4,
+	0x54, 0xa4, 0xbd, 0x78, 0xf6, 0xa6, 0x07, 0x95, 0xfc, 0x6b, 0xe3, 0x5d, 0x4f, 0xbf, 0x53, 0x76,
+	0xde, 0x4e, 0xde, 0xce, 0x7b, 0x33, 0x43, 0xbb, 0x21, 0x64, 0x4e, 0x2a, 0x41, 0x01, 0xbb, 0x8e,
+	0x84, 0xf4, 0x9d, 0x10, 0xb2, 0x07, 0xc3, 0x10, 0x42, 0x28, 0x40, 0x37, 0x3f, 0x95, 0xf7, 0xd6,
+	0x6f, 0x42, 0xef, 0xbf, 0xc4, 0xf0, 0xcd, 0x4a, 0x28, 0x1e, 0x0b, 0x54, 0xaf, 0xb9, 0x4c, 0x04,
+	0xa2, 0x80, 0x35, 0xb2, 0xf7, 0xf4, 0x3a, 0x95, 0x90, 0x02, 0x72, 0xa9, 0x13, 0x93, 0xd8, 0xfd,
+	0xd9, 0xfc, 0xfb, 0x61, 0x74, 0x67, 0xe7, 0x27, 0xf1, 0xc4, 0xf2, 0x97, 0x4b, 0xc9, 0x11, 0xad,
+	0x9f, 0x87, 0xd1, 0x38, 0x14, 0x6a, 0xb5, 0x59, 0x38, 0x01, 0x24, 0x6e, 0x00, 0x98, 0x00, 0x56,
+	0x9f, 0x31, 0x2e, 0x23, 0x57, 0xed, 0x52, 0x8e, 0xce, 0x34, 0x08, 0xa6, 0xe5, 0x1f, 0xde, 0x99,
+	0x94, 0xbd, 0xa3, 0xb7, 0x2b, 0x1a, 0xfd, 0xd6, 0xbf, 0xe3, 0xaf, 0x39, 0x99, 0x41, 0x69, 0x7a,
+	0x96, 0xa3, 0xb7, 0x4d, 0x62, 0x0f, 0xbc, 0x06, 0x32, 0xd1, 0xbe, 0x7d, 0x1a, 0x11, 0xeb, 0x47,
+	0xe9, 0xc0, 0x2c, 0xf6, 0x83, 0xe8, 0x86, 0x39, 0x60, 0xfd, 0x22, 0xb4, 0xff, 0x8a, 0xab, 0x2d,
+	0xc8, 0x68, 0x1a, 0x28, 0xf8, 0xab, 0x1e, 0xf2, 0x1f, 0xea, 0x19, 0xd2, 0x2b, 0x09, 0x31, 0xcf,
+	0xc5, 0xb6, 0x6d, 0xcd, 0x2b, 0x03, 0x76, 0x8f, 0x76, 0x50, 0xf9, 0x6a, 0x83, 0x55, 0x85, 0x55,
+	0x94, 0x67, 0x67, 0xa0, 0x38, 0xea, 0x9a, 0xd9, 0xb6, 0x07, 0x5e, 0x19, 0xb0, 0xa7, 0xb4, 0x77,
+	0x51, 0x80, 0xfa, 0x95, 0x49, 0xec, 0xde, 0xe3, 0xbb, 0x4e, 0x3d, 0xe7, 0x4e, 0xa3, 0x7f, 0x5e,
+	0x33, 0x93, 0x31, 0xaa, 0x61, 0x24, 0xd6, 0x7a, 0xc7, 0x24, 0xb6, 0xe6, 0x15, 0x67, 0xeb, 0x39,
+	0xed, 0x35, 0xfb, 0xfd, 0x90, 0x76, 0x17, 0xf5, 0x1c, 0xe8, 0xa4, 0x78, 0xf5, 0x02, 0xe4, 0xb7,
+	0xdb, 0x7a, 0x4f, 0x0a, 0x05, 0x03, 0xef, 0x02, 0xcc, 0x9e, 0x7d, 0x3e, 0x1a, 0x64, 0x7f, 0x34,
+	0xc8, 0xd7, 0xa3, 0x41, 0x3e, 0x9e, 0x8c, 0xd6, 0xfe, 0x64, 0xb4, 0xbe, 0x9c, 0x8c, 0xd6, 0xdb,
+	0x47, 0x0d, 0xb7, 0x5e, 0x08, 0xe9, 0xcf, 0x41, 0x72, 0x17, 0x79, 0xe4, 0x0b, 0xf7, 0x83, 0x1b,
+	0x42, 0x56, 0x1a, 0xb6, 0xe8, 0x14, 0x1b, 0xf9, 0xe4, 0x4f, 0x00, 0x00, 0x00, 0xff, 0xff, 0xd9,
+	0x4d, 0xdf, 0xb2, 0xbe, 0x03, 0x00, 0x00,
 }
 
 func (this *MsgWhitelistPermissions) Equal(that interface{}) bool {
@@ -345,13 +345,8 @@ func (this *MsgWhitelistPermissions) Equal(that interface{}) bool {
 	if !bytes.Equal(this.Address, that1.Address) {
 		return false
 	}
-	if len(this.Permissions) != len(that1.Permissions) {
+	if this.Permission != that1.Permission {
 		return false
-	}
-	for i := range this.Permissions {
-		if this.Permissions[i] != that1.Permissions[i] {
-			return false
-		}
 	}
 	return true
 }
@@ -375,23 +370,10 @@ func (m *MsgWhitelistPermissions) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Permissions) > 0 {
-		dAtA2 := make([]byte, len(m.Permissions)*10)
-		var j1 int
-		for _, num := range m.Permissions {
-			for num >= 1<<7 {
-				dAtA2[j1] = uint8(uint64(num)&0x7f | 0x80)
-				num >>= 7
-				j1++
-			}
-			dAtA2[j1] = uint8(num)
-			j1++
-		}
-		i -= j1
-		copy(dAtA[i:], dAtA2[:j1])
-		i = encodeVarintGov(dAtA, i, uint64(j1))
+	if m.Permission != 0 {
+		i = encodeVarintGov(dAtA, i, uint64(m.Permission))
 		i--
-		dAtA[i] = 0x1a
+		dAtA[i] = 0x18
 	}
 	if len(m.Address) > 0 {
 		i -= len(m.Address)
@@ -430,23 +412,10 @@ func (m *MsgBlacklistPermissions) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Permissions) > 0 {
-		dAtA4 := make([]byte, len(m.Permissions)*10)
-		var j3 int
-		for _, num := range m.Permissions {
-			for num >= 1<<7 {
-				dAtA4[j3] = uint8(uint64(num)&0x7f | 0x80)
-				num >>= 7
-				j3++
-			}
-			dAtA4[j3] = uint8(num)
-			j3++
-		}
-		i -= j3
-		copy(dAtA[i:], dAtA4[:j3])
-		i = encodeVarintGov(dAtA, i, uint64(j3))
+	if m.Permission != 0 {
+		i = encodeVarintGov(dAtA, i, uint64(m.Permission))
 		i--
-		dAtA[i] = 0x1a
+		dAtA[i] = 0x18
 	}
 	if len(m.Address) > 0 {
 		i -= len(m.Address)
@@ -503,20 +472,20 @@ func (m *NetworkActor) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		dAtA[i] = 0x2a
 	}
 	if len(m.Votes) > 0 {
-		dAtA7 := make([]byte, len(m.Votes)*10)
-		var j6 int
+		dAtA3 := make([]byte, len(m.Votes)*10)
+		var j2 int
 		for _, num := range m.Votes {
 			for num >= 1<<7 {
-				dAtA7[j6] = uint8(uint64(num)&0x7f | 0x80)
+				dAtA3[j2] = uint8(uint64(num)&0x7f | 0x80)
 				num >>= 7
-				j6++
+				j2++
 			}
-			dAtA7[j6] = uint8(num)
-			j6++
+			dAtA3[j2] = uint8(num)
+			j2++
 		}
-		i -= j6
-		copy(dAtA[i:], dAtA7[:j6])
-		i = encodeVarintGov(dAtA, i, uint64(j6))
+		i -= j2
+		copy(dAtA[i:], dAtA3[:j2])
+		i = encodeVarintGov(dAtA, i, uint64(j2))
 		i--
 		dAtA[i] = 0x22
 	}
@@ -526,20 +495,20 @@ func (m *NetworkActor) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		dAtA[i] = 0x18
 	}
 	if len(m.Roles) > 0 {
-		dAtA9 := make([]byte, len(m.Roles)*10)
-		var j8 int
+		dAtA5 := make([]byte, len(m.Roles)*10)
+		var j4 int
 		for _, num := range m.Roles {
 			for num >= 1<<7 {
-				dAtA9[j8] = uint8(uint64(num)&0x7f | 0x80)
+				dAtA5[j4] = uint8(uint64(num)&0x7f | 0x80)
 				num >>= 7
-				j8++
+				j4++
 			}
-			dAtA9[j8] = uint8(num)
-			j8++
+			dAtA5[j4] = uint8(num)
+			j4++
 		}
-		i -= j8
-		copy(dAtA[i:], dAtA9[:j8])
-		i = encodeVarintGov(dAtA, i, uint64(j8))
+		i -= j4
+		copy(dAtA[i:], dAtA5[:j4])
+		i = encodeVarintGov(dAtA, i, uint64(j4))
 		i--
 		dAtA[i] = 0x12
 	}
@@ -574,38 +543,38 @@ func (m *Permissions) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	var l int
 	_ = l
 	if len(m.Whitelist) > 0 {
-		dAtA11 := make([]byte, len(m.Whitelist)*10)
-		var j10 int
+		dAtA7 := make([]byte, len(m.Whitelist)*10)
+		var j6 int
 		for _, num := range m.Whitelist {
 			for num >= 1<<7 {
-				dAtA11[j10] = uint8(uint64(num)&0x7f | 0x80)
+				dAtA7[j6] = uint8(uint64(num)&0x7f | 0x80)
 				num >>= 7
-				j10++
+				j6++
 			}
-			dAtA11[j10] = uint8(num)
-			j10++
+			dAtA7[j6] = uint8(num)
+			j6++
 		}
-		i -= j10
-		copy(dAtA[i:], dAtA11[:j10])
-		i = encodeVarintGov(dAtA, i, uint64(j10))
+		i -= j6
+		copy(dAtA[i:], dAtA7[:j6])
+		i = encodeVarintGov(dAtA, i, uint64(j6))
 		i--
 		dAtA[i] = 0x12
 	}
 	if len(m.Blacklist) > 0 {
-		dAtA13 := make([]byte, len(m.Blacklist)*10)
-		var j12 int
+		dAtA9 := make([]byte, len(m.Blacklist)*10)
+		var j8 int
 		for _, num := range m.Blacklist {
 			for num >= 1<<7 {
-				dAtA13[j12] = uint8(uint64(num)&0x7f | 0x80)
+				dAtA9[j8] = uint8(uint64(num)&0x7f | 0x80)
 				num >>= 7
-				j12++
+				j8++
 			}
-			dAtA13[j12] = uint8(num)
-			j12++
+			dAtA9[j8] = uint8(num)
+			j8++
 		}
-		i -= j12
-		copy(dAtA[i:], dAtA13[:j12])
-		i = encodeVarintGov(dAtA, i, uint64(j12))
+		i -= j8
+		copy(dAtA[i:], dAtA9[:j8])
+		i = encodeVarintGov(dAtA, i, uint64(j8))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -637,12 +606,8 @@ func (m *MsgWhitelistPermissions) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovGov(uint64(l))
 	}
-	if len(m.Permissions) > 0 {
-		l = 0
-		for _, e := range m.Permissions {
-			l += sovGov(uint64(e))
-		}
-		n += 1 + sovGov(uint64(l)) + l
+	if m.Permission != 0 {
+		n += 1 + sovGov(uint64(m.Permission))
 	}
 	return n
 }
@@ -661,12 +626,8 @@ func (m *MsgBlacklistPermissions) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovGov(uint64(l))
 	}
-	if len(m.Permissions) > 0 {
-		l = 0
-		for _, e := range m.Permissions {
-			l += sovGov(uint64(e))
-		}
-		n += 1 + sovGov(uint64(l)) + l
+	if m.Permission != 0 {
+		n += 1 + sovGov(uint64(m.Permission))
 	}
 	return n
 }
@@ -835,80 +796,23 @@ func (m *MsgWhitelistPermissions) Unmarshal(dAtA []byte) error {
 			}
 			iNdEx = postIndex
 		case 3:
-			if wireType == 0 {
-				var v uint32
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return ErrIntOverflowGov
-					}
-					if iNdEx >= l {
-						return io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					v |= uint32(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Permission", wireType)
+			}
+			m.Permission = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGov
 				}
-				m.Permissions = append(m.Permissions, v)
-			} else if wireType == 2 {
-				var packedLen int
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return ErrIntOverflowGov
-					}
-					if iNdEx >= l {
-						return io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					packedLen |= int(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				if packedLen < 0 {
-					return ErrInvalidLengthGov
-				}
-				postIndex := iNdEx + packedLen
-				if postIndex < 0 {
-					return ErrInvalidLengthGov
-				}
-				if postIndex > l {
+				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				var elementCount int
-				var count int
-				for _, integer := range dAtA[iNdEx:postIndex] {
-					if integer < 128 {
-						count++
-					}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Permission |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
 				}
-				elementCount = count
-				if elementCount != 0 && len(m.Permissions) == 0 {
-					m.Permissions = make([]uint32, 0, elementCount)
-				}
-				for iNdEx < postIndex {
-					var v uint32
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowGov
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						v |= uint32(b&0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					m.Permissions = append(m.Permissions, v)
-				}
-			} else {
-				return fmt.Errorf("proto: wrong wireType = %d for field Permissions", wireType)
 			}
 		default:
 			iNdEx = preIndex
@@ -1032,80 +936,23 @@ func (m *MsgBlacklistPermissions) Unmarshal(dAtA []byte) error {
 			}
 			iNdEx = postIndex
 		case 3:
-			if wireType == 0 {
-				var v uint32
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return ErrIntOverflowGov
-					}
-					if iNdEx >= l {
-						return io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					v |= uint32(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Permission", wireType)
+			}
+			m.Permission = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGov
 				}
-				m.Permissions = append(m.Permissions, v)
-			} else if wireType == 2 {
-				var packedLen int
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return ErrIntOverflowGov
-					}
-					if iNdEx >= l {
-						return io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					packedLen |= int(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				if packedLen < 0 {
-					return ErrInvalidLengthGov
-				}
-				postIndex := iNdEx + packedLen
-				if postIndex < 0 {
-					return ErrInvalidLengthGov
-				}
-				if postIndex > l {
+				if iNdEx >= l {
 					return io.ErrUnexpectedEOF
 				}
-				var elementCount int
-				var count int
-				for _, integer := range dAtA[iNdEx:postIndex] {
-					if integer < 128 {
-						count++
-					}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Permission |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
 				}
-				elementCount = count
-				if elementCount != 0 && len(m.Permissions) == 0 {
-					m.Permissions = make([]uint32, 0, elementCount)
-				}
-				for iNdEx < postIndex {
-					var v uint32
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowGov
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						v |= uint32(b&0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					m.Permissions = append(m.Permissions, v)
-				}
-			} else {
-				return fmt.Errorf("proto: wrong wireType = %d for field Permissions", wireType)
 			}
 		default:
 			iNdEx = preIndex

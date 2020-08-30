@@ -33,6 +33,7 @@ func (b AppModuleBasic) Name() string {
 }
 
 func (b AppModuleBasic) RegisterInterfaces(registry types2.InterfaceRegistry) {
+	customgovtypes.RegisterInterfaces(registry)
 }
 
 func (b AppModuleBasic) DefaultGenesis(marshaler codec.JSONMarshaler) json.RawMessage {
@@ -61,6 +62,7 @@ type AppModule struct {
 }
 
 func (am AppModule) RegisterInterfaces(registry types2.InterfaceRegistry) {
+	customgovtypes.RegisterInterfaces(registry)
 }
 
 func (am AppModule) InitGenesis(
@@ -102,7 +104,7 @@ func (am AppModule) Name() string {
 
 // Route returns the message routing key for the staking module.
 func (am AppModule) Route() sdk.Route {
-	return sdk.Route{}
+	return sdk.NewRoute(customgovtypes.ModuleName, NewHandler(am.customGovKeeper))
 }
 
 // RegisterQueryService registers a GRPC query service to respond to the

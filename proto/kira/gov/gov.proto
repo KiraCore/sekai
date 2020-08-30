@@ -18,7 +18,7 @@ message MsgWhitelistPermissions {
     (gogoproto.moretags) = "yaml:\"address\""
   ];
 
-  repeated uint32 permissions = 3;
+  uint32 permission = 3;
 }
 
 message MsgBlacklistPermissions {
@@ -32,7 +32,7 @@ message MsgBlacklistPermissions {
     (gogoproto.moretags) = "yaml:\"address\""
   ];
 
-  repeated uint32 permissions = 3;
+  uint32 permission = 3;
 }
 
 message NetworkActor {

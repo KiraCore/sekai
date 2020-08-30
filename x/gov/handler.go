@@ -28,11 +28,9 @@ func handleWhitelistPermissions(ctx sdk.Context, ck keeper.Keeper, msg *types2.M
 		actor = types2.NewDefaultActor(msg.Address)
 	}
 
-	for _, perm := range msg.Permissions {
-		err := actor.Permissions.AddToWhitelist(types2.PermValue(perm))
-		if err != nil {
-			return nil, errors.Wrapf(types2.ErrSetPermissions, "error setting %d to whitelist", perm)
-		}
+	err = actor.Permissions.AddToWhitelist(types2.PermValue(msg.Permission))
+	if err != nil {
+		return nil, errors.Wrapf(types2.ErrSetPermissions, "error setting %d to whitelist", msg.Permission)
 	}
 
 	ck.SaveNetworkActor(ctx, actor)

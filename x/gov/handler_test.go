@@ -30,10 +30,8 @@ func TestNewHandler_SetPermissions_ActorWithoutPerms(t *testing.T) {
 	handler := gov.NewHandler(app.CustomGovKeeper)
 
 	_, err = handler(ctx, &types.MsgWhitelistPermissions{
-		Address: addr,
-		Permissions: []uint32{
-			uint32(types.PermClaimValidator),
-		},
+		Address:    addr,
+		Permission: uint32(types.PermClaimValidator),
 	})
 	require.NoError(t, err)
 
@@ -60,10 +58,8 @@ func TestNewHandler_SetPermissions_ActorWithPerms(t *testing.T) {
 	// Call the handler to add some permissions.
 	handler := gov.NewHandler(app.CustomGovKeeper)
 	_, err = handler(ctx, &types.MsgWhitelistPermissions{
-		Address: addr,
-		Permissions: []uint32{
-			uint32(types.PermClaimValidator),
-		},
+		Address:    addr,
+		Permission: uint32(types.PermClaimValidator),
 	})
 	require.NoError(t, err)
 

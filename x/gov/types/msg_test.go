@@ -20,7 +20,7 @@ func TestMsgWhitelistPermissions_ValidateBasic(t *testing.T) {
 			msg: NewMsgWhitelistPermissions(
 				types.AccAddress{},
 				types.AccAddress("some addr"),
-				nil,
+				0,
 			),
 			expectedErr: ErrEmptyProposerAccAddress,
 		},
@@ -29,7 +29,7 @@ func TestMsgWhitelistPermissions_ValidateBasic(t *testing.T) {
 			msg: NewMsgWhitelistPermissions(
 				types.AccAddress("some addr"),
 				types.AccAddress{},
-				nil,
+				0,
 			),
 			expectedErr: ErrEmptyPermissionsAccAddress,
 		},

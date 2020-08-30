@@ -17,7 +17,7 @@ import (
 )
 
 const (
-	flagPermissions = "permissions"
+	FlagPermission = "permission"
 )
 
 func GetTxSetWhitelistPermissions() *cobra.Command {
@@ -31,7 +31,7 @@ func GetTxSetWhitelistPermissions() *cobra.Command {
 				return err
 			}
 
-			slice, err := cmd.Flags().GetUintSlice(flagPermissions)
+			perm, err := cmd.Flags().GetUint32(FlagPermission)
 			if err != nil {
 				return fmt.Errorf("invalid permissions")
 			}
@@ -49,7 +49,7 @@ func GetTxSetWhitelistPermissions() *cobra.Command {
 			msg := types.NewMsgWhitelistPermissions(
 				clientCtx.FromAddress,
 				bech,
-				uintToUint32Slice(slice),
+				perm,
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
@@ -57,7 +57,7 @@ func GetTxSetWhitelistPermissions() *cobra.Command {
 	}
 
 	cmd.Flags().String(cli.FlagAddr, "", "the address to set permissions")
-	cmd.Flags().UintSlice(flagPermissions, []uint{}, "the list of permissions")
+	cmd.Flags().Uint32(FlagPermission, 0, "the list of permissions")
 
 	flags.AddTxFlagsToCmd(cmd)
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)

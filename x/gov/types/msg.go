@@ -6,12 +6,12 @@ var _ sdk.Msg = &MsgWhitelistPermissions{}
 
 func NewMsgWhitelistPermissions(
 	proposer, address sdk.AccAddress,
-	permissions []uint32,
+	permission uint32,
 ) *MsgWhitelistPermissions {
 	return &MsgWhitelistPermissions{
-		Proposer:    proposer,
-		Address:     address,
-		Permissions: permissions,
+		Proposer:   proposer,
+		Address:    address,
+		Permission: permission,
 	}
 }
 
