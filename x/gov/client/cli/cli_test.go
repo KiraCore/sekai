@@ -3,6 +3,7 @@ package cli_test
 import (
 	"context"
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/cosmos/cosmos-sdk/crypto/hd"
@@ -163,7 +164,7 @@ func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions_WithUserThatDoesN
 	cmd.SetArgs(
 		[]string{
 			fmt.Sprintf("--%s=%s", flags.FlagFrom, newAccount.GetAddress().String()),
-			fmt.Sprintf("--%s=%s", cli2.FlagAddr, newAccount.GetAddress().String()),
+			fmt.Sprintf("--%s=%s", cli2.FlagAddr, val.Address.String()),
 			fmt.Sprintf("--%s=%s", cli.FlagPermission, "1"),
 			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
@@ -174,30 +175,7 @@ func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions_WithUserThatDoesN
 	err = cmd.ExecuteContext(ctx)
 	s.Require().NoError(err)
 
-	err = s.network.WaitForNextBlock()
-	s.Require().NoError(err)
-
-	fmt.Printf("%s", out.String())
-
-	// We check if the user has the permissions
-	cmd = cli.GetCmdQueryPermissions()
-	out.Reset()
-
-	cmd.SetArgs(
-		[]string{
-			newAccount.GetAddress().String(),
-		},
-	)
-
-	err = cmd.ExecuteContext(ctx)
-	s.Require().NoError(err)
-
-	var perms types2.Permissions
-	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &perms)
-
-	// Validator 1 has permission to Add Permissions.
-	s.Require().False(perms.IsWhitelisted(types2.PermAddPermissions))
-	s.Require().True(perms.IsWhitelisted(types2.PermClaimValidator))
+	strings.Contains(out.String(), "SetPermissions: not enough permissions")
 }
 
 func (s IntegrationTestSuite) sendValue(cCtx client.Context, from types3.AccAddress, to types3.AccAddress, coin types3.Coin) {
@@ -224,8 +202,6 @@ func (s IntegrationTestSuite) sendValue(cCtx client.Context, from types3.AccAddr
 
 	err = s.network.WaitForNextBlock()
 	s.Require().NoError(err)
-
-	fmt.Printf(out.String())
 }
 
 func TestIntegrationTestSuite(t *testing.T) {
