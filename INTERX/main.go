@@ -30,7 +30,7 @@ func getOpenAPIHandler() http.Handler {
 
 var serverAddress = flag.String(
 	"server-address",
-	"dns:///0.0.0.0:10000",
+	"dns:///0.0.0.0:9090",
 	"The address to the gRPC server, in the gRPC standard naming format. "+
 		"See https://github.com/grpc/grpc/blob/master/doc/naming.md for more information.",
 )
