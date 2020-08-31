@@ -12,6 +12,7 @@ import (
 	"github.com/KiraCore/sekai/x/ixp/handlers"
 	ixptypes "github.com/KiraCore/sekai/x/ixp/types"
 	"github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
@@ -19,6 +20,13 @@ import (
 func TestMain(m *testing.M) {
 	app.SetConfig()
 	os.Exit(m.Run())
+}
+
+func ParseResponseID(result *sdk.Result, t *testing.T) string {
+	resultParser := handlers.CreateOrderBookResponse{}
+	err := json.Unmarshal(result.Data, &resultParser)
+	require.NoError(t, err)
+	return resultParser.ID
 }
 
 func TestNewHandler_MsgCreateOrderBook_HappyPath(t *testing.T) {
@@ -81,11 +89,8 @@ func TestNewHandler_MsgCreateOrderBook_HappyPath(t *testing.T) {
 
 			result, err := handler(ctx, theMsg)
 			require.NoError(t, err)
-			resultParser := handlers.CreateOrderBookResponse{}
-			err = json.Unmarshal(result.Data, &resultParser)
-			require.NoError(t, err)
 
-			orderbooks := app.IxpKeeper.GetOrderBookByID(ctx, resultParser.ID)
+			orderbooks := app.IxpKeeper.GetOrderBookByID(ctx, ParseResponseID(result, t))
 			require.Len(t, orderbooks, 1)
 
 			orderbook := orderbooks[0]
@@ -112,13 +117,12 @@ func TestNewHandler_MsgCreateOrder_HappyPath(t *testing.T) {
 	handler := ixp.NewHandler(app.IxpKeeper)
 
 	theMsg, err := ixptypes.NewMsgCreateOrderBook("base", "quote", "mnemonic", kiraAddr1)
-
 	require.NoError(t, err)
 
-	_, err = handler(ctx, theMsg) // TODO: should parse ID from handler response
+	result, err := handler(ctx, theMsg)
 	require.NoError(t, err)
 
-	orderbooks := app.IxpKeeper.GetOrderBookByQuote(ctx, "quote") // TODO replace this to by handler getter
+	orderbooks := app.IxpKeeper.GetOrderBookByID(ctx, ParseResponseID(result, t))
 	require.Len(t, orderbooks, 1)
 
 	orderbook := orderbooks[0]
@@ -127,13 +131,12 @@ func TestNewHandler_MsgCreateOrder_HappyPath(t *testing.T) {
 	createOrderMsg, err := ixptypes.NewMsgCreateOrder(bookID, ixptypes.LimitOrderType_limitBuy, 10, 10, kiraAddr1)
 	require.NoError(t, err)
 
-	_, err = handler(ctx, createOrderMsg) // TODO: should parse ID from handler response
+	result, err = handler(ctx, createOrderMsg)
 	require.NoError(t, err)
 
-	orders := app.IxpKeeper.GetOrders(ctx, bookID, 0, 0)
-	require.Len(t, orders, 1)
+	order, err := app.IxpKeeper.GetOrderByID(ctx, ParseResponseID(result, t))
+	require.NoError(t, err)
 
-	order := orders[0]
 	require.Equal(t, createOrderMsg.OrderType, order.OrderType)
 	require.Equal(t, createOrderMsg.OrderBookID, order.OrderBookID)
 	require.Equal(t, createOrderMsg.Amount, order.Amount)

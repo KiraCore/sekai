@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"encoding/hex"
+	"errors"
 	"math/rand"
 	"strconv"
 	"strings"
@@ -34,6 +35,27 @@ func (k Keeper) GetOrders(ctx sdk.Context, orderBookID string, maxOrders uint32,
 	}
 
 	return queryOutput
+}
+
+// GetOrderByID returns order by ID
+func (k Keeper) GetOrderByID(ctx sdk.Context, orderID string) (types.LimitOrder, error) {
+
+	var metaData []orderMeta
+	var order types.LimitOrder
+
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get([]byte("limit_order_meta"))
+
+	k.cdc.MustUnmarshalBinaryBare(bz, &metaData)
+
+	for _, elementInListOfIndices := range metaData {
+		if elementInListOfIndices.OrderID == orderID {
+			bz := store.Get([]byte(elementInListOfIndices.OrderID))
+			k.cdc.MustUnmarshalBinaryBare(bz, &order)
+			return order, nil
+		}
+	}
+	return order, errors.New("the orderID isn't working")
 }
 
 type orderMeta struct {
