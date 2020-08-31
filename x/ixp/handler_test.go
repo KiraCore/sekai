@@ -1,6 +1,7 @@
 package ixp_test
 
 import (
+	"encoding/json"
 	"os"
 	"testing"
 
@@ -8,6 +9,7 @@ import (
 
 	"github.com/KiraCore/sekai/simapp"
 	"github.com/KiraCore/sekai/x/ixp"
+	"github.com/KiraCore/sekai/x/ixp/handlers"
 	ixptypes "github.com/KiraCore/sekai/x/ixp/types"
 	"github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
@@ -21,6 +23,8 @@ func TestMain(m *testing.M) {
 
 func TestNewHandler_MsgCreateOrderBook_HappyPath(t *testing.T) {
 	kiraAddr1, err := types.AccAddressFromBech32("kira1da22wd7slpxpptasczs679mr5c8xtucqdzxc3n")
+	emptyKiraAddr1 := types.AccAddress{}
+	emptyKiraAddr2 := types.AccAddress(nil)
 	require.NoError(t, err)
 
 	app := simapp.Setup(false)
@@ -28,22 +32,74 @@ func TestNewHandler_MsgCreateOrderBook_HappyPath(t *testing.T) {
 
 	handler := ixp.NewHandler(app.IxpKeeper)
 
-	theMsg, err := ixptypes.NewMsgCreateOrderBook("base", "quote", "mnemonic", kiraAddr1)
+	tests := []struct {
+		name        string
+		constructor func() (*ixptypes.MsgCreateOrderBook, error)
+	}{
+		{
+			name: "basic path test",
+			constructor: func() (*ixptypes.MsgCreateOrderBook, error) {
+				return ixptypes.NewMsgCreateOrderBook("base", "quote", "mnemonic", kiraAddr1)
+			},
+		},
+		{
+			name: "empty base case",
+			constructor: func() (*ixptypes.MsgCreateOrderBook, error) {
+				return ixptypes.NewMsgCreateOrderBook("", "quote", "mnemonic", kiraAddr1)
+			},
+		},
+		{
+			name: "empty quote case",
+			constructor: func() (*ixptypes.MsgCreateOrderBook, error) {
+				return ixptypes.NewMsgCreateOrderBook("base", "", "mnemonic", kiraAddr1)
+			},
+		},
+		{
+			name: "empty mnemonic case",
+			constructor: func() (*ixptypes.MsgCreateOrderBook, error) {
+				return ixptypes.NewMsgCreateOrderBook("base", "quote", "", kiraAddr1)
+			},
+		},
+		{
+			name: "empty curator case1",
+			constructor: func() (*ixptypes.MsgCreateOrderBook, error) {
+				return ixptypes.NewMsgCreateOrderBook("base", "quote", "mnemonic", emptyKiraAddr1)
+			},
+		},
+		{
+			name: "empty curator case2",
+			constructor: func() (*ixptypes.MsgCreateOrderBook, error) {
+				return ixptypes.NewMsgCreateOrderBook("base", "quote", "mnemonic", emptyKiraAddr2)
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			theMsg, err := tt.constructor()
+			require.NoError(t, err)
 
-	require.NoError(t, err)
+			result, err := handler(ctx, theMsg)
+			require.NoError(t, err)
+			resultParser := handlers.CreateOrderBookResponse{}
+			err = json.Unmarshal(result.Data, &resultParser)
+			require.NoError(t, err)
 
-	_, err = handler(ctx, theMsg) // TODO: should parse ID from handler response
-	require.NoError(t, err)
+			orderbooks := app.IxpKeeper.GetOrderBookByID(ctx, resultParser.ID)
+			require.Len(t, orderbooks, 1)
 
-	orderbooks := app.IxpKeeper.GetOrderBookByQuote(ctx, "quote") // TODO replace this to by handler getter
-	require.Len(t, orderbooks, 1)
+			orderbook := orderbooks[0]
 
-	orderbook := orderbooks[0]
-
-	require.Equal(t, theMsg.Base, orderbook.Base)
-	require.Equal(t, theMsg.Quote, orderbook.Quote)
-	require.Equal(t, theMsg.Mnemonic, orderbook.Mnemonic)
-	require.Equal(t, theMsg.Curator, orderbook.Curator)
+			require.Equal(t, theMsg.Base, orderbook.Base)
+			require.Equal(t, theMsg.Quote, orderbook.Quote)
+			require.Equal(t, theMsg.Mnemonic, orderbook.Mnemonic)
+			if theMsg.Curator != nil && theMsg.Curator.Empty() {
+				require.Equal(t, emptyKiraAddr2, orderbook.Curator)
+			} else {
+				require.Equal(t, theMsg.Curator, orderbook.Curator)
+			}
+		})
+	}
 }
 
 func TestNewHandler_MsgCreateOrder_HappyPath(t *testing.T) {
