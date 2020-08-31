@@ -12,14 +12,7 @@ generate:
 	# --grpc-gateway_out generates gRPC-Gateway output.
 	# --openapiv2_out generates an OpenAPI 2.0 specification for our gRPC-Gateway endpoints.
 	#
-	protoc \
-		-I proto \
-		-I third_party/grpc-gateway/ \
-		-I third_party/googleapis \
-		--go_out=plugins=grpc,paths=source_relative:./proto-gen \
-		--grpc-gateway_out=paths=source_relative:./proto-gen \
-		--openapiv2_out=third_party/OpenAPI/ \
-		proto/example.proto
+	./scripts/protocgen.sh
 
 	# Generate static assets for OpenAPI UI
 	statik -m -f -src third_party/OpenAPI/
@@ -30,3 +23,6 @@ install:
 		github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway \
 		github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2 \
 		github.com/rakyll/statik
+
+start:
+	WITH_TRANSPORT_CREDENTIALS=false go run main.go
