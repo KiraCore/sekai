@@ -16,6 +16,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
+	"github.com/tendermint/tendermint/crypto"
+	"github.com/tendermint/tendermint/crypto/ed25519"
+	"github.com/tendermint/tendermint/crypto/secp256k1"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
 
@@ -43,6 +46,18 @@ func NewAccountByIndex(accNum int) sdk.AccAddress {
 	addr, _ := simapp.TestAddr(buffer.String(), bech)
 	buffer.Reset()
 	return addr
+}
+
+// GenSecp256k1PubKey is a function to generate a pubKey
+func GenSecp256k1PubKey() (secp256k1.PrivKey, crypto.PubKey, error) {
+	priv := secp256k1.GenPrivKey()
+	return priv, priv.PubKey(), nil
+}
+
+// GenEd25519PubKey is a function to generate a pubKey
+func GenEd25519PubKey() (ed25519.PrivKey, crypto.PubKey, error) {
+	priv := ed25519.GenPrivKey()
+	return priv, priv.PubKey(), nil
 }
 
 func TestNewHandler_MsgCreateOrderBook_HappyPath(t *testing.T) {
@@ -341,52 +356,86 @@ func TestNewHandler_MsgUpsertSignerKey_HappyPath(t *testing.T) {
 	handler := ixp.NewHandler(app.IxpKeeper)
 
 	tests := []struct {
-		name        string
-		constructor func(sdk.AccAddress) (*ixptypes.MsgUpsertSignerKey, error)
-		handlerErr  string
+		name          string
+		constructor   func(sdk.AccAddress) (*ixptypes.MsgUpsertSignerKey, error)
+		handlerErr    string
+		runAgain      bool
+		againErr      string
+		runDiffAddr   bool
+		diffAddrErr   string
+		runDiffPubKey bool
 	}{
 		{
 			name: "one permission test",
 			constructor: func(addr sdk.AccAddress) (*ixptypes.MsgUpsertSignerKey, error) {
+				_, pubKey, err := GenSecp256k1PubKey()
+				require.NoError(t, err)
+				pubKeyText, err := types.Bech32ifyPubKey(types.Bech32PubKeyTypeAccPub, pubKey)
+				require.NoError(t, err)
 				return ixptypes.NewMsgUpsertSignerKey(pubKeyText, ixptypes.SignerKeyType_Secp256k1, 0, true, []int64{1}, addr)
 			},
+			runAgain:      true,
+			againErr:      "",
+			runDiffAddr:   true,
+			diffAddrErr:   "this key is owned by another curator already",
+			runDiffPubKey: true,
 		},
 		{
 			name: "empty permission test1",
-			// TODO this shouldn't output an error for using duplicated pubKey?
 			constructor: func(addr sdk.AccAddress) (*ixptypes.MsgUpsertSignerKey, error) {
+				_, pubKey, err := GenSecp256k1PubKey()
+				require.NoError(t, err)
+				pubKeyText, err := types.Bech32ifyPubKey(types.Bech32PubKeyTypeAccPub, pubKey)
+				require.NoError(t, err)
 				return ixptypes.NewMsgUpsertSignerKey(pubKeyText, ixptypes.SignerKeyType_Secp256k1, 0, true, []int64{}, addr)
 			},
 		},
 		{
 			name: "empty permission test2",
-			// TODO this shouldn't output an error for using duplicated pubKey?
 			constructor: func(addr sdk.AccAddress) (*ixptypes.MsgUpsertSignerKey, error) {
+				_, pubKey, err := GenSecp256k1PubKey()
+				require.NoError(t, err)
+				pubKeyText, err := types.Bech32ifyPubKey(types.Bech32PubKeyTypeAccPub, pubKey)
+				require.NoError(t, err)
 				return ixptypes.NewMsgUpsertSignerKey(pubKeyText, ixptypes.SignerKeyType_Secp256k1, 0, true, nil, addr)
 			},
 		},
 		{
 			name: "empty curator test1",
-			// TODO this shouldn't output an error for using duplicated pubKey?
 			constructor: func(addr sdk.AccAddress) (*ixptypes.MsgUpsertSignerKey, error) {
+				_, pubKey, err := GenSecp256k1PubKey()
+				require.NoError(t, err)
+				pubKeyText, err := types.Bech32ifyPubKey(types.Bech32PubKeyTypeAccPub, pubKey)
+				require.NoError(t, err)
 				return ixptypes.NewMsgUpsertSignerKey(pubKeyText, ixptypes.SignerKeyType_Secp256k1, 0, true, []int64{1}, emptyKiraAddr1)
 			},
 			handlerErr: "curator shouldn't be empty",
 		},
 		{
 			name: "empty curator test2",
-			// TODO this shouldn't output an error for using duplicated pubKey?
 			constructor: func(addr sdk.AccAddress) (*ixptypes.MsgUpsertSignerKey, error) {
+				_, pubKey, err := GenSecp256k1PubKey()
+				require.NoError(t, err)
+				pubKeyText, err := types.Bech32ifyPubKey(types.Bech32PubKeyTypeAccPub, pubKey)
+				require.NoError(t, err)
 				return ixptypes.NewMsgUpsertSignerKey(pubKeyText, ixptypes.SignerKeyType_Secp256k1, 0, true, []int64{1}, emptyKiraAddr2)
 			},
 			handlerErr: "curator shouldn't be empty",
 		},
-		// TODO should use different pubKey per test
-		// TODO should add case for two pub key creation from single key
-		// TODO should add case for upsert signer key validation e.g. output an error for using duplicated pubKey
+		{
+			name: "ed25519 pubKey test",
+			constructor: func(addr sdk.AccAddress) (*ixptypes.MsgUpsertSignerKey, error) {
+				_, pubKey, err := GenEd25519PubKey()
+				require.NoError(t, err)
+				pubKeyText, err := types.Bech32ifyPubKey(types.Bech32PubKeyTypeAccPub, pubKey)
+				require.NoError(t, err)
+				return ixptypes.NewMsgUpsertSignerKey(pubKeyText, ixptypes.SignerKeyType_Secp256k1, 0, true, []int64{1}, addr)
+			},
+		},
 	}
 	for i, tt := range tests {
-		theMsg, err := tt.constructor(NewAccountByIndex(i))
+		addr := NewAccountByIndex(i)
+		theMsg, err := tt.constructor(addr)
 		require.NoError(t, err)
 
 		_, err = handler(ctx, theMsg)
@@ -415,6 +464,33 @@ func TestNewHandler_MsgUpsertSignerKey_HappyPath(t *testing.T) {
 			require.Equal(t, emptyKiraAddr2, signerkey.Curator)
 		} else {
 			require.Equal(t, theMsg.Curator, signerkey.Curator)
+		}
+		if tt.runAgain {
+			_, err = handler(ctx, theMsg)
+			if tt.againErr == "" {
+				require.NoError(t, err)
+				signerkeys := app.IxpKeeper.GetSignerKeys(ctx, theMsg.Curator)
+				require.Len(t, signerkeys, 1)
+			} else {
+				require.Error(t, err)
+				require.Contains(t, err.Error(), tt.againErr)
+			}
+		}
+		if tt.runDiffAddr {
+			diffMsg := *theMsg                                      // copy message
+			diffMsg.Curator = NewAccountByIndex(i + len(tests) + 1) // update curator field
+			_, err = handler(ctx, &diffMsg)                         // execute the message
+			require.Error(t, err)
+			require.Contains(t, err.Error(), tt.diffAddrErr)
+		}
+		if tt.runDiffPubKey {
+			diffMsg, err := tt.constructor(addr)
+			require.True(t, diffMsg.Curator.String() == theMsg.Curator.String())
+			require.NoError(t, err)
+			_, err = handler(ctx, diffMsg)
+			require.NoError(t, err)
+			signerkeys := app.IxpKeeper.GetSignerKeys(ctx, theMsg.Curator)
+			require.Len(t, signerkeys, 2)
 		}
 	}
 }

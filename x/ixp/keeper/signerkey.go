@@ -76,7 +76,7 @@ func (k Keeper) UpsertSignerKey(ctx sdk.Context,
 			store.Delete(pubKeyStoreID)
 		}
 	}
-	if !store.Has([]byte(pubKey)) { // when pubKey's owner does not exist
+	if !store.Has(pubKeyStoreID) { // when pubKey's owner does not exist
 		newSignerKeys = append(newSignerKeys, signerKey)
 		// Set pubKey curator when pubKey is newly added
 		store.Set(pubKeyStoreID, curator)
