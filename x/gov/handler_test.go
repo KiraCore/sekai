@@ -32,7 +32,7 @@ func TestNewHandler_SetPermissions_ActorWithoutPerms(t *testing.T) {
 
 	// First we set Permissions to SetPermissions to proposerAddr.
 	proposerActor := types.NewDefaultActor(proposerAddr)
-	err = proposerActor.Permissions.AddToWhitelist(types.PermAddPermissions)
+	err = proposerActor.Permissions.AddToWhitelist(types.PermSetPermissions)
 	require.NoError(t, err)
 	app.CustomGovKeeper.SaveNetworkActor(ctx, proposerActor)
 
@@ -63,13 +63,13 @@ func TestNewHandler_SetPermissions_ActorWithPerms(t *testing.T) {
 
 	// First we set Permissions to SetPermissions to proposerAddr.
 	proposerActor := types.NewDefaultActor(proposerAddr)
-	err = proposerActor.Permissions.AddToWhitelist(types.PermAddPermissions)
+	err = proposerActor.Permissions.AddToWhitelist(types.PermSetPermissions)
 	require.NoError(t, err)
 	app.CustomGovKeeper.SaveNetworkActor(ctx, proposerActor)
 
 	// Add some perms before to the actor.
 	actor := types.NewDefaultActor(addr)
-	err = actor.Permissions.AddToWhitelist(types.PermAddPermissions)
+	err = actor.Permissions.AddToWhitelist(types.PermSetPermissions)
 	require.NoError(t, err)
 	app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
 
@@ -86,7 +86,7 @@ func TestNewHandler_SetPermissions_ActorWithPerms(t *testing.T) {
 	require.NoError(t, err)
 
 	require.True(t, actor.Permissions.IsWhitelisted(types.PermClaimValidator))
-	require.True(t, actor.Permissions.IsWhitelisted(types.PermAddPermissions)) // This permission was already set before callid add permission.
+	require.True(t, actor.Permissions.IsWhitelisted(types.PermSetPermissions)) // This permission was already set before callid add permission.
 }
 
 func TestNewHandler_SetPermissionsWithoutSetPermissions(t *testing.T) {

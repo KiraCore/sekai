@@ -29,7 +29,7 @@ func handleWhitelistPermissions(ctx sdk.Context, ck keeper.Keeper, msg *types2.M
 		return nil, errors.Wrap(types2.ErrNotEnoughPermissions, "SetPermissions")
 	}
 
-	if proposer.Permissions.IsBlacklisted(types2.PermAddPermissions) || !proposer.Permissions.IsWhitelisted(types2.PermAddPermissions) {
+	if proposer.Permissions.IsBlacklisted(types2.PermSetPermissions) || !proposer.Permissions.IsWhitelisted(types2.PermSetPermissions) {
 		return nil, errors.Wrap(types2.ErrNotEnoughPermissions, "SetPermissions")
 	}
 

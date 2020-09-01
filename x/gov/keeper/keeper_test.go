@@ -77,15 +77,15 @@ func TestKeeper_AddPermissionToNetworkActor(t *testing.T) {
 	// We check he does not have permissions
 	savedNetworkActor, err := app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addr)
 	require.NoError(t, err)
-	require.False(t, savedNetworkActor.Permissions.IsWhitelisted(types.PermAddPermissions))
+	require.False(t, savedNetworkActor.Permissions.IsWhitelisted(types.PermSetPermissions))
 
 	// We add permissions and we save it again.
-	err = savedNetworkActor.Permissions.AddToWhitelist(types.PermAddPermissions)
+	err = savedNetworkActor.Permissions.AddToWhitelist(types.PermSetPermissions)
 	require.NoError(t, err)
 	app.CustomGovKeeper.SaveNetworkActor(ctx, savedNetworkActor)
 
 	// And we check that now it has permissions
 	savedNetworkActor, err = app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addr)
 	require.NoError(t, err)
-	require.True(t, savedNetworkActor.Permissions.IsWhitelisted(types.PermAddPermissions))
+	require.True(t, savedNetworkActor.Permissions.IsWhitelisted(types.PermSetPermissions))
 }

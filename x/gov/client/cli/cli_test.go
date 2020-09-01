@@ -88,7 +88,7 @@ func (s IntegrationTestSuite) TestGetCmdQueryPermissions() {
 	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &perms)
 
 	// Validator 1 has permission to Add Permissions.
-	s.Require().True(perms.IsWhitelisted(types2.PermAddPermissions))
+	s.Require().True(perms.IsWhitelisted(types2.PermSetPermissions))
 	s.Require().False(perms.IsWhitelisted(types2.PermClaimValidator))
 }
 
@@ -141,7 +141,7 @@ func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions() {
 	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &perms)
 
 	// Validator 1 has permission to Add Permissions.
-	s.Require().False(perms.IsWhitelisted(types2.PermAddPermissions))
+	s.Require().False(perms.IsWhitelisted(types2.PermSetPermissions))
 	s.Require().True(perms.IsWhitelisted(types2.PermClaimValidator))
 }
 
