@@ -1,8 +1,10 @@
 package ixp_test
 
 import (
+	"bytes"
 	"encoding/json"
 	"os"
+	"strconv"
 	"testing"
 
 	"github.com/KiraCore/sekai/app"
@@ -27,6 +29,20 @@ func ParseResponseID(result *sdk.Result, t *testing.T) string {
 	err := json.Unmarshal(result.Data, &resultParser)
 	require.NoError(t, err)
 	return resultParser.ID
+}
+
+func NewAccountByIndex(accNum int) sdk.AccAddress {
+	var buffer bytes.Buffer
+	i := accNum + 100
+	numString := strconv.Itoa(i)
+	buffer.WriteString("A58856F0FD53BF058B4909A21AEC019107BA6") //base address string
+
+	buffer.WriteString(numString) //adding on final two digits to make addresses unique
+	res, _ := sdk.AccAddressFromHex(buffer.String())
+	bech := res.String()
+	addr, _ := simapp.TestAddr(buffer.String(), bech)
+	buffer.Reset()
+	return addr
 }
 
 func TestNewHandler_MsgCreateOrderBook_HappyPath(t *testing.T) {
@@ -313,12 +329,12 @@ func TestNewHandler_MsgCancelOrder_HappyPath(t *testing.T) {
 }
 
 func TestNewHandler_MsgUpsertSignerKey_HappyPath(t *testing.T) {
-	kiraAddr1, err := types.AccAddressFromBech32("kira1da22wd7slpxpptasczs679mr5c8xtucqdzxc3n")
-	require.NoError(t, err)
 
 	pubKeyText := "kiravalconspub1zcjduepqylc5k8r40azmw0xt7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsq4xg7em"
-	_, err = types.GetPubKeyFromBech32(types.Bech32PubKeyTypeConsPub, pubKeyText)
+	_, err := types.GetPubKeyFromBech32(types.Bech32PubKeyTypeConsPub, pubKeyText)
 	require.NoError(t, err)
+	emptyKiraAddr1 := types.AccAddress{}
+	emptyKiraAddr2 := types.AccAddress(nil)
 
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
@@ -326,32 +342,63 @@ func TestNewHandler_MsgUpsertSignerKey_HappyPath(t *testing.T) {
 
 	tests := []struct {
 		name        string
-		constructor func() (*ixptypes.MsgUpsertSignerKey, error)
+		constructor func(sdk.AccAddress) (*ixptypes.MsgUpsertSignerKey, error)
+		handlerErr  string
 	}{
 		{
 			name: "one permission test",
-			constructor: func() (*ixptypes.MsgUpsertSignerKey, error) {
-				return ixptypes.NewMsgUpsertSignerKey(pubKeyText, ixptypes.SignerKeyType_Secp256k1, 0, true, []int64{1}, kiraAddr1)
+			constructor: func(addr sdk.AccAddress) (*ixptypes.MsgUpsertSignerKey, error) {
+				return ixptypes.NewMsgUpsertSignerKey(pubKeyText, ixptypes.SignerKeyType_Secp256k1, 0, true, []int64{1}, addr)
 			},
 		},
-		// {
-		// 	name: "empty permission test",
-		// 	constructor: func() (*ixptypes.MsgUpsertSignerKey, error) {
-		// 		return ixptypes.NewMsgUpsertSignerKey(pubKeyText, ixptypes.SignerKeyType_Secp256k1, 0, true, []int64{}, kiraAddr1)
-		// 	},
-		// },
-		// TODO should use different addresses and pubKey per test
-		// TODO should add case for two pub key creation
-		// TODO should add case for upsert signer key validation
+		{
+			name: "empty permission test1",
+			// TODO this shouldn't output an error for using duplicated pubKey?
+			constructor: func(addr sdk.AccAddress) (*ixptypes.MsgUpsertSignerKey, error) {
+				return ixptypes.NewMsgUpsertSignerKey(pubKeyText, ixptypes.SignerKeyType_Secp256k1, 0, true, []int64{}, addr)
+			},
+		},
+		{
+			name: "empty permission test2",
+			// TODO this shouldn't output an error for using duplicated pubKey?
+			constructor: func(addr sdk.AccAddress) (*ixptypes.MsgUpsertSignerKey, error) {
+				return ixptypes.NewMsgUpsertSignerKey(pubKeyText, ixptypes.SignerKeyType_Secp256k1, 0, true, nil, addr)
+			},
+		},
+		{
+			name: "empty curator test1",
+			// TODO this shouldn't output an error for using duplicated pubKey?
+			constructor: func(addr sdk.AccAddress) (*ixptypes.MsgUpsertSignerKey, error) {
+				return ixptypes.NewMsgUpsertSignerKey(pubKeyText, ixptypes.SignerKeyType_Secp256k1, 0, true, []int64{1}, emptyKiraAddr1)
+			},
+			handlerErr: "curator shouldn't be empty",
+		},
+		{
+			name: "empty curator test2",
+			// TODO this shouldn't output an error for using duplicated pubKey?
+			constructor: func(addr sdk.AccAddress) (*ixptypes.MsgUpsertSignerKey, error) {
+				return ixptypes.NewMsgUpsertSignerKey(pubKeyText, ixptypes.SignerKeyType_Secp256k1, 0, true, []int64{1}, emptyKiraAddr2)
+			},
+			handlerErr: "curator shouldn't be empty",
+		},
+		// TODO should use different pubKey per test
+		// TODO should add case for two pub key creation from single key
+		// TODO should add case for upsert signer key validation e.g. output an error for using duplicated pubKey
 	}
-	for _, tt := range tests {
-		theMsg, err := tt.constructor()
+	for i, tt := range tests {
+		theMsg, err := tt.constructor(NewAccountByIndex(i))
 		require.NoError(t, err)
 
 		_, err = handler(ctx, theMsg)
-		require.NoError(t, err)
+		if len(tt.handlerErr) != 0 {
+			require.Error(t, err)
+			require.Contains(t, err.Error(), tt.handlerErr)
+			continue
+		} else {
+			require.NoError(t, err)
+		}
 
-		signerkeys := app.IxpKeeper.GetSignerKeys(ctx, kiraAddr1)
+		signerkeys := app.IxpKeeper.GetSignerKeys(ctx, theMsg.Curator)
 		require.Len(t, signerkeys, 1)
 
 		signerkey := signerkeys[0]
@@ -359,7 +406,15 @@ func TestNewHandler_MsgUpsertSignerKey_HappyPath(t *testing.T) {
 		require.Equal(t, theMsg.PubKey, signerkey.PubKey)
 		require.Equal(t, theMsg.KeyType, signerkey.KeyType)
 		require.Equal(t, theMsg.ExpiryTime, signerkey.ExpiryTime)
-		require.Equal(t, theMsg.Permissions, signerkey.Permissions)
-		require.Equal(t, theMsg.Curator, signerkey.Curator)
+		if theMsg.Permissions != nil && len(theMsg.Permissions) == 0 {
+			require.Equal(t, []int64(nil), signerkey.Permissions)
+		} else {
+			require.Equal(t, theMsg.Permissions, signerkey.Permissions)
+		}
+		if theMsg.Curator != nil && theMsg.Curator.Empty() {
+			require.Equal(t, emptyKiraAddr2, signerkey.Curator)
+		} else {
+			require.Equal(t, theMsg.Curator, signerkey.Curator)
+		}
 	}
 }

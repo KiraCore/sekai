@@ -36,14 +36,18 @@ func (k Keeper) UpsertSignerKey(ctx sdk.Context,
 	pubKey string,
 	keyType types.SignerKeyType,
 	expiryTime int64,
-	Permissions []int64,
+	permissions []int64,
 	curator sdk.AccAddress) error {
+
+	if curator.Empty() {
+		return errors.New("curator shouldn't be empty")
+	}
 
 	var newSignerKeys []types.SignerKey
 	// TODO: createOrder/createOrderBook should use block time instead of current timestamp from local computer
 	lastBlockTimestamp := ctx.BlockHeader().Time.Unix() + time.Hour.Milliseconds()*24*10
 
-	var signerKey = types.NewSignerKey(pubKey, keyType, expiryTime, true, Permissions, curator)
+	var signerKey = types.NewSignerKey(pubKey, keyType, expiryTime, true, permissions, curator)
 
 	var signerKeys []types.SignerKey
 	// Storage Logic
