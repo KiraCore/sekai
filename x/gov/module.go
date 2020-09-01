@@ -36,8 +36,8 @@ func (b AppModuleBasic) RegisterInterfaces(registry types2.InterfaceRegistry) {
 	customgovtypes.RegisterInterfaces(registry)
 }
 
-func (b AppModuleBasic) DefaultGenesis(marshaler codec.JSONMarshaler) json.RawMessage {
-	return nil
+func (b AppModuleBasic) DefaultGenesis(cdc codec.JSONMarshaler) json.RawMessage {
+	return cdc.MustMarshalJSON(customgovtypes.DefaultGenesis())
 }
 
 func (b AppModuleBasic) ValidateGenesis(marshaler codec.JSONMarshaler, config client.TxEncodingConfig, message json.RawMessage) error {
@@ -75,6 +75,10 @@ func (am AppModule) InitGenesis(
 
 	for _, actor := range genesisState.NetworkActors {
 		am.customGovKeeper.SaveNetworkActor(ctx, *actor)
+	}
+
+	for index, perm := range genesisState.Permissions {
+		am.customGovKeeper.SetPermissionsForRole(ctx, customgovtypes.Role(index), perm)
 	}
 
 	return nil

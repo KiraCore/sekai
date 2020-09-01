@@ -5,7 +5,7 @@ func DefaultGenesis() *GenesisState {
 	return &GenesisState{
 		Permissions: map[uint64]*Permissions{
 			uint64(RoleSudo):      NewPermissions([]PermValue{PermSetPermissions}, nil),
-			uint64(RoleValidator): NewPermissions([]PermValue{PermClaimGovernanceSeat}, nil),
+			uint64(RoleValidator): NewPermissions([]PermValue{PermClaimValidator}, nil),
 		},
 	}
 }

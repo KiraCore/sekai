@@ -4,6 +4,8 @@ import (
 	"io"
 	"os"
 
+	gov2 "github.com/KiraCore/sekai/x/gov"
+
 	customstaking "github.com/KiraCore/sekai/x/staking"
 	customstakingtypes "github.com/KiraCore/sekai/x/staking/types"
 
@@ -113,6 +115,7 @@ var (
 		transfer.AppModuleBasic{},
 
 		customstaking.AppModuleBasic{},
+		gov2.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -323,6 +326,7 @@ func NewSimApp(
 		evidence.NewAppModule(app.EvidenceKeeper),
 		ibc.NewAppModule(app.IBCKeeper),
 		params.NewAppModule(app.ParamsKeeper),
+		gov2.NewAppModule(app.CustomGovKeeper),
 		transferModule,
 	)
 
@@ -344,7 +348,7 @@ func NewSimApp(
 	app.mm.SetOrderInitGenesis(
 		capabilitytypes.ModuleName, authtypes.ModuleName, distrtypes.ModuleName, stakingtypes.ModuleName, banktypes.ModuleName,
 		slashingtypes.ModuleName, govtypes.ModuleName, minttypes.ModuleName, crisistypes.ModuleName,
-		ibchost.ModuleName, genutiltypes.ModuleName, evidencetypes.ModuleName, ibctransfertypes.ModuleName,
+		ibchost.ModuleName, genutiltypes.ModuleName, evidencetypes.ModuleName, ibctransfertypes.ModuleName, customgovtypes.ModuleName,
 	)
 
 	app.mm.RegisterInvariants(&app.CrisisKeeper)

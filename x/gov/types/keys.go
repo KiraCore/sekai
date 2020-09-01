@@ -16,9 +16,8 @@ var (
 	RoleSudo      Role = 0x1
 	RoleValidator Role = 0x2
 
-	PermClaimValidator      PermValue = 1
-	PermClaimGovernanceSeat PermValue = 2
-	PermSetPermissions      PermValue = 3
+	PermClaimValidator PermValue = 1
+	PermSetPermissions PermValue = 2
 )
 
 // Role represents a Role in the registry.

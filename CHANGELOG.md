@@ -3,6 +3,8 @@
 
 ## [Unreleased]
 
+- Module CustomGov defines in genesis by default Permissions by roles Validator (0x2) and Sudo (0x1).
+
 ## [0.1.2] - 09.01.2020
 ### Added
 
