@@ -210,6 +210,8 @@ func TestNewHandler_MsgCreateOrder_HappyPath(t *testing.T) {
 func TestNewHandler_MsgCancelOrder_HappyPath(t *testing.T) {
 	kiraAddr1, err := types.AccAddressFromBech32("kira1da22wd7slpxpptasczs679mr5c8xtucqdzxc3n")
 	require.NoError(t, err)
+	emptyKiraAddr1 := types.AccAddress{}
+	emptyKiraAddr2 := types.AccAddress(nil)
 
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
@@ -220,43 +222,94 @@ func TestNewHandler_MsgCancelOrder_HappyPath(t *testing.T) {
 
 	require.NoError(t, err)
 
-	_, err = handler(ctx, theMsg) // TODO: should parse ID from handler response
+	result, err := handler(ctx, theMsg)
 	require.NoError(t, err)
 
-	orderbooks := app.IxpKeeper.GetOrderBookByQuote(ctx, "quote") // TODO replace this to by handler getter
+	orderbooks := app.IxpKeeper.GetOrderBookByID(ctx, ParseResponseID(result, t))
 	require.Len(t, orderbooks, 1)
 
 	orderbook := orderbooks[0]
 	bookID := orderbook.ID
 
-	createOrderMsg, err := ixptypes.NewMsgCreateOrder(bookID, ixptypes.LimitOrderType_limitBuy, 10, 10, kiraAddr1)
-	require.NoError(t, err)
+	tests := []struct {
+		name        string
+		constructor func() (*ixptypes.MsgCreateOrder, error)
+	}{
+		{
+			name: "buy order test",
+			constructor: func() (*ixptypes.MsgCreateOrder, error) {
+				return ixptypes.NewMsgCreateOrder(bookID, ixptypes.LimitOrderType_limitBuy, 10, 10, kiraAddr1)
+			},
+		},
+		{
+			name: "sell order test",
+			constructor: func() (*ixptypes.MsgCreateOrder, error) {
+				return ixptypes.NewMsgCreateOrder(bookID, ixptypes.LimitOrderType_limitSell, 10, 10, kiraAddr1)
+			},
+		},
+		{
+			name: "zero price test",
+			// TODO: This shouldn't fail?
+			constructor: func() (*ixptypes.MsgCreateOrder, error) {
+				return ixptypes.NewMsgCreateOrder(bookID, ixptypes.LimitOrderType_limitBuy, 10, 0, kiraAddr1)
+			},
+		},
+		{
+			name: "zero amount test",
+			// TODO: This shouldn't fail?
+			constructor: func() (*ixptypes.MsgCreateOrder, error) {
+				return ixptypes.NewMsgCreateOrder(bookID, ixptypes.LimitOrderType_limitBuy, 0, 10, kiraAddr1)
+			},
+		},
+		{
+			name: "empty curator test1",
+			// TODO: This shouldn't fail?
+			constructor: func() (*ixptypes.MsgCreateOrder, error) {
+				return ixptypes.NewMsgCreateOrder(bookID, ixptypes.LimitOrderType_limitBuy, 10, 10, emptyKiraAddr1)
+			},
+		},
+		{
+			name: "empty curator test2",
+			// TODO: This shouldn't fail?
+			constructor: func() (*ixptypes.MsgCreateOrder, error) {
+				return ixptypes.NewMsgCreateOrder(bookID, ixptypes.LimitOrderType_limitBuy, 10, 10, emptyKiraAddr2)
+			},
+		},
+	}
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			createOrderMsg, err := tt.constructor()
+			require.NoError(t, err)
 
-	_, err = handler(ctx, createOrderMsg) // TODO: should parse ID from handler response
-	require.NoError(t, err)
+			result, err = handler(ctx, createOrderMsg)
+			require.NoError(t, err)
 
-	orders := app.IxpKeeper.GetOrders(ctx, bookID, 0, 0)
-	require.Len(t, orders, 1)
+			orderID := ParseResponseID(result, t)
+			order, err := app.IxpKeeper.GetOrderByID(ctx, orderID)
+			require.NoError(t, err)
 
-	order := orders[0]
-	orderID := order.ID
+			cancelOrderMsg, err := ixptypes.NewMsgCancelOrder(orderID, kiraAddr1)
+			require.NoError(t, err)
 
-	cancelOrderMsg, err := ixptypes.NewMsgCancelOrder(orderID, kiraAddr1)
-	require.NoError(t, err)
+			_, err = handler(ctx, cancelOrderMsg)
+			require.NoError(t, err)
+			order, err = app.IxpKeeper.GetOrderByID(ctx, orderID)
+			require.NoError(t, err)
 
-	_, err = handler(ctx, cancelOrderMsg)
-	require.NoError(t, err)
-	orders = app.IxpKeeper.GetOrders(ctx, bookID, 0, 0)
-	require.Len(t, orders, 1)
-
-	order = orders[0]
-	require.Equal(t, createOrderMsg.OrderType, order.OrderType)
-	require.Equal(t, createOrderMsg.OrderBookID, order.OrderBookID)
-	require.Equal(t, createOrderMsg.Amount, order.Amount)
-	require.Equal(t, createOrderMsg.LimitPrice, order.LimitPrice)
-	require.Equal(t, createOrderMsg.ExpiryTime, order.ExpiryTime)
-	require.Equal(t, createOrderMsg.Curator, order.Curator)
-	require.Equal(t, order.IsCancelled, true)
+			require.Equal(t, createOrderMsg.OrderType, order.OrderType)
+			require.Equal(t, createOrderMsg.OrderBookID, order.OrderBookID)
+			require.Equal(t, createOrderMsg.Amount, order.Amount)
+			require.Equal(t, createOrderMsg.LimitPrice, order.LimitPrice)
+			require.Equal(t, createOrderMsg.ExpiryTime, order.ExpiryTime)
+			if createOrderMsg.Curator != nil && createOrderMsg.Curator.Empty() {
+				require.Equal(t, emptyKiraAddr2, order.Curator)
+			} else {
+				require.Equal(t, createOrderMsg.Curator, order.Curator)
+			}
+			require.Equal(t, order.IsCancelled, true)
+		})
+	}
 }
 
 func TestNewHandler_MsgUpsertSignerKey_HappyPath(t *testing.T) {
