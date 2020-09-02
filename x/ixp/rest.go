@@ -11,6 +11,7 @@ import (
 
 // RegisterRESTRoutes register rest routes
 func RegisterRESTRoutes(cliContext client.Context, router *mux.Router) {
+	// TODO: rest server is not used on latest cosmos and we might need to remote this code
 	router.HandleFunc(strings.Join([]string{"", TransactionRoute, types.CreateOrderBookTransaction}, "/"), rest.CreateOrderbookRequestHandler(cliContext)).Methods("POST")
 	router.HandleFunc(strings.Join([]string{"", TransactionRoute, types.CreateOrderTransaction}, "/"), rest.CreateOrderRequestHandler(cliContext)).Methods("POST")
 	// TODO: should add cancel order rest endpoint

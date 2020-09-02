@@ -91,5 +91,44 @@ func (k Keeper) UpsertSignerKey(ctx sdk.Context,
 	return nil
 }
 
-// TODO: should add test for creating / updating after v0.0.5 release.
-// TODO: should add deleteSignerKey after discussion but this should create another directory under transactions folder?
+// DeleteSignerKey create signer key and put it into the keeper
+func (k Keeper) DeleteSignerKey(ctx sdk.Context,
+	pubKey string,
+	curator sdk.AccAddress) error {
+
+	if curator.Empty() {
+		return errors.New("curator shouldn't be empty")
+	}
+
+	var newSignerKeys []types.SignerKey
+	lastBlockTimestamp := ctx.BlockHeader().Time.Unix() + time.Hour.Milliseconds()*24*10
+
+	var signerKeys []types.SignerKey
+	// Storage Logic
+	store := ctx.KVStore(k.storeKey)
+	curatorStoreID := append([]byte(PrefixKeySignerKeys), []byte(curator)...)
+
+	if store.Has(curatorStoreID) {
+		bz := store.Get(curatorStoreID)
+		k.cdc.MustUnmarshalBinaryBare(bz, &signerKeys)
+	}
+
+	pubKeyStoreID := append([]byte(PrefixKeyPubKeyCurator), []byte(pubKey)...)
+
+	for _, sk := range signerKeys {
+		if strings.Compare(sk.PubKey, pubKey) != 0 && sk.ExpiryTime > lastBlockTimestamp {
+			// keep non-expired keys and not deleted key
+			newSignerKeys = append(newSignerKeys, sk)
+		} else { // Delete pubKey curator when it is expired or it's deleting key
+			if !store.Has(pubKeyStoreID) {
+				return errors.New("pubKey to curator mapping is not set properly at the time of expired key cleanup")
+			}
+			store.Delete(pubKeyStoreID)
+		}
+	}
+
+	store.Set(curatorStoreID, k.cdc.MustMarshalBinaryBare(newSignerKeys))
+	return nil
+}
+
+// TODO: should implement DeleteSignerKey msg, handler, cli and test
