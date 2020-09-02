@@ -4,6 +4,11 @@ import (
 	"io"
 	"os"
 
+	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
+
+	customgov "github.com/KiraCore/sekai/x/gov"
+	customgovkeeper "github.com/KiraCore/sekai/x/gov/keeper"
+
 	simappparams "github.com/cosmos/cosmos-sdk/simapp/params"
 
 	"github.com/cosmos/cosmos-sdk/client/rpc"
@@ -118,6 +123,7 @@ var (
 		transfer.AppModuleBasic{},
 		customstaking.AppModuleBasic{},
 		ixp.AppModuleBasic{},
+		customgov.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -168,6 +174,7 @@ type SekaiApp struct {
 	transferKeeper   ibctransferkeeper.Keeper
 
 	customStakingKeeper customkeeper.Keeper
+	customGovKeeper     customgovkeeper.Keeper
 
 	// make scoped keepers public for test purposes
 	scopedIBCKeeper      capabilitykeeper.ScopedKeeper
@@ -270,6 +277,7 @@ func NewInitApp(
 	)
 
 	app.customStakingKeeper = customkeeper.NewKeeper(keys[cumstomtypes.ModuleName], cdc)
+	app.customGovKeeper = customgovkeeper.NewKeeper(keys[cumstomtypes.ModuleName], appCodec)
 
 	app.ibcKeeper = ibckeeper.NewKeeper(
 		appCodec, keys[ibchost.StoreKey], app.stakingKeeper, scopedIBCKeeper,
@@ -318,7 +326,8 @@ func NewInitApp(
 		ibc.NewAppModule(app.ibcKeeper),
 		params.NewAppModule(app.paramsKeeper),
 		transferModule,
-		customstaking.NewAppModule(app.customStakingKeeper),
+		customstaking.NewAppModule(app.customStakingKeeper, app.customGovKeeper),
+		customgov.NewAppModule(app.customGovKeeper),
 	)
 	// During begin block slashing happens after distr.BeginBlocker so that
 	// there is nothing left over in the validator fee pool, so as to keep the
@@ -339,7 +348,7 @@ func NewInitApp(
 		capabilitytypes.ModuleName, authtypes.ModuleName /*distrtypes.ModuleName */ /*stakingtypes.ModuleName,*/, banktypes.ModuleName,
 		/*slashingtypes.ModuleName,*/ govtypes.ModuleName, crisistypes.ModuleName,
 		ibchost.ModuleName, genutiltypes.ModuleName, evidencetypes.ModuleName, ibctransfertypes.ModuleName,
-		cumstomtypes.ModuleName,
+		cumstomtypes.ModuleName, customgovtypes.ModuleName,
 	)
 
 	app.mm.RegisterInvariants(&app.crisisKeeper)

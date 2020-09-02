@@ -7,7 +7,7 @@ import (
 	"github.com/KiraCore/sekai/x/ixp"
 	ixptypes "github.com/KiraCore/sekai/x/ixp/types"
 	customstaking "github.com/KiraCore/sekai/x/staking"
-	types2 "github.com/KiraCore/sekai/x/staking/types"
+	customstakingtypes "github.com/KiraCore/sekai/x/staking/types"
 
 	ixpkeeper "github.com/KiraCore/sekai/x/ixp/keeper"
 	"github.com/KiraCore/sekai/x/staking/keeper"
@@ -82,6 +82,9 @@ import (
 	upgradeclient "github.com/cosmos/cosmos-sdk/x/upgrade/client"
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
+
+	customgov "github.com/KiraCore/sekai/x/gov/keeper"
+	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 )
 
 const appName = "KiraSimApp"
@@ -169,6 +172,7 @@ type SimApp struct {
 
 	CustomStakingKeeper keeper.Keeper
 	IxpKeeper           ixpkeeper.Keeper
+	CustomGovKeeper     customgov.Keeper
 
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
@@ -202,7 +206,7 @@ func NewSimApp(
 		minttypes.StoreKey, distrtypes.StoreKey, slashingtypes.StoreKey,
 		govtypes.StoreKey, paramstypes.StoreKey, ibchost.StoreKey, upgradetypes.StoreKey,
 		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey,
-		types2.ModuleName, ixptypes.ModuleName,
+		customstakingtypes.ModuleName, customgovtypes.ModuleName, ixptypes.ModuleName,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
@@ -271,7 +275,8 @@ func NewSimApp(
 		stakingtypes.NewMultiStakingHooks(app.DistrKeeper.Hooks(), app.SlashingKeeper.Hooks()),
 	)
 
-	app.CustomStakingKeeper = keeper.NewKeeper(keys[types2.ModuleName], cdc)
+	app.CustomStakingKeeper = keeper.NewKeeper(keys[customstakingtypes.ModuleName], cdc)
+	app.CustomGovKeeper = customgov.NewKeeper(keys[customgovtypes.ModuleName], appCodec)
 	app.IxpKeeper = ixpkeeper.NewKeeper(keys[ixptypes.ModuleName], cdc)
 
 	// Create IBC Keeper

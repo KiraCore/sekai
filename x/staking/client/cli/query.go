@@ -22,8 +22,8 @@ const (
 	FlagAddr    = "addr"
 )
 
-// GetCmdQueryValidatorByAddress the query delegation command.
-func GetCmdQueryValidatorByAddress() *cobra.Command {
+// GetCmdQueryValidator the query delegation command.
+func GetCmdQueryValidator() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "validator [--addr || --val-addr || --flagMoniker] ",
 		Short: "Query a validator based on address",

@@ -5,6 +5,8 @@ import (
 	"path/filepath"
 	"time"
 
+	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
+
 	"github.com/pkg/errors"
 
 	types2 "github.com/cosmos/cosmos-sdk/types"
@@ -136,7 +138,6 @@ func collectGenFiles(cfg Config, vals []*Validator, outputDir string) error {
 }
 
 func initGenFiles(cfg Config, vals []*Validator, genAccounts []authtypes.GenesisAccount, genBalances []banktypes.Balance, genFiles []string) error {
-
 	// set the accounts in the genesis state
 	var authGenState authtypes.GenesisState
 	cfg.Codec.MustUnmarshalJSON(cfg.GenesisState[authtypes.ModuleName], &authGenState)
@@ -165,6 +166,19 @@ func initGenFiles(cfg Config, vals []*Validator, genAccounts []authtypes.Genesis
 		customStakingGenState.Validators = append(customStakingGenState.Validators, validator)
 	}
 	cfg.GenesisState[customtypes.ModuleName] = cfg.Codec.MustMarshalJSON(&customStakingGenState)
+
+	var customGovGenState customgovtypes.GenesisState
+	// Only first validator is network actor
+	networkActor := customgovtypes.NewNetworkActor(
+		vals[0].Address,
+		nil,
+		1,
+		nil,
+		customgovtypes.NewPermissions([]customgovtypes.PermValue{customgovtypes.PermAddPermissions}, nil),
+		1,
+	)
+	customGovGenState.NetworkActors = append(customGovGenState.NetworkActors, &networkActor)
+	cfg.GenesisState[customgovtypes.ModuleName] = cfg.Codec.MustMarshalJSON(&customGovGenState)
 
 	appGenStateJSON, err := json.MarshalIndent(cfg.GenesisState, "", "  ")
 	if err != nil {

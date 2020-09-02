@@ -1,0 +1,24 @@
+syntax = "proto3";
+package kira.gov;
+
+import "gov.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/gov/types";
+
+// Query defines the gRPC querier service
+service Query {
+  // Validators queries a validator by address.
+  rpc PermissionsByAddress (PermissionsByAddressRequest) returns (PermissionsResponse) {}
+}
+
+message PermissionsByAddressRequest {
+  bytes val_addr = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"val_addr\""
+  ];
+}
+
+message PermissionsResponse {
+  kira.gov.Permissions permissions = 1;
+}

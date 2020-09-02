@@ -49,13 +49,20 @@ func (m MsgClaimValidator) Type() string {
 }
 
 func (m MsgClaimValidator) ValidateBasic() error {
+	if m.ValKey.Empty() {
+		return fmt.Errorf("validator not set")
+	}
+
+	if m.PubKey == "" {
+		return fmt.Errorf("public key not set")
+	}
+
 	return nil
 }
 
 func (m MsgClaimValidator) GetSignBytes() []byte {
-	//bz := ModuleCdc.MustMarshalJSON(m)
-	//return sdk.MustSortJSON(bz)
-	return nil
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
 }
 
 func (m MsgClaimValidator) GetSigners() []sdk.AccAddress {

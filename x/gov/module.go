@@ -1,14 +1,12 @@
-package staking
+package gov
 
 import (
 	"encoding/json"
 
-	govkeeper "github.com/KiraCore/sekai/x/gov/keeper"
+	cli2 "github.com/KiraCore/sekai/x/gov/client/cli"
+	keeper2 "github.com/KiraCore/sekai/x/gov/keeper"
+	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 
-	"github.com/tendermint/tendermint/crypto/encoding"
-
-	"github.com/KiraCore/sekai/x/staking/keeper"
-	"github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	types2 "github.com/cosmos/cosmos-sdk/codec/types"
@@ -18,9 +16,6 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 	abci "github.com/tendermint/tendermint/abci/types"
-
-	"github.com/KiraCore/sekai/x/staking/client/cli"
-	cumstomtypes "github.com/KiraCore/sekai/x/staking/types"
 )
 
 var (
@@ -31,14 +26,14 @@ var (
 type AppModuleBasic struct{}
 
 func (b AppModuleBasic) RegisterCodec(amino *codec.LegacyAmino) {
-	cumstomtypes.RegisterCodec(amino)
 }
 
 func (b AppModuleBasic) Name() string {
-	return cumstomtypes.ModuleName
+	return customgovtypes.ModuleName
 }
 
 func (b AppModuleBasic) RegisterInterfaces(registry types2.InterfaceRegistry) {
+	customgovtypes.RegisterInterfaces(registry)
 }
 
 func (b AppModuleBasic) DefaultGenesis(marshaler codec.JSONMarshaler) json.RawMessage {
@@ -53,22 +48,21 @@ func (b AppModuleBasic) RegisterRESTRoutes(context client.Context, router *mux.R
 }
 
 func (b AppModuleBasic) GetTxCmd() *cobra.Command {
-	return cli.GetTxClaimValidatorCmd()
+	return cli2.GetTxSetWhitelistPermissions()
 }
 
 func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
-	return cli.GetCmdQueryValidator()
+	return cli2.GetCmdQueryPermissions()
 }
 
-// AppModule extends the cosmos SDK staking.
+// AppModule extends the cosmos SDK gov.
 type AppModule struct {
 	AppModuleBasic
-	customStakingKeeper keeper.Keeper
-	customGovKeeper     govkeeper.Keeper
+	customGovKeeper keeper2.Keeper
 }
 
 func (am AppModule) RegisterInterfaces(registry types2.InterfaceRegistry) {
-	cumstomtypes.RegisterInterfaces(registry)
+	customgovtypes.RegisterInterfaces(registry)
 }
 
 func (am AppModule) InitGenesis(
@@ -76,24 +70,14 @@ func (am AppModule) InitGenesis(
 	cdc codec.JSONMarshaler,
 	data json.RawMessage,
 ) []abci.ValidatorUpdate {
-	var genesisState types.GenesisState
+	var genesisState customgovtypes.GenesisState
 	cdc.MustUnmarshalJSON(data, &genesisState)
 
-	valUpdate := make([]abci.ValidatorUpdate, len(genesisState.Validators))
-
-	for i, val := range genesisState.Validators {
-		am.customStakingKeeper.AddValidator(ctx, val)
-		pk, err := encoding.PubKeyToProto(val.GetConsPubKey())
-		if err != nil {
-			panic("invalid key")
-		}
-		valUpdate[i] = abci.ValidatorUpdate{
-			Power:  1,
-			PubKey: pk,
-		}
+	for _, actor := range genesisState.NetworkActors {
+		am.customGovKeeper.SaveNetworkActor(ctx, *actor)
 	}
 
-	return valUpdate
+	return nil
 }
 
 func (am AppModule) ExportGenesis(context sdk.Context, marshaler codec.JSONMarshaler) json.RawMessage {
@@ -111,48 +95,30 @@ func (am AppModule) LegacyQuerierHandler(marshaler codec.JSONMarshaler) sdk.Quer
 func (am AppModule) BeginBlock(context sdk.Context, block abci.RequestBeginBlock) {}
 
 func (am AppModule) EndBlock(ctx sdk.Context, block abci.RequestEndBlock) []abci.ValidatorUpdate {
-	valSet := am.customStakingKeeper.GetValidatorSet(ctx)
-
-	valUpdate := make([]abci.ValidatorUpdate, len(valSet))
-
-	for i, val := range valSet {
-		am.customStakingKeeper.AddValidator(ctx, val)
-		proto, err := encoding.PubKeyToProto(val.GetConsPubKey())
-		if err != nil {
-			panic("invalid key")
-		}
-		valUpdate[i] = abci.ValidatorUpdate{
-			Power:  1,
-			PubKey: proto,
-		}
-	}
-
-	return valUpdate
+	return nil
 }
 
 func (am AppModule) Name() string {
-	return cumstomtypes.ModuleName
+	return customgovtypes.ModuleName
 }
 
 // Route returns the message routing key for the staking module.
 func (am AppModule) Route() sdk.Route {
-	return sdk.NewRoute(cumstomtypes.ModuleName, NewHandler(am.customStakingKeeper, am.customGovKeeper))
+	return sdk.NewRoute(customgovtypes.ModuleName, NewHandler(am.customGovKeeper))
 }
 
 // RegisterQueryService registers a GRPC query service to respond to the
 // module-specific GRPC queries.
 func (am AppModule) RegisterQueryService(server grpc.Server) {
-	querier := NewQuerier(am.customStakingKeeper)
-	cumstomtypes.RegisterQueryServer(server, querier)
+	querier := NewQuerier(am.customGovKeeper)
+	customgovtypes.RegisterQueryServer(server, querier)
 }
 
 // NewAppModule returns a new Custom Staking module.
 func NewAppModule(
-	keeper keeper.Keeper,
-	govKeeper govkeeper.Keeper,
+	keeper keeper2.Keeper,
 ) AppModule {
 	return AppModule{
-		customStakingKeeper: keeper,
-		customGovKeeper:     govKeeper,
+		customGovKeeper: keeper,
 	}
 }

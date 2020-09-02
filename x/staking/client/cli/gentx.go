@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 
 	cumstomtypes "github.com/KiraCore/sekai/x/staking/types"
@@ -86,13 +87,22 @@ func GenTxClaimCmd(mbm module.BasicManager, txEncCfg client.TxEncodingConfig, ge
 
 			var stakingGenesisState cumstomtypes.GenesisState
 			stakingGenesisState.Validators = append(stakingGenesisState.Validators, validator)
-
-			bzStakingGen, err := cdc.MarshalJSON(&stakingGenesisState)
-			if err != nil {
-				return fmt.Errorf("failed to marshal staking genesis state: %w", err)
-			}
-
+			bzStakingGen := cdc.MustMarshalJSON(&stakingGenesisState)
 			appState[cumstomtypes.ModuleName] = bzStakingGen
+
+			var customGovGenState customgovtypes.GenesisState
+			// Only first validator is network actor
+			networkActor := customgovtypes.NewNetworkActor(
+				types.AccAddress(validator.ValKey),
+				nil,
+				1,
+				nil,
+				customgovtypes.NewPermissions([]customgovtypes.PermValue{customgovtypes.PermAddPermissions}, nil),
+				1,
+			)
+			customGovGenState.NetworkActors = append(customGovGenState.NetworkActors, &networkActor)
+			appState[customgovtypes.ModuleName] = cdc.MustMarshalJSON(&customGovGenState)
+
 			appGenStateJSON, err := json.Marshal(appState)
 			if err != nil {
 				return err
