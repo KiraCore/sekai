@@ -37,7 +37,16 @@
     window.onload = function () {
       // Begin Swagger UI call region
       const ui = SwaggerUIBundle({
-        url: "./cosmos/bank/query.swagger.json",
+        urls: [
+          {
+            name: "Cosmos Bank Query",
+            url: "./cosmos/bank/query.swagger.json",
+          },
+          {
+            name: "Cosmos Query",
+            url: "./cosmos/query.swagger.json",
+          },
+        ],
         dom_id: '#swagger-ui',
         deepLinking: true,
         presets: [

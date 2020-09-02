@@ -216,7 +216,7 @@
     }
   },
   "externalDocs": {
-    "description": "gRPC-gateway boilerplate repository",
+    "description": "gRPC-gateway",
     "url": "https://github.com/KiraCore/sekai/INTERX"
   }
 }

@@ -16,7 +16,7 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   };
   external_docs: {
     url: "https://github.com/KiraCore/sekai/INTERX";
-    description: "gRPC-gateway boilerplate repository";
+    description: "gRPC-gateway";
   }
   schemes: HTTPS;
 };

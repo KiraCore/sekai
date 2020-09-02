@@ -25,4 +25,4 @@ install:
 		github.com/rakyll/statik
 
 start:
-	WITH_TRANSPORT_CREDENTIALS=false go run main.go
+	go run main.go

@@ -3,36 +3,27 @@ package main
 import (
 	"flag"
 	"io/ioutil"
-	"mime"
-	"net/http"
 	"os"
 
-	"github.com/rakyll/statik/fs"
 	"google.golang.org/grpc/grpclog"
 
 	"github.com/KiraCore/sekai/INTERX/gateway"
+	config "github.com/KiraCore/sekai/INTERX/config"
 
 	// Static files
 	_ "github.com/KiraCore/sekai/INTERX/statik"
 )
 
-// getOpenAPIHandler serves an OpenAPI UI.
-func getOpenAPIHandler() http.Handler {
-	mime.AddExtensionType(".svg", "image/svg+xml")
-
-	statikFS, err := fs.New()
-	if err != nil {
-		panic("creating OpenAPI filesystem: " + err.Error())
-	}
-
-	return http.FileServer(statikFS)
-}
-
-var serverAddress = flag.String(
-	"server-address",
+var serverGRPCAddress = flag.String(
+	"server-gRPC-address",
 	"dns:///0.0.0.0:9090",
-	"The address to the gRPC server, in the gRPC standard naming format. "+
-		"See https://github.com/grpc/grpc/blob/master/doc/naming.md for more information.",
+	"The address to the gRPC server, in the gRPC standard naming format. ",
+)
+
+var serverRPCAddress = flag.String(
+	"server-RPC-address",
+	"http://0.0.0.0:26657",
+	"The address to the RPC server, in the RPC standard naming format. ",
 )
 
 func main() {
@@ -42,6 +33,18 @@ func main() {
 	log := grpclog.NewLoggerV2(os.Stdout, ioutil.Discard, ioutil.Discard)
 	grpclog.SetLoggerV2(log)
 
-	err := gateway.Run(*serverAddress)
+	config.SetConfig();
+	
+	grpcAddr := os.Getenv("GRPC")
+	if len(grpcAddr) == 0 {
+		grpcAddr = *serverGRPCAddress
+	}
+	
+	rpcAddr := os.Getenv("RPC")
+	if len(rpcAddr) == 0 {
+		rpcAddr = *serverRPCAddress
+	}
+
+	err := gateway.Run(grpcAddr, rpcAddr, log)
 	log.Fatalln(err)
 }
