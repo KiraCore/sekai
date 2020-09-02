@@ -1,0 +1,186 @@
+{
+	"info": {
+		"_postman_id": "1dffbbbc-2be8-460f-be20-460ed275a4b4",
+		"name": "Kira",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Total Supply",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/cosmos/bank/supply",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"cosmos",
+						"bank",
+						"supply"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Status",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/cosmos/status",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"cosmos",
+						"status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Query All Banaces",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/cosmos/bank/balances/kira1gaadckc6g8ne62dzmscgyqkx3sd5p26wrapekd",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"cosmos",
+						"bank",
+						"balances",
+						"kira1gaadckc6g8ne62dzmscgyqkx3sd5p26wrapekd"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Transaction hash",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/cosmos/tx/0x4A41257AC228F6CE476E9C9AD67BB98057412A22B035E1C0A4CCEB0E4E8E364D",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"cosmos",
+						"tx",
+						"0x4A41257AC228F6CE476E9C9AD67BB98057412A22B035E1C0A4CCEB0E4E8E364D"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
