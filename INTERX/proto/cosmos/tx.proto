@@ -1,0 +1,56 @@
+syntax="proto3";
+
+package cosmos.tx;
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+// Defines the import path that should be used to import the generated package,
+// and the package name.
+option go_package = "github.com/KiraCore/sekai/INTERX/proto";
+
+// These annotations are used when generating the OpenAPI file.
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    version: "1.0";
+  };
+  external_docs: {
+    url: "https://github.com/KiraCore/sekai/INTERX";
+    description: "gRPC-gateway";
+  }
+  schemes: HTTPS;
+};
+
+service Transaction {
+  rpc PostTransaction(PostTransactionRequest) returns (PostTransactionResponse) {
+    option (google.api.http) = {
+      post: "/api/cosmos/tx"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Post Transaction"
+      description: "Post Transaction."
+      tags: "tx"
+    };
+  }
+}
+
+message PostTransactionResult {
+  string code = 1;
+  string data = 2;
+  string log = 3;
+  string codespace = 4;
+  string hash = 5;
+}
+
+// PostTransactionRequest is the request type for the tx/PostTransaction RPC method.
+message PostTransactionRequest {
+  // transaction hash.
+  bytes tx = 1;
+}
+
+// PostTransactionResponse is the response type for the tx/PostTransaction RPC method.
+message PostTransactionResponse {
+  uint64 id = 1;
+  string jsonrpc = 2;
+  PostTransactionResult result = 3;
+}

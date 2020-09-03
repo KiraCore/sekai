@@ -180,6 +180,52 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Post Transaction",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/cosmos/tx?tx=0xF7B9E190E6A80385E2B537A3EE8EEF17C36112A0AF2DE625879E84E8F3877BE7",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"cosmos",
+						"tx"
+					],
+					"query": [
+						{
+							"key": "tx",
+							"value": "0xF7B9E190E6A80385E2B537A3EE8EEF17C36112A0AF2DE625879E84E8F3877BE7"
+						}
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"protocolProfileBehavior": {}

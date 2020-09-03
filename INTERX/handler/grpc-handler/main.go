@@ -60,7 +60,7 @@ func GetServeMux(grpcAddr string) (*runtime.ServeMux, error) {
 func ServeGRPC(w http.ResponseWriter, r *http.Request, gwCosmosmux *runtime.ServeMux) bool {
 	serve := false
 
-	if strings.HasPrefix(r.URL.Path, QueryBalances) {
+	if strings.HasPrefix(r.URL.Path, QueryBalances) && r.Method == http.MethodGet {
 		serve = true
 
 		addr, err := sdk.AccAddressFromBech32(strings.TrimPrefix(r.URL.Path, QueryBalances))
@@ -68,7 +68,7 @@ func ServeGRPC(w http.ResponseWriter, r *http.Request, gwCosmosmux *runtime.Serv
 			fmt.Println(err)
 		}
 		r.URL.Path = QueryBalances + fmt.Sprintf("%x", addr)
-	} else if strings.HasPrefix(r.URL.Path, QuerySupply) {
+	} else if strings.HasPrefix(r.URL.Path, QuerySupply) && r.Method == http.MethodGet {
 		serve = true
 	}
 

@@ -1,6 +1,6 @@
 syntax="proto3";
 
-package cosmos;
+package cosmos.query;
 
 import "google/api/annotations.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
