@@ -30,7 +30,9 @@ func (k Keeper) GetOrders(ctx sdk.Context, orderBookID string, maxOrders uint32,
 			bz := store.Get([]byte(elementInListOfIndices.OrderID))
 			k.cdc.MustUnmarshalBinaryBare(bz, &order)
 
-			queryOutput = append(queryOutput, order)
+			if !order.IsCancelled {
+				queryOutput = append(queryOutput, order)
+			}
 		}
 	}
 
