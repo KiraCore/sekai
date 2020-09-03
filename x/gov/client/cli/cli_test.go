@@ -145,6 +145,30 @@ func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions() {
 	s.Require().True(perms.IsWhitelisted(types2.PermClaimValidator))
 }
 
+func (s IntegrationTestSuite) TestRolePermissions_QueryCommand_DefaultRolePerms() {
+	val := s.network.Validators[0]
+
+	cmd := cli.GetCmdQueryRolePermissions()
+	_, out := testutil.ApplyMockIO(cmd)
+	clientCtx := val.ClientCtx.WithOutput(out).WithOutputFormat("json")
+
+	ctx := context.Background()
+	ctx = context.WithValue(ctx, client.ClientContextKey, &clientCtx)
+
+	cmd.SetArgs([]string{
+		"2", // RoleValidator
+	})
+
+	err := cmd.ExecuteContext(ctx)
+	s.Require().NoError(err)
+
+	fmt.Printf("%s\n", out.String())
+	var perms types2.Permissions
+	val.ClientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &perms)
+
+	s.Require().True(perms.IsWhitelisted(types2.PermClaimValidator))
+}
+
 func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions_WithUserThatDoesNotHaveSetPermissions() {
 	val := s.network.Validators[0]
 

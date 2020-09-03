@@ -2,6 +2,8 @@ package cli
 
 import (
 	"context"
+	"fmt"
+	"strconv"
 
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
@@ -12,6 +14,8 @@ import (
 
 	"github.com/KiraCore/sekai/x/gov/types"
 )
+
+const FlagRole = "role"
 
 // GetCmdQueryPermissions the query delegation command.
 func GetCmdQueryPermissions() *cobra.Command {
@@ -47,10 +51,11 @@ func GetCmdQueryPermissions() *cobra.Command {
 	return cmd
 }
 
-func GetCmdQueryRolesPermissions() *cobra.Command {
+func GetCmdQueryRolePermissions() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "role-permissions",
+		Use:   "role-permissions arg-num",
 		Short: "Get the permissions of all the roles",
+		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
@@ -58,7 +63,14 @@ func GetCmdQueryRolesPermissions() *cobra.Command {
 				return err
 			}
 
-			params := &types.RolePermissionsRequest{}
+			roleNum, err := strconv.ParseUint(args[0], 10, 64)
+			if err != nil {
+				return fmt.Errorf("invalid role number")
+			}
+
+			params := &types.RolePermissionsRequest{
+				Role: roleNum,
+			}
 
 			queryClient := types.NewQueryClient(clientCtx)
 			res, err := queryClient.RolePermissions(context.Background(), params)
@@ -66,7 +78,7 @@ func GetCmdQueryRolesPermissions() *cobra.Command {
 				return err
 			}
 
-			return clientCtx.PrintOutput(res)
+			return clientCtx.PrintOutput(res.Permissions)
 		},
 	}
 
