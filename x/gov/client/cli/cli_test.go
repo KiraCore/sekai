@@ -162,7 +162,6 @@ func (s IntegrationTestSuite) TestRolePermissions_QueryCommand_DefaultRolePerms(
 	err := cmd.ExecuteContext(ctx)
 	s.Require().NoError(err)
 
-	fmt.Printf("%s\n", out.String())
 	var perms types2.Permissions
 	val.ClientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &perms)
 
