@@ -39,12 +39,16 @@
       const ui = SwaggerUIBundle({
         urls: [
           {
-            name: "Cosmos Bank Query",
+            name: "Cosmos.Bank.Query",
             url: "./cosmos/bank/query.swagger.json",
           },
           {
-            name: "Cosmos Query",
+            name: "Cosmos.Query",
             url: "./cosmos/query.swagger.json",
+          },
+          {
+            name: "Cosmos.Tx",
+            url: "./cosmos/tx.swagger.json",
           },
         ],
         dom_id: '#swagger-ui',
