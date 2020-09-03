@@ -46,3 +46,31 @@ func GetCmdQueryPermissions() *cobra.Command {
 
 	return cmd
 }
+
+func GetCmdQueryRolesPermissions() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "role-permissions",
+		Short: "Get the permissions of all the roles",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			params := &types.RolePermissionsRequest{}
+
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.RolePermissions(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintOutput(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}

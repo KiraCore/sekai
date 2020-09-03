@@ -10,6 +10,8 @@ option go_package = "github.com/KiraCore/sekai/x/gov/types";
 service Query {
   // Validators queries a validator by address.
   rpc PermissionsByAddress (PermissionsByAddressRequest) returns (PermissionsResponse) {}
+  // RolePermissions returns the permissions of the roles available in the registry.
+  rpc RolePermissions (RolePermissionsRequest) returns (RolePermissionsResponse) {}
 }
 
 message PermissionsByAddressRequest {
@@ -21,4 +23,11 @@ message PermissionsByAddressRequest {
 
 message PermissionsResponse {
   kira.gov.Permissions permissions = 1;
+}
+
+message RolePermissionsRequest {
+  uint64 role = 1;
+}
+message RolePermissionsResponse {
+  Permissions permissions = 1;
 }
