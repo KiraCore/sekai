@@ -11,7 +11,6 @@ service Query {
   // Validators queries a validator by address.
   rpc PermissionsByAddress (PermissionsByAddressRequest) returns (PermissionsResponse) {}
   rpc GetNetworkProperties (Empty) returns (kira.gov.NetworkProperties) {}
-  rpc SetNetworkProperties (kira.gov.NetworkProperties) returns (Empty) {}
 }
 
 message PermissionsByAddressRequest {

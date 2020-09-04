@@ -16,6 +16,8 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 		switch msg := msg.(type) {
 		case *types2.MsgWhitelistPermissions:
 			return handleWhitelistPermissions(ctx, ck, msg)
+		case *types2.MsgSetNetworkProperties:
+			return handleSetNetworkProperties(ctx, ck, msg)
 		default:
 			return nil, errors.Wrapf(errors.ErrUnknownRequest, "unrecognized %s message type: %T", types.ModuleName, msg)
 		}
@@ -45,5 +47,11 @@ func handleWhitelistPermissions(ctx sdk.Context, ck keeper.Keeper, msg *types2.M
 
 	ck.SaveNetworkActor(ctx, actor)
 
+	return &sdk.Result{}, nil
+}
+
+func handleSetNetworkProperties(ctx sdk.Context, ck keeper.Keeper, msg *types2.MsgSetNetworkProperties) (*sdk.Result, error) {
+	// TODO should check msg.Proposer permissions to handle reset network properties
+	ck.SetNetworkProperties(ctx, msg.NetworkProperties)
 	return &sdk.Result{}, nil
 }

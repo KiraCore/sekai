@@ -35,6 +35,14 @@ message MsgBlacklistPermissions {
   uint32 permission = 3;
 }
 
+message MsgSetNetworkProperties {
+  NetworkProperties network_properties = 1;
+  bytes proposer = 2 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+}
+
 message NetworkActor {
   bytes address = 1 [
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
