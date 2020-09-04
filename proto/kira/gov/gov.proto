@@ -64,6 +64,4 @@ message Permissions {
 message NetworkProperties {
   uint64 min_tx_fee = 1;
   uint64 max_tx_fee = 2;
-  uint64 inflation_rate = 3;
-  uint64 min_block_time = 4;
 }
