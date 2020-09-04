@@ -7,9 +7,11 @@ const ModuleName = "customgov"
 const WhitelistPermissions = "whitelist-permissions"
 const BlacklistPermissions = "blacklist-permissions"
 
+// constants
 var (
 	KeyPrefixPermissionsRegistry = []byte("permissions_registry")
 	KeyPrefixActors              = []byte("network_actors")
+	KeyPrefixNetworkProperties   = []byte("network_properties")
 
 	// Roles
 	RoleUndefined Role = 0x0

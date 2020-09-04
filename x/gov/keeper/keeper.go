@@ -18,6 +18,22 @@ func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryMarshaler) Keeper {
 	return Keeper{cdc: cdc, storeKey: storeKey}
 }
 
+// SetNetworkProperties set network properties on KVStore
+func (k Keeper) SetNetworkProperties(ctx sdk.Context, properties *types.NetworkProperties) {
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixNetworkProperties)
+	prefixStore.Set([]byte("property"), k.cdc.MustMarshalBinaryBare(properties))
+}
+
+// GetNetworkProperties get network properties from KVStore
+func (k Keeper) GetNetworkProperties(ctx sdk.Context) *types.NetworkProperties {
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixNetworkProperties)
+	bz := prefixStore.Get([]byte("property"))
+
+	properties := new(types.NetworkProperties)
+	k.cdc.MustUnmarshalBinaryBare(bz, properties)
+	return properties
+}
+
 func (k Keeper) SetPermissionsForRole(ctx sdk.Context, role types.Role, permissions *types.Permissions) {
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixPermissionsRegistry)
 

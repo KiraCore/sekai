@@ -29,3 +29,17 @@ func (q Querier) PermissionsByAddress(ctx context.Context, request *types.Permis
 
 	return &types.PermissionsResponse{Permissions: networkActor.Permissions}, nil
 }
+
+func (q Querier) GetNetworkProperties(ctx context.Context, request *types.Empty) (*types.NetworkProperties, error) {
+	sdkContext := sdk.UnwrapSDKContext(ctx)
+
+	networkProperties := q.keeper.GetNetworkProperties(sdkContext)
+	return networkProperties, nil
+}
+
+func (q Querier) SetNetworkProperties(ctx context.Context, request *types.NetworkProperties) (*types.Empty, error) {
+	sdkContext := sdk.UnwrapSDKContext(ctx)
+
+	q.keeper.SetNetworkProperties(sdkContext, request)
+	return &types.Empty{}, nil
+}
