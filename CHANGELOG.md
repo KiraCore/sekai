@@ -1,11 +1,14 @@
 # Changelog
 
 
-## [Unreleased]
+## [0.1.2.1] - 09.06.2020
+### Added
 
-- Module CustomGov defines in genesis by default Permissions by roles Validator (0x2) and Sudo (0x1).
-- Now the roles are validated when taking some action. It checks if the user has permissions either in the role or individually.
 - Added CLI command to Set Blacklist Permissions too.
+- Module CustomGov defines in genesis by default Permissions by roles Validator (0x2) and Sudo (0x1).
+
+### Changed
+- Now the roles are validated when taking some action. It checks if the user has permissions either in the role or individually.
 
 ## [0.1.2] - 09.01.2020
 ### Added
