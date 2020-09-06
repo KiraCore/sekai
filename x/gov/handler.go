@@ -17,7 +17,7 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 		case *customgovtypes.MsgWhitelistPermissions:
 			return handleWhitelistPermissions(ctx, ck, msg)
 		case *customgovtypes.MsgBlacklistPermissions:
-			return handleWhitelistPermissions(ctx, ck, msg)
+			return handleBlacklistPermissions(ctx, ck, msg)
 		default:
 			return nil, errors.Wrapf(errors.ErrUnknownRequest, "unrecognized %s message type: %T", types.ModuleName, msg)
 		}
@@ -36,6 +36,27 @@ func handleWhitelistPermissions(ctx sdk.Context, ck keeper.Keeper, msg *customgo
 	}
 
 	err = actor.Permissions.AddToWhitelist(customgovtypes.PermValue(msg.Permission))
+	if err != nil {
+		return nil, errors.Wrapf(customgovtypes.ErrSetPermissions, "error setting %d to whitelist", msg.Permission)
+	}
+
+	ck.SaveNetworkActor(ctx, actor)
+
+	return &sdk.Result{}, nil
+}
+
+func handleBlacklistPermissions(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgBlacklistPermissions) (*sdk.Result, error) {
+	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Proposer, customgovtypes.PermSetPermissions)
+	if !isAllowed {
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermSetPermissions")
+	}
+
+	actor, err := ck.GetNetworkActorByAddress(ctx, msg.Address)
+	if err != nil {
+		actor = customgovtypes.NewDefaultActor(msg.Address)
+	}
+
+	err = actor.Permissions.AddToBlacklist(customgovtypes.PermValue(msg.Permission))
 	if err != nil {
 		return nil, errors.Wrapf(customgovtypes.ErrSetPermissions, "error setting %d to whitelist", msg.Permission)
 	}
