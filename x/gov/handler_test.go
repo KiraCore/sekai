@@ -198,27 +198,57 @@ func TestNewHandler_SetPermissions_ProposerHasRoleSudo(t *testing.T) {
 	proposerAddr, err := sdk.AccAddressFromBech32("kira1alzyfq40zjsveat87jlg8jxetwqmr0a29sgd0f")
 	require.NoError(t, err)
 
-	app := simapp.Setup(false)
-	ctx := app.NewContext(false, tmproto.Header{})
+	tests := []struct {
+		name           string
+		msg            sdk.Msg
+		checkWhitelist bool
+	}{
+		{
+			name: "MsgWhitelist",
+			msg: &types.MsgWhitelistPermissions{
+				Proposer:   proposerAddr,
+				Address:    addr,
+				Permission: uint32(types.PermClaimValidator),
+			},
+			checkWhitelist: true,
+		},
+		{
+			name: "MsgBlacklist",
+			msg: &types.MsgBlacklistPermissions{
+				Proposer:   proposerAddr,
+				Address:    addr,
+				Permission: uint32(types.PermClaimValidator),
+			},
+			checkWhitelist: false,
+		},
+	}
 
-	// First we set Role Sudo to proposer Actor
-	proposerActor := types.NewDefaultActor(proposerAddr)
-	proposerActor.SetRole(types.RoleSudo)
-	require.NoError(t, err)
-	app.CustomGovKeeper.SaveNetworkActor(ctx, proposerActor)
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			app := simapp.Setup(false)
+			ctx := app.NewContext(false, tmproto.Header{})
 
-	handler := gov.NewHandler(app.CustomGovKeeper)
-	_, err = handler(ctx, &types.MsgWhitelistPermissions{
-		Proposer:   proposerAddr,
-		Address:    addr,
-		Permission: uint32(types.PermClaimValidator),
-	})
-	require.NoError(t, err)
+			// First we set Role Sudo to proposer Actor
+			proposerActor := types.NewDefaultActor(proposerAddr)
+			proposerActor.SetRole(types.RoleSudo)
+			require.NoError(t, err)
+			app.CustomGovKeeper.SaveNetworkActor(ctx, proposerActor)
 
-	actor, err := app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addr)
-	require.NoError(t, err)
+			handler := gov.NewHandler(app.CustomGovKeeper)
+			_, err = handler(ctx, tt.msg)
+			require.NoError(t, err)
 
-	require.True(t, actor.Permissions.IsWhitelisted(types.PermClaimValidator))
+			actor, err := app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addr)
+			require.NoError(t, err)
+
+			if tt.checkWhitelist {
+				require.True(t, actor.Permissions.IsWhitelisted(types.PermClaimValidator))
+			} else {
+				require.True(t, actor.Permissions.IsBlacklisted(types.PermClaimValidator))
+			}
+		})
+	}
 }
 
 func setSetPermissionsToAddr(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addr sdk.AccAddress) error {
