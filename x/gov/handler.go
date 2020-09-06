@@ -1,7 +1,7 @@
 package gov
 
 import (
-	types2 "github.com/KiraCore/sekai/x/gov/types"
+	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -14,7 +14,7 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 		ctx = ctx.WithEventManager(sdk.NewEventManager())
 
 		switch msg := msg.(type) {
-		case *types2.MsgWhitelistPermissions:
+		case *customgovtypes.MsgWhitelistPermissions:
 			return handleWhitelistPermissions(ctx, ck, msg)
 		default:
 			return nil, errors.Wrapf(errors.ErrUnknownRequest, "unrecognized %s message type: %T", types.ModuleName, msg)
@@ -22,25 +22,27 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 	}
 }
 
-func handleWhitelistPermissions(ctx sdk.Context, ck keeper.Keeper, msg *types2.MsgWhitelistPermissions) (*sdk.Result, error) {
+func handleWhitelistPermissions(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgWhitelistPermissions) (*sdk.Result, error) {
 	// Check if proposer have permissions to SetPermissions.
 	proposer, err := ck.GetNetworkActorByAddress(ctx, msg.Proposer)
 	if err != nil {
-		return nil, errors.Wrap(types2.ErrNotEnoughPermissions, "SetPermissions")
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "SetPermissions")
 	}
 
-	if proposer.Permissions.IsBlacklisted(types2.PermSetPermissions) || !proposer.Permissions.IsWhitelisted(types2.PermSetPermissions) {
-		return nil, errors.Wrap(types2.ErrNotEnoughPermissions, "SetPermissions")
+	if !proposer.HasRole(customgovtypes.RoleSudo) {
+		if proposer.Permissions.IsBlacklisted(customgovtypes.PermSetPermissions) || !proposer.Permissions.IsWhitelisted(customgovtypes.PermSetPermissions) {
+			return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "SetPermissions")
+		}
 	}
 
 	actor, err := ck.GetNetworkActorByAddress(ctx, msg.Address)
 	if err != nil {
-		actor = types2.NewDefaultActor(msg.Address)
+		actor = customgovtypes.NewDefaultActor(msg.Address)
 	}
 
-	err = actor.Permissions.AddToWhitelist(types2.PermValue(msg.Permission))
+	err = actor.Permissions.AddToWhitelist(customgovtypes.PermValue(msg.Permission))
 	if err != nil {
-		return nil, errors.Wrapf(types2.ErrSetPermissions, "error setting %d to whitelist", msg.Permission)
+		return nil, errors.Wrapf(customgovtypes.ErrSetPermissions, "error setting %d to whitelist", msg.Permission)
 	}
 
 	ck.SaveNetworkActor(ctx, actor)

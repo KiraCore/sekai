@@ -108,3 +108,32 @@ func TestNewHandler_SetPermissionsWithoutSetPermissions(t *testing.T) {
 	require.EqualError(t, err, "SetPermissions: not enough permissions")
 }
 
+func TestNewHandler_SetPermissions_ProposerHasRoleSudo(t *testing.T) {
+	addr, err := types2.AccAddressFromBech32("kira15ky9du8a2wlstz6fpx3p4mqpjyrm5cgqzp4f3d")
+	require.NoError(t, err)
+
+	proposerAddr, err := types2.AccAddressFromBech32("kira1alzyfq40zjsveat87jlg8jxetwqmr0a29sgd0f")
+	require.NoError(t, err)
+
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	// First we set Role Sudo to proposer Actor
+	proposerActor := types.NewDefaultActor(proposerAddr)
+	proposerActor.SetRole(types.RoleSudo)
+	require.NoError(t, err)
+	app.CustomGovKeeper.SaveNetworkActor(ctx, proposerActor)
+
+	handler := gov.NewHandler(app.CustomGovKeeper)
+	_, err = handler(ctx, &types.MsgWhitelistPermissions{
+		Proposer:   proposerAddr,
+		Address:    addr,
+		Permission: uint32(types.PermClaimValidator),
+	})
+	require.NoError(t, err)
+
+	actor, err := app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addr)
+	require.NoError(t, err)
+
+	require.True(t, actor.Permissions.IsWhitelisted(types.PermClaimValidator))
+}
