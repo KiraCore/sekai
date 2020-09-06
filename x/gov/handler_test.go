@@ -85,35 +85,68 @@ func TestNewHandler_SetPermissions_ActorWithPerms(t *testing.T) {
 	proposerAddr, err := sdk.AccAddressFromBech32("kira1alzyfq40zjsveat87jlg8jxetwqmr0a29sgd0f")
 	require.NoError(t, err)
 
-	app := simapp.Setup(false)
-	ctx := app.NewContext(false, tmproto.Header{})
+	tests := []struct {
+		name             string
+		msg              sdk.Msg
+		checkWhitelisted bool
+	}{
+		{
+			name: "actor with Whitelist Permissions",
+			msg: &types.MsgWhitelistPermissions{
+				Proposer:   proposerAddr,
+				Address:    addr,
+				Permission: uint32(types.PermClaimValidator),
+			},
+			checkWhitelisted: true,
+		},
+		{
+			name: "actor with Blacklist Permissions",
+			msg: &types.MsgBlacklistPermissions{
+				Proposer:   proposerAddr,
+				Address:    addr,
+				Permission: uint32(types.PermClaimValidator),
+			},
+			checkWhitelisted: false,
+		},
+	}
 
-	// First we set Permissions to SetPermissions to proposerAddr.
-	proposerActor := types.NewDefaultActor(proposerAddr)
-	err = proposerActor.Permissions.AddToWhitelist(types.PermSetPermissions)
-	require.NoError(t, err)
-	app.CustomGovKeeper.SaveNetworkActor(ctx, proposerActor)
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			app := simapp.Setup(false)
+			ctx := app.NewContext(false, tmproto.Header{})
 
-	// Add some perms before to the actor.
-	actor := types.NewDefaultActor(addr)
-	err = actor.Permissions.AddToWhitelist(types.PermSetPermissions)
-	require.NoError(t, err)
-	app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
+			err := setSetPermissionsToAddr(t, app, ctx, proposerAddr)
+			require.NoError(t, err)
 
-	// Call the handler to add some permissions.
-	handler := gov.NewHandler(app.CustomGovKeeper)
-	_, err = handler(ctx, &types.MsgWhitelistPermissions{
-		Proposer:   proposerAddr,
-		Address:    addr,
-		Permission: uint32(types.PermClaimValidator),
-	})
-	require.NoError(t, err)
+			// Add some perms before to the actor.
+			actor := types.NewDefaultActor(addr)
+			if tt.checkWhitelisted {
+				err = actor.Permissions.AddToWhitelist(types.PermSetPermissions)
+			} else {
+				err = actor.Permissions.AddToBlacklist(types.PermSetPermissions)
+			}
+			require.NoError(t, err)
 
-	actor, err = app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addr)
-	require.NoError(t, err)
+			app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
 
-	require.True(t, actor.Permissions.IsWhitelisted(types.PermClaimValidator))
-	require.True(t, actor.Permissions.IsWhitelisted(types.PermSetPermissions)) // This permission was already set before callid add permission.
+			// Call the handler to add some permissions.
+			handler := gov.NewHandler(app.CustomGovKeeper)
+			_, err = handler(ctx, tt.msg)
+			require.NoError(t, err)
+
+			actor, err = app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addr)
+			require.NoError(t, err)
+
+			if tt.checkWhitelisted {
+				require.True(t, actor.Permissions.IsWhitelisted(types.PermClaimValidator))
+				require.True(t, actor.Permissions.IsWhitelisted(types.PermSetPermissions)) // This permission was already set before callid add permission.
+			} else {
+				require.True(t, actor.Permissions.IsBlacklisted(types.PermClaimValidator))
+				require.True(t, actor.Permissions.IsBlacklisted(types.PermSetPermissions)) // This permission was already set before callid add permission.
+			}
+		})
+	}
 }
 
 func TestNewHandler_SetPermissionsWithoutSetPermissions(t *testing.T) {
