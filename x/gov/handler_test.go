@@ -156,16 +156,39 @@ func TestNewHandler_SetPermissionsWithoutSetPermissions(t *testing.T) {
 	proposerAddr, err := sdk.AccAddressFromBech32("kira1alzyfq40zjsveat87jlg8jxetwqmr0a29sgd0f")
 	require.NoError(t, err)
 
-	app := simapp.Setup(false)
-	ctx := app.NewContext(false, tmproto.Header{})
+	tests := []struct {
+		name string
+		msg  sdk.Msg
+	}{
+		{
+			name: "MsgWhitelist",
+			msg: &types.MsgWhitelistPermissions{
+				Proposer:   proposerAddr,
+				Address:    addr,
+				Permission: uint32(types.PermClaimValidator),
+			},
+		},
+		{
+			name: "MsgBlacklist",
+			msg: &types.MsgBlacklistPermissions{
+				Proposer:   proposerAddr,
+				Address:    addr,
+				Permission: uint32(types.PermClaimValidator),
+			},
+		},
+	}
 
-	handler := gov.NewHandler(app.CustomGovKeeper)
-	_, err = handler(ctx, &types.MsgWhitelistPermissions{
-		Proposer:   proposerAddr,
-		Address:    addr,
-		Permission: uint32(types.PermClaimValidator),
-	})
-	require.EqualError(t, err, "PermSetPermissions: not enough permissions")
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			app := simapp.Setup(false)
+			ctx := app.NewContext(false, tmproto.Header{})
+
+			handler := gov.NewHandler(app.CustomGovKeeper)
+			_, err = handler(ctx, tt.msg)
+			require.EqualError(t, err, "PermSetPermissions: not enough permissions")
+		})
+	}
 }
 
 func TestNewHandler_SetPermissions_ProposerHasRoleSudo(t *testing.T) {
