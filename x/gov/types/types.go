@@ -84,6 +84,21 @@ func NewNetworkActor(
 	}
 }
 
+func (m *NetworkActor) HasRole(role Role) bool {
+	for _, r := range m.Roles {
+		if r == uint64(role) {
+			return true
+		}
+	}
+	return false
+}
+
+func (m *NetworkActor) SetRole(role Role) {
+	if !m.HasRole(role) {
+		m.Roles = append(m.Roles, uint64(role))
+	}
+}
+
 // NewDefaultActor returns a default actor with:
 // - The provided addr.
 // - Roles set to nil

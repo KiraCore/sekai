@@ -3,7 +3,7 @@ package staking_test
 import (
 	"testing"
 
-	types3 "github.com/KiraCore/sekai/x/gov/types"
+	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 
 	"github.com/KiraCore/sekai/app"
 
@@ -32,13 +32,13 @@ func TestNewHandler_MsgClaimValidator_HappyPath(t *testing.T) {
 	ctx := app.NewContext(false, tmproto.Header{})
 
 	// First we give user permissions
-	networkActor := types3.NewNetworkActor(
+	networkActor := customgovtypes.NewNetworkActor(
 		types.AccAddress(valAddr1),
 		nil,
 		1,
 		nil,
-		types3.NewPermissions([]types3.PermValue{
-			types3.PermClaimValidator,
+		customgovtypes.NewPermissions([]customgovtypes.PermValue{
+			customgovtypes.PermClaimValidator,
 		}, nil),
 		1,
 	)
@@ -93,6 +93,45 @@ func TestNewHandler_MsgClaimValidator_ItFailsIfUserDoesNotHavePermissionsToClaim
 
 	_, err = handler(ctx, theMsg)
 	require.EqualError(t, err, "network actor not found")
+}
+
+func TestNewHandler_SetPermissions_ActorWithRole(t *testing.T) {
+	valAddr1, err := types.ValAddressFromBech32("kiravaloper15ky9du8a2wlstz6fpx3p4mqpjyrm5cgq38f2fp")
+	require.NoError(t, err)
+
+	pubKey, err := types.GetPubKeyFromBech32(types.Bech32PubKeyTypeConsPub, "kiravalconspub1zcjduepqylc5k8r40azmw0xt7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsq4xg7em")
+	require.NoError(t, err)
+
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	// Save network actor With Role Validator
+	networkActor := customgovtypes.NewDefaultActor(types.AccAddress(valAddr1))
+	networkActor.SetRole(customgovtypes.RoleValidator)
+	app.CustomGovKeeper.SaveNetworkActor(ctx, networkActor)
+
+	handler := staking.NewHandler(app.CustomStakingKeeper, app.CustomGovKeeper)
+
+	theMsg, err := types2.NewMsgClaimValidator(
+		"aMoniker",
+		"some-web.com",
+		"A Social",
+		"My Identity",
+		types.NewDec(1234),
+		valAddr1,
+		pubKey,
+	)
+	require.NoError(t, err)
+
+	_, err = handler(ctx, theMsg)
+	require.NoError(t, err)
+
+	validatorSet := app.CustomStakingKeeper.GetValidatorSet(ctx)
+	require.Len(t, validatorSet, 1)
+	val, err := app.CustomStakingKeeper.GetValidator(ctx, valAddr1)
+	require.NoError(t, err)
+
+	validatorIsEqualThanClaimMsg(t, val, theMsg)
 }
 
 func validatorIsEqualThanClaimMsg(t *testing.T, val types2.Validator, msg *types2.MsgClaimValidator) {

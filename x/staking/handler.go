@@ -1,7 +1,7 @@
 package staking
 
 import (
-	types2 "github.com/KiraCore/sekai/x/gov/types"
+	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -35,12 +35,14 @@ func handleMsgClaimValidator(ctx sdk.Context, k customkeeper.Keeper, govkeeper g
 		return nil, types.ErrNetworkActorNotFound
 	}
 
-	if networkActor.Permissions.IsBlacklisted(types2.PermClaimValidator) {
-		return nil, errors.Wrap(types.ErrNotEnoughPermissions, "PermClaimValidator is blacklisted")
-	}
+	if !networkActor.HasRole(customgovtypes.RoleValidator) {
+		if networkActor.Permissions.IsBlacklisted(customgovtypes.PermClaimValidator) {
+			return nil, errors.Wrap(types.ErrNotEnoughPermissions, "PermClaimValidator is blacklisted")
+		}
 
-	if !networkActor.Permissions.IsWhitelisted(types2.PermClaimValidator) {
-		return nil, errors.Wrap(types.ErrNotEnoughPermissions, "PermClaimValidator not whitelisted")
+		if !networkActor.Permissions.IsWhitelisted(customgovtypes.PermClaimValidator) {
+			return nil, errors.Wrap(types.ErrNotEnoughPermissions, "PermClaimValidator not whitelisted")
+		}
 	}
 
 	validator, err := types.NewValidator(msg.Moniker, msg.Website, msg.Social, msg.Identity, msg.Commission, msg.ValKey, valPubKey)

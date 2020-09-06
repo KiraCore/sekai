@@ -107,3 +107,4 @@ func TestNewHandler_SetPermissionsWithoutSetPermissions(t *testing.T) {
 	})
 	require.EqualError(t, err, "SetPermissions: not enough permissions")
 }
+
