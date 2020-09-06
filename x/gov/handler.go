@@ -16,6 +16,8 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 		switch msg := msg.(type) {
 		case *customgovtypes.MsgWhitelistPermissions:
 			return handleWhitelistPermissions(ctx, ck, msg)
+		case *customgovtypes.MsgBlacklistPermissions:
+			return handleWhitelistPermissions(ctx, ck, msg)
 		default:
 			return nil, errors.Wrapf(errors.ErrUnknownRequest, "unrecognized %s message type: %T", types.ModuleName, msg)
 		}

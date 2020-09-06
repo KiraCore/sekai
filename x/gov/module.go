@@ -48,7 +48,7 @@ func (b AppModuleBasic) RegisterRESTRoutes(context client.Context, router *mux.R
 }
 
 func (b AppModuleBasic) GetTxCmd() *cobra.Command {
-	return cli2.GetTxSetWhitelistPermissions()
+	return cli2.NewTxCmd()
 }
 
 func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
