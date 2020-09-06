@@ -92,7 +92,7 @@ func TestNewHandler_MsgClaimValidator_ItFailsIfUserDoesNotHavePermissionsToClaim
 	require.NoError(t, err)
 
 	_, err = handler(ctx, theMsg)
-	require.EqualError(t, err, "network actor not found")
+	require.EqualError(t, err, "PermClaimValidator: not enough permissions")
 }
 
 func TestNewHandler_SetPermissions_ActorWithRole(t *testing.T) {

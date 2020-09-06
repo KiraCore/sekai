@@ -23,16 +23,9 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 }
 
 func handleWhitelistPermissions(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgWhitelistPermissions) (*sdk.Result, error) {
-	// Check if proposer have permissions to SetPermissions.
-	proposer, err := ck.GetNetworkActorByAddress(ctx, msg.Proposer)
-	if err != nil {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "SetPermissions")
-	}
-
-	if !proposer.HasRole(customgovtypes.RoleSudo) {
-		if proposer.Permissions.IsBlacklisted(customgovtypes.PermSetPermissions) || !proposer.Permissions.IsWhitelisted(customgovtypes.PermSetPermissions) {
-			return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "SetPermissions")
-		}
+	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Proposer, customgovtypes.PermSetPermissions)
+	if !isAllowed {
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermSetPermissions")
 	}
 
 	actor, err := ck.GetNetworkActorByAddress(ctx, msg.Address)

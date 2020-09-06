@@ -105,7 +105,7 @@ func TestNewHandler_SetPermissionsWithoutSetPermissions(t *testing.T) {
 		Address:    addr,
 		Permission: uint32(types.PermClaimValidator),
 	})
-	require.EqualError(t, err, "SetPermissions: not enough permissions")
+	require.EqualError(t, err, "PermSetPermissions: not enough permissions")
 }
 
 func TestNewHandler_SetPermissions_ProposerHasRoleSudo(t *testing.T) {
