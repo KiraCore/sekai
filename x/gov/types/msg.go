@@ -52,6 +52,17 @@ func (m *MsgWhitelistPermissions) GetSigners() []sdk.AccAddress {
 	}
 }
 
+func NewMsgBlacklistPermissions(
+	proposer, address sdk.AccAddress,
+	permission uint32,
+) *MsgBlacklistPermissions {
+	return &MsgBlacklistPermissions{
+		Proposer:   proposer,
+		Address:    address,
+		Permission: permission,
+	}
+}
+
 func (m *MsgBlacklistPermissions) Route() string {
 	return ModuleName
 }

@@ -95,7 +95,7 @@ func GetTxSetBlacklistPermissions() *cobra.Command {
 				return fmt.Errorf("error getting address: %w", err)
 			}
 
-			msg := types.NewMsgWhitelistPermissions(
+			msg := types.NewMsgBlacklistPermissions(
 				clientCtx.FromAddress,
 				addr,
 				perm,
