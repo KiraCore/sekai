@@ -112,6 +112,7 @@ type UpsertSignerKeyRequest struct {
 	KeyType     types.SignerKeyType `json:"type" yaml:"type" valid:"required~Type is required"`
 	ExpiryTime  int64               `json:"expires" yaml:"expires" valid:"required~Expires is required"`
 	Enabled     bool                `json:"enabled" yaml:"enabled" valid:"required~Enabled is required"`
+	Data        string              `json:"data" yaml:"data" valid:"required~Data is required"`
 	Permissions []int64             `json:"permissions" yaml:"permissions" valid:"required~Permissions is required"`
 	Curator     sdk.AccAddress      `json:"curator"  yaml:"curator" valid:"required~Curator is required"`
 }
@@ -147,6 +148,7 @@ func UpsertSignerKeyRequestHandler(cliContext client.Context) http.HandlerFunc {
 			request.KeyType,
 			request.ExpiryTime,
 			request.Enabled,
+			request.Data,
 			request.Permissions,
 			request.Curator,
 		)

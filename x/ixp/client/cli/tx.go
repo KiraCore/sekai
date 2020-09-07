@@ -135,6 +135,7 @@ func UpsertSignerKey() *cobra.Command {
 			var enabledFlag = viper.GetBool("enabled")
 			var permissionsFlag = viper.GetIntSlice("permissions")
 			var expiryTimeFlag = viper.GetInt64("expiry-time")
+			var data = viper.GetString("data")
 
 			var permissions = []int64{}
 
@@ -181,6 +182,7 @@ func UpsertSignerKey() *cobra.Command {
 				keyType,
 				expiryTimeFlag,
 				enabledFlag,
+				data,
 				permissions,
 				curator,
 			)
@@ -196,5 +198,6 @@ func UpsertSignerKey() *cobra.Command {
 	cmd.Flags().Bool("enabled", true, "flag to enable/disable pubKey")
 	cmd.Flags().IntSlice("permissions", []int{}, "flag to set permissions set for the pubKey")
 	cmd.Flags().Int64("expiry-time", time.Now().Add(time.Hour*24*10).Unix(), "flag to set permissions set for the pubKey")
+	cmd.Flags().String("data", "", "additional data for for pubKey")
 	return cmd
 }

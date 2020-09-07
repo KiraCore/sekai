@@ -187,8 +187,9 @@ sekaid tx ixp upsertSignerKey AnzIM9IcLb07Cvwq3hdMJuuRofAgxfDekkD3nJUPPw0w --per
 
 # expiry-time (set when this key expire if does not set it's automatically set to 10 days after current timestamp)
 sekaid tx ixp upsertSignerKey AnzIM9IcLb07Cvwq3hdMJuuRofAgxfDekkD3nJUPPw0w --expiry-time=1598247750
+# data
+sekaid tx ixp upsertSignerKey AnzIM9IcLb07Cvwq3hdMJuuRofAgxfDekkD3nJUPPw0w --data="192.168.1.1" --keyring-backend=test --chain-id=testing
 ```
-
 Ex1.
 ```sh
 # command

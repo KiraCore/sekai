@@ -3,7 +3,7 @@ package kira.ixp;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/cosmos/cosmos-sdk/x/ixp/types";
+option go_package = "github.com/KiraCore/sekai/x/ixp/types";
 
 message OrderBook {
     string ID = 1;

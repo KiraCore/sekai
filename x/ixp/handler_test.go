@@ -372,7 +372,7 @@ func TestNewHandler_MsgUpsertSignerKey_HappyPath(t *testing.T) {
 				require.NoError(t, err)
 				pubKeyText, err := types.Bech32ifyPubKey(types.Bech32PubKeyTypeAccPub, pubKey)
 				require.NoError(t, err)
-				return ixptypes.NewMsgUpsertSignerKey(pubKeyText, ixptypes.SignerKeyType_Secp256k1, 0, true, []int64{1}, addr)
+				return ixptypes.NewMsgUpsertSignerKey(pubKeyText, ixptypes.SignerKeyType_Secp256k1, 0, true, "", []int64{1}, addr)
 			},
 			runAgain:      true,
 			againErr:      "",
@@ -387,7 +387,7 @@ func TestNewHandler_MsgUpsertSignerKey_HappyPath(t *testing.T) {
 				require.NoError(t, err)
 				pubKeyText, err := types.Bech32ifyPubKey(types.Bech32PubKeyTypeAccPub, pubKey)
 				require.NoError(t, err)
-				return ixptypes.NewMsgUpsertSignerKey(pubKeyText, ixptypes.SignerKeyType_Secp256k1, 0, true, []int64{}, addr)
+				return ixptypes.NewMsgUpsertSignerKey(pubKeyText, ixptypes.SignerKeyType_Secp256k1, 0, true, "", []int64{}, addr)
 			},
 		},
 		{
@@ -397,7 +397,7 @@ func TestNewHandler_MsgUpsertSignerKey_HappyPath(t *testing.T) {
 				require.NoError(t, err)
 				pubKeyText, err := types.Bech32ifyPubKey(types.Bech32PubKeyTypeAccPub, pubKey)
 				require.NoError(t, err)
-				return ixptypes.NewMsgUpsertSignerKey(pubKeyText, ixptypes.SignerKeyType_Secp256k1, 0, true, nil, addr)
+				return ixptypes.NewMsgUpsertSignerKey(pubKeyText, ixptypes.SignerKeyType_Secp256k1, 0, true, "", nil, addr)
 			},
 		},
 		{
@@ -407,7 +407,7 @@ func TestNewHandler_MsgUpsertSignerKey_HappyPath(t *testing.T) {
 				require.NoError(t, err)
 				pubKeyText, err := types.Bech32ifyPubKey(types.Bech32PubKeyTypeAccPub, pubKey)
 				require.NoError(t, err)
-				return ixptypes.NewMsgUpsertSignerKey(pubKeyText, ixptypes.SignerKeyType_Secp256k1, 0, true, []int64{1}, emptyKiraAddr1)
+				return ixptypes.NewMsgUpsertSignerKey(pubKeyText, ixptypes.SignerKeyType_Secp256k1, 0, true, "", []int64{1}, emptyKiraAddr1)
 			},
 			handlerErr: "curator shouldn't be empty",
 		},
@@ -418,7 +418,7 @@ func TestNewHandler_MsgUpsertSignerKey_HappyPath(t *testing.T) {
 				require.NoError(t, err)
 				pubKeyText, err := types.Bech32ifyPubKey(types.Bech32PubKeyTypeAccPub, pubKey)
 				require.NoError(t, err)
-				return ixptypes.NewMsgUpsertSignerKey(pubKeyText, ixptypes.SignerKeyType_Secp256k1, 0, true, []int64{1}, emptyKiraAddr2)
+				return ixptypes.NewMsgUpsertSignerKey(pubKeyText, ixptypes.SignerKeyType_Secp256k1, 0, true, "", []int64{1}, emptyKiraAddr2)
 			},
 			handlerErr: "curator shouldn't be empty",
 		},
@@ -429,7 +429,7 @@ func TestNewHandler_MsgUpsertSignerKey_HappyPath(t *testing.T) {
 				require.NoError(t, err)
 				pubKeyText, err := types.Bech32ifyPubKey(types.Bech32PubKeyTypeAccPub, pubKey)
 				require.NoError(t, err)
-				return ixptypes.NewMsgUpsertSignerKey(pubKeyText, ixptypes.SignerKeyType_Secp256k1, 0, true, []int64{1}, addr)
+				return ixptypes.NewMsgUpsertSignerKey(pubKeyText, ixptypes.SignerKeyType_Secp256k1, 0, true, "", []int64{1}, addr)
 			},
 		},
 	}

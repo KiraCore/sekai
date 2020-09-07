@@ -4,7 +4,7 @@ package kira.ixp;
 import "order.proto";
 import "signerkey.proto";
 import "gogoproto/gogo.proto";
-option go_package = "github.com/cosmos/cosmos-sdk/x/ixp/types";
+option go_package = "github.com/KiraCore/sekai/x/ixp/types";
 
 message GenesisState {
     repeated OrderBook orderBooks = 1 [

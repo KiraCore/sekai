@@ -15,6 +15,7 @@ func NewMsgUpsertSignerKey(
 	keyType SignerKeyType,
 	expiryTime int64,
 	enabled bool,
+	Data string,
 	permissions []int64,
 	curator sdk.AccAddress,
 ) (*MsgUpsertSignerKey, error) {

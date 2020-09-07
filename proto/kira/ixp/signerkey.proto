@@ -3,7 +3,7 @@ package kira.ixp;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/cosmos/cosmos-sdk/x/ixp/types";
+option go_package = "github.com/KiraCore/sekai/x/ixp/types";
 
 enum SignerKeyType {
     Secp256k1 = 0;
@@ -14,10 +14,10 @@ message SignerKey {
 	string PubKey = 1;
 	SignerKeyType KeyType = 2;
 	int64 ExpiryTime = 3;
-    bool Enabled = 4;
-    
-	repeated int64 Permissions = 5;
-	bytes Curator = 6 [
+	bool Enabled = 4;
+	string Data = 5;
+	repeated int64 Permissions = 6;
+	bytes Curator = 7 [
         (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
     ];
 }
@@ -27,8 +27,9 @@ message MsgUpsertSignerKey {
 	SignerKeyType KeyType = 2;
 	int64 ExpiryTime = 3;
 	bool Enabled   = 4;
-	repeated int64 Permissions = 5;
-	bytes Curator = 6 [
+	string Data = 5;
+	repeated int64 Permissions = 6;
+	bytes Curator = 7 [
         (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
     ];
 }

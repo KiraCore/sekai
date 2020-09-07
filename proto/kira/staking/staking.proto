@@ -3,7 +3,7 @@ package kira.staking;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/cosmos/cosmos-sdk/x/staking/types";
+option go_package = "github.com/KiraCore/sekai/x/staking/types";
 
 message MsgClaimValidator {
   option (gogoproto.equal)            = true;
