@@ -12,7 +12,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/server"
 	"github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/module"
 	types2 "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	"github.com/cosmos/cosmos-sdk/x/staking/client/cli"
@@ -20,7 +19,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func GenTxClaimCmd(mbm module.BasicManager, txEncCfg client.TxEncodingConfig, genBalIterator types2.GenesisBalancesIterator, defaultNodeHome string) *cobra.Command {
+func GenTxClaimCmd(genBalIterator types2.GenesisBalancesIterator, defaultNodeHome string) *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:   "gentx-claim [key_name]",
 		Short: "Adds validator into the genesis set",
@@ -91,13 +90,15 @@ func GenTxClaimCmd(mbm module.BasicManager, txEncCfg client.TxEncodingConfig, ge
 			appState[cumstomtypes.ModuleName] = bzStakingGen
 
 			var customGovGenState customgovtypes.GenesisState
+			cdc.MustUnmarshalJSON(appState[customgovtypes.ModuleName], &customGovGenState)
+
 			// Only first validator is network actor
 			networkActor := customgovtypes.NewNetworkActor(
 				types.AccAddress(validator.ValKey),
 				nil,
 				1,
 				nil,
-				customgovtypes.NewPermissions([]customgovtypes.PermValue{customgovtypes.PermAddPermissions}, nil),
+				customgovtypes.NewPermissions([]customgovtypes.PermValue{customgovtypes.PermSetPermissions}, nil),
 				1,
 			)
 			customGovGenState.NetworkActors = append(customGovGenState.NetworkActors, &networkActor)

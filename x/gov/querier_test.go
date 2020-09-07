@@ -1,7 +1,9 @@
-package gov
+package gov_test
 
 import (
 	"testing"
+
+	"github.com/KiraCore/sekai/x/gov"
 
 	"github.com/stretchr/testify/require"
 
@@ -38,7 +40,7 @@ func TestQuerier_PermissionsByAddress(t *testing.T) {
 
 	app.CustomGovKeeper.SaveNetworkActor(ctx, networkActor)
 
-	querier := NewQuerier(app.CustomGovKeeper)
+	querier := gov.NewQuerier(app.CustomGovKeeper)
 
 	resp, err := querier.PermissionsByAddress(sdk.WrapSDKContext(ctx), &types.PermissionsByAddressRequest{ValAddr: addr1})
 	require.NoError(t, err)

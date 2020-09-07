@@ -168,13 +168,14 @@ func initGenFiles(cfg Config, vals []*Validator, genAccounts []authtypes.Genesis
 	cfg.GenesisState[customtypes.ModuleName] = cfg.Codec.MustMarshalJSON(&customStakingGenState)
 
 	var customGovGenState customgovtypes.GenesisState
+	cfg.Codec.MustUnmarshalJSON(cfg.GenesisState[customgovtypes.ModuleName], &customGovGenState)
 	// Only first validator is network actor
 	networkActor := customgovtypes.NewNetworkActor(
 		vals[0].Address,
 		nil,
 		1,
 		nil,
-		customgovtypes.NewPermissions([]customgovtypes.PermValue{customgovtypes.PermAddPermissions}, nil),
+		customgovtypes.NewPermissions([]customgovtypes.PermValue{customgovtypes.PermSetPermissions}, nil),
 		1,
 	)
 	customGovGenState.NetworkActors = append(customGovGenState.NetworkActors, &networkActor)

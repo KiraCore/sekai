@@ -11,6 +11,8 @@ service Query {
   // Validators queries a validator by address.
   rpc PermissionsByAddress (PermissionsByAddressRequest) returns (PermissionsResponse) {}
   rpc GetNetworkProperties (Empty) returns (kira.gov.NetworkProperties) {}
+  // RolePermissions returns the permissions of the roles available in the registry.
+  rpc RolePermissions (RolePermissionsRequest) returns (RolePermissionsResponse) {}
 }
 
 message PermissionsByAddressRequest {
@@ -25,3 +27,9 @@ message PermissionsResponse {
 }
 
 message Empty {}
+message RolePermissionsRequest {
+  uint64 role = 1;
+}
+message RolePermissionsResponse {
+  Permissions permissions = 1;
+}

@@ -88,7 +88,7 @@ func (s IntegrationTestSuite) TestGetCmdQueryPermissions() {
 	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &perms)
 
 	// Validator 1 has permission to Add Permissions.
-	s.Require().True(perms.IsWhitelisted(types2.PermAddPermissions))
+	s.Require().True(perms.IsWhitelisted(types2.PermSetPermissions))
 	s.Require().False(perms.IsWhitelisted(types2.PermClaimValidator))
 }
 
@@ -141,7 +141,84 @@ func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions() {
 	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &perms)
 
 	// Validator 1 has permission to Add Permissions.
-	s.Require().False(perms.IsWhitelisted(types2.PermAddPermissions))
+	s.Require().False(perms.IsWhitelisted(types2.PermSetPermissions))
+	s.Require().True(perms.IsWhitelisted(types2.PermClaimValidator))
+}
+
+func (s IntegrationTestSuite) TestGetTxSetBlacklistPermissions() {
+	val := s.network.Validators[0]
+	cmd := cli.GetTxSetBlacklistPermissions()
+
+	_, out := testutil.ApplyMockIO(cmd)
+
+	clientCtx := val.ClientCtx.WithOutput(out).WithOutputFormat("json")
+
+	ctx := context.Background()
+	ctx = context.WithValue(ctx, client.ClientContextKey, &clientCtx)
+
+	// We create some random address where we will give perms.
+	addr, err := types3.AccAddressFromBech32("kira1alzyfq40zjsveat87jlg8jxetwqmr0a29sgd0f")
+	s.Require().NoError(err)
+
+	cmd.SetArgs(
+		[]string{
+			fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+			fmt.Sprintf("--%s=%s", cli2.FlagAddr, addr.String()),
+			fmt.Sprintf("--%s=%s", cli.FlagPermission, "1"),
+			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+			fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(10))).String()),
+		},
+	)
+
+	err = cmd.ExecuteContext(ctx)
+	s.Require().NoError(err)
+	s.T().Logf("error %s", out.String())
+
+	err = s.network.WaitForNextBlock()
+	s.Require().NoError(err)
+
+	// We check if the user has the permissions
+	cmd = cli.GetCmdQueryPermissions()
+	out.Reset()
+
+	cmd.SetArgs(
+		[]string{
+			addr.String(),
+		},
+	)
+
+	err = cmd.ExecuteContext(ctx)
+	s.Require().NoError(err)
+
+	var perms types2.Permissions
+	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &perms)
+
+	// Validator 1 has permission to Add Permissions.
+	s.Require().False(perms.IsBlacklisted(types2.PermSetPermissions))
+	s.Require().True(perms.IsBlacklisted(types2.PermClaimValidator))
+}
+
+func (s IntegrationTestSuite) TestRolePermissions_QueryCommand_DefaultRolePerms() {
+	val := s.network.Validators[0]
+
+	cmd := cli.GetCmdQueryRolePermissions()
+	_, out := testutil.ApplyMockIO(cmd)
+	clientCtx := val.ClientCtx.WithOutput(out).WithOutputFormat("json")
+
+	ctx := context.Background()
+	ctx = context.WithValue(ctx, client.ClientContextKey, &clientCtx)
+
+	cmd.SetArgs([]string{
+		"2", // RoleValidator
+	})
+
+	err := cmd.ExecuteContext(ctx)
+	s.Require().NoError(err)
+
+	var perms types2.Permissions
+	val.ClientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &perms)
+
 	s.Require().True(perms.IsWhitelisted(types2.PermClaimValidator))
 }
 
