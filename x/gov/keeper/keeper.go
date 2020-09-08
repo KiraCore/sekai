@@ -24,9 +24,9 @@ func (k Keeper) SetPermissionsForRole(ctx sdk.Context, role types.Role, permissi
 	prefixStore.Set(types.RoleToKey(role), k.cdc.MustMarshalBinaryBare(permissions))
 }
 
-func (k Keeper) GetPermissionsForRole(ctx sdk.Context, councilor types.Role) *types.Permissions {
+func (k Keeper) GetPermissionsForRole(ctx sdk.Context, role types.Role) *types.Permissions {
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixPermissionsRegistry)
-	bz := prefixStore.Get(types.RoleToKey(councilor))
+	bz := prefixStore.Get(types.RoleToKey(role))
 
 	perm := new(types.Permissions)
 	k.cdc.MustUnmarshalBinaryBare(bz, perm)
@@ -53,4 +53,25 @@ func (k Keeper) GetNetworkActorByAddress(ctx sdk.Context, address sdk.AccAddress
 	k.cdc.MustUnmarshalBinaryBare(bz, &na)
 
 	return na, nil
+}
+
+func (k Keeper) SaveCouncilor(ctx sdk.Context, councilor types.Councilor) {
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixCouncilorIdentityRegistry)
+
+	bz := k.cdc.MustMarshalBinaryBare(&councilor)
+	prefixStore.Set(councilor.Address.Bytes(), bz)
+}
+
+func (k Keeper) GetCouncilor(ctx sdk.Context, address sdk.AccAddress) (types.Councilor, error) {
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixCouncilorIdentityRegistry)
+
+	bz := prefixStore.Get(address.Bytes())
+	if bz == nil {
+		return types.Councilor{}, fmt.Errorf("councilor not found")
+	}
+
+	var co types.Councilor
+	k.cdc.MustUnmarshalBinaryBare(bz, &co)
+
+	return co, nil
 }

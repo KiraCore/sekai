@@ -8,8 +8,9 @@ const WhitelistPermissions = "whitelist-permissions"
 const BlacklistPermissions = "blacklist-permissions"
 
 var (
-	KeyPrefixPermissionsRegistry = []byte("permissions_registry")
-	KeyPrefixActors              = []byte("network_actors")
+	KeyPrefixPermissionsRegistry       = []byte("permissions_registry")
+	KeyPrefixActors                    = []byte("network_actors")
+	KeyPrefixCouncilorIdentityRegistry = []byte("council_identity_registry")
 
 	// Roles
 	RoleUndefined Role = 0x0
