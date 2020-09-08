@@ -69,7 +69,10 @@ func handleBlacklistPermissions(ctx sdk.Context, ck keeper.Keeper, msg *customgo
 }
 
 func handleSetNetworkProperties(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgSetNetworkProperties) (*sdk.Result, error) {
-	// TODO should check msg.Proposer permissions to handle reset network properties
+	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Proposer, customgovtypes.PermChangeTxFee)
+	if !isAllowed {
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermChangeTxFee")
+	}
 	ck.SetNetworkProperties(ctx, msg.NetworkProperties)
 	return &sdk.Result{}, nil
 }
