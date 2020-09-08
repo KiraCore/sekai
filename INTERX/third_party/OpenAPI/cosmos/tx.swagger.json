@@ -58,6 +58,21 @@
         }
       }
     },
+    "interxError": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "format": "int64"
+        },
+        "data": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
     "protobufAny": {
       "type": "object",
       "properties": {
@@ -76,15 +91,22 @@
     "txPostTransactionResponse": {
       "type": "object",
       "properties": {
-        "id": {
+        "chainId": {
+          "type": "string"
+        },
+        "block": {
           "type": "string",
           "format": "uint64"
         },
-        "jsonrpc": {
-          "type": "string"
+        "timestamp": {
+          "type": "string",
+          "format": "uint64"
         },
-        "result": {
+        "response": {
           "$ref": "#/definitions/txPostTransactionResult"
+        },
+        "error": {
+          "$ref": "#/definitions/interxError"
         }
       },
       "description": "PostTransactionResponse is the response type for the tx/PostTransaction RPC method."

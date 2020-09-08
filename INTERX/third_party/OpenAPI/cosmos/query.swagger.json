@@ -106,6 +106,21 @@
         }
       }
     },
+    "interxError": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "format": "int64"
+        },
+        "data": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
     "protobufAny": {
       "type": "object",
       "properties": {
@@ -204,15 +219,22 @@
     "queryStatusResponse": {
       "type": "object",
       "properties": {
-        "id": {
+        "chainId": {
+          "type": "string"
+        },
+        "block": {
           "type": "string",
           "format": "uint64"
         },
-        "jsonrpc": {
-          "type": "string"
+        "timestamp": {
+          "type": "string",
+          "format": "uint64"
         },
-        "result": {
+        "response": {
           "$ref": "#/definitions/cosmosqueryStatus"
+        },
+        "error": {
+          "$ref": "#/definitions/interxError"
         }
       },
       "title": "StatusResponse is the response type for the Query/Status RPC method"
@@ -274,15 +296,22 @@
     "queryTransactionHashResponse": {
       "type": "object",
       "properties": {
-        "id": {
+        "chainId": {
+          "type": "string"
+        },
+        "block": {
           "type": "string",
           "format": "uint64"
         },
-        "jsonrpc": {
-          "type": "string"
+        "timestamp": {
+          "type": "string",
+          "format": "uint64"
         },
-        "result": {
+        "response": {
           "$ref": "#/definitions/queryTransaction"
+        },
+        "error": {
+          "$ref": "#/definitions/interxError"
         }
       },
       "description": "TransactionHashResponse is the response type for the Query/TransactionHash RPC method."
