@@ -3,21 +3,23 @@ package cli
 import (
 	"fmt"
 
-	types2 "github.com/cosmos/cosmos-sdk/types"
-
-	"github.com/KiraCore/sekai/x/staking/client/cli"
-
-	"github.com/KiraCore/sekai/x/gov/types"
-
-	"github.com/spf13/cobra"
-
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
+	types2 "github.com/cosmos/cosmos-sdk/types"
+	"github.com/spf13/cobra"
+
+	"github.com/KiraCore/sekai/x/gov/types"
+	"github.com/KiraCore/sekai/x/staking/client/cli"
 )
 
 const (
 	FlagPermission = "permission"
+	FlagWebsite    = "website"
+	FlagMoniker    = "moniker"
+	FlagSocial     = "social"
+	FlagIdentity   = "identity"
+	FlagAddress    = "address"
 )
 
 // NewTxCmd returns a root CLI command handler for all x/bank transaction commands.
@@ -31,6 +33,7 @@ func NewTxCmd() *cobra.Command {
 	}
 
 	txCmd.AddCommand(GetTxSetWhitelistPermissions())
+	txCmd.AddCommand(GetTxSetBlacklistPermissions())
 
 	return txCmd
 }
@@ -133,4 +136,45 @@ func getAddressFromFlag(cmd *cobra.Command) (types2.AccAddress, error) {
 	}
 
 	return bech, nil
+}
+
+func GetTxClaimGovernanceCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "claim-governance-seat",
+		Short: "Claim governance seat to become a Councilor",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			moniker, _ := cmd.Flags().GetString(FlagMoniker)
+			website, _ := cmd.Flags().GetString(FlagWebsite)
+			social, _ := cmd.Flags().GetString(FlagSocial)
+			identity, _ := cmd.Flags().GetString(FlagIdentity)
+			address, _ := cmd.Flags().GetString(FlagAddress)
+
+			bech32, err := types2.AccAddressFromBech32(address)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgClaimCouncilor(
+				moniker,
+				website,
+				social,
+				identity,
+				bech32,
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
 }
