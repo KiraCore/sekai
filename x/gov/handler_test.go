@@ -59,7 +59,7 @@ func TestHandler_MsgWhitelistPermissions_ActorDoesNotExist(t *testing.T) {
 			app := simapp.Setup(false)
 			ctx := app.NewContext(false, tmproto.Header{})
 
-			err := setSetPermissionsToAddr(t, app, ctx, proposerAddr)
+			err := setPermissionToAddr(t, app, ctx, proposerAddr, types.PermSetPermissions)
 			require.NoError(t, err)
 
 			handler := gov.NewHandler(app.CustomGovKeeper)
@@ -117,7 +117,7 @@ func TestNewHandler_SetPermissions_ActorWithPerms(t *testing.T) {
 			app := simapp.Setup(false)
 			ctx := app.NewContext(false, tmproto.Header{})
 
-			err := setSetPermissionsToAddr(t, app, ctx, proposerAddr)
+			err := setPermissionToAddr(t, app, ctx, proposerAddr, types.PermSetPermissions)
 			require.NoError(t, err)
 
 			// Add some perms before to the actor.
@@ -313,7 +313,7 @@ func TestHandler_ClaimCouncilor_HappyPath(t *testing.T) {
 			app := simapp.Setup(false)
 			ctx := app.NewContext(false, tmproto.Header{})
 
-			err = setClaimGovernancePermissionsToAddr(t, app, ctx, addr)
+			err = setPermissionToAddr(t, app, ctx, addr, types.PermClaimGovernance)
 			require.NoError(t, err)
 
 			handler := gov.NewHandler(app.CustomGovKeeper)
@@ -336,19 +336,9 @@ func TestHandler_ClaimCouncilor_HappyPath(t *testing.T) {
 	}
 }
 
-func setSetPermissionsToAddr(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addr sdk.AccAddress) error {
+func setPermissionToAddr(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addr sdk.AccAddress, perm types.PermValue) error {
 	proposerActor := types.NewDefaultActor(addr)
-	err := proposerActor.Permissions.AddToWhitelist(types.PermSetPermissions)
-	require.NoError(t, err)
-
-	app.CustomGovKeeper.SaveNetworkActor(ctx, proposerActor)
-
-	return nil
-}
-
-func setClaimGovernancePermissionsToAddr(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addr sdk.AccAddress) error {
-	proposerActor := types.NewDefaultActor(addr)
-	err := proposerActor.Permissions.AddToWhitelist(types.PermClaimGovernance)
+	err := proposerActor.Permissions.AddToWhitelist(perm)
 	require.NoError(t, err)
 
 	app.CustomGovKeeper.SaveNetworkActor(ctx, proposerActor)
