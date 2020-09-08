@@ -4,6 +4,9 @@ import sdk "github.com/cosmos/cosmos-sdk/types"
 
 const ModuleName = "customgov"
 
+// RouterKey to be used for routing msgs
+const RouterKey = ModuleName
+
 const WhitelistPermissions = "whitelist-permissions"
 const BlacklistPermissions = "blacklist-permissions"
 

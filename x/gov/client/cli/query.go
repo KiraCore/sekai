@@ -100,7 +100,7 @@ func GetCmdQueryNetworkProperties() *cobra.Command {
 				return err
 			}
 
-			params := &types.Empty{}
+			params := &types.NetworkPropertiesRequest{}
 			queryClient := types.NewQueryClient(clientCtx)
 			res, err := queryClient.GetNetworkProperties(context.Background(), params)
 			if err != nil {

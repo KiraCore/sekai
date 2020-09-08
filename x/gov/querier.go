@@ -30,11 +30,11 @@ func (q Querier) PermissionsByAddress(ctx context.Context, request *types.Permis
 	return &types.PermissionsResponse{Permissions: networkActor.Permissions}, nil
 }
 
-func (q Querier) GetNetworkProperties(ctx context.Context, request *types.Empty) (*types.NetworkProperties, error) {
+func (q Querier) GetNetworkProperties(ctx context.Context, request *types.NetworkPropertiesRequest) (*types.NetworkPropertiesResponse, error) {
 	sdkContext := sdk.UnwrapSDKContext(ctx)
 
 	networkProperties := q.keeper.GetNetworkProperties(sdkContext)
-	return networkProperties, nil
+	return &types.NetworkPropertiesResponse{Properties: networkProperties}, nil
 }
 
 func (q Querier) RolePermissions(ctx context.Context, request *types.RolePermissionsRequest) (*types.RolePermissionsResponse, error) {

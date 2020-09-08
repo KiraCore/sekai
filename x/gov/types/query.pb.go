@@ -117,21 +117,21 @@ func (m *PermissionsResponse) GetPermissions() *Permissions {
 	return nil
 }
 
-type Empty struct {
+type NetworkPropertiesRequest struct {
 }
 
-func (m *Empty) Reset()         { *m = Empty{} }
-func (m *Empty) String() string { return proto.CompactTextString(m) }
-func (*Empty) ProtoMessage()    {}
-func (*Empty) Descriptor() ([]byte, []int) {
+func (m *NetworkPropertiesRequest) Reset()         { *m = NetworkPropertiesRequest{} }
+func (m *NetworkPropertiesRequest) String() string { return proto.CompactTextString(m) }
+func (*NetworkPropertiesRequest) ProtoMessage()    {}
+func (*NetworkPropertiesRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_5c6ac9b241082464, []int{2}
 }
-func (m *Empty) XXX_Unmarshal(b []byte) error {
+func (m *NetworkPropertiesRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *Empty) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *NetworkPropertiesRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_Empty.Marshal(b, m, deterministic)
+		return xxx_messageInfo_NetworkPropertiesRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -141,17 +141,61 @@ func (m *Empty) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-func (m *Empty) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Empty.Merge(m, src)
+func (m *NetworkPropertiesRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NetworkPropertiesRequest.Merge(m, src)
 }
-func (m *Empty) XXX_Size() int {
+func (m *NetworkPropertiesRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *Empty) XXX_DiscardUnknown() {
-	xxx_messageInfo_Empty.DiscardUnknown(m)
+func (m *NetworkPropertiesRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_NetworkPropertiesRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Empty proto.InternalMessageInfo
+var xxx_messageInfo_NetworkPropertiesRequest proto.InternalMessageInfo
+
+type NetworkPropertiesResponse struct {
+	Properties *NetworkProperties `protobuf:"bytes,1,opt,name=properties,proto3" json:"properties,omitempty"`
+}
+
+func (m *NetworkPropertiesResponse) Reset()         { *m = NetworkPropertiesResponse{} }
+func (m *NetworkPropertiesResponse) String() string { return proto.CompactTextString(m) }
+func (*NetworkPropertiesResponse) ProtoMessage()    {}
+func (*NetworkPropertiesResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5c6ac9b241082464, []int{3}
+}
+func (m *NetworkPropertiesResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *NetworkPropertiesResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_NetworkPropertiesResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *NetworkPropertiesResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NetworkPropertiesResponse.Merge(m, src)
+}
+func (m *NetworkPropertiesResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *NetworkPropertiesResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_NetworkPropertiesResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_NetworkPropertiesResponse proto.InternalMessageInfo
+
+func (m *NetworkPropertiesResponse) GetProperties() *NetworkProperties {
+	if m != nil {
+		return m.Properties
+	}
+	return nil
+}
 
 type RolePermissionsRequest struct {
 	Role uint64 `protobuf:"varint,1,opt,name=role,proto3" json:"role,omitempty"`
@@ -161,7 +205,7 @@ func (m *RolePermissionsRequest) Reset()         { *m = RolePermissionsRequest{}
 func (m *RolePermissionsRequest) String() string { return proto.CompactTextString(m) }
 func (*RolePermissionsRequest) ProtoMessage()    {}
 func (*RolePermissionsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5c6ac9b241082464, []int{3}
+	return fileDescriptor_5c6ac9b241082464, []int{4}
 }
 func (m *RolePermissionsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -205,7 +249,7 @@ func (m *RolePermissionsResponse) Reset()         { *m = RolePermissionsResponse
 func (m *RolePermissionsResponse) String() string { return proto.CompactTextString(m) }
 func (*RolePermissionsResponse) ProtoMessage()    {}
 func (*RolePermissionsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5c6ac9b241082464, []int{4}
+	return fileDescriptor_5c6ac9b241082464, []int{5}
 }
 func (m *RolePermissionsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -244,7 +288,8 @@ func (m *RolePermissionsResponse) GetPermissions() *Permissions {
 func init() {
 	proto.RegisterType((*PermissionsByAddressRequest)(nil), "kira.gov.PermissionsByAddressRequest")
 	proto.RegisterType((*PermissionsResponse)(nil), "kira.gov.PermissionsResponse")
-	proto.RegisterType((*Empty)(nil), "kira.gov.Empty")
+	proto.RegisterType((*NetworkPropertiesRequest)(nil), "kira.gov.NetworkPropertiesRequest")
+	proto.RegisterType((*NetworkPropertiesResponse)(nil), "kira.gov.NetworkPropertiesResponse")
 	proto.RegisterType((*RolePermissionsRequest)(nil), "kira.gov.RolePermissionsRequest")
 	proto.RegisterType((*RolePermissionsResponse)(nil), "kira.gov.RolePermissionsResponse")
 }
@@ -252,32 +297,34 @@ func init() {
 func init() { proto.RegisterFile("query.proto", fileDescriptor_5c6ac9b241082464) }
 
 var fileDescriptor_5c6ac9b241082464 = []byte{
-	// 397 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x52, 0x3f, 0xef, 0xd2, 0x50,
-	0x14, 0x6d, 0xcd, 0x0f, 0xc1, 0x87, 0x09, 0xc9, 0x13, 0xff, 0xa4, 0xc4, 0x82, 0x2f, 0x21, 0x71,
-	0x90, 0x36, 0xc1, 0xc1, 0xc4, 0xc5, 0x80, 0xff, 0x06, 0x13, 0x82, 0x9d, 0x8c, 0x83, 0xa4, 0xb4,
-	0x37, 0xb5, 0x69, 0xcb, 0x2d, 0xef, 0x3d, 0xaa, 0x5d, 0xdc, 0xdd, 0xfc, 0x58, 0x8e, 0x8c, 0x4e,
-	0xc4, 0xc0, 0x37, 0x70, 0x74, 0x32, 0xb4, 0x34, 0xad, 0xd0, 0xb8, 0x38, 0xf5, 0xe4, 0xf4, 0xdc,
-	0x73, 0xef, 0x3b, 0xf7, 0x92, 0xf6, 0x7a, 0x03, 0x3c, 0x35, 0x62, 0x8e, 0x12, 0x69, 0x2b, 0xf0,
-	0xb9, 0x6d, 0x78, 0x98, 0x68, 0x37, 0x3c, 0x4c, 0x72, 0x52, 0xeb, 0x7a, 0xe8, 0x61, 0x06, 0xcd,
-	0x23, 0xca, 0x59, 0xf6, 0x85, 0xf4, 0xe6, 0xc0, 0x23, 0x5f, 0x08, 0x1f, 0x57, 0x62, 0x9a, 0x4e,
-	0x5c, 0x97, 0x83, 0x10, 0x16, 0xac, 0x37, 0x20, 0x24, 0x5d, 0x90, 0x56, 0x62, 0x87, 0x0b, 0xdb,
-	0x75, 0xf9, 0x3d, 0x75, 0xa0, 0x3e, 0xbc, 0x39, 0x7d, 0xf1, 0x6b, 0xd7, 0xef, 0xa4, 0x76, 0x14,
-	0x3e, 0x65, 0xc5, 0x1f, 0xf6, 0x7b, 0xd7, 0x1f, 0x79, 0xbe, 0xfc, 0xb8, 0x59, 0x1a, 0x0e, 0x46,
-	0xa6, 0x83, 0x22, 0x42, 0x71, 0xfa, 0x8c, 0x84, 0x1b, 0x98, 0x32, 0x8d, 0x41, 0x18, 0x13, 0xc7,
-	0x29, 0xec, 0x9b, 0x89, 0x1d, 0x1e, 0x31, 0x9b, 0x91, 0x5b, 0x95, 0xfe, 0x16, 0x88, 0x18, 0x57,
-	0x02, 0xe8, 0x13, 0xd2, 0x8e, 0x4b, 0x3a, 0x6b, 0xdd, 0x1e, 0xdf, 0x36, 0x8a, 0x77, 0x19, 0xd5,
-	0x9a, 0xaa, 0x92, 0x35, 0x49, 0xe3, 0x65, 0x14, 0xcb, 0x94, 0x3d, 0x22, 0x77, 0x2c, 0x0c, 0xe1,
-	0x2f, 0xf3, 0xfc, 0x4d, 0x94, 0x5c, 0x71, 0x0c, 0x21, 0x33, 0xbd, 0xb2, 0x32, 0xcc, 0x2c, 0x72,
-	0xf7, 0x42, 0xfd, 0x9f, 0xa3, 0x8c, 0xbf, 0x5e, 0x23, 0x8d, 0xb7, 0xc7, 0xad, 0xd0, 0x0f, 0xa4,
-	0x5b, 0x17, 0x32, 0x1d, 0xd6, 0xba, 0x9c, 0x2f, 0x41, 0xbb, 0x5f, 0xdf, 0xec, 0x34, 0x20, 0x53,
-	0xe8, 0x2b, 0xd2, 0x7d, 0x0d, 0x72, 0x06, 0xf2, 0x13, 0xf2, 0x60, 0xce, 0x31, 0x06, 0x2e, 0x7d,
-	0x10, 0xb4, 0x53, 0x16, 0x66, 0xa1, 0x68, 0xbd, 0x92, 0xb8, 0x50, 0x33, 0x85, 0xbe, 0x23, 0x9d,
-	0xb3, 0x14, 0xe8, 0xa0, 0xac, 0xa8, 0x8f, 0x53, 0x7b, 0xf0, 0x0f, 0x45, 0x31, 0xe1, 0xf4, 0xd9,
-	0xf7, 0xbd, 0xae, 0x6e, 0xf7, 0xba, 0xfa, 0x73, 0xaf, 0xab, 0xdf, 0x0e, 0xba, 0xb2, 0x3d, 0xe8,
-	0xca, 0x8f, 0x83, 0xae, 0xbc, 0x1f, 0x56, 0x0e, 0xe7, 0x8d, 0xcf, 0xed, 0xe7, 0xc8, 0xc1, 0x14,
-	0x10, 0xd8, 0xbe, 0xf9, 0xd9, 0xf4, 0x30, 0xc9, 0x6f, 0x67, 0x79, 0x3d, 0x3b, 0xd7, 0xc7, 0x7f,
-	0x02, 0x00, 0x00, 0xff, 0xff, 0x71, 0x74, 0x9a, 0xde, 0xe8, 0x02, 0x00, 0x00,
+	// 420 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x53, 0x3d, 0x8f, 0xd3, 0x40,
+	0x10, 0xb5, 0xd1, 0x01, 0xc7, 0x04, 0xe9, 0xa4, 0x25, 0xc0, 0xe1, 0x13, 0xbe, 0x63, 0xd1, 0x49,
+	0x14, 0x9c, 0x2d, 0x1d, 0x05, 0x12, 0x14, 0xe8, 0x02, 0x12, 0x05, 0xd2, 0xe9, 0x70, 0x15, 0x51,
+	0x10, 0x6d, 0xec, 0x91, 0xb1, 0x6c, 0x67, 0x9c, 0x5d, 0xc7, 0xe0, 0x86, 0xdf, 0xc0, 0x8f, 0xe0,
+	0xc7, 0x50, 0xa6, 0xa4, 0x8a, 0x50, 0xf2, 0x0f, 0x28, 0xa9, 0x50, 0xfc, 0x91, 0x98, 0xc4, 0x4a,
+	0x43, 0xe5, 0xd1, 0xec, 0x9b, 0xf7, 0xfc, 0xde, 0xce, 0x42, 0x67, 0x3c, 0x41, 0x99, 0x5b, 0x89,
+	0xa4, 0x94, 0xd8, 0x7e, 0x18, 0x48, 0x61, 0xf9, 0x94, 0x19, 0xb7, 0x7c, 0xca, 0xca, 0xa6, 0xd1,
+	0xf5, 0xc9, 0xa7, 0xa2, 0xb4, 0x97, 0x55, 0xd9, 0xe5, 0x5f, 0xe1, 0xe8, 0x0a, 0x65, 0x1c, 0x28,
+	0x15, 0xd0, 0x48, 0xf5, 0xf2, 0x0b, 0xcf, 0x93, 0xa8, 0x94, 0x83, 0xe3, 0x09, 0xaa, 0x94, 0x0d,
+	0x60, 0x3f, 0x13, 0xd1, 0x40, 0x78, 0x9e, 0x3c, 0xd4, 0x4f, 0xf4, 0x27, 0xb7, 0x7b, 0x6f, 0x7e,
+	0xcf, 0x8e, 0x0f, 0x72, 0x11, 0x47, 0x2f, 0x78, 0x7d, 0xc2, 0xff, 0xcc, 0x8e, 0xcf, 0xfc, 0x20,
+	0xfd, 0x34, 0x19, 0x5a, 0x2e, 0xc5, 0xb6, 0x4b, 0x2a, 0x26, 0x55, 0x7d, 0xce, 0x94, 0x17, 0xda,
+	0x69, 0x9e, 0xa0, 0xb2, 0x2e, 0x5c, 0xb7, 0xa6, 0xbf, 0x99, 0x89, 0x68, 0x59, 0xf3, 0x4b, 0xb8,
+	0xd3, 0xd0, 0x77, 0x50, 0x25, 0x34, 0x52, 0xc8, 0x9e, 0x43, 0x27, 0x59, 0xb7, 0x0b, 0xe9, 0xce,
+	0xf9, 0x5d, 0xab, 0xf6, 0x65, 0x35, 0x67, 0x9a, 0x48, 0x6e, 0xc0, 0xe1, 0x25, 0xa6, 0x9f, 0x49,
+	0x86, 0x57, 0x92, 0x12, 0x94, 0x69, 0x80, 0xb5, 0x19, 0xde, 0x87, 0x07, 0x2d, 0x67, 0x95, 0xe2,
+	0x4b, 0x80, 0x64, 0xd5, 0xad, 0x04, 0x8f, 0xd6, 0x82, 0xdb, 0x83, 0x0d, 0x38, 0x7f, 0x0a, 0xf7,
+	0x1c, 0x8a, 0xf0, 0x1f, 0x27, 0x65, 0x80, 0x0c, 0xf6, 0x24, 0x45, 0x58, 0x10, 0xee, 0x39, 0x45,
+	0xcd, 0x1d, 0xb8, 0xbf, 0x85, 0xfe, 0x4f, 0xdf, 0xe7, 0xdf, 0xaf, 0xc1, 0xf5, 0xf7, 0xcb, 0x15,
+	0x60, 0x1f, 0xa1, 0xdb, 0x76, 0xa3, 0xec, 0xb4, 0x95, 0x65, 0xf3, 0xc6, 0x8d, 0x87, 0xed, 0x62,
+	0xd5, 0x0f, 0x72, 0x8d, 0x09, 0xe8, 0xbe, 0xc5, 0x74, 0x2b, 0x0f, 0xc6, 0x77, 0x85, 0x55, 0x91,
+	0x3f, 0xde, 0x89, 0x59, 0x49, 0xf4, 0xe1, 0x60, 0x23, 0x20, 0x76, 0xb2, 0x9e, 0x6c, 0x4f, 0xda,
+	0x78, 0xb4, 0x03, 0x51, 0x33, 0xf7, 0x5e, 0xfd, 0x98, 0x9b, 0xfa, 0x74, 0x6e, 0xea, 0xbf, 0xe6,
+	0xa6, 0xfe, 0x6d, 0x61, 0x6a, 0xd3, 0x85, 0xa9, 0xfd, 0x5c, 0x98, 0xda, 0x87, 0xd3, 0xc6, 0x02,
+	0xbf, 0x0b, 0xa4, 0x78, 0x4d, 0x12, 0x6d, 0x85, 0xa1, 0x08, 0xec, 0x2f, 0xb6, 0x4f, 0x59, 0xb9,
+	0xc3, 0xc3, 0x1b, 0xc5, 0xb3, 0x79, 0xf6, 0x37, 0x00, 0x00, 0xff, 0xff, 0xeb, 0xce, 0x5a, 0x74,
+	0x70, 0x03, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -294,7 +341,7 @@ const _ = grpc.SupportPackageIsVersion4
 type QueryClient interface {
 	// Validators queries a validator by address.
 	PermissionsByAddress(ctx context.Context, in *PermissionsByAddressRequest, opts ...grpc.CallOption) (*PermissionsResponse, error)
-	GetNetworkProperties(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*NetworkProperties, error)
+	GetNetworkProperties(ctx context.Context, in *NetworkPropertiesRequest, opts ...grpc.CallOption) (*NetworkPropertiesResponse, error)
 	// RolePermissions returns the permissions of the roles available in the registry.
 	RolePermissions(ctx context.Context, in *RolePermissionsRequest, opts ...grpc.CallOption) (*RolePermissionsResponse, error)
 }
@@ -316,8 +363,8 @@ func (c *queryClient) PermissionsByAddress(ctx context.Context, in *PermissionsB
 	return out, nil
 }
 
-func (c *queryClient) GetNetworkProperties(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*NetworkProperties, error) {
-	out := new(NetworkProperties)
+func (c *queryClient) GetNetworkProperties(ctx context.Context, in *NetworkPropertiesRequest, opts ...grpc.CallOption) (*NetworkPropertiesResponse, error) {
+	out := new(NetworkPropertiesResponse)
 	err := c.cc.Invoke(ctx, "/kira.gov.Query/GetNetworkProperties", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -338,7 +385,7 @@ func (c *queryClient) RolePermissions(ctx context.Context, in *RolePermissionsRe
 type QueryServer interface {
 	// Validators queries a validator by address.
 	PermissionsByAddress(context.Context, *PermissionsByAddressRequest) (*PermissionsResponse, error)
-	GetNetworkProperties(context.Context, *Empty) (*NetworkProperties, error)
+	GetNetworkProperties(context.Context, *NetworkPropertiesRequest) (*NetworkPropertiesResponse, error)
 	// RolePermissions returns the permissions of the roles available in the registry.
 	RolePermissions(context.Context, *RolePermissionsRequest) (*RolePermissionsResponse, error)
 }
@@ -350,7 +397,7 @@ type UnimplementedQueryServer struct {
 func (*UnimplementedQueryServer) PermissionsByAddress(ctx context.Context, req *PermissionsByAddressRequest) (*PermissionsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PermissionsByAddress not implemented")
 }
-func (*UnimplementedQueryServer) GetNetworkProperties(ctx context.Context, req *Empty) (*NetworkProperties, error) {
+func (*UnimplementedQueryServer) GetNetworkProperties(ctx context.Context, req *NetworkPropertiesRequest) (*NetworkPropertiesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetNetworkProperties not implemented")
 }
 func (*UnimplementedQueryServer) RolePermissions(ctx context.Context, req *RolePermissionsRequest) (*RolePermissionsResponse, error) {
@@ -380,7 +427,7 @@ func _Query_PermissionsByAddress_Handler(srv interface{}, ctx context.Context, d
 }
 
 func _Query_GetNetworkProperties_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Empty)
+	in := new(NetworkPropertiesRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -392,7 +439,7 @@ func _Query_GetNetworkProperties_Handler(srv interface{}, ctx context.Context, d
 		FullMethod: "/kira.gov.Query/GetNetworkProperties",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).GetNetworkProperties(ctx, req.(*Empty))
+		return srv.(QueryServer).GetNetworkProperties(ctx, req.(*NetworkPropertiesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -501,7 +548,7 @@ func (m *PermissionsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *Empty) Marshal() (dAtA []byte, err error) {
+func (m *NetworkPropertiesRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -511,16 +558,51 @@ func (m *Empty) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *Empty) MarshalTo(dAtA []byte) (int, error) {
+func (m *NetworkPropertiesRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *Empty) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *NetworkPropertiesRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *NetworkPropertiesResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *NetworkPropertiesResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *NetworkPropertiesResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Properties != nil {
+		{
+			size, err := m.Properties.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
 	return len(dAtA) - i, nil
 }
 
@@ -624,12 +706,25 @@ func (m *PermissionsResponse) Size() (n int) {
 	return n
 }
 
-func (m *Empty) Size() (n int) {
+func (m *NetworkPropertiesRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
+	return n
+}
+
+func (m *NetworkPropertiesResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Properties != nil {
+		l = m.Properties.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
 	return n
 }
 
@@ -840,7 +935,7 @@ func (m *PermissionsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *Empty) Unmarshal(dAtA []byte) error {
+func (m *NetworkPropertiesRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -863,12 +958,101 @@ func (m *Empty) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: Empty: wiretype end group for non-group")
+			return fmt.Errorf("proto: NetworkPropertiesRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Empty: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: NetworkPropertiesRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *NetworkPropertiesResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: NetworkPropertiesResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: NetworkPropertiesResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Properties", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Properties == nil {
+				m.Properties = &NetworkProperties{}
+			}
+			if err := m.Properties.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuery(dAtA[iNdEx:])
