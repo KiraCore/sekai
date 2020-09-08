@@ -1,6 +1,7 @@
 package gov_test
 
 import (
+	"fmt"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -251,9 +252,103 @@ func TestNewHandler_SetPermissions_ProposerHasRoleSudo(t *testing.T) {
 	}
 }
 
+func TestHandler_ClaimCouncilor_Fails(t *testing.T) {
+	addr, err := sdk.AccAddressFromBech32("kira15ky9du8a2wlstz6fpx3p4mqpjyrm5cgqzp4f3d")
+	require.NoError(t, err)
+
+	tests := []struct {
+		name        string
+		msg         sdk.Msg
+		expectedErr error
+	}{
+		{
+			name: "not enough permissions",
+			msg: &types.MsgClaimCouncilor{
+				Moniker:  "",
+				Website:  "",
+				Social:   "",
+				Identity: "",
+				Address:  addr,
+			},
+			expectedErr: fmt.Errorf("PermClaimGovernance: not enough permissions"),
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			app := simapp.Setup(false)
+			ctx := app.NewContext(false, tmproto.Header{})
+
+			handler := gov.NewHandler(app.CustomGovKeeper)
+			_, err := handler(ctx, tt.msg)
+			require.EqualError(t, err, tt.expectedErr.Error())
+		})
+	}
+}
+
+func TestHandler_ClaimCouncilor_HappyPath(t *testing.T) {
+	addr, err := sdk.AccAddressFromBech32("kira15ky9du8a2wlstz6fpx3p4mqpjyrm5cgqzp4f3d")
+	require.NoError(t, err)
+
+	tests := []struct {
+		name string
+		msg  *types.MsgClaimCouncilor
+	}{
+		{
+			name: "all correct",
+			msg: &types.MsgClaimCouncilor{
+				Moniker:  "TheMoniker",
+				Website:  "TheWebsite",
+				Social:   "The Social",
+				Identity: "The Identity",
+				Address:  addr,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			app := simapp.Setup(false)
+			ctx := app.NewContext(false, tmproto.Header{})
+
+			err = setClaimGovernancePermissionsToAddr(t, app, ctx, addr)
+			require.NoError(t, err)
+
+			handler := gov.NewHandler(app.CustomGovKeeper)
+			_, err := handler(ctx, tt.msg)
+			require.NoError(t, err)
+
+			expectedCouncilor := types.NewCouncilor(
+				tt.msg.Moniker,
+				tt.msg.Website,
+				tt.msg.Social,
+				tt.msg.Identity,
+				tt.msg.Address,
+			)
+
+			councilor, err := app.CustomGovKeeper.GetCouncilor(ctx, addr)
+			require.NoError(t, err)
+
+			require.Equal(t, expectedCouncilor, councilor)
+		})
+	}
+}
+
 func setSetPermissionsToAddr(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addr sdk.AccAddress) error {
 	proposerActor := types.NewDefaultActor(addr)
 	err := proposerActor.Permissions.AddToWhitelist(types.PermSetPermissions)
+	require.NoError(t, err)
+
+	app.CustomGovKeeper.SaveNetworkActor(ctx, proposerActor)
+
+	return nil
+}
+
+func setClaimGovernancePermissionsToAddr(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addr sdk.AccAddress) error {
+	proposerActor := types.NewDefaultActor(addr)
+	err := proposerActor.Permissions.AddToWhitelist(types.PermClaimGovernance)
 	require.NoError(t, err)
 
 	app.CustomGovKeeper.SaveNetworkActor(ctx, proposerActor)

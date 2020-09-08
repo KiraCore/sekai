@@ -4,8 +4,12 @@ import sdk "github.com/cosmos/cosmos-sdk/types"
 
 const ModuleName = "customgov"
 
-const WhitelistPermissions = "whitelist-permissions"
-const BlacklistPermissions = "blacklist-permissions"
+// Msg types
+const (
+	WhitelistPermissions = "whitelist-permissions"
+	BlacklistPermissions = "blacklist-permissions"
+	ClaimCouncilor       = "claim-councilor"
+)
 
 var (
 	KeyPrefixPermissionsRegistry       = []byte("permissions_registry")
@@ -17,8 +21,9 @@ var (
 	RoleSudo      Role = 0x1
 	RoleValidator Role = 0x2
 
-	PermClaimValidator PermValue = 1
-	PermSetPermissions PermValue = 2
+	PermClaimValidator  PermValue = 1
+	PermSetPermissions  PermValue = 2
+	PermClaimGovernance PermValue = 3
 )
 
 // Role represents a Role in the registry.

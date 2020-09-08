@@ -18,6 +18,8 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 			return handleWhitelistPermissions(ctx, ck, msg)
 		case *customgovtypes.MsgBlacklistPermissions:
 			return handleBlacklistPermissions(ctx, ck, msg)
+		case *customgovtypes.MsgClaimCouncilor:
+			return handleClaimCouncilor(ctx, ck, msg)
 		default:
 			return nil, errors.Wrapf(errors.ErrUnknownRequest, "unrecognized %s message type: %T", types.ModuleName, msg)
 		}
@@ -62,6 +64,19 @@ func handleBlacklistPermissions(ctx sdk.Context, ck keeper.Keeper, msg *customgo
 	}
 
 	ck.SaveNetworkActor(ctx, actor)
+
+	return &sdk.Result{}, nil
+}
+
+func handleClaimCouncilor(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgClaimCouncilor) (*sdk.Result, error) {
+	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Address, customgovtypes.PermClaimGovernance)
+	if !isAllowed {
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermClaimGovernance")
+	}
+
+	councilor := customgovtypes.NewCouncilor(msg.Moniker, msg.Website, msg.Social, msg.Identity, msg.Address)
+
+	ck.SaveCouncilor(ctx, councilor)
 
 	return &sdk.Result{}, nil
 }
