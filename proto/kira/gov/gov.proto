@@ -52,3 +52,15 @@ message Permissions {
   repeated uint32 blacklist = 1;
   repeated uint32 whitelist = 2;
 }
+
+message Councilor {
+  string moniker = 1;
+  string website = 2;
+  string social = 3;
+  string identity = 4;
+
+  bytes address = 5 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+}
