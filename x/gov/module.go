@@ -92,6 +92,8 @@ func (am AppModule) InitGenesis(
 		am.customGovKeeper.SetPermissionsForRole(ctx, customgovtypes.Role(index), perm)
 	}
 
+	am.customGovKeeper.SetNetworkProperties(ctx, genesisState.NetworkProperties)
+
 	return nil
 }
 
