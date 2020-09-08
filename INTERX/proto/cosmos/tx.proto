@@ -4,6 +4,7 @@ package cosmos.tx;
 
 import "google/api/annotations.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
+import "interx/type.proto";
 
 // Defines the import path that should be used to import the generated package,
 // and the package name.
@@ -50,7 +51,9 @@ message PostTransactionRequest {
 
 // PostTransactionResponse is the response type for the tx/PostTransaction RPC method.
 message PostTransactionResponse {
-  uint64 id = 1;
-  string jsonrpc = 2;
-  PostTransactionResult result = 3;
+  string chain_id = 1;
+  uint64 block = 2;
+  uint64 timestamp = 3;
+  PostTransactionResult response = 4;
+  interx.Error error = 5;
 }

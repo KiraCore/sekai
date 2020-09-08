@@ -1,9 +1,11 @@
-package gateway
+package grpc_handler
 
 import (
 	"context"
+    "encoding/json"
 	"fmt"
 	"net/http"
+	"net/http/httptest"
 	"os"
 	"strings"
 
@@ -15,11 +17,12 @@ import (
 
 	"github.com/KiraCore/sekai/INTERX/insecure"
 	cosmosBank "github.com/KiraCore/sekai/INTERX/proto-gen/cosmos/bank"
+	rpcHandler "github.com/KiraCore/sekai/INTERX/handler/rpc-handler"
 )
 
 const (
-	QueryBalances string = "/api/cosmos/bank/balances/"
-	QuerySupply string = "/api/cosmos/bank/supply"
+	QueryBalances 	string = "/api/cosmos/bank/balances/"
+	QuerySupply 	string = "/api/cosmos/bank/supply"
 )
 
 var Endpoints = []string {
@@ -57,7 +60,7 @@ func GetServeMux(grpcAddr string) (*runtime.ServeMux, error) {
 	return gwCosmosmux, nil
 }
 
-func ServeGRPC(w http.ResponseWriter, r *http.Request, gwCosmosmux *runtime.ServeMux) bool {
+func ServeGRPC(w http.ResponseWriter, r *http.Request, gwCosmosmux *runtime.ServeMux, rpcAddr string) bool {
 	serve := false
 
 	if strings.HasPrefix(r.URL.Path, QueryBalances) && r.Method == http.MethodGet {
@@ -73,7 +76,25 @@ func ServeGRPC(w http.ResponseWriter, r *http.Request, gwCosmosmux *runtime.Serv
 	}
 
 	if serve {
-		gwCosmosmux.ServeHTTP(w, r)
+		recorder := httptest.NewRecorder()
+		gwCosmosmux.ServeHTTP(recorder, r)
+		resp := recorder.Result()
+
+		response := rpcHandler.GetResponseFormat(rpcAddr)
+
+		result := new(interface{})
+		if json.NewDecoder(resp.Body).Decode(result) == nil {
+			if resp.StatusCode == 200 {
+				response.Response = result
+			} else {
+				response.Error = result;
+			}
+		}
+		
+		rpcHandler.CopyHeader(w.Header(), resp.Header)
+		w.WriteHeader(resp.StatusCode)
+		json.NewEncoder(w).Encode(response)
+
 	}
 
 	return serve

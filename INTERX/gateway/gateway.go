@@ -49,7 +49,7 @@ func Run(grpcAddr string, rpcAddr string, log grpclog.LoggerV2) error {
 	gwServer := &http.Server{
 		Addr: gatewayAddr,
 		Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if grpcHandler.ServeGRPC(w,r, gwCosmosmux) {
+			if grpcHandler.ServeGRPC(w,r, gwCosmosmux, rpcAddr) {
 				return
 			}
 

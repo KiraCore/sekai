@@ -4,6 +4,7 @@ package cosmos.query;
 
 import "google/api/annotations.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
+import "interx/type.proto";
 
 // Defines the import path that should be used to import the generated package,
 // and the package name.
@@ -100,9 +101,11 @@ message StatusRequest {}
 
 // StatusResponse is the response type for the Query/Status RPC method
 message StatusResponse {
-  uint64 id = 1;
-  string jsonrpc = 2;
-  Status result = 3;
+  string chain_id = 1;
+  uint64 block = 2;
+  uint64 timestamp = 3;
+  Status response = 4;
+  interx.Error error = 5;
 }
 
 message Event {
@@ -134,7 +137,9 @@ message TransactionHashRequest {
 
 // TransactionHashResponse is the response type for the Query/TransactionHash RPC method.
 message TransactionHashResponse {
-  uint64 id = 1;
-  string jsonrpc = 2;
-  Transaction result = 3;
+  string chain_id = 1;
+  uint64 block = 2;
+  uint64 timestamp = 3;
+  Transaction response = 4;
+  interx.Error error = 5;
 }
