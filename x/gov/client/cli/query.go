@@ -86,3 +86,32 @@ func GetCmdQueryRolePermissions() *cobra.Command {
 
 	return cmd
 }
+
+// GetCmdQueryNetworkProperties implement query network properties
+func GetCmdQueryNetworkProperties() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "network-properties",
+		Short: "Get the network properties",
+		Args:  cobra.MinimumNArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			params := &types.Empty{}
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.GetNetworkProperties(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintOutput(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
