@@ -18,6 +18,8 @@ import (
 
 const (
 	FlagPermission = "permission"
+	FlagMinTxFee   = "min_tx_fee"
+	FlagMaxTxFee   = "max_tx_fee"
 )
 
 // NewTxCmd returns a root CLI command handler for all x/bank transaction commands.
@@ -30,7 +32,10 @@ func NewTxCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	txCmd.AddCommand(GetTxSetWhitelistPermissions())
+	txCmd.AddCommand(
+		GetTxSetWhitelistPermissions(),
+		GetTxSetNetworkProperties(),
+	)
 
 	return txCmd
 }
@@ -106,6 +111,48 @@ func GetTxSetBlacklistPermissions() *cobra.Command {
 	}
 
 	setPermissionFlags(cmd)
+
+	flags.AddTxFlagsToCmd(cmd)
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+// GetTxSetNetworkProperties is a function to set network properties tx command
+func GetTxSetNetworkProperties() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "set-network-properties",
+		Short: "Set network properties",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			minTxFee, err := cmd.Flags().GetUint64(FlagMinTxFee)
+			if err != nil {
+				return fmt.Errorf("invalid minimum tx fee")
+			}
+			maxTxFee, err := cmd.Flags().GetUint64(FlagMaxTxFee)
+			if err != nil {
+				return fmt.Errorf("invalid maximum tx fee")
+			}
+
+			msg := types.NewMsgSetNetworkProperties(
+				clientCtx.FromAddress,
+				&types.NetworkProperties{
+					MinTxFee: minTxFee,
+					MaxTxFee: maxTxFee,
+				},
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	cmd.Flags().Uint64(FlagMinTxFee, 1, "min tx fee")
+	cmd.Flags().Uint64(FlagMaxTxFee, 10000, "max tx fee")
 
 	flags.AddTxFlagsToCmd(cmd)
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)
