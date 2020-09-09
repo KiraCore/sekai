@@ -15,7 +15,9 @@ import (
 	"github.com/KiraCore/sekai/x/gov/types"
 )
 
-const FlagRole = "role"
+const (
+	FlagRole = "role"
+)
 
 // GetCmdQueryPermissions the query delegation command.
 func GetCmdQueryPermissions() *cobra.Command {
@@ -86,3 +88,29 @@ func GetCmdQueryRolePermissions() *cobra.Command {
 
 	return cmd
 }
+
+//func GetCmdQueryCouncilRegistry() *cobra.Command {
+//	cmd := &cobra.Command{
+//		Use:   "council-registry [--addr || --flagMoniker]",
+//		Short: "Query the governance registry.",
+//		Args:  cobra.MinimumNArgs(1),
+//		RunE: func(cmd *cobra.Command, args []string) error {
+//			clientCtx := client.GetClientContextFromCmd(cmd)
+//			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
+//			if err != nil {
+//				return err
+//			}
+//
+//			jkk
+//
+//			return clientCtx.PrintOutput(res.Permissions)
+//		},
+//	}
+//
+//	flags.AddQueryFlagsToCmd(cmd)
+//
+//	cmd.Flags().String(FlagAddress, "", "the address you want to query information")
+//	cmd.Flags().String(FlagMoniker, "", "the moniker you want to query information")
+//
+//	return cmd
+//}

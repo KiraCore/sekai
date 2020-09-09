@@ -12,10 +12,6 @@ const (
 )
 
 var (
-	KeyPrefixPermissionsRegistry       = []byte("permissions_registry")
-	KeyPrefixActors                    = []byte("network_actors")
-	KeyPrefixCouncilorIdentityRegistry = []byte("council_identity_registry")
-
 	// Roles
 	RoleUndefined Role = 0x0
 	RoleSudo      Role = 0x1

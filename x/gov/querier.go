@@ -15,6 +15,19 @@ type Querier struct {
 	keeper keeper.Keeper
 }
 
+func (q Querier) CouncilorByAddress(ctx context.Context, request *types.CouncilorByAddressRequest) (*types.CouncilorResponse, error) {
+	councilor, err := q.keeper.GetCouncilor(sdk.UnwrapSDKContext(ctx), request.ValAddr)
+	if err != nil {
+		return nil, errors.Wrap(errors.ErrKeyNotFound, err.Error())
+	}
+
+	return &types.CouncilorResponse{Councilor: councilor}, nil
+}
+
+func (q Querier) CouncilorByMoniker(ctx context.Context, request *types.CouncilorByMonikerRequest) (*types.CouncilorResponse, error) {
+	panic("implement me")
+}
+
 func NewQuerier(keeper keeper.Keeper) types.QueryServer {
 	return &Querier{keeper: keeper}
 }

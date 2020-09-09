@@ -1,30 +1,14 @@
-package keeper_test
+package keeper
 
 import (
 	"testing"
 
-	types2 "github.com/cosmos/cosmos-sdk/types"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-
-	"github.com/stretchr/testify/require"
-
 	"github.com/KiraCore/sekai/simapp"
 	"github.com/KiraCore/sekai/x/gov/types"
+	types2 "github.com/cosmos/cosmos-sdk/types"
+	"github.com/stretchr/testify/require"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
-
-func TestKeeper_SaveGetPermissionsForRole(t *testing.T) {
-	app := simapp.Setup(false)
-	ctx := app.NewContext(false, tmproto.Header{})
-
-	perm := types.NewPermissions(
-		nil, []types.PermValue{types.PermClaimValidator},
-	)
-
-	app.CustomGovKeeper.SetPermissionsForRole(ctx, types.RoleSudo, perm)
-
-	savedPerms := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleSudo)
-	require.Equal(t, perm, savedPerms)
-}
 
 func TestNewKeeper_SaveNetworkActor(t *testing.T) {
 	app := simapp.Setup(false)
@@ -88,38 +72,4 @@ func TestKeeper_AddPermissionToNetworkActor(t *testing.T) {
 	savedNetworkActor, err = app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addr)
 	require.NoError(t, err)
 	require.True(t, savedNetworkActor.Permissions.IsWhitelisted(types.PermSetPermissions))
-}
-
-func TestKeeper_HasGenesisDefaultRoles(t *testing.T) {
-	app := simapp.Setup(false)
-	ctx := app.NewContext(false, tmproto.Header{})
-
-	roleSudo := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleSudo)
-	require.True(t, roleSudo.IsWhitelisted(types.PermSetPermissions))
-
-	roleValidator := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleValidator)
-	require.True(t, roleValidator.IsWhitelisted(types.PermClaimValidator))
-}
-
-func TestKeeper_SaveCouncilor(t *testing.T) {
-	app := simapp.Setup(false)
-	ctx := app.NewContext(false, tmproto.Header{})
-
-	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, types2.TokensFromConsensusPower(10))
-	addr := addrs[0]
-
-	councilor := types.NewCouncilor(
-		"moniker",
-		"website",
-		"social",
-		"identity",
-		addr,
-	)
-
-	app.CustomGovKeeper.SaveCouncilor(ctx, councilor)
-
-	savedCouncilor, err := app.CustomGovKeeper.GetCouncilor(ctx, councilor.Address)
-	require.NoError(t, err)
-
-	require.Equal(t, councilor, savedCouncilor)
 }
