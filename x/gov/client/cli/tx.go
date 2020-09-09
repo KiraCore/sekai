@@ -34,6 +34,7 @@ func NewTxCmd() *cobra.Command {
 
 	txCmd.AddCommand(GetTxSetWhitelistPermissions())
 	txCmd.AddCommand(GetTxSetBlacklistPermissions())
+	txCmd.AddCommand(GetTxClaimGovernanceCmd())
 
 	return txCmd
 }
@@ -173,6 +174,12 @@ func GetTxClaimGovernanceCmd() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
+
+	cmd.Flags().String(FlagMoniker, "", "the Moniker")
+	cmd.Flags().String(FlagWebsite, "", "the Website")
+	cmd.Flags().String(FlagSocial, "", "the social")
+	cmd.Flags().String(FlagIdentity, "", "the Identity")
+	cmd.Flags().String(FlagAddress, "", "the address")
 
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)
 

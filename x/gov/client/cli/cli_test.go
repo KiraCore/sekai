@@ -255,6 +255,30 @@ func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions_WithUserThatDoesN
 	strings.Contains(out.String(), "SetPermissions: not enough permissions")
 }
 
+func (s IntegrationTestSuite) TestClaimCouncilor_HappyPath() {
+	val := s.network.Validators[0]
+
+	cmd := cli.GetTxClaimGovernanceCmd()
+	_, out := testutil.ApplyMockIO(cmd)
+	clientCtx := val.ClientCtx.WithOutput(out).WithOutputFormat("json")
+
+	ctx := context.Background()
+	ctx = context.WithValue(ctx, client.ClientContextKey, &clientCtx)
+
+	cmd.SetArgs(
+		[]string{
+			fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+			fmt.Sprintf("--%s=%s", cli.FlagAddress, val.Address.String()),
+			fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(10))).String()),
+		},
+	)
+
+	err := cmd.ExecuteContext(ctx)
+	s.Require().NoError(err)
+
+	// TODO add query
+}
+
 func (s IntegrationTestSuite) sendValue(cCtx client.Context, from types3.AccAddress, to types3.AccAddress, coin types3.Coin) {
 	cmd := cli3.NewSendTxCmd()
 	_, out := testutil.ApplyMockIO(cmd)
