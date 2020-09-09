@@ -8,17 +8,26 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+var (
+	CouncilorsKey          = []byte{0x21} // Councilors key prefix.
+	CouncilorsByMonikerKey = []byte{0x22} // Councilors by moniker prefix.
+)
+
+func GetCouncilorKey(address sdk.AccAddress) []byte {
+	return append(CouncilorsKey, address.Bytes()...)
+}
+
 func (k Keeper) SaveCouncilor(ctx sdk.Context, councilor types.Councilor) {
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), KeyPrefixCouncilorIdentityRegistry)
 
 	bz := k.cdc.MustMarshalBinaryBare(&councilor)
-	prefixStore.Set(councilor.Address.Bytes(), bz)
+	prefixStore.Set(GetCouncilorKey(councilor.Address), bz)
 }
 
 func (k Keeper) GetCouncilor(ctx sdk.Context, address sdk.AccAddress) (types.Councilor, error) {
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), KeyPrefixCouncilorIdentityRegistry)
 
-	bz := prefixStore.Get(address.Bytes())
+	bz := prefixStore.Get(GetCouncilorKey(address))
 	if bz == nil {
 		return types.Councilor{}, fmt.Errorf("councilor not found")
 	}

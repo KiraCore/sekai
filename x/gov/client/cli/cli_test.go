@@ -256,6 +256,7 @@ func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions_WithUserThatDoesN
 }
 
 func (s IntegrationTestSuite) TestClaimCouncilor_HappyPath() {
+	s.T().SkipNow()
 	val := s.network.Validators[0]
 
 	cmd := cli.GetTxClaimGovernanceCmd()
