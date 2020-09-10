@@ -33,27 +33,29 @@ func (k Keeper) SaveCouncilor(ctx sdk.Context, councilor types.Councilor) {
 }
 
 func (k Keeper) GetCouncilor(ctx sdk.Context, address sdk.AccAddress) (types.Councilor, error) {
-	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), KeyPrefixCouncilorIdentityRegistry)
-
-	bz := prefixStore.Get(GetCouncilorKey(address))
-	if bz == nil {
-		return types.Councilor{}, fmt.Errorf("councilor not found")
-	}
-
-	var co types.Councilor
-	k.cdc.MustUnmarshalBinaryBare(bz, &co)
-
-	return co, nil
+	return k.getCouncilorByKey(ctx, GetCouncilorKey(address))
 }
 
 func (k Keeper) GetCouncilorByMoniker(ctx sdk.Context, moniker string) (types.Councilor, error) {
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), KeyPrefixCouncilorIdentityRegistry)
 
 	councilorKey := prefixStore.Get(GetCouncilorByMonikerKey(moniker))
+	if councilorKey == nil {
+		return types.Councilor{}, fmt.Errorf("councilor with moniker %s not found", moniker)
+	}
 
-	bz := prefixStore.Get(councilorKey)
+	return k.getCouncilorByKey(ctx, councilorKey)
+}
+
+func (k Keeper) getCouncilorByKey(ctx sdk.Context, key []byte) (types.Councilor, error) {
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), KeyPrefixCouncilorIdentityRegistry)
+
+	bz := prefixStore.Get(key)
+	if bz == nil {
+		return types.Councilor{}, fmt.Errorf("councilor not found")
+	}
+
 	var councilor types.Councilor
-
 	k.cdc.MustUnmarshalBinaryBare(bz, &councilor)
 
 	return councilor, nil

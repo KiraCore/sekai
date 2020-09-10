@@ -29,6 +29,10 @@ func TestKeeper_SaveCouncilor(t *testing.T) {
 
 	savedCouncilor, err := app.CustomGovKeeper.GetCouncilor(ctx, councilor.Address)
 	require.NoError(t, err)
-
 	require.Equal(t, councilor, savedCouncilor)
+
+	// Get by moniker
+	councilorByMoniker, err := app.CustomGovKeeper.GetCouncilorByMoniker(ctx, councilor.Moniker)
+	require.NoError(t, err)
+	require.Equal(t, councilor, councilorByMoniker)
 }
