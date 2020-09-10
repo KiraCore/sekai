@@ -79,6 +79,16 @@ func TestQuerier_CouncilorByAddress(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, councilor, resp.Councilor)
 
+	// Councilor by Moniker
+	resp, err = querier.CouncilorByMoniker(
+		sdk.WrapSDKContext(ctx),
+		&types.CouncilorByMonikerRequest{
+			Moniker: councilor.Moniker,
+		},
+	)
+	require.NoError(t, err)
+	require.Equal(t, councilor, resp.Councilor)
+
 	// Non existing Councilor
 	resp, err = querier.CouncilorByAddress(
 		sdk.WrapSDKContext(ctx),

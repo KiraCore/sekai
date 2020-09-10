@@ -3,9 +3,10 @@ package keeper
 import (
 	"fmt"
 
-	"github.com/KiraCore/sekai/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/KiraCore/sekai/x/gov/types"
 )
 
 var (

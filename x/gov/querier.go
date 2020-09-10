@@ -25,7 +25,12 @@ func (q Querier) CouncilorByAddress(ctx context.Context, request *types.Councilo
 }
 
 func (q Querier) CouncilorByMoniker(ctx context.Context, request *types.CouncilorByMonikerRequest) (*types.CouncilorResponse, error) {
-	panic("implement me")
+	councilor, err := q.keeper.GetCouncilorByMoniker(sdk.UnwrapSDKContext(ctx), request.Moniker)
+	if err != nil {
+		return nil, errors.Wrap(errors.ErrKeyNotFound, err.Error())
+	}
+
+	return &types.CouncilorResponse{Councilor: councilor}, nil
 }
 
 func NewQuerier(keeper keeper.Keeper) types.QueryServer {
