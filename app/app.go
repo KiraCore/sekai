@@ -96,6 +96,9 @@ import (
 
 const appName = "Sekai"
 
+var CustomGovKeeper customgovkeeper.Keeper
+var StakingKeeper stakingkeeper.Keeper
+
 var (
 	// DefaultNodeHome sets the folder where the applcation data and configuration will be stored
 	DefaultNodeHome = os.ExpandEnv("$HOME/.sekaid")
@@ -273,9 +276,11 @@ func NewInitApp(
 	app.stakingKeeper = *stakingKeeper.SetHooks(
 		stakingtypes.NewMultiStakingHooks(app.distrKeeper.Hooks(), app.slashingKeeper.Hooks()),
 	)
+	StakingKeeper = app.stakingKeeper
 
 	app.customStakingKeeper = customkeeper.NewKeeper(keys[cumstomtypes.ModuleName], cdc)
 	app.customGovKeeper = customgovkeeper.NewKeeper(keys[customgovtypes.ModuleName], appCodec)
+	CustomGovKeeper = app.customGovKeeper
 
 	app.ibcKeeper = ibckeeper.NewKeeper(
 		appCodec, keys[ibchost.StoreKey], app.stakingKeeper, scopedIBCKeeper,
@@ -383,7 +388,7 @@ func NewInitApp(
 	app.SetInitChainer(app.InitChainer)
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetAnteHandler(
-		ante.NewAnteHandler(
+		NewAnteHandler(
 			app.accountKeeper, app.bankKeeper, ante.DefaultSigVerificationGasConsumer,
 			encodingConfig.TxConfig.SignModeHandler(),
 		),
