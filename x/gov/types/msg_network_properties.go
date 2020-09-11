@@ -19,7 +19,7 @@ func (m *MsgSetNetworkProperties) Route() string {
 }
 
 func (m *MsgSetNetworkProperties) Type() string {
-	return WhitelistPermissions
+	return SetNetworkProperties
 }
 
 func (m *MsgSetNetworkProperties) ValidateBasic() error {

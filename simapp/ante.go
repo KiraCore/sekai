@@ -53,16 +53,16 @@ func NewValidateFeeRangeDecorator(ak keeper.AccountKeeper) ValidateFeeRangeDecor
 
 // AnteHandle is a handler for ValidateFeeRangeDecorator
 func (svd ValidateFeeRangeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
-	sigTx, ok := tx.(types.StdTx)
+	feeTx, ok := tx.(sdk.FeeTx)
 	if !ok {
-		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "invalid transaction type")
+		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "Tx must be a FeeTx")
 	}
 
 	properties := CustomGovKeeper.GetNetworkProperties(ctx)
 
 	// TODO should check if use fee.Amount or Fee.Gas
-	bondDenom := StakingKeeper.BondDenom(ctx)
-	feeAmount := sigTx.Fee.Amount.AmountOf(bondDenom).Uint64() // || sigTx.Fee.Gas
+	bondDenom := "stake"                                     // StakingKeeper.BondDenom(ctx)
+	feeAmount := feeTx.GetFee().AmountOf(bondDenom).Uint64() // || sigTx.Fee.Gas
 	if feeAmount < properties.MinTxFee || feeAmount > properties.MaxTxFee {
 		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("fee out of range [%d, %d]", properties.MinTxFee, properties.MaxTxFee))
 	}

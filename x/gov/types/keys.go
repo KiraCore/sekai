@@ -9,6 +9,7 @@ const RouterKey = ModuleName
 
 const WhitelistPermissions = "whitelist-permissions"
 const BlacklistPermissions = "blacklist-permissions"
+const SetNetworkProperties = "set-network-properties"
 
 // constants
 var (
