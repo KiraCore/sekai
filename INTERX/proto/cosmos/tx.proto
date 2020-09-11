@@ -53,7 +53,10 @@ message PostTransactionRequest {
 message PostTransactionResponse {
   string chain_id = 1;
   uint64 block = 2;
-  uint64 timestamp = 3;
-  PostTransactionResult response = 4;
-  interx.Error error = 5;
+  string block_time = 3;
+  uint64 timestamp = 4;
+  PostTransactionResult response = 5;
+  interx.Error error = 6;
+  string signature = 7;
+  string hash = 8;
 }

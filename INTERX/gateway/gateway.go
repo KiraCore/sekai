@@ -8,13 +8,11 @@ import (
 	"os"
 	"strings"
 
-	grpclog "google.golang.org/grpc/grpclog"
-
-	"github.com/rakyll/statik/fs"
-	"github.com/KiraCore/sekai/INTERX/insecure"
-
 	grpcHandler "github.com/KiraCore/sekai/INTERX/handler/grpc-handler"
 	rpcHandler "github.com/KiraCore/sekai/INTERX/handler/rpc-handler"
+	"github.com/KiraCore/sekai/INTERX/insecure"
+	"github.com/rakyll/statik/fs"
+	grpclog "google.golang.org/grpc/grpclog"
 )
 
 // getOpenAPIHandler serves an OpenAPI UI.
@@ -49,7 +47,7 @@ func Run(grpcAddr string, rpcAddr string, log grpclog.LoggerV2) error {
 	gwServer := &http.Server{
 		Addr: gatewayAddr,
 		Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if grpcHandler.ServeGRPC(w,r, gwCosmosmux, rpcAddr) {
+			if grpcHandler.ServeGRPC(w, r, gwCosmosmux, rpcAddr) {
 				return
 			}
 
@@ -60,13 +58,13 @@ func Run(grpcAddr string, rpcAddr string, log grpclog.LoggerV2) error {
 			oaHander.ServeHTTP(w, r)
 		}),
 	}
-	
+
 	// SERVE_HTTP: Empty parameters mean use the TLS Config specified with the server.
 	if strings.ToLower(os.Getenv("SERVE_HTTP")) == "false" {
-		gwServer.TLSConfig = &tls.Config {
+		gwServer.TLSConfig = &tls.Config{
 			Certificates: []tls.Certificate{insecure.Cert},
 		}
-		
+
 		log.Info("Serving gRPC-Gateway and OpenAPI Documentation on https://", gatewayAddr)
 		return fmt.Errorf("serving gRPC-Gateway server: %w", gwServer.ListenAndServeTLS("", ""))
 	}

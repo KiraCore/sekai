@@ -226,6 +226,9 @@
           "type": "string",
           "format": "uint64"
         },
+        "blockTime": {
+          "type": "string"
+        },
         "timestamp": {
           "type": "string",
           "format": "uint64"
@@ -235,6 +238,12 @@
         },
         "error": {
           "$ref": "#/definitions/interxError"
+        },
+        "signature": {
+          "type": "string"
+        },
+        "hash": {
+          "type": "string"
         }
       },
       "title": "StatusResponse is the response type for the Query/Status RPC method"
@@ -303,6 +312,9 @@
           "type": "string",
           "format": "uint64"
         },
+        "blockTime": {
+          "type": "string"
+        },
         "timestamp": {
           "type": "string",
           "format": "uint64"
@@ -312,6 +324,12 @@
         },
         "error": {
           "$ref": "#/definitions/interxError"
+        },
+        "signature": {
+          "type": "string"
+        },
+        "hash": {
+          "type": "string"
         }
       },
       "description": "TransactionHashResponse is the response type for the Query/TransactionHash RPC method."

@@ -1,36 +1,24 @@
-package grpc_handler
+package interx
 
 import (
 	"context"
-    "encoding/json"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"strings"
 
+	handler "github.com/KiraCore/sekai/INTERX/handler"
+	"github.com/KiraCore/sekai/INTERX/insecure"
+	cosmosBank "github.com/KiraCore/sekai/INTERX/proto-gen/cosmos/bank"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
-
-	"github.com/KiraCore/sekai/INTERX/insecure"
-	cosmosBank "github.com/KiraCore/sekai/INTERX/proto-gen/cosmos/bank"
-	rpcHandler "github.com/KiraCore/sekai/INTERX/handler/rpc-handler"
 )
 
-const (
-	QueryBalances 	string = "/api/cosmos/bank/balances/"
-	QuerySupply 	string = "/api/cosmos/bank/supply"
-)
-
-var Endpoints = []string {
-	QueryBalances,
-	QuerySupply,
-}
-
-// Run runs the gRPC-Gateway, dialling the provided address.
+// GetServeMux is a function to get ServerMux for GRPC server.
 func GetServeMux(grpcAddr string) (*runtime.ServeMux, error) {
 	// Create a client connection to the gRPC Server we just started.
 	// This is where the gRPC-Gateway proxies the requests.
@@ -46,7 +34,7 @@ func GetServeMux(grpcAddr string) (*runtime.ServeMux, error) {
 		security,
 		grpc.WithBlock(),
 	)
-	
+
 	if err != nil {
 		return nil, fmt.Errorf("failed to dial server: %w", err)
 	}
@@ -56,22 +44,24 @@ func GetServeMux(grpcAddr string) (*runtime.ServeMux, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to register gateway: %w", err)
 	}
-	
+
 	return gwCosmosmux, nil
 }
 
+// ServeGRPC is a function to server GRPC
 func ServeGRPC(w http.ResponseWriter, r *http.Request, gwCosmosmux *runtime.ServeMux, rpcAddr string) bool {
 	serve := false
 
-	if strings.HasPrefix(r.URL.Path, QueryBalances) && r.Method == http.MethodGet {
+	if strings.HasPrefix(r.URL.Path, handler.QueryBalances) && r.Method == http.MethodGet {
 		serve = true
 
-		addr, err := sdk.AccAddressFromBech32(strings.TrimPrefix(r.URL.Path, QueryBalances))
+		addr, err := sdk.AccAddressFromBech32(strings.TrimPrefix(r.URL.Path, handler.QueryBalances))
 		if err != nil {
 			fmt.Println(err)
 		}
-		r.URL.Path = QueryBalances + fmt.Sprintf("%x", addr)
-	} else if strings.HasPrefix(r.URL.Path, QuerySupply) && r.Method == http.MethodGet {
+
+		r.URL.Path = handler.QueryBalances + fmt.Sprintf("%x", addr)
+	} else if strings.HasPrefix(r.URL.Path, handler.QuerySupply) && r.Method == http.MethodGet {
 		serve = true
 	}
 
@@ -80,21 +70,21 @@ func ServeGRPC(w http.ResponseWriter, r *http.Request, gwCosmosmux *runtime.Serv
 		gwCosmosmux.ServeHTTP(recorder, r)
 		resp := recorder.Result()
 
-		response := rpcHandler.GetResponseFormat(rpcAddr)
+		response := handler.GetResponseFormat(rpcAddr)
 
 		result := new(interface{})
 		if json.NewDecoder(resp.Body).Decode(result) == nil {
 			if resp.StatusCode == 200 {
 				response.Response = result
 			} else {
-				response.Error = result;
+				response.Error = result
 			}
 		}
-		
-		rpcHandler.CopyHeader(w.Header(), resp.Header)
-		w.WriteHeader(resp.StatusCode)
-		json.NewEncoder(w).Encode(response)
 
+		handler.CopyHeader(w.Header(), resp.Header)
+		w.WriteHeader(resp.StatusCode)
+
+		handler.WrapResponse(w, *response)
 	}
 
 	return serve
