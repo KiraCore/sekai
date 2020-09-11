@@ -103,9 +103,12 @@ message StatusRequest {}
 message StatusResponse {
   string chain_id = 1;
   uint64 block = 2;
-  uint64 timestamp = 3;
-  Status response = 4;
-  interx.Error error = 5;
+  string block_time = 3;
+  uint64 timestamp = 4;
+  Status response = 5;
+  interx.Error error = 6;
+  string signature = 7;
+  string hash = 8;
 }
 
 message Event {
@@ -139,7 +142,10 @@ message TransactionHashRequest {
 message TransactionHashResponse {
   string chain_id = 1;
   uint64 block = 2;
-  uint64 timestamp = 3;
-  Transaction response = 4;
-  interx.Error error = 5;
+  string block_time = 3;
+  uint64 timestamp = 4;
+  Transaction response = 5;
+  interx.Error error = 6;
+  string signature = 7;
+  string hash = 8;
 }

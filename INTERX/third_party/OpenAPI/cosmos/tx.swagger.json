@@ -98,6 +98,9 @@
           "type": "string",
           "format": "uint64"
         },
+        "blockTime": {
+          "type": "string"
+        },
         "timestamp": {
           "type": "string",
           "format": "uint64"
@@ -107,6 +110,12 @@
         },
         "error": {
           "$ref": "#/definitions/interxError"
+        },
+        "signature": {
+          "type": "string"
+        },
+        "hash": {
+          "type": "string"
         }
       },
       "description": "PostTransactionResponse is the response type for the tx/PostTransaction RPC method."
