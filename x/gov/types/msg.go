@@ -8,6 +8,7 @@ var (
 	_ sdk.Msg = &MsgWhitelistPermissions{}
 	_ sdk.Msg = &MsgBlacklistPermissions{}
 	_ sdk.Msg = &MsgClaimCouncilor{}
+	_ sdk.Msg = &MsgAddWhitelistPermissionToRole{}
 )
 
 func NewMsgWhitelistPermissions(
@@ -135,4 +136,28 @@ func (m *MsgClaimCouncilor) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{
 		m.Address,
 	}
+}
+
+func NewMsgAddWhitelistPermissionToRole(role uint32, permission uint32) *MsgAddWhitelistPermissionToRole {
+	return &MsgAddWhitelistPermissionToRole{Role: role, Permission: permission}
+}
+
+func (m *MsgAddWhitelistPermissionToRole) Route() string {
+	panic("implement me")
+}
+
+func (m *MsgAddWhitelistPermissionToRole) Type() string {
+	panic("implement me")
+}
+
+func (m *MsgAddWhitelistPermissionToRole) ValidateBasic() error {
+	panic("implement me")
+}
+
+func (m *MsgAddWhitelistPermissionToRole) GetSignBytes() []byte {
+	panic("implement me")
+}
+
+func (m *MsgAddWhitelistPermissionToRole) GetSigners() []sdk.AccAddress {
+	panic("implement me")
 }

@@ -1,6 +1,10 @@
 # Changelog
 
 
+## [Unreleased]
+
+- Added cli command to claim governance seat.
+
 ## [0.1.2.1] - 09.06.2020
 ### Added
 
