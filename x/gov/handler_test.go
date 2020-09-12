@@ -409,6 +409,35 @@ func TestHandler_WhitelistRolePermissions_Errors(t *testing.T) {
 	}
 }
 
+func TestHandler_WhitelistRolePermissions(t *testing.T) {
+	addr, err := sdk.AccAddressFromBech32("kira15ky9du8a2wlstz6fpx3p4mqpjyrm5cgqzp4f3d")
+	require.NoError(t, err)
+
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	err = setPermissionToAddr(t, app, ctx, addr, types.PermSetPermissions)
+	require.NoError(t, err)
+
+	perms, err := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleValidator)
+	require.NoError(t, err)
+	require.False(t, perms.IsWhitelisted(types.PermSetPermissions))
+
+	msg := types.NewMsgWhitelistRolePermission(
+		addr,
+		uint32(types.RoleValidator),
+		uint32(types.PermSetPermissions),
+	)
+
+	handler := gov.NewHandler(app.CustomGovKeeper)
+	_, err = handler(ctx, msg)
+	require.NoError(t, err)
+
+	perms, err = app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleValidator)
+	require.NoError(t, err)
+	require.True(t, perms.IsWhitelisted(types.PermSetPermissions))
+}
+
 func setPermissionToAddr(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addr sdk.AccAddress, perm types.PermValue) error {
 	proposerActor := types.NewDefaultActor(addr)
 	err := proposerActor.Permissions.AddToWhitelist(perm)

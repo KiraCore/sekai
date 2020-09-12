@@ -44,7 +44,9 @@ func handleWhitelistRolePermission(ctx sdk.Context, ck keeper.Keeper, msg *custo
 		return nil, errors.Wrap(customgovtypes.ErrWhitelisting, err.Error())
 	}
 
-	return nil, nil
+	ck.SetPermissionsForRole(ctx, customgovtypes.Role(msg.Role), perms)
+
+	return &sdk.Result{}, nil
 }
 
 func handleWhitelistPermissions(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgWhitelistPermissions) (*sdk.Result, error) {
