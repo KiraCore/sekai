@@ -12,7 +12,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client/flags"
 
-	types2 "github.com/KiraCore/sekai/x/gov/types"
+	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 	cli2 "github.com/KiraCore/sekai/x/staking/client/cli"
 	types3 "github.com/cosmos/cosmos-sdk/types"
 
@@ -65,33 +65,6 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.Require().NoError(err)
 }
 
-func (s IntegrationTestSuite) TestGetCmdQueryPermissions() {
-	val := s.network.Validators[0]
-	cmd := cli.GetCmdQueryPermissions()
-	_, out := testutil.ApplyMockIO(cmd)
-
-	clientCtx := val.ClientCtx.WithOutput(out).WithOutputFormat("json")
-
-	ctx := context.Background()
-	ctx = context.WithValue(ctx, client.ClientContextKey, &clientCtx)
-
-	cmd.SetArgs(
-		[]string{
-			val.Address.String(),
-		},
-	)
-
-	err := cmd.ExecuteContext(ctx)
-	s.Require().NoError(err)
-
-	var perms types2.Permissions
-	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &perms)
-
-	// Validator 1 has permission to Add Permissions.
-	s.Require().True(perms.IsWhitelisted(types2.PermSetPermissions))
-	s.Require().False(perms.IsWhitelisted(types2.PermClaimValidator))
-}
-
 func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions() {
 	val := s.network.Validators[0]
 	cmd := cli.GetTxSetWhitelistPermissions()
@@ -137,12 +110,12 @@ func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions() {
 	err = cmd.ExecuteContext(ctx)
 	s.Require().NoError(err)
 
-	var perms types2.Permissions
+	var perms customgovtypes.Permissions
 	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &perms)
 
 	// Validator 1 has permission to Add Permissions.
-	s.Require().False(perms.IsWhitelisted(types2.PermSetPermissions))
-	s.Require().True(perms.IsWhitelisted(types2.PermClaimValidator))
+	s.Require().False(perms.IsWhitelisted(customgovtypes.PermSetPermissions))
+	s.Require().True(perms.IsWhitelisted(customgovtypes.PermClaimValidator))
 }
 
 func (s IntegrationTestSuite) TestGetTxSetBlacklistPermissions() {
@@ -191,12 +164,12 @@ func (s IntegrationTestSuite) TestGetTxSetBlacklistPermissions() {
 	err = cmd.ExecuteContext(ctx)
 	s.Require().NoError(err)
 
-	var perms types2.Permissions
+	var perms customgovtypes.Permissions
 	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &perms)
 
 	// Validator 1 has permission to Add Permissions.
-	s.Require().False(perms.IsBlacklisted(types2.PermSetPermissions))
-	s.Require().True(perms.IsBlacklisted(types2.PermClaimValidator))
+	s.Require().False(perms.IsBlacklisted(customgovtypes.PermSetPermissions))
+	s.Require().True(perms.IsBlacklisted(customgovtypes.PermClaimValidator))
 }
 
 func (s IntegrationTestSuite) TestRolePermissions_QueryCommand_DefaultRolePerms() {
@@ -216,10 +189,10 @@ func (s IntegrationTestSuite) TestRolePermissions_QueryCommand_DefaultRolePerms(
 	err := cmd.ExecuteContext(ctx)
 	s.Require().NoError(err)
 
-	var perms types2.Permissions
+	var perms customgovtypes.Permissions
 	val.ClientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &perms)
 
-	s.Require().True(perms.IsWhitelisted(types2.PermClaimValidator))
+	s.Require().True(perms.IsWhitelisted(customgovtypes.PermClaimValidator))
 }
 
 func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions_WithUserThatDoesNotHaveSetPermissions() {
@@ -256,7 +229,6 @@ func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions_WithUserThatDoesN
 }
 
 func (s IntegrationTestSuite) TestClaimCouncilor_HappyPath() {
-	s.T().SkipNow()
 	val := s.network.Validators[0]
 
 	cmd := cli.GetTxClaimGovernanceCmd()
@@ -269,15 +241,67 @@ func (s IntegrationTestSuite) TestClaimCouncilor_HappyPath() {
 	cmd.SetArgs(
 		[]string{
 			fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
-			fmt.Sprintf("--%s=%s", cli.FlagAddress, val.Address.String()),
+			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 			fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(10))).String()),
+			fmt.Sprintf("--%s=%s", cli.FlagAddress, val.Address.String()),
+			fmt.Sprintf("--%s=%s", cli.FlagMoniker, val.Moniker),
 		},
 	)
 
 	err := cmd.ExecuteContext(ctx)
 	s.Require().NoError(err)
 
-	// TODO add query
+	fmt.Printf("%s\n", out.String())
+
+	err = s.network.WaitForNextBlock()
+	s.Require().NoError(err)
+
+	// Query command
+	// Mandatory flags
+	out.Reset()
+
+	cmd = cli.GetCmdQueryCouncilRegistry()
+	cmd.SetArgs([]string{
+		"",
+	})
+
+	err = cmd.ExecuteContext(ctx)
+	s.Require().Error(err)
+
+	// From address
+	out.Reset()
+
+	cmd = cli.GetCmdQueryCouncilRegistry()
+	cmd.SetArgs([]string{
+		fmt.Sprintf("--%s=%s", cli.FlagAddress, val.Address.String()),
+	})
+
+	err = cmd.ExecuteContext(ctx)
+	s.Require().NoError(err)
+
+	var councilorByAddress customgovtypes.Councilor
+	err = val.ClientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &councilorByAddress)
+	s.Require().NoError(err)
+	s.Require().Equal(val.Moniker, councilorByAddress.Moniker)
+	s.Require().Equal(val.Address, councilorByAddress.Address)
+
+	// From Moniker
+	out.Reset()
+
+	cmd = cli.GetCmdQueryCouncilRegistry()
+	cmd.SetArgs([]string{
+		fmt.Sprintf("--%s=%s", cli.FlagMoniker, val.Moniker),
+	})
+
+	err = cmd.ExecuteContext(ctx)
+	s.Require().NoError(err)
+
+	var councilorByMoniker customgovtypes.Councilor
+	err = val.ClientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &councilorByMoniker)
+	s.Require().NoError(err)
+	s.Require().Equal(val.Moniker, councilorByMoniker.Moniker)
+	s.Require().Equal(val.Address, councilorByMoniker.Address)
 }
 
 func (s IntegrationTestSuite) sendValue(cCtx client.Context, from types3.AccAddress, to types3.AccAddress, coin types3.Coin) {

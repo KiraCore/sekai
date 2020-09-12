@@ -172,10 +172,10 @@ func initGenFiles(cfg Config, vals []*Validator, genAccounts []authtypes.Genesis
 	// Only first validator is network actor
 	networkActor := customgovtypes.NewNetworkActor(
 		vals[0].Address,
-		nil,
+		customgovtypes.Roles{uint64(customgovtypes.RoleSudo)},
 		1,
 		nil,
-		customgovtypes.NewPermissions([]customgovtypes.PermValue{customgovtypes.PermSetPermissions}, nil),
+		customgovtypes.NewPermissions(nil, nil),
 		1,
 	)
 	customGovGenState.NetworkActors = append(customGovGenState.NetworkActors, &networkActor)
