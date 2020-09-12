@@ -20,10 +20,16 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 			return handleBlacklistPermissions(ctx, ck, msg)
 		case *customgovtypes.MsgClaimCouncilor:
 			return handleClaimCouncilor(ctx, ck, msg)
+		case *customgovtypes.MsgWhitelistRolePermission:
+			return handleWhitelistRolePermission(ctx, ck, msg)
 		default:
 			return nil, errors.Wrapf(errors.ErrUnknownRequest, "unrecognized %s message type: %T", types.ModuleName, msg)
 		}
 	}
+}
+
+func handleWhitelistRolePermission(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgWhitelistRolePermission) (*sdk.Result, error) {
+	return nil, nil
 }
 
 func handleWhitelistPermissions(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgWhitelistPermissions) (*sdk.Result, error) {
