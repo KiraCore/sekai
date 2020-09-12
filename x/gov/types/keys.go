@@ -4,12 +4,6 @@ import sdk "github.com/cosmos/cosmos-sdk/types"
 
 const ModuleName = "customgov"
 
-// Msg types
-const (
-	WhitelistPermissions = "whitelist-permissions"
-	BlacklistPermissions = "blacklist-permissions"
-	ClaimCouncilor       = "claim-councilor"
-)
 
 var (
 	// Roles

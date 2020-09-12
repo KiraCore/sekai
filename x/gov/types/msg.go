@@ -4,11 +4,19 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+// Msg types
+const (
+	WhitelistPermissions      = "whitelist-permissions"
+	BlacklistPermissions      = "blacklist-permissions"
+	ClaimCouncilor            = "claim-councilor"
+	WhitelistPermissionToRole = "whitelist-permission-role"
+)
+
 var (
 	_ sdk.Msg = &MsgWhitelistPermissions{}
 	_ sdk.Msg = &MsgBlacklistPermissions{}
 	_ sdk.Msg = &MsgClaimCouncilor{}
-	_ sdk.Msg = &MsgAddWhitelistPermissionToRole{}
+	_ sdk.Msg = &MsgWhitelistRolePermission{}
 )
 
 func NewMsgWhitelistPermissions(
@@ -138,26 +146,37 @@ func (m *MsgClaimCouncilor) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgAddWhitelistPermissionToRole(role uint32, permission uint32) *MsgAddWhitelistPermissionToRole {
-	return &MsgAddWhitelistPermissionToRole{Role: role, Permission: permission}
+func NewMsgWhitelistRolePermission(
+	proposer sdk.AccAddress,
+	role uint32,
+	permission uint32,
+) *MsgWhitelistRolePermission {
+	return &MsgWhitelistRolePermission{Proposer: proposer, Role: role, Permission: permission}
 }
 
-func (m *MsgAddWhitelistPermissionToRole) Route() string {
-	panic("implement me")
+func (m *MsgWhitelistRolePermission) Route() string {
+	return ModuleName
 }
 
-func (m *MsgAddWhitelistPermissionToRole) Type() string {
-	panic("implement me")
+func (m *MsgWhitelistRolePermission) Type() string {
+	return WhitelistPermissionToRole
 }
 
-func (m *MsgAddWhitelistPermissionToRole) ValidateBasic() error {
-	panic("implement me")
+func (m *MsgWhitelistRolePermission) ValidateBasic() error {
+	if m.Proposer.Empty() {
+		return ErrEmptyProposerAccAddress
+	}
+
+	return nil
 }
 
-func (m *MsgAddWhitelistPermissionToRole) GetSignBytes() []byte {
-	panic("implement me")
+func (m *MsgWhitelistRolePermission) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
 }
 
-func (m *MsgAddWhitelistPermissionToRole) GetSigners() []sdk.AccAddress {
-	panic("implement me")
+func (m *MsgWhitelistRolePermission) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{
+		m.Proposer,
+	}
 }
