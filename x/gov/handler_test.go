@@ -371,6 +371,27 @@ func TestHandler_WhitelistRolePermissions_Errors(t *testing.T) {
 			},
 			expectedErr: fmt.Errorf("role does not exist"),
 		},
+		{
+			name: "permission is blacklisted",
+			msg: types.NewMsgWhitelistRolePermission(
+				addr,
+				uint32(types.RoleValidator),
+				uint32(types.PermSetPermissions),
+			),
+			preparePerms: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+				err2 := setPermissionToAddr(t, app, ctx, addr, types.PermSetPermissions)
+				require.NoError(t, err2)
+
+				perms, err2 := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleValidator)
+				require.NoError(t, err2)
+
+				err2 = perms.AddToBlacklist(types.PermSetPermissions)
+				require.NoError(t, err2)
+
+				app.CustomGovKeeper.SetPermissionsForRole(ctx, types.RoleValidator, perms)
+			},
+			expectedErr: fmt.Errorf("permission is already blacklisted: error adding to whitelist"),
+		},
 	}
 
 	for _, tt := range tests {

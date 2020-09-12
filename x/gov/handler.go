@@ -34,9 +34,14 @@ func handleWhitelistRolePermission(ctx sdk.Context, ck keeper.Keeper, msg *custo
 		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermSetPermissions")
 	}
 
-	_, err := ck.GetPermissionsForRole(ctx, customgovtypes.Role(msg.Role))
+	perms, err := ck.GetPermissionsForRole(ctx, customgovtypes.Role(msg.Role))
 	if err != nil {
 		return nil, customgovtypes.ErrRoleDoesNotExist
+	}
+
+	err = perms.AddToWhitelist(customgovtypes.PermValue(msg.Permission))
+	if err != nil {
+		return nil, errors.Wrap(customgovtypes.ErrWhitelisting, err.Error())
 	}
 
 	return nil, nil
