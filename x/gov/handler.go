@@ -29,6 +29,16 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 }
 
 func handleWhitelistRolePermission(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgWhitelistRolePermission) (*sdk.Result, error) {
+	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Proposer, customgovtypes.PermSetPermissions)
+	if !isAllowed {
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermSetPermissions")
+	}
+
+	_, err := ck.GetPermissionsForRole(ctx, customgovtypes.Role(msg.Role))
+	if err != nil {
+		return nil, customgovtypes.ErrRoleDoesNotExist
+	}
+
 	return nil, nil
 }
 

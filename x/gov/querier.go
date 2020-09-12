@@ -3,6 +3,8 @@ package gov
 import (
 	"context"
 
+	"github.com/coreos/etcd/auth"
+
 	"github.com/cosmos/cosmos-sdk/types/errors"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -51,7 +53,10 @@ func (q Querier) PermissionsByAddress(ctx context.Context, request *types.Permis
 func (q Querier) RolePermissions(ctx context.Context, request *types.RolePermissionsRequest) (*types.RolePermissionsResponse, error) {
 	sdkContext := sdk.UnwrapSDKContext(ctx)
 
-	perms := q.keeper.GetPermissionsForRole(sdkContext, types.Role(request.Role))
+	perms, err := q.keeper.GetPermissionsForRole(sdkContext, types.Role(request.Role))
+	if err != nil {
+		return nil, auth.ErrRoleNotFound
+	}
 
 	return &types.RolePermissionsResponse{Permissions: perms}, nil
 }
