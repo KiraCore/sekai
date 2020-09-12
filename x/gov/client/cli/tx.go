@@ -141,7 +141,7 @@ func getAddressFromFlag(cmd *cobra.Command) (types2.AccAddress, error) {
 
 func GetTxClaimGovernanceCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "claim-governance-seat",
+		Use:   "claim-councilor-seat",
 		Short: "Claim governance seat to become a Councilor",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)

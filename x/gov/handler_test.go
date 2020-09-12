@@ -270,7 +270,7 @@ func TestHandler_ClaimCouncilor_Fails(t *testing.T) {
 				Identity: "",
 				Address:  addr,
 			},
-			expectedErr: fmt.Errorf("PermClaimGovernance: not enough permissions"),
+			expectedErr: fmt.Errorf("PermClaimCouncilor: not enough permissions"),
 		},
 	}
 
@@ -313,7 +313,7 @@ func TestHandler_ClaimCouncilor_HappyPath(t *testing.T) {
 			app := simapp.Setup(false)
 			ctx := app.NewContext(false, tmproto.Header{})
 
-			err = setPermissionToAddr(t, app, ctx, addr, types.PermClaimGovernance)
+			err = setPermissionToAddr(t, app, ctx, addr, types.PermClaimCouncilor)
 			require.NoError(t, err)
 
 			handler := gov.NewHandler(app.CustomGovKeeper)
