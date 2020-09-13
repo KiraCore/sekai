@@ -33,18 +33,18 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 }
 
 func handleRemoveWhitelistRolePermission(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgRemoveWhitelistRolePermission) (*sdk.Result, error) {
+	_, err := validateAndGetPermissionsForRole(ctx, ck, msg.Proposer, customgovtypes.Role(msg.Role))
+	if err != nil {
+		return nil, err
+	}
+
 	return nil, nil
 }
 
 func handleBlacklistRolePermission(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgBlacklistRolePermission) (*sdk.Result, error) {
-	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Proposer, customgovtypes.PermSetPermissions)
-	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermSetPermissions")
-	}
-
-	perms, err := ck.GetPermissionsForRole(ctx, customgovtypes.Role(msg.Role))
+	perms, err := validateAndGetPermissionsForRole(ctx, ck, msg.Proposer, customgovtypes.Role(msg.Role))
 	if err != nil {
-		return nil, customgovtypes.ErrRoleDoesNotExist
+		return nil, err
 	}
 
 	err = perms.AddToBlacklist(customgovtypes.PermValue(msg.Permission))
@@ -58,14 +58,9 @@ func handleBlacklistRolePermission(ctx sdk.Context, ck keeper.Keeper, msg *custo
 }
 
 func handleWhitelistRolePermission(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgWhitelistRolePermission) (*sdk.Result, error) {
-	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Proposer, customgovtypes.PermSetPermissions)
-	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermSetPermissions")
-	}
-
-	perms, err := ck.GetPermissionsForRole(ctx, customgovtypes.Role(msg.Role))
+	perms, err := validateAndGetPermissionsForRole(ctx, ck, msg.Proposer, customgovtypes.Role(msg.Role))
 	if err != nil {
-		return nil, customgovtypes.ErrRoleDoesNotExist
+		return nil, err
 	}
 
 	err = perms.AddToWhitelist(customgovtypes.PermValue(msg.Permission))
@@ -131,4 +126,27 @@ func handleClaimCouncilor(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes
 	ck.SaveCouncilor(ctx, councilor)
 
 	return &sdk.Result{}, nil
+}
+
+// validateAndGetPermissionsForRole checks if:
+// - Proposer has permissions to SetPermissions.
+// - Role exists.
+// And returns the permissions.
+func validateAndGetPermissionsForRole(
+	ctx sdk.Context,
+	ck keeper.Keeper,
+	proposer sdk.AccAddress,
+	role customgovtypes.Role,
+) (*customgovtypes.Permissions, error) {
+	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, proposer, customgovtypes.PermSetPermissions)
+	if !isAllowed {
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermSetPermissions")
+	}
+
+	perms, err := ck.GetPermissionsForRole(ctx, role)
+	if err != nil {
+		return nil, customgovtypes.ErrRoleDoesNotExist
+	}
+
+	return perms, nil
 }

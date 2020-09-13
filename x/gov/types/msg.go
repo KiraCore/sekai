@@ -222,6 +222,14 @@ func (m *MsgBlacklistRolePermission) GetSigners() []sdk.AccAddress {
 	}
 }
 
+func NewMsgRemoveWhitelistRolePermission(
+	proposer sdk.AccAddress,
+	role uint32,
+	permission uint32,
+) *MsgRemoveWhitelistRolePermission {
+	return &MsgRemoveWhitelistRolePermission{Proposer: proposer, Role: role, Permission: permission}
+}
+
 func (m *MsgRemoveWhitelistRolePermission) Route() string {
 	return ModuleName
 }

@@ -509,6 +509,56 @@ func TestHandler_BlacklistRolePermissions_Errors(t *testing.T) {
 	}
 }
 
+func TestHandler_RemoveWhitelistRolePermissions_Errors(t *testing.T) {
+	addr, err := sdk.AccAddressFromBech32("kira15ky9du8a2wlstz6fpx3p4mqpjyrm5cgqzp4f3d")
+	require.NoError(t, err)
+
+	tests := []struct {
+		name         string
+		msg          *types.MsgRemoveWhitelistRolePermission
+		preparePerms func(t *testing.T, app *simapp.SimApp, ctx sdk.Context)
+		expectedErr  error
+	}{
+		{
+			name: "address without SetPermissions perm",
+			msg: types.NewMsgRemoveWhitelistRolePermission(
+				addr,
+				uint32(types.RoleValidator),
+				uint32(types.PermSetPermissions),
+			),
+			preparePerms: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
+			expectedErr:  fmt.Errorf("PermSetPermissions: not enough permissions"),
+		},
+		{
+			name: "role does not exist",
+			msg: types.NewMsgRemoveWhitelistRolePermission(
+				addr,
+				10000,
+				1,
+			),
+			preparePerms: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+				err2 := setPermissionToAddr(t, app, ctx, addr, types.PermSetPermissions)
+				require.NoError(t, err2)
+			},
+			expectedErr: fmt.Errorf("role does not exist"),
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			app := simapp.Setup(false)
+			ctx := app.NewContext(false, tmproto.Header{})
+
+			tt.preparePerms(t, app, ctx)
+
+			handler := gov.NewHandler(app.CustomGovKeeper)
+			_, err := handler(ctx, tt.msg)
+			require.EqualError(t, err, tt.expectedErr.Error())
+		})
+	}
+}
+
 func TestHandler_BlacklistRolePermissions(t *testing.T) {
 	addr, err := sdk.AccAddressFromBech32("kira15ky9du8a2wlstz6fpx3p4mqpjyrm5cgqzp4f3d")
 	require.NoError(t, err)
