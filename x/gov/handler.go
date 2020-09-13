@@ -24,10 +24,16 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 			return handleWhitelistRolePermission(ctx, ck, msg)
 		case *customgovtypes.MsgBlacklistRolePermission:
 			return handleBlacklistRolePermission(ctx, ck, msg)
+		case *customgovtypes.MsgRemoveWhitelistRolePermission:
+			return handleRemoveWhitelistRolePermission(ctx, ck, msg)
 		default:
 			return nil, errors.Wrapf(errors.ErrUnknownRequest, "unrecognized %s message type: %T", types.ModuleName, msg)
 		}
 	}
+}
+
+func handleRemoveWhitelistRolePermission(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgRemoveWhitelistRolePermission) (*sdk.Result, error) {
+	return nil, nil
 }
 
 func handleBlacklistRolePermission(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgBlacklistRolePermission) (*sdk.Result, error) {
