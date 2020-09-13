@@ -6,11 +6,12 @@ import (
 
 // Msg types
 const (
-	WhitelistPermissions      = "whitelist-permissions"
-	BlacklistPermissions      = "blacklist-permissions"
-	ClaimCouncilor            = "claim-councilor"
-	WhitelistPermissionToRole = "whitelist-permission-role"
-	BlacklistPermissionToRole = "blacklist-permission-role"
+	WhitelistPermissions          = "whitelist-permissions"
+	BlacklistPermissions          = "blacklist-permissions"
+	ClaimCouncilor                = "claim-councilor"
+	WhitelistRolePermission       = "whitelist-role-permission"
+	BlacklistRolePermission       = "blacklist-role-permission"
+	RemoveWhitelistRolePermission = "remove-whitelist-role-permission"
 )
 
 var (
@@ -161,7 +162,7 @@ func (m *MsgWhitelistRolePermission) Route() string {
 }
 
 func (m *MsgWhitelistRolePermission) Type() string {
-	return WhitelistPermissionToRole
+	return WhitelistRolePermission
 }
 
 func (m *MsgWhitelistRolePermission) ValidateBasic() error {
@@ -196,7 +197,7 @@ func (m *MsgBlacklistRolePermission) Route() string {
 }
 
 func (m *MsgBlacklistRolePermission) Type() string {
-	return BlacklistPermissionToRole
+	return BlacklistRolePermission
 }
 
 func (m *MsgBlacklistRolePermission) ValidateBasic() error {
