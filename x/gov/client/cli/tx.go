@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -110,6 +111,44 @@ func GetTxSetBlacklistPermissions() *cobra.Command {
 	}
 
 	setPermissionFlags(cmd)
+
+	flags.AddTxFlagsToCmd(cmd)
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+func GetTxWhitelistRolePermission() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "whitelist-role-permissions role permission",
+		Short: "Whitelist role permissions",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			role, err := strconv.Atoi(args[0])
+			if err != nil {
+				return fmt.Errorf("invalid role: %w", err)
+			}
+
+			permission, err := strconv.Atoi(args[1])
+			if err != nil {
+				return fmt.Errorf("invalid permission: %w", err)
+			}
+
+			msg := types.NewMsgWhitelistRolePermission(
+				clientCtx.FromAddress,
+				uint32(role),
+				uint32(permission),
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
 
 	flags.AddTxFlagsToCmd(cmd)
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)
