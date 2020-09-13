@@ -1,11 +1,11 @@
 package gov
 
 import (
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/KiraCore/sekai/x/gov/keeper"
+	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/staking/types"
 )
 
@@ -33,12 +33,19 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 }
 
 func handleRemoveWhitelistRolePermission(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgRemoveWhitelistRolePermission) (*sdk.Result, error) {
-	_, err := validateAndGetPermissionsForRole(ctx, ck, msg.Proposer, customgovtypes.Role(msg.Role))
+	perms, err := validateAndGetPermissionsForRole(ctx, ck, msg.Proposer, customgovtypes.Role(msg.Role))
 	if err != nil {
 		return nil, err
 	}
 
-	return nil, nil
+	err = perms.RemoveFromWhitelist(customgovtypes.PermValue(msg.Permission))
+	if err != nil {
+		return nil, err
+	}
+
+	ck.SetPermissionsForRole(ctx, customgovtypes.Role(msg.Role), perms)
+
+	return &sdk.Result{}, nil
 }
 
 func handleBlacklistRolePermission(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgBlacklistRolePermission) (*sdk.Result, error) {

@@ -509,6 +509,35 @@ func TestHandler_BlacklistRolePermissions_Errors(t *testing.T) {
 	}
 }
 
+func TestHandler_BlacklistRolePermissions(t *testing.T) {
+	addr, err := sdk.AccAddressFromBech32("kira15ky9du8a2wlstz6fpx3p4mqpjyrm5cgqzp4f3d")
+	require.NoError(t, err)
+
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	err = setPermissionToAddr(t, app, ctx, addr, types.PermSetPermissions)
+	require.NoError(t, err)
+
+	perms, err := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleValidator)
+	require.NoError(t, err)
+	require.False(t, perms.IsBlacklisted(types.PermSetPermissions))
+
+	msg := types.NewMsgBlacklistRolePermission(
+		addr,
+		uint32(types.RoleValidator),
+		uint32(types.PermSetPermissions),
+	)
+
+	handler := gov.NewHandler(app.CustomGovKeeper)
+	_, err = handler(ctx, msg)
+	require.NoError(t, err)
+
+	perms, err = app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleValidator)
+	require.NoError(t, err)
+	require.True(t, perms.IsBlacklisted(types.PermSetPermissions))
+}
+
 func TestHandler_RemoveWhitelistRolePermissions_Errors(t *testing.T) {
 	addr, err := sdk.AccAddressFromBech32("kira15ky9du8a2wlstz6fpx3p4mqpjyrm5cgqzp4f3d")
 	require.NoError(t, err)
@@ -559,7 +588,7 @@ func TestHandler_RemoveWhitelistRolePermissions_Errors(t *testing.T) {
 	}
 }
 
-func TestHandler_BlacklistRolePermissions(t *testing.T) {
+func TestHandler_RemoveWhitelistRolePermissions(t *testing.T) {
 	addr, err := sdk.AccAddressFromBech32("kira15ky9du8a2wlstz6fpx3p4mqpjyrm5cgqzp4f3d")
 	require.NoError(t, err)
 
@@ -571,12 +600,12 @@ func TestHandler_BlacklistRolePermissions(t *testing.T) {
 
 	perms, err := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleValidator)
 	require.NoError(t, err)
-	require.False(t, perms.IsBlacklisted(types.PermSetPermissions))
+	require.True(t, perms.IsWhitelisted(types.PermClaimValidator))
 
-	msg := types.NewMsgBlacklistRolePermission(
+	msg := types.NewMsgRemoveWhitelistRolePermission(
 		addr,
 		uint32(types.RoleValidator),
-		uint32(types.PermSetPermissions),
+		uint32(types.PermClaimValidator),
 	)
 
 	handler := gov.NewHandler(app.CustomGovKeeper)
@@ -585,7 +614,7 @@ func TestHandler_BlacklistRolePermissions(t *testing.T) {
 
 	perms, err = app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleValidator)
 	require.NoError(t, err)
-	require.True(t, perms.IsBlacklisted(types.PermSetPermissions))
+	require.False(t, perms.IsWhitelisted(types.PermClaimValidator))
 }
 
 func setPermissionToAddr(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addr sdk.AccAddress, perm types.PermValue) error {
