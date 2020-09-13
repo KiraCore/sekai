@@ -36,6 +36,8 @@ func NewTxCmd() *cobra.Command {
 	txCmd.AddCommand(GetTxSetWhitelistPermissions())
 	txCmd.AddCommand(GetTxSetBlacklistPermissions())
 	txCmd.AddCommand(GetTxClaimGovernanceCmd())
+	txCmd.AddCommand(GetTxBlacklistRolePermission())
+	txCmd.AddCommand(GetTxWhitelistRolePermission())
 
 	return txCmd
 }
@@ -141,6 +143,44 @@ func GetTxWhitelistRolePermission() *cobra.Command {
 			}
 
 			msg := types.NewMsgWhitelistRolePermission(
+				clientCtx.FromAddress,
+				uint32(role),
+				uint32(permission),
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+func GetTxBlacklistRolePermission() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "blacklist-role-permissions role permission",
+		Short: "Blacklist role permissions",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			role, err := strconv.Atoi(args[0])
+			if err != nil {
+				return fmt.Errorf("invalid role: %w", err)
+			}
+
+			permission, err := strconv.Atoi(args[1])
+			if err != nil {
+				return fmt.Errorf("invalid permission: %w", err)
+			}
+
+			msg := types.NewMsgBlacklistRolePermission(
 				clientCtx.FromAddress,
 				uint32(role),
 				uint32(permission),

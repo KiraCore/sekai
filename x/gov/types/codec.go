@@ -11,6 +11,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgBlacklistPermissions{}, "kiraHub/MsgBlacklistPermissions", nil)
 	cdc.RegisterConcrete(&MsgClaimCouncilor{}, "kiraHub/MsgClaimCouncilor", nil)
 	cdc.RegisterConcrete(&MsgWhitelistRolePermission{}, "kiraHub/MsgWhitelistRolePermission", nil)
+	cdc.RegisterConcrete(&MsgBlacklistRolePermission{}, "kiraHub/MsgBlacklistRolePermission", nil)
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {
@@ -19,6 +20,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgBlacklistPermissions{},
 		&MsgClaimCouncilor{},
 		&MsgWhitelistRolePermission{},
+		&MsgBlacklistRolePermission{},
 	)
 }
 
