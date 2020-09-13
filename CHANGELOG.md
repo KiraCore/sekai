@@ -2,8 +2,10 @@
 
 
 ## [Unreleased]
+### Added
 
-- Added cli command to claim governance seat.
+- Added CLI command to claim governance seat.
+- Added CLI command to set whitelist permissions into a specific role.
 
 ## [0.1.2.1] - 09.06.2020
 ### Added
