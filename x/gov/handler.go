@@ -40,7 +40,7 @@ func handleRemoveWhitelistRolePermission(ctx sdk.Context, ck keeper.Keeper, msg 
 
 	err = perms.RemoveFromWhitelist(customgovtypes.PermValue(msg.Permission))
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(customgovtypes.ErrWhitelisting, err.Error())
 	}
 
 	ck.SetPermissionsForRole(ctx, customgovtypes.Role(msg.Role), perms)
