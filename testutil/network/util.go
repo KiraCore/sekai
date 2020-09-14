@@ -178,6 +178,8 @@ func initGenFiles(cfg Config, vals []*Validator, genAccounts []authtypes.Genesis
 		customgovtypes.NewPermissions(nil, nil),
 		1,
 	)
+
+	customGovGenState.Permissions[0] = customgovtypes.NewPermissions(nil, nil)
 	customGovGenState.NetworkActors = append(customGovGenState.NetworkActors, &networkActor)
 	cfg.GenesisState[customgovtypes.ModuleName] = cfg.Codec.MustMarshalJSON(&customGovGenState)
 

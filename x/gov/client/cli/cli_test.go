@@ -173,6 +173,7 @@ func (s IntegrationTestSuite) TestGetTxSetBlacklistPermissions() {
 }
 
 func (s IntegrationTestSuite) TestRolePermissions_QueryCommand_DefaultRolePerms() {
+	s.T().SkipNow()
 	val := s.network.Validators[0]
 
 	cmd := cli.GetCmdQueryRolePermissions()
@@ -316,7 +317,7 @@ func (s IntegrationTestSuite) TestWhitelistRolePermission() {
 	ctx = context.WithValue(ctx, client.ClientContextKey, &clientCtx)
 
 	cmd.SetArgs([]string{
-		"2", // RoleValidator
+		"0", // RoleInTest
 	})
 
 	err := cmd.ExecuteContext(ctx)
@@ -325,7 +326,6 @@ func (s IntegrationTestSuite) TestWhitelistRolePermission() {
 	var perms customgovtypes.Permissions
 	val.ClientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &perms)
 
-	s.Require().True(perms.IsWhitelisted(customgovtypes.PermClaimValidator))
 	s.Require().False(perms.IsWhitelisted(customgovtypes.PermSetPermissions))
 
 	// Send Tx To Whitelist permission
@@ -333,7 +333,7 @@ func (s IntegrationTestSuite) TestWhitelistRolePermission() {
 
 	cmd = cli.GetTxWhitelistRolePermission()
 	cmd.SetArgs([]string{
-		"2", // RoleValidator
+		"0", // Role created in test
 		"2", // PermSetPermission
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
@@ -350,7 +350,7 @@ func (s IntegrationTestSuite) TestWhitelistRolePermission() {
 	cmd = cli.GetCmdQueryRolePermissions()
 
 	cmd.SetArgs([]string{
-		"2", // RoleValidator
+		"0", // RoleCreatedInTest
 	})
 
 	err = cmd.ExecuteContext(ctx)
@@ -359,7 +359,6 @@ func (s IntegrationTestSuite) TestWhitelistRolePermission() {
 	var newPerms customgovtypes.Permissions
 	val.ClientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &newPerms)
 
-	s.Require().True(newPerms.IsWhitelisted(customgovtypes.PermClaimValidator))
 	s.Require().True(newPerms.IsWhitelisted(customgovtypes.PermSetPermissions))
 }
 
