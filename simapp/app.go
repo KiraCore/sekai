@@ -88,9 +88,6 @@ import (
 
 const appName = "KiraSimApp"
 
-var CustomGovKeeper customgov.Keeper
-var StakingKeeper stakingkeeper.Keeper
-
 var (
 	// DefaultNodeHome default home directories for the application daemon
 	DefaultNodeHome = os.ExpandEnv("$HOME/.simapp")
@@ -275,11 +272,9 @@ func NewSimApp(
 	app.StakingKeeper = *stakingKeeper.SetHooks(
 		stakingtypes.NewMultiStakingHooks(app.DistrKeeper.Hooks(), app.SlashingKeeper.Hooks()),
 	)
-	StakingKeeper = app.StakingKeeper
 
 	app.CustomStakingKeeper = keeper.NewKeeper(keys[customstakingtypes.ModuleName], cdc)
 	app.CustomGovKeeper = customgov.NewKeeper(keys[customgovtypes.ModuleName], appCodec)
-	CustomGovKeeper = app.CustomGovKeeper
 
 	// Create IBC Keeper
 	// TODO: remove amino codec dependency once Tendermint version is upgraded with
@@ -394,7 +389,7 @@ func NewSimApp(
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetAnteHandler(
 		NewAnteHandler(
-			app.AccountKeeper, app.BankKeeper, ante.DefaultSigVerificationGasConsumer,
+			app.CustomStakingKeeper, app.CustomGovKeeper, app.AccountKeeper, app.BankKeeper, ante.DefaultSigVerificationGasConsumer,
 			encodingConfig.TxConfig.SignModeHandler(),
 		),
 	)

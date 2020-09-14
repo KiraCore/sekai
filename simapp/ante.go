@@ -3,6 +3,8 @@ package simapp
 import (
 	"fmt"
 
+	customgovkeeper "github.com/KiraCore/sekai/x/gov/keeper"
+	customstakingkeeper "github.com/KiraCore/sekai/x/staking/keeper"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
@@ -15,6 +17,8 @@ import (
 // numbers, checks signatures & account numbers, and deducts fees from the first
 // signer.
 func NewAnteHandler(
+	sk customstakingkeeper.Keeper,
+	cgk customgovkeeper.Keeper,
 	ak keeper.AccountKeeper,
 	bankKeeper types.BankKeeper,
 	sigGasConsumer ante.SignatureVerificationGasConsumer,
@@ -29,7 +33,7 @@ func NewAnteHandler(
 		ante.NewValidateMemoDecorator(ak),
 		ante.NewConsumeGasForTxSizeDecorator(ak),
 		// custom fee range validator
-		NewValidateFeeRangeDecorator(ak),
+		NewValidateFeeRangeDecorator(sk, cgk, ak),
 		ante.NewSetPubKeyDecorator(ak), // SetPubKeyDecorator must be called before all signature verification decorators
 		ante.NewValidateSigCountDecorator(ak),
 		ante.NewDeductFeeDecorator(ak, bankKeeper),
@@ -41,13 +45,21 @@ func NewAnteHandler(
 
 // ValidateFeeRangeDecorator check if fee is within range defined as network properties
 type ValidateFeeRangeDecorator struct {
-	ak keeper.AccountKeeper
+	sk  customstakingkeeper.Keeper
+	cgk customgovkeeper.Keeper
+	ak  keeper.AccountKeeper
 }
 
 // NewValidateFeeRangeDecorator check if fee is within range defined as network properties
-func NewValidateFeeRangeDecorator(ak keeper.AccountKeeper) ValidateFeeRangeDecorator {
+func NewValidateFeeRangeDecorator(
+	sk customstakingkeeper.Keeper,
+	cgk customgovkeeper.Keeper,
+	ak keeper.AccountKeeper,
+) ValidateFeeRangeDecorator {
 	return ValidateFeeRangeDecorator{
-		ak: ak,
+		sk:  sk,
+		cgk: cgk,
+		ak:  ak,
 	}
 }
 
@@ -58,11 +70,10 @@ func (svd ValidateFeeRangeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "Tx must be a FeeTx")
 	}
 
-	properties := CustomGovKeeper.GetNetworkProperties(ctx)
+	properties := svd.cgk.GetNetworkProperties(ctx)
 
-	// TODO should check if use fee.Amount or Fee.Gas
-	bondDenom := "stake"                                     // StakingKeeper.BondDenom(ctx)
-	feeAmount := feeTx.GetFee().AmountOf(bondDenom).Uint64() // || sigTx.Fee.Gas
+	bondDenom := svd.sk.BondDenom(ctx)
+	feeAmount := feeTx.GetFee().AmountOf(bondDenom).Uint64()
 	if feeAmount < properties.MinTxFee || feeAmount > properties.MaxTxFee {
 		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("fee out of range [%d, %d]", properties.MinTxFee, properties.MaxTxFee))
 	}
