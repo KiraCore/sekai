@@ -173,7 +173,6 @@ func (s IntegrationTestSuite) TestGetTxSetBlacklistPermissions() {
 }
 
 func (s IntegrationTestSuite) TestRolePermissions_QueryCommand_DefaultRolePerms() {
-	s.T().SkipNow()
 	val := s.network.Validators[0]
 
 	cmd := cli.GetCmdQueryRolePermissions()
@@ -436,7 +435,7 @@ func (s IntegrationTestSuite) TestRemoveWhitelistRolePermission() {
 	ctx = context.WithValue(ctx, client.ClientContextKey, &clientCtx)
 
 	cmd.SetArgs([]string{
-		"2", // RoleValidator
+		"0", // RoleInTest
 	})
 
 	err := cmd.ExecuteContext(ctx)
@@ -452,7 +451,7 @@ func (s IntegrationTestSuite) TestRemoveWhitelistRolePermission() {
 
 	cmd = cli.GetTxRemoveWhitelistRolePermission()
 	cmd.SetArgs([]string{
-		"2", // RoleValidator
+		"0", // RoleValidator
 		"1", // PermClaimValidator
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
@@ -472,7 +471,7 @@ func (s IntegrationTestSuite) TestRemoveWhitelistRolePermission() {
 	cmd = cli.GetCmdQueryRolePermissions()
 
 	cmd.SetArgs([]string{
-		"2", // RoleValidator
+		"0", // RoleInTest
 	})
 
 	err = cmd.ExecuteContext(ctx)
