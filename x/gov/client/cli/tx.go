@@ -16,10 +16,17 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/tx"
 )
 
+// define flags
 const (
-	FlagPermission = "permission"
-	FlagMinTxFee   = "min_tx_fee"
-	FlagMaxTxFee   = "max_tx_fee"
+	FlagPermission        = "permission"
+	FlagMinTxFee          = "min_tx_fee"
+	FlagMaxTxFee          = "max_tx_fee"
+	FlagExecName          = "execution_name"
+	FlagTxType            = "transaction_type"
+	FlagExecutionFee      = "execution_fee"
+	FlagFailureFee        = "failure_fee"
+	FlagTimeout           = "timeout"
+	FlagDefaultParameters = "default_parameters"
 )
 
 // NewTxCmd returns a root CLI command handler for all x/bank transaction commands.
@@ -35,6 +42,7 @@ func NewTxCmd() *cobra.Command {
 	txCmd.AddCommand(
 		GetTxSetWhitelistPermissions(),
 		GetTxSetNetworkProperties(),
+		GetTxSetExecutionFee(),
 	)
 
 	return txCmd
@@ -153,6 +161,71 @@ func GetTxSetNetworkProperties() *cobra.Command {
 
 	cmd.Flags().Uint64(FlagMinTxFee, 1, "min tx fee")
 	cmd.Flags().Uint64(FlagMaxTxFee, 10000, "max tx fee")
+
+	flags.AddTxFlagsToCmd(cmd)
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+// GetTxSetExecutionFee is a function to set network properties tx command
+func GetTxSetExecutionFee() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "set-execution-fee",
+		Short: "Set execution fee",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			execName, err := cmd.Flags().GetString(FlagExecName)
+			if err != nil {
+				return fmt.Errorf("invalid execution name")
+			}
+			txType, err := cmd.Flags().GetString(FlagTxType)
+			if err != nil {
+				return fmt.Errorf("invalid transaction type")
+			}
+
+			execFee, err := cmd.Flags().GetUint64(FlagExecutionFee)
+			if err != nil {
+				return fmt.Errorf("invalid execution fee")
+			}
+			failureFee, err := cmd.Flags().GetUint64(FlagFailureFee)
+			if err != nil {
+				return fmt.Errorf("invalid failure fee")
+			}
+			timeout, err := cmd.Flags().GetUint64(FlagTimeout)
+			if err != nil {
+				return fmt.Errorf("invalid timeout")
+			}
+			defaultParams, err := cmd.Flags().GetUint64(FlagDefaultParameters)
+			if err != nil {
+				return fmt.Errorf("invalid default parameters")
+			}
+
+			msg := types.NewMsgSetExecutionFee(
+				execName,
+				txType,
+				execFee,
+				failureFee,
+				timeout,
+				defaultParams,
+				clientCtx.FromAddress,
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	cmd.Flags().String(FlagExecName, "", "execution name")
+	cmd.Flags().String(FlagTxType, "", "execution type")
+	cmd.Flags().Uint64(FlagExecutionFee, 10, "execution fee")
+	cmd.Flags().Uint64(FlagFailureFee, 1, "failure fee")
+	cmd.Flags().Uint64(FlagTimeout, 0, "timeout")
+	cmd.Flags().Uint64(FlagDefaultParameters, 0, "default parameters")
 
 	flags.AddTxFlagsToCmd(cmd)
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)

@@ -41,5 +41,15 @@ properties:
   max_tx_fee: "10000"
   min_tx_fee: "1"
 ```
+
+## Set Execution Fee
+```sh
+# command
+sekaid tx customgov set-execution-fee --from validator --execution_name="ABC" --transaction_type="B" --execution_fee=10 --failure_fee=1 --timeout=10 default_parameters=0 --keyring-backend=test --chain-id=testing --fees=10ukex
+
+# response
+confirm transaction before signing and broadcasting [y/N]: y
+{"height":"8","txhash":"F716689F967C24CD66D7D94BB90ED6A786E7E31E8D4871B383816E0F0B0E6D5B","codespace":"","code":0,"data":"0A130A117365742D657865637574696F6E2D666565","raw_log":"[{\"events\":[{\"type\":\"message\",\"attributes\":[{\"key\":\"action\",\"value\":\"set-execution-fee\"}]}]}]","logs":[{"msg_index":0,"log":"","events":[{"type":"message","attributes":[{"key":"action","value":"set-execution-fee"}]}]}],"info":"","gas_wanted":"200000","gas_used":"50055","tx":null,"timestamp":""}
+```
 ---
 `dev` branch
