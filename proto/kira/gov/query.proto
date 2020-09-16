@@ -11,6 +11,7 @@ service Query {
   // Validators queries a validator by address.
   rpc PermissionsByAddress (PermissionsByAddressRequest) returns (PermissionsResponse) {}
   rpc GetNetworkProperties (NetworkPropertiesRequest) returns (NetworkPropertiesResponse) {}
+  rpc GetExecutionFee (ExecutionFeeRequest) returns (ExecutionFeeResponse) {}
   // RolePermissions returns the permissions of the roles available in the registry.
   rpc RolePermissions (RolePermissionsRequest) returns (RolePermissionsResponse) {}
 }
@@ -35,4 +36,8 @@ message RolePermissionsRequest {
 }
 message RolePermissionsResponse {
   Permissions permissions = 1;
+}
+message ExecutionFeeRequest {}
+message ExecutionFeeResponse {
+  repeated kira.gov.ExecutionFee fees = 1;
 }
