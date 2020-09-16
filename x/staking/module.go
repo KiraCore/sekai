@@ -3,6 +3,8 @@ package staking
 import (
 	"encoding/json"
 
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+
 	govkeeper "github.com/KiraCore/sekai/x/gov/keeper"
 
 	"github.com/tendermint/tendermint/crypto/encoding"
@@ -30,10 +32,6 @@ var (
 
 type AppModuleBasic struct{}
 
-func (b AppModuleBasic) RegisterCodec(amino *codec.LegacyAmino) {
-	cumstomtypes.RegisterCodec(amino)
-}
-
 func (b AppModuleBasic) Name() string {
 	return cumstomtypes.ModuleName
 }
@@ -49,11 +47,18 @@ func (b AppModuleBasic) ValidateGenesis(marshaler codec.JSONMarshaler, config cl
 	return nil
 }
 
+func (b AppModuleBasic) RegisterGRPCRoutes(context client.Context, serveMux *runtime.ServeMux) {
+}
+
 func (b AppModuleBasic) RegisterRESTRoutes(context client.Context, router *mux.Router) {
 }
 
 func (b AppModuleBasic) GetTxCmd() *cobra.Command {
 	return cli.GetTxClaimValidatorCmd()
+}
+
+func (b AppModuleBasic) RegisterLegacyAminoCodec(amino *codec.LegacyAmino) {
+	cumstomtypes.RegisterCodec(amino)
 }
 
 func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
