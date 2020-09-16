@@ -50,6 +50,10 @@ message MsgSetExecutionFee {
   uint64 failure_fee = 4;
   uint64 timeout = 5;
   uint64 default_parameters = 6;
+  bytes proposer = 7 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
 }
 
 message NetworkActor {
