@@ -109,7 +109,7 @@ func (am AppModule) RegisterInvariants(registry sdk.InvariantRegistry) {}
 
 func (am AppModule) QuerierRoute() string { return "" }
 
-func (am AppModule) LegacyQuerierHandler(marshaler codec.JSONMarshaler) sdk.Querier {
+func (am AppModule) LegacyQuerierHandler(marshaler *codec.LegacyAmino) sdk.Querier {
 	return nil
 }
 
