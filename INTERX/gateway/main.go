@@ -1,6 +1,7 @@
 package gateway
 
 import (
+	"context"
 	"crypto/tls"
 	"fmt"
 	"mime"
@@ -8,12 +9,18 @@ import (
 	"os"
 	"strings"
 
-	grpcHandler "github.com/KiraCore/sekai/INTERX/handler/grpc-handler"
-	rpcHandler "github.com/KiraCore/sekai/INTERX/handler/rpc-handler"
 	"github.com/KiraCore/sekai/INTERX/insecure"
+	cosmosBank "github.com/KiraCore/sekai/INTERX/proto-gen/cosmos/bank"
+	sekaiapp "github.com/KiraCore/sekai/app"
+	"github.com/gorilla/mux"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rakyll/statik/fs"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 	grpclog "google.golang.org/grpc/grpclog"
 )
+
+var encodingConfig = sekaiapp.MakeEncodingConfig()
 
 // getOpenAPIHandler serves an OpenAPI UI.
 func getOpenAPIHandler() http.Handler {
@@ -28,9 +35,39 @@ func getOpenAPIHandler() http.Handler {
 	return http.FileServer(statikFS)
 }
 
+// GetGrpcServeMux is a function to get ServerMux for GRPC server.
+func GetGrpcServeMux(grpcAddr string) (*runtime.ServeMux, error) {
+	// Create a client connection to the gRPC Server we just started.
+	// This is where the gRPC-Gateway proxies the requests.
+	// WITH_TRANSPORT_CREDENTIALS: Empty parameters mean set transport security.
+	security := grpc.WithInsecure()
+	if strings.ToLower(os.Getenv("WITH_TRANSPORT_CREDENTIALS")) == "true" {
+		security = grpc.WithTransportCredentials(credentials.NewClientTLSFromCert(insecure.CertPool, ""))
+	}
+
+	conn, err := grpc.DialContext(
+		context.Background(),
+		grpcAddr,
+		security,
+		grpc.WithBlock(),
+	)
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to dial server: %w", err)
+	}
+
+	gwCosmosmux := runtime.NewServeMux()
+	err = cosmosBank.RegisterQueryHandler(context.Background(), gwCosmosmux, conn)
+	if err != nil {
+		return nil, fmt.Errorf("failed to register gateway: %w", err)
+	}
+
+	return gwCosmosmux, nil
+}
+
 // Run runs the gRPC-Gateway, dialling the provided address.
 func Run(grpcAddr string, rpcAddr string, log grpclog.LoggerV2) error {
-	gwCosmosmux, err := grpcHandler.GetServeMux(grpcAddr)
+	gwCosmosmux, err := GetGrpcServeMux(grpcAddr)
 	if err != nil {
 		return fmt.Errorf("failed to register gateway: %w", err)
 	}
@@ -43,20 +80,15 @@ func Run(grpcAddr string, rpcAddr string, log grpclog.LoggerV2) error {
 		port = "11000"
 	}
 
+	router := mux.NewRouter()
+	RegisterRequest(router, gwCosmosmux, rpcAddr)
+
+	router.PathPrefix("/").Handler(oaHander)
+
 	gatewayAddr := "0.0.0.0:" + port
 	gwServer := &http.Server{
-		Addr: gatewayAddr,
-		Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if grpcHandler.ServeGRPC(w, r, gwCosmosmux, rpcAddr) {
-				return
-			}
-
-			if rpcHandler.ServeRPC(w, r, rpcAddr) {
-				return
-			}
-
-			oaHander.ServeHTTP(w, r)
-		}),
+		Addr:    gatewayAddr,
+		Handler: router,
 	}
 
 	// SERVE_HTTP: Empty parameters mean use the TLS Config specified with the server.
