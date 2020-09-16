@@ -9,4 +9,5 @@ message GenesisState {
   map<uint64, Permissions> permissions = 1;
   repeated NetworkActor network_actors = 2;
   NetworkProperties network_properties = 3;
+  repeated ExecutionFee execution_fees = 4;
 }
