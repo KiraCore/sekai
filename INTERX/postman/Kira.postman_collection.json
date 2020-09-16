@@ -195,7 +195,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "",
+					"raw": "{\n  \"tx\": {\n    \"msg\": [\n      {\n      \t\"type\": \"cosmos-sdk/MsgSend\",\n      \t\"value\": {\n\t      \t\"amount\": [\n\t      \t\t{\n\t      \t\t\t\"amount\": \"100\",\n\t      \t\t\t\"denom\": \"stake\"\n\t      \t\t}\n\t      \t],\n\t      \t\"from_address\": \"kira135zxnfy6tza8896ej9ruty4l6wfay8ded984n0\",\n\t      \t\"to_address\": \"kira1knlfp33twum9kufrqvdtklc8732f657jk8n0ur\"\n      \t}\n      }\n    ],\n    \"fee\": {\n      \"amount\": [\n        {\n          \"denom\": \"stake\",\n          \"amount\": \"50\"\n        }\n      ],\n      \"gas\": \"200000\"\n    },\n    \"signatures\": [\n    \t{\n\t      \"signature\": \"\",\n\t      \"pub_key\": {\n\t        \"type\": \"tendermint/PubKeySecp256k1\",\n\t        \"value\": \"Ar+9VJRBaIobdu/KawIXGbmy4p/djxGAiAUlvsKL8lGo\"\n\t      }\n\t    }\n\t],\n    \"memo\": \"string\",\n    \"timeout_height\": \"0\"\n  },\n  \"mode\": \"block\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -203,7 +203,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://0.0.0.0:11000/api/cosmos/tx?tx=0xF7B9E190E6A80385E2B537A3EE8EEF17C36112A0AF2DE625879E84E8F3877BE7",
+					"raw": "http://0.0.0.0:11000/api/cosmos/tx",
 					"protocol": "http",
 					"host": [
 						"0",
@@ -216,12 +216,6 @@
 						"api",
 						"cosmos",
 						"tx"
-					],
-					"query": [
-						{
-							"key": "tx",
-							"value": "0xF7B9E190E6A80385E2B537A3EE8EEF17C36112A0AF2DE625879E84E8F3877BE7"
-						}
 					]
 				}
 			},
