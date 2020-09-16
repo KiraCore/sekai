@@ -3,9 +3,11 @@ module github.com/KiraCore/sekai/INTERX
 go 1.12
 
 require (
+	github.com/KiraCore/sekai v0.0.0-20200823002648-c9c157f71380
 	github.com/cosmos/cosmos-sdk v0.34.4-0.20200821154312-2e1fbaed9c41
 	github.com/gofrs/uuid v3.2.0+incompatible
 	github.com/golang/protobuf v1.4.2
+	github.com/gorilla/mux v1.7.4
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.0.0-beta.4
 	github.com/rakyll/statik v0.1.7
 	github.com/tendermint/tendermint v0.34.0-rc3
