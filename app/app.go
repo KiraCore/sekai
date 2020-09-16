@@ -196,7 +196,7 @@ func init() {
 }
 
 // NewSimApp returns a reference to an initialized SimApp.
-func NewSimApp(
+func NewInitApp(
 	logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest bool, skipUpgradeHeights map[int64]bool,
 	homePath string, invCheckPeriod uint, encodingConfig simappparams.EncodingConfig, baseAppOptions ...func(*bam.BaseApp),
 ) *SekaiApp {
