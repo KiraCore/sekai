@@ -9,6 +9,8 @@ import (
 func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgWhitelistPermissions{}, "kiraHub/MsgWhitelistPermissions", nil)
 	cdc.RegisterConcrete(&MsgBlacklistPermissions{}, "kiraHub/MsgBlacklistPermissions", nil)
+	cdc.RegisterConcrete(&MsgSetNetworkProperties{}, "kiraHub/MsgSetNetworkProperties", nil)
+	cdc.RegisterConcrete(&MsgSetExecutionFee{}, "kiraHub/MsgSetExecutionFee", nil)
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {
@@ -16,6 +18,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgWhitelistPermissions{},
 		&MsgBlacklistPermissions{},
 		&MsgSetNetworkProperties{},
+		&MsgSetExecutionFee{},
 	)
 }
 

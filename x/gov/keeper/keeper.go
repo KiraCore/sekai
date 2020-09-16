@@ -34,6 +34,27 @@ func (k Keeper) GetNetworkProperties(ctx sdk.Context) *types.NetworkProperties {
 	return properties
 }
 
+// SetExecutionFee set fee by execution function name
+func (k Keeper) SetExecutionFee(ctx sdk.Context, fee *types.ExecutionFee) {
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixExecutionFee)
+	key := []byte(fee.Name)
+	prefixStore.Set(key, k.cdc.MustMarshalBinaryBare(fee))
+}
+
+// GetExecutionFee get fee from execution function name
+func (k Keeper) GetExecutionFee(ctx sdk.Context, executionName string) *types.ExecutionFee {
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixExecutionFee)
+	key := []byte(executionName)
+	if !prefixStore.Has(key) {
+		return nil
+	}
+	bz := prefixStore.Get([]byte(executionName))
+
+	fee := new(types.ExecutionFee)
+	k.cdc.MustUnmarshalBinaryBare(bz, fee)
+	return fee
+}
+
 func (k Keeper) SetPermissionsForRole(ctx sdk.Context, role types.Role, permissions *types.Permissions) {
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixPermissionsRegistry)
 

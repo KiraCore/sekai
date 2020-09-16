@@ -37,7 +37,9 @@ message RolePermissionsRequest {
 message RolePermissionsResponse {
   Permissions permissions = 1;
 }
-message ExecutionFeeRequest {}
+message ExecutionFeeRequest {
+  string execution_name = 1;
+}
 message ExecutionFeeResponse {
-  repeated kira.gov.ExecutionFee fees = 1;
+  kira.gov.ExecutionFee fee = 1;
 }
