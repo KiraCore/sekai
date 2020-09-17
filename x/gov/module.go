@@ -47,7 +47,6 @@ func (b AppModuleBasic) RegisterRESTRoutes(context client.Context, router *mux.R
 }
 
 func (b AppModuleBasic) RegisterGRPCRoutes(context client.Context, serveMux *runtime.ServeMux) {
-	panic("implement me")
 }
 
 func (b AppModuleBasic) RegisterLegacyAminoCodec(amino *codec.LegacyAmino) {
