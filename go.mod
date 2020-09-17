@@ -5,7 +5,7 @@ go 1.14
 require (
 	github.com/asaskevich/govalidator v0.0.0-20200428143746-21a406dcc535
 	github.com/coreos/etcd v3.3.13+incompatible
-	github.com/cosmos/cosmos-sdk v0.34.4-0.20200914181642-813be217e3db
+	github.com/cosmos/cosmos-sdk v0.34.4-0.20200917134338-9cb27fb171aa
 	github.com/gogo/protobuf v1.3.1
 	github.com/gorilla/mux v1.8.0
 	github.com/grpc-ecosystem/grpc-gateway v1.14.8
