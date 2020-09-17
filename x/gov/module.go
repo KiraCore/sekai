@@ -95,6 +95,10 @@ func (am AppModule) InitGenesis(
 
 	am.customGovKeeper.SetNetworkProperties(ctx, genesisState.NetworkProperties)
 
+	for _, fee := range genesisState.ExecutionFees {
+		am.customGovKeeper.SetExecutionFee(ctx, fee)
+	}
+
 	return nil
 }
 
