@@ -14,15 +14,19 @@ const (
 	WhitelistRolePermission       = "whitelist-role-permission"
 	BlacklistRolePermission       = "blacklist-role-permission"
 	RemoveWhitelistRolePermission = "remove-whitelist-role-permission"
+	RemoveBlacklistRolePermission = "remove-blacklist-role-permission"
 )
 
 var (
 	_ sdk.Msg = &MsgWhitelistPermissions{}
 	_ sdk.Msg = &MsgBlacklistPermissions{}
+
 	_ sdk.Msg = &MsgClaimCouncilor{}
+
 	_ sdk.Msg = &MsgWhitelistRolePermission{}
 	_ sdk.Msg = &MsgBlacklistRolePermission{}
 	_ sdk.Msg = &MsgRemoveWhitelistRolePermission{}
+	_ sdk.Msg = &MsgRemoveBlacklistRolePermission{}
 )
 
 func NewMsgWhitelistPermissions(
@@ -252,6 +256,41 @@ func (m *MsgRemoveWhitelistRolePermission) GetSignBytes() []byte {
 }
 
 func (m *MsgRemoveWhitelistRolePermission) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{
+		m.Proposer,
+	}
+}
+
+func NewMsgRemoveBlacklistRolePermission(
+	proposer sdk.AccAddress,
+	role uint32,
+	permission uint32,
+) *MsgRemoveBlacklistRolePermission {
+	return &MsgRemoveBlacklistRolePermission{Proposer: proposer, Role: role, Permission: permission}
+}
+
+func (m *MsgRemoveBlacklistRolePermission) Route() string {
+	return ModuleName
+}
+
+func (m *MsgRemoveBlacklistRolePermission) Type() string {
+	return RemoveBlacklistRolePermission
+}
+
+func (m *MsgRemoveBlacklistRolePermission) ValidateBasic() error {
+	if m.Proposer.Empty() {
+		return ErrEmptyProposerAccAddress
+	}
+
+	return nil
+}
+
+func (m *MsgRemoveBlacklistRolePermission) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *MsgRemoveBlacklistRolePermission) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{
 		m.Proposer,
 	}
