@@ -4,9 +4,7 @@ import (
 	"net/http"
 
 	"github.com/KiraCore/sekai/x/ixp/types"
-	"github.com/asaskevich/govalidator"
 	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/rest"
 )
@@ -24,38 +22,38 @@ type CreateOrderRequest struct {
 // CreateOrderRequestHandler is a function to handle create order command on rest endpoint
 func CreateOrderRequestHandler(cliContext client.Context) http.HandlerFunc {
 	return func(responseWriter http.ResponseWriter, httpRequest *http.Request) {
-		var request CreateOrderRequest
-		if !rest.ReadRESTReq(responseWriter, httpRequest, cliContext.JSONMarshaler, &request) {
-			return
-		}
+		// var request CreateOrderRequest
+		// if !rest.ReadRESTReq(responseWriter, httpRequest, cliContext.JSONMarshaler, &request) {
+		// 	return
+		// }
 
-		request.BaseReq = request.BaseReq.Sanitize()
-		if !request.BaseReq.ValidateBasic(responseWriter) {
-			rest.WriteErrorResponse(responseWriter, http.StatusBadRequest, "")
-			return
-		}
+		// request.BaseReq = request.BaseReq.Sanitize()
+		// if !request.BaseReq.ValidateBasic(responseWriter) {
+		// 	rest.WriteErrorResponse(responseWriter, http.StatusBadRequest, "")
+		// 	return
+		// }
 
-		_, Error := govalidator.ValidateStruct(request)
-		if Error != nil {
-			rest.WriteErrorResponse(responseWriter, http.StatusBadRequest, Error.Error())
-			return
-		}
+		// _, Error := govalidator.ValidateStruct(request)
+		// if Error != nil {
+		// 	rest.WriteErrorResponse(responseWriter, http.StatusBadRequest, Error.Error())
+		// 	return
+		// }
 
-		curator, Error := sdk.AccAddressFromBech32(request.Curator)
-		if Error != nil {
-			rest.WriteErrorResponse(responseWriter, http.StatusBadRequest, Error.Error())
-			return
-		}
+		// curator, Error := sdk.AccAddressFromBech32(request.Curator)
+		// if Error != nil {
+		// 	rest.WriteErrorResponse(responseWriter, http.StatusBadRequest, Error.Error())
+		// 	return
+		// }
 
-		message, _ := types.NewMsgCreateOrder(
-			request.OrderBookID,
-			request.OrderType,
-			request.Amount,
-			request.LimitPrice,
-			curator,
-		)
+		// message, _ := types.NewMsgCreateOrder(
+		// 	request.OrderBookID,
+		// 	request.OrderType,
+		// 	request.Amount,
+		// 	request.LimitPrice,
+		// 	curator,
+		// )
 
-		tx.WriteGeneratedTxResponse(cliContext, responseWriter, request.BaseReq, message)
+		// tx.WriteGeneratedTxResponse(cliContext, responseWriter, request.BaseReq, message)
 	}
 }
 
@@ -71,37 +69,37 @@ type CreateOrderBookRequest struct {
 // CreateOrderbookRequestHandler is a function to handle create orderbook command on rest endpoint
 func CreateOrderbookRequestHandler(cliContext client.Context) http.HandlerFunc {
 	return func(responseWriter http.ResponseWriter, httpRequest *http.Request) {
-		var request CreateOrderBookRequest
-		if !rest.ReadRESTReq(responseWriter, httpRequest, cliContext.JSONMarshaler, &request) {
-			return
-		}
+		// var request CreateOrderBookRequest
+		// if !rest.ReadRESTReq(responseWriter, httpRequest, cliContext.JSONMarshaler, &request) {
+		// 	return
+		// }
 
-		request.BaseReq = request.BaseReq.Sanitize()
-		if !request.BaseReq.ValidateBasic(responseWriter) {
-			rest.WriteErrorResponse(responseWriter, http.StatusBadRequest, "")
-			return
-		}
+		// request.BaseReq = request.BaseReq.Sanitize()
+		// if !request.BaseReq.ValidateBasic(responseWriter) {
+		// 	rest.WriteErrorResponse(responseWriter, http.StatusBadRequest, "")
+		// 	return
+		// }
 
-		_, Error := govalidator.ValidateStruct(request)
-		if Error != nil {
-			rest.WriteErrorResponse(responseWriter, http.StatusBadRequest, Error.Error())
-			return
-		}
+		// _, Error := govalidator.ValidateStruct(request)
+		// if Error != nil {
+		// 	rest.WriteErrorResponse(responseWriter, http.StatusBadRequest, Error.Error())
+		// 	return
+		// }
 
-		curator, Error := sdk.AccAddressFromBech32(request.Curator)
-		if Error != nil {
-			rest.WriteErrorResponse(responseWriter, http.StatusBadRequest, Error.Error())
-			return
-		}
+		// curator, Error := sdk.AccAddressFromBech32(request.Curator)
+		// if Error != nil {
+		// 	rest.WriteErrorResponse(responseWriter, http.StatusBadRequest, Error.Error())
+		// 	return
+		// }
 
-		message, _ := types.NewMsgCreateOrderBook(
-			request.Base,
-			request.Quote,
-			request.Mnemonic,
-			curator,
-		)
+		// message, _ := types.NewMsgCreateOrderBook(
+		// 	request.Base,
+		// 	request.Quote,
+		// 	request.Mnemonic,
+		// 	curator,
+		// )
 
-		tx.WriteGeneratedTxResponse(cliContext, responseWriter, request.BaseReq, message)
+		// tx.WriteGeneratedTxResponse(cliContext, responseWriter, request.BaseReq, message)
 	}
 }
 
@@ -120,39 +118,39 @@ type UpsertSignerKeyRequest struct {
 // UpsertSignerKeyRequestHandler is a function to handle upsert signer key request command on rest endpoint
 func UpsertSignerKeyRequestHandler(cliContext client.Context) http.HandlerFunc {
 	return func(responseWriter http.ResponseWriter, httpRequest *http.Request) {
-		var request UpsertSignerKeyRequest
-		if !rest.ReadRESTReq(responseWriter, httpRequest, cliContext.JSONMarshaler, &request) {
-			return
-		}
+		// var request UpsertSignerKeyRequest
+		// if !rest.ReadRESTReq(responseWriter, httpRequest, cliContext.JSONMarshaler, &request) {
+		// 	return
+		// }
 
-		request.BaseReq = request.BaseReq.Sanitize()
-		if !request.BaseReq.ValidateBasic(responseWriter) {
-			rest.WriteErrorResponse(responseWriter, http.StatusBadRequest, "")
-			return
-		}
+		// request.BaseReq = request.BaseReq.Sanitize()
+		// if !request.BaseReq.ValidateBasic(responseWriter) {
+		// 	rest.WriteErrorResponse(responseWriter, http.StatusBadRequest, "")
+		// 	return
+		// }
 
-		_, Error := govalidator.ValidateStruct(request)
-		if Error != nil {
-			rest.WriteErrorResponse(responseWriter, http.StatusBadRequest, Error.Error())
-			return
-		}
-
-		// curator, Error := sdk.AccAddressFromBech32(request.Curator)
+		// _, Error := govalidator.ValidateStruct(request)
 		// if Error != nil {
 		// 	rest.WriteErrorResponse(responseWriter, http.StatusBadRequest, Error.Error())
 		// 	return
 		// }
 
-		message, _ := types.NewMsgUpsertSignerKey(
-			request.PubKey,
-			request.KeyType,
-			request.ExpiryTime,
-			request.Enabled,
-			request.Data,
-			request.Permissions,
-			request.Curator,
-		)
+		// // curator, Error := sdk.AccAddressFromBech32(request.Curator)
+		// // if Error != nil {
+		// // 	rest.WriteErrorResponse(responseWriter, http.StatusBadRequest, Error.Error())
+		// // 	return
+		// // }
 
-		tx.WriteGeneratedTxResponse(cliContext, responseWriter, request.BaseReq, message)
+		// message, _ := types.NewMsgUpsertSignerKey(
+		// 	request.PubKey,
+		// 	request.KeyType,
+		// 	request.ExpiryTime,
+		// 	request.Enabled,
+		// 	request.Data,
+		// 	request.Permissions,
+		// 	request.Curator,
+		// )
+
+		// tx.WriteGeneratedTxResponse(cliContext, responseWriter, request.BaseReq, message)
 	}
 }

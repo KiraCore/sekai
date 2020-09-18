@@ -17,13 +17,13 @@ func NewMsgCancelOrder(orderID string, curator sdk.AccAddress) (*MsgCancelOrder,
 }
 
 // Route returns route name associated with the message
-func (message MsgCancelOrder) Route() string { return ModuleName }
+func (message *MsgCancelOrder) Route() string { return ModuleName }
 
 // Type returns transaction type in string
-func (message MsgCancelOrder) Type() string { return CancelOrderTransaction }
+func (message *MsgCancelOrder) Type() string { return CancelOrderTransaction }
 
 // ValidateBasic do basic validation for message by type
-func (message MsgCancelOrder) ValidateBasic() error {
+func (message *MsgCancelOrder) ValidateBasic() error {
 	var _, Error = govalidator.ValidateStruct(message)
 	if Error != nil {
 		return errors.Wrap(IncorrectMessageCode, Error.Error())
@@ -32,11 +32,11 @@ func (message MsgCancelOrder) ValidateBasic() error {
 }
 
 // GetSignBytes returns to sign bytes for this message
-func (message MsgCancelOrder) GetSignBytes() []byte {
+func (message *MsgCancelOrder) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(message))
 }
 
 // GetSigners return signers to sign this message before broadcast
-func (message MsgCancelOrder) GetSigners() []sdk.AccAddress {
+func (message *MsgCancelOrder) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{message.Curator}
 }

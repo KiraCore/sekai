@@ -168,7 +168,7 @@ func (s *IntegrationTestSuite) TestQueryValidator_Errors() {
 		},
 	)
 	err = cmd.ExecuteContext(ctx)
-	s.Require().EqualError(err, "validator not found: key not found")
+	s.Require().EqualError(err, "validator not found: key not found: invalid request")
 
 	// Non existing moniker.
 	cmd = cli.GetCmdQueryValidator()
@@ -180,7 +180,7 @@ func (s *IntegrationTestSuite) TestQueryValidator_Errors() {
 	out.Reset()
 
 	err = cmd.ExecuteContext(ctx)
-	s.Require().EqualError(err, "validator not found: key not found")
+	s.Require().EqualError(err, "validator not found: key not found: invalid request")
 
 	// Non existing moniker.
 	cmd = cli.GetCmdQueryValidator()
@@ -192,7 +192,7 @@ func (s *IntegrationTestSuite) TestQueryValidator_Errors() {
 	out.Reset()
 
 	err = cmd.ExecuteContext(ctx)
-	s.Require().EqualError(err, "validator with moniker weirdMoniker not found: key not found")
+	s.Require().EqualError(err, "validator with moniker weirdMoniker not found: key not found: invalid request")
 }
 
 func TestIntegrationTestSuite(t *testing.T) {

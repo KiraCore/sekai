@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 
 	cdcTypes "github.com/cosmos/cosmos-sdk/codec/types"
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
 	"github.com/cosmos/cosmos-sdk/client"
 
@@ -54,6 +55,14 @@ func (AppModuleBasic) DefaultGenesis(jsonMarshaler codec.JSONMarshaler) json.Raw
 // RegisterRESTRoutes register REST routes
 func (AppModuleBasic) RegisterRESTRoutes(cliContext client.Context, router *mux.Router) {
 	RegisterRESTRoutes(cliContext, router)
+}
+
+// RegisterGRPCRoutes register GRPC routes
+func (b AppModuleBasic) RegisterGRPCRoutes(context client.Context, serveMux *runtime.ServeMux) {
+}
+
+// RegisterGRPCRoutes register LegacyAminoCodec
+func (AppModuleBasic) RegisterLegacyAminoCodec(amino *codec.LegacyAmino) {
 }
 
 // ValidateGenesis validate genesis for this module
@@ -146,7 +155,7 @@ func (am AppModule) QuerierRoute() string {
 }
 
 // LegacyQuerierHandler returns querier handler
-func (am AppModule) LegacyQuerierHandler(marshaler codec.JSONMarshaler) sdkTypes.Querier {
+func (am AppModule) LegacyQuerierHandler(marshaler *codec.LegacyAmino) sdkTypes.Querier {
 	return nil
 }
 

@@ -117,34 +117,268 @@ func (m *PermissionsResponse) GetPermissions() *Permissions {
 	return nil
 }
 
+type RolePermissionsRequest struct {
+	Role uint64 `protobuf:"varint,1,opt,name=role,proto3" json:"role,omitempty"`
+}
+
+func (m *RolePermissionsRequest) Reset()         { *m = RolePermissionsRequest{} }
+func (m *RolePermissionsRequest) String() string { return proto.CompactTextString(m) }
+func (*RolePermissionsRequest) ProtoMessage()    {}
+func (*RolePermissionsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5c6ac9b241082464, []int{2}
+}
+func (m *RolePermissionsRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *RolePermissionsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_RolePermissionsRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *RolePermissionsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RolePermissionsRequest.Merge(m, src)
+}
+func (m *RolePermissionsRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *RolePermissionsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_RolePermissionsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_RolePermissionsRequest proto.InternalMessageInfo
+
+func (m *RolePermissionsRequest) GetRole() uint64 {
+	if m != nil {
+		return m.Role
+	}
+	return 0
+}
+
+type RolePermissionsResponse struct {
+	Permissions *Permissions `protobuf:"bytes,1,opt,name=permissions,proto3" json:"permissions,omitempty"`
+}
+
+func (m *RolePermissionsResponse) Reset()         { *m = RolePermissionsResponse{} }
+func (m *RolePermissionsResponse) String() string { return proto.CompactTextString(m) }
+func (*RolePermissionsResponse) ProtoMessage()    {}
+func (*RolePermissionsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5c6ac9b241082464, []int{3}
+}
+func (m *RolePermissionsResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *RolePermissionsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_RolePermissionsResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *RolePermissionsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RolePermissionsResponse.Merge(m, src)
+}
+func (m *RolePermissionsResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *RolePermissionsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_RolePermissionsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_RolePermissionsResponse proto.InternalMessageInfo
+
+func (m *RolePermissionsResponse) GetPermissions() *Permissions {
+	if m != nil {
+		return m.Permissions
+	}
+	return nil
+}
+
+type CouncilorByAddressRequest struct {
+	ValAddr github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=val_addr,json=valAddr,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"val_addr,omitempty" yaml:"val_addr"`
+}
+
+func (m *CouncilorByAddressRequest) Reset()         { *m = CouncilorByAddressRequest{} }
+func (m *CouncilorByAddressRequest) String() string { return proto.CompactTextString(m) }
+func (*CouncilorByAddressRequest) ProtoMessage()    {}
+func (*CouncilorByAddressRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5c6ac9b241082464, []int{4}
+}
+func (m *CouncilorByAddressRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *CouncilorByAddressRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_CouncilorByAddressRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *CouncilorByAddressRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CouncilorByAddressRequest.Merge(m, src)
+}
+func (m *CouncilorByAddressRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *CouncilorByAddressRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_CouncilorByAddressRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CouncilorByAddressRequest proto.InternalMessageInfo
+
+func (m *CouncilorByAddressRequest) GetValAddr() github_com_cosmos_cosmos_sdk_types.AccAddress {
+	if m != nil {
+		return m.ValAddr
+	}
+	return nil
+}
+
+type CouncilorByMonikerRequest struct {
+	Moniker string `protobuf:"bytes,1,opt,name=moniker,proto3" json:"moniker,omitempty"`
+}
+
+func (m *CouncilorByMonikerRequest) Reset()         { *m = CouncilorByMonikerRequest{} }
+func (m *CouncilorByMonikerRequest) String() string { return proto.CompactTextString(m) }
+func (*CouncilorByMonikerRequest) ProtoMessage()    {}
+func (*CouncilorByMonikerRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5c6ac9b241082464, []int{5}
+}
+func (m *CouncilorByMonikerRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *CouncilorByMonikerRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_CouncilorByMonikerRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *CouncilorByMonikerRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CouncilorByMonikerRequest.Merge(m, src)
+}
+func (m *CouncilorByMonikerRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *CouncilorByMonikerRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_CouncilorByMonikerRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CouncilorByMonikerRequest proto.InternalMessageInfo
+
+func (m *CouncilorByMonikerRequest) GetMoniker() string {
+	if m != nil {
+		return m.Moniker
+	}
+	return ""
+}
+
+type CouncilorResponse struct {
+	Councilor Councilor `protobuf:"bytes,1,opt,name=councilor,proto3" json:"councilor"`
+}
+
+func (m *CouncilorResponse) Reset()         { *m = CouncilorResponse{} }
+func (m *CouncilorResponse) String() string { return proto.CompactTextString(m) }
+func (*CouncilorResponse) ProtoMessage()    {}
+func (*CouncilorResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5c6ac9b241082464, []int{6}
+}
+func (m *CouncilorResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *CouncilorResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_CouncilorResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *CouncilorResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CouncilorResponse.Merge(m, src)
+}
+func (m *CouncilorResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *CouncilorResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_CouncilorResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CouncilorResponse proto.InternalMessageInfo
+
+func (m *CouncilorResponse) GetCouncilor() Councilor {
+	if m != nil {
+		return m.Councilor
+	}
+	return Councilor{}
+}
+
 func init() {
 	proto.RegisterType((*PermissionsByAddressRequest)(nil), "kira.gov.PermissionsByAddressRequest")
 	proto.RegisterType((*PermissionsResponse)(nil), "kira.gov.PermissionsResponse")
+	proto.RegisterType((*RolePermissionsRequest)(nil), "kira.gov.RolePermissionsRequest")
+	proto.RegisterType((*RolePermissionsResponse)(nil), "kira.gov.RolePermissionsResponse")
+	proto.RegisterType((*CouncilorByAddressRequest)(nil), "kira.gov.CouncilorByAddressRequest")
+	proto.RegisterType((*CouncilorByMonikerRequest)(nil), "kira.gov.CouncilorByMonikerRequest")
+	proto.RegisterType((*CouncilorResponse)(nil), "kira.gov.CouncilorResponse")
 }
 
 func init() { proto.RegisterFile("query.proto", fileDescriptor_5c6ac9b241082464) }
 
 var fileDescriptor_5c6ac9b241082464 = []byte{
-	// 299 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x2e, 0x2c, 0x4d, 0x2d,
-	0xaa, 0xd4, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0xc8, 0xce, 0x2c, 0x4a, 0xd4, 0x4b, 0xcf,
-	0x2f, 0x93, 0xe2, 0x4c, 0xcf, 0x2f, 0x83, 0x08, 0x4a, 0x89, 0xa4, 0xe7, 0xa7, 0xe7, 0x83, 0x99,
-	0xfa, 0x20, 0x16, 0x44, 0x54, 0xa9, 0x8e, 0x4b, 0x3a, 0x20, 0xb5, 0x28, 0x37, 0xb3, 0xb8, 0x38,
-	0x33, 0x3f, 0xaf, 0xd8, 0xa9, 0xd2, 0x31, 0x25, 0xa5, 0x28, 0xb5, 0xb8, 0x38, 0x28, 0xb5, 0xb0,
-	0x34, 0xb5, 0xb8, 0x44, 0x28, 0x9e, 0x8b, 0xa3, 0x2c, 0x31, 0x27, 0x3e, 0x31, 0x25, 0xa5, 0x48,
-	0x82, 0x51, 0x81, 0x51, 0x83, 0xc7, 0xc9, 0xe5, 0xd3, 0x3d, 0x79, 0xfe, 0xca, 0xc4, 0xdc, 0x1c,
-	0x2b, 0x25, 0x98, 0x8c, 0xd2, 0xaf, 0x7b, 0xf2, 0xba, 0xe9, 0x99, 0x25, 0x19, 0xa5, 0x49, 0x7a,
-	0xc9, 0xf9, 0xb9, 0xfa, 0xc9, 0xf9, 0xc5, 0xb9, 0xf9, 0xc5, 0x50, 0x4a, 0xb7, 0x38, 0x25, 0x5b,
-	0xbf, 0xa4, 0xb2, 0x20, 0xb5, 0x58, 0xcf, 0x31, 0x39, 0x19, 0x66, 0x3c, 0x7b, 0x59, 0x62, 0x0e,
-	0x88, 0xad, 0xe4, 0xc7, 0x25, 0x8c, 0x64, 0x7f, 0x50, 0x6a, 0x71, 0x41, 0x7e, 0x5e, 0x71, 0xaa,
-	0x90, 0x39, 0x17, 0x77, 0x01, 0x42, 0x18, 0x6c, 0x35, 0xb7, 0x91, 0xa8, 0x1e, 0xcc, 0x5f, 0x7a,
-	0xc8, 0x7a, 0x90, 0x55, 0x1a, 0xa5, 0x73, 0xb1, 0x06, 0x82, 0x42, 0x42, 0x28, 0x8e, 0x4b, 0x04,
-	0x9b, 0xc7, 0x84, 0x54, 0xb1, 0x1a, 0x82, 0xee, 0x71, 0x29, 0x59, 0xec, 0x76, 0x41, 0xdd, 0xa7,
-	0xc4, 0xe0, 0x64, 0x7f, 0xe2, 0x91, 0x1c, 0xe3, 0x85, 0x47, 0x72, 0x8c, 0x0f, 0x1e, 0xc9, 0x31,
-	0x4e, 0x78, 0x2c, 0xc7, 0x70, 0xe1, 0xb1, 0x1c, 0xc3, 0x8d, 0xc7, 0x72, 0x0c, 0x51, 0xaa, 0x48,
-	0x41, 0xe1, 0x9d, 0x59, 0x94, 0xe8, 0x9c, 0x5f, 0x94, 0xaa, 0x5f, 0x9c, 0x9a, 0x9d, 0x98, 0xa9,
-	0x5f, 0xa1, 0x9f, 0x9e, 0x5f, 0x06, 0x09, 0x8d, 0x24, 0x36, 0x70, 0x04, 0x18, 0x03, 0x02, 0x00,
-	0x00, 0xff, 0xff, 0xa5, 0x31, 0x9b, 0x72, 0xba, 0x01, 0x00, 0x00,
+	// 448 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x54, 0x4d, 0x8b, 0xd3, 0x50,
+	0x14, 0x4d, 0xa4, 0x3a, 0xd3, 0x57, 0x61, 0xf0, 0xcd, 0xa8, 0x63, 0x06, 0xd3, 0xf1, 0xc9, 0x80,
+	0x0b, 0x9b, 0x40, 0x45, 0x04, 0x37, 0xd2, 0xd6, 0x9d, 0x1f, 0x68, 0x56, 0xe2, 0xc2, 0x92, 0x26,
+	0x8f, 0xf8, 0xc8, 0xc7, 0x4d, 0xdf, 0x4b, 0x82, 0x01, 0xf1, 0x37, 0xf8, 0xb3, 0xba, 0xec, 0xd2,
+	0x55, 0x91, 0xf6, 0x1f, 0x08, 0x6e, 0x5c, 0x49, 0xf3, 0x61, 0xd2, 0x36, 0xd5, 0x85, 0x30, 0xab,
+	0xdc, 0xdc, 0xdc, 0x7b, 0xce, 0xbd, 0xe7, 0x1e, 0x82, 0x3a, 0xd3, 0x98, 0xf2, 0x54, 0x0b, 0x39,
+	0x44, 0x80, 0x0f, 0x5d, 0xc6, 0x4d, 0xcd, 0x81, 0x44, 0x69, 0x3b, 0x90, 0xe4, 0x49, 0xe5, 0xc4,
+	0x01, 0x07, 0xb2, 0x50, 0x5f, 0x47, 0x79, 0x96, 0x7c, 0x41, 0x67, 0x6f, 0x28, 0xf7, 0x99, 0x10,
+	0x0c, 0x02, 0x31, 0x4c, 0x07, 0xb6, 0xcd, 0xa9, 0x10, 0x06, 0x9d, 0xc6, 0x54, 0x44, 0x78, 0x8c,
+	0x0e, 0x13, 0xd3, 0x1b, 0x9b, 0xb6, 0xcd, 0x4f, 0xe5, 0x73, 0xf9, 0xc1, 0xf5, 0xe1, 0xf3, 0x1f,
+	0x8b, 0xee, 0x51, 0x6a, 0xfa, 0xde, 0x53, 0x52, 0x7e, 0x21, 0xbf, 0x16, 0xdd, 0x9e, 0xc3, 0xa2,
+	0x8f, 0xf1, 0x44, 0xb3, 0xc0, 0xd7, 0x2d, 0x10, 0x3e, 0x88, 0xe2, 0xd1, 0x13, 0xb6, 0xab, 0x47,
+	0x69, 0x48, 0x85, 0x36, 0xb0, 0xac, 0x12, 0xfe, 0x20, 0x31, 0xbd, 0x75, 0x4c, 0x5e, 0xa3, 0xe3,
+	0x1a, 0xbf, 0x41, 0x45, 0x08, 0x81, 0xa0, 0xf8, 0x09, 0xea, 0x84, 0x55, 0x3a, 0xa3, 0xee, 0xf4,
+	0x6f, 0x6a, 0xe5, 0x5e, 0x5a, 0xbd, 0xa7, 0x5e, 0x49, 0x1e, 0xa2, 0x5b, 0x06, 0x78, 0x74, 0x03,
+	0x33, 0x5f, 0x05, 0xa3, 0x16, 0x07, 0x8f, 0x66, 0x58, 0x2d, 0x23, 0x8b, 0x89, 0x81, 0x6e, 0xef,
+	0x54, 0xff, 0xef, 0x04, 0x9f, 0xd1, 0x9d, 0x11, 0xc4, 0x81, 0xc5, 0x3c, 0xe0, 0x97, 0xaf, 0xe7,
+	0xe3, 0x0d, 0xf6, 0x57, 0x10, 0x30, 0x97, 0xf2, 0x92, 0xfd, 0x14, 0x1d, 0xf8, 0x79, 0x26, 0x23,
+	0x6f, 0x1b, 0xe5, 0x2b, 0x79, 0x89, 0x6e, 0xfc, 0x69, 0xab, 0x49, 0xd0, 0xb6, 0xca, 0x64, 0x21,
+	0xc0, 0x71, 0x25, 0x40, 0x45, 0xd3, 0x9a, 0x2d, 0xba, 0x92, 0x51, 0xd5, 0xf6, 0x7f, 0x5e, 0x41,
+	0x57, 0xdf, 0xae, 0xfd, 0x88, 0x3f, 0xa0, 0x93, 0x26, 0x7b, 0xe1, 0x8b, 0x46, 0x21, 0xb7, 0xe5,
+	0x52, 0xee, 0x36, 0xeb, 0x5d, 0x0c, 0x48, 0x24, 0xfc, 0x0e, 0x1d, 0x6d, 0x1d, 0x10, 0x9f, 0x57,
+	0x3d, 0xcd, 0x4e, 0x50, 0xee, 0xfd, 0xa5, 0xa2, 0x86, 0x8c, 0x77, 0xcf, 0x88, 0xef, 0x37, 0xed,
+	0xbf, 0x3d, 0xf5, 0x59, 0x43, 0xd1, 0x5e, 0xe4, 0xe2, 0x44, 0x7b, 0x90, 0x37, 0x0f, 0xf8, 0x0f,
+	0xe4, 0xe1, 0xb3, 0xd9, 0x52, 0x95, 0xe7, 0x4b, 0x55, 0xfe, 0xbe, 0x54, 0xe5, 0xaf, 0x2b, 0x55,
+	0x9a, 0xaf, 0x54, 0xe9, 0xdb, 0x4a, 0x95, 0xde, 0x5f, 0xd4, 0xec, 0xf4, 0x82, 0x71, 0x73, 0x04,
+	0x9c, 0xea, 0x82, 0xba, 0x26, 0xd3, 0x3f, 0xe9, 0x0e, 0x24, 0xb9, 0xa3, 0x26, 0xd7, 0xb2, 0x9f,
+	0xc2, 0xa3, 0xdf, 0x01, 0x00, 0x00, 0xff, 0xff, 0x15, 0xcb, 0x7d, 0x77, 0x4e, 0x04, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -161,6 +395,10 @@ const _ = grpc.SupportPackageIsVersion4
 type QueryClient interface {
 	// Validators queries a validator by address.
 	PermissionsByAddress(ctx context.Context, in *PermissionsByAddressRequest, opts ...grpc.CallOption) (*PermissionsResponse, error)
+	// RolePermissions returns the permissions of the roles available in the registry.
+	RolePermissions(ctx context.Context, in *RolePermissionsRequest, opts ...grpc.CallOption) (*RolePermissionsResponse, error)
+	CouncilorByAddress(ctx context.Context, in *CouncilorByAddressRequest, opts ...grpc.CallOption) (*CouncilorResponse, error)
+	CouncilorByMoniker(ctx context.Context, in *CouncilorByMonikerRequest, opts ...grpc.CallOption) (*CouncilorResponse, error)
 }
 
 type queryClient struct {
@@ -180,10 +418,41 @@ func (c *queryClient) PermissionsByAddress(ctx context.Context, in *PermissionsB
 	return out, nil
 }
 
+func (c *queryClient) RolePermissions(ctx context.Context, in *RolePermissionsRequest, opts ...grpc.CallOption) (*RolePermissionsResponse, error) {
+	out := new(RolePermissionsResponse)
+	err := c.cc.Invoke(ctx, "/kira.gov.Query/RolePermissions", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) CouncilorByAddress(ctx context.Context, in *CouncilorByAddressRequest, opts ...grpc.CallOption) (*CouncilorResponse, error) {
+	out := new(CouncilorResponse)
+	err := c.cc.Invoke(ctx, "/kira.gov.Query/CouncilorByAddress", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) CouncilorByMoniker(ctx context.Context, in *CouncilorByMonikerRequest, opts ...grpc.CallOption) (*CouncilorResponse, error) {
+	out := new(CouncilorResponse)
+	err := c.cc.Invoke(ctx, "/kira.gov.Query/CouncilorByMoniker", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 type QueryServer interface {
 	// Validators queries a validator by address.
 	PermissionsByAddress(context.Context, *PermissionsByAddressRequest) (*PermissionsResponse, error)
+	// RolePermissions returns the permissions of the roles available in the registry.
+	RolePermissions(context.Context, *RolePermissionsRequest) (*RolePermissionsResponse, error)
+	CouncilorByAddress(context.Context, *CouncilorByAddressRequest) (*CouncilorResponse, error)
+	CouncilorByMoniker(context.Context, *CouncilorByMonikerRequest) (*CouncilorResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -192,6 +461,15 @@ type UnimplementedQueryServer struct {
 
 func (*UnimplementedQueryServer) PermissionsByAddress(ctx context.Context, req *PermissionsByAddressRequest) (*PermissionsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PermissionsByAddress not implemented")
+}
+func (*UnimplementedQueryServer) RolePermissions(ctx context.Context, req *RolePermissionsRequest) (*RolePermissionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RolePermissions not implemented")
+}
+func (*UnimplementedQueryServer) CouncilorByAddress(ctx context.Context, req *CouncilorByAddressRequest) (*CouncilorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CouncilorByAddress not implemented")
+}
+func (*UnimplementedQueryServer) CouncilorByMoniker(ctx context.Context, req *CouncilorByMonikerRequest) (*CouncilorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CouncilorByMoniker not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -216,6 +494,60 @@ func _Query_PermissionsByAddress_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_RolePermissions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RolePermissionsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).RolePermissions(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.gov.Query/RolePermissions",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).RolePermissions(ctx, req.(*RolePermissionsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_CouncilorByAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CouncilorByAddressRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).CouncilorByAddress(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.gov.Query/CouncilorByAddress",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).CouncilorByAddress(ctx, req.(*CouncilorByAddressRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_CouncilorByMoniker_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CouncilorByMonikerRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).CouncilorByMoniker(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.gov.Query/CouncilorByMoniker",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).CouncilorByMoniker(ctx, req.(*CouncilorByMonikerRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "kira.gov.Query",
 	HandlerType: (*QueryServer)(nil),
@@ -223,6 +555,18 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PermissionsByAddress",
 			Handler:    _Query_PermissionsByAddress_Handler,
+		},
+		{
+			MethodName: "RolePermissions",
+			Handler:    _Query_RolePermissions_Handler,
+		},
+		{
+			MethodName: "CouncilorByAddress",
+			Handler:    _Query_CouncilorByAddress_Handler,
+		},
+		{
+			MethodName: "CouncilorByMoniker",
+			Handler:    _Query_CouncilorByMoniker_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -294,6 +638,162 @@ func (m *PermissionsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *RolePermissionsRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *RolePermissionsRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *RolePermissionsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Role != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Role))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *RolePermissionsResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *RolePermissionsResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *RolePermissionsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Permissions != nil {
+		{
+			size, err := m.Permissions.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *CouncilorByAddressRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *CouncilorByAddressRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *CouncilorByAddressRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.ValAddr) > 0 {
+		i -= len(m.ValAddr)
+		copy(dAtA[i:], m.ValAddr)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.ValAddr)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *CouncilorByMonikerRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *CouncilorByMonikerRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *CouncilorByMonikerRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Moniker) > 0 {
+		i -= len(m.Moniker)
+		copy(dAtA[i:], m.Moniker)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Moniker)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *CouncilorResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *CouncilorResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *CouncilorResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size, err := m.Councilor.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintQuery(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	offset -= sovQuery(v)
 	base := offset
@@ -328,6 +828,68 @@ func (m *PermissionsResponse) Size() (n int) {
 		l = m.Permissions.Size()
 		n += 1 + l + sovQuery(uint64(l))
 	}
+	return n
+}
+
+func (m *RolePermissionsRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Role != 0 {
+		n += 1 + sovQuery(uint64(m.Role))
+	}
+	return n
+}
+
+func (m *RolePermissionsResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Permissions != nil {
+		l = m.Permissions.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *CouncilorByAddressRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.ValAddr)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *CouncilorByMonikerRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Moniker)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *CouncilorResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = m.Councilor.Size()
+	n += 1 + l + sovQuery(uint64(l))
 	return n
 }
 
@@ -486,6 +1048,425 @@ func (m *PermissionsResponse) Unmarshal(dAtA []byte) error {
 				m.Permissions = &Permissions{}
 			}
 			if err := m.Permissions.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *RolePermissionsRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: RolePermissionsRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: RolePermissionsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Role", wireType)
+			}
+			m.Role = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Role |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *RolePermissionsResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: RolePermissionsResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: RolePermissionsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Permissions", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Permissions == nil {
+				m.Permissions = &Permissions{}
+			}
+			if err := m.Permissions.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *CouncilorByAddressRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: CouncilorByAddressRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: CouncilorByAddressRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ValAddr", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ValAddr = append(m.ValAddr[:0], dAtA[iNdEx:postIndex]...)
+			if m.ValAddr == nil {
+				m.ValAddr = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *CouncilorByMonikerRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: CouncilorByMonikerRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: CouncilorByMonikerRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Moniker", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Moniker = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *CouncilorResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: CouncilorResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: CouncilorResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Councilor", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Councilor.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

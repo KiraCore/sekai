@@ -10,6 +10,12 @@ option go_package = "github.com/KiraCore/sekai/x/gov/types";
 service Query {
   // Validators queries a validator by address.
   rpc PermissionsByAddress (PermissionsByAddressRequest) returns (PermissionsResponse) {}
+  // RolePermissions returns the permissions of the roles available in the registry.
+  rpc RolePermissions (RolePermissionsRequest) returns (RolePermissionsResponse) {}
+
+  rpc CouncilorByAddress (CouncilorByAddressRequest) returns (CouncilorResponse) {}
+
+  rpc CouncilorByMoniker (CouncilorByMonikerRequest) returns (CouncilorResponse) {}
 }
 
 message PermissionsByAddressRequest {
@@ -21,4 +27,27 @@ message PermissionsByAddressRequest {
 
 message PermissionsResponse {
   kira.gov.Permissions permissions = 1;
+}
+
+message RolePermissionsRequest {
+  uint64 role = 1;
+}
+
+message RolePermissionsResponse {
+  Permissions permissions = 1;
+}
+
+message CouncilorByAddressRequest {
+  bytes val_addr = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"val_addr\""
+  ];
+}
+
+message CouncilorByMonikerRequest {
+  string moniker = 1;
+}
+
+message CouncilorResponse {
+  kira.gov.Councilor councilor = 1 [(gogoproto.nullable) = false];
 }

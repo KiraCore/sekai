@@ -30,13 +30,13 @@ func NewMsgUpsertSignerKey(
 }
 
 // Route returns module route to find appropriate handler
-func (message MsgUpsertSignerKey) Route() string { return ModuleName }
+func (message *MsgUpsertSignerKey) Route() string { return ModuleName }
 
 // Type returns message type to differentiate with other messages on amino codec
-func (message MsgUpsertSignerKey) Type() string { return UpsertSignerKeyTransaction }
+func (message *MsgUpsertSignerKey) Type() string { return UpsertSignerKeyTransaction }
 
 // ValidateBasic returns basic validation error
-func (message MsgUpsertSignerKey) ValidateBasic() error {
+func (message *MsgUpsertSignerKey) ValidateBasic() error {
 	// TODO: validate pubkey encoding by key type
 	// TODO: validate permissions set
 
@@ -52,11 +52,11 @@ func (message MsgUpsertSignerKey) ValidateBasic() error {
 }
 
 // GetSignBytes return sorted sign bytes
-func (message MsgUpsertSignerKey) GetSignBytes() []byte {
+func (message *MsgUpsertSignerKey) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(message))
 }
 
 // GetSigners returns signer to sign the message
-func (message MsgUpsertSignerKey) GetSigners() []sdk.AccAddress {
+func (message *MsgUpsertSignerKey) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{message.Curator}
 }

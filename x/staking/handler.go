@@ -1,7 +1,7 @@
 package staking
 
 import (
-	types2 "github.com/KiraCore/sekai/x/gov/types"
+	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -23,24 +23,15 @@ func NewHandler(ck customkeeper.Keeper, govkeeper govkeeper.Keeper) sdk.Handler 
 	}
 }
 
-func handleMsgClaimValidator(ctx sdk.Context, k customkeeper.Keeper, govkeeper govkeeper.Keeper, msg *types.MsgClaimValidator) (*sdk.Result, error) {
+func handleMsgClaimValidator(ctx sdk.Context, k customkeeper.Keeper, gk govkeeper.Keeper, msg *types.MsgClaimValidator) (*sdk.Result, error) {
+	isAllowed := govkeeper.CheckIfAllowedPermission(ctx, gk, sdk.AccAddress(msg.ValKey), customgovtypes.PermClaimValidator)
+	if !isAllowed {
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermClaimValidator")
+	}
+
 	valPubKey, err := sdk.GetPubKeyFromBech32(sdk.Bech32PubKeyTypeConsPub, msg.PubKey)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get consensus node public key")
-	}
-
-	addr := sdk.AccAddress(msg.ValKey)
-	networkActor, err := govkeeper.GetNetworkActorByAddress(ctx, addr)
-	if err != nil {
-		return nil, types.ErrNetworkActorNotFound
-	}
-
-	if networkActor.Permissions.IsBlacklisted(types2.PermClaimValidator) {
-		return nil, errors.Wrap(types.ErrNotEnoughPermissions, "PermClaimValidator is blacklisted")
-	}
-
-	if !networkActor.Permissions.IsWhitelisted(types2.PermClaimValidator) {
-		return nil, errors.Wrap(types.ErrNotEnoughPermissions, "PermClaimValidator not whitelisted")
 	}
 
 	validator, err := types.NewValidator(msg.Moniker, msg.Website, msg.Social, msg.Identity, msg.Commission, msg.ValKey, valPubKey)

@@ -27,13 +27,13 @@ func NewMsgCreateOrder(
 }
 
 // Route returns route name associated with the message
-func (message MsgCreateOrder) Route() string { return ModuleName }
+func (message *MsgCreateOrder) Route() string { return ModuleName }
 
 // Type returns transaction type in string
-func (message MsgCreateOrder) Type() string { return CreateOrderTransaction }
+func (message *MsgCreateOrder) Type() string { return CreateOrderTransaction }
 
 // ValidateBasic do basic validation for message by type
-func (message MsgCreateOrder) ValidateBasic() error {
+func (message *MsgCreateOrder) ValidateBasic() error {
 	var _, Error = govalidator.ValidateStruct(message)
 	if Error != nil {
 		return errors.Wrap(IncorrectMessageCode, Error.Error())
@@ -42,11 +42,11 @@ func (message MsgCreateOrder) ValidateBasic() error {
 }
 
 // GetSignBytes returns to sign bytes for this message
-func (message MsgCreateOrder) GetSignBytes() []byte {
+func (message *MsgCreateOrder) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(message))
 }
 
 // GetSigners return signers to sign this message before broadcast
-func (message MsgCreateOrder) GetSigners() []sdk.AccAddress {
+func (message *MsgCreateOrder) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{message.Curator}
 }

@@ -3,6 +3,8 @@ package gov
 import (
 	"encoding/json"
 
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+
 	cli2 "github.com/KiraCore/sekai/x/gov/client/cli"
 	keeper2 "github.com/KiraCore/sekai/x/gov/keeper"
 	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
@@ -25,9 +27,6 @@ var (
 
 type AppModuleBasic struct{}
 
-func (b AppModuleBasic) RegisterCodec(amino *codec.LegacyAmino) {
-}
-
 func (b AppModuleBasic) Name() string {
 	return customgovtypes.ModuleName
 }
@@ -36,8 +35,8 @@ func (b AppModuleBasic) RegisterInterfaces(registry types2.InterfaceRegistry) {
 	customgovtypes.RegisterInterfaces(registry)
 }
 
-func (b AppModuleBasic) DefaultGenesis(marshaler codec.JSONMarshaler) json.RawMessage {
-	return nil
+func (b AppModuleBasic) DefaultGenesis(cdc codec.JSONMarshaler) json.RawMessage {
+	return cdc.MustMarshalJSON(customgovtypes.DefaultGenesis())
 }
 
 func (b AppModuleBasic) ValidateGenesis(marshaler codec.JSONMarshaler, config client.TxEncodingConfig, message json.RawMessage) error {
@@ -47,8 +46,14 @@ func (b AppModuleBasic) ValidateGenesis(marshaler codec.JSONMarshaler, config cl
 func (b AppModuleBasic) RegisterRESTRoutes(context client.Context, router *mux.Router) {
 }
 
+func (b AppModuleBasic) RegisterGRPCRoutes(context client.Context, serveMux *runtime.ServeMux) {
+}
+
+func (b AppModuleBasic) RegisterLegacyAminoCodec(amino *codec.LegacyAmino) {
+}
+
 func (b AppModuleBasic) GetTxCmd() *cobra.Command {
-	return cli2.GetTxSetWhitelistPermissions()
+	return cli2.NewTxCmd()
 }
 
 func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
@@ -77,6 +82,10 @@ func (am AppModule) InitGenesis(
 		am.customGovKeeper.SaveNetworkActor(ctx, *actor)
 	}
 
+	for index, perm := range genesisState.Permissions {
+		am.customGovKeeper.SetPermissionsForRole(ctx, customgovtypes.Role(index), perm)
+	}
+
 	return nil
 }
 
@@ -88,7 +97,7 @@ func (am AppModule) RegisterInvariants(registry sdk.InvariantRegistry) {}
 
 func (am AppModule) QuerierRoute() string { return "" }
 
-func (am AppModule) LegacyQuerierHandler(marshaler codec.JSONMarshaler) sdk.Querier {
+func (am AppModule) LegacyQuerierHandler(marshaler *codec.LegacyAmino) sdk.Querier {
 	return nil
 }
 

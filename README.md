@@ -4,7 +4,7 @@ Kira Hub
 ## Create order book
 ```sh
 # command
-sekaid tx ixp createOrderBook base quote mnemonic --from validator --keyring-backend=test --chain-id testing
+sekaid tx ixp createOrderBook base quote mnemonic --from validator --keyring-backend=test --chain-id testing --home=$HOME/.sekaid
 {"body":{"messages":[{"@type":"/kira.ixp.MsgCreateOrderBook","Base":"base","Quote":"quote","Mnemonic":"mnemonic","Curator":"kira17pzan0q4d5acyykygwqass8z0crjvflhjq3qvm"}],"memo":"","timeout_height":"0","extension_options":[],"non_critical_extension_options":[]},"auth_info":{"signer_infos":[],"fee":{"amount":[],"gas_limit":"200000"}},"signatures":[]}
 
 confirm transaction before signing and broadcasting [y/N]: y
@@ -122,7 +122,7 @@ sekaid query ixp listorderbooks_tradingpair base quote1 --chain-id testing
 ## Create order
 ```sh
 # command
-sekaid tx ixp createOrder 36e0cd99f92e157f9f03580291b6e5db 0 0 0 --from validator --keyring-backend=test --chain-id=testing
+sekaid tx ixp createOrder 36e0cd99f92e157f9f03580291b6e5db 0 0 0 --from validator --keyring-backend=test --chain-id=testing --home=$HOME/.sekaid
 {"body":{"messages":[{"@type":"/kira.ixp.MsgCreateOrder","OrderBookID":"36e0cd99f92e157f9f03580291b6e5db","OrderType":"limitBuy","Amount":"0","LimitPrice":"0","ExpiryTime":"0","Curator":"kira13n3el7pzynrd3d4mn92k49djktf75kngl2xlc7"}],"memo":"","timeout_height":"0","extension_options":[],"non_critical_extension_options":[]},"auth_info":{"signer_infos":[],"fee":{"amount":[],"gas_limit":"200000"}},"signatures":[]}
 
 confirm transaction before signing and broadcasting [y/N]: y
@@ -133,7 +133,7 @@ confirm transaction before signing and broadcasting [y/N]: y
 ## Cancel order
 ```sh
 # command
-sekaid tx ixp cancelOrder a991645f855efbb8855efbb891b6e5db --from validator --keyring-backend=test --chain-id=testing
+sekaid tx ixp cancelOrder a991645f855efbb8855efbb891b6e5db --from validator --keyring-backend=test --chain-id=testing --home=$HOME/.sekaid
 {"body":{"messages":[{"@type":"/kira.ixp.MsgCancelOrder","OrderID":"a991645f855efbb8855efbb891b6e5db","Curator":""}],"memo":"","timeout_height":"0","extension_options":[],"non_critical_extension_options":[]},"auth_info":{"signer_infos":[],"fee":{"amount":[],"gas_limit":"200000"}},"signatures":[]}
 
 confirm transaction before signing and broadcasting [y/N]: y
@@ -188,12 +188,12 @@ sekaid tx ixp upsertSignerKey AnzIM9IcLb07Cvwq3hdMJuuRofAgxfDekkD3nJUPPw0w --per
 # expiry-time (set when this key expire if does not set it's automatically set to 10 days after current timestamp)
 sekaid tx ixp upsertSignerKey AnzIM9IcLb07Cvwq3hdMJuuRofAgxfDekkD3nJUPPw0w --expiry-time=1598247750
 # data
-sekaid tx ixp upsertSignerKey AnzIM9IcLb07Cvwq3hdMJuuRofAgxfDekkD3nJUPPw0w --data="192.168.1.1" --keyring-backend=test --chain-id=testing
+sekaid tx ixp upsertSignerKey AnzIM9IcLb07Cvwq3hdMJuuRofAgxfDekkD3nJUPPw0w --data="192.168.1.1" --keyring-backend=test --chain-id=testing --home=$HOME/.sekaid
 ```
 Ex1.
 ```sh
 # command
-sekaid tx ixp upsertSignerKey AnzIM9IcLb07Cvwq3hdMJuuRofAgxfDekkD3nJUPPw0w --from validator --keyring-backend=test --chain-id=testing
+sekaid tx ixp upsertSignerKey AnzIM9IcLb07Cvwq3hdMJuuRofAgxfDekkD3nJUPPw0w --from validator --keyring-backend=test --chain-id=testing --home=$HOME/.sekaid
 {"body":{"messages":[{"@type":"/kira.ixp.MsgUpsertSignerKey","PubKey":"AnzIM9IcLb07Cvwq3hdMJuuRofAgxfDekkD3nJUPPw0w","KeyType":"Secp256k1","ExpiryTime":"1599186595","Enabled":true,"Permissions":[],"Curator":"kira13n3el7pzynrd3d4mn92k49djktf75kngl2xlc7"}],"memo":"","timeout_height":"0","extension_options":[],"non_critical_extension_options":[]},"auth_info":{"signer_infos":[],"fee":{"amount":[],"gas_limit":"200000"}},"signatures":[]}
 
 confirm transaction before signing and broadcasting [y/N]: y
