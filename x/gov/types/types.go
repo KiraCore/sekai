@@ -56,13 +56,30 @@ func (p *Permissions) AddToWhitelist(perm PermValue) error {
 	return nil
 }
 
-// AddToBlacklist adds permission to whitelist.
+// AddToBlacklist adds permission to blacklist. It fails if the permission is whitelisted.
 func (p *Permissions) AddToBlacklist(perm PermValue) error {
 	if p.IsWhitelisted(perm) {
 		return fmt.Errorf("permission is already whitelisted")
 	}
 
 	p.Blacklist = append(p.Blacklist, uint32(perm))
+	return nil
+}
+
+// RemoveFromWhitelist removes permission from whitelist. It fails if permission is not
+// whitelisted.
+func (m *Permissions) RemoveFromWhitelist(perm PermValue) error {
+	if !m.IsWhitelisted(perm) {
+		return fmt.Errorf("permission is not whitelisted")
+	}
+
+	for i, v := range m.Whitelist {
+		if v == uint32(perm) {
+			m.Whitelist = append(m.Whitelist[:i], m.Whitelist[i+1:]...)
+			return nil
+		}
+	}
+
 	return nil
 }
 
@@ -115,4 +132,20 @@ func NewDefaultActor(addr types.AccAddress) NetworkActor {
 		NewPermissions(nil, nil),
 		0,
 	)
+}
+
+func NewCouncilor(
+	moniker string,
+	website string,
+	social string,
+	identity string,
+	address types.AccAddress,
+) Councilor {
+	return Councilor{
+		Moniker:  moniker,
+		Website:  website,
+		Social:   social,
+		Identity: identity,
+		Address:  address,
+	}
 }

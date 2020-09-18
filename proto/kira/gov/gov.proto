@@ -56,6 +56,51 @@ message MsgSetExecutionFee {
   ];
 }
 
+message MsgWhitelistRolePermission {
+  bytes proposer = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  uint32 role = 2;
+  uint32 permission = 3;
+}
+
+message MsgBlacklistRolePermission {
+  bytes proposer = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  uint32 role = 2;
+  uint32 permission = 3;
+}
+
+
+message MsgRemoveWhitelistRolePermission {
+  bytes proposer = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  uint32 role = 2;
+  uint32 permission = 3;
+}
+
+message MsgClaimCouncilor {
+  option (gogoproto.equal)            = true;
+
+  string moniker = 1;
+  string website = 2;
+  string social = 3;
+  string identity = 4;
+
+  bytes address = 5 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+}
+
 message NetworkActor {
   bytes address = 1 [
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
@@ -87,3 +132,16 @@ message ExecutionFee {
   uint64 timeout = 5; // After what time function execution should fail
   uint64 default_parameters = 6; // Default values that the function in question will consume as input parameters before execution
 }
+
+message Councilor {
+  string moniker = 1;
+  string website = 2;
+  string social = 3;
+  string identity = 4;
+
+  bytes address = 5 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+}
+

@@ -7,11 +7,6 @@ const ModuleName = "customgov"
 // RouterKey to be used for routing msgs
 const RouterKey = ModuleName
 
-const WhitelistPermissions = "whitelist-permissions"
-const BlacklistPermissions = "blacklist-permissions"
-const SetNetworkProperties = "set-network-properties"
-const SetExecutionFee = "set-execution-fee"
-
 // constants
 var (
 	KeyPrefixPermissionsRegistry = []byte("permissions_registry")
@@ -27,6 +22,7 @@ var (
 	PermClaimValidator PermValue = 1
 	PermSetPermissions PermValue = 2
 	PermChangeTxFee    PermValue = 3
+	PermClaimCouncilor PermValue = 3
 )
 
 // Role represents a Role in the registry.

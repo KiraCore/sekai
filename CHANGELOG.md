@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.1.2.3] - 09.17.2020
+### Changed
+
+- Updated cosmos SDK to last version of 17th september .
+
+
+## [0.1.2.2] - 09.14.2020
+### Added
+
+- Added CLI command to claim governance seat.
+- Added CLI command to set whitelist permissions into a specific role.
+- Added CLI command to set blacklist permissions into a specific role.
+- Added CLI command to remove whitelist permissions into a specific role.
 
 ## [0.1.2.1] - 09.06.2020
 ### Added

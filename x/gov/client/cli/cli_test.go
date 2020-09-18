@@ -3,17 +3,13 @@ package cli_test
 import (
 	"context"
 	"fmt"
-	"strings"
 	"testing"
 
-	"github.com/cosmos/cosmos-sdk/crypto/hd"
-	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	cli3 "github.com/cosmos/cosmos-sdk/x/bank/client/cli"
 
 	"github.com/cosmos/cosmos-sdk/client/flags"
 
-	types2 "github.com/KiraCore/sekai/x/gov/types"
-	cli2 "github.com/KiraCore/sekai/x/staking/client/cli"
+	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 	types3 "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/KiraCore/sekai/x/gov/client/cli"
@@ -65,140 +61,6 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.Require().NoError(err)
 }
 
-func (s IntegrationTestSuite) TestGetCmdQueryPermissions() {
-	val := s.network.Validators[0]
-	cmd := cli.GetCmdQueryPermissions()
-	_, out := testutil.ApplyMockIO(cmd)
-
-	clientCtx := val.ClientCtx.WithOutput(out).WithOutputFormat("json")
-
-	ctx := context.Background()
-	ctx = context.WithValue(ctx, client.ClientContextKey, &clientCtx)
-
-	cmd.SetArgs(
-		[]string{
-			val.Address.String(),
-		},
-	)
-
-	err := cmd.ExecuteContext(ctx)
-	s.Require().NoError(err)
-
-	var perms types2.Permissions
-	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &perms)
-
-	// Validator 1 has permission to Add Permissions.
-	s.Require().True(perms.IsWhitelisted(types2.PermSetPermissions))
-	s.Require().False(perms.IsWhitelisted(types2.PermClaimValidator))
-}
-
-func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions() {
-	val := s.network.Validators[0]
-	cmd := cli.GetTxSetWhitelistPermissions()
-
-	_, out := testutil.ApplyMockIO(cmd)
-
-	clientCtx := val.ClientCtx.WithOutput(out).WithOutputFormat("json")
-
-	ctx := context.Background()
-	ctx = context.WithValue(ctx, client.ClientContextKey, &clientCtx)
-
-	// We create some random address where we will give perms.
-	addr, err := types3.AccAddressFromBech32("kira15ky9du8a2wlstz6fpx3p4mqpjyrm5cgqzp4f3d")
-	s.Require().NoError(err)
-
-	cmd.SetArgs(
-		[]string{
-			fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
-			fmt.Sprintf("--%s=%s", cli2.FlagAddr, addr.String()),
-			fmt.Sprintf("--%s=%s", cli.FlagPermission, "1"),
-			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-			fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(10))).String()),
-		},
-	)
-
-	err = cmd.ExecuteContext(ctx)
-	s.Require().NoError(err)
-
-	err = s.network.WaitForNextBlock()
-	s.Require().NoError(err)
-
-	// We check if the user has the permissions
-	cmd = cli.GetCmdQueryPermissions()
-	out.Reset()
-
-	cmd.SetArgs(
-		[]string{
-			addr.String(),
-		},
-	)
-
-	err = cmd.ExecuteContext(ctx)
-	s.Require().NoError(err)
-
-	var perms types2.Permissions
-	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &perms)
-
-	// Validator 1 has permission to Add Permissions.
-	s.Require().False(perms.IsWhitelisted(types2.PermSetPermissions))
-	s.Require().True(perms.IsWhitelisted(types2.PermClaimValidator))
-}
-
-func (s IntegrationTestSuite) TestGetTxSetBlacklistPermissions() {
-	val := s.network.Validators[0]
-	cmd := cli.GetTxSetBlacklistPermissions()
-
-	_, out := testutil.ApplyMockIO(cmd)
-
-	clientCtx := val.ClientCtx.WithOutput(out).WithOutputFormat("json")
-
-	ctx := context.Background()
-	ctx = context.WithValue(ctx, client.ClientContextKey, &clientCtx)
-
-	// We create some random address where we will give perms.
-	addr, err := types3.AccAddressFromBech32("kira1alzyfq40zjsveat87jlg8jxetwqmr0a29sgd0f")
-	s.Require().NoError(err)
-
-	cmd.SetArgs(
-		[]string{
-			fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
-			fmt.Sprintf("--%s=%s", cli2.FlagAddr, addr.String()),
-			fmt.Sprintf("--%s=%s", cli.FlagPermission, "1"),
-			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-			fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(10))).String()),
-		},
-	)
-
-	err = cmd.ExecuteContext(ctx)
-	s.Require().NoError(err)
-	s.T().Logf("error %s", out.String())
-
-	err = s.network.WaitForNextBlock()
-	s.Require().NoError(err)
-
-	// We check if the user has the permissions
-	cmd = cli.GetCmdQueryPermissions()
-	out.Reset()
-
-	cmd.SetArgs(
-		[]string{
-			addr.String(),
-		},
-	)
-
-	err = cmd.ExecuteContext(ctx)
-	s.Require().NoError(err)
-
-	var perms types2.Permissions
-	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &perms)
-
-	// Validator 1 has permission to Add Permissions.
-	s.Require().False(perms.IsBlacklisted(types2.PermSetPermissions))
-	s.Require().True(perms.IsBlacklisted(types2.PermClaimValidator))
-}
-
 func (s IntegrationTestSuite) TestRolePermissions_QueryCommand_DefaultRolePerms() {
 	val := s.network.Validators[0]
 
@@ -216,22 +78,16 @@ func (s IntegrationTestSuite) TestRolePermissions_QueryCommand_DefaultRolePerms(
 	err := cmd.ExecuteContext(ctx)
 	s.Require().NoError(err)
 
-	var perms types2.Permissions
+	var perms customgovtypes.Permissions
 	val.ClientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &perms)
 
-	s.Require().True(perms.IsWhitelisted(types2.PermClaimValidator))
+	s.Require().True(perms.IsWhitelisted(customgovtypes.PermClaimValidator))
 }
 
-func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions_WithUserThatDoesNotHaveSetPermissions() {
+func (s IntegrationTestSuite) TestClaimCouncilor_HappyPath() {
 	val := s.network.Validators[0]
 
-	// We create some random address where we will give perms.
-	newAccount, _, err := val.ClientCtx.Keyring.NewMnemonic("test", keyring.English, "", hd.Secp256k1)
-	s.Require().NoError(err)
-	s.sendValue(val.ClientCtx, val.Address, newAccount.GetAddress(), types3.NewCoin(s.cfg.BondDenom, types3.NewInt(100)))
-
-	// Now we try to set permissions with a user that does not have.
-	cmd := cli.GetTxSetWhitelistPermissions()
+	cmd := cli.GetTxClaimGovernanceCmd()
 	_, out := testutil.ApplyMockIO(cmd)
 	clientCtx := val.ClientCtx.WithOutput(out).WithOutputFormat("json")
 
@@ -240,19 +96,68 @@ func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions_WithUserThatDoesN
 
 	cmd.SetArgs(
 		[]string{
-			fmt.Sprintf("--%s=%s", flags.FlagFrom, newAccount.GetAddress().String()),
-			fmt.Sprintf("--%s=%s", cli2.FlagAddr, val.Address.String()),
-			fmt.Sprintf("--%s=%s", cli.FlagPermission, "1"),
+			fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 			fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(10))).String()),
+			fmt.Sprintf("--%s=%s", cli.FlagAddress, val.Address.String()),
+			fmt.Sprintf("--%s=%s", cli.FlagMoniker, val.Moniker),
 		},
 	)
+
+	err := cmd.ExecuteContext(ctx)
+	s.Require().NoError(err)
+
+	fmt.Printf("%s\n", out.String())
+
+	err = s.network.WaitForNextBlock()
+	s.Require().NoError(err)
+
+	// Query command
+	// Mandatory flags
+	out.Reset()
+
+	cmd = cli.GetCmdQueryCouncilRegistry()
+	cmd.SetArgs([]string{
+		"",
+	})
+
+	err = cmd.ExecuteContext(ctx)
+	s.Require().Error(err)
+
+	// From address
+	out.Reset()
+
+	cmd = cli.GetCmdQueryCouncilRegistry()
+	cmd.SetArgs([]string{
+		fmt.Sprintf("--%s=%s", cli.FlagAddress, val.Address.String()),
+	})
 
 	err = cmd.ExecuteContext(ctx)
 	s.Require().NoError(err)
 
-	strings.Contains(out.String(), "SetPermissions: not enough permissions")
+	var councilorByAddress customgovtypes.Councilor
+	err = val.ClientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &councilorByAddress)
+	s.Require().NoError(err)
+	s.Require().Equal(val.Moniker, councilorByAddress.Moniker)
+	s.Require().Equal(val.Address, councilorByAddress.Address)
+
+	// From Moniker
+	out.Reset()
+
+	cmd = cli.GetCmdQueryCouncilRegistry()
+	cmd.SetArgs([]string{
+		fmt.Sprintf("--%s=%s", cli.FlagMoniker, val.Moniker),
+	})
+
+	err = cmd.ExecuteContext(ctx)
+	s.Require().NoError(err)
+
+	var councilorByMoniker customgovtypes.Councilor
+	err = val.ClientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &councilorByMoniker)
+	s.Require().NoError(err)
+	s.Require().Equal(val.Moniker, councilorByMoniker.Moniker)
+	s.Require().Equal(val.Address, councilorByMoniker.Address)
 }
 
 func (s IntegrationTestSuite) sendValue(cCtx client.Context, from types3.AccAddress, to types3.AccAddress, coin types3.Coin) {

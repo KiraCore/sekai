@@ -67,6 +67,21 @@ func TestPermissions_AddBlacklist(t *testing.T) {
 	require.EqualError(t, err, "permission is already whitelisted")
 }
 
+func TestPermissions_RemoveFromWhitelist(t *testing.T) {
+	perms := customgovtypes.NewPermissions([]customgovtypes.PermValue{
+		customgovtypes.PermSetPermissions,
+	}, nil)
+
+	// It fails if permission is not whitelisted.
+	err := perms.RemoveFromWhitelist(customgovtypes.PermClaimCouncilor)
+	require.EqualError(t, err, "permission is not whitelisted")
+
+	err = perms.RemoveFromWhitelist(customgovtypes.PermSetPermissions)
+	require.NoError(t, err)
+
+	require.False(t, perms.IsWhitelisted(customgovtypes.PermSetPermissions))
+}
+
 //
 // NETWORK ACTOR
 //

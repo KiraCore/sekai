@@ -53,7 +53,7 @@ func CheckIfAllowedPermission(ctx sdk.Context, keeper Keeper, addr sdk.AccAddres
 func getRolePermissions(ctx sdk.Context, keeper Keeper, actor types.NetworkActor) map[uint64]*types.Permissions {
 	roles := map[uint64]*types.Permissions{}
 	for _, role := range actor.Roles {
-		roles[role] = keeper.GetPermissionsForRole(ctx, types.Role(role))
+		roles[role], _ = keeper.GetPermissionsForRole(ctx, types.Role(role)) // TODO take care of roles.
 	}
 
 	return roles

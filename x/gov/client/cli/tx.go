@@ -2,18 +2,16 @@ package cli
 
 import (
 	"fmt"
-
-	types2 "github.com/cosmos/cosmos-sdk/types"
-
-	"github.com/KiraCore/sekai/x/staking/client/cli"
-
-	"github.com/KiraCore/sekai/x/gov/types"
-
-	"github.com/spf13/cobra"
+	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
+	types2 "github.com/cosmos/cosmos-sdk/types"
+	"github.com/spf13/cobra"
+
+	"github.com/KiraCore/sekai/x/gov/types"
+	"github.com/KiraCore/sekai/x/staking/client/cli"
 )
 
 // define flags
@@ -27,6 +25,11 @@ const (
 	FlagFailureFee        = "failure_fee"
 	FlagTimeout           = "timeout"
 	FlagDefaultParameters = "default_parameters"
+	FlagWebsite           = "website"
+	FlagMoniker           = "moniker"
+	FlagSocial            = "social"
+	FlagIdentity          = "identity"
+	FlagAddress           = "address"
 )
 
 // NewTxCmd returns a root CLI command handler for all x/bank transaction commands.
@@ -43,6 +46,10 @@ func NewTxCmd() *cobra.Command {
 		GetTxSetWhitelistPermissions(),
 		GetTxSetNetworkProperties(),
 		GetTxSetExecutionFee(),
+		GetTxSetBlacklistPermissions(),
+		GetTxClaimGovernanceCmd(),
+		GetTxBlacklistRolePermission(),
+		GetTxWhitelistRolePermission(),
 	)
 
 	return txCmd
@@ -137,7 +144,6 @@ func GetTxSetNetworkProperties() *cobra.Command {
 			if err != nil {
 				return err
 			}
-
 			minTxFee, err := cmd.Flags().GetUint64(FlagMinTxFee)
 			if err != nil {
 				return fmt.Errorf("invalid minimum tx fee")
@@ -158,9 +164,45 @@ func GetTxSetNetworkProperties() *cobra.Command {
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
-
 	cmd.Flags().Uint64(FlagMinTxFee, 1, "min tx fee")
 	cmd.Flags().Uint64(FlagMaxTxFee, 10000, "max tx fee")
+	flags.AddTxFlagsToCmd(cmd)
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+func GetTxWhitelistRolePermission() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "whitelist-role-permissions role permission",
+		Short: "Whitelist role permissions",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			role, err := strconv.Atoi(args[0])
+			if err != nil {
+				return fmt.Errorf("invalid role: %w", err)
+			}
+
+			permission, err := strconv.Atoi(args[1])
+			if err != nil {
+				return fmt.Errorf("invalid permission: %w", err)
+			}
+
+			msg := types.NewMsgWhitelistRolePermission(
+				clientCtx.FromAddress,
+				uint32(role),
+				uint32(permission),
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
 
 	flags.AddTxFlagsToCmd(cmd)
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)
@@ -179,7 +221,6 @@ func GetTxSetExecutionFee() *cobra.Command {
 			if err != nil {
 				return err
 			}
-
 			execName, err := cmd.Flags().GetString(FlagExecName)
 			if err != nil {
 				return fmt.Errorf("invalid execution name")
@@ -219,13 +260,87 @@ func GetTxSetExecutionFee() *cobra.Command {
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
-
 	cmd.Flags().String(FlagExecName, "", "execution name")
 	cmd.Flags().String(FlagTxType, "", "execution type")
 	cmd.Flags().Uint64(FlagExecutionFee, 10, "execution fee")
 	cmd.Flags().Uint64(FlagFailureFee, 1, "failure fee")
 	cmd.Flags().Uint64(FlagTimeout, 0, "timeout")
 	cmd.Flags().Uint64(FlagDefaultParameters, 0, "default parameters")
+	flags.AddTxFlagsToCmd(cmd)
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+func GetTxBlacklistRolePermission() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "blacklist-role-permissions role permission",
+		Short: "Blacklist role permissions",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			role, err := strconv.Atoi(args[0])
+			if err != nil {
+				return fmt.Errorf("invalid role: %w", err)
+			}
+
+			permission, err := strconv.Atoi(args[1])
+			if err != nil {
+				return fmt.Errorf("invalid permission: %w", err)
+			}
+
+			msg := types.NewMsgBlacklistRolePermission(
+				clientCtx.FromAddress,
+				uint32(role),
+				uint32(permission),
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+func GetTxRemoveWhitelistRolePermission() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "remove-whitelist-role-permissions role permission",
+		Short: "Remove whitelist role permissions",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			role, err := strconv.Atoi(args[0])
+			if err != nil {
+				return fmt.Errorf("invalid role: %w", err)
+			}
+
+			permission, err := strconv.Atoi(args[1])
+			if err != nil {
+				return fmt.Errorf("invalid permission: %w", err)
+			}
+
+			msg := types.NewMsgRemoveWhitelistRolePermission(
+				clientCtx.FromAddress,
+				uint32(role),
+				uint32(permission),
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
 
 	flags.AddTxFlagsToCmd(cmd)
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)
@@ -253,4 +368,51 @@ func getAddressFromFlag(cmd *cobra.Command) (types2.AccAddress, error) {
 	}
 
 	return bech, nil
+}
+
+func GetTxClaimGovernanceCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "claim-councilor-seat",
+		Short: "Claim governance seat to become a Councilor",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			moniker, _ := cmd.Flags().GetString(FlagMoniker)
+			website, _ := cmd.Flags().GetString(FlagWebsite)
+			social, _ := cmd.Flags().GetString(FlagSocial)
+			identity, _ := cmd.Flags().GetString(FlagIdentity)
+			address, _ := cmd.Flags().GetString(FlagAddress)
+
+			bech32, err := types2.AccAddressFromBech32(address)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgClaimCouncilor(
+				moniker,
+				website,
+				social,
+				identity,
+				bech32,
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	cmd.Flags().String(FlagMoniker, "", "the Moniker")
+	cmd.Flags().String(FlagWebsite, "", "the Website")
+	cmd.Flags().String(FlagSocial, "", "the social")
+	cmd.Flags().String(FlagIdentity, "", "the Identity")
+	cmd.Flags().String(FlagAddress, "", "the address")
+
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
 }

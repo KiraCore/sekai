@@ -40,15 +40,15 @@ func NewMsgClaimValidator(
 	}, nil
 }
 
-func (m MsgClaimValidator) Route() string {
+func (m *MsgClaimValidator) Route() string {
 	return ModuleName
 }
 
-func (m MsgClaimValidator) Type() string {
+func (m *MsgClaimValidator) Type() string {
 	return ClaimValidator
 }
 
-func (m MsgClaimValidator) ValidateBasic() error {
+func (m *MsgClaimValidator) ValidateBasic() error {
 	if m.ValKey.Empty() {
 		return fmt.Errorf("validator not set")
 	}
@@ -60,12 +60,12 @@ func (m MsgClaimValidator) ValidateBasic() error {
 	return nil
 }
 
-func (m MsgClaimValidator) GetSignBytes() []byte {
+func (m *MsgClaimValidator) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(m)
 	return sdk.MustSortJSON(bz)
 }
 
-func (m MsgClaimValidator) GetSigners() []sdk.AccAddress {
+func (m *MsgClaimValidator) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{
 		sdk.AccAddress(m.ValKey),
 	}

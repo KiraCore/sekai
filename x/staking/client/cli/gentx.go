@@ -45,7 +45,7 @@ func GenTxClaimCmd(genBalIterator types2.GenesisBalancesIterator, defaultNodeHom
 				}
 			}
 
-			appState, genDoc, err := genutiltypes.GenesisStateFromGenFile(cdc, config.GenesisFile())
+			appState, genDoc, err := genutiltypes.GenesisStateFromGenFile(config.GenesisFile())
 
 			name := args[0]
 			key, err := clientCtx.Keyring.Key(name)

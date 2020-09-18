@@ -4,7 +4,7 @@ Kira Hub
 ## Set ChangeTxFee permission
 ```sh
 # command to set changeTxFee permission
-sekaid tx customgov set-whitelist-permissions --from validator --keyring-backend=test --permission=3 --addr=$(sekaid keys show -a validator --keyring-backend=test) --chain-id=testing --fees=100ukex
+sekaid tx customgov set-whitelist-permissions --from validator --keyring-backend=test --permission=3 --addr=$(sekaid keys show -a validator --keyring-backend=test) --chain-id=testing --fees=100ukex --home=$HOME/.sekaid
 
 # response
 {"height":"101","txhash":"D584594958BE83482C19B687A17C4A00591C0128308D32D64A211860F6826611","codespace":"","code":0,"data":"0A170A1577686974656C6973742D7065726D697373696F6E73","raw_log":"[{\"events\":[{\"type\":\"message\",\"attributes\":[{\"key\":\"action\",\"value\":\"whitelist-permissions\"}]}]}]","logs":[{"msg_index":0,"log":"","events":[{"type":"message","attributes":[{"key":"action","value":"whitelist-permissions"}]}]}],"info":"","gas_wanted":"200000","gas_used":"51921","tx":null,"timestamp":""}
@@ -13,7 +13,7 @@ sekaid tx customgov set-whitelist-permissions --from validator --keyring-backend
 ```sh
 
 # command with fee set
-sekaid tx customgov set-network-properties --from validator --min_tx_fee="2" --max_tx_fee="2000" --keyring-backend=test --chain-id=testing --fees=100ukex
+sekaid tx customgov set-network-properties --from validator --min_tx_fee="2" --max_tx_fee="2000" --keyring-backend=test --chain-id=testing --fees=100ukex --home=$HOME/.sekaid
 
 confirm transaction before signing and broadcasting [y/N]: y
 
@@ -24,7 +24,7 @@ confirm transaction before signing and broadcasting [y/N]: y
 {"height":"3","txhash":"032EF37E996A9D9060A70F74F2C78956FA95F39EDE6A91E1C8BC27EE75C62826","codespace":"customgov","code":5,"data":"","raw_log":"failed to execute message; message index: 0: PermChangeTxFee: not enough permissions","logs":[],"info":"","gas_wanted":"200000","gas_used":"52429","tx":null,"timestamp":""}
 
 # command without fee set
-sekaid tx customgov set-network-properties --from validator --min_tx_fee="2" --max_tx_fee="2000" --keyring-backend=test --chain-id=testing
+sekaid tx customgov set-network-properties --from validator --min_tx_fee="2" --max_tx_fee="2000" --keyring-backend=test --chain-id=testing --home=$HOME/.sekaid
 
 # response
 confirm transaction before signing and broadcasting [y/N]: y
@@ -45,7 +45,7 @@ properties:
 ## Set Execution Fee
 ```sh
 # command
-sekaid tx customgov set-execution-fee --from validator --execution_name="ABC" --transaction_type="B" --execution_fee=10 --failure_fee=1 --timeout=10 default_parameters=0 --keyring-backend=test --chain-id=testing --fees=10ukex
+sekaid tx customgov set-execution-fee --from validator --execution_name="ABC" --transaction_type="B" --execution_fee=10 --failure_fee=1 --timeout=10 default_parameters=0 --keyring-backend=test --chain-id=testing --fees=10ukex --home=$HOME/.sekaid
 
 # response
 confirm transaction before signing and broadcasting [y/N]: y

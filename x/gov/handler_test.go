@@ -1,6 +1,7 @@
 package gov_test
 
 import (
+	"fmt"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -58,7 +59,7 @@ func TestHandler_MsgWhitelistPermissions_ActorDoesNotExist(t *testing.T) {
 			app := simapp.Setup(false)
 			ctx := app.NewContext(false, tmproto.Header{})
 
-			err := setSetPermissionsToAddr(t, app, ctx, proposerAddr)
+			err := setPermissionToAddr(t, app, ctx, proposerAddr, types.PermSetPermissions)
 			require.NoError(t, err)
 
 			handler := gov.NewHandler(app.CustomGovKeeper)
@@ -116,7 +117,7 @@ func TestNewHandler_SetPermissions_ActorWithPerms(t *testing.T) {
 			app := simapp.Setup(false)
 			ctx := app.NewContext(false, tmproto.Header{})
 
-			err := setSetPermissionsToAddr(t, app, ctx, proposerAddr)
+			err := setPermissionToAddr(t, app, ctx, proposerAddr, types.PermSetPermissions)
 			require.NoError(t, err)
 
 			// Add some perms before to the actor.
@@ -292,7 +293,6 @@ func TestNewHandler_SetNetworkProperties(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			app := simapp.Setup(false)
 			ctx := app.NewContext(false, tmproto.Header{})
-
 			// First we set Role Sudo to proposer Actor
 			proposerActor := types.NewDefaultActor(sudoAddr)
 			proposerActor.SetRole(types.RoleSudo)
@@ -320,9 +320,374 @@ func TestNewHandler_SetNetworkProperties(t *testing.T) {
 	}
 }
 
-func setSetPermissionsToAddr(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addr sdk.AccAddress) error {
+func TestHandler_ClaimCouncilor_Fails(t *testing.T) {
+	addr, err := sdk.AccAddressFromBech32("kira15ky9du8a2wlstz6fpx3p4mqpjyrm5cgqzp4f3d")
+	require.NoError(t, err)
+
+	tests := []struct {
+		name        string
+		msg         sdk.Msg
+		expectedErr error
+	}{
+		{
+			name: "not enough permissions",
+			msg: &types.MsgClaimCouncilor{
+				Moniker:  "",
+				Website:  "",
+				Social:   "",
+				Identity: "",
+				Address:  addr,
+			},
+			expectedErr: fmt.Errorf("PermClaimCouncilor: not enough permissions"),
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			app := simapp.Setup(false)
+			ctx := app.NewContext(false, tmproto.Header{})
+
+			handler := gov.NewHandler(app.CustomGovKeeper)
+			_, err := handler(ctx, tt.msg)
+			require.EqualError(t, err, tt.expectedErr.Error())
+		})
+	}
+}
+
+func TestHandler_ClaimCouncilor_HappyPath(t *testing.T) {
+	addr, err := sdk.AccAddressFromBech32("kira15ky9du8a2wlstz6fpx3p4mqpjyrm5cgqzp4f3d")
+	require.NoError(t, err)
+
+	tests := []struct {
+		name string
+		msg  *types.MsgClaimCouncilor
+	}{
+		{
+			name: "all correct",
+			msg: &types.MsgClaimCouncilor{
+				Moniker:  "TheMoniker",
+				Website:  "TheWebsite",
+				Social:   "The Social",
+				Identity: "The Identity",
+				Address:  addr,
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			app := simapp.Setup(false)
+			ctx := app.NewContext(false, tmproto.Header{})
+
+			err = setPermissionToAddr(t, app, ctx, addr, types.PermClaimCouncilor)
+			require.NoError(t, err)
+
+			handler := gov.NewHandler(app.CustomGovKeeper)
+			_, err := handler(ctx, tt.msg)
+			require.NoError(t, err)
+
+			expectedCouncilor := types.NewCouncilor(
+				tt.msg.Moniker,
+				tt.msg.Website,
+				tt.msg.Social,
+				tt.msg.Identity,
+				tt.msg.Address,
+			)
+
+			councilor, err := app.CustomGovKeeper.GetCouncilor(ctx, addr)
+			require.NoError(t, err)
+
+			require.Equal(t, expectedCouncilor, councilor)
+		})
+	}
+}
+
+func TestHandler_WhitelistRolePermissions_Errors(t *testing.T) {
+	addr, err := sdk.AccAddressFromBech32("kira15ky9du8a2wlstz6fpx3p4mqpjyrm5cgqzp4f3d")
+	require.NoError(t, err)
+
+	tests := []struct {
+		name         string
+		msg          *types.MsgWhitelistRolePermission
+		preparePerms func(t *testing.T, app *simapp.SimApp, ctx sdk.Context)
+		expectedErr  error
+	}{
+		{
+			name: "address without SetPermissions perm",
+			msg: types.NewMsgWhitelistRolePermission(
+				addr,
+				uint32(types.RoleValidator),
+				uint32(types.PermSetPermissions),
+			),
+			preparePerms: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+				return
+			},
+			expectedErr: fmt.Errorf("PermSetPermissions: not enough permissions"),
+		},
+		{
+			name: "role does not exist",
+			msg: types.NewMsgWhitelistRolePermission(
+				addr,
+				10000,
+				1,
+			),
+			preparePerms: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+				err2 := setPermissionToAddr(t, app, ctx, addr, types.PermSetPermissions)
+				require.NoError(t, err2)
+			},
+			expectedErr: fmt.Errorf("role does not exist"),
+		},
+		{
+			name: "permission is blacklisted",
+			msg: types.NewMsgWhitelistRolePermission(
+				addr,
+				uint32(types.RoleValidator),
+				uint32(types.PermSetPermissions),
+			),
+			preparePerms: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+				err2 := setPermissionToAddr(t, app, ctx, addr, types.PermSetPermissions)
+				require.NoError(t, err2)
+
+				perms, err2 := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleValidator)
+				require.NoError(t, err2)
+
+				err2 = perms.AddToBlacklist(types.PermSetPermissions)
+				require.NoError(t, err2)
+
+				app.CustomGovKeeper.SetPermissionsForRole(ctx, types.RoleValidator, perms)
+			},
+			expectedErr: fmt.Errorf("permission is already blacklisted: error adding to whitelist"),
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			app := simapp.Setup(false)
+			ctx := app.NewContext(false, tmproto.Header{})
+
+			tt.preparePerms(t, app, ctx)
+
+			handler := gov.NewHandler(app.CustomGovKeeper)
+			_, err := handler(ctx, tt.msg)
+			require.EqualError(t, err, tt.expectedErr.Error())
+		})
+	}
+}
+
+func TestHandler_WhitelistRolePermissions(t *testing.T) {
+	addr, err := sdk.AccAddressFromBech32("kira15ky9du8a2wlstz6fpx3p4mqpjyrm5cgqzp4f3d")
+	require.NoError(t, err)
+
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	err = setPermissionToAddr(t, app, ctx, addr, types.PermSetPermissions)
+	require.NoError(t, err)
+
+	perms, err := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleValidator)
+	require.NoError(t, err)
+	require.False(t, perms.IsWhitelisted(types.PermSetPermissions))
+
+	msg := types.NewMsgWhitelistRolePermission(
+		addr,
+		uint32(types.RoleValidator),
+		uint32(types.PermSetPermissions),
+	)
+
+	handler := gov.NewHandler(app.CustomGovKeeper)
+	_, err = handler(ctx, msg)
+	require.NoError(t, err)
+
+	perms, err = app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleValidator)
+	require.NoError(t, err)
+	require.True(t, perms.IsWhitelisted(types.PermSetPermissions))
+}
+
+func TestHandler_BlacklistRolePermissions_Errors(t *testing.T) {
+	addr, err := sdk.AccAddressFromBech32("kira15ky9du8a2wlstz6fpx3p4mqpjyrm5cgqzp4f3d")
+	require.NoError(t, err)
+
+	tests := []struct {
+		name         string
+		msg          *types.MsgBlacklistRolePermission
+		preparePerms func(t *testing.T, app *simapp.SimApp, ctx sdk.Context)
+		expectedErr  error
+	}{
+		{
+			name: "address without SetPermissions perm",
+			msg: types.NewMsgBlacklistRolePermission(
+				addr,
+				uint32(types.RoleValidator),
+				uint32(types.PermSetPermissions),
+			),
+			preparePerms: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
+			expectedErr:  fmt.Errorf("PermSetPermissions: not enough permissions"),
+		},
+		{
+			name: "role does not exist",
+			msg: types.NewMsgBlacklistRolePermission(
+				addr,
+				10000,
+				1,
+			),
+			preparePerms: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+				err2 := setPermissionToAddr(t, app, ctx, addr, types.PermSetPermissions)
+				require.NoError(t, err2)
+			},
+			expectedErr: fmt.Errorf("role does not exist"),
+		},
+		{
+			name: "permission is whitelisted",
+			msg: types.NewMsgBlacklistRolePermission(
+				addr,
+				uint32(types.RoleValidator),
+				uint32(types.PermSetPermissions),
+			),
+			preparePerms: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+				err2 := setPermissionToAddr(t, app, ctx, addr, types.PermSetPermissions)
+				require.NoError(t, err2)
+
+				perms, err2 := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleValidator)
+				require.NoError(t, err2)
+
+				err2 = perms.AddToWhitelist(types.PermSetPermissions)
+				require.NoError(t, err2)
+
+				app.CustomGovKeeper.SetPermissionsForRole(ctx, types.RoleValidator, perms)
+			},
+			expectedErr: fmt.Errorf("permission is already whitelisted: error adding to blacklist"),
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			app := simapp.Setup(false)
+			ctx := app.NewContext(false, tmproto.Header{})
+
+			tt.preparePerms(t, app, ctx)
+
+			handler := gov.NewHandler(app.CustomGovKeeper)
+			_, err := handler(ctx, tt.msg)
+			require.EqualError(t, err, tt.expectedErr.Error())
+		})
+	}
+}
+
+func TestHandler_BlacklistRolePermissions(t *testing.T) {
+	addr, err := sdk.AccAddressFromBech32("kira15ky9du8a2wlstz6fpx3p4mqpjyrm5cgqzp4f3d")
+	require.NoError(t, err)
+
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	err = setPermissionToAddr(t, app, ctx, addr, types.PermSetPermissions)
+	require.NoError(t, err)
+
+	perms, err := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleValidator)
+	require.NoError(t, err)
+	require.False(t, perms.IsBlacklisted(types.PermSetPermissions))
+
+	msg := types.NewMsgBlacklistRolePermission(
+		addr,
+		uint32(types.RoleValidator),
+		uint32(types.PermSetPermissions),
+	)
+
+	handler := gov.NewHandler(app.CustomGovKeeper)
+	_, err = handler(ctx, msg)
+	require.NoError(t, err)
+
+	perms, err = app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleValidator)
+	require.NoError(t, err)
+	require.True(t, perms.IsBlacklisted(types.PermSetPermissions))
+}
+
+func TestHandler_RemoveWhitelistRolePermissions_Errors(t *testing.T) {
+	addr, err := sdk.AccAddressFromBech32("kira15ky9du8a2wlstz6fpx3p4mqpjyrm5cgqzp4f3d")
+	require.NoError(t, err)
+
+	tests := []struct {
+		name         string
+		msg          *types.MsgRemoveWhitelistRolePermission
+		preparePerms func(t *testing.T, app *simapp.SimApp, ctx sdk.Context)
+		expectedErr  error
+	}{
+		{
+			name: "address without SetPermissions perm",
+			msg: types.NewMsgRemoveWhitelistRolePermission(
+				addr,
+				uint32(types.RoleValidator),
+				uint32(types.PermSetPermissions),
+			),
+			preparePerms: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
+			expectedErr:  fmt.Errorf("PermSetPermissions: not enough permissions"),
+		},
+		{
+			name: "role does not exist",
+			msg: types.NewMsgRemoveWhitelistRolePermission(
+				addr,
+				10000,
+				1,
+			),
+			preparePerms: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+				err2 := setPermissionToAddr(t, app, ctx, addr, types.PermSetPermissions)
+				require.NoError(t, err2)
+			},
+			expectedErr: fmt.Errorf("role does not exist"),
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			app := simapp.Setup(false)
+			ctx := app.NewContext(false, tmproto.Header{})
+
+			tt.preparePerms(t, app, ctx)
+
+			handler := gov.NewHandler(app.CustomGovKeeper)
+			_, err := handler(ctx, tt.msg)
+			require.EqualError(t, err, tt.expectedErr.Error())
+		})
+	}
+}
+
+func TestHandler_RemoveWhitelistRolePermissions(t *testing.T) {
+	addr, err := sdk.AccAddressFromBech32("kira15ky9du8a2wlstz6fpx3p4mqpjyrm5cgqzp4f3d")
+	require.NoError(t, err)
+
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	err = setPermissionToAddr(t, app, ctx, addr, types.PermSetPermissions)
+	require.NoError(t, err)
+
+	perms, err := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleValidator)
+	require.NoError(t, err)
+	require.True(t, perms.IsWhitelisted(types.PermClaimValidator))
+
+	msg := types.NewMsgRemoveWhitelistRolePermission(
+		addr,
+		uint32(types.RoleValidator),
+		uint32(types.PermClaimValidator),
+	)
+
+	handler := gov.NewHandler(app.CustomGovKeeper)
+	_, err = handler(ctx, msg)
+	require.NoError(t, err)
+
+	perms, err = app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleValidator)
+	require.NoError(t, err)
+	require.False(t, perms.IsWhitelisted(types.PermClaimValidator))
+}
+
+func setPermissionToAddr(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addr sdk.AccAddress, perm types.PermValue) error {
 	proposerActor := types.NewDefaultActor(addr)
-	err := proposerActor.Permissions.AddToWhitelist(types.PermSetPermissions)
+	err := proposerActor.Permissions.AddToWhitelist(perm)
 	require.NoError(t, err)
 
 	app.CustomGovKeeper.SaveNetworkActor(ctx, proposerActor)
