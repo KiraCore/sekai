@@ -35,12 +35,19 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 }
 
 func handleRemoveBlacklistRolePermission(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgRemoveBlacklistRolePermission) (*sdk.Result, error) {
-	_, err := validateAndGetPermissionsForRole(ctx, ck, msg.Proposer, customgovtypes.Role(msg.Role))
+	perms, err := validateAndGetPermissionsForRole(ctx, ck, msg.Proposer, customgovtypes.Role(msg.Role))
 	if err != nil {
 		return nil, err
 	}
 
-	return nil, nil
+	err = perms.RemoveFromBlacklist(customgovtypes.PermValue(msg.Permission))
+	if err != nil {
+		return nil, errors.Wrap(customgovtypes.ErrRemovingBlacklist, err.Error())
+	}
+
+	ck.SetPermissionsForRole(ctx, customgovtypes.Role(msg.Role), perms)
+
+	return &sdk.Result{}, nil
 }
 
 func handleRemoveWhitelistRolePermission(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgRemoveWhitelistRolePermission) (*sdk.Result, error) {

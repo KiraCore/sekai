@@ -12,4 +12,5 @@ var (
 	ErrWhitelisting               = errors.Register(ModuleName, 8, "error adding to whitelist")
 	ErrBlacklisting               = errors.Register(ModuleName, 9, "error adding to blacklist")
 	ErrRemovingWhitelist          = errors.Register(ModuleName, 10, "error removing from whitelist")
+	ErrRemovingBlacklist          = errors.Register(ModuleName, 11, "error removing from blacklist")
 )
