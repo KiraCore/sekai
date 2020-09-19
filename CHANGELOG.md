@@ -4,6 +4,7 @@
 ### Added
 
 - Added CLI command to remove blacklist permissions into a specific role.
+- Added CLI command to create new role.
 
 ## [0.1.2.3] - 09.17.2020
 ### Changed
