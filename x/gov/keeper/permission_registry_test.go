@@ -19,8 +19,8 @@ func TestKeeper_SaveGetPermissionsForRole(t *testing.T) {
 
 	app.CustomGovKeeper.SetPermissionsForRole(ctx, types.RoleSudo, perm)
 
-	savedPerms, err := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleSudo)
-	require.NoError(t, err)
+	savedPerms := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleSudo)
+	require.NotNil(t, savedPerms)
 	require.Equal(t, perm, savedPerms)
 }
 
@@ -28,12 +28,12 @@ func TestKeeper_HasGenesisDefaultRoles(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	roleSudo, err := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleSudo)
-	require.NoError(t, err)
+	roleSudo := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleSudo)
+	require.NotNil(t, roleSudo)
 	require.True(t, roleSudo.IsWhitelisted(types.PermSetPermissions))
 
-	roleValidator, err := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleValidator)
-	require.NoError(t, err)
+	roleValidator := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleValidator)
+	require.NotNil(t, roleValidator)
 	require.True(t, roleValidator.IsWhitelisted(types.PermClaimValidator))
 }
 
@@ -41,8 +41,8 @@ func TestKeeper_SetPermissionsOverwritesOldPerms(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	roleValidator, err := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleValidator)
-	require.NoError(t, err)
+	roleValidator := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleValidator)
+	require.NotNil(t, roleValidator)
 	require.True(t, roleValidator.IsWhitelisted(types.PermClaimValidator))
 	require.False(t, roleValidator.IsWhitelisted(types.PermSetPermissions))
 
@@ -50,16 +50,16 @@ func TestKeeper_SetPermissionsOverwritesOldPerms(t *testing.T) {
 	newPerms := types.NewPermissions([]types.PermValue{types.PermSetPermissions}, []types.PermValue{types.PermClaimValidator})
 	app.CustomGovKeeper.SetPermissionsForRole(ctx, types.RoleValidator, newPerms)
 
-	newRoleValidatorPerms, err := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleValidator)
-	require.NoError(t, err)
+	newRoleValidatorPerms := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleValidator)
+	require.NotNil(t, newRoleValidatorPerms)
 	require.True(t, newRoleValidatorPerms.IsWhitelisted(types.PermSetPermissions))
 	require.False(t, newRoleValidatorPerms.IsWhitelisted(types.PermClaimValidator))
 }
 
-func TestKeeper_GetPermissionsForRole_ReturnsErrorWhenDoesNotExist(t *testing.T) {
+func TestKeeper_GetPermissionsForRole_ReturnsNilWhenDoesNotExist(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	_, err := app.CustomGovKeeper.GetPermissionsForRole(ctx, 12345)
-	require.Error(t, err)
+	perms := app.CustomGovKeeper.GetPermissionsForRole(ctx, 12345)
+	require.Nil(t, perms)
 }

@@ -9,6 +9,7 @@ var (
 	ErrNotEnoughPermissions       = errors.Register(ModuleName, 5, "not enough permissions")
 	ErrCouncilorEmptyAddress      = errors.Register(ModuleName, 6, "empty councilor address")
 	ErrRoleDoesNotExist           = errors.Register(ModuleName, 7, "role does not exist")
+	ErrRoleExist                  = errors.Register(ModuleName, 12, "role already exist")
 	ErrWhitelisting               = errors.Register(ModuleName, 8, "error adding to whitelist")
 	ErrBlacklisting               = errors.Register(ModuleName, 9, "error adding to blacklist")
 	ErrRemovingWhitelist          = errors.Register(ModuleName, 10, "error removing from whitelist")

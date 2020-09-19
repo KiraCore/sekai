@@ -37,10 +37,18 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 }
 
 func handleCreateRole(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgCreateRole) (*sdk.Result, error) {
-	_, err := validateAndGetPermissionsForRole(ctx, ck, msg.Proposer, customgovtypes.Role(msg.Role))
-	if err != nil {
-		return nil, err
+	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Proposer, customgovtypes.PermSetPermissions)
+	if !isAllowed {
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermSetPermissions")
 	}
+
+	perms := ck.GetPermissionsForRole(ctx, customgovtypes.Role(msg.Role))
+	if perms != nil {
+		return nil, customgovtypes.ErrRoleExist
+	}
+
+	permissions := customgovtypes.NewPermissions(nil, nil)
+	ck.SetPermissionsForRole(ctx, customgovtypes.Role(msg.Role), permissions)
 
 	return nil, nil
 }
@@ -179,8 +187,8 @@ func validateAndGetPermissionsForRole(
 		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermSetPermissions")
 	}
 
-	perms, err := ck.GetPermissionsForRole(ctx, role)
-	if err != nil {
+	perms := ck.GetPermissionsForRole(ctx, role)
+	if perms == nil {
 		return nil, customgovtypes.ErrRoleDoesNotExist
 	}
 

@@ -53,8 +53,8 @@ func (q Querier) PermissionsByAddress(ctx context.Context, request *types.Permis
 func (q Querier) RolePermissions(ctx context.Context, request *types.RolePermissionsRequest) (*types.RolePermissionsResponse, error) {
 	sdkContext := sdk.UnwrapSDKContext(ctx)
 
-	perms, err := q.keeper.GetPermissionsForRole(sdkContext, types.Role(request.Role))
-	if err != nil {
+	perms := q.keeper.GetPermissionsForRole(sdkContext, types.Role(request.Role))
+	if perms == nil {
 		return nil, auth.ErrRoleNotFound
 	}
 

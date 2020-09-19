@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	"fmt"
-
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -17,15 +15,15 @@ func (k Keeper) SetPermissionsForRole(ctx sdk.Context, role types.Role, permissi
 }
 
 // GetPermissionsForRole returns the permissions assigned to the specific role.
-func (k Keeper) GetPermissionsForRole(ctx sdk.Context, role types.Role) (*types.Permissions, error) {
+func (k Keeper) GetPermissionsForRole(ctx sdk.Context, role types.Role) *types.Permissions {
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), KeyPrefixPermissionsRegistry)
 	bz := prefixStore.Get(types.RoleToKey(role))
 	if bz == nil {
-		return nil, fmt.Errorf("role not found")
+		return nil
 	}
 
 	perm := new(types.Permissions)
 	k.cdc.MustUnmarshalBinaryBare(bz, perm)
 
-	return perm, nil
+	return perm
 }
