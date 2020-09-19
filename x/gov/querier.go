@@ -3,11 +3,8 @@ package gov
 import (
 	"context"
 
-	"github.com/coreos/etcd/auth"
-
-	"github.com/cosmos/cosmos-sdk/types/errors"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/KiraCore/sekai/x/gov/keeper"
 	"github.com/KiraCore/sekai/x/gov/types"
@@ -55,7 +52,7 @@ func (q Querier) RolePermissions(ctx context.Context, request *types.RolePermiss
 
 	perms := q.keeper.GetPermissionsForRole(sdkContext, types.Role(request.Role))
 	if perms == nil {
-		return nil, auth.ErrRoleNotFound
+		return nil, types.ErrRoleDoesNotExist
 	}
 
 	return &types.RolePermissionsResponse{Permissions: perms}, nil

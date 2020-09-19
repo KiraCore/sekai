@@ -50,7 +50,7 @@ func handleCreateRole(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.Msg
 	permissions := customgovtypes.NewPermissions(nil, nil)
 	ck.SetPermissionsForRole(ctx, customgovtypes.Role(msg.Role), permissions)
 
-	return nil, nil
+	return &sdk.Result{}, nil
 }
 
 func handleRemoveBlacklistRolePermission(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgRemoveBlacklistRolePermission) (*sdk.Result, error) {
