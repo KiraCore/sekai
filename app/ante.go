@@ -78,16 +78,21 @@ func (svd ValidateFeeRangeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 	feeAmount := feeTx.GetFee().AmountOf(bondDenom).Uint64()
 
 	// execution fees
+	executionFee := uint64(0)
 	for _, msg := range feeTx.GetMsgs() {
 		executionName := msg.Type()
 		fee := svd.cgk.GetExecutionFee(ctx, executionName)
 		if fee != nil { // execution fee exist
-			feeAmount += fee.ExecutionFee
+			executionFee += fee.ExecutionFee
 		}
 	}
 
 	if feeAmount < properties.MinTxFee || feeAmount > properties.MaxTxFee {
 		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("fee out of range [%d, %d]", properties.MinTxFee, properties.MaxTxFee))
+	}
+
+	if feeAmount < executionFee {
+		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("fee is less than execution fee %d", executionFee))
 	}
 
 	return next(ctx, tx, simulate)
@@ -119,6 +124,7 @@ func (sgcd CustomExecutionFeeConsumeDecorator) AnteHandle(ctx sdk.Context, tx sd
 		executionName := msg.Type()
 		fee := sgcd.cgk.GetExecutionFee(ctx, executionName)
 		if fee != nil { // execution fee exist
+			// TODO should check failure case and in that case should consume failure fee
 			ctx.GasMeter().ConsumeGas(fee.ExecutionFee, "consume execution fee")
 		}
 	}
