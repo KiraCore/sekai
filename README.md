@@ -44,7 +44,7 @@ sekaid query ixp listorderbooks ID e6a8 --chain-id testing
 - By curator
 ```sh
 # command
-sekaid query ixp listorderbooks Curator $(sekaid keys show -a validator --keyring-backend=test) --chain-id testing
+sekaid query ixp listorderbooks Curator $(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --chain-id testing
 
 # response
 {"orderbooks":[{"ID":"e6a8fc6cf92e157f9f03580291b6e5db","Index":0,"Base":"base","Quote":"quote","Mnemonic":"mnemonic","Curator":"kira17pzan0q4d5acyykygwqass8z0crjvflhjq3qvm"}]}
@@ -206,7 +206,7 @@ confirm transaction before signing and broadcasting [y/N]: y
 
 ```sh
 # command
-sekaid query ixp getsignerkeys --curator $(sekaid keys show -a validator --keyring-backend=test)
+sekaid query ixp getsignerkeys --curator $(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid)
 
 # response
 {"signerkeys":[{"PubKey":"AnzIM9IcLb07Cvwq3hdMJuuRofAgxfDekkD3nJUPPw0w","KeyType":"Secp256k1","ExpiryTime":"1599187090","Enabled":true,"Permissions":[],"Curator":"kira1xsq0wapm5t975k3hn2rj4y2zhnm5up9d59uhpy"}]}
