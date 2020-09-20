@@ -21,8 +21,8 @@ var (
 
 	PermClaimValidator PermValue = 1
 	PermSetPermissions PermValue = 2
-	PermChangeTxFee    PermValue = 3
 	PermClaimCouncilor PermValue = 3
+	PermChangeTxFee    PermValue = 4
 )
 
 // Role represents a Role in the registry.

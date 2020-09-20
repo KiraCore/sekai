@@ -38,6 +38,8 @@ func NewAnteHandler(
 		ante.NewValidateSigCountDecorator(ak),
 		ante.NewDeductFeeDecorator(ak, bankKeeper),
 		ante.NewSigGasConsumeDecorator(ak, sigGasConsumer),
+		// custom execution fee consume decorator
+		NewCustomExecutionFeeConsumeDecorator(ak, cgk),
 		ante.NewSigVerificationDecorator(ak, signModeHandler),
 		ante.NewIncrementSequenceDecorator(ak),
 	)
@@ -74,8 +76,51 @@ func (svd ValidateFeeRangeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 
 	bondDenom := svd.sk.BondDenom(ctx)
 	feeAmount := feeTx.GetFee().AmountOf(bondDenom).Uint64()
+
+	// execution fees
+	for _, msg := range feeTx.GetMsgs() {
+		executionName := msg.Type()
+		fee := svd.cgk.GetExecutionFee(ctx, executionName)
+		if fee != nil { // execution fee exist
+			feeAmount += fee.ExecutionFee
+		}
+	}
+
 	if feeAmount < properties.MinTxFee || feeAmount > properties.MaxTxFee {
 		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("fee out of range [%d, %d]", properties.MinTxFee, properties.MaxTxFee))
+	}
+
+	return next(ctx, tx, simulate)
+}
+
+// CustomExecutionFeeConsumeDecorator calculate custom gas consume
+type CustomExecutionFeeConsumeDecorator struct {
+	ak  keeper.AccountKeeper
+	cgk customgovkeeper.Keeper
+}
+
+// NewCustomExecutionFeeConsumeDecorator returns instance of CustomExecutionFeeConsumeDecorator
+func NewCustomExecutionFeeConsumeDecorator(ak keeper.AccountKeeper, cgk customgovkeeper.Keeper) CustomExecutionFeeConsumeDecorator {
+	return CustomExecutionFeeConsumeDecorator{
+		ak:  ak,
+		cgk: cgk,
+	}
+}
+
+// AnteHandle handle CustomExecutionFeeConsumeDecorator
+func (sgcd CustomExecutionFeeConsumeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
+	sigTx, ok := tx.(sdk.FeeTx)
+	if !ok {
+		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "invalid transaction type")
+	}
+
+	// execution fee consume gas
+	for _, msg := range sigTx.GetMsgs() {
+		executionName := msg.Type()
+		fee := sgcd.cgk.GetExecutionFee(ctx, executionName)
+		if fee != nil { // execution fee exist
+			ctx.GasMeter().ConsumeGas(fee.ExecutionFee, "consume execution fee")
+		}
 	}
 
 	return next(ctx, tx, simulate)

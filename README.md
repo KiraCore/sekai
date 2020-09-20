@@ -4,7 +4,7 @@ Kira Hub
 ## Set ChangeTxFee permission
 ```sh
 # command to set changeTxFee permission
-sekaid tx customgov set-whitelist-permissions --from validator --keyring-backend=test --permission=3 --addr=$(sekaid keys show -a validator --keyring-backend=test) --chain-id=testing --fees=100ukex --home=$HOME/.sekaid
+sekaid tx customgov set-whitelist-permissions --from validator --keyring-backend=test --permission=4 --addr=$(sekaid keys show -a validator --keyring-backend=test) --chain-id=testing --fees=100ukex --home=$HOME/.sekaid
 
 # response
 {"height":"101","txhash":"D584594958BE83482C19B687A17C4A00591C0128308D32D64A211860F6826611","codespace":"","code":0,"data":"0A170A1577686974656C6973742D7065726D697373696F6E73","raw_log":"[{\"events\":[{\"type\":\"message\",\"attributes\":[{\"key\":\"action\",\"value\":\"whitelist-permissions\"}]}]}]","logs":[{"msg_index":0,"log":"","events":[{"type":"message","attributes":[{"key":"action","value":"whitelist-permissions"}]}]}],"info":"","gas_wanted":"200000","gas_used":"51921","tx":null,"timestamp":""}
