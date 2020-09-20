@@ -64,6 +64,22 @@ confirm transaction before signing and broadcasting [y/N]: y
 {"height":"8","txhash":"F716689F967C24CD66D7D94BB90ED6A786E7E31E8D4871B383816E0F0B0E6D5B","codespace":"","code":0,"data":"0A130A117365742D657865637574696F6E2D666565","raw_log":"[{\"events\":[{\"type\":\"message\",\"attributes\":[{\"key\":\"action\",\"value\":\"set-execution-fee\"}]}]}]","logs":[{"msg_index":0,"log":"","events":[{"type":"message","attributes":[{"key":"action","value":"set-execution-fee"}]}]}],"info":"","gas_wanted":"200000","gas_used":"50055","tx":null,"timestamp":""}
 ```
 
+## Set execution fee validation test
+```sh
+# command for setting execution fee
+sekaid tx customgov set-execution-fee --from validator --execution_name="set-execution-fee" --transaction_type="B" --execution_fee=10000 --failure_fee=1 --timeout=10 default_parameters=0 --keyring-backend=test --chain-id=testing --fees=10000ukex --home=$HOME/.sekaid
+
+Here, the value should be looked at is `--execution_name="set-execution-fee"` and `--execution_fee=10000`
+
+# check execution fee validation
+sekaid tx customgov set-execution-fee --from validator --execution_name="set-execution-fee" --transaction_type="B" --execution_fee=10000 --failure_fee=1 --timeout=10 default_parameters=0 --keyring-backend=test --chain-id=testing --fees=100ukex --home=$HOME/.sekaid
+
+confirm transaction before signing and broadcasting [y/N]: y
+{"height":"0","txhash":"25F990EEC9E56141BA729A2B1AB83036D4A1A96DEB6D14B78C789349C1FB0B31","codespace":"sdk","code":18,"data":"","raw_log":"fee is less than execution fee 10000: invalid request","logs":[],"info":"","gas_wanted":"200000","gas_used":"15450","tx":null,"timestamp":""}
+
+Here, the value should be looked at is `"fee is less than execution fee 10000: invalid request"`.
+```
+
 ## Query execution fee
 ```sh
 # command
