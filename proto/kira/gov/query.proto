@@ -8,8 +8,10 @@ option go_package = "github.com/KiraCore/sekai/x/gov/types";
 
 // Query defines the gRPC querier service
 service Query {
-  // Validators queries a validator by address.
+  // Returns the permissions an actor has by address.
   rpc PermissionsByAddress (PermissionsByAddressRequest) returns (PermissionsResponse) {}
+  // Returns the roles that are assigned to an address.
+  rpc RolesByAddress (RolesByAddressRequest) returns (RolesByAddressResponse) {}
   // RolePermissions returns the permissions of the roles available in the registry.
   rpc RolePermissions (RolePermissionsRequest) returns (RolePermissionsResponse) {}
 
@@ -27,6 +29,17 @@ message PermissionsByAddressRequest {
 
 message PermissionsResponse {
   kira.gov.Permissions permissions = 1;
+}
+
+message RolesByAddressRequest {
+  bytes val_addr = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"val_addr\""
+  ];
+}
+
+message RolesByAddressResponse {
+  repeated uint64 roles = 1;
 }
 
 message RolePermissionsRequest {
