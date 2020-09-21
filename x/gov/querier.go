@@ -3,6 +3,8 @@ package gov
 import (
 	"context"
 
+	types2 "github.com/KiraCore/sekai/x/staking/types"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -12,6 +14,21 @@ import (
 
 type Querier struct {
 	keeper keeper.Keeper
+}
+
+func NewQuerier(keeper keeper.Keeper) types.QueryServer {
+	return &Querier{keeper: keeper}
+}
+
+func (q Querier) RolesByAddress(ctx context.Context, request *types.RolesByAddressRequest) (*types.RolesByAddressResponse, error) {
+	actor, err := q.keeper.GetNetworkActorByAddress(sdk.UnwrapSDKContext(ctx), request.ValAddr)
+	if err != nil {
+		return nil, types2.ErrNetworkActorNotFound
+	}
+
+	return &types.RolesByAddressResponse{
+		Roles: actor.Roles,
+	}, nil
 }
 
 func (q Querier) CouncilorByAddress(ctx context.Context, request *types.CouncilorByAddressRequest) (*types.CouncilorResponse, error) {
@@ -30,10 +47,6 @@ func (q Querier) CouncilorByMoniker(ctx context.Context, request *types.Councilo
 	}
 
 	return &types.CouncilorResponse{Councilor: councilor}, nil
-}
-
-func NewQuerier(keeper keeper.Keeper) types.QueryServer {
-	return &Querier{keeper: keeper}
 }
 
 func (q Querier) PermissionsByAddress(ctx context.Context, request *types.PermissionsByAddressRequest) (*types.PermissionsResponse, error) {
