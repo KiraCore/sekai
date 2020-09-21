@@ -58,7 +58,10 @@ func handleAssignRole(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.Msg
 		return nil, customgovtypes.ErrRoleAlreadyAssigned
 	}
 
-	return nil, nil
+	actor.SetRole(customgovtypes.Role(msg.Role))
+	ck.SaveNetworkActor(ctx, actor)
+
+	return &sdk.Result{}, nil
 }
 
 func handleCreateRole(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgCreateRole) (*sdk.Result, error) {
