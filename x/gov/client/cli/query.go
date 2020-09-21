@@ -53,6 +53,40 @@ func GetCmdQueryPermissions() *cobra.Command {
 	return cmd
 }
 
+// GetCmdQueryRolesByAddress the query delegation command.
+func GetCmdQueryRolesByAddress() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "roles addr",
+		Short: "Get the roles assigned to an address",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			accAddr, err := sdk.AccAddressFromBech32(args[0])
+			if err != nil {
+				return errors.Wrap(err, "invalid account address")
+			}
+
+			params := &types.RolesByAddressRequest{ValAddr: accAddr}
+
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.RolesByAddress(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintOutput(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
 func GetCmdQueryRolePermissions() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "role-permissions arg-num",

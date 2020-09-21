@@ -300,3 +300,27 @@ func (s IntegrationTestSuite) TestCreateRole() {
 	err = cmd.ExecuteContext(ctx)
 	s.Require().NoError(err)
 }
+
+func (s IntegrationTestSuite) TestGetRolesByAddress() {
+	val := s.network.Validators[0]
+
+	cmd := cli.GetCmdQueryRolesByAddress()
+	_, out := testutil.ApplyMockIO(cmd)
+	clientCtx := val.ClientCtx.WithOutput(out).WithOutputFormat("json")
+
+	ctx := context.Background()
+	ctx = context.WithValue(ctx, client.ClientContextKey, &clientCtx)
+
+	cmd.SetArgs([]string{
+		val.Address.String(),
+	})
+
+	err := cmd.ExecuteContext(ctx)
+	s.Require().NoError(err)
+
+	var roles customgovtypes.RolesByAddressResponse
+	err = val.ClientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &roles)
+	s.Require().NoError(err)
+
+	s.Require().Equal([]uint64{1}, roles.Roles)
+}
