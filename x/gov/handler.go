@@ -44,6 +44,20 @@ func handleAssignRole(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.Msg
 		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermSetPermissions")
 	}
 
+	role := ck.GetPermissionsForRole(ctx, customgovtypes.Role(msg.Role))
+	if role == nil {
+		return nil, customgovtypes.ErrRoleDoesNotExist
+	}
+
+	actor, err := ck.GetNetworkActorByAddress(ctx, msg.Address)
+	if err != nil {
+		actor = customgovtypes.NewDefaultActor(msg.Address)
+	}
+
+	if actor.HasRole(customgovtypes.Role(msg.Role)) {
+		return nil, customgovtypes.ErrRoleAlreadyAssigned
+	}
+
 	return nil, nil
 }
 

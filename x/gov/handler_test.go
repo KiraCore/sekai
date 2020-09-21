@@ -796,19 +796,36 @@ func TestHandler_AssignRole_Errors(t *testing.T) {
 			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
 			fmt.Errorf("PermSetPermissions: not enough permissions"),
 		},
-		//{
-		//	"fails when role already exists",
-		//	types.NewMsgCreateRole(
-		//		addr,
-		//		1234,
-		//	),
-		//	func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
-		//		err2 := setPermissionToAddr(t, app, ctx, addr, types.PermSetPermissions)
-		//		require.NoError(t, err2)
-		//		app.CustomGovKeeper.SetPermissionsForRole(ctx, types.Role(1234), types.NewPermissions(nil, nil))
-		//	},
-		//	fmt.Errorf("role already exist"),
-		//},
+		{
+			"fails when role does not exist",
+			types.NewMsgAssignRole(
+				proposerAddr, addr, 3,
+			),
+			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+				err2 := setPermissionToAddr(t, app, ctx, proposerAddr, types.PermSetPermissions)
+				require.NoError(t, err2)
+			},
+			types.ErrRoleDoesNotExist,
+		},
+		{
+			"role already assigned",
+			types.NewMsgAssignRole(
+				proposerAddr, addr, 3,
+			),
+			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+				err2 := setPermissionToAddr(t, app, ctx, proposerAddr, types.PermSetPermissions)
+				require.NoError(t, err2)
+
+				app.CustomGovKeeper.SetPermissionsForRole(ctx, types.Role(3), types.NewPermissions([]types.PermValue{
+					types.PermClaimValidator,
+				}, nil))
+
+				networkActor := types.NewDefaultActor(addr)
+				networkActor.SetRole(3)
+				app.CustomGovKeeper.SaveNetworkActor(ctx, networkActor)
+			},
+			types.ErrRoleAlreadyAssigned,
+		},
 	}
 
 	for _, tt := range tests {
