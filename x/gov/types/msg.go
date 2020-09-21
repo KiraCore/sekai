@@ -12,6 +12,7 @@ const (
 	ClaimCouncilor = "claim-councilor"
 
 	CreateRole                    = "create-role"
+	AssignRole                    = "assign-role"
 	WhitelistRolePermission       = "whitelist-role-permission"
 	BlacklistRolePermission       = "blacklist-role-permission"
 	RemoveWhitelistRolePermission = "remove-whitelist-role-permission"
@@ -25,6 +26,7 @@ var (
 	_ sdk.Msg = &MsgClaimCouncilor{}
 
 	_ sdk.Msg = &MsgCreateRole{}
+	_ sdk.Msg = &MsgAssignRole{}
 	_ sdk.Msg = &MsgWhitelistRolePermission{}
 	_ sdk.Msg = &MsgBlacklistRolePermission{}
 	_ sdk.Msg = &MsgRemoveWhitelistRolePermission{}
@@ -324,6 +326,41 @@ func (m *MsgCreateRole) GetSignBytes() []byte {
 }
 
 func (m *MsgCreateRole) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{
+		m.Proposer,
+	}
+}
+
+func NewMsgAssignRole(proposer, address sdk.AccAddress, role uint32) *MsgAssignRole {
+	return &MsgAssignRole{Proposer: proposer, Address: address, Role: role}
+}
+
+func (m *MsgAssignRole) Route() string {
+	return ModuleName
+}
+
+func (m *MsgAssignRole) Type() string {
+	return AssignRole
+}
+
+func (m *MsgAssignRole) ValidateBasic() error {
+	if m.Proposer.Empty() {
+		return ErrEmptyProposerAccAddress
+	}
+
+	if m.Address.Empty() {
+		return ErrEmptyPermissionsAccAddress
+	}
+
+	return nil
+}
+
+func (m *MsgAssignRole) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *MsgAssignRole) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{
 		m.Proposer,
 	}

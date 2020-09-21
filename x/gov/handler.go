@@ -30,10 +30,21 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 			return handleRemoveBlacklistRolePermission(ctx, ck, msg)
 		case *customgovtypes.MsgCreateRole:
 			return handleCreateRole(ctx, ck, msg)
+		case *customgovtypes.MsgAssignRole:
+			return handleAssignRole(ctx, ck, msg)
 		default:
 			return nil, errors.Wrapf(errors.ErrUnknownRequest, "unrecognized %s message type: %T", types.ModuleName, msg)
 		}
 	}
+}
+
+func handleAssignRole(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgAssignRole) (*sdk.Result, error) {
+	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Proposer, customgovtypes.PermSetPermissions)
+	if !isAllowed {
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermSetPermissions")
+	}
+
+	return nil, nil
 }
 
 func handleCreateRole(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgCreateRole) (*sdk.Result, error) {
