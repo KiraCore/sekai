@@ -1,0 +1,26 @@
+[
+    {
+        "api": {
+            "url": "/api/cosmos/status",
+            "method": "GET"
+        },
+        "rate_limit": 0.1,
+        "auth_rate_limit": 1
+    },
+    {
+        "api": {
+            "url": "/api/cosmos/bank/supply",
+            "method": "GET"
+        },
+        "disable": true,
+        "auth_rate_limit": 1
+    },
+    {
+        "api": {
+            "url": "/api/cosmos/tx",
+            "method": "POST"
+        },
+        "disable": true,
+        "rate_limit": 0.1
+    }
+]

@@ -3,9 +3,11 @@ package gateway
 import (
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"sort"
 	"strconv"
 	"time"
 
@@ -15,40 +17,47 @@ import (
 	"golang.org/x/crypto/blake2b"
 )
 
-// RPCResponse is a struct of RPC response
-type RPCResponse struct {
-	Jsonrpc string      `json:"jsonrpc"`
-	ID      int         `json:"id"`
-	Result  interface{} `json:"result"`
-	Error   interface{} `json:"error"`
+func getAPIConfig(url string, method string) (*APIConfig, error) {
+	api := Endpoint{}
+	api.URL = url
+	api.Method = method
+
+	i := sort.Search(len(config), func(i int) bool {
+		if api.URL != config[i].API.URL {
+			return api.URL < config[i].API.URL
+		}
+		return api.Method <= config[i].API.Method
+	})
+
+	if i < len(config) && config[i].API.URL == api.URL && config[i].API.Method == api.Method {
+		conf := new(APIConfig)
+		conf.API = config[i].API
+		conf.Disable = config[i].Disable
+		conf.RateLimit = config[i].RateLimit
+		conf.AuthRateLimit = config[i].AuthRateLimit
+
+		return conf, nil
+	}
+
+	return nil, errors.New("Not Found")
 }
 
-// ProxyResponseError is a struct to be used for proxy response error
-type ProxyResponseError struct {
-	Code    int    `json:"code"`
-	Data    string `json:"data"`
-	Message string `json:"message"`
-}
+// AddRPCMethod is a function to add a RPC method
+func AddRPCMethod(name string, url string, method string) {
+	newMethod := RPCMethod{}
+	newMethod.API = Endpoint{}
+	newMethod.API.URL = url
+	newMethod.API.Method = method
+	newMethod.Enabled = true
 
-// ProxyResponse is a struct to be used for proxy response
-type ProxyResponse struct {
-	Chainid   string      `json:"chain_id"`
-	Block     int64       `json:"block"`
-	Blocktime string      `json:"block_time"`
-	Timestamp int64       `json:"timestamp"`
-	Response  interface{} `json:"response,omitempty"`
-	Error     interface{} `json:"error,omitempty"`
-	Signature string      `json:"signature,omitempty"`
-	Hash      string      `json:"hash,omitempty"`
-}
+	conf, err := getAPIConfig(url, method)
+	if err == nil {
+		newMethod.Enabled = !conf.Disable
+		newMethod.RateLimit = conf.RateLimit
+		newMethod.AuthRateLimit = conf.AuthRateLimit
+	}
 
-// ResponseSign is a struct to be used for response sign
-type ResponseSign struct {
-	Chainid   string `json:"chain_id"`
-	Block     int64  `json:"block"`
-	Blocktime string `json:"block_time"`
-	Timestamp int64  `json:"timestamp"`
-	Response  string `json:"response"`
+	rpcMethods[name] = newMethod
 }
 
 // MakeGetRequest is a function to make GET request
@@ -159,9 +168,6 @@ func GetResponseSignature(response ProxyResponse) (string, string) {
 	if err != nil {
 		return "", responseHash
 	}
-
-	// Generate PrivKey
-	privKey := GenEd25519PrivKey()
 
 	// Get Signature
 	signature, err := privKey.Sign(signBytes)

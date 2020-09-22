@@ -10,10 +10,18 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 )
 
+const (
+	postTransaction      = "/api/cosmos/tx"
+	queryTransactionHash = "/api/cosmos/tx"
+)
+
 // RegisterTxRoutes registers query routers.
 func RegisterTxRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr string) {
-	r.HandleFunc("/api/cosmos/tx", PostTxRequest(rpcAddr)).Methods("POST")
+	r.HandleFunc(postTransaction, PostTxRequest(rpcAddr)).Methods("POST")
 	r.HandleFunc("/api/cosmos/tx/{hash}", QueryTxHashRequest(rpcAddr)).Methods("GET")
+
+	AddRPCMethod("Post Transaction", postTransaction, "POST")
+	AddRPCMethod("Query Transaction Hash", queryTransactionHash, "GET")
 }
 
 // PostTxReq defines a tx broadcasting request.
@@ -25,6 +33,12 @@ type PostTxReq struct {
 // PostTxRequest is a function to post transaction.
 func PostTxRequest(rpcAddr string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		conf, err := getAPIConfig(postTransaction, "POST")
+		if err == nil && conf.Disable {
+			ServeError(w, rpcAddr, 0, "", "", http.StatusForbidden)
+			return
+		}
+
 		var req PostTxReq
 
 		body, err := ioutil.ReadAll(r.Body)
@@ -69,6 +83,12 @@ func PostTxRequest(rpcAddr string) http.HandlerFunc {
 // QueryTxHashRequest is a function to query transaction hash.
 func QueryTxHashRequest(rpcAddr string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		conf, err := getAPIConfig(queryTransactionHash, "GET")
+		if err == nil && conf.Disable {
+			ServeError(w, rpcAddr, 0, "", "", http.StatusForbidden)
+			return
+		}
+
 		queries := mux.Vars(r)
 		hash := queries["hash"]
 

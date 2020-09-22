@@ -11,7 +11,6 @@ import (
 
 	"github.com/KiraCore/sekai/INTERX/insecure"
 	cosmosBank "github.com/KiraCore/sekai/INTERX/proto-gen/cosmos/bank"
-	sekaiapp "github.com/KiraCore/sekai/app"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rakyll/statik/fs"
@@ -19,8 +18,6 @@ import (
 	"google.golang.org/grpc/credentials"
 	grpclog "google.golang.org/grpc/grpclog"
 )
-
-var encodingConfig = sekaiapp.MakeEncodingConfig()
 
 // getOpenAPIHandler serves an OpenAPI UI.
 func getOpenAPIHandler() http.Handler {

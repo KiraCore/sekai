@@ -5,7 +5,7 @@
     "version": "1.0"
   },
   "schemes": [
-    "https"
+    "http"
   ],
   "consumes": [
     "application/json"
