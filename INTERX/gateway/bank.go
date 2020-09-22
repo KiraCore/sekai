@@ -9,15 +9,29 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 )
 
+const (
+	queryTotalSupply = "/api/cosmos/bank/supply"
+	queryBalances    = "/api/cosmos/bank/balances"
+)
+
 // RegisterBankRoutes registers query routers.
 func RegisterBankRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr string) {
-	r.HandleFunc("/api/cosmos/bank/supply", QuerySupplyRequest(gwCosmosmux, rpcAddr)).Methods("GET")
+	r.HandleFunc(queryTotalSupply, QuerySupplyRequest(gwCosmosmux, rpcAddr)).Methods("GET")
 	r.HandleFunc("/api/cosmos/bank/balances/{address}", QueryBalancesRequest(gwCosmosmux, rpcAddr)).Methods("GET")
+
+	AddRPCMethod("Query Total Supply", queryTotalSupply, "GET")
+	AddRPCMethod("Query Balances", queryBalances, "GET")
 }
 
 // QuerySupplyRequest is a function to query total supply.
 func QuerySupplyRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		conf, err := getAPIConfig(queryTotalSupply, "GET")
+		if err == nil && conf.Disable {
+			ServeError(w, rpcAddr, 0, "", "", http.StatusForbidden)
+			return
+		}
+
 		ServeGRPC(w, r, gwCosmosmux, rpcAddr)
 	}
 }
@@ -25,6 +39,12 @@ func QuerySupplyRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.Hand
 // QueryBalancesRequest is a function to query balances.
 func QueryBalancesRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		conf, err := getAPIConfig(queryBalances, "GET")
+		if err == nil && conf.Disable {
+			ServeError(w, rpcAddr, 0, "", "", http.StatusForbidden)
+			return
+		}
+
 		queries := mux.Vars(r)
 		bech32addr := queries["address"]
 

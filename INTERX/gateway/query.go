@@ -7,14 +7,28 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 )
 
+const (
+	queryStatus     = "/api/cosmos/status"
+	queryRPCMethods = "/api/rpc_methods"
+)
+
 // RegisterQueryRoutes registers query routers.
 func RegisterQueryRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr string) {
-	r.HandleFunc("/api/cosmos/status", QueryStatusRequest(rpcAddr)).Methods("GET")
+	r.HandleFunc(queryStatus, QueryStatusRequest(rpcAddr)).Methods("GET")
+	r.HandleFunc(queryRPCMethods, QueryRPCMethods(rpcAddr)).Methods("GET")
+
+	AddRPCMethod("Query Status", queryStatus, "GET")
 }
 
 // QueryStatusRequest is a function to query status.
 func QueryStatusRequest(rpcAddr string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		conf, err := getAPIConfig(queryStatus, "GET")
+		if err == nil && conf.Disable {
+			ServeError(w, rpcAddr, 0, "", "", http.StatusForbidden)
+			return
+		}
+
 		r.Host = rpcAddr
 		r.URL.Path = "/status"
 
@@ -24,5 +38,18 @@ func QueryStatusRequest(rpcAddr string) http.HandlerFunc {
 		} else {
 			ServeRPC(w, response, rpcAddr)
 		}
+	}
+}
+
+// QueryRPCMethods is a function to query RPC methods.
+func QueryRPCMethods(rpcAddr string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		response := GetResponseFormat(rpcAddr)
+		response.Response = rpcMethods
+
+		w.Header().Add("Content-Type", "application/json")
+		w.WriteHeader(200)
+
+		WrapResponse(w, *response)
 	}
 }

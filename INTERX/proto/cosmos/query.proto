@@ -19,7 +19,7 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
     url: "https://github.com/KiraCore/sekai/INTERX";
     description: "gRPC-gateway";
   }
-  schemes: HTTPS;
+  schemes: HTTP;
 };
 
 service Query {
