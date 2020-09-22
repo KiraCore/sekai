@@ -39,6 +39,7 @@ func NewTxCmd() *cobra.Command {
 	txCmd.AddCommand(GetTxClaimGovernanceCmd())
 
 	txCmd.AddCommand(GetTxCreateRole())
+
 	txCmd.AddCommand(GetTxBlacklistRolePermission())
 	txCmd.AddCommand(GetTxWhitelistRolePermission())
 	txCmd.AddCommand(GetTxRemoveWhitelistRolePermission())
@@ -305,6 +306,47 @@ func GetTxCreateRole() *cobra.Command {
 
 	flags.AddTxFlagsToCmd(cmd)
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+func GetTxAssignRole() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "assign-role role",
+		Short: "Assign new role",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			role, err := strconv.Atoi(args[0])
+			if err != nil {
+				return fmt.Errorf("invalid role: %w", err)
+			}
+
+			addr, err := getAddressFromFlag(cmd)
+			if err != nil {
+				return fmt.Errorf("error getting address: %w", err)
+			}
+
+			msg := types.NewMsgAssignRole(
+				clientCtx.FromAddress,
+				addr,
+				uint32(role),
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	cmd.Flags().String(cli.FlagAddr, "", "the address to set permissions")
+
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+	_ = cmd.MarkFlagRequired(cli.FlagAddr)
 
 	return cmd
 }

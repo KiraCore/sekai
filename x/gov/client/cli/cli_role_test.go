@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strings"
 
+	cli2 "github.com/KiraCore/sekai/x/staking/client/cli"
+
 	"github.com/KiraCore/sekai/x/gov/client/cli"
 	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -301,26 +303,41 @@ func (s IntegrationTestSuite) TestCreateRole() {
 	s.Require().NoError(err)
 }
 
-func (s IntegrationTestSuite) TestGetRolesByAddress() {
+func (s IntegrationTestSuite) TestAssignRoles() {
 	val := s.network.Validators[0]
 
-	cmd := cli.GetCmdQueryRolesByAddress()
+	addr, err := types3.AccAddressFromBech32("kira15ky9du8a2wlstz6fpx3p4mqpjyrm5cgqzp4f3d")
+	s.Require().NoError(err)
+
+	cmd := cli.GetTxAssignRole()
 	_, out := testutil.ApplyMockIO(cmd)
 	clientCtx := val.ClientCtx.WithOutput(out).WithOutputFormat("json")
 
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, client.ClientContextKey, &clientCtx)
 
-	cmd.SetArgs([]string{
-		val.Address.String(),
-	})
+	cmd.SetArgs(
+		[]string{
+			"0", // Role created in test
+			fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+			fmt.Sprintf("--%s=%s", cli2.FlagAddr, addr),
+			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+			fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(10))).String()),
+		},
+	)
 
-	err := cmd.ExecuteContext(ctx)
+	err = cmd.ExecuteContext(ctx)
 	s.Require().NoError(err)
 
-	var roles customgovtypes.RolesByAddressResponse
-	err = val.ClientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &roles)
-	s.Require().NoError(err)
+	roles := GetRolesByAddress(s.T(), s.network, addr)
+	s.Require().Equal([]uint64{uint64(customgovtypes.RoleUndefined)}, roles)
+}
 
-	s.Require().Equal([]uint64{1}, roles.Roles)
+func (s IntegrationTestSuite) TestGetRolesByAddress() {
+	val := s.network.Validators[0]
+
+	roles := GetRolesByAddress(s.T(), s.network, val.Address)
+
+	s.Require().Equal([]uint64{uint64(customgovtypes.RoleSudo)}, roles)
 }
