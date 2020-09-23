@@ -106,21 +106,6 @@
         }
       }
     },
-    "interxError": {
-      "type": "object",
-      "properties": {
-        "code": {
-          "type": "string",
-          "format": "int64"
-        },
-        "data": {
-          "type": "string"
-        },
-        "message": {
-          "type": "string"
-        }
-      }
-    },
     "protobufAny": {
       "type": "object",
       "properties": {
@@ -237,7 +222,7 @@
           "$ref": "#/definitions/cosmosqueryStatus"
         },
         "error": {
-          "$ref": "#/definitions/interxError"
+          "$ref": "#/definitions/typeError"
         },
         "signature": {
           "type": "string"
@@ -323,7 +308,7 @@
           "$ref": "#/definitions/queryTransaction"
         },
         "error": {
-          "$ref": "#/definitions/interxError"
+          "$ref": "#/definitions/typeError"
         },
         "signature": {
           "type": "string"
@@ -364,6 +349,21 @@
           "$ref": "#/definitions/queryPubKey"
         },
         "votingPower": {
+          "type": "string"
+        }
+      }
+    },
+    "typeError": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "format": "int64"
+        },
+        "data": {
+          "type": "string"
+        },
+        "message": {
           "type": "string"
         }
       }

@@ -4,44 +4,28 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"sort"
 
 	sekaiapp "github.com/KiraCore/sekai/app"
 )
 
-// Endpoint is a struct for API endpiont.
-type Endpoint struct {
-	URL    string `json:"url"`
-	Method string `json:"method"`
+// PRCConfig is a struct to be used for PRC configuration
+type PRCConfig struct {
+	Disable       bool    `json:"disable"`
+	RateLimit     float64 `json:"rate_limit,omitempty"`
+	AuthRateLimit float64 `json:"auth_rate_limit,omitempty"`
 }
 
-// APIConfig is a struct for configuration.
-type APIConfig struct {
-	API           Endpoint `json:"api"`
-	Disable       bool     `json:"disable,omitempty"`
-	RateLimit     float64  `json:"rate_limit,omitempty"`
-	AuthRateLimit float64  `json:"auth_rate_limit,omitempty"`
-}
-
-// InterxConfig is a struct for configuration.
-type InterxConfig []APIConfig
-
-func readConfig() InterxConfig {
+func readConfig() map[string]map[string]PRCConfig {
 	file, _ := ioutil.ReadFile("./config.json")
 
-	config := InterxConfig{}
+	config := map[string]map[string]PRCConfig{}
 
 	err := json.Unmarshal([]byte(file), &config)
 	if err != nil {
 		fmt.Println("Invalid configuration error: {}", err)
 	}
 
-	sort.SliceStable(config, func(i, j int) bool {
-		if config[i].API.URL != config[j].API.URL {
-			return config[i].API.URL < config[j].API.URL
-		}
-		return config[i].API.Method < config[j].API.Method
-	})
+	fmt.Println(config)
 
 	return config
 }

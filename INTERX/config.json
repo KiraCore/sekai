@@ -1,26 +1,18 @@
-[
-    {
-        "api": {
-            "url": "/api/cosmos/status",
-            "method": "GET"
+{
+    "GET": {
+        "/api/cosmos/status": {
+            "rate_limit": 0.1,
+            "auth_rate_limit": 1
         },
-        "rate_limit": 0.1,
-        "auth_rate_limit": 1
+        "/api/cosmos/bank/supply": {
+            "disable": true,
+            "auth_rate_limit": 1
+        }
     },
-    {
-        "api": {
-            "url": "/api/cosmos/bank/supply",
-            "method": "GET"
-        },
-        "disable": true,
-        "auth_rate_limit": 1
-    },
-    {
-        "api": {
-            "url": "/api/cosmos/tx",
-            "method": "POST"
-        },
-        "disable": true,
-        "rate_limit": 0.1
+    "POST": {
+        "/api/cosmos/tx": {
+            "disable": true,
+            "rate_limit": 0.1
+        }
     }
-]
+}

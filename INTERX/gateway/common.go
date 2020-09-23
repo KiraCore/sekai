@@ -3,11 +3,9 @@ package gateway
 import (
 	"encoding/base64"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httptest"
-	"sort"
 	"strconv"
 	"time"
 
@@ -17,47 +15,22 @@ import (
 	"golang.org/x/crypto/blake2b"
 )
 
-func getAPIConfig(url string, method string) (*APIConfig, error) {
-	api := Endpoint{}
-	api.URL = url
-	api.Method = method
-
-	i := sort.Search(len(config), func(i int) bool {
-		if api.URL != config[i].API.URL {
-			return api.URL < config[i].API.URL
-		}
-		return api.Method <= config[i].API.Method
-	})
-
-	if i < len(config) && config[i].API.URL == api.URL && config[i].API.Method == api.Method {
-		conf := new(APIConfig)
-		conf.API = config[i].API
-		conf.Disable = config[i].Disable
-		conf.RateLimit = config[i].RateLimit
-		conf.AuthRateLimit = config[i].AuthRateLimit
-
-		return conf, nil
-	}
-
-	return nil, errors.New("Not Found")
-}
-
 // AddRPCMethod is a function to add a RPC method
-func AddRPCMethod(name string, url string, method string) {
+func AddRPCMethod(method string, url string, description string) {
 	newMethod := RPCMethod{}
-	newMethod.API = Endpoint{}
-	newMethod.API.URL = url
-	newMethod.API.Method = method
+	newMethod.Description = description
 	newMethod.Enabled = true
 
-	conf, err := getAPIConfig(url, method)
-	if err == nil {
+	if conf, ok := config[method][url]; ok {
 		newMethod.Enabled = !conf.Disable
 		newMethod.RateLimit = conf.RateLimit
 		newMethod.AuthRateLimit = conf.AuthRateLimit
 	}
 
-	rpcMethods[name] = newMethod
+	if _, ok := rpcMethods[method]; !ok {
+		rpcMethods[method] = map[string]RPCMethod{}
+	}
+	rpcMethods[method][url] = newMethod
 }
 
 // MakeGetRequest is a function to make GET request
