@@ -4,7 +4,7 @@ package query;
 
 import "google/api/annotations.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
-import "interx/type.proto";
+import "type.proto";
 
 // Defines the import path that should be used to import the generated package,
 // and the package name.
@@ -41,10 +41,15 @@ message Endpoint {
 }
 
 message RPCMethod {
-  Endpoint api = 1;
+  string description = 1;
   bool enabled = 2;
   double rate_limit = 3;
   double auth_rate_limit = 4;
+}
+
+message RPCMethods {
+  map<string, RPCMethod> GET = 1;
+  map<string, RPCMethod> POST = 2;
 }
 
 // RPCMethodsRequest is the request type for the query RPC methods.
@@ -56,8 +61,8 @@ message RPCMethodsResponse {
   uint64 block = 2;
   string block_time = 3;
   uint64 timestamp = 4;
-  map<string, RPCMethod> response = 5;
-  interx.Error error = 6;
+  RPCMethods response = 5;
+  type.Error error = 6;
   string signature = 7;
   string hash = 8;
 }

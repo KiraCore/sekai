@@ -38,10 +38,17 @@ type ResponseSign struct {
 
 // RPCMethod is a struct to be used for rpc_methods API
 type RPCMethod struct {
-	API           Endpoint `json:"api"`
-	Enabled       bool     `json:"enabled"`
-	RateLimit     float64  `json:"rate_limit,omitempty"`
-	AuthRateLimit float64  `json:"auth_rate_limit,omitempty"`
+	Description   string  `json:"description"`
+	Enabled       bool    `json:"enabled"`
+	RateLimit     float64 `json:"rate_limit,omitempty"`
+	AuthRateLimit float64 `json:"auth_rate_limit,omitempty"`
 }
 
-var rpcMethods = make(map[string]RPCMethod)
+const (
+	// GET is a constant to refer GET HTTP Method
+	GET string = "GET"
+	// POST is a constant to refer POST HTTP Method
+	POST string = "POST"
+)
+
+var rpcMethods = make(map[string]map[string]RPCMethod)

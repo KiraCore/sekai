@@ -14,17 +14,16 @@ const (
 
 // RegisterQueryRoutes registers query routers.
 func RegisterQueryRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr string) {
-	r.HandleFunc(queryStatus, QueryStatusRequest(rpcAddr)).Methods("GET")
-	r.HandleFunc(queryRPCMethods, QueryRPCMethods(rpcAddr)).Methods("GET")
+	r.HandleFunc(queryStatus, QueryStatusRequest(rpcAddr)).Methods(GET)
+	r.HandleFunc(queryRPCMethods, QueryRPCMethods(rpcAddr)).Methods(GET)
 
-	AddRPCMethod("Query Status", queryStatus, "GET")
+	AddRPCMethod(GET, queryStatus, "This is an API to query status.")
 }
 
 // QueryStatusRequest is a function to query status.
 func QueryStatusRequest(rpcAddr string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		conf, err := getAPIConfig(queryStatus, "GET")
-		if err == nil && conf.Disable {
+		if !rpcMethods[GET][queryStatus].Enabled {
 			ServeError(w, rpcAddr, 0, "", "", http.StatusForbidden)
 			return
 		}

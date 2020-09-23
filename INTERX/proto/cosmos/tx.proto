@@ -4,7 +4,7 @@ package cosmos.tx;
 
 import "google/api/annotations.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
-import "interx/type.proto";
+import "type.proto";
 
 // Defines the import path that should be used to import the generated package,
 // and the package name.
@@ -56,7 +56,7 @@ message PostTransactionResponse {
   string block_time = 3;
   uint64 timestamp = 4;
   PostTransactionResult response = 5;
-  interx.Error error = 6;
+  type.Error error = 6;
   string signature = 7;
   string hash = 8;
 }

@@ -58,21 +58,6 @@
         }
       }
     },
-    "interxError": {
-      "type": "object",
-      "properties": {
-        "code": {
-          "type": "string",
-          "format": "int64"
-        },
-        "data": {
-          "type": "string"
-        },
-        "message": {
-          "type": "string"
-        }
-      }
-    },
     "protobufAny": {
       "type": "object",
       "properties": {
@@ -109,7 +94,7 @@
           "$ref": "#/definitions/txPostTransactionResult"
         },
         "error": {
-          "$ref": "#/definitions/interxError"
+          "$ref": "#/definitions/typeError"
         },
         "signature": {
           "type": "string"
@@ -136,6 +121,21 @@
           "type": "string"
         },
         "hash": {
+          "type": "string"
+        }
+      }
+    },
+    "typeError": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "format": "int64"
+        },
+        "data": {
+          "type": "string"
+        },
+        "message": {
           "type": "string"
         }
       }
