@@ -131,6 +131,15 @@ func (m *NetworkActor) SetRole(role Role) {
 	}
 }
 
+func (m *NetworkActor) RemoveRole(role Role) {
+	for i, r := range m.Roles {
+		if r == uint64(role) {
+			m.Roles = append(m.Roles[:i], m.Roles[i+1:]...)
+			return
+		}
+	}
+}
+
 // NewDefaultActor returns a default actor with:
 // - The provided addr.
 // - Roles set to nil

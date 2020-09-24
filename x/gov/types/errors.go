@@ -15,4 +15,5 @@ var (
 	ErrRemovingWhitelist          = errors.Register(ModuleName, 10, "error removing from whitelist")
 	ErrRemovingBlacklist          = errors.Register(ModuleName, 11, "error removing from blacklist")
 	ErrRoleAlreadyAssigned        = errors.Register(ModuleName, 13, "role already assigned")
+	ErrRoleNotAssigned            = errors.Register(ModuleName, 14, "role not assigned")
 )

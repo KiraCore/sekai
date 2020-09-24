@@ -869,6 +869,105 @@ func TestHandler_AssignRole(t *testing.T) {
 	require.True(t, actor.HasRole(types.Role(3)))
 }
 
+func TestHandler_RemoveRole_Errors(t *testing.T) {
+	proposerAddr, err := sdk.AccAddressFromBech32("kira1alzyfq40zjsveat87jlg8jxetwqmr0a29sgd0f")
+	require.NoError(t, err)
+
+	addr, err := sdk.AccAddressFromBech32("kira15ky9du8a2wlstz6fpx3p4mqpjyrm5cgqzp4f3d")
+	require.NoError(t, err)
+
+	tests := []struct {
+		name         string
+		msg          *types.MsgRemoveRole
+		preparePerms func(t *testing.T, app *simapp.SimApp, ctx sdk.Context)
+		expectedErr  error
+	}{
+		{
+			"fails when no perms",
+			types.NewMsgRemoveRole(
+				proposerAddr, addr, 3,
+			),
+			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
+			fmt.Errorf("PermSetPermissions: not enough permissions"),
+		},
+		{
+			"fails when role does not exist",
+			types.NewMsgRemoveRole(
+				proposerAddr, addr, 3,
+			),
+			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+				err2 := setPermissionToAddr(t, app, ctx, proposerAddr, types.PermSetPermissions)
+				require.NoError(t, err2)
+			},
+			types.ErrRoleDoesNotExist,
+		},
+		{
+			"role not assigned",
+			types.NewMsgRemoveRole(
+				proposerAddr, addr, 3,
+			),
+			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+				err2 := setPermissionToAddr(t, app, ctx, proposerAddr, types.PermSetPermissions)
+				require.NoError(t, err2)
+
+				app.CustomGovKeeper.SetPermissionsForRole(ctx, types.Role(3), types.NewPermissions([]types.PermValue{
+					types.PermClaimValidator,
+				}, nil))
+
+				networkActor := types.NewDefaultActor(addr)
+				app.CustomGovKeeper.SaveNetworkActor(ctx, networkActor)
+			},
+			types.ErrRoleNotAssigned,
+		},
+	}
+
+	for _, tt := range tests {
+		app := simapp.Setup(false)
+		ctx := app.NewContext(false, tmproto.Header{})
+
+		tt.preparePerms(t, app, ctx)
+
+		handler := gov.NewHandler(app.CustomGovKeeper)
+		_, err := handler(ctx, tt.msg)
+		require.EqualError(t, err, tt.expectedErr.Error())
+	}
+}
+
+func TestHandler_RemoveRoles(t *testing.T) {
+	proposerAddr, err := sdk.AccAddressFromBech32("kira1alzyfq40zjsveat87jlg8jxetwqmr0a29sgd0f")
+	require.NoError(t, err)
+
+	addr, err := sdk.AccAddressFromBech32("kira15ky9du8a2wlstz6fpx3p4mqpjyrm5cgqzp4f3d")
+	require.NoError(t, err)
+
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	// Set permissions to proposer.
+	err = setPermissionToAddr(t, app, ctx, proposerAddr, types.PermSetPermissions)
+	require.NoError(t, err)
+
+	// Set new role and set permission to actor.
+	app.CustomGovKeeper.SetPermissionsForRole(ctx, types.Role(3), types.NewPermissions([]types.PermValue{types.PermSetPermissions}, nil))
+	actor := types.NewDefaultActor(addr)
+	actor.SetRole(3)
+	app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
+
+	actor, err = app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addr)
+	require.NoError(t, err)
+	require.True(t, actor.HasRole(3))
+
+	msg := types.NewMsgRemoveRole(proposerAddr, addr, 3)
+	handler := gov.NewHandler(app.CustomGovKeeper)
+	_, err = handler(ctx, msg)
+	require.NoError(t, err)
+
+	actor, err = app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addr)
+	require.NoError(t, err)
+
+	require.False(t, actor.HasRole(3))
+}
+
 func setPermissionToAddr(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addr sdk.AccAddress, perm types.PermValue) error {
 	proposerActor := types.NewDefaultActor(addr)
 	err := proposerActor.Permissions.AddToWhitelist(perm)

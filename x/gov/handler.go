@@ -32,10 +32,39 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 			return handleCreateRole(ctx, ck, msg)
 		case *customgovtypes.MsgAssignRole:
 			return handleAssignRole(ctx, ck, msg)
+		case *customgovtypes.MsgRemoveRole:
+			return handleMsgRemoveRole(ctx, ck, msg)
 		default:
 			return nil, errors.Wrapf(errors.ErrUnknownRequest, "unrecognized %s message type: %T", types.ModuleName, msg)
 		}
 	}
+}
+
+func handleMsgRemoveRole(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgRemoveRole) (*sdk.Result, error) {
+	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Proposer, customgovtypes.PermSetPermissions)
+	if !isAllowed {
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermSetPermissions")
+	}
+
+	role := ck.GetPermissionsForRole(ctx, customgovtypes.Role(msg.Role))
+	if role == nil {
+		return nil, customgovtypes.ErrRoleDoesNotExist
+	}
+
+	actor, err := ck.GetNetworkActorByAddress(ctx, msg.Address)
+	if err != nil {
+		actor = customgovtypes.NewDefaultActor(msg.Address)
+	}
+
+	if !actor.HasRole(customgovtypes.Role(msg.Role)) {
+		return nil, customgovtypes.ErrRoleNotAssigned
+	}
+
+	actor.RemoveRole(customgovtypes.Role(msg.Role))
+
+	ck.SaveNetworkActor(ctx, actor)
+
+	return nil, nil
 }
 
 func handleAssignRole(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgAssignRole) (*sdk.Result, error) {

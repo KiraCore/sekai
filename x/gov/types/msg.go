@@ -370,6 +370,10 @@ func (m *MsgAssignRole) GetSigners() []sdk.AccAddress {
 	}
 }
 
+func NewMsgRemoveRole(proposer, address sdk.AccAddress, role uint32) *MsgRemoveRole {
+	return &MsgRemoveRole{Proposer: proposer, Address: address, Role: role}
+}
+
 func (m *MsgRemoveRole) Route() string {
 	return ModuleName
 }
