@@ -303,7 +303,7 @@ func (s IntegrationTestSuite) TestCreateRole() {
 	s.Require().NoError(err)
 }
 
-func (s IntegrationTestSuite) TestAssignRoles() {
+func (s IntegrationTestSuite) TestAssignRoles_AndRemoveRoles() {
 	val := s.network.Validators[0]
 
 	addr, err := types3.AccAddressFromBech32("kira15ky9du8a2wlstz6fpx3p4mqpjyrm5cgqzp4f3d")
@@ -332,6 +332,31 @@ func (s IntegrationTestSuite) TestAssignRoles() {
 
 	roles := GetRolesByAddress(s.T(), s.network, addr)
 	s.Require().Equal([]uint64{uint64(customgovtypes.RoleUndefined)}, roles)
+
+	err = s.network.WaitForNextBlock()
+	s.Require().NoError(err)
+
+	out.Reset()
+
+	cmd = cli.GetTxRemoveRole()
+	cmd.SetArgs(
+		[]string{
+			"0", // Role created in test
+			fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+			fmt.Sprintf("--%s=%s", cli2.FlagAddr, addr),
+			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+			fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(10))).String()),
+		},
+	)
+	err = cmd.ExecuteContext(ctx)
+	s.Require().NoError(err)
+
+	err = s.network.WaitForNextBlock()
+	s.Require().NoError(err)
+
+	roles = GetRolesByAddress(s.T(), s.network, addr)
+	s.Require().Equal([]uint64{}, roles)
 }
 
 func (s IntegrationTestSuite) TestGetRolesByAddress() {

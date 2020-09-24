@@ -64,7 +64,7 @@ func handleMsgRemoveRole(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.
 
 	ck.SaveNetworkActor(ctx, actor)
 
-	return nil, nil
+	return &sdk.Result{}, nil
 }
 
 func handleAssignRole(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgAssignRole) (*sdk.Result, error) {

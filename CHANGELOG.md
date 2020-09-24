@@ -1,11 +1,12 @@
 # Changelog
 
-## [Unreleased]
+## [0.1.2.4] - 09.24.2020
 ### Added
 
 - Added CLI command to remove blacklist permissions into a specific role.
 - Added CLI command to create new role.
 - Added CLI command to assign new role.
+- Added CLI command to remove assignation for a role.
 
 ## [0.1.2.3] - 09.17.2020
 ### Changed
