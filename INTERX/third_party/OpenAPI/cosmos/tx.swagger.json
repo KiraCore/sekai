@@ -14,7 +14,7 @@
     "application/json"
   ],
   "paths": {
-    "/api/cosmos/tx": {
+    "/api/cosmos/txs": {
       "post": {
         "summary": "Post Transaction",
         "description": "Post Transaction.",

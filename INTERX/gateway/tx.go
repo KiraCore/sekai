@@ -11,14 +11,14 @@ import (
 )
 
 const (
-	postTransaction      = "/api/cosmos/tx"
+	postTransaction      = "/api/cosmos/txs"
 	queryTransactionHash = "/api/cosmos/tx"
 )
 
 // RegisterTxRoutes registers query routers.
 func RegisterTxRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr string) {
 	r.HandleFunc(postTransaction, PostTxRequest(rpcAddr)).Methods(POST)
-	r.HandleFunc("/api/cosmos/tx/{hash}", QueryTxHashRequest(rpcAddr)).Methods(GET)
+	r.HandleFunc("/api/cosmos/txs/{hash}", QueryTxHashRequest(rpcAddr)).Methods(GET)
 
 	AddRPCMethod(POST, postTransaction, "This is an API to post transaction.")
 	AddRPCMethod(GET, queryTransactionHash, "This is an API to query transaction from transaction hash.")

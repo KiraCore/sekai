@@ -10,8 +10,8 @@
         }
     },
     "POST": {
-        "/api/cosmos/tx": {
-            "disable": true,
+        "/api/cosmos/txs": {
+            "disable": false,
             "rate_limit": 0.1
         }
     }
