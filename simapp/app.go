@@ -7,6 +7,7 @@ import (
 
 	ibcmock "github.com/cosmos/cosmos-sdk/x/ibc/testing/mock"
 
+	"github.com/KiraCore/sekai/middleware"
 	gov2 "github.com/KiraCore/sekai/x/gov"
 
 	customstaking "github.com/KiraCore/sekai/x/staking"
@@ -437,6 +438,8 @@ func NewSimApp(
 	// NOTE: the IBC mock keeper and application module is used only for testing core IBC. Do
 	// note replicate if you do not need to test core IBC or light clients.
 	app.ScopedIBCMockKeeper = scopedIBCMockKeeper
+
+	middleware.SetKeepers(app.CustomGovKeeper, app.CustomStakingKeeper, app.BankKeeper)
 
 	return app
 }
