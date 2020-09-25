@@ -77,13 +77,13 @@ func (svd ValidateFeeRangeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 	bondDenom := svd.sk.BondDenom(ctx)
 	feeAmount := feeTx.GetFee().AmountOf(bondDenom).Uint64()
 
-	// execution fees
-	executionFee := uint64(0)
+	// execution failure fee should be prepaid
+	executionFailureFee := uint64(0)
 	for _, msg := range feeTx.GetMsgs() {
 		executionName := msg.Type()
 		fee := svd.cgk.GetExecutionFee(ctx, executionName)
 		if fee != nil { // execution fee exist
-			executionFee += fee.ExecutionFee
+			executionFailureFee += fee.FailureFee
 		}
 	}
 
@@ -91,8 +91,8 @@ func (svd ValidateFeeRangeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("fee out of range [%d, %d]", properties.MinTxFee, properties.MaxTxFee))
 	}
 
-	if feeAmount < executionFee {
-		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("fee is less than execution fee %d", executionFee))
+	if feeAmount < executionFailureFee {
+		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("fee is less than execution failure fee %d", executionFailureFee))
 	}
 
 	return next(ctx, tx, simulate)

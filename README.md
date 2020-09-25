@@ -25,7 +25,7 @@ whitelist:
 ```sh
 
 # command with fee set
-sekaid tx customgov set-network-properties --from validator --min_tx_fee="2" --max_tx_fee="2000" --keyring-backend=test --chain-id=testing --fees=100ukex --home=$HOME/.sekaid
+sekaid tx customgov set-network-properties --from validator --min_tx_fee="2" --max_tx_fee="20000" --keyring-backend=test --chain-id=testing --fees=100ukex --home=$HOME/.sekaid
 
 confirm transaction before signing and broadcasting [y/N]: y
 
@@ -36,7 +36,7 @@ confirm transaction before signing and broadcasting [y/N]: y
 {"height":"3","txhash":"032EF37E996A9D9060A70F74F2C78956FA95F39EDE6A91E1C8BC27EE75C62826","codespace":"customgov","code":5,"data":"","raw_log":"failed to execute message; message index: 0: PermChangeTxFee: not enough permissions","logs":[],"info":"","gas_wanted":"200000","gas_used":"52429","tx":null,"timestamp":""}
 
 # command without fee set
-sekaid tx customgov set-network-properties --from validator --min_tx_fee="2" --max_tx_fee="2000" --keyring-backend=test --chain-id=testing --home=$HOME/.sekaid
+sekaid tx customgov set-network-properties --from validator --min_tx_fee="2" --max_tx_fee="20000" --keyring-backend=test --chain-id=testing --home=$HOME/.sekaid
 
 # response
 confirm transaction before signing and broadcasting [y/N]: y
@@ -67,17 +67,37 @@ confirm transaction before signing and broadcasting [y/N]: y
 ## Set execution fee validation test
 ```sh
 # command for setting execution fee
-sekaid tx customgov set-execution-fee --from validator --execution_name="set-execution-fee" --transaction_type="B" --execution_fee=10000 --failure_fee=1 --timeout=10 default_parameters=0 --keyring-backend=test --chain-id=testing --fees=10000ukex --home=$HOME/.sekaid
+sekaid tx customgov set-execution-fee --from validator --execution_name="set-network-properties" --transaction_type="B" --execution_fee=10000 --failure_fee=1000 --timeout=10 default_parameters=0 --keyring-backend=test --chain-id=testing --fees=100ukex --home=$HOME/.sekaid
 
-Here, the value should be looked at is `--execution_name="set-execution-fee"` and `--execution_fee=10000`
+Here, the value should be looked at is `--execution_name="set-network-properties"`, `--execution_fee=10000` and `--failure_fee=1000`.
 
 # check execution fee validation
-sekaid tx customgov set-execution-fee --from validator --execution_name="set-execution-fee" --transaction_type="B" --execution_fee=10000 --failure_fee=1 --timeout=10 default_parameters=0 --keyring-backend=test --chain-id=testing --fees=100ukex --home=$HOME/.sekaid
+sekaid tx customgov set-network-properties --from validator --min_tx_fee="2" --max_tx_fee="20000" --keyring-backend=test --chain-id=testing --fees=100ukex --home=$HOME/.sekaid
 
 confirm transaction before signing and broadcasting [y/N]: y
 {"height":"0","txhash":"25F990EEC9E56141BA729A2B1AB83036D4A1A96DEB6D14B78C789349C1FB0B31","codespace":"sdk","code":18,"data":"","raw_log":"fee is less than execution fee 10000: invalid request","logs":[],"info":"","gas_wanted":"200000","gas_used":"15450","tx":null,"timestamp":""}
 
 Here, the value should be looked at is `"fee is less than execution fee 10000: invalid request"`.
+
+# preparation for networks
+sekaid tx customgov set-whitelist-permissions --from validator --keyring-backend=test --permission=4 --addr=$(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --chain-id=testing --fees=100ukex --home=$HOME/.sekaid <<< y
+sekaid tx customgov set-execution-fee --from validator --execution_name="set-network-properties" --transaction_type="B" --execution_fee=10000 --failure_fee=1000 --timeout=10 default_parameters=0 --keyring-backend=test --chain-id=testing --fees=100ukex --home=$HOME/.sekaid <<< y
+
+# init user1 with 100000ukex
+sekaid keys add user1 --keyring-backend=test --home=$HOME/.sekaid
+sekaid tx bank send validator $(sekaid keys show -a user1 --keyring-backend=test --home=$HOME/.sekaid) 100000ukex --keyring-backend=test --chain-id=testing --fees=100ukex --home=$HOME/.sekaid <<< y
+sekaid query bank balances $(sekaid keys show -a user1 --keyring-backend=test --home=$HOME/.sekaid) <<< y
+
+# try changing set-network-properties with user1 that does not have ChangeTxFee permission
+sekaid tx customgov set-network-properties --from user1 --min_tx_fee="2" --max_tx_fee="25000" --keyring-backend=test --chain-id=testing --fees=1000ukex --home=$HOME/.sekaid <<< y
+# this should fail and balance should be (previousBalance - failureFee)
+sekaid query bank balances $(sekaid keys show -a user1 --keyring-backend=test --home=$HOME/.sekaid)
+
+# whitelist user1's permission for ChangeTxFee and try again
+sekaid tx customgov set-whitelist-permissions --from validator --keyring-backend=test --permission=4 --addr=$(sekaid keys show -a user1 --keyring-backend=test --home=$HOME/.sekaid) --chain-id=testing --fees=100ukex --home=$HOME/.sekaid
+sekaid tx customgov set-network-properties --from user1 --min_tx_fee="2" --max_tx_fee="25000" --keyring-backend=test --chain-id=testing --fees=1000ukex --home=$HOME/.sekaid
+# this should fail and balance should be (previousBalance - successFee)
+sekaid query bank balances $(sekaid keys show -a user1 --keyring-backend=test --home=$HOME/.sekaid)
 ```
 
 ## Query execution fee
