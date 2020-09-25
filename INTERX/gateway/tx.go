@@ -12,7 +12,7 @@ import (
 
 const (
 	postTransaction      = "/api/cosmos/txs"
-	queryTransactionHash = "/api/cosmos/tx"
+	queryTransactionHash = "/api/cosmos/txs"
 )
 
 // RegisterTxRoutes registers query routers.

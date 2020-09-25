@@ -38,7 +38,7 @@
         ]
       }
     },
-    "/api/cosmos/tx/{hash}": {
+    "/api/cosmos/txs/{hash}": {
       "get": {
         "summary": "Query Transaction Hash",
         "description": "Query Transaction Hash.",

@@ -162,7 +162,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://0.0.0.0:11000/api/cosmos/tx/0x4A41257AC228F6CE476E9C9AD67BB98057412A22B035E1C0A4CCEB0E4E8E364D",
+					"raw": "http://0.0.0.0:11000/api/cosmos/txs/0x4A41257AC228F6CE476E9C9AD67BB98057412A22B035E1C0A4CCEB0E4E8E364D",
 					"protocol": "http",
 					"host": [
 						"0",
@@ -174,7 +174,7 @@
 					"path": [
 						"api",
 						"cosmos",
-						"tx",
+						"txs",
 						"0x4A41257AC228F6CE476E9C9AD67BB98057412A22B035E1C0A4CCEB0E4E8E364D"
 					]
 				}

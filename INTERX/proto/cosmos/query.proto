@@ -35,7 +35,7 @@ service Query {
   }
   rpc TransactionHash(TransactionHashRequest) returns (TransactionHashResponse) {
     option (google.api.http) = {
-      get: "/api/cosmos/tx/{hash}"
+      get: "/api/cosmos/txs/{hash}"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Query Transaction Hash"
