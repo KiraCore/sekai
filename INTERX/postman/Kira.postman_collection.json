@@ -203,7 +203,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://0.0.0.0:11000/api/cosmos/tx",
+					"raw": "http://0.0.0.0:11000/api/cosmos/txs",
 					"protocol": "http",
 					"host": [
 						"0",
@@ -215,7 +215,7 @@
 					"path": [
 						"api",
 						"cosmos",
-						"tx"
+						"txs"
 					]
 				}
 			},

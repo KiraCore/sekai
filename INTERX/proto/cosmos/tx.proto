@@ -25,7 +25,7 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
 service Transaction {
   rpc PostTransaction(PostTransactionRequest) returns (PostTransactionResponse) {
     option (google.api.http) = {
-      post: "/api/cosmos/tx"
+      post: "/api/cosmos/txs"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Post Transaction"
