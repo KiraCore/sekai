@@ -59,9 +59,6 @@ func NewRoute(p string, h sdk.Handler) sdk.Route {
 			fees := sdk.Coins{sdk.NewInt64Coin(bondDenom, amount)}
 			err := bankKeeper.SendCoinsFromAccountToModule(ctx, feePayer, authtypes.FeeCollectorName, fees)
 
-			// fmt.Println("balance before refund", bankKeeper.GetBalance(ctx, feePayer, bondDenom))
-			// fmt.Println("refunding fee for failure execution", amount)
-			// fmt.Println("balance after refund", bankKeeper.GetBalance(ctx, feePayer, bondDenom), "err=", err)
 			if err != nil {
 				// TODO this can be something that's not needed as this modified ctx won't be used for tx failure
 				ctx.GasMeter().ConsumeGas(fee.FailureFee, "consume execution failure fee")
