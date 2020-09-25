@@ -38,6 +38,7 @@ import (
 	tmos "github.com/tendermint/tendermint/libs/os"
 	dbm "github.com/tendermint/tm-db"
 
+	"github.com/KiraCore/sekai/middleware"
 	bam "github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -421,6 +422,8 @@ func NewInitApp(
 	// NOTE: the IBC mock keeper and application module is used only for testing core IBC. Do
 	// note replicate if you do not need to test core IBC or light clients.
 	app.scopedIBCMockKeeper = scopedIBCMockKeeper
+
+	middleware.SetKeepers(app.customGovKeeper, app.customStakingKeeper, app.bankKeeper)
 
 	return app
 }

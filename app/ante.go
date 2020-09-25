@@ -39,7 +39,7 @@ func NewAnteHandler(
 		ante.NewDeductFeeDecorator(ak, bankKeeper),
 		ante.NewSigGasConsumeDecorator(ak, sigGasConsumer),
 		// custom execution fee consume decorator
-		NewCustomExecutionFeeConsumeDecorator(ak, cgk),
+		// NewCustomExecutionFeeConsumeDecorator(ak, cgk),
 		ante.NewSigVerificationDecorator(ak, signModeHandler),
 		ante.NewIncrementSequenceDecorator(ak),
 	)
@@ -77,13 +77,13 @@ func (svd ValidateFeeRangeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 	bondDenom := svd.sk.BondDenom(ctx)
 	feeAmount := feeTx.GetFee().AmountOf(bondDenom).Uint64()
 
-	// execution fees
-	executionFee := uint64(0)
+	// execution failure fee should be prepaid
+	executionFailureFee := uint64(0)
 	for _, msg := range feeTx.GetMsgs() {
 		executionName := msg.Type()
 		fee := svd.cgk.GetExecutionFee(ctx, executionName)
 		if fee != nil { // execution fee exist
-			executionFee += fee.ExecutionFee
+			executionFailureFee += fee.FailureFee
 		}
 	}
 
@@ -91,43 +91,43 @@ func (svd ValidateFeeRangeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("fee out of range [%d, %d]", properties.MinTxFee, properties.MaxTxFee))
 	}
 
-	if feeAmount < executionFee {
-		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("fee is less than execution fee %d", executionFee))
+	if feeAmount < executionFailureFee {
+		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("fee is less than execution failure fee %d", executionFailureFee))
 	}
 
 	return next(ctx, tx, simulate)
 }
 
-// CustomExecutionFeeConsumeDecorator calculate custom gas consume
-type CustomExecutionFeeConsumeDecorator struct {
-	ak  keeper.AccountKeeper
-	cgk customgovkeeper.Keeper
-}
+// // CustomExecutionFeeConsumeDecorator calculate custom gas consume
+// type CustomExecutionFeeConsumeDecorator struct {
+// 	ak  keeper.AccountKeeper
+// 	cgk customgovkeeper.Keeper
+// }
 
-// NewCustomExecutionFeeConsumeDecorator returns instance of CustomExecutionFeeConsumeDecorator
-func NewCustomExecutionFeeConsumeDecorator(ak keeper.AccountKeeper, cgk customgovkeeper.Keeper) CustomExecutionFeeConsumeDecorator {
-	return CustomExecutionFeeConsumeDecorator{
-		ak:  ak,
-		cgk: cgk,
-	}
-}
+// // NewCustomExecutionFeeConsumeDecorator returns instance of CustomExecutionFeeConsumeDecorator
+// func NewCustomExecutionFeeConsumeDecorator(ak keeper.AccountKeeper, cgk customgovkeeper.Keeper) CustomExecutionFeeConsumeDecorator {
+// 	return CustomExecutionFeeConsumeDecorator{
+// 		ak:  ak,
+// 		cgk: cgk,
+// 	}
+// }
 
-// AnteHandle handle CustomExecutionFeeConsumeDecorator
-func (sgcd CustomExecutionFeeConsumeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
-	sigTx, ok := tx.(sdk.FeeTx)
-	if !ok {
-		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "invalid transaction type")
-	}
+// // AnteHandle handle CustomExecutionFeeConsumeDecorator
+// func (sgcd CustomExecutionFeeConsumeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
+// 	sigTx, ok := tx.(sdk.FeeTx)
+// 	if !ok {
+// 		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "invalid transaction type")
+// 	}
 
-	// execution fee consume gas
-	for _, msg := range sigTx.GetMsgs() {
-		executionName := msg.Type()
-		fee := sgcd.cgk.GetExecutionFee(ctx, executionName)
-		if fee != nil { // execution fee exist
-			// TODO should check failure case and in that case should consume failure fee
-			ctx.GasMeter().ConsumeGas(fee.ExecutionFee, "consume execution fee")
-		}
-	}
+// 	// execution fee consume gas
+// 	for _, msg := range sigTx.GetMsgs() {
+// 		executionName := msg.Type()
+// 		fee := sgcd.cgk.GetExecutionFee(ctx, executionName)
+// 		if fee != nil { // execution fee exist
+// 			ctx.GasMeter().ConsumeGas(fee.ExecutionFee, "consume execution fee")
+// 			// On failure case, fee modifier is running on middleware package.
+// 		}
+// 	}
 
-	return next(ctx, tx, simulate)
-}
+// 	return next(ctx, tx, simulate)
+// }
