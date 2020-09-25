@@ -46,7 +46,6 @@ func NewRoute(p string, h sdk.Handler) sdk.Route {
       return hResult, hErr
     }
 
-    // on failure case, should pay
     if hErr == nil {
       ctx.GasMeter().ConsumeGas(fee.ExecutionFee, "consume execution fee")
       return hResult, hErr
