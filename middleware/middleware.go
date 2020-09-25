@@ -22,6 +22,7 @@ func SetKeepers(cgk customgovkeeper.Keeper, csk customstakingkeeper.Keeper, bk b
   bankKeeper = bk
 }
 
+// MergeTwoErrors combines two error into one to show two errors in a single error text
 func MergeTwoErrors(hErr, err error) error {
   if hErr == nil {
     return err
