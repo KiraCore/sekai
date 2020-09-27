@@ -7,5 +7,6 @@ func DefaultGenesis() *GenesisState {
 			uint64(RoleSudo):      NewPermissions([]PermValue{PermSetPermissions, PermClaimCouncilor, PermClaimValidator}, nil),
 			uint64(RoleValidator): NewPermissions([]PermValue{PermClaimValidator}, nil),
 		},
+		StartingProposalId: 1,
 	}
 }

@@ -6,9 +6,11 @@ import (
 )
 
 var (
-	KeyPrefixPermissionsRegistry       = []byte("perm_registry")
-	KeyPrefixCouncilorIdentityRegistry = []byte("council_registry")
-	KeyPrefixActors                    = []byte("network_actors")
+	KeyProposalKeyIDPrefix = []byte{0x00}
+
+	KeyPrefixPermissionsRegistry       = []byte{0x20}
+	KeyPrefixCouncilorIdentityRegistry = []byte{0x21}
+	KeyPrefixActors                    = []byte{0x22}
 )
 
 type Keeper struct {

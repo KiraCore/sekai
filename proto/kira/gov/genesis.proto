@@ -6,6 +6,10 @@ import "gov.proto";
 option go_package = "github.com/KiraCore/sekai/x/gov/types";
 
 message GenesisState {
-  map<uint64, Permissions> permissions = 1;
-  repeated NetworkActor network_actors = 2;
+  // starting_proposal_id is the ID of the starting proposal.
+  uint64 starting_proposal_id = 1;
+  // permissions is the roles that are active from genesis.
+  map<uint64, Permissions> permissions = 2;
+  // NetworkActors are the actors that are saved from genesis.
+  repeated NetworkActor network_actors = 3;
 }
