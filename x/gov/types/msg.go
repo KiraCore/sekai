@@ -6,20 +6,20 @@ import (
 
 // Msg types
 const (
-	WhitelistPermissions     = "whitelist-permissions"
-	BlacklistPermissions     = "blacklist-permissions"
-	ProposalAssignPermission = "proposal-assign-permission"
+	MsgTypeWhitelistPermissions     = "whitelist-permissions"
+	MsgTypeBlacklistPermissions     = "blacklist-permissions"
+	MsgTypeProposalAssignPermission = "proposal-assign-permission"
 
-	ClaimCouncilor = "claim-councilor"
+	MsgTypeClaimCouncilor = "claim-councilor"
 
-	CreateRole = "create-role"
-	AssignRole = "assign-role"
-	RemoveRole = "remove-role"
+	MsgTypeCreateRole = "create-role"
+	MsgTypeAssignRole = "assign-role"
+	MsgTypeRemoveRole = "remove-role"
 
-	WhitelistRolePermission       = "whitelist-role-permission"
-	BlacklistRolePermission       = "blacklist-role-permission"
-	RemoveWhitelistRolePermission = "remove-whitelist-role-permission"
-	RemoveBlacklistRolePermission = "remove-blacklist-role-permission"
+	MsgTypeWhitelistRolePermission       = "whitelist-role-permission"
+	MsgTypeBlacklistRolePermission       = "blacklist-role-permission"
+	MsgTypeRemoveWhitelistRolePermission = "remove-whitelist-role-permission"
+	MsgTypeRemoveBlacklistRolePermission = "remove-blacklist-role-permission"
 )
 
 var (
@@ -58,7 +58,7 @@ func (m *MsgWhitelistPermissions) Route() string {
 }
 
 func (m *MsgWhitelistPermissions) Type() string {
-	return WhitelistPermissions
+	return MsgTypeWhitelistPermissions
 }
 
 func (m *MsgWhitelistPermissions) ValidateBasic() error {
@@ -100,7 +100,7 @@ func (m *MsgBlacklistPermissions) Route() string {
 }
 
 func (m *MsgBlacklistPermissions) Type() string {
-	return BlacklistPermissions
+	return MsgTypeBlacklistPermissions
 }
 
 func (m *MsgBlacklistPermissions) ValidateBasic() error {
@@ -147,7 +147,7 @@ func (m *MsgClaimCouncilor) Route() string {
 }
 
 func (m *MsgClaimCouncilor) Type() string {
-	return ClaimCouncilor
+	return MsgTypeClaimCouncilor
 }
 
 func (m *MsgClaimCouncilor) ValidateBasic() error {
@@ -182,7 +182,7 @@ func (m *MsgWhitelistRolePermission) Route() string {
 }
 
 func (m *MsgWhitelistRolePermission) Type() string {
-	return WhitelistRolePermission
+	return MsgTypeWhitelistRolePermission
 }
 
 func (m *MsgWhitelistRolePermission) ValidateBasic() error {
@@ -217,7 +217,7 @@ func (m *MsgBlacklistRolePermission) Route() string {
 }
 
 func (m *MsgBlacklistRolePermission) Type() string {
-	return BlacklistRolePermission
+	return MsgTypeBlacklistRolePermission
 }
 
 func (m *MsgBlacklistRolePermission) ValidateBasic() error {
@@ -252,7 +252,7 @@ func (m *MsgRemoveWhitelistRolePermission) Route() string {
 }
 
 func (m *MsgRemoveWhitelistRolePermission) Type() string {
-	return RemoveWhitelistRolePermission
+	return MsgTypeRemoveWhitelistRolePermission
 }
 
 func (m *MsgRemoveWhitelistRolePermission) ValidateBasic() error {
@@ -287,7 +287,7 @@ func (m *MsgRemoveBlacklistRolePermission) Route() string {
 }
 
 func (m *MsgRemoveBlacklistRolePermission) Type() string {
-	return RemoveBlacklistRolePermission
+	return MsgTypeRemoveBlacklistRolePermission
 }
 
 func (m *MsgRemoveBlacklistRolePermission) ValidateBasic() error {
@@ -318,7 +318,7 @@ func (m *MsgCreateRole) Route() string {
 }
 
 func (m *MsgCreateRole) Type() string {
-	return CreateRole
+	return MsgTypeCreateRole
 }
 
 func (m *MsgCreateRole) ValidateBasic() error {
@@ -349,7 +349,7 @@ func (m *MsgAssignRole) Route() string {
 }
 
 func (m *MsgAssignRole) Type() string {
-	return AssignRole
+	return MsgTypeAssignRole
 }
 
 func (m *MsgAssignRole) ValidateBasic() error {
@@ -384,7 +384,7 @@ func (m *MsgRemoveRole) Route() string {
 }
 
 func (m *MsgRemoveRole) Type() string {
-	return RemoveRole
+	return MsgTypeRemoveRole
 }
 
 func (m *MsgRemoveRole) ValidateBasic() error {
@@ -419,7 +419,7 @@ func (m *MsgProposalAssignPermission) Route() string {
 }
 
 func (m *MsgProposalAssignPermission) Type() string {
-	return ProposalAssignPermission
+	return MsgTypeProposalAssignPermission
 }
 
 func (m *MsgProposalAssignPermission) ValidateBasic() error {

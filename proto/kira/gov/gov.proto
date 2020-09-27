@@ -154,6 +154,15 @@ message NetworkActor {
   uint64 skin = 6;
 }
 
+message ProposalAssignPermission {
+  bytes address = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  uint32 permission = 2;
+}
+
 message Permissions {
   repeated uint32 blacklist = 1;
   repeated uint32 whitelist = 2;

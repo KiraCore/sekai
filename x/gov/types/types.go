@@ -173,3 +173,10 @@ func NewCouncilor(
 		Address:  address,
 	}
 }
+
+func NewProposalAssignPermission(address types.AccAddress, permission PermValue) ProposalAssignPermission {
+	return ProposalAssignPermission{
+		Address:    address,
+		Permission: uint32(permission),
+	}
+}
