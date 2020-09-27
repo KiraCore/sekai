@@ -330,12 +330,12 @@ func TestNewHandler_SetExecutionFee(t *testing.T) {
 
 	tests := []struct {
 		name       string
-		msg        sdk.Msg
+		msg        types.MsgSetExecutionFee
 		desiredErr string
 	}{
 		{
 			name: "Success run with ChangeTxFee permission",
-			msg: &types.MsgSetExecutionFee{
+			msg: types.MsgSetExecutionFee{
 				Name:              "network-properties",
 				TransactionType:   "B",
 				ExecutionFee:      10000,
@@ -348,7 +348,7 @@ func TestNewHandler_SetExecutionFee(t *testing.T) {
 		},
 		{
 			name: "Success run without ChangeTxFee permission",
-			msg: &types.MsgSetExecutionFee{
+			msg: types.MsgSetExecutionFee{
 				Name:              "network-properties-2",
 				TransactionType:   "B",
 				ExecutionFee:      10000,
@@ -382,9 +382,16 @@ func TestNewHandler_SetExecutionFee(t *testing.T) {
 			})
 			require.NoError(t, err)
 
-			_, err = handler(ctx, tt.msg)
+			_, err = handler(ctx, &tt.msg)
 			if tt.desiredErr == "" {
 				require.NoError(t, err)
+				execFee := app.CustomGovKeeper.GetExecutionFee(ctx, tt.msg.Name)
+				require.Equal(t, tt.msg.Name, execFee.Name)
+				require.Equal(t, tt.msg.TransactionType, execFee.TransactionType)
+				require.Equal(t, tt.msg.ExecutionFee, execFee.ExecutionFee)
+				require.Equal(t, tt.msg.FailureFee, execFee.FailureFee)
+				require.Equal(t, tt.msg.Timeout, execFee.Timeout)
+				require.Equal(t, tt.msg.DefaultParameters, execFee.DefaultParameters)
 			} else {
 				require.Error(t, err)
 				require.Contains(t, err.Error(), tt.desiredErr)
