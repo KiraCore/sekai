@@ -2,6 +2,7 @@ package gov_test
 
 import (
 	"fmt"
+	"os"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -16,7 +17,7 @@ import (
 
 func TestMain(m *testing.M) {
 	app.SetConfig()
-	m.Run()
+	os.Exit(m.Run())
 }
 
 // When a network actor has not been saved before, it creates one with default params
