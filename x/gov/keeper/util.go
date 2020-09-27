@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	"encoding/binary"
-
 	"github.com/KiraCore/sekai/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -62,13 +60,12 @@ func getRolePermissions(ctx sdk.Context, keeper Keeper, actor types.NetworkActor
 }
 
 // getProposalIDBytes returns the byte representation of the proposalID
-func getProposalIDBytes(proposalID uint64) (proposalIDBz []byte) {
-	proposalIDBz = make([]byte, 8)
-	binary.BigEndian.PutUint64(proposalIDBz, proposalID)
-	return
+func getProposalIDBytes(proposalID uint64) []byte {
+	proposalIDBz := sdk.Uint64ToBigEndian(proposalID)
+	return proposalIDBz
 }
 
 // getProposalIDFromBytes returns proposalID in uint64 format from a byte array
-func getProposalIDFromBytes(bz []byte) (proposalID uint64) {
-	return binary.BigEndian.Uint64(bz)
+func getProposalIDFromBytes(bz []byte) uint64 {
+	return sdk.BigEndianToUint64(bz)
 }

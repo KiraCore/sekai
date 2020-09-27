@@ -5,14 +5,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-var (
-	KeyProposalKeyIDPrefix = []byte{0x00}
-
-	KeyPrefixPermissionsRegistry       = []byte{0x20}
-	KeyPrefixCouncilorIdentityRegistry = []byte{0x21}
-	KeyPrefixActors                    = []byte{0x22}
-)
-
 type Keeper struct {
 	cdc      codec.BinaryMarshaler
 	storeKey sdk.StoreKey
