@@ -14,12 +14,15 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 		ctx = ctx.WithEventManager(sdk.NewEventManager())
 
 		switch msg := msg.(type) {
+		// Permission Related
 		case *customgovtypes.MsgWhitelistPermissions:
 			return handleWhitelistPermissions(ctx, ck, msg)
 		case *customgovtypes.MsgBlacklistPermissions:
 			return handleBlacklistPermissions(ctx, ck, msg)
+		// Councilor Related
 		case *customgovtypes.MsgClaimCouncilor:
 			return handleClaimCouncilor(ctx, ck, msg)
+		// Role Related
 		case *customgovtypes.MsgWhitelistRolePermission:
 			return handleWhitelistRolePermission(ctx, ck, msg)
 		case *customgovtypes.MsgBlacklistRolePermission:
@@ -34,10 +37,26 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 			return handleAssignRole(ctx, ck, msg)
 		case *customgovtypes.MsgRemoveRole:
 			return handleMsgRemoveRole(ctx, ck, msg)
+		// Proposal related
+		case *customgovtypes.MsgProposalAssignPermission:
+			return handleMsgProposalAssignPermission(ctx, ck, msg)
 		default:
 			return nil, errors.Wrapf(errors.ErrUnknownRequest, "unrecognized %s message type: %T", types.ModuleName, msg)
 		}
 	}
+}
+
+func handleMsgProposalAssignPermission(
+	ctx sdk.Context,
+	ck keeper.Keeper,
+	msg *customgovtypes.MsgProposalAssignPermission,
+) (*sdk.Result, error) {
+	_, err := ck.GetNetworkActorByAddress(ctx, msg.Proposer)
+	if err != nil {
+		return nil, types.ErrNetworkActorNotFound
+	}
+
+	return nil, nil
 }
 
 func handleMsgRemoveRole(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgRemoveRole) (*sdk.Result, error) {

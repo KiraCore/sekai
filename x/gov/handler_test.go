@@ -968,6 +968,70 @@ func TestHandler_RemoveRoles(t *testing.T) {
 	require.False(t, actor.HasRole(3))
 }
 
+func TestHandler_ProposalAssignPermission_Errors(t *testing.T) {
+	proposerAddr, err := sdk.AccAddressFromBech32("kira1alzyfq40zjsveat87jlg8jxetwqmr0a29sgd0f")
+	require.NoError(t, err)
+
+	addr, err := sdk.AccAddressFromBech32("kira15ky9du8a2wlstz6fpx3p4mqpjyrm5cgqzp4f3d")
+	require.NoError(t, err)
+
+	tests := []struct {
+		name         string
+		msg          *types.MsgProposalAssignPermission
+		preparePerms func(t *testing.T, app *simapp.SimApp, ctx sdk.Context)
+		expectedErr  error
+	}{
+		{
+			"NetworkActor does not exist",
+			types.NewMsgProposalAssignPermission(
+				proposerAddr, addr, 3,
+			),
+			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
+			fmt.Errorf("network actor not found"),
+		},
+		//{
+		//	"fails when role does not exist",
+		//	types.NewMsgProposalAssignPermission(
+		//		proposerAddr, addr, 3,
+		//	),
+		//	func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+		//		err2 := setPermissionToAddr(t, app, ctx, proposerAddr, types.PermSetPermissions)
+		//		require.NoError(t, err2)
+		//	},
+		//	types.ErrRoleDoesNotExist,
+		//},
+		//{
+		//	"role not assigned",
+		//	types.NewMsgProposalAssignPermission(
+		//		proposerAddr, addr, 3,
+		//	),
+		//	func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+		//		err2 := setPermissionToAddr(t, app, ctx, proposerAddr, types.PermSetPermissions)
+		//		require.NoError(t, err2)
+		//
+		//		app.CustomGovKeeper.SetPermissionsForRole(ctx, types.Role(3), types.NewPermissions([]types.PermValue{
+		//			types.PermClaimValidator,
+		//		}, nil))
+		//
+		//		networkActor := types.NewDefaultActor(addr)
+		//		app.CustomGovKeeper.SaveNetworkActor(ctx, networkActor)
+		//	},
+		//	types.ErrRoleNotAssigned,
+		//},
+	}
+
+	for _, tt := range tests {
+		app := simapp.Setup(false)
+		ctx := app.NewContext(false, tmproto.Header{})
+
+		tt.preparePerms(t, app, ctx)
+
+		handler := gov.NewHandler(app.CustomGovKeeper)
+		_, err := handler(ctx, tt.msg)
+		require.EqualError(t, err, tt.expectedErr.Error())
+	}
+}
+
 func setPermissionToAddr(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addr sdk.AccAddress, perm types.PermValue) error {
 	proposerActor := types.NewDefaultActor(addr)
 	err := proposerActor.Permissions.AddToWhitelist(perm)
