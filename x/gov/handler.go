@@ -3,10 +3,10 @@ package gov
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
+	types2 "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	"github.com/KiraCore/sekai/x/gov/keeper"
 	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
-	"github.com/KiraCore/sekai/x/staking/types"
 )
 
 func NewHandler(ck keeper.Keeper) sdk.Handler {
@@ -41,7 +41,7 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 		case *customgovtypes.MsgProposalAssignPermission:
 			return handleMsgProposalAssignPermission(ctx, ck, msg)
 		default:
-			return nil, errors.Wrapf(errors.ErrUnknownRequest, "unrecognized %s message type: %T", types.ModuleName, msg)
+			return nil, errors.Wrapf(errors.ErrUnknownRequest, "unrecognized %s message type: %T", customgovtypes.ModuleName, msg)
 		}
 	}
 }
@@ -51,12 +51,20 @@ func handleMsgProposalAssignPermission(
 	ck keeper.Keeper,
 	msg *customgovtypes.MsgProposalAssignPermission,
 ) (*sdk.Result, error) {
-	_, err := ck.GetNetworkActorByAddress(ctx, msg.Proposer)
+	_, err := ck.GetCouncilor(ctx, msg.Proposer)
 	if err != nil {
-		return nil, types.ErrNetworkActorNotFound
+		return nil, err
 	}
 
-	return nil, nil
+	proposal := customgovtypes.NewProposalAssignPermission(msg.Address, customgovtypes.PermValue(msg.Permission))
+	proposalID, err := ck.SaveProposal(ctx, proposal)
+	if err != nil {
+		return nil, err
+	}
+
+	return &sdk.Result{
+		Data: types2.GetProposalIDBytes(proposalID),
+	}, nil
 }
 
 func handleMsgRemoveRole(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgRemoveRole) (*sdk.Result, error) {

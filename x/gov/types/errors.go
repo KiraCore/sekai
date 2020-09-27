@@ -16,4 +16,5 @@ var (
 	ErrRemovingBlacklist          = errors.Register(ModuleName, 11, "error removing from blacklist")
 	ErrRoleAlreadyAssigned        = errors.Register(ModuleName, 13, "role already assigned")
 	ErrRoleNotAssigned            = errors.Register(ModuleName, 14, "role not assigned")
+	ErrCouncilorNotFound          = errors.Register(ModuleName, 15, "councilor not found")
 )

@@ -3,6 +3,8 @@ package keeper
 import (
 	"fmt"
 
+	"github.com/cosmos/cosmos-sdk/types/errors"
+
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -42,7 +44,7 @@ func (k Keeper) GetCouncilorByMoniker(ctx sdk.Context, moniker string) (types.Co
 
 	councilorKey := prefixStore.Get(GetCouncilorByMonikerKey(moniker))
 	if councilorKey == nil {
-		return types.Councilor{}, fmt.Errorf("councilor with moniker %s not found", moniker)
+		return types.Councilor{}, errors.Wrap(types.ErrCouncilorNotFound, fmt.Sprintf("councilor with moniker %s not found", moniker))
 	}
 
 	return k.getCouncilorByKey(ctx, councilorKey)
@@ -53,7 +55,7 @@ func (k Keeper) getCouncilorByKey(ctx sdk.Context, key []byte) (types.Councilor,
 
 	bz := prefixStore.Get(key)
 	if bz == nil {
-		return types.Councilor{}, fmt.Errorf("councilor not found")
+		return types.Councilor{}, types.ErrCouncilorNotFound
 	}
 
 	var councilor types.Councilor

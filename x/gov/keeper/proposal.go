@@ -41,7 +41,7 @@ func (k Keeper) SaveProposal(ctx sdk.Context, proposal types.ProposalAssignPermi
 	// Update NextProposal
 	k.SaveProposalID(ctx, proposalID+1)
 
-	return proposalID, err
+	return proposalID, nil
 }
 
 func GetProposalKey(proposalID uint64) []byte {

@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"testing"
 
+	types2 "github.com/cosmos/cosmos-sdk/x/gov/types"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
@@ -982,42 +984,13 @@ func TestHandler_ProposalAssignPermission_Errors(t *testing.T) {
 		expectedErr  error
 	}{
 		{
-			"NetworkActor does not exist",
+			"Proposer is not a councilor",
 			types.NewMsgProposalAssignPermission(
 				proposerAddr, addr, 3,
 			),
 			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
-			fmt.Errorf("network actor not found"),
+			fmt.Errorf("councilor not found"),
 		},
-		//{
-		//	"fails when role does not exist",
-		//	types.NewMsgProposalAssignPermission(
-		//		proposerAddr, addr, 3,
-		//	),
-		//	func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
-		//		err2 := setPermissionToAddr(t, app, ctx, proposerAddr, types.PermSetPermissions)
-		//		require.NoError(t, err2)
-		//	},
-		//	types.ErrRoleDoesNotExist,
-		//},
-		//{
-		//	"role not assigned",
-		//	types.NewMsgProposalAssignPermission(
-		//		proposerAddr, addr, 3,
-		//	),
-		//	func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
-		//		err2 := setPermissionToAddr(t, app, ctx, proposerAddr, types.PermSetPermissions)
-		//		require.NoError(t, err2)
-		//
-		//		app.CustomGovKeeper.SetPermissionsForRole(ctx, types.Role(3), types.NewPermissions([]types.PermValue{
-		//			types.PermClaimValidator,
-		//		}, nil))
-		//
-		//		networkActor := types.NewDefaultActor(addr)
-		//		app.CustomGovKeeper.SaveNetworkActor(ctx, networkActor)
-		//	},
-		//	types.ErrRoleNotAssigned,
-		//},
 	}
 
 	for _, tt := range tests {
@@ -1030,6 +1003,33 @@ func TestHandler_ProposalAssignPermission_Errors(t *testing.T) {
 		_, err := handler(ctx, tt.msg)
 		require.EqualError(t, err, tt.expectedErr.Error())
 	}
+}
+
+func TestHandler_ProposalAssignPermission(t *testing.T) {
+	proposerAddr, err := sdk.AccAddressFromBech32("kira1alzyfq40zjsveat87jlg8jxetwqmr0a29sgd0f")
+	require.NoError(t, err)
+
+	addr, err := sdk.AccAddressFromBech32("kira15ky9du8a2wlstz6fpx3p4mqpjyrm5cgqzp4f3d")
+	require.NoError(t, err)
+
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	// Set proposer as councilor
+	app.CustomGovKeeper.SaveCouncilor(ctx, types.NewCouncilor("test", "website", "social", "identity", proposerAddr))
+
+	handler := gov.NewHandler(app.CustomGovKeeper)
+	res, err := handler(
+		ctx,
+		types.NewMsgProposalAssignPermission(proposerAddr, addr, types.PermValue(1)),
+	)
+	require.NoError(t, err)
+	require.Equal(t, types2.GetProposalIDBytes(1), res.Data)
+
+	// Next proposal ID is increased.
+	id, err := app.CustomGovKeeper.GetNextProposalID(ctx)
+	require.NoError(t, err)
+	require.Equal(t, uint64(2), id)
 }
 
 func setPermissionToAddr(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addr sdk.AccAddress, perm types.PermValue) error {
