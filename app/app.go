@@ -28,6 +28,7 @@ import (
 	cumstomtypes "github.com/KiraCore/sekai/x/staking/types"
 
 	customstaking "github.com/KiraCore/sekai/x/staking"
+	customante "github.com/KiraCore/sekai/app/ante"
 
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 
@@ -395,7 +396,7 @@ func NewInitApp(
 	app.SetInitChainer(app.InitChainer)
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetAnteHandler(
-		NewAnteHandler(
+		customante.NewAnteHandler(
 			app.customStakingKeeper, app.customGovKeeper, app.accountKeeper, app.bankKeeper, ante.DefaultSigVerificationGasConsumer,
 			encodingConfig.TxConfig.SignModeHandler(),
 		),
