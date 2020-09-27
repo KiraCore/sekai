@@ -410,6 +410,10 @@ func (m *MsgRemoveRole) GetSigners() []sdk.AccAddress {
 	}
 }
 
+func NewMsgProposalAssignPermission(proposer, address sdk.AccAddress, permission uint32) *MsgProposalAssignPermission {
+	return &MsgProposalAssignPermission{Proposer: proposer, Address: address, Permission: permission}
+}
+
 func (m *MsgProposalAssignPermission) Route() string {
 	return ModuleName
 }
