@@ -87,7 +87,7 @@ func (s IntegrationTestSuite) TestRolePermissions_QueryCommand_DefaultRolePerms(
 func (s IntegrationTestSuite) TestClaimCouncilor_HappyPath() {
 	val := s.network.Validators[0]
 
-	cmd := cli.GetTxClaimGovernanceCmd()
+	cmd := cli.GetTxClaimCouncilorSeatCmd()
 	_, out := testutil.ApplyMockIO(cmd)
 	clientCtx := val.ClientCtx.WithOutput(out).WithOutputFormat("json")
 

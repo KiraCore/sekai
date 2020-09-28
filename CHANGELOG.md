@@ -1,5 +1,18 @@
 # Changelog
 
+## [Unreleased]
+### Added
+
+### Changed
+- Now the commands for all Governance module is simplified in a better hierarchical style.
+```
+Available Commands:
+  councilor   Councilor subcommands
+  permission  Permission subcommands
+  proposal    Proposal subcommands
+  role        Role subcommands
+```
+
 ## [0.1.2.4] - 09.24.2020
 ### Added
 
