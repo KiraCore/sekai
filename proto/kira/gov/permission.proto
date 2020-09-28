@@ -5,6 +5,22 @@ import "gogoproto/gogo.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/gov/types";
 
+enum PermValue {
+  option (gogoproto.goproto_enum_prefix) = false;
+
+  // PERMISSION_ZERO is a no-op permission.
+  PERMISSION_ZERO = 0 [(gogoproto.enumvalue_customname) = "PermZero"];
+
+  // PERMISSION_CLAIM_VALIDATOR defines the permission that allows to Claim a validator Seat.
+  PERMISSION_CLAIM_VALIDATOR = 1 [(gogoproto.enumvalue_customname) = "PermClaimValidator"];
+
+  // PERMISSION_SET_PERMISSIONS defines the permission that allows to Set Permissions to other actors.
+  PERMISSION_SET_PERMISSIONS = 2 [(gogoproto.enumvalue_customname) = "PermSetPermissions"];
+
+  // PERMISSION_SET_PERMISSIONS defines the permission that allows to Claim a Councilor Seat.
+  PERMISSION_CLAIM_COUNCILOR = 3 [(gogoproto.enumvalue_customname) = "PermClaimCouncilor"];
+}
+
 message Permissions {
   repeated uint32 blacklist = 1;
   repeated uint32 whitelist = 2;
