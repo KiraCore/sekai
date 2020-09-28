@@ -1,8 +1,8 @@
 syntax = "proto3";
 package kira.gov;
 
-import "gov.proto";
 import "permission.proto";
+import "councilor.proto";
 import "gogoproto/gogo.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/gov/types";

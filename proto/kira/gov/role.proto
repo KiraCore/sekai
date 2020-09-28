@@ -1,0 +1,84 @@
+syntax = "proto3";
+package kira.gov;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/gov/types";
+
+message MsgCreateRole {
+  bytes proposer = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  uint32 role = 2;
+}
+
+message MsgAssignRole {
+  bytes proposer = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  bytes address = 2 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  uint32 role = 3;
+}
+
+message MsgRemoveRole {
+  bytes proposer = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  bytes address = 2 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  uint32 role = 3;
+}
+
+message MsgWhitelistRolePermission {
+  bytes proposer = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  uint32 role = 2;
+  uint32 permission = 3;
+}
+
+message MsgBlacklistRolePermission {
+  bytes proposer = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  uint32 role = 2;
+  uint32 permission = 3;
+}
+
+message MsgRemoveWhitelistRolePermission {
+  bytes proposer = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  uint32 role = 2;
+  uint32 permission = 3;
+}
+
+message MsgRemoveBlacklistRolePermission {
+  bytes proposer = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  uint32 role = 2;
+  uint32 permission = 3;
+}
+
