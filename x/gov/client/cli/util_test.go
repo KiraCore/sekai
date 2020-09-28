@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/cosmos/cosmos-sdk/client/flags"
+	cli3 "github.com/cosmos/cosmos-sdk/x/bank/client/cli"
 
 	"github.com/stretchr/testify/require"
 
@@ -64,5 +65,35 @@ func (s IntegrationTestSuite) SetCouncilor(address types3.Address) {
 	)
 
 	err := cmd.ExecuteContext(ctx)
+	s.Require().NoError(err)
+
+	err = s.network.WaitForNextBlock()
+	s.Require().NoError(err)
+}
+
+// SendValue sends Coins from A to B using CLI.
+func (s IntegrationTestSuite) SendValue(cCtx client.Context, from types3.AccAddress, to types3.AccAddress, coin types3.Coin) {
+	cmd := cli3.NewSendTxCmd()
+	_, out := testutil.ApplyMockIO(cmd)
+	cCtx = cCtx.WithOutput(out).WithOutputFormat("json")
+
+	cmd.SetArgs(
+		[]string{
+			from.String(),
+			to.String(),
+			coin.String(),
+			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+			fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(10))).String()),
+		},
+	)
+
+	ctx := context.Background()
+	ctx = context.WithValue(ctx, client.ClientContextKey, &cCtx)
+
+	err := cmd.ExecuteContext(ctx)
+	s.Require().NoError(err)
+
+	err = s.network.WaitForNextBlock()
 	s.Require().NoError(err)
 }

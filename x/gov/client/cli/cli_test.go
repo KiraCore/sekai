@@ -5,14 +5,8 @@ import (
 	"fmt"
 	"testing"
 
-	cli3 "github.com/cosmos/cosmos-sdk/x/bank/client/cli"
-
-	"github.com/cosmos/cosmos-sdk/client/flags"
-
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
-	types3 "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/KiraCore/sekai/x/gov/client/cli"
+	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/testutil"
@@ -142,32 +136,6 @@ func (s IntegrationTestSuite) TestClaimCouncilor_HappyPath() {
 	s.Require().NoError(err)
 	s.Require().Equal(val.Moniker, councilorByMoniker.Moniker)
 	s.Require().Equal(val.Address, councilorByMoniker.Address)
-}
-
-func (s IntegrationTestSuite) sendValue(cCtx client.Context, from types3.AccAddress, to types3.AccAddress, coin types3.Coin) {
-	cmd := cli3.NewSendTxCmd()
-	_, out := testutil.ApplyMockIO(cmd)
-	cCtx = cCtx.WithOutput(out).WithOutputFormat("json")
-
-	cmd.SetArgs(
-		[]string{
-			from.String(),
-			to.String(),
-			coin.String(),
-			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-			fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(10))).String()),
-		},
-	)
-
-	ctx := context.Background()
-	ctx = context.WithValue(ctx, client.ClientContextKey, &cCtx)
-
-	err := cmd.ExecuteContext(ctx)
-	s.Require().NoError(err)
-
-	err = s.network.WaitForNextBlock()
-	s.Require().NoError(err)
 }
 
 func TestIntegrationTestSuite(t *testing.T) {
