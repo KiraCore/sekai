@@ -22,9 +22,6 @@ enum VoteOption {
 }
 
 message Vote {
-  option (gogoproto.goproto_stringer) = false;
-  option (gogoproto.equal)            = false;
-
   uint64     proposal_id = 1;
 
   bytes voter = 2 [
