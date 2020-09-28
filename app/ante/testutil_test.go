@@ -9,9 +9,10 @@ import (
 	"github.com/tendermint/tendermint/crypto"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
+	customante "github.com/KiraCore/sekai/app/ante"
+	"github.com/KiraCore/sekai/simapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/tx"
-	"github.com/cosmos/cosmos-sdk/simapp"
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/tx/signing"
@@ -60,7 +61,13 @@ func (suite *AnteTestSuite) SetupTest(isCheckTx bool) {
 	suite.clientCtx = client.Context{}.
 		WithTxConfig(encodingConfig.TxConfig)
 
-	suite.anteHandler = ante.NewAnteHandler(suite.app.AccountKeeper, suite.app.BankKeeper, ante.DefaultSigVerificationGasConsumer, encodingConfig.TxConfig.SignModeHandler())
+	suite.anteHandler = customante.NewAnteHandler(
+		suite.app.CustomStakingKeeper,
+		suite.app.CustomGovKeeper,
+		suite.app.AccountKeeper,
+		suite.app.BankKeeper,
+		ante.DefaultSigVerificationGasConsumer,
+		encodingConfig.TxConfig.SignModeHandler())
 }
 
 // CreateTestAccounts creates `numAccs` accounts, and return all relevant
@@ -133,11 +140,11 @@ func (suite *AnteTestSuite) CreateTestTx(privs []crypto.PrivKey, accNums []uint6
 
 // TestCase represents a test case used in test tables.
 type TestCase struct {
-	desc     string
-	malleate func()
-	simulate bool
-	expPass  bool
-	expErr   error
+	desc      string
+	buildTest func() []sdk.Msg
+	simulate  bool
+	expPass   bool
+	expErr    error
 }
 
 // CreateTestTx is a helper function to create a tx given multiple inputs.
