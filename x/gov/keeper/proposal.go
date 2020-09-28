@@ -16,7 +16,7 @@ func (k Keeper) GetNextProposalID(ctx sdk.Context) (uint64, error) {
 		return 0, errors.Wrap(sdktypes.ErrInvalidGenesis, "initial proposal ID hasn't been set")
 	}
 
-	proposalID := getProposalIDFromBytes(bz)
+	proposalID := GetProposalIDFromBytes(bz)
 
 	return proposalID, nil
 }
@@ -24,7 +24,7 @@ func (k Keeper) GetNextProposalID(ctx sdk.Context) (uint64, error) {
 func (k Keeper) SaveProposalID(ctx sdk.Context, proposalID uint64) {
 	store := ctx.KVStore(k.storeKey)
 
-	store.Set(NextProposalIDPrefix, getProposalIDBytes(proposalID))
+	store.Set(NextProposalIDPrefix, GetProposalIDBytes(proposalID))
 }
 
 func (k Keeper) SaveProposal(ctx sdk.Context, proposal types.ProposalAssignPermission) (uint64, error) {
@@ -45,5 +45,5 @@ func (k Keeper) SaveProposal(ctx sdk.Context, proposal types.ProposalAssignPermi
 }
 
 func GetProposalKey(proposalID uint64) []byte {
-	return append(ProposalsPrefix, getProposalIDBytes(proposalID)...)
+	return append(ProposalsPrefix, GetProposalIDBytes(proposalID)...)
 }
