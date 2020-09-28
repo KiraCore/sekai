@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"fmt"
+	types2 "github.com/KiraCore/sekai/x/staking/types"
 
 	"github.com/KiraCore/sekai/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
@@ -20,7 +20,7 @@ func (k Keeper) GetNetworkActorByAddress(ctx sdk.Context, address sdk.AccAddress
 
 	bz := prefixStore.Get(address.Bytes())
 	if bz == nil {
-		return types.NetworkActor{}, fmt.Errorf("network actor not found")
+		return types.NetworkActor{}, types2.ErrNetworkActorNotFound
 	}
 
 	var na types.NetworkActor

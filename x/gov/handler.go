@@ -55,6 +55,13 @@ func handleMsgProposalAssignPermission(
 		return nil, err
 	}
 
+	actor, err := ck.GetNetworkActorByAddress(ctx, msg.Address)
+	if err == nil { // Actor exists
+		if actor.Permissions.IsWhitelisted(customgovtypes.PermValue(msg.Permission)) {
+			return nil, errors.Wrap(customgovtypes.ErrWhitelisting, "permission already whitelisted")
+		}
+	}
+
 	proposal := customgovtypes.NewProposalAssignPermission(msg.Address, customgovtypes.PermValue(msg.Permission))
 	proposalID, err := ck.SaveProposal(ctx, proposal)
 	if err != nil {

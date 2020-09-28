@@ -986,10 +986,26 @@ func TestHandler_ProposalAssignPermission_Errors(t *testing.T) {
 		{
 			"Proposer is not a councilor",
 			types.NewMsgProposalAssignPermission(
-				proposerAddr, addr, 3,
+				proposerAddr, addr, types.PermClaimValidator,
 			),
 			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
 			fmt.Errorf("councilor not found"),
+		},
+		{
+			"address already has that permission",
+			types.NewMsgProposalAssignPermission(
+				proposerAddr, addr, types.PermClaimValidator,
+			),
+			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+				app.CustomGovKeeper.SaveCouncilor(ctx, types.NewCouncilor("test", "website", "social", "identity", proposerAddr))
+
+				actor := types.NewDefaultActor(addr)
+				err2 := actor.Permissions.AddToWhitelist(types.PermClaimValidator)
+				require.NoError(t, err2)
+
+				app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
+			},
+			fmt.Errorf("permission already whitelisted: error adding to whitelist"),
 		},
 	}
 
