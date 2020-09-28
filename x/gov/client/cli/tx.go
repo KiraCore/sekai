@@ -38,15 +38,44 @@ func NewTxCmd() *cobra.Command {
 
 	txCmd.AddCommand(GetTxClaimGovernanceCmd())
 
-	txCmd.AddCommand(GetTxCreateRole())
-	txCmd.AddCommand(GetTxRemoveRole())
-
-	txCmd.AddCommand(GetTxBlacklistRolePermission())
-	txCmd.AddCommand(GetTxWhitelistRolePermission())
-	txCmd.AddCommand(GetTxRemoveWhitelistRolePermission())
-	txCmd.AddCommand(GetTxRemoveBlacklistRolePermission())
+	txCmd.AddCommand(NewTxProposalCmds())
+	txCmd.AddCommand(NewTxRoleCmds())
 
 	return txCmd
+}
+
+// NewTxProposalCmds returns the subcommands of proposal related commands.
+func NewTxProposalCmds() *cobra.Command {
+	proposalCmd := &cobra.Command{
+		Use:                        "proposal",
+		Short:                      "Proposal subcommands",
+		DisableFlagParsing:         true,
+		SuggestionsMinimumDistance: 2,
+		RunE:                       client.ValidateCmd,
+	}
+
+	return proposalCmd
+}
+
+// NewTxRoleCmds returns the subcommands of role related commands.
+func NewTxRoleCmds() *cobra.Command {
+	roleCmd := &cobra.Command{
+		Use:                        "role",
+		Short:                      "Role subcommands",
+		DisableFlagParsing:         true,
+		SuggestionsMinimumDistance: 2,
+		RunE:                       client.ValidateCmd,
+	}
+
+	roleCmd.AddCommand(GetTxCreateRole())
+	roleCmd.AddCommand(GetTxRemoveRole())
+
+	roleCmd.AddCommand(GetTxBlacklistRolePermission())
+	roleCmd.AddCommand(GetTxWhitelistRolePermission())
+	roleCmd.AddCommand(GetTxRemoveWhitelistRolePermission())
+	roleCmd.AddCommand(GetTxRemoveBlacklistRolePermission())
+
+	return roleCmd
 }
 
 func GetTxSetWhitelistPermissions() *cobra.Command {
@@ -355,6 +384,47 @@ func GetTxAssignRole() *cobra.Command {
 func GetTxRemoveRole() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "remove-role role",
+		Short: "Remove new role",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			role, err := strconv.Atoi(args[0])
+			if err != nil {
+				return fmt.Errorf("invalid role: %w", err)
+			}
+
+			addr, err := getAddressFromFlag(cmd)
+			if err != nil {
+				return fmt.Errorf("error getting address: %w", err)
+			}
+
+			msg := types.NewMsgRemoveRole(
+				clientCtx.FromAddress,
+				addr,
+				uint32(role),
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	cmd.Flags().String(cli.FlagAddr, "", "the address to set permissions")
+
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+	_ = cmd.MarkFlagRequired(cli.FlagAddr)
+
+	return cmd
+}
+
+func GetTxProposalAssignPermission() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "assign-permission role",
 		Short: "Remove new role",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
