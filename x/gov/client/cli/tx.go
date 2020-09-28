@@ -51,6 +51,8 @@ func NewTxProposalCmds() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
+	proposalCmd.AddCommand(GetTxProposalAssignPermission())
+
 	return proposalCmd
 }
 
@@ -451,8 +453,8 @@ func GetTxRemoveRole() *cobra.Command {
 
 func GetTxProposalAssignPermission() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "assign-permission role",
-		Short: "Remove new role",
+		Use:   "assign-permission permission",
+		Short: "Create a proposal to assign a permission to an address.",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
@@ -461,9 +463,9 @@ func GetTxProposalAssignPermission() *cobra.Command {
 				return err
 			}
 
-			role, err := strconv.Atoi(args[0])
+			perm, err := strconv.Atoi(args[0])
 			if err != nil {
-				return fmt.Errorf("invalid role: %w", err)
+				return fmt.Errorf("invalid perm: %w", err)
 			}
 
 			addr, err := getAddressFromFlag(cmd)
@@ -471,10 +473,10 @@ func GetTxProposalAssignPermission() *cobra.Command {
 				return fmt.Errorf("error getting address: %w", err)
 			}
 
-			msg := types.NewMsgRemoveRole(
+			msg := types.NewMsgProposalAssignPermission(
 				clientCtx.FromAddress,
 				addr,
-				uint32(role),
+				types.PermValue(perm),
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
