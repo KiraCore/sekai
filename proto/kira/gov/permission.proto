@@ -10,6 +10,19 @@ message Permissions {
   repeated uint32 whitelist = 2;
 }
 
+message NetworkActor {
+  bytes address = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  repeated uint64 roles = 2;
+  uint32 status = 3;
+  repeated uint32 votes = 4;
+  Permissions permissions = 5;
+  uint64 skin = 6;
+}
+
 message MsgWhitelistPermissions {
   option (gogoproto.equal)            = true;
 
