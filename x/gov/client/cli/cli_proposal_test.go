@@ -18,6 +18,8 @@ func (s IntegrationTestSuite) TestCreateProposalAssignPermission() {
 	// Query permissions for role Validator
 	val := s.network.Validators[0]
 
+	s.SetCouncilor(val.Address)
+
 	cmd := cli.GetTxProposalAssignPermission()
 	_, out := testutil.ApplyMockIO(cmd)
 	clientCtx := val.ClientCtx.WithOutput(out).WithOutputFormat("json")
@@ -36,6 +38,4 @@ func (s IntegrationTestSuite) TestCreateProposalAssignPermission() {
 
 	err := cmd.ExecuteContext(ctx)
 	s.Require().NoError(err)
-
-	s.T().Logf("%s", out.String())
 }
