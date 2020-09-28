@@ -10,6 +10,11 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	registerPermissionsCodec(cdc)
 	registerRolesCodec(cdc)
 	registerCouncilorCodec(cdc)
+	registerProposalCodec(cdc)
+}
+
+func registerProposalCodec(cdc *codec.LegacyAmino) {
+	cdc.RegisterConcrete(&MsgProposalAssignPermission{}, "kiraHub/MsgProposalAssignPermission", nil)
 }
 
 func registerCouncilorCodec(cdc *codec.LegacyAmino) {
@@ -47,6 +52,8 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgBlacklistRolePermission{},
 		&MsgRemoveWhitelistRolePermission{},
 		&MsgRemoveBlacklistRolePermission{},
+
+		&MsgProposalAssignPermission{},
 	)
 }
 
