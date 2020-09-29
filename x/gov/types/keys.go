@@ -4,7 +4,6 @@ import sdk "github.com/cosmos/cosmos-sdk/types"
 
 const ModuleName = "customgov"
 
-
 var (
 	// Roles
 	RoleUndefined Role = 0x0
