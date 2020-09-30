@@ -88,11 +88,11 @@ func (svd ValidateFeeRangeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 	}
 
 	if feeAmount < properties.MinTxFee || feeAmount > properties.MaxTxFee {
-		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("fee out of range [%d, %d]", properties.MinTxFee, properties.MaxTxFee))
+		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("fee %+v is out of range [%d, %d]%s", feeTx.GetFee(), properties.MinTxFee, properties.MaxTxFee, bondDenom))
 	}
 
 	if feeAmount < executionFailureFee {
-		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("fee is less than execution failure fee %d", executionFailureFee))
+		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("fee %+v is less than execution failure fee %d%s", feeTx.GetFee(), executionFailureFee, bondDenom))
 	}
 
 	return next(ctx, tx, simulate)

@@ -1,8 +1,8 @@
 package ante_test
 
 import (
-	"errors"
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/suite"
@@ -141,7 +141,7 @@ func (suite *AnteTestSuite) CreateTestTx(privs []crypto.PrivKey, accNums []uint6
 // TestCase represents a test case used in test tables.
 type TestCase struct {
 	desc      string
-	buildTest func() []sdk.Msg
+	buildTest func() ([]sdk.Msg, []crypto.PrivKey, []uint64, []uint64, sdk.Coins)
 	simulate  bool
 	expPass   bool
 	expErr    error
@@ -170,11 +170,11 @@ func (suite *AnteTestSuite) RunTestCase(privs []crypto.PrivKey, msgs []sdk.Msg, 
 			switch {
 			case txErr != nil:
 				suite.Require().Error(txErr)
-				suite.Require().True(errors.Is(txErr, tc.expErr))
+				suite.Require().True(strings.Contains(txErr.Error(), tc.expErr.Error()))
 
 			case anteErr != nil:
 				suite.Require().Error(anteErr)
-				suite.Require().True(errors.Is(anteErr, tc.expErr))
+				suite.Require().True(strings.Contains(anteErr.Error(), tc.expErr.Error()))
 
 			default:
 				suite.Fail("expected one of txErr,anteErr to be an error")
