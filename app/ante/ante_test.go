@@ -74,7 +74,7 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 			nil,
 		},
 		{
-			"no deduction when does not exist",
+			"no execution fee deduction when does not exist",
 			func() ([]sdk.Msg, []crypto.PrivKey, []uint64, []uint64, sdk.Coins) {
 				msgs := []sdk.Msg{
 					customgovtypes.NewMsgSetExecutionFee(
