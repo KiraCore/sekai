@@ -142,7 +142,6 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 
 			// this runs multi signature transaction with the params provided
 			suite.RunTestCase(privs, msgs, feeAmount, gasLimit, accNums, accSeqs, suite.ctx.ChainID(), tc)
-			// TODO should check balance change after a transaction (two cases describe below)
 		})
 	}
 }
