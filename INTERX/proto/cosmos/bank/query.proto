@@ -93,7 +93,7 @@ message QueryAllBalancesRequest {
 // QueryAllBalancesResponse is the response type for the Query/AllBalances RPC method.
 message QueryAllBalancesResponse {
   // balances is the balances of all the coins.
-  Coin balances = 1;
+  repeated Coin balances = 1;
 
   // pagination defines the pagination in the response.
   PageResponse pagination = 2;
@@ -105,5 +105,5 @@ message QueryTotalSupplyRequest {}
 // QueryTotalSupplyResponse is the response type for the Query/TotalSupply RPC method
 message QueryTotalSupplyResponse {
   // supply is the supply of the coins
-  Coin supply = 1;
+  repeated Coin supply = 1;
 }

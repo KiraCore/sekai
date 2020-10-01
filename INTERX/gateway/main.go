@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/KiraCore/sekai/INTERX/insecure"
+	cosmosAuth "github.com/KiraCore/sekai/INTERX/proto-gen/cosmos/auth"
 	cosmosBank "github.com/KiraCore/sekai/INTERX/proto-gen/cosmos/bank"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -55,6 +56,11 @@ func GetGrpcServeMux(grpcAddr string) (*runtime.ServeMux, error) {
 
 	gwCosmosmux := runtime.NewServeMux()
 	err = cosmosBank.RegisterQueryHandler(context.Background(), gwCosmosmux, conn)
+	if err != nil {
+		return nil, fmt.Errorf("failed to register gateway: %w", err)
+	}
+
+	err = cosmosAuth.RegisterQueryHandler(context.Background(), gwCosmosmux, conn)
 	if err != nil {
 		return nil, fmt.Errorf("failed to register gateway: %w", err)
 	}

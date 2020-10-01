@@ -6,6 +6,49 @@
 	},
 	"item": [
 		{
+			"name": "Status",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/cosmos/status",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"cosmos",
+						"status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Total Supply",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
@@ -50,49 +93,6 @@
 			"response": []
 		},
 		{
-			"name": "Status",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"name": "Content-Type",
-						"type": "text",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://0.0.0.0:11000/api/cosmos/status",
-					"protocol": "http",
-					"host": [
-						"0",
-						"0",
-						"0",
-						"0"
-					],
-					"port": "11000",
-					"path": [
-						"api",
-						"cosmos",
-						"status"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Query All Banaces",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
@@ -131,6 +131,51 @@
 						"cosmos",
 						"bank",
 						"balances",
+						"kira1gaadckc6g8ne62dzmscgyqkx3sd5p26wrapekd"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Query Accounts",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/cosmos/auth/accounts/kira1gaadckc6g8ne62dzmscgyqkx3sd5p26wrapekd",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"cosmos",
+						"auth",
+						"accounts",
 						"kira1gaadckc6g8ne62dzmscgyqkx3sd5p26wrapekd"
 					]
 				}
@@ -258,6 +303,100 @@
 					"path": [
 						"api",
 						"rpc_methods"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Faucet",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/faucet?claim=kira1kdnep4lm3z6yd3pah0rzfu3dvudgwfjejs9ans&token=stake",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"faucet"
+					],
+					"query": [
+						{
+							"key": "claim",
+							"value": "kira1kdnep4lm3z6yd3pah0rzfu3dvudgwfjejs9ans"
+						},
+						{
+							"key": "token",
+							"value": "stake"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FaucetInfo",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/faucet",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"faucet"
 					]
 				}
 			},
