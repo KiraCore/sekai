@@ -36,6 +36,18 @@ type ResponseSign struct {
 	Response  string `json:"response"`
 }
 
+// Coin is a struct for coin
+type Coin struct {
+	Amount string `json:"amount"`
+	Denom  string `json:"denom"`
+}
+
+// FaucetAccountInfo is a struct to be used for Faucet Account Info
+type FaucetAccountInfo struct {
+	Address  string `json:"address"`
+	Balances []Coin `json:"balances"`
+}
+
 // RPCMethod is a struct to be used for rpc_methods API
 type RPCMethod struct {
 	Description   string  `json:"description"`

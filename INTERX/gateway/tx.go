@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	interx "github.com/KiraCore/sekai/INTERX/config"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -46,13 +47,13 @@ func PostTxRequest(rpcAddr string) http.HandlerFunc {
 			return
 		}
 
-		err = encodingConfig.Amino.UnmarshalJSON(body, &req)
+		err = interx.EncodingCg.Amino.UnmarshalJSON(body, &req)
 		if err != nil {
 			ServeError(w, rpcAddr, 0, "", err.Error(), http.StatusBadRequest)
 			return
 		}
 
-		txBytes, err := encodingConfig.Amino.MarshalBinaryLengthPrefixed(req.Tx)
+		txBytes, err := interx.EncodingCg.Amino.MarshalBinaryLengthPrefixed(req.Tx)
 		if err != nil {
 			ServeError(w, rpcAddr, 0, "", err.Error(), http.StatusInternalServerError)
 			return

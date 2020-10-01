@@ -1,6 +1,7 @@
 package gateway
 
 import (
+	"encoding/base64"
 	"fmt"
 	"net/http"
 
@@ -50,7 +51,7 @@ func QueryBalancesRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.Ha
 		if err != nil {
 			ServeError(w, rpcAddr, 0, "", err.Error(), http.StatusBadRequest)
 		} else {
-			r.URL.Path = fmt.Sprintf("/api/cosmos/bank/balances/%x", addr)
+			r.URL.Path = fmt.Sprintf("/api/cosmos/bank/balances/%s", base64.URLEncoding.EncodeToString([]byte(addr)))
 			ServeGRPC(w, r, gwCosmosmux, rpcAddr)
 		}
 	}

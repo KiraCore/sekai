@@ -9,9 +9,9 @@ import (
 	"strconv"
 	"time"
 
+	interx "github.com/KiraCore/sekai/INTERX/config"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/tendermint/tendermint/crypto/ed25519"
-	"github.com/tendermint/tendermint/crypto/secp256k1"
 	"golang.org/x/crypto/blake2b"
 )
 
@@ -21,7 +21,7 @@ func AddRPCMethod(method string, url string, description string) {
 	newMethod.Description = description
 	newMethod.Enabled = true
 
-	if conf, ok := config[method][url]; ok {
+	if conf, ok := interx.WhitelistCg[method][url]; ok {
 		newMethod.Enabled = !conf.Disable
 		newMethod.RateLimit = conf.RateLimit
 		newMethod.AuthRateLimit = conf.AuthRateLimit
@@ -70,16 +70,6 @@ func makePostRequest(w http.ResponseWriter, r *http.Request) (*RPCResponse, erro
 	}
 
 	return result, nil
-}
-
-// GenSecp256k1PrivKey is a function to generate a pubKey
-func GenSecp256k1PrivKey() secp256k1.PrivKey {
-	return secp256k1.GenPrivKey()
-}
-
-// GenEd25519PrivKey is a function to generate a pubKey
-func GenEd25519PrivKey() ed25519.PrivKey {
-	return ed25519.GenPrivKey()
 }
 
 // GetResponseFormat is a function to get response format
@@ -143,7 +133,7 @@ func GetResponseSignature(response ProxyResponse) (string, string) {
 	}
 
 	// Get Signature
-	signature, err := privKey.Sign(signBytes)
+	signature, err := interx.PrivKey.Sign(signBytes)
 	if err != nil {
 		return "", responseHash
 	}
@@ -207,4 +197,29 @@ func ServeError(w http.ResponseWriter, rpcAddr string, code int, data string, me
 	w.WriteHeader(statusCode)
 
 	WrapResponse(w, *response)
+}
+
+// GetAccountBalances is a function to get balances of an address
+func GetAccountBalances(gwCosmosmux *runtime.ServeMux, r *http.Request, bech32addr string) []Coin {
+	addr, err := sdk.AccAddressFromBech32(bech32addr)
+	if err != nil {
+		return nil
+	}
+
+	r.URL.Path = fmt.Sprintf("/api/cosmos/bank/balances/%s", base64.URLEncoding.EncodeToString([]byte(addr)))
+	r.URL.RawQuery = ""
+	r.Method = "GET"
+
+	recorder := httptest.NewRecorder()
+	gwCosmosmux.ServeHTTP(recorder, r)
+	resp := recorder.Result()
+
+	type BalancesResponse struct {
+		Balances []Coin `json:"balances"`
+	}
+
+	result := BalancesResponse{}
+	json.NewDecoder(resp.Body).Decode(&result)
+
+	return result.Balances
 }

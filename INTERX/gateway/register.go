@@ -8,6 +8,8 @@ import (
 // RegisterRequest is a function to register requests.
 func RegisterRequest(router *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr string) {
 	RegisterQueryRoutes(router, gwCosmosmux, rpcAddr)
+	RegisterFaucetRoutes(router, gwCosmosmux, rpcAddr)
 	RegisterTxRoutes(router, gwCosmosmux, rpcAddr)
 	RegisterBankRoutes(router, gwCosmosmux, rpcAddr)
+	RegisterAuthRoutes(router, gwCosmosmux, rpcAddr)
 }

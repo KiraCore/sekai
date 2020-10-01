@@ -194,7 +194,10 @@
       "type": "object",
       "properties": {
         "balances": {
-          "$ref": "#/definitions/v1beta1Coin",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1beta1Coin"
+          },
           "description": "balances is the balances of all the coins."
         },
         "pagination": {
@@ -208,7 +211,10 @@
       "type": "object",
       "properties": {
         "supply": {
-          "$ref": "#/definitions/v1beta1Coin",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1beta1Coin"
+          },
           "title": "supply is the supply of the coins"
         }
       },

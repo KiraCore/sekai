@@ -4,11 +4,9 @@ import (
 	"flag"
 	"io/ioutil"
 	"os"
-	// Static files
 
 	"github.com/KiraCore/sekai/INTERX/gateway"
 	_ "github.com/KiraCore/sekai/INTERX/statik"
-	sekaiapp "github.com/KiraCore/sekai/app"
 	"google.golang.org/grpc/grpclog"
 )
 
@@ -30,8 +28,6 @@ func main() {
 	// Adds gRPC internal logs. This is quite verbose, so adjust as desired!
 	log := grpclog.NewLoggerV2(os.Stdout, ioutil.Discard, ioutil.Discard)
 	grpclog.SetLoggerV2(log)
-
-	sekaiapp.SetConfig()
 
 	grpcAddr := os.Getenv("GRPC")
 	if len(grpcAddr) == 0 {
