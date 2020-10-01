@@ -101,6 +101,7 @@ sekaid query bank balances $(sekaid keys show -a user1 --keyring-backend=test --
 
 ## Query execution fee
 ```sh
+sekaid query customgov execution-fee <msg_type>
 # command
 sekaid query customgov execution-fee ABC
 # response
