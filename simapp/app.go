@@ -10,6 +10,7 @@ import (
 	"github.com/KiraCore/sekai/middleware"
 	gov2 "github.com/KiraCore/sekai/x/gov"
 
+	customante "github.com/KiraCore/sekai/app/ante"
 	customstaking "github.com/KiraCore/sekai/x/staking"
 	customstakingtypes "github.com/KiraCore/sekai/x/staking/types"
 
@@ -409,7 +410,7 @@ func NewSimApp(
 	app.SetInitChainer(app.InitChainer)
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetAnteHandler(
-		NewAnteHandler(
+		customante.NewAnteHandler(
 			app.CustomStakingKeeper, app.CustomGovKeeper, app.AccountKeeper, app.BankKeeper, ante.DefaultSigVerificationGasConsumer,
 			encodingConfig.TxConfig.SignModeHandler(),
 		),
