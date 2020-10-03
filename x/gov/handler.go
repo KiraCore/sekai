@@ -54,7 +54,7 @@ func handleMsgVoteProposal(
 ) (*sdk.Result, error) {
 	_, err := ck.GetCouncilor(ctx, msg.Voter)
 	if err != nil { // Councilor not found
-		return nil, err
+		return nil, customgovtypes.ErrUserIsNotCouncilor
 	}
 
 	return nil, nil
@@ -182,7 +182,7 @@ func handleRemoveWhitelistRolePermission(ctx sdk.Context, ck keeper.Keeper, msg 
 
 	err = perms.RemoveFromWhitelist(customgovtypes.PermValue(msg.Permission))
 	if err != nil {
-		return nil, errors.Wrap(customgovtypes.ErrRemovingBlacklist, err.Error())
+		return nil, errors.Wrap(customgovtypes.ErrRemovingWhitelist, err.Error())
 	}
 
 	ck.SetPermissionsForRole(ctx, customgovtypes.Role(msg.Role), perms)

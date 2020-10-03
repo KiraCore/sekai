@@ -42,4 +42,9 @@ func TestSaveProposalReturnsTheProposalID_AndIncreasesLast(t *testing.T) {
 	proposalID, err = app.CustomGovKeeper.GetNextProposalID(ctx)
 	require.NoError(t, err)
 	require.Equal(t, uint64(2), proposalID)
+
+	// Get proposal
+	savedProposal, found := app.CustomGovKeeper.GetProposal(ctx, saveProposal)
+	require.True(t, found)
+	require.Equal(t, proposal, savedProposal)
 }

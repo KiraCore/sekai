@@ -44,6 +44,20 @@ func (k Keeper) SaveProposal(ctx sdk.Context, proposal types.ProposalAssignPermi
 	return proposalID, nil
 }
 
+func (k Keeper) GetProposal(ctx sdk.Context, proposalID uint64) (types.ProposalAssignPermission, bool) {
+	store := ctx.KVStore(k.storeKey)
+
+	bz := store.Get(GetProposalKey(proposalID))
+	if bz == nil {
+		return types.ProposalAssignPermission{}, false
+	}
+
+	var prop types.ProposalAssignPermission
+	k.cdc.MustUnmarshalBinaryBare(bz, &prop)
+
+	return prop, true
+}
+
 func GetProposalKey(proposalID uint64) []byte {
 	return append(ProposalsPrefix, GetProposalIDBytes(proposalID)...)
 }

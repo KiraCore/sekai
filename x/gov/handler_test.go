@@ -1064,16 +1064,26 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 				1, voterAddr, types.OptionAbstain,
 			),
 			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
-			fmt.Errorf("councilor not found"),
+			types.ErrUserIsNotCouncilor,
 		},
-		//{
-		//	"Proposal does not exist",
-		//	types.NewMsgVoteProposal(
-		//		1, voterAddr, types.OptionAbstain,
-		//	),
-		//	func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
-		//	fmt.Errorf("councilor not found"),
-		//},
+		{
+			"Proposal does not exist",
+			types.NewMsgVoteProposal(
+				1, voterAddr, types.OptionAbstain,
+			),
+			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+				councilor := types.NewCouncilor(
+					"test",
+					"website",
+					"social",
+					"identity",
+					voterAddr,
+				)
+
+				app.CustomGovKeeper.SaveCouncilor(ctx, councilor)
+			},
+			types.ErrProposalDoesNotExist,
+		},
 		//{
 		//	"address already has that permission",
 		//	types.NewMsgVoteProposal(
