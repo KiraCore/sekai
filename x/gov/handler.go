@@ -57,6 +57,11 @@ func handleMsgVoteProposal(
 		return nil, customgovtypes.ErrUserIsNotCouncilor
 	}
 
+	_, found = ck.GetProposal(ctx, msg.ProposalId)
+	if !found {
+		return nil, customgovtypes.ErrProposalDoesNotExist
+	}
+
 	return nil, nil
 }
 

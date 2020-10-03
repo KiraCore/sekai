@@ -1052,7 +1052,6 @@ func TestHandler_ProposalAssignPermission(t *testing.T) {
 }
 
 func TestHandler_VoteProposal_Errors(t *testing.T) {
-	t.SkipNow()
 	voterAddr, err := sdk.AccAddressFromBech32("kira15ky9du8a2wlstz6fpx3p4mqpjyrm5cgqzp4f3d")
 	require.NoError(t, err)
 
