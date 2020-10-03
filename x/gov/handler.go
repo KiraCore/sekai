@@ -70,8 +70,8 @@ func handleMsgProposalAssignPermission(
 		return nil, customgovtypes.ErrUserIsNotCouncilor
 	}
 
-	actor, err := ck.GetNetworkActorByAddress(ctx, msg.Address)
-	if err == nil { // Actor exists
+	actor, found := ck.GetNetworkActorByAddress(ctx, msg.Address)
+	if found { // Actor exists
 		if actor.Permissions.IsWhitelisted(customgovtypes.PermValue(msg.Permission)) {
 			return nil, errors.Wrap(customgovtypes.ErrWhitelisting, "permission already whitelisted")
 		}
@@ -99,8 +99,8 @@ func handleMsgRemoveRole(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.
 		return nil, customgovtypes.ErrRoleDoesNotExist
 	}
 
-	actor, err := ck.GetNetworkActorByAddress(ctx, msg.Address)
-	if err != nil {
+	actor, found := ck.GetNetworkActorByAddress(ctx, msg.Address)
+	if !found {
 		actor = customgovtypes.NewDefaultActor(msg.Address)
 	}
 
@@ -126,8 +126,8 @@ func handleAssignRole(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.Msg
 		return nil, customgovtypes.ErrRoleDoesNotExist
 	}
 
-	actor, err := ck.GetNetworkActorByAddress(ctx, msg.Address)
-	if err != nil {
+	actor, found := ck.GetNetworkActorByAddress(ctx, msg.Address)
+	if !found {
 		actor = customgovtypes.NewDefaultActor(msg.Address)
 	}
 
@@ -228,12 +228,12 @@ func handleWhitelistPermissions(ctx sdk.Context, ck keeper.Keeper, msg *customgo
 		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermSetPermissions")
 	}
 
-	actor, err := ck.GetNetworkActorByAddress(ctx, msg.Address)
-	if err != nil {
+	actor, found := ck.GetNetworkActorByAddress(ctx, msg.Address)
+	if !found {
 		actor = customgovtypes.NewDefaultActor(msg.Address)
 	}
 
-	err = actor.Permissions.AddToWhitelist(customgovtypes.PermValue(msg.Permission))
+	err := actor.Permissions.AddToWhitelist(customgovtypes.PermValue(msg.Permission))
 	if err != nil {
 		return nil, errors.Wrapf(customgovtypes.ErrSetPermissions, "error setting %d to whitelist", msg.Permission)
 	}
@@ -249,12 +249,12 @@ func handleBlacklistPermissions(ctx sdk.Context, ck keeper.Keeper, msg *customgo
 		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermSetPermissions")
 	}
 
-	actor, err := ck.GetNetworkActorByAddress(ctx, msg.Address)
-	if err != nil {
+	actor, found := ck.GetNetworkActorByAddress(ctx, msg.Address)
+	if !found {
 		actor = customgovtypes.NewDefaultActor(msg.Address)
 	}
 
-	err = actor.Permissions.AddToBlacklist(customgovtypes.PermValue(msg.Permission))
+	err := actor.Permissions.AddToBlacklist(customgovtypes.PermValue(msg.Permission))
 	if err != nil {
 		return nil, errors.Wrapf(customgovtypes.ErrSetPermissions, "error setting %d to whitelist", msg.Permission)
 	}

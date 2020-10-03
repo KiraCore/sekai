@@ -3,6 +3,8 @@ package gov_test
 import (
 	"testing"
 
+	types2 "github.com/KiraCore/sekai/x/staking/types"
+
 	"github.com/KiraCore/sekai/x/gov"
 
 	"github.com/stretchr/testify/require"
@@ -49,7 +51,7 @@ func TestQuerier_PermissionsByAddress(t *testing.T) {
 
 	// Get permissions by address that is not saved.
 	_, err = querier.PermissionsByAddress(sdk.WrapSDKContext(ctx), &types.PermissionsByAddressRequest{ValAddr: addr2})
-	require.EqualError(t, err, "network actor not found: key not found")
+	require.EqualError(t, err, types2.ErrNetworkActorNotFound.Error())
 }
 
 func TestQuerier_RolesByAddress(t *testing.T) {

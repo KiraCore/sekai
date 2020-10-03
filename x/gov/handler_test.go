@@ -68,8 +68,8 @@ func TestHandler_MsgWhitelistPermissions_ActorDoesNotExist(t *testing.T) {
 			_, err = handler(ctx, tt.msg)
 			require.NoError(t, err)
 
-			actor, err := app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addr)
-			require.NoError(t, err)
+			actor, found := app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addr)
+			require.True(t, found)
 
 			if tt.checkWhitelisted {
 				require.True(t, actor.Permissions.IsWhitelisted(types.PermClaimValidator))
@@ -138,8 +138,8 @@ func TestNewHandler_SetPermissions_ActorWithPerms(t *testing.T) {
 			_, err = handler(ctx, tt.msg)
 			require.NoError(t, err)
 
-			actor, err = app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addr)
-			require.NoError(t, err)
+			actor, found := app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addr)
+			require.True(t, found)
 
 			if tt.checkWhitelisted {
 				require.True(t, actor.Permissions.IsWhitelisted(types.PermClaimValidator))
@@ -242,8 +242,8 @@ func TestNewHandler_SetPermissions_ProposerHasRoleSudo(t *testing.T) {
 			_, err = handler(ctx, tt.msg)
 			require.NoError(t, err)
 
-			actor, err := app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addr)
-			require.NoError(t, err)
+			actor, found := app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addr)
+			require.True(t, found)
 
 			if tt.checkWhitelist {
 				require.True(t, actor.Permissions.IsWhitelisted(types.PermClaimValidator))
@@ -865,8 +865,8 @@ func TestHandler_AssignRole(t *testing.T) {
 	_, err = handler(ctx, msg)
 	require.NoError(t, err)
 
-	actor, err := app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addr)
-	require.NoError(t, err)
+	actor, found := app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addr)
+	require.True(t, found)
 
 	require.True(t, actor.HasRole(types.Role(3)))
 }
@@ -955,8 +955,8 @@ func TestHandler_RemoveRoles(t *testing.T) {
 	actor.SetRole(3)
 	app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
 
-	actor, err = app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addr)
-	require.NoError(t, err)
+	actor, found := app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addr)
+	require.True(t, found)
 	require.True(t, actor.HasRole(3))
 
 	msg := types.NewMsgRemoveRole(proposerAddr, addr, 3)
@@ -964,8 +964,8 @@ func TestHandler_RemoveRoles(t *testing.T) {
 	_, err = handler(ctx, msg)
 	require.NoError(t, err)
 
-	actor, err = app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addr)
-	require.NoError(t, err)
+	actor, found = app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addr)
+	require.True(t, found)
 
 	require.False(t, actor.HasRole(3))
 }

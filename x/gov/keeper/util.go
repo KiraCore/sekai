@@ -7,8 +7,8 @@ import (
 
 // CheckIfAllowedPermission
 func CheckIfAllowedPermission(ctx sdk.Context, keeper Keeper, addr sdk.AccAddress, permValue types.PermValue) bool {
-	actor, err := keeper.GetNetworkActorByAddress(ctx, addr)
-	if err != nil {
+	actor, found := keeper.GetNetworkActorByAddress(ctx, addr)
+	if !found {
 		return false
 	}
 

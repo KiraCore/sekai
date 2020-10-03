@@ -3,13 +3,11 @@ package gov
 import (
 	"context"
 
-	types2 "github.com/KiraCore/sekai/x/staking/types"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/KiraCore/sekai/x/gov/keeper"
 	"github.com/KiraCore/sekai/x/gov/types"
+	cumstomtypes "github.com/KiraCore/sekai/x/staking/types"
 )
 
 type Querier struct {
@@ -21,9 +19,9 @@ func NewQuerier(keeper keeper.Keeper) types.QueryServer {
 }
 
 func (q Querier) RolesByAddress(ctx context.Context, request *types.RolesByAddressRequest) (*types.RolesByAddressResponse, error) {
-	actor, err := q.keeper.GetNetworkActorByAddress(sdk.UnwrapSDKContext(ctx), request.ValAddr)
-	if err != nil {
-		return nil, types2.ErrNetworkActorNotFound
+	actor, found := q.keeper.GetNetworkActorByAddress(sdk.UnwrapSDKContext(ctx), request.ValAddr)
+	if !found {
+		return nil, cumstomtypes.ErrNetworkActorNotFound
 	}
 
 	return &types.RolesByAddressResponse{
@@ -52,9 +50,9 @@ func (q Querier) CouncilorByMoniker(ctx context.Context, request *types.Councilo
 func (q Querier) PermissionsByAddress(ctx context.Context, request *types.PermissionsByAddressRequest) (*types.PermissionsResponse, error) {
 	sdkContext := sdk.UnwrapSDKContext(ctx)
 
-	networkActor, err := q.keeper.GetNetworkActorByAddress(sdkContext, request.ValAddr)
-	if err != nil {
-		return nil, errors.Wrap(errors.ErrKeyNotFound, err.Error())
+	networkActor, found := q.keeper.GetNetworkActorByAddress(sdkContext, request.ValAddr)
+	if !found {
+		return nil, cumstomtypes.ErrNetworkActorNotFound
 	}
 
 	return &types.PermissionsResponse{Permissions: networkActor.Permissions}, nil

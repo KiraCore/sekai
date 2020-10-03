@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	types2 "github.com/KiraCore/sekai/x/staking/types"
-
 	"github.com/KiraCore/sekai/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -15,16 +13,16 @@ func (k Keeper) SaveNetworkActor(ctx sdk.Context, actor types.NetworkActor) {
 	prefixStore.Set(actor.Address.Bytes(), bz)
 }
 
-func (k Keeper) GetNetworkActorByAddress(ctx sdk.Context, address sdk.AccAddress) (types.NetworkActor, error) {
+func (k Keeper) GetNetworkActorByAddress(ctx sdk.Context, address sdk.AccAddress) (types.NetworkActor, bool) {
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), NetworkActorsPrefix)
 
 	bz := prefixStore.Get(address.Bytes())
 	if bz == nil {
-		return types.NetworkActor{}, types2.ErrNetworkActorNotFound
+		return types.NetworkActor{}, false
 	}
 
 	var na types.NetworkActor
 	k.cdc.MustUnmarshalBinaryBare(bz, &na)
 
-	return na, nil
+	return na, true
 }
