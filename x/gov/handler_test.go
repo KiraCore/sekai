@@ -1087,22 +1087,6 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 			},
 			types.ErrProposalDoesNotExist,
 		},
-		//{
-		//	"address already has that permission",
-		//	types.NewMsgVoteProposal(
-		//		proposerAddr, voterAddr, types.PermClaimValidator,
-		//	),
-		//	func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
-		//		app.CustomGovKeeper.SaveCouncilor(ctx, types.NewCouncilor("test", "website", "social", "identity", proposerAddr))
-		//
-		//		actor := types.NewDefaultActor(voterAddr)
-		//		err2 := actor.Permissions.AddToWhitelist(types.PermClaimValidator)
-		//		require.NoError(t, err2)
-		//
-		//		app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
-		//	},
-		//	fmt.Errorf("permission already whitelisted: error adding to whitelist"),
-		//},
 	}
 
 	for _, tt := range tests {

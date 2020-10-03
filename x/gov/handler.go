@@ -53,7 +53,7 @@ func handleMsgVoteProposal(
 	msg *customgovtypes.MsgVoteProposal,
 ) (*sdk.Result, error) {
 	_, found := ck.GetCouncilor(ctx, msg.Voter)
-	if !found { // Councilor not found
+	if !found {
 		return nil, customgovtypes.ErrUserIsNotCouncilor
 	}
 
