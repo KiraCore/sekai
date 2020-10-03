@@ -1048,6 +1048,62 @@ func TestHandler_ProposalAssignPermission(t *testing.T) {
 	require.Equal(t, uint64(2), id)
 }
 
+func TestHandler_VoteProposal_Errors(t *testing.T) {
+	voterAddr, err := sdk.AccAddressFromBech32("kira15ky9du8a2wlstz6fpx3p4mqpjyrm5cgqzp4f3d")
+	require.NoError(t, err)
+
+	tests := []struct {
+		name         string
+		msg          *types.MsgVoteProposal
+		preparePerms func(t *testing.T, app *simapp.SimApp, ctx sdk.Context)
+		expectedErr  error
+	}{
+		{
+			"Voter is not Councilor",
+			types.NewMsgVoteProposal(
+				1, voterAddr, types.OptionAbstain,
+			),
+			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
+			fmt.Errorf("councilor not found"),
+		},
+		//{
+		//	"Proposal does not exist",
+		//	types.NewMsgVoteProposal(
+		//		1, voterAddr, types.OptionAbstain,
+		//	),
+		//	func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
+		//	fmt.Errorf("councilor not found"),
+		//},
+		//{
+		//	"address already has that permission",
+		//	types.NewMsgVoteProposal(
+		//		proposerAddr, voterAddr, types.PermClaimValidator,
+		//	),
+		//	func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+		//		app.CustomGovKeeper.SaveCouncilor(ctx, types.NewCouncilor("test", "website", "social", "identity", proposerAddr))
+		//
+		//		actor := types.NewDefaultActor(voterAddr)
+		//		err2 := actor.Permissions.AddToWhitelist(types.PermClaimValidator)
+		//		require.NoError(t, err2)
+		//
+		//		app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
+		//	},
+		//	fmt.Errorf("permission already whitelisted: error adding to whitelist"),
+		//},
+	}
+
+	for _, tt := range tests {
+		app := simapp.Setup(false)
+		ctx := app.NewContext(false, tmproto.Header{})
+
+		tt.preparePerms(t, app, ctx)
+
+		handler := gov.NewHandler(app.CustomGovKeeper)
+		_, err := handler(ctx, tt.msg)
+		require.EqualError(t, err, tt.expectedErr.Error())
+	}
+}
+
 func setPermissionToAddr(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addr sdk.AccAddress, perm types.PermValue) error {
 	proposerActor := types.NewDefaultActor(addr)
 	err := proposerActor.Permissions.AddToWhitelist(perm)

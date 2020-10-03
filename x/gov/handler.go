@@ -39,10 +39,25 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 		// Proposal related
 		case *customgovtypes.MsgProposalAssignPermission:
 			return handleMsgProposalAssignPermission(ctx, ck, msg)
+		case *customgovtypes.MsgVoteProposal:
+			return handleMsgVoteProposal(ctx, ck, msg)
 		default:
 			return nil, errors.Wrapf(errors.ErrUnknownRequest, "unrecognized %s message type: %T", customgovtypes.ModuleName, msg)
 		}
 	}
+}
+
+func handleMsgVoteProposal(
+	ctx sdk.Context,
+	ck keeper.Keeper,
+	msg *customgovtypes.MsgVoteProposal,
+) (*sdk.Result, error) {
+	_, err := ck.GetCouncilor(ctx, msg.Voter)
+	if err != nil { // Councilor not found
+		return nil, err
+	}
+
+	return nil, nil
 }
 
 func handleMsgProposalAssignPermission(
@@ -167,7 +182,7 @@ func handleRemoveWhitelistRolePermission(ctx sdk.Context, ck keeper.Keeper, msg 
 
 	err = perms.RemoveFromWhitelist(customgovtypes.PermValue(msg.Permission))
 	if err != nil {
-		return nil, errors.Wrap(customgovtypes.ErrWhitelisting, err.Error())
+		return nil, errors.Wrap(customgovtypes.ErrRemovingBlacklist, err.Error())
 	}
 
 	ck.SetPermissionsForRole(ctx, customgovtypes.Role(msg.Role), perms)

@@ -6,9 +6,11 @@ import (
 
 // Msg types
 const (
-	MsgTypeWhitelistPermissions     = "whitelist-permissions"
-	MsgTypeBlacklistPermissions     = "blacklist-permissions"
 	MsgTypeProposalAssignPermission = "proposal-assign-permission"
+	MsgTypeVoteProposal             = "vote-proposal"
+
+	MsgTypeWhitelistPermissions = "whitelist-permissions"
+	MsgTypeBlacklistPermissions = "blacklist-permissions"
 
 	MsgTypeClaimCouncilor = "claim-councilor"
 
@@ -23,6 +25,9 @@ const (
 )
 
 var (
+	// Proposal
+	_ sdk.Msg = &MsgVoteProposal{}
+
 	// Permissions
 	_ sdk.Msg = &MsgWhitelistPermissions{}
 	_ sdk.Msg = &MsgBlacklistPermissions{}
@@ -442,5 +447,40 @@ func (m *MsgProposalAssignPermission) GetSignBytes() []byte {
 func (m *MsgProposalAssignPermission) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{
 		m.Proposer,
+	}
+}
+
+func NewMsgVoteProposal(proposalID uint64, voter sdk.AccAddress, option VoteOption) *MsgVoteProposal {
+	return &MsgVoteProposal{
+		ProposalId: proposalID,
+		Voter:      voter,
+		Option:     option,
+	}
+}
+
+func (m *MsgVoteProposal) Route() string {
+	return ModuleName
+}
+
+func (m *MsgVoteProposal) Type() string {
+	return MsgTypeVoteProposal
+}
+
+func (m *MsgVoteProposal) ValidateBasic() error {
+	if m.Voter.Empty() {
+		return ErrEmptyProposerAccAddress
+	}
+
+	return nil
+}
+
+func (m *MsgVoteProposal) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *MsgVoteProposal) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{
+		m.Voter,
 	}
 }
