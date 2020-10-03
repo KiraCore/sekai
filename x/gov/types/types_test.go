@@ -137,9 +137,14 @@ func TestNewNetworkActor_Status(t *testing.T) {
 	require.Equal(t, customgovtypes.Undefined, actor.Status)
 
 	// Active Actor
-	actor:= customgovtypes.NewNetworkActor(
+	actor = customgovtypes.NewNetworkActor(
 		addr,
 		customgovtypes.Roles{},
+		customgovtypes.Active,
+		[]uint32{},
+		customgovtypes.NewPermissions(nil, nil),
+		1,
+	)
 
-		)
+	require.True(t, actor.IsActive())
 }

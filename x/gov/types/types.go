@@ -140,6 +140,10 @@ func (m *NetworkActor) RemoveRole(role Role) {
 	}
 }
 
+func (m *NetworkActor) IsActive() bool {
+	return m.Status == Active
+}
+
 // NewDefaultActor returns a default actor with:
 // - The provided addr.
 // - Roles set to nil

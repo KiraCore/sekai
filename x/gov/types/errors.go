@@ -19,4 +19,5 @@ var (
 	ErrCouncilorNotFound          = errors.Register(ModuleName, 15, "councilor not found")
 	ErrUserIsNotCouncilor         = errors.Register(ModuleName, 16, "user is not councilor")
 	ErrProposalDoesNotExist       = errors.Register(ModuleName, 17, "proposal does not exist")
+	ErrActorIsNotActive           = errors.Register(ModuleName, 18, "actor is not active")
 )

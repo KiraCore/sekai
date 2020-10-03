@@ -1084,8 +1084,38 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 				)
 
 				app.CustomGovKeeper.SaveCouncilor(ctx, councilor)
+
+				actor := types.NewNetworkActor(
+					voterAddr,
+					types.Roles{},
+					types.Active,
+					[]uint32{},
+					types.NewPermissions(nil, nil),
+					1,
+				)
+				app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
 			},
 			types.ErrProposalDoesNotExist,
+		},
+		{
+			"Voter is not active",
+			types.NewMsgVoteProposal(
+				1, voterAddr, types.OptionAbstain,
+			),
+			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+				councilor := types.NewCouncilor(
+					"test",
+					"website",
+					"social",
+					"identity",
+					voterAddr,
+				)
+				app.CustomGovKeeper.SaveCouncilor(ctx, councilor)
+
+				actor := types.NewDefaultActor(voterAddr)
+				app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
+			},
+			types.ErrActorIsNotActive,
 		},
 	}
 

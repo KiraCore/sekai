@@ -61,6 +61,11 @@ func handleMsgVoteProposal(
 		return nil, customgovtypes.ErrUserIsNotCouncilor
 	}
 
+	actor, found := ck.GetNetworkActorByAddress(ctx, msg.Voter)
+	if !found || !actor.IsActive() {
+		return nil, customgovtypes.ErrActorIsNotActive
+	}
+
 	_, found = ck.GetProposal(ctx, msg.ProposalId)
 	if !found {
 		return nil, customgovtypes.ErrProposalDoesNotExist
