@@ -128,3 +128,18 @@ func TestNewNetworkActor_RemoveRole(t *testing.T) {
 	require.True(t, actor.HasRole(customgovtypes.RoleValidator))
 	require.False(t, actor.HasRole(customgovtypes.RoleSudo))
 }
+
+func TestNewNetworkActor_Status(t *testing.T) {
+	addr, err := types.AccAddressFromBech32("kira1q24436yrnettd6v4eu6r4t9gycnnddack4jr5r")
+	require.NoError(t, err)
+
+	actor := customgovtypes.NewDefaultActor(addr)
+	require.Equal(t, customgovtypes.Undefined, actor.Status)
+
+	// Active Actor
+	actor:= customgovtypes.NewNetworkActor(
+		addr,
+		customgovtypes.Roles{},
+
+		)
+}

@@ -18,9 +18,11 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 			return handleWhitelistPermissions(ctx, ck, msg)
 		case *customgovtypes.MsgBlacklistPermissions:
 			return handleBlacklistPermissions(ctx, ck, msg)
+
 		// Councilor Related
 		case *customgovtypes.MsgClaimCouncilor:
 			return handleClaimCouncilor(ctx, ck, msg)
+
 		// Role Related
 		case *customgovtypes.MsgWhitelistRolePermission:
 			return handleWhitelistRolePermission(ctx, ck, msg)
@@ -36,11 +38,13 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 			return handleAssignRole(ctx, ck, msg)
 		case *customgovtypes.MsgRemoveRole:
 			return handleMsgRemoveRole(ctx, ck, msg)
+
 		// Proposal related
 		case *customgovtypes.MsgProposalAssignPermission:
 			return handleMsgProposalAssignPermission(ctx, ck, msg)
 		case *customgovtypes.MsgVoteProposal:
 			return handleMsgVoteProposal(ctx, ck, msg)
+
 		default:
 			return nil, errors.Wrapf(errors.ErrUnknownRequest, "unrecognized %s message type: %T", customgovtypes.ModuleName, msg)
 		}

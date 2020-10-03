@@ -101,7 +101,7 @@ func (m *Permissions) RemoveFromBlacklist(perm PermValue) error {
 func NewNetworkActor(
 	addr types.AccAddress,
 	roles Roles,
-	status uint32,
+	status ActorStatus,
 	votes []uint32,
 	perm *Permissions,
 	skin uint64,
@@ -151,7 +151,7 @@ func NewDefaultActor(addr types.AccAddress) NetworkActor {
 	return NewNetworkActor(
 		addr,
 		nil,
-		0,
+		Undefined,
 		nil,
 		NewPermissions(nil, nil),
 		0,

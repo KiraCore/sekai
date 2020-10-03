@@ -1090,15 +1090,21 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		app := simapp.Setup(false)
-		ctx := app.NewContext(false, tmproto.Header{})
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			app := simapp.Setup(false)
+			ctx := app.NewContext(false, tmproto.Header{})
 
-		tt.preparePerms(t, app, ctx)
+			tt.preparePerms(t, app, ctx)
 
-		handler := gov.NewHandler(app.CustomGovKeeper)
-		_, err := handler(ctx, tt.msg)
-		require.EqualError(t, err, tt.expectedErr.Error())
+			handler := gov.NewHandler(app.CustomGovKeeper)
+			_, err := handler(ctx, tt.msg)
+			require.EqualError(t, err, tt.expectedErr.Error())
+		})
 	}
+}
+
+func TestHandler_VoteProposal(t *testing.T) {
 }
 
 func setPermissionToAddr(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addr sdk.AccAddress, perm types.PermValue) error {
