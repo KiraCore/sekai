@@ -135,5 +135,5 @@ func TestQuerier_CouncilorByAddress(t *testing.T) {
 		sdk.WrapSDKContext(ctx),
 		&types.CouncilorByAddressRequest{ValAddr: addr2},
 	)
-	require.EqualError(t, err, "councilor not found: key not found")
+	require.Error(t, types.ErrCouncilorNotFound)
 }

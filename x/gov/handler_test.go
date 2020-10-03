@@ -330,8 +330,8 @@ func TestHandler_ClaimCouncilor_HappyPath(t *testing.T) {
 				tt.msg.Address,
 			)
 
-			councilor, err := app.CustomGovKeeper.GetCouncilor(ctx, addr)
-			require.NoError(t, err)
+			councilor, found := app.CustomGovKeeper.GetCouncilor(ctx, addr)
+			require.True(t, found)
 
 			require.Equal(t, expectedCouncilor, councilor)
 		})
@@ -989,7 +989,7 @@ func TestHandler_ProposalAssignPermission_Errors(t *testing.T) {
 				proposerAddr, addr, types.PermClaimValidator,
 			),
 			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
-			fmt.Errorf("councilor not found"),
+			types.ErrUserIsNotCouncilor,
 		},
 		{
 			"address already has that permission",
@@ -1010,14 +1010,17 @@ func TestHandler_ProposalAssignPermission_Errors(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		app := simapp.Setup(false)
-		ctx := app.NewContext(false, tmproto.Header{})
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			app := simapp.Setup(false)
+			ctx := app.NewContext(false, tmproto.Header{})
 
-		tt.preparePerms(t, app, ctx)
+			tt.preparePerms(t, app, ctx)
 
-		handler := gov.NewHandler(app.CustomGovKeeper)
-		_, err := handler(ctx, tt.msg)
-		require.EqualError(t, err, tt.expectedErr.Error())
+			handler := gov.NewHandler(app.CustomGovKeeper)
+			_, err := handler(ctx, tt.msg)
+			require.EqualError(t, err, tt.expectedErr.Error())
+		})
 	}
 }
 

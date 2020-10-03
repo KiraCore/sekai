@@ -32,18 +32,18 @@ func (q Querier) RolesByAddress(ctx context.Context, request *types.RolesByAddre
 }
 
 func (q Querier) CouncilorByAddress(ctx context.Context, request *types.CouncilorByAddressRequest) (*types.CouncilorResponse, error) {
-	councilor, err := q.keeper.GetCouncilor(sdk.UnwrapSDKContext(ctx), request.ValAddr)
-	if err != nil {
-		return nil, errors.Wrap(errors.ErrKeyNotFound, err.Error())
+	councilor, found := q.keeper.GetCouncilor(sdk.UnwrapSDKContext(ctx), request.ValAddr)
+	if !found {
+		return nil, types.ErrCouncilorNotFound
 	}
 
 	return &types.CouncilorResponse{Councilor: councilor}, nil
 }
 
 func (q Querier) CouncilorByMoniker(ctx context.Context, request *types.CouncilorByMonikerRequest) (*types.CouncilorResponse, error) {
-	councilor, err := q.keeper.GetCouncilorByMoniker(sdk.UnwrapSDKContext(ctx), request.Moniker)
-	if err != nil {
-		return nil, errors.Wrap(errors.ErrKeyNotFound, err.Error())
+	councilor, found := q.keeper.GetCouncilorByMoniker(sdk.UnwrapSDKContext(ctx), request.Moniker)
+	if !found {
+		return nil, types.ErrCouncilorNotFound
 	}
 
 	return &types.CouncilorResponse{Councilor: councilor}, nil

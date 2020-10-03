@@ -52,8 +52,8 @@ func handleMsgVoteProposal(
 	ck keeper.Keeper,
 	msg *customgovtypes.MsgVoteProposal,
 ) (*sdk.Result, error) {
-	_, err := ck.GetCouncilor(ctx, msg.Voter)
-	if err != nil { // Councilor not found
+	_, found := ck.GetCouncilor(ctx, msg.Voter)
+	if !found { // Councilor not found
 		return nil, customgovtypes.ErrUserIsNotCouncilor
 	}
 
@@ -65,9 +65,9 @@ func handleMsgProposalAssignPermission(
 	ck keeper.Keeper,
 	msg *customgovtypes.MsgProposalAssignPermission,
 ) (*sdk.Result, error) {
-	_, err := ck.GetCouncilor(ctx, msg.Proposer)
-	if err != nil {
-		return nil, err
+	_, found := ck.GetCouncilor(ctx, msg.Proposer)
+	if !found {
+		return nil, customgovtypes.ErrUserIsNotCouncilor
 	}
 
 	actor, err := ck.GetNetworkActorByAddress(ctx, msg.Address)
