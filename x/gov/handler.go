@@ -94,8 +94,8 @@ func handleMsgRemoveRole(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.
 		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermSetPermissions")
 	}
 
-	role := ck.GetPermissionsForRole(ctx, customgovtypes.Role(msg.Role))
-	if role == nil {
+	_, found := ck.GetPermissionsForRole(ctx, customgovtypes.Role(msg.Role))
+	if !found {
 		return nil, customgovtypes.ErrRoleDoesNotExist
 	}
 
@@ -121,8 +121,8 @@ func handleAssignRole(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.Msg
 		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermSetPermissions")
 	}
 
-	role := ck.GetPermissionsForRole(ctx, customgovtypes.Role(msg.Role))
-	if role == nil {
+	_, found := ck.GetPermissionsForRole(ctx, customgovtypes.Role(msg.Role))
+	if !found {
 		return nil, customgovtypes.ErrRoleDoesNotExist
 	}
 
@@ -147,8 +147,8 @@ func handleCreateRole(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.Msg
 		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermSetPermissions")
 	}
 
-	perms := ck.GetPermissionsForRole(ctx, customgovtypes.Role(msg.Role))
-	if perms != nil {
+	_, found := ck.GetPermissionsForRole(ctx, customgovtypes.Role(msg.Role))
+	if found {
 		return nil, customgovtypes.ErrRoleExist
 	}
 
@@ -292,10 +292,10 @@ func validateAndGetPermissionsForRole(
 		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermSetPermissions")
 	}
 
-	perms := ck.GetPermissionsForRole(ctx, role)
-	if perms == nil {
+	perms, found := ck.GetPermissionsForRole(ctx, role)
+	if !found {
 		return nil, customgovtypes.ErrRoleDoesNotExist
 	}
 
-	return perms, nil
+	return &perms, nil
 }

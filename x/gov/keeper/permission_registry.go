@@ -15,15 +15,15 @@ func (k Keeper) SetPermissionsForRole(ctx sdk.Context, role types.Role, permissi
 }
 
 // GetPermissionsForRole returns the permissions assigned to the specific role.
-func (k Keeper) GetPermissionsForRole(ctx sdk.Context, role types.Role) *types.Permissions {
+func (k Keeper) GetPermissionsForRole(ctx sdk.Context, role types.Role) (types.Permissions, bool) {
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), RolePermissionRegistry)
 	bz := prefixStore.Get(types.RoleToKey(role))
 	if bz == nil {
-		return nil
+		return types.Permissions{}, false
 	}
 
-	perm := new(types.Permissions)
-	k.cdc.MustUnmarshalBinaryBare(bz, perm)
+	var perm types.Permissions
+	k.cdc.MustUnmarshalBinaryBare(bz, &perm)
 
-	return perm
+	return perm, true
 }
