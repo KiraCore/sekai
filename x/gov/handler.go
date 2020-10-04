@@ -71,6 +71,9 @@ func handleMsgVoteProposal(
 		return nil, customgovtypes.ErrProposalDoesNotExist
 	}
 
+	vote := customgovtypes.NewVote(msg.ProposalId, msg.Voter, msg.Option)
+	ck.SaveVote(ctx, vote)
+
 	return &sdk.Result{}, nil
 }
 

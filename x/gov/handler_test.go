@@ -1135,6 +1135,46 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 }
 
 func TestHandler_VoteProposal(t *testing.T) {
+	voterAddr, err := sdk.AccAddressFromBech32("kira15ky9du8a2wlstz6fpx3p4mqpjyrm5cgqzp4f3d")
+	require.NoError(t, err)
+
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	// Put voter as councilor
+	councilor := types.NewCouncilor(
+		"test",
+		"website",
+		"social",
+		"identity",
+		voterAddr,
+	)
+	app.CustomGovKeeper.SaveCouncilor(ctx, councilor)
+
+	// Create Voter as active actor.
+	actor := types.NewNetworkActor(
+		voterAddr,
+		types.Roles{},
+		types.Active,
+		[]uint32{},
+		types.NewPermissions(nil, nil),
+		1,
+	)
+	app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
+
+	// Create proposal
+	proposal := types.NewProposalAssignPermission(voterAddr, types.PermClaimCouncilor)
+	proposalID, err := app.CustomGovKeeper.SaveProposal(ctx, proposal)
+	require.NoError(t, err)
+
+	msg := types.NewMsgVoteProposal(proposalID, voterAddr, types.OptionAbstain)
+	handler := gov.NewHandler(app.CustomGovKeeper)
+	_, err = handler(ctx, msg)
+	require.NoError(t, err)
+
+	vote, found := app.CustomGovKeeper.GetVote(ctx, proposalID, voterAddr)
+	require.True(t, found)
+	require.Equal(t, types.NewVote(proposalID, voterAddr, types.OptionAbstain), vote)
 }
 
 func setPermissionToAddr(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addr sdk.AccAddress, perm types.PermValue) error {
