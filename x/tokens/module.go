@@ -57,13 +57,14 @@ func (b AppModuleBasic) GetTxCmd() *cobra.Command {
 }
 
 func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
-	return cli2.GetCmdQueryPermissions()
+	return cli2.GetCmdQueryTokenAlias()
 }
 
 // AppModule for tokens management
 type AppModule struct {
 	AppModuleBasic
-	aliasKeeper keeper2.Keeper
+	aliasKeeper     keeper2.Keeper
+	customGovKeeper tokenstypes.CustomGovKeeper
 }
 
 func (am AppModule) RegisterInterfaces(registry types2.InterfaceRegistry) {
@@ -78,12 +79,8 @@ func (am AppModule) InitGenesis(
 	var genesisState tokenstypes.GenesisState
 	cdc.MustUnmarshalJSON(data, &genesisState)
 
-	for _, actor := range genesisState.NetworkActors {
-		am.aliasKeeper.SaveNetworkActor(ctx, *actor)
-	}
-
-	for index, perm := range genesisState.Permissions {
-		am.aliasKeeper.SetPermissionsForRole(ctx, tokenstypes.Role(index), perm)
+	for _, alias := range genesisState.Aliases {
+		am.aliasKeeper.UpsertTokenAlias(ctx, *alias)
 	}
 
 	return nil
@@ -113,7 +110,7 @@ func (am AppModule) Name() string {
 
 // Route returns the message routing key for the staking module.
 func (am AppModule) Route() sdk.Route {
-	return sdk.NewRoute(tokenstypes.ModuleName, NewHandler(am.aliasKeeper))
+	return sdk.NewRoute(tokenstypes.ModuleName, NewHandler(am.aliasKeeper, am.customGovKeeper))
 }
 
 // RegisterQueryService registers a GRPC query service to respond to the
