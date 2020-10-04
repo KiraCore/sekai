@@ -8,7 +8,7 @@ import (
 )
 
 // UpsertTokenAlias upsert a token alias to the registry
-func (k Keeper) UpsertTokenAlias(ctx sdk.Context, role types.Role, permissions *types.Permissions) {
+func (k Keeper) UpsertTokenAlias(ctx sdk.Context, alias types.TokenAlias) {
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), KeyPrefixPermissionsRegistry)
 
 	prefixStore.Set(types.RoleToKey(role), k.cdc.MustMarshalBinaryBare(permissions))
