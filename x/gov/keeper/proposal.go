@@ -27,21 +27,16 @@ func (k Keeper) SaveProposalID(ctx sdk.Context, proposalID uint64) {
 	store.Set(NextProposalIDPrefix, GetProposalIDBytes(proposalID))
 }
 
-func (k Keeper) SaveProposal(ctx sdk.Context, proposal types.ProposalAssignPermission) (uint64, error) {
+func (k Keeper) SaveProposal(ctx sdk.Context, proposal types.ProposalAssignPermission) error {
 	store := ctx.KVStore(k.storeKey)
 
-	proposalID, err := k.GetNextProposalID(ctx)
-	if err != nil {
-		return 0, err
-	}
-
 	bz := k.cdc.MustMarshalBinaryBare(&proposal)
-	store.Set(GetProposalKey(proposalID), bz)
+	store.Set(GetProposalKey(proposal.ProposalId), bz)
 
 	// Update NextProposal
-	k.SaveProposalID(ctx, proposalID+1)
+	k.SaveProposalID(ctx, proposal.ProposalId+1)
 
-	return proposalID, nil
+	return nil
 }
 
 func (k Keeper) GetProposal(ctx sdk.Context, proposalID uint64) (types.ProposalAssignPermission, bool) {

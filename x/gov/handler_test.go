@@ -1050,7 +1050,7 @@ func TestHandler_ProposalAssignPermission(t *testing.T) {
 
 	savedProposal, found := app.CustomGovKeeper.GetProposal(ctx, 1)
 	require.True(t, found)
-	require.Equal(t, types.NewProposalAssignPermission(addr, types.PermValue(1), ctx.BlockTime()), savedProposal)
+	require.Equal(t, types.NewProposalAssignPermission(1, addr, types.PermValue(1), ctx.BlockTime()), savedProposal)
 
 	// Next proposal ID is increased.
 	id, err := app.CustomGovKeeper.GetNextProposalID(ctx)
@@ -1170,18 +1170,18 @@ func TestHandler_VoteProposal(t *testing.T) {
 	app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
 
 	// Create proposal
-	proposal := types.NewProposalAssignPermission(voterAddr, types.PermClaimCouncilor, ctx.BlockTime())
-	proposalID, err := app.CustomGovKeeper.SaveProposal(ctx, proposal)
+	proposal := types.NewProposalAssignPermission(1, voterAddr, types.PermClaimCouncilor, ctx.BlockTime())
+	err = app.CustomGovKeeper.SaveProposal(ctx, proposal)
 	require.NoError(t, err)
 
-	msg := types.NewMsgVoteProposal(proposalID, voterAddr, types.OptionAbstain)
+	msg := types.NewMsgVoteProposal(proposal.ProposalId, voterAddr, types.OptionAbstain)
 	handler := gov.NewHandler(app.CustomGovKeeper)
 	_, err = handler(ctx, msg)
 	require.NoError(t, err)
 
-	vote, found := app.CustomGovKeeper.GetVote(ctx, proposalID, voterAddr)
+	vote, found := app.CustomGovKeeper.GetVote(ctx, proposal.ProposalId, voterAddr)
 	require.True(t, found)
-	require.Equal(t, types.NewVote(proposalID, voterAddr, types.OptionAbstain), vote)
+	require.Equal(t, types.NewVote(proposal.ProposalId, voterAddr, types.OptionAbstain), vote)
 }
 
 func setPermissionToAddr(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addr sdk.AccAddress, perm types.PermValue) error {

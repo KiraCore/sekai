@@ -95,8 +95,13 @@ func handleMsgProposalAssignPermission(
 	}
 
 	blockTime := ctx.BlockTime()
-	proposal := customgovtypes.NewProposalAssignPermission(msg.Address, customgovtypes.PermValue(msg.Permission), blockTime)
-	proposalID, err := ck.SaveProposal(ctx, proposal)
+	proposalID, err := ck.GetNextProposalID(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	proposal := customgovtypes.NewProposalAssignPermission(proposalID, msg.Address, customgovtypes.PermValue(msg.Permission), blockTime)
+	err = ck.SaveProposal(ctx, proposal)
 	if err != nil {
 		return nil, err
 	}
