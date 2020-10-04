@@ -7,23 +7,41 @@ import (
 	"github.com/KiraCore/sekai/x/tokens/types"
 )
 
-// UpsertTokenAlias upsert a token alias to the registry
-func (k Keeper) UpsertTokenAlias(ctx sdk.Context, alias types.TokenAlias) {
-	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), KeyPrefixPermissionsRegistry)
-
-	prefixStore.Set(types.RoleToKey(role), k.cdc.MustMarshalBinaryBare(permissions))
-}
-
 // GetTokenAlias returns a token alias
-func (k Keeper) GetTokenAlias(ctx sdk.Context, role types.Role) *types.Permissions {
-	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), KeyPrefixPermissionsRegistry)
-	bz := prefixStore.Get(types.RoleToKey(role))
+func (k Keeper) GetTokenAlias(ctx sdk.Context, symbol string) *types.TokenAlias {
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), PrefixKeyTokenAlias)
+	bz := prefixStore.Get([]byte(symbol))
 	if bz == nil {
 		return nil
 	}
 
-	perm := new(types.Permissions)
-	k.cdc.MustUnmarshalBinaryBare(bz, perm)
+	alias := new(types.TokenAlias)
+	k.cdc.MustUnmarshalBinaryBare(bz, alias)
 
-	return perm
+	return alias
+}
+
+// ListTokenAlias returns all list of token alias
+func (k Keeper) ListTokenAlias(ctx sdk.Context) []types.TokenAlias {
+
+}
+
+// UpsertTokenAlias upsert a token alias to the registry
+func (k Keeper) UpsertTokenAlias(ctx sdk.Context, alias types.TokenAlias) error {
+	store := ctx.KVStore(k.storeKey)
+	// we use symbol of TokenAlias as an ID inside KVStore storage
+	tokenAliasStoreID := append([]byte(PrefixKeyTokenAlias), []byte(alias.Symbol)...)
+
+	store.Set(tokenAliasStoreID, k.cdc.MustMarshalBinaryBare(alias))
+	return nil
+}
+
+// DeleteTokenAlias delete token alias by symbol
+func (k Keeper) DeleteTokenAlias(ctx sdk.Context, symbol string) error {
+	store := ctx.KVStore(k.storeKey)
+	// we use symbol of TokenAlias as an ID inside KVStore storage
+	tokenAliasStoreID := append([]byte(PrefixKeyTokenAlias), []byte(symbol)...)
+
+	store.Delete(tokenAliasStoreID)
+	return nil
 }
