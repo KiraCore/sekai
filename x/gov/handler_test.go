@@ -3,6 +3,7 @@ package gov_test
 import (
 	"fmt"
 	"testing"
+	"time"
 
 	types2 "github.com/cosmos/cosmos-sdk/x/gov/types"
 
@@ -1032,7 +1033,9 @@ func TestHandler_ProposalAssignPermission(t *testing.T) {
 	require.NoError(t, err)
 
 	app := simapp.Setup(false)
-	ctx := app.NewContext(false, tmproto.Header{})
+	ctx := app.NewContext(false, tmproto.Header{
+		Time: time.Now(),
+	})
 
 	// Set proposer as councilor
 	app.CustomGovKeeper.SaveCouncilor(ctx, types.NewCouncilor("test", "website", "social", "identity", proposerAddr))
