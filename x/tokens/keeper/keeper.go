@@ -5,17 +5,18 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+// store prefixes
 var (
-	KeyPrefixPermissionsRegistry       = []byte("perm_registry")
-	KeyPrefixCouncilorIdentityRegistry = []byte("council_registry")
-	KeyPrefixActors                    = []byte("network_actors")
+	PrefixKeyTokenAlias = []byte("token_registry")
 )
 
+// Keeper is for managing token aliases
 type Keeper struct {
 	cdc      codec.BinaryMarshaler
 	storeKey sdk.StoreKey
 }
 
+// NewKeeper returns instance of a keeper
 func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryMarshaler) Keeper {
 	return Keeper{cdc: cdc, storeKey: storeKey}
 }

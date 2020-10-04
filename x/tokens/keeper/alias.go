@@ -23,7 +23,20 @@ func (k Keeper) GetTokenAlias(ctx sdk.Context, symbol string) *types.TokenAlias 
 
 // ListTokenAlias returns all list of token alias
 func (k Keeper) ListTokenAlias(ctx sdk.Context) []types.TokenAlias {
+	var tokenAliases []types.TokenAlias
 
+	// get iterator for token aliases
+	store := ctx.KVStore(PrefixKeyTokenAlias)
+	iterator := sdk.KVStorePrefixIterator(store, []byte(""))
+
+	for ; iterator.Valid(); iterator.Next() {
+		symbol := string(iterator.Key())
+		tokenAlias := k.GetTokenAlias(ctx, symbol)
+		if tokenAlias != nil {
+			tokenAliases = append(tokenAliases, *tokenAlias)
+		}
+	}
+	return tokenAliases
 }
 
 // UpsertTokenAlias upsert a token alias to the registry
@@ -32,7 +45,7 @@ func (k Keeper) UpsertTokenAlias(ctx sdk.Context, alias types.TokenAlias) error 
 	// we use symbol of TokenAlias as an ID inside KVStore storage
 	tokenAliasStoreID := append([]byte(PrefixKeyTokenAlias), []byte(alias.Symbol)...)
 
-	store.Set(tokenAliasStoreID, k.cdc.MustMarshalBinaryBare(alias))
+	store.Set(tokenAliasStoreID, k.cdc.MustMarshalBinaryBare(&alias))
 	return nil
 }
 
