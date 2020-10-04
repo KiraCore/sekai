@@ -1,7 +1,6 @@
 syntax = "proto3";
-package kira.gov;
+package kira.tokens;
 
-import "gogoproto/gogo.proto";
 import "alias.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/tokens/types";
