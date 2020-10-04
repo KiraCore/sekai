@@ -1,23 +1,43 @@
 syntax = "proto3";
 package kira.tokens;
 
-import "gogoproto/gogo.proto";
-
 option go_package = "github.com/KiraCore/sekai/x/tokens/types";
 
-message MsgUpsertTokenAlias {
+enum VoteType {
+    yes = 0;
+    no = 1;
+    veto = 2;
+    abstain = 3;
+}
+
+enum ProposalStatus {
+    undefined = 0;
+    active = 1;
+    rejected = 2;
+    passed = 3;
+    enacted = 4;
+}
+
+message TokenAlias {
     uint32 expiration = 1; // Configurable in genesis expiration time (uint32) - seconds since submission
     uint32 enactment = 2; // Configurable in genesis enactment time (uint32) - seconds since expiration
-    Allowed vote types: yes, no, veto, abstain
+    repeated VoteType allowed_vote_types = 3; // yes, no, veto, abstain
     string symbol = 4;// Ticker (eg. ATOM, KEX, BTC)
     string name = 5; // Token Name (e.g. Cosmos, Kira, Bitcoin)
     string icon = 6; // Graphical Symbol (url link to graphics)
     uint32 decimals = 7; // Integer number of max decimals
     repeated string denoms = 8; // An array of token denoms to be aliased
-    int status = 9; 
-        // undefined - 0x00
-        // active - 0x01
-        // rejected - 0x02
-        // passed - 0x03
-        // enacted - 0x04
+    ProposalStatus status = 9; // undefined, active, rejected, passed, enacted
+}
+
+message MsgUpsertTokenAlias {
+    uint32 expiration = 1; // Configurable in genesis expiration time (uint32) - seconds since submission
+    uint32 enactment = 2; // Configurable in genesis enactment time (uint32) - seconds since expiration
+    repeated VoteType allowed_vote_types = 3; // yes, no, veto, abstain
+    string symbol = 4;// Ticker (eg. ATOM, KEX, BTC)
+    string name = 5; // Token Name (e.g. Cosmos, Kira, Bitcoin)
+    string icon = 6; // Graphical Symbol (url link to graphics)
+    uint32 decimals = 7; // Integer number of max decimals
+    repeated string denoms = 8; // An array of token denoms to be aliased
+    ProposalStatus status = 9; // undefined, active, rejected, passed, enacted
 }
