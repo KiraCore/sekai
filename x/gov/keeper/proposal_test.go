@@ -32,7 +32,7 @@ func TestSaveProposalReturnsTheProposalID_AndIncreasesLast(t *testing.T) {
 	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, types2.TokensFromConsensusPower(10))
 	addr := addrs[0]
 
-	proposal := types.NewProposalAssignPermission(addr, types.PermClaimValidator)
+	proposal := types.NewProposalAssignPermission(addr, types.PermClaimValidator, ctx.BlockTime())
 	saveProposal, err := app.CustomGovKeeper.SaveProposal(ctx, proposal)
 	require.NoError(t, err)
 

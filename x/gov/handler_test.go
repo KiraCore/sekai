@@ -1045,6 +1045,10 @@ func TestHandler_ProposalAssignPermission(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, types2.GetProposalIDBytes(1), res.Data)
 
+	savedProposal, found := app.CustomGovKeeper.GetProposal(ctx, 1)
+	require.True(t, found)
+	require.Equal(t, types.NewProposalAssignPermission(addr, types.PermValue(1), ctx.BlockTime()), savedProposal)
+
 	// Next proposal ID is increased.
 	id, err := app.CustomGovKeeper.GetNextProposalID(ctx)
 	require.NoError(t, err)
@@ -1163,7 +1167,7 @@ func TestHandler_VoteProposal(t *testing.T) {
 	app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
 
 	// Create proposal
-	proposal := types.NewProposalAssignPermission(voterAddr, types.PermClaimCouncilor)
+	proposal := types.NewProposalAssignPermission(voterAddr, types.PermClaimCouncilor, ctx.BlockTime())
 	proposalID, err := app.CustomGovKeeper.SaveProposal(ctx, proposal)
 	require.NoError(t, err)
 

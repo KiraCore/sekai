@@ -2,6 +2,7 @@ package types
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/cosmos/cosmos-sdk/types"
 )
@@ -178,10 +179,11 @@ func NewCouncilor(
 	}
 }
 
-func NewProposalAssignPermission(address types.AccAddress, permission PermValue) ProposalAssignPermission {
+func NewProposalAssignPermission(address types.AccAddress, permission PermValue, submitTime time.Time) ProposalAssignPermission {
 	return ProposalAssignPermission{
 		Address:    address,
 		Permission: uint32(permission),
+		SubmitTime: submitTime,
 	}
 }
 
