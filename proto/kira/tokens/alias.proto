@@ -44,6 +44,6 @@ message MsgUpsertTokenAlias {
     ProposalStatus status = 9; // undefined, active, rejected, passed, enacted
     bytes proposer = 10 [
         (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
-        (gogoproto.moretags) = "yaml:\"address\""
+        (gogoproto.moretags) = "yaml:\"proposer\""
     ];
 }
