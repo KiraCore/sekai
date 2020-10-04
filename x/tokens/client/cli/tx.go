@@ -2,6 +2,8 @@ package cli
 
 import (
 	"fmt"
+	"strconv"
+	"strings"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -11,13 +13,16 @@ import (
 	"github.com/KiraCore/sekai/x/tokens/types"
 )
 
+// flags for tokens module txs
 const (
-	FlagPermission = "permission"
-	FlagWebsite    = "website"
-	FlagMoniker    = "moniker"
-	FlagSocial     = "social"
-	FlagIdentity   = "identity"
-	FlagAddress    = "address"
+	FlagExpiration       = "expiration"
+	FlagEnactment        = "enactment"
+	FlagAllowedVoteTypes = "allowed_vote_types"
+	FlagSymbol           = "symbol"
+	FlagName             = "name"
+	FlagIcon             = "icon"
+	FlagDecimals         = "decimals"
+	FlagDenoms           = "denoms"
 )
 
 // NewTxCmd returns a root CLI command handler for all x/bank transaction commands.
@@ -35,10 +40,11 @@ func NewTxCmd() *cobra.Command {
 	return txCmd
 }
 
+// GetTxUpsertTokenAliasCmd implement cli command for MsgUpsertTokenAlias
 func GetTxUpsertTokenAliasCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "set-whitelist-permissions",
-		Short: "Whitelists permissions into an address",
+		Use:   "upsert-alias",
+		Short: "Upsert token alias",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
@@ -46,27 +52,85 @@ func GetTxUpsertTokenAliasCmd() *cobra.Command {
 				return err
 			}
 
-			perm, err := cmd.Flags().GetUint32(FlagPermission)
+			expiration, err := cmd.Flags().GetUint32(FlagExpiration)
 			if err != nil {
-				return fmt.Errorf("invalid permissions")
+				return fmt.Errorf("invalid expiration")
 			}
 
-			addr, err := getAddressFromFlag(cmd)
+			enactment, err := cmd.Flags().GetUint32(FlagEnactment)
 			if err != nil {
-				return fmt.Errorf("error getting address: %w", err)
+				return fmt.Errorf("invalid enactment")
 			}
 
-			msg := types.NewMsgWhitelistPermissions(
+			allowedVoteTypesString, err := cmd.Flags().GetString(FlagAllowedVoteTypes)
+			if err != nil {
+				return fmt.Errorf("invalid vote type")
+			}
+
+			allowedVoteTypes := []types.VoteType{}
+			for _, v := range strings.Split(allowedVoteTypesString, ",") {
+				voteType, err := strconv.Atoi(v)
+				if err != nil {
+					return fmt.Errorf("invalid vote type")
+				}
+				allowedVoteTypes = append(allowedVoteTypes, types.VoteType(voteType))
+			}
+
+			symbol, err := cmd.Flags().GetString(FlagSymbol)
+			if err != nil {
+				return fmt.Errorf("invalid symbol")
+			}
+
+			name, err := cmd.Flags().GetString(FlagName)
+			if err != nil {
+				return fmt.Errorf("invalid name")
+			}
+
+			icon, err := cmd.Flags().GetString(FlagIcon)
+			if err != nil {
+				return fmt.Errorf("invalid icon")
+			}
+
+			decimals, err := cmd.Flags().GetUint32(FlagDecimals)
+			if err != nil {
+				return fmt.Errorf("invalid decimals")
+			}
+
+			denomsString, err := cmd.Flags().GetString(FlagDenoms)
+			if err != nil {
+				return fmt.Errorf("invalid denoms")
+			}
+
+			denoms := strings.Split(denomsString, ",")
+			// TODO should do validation for denom regex
+
+			status := types.ProposalStatus_undefined
+
+			msg := types.NewMsgUpsertTokenAlias(
 				clientCtx.FromAddress,
-				addr,
-				perm,
+				expiration,
+				enactment,
+				allowedVoteTypes,
+				symbol,
+				name,
+				icon,
+				decimals,
+				denoms,
+				status,
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
 
-	setPermissionFlags(cmd)
+	cmd.Flags().Uint32(FlagExpiration, 0, "expiration time - seconds since submission")
+	cmd.Flags().Uint32(FlagEnactment, 0, "enactment time - seconds since expiration")
+	cmd.Flags().String(FlagAllowedVoteTypes, "0,1,2,3", "Allowed vote types: yes(0), no(1), veto(2), abstain(3)")
+	cmd.Flags().String(FlagSymbol, "KEX", "Ticker (eg. ATOM, KEX, BTC)")
+	cmd.Flags().String(FlagName, "Kira", "Token Name (e.g. Cosmos, Kira, Bitcoin)")
+	cmd.Flags().String(FlagIcon, "", "Graphical Symbol (url link to graphics)")
+	cmd.Flags().Uint32(FlagDecimals, 6, "Integer number of max decimals")
+	cmd.Flags().String(FlagDenoms, "ukex,mkex", "An array of token denoms to be aliased")
 
 	flags.AddTxFlagsToCmd(cmd)
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)

@@ -26,8 +26,8 @@ func (k Keeper) ListTokenAlias(ctx sdk.Context) []types.TokenAlias {
 	var tokenAliases []types.TokenAlias
 
 	// get iterator for token aliases
-	store := ctx.KVStore(PrefixKeyTokenAlias)
-	iterator := sdk.KVStorePrefixIterator(store, []byte(""))
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, []byte(PrefixKeyTokenAlias))
 
 	for ; iterator.Valid(); iterator.Next() {
 		symbol := string(iterator.Key())
