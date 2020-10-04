@@ -71,7 +71,7 @@ func handleMsgVoteProposal(
 		return nil, customgovtypes.ErrProposalDoesNotExist
 	}
 
-	return nil, nil
+	return &sdk.Result{}, nil
 }
 
 func handleMsgProposalAssignPermission(

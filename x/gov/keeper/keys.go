@@ -3,6 +3,7 @@ package keeper
 // Keys for Gov store.
 // 0x00<uint64 in bytes> : The next proposalID.
 // 0x01<proposalID_bytes> : The Proposal
+// 0x02<proposalID_Bytes + voterAddress_Bytes> : The Proposal
 //
 // 0x10<role_uint64_Bytes> : The role permissions.
 //
@@ -12,6 +13,7 @@ package keeper
 var (
 	NextProposalIDPrefix = []byte{0x00}
 	ProposalsPrefix      = []byte{0x01}
+	VotesPrefix          = []byte{0x02}
 
 	RolePermissionRegistry          = []byte{0x10}
 	CouncilorIdentityRegistryPrefix = []byte{0x20}

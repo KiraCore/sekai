@@ -48,3 +48,23 @@ func TestSaveProposalReturnsTheProposalID_AndIncreasesLast(t *testing.T) {
 	require.True(t, found)
 	require.Equal(t, proposal, savedProposal)
 }
+
+func TestKeeper_SaveVote(t *testing.T) {
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, types2.TokensFromConsensusPower(10))
+	addr := addrs[0]
+
+	// Vote not saved yet
+	_, found := app.CustomGovKeeper.GetVote(ctx, 1, addr)
+	require.False(t, found)
+
+	vote := types.NewVote(1, addr, types.OptionAbstain)
+
+	app.CustomGovKeeper.SaveVote(ctx, vote)
+
+	savedVote, found := app.CustomGovKeeper.GetVote(ctx, 1, addr)
+	require.True(t, found)
+	require.Equal(t, vote, savedVote)
+}

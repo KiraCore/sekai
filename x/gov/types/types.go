@@ -184,3 +184,11 @@ func NewProposalAssignPermission(address types.AccAddress, permission PermValue)
 		Permission: uint32(permission),
 	}
 }
+
+func NewVote(proposalID uint64, addr types.AccAddress, option VoteOption) Vote {
+	return Vote{
+		ProposalId: proposalID,
+		Voter:      addr,
+		Option:     option,
+	}
+}
