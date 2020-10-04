@@ -40,4 +40,8 @@ message MsgUpsertTokenAlias {
     uint32 decimals = 7; // Integer number of max decimals
     repeated string denoms = 8; // An array of token denoms to be aliased
     ProposalStatus status = 9; // undefined, active, rejected, passed, enacted
+    bytes proposer = 10 [
+        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+        (gogoproto.moretags) = "yaml:\"address\""
+    ];
 }

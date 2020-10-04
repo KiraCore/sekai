@@ -1,0 +1,19 @@
+syntax = "proto3";
+package kira.gov;
+
+import "gov.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/gov/types";
+
+// Query defines the gRPC querier service
+service Query {
+  // Returns the token alias
+  rpc GetTokenAlias (TokenAliasRequest) returns (TokenAliasResponse) {}
+}
+
+message TokenAliasRequest {
+}
+
+message RolesByAddressResponse {
+}

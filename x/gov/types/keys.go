@@ -4,7 +4,6 @@ import sdk "github.com/cosmos/cosmos-sdk/types"
 
 const ModuleName = "customgov"
 
-
 var (
 	// Roles
 	RoleUndefined Role = 0x0
@@ -14,6 +13,8 @@ var (
 	PermClaimValidator PermValue = 1
 	PermSetPermissions PermValue = 2
 	PermClaimCouncilor PermValue = 3
+
+	PermUpsertTokenAlias PermValue = 10
 )
 
 // Role represents a Role in the registry.

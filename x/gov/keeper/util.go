@@ -58,3 +58,7 @@ func getRolePermissions(ctx sdk.Context, keeper Keeper, actor types.NetworkActor
 
 	return roles
 }
+
+func (k Keeper) CheckIfAllowedPermission(ctx sdk.Context, addr sdk.AccAddress, permValue types.PermValue) bool {
+	return CheckIfAllowedPermission(ctx, k, addr, permValue)
+}
