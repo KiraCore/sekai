@@ -4,6 +4,7 @@ package keeper
 // 0x00<uint64 in bytes> : The next proposalID.
 // 0x01<proposalID_bytes> : The Proposal
 // 0x02<proposalID_Bytes + voterAddress_Bytes> : The Proposal
+// 0x03<endTime_Bytes + proposalID_Bytes> : ActiveProposalID
 //
 // 0x10<role_uint64_Bytes> : The role permissions.
 //
@@ -11,9 +12,10 @@ package keeper
 //
 // 0x30<actorAddress_Bytes> : Councilor.
 var (
-	NextProposalIDPrefix = []byte{0x00}
-	ProposalsPrefix      = []byte{0x01}
-	VotesPrefix          = []byte{0x02}
+	NextProposalIDPrefix  = []byte{0x00}
+	ProposalsPrefix       = []byte{0x01}
+	VotesPrefix           = []byte{0x02}
+	ActiveProposalsPrefix = []byte{0x03}
 
 	RolePermissionRegistry          = []byte{0x10}
 	CouncilorIdentityRegistryPrefix = []byte{0x20}

@@ -179,12 +179,19 @@ func NewCouncilor(
 	}
 }
 
-func NewProposalAssignPermission(proposalID uint64, address types.AccAddress, permission PermValue, submitTime time.Time) ProposalAssignPermission {
+func NewProposalAssignPermission(
+	proposalID uint64,
+	address types.AccAddress,
+	permission PermValue,
+	votingStartTime time.Time,
+	votingEndTime time.Time,
+) ProposalAssignPermission {
 	return ProposalAssignPermission{
-		ProposalId: proposalID,
-		Address:    address,
-		Permission: uint32(permission),
-		SubmitTime: submitTime,
+		ProposalId:      proposalID,
+		Address:         address,
+		Permission:      uint32(permission),
+		VotingStartTime: votingStartTime,
+		VotingEndTime:   votingEndTime,
 	}
 }
 

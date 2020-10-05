@@ -1,6 +1,8 @@
 package gov
 
 import (
+	"time"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -100,7 +102,7 @@ func handleMsgProposalAssignPermission(
 		return nil, err
 	}
 
-	proposal := customgovtypes.NewProposalAssignPermission(proposalID, msg.Address, customgovtypes.PermValue(msg.Permission), blockTime)
+	proposal := customgovtypes.NewProposalAssignPermission(proposalID, msg.Address, customgovtypes.PermValue(msg.Permission), blockTime, blockTime.Add(time.Minute*10)) // TODO end time for voting by config.
 	err = ck.SaveProposal(ctx, proposal)
 	if err != nil {
 		return nil, err
