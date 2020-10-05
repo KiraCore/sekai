@@ -1,10 +1,25 @@
 # Changelog
 
+## [0.1.2.5] - 10.05.2020
+### Added
+
+- Added CLI command to change execution fee per message type
+- Added CLI command to change transaction fee range
+- Added CLI command to query execution fee
+- Added CLI command to query transaction fee range
+
+## [0.1.2.4] - 09.24.2020
+### Added
+
+- Added CLI command to remove blacklist permissions into a specific role.
+- Added CLI command to create new role.
+- Added CLI command to assign new role.
+- Added CLI command to remove assignation for a role.
+
 ## [0.1.2.3] - 09.17.2020
 ### Changed
 
 - Updated cosmos SDK to last version of 17th september .
-
 
 ## [0.1.2.2] - 09.14.2020
 ### Added

@@ -197,6 +197,94 @@ func (m *NetworkPropertiesResponse) GetProperties() *NetworkProperties {
 	return nil
 }
 
+type RolesByAddressRequest struct {
+	ValAddr github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=val_addr,json=valAddr,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"val_addr,omitempty" yaml:"val_addr"`
+}
+
+func (m *RolesByAddressRequest) Reset()         { *m = RolesByAddressRequest{} }
+func (m *RolesByAddressRequest) String() string { return proto.CompactTextString(m) }
+func (*RolesByAddressRequest) ProtoMessage()    {}
+func (*RolesByAddressRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5c6ac9b241082464, []int{4}
+}
+func (m *RolesByAddressRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *RolesByAddressRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_RolesByAddressRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *RolesByAddressRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RolesByAddressRequest.Merge(m, src)
+}
+func (m *RolesByAddressRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *RolesByAddressRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_RolesByAddressRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_RolesByAddressRequest proto.InternalMessageInfo
+
+func (m *RolesByAddressRequest) GetValAddr() github_com_cosmos_cosmos_sdk_types.AccAddress {
+	if m != nil {
+		return m.ValAddr
+	}
+	return nil
+}
+
+type RolesByAddressResponse struct {
+	Roles []uint64 `protobuf:"varint,1,rep,packed,name=roles,proto3" json:"roles,omitempty"`
+}
+
+func (m *RolesByAddressResponse) Reset()         { *m = RolesByAddressResponse{} }
+func (m *RolesByAddressResponse) String() string { return proto.CompactTextString(m) }
+func (*RolesByAddressResponse) ProtoMessage()    {}
+func (*RolesByAddressResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5c6ac9b241082464, []int{5}
+}
+func (m *RolesByAddressResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *RolesByAddressResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_RolesByAddressResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *RolesByAddressResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RolesByAddressResponse.Merge(m, src)
+}
+func (m *RolesByAddressResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *RolesByAddressResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_RolesByAddressResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_RolesByAddressResponse proto.InternalMessageInfo
+
+func (m *RolesByAddressResponse) GetRoles() []uint64 {
+	if m != nil {
+		return m.Roles
+	}
+	return nil
+}
+
 type RolePermissionsRequest struct {
 	Role uint64 `protobuf:"varint,1,opt,name=role,proto3" json:"role,omitempty"`
 }
@@ -205,7 +293,7 @@ func (m *RolePermissionsRequest) Reset()         { *m = RolePermissionsRequest{}
 func (m *RolePermissionsRequest) String() string { return proto.CompactTextString(m) }
 func (*RolePermissionsRequest) ProtoMessage()    {}
 func (*RolePermissionsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5c6ac9b241082464, []int{4}
+	return fileDescriptor_5c6ac9b241082464, []int{6}
 }
 func (m *RolePermissionsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -249,7 +337,7 @@ func (m *RolePermissionsResponse) Reset()         { *m = RolePermissionsResponse
 func (m *RolePermissionsResponse) String() string { return proto.CompactTextString(m) }
 func (*RolePermissionsResponse) ProtoMessage()    {}
 func (*RolePermissionsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5c6ac9b241082464, []int{5}
+	return fileDescriptor_5c6ac9b241082464, []int{7}
 }
 func (m *RolePermissionsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -293,7 +381,7 @@ func (m *ExecutionFeeRequest) Reset()         { *m = ExecutionFeeRequest{} }
 func (m *ExecutionFeeRequest) String() string { return proto.CompactTextString(m) }
 func (*ExecutionFeeRequest) ProtoMessage()    {}
 func (*ExecutionFeeRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5c6ac9b241082464, []int{6}
+	return fileDescriptor_5c6ac9b241082464, []int{8}
 }
 func (m *ExecutionFeeRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -337,7 +425,7 @@ func (m *ExecutionFeeResponse) Reset()         { *m = ExecutionFeeResponse{} }
 func (m *ExecutionFeeResponse) String() string { return proto.CompactTextString(m) }
 func (*ExecutionFeeResponse) ProtoMessage()    {}
 func (*ExecutionFeeResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5c6ac9b241082464, []int{7}
+	return fileDescriptor_5c6ac9b241082464, []int{9}
 }
 func (m *ExecutionFeeResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -381,7 +469,7 @@ func (m *CouncilorByAddressRequest) Reset()         { *m = CouncilorByAddressReq
 func (m *CouncilorByAddressRequest) String() string { return proto.CompactTextString(m) }
 func (*CouncilorByAddressRequest) ProtoMessage()    {}
 func (*CouncilorByAddressRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5c6ac9b241082464, []int{8}
+	return fileDescriptor_5c6ac9b241082464, []int{10}
 }
 func (m *CouncilorByAddressRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -425,7 +513,7 @@ func (m *CouncilorByMonikerRequest) Reset()         { *m = CouncilorByMonikerReq
 func (m *CouncilorByMonikerRequest) String() string { return proto.CompactTextString(m) }
 func (*CouncilorByMonikerRequest) ProtoMessage()    {}
 func (*CouncilorByMonikerRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5c6ac9b241082464, []int{9}
+	return fileDescriptor_5c6ac9b241082464, []int{11}
 }
 func (m *CouncilorByMonikerRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -469,7 +557,7 @@ func (m *CouncilorResponse) Reset()         { *m = CouncilorResponse{} }
 func (m *CouncilorResponse) String() string { return proto.CompactTextString(m) }
 func (*CouncilorResponse) ProtoMessage()    {}
 func (*CouncilorResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5c6ac9b241082464, []int{10}
+	return fileDescriptor_5c6ac9b241082464, []int{12}
 }
 func (m *CouncilorResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -510,6 +598,8 @@ func init() {
 	proto.RegisterType((*PermissionsResponse)(nil), "kira.gov.PermissionsResponse")
 	proto.RegisterType((*NetworkPropertiesRequest)(nil), "kira.gov.NetworkPropertiesRequest")
 	proto.RegisterType((*NetworkPropertiesResponse)(nil), "kira.gov.NetworkPropertiesResponse")
+	proto.RegisterType((*RolesByAddressRequest)(nil), "kira.gov.RolesByAddressRequest")
+	proto.RegisterType((*RolesByAddressResponse)(nil), "kira.gov.RolesByAddressResponse")
 	proto.RegisterType((*RolePermissionsRequest)(nil), "kira.gov.RolePermissionsRequest")
 	proto.RegisterType((*RolePermissionsResponse)(nil), "kira.gov.RolePermissionsResponse")
 	proto.RegisterType((*ExecutionFeeRequest)(nil), "kira.gov.ExecutionFeeRequest")
@@ -522,44 +612,46 @@ func init() {
 func init() { proto.RegisterFile("query.proto", fileDescriptor_5c6ac9b241082464) }
 
 var fileDescriptor_5c6ac9b241082464 = []byte{
-	// 578 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x54, 0xc1, 0x6e, 0xd3, 0x4c,
-	0x10, 0x4e, 0xf4, 0xe7, 0xa7, 0xed, 0x04, 0x88, 0xd8, 0x84, 0x92, 0x26, 0xaa, 0x53, 0xb6, 0x8a,
-	0xd4, 0x03, 0xb5, 0xa5, 0x22, 0x84, 0x04, 0x48, 0xd0, 0x14, 0xe8, 0x01, 0x88, 0x8a, 0x4f, 0x15,
-	0x07, 0x22, 0xd7, 0x19, 0x8c, 0x15, 0xdb, 0xeb, 0xee, 0x3a, 0xa1, 0x91, 0x10, 0xcf, 0xc0, 0x83,
-	0xf0, 0x20, 0x3d, 0xf6, 0xc8, 0x29, 0x42, 0xc9, 0x1b, 0x70, 0xe4, 0x84, 0x12, 0xaf, 0x63, 0x27,
-	0x71, 0xc2, 0x01, 0x89, 0x53, 0x36, 0xdf, 0x7e, 0xf3, 0x7d, 0x33, 0x3b, 0x33, 0x86, 0xfc, 0x79,
-	0x17, 0x79, 0x5f, 0xf5, 0x39, 0x0b, 0x18, 0x59, 0xef, 0xd8, 0xdc, 0x50, 0x2d, 0xd6, 0xab, 0x6c,
-	0x58, 0xac, 0x17, 0x82, 0x95, 0x92, 0xc5, 0x2c, 0x36, 0x39, 0x6a, 0xe3, 0x53, 0x88, 0xd2, 0x2f,
-	0x50, 0x3d, 0x41, 0xee, 0xda, 0x42, 0xd8, 0xcc, 0x13, 0x8d, 0xfe, 0x61, 0xbb, 0xcd, 0x51, 0x08,
-	0x1d, 0xcf, 0xbb, 0x28, 0x02, 0xd2, 0x82, 0xf5, 0x9e, 0xe1, 0xb4, 0x8c, 0x76, 0x9b, 0x97, 0xb3,
-	0x3b, 0xd9, 0xbd, 0xeb, 0x8d, 0xe7, 0x3f, 0x07, 0xb5, 0x42, 0xdf, 0x70, 0x9d, 0x47, 0x34, 0xba,
-	0xa1, 0xbf, 0x06, 0xb5, 0x7d, 0xcb, 0x0e, 0x3e, 0x76, 0xcf, 0x54, 0x93, 0xb9, 0x9a, 0xc9, 0x84,
-	0xcb, 0x84, 0xfc, 0xd9, 0x17, 0xed, 0x8e, 0x16, 0xf4, 0x7d, 0x14, 0xea, 0xa1, 0x69, 0x46, 0xf2,
-	0x6b, 0x3d, 0xc3, 0x19, 0x9f, 0x69, 0x13, 0x8a, 0x09, 0x7f, 0x1d, 0x85, 0xcf, 0x3c, 0x81, 0xe4,
-	0x21, 0xe4, 0xfd, 0x18, 0x9e, 0x58, 0xe7, 0x0f, 0x6e, 0xab, 0x51, 0x5d, 0x6a, 0x32, 0x26, 0xc9,
-	0xa4, 0x15, 0x28, 0x37, 0x31, 0xf8, 0xc4, 0x78, 0xe7, 0x84, 0x33, 0x1f, 0x79, 0x60, 0x63, 0x54,
-	0x0c, 0x3d, 0x85, 0xad, 0x94, 0x3b, 0xe9, 0xf8, 0x18, 0xc0, 0x9f, 0xa2, 0xd2, 0xb0, 0x1a, 0x1b,
-	0x2e, 0x06, 0x26, 0xe8, 0xf4, 0x1e, 0x6c, 0xea, 0xcc, 0xc1, 0x99, 0x4a, 0xc2, 0x07, 0x24, 0x90,
-	0xe3, 0xcc, 0xc1, 0x89, 0x60, 0x4e, 0x9f, 0x9c, 0xa9, 0x0e, 0x77, 0x16, 0xd8, 0x7f, 0x5b, 0xf7,
-	0x13, 0x28, 0xbe, 0xb8, 0x40, 0xb3, 0x1b, 0xd8, 0xcc, 0x7b, 0x89, 0x18, 0xd9, 0xd7, 0xe1, 0x26,
-	0x46, 0x70, 0xcb, 0x33, 0xdc, 0x30, 0x91, 0x0d, 0xfd, 0xc6, 0x14, 0x6d, 0x1a, 0x2e, 0xd2, 0x67,
-	0x50, 0x9a, 0x8d, 0x96, 0xe9, 0xec, 0xc1, 0x7f, 0x1f, 0x10, 0x65, 0x1a, 0x9b, 0x71, 0x1a, 0x33,
-	0xe4, 0x31, 0x85, 0x7e, 0x86, 0xad, 0x23, 0xd6, 0xf5, 0x4c, 0xdb, 0x61, 0xfc, 0xdf, 0x4f, 0xd1,
-	0x83, 0x19, 0xf7, 0x37, 0xcc, 0xb3, 0x3b, 0xc8, 0x23, 0xf7, 0x32, 0xac, 0xb9, 0x21, 0x22, 0x8b,
-	0x8f, 0xfe, 0xd2, 0xd7, 0x70, 0x6b, 0x1a, 0x96, 0x68, 0xc1, 0x86, 0x19, 0x81, 0xb2, 0xf2, 0x62,
-	0x5c, 0x79, 0x6c, 0x93, 0xbb, 0x1c, 0xd4, 0x32, 0x7a, 0xcc, 0x3d, 0xf8, 0x96, 0x83, 0xff, 0xdf,
-	0x8e, 0xb7, 0x90, 0xbc, 0x87, 0x52, 0xda, 0x52, 0x91, 0x7a, 0x6a, 0x23, 0xe7, 0x9f, 0xab, 0xb2,
-	0x9d, 0xde, 0x6f, 0x99, 0x20, 0xcd, 0x10, 0x03, 0x4a, 0xc7, 0x18, 0x2c, 0x8c, 0x24, 0xa1, 0xab,
-	0xe6, 0x55, 0x8a, 0xef, 0xae, 0xe4, 0x4c, 0x2d, 0x74, 0x28, 0x1c, 0x63, 0x90, 0xec, 0x33, 0xd9,
-	0x5e, 0xd2, 0x7f, 0x29, 0xac, 0x2c, 0xbb, 0x9e, 0x6a, 0x9e, 0x42, 0x61, 0x6e, 0xee, 0xc9, 0x4e,
-	0x1c, 0x94, 0xbe, 0x40, 0x95, 0xbb, 0x2b, 0x18, 0x09, 0x65, 0xb2, 0x38, 0x7d, 0x64, 0x37, 0xad,
-	0x6d, 0xf3, 0x8f, 0x5d, 0x4d, 0x21, 0x2d, 0x55, 0x96, 0x93, 0xb5, 0x44, 0x79, 0x76, 0xee, 0xfe,
-	0xa0, 0xdc, 0x78, 0x7a, 0x39, 0x54, 0xb2, 0x57, 0x43, 0x25, 0xfb, 0x63, 0xa8, 0x64, 0xbf, 0x8e,
-	0x94, 0xcc, 0xd5, 0x48, 0xc9, 0x7c, 0x1f, 0x29, 0x99, 0x77, 0xf5, 0xc4, 0x16, 0xbc, 0xb2, 0xb9,
-	0x71, 0xc4, 0x38, 0x6a, 0x02, 0x3b, 0x86, 0xad, 0x5d, 0x68, 0x16, 0xeb, 0x85, 0x8b, 0x70, 0x76,
-	0x6d, 0xf2, 0x05, 0xbf, 0xff, 0x3b, 0x00, 0x00, 0xff, 0xff, 0xc7, 0xb3, 0xd3, 0x23, 0xfb, 0x05,
-	0x00, 0x00,
+	// 622 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x55, 0xcf, 0x4f, 0xd4, 0x4e,
+	0x14, 0xdf, 0x86, 0xe5, 0x0b, 0x3c, 0xbe, 0x42, 0x1c, 0x16, 0x5c, 0x4a, 0xe8, 0xe2, 0x10, 0x12,
+	0x0e, 0xd2, 0x26, 0x18, 0x63, 0xa2, 0x26, 0x0a, 0xa8, 0x1c, 0x54, 0x82, 0x4d, 0x4c, 0x88, 0x07,
+	0x49, 0xe9, 0x3e, 0x6b, 0xb3, 0xdb, 0x4e, 0x99, 0xe9, 0xae, 0x6c, 0x62, 0xbc, 0xf8, 0x0f, 0xf8,
+	0x67, 0x71, 0xe4, 0xe8, 0x89, 0x18, 0xf8, 0x0f, 0x3c, 0x7a, 0x32, 0xdd, 0x4e, 0x7f, 0xed, 0x76,
+	0xd7, 0x83, 0x89, 0x9e, 0x76, 0xe6, 0xcd, 0xe7, 0x7d, 0x3e, 0xef, 0xcd, 0x9b, 0xcf, 0x16, 0x66,
+	0x4f, 0x3b, 0xc8, 0x7b, 0x7a, 0xc0, 0x59, 0xc8, 0xc8, 0x74, 0xcb, 0xe5, 0x96, 0xee, 0xb0, 0xae,
+	0x3a, 0xe3, 0xb0, 0x6e, 0x1c, 0x54, 0x6b, 0x0e, 0x73, 0x58, 0x7f, 0x69, 0x44, 0xab, 0x38, 0x4a,
+	0x3f, 0xc3, 0xca, 0x21, 0x72, 0xcf, 0x15, 0xc2, 0x65, 0xbe, 0xd8, 0xed, 0xed, 0x34, 0x9b, 0x1c,
+	0x85, 0x30, 0xf1, 0xb4, 0x83, 0x22, 0x24, 0xc7, 0x30, 0xdd, 0xb5, 0xda, 0xc7, 0x56, 0xb3, 0xc9,
+	0xeb, 0xca, 0x9a, 0xb2, 0xf9, 0xff, 0xee, 0xd3, 0x1f, 0x97, 0x8d, 0xf9, 0x9e, 0xe5, 0xb5, 0x1f,
+	0xd0, 0xe4, 0x84, 0xfe, 0xbc, 0x6c, 0x6c, 0x39, 0x6e, 0xf8, 0xa1, 0x73, 0xa2, 0xdb, 0xcc, 0x33,
+	0x6c, 0x26, 0x3c, 0x26, 0xe4, 0xcf, 0x96, 0x68, 0xb6, 0x8c, 0xb0, 0x17, 0xa0, 0xd0, 0x77, 0x6c,
+	0x3b, 0xa1, 0x9f, 0xea, 0x5a, 0xed, 0x68, 0x4d, 0x0f, 0x60, 0x21, 0xa7, 0x6f, 0xa2, 0x08, 0x98,
+	0x2f, 0x90, 0xdc, 0x87, 0xd9, 0x20, 0x0b, 0xf7, 0xa5, 0x67, 0xb7, 0x17, 0xf5, 0xa4, 0x2f, 0x3d,
+	0x9f, 0x93, 0x47, 0x52, 0x15, 0xea, 0x07, 0x18, 0x7e, 0x64, 0xbc, 0x75, 0xc8, 0x59, 0x80, 0x3c,
+	0x74, 0x31, 0x69, 0x86, 0x1e, 0xc1, 0x72, 0xc9, 0x99, 0x54, 0x7c, 0x08, 0x10, 0xa4, 0x51, 0x29,
+	0xb8, 0x92, 0x09, 0x0e, 0x27, 0xe6, 0xe0, 0xf4, 0x0c, 0x16, 0x4d, 0xd6, 0xc6, 0x7f, 0x70, 0x7f,
+	0x3a, 0x2c, 0x0d, 0x2a, 0xcb, 0x86, 0x6a, 0x30, 0xc9, 0xa3, 0x93, 0xba, 0xb2, 0x36, 0xb1, 0x59,
+	0x35, 0xe3, 0x0d, 0xbd, 0x13, 0xe3, 0x0b, 0x77, 0x1e, 0x97, 0x4a, 0xa0, 0x1a, 0x41, 0xfa, 0x65,
+	0x56, 0xcd, 0xfe, 0x9a, 0x9a, 0x70, 0x6b, 0x08, 0xfd, 0xa7, 0x13, 0x7a, 0x04, 0x0b, 0xcf, 0xce,
+	0xd0, 0xee, 0x84, 0x2e, 0xf3, 0x9f, 0x23, 0x26, 0xf2, 0x1b, 0x30, 0x87, 0x49, 0xf8, 0xd8, 0xb7,
+	0xbc, 0xb8, 0x90, 0x19, 0xf3, 0x46, 0x1a, 0x3d, 0xb0, 0x3c, 0xa4, 0x4f, 0xa0, 0x56, 0xcc, 0x96,
+	0xe5, 0x6c, 0xc2, 0xc4, 0x7b, 0x44, 0x59, 0xc6, 0x52, 0x56, 0x46, 0x01, 0x1c, 0x41, 0xe8, 0x27,
+	0x58, 0xde, 0x63, 0x1d, 0xdf, 0x76, 0xdb, 0x8c, 0xff, 0xfd, 0x79, 0xdd, 0x2b, 0xa8, 0xbf, 0x62,
+	0xbe, 0xdb, 0x42, 0x9e, 0xa8, 0xd7, 0x61, 0xca, 0x8b, 0x23, 0xb2, 0xf9, 0x64, 0x4b, 0x5f, 0xc2,
+	0xcd, 0x34, 0x2d, 0x37, 0x82, 0x19, 0x3b, 0x09, 0xca, 0xce, 0x17, 0xb2, 0xce, 0x33, 0x99, 0xea,
+	0xf9, 0x65, 0xa3, 0x62, 0x66, 0xd8, 0xed, 0x2f, 0x93, 0x30, 0xf9, 0x3a, 0xfa, 0xbf, 0x20, 0xef,
+	0xa0, 0x56, 0x66, 0x7f, 0xb2, 0x51, 0x3a, 0xc8, 0xc1, 0xeb, 0x52, 0x57, 0xcb, 0xe7, 0x2d, 0x0b,
+	0xa4, 0x15, 0x62, 0x41, 0x6d, 0x1f, 0xc3, 0x21, 0xf3, 0x10, 0x3a, 0xce, 0x59, 0x92, 0x7c, 0x7d,
+	0x2c, 0x26, 0x95, 0x30, 0x61, 0x7e, 0x1f, 0xc3, 0xfc, 0x9c, 0xc9, 0xea, 0x88, 0xf9, 0x4b, 0x62,
+	0x6d, 0xd4, 0x71, 0xca, 0xf9, 0x06, 0xe6, 0x8a, 0xae, 0x22, 0x8d, 0x2c, 0xa7, 0xd4, 0xe9, 0xea,
+	0xda, 0x68, 0x40, 0x4a, 0x7b, 0x04, 0xf3, 0x03, 0x76, 0x22, 0x03, 0x69, 0xc3, 0xbe, 0x54, 0x6f,
+	0x8f, 0x41, 0xe4, 0x98, 0xc9, 0xf0, 0xa3, 0x26, 0xeb, 0x65, 0xaf, 0x61, 0xb0, 0xf0, 0x95, 0x12,
+	0xd0, 0x48, 0x66, 0xf9, 0x60, 0x47, 0x30, 0x17, 0x9f, 0xf3, 0x6f, 0x98, 0x77, 0x1f, 0x9f, 0x5f,
+	0x69, 0xca, 0xc5, 0x95, 0xa6, 0x7c, 0xbf, 0xd2, 0x94, 0xaf, 0xd7, 0x5a, 0xe5, 0xe2, 0x5a, 0xab,
+	0x7c, 0xbb, 0xd6, 0x2a, 0x6f, 0x37, 0x72, 0xe6, 0x7a, 0xe1, 0x72, 0x6b, 0x8f, 0x71, 0x34, 0x04,
+	0xb6, 0x2c, 0xd7, 0x38, 0x33, 0x1c, 0xd6, 0x8d, 0xfd, 0x75, 0xf2, 0x5f, 0xff, 0x13, 0x76, 0xf7,
+	0x57, 0x00, 0x00, 0x00, 0xff, 0xff, 0xba, 0x6d, 0xca, 0x50, 0xfc, 0x06, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -574,10 +666,12 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type QueryClient interface {
-	// Validators queries a validator by address.
+	// Returns the permissions an actor has by address.
 	PermissionsByAddress(ctx context.Context, in *PermissionsByAddressRequest, opts ...grpc.CallOption) (*PermissionsResponse, error)
 	GetNetworkProperties(ctx context.Context, in *NetworkPropertiesRequest, opts ...grpc.CallOption) (*NetworkPropertiesResponse, error)
 	GetExecutionFee(ctx context.Context, in *ExecutionFeeRequest, opts ...grpc.CallOption) (*ExecutionFeeResponse, error)
+	// Returns the roles that are assigned to an address.
+	RolesByAddress(ctx context.Context, in *RolesByAddressRequest, opts ...grpc.CallOption) (*RolesByAddressResponse, error)
 	// RolePermissions returns the permissions of the roles available in the registry.
 	RolePermissions(ctx context.Context, in *RolePermissionsRequest, opts ...grpc.CallOption) (*RolePermissionsResponse, error)
 	CouncilorByAddress(ctx context.Context, in *CouncilorByAddressRequest, opts ...grpc.CallOption) (*CouncilorResponse, error)
@@ -619,6 +713,15 @@ func (c *queryClient) GetExecutionFee(ctx context.Context, in *ExecutionFeeReque
 	return out, nil
 }
 
+func (c *queryClient) RolesByAddress(ctx context.Context, in *RolesByAddressRequest, opts ...grpc.CallOption) (*RolesByAddressResponse, error) {
+	out := new(RolesByAddressResponse)
+	err := c.cc.Invoke(ctx, "/kira.gov.Query/RolesByAddress", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *queryClient) RolePermissions(ctx context.Context, in *RolePermissionsRequest, opts ...grpc.CallOption) (*RolePermissionsResponse, error) {
 	out := new(RolePermissionsResponse)
 	err := c.cc.Invoke(ctx, "/kira.gov.Query/RolePermissions", in, out, opts...)
@@ -648,10 +751,12 @@ func (c *queryClient) CouncilorByMoniker(ctx context.Context, in *CouncilorByMon
 
 // QueryServer is the server API for Query service.
 type QueryServer interface {
-	// Validators queries a validator by address.
+	// Returns the permissions an actor has by address.
 	PermissionsByAddress(context.Context, *PermissionsByAddressRequest) (*PermissionsResponse, error)
 	GetNetworkProperties(context.Context, *NetworkPropertiesRequest) (*NetworkPropertiesResponse, error)
 	GetExecutionFee(context.Context, *ExecutionFeeRequest) (*ExecutionFeeResponse, error)
+	// Returns the roles that are assigned to an address.
+	RolesByAddress(context.Context, *RolesByAddressRequest) (*RolesByAddressResponse, error)
 	// RolePermissions returns the permissions of the roles available in the registry.
 	RolePermissions(context.Context, *RolePermissionsRequest) (*RolePermissionsResponse, error)
 	CouncilorByAddress(context.Context, *CouncilorByAddressRequest) (*CouncilorResponse, error)
@@ -670,6 +775,9 @@ func (*UnimplementedQueryServer) GetNetworkProperties(ctx context.Context, req *
 }
 func (*UnimplementedQueryServer) GetExecutionFee(ctx context.Context, req *ExecutionFeeRequest) (*ExecutionFeeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetExecutionFee not implemented")
+}
+func (*UnimplementedQueryServer) RolesByAddress(ctx context.Context, req *RolesByAddressRequest) (*RolesByAddressResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RolesByAddress not implemented")
 }
 func (*UnimplementedQueryServer) RolePermissions(ctx context.Context, req *RolePermissionsRequest) (*RolePermissionsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RolePermissions not implemented")
@@ -735,6 +843,24 @@ func _Query_GetExecutionFee_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).GetExecutionFee(ctx, req.(*ExecutionFeeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_RolesByAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RolesByAddressRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).RolesByAddress(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.gov.Query/RolesByAddress",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).RolesByAddress(ctx, req.(*RolesByAddressRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -808,6 +934,10 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetExecutionFee",
 			Handler:    _Query_GetExecutionFee_Handler,
+		},
+		{
+			MethodName: "RolesByAddress",
+			Handler:    _Query_RolesByAddress_Handler,
 		},
 		{
 			MethodName: "RolePermissions",
@@ -943,6 +1073,77 @@ func (m *NetworkPropertiesResponse) MarshalToSizedBuffer(dAtA []byte) (int, erro
 			i -= size
 			i = encodeVarintQuery(dAtA, i, uint64(size))
 		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *RolesByAddressRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *RolesByAddressRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *RolesByAddressRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.ValAddr) > 0 {
+		i -= len(m.ValAddr)
+		copy(dAtA[i:], m.ValAddr)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.ValAddr)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *RolesByAddressResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *RolesByAddressResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *RolesByAddressResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Roles) > 0 {
+		dAtA4 := make([]byte, len(m.Roles)*10)
+		var j3 int
+		for _, num := range m.Roles {
+			for num >= 1<<7 {
+				dAtA4[j3] = uint8(uint64(num)&0x7f | 0x80)
+				num >>= 7
+				j3++
+			}
+			dAtA4[j3] = uint8(num)
+			j3++
+		}
+		i -= j3
+		copy(dAtA[i:], dAtA4[:j3])
+		i = encodeVarintQuery(dAtA, i, uint64(j3))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1225,6 +1426,35 @@ func (m *NetworkPropertiesResponse) Size() (n int) {
 	if m.Properties != nil {
 		l = m.Properties.Size()
 		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *RolesByAddressRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.ValAddr)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *RolesByAddressResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Roles) > 0 {
+		l = 0
+		for _, e := range m.Roles {
+			l += sovQuery(uint64(e))
+		}
+		n += 1 + sovQuery(uint64(l)) + l
 	}
 	return n
 }
@@ -1617,6 +1847,222 @@ func (m *NetworkPropertiesResponse) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *RolesByAddressRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: RolesByAddressRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: RolesByAddressRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ValAddr", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ValAddr = append(m.ValAddr[:0], dAtA[iNdEx:postIndex]...)
+			if m.ValAddr == nil {
+				m.ValAddr = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *RolesByAddressResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: RolesByAddressResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: RolesByAddressResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType == 0 {
+				var v uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowQuery
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					v |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				m.Roles = append(m.Roles, v)
+			} else if wireType == 2 {
+				var packedLen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowQuery
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					packedLen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if packedLen < 0 {
+					return ErrInvalidLengthQuery
+				}
+				postIndex := iNdEx + packedLen
+				if postIndex < 0 {
+					return ErrInvalidLengthQuery
+				}
+				if postIndex > l {
+					return io.ErrUnexpectedEOF
+				}
+				var elementCount int
+				var count int
+				for _, integer := range dAtA[iNdEx:postIndex] {
+					if integer < 128 {
+						count++
+					}
+				}
+				elementCount = count
+				if elementCount != 0 && len(m.Roles) == 0 {
+					m.Roles = make([]uint64, 0, elementCount)
+				}
+				for iNdEx < postIndex {
+					var v uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowQuery
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						v |= uint64(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					m.Roles = append(m.Roles, v)
+				}
+			} else {
+				return fmt.Errorf("proto: wrong wireType = %d for field Roles", wireType)
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuery(dAtA[iNdEx:])
