@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.1.2.5] - 10.05.2020
+## [0.1.4] - 10.05.2020
 ### Added
 
 - Added CLI command to change execution fee per message type
