@@ -1,7 +1,7 @@
 package config
 
 import (
-	sekaiapp "github.com/KiraCore/sekai/app"
+	sekaiapp "github.com/KiraCore/sekai/simapp"
 	"github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/crypto/sr25519"
 )

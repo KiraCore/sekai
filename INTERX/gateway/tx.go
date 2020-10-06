@@ -1,12 +1,12 @@
 package gateway
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 
 	interx "github.com/KiraCore/sekai/INTERX/config"
-	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 )
@@ -27,8 +27,8 @@ func RegisterTxRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr stri
 
 // PostTxReq defines a tx broadcasting request.
 type PostTxReq struct {
-	Tx   types.StdTx `json:"tx" yaml:"tx"`
-	Mode string      `json:"mode" yaml:"mode"`
+	Tx   json.RawMessage `json:"tx" yaml:"tx"`
+	Mode string          `json:"mode" yaml:"mode"`
 }
 
 // PostTxRequest is a function to post transaction.
@@ -47,15 +47,27 @@ func PostTxRequest(rpcAddr string) http.HandlerFunc {
 			return
 		}
 
-		err = interx.EncodingCg.Amino.UnmarshalJSON(body, &req)
+		err = json.Unmarshal(body, &req)
 		if err != nil {
-			ServeError(w, rpcAddr, 0, "", err.Error(), http.StatusBadRequest)
+			ServeError(w, rpcAddr, 0, "failed to unmarshal", err.Error(), http.StatusBadRequest)
 			return
 		}
 
-		txBytes, err := interx.EncodingCg.Amino.MarshalBinaryLengthPrefixed(req.Tx)
+		signedTx, err := interx.EncodingCg.TxConfig.TxJSONDecoder()(req.Tx)
 		if err != nil {
-			ServeError(w, rpcAddr, 0, "", err.Error(), http.StatusInternalServerError)
+			ServeError(w, rpcAddr, 0, "failed to get signed TX", err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		txBuilder, err := interx.EncodingCg.TxConfig.WrapTxBuilder(signedTx)
+		if err != nil {
+			ServeError(w, rpcAddr, 0, "failed to get TX builder", err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		txBytes, err := interx.EncodingCg.TxConfig.TxEncoder()(txBuilder.GetTx())
+		if err != nil {
+			ServeError(w, rpcAddr, 0, "failed to get TX bytes", err.Error(), http.StatusBadRequest)
 			return
 		}
 
