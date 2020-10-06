@@ -9,6 +9,8 @@ import (
 	interx "github.com/KiraCore/sekai/INTERX/config"
 	database "github.com/KiraCore/sekai/INTERX/database"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	auth "github.com/cosmos/cosmos-sdk/x/auth/types"
+	bank "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 )
@@ -44,7 +46,14 @@ func serveFaucet(w http.ResponseWriter, r *http.Request, gwCosmosmux *runtime.Se
 	// token := tokens[0]
 
 	// check address
-	_, err := sdk.AccAddressFromBech32(bech32addr)
+	faucetAccAddr, err := sdk.AccAddressFromBech32(interx.FaucetCg.Address)
+	if err != nil {
+		ServeError(w, rpcAddr, 0, "", fmt.Sprintf("internal server error: %s", err), http.StatusBadRequest)
+		return
+	}
+
+	// check address
+	claimAccAddr, err := sdk.AccAddressFromBech32(bech32addr)
 	if err != nil {
 		ServeError(w, rpcAddr, 0, "", fmt.Sprintf("invalid address: %s", err), http.StatusBadRequest)
 		return
@@ -102,8 +111,68 @@ func serveFaucet(w http.ResponseWriter, r *http.Request, gwCosmosmux *runtime.Se
 		return
 	}
 
+	// GET AccountNumber and Sequence
+	accountNumber, sequence := GetAccountNumberSequence(gwCosmosmux, r.Clone(r.Context()), interx.FaucetCg.Address)
+	fmt.Println("accountNumber: ", accountNumber)
+	fmt.Println("sequence: ", sequence)
+
+	msgSend := &bank.MsgSend{
+		FromAddress: faucetAccAddr,
+		ToAddress:   claimAccAddr,
+		Amount:      sdk.NewCoins(sdk.NewInt64Coin(token, faucetAmount-claimAmount)),
+	}
+
+	msgs := []sdk.Msg{msgSend}
+	fee := auth.NewStdFee(200000, sdk.NewCoins(sdk.NewInt64Coin(token, 1000)))
+	memo := "Faucet Transfer"
+
+	sigs := make([]auth.StdSignature, 1)
+	signBytes := auth.StdSignBytes("testing", accountNumber, sequence, 0, fee, msgs, memo)
+
+	sig, err := interx.FaucetCg.PrivKey.Sign(signBytes)
+	if err != nil {
+		panic(err)
+	}
+
+	sigs[0] = auth.StdSignature{PubKey: interx.FaucetCg.PubKey, Signature: sig}
+
+	stdTx := auth.NewStdTx(msgs, fee, sigs, memo)
+
+	txBuilder := interx.EncodingCg.TxConfig.NewTxBuilder()
+	err = txBuilder.SetMsgs(stdTx.GetMsgs()...)
+	if err != nil {
+		ServeError(w, rpcAddr, 0, "failed to set TX Msgs", err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	sigV2, err := stdTx.GetSignaturesV2()
+	if err != nil {
+		ServeError(w, rpcAddr, 0, "failed to get SignaturesV2", err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	err = txBuilder.SetSignatures(sigV2...)
+	if err != nil {
+		ServeError(w, rpcAddr, 0, "failed to set Signatures", err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	txBuilder.SetMemo(stdTx.GetMemo())
+	txBuilder.SetFeeAmount(stdTx.GetFee())
+	txBuilder.SetGasLimit(stdTx.GetGas())
+
+	txBytes, err := interx.EncodingCg.TxConfig.TxEncoder()(txBuilder.GetTx())
+	if err != nil {
+		ServeError(w, rpcAddr, 0, "failed to get TX bytes", err.Error(), http.StatusBadRequest)
+		return
+	}
+
 	// send tokens
-	response.Response = ""
+	response.Response, err = BroadcastTransaction(rpcAddr, txBytes)
+	if err != nil {
+		ServeError(w, rpcAddr, 0, "", err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	// add new claim
 	database.AddNewClaim(bech32addr, time.Now())

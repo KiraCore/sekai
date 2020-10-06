@@ -223,3 +223,51 @@ func GetAccountBalances(gwCosmosmux *runtime.ServeMux, r *http.Request, bech32ad
 
 	return result.Balances
 }
+
+// GetAccountNumberSequence is a function to get AccountNumber and Sequence
+func GetAccountNumberSequence(gwCosmosmux *runtime.ServeMux, r *http.Request, bech32addr string) (uint64, uint64) {
+	addr, err := sdk.AccAddressFromBech32(bech32addr)
+	if err != nil {
+		return 0, 0
+	}
+
+	r.URL.Path = fmt.Sprintf("/api/cosmos/auth/accounts/%s", base64.URLEncoding.EncodeToString([]byte(addr)))
+	r.URL.RawQuery = ""
+	r.Method = "GET"
+
+	recorder := httptest.NewRecorder()
+	gwCosmosmux.ServeHTTP(recorder, r)
+	resp := recorder.Result()
+
+	type QueryAccountResponse struct {
+		Account struct {
+			Address       string `json:"addresss"`
+			PubKey        string `json:"pubKey"`
+			AccountNumber string `json:"accountNumber"`
+			Sequence      string `json:"sequence"`
+		} `json:"account"`
+	}
+	result := QueryAccountResponse{}
+	json.NewDecoder(resp.Body).Decode(&result)
+
+	accountNumber, _ := strconv.ParseInt(result.Account.AccountNumber, 10, 64)
+	sequence, _ := strconv.ParseInt(result.Account.Sequence, 10, 64)
+
+	return uint64(accountNumber), uint64(sequence)
+}
+
+// BroadcastTransaction is a function to post transaction
+func BroadcastTransaction(rpcAddr string, txBytes []byte) (interface{}, error) {
+	resp, err := http.Get(fmt.Sprintf("%s/broadcast_tx_commit?tx=0x%X", rpcAddr, txBytes))
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	result := new(RPCResponse)
+	if json.NewDecoder(resp.Body).Decode(result) != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
