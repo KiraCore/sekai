@@ -123,5 +123,6 @@ fee:
   timeout: "10"
   transaction_type: A
 ```
+
 ---
 `dev` branch
