@@ -3,6 +3,8 @@
 ## [Unreleased]
 ### Added
 
+- Added CLI command to send a SetPermission proposal.
+
 ### Changed
 - Now the commands for all Governance module is simplified in a better hierarchical style.
 ```
