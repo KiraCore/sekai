@@ -4,7 +4,16 @@ import sdk "github.com/cosmos/cosmos-sdk/types"
 
 const ModuleName = "customgov"
 
+// RouterKey to be used for routing msgs
+const RouterKey = ModuleName
+
+// constants
 var (
+	KeyPrefixPermissionsRegistry = []byte("permissions_registry")
+	KeyPrefixActors              = []byte("network_actors")
+	KeyPrefixNetworkProperties   = []byte("network_properties")
+	KeyPrefixExecutionFee        = []byte("execution_fee")
+
 	// Roles
 	RoleUndefined Role = 0x0
 	RoleSudo      Role = 0x1
@@ -15,6 +24,7 @@ var (
 	PermClaimCouncilor PermValue = 3
 
 	PermUpsertTokenAlias PermValue = 10
+	PermChangeTxFee      PermValue = 4
 )
 
 // Role represents a Role in the registry.

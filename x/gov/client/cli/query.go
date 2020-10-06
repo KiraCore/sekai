@@ -123,6 +123,62 @@ func GetCmdQueryRolePermissions() *cobra.Command {
 	return cmd
 }
 
+// GetCmdQueryNetworkProperties implement query network properties
+func GetCmdQueryNetworkProperties() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "network-properties",
+		Short: "Get the network properties",
+		Args:  cobra.MinimumNArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
+			if err != nil {
+				return err
+			}
+			params := &types.NetworkPropertiesRequest{}
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.GetNetworkProperties(context.Background(), params)
+			if err != nil {
+				return err
+			}
+			return clientCtx.PrintOutput(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// GetCmdQueryExecutionFee query for execution fee by execution name
+func GetCmdQueryExecutionFee() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "execution-fee",
+		Short: "Get the execution fee by [name]",
+		Args:  cobra.MinimumNArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
+			if err != nil {
+				return err
+			}
+			params := &types.ExecutionFeeRequest{
+				ExecutionName: args[0],
+			}
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.GetExecutionFee(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintOutput(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	return cmd
+}
+
 func GetCmdQueryCouncilRegistry() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "council-registry [--addr || --flagMoniker]",
@@ -143,7 +199,6 @@ func GetCmdQueryCouncilRegistry() *cobra.Command {
 			if err != nil {
 				return err
 			}
-
 			if addr == "" && moniker == "" {
 				return fmt.Errorf("at least one flag (--flag or --moniker) is mandatory")
 			}

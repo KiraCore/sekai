@@ -46,6 +46,9 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
 
+// DefaultBondDenom defines default denom for fee
+var DefaultBondDenom = "ukex"
+
 // package-wide network lock to only allow one test network at a time
 var lock = new(sync.Mutex)
 
@@ -104,8 +107,8 @@ func DefaultConfig() Config {
 		TimeoutCommit:     2 * time.Second,
 		ChainID:           "chain-" + tmrand.NewRand().Str(6),
 		NumValidators:     4,
-		BondDenom:         sdk.DefaultBondDenom,
-		MinGasPrices:      fmt.Sprintf("0.000006%s", sdk.DefaultBondDenom),
+		BondDenom:         DefaultBondDenom,
+		MinGasPrices:      fmt.Sprintf("0.000006%s", DefaultBondDenom),
 		AccountTokens:     sdk.TokensFromConsensusPower(1000),
 		StakingTokens:     sdk.TokensFromConsensusPower(500),
 		BondedTokens:      sdk.TokensFromConsensusPower(100),
@@ -293,7 +296,7 @@ func New(t *testing.T, cfg Config) *Network {
 		createValMsg := stakingtypes.NewMsgCreateValidator(
 			sdk.ValAddress(addr),
 			valPubKeys[i],
-			sdk.NewCoin(sdk.DefaultBondDenom, cfg.BondedTokens),
+			sdk.NewCoin(DefaultBondDenom, cfg.BondedTokens),
 			stakingtypes.NewDescription(nodeDirName, "", "", "", ""),
 			stakingtypes.NewCommissionRates(commission, sdk.OneDec(), sdk.OneDec()),
 			sdk.OneInt(),

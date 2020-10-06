@@ -14,13 +14,22 @@ import (
 	"github.com/KiraCore/sekai/x/staking/client/cli"
 )
 
+// define flags
 const (
-	FlagPermission = "permission"
-	FlagWebsite    = "website"
-	FlagMoniker    = "moniker"
-	FlagSocial     = "social"
-	FlagIdentity   = "identity"
-	FlagAddress    = "address"
+	FlagPermission        = "permission"
+	FlagMinTxFee          = "min_tx_fee"
+	FlagMaxTxFee          = "max_tx_fee"
+	FlagExecName          = "execution_name"
+	FlagTxType            = "transaction_type"
+	FlagExecutionFee      = "execution_fee"
+	FlagFailureFee        = "failure_fee"
+	FlagTimeout           = "timeout"
+	FlagDefaultParameters = "default_parameters"
+	FlagWebsite           = "website"
+	FlagMoniker           = "moniker"
+	FlagSocial            = "social"
+	FlagIdentity          = "identity"
+	FlagAddress           = "address"
 )
 
 // NewTxCmd returns a root CLI command handler for all x/bank transaction commands.
@@ -33,18 +42,19 @@ func NewTxCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	txCmd.AddCommand(GetTxSetWhitelistPermissions())
-	txCmd.AddCommand(GetTxSetBlacklistPermissions())
-
-	txCmd.AddCommand(GetTxClaimGovernanceCmd())
-
-	txCmd.AddCommand(GetTxCreateRole())
-	txCmd.AddCommand(GetTxRemoveRole())
-
-	txCmd.AddCommand(GetTxBlacklistRolePermission())
-	txCmd.AddCommand(GetTxWhitelistRolePermission())
-	txCmd.AddCommand(GetTxRemoveWhitelistRolePermission())
-	txCmd.AddCommand(GetTxRemoveBlacklistRolePermission())
+	txCmd.AddCommand(
+		GetTxSetNetworkProperties(),
+		GetTxSetExecutionFee(),
+		GetTxSetBlacklistPermissions(),
+		GetTxWhitelistRolePermission(),
+		GetTxSetWhitelistPermissions(),
+		GetTxClaimGovernanceCmd(),
+		GetTxCreateRole(),
+		GetTxRemoveRole(),
+		GetTxBlacklistRolePermission(),
+		GetTxRemoveWhitelistRolePermission(),
+		GetTxRemoveBlacklistRolePermission(),
+	)
 
 	return txCmd
 }
@@ -127,6 +137,45 @@ func GetTxSetBlacklistPermissions() *cobra.Command {
 	return cmd
 }
 
+// GetTxSetNetworkProperties is a function to set network properties tx command
+func GetTxSetNetworkProperties() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "set-network-properties",
+		Short: "Set network properties",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			if err != nil {
+				return err
+			}
+			minTxFee, err := cmd.Flags().GetUint64(FlagMinTxFee)
+			if err != nil {
+				return fmt.Errorf("invalid minimum tx fee")
+			}
+			maxTxFee, err := cmd.Flags().GetUint64(FlagMaxTxFee)
+			if err != nil {
+				return fmt.Errorf("invalid maximum tx fee")
+			}
+
+			msg := types.NewMsgSetNetworkProperties(
+				clientCtx.FromAddress,
+				&types.NetworkProperties{
+					MinTxFee: minTxFee,
+					MaxTxFee: maxTxFee,
+				},
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+	cmd.Flags().Uint64(FlagMinTxFee, 1, "min tx fee")
+	cmd.Flags().Uint64(FlagMaxTxFee, 10000, "max tx fee")
+	flags.AddTxFlagsToCmd(cmd)
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
 func GetTxWhitelistRolePermission() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "whitelist-role-permissions role permission",
@@ -159,6 +208,68 @@ func GetTxWhitelistRolePermission() *cobra.Command {
 		},
 	}
 
+	flags.AddTxFlagsToCmd(cmd)
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+// GetTxSetExecutionFee is a function to set network properties tx command
+func GetTxSetExecutionFee() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "set-execution-fee",
+		Short: "Set execution fee",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			if err != nil {
+				return err
+			}
+			execName, err := cmd.Flags().GetString(FlagExecName)
+			if err != nil {
+				return fmt.Errorf("invalid execution name")
+			}
+			txType, err := cmd.Flags().GetString(FlagTxType)
+			if err != nil {
+				return fmt.Errorf("invalid transaction type")
+			}
+
+			execFee, err := cmd.Flags().GetUint64(FlagExecutionFee)
+			if err != nil {
+				return fmt.Errorf("invalid execution fee")
+			}
+			failureFee, err := cmd.Flags().GetUint64(FlagFailureFee)
+			if err != nil {
+				return fmt.Errorf("invalid failure fee")
+			}
+			timeout, err := cmd.Flags().GetUint64(FlagTimeout)
+			if err != nil {
+				return fmt.Errorf("invalid timeout")
+			}
+			defaultParams, err := cmd.Flags().GetUint64(FlagDefaultParameters)
+			if err != nil {
+				return fmt.Errorf("invalid default parameters")
+			}
+
+			msg := types.NewMsgSetExecutionFee(
+				execName,
+				txType,
+				execFee,
+				failureFee,
+				timeout,
+				defaultParams,
+				clientCtx.FromAddress,
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+	cmd.Flags().String(FlagExecName, "", "execution name")
+	cmd.Flags().String(FlagTxType, "", "execution type")
+	cmd.Flags().Uint64(FlagExecutionFee, 10, "execution fee")
+	cmd.Flags().Uint64(FlagFailureFee, 1, "failure fee")
+	cmd.Flags().Uint64(FlagTimeout, 0, "timeout")
+	cmd.Flags().Uint64(FlagDefaultParameters, 0, "default parameters")
 	flags.AddTxFlagsToCmd(cmd)
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)
 

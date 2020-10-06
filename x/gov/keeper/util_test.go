@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"os"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -15,7 +16,7 @@ import (
 
 func TestMain(m *testing.M) {
 	app.SetConfig()
-	m.Run()
+	os.Exit(m.Run())
 }
 
 func TestCheckIfAllowedPermission(t *testing.T) {

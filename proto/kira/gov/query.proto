@@ -10,6 +10,8 @@ option go_package = "github.com/KiraCore/sekai/x/gov/types";
 service Query {
   // Returns the permissions an actor has by address.
   rpc PermissionsByAddress (PermissionsByAddressRequest) returns (PermissionsResponse) {}
+  rpc GetNetworkProperties (NetworkPropertiesRequest) returns (NetworkPropertiesResponse) {}
+  rpc GetExecutionFee (ExecutionFeeRequest) returns (ExecutionFeeResponse) {}
   // Returns the roles that are assigned to an address.
   rpc RolesByAddress (RolesByAddressRequest) returns (RolesByAddressResponse) {}
   // RolePermissions returns the permissions of the roles available in the registry.
@@ -31,6 +33,12 @@ message PermissionsResponse {
   kira.gov.Permissions permissions = 1;
 }
 
+message NetworkPropertiesRequest {}
+
+message NetworkPropertiesResponse {
+  kira.gov.NetworkProperties properties = 1;
+}
+
 message RolesByAddressRequest {
   bytes val_addr = 1 [
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
@@ -49,6 +57,12 @@ message RolePermissionsRequest {
 message RolePermissionsResponse {
   Permissions permissions = 1;
 }
+message ExecutionFeeRequest {
+  string execution_name = 1;
+}
+message ExecutionFeeResponse {
+  kira.gov.ExecutionFee fee = 1;
+}
 
 message CouncilorByAddressRequest {
   bytes val_addr = 1 [
@@ -64,3 +78,4 @@ message CouncilorByMonikerRequest {
 message CouncilorResponse {
   kira.gov.Councilor councilor = 1 [(gogoproto.nullable) = false];
 }
+

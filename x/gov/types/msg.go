@@ -9,6 +9,9 @@ const (
 	WhitelistPermissions = "whitelist-permissions"
 	BlacklistPermissions = "blacklist-permissions"
 
+	SetNetworkProperties = "set-network-properties"
+	SetExecutionFee      = "set-execution-fee"
+
 	ClaimCouncilor = "claim-councilor"
 
 	CreateRole = "create-role"

@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.4] - 10.05.2020
+### Added
+
+- Added CLI command to change execution fee per message type
+- Added CLI command to change transaction fee range
+- Added CLI command to query execution fee
+- Added CLI command to query transaction fee range
+
 ## [0.1.2.4] - 09.24.2020
 ### Added
 

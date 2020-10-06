@@ -27,6 +27,9 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
 
+// DefaultBondDenom defines default denom for fee
+var DefaultBondDenom = "ukex"
+
 // DefaultConsensusParams defines the default Tendermint consensus params used in
 // SimApp testing.
 var DefaultConsensusParams = &abci.ConsensusParams{
@@ -115,7 +118,7 @@ func SetupWithGenesisValSet(t *testing.T, valSet *tmtypes.ValidatorSet, genAccs 
 	totalSupply := sdk.NewCoins()
 	for _, b := range balances {
 		// add genesis acc tokens and delegated tokens to total supply
-		totalSupply = totalSupply.Add(b.Coins.Add(sdk.NewCoin(sdk.DefaultBondDenom, bondAmt))...)
+		totalSupply = totalSupply.Add(b.Coins.Add(sdk.NewCoin(DefaultBondDenom, bondAmt))...)
 	}
 
 	// update total supply
@@ -325,7 +328,7 @@ func SignCheckDeliver(
 	tx, err := helpers.GenTx(
 		txGen,
 		msgs,
-		sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 0)},
+		sdk.Coins{sdk.NewInt64Coin(DefaultBondDenom, 0)},
 		helpers.DefaultGenTxGas,
 		chainID,
 		accNums,
@@ -375,7 +378,7 @@ func GenSequenceOfTxs(txGen client.TxConfig, msgs []sdk.Msg, accNums []uint64, i
 		txs[i], err = helpers.GenTx(
 			txGen,
 			msgs,
-			sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 0)},
+			sdk.Coins{sdk.NewInt64Coin(DefaultBondDenom, 0)},
 			helpers.DefaultGenTxGas,
 			"",
 			accNums,

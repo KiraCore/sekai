@@ -1,6 +1,7 @@
 package types_test
 
 import (
+	"os"
 	"testing"
 
 	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
@@ -14,7 +15,7 @@ import (
 
 func TestMain(m *testing.M) {
 	app.SetConfig()
-	m.Run()
+	os.Exit(m.Run())
 }
 
 func TestPermissions_IsBlacklisted(t *testing.T) {

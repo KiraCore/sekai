@@ -7,6 +7,9 @@ import (
 
 	ibcmock "github.com/cosmos/cosmos-sdk/x/ibc/testing/mock"
 
+	"github.com/KiraCore/sekai/middleware"
+
+	customante "github.com/KiraCore/sekai/app/ante"
 	customstaking "github.com/KiraCore/sekai/x/staking"
 	customstakingtypes "github.com/KiraCore/sekai/x/staking/types"
 
@@ -417,8 +420,8 @@ func NewSimApp(
 	app.SetInitChainer(app.InitChainer)
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetAnteHandler(
-		ante.NewAnteHandler(
-			app.AccountKeeper, app.BankKeeper, ante.DefaultSigVerificationGasConsumer,
+		customante.NewAnteHandler(
+			app.CustomStakingKeeper, app.CustomGovKeeper, app.AccountKeeper, app.BankKeeper, ante.DefaultSigVerificationGasConsumer,
 			encodingConfig.TxConfig.SignModeHandler(),
 		),
 	)
@@ -446,6 +449,8 @@ func NewSimApp(
 	// NOTE: the IBC mock keeper and application module is used only for testing core IBC. Do
 	// note replicate if you do not need to test core IBC or light clients.
 	app.ScopedIBCMockKeeper = scopedIBCMockKeeper
+
+	middleware.SetKeepers(app.CustomGovKeeper, app.CustomStakingKeeper, app.BankKeeper)
 
 	return app
 }

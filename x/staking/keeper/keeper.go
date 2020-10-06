@@ -19,6 +19,11 @@ func NewKeeper(storeKey sdk.StoreKey, cdc *codec.LegacyAmino) Keeper {
 	return Keeper{storeKey: storeKey, cdc: cdc}
 }
 
+// BondDenom returns the denom that is basically used for fee payment
+func (k Keeper) BondDenom(ctx sdk.Context) string {
+	return "ukex"
+}
+
 func (k Keeper) AddValidator(ctx sdk.Context, validator types.Validator) {
 	store := ctx.KVStore(k.storeKey)
 	bz := k.cdc.MustMarshalBinaryBare(&validator)
