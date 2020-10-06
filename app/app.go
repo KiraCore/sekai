@@ -28,6 +28,7 @@ import (
 
 	cumstomtypes "github.com/KiraCore/sekai/x/staking/types"
 
+	customante "github.com/KiraCore/sekai/app/ante"
 	customstaking "github.com/KiraCore/sekai/x/staking"
 
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
@@ -39,6 +40,7 @@ import (
 	tmos "github.com/tendermint/tendermint/libs/os"
 	dbm "github.com/tendermint/tm-db"
 
+	"github.com/KiraCore/sekai/middleware"
 	ixpkeeper "github.com/KiraCore/sekai/x/ixp/keeper"
 	ixptypes "github.com/KiraCore/sekai/x/ixp/types"
 	bam "github.com/cosmos/cosmos-sdk/baseapp"
@@ -397,8 +399,8 @@ func NewInitApp(
 	app.SetInitChainer(app.InitChainer)
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetAnteHandler(
-		ante.NewAnteHandler(
-			app.accountKeeper, app.bankKeeper, ante.DefaultSigVerificationGasConsumer,
+		customante.NewAnteHandler(
+			app.customStakingKeeper, app.customGovKeeper, app.accountKeeper, app.bankKeeper, ante.DefaultSigVerificationGasConsumer,
 			encodingConfig.TxConfig.SignModeHandler(),
 		),
 	)
@@ -424,6 +426,8 @@ func NewInitApp(
 	// NOTE: the IBC mock keeper and application module is used only for testing core IBC. Do
 	// note replicate if you do not need to test core IBC or light clients.
 	app.scopedIBCMockKeeper = scopedIBCMockKeeper
+
+	middleware.SetKeepers(app.customGovKeeper, app.customStakingKeeper, app.bankKeeper)
 
 	return app
 }

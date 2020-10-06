@@ -9,6 +9,7 @@ import (
 	keeper2 "github.com/KiraCore/sekai/x/gov/keeper"
 	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 
+	"github.com/KiraCore/sekai/middleware"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	types2 "github.com/cosmos/cosmos-sdk/codec/types"
@@ -56,8 +57,20 @@ func (b AppModuleBasic) GetTxCmd() *cobra.Command {
 	return cli2.NewTxCmd()
 }
 
+// GetQueryCmd implement query commands for this module
 func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
-	return cli2.GetCmdQueryPermissions()
+	queryCmd := &cobra.Command{
+		Use:   customgovtypes.RouterKey,
+		Short: "query commands for the customgov module",
+	}
+	queryCmd.AddCommand(
+		cli2.GetCmdQueryPermissions(),
+		cli2.GetCmdQueryNetworkProperties(),
+		cli2.GetCmdQueryExecutionFee(),
+	)
+
+	queryCmd.PersistentFlags().String("node", "tcp://localhost:26657", "<host>:<port> to Tendermint RPC interface for this chain")
+	return queryCmd
 }
 
 // AppModule extends the cosmos SDK gov.
@@ -84,6 +97,12 @@ func (am AppModule) InitGenesis(
 
 	for index, perm := range genesisState.Permissions {
 		am.customGovKeeper.SetPermissionsForRole(ctx, customgovtypes.Role(index), perm)
+	}
+
+	am.customGovKeeper.SetNetworkProperties(ctx, genesisState.NetworkProperties)
+
+	for _, fee := range genesisState.ExecutionFees {
+		am.customGovKeeper.SetExecutionFee(ctx, fee)
 	}
 
 	return nil
@@ -113,7 +132,7 @@ func (am AppModule) Name() string {
 
 // Route returns the message routing key for the staking module.
 func (am AppModule) Route() sdk.Route {
-	return sdk.NewRoute(customgovtypes.ModuleName, NewHandler(am.customGovKeeper))
+	return middleware.NewRoute(customgovtypes.ModuleName, NewHandler(am.customGovKeeper))
 }
 
 // RegisterQueryService registers a GRPC query service to respond to the

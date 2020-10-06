@@ -83,6 +83,21 @@ func (m *Permissions) RemoveFromWhitelist(perm PermValue) error {
 	return nil
 }
 
+func (m *Permissions) RemoveFromBlacklist(perm PermValue) error {
+	if !m.IsBlacklisted(perm) {
+		return fmt.Errorf("permission is not blacklisted")
+	}
+
+	for i, v := range m.Blacklist {
+		if v == uint32(perm) {
+			m.Blacklist = append(m.Blacklist[:i], m.Blacklist[i+1:]...)
+			return nil
+		}
+	}
+
+	return nil
+}
+
 func NewNetworkActor(
 	addr types.AccAddress,
 	roles Roles,
@@ -113,6 +128,15 @@ func (m *NetworkActor) HasRole(role Role) bool {
 func (m *NetworkActor) SetRole(role Role) {
 	if !m.HasRole(role) {
 		m.Roles = append(m.Roles, uint64(role))
+	}
+}
+
+func (m *NetworkActor) RemoveRole(role Role) {
+	for i, r := range m.Roles {
+		if r == uint64(role) {
+			m.Roles = append(m.Roles[:i], m.Roles[i+1:]...)
+			return
+		}
 	}
 }
 

@@ -169,6 +169,17 @@ func initGenFiles(cfg Config, vals []*Validator, genAccounts []authtypes.Genesis
 
 	var customGovGenState customgovtypes.GenesisState
 	cfg.Codec.MustUnmarshalJSON(cfg.GenesisState[customgovtypes.ModuleName], &customGovGenState)
+
+	// Add permissions to RoleInTest, num 0. This included:
+	// - Whitelisted PermClaimValidator.
+	// - Blacklisted PermClaimCouncilor.
+	customGovGenState.Permissions[uint64(customgovtypes.RoleUndefined)] = customgovtypes.NewPermissions(
+		[]customgovtypes.PermValue{
+			customgovtypes.PermClaimValidator,
+		}, []customgovtypes.PermValue{
+			customgovtypes.PermClaimCouncilor,
+		})
+
 	// Only first validator is network actor
 	networkActor := customgovtypes.NewNetworkActor(
 		vals[0].Address,
@@ -178,10 +189,6 @@ func initGenFiles(cfg Config, vals []*Validator, genAccounts []authtypes.Genesis
 		customgovtypes.NewPermissions(nil, nil),
 		1,
 	)
-
-	customGovGenState.Permissions[0] = customgovtypes.NewPermissions([]customgovtypes.PermValue{
-		customgovtypes.PermClaimValidator,
-	}, nil)
 	customGovGenState.NetworkActors = append(customGovGenState.NetworkActors, &networkActor)
 	cfg.GenesisState[customgovtypes.ModuleName] = cfg.Codec.MustMarshalJSON(&customGovGenState)
 

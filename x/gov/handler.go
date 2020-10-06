@@ -16,6 +16,10 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 		switch msg := msg.(type) {
 		case *customgovtypes.MsgWhitelistPermissions:
 			return handleWhitelistPermissions(ctx, ck, msg)
+		case *customgovtypes.MsgSetNetworkProperties:
+			return handleSetNetworkProperties(ctx, ck, msg)
+		case *customgovtypes.MsgSetExecutionFee:
+			return handleSetExecutionFee(ctx, ck, msg)
 		case *customgovtypes.MsgBlacklistPermissions:
 			return handleBlacklistPermissions(ctx, ck, msg)
 		case *customgovtypes.MsgClaimCouncilor:
@@ -26,10 +30,104 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 			return handleBlacklistRolePermission(ctx, ck, msg)
 		case *customgovtypes.MsgRemoveWhitelistRolePermission:
 			return handleRemoveWhitelistRolePermission(ctx, ck, msg)
+		case *customgovtypes.MsgRemoveBlacklistRolePermission:
+			return handleRemoveBlacklistRolePermission(ctx, ck, msg)
+		case *customgovtypes.MsgCreateRole:
+			return handleCreateRole(ctx, ck, msg)
+		case *customgovtypes.MsgAssignRole:
+			return handleAssignRole(ctx, ck, msg)
+		case *customgovtypes.MsgRemoveRole:
+			return handleMsgRemoveRole(ctx, ck, msg)
 		default:
 			return nil, errors.Wrapf(errors.ErrUnknownRequest, "unrecognized %s message type: %T", types.ModuleName, msg)
 		}
 	}
+}
+
+func handleMsgRemoveRole(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgRemoveRole) (*sdk.Result, error) {
+	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Proposer, customgovtypes.PermSetPermissions)
+	if !isAllowed {
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermSetPermissions")
+	}
+
+	role := ck.GetPermissionsForRole(ctx, customgovtypes.Role(msg.Role))
+	if role == nil {
+		return nil, customgovtypes.ErrRoleDoesNotExist
+	}
+
+	actor, err := ck.GetNetworkActorByAddress(ctx, msg.Address)
+	if err != nil {
+		actor = customgovtypes.NewDefaultActor(msg.Address)
+	}
+
+	if !actor.HasRole(customgovtypes.Role(msg.Role)) {
+		return nil, customgovtypes.ErrRoleNotAssigned
+	}
+
+	actor.RemoveRole(customgovtypes.Role(msg.Role))
+
+	ck.SaveNetworkActor(ctx, actor)
+
+	return &sdk.Result{}, nil
+}
+
+func handleAssignRole(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgAssignRole) (*sdk.Result, error) {
+	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Proposer, customgovtypes.PermSetPermissions)
+	if !isAllowed {
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermSetPermissions")
+	}
+
+	role := ck.GetPermissionsForRole(ctx, customgovtypes.Role(msg.Role))
+	if role == nil {
+		return nil, customgovtypes.ErrRoleDoesNotExist
+	}
+
+	actor, err := ck.GetNetworkActorByAddress(ctx, msg.Address)
+	if err != nil {
+		actor = customgovtypes.NewDefaultActor(msg.Address)
+	}
+
+	if actor.HasRole(customgovtypes.Role(msg.Role)) {
+		return nil, customgovtypes.ErrRoleAlreadyAssigned
+	}
+
+	actor.SetRole(customgovtypes.Role(msg.Role))
+	ck.SaveNetworkActor(ctx, actor)
+
+	return &sdk.Result{}, nil
+}
+
+func handleCreateRole(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgCreateRole) (*sdk.Result, error) {
+	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Proposer, customgovtypes.PermSetPermissions)
+	if !isAllowed {
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermSetPermissions")
+	}
+
+	perms := ck.GetPermissionsForRole(ctx, customgovtypes.Role(msg.Role))
+	if perms != nil {
+		return nil, customgovtypes.ErrRoleExist
+	}
+
+	permissions := customgovtypes.NewPermissions(nil, nil)
+	ck.SetPermissionsForRole(ctx, customgovtypes.Role(msg.Role), permissions)
+
+	return &sdk.Result{}, nil
+}
+
+func handleRemoveBlacklistRolePermission(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgRemoveBlacklistRolePermission) (*sdk.Result, error) {
+	perms, err := validateAndGetPermissionsForRole(ctx, ck, msg.Proposer, customgovtypes.Role(msg.Role))
+	if err != nil {
+		return nil, err
+	}
+
+	err = perms.RemoveFromBlacklist(customgovtypes.PermValue(msg.Permission))
+	if err != nil {
+		return nil, errors.Wrap(customgovtypes.ErrRemovingBlacklist, err.Error())
+	}
+
+	ck.SetPermissionsForRole(ctx, customgovtypes.Role(msg.Role), perms)
+
+	return &sdk.Result{}, nil
 }
 
 func handleRemoveWhitelistRolePermission(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgRemoveWhitelistRolePermission) (*sdk.Result, error) {
@@ -122,6 +220,32 @@ func handleBlacklistPermissions(ctx sdk.Context, ck keeper.Keeper, msg *customgo
 	return &sdk.Result{}, nil
 }
 
+func handleSetNetworkProperties(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgSetNetworkProperties) (*sdk.Result, error) {
+	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Proposer, customgovtypes.PermChangeTxFee)
+	if !isAllowed {
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermChangeTxFee")
+	}
+	ck.SetNetworkProperties(ctx, msg.NetworkProperties)
+	return &sdk.Result{}, nil
+}
+
+func handleSetExecutionFee(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgSetExecutionFee) (*sdk.Result, error) {
+	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Proposer, customgovtypes.PermChangeTxFee)
+	if !isAllowed {
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermChangeTxFee")
+	}
+
+	ck.SetExecutionFee(ctx, &customgovtypes.ExecutionFee{
+		Name:              msg.Name,
+		TransactionType:   msg.TransactionType,
+		ExecutionFee:      msg.ExecutionFee,
+		FailureFee:        msg.FailureFee,
+		Timeout:           msg.Timeout,
+		DefaultParameters: msg.DefaultParameters,
+	})
+	return &sdk.Result{}, nil
+}
+
 func handleClaimCouncilor(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgClaimCouncilor) (*sdk.Result, error) {
 	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Address, customgovtypes.PermClaimCouncilor)
 	if !isAllowed {
@@ -150,8 +274,8 @@ func validateAndGetPermissionsForRole(
 		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermSetPermissions")
 	}
 
-	perms, err := ck.GetPermissionsForRole(ctx, role)
-	if err != nil {
+	perms := ck.GetPermissionsForRole(ctx, role)
+	if perms == nil {
 		return nil, customgovtypes.ErrRoleDoesNotExist
 	}
 

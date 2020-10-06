@@ -9,6 +9,7 @@ import (
 
 	"github.com/tendermint/tendermint/crypto/encoding"
 
+	"github.com/KiraCore/sekai/middleware"
 	"github.com/KiraCore/sekai/x/staking/keeper"
 	"github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -141,7 +142,7 @@ func (am AppModule) Name() string {
 
 // Route returns the message routing key for the staking module.
 func (am AppModule) Route() sdk.Route {
-	return sdk.NewRoute(cumstomtypes.ModuleName, NewHandler(am.customStakingKeeper, am.customGovKeeper))
+	return middleware.NewRoute(cumstomtypes.ModuleName, NewHandler(am.customStakingKeeper, am.customGovKeeper))
 }
 
 // RegisterQueryService registers a GRPC query service to respond to the
