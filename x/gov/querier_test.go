@@ -95,6 +95,47 @@ func TestQuerier_RolesByAddress(t *testing.T) {
 	require.EqualError(t, err, "network actor not found")
 }
 
+func TestQuerier_RolesByAddress(t *testing.T) {
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, sdk.TokensFromConsensusPower(10))
+	addr1 := addrs[0]
+	addr2 := addrs[1]
+
+	networkActor := types.NewNetworkActor(
+		addr1,
+		types.Roles{
+			1, 2, 3,
+		},
+		1,
+		nil,
+		types.NewPermissions(
+			[]types.PermValue{
+				types.PermClaimValidator,
+			},
+			nil,
+		),
+		123,
+	)
+
+	app.CustomGovKeeper.SaveNetworkActor(ctx, networkActor)
+
+	querier := gov.NewQuerier(app.CustomGovKeeper)
+
+	resp, err := querier.RolesByAddress(sdk.WrapSDKContext(ctx), &types.RolesByAddressRequest{ValAddr: addr1})
+	require.NoError(t, err)
+
+	require.Equal(t,
+		[]uint64{0x1, 0x2, 0x3},
+		resp.Roles,
+	)
+
+	// Get roles for actor that does not exist
+	_, err = querier.RolesByAddress(sdk.WrapSDKContext(ctx), &types.RolesByAddressRequest{ValAddr: addr2})
+	require.EqualError(t, err, "network actor not found")
+}
+
 func TestQuerier_CouncilorByAddress(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})

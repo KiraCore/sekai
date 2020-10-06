@@ -15,6 +15,11 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 		ctx = ctx.WithEventManager(sdk.NewEventManager())
 
 		switch msg := msg.(type) {
+		case *customgovtypes.MsgSetNetworkProperties:
+			return handleSetNetworkProperties(ctx, ck, msg)
+		case *customgovtypes.MsgSetExecutionFee:
+			return handleSetExecutionFee(ctx, ck, msg)
+
 		// Permission Related
 		case *customgovtypes.MsgWhitelistPermissions:
 			return handleWhitelistPermissions(ctx, ck, msg)
@@ -286,6 +291,32 @@ func handleBlacklistPermissions(ctx sdk.Context, ck keeper.Keeper, msg *customgo
 
 	ck.SaveNetworkActor(ctx, actor)
 
+	return &sdk.Result{}, nil
+}
+
+func handleSetNetworkProperties(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgSetNetworkProperties) (*sdk.Result, error) {
+	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Proposer, customgovtypes.PermChangeTxFee)
+	if !isAllowed {
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermChangeTxFee")
+	}
+	ck.SetNetworkProperties(ctx, msg.NetworkProperties)
+	return &sdk.Result{}, nil
+}
+
+func handleSetExecutionFee(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgSetExecutionFee) (*sdk.Result, error) {
+	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Proposer, customgovtypes.PermChangeTxFee)
+	if !isAllowed {
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermChangeTxFee")
+	}
+
+	ck.SetExecutionFee(ctx, &customgovtypes.ExecutionFee{
+		Name:              msg.Name,
+		TransactionType:   msg.TransactionType,
+		ExecutionFee:      msg.ExecutionFee,
+		FailureFee:        msg.FailureFee,
+		Timeout:           msg.Timeout,
+		DefaultParameters: msg.DefaultParameters,
+	})
 	return &sdk.Result{}, nil
 }
 

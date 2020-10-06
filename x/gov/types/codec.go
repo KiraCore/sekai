@@ -11,6 +11,9 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	registerRolesCodec(cdc)
 	registerCouncilorCodec(cdc)
 	registerProposalCodec(cdc)
+
+	cdc.RegisterConcrete(&MsgSetNetworkProperties{}, "kiraHub/MsgSetNetworkProperties", nil)
+	cdc.RegisterConcrete(&MsgSetExecutionFee{}, "kiraHub/MsgSetExecutionFee", nil)
 }
 
 func registerProposalCodec(cdc *codec.LegacyAmino) {
@@ -41,6 +44,9 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgWhitelistPermissions{},
 		&MsgBlacklistPermissions{},
+
+		&MsgSetNetworkProperties{},
+		&MsgSetExecutionFee{},
 
 		&MsgClaimCouncilor{},
 

@@ -19,6 +19,15 @@ service Query {
   rpc CouncilorByAddress (CouncilorByAddressRequest) returns (CouncilorResponse) {}
 
   rpc CouncilorByMoniker (CouncilorByMonikerRequest) returns (CouncilorResponse) {}
+  j
+  rpc GetNetworkProperties (NetworkPropertiesRequest) returns (NetworkPropertiesResponse) {}
+  rpc GetExecutionFee (ExecutionFeeRequest) returns (ExecutionFeeResponse) {}
+}
+
+message NetworkPropertiesRequest {}
+
+message NetworkPropertiesResponse {
+  kira.gov.NetworkProperties properties = 1;
 }
 
 message PermissionsByAddressRequest {
@@ -49,6 +58,13 @@ message RolePermissionsRequest {
 
 message RolePermissionsResponse {
   Permissions permissions = 1;
+}
+
+message ExecutionFeeRequest {
+  string execution_name = 1;
+}
+message ExecutionFeeResponse {
+  kira.gov.ExecutionFee fee = 1;
 }
 
 message CouncilorByAddressRequest {

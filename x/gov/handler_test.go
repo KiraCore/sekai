@@ -2,6 +2,7 @@ package gov_test
 
 import (
 	"fmt"
+	"os"
 	"testing"
 	"time"
 
@@ -19,7 +20,7 @@ import (
 
 func TestMain(m *testing.M) {
 	app.SetConfig()
-	m.Run()
+	os.Exit(m.Run())
 }
 
 // When a network actor has not been saved before, it creates one with default params
@@ -250,6 +251,153 @@ func TestNewHandler_SetPermissions_ProposerHasRoleSudo(t *testing.T) {
 				require.True(t, actor.Permissions.IsWhitelisted(types.PermClaimValidator))
 			} else {
 				require.True(t, actor.Permissions.IsBlacklisted(types.PermClaimValidator))
+			}
+		})
+	}
+}
+
+func TestNewHandler_SetNetworkProperties(t *testing.T) {
+	changeFeeAddr, err := sdk.AccAddressFromBech32("kira15ky9du8a2wlstz6fpx3p4mqpjyrm5cgqzp4f3d")
+	require.NoError(t, err)
+
+	sudoAddr, err := sdk.AccAddressFromBech32("kira1alzyfq40zjsveat87jlg8jxetwqmr0a29sgd0f")
+	require.NoError(t, err)
+
+	tests := []struct {
+		name       string
+		msg        sdk.Msg
+		desiredErr string
+	}{
+		{
+			name: "Success run with ChangeTxFee permission",
+			msg: &types.MsgSetNetworkProperties{
+				NetworkProperties: &types.NetworkProperties{
+					MinTxFee: 100,
+					MaxTxFee: 1000,
+				},
+				Proposer: changeFeeAddr,
+			},
+			desiredErr: "",
+		},
+		{
+			name: "Failure run without ChangeTxFee permission",
+			msg: &types.MsgSetNetworkProperties{
+				NetworkProperties: &types.NetworkProperties{
+					MinTxFee: 100,
+					MaxTxFee: 1000,
+				},
+				Proposer: sudoAddr,
+			},
+			desiredErr: "not enough permissions",
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			app := simapp.Setup(false)
+			ctx := app.NewContext(false, tmproto.Header{})
+			// First we set Role Sudo to proposer Actor
+			proposerActor := types.NewDefaultActor(sudoAddr)
+			proposerActor.SetRole(types.RoleSudo)
+			require.NoError(t, err)
+			app.CustomGovKeeper.SaveNetworkActor(ctx, proposerActor)
+
+			handler := gov.NewHandler(app.CustomGovKeeper)
+
+			// set change fee permission to addr
+			_, err = handler(ctx, &types.MsgWhitelistPermissions{
+				Proposer:   sudoAddr,
+				Address:    changeFeeAddr,
+				Permission: uint32(types.PermChangeTxFee),
+			})
+			require.NoError(t, err)
+
+			_, err = handler(ctx, tt.msg)
+			if tt.desiredErr == "" {
+				require.NoError(t, err)
+			} else {
+				require.Error(t, err)
+				require.Contains(t, err.Error(), tt.desiredErr)
+			}
+		})
+	}
+}
+
+func TestNewHandler_SetExecutionFee(t *testing.T) {
+	execFeeSetAddr, err := sdk.AccAddressFromBech32("kira15ky9du8a2wlstz6fpx3p4mqpjyrm5cgqzp4f3d")
+	require.NoError(t, err)
+
+	sudoAddr, err := sdk.AccAddressFromBech32("kira1alzyfq40zjsveat87jlg8jxetwqmr0a29sgd0f")
+	require.NoError(t, err)
+
+	tests := []struct {
+		name       string
+		msg        types.MsgSetExecutionFee
+		desiredErr string
+	}{
+		{
+			name: "Success run with ChangeTxFee permission",
+			msg: types.MsgSetExecutionFee{
+				Name:              "network-properties",
+				TransactionType:   "B",
+				ExecutionFee:      10000,
+				FailureFee:        1000,
+				Timeout:           1,
+				DefaultParameters: 2,
+				Proposer:          execFeeSetAddr,
+			},
+			desiredErr: "",
+		},
+		{
+			name: "Success run without ChangeTxFee permission",
+			msg: types.MsgSetExecutionFee{
+				Name:              "network-properties-2",
+				TransactionType:   "B",
+				ExecutionFee:      10000,
+				FailureFee:        1000,
+				Timeout:           1,
+				DefaultParameters: 2,
+				Proposer:          sudoAddr,
+			},
+			desiredErr: "PermChangeTxFee: not enough permissions",
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			app := simapp.Setup(false)
+			ctx := app.NewContext(false, tmproto.Header{})
+			// First we set Role Sudo to proposer Actor
+			proposerActor := types.NewDefaultActor(sudoAddr)
+			proposerActor.SetRole(types.RoleSudo)
+			require.NoError(t, err)
+			app.CustomGovKeeper.SaveNetworkActor(ctx, proposerActor)
+
+			handler := gov.NewHandler(app.CustomGovKeeper)
+
+			// set change fee permission to addr
+			_, err = handler(ctx, &types.MsgWhitelistPermissions{
+				Proposer:   sudoAddr,
+				Address:    execFeeSetAddr,
+				Permission: uint32(types.PermChangeTxFee),
+			})
+			require.NoError(t, err)
+
+			_, err = handler(ctx, &tt.msg)
+			if tt.desiredErr == "" {
+				require.NoError(t, err)
+				execFee := app.CustomGovKeeper.GetExecutionFee(ctx, tt.msg.Name)
+				require.Equal(t, tt.msg.Name, execFee.Name)
+				require.Equal(t, tt.msg.TransactionType, execFee.TransactionType)
+				require.Equal(t, tt.msg.ExecutionFee, execFee.ExecutionFee)
+				require.Equal(t, tt.msg.FailureFee, execFee.FailureFee)
+				require.Equal(t, tt.msg.Timeout, execFee.Timeout)
+				require.Equal(t, tt.msg.DefaultParameters, execFee.DefaultParameters)
+			} else {
+				require.Error(t, err)
+				require.Contains(t, err.Error(), tt.desiredErr)
 			}
 		})
 	}

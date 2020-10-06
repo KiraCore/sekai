@@ -12,4 +12,7 @@ message GenesisState {
   map<uint64, Permissions> permissions = 2;
   // NetworkActors are the actors that are saved from genesis.
   repeated NetworkActor network_actors = 3;
+
+  NetworkProperties network_properties = 4;
+  repeated ExecutionFee execution_fees = 5;
 }

@@ -13,6 +13,8 @@ const (
 	MsgTypeBlacklistPermissions = "blacklist-permissions"
 
 	MsgTypeClaimCouncilor = "claim-councilor"
+	SetNetworkProperties = "set-network-properties"
+	SetExecutionFee      = "set-execution-fee"
 
 	MsgTypeCreateRole = "create-role"
 	MsgTypeAssignRole = "assign-role"
