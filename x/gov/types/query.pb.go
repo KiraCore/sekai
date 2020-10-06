@@ -29,6 +29,86 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+type NetworkPropertiesRequest struct {
+}
+
+func (m *NetworkPropertiesRequest) Reset()         { *m = NetworkPropertiesRequest{} }
+func (m *NetworkPropertiesRequest) String() string { return proto.CompactTextString(m) }
+func (*NetworkPropertiesRequest) ProtoMessage()    {}
+func (*NetworkPropertiesRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5c6ac9b241082464, []int{0}
+}
+func (m *NetworkPropertiesRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *NetworkPropertiesRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_NetworkPropertiesRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *NetworkPropertiesRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NetworkPropertiesRequest.Merge(m, src)
+}
+func (m *NetworkPropertiesRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *NetworkPropertiesRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_NetworkPropertiesRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_NetworkPropertiesRequest proto.InternalMessageInfo
+
+type NetworkPropertiesResponse struct {
+	Properties *NetworkProperties `protobuf:"bytes,1,opt,name=properties,proto3" json:"properties,omitempty"`
+}
+
+func (m *NetworkPropertiesResponse) Reset()         { *m = NetworkPropertiesResponse{} }
+func (m *NetworkPropertiesResponse) String() string { return proto.CompactTextString(m) }
+func (*NetworkPropertiesResponse) ProtoMessage()    {}
+func (*NetworkPropertiesResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5c6ac9b241082464, []int{1}
+}
+func (m *NetworkPropertiesResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *NetworkPropertiesResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_NetworkPropertiesResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *NetworkPropertiesResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_NetworkPropertiesResponse.Merge(m, src)
+}
+func (m *NetworkPropertiesResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *NetworkPropertiesResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_NetworkPropertiesResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_NetworkPropertiesResponse proto.InternalMessageInfo
+
+func (m *NetworkPropertiesResponse) GetProperties() *NetworkProperties {
+	if m != nil {
+		return m.Properties
+	}
+	return nil
+}
+
 type PermissionsByAddressRequest struct {
 	ValAddr github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=val_addr,json=valAddr,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"val_addr,omitempty" yaml:"val_addr"`
 }
@@ -37,7 +117,7 @@ func (m *PermissionsByAddressRequest) Reset()         { *m = PermissionsByAddres
 func (m *PermissionsByAddressRequest) String() string { return proto.CompactTextString(m) }
 func (*PermissionsByAddressRequest) ProtoMessage()    {}
 func (*PermissionsByAddressRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5c6ac9b241082464, []int{0}
+	return fileDescriptor_5c6ac9b241082464, []int{2}
 }
 func (m *PermissionsByAddressRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -81,7 +161,7 @@ func (m *PermissionsResponse) Reset()         { *m = PermissionsResponse{} }
 func (m *PermissionsResponse) String() string { return proto.CompactTextString(m) }
 func (*PermissionsResponse) ProtoMessage()    {}
 func (*PermissionsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5c6ac9b241082464, []int{1}
+	return fileDescriptor_5c6ac9b241082464, []int{3}
 }
 func (m *PermissionsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -125,7 +205,7 @@ func (m *RolesByAddressRequest) Reset()         { *m = RolesByAddressRequest{} }
 func (m *RolesByAddressRequest) String() string { return proto.CompactTextString(m) }
 func (*RolesByAddressRequest) ProtoMessage()    {}
 func (*RolesByAddressRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5c6ac9b241082464, []int{2}
+	return fileDescriptor_5c6ac9b241082464, []int{4}
 }
 func (m *RolesByAddressRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -169,7 +249,7 @@ func (m *RolesByAddressResponse) Reset()         { *m = RolesByAddressResponse{}
 func (m *RolesByAddressResponse) String() string { return proto.CompactTextString(m) }
 func (*RolesByAddressResponse) ProtoMessage()    {}
 func (*RolesByAddressResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5c6ac9b241082464, []int{3}
+	return fileDescriptor_5c6ac9b241082464, []int{5}
 }
 func (m *RolesByAddressResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -213,7 +293,7 @@ func (m *RolePermissionsRequest) Reset()         { *m = RolePermissionsRequest{}
 func (m *RolePermissionsRequest) String() string { return proto.CompactTextString(m) }
 func (*RolePermissionsRequest) ProtoMessage()    {}
 func (*RolePermissionsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5c6ac9b241082464, []int{4}
+	return fileDescriptor_5c6ac9b241082464, []int{6}
 }
 func (m *RolePermissionsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -257,7 +337,7 @@ func (m *RolePermissionsResponse) Reset()         { *m = RolePermissionsResponse
 func (m *RolePermissionsResponse) String() string { return proto.CompactTextString(m) }
 func (*RolePermissionsResponse) ProtoMessage()    {}
 func (*RolePermissionsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5c6ac9b241082464, []int{5}
+	return fileDescriptor_5c6ac9b241082464, []int{7}
 }
 func (m *RolePermissionsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -293,6 +373,94 @@ func (m *RolePermissionsResponse) GetPermissions() *Permissions {
 	return nil
 }
 
+type ExecutionFeeRequest struct {
+	ExecutionName string `protobuf:"bytes,1,opt,name=execution_name,json=executionName,proto3" json:"execution_name,omitempty"`
+}
+
+func (m *ExecutionFeeRequest) Reset()         { *m = ExecutionFeeRequest{} }
+func (m *ExecutionFeeRequest) String() string { return proto.CompactTextString(m) }
+func (*ExecutionFeeRequest) ProtoMessage()    {}
+func (*ExecutionFeeRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5c6ac9b241082464, []int{8}
+}
+func (m *ExecutionFeeRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ExecutionFeeRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ExecutionFeeRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ExecutionFeeRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ExecutionFeeRequest.Merge(m, src)
+}
+func (m *ExecutionFeeRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *ExecutionFeeRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ExecutionFeeRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ExecutionFeeRequest proto.InternalMessageInfo
+
+func (m *ExecutionFeeRequest) GetExecutionName() string {
+	if m != nil {
+		return m.ExecutionName
+	}
+	return ""
+}
+
+type ExecutionFeeResponse struct {
+	Fee *ExecutionFee `protobuf:"bytes,1,opt,name=fee,proto3" json:"fee,omitempty"`
+}
+
+func (m *ExecutionFeeResponse) Reset()         { *m = ExecutionFeeResponse{} }
+func (m *ExecutionFeeResponse) String() string { return proto.CompactTextString(m) }
+func (*ExecutionFeeResponse) ProtoMessage()    {}
+func (*ExecutionFeeResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5c6ac9b241082464, []int{9}
+}
+func (m *ExecutionFeeResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ExecutionFeeResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ExecutionFeeResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ExecutionFeeResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ExecutionFeeResponse.Merge(m, src)
+}
+func (m *ExecutionFeeResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *ExecutionFeeResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_ExecutionFeeResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ExecutionFeeResponse proto.InternalMessageInfo
+
+func (m *ExecutionFeeResponse) GetFee() *ExecutionFee {
+	if m != nil {
+		return m.Fee
+	}
+	return nil
+}
+
 type CouncilorByAddressRequest struct {
 	ValAddr github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=val_addr,json=valAddr,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"val_addr,omitempty" yaml:"val_addr"`
 }
@@ -301,7 +469,7 @@ func (m *CouncilorByAddressRequest) Reset()         { *m = CouncilorByAddressReq
 func (m *CouncilorByAddressRequest) String() string { return proto.CompactTextString(m) }
 func (*CouncilorByAddressRequest) ProtoMessage()    {}
 func (*CouncilorByAddressRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5c6ac9b241082464, []int{6}
+	return fileDescriptor_5c6ac9b241082464, []int{10}
 }
 func (m *CouncilorByAddressRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -345,7 +513,7 @@ func (m *CouncilorByMonikerRequest) Reset()         { *m = CouncilorByMonikerReq
 func (m *CouncilorByMonikerRequest) String() string { return proto.CompactTextString(m) }
 func (*CouncilorByMonikerRequest) ProtoMessage()    {}
 func (*CouncilorByMonikerRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5c6ac9b241082464, []int{7}
+	return fileDescriptor_5c6ac9b241082464, []int{11}
 }
 func (m *CouncilorByMonikerRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -389,7 +557,7 @@ func (m *CouncilorResponse) Reset()         { *m = CouncilorResponse{} }
 func (m *CouncilorResponse) String() string { return proto.CompactTextString(m) }
 func (*CouncilorResponse) ProtoMessage()    {}
 func (*CouncilorResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5c6ac9b241082464, []int{8}
+	return fileDescriptor_5c6ac9b241082464, []int{12}
 }
 func (m *CouncilorResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -426,12 +594,16 @@ func (m *CouncilorResponse) GetCouncilor() Councilor {
 }
 
 func init() {
+	proto.RegisterType((*NetworkPropertiesRequest)(nil), "kira.gov.NetworkPropertiesRequest")
+	proto.RegisterType((*NetworkPropertiesResponse)(nil), "kira.gov.NetworkPropertiesResponse")
 	proto.RegisterType((*PermissionsByAddressRequest)(nil), "kira.gov.PermissionsByAddressRequest")
 	proto.RegisterType((*PermissionsResponse)(nil), "kira.gov.PermissionsResponse")
 	proto.RegisterType((*RolesByAddressRequest)(nil), "kira.gov.RolesByAddressRequest")
 	proto.RegisterType((*RolesByAddressResponse)(nil), "kira.gov.RolesByAddressResponse")
 	proto.RegisterType((*RolePermissionsRequest)(nil), "kira.gov.RolePermissionsRequest")
 	proto.RegisterType((*RolePermissionsResponse)(nil), "kira.gov.RolePermissionsResponse")
+	proto.RegisterType((*ExecutionFeeRequest)(nil), "kira.gov.ExecutionFeeRequest")
+	proto.RegisterType((*ExecutionFeeResponse)(nil), "kira.gov.ExecutionFeeResponse")
 	proto.RegisterType((*CouncilorByAddressRequest)(nil), "kira.gov.CouncilorByAddressRequest")
 	proto.RegisterType((*CouncilorByMonikerRequest)(nil), "kira.gov.CouncilorByMonikerRequest")
 	proto.RegisterType((*CouncilorResponse)(nil), "kira.gov.CouncilorResponse")
@@ -440,39 +612,47 @@ func init() {
 func init() { proto.RegisterFile("query.proto", fileDescriptor_5c6ac9b241082464) }
 
 var fileDescriptor_5c6ac9b241082464 = []byte{
-	// 498 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x54, 0x4d, 0x6f, 0xd3, 0x40,
-	0x10, 0xb5, 0xd5, 0x94, 0xb6, 0x13, 0x44, 0xc4, 0x36, 0x85, 0xe0, 0x0a, 0x27, 0x2c, 0xaa, 0xd4,
-	0x03, 0xb5, 0xa5, 0x22, 0x84, 0xc4, 0x05, 0x35, 0xe5, 0xc6, 0x87, 0xc0, 0x12, 0x12, 0xe2, 0x40,
-	0xe5, 0xda, 0x2b, 0xb3, 0x8a, 0x9d, 0x49, 0x77, 0x9d, 0xa8, 0x91, 0x10, 0xbf, 0x81, 0x9f, 0xd5,
-	0x03, 0x87, 0x1c, 0x39, 0x45, 0x28, 0xf9, 0x07, 0x1c, 0x39, 0x21, 0x7f, 0xc5, 0x8e, 0xe3, 0xc0,
-	0x01, 0x09, 0x4e, 0x99, 0x9d, 0x7d, 0x33, 0x6f, 0xe6, 0xe5, 0xad, 0xa1, 0x7e, 0x31, 0x64, 0x62,
-	0x6c, 0x0c, 0x04, 0x86, 0x48, 0xb6, 0x7b, 0x5c, 0xd8, 0x86, 0x87, 0x23, 0xad, 0x6e, 0x3b, 0x21,
-	0x8a, 0x24, 0xad, 0x35, 0x1c, 0x1c, 0xf6, 0x1d, 0xee, 0x2f, 0x12, 0x4d, 0x0f, 0x3d, 0x8c, 0x43,
-	0x33, 0x8a, 0x92, 0x2c, 0xfd, 0x0c, 0xfb, 0xaf, 0x99, 0x08, 0xb8, 0x94, 0x1c, 0xfb, 0xb2, 0x3b,
-	0x3e, 0x71, 0x5d, 0xc1, 0xa4, 0xb4, 0xd8, 0xc5, 0x90, 0xc9, 0x90, 0x9c, 0xc1, 0xf6, 0xc8, 0xf6,
-	0xcf, 0x6c, 0xd7, 0x15, 0x2d, 0xb5, 0xa3, 0x1e, 0x5e, 0xef, 0x3e, 0xfb, 0x31, 0x6d, 0x37, 0xc6,
-	0x76, 0xe0, 0x3f, 0xa1, 0xd9, 0x0d, 0xfd, 0x39, 0x6d, 0x1f, 0x79, 0x3c, 0xfc, 0x38, 0x3c, 0x37,
-	0x1c, 0x0c, 0x4c, 0x07, 0x65, 0x80, 0x32, 0xfd, 0x39, 0x92, 0x6e, 0xcf, 0x0c, 0xc7, 0x03, 0x26,
-	0x8d, 0x13, 0xc7, 0xc9, 0xda, 0x6f, 0x8d, 0x6c, 0x3f, 0x8a, 0xe9, 0x2b, 0xd8, 0x2d, 0xf0, 0x5b,
-	0x4c, 0x0e, 0xb0, 0x2f, 0x19, 0x79, 0x0c, 0xf5, 0x41, 0x9e, 0x8e, 0xa9, 0xeb, 0xc7, 0x7b, 0x46,
-	0xb6, 0xaa, 0x51, 0xac, 0x29, 0x22, 0xe9, 0x25, 0xec, 0x59, 0xe8, 0xb3, 0xff, 0xb0, 0x89, 0x01,
-	0xb7, 0xca, 0xcc, 0xe9, 0x32, 0x4d, 0xd8, 0x14, 0xd1, 0x4d, 0x4b, 0xed, 0x6c, 0x1c, 0xd6, 0xac,
-	0xe4, 0x40, 0x1f, 0x24, 0xf8, 0xa5, 0xed, 0x93, 0x51, 0x09, 0xd4, 0x22, 0x48, 0x3c, 0x66, 0xcd,
-	0x8a, 0x63, 0x6a, 0xc1, 0xed, 0x15, 0xf4, 0xdf, 0x6a, 0xf5, 0x09, 0xee, 0x9c, 0x66, 0x26, 0xf9,
-	0xf7, 0x7a, 0x3d, 0x5a, 0x62, 0x7f, 0x89, 0x7d, 0xde, 0x63, 0x22, 0x63, 0x6f, 0xc1, 0x56, 0x90,
-	0x64, 0x62, 0xf2, 0x1d, 0x2b, 0x3b, 0xd2, 0x17, 0x70, 0x73, 0x51, 0x56, 0x90, 0x60, 0x67, 0x61,
-	0xf7, 0x54, 0x80, 0xdd, 0x5c, 0x80, 0x9c, 0xa6, 0x76, 0x35, 0x6d, 0x2b, 0x56, 0x8e, 0x3d, 0xfe,
-	0xba, 0x01, 0x9b, 0x6f, 0xa2, 0xc7, 0x44, 0x3e, 0x40, 0xb3, 0xea, 0x21, 0x90, 0x83, 0x4a, 0x21,
-	0xcb, 0x72, 0x69, 0x77, 0xab, 0xf5, 0x4e, 0x07, 0xa4, 0x0a, 0x79, 0x0b, 0x37, 0x96, 0xed, 0x41,
-	0xda, 0x79, 0x49, 0xa5, 0x65, 0xb5, 0xce, 0x7a, 0xc0, 0xa2, 0xed, 0x3b, 0x68, 0x94, 0x7c, 0x41,
-	0x4a, 0x65, 0xab, 0x06, 0xd3, 0xee, 0xfd, 0x06, 0x51, 0xe8, 0x4c, 0x56, 0xdd, 0x41, 0xee, 0x57,
-	0xc9, 0x5a, 0x1e, 0x7c, 0xbf, 0x02, 0xb4, 0xb6, 0x73, 0xfa, 0xcf, 0xaf, 0xe9, 0xbc, 0xec, 0x8b,
-	0x3f, 0x74, 0xee, 0x3e, 0xbd, 0x9a, 0xe9, 0xea, 0x64, 0xa6, 0xab, 0xdf, 0x67, 0xba, 0xfa, 0x65,
-	0xae, 0x2b, 0x93, 0xb9, 0xae, 0x7c, 0x9b, 0xeb, 0xca, 0xfb, 0x83, 0x82, 0x4b, 0x9f, 0x73, 0x61,
-	0x9f, 0xa2, 0x60, 0xa6, 0x64, 0x3d, 0x9b, 0x9b, 0x97, 0xa6, 0x87, 0xa3, 0xc4, 0xa8, 0xe7, 0xd7,
-	0xe2, 0xaf, 0xe2, 0xc3, 0x5f, 0x01, 0x00, 0x00, 0xff, 0xff, 0xe2, 0x62, 0x19, 0x45, 0x62, 0x05,
-	0x00, 0x00,
+	// 630 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x55, 0xcf, 0x6e, 0xd3, 0x4e,
+	0x10, 0x4e, 0xd4, 0xf4, 0xd7, 0x76, 0xf2, 0xa3, 0x11, 0xdb, 0xb4, 0xb4, 0xae, 0xea, 0x94, 0xad,
+	0x2a, 0xf5, 0x40, 0x6d, 0xa9, 0x08, 0x21, 0x01, 0x12, 0xb4, 0x05, 0x7a, 0x00, 0xaa, 0x62, 0x09,
+	0xa9, 0xe2, 0x40, 0xe5, 0x3a, 0x43, 0xb0, 0x62, 0x7b, 0xdd, 0x5d, 0x27, 0x34, 0x12, 0xe2, 0xc2,
+	0x0b, 0xf0, 0x58, 0x3d, 0xf6, 0xc8, 0xa9, 0x42, 0xcd, 0x1b, 0x70, 0xe4, 0x84, 0x1c, 0xaf, 0xff,
+	0x25, 0x4e, 0x38, 0x20, 0xc1, 0x29, 0xe3, 0xd9, 0x6f, 0xbe, 0x99, 0x6f, 0x67, 0x66, 0x03, 0xd5,
+	0xb3, 0x0e, 0xf2, 0x9e, 0xe6, 0x73, 0x16, 0x30, 0x32, 0xdb, 0xb6, 0xb9, 0xa9, 0xb5, 0x58, 0x57,
+	0xa9, 0x9a, 0x56, 0xc0, 0x78, 0xe4, 0x56, 0x6a, 0x16, 0xeb, 0x78, 0x96, 0xed, 0x24, 0x0e, 0xe0,
+	0xcc, 0x41, 0x69, 0xd7, 0x5b, 0xac, 0xc5, 0x06, 0xa6, 0x1e, 0x5a, 0x91, 0x97, 0x2a, 0xb0, 0x7c,
+	0x88, 0xc1, 0x47, 0xc6, 0xdb, 0x47, 0x9c, 0xf9, 0xc8, 0x03, 0x1b, 0x85, 0x81, 0x67, 0x1d, 0x14,
+	0x01, 0x3d, 0x86, 0x95, 0x82, 0x33, 0xe1, 0x33, 0x4f, 0x20, 0x79, 0x08, 0xe0, 0x27, 0xde, 0xe5,
+	0xf2, 0x7a, 0x79, 0xab, 0xba, 0xb3, 0xaa, 0xc5, 0x75, 0x69, 0xa3, 0x81, 0x19, 0x38, 0xfd, 0x0c,
+	0xab, 0x47, 0xc8, 0x5d, 0x5b, 0x08, 0x9b, 0x79, 0x62, 0xaf, 0xb7, 0xdb, 0x6c, 0x72, 0x14, 0x71,
+	0x62, 0x72, 0x02, 0xb3, 0x5d, 0xd3, 0x39, 0x31, 0x9b, 0x4d, 0x3e, 0x60, 0xfe, 0x7f, 0xef, 0xe9,
+	0x8f, 0xab, 0x46, 0xad, 0x67, 0xba, 0xce, 0x03, 0x1a, 0x9f, 0xd0, 0x9f, 0x57, 0x8d, 0xed, 0x96,
+	0x1d, 0x7c, 0xe8, 0x9c, 0x6a, 0x16, 0x73, 0x75, 0x8b, 0x09, 0x97, 0x09, 0xf9, 0xb3, 0x2d, 0x9a,
+	0x6d, 0x3d, 0xe8, 0xf9, 0x28, 0xb4, 0x5d, 0xcb, 0x8a, 0xe9, 0x67, 0xba, 0xa6, 0x13, 0xda, 0xf4,
+	0x10, 0x16, 0x32, 0xf9, 0x13, 0x4d, 0xf7, 0xa1, 0xea, 0xa7, 0x6e, 0x29, 0x6a, 0x31, 0x15, 0x95,
+	0x8d, 0xc9, 0x22, 0xe9, 0x39, 0x2c, 0x1a, 0xcc, 0xc1, 0x7f, 0xa0, 0x44, 0x83, 0xa5, 0xe1, 0xcc,
+	0x52, 0x4c, 0x1d, 0xa6, 0xc3, 0xee, 0x87, 0x32, 0xa6, 0xb6, 0x2a, 0x46, 0xf4, 0x41, 0xef, 0x44,
+	0xf8, 0x9c, 0xfa, 0xa8, 0x54, 0x02, 0x95, 0x10, 0x32, 0x28, 0xb3, 0x62, 0x0c, 0x6c, 0x6a, 0xc0,
+	0xad, 0x11, 0xf4, 0x9f, 0xde, 0xd5, 0x23, 0x58, 0x78, 0x76, 0x8e, 0x56, 0x27, 0xb0, 0x99, 0xf7,
+	0x1c, 0x31, 0x4e, 0xbf, 0x09, 0xf3, 0x18, 0xbb, 0x4f, 0x3c, 0xd3, 0x8d, 0x0a, 0x99, 0x33, 0x6e,
+	0x24, 0xde, 0x43, 0xd3, 0x45, 0xfa, 0x04, 0xea, 0xf9, 0x68, 0x59, 0xce, 0x16, 0x4c, 0xbd, 0x47,
+	0x94, 0x65, 0x2c, 0xa5, 0x65, 0xe4, 0xc0, 0x21, 0x84, 0x7e, 0x82, 0x95, 0xfd, 0x78, 0x4d, 0xfe,
+	0x7e, 0xbf, 0xee, 0xe5, 0xb2, 0xbf, 0x62, 0x9e, 0xdd, 0x46, 0x1e, 0x67, 0x5f, 0x86, 0x19, 0x37,
+	0xf2, 0x48, 0xf1, 0xf1, 0x27, 0x7d, 0x09, 0x37, 0x93, 0xb0, 0x4c, 0x0b, 0xe6, 0x92, 0x85, 0x97,
+	0xca, 0x17, 0x52, 0xe5, 0x69, 0x9a, 0xca, 0xc5, 0x55, 0xa3, 0x64, 0xa4, 0xd8, 0x9d, 0x2f, 0xd3,
+	0x30, 0xfd, 0x3a, 0x7c, 0x4e, 0xc8, 0x3b, 0xa8, 0x17, 0x2d, 0x22, 0xd9, 0x2c, 0x6c, 0xe4, 0xf0,
+	0x75, 0x29, 0x6b, 0xc5, 0xfd, 0x96, 0x05, 0xd2, 0x12, 0x79, 0x03, 0xf3, 0xf9, 0xf1, 0x24, 0x8d,
+	0x34, 0xa4, 0x70, 0x65, 0x94, 0xf5, 0xf1, 0x80, 0x84, 0xf6, 0x18, 0x6a, 0x43, 0x73, 0x49, 0x86,
+	0xc2, 0x46, 0x07, 0x5c, 0xb9, 0x3d, 0x01, 0x91, 0x61, 0x26, 0xa3, 0xd3, 0x41, 0x36, 0x8a, 0xae,
+	0x75, 0xb8, 0xf0, 0xd5, 0x02, 0xd0, 0x58, 0x66, 0xd9, 0xf9, 0x31, 0xcc, 0xf9, 0xb9, 0xf8, 0x1d,
+	0xb3, 0x09, 0xf5, 0x03, 0x0c, 0x46, 0x5e, 0x5c, 0x42, 0x27, 0x3d, 0xc7, 0x92, 0x7a, 0x63, 0x22,
+	0x26, 0x49, 0x61, 0x40, 0xed, 0x00, 0x83, 0xec, 0x32, 0x91, 0xb5, 0x31, 0x4b, 0x26, 0x89, 0xd5,
+	0x71, 0xc7, 0x31, 0xe7, 0xde, 0xe3, 0x8b, 0x6b, 0xb5, 0x7c, 0x79, 0xad, 0x96, 0xbf, 0x5f, 0xab,
+	0xe5, 0xaf, 0x7d, 0xb5, 0x74, 0xd9, 0x57, 0x4b, 0xdf, 0xfa, 0x6a, 0xe9, 0xed, 0x66, 0x66, 0xb9,
+	0x5e, 0xd8, 0xdc, 0xdc, 0x67, 0x1c, 0x75, 0x81, 0x6d, 0xd3, 0xd6, 0xcf, 0xf5, 0x16, 0xeb, 0x46,
+	0xfb, 0x75, 0xfa, 0xdf, 0xe0, 0x2f, 0xec, 0xee, 0xaf, 0x00, 0x00, 0x00, 0xff, 0xff, 0x7c, 0xe7,
+	0xc8, 0x4d, 0x1b, 0x07, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -495,6 +675,8 @@ type QueryClient interface {
 	RolePermissions(ctx context.Context, in *RolePermissionsRequest, opts ...grpc.CallOption) (*RolePermissionsResponse, error)
 	CouncilorByAddress(ctx context.Context, in *CouncilorByAddressRequest, opts ...grpc.CallOption) (*CouncilorResponse, error)
 	CouncilorByMoniker(ctx context.Context, in *CouncilorByMonikerRequest, opts ...grpc.CallOption) (*CouncilorResponse, error)
+	GetNetworkProperties(ctx context.Context, in *NetworkPropertiesRequest, opts ...grpc.CallOption) (*NetworkPropertiesResponse, error)
+	GetExecutionFee(ctx context.Context, in *ExecutionFeeRequest, opts ...grpc.CallOption) (*ExecutionFeeResponse, error)
 }
 
 type queryClient struct {
@@ -550,6 +732,24 @@ func (c *queryClient) CouncilorByMoniker(ctx context.Context, in *CouncilorByMon
 	return out, nil
 }
 
+func (c *queryClient) GetNetworkProperties(ctx context.Context, in *NetworkPropertiesRequest, opts ...grpc.CallOption) (*NetworkPropertiesResponse, error) {
+	out := new(NetworkPropertiesResponse)
+	err := c.cc.Invoke(ctx, "/kira.gov.Query/GetNetworkProperties", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) GetExecutionFee(ctx context.Context, in *ExecutionFeeRequest, opts ...grpc.CallOption) (*ExecutionFeeResponse, error) {
+	out := new(ExecutionFeeResponse)
+	err := c.cc.Invoke(ctx, "/kira.gov.Query/GetExecutionFee", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 type QueryServer interface {
 	// Returns the permissions an actor has by address.
@@ -560,6 +760,8 @@ type QueryServer interface {
 	RolePermissions(context.Context, *RolePermissionsRequest) (*RolePermissionsResponse, error)
 	CouncilorByAddress(context.Context, *CouncilorByAddressRequest) (*CouncilorResponse, error)
 	CouncilorByMoniker(context.Context, *CouncilorByMonikerRequest) (*CouncilorResponse, error)
+	GetNetworkProperties(context.Context, *NetworkPropertiesRequest) (*NetworkPropertiesResponse, error)
+	GetExecutionFee(context.Context, *ExecutionFeeRequest) (*ExecutionFeeResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -580,6 +782,12 @@ func (*UnimplementedQueryServer) CouncilorByAddress(ctx context.Context, req *Co
 }
 func (*UnimplementedQueryServer) CouncilorByMoniker(ctx context.Context, req *CouncilorByMonikerRequest) (*CouncilorResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CouncilorByMoniker not implemented")
+}
+func (*UnimplementedQueryServer) GetNetworkProperties(ctx context.Context, req *NetworkPropertiesRequest) (*NetworkPropertiesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetNetworkProperties not implemented")
+}
+func (*UnimplementedQueryServer) GetExecutionFee(ctx context.Context, req *ExecutionFeeRequest) (*ExecutionFeeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetExecutionFee not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -676,6 +884,42 @@ func _Query_CouncilorByMoniker_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_GetNetworkProperties_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NetworkPropertiesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).GetNetworkProperties(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.gov.Query/GetNetworkProperties",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).GetNetworkProperties(ctx, req.(*NetworkPropertiesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_GetExecutionFee_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ExecutionFeeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).GetExecutionFee(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.gov.Query/GetExecutionFee",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).GetExecutionFee(ctx, req.(*ExecutionFeeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "kira.gov.Query",
 	HandlerType: (*QueryServer)(nil),
@@ -700,9 +944,75 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 			MethodName: "CouncilorByMoniker",
 			Handler:    _Query_CouncilorByMoniker_Handler,
 		},
+		{
+			MethodName: "GetNetworkProperties",
+			Handler:    _Query_GetNetworkProperties_Handler,
+		},
+		{
+			MethodName: "GetExecutionFee",
+			Handler:    _Query_GetExecutionFee_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "query.proto",
+}
+
+func (m *NetworkPropertiesRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *NetworkPropertiesRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *NetworkPropertiesRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *NetworkPropertiesResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *NetworkPropertiesResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *NetworkPropertiesResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Properties != nil {
+		{
+			size, err := m.Properties.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *PermissionsByAddressRequest) Marshal() (dAtA []byte, err error) {
@@ -821,20 +1131,20 @@ func (m *RolesByAddressResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) 
 	var l int
 	_ = l
 	if len(m.Roles) > 0 {
-		dAtA3 := make([]byte, len(m.Roles)*10)
-		var j2 int
+		dAtA4 := make([]byte, len(m.Roles)*10)
+		var j3 int
 		for _, num := range m.Roles {
 			for num >= 1<<7 {
-				dAtA3[j2] = uint8(uint64(num)&0x7f | 0x80)
+				dAtA4[j3] = uint8(uint64(num)&0x7f | 0x80)
 				num >>= 7
-				j2++
+				j3++
 			}
-			dAtA3[j2] = uint8(num)
-			j2++
+			dAtA4[j3] = uint8(num)
+			j3++
 		}
-		i -= j2
-		copy(dAtA[i:], dAtA3[:j2])
-		i = encodeVarintQuery(dAtA, i, uint64(j2))
+		i -= j3
+		copy(dAtA[i:], dAtA4[:j3])
+		i = encodeVarintQuery(dAtA, i, uint64(j3))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -892,6 +1202,71 @@ func (m *RolePermissionsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	if m.Permissions != nil {
 		{
 			size, err := m.Permissions.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ExecutionFeeRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ExecutionFeeRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ExecutionFeeRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.ExecutionName) > 0 {
+		i -= len(m.ExecutionName)
+		copy(dAtA[i:], m.ExecutionName)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.ExecutionName)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ExecutionFeeResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ExecutionFeeResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ExecutionFeeResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Fee != nil {
+		{
+			size, err := m.Fee.MarshalToSizedBuffer(dAtA[:i])
 			if err != nil {
 				return 0, err
 			}
@@ -1008,6 +1383,28 @@ func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+func (m *NetworkPropertiesRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *NetworkPropertiesResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Properties != nil {
+		l = m.Properties.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
 func (m *PermissionsByAddressRequest) Size() (n int) {
 	if m == nil {
 		return 0
@@ -1088,6 +1485,32 @@ func (m *RolePermissionsResponse) Size() (n int) {
 	return n
 }
 
+func (m *ExecutionFeeRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.ExecutionName)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *ExecutionFeeResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Fee != nil {
+		l = m.Fee.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
 func (m *CouncilorByAddressRequest) Size() (n int) {
 	if m == nil {
 		return 0
@@ -1130,6 +1553,148 @@ func sovQuery(x uint64) (n int) {
 }
 func sozQuery(x uint64) (n int) {
 	return sovQuery(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
+func (m *NetworkPropertiesRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: NetworkPropertiesRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: NetworkPropertiesRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *NetworkPropertiesResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: NetworkPropertiesResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: NetworkPropertiesResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Properties", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Properties == nil {
+				m.Properties = &NetworkProperties{}
+			}
+			if err := m.Properties.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
 }
 func (m *PermissionsByAddressRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
@@ -1657,6 +2222,180 @@ func (m *RolePermissionsResponse) Unmarshal(dAtA []byte) error {
 				m.Permissions = &Permissions{}
 			}
 			if err := m.Permissions.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ExecutionFeeRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ExecutionFeeRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ExecutionFeeRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ExecutionName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ExecutionName = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ExecutionFeeResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ExecutionFeeResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ExecutionFeeResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Fee", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Fee == nil {
+				m.Fee = &ExecutionFee{}
+			}
+			if err := m.Fee.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

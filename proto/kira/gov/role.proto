@@ -117,16 +117,3 @@ message ExecutionFee {
   uint64 timeout = 5; // After what time function execution should fail
   uint64 default_parameters = 6; // Default values that the function in question will consume as input parameters before execution
 }
-
-message Councilor {
-  string moniker = 1;
-  string website = 2;
-  string social = 3;
-  string identity = 4;
-
-  bytes address = 5 [
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
-    (gogoproto.moretags) = "yaml:\"address\""
-  ];
-}
-

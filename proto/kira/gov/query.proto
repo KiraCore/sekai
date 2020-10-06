@@ -3,6 +3,7 @@ package kira.gov;
 
 import "actor.proto";
 import "councilor.proto";
+import "role.proto";
 import "gogoproto/gogo.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/gov/types";
@@ -19,7 +20,7 @@ service Query {
   rpc CouncilorByAddress (CouncilorByAddressRequest) returns (CouncilorResponse) {}
 
   rpc CouncilorByMoniker (CouncilorByMonikerRequest) returns (CouncilorResponse) {}
-  j
+
   rpc GetNetworkProperties (NetworkPropertiesRequest) returns (NetworkPropertiesResponse) {}
   rpc GetExecutionFee (ExecutionFeeRequest) returns (ExecutionFeeResponse) {}
 }

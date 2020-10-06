@@ -2,6 +2,7 @@ syntax = "proto3";
 package kira.gov;
 
 import "actor.proto";
+import "role.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/gov/types";
 
