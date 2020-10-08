@@ -35,10 +35,7 @@ func serveFaucetInfo(w http.ResponseWriter, r *http.Request, gwCosmosmux *runtim
 
 	response.Response = faucetInfo
 
-	w.Header().Add("Content-Type", "application/json")
-	w.WriteHeader(200)
-
-	WrapResponse(w, *response)
+	WrapResponse(w, *response, 200)
 }
 
 func serveFaucet(w http.ResponseWriter, r *http.Request, gwCosmosmux *runtime.ServeMux, rpcAddr string, bech32addr string, token string) {
@@ -127,7 +124,7 @@ func serveFaucet(w http.ResponseWriter, r *http.Request, gwCosmosmux *runtime.Se
 	memo := "Faucet Transfer"
 
 	sigs := make([]auth.StdSignature, 1)
-	signBytes := auth.StdSignBytes("testing", accountNumber, sequence, 0, fee, msgs, memo)
+	signBytes := auth.StdSignBytes(GetChainID(rpcAddr), accountNumber, sequence, 0, fee, msgs, memo)
 
 	sig, err := interx.FaucetCg.PrivKey.Sign(signBytes)
 	if err != nil {
@@ -177,10 +174,7 @@ func serveFaucet(w http.ResponseWriter, r *http.Request, gwCosmosmux *runtime.Se
 	// add new claim
 	database.AddNewClaim(bech32addr, time.Now())
 
-	w.Header().Add("Content-Type", "application/json")
-	w.WriteHeader(200)
-
-	WrapResponse(w, *response)
+	WrapResponse(w, *response, 200)
 }
 
 // FaucetRequest is a function to handle faucet service.

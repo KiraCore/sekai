@@ -31,11 +31,11 @@ func QueryStatusRequest(rpcAddr string) http.HandlerFunc {
 		r.Host = rpcAddr
 		r.URL.Path = "/status"
 
-		response, err := MakeGetRequest(w, rpcAddr, "/status", "")
+		response, statusCode, err := MakeGetRequest(w, rpcAddr, "/status", "")
 		if err != nil {
 			ServeError(w, rpcAddr, 0, "", err.Error(), http.StatusInternalServerError)
 		} else {
-			ServeRPC(w, response, rpcAddr)
+			ServeRPC(w, response, rpcAddr, statusCode)
 		}
 	}
 }
@@ -46,9 +46,6 @@ func QueryRPCMethods(rpcAddr string) http.HandlerFunc {
 		response := GetResponseFormat(rpcAddr)
 		response.Response = rpcMethods
 
-		w.Header().Add("Content-Type", "application/json")
-		w.WriteHeader(200)
-
-		WrapResponse(w, *response)
+		WrapResponse(w, *response, 200)
 	}
 }

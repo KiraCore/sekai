@@ -34,23 +34,20 @@ func AddRPCMethod(method string, url string, description string) {
 }
 
 // MakeGetRequest is a function to make GET request
-func MakeGetRequest(w http.ResponseWriter, rpcAddr string, url string, query string) (*RPCResponse, error) {
+func MakeGetRequest(w http.ResponseWriter, rpcAddr string, url string, query string) (*RPCResponse, int, error) {
 	resp, err := http.Get(fmt.Sprintf("%s%s?%s", rpcAddr, url, query))
 	if err != nil {
-		return nil, err
+		return nil, http.StatusInternalServerError, err
 	}
 	defer resp.Body.Close()
-
-	w.Header().Add("Content-Type", "application/json")
-	w.WriteHeader(resp.StatusCode)
 
 	result := new(RPCResponse)
 	err = json.NewDecoder(resp.Body).Decode(result)
 	if err != nil {
-		return nil, err
+		return nil, resp.StatusCode, err
 	}
 
-	return result, nil
+	return result, resp.StatusCode, nil
 }
 
 func makePostRequest(w http.ResponseWriter, r *http.Request) (*RPCResponse, error) {
@@ -142,12 +139,26 @@ func GetResponseSignature(response ProxyResponse) (string, string) {
 }
 
 // WrapResponse is a function to wrap response
-func WrapResponse(w http.ResponseWriter, response ProxyResponse) {
+func WrapResponse(w http.ResponseWriter, response ProxyResponse, statusCode int) {
+	w.Header().Add("Content-Type", "application/json")
+
+	w.Header().Add("Interx_chain_id", response.Chainid)
+	w.Header().Add("Interx_block", strconv.FormatInt(response.Block, 10))
+	w.Header().Add("Interx_blocktime", response.Blocktime)
+	w.Header().Add("Interx_timestamp", strconv.FormatInt(response.Timestamp, 10))
+
 	if response.Response != nil {
 		response.Signature, response.Hash = GetResponseSignature(response)
-	}
 
-	json.NewEncoder(w).Encode(response)
+		w.Header().Add("Interx_signature", response.Signature)
+		w.Header().Add("Interx_hash", response.Hash)
+		w.WriteHeader(statusCode)
+
+		json.NewEncoder(w).Encode(response.Response)
+	} else {
+		w.WriteHeader(statusCode)
+		json.NewEncoder(w).Encode(response.Error)
+	}
 }
 
 // ServeGRPC is a function to server GRPC
@@ -167,19 +178,16 @@ func ServeGRPC(w http.ResponseWriter, r *http.Request, gwCosmosmux *runtime.Serv
 		}
 	}
 
-	w.Header().Add("Content-Type", "application/json")
-	w.WriteHeader(resp.StatusCode)
-
-	WrapResponse(w, *response)
+	WrapResponse(w, *response, resp.StatusCode)
 }
 
 // ServeRPC is a function to server RPC
-func ServeRPC(w http.ResponseWriter, result *RPCResponse, rpcAddr string) {
+func ServeRPC(w http.ResponseWriter, result *RPCResponse, rpcAddr string, statusCode int) {
 	response := GetResponseFormat(rpcAddr)
 	response.Response = result.Result
 	response.Error = result.Error
 
-	WrapResponse(w, *response)
+	WrapResponse(w, *response, statusCode)
 }
 
 // ServeError is a function to server GRPC
@@ -193,10 +201,7 @@ func ServeError(w http.ResponseWriter, rpcAddr string, code int, data string, me
 		Message: message,
 	}
 
-	w.Header().Add("Content-Type", "application/json")
-	w.WriteHeader(statusCode)
-
-	WrapResponse(w, *response)
+	WrapResponse(w, *response, statusCode)
 }
 
 // GetAccountBalances is a function to get balances of an address
@@ -270,4 +275,9 @@ func BroadcastTransaction(rpcAddr string, txBytes []byte) (interface{}, error) {
 	}
 
 	return result, nil
+}
+
+// GetChainID is a function to get ChainID
+func GetChainID(rpcAddr string) string {
+	return GetResponseFormat(rpcAddr).Chainid
 }
