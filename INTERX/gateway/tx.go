@@ -83,11 +83,11 @@ func PostTxRequest(rpcAddr string) http.HandlerFunc {
 			return
 		}
 
-		response, err := MakeGetRequest(w, rpcAddr, url, fmt.Sprintf("tx=0x%X", txBytes))
+		response, statusCode, err := MakeGetRequest(w, rpcAddr, url, fmt.Sprintf("tx=0x%X", txBytes))
 		if err != nil {
 			ServeError(w, rpcAddr, 0, "", err.Error(), http.StatusInternalServerError)
 		} else {
-			ServeRPC(w, response, rpcAddr)
+			ServeRPC(w, response, rpcAddr, statusCode)
 		}
 	}
 }
@@ -103,11 +103,11 @@ func QueryTxHashRequest(rpcAddr string) http.HandlerFunc {
 		queries := mux.Vars(r)
 		hash := queries["hash"]
 
-		response, err := MakeGetRequest(w, rpcAddr, "/tx", fmt.Sprintf("hash=%s", hash))
+		response, statusCode, err := MakeGetRequest(w, rpcAddr, "/tx", fmt.Sprintf("hash=%s", hash))
 		if err != nil {
 			ServeError(w, rpcAddr, 0, "", err.Error(), http.StatusInternalServerError)
 		} else {
-			ServeRPC(w, response, rpcAddr)
+			ServeRPC(w, response, rpcAddr, statusCode)
 		}
 	}
 }
