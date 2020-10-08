@@ -11,6 +11,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/KiraCore/sekai/x/tokens/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // flags for tokens module txs
@@ -102,7 +103,11 @@ func GetTxUpsertTokenAliasCmd() *cobra.Command {
 			}
 
 			denoms := strings.Split(denomsString, ",")
-			// TODO should do validation for denom regex
+			for _, denom := range denoms {
+				if err = sdk.ValidateDenom(denom); err != nil {
+					return err
+				}
+			}
 
 			status := types.ProposalStatus_undefined
 
