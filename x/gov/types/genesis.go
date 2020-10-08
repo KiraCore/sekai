@@ -1,5 +1,9 @@
 package types
 
+import (
+	tokentypes "github.com/KiraCore/sekai/x/tokens/types"
+)
+
 // DefaultGenesis returns the default CustomGo genesis state
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
@@ -55,6 +59,14 @@ func DefaultGenesis() *GenesisState {
 			{
 				Name:              "Veto Proposal Type X",
 				TransactionType:   "B",
+				ExecutionFee:      10,
+				FailureFee:        1,
+				Timeout:           10,
+				DefaultParameters: 0,
+			},
+			{
+				Name:              "Upsert Token Alias Execution Fee",
+				TransactionType:   tokentypes.UpsertTokenAlias,
 				ExecutionFee:      10,
 				FailureFee:        1,
 				Timeout:           10,
