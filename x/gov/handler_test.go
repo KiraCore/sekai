@@ -1204,6 +1204,14 @@ func TestHandler_ProposalAssignPermission(t *testing.T) {
 	id, err := app.CustomGovKeeper.GetNextProposalID(ctx)
 	require.NoError(t, err)
 	require.Equal(t, uint64(2), id)
+
+	// Is not on finished active proposals.
+	iterator := app.CustomGovKeeper.GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx, ctx.BlockTime())
+	require.False(t, iterator.Valid())
+
+	ctx = ctx.WithBlockTime(ctx.BlockTime().Add(time.Minute * 10))
+	iterator = app.CustomGovKeeper.GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx, ctx.BlockTime())
+	require.True(t, iterator.Valid())
 }
 
 func TestHandler_VoteProposal_Errors(t *testing.T) {
