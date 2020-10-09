@@ -8,6 +8,7 @@ import (
 	fmt "fmt"
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/gogo/protobuf/gogoproto"
+	grpc1 "github.com/gogo/protobuf/grpc"
 	proto "github.com/gogo/protobuf/proto"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
@@ -678,10 +679,10 @@ type QueryClient interface {
 }
 
 type queryClient struct {
-	cc *grpc.ClientConn
+	cc grpc1.ClientConn
 }
 
-func NewQueryClient(cc *grpc.ClientConn) QueryClient {
+func NewQueryClient(cc grpc1.ClientConn) QueryClient {
 	return &queryClient{cc}
 }
 
@@ -788,7 +789,7 @@ func (*UnimplementedQueryServer) CouncilorByMoniker(ctx context.Context, req *Co
 	return nil, status.Errorf(codes.Unimplemented, "method CouncilorByMoniker not implemented")
 }
 
-func RegisterQueryServer(s *grpc.Server, srv QueryServer) {
+func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
 	s.RegisterService(&_Query_serviceDesc, srv)
 }
 
