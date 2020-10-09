@@ -124,5 +124,9 @@ fee:
   transaction_type: A
 ```
 
+## Upsert token alias
+```sh
+sekaid tx tokens upsert-alias --from validator --keyring-backend=test --expiration=0 --enactment=0 --allowed_vote_types=0,1 --symbol="KEX" --name="Kira" --icon="myiconurl" --decimals=6 --denoms="ukex" --chain-id=testing --fees=100ukex --home=$HOME/.sekaid
+```
 ---
 `dev` branch

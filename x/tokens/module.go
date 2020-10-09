@@ -50,6 +50,7 @@ func (b AppModuleBasic) RegisterGRPCRoutes(context client.Context, serveMux *run
 }
 
 func (b AppModuleBasic) RegisterLegacyAminoCodec(amino *codec.LegacyAmino) {
+	tokenstypes.RegisterCodec(amino)
 }
 
 func (b AppModuleBasic) GetTxCmd() *cobra.Command {
