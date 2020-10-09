@@ -1,7 +1,8 @@
 package types
 
-import (
-	tokentypes "github.com/KiraCore/sekai/x/tokens/types"
+// special messages managed by governance
+const (
+	UpsertTokenAlias = "upsert-token-alias"
 )
 
 // DefaultGenesis returns the default CustomGo genesis state
@@ -66,7 +67,7 @@ func DefaultGenesis() *GenesisState {
 			},
 			{
 				Name:              "Upsert Token Alias Execution Fee",
-				TransactionType:   tokentypes.UpsertTokenAlias,
+				TransactionType:   UpsertTokenAlias,
 				ExecutionFee:      10,
 				FailureFee:        1,
 				Timeout:           10,

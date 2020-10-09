@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -45,6 +47,17 @@ func (k Keeper) UpsertTokenAlias(ctx sdk.Context, alias types.TokenAlias) error 
 	// we use symbol of TokenAlias as an ID inside KVStore storage
 	tokenAliasStoreID := append([]byte(PrefixKeyTokenAlias), []byte(alias.Symbol)...)
 
+	for _, denom := range alias.Denoms {
+		denomTokenStoreID := append([]byte(PrefixKeyDenomToken), []byte(denom)...)
+
+		if store.Has(denomTokenStoreID) {
+			symbol := string(store.Get(denomTokenStoreID))
+			if symbol != alias.Symbol {
+				return fmt.Errorf("%s denom is already registered for %s token alias", denom, symbol)
+			}
+		}
+		store.Set(denomTokenStoreID, []byte(alias.Symbol))
+	}
 	store.Set(tokenAliasStoreID, k.cdc.MustMarshalBinaryBare(&alias))
 	return nil
 }
@@ -54,6 +67,19 @@ func (k Keeper) DeleteTokenAlias(ctx sdk.Context, symbol string) error {
 	store := ctx.KVStore(k.storeKey)
 	// we use symbol of TokenAlias as an ID inside KVStore storage
 	tokenAliasStoreID := append([]byte(PrefixKeyTokenAlias), []byte(symbol)...)
+
+	if !store.Has(tokenAliasStoreID) {
+		return fmt.Errorf("no alias is available for %s symbol", symbol)
+	}
+
+	var alias types.TokenAlias
+	bz := store.Get(tokenAliasStoreID)
+	k.cdc.MustUnmarshalBinaryBare(bz, &alias)
+
+	for _, denom := range alias.Denoms {
+		denomTokenStoreID := append([]byte(PrefixKeyDenomToken), []byte(denom)...)
+		store.Delete(denomTokenStoreID)
+	}
 
 	store.Delete(tokenAliasStoreID)
 	return nil

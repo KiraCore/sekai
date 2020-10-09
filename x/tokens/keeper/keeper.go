@@ -7,7 +7,8 @@ import (
 
 // store prefixes
 var (
-	PrefixKeyTokenAlias = []byte("token_registry")
+	PrefixKeyTokenAlias = []byte("token_alias_registry")
+	PrefixKeyDenomToken = []byte("denom_token_registry")
 )
 
 // Keeper is for managing token aliases
