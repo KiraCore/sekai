@@ -2,5 +2,5 @@ package gov
 
 import "testing"
 
-func TestEndBlocker(t *testing.T) {
+func TestEndBlocker_ItIsQuorum(t *testing.T) {
 }

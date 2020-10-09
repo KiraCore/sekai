@@ -103,3 +103,48 @@ func TestKeeper_AddProposalToActiveQueue(t *testing.T) {
 
 	require.Equal(t, 2, totalIdsFound)
 }
+
+func TestKeeper_GetProposalVotesIterator(t *testing.T) {
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, types2.TokensFromConsensusPower(10))
+	addr1 := addrs[0]
+	addr2 := addrs[1]
+
+	proposal1 := types.NewProposalAssignPermission(1, addr1, types.PermSetPermissions, time.Now(), time.Now().Add(1*time.Second))
+	proposal2 := types.NewProposalAssignPermission(2, addr2, types.PermClaimCouncilor, time.Now(), time.Now().Add(1*time.Second))
+
+	err := app.CustomGovKeeper.SaveProposal(ctx, proposal1)
+	require.NoError(t, err)
+	err = app.CustomGovKeeper.SaveProposal(ctx, proposal2)
+	require.NoError(t, err)
+
+	// 1st proposal has 2 votes
+	vote1 := types.NewVote(proposal1.ProposalId, addr1, types.OptionYes)
+	vote2 := types.NewVote(proposal1.ProposalId, addr2, types.OptionYes)
+	app.CustomGovKeeper.SaveVote(ctx, vote1)
+	app.CustomGovKeeper.SaveVote(ctx, vote2)
+
+	// 2nd proposal has 1 vote
+	v1 := types.NewVote(proposal2.ProposalId, addr1, types.OptionYes)
+	app.CustomGovKeeper.SaveVote(ctx, v1)
+
+	// We iterate the 1st proposal
+	iterator := app.CustomGovKeeper.GetProposalVotesIterator(ctx, proposal1.ProposalId)
+	require.True(t, iterator.Valid())
+	totalVotes := 0
+	for ; iterator.Valid(); iterator.Next() {
+		totalVotes++
+	}
+	require.Equal(t, 2, totalVotes)
+
+	// We iterate the 2nd proposal
+	iterator = app.CustomGovKeeper.GetProposalVotesIterator(ctx, proposal2.ProposalId)
+	require.True(t, iterator.Valid())
+	totalVotes = 0
+	for ; iterator.Valid(); iterator.Next() {
+		totalVotes++
+	}
+	require.Equal(t, 1, totalVotes)
+}

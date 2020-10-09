@@ -3,8 +3,6 @@ package keeper
 import (
 	"time"
 
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
 	sdktypes "github.com/cosmos/cosmos-sdk/x/gov/types"
@@ -77,12 +75,17 @@ func (k Keeper) GetVote(ctx sdk.Context, proposalID uint64, address sdk.AccAddre
 	return vote, true
 }
 
+func (k Keeper) GetProposalVotesIterator(ctx sdk.Context, proposalID uint64) sdk.Iterator {
+	store := ctx.KVStore(k.storeKey)
+	return sdk.KVStorePrefixIterator(store, VotesKey(proposalID))
+}
+
 func (k Keeper) AddToActiveProposals(ctx sdk.Context, proposal types.ProposalAssignPermission) {
 	store := ctx.KVStore(k.storeKey)
 	store.Set(ActiveProposalKey(proposal), GetProposalIDBytes(proposal.ProposalId))
 }
 
-func (k Keeper) GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx sdk.Context, endTime time.Time) storetypes.Iterator {
+func (k Keeper) GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx sdk.Context, endTime time.Time) sdk.Iterator {
 	store := ctx.KVStore(k.storeKey)
 	return store.Iterator(ActiveProposalsPrefix, sdk.PrefixEndBytes(ActiveProposalByTimeKey(endTime)))
 }
