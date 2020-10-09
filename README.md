@@ -131,5 +131,29 @@ sekaid tx customgov set-whitelist-permissions --from validator --keyring-backend
 # run upsert alias
 sekaid tx tokens upsert-alias --from validator --keyring-backend=test --expiration=0 --enactment=0 --allowed_vote_types=0,1 --symbol="KEX" --name="Kira" --icon="myiconurl" --decimals=6 --denoms="ukex" --chain-id=testing --fees=100ukex --home=$HOME/.sekaid
 ```
+# Query token alias
+```sh
+# command
+sekaid query alias KEX
+# response
+allowed_vote_types:
+- "yes"
+- "no"
+decimals: 6
+denoms:
+- ukex
+enactment: 0
+expiration: 0
+icon: myiconurl
+name: Kira
+status: undefined
+symbol: KEX
+```
+```sh
+# command
+sekaid query alias KE
+# response
+Error: KE symbol does not exist
+```
 ---
 `dev` branch
