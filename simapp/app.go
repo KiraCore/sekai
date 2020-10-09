@@ -357,7 +357,7 @@ func NewSimApp(
 		ibc.NewAppModule(app.IBCKeeper),
 		params.NewAppModule(app.ParamsKeeper),
 		customgov.NewAppModule(app.CustomGovKeeper),
-		tokens.NewAppModule(app.TokensKeeper),
+		tokens.NewAppModule(app.TokensKeeper, app.CustomGovKeeper),
 		transferModule,
 	)
 

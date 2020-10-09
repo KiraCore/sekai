@@ -30,8 +30,8 @@ import (
 
 	cumstomtypes "github.com/KiraCore/sekai/x/staking/types"
 
-	customstaking "github.com/KiraCore/sekai/x/staking"
 	customante "github.com/KiraCore/sekai/app/ante"
+	customstaking "github.com/KiraCore/sekai/x/staking"
 
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 
@@ -345,7 +345,7 @@ func NewInitApp(
 		transferModule,
 		customstaking.NewAppModule(app.customStakingKeeper, app.customGovKeeper),
 		customgov.NewAppModule(app.customGovKeeper),
-		tokens.NewAppModule(app.tokensKeeper),
+		tokens.NewAppModule(app.tokensKeeper, app.customGovKeeper),
 	)
 	// During begin block slashing happens after distr.BeginBlocker so that
 	// there is nothing left over in the validator fee pool, so as to keep the

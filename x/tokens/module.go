@@ -124,8 +124,10 @@ func (am AppModule) RegisterQueryService(server grpc.Server) {
 // NewAppModule returns a new Custom Staking module.
 func NewAppModule(
 	keeper keeper2.Keeper,
+	customGovKeeper tokenstypes.CustomGovKeeper,
 ) AppModule {
 	return AppModule{
-		aliasKeeper: keeper,
+		aliasKeeper:     keeper,
+		customGovKeeper: customGovKeeper,
 	}
 }
