@@ -1,6 +1,9 @@
 package tokens_test
 
 import (
+	"bytes"
+	"strconv"
+	"strings"
 	"testing"
 
 	"github.com/KiraCore/sekai/simapp"
@@ -12,6 +15,20 @@ import (
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
+
+func NewAccountByIndex(accNum int) sdk.AccAddress {
+	var buffer bytes.Buffer
+	i := accNum + 100
+	numString := strconv.Itoa(i)
+	buffer.WriteString("A58856F0FD53BF058B4909A21AEC019107BA6") //base address string
+
+	buffer.WriteString(numString) //adding on final two digits to make addresses unique
+	res, _ := sdk.AccAddressFromHex(buffer.String())
+	bech := res.String()
+	addr, _ := simapp.TestAddr(buffer.String(), bech)
+	buffer.Reset()
+	return addr
+}
 
 func setPermissionToAddr(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addr sdk.AccAddress, perm types.PermValue) error {
 	proposerActor := customgovtypes.NewDefaultActor(addr)
@@ -37,17 +54,17 @@ func TestNewHandler_MsgUpsertTokenAlias(t *testing.T) {
 		{
 			name: "good permission test",
 			constructor: func(addr sdk.AccAddress) (*tokenstypes.MsgUpsertTokenAlias, error) {
-				err := setPermissionToAddr(t, app, ctx, addr, types.PermSetPermissions)
+				err := setPermissionToAddr(t, app, ctx, addr, types.PermUpsertTokenAlias)
 				require.NoError(t, err)
 				return tokenstypes.NewMsgUpsertTokenAlias(
 					addr,
 					0, 0,
 					[]tokenstypes.VoteType{tokenstypes.VoteType_no, tokenstypes.VoteType_yes},
-					"ukex",
-					"Kira",
+					"ETH",
+					"Ethereum",
 					"icon",
 					6,
-					[]string{"ukex"},
+					[]string{"finney"},
 					tokenstypes.ProposalStatus_active,
 				), nil
 			},
@@ -59,14 +76,15 @@ func TestNewHandler_MsgUpsertTokenAlias(t *testing.T) {
 					addr,
 					0, 0,
 					[]tokenstypes.VoteType{tokenstypes.VoteType_no, tokenstypes.VoteType_yes},
-					"ukex",
-					"Kira",
+					"ETH",
+					"Ethereum",
 					"icon",
 					6,
-					[]string{"ukex"},
+					[]string{"finney"},
 					tokenstypes.ProposalStatus_active,
 				), nil
 			},
+			handlerErr: "PermUpsertTokenAlias: not enough permissions",
 		},
 	}
 	for i, tt := range tests {
@@ -80,6 +98,20 @@ func TestNewHandler_MsgUpsertTokenAlias(t *testing.T) {
 			require.Contains(t, err.Error(), tt.handlerErr)
 		} else {
 			require.NoError(t, err)
+
+			// test various query commands
+			alias := app.TokensKeeper.GetTokenAlias(ctx, theMsg.Symbol)
+			require.True(t, alias != nil)
+			aliasesAll := app.TokensKeeper.ListTokenAlias(ctx)
+			require.True(t, len(aliasesAll) > 0)
+			aliasesByDenom := app.TokensKeeper.GetTokenAliasesByDenom(ctx, theMsg.Denoms)
+			require.True(t, aliasesByDenom[theMsg.Denoms[0]] != nil)
+
+			// try different alias for same denom
+			theMsg.Symbol += "V2"
+			_, err = handler(ctx, theMsg)
+			require.Error(t, err)
+			require.True(t, strings.Contains(err.Error(), "denom is already registered"))
 		}
 	}
 }

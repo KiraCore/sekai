@@ -28,7 +28,7 @@ func handleUpsertTokenAlias(ctx sdk.Context, ck keeper.Keeper, cgk types.CustomG
 		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermUpsertTokenAlias")
 	}
 
-	ck.UpsertTokenAlias(ctx, *types.NewTokenAlias(
+	err := ck.UpsertTokenAlias(ctx, *types.NewTokenAlias(
 		msg.Expiration,
 		msg.Enactment,
 		msg.AllowedVoteTypes,
@@ -39,5 +39,5 @@ func handleUpsertTokenAlias(ctx sdk.Context, ck keeper.Keeper, cgk types.CustomG
 		msg.Denoms,
 		msg.Status,
 	))
-	return &sdk.Result{}, nil
+	return &sdk.Result{}, err
 }
