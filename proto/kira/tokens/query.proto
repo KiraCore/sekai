@@ -9,6 +9,8 @@ option go_package = "github.com/KiraCore/sekai/x/tokens/types";
 service Query {
   // Returns the token alias
   rpc GetTokenAlias (TokenAliasRequest) returns (TokenAliasResponse) {}
+  rpc GetAllTokenAliases (AllTokenAliasesRequest) returns (AllTokenAliasesResponse) {}
+  rpc GetTokenAliasesByDenom (TokenAliasesByDenomRequest) returns (TokenAliasesByDenomResponse) {}
 }
 
 message TokenAliasRequest {
@@ -17,4 +19,18 @@ message TokenAliasRequest {
 
 message TokenAliasResponse {
   kira.tokens.TokenAlias data = 1;
+}
+
+message AllTokenAliasesRequest {}
+
+message AllTokenAliasesResponse {
+  repeated kira.tokens.TokenAlias data = 1;
+}
+
+message TokenAliasesByDenomRequest {
+  repeated string denoms = 1;
+}
+  
+message TokenAliasesByDenomResponse {
+  map<string, kira.tokens.TokenAlias> data = 1;
 }
