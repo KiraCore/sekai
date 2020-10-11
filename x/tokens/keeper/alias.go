@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -24,21 +25,41 @@ func (k Keeper) GetTokenAlias(ctx sdk.Context, symbol string) *types.TokenAlias 
 }
 
 // ListTokenAlias returns all list of token alias
-func (k Keeper) ListTokenAlias(ctx sdk.Context) []types.TokenAlias {
-	var tokenAliases []types.TokenAlias
+func (k Keeper) ListTokenAlias(ctx sdk.Context) []*types.TokenAlias {
+	var tokenAliases []*types.TokenAlias
 
 	// get iterator for token aliases
 	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, []byte(PrefixKeyTokenAlias))
+	iterator := sdk.KVStorePrefixIterator(store, PrefixKeyTokenAlias)
 
 	for ; iterator.Valid(); iterator.Next() {
-		symbol := string(iterator.Key())
+		symbol := strings.TrimPrefix(string(iterator.Key()), string(PrefixKeyTokenAlias))
 		tokenAlias := k.GetTokenAlias(ctx, symbol)
 		if tokenAlias != nil {
-			tokenAliases = append(tokenAliases, *tokenAlias)
+			tokenAliases = append(tokenAliases, tokenAlias)
 		}
 	}
 	return tokenAliases
+}
+
+// GetTokenAliasesByDenom returns all list of token alias
+func (k Keeper) GetTokenAliasesByDenom(ctx sdk.Context, denoms []string) map[string]*types.TokenAlias {
+	// get iterator for token aliases
+	store := ctx.KVStore(k.storeKey)
+	tokenAliasesMap := make(map[string]*types.TokenAlias)
+	fmt.Println("GetTokenAliasesByDenom start")
+
+	for _, denom := range denoms {
+		denomTokenStoreID := append([]byte(PrefixKeyDenomToken), []byte(denom)...)
+		fmt.Println("GetTokenAliasesByDenom tokenAlias", denom)
+
+		if store.Has(denomTokenStoreID) {
+			symbol := string(store.Get(denomTokenStoreID))
+			tokenAlias := k.GetTokenAlias(ctx, symbol)
+			tokenAliasesMap[denom] = tokenAlias
+		}
+	}
+	return tokenAliasesMap
 }
 
 // UpsertTokenAlias upsert a token alias to the registry

@@ -127,14 +127,14 @@ fee:
 ## Upsert token alias
 ```sh
 # set PermUpsertTokenAlias(10) permission to validator address
-sekaid tx customgov set-whitelist-permissions --from validator --keyring-backend=test --permission=10 --addr=$(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --chain-id=testing --fees=100ukex --home=$HOME/.sekaid
+sekaid tx customgov set-whitelist-permissions --from validator --keyring-backend=test --permission=10 --addr=$(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --chain-id=testing --fees=100ukex --home=$HOME/.sekaid <<< y
 # run upsert alias
-sekaid tx tokens upsert-alias --from validator --keyring-backend=test --expiration=0 --enactment=0 --allowed_vote_types=0,1 --symbol="KEX" --name="Kira" --icon="myiconurl" --decimals=6 --denoms="ukex" --chain-id=testing --fees=100ukex --home=$HOME/.sekaid
+sekaid tx tokens upsert-alias --from validator --keyring-backend=test --expiration=0 --enactment=0 --allowed_vote_types=0,1 --symbol="KEX" --name="Kira" --icon="myiconurl" --decimals=6 --denoms="ukex" --chain-id=testing --fees=100ukex --home=$HOME/.sekaid  <<< y
 ```
 # Query token alias
 ```sh
 # command
-sekaid query alias KEX
+sekaid query tokens alias KEX
 # response
 allowed_vote_types:
 - "yes"
@@ -151,9 +151,45 @@ symbol: KEX
 ```
 ```sh
 # command
-sekaid query alias KE
+sekaid query tokens alias KE
 # response
 Error: KE symbol does not exist
+```
+```sh
+# command
+sekaid query tokens all-aliases --chain-id=testing --home=$HOME/.sekaid
+# response
+data:
+- allowed_vote_types:
+  - "yes"
+  - "no"
+  decimals: 6
+  denoms:
+  - ukex
+  enactment: 0
+  expiration: 0
+  icon: myiconurl
+  name: Kira
+  status: undefined
+  symbol: KEX
+
+# command
+sekaid query tokens aliases-by-denom ukex --chain-id=testing --home=$HOME/.sekaid
+# response
+data:
+  ukex:
+    allowed_vote_types:
+    - "yes"
+    - "no"
+    decimals: 6
+    denoms:
+    - ukex
+    enactment: 0
+    expiration: 0
+    icon: myiconurl
+    name: Kira
+    status: undefined
+    symbol: KEX
 ```
 ---
 `dev` branch

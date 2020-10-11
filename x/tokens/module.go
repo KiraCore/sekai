@@ -57,8 +57,20 @@ func (b AppModuleBasic) GetTxCmd() *cobra.Command {
 	return cli2.NewTxCmd()
 }
 
+// GetQueryCmd implement query commands for this module
 func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
-	return cli2.GetCmdQueryTokenAlias()
+	queryCmd := &cobra.Command{
+		Use:   tokenstypes.RouterKey,
+		Short: "query commands for the customgov module",
+	}
+	queryCmd.AddCommand(
+		cli2.GetCmdQueryTokenAlias(),
+		cli2.GetCmdQueryAllTokenAliases(),
+		cli2.GetCmdQueryTokenAliasesByDenom(),
+	)
+
+	queryCmd.PersistentFlags().String("node", "tcp://localhost:26657", "<host>:<port> to Tendermint RPC interface for this chain")
+	return queryCmd
 }
 
 // AppModule for tokens management
