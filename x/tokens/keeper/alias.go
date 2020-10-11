@@ -47,11 +47,9 @@ func (k Keeper) GetTokenAliasesByDenom(ctx sdk.Context, denoms []string) map[str
 	// get iterator for token aliases
 	store := ctx.KVStore(k.storeKey)
 	tokenAliasesMap := make(map[string]*types.TokenAlias)
-	fmt.Println("GetTokenAliasesByDenom start")
 
 	for _, denom := range denoms {
 		denomTokenStoreID := append([]byte(PrefixKeyDenomToken), []byte(denom)...)
-		fmt.Println("GetTokenAliasesByDenom tokenAlias", denom)
 
 		if store.Has(denomTokenStoreID) {
 			symbol := string(store.Get(denomTokenStoreID))
