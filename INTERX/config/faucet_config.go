@@ -40,7 +40,7 @@ func readFaucetConfig() FaucetConfig {
 
 	err := json.Unmarshal([]byte(file), &configFromFile)
 	if err != nil {
-		fmt.Println("Invalid configuration error: {}", err)
+		fmt.Println("Invalid configuration: {}", err)
 	}
 
 	config := FaucetConfig{
@@ -56,9 +56,9 @@ func readFaucetConfig() FaucetConfig {
 	config.Address = sdk.MustBech32ifyAddressBytes(sdk.GetConfig().GetBech32AccountAddrPrefix(), config.PubKey.Address())
 
 	// Display mnemonic and keys
-	fmt.Println("Mnemonic   : ", config.Mnemonic)
-	fmt.Println("Address    : ", config.Address)
-	fmt.Println("Public Key : ", sdk.MustBech32ifyPubKey(sdk.Bech32PubKeyTypeAccPub, config.PubKey))
+	fmt.Println("Faucet Mnemonic   : ", config.Mnemonic)
+	fmt.Println("Faucet Address    : ", config.Address)
+	fmt.Println("Faucet Public Key : ", sdk.MustBech32ifyPubKey(sdk.Bech32PubKeyTypeAccPub, config.PubKey))
 
 	return config
 }

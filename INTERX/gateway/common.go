@@ -3,7 +3,9 @@ package gateway
 import (
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"strconv"
@@ -34,7 +36,7 @@ func AddRPCMethod(method string, url string, description string) {
 }
 
 // MakeGetRequest is a function to make GET request
-func MakeGetRequest(w http.ResponseWriter, rpcAddr string, url string, query string) (*RPCResponse, int, error) {
+func MakeGetRequest(rpcAddr string, url string, query string) (*RPCResponse, int, error) {
 	resp, err := http.Get(fmt.Sprintf("%s%s?%s", rpcAddr, url, query))
 	if err != nil {
 		return nil, http.StatusInternalServerError, err
@@ -50,15 +52,12 @@ func MakeGetRequest(w http.ResponseWriter, rpcAddr string, url string, query str
 	return result, resp.StatusCode, nil
 }
 
-func makePostRequest(w http.ResponseWriter, r *http.Request) (*RPCResponse, error) {
+func makePostRequest(r *http.Request) (*RPCResponse, error) {
 	resp, err := http.PostForm(fmt.Sprintf("%s%s", r.Host, r.URL), r.Form)
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
-
-	w.Header().Add("Content-Type", "application/json")
-	w.WriteHeader(resp.StatusCode)
 
 	result := new(RPCResponse)
 	err = json.NewDecoder(resp.Body).Decode(result)
@@ -69,16 +68,31 @@ func makePostRequest(w http.ResponseWriter, r *http.Request) (*RPCResponse, erro
 	return result, nil
 }
 
+// GetInterxRequest is a function to get Interx Request
+func GetInterxRequest(r *http.Request) InterxRequest {
+	request := InterxRequest{}
+
+	request.Method = r.Method
+	request.Endpoint = fmt.Sprintf("%s", r.URL)
+	request.Params, _ = ioutil.ReadAll(r.Body)
+
+	return request
+}
+
 // GetResponseFormat is a function to get response format
-func GetResponseFormat(rpcAddr string) *ProxyResponse {
+func GetResponseFormat(request InterxRequest, rpcAddr string) *ProxyResponse {
 	response := new(ProxyResponse)
 	response.Timestamp = time.Now().Unix()
 
-	r, err := http.Get(fmt.Sprintf("%s/block", rpcAddr))
+	requestJSON, _ := json.Marshal(request)
+	hash := blake2b.Sum256([]byte(requestJSON))
+	response.RequestHash = fmt.Sprintf("%X", hash)
+
+	resp, err := http.Get(fmt.Sprintf("%s/block", rpcAddr))
 	if err != nil {
 		return response
 	}
-	defer r.Body.Close()
+	defer resp.Body.Close()
 
 	type RPCTempResponse struct {
 		Jsonrpc string `json:"jsonrpc"`
@@ -96,7 +110,7 @@ func GetResponseFormat(rpcAddr string) *ProxyResponse {
 	}
 
 	result := new(RPCTempResponse)
-	if json.NewDecoder(r.Body).Decode(result) != nil {
+	if json.NewDecoder(resp.Body).Decode(result) != nil {
 		return response
 	}
 
@@ -130,7 +144,7 @@ func GetResponseSignature(response ProxyResponse) (string, string) {
 	}
 
 	// Get Signature
-	signature, err := interx.PrivKey.Sign(signBytes)
+	signature, err := interx.InterxCg.PrivKey.Sign(signBytes)
 	if err != nil {
 		return "", responseHash
 	}
@@ -141,11 +155,11 @@ func GetResponseSignature(response ProxyResponse) (string, string) {
 // WrapResponse is a function to wrap response
 func WrapResponse(w http.ResponseWriter, response ProxyResponse, statusCode int) {
 	w.Header().Add("Content-Type", "application/json")
-
 	w.Header().Add("Interx_chain_id", response.Chainid)
 	w.Header().Add("Interx_block", strconv.FormatInt(response.Block, 10))
 	w.Header().Add("Interx_blocktime", response.Blocktime)
 	w.Header().Add("Interx_timestamp", strconv.FormatInt(response.Timestamp, 10))
+	w.Header().Add("Interx_request_hash", response.RequestHash)
 
 	if response.Response != nil {
 		response.Signature, response.Hash = GetResponseSignature(response)
@@ -162,12 +176,12 @@ func WrapResponse(w http.ResponseWriter, response ProxyResponse, statusCode int)
 }
 
 // ServeGRPC is a function to server GRPC
-func ServeGRPC(w http.ResponseWriter, r *http.Request, gwCosmosmux *runtime.ServeMux, rpcAddr string) {
+func ServeGRPC(w http.ResponseWriter, r *http.Request, gwCosmosmux *runtime.ServeMux, request InterxRequest, rpcAddr string) {
 	recorder := httptest.NewRecorder()
 	gwCosmosmux.ServeHTTP(recorder, r)
 	resp := recorder.Result()
 
-	response := GetResponseFormat(rpcAddr)
+	response := GetResponseFormat(request, rpcAddr)
 
 	result := new(interface{})
 	if json.NewDecoder(resp.Body).Decode(result) == nil {
@@ -182,8 +196,8 @@ func ServeGRPC(w http.ResponseWriter, r *http.Request, gwCosmosmux *runtime.Serv
 }
 
 // ServeRPC is a function to server RPC
-func ServeRPC(w http.ResponseWriter, result *RPCResponse, rpcAddr string, statusCode int) {
-	response := GetResponseFormat(rpcAddr)
+func ServeRPC(w http.ResponseWriter, request InterxRequest, result *RPCResponse, rpcAddr string, statusCode int) {
+	response := GetResponseFormat(request, rpcAddr)
 	response.Response = result.Result
 	response.Error = result.Error
 
@@ -191,8 +205,8 @@ func ServeRPC(w http.ResponseWriter, result *RPCResponse, rpcAddr string, status
 }
 
 // ServeError is a function to server GRPC
-func ServeError(w http.ResponseWriter, rpcAddr string, code int, data string, message string, statusCode int) {
-	response := GetResponseFormat(rpcAddr)
+func ServeError(w http.ResponseWriter, request InterxRequest, rpcAddr string, code int, data string, message string, statusCode int) {
+	response := GetResponseFormat(request, rpcAddr)
 
 	response.Response = nil
 	response.Error = ProxyResponseError{
@@ -261,23 +275,63 @@ func GetAccountNumberSequence(gwCosmosmux *runtime.ServeMux, r *http.Request, be
 	return uint64(accountNumber), uint64(sequence)
 }
 
-// BroadcastTransaction is a function to post transaction
-func BroadcastTransaction(rpcAddr string, txBytes []byte) (interface{}, error) {
+// BroadcastTransaction is a function to post transaction, returns txHash
+func BroadcastTransaction(rpcAddr string, txBytes []byte) (string, error) {
 	resp, err := http.Get(fmt.Sprintf("%s/broadcast_tx_commit?tx=0x%X", rpcAddr, txBytes))
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	defer resp.Body.Close()
 
-	result := new(RPCResponse)
-	if json.NewDecoder(resp.Body).Decode(result) != nil {
-		return nil, err
+	type RPCTempResponse struct {
+		Jsonrpc string `json:"jsonrpc"`
+		ID      int    `json:"id"`
+		Result  struct {
+			Hash string `json:"hash"`
+		} `json:"result,omitempty"`
+		Error struct {
+			Message string `json:"message"`
+		} `json:"error,omitempty"`
 	}
 
-	return result, nil
+	result := new(RPCTempResponse)
+	err = json.NewDecoder(resp.Body).Decode(result)
+	if err != nil {
+		return "", err
+	}
+
+	if resp.StatusCode != 200 {
+		return "", errors.New(result.Error.Message)
+	}
+
+	return result.Result.Hash, nil
 }
 
 // GetChainID is a function to get ChainID
 func GetChainID(rpcAddr string) string {
-	return GetResponseFormat(rpcAddr).Chainid
+	r, err := http.Get(fmt.Sprintf("%s/block", rpcAddr))
+	if err != nil {
+		return ""
+	}
+	defer r.Body.Close()
+
+	type RPCTempResponse struct {
+		Jsonrpc string `json:"jsonrpc"`
+		ID      int    `json:"id"`
+		Result  struct {
+			Block struct {
+				Header struct {
+					Chainid string `json:"chain_id"`
+				} `json:"header"`
+			} `json:"block"`
+		} `json:"result"`
+		Error interface{} `json:"error"`
+	}
+
+	result := new(RPCTempResponse)
+	if json.NewDecoder(r.Body).Decode(result) != nil {
+		return ""
+	}
+
+	return result.Result.Block.Header.Chainid
 }

@@ -27,20 +27,24 @@ func RegisterBankRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr st
 // QuerySupplyRequest is a function to query total supply.
 func QuerySupplyRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		request := GetInterxRequest(r)
+
 		if !rpcMethods[GET][queryTotalSupply].Enabled {
-			ServeError(w, rpcAddr, 0, "", "", http.StatusForbidden)
+			ServeError(w, request, rpcAddr, 0, "", "", http.StatusForbidden)
 			return
 		}
 
-		ServeGRPC(w, r, gwCosmosmux, rpcAddr)
+		ServeGRPC(w, r, gwCosmosmux, request, rpcAddr)
 	}
 }
 
 // QueryBalancesRequest is a function to query balances.
 func QueryBalancesRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		request := GetInterxRequest(r)
+
 		if !rpcMethods[GET][queryBalances].Enabled {
-			ServeError(w, rpcAddr, 0, "", "", http.StatusForbidden)
+			ServeError(w, request, rpcAddr, 0, "", "", http.StatusForbidden)
 			return
 		}
 
@@ -49,10 +53,10 @@ func QueryBalancesRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.Ha
 
 		addr, err := sdk.AccAddressFromBech32(bech32addr)
 		if err != nil {
-			ServeError(w, rpcAddr, 0, "", err.Error(), http.StatusBadRequest)
+			ServeError(w, request, rpcAddr, 0, "", err.Error(), http.StatusBadRequest)
 		} else {
 			r.URL.Path = fmt.Sprintf("/api/cosmos/bank/balances/%s", base64.URLEncoding.EncodeToString([]byte(addr)))
-			ServeGRPC(w, r, gwCosmosmux, rpcAddr)
+			ServeGRPC(w, r, gwCosmosmux, request, rpcAddr)
 		}
 	}
 }

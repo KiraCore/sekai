@@ -27,7 +27,9 @@ func RegisterFaucetRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr 
 }
 
 func serveFaucetInfo(w http.ResponseWriter, r *http.Request, gwCosmosmux *runtime.ServeMux, rpcAddr string) {
-	response := GetResponseFormat(rpcAddr)
+	request := GetInterxRequest(r)
+
+	response := GetResponseFormat(request, rpcAddr)
 
 	faucetInfo := FaucetAccountInfo{}
 	faucetInfo.Address = interx.FaucetCg.Address
@@ -39,27 +41,26 @@ func serveFaucetInfo(w http.ResponseWriter, r *http.Request, gwCosmosmux *runtim
 }
 
 func serveFaucet(w http.ResponseWriter, r *http.Request, gwCosmosmux *runtime.ServeMux, rpcAddr string, bech32addr string, token string) {
-	response := GetResponseFormat(rpcAddr)
-	// token := tokens[0]
+	request := GetInterxRequest(r)
 
 	// check address
 	faucetAccAddr, err := sdk.AccAddressFromBech32(interx.FaucetCg.Address)
 	if err != nil {
-		ServeError(w, rpcAddr, 0, "", fmt.Sprintf("internal server error: %s", err), http.StatusBadRequest)
+		ServeError(w, request, rpcAddr, 0, "", fmt.Sprintf("internal server error: %s", err), http.StatusBadRequest)
 		return
 	}
 
 	// check address
 	claimAccAddr, err := sdk.AccAddressFromBech32(bech32addr)
 	if err != nil {
-		ServeError(w, rpcAddr, 0, "", fmt.Sprintf("invalid address: %s", err), http.StatusBadRequest)
+		ServeError(w, request, rpcAddr, 0, "", fmt.Sprintf("invalid address: %s", err), http.StatusBadRequest)
 		return
 	}
 
 	// check claim limit
 	timeLeft := database.GetClaimTimeLeft(bech32addr)
 	if timeLeft > 0 {
-		ServeError(w, rpcAddr, 0, "", fmt.Sprintf("cliam limit: %d second(s) left", timeLeft), http.StatusBadRequest)
+		ServeError(w, request, rpcAddr, 0, "", fmt.Sprintf("cliam limit: %d second(s) left", timeLeft), http.StatusBadRequest)
 		return
 	}
 
@@ -89,22 +90,22 @@ func serveFaucet(w http.ResponseWriter, r *http.Request, gwCosmosmux *runtime.Se
 	faucetAmount, ok := interx.FaucetCg.FaucetAmounts[token]               // X
 	faucetMininumAmount, ok := interx.FaucetCg.FaucetMinimumAmounts[token] // M
 	if !ok {
-		ServeError(w, rpcAddr, 0, "", "invalid token", http.StatusBadRequest)
+		ServeError(w, request, rpcAddr, 0, "", "invalid token", http.StatusBadRequest)
 		return
 	}
 
 	if faucetAmount <= claimAmount {
-		ServeError(w, rpcAddr, 0, "", "no need to send tokens", http.StatusBadRequest)
+		ServeError(w, request, rpcAddr, 0, "", "no need to send tokens", http.StatusBadRequest)
 		return
 	}
 
 	if faucetAmount-claimAmount <= faucetMininumAmount {
-		ServeError(w, rpcAddr, 0, "", "can't send tokens, less than minimum amount", http.StatusBadRequest)
+		ServeError(w, request, rpcAddr, 0, "", "can't send tokens, less than minimum amount", http.StatusBadRequest)
 		return
 	}
 
 	if faucetAmount-claimAmount > availableAmount-faucetMininumAmount {
-		ServeError(w, rpcAddr, 0, "", "not enough tokens", http.StatusBadRequest)
+		ServeError(w, request, rpcAddr, 0, "", "not enough tokens", http.StatusBadRequest)
 		return
 	}
 
@@ -138,19 +139,21 @@ func serveFaucet(w http.ResponseWriter, r *http.Request, gwCosmosmux *runtime.Se
 	txBuilder := interx.EncodingCg.TxConfig.NewTxBuilder()
 	err = txBuilder.SetMsgs(stdTx.GetMsgs()...)
 	if err != nil {
-		ServeError(w, rpcAddr, 0, "failed to set TX Msgs", err.Error(), http.StatusBadRequest)
+		ServeError(w, request, rpcAddr, 0, "failed to set TX Msgs", err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	sigV2, err := stdTx.GetSignaturesV2()
 	if err != nil {
-		ServeError(w, rpcAddr, 0, "failed to get SignaturesV2", err.Error(), http.StatusBadRequest)
+		ServeError(w, request, rpcAddr, 0, "failed to get SignaturesV2", err.Error(), http.StatusBadRequest)
 		return
 	}
 
+	sigV2[0].Sequence = sequence
+
 	err = txBuilder.SetSignatures(sigV2...)
 	if err != nil {
-		ServeError(w, rpcAddr, 0, "failed to set Signatures", err.Error(), http.StatusBadRequest)
+		ServeError(w, request, rpcAddr, 0, "failed to set Signatures", err.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -160,20 +163,25 @@ func serveFaucet(w http.ResponseWriter, r *http.Request, gwCosmosmux *runtime.Se
 
 	txBytes, err := interx.EncodingCg.TxConfig.TxEncoder()(txBuilder.GetTx())
 	if err != nil {
-		ServeError(w, rpcAddr, 0, "failed to get TX bytes", err.Error(), http.StatusBadRequest)
+		ServeError(w, request, rpcAddr, 0, "failed to get TX bytes", err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	// send tokens
-	response.Response, err = BroadcastTransaction(rpcAddr, txBytes)
+	txHash, err := BroadcastTransaction(rpcAddr, txBytes)
 	if err != nil {
-		ServeError(w, rpcAddr, 0, "", err.Error(), http.StatusInternalServerError)
+		ServeError(w, request, rpcAddr, 0, "", err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	// add new claim
 	database.AddNewClaim(bech32addr, time.Now())
 
+	response := GetResponseFormat(request, rpcAddr)
+	type FaucetResponse struct {
+		Hash string `json:"hash"`
+	}
+	response.Response = FaucetResponse{Hash: txHash}
 	WrapResponse(w, *response, 200)
 }
 
@@ -189,7 +197,7 @@ func FaucetRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.HandlerFu
 		} else if len(claims) == 1 && len(tokens) == 1 {
 			serveFaucet(w, r, gwCosmosmux, rpcAddr, claims[0], tokens[0])
 		} else {
-			ServeError(w, rpcAddr, 0, "", "invalid query parameters", http.StatusBadRequest)
+			ServeError(w, GetInterxRequest(r), rpcAddr, 0, "", "invalid query parameters", http.StatusBadRequest)
 		}
 	}
 }
