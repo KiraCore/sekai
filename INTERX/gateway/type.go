@@ -17,14 +17,15 @@ type ProxyResponseError struct {
 
 // ProxyResponse is a struct to be used for proxy response
 type ProxyResponse struct {
-	Chainid   string      `json:"chain_id"`
-	Block     int64       `json:"block"`
-	Blocktime string      `json:"block_time"`
-	Timestamp int64       `json:"timestamp"`
-	Response  interface{} `json:"response,omitempty"`
-	Error     interface{} `json:"error,omitempty"`
-	Signature string      `json:"signature,omitempty"`
-	Hash      string      `json:"hash,omitempty"`
+	Chainid     string      `json:"chain_id"`
+	Block       int64       `json:"block"`
+	Blocktime   string      `json:"block_time"`
+	Timestamp   int64       `json:"timestamp"`
+	Response    interface{} `json:"response,omitempty"`
+	Error       interface{} `json:"error,omitempty"`
+	Signature   string      `json:"signature,omitempty"`
+	Hash        string      `json:"hash,omitempty"`
+	RequestHash string      `json:"request_hash,omitempty"`
 }
 
 // ResponseSign is a struct to be used for response sign
@@ -54,6 +55,13 @@ type RPCMethod struct {
 	Enabled       bool    `json:"enabled"`
 	RateLimit     float64 `json:"rate_limit,omitempty"`
 	AuthRateLimit float64 `json:"auth_rate_limit,omitempty"`
+}
+
+// InterxRequest is a struct to be used for request hash
+type InterxRequest struct {
+	Method   string `json:"method"`
+	Endpoint string `json:"endpoint"`
+	Params   []byte `json:"params"`
 }
 
 const (

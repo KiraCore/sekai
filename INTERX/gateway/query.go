@@ -23,19 +23,21 @@ func RegisterQueryRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr s
 // QueryStatusRequest is a function to query status.
 func QueryStatusRequest(rpcAddr string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		request := GetInterxRequest(r)
+
 		if !rpcMethods[GET][queryStatus].Enabled {
-			ServeError(w, rpcAddr, 0, "", "", http.StatusForbidden)
+			ServeError(w, request, rpcAddr, 0, "", "", http.StatusForbidden)
 			return
 		}
 
 		r.Host = rpcAddr
 		r.URL.Path = "/status"
 
-		response, statusCode, err := MakeGetRequest(w, rpcAddr, "/status", "")
+		response, statusCode, err := MakeGetRequest(rpcAddr, "/status", "")
 		if err != nil {
-			ServeError(w, rpcAddr, 0, "", err.Error(), http.StatusInternalServerError)
+			ServeError(w, request, rpcAddr, 0, "", err.Error(), http.StatusInternalServerError)
 		} else {
-			ServeRPC(w, response, rpcAddr, statusCode)
+			ServeRPC(w, request, response, rpcAddr, statusCode)
 		}
 	}
 }
@@ -43,7 +45,9 @@ func QueryStatusRequest(rpcAddr string) http.HandlerFunc {
 // QueryRPCMethods is a function to query RPC methods.
 func QueryRPCMethods(rpcAddr string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		response := GetResponseFormat(rpcAddr)
+		request := GetInterxRequest(r)
+
+		response := GetResponseFormat(request, rpcAddr)
 		response.Response = rpcMethods
 
 		WrapResponse(w, *response, 200)

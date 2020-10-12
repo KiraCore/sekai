@@ -1,18 +1,3 @@
 {
-    "GET": {
-        "/api/cosmos/status": {
-            "rate_limit": 0.1,
-            "auth_rate_limit": 1
-        },
-        "/api/cosmos/bank/supply": {
-            "disable": true,
-            "auth_rate_limit": 1
-        }
-    },
-    "POST": {
-        "/api/cosmos/txs": {
-            "disable": false,
-            "rate_limit": 0.1
-        }
-    }
+    "mnemonic": "swap exercise equip shoot mad inside floor wheel loan visual stereo build frozen always bulb naive subway foster marine erosion shuffle flee action there"
 }

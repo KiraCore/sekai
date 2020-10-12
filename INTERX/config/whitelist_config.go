@@ -6,29 +6,27 @@ import (
 	"io/ioutil"
 )
 
-// PRCConfig is a struct to be used for PRC configuration
-type PRCConfig struct {
+// WhitelistConfig is a struct to be used for PRC Whitelist configuration
+type WhitelistConfig struct {
 	Disable       bool    `json:"disable"`
 	RateLimit     float64 `json:"rate_limit,omitempty"`
 	AuthRateLimit float64 `json:"auth_rate_limit,omitempty"`
 }
 
-func readConfig() map[string]map[string]PRCConfig {
-	file, _ := ioutil.ReadFile("./config.json")
+func readWhitelistConfig() map[string]map[string]WhitelistConfig {
+	file, _ := ioutil.ReadFile("./whitelist.json")
 
-	config := map[string]map[string]PRCConfig{}
+	config := map[string]map[string]WhitelistConfig{}
 
 	err := json.Unmarshal([]byte(file), &config)
 	if err != nil {
-		fmt.Println("Invalid configuration error: {}", err)
+		fmt.Println("Invalid configuration : {}", err)
 	}
-
-	fmt.Println(config)
 
 	return config
 }
 
 var (
 	// WhitelistCg is a configuration for rpc whitelist
-	WhitelistCg = readConfig()
+	WhitelistCg = readWhitelistConfig()
 )

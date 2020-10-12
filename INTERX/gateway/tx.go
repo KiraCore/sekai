@@ -3,7 +3,6 @@ package gateway
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 
 	interx "github.com/KiraCore/sekai/INTERX/config"
@@ -34,40 +33,35 @@ type PostTxReq struct {
 // PostTxRequest is a function to post transaction.
 func PostTxRequest(rpcAddr string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		request := GetInterxRequest(r)
+
 		if !rpcMethods[POST][postTransaction].Enabled {
-			ServeError(w, rpcAddr, 0, "", "", http.StatusForbidden)
+			ServeError(w, request, rpcAddr, 0, "", "", http.StatusForbidden)
 			return
 		}
 
 		var req PostTxReq
-
-		body, err := ioutil.ReadAll(r.Body)
+		err := json.Unmarshal(request.Params, &req)
 		if err != nil {
-			ServeError(w, rpcAddr, 0, "", err.Error(), http.StatusBadRequest)
-			return
-		}
-
-		err = json.Unmarshal(body, &req)
-		if err != nil {
-			ServeError(w, rpcAddr, 0, "failed to unmarshal", err.Error(), http.StatusBadRequest)
+			ServeError(w, request, rpcAddr, 0, "failed to unmarshal", err.Error(), http.StatusBadRequest)
 			return
 		}
 
 		signedTx, err := interx.EncodingCg.TxConfig.TxJSONDecoder()(req.Tx)
 		if err != nil {
-			ServeError(w, rpcAddr, 0, "failed to get signed TX", err.Error(), http.StatusBadRequest)
+			ServeError(w, request, rpcAddr, 0, "failed to get signed TX", err.Error(), http.StatusBadRequest)
 			return
 		}
 
 		txBuilder, err := interx.EncodingCg.TxConfig.WrapTxBuilder(signedTx)
 		if err != nil {
-			ServeError(w, rpcAddr, 0, "failed to get TX builder", err.Error(), http.StatusBadRequest)
+			ServeError(w, request, rpcAddr, 0, "failed to get TX builder", err.Error(), http.StatusBadRequest)
 			return
 		}
 
 		txBytes, err := interx.EncodingCg.TxConfig.TxEncoder()(txBuilder.GetTx())
 		if err != nil {
-			ServeError(w, rpcAddr, 0, "failed to get TX bytes", err.Error(), http.StatusBadRequest)
+			ServeError(w, request, rpcAddr, 0, "failed to get TX bytes", err.Error(), http.StatusBadRequest)
 			return
 		}
 
@@ -79,15 +73,15 @@ func PostTxRequest(rpcAddr string) http.HandlerFunc {
 		} else if req.Mode == "async" {
 			url = "/broadcast_tx_async"
 		} else {
-			ServeError(w, rpcAddr, 0, "", "invalid mode", http.StatusBadRequest)
+			ServeError(w, request, rpcAddr, 0, "", "invalid mode", http.StatusBadRequest)
 			return
 		}
 
-		response, statusCode, err := MakeGetRequest(w, rpcAddr, url, fmt.Sprintf("tx=0x%X", txBytes))
+		response, statusCode, err := MakeGetRequest(rpcAddr, url, fmt.Sprintf("tx=0x%X", txBytes))
 		if err != nil {
-			ServeError(w, rpcAddr, 0, "", err.Error(), http.StatusInternalServerError)
+			ServeError(w, request, rpcAddr, 0, "", err.Error(), http.StatusInternalServerError)
 		} else {
-			ServeRPC(w, response, rpcAddr, statusCode)
+			ServeRPC(w, request, response, rpcAddr, statusCode)
 		}
 	}
 }
@@ -95,19 +89,21 @@ func PostTxRequest(rpcAddr string) http.HandlerFunc {
 // QueryTxHashRequest is a function to query transaction hash.
 func QueryTxHashRequest(rpcAddr string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		request := GetInterxRequest(r)
+
 		if !rpcMethods[GET][queryTransactionHash].Enabled {
-			ServeError(w, rpcAddr, 0, "", "", http.StatusForbidden)
+			ServeError(w, request, rpcAddr, 0, "", "", http.StatusForbidden)
 			return
 		}
 
 		queries := mux.Vars(r)
 		hash := queries["hash"]
 
-		response, statusCode, err := MakeGetRequest(w, rpcAddr, "/tx", fmt.Sprintf("hash=%s", hash))
+		response, statusCode, err := MakeGetRequest(rpcAddr, "/tx", fmt.Sprintf("hash=%s", hash))
 		if err != nil {
-			ServeError(w, rpcAddr, 0, "", err.Error(), http.StatusInternalServerError)
+			ServeError(w, request, rpcAddr, 0, "", err.Error(), http.StatusInternalServerError)
 		} else {
-			ServeRPC(w, response, rpcAddr, statusCode)
+			ServeRPC(w, request, response, rpcAddr, statusCode)
 		}
 	}
 }

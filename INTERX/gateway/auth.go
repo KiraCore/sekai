@@ -24,8 +24,10 @@ func RegisterAuthRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr st
 // QueryAccountsRequest is a function to query balances.
 func QueryAccountsRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		request := GetInterxRequest(r)
+
 		if !rpcMethods[GET][queryBalances].Enabled {
-			ServeError(w, rpcAddr, 0, "", "", http.StatusForbidden)
+			ServeError(w, request, rpcAddr, 0, "", "", http.StatusForbidden)
 			return
 		}
 
@@ -34,10 +36,10 @@ func QueryAccountsRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.Ha
 
 		addr, err := sdk.AccAddressFromBech32(bech32addr)
 		if err != nil {
-			ServeError(w, rpcAddr, 0, "", err.Error(), http.StatusBadRequest)
+			ServeError(w, request, rpcAddr, 0, "", err.Error(), http.StatusBadRequest)
 		} else {
 			r.URL.Path = fmt.Sprintf("/api/cosmos/auth/accounts/%s", base64.URLEncoding.EncodeToString([]byte(addr)))
-			ServeGRPC(w, r, gwCosmosmux, rpcAddr)
+			ServeGRPC(w, r, gwCosmosmux, request, rpcAddr)
 		}
 	}
 }
