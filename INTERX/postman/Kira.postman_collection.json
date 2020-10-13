@@ -401,6 +401,47 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Transaction Encode",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"chain_id\": \"testing\",\n\t\"account_number\": \"0\",\n\t\"sequence\": \"0\",\n\t\"tx\": {\n        \"msg\": [\n            {\n                \"type\": \"cosmos-sdk/MsgSend\",\n                \"value\": {\n                    \"from_address\": \"kira1cxj0var5eqkt0c3wfv3x3es63nz2hg5aeenkct\",\n                    \"to_address\": \"kira15plrtetqt55uyfy25tyy3kjy5lsjdgdddf2vfr\",\n                    \"amount\": [\n                        {\n                            \"denom\": \"stake\",\n                            \"amount\": \"25\"\n                        }\n                    ]\n                }\n            }\n        ],\n        \"fee\": {\n            \"amount\": [],\n            \"gas\": \"200000\"\n        },\n        \"signatures\": [],\n        \"memo\": \"\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/cosmos/txs/encode",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"cosmos",
+						"txs",
+						"encode"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"protocolProfileBehavior": {}
