@@ -66,8 +66,8 @@ func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions() {
 	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &perms)
 
 	// Validator 1 has permission to Add Permissions.
-	s.Require().False(perms.IsWhitelisted(customgovtypes.PermSetPermissions))
-	s.Require().True(perms.IsWhitelisted(customgovtypes.PermClaimValidator))
+	s.Require().True(perms.IsWhitelisted(customgovtypes.PermSetPermissions))
+	s.Require().False(perms.IsWhitelisted(customgovtypes.PermClaimValidator))
 }
 
 func (s IntegrationTestSuite) TestGetTxSetBlacklistPermissions() {
@@ -120,8 +120,8 @@ func (s IntegrationTestSuite) TestGetTxSetBlacklistPermissions() {
 	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &perms)
 
 	// Validator 1 has permission to Add Permissions.
-	s.Require().False(perms.IsBlacklisted(customgovtypes.PermSetPermissions))
-	s.Require().True(perms.IsBlacklisted(customgovtypes.PermClaimValidator))
+	s.Require().True(perms.IsBlacklisted(customgovtypes.PermSetPermissions))
+	s.Require().False(perms.IsBlacklisted(customgovtypes.PermClaimValidator))
 }
 
 func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions_WithUserThatDoesNotHaveSetPermissions() {

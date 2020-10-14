@@ -1225,7 +1225,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 		expectedErr  error
 	}{
 		{
-			"Voter is not Councilor",
+			"Voter does not have permission to vote this proposal",
 			types.NewMsgVoteProposal(
 				1, voterAddr, types.OptionAbstain,
 			),

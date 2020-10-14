@@ -11,14 +11,21 @@ enum PermValue {
   // PERMISSION_ZERO is a no-op permission.
   PERMISSION_ZERO = 0 [(gogoproto.enumvalue_customname) = "PermZero"];
 
-  // PERMISSION_CLAIM_VALIDATOR defines the permission that allows to Claim a validator Seat.
-  PERMISSION_CLAIM_VALIDATOR = 1 [(gogoproto.enumvalue_customname) = "PermClaimValidator"];
-
   // PERMISSION_SET_PERMISSIONS defines the permission that allows to Set Permissions to other actors.
-  PERMISSION_SET_PERMISSIONS = 2 [(gogoproto.enumvalue_customname) = "PermSetPermissions"];
+  PERMISSION_SET_PERMISSIONS = 1 [(gogoproto.enumvalue_customname) = "PermSetPermissions"];
 
-  // PERMISSION_SET_PERMISSIONS defines the permission that allows to Claim a Councilor Seat.
+  // PERMISSION_CLAIM_VALIDATOR defines the permission that allows to Claim a validator Seat.
+  PERMISSION_CLAIM_VALIDATOR = 2 [(gogoproto.enumvalue_customname) = "PermClaimValidator"];
+
+  // PERMISSION_CLAIM_COUNCILOR defines the permission that allows to Claim a Councilor Seat.
   PERMISSION_CLAIM_COUNCILOR = 3 [(gogoproto.enumvalue_customname) = "PermClaimCouncilor"];
+
+  // PERMISSION_CREATE_SET_PERMISSIONS_PROPOSAL defines the permission needed to create proposals.
+  PERMISSION_CREATE_SET_PERMISSIONS_PROPOSAL = 4 [(gogoproto.enumvalue_customname) = "PermCreateSetPermissionsProposal"];
+
+  // PERMISSION_VOTE_SET_PERMISSIONS_PROPOSAL defines the permission that an actor must have in order to vote a
+  // Proposal to set permissions.
+  PERMISSION_VOTE_SET_PERMISSIONS_PROPOSAL = 5 [(gogoproto.enumvalue_customname) = "PermVoteSetPermissionProposal"];
 }
 
 enum ActorStatus {
