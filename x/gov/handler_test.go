@@ -6,6 +6,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/cosmos/cosmos-sdk/types/errors"
+
 	types2 "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -1119,7 +1121,7 @@ func TestHandler_RemoveRoles(t *testing.T) {
 	require.False(t, actor.HasRole(3))
 }
 
-func TestHandler_ProposalAssignPermission_Errors(t *testing.T) {
+func TestHandler_CreateProposalAssignPermission_Errors(t *testing.T) {
 	proposerAddr, err := sdk.AccAddressFromBech32("kira1alzyfq40zjsveat87jlg8jxetwqmr0a29sgd0f")
 	require.NoError(t, err)
 
@@ -1133,12 +1135,12 @@ func TestHandler_ProposalAssignPermission_Errors(t *testing.T) {
 		expectedErr  error
 	}{
 		{
-			"Proposer is not a councilor",
+			"Proposer does not have Perm",
 			types.NewMsgProposalAssignPermission(
 				proposerAddr, addr, types.PermClaimValidator,
 			),
 			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
-			types.ErrUserIsNotCouncilor,
+			errors.Wrap(types.ErrNotEnoughPermissions, "PermCreateSetPermissionsProposal"),
 		},
 		{
 			"address already has that permission",
@@ -1146,12 +1148,14 @@ func TestHandler_ProposalAssignPermission_Errors(t *testing.T) {
 				proposerAddr, addr, types.PermClaimValidator,
 			),
 			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
-				app.CustomGovKeeper.SaveCouncilor(ctx, types.NewCouncilor("test", "website", "social", "identity", proposerAddr))
+				proposerActor := types.NewDefaultActor(proposerAddr)
+				err2 := proposerActor.Permissions.AddToWhitelist(types.PermCreateSetPermissionsProposal)
+				require.NoError(t, err2)
+				app.CustomGovKeeper.SaveNetworkActor(ctx, proposerActor)
 
 				actor := types.NewDefaultActor(addr)
-				err2 := actor.Permissions.AddToWhitelist(types.PermClaimValidator)
+				err2 = actor.Permissions.AddToWhitelist(types.PermClaimValidator)
 				require.NoError(t, err2)
-
 				app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
 			},
 			fmt.Errorf("permission already whitelisted: error adding to whitelist"),
@@ -1185,8 +1189,11 @@ func TestHandler_ProposalAssignPermission(t *testing.T) {
 		Time: time.Now(),
 	})
 
-	// Set proposer as councilor
-	app.CustomGovKeeper.SaveCouncilor(ctx, types.NewCouncilor("test", "website", "social", "identity", proposerAddr))
+	// Set proposer Permissions
+	proposerActor := types.NewDefaultActor(proposerAddr)
+	err2 := proposerActor.Permissions.AddToWhitelist(types.PermCreateSetPermissionsProposal)
+	require.NoError(t, err2)
+	app.CustomGovKeeper.SaveNetworkActor(ctx, proposerActor)
 
 	handler := gov.NewHandler(app.CustomGovKeeper)
 	res, err := handler(

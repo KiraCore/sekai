@@ -89,9 +89,9 @@ func handleMsgProposalAssignPermission(
 	ck keeper.Keeper,
 	msg *customgovtypes.MsgProposalAssignPermission,
 ) (*sdk.Result, error) {
-	_, found := ck.GetCouncilor(ctx, msg.Proposer)
-	if !found {
-		return nil, customgovtypes.ErrUserIsNotCouncilor
+	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Proposer, customgovtypes.PermCreateSetPermissionsProposal)
+	if !isAllowed {
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermCreateSetPermissionsProposal")
 	}
 
 	actor, found := ck.GetNetworkActorByAddress(ctx, msg.Address)
