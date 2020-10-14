@@ -42,5 +42,29 @@ func (k Keeper) AddWhitelistPermission(ctx sdk.Context, address sdk.AccAddress, 
 
 	k.SaveNetworkActor(ctx, actor)
 
+	store := ctx.KVStore(k.storeKey)
+	store.Set(WhitelistAddressPermKey(address, perm), actor.Address.Bytes())
+
 	return nil
+}
+
+// GetNetworkActorByWhitelistedPermission returns all the actors that have Perm in whitelist.
+func (k Keeper) GetNetworkActorByWhitelistedPermission(ctx sdk.Context, perm types.PermValue) sdk.Iterator {
+	store := ctx.KVStore(k.storeKey)
+	return sdk.KVStorePrefixIterator(store, WhitelistPermKey(perm))
+}
+
+// WhitelsitAddressPermKey returns the prefix key in format <0x31 + Perm_Bytes + address_bytes>
+func WhitelistAddressPermKey(address sdk.AccAddress, perm types.PermValue) []byte {
+	return append(WhitelistPermKey(perm), address.Bytes()...)
+}
+
+// WhitelistPermKey returns the prefix key in format <0x31 + Perm_Bytes>
+func WhitelistPermKey(perm types.PermValue) []byte {
+	return append(WhitelistActorPrefix, getPermBytes(perm)...)
+}
+
+// getPermBytes returns a PermValue in bytes representation.
+func getPermBytes(perm types.PermValue) []byte {
+	return sdk.Uint64ToBigEndian(uint64(perm))
 }

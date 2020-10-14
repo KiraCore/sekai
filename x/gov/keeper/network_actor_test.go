@@ -101,7 +101,14 @@ func TestKeeper_GetActorsByWhitelistedPerm(t *testing.T) {
 
 	err := app.CustomGovKeeper.AddWhitelistPermission(ctx, addr1, types.PermSetPermissions)
 	require.NoError(t, err)
-
 	err = app.CustomGovKeeper.AddWhitelistPermission(ctx, addr2, types.PermSetPermissions)
 	require.NoError(t, err)
+
+	iterator := app.CustomGovKeeper.GetNetworkActorByWhitelistedPermission(ctx, types.PermSetPermissions)
+
+	count := 0
+	for ; iterator.Valid(); iterator.Next() {
+		count++
+	}
+	require.Equal(t, 2, count)
 }
