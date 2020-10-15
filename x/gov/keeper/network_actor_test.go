@@ -88,7 +88,6 @@ func TestKeeper_AddWhitelistPermission_Error(t *testing.T) {
 }
 
 func TestKeeper_RemoveWhitelistPermission(t *testing.T) {
-	t.SkipNow()
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
@@ -100,6 +99,16 @@ func TestKeeper_RemoveWhitelistPermission(t *testing.T) {
 
 	iterator := app.CustomGovKeeper.GetNetworkActorByWhitelistedPermission(ctx, types.PermSetPermissions)
 	requireIteratorCount(t, iterator, 2)
+	assertAddrsHaveWhitelistedPerm(t, app, ctx, addrs, types.PermSetPermissions)
+
+	err = app.CustomGovKeeper.RemoveWhitelistPermission(ctx, addrs[0], types.PermSetPermissions)
+	require.NoError(t, err)
+
+	iterator = app.CustomGovKeeper.GetNetworkActorByWhitelistedPermission(ctx, types.PermSetPermissions)
+	requireIteratorCount(t, iterator, 1)
+
+	assertAddrsDontHaveWhitelistedPerm(t, app, ctx, []types2.AccAddress{addrs[0]}, types.PermSetPermissions)
+	assertAddrsHaveWhitelistedPerm(t, app, ctx, []types2.AccAddress{addrs[1]}, types.PermSetPermissions)
 }
 
 func TestKeeper_GetActorsByWhitelistedPerm(t *testing.T) {
@@ -155,5 +164,19 @@ func assertAddrsHaveWhitelistedPerm(
 		actor, found := app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addr)
 		require.True(t, found)
 		require.True(t, actor.Permissions.IsWhitelisted(perm))
+	}
+}
+
+func assertAddrsDontHaveWhitelistedPerm(
+	t *testing.T,
+	app *simapp.SimApp,
+	ctx types2.Context,
+	addrs []types2.AccAddress,
+	perm types.PermValue,
+) {
+	for _, addr := range addrs {
+		actor, found := app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addr)
+		require.True(t, found)
+		require.False(t, actor.Permissions.IsWhitelisted(perm))
 	}
 }
