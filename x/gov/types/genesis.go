@@ -19,7 +19,7 @@ func DefaultGenesis() *GenesisState {
 		ExecutionFees: []*ExecutionFee{
 			{
 				Name:              "Claim Validator Seat",
-				TransactionType:   "A",
+				TransactionType:   "claim-validator-seat",
 				ExecutionFee:      10,
 				FailureFee:        1,
 				Timeout:           10,
@@ -27,7 +27,7 @@ func DefaultGenesis() *GenesisState {
 			},
 			{
 				Name:              "Claim Governance Seat",
-				TransactionType:   "A",
+				TransactionType:   "claim-governance-seat",
 				ExecutionFee:      10,
 				FailureFee:        1,
 				Timeout:           10,
@@ -35,7 +35,7 @@ func DefaultGenesis() *GenesisState {
 			},
 			{
 				Name:              "Claim Proposal Type X",
-				TransactionType:   "B",
+				TransactionType:   "claim-proposal-type-x",
 				ExecutionFee:      10,
 				FailureFee:        1,
 				Timeout:           10,
@@ -43,7 +43,7 @@ func DefaultGenesis() *GenesisState {
 			},
 			{
 				Name:              "Vote Proposal Type X",
-				TransactionType:   "B",
+				TransactionType:   "vote-proposal-type-x",
 				ExecutionFee:      10,
 				FailureFee:        1,
 				Timeout:           10,
@@ -51,7 +51,7 @@ func DefaultGenesis() *GenesisState {
 			},
 			{
 				Name:              "Submit Proposal Type X",
-				TransactionType:   "B",
+				TransactionType:   "submit-proposal-type-x",
 				ExecutionFee:      10,
 				FailureFee:        1,
 				Timeout:           10,
@@ -59,7 +59,7 @@ func DefaultGenesis() *GenesisState {
 			},
 			{
 				Name:              "Veto Proposal Type X",
-				TransactionType:   "B",
+				TransactionType:   "veto-proposal-type-x",
 				ExecutionFee:      10,
 				FailureFee:        1,
 				Timeout:           10,
