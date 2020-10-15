@@ -7,6 +7,7 @@ import (
 
 	"github.com/KiraCore/sekai/simapp"
 	"github.com/KiraCore/sekai/x/gov/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	types2 "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
@@ -86,29 +87,73 @@ func TestKeeper_AddWhitelistPermission_Error(t *testing.T) {
 	require.EqualError(t, err, types3.ErrNetworkActorNotFound.Error())
 }
 
+func TestKeeper_RemoveWhitelistPermission(t *testing.T) {
+	t.SkipNow()
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, types2.TokensFromConsensusPower(10))
+
+	createAndSaveMultipleActors(app, ctx, addrs)
+	err := whitelistPermToMultipleAddrs(app, ctx, addrs, types.PermSetPermissions)
+	require.NoError(t, err)
+
+	iterator := app.CustomGovKeeper.GetNetworkActorByWhitelistedPermission(ctx, types.PermSetPermissions)
+	requireIteratorCount(t, iterator, 2)
+}
+
 func TestKeeper_GetActorsByWhitelistedPerm(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
 	addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, types2.TokensFromConsensusPower(10))
-	addr1 := addrs[0]
-	addr2 := addrs[1]
 
-	actor1 := types.NewDefaultActor(addr1)
-	app.CustomGovKeeper.SaveNetworkActor(ctx, actor1)
-	actor2 := types.NewDefaultActor(addr2)
-	app.CustomGovKeeper.SaveNetworkActor(ctx, actor2)
-
-	err := app.CustomGovKeeper.AddWhitelistPermission(ctx, addr1, types.PermSetPermissions)
-	require.NoError(t, err)
-	err = app.CustomGovKeeper.AddWhitelistPermission(ctx, addr2, types.PermSetPermissions)
+	createAndSaveMultipleActors(app, ctx, addrs)
+	err := whitelistPermToMultipleAddrs(app, ctx, addrs, types.PermSetPermissions)
 	require.NoError(t, err)
 
 	iterator := app.CustomGovKeeper.GetNetworkActorByWhitelistedPermission(ctx, types.PermSetPermissions)
+	requireIteratorCount(t, iterator, 2)
 
-	count := 0
-	for ; iterator.Valid(); iterator.Next() {
-		count++
+	assertAddrsHaveWhitelistedPerm(t, app, ctx, addrs, types.PermSetPermissions)
+}
+
+func createAndSaveMultipleActors(app *simapp.SimApp, ctx sdk.Context, addrs []types2.AccAddress) {
+	for _, addr := range addrs {
+		app.CustomGovKeeper.SaveNetworkActor(ctx, types.NewDefaultActor(addr))
 	}
-	require.Equal(t, 2, count)
+}
+
+func whitelistPermToMultipleAddrs(app *simapp.SimApp, ctx types2.Context, addrs []types2.AccAddress, permissions types.PermValue) error {
+	for _, addr := range addrs {
+		err := app.CustomGovKeeper.AddWhitelistPermission(ctx, addr, permissions)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func requireIteratorCount(t *testing.T, iterator sdk.Iterator, expectedCount int) {
+	c := 0
+	for ; iterator.Valid(); iterator.Next() {
+		c++
+	}
+
+	require.Equal(t, expectedCount, c)
+}
+
+func assertAddrsHaveWhitelistedPerm(
+	t *testing.T,
+	app *simapp.SimApp,
+	ctx types2.Context,
+	addrs []types2.AccAddress,
+	perm types.PermValue,
+) {
+	for _, addr := range addrs {
+		actor, found := app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addr)
+		require.True(t, found)
+		require.True(t, actor.Permissions.IsWhitelisted(perm))
+	}
 }
