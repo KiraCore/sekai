@@ -86,7 +86,7 @@ func TestNewHandler_SetNetworkProperties(t *testing.T) {
 			_, err = handler(ctx, &customgovtypes.MsgSetExecutionFee{
 				Proposer:          changeFeeAddr,
 				Name:              customgovtypes.SetNetworkProperties,
-				TransactionType:   "B",
+				TransactionType:   customgovtypes.SetNetworkProperties,
 				ExecutionFee:      10000,
 				FailureFee:        1000,
 				Timeout:           1,

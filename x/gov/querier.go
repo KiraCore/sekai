@@ -81,9 +81,9 @@ func (q Querier) RolePermissions(ctx context.Context, request *types.RolePermiss
 
 func (q Querier) GetExecutionFee(ctx context.Context, request *types.ExecutionFeeRequest) (*types.ExecutionFeeResponse, error) {
 	sdkContext := sdk.UnwrapSDKContext(ctx)
-	fee := q.keeper.GetExecutionFee(sdkContext, request.ExecutionName)
+	fee := q.keeper.GetExecutionFee(sdkContext, request.TransactionType)
 	if fee == nil {
-		return nil, fmt.Errorf("fee does not exist for %s", request.ExecutionName)
+		return nil, fmt.Errorf("fee does not exist for %s", request.TransactionType)
 	}
 	return &types.ExecutionFeeResponse{Fee: fee}, nil
 }

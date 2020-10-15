@@ -58,7 +58,7 @@ message RolePermissionsResponse {
   Permissions permissions = 1;
 }
 message ExecutionFeeRequest {
-  string execution_name = 1;
+  string transaction_type = 1;
 }
 message ExecutionFeeResponse {
   kira.gov.ExecutionFee fee = 1;
