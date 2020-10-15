@@ -34,6 +34,10 @@ func QuerySupplyRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.Hand
 			return
 		}
 
+		if rpcMethods[GET][queryTotalSupply].CachingEnabled {
+			// Add Caching Here
+		}
+
 		ServeGRPC(w, r, gwCosmosmux, request, rpcAddr)
 	}
 }
@@ -46,6 +50,10 @@ func QueryBalancesRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.Ha
 		if !rpcMethods[GET][queryBalances].Enabled {
 			ServeError(w, request, rpcAddr, 0, "", "", http.StatusForbidden)
 			return
+		}
+
+		if rpcMethods[GET][queryBalances].CachingEnabled {
+			// Add Caching Here
 		}
 
 		queries := mux.Vars(r)

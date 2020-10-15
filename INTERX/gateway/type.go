@@ -51,10 +51,11 @@ type FaucetAccountInfo struct {
 
 // RPCMethod is a struct to be used for rpc_methods API
 type RPCMethod struct {
-	Description   string  `json:"description"`
-	Enabled       bool    `json:"enabled"`
-	RateLimit     float64 `json:"rate_limit,omitempty"`
-	AuthRateLimit float64 `json:"auth_rate_limit,omitempty"`
+	Description    string  `json:"description"`
+	Enabled        bool    `json:"enabled"`
+	RateLimit      float64 `json:"rate_limit,omitempty"`
+	AuthRateLimit  float64 `json:"auth_rate_limit,omitempty"`
+	CachingEnabled bool    `json:"caching_enabled"`
 }
 
 // InterxRequest is a struct to be used for request hash

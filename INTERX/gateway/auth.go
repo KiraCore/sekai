@@ -31,6 +31,11 @@ func QueryAccountsRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.Ha
 			return
 		}
 
+		if rpcMethods[GET][queryBalances].CachingEnabled {
+			// Add Caching Here
+			// _ := GetHash(request)
+		}
+
 		queries := mux.Vars(r)
 		bech32addr := queries["address"]
 

@@ -13,35 +13,34 @@ import (
 	"github.com/tyler-smith/go-bip39"
 )
 
-// InterxConfigFromFile is a struct to be used for interx configuration
-type InterxConfigFromFile struct {
-	Mnemonic string `json:"mnemonic"`
-}
+func readConfig() InterxConfig {
+	sekaiapp.SetConfig()
 
-// InterxConfig is a struct to be used for interx configuration
-type InterxConfig struct {
-	Mnemonic string         `json:"mnemonic"`
-	PrivKey  crypto.PrivKey `json:"privkey"`
-	PubKey   crypto.PubKey  `json:"pubkey"`
-	Address  string         `json:"address"`
-}
+	type ConfigFromFile struct {
+		Mnemonic string `json:"mnemonic"`
+		Faucet   struct {
+			Mnemonic             string           `json:"mnemonic"`
+			FaucetAmounts        map[string]int64 `json:"faucet_amounts"`
+			FaucetMinimumAmounts map[string]int64 `json:"faucet_minimum_amounts"`
+			TimeLimit            int64            `json:"time_limit"`
+		} `json:"faucet"`
+		RPC RPCConfig `json:"rpc"`
+	}
 
-func readInterxConfig() InterxConfig {
 	file, _ := ioutil.ReadFile("./config.json")
 
-	configFromFile := InterxConfigFromFile{}
+	configFromFile := ConfigFromFile{}
 
 	err := json.Unmarshal([]byte(file), &configFromFile)
 	if err != nil {
 		fmt.Println("Invalid configuration: {}", err)
 	}
 
-	config := InterxConfig{
-		Mnemonic: configFromFile.Mnemonic,
-	}
+	config := InterxConfig{}
 
-	seed := bip39.NewSeed(config.Mnemonic, "")
-	config.PrivKey = secp256k1.GenPrivKeyFromSecret(seed)
+	// Interx Main Configuration
+	config.Mnemonic = configFromFile.Mnemonic
+	config.PrivKey = secp256k1.GenPrivKeyFromSecret(bip39.NewSeed(config.Mnemonic, ""))
 	config.PubKey = config.PrivKey.PubKey()
 	config.Address = sdk.MustBech32ifyAddressBytes(sdk.GetConfig().GetBech32AccountAddrPrefix(), config.PubKey.Address())
 
@@ -49,6 +48,26 @@ func readInterxConfig() InterxConfig {
 	fmt.Println("Interx Mnemonic   : ", config.Mnemonic)
 	fmt.Println("Interx Address    : ", config.Address)
 	fmt.Println("Interx Public Key : ", sdk.MustBech32ifyPubKey(sdk.Bech32PubKeyTypeAccPub, config.PubKey))
+
+	// Faucet Configuration
+	config.Faucet = FaucetConfig{
+		Mnemonic:             configFromFile.Faucet.Mnemonic,
+		FaucetAmounts:        configFromFile.Faucet.FaucetAmounts,
+		FaucetMinimumAmounts: configFromFile.Faucet.FaucetMinimumAmounts,
+		TimeLimit:            configFromFile.Faucet.TimeLimit,
+	}
+
+	config.Faucet.PrivKey = secp256k1.GenPrivKeyFromSecret(bip39.NewSeed(config.Faucet.Mnemonic, ""))
+	config.Faucet.PubKey = config.Faucet.PrivKey.PubKey()
+	config.Faucet.Address = sdk.MustBech32ifyAddressBytes(sdk.GetConfig().GetBech32AccountAddrPrefix(), config.Faucet.PubKey.Address())
+
+	// Display mnemonic and keys
+	fmt.Println("Faucet Mnemonic   : ", config.Faucet.Mnemonic)
+	fmt.Println("Faucet Address    : ", config.Faucet.Address)
+	fmt.Println("Faucet Public Key : ", sdk.MustBech32ifyPubKey(sdk.Bech32PubKeyTypeAccPub, config.Faucet.PubKey))
+
+	// RPC Configuration
+	config.RPC = configFromFile.RPC
 
 	return config
 }
@@ -59,8 +78,8 @@ func GenPrivKey() crypto.PrivKey {
 }
 
 var (
-	// InterxCg is a configuration for rpc whitelist
-	InterxCg = readInterxConfig()
+	// Config is a configuration for interx
+	Config = readConfig()
 	// EncodingCg is a configuration for Amino Encoding
 	EncodingCg = sekaiapp.MakeEncodingConfig()
 )

@@ -1,3 +1,37 @@
 {
-    "mnemonic": "swap exercise equip shoot mad inside floor wheel loan visual stereo build frozen always bulb naive subway foster marine erosion shuffle flee action there"
+    "mnemonic": "swap exercise equip shoot mad inside floor wheel loan visual stereo build frozen always bulb naive subway foster marine erosion shuffle flee action there",
+    "faucet": {
+        "mnemonic": "equip exercise shoot mad inside floor wheel loan visual stereo build frozen potato always bulb naive subway foster marine erosion shuffle flee action there",
+        "faucet_amounts": {
+            "stake": 100000,
+            "validatortoken": 100000
+        },
+        "faucet_minimum_amounts": {
+            "stake": 100,
+            "validatortoken": 100
+        },
+        "time_limit": 20
+    },
+    "rpc": {
+        "caching_duration": 10,
+        "API": {
+            "GET": {
+                "/api/cosmos/status": {
+                    "rate_limit": 0.1,
+                    "auth_rate_limit": 1
+                },
+                "/api/cosmos/bank/supply": {
+                    "disable": true,
+                    "auth_rate_limit": 1,
+                    "caching_disable": true
+                }
+            },
+            "POST": {
+                "/api/cosmos/txs": {
+                    "disable": false,
+                    "rate_limit": 0.1
+                }
+            }
+        }
+    }
 }

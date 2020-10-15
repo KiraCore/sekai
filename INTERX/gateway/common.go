@@ -23,10 +23,11 @@ func AddRPCMethod(method string, url string, description string) {
 	newMethod.Description = description
 	newMethod.Enabled = true
 
-	if conf, ok := interx.WhitelistCg[method][url]; ok {
+	if conf, ok := interx.Config.RPC.API[method][url]; ok {
 		newMethod.Enabled = !conf.Disable
 		newMethod.RateLimit = conf.RateLimit
 		newMethod.AuthRateLimit = conf.AuthRateLimit
+		newMethod.CachingEnabled = !!conf.CachingDisable
 	}
 
 	if _, ok := rpcMethods[method]; !ok {
@@ -79,14 +80,19 @@ func GetInterxRequest(r *http.Request) InterxRequest {
 	return request
 }
 
+// GetHash is a function to get hash
+func GetHash(request interface{}) string {
+	// Calculate blake2b hash
+	requestJSON, _ := json.Marshal(request)
+	hash := blake2b.Sum256([]byte(requestJSON))
+	return fmt.Sprintf("%X", hash)
+}
+
 // GetResponseFormat is a function to get response format
 func GetResponseFormat(request InterxRequest, rpcAddr string) *ProxyResponse {
 	response := new(ProxyResponse)
 	response.Timestamp = time.Now().Unix()
-
-	requestJSON, _ := json.Marshal(request)
-	hash := blake2b.Sum256([]byte(requestJSON))
-	response.RequestHash = fmt.Sprintf("%X", hash)
+	response.RequestHash = GetHash(request)
 
 	resp, err := http.Get(fmt.Sprintf("%s/block", rpcAddr))
 	if err != nil {
@@ -123,13 +129,8 @@ func GetResponseFormat(request InterxRequest, rpcAddr string) *ProxyResponse {
 
 // GetResponseSignature is a function to get response signature
 func GetResponseSignature(response ProxyResponse) (string, string) {
-	// Calculate blake2b hash
-	responseJSON, err := json.Marshal(response.Response)
-	if err != nil {
-		return "", ""
-	}
-	hash := blake2b.Sum256([]byte(responseJSON))
-	responseHash := fmt.Sprintf("%X", hash)
+	// Get Response Hash
+	responseHash := GetHash(response.Response)
 
 	// Generate json to be signed
 	sign := new(ResponseSign)
@@ -144,7 +145,7 @@ func GetResponseSignature(response ProxyResponse) (string, string) {
 	}
 
 	// Get Signature
-	signature, err := interx.InterxCg.PrivKey.Sign(signBytes)
+	signature, err := interx.Config.PrivKey.Sign(signBytes)
 	if err != nil {
 		return "", responseHash
 	}

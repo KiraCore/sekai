@@ -32,8 +32,8 @@ func serveFaucetInfo(w http.ResponseWriter, r *http.Request, gwCosmosmux *runtim
 	response := GetResponseFormat(request, rpcAddr)
 
 	faucetInfo := FaucetAccountInfo{}
-	faucetInfo.Address = interx.FaucetCg.Address
-	faucetInfo.Balances = GetAccountBalances(gwCosmosmux, r.Clone(r.Context()), interx.FaucetCg.Address)
+	faucetInfo.Address = interx.Config.Faucet.Address
+	faucetInfo.Balances = GetAccountBalances(gwCosmosmux, r.Clone(r.Context()), interx.Config.Faucet.Address)
 
 	response.Response = faucetInfo
 
@@ -44,7 +44,7 @@ func serveFaucet(w http.ResponseWriter, r *http.Request, gwCosmosmux *runtime.Se
 	request := GetInterxRequest(r)
 
 	// check address
-	faucetAccAddr, err := sdk.AccAddressFromBech32(interx.FaucetCg.Address)
+	faucetAccAddr, err := sdk.AccAddressFromBech32(interx.Config.Faucet.Address)
 	if err != nil {
 		ServeError(w, request, rpcAddr, 0, "", fmt.Sprintf("internal server error: %s", err), http.StatusBadRequest)
 		return
@@ -64,7 +64,7 @@ func serveFaucet(w http.ResponseWriter, r *http.Request, gwCosmosmux *runtime.Se
 		return
 	}
 
-	availableBalances := GetAccountBalances(gwCosmosmux, r.Clone(r.Context()), interx.FaucetCg.Address)
+	availableBalances := GetAccountBalances(gwCosmosmux, r.Clone(r.Context()), interx.Config.Faucet.Address)
 	claimBalances := GetAccountBalances(gwCosmosmux, r.Clone(r.Context()), bech32addr)
 
 	availableAmount := int64(0)
@@ -87,8 +87,8 @@ func serveFaucet(w http.ResponseWriter, r *http.Request, gwCosmosmux *runtime.Se
 		}
 	}
 
-	faucetAmount, ok := interx.FaucetCg.FaucetAmounts[token]               // X
-	faucetMininumAmount, ok := interx.FaucetCg.FaucetMinimumAmounts[token] // M
+	faucetAmount, ok := interx.Config.Faucet.FaucetAmounts[token]               // X
+	faucetMininumAmount, ok := interx.Config.Faucet.FaucetMinimumAmounts[token] // M
 	if !ok {
 		ServeError(w, request, rpcAddr, 0, "", "invalid token", http.StatusBadRequest)
 		return
@@ -110,7 +110,7 @@ func serveFaucet(w http.ResponseWriter, r *http.Request, gwCosmosmux *runtime.Se
 	}
 
 	// GET AccountNumber and Sequence
-	accountNumber, sequence := GetAccountNumberSequence(gwCosmosmux, r.Clone(r.Context()), interx.FaucetCg.Address)
+	accountNumber, sequence := GetAccountNumberSequence(gwCosmosmux, r.Clone(r.Context()), interx.Config.Faucet.Address)
 	fmt.Println("accountNumber: ", accountNumber)
 	fmt.Println("sequence: ", sequence)
 
@@ -127,12 +127,12 @@ func serveFaucet(w http.ResponseWriter, r *http.Request, gwCosmosmux *runtime.Se
 	sigs := make([]auth.StdSignature, 1)
 	signBytes := auth.StdSignBytes(GetChainID(rpcAddr), accountNumber, sequence, 0, fee, msgs, memo)
 
-	sig, err := interx.FaucetCg.PrivKey.Sign(signBytes)
+	sig, err := interx.Config.Faucet.PrivKey.Sign(signBytes)
 	if err != nil {
 		panic(err)
 	}
 
-	sigs[0] = auth.StdSignature{PubKey: interx.FaucetCg.PubKey, Signature: sig}
+	sigs[0] = auth.StdSignature{PubKey: interx.Config.Faucet.PubKey, Signature: sig}
 
 	stdTx := auth.NewStdTx(msgs, fee, sigs, memo)
 
