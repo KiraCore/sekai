@@ -1149,14 +1149,14 @@ func TestHandler_CreateProposalAssignPermission_Errors(t *testing.T) {
 			),
 			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
 				proposerActor := types.NewDefaultActor(proposerAddr)
-				err2 := proposerActor.Permissions.AddToWhitelist(types.PermCreateSetPermissionsProposal)
-				require.NoError(t, err2)
 				app.CustomGovKeeper.SaveNetworkActor(ctx, proposerActor)
+				err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerAddr, types.PermCreateSetPermissionsProposal)
+				require.NoError(t, err2)
 
 				actor := types.NewDefaultActor(addr)
-				err2 = actor.Permissions.AddToWhitelist(types.PermClaimValidator)
-				require.NoError(t, err2)
 				app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
+				err2 = app.CustomGovKeeper.AddWhitelistPermission(ctx, addr, types.PermClaimValidator)
+				require.NoError(t, err2)
 			},
 			fmt.Errorf("permission already whitelisted: error adding to whitelist"),
 		},
@@ -1191,9 +1191,9 @@ func TestHandler_ProposalAssignPermission(t *testing.T) {
 
 	// Set proposer Permissions
 	proposerActor := types.NewDefaultActor(proposerAddr)
-	err2 := proposerActor.Permissions.AddToWhitelist(types.PermCreateSetPermissionsProposal)
-	require.NoError(t, err2)
 	app.CustomGovKeeper.SaveNetworkActor(ctx, proposerActor)
+	err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerAddr, types.PermCreateSetPermissionsProposal)
+	require.NoError(t, err2)
 
 	handler := gov.NewHandler(app.CustomGovKeeper)
 	res, err := handler(
@@ -1349,10 +1349,10 @@ func TestHandler_VoteProposal(t *testing.T) {
 
 func setPermissionToAddr(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addr sdk.AccAddress, perm types.PermValue) error {
 	proposerActor := types.NewDefaultActor(addr)
-	err := proposerActor.Permissions.AddToWhitelist(perm)
-	require.NoError(t, err)
-
 	app.CustomGovKeeper.SaveNetworkActor(ctx, proposerActor)
+
+	err := app.CustomGovKeeper.AddWhitelistPermission(ctx, addr, perm)
+	require.NoError(t, err)
 
 	return nil
 }
