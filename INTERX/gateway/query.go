@@ -30,6 +30,10 @@ func QueryStatusRequest(rpcAddr string) http.HandlerFunc {
 			return
 		}
 
+		if rpcMethods[GET][queryStatus].CachingEnabled {
+			// Add Caching Here
+		}
+
 		r.Host = rpcAddr
 		r.URL.Path = "/status"
 

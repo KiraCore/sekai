@@ -57,11 +57,11 @@ func GetClaimTimeLeft(address string) int64 {
 
 	diff := time.Now().Unix() - getClaim(address).Unix()
 
-	if diff > interx.FaucetCg.TimeLimit {
+	if diff > interx.Config.Faucet.TimeLimit {
 		return 0
 	}
 
-	return interx.FaucetCg.TimeLimit - diff
+	return interx.Config.Faucet.TimeLimit - diff
 }
 
 // AddNewClaim is a function to add current claim time

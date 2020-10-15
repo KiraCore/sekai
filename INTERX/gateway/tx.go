@@ -102,6 +102,10 @@ func QueryTxHashRequest(rpcAddr string) http.HandlerFunc {
 			return
 		}
 
+		if rpcMethods[GET][queryTransactionHash].CachingEnabled {
+			// Add Caching Here
+		}
+
 		queries := mux.Vars(r)
 		hash := queries["hash"]
 
