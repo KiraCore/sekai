@@ -13,8 +13,8 @@ func DefaultGenesis() *GenesisState {
 			uint64(RoleValidator): NewPermissions([]PermValue{PermClaimValidator}, nil),
 		},
 		NetworkProperties: &NetworkProperties{
-			MinTxFee: 1,
-			MaxTxFee: 10000,
+			MinTxFee: 100,
+			MaxTxFee: 1000000,
 		},
 		ExecutionFees: []*ExecutionFee{
 			{
