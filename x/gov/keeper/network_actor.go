@@ -44,12 +44,7 @@ func (k Keeper) AddWhitelistPermission(ctx sdk.Context, actor types.NetworkActor
 }
 
 // RemoveWhitelistPermission removes the whitelisted permission that an address has
-func (k Keeper) RemoveWhitelistPermission(ctx sdk.Context, address sdk.AccAddress, perm types.PermValue) error {
-	actor, found := k.GetNetworkActorByAddress(ctx, address)
-	if !found {
-		return types2.ErrNetworkActorNotFound
-	}
-
+func (k Keeper) RemoveWhitelistPermission(ctx sdk.Context, actor types.NetworkActor, perm types.PermValue) error {
 	err := actor.Permissions.RemoveFromWhitelist(perm)
 	if err != nil {
 		return err
@@ -58,7 +53,7 @@ func (k Keeper) RemoveWhitelistPermission(ctx sdk.Context, address sdk.AccAddres
 	k.SaveNetworkActor(ctx, actor)
 
 	store := ctx.KVStore(k.storeKey)
-	store.Delete(WhitelistAddressPermKey(address, perm))
+	store.Delete(WhitelistAddressPermKey(actor.Address, perm))
 
 	return nil
 }

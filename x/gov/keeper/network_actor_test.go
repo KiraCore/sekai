@@ -100,7 +100,9 @@ func TestKeeper_RemoveWhitelistPermission(t *testing.T) {
 	requireIteratorCount(t, iterator, 2)
 	assertAddrsHaveWhitelistedPerm(t, app, ctx, addrs, types.PermSetPermissions)
 
-	err = app.CustomGovKeeper.RemoveWhitelistPermission(ctx, addrs[0], types.PermSetPermissions)
+	actor, found := app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addrs[0])
+	require.True(t, found)
+	err = app.CustomGovKeeper.RemoveWhitelistPermission(ctx, actor, types.PermSetPermissions)
 	require.NoError(t, err)
 
 	iterator = app.CustomGovKeeper.GetNetworkActorByWhitelistedPermission(ctx, types.PermSetPermissions)
