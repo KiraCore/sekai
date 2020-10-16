@@ -6,8 +6,11 @@
 - Added CLI command to upsert token alias per symbol
 - Added CLI commands to query token aliases per symbol and denom
 - Added CLI command to query all token aliases
+
+### Modified
+
 - Modified execution fee to use transaction type as identifier
-- Set min/max fee range to [100 - 1'000'000] in ukex
+- Modified min/max fee range to [100 - 1'000'000] in ukex
 
 ## [0.1.4] - 10.05.2020
 ### Added
