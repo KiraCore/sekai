@@ -78,9 +78,7 @@ func TestCheckIfAllowedPermission(t *testing.T) {
 			name: "actor has permission whitelisted individually",
 			prepareScenario: func(ctx sdk.Context, keeper keeper.Keeper) {
 				actor := types.NewDefaultActor(addr)
-				keeper.SaveNetworkActor(ctx, actor)
-
-				require.NoError(t, keeper.AddWhitelistPermission(ctx, addr, types.PermClaimValidator))
+				require.NoError(t, keeper.AddWhitelistPermission(ctx, actor, types.PermClaimValidator))
 			},
 			isAllowed: true,
 		},

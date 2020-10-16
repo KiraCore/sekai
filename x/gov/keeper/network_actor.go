@@ -28,13 +28,8 @@ func (k Keeper) GetNetworkActorByAddress(ctx sdk.Context, address sdk.AccAddress
 	return na, true
 }
 
-// AddWhitelistPermission whitelist a permission to an address.
-func (k Keeper) AddWhitelistPermission(ctx sdk.Context, address sdk.AccAddress, perm types.PermValue) error {
-	actor, found := k.GetNetworkActorByAddress(ctx, address)
-	if !found {
-		return types2.ErrNetworkActorNotFound
-	}
-
+// AddWhitelistPermission whitelist a permission to an address. It saves the actor after it.
+func (k Keeper) AddWhitelistPermission(ctx sdk.Context, actor types.NetworkActor, perm types.PermValue) error {
 	err := actor.Permissions.AddToWhitelist(perm)
 	if err != nil {
 		return err
@@ -43,7 +38,7 @@ func (k Keeper) AddWhitelistPermission(ctx sdk.Context, address sdk.AccAddress, 
 	k.SaveNetworkActor(ctx, actor)
 
 	store := ctx.KVStore(k.storeKey)
-	store.Set(WhitelistAddressPermKey(address, perm), actor.Address.Bytes())
+	store.Set(WhitelistAddressPermKey(actor.Address, perm), actor.Address.Bytes())
 
 	return nil
 }
@@ -64,6 +59,15 @@ func (k Keeper) RemoveWhitelistPermission(ctx sdk.Context, address sdk.AccAddres
 
 	store := ctx.KVStore(k.storeKey)
 	store.Delete(WhitelistAddressPermKey(address, perm))
+
+	return nil
+}
+
+func (k Keeper) AssignRoleToAddress(ctx sdk.Context, addr sdk.AccAddress, role types.Role) error {
+	_, found := k.GetNetworkActorByAddress(ctx, addr)
+	if !found {
+		return types2.ErrNetworkActorNotFound
+	}
 
 	return nil
 }

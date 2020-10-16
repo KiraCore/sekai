@@ -263,10 +263,9 @@ func handleWhitelistPermissions(ctx sdk.Context, ck keeper.Keeper, msg *customgo
 	actor, found := ck.GetNetworkActorByAddress(ctx, msg.Address)
 	if !found {
 		actor = customgovtypes.NewDefaultActor(msg.Address)
-		ck.SaveNetworkActor(ctx, actor)
 	}
 
-	err := ck.AddWhitelistPermission(ctx, msg.Address, customgovtypes.PermValue(msg.Permission))
+	err := ck.AddWhitelistPermission(ctx, actor, customgovtypes.PermValue(msg.Permission))
 	if err != nil {
 		return nil, errors.Wrapf(customgovtypes.ErrSetPermissions, "error setting %d to whitelist: %s", msg.Permission, err)
 	}
