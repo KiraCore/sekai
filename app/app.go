@@ -7,10 +7,13 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/x/auth/simulation"
 
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
-
 	customgov "github.com/KiraCore/sekai/x/gov"
 	customgovkeeper "github.com/KiraCore/sekai/x/gov/keeper"
+	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
+
+	tokens "github.com/KiraCore/sekai/x/tokens"
+	tokenskeeper "github.com/KiraCore/sekai/x/tokens/keeper"
+	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
 
 	simappparams "github.com/cosmos/cosmos-sdk/simapp/params"
 
@@ -27,8 +30,8 @@ import (
 
 	cumstomtypes "github.com/KiraCore/sekai/x/staking/types"
 
-	customstaking "github.com/KiraCore/sekai/x/staking"
 	customante "github.com/KiraCore/sekai/app/ante"
+	customstaking "github.com/KiraCore/sekai/x/staking"
 
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 
@@ -124,6 +127,7 @@ var (
 		transfer.AppModuleBasic{},
 		customstaking.AppModuleBasic{},
 		customgov.AppModuleBasic{},
+		tokens.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -175,6 +179,7 @@ type SekaiApp struct {
 
 	customStakingKeeper customkeeper.Keeper
 	customGovKeeper     customgovkeeper.Keeper
+	tokensKeeper        tokenskeeper.Keeper
 
 	// make scoped keepers public for test purposes
 	scopedIBCKeeper      capabilitykeeper.ScopedKeeper
@@ -219,7 +224,7 @@ func NewInitApp(
 		distrtypes.StoreKey, slashingtypes.StoreKey,
 		govtypes.StoreKey, paramstypes.StoreKey, ibchost.StoreKey, upgradetypes.StoreKey,
 		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey,
-		cumstomtypes.ModuleName, customgovtypes.ModuleName,
+		cumstomtypes.ModuleName, customgovtypes.ModuleName, tokenstypes.ModuleName,
 	)
 	tKeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
@@ -289,6 +294,7 @@ func NewInitApp(
 
 	app.customStakingKeeper = customkeeper.NewKeeper(keys[cumstomtypes.ModuleName], cdc)
 	app.customGovKeeper = customgovkeeper.NewKeeper(keys[customgovtypes.ModuleName], appCodec)
+	app.tokensKeeper = tokenskeeper.NewKeeper(keys[tokenstypes.ModuleName], appCodec)
 
 	app.ibcKeeper = ibckeeper.NewKeeper(
 		appCodec, keys[ibchost.StoreKey], app.stakingKeeper, scopedIBCKeeper,
@@ -339,6 +345,7 @@ func NewInitApp(
 		transferModule,
 		customstaking.NewAppModule(app.customStakingKeeper, app.customGovKeeper),
 		customgov.NewAppModule(app.customGovKeeper),
+		tokens.NewAppModule(app.tokensKeeper, app.customGovKeeper),
 	)
 	// During begin block slashing happens after distr.BeginBlocker so that
 	// there is nothing left over in the validator fee pool, so as to keep the
@@ -359,7 +366,7 @@ func NewInitApp(
 		capabilitytypes.ModuleName, authtypes.ModuleName /*distrtypes.ModuleName */ /*stakingtypes.ModuleName,*/, banktypes.ModuleName,
 		/*slashingtypes.ModuleName,*/ govtypes.ModuleName, crisistypes.ModuleName,
 		ibchost.ModuleName, genutiltypes.ModuleName, evidencetypes.ModuleName, ibctransfertypes.ModuleName,
-		cumstomtypes.ModuleName, customgovtypes.ModuleName,
+		cumstomtypes.ModuleName, customgovtypes.ModuleName, tokenstypes.ModuleName,
 	)
 
 	app.mm.RegisterInvariants(&app.crisisKeeper)

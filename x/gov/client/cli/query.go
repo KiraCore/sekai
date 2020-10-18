@@ -154,7 +154,7 @@ func GetCmdQueryNetworkProperties() *cobra.Command {
 func GetCmdQueryExecutionFee() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "execution-fee",
-		Short: "Get the execution fee by [name]",
+		Short: "Get the execution fee by [transaction_type]",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
@@ -163,7 +163,7 @@ func GetCmdQueryExecutionFee() *cobra.Command {
 				return err
 			}
 			params := &types.ExecutionFeeRequest{
-				ExecutionName: args[0],
+				TransactionType: args[0],
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 			res, err := queryClient.GetExecutionFee(context.Background(), params)

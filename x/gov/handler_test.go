@@ -342,7 +342,7 @@ func TestNewHandler_SetExecutionFee(t *testing.T) {
 			name: "Success run with ChangeTxFee permission",
 			msg: types.MsgSetExecutionFee{
 				Name:              "network-properties",
-				TransactionType:   "B",
+				TransactionType:   "network-properties",
 				ExecutionFee:      10000,
 				FailureFee:        1000,
 				Timeout:           1,
@@ -355,7 +355,7 @@ func TestNewHandler_SetExecutionFee(t *testing.T) {
 			name: "Success run without ChangeTxFee permission",
 			msg: types.MsgSetExecutionFee{
 				Name:              "network-properties-2",
-				TransactionType:   "B",
+				TransactionType:   "network-properties-2",
 				ExecutionFee:      10000,
 				FailureFee:        1000,
 				Timeout:           1,
@@ -390,7 +390,7 @@ func TestNewHandler_SetExecutionFee(t *testing.T) {
 			_, err = handler(ctx, &tt.msg)
 			if tt.desiredErr == "" {
 				require.NoError(t, err)
-				execFee := app.CustomGovKeeper.GetExecutionFee(ctx, tt.msg.Name)
+				execFee := app.CustomGovKeeper.GetExecutionFee(ctx, tt.msg.TransactionType)
 				require.Equal(t, tt.msg.Name, execFee.Name)
 				require.Equal(t, tt.msg.TransactionType, execFee.TransactionType)
 				require.Equal(t, tt.msg.ExecutionFee, execFee.ExecutionFee)
