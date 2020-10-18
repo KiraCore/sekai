@@ -7,14 +7,20 @@ option go_package = "github.com/KiraCore/sekai/x/tokens/types";
 
 message TokenRate {
     string denom = 1; // denomination target
-    float rate = 2; // Exchange rate in terms of KEX token
+    uint64 rate = 2; // Exchange rate in terms of KEX token, decimal=10^9
     bool fee_payments = 3; // Properties defining if it is enabled or disabled as fee payment method
 }
 
-message MsgUpsertTokenRate {
+message TokenRateHumanReadable {
     string denom = 1;
-    float rate = 2;
+    string rate = 2;
     bool fee_payments = 3;
+}
+
+message MsgUpsertTokenRate {
+    string denom = 1; // denomination target
+    string rate = 2; // Exchange rate in terms of KEX token, decimal=10^9, in string e.g. 0.01
+    bool fee_payments = 3; // Properties defining if it is enabled or disabled as fee payment methodß
     bytes proposer = 4 [
         (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
         (gogoproto.moretags) = "yaml:\"proposer\""

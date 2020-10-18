@@ -1,6 +1,10 @@
 package types
 
 import (
+	"errors"
+	"math"
+	"strconv"
+
 	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -18,7 +22,7 @@ var (
 func NewMsgUpsertTokenRate(
 	proposer sdk.AccAddress,
 	denom string,
-	rate float32,
+	rate string,
 	feePayments bool,
 ) *MsgUpsertTokenRate {
 	return &MsgUpsertTokenRate{
@@ -41,6 +45,23 @@ func (m *MsgUpsertTokenRate) Type() string {
 
 // ValidateBasic returns basic validation result
 func (m *MsgUpsertTokenRate) ValidateBasic() error {
+	rateFloat, err := strconv.ParseFloat(m.Rate, 64)
+	if err != nil {
+		return err
+	}
+
+	if rateFloat <= 0 {
+		return errors.New("rate should be positive")
+	}
+
+	if rateFloat >= RateMaximum {
+		return errors.New("rate is larger than maximum")
+	}
+
+	rateRawFloat := rateFloat * RateDecimalDenominator
+	if math.Floor(rateRawFloat) != rateRawFloat {
+		return errors.New("decimal is bigger than maximum decimal")
+	}
 	return nil
 }
 

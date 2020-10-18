@@ -166,7 +166,7 @@ func GetTxUpsertTokenRateCmd() *cobra.Command {
 				return fmt.Errorf("invalid denom")
 			}
 
-			rate, err := cmd.Flags().GetFloat32(FlagRate)
+			rateString, err := cmd.Flags().GetString(FlagRate)
 			if err != nil {
 				return fmt.Errorf("invalid rate")
 			}
@@ -179,7 +179,7 @@ func GetTxUpsertTokenRateCmd() *cobra.Command {
 			msg := types.NewMsgUpsertTokenRate(
 				clientCtx.FromAddress,
 				denom,
-				rate,
+				rateString,
 				feePayments,
 			)
 
@@ -188,7 +188,7 @@ func GetTxUpsertTokenRateCmd() *cobra.Command {
 	}
 
 	cmd.Flags().String(FlagDenom, "tbtc", "denom - identifier for token rates")
-	cmd.Flags().Float64(FlagRate, 1, "rate to register")
+	cmd.Flags().String(FlagRate, "1.0", "rate to register, max decimal 9, max value 10^10")
 	cmd.Flags().Bool(FlagFeePayments, true, "use registry as fee payment")
 
 	flags.AddTxFlagsToCmd(cmd)

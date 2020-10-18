@@ -1,6 +1,8 @@
 package tokens
 
 import (
+	"strconv"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -50,9 +52,15 @@ func handleUpsertTokenRate(ctx sdk.Context, ck keeper.Keeper, cgk types.CustomGo
 		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermUpsertTokenRate")
 	}
 
-	err := ck.UpsertTokenRate(ctx, *types.NewTokenRate(
+	rateFloat, err := strconv.ParseFloat(msg.Rate, 64)
+	if err != nil {
+		return nil, err
+	}
+	rateRaw := uint64(rateFloat * types.RateDecimalDenominator)
+
+	err = ck.UpsertTokenRate(ctx, *types.NewTokenRate(
 		msg.Denom,
-		msg.Rate,
+		rateRaw,
 		msg.FeePayments,
 	))
 	return &sdk.Result{}, err

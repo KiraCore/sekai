@@ -134,7 +134,7 @@ func TestNewHandler_MsgUpsertTokenRate(t *testing.T) {
 				require.NoError(t, err)
 				return tokenstypes.NewMsgUpsertTokenRate(
 					addr,
-					"quv", 0.1,
+					"finney", "0.001",
 					true,
 				), nil
 			},
@@ -144,11 +144,44 @@ func TestNewHandler_MsgUpsertTokenRate(t *testing.T) {
 			constructor: func(addr sdk.AccAddress) (*tokenstypes.MsgUpsertTokenRate, error) {
 				return tokenstypes.NewMsgUpsertTokenRate(
 					addr,
-					"quv", 0.1,
+					"finney", "0.001",
 					true,
 				), nil
 			},
 			handlerErr: "PermUpsertTokenRate: not enough permissions",
+		},
+		{
+			name: "negative rate value test",
+			constructor: func(addr sdk.AccAddress) (*tokenstypes.MsgUpsertTokenRate, error) {
+				return tokenstypes.NewMsgUpsertTokenRate(
+					addr,
+					"finney", "-1.0",
+					true,
+				), nil
+			},
+			handlerErr: "rate should be positive",
+		},
+		{
+			name: "bigger than maximum decimal rate value test",
+			constructor: func(addr sdk.AccAddress) (*tokenstypes.MsgUpsertTokenRate, error) {
+				return tokenstypes.NewMsgUpsertTokenRate(
+					addr,
+					"finney", "0.00123456789",
+					true,
+				), nil
+			},
+			handlerErr: "decimal is bigger than maximum decimal",
+		},
+		{
+			name: "larger than maximum rate value test",
+			constructor: func(addr sdk.AccAddress) (*tokenstypes.MsgUpsertTokenRate, error) {
+				return tokenstypes.NewMsgUpsertTokenRate(
+					addr,
+					"finney", "100000000000",
+					true,
+				), nil
+			},
+			handlerErr: "rate is larger than maximum",
 		},
 	}
 	for i, tt := range tests {

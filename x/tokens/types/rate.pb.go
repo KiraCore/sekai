@@ -4,7 +4,6 @@
 package types
 
 import (
-	encoding_binary "encoding/binary"
 	fmt "fmt"
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/gogo/protobuf/gogoproto"
@@ -26,9 +25,9 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type TokenRate struct {
-	Denom       string  `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
-	Rate        float32 `protobuf:"fixed32,2,opt,name=rate,proto3" json:"rate,omitempty"`
-	FeePayments bool    `protobuf:"varint,3,opt,name=fee_payments,json=feePayments,proto3" json:"fee_payments,omitempty"`
+	Denom       string `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
+	Rate        uint64 `protobuf:"varint,2,opt,name=rate,proto3" json:"rate,omitempty"`
+	FeePayments bool   `protobuf:"varint,3,opt,name=fee_payments,json=feePayments,proto3" json:"fee_payments,omitempty"`
 }
 
 func (m *TokenRate) Reset()         { *m = TokenRate{} }
@@ -71,7 +70,7 @@ func (m *TokenRate) GetDenom() string {
 	return ""
 }
 
-func (m *TokenRate) GetRate() float32 {
+func (m *TokenRate) GetRate() uint64 {
 	if m != nil {
 		return m.Rate
 	}
@@ -85,9 +84,69 @@ func (m *TokenRate) GetFeePayments() bool {
 	return false
 }
 
+type TokenRateHumanReadable struct {
+	Denom       string `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
+	Rate        string `protobuf:"bytes,2,opt,name=rate,proto3" json:"rate,omitempty"`
+	FeePayments bool   `protobuf:"varint,3,opt,name=fee_payments,json=feePayments,proto3" json:"fee_payments,omitempty"`
+}
+
+func (m *TokenRateHumanReadable) Reset()         { *m = TokenRateHumanReadable{} }
+func (m *TokenRateHumanReadable) String() string { return proto.CompactTextString(m) }
+func (*TokenRateHumanReadable) ProtoMessage()    {}
+func (*TokenRateHumanReadable) Descriptor() ([]byte, []int) {
+	return fileDescriptor_426335fde4cae2d1, []int{1}
+}
+func (m *TokenRateHumanReadable) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *TokenRateHumanReadable) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_TokenRateHumanReadable.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *TokenRateHumanReadable) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_TokenRateHumanReadable.Merge(m, src)
+}
+func (m *TokenRateHumanReadable) XXX_Size() int {
+	return m.Size()
+}
+func (m *TokenRateHumanReadable) XXX_DiscardUnknown() {
+	xxx_messageInfo_TokenRateHumanReadable.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_TokenRateHumanReadable proto.InternalMessageInfo
+
+func (m *TokenRateHumanReadable) GetDenom() string {
+	if m != nil {
+		return m.Denom
+	}
+	return ""
+}
+
+func (m *TokenRateHumanReadable) GetRate() string {
+	if m != nil {
+		return m.Rate
+	}
+	return ""
+}
+
+func (m *TokenRateHumanReadable) GetFeePayments() bool {
+	if m != nil {
+		return m.FeePayments
+	}
+	return false
+}
+
 type MsgUpsertTokenRate struct {
 	Denom       string                                        `protobuf:"bytes,1,opt,name=denom,proto3" json:"denom,omitempty"`
-	Rate        float32                                       `protobuf:"fixed32,2,opt,name=rate,proto3" json:"rate,omitempty"`
+	Rate        string                                        `protobuf:"bytes,2,opt,name=rate,proto3" json:"rate,omitempty"`
 	FeePayments bool                                          `protobuf:"varint,3,opt,name=fee_payments,json=feePayments,proto3" json:"fee_payments,omitempty"`
 	Proposer    github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,4,opt,name=proposer,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"proposer,omitempty" yaml:"proposer"`
 }
@@ -96,7 +155,7 @@ func (m *MsgUpsertTokenRate) Reset()         { *m = MsgUpsertTokenRate{} }
 func (m *MsgUpsertTokenRate) String() string { return proto.CompactTextString(m) }
 func (*MsgUpsertTokenRate) ProtoMessage()    {}
 func (*MsgUpsertTokenRate) Descriptor() ([]byte, []int) {
-	return fileDescriptor_426335fde4cae2d1, []int{1}
+	return fileDescriptor_426335fde4cae2d1, []int{2}
 }
 func (m *MsgUpsertTokenRate) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -132,11 +191,11 @@ func (m *MsgUpsertTokenRate) GetDenom() string {
 	return ""
 }
 
-func (m *MsgUpsertTokenRate) GetRate() float32 {
+func (m *MsgUpsertTokenRate) GetRate() string {
 	if m != nil {
 		return m.Rate
 	}
-	return 0
+	return ""
 }
 
 func (m *MsgUpsertTokenRate) GetFeePayments() bool {
@@ -155,32 +214,34 @@ func (m *MsgUpsertTokenRate) GetProposer() github_com_cosmos_cosmos_sdk_types.Ac
 
 func init() {
 	proto.RegisterType((*TokenRate)(nil), "kira.tokens.TokenRate")
+	proto.RegisterType((*TokenRateHumanReadable)(nil), "kira.tokens.TokenRateHumanReadable")
 	proto.RegisterType((*MsgUpsertTokenRate)(nil), "kira.tokens.MsgUpsertTokenRate")
 }
 
 func init() { proto.RegisterFile("rate.proto", fileDescriptor_426335fde4cae2d1) }
 
 var fileDescriptor_426335fde4cae2d1 = []byte{
-	// 291 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x2a, 0x4a, 0x2c, 0x49,
-	0xd5, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0xce, 0xce, 0x2c, 0x4a, 0xd4, 0x2b, 0xc9, 0xcf,
-	0x4e, 0xcd, 0x2b, 0x96, 0x12, 0x49, 0xcf, 0x4f, 0xcf, 0x07, 0x8b, 0xeb, 0x83, 0x58, 0x10, 0x25,
-	0x4a, 0x11, 0x5c, 0x9c, 0x21, 0x20, 0xf9, 0xa0, 0xc4, 0x92, 0x54, 0x21, 0x11, 0x2e, 0xd6, 0x94,
-	0xd4, 0xbc, 0xfc, 0x5c, 0x09, 0x46, 0x05, 0x46, 0x0d, 0xce, 0x20, 0x08, 0x47, 0x48, 0x88, 0x8b,
-	0x05, 0x64, 0xa6, 0x04, 0x93, 0x02, 0xa3, 0x06, 0x53, 0x10, 0x98, 0x2d, 0xa4, 0xc8, 0xc5, 0x93,
-	0x96, 0x9a, 0x1a, 0x5f, 0x90, 0x58, 0x99, 0x9b, 0x9a, 0x57, 0x52, 0x2c, 0xc1, 0xac, 0xc0, 0xa8,
-	0xc1, 0x11, 0xc4, 0x9d, 0x96, 0x9a, 0x1a, 0x00, 0x15, 0x52, 0x3a, 0xcc, 0xc8, 0x25, 0xe4, 0x5b,
-	0x9c, 0x1e, 0x5a, 0x50, 0x9c, 0x5a, 0x54, 0x42, 0x1b, 0x3b, 0x84, 0x12, 0xb8, 0x38, 0x0a, 0x8a,
-	0xf2, 0x0b, 0xf2, 0x8b, 0x53, 0x8b, 0x24, 0x58, 0x14, 0x18, 0x35, 0x78, 0x9c, 0x5c, 0x3e, 0xdd,
-	0x93, 0xe7, 0xaf, 0x4c, 0xcc, 0xcd, 0xb1, 0x52, 0x82, 0xc9, 0x28, 0xfd, 0xba, 0x27, 0xaf, 0x9b,
-	0x9e, 0x59, 0x92, 0x51, 0x9a, 0xa4, 0x97, 0x9c, 0x9f, 0xab, 0x9f, 0x9c, 0x5f, 0x9c, 0x9b, 0x5f,
-	0x0c, 0xa5, 0x74, 0x8b, 0x53, 0xb2, 0xf5, 0x4b, 0x2a, 0x0b, 0x52, 0x8b, 0xf5, 0x1c, 0x93, 0x93,
-	0x1d, 0x53, 0x52, 0x8a, 0x52, 0x8b, 0x8b, 0x83, 0xe0, 0xa6, 0x3a, 0x39, 0x9d, 0x78, 0x24, 0xc7,
-	0x78, 0xe1, 0x91, 0x1c, 0xe3, 0x83, 0x47, 0x72, 0x8c, 0x13, 0x1e, 0xcb, 0x31, 0x5c, 0x78, 0x2c,
-	0xc7, 0x70, 0xe3, 0xb1, 0x1c, 0x43, 0x94, 0x06, 0x92, 0x91, 0xde, 0x99, 0x45, 0x89, 0xce, 0xf9,
-	0x45, 0xa9, 0xfa, 0xc5, 0xa9, 0xd9, 0x89, 0x99, 0xfa, 0x15, 0xfa, 0x90, 0x30, 0x87, 0x18, 0x9c,
-	0xc4, 0x06, 0x0e, 0x6a, 0x63, 0x40, 0x00, 0x00, 0x00, 0xff, 0xff, 0xe9, 0xd4, 0x02, 0x17, 0x9b,
-	0x01, 0x00, 0x00,
+	// 313 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x91, 0x31, 0x4b, 0xfb, 0x40,
+	0x18, 0xc6, 0x7b, 0xff, 0x7f, 0x95, 0xf6, 0x5a, 0x10, 0x8e, 0x22, 0xc1, 0x21, 0x8d, 0x99, 0xb2,
+	0x34, 0x19, 0xdc, 0xdc, 0x5a, 0x1d, 0x04, 0x11, 0x24, 0x28, 0x88, 0x8b, 0x5e, 0x93, 0xb7, 0x31,
+	0xa4, 0x97, 0xf7, 0xb8, 0xf7, 0x0a, 0xf6, 0x5b, 0xf8, 0x9d, 0x5c, 0x1c, 0x3b, 0x3a, 0x15, 0x69,
+	0xbf, 0x81, 0xa3, 0x93, 0xb4, 0xa9, 0xc5, 0xb1, 0x4e, 0xf7, 0xdc, 0xf3, 0x1c, 0xbf, 0x87, 0xe3,
+	0xe1, 0xdc, 0x48, 0x0b, 0xa1, 0x36, 0x68, 0x51, 0xb4, 0x8a, 0xdc, 0xc8, 0xd0, 0x62, 0x01, 0x25,
+	0x1d, 0x75, 0x32, 0xcc, 0x70, 0xed, 0x47, 0x2b, 0x55, 0x3d, 0xf1, 0xef, 0x78, 0xf3, 0x66, 0x95,
+	0xc7, 0xd2, 0x82, 0xe8, 0xf0, 0xbd, 0x14, 0x4a, 0x54, 0x0e, 0xf3, 0x58, 0xd0, 0x8c, 0xab, 0x8b,
+	0x10, 0xbc, 0xbe, 0x62, 0x3a, 0xff, 0x3c, 0x16, 0xd4, 0xe3, 0xb5, 0x16, 0xc7, 0xbc, 0x3d, 0x02,
+	0x78, 0xd0, 0x72, 0xaa, 0xa0, 0xb4, 0xe4, 0xfc, 0xf7, 0x58, 0xd0, 0x88, 0x5b, 0x23, 0x80, 0xeb,
+	0x8d, 0xe5, 0x03, 0x3f, 0xdc, 0x92, 0x2f, 0x26, 0x4a, 0x96, 0x31, 0xc8, 0x54, 0x0e, 0xc7, 0xbb,
+	0xd4, 0x34, 0x77, 0xaf, 0x79, 0x65, 0x5c, 0x5c, 0x51, 0x76, 0xab, 0x09, 0x8c, 0xfd, 0xcb, 0x57,
+	0x76, 0xef, 0x10, 0x8f, 0xbc, 0xa1, 0x0d, 0x6a, 0x24, 0x30, 0x4e, 0xdd, 0x63, 0x41, 0x7b, 0x70,
+	0xfe, 0x39, 0xef, 0x1e, 0x4c, 0xa5, 0x1a, 0x9f, 0xfa, 0x3f, 0x89, 0xff, 0x35, 0xef, 0xf6, 0xb2,
+	0xdc, 0x3e, 0x4d, 0x86, 0x61, 0x82, 0x2a, 0x4a, 0x90, 0x14, 0xd2, 0xe6, 0xe8, 0x51, 0x5a, 0x44,
+	0x76, 0xaa, 0x81, 0xc2, 0x7e, 0x92, 0xf4, 0xd3, 0xd4, 0x00, 0x51, 0xbc, 0xa5, 0x0e, 0x06, 0x6f,
+	0x0b, 0x97, 0xcd, 0x16, 0x2e, 0xfb, 0x58, 0xb8, 0xec, 0x65, 0xe9, 0xd6, 0x66, 0x4b, 0xb7, 0xf6,
+	0xbe, 0x74, 0x6b, 0xf7, 0xc1, 0x2f, 0xe4, 0x65, 0x6e, 0xe4, 0x19, 0x1a, 0x88, 0x08, 0x0a, 0x99,
+	0x47, 0xcf, 0x51, 0x35, 0x6d, 0x05, 0x1e, 0xee, 0xaf, 0x17, 0x3d, 0xf9, 0x0e, 0x00, 0x00, 0xff,
+	0xff, 0x97, 0xcf, 0xc3, 0x26, 0x02, 0x02, 0x00, 0x00,
 }
 
 func (m *TokenRate) Marshal() (dAtA []byte, err error) {
@@ -214,10 +275,56 @@ func (m *TokenRate) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		dAtA[i] = 0x18
 	}
 	if m.Rate != 0 {
-		i -= 4
-		encoding_binary.LittleEndian.PutUint32(dAtA[i:], uint32(math.Float32bits(float32(m.Rate))))
+		i = encodeVarintRate(dAtA, i, uint64(m.Rate))
 		i--
-		dAtA[i] = 0x15
+		dAtA[i] = 0x10
+	}
+	if len(m.Denom) > 0 {
+		i -= len(m.Denom)
+		copy(dAtA[i:], m.Denom)
+		i = encodeVarintRate(dAtA, i, uint64(len(m.Denom)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *TokenRateHumanReadable) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *TokenRateHumanReadable) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *TokenRateHumanReadable) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.FeePayments {
+		i--
+		if m.FeePayments {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x18
+	}
+	if len(m.Rate) > 0 {
+		i -= len(m.Rate)
+		copy(dAtA[i:], m.Rate)
+		i = encodeVarintRate(dAtA, i, uint64(len(m.Rate)))
+		i--
+		dAtA[i] = 0x12
 	}
 	if len(m.Denom) > 0 {
 		i -= len(m.Denom)
@@ -266,11 +373,12 @@ func (m *MsgUpsertTokenRate) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x18
 	}
-	if m.Rate != 0 {
-		i -= 4
-		encoding_binary.LittleEndian.PutUint32(dAtA[i:], uint32(math.Float32bits(float32(m.Rate))))
+	if len(m.Rate) > 0 {
+		i -= len(m.Rate)
+		copy(dAtA[i:], m.Rate)
+		i = encodeVarintRate(dAtA, i, uint64(len(m.Rate)))
 		i--
-		dAtA[i] = 0x15
+		dAtA[i] = 0x12
 	}
 	if len(m.Denom) > 0 {
 		i -= len(m.Denom)
@@ -304,7 +412,27 @@ func (m *TokenRate) Size() (n int) {
 		n += 1 + l + sovRate(uint64(l))
 	}
 	if m.Rate != 0 {
-		n += 5
+		n += 1 + sovRate(uint64(m.Rate))
+	}
+	if m.FeePayments {
+		n += 2
+	}
+	return n
+}
+
+func (m *TokenRateHumanReadable) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Denom)
+	if l > 0 {
+		n += 1 + l + sovRate(uint64(l))
+	}
+	l = len(m.Rate)
+	if l > 0 {
+		n += 1 + l + sovRate(uint64(l))
 	}
 	if m.FeePayments {
 		n += 2
@@ -322,8 +450,9 @@ func (m *MsgUpsertTokenRate) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovRate(uint64(l))
 	}
-	if m.Rate != 0 {
-		n += 5
+	l = len(m.Rate)
+	if l > 0 {
+		n += 1 + l + sovRate(uint64(l))
 	}
 	if m.FeePayments {
 		n += 2
@@ -403,16 +532,161 @@ func (m *TokenRate) Unmarshal(dAtA []byte) error {
 			m.Denom = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
-			if wireType != 5 {
+			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Rate", wireType)
 			}
-			var v uint32
-			if (iNdEx + 4) > l {
+			m.Rate = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Rate |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field FeePayments", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.FeePayments = bool(v != 0)
+		default:
+			iNdEx = preIndex
+			skippy, err := skipRate(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthRate
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthRate
+			}
+			if (iNdEx + skippy) > l {
 				return io.ErrUnexpectedEOF
 			}
-			v = uint32(encoding_binary.LittleEndian.Uint32(dAtA[iNdEx:]))
-			iNdEx += 4
-			m.Rate = float32(math.Float32frombits(v))
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *TokenRateHumanReadable) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowRate
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: TokenRateHumanReadable: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: TokenRateHumanReadable: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denom", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthRate
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthRate
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denom = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Rate", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthRate
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthRate
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Rate = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		case 3:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field FeePayments", wireType)
@@ -519,16 +793,37 @@ func (m *MsgUpsertTokenRate) Unmarshal(dAtA []byte) error {
 			m.Denom = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
-			if wireType != 5 {
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Rate", wireType)
 			}
-			var v uint32
-			if (iNdEx + 4) > l {
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRate
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthRate
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthRate
+			}
+			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			v = uint32(encoding_binary.LittleEndian.Uint32(dAtA[iNdEx:]))
-			iNdEx += 4
-			m.Rate = float32(math.Float32frombits(v))
+			m.Rate = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		case 3:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field FeePayments", wireType)
