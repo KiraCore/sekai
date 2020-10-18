@@ -2,6 +2,7 @@ syntax = "proto3";
 package kira.tokens;
 
 import "alias.proto";
+import "rate.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/tokens/types";
 
@@ -11,6 +12,10 @@ service Query {
   rpc GetTokenAlias (TokenAliasRequest) returns (TokenAliasResponse) {}
   rpc GetAllTokenAliases (AllTokenAliasesRequest) returns (AllTokenAliasesResponse) {}
   rpc GetTokenAliasesByDenom (TokenAliasesByDenomRequest) returns (TokenAliasesByDenomResponse) {}
+  // Returns the token rates
+  rpc GetTokenRate (TokenRateRequest) returns (TokenRateResponse) {}
+  rpc GetAllTokenRates (AllTokenRatesRequest) returns (AllTokenRatesResponse) {}
+  rpc GetTokenRatesByDenom (TokenRatesByDenomRequest) returns (TokenRatesByDenomResponse) {}
 }
 
 message TokenAliasRequest {
@@ -33,4 +38,26 @@ message TokenAliasesByDenomRequest {
   
 message TokenAliasesByDenomResponse {
   map<string, kira.tokens.TokenAlias> data = 1;
+}
+
+message TokenRateRequest {
+  string symbol = 1;
+}
+
+message TokenRateResponse {
+  kira.tokens.TokenRate data = 1;
+}
+
+message AllTokenRatesRequest {}
+
+message AllTokenRatesResponse {
+  repeated kira.tokens.TokenRate data = 1;
+}
+
+message TokenRatesByDenomRequest {
+  repeated string denoms = 1;
+}
+  
+message TokenRatesByDenomResponse {
+  map<string, kira.tokens.TokenRate> data = 1;
 }

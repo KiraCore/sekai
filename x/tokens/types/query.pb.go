@@ -283,6 +283,262 @@ func (m *TokenAliasesByDenomResponse) GetData() map[string]*TokenAlias {
 	return nil
 }
 
+type TokenRateRequest struct {
+	Symbol string `protobuf:"bytes,1,opt,name=symbol,proto3" json:"symbol,omitempty"`
+}
+
+func (m *TokenRateRequest) Reset()         { *m = TokenRateRequest{} }
+func (m *TokenRateRequest) String() string { return proto.CompactTextString(m) }
+func (*TokenRateRequest) ProtoMessage()    {}
+func (*TokenRateRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5c6ac9b241082464, []int{6}
+}
+func (m *TokenRateRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *TokenRateRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_TokenRateRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *TokenRateRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_TokenRateRequest.Merge(m, src)
+}
+func (m *TokenRateRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *TokenRateRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_TokenRateRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_TokenRateRequest proto.InternalMessageInfo
+
+func (m *TokenRateRequest) GetSymbol() string {
+	if m != nil {
+		return m.Symbol
+	}
+	return ""
+}
+
+type TokenRateResponse struct {
+	Data *TokenRate `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty"`
+}
+
+func (m *TokenRateResponse) Reset()         { *m = TokenRateResponse{} }
+func (m *TokenRateResponse) String() string { return proto.CompactTextString(m) }
+func (*TokenRateResponse) ProtoMessage()    {}
+func (*TokenRateResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5c6ac9b241082464, []int{7}
+}
+func (m *TokenRateResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *TokenRateResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_TokenRateResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *TokenRateResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_TokenRateResponse.Merge(m, src)
+}
+func (m *TokenRateResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *TokenRateResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_TokenRateResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_TokenRateResponse proto.InternalMessageInfo
+
+func (m *TokenRateResponse) GetData() *TokenRate {
+	if m != nil {
+		return m.Data
+	}
+	return nil
+}
+
+type AllTokenRatesRequest struct {
+}
+
+func (m *AllTokenRatesRequest) Reset()         { *m = AllTokenRatesRequest{} }
+func (m *AllTokenRatesRequest) String() string { return proto.CompactTextString(m) }
+func (*AllTokenRatesRequest) ProtoMessage()    {}
+func (*AllTokenRatesRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5c6ac9b241082464, []int{8}
+}
+func (m *AllTokenRatesRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *AllTokenRatesRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_AllTokenRatesRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *AllTokenRatesRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AllTokenRatesRequest.Merge(m, src)
+}
+func (m *AllTokenRatesRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *AllTokenRatesRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_AllTokenRatesRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AllTokenRatesRequest proto.InternalMessageInfo
+
+type AllTokenRatesResponse struct {
+	Data []*TokenRate `protobuf:"bytes,1,rep,name=data,proto3" json:"data,omitempty"`
+}
+
+func (m *AllTokenRatesResponse) Reset()         { *m = AllTokenRatesResponse{} }
+func (m *AllTokenRatesResponse) String() string { return proto.CompactTextString(m) }
+func (*AllTokenRatesResponse) ProtoMessage()    {}
+func (*AllTokenRatesResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5c6ac9b241082464, []int{9}
+}
+func (m *AllTokenRatesResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *AllTokenRatesResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_AllTokenRatesResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *AllTokenRatesResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_AllTokenRatesResponse.Merge(m, src)
+}
+func (m *AllTokenRatesResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *AllTokenRatesResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_AllTokenRatesResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_AllTokenRatesResponse proto.InternalMessageInfo
+
+func (m *AllTokenRatesResponse) GetData() []*TokenRate {
+	if m != nil {
+		return m.Data
+	}
+	return nil
+}
+
+type TokenRatesByDenomRequest struct {
+	Denoms []string `protobuf:"bytes,1,rep,name=denoms,proto3" json:"denoms,omitempty"`
+}
+
+func (m *TokenRatesByDenomRequest) Reset()         { *m = TokenRatesByDenomRequest{} }
+func (m *TokenRatesByDenomRequest) String() string { return proto.CompactTextString(m) }
+func (*TokenRatesByDenomRequest) ProtoMessage()    {}
+func (*TokenRatesByDenomRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5c6ac9b241082464, []int{10}
+}
+func (m *TokenRatesByDenomRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *TokenRatesByDenomRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_TokenRatesByDenomRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *TokenRatesByDenomRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_TokenRatesByDenomRequest.Merge(m, src)
+}
+func (m *TokenRatesByDenomRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *TokenRatesByDenomRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_TokenRatesByDenomRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_TokenRatesByDenomRequest proto.InternalMessageInfo
+
+func (m *TokenRatesByDenomRequest) GetDenoms() []string {
+	if m != nil {
+		return m.Denoms
+	}
+	return nil
+}
+
+type TokenRatesByDenomResponse struct {
+	Data map[string]*TokenRate `protobuf:"bytes,1,rep,name=data,proto3" json:"data,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+}
+
+func (m *TokenRatesByDenomResponse) Reset()         { *m = TokenRatesByDenomResponse{} }
+func (m *TokenRatesByDenomResponse) String() string { return proto.CompactTextString(m) }
+func (*TokenRatesByDenomResponse) ProtoMessage()    {}
+func (*TokenRatesByDenomResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5c6ac9b241082464, []int{11}
+}
+func (m *TokenRatesByDenomResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *TokenRatesByDenomResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_TokenRatesByDenomResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *TokenRatesByDenomResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_TokenRatesByDenomResponse.Merge(m, src)
+}
+func (m *TokenRatesByDenomResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *TokenRatesByDenomResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_TokenRatesByDenomResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_TokenRatesByDenomResponse proto.InternalMessageInfo
+
+func (m *TokenRatesByDenomResponse) GetData() map[string]*TokenRate {
+	if m != nil {
+		return m.Data
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*TokenAliasRequest)(nil), "kira.tokens.TokenAliasRequest")
 	proto.RegisterType((*TokenAliasResponse)(nil), "kira.tokens.TokenAliasResponse")
@@ -291,37 +547,53 @@ func init() {
 	proto.RegisterType((*TokenAliasesByDenomRequest)(nil), "kira.tokens.TokenAliasesByDenomRequest")
 	proto.RegisterType((*TokenAliasesByDenomResponse)(nil), "kira.tokens.TokenAliasesByDenomResponse")
 	proto.RegisterMapType((map[string]*TokenAlias)(nil), "kira.tokens.TokenAliasesByDenomResponse.DataEntry")
+	proto.RegisterType((*TokenRateRequest)(nil), "kira.tokens.TokenRateRequest")
+	proto.RegisterType((*TokenRateResponse)(nil), "kira.tokens.TokenRateResponse")
+	proto.RegisterType((*AllTokenRatesRequest)(nil), "kira.tokens.AllTokenRatesRequest")
+	proto.RegisterType((*AllTokenRatesResponse)(nil), "kira.tokens.AllTokenRatesResponse")
+	proto.RegisterType((*TokenRatesByDenomRequest)(nil), "kira.tokens.TokenRatesByDenomRequest")
+	proto.RegisterType((*TokenRatesByDenomResponse)(nil), "kira.tokens.TokenRatesByDenomResponse")
+	proto.RegisterMapType((map[string]*TokenRate)(nil), "kira.tokens.TokenRatesByDenomResponse.DataEntry")
 }
 
 func init() { proto.RegisterFile("query.proto", fileDescriptor_5c6ac9b241082464) }
 
 var fileDescriptor_5c6ac9b241082464 = []byte{
-	// 386 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x53, 0x4d, 0x4f, 0xea, 0x50,
-	0x10, 0x6d, 0xe1, 0x41, 0xc2, 0x34, 0x2f, 0x79, 0xef, 0x2e, 0x80, 0xf4, 0x25, 0x7d, 0xa6, 0x9a,
-	0x48, 0x42, 0x6c, 0x13, 0x74, 0x61, 0xdc, 0x81, 0x08, 0x0b, 0x37, 0xda, 0xb8, 0x72, 0x77, 0x91,
-	0x89, 0x36, 0xfd, 0xb8, 0xd0, 0x7b, 0x6b, 0xec, 0xbf, 0xf0, 0x8f, 0xb8, 0xf6, 0x2f, 0xb8, 0x64,
-	0xe9, 0xd2, 0xc0, 0x1f, 0x31, 0xfd, 0x10, 0x8a, 0x7c, 0xb9, 0xeb, 0xcc, 0x9c, 0x99, 0x73, 0x7a,
-	0x4e, 0x2e, 0x28, 0xe3, 0x10, 0x83, 0xc8, 0x18, 0x05, 0x4c, 0x30, 0xa2, 0x38, 0x76, 0x40, 0x0d,
-	0xc1, 0x1c, 0xf4, 0xb9, 0xaa, 0x50, 0xd7, 0xa6, 0x3c, 0x9d, 0xe8, 0x4d, 0xf8, 0x7b, 0x13, 0xb7,
-	0xdb, 0x71, 0xcf, 0xc2, 0x71, 0x88, 0x5c, 0x90, 0x2a, 0x94, 0x79, 0xe4, 0x0d, 0x98, 0x5b, 0x97,
-	0xf7, 0xe4, 0x46, 0xc5, 0xca, 0x2a, 0xbd, 0x0d, 0x24, 0x0f, 0xe6, 0x23, 0xe6, 0x73, 0x24, 0x4d,
-	0xf8, 0x35, 0xa4, 0x82, 0x26, 0x58, 0xa5, 0x55, 0x33, 0x72, 0x5c, 0x46, 0x0e, 0x9e, 0x80, 0xf4,
-	0x3a, 0x54, 0xdb, 0xae, 0xbb, 0x68, 0xe3, 0x17, 0xa9, 0xde, 0x83, 0xda, 0xca, 0x64, 0x85, 0xa1,
-	0xb8, 0x9b, 0xe1, 0x04, 0xd4, 0xfc, 0x91, 0x4e, 0xd4, 0x45, 0x9f, 0x79, 0xb9, 0x5f, 0x1b, 0xc6,
-	0x35, 0x4f, 0x8e, 0x55, 0xac, 0xac, 0xd2, 0x5f, 0x65, 0xf8, 0xb7, 0x76, 0x2d, 0x93, 0xd0, 0x5b,
-	0x92, 0xd0, 0xda, 0x20, 0x61, 0x65, 0xcf, 0xe8, 0x52, 0x41, 0x2f, 0x7c, 0x11, 0x44, 0xa9, 0x3a,
-	0xf5, 0x0a, 0x2a, 0xf3, 0x16, 0xf9, 0x03, 0x45, 0x07, 0xa3, 0xcc, 0xe4, 0xf8, 0x93, 0x1c, 0x41,
-	0xe9, 0x91, 0xba, 0x21, 0xd6, 0x0b, 0xdb, 0xcd, 0x4c, 0x51, 0x67, 0x85, 0x53, 0xb9, 0xf5, 0x52,
-	0x80, 0xd2, 0x75, 0x9c, 0x35, 0xb1, 0xe0, 0x77, 0x1f, 0xc5, 0x02, 0x45, 0xb4, 0x4d, 0xeb, 0xa9,
-	0x19, 0xea, 0xff, 0x8d, 0xf3, 0x54, 0xbd, 0x2e, 0x11, 0x0a, 0xa4, 0x8f, 0xe2, 0x5b, 0x30, 0x64,
-	0x7f, 0x69, 0x71, 0x7d, 0xa0, 0xea, 0xc1, 0x76, 0xd0, 0x9c, 0xc2, 0x83, 0xea, 0x92, 0xec, 0xb9,
-	0x89, 0xe4, 0x70, 0xb7, 0xcd, 0x29, 0x55, 0xe3, 0xa7, 0x79, 0xe8, 0x52, 0xa7, 0xf3, 0x36, 0xd5,
-	0xe4, 0xc9, 0x54, 0x93, 0x3f, 0xa6, 0x9a, 0xfc, 0x3c, 0xd3, 0xa4, 0xc9, 0x4c, 0x93, 0xde, 0x67,
-	0x9a, 0x74, 0xdb, 0xb8, 0xb7, 0xc5, 0x43, 0x38, 0x30, 0xee, 0x98, 0x67, 0x5e, 0xda, 0x01, 0x3d,
-	0x67, 0x01, 0x9a, 0x1c, 0x1d, 0x6a, 0x9b, 0x4f, 0x66, 0x7a, 0xdb, 0x14, 0xd1, 0x08, 0xf9, 0xa0,
-	0x9c, 0x3c, 0x9e, 0xe3, 0xcf, 0x00, 0x00, 0x00, 0xff, 0xff, 0x21, 0x12, 0x7a, 0x04, 0x65, 0x03,
-	0x00, 0x00,
+	// 532 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x55, 0xcb, 0x6e, 0xd3, 0x40,
+	0x14, 0xb5, 0x9b, 0xb6, 0x52, 0x6e, 0x40, 0x0a, 0xa3, 0xe2, 0x06, 0x23, 0x0c, 0x0c, 0xaf, 0xa8,
+	0x05, 0x1b, 0x05, 0x16, 0x88, 0x0d, 0x4a, 0x1a, 0xda, 0x05, 0x8b, 0x82, 0xc5, 0x0a, 0x56, 0x13,
+	0x7a, 0x55, 0xac, 0x38, 0x71, 0xea, 0x99, 0x20, 0xfc, 0x17, 0x7c, 0x0b, 0x1b, 0x7e, 0x80, 0x05,
+	0xcb, 0x2e, 0x59, 0xa2, 0xe4, 0x47, 0x90, 0x3d, 0x8e, 0x63, 0xd7, 0xaf, 0xec, 0x3c, 0x73, 0xcf,
+	0x9c, 0x73, 0xe7, 0x9c, 0xb9, 0x32, 0xb4, 0x2e, 0xe6, 0xe8, 0x07, 0xe6, 0xcc, 0xf7, 0x84, 0x47,
+	0x5a, 0x63, 0xc7, 0x67, 0xa6, 0xf0, 0xc6, 0x38, 0xe5, 0x7a, 0x8b, 0xb9, 0x0e, 0xe3, 0xb2, 0xa2,
+	0x83, 0xcf, 0x04, 0xca, 0x6f, 0x7a, 0x08, 0x37, 0x3e, 0x86, 0x90, 0x7e, 0x58, 0xb7, 0xf1, 0x62,
+	0x8e, 0x5c, 0x10, 0x0d, 0x76, 0x79, 0x30, 0x19, 0x79, 0x6e, 0x47, 0xbd, 0xa7, 0x76, 0x9b, 0x76,
+	0xbc, 0xa2, 0x7d, 0x20, 0x69, 0x30, 0x9f, 0x79, 0x53, 0x8e, 0xe4, 0x10, 0xb6, 0xcf, 0x98, 0x60,
+	0x11, 0xb6, 0xd5, 0xdb, 0x37, 0x53, 0xba, 0x66, 0x0a, 0x1e, 0x81, 0x68, 0x07, 0xb4, 0xbe, 0xeb,
+	0xae, 0xb7, 0x71, 0x25, 0x4a, 0x8f, 0x61, 0x3f, 0x57, 0xc9, 0x29, 0x34, 0xea, 0x15, 0x5e, 0x82,
+	0x9e, 0x26, 0x19, 0x04, 0x43, 0x9c, 0x7a, 0x93, 0xd4, 0xd5, 0xce, 0xc2, 0x35, 0x8f, 0xc8, 0x9a,
+	0x76, 0xbc, 0xa2, 0xbf, 0x54, 0xb8, 0x5d, 0x78, 0x2c, 0x6e, 0xe1, 0x38, 0xd3, 0x42, 0xaf, 0xa4,
+	0x85, 0xdc, 0x39, 0x73, 0xc8, 0x04, 0x7b, 0x3b, 0x15, 0x7e, 0x20, 0xbb, 0xd3, 0xdf, 0x43, 0x33,
+	0xd9, 0x22, 0x6d, 0x68, 0x8c, 0x31, 0x88, 0x4d, 0x0e, 0x3f, 0xc9, 0x33, 0xd8, 0xf9, 0xc6, 0xdc,
+	0x39, 0x76, 0xb6, 0xaa, 0xcd, 0x94, 0xa8, 0xd7, 0x5b, 0xaf, 0x54, 0x7a, 0x00, 0xed, 0xa8, 0x60,
+	0x33, 0x81, 0x75, 0x01, 0xbe, 0x89, 0xd3, 0x96, 0xd8, 0xf8, 0x6a, 0x07, 0x99, 0xfc, 0xb4, 0xbc,
+	0x64, 0x84, 0x96, 0xe6, 0x6a, 0xb0, 0xb7, 0x0a, 0x29, 0xdc, 0x4d, 0xc2, 0x3b, 0x82, 0x9b, 0x57,
+	0xf6, 0x73, 0xe4, 0x8d, 0x5a, 0xf2, 0x1e, 0x74, 0xd6, 0x0c, 0x1b, 0xe6, 0xf6, 0x53, 0x85, 0x5b,
+	0x05, 0x87, 0x62, 0xf5, 0x61, 0x46, 0xfd, 0x79, 0xb1, 0x7a, 0x6d, 0x66, 0xa7, 0xd5, 0x99, 0x3d,
+	0xcd, 0x66, 0x56, 0x76, 0xc7, 0x75, 0x64, 0xbd, 0xdf, 0xdb, 0xb0, 0xf3, 0x21, 0x1c, 0x55, 0x62,
+	0xc3, 0xf5, 0x13, 0x14, 0xeb, 0x60, 0x89, 0x51, 0x96, 0xb8, 0xf4, 0x41, 0xbf, 0x5b, 0x5a, 0x97,
+	0xcd, 0x53, 0x85, 0x30, 0x20, 0x27, 0x28, 0xae, 0xcc, 0x12, 0x79, 0x90, 0x39, 0x58, 0x3c, 0x83,
+	0xfa, 0xc3, 0x6a, 0x50, 0x22, 0x31, 0x01, 0x2d, 0xd3, 0x76, 0xe2, 0x21, 0x79, 0x52, 0x3f, 0x19,
+	0x52, 0xaa, 0xbb, 0xe9, 0x08, 0x51, 0x85, 0x9c, 0xc2, 0xb5, 0x95, 0x5c, 0x68, 0x25, 0xb9, 0x53,
+	0x62, 0x71, 0x4c, 0x6d, 0x94, 0x95, 0x13, 0xc2, 0xcf, 0xd0, 0x4e, 0x59, 0x14, 0x3d, 0x02, 0x72,
+	0xbf, 0xf0, 0xee, 0xe9, 0x57, 0xae, 0xd3, 0x2a, 0x48, 0x42, 0x7e, 0x0e, 0x7b, 0xe9, 0x6e, 0x13,
+	0x6b, 0x1e, 0xd5, 0x3d, 0x3f, 0x29, 0xf2, 0x78, 0xb3, 0x57, 0x4a, 0x95, 0xc1, 0xe0, 0xcf, 0xc2,
+	0x50, 0x2f, 0x17, 0x86, 0xfa, 0x6f, 0x61, 0xa8, 0x3f, 0x96, 0x86, 0x72, 0xb9, 0x34, 0x94, 0xbf,
+	0x4b, 0x43, 0xf9, 0xd4, 0x3d, 0x77, 0xc4, 0xd7, 0xf9, 0xc8, 0xfc, 0xe2, 0x4d, 0xac, 0x77, 0x8e,
+	0xcf, 0x8e, 0x3c, 0x1f, 0x2d, 0x8e, 0x63, 0xe6, 0x58, 0xdf, 0x2d, 0xc9, 0x6c, 0x89, 0x60, 0x86,
+	0x7c, 0xb4, 0x1b, 0xfd, 0x06, 0x5e, 0xfc, 0x0f, 0x00, 0x00, 0xff, 0xff, 0x29, 0x47, 0xc7, 0xc7,
+	0x3b, 0x06, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -340,6 +612,10 @@ type QueryClient interface {
 	GetTokenAlias(ctx context.Context, in *TokenAliasRequest, opts ...grpc.CallOption) (*TokenAliasResponse, error)
 	GetAllTokenAliases(ctx context.Context, in *AllTokenAliasesRequest, opts ...grpc.CallOption) (*AllTokenAliasesResponse, error)
 	GetTokenAliasesByDenom(ctx context.Context, in *TokenAliasesByDenomRequest, opts ...grpc.CallOption) (*TokenAliasesByDenomResponse, error)
+	// Returns the token rates
+	GetTokenRate(ctx context.Context, in *TokenRateRequest, opts ...grpc.CallOption) (*TokenRateResponse, error)
+	GetAllTokenRates(ctx context.Context, in *AllTokenRatesRequest, opts ...grpc.CallOption) (*AllTokenRatesResponse, error)
+	GetTokenRatesByDenom(ctx context.Context, in *TokenRatesByDenomRequest, opts ...grpc.CallOption) (*TokenRatesByDenomResponse, error)
 }
 
 type queryClient struct {
@@ -377,12 +653,43 @@ func (c *queryClient) GetTokenAliasesByDenom(ctx context.Context, in *TokenAlias
 	return out, nil
 }
 
+func (c *queryClient) GetTokenRate(ctx context.Context, in *TokenRateRequest, opts ...grpc.CallOption) (*TokenRateResponse, error) {
+	out := new(TokenRateResponse)
+	err := c.cc.Invoke(ctx, "/kira.tokens.Query/GetTokenRate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) GetAllTokenRates(ctx context.Context, in *AllTokenRatesRequest, opts ...grpc.CallOption) (*AllTokenRatesResponse, error) {
+	out := new(AllTokenRatesResponse)
+	err := c.cc.Invoke(ctx, "/kira.tokens.Query/GetAllTokenRates", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) GetTokenRatesByDenom(ctx context.Context, in *TokenRatesByDenomRequest, opts ...grpc.CallOption) (*TokenRatesByDenomResponse, error) {
+	out := new(TokenRatesByDenomResponse)
+	err := c.cc.Invoke(ctx, "/kira.tokens.Query/GetTokenRatesByDenom", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 type QueryServer interface {
 	// Returns the token alias
 	GetTokenAlias(context.Context, *TokenAliasRequest) (*TokenAliasResponse, error)
 	GetAllTokenAliases(context.Context, *AllTokenAliasesRequest) (*AllTokenAliasesResponse, error)
 	GetTokenAliasesByDenom(context.Context, *TokenAliasesByDenomRequest) (*TokenAliasesByDenomResponse, error)
+	// Returns the token rates
+	GetTokenRate(context.Context, *TokenRateRequest) (*TokenRateResponse, error)
+	GetAllTokenRates(context.Context, *AllTokenRatesRequest) (*AllTokenRatesResponse, error)
+	GetTokenRatesByDenom(context.Context, *TokenRatesByDenomRequest) (*TokenRatesByDenomResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -397,6 +704,15 @@ func (*UnimplementedQueryServer) GetAllTokenAliases(ctx context.Context, req *Al
 }
 func (*UnimplementedQueryServer) GetTokenAliasesByDenom(ctx context.Context, req *TokenAliasesByDenomRequest) (*TokenAliasesByDenomResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetTokenAliasesByDenom not implemented")
+}
+func (*UnimplementedQueryServer) GetTokenRate(ctx context.Context, req *TokenRateRequest) (*TokenRateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTokenRate not implemented")
+}
+func (*UnimplementedQueryServer) GetAllTokenRates(ctx context.Context, req *AllTokenRatesRequest) (*AllTokenRatesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAllTokenRates not implemented")
+}
+func (*UnimplementedQueryServer) GetTokenRatesByDenom(ctx context.Context, req *TokenRatesByDenomRequest) (*TokenRatesByDenomResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTokenRatesByDenom not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -457,6 +773,60 @@ func _Query_GetTokenAliasesByDenom_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_GetTokenRate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TokenRateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).GetTokenRate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.tokens.Query/GetTokenRate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).GetTokenRate(ctx, req.(*TokenRateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_GetAllTokenRates_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AllTokenRatesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).GetAllTokenRates(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.tokens.Query/GetAllTokenRates",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).GetAllTokenRates(ctx, req.(*AllTokenRatesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_GetTokenRatesByDenom_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TokenRatesByDenomRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).GetTokenRatesByDenom(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.tokens.Query/GetTokenRatesByDenom",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).GetTokenRatesByDenom(ctx, req.(*TokenRatesByDenomRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "kira.tokens.Query",
 	HandlerType: (*QueryServer)(nil),
@@ -472,6 +842,18 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetTokenAliasesByDenom",
 			Handler:    _Query_GetTokenAliasesByDenom_Handler,
+		},
+		{
+			MethodName: "GetTokenRate",
+			Handler:    _Query_GetTokenRate_Handler,
+		},
+		{
+			MethodName: "GetAllTokenRates",
+			Handler:    _Query_GetAllTokenRates_Handler,
+		},
+		{
+			MethodName: "GetTokenRatesByDenom",
+			Handler:    _Query_GetTokenRatesByDenom_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -684,6 +1066,212 @@ func (m *TokenAliasesByDenomResponse) MarshalToSizedBuffer(dAtA []byte) (int, er
 	return len(dAtA) - i, nil
 }
 
+func (m *TokenRateRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *TokenRateRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *TokenRateRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Symbol) > 0 {
+		i -= len(m.Symbol)
+		copy(dAtA[i:], m.Symbol)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Symbol)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *TokenRateResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *TokenRateResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *TokenRateResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Data != nil {
+		{
+			size, err := m.Data.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *AllTokenRatesRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *AllTokenRatesRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *AllTokenRatesRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *AllTokenRatesResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *AllTokenRatesResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *AllTokenRatesResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Data) > 0 {
+		for iNdEx := len(m.Data) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Data[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *TokenRatesByDenomRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *TokenRatesByDenomRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *TokenRatesByDenomRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Denoms) > 0 {
+		for iNdEx := len(m.Denoms) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Denoms[iNdEx])
+			copy(dAtA[i:], m.Denoms[iNdEx])
+			i = encodeVarintQuery(dAtA, i, uint64(len(m.Denoms[iNdEx])))
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *TokenRatesByDenomResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *TokenRatesByDenomResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *TokenRatesByDenomResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Data) > 0 {
+		for k := range m.Data {
+			v := m.Data[k]
+			baseI := i
+			if v != nil {
+				{
+					size, err := v.MarshalToSizedBuffer(dAtA[:i])
+					if err != nil {
+						return 0, err
+					}
+					i -= size
+					i = encodeVarintQuery(dAtA, i, uint64(size))
+				}
+				i--
+				dAtA[i] = 0x12
+			}
+			i -= len(k)
+			copy(dAtA[i:], k)
+			i = encodeVarintQuery(dAtA, i, uint64(len(k)))
+			i--
+			dAtA[i] = 0xa
+			i = encodeVarintQuery(dAtA, i, uint64(baseI-i))
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	offset -= sovQuery(v)
 	base := offset
@@ -761,6 +1349,93 @@ func (m *TokenAliasesByDenomRequest) Size() (n int) {
 }
 
 func (m *TokenAliasesByDenomResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Data) > 0 {
+		for k, v := range m.Data {
+			_ = k
+			_ = v
+			l = 0
+			if v != nil {
+				l = v.Size()
+				l += 1 + sovQuery(uint64(l))
+			}
+			mapEntrySize := 1 + len(k) + sovQuery(uint64(len(k))) + l
+			n += mapEntrySize + 1 + sovQuery(uint64(mapEntrySize))
+		}
+	}
+	return n
+}
+
+func (m *TokenRateRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Symbol)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *TokenRateResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Data != nil {
+		l = m.Data.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *AllTokenRatesRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *AllTokenRatesResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Data) > 0 {
+		for _, e := range m.Data {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *TokenRatesByDenomRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Denoms) > 0 {
+		for _, s := range m.Denoms {
+			l = len(s)
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *TokenRatesByDenomResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1324,6 +1999,587 @@ func (m *TokenAliasesByDenomResponse) Unmarshal(dAtA []byte) error {
 						return io.ErrUnexpectedEOF
 					}
 					mapvalue = &TokenAlias{}
+					if err := mapvalue.Unmarshal(dAtA[iNdEx:postmsgIndex]); err != nil {
+						return err
+					}
+					iNdEx = postmsgIndex
+				} else {
+					iNdEx = entryPreIndex
+					skippy, err := skipQuery(dAtA[iNdEx:])
+					if err != nil {
+						return err
+					}
+					if skippy < 0 {
+						return ErrInvalidLengthQuery
+					}
+					if (iNdEx + skippy) > postIndex {
+						return io.ErrUnexpectedEOF
+					}
+					iNdEx += skippy
+				}
+			}
+			m.Data[mapkey] = mapvalue
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *TokenRateRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: TokenRateRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: TokenRateRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Symbol", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Symbol = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *TokenRateResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: TokenRateResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: TokenRateResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Data", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Data == nil {
+				m.Data = &TokenRate{}
+			}
+			if err := m.Data.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *AllTokenRatesRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: AllTokenRatesRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: AllTokenRatesRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *AllTokenRatesResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: AllTokenRatesResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: AllTokenRatesResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Data", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Data = append(m.Data, &TokenRate{})
+			if err := m.Data[len(m.Data)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *TokenRatesByDenomRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: TokenRatesByDenomRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: TokenRatesByDenomRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Denoms", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Denoms = append(m.Denoms, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *TokenRatesByDenomResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: TokenRatesByDenomResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: TokenRatesByDenomResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Data", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Data == nil {
+				m.Data = make(map[string]*TokenRate)
+			}
+			var mapkey string
+			var mapvalue *TokenRate
+			for iNdEx < postIndex {
+				entryPreIndex := iNdEx
+				var wire uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowQuery
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					wire |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				fieldNum := int32(wire >> 3)
+				if fieldNum == 1 {
+					var stringLenmapkey uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowQuery
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						stringLenmapkey |= uint64(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					intStringLenmapkey := int(stringLenmapkey)
+					if intStringLenmapkey < 0 {
+						return ErrInvalidLengthQuery
+					}
+					postStringIndexmapkey := iNdEx + intStringLenmapkey
+					if postStringIndexmapkey < 0 {
+						return ErrInvalidLengthQuery
+					}
+					if postStringIndexmapkey > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
+					iNdEx = postStringIndexmapkey
+				} else if fieldNum == 2 {
+					var mapmsglen int
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowQuery
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						mapmsglen |= int(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					if mapmsglen < 0 {
+						return ErrInvalidLengthQuery
+					}
+					postmsgIndex := iNdEx + mapmsglen
+					if postmsgIndex < 0 {
+						return ErrInvalidLengthQuery
+					}
+					if postmsgIndex > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapvalue = &TokenRate{}
 					if err := mapvalue.Unmarshal(dAtA[iNdEx:postmsgIndex]); err != nil {
 						return err
 					}
