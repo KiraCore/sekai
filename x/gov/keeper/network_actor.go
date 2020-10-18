@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"github.com/KiraCore/sekai/x/gov/types"
-	types2 "github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -58,11 +57,12 @@ func (k Keeper) RemoveWhitelistPermission(ctx sdk.Context, actor types.NetworkAc
 	return nil
 }
 
-func (k Keeper) AssignRoleToAddress(ctx sdk.Context, addr sdk.AccAddress, role types.Role) error {
-	_, found := k.GetNetworkActorByAddress(ctx, addr)
-	if !found {
-		return types2.ErrNetworkActorNotFound
-	}
+func (k Keeper) AssignRoleToAddress(ctx sdk.Context, actor types.NetworkActor, role types.Role) error {
+	actor.SetRole(role)
+	k.SaveNetworkActor(ctx, actor)
+
+	store := ctx.KVStore(k.storeKey)
+	store.Set(roleAddressKey(role, actor.Address), actor.Address.Bytes())
 
 	return nil
 }
@@ -73,17 +73,37 @@ func (k Keeper) GetNetworkActorByWhitelistedPermission(ctx sdk.Context, perm typ
 	return sdk.KVStorePrefixIterator(store, WhitelistPermKey(perm))
 }
 
-// WhitelsitAddressPermKey returns the prefix key in format <0x31 + Perm_Bytes + address_bytes>
+func (k Keeper) GetNetworkActorsByRole(ctx sdk.Context, role types.Role) sdk.Iterator {
+	store := ctx.KVStore(k.storeKey)
+	return sdk.KVStorePrefixIterator(store, roleKey(role))
+}
+
+// WhitelistAddressPermKey returns the prefix key in format <0x31 + Perm_Bytes + address_bytes>
 func WhitelistAddressPermKey(address sdk.AccAddress, perm types.PermValue) []byte {
 	return append(WhitelistPermKey(perm), address.Bytes()...)
 }
 
 // WhitelistPermKey returns the prefix key in format <0x31 + Perm_Bytes>
 func WhitelistPermKey(perm types.PermValue) []byte {
-	return append(WhitelistActorPrefix, getPermBytes(perm)...)
+	return append(WhitelistActorPrefix, getPermissionByteRepresentation(perm)...)
 }
 
-// getPermBytes returns a PermValue in bytes representation.
-func getPermBytes(perm types.PermValue) []byte {
+// roleAddressKey returns the prefix key in format <0x33 + Role_Bytes + address_bytes>
+func roleAddressKey(role types.Role, address sdk.AccAddress) []byte {
+	return append(roleKey(role), address.Bytes()...)
+}
+
+// roleKey returns a prefix key in format <0x32 + Role_Bytes>
+func roleKey(role types.Role) []byte {
+	return append(RoleActorPrefix, getRoleByteRepresentation(role)...)
+}
+
+// getPermissionByteRepresentation returns a PermValue in bytes representation.
+func getPermissionByteRepresentation(perm types.PermValue) []byte {
 	return sdk.Uint64ToBigEndian(uint64(perm))
+}
+
+// getRoleByteRepresentation returns a Role in bytes representation.
+func getRoleByteRepresentation(role types.Role) []byte {
+	return sdk.Uint64ToBigEndian(uint64(role))
 }

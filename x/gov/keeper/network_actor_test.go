@@ -3,8 +3,6 @@ package keeper_test
 import (
 	"testing"
 
-	types3 "github.com/KiraCore/sekai/x/staking/types"
-
 	"github.com/KiraCore/sekai/simapp"
 	"github.com/KiraCore/sekai/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -43,15 +41,20 @@ func TestKeeper_GetNetworkActorByAddress_FailsIfItDoesNotExist(t *testing.T) {
 	require.False(t, found)
 }
 
-func TestKeeper_AssignRoleToAddress_FailsIfActorDoesNotExist(t *testing.T) {
+func TestKeeper_AssignRoleToAddress(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
 	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, types2.TokensFromConsensusPower(10))
 	addr := addrs[0]
 
-	err := app.CustomGovKeeper.AssignRoleToAddress(ctx, addr, types.RoleSudo)
-	require.EqualError(t, err, types3.ErrNetworkActorNotFound.Error())
+	actor := types.NewDefaultActor(addr)
+	err := app.CustomGovKeeper.AssignRoleToAddress(ctx, actor, types.RoleSudo)
+	require.NoError(t, err)
+
+	savedActor, found := app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addr)
+	require.True(t, found)
+	require.True(t, savedActor.HasRole(types.RoleSudo))
 }
 
 func TestKeeper_AddPermissionToNetworkActor(t *testing.T) {
@@ -112,6 +115,38 @@ func TestKeeper_RemoveWhitelistPermission(t *testing.T) {
 	assertAddrsHaveWhitelistedPerm(t, app, ctx, []types2.AccAddress{addrs[1]}, types.PermSetPermissions)
 }
 
+func TestKeeper_GetActorsByRole(t *testing.T) {
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, types2.TokensFromConsensusPower(10))
+
+	err := addRoleToMultipleAddrs(app, ctx, addrs, types.RoleSudo)
+	require.NoError(t, err)
+
+	iterator := app.CustomGovKeeper.GetNetworkActorsByRole(ctx, types.RoleSudo)
+	requireIteratorCount(t, iterator, 2)
+
+	assertAddrsHaveRole(t, app, ctx, addrs, types.RoleSudo)
+}
+
+func TestKeeper_RemoveRole(t *testing.T) {
+	t.SkipNow()
+
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, types2.TokensFromConsensusPower(10))
+
+	err := addRoleToMultipleAddrs(app, ctx, addrs, types.RoleSudo)
+	require.NoError(t, err)
+
+	iterator := app.CustomGovKeeper.GetNetworkActorsByRole(ctx, types.RoleSudo)
+	requireIteratorCount(t, iterator, 2)
+
+	assertAddrsHaveRole(t, app, ctx, addrs, types.RoleSudo)
+}
+
 func TestKeeper_GetActorsByWhitelistedPerm(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
@@ -125,6 +160,17 @@ func TestKeeper_GetActorsByWhitelistedPerm(t *testing.T) {
 	requireIteratorCount(t, iterator, 2)
 
 	assertAddrsHaveWhitelistedPerm(t, app, ctx, addrs, types.PermSetPermissions)
+}
+
+func addRoleToMultipleAddrs(app *simapp.SimApp, ctx types2.Context, addrs []types2.AccAddress, role types.Role) error {
+	for _, addr := range addrs {
+		err := app.CustomGovKeeper.AssignRoleToAddress(ctx, types.NewDefaultActor(addr), role)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func whitelistPermToMultipleAddrs(app *simapp.SimApp, ctx types2.Context, addrs []types2.AccAddress, permissions types.PermValue) error {
@@ -158,6 +204,20 @@ func assertAddrsHaveWhitelistedPerm(
 		actor, found := app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addr)
 		require.True(t, found)
 		require.True(t, actor.Permissions.IsWhitelisted(perm))
+	}
+}
+
+func assertAddrsHaveRole(
+	t *testing.T,
+	app *simapp.SimApp,
+	ctx types2.Context,
+	addrs []types2.AccAddress,
+	role types.Role,
+) {
+	for _, addr := range addrs {
+		actor, found := app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addr)
+		require.True(t, found)
+		require.True(t, actor.HasRole(role))
 	}
 }
 
