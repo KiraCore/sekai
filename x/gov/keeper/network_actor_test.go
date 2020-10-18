@@ -145,8 +145,7 @@ func TestKeeper_RemoveRole(t *testing.T) {
 	require.True(t, found)
 	require.True(t, actor.HasRole(types.RoleSudo))
 
-	err := app.CustomGovKeeper.RemoveRoleFromActor(ctx, actor, types.RoleSudo)
-	require.NoError(t, err)
+	app.CustomGovKeeper.RemoveRoleFromActor(ctx, actor, types.RoleSudo)
 
 	actor, found = app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addrs[0])
 	require.True(t, found)

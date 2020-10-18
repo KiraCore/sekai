@@ -65,14 +65,12 @@ func (k Keeper) AssignRoleToActor(ctx sdk.Context, actor types.NetworkActor, rol
 	store.Set(roleAddressKey(role, actor.Address), actor.Address.Bytes())
 }
 
-func (k Keeper) RemoveRoleFromActor(ctx sdk.Context, actor types.NetworkActor, role types.Role) error {
+func (k Keeper) RemoveRoleFromActor(ctx sdk.Context, actor types.NetworkActor, role types.Role) {
 	actor.RemoveRole(role)
 	k.SaveNetworkActor(ctx, actor)
 
 	store := ctx.KVStore(k.storeKey)
 	store.Delete(roleAddressKey(role, actor.Address))
-
-	return nil
 }
 
 // GetNetworkActorsByWhitelistedPermission returns all the actors that have Perm in whitelist.
