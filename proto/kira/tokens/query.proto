@@ -41,7 +41,7 @@ message TokenAliasesByDenomResponse {
 }
 
 message TokenRateRequest {
-  string symbol = 1;
+  string denom = 1;
 }
 
 message TokenRateResponse {

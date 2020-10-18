@@ -9,9 +9,10 @@ import (
 var (
 	PrefixKeyTokenAlias = []byte("token_alias_registry")
 	PrefixKeyDenomToken = []byte("denom_token_registry")
+	PrefixKeyTokenRate  = []byte("token_rate_registry")
 )
 
-// Keeper is for managing token aliases
+// Keeper is for managing token module
 type Keeper struct {
 	cdc      codec.BinaryMarshaler
 	storeKey sdk.StoreKey

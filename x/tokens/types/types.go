@@ -24,3 +24,16 @@ func NewTokenAlias(
 		Status:           status,
 	}
 }
+
+// NewTokenRate generates a new token rate struct.
+func NewTokenRate(
+	denom string,
+	rate float32,
+	feePayments bool,
+) *TokenRate {
+	return &TokenRate{
+		Denom:       denom,
+		Rate:        rate,
+		FeePayments: feePayments,
+	}
+}

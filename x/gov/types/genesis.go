@@ -3,6 +3,7 @@ package types
 // special messages managed by governance
 const (
 	UpsertTokenAlias = "upsert-token-alias"
+	UpsertTokenRate  = "upsert-token-rate"
 )
 
 // DefaultGenesis returns the default CustomGo genesis state

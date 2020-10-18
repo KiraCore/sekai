@@ -1,0 +1,58 @@
+package types
+
+import (
+	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+)
+
+// Msg types
+const (
+	UpsertTokenRate = customgovtypes.UpsertTokenRate
+)
+
+var (
+	_ sdk.Msg = &MsgUpsertTokenRate{}
+)
+
+// NewMsgUpsertTokenRate returns an instance of MsgUpserTokenRate
+func NewMsgUpsertTokenRate(
+	proposer sdk.AccAddress,
+	denom string,
+	rate float32,
+	feePayments bool,
+) *MsgUpsertTokenRate {
+	return &MsgUpsertTokenRate{
+		Proposer:    proposer,
+		Denom:       denom,
+		Rate:        rate,
+		FeePayments: feePayments,
+	}
+}
+
+// Route returns route
+func (m *MsgUpsertTokenRate) Route() string {
+	return ModuleName
+}
+
+// Type returns return message type
+func (m *MsgUpsertTokenRate) Type() string {
+	return UpsertTokenRate
+}
+
+// ValidateBasic returns basic validation result
+func (m *MsgUpsertTokenRate) ValidateBasic() error {
+	return nil
+}
+
+// GetSignBytes returns to sign bytes
+func (m *MsgUpsertTokenRate) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+// GetSigners returns signers
+func (m *MsgUpsertTokenRate) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{
+		m.Proposer,
+	}
+}

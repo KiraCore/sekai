@@ -24,6 +24,9 @@ const (
 	FlagIcon             = "icon"
 	FlagDecimals         = "decimals"
 	FlagDenoms           = "denoms"
+	FlagDenom            = "denom"
+	FlagRate             = "rate"
+	FlagFeePayments      = "fee_payments"
 )
 
 // NewTxCmd returns a root CLI command handler for all x/bank transaction commands.
@@ -36,7 +39,10 @@ func NewTxCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	txCmd.AddCommand(GetTxUpsertTokenAliasCmd())
+	txCmd.AddCommand(
+		GetTxUpsertTokenAliasCmd(),
+		GetTxUpsertTokenRateCmd(),
+	)
 
 	return txCmd
 }
@@ -136,6 +142,54 @@ func GetTxUpsertTokenAliasCmd() *cobra.Command {
 	cmd.Flags().String(FlagIcon, "", "Graphical Symbol (url link to graphics)")
 	cmd.Flags().Uint32(FlagDecimals, 6, "Integer number of max decimals")
 	cmd.Flags().String(FlagDenoms, "ukex,mkex", "An array of token denoms to be aliased")
+
+	flags.AddTxFlagsToCmd(cmd)
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+// GetTxUpsertTokenRateCmd implement cli command for MsgUpsertTokenRate
+func GetTxUpsertTokenRateCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "upsert-rate",
+		Short: "Upsert token rate",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			denom, err := cmd.Flags().GetString(FlagDenom)
+			if err != nil {
+				return fmt.Errorf("invalid denom")
+			}
+
+			rate, err := cmd.Flags().GetFloat32(FlagRate)
+			if err != nil {
+				return fmt.Errorf("invalid rate")
+			}
+
+			feePayments, err := cmd.Flags().GetBool(FlagFeePayments)
+			if err != nil {
+				return fmt.Errorf("invalid fee payments")
+			}
+
+			msg := types.NewMsgUpsertTokenRate(
+				clientCtx.FromAddress,
+				denom,
+				rate,
+				feePayments,
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	cmd.Flags().String(FlagDenom, "tbtc", "denom - identifier for token rates")
+	cmd.Flags().Float64(FlagRate, 1, "rate to register")
+	cmd.Flags().Bool(FlagFeePayments, true, "use registry as fee payment")
 
 	flags.AddTxFlagsToCmd(cmd)
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)

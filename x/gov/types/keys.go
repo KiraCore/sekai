@@ -24,6 +24,7 @@ var (
 	PermClaimCouncilor PermValue = 3
 
 	PermUpsertTokenAlias PermValue = 10
+	PermUpsertTokenRate  PermValue = 11
 	PermChangeTxFee      PermValue = 4
 )
 

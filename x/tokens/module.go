@@ -67,6 +67,9 @@ func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
 		cli2.GetCmdQueryTokenAlias(),
 		cli2.GetCmdQueryAllTokenAliases(),
 		cli2.GetCmdQueryTokenAliasesByDenom(),
+		cli2.GetCmdQueryTokenRate(),
+		cli2.GetCmdQueryAllTokenRates(),
+		cli2.GetCmdQueryTokenRatesByDenom(),
 	)
 
 	queryCmd.PersistentFlags().String("node", "tcp://localhost:26657", "<host>:<port> to Tendermint RPC interface for this chain")
@@ -76,7 +79,7 @@ func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
 // AppModule for tokens management
 type AppModule struct {
 	AppModuleBasic
-	aliasKeeper     keeper2.Keeper
+	tokensKeeper    keeper2.Keeper
 	customGovKeeper tokenstypes.CustomGovKeeper
 }
 
@@ -93,7 +96,11 @@ func (am AppModule) InitGenesis(
 	cdc.MustUnmarshalJSON(data, &genesisState)
 
 	for _, alias := range genesisState.Aliases {
-		am.aliasKeeper.UpsertTokenAlias(ctx, *alias)
+		am.tokensKeeper.UpsertTokenAlias(ctx, *alias)
+	}
+
+	for _, rate := range genesisState.Rates {
+		am.tokensKeeper.UpsertTokenRate(ctx, *rate)
 	}
 
 	return nil
@@ -123,13 +130,13 @@ func (am AppModule) Name() string {
 
 // Route returns the message routing key for the staking module.
 func (am AppModule) Route() sdk.Route {
-	return sdk.NewRoute(tokenstypes.ModuleName, NewHandler(am.aliasKeeper, am.customGovKeeper))
+	return sdk.NewRoute(tokenstypes.ModuleName, NewHandler(am.tokensKeeper, am.customGovKeeper))
 }
 
 // RegisterQueryService registers a GRPC query service to respond to the
 // module-specific GRPC queries.
 func (am AppModule) RegisterQueryService(server grpc.Server) {
-	querier := NewQuerier(am.aliasKeeper)
+	querier := NewQuerier(am.tokensKeeper)
 	tokenstypes.RegisterQueryServer(server, querier)
 }
 
@@ -139,7 +146,7 @@ func NewAppModule(
 	customGovKeeper tokenstypes.CustomGovKeeper,
 ) AppModule {
 	return AppModule{
-		aliasKeeper:     keeper,
+		tokensKeeper:    keeper,
 		customGovKeeper: customGovKeeper,
 	}
 }

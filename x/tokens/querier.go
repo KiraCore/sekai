@@ -33,3 +33,21 @@ func (q Querier) GetAllTokenAliases(ctx context.Context, request *types.AllToken
 
 	return &types.AllTokenAliasesResponse{Data: aliases}, nil
 }
+
+func (q Querier) GetTokenRate(ctx context.Context, request *types.TokenRateRequest) (*types.TokenRateResponse, error) {
+	rate := q.keeper.GetTokenRate(sdk.UnwrapSDKContext(ctx), request.Denom)
+
+	return &types.TokenRateResponse{Data: rate}, nil
+}
+
+func (q Querier) GetTokenRatesByDenom(ctx context.Context, request *types.TokenRatesByDenomRequest) (*types.TokenRatesByDenomResponse, error) {
+	rates := q.keeper.GetTokenRatesByDenom(sdk.UnwrapSDKContext(ctx), request.Denoms)
+
+	return &types.TokenRatesByDenomResponse{Data: rates}, nil
+}
+
+func (q Querier) GetAllTokenRates(ctx context.Context, request *types.AllTokenRatesRequest) (*types.AllTokenRatesResponse, error) {
+	rates := q.keeper.ListTokenRate(sdk.UnwrapSDKContext(ctx))
+
+	return &types.AllTokenRatesResponse{Data: rates}, nil
+}
