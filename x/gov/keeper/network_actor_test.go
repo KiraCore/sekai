@@ -49,8 +49,7 @@ func TestKeeper_AssignRoleToAddress(t *testing.T) {
 	addr := addrs[0]
 
 	actor := types.NewDefaultActor(addr)
-	err := app.CustomGovKeeper.AssignRoleToAddress(ctx, actor, types.RoleSudo)
-	require.NoError(t, err)
+	app.CustomGovKeeper.AssignRoleToAddress(ctx, actor, types.RoleSudo)
 
 	savedActor, found := app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addr)
 	require.True(t, found)
@@ -121,8 +120,7 @@ func TestKeeper_GetActorsByRole(t *testing.T) {
 
 	addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, types2.TokensFromConsensusPower(10))
 
-	err := addRoleToMultipleAddrs(app, ctx, addrs, types.RoleSudo)
-	require.NoError(t, err)
+	addRoleToMultipleAddrs(app, ctx, addrs, types.RoleSudo)
 
 	iterator := app.CustomGovKeeper.GetNetworkActorsByRole(ctx, types.RoleSudo)
 	requireIteratorCount(t, iterator, 2)
@@ -131,15 +129,12 @@ func TestKeeper_GetActorsByRole(t *testing.T) {
 }
 
 func TestKeeper_RemoveRole(t *testing.T) {
-	t.SkipNow()
-
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
 	addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, types2.TokensFromConsensusPower(10))
 
-	err := addRoleToMultipleAddrs(app, ctx, addrs, types.RoleSudo)
-	require.NoError(t, err)
+	addRoleToMultipleAddrs(app, ctx, addrs, types.RoleSudo)
 
 	iterator := app.CustomGovKeeper.GetNetworkActorsByRole(ctx, types.RoleSudo)
 	requireIteratorCount(t, iterator, 2)
@@ -162,15 +157,10 @@ func TestKeeper_GetActorsByWhitelistedPerm(t *testing.T) {
 	assertAddrsHaveWhitelistedPerm(t, app, ctx, addrs, types.PermSetPermissions)
 }
 
-func addRoleToMultipleAddrs(app *simapp.SimApp, ctx types2.Context, addrs []types2.AccAddress, role types.Role) error {
+func addRoleToMultipleAddrs(app *simapp.SimApp, ctx types2.Context, addrs []types2.AccAddress, role types.Role) {
 	for _, addr := range addrs {
-		err := app.CustomGovKeeper.AssignRoleToAddress(ctx, types.NewDefaultActor(addr), role)
-		if err != nil {
-			return err
-		}
+		app.CustomGovKeeper.AssignRoleToAddress(ctx, types.NewDefaultActor(addr), role)
 	}
-
-	return nil
 }
 
 func whitelistPermToMultipleAddrs(app *simapp.SimApp, ctx types2.Context, addrs []types2.AccAddress, permissions types.PermValue) error {

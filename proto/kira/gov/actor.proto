@@ -26,6 +26,8 @@ enum PermValue {
   // PERMISSION_VOTE_SET_PERMISSIONS_PROPOSAL defines the permission that an actor must have in order to vote a
   // Proposal to set permissions.
   PERMISSION_VOTE_SET_PERMISSIONS_PROPOSAL = 5 [(gogoproto.enumvalue_customname) = "PermVoteSetPermissionProposal"];
+
+  PERMISSION_UPSERT_TOKEN_ALIAS = 6 [(gogoproto.enumvalue_customname) = "PermUpsertTokenAlias"];
 }
 
 enum ActorStatus {

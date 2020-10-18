@@ -57,13 +57,15 @@ func (k Keeper) RemoveWhitelistPermission(ctx sdk.Context, actor types.NetworkAc
 	return nil
 }
 
-func (k Keeper) AssignRoleToAddress(ctx sdk.Context, actor types.NetworkActor, role types.Role) error {
+func (k Keeper) AssignRoleToAddress(ctx sdk.Context, actor types.NetworkActor, role types.Role) {
 	actor.SetRole(role)
 	k.SaveNetworkActor(ctx, actor)
 
 	store := ctx.KVStore(k.storeKey)
 	store.Set(roleAddressKey(role, actor.Address), actor.Address.Bytes())
+}
 
+func (k Keeper) RemoveRoleToAddress(ctc sdk.Context, actor types.NetworkActor, role types.Role) error {
 	return nil
 }
 

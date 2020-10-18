@@ -27,3 +27,7 @@ func (k Keeper) GetPermissionsForRole(ctx sdk.Context, role types.Role) (types.P
 
 	return perm, true
 }
+
+func (k Keeper) CheckIfAllowedPermission(ctx sdk.Context, addr sdk.AccAddress, permValue types.PermValue) bool {
+	return CheckIfAllowedPermission(ctx, k, addr, permValue)
+}
