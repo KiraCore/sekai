@@ -57,7 +57,7 @@ func (k Keeper) RemoveWhitelistPermission(ctx sdk.Context, actor types.NetworkAc
 	return nil
 }
 
-func (k Keeper) AssignRoleToAddress(ctx sdk.Context, actor types.NetworkActor, role types.Role) {
+func (k Keeper) AssignRoleToActor(ctx sdk.Context, actor types.NetworkActor, role types.Role) {
 	actor.SetRole(role)
 	k.SaveNetworkActor(ctx, actor)
 
@@ -65,12 +65,18 @@ func (k Keeper) AssignRoleToAddress(ctx sdk.Context, actor types.NetworkActor, r
 	store.Set(roleAddressKey(role, actor.Address), actor.Address.Bytes())
 }
 
-func (k Keeper) RemoveRoleToAddress(ctc sdk.Context, actor types.NetworkActor, role types.Role) error {
+func (k Keeper) RemoveRoleFromActor(ctx sdk.Context, actor types.NetworkActor, role types.Role) error {
+	actor.RemoveRole(role)
+	k.SaveNetworkActor(ctx, actor)
+
+	store := ctx.KVStore(k.storeKey)
+	store.Delete(roleAddressKey(role, actor.Address))
+
 	return nil
 }
 
-// GetNetworkActorByWhitelistedPermission returns all the actors that have Perm in whitelist.
-func (k Keeper) GetNetworkActorByWhitelistedPermission(ctx sdk.Context, perm types.PermValue) sdk.Iterator {
+// GetNetworkActorsByWhitelistedPermission returns all the actors that have Perm in whitelist.
+func (k Keeper) GetNetworkActorsByWhitelistedPermission(ctx sdk.Context, perm types.PermValue) sdk.Iterator {
 	store := ctx.KVStore(k.storeKey)
 	return sdk.KVStorePrefixIterator(store, WhitelistPermKey(perm))
 }

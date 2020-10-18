@@ -49,7 +49,7 @@ func TestKeeper_AssignRoleToAddress(t *testing.T) {
 	addr := addrs[0]
 
 	actor := types.NewDefaultActor(addr)
-	app.CustomGovKeeper.AssignRoleToAddress(ctx, actor, types.RoleSudo)
+	app.CustomGovKeeper.AssignRoleToActor(ctx, actor, types.RoleSudo)
 
 	savedActor, found := app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addr)
 	require.True(t, found)
@@ -98,7 +98,7 @@ func TestKeeper_RemoveWhitelistPermission(t *testing.T) {
 	err := whitelistPermToMultipleAddrs(app, ctx, addrs, types.PermSetPermissions)
 	require.NoError(t, err)
 
-	iterator := app.CustomGovKeeper.GetNetworkActorByWhitelistedPermission(ctx, types.PermSetPermissions)
+	iterator := app.CustomGovKeeper.GetNetworkActorsByWhitelistedPermission(ctx, types.PermSetPermissions)
 	requireIteratorCount(t, iterator, 2)
 	assertAddrsHaveWhitelistedPerm(t, app, ctx, addrs, types.PermSetPermissions)
 
@@ -107,7 +107,7 @@ func TestKeeper_RemoveWhitelistPermission(t *testing.T) {
 	err = app.CustomGovKeeper.RemoveWhitelistPermission(ctx, actor, types.PermSetPermissions)
 	require.NoError(t, err)
 
-	iterator = app.CustomGovKeeper.GetNetworkActorByWhitelistedPermission(ctx, types.PermSetPermissions)
+	iterator = app.CustomGovKeeper.GetNetworkActorsByWhitelistedPermission(ctx, types.PermSetPermissions)
 	requireIteratorCount(t, iterator, 1)
 
 	assertAddrsDontHaveWhitelistedPerm(t, app, ctx, []types2.AccAddress{addrs[0]}, types.PermSetPermissions)
@@ -140,6 +140,21 @@ func TestKeeper_RemoveRole(t *testing.T) {
 	requireIteratorCount(t, iterator, 2)
 
 	assertAddrsHaveRole(t, app, ctx, addrs, types.RoleSudo)
+
+	actor, found := app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addrs[0])
+	require.True(t, found)
+	require.True(t, actor.HasRole(types.RoleSudo))
+
+	err := app.CustomGovKeeper.RemoveRoleFromActor(ctx, actor, types.RoleSudo)
+	require.NoError(t, err)
+
+	actor, found = app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addrs[0])
+	require.True(t, found)
+	require.False(t, actor.HasRole(types.RoleSudo))
+
+	iterator = app.CustomGovKeeper.GetNetworkActorsByRole(ctx, types.RoleSudo)
+	requireIteratorCount(t, iterator, 1)
+
 }
 
 func TestKeeper_GetActorsByWhitelistedPerm(t *testing.T) {
@@ -151,7 +166,7 @@ func TestKeeper_GetActorsByWhitelistedPerm(t *testing.T) {
 	err := whitelistPermToMultipleAddrs(app, ctx, addrs, types.PermSetPermissions)
 	require.NoError(t, err)
 
-	iterator := app.CustomGovKeeper.GetNetworkActorByWhitelistedPermission(ctx, types.PermSetPermissions)
+	iterator := app.CustomGovKeeper.GetNetworkActorsByWhitelistedPermission(ctx, types.PermSetPermissions)
 	requireIteratorCount(t, iterator, 2)
 
 	assertAddrsHaveWhitelistedPerm(t, app, ctx, addrs, types.PermSetPermissions)
@@ -159,7 +174,7 @@ func TestKeeper_GetActorsByWhitelistedPerm(t *testing.T) {
 
 func addRoleToMultipleAddrs(app *simapp.SimApp, ctx types2.Context, addrs []types2.AccAddress, role types.Role) {
 	for _, addr := range addrs {
-		app.CustomGovKeeper.AssignRoleToAddress(ctx, types.NewDefaultActor(addr), role)
+		app.CustomGovKeeper.AssignRoleToActor(ctx, types.NewDefaultActor(addr), role)
 	}
 }
 
