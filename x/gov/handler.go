@@ -181,11 +181,7 @@ func handleCreateRole(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.Msg
 		return nil, customgovtypes.ErrRoleExist
 	}
 
-	ck.SavePermissionsForRole(
-		ctx,
-		customgovtypes.Role(msg.Role),
-		customgovtypes.NewPermissions(nil, nil),
-	)
+	ck.CreateRole(ctx, customgovtypes.Role(msg.Role))
 
 	return &sdk.Result{}, nil
 }
