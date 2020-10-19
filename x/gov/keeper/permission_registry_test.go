@@ -13,15 +13,14 @@ func TestKeeper_SaveGetPermissionsForRole(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	perm := types.NewPermissions(
-		nil, []types.PermValue{types.PermClaimValidator},
-	)
+	app.CustomGovKeeper.CreateRole(ctx, types.RoleSudo)
 
-	app.CustomGovKeeper.SetPermissionsForRole(ctx, types.RoleSudo, perm)
+	err := app.CustomGovKeeper.WhitelistRolePermission(ctx, types.RoleSudo, types.PermClaimValidator)
+	require.NoError(t, err)
 
 	savedPerms, found := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleSudo)
 	require.True(t, found)
-	require.Equal(t, perm, &savedPerms)
+	require.True(t, savedPerms.IsWhitelisted(types.PermClaimValidator))
 }
 
 func TestKeeper_HasGenesisDefaultRoles(t *testing.T) {
@@ -48,7 +47,7 @@ func TestKeeper_SetPermissionsOverwritesOldPerms(t *testing.T) {
 
 	// We set whitelisted PermSetPermissions and Blacklisted PermClaimValidator
 	newPerms := types.NewPermissions([]types.PermValue{types.PermSetPermissions}, []types.PermValue{types.PermClaimValidator})
-	app.CustomGovKeeper.SetPermissionsForRole(ctx, types.RoleValidator, newPerms)
+	app.CustomGovKeeper.SavePermissionsForRole(ctx, types.RoleValidator, newPerms)
 
 	newRoleValidatorPerms, found := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleValidator)
 	require.True(t, found)

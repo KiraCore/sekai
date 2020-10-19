@@ -96,7 +96,7 @@ func (am AppModule) InitGenesis(
 	}
 
 	for index, perm := range genesisState.Permissions {
-		am.customGovKeeper.SetPermissionsForRole(ctx, customgovtypes.Role(index), perm)
+		am.customGovKeeper.SavePermissionsForRole(ctx, customgovtypes.Role(index), perm)
 	}
 
 	am.customGovKeeper.SaveProposalID(ctx, genesisState.StartingProposalId)

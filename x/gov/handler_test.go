@@ -541,7 +541,7 @@ func TestHandler_WhitelistRolePermissions_Errors(t *testing.T) {
 				err2 = perms.AddToBlacklist(types.PermSetPermissions)
 				require.NoError(t, err2)
 
-				app.CustomGovKeeper.SetPermissionsForRole(ctx, types.RoleValidator, &perms)
+				app.CustomGovKeeper.SavePermissionsForRole(ctx, types.RoleValidator, &perms)
 			},
 			expectedErr: fmt.Errorf("permission is already blacklisted: error adding to whitelist"),
 		},
@@ -641,7 +641,7 @@ func TestHandler_BlacklistRolePermissions_Errors(t *testing.T) {
 				err2 = perms.AddToWhitelist(types.PermSetPermissions)
 				require.NoError(t, err2)
 
-				app.CustomGovKeeper.SetPermissionsForRole(ctx, types.RoleValidator, &perms)
+				app.CustomGovKeeper.SavePermissionsForRole(ctx, types.RoleValidator, &perms)
 			},
 			expectedErr: fmt.Errorf("permission is already whitelisted: error adding to blacklist"),
 		},
@@ -836,7 +836,7 @@ func TestHandler_RemoveBlacklistRolePermissions(t *testing.T) {
 	// Set some blacklist value
 	err = perms.AddToBlacklist(types.PermClaimCouncilor)
 	require.NoError(t, err)
-	app.CustomGovKeeper.SetPermissionsForRole(ctx, types.RoleValidator, &perms)
+	app.CustomGovKeeper.SavePermissionsForRole(ctx, types.RoleValidator, &perms)
 
 	// Check if it is blacklisted.
 	perms, found = app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleValidator)
@@ -886,7 +886,7 @@ func TestHandler_CreateRole_Errors(t *testing.T) {
 			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
 				err2 := setPermissionToAddr(t, app, ctx, addr, types.PermSetPermissions)
 				require.NoError(t, err2)
-				app.CustomGovKeeper.SetPermissionsForRole(ctx, types.Role(1234), types.NewPermissions(nil, nil))
+				app.CustomGovKeeper.SavePermissionsForRole(ctx, types.Role(1234), types.NewPermissions(nil, nil))
 			},
 			fmt.Errorf("role already exist"),
 		},
@@ -969,7 +969,7 @@ func TestHandler_AssignRole_Errors(t *testing.T) {
 				err2 := setPermissionToAddr(t, app, ctx, proposerAddr, types.PermSetPermissions)
 				require.NoError(t, err2)
 
-				app.CustomGovKeeper.SetPermissionsForRole(ctx, types.Role(3), types.NewPermissions([]types.PermValue{
+				app.CustomGovKeeper.SavePermissionsForRole(ctx, types.Role(3), types.NewPermissions([]types.PermValue{
 					types.PermClaimValidator,
 				}, nil))
 
@@ -1008,7 +1008,7 @@ func TestHandler_AssignRole(t *testing.T) {
 	require.NoError(t, err)
 
 	// Create role
-	app.CustomGovKeeper.SetPermissionsForRole(ctx, types.Role(3), types.NewPermissions([]types.PermValue{types.PermSetPermissions}, nil))
+	app.CustomGovKeeper.SavePermissionsForRole(ctx, types.Role(3), types.NewPermissions([]types.PermValue{types.PermSetPermissions}, nil))
 
 	msg := types.NewMsgAssignRole(proposerAddr, addr, 3)
 
@@ -1063,7 +1063,7 @@ func TestHandler_RemoveRole_Errors(t *testing.T) {
 				err2 := setPermissionToAddr(t, app, ctx, proposerAddr, types.PermSetPermissions)
 				require.NoError(t, err2)
 
-				app.CustomGovKeeper.SetPermissionsForRole(ctx, types.Role(3), types.NewPermissions([]types.PermValue{
+				app.CustomGovKeeper.SavePermissionsForRole(ctx, types.Role(3), types.NewPermissions([]types.PermValue{
 					types.PermClaimValidator,
 				}, nil))
 
@@ -1101,7 +1101,7 @@ func TestHandler_RemoveRoles(t *testing.T) {
 	require.NoError(t, err)
 
 	// Set new role and set permission to actor.
-	app.CustomGovKeeper.SetPermissionsForRole(ctx, types.Role(3), types.NewPermissions([]types.PermValue{types.PermSetPermissions}, nil))
+	app.CustomGovKeeper.SavePermissionsForRole(ctx, types.Role(3), types.NewPermissions([]types.PermValue{types.PermSetPermissions}, nil))
 	actor := types.NewDefaultActor(addr)
 	actor.SetRole(3)
 	app.CustomGovKeeper.SaveNetworkActor(ctx, actor)

@@ -3,14 +3,19 @@ package keeper
 import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/KiraCore/sekai/x/gov/types"
 )
 
-// SetPermissionsForRole adds permissions to role in the  permission Registry.
-func (k Keeper) SetPermissionsForRole(ctx sdk.Context, role types.Role, permissions *types.Permissions) {
-	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), RolePermissionRegistry)
+func (k Keeper) CreateRole(ctx sdk.Context, role types.Role) {
+	perms := types.NewPermissions(nil, nil)
+	k.SavePermissionsForRole(ctx, role, perms)
+}
 
+// SavePermissionsForRole adds permissions to role in the  permission Registry.
+func (k Keeper) SavePermissionsForRole(ctx sdk.Context, role types.Role, permissions *types.Permissions) {
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), RolePermissionRegistry)
 	prefixStore.Set(types.RoleToKey(role), k.cdc.MustMarshalBinaryBare(permissions))
 }
 
@@ -26,6 +31,25 @@ func (k Keeper) GetPermissionsForRole(ctx sdk.Context, role types.Role) (types.P
 	k.cdc.MustUnmarshalBinaryBare(bz, &perm)
 
 	return perm, true
+}
+
+func (k Keeper) WhitelistRolePermission(ctx sdk.Context, role types.Role, perm types.PermValue) error {
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), RolePermissionRegistry)
+	bz := prefixStore.Get(types.RoleToKey(role))
+	if bz == nil {
+		return types.ErrRoleDoesNotExist
+	}
+
+	var perms types.Permissions
+	k.cdc.MustUnmarshalBinaryBare(bz, &perms)
+
+	err := perms.AddToWhitelist(perm)
+	if err != nil {
+		return errors.Wrap(types.ErrWhitelisting, err.Error())
+	}
+
+	k.SavePermissionsForRole(ctx, role, &perms)
+	return nil
 }
 
 func (k Keeper) CheckIfAllowedPermission(ctx sdk.Context, addr sdk.AccAddress, permValue types.PermValue) bool {

@@ -48,7 +48,7 @@ func TestCheckIfAllowedPermission(t *testing.T) {
 			name: "actor has permission blacklisted in role",
 			prepareScenario: func(ctx sdk.Context, keeper keeper.Keeper) {
 				roleWithBlacklistedValue := types.Role(123)
-				keeper.SetPermissionsForRole(ctx, roleWithBlacklistedValue, types.NewPermissions(nil, []types.PermValue{
+				keeper.SavePermissionsForRole(ctx, roleWithBlacklistedValue, types.NewPermissions(nil, []types.PermValue{
 					types.PermClaimValidator,
 				}))
 
@@ -63,7 +63,7 @@ func TestCheckIfAllowedPermission(t *testing.T) {
 			name: "actor has permission whitelisted in role",
 			prepareScenario: func(ctx sdk.Context, keeper keeper.Keeper) {
 				roleWithWhitelistedValue := types.Role(123)
-				keeper.SetPermissionsForRole(ctx, roleWithWhitelistedValue, types.NewPermissions([]types.PermValue{
+				keeper.SavePermissionsForRole(ctx, roleWithWhitelistedValue, types.NewPermissions([]types.PermValue{
 					types.PermClaimValidator,
 				}, nil))
 
