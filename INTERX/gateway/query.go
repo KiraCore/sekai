@@ -17,32 +17,36 @@ func RegisterQueryRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr s
 	r.HandleFunc(queryStatus, QueryStatusRequest(rpcAddr)).Methods(GET)
 	r.HandleFunc(queryRPCMethods, QueryRPCMethods(rpcAddr)).Methods(GET)
 
-	AddRPCMethod(GET, queryStatus, "This is an API to query status.")
+	AddRPCMethod(GET, queryStatus, "This is an API to query status.", true)
+}
+
+func queryStatusHandle(rpcAddr string) (interface{}, interface{}, int) {
+	return MakeGetRequest(rpcAddr, "/status", "")
 }
 
 // QueryStatusRequest is a function to query status.
 func QueryStatusRequest(rpcAddr string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		request := GetInterxRequest(r)
+		response := GetResponseFormat(request, rpcAddr)
+		statusCode := http.StatusOK
 
 		if !rpcMethods[GET][queryStatus].Enabled {
-			ServeError(w, request, rpcAddr, 0, "", "", http.StatusForbidden)
-			return
-		}
-
-		if rpcMethods[GET][queryStatus].CachingEnabled {
-			// Add Caching Here
-		}
-
-		r.Host = rpcAddr
-		r.URL.Path = "/status"
-
-		response, statusCode, err := MakeGetRequest(rpcAddr, "/status", "")
-		if err != nil {
-			ServeError(w, request, rpcAddr, 0, "", err.Error(), http.StatusInternalServerError)
+			response.Response, response.Error, statusCode = ServeError(0, "", "", http.StatusForbidden)
 		} else {
-			ServeRPC(w, request, response, rpcAddr, statusCode)
+			if rpcMethods[GET][queryStatus].CachingEnabled {
+				found, cacheResponse, cacheError, cacheStatus := SearchCache(request, response)
+				if found {
+					response.Response, response.Error, statusCode = cacheResponse, cacheError, cacheStatus
+					WrapResponse(w, request, *response, statusCode, false)
+					return
+				}
+			}
+
+			response.Response, response.Error, statusCode = queryStatusHandle(rpcAddr)
 		}
+
+		WrapResponse(w, request, *response, statusCode, rpcMethods[GET][queryStatus].CachingEnabled)
 	}
 }
 
@@ -50,10 +54,11 @@ func QueryStatusRequest(rpcAddr string) http.HandlerFunc {
 func QueryRPCMethods(rpcAddr string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		request := GetInterxRequest(r)
-
 		response := GetResponseFormat(request, rpcAddr)
+		statusCode := http.StatusOK
+
 		response.Response = rpcMethods
 
-		WrapResponse(w, *response, 200)
+		WrapResponse(w, request, *response, statusCode, false)
 	}
 }

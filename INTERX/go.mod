@@ -11,6 +11,7 @@ require (
 	github.com/golang/protobuf v1.4.2
 	github.com/gorilla/mux v1.7.4
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.0.0-beta.4
+	github.com/igorsobreira/kvstore v0.0.0-20131025205959-a8574822a4b3
 	github.com/rakyll/statik v0.1.7
 	github.com/sonyarouje/simdb v0.0.0-20181202125413-c2488dfc374a
 	github.com/tendermint/tendermint v0.34.0-rc3

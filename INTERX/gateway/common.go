@@ -18,16 +18,21 @@ import (
 )
 
 // AddRPCMethod is a function to add a RPC method
-func AddRPCMethod(method string, url string, description string) {
+func AddRPCMethod(method string, url string, description string, canCache bool) {
 	newMethod := RPCMethod{}
 	newMethod.Description = description
 	newMethod.Enabled = true
+	newMethod.CachingEnabled = true
 
 	if conf, ok := interx.Config.RPC.API[method][url]; ok {
 		newMethod.Enabled = !conf.Disable
+		newMethod.CachingEnabled = !conf.CachingDisable
 		newMethod.RateLimit = conf.RateLimit
 		newMethod.AuthRateLimit = conf.AuthRateLimit
-		newMethod.CachingEnabled = !!conf.CachingDisable
+	}
+
+	if !canCache {
+		newMethod.CachingEnabled = false
 	}
 
 	if _, ok := rpcMethods[method]; !ok {
@@ -37,20 +42,20 @@ func AddRPCMethod(method string, url string, description string) {
 }
 
 // MakeGetRequest is a function to make GET request
-func MakeGetRequest(rpcAddr string, url string, query string) (*RPCResponse, int, error) {
+func MakeGetRequest(rpcAddr string, url string, query string) (interface{}, interface{}, int) {
 	resp, err := http.Get(fmt.Sprintf("%s%s?%s", rpcAddr, url, query))
 	if err != nil {
-		return nil, http.StatusInternalServerError, err
+		return ServeError(0, "", err.Error(), http.StatusInternalServerError)
 	}
 	defer resp.Body.Close()
 
-	result := new(RPCResponse)
-	err = json.NewDecoder(resp.Body).Decode(result)
+	response := new(RPCResponse)
+	err = json.NewDecoder(resp.Body).Decode(response)
 	if err != nil {
-		return nil, resp.StatusCode, err
+		return nil, nil, resp.StatusCode
 	}
 
-	return result, resp.StatusCode, nil
+	return response.Result, response.Error, resp.StatusCode
 }
 
 func makePostRequest(r *http.Request) (*RPCResponse, error) {
@@ -153,8 +158,48 @@ func GetResponseSignature(response ProxyResponse) (string, string) {
 	return base64.StdEncoding.EncodeToString([]byte(signature)), responseHash
 }
 
+// SearchCache is a function to search response in cache
+func SearchCache(request InterxRequest, response *ProxyResponse) (bool, interface{}, interface{}, int) {
+	fmt.Println("searching in the cache")
+
+	chainIDHash := GetHash(response.Chainid)
+	endpointHash := GetHash(request.Endpoint)
+	requestHash := GetHash(request)
+
+	result, err := GetCache(chainIDHash, endpointHash, requestHash)
+
+	if err != nil {
+		return false, nil, nil, -1
+	}
+
+	if result.ExpireAt.Before(time.Now()) && result.Response.Block != response.Block {
+		RemoveCache(chainIDHash, endpointHash, requestHash)
+
+		return false, nil, nil, -1
+	}
+
+	return true, result.Response.Response, result.Response.Error, result.Status
+}
+
 // WrapResponse is a function to wrap response
-func WrapResponse(w http.ResponseWriter, response ProxyResponse, statusCode int) {
+func WrapResponse(w http.ResponseWriter, request InterxRequest, response ProxyResponse, statusCode int, saveToCashe bool) {
+	if saveToCashe {
+		fmt.Println("saving in the cache")
+		chainIDHash := GetHash(response.Chainid)
+		endpointHash := GetHash(request.Endpoint)
+		requestHash := GetHash(request)
+
+		err := PutCache(chainIDHash, endpointHash, requestHash, InterxResponse{
+			Response: response,
+			Status:   statusCode,
+			ExpireAt: time.Now().Add(time.Second * interx.Config.RPC.CachingDuration),
+		})
+		if err != nil {
+			fmt.Printf("failed to save in the cache : %s\n", err.Error())
+		}
+		fmt.Println("save finished")
+	}
+
 	w.Header().Add("Content-Type", "application/json")
 	w.Header().Add("Interx_chain_id", response.Chainid)
 	w.Header().Add("Interx_block", strconv.FormatInt(response.Block, 10))
@@ -177,46 +222,30 @@ func WrapResponse(w http.ResponseWriter, response ProxyResponse, statusCode int)
 }
 
 // ServeGRPC is a function to server GRPC
-func ServeGRPC(w http.ResponseWriter, r *http.Request, gwCosmosmux *runtime.ServeMux, request InterxRequest, rpcAddr string) {
+func ServeGRPC(r *http.Request, gwCosmosmux *runtime.ServeMux) (interface{}, interface{}, int) {
 	recorder := httptest.NewRecorder()
 	gwCosmosmux.ServeHTTP(recorder, r)
 	resp := recorder.Result()
 
-	response := GetResponseFormat(request, rpcAddr)
-
 	result := new(interface{})
 	if json.NewDecoder(resp.Body).Decode(result) == nil {
-		if resp.StatusCode == 200 {
-			response.Response = result
-		} else {
-			response.Error = result
+		if resp.StatusCode == http.StatusOK {
+			return result, nil, resp.StatusCode
 		}
+
+		return nil, result, resp.StatusCode
 	}
 
-	WrapResponse(w, *response, resp.StatusCode)
-}
-
-// ServeRPC is a function to server RPC
-func ServeRPC(w http.ResponseWriter, request InterxRequest, result *RPCResponse, rpcAddr string, statusCode int) {
-	response := GetResponseFormat(request, rpcAddr)
-	response.Response = result.Result
-	response.Error = result.Error
-
-	WrapResponse(w, *response, statusCode)
+	return nil, nil, resp.StatusCode
 }
 
 // ServeError is a function to server GRPC
-func ServeError(w http.ResponseWriter, request InterxRequest, rpcAddr string, code int, data string, message string, statusCode int) {
-	response := GetResponseFormat(request, rpcAddr)
-
-	response.Response = nil
-	response.Error = ProxyResponseError{
+func ServeError(code int, data string, message string, statusCode int) (interface{}, interface{}, int) {
+	return nil, ProxyResponseError{
 		Code:    code,
 		Data:    data,
 		Message: message,
-	}
-
-	WrapResponse(w, *response, statusCode)
+	}, statusCode
 }
 
 // GetAccountBalances is a function to get balances of an address
@@ -301,7 +330,7 @@ func BroadcastTransaction(rpcAddr string, txBytes []byte) (string, error) {
 		return "", err
 	}
 
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		return "", errors.New(result.Error.Message)
 	}
 
@@ -310,6 +339,10 @@ func BroadcastTransaction(rpcAddr string, txBytes []byte) (string, error) {
 
 // GetChainID is a function to get ChainID
 func GetChainID(rpcAddr string) string {
+	if len(interxChainID) > 0 {
+		return interxChainID
+	}
+
 	r, err := http.Get(fmt.Sprintf("%s/block", rpcAddr))
 	if err != nil {
 		return ""
@@ -334,5 +367,7 @@ func GetChainID(rpcAddr string) string {
 		return ""
 	}
 
-	return result.Result.Block.Header.Chainid
+	interxChainID = result.Result.Block.Header.Chainid
+
+	return interxChainID
 }
