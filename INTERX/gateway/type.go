@@ -1,5 +1,7 @@
 package gateway
 
+import "time"
+
 // RPCResponse is a struct of RPC response
 type RPCResponse struct {
 	Jsonrpc string      `json:"jsonrpc"`
@@ -65,6 +67,13 @@ type InterxRequest struct {
 	Params   []byte `json:"params"`
 }
 
+// InterxResponse is a struct to be used for response caching
+type InterxResponse struct {
+	Response ProxyResponse `json:"response"`
+	Status   int           `json:"status"`
+	ExpireAt time.Time     `json:"expire_at"`
+}
+
 const (
 	// GET is a constant to refer GET HTTP Method
 	GET string = "GET"
@@ -73,3 +82,4 @@ const (
 )
 
 var rpcMethods = make(map[string]map[string]RPCMethod)
+var interxChainID string = ""

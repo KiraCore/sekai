@@ -20,51 +20,81 @@ func RegisterBankRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr st
 	r.HandleFunc(queryTotalSupply, QuerySupplyRequest(gwCosmosmux, rpcAddr)).Methods(GET)
 	r.HandleFunc("/api/cosmos/bank/balances/{address}", QueryBalancesRequest(gwCosmosmux, rpcAddr)).Methods(GET)
 
-	AddRPCMethod(GET, queryTotalSupply, "This is an API to query total supply.")
-	AddRPCMethod(GET, queryBalances, "This is an API to query balances of an address.")
+	AddRPCMethod(GET, queryTotalSupply, "This is an API to query total supply.", true)
+	AddRPCMethod(GET, queryBalances, "This is an API to query balances of an address.", true)
+}
+
+func querySupplyHandle(r *http.Request, gwCosmosmux *runtime.ServeMux) (interface{}, interface{}, int) {
+	return ServeGRPC(r, gwCosmosmux)
 }
 
 // QuerySupplyRequest is a function to query total supply.
 func QuerySupplyRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		request := GetInterxRequest(r)
+		response := GetResponseFormat(request, rpcAddr)
+		statusCode := http.StatusOK
 
 		if !rpcMethods[GET][queryTotalSupply].Enabled {
-			ServeError(w, request, rpcAddr, 0, "", "", http.StatusForbidden)
-			return
+			response.Response, response.Error, statusCode = ServeError(0, "", "", http.StatusForbidden)
+		} else {
+			if rpcMethods[GET][queryTotalSupply].CachingEnabled {
+				found, cacheResponse, cacheError, cacheStatus := SearchCache(request, response)
+				if found {
+					response.Response, response.Error, statusCode = cacheResponse, cacheError, cacheStatus
+					WrapResponse(w, request, *response, statusCode, false)
+					return
+				}
+			}
+
+			response.Response, response.Error, statusCode = querySupplyHandle(r, gwCosmosmux)
 		}
 
-		if rpcMethods[GET][queryTotalSupply].CachingEnabled {
-			// Add Caching Here
-		}
-
-		ServeGRPC(w, r, gwCosmosmux, request, rpcAddr)
+		WrapResponse(w, request, *response, statusCode, rpcMethods[GET][queryTotalSupply].CachingEnabled)
 	}
+}
+
+func queryBalancesHandle(r *http.Request, gwCosmosmux *runtime.ServeMux) (interface{}, interface{}, int) {
+	queries := mux.Vars(r)
+	bech32addr := queries["address"]
+
+	addr, err := sdk.AccAddressFromBech32(bech32addr)
+	if err != nil {
+		return ServeError(0, "", err.Error(), http.StatusBadRequest)
+	}
+
+	r.URL.Path = fmt.Sprintf("/api/cosmos/bank/balances/%s", base64.URLEncoding.EncodeToString([]byte(addr)))
+	return ServeGRPC(r, gwCosmosmux)
 }
 
 // QueryBalancesRequest is a function to query balances.
 func QueryBalancesRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		request := GetInterxRequest(r)
-
-		if !rpcMethods[GET][queryBalances].Enabled {
-			ServeError(w, request, rpcAddr, 0, "", "", http.StatusForbidden)
-			return
-		}
-
-		if rpcMethods[GET][queryBalances].CachingEnabled {
-			// Add Caching Here
-		}
-
 		queries := mux.Vars(r)
 		bech32addr := queries["address"]
-
-		addr, err := sdk.AccAddressFromBech32(bech32addr)
-		if err != nil {
-			ServeError(w, request, rpcAddr, 0, "", err.Error(), http.StatusBadRequest)
-		} else {
-			r.URL.Path = fmt.Sprintf("/api/cosmos/bank/balances/%s", base64.URLEncoding.EncodeToString([]byte(addr)))
-			ServeGRPC(w, r, gwCosmosmux, request, rpcAddr)
+		request := InterxRequest{
+			Method:   r.Method,
+			Endpoint: queryBalances,
+			Params:   []byte(bech32addr),
 		}
+		response := GetResponseFormat(request, rpcAddr)
+		statusCode := http.StatusOK
+
+		if !rpcMethods[GET][queryBalances].Enabled {
+			response.Response, response.Error, statusCode = ServeError(0, "", "", http.StatusForbidden)
+		} else {
+			if rpcMethods[GET][queryBalances].CachingEnabled {
+				found, cacheResponse, cacheError, cacheStatus := SearchCache(request, response)
+				if found {
+					response.Response, response.Error, statusCode = cacheResponse, cacheError, cacheStatus
+					WrapResponse(w, request, *response, statusCode, false)
+					return
+				}
+			}
+
+			response.Response, response.Error, statusCode = queryBalancesHandle(r, gwCosmosmux)
+		}
+
+		WrapResponse(w, request, *response, statusCode, rpcMethods[GET][queryBalances].CachingEnabled)
 	}
 }

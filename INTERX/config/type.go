@@ -1,6 +1,10 @@
 package config
 
-import "github.com/tendermint/tendermint/crypto"
+import (
+	"time"
+
+	"github.com/tendermint/tendermint/crypto"
+)
 
 // FaucetConfig is a struct to be used for Faucet configuration
 type FaucetConfig struct {
@@ -23,7 +27,8 @@ type RPCSetting struct {
 
 // RPCConfig is a struct to be used for PRC configuration
 type RPCConfig struct {
-	CachingDuration bool                             `json:"caching_duration"`
+	CacheDir        string                           `json:"cache_dir"`
+	CachingDuration time.Duration                    `json:"caching_duration"`
 	API             map[string]map[string]RPCSetting `json:"API"`
 }
 

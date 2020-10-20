@@ -13,6 +13,7 @@
         "time_limit": 20
     },
     "rpc": {
+        "cache_dir": "cache",
         "caching_duration": 10,
         "API": {
             "GET": {
