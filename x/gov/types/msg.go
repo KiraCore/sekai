@@ -6,30 +6,39 @@ import (
 
 // Msg types
 const (
-	WhitelistPermissions = "whitelist-permissions"
-	BlacklistPermissions = "blacklist-permissions"
+	MsgTypeProposalAssignPermission = "proposal-assign-permission"
+	MsgTypeVoteProposal             = "vote-proposal"
 
+	MsgTypeWhitelistPermissions = "whitelist-permissions"
+	MsgTypeBlacklistPermissions = "blacklist-permissions"
+
+	MsgTypeClaimCouncilor = "claim-councilor"
 	SetNetworkProperties = "set-network-properties"
 	SetExecutionFee      = "set-execution-fee"
 
-	ClaimCouncilor = "claim-councilor"
+	MsgTypeCreateRole = "create-role"
+	MsgTypeAssignRole = "assign-role"
+	MsgTypeRemoveRole = "remove-role"
 
-	CreateRole = "create-role"
-	AssignRole = "assign-role"
-	RemoveRole = "remove-role"
-
-	WhitelistRolePermission       = "whitelist-role-permission"
-	BlacklistRolePermission       = "blacklist-role-permission"
-	RemoveWhitelistRolePermission = "remove-whitelist-role-permission"
-	RemoveBlacklistRolePermission = "remove-blacklist-role-permission"
+	MsgTypeWhitelistRolePermission       = "whitelist-role-permission"
+	MsgTypeBlacklistRolePermission       = "blacklist-role-permission"
+	MsgTypeRemoveWhitelistRolePermission = "remove-whitelist-role-permission"
+	MsgTypeRemoveBlacklistRolePermission = "remove-blacklist-role-permission"
 )
 
 var (
+	// Proposal
+	_ sdk.Msg = &MsgVoteProposal{}
+
+	// Permissions
 	_ sdk.Msg = &MsgWhitelistPermissions{}
 	_ sdk.Msg = &MsgBlacklistPermissions{}
+	_ sdk.Msg = &MsgProposalAssignPermission{}
 
+	// Councilor
 	_ sdk.Msg = &MsgClaimCouncilor{}
 
+	// Roles
 	_ sdk.Msg = &MsgCreateRole{}
 	_ sdk.Msg = &MsgAssignRole{}
 	_ sdk.Msg = &MsgRemoveRole{}
@@ -56,7 +65,7 @@ func (m *MsgWhitelistPermissions) Route() string {
 }
 
 func (m *MsgWhitelistPermissions) Type() string {
-	return WhitelistPermissions
+	return MsgTypeWhitelistPermissions
 }
 
 func (m *MsgWhitelistPermissions) ValidateBasic() error {
@@ -98,7 +107,7 @@ func (m *MsgBlacklistPermissions) Route() string {
 }
 
 func (m *MsgBlacklistPermissions) Type() string {
-	return BlacklistPermissions
+	return MsgTypeBlacklistPermissions
 }
 
 func (m *MsgBlacklistPermissions) ValidateBasic() error {
@@ -145,7 +154,7 @@ func (m *MsgClaimCouncilor) Route() string {
 }
 
 func (m *MsgClaimCouncilor) Type() string {
-	return ClaimCouncilor
+	return MsgTypeClaimCouncilor
 }
 
 func (m *MsgClaimCouncilor) ValidateBasic() error {
@@ -180,7 +189,7 @@ func (m *MsgWhitelistRolePermission) Route() string {
 }
 
 func (m *MsgWhitelistRolePermission) Type() string {
-	return WhitelistRolePermission
+	return MsgTypeWhitelistRolePermission
 }
 
 func (m *MsgWhitelistRolePermission) ValidateBasic() error {
@@ -215,7 +224,7 @@ func (m *MsgBlacklistRolePermission) Route() string {
 }
 
 func (m *MsgBlacklistRolePermission) Type() string {
-	return BlacklistRolePermission
+	return MsgTypeBlacklistRolePermission
 }
 
 func (m *MsgBlacklistRolePermission) ValidateBasic() error {
@@ -250,7 +259,7 @@ func (m *MsgRemoveWhitelistRolePermission) Route() string {
 }
 
 func (m *MsgRemoveWhitelistRolePermission) Type() string {
-	return RemoveWhitelistRolePermission
+	return MsgTypeRemoveWhitelistRolePermission
 }
 
 func (m *MsgRemoveWhitelistRolePermission) ValidateBasic() error {
@@ -285,7 +294,7 @@ func (m *MsgRemoveBlacklistRolePermission) Route() string {
 }
 
 func (m *MsgRemoveBlacklistRolePermission) Type() string {
-	return RemoveBlacklistRolePermission
+	return MsgTypeRemoveBlacklistRolePermission
 }
 
 func (m *MsgRemoveBlacklistRolePermission) ValidateBasic() error {
@@ -316,7 +325,7 @@ func (m *MsgCreateRole) Route() string {
 }
 
 func (m *MsgCreateRole) Type() string {
-	return CreateRole
+	return MsgTypeCreateRole
 }
 
 func (m *MsgCreateRole) ValidateBasic() error {
@@ -347,7 +356,7 @@ func (m *MsgAssignRole) Route() string {
 }
 
 func (m *MsgAssignRole) Type() string {
-	return AssignRole
+	return MsgTypeAssignRole
 }
 
 func (m *MsgAssignRole) ValidateBasic() error {
@@ -382,7 +391,7 @@ func (m *MsgRemoveRole) Route() string {
 }
 
 func (m *MsgRemoveRole) Type() string {
-	return RemoveRole
+	return MsgTypeRemoveRole
 }
 
 func (m *MsgRemoveRole) ValidateBasic() error {
@@ -405,5 +414,75 @@ func (m *MsgRemoveRole) GetSignBytes() []byte {
 func (m *MsgRemoveRole) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{
 		m.Proposer,
+	}
+}
+
+func NewMsgProposalAssignPermission(proposer, address sdk.AccAddress, permission PermValue) *MsgProposalAssignPermission {
+	return &MsgProposalAssignPermission{Proposer: proposer, Address: address, Permission: uint32(permission)}
+}
+
+func (m *MsgProposalAssignPermission) Route() string {
+	return ModuleName
+}
+
+func (m *MsgProposalAssignPermission) Type() string {
+	return MsgTypeProposalAssignPermission
+}
+
+func (m *MsgProposalAssignPermission) ValidateBasic() error {
+	if m.Proposer.Empty() {
+		return ErrEmptyProposerAccAddress
+	}
+
+	if m.Address.Empty() {
+		return ErrEmptyPermissionsAccAddress
+	}
+
+	return nil
+}
+
+func (m *MsgProposalAssignPermission) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *MsgProposalAssignPermission) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{
+		m.Proposer,
+	}
+}
+
+func NewMsgVoteProposal(proposalID uint64, voter sdk.AccAddress, option VoteOption) *MsgVoteProposal {
+	return &MsgVoteProposal{
+		ProposalId: proposalID,
+		Voter:      voter,
+		Option:     option,
+	}
+}
+
+func (m *MsgVoteProposal) Route() string {
+	return ModuleName
+}
+
+func (m *MsgVoteProposal) Type() string {
+	return MsgTypeVoteProposal
+}
+
+func (m *MsgVoteProposal) ValidateBasic() error {
+	if m.Voter.Empty() {
+		return ErrEmptyProposerAccAddress
+	}
+
+	return nil
+}
+
+func (m *MsgVoteProposal) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *MsgVoteProposal) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{
+		m.Voter,
 	}
 }

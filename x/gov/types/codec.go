@@ -7,13 +7,29 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgWhitelistPermissions{}, "kiraHub/MsgWhitelistPermissions", nil)
-	cdc.RegisterConcrete(&MsgBlacklistPermissions{}, "kiraHub/MsgBlacklistPermissions", nil)
+	registerPermissionsCodec(cdc)
+	registerRolesCodec(cdc)
+	registerCouncilorCodec(cdc)
+	registerProposalCodec(cdc)
+
 	cdc.RegisterConcrete(&MsgSetNetworkProperties{}, "kiraHub/MsgSetNetworkProperties", nil)
 	cdc.RegisterConcrete(&MsgSetExecutionFee{}, "kiraHub/MsgSetExecutionFee", nil)
+}
 
+func registerProposalCodec(cdc *codec.LegacyAmino) {
+	cdc.RegisterConcrete(&MsgProposalAssignPermission{}, "kiraHub/MsgProposalAssignPermission", nil)
+}
+
+func registerCouncilorCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgClaimCouncilor{}, "kiraHub/MsgClaimCouncilor", nil)
+}
 
+func registerPermissionsCodec(cdc *codec.LegacyAmino) {
+	cdc.RegisterConcrete(&MsgWhitelistPermissions{}, "kiraHub/MsgWhitelistPermissions", nil)
+	cdc.RegisterConcrete(&MsgBlacklistPermissions{}, "kiraHub/MsgBlacklistPermissions", nil)
+}
+
+func registerRolesCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgCreateRole{}, "kiraHub/MsgCreateRole", nil)
 	cdc.RegisterConcrete(&MsgAssignRole{}, "kiraHub/MsgAssignRole", nil)
 	cdc.RegisterConcrete(&MsgRemoveRole{}, "kiraHub/MsgRemoveRole", nil)
@@ -28,6 +44,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgWhitelistPermissions{},
 		&MsgBlacklistPermissions{},
+
 		&MsgSetNetworkProperties{},
 		&MsgSetExecutionFee{},
 
@@ -41,6 +58,8 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgBlacklistRolePermission{},
 		&MsgRemoveWhitelistRolePermission{},
 		&MsgRemoveBlacklistRolePermission{},
+
+		&MsgProposalAssignPermission{},
 	)
 }
 

@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	"fmt"
-
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -23,7 +21,7 @@ func GetCouncilorByMonikerKey(moniker string) []byte {
 }
 
 func (k Keeper) SaveCouncilor(ctx sdk.Context, councilor types.Councilor) {
-	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), KeyPrefixCouncilorIdentityRegistry)
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), CouncilorIdentityRegistryPrefix)
 
 	bz := k.cdc.MustMarshalBinaryBare(&councilor)
 
@@ -33,31 +31,31 @@ func (k Keeper) SaveCouncilor(ctx sdk.Context, councilor types.Councilor) {
 	prefixStore.Set(GetCouncilorByMonikerKey(councilor.Moniker), councilorKey)
 }
 
-func (k Keeper) GetCouncilor(ctx sdk.Context, address sdk.AccAddress) (types.Councilor, error) {
+func (k Keeper) GetCouncilor(ctx sdk.Context, address sdk.AccAddress) (types.Councilor, bool) {
 	return k.getCouncilorByKey(ctx, GetCouncilorKey(address))
 }
 
-func (k Keeper) GetCouncilorByMoniker(ctx sdk.Context, moniker string) (types.Councilor, error) {
-	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), KeyPrefixCouncilorIdentityRegistry)
+func (k Keeper) GetCouncilorByMoniker(ctx sdk.Context, moniker string) (types.Councilor, bool) {
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), CouncilorIdentityRegistryPrefix)
 
 	councilorKey := prefixStore.Get(GetCouncilorByMonikerKey(moniker))
 	if councilorKey == nil {
-		return types.Councilor{}, fmt.Errorf("councilor with moniker %s not found", moniker)
+		return types.Councilor{}, false
 	}
 
 	return k.getCouncilorByKey(ctx, councilorKey)
 }
 
-func (k Keeper) getCouncilorByKey(ctx sdk.Context, key []byte) (types.Councilor, error) {
-	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), KeyPrefixCouncilorIdentityRegistry)
+func (k Keeper) getCouncilorByKey(ctx sdk.Context, key []byte) (types.Councilor, bool) {
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), CouncilorIdentityRegistryPrefix)
 
 	bz := prefixStore.Get(key)
 	if bz == nil {
-		return types.Councilor{}, fmt.Errorf("councilor not found")
+		return types.Councilor{}, false
 	}
 
 	var councilor types.Councilor
 	k.cdc.MustUnmarshalBinaryBare(bz, &councilor)
 
-	return councilor, nil
+	return councilor, true
 }

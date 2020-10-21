@@ -18,7 +18,7 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 	// set execution fee for set network properties
 	suite.app.CustomGovKeeper.SetExecutionFee(suite.ctx, &customgovtypes.ExecutionFee{
 		Name:              customgovtypes.SetNetworkProperties,
-		TransactionType:   "B",
+		TransactionType:   customgovtypes.SetNetworkProperties,
 		ExecutionFee:      10000,
 		FailureFee:        1000,
 		Timeout:           0,
@@ -79,7 +79,7 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 				msgs := []sdk.Msg{
 					customgovtypes.NewMsgSetExecutionFee(
 						customgovtypes.SetNetworkProperties,
-						"B",
+						customgovtypes.SetNetworkProperties,
 						10000,
 						1000,
 						0,
@@ -99,7 +99,7 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 				msgs := []sdk.Msg{
 					customgovtypes.NewMsgSetExecutionFee(
 						customgovtypes.SetNetworkProperties,
-						"B",
+						customgovtypes.SetNetworkProperties,
 						10000,
 						1000,
 						0,
@@ -119,7 +119,7 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 				msgs := []sdk.Msg{
 					customgovtypes.NewMsgSetExecutionFee(
 						customgovtypes.SetNetworkProperties,
-						"B",
+						customgovtypes.SetNetworkProperties,
 						10000,
 						1000,
 						0,

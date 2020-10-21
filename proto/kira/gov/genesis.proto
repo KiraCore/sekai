@@ -1,13 +1,19 @@
 syntax = "proto3";
 package kira.gov;
 
-import "gov.proto";
+import "actor.proto";
+import "role.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/gov/types";
 
 message GenesisState {
-  map<uint64, Permissions> permissions = 1;
-  repeated NetworkActor network_actors = 2;
-  NetworkProperties network_properties = 3;
-  repeated ExecutionFee execution_fees = 4;
+  // starting_proposal_id is the ID of the starting proposal.
+  uint64 starting_proposal_id = 1;
+  // permissions is the roles that are active from genesis.
+  map<uint64, Permissions> permissions = 2;
+  // NetworkActors are the actors that are saved from genesis.
+  repeated NetworkActor network_actors = 3;
+
+  NetworkProperties network_properties = 4;
+  repeated ExecutionFee execution_fees = 5;
 }

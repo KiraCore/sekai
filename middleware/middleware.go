@@ -26,11 +26,10 @@ func NewRoute(p string, h sdk.Handler) sdk.Route {
 	newHandler := func(ctx sdk.Context, msg sdk.Msg) (*sdk.Result, error) {
 		hResult, hErr := h(ctx, msg)
 		// handle extra fee based on handler result
-		executionName := msg.Type()
 		feePayer := msg.GetSigners()[0] // signers listing should be at least 1 always
 		bondDenom := customStakingKeeper.BondDenom(ctx)
 
-		fee := customGovKeeper.GetExecutionFee(ctx, executionName)
+		fee := customGovKeeper.GetExecutionFee(ctx, msg.Type())
 		if fee == nil {
 			return hResult, hErr
 		}

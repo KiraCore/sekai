@@ -38,17 +38,17 @@ func (s IntegrationTestSuite) TestWhitelistRolePermission() {
 
 	s.Require().False(perms.IsWhitelisted(customgovtypes.PermSetPermissions))
 
-	// Send Tx To Whitelist permission
 	out.Reset()
 
+	// Send Tx To Whitelist permission
 	cmd = cli.GetTxWhitelistRolePermission()
 	cmd.SetArgs([]string{
 		"0", // Role created in test
-		"2", // PermSetPermission
+		"1", // PermSetPermission
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(10))).String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(100))).String()),
 	})
 
 	err = cmd.ExecuteContext(ctx)
@@ -106,7 +106,7 @@ func (s IntegrationTestSuite) TestBlacklistRolePermission() {
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(10))).String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(100))).String()),
 	})
 
 	err = cmd.ExecuteContext(ctx)
@@ -163,11 +163,11 @@ func (s IntegrationTestSuite) TestRemoveWhitelistRolePermission() {
 	cmd = cli.GetTxRemoveWhitelistRolePermission()
 	cmd.SetArgs([]string{
 		"0", // RoleValidator
-		"1", // PermClaimValidator
+		"2", // PermClaimValidator
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(10))).String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(100))).String()),
 	})
 
 	err = cmd.ExecuteContext(ctx)
@@ -227,7 +227,7 @@ func (s IntegrationTestSuite) TestRemoveBlacklistRolePermission() {
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(10))).String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(100))).String()),
 	})
 
 	err = cmd.ExecuteContext(ctx)
@@ -282,7 +282,7 @@ func (s IntegrationTestSuite) TestCreateRole() {
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(10))).String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(100))).String()),
 	})
 
 	err = cmd.ExecuteContext(ctx)
@@ -323,7 +323,7 @@ func (s IntegrationTestSuite) TestAssignRoles_AndRemoveRoles() {
 			fmt.Sprintf("--%s=%s", cli2.FlagAddr, addr),
 			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-			fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(10))).String()),
+			fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(100))).String()),
 		},
 	)
 
@@ -346,7 +346,7 @@ func (s IntegrationTestSuite) TestAssignRoles_AndRemoveRoles() {
 			fmt.Sprintf("--%s=%s", cli2.FlagAddr, addr),
 			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-			fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(10))).String()),
+			fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(100))).String()),
 		},
 	)
 	err = cmd.ExecuteContext(ctx)

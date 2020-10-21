@@ -80,8 +80,7 @@ func (svd ValidateFeeRangeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 	// execution failure fee should be prepaid
 	executionFailureFee := uint64(0)
 	for _, msg := range feeTx.GetMsgs() {
-		executionName := msg.Type()
-		fee := svd.cgk.GetExecutionFee(ctx, executionName)
+		fee := svd.cgk.GetExecutionFee(ctx, msg.Type())
 		if fee != nil { // execution fee exist
 			executionFailureFee += fee.FailureFee
 		}
@@ -121,8 +120,7 @@ func (svd ValidateFeeRangeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 
 // 	// execution fee consume gas
 // 	for _, msg := range sigTx.GetMsgs() {
-// 		executionName := msg.Type()
-// 		fee := sgcd.cgk.GetExecutionFee(ctx, executionName)
+// 		fee := sgcd.cgk.GetExecutionFee(ctx, msg.Type())
 // 		if fee != nil { // execution fee exist
 // 			ctx.GasMeter().ConsumeGas(fee.ExecutionFee, "consume execution fee")
 // 			// On failure case, fee modifier is running on middleware package.

@@ -1,12 +1,13 @@
 package gov
 
 import (
+	"time"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/KiraCore/sekai/x/gov/keeper"
 	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
-	"github.com/KiraCore/sekai/x/staking/types"
 )
 
 func NewHandler(ck keeper.Keeper) sdk.Handler {
@@ -14,16 +15,22 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 		ctx = ctx.WithEventManager(sdk.NewEventManager())
 
 		switch msg := msg.(type) {
-		case *customgovtypes.MsgWhitelistPermissions:
-			return handleWhitelistPermissions(ctx, ck, msg)
 		case *customgovtypes.MsgSetNetworkProperties:
 			return handleSetNetworkProperties(ctx, ck, msg)
 		case *customgovtypes.MsgSetExecutionFee:
 			return handleSetExecutionFee(ctx, ck, msg)
+
+		// Permission Related
+		case *customgovtypes.MsgWhitelistPermissions:
+			return handleWhitelistPermissions(ctx, ck, msg)
 		case *customgovtypes.MsgBlacklistPermissions:
 			return handleBlacklistPermissions(ctx, ck, msg)
+
+		// Councilor Related
 		case *customgovtypes.MsgClaimCouncilor:
 			return handleClaimCouncilor(ctx, ck, msg)
+
+		// Role Related
 		case *customgovtypes.MsgWhitelistRolePermission:
 			return handleWhitelistRolePermission(ctx, ck, msg)
 		case *customgovtypes.MsgBlacklistRolePermission:
@@ -38,10 +45,79 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 			return handleAssignRole(ctx, ck, msg)
 		case *customgovtypes.MsgRemoveRole:
 			return handleMsgRemoveRole(ctx, ck, msg)
+
+		// Proposal related
+		case *customgovtypes.MsgProposalAssignPermission:
+			return handleMsgProposalAssignPermission(ctx, ck, msg)
+		case *customgovtypes.MsgVoteProposal:
+			return handleMsgVoteProposal(ctx, ck, msg)
+
 		default:
-			return nil, errors.Wrapf(errors.ErrUnknownRequest, "unrecognized %s message type: %T", types.ModuleName, msg)
+			return nil, errors.Wrapf(errors.ErrUnknownRequest, "unrecognized %s message type: %T", customgovtypes.ModuleName, msg)
 		}
 	}
+}
+
+func handleMsgVoteProposal(
+	ctx sdk.Context,
+	ck keeper.Keeper,
+	msg *customgovtypes.MsgVoteProposal,
+) (*sdk.Result, error) {
+	_, found := ck.GetCouncilor(ctx, msg.Voter)
+	if !found {
+		return nil, customgovtypes.ErrUserIsNotCouncilor
+	}
+
+	actor, found := ck.GetNetworkActorByAddress(ctx, msg.Voter)
+	if !found || !actor.IsActive() {
+		return nil, customgovtypes.ErrActorIsNotActive
+	}
+
+	_, found = ck.GetProposal(ctx, msg.ProposalId)
+	if !found {
+		return nil, customgovtypes.ErrProposalDoesNotExist
+	}
+
+	vote := customgovtypes.NewVote(msg.ProposalId, msg.Voter, msg.Option)
+	ck.SaveVote(ctx, vote)
+
+	return &sdk.Result{}, nil
+}
+
+func handleMsgProposalAssignPermission(
+	ctx sdk.Context,
+	ck keeper.Keeper,
+	msg *customgovtypes.MsgProposalAssignPermission,
+) (*sdk.Result, error) {
+	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Proposer, customgovtypes.PermCreateSetPermissionsProposal)
+	if !isAllowed {
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermCreateSetPermissionsProposal")
+	}
+
+	actor, found := ck.GetNetworkActorByAddress(ctx, msg.Address)
+	if found { // Actor exists
+		if actor.Permissions.IsWhitelisted(customgovtypes.PermValue(msg.Permission)) {
+			return nil, errors.Wrap(customgovtypes.ErrWhitelisting, "permission already whitelisted")
+		}
+	}
+
+	blockTime := ctx.BlockTime()
+	proposalID, err := ck.GetNextProposalID(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	proposal := customgovtypes.NewProposalAssignPermission(proposalID, msg.Address, customgovtypes.PermValue(msg.Permission), blockTime, blockTime.Add(time.Minute*10)) // TODO end time for voting by config.
+	err = ck.SaveProposal(ctx, proposal)
+	if err != nil {
+		return nil, err
+	}
+
+	ck.AddToActiveProposals(ctx, proposal)
+
+	return &sdk.Result{
+		Data: keeper.GetProposalIDBytes(proposalID),
+	}, nil
 }
 
 func handleMsgRemoveRole(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgRemoveRole) (*sdk.Result, error) {
@@ -50,13 +126,13 @@ func handleMsgRemoveRole(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.
 		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermSetPermissions")
 	}
 
-	role := ck.GetPermissionsForRole(ctx, customgovtypes.Role(msg.Role))
-	if role == nil {
+	_, found := ck.GetPermissionsForRole(ctx, customgovtypes.Role(msg.Role))
+	if !found {
 		return nil, customgovtypes.ErrRoleDoesNotExist
 	}
 
-	actor, err := ck.GetNetworkActorByAddress(ctx, msg.Address)
-	if err != nil {
+	actor, found := ck.GetNetworkActorByAddress(ctx, msg.Address)
+	if !found {
 		actor = customgovtypes.NewDefaultActor(msg.Address)
 	}
 
@@ -64,9 +140,7 @@ func handleMsgRemoveRole(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.
 		return nil, customgovtypes.ErrRoleNotAssigned
 	}
 
-	actor.RemoveRole(customgovtypes.Role(msg.Role))
-
-	ck.SaveNetworkActor(ctx, actor)
+	ck.RemoveRoleFromActor(ctx, actor, customgovtypes.Role(msg.Role))
 
 	return &sdk.Result{}, nil
 }
@@ -77,13 +151,13 @@ func handleAssignRole(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.Msg
 		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermSetPermissions")
 	}
 
-	role := ck.GetPermissionsForRole(ctx, customgovtypes.Role(msg.Role))
-	if role == nil {
+	_, found := ck.GetPermissionsForRole(ctx, customgovtypes.Role(msg.Role))
+	if !found {
 		return nil, customgovtypes.ErrRoleDoesNotExist
 	}
 
-	actor, err := ck.GetNetworkActorByAddress(ctx, msg.Address)
-	if err != nil {
+	actor, found := ck.GetNetworkActorByAddress(ctx, msg.Address)
+	if !found {
 		actor = customgovtypes.NewDefaultActor(msg.Address)
 	}
 
@@ -91,8 +165,7 @@ func handleAssignRole(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.Msg
 		return nil, customgovtypes.ErrRoleAlreadyAssigned
 	}
 
-	actor.SetRole(customgovtypes.Role(msg.Role))
-	ck.SaveNetworkActor(ctx, actor)
+	ck.AssignRoleToActor(ctx, actor, customgovtypes.Role(msg.Role))
 
 	return &sdk.Result{}, nil
 }
@@ -103,8 +176,8 @@ func handleCreateRole(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.Msg
 		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermSetPermissions")
 	}
 
-	perms := ck.GetPermissionsForRole(ctx, customgovtypes.Role(msg.Role))
-	if perms != nil {
+	_, found := ck.GetPermissionsForRole(ctx, customgovtypes.Role(msg.Role))
+	if found {
 		return nil, customgovtypes.ErrRoleExist
 	}
 
@@ -138,7 +211,7 @@ func handleRemoveWhitelistRolePermission(ctx sdk.Context, ck keeper.Keeper, msg 
 
 	err = perms.RemoveFromWhitelist(customgovtypes.PermValue(msg.Permission))
 	if err != nil {
-		return nil, errors.Wrap(customgovtypes.ErrWhitelisting, err.Error())
+		return nil, errors.Wrap(customgovtypes.ErrRemovingWhitelist, err.Error())
 	}
 
 	ck.SetPermissionsForRole(ctx, customgovtypes.Role(msg.Role), perms)
@@ -184,17 +257,15 @@ func handleWhitelistPermissions(ctx sdk.Context, ck keeper.Keeper, msg *customgo
 		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermSetPermissions")
 	}
 
-	actor, err := ck.GetNetworkActorByAddress(ctx, msg.Address)
-	if err != nil {
+	actor, found := ck.GetNetworkActorByAddress(ctx, msg.Address)
+	if !found {
 		actor = customgovtypes.NewDefaultActor(msg.Address)
 	}
 
-	err = actor.Permissions.AddToWhitelist(customgovtypes.PermValue(msg.Permission))
+	err := ck.AddWhitelistPermission(ctx, actor, customgovtypes.PermValue(msg.Permission))
 	if err != nil {
-		return nil, errors.Wrapf(customgovtypes.ErrSetPermissions, "error setting %d to whitelist", msg.Permission)
+		return nil, errors.Wrapf(customgovtypes.ErrSetPermissions, "error setting %d to whitelist: %s", msg.Permission, err)
 	}
-
-	ck.SaveNetworkActor(ctx, actor)
 
 	return &sdk.Result{}, nil
 }
@@ -205,12 +276,12 @@ func handleBlacklistPermissions(ctx sdk.Context, ck keeper.Keeper, msg *customgo
 		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermSetPermissions")
 	}
 
-	actor, err := ck.GetNetworkActorByAddress(ctx, msg.Address)
-	if err != nil {
+	actor, found := ck.GetNetworkActorByAddress(ctx, msg.Address)
+	if !found {
 		actor = customgovtypes.NewDefaultActor(msg.Address)
 	}
 
-	err = actor.Permissions.AddToBlacklist(customgovtypes.PermValue(msg.Permission))
+	err := actor.Permissions.AddToBlacklist(customgovtypes.PermValue(msg.Permission))
 	if err != nil {
 		return nil, errors.Wrapf(customgovtypes.ErrSetPermissions, "error setting %d to whitelist", msg.Permission)
 	}
@@ -274,10 +345,10 @@ func validateAndGetPermissionsForRole(
 		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermSetPermissions")
 	}
 
-	perms := ck.GetPermissionsForRole(ctx, role)
-	if perms == nil {
+	perms, found := ck.GetPermissionsForRole(ctx, role)
+	if !found {
 		return nil, customgovtypes.ErrRoleDoesNotExist
 	}
 
-	return perms, nil
+	return &perms, nil
 }

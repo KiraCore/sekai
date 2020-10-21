@@ -1,5 +1,10 @@
 package types
 
+// special messages managed by governance
+const (
+	UpsertTokenAlias = "upsert-token-alias"
+)
+
 // DefaultGenesis returns the default CustomGo genesis state
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
@@ -7,14 +12,15 @@ func DefaultGenesis() *GenesisState {
 			uint64(RoleSudo):      NewPermissions([]PermValue{PermSetPermissions, PermClaimCouncilor, PermClaimValidator}, nil),
 			uint64(RoleValidator): NewPermissions([]PermValue{PermClaimValidator}, nil),
 		},
+		StartingProposalId: 1,
 		NetworkProperties: &NetworkProperties{
-			MinTxFee: 1,
-			MaxTxFee: 10000,
+			MinTxFee: 100,
+			MaxTxFee: 1000000,
 		},
 		ExecutionFees: []*ExecutionFee{
 			{
 				Name:              "Claim Validator Seat",
-				TransactionType:   "A",
+				TransactionType:   "claim-validator-seat",
 				ExecutionFee:      10,
 				FailureFee:        1,
 				Timeout:           10,
@@ -22,7 +28,7 @@ func DefaultGenesis() *GenesisState {
 			},
 			{
 				Name:              "Claim Governance Seat",
-				TransactionType:   "A",
+				TransactionType:   "claim-governance-seat",
 				ExecutionFee:      10,
 				FailureFee:        1,
 				Timeout:           10,
@@ -30,7 +36,7 @@ func DefaultGenesis() *GenesisState {
 			},
 			{
 				Name:              "Claim Proposal Type X",
-				TransactionType:   "B",
+				TransactionType:   "claim-proposal-type-x",
 				ExecutionFee:      10,
 				FailureFee:        1,
 				Timeout:           10,
@@ -38,7 +44,7 @@ func DefaultGenesis() *GenesisState {
 			},
 			{
 				Name:              "Vote Proposal Type X",
-				TransactionType:   "B",
+				TransactionType:   "vote-proposal-type-x",
 				ExecutionFee:      10,
 				FailureFee:        1,
 				Timeout:           10,
@@ -46,7 +52,7 @@ func DefaultGenesis() *GenesisState {
 			},
 			{
 				Name:              "Submit Proposal Type X",
-				TransactionType:   "B",
+				TransactionType:   "submit-proposal-type-x",
 				ExecutionFee:      10,
 				FailureFee:        1,
 				Timeout:           10,
@@ -54,7 +60,15 @@ func DefaultGenesis() *GenesisState {
 			},
 			{
 				Name:              "Veto Proposal Type X",
-				TransactionType:   "B",
+				TransactionType:   "veto-proposal-type-x",
+				ExecutionFee:      10,
+				FailureFee:        1,
+				Timeout:           10,
+				DefaultParameters: 0,
+			},
+			{
+				Name:              "Upsert Token Alias Execution Fee",
+				TransactionType:   UpsertTokenAlias,
 				ExecutionFee:      10,
 				FailureFee:        1,
 				Timeout:           10,

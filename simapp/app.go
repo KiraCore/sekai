@@ -8,7 +8,6 @@ import (
 	ibcmock "github.com/cosmos/cosmos-sdk/x/ibc/testing/mock"
 
 	"github.com/KiraCore/sekai/middleware"
-	gov2 "github.com/KiraCore/sekai/x/gov"
 
 	customante "github.com/KiraCore/sekai/app/ante"
 	"github.com/KiraCore/sekai/x/ixp"
@@ -91,8 +90,13 @@ import (
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
-	customgov "github.com/KiraCore/sekai/x/gov/keeper"
+	customgov "github.com/KiraCore/sekai/x/gov"
+	customgovkeeper "github.com/KiraCore/sekai/x/gov/keeper"
 	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
+
+	tokens "github.com/KiraCore/sekai/x/tokens"
+	tokenskeeper "github.com/KiraCore/sekai/x/tokens/keeper"
+	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
 )
 
 const appName = "KiraSimApp"
@@ -124,8 +128,9 @@ var (
 		transfer.AppModuleBasic{},
 
 		customstaking.AppModuleBasic{},
+		customgov.AppModuleBasic{},
+		tokens.AppModuleBasic{},
 		ixp.AppModuleBasic{},
-		gov2.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -180,8 +185,9 @@ type SimApp struct {
 	TransferKeeper   ibctransferkeeper.Keeper
 
 	CustomStakingKeeper keeper.Keeper
+	CustomGovKeeper     customgovkeeper.Keeper
 	IxpKeeper           ixpkeeper.Keeper
-	CustomGovKeeper     customgov.Keeper
+	TokensKeeper        tokenskeeper.Keeper
 
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
@@ -226,7 +232,9 @@ func NewSimApp(
 		minttypes.StoreKey, distrtypes.StoreKey, slashingtypes.StoreKey,
 		govtypes.StoreKey, paramstypes.StoreKey, ibchost.StoreKey, upgradetypes.StoreKey,
 		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey,
-		customstakingtypes.ModuleName, customgovtypes.ModuleName, ixptypes.ModuleName,
+		customstakingtypes.ModuleName, customgovtypes.ModuleName,
+		ixptypes.ModuleName,
+		tokenstypes.ModuleName,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
@@ -256,8 +264,9 @@ func NewSimApp(
 	scopedIBCMockKeeper := app.CapabilityKeeper.ScopeToModule(ibcmock.ModuleName)
 
 	app.CustomStakingKeeper = keeper.NewKeeper(keys[customstakingtypes.ModuleName], cdc)
-	app.CustomGovKeeper = customgov.NewKeeper(keys[customgovtypes.ModuleName], appCodec)
+	app.CustomGovKeeper = customgovkeeper.NewKeeper(keys[customgovtypes.ModuleName], appCodec)
 	app.IxpKeeper = ixpkeeper.NewKeeper(keys[ixptypes.ModuleName], cdc)
+	app.TokensKeeper = tokenskeeper.NewKeeper(keys[tokenstypes.ModuleName], appCodec)
 
 	// add keepers
 	app.AccountKeeper = authkeeper.NewAccountKeeper(
@@ -354,7 +363,8 @@ func NewSimApp(
 		evidence.NewAppModule(app.EvidenceKeeper),
 		ibc.NewAppModule(app.IBCKeeper),
 		params.NewAppModule(app.ParamsKeeper),
-		gov2.NewAppModule(app.CustomGovKeeper),
+		customgov.NewAppModule(app.CustomGovKeeper),
+		tokens.NewAppModule(app.TokensKeeper, app.CustomGovKeeper),
 		transferModule,
 	)
 
@@ -377,6 +387,7 @@ func NewSimApp(
 		capabilitytypes.ModuleName, authtypes.ModuleName, distrtypes.ModuleName, stakingtypes.ModuleName, banktypes.ModuleName,
 		slashingtypes.ModuleName, govtypes.ModuleName, minttypes.ModuleName, crisistypes.ModuleName,
 		ibchost.ModuleName, genutiltypes.ModuleName, evidencetypes.ModuleName, ibctransfertypes.ModuleName, customgovtypes.ModuleName,
+		tokenstypes.ModuleName,
 	)
 
 	app.mm.RegisterInvariants(&app.CrisisKeeper)

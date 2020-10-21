@@ -5,23 +5,16 @@ import "gogoproto/gogo.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/gov/types";
 
-message MsgWhitelistPermissions {
-  option (gogoproto.equal)            = true;
-
+message MsgCreateRole {
   bytes proposer = 1 [
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
     (gogoproto.moretags) = "yaml:\"address\""
   ];
 
-  bytes address = 2 [
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
-    (gogoproto.moretags) = "yaml:\"address\""
-  ];
-
-  uint32 permission = 3;
+  uint32 role = 2;
 }
 
-message MsgBlacklistPermissions {
+message MsgAssignRole {
   bytes proposer = 1 [
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
     (gogoproto.moretags) = "yaml:\"address\""
@@ -32,7 +25,21 @@ message MsgBlacklistPermissions {
     (gogoproto.moretags) = "yaml:\"address\""
   ];
 
-  uint32 permission = 3;
+  uint32 role = 3;
+}
+
+message MsgRemoveRole {
+  bytes proposer = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  bytes address = 2 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  uint32 role = 3;
 }
 
 message MsgSetNetworkProperties {
@@ -76,7 +83,6 @@ message MsgBlacklistRolePermission {
   uint32 permission = 3;
 }
 
-
 message MsgRemoveWhitelistRolePermission {
   bytes proposer = 1 [
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
@@ -85,43 +91,6 @@ message MsgRemoveWhitelistRolePermission {
 
   uint32 role = 2;
   uint32 permission = 3;
-}
-
-message MsgCreateRole {
-  bytes proposer = 1 [
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
-    (gogoproto.moretags) = "yaml:\"address\""
-  ];
-
-  uint32 role = 2;
-}
-
-message MsgAssignRole {
-  bytes proposer = 1 [
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
-    (gogoproto.moretags) = "yaml:\"address\""
-  ];
-
-  bytes address = 2 [
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
-    (gogoproto.moretags) = "yaml:\"address\""
-  ];
-
-  uint32 role = 3;
-}
-
-message MsgRemoveRole {
-  bytes proposer = 1 [
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
-    (gogoproto.moretags) = "yaml:\"address\""
-  ];
-
-  bytes address = 2 [
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
-    (gogoproto.moretags) = "yaml:\"address\""
-  ];
-
-  uint32 role = 3;
 }
 
 message MsgRemoveBlacklistRolePermission {
@@ -134,37 +103,6 @@ message MsgRemoveBlacklistRolePermission {
   uint32 permission = 3;
 }
 
-message MsgClaimCouncilor {
-  option (gogoproto.equal)            = true;
-
-  string moniker = 1;
-  string website = 2;
-  string social = 3;
-  string identity = 4;
-
-  bytes address = 5 [
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
-    (gogoproto.moretags) = "yaml:\"address\""
-  ];
-}
-
-message NetworkActor {
-  bytes address = 1 [
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
-    (gogoproto.moretags) = "yaml:\"address\""
-  ];
-
-  repeated uint64 roles = 2;
-  uint32 status = 3;
-  repeated uint32 votes = 4;
-  Permissions permissions = 5;
-  uint64 skin = 6;
-}
-
-message Permissions {
-  repeated uint32 blacklist = 1;
-  repeated uint32 whitelist = 2;
-}
 
 message NetworkProperties {
   uint64 min_tx_fee = 1;
@@ -179,16 +117,3 @@ message ExecutionFee {
   uint64 timeout = 5; // After what time function execution should fail
   uint64 default_parameters = 6; // Default values that the function in question will consume as input parameters before execution
 }
-
-message Councilor {
-  string moniker = 1;
-  string website = 2;
-  string social = 3;
-  string identity = 4;
-
-  bytes address = 5 [
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
-    (gogoproto.moretags) = "yaml:\"address\""
-  ];
-}
-
