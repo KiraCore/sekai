@@ -39,7 +39,7 @@ func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions() {
 			fmt.Sprintf("--%s=%s", cli.FlagPermission, "1"),
 			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-			fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(10))).String()),
+			fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(100))).String()),
 		},
 	)
 
@@ -66,8 +66,8 @@ func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions() {
 	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &perms)
 
 	// Validator 1 has permission to Add Permissions.
-	s.Require().False(perms.IsWhitelisted(customgovtypes.PermSetPermissions))
-	s.Require().True(perms.IsWhitelisted(customgovtypes.PermClaimValidator))
+	s.Require().True(perms.IsWhitelisted(customgovtypes.PermSetPermissions))
+	s.Require().False(perms.IsWhitelisted(customgovtypes.PermClaimValidator))
 }
 
 func (s IntegrationTestSuite) TestGetTxSetBlacklistPermissions() {
@@ -92,7 +92,7 @@ func (s IntegrationTestSuite) TestGetTxSetBlacklistPermissions() {
 			fmt.Sprintf("--%s=%s", cli.FlagPermission, "1"),
 			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-			fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(10))).String()),
+			fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(100))).String()),
 		},
 	)
 
@@ -120,8 +120,8 @@ func (s IntegrationTestSuite) TestGetTxSetBlacklistPermissions() {
 	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &perms)
 
 	// Validator 1 has permission to Add Permissions.
-	s.Require().False(perms.IsBlacklisted(customgovtypes.PermSetPermissions))
-	s.Require().True(perms.IsBlacklisted(customgovtypes.PermClaimValidator))
+	s.Require().True(perms.IsBlacklisted(customgovtypes.PermSetPermissions))
+	s.Require().False(perms.IsBlacklisted(customgovtypes.PermClaimValidator))
 }
 
 func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions_WithUserThatDoesNotHaveSetPermissions() {
@@ -130,7 +130,7 @@ func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions_WithUserThatDoesN
 	// We create some random address where we will give perms.
 	newAccount, _, err := val.ClientCtx.Keyring.NewMnemonic("test", keyring.English, "", hd.Secp256k1)
 	s.Require().NoError(err)
-	s.sendValue(val.ClientCtx, val.Address, newAccount.GetAddress(), types3.NewCoin(s.cfg.BondDenom, types3.NewInt(100)))
+	s.SendValue(val.ClientCtx, val.Address, newAccount.GetAddress(), types3.NewCoin(s.cfg.BondDenom, types3.NewInt(100)))
 
 	// Now we try to set permissions with a user that does not have.
 	cmd := cli.GetTxSetWhitelistPermissions()
@@ -147,7 +147,7 @@ func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions_WithUserThatDoesN
 			fmt.Sprintf("--%s=%s", cli.FlagPermission, "1"),
 			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-			fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(10))).String()),
+			fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(100))).String()),
 		},
 	)
 

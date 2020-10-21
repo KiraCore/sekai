@@ -2,6 +2,7 @@ package types
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/cosmos/cosmos-sdk/types"
 )
@@ -98,66 +99,6 @@ func (m *Permissions) RemoveFromBlacklist(perm PermValue) error {
 	return nil
 }
 
-func NewNetworkActor(
-	addr types.AccAddress,
-	roles Roles,
-	status uint32,
-	votes []uint32,
-	perm *Permissions,
-	skin uint64,
-) NetworkActor {
-	return NetworkActor{
-		Address:     addr,
-		Roles:       roles,
-		Status:      status,
-		Votes:       votes,
-		Permissions: perm,
-		Skin:        skin,
-	}
-}
-
-func (m *NetworkActor) HasRole(role Role) bool {
-	for _, r := range m.Roles {
-		if r == uint64(role) {
-			return true
-		}
-	}
-	return false
-}
-
-func (m *NetworkActor) SetRole(role Role) {
-	if !m.HasRole(role) {
-		m.Roles = append(m.Roles, uint64(role))
-	}
-}
-
-func (m *NetworkActor) RemoveRole(role Role) {
-	for i, r := range m.Roles {
-		if r == uint64(role) {
-			m.Roles = append(m.Roles[:i], m.Roles[i+1:]...)
-			return
-		}
-	}
-}
-
-// NewDefaultActor returns a default actor with:
-// - The provided addr.
-// - Roles set to nil
-// - Status set to 0
-// - Votes set to nil
-// - Empty permissions
-// - Skin set to 0
-func NewDefaultActor(addr types.AccAddress) NetworkActor {
-	return NewNetworkActor(
-		addr,
-		nil,
-		0,
-		nil,
-		NewPermissions(nil, nil),
-		0,
-	)
-}
-
 func NewCouncilor(
 	moniker string,
 	website string,
@@ -171,5 +112,29 @@ func NewCouncilor(
 		Social:   social,
 		Identity: identity,
 		Address:  address,
+	}
+}
+
+func NewProposalAssignPermission(
+	proposalID uint64,
+	address types.AccAddress,
+	permission PermValue,
+	votingStartTime time.Time,
+	votingEndTime time.Time,
+) ProposalAssignPermission {
+	return ProposalAssignPermission{
+		ProposalId:      proposalID,
+		Address:         address,
+		Permission:      uint32(permission),
+		VotingStartTime: votingStartTime,
+		VotingEndTime:   votingEndTime,
+	}
+}
+
+func NewVote(proposalID uint64, addr types.AccAddress, option VoteOption) Vote {
+	return Vote{
+		ProposalId: proposalID,
+		Voter:      addr,
+		Option:     option,
 	}
 }

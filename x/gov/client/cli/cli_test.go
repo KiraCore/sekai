@@ -5,14 +5,8 @@ import (
 	"fmt"
 	"testing"
 
-	cli3 "github.com/cosmos/cosmos-sdk/x/bank/client/cli"
-
-	"github.com/cosmos/cosmos-sdk/client/flags"
-
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
-	types3 "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/KiraCore/sekai/x/gov/client/cli"
+	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/testutil"
@@ -87,37 +81,21 @@ func (s IntegrationTestSuite) TestRolePermissions_QueryCommand_DefaultRolePerms(
 func (s IntegrationTestSuite) TestClaimCouncilor_HappyPath() {
 	val := s.network.Validators[0]
 
-	cmd := cli.GetTxClaimGovernanceCmd()
+	s.SetCouncilor(val.Address)
+
+	err := s.network.WaitForNextBlock()
+	s.Require().NoError(err)
+
+	// Query command
+	// Mandatory flags
+	cmd := cli.GetCmdQueryCouncilRegistry()
+
 	_, out := testutil.ApplyMockIO(cmd)
 	clientCtx := val.ClientCtx.WithOutput(out).WithOutputFormat("json")
 
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, client.ClientContextKey, &clientCtx)
 
-	cmd.SetArgs(
-		[]string{
-			fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
-			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-			fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(10))).String()),
-			fmt.Sprintf("--%s=%s", cli.FlagAddress, val.Address.String()),
-			fmt.Sprintf("--%s=%s", cli.FlagMoniker, val.Moniker),
-		},
-	)
-
-	err := cmd.ExecuteContext(ctx)
-	s.Require().NoError(err)
-
-	fmt.Printf("%s\n", out.String())
-
-	err = s.network.WaitForNextBlock()
-	s.Require().NoError(err)
-
-	// Query command
-	// Mandatory flags
-	out.Reset()
-
-	cmd = cli.GetCmdQueryCouncilRegistry()
 	cmd.SetArgs([]string{
 		"",
 	})
@@ -158,32 +136,6 @@ func (s IntegrationTestSuite) TestClaimCouncilor_HappyPath() {
 	s.Require().NoError(err)
 	s.Require().Equal(val.Moniker, councilorByMoniker.Moniker)
 	s.Require().Equal(val.Address, councilorByMoniker.Address)
-}
-
-func (s IntegrationTestSuite) sendValue(cCtx client.Context, from types3.AccAddress, to types3.AccAddress, coin types3.Coin) {
-	cmd := cli3.NewSendTxCmd()
-	_, out := testutil.ApplyMockIO(cmd)
-	cCtx = cCtx.WithOutput(out).WithOutputFormat("json")
-
-	cmd.SetArgs(
-		[]string{
-			from.String(),
-			to.String(),
-			coin.String(),
-			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-			fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(10))).String()),
-		},
-	)
-
-	ctx := context.Background()
-	ctx = context.WithValue(ctx, client.ClientContextKey, &cCtx)
-
-	err := cmd.ExecuteContext(ctx)
-	s.Require().NoError(err)
-
-	err = s.network.WaitForNextBlock()
-	s.Require().NoError(err)
 }
 
 func TestIntegrationTestSuite(t *testing.T) {

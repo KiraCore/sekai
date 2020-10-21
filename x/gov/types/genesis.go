@@ -13,6 +13,7 @@ func DefaultGenesis() *GenesisState {
 			uint64(RoleSudo):      NewPermissions([]PermValue{PermSetPermissions, PermClaimCouncilor, PermClaimValidator}, nil),
 			uint64(RoleValidator): NewPermissions([]PermValue{PermClaimValidator}, nil),
 		},
+		StartingProposalId: 1,
 		NetworkProperties: &NetworkProperties{
 			MinTxFee: 100,
 			MaxTxFee: 1000000,

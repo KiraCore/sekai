@@ -1,7 +1,9 @@
 syntax = "proto3";
 package kira.gov;
 
-import "gov.proto";
+import "actor.proto";
+import "councilor.proto";
+import "role.proto";
 import "gogoproto/gogo.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/gov/types";
@@ -10,8 +12,6 @@ option go_package = "github.com/KiraCore/sekai/x/gov/types";
 service Query {
   // Returns the permissions an actor has by address.
   rpc PermissionsByAddress (PermissionsByAddressRequest) returns (PermissionsResponse) {}
-  rpc GetNetworkProperties (NetworkPropertiesRequest) returns (NetworkPropertiesResponse) {}
-  rpc GetExecutionFee (ExecutionFeeRequest) returns (ExecutionFeeResponse) {}
   // Returns the roles that are assigned to an address.
   rpc RolesByAddress (RolesByAddressRequest) returns (RolesByAddressResponse) {}
   // RolePermissions returns the permissions of the roles available in the registry.
@@ -20,6 +20,15 @@ service Query {
   rpc CouncilorByAddress (CouncilorByAddressRequest) returns (CouncilorResponse) {}
 
   rpc CouncilorByMoniker (CouncilorByMonikerRequest) returns (CouncilorResponse) {}
+
+  rpc GetNetworkProperties (NetworkPropertiesRequest) returns (NetworkPropertiesResponse) {}
+  rpc GetExecutionFee (ExecutionFeeRequest) returns (ExecutionFeeResponse) {}
+}
+
+message NetworkPropertiesRequest {}
+
+message NetworkPropertiesResponse {
+  kira.gov.NetworkProperties properties = 1;
 }
 
 message PermissionsByAddressRequest {
@@ -31,12 +40,6 @@ message PermissionsByAddressRequest {
 
 message PermissionsResponse {
   kira.gov.Permissions permissions = 1;
-}
-
-message NetworkPropertiesRequest {}
-
-message NetworkPropertiesResponse {
-  kira.gov.NetworkProperties properties = 1;
 }
 
 message RolesByAddressRequest {
@@ -57,6 +60,7 @@ message RolePermissionsRequest {
 message RolePermissionsResponse {
   Permissions permissions = 1;
 }
+
 message ExecutionFeeRequest {
   string transaction_type = 1;
 }
@@ -78,4 +82,3 @@ message CouncilorByMonikerRequest {
 message CouncilorResponse {
   kira.gov.Councilor councilor = 1 [(gogoproto.nullable) = false];
 }
-

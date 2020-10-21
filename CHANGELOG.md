@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.1.6.1] - 10.19.2020
+### Added
+
+- Added CLI command to send a SetPermission proposal.
+- Added CLI command to vote a SetPermission proposal.
+
+### Changed
+
+- Now Role and Permissions are persisted differently in order to be able to get
+actors by permission and actors by role.
+
+- Now the commands for all Governance module is simplified in a better hierarchical style.
+```
+Available Commands:
+  councilor   Councilor subcommands
+  permission  Permission subcommands
+  proposal    Proposal subcommands
+  role        Role subcommands
+```
+
 ## [0.1.6] - 10.16.2020
 ### Added
 

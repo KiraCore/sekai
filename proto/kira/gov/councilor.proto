@@ -1,0 +1,33 @@
+syntax = "proto3";
+package kira.gov;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/gov/types";
+
+message MsgClaimCouncilor {
+  option (gogoproto.equal)            = true;
+
+  string moniker = 1;
+  string website = 2;
+  string social = 3;
+  string identity = 4;
+
+  bytes address = 5 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+}
+
+message Councilor {
+  string moniker = 1;
+  string website = 2;
+  string social = 3;
+  string identity = 4;
+
+  bytes address = 5 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+}
+

@@ -9,31 +9,18 @@ const RouterKey = ModuleName
 
 // constants
 var (
-	KeyPrefixPermissionsRegistry = []byte("permissions_registry")
-	KeyPrefixActors              = []byte("network_actors")
-	KeyPrefixNetworkProperties   = []byte("network_properties")
-	KeyPrefixExecutionFee        = []byte("execution_fee")
+	KeyPrefixNetworkProperties = []byte("network_properties")
+	KeyPrefixExecutionFee      = []byte("execution_fee")
 
 	// Roles
 	RoleUndefined Role = 0x0
 	RoleSudo      Role = 0x1
 	RoleValidator Role = 0x2
-
-	PermClaimValidator PermValue = 1
-	PermSetPermissions PermValue = 2
-	PermClaimCouncilor PermValue = 3
-
-	PermUpsertTokenAlias PermValue = 10
-	PermUpsertTokenRate  PermValue = 11
-	PermChangeTxFee      PermValue = 4
 )
 
 // Role represents a Role in the registry.
 type Role uint64
 type Roles []uint64
-
-// PermValue represents a single permission value, like claim-role-validator.
-type PermValue uint32
 
 // RoleToKey returns bytes to be used as a key for a given capability index.
 func RoleToKey(index Role) []byte {

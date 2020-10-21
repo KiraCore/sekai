@@ -5,10 +5,14 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+func HasQuorum(ctx sdk.Context, keeper Keeper, proposal types.ProposalAssignPermission) bool {
+	return false
+}
+
 // CheckIfAllowedPermission
 func CheckIfAllowedPermission(ctx sdk.Context, keeper Keeper, addr sdk.AccAddress, permValue types.PermValue) bool {
-	actor, err := keeper.GetNetworkActorByAddress(ctx, addr)
-	if err != nil {
+	actor, found := keeper.GetNetworkActorByAddress(ctx, addr)
+	if !found {
 		return false
 	}
 
@@ -53,12 +57,22 @@ func CheckIfAllowedPermission(ctx sdk.Context, keeper Keeper, addr sdk.AccAddres
 func getRolePermissions(ctx sdk.Context, keeper Keeper, actor types.NetworkActor) map[uint64]*types.Permissions {
 	roles := map[uint64]*types.Permissions{}
 	for _, role := range actor.Roles {
-		roles[role] = keeper.GetPermissionsForRole(ctx, types.Role(role)) // TODO take care of roles.
+		rolePerms, found := keeper.GetPermissionsForRole(ctx, types.Role(role))
+		if found {
+			roles[role] = &rolePerms
+		}
 	}
 
 	return roles
 }
 
-func (k Keeper) CheckIfAllowedPermission(ctx sdk.Context, addr sdk.AccAddress, permValue types.PermValue) bool {
-	return CheckIfAllowedPermission(ctx, k, addr, permValue)
+// GetProposalIDBytes returns the byte representation of the proposalID
+func GetProposalIDBytes(proposalID uint64) []byte {
+	proposalIDBz := sdk.Uint64ToBigEndian(proposalID)
+	return proposalIDBz
+}
+
+// GetProposalIDFromBytes returns proposalID in uint64 format from a byte array
+func GetProposalIDFromBytes(bz []byte) uint64 {
+	return sdk.BigEndianToUint64(bz)
 }
