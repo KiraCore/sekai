@@ -3,8 +3,8 @@ Kira Hub
 
 ## Set ChangeTxFee permission
 ```sh
-# command to set changeTxFee permission
-sekaid tx customgov set-whitelist-permissions --from validator --keyring-backend=test --permission=4 --addr=$(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --chain-id=testing --fees=100ukex --home=$HOME/.sekaid
+# command to set PermChangeTxFee(8) permission
+sekaid tx customgov permission whitelist-permission --from validator --keyring-backend=test --permission=8 --addr=$(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --chain-id=testing --fees=100ukex --home=$HOME/.sekaid
 # good response
 "[{\"events\":[{\"type\":\"message\",\"attributes\":[{\"key\":\"action\",\"value\":\"whitelist-permissions\"}]}]}]"
 ```
@@ -75,11 +75,11 @@ Here, the value should be looked at is `"fee is less than failure fee 1000: inva
 In this case, issue is found on ante step and fee is not being paid at all.
 
 # preparation for networks (v1) failure=1000, execution=10000
-sekaid tx customgov set-whitelist-permissions --from validator --keyring-backend=test --permission=4 --addr=$(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --chain-id=testing --fees=100ukex --home=$HOME/.sekaid <<< y
+sekaid tx customgov permission whitelist-permission --from validator --keyring-backend=test --permission=8 --addr=$(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --chain-id=testing --fees=100ukex --home=$HOME/.sekaid <<< y
 sekaid tx customgov set-execution-fee --from validator --execution_name="set-network-properties" --transaction_type="set-network-properties" --execution_fee=10000 --failure_fee=1000 --timeout=10 default_parameters=0 --keyring-backend=test --chain-id=testing --fees=100ukex --home=$HOME/.sekaid <<< y
 
 # preparation for networks (v2) failure=1000, execution=500
-sekaid tx customgov set-whitelist-permissions --from validator --keyring-backend=test --permission=4 --addr=$(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --chain-id=testing --fees=100ukex --home=$HOME/.sekaid <<< y
+sekaid tx customgov permission whitelist-permission --from validator --keyring-backend=test --permission=8 --addr=$(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --chain-id=testing --fees=100ukex --home=$HOME/.sekaid <<< y
 sekaid tx customgov set-execution-fee --from validator --execution_name="set-network-properties" --transaction_type="set-network-properties" --execution_fee=500 --failure_fee=1000 --timeout=10 default_parameters=0 --keyring-backend=test --chain-id=testing --fees=100ukex --home=$HOME/.sekaid <<< y
 
 # init user1 with 100000ukex
@@ -93,7 +93,7 @@ sekaid tx customgov set-network-properties --from user1 --min_tx_fee="2" --max_t
 sekaid query bank balances $(sekaid keys show -a user1 --keyring-backend=test --home=$HOME/.sekaid)
 
 # whitelist user1's permission for ChangeTxFee and try again
-sekaid tx customgov set-whitelist-permissions --from validator --keyring-backend=test --permission=4 --addr=$(sekaid keys show -a user1 --keyring-backend=test --home=$HOME/.sekaid) --chain-id=testing --fees=100ukex --home=$HOME/.sekaid <<< y
+sekaid tx customgov permission whitelist-permission --from validator --keyring-backend=test --permission=8 --addr=$(sekaid keys show -a user1 --keyring-backend=test --home=$HOME/.sekaid) --chain-id=testing --fees=100ukex --home=$HOME/.sekaid <<< y
 sekaid tx customgov set-network-properties --from user1 --min_tx_fee="2" --max_tx_fee="25000" --keyring-backend=test --chain-id=testing --fees=1000ukex --home=$HOME/.sekaid <<< y
 # this should fail and balance should be (previousBalance - successFee)
 sekaid query bank balances $(sekaid keys show -a user1 --keyring-backend=test --home=$HOME/.sekaid)
@@ -126,8 +126,8 @@ fee:
 
 ## Upsert token alias
 ```sh
-# set PermUpsertTokenAlias(10) permission to validator address
-sekaid tx customgov set-whitelist-permissions --from validator --keyring-backend=test --permission=10 --addr=$(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --chain-id=testing --fees=100ukex --home=$HOME/.sekaid <<< y
+# set PermUpsertTokenAlias(6) permission to validator address
+sekaid tx customgov permission whitelist-permission --from validator --keyring-backend=test --permission=6 --addr=$(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --chain-id=testing --fees=100ukex --home=$HOME/.sekaid <<< y
 # run upsert alias
 sekaid tx tokens upsert-alias --from validator --keyring-backend=test --expiration=0 --enactment=0 --allowed_vote_types=0,1 --symbol="ETH" --name="Ethereum" --icon="myiconurl" --decimals=6 --denoms="finney" --chain-id=testing --fees=100ukex --home=$HOME/.sekaid  <<< y
 ```
@@ -190,6 +190,53 @@ data:
     name: Kira
     status: undefined
     symbol: KEX
+```
+
+## Upsert token rates
+```sh
+# set PermUpsertTokenRate(7) permission to validator address
+sekaid tx customgov permission whitelist-permission --from validator --keyring-backend=test --permission=7 --addr=$(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --chain-id=testing --fees=100ukex --home=$HOME/.sekaid <<< y
+# run upsert rate
+sekaid tx tokens upsert-rate --from validator --keyring-backend=test --denom="mykex" --rate="1.5" --fee_payments=true --chain-id=testing --fees=100ukex --home=$HOME/.sekaid  <<< y
+```
+# Query token rate
+```sh
+# command
+sekaid query tokens rate mykex
+# response
+denom: mykex
+fee_payments: true
+rate: "1.500000"
+```
+```sh
+# command
+sekaid query tokens rate invalid_denom
+# response
+Error: invalid_denom denom does not exist
+```
+```sh
+# command
+sekaid query tokens all-rates --chain-id=testing --home=$HOME/.sekaid
+# response
+data:
+- denom: ubtc
+  fee_payments: true
+  rate: "0.000010"
+- denom: ukex
+  fee_payments: true
+  rate: "1.000000"
+- denom: xeth
+  fee_payments: true
+  rate: "0.000100"
+
+# command
+sekaid query tokens rates-by-denom ukex --chain-id=testing --home=$HOME/.sekaid
+# response
+data:
+  ukex:
+    denom: ukex
+    fee_payments: true
+    rate: "1.000000"
 ```
 ---
 `dev` branch

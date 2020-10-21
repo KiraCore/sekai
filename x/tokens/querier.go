@@ -37,6 +37,9 @@ func (q Querier) GetAllTokenAliases(ctx context.Context, request *types.AllToken
 func (q Querier) GetTokenRate(ctx context.Context, request *types.TokenRateRequest) (*types.TokenRateResponse, error) {
 	rate := q.keeper.GetTokenRate(sdk.UnwrapSDKContext(ctx), request.Denom)
 
+	if rate == nil {
+		return &types.TokenRateResponse{Data: nil}, nil
+	}
 	return &types.TokenRateResponse{Data: rate.ToHumanReadable()}, nil
 }
 
