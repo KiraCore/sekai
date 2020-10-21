@@ -49,10 +49,9 @@ func (k Keeper) GetTokenRatesByDenom(ctx sdk.Context, denoms []string) map[strin
 	tokenRatesMap := make(map[string]*types.TokenRate)
 
 	for _, denom := range denoms {
-		denomTokenStoreID := append([]byte(PrefixKeyDenomToken), []byte(denom)...)
+		denomTokenStoreID := append([]byte(PrefixKeyTokenRate), []byte(denom)...)
 
 		if store.Has(denomTokenStoreID) {
-			denom := string(store.Get(denomTokenStoreID))
 			tokenRate := k.GetTokenRate(ctx, denom)
 			tokenRatesMap[denom] = tokenRate
 		}

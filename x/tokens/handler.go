@@ -47,6 +47,11 @@ func handleUpsertTokenAlias(ctx sdk.Context, ck keeper.Keeper, cgk types.CustomG
 }
 
 func handleUpsertTokenRate(ctx sdk.Context, ck keeper.Keeper, cgk types.CustomGovKeeper, msg *types.MsgUpsertTokenRate) (*sdk.Result, error) {
+	err := msg.ValidateBasic()
+	if err != nil {
+		return nil, err
+	}
+
 	isAllowed := cgk.CheckIfAllowedPermission(ctx, msg.Proposer, customgovtypes.PermUpsertTokenRate)
 	if !isAllowed {
 		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermUpsertTokenRate")
