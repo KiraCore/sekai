@@ -54,6 +54,29 @@ func (k Keeper) WhitelistRolePermission(ctx sdk.Context, role types.Role, perm t
 	return nil
 }
 
+func (k Keeper) RemoveWhitelistRolePermission(ctx sdk.Context, role types.Role, perm types.PermValue) error {
+	store := ctx.KVStore(k.storeKey)
+
+	prefixStore := prefix.NewStore(store, RolePermissionRegistry)
+	bz := prefixStore.Get(roleToBytes(role))
+	if bz == nil {
+		return types.ErrRoleDoesNotExist
+	}
+
+	var perms types.Permissions
+	k.cdc.MustUnmarshalBinaryBare(bz, &perms)
+
+	err := perms.RemoveFromWhitelist(perm)
+	if err != nil {
+		return err
+	}
+
+	k.SavePermissionsForRole(ctx, role, &perms)
+	store.Delete(prefixWhitelistRole(perm, role))
+
+	return nil
+}
+
 func (k Keeper) GetRolesByWhitelistedPerm(ctx sdk.Context, perm types.PermValue) sdk.Iterator {
 	store := ctx.KVStore(k.storeKey)
 	return sdk.KVStorePrefixIterator(store, prefixWhitelist(perm))

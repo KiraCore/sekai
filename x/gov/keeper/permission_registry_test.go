@@ -9,7 +9,7 @@ import (
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
 
-func TestKeeper_SaveGetPermissionsForRole(t *testing.T) {
+func TestKeeper_CreateRoleAndWhitelistPerm(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
@@ -53,6 +53,35 @@ func TestKeeper_WhitelistRolePermission(t *testing.T) {
 
 	iterator := app.CustomGovKeeper.GetRolesByWhitelistedPerm(ctx, types.PermChangeTxFee)
 	requireIteratorCount(t, iterator, 1)
+}
+
+func TestKeeper_RemoveWhitelistRolePermission(t *testing.T) {
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	perms, found := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleSudo)
+	require.True(t, found)
+	require.False(t, perms.IsWhitelisted(types.PermChangeTxFee))
+
+	err := app.CustomGovKeeper.WhitelistRolePermission(ctx, types.RoleSudo, types.PermChangeTxFee)
+	require.NoError(t, err)
+
+	perms, found = app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleSudo)
+	require.True(t, found)
+	require.True(t, perms.IsWhitelisted(types.PermChangeTxFee))
+
+	iterator := app.CustomGovKeeper.GetRolesByWhitelistedPerm(ctx, types.PermChangeTxFee)
+	requireIteratorCount(t, iterator, 1)
+
+	err = app.CustomGovKeeper.RemoveWhitelistRolePermission(ctx, types.RoleSudo, types.PermChangeTxFee)
+	require.NoError(t, err)
+
+	perms, found = app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleSudo)
+	require.True(t, found)
+	require.False(t, perms.IsWhitelisted(types.PermChangeTxFee))
+
+	iterator = app.CustomGovKeeper.GetRolesByWhitelistedPerm(ctx, types.PermChangeTxFee)
+	requireIteratorCount(t, iterator, 0)
 }
 
 func TestKeeper_SetPermissionsOverwritesOldPerms(t *testing.T) {
