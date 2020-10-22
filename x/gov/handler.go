@@ -235,17 +235,15 @@ func handleBlacklistRolePermission(ctx sdk.Context, ck keeper.Keeper, msg *custo
 }
 
 func handleWhitelistRolePermission(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgWhitelistRolePermission) (*sdk.Result, error) {
-	perms, err := validateAndGetPermissionsForRole(ctx, ck, msg.Proposer, customgovtypes.Role(msg.Role))
+	_, err := validateAndGetPermissionsForRole(ctx, ck, msg.Proposer, customgovtypes.Role(msg.Role))
 	if err != nil {
 		return nil, err
 	}
 
-	err = perms.AddToWhitelist(customgovtypes.PermValue(msg.Permission))
+	err = ck.WhitelistRolePermission(ctx, customgovtypes.Role(msg.Role), customgovtypes.PermValue(msg.Permission))
 	if err != nil {
 		return nil, errors.Wrap(customgovtypes.ErrWhitelisting, err.Error())
 	}
-
-	ck.SavePermissionsForRole(ctx, customgovtypes.Role(msg.Role), perms)
 
 	return &sdk.Result{}, nil
 }

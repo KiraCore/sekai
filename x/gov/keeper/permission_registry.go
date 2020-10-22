@@ -1,11 +1,9 @@
 package keeper
 
 import (
+	"github.com/KiraCore/sekai/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/errors"
-
-	"github.com/KiraCore/sekai/x/gov/types"
 )
 
 func (k Keeper) CreateRole(ctx sdk.Context, role types.Role) {
@@ -34,7 +32,9 @@ func (k Keeper) GetPermissionsForRole(ctx sdk.Context, role types.Role) (types.P
 }
 
 func (k Keeper) WhitelistRolePermission(ctx sdk.Context, role types.Role, perm types.PermValue) error {
-	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), RolePermissionRegistry)
+	store := ctx.KVStore(k.storeKey)
+
+	prefixStore := prefix.NewStore(store, RolePermissionRegistry)
 	bz := prefixStore.Get(roleToBytes(role))
 	if bz == nil {
 		return types.ErrRoleDoesNotExist
@@ -45,17 +45,28 @@ func (k Keeper) WhitelistRolePermission(ctx sdk.Context, role types.Role, perm t
 
 	err := perms.AddToWhitelist(perm)
 	if err != nil {
-		return errors.Wrap(types.ErrWhitelisting, err.Error())
+		return err
 	}
 
 	k.SavePermissionsForRole(ctx, role, &perms)
+	store.Set(prefixWhitelistRole(perm, role), roleToBytes(role))
+
 	return nil
+}
+
+func (k Keeper) GetRolesByWhitelistedPerm(ctx sdk.Context, perm types.PermValue) sdk.Iterator {
+	store := ctx.KVStore(k.storeKey)
+	return sdk.KVStorePrefixIterator(store, prefixWhitelist(perm))
 }
 
 func (k Keeper) CheckIfAllowedPermission(ctx sdk.Context, addr sdk.AccAddress, permValue types.PermValue) bool {
 	return CheckIfAllowedPermission(ctx, k, addr, permValue)
 }
 
-func prefixWhitelist(role types.Role) []byte {
-	return append(WhitelistRolePrefix, roleToBytes(role)...)
+func prefixWhitelist(perm types.PermValue) []byte {
+	return append(WhitelistRolePrefix, permToBytes(perm)...)
+}
+
+func prefixWhitelistRole(perm types.PermValue, role types.Role) []byte {
+	return append(prefixWhitelist(perm), roleToBytes(role)...)
 }

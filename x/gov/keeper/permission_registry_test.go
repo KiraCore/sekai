@@ -49,7 +49,10 @@ func TestKeeper_WhitelistRolePermission(t *testing.T) {
 
 	perms, found = app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleSudo)
 	require.True(t, found)
-	require.True(t, perms.IsWhitelisted(types.PermSetPermissions))
+	require.True(t, perms.IsWhitelisted(types.PermChangeTxFee))
+
+	iterator := app.CustomGovKeeper.GetRolesByWhitelistedPerm(ctx, types.PermChangeTxFee)
+	requireIteratorCount(t, iterator, 1)
 }
 
 func TestKeeper_SetPermissionsOverwritesOldPerms(t *testing.T) {
