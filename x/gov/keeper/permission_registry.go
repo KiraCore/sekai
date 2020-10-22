@@ -16,13 +16,13 @@ func (k Keeper) CreateRole(ctx sdk.Context, role types.Role) {
 // SavePermissionsForRole adds permissions to role in the  permission Registry.
 func (k Keeper) SavePermissionsForRole(ctx sdk.Context, role types.Role, permissions *types.Permissions) {
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), RolePermissionRegistry)
-	prefixStore.Set(types.RoleToKey(role), k.cdc.MustMarshalBinaryBare(permissions))
+	prefixStore.Set(roleToBytes(role), k.cdc.MustMarshalBinaryBare(permissions))
 }
 
 // GetPermissionsForRole returns the permissions assigned to the specific role.
 func (k Keeper) GetPermissionsForRole(ctx sdk.Context, role types.Role) (types.Permissions, bool) {
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), RolePermissionRegistry)
-	bz := prefixStore.Get(types.RoleToKey(role))
+	bz := prefixStore.Get(roleToBytes(role))
 	if bz == nil {
 		return types.Permissions{}, false
 	}
@@ -35,7 +35,7 @@ func (k Keeper) GetPermissionsForRole(ctx sdk.Context, role types.Role) (types.P
 
 func (k Keeper) WhitelistRolePermission(ctx sdk.Context, role types.Role, perm types.PermValue) error {
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), RolePermissionRegistry)
-	bz := prefixStore.Get(types.RoleToKey(role))
+	bz := prefixStore.Get(roleToBytes(role))
 	if bz == nil {
 		return types.ErrRoleDoesNotExist
 	}
@@ -54,4 +54,8 @@ func (k Keeper) WhitelistRolePermission(ctx sdk.Context, role types.Role, perm t
 
 func (k Keeper) CheckIfAllowedPermission(ctx sdk.Context, addr sdk.AccAddress, permValue types.PermValue) bool {
 	return CheckIfAllowedPermission(ctx, k, addr, permValue)
+}
+
+func prefixWhitelist(role types.Role) []byte {
+	return append(WhitelistRolePrefix, roleToBytes(role)...)
 }
