@@ -61,14 +61,13 @@ func TestCheckIfAllowedPermission(t *testing.T) {
 			name: "actor has permission whitelisted in role",
 			prepareScenario: func(ctx sdk.Context, keeper keeper.Keeper) {
 				roleWithWhitelistedValue := types.Role(123)
-				keeper.SavePermissionsForRole(ctx, roleWithWhitelistedValue, types.NewPermissions([]types.PermValue{
-					types.PermClaimValidator,
-				}, nil))
+				keeper.CreateRole(ctx, roleWithWhitelistedValue)
+
+				err2 := keeper.WhitelistRolePermission(ctx, roleWithWhitelistedValue, types.PermClaimValidator)
+				require.NoError(t, err2)
 
 				actor := types.NewDefaultActor(addr)
-				actor.SetRole(roleWithWhitelistedValue)
-
-				keeper.SaveNetworkActor(ctx, actor)
+				keeper.AssignRoleToActor(ctx, actor, roleWithWhitelistedValue)
 			},
 			isAllowed: true,
 		},
