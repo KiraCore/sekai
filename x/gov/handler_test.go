@@ -535,13 +535,11 @@ func TestHandler_WhitelistRolePermissions_Errors(t *testing.T) {
 				err2 := setPermissionToAddr(t, app, ctx, addr, types.PermSetPermissions)
 				require.NoError(t, err2)
 
-				perms, found := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleValidator)
+				_, found := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleValidator)
 				require.True(t, found)
 
-				err2 = perms.AddToBlacklist(types.PermSetPermissions)
+				err2 = app.CustomGovKeeper.BlacklistRolePermission(ctx, types.RoleValidator, types.PermSetPermissions)
 				require.NoError(t, err2)
-
-				app.CustomGovKeeper.SavePermissionsForRole(ctx, types.RoleValidator, &perms)
 			},
 			expectedErr: fmt.Errorf("permission is already blacklisted: error adding to whitelist"),
 		},
@@ -1098,10 +1096,12 @@ func TestHandler_RemoveRoles(t *testing.T) {
 	require.NoError(t, err)
 
 	// Set new role and set permission to actor.
-	app.CustomGovKeeper.SavePermissionsForRole(ctx, types.Role(3), types.NewPermissions([]types.PermValue{types.PermSetPermissions}, nil))
+	app.CustomGovKeeper.CreateRole(ctx, types.Role(3))
+	err = app.CustomGovKeeper.WhitelistRolePermission(ctx, types.Role(3), types.PermSetPermissions)
+	require.NoError(t, err)
+
 	actor := types.NewDefaultActor(addr)
-	actor.SetRole(3)
-	app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
+	app.CustomGovKeeper.AssignRoleToActor(ctx, actor, types.Role(3))
 
 	actor, found := app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addr)
 	require.True(t, found)

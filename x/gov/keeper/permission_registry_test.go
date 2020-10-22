@@ -126,25 +126,6 @@ func TestKeeper_RemoveBlacklistRolePermission(t *testing.T) {
 	require.False(t, perms.IsBlacklisted(types.PermChangeTxFee))
 }
 
-func TestKeeper_SetPermissionsOverwritesOldPerms(t *testing.T) {
-	app := simapp.Setup(false)
-	ctx := app.NewContext(false, tmproto.Header{})
-
-	roleValidator, found := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleValidator)
-	require.True(t, found)
-	require.True(t, roleValidator.IsWhitelisted(types.PermClaimValidator))
-	require.False(t, roleValidator.IsWhitelisted(types.PermSetPermissions))
-
-	// We set whitelisted PermSetPermissions and Blacklisted PermClaimValidator
-	newPerms := types.NewPermissions([]types.PermValue{types.PermSetPermissions}, []types.PermValue{types.PermClaimValidator})
-	app.CustomGovKeeper.SavePermissionsForRole(ctx, types.RoleValidator, newPerms)
-
-	newRoleValidatorPerms, found := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleValidator)
-	require.True(t, found)
-	require.True(t, newRoleValidatorPerms.IsWhitelisted(types.PermSetPermissions))
-	require.False(t, newRoleValidatorPerms.IsWhitelisted(types.PermClaimValidator))
-}
-
 func TestKeeper_GetPermissionsForRole_ReturnsNilWhenDoesNotExist(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
