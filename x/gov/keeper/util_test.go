@@ -48,14 +48,12 @@ func TestCheckIfAllowedPermission(t *testing.T) {
 			name: "actor has permission blacklisted in role",
 			prepareScenario: func(ctx sdk.Context, keeper keeper.Keeper) {
 				roleWithBlacklistedValue := types.Role(123)
-				keeper.SavePermissionsForRole(ctx, roleWithBlacklistedValue, types.NewPermissions(nil, []types.PermValue{
-					types.PermClaimValidator,
-				}))
+				keeper.CreateRole(ctx, roleWithBlacklistedValue)
+				err2 := keeper.BlacklistRolePermission(ctx, roleWithBlacklistedValue, types.PermClaimValidator)
+				require.NoError(t, err2)
 
 				actor := types.NewDefaultActor(addr)
-				actor.SetRole(roleWithBlacklistedValue)
-
-				keeper.SaveNetworkActor(ctx, actor)
+				keeper.AssignRoleToActor(ctx, actor, roleWithBlacklistedValue)
 			},
 			isAllowed: false,
 		},
