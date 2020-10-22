@@ -8,11 +8,11 @@ import (
 
 func (k Keeper) CreateRole(ctx sdk.Context, role types.Role) {
 	perms := types.NewPermissions(nil, nil)
-	k.SavePermissionsForRole(ctx, role, perms)
+	k.savePermissionsForRole(ctx, role, perms)
 }
 
-// SavePermissionsForRole adds permissions to role in the  permission Registry.
-func (k Keeper) SavePermissionsForRole(ctx sdk.Context, role types.Role, permissions *types.Permissions) {
+// savePermissionsForRole adds permissions to role in the  permission Registry.
+func (k Keeper) savePermissionsForRole(ctx sdk.Context, role types.Role, permissions *types.Permissions) {
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), RolePermissionRegistry)
 	prefixStore.Set(roleToBytes(role), k.cdc.MustMarshalBinaryBare(permissions))
 }
@@ -48,7 +48,7 @@ func (k Keeper) WhitelistRolePermission(ctx sdk.Context, role types.Role, perm t
 		return err
 	}
 
-	k.SavePermissionsForRole(ctx, role, &perms)
+	k.savePermissionsForRole(ctx, role, &perms)
 	store.Set(prefixWhitelistRole(perm, role), roleToBytes(role))
 
 	return nil
@@ -71,7 +71,7 @@ func (k Keeper) BlacklistRolePermission(ctx sdk.Context, role types.Role, perm t
 		return err
 	}
 
-	k.SavePermissionsForRole(ctx, role, &perms)
+	k.savePermissionsForRole(ctx, role, &perms)
 
 	return nil
 }
@@ -93,7 +93,7 @@ func (k Keeper) RemoveWhitelistRolePermission(ctx sdk.Context, role types.Role, 
 		return err
 	}
 
-	k.SavePermissionsForRole(ctx, role, &perms)
+	k.savePermissionsForRole(ctx, role, &perms)
 	store.Delete(prefixWhitelistRole(perm, role))
 
 	return nil
@@ -116,7 +116,7 @@ func (k Keeper) RemoveBlacklistRolePermission(ctx sdk.Context, role types.Role, 
 		return err
 	}
 
-	k.SavePermissionsForRole(ctx, role, &perms)
+	k.savePermissionsForRole(ctx, role, &perms)
 
 	return nil
 }
