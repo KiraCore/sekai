@@ -54,6 +54,28 @@ func (k Keeper) WhitelistRolePermission(ctx sdk.Context, role types.Role, perm t
 	return nil
 }
 
+func (k Keeper) BlacklistRolePermission(ctx sdk.Context, role types.Role, perm types.PermValue) error {
+	store := ctx.KVStore(k.storeKey)
+
+	prefixStore := prefix.NewStore(store, RolePermissionRegistry)
+	bz := prefixStore.Get(roleToBytes(role))
+	if bz == nil {
+		return types.ErrRoleDoesNotExist
+	}
+
+	var perms types.Permissions
+	k.cdc.MustUnmarshalBinaryBare(bz, &perms)
+
+	err := perms.AddToBlacklist(perm)
+	if err != nil {
+		return err
+	}
+
+	k.SavePermissionsForRole(ctx, role, &perms)
+
+	return nil
+}
+
 func (k Keeper) RemoveWhitelistRolePermission(ctx sdk.Context, role types.Role, perm types.PermValue) error {
 	store := ctx.KVStore(k.storeKey)
 
@@ -73,6 +95,28 @@ func (k Keeper) RemoveWhitelistRolePermission(ctx sdk.Context, role types.Role, 
 
 	k.SavePermissionsForRole(ctx, role, &perms)
 	store.Delete(prefixWhitelistRole(perm, role))
+
+	return nil
+}
+
+func (k Keeper) RemoveBlacklistRolePermission(ctx sdk.Context, role types.Role, perm types.PermValue) error {
+	store := ctx.KVStore(k.storeKey)
+	prefixStore := prefix.NewStore(store, RolePermissionRegistry)
+
+	bz := prefixStore.Get(roleToBytes(role))
+	if bz == nil {
+		return types.ErrRoleDoesNotExist
+	}
+
+	var perms types.Permissions
+	k.cdc.MustUnmarshalBinaryBare(bz, &perms)
+
+	err := perms.RemoveFromBlacklist(perm)
+	if err != nil {
+		return err
+	}
+
+	k.SavePermissionsForRole(ctx, role, &perms)
 
 	return nil
 }

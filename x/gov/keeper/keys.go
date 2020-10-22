@@ -26,5 +26,5 @@ var (
 	NetworkActorsPrefix  = []byte{0x30}
 	WhitelistActorPrefix = []byte{0x31}
 	RoleActorPrefix      = []byte{0x32}
-	WhitelistRolePrefix  = []byte{0x32}
+	WhitelistRolePrefix  = []byte{0x33}
 )

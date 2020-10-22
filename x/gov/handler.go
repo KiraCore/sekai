@@ -203,17 +203,15 @@ func handleRemoveBlacklistRolePermission(ctx sdk.Context, ck keeper.Keeper, msg 
 }
 
 func handleRemoveWhitelistRolePermission(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgRemoveWhitelistRolePermission) (*sdk.Result, error) {
-	perms, err := validateAndGetPermissionsForRole(ctx, ck, msg.Proposer, customgovtypes.Role(msg.Role))
+	_, err := validateAndGetPermissionsForRole(ctx, ck, msg.Proposer, customgovtypes.Role(msg.Role))
 	if err != nil {
 		return nil, err
 	}
 
-	err = perms.RemoveFromWhitelist(customgovtypes.PermValue(msg.Permission))
+	err = ck.RemoveWhitelistRolePermission(ctx, customgovtypes.Role(msg.Role), customgovtypes.PermValue(msg.Permission))
 	if err != nil {
 		return nil, errors.Wrap(customgovtypes.ErrRemovingWhitelist, err.Error())
 	}
-
-	ck.SavePermissionsForRole(ctx, customgovtypes.Role(msg.Role), perms)
 
 	return &sdk.Result{}, nil
 }

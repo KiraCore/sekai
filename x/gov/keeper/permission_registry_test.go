@@ -34,6 +34,9 @@ func TestKeeper_HasGenesisDefaultRoles(t *testing.T) {
 	roleValidator, found := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleValidator)
 	require.True(t, found)
 	require.True(t, roleValidator.IsWhitelisted(types.PermClaimValidator))
+
+	iterator := app.CustomGovKeeper.GetRolesByWhitelistedPerm(ctx, types.PermClaimValidator)
+	requireIteratorCount(t, iterator, 2)
 }
 
 func TestKeeper_WhitelistRolePermission(t *testing.T) {
@@ -82,6 +85,45 @@ func TestKeeper_RemoveWhitelistRolePermission(t *testing.T) {
 
 	iterator = app.CustomGovKeeper.GetRolesByWhitelistedPerm(ctx, types.PermChangeTxFee)
 	requireIteratorCount(t, iterator, 0)
+}
+
+func TestKeeper_BlacklistRolePermission(t *testing.T) {
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	perms, found := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleSudo)
+	require.True(t, found)
+	require.False(t, perms.IsBlacklisted(types.PermChangeTxFee))
+
+	err := app.CustomGovKeeper.BlacklistRolePermission(ctx, types.RoleSudo, types.PermChangeTxFee)
+	require.NoError(t, err)
+
+	perms, found = app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleSudo)
+	require.True(t, found)
+	require.True(t, perms.IsBlacklisted(types.PermChangeTxFee))
+}
+
+func TestKeeper_RemoveBlacklistRolePermission(t *testing.T) {
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	perms, found := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleSudo)
+	require.True(t, found)
+	require.False(t, perms.IsBlacklisted(types.PermChangeTxFee))
+
+	err := app.CustomGovKeeper.BlacklistRolePermission(ctx, types.RoleSudo, types.PermChangeTxFee)
+	require.NoError(t, err)
+
+	perms, found = app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleSudo)
+	require.True(t, found)
+	require.True(t, perms.IsBlacklisted(types.PermChangeTxFee))
+
+	err = app.CustomGovKeeper.RemoveBlacklistRolePermission(ctx, types.RoleSudo, types.PermChangeTxFee)
+	require.NoError(t, err)
+
+	perms, found = app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleSudo)
+	require.True(t, found)
+	require.False(t, perms.IsBlacklisted(types.PermChangeTxFee))
 }
 
 func TestKeeper_SetPermissionsOverwritesOldPerms(t *testing.T) {
