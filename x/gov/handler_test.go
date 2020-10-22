@@ -635,13 +635,11 @@ func TestHandler_BlacklistRolePermissions_Errors(t *testing.T) {
 				err2 := setPermissionToAddr(t, app, ctx, addr, types.PermSetPermissions)
 				require.NoError(t, err2)
 
-				perms, found := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleValidator)
+				_, found := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleValidator)
 				require.True(t, found)
 
-				err2 = perms.AddToWhitelist(types.PermSetPermissions)
+				err2 = app.CustomGovKeeper.WhitelistRolePermission(ctx, types.RoleValidator, types.PermSetPermissions)
 				require.NoError(t, err2)
-
-				app.CustomGovKeeper.SavePermissionsForRole(ctx, types.RoleValidator, &perms)
 			},
 			expectedErr: fmt.Errorf("permission is already whitelisted: error adding to blacklist"),
 		},
@@ -830,16 +828,15 @@ func TestHandler_RemoveBlacklistRolePermissions(t *testing.T) {
 	err = setPermissionToAddr(t, app, ctx, addr, types.PermSetPermissions)
 	require.NoError(t, err)
 
-	perms, found := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleValidator)
+	_, found := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleValidator)
 	require.True(t, found)
 
 	// Set some blacklist value
-	err = perms.AddToBlacklist(types.PermClaimCouncilor)
+	err = app.CustomGovKeeper.BlacklistRolePermission(ctx, types.RoleValidator, types.PermClaimCouncilor)
 	require.NoError(t, err)
-	app.CustomGovKeeper.SavePermissionsForRole(ctx, types.RoleValidator, &perms)
 
 	// Check if it is blacklisted.
-	perms, found = app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleValidator)
+	perms, found := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleValidator)
 	require.True(t, found)
 	require.True(t, perms.IsBlacklisted(types.PermClaimCouncilor))
 
@@ -886,7 +883,7 @@ func TestHandler_CreateRole_Errors(t *testing.T) {
 			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
 				err2 := setPermissionToAddr(t, app, ctx, addr, types.PermSetPermissions)
 				require.NoError(t, err2)
-				app.CustomGovKeeper.SavePermissionsForRole(ctx, types.Role(1234), types.NewPermissions(nil, nil))
+				app.CustomGovKeeper.CreateRole(ctx, types.Role(1234))
 			},
 			fmt.Errorf("role already exist"),
 		},
@@ -969,13 +966,12 @@ func TestHandler_AssignRole_Errors(t *testing.T) {
 				err2 := setPermissionToAddr(t, app, ctx, proposerAddr, types.PermSetPermissions)
 				require.NoError(t, err2)
 
-				app.CustomGovKeeper.SavePermissionsForRole(ctx, types.Role(3), types.NewPermissions([]types.PermValue{
-					types.PermClaimValidator,
-				}, nil))
+				app.CustomGovKeeper.CreateRole(ctx, types.Role(3))
+				err2 = app.CustomGovKeeper.WhitelistRolePermission(ctx, types.Role(3), types.PermClaimValidator)
+				require.NoError(t, err2)
 
 				networkActor := types.NewDefaultActor(addr)
-				networkActor.SetRole(3)
-				app.CustomGovKeeper.SaveNetworkActor(ctx, networkActor)
+				app.CustomGovKeeper.AssignRoleToActor(ctx, networkActor, types.Role(3))
 			},
 			types.ErrRoleAlreadyAssigned,
 		},
@@ -1008,7 +1004,9 @@ func TestHandler_AssignRole(t *testing.T) {
 	require.NoError(t, err)
 
 	// Create role
-	app.CustomGovKeeper.SavePermissionsForRole(ctx, types.Role(3), types.NewPermissions([]types.PermValue{types.PermSetPermissions}, nil))
+	app.CustomGovKeeper.CreateRole(ctx, types.Role(3))
+	err = app.CustomGovKeeper.WhitelistRolePermission(ctx, types.Role(3), types.PermSetPermissions)
+	require.NoError(t, err)
 
 	msg := types.NewMsgAssignRole(proposerAddr, addr, 3)
 
@@ -1063,10 +1061,9 @@ func TestHandler_RemoveRole_Errors(t *testing.T) {
 				err2 := setPermissionToAddr(t, app, ctx, proposerAddr, types.PermSetPermissions)
 				require.NoError(t, err2)
 
-				app.CustomGovKeeper.SavePermissionsForRole(ctx, types.Role(3), types.NewPermissions([]types.PermValue{
-					types.PermClaimValidator,
-				}, nil))
-
+				app.CustomGovKeeper.CreateRole(ctx, types.Role(3))
+				err2 = app.CustomGovKeeper.WhitelistRolePermission(ctx, types.Role(3), types.PermClaimValidator)
+				require.NoError(t, err2)
 				networkActor := types.NewDefaultActor(addr)
 				app.CustomGovKeeper.SaveNetworkActor(ctx, networkActor)
 			},

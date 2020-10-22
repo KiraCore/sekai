@@ -187,17 +187,15 @@ func handleCreateRole(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.Msg
 }
 
 func handleRemoveBlacklistRolePermission(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgRemoveBlacklistRolePermission) (*sdk.Result, error) {
-	perms, err := validateAndGetPermissionsForRole(ctx, ck, msg.Proposer, customgovtypes.Role(msg.Role))
+	_, err := validateAndGetPermissionsForRole(ctx, ck, msg.Proposer, customgovtypes.Role(msg.Role))
 	if err != nil {
 		return nil, err
 	}
 
-	err = perms.RemoveFromBlacklist(customgovtypes.PermValue(msg.Permission))
+	err = ck.RemoveBlacklistRolePermission(ctx, customgovtypes.Role(msg.Role), customgovtypes.PermValue(msg.Permission))
 	if err != nil {
 		return nil, errors.Wrap(customgovtypes.ErrRemovingBlacklist, err.Error())
 	}
-
-	ck.SavePermissionsForRole(ctx, customgovtypes.Role(msg.Role), perms)
 
 	return &sdk.Result{}, nil
 }
@@ -217,17 +215,15 @@ func handleRemoveWhitelistRolePermission(ctx sdk.Context, ck keeper.Keeper, msg 
 }
 
 func handleBlacklistRolePermission(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgBlacklistRolePermission) (*sdk.Result, error) {
-	perms, err := validateAndGetPermissionsForRole(ctx, ck, msg.Proposer, customgovtypes.Role(msg.Role))
+	_, err := validateAndGetPermissionsForRole(ctx, ck, msg.Proposer, customgovtypes.Role(msg.Role))
 	if err != nil {
 		return nil, err
 	}
 
-	err = perms.AddToBlacklist(customgovtypes.PermValue(msg.Permission))
+	err = ck.BlacklistRolePermission(ctx, customgovtypes.Role(msg.Role), customgovtypes.PermValue(msg.Permission))
 	if err != nil {
 		return nil, errors.Wrap(customgovtypes.ErrBlacklisting, err.Error())
 	}
-
-	ck.SavePermissionsForRole(ctx, customgovtypes.Role(msg.Role), perms)
 
 	return &sdk.Result{}, nil
 }
