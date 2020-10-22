@@ -36,6 +36,22 @@ func TestKeeper_HasGenesisDefaultRoles(t *testing.T) {
 	require.True(t, roleValidator.IsWhitelisted(types.PermClaimValidator))
 }
 
+func TestKeeper_WhitelistRolePermission(t *testing.T) {
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	perms, found := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleSudo)
+	require.True(t, found)
+	require.False(t, perms.IsWhitelisted(types.PermChangeTxFee))
+
+	err := app.CustomGovKeeper.WhitelistRolePermission(ctx, types.RoleSudo, types.PermChangeTxFee)
+	require.NoError(t, err)
+
+	perms, found = app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleSudo)
+	require.True(t, found)
+	require.True(t, perms.IsWhitelisted(types.PermSetPermissions))
+}
+
 func TestKeeper_SetPermissionsOverwritesOldPerms(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
