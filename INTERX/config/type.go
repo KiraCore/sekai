@@ -1,8 +1,6 @@
 package config
 
 import (
-	"time"
-
 	"github.com/tendermint/tendermint/crypto"
 )
 
@@ -28,16 +26,17 @@ type RPCSetting struct {
 // RPCConfig is a struct to be used for PRC configuration
 type RPCConfig struct {
 	CacheDir        string                           `json:"cache_dir"`
-	CachingDuration time.Duration                    `json:"caching_duration"`
+	CachingDuration int64                            `json:"caching_duration"`
 	API             map[string]map[string]RPCSetting `json:"API"`
 }
 
 // InterxConfig is a struct to be used for interx configuration
 type InterxConfig struct {
-	Mnemonic string         `json:"mnemonic"`
-	PrivKey  crypto.PrivKey `json:"privkey"`
-	PubKey   crypto.PubKey  `json:"pubkey"`
-	Address  string         `json:"address"`
-	Faucet   FaucetConfig   `json:"faucet"`
-	RPC      RPCConfig      `json:"rpc"`
+	Mnemonic   string         `json:"mnemonic"`
+	PrivKey    crypto.PrivKey `json:"privkey"`
+	PubKey     crypto.PubKey  `json:"pubkey"`
+	Address    string         `json:"address"`
+	StatusSync int64          `json:"status_sync"`
+	Faucet     FaucetConfig   `json:"faucet"`
+	RPC        RPCConfig      `json:"rpc"`
 }

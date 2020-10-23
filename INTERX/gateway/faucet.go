@@ -8,6 +8,7 @@ import (
 
 	interx "github.com/KiraCore/sekai/INTERX/config"
 	database "github.com/KiraCore/sekai/INTERX/database"
+	tasks "github.com/KiraCore/sekai/INTERX/tasks"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	auth "github.com/cosmos/cosmos-sdk/x/auth/types"
 	bank "github.com/cosmos/cosmos-sdk/x/bank/types"
@@ -110,7 +111,7 @@ func serveFaucet(r *http.Request, gwCosmosmux *runtime.ServeMux, request InterxR
 	memo := "Faucet Transfer"
 
 	sigs := make([]auth.StdSignature, 1)
-	signBytes := auth.StdSignBytes(GetChainID(rpcAddr), accountNumber, sequence, 0, fee, msgs, memo)
+	signBytes := auth.StdSignBytes(tasks.NodeStatus.Chainid, accountNumber, sequence, 0, fee, msgs, memo)
 
 	sig, err := interx.Config.Faucet.PrivKey.Sign(signBytes)
 	if err != nil {

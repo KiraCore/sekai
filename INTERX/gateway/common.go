@@ -11,7 +11,9 @@ import (
 	"strconv"
 	"time"
 
+	common "github.com/KiraCore/sekai/INTERX/common"
 	interx "github.com/KiraCore/sekai/INTERX/config"
+	tasks "github.com/KiraCore/sekai/INTERX/tasks"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"golang.org/x/crypto/blake2b"
@@ -94,46 +96,19 @@ func GetHash(request interface{}) string {
 }
 
 // GetResponseFormat is a function to get response format
-func GetResponseFormat(request InterxRequest, rpcAddr string) *ProxyResponse {
-	response := new(ProxyResponse)
+func GetResponseFormat(request InterxRequest, rpcAddr string) *common.ProxyResponse {
+	response := new(common.ProxyResponse)
 	response.Timestamp = time.Now().Unix()
 	response.RequestHash = GetHash(request)
-
-	resp, err := http.Get(fmt.Sprintf("%s/block", rpcAddr))
-	if err != nil {
-		return response
-	}
-	defer resp.Body.Close()
-
-	type RPCTempResponse struct {
-		Jsonrpc string `json:"jsonrpc"`
-		ID      int    `json:"id"`
-		Result  struct {
-			Block struct {
-				Header struct {
-					Chainid string `json:"chain_id"`
-					Height  string `json:"height"`
-					Time    string `json:"time"`
-				} `json:"header"`
-			} `json:"block"`
-		} `json:"result"`
-		Error interface{} `json:"error"`
-	}
-
-	result := new(RPCTempResponse)
-	if json.NewDecoder(resp.Body).Decode(result) != nil {
-		return response
-	}
-
-	response.Chainid = result.Result.Block.Header.Chainid
-	response.Block, _ = strconv.ParseInt(result.Result.Block.Header.Height, 10, 64)
-	response.Blocktime = result.Result.Block.Header.Time
+	response.Chainid = tasks.NodeStatus.Chainid
+	response.Block = tasks.NodeStatus.Block
+	response.Blocktime = tasks.NodeStatus.Blocktime
 
 	return response
 }
 
 // GetResponseSignature is a function to get response signature
-func GetResponseSignature(response ProxyResponse) (string, string) {
+func GetResponseSignature(response common.ProxyResponse) (string, string) {
 	// Get Response Hash
 	responseHash := GetHash(response.Response)
 
@@ -159,7 +134,7 @@ func GetResponseSignature(response ProxyResponse) (string, string) {
 }
 
 // SearchCache is a function to search response in cache
-func SearchCache(request InterxRequest, response *ProxyResponse) (bool, interface{}, interface{}, int) {
+func SearchCache(request InterxRequest, response *common.ProxyResponse) (bool, interface{}, interface{}, int) {
 	fmt.Println("searching in the cache")
 
 	chainIDHash := GetHash(response.Chainid)
@@ -173,8 +148,6 @@ func SearchCache(request InterxRequest, response *ProxyResponse) (bool, interfac
 	}
 
 	if result.ExpireAt.Before(time.Now()) && result.Response.Block != response.Block {
-		RemoveCache(chainIDHash, endpointHash, requestHash)
-
 		return false, nil, nil, -1
 	}
 
@@ -182,17 +155,17 @@ func SearchCache(request InterxRequest, response *ProxyResponse) (bool, interfac
 }
 
 // WrapResponse is a function to wrap response
-func WrapResponse(w http.ResponseWriter, request InterxRequest, response ProxyResponse, statusCode int, saveToCashe bool) {
+func WrapResponse(w http.ResponseWriter, request InterxRequest, response common.ProxyResponse, statusCode int, saveToCashe bool) {
 	if saveToCashe {
 		fmt.Println("saving in the cache")
 		chainIDHash := GetHash(response.Chainid)
 		endpointHash := GetHash(request.Endpoint)
 		requestHash := GetHash(request)
 
-		err := PutCache(chainIDHash, endpointHash, requestHash, InterxResponse{
+		err := PutCache(chainIDHash, endpointHash, requestHash, common.InterxResponse{
 			Response: response,
 			Status:   statusCode,
-			ExpireAt: time.Now().Add(time.Second * interx.Config.RPC.CachingDuration),
+			ExpireAt: time.Now().Add(time.Duration(interx.Config.RPC.CachingDuration) * time.Second),
 		})
 		if err != nil {
 			fmt.Printf("failed to save in the cache : %s\n", err.Error())
@@ -241,7 +214,7 @@ func ServeGRPC(r *http.Request, gwCosmosmux *runtime.ServeMux) (interface{}, int
 
 // ServeError is a function to server GRPC
 func ServeError(code int, data string, message string, statusCode int) (interface{}, interface{}, int) {
-	return nil, ProxyResponseError{
+	return nil, common.ProxyResponseError{
 		Code:    code,
 		Data:    data,
 		Message: message,
@@ -335,39 +308,4 @@ func BroadcastTransaction(rpcAddr string, txBytes []byte) (string, error) {
 	}
 
 	return result.Result.Hash, nil
-}
-
-// GetChainID is a function to get ChainID
-func GetChainID(rpcAddr string) string {
-	if len(interxChainID) > 0 {
-		return interxChainID
-	}
-
-	r, err := http.Get(fmt.Sprintf("%s/block", rpcAddr))
-	if err != nil {
-		return ""
-	}
-	defer r.Body.Close()
-
-	type RPCTempResponse struct {
-		Jsonrpc string `json:"jsonrpc"`
-		ID      int    `json:"id"`
-		Result  struct {
-			Block struct {
-				Header struct {
-					Chainid string `json:"chain_id"`
-				} `json:"header"`
-			} `json:"block"`
-		} `json:"result"`
-		Error interface{} `json:"error"`
-	}
-
-	result := new(RPCTempResponse)
-	if json.NewDecoder(r.Body).Decode(result) != nil {
-		return ""
-	}
-
-	interxChainID = result.Result.Block.Header.Chainid
-
-	return interxChainID
 }
