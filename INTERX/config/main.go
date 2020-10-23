@@ -17,8 +17,9 @@ func readConfig() InterxConfig {
 	sekaiapp.SetConfig()
 
 	type ConfigFromFile struct {
-		Mnemonic string `json:"mnemonic"`
-		Faucet   struct {
+		Mnemonic   string `json:"mnemonic"`
+		StatusSync int64  `json:"status_sync"`
+		Faucet     struct {
 			Mnemonic             string           `json:"mnemonic"`
 			FaucetAmounts        map[string]int64 `json:"faucet_amounts"`
 			FaucetMinimumAmounts map[string]int64 `json:"faucet_minimum_amounts"`
@@ -34,12 +35,14 @@ func readConfig() InterxConfig {
 	err := json.Unmarshal([]byte(file), &configFromFile)
 	if err != nil {
 		fmt.Println("Invalid configuration: {}", err)
+		panic(err)
 	}
 
 	config := InterxConfig{}
 
 	// Interx Main Configuration
 	config.Mnemonic = configFromFile.Mnemonic
+	config.StatusSync = configFromFile.StatusSync
 	config.PrivKey = secp256k1.GenPrivKeyFromSecret(bip39.NewSeed(config.Mnemonic, ""))
 	config.PubKey = config.PrivKey.PubKey()
 	config.Address = sdk.MustBech32ifyAddressBytes(sdk.GetConfig().GetBech32AccountAddrPrefix(), config.PubKey.Address())

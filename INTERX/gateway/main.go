@@ -12,6 +12,7 @@ import (
 	"github.com/KiraCore/sekai/INTERX/insecure"
 	cosmosAuth "github.com/KiraCore/sekai/INTERX/proto-gen/cosmos/auth"
 	cosmosBank "github.com/KiraCore/sekai/INTERX/proto-gen/cosmos/bank"
+	tasks "github.com/KiraCore/sekai/INTERX/tasks"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rakyll/statik/fs"
@@ -70,6 +71,8 @@ func GetGrpcServeMux(grpcAddr string) (*runtime.ServeMux, error) {
 
 // Run runs the gRPC-Gateway, dialling the provided address.
 func Run(grpcAddr string, rpcAddr string, log grpclog.LoggerV2) error {
+	tasks.RunTasks(rpcAddr)
+
 	gwCosmosmux, err := GetGrpcServeMux(grpcAddr)
 	if err != nil {
 		return fmt.Errorf("failed to register gateway: %w", err)
