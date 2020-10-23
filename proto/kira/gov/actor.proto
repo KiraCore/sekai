@@ -27,7 +27,11 @@ enum PermValue {
   // Proposal to set permissions.
   PERMISSION_VOTE_SET_PERMISSIONS_PROPOSAL = 5 [(gogoproto.enumvalue_customname) = "PermVoteSetPermissionProposal"];
 
+  //  PERMISSION_UPSERT_TOKEN_ALIAS
   PERMISSION_UPSERT_TOKEN_ALIAS = 6 [(gogoproto.enumvalue_customname) = "PermUpsertTokenAlias"];
+
+  // PERMISSION_CHANGE_TX_FEE
+  PERMISSION_CHANGE_TX_FEE = 7 [(gogoproto.enumvalue_customname) = "PermChangeTxFee"];
 }
 
 enum ActorStatus {
