@@ -1,6 +1,15 @@
 # Changelog
 
-## [Unreleased] - 10.19.2020
+## [0.1.6.2] - 10.23.2020
+
+### Added
+- The keeper has method to get all Actors by witelisted permission.
+- The keeper has method to get All actors that have specific role.
+- The keeper has method to get all roles that have a whitelist permission.
+
+### Changed
+- Big refactor on the way Role and Permissions are stored.
+- In keeper we don't expose SetPermissionsForRole anymore.
 
 ## [0.1.6.1] - 10.19.2020
 ### Added
