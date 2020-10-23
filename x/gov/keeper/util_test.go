@@ -48,14 +48,12 @@ func TestCheckIfAllowedPermission(t *testing.T) {
 			name: "actor has permission blacklisted in role",
 			prepareScenario: func(ctx sdk.Context, keeper keeper.Keeper) {
 				roleWithBlacklistedValue := types.Role(123)
-				keeper.SetPermissionsForRole(ctx, roleWithBlacklistedValue, types.NewPermissions(nil, []types.PermValue{
-					types.PermClaimValidator,
-				}))
+				keeper.CreateRole(ctx, roleWithBlacklistedValue)
+				err2 := keeper.BlacklistRolePermission(ctx, roleWithBlacklistedValue, types.PermClaimValidator)
+				require.NoError(t, err2)
 
 				actor := types.NewDefaultActor(addr)
-				actor.SetRole(roleWithBlacklistedValue)
-
-				keeper.SaveNetworkActor(ctx, actor)
+				keeper.AssignRoleToActor(ctx, actor, roleWithBlacklistedValue)
 			},
 			isAllowed: false,
 		},
@@ -63,14 +61,13 @@ func TestCheckIfAllowedPermission(t *testing.T) {
 			name: "actor has permission whitelisted in role",
 			prepareScenario: func(ctx sdk.Context, keeper keeper.Keeper) {
 				roleWithWhitelistedValue := types.Role(123)
-				keeper.SetPermissionsForRole(ctx, roleWithWhitelistedValue, types.NewPermissions([]types.PermValue{
-					types.PermClaimValidator,
-				}, nil))
+				keeper.CreateRole(ctx, roleWithWhitelistedValue)
+
+				err2 := keeper.WhitelistRolePermission(ctx, roleWithWhitelistedValue, types.PermClaimValidator)
+				require.NoError(t, err2)
 
 				actor := types.NewDefaultActor(addr)
-				actor.SetRole(roleWithWhitelistedValue)
-
-				keeper.SaveNetworkActor(ctx, actor)
+				keeper.AssignRoleToActor(ctx, actor, roleWithWhitelistedValue)
 			},
 			isAllowed: true,
 		},

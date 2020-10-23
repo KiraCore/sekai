@@ -52,3 +52,4 @@ func (k Keeper) GetExecutionFee(ctx sdk.Context, txType string) *types.Execution
 	k.cdc.MustUnmarshalBinaryBare(bz, fee)
 	return fee
 }
+

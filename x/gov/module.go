@@ -96,7 +96,20 @@ func (am AppModule) InitGenesis(
 	}
 
 	for index, perm := range genesisState.Permissions {
-		am.customGovKeeper.SetPermissionsForRole(ctx, customgovtypes.Role(index), perm)
+		role := customgovtypes.Role(index)
+		am.customGovKeeper.CreateRole(ctx, role)
+		for _, white := range perm.Whitelist {
+			err := am.customGovKeeper.WhitelistRolePermission(ctx, role, customgovtypes.PermValue(white))
+			if err != nil {
+				panic(err)
+			}
+		}
+		for _, black := range perm.Blacklist {
+			err := am.customGovKeeper.BlacklistRolePermission(ctx, role, customgovtypes.PermValue(black))
+			if err != nil {
+				panic(err)
+			}
+		}
 	}
 
 	am.customGovKeeper.SaveProposalID(ctx, genesisState.StartingProposalId)

@@ -91,7 +91,7 @@ func WhitelistAddressPermKey(address sdk.AccAddress, perm types.PermValue) []byt
 
 // WhitelistPermKey returns the prefix key in format <0x31 + Perm_Bytes>
 func WhitelistPermKey(perm types.PermValue) []byte {
-	return append(WhitelistActorPrefix, getPermissionByteRepresentation(perm)...)
+	return append(WhitelistActorPrefix, permToBytes(perm)...)
 }
 
 // roleAddressKey returns the prefix key in format <0x33 + Role_Bytes + address_bytes>
@@ -101,15 +101,15 @@ func roleAddressKey(role types.Role, address sdk.AccAddress) []byte {
 
 // roleKey returns a prefix key in format <0x32 + Role_Bytes>
 func roleKey(role types.Role) []byte {
-	return append(RoleActorPrefix, getRoleByteRepresentation(role)...)
+	return append(RoleActorPrefix, roleToBytes(role)...)
 }
 
-// getPermissionByteRepresentation returns a PermValue in bytes representation.
-func getPermissionByteRepresentation(perm types.PermValue) []byte {
+// permToBytes returns a PermValue in bytes representation.
+func permToBytes(perm types.PermValue) []byte {
 	return sdk.Uint64ToBigEndian(uint64(perm))
 }
 
-// getRoleByteRepresentation returns a Role in bytes representation.
-func getRoleByteRepresentation(role types.Role) []byte {
+// roleToBytes returns a Role in bytes representation.
+func roleToBytes(role types.Role) []byte {
 	return sdk.Uint64ToBigEndian(uint64(role))
 }
