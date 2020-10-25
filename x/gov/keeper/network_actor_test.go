@@ -192,6 +192,29 @@ func TestKeeper_GetNetworkActorsByAbsoluteWhitelistPermission(t *testing.T) {
 				return expectedActors
 			},
 		},
+		{
+			name: "some addresses whitelisted by role",
+			prepareApp: func(app *simapp.SimApp, ctx types2.Context) []types.NetworkActor {
+				addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, types2.TokensFromConsensusPower(10))
+
+				// Create role
+				app.CustomGovKeeper.CreateRole(ctx, types.Role(12345))
+				err := app.CustomGovKeeper.WhitelistRolePermission(ctx, types.Role(12345), types.PermSetPermissions)
+				require.NoError(t, err)
+
+				for _, addr := range addrs {
+					actor := types.NewDefaultActor(addr)
+					app.CustomGovKeeper.AssignRoleToActor(ctx, actor, types.Role(12345))
+				}
+
+				expectedActors := []types.NetworkActor{
+					types.NewDefaultActor(addrs[0]),
+					types.NewDefaultActor(addrs[1]),
+				}
+
+				return expectedActors
+			},
+		},
 	}
 
 	for _, tt := range tests {

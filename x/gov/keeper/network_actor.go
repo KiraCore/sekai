@@ -100,6 +100,20 @@ func (k Keeper) GetNetworkActorsByAbsoluteWhitelistPermission(ctx sdk.Context, p
 		actors = append(actors, actor)
 	}
 
+	rolesIter := k.GetRolesByWhitelistedPerm(ctx, perm)
+	for ; rolesIter.Valid(); rolesIter.Next() {
+		role := bytesToRole(rolesIter.Value())
+		actorIter := k.GetNetworkActorsByRole(ctx, role)
+		for ; actorIter.Valid(); actorIter.Next() {
+			actor, found := k.GetNetworkActorByAddress(ctx, actorIter.Value())
+			if !found {
+				panic("whitelisted by role actor not found")
+			}
+
+			actors = append(actors, actor)
+		}
+	}
+
 	return actors
 }
 
@@ -131,4 +145,9 @@ func permToBytes(perm types.PermValue) []byte {
 // roleToBytes returns a Role in bytes representation.
 func roleToBytes(role types.Role) []byte {
 	return sdk.Uint64ToBigEndian(uint64(role))
+}
+
+// bytesToRole converts byte representation of a role to Role type.
+func bytesToRole(bz []byte) types.Role {
+	return types.Role(sdk.BigEndianToUint64(bz))
 }
