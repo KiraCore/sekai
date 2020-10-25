@@ -88,11 +88,15 @@ func (k Keeper) GetNetworkActorsByRole(ctx sdk.Context, role types.Role) sdk.Ite
 // GetNetworkActorsByAbsoluteWhitelistPermission returns all actors that have a specific whitelist permission,
 // it does not matter if it is by role or by individual permission.
 func (k Keeper) GetNetworkActorsByAbsoluteWhitelistPermission(ctx sdk.Context, perm types.PermValue) []types.NetworkActor {
-	var actors []types.NetworkActor
+	duplicateMap := map[string]bool{}
 
+	var actors []types.NetworkActor
 	iterator := k.GetNetworkActorsByWhitelistedPermission(ctx, perm)
 	for ; iterator.Valid(); iterator.Next() {
-		actors = append(actors, k.getNetworkActorOrFail(ctx, iterator.Value()))
+		if _, ok := duplicateMap[sdk.AccAddress(iterator.Value()).String()]; !ok {
+			duplicateMap[sdk.AccAddress(iterator.Value()).String()] = true
+			actors = append(actors, k.getNetworkActorOrFail(ctx, iterator.Value()))
+		}
 	}
 
 	rolesIter := k.GetRolesByWhitelistedPerm(ctx, perm)
@@ -100,7 +104,10 @@ func (k Keeper) GetNetworkActorsByAbsoluteWhitelistPermission(ctx sdk.Context, p
 		actorIter := k.GetNetworkActorsByRole(ctx, bytesToRole(rolesIter.Value()))
 
 		for ; actorIter.Valid(); actorIter.Next() {
-			actors = append(actors, k.getNetworkActorOrFail(ctx, actorIter.Value()))
+			if _, ok := duplicateMap[sdk.AccAddress(actorIter.Value()).String()]; !ok {
+				duplicateMap[sdk.AccAddress(actorIter.Value()).String()] = true
+				actors = append(actors, k.getNetworkActorOrFail(ctx, actorIter.Value()))
+			}
 		}
 	}
 
