@@ -12,9 +12,9 @@ import (
 )
 
 // GetTokenRate returns a token rate
-func (k Keeper) GetTokenRate(ctx sdk.Context, symbol string) *types.TokenRate {
+func (k Keeper) GetTokenRate(ctx sdk.Context, denom string) *types.TokenRate {
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), PrefixKeyTokenRate)
-	bz := prefixStore.Get([]byte(symbol))
+	bz := prefixStore.Get([]byte(denom))
 	if bz == nil {
 		return nil
 	}
@@ -63,11 +63,11 @@ func (k Keeper) GetTokenRatesByDenom(ctx sdk.Context, denoms []string) map[strin
 // UpsertTokenRate upsert a token rate to the registry
 func (k Keeper) UpsertTokenRate(ctx sdk.Context, rate types.TokenRate) error {
 	store := ctx.KVStore(k.storeKey)
-	if rate.Denom == k.BondDenom(ctx) {
-		return errors.New("bond denom rate is read-only")
-	}
 	// we use denom of TokenRate as an ID inside KVStore storage
 	tokenRateStoreID := append([]byte(PrefixKeyTokenRate), []byte(rate.Denom)...)
+	if rate.Denom == k.BondDenom(ctx) && store.Has(tokenRateStoreID) {
+		return errors.New("bond denom rate is read-only")
+	}
 	store.Set(tokenRateStoreID, k.cdc.MustMarshalBinaryBare(&rate))
 	return nil
 }

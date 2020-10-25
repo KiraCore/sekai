@@ -5,6 +5,8 @@ import (
 
 	customgovkeeper "github.com/KiraCore/sekai/x/gov/keeper"
 	customstakingkeeper "github.com/KiraCore/sekai/x/staking/keeper"
+	tokenskeeper "github.com/KiraCore/sekai/x/tokens/keeper"
+	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
@@ -19,6 +21,7 @@ import (
 func NewAnteHandler(
 	sk customstakingkeeper.Keeper,
 	cgk customgovkeeper.Keeper,
+	tk tokenskeeper.Keeper,
 	ak keeper.AccountKeeper,
 	bankKeeper types.BankKeeper,
 	sigGasConsumer ante.SignatureVerificationGasConsumer,
@@ -33,7 +36,7 @@ func NewAnteHandler(
 		ante.NewValidateMemoDecorator(ak),
 		ante.NewConsumeGasForTxSizeDecorator(ak),
 		// custom fee range validator
-		NewValidateFeeRangeDecorator(sk, cgk, ak),
+		NewValidateFeeRangeDecorator(sk, cgk, tk, ak),
 		ante.NewSetPubKeyDecorator(ak), // SetPubKeyDecorator must be called before all signature verification decorators
 		ante.NewValidateSigCountDecorator(ak),
 		ante.NewDeductFeeDecorator(ak, bankKeeper),
@@ -49,6 +52,7 @@ func NewAnteHandler(
 type ValidateFeeRangeDecorator struct {
 	sk  customstakingkeeper.Keeper
 	cgk customgovkeeper.Keeper
+	tk  tokenskeeper.Keeper
 	ak  keeper.AccountKeeper
 }
 
@@ -56,12 +60,14 @@ type ValidateFeeRangeDecorator struct {
 func NewValidateFeeRangeDecorator(
 	sk customstakingkeeper.Keeper,
 	cgk customgovkeeper.Keeper,
+	tk tokenskeeper.Keeper,
 	ak keeper.AccountKeeper,
 ) ValidateFeeRangeDecorator {
 	return ValidateFeeRangeDecorator{
 		sk:  sk,
 		cgk: cgk,
 		ak:  ak,
+		tk:  tk,
 	}
 }
 
@@ -74,8 +80,16 @@ func (svd ValidateFeeRangeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 
 	properties := svd.cgk.GetNetworkProperties(ctx)
 
-	bondDenom := svd.sk.BondDenom(ctx)
-	feeAmount := feeTx.GetFee().AmountOf(bondDenom).Uint64()
+	feeAmount := uint64(0)
+	feeCoins := feeTx.GetFee()
+	for _, feeCoin := range feeCoins {
+		rate := svd.tk.GetTokenRate(ctx, feeCoin.Denom)
+		if rate == nil || !rate.FeePayments {
+			return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("currency you are tying to use was not whitelisted as fee payment"))
+		}
+		// TODO it might be required to use safemath for this operation, in case of user set too much fee which can overflow 10^19
+		feeAmount += uint64(feeCoin.Amount.Int64()) * rate.Rate / uint64(tokenstypes.RateDecimalDenominator)
+	}
 
 	// execution failure fee should be prepaid
 	executionFailureFee := uint64(0)
@@ -86,8 +100,9 @@ func (svd ValidateFeeRangeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 		}
 	}
 
+	bondDenom := svd.sk.BondDenom(ctx)
 	if feeAmount < properties.MinTxFee || feeAmount > properties.MaxTxFee {
-		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("fee %+v is out of range [%d, %d]%s", feeTx.GetFee(), properties.MinTxFee, properties.MaxTxFee, bondDenom))
+		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("fee %+v(%d) is out of range [%d, %d]%s", feeTx.GetFee(), feeAmount, properties.MinTxFee, properties.MaxTxFee, bondDenom))
 	}
 
 	if feeAmount < executionFailureFee {

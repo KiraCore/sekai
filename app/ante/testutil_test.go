@@ -64,6 +64,7 @@ func (suite *AnteTestSuite) SetupTest(isCheckTx bool) {
 	suite.anteHandler = customante.NewAnteHandler(
 		suite.app.CustomStakingKeeper,
 		suite.app.CustomGovKeeper,
+		suite.app.TokensKeeper,
 		suite.app.AccountKeeper,
 		suite.app.BankKeeper,
 		ante.DefaultSigVerificationGasConsumer,

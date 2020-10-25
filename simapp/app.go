@@ -421,7 +421,12 @@ func NewSimApp(
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetAnteHandler(
 		customante.NewAnteHandler(
-			app.CustomStakingKeeper, app.CustomGovKeeper, app.AccountKeeper, app.BankKeeper, ante.DefaultSigVerificationGasConsumer,
+			app.CustomStakingKeeper,
+			app.CustomGovKeeper,
+			app.TokensKeeper,
+			app.AccountKeeper,
+			app.BankKeeper,
+			ante.DefaultSigVerificationGasConsumer,
 			encodingConfig.TxConfig.SignModeHandler(),
 		),
 	)

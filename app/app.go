@@ -404,7 +404,12 @@ func NewInitApp(
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetAnteHandler(
 		customante.NewAnteHandler(
-			app.customStakingKeeper, app.customGovKeeper, app.accountKeeper, app.bankKeeper, ante.DefaultSigVerificationGasConsumer,
+			app.customStakingKeeper,
+			app.customGovKeeper,
+			app.tokensKeeper,
+			app.accountKeeper,
+			app.bankKeeper,
+			ante.DefaultSigVerificationGasConsumer,
 			encodingConfig.TxConfig.SignModeHandler(),
 		),
 	)
