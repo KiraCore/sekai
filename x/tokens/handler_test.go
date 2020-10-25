@@ -183,6 +183,19 @@ func TestNewHandler_MsgUpsertTokenRate(t *testing.T) {
 			},
 			handlerErr: "rate is larger than maximum",
 		},
+		{
+			name: "bond denom rate change test",
+			constructor: func(addr sdk.AccAddress) (*tokenstypes.MsgUpsertTokenRate, error) {
+				err := setPermissionToAddr(t, app, ctx, addr, types.PermUpsertTokenRate)
+				require.NoError(t, err)
+				return tokenstypes.NewMsgUpsertTokenRate(
+					addr,
+					"ukex", "10000000",
+					true,
+				), nil
+			},
+			handlerErr: "bond denom rate is read-only",
+		},
 	}
 	for i, tt := range tests {
 		addr := NewAccountByIndex(i)

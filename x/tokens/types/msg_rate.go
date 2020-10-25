@@ -45,6 +45,10 @@ func (m *MsgUpsertTokenRate) Type() string {
 
 // ValidateBasic returns basic validation result
 func (m *MsgUpsertTokenRate) ValidateBasic() error {
+	if m.Denom == "ukex" {
+		return errors.New("bond denom rate is read-only")
+	}
+
 	rateFloat, err := strconv.ParseFloat(m.Rate, 64)
 	if err != nil {
 		return err

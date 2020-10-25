@@ -22,3 +22,8 @@ type Keeper struct {
 func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryMarshaler) Keeper {
 	return Keeper{cdc: cdc, storeKey: storeKey}
 }
+
+// BondDenom returns the denom that is basically used for fee payment
+func (k Keeper) BondDenom(ctx sdk.Context) string {
+	return "ukex"
+}

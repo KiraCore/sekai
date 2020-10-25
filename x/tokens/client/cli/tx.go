@@ -165,6 +165,9 @@ func GetTxUpsertTokenRateCmd() *cobra.Command {
 			if err != nil {
 				return fmt.Errorf("invalid denom")
 			}
+			if denom == "ukex" {
+				return fmt.Errorf("bond denom rate is read-only")
+			}
 
 			rateString, err := cmd.Flags().GetString(FlagRate)
 			if err != nil {
