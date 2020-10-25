@@ -171,6 +171,46 @@ func TestKeeper_GetActorsByWhitelistedPerm(t *testing.T) {
 	assertAddrsHaveWhitelistedPerm(t, app, ctx, addrs, types.PermSetPermissions)
 }
 
+func TestKeeper_GetNetworkActorsByAbsoluteWhitelistPermission(t *testing.T) {
+	tests := []struct {
+		name       string
+		prepareApp func(app *simapp.SimApp, ctx sdk.Context) []types.NetworkActor
+	}{
+		{
+			name: "some addresses whitelisted",
+			prepareApp: func(app *simapp.SimApp, ctx types2.Context) []types.NetworkActor {
+				addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, types2.TokensFromConsensusPower(10))
+
+				err := whitelistPermToMultipleAddrs(app, ctx, addrs, types.PermSetPermissions)
+				require.NoError(t, err)
+
+				expectedActors := []types.NetworkActor{
+					types.NewDefaultActor(addrs[0]),
+					types.NewDefaultActor(addrs[1]),
+				}
+
+				return expectedActors
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			app := simapp.Setup(false)
+			ctx := app.NewContext(false, tmproto.Header{})
+
+			expectecActors := tt.prepareApp(app, ctx)
+			savedPerms := app.CustomGovKeeper.GetNetworkActorsByAbsoluteWhitelistPermission(ctx, types.PermSetPermissions)
+
+			require.Equal(t, len(expectecActors), len(savedPerms))
+			for i, actor := range expectecActors {
+				require.Equal(t, actor.Address, savedPerms[i].Address)
+			}
+		})
+	}
+}
+
 func addRoleToMultipleAddrs(app *simapp.SimApp, ctx types2.Context, addrs []types2.AccAddress, role types.Role) {
 	for _, addr := range addrs {
 		app.CustomGovKeeper.AssignRoleToActor(ctx, types.NewDefaultActor(addr), role)
