@@ -107,6 +107,7 @@ message MsgRemoveBlacklistRolePermission {
 message NetworkProperties {
   uint64 min_tx_fee = 1;
   uint64 max_tx_fee = 2;
+  uint64 vote_quorum = 3;
 }
 
 message ExecutionFee {
