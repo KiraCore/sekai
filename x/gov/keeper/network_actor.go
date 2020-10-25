@@ -92,29 +92,28 @@ func (k Keeper) GetNetworkActorsByAbsoluteWhitelistPermission(ctx sdk.Context, p
 
 	iterator := k.GetNetworkActorsByWhitelistedPermission(ctx, perm)
 	for ; iterator.Valid(); iterator.Next() {
-		actor, found := k.GetNetworkActorByAddress(ctx, iterator.Value())
-		if !found {
-			panic("whitelisted permission actor not found")
-		}
-
-		actors = append(actors, actor)
+		actors = append(actors, k.getNetworkActorOrFail(ctx, iterator.Value()))
 	}
 
 	rolesIter := k.GetRolesByWhitelistedPerm(ctx, perm)
 	for ; rolesIter.Valid(); rolesIter.Next() {
-		role := bytesToRole(rolesIter.Value())
-		actorIter := k.GetNetworkActorsByRole(ctx, role)
-		for ; actorIter.Valid(); actorIter.Next() {
-			actor, found := k.GetNetworkActorByAddress(ctx, actorIter.Value())
-			if !found {
-				panic("whitelisted by role actor not found")
-			}
+		actorIter := k.GetNetworkActorsByRole(ctx, bytesToRole(rolesIter.Value()))
 
-			actors = append(actors, actor)
+		for ; actorIter.Valid(); actorIter.Next() {
+			actors = append(actors, k.getNetworkActorOrFail(ctx, actorIter.Value()))
 		}
 	}
 
 	return actors
+}
+
+func (k Keeper) getNetworkActorOrFail(ctx sdk.Context, addr sdk.AccAddress) types.NetworkActor {
+	actor, found := k.GetNetworkActorByAddress(ctx, addr)
+	if !found {
+		panic("expected network actor not found")
+	}
+
+	return actor
 }
 
 // WhitelistAddressPermKey returns the prefix key in format <0x31 + Perm_Bytes + address_bytes>
