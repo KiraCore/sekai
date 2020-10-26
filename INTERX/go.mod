@@ -12,6 +12,7 @@ require (
 	github.com/gorilla/mux v1.7.4
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.0.0-beta.4
 	github.com/igorsobreira/kvstore v0.0.0-20131025205959-a8574822a4b3
+	github.com/inhies/go-bytesize v0.0.0-20200716184324-4fe85e9b81b2
 	github.com/juju/fslock v0.0.0-20160525022230-4d5c94c67b4b
 	github.com/nightlyone/lockfile v1.0.0
 	github.com/rakyll/statik v0.1.7

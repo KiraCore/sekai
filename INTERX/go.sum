@@ -277,6 +277,8 @@ github.com/igorsobreira/kvstore v0.0.0-20131025205959-a8574822a4b3 h1:oj7L/Lo3Ho
 github.com/igorsobreira/kvstore v0.0.0-20131025205959-a8574822a4b3/go.mod h1:DwQBiCrl2NlFQrxPrg1AD5nUeaPDngnWTns4tsp1D5w=
 github.com/inconshreveable/mousetrap v1.0.0/go.mod h1:PxqpIevigyE2G7u3NXJIT2ANytuPF1OarO4DADm73n8=
 github.com/influxdata/influxdb1-client v0.0.0-20191209144304-8bf82d3c094d/go.mod h1:qj24IKcXYK6Iy9ceXlo3Tc+vtHo9lIhSX5JddghvEPo=
+github.com/inhies/go-bytesize v0.0.0-20200716184324-4fe85e9b81b2 h1:cdDdMBSC31fswuzvGrd05fGdb5EyCF++DVr8Q1JOhdU=
+github.com/inhies/go-bytesize v0.0.0-20200716184324-4fe85e9b81b2/go.mod h1:KrtyD5PFj++GKkFS/7/RRrfnRhAMGQwy75GLCHWrCNs=
 github.com/jessevdk/go-flags v0.0.0-20141203071132-1679536dcc89/go.mod h1:4FA24M0QyGHXBuZZK/XkWh8h0e1EYbRYJSGM75WSRxI=
 github.com/jmespath/go-jmespath v0.0.0-20180206201540-c2b33e8439af/go.mod h1:Nht3zPeWKUH0NzdCt2Blrr5ys8VGpn0CEB0cQHVjt7k=
 github.com/jmhodges/levigo v1.0.0/go.mod h1:Q6Qx+uH3RAqyK4rFQroq9RL7mdkABMcfhEI+nNuzMJQ=

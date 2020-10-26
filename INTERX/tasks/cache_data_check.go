@@ -16,16 +16,17 @@ import (
 // CacheDataCheck is a function to check cache data if it's expired.
 func CacheDataCheck(rpcAddr string) {
 	for {
-		err := filepath.Walk(interx.Config.RPC.CacheDir,
+		err := filepath.Walk(interx.Config.CacheDir,
 			func(path string, info os.FileInfo, err error) error {
 				if err != nil {
 					return err
 				}
 
-				// check timestamp and block height in cache data and delete expired one
 				delete := false
 
 				if !info.IsDir() && info.Size() != 0 {
+					// check cache json data
+
 					common.Mutex.Lock()
 					data, _ := ioutil.ReadFile(path)
 					common.Mutex.Unlock()
@@ -38,7 +39,7 @@ func CacheDataCheck(rpcAddr string) {
 					}
 				}
 
-				if path != interx.Config.RPC.CacheDir && delete {
+				if path != interx.Config.CacheDir && delete {
 					fmt.Println("deleting file ... ", path)
 
 					common.Mutex.Lock()

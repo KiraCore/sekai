@@ -1,6 +1,9 @@
 {
     "mnemonic": "swap exercise equip shoot mad inside floor wheel loan visual stereo build frozen always bulb naive subway foster marine erosion shuffle flee action there",
     "status_sync": 5,
+    "cache_dir": "cache",
+    "max_cache_size": "2 GB",
+    "caching_duration": 10,
     "faucet": {
         "mnemonic": "equip exercise shoot mad inside floor wheel loan visual stereo build frozen potato always bulb naive subway foster marine erosion shuffle flee action there",
         "faucet_amounts": {
@@ -14,8 +17,6 @@
         "time_limit": 20
     },
     "rpc": {
-        "cache_dir": "cache",
-        "caching_duration": 5,
         "API": {
             "GET": {
                 "/api/cosmos/status": {

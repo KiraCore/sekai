@@ -165,7 +165,7 @@ func WrapResponse(w http.ResponseWriter, request InterxRequest, response common.
 		err := PutCache(chainIDHash, endpointHash, requestHash, common.InterxResponse{
 			Response: response,
 			Status:   statusCode,
-			ExpireAt: time.Now().Add(time.Duration(interx.Config.RPC.CachingDuration) * time.Second),
+			ExpireAt: time.Now().Add(time.Duration(interx.Config.CachingDuration) * time.Second),
 		})
 		if err != nil {
 			fmt.Printf("failed to save in the cache : %s\n", err.Error())
