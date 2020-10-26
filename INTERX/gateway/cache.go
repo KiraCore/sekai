@@ -17,7 +17,7 @@ func PutCache(chainIDHash string, endpointHash string, requestHash string, value
 		return err
 	}
 
-	folderPath := fmt.Sprintf("%s/%s/%s", interx.Config.RPC.CacheDir, chainIDHash, endpointHash)
+	folderPath := fmt.Sprintf("%s/%s/%s", interx.Config.CacheDir, chainIDHash, endpointHash)
 	filePath := fmt.Sprintf("%s/%s", folderPath, requestHash)
 
 	common.Mutex.Lock()
@@ -35,7 +35,7 @@ func PutCache(chainIDHash string, endpointHash string, requestHash string, value
 
 // GetCache is a function to get value from cache
 func GetCache(chainIDHash string, endpointHash string, requestHash string) (common.InterxResponse, error) {
-	filePath := fmt.Sprintf("%s/%s/%s/%s", interx.Config.RPC.CacheDir, chainIDHash, endpointHash, requestHash)
+	filePath := fmt.Sprintf("%s/%s/%s/%s", interx.Config.CacheDir, chainIDHash, endpointHash, requestHash)
 
 	common.Mutex.Lock()
 	data, _ := ioutil.ReadFile(filePath)

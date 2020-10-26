@@ -7,6 +7,7 @@ import (
 
 	sekaiapp "github.com/KiraCore/sekai/app"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	bytesize "github.com/inhies/go-bytesize"
 	"github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
 	"github.com/tendermint/tendermint/crypto/sr25519"
@@ -17,9 +18,12 @@ func readConfig() InterxConfig {
 	sekaiapp.SetConfig()
 
 	type ConfigFromFile struct {
-		Mnemonic   string `json:"mnemonic"`
-		StatusSync int64  `json:"status_sync"`
-		Faucet     struct {
+		Mnemonic        string `json:"mnemonic"`
+		StatusSync      int64  `json:"status_sync"`
+		CacheDir        string `json:"cache_dir"`
+		MaxCacheSize    string `json:"max_cache_size"`
+		CachingDuration int64  `json:"caching_duration"`
+		Faucet          struct {
 			Mnemonic             string           `json:"mnemonic"`
 			FaucetAmounts        map[string]int64 `json:"faucet_amounts"`
 			FaucetMinimumAmounts map[string]int64 `json:"faucet_minimum_amounts"`
@@ -43,6 +47,10 @@ func readConfig() InterxConfig {
 	// Interx Main Configuration
 	config.Mnemonic = configFromFile.Mnemonic
 	config.StatusSync = configFromFile.StatusSync
+	config.CacheDir = configFromFile.CacheDir
+	b, _ := bytesize.Parse(configFromFile.MaxCacheSize)
+	config.MaxCacheSize = int64(b)
+	config.CachingDuration = configFromFile.CachingDuration
 	config.PrivKey = secp256k1.GenPrivKeyFromSecret(bip39.NewSeed(config.Mnemonic, ""))
 	config.PubKey = config.PrivKey.PubKey()
 	config.Address = sdk.MustBech32ifyAddressBytes(sdk.GetConfig().GetBech32AccountAddrPrefix(), config.PubKey.Address())
@@ -51,6 +59,8 @@ func readConfig() InterxConfig {
 	fmt.Println("Interx Mnemonic   : ", config.Mnemonic)
 	fmt.Println("Interx Address    : ", config.Address)
 	fmt.Println("Interx Public Key : ", sdk.MustBech32ifyPubKey(sdk.Bech32PubKeyTypeAccPub, config.PubKey))
+	fmt.Println("Max Cache Size    : ", config.MaxCacheSize)
+	fmt.Println("Caching Duration  : ", config.CachingDuration)
 
 	// Faucet Configuration
 	config.Faucet = FaucetConfig{
