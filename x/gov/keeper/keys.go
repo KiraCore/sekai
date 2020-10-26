@@ -3,7 +3,7 @@ package keeper
 // Keys for Gov store.
 // 0x00<uint64 in bytes> : The next proposalID.
 // 0x01<proposalID_bytes> : The Proposal
-// 0x02<proposalID_Bytes + voterAddress_Bytes> : The Proposal
+// 0x02<proposalID_Bytes + voterAddress_Bytes> : The vote
 // 0x03<endTime_Bytes + proposalID_Bytes> : ActiveProposalID
 //
 // 0x10<role_uint64_Bytes> : The role permissions.

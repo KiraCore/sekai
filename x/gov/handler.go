@@ -116,7 +116,7 @@ func handleMsgProposalAssignPermission(
 	ck.AddToActiveProposals(ctx, proposal)
 
 	return &sdk.Result{
-		Data: keeper.GetProposalIDBytes(proposalID),
+		Data: keeper.ProposalIDToBytes(proposalID),
 	}, nil
 }
 
