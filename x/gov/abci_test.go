@@ -58,6 +58,45 @@ func TestEndBlocker(t *testing.T) {
 				require.False(t, actor.Permissions.IsWhitelisted(types.PermSetPermissions))
 			},
 		},
+		{
+			name: "proposal passes: quorum reached but not more than half of the votes",
+			prepareScenario: func(app *simapp.SimApp, ctx sdk.Context) []sdk.AccAddress {
+				addrs := simapp.AddTestAddrsIncremental(app, ctx, 10, sdk.NewInt(100))
+
+				proposalID := uint64(1234)
+				proposal := types.NewProposalAssignPermission(
+					proposalID,
+					addrs[0],
+					types.PermSetPermissions,
+					time.Now(),
+					time.Now(),
+				)
+
+				err := app.CustomGovKeeper.SaveProposal(ctx, proposal)
+				require.NoError(t, err)
+				app.CustomGovKeeper.AddToActiveProposals(ctx, proposal)
+
+				// We set permissions to Vote The proposal to all the actors. 10 in total.
+				for i, addr := range addrs {
+					actor := types.NewDefaultActor(addr)
+					err := app.CustomGovKeeper.AddWhitelistPermission(ctx, actor, types.PermVoteSetPermissionProposal)
+					require.NoError(t, err)
+
+					// Only 4 first users vote yes. We reach quorum but not half of the votes are yes.
+					if i < 3 {
+						vote := types.NewVote(proposalID, addr, types.OptionYes)
+						app.CustomGovKeeper.SaveVote(ctx, vote)
+					}
+				}
+
+				return addrs
+			},
+			validateScenario: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addrs []sdk.AccAddress) {
+				actor, found := app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addrs[0])
+				require.True(t, found)
+				require.False(t, actor.Permissions.IsWhitelisted(types.PermSetPermissions))
+			},
+		},
 	}
 
 	for _, tt := range tests {

@@ -80,8 +80,8 @@ func (k Keeper) GetProposalVotesIterator(ctx sdk.Context, proposalID uint64) sdk
 	return sdk.KVStorePrefixIterator(store, VotesKey(proposalID))
 }
 
-func (k Keeper) GetProposalVotes(ctx sdk.Context, proposalID uint64) []types.Vote {
-	var votes []types.Vote
+func (k Keeper) GetProposalVotes(ctx sdk.Context, proposalID uint64) types.Votes {
+	var votes types.Votes
 
 	iterator := k.GetProposalVotesIterator(ctx, proposalID)
 	for ; iterator.Valid(); iterator.Next() {
