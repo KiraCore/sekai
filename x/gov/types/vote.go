@@ -11,19 +11,21 @@ const (
 )
 
 type CalculatedVotes struct {
-	votes map[VoteOption]uint64
-	total uint64
+	votes          map[VoteOption]uint64
+	actorsWithVeto uint64
+	total          uint64
 }
 
-func CalculateVotes(votes Votes) CalculatedVotes {
+func CalculateVotes(votes Votes, actorsWithVeto uint64) CalculatedVotes {
 	votesMap := make(map[VoteOption]uint64)
 	for _, vote := range votes {
 		votesMap[vote.Option]++
 	}
 
 	return CalculatedVotes{
-		total: uint64(len(votes)),
-		votes: votesMap,
+		total:          uint64(len(votes)),
+		actorsWithVeto: actorsWithVeto,
+		votes:          votesMap,
 	}
 }
 
@@ -48,8 +50,14 @@ func (c CalculatedVotes) VetoVotes() uint64 {
 }
 
 func (c CalculatedVotes) ProcessResult() VoteResult {
-	yesPercentage := (float32(c.votes[OptionYes]) / float32(c.total)) * 100
+	if c.actorsWithVeto != 0 {
+		percentageActorsWithVeto := (float32(c.votes[OptionNoWithVeto]) / float32(c.actorsWithVeto)) * 100
+		if percentageActorsWithVeto >= 50 {
+			return RejectedWithVeto
+		}
+	}
 
+	yesPercentage := (float32(c.votes[OptionYes]) / float32(c.total)) * 100
 	if yesPercentage > 50.00 {
 		return Passed
 	}
