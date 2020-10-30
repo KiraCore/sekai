@@ -65,6 +65,7 @@ func (suite *AnteTestSuite) SetupTest(isCheckTx bool) {
 		suite.app.CustomStakingKeeper,
 		suite.app.CustomGovKeeper,
 		suite.app.TokensKeeper,
+		suite.app.FeeProcessingKeeper,
 		suite.app.AccountKeeper,
 		suite.app.BankKeeper,
 		ante.DefaultSigVerificationGasConsumer,
