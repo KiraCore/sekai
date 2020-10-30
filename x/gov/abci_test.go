@@ -59,7 +59,7 @@ func TestEndBlocker(t *testing.T) {
 			},
 		},
 		{
-			name: "proposal passes: quorum reached but not more than half of the votes",
+			name: "proposal passes",
 			prepareScenario: func(app *simapp.SimApp, ctx sdk.Context) []sdk.AccAddress {
 				addrs := simapp.AddTestAddrsIncremental(app, ctx, 10, sdk.NewInt(100))
 

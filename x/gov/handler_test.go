@@ -1253,7 +1253,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 					voterAddr,
 					types.Roles{},
 					types.Active,
-					[]uint32{},
+					[]types.VoteOption{},
 					types.NewPermissions(nil, nil),
 					1,
 				)
@@ -1320,7 +1320,7 @@ func TestHandler_VoteProposal(t *testing.T) {
 		voterAddr,
 		types.Roles{},
 		types.Active,
-		[]uint32{},
+		[]types.VoteOption{},
 		types.NewPermissions(nil, nil),
 		1,
 	)

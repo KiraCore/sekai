@@ -6,7 +6,7 @@ func NewNetworkActor(
 	addr types.AccAddress,
 	roles Roles,
 	status ActorStatus,
-	votes []uint32,
+	votes []VoteOption,
 	perm *Permissions,
 	skin uint64,
 ) NetworkActor {
@@ -60,7 +60,12 @@ func NewDefaultActor(addr types.AccAddress) NetworkActor {
 		addr,
 		nil,
 		Undefined,
-		nil,
+		[]VoteOption{
+			OptionYes,
+			OptionNo,
+			OptionAbstain,
+			OptionNoWithVeto,
+		},
 		NewPermissions(nil, nil),
 		0,
 	)

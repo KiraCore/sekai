@@ -51,7 +51,7 @@ func TestNewNetworkActor_Status(t *testing.T) {
 		addr,
 		customgovtypes.Roles{},
 		customgovtypes.Active,
-		[]uint32{},
+		[]customgovtypes.VoteOption{},
 		customgovtypes.NewPermissions(nil, nil),
 		1,
 	)
