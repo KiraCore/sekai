@@ -60,7 +60,7 @@ func TestEndBlocker(t *testing.T) {
 			},
 		},
 		{
-			name: "proposal passes",
+			name: "proposal passes and joins Enactment place",
 			prepareScenario: func(app *simapp.SimApp, ctx sdk.Context) []sdk.AccAddress {
 				addrs := simapp.AddTestAddrsIncremental(app, ctx, 10, sdk.NewInt(100))
 
@@ -70,8 +70,8 @@ func TestEndBlocker(t *testing.T) {
 					addrs[0],
 					types.PermSetPermissions,
 					time.Now(),
-					time.Now(),
-					time.Now(),
+					time.Now().Add(10*time.Second),
+					time.Now().Add(20*time.Second),
 				)
 
 				err := app.CustomGovKeeper.SaveProposal(ctx, proposal)
@@ -85,11 +85,17 @@ func TestEndBlocker(t *testing.T) {
 					require.NoError(t, err)
 
 					// Only 4 first users vote yes. We reach quorum but not half of the votes are yes.
-					if i < 3 {
+					if i < 4 {
 						vote := types.NewVote(proposalID, addr, types.OptionYes)
 						app.CustomGovKeeper.SaveVote(ctx, vote)
 					}
 				}
+
+				iterator := app.CustomGovKeeper.GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx, time.Now().Add(10*time.Second))
+				requireIteratorCount(t, iterator, 1)
+
+				iterator = app.CustomGovKeeper.GetEnactmentProposalsWithFinishedEnactmentEndTimeIterator(ctx, time.Now().Add(25*time.Second))
+				requireIteratorCount(t, iterator, 0)
 
 				return addrs
 			},
@@ -97,6 +103,18 @@ func TestEndBlocker(t *testing.T) {
 				actor, found := app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addrs[0])
 				require.True(t, found)
 				require.False(t, actor.Permissions.IsWhitelisted(types.PermSetPermissions))
+
+				// We check that is not in the ActiveProposals
+				iterator := app.CustomGovKeeper.GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx, time.Now().Add(15*time.Second))
+				requireIteratorCount(t, iterator, 0)
+
+				// And it is in the EnactmentProposals
+				iterator = app.CustomGovKeeper.GetEnactmentProposalsWithFinishedEnactmentEndTimeIterator(ctx, time.Now().Add(25*time.Second))
+				requireIteratorCount(t, iterator, 1)
+
+				proposal, found := app.CustomGovKeeper.GetProposal(ctx, 1234)
+				require.True(t, found)
+				require.Equal(t, types.Passed, proposal.Result)
 			},
 		},
 	}
@@ -109,11 +127,20 @@ func TestEndBlocker(t *testing.T) {
 
 			addrs := tt.prepareScenario(app, ctx)
 
-			ctx = ctx.WithBlockTime(time.Now().Add(time.Second * 10)) // We make that proposal passes.
+			ctx = ctx.WithBlockTime(time.Now().Add(time.Second * 10))
 
 			gov.EndBlocker(ctx, app.CustomGovKeeper)
 
 			tt.validateScenario(t, app, ctx, addrs)
 		})
 	}
+}
+
+func requireIteratorCount(t *testing.T, iterator sdk.Iterator, expectedCount int) {
+	c := 0
+	for ; iterator.Valid(); iterator.Next() {
+		c++
+	}
+
+	require.Equal(t, expectedCount, c)
 }

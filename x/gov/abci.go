@@ -30,4 +30,18 @@ func processProposal(ctx sdk.Context, k keeper.Keeper, proposalID uint64) {
 	if !isQuorum {
 		return
 	}
+
+	numActorsWithVeto := len(types.GetActorsWithVoteWithVeto(availableVoters))
+	calculatedVote := types.CalculateVotes(votes, uint64(numActorsWithVeto))
+
+	proposal, found := k.GetProposal(ctx, proposalID)
+	if !found {
+		panic("proposal was expected to exist")
+	}
+
+	proposal.Result = calculatedVote.ProcessResult()
+
+	k.SaveProposal(ctx, proposal)
+	k.RemoveActiveProposal(ctx, proposal)
+	k.AddToEnactmentProposals(ctx, proposal)
 }

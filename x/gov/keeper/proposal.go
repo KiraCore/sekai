@@ -29,7 +29,7 @@ func (k Keeper) SaveProposalID(ctx sdk.Context, proposalID uint64) {
 	store.Set(NextProposalIDPrefix, ProposalIDToBytes(proposalID))
 }
 
-func (k Keeper) SaveProposal(ctx sdk.Context, proposal types.ProposalAssignPermission) error {
+func (k Keeper) SaveProposal(ctx sdk.Context, proposal types.ProposalAssignPermission) error { // TODO saveproposal should not returs err
 	store := ctx.KVStore(k.storeKey)
 
 	bz := k.cdc.MustMarshalBinaryBare(&proposal)
