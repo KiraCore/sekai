@@ -31,6 +31,7 @@ func TestEndBlocker(t *testing.T) {
 					types.PermSetPermissions,
 					time.Now(),
 					time.Now(),
+					time.Now(),
 				)
 
 				err := app.CustomGovKeeper.SaveProposal(ctx, proposal)
@@ -68,6 +69,7 @@ func TestEndBlocker(t *testing.T) {
 					proposalID,
 					addrs[0],
 					types.PermSetPermissions,
+					time.Now(),
 					time.Now(),
 					time.Now(),
 				)

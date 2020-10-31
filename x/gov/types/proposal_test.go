@@ -15,6 +15,7 @@ func TestNewProposalAssignPermission_ProposalIsPendingByDefault(t *testing.T) {
 		PermSetPermissions,
 		time.Now(),
 		time.Now(),
+		time.Now(),
 	)
 
 	require.Equal(t, Pending, proposal.Result)

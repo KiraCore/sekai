@@ -87,5 +87,8 @@ message ProposalAssignPermission {
   google.protobuf.Timestamp voting_end_time = 6
   [(gogoproto.stdtime) = true, (gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"voting_end_time\""];
 
-  VoteResult result = 7;
+  google.protobuf.Timestamp enactment_end_time = 7
+  [(gogoproto.stdtime) = true, (gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"voting_end_time\""];
+
+  VoteResult result = 8;
 }

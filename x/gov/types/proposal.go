@@ -12,6 +12,7 @@ func NewProposalAssignPermission(
 	permission PermValue,
 	votingStartTime time.Time,
 	votingEndTime time.Time,
+	enactmentEndTime time.Time,
 ) ProposalAssignPermission {
 	return ProposalAssignPermission{
 		ProposalId:      proposalID,
@@ -19,6 +20,7 @@ func NewProposalAssignPermission(
 		Permission:      uint32(permission),
 		VotingStartTime: votingStartTime,
 		VotingEndTime:   votingEndTime,
+		EnactmentEndTime: enactmentEndTime,
 		Result:          Pending,
 	}
 }

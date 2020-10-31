@@ -103,18 +103,42 @@ func (k Keeper) RemoveActiveProposal(ctx sdk.Context, proposal types.ProposalAss
 	store.Delete(ActiveProposalKey(proposal))
 }
 
+func (k Keeper) AddToEnactmentProposals(ctx sdk.Context, proposal types.ProposalAssignPermission) {
+	store := ctx.KVStore(k.storeKey)
+	store.Set(EnactmentProposalKey(proposal), ProposalIDToBytes(proposal.ProposalId))
+}
+
+func (k Keeper) RemoveEnactmentProposal(ctx sdk.Context, proposal types.ProposalAssignPermission) {
+	store := ctx.KVStore(k.storeKey)
+	store.Delete(EnactmentProposalKey(proposal))
+}
+
 // GetActiveProposalsWithFinishedVotingEndTimeIterator returns the proposals that have endtime finished.
 func (k Keeper) GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx sdk.Context, endTime time.Time) sdk.Iterator {
 	store := ctx.KVStore(k.storeKey)
 	return store.Iterator(ActiveProposalsPrefix, sdk.PrefixEndBytes(ActiveProposalByTimeKey(endTime)))
 }
 
+// GetEnactmentProposalsWithFinishedEnactmentEndTimeIterator returns the proposals that have finished the enactment time.
+func (k Keeper) GetEnactmentProposalsWithFinishedEnactmentEndTimeIterator(ctx sdk.Context, endTime time.Time) sdk.Iterator {
+	store := ctx.KVStore(k.storeKey)
+	return store.Iterator(EnactmentProposalsPrefix, sdk.PrefixEndBytes(EnactmentProposalByTimeKey(endTime)))
+}
+
 func ActiveProposalByTimeKey(endTime time.Time) []byte {
 	return append(ActiveProposalsPrefix, sdk.FormatTimeBytes(endTime)...)
 }
 
+func EnactmentProposalByTimeKey(endTime time.Time) []byte {
+	return append(EnactmentProposalsPrefix, sdk.FormatTimeBytes(endTime)...)
+}
+
 func ActiveProposalKey(prop types.ProposalAssignPermission) []byte {
 	return append(ActiveProposalByTimeKey(prop.VotingEndTime), ProposalIDToBytes(prop.ProposalId)...)
+}
+
+func EnactmentProposalKey(prop types.ProposalAssignPermission) []byte {
+	return append(EnactmentProposalByTimeKey(prop.EnactmentEndTime), ProposalIDToBytes(prop.ProposalId)...)
 }
 
 func VotesKey(proposalID uint64) []byte {
