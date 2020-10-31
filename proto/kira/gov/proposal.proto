@@ -29,6 +29,7 @@ enum VoteResult {
   VOTE_RESULT_PASSED = 1 [(gogoproto.enumvalue_customname) = "Passed"];
   VOTE_RESULT_REJECTED = 2 [(gogoproto.enumvalue_customname) = "Rejected"];
   VOTE_RESULT_REJECTED_WITH_VETO = 3 [(gogoproto.enumvalue_customname) = "RejectedWithVeto"];
+  VOTE_PENDING = 4 [(gogoproto.enumvalue_customname) = "Pending"];
 }
 
 message Vote {
@@ -85,4 +86,6 @@ message ProposalAssignPermission {
 
   google.protobuf.Timestamp voting_end_time = 6
   [(gogoproto.stdtime) = true, (gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"voting_end_time\""];
+
+  VoteResult result = 7;
 }
