@@ -96,12 +96,7 @@ func TestKeeper_AddProposalToActiveQueue(t *testing.T) {
 	iterator := app.CustomGovKeeper.GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx, baseEndTime.Add(2*time.Second))
 	defer iterator.Close()
 
-	totalIdsFound := 0
-	for ; iterator.Valid(); iterator.Next() {
-		totalIdsFound++
-	}
-
-	require.Equal(t, 2, totalIdsFound)
+	requireIteratorCount(t, iterator, 2)
 }
 
 func TestKeeper_GetProposalVotesIterator(t *testing.T) {

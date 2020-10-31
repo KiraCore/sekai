@@ -22,6 +22,15 @@ enum VoteOption {
   VOTE_OPTION_NO_WITH_VETO = 4 [(gogoproto.enumvalue_customname) = "OptionNoWithVeto"];
 }
 
+enum VoteResult {
+  option (gogoproto.goproto_enum_prefix) = false;
+
+  VOTE_RESULT_UNKNOWN = 0 [(gogoproto.enumvalue_customname) = "Unknown"];
+  VOTE_RESULT_PASSED = 1 [(gogoproto.enumvalue_customname) = "Passed"];
+  VOTE_RESULT_REJECTED = 2 [(gogoproto.enumvalue_customname) = "Rejected"];
+  VOTE_RESULT_REJECTED_WITH_VETO = 3 [(gogoproto.enumvalue_customname) = "RejectedWithVeto"];
+}
+
 message Vote {
   uint64     proposal_id = 1;
 

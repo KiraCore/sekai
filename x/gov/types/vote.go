@@ -1,14 +1,6 @@
 package types
 
 type Votes []Vote
-type VoteResult int64
-
-const (
-	Unknown VoteResult = iota
-	Passed
-	Rejected
-	RejectedWithVeto
-)
 
 type CalculatedVotes struct {
 	votes          map[VoteOption]uint64
