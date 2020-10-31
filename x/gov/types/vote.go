@@ -1,6 +1,16 @@
 package types
 
+import "github.com/cosmos/cosmos-sdk/types"
+
 type Votes []Vote
+
+func NewVote(proposalID uint64, addr types.AccAddress, option VoteOption) Vote {
+	return Vote{
+		ProposalId: proposalID,
+		Voter:      addr,
+		Option:     option,
+	}
+}
 
 type CalculatedVotes struct {
 	votes          map[VoteOption]uint64

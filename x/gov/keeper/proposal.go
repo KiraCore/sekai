@@ -98,6 +98,11 @@ func (k Keeper) AddToActiveProposals(ctx sdk.Context, proposal types.ProposalAss
 	store.Set(ActiveProposalKey(proposal), ProposalIDToBytes(proposal.ProposalId))
 }
 
+func (k Keeper) RemoveActiveProposal(ctx sdk.Context, proposal types.ProposalAssignPermission) {
+	store := ctx.KVStore(k.storeKey)
+	store.Delete(ActiveProposalKey(proposal))
+}
+
 // GetActiveProposalsWithFinishedVotingEndTimeIterator returns the proposals that have endtime finished.
 func (k Keeper) GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx sdk.Context, endTime time.Time) sdk.Iterator {
 	store := ctx.KVStore(k.storeKey)

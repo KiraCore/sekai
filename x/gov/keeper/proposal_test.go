@@ -95,8 +95,17 @@ func TestKeeper_AddProposalToActiveQueue(t *testing.T) {
 	// We only get until endtime of the second proposal.
 	iterator := app.CustomGovKeeper.GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx, baseEndTime.Add(2*time.Second))
 	defer iterator.Close()
-
 	requireIteratorCount(t, iterator, 2)
+
+	// We remove one ActiveProposal, the first
+	proposal, found := app.CustomGovKeeper.GetProposal(ctx, 1)
+	require.True(t, found)
+	app.CustomGovKeeper.RemoveActiveProposal(ctx, proposal)
+
+	// We then only get 1 proposal.
+	iterator = app.CustomGovKeeper.GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx, baseEndTime.Add(2*time.Second))
+	defer iterator.Close()
+	requireIteratorCount(t, iterator, 1)
 }
 
 func TestKeeper_GetProposalVotesIterator(t *testing.T) {
