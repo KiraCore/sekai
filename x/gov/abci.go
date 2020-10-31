@@ -7,7 +7,12 @@ import (
 )
 
 func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
-	iterator := k.GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx, ctx.BlockTime())
+	iterator := k.GetEnactmentProposalsWithFinishedEnactmentEndTimeIterator(ctx, ctx.BlockTime())
+	for ; iterator.Valid(); iterator.Next() {
+		processEnactmentProposal(ctx, k, keeper.BytesToProposalID(iterator.Value()))
+	}
+
+	iterator = k.GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx, ctx.BlockTime())
 	for ; iterator.Valid(); iterator.Next() {
 		processProposal(ctx, k, keeper.BytesToProposalID(iterator.Value()))
 	}
@@ -44,4 +49,25 @@ func processProposal(ctx sdk.Context, k keeper.Keeper, proposalID uint64) {
 	k.SaveProposal(ctx, proposal)
 	k.RemoveActiveProposal(ctx, proposal)
 	k.AddToEnactmentProposals(ctx, proposal)
+}
+
+func processEnactmentProposal(ctx sdk.Context, k keeper.Keeper, proposalID uint64) {
+	proposal, found := k.GetProposal(ctx, proposalID)
+	if !found {
+		panic("proposal was expected to exist")
+	}
+
+	if proposal.Result == types.Passed {
+		actor, found := k.GetNetworkActorByAddress(ctx, proposal.Address)
+		if !found {
+			panic("network actor was expected to exist")
+		}
+
+		err := k.AddWhitelistPermission(ctx, actor, types.PermValue(proposal.Permission))
+		if err != nil {
+			panic("network actor has this permission")
+		}
+	}
+
+	k.RemoveEnactmentProposal(ctx, proposal)
 }
