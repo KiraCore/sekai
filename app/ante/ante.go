@@ -42,9 +42,9 @@ func NewAnteHandler(
 		ante.NewSetPubKeyDecorator(ak), // SetPubKeyDecorator must be called before all signature verification decorators
 		ante.NewValidateSigCountDecorator(ak),
 		ante.NewDeductFeeDecorator(ak, fk),
-		ante.NewSigGasConsumeDecorator(ak, sigGasConsumer),
 		// custom execution fee consume decorator
-		// NewCustomExecutionFeeConsumeDecorator(ak, cgk),
+		NewExecutionFeeRegistrationDecorator(ak, cgk, fk),
+		ante.NewSigGasConsumeDecorator(ak, sigGasConsumer),
 		ante.NewSigVerificationDecorator(ak, signModeHandler),
 		ante.NewIncrementSequenceDecorator(ak),
 	)
@@ -93,12 +93,16 @@ func (svd ValidateFeeRangeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 		feeAmount += uint64(feeCoin.Amount.Int64()) * rate.Rate / uint64(tokenstypes.RateDecimalDenominator)
 	}
 
-	// execution failure fee should be prepaid
-	executionFailureFee := uint64(0)
+	// execution fee should be prepaid
+	executionMaxFee := uint64(0)
 	for _, msg := range feeTx.GetMsgs() {
 		fee := svd.cgk.GetExecutionFee(ctx, msg.Type())
 		if fee != nil { // execution fee exist
-			executionFailureFee += fee.FailureFee
+			maxFee := fee.FailureFee
+			if fee.ExecutionFee > maxFee {
+				maxFee = fee.ExecutionFee
+			}
+			executionMaxFee += maxFee
 		}
 	}
 
@@ -107,42 +111,43 @@ func (svd ValidateFeeRangeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("fee %+v(%d) is out of range [%d, %d]%s", feeTx.GetFee(), feeAmount, properties.MinTxFee, properties.MaxTxFee, bondDenom))
 	}
 
-	if feeAmount < executionFailureFee {
-		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("fee %+v is less than execution failure fee %d%s", feeTx.GetFee(), executionFailureFee, bondDenom))
+	if feeAmount < executionMaxFee {
+		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("fee %+v(%d) is less than max execution fee %d%s", feeTx.GetFee(), feeAmount, executionMaxFee, bondDenom))
 	}
 
 	return next(ctx, tx, simulate)
 }
 
-// // CustomExecutionFeeConsumeDecorator calculate custom gas consume
-// type CustomExecutionFeeConsumeDecorator struct {
-// 	ak  keeper.AccountKeeper
-// 	cgk customgovkeeper.Keeper
-// }
+// ExecutionFeeRegistrationDecorator register paid execution fee
+type ExecutionFeeRegistrationDecorator struct {
+	ak  keeper.AccountKeeper
+	cgk customgovkeeper.Keeper
+	fk  feeprocessingkeeper.Keeper
+}
 
-// // NewCustomExecutionFeeConsumeDecorator returns instance of CustomExecutionFeeConsumeDecorator
-// func NewCustomExecutionFeeConsumeDecorator(ak keeper.AccountKeeper, cgk customgovkeeper.Keeper) CustomExecutionFeeConsumeDecorator {
-// 	return CustomExecutionFeeConsumeDecorator{
-// 		ak:  ak,
-// 		cgk: cgk,
-// 	}
-// }
+// NewExecutionFeeRegistrationDecorator returns instance of CustomExecutionFeeConsumeDecorator
+func NewExecutionFeeRegistrationDecorator(ak keeper.AccountKeeper, cgk customgovkeeper.Keeper, fk feeprocessingkeeper.Keeper) ExecutionFeeRegistrationDecorator {
+	return ExecutionFeeRegistrationDecorator{
+		ak:  ak,
+		cgk: cgk,
+		fk:  fk,
+	}
+}
 
-// // AnteHandle handle CustomExecutionFeeConsumeDecorator
-// func (sgcd CustomExecutionFeeConsumeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
-// 	sigTx, ok := tx.(sdk.FeeTx)
-// 	if !ok {
-// 		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "invalid transaction type")
-// 	}
+// AnteHandle handle ExecutionFeeRegistrationDecorator
+func (sgcd ExecutionFeeRegistrationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
+	sigTx, ok := tx.(sdk.FeeTx)
+	if !ok {
+		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "invalid transaction type")
+	}
 
-// 	// execution fee consume gas
-// 	for _, msg := range sigTx.GetMsgs() {
-// 		fee := sgcd.cgk.GetExecutionFee(ctx, msg.Type())
-// 		if fee != nil { // execution fee exist
-// 			ctx.GasMeter().ConsumeGas(fee.ExecutionFee, "consume execution fee")
-// 			// On failure case, fee modifier is running on middleware package.
-// 		}
-// 	}
+	// execution fee consume gas
+	for _, msg := range sigTx.GetMsgs() {
+		fee := sgcd.cgk.GetExecutionFee(ctx, msg.Type())
+		if fee != nil { // execution fee exist
+			sgcd.fk.AddExecutionStart(ctx, msg)
+		}
+	}
 
-// 	return next(ctx, tx, simulate)
-// }
+	return next(ctx, tx, simulate)
+}

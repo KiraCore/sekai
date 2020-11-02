@@ -304,7 +304,7 @@ func NewSimApp(
 		appCodec, keys[ibchost.StoreKey], app.StakingKeeper, scopedIBCKeeper,
 	)
 
-	app.FeeProcessingKeeper = feeprocessingkeeper.NewKeeper(keys[feeprocessingtypes.ModuleName], appCodec, app.BankKeeper, app.TokensKeeper)
+	app.FeeProcessingKeeper = feeprocessingkeeper.NewKeeper(keys[feeprocessingtypes.ModuleName], appCodec, app.BankKeeper, app.TokensKeeper, app.CustomGovKeeper)
 
 	// register the proposal types
 	govRouter := govtypes.NewRouter()
@@ -465,7 +465,7 @@ func NewSimApp(
 	// note replicate if you do not need to test core IBC or light clients.
 	app.ScopedIBCMockKeeper = scopedIBCMockKeeper
 
-	middleware.SetKeepers(app.CustomGovKeeper, app.CustomStakingKeeper, app.BankKeeper)
+	middleware.SetKeepers(app.CustomGovKeeper, app.CustomStakingKeeper, app.FeeProcessingKeeper)
 
 	return app
 }

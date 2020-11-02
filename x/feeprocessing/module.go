@@ -62,7 +62,7 @@ func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
 // AppModule extends the cosmos SDK gov.
 type AppModule struct {
 	AppModuleBasic
-	feeProcessingKeeper feeprocessingkeeper.Keeper
+	keeper feeprocessingkeeper.Keeper
 }
 
 func (am AppModule) RegisterInterfaces(registry types2.InterfaceRegistry) {
@@ -91,7 +91,7 @@ func (am AppModule) LegacyQuerierHandler(marshaler *codec.LegacyAmino) sdk.Queri
 func (am AppModule) BeginBlock(context sdk.Context, block abci.RequestBeginBlock) {}
 
 func (am AppModule) EndBlock(ctx sdk.Context, block abci.RequestEndBlock) []abci.ValidatorUpdate {
-	return []abci.ValidatorUpdate{}
+	return EndBlocker(ctx, am.keeper)
 }
 
 func (am AppModule) Name() string {
@@ -100,7 +100,7 @@ func (am AppModule) Name() string {
 
 // Route returns the message routing key for the staking module.
 func (am AppModule) Route() sdk.Route {
-	return sdk.NewRoute(feeprocessingtypes.ModuleName, NewHandler(am.feeProcessingKeeper))
+	return sdk.NewRoute(feeprocessingtypes.ModuleName, NewHandler(am.keeper))
 }
 
 // RegisterQueryService registers a GRPC query service to respond to the
@@ -113,6 +113,6 @@ func NewAppModule(
 	keeper feeprocessingkeeper.Keeper,
 ) AppModule {
 	return AppModule{
-		feeProcessingKeeper: keeper,
+		keeper: keeper,
 	}
 }

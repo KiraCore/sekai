@@ -1,70 +1,37 @@
 package middleware
 
 import (
+	feeprocessingkeeper "github.com/KiraCore/sekai/x/feeprocessing/keeper"
 	customgovkeeper "github.com/KiraCore/sekai/x/gov/keeper"
-	customstakingkeeper "github.com/KiraCore/sekai/x/staking/keeper"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 )
 
 var (
 	customGovKeeper     customgovkeeper.Keeper
-	customStakingKeeper customstakingkeeper.Keeper
-	bankKeeper          bankkeeper.Keeper
+	feeprocessingKeeper feeprocessingkeeper.Keeper
 )
 
 // SetKeepers set keepers to be used on middlewares
-func SetKeepers(cgk customgovkeeper.Keeper, csk customstakingkeeper.Keeper, bk bankkeeper.Keeper) {
+func SetKeepers(cgk customgovkeeper.Keeper, fk feeprocessingkeeper.Keeper) {
 	customGovKeeper = cgk
-	customStakingKeeper = csk
-	bankKeeper = bk
+	feeprocessingKeeper = fk
 }
 
 // NewRoute returns an instance of Route.
 func NewRoute(p string, h sdk.Handler) sdk.Route {
 	newHandler := func(ctx sdk.Context, msg sdk.Msg) (*sdk.Result, error) {
 		hResult, hErr := h(ctx, msg)
+		if hErr != nil {
+			return hResult, hErr
+		}
 		// handle extra fee based on handler result
-		feePayer := msg.GetSigners()[0] // signers listing should be at least 1 always
-		bondDenom := customStakingKeeper.BondDenom(ctx)
 
 		fee := customGovKeeper.GetExecutionFee(ctx, msg.Type())
 		if fee == nil {
 			return hResult, hErr
 		}
 
-		if hErr != nil {
-			// TODO this can be something that's not needed as this modified ctx won't be used for tx failure
-			ctx.GasMeter().ConsumeGas(fee.FailureFee, "consume execution failure fee")
-			return hResult, hErr
-		}
-
-		if fee.FailureFee < fee.ExecutionFee { // should pay extra fee
-			amount := int64(fee.ExecutionFee - fee.FailureFee)
-			fees := sdk.Coins{sdk.NewInt64Coin(bondDenom, amount)}
-			err := bankKeeper.SendCoinsFromAccountToModule(ctx, feePayer, authtypes.FeeCollectorName, fees)
-
-			if err != nil {
-				// TODO this can be something that's not needed as this modified ctx won't be used for tx failure
-				ctx.GasMeter().ConsumeGas(fee.FailureFee, "consume execution failure fee")
-				return hResult, err
-			}
-		}
-
-		if fee.FailureFee > fee.ExecutionFee { // should return risk fee on success
-			amount := int64(fee.FailureFee - fee.ExecutionFee)
-			fees := sdk.Coins{sdk.NewInt64Coin(bondDenom, amount)}
-			err := bankKeeper.SendCoinsFromModuleToAccount(ctx, authtypes.FeeCollectorName, feePayer, fees)
-
-			if err != nil {
-				// TODO this can be something that's not needed as this modified ctx won't be used for tx failure
-				ctx.GasMeter().ConsumeGas(fee.FailureFee, "consume execution failure fee")
-				return hResult, err
-			}
-		}
-
-		ctx.GasMeter().ConsumeGas(fee.ExecutionFee, "consume execution failure fee")
+		feeprocessingKeeper.SetExecutionStatusSuccess(ctx, msg)
 		return hResult, hErr
 	}
 	return sdk.NewRoute(p, newHandler)

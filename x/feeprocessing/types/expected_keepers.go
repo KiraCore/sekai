@@ -1,6 +1,7 @@
 package types
 
 import (
+	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/tokens/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -14,4 +15,9 @@ type BankKeeper interface {
 // TokensKeeper defines expected interface needed to get token rate
 type TokensKeeper interface {
 	GetTokenRate(ctx sdk.Context, denom string) *types.TokenRate
+}
+
+// CustomGovKeeper defines the expected interface contract the tokens module requires
+type CustomGovKeeper interface {
+	GetExecutionFee(ctx sdk.Context, txType string) *customgovtypes.ExecutionFee
 }

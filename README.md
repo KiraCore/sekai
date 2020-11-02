@@ -265,5 +265,26 @@ sekaid tx tokens upsert-rate --from validator --keyring-backend=test --denom="va
 # try to spend unregistered token (validatortoken) as fee
 sekaid tx tokens upsert-rate --from validator --keyring-backend=test --denom="valstake" --rate="0.03" --fee_payments=true --chain-id=testing --fees=1000validatortoken --home=$HOME/.sekaid  <<< y
 ```
+
+# Fee payment in foreign currency returning failure - execution fee in foreign currency
+```sh
+# register stake token as 1ukex=100stake
+sekaid tx customgov permission whitelist-permission --from validator --keyring-backend=test --permission=$PermUpsertTokenRate --addr=$(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --chain-id=testing --fees=100ukex --home=$HOME/.sekaid <<< y
+sekaid tx tokens upsert-rate --from validator --keyring-backend=test --denom="stake" --rate="0.01" --fee_payments=true --chain-id=testing --fees=100ukex --home=$HOME/.sekaid  <<< y
+sekaid query tokens rate stake
+
+# set execution fee and failure fee for upsert-rate transaction
+sekaid tx customgov permission whitelist-permission --from validator --keyring-backend=test --permission=$PermChangeTxFee --addr=$(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --chain-id=testing --fees=100ukex --home=$HOME/.sekaid <<< y
+
+sekaid tx customgov set-execution-fee --from validator --execution_name="upsert-token-rate" --transaction_type="upsert-token-rate" --execution_fee=1000 --failure_fee=5000 --timeout=10 default_parameters=0 --keyring-backend=test --chain-id=testing --fees=100ukex --home=$HOME/.sekaid <<< y
+
+# check current balance
+sekaid query bank balances $(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid)
+
+# try upsert-rate failure in foreign currency
+sekaid tx tokens upsert-rate --from validator --keyring-backend=test --denom="valstake" --rate="0.000000000000001" --fee_payments=true --chain-id=testing --fees=5000stake --home=$HOME/.sekaid  <<< y
+# try upsert-rate success in foreign currency
+sekaid tx tokens upsert-rate --from validator --keyring-backend=test --denom="valstake" --rate="0.1" --fee_payments=true --chain-id=testing --fees=5000stake --home=$HOME/.sekaid  <<< y
+```
 ---
 `dev` branch

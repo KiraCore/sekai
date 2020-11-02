@@ -331,7 +331,7 @@ func NewInitApp(
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	app.evidenceKeeper = *evidenceKeeper
 
-	app.feeprocessingKeeper = feeprocessingkeeper.NewKeeper(keys[feeprocessingtypes.ModuleName], appCodec, app.bankKeeper, app.tokensKeeper)
+	app.feeprocessingKeeper = feeprocessingkeeper.NewKeeper(keys[feeprocessingtypes.ModuleName], appCodec, app.bankKeeper, app.tokensKeeper, app.customGovKeeper)
 
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
@@ -446,7 +446,7 @@ func NewInitApp(
 	// note replicate if you do not need to test core IBC or light clients.
 	app.scopedIBCMockKeeper = scopedIBCMockKeeper
 
-	middleware.SetKeepers(app.customGovKeeper, app.customStakingKeeper, app.bankKeeper)
+	middleware.SetKeepers(app.customGovKeeper, app.feeprocessingKeeper)
 
 	return app
 }
