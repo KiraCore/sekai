@@ -364,7 +364,13 @@ func NewInitApp(
 		upgradetypes.ModuleName, /*distrtypes.ModuleName, slashingtypes.ModuleName,*/
 		evidencetypes.ModuleName /*stakingtypes.ModuleName,*/, ibchost.ModuleName,
 	)
-	app.mm.SetOrderEndBlockers(crisistypes.ModuleName, govtypes.ModuleName, cumstomtypes.ModuleName /*stakingtypes.ModuleName*/)
+	app.mm.SetOrderEndBlockers(
+		crisistypes.ModuleName,
+		govtypes.ModuleName,
+		cumstomtypes.ModuleName,
+		feeprocessingtypes.ModuleName,
+		/*stakingtypes.ModuleName*/
+	)
 
 	// NOTE: The genutils moodule must occur after staking so that pools are
 	// properly initialized with tokens from genesis accounts.

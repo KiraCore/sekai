@@ -128,9 +128,9 @@ type ExecutionFeeRegistrationDecorator struct {
 // NewExecutionFeeRegistrationDecorator returns instance of CustomExecutionFeeConsumeDecorator
 func NewExecutionFeeRegistrationDecorator(ak keeper.AccountKeeper, cgk customgovkeeper.Keeper, fk feeprocessingkeeper.Keeper) ExecutionFeeRegistrationDecorator {
 	return ExecutionFeeRegistrationDecorator{
-		ak:  ak,
-		cgk: cgk,
-		fk:  fk,
+		ak,
+		cgk,
+		fk,
 	}
 }
 

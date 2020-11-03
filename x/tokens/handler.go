@@ -9,8 +9,10 @@ import (
 	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/tokens/keeper"
 	"github.com/KiraCore/sekai/x/tokens/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
+// NewHandler returns new instance of handler
 func NewHandler(ck keeper.Keeper, cgk types.CustomGovKeeper) sdk.Handler {
 	return func(ctx sdk.Context, msg sdk.Msg) (*sdk.Result, error) {
 		ctx = ctx.WithEventManager(sdk.NewEventManager())
@@ -49,7 +51,7 @@ func handleUpsertTokenAlias(ctx sdk.Context, ck keeper.Keeper, cgk types.CustomG
 func handleUpsertTokenRate(ctx sdk.Context, ck keeper.Keeper, cgk types.CustomGovKeeper, msg *types.MsgUpsertTokenRate) (*sdk.Result, error) {
 	err := msg.ValidateBasic()
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
 	}
 
 	isAllowed := cgk.CheckIfAllowedPermission(ctx, msg.Proposer, customgovtypes.PermUpsertTokenRate)
@@ -59,7 +61,7 @@ func handleUpsertTokenRate(ctx sdk.Context, ck keeper.Keeper, cgk types.CustomGo
 
 	rateFloat, err := strconv.ParseFloat(msg.Rate, 64)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
 	}
 	rateRaw := uint64(rateFloat * types.RateDecimalDenominator)
 
@@ -68,5 +70,9 @@ func handleUpsertTokenRate(ctx sdk.Context, ck keeper.Keeper, cgk types.CustomGo
 		rateRaw,
 		msg.FeePayments,
 	))
-	return &sdk.Result{}, err
+
+	if err != nil {
+		return nil, errors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
+	}
+	return &sdk.Result{}, nil
 }

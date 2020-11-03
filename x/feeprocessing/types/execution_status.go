@@ -6,6 +6,7 @@ import (
 
 // ExecutionStatus describes msg execution status
 type ExecutionStatus struct {
-	Msg     sdk.Msg
-	Success bool
+	MsgType  string
+	FeePayer sdk.AccAddress
+	Success  bool
 }

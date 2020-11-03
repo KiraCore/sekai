@@ -1,7 +1,6 @@
 package keeper
 
 import (
-	"bytes"
 	"encoding/json"
 
 	"github.com/KiraCore/sekai/x/feeprocessing/types"
@@ -74,11 +73,11 @@ func (k Keeper) SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule strin
 		fillAmt := int64(rate.Rate) * coin.Amount.Int64()
 		if fillAmt > totalAmount-filledAmount {
 			coinAmt := (totalAmount - filledAmount) / int64(rate.Rate)
-			paybackCoins.Add(sdk.NewInt64Coin(coin.Denom, coinAmt))
+			paybackCoins = paybackCoins.Add(sdk.NewInt64Coin(coin.Denom, coinAmt))
 			filledAmount = totalAmount
 		} else {
 			filledAmount += fillAmt
-			paybackCoins.Add(coin)
+			paybackCoins = paybackCoins.Add(coin)
 		}
 	}
 
@@ -108,8 +107,9 @@ func (k Keeper) GetExecutionsStatus(ctx sdk.Context) []types.ExecutionStatus {
 func (k Keeper) AddExecutionStart(ctx sdk.Context, msg sdk.Msg) {
 	executions := k.GetExecutionsStatus(ctx)
 	executions = append(executions, types.ExecutionStatus{
-		Msg:     msg,
-		Success: false,
+		MsgType:  msg.Type(),
+		FeePayer: msg.GetSigners()[0],
+		Success:  false,
 	})
 	bz, _ := json.Marshal(executions)
 	store := ctx.KVStore(k.storeKey)
@@ -121,7 +121,7 @@ func (k Keeper) SetExecutionStatusSuccess(ctx sdk.Context, msg sdk.Msg) {
 	executions := k.GetExecutionsStatus(ctx)
 	for i, exec := range executions {
 		// when execution message is same as param and success is false, just set success flag to be true and break
-		if bytes.Equal(exec.Msg.GetSignBytes(), msg.GetSignBytes()) && exec.Success == false {
+		if exec.MsgType == msg.Type() && exec.Success == false {
 			executions[i].Success = true
 			break
 		}
@@ -135,7 +135,7 @@ func (k Keeper) SetExecutionStatusSuccess(ctx sdk.Context, msg sdk.Msg) {
 func (k Keeper) ProcessExecutionFeeReturn(ctx sdk.Context) {
 	executions := k.GetExecutionsStatus(ctx)
 	for _, exec := range executions {
-		fee := k.cgk.GetExecutionFee(ctx, exec.Msg.Type())
+		fee := k.cgk.GetExecutionFee(ctx, exec.MsgType)
 		if fee != nil {
 			amount := int64(0)
 			if exec.Success && fee.ExecutionFee < fee.FailureFee {
@@ -146,10 +146,9 @@ func (k Keeper) ProcessExecutionFeeReturn(ctx sdk.Context) {
 			}
 			if amount > 0 {
 				// handle extra fee based on handler result
-				feePayer := exec.Msg.GetSigners()[0] // signers listing should be at least 1 always
 				bondDenom := k.BondDenom(ctx)
 				fees := sdk.Coins{sdk.NewInt64Coin(bondDenom, amount)}
-				k.SendCoinsFromModuleToAccount(ctx, authtypes.FeeCollectorName, feePayer, fees)
+				k.SendCoinsFromModuleToAccount(ctx, authtypes.FeeCollectorName, exec.FeePayer, fees)
 			}
 		}
 	}

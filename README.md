@@ -276,15 +276,21 @@ sekaid query tokens rate stake
 # set execution fee and failure fee for upsert-rate transaction
 sekaid tx customgov permission whitelist-permission --from validator --keyring-backend=test --permission=$PermChangeTxFee --addr=$(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --chain-id=testing --fees=100ukex --home=$HOME/.sekaid <<< y
 
-sekaid tx customgov set-execution-fee --from validator --execution_name="upsert-token-rate" --transaction_type="upsert-token-rate" --execution_fee=1000 --failure_fee=5000 --timeout=10 default_parameters=0 --keyring-backend=test --chain-id=testing --fees=100ukex --home=$HOME/.sekaid <<< y
+# set execution_fee=1000 failure_fee=5000
+sekaid tx customgov set-execution-fee --from validator --execution_name="upsert-token-alias" --transaction_type="upsert-token-alias" --execution_fee=1000 --failure_fee=5000 --timeout=10 default_parameters=0 --keyring-backend=test --chain-id=testing --fees=100ukex --home=$HOME/.sekaid <<< y
+
+# set execution_fee=5000 failure_fee=1000
+sekaid tx customgov set-execution-fee --from validator --execution_name="upsert-token-alias" --transaction_type="upsert-token-alias" --execution_fee=5000 --failure_fee=1000 --timeout=10 default_parameters=0 --keyring-backend=test --chain-id=testing --fees=100ukex --home=$HOME/.sekaid <<< y
 
 # check current balance
 sekaid query bank balances $(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid)
 
-# try upsert-rate failure in foreign currency
-sekaid tx tokens upsert-rate --from validator --keyring-backend=test --denom="valstake" --rate="0.000000000000001" --fee_payments=true --chain-id=testing --fees=5000stake --home=$HOME/.sekaid  <<< y
-# try upsert-rate success in foreign currency
-sekaid tx tokens upsert-rate --from validator --keyring-backend=test --denom="valstake" --rate="0.1" --fee_payments=true --chain-id=testing --fees=5000stake --home=$HOME/.sekaid  <<< y
+# try upsert-token-alias failure in foreign currency
+sekaid tx tokens upsert-alias --from validator --keyring-backend=test --expiration=0 --enactment=0 --allowed_vote_types=0,1 --symbol="ETH" --name="Ethereum" --icon="myiconurl" --decimals=6 --denoms="finney" --chain-id=testing --fees=500000stake --home=$HOME/.sekaid  <<< y
+# set permission for this execution
+sekaid tx customgov permission whitelist-permission --from validator --keyring-backend=test --permission=$PermUpsertTokenAlias --addr=$(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --chain-id=testing --fees=10000stake --home=$HOME/.sekaid <<< y
+# try upsert-token-alias success in foreign currency
+sekaid tx tokens upsert-alias --from validator --keyring-backend=test --expiration=0 --enactment=0 --allowed_vote_types=0,1 --symbol="ETH" --name="Ethereum" --icon="myiconurl" --decimals=6 --denoms="finney" --chain-id=testing --fees=500000stake --home=$HOME/.sekaid  <<< y
 ```
 ---
 `dev` branch

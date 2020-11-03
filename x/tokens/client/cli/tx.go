@@ -130,6 +130,11 @@ func GetTxUpsertTokenAliasCmd() *cobra.Command {
 				status,
 			)
 
+			err = msg.ValidateBasic()
+			if err != nil {
+				return err
+			}
+
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
@@ -185,6 +190,11 @@ func GetTxUpsertTokenRateCmd() *cobra.Command {
 				rateString,
 				feePayments,
 			)
+
+			err = msg.ValidateBasic()
+			if err != nil {
+				return err
+			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
