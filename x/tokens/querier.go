@@ -40,27 +40,15 @@ func (q Querier) GetTokenRate(ctx context.Context, request *types.TokenRateReque
 	if rate == nil {
 		return &types.TokenRateResponse{Data: nil}, nil
 	}
-	return &types.TokenRateResponse{Data: rate.ToHumanReadable()}, nil
+	return &types.TokenRateResponse{Data: rate}, nil
 }
 
 func (q Querier) GetTokenRatesByDenom(ctx context.Context, request *types.TokenRatesByDenomRequest) (*types.TokenRatesByDenomResponse, error) {
-	ratesRaw := q.keeper.GetTokenRatesByDenom(sdk.UnwrapSDKContext(ctx), request.Denoms)
-	ratesHR := make(map[string]*types.TokenRateHumanReadable)
-
-	for k, v := range ratesRaw {
-		ratesHR[k] = v.ToHumanReadable()
-	}
-
-	return &types.TokenRatesByDenomResponse{Data: ratesHR}, nil
+	rates := q.keeper.GetTokenRatesByDenom(sdk.UnwrapSDKContext(ctx), request.Denoms)
+	return &types.TokenRatesByDenomResponse{Data: rates}, nil
 }
 
 func (q Querier) GetAllTokenRates(ctx context.Context, request *types.AllTokenRatesRequest) (*types.AllTokenRatesResponse, error) {
-	ratesRaw := q.keeper.ListTokenRate(sdk.UnwrapSDKContext(ctx))
-	ratesHR := []*types.TokenRateHumanReadable{}
-
-	for _, rate := range ratesRaw {
-		ratesHR = append(ratesHR, rate.ToHumanReadable())
-	}
-
-	return &types.AllTokenRatesResponse{Data: ratesHR}, nil
+	rates := q.keeper.ListTokenRate(sdk.UnwrapSDKContext(ctx))
+	return &types.AllTokenRatesResponse{Data: rates}, nil
 }

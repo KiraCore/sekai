@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"bytes"
 	"encoding/json"
 
 	"github.com/KiraCore/sekai/x/feeprocessing/types"
@@ -55,13 +56,13 @@ func (k Keeper) SetSenderCoinsHistory(ctx sdk.Context, senderAddr sdk.AccAddress
 func (k Keeper) SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error {
 	recipientSentCoins := k.GetSenderCoinsHistory(ctx, recipientAddr)
 	paybackCoins := sdk.Coins{}
-	totalAmount := int64(0)
-	filledAmount := int64(0)
+	totalAmount := sdk.NewDec(0)
+	filledAmount := sdk.NewDec(0)
 
 	for _, coin := range amt {
 		rate := k.tk.GetTokenRate(ctx, coin.Denom)
 		if rate != nil {
-			totalAmount += int64(rate.Rate) * coin.Amount.Int64()
+			totalAmount = totalAmount.Add(rate.Rate.Mul(coin.Amount.ToDec()))
 		}
 	}
 
@@ -70,14 +71,21 @@ func (k Keeper) SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule strin
 		if rate == nil {
 			continue
 		}
-		fillAmt := int64(rate.Rate) * coin.Amount.Int64()
-		if fillAmt > totalAmount-filledAmount {
-			coinAmt := (totalAmount - filledAmount) / int64(rate.Rate)
-			paybackCoins = paybackCoins.Add(sdk.NewInt64Coin(coin.Denom, coinAmt))
-			filledAmount = totalAmount
+		toFillAmt := totalAmount.Sub(filledAmount)
+		fillAmt := rate.Rate.Mul(coin.Amount.ToDec())
+		if fillAmt.GT(toFillAmt) {
+			// we don't pay back full amount if there's remainder in div operation
+			coinAmt := toFillAmt.BigInt().Div(toFillAmt.BigInt(), rate.Rate.BigInt())
+			if coinAmt.Int64() > 0 {
+				paybackCoins = paybackCoins.Add(sdk.NewInt64Coin(coin.Denom, coinAmt.Int64()))
+				filledAmount = filledAmount.Add(rate.Rate.Mul(sdk.NewDec(coinAmt.Int64())))
+			}
 		} else {
-			filledAmount += fillAmt
+			filledAmount = filledAmount.Add(fillAmt)
 			paybackCoins = paybackCoins.Add(coin)
+		}
+		if totalAmount.Equal(filledAmount) {
+			break
 		}
 	}
 
@@ -121,7 +129,7 @@ func (k Keeper) SetExecutionStatusSuccess(ctx sdk.Context, msg sdk.Msg) {
 	executions := k.GetExecutionsStatus(ctx)
 	for i, exec := range executions {
 		// when execution message is same as param and success is false, just set success flag to be true and break
-		if exec.MsgType == msg.Type() && exec.Success == false {
+		if exec.MsgType == msg.Type() && bytes.Equal(exec.FeePayer, msg.GetSigners()[0]) && exec.Success == false {
 			executions[i].Success = true
 			break
 		}

@@ -179,6 +179,11 @@ func GetTxUpsertTokenRateCmd() *cobra.Command {
 				return fmt.Errorf("invalid rate")
 			}
 
+			rate, err := sdk.NewDecFromStr(rateString)
+			if err != nil {
+				return err
+			}
+
 			feePayments, err := cmd.Flags().GetBool(FlagFeePayments)
 			if err != nil {
 				return fmt.Errorf("invalid fee payments")
@@ -187,7 +192,7 @@ func GetTxUpsertTokenRateCmd() *cobra.Command {
 			msg := types.NewMsgUpsertTokenRate(
 				clientCtx.FromAddress,
 				denom,
-				rateString,
+				rate,
 				feePayments,
 			)
 

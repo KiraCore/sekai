@@ -134,7 +134,7 @@ func TestNewHandler_MsgUpsertTokenRate(t *testing.T) {
 				require.NoError(t, err)
 				return tokenstypes.NewMsgUpsertTokenRate(
 					addr,
-					"finney", "0.001",
+					"finney", sdk.NewDecWithPrec(1, 3), // 0.001
 					true,
 				), nil
 			},
@@ -144,7 +144,7 @@ func TestNewHandler_MsgUpsertTokenRate(t *testing.T) {
 			constructor: func(addr sdk.AccAddress) (*tokenstypes.MsgUpsertTokenRate, error) {
 				return tokenstypes.NewMsgUpsertTokenRate(
 					addr,
-					"finney", "0.001",
+					"finney", sdk.NewDecWithPrec(1, 3), // 0.001
 					true,
 				), nil
 			},
@@ -155,33 +155,11 @@ func TestNewHandler_MsgUpsertTokenRate(t *testing.T) {
 			constructor: func(addr sdk.AccAddress) (*tokenstypes.MsgUpsertTokenRate, error) {
 				return tokenstypes.NewMsgUpsertTokenRate(
 					addr,
-					"finney", "-1.0",
+					"finney", sdk.NewDec(-1), // -1
 					true,
 				), nil
 			},
 			handlerErr: "rate should be positive",
-		},
-		{
-			name: "bigger than maximum decimal rate value test",
-			constructor: func(addr sdk.AccAddress) (*tokenstypes.MsgUpsertTokenRate, error) {
-				return tokenstypes.NewMsgUpsertTokenRate(
-					addr,
-					"finney", "0.00123456789",
-					true,
-				), nil
-			},
-			handlerErr: "decimal is bigger than maximum decimal",
-		},
-		{
-			name: "larger than maximum rate value test",
-			constructor: func(addr sdk.AccAddress) (*tokenstypes.MsgUpsertTokenRate, error) {
-				return tokenstypes.NewMsgUpsertTokenRate(
-					addr,
-					"finney", "100000000000",
-					true,
-				), nil
-			},
-			handlerErr: "rate is larger than maximum",
 		},
 		{
 			name: "bond denom rate change test",
@@ -190,7 +168,7 @@ func TestNewHandler_MsgUpsertTokenRate(t *testing.T) {
 				require.NoError(t, err)
 				return tokenstypes.NewMsgUpsertTokenRate(
 					addr,
-					"ukex", "10000000",
+					"ukex", sdk.NewDec(10),
 					true,
 				), nil
 			},

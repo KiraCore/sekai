@@ -7,7 +7,6 @@ import (
 	customgovkeeper "github.com/KiraCore/sekai/x/gov/keeper"
 	customstakingkeeper "github.com/KiraCore/sekai/x/staking/keeper"
 	tokenskeeper "github.com/KiraCore/sekai/x/tokens/keeper"
-	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
@@ -82,15 +81,14 @@ func (svd ValidateFeeRangeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 
 	properties := svd.cgk.GetNetworkProperties(ctx)
 
-	feeAmount := uint64(0)
+	feeAmount := sdk.NewDec(0)
 	feeCoins := feeTx.GetFee()
 	for _, feeCoin := range feeCoins {
 		rate := svd.tk.GetTokenRate(ctx, feeCoin.Denom)
 		if rate == nil || !rate.FeePayments {
 			return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("currency you are tying to use was not whitelisted as fee payment"))
 		}
-		// TODO it might be required to use safemath for this operation, in case of user set too much fee which can overflow 10^19
-		feeAmount += uint64(feeCoin.Amount.Int64()) * rate.Rate / uint64(tokenstypes.RateDecimalDenominator)
+		feeAmount = feeAmount.Add(feeCoin.Amount.ToDec().Mul(rate.Rate))
 	}
 
 	// execution fee should be prepaid
@@ -107,12 +105,12 @@ func (svd ValidateFeeRangeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 	}
 
 	bondDenom := svd.sk.BondDenom(ctx)
-	if feeAmount < properties.MinTxFee || feeAmount > properties.MaxTxFee {
-		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("fee %+v(%d) is out of range [%d, %d]%s", feeTx.GetFee(), feeAmount, properties.MinTxFee, properties.MaxTxFee, bondDenom))
+	if feeAmount.LT(sdk.NewDec(int64(properties.MinTxFee))) || feeAmount.GT(sdk.NewDec(int64(properties.MaxTxFee))) {
+		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("fee %+v(%d) is out of range [%d, %d]%s", feeTx.GetFee(), feeAmount.RoundInt().Int64(), properties.MinTxFee, properties.MaxTxFee, bondDenom))
 	}
 
-	if feeAmount < executionMaxFee {
-		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("fee %+v(%d) is less than max execution fee %d%s", feeTx.GetFee(), feeAmount, executionMaxFee, bondDenom))
+	if feeAmount.LT(sdk.NewDec(int64(executionMaxFee))) {
+		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("fee %+v(%d) is less than max execution fee %d%s", feeTx.GetFee(), feeAmount.RoundInt().Int64(), executionMaxFee, bondDenom))
 	}
 
 	return next(ctx, tx, simulate)

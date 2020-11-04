@@ -465,7 +465,7 @@ func NewSimApp(
 	// note replicate if you do not need to test core IBC or light clients.
 	app.ScopedIBCMockKeeper = scopedIBCMockKeeper
 
-	middleware.SetKeepers(app.CustomGovKeeper, app.CustomStakingKeeper, app.FeeProcessingKeeper)
+	middleware.SetKeepers(app.CustomGovKeeper, app.FeeProcessingKeeper)
 
 	return app
 }

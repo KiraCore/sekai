@@ -1,6 +1,7 @@
 package middleware_test
 
 import (
+	"bytes"
 	"os"
 	"testing"
 
@@ -13,7 +14,6 @@ import (
 	"github.com/KiraCore/sekai/simapp"
 	"github.com/KiraCore/sekai/x/gov"
 	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 )
 
 func TestMain(m *testing.M) {
@@ -94,9 +94,7 @@ func TestNewHandler_SetNetworkProperties(t *testing.T) {
 			})
 			require.NoError(t, err)
 
-			oldBalance := app.BankKeeper.GetBalance(ctx, tt.msg.GetSigners()[0], "ukex").Amount.Int64()
-			feeCollectorAcc := app.AccountKeeper.GetModuleAccount(ctx, authtypes.FeeCollectorName)
-			oldFeeCollectorBal := app.BankKeeper.GetBalance(ctx, feeCollectorAcc.GetAddress(), "ukex").Amount.Int64()
+			app.FeeProcessingKeeper.AddExecutionStart(ctx, tt.msg)
 
 			// test message with new middleware handler
 			newHandler := middleware.NewRoute(customgovtypes.ModuleName, gov.NewHandler(app.CustomGovKeeper)).Handler()
@@ -104,12 +102,17 @@ func TestNewHandler_SetNetworkProperties(t *testing.T) {
 
 			if tt.desiredErr == "" {
 				require.NoError(t, err)
-				// check balance change after successful run
-				newBalance := app.BankKeeper.GetBalance(ctx, tt.msg.GetSigners()[0], "ukex").Amount.Int64()
-				require.True(t, int64(oldBalance-newBalance) == int64(10000-1000))
-				// check module balance as well here
-				newFeeCollectorBal := app.BankKeeper.GetBalance(ctx, feeCollectorAcc.GetAddress(), "ukex").Amount.Int64()
-				require.True(t, int64(newFeeCollectorBal-oldFeeCollectorBal) == int64(10000-1000))
+
+				// check success flag change after successful run
+				executions := app.FeeProcessingKeeper.GetExecutionsStatus(ctx)
+				successExist := false
+				for _, exec := range executions {
+					if exec.Success == true && exec.MsgType == tt.msg.Type() && bytes.Equal(exec.FeePayer, tt.msg.GetSigners()[0]) {
+						successExist = true
+						break
+					}
+				}
+				require.True(t, successExist)
 			} else {
 				require.Error(t, err)
 				require.Contains(t, err.Error(), tt.desiredErr)

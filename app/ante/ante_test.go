@@ -45,7 +45,7 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 
 	testCases := []TestCase{
 		{
-			"insufficient failure fee set",
+			"insufficient max execution fee set",
 			func() ([]sdk.Msg, []crypto.PrivKey, []uint64, []uint64, sdk.Coins) {
 				msgs := []sdk.Msg{
 					customgovtypes.NewMsgSetNetworkProperties(accounts[0].acc.GetAddress(), &customgovtypes.NetworkProperties{
@@ -57,7 +57,7 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 			},
 			true,
 			false,
-			errors.New("fee 100ukex is less than execution failure fee 1000ukex: invalid request"),
+			errors.New("fee 100ukex(100) is less than max execution fee 10000ukex: invalid request"),
 		},
 		{
 			"execution failure fee deduction",
@@ -68,7 +68,7 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 						MaxTxFee: 10000,
 					}),
 				}
-				return msgs, privs[1:2], accNums[1:2], []uint64{0}, sdk.NewCoins(sdk.NewInt64Coin("ukex", 1000))
+				return msgs, privs[1:2], accNums[1:2], []uint64{0}, sdk.NewCoins(sdk.NewInt64Coin("ukex", 10000))
 			},
 			true,
 			true,
