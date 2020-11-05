@@ -126,9 +126,13 @@ func TestNewKeeper_ProcessExecutionFeeReturn(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10))
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 3, sdk.TokensFromConsensusPower(10))
 	addr := addrs[0]
+	addr2 := addrs[1]
+	addr3 := addrs[2]
 	app.BankKeeper.SetBalance(ctx, addr, sdk.NewInt64Coin("ukex", 10000))
+	app.BankKeeper.SetBalance(ctx, addr2, sdk.NewInt64Coin("ukex", 10000))
+	app.BankKeeper.SetBalance(ctx, addr3, sdk.NewInt64Coin("ukex", 10000))
 
 	app.CustomGovKeeper.SetExecutionFee(ctx, &customgovtypes.ExecutionFee{
 		Name:              customgovtypes.UpsertTokenRate,
@@ -164,4 +168,21 @@ func TestNewKeeper_ProcessExecutionFeeReturn(t *testing.T) {
 
 	executions = app.FeeProcessingKeeper.GetExecutionsStatus(ctx)
 	require.True(t, len(executions) == 0)
+
+	// check success return when two message types are same but addresses are different
+	app.FeeProcessingKeeper.SendCoinsFromAccountToModule(ctx, addr2, authtypes.FeeCollectorName, fees)
+	app.FeeProcessingKeeper.SendCoinsFromAccountToModule(ctx, addr3, authtypes.FeeCollectorName, fees)
+	msg2 := tokenstypes.NewMsgUpsertTokenRate(addr2, "ukex", sdk.NewDec(1), true)
+	msg3 := tokenstypes.NewMsgUpsertTokenRate(addr3, "ukex", sdk.NewDec(1), true)
+	app.FeeProcessingKeeper.AddExecutionStart(ctx, msg3)
+	app.FeeProcessingKeeper.AddExecutionStart(ctx, msg2)
+	app.FeeProcessingKeeper.SetExecutionStatusSuccess(ctx, msg2)
+	app.FeeProcessingKeeper.ProcessExecutionFeeReturn(ctx)
+
+	balance = app.BankKeeper.GetBalance(ctx, addr2, "ukex")
+	t.Log("AAA", balance)
+	require.True(t, balance.Amount.Int64() == 10000-1000) // success fee
+	balance = app.BankKeeper.GetBalance(ctx, addr3, "ukex")
+	t.Log("BBB", balance)
+	require.True(t, balance.Amount.Int64() == 10000-100) // failure fee
 }
