@@ -107,14 +107,16 @@ func handleMsgProposalAssignPermission(
 		return nil, err
 	}
 
+	properties := ck.GetNetworkProperties(ctx)
+
 	proposal := customgovtypes.NewProposalAssignPermission(
 		proposalID,
 		msg.Address,
 		customgovtypes.PermValue(msg.Permission),
 		blockTime,
-		blockTime.Add(time.Minute*10),
-		blockTime.Add(time.Minute*20),
-	) // TODO end time for voting by config.
+		blockTime.Add(time.Minute*time.Duration(properties.ProposalEndTime)),
+		blockTime.Add(time.Minute*time.Duration(properties.ProposalEnactmentTime)),
+	)
 	err = ck.SaveProposal(ctx, proposal)
 	if err != nil {
 		return nil, err

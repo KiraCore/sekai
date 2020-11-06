@@ -1189,6 +1189,10 @@ func TestHandler_ProposalAssignPermission(t *testing.T) {
 	err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerActor, types.PermCreateSetPermissionsProposal)
 	require.NoError(t, err2)
 
+	properties := app.CustomGovKeeper.GetNetworkProperties(ctx)
+	properties.ProposalEndTime = 10
+	app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
+
 	handler := gov.NewHandler(app.CustomGovKeeper)
 	res, err := handler(
 		ctx,
@@ -1199,7 +1203,14 @@ func TestHandler_ProposalAssignPermission(t *testing.T) {
 
 	savedProposal, found := app.CustomGovKeeper.GetProposal(ctx, 1)
 	require.True(t, found)
-	require.Equal(t, types.NewProposalAssignPermission(1, addr, types.PermValue(1), ctx.BlockTime(), ctx.BlockTime().Add(time.Minute*10), ctx.BlockTime().Add(time.Minute*20)), savedProposal)
+	require.Equal(t, types.NewProposalAssignPermission(
+		1,
+		addr,
+		types.PermValue(1),
+		ctx.BlockTime(),
+		ctx.BlockTime().Add(time.Minute*time.Duration(properties.ProposalEndTime)),
+		ctx.BlockTime().Add(time.Minute*time.Duration(properties.ProposalEnactmentTime)),
+	), savedProposal)
 
 	// Next proposal ID is increased.
 	id, err := app.CustomGovKeeper.GetNextProposalID(ctx)
