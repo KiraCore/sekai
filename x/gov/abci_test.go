@@ -156,6 +156,42 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				require.True(t, actor.Permissions.IsWhitelisted(types.PermSetPermissions))
 			},
 		},
+		{
+			name: "Passed proposal in enactment is applied and removed from enactment list, actor does not exist",
+			prepareScenario: func(app *simapp.SimApp, ctx sdk.Context) []sdk.AccAddress {
+				addrs := simapp.AddTestAddrsIncremental(app, ctx, 10, sdk.NewInt(100))
+
+				proposalID := uint64(1234)
+				proposal := types.NewProposalAssignPermission(
+					proposalID,
+					addrs[0],
+					types.PermSetPermissions,
+					time.Now(),
+					time.Now().Add(10*time.Second),
+					time.Now().Add(20*time.Second),
+				)
+
+				proposal.Result = types.Passed
+				err := app.CustomGovKeeper.SaveProposal(ctx, proposal)
+				require.NoError(t, err)
+
+				app.CustomGovKeeper.AddToEnactmentProposals(ctx, proposal)
+
+				iterator := app.CustomGovKeeper.GetEnactmentProposalsWithFinishedEnactmentEndTimeIterator(ctx, time.Now().Add(25*time.Second))
+				requireIteratorCount(t, iterator, 1)
+
+				return addrs
+			},
+			validateScenario: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addrs []sdk.AccAddress) {
+				iterator := app.CustomGovKeeper.GetEnactmentProposalsWithFinishedEnactmentEndTimeIterator(ctx, time.Now().Add(25*time.Second))
+				requireIteratorCount(t, iterator, 0)
+
+				actor, found := app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addrs[0])
+				require.True(t, found)
+
+				require.True(t, actor.Permissions.IsWhitelisted(types.PermSetPermissions))
+			},
+		},
 	}
 
 	for _, tt := range tests {

@@ -60,7 +60,7 @@ func processEnactmentProposal(ctx sdk.Context, k keeper.Keeper, proposalID uint6
 	if proposal.Result == types.Passed {
 		actor, found := k.GetNetworkActorByAddress(ctx, proposal.Address)
 		if !found {
-			panic("network actor was expected to exist")
+			actor = types.NewDefaultActor(proposal.Address)
 		}
 
 		err := k.AddWhitelistPermission(ctx, actor, types.PermValue(proposal.Permission))
