@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+- We can propose to SetPermissions to an actor.
+- We can vote a proposal to SetPermissions to an actor.
+- Added proposal endtime and proposal enactment time into 
+the network properties.
+
 ## [0.1.6.2] - 10.23.2020
 
 ### Added
