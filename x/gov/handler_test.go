@@ -1242,7 +1242,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 				1, voterAddr, types.OptionAbstain,
 			),
 			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
-			types.ErrUserIsNotCouncilor,
+			fmt.Errorf("PermVoteSetPermissionProposal: not enough permissions"),
 		},
 		{
 			"Proposal does not exist",
@@ -1250,16 +1250,6 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 				1, voterAddr, types.OptionAbstain,
 			),
 			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
-				councilor := types.NewCouncilor(
-					"test",
-					"website",
-					"social",
-					"identity",
-					voterAddr,
-				)
-
-				app.CustomGovKeeper.SaveCouncilor(ctx, councilor)
-
 				actor := types.NewNetworkActor(
 					voterAddr,
 					types.Roles{},
@@ -1269,6 +1259,8 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 					1,
 				)
 				app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
+				err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, actor, types.PermVoteSetPermissionProposal)
+				require.NoError(t, err2)
 			},
 			types.ErrProposalDoesNotExist,
 		},
@@ -1278,17 +1270,10 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 				1, voterAddr, types.OptionAbstain,
 			),
 			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
-				councilor := types.NewCouncilor(
-					"test",
-					"website",
-					"social",
-					"identity",
-					voterAddr,
-				)
-				app.CustomGovKeeper.SaveCouncilor(ctx, councilor)
-
 				actor := types.NewDefaultActor(voterAddr)
 				app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
+				err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, actor, types.PermVoteSetPermissionProposal)
+				require.NoError(t, err2)
 			},
 			types.ErrActorIsNotActive,
 		},
@@ -1316,16 +1301,6 @@ func TestHandler_VoteProposal(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	// Put voter as councilor
-	councilor := types.NewCouncilor(
-		"test",
-		"website",
-		"social",
-		"identity",
-		voterAddr,
-	)
-	app.CustomGovKeeper.SaveCouncilor(ctx, councilor)
-
 	// Create Voter as active actor.
 	actor := types.NewNetworkActor(
 		voterAddr,
@@ -1336,6 +1311,8 @@ func TestHandler_VoteProposal(t *testing.T) {
 		1,
 	)
 	app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
+	err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, actor, types.PermVoteSetPermissionProposal)
+	require.NoError(t, err2)
 
 	// Create proposal
 	proposal := types.NewProposalAssignPermission(1, voterAddr, types.PermClaimCouncilor, ctx.BlockTime(), ctx.BlockTime().Add(time.Second*1), ctx.BlockTime().Add(time.Second*10))

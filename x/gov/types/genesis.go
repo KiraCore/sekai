@@ -9,7 +9,10 @@ const (
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
 		Permissions: map[uint64]*Permissions{
-			uint64(RoleSudo):      NewPermissions([]PermValue{PermSetPermissions, PermClaimCouncilor, PermClaimValidator}, nil),
+			uint64(RoleSudo): NewPermissions(
+				[]PermValue{PermSetPermissions, PermClaimCouncilor, PermClaimValidator, PermCreateSetPermissionsProposal, PermVoteSetPermissionProposal},
+				nil,
+			),
 			uint64(RoleValidator): NewPermissions([]PermValue{PermClaimValidator}, nil),
 		},
 		StartingProposalId: 1,

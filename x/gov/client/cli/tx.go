@@ -610,7 +610,7 @@ func GetTxVoteProposal() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "vote proposal-id vote-option",
 		Short: "Vote a proposal.",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
