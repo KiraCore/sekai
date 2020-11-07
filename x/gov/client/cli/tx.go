@@ -64,6 +64,7 @@ func NewTxProposalCmds() *cobra.Command {
 	}
 
 	proposalCmd.AddCommand(GetTxProposalAssignPermission())
+	proposalCmd.AddCommand(GetTxVoteProposal())
 
 	return proposalCmd
 }
@@ -608,7 +609,7 @@ func GetTxProposalAssignPermission() *cobra.Command {
 func GetTxVoteProposal() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "vote proposal-id vote-option",
-		Short: "Create a proposal to assign a permission to an address.",
+		Short: "Vote a proposal.",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
@@ -638,10 +639,7 @@ func GetTxVoteProposal() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
-	cmd.Flags().String(cli.FlagAddr, "", "the address to set permissions")
-
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)
-	_ = cmd.MarkFlagRequired(cli.FlagAddr)
 
 	return cmd
 }
