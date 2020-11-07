@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [0.1.6.3] - 11.07.2020
 
 ### Added
 - We can propose to SetPermissions to an actor.
