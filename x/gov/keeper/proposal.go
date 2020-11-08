@@ -18,7 +18,7 @@ func (k Keeper) GetNextProposalID(ctx sdk.Context) (uint64, error) {
 		return 0, errors.Wrap(sdktypes.ErrInvalidGenesis, "initial proposal ID hasn't been set")
 	}
 
-	proposalID := GetProposalIDFromBytes(bz)
+	proposalID := BytesToProposalID(bz)
 
 	return proposalID, nil
 }
@@ -26,10 +26,10 @@ func (k Keeper) GetNextProposalID(ctx sdk.Context) (uint64, error) {
 func (k Keeper) SaveProposalID(ctx sdk.Context, proposalID uint64) {
 	store := ctx.KVStore(k.storeKey)
 
-	store.Set(NextProposalIDPrefix, GetProposalIDBytes(proposalID))
+	store.Set(NextProposalIDPrefix, ProposalIDToBytes(proposalID))
 }
 
-func (k Keeper) SaveProposal(ctx sdk.Context, proposal types.ProposalAssignPermission) error {
+func (k Keeper) SaveProposal(ctx sdk.Context, proposal types.ProposalAssignPermission) error { // TODO saveproposal should not returs err
 	store := ctx.KVStore(k.storeKey)
 
 	bz := k.cdc.MustMarshalBinaryBare(&proposal)
@@ -80,26 +80,69 @@ func (k Keeper) GetProposalVotesIterator(ctx sdk.Context, proposalID uint64) sdk
 	return sdk.KVStorePrefixIterator(store, VotesKey(proposalID))
 }
 
-func (k Keeper) AddToActiveProposals(ctx sdk.Context, proposal types.ProposalAssignPermission) {
-	store := ctx.KVStore(k.storeKey)
-	store.Set(ActiveProposalKey(proposal), GetProposalIDBytes(proposal.ProposalId))
+func (k Keeper) GetProposalVotes(ctx sdk.Context, proposalID uint64) types.Votes {
+	var votes types.Votes
+
+	iterator := k.GetProposalVotesIterator(ctx, proposalID)
+	for ; iterator.Valid(); iterator.Next() {
+		var vote types.Vote
+		k.cdc.MustUnmarshalBinaryBare(iterator.Value(), &vote)
+		votes = append(votes, vote)
+	}
+
+	return votes
 }
 
+func (k Keeper) AddToActiveProposals(ctx sdk.Context, proposal types.ProposalAssignPermission) {
+	store := ctx.KVStore(k.storeKey)
+	store.Set(ActiveProposalKey(proposal), ProposalIDToBytes(proposal.ProposalId))
+}
+
+func (k Keeper) RemoveActiveProposal(ctx sdk.Context, proposal types.ProposalAssignPermission) {
+	store := ctx.KVStore(k.storeKey)
+	store.Delete(ActiveProposalKey(proposal))
+}
+
+func (k Keeper) AddToEnactmentProposals(ctx sdk.Context, proposal types.ProposalAssignPermission) {
+	store := ctx.KVStore(k.storeKey)
+	store.Set(EnactmentProposalKey(proposal), ProposalIDToBytes(proposal.ProposalId))
+}
+
+func (k Keeper) RemoveEnactmentProposal(ctx sdk.Context, proposal types.ProposalAssignPermission) {
+	store := ctx.KVStore(k.storeKey)
+	store.Delete(EnactmentProposalKey(proposal))
+}
+
+// GetActiveProposalsWithFinishedVotingEndTimeIterator returns the proposals that have endtime finished.
 func (k Keeper) GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx sdk.Context, endTime time.Time) sdk.Iterator {
 	store := ctx.KVStore(k.storeKey)
 	return store.Iterator(ActiveProposalsPrefix, sdk.PrefixEndBytes(ActiveProposalByTimeKey(endTime)))
+}
+
+// GetEnactmentProposalsWithFinishedEnactmentEndTimeIterator returns the proposals that have finished the enactment time.
+func (k Keeper) GetEnactmentProposalsWithFinishedEnactmentEndTimeIterator(ctx sdk.Context, endTime time.Time) sdk.Iterator {
+	store := ctx.KVStore(k.storeKey)
+	return store.Iterator(EnactmentProposalsPrefix, sdk.PrefixEndBytes(EnactmentProposalByTimeKey(endTime)))
 }
 
 func ActiveProposalByTimeKey(endTime time.Time) []byte {
 	return append(ActiveProposalsPrefix, sdk.FormatTimeBytes(endTime)...)
 }
 
+func EnactmentProposalByTimeKey(endTime time.Time) []byte {
+	return append(EnactmentProposalsPrefix, sdk.FormatTimeBytes(endTime)...)
+}
+
 func ActiveProposalKey(prop types.ProposalAssignPermission) []byte {
-	return append(ActiveProposalByTimeKey(prop.VotingEndTime), GetProposalIDBytes(prop.ProposalId)...)
+	return append(ActiveProposalByTimeKey(prop.VotingEndTime), ProposalIDToBytes(prop.ProposalId)...)
+}
+
+func EnactmentProposalKey(prop types.ProposalAssignPermission) []byte {
+	return append(EnactmentProposalByTimeKey(prop.EnactmentEndTime), ProposalIDToBytes(prop.ProposalId)...)
 }
 
 func VotesKey(proposalID uint64) []byte {
-	return append(VotesPrefix, GetProposalIDBytes(proposalID)...)
+	return append(VotesPrefix, ProposalIDToBytes(proposalID)...)
 }
 
 func VoteKey(proposalId uint64, address sdk.AccAddress) []byte {
@@ -107,5 +150,5 @@ func VoteKey(proposalId uint64, address sdk.AccAddress) []byte {
 }
 
 func GetProposalKey(proposalID uint64) []byte {
-	return append(ProposalsPrefix, GetProposalIDBytes(proposalID)...)
+	return append(ProposalsPrefix, ProposalIDToBytes(proposalID)...)
 }

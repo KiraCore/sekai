@@ -73,15 +73,54 @@ func (k Keeper) RemoveRoleFromActor(ctx sdk.Context, actor types.NetworkActor, r
 	store.Delete(roleAddressKey(role, actor.Address))
 }
 
-// GetNetworkActorsByWhitelistedPermission returns all the actors that have Perm in whitelist.
+// GetNetworkActorsByWhitelistedPermission returns all the actors that have Perm in individual whitelist.
 func (k Keeper) GetNetworkActorsByWhitelistedPermission(ctx sdk.Context, perm types.PermValue) sdk.Iterator {
 	store := ctx.KVStore(k.storeKey)
 	return sdk.KVStorePrefixIterator(store, WhitelistPermKey(perm))
 }
 
+// GetNetworkActorsByRole returns all network actors that have role assigned.
 func (k Keeper) GetNetworkActorsByRole(ctx sdk.Context, role types.Role) sdk.Iterator {
 	store := ctx.KVStore(k.storeKey)
 	return sdk.KVStorePrefixIterator(store, roleKey(role))
+}
+
+// GetNetworkActorsByAbsoluteWhitelistPermission returns all actors that have a specific whitelist permission,
+// it does not matter if it is by role or by individual permission.
+func (k Keeper) GetNetworkActorsByAbsoluteWhitelistPermission(ctx sdk.Context, perm types.PermValue) []types.NetworkActor {
+	duplicateMap := map[string]bool{}
+
+	var actors []types.NetworkActor
+	iterator := k.GetNetworkActorsByWhitelistedPermission(ctx, perm)
+	for ; iterator.Valid(); iterator.Next() {
+		if _, ok := duplicateMap[sdk.AccAddress(iterator.Value()).String()]; !ok {
+			duplicateMap[sdk.AccAddress(iterator.Value()).String()] = true
+			actors = append(actors, k.getNetworkActorOrFail(ctx, iterator.Value()))
+		}
+	}
+
+	rolesIter := k.GetRolesByWhitelistedPerm(ctx, perm)
+	for ; rolesIter.Valid(); rolesIter.Next() {
+		actorIter := k.GetNetworkActorsByRole(ctx, bytesToRole(rolesIter.Value()))
+
+		for ; actorIter.Valid(); actorIter.Next() {
+			if _, ok := duplicateMap[sdk.AccAddress(actorIter.Value()).String()]; !ok {
+				duplicateMap[sdk.AccAddress(actorIter.Value()).String()] = true
+				actors = append(actors, k.getNetworkActorOrFail(ctx, actorIter.Value()))
+			}
+		}
+	}
+
+	return actors
+}
+
+func (k Keeper) getNetworkActorOrFail(ctx sdk.Context, addr sdk.AccAddress) types.NetworkActor {
+	actor, found := k.GetNetworkActorByAddress(ctx, addr)
+	if !found {
+		panic("expected network actor not found")
+	}
+
+	return actor
 }
 
 // WhitelistAddressPermKey returns the prefix key in format <0x31 + Perm_Bytes + address_bytes>
@@ -112,4 +151,9 @@ func permToBytes(perm types.PermValue) []byte {
 // roleToBytes returns a Role in bytes representation.
 func roleToBytes(role types.Role) []byte {
 	return sdk.Uint64ToBigEndian(uint64(role))
+}
+
+// bytesToRole converts byte representation of a role to Role type.
+func bytesToRole(bz []byte) types.Role {
+	return types.Role(sdk.BigEndianToUint64(bz))
 }

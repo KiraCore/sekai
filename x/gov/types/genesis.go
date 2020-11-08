@@ -10,13 +10,19 @@ const (
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
 		Permissions: map[uint64]*Permissions{
-			uint64(RoleSudo):      NewPermissions([]PermValue{PermSetPermissions, PermClaimCouncilor, PermClaimValidator}, nil),
+			uint64(RoleSudo): NewPermissions(
+				[]PermValue{PermSetPermissions, PermClaimCouncilor, PermClaimValidator, PermCreateSetPermissionsProposal, PermVoteSetPermissionProposal},
+				nil,
+			),
 			uint64(RoleValidator): NewPermissions([]PermValue{PermClaimValidator}, nil),
 		},
 		StartingProposalId: 1,
 		NetworkProperties: &NetworkProperties{
-			MinTxFee: 100,
-			MaxTxFee: 1000000,
+			MinTxFee:              100,
+			MaxTxFee:              1000000,
+			VoteQuorum:            33,
+			ProposalEndTime:       0,
+			ProposalEnactmentTime: 0,
 		},
 		ExecutionFees: []*ExecutionFee{
 			{

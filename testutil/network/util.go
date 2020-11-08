@@ -184,7 +184,7 @@ func initGenFiles(cfg Config, vals []*Validator, genAccounts []authtypes.Genesis
 	networkActor := customgovtypes.NewNetworkActor(
 		vals[0].Address,
 		customgovtypes.Roles{uint64(customgovtypes.RoleSudo)},
-		1,
+		customgovtypes.Active,
 		nil,
 		customgovtypes.NewPermissions(nil, nil),
 		1,

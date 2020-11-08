@@ -66,13 +66,13 @@ func getRolePermissions(ctx sdk.Context, keeper Keeper, actor types.NetworkActor
 	return roles
 }
 
-// GetProposalIDBytes returns the byte representation of the proposalID
-func GetProposalIDBytes(proposalID uint64) []byte {
+// ProposalIDToBytes returns the byte representation of the proposalID
+func ProposalIDToBytes(proposalID uint64) []byte {
 	proposalIDBz := sdk.Uint64ToBigEndian(proposalID)
 	return proposalIDBz
 }
 
-// GetProposalIDFromBytes returns proposalID in uint64 format from a byte array
-func GetProposalIDFromBytes(bz []byte) uint64 {
+// BytesToProposalID returns proposalID in uint64 format from a byte array
+func BytesToProposalID(bz []byte) uint64 {
 	return sdk.BigEndianToUint64(bz)
 }

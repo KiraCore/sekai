@@ -1189,6 +1189,10 @@ func TestHandler_ProposalAssignPermission(t *testing.T) {
 	err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerActor, types.PermCreateSetPermissionsProposal)
 	require.NoError(t, err2)
 
+	properties := app.CustomGovKeeper.GetNetworkProperties(ctx)
+	properties.ProposalEndTime = 10
+	app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
+
 	handler := gov.NewHandler(app.CustomGovKeeper)
 	res, err := handler(
 		ctx,
@@ -1199,7 +1203,14 @@ func TestHandler_ProposalAssignPermission(t *testing.T) {
 
 	savedProposal, found := app.CustomGovKeeper.GetProposal(ctx, 1)
 	require.True(t, found)
-	require.Equal(t, types.NewProposalAssignPermission(1, addr, types.PermValue(1), ctx.BlockTime(), ctx.BlockTime().Add(time.Minute*10)), savedProposal)
+	require.Equal(t, types.NewProposalAssignPermission(
+		1,
+		addr,
+		types.PermValue(1),
+		ctx.BlockTime(),
+		ctx.BlockTime().Add(time.Minute*time.Duration(properties.ProposalEndTime)),
+		ctx.BlockTime().Add(time.Minute*time.Duration(properties.ProposalEnactmentTime)),
+	), savedProposal)
 
 	// Next proposal ID is increased.
 	id, err := app.CustomGovKeeper.GetNextProposalID(ctx)
@@ -1231,7 +1242,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 				1, voterAddr, types.OptionAbstain,
 			),
 			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
-			types.ErrUserIsNotCouncilor,
+			fmt.Errorf("PermVoteSetPermissionProposal: not enough permissions"),
 		},
 		{
 			"Proposal does not exist",
@@ -1239,25 +1250,17 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 				1, voterAddr, types.OptionAbstain,
 			),
 			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
-				councilor := types.NewCouncilor(
-					"test",
-					"website",
-					"social",
-					"identity",
-					voterAddr,
-				)
-
-				app.CustomGovKeeper.SaveCouncilor(ctx, councilor)
-
 				actor := types.NewNetworkActor(
 					voterAddr,
 					types.Roles{},
 					types.Active,
-					[]uint32{},
+					[]types.VoteOption{},
 					types.NewPermissions(nil, nil),
 					1,
 				)
 				app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
+				err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, actor, types.PermVoteSetPermissionProposal)
+				require.NoError(t, err2)
 			},
 			types.ErrProposalDoesNotExist,
 		},
@@ -1267,17 +1270,10 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 				1, voterAddr, types.OptionAbstain,
 			),
 			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
-				councilor := types.NewCouncilor(
-					"test",
-					"website",
-					"social",
-					"identity",
-					voterAddr,
-				)
-				app.CustomGovKeeper.SaveCouncilor(ctx, councilor)
-
 				actor := types.NewDefaultActor(voterAddr)
 				app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
+				err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, actor, types.PermVoteSetPermissionProposal)
+				require.NoError(t, err2)
 			},
 			types.ErrActorIsNotActive,
 		},
@@ -1305,29 +1301,21 @@ func TestHandler_VoteProposal(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	// Put voter as councilor
-	councilor := types.NewCouncilor(
-		"test",
-		"website",
-		"social",
-		"identity",
-		voterAddr,
-	)
-	app.CustomGovKeeper.SaveCouncilor(ctx, councilor)
-
 	// Create Voter as active actor.
 	actor := types.NewNetworkActor(
 		voterAddr,
 		types.Roles{},
 		types.Active,
-		[]uint32{},
+		[]types.VoteOption{},
 		types.NewPermissions(nil, nil),
 		1,
 	)
 	app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
+	err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, actor, types.PermVoteSetPermissionProposal)
+	require.NoError(t, err2)
 
 	// Create proposal
-	proposal := types.NewProposalAssignPermission(1, voterAddr, types.PermClaimCouncilor, ctx.BlockTime(), ctx.BlockTime().Add(time.Second*1))
+	proposal := types.NewProposalAssignPermission(1, voterAddr, types.PermClaimCouncilor, ctx.BlockTime(), ctx.BlockTime().Add(time.Second*1), ctx.BlockTime().Add(time.Second*10))
 	err = app.CustomGovKeeper.SaveProposal(ctx, proposal)
 	require.NoError(t, err)
 

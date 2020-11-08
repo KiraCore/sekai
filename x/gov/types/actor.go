@@ -6,7 +6,7 @@ func NewNetworkActor(
 	addr types.AccAddress,
 	roles Roles,
 	status ActorStatus,
-	votes []uint32,
+	votes []VoteOption,
 	perm *Permissions,
 	skin uint64,
 ) NetworkActor {
@@ -48,6 +48,17 @@ func (m *NetworkActor) IsActive() bool {
 	return m.Status == Active
 }
 
+// CanVote returns if the actor can vote a specific vote option.
+func (m *NetworkActor) CanVote(voteOption VoteOption) bool {
+	for _, v := range m.Votes {
+		if v == voteOption {
+			return true
+		}
+	}
+
+	return false
+}
+
 // NewDefaultActor returns a default actor with:
 // - The provided addr.
 // - Roles set to nil
@@ -60,8 +71,26 @@ func NewDefaultActor(addr types.AccAddress) NetworkActor {
 		addr,
 		nil,
 		Undefined,
-		nil,
+		[]VoteOption{
+			OptionYes,
+			OptionNo,
+			OptionAbstain,
+			OptionNoWithVeto,
+		},
 		NewPermissions(nil, nil),
 		0,
 	)
+}
+
+// GetActorsWithVoteWithVeto returns the actors that have permission to vote with Veto from a list of network actors.
+func GetActorsWithVoteWithVeto(actors []NetworkActor) []NetworkActor {
+	var actorsWithVeto []NetworkActor
+
+	for _, actor := range actors {
+		if actor.CanVote(OptionNoWithVeto) {
+			actorsWithVeto = append(actorsWithVeto, actor)
+		}
+	}
+
+	return actorsWithVeto
 }

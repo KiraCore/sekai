@@ -18,7 +18,9 @@ func (s IntegrationTestSuite) TestCreateProposalAssignPermission() {
 	// Query permissions for role Validator
 	val := s.network.Validators[0]
 
-	s.SetCouncilor(val.Address)
+	// We create some random address where we will give perms.
+	addr, err := types3.AccAddressFromBech32("kira1alzyfq40zjsveet87jlg8jxetwqmr0a2x50lqq")
+	s.Require().NoError(err)
 
 	cmd := cli.GetTxProposalAssignPermission()
 	_, out := testutil.ApplyMockIO(cmd)
@@ -30,12 +32,27 @@ func (s IntegrationTestSuite) TestCreateProposalAssignPermission() {
 	cmd.SetArgs([]string{
 		fmt.Sprintf("%d", customgovtypes.PermClaimValidator),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
-		fmt.Sprintf("--%s=%s", cli2.FlagAddr, val.Address.String()),
+		fmt.Sprintf("--%s=%s", cli2.FlagAddr, addr.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(10))).String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(100))).String()),
 	})
 
-	err := cmd.ExecuteContext(ctx)
+	err = cmd.ExecuteContext(ctx)
+	s.Require().NoError(err)
+
+	// Vote Proposal
+	out.Reset()
+	cmd = cli.GetTxVoteProposal()
+	cmd.SetArgs([]string{
+		fmt.Sprintf("%d", 1), // Proposal ID
+		fmt.Sprintf("%d", customgovtypes.OptionYes),
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(100))).String()),
+	})
+
+	err = cmd.ExecuteContext(ctx)
 	s.Require().NoError(err)
 }

@@ -51,10 +51,46 @@ func TestNewNetworkActor_Status(t *testing.T) {
 		addr,
 		customgovtypes.Roles{},
 		customgovtypes.Active,
-		[]uint32{},
+		[]customgovtypes.VoteOption{},
 		customgovtypes.NewPermissions(nil, nil),
 		1,
 	)
 
 	require.True(t, actor.IsActive())
+}
+
+func TestNewDefaultActor_CanVote(t *testing.T) {
+	actor := customgovtypes.NewNetworkActor(
+		types.AccAddress{0x0},
+		customgovtypes.Roles{},
+		customgovtypes.Active,
+		[]customgovtypes.VoteOption{customgovtypes.OptionYes, customgovtypes.OptionAbstain},
+		nil,
+		123,
+	)
+
+	require.True(t, actor.CanVote(customgovtypes.OptionYes))
+	require.True(t, actor.CanVote(customgovtypes.OptionAbstain))
+	require.False(t, actor.CanVote(customgovtypes.OptionNo))
+	require.False(t, actor.CanVote(customgovtypes.OptionNoWithVeto))
+}
+
+func TestGetVetoActorsFromList(t *testing.T) {
+	actors := []customgovtypes.NetworkActor{
+		customgovtypes.NewNetworkActor(types.AccAddress{0x0}, customgovtypes.Roles{}, customgovtypes.Active, []customgovtypes.VoteOption{customgovtypes.OptionAbstain}, nil, 123),
+		customgovtypes.NewNetworkActor(types.AccAddress{0x1}, customgovtypes.Roles{}, customgovtypes.Active, []customgovtypes.VoteOption{customgovtypes.OptionAbstain, customgovtypes.OptionNoWithVeto}, nil, 123),
+		customgovtypes.NewNetworkActor(types.AccAddress{0x2}, customgovtypes.Roles{}, customgovtypes.Active, []customgovtypes.VoteOption{customgovtypes.OptionAbstain}, nil, 123),
+		customgovtypes.NewNetworkActor(types.AccAddress{0x3}, customgovtypes.Roles{}, customgovtypes.Active, []customgovtypes.VoteOption{customgovtypes.OptionAbstain}, nil, 123),
+		customgovtypes.NewNetworkActor(types.AccAddress{0x4}, customgovtypes.Roles{}, customgovtypes.Active, []customgovtypes.VoteOption{customgovtypes.OptionAbstain}, nil, 123),
+		customgovtypes.NewNetworkActor(types.AccAddress{0x5}, customgovtypes.Roles{}, customgovtypes.Active, []customgovtypes.VoteOption{customgovtypes.OptionAbstain}, nil, 123),
+		customgovtypes.NewNetworkActor(types.AccAddress{0x6}, customgovtypes.Roles{}, customgovtypes.Active, []customgovtypes.VoteOption{customgovtypes.OptionAbstain}, nil, 123),
+		customgovtypes.NewNetworkActor(types.AccAddress{0x7}, customgovtypes.Roles{}, customgovtypes.Active, []customgovtypes.VoteOption{customgovtypes.OptionAbstain, customgovtypes.OptionNoWithVeto}, nil, 123),
+		customgovtypes.NewNetworkActor(types.AccAddress{0x8}, customgovtypes.Roles{}, customgovtypes.Active, []customgovtypes.VoteOption{customgovtypes.OptionAbstain}, nil, 123),
+		customgovtypes.NewNetworkActor(types.AccAddress{0x9}, customgovtypes.Roles{}, customgovtypes.Active, []customgovtypes.VoteOption{customgovtypes.OptionAbstain}, nil, 123),
+	}
+
+	actorsWithVeto := customgovtypes.GetActorsWithVoteWithVeto(actors)
+	require.Equal(t, actorsWithVeto[0], actors[1])
+	require.Equal(t, actorsWithVeto[1], actors[7])
+	require.Len(t, actorsWithVeto, 2)
 }

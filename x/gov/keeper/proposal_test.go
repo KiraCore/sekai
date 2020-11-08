@@ -33,7 +33,7 @@ func TestSaveProposalReturnsTheProposalID_AndIncreasesLast(t *testing.T) {
 	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, types2.TokensFromConsensusPower(10))
 	addr := addrs[0]
 
-	proposal := types.NewProposalAssignPermission(1, addr, types.PermClaimValidator, ctx.BlockTime(), ctx.BlockTime().Add(10*time.Minute))
+	proposal := types.NewProposalAssignPermission(1, addr, types.PermClaimValidator, ctx.BlockTime(), ctx.BlockTime().Add(10*time.Minute), ctx.BlockTime().Add(20*time.Minute))
 	err = app.CustomGovKeeper.SaveProposal(ctx, proposal)
 	require.NoError(t, err)
 
@@ -85,6 +85,7 @@ func TestKeeper_AddProposalToActiveQueue(t *testing.T) {
 			types.PermSetPermissions,
 			baseEndTime,
 			endTime,
+			endTime,
 		)
 
 		err := app.CustomGovKeeper.SaveProposal(ctx, proposal)
@@ -95,13 +96,58 @@ func TestKeeper_AddProposalToActiveQueue(t *testing.T) {
 	// We only get until endtime of the second proposal.
 	iterator := app.CustomGovKeeper.GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx, baseEndTime.Add(2*time.Second))
 	defer iterator.Close()
+	requireIteratorCount(t, iterator, 2)
 
-	totalIdsFound := 0
-	for ; iterator.Valid(); iterator.Next() {
-		totalIdsFound++
+	// We remove one ActiveProposal, the first
+	proposal, found := app.CustomGovKeeper.GetProposal(ctx, 1)
+	require.True(t, found)
+	app.CustomGovKeeper.RemoveActiveProposal(ctx, proposal)
+
+	// We then only get 1 proposal.
+	iterator = app.CustomGovKeeper.GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx, baseEndTime.Add(2*time.Second))
+	defer iterator.Close()
+	requireIteratorCount(t, iterator, 1)
+}
+
+func TestKeeper_AddProposalToEnactmentQueue(t *testing.T) {
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, types2.TokensFromConsensusPower(10))
+	addr := addrs[0]
+
+	baseEndTime := time.Now()
+	for _, i := range []uint64{1, 2, 3} {
+		enactmentEndTime := baseEndTime.Add(time.Duration(i) * time.Second)
+		proposal := types.NewProposalAssignPermission(
+			i,
+			addr,
+			types.PermSetPermissions,
+			baseEndTime,
+			baseEndTime,
+			enactmentEndTime,
+		)
+
+		err := app.CustomGovKeeper.SaveProposal(ctx, proposal)
+		require.NoError(t, err)
+
+		app.CustomGovKeeper.AddToEnactmentProposals(ctx, proposal)
 	}
 
-	require.Equal(t, 2, totalIdsFound)
+	// We only get until endtime of the second proposal.
+	iterator := app.CustomGovKeeper.GetEnactmentProposalsWithFinishedEnactmentEndTimeIterator(ctx, baseEndTime.Add(2*time.Second))
+	defer iterator.Close()
+	requireIteratorCount(t, iterator, 2)
+
+	// We remove one Proposal from the Enactment list, the first
+	proposal, found := app.CustomGovKeeper.GetProposal(ctx, 1)
+	require.True(t, found)
+	app.CustomGovKeeper.RemoveEnactmentProposal(ctx, proposal)
+
+	// We then only get 1 proposal.
+	iterator = app.CustomGovKeeper.GetEnactmentProposalsWithFinishedEnactmentEndTimeIterator(ctx, baseEndTime.Add(2*time.Second))
+	defer iterator.Close()
+	requireIteratorCount(t, iterator, 1)
 }
 
 func TestKeeper_GetProposalVotesIterator(t *testing.T) {
@@ -112,8 +158,8 @@ func TestKeeper_GetProposalVotesIterator(t *testing.T) {
 	addr1 := addrs[0]
 	addr2 := addrs[1]
 
-	proposal1 := types.NewProposalAssignPermission(1, addr1, types.PermSetPermissions, time.Now(), time.Now().Add(1*time.Second))
-	proposal2 := types.NewProposalAssignPermission(2, addr2, types.PermClaimCouncilor, time.Now(), time.Now().Add(1*time.Second))
+	proposal1 := types.NewProposalAssignPermission(1, addr1, types.PermSetPermissions, time.Now(), time.Now().Add(1*time.Second), time.Now().Add(10*time.Second))
+	proposal2 := types.NewProposalAssignPermission(2, addr2, types.PermClaimCouncilor, time.Now(), time.Now().Add(1*time.Second), time.Now().Add(10*time.Second))
 
 	err := app.CustomGovKeeper.SaveProposal(ctx, proposal1)
 	require.NoError(t, err)

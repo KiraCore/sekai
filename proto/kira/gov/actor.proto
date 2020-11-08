@@ -2,6 +2,7 @@ syntax = "proto3";
 package kira.gov;
 
 import "gogoproto/gogo.proto";
+import "proposal.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/gov/types";
 
@@ -75,7 +76,7 @@ message NetworkActor {
 
   repeated uint64 roles = 2;
   ActorStatus status = 3;
-  repeated uint32 votes = 4;
+  repeated VoteOption votes = 4;
   Permissions permissions = 5;
   uint64 skin = 6;
 }

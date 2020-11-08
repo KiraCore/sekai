@@ -46,7 +46,7 @@ func NewTxCmd() *cobra.Command {
 	txCmd.AddCommand(NewTxProposalCmds())
 	txCmd.AddCommand(NewTxRoleCmds())
 	txCmd.AddCommand(NewTxPermissionCmds())
-	txCmd.AddCommand(		GetTxSetNetworkProperties(),
+	txCmd.AddCommand(GetTxSetNetworkProperties(),
 		GetTxSetExecutionFee(),
 	)
 
@@ -64,6 +64,7 @@ func NewTxProposalCmds() *cobra.Command {
 	}
 
 	proposalCmd.AddCommand(GetTxProposalAssignPermission())
+	proposalCmd.AddCommand(GetTxVoteProposal())
 
 	return proposalCmd
 }
@@ -601,6 +602,44 @@ func GetTxProposalAssignPermission() *cobra.Command {
 
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)
 	_ = cmd.MarkFlagRequired(cli.FlagAddr)
+
+	return cmd
+}
+
+func GetTxVoteProposal() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "vote proposal-id vote-option",
+		Short: "Vote a proposal.",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			proposalID, err := strconv.Atoi(args[0])
+			if err != nil {
+				return fmt.Errorf("invalid proposal ID: %w", err)
+			}
+
+			voteOption, err := strconv.Atoi(args[1])
+			if err != nil {
+				return fmt.Errorf("invalid vote option: %w", err)
+			}
+
+			msg := types.NewMsgVoteProposal(
+				uint64(proposalID),
+				clientCtx.FromAddress,
+				types.VoteOption(voteOption),
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
 }

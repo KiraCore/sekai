@@ -63,9 +63,9 @@ func handleMsgVoteProposal(
 	ck keeper.Keeper,
 	msg *customgovtypes.MsgVoteProposal,
 ) (*sdk.Result, error) {
-	_, found := ck.GetCouncilor(ctx, msg.Voter)
-	if !found {
-		return nil, customgovtypes.ErrUserIsNotCouncilor
+	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Voter, customgovtypes.PermVoteSetPermissionProposal)
+	if !isAllowed {
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermVoteSetPermissionProposal")
 	}
 
 	actor, found := ck.GetNetworkActorByAddress(ctx, msg.Voter)
@@ -107,7 +107,16 @@ func handleMsgProposalAssignPermission(
 		return nil, err
 	}
 
-	proposal := customgovtypes.NewProposalAssignPermission(proposalID, msg.Address, customgovtypes.PermValue(msg.Permission), blockTime, blockTime.Add(time.Minute*10)) // TODO end time for voting by config.
+	properties := ck.GetNetworkProperties(ctx)
+
+	proposal := customgovtypes.NewProposalAssignPermission(
+		proposalID,
+		msg.Address,
+		customgovtypes.PermValue(msg.Permission),
+		blockTime,
+		blockTime.Add(time.Minute*time.Duration(properties.ProposalEndTime)),
+		blockTime.Add(time.Minute*time.Duration(properties.ProposalEnactmentTime)),
+	)
 	err = ck.SaveProposal(ctx, proposal)
 	if err != nil {
 		return nil, err
@@ -116,7 +125,7 @@ func handleMsgProposalAssignPermission(
 	ck.AddToActiveProposals(ctx, proposal)
 
 	return &sdk.Result{
-		Data: keeper.GetProposalIDBytes(proposalID),
+		Data: keeper.ProposalIDToBytes(proposalID),
 	}, nil
 }
 
