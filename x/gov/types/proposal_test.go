@@ -21,11 +21,13 @@ func TestNewProposalAssignPermission_ProposalIsPendingByDefault_Deprecated(t *te
 	require.Equal(t, Pending, proposal.Result)
 }
 
-func TestNewProposalAssignPermission_ProposalIsPendingByDefault(t *testing.T) {
-	proposal, err := NewAssignPermissionProposal(
+func TestNewProposal_ProposalIsPendingByDefault(t *testing.T) {
+	proposal, err := NewProposal(
 		1234,
-		types.AccAddress{0x12},
-		PermSetPermissions,
+		NewAssignPermissionProposal(
+			types.AccAddress{0x12},
+			PermSetPermissions,
+		),
 		time.Now(),
 		time.Now(),
 		time.Now(),

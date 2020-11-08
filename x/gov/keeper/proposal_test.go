@@ -30,10 +30,12 @@ func TestKeeper_SaveProposal(t *testing.T) {
 	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, types2.TokensFromConsensusPower(10))
 	addr := addrs[0]
 
-	proposal1, err := types.NewAssignPermissionProposal(
+	proposal1, err := types.NewProposal(
 		1,
-		addr,
-		types.PermSetPermissions,
+		types.NewAssignPermissionProposal(
+			addr,
+			types.PermSetPermissions,
+		),
 		time.Now(),
 		time.Now().Add(1*time.Second),
 		time.Now().Add(10*time.Second),

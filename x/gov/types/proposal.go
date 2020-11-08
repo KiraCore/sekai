@@ -14,19 +14,13 @@ const AssignPermissionProposalType = "AssignPermission"
 
 var _ Content = &AssignPermissionProposal{}
 
-func NewAssignPermissionProposal(
+func NewProposal(
 	proposalID uint64,
-	address types.AccAddress,
-	permission PermValue,
+	content Content,
 	votingStartTime time.Time,
 	votingEndTime time.Time,
 	enactmentEndTime time.Time,
 ) (Proposal, error) {
-	var content Content = &AssignPermissionProposal{
-		Address:    address,
-		Permission: uint32(permission),
-	}
-
 	msg, ok := content.(proto.Message)
 	if !ok {
 		return Proposal{}, fmt.Errorf("%T does not implement proto.Message", content)
@@ -43,8 +37,18 @@ func NewAssignPermissionProposal(
 		VotingEndTime:    votingEndTime,
 		EnactmentEndTime: enactmentEndTime,
 		Content:          any,
-		Result: Pending,
+		Result:           Pending,
 	}, nil
+}
+
+func NewAssignPermissionProposal(
+	address types.AccAddress,
+	permission PermValue,
+) Content {
+	return &AssignPermissionProposal{
+		Address:    address,
+		Permission: uint32(permission),
+	}
 }
 
 func (m *AssignPermissionProposal) ProposalType() string {
