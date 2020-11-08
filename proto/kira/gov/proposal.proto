@@ -90,6 +90,11 @@ message Proposal {
   VoteResult result = 8;
 }
 
+message AssignPermissionProposal {
+  option (cosmos_proto.implements_interface) = "Content";
+  option (gogoproto.equal) = true;
+}
+
 message ProposalAssignPermission {
   uint64     proposal_id = 1;
 
