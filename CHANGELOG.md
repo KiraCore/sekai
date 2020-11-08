@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.1.7] - 11.09.2020
+- Added CLI command to upsert token rates per denom
+- Added CLI commands to query token rates
+- Implemented feeprocessing module for new fee processing logic
+- Implemented foreign currency fee payment
+
 ## [0.1.6.3] - 11.07.2020
 
 ### Added
