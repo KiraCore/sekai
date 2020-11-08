@@ -23,6 +23,29 @@ func TestDefaultProposalIdAtDefaultGenesis(t *testing.T) {
 }
 
 func TestKeeper_SaveProposal(t *testing.T) {
+	t.SkipNow()
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, types2.TokensFromConsensusPower(10))
+	addr := addrs[0]
+
+	proposal1, err := types.NewAssignPermissionProposal(
+		1,
+		addr,
+		types.PermSetPermissions,
+		time.Now(),
+		time.Now().Add(1*time.Second),
+		time.Now().Add(10*time.Second),
+	)
+	require.NoError(t, err)
+
+	app.CustomGovKeeper.SaveProposalGeneric(ctx, proposal1)
+
+	saveProposal, found := app.CustomGovKeeper.GetProposalGeneric(ctx, proposal1.ProposalId)
+	require.True(t, found)
+
+	require.Equal(t, proposal1, saveProposal)
 }
 
 func TestSaveProposalReturnsTheProposalID_AndIncreasesLast(t *testing.T) {

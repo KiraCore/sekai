@@ -41,6 +41,30 @@ func (k Keeper) SaveProposal(ctx sdk.Context, proposal types.ProposalAssignPermi
 	return nil
 }
 
+func (k Keeper) SaveProposalGeneric(ctx sdk.Context, proposal types.Proposal) { // TODO saveproposal should not returs err
+	store := ctx.KVStore(k.storeKey)
+
+	bz := k.cdc.MustMarshalBinaryBare(&proposal)
+	store.Set(GetProposalKey(proposal.ProposalId), bz)
+
+	// Update NextProposal
+	k.SaveProposalID(ctx, proposal.ProposalId+1)
+}
+
+func (k Keeper) GetProposalGeneric(ctx sdk.Context, proposalID uint64) (types.Proposal, bool) {
+	store := ctx.KVStore(k.storeKey)
+
+	bz := store.Get(GetProposalKey(proposalID))
+	if bz == nil {
+		return types.Proposal{}, false
+	}
+
+	var prop types.Proposal
+	k.cdc.MustUnmarshalBinaryBare(bz, &prop)
+
+	return prop, true
+}
+
 func (k Keeper) GetProposal(ctx sdk.Context, proposalID uint64) (types.ProposalAssignPermission, bool) {
 	store := ctx.KVStore(k.storeKey)
 
