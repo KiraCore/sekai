@@ -80,11 +80,15 @@ func (svd ValidateFeeRangeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 	}
 
 	properties := svd.cgk.GetNetworkProperties(ctx)
+	bondDenom := svd.sk.BondDenom(ctx)
 
 	feeAmount := sdk.NewDec(0)
 	feeCoins := feeTx.GetFee()
 	for _, feeCoin := range feeCoins {
 		rate := svd.tk.GetTokenRate(ctx, feeCoin.Denom)
+		if !properties.EnableForeignFeePayments && feeCoin.Denom != bondDenom {
+			return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("foreign fee payments is disabled by governance"))
+		}
 		if rate == nil || !rate.FeePayments {
 			return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("currency you are tying to use was not whitelisted as fee payment"))
 		}
@@ -104,7 +108,6 @@ func (svd ValidateFeeRangeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 		}
 	}
 
-	bondDenom := svd.sk.BondDenom(ctx)
 	if feeAmount.LT(sdk.NewDec(int64(properties.MinTxFee))) || feeAmount.GT(sdk.NewDec(int64(properties.MaxTxFee))) {
 		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("fee %+v(%d) is out of range [%d, %d]%s", feeTx.GetFee(), feeAmount.RoundInt().Int64(), properties.MinTxFee, properties.MaxTxFee, bondDenom))
 	}

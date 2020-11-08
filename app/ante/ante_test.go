@@ -25,8 +25,9 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 		DefaultParameters: 0,
 	})
 	suite.app.CustomGovKeeper.SetNetworkProperties(suite.ctx, &customgovtypes.NetworkProperties{
-		MinTxFee: 2,
-		MaxTxFee: 10000,
+		MinTxFee:                 2,
+		MaxTxFee:                 10000,
+		EnableForeignFeePayments: true,
 	})
 
 	// Same data for every test cases
@@ -49,8 +50,9 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 			func() ([]sdk.Msg, []crypto.PrivKey, []uint64, []uint64, sdk.Coins) {
 				msgs := []sdk.Msg{
 					customgovtypes.NewMsgSetNetworkProperties(accounts[0].acc.GetAddress(), &customgovtypes.NetworkProperties{
-						MinTxFee: 2,
-						MaxTxFee: 10000,
+						MinTxFee:                 2,
+						MaxTxFee:                 10000,
+						EnableForeignFeePayments: true,
 					}),
 				}
 				return msgs, privs[0:1], accNums[0:1], []uint64{0}, defaultFee
@@ -64,8 +66,9 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 			func() ([]sdk.Msg, []crypto.PrivKey, []uint64, []uint64, sdk.Coins) {
 				msgs := []sdk.Msg{
 					customgovtypes.NewMsgSetNetworkProperties(accounts[1].acc.GetAddress(), &customgovtypes.NetworkProperties{
-						MinTxFee: 2,
-						MaxTxFee: 10000,
+						MinTxFee:                 2,
+						MaxTxFee:                 10000,
+						EnableForeignFeePayments: true,
 					}),
 				}
 				return msgs, privs[1:2], accNums[1:2], []uint64{0}, sdk.NewCoins(sdk.NewInt64Coin("ukex", 10000))
@@ -135,8 +138,13 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 			errors.New("fee 1ukex(1) is out of range [2, 10000]ukex: invalid request"),
 		},
 		{
-			"foreign currency as fee payment",
+			"foreign currency as fee payment when EnableForeignFeePayments is enabled by governance",
 			func() ([]sdk.Msg, []crypto.PrivKey, []uint64, []uint64, sdk.Coins) {
+				suite.app.CustomGovKeeper.SetNetworkProperties(suite.ctx, &customgovtypes.NetworkProperties{
+					MinTxFee:                 2,
+					MaxTxFee:                 10000,
+					EnableForeignFeePayments: true,
+				})
 				msgs := []sdk.Msg{
 					customgovtypes.NewMsgSetExecutionFee(
 						customgovtypes.SetNetworkProperties,
@@ -153,6 +161,32 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 			false,
 			true,
 			nil,
+		},
+		{
+			"foreign currency as fee payment when EnableForeignFeePayments is disabled by governance",
+			func() ([]sdk.Msg, []crypto.PrivKey, []uint64, []uint64, sdk.Coins) {
+
+				suite.app.CustomGovKeeper.SetNetworkProperties(suite.ctx, &customgovtypes.NetworkProperties{
+					MinTxFee:                 2,
+					MaxTxFee:                 10000,
+					EnableForeignFeePayments: false,
+				})
+				msgs := []sdk.Msg{
+					customgovtypes.NewMsgSetExecutionFee(
+						customgovtypes.SetNetworkProperties,
+						customgovtypes.SetNetworkProperties,
+						10000,
+						1000,
+						0,
+						0,
+						accounts[4].acc.GetAddress(),
+					),
+				}
+				return msgs, privs[4:5], accNums[4:5], []uint64{0}, sdk.NewCoins(sdk.NewInt64Coin("ubtc", 10))
+			},
+			false,
+			false,
+			errors.New("foreign fee payments is disabled by governance: invalid request"),
 		},
 	}
 
