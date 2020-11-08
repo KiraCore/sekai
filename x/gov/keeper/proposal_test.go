@@ -22,6 +22,9 @@ func TestDefaultProposalIdAtDefaultGenesis(t *testing.T) {
 	require.Equal(t, uint64(1), proposalID)
 }
 
+func TestKeeper_SaveProposal(t *testing.T) {
+}
+
 func TestSaveProposalReturnsTheProposalID_AndIncreasesLast(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})

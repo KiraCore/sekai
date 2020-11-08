@@ -93,6 +93,14 @@ message Proposal {
 message AssignPermissionProposal {
   option (cosmos_proto.implements_interface) = "Content";
   option (gogoproto.equal) = true;
+
+  bytes address = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  uint32 permission = 2;
+
 }
 
 message ProposalAssignPermission {
