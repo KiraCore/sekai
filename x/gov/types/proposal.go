@@ -41,6 +41,21 @@ func NewProposal(
 	}, nil
 }
 
+// GetContent returns the proposal Content
+func (p Proposal) GetContent() Content {
+	content, ok := p.Content.GetCachedValue().(Content)
+	if !ok {
+		return nil
+	}
+	return content
+}
+
+// UnpackInterfaces implements UnpackInterfacesMessage.UnpackInterfaces
+func (p Proposal) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
+	var content Content
+	return unpacker.UnpackAny(p.Content, &content)
+}
+
 func NewAssignPermissionProposal(
 	address types.AccAddress,
 	permission PermValue,

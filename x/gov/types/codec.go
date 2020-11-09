@@ -7,6 +7,8 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
+	cdc.RegisterInterface((*Content)(nil), nil)
+
 	registerPermissionsCodec(cdc)
 	registerRolesCodec(cdc)
 	registerCouncilorCodec(cdc)
@@ -63,6 +65,13 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgProposalAssignPermission{},
 		&MsgVoteProposal{},
 	)
+
+	registry.RegisterInterface(
+		"kira.gov.Content",
+		(*Content)(nil),
+		&AssignPermissionProposal{},
+	)
+
 }
 
 var (

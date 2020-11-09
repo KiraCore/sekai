@@ -71,6 +71,7 @@ message MsgProposalAssignPermission {
 }
 
 message Proposal {
+  option (gogoproto.goproto_getters) = false;
   uint64     proposal_id = 1;
 
   google.protobuf.Any content            = 2 [(cosmos_proto.accepts_interface) = "Content"];
@@ -100,7 +101,6 @@ message AssignPermissionProposal {
   ];
 
   uint32 permission = 2;
-
 }
 
 message ProposalAssignPermission {

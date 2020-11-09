@@ -22,8 +22,7 @@ func TestDefaultProposalIdAtDefaultGenesis(t *testing.T) {
 	require.Equal(t, uint64(1), proposalID)
 }
 
-func TestKeeper_SaveProposal(t *testing.T) {
-	t.SkipNow()
+func TestKeeper_EncodingContentType(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
@@ -47,7 +46,12 @@ func TestKeeper_SaveProposal(t *testing.T) {
 	saveProposal, found := app.CustomGovKeeper.GetProposalGeneric(ctx, proposal1.ProposalId)
 	require.True(t, found)
 
-	require.Equal(t, proposal1, saveProposal)
+	require.Equal(t, proposal1.GetContent(), saveProposal.GetContent())
+
+	content, ok := saveProposal.GetContent().(*types.AssignPermissionProposal)
+	require.True(t, ok)
+	require.Equal(t, addr, content.Address)
+	require.Equal(t, uint32(types.PermSetPermissions), content.Permission)
 }
 
 func TestSaveProposalReturnsTheProposalID_AndIncreasesLast(t *testing.T) {
