@@ -1,16 +1,16 @@
 # Changelog
 
+## [0.1.7.1] - 11.09.2020
+
+### Changed
+- Proposal is now a generic type, the Content part is what changes between different proposal types.
+
 ## [0.1.7] - 11.09.2020
 - Added CLI command to upsert token rates per denom
 - Added CLI commands to query token rates
 - Implemented feeprocessing module for new fee processing logic
 - Implemented foreign currency fee payment
 
-## [0.1.6.4] - 11.09.2020
-
-### Changed
-- Proposal is now a generic type, the Content part is what changes between different proposal types.
-  
 ## [0.1.6.3] - 11.07.2020
 
 ### Added
