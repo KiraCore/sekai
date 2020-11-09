@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.1.6.4] - 11.09.2020
+
+### Changed
+- Proposal is now a generic type, the Content part is what changes between different proposal types.
+  
 ## [0.1.6.3] - 11.07.2020
 
 ### Added
