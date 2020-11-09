@@ -8,19 +8,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestNewProposalAssignPermission_ProposalIsPendingByDefault_Deprecated(t *testing.T) { // TODO Remove this type
-	proposal := NewProposalAssignPermission(
-		1234,
-		types.AccAddress{0x12},
-		PermSetPermissions,
-		time.Now(),
-		time.Now(),
-		time.Now(),
-	)
-
-	require.Equal(t, Pending, proposal.Result)
-}
-
 func TestNewProposal_ProposalIsPendingByDefault(t *testing.T) {
 	proposal, err := NewProposal(
 		1234,

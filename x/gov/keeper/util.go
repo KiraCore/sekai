@@ -5,10 +5,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func HasQuorum(ctx sdk.Context, keeper Keeper, proposal types.ProposalAssignPermission) bool {
-	return false
-}
-
 // CheckIfAllowedPermission
 func CheckIfAllowedPermission(ctx sdk.Context, keeper Keeper, addr sdk.AccAddress, permValue types.PermValue) bool {
 	actor, found := keeper.GetNetworkActorByAddress(ctx, addr)
