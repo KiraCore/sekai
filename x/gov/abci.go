@@ -58,16 +58,28 @@ func processEnactmentProposal(ctx sdk.Context, k keeper.Keeper, proposalID uint6
 	}
 
 	if proposal.Result == types.Passed {
-		actor, found := k.GetNetworkActorByAddress(ctx, proposal.Address)
-		if !found {
-			actor = types.NewDefaultActor(proposal.Address)
+		switch proposal.GetContent().ProposalType() {
+		case types.AssignPermissionProposalType:
+			applyAssignPermissionProposal(ctx, k, proposal)
+		default:
+			panic("invalid proposal type")
 		}
 
-		err := k.AddWhitelistPermission(ctx, actor, types.PermValue(proposal.Permission))
-		if err != nil {
-			panic("network actor has this permission")
-		}
 	}
 
 	k.RemoveEnactmentProposal(ctx, proposal)
+}
+
+func applyAssignPermissionProposal(ctx sdk.Context, k keeper.Keeper, proposal types.Proposal) {
+	p := proposal.GetContent().(*types.AssignPermissionProposal)
+
+	actor, found := k.GetNetworkActorByAddress(ctx, p.Address)
+	if !found {
+		actor = types.NewDefaultActor(p.Address)
+	}
+
+	err := k.AddWhitelistPermission(ctx, actor, types.PermValue(p.Permission))
+	if err != nil {
+		panic("network actor has this permission")
+	}
 }

@@ -1203,14 +1203,19 @@ func TestHandler_ProposalAssignPermission(t *testing.T) {
 
 	savedProposal, found := app.CustomGovKeeper.GetProposal(ctx, 1)
 	require.True(t, found)
-	require.Equal(t, types.NewProposalAssignPermission(
+
+	expectedSavedProposal, err := types.NewProposal(
 		1,
-		addr,
-		types.PermValue(1),
+		types.NewAssignPermissionProposal(
+			addr,
+			types.PermValue(1),
+		),
 		ctx.BlockTime(),
 		ctx.BlockTime().Add(time.Minute*time.Duration(properties.ProposalEndTime)),
 		ctx.BlockTime().Add(time.Minute*time.Duration(properties.ProposalEnactmentTime)),
-	), savedProposal)
+	)
+	require.NoError(t, err)
+	require.Equal(t, expectedSavedProposal, savedProposal)
 
 	// Next proposal ID is increased.
 	id, err := app.CustomGovKeeper.GetNextProposalID(ctx)
@@ -1315,9 +1320,18 @@ func TestHandler_VoteProposal(t *testing.T) {
 	require.NoError(t, err2)
 
 	// Create proposal
-	proposal := types.NewProposalAssignPermission(1, voterAddr, types.PermClaimCouncilor, ctx.BlockTime(), ctx.BlockTime().Add(time.Second*1), ctx.BlockTime().Add(time.Second*10))
-	err = app.CustomGovKeeper.SaveProposal(ctx, proposal)
+	proposal, err := types.NewProposal(
+		1,
+		types.NewAssignPermissionProposal(
+			voterAddr,
+			types.PermClaimCouncilor,
+		),
+		ctx.BlockTime(),
+		ctx.BlockTime().Add(time.Second*1),
+		ctx.BlockTime().Add(time.Second*10),
+	)
 	require.NoError(t, err)
+	app.CustomGovKeeper.SaveProposal(ctx, proposal)
 
 	msg := types.NewMsgVoteProposal(proposal.ProposalId, voterAddr, types.OptionAbstain)
 	handler := gov.NewHandler(app.CustomGovKeeper)

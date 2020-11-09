@@ -25,17 +25,19 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				addrs := simapp.AddTestAddrsIncremental(app, ctx, 10, sdk.NewInt(100))
 
 				proposalID := uint64(1234)
-				proposal := types.NewProposalAssignPermission(
+				proposal, err := types.NewProposal(
 					proposalID,
-					addrs[0],
-					types.PermSetPermissions,
+					types.NewAssignPermissionProposal(
+						addrs[0],
+						types.PermSetPermissions,
+					),
 					time.Now(),
 					time.Now(),
 					time.Now(),
 				)
-
-				err := app.CustomGovKeeper.SaveProposal(ctx, proposal)
 				require.NoError(t, err)
+
+				app.CustomGovKeeper.SaveProposal(ctx, proposal)
 				app.CustomGovKeeper.AddToActiveProposals(ctx, proposal)
 
 				// We set permissions to Vote The proposal to all the actors. 10 in total.
@@ -65,16 +67,19 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				addrs := simapp.AddTestAddrsIncremental(app, ctx, 10, sdk.NewInt(100))
 
 				proposalID := uint64(1234)
-				proposal := types.NewProposalAssignPermission(
+				proposal, err := types.NewProposal(
 					proposalID,
-					addrs[0],
-					types.PermSetPermissions,
+					types.NewAssignPermissionProposal(
+						addrs[0],
+						types.PermSetPermissions,
+					),
 					time.Now(),
 					time.Now().Add(10*time.Second),
 					time.Now().Add(20*time.Second),
 				)
+				require.NoError(t, err)
 
-				err := app.CustomGovKeeper.SaveProposal(ctx, proposal)
+				app.CustomGovKeeper.SaveProposal(ctx, proposal)
 				require.NoError(t, err)
 				app.CustomGovKeeper.AddToActiveProposals(ctx, proposal)
 
@@ -126,18 +131,20 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
 
 				proposalID := uint64(1234)
-				proposal := types.NewProposalAssignPermission(
+				proposal, err := types.NewProposal(
 					proposalID,
-					addrs[0],
-					types.PermSetPermissions,
+					types.NewAssignPermissionProposal(
+						addrs[0],
+						types.PermSetPermissions,
+					),
 					time.Now(),
 					time.Now().Add(10*time.Second),
 					time.Now().Add(20*time.Second),
 				)
+				require.NoError(t, err)
 
 				proposal.Result = types.Passed
-				err := app.CustomGovKeeper.SaveProposal(ctx, proposal)
-				require.NoError(t, err)
+				app.CustomGovKeeper.SaveProposal(ctx, proposal)
 
 				app.CustomGovKeeper.AddToEnactmentProposals(ctx, proposal)
 
@@ -162,18 +169,20 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				addrs := simapp.AddTestAddrsIncremental(app, ctx, 10, sdk.NewInt(100))
 
 				proposalID := uint64(1234)
-				proposal := types.NewProposalAssignPermission(
+				proposal, err := types.NewProposal(
 					proposalID,
-					addrs[0],
-					types.PermSetPermissions,
+					types.NewAssignPermissionProposal(
+						addrs[0],
+						types.PermSetPermissions,
+					),
 					time.Now(),
 					time.Now().Add(10*time.Second),
 					time.Now().Add(20*time.Second),
 				)
+				require.NoError(t, err)
 
 				proposal.Result = types.Passed
-				err := app.CustomGovKeeper.SaveProposal(ctx, proposal)
-				require.NoError(t, err)
+				app.CustomGovKeeper.SaveProposal(ctx, proposal)
 
 				app.CustomGovKeeper.AddToEnactmentProposals(ctx, proposal)
 

@@ -41,9 +41,9 @@ func TestKeeper_EncodingContentType(t *testing.T) {
 	)
 	require.NoError(t, err)
 
-	app.CustomGovKeeper.SaveProposalGeneric(ctx, proposal1)
+	app.CustomGovKeeper.SaveProposal(ctx, proposal1)
 
-	saveProposal, found := app.CustomGovKeeper.GetProposalGeneric(ctx, proposal1.ProposalId)
+	saveProposal, found := app.CustomGovKeeper.GetProposal(ctx, proposal1.ProposalId)
 	require.True(t, found)
 
 	require.Equal(t, proposal1.GetContent(), saveProposal.GetContent())
@@ -65,9 +65,18 @@ func TestSaveProposalReturnsTheProposalID_AndIncreasesLast(t *testing.T) {
 	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, types2.TokensFromConsensusPower(10))
 	addr := addrs[0]
 
-	proposal := types.NewProposalAssignPermission(1, addr, types.PermClaimValidator, ctx.BlockTime(), ctx.BlockTime().Add(10*time.Minute), ctx.BlockTime().Add(20*time.Minute))
-	err = app.CustomGovKeeper.SaveProposal(ctx, proposal)
+	proposal, err := types.NewProposal(
+		1,
+		types.NewAssignPermissionProposal(
+			addr,
+			types.PermClaimValidator,
+		),
+		ctx.BlockTime(),
+		ctx.BlockTime().Add(10*time.Minute),
+		ctx.BlockTime().Add(20*time.Minute),
+	)
 	require.NoError(t, err)
+	app.CustomGovKeeper.SaveProposal(ctx, proposal)
 
 	// nextProposalID should be 2
 	proposalID, err = app.CustomGovKeeper.GetNextProposalID(ctx)
@@ -111,17 +120,19 @@ func TestKeeper_AddProposalToActiveQueue(t *testing.T) {
 	for _, i := range []uint64{1, 2, 3} {
 		endTime := baseEndTime.Add(time.Second * time.Duration(i))
 
-		proposal := types.NewProposalAssignPermission(
+		proposal, err := types.NewProposal(
 			i,
-			addr,
-			types.PermSetPermissions,
+			types.NewAssignPermissionProposal(
+				addr,
+				types.PermSetPermissions,
+			),
 			baseEndTime,
 			endTime,
 			endTime,
 		)
-
-		err := app.CustomGovKeeper.SaveProposal(ctx, proposal)
 		require.NoError(t, err)
+
+		app.CustomGovKeeper.SaveProposal(ctx, proposal)
 		app.CustomGovKeeper.AddToActiveProposals(ctx, proposal)
 	}
 
@@ -151,18 +162,19 @@ func TestKeeper_AddProposalToEnactmentQueue(t *testing.T) {
 	baseEndTime := time.Now()
 	for _, i := range []uint64{1, 2, 3} {
 		enactmentEndTime := baseEndTime.Add(time.Duration(i) * time.Second)
-		proposal := types.NewProposalAssignPermission(
+		proposal, err := types.NewProposal(
 			i,
-			addr,
-			types.PermSetPermissions,
+			types.NewAssignPermissionProposal(
+				addr,
+				types.PermSetPermissions,
+			),
 			baseEndTime,
 			baseEndTime,
 			enactmentEndTime,
 		)
-
-		err := app.CustomGovKeeper.SaveProposal(ctx, proposal)
 		require.NoError(t, err)
 
+		app.CustomGovKeeper.SaveProposal(ctx, proposal)
 		app.CustomGovKeeper.AddToEnactmentProposals(ctx, proposal)
 	}
 
@@ -190,13 +202,32 @@ func TestKeeper_GetProposalVotesIterator(t *testing.T) {
 	addr1 := addrs[0]
 	addr2 := addrs[1]
 
-	proposal1 := types.NewProposalAssignPermission(1, addr1, types.PermSetPermissions, time.Now(), time.Now().Add(1*time.Second), time.Now().Add(10*time.Second))
-	proposal2 := types.NewProposalAssignPermission(2, addr2, types.PermClaimCouncilor, time.Now(), time.Now().Add(1*time.Second), time.Now().Add(10*time.Second))
+	proposal1, err := types.NewProposal(
+		1,
+		types.NewAssignPermissionProposal(
+			addr1,
+			types.PermSetPermissions,
+		),
+		time.Now(),
+		time.Now().Add(1*time.Second),
+		time.Now().Add(10*time.Second),
+	)
+	require.NoError(t, err)
 
-	err := app.CustomGovKeeper.SaveProposal(ctx, proposal1)
+	proposal2, err := types.NewProposal(
+		2,
+		types.NewAssignPermissionProposal(
+			addr2,
+			types.PermClaimCouncilor,
+		),
+		time.Now(),
+		time.Now().Add(1*time.Second),
+		time.Now().Add(10*time.Second),
+	)
 	require.NoError(t, err)
-	err = app.CustomGovKeeper.SaveProposal(ctx, proposal2)
-	require.NoError(t, err)
+
+	app.CustomGovKeeper.SaveProposal(ctx, proposal1)
+	app.CustomGovKeeper.SaveProposal(ctx, proposal2)
 
 	// 1st proposal has 2 votes
 	vote1 := types.NewVote(proposal1.ProposalId, addr1, types.OptionYes)

@@ -29,19 +29,7 @@ func (k Keeper) SaveProposalID(ctx sdk.Context, proposalID uint64) {
 	store.Set(NextProposalIDPrefix, ProposalIDToBytes(proposalID))
 }
 
-func (k Keeper) SaveProposal(ctx sdk.Context, proposal types.ProposalAssignPermission) error { // TODO saveproposal should not returs err
-	store := ctx.KVStore(k.storeKey)
-
-	bz := k.cdc.MustMarshalBinaryBare(&proposal)
-	store.Set(GetProposalKey(proposal.ProposalId), bz)
-
-	// Update NextProposal
-	k.SaveProposalID(ctx, proposal.ProposalId+1)
-
-	return nil
-}
-
-func (k Keeper) SaveProposalGeneric(ctx sdk.Context, proposal types.Proposal) { // TODO saveproposal should not returs err
+func (k Keeper) SaveProposal(ctx sdk.Context, proposal types.Proposal) {
 	store := ctx.KVStore(k.storeKey)
 
 	bz := k.cdc.MustMarshalBinaryBare(&proposal)
@@ -51,7 +39,7 @@ func (k Keeper) SaveProposalGeneric(ctx sdk.Context, proposal types.Proposal) { 
 	k.SaveProposalID(ctx, proposal.ProposalId+1)
 }
 
-func (k Keeper) GetProposalGeneric(ctx sdk.Context, proposalID uint64) (types.Proposal, bool) {
+func (k Keeper) GetProposal(ctx sdk.Context, proposalID uint64) (types.Proposal, bool) {
 	store := ctx.KVStore(k.storeKey)
 
 	bz := store.Get(GetProposalKey(proposalID))
@@ -60,20 +48,6 @@ func (k Keeper) GetProposalGeneric(ctx sdk.Context, proposalID uint64) (types.Pr
 	}
 
 	var prop types.Proposal
-	k.cdc.MustUnmarshalBinaryBare(bz, &prop)
-
-	return prop, true
-}
-
-func (k Keeper) GetProposal(ctx sdk.Context, proposalID uint64) (types.ProposalAssignPermission, bool) {
-	store := ctx.KVStore(k.storeKey)
-
-	bz := store.Get(GetProposalKey(proposalID))
-	if bz == nil {
-		return types.ProposalAssignPermission{}, false
-	}
-
-	var prop types.ProposalAssignPermission
 	k.cdc.MustUnmarshalBinaryBare(bz, &prop)
 
 	return prop, true
@@ -117,22 +91,22 @@ func (k Keeper) GetProposalVotes(ctx sdk.Context, proposalID uint64) types.Votes
 	return votes
 }
 
-func (k Keeper) AddToActiveProposals(ctx sdk.Context, proposal types.ProposalAssignPermission) {
+func (k Keeper) AddToActiveProposals(ctx sdk.Context, proposal types.Proposal) {
 	store := ctx.KVStore(k.storeKey)
 	store.Set(ActiveProposalKey(proposal), ProposalIDToBytes(proposal.ProposalId))
 }
 
-func (k Keeper) RemoveActiveProposal(ctx sdk.Context, proposal types.ProposalAssignPermission) {
+func (k Keeper) RemoveActiveProposal(ctx sdk.Context, proposal types.Proposal) {
 	store := ctx.KVStore(k.storeKey)
 	store.Delete(ActiveProposalKey(proposal))
 }
 
-func (k Keeper) AddToEnactmentProposals(ctx sdk.Context, proposal types.ProposalAssignPermission) {
+func (k Keeper) AddToEnactmentProposals(ctx sdk.Context, proposal types.Proposal) {
 	store := ctx.KVStore(k.storeKey)
 	store.Set(EnactmentProposalKey(proposal), ProposalIDToBytes(proposal.ProposalId))
 }
 
-func (k Keeper) RemoveEnactmentProposal(ctx sdk.Context, proposal types.ProposalAssignPermission) {
+func (k Keeper) RemoveEnactmentProposal(ctx sdk.Context, proposal types.Proposal) {
 	store := ctx.KVStore(k.storeKey)
 	store.Delete(EnactmentProposalKey(proposal))
 }
@@ -157,11 +131,11 @@ func EnactmentProposalByTimeKey(endTime time.Time) []byte {
 	return append(EnactmentProposalsPrefix, sdk.FormatTimeBytes(endTime)...)
 }
 
-func ActiveProposalKey(prop types.ProposalAssignPermission) []byte {
+func ActiveProposalKey(prop types.Proposal) []byte {
 	return append(ActiveProposalByTimeKey(prop.VotingEndTime), ProposalIDToBytes(prop.ProposalId)...)
 }
 
-func EnactmentProposalKey(prop types.ProposalAssignPermission) []byte {
+func EnactmentProposalKey(prop types.Proposal) []byte {
 	return append(EnactmentProposalByTimeKey(prop.EnactmentEndTime), ProposalIDToBytes(prop.ProposalId)...)
 }
 

@@ -109,18 +109,18 @@ func handleMsgProposalAssignPermission(
 
 	properties := ck.GetNetworkProperties(ctx)
 
-	proposal := customgovtypes.NewProposalAssignPermission(
+	proposal, err := customgovtypes.NewProposal(
 		proposalID,
-		msg.Address,
-		customgovtypes.PermValue(msg.Permission),
+		customgovtypes.NewAssignPermissionProposal(
+			msg.Address,
+			customgovtypes.PermValue(msg.Permission),
+		),
 		blockTime,
 		blockTime.Add(time.Minute*time.Duration(properties.ProposalEndTime)),
 		blockTime.Add(time.Minute*time.Duration(properties.ProposalEnactmentTime)),
 	)
-	err = ck.SaveProposal(ctx, proposal)
-	if err != nil {
-		return nil, err
-	}
+
+	ck.SaveProposal(ctx, proposal)
 
 	ck.AddToActiveProposals(ctx, proposal)
 
