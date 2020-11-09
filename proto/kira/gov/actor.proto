@@ -33,6 +33,9 @@ enum PermValue {
 
   // PERMISSION_CHANGE_TX_FEE
   PERMISSION_CHANGE_TX_FEE = 7 [(gogoproto.enumvalue_customname) = "PermChangeTxFee"];
+
+  // PERMISSION_UPSERT_TOKEN_RATE
+  PERMISSION_UPSERT_TOKEN_RATE = 8 [(gogoproto.enumvalue_customname) = "PermUpsertTokenRate"];
 }
 
 enum ActorStatus {

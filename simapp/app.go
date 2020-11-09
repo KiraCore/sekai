@@ -94,6 +94,10 @@ import (
 	tokens "github.com/KiraCore/sekai/x/tokens"
 	tokenskeeper "github.com/KiraCore/sekai/x/tokens/keeper"
 	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
+
+	feeprocessing "github.com/KiraCore/sekai/x/feeprocessing"
+	feeprocessingkeeper "github.com/KiraCore/sekai/x/feeprocessing/keeper"
+	feeprocessingtypes "github.com/KiraCore/sekai/x/feeprocessing/types"
 )
 
 const appName = "KiraSimApp"
@@ -127,6 +131,7 @@ var (
 		customstaking.AppModuleBasic{},
 		customgov.AppModuleBasic{},
 		tokens.AppModuleBasic{},
+		feeprocessing.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -183,6 +188,7 @@ type SimApp struct {
 	CustomStakingKeeper keeper.Keeper
 	CustomGovKeeper     customgovkeeper.Keeper
 	TokensKeeper        tokenskeeper.Keeper
+	FeeProcessingKeeper feeprocessingkeeper.Keeper
 
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
@@ -228,7 +234,7 @@ func NewSimApp(
 		govtypes.StoreKey, paramstypes.StoreKey, ibchost.StoreKey, upgradetypes.StoreKey,
 		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey,
 		customstakingtypes.ModuleName, customgovtypes.ModuleName,
-		customgovtypes.ModuleName, tokenstypes.ModuleName,
+		customgovtypes.ModuleName, tokenstypes.ModuleName, feeprocessingtypes.ModuleName,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
@@ -298,6 +304,8 @@ func NewSimApp(
 		appCodec, keys[ibchost.StoreKey], app.StakingKeeper, scopedIBCKeeper,
 	)
 
+	app.FeeProcessingKeeper = feeprocessingkeeper.NewKeeper(keys[feeprocessingtypes.ModuleName], appCodec, app.BankKeeper, app.TokensKeeper, app.CustomGovKeeper)
+
 	// register the proposal types
 	govRouter := govtypes.NewRouter()
 	govRouter.AddRoute(govtypes.RouterKey, govtypes.ProposalHandler).
@@ -358,6 +366,7 @@ func NewSimApp(
 		params.NewAppModule(app.ParamsKeeper),
 		customgov.NewAppModule(app.CustomGovKeeper),
 		tokens.NewAppModule(app.TokensKeeper, app.CustomGovKeeper),
+		feeprocessing.NewAppModule(app.FeeProcessingKeeper),
 		transferModule,
 	)
 
@@ -380,7 +389,7 @@ func NewSimApp(
 		capabilitytypes.ModuleName, authtypes.ModuleName, distrtypes.ModuleName, stakingtypes.ModuleName, banktypes.ModuleName,
 		slashingtypes.ModuleName, govtypes.ModuleName, minttypes.ModuleName, crisistypes.ModuleName,
 		ibchost.ModuleName, genutiltypes.ModuleName, evidencetypes.ModuleName, ibctransfertypes.ModuleName, customgovtypes.ModuleName,
-		tokenstypes.ModuleName,
+		tokenstypes.ModuleName, feeprocessingtypes.ModuleName,
 	)
 
 	app.mm.RegisterInvariants(&app.CrisisKeeper)
@@ -421,7 +430,13 @@ func NewSimApp(
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetAnteHandler(
 		customante.NewAnteHandler(
-			app.CustomStakingKeeper, app.CustomGovKeeper, app.AccountKeeper, app.BankKeeper, ante.DefaultSigVerificationGasConsumer,
+			app.CustomStakingKeeper,
+			app.CustomGovKeeper,
+			app.TokensKeeper,
+			app.FeeProcessingKeeper,
+			app.AccountKeeper,
+			app.BankKeeper,
+			ante.DefaultSigVerificationGasConsumer,
 			encodingConfig.TxConfig.SignModeHandler(),
 		),
 	)
@@ -450,7 +465,7 @@ func NewSimApp(
 	// note replicate if you do not need to test core IBC or light clients.
 	app.ScopedIBCMockKeeper = scopedIBCMockKeeper
 
-	middleware.SetKeepers(app.CustomGovKeeper, app.CustomStakingKeeper, app.BankKeeper)
+	middleware.SetKeepers(app.CustomGovKeeper, app.FeeProcessingKeeper)
 
 	return app
 }

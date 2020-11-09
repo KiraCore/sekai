@@ -110,6 +110,7 @@ message NetworkProperties {
   uint64 vote_quorum = 3;
   uint64 proposal_end_time = 4;
   uint64 proposal_enactment_time = 5;
+  bool enable_foreign_fee_payments = 6;
 }
 
 message ExecutionFee {

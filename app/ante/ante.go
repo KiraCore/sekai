@@ -3,8 +3,10 @@ package ante
 import (
 	"fmt"
 
+	feeprocessingkeeper "github.com/KiraCore/sekai/x/feeprocessing/keeper"
 	customgovkeeper "github.com/KiraCore/sekai/x/gov/keeper"
 	customstakingkeeper "github.com/KiraCore/sekai/x/staking/keeper"
+	tokenskeeper "github.com/KiraCore/sekai/x/tokens/keeper"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
@@ -19,6 +21,8 @@ import (
 func NewAnteHandler(
 	sk customstakingkeeper.Keeper,
 	cgk customgovkeeper.Keeper,
+	tk tokenskeeper.Keeper,
+	fk feeprocessingkeeper.Keeper,
 	ak keeper.AccountKeeper,
 	bankKeeper types.BankKeeper,
 	sigGasConsumer ante.SignatureVerificationGasConsumer,
@@ -33,13 +37,13 @@ func NewAnteHandler(
 		ante.NewValidateMemoDecorator(ak),
 		ante.NewConsumeGasForTxSizeDecorator(ak),
 		// custom fee range validator
-		NewValidateFeeRangeDecorator(sk, cgk, ak),
+		NewValidateFeeRangeDecorator(sk, cgk, tk, ak),
 		ante.NewSetPubKeyDecorator(ak), // SetPubKeyDecorator must be called before all signature verification decorators
 		ante.NewValidateSigCountDecorator(ak),
-		ante.NewDeductFeeDecorator(ak, bankKeeper),
-		ante.NewSigGasConsumeDecorator(ak, sigGasConsumer),
+		ante.NewDeductFeeDecorator(ak, fk),
 		// custom execution fee consume decorator
-		// NewCustomExecutionFeeConsumeDecorator(ak, cgk),
+		NewExecutionFeeRegistrationDecorator(ak, cgk, fk),
+		ante.NewSigGasConsumeDecorator(ak, sigGasConsumer),
 		ante.NewSigVerificationDecorator(ak, signModeHandler),
 		ante.NewIncrementSequenceDecorator(ak),
 	)
@@ -49,6 +53,7 @@ func NewAnteHandler(
 type ValidateFeeRangeDecorator struct {
 	sk  customstakingkeeper.Keeper
 	cgk customgovkeeper.Keeper
+	tk  tokenskeeper.Keeper
 	ak  keeper.AccountKeeper
 }
 
@@ -56,12 +61,14 @@ type ValidateFeeRangeDecorator struct {
 func NewValidateFeeRangeDecorator(
 	sk customstakingkeeper.Keeper,
 	cgk customgovkeeper.Keeper,
+	tk tokenskeeper.Keeper,
 	ak keeper.AccountKeeper,
 ) ValidateFeeRangeDecorator {
 	return ValidateFeeRangeDecorator{
 		sk:  sk,
 		cgk: cgk,
 		ak:  ak,
+		tk:  tk,
 	}
 }
 
@@ -73,59 +80,75 @@ func (svd ValidateFeeRangeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 	}
 
 	properties := svd.cgk.GetNetworkProperties(ctx)
-
 	bondDenom := svd.sk.BondDenom(ctx)
-	feeAmount := feeTx.GetFee().AmountOf(bondDenom).Uint64()
 
-	// execution failure fee should be prepaid
-	executionFailureFee := uint64(0)
+	feeAmount := sdk.NewDec(0)
+	feeCoins := feeTx.GetFee()
+	for _, feeCoin := range feeCoins {
+		rate := svd.tk.GetTokenRate(ctx, feeCoin.Denom)
+		if !properties.EnableForeignFeePayments && feeCoin.Denom != bondDenom {
+			return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("foreign fee payments is disabled by governance"))
+		}
+		if rate == nil || !rate.FeePayments {
+			return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("currency you are tying to use was not whitelisted as fee payment"))
+		}
+		feeAmount = feeAmount.Add(feeCoin.Amount.ToDec().Mul(rate.Rate))
+	}
+
+	// execution fee should be prepaid
+	executionMaxFee := uint64(0)
 	for _, msg := range feeTx.GetMsgs() {
 		fee := svd.cgk.GetExecutionFee(ctx, msg.Type())
 		if fee != nil { // execution fee exist
-			executionFailureFee += fee.FailureFee
+			maxFee := fee.FailureFee
+			if fee.ExecutionFee > maxFee {
+				maxFee = fee.ExecutionFee
+			}
+			executionMaxFee += maxFee
 		}
 	}
 
-	if feeAmount < properties.MinTxFee || feeAmount > properties.MaxTxFee {
-		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("fee %+v is out of range [%d, %d]%s", feeTx.GetFee(), properties.MinTxFee, properties.MaxTxFee, bondDenom))
+	if feeAmount.LT(sdk.NewDec(int64(properties.MinTxFee))) || feeAmount.GT(sdk.NewDec(int64(properties.MaxTxFee))) {
+		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("fee %+v(%d) is out of range [%d, %d]%s", feeTx.GetFee(), feeAmount.RoundInt().Int64(), properties.MinTxFee, properties.MaxTxFee, bondDenom))
 	}
 
-	if feeAmount < executionFailureFee {
-		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("fee %+v is less than execution failure fee %d%s", feeTx.GetFee(), executionFailureFee, bondDenom))
+	if feeAmount.LT(sdk.NewDec(int64(executionMaxFee))) {
+		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("fee %+v(%d) is less than max execution fee %d%s", feeTx.GetFee(), feeAmount.RoundInt().Int64(), executionMaxFee, bondDenom))
 	}
 
 	return next(ctx, tx, simulate)
 }
 
-// // CustomExecutionFeeConsumeDecorator calculate custom gas consume
-// type CustomExecutionFeeConsumeDecorator struct {
-// 	ak  keeper.AccountKeeper
-// 	cgk customgovkeeper.Keeper
-// }
+// ExecutionFeeRegistrationDecorator register paid execution fee
+type ExecutionFeeRegistrationDecorator struct {
+	ak  keeper.AccountKeeper
+	cgk customgovkeeper.Keeper
+	fk  feeprocessingkeeper.Keeper
+}
 
-// // NewCustomExecutionFeeConsumeDecorator returns instance of CustomExecutionFeeConsumeDecorator
-// func NewCustomExecutionFeeConsumeDecorator(ak keeper.AccountKeeper, cgk customgovkeeper.Keeper) CustomExecutionFeeConsumeDecorator {
-// 	return CustomExecutionFeeConsumeDecorator{
-// 		ak:  ak,
-// 		cgk: cgk,
-// 	}
-// }
+// NewExecutionFeeRegistrationDecorator returns instance of CustomExecutionFeeConsumeDecorator
+func NewExecutionFeeRegistrationDecorator(ak keeper.AccountKeeper, cgk customgovkeeper.Keeper, fk feeprocessingkeeper.Keeper) ExecutionFeeRegistrationDecorator {
+	return ExecutionFeeRegistrationDecorator{
+		ak,
+		cgk,
+		fk,
+	}
+}
 
-// // AnteHandle handle CustomExecutionFeeConsumeDecorator
-// func (sgcd CustomExecutionFeeConsumeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
-// 	sigTx, ok := tx.(sdk.FeeTx)
-// 	if !ok {
-// 		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "invalid transaction type")
-// 	}
+// AnteHandle handle ExecutionFeeRegistrationDecorator
+func (sgcd ExecutionFeeRegistrationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
+	sigTx, ok := tx.(sdk.FeeTx)
+	if !ok {
+		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "invalid transaction type")
+	}
 
-// 	// execution fee consume gas
-// 	for _, msg := range sigTx.GetMsgs() {
-// 		fee := sgcd.cgk.GetExecutionFee(ctx, msg.Type())
-// 		if fee != nil { // execution fee exist
-// 			ctx.GasMeter().ConsumeGas(fee.ExecutionFee, "consume execution fee")
-// 			// On failure case, fee modifier is running on middleware package.
-// 		}
-// 	}
+	// execution fee consume gas
+	for _, msg := range sigTx.GetMsgs() {
+		fee := sgcd.cgk.GetExecutionFee(ctx, msg.Type())
+		if fee != nil { // execution fee exist
+			sgcd.fk.AddExecutionStart(ctx, msg)
+		}
+	}
 
-// 	return next(ctx, tx, simulate)
-// }
+	return next(ctx, tx, simulate)
+}

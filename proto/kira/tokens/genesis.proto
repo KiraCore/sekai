@@ -2,9 +2,11 @@ syntax = "proto3";
 package kira.tokens;
 
 import "alias.proto";
+import "rate.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/tokens/types";
 
 message GenesisState {
   map<string, kira.tokens.TokenAlias> aliases = 1;
+  map<string, kira.tokens.TokenRate> rates = 2;
 }

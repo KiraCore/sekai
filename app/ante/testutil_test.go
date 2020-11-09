@@ -64,6 +64,8 @@ func (suite *AnteTestSuite) SetupTest(isCheckTx bool) {
 	suite.anteHandler = customante.NewAnteHandler(
 		suite.app.CustomStakingKeeper,
 		suite.app.CustomGovKeeper,
+		suite.app.TokensKeeper,
+		suite.app.FeeProcessingKeeper,
 		suite.app.AccountKeeper,
 		suite.app.BankKeeper,
 		ante.DefaultSigVerificationGasConsumer,
@@ -174,7 +176,7 @@ func (suite *AnteTestSuite) RunTestCase(privs []crypto.PrivKey, msgs []sdk.Msg, 
 
 			case anteErr != nil:
 				suite.Require().Error(anteErr)
-				suite.Require().True(strings.Contains(anteErr.Error(), tc.expErr.Error()))
+				suite.Require().True(strings.Contains(anteErr.Error(), tc.expErr.Error()), anteErr.Error())
 
 			default:
 				suite.Fail("expected one of txErr,anteErr to be an error")

@@ -115,3 +115,85 @@ func TestNewHandler_MsgUpsertTokenAlias(t *testing.T) {
 		}
 	}
 }
+
+func TestNewHandler_MsgUpsertTokenRate(t *testing.T) {
+
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+	handler := tokens.NewHandler(app.TokensKeeper, app.CustomGovKeeper)
+
+	tests := []struct {
+		name        string
+		constructor func(sdk.AccAddress) (*tokenstypes.MsgUpsertTokenRate, error)
+		handlerErr  string
+	}{
+		{
+			name: "good permission test",
+			constructor: func(addr sdk.AccAddress) (*tokenstypes.MsgUpsertTokenRate, error) {
+				err := setPermissionToAddr(t, app, ctx, addr, types.PermUpsertTokenRate)
+				require.NoError(t, err)
+				return tokenstypes.NewMsgUpsertTokenRate(
+					addr,
+					"finney", sdk.NewDecWithPrec(1, 3), // 0.001
+					true,
+				), nil
+			},
+		},
+		{
+			name: "lack permission test",
+			constructor: func(addr sdk.AccAddress) (*tokenstypes.MsgUpsertTokenRate, error) {
+				return tokenstypes.NewMsgUpsertTokenRate(
+					addr,
+					"finney", sdk.NewDecWithPrec(1, 3), // 0.001
+					true,
+				), nil
+			},
+			handlerErr: "PermUpsertTokenRate: not enough permissions",
+		},
+		{
+			name: "negative rate value test",
+			constructor: func(addr sdk.AccAddress) (*tokenstypes.MsgUpsertTokenRate, error) {
+				return tokenstypes.NewMsgUpsertTokenRate(
+					addr,
+					"finney", sdk.NewDec(-1), // -1
+					true,
+				), nil
+			},
+			handlerErr: "rate should be positive",
+		},
+		{
+			name: "bond denom rate change test",
+			constructor: func(addr sdk.AccAddress) (*tokenstypes.MsgUpsertTokenRate, error) {
+				err := setPermissionToAddr(t, app, ctx, addr, types.PermUpsertTokenRate)
+				require.NoError(t, err)
+				return tokenstypes.NewMsgUpsertTokenRate(
+					addr,
+					"ukex", sdk.NewDec(10),
+					true,
+				), nil
+			},
+			handlerErr: "bond denom rate is read-only",
+		},
+	}
+	for i, tt := range tests {
+		addr := NewAccountByIndex(i)
+		theMsg, err := tt.constructor(addr)
+		require.NoError(t, err)
+
+		_, err = handler(ctx, theMsg)
+		if len(tt.handlerErr) != 0 {
+			require.Error(t, err)
+			require.Contains(t, err.Error(), tt.handlerErr)
+		} else {
+			require.NoError(t, err)
+
+			// test various query commands
+			rate := app.TokensKeeper.GetTokenRate(ctx, theMsg.Denom)
+			require.True(t, rate != nil)
+			ratesAll := app.TokensKeeper.ListTokenRate(ctx)
+			require.True(t, len(ratesAll) > 0)
+			ratesByDenom := app.TokensKeeper.GetTokenRatesByDenom(ctx, []string{theMsg.Denom})
+			require.True(t, ratesByDenom[theMsg.Denom] != nil)
+		}
+	}
+}

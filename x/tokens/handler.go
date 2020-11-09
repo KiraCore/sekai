@@ -7,8 +7,10 @@ import (
 	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/tokens/keeper"
 	"github.com/KiraCore/sekai/x/tokens/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
+// NewHandler returns new instance of handler
 func NewHandler(ck keeper.Keeper, cgk types.CustomGovKeeper) sdk.Handler {
 	return func(ctx sdk.Context, msg sdk.Msg) (*sdk.Result, error) {
 		ctx = ctx.WithEventManager(sdk.NewEventManager())
@@ -16,6 +18,8 @@ func NewHandler(ck keeper.Keeper, cgk types.CustomGovKeeper) sdk.Handler {
 		switch msg := msg.(type) {
 		case *types.MsgUpsertTokenAlias:
 			return handleUpsertTokenAlias(ctx, ck, cgk, msg)
+		case *types.MsgUpsertTokenRate:
+			return handleUpsertTokenRate(ctx, ck, cgk, msg)
 		default:
 			return nil, errors.Wrapf(errors.ErrUnknownRequest, "unrecognized %s message type: %T", types.ModuleName, msg)
 		}
@@ -40,4 +44,27 @@ func handleUpsertTokenAlias(ctx sdk.Context, ck keeper.Keeper, cgk types.CustomG
 		msg.Status,
 	))
 	return &sdk.Result{}, err
+}
+
+func handleUpsertTokenRate(ctx sdk.Context, ck keeper.Keeper, cgk types.CustomGovKeeper, msg *types.MsgUpsertTokenRate) (*sdk.Result, error) {
+	err := msg.ValidateBasic()
+	if err != nil {
+		return nil, errors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
+	}
+
+	isAllowed := cgk.CheckIfAllowedPermission(ctx, msg.Proposer, customgovtypes.PermUpsertTokenRate)
+	if !isAllowed {
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermUpsertTokenRate")
+	}
+
+	err = ck.UpsertTokenRate(ctx, *types.NewTokenRate(
+		msg.Denom,
+		msg.Rate,
+		msg.FeePayments,
+	))
+
+	if err != nil {
+		return nil, errors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
+	}
+	return &sdk.Result{}, nil
 }

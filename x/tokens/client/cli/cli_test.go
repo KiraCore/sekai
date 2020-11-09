@@ -118,6 +118,53 @@ func (s *IntegrationTestSuite) TestUpsertTokenAliasAndQuery() {
 	s.Require().Equal(tokenAlias.Denoms, []string{"finney"})
 }
 
+func (s *IntegrationTestSuite) TestUpsertTokenRateAndQuery() {
+	s.T().SkipNow()
+	val := s.network.Validators[0]
+
+	cmd := cli.GetTxUpsertTokenRateCmd()
+	_, out := testutil.ApplyMockIO(cmd)
+	clientCtx := val.ClientCtx.WithOutput(out)
+
+	ctx := context.Background()
+	ctx = context.WithValue(ctx, client.ClientContextKey, &clientCtx)
+
+	cmd.SetArgs(
+		[]string{
+			fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+			fmt.Sprintf("--%s=%s", cli.FlagDenom, "ubtc"),
+			fmt.Sprintf("--%s=%f", cli.FlagRate, 0.00001),
+			fmt.Sprintf("--%s=%s", cli.FlagFeePayments, "true"),
+		},
+	)
+
+	err := cmd.ExecuteContext(ctx)
+	s.Require().NoError(err)
+
+	height, err := s.network.LatestHeight()
+	s.Require().NoError(err)
+
+	_, err = s.network.WaitForHeight(height + 2)
+	s.Require().NoError(err)
+
+	query := cli.GetCmdQueryTokenRate()
+	query.SetArgs([]string{"ubtc"})
+
+	out.Reset()
+
+	clientCtx = clientCtx.WithOutputFormat("json")
+	err = query.ExecuteContext(ctx)
+	s.Require().NoError(err)
+
+	var tokenRateResponse tokenstypes.TokenRateResponse
+	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &tokenRateResponse)
+	tokenRate := tokenRateResponse.Data
+
+	s.Require().Equal(tokenRate.Denom, "ubtc")
+	s.Require().Equal(tokenRate.Rate, 0.00001)
+	s.Require().Equal(tokenRate.FeePayments, true)
+}
+
 func TestIntegrationTestSuite(t *testing.T) {
 	suite.Run(t, new(IntegrationTestSuite))
 }

@@ -15,6 +15,10 @@ import (
 	tokenskeeper "github.com/KiraCore/sekai/x/tokens/keeper"
 	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
 
+	feeprocessing "github.com/KiraCore/sekai/x/feeprocessing"
+	feeprocessingkeeper "github.com/KiraCore/sekai/x/feeprocessing/keeper"
+	feeprocessingtypes "github.com/KiraCore/sekai/x/feeprocessing/types"
+
 	simappparams "github.com/cosmos/cosmos-sdk/simapp/params"
 
 	"github.com/cosmos/cosmos-sdk/client/rpc"
@@ -128,6 +132,7 @@ var (
 		customstaking.AppModuleBasic{},
 		customgov.AppModuleBasic{},
 		tokens.AppModuleBasic{},
+		feeprocessing.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -180,6 +185,7 @@ type SekaiApp struct {
 	customStakingKeeper customkeeper.Keeper
 	customGovKeeper     customgovkeeper.Keeper
 	tokensKeeper        tokenskeeper.Keeper
+	feeprocessingKeeper feeprocessingkeeper.Keeper
 
 	// make scoped keepers public for test purposes
 	scopedIBCKeeper      capabilitykeeper.ScopedKeeper
@@ -224,7 +230,7 @@ func NewInitApp(
 		distrtypes.StoreKey, slashingtypes.StoreKey,
 		govtypes.StoreKey, paramstypes.StoreKey, ibchost.StoreKey, upgradetypes.StoreKey,
 		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey,
-		cumstomtypes.ModuleName, customgovtypes.ModuleName, tokenstypes.ModuleName,
+		cumstomtypes.ModuleName, customgovtypes.ModuleName, tokenstypes.ModuleName, feeprocessingtypes.ModuleName,
 	)
 	tKeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
@@ -325,6 +331,8 @@ func NewInitApp(
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	app.evidenceKeeper = *evidenceKeeper
 
+	app.feeprocessingKeeper = feeprocessingkeeper.NewKeeper(keys[feeprocessingtypes.ModuleName], appCodec, app.bankKeeper, app.tokensKeeper, app.customGovKeeper)
+
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
 	app.mm = module.NewManager(
@@ -346,6 +354,7 @@ func NewInitApp(
 		customstaking.NewAppModule(app.customStakingKeeper, app.customGovKeeper),
 		customgov.NewAppModule(app.customGovKeeper),
 		tokens.NewAppModule(app.tokensKeeper, app.customGovKeeper),
+		feeprocessing.NewAppModule(app.feeprocessingKeeper),
 	)
 	// During begin block slashing happens after distr.BeginBlocker so that
 	// there is nothing left over in the validator fee pool, so as to keep the
@@ -355,7 +364,13 @@ func NewInitApp(
 		upgradetypes.ModuleName, /*distrtypes.ModuleName, slashingtypes.ModuleName,*/
 		evidencetypes.ModuleName /*stakingtypes.ModuleName,*/, ibchost.ModuleName,
 	)
-	app.mm.SetOrderEndBlockers(crisistypes.ModuleName, govtypes.ModuleName, cumstomtypes.ModuleName /*stakingtypes.ModuleName*/)
+	app.mm.SetOrderEndBlockers(
+		crisistypes.ModuleName,
+		govtypes.ModuleName,
+		cumstomtypes.ModuleName,
+		feeprocessingtypes.ModuleName,
+		/*stakingtypes.ModuleName*/
+	)
 
 	// NOTE: The genutils moodule must occur after staking so that pools are
 	// properly initialized with tokens from genesis accounts.
@@ -366,7 +381,7 @@ func NewInitApp(
 		capabilitytypes.ModuleName, authtypes.ModuleName /*distrtypes.ModuleName */ /*stakingtypes.ModuleName,*/, banktypes.ModuleName,
 		/*slashingtypes.ModuleName,*/ govtypes.ModuleName, crisistypes.ModuleName,
 		ibchost.ModuleName, genutiltypes.ModuleName, evidencetypes.ModuleName, ibctransfertypes.ModuleName,
-		cumstomtypes.ModuleName, customgovtypes.ModuleName, tokenstypes.ModuleName,
+		cumstomtypes.ModuleName, customgovtypes.ModuleName, tokenstypes.ModuleName, feeprocessingtypes.ModuleName,
 	)
 
 	app.mm.RegisterInvariants(&app.crisisKeeper)
@@ -404,7 +419,13 @@ func NewInitApp(
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetAnteHandler(
 		customante.NewAnteHandler(
-			app.customStakingKeeper, app.customGovKeeper, app.accountKeeper, app.bankKeeper, ante.DefaultSigVerificationGasConsumer,
+			app.customStakingKeeper,
+			app.customGovKeeper,
+			app.tokensKeeper,
+			app.feeprocessingKeeper,
+			app.accountKeeper,
+			app.bankKeeper,
+			ante.DefaultSigVerificationGasConsumer,
 			encodingConfig.TxConfig.SignModeHandler(),
 		),
 	)
@@ -431,7 +452,7 @@ func NewInitApp(
 	// note replicate if you do not need to test core IBC or light clients.
 	app.scopedIBCMockKeeper = scopedIBCMockKeeper
 
-	middleware.SetKeepers(app.customGovKeeper, app.customStakingKeeper, app.bankKeeper)
+	middleware.SetKeepers(app.customGovKeeper, app.feeprocessingKeeper)
 
 	return app
 }

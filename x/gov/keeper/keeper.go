@@ -16,6 +16,11 @@ func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryMarshaler) Keeper {
 	return Keeper{cdc: cdc, storeKey: storeKey}
 }
 
+// BondDenom returns the denom that is basically used for fee payment
+func (k Keeper) BondDenom(ctx sdk.Context) string {
+	return "ukex"
+}
+
 // SetNetworkProperties set network properties on KVStore
 func (k Keeper) SetNetworkProperties(ctx sdk.Context, properties *types.NetworkProperties) {
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixNetworkProperties)

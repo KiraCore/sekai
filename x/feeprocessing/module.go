@@ -1,14 +1,12 @@
-package tokens
+package feeprocessing
 
 import (
 	"encoding/json"
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
-	"github.com/KiraCore/sekai/middleware"
-	cli2 "github.com/KiraCore/sekai/x/tokens/client/cli"
-	keeper2 "github.com/KiraCore/sekai/x/tokens/keeper"
-	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
+	feeprocessingkeeper "github.com/KiraCore/sekai/x/feeprocessing/keeper"
+	feeprocessingtypes "github.com/KiraCore/sekai/x/feeprocessing/types"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -29,15 +27,14 @@ var (
 type AppModuleBasic struct{}
 
 func (b AppModuleBasic) Name() string {
-	return tokenstypes.ModuleName
+	return feeprocessingtypes.ModuleName
 }
 
 func (b AppModuleBasic) RegisterInterfaces(registry types2.InterfaceRegistry) {
-	tokenstypes.RegisterInterfaces(registry)
 }
 
 func (b AppModuleBasic) DefaultGenesis(cdc codec.JSONMarshaler) json.RawMessage {
-	return cdc.MustMarshalJSON(tokenstypes.DefaultGenesis())
+	return json.RawMessage("{}")
 }
 
 func (b AppModuleBasic) ValidateGenesis(marshaler codec.JSONMarshaler, config client.TxEncodingConfig, message json.RawMessage) error {
@@ -51,41 +48,24 @@ func (b AppModuleBasic) RegisterGRPCRoutes(context client.Context, serveMux *run
 }
 
 func (b AppModuleBasic) RegisterLegacyAminoCodec(amino *codec.LegacyAmino) {
-	tokenstypes.RegisterCodec(amino)
 }
 
 func (b AppModuleBasic) GetTxCmd() *cobra.Command {
-	return cli2.NewTxCmd()
+	return nil
 }
 
 // GetQueryCmd implement query commands for this module
 func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
-	queryCmd := &cobra.Command{
-		Use:   tokenstypes.RouterKey,
-		Short: "query commands for the customgov module",
-	}
-	queryCmd.AddCommand(
-		cli2.GetCmdQueryTokenAlias(),
-		cli2.GetCmdQueryAllTokenAliases(),
-		cli2.GetCmdQueryTokenAliasesByDenom(),
-		cli2.GetCmdQueryTokenRate(),
-		cli2.GetCmdQueryAllTokenRates(),
-		cli2.GetCmdQueryTokenRatesByDenom(),
-	)
-
-	queryCmd.PersistentFlags().String("node", "tcp://localhost:26657", "<host>:<port> to Tendermint RPC interface for this chain")
-	return queryCmd
+	return nil
 }
 
-// AppModule for tokens management
+// AppModule extends the cosmos SDK gov.
 type AppModule struct {
 	AppModuleBasic
-	tokensKeeper    keeper2.Keeper
-	customGovKeeper tokenstypes.CustomGovKeeper
+	keeper feeprocessingkeeper.Keeper
 }
 
 func (am AppModule) RegisterInterfaces(registry types2.InterfaceRegistry) {
-	tokenstypes.RegisterInterfaces(registry)
 }
 
 func (am AppModule) InitGenesis(
@@ -93,17 +73,6 @@ func (am AppModule) InitGenesis(
 	cdc codec.JSONMarshaler,
 	data json.RawMessage,
 ) []abci.ValidatorUpdate {
-	var genesisState tokenstypes.GenesisState
-	cdc.MustUnmarshalJSON(data, &genesisState)
-
-	for _, alias := range genesisState.Aliases {
-		am.tokensKeeper.UpsertTokenAlias(ctx, *alias)
-	}
-
-	for _, rate := range genesisState.Rates {
-		am.tokensKeeper.UpsertTokenRate(ctx, *rate)
-	}
-
 	return nil
 }
 
@@ -122,32 +91,28 @@ func (am AppModule) LegacyQuerierHandler(marshaler *codec.LegacyAmino) sdk.Queri
 func (am AppModule) BeginBlock(context sdk.Context, block abci.RequestBeginBlock) {}
 
 func (am AppModule) EndBlock(ctx sdk.Context, block abci.RequestEndBlock) []abci.ValidatorUpdate {
-	return nil
+	return EndBlocker(ctx, am.keeper)
 }
 
 func (am AppModule) Name() string {
-	return tokenstypes.ModuleName
+	return feeprocessingtypes.ModuleName
 }
 
 // Route returns the message routing key for the staking module.
 func (am AppModule) Route() sdk.Route {
-	return middleware.NewRoute(tokenstypes.ModuleName, NewHandler(am.tokensKeeper, am.customGovKeeper))
+	return sdk.NewRoute(feeprocessingtypes.ModuleName, NewHandler(am.keeper))
 }
 
 // RegisterQueryService registers a GRPC query service to respond to the
 // module-specific GRPC queries.
 func (am AppModule) RegisterQueryService(server grpc.Server) {
-	querier := NewQuerier(am.tokensKeeper)
-	tokenstypes.RegisterQueryServer(server, querier)
 }
 
 // NewAppModule returns a new Custom Staking module.
 func NewAppModule(
-	keeper keeper2.Keeper,
-	customGovKeeper tokenstypes.CustomGovKeeper,
+	keeper feeprocessingkeeper.Keeper,
 ) AppModule {
 	return AppModule{
-		tokensKeeper:    keeper,
-		customGovKeeper: customGovKeeper,
+		keeper: keeper,
 	}
 }
