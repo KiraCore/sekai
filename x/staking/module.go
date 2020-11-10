@@ -38,6 +38,7 @@ func (b AppModuleBasic) Name() string {
 }
 
 func (b AppModuleBasic) RegisterInterfaces(registry types2.InterfaceRegistry) {
+	cumstomtypes.RegisterInterfaces(registry)
 }
 
 func (b AppModuleBasic) DefaultGenesis(marshaler codec.JSONMarshaler) json.RawMessage {
