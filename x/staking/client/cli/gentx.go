@@ -95,8 +95,10 @@ func GenTxClaimCmd(genBalIterator types2.GenesisBalancesIterator, defaultNodeHom
 			// Only first validator is network actor
 			networkActor := customgovtypes.NewNetworkActor(
 				types.AccAddress(validator.ValKey),
-				nil,
-				1,
+				customgovtypes.Roles{
+					uint64(customgovtypes.RoleSudo),
+				},
+				customgovtypes.Active,
 				nil,
 				customgovtypes.NewPermissions([]customgovtypes.PermValue{customgovtypes.PermSetPermissions}, nil),
 				1,
