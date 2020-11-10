@@ -870,7 +870,7 @@ func TestHandler_CreateRole_Errors(t *testing.T) {
 				10,
 			),
 			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
-			fmt.Errorf("PermSetPermissions: not enough permissions"),
+			fmt.Errorf("PermUpsertRole: not enough permissions"),
 		},
 		{
 			"fails when role already exists",
@@ -879,7 +879,7 @@ func TestHandler_CreateRole_Errors(t *testing.T) {
 				1234,
 			),
 			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
-				err2 := setPermissionToAddr(t, app, ctx, addr, types.PermSetPermissions)
+				err2 := setPermissionToAddr(t, app, ctx, addr, types.PermUpsertRole)
 				require.NoError(t, err2)
 				app.CustomGovKeeper.CreateRole(ctx, types.Role(1234))
 			},
@@ -906,7 +906,7 @@ func TestHandler_CreateRole(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	err = setPermissionToAddr(t, app, ctx, addr, types.PermSetPermissions)
+	err = setPermissionToAddr(t, app, ctx, addr, types.PermUpsertRole)
 	require.NoError(t, err)
 
 	_, found := app.CustomGovKeeper.GetPermissionsForRole(ctx, 1234)
