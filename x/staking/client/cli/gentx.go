@@ -100,7 +100,7 @@ func GenTxClaimCmd(genBalIterator types2.GenesisBalancesIterator, defaultNodeHom
 				},
 				customgovtypes.Active,
 				nil,
-				customgovtypes.NewPermissions([]customgovtypes.PermValue{customgovtypes.PermSetPermissions}, nil),
+				customgovtypes.NewPermissions(nil, nil),
 				1,
 			)
 			customGovGenState.NetworkActors = append(customGovGenState.NetworkActors, &networkActor)
