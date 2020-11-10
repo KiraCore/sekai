@@ -13,9 +13,13 @@ import (
 
 	common "github.com/KiraCore/sekai/INTERX/common"
 	interx "github.com/KiraCore/sekai/INTERX/config"
+	database "github.com/KiraCore/sekai/INTERX/database"
 	tasks "github.com/KiraCore/sekai/INTERX/tasks"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	tmjson "github.com/tendermint/tendermint/libs/json"
+	tmTypes "github.com/tendermint/tendermint/rpc/core/types"
+	tmJsonRPCTypes "github.com/tendermint/tendermint/rpc/jsonrpc/types"
 	"golang.org/x/crypto/blake2b"
 )
 
@@ -54,7 +58,7 @@ func MakeGetRequest(rpcAddr string, url string, query string) (interface{}, inte
 	response := new(RPCResponse)
 	err = json.NewDecoder(resp.Body).Decode(response)
 	if err != nil {
-		return nil, nil, resp.StatusCode
+		return nil, err.Error(), resp.StatusCode
 	}
 
 	return response.Result, response.Error, resp.StatusCode
@@ -308,4 +312,49 @@ func BroadcastTransaction(rpcAddr string, txBytes []byte) (string, error) {
 	}
 
 	return result.Result.Hash, nil
+}
+
+// GetPermittedTxTypes is a function to get all permitted tx types and function ids
+func GetPermittedTxTypes(rpcAddr string, account string) (map[string]string, error) {
+	permittedTxTypes := map[string]string{}
+	permittedTxTypes["ExampleTx"] = "123"
+	return permittedTxTypes, nil
+}
+
+// GetBlockTime is a function to get block time
+func GetBlockTime(rpcAddr string, height int64) (int64, error) {
+	blockTime, err := database.GetBlockTime(height)
+	if err == nil {
+		return blockTime, nil
+	}
+
+	resp, err := http.Get(fmt.Sprintf("%s/block?height=%d", rpcAddr, height))
+	if err != nil {
+		return 0, fmt.Errorf("block not found: %d", height)
+	}
+	defer resp.Body.Close()
+
+	respBody, _ := ioutil.ReadAll(resp.Body)
+
+	response := new(tmJsonRPCTypes.RPCResponse)
+
+	if err := json.Unmarshal(respBody, response); err != nil {
+		return 0, err
+	}
+
+	if response.Error != nil {
+		return 0, fmt.Errorf("block not found: %d", height)
+	}
+
+	result := new(tmTypes.ResultBlock)
+	if err := tmjson.Unmarshal(response.Result, result); err != nil {
+		return 0, err
+	}
+
+	blockTime = result.Block.Header.Time.Unix()
+
+	// save block time
+	database.AddBlockTime(height, blockTime)
+
+	return blockTime, nil
 }

@@ -1,5 +1,94 @@
 # INTERX
 
+## Configurations.
+
+#### config.json
+
+- interx configurations
+
+    "mnemonic": "...",
+    "status_sync": 5,
+    
+- caching configurations
+
+    "cache_dir": "cache",
+    "max_cache_size": "2 GB",
+    "caching_duration": 10,
+
+- faucet configurations
+
+    "faucet": {
+        "mnemonic": "...",
+        "faucet_amounts": {
+            "stake": 100000,
+            "...": ...
+        },
+        "faucet_minimum_amounts": {
+            "stake": 100,
+            "...": ...
+        },
+        "time_limit": 20
+    },
+
+- RPC configurations (include caching enable/disable for each endpoint)
+
+    "rpc": {
+        "API": {
+            "GET": {
+                "/api/cosmos/status": {
+                    "rate_limit": 0.1,
+                    "auth_rate_limit": 1,
+                    "caching_disable": true
+                },
+                "...": {...}
+            },
+            "POST": {
+                "...": {...}
+            }
+        }
+    }
+
+#### functions/*.json
+
+functions metadata
+
+    - we have functions metadata in json files in `functions` folder.
+        (there can be multiple json files. we can collect all json files to `functions` folder)
+    - each json file can have multiple transaction types.
+    - each transaction type has `description` and `parameters` field.
+    - each parameter has `type` and `description` field.
+    
+    {
+        "{tx_type1}": {
+            "description": "Description field for each tx type",
+            "parameters": {     // List parameters here.
+                "{parameter1}": {
+                    "type": "Parameter type field, e.g. bool, string, int, ...",
+                    "description": "Description field for each parameter"
+                },
+                "{parameter2}": {
+                    "type": "...",
+                    "description": "..."
+                },
+                ...
+            }
+        },
+        "{tx_type2}": {
+            "description": "Description field for each tx type",
+            "parameters": {     // List parameters here.
+                "{parameter1}": {
+                    "type": "...",
+                    "description": "..."
+                },
+                "{parameter2}": {
+                    "type": "...",
+                    "description": "..."
+                },
+                ...
+            }
+        }
+    }
+
 ## Generate go, gRPC-Gateway, OpenAPI output.
 
 - generate go, gRPC-gateway in ./proto-gen.

@@ -9,6 +9,7 @@ import (
 
 	common "github.com/KiraCore/sekai/INTERX/common"
 	interx "github.com/KiraCore/sekai/INTERX/config"
+	database "github.com/KiraCore/sekai/INTERX/database"
 )
 
 // NodeStatus is a struct to be used for node status
@@ -50,6 +51,10 @@ func getStatus(rpcAddr string) {
 	NodeStatus.Block, _ = strconv.ParseInt(result.Result.Block.Header.Height, 10, 64)
 	NodeStatus.Blocktime = result.Result.Block.Header.Time
 	common.Mutex.Unlock()
+
+	// save block height/time
+	t, _ := time.Parse(time.RFC3339, NodeStatus.Blocktime)
+	database.AddBlockTime(NodeStatus.Block, t.Unix())
 }
 
 // SyncStatus is a function for syncing sekaid status.

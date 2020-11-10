@@ -416,7 +416,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"chain_id\": \"testing\",\n\t\"account_number\": \"0\",\n\t\"sequence\": \"0\",\n\t\"tx\": {\n        \"msg\": [\n            {\n                \"type\": \"cosmos-sdk/MsgSend\",\n                \"value\": {\n                    \"from_address\": \"kira1cxj0var5eqkt0c3wfv3x3es63nz2hg5aeenkct\",\n                    \"to_address\": \"kira15plrtetqt55uyfy25tyy3kjy5lsjdgdddf2vfr\",\n                    \"amount\": [\n                        {\n                            \"denom\": \"stake\",\n                            \"amount\": \"25\"\n                        }\n                    ]\n                }\n            }\n        ],\n        \"fee\": {\n            \"amount\": [],\n            \"gas\": \"200000\"\n        },\n        \"signatures\": [],\n        \"memo\": \"\"\n    }\n}",
+					"raw": "{\n    \"chain_id\": \"testing\",\n\t\"account_number\": \"4\",\n\t\"sequence\": \"0\",\n\t\"tx\": {\n        \"msg\": [\n            {\n                \"type\": \"cosmos-sdk/MsgSend\",\n                \"value\": {\n                    \"from_address\": \"kira1h9s2k2s9624kdghp5ztcdgnausg77rdj9cyat6\",\n                    \"to_address\": \"kira1kdnep4lm3z6yd3pah0rzfu3dvudgwfjejs9ans\",\n                    \"amount\": [\n                        {\n                            \"denom\": \"stake\",\n                            \"amount\": \"100000\"\n                        }\n                    ]\n                }\n            }\n        ],\n        \"fee\": {\n            \"amount\": [],\n            \"gas\": \"200000\"\n        },\n        \"signatures\": [],\n        \"memo\": \"\"\n    }\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -438,6 +438,160 @@
 						"cosmos",
 						"txs",
 						"encode"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Query Functions",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/functions",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"functions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Query Withdraws",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/withdraws?account=kira1eyvuhkj9r28sutr6n5vxgckejz2qy3hvanjk7k&type=send&max=4",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"withdraws"
+					],
+					"query": [
+						{
+							"key": "account",
+							"value": "kira1eyvuhkj9r28sutr6n5vxgckejz2qy3hvanjk7k"
+						},
+						{
+							"key": "type",
+							"value": "send"
+						},
+						{
+							"key": "max",
+							"value": "4"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Query Deposits",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/deposits?account=kira1h9s2k2s9624kdghp5ztcdgnausg77rdj9cyat6&type=Send&last=0x9C9FD016B905AFA81E7BC9FC6C38C1AAE06EF0D0399080A7AAFA6481B91101D8",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"deposits"
+					],
+					"query": [
+						{
+							"key": "account",
+							"value": "kira1h9s2k2s9624kdghp5ztcdgnausg77rdj9cyat6"
+						},
+						{
+							"key": "type",
+							"value": "Send"
+						},
+						{
+							"key": "last",
+							"value": "0x9C9FD016B905AFA81E7BC9FC6C38C1AAE06EF0D0399080A7AAFA6481B91101D8"
+						}
 					]
 				}
 			},

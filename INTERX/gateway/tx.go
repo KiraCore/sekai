@@ -43,10 +43,12 @@ func postTxHandle(r *http.Request, request InterxRequest, rpcAddr string) (inter
 		return ServeError(0, "failed to unmarshal", err.Error(), http.StatusBadRequest)
 	}
 
+	fmt.Println(fmt.Sprintf("%X", req.Tx))
 	signedTx, err := interx.EncodingCg.TxConfig.TxJSONDecoder()(req.Tx)
 	if err != nil {
 		return ServeError(0, "failed to get signed TX", err.Error(), http.StatusBadRequest)
 	}
+	fmt.Println(fmt.Sprintf("%X", signedTx))
 
 	txBuilder, err := interx.EncodingCg.TxConfig.WrapTxBuilder(signedTx)
 	if err != nil {
@@ -57,6 +59,7 @@ func postTxHandle(r *http.Request, request InterxRequest, rpcAddr string) (inter
 	if err != nil {
 		return ServeError(0, "failed to get TX bytes", err.Error(), http.StatusBadRequest)
 	}
+	fmt.Println(fmt.Sprintf("%X", txBytes))
 
 	url := ""
 	if req.Mode == "block" {

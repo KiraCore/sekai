@@ -4,8 +4,8 @@ package gateway
 type RPCResponse struct {
 	Jsonrpc string      `json:"jsonrpc"`
 	ID      int         `json:"id"`
-	Result  interface{} `json:"result"`
-	Error   interface{} `json:"error"`
+	Result  interface{} `json:"result,omitempty"`
+	Error   interface{} `json:"error,omitempty"`
 }
 
 // ResponseSign is a struct to be used for response sign

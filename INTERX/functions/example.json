@@ -1,0 +1,15 @@
+{
+    "ExampleTx": {
+        "description": "This is an example transaction type",
+        "parameters": {
+            "account": {
+                "type": "string",
+                "description": "account field"
+            },
+            "sequence": {
+                "type": "int",
+                "description": "sequence field"
+            }
+        }
+    }
+}
