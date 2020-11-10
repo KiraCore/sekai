@@ -201,7 +201,7 @@ func queryTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw bool) 
 		last      string = ""
 		sender    string = ""
 		recipient string = ""
-		limit     int    = 100
+		limit     int    = 10
 	)
 
 	account = r.FormValue("account")
@@ -218,6 +218,9 @@ func queryTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw bool) 
 	if maxStr := r.FormValue("max"); maxStr != "" {
 		if limit, err = strconv.Atoi(maxStr); err != nil {
 			return ServeError(0, "failed to parse parameter 'max'", err.Error(), http.StatusBadRequest)
+		}
+		if limit < 1 || limit > 1000 {
+			return ServeError(0, "'max' should be 1 ~ 1000", "", http.StatusBadRequest)
 		}
 	}
 
