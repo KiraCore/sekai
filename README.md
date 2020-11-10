@@ -298,5 +298,24 @@ sekaid tx tokens upsert-alias --from validator --keyring-backend=test --expirati
 # query validator account
 sekaid query validator --addr  $(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid)
 ```
+
+# Custom governance module commands
+
+```
+sekaid tx customgov councilor claim-seat --from validator --keyring-backend=test --home=$HOME/.sekaid
+
+sekaid tx customgov permission blacklist-permission
+sekaid tx customgov permission whitelist-permission
+
+sekaid tx customgov proposal assign-permission
+sekaid tx customgov proposal vote
+
+sekaid tx customgov role blacklist-permission
+sekaid tx customgov role create
+sekaid tx customgov role remove
+sekaid tx customgov role remove-blacklist-permission
+sekaid tx customgov role remove-whitelist-permission
+sekaid tx customgov role whitelist-permission
+```
 ---
 `dev` branch
