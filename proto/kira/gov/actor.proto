@@ -36,6 +36,9 @@ enum PermValue {
 
   // PERMISSION_UPSERT_TOKEN_RATE
   PERMISSION_UPSERT_TOKEN_RATE = 8 [(gogoproto.enumvalue_customname) = "PermUpsertTokenRate"];
+
+  // PERMISSION_UPSERT_ROLE makes possible to add, modify and assign roles.
+  PERMISSION_UPSERT_ROLE = 9  [(gogoproto.enumvalue_customname) = "PermUpsertRole"];
 }
 
 enum ActorStatus {
