@@ -238,14 +238,14 @@ func handleBlacklistRolePermission(ctx sdk.Context, ck keeper.Keeper, msg *custo
 }
 
 func handleWhitelistRolePermission(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgWhitelistRolePermission) (*sdk.Result, error) {
-	_, err := validateAndGetPermissionsForRole(ctx, ck, msg.Proposer, customgovtypes.Role(msg.Role))
-	if err != nil {
-		return nil, err
+	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Proposer, customgovtypes.PermSetPermissions)
+	if !isAllowed {
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermSetPermissions")
 	}
 
-	err = ck.WhitelistRolePermission(ctx, customgovtypes.Role(msg.Role), customgovtypes.PermValue(msg.Permission))
+	err := ck.WhitelistRolePermission(ctx, customgovtypes.Role(msg.Role), customgovtypes.PermValue(msg.Permission))
 	if err != nil {
-		return nil, errors.Wrap(customgovtypes.ErrWhitelisting, err.Error())
+		return nil, err
 	}
 
 	return &sdk.Result{}, nil

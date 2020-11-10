@@ -6,41 +6,6 @@ import "proposal.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/gov/types";
 
-enum PermValue {
-  option (gogoproto.goproto_enum_prefix) = false;
-
-  // PERMISSION_ZERO is a no-op permission.
-  PERMISSION_ZERO = 0 [(gogoproto.enumvalue_customname) = "PermZero"];
-
-  // PERMISSION_SET_PERMISSIONS defines the permission that allows to Set Permissions to other actors.
-  PERMISSION_SET_PERMISSIONS = 1 [(gogoproto.enumvalue_customname) = "PermSetPermissions"];
-
-  // PERMISSION_CLAIM_VALIDATOR defines the permission that allows to Claim a validator Seat.
-  PERMISSION_CLAIM_VALIDATOR = 2 [(gogoproto.enumvalue_customname) = "PermClaimValidator"];
-
-  // PERMISSION_CLAIM_COUNCILOR defines the permission that allows to Claim a Councilor Seat.
-  PERMISSION_CLAIM_COUNCILOR = 3 [(gogoproto.enumvalue_customname) = "PermClaimCouncilor"];
-
-  // PERMISSION_CREATE_SET_PERMISSIONS_PROPOSAL defines the permission needed to create proposals.
-  PERMISSION_CREATE_SET_PERMISSIONS_PROPOSAL = 4 [(gogoproto.enumvalue_customname) = "PermCreateSetPermissionsProposal"];
-
-  // PERMISSION_VOTE_SET_PERMISSIONS_PROPOSAL defines the permission that an actor must have in order to vote a
-  // Proposal to set permissions.
-  PERMISSION_VOTE_SET_PERMISSIONS_PROPOSAL = 5 [(gogoproto.enumvalue_customname) = "PermVoteSetPermissionProposal"];
-
-  //  PERMISSION_UPSERT_TOKEN_ALIAS
-  PERMISSION_UPSERT_TOKEN_ALIAS = 6 [(gogoproto.enumvalue_customname) = "PermUpsertTokenAlias"];
-
-  // PERMISSION_CHANGE_TX_FEE
-  PERMISSION_CHANGE_TX_FEE = 7 [(gogoproto.enumvalue_customname) = "PermChangeTxFee"];
-
-  // PERMISSION_UPSERT_TOKEN_RATE
-  PERMISSION_UPSERT_TOKEN_RATE = 8 [(gogoproto.enumvalue_customname) = "PermUpsertTokenRate"];
-
-  // PERMISSION_UPSERT_ROLE makes possible to add, modify and assign roles.
-  PERMISSION_UPSERT_ROLE = 9  [(gogoproto.enumvalue_customname) = "PermUpsertRole"];
-}
-
 enum ActorStatus {
   option (gogoproto.goproto_enum_prefix) = false;
 

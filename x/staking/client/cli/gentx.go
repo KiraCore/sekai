@@ -99,7 +99,12 @@ func GenTxClaimCmd(genBalIterator types2.GenesisBalancesIterator, defaultNodeHom
 					uint64(customgovtypes.RoleSudo),
 				},
 				customgovtypes.Active,
-				nil,
+				[]customgovtypes.VoteOption{
+					customgovtypes.OptionYes,
+					customgovtypes.OptionAbstain,
+					customgovtypes.OptionNo,
+					customgovtypes.OptionNoWithVeto,
+				},
 				customgovtypes.NewPermissions(nil, nil),
 				1,
 			)
