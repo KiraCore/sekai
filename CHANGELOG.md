@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.1.7.2] - 11.11.2020
+
+### Changed
+- There is a new permission for all role related changes. PermUpsertRole.
+
 ## [0.1.7.1] - 11.09.2020
 
 ### Changed
