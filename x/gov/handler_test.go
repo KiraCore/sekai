@@ -507,7 +507,7 @@ func TestHandler_WhitelistRolePermissions_Errors(t *testing.T) {
 			preparePerms: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
 				return
 			},
-			expectedErr: fmt.Errorf("PermSetPermissions: not enough permissions"),
+			expectedErr: fmt.Errorf("%s: not enough permissions", types.PermUpsertRole.String()),
 		},
 		{
 			name: "role does not exist",
@@ -517,7 +517,7 @@ func TestHandler_WhitelistRolePermissions_Errors(t *testing.T) {
 				1,
 			),
 			preparePerms: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
-				err2 := setPermissionToAddr(t, app, ctx, addr, types.PermSetPermissions)
+				err2 := setPermissionToAddr(t, app, ctx, addr, types.PermUpsertRole)
 				require.NoError(t, err2)
 			},
 			expectedErr: fmt.Errorf("role does not exist"),
@@ -530,7 +530,7 @@ func TestHandler_WhitelistRolePermissions_Errors(t *testing.T) {
 				uint32(types.PermSetPermissions),
 			),
 			preparePerms: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
-				err2 := setPermissionToAddr(t, app, ctx, addr, types.PermSetPermissions)
+				err2 := setPermissionToAddr(t, app, ctx, addr, types.PermUpsertRole)
 				require.NoError(t, err2)
 
 				_, found := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleValidator)
@@ -565,7 +565,7 @@ func TestHandler_WhitelistRolePermissions(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	err = setPermissionToAddr(t, app, ctx, addr, types.PermSetPermissions)
+	err = setPermissionToAddr(t, app, ctx, addr, types.PermUpsertRole)
 	require.NoError(t, err)
 
 	perms, found := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.RoleValidator)
