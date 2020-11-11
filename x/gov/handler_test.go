@@ -6,11 +6,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/cosmos/cosmos-sdk/types/errors"
-
-	types2 "github.com/cosmos/cosmos-sdk/x/gov/types"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/errors"
+	types2 "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
@@ -942,7 +940,7 @@ func TestHandler_AssignRole_Errors(t *testing.T) {
 				proposerAddr, addr, 3,
 			),
 			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
-			fmt.Errorf("PermSetPermissions: not enough permissions"),
+			fmt.Errorf("%s: not enough permissions", types.PermUpsertRole.String()),
 		},
 		{
 			"fails when role does not exist",
@@ -950,7 +948,7 @@ func TestHandler_AssignRole_Errors(t *testing.T) {
 				proposerAddr, addr, 3,
 			),
 			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
-				err2 := setPermissionToAddr(t, app, ctx, proposerAddr, types.PermSetPermissions)
+				err2 := setPermissionToAddr(t, app, ctx, proposerAddr, types.PermUpsertRole)
 				require.NoError(t, err2)
 			},
 			types.ErrRoleDoesNotExist,
@@ -961,7 +959,7 @@ func TestHandler_AssignRole_Errors(t *testing.T) {
 				proposerAddr, addr, 3,
 			),
 			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
-				err2 := setPermissionToAddr(t, app, ctx, proposerAddr, types.PermSetPermissions)
+				err2 := setPermissionToAddr(t, app, ctx, proposerAddr, types.PermUpsertRole)
 				require.NoError(t, err2)
 
 				app.CustomGovKeeper.CreateRole(ctx, types.Role(3))
@@ -998,7 +996,7 @@ func TestHandler_AssignRole(t *testing.T) {
 	ctx := app.NewContext(false, tmproto.Header{})
 
 	// Set permissions to proposer.
-	err = setPermissionToAddr(t, app, ctx, proposerAddr, types.PermSetPermissions)
+	err = setPermissionToAddr(t, app, ctx, proposerAddr, types.PermUpsertRole)
 	require.NoError(t, err)
 
 	// Create role
