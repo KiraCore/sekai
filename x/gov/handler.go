@@ -196,42 +196,42 @@ func handleCreateRole(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.Msg
 }
 
 func handleRemoveBlacklistRolePermission(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgRemoveBlacklistRolePermission) (*sdk.Result, error) {
-	_, err := validateAndGetPermissionsForRole(ctx, ck, msg.Proposer, customgovtypes.Role(msg.Role))
-	if err != nil {
-		return nil, err
+	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Proposer, customgovtypes.PermUpsertRole)
+	if !isAllowed {
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermUpsertRole.String())
 	}
 
-	err = ck.RemoveBlacklistRolePermission(ctx, customgovtypes.Role(msg.Role), customgovtypes.PermValue(msg.Permission))
+	err := ck.RemoveBlacklistRolePermission(ctx, customgovtypes.Role(msg.Role), customgovtypes.PermValue(msg.Permission))
 	if err != nil {
-		return nil, errors.Wrap(customgovtypes.ErrRemovingBlacklist, err.Error())
+		return nil, err
 	}
 
 	return &sdk.Result{}, nil
 }
 
 func handleRemoveWhitelistRolePermission(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgRemoveWhitelistRolePermission) (*sdk.Result, error) {
-	_, err := validateAndGetPermissionsForRole(ctx, ck, msg.Proposer, customgovtypes.Role(msg.Role))
-	if err != nil {
-		return nil, err
+	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Proposer, customgovtypes.PermUpsertRole)
+	if !isAllowed {
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermUpsertRole.String())
 	}
 
-	err = ck.RemoveWhitelistRolePermission(ctx, customgovtypes.Role(msg.Role), customgovtypes.PermValue(msg.Permission))
+	err := ck.RemoveWhitelistRolePermission(ctx, customgovtypes.Role(msg.Role), customgovtypes.PermValue(msg.Permission))
 	if err != nil {
-		return nil, errors.Wrap(customgovtypes.ErrRemovingWhitelist, err.Error())
+		return nil, err
 	}
 
 	return &sdk.Result{}, nil
 }
 
 func handleBlacklistRolePermission(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgBlacklistRolePermission) (*sdk.Result, error) {
-	_, err := validateAndGetPermissionsForRole(ctx, ck, msg.Proposer, customgovtypes.Role(msg.Role))
-	if err != nil {
-		return nil, err
+	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Proposer, customgovtypes.PermUpsertRole)
+	if !isAllowed {
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermUpsertRole.String())
 	}
 
-	err = ck.BlacklistRolePermission(ctx, customgovtypes.Role(msg.Role), customgovtypes.PermValue(msg.Permission))
+	err := ck.BlacklistRolePermission(ctx, customgovtypes.Role(msg.Role), customgovtypes.PermValue(msg.Permission))
 	if err != nil {
-		return nil, errors.Wrap(customgovtypes.ErrBlacklisting, err.Error())
+		return nil, err
 	}
 
 	return &sdk.Result{}, nil
