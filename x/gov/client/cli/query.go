@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
@@ -11,12 +12,21 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/version"
 
 	"github.com/KiraCore/sekai/x/gov/types"
 )
 
+// Proposal flags
 const (
-	FlagRole = "role"
+	FlagRole         = "role"
+	FlagTitle        = "title"
+	FlagDescription  = "description"
+	FlagProposalType = "type"
+	FlagDeposit      = "deposit"
+	flagVoter        = "voter"
+	flagDepositor    = "depositor"
+	FlagProposal     = "proposal"
 )
 
 // GetCmdQueryPermissions the query delegation command.
@@ -235,6 +245,121 @@ func GetCmdQueryCouncilRegistry() *cobra.Command {
 
 	cmd.Flags().String(FlagAddress, "", "the address you want to query information")
 	cmd.Flags().String(FlagMoniker, "", "the moniker you want to query information")
+
+	return cmd
+}
+
+// GetCmdQueryProposals implements a query proposals command. Command to Get a
+// Proposal Information.
+func GetCmdQueryProposals() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "proposals",
+		Short: "Query proposals with optional filters",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query for a all paginated proposals that match optional filters:
+
+Example:
+$ %s query gov proposals --depositor cosmos1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
+$ %s query gov proposals --voter cosmos1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
+`,
+				version.AppName, version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			bechDepositorAddr, _ := cmd.Flags().GetString(flagDepositor)
+			bechVoterAddr, _ := cmd.Flags().GetString(flagVoter)
+
+			if len(bechDepositorAddr) != 0 {
+				_, err := sdk.AccAddressFromBech32(bechDepositorAddr)
+				if err != nil {
+					return err
+				}
+			}
+
+			if len(bechVoterAddr) != 0 {
+				_, err := sdk.AccAddressFromBech32(bechVoterAddr)
+				if err != nil {
+					return err
+				}
+			}
+
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
+			if err != nil {
+				return err
+			}
+			queryClient := types.NewQueryClient(clientCtx)
+
+			res, err := queryClient.Proposals(
+				context.Background(),
+				&types.QueryProposalsRequest{
+					Voter:     bechVoterAddr,
+					Depositor: bechDepositorAddr,
+				},
+			)
+			if err != nil {
+				return err
+			}
+
+			if len(res.GetProposals()) == 0 {
+				return fmt.Errorf("no proposals found")
+			}
+
+			return clientCtx.PrintOutput(res)
+		},
+	}
+
+	cmd.Flags().String(flagDepositor, "", "(optional) filter by proposals deposited on by depositor")
+	cmd.Flags().String(flagVoter, "", "(optional) filter by proposals voted on by voted")
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// GetCmdQueryProposal implements the query proposal command.
+func GetCmdQueryProposal() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "proposal [proposal-id]",
+		Args:  cobra.ExactArgs(1),
+		Short: "Query details of a single proposal",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query details for a proposal. You can find the
+proposal-id by running "%s query gov proposals".
+
+Example:
+$ %s query gov proposal 1
+`,
+				version.AppName, version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
+			if err != nil {
+				return err
+			}
+			queryClient := types.NewQueryClient(clientCtx)
+
+			// validate that the proposal id is a uint
+			proposalID, err := strconv.ParseUint(args[0], 10, 64)
+			if err != nil {
+				return fmt.Errorf("proposal-id %s not a valid uint, please input a valid proposal-id", args[0])
+			}
+
+			// Query the proposal
+			res, err := queryClient.Proposal(
+				context.Background(),
+				&types.QueryProposalRequest{ProposalId: proposalID},
+			)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintOutput(&res.Proposal)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
 
 	return cmd
 }

@@ -4,6 +4,7 @@ package kira.gov;
 import "actor.proto";
 import "councilor.proto";
 import "role.proto";
+import "proposal.proto";
 import "gogoproto/gogo.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/gov/types";
@@ -23,6 +24,12 @@ service Query {
 
   rpc GetNetworkProperties (NetworkPropertiesRequest) returns (NetworkPropertiesResponse) {}
   rpc GetExecutionFee (ExecutionFeeRequest) returns (ExecutionFeeResponse) {}
+
+  // Proposal queries proposal details based on ProposalID.
+  rpc Proposal(QueryProposalRequest) returns (QueryProposalResponse) {}
+
+  // Proposals queries all proposals based on given status.
+  rpc Proposals(QueryProposalsRequest) returns (QueryProposalsResponse) {}
 }
 
 message NetworkPropertiesRequest {}
@@ -81,4 +88,33 @@ message CouncilorByMonikerRequest {
 
 message CouncilorResponse {
   kira.gov.Councilor councilor = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryProposalRequest is the request type for the Query/Proposal RPC method.
+message QueryProposalRequest {
+  // proposal_id defines the unique id of the proposal.
+  uint64 proposal_id = 1;
+}
+
+// QueryProposalResponse is the response type for the Query/Proposal RPC method.
+message QueryProposalResponse {
+  kira.gov.Proposal proposal = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryProposalsRequest is the request type for the Query/Proposals RPC method.
+message QueryProposalsRequest {
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // voter defines the voter address for the proposals.
+  string voter = 1;
+
+  // depositor defines the deposit addresses from the proposals.
+  string depositor = 2;
+}
+
+// QueryProposalsResponse is the response type for the Query/Proposals RPC
+// method.
+message QueryProposalsResponse {
+  repeated kira.gov.Proposal proposals = 1 [(gogoproto.nullable) = false];
 }
