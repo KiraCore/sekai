@@ -96,33 +96,14 @@ func handleMsgProposalUpsertDataRegistry(
 		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermUpsertDataRegistryProposal.String())
 	}
 
-	blockTime := ctx.BlockTime()
-	proposalID, err := ck.GetNextProposalID(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	properties := ck.GetNetworkProperties(ctx)
-
-	proposal, err := customgovtypes.NewProposal(
-		proposalID,
+	return createAndSaveProposalWithContent(ctx, ck,
 		customgovtypes.NewUpsertDataRegistryProposal(
 			msg.Key,
 			msg.Hash,
 			msg.Encoding,
 			msg.Size_,
 		),
-		blockTime,
-		blockTime.Add(time.Minute*time.Duration(properties.ProposalEndTime)),
-		blockTime.Add(time.Minute*time.Duration(properties.ProposalEnactmentTime)),
 	)
-
-	ck.SaveProposal(ctx, proposal)
-	ck.AddToActiveProposals(ctx, proposal)
-
-	return &sdk.Result{
-		Data: keeper.ProposalIDToBytes(proposalID),
-	}, nil
 }
 
 func handleMsgProposalAssignPermission(
@@ -142,6 +123,13 @@ func handleMsgProposalAssignPermission(
 		}
 	}
 
+	return createAndSaveProposalWithContent(ctx, ck, customgovtypes.NewAssignPermissionProposal(
+		msg.Address,
+		customgovtypes.PermValue(msg.Permission),
+	))
+}
+
+func createAndSaveProposalWithContent(ctx sdk.Context, ck keeper.Keeper, content customgovtypes.Content) (*sdk.Result, error) {
 	blockTime := ctx.BlockTime()
 	proposalID, err := ck.GetNextProposalID(ctx)
 	if err != nil {
@@ -152,17 +140,13 @@ func handleMsgProposalAssignPermission(
 
 	proposal, err := customgovtypes.NewProposal(
 		proposalID,
-		customgovtypes.NewAssignPermissionProposal(
-			msg.Address,
-			customgovtypes.PermValue(msg.Permission),
-		),
+		content,
 		blockTime,
 		blockTime.Add(time.Minute*time.Duration(properties.ProposalEndTime)),
 		blockTime.Add(time.Minute*time.Duration(properties.ProposalEnactmentTime)),
 	)
 
 	ck.SaveProposal(ctx, proposal)
-
 	ck.AddToActiveProposals(ctx, proposal)
 
 	return &sdk.Result{
