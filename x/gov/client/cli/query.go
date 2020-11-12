@@ -23,9 +23,7 @@ const (
 	FlagTitle        = "title"
 	FlagDescription  = "description"
 	FlagProposalType = "type"
-	FlagDeposit      = "deposit"
 	flagVoter        = "voter"
-	flagDepositor    = "depositor"
 	FlagProposal     = "proposal"
 )
 
@@ -266,15 +264,7 @@ $ %s query gov proposals --voter cosmos1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
 			),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			bechDepositorAddr, _ := cmd.Flags().GetString(flagDepositor)
 			bechVoterAddr, _ := cmd.Flags().GetString(flagVoter)
-
-			if len(bechDepositorAddr) != 0 {
-				_, err := sdk.AccAddressFromBech32(bechDepositorAddr)
-				if err != nil {
-					return err
-				}
-			}
 
 			if len(bechVoterAddr) != 0 {
 				_, err := sdk.AccAddressFromBech32(bechVoterAddr)
@@ -293,8 +283,7 @@ $ %s query gov proposals --voter cosmos1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
 			res, err := queryClient.Proposals(
 				context.Background(),
 				&types.QueryProposalsRequest{
-					Voter:     bechVoterAddr,
-					Depositor: bechDepositorAddr,
+					Voter: bechVoterAddr,
 				},
 			)
 			if err != nil {
@@ -309,7 +298,6 @@ $ %s query gov proposals --voter cosmos1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
 		},
 	}
 
-	cmd.Flags().String(flagDepositor, "", "(optional) filter by proposals deposited on by depositor")
 	cmd.Flags().String(flagVoter, "", "(optional) filter by proposals voted on by voted")
 	flags.AddQueryFlagsToCmd(cmd)
 

@@ -113,9 +113,6 @@ message QueryProposalsRequest {
 
   // voter defines the voter address for the proposals.
   string voter = 1;
-
-  // depositor defines the deposit addresses from the proposals.
-  string depositor = 2;
 }
 
 // QueryProposalsResponse is the response type for the Query/Proposals RPC
