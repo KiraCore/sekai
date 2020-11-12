@@ -53,6 +53,20 @@ func (k Keeper) GetProposal(ctx sdk.Context, proposalID uint64) (types.Proposal,
 	return prop, true
 }
 
+func (k Keeper) GetProposals(ctx sdk.Context) ([]types.Proposal, error) {
+	proposals := []types.Proposal{}
+	iterator := sdk.KVStorePrefixIterator(ctx.KVStore(k.storeKey), ProposalsPrefix)
+
+	for ; iterator.Valid(); iterator.Next() {
+		var proposal types.Proposal
+		bz := iterator.Value()
+		k.cdc.MustUnmarshalBinaryBare(bz, &proposal)
+		proposals = append(proposals, proposal)
+	}
+
+	return proposals, nil
+}
+
 func (k Keeper) SaveVote(ctx sdk.Context, vote types.Vote) {
 	store := ctx.KVStore(k.storeKey)
 	bz := k.cdc.MustMarshalBinaryBare(&vote)

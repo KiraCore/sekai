@@ -67,6 +67,14 @@ func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
 		cli2.GetCmdQueryPermissions(),
 		cli2.GetCmdQueryNetworkProperties(),
 		cli2.GetCmdQueryExecutionFee(),
+		cli2.GetCmdQueryRolePermissions(),
+		cli2.GetCmdQueryRolesByAddress(),
+		cli2.GetCmdQueryProposals(),
+		cli2.GetCmdQueryCouncilRegistry(),
+		cli2.GetCmdQueryProposal(),
+		cli2.GetCmdQueryVote(),
+		cli2.GetCmdQueryVotes(),
+		cli2.GetCmdQueryWhitelistedProposalVoters(),
 	)
 
 	queryCmd.PersistentFlags().String("node", "tcp://localhost:26657", "<host>:<port> to Tendermint RPC interface for this chain")
@@ -93,6 +101,19 @@ func (am AppModule) InitGenesis(
 
 	for _, actor := range genesisState.NetworkActors {
 		am.customGovKeeper.SaveNetworkActor(ctx, *actor)
+		for _, role := range actor.Roles {
+			am.customGovKeeper.AssignRoleToActor(ctx, *actor, customgovtypes.Role(role))
+		}
+		for _, perm := range actor.Permissions.Whitelist {
+			err := am.customGovKeeper.AddWhitelistPermission(ctx, *actor, customgovtypes.PermValue(perm))
+			if err != nil {
+				panic(err)
+			}
+		}
+		// TODO when we add keeper function for managing blacklist mapping, we can just enable this
+		// for _, perm := range actor.Permissions.Blacklist {
+		// 	am.customGovKeeper.RemoveWhitelistPermission(ctx, *actor, customgovtypes.PermValue(perm))
+		// }
 	}
 
 	for index, perm := range genesisState.Permissions {

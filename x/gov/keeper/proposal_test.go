@@ -54,6 +54,54 @@ func TestKeeper_EncodingContentType(t *testing.T) {
 	require.Equal(t, uint32(types.PermSetPermissions), content.Permission)
 }
 
+func TestKeeper_GetProposals(t *testing.T) {
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, types2.TokensFromConsensusPower(10))
+	addr := addrs[0]
+
+	proposal1, err := types.NewProposal(
+		1,
+		types.NewAssignPermissionProposal(
+			addr,
+			types.PermSetPermissions,
+		),
+		time.Now(),
+		time.Now().Add(1*time.Second),
+		time.Now().Add(10*time.Second),
+	)
+	require.NoError(t, err)
+
+	app.CustomGovKeeper.SaveProposal(ctx, proposal1)
+
+	proposals, err := app.CustomGovKeeper.GetProposals(ctx)
+	require.NoError(t, err)
+	require.Len(t, proposals, 1)
+
+	proposal2, err := types.NewProposal(
+		2,
+		types.NewAssignPermissionProposal(
+			addr,
+			types.PermSetPermissions,
+		),
+		time.Now(),
+		time.Now().Add(1*time.Second),
+		time.Now().Add(10*time.Second),
+	)
+	app.CustomGovKeeper.SaveProposal(ctx, proposal2)
+	proposals, err = app.CustomGovKeeper.GetProposals(ctx)
+	require.NoError(t, err)
+	require.Len(t, proposals, 2)
+	require.Equal(t, proposals[1].ProposalId, proposal2.ProposalId)
+	require.Equal(t, proposals[1].SubmitTime, proposal2.SubmitTime)
+	require.Equal(t, proposals[1].Content, proposal2.Content)
+	require.Equal(t, proposals[1].Result, proposal2.Result)
+	require.Equal(t, proposals[1].VotingStartTime.UTC().String(), proposal2.VotingStartTime.UTC().String())
+	require.Equal(t, proposals[1].VotingEndTime.UTC().String(), proposal2.VotingEndTime.UTC().String())
+	require.Equal(t, proposals[1].EnactmentEndTime.UTC().String(), proposal2.EnactmentEndTime.UTC().String())
+}
+
 func TestSaveProposalReturnsTheProposalID_AndIncreasesLast(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})

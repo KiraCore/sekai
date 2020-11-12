@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.1.7.3] - 11.12.2020
+### Added
+- Added CLI for querying proposals / individual proposal
+- Added CLI for querying votes / individual vote
+- Added CLI for querying whitelisted proposal voters
+
+### Changed
+- Updated genesis actor initialization process
+- Updated proposal end time and enactment time
+- Fixed end blocker concert not registered issue for MsgClaimValidator
+
 ## [0.1.7.2] - 11.11.2020
 
 ### Changed

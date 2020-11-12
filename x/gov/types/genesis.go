@@ -25,8 +25,8 @@ func DefaultGenesis() *GenesisState {
 			MinTxFee:                 100,
 			MaxTxFee:                 1000000,
 			VoteQuorum:               33,
-			ProposalEndTime:          0,
-			ProposalEnactmentTime:    0,
+			ProposalEndTime:          1, // 1min
+			ProposalEnactmentTime:    2, // 2min
 			EnableForeignFeePayments: true,
 		},
 		ExecutionFees: []*ExecutionFee{
