@@ -98,6 +98,19 @@ func (am AppModule) InitGenesis(
 
 	for _, actor := range genesisState.NetworkActors {
 		am.customGovKeeper.SaveNetworkActor(ctx, *actor)
+		for _, role := range actor.Roles {
+			am.customGovKeeper.AssignRoleToActor(ctx, *actor, customgovtypes.Role(role))
+		}
+		for _, perm := range actor.Permissions.Whitelist {
+			err := am.customGovKeeper.AddWhitelistPermission(ctx, *actor, customgovtypes.PermValue(perm))
+			if err != nil {
+				panic(err)
+			}
+		}
+		// TODO when we add keeper function for managing blacklist mapping, we can just enable this
+		// for _, perm := range actor.Permissions.Blacklist {
+		// 	am.customGovKeeper.RemoveWhitelistPermission(ctx, *actor, customgovtypes.PermValue(perm))
+		// }
 	}
 
 	for index, perm := range genesisState.Permissions {
