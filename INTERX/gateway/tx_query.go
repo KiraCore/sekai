@@ -115,7 +115,7 @@ func parseTxType(txType string) string {
 }
 
 func searchTxHashHandle(rpcAddr string, sender string, recipient string, txType string, limit int, txMinHeight int64, txMaxHeight int64) (*tmTypes.ResultTxSearch, error) {
-	var events = make([]string, 0, 4)
+	var events = make([]string, 0, 5)
 
 	if sender != "" {
 		events = append(events, fmt.Sprintf("transfer.sender='%s'", sender))
