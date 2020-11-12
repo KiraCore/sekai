@@ -21,6 +21,7 @@ func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 func processProposal(ctx sdk.Context, k keeper.Keeper, proposalID uint64) {
 	votes := k.GetProposalVotes(ctx, proposalID)
 
+	// TODO: this should get availableVoters by proposal type
 	availableVoters := k.GetNetworkActorsByAbsoluteWhitelistPermission(ctx, types.PermVoteSetPermissionProposal)
 	totalVoters := len(availableVoters)
 	numVotes := len(votes)

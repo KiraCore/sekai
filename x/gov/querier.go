@@ -114,3 +114,28 @@ func (q Querier) Proposals(ctx context.Context, request *types.QueryProposalsReq
 	}
 	return &types.QueryProposalsResponse{Proposals: proposals}, nil
 }
+
+// GetWhitelistedProposalVoters returns whitelisted voters for a proposal for tracking
+func (q Querier) GetWhitelistedProposalVoters(ctx context.Context, request *types.QueryWhitelistedProposalVotersRequest) (*types.QueryWhitelistedProposalVotersResponse, error) {
+	sdkContext := sdk.UnwrapSDKContext(ctx)
+	// TODO: this should get availableVoters by proposal type
+	actors := q.keeper.GetNetworkActorsByAbsoluteWhitelistPermission(sdkContext, types.PermVoteSetPermissionProposal)
+	return &types.QueryWhitelistedProposalVotersResponse{Voters: actors}, nil
+}
+
+// Vote queries voted information based on proposalID, voterAddr.
+func (q Querier) Vote(ctx context.Context, request *types.QueryVoteRequest) (*types.QueryVoteResponse, error) {
+	sdkContext := sdk.UnwrapSDKContext(ctx)
+	vote, found := q.keeper.GetVote(sdkContext, request.ProposalId, request.Voter)
+	if !found {
+		return &types.QueryVoteResponse{Vote: vote}, fmt.Errorf("error getting votes for proposal %d, voter %s", request.ProposalId, request.Voter.String())
+	}
+	return &types.QueryVoteResponse{Vote: vote}, nil
+}
+
+// Votes queries votes of a given proposal.
+func (q Querier) Votes(ctx context.Context, request *types.QueryVotesRequest) (*types.QueryVotesResponse, error) {
+	sdkContext := sdk.UnwrapSDKContext(ctx)
+	votes := q.keeper.GetProposalVotes(sdkContext, request.ProposalId)
+	return &types.QueryVotesResponse{Votes: votes}, nil
+}
