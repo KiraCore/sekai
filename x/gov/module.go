@@ -74,6 +74,7 @@ func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
 		cli2.GetCmdQueryProposal(),
 		cli2.GetCmdQueryVote(),
 		cli2.GetCmdQueryVotes(),
+		cli2.GetCmdQueryWhitelistedProposalVoters(),
 	)
 
 	queryCmd.PersistentFlags().String("node", "tcp://localhost:26657", "<host>:<port> to Tendermint RPC interface for this chain")

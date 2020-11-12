@@ -316,6 +316,13 @@ sekaid tx customgov role remove
 sekaid tx customgov role remove-blacklist-permission
 sekaid tx customgov role remove-whitelist-permission
 sekaid tx customgov role whitelist-permission
+
+# querying for voters of a specific proposal
+sekaid query customgov voters 1
+# querying for votes of a specific proposal
+sekaid query customgov votes 1
+# querying for a vote of a specific propsal/voter pair
+sekaid query customgov vote 1 $(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid)
 ```
 
 # Commands for adding more validators
