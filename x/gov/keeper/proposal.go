@@ -55,16 +55,15 @@ func (k Keeper) GetProposal(ctx sdk.Context, proposalID uint64) (types.Proposal,
 
 func (k Keeper) GetProposals(ctx sdk.Context) ([]types.Proposal, error) {
 	proposals := []types.Proposal{}
-	nextProposalIndex, err := k.GetNextProposalID(ctx)
-	if err != nil {
-		return proposals, err
+	iterator := sdk.KVStorePrefixIterator(ctx.KVStore(k.storeKey), ProposalsPrefix)
+
+	for ; iterator.Valid(); iterator.Next() {
+		var proposal types.Proposal
+		bz := iterator.Value()
+		k.cdc.MustUnmarshalBinaryBare(bz, &proposal)
+		proposals = append(proposals, proposal)
 	}
-	for i := uint64(0); i < nextProposalIndex; i++ {
-		proposal, found := k.GetProposal(ctx, i)
-		if found {
-			proposals = append(proposals, proposal)
-		}
-	}
+
 	return proposals, nil
 }
 
