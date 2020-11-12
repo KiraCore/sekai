@@ -472,3 +472,51 @@ $ %[1]s query gov votes 1
 
 	return cmd
 }
+
+// GetCmdQueryWhitelistedProposalVoters implements the command to query for possible proposal voters.
+func GetCmdQueryWhitelistedProposalVoters() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "voters [proposal-id]",
+		Args:  cobra.ExactArgs(1),
+		Short: "Query voters of a proposal",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query voters for a single proposal by its identifier.
+
+Example:
+$ %[1]s query gov voters 1
+`,
+				version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
+			if err != nil {
+				return err
+			}
+			queryClient := types.NewQueryClient(clientCtx)
+
+			// validate that the proposal id is a uint
+			proposalID, err := strconv.ParseUint(args[0], 10, 64)
+			if err != nil {
+				return fmt.Errorf("proposal-id %s not a valid int, please input a valid proposal-id", args[0])
+			}
+
+			res, err := queryClient.GetWhitelistedProposalVoters(
+				context.Background(),
+				&types.QueryWhitelistedProposalVotersRequest{ProposalId: proposalID},
+			)
+
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintOutput(res)
+
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
