@@ -49,6 +49,8 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 		// Proposal related
 		case *customgovtypes.MsgProposalAssignPermission:
 			return handleMsgProposalAssignPermission(ctx, ck, msg)
+		case *customgovtypes.MsgProposalUpsertDataRegistry:
+			return handleMsgProposalUpsertDataRegistry(ctx, ck, msg)
 		case *customgovtypes.MsgVoteProposal:
 			return handleMsgVoteProposal(ctx, ck, msg)
 
@@ -82,6 +84,52 @@ func handleMsgVoteProposal(
 	ck.SaveVote(ctx, vote)
 
 	return &sdk.Result{}, nil
+}
+
+func handleMsgProposalUpsertDataRegistry(
+	ctx sdk.Context,
+	ck keeper.Keeper,
+	msg *customgovtypes.MsgProposalUpsertDataRegistry,
+) (*sdk.Result, error) {
+	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Proposer, customgovtypes.PermUpsertDataRegistryProposal)
+	if !isAllowed {
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermUpsertDataRegistryProposal.String())
+	}
+
+	//
+	//actor, found := ck.GetNetworkActorByAddress(ctx, msg.Address)
+	//if found { // Actor exists
+	//	if actor.Permissions.IsWhitelisted(customgovtypes.PermValue(msg.Permission)) {
+	//		return nil, errors.Wrap(customgovtypes.ErrWhitelisting, "permission already whitelisted")
+	//	}
+	//}
+	//
+	//blockTime := ctx.BlockTime()
+	//proposalID, err := ck.GetNextProposalID(ctx)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//
+	//properties := ck.GetNetworkProperties(ctx)
+	//
+	//proposal, err := customgovtypes.NewProposal(
+	//	proposalID,
+	//	customgovtypes.NewAssignPermissionProposal(
+	//		msg.Address,
+	//		customgovtypes.PermValue(msg.Permission),
+	//	),
+	//	blockTime,
+	//	blockTime.Add(time.Minute*time.Duration(properties.ProposalEndTime)),
+	//	blockTime.Add(time.Minute*time.Duration(properties.ProposalEnactmentTime)),
+	//)
+	//
+	//ck.SaveProposal(ctx, proposal)
+	//ck.AddToActiveProposals(ctx, proposal)
+	//
+	//return &sdk.Result{
+	//	Data: keeper.ProposalIDToBytes(proposalID),
+	//}, nil
+	return nil, nil
 }
 
 func handleMsgProposalAssignPermission(

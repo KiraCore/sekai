@@ -1229,6 +1229,61 @@ func TestHandler_ProposalAssignPermission(t *testing.T) {
 	require.True(t, iterator.Valid())
 }
 
+func TestHandler_CreateProposalUpsertDataRegistry_Errors(t *testing.T) {
+	proposerAddr, err := sdk.AccAddressFromBech32("kira1alzyfq40zjsveat87jlg8jxetwqmr0a29sgd0f")
+	require.NoError(t, err)
+
+	tests := []struct {
+		name         string
+		msg          *types.MsgProposalUpsertDataRegistry
+		preparePerms func(t *testing.T, app *simapp.SimApp, ctx sdk.Context)
+		expectedErr  error
+	}{
+		{
+			"Proposer does not have Perm",
+			types.NewMsgProposalUpsertDataRegistry(
+				proposerAddr,
+				"theKey",
+				"theHash",
+				"theEncoding",
+				1234,
+			),
+			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
+			errors.Wrap(types.ErrNotEnoughPermissions, types.PermUpsertDataRegistryProposal.String()),
+		},
+		//{
+		//	"address already has that permission",
+		//	types.NewMsgProposalAssignPermission(
+		//		proposerAddr, addr, types.PermClaimValidator,
+		//	),
+		//	func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+		//		proposerActor := types.NewDefaultActor(proposerAddr)
+		//		err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerActor, types.PermCreateSetPermissionsProposal)
+		//		require.NoError(t, err2)
+		//
+		//		actor := types.NewDefaultActor(addr)
+		//		err2 = app.CustomGovKeeper.AddWhitelistPermission(ctx, actor, types.PermClaimValidator)
+		//		require.NoError(t, err2)
+		//	},
+		//	fmt.Errorf("permission already whitelisted: error adding to whitelist"),
+		//},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			app := simapp.Setup(false)
+			ctx := app.NewContext(false, tmproto.Header{})
+
+			tt.preparePerms(t, app, ctx)
+
+			handler := gov.NewHandler(app.CustomGovKeeper)
+			_, err := handler(ctx, tt.msg)
+			require.EqualError(t, err, tt.expectedErr.Error())
+		})
+	}
+}
+
 func TestHandler_VoteProposal_Errors(t *testing.T) {
 	voterAddr, err := sdk.AccAddressFromBech32("kira15ky9du8a2wlstz6fpx3p4mqpjyrm5cgqzp4f3d")
 	require.NoError(t, err)

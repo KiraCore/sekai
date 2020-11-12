@@ -38,5 +38,8 @@ enum PermValue {
 
   // PERMISSION_UPSERT_ROLE makes possible to add, modify and assign roles.
   PERMISSION_UPSERT_ROLE = 9  [(gogoproto.enumvalue_customname) = "PermUpsertRole"];
+
+  // PERMISSION_UPSERT_DATA_REGISTRY_PROPOSAL
+  PERMISSION_UPSERT_DATA_REGISTRY_PROPOSAL = 10 [(gogoproto.enumvalue_customname) = "PermUpsertDataRegistryProposal"];
 }
 
