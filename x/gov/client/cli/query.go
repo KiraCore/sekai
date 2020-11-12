@@ -363,3 +363,112 @@ $ %s query gov proposal 1
 
 	return cmd
 }
+
+// GetCmdQueryVote implements the query proposal vote command. Command to Get a
+// Proposal Information.
+func GetCmdQueryVote() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "vote [proposal-id] [voter-addr]",
+		Args:  cobra.ExactArgs(2),
+		Short: "Query details of a single vote",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query details for a single vote on a proposal given its identifier.
+
+Example:
+$ %s query gov vote 1 kira1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
+`,
+				version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
+			if err != nil {
+				return err
+			}
+			queryClient := types.NewQueryClient(clientCtx)
+
+			// validate that the proposal id is a uint
+			proposalID, err := strconv.ParseUint(args[0], 10, 64)
+			if err != nil {
+				return fmt.Errorf("proposal-id %s not a valid int, please input a valid proposal-id", args[0])
+			}
+
+			// check to see if the proposal is in the store
+			_, err = queryClient.Proposal(
+				context.Background(),
+				&types.QueryProposalRequest{ProposalId: proposalID},
+			)
+			if err != nil {
+				return fmt.Errorf("failed to fetch proposal-id %d: %s", proposalID, err)
+			}
+
+			voterAddr, err := sdk.AccAddressFromBech32(args[1])
+			if err != nil {
+				return err
+			}
+
+			res, err := queryClient.Vote(
+				context.Background(),
+				&types.QueryVoteRequest{ProposalId: proposalID, Voter: voterAddr},
+			)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintOutput(&res.Vote)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// GetCmdQueryVotes implements the command to query for proposal votes.
+func GetCmdQueryVotes() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "votes [proposal-id]",
+		Args:  cobra.ExactArgs(1),
+		Short: "Query votes on a proposal",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query vote details for a single proposal by its identifier.
+
+Example:
+$ %[1]s query gov votes 1
+`,
+				version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
+			if err != nil {
+				return err
+			}
+			queryClient := types.NewQueryClient(clientCtx)
+
+			// validate that the proposal id is a uint
+			proposalID, err := strconv.ParseUint(args[0], 10, 64)
+			if err != nil {
+				return fmt.Errorf("proposal-id %s not a valid int, please input a valid proposal-id", args[0])
+			}
+
+			res, err := queryClient.Votes(
+				context.Background(),
+				&types.QueryVotesRequest{ProposalId: proposalID},
+			)
+
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintOutput(res)
+
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
