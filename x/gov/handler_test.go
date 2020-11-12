@@ -1251,22 +1251,6 @@ func TestHandler_CreateProposalUpsertDataRegistry_Errors(t *testing.T) {
 			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
 			errors.Wrap(types.ErrNotEnoughPermissions, types.PermUpsertDataRegistryProposal.String()),
 		},
-		//{
-		//	"address already has that permission",
-		//	types.NewMsgProposalAssignPermission(
-		//		proposerAddr, addr, types.PermClaimValidator,
-		//	),
-		//	func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
-		//		proposerActor := types.NewDefaultActor(proposerAddr)
-		//		err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerActor, types.PermCreateSetPermissionsProposal)
-		//		require.NoError(t, err2)
-		//
-		//		actor := types.NewDefaultActor(addr)
-		//		err2 = app.CustomGovKeeper.AddWhitelistPermission(ctx, actor, types.PermClaimValidator)
-		//		require.NoError(t, err2)
-		//	},
-		//	fmt.Errorf("permission already whitelisted: error adding to whitelist"),
-		//},
 	}
 
 	for _, tt := range tests {
@@ -1282,6 +1266,70 @@ func TestHandler_CreateProposalUpsertDataRegistry_Errors(t *testing.T) {
 			require.EqualError(t, err, tt.expectedErr.Error())
 		})
 	}
+}
+
+func TestHandler_ProposalUpsertDataRegistry(t *testing.T) {
+	proposerAddr, err := sdk.AccAddressFromBech32("kira1alzyfq40zjsveat87jlg8jxetwqmr0a29sgd0f")
+	require.NoError(t, err)
+
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{
+		Time: time.Now(),
+	})
+
+	// Set proposer Permissions
+	proposerActor := types.NewDefaultActor(proposerAddr)
+	err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerActor, types.PermUpsertDataRegistryProposal)
+	require.NoError(t, err2)
+
+	properties := app.CustomGovKeeper.GetNetworkProperties(ctx)
+	properties.ProposalEndTime = 10
+	app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
+
+	handler := gov.NewHandler(app.CustomGovKeeper)
+	res, err := handler(
+		ctx,
+		types.NewMsgProposalUpsertDataRegistry(
+			proposerAddr,
+			"theKey",
+			"theHash",
+			"theEncoding",
+			1234,
+		),
+	)
+	require.NoError(t, err)
+	require.Equal(t, types2.GetProposalIDBytes(1), res.Data)
+
+	savedProposal, found := app.CustomGovKeeper.GetProposal(ctx, 1)
+	require.True(t, found)
+
+	expectedSavedProposal, err := types.NewProposal(
+		1,
+		types.NewUpsertDataRegistryProposal(
+			"theKey",
+			"theHash",
+			"theEncoding",
+			1234,
+		),
+		ctx.BlockTime(),
+		ctx.BlockTime().Add(time.Minute*time.Duration(properties.ProposalEndTime)),
+		ctx.BlockTime().Add(time.Minute*time.Duration(properties.ProposalEnactmentTime)),
+	)
+	require.NoError(t, err)
+	require.Equal(t, expectedSavedProposal, savedProposal)
+
+	// Next proposal ID is increased.
+	id, err := app.CustomGovKeeper.GetNextProposalID(ctx)
+	require.NoError(t, err)
+	require.Equal(t, uint64(2), id)
+
+	// Is not on finished active proposals.
+	iterator := app.CustomGovKeeper.GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx, ctx.BlockTime())
+	require.False(t, iterator.Valid())
+
+	ctx = ctx.WithBlockTime(ctx.BlockTime().Add(time.Minute * 10))
+	iterator = app.CustomGovKeeper.GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx, ctx.BlockTime())
+	require.True(t, iterator.Valid())
 }
 
 func TestHandler_VoteProposal_Errors(t *testing.T) {

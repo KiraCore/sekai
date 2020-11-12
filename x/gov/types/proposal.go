@@ -10,7 +10,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/types"
 )
 
-const AssignPermissionProposalType = "AssignPermission"
+const (
+	AssignPermissionProposalType = "AssignPermission"
+	UpsertDataRegistryProposalType = "UpsertDataRegistry"
+)
 
 var _ Content = &AssignPermissionProposal{}
 
@@ -68,4 +71,17 @@ func NewAssignPermissionProposal(
 
 func (m *AssignPermissionProposal) ProposalType() string {
 	return AssignPermissionProposalType
+}
+
+func NewUpsertDataRegistryProposal(key, hash, encoding string, size uint64) Content {
+	return &UpsertDataRegistryProposal{
+		Key:      key,
+		Hash:     hash,
+		Encoding: encoding,
+		Size_:    size,
+	}
+}
+
+func (m *UpsertDataRegistryProposal) ProposalType() string {
+	return UpsertDataRegistryProposalType
 }

@@ -20,6 +20,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 
 func registerProposalCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgProposalAssignPermission{}, "kiraHub/MsgProposalAssignPermission", nil)
+	cdc.RegisterConcrete(&MsgProposalUpsertDataRegistry{}, "kiraHub/MsgProposalUpsertDataRegistry", nil)
 	cdc.RegisterConcrete(&MsgVoteProposal{}, "kiraHub/MsgVoteProposal", nil)
 }
 
@@ -70,6 +71,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		"kira.gov.Content",
 		(*Content)(nil),
 		&AssignPermissionProposal{},
+		&UpsertDataRegistryProposal{},
 	)
 
 }
