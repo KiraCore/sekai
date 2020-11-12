@@ -102,3 +102,16 @@ message AssignPermissionProposal {
 
   uint32 permission = 2;
 }
+
+message UpsertDataRegistryProposal {
+  option (cosmos_proto.implements_interface) = "Content";
+  option (gogoproto.equal) = true;
+
+  string key = 1;
+
+  string hash = 2;
+
+  string encoding = 3;
+
+  uint64 size = 4;
+}
