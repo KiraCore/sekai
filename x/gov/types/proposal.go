@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	AssignPermissionProposalType = "AssignPermission"
+	AssignPermissionProposalType   = "AssignPermission"
 	UpsertDataRegistryProposalType = "UpsertDataRegistry"
 )
 
@@ -73,6 +73,14 @@ func (m *AssignPermissionProposal) ProposalType() string {
 	return AssignPermissionProposalType
 }
 
+func (m *AssignPermissionProposal) VotePermission() PermValue {
+	return PermVoteSetPermissionProposal
+}
+
+func (m *AssignPermissionProposal) ProposePermission() PermValue {
+	return PermCreateSetPermissionsProposal
+}
+
 func NewUpsertDataRegistryProposal(key, hash, encoding string, size uint64) Content {
 	return &UpsertDataRegistryProposal{
 		Key:      key,
@@ -84,4 +92,12 @@ func NewUpsertDataRegistryProposal(key, hash, encoding string, size uint64) Cont
 
 func (m *UpsertDataRegistryProposal) ProposalType() string {
 	return UpsertDataRegistryProposalType
+}
+
+func (m *UpsertDataRegistryProposal) VotePermission() PermValue {
+	return PermVoteUpsertDataRegistryProposal
+}
+
+func (m *UpsertDataRegistryProposal) ProposePermission() PermValue {
+	return PermUpsertDataRegistryProposal
 }
