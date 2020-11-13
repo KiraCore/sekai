@@ -8,11 +8,13 @@
         "mnemonic": "equip exercise shoot mad inside floor wheel loan visual stereo build frozen potato always bulb naive subway foster marine erosion shuffle flee action there",
         "faucet_amounts": {
             "stake": 100000,
-            "validatortoken": 100000
+            "validatortoken": 100000,
+            "ukex": 100000
         },
         "faucet_minimum_amounts": {
             "stake": 100,
-            "validatortoken": 100
+            "validatortoken": 100,
+            "ukex": 100
         },
         "time_limit": 20
     },

@@ -107,7 +107,7 @@ func serveFaucet(r *http.Request, gwCosmosmux *runtime.ServeMux, request InterxR
 	}
 
 	msgs := []sdk.Msg{msgSend}
-	fee := auth.NewStdFee(200000, sdk.NewCoins())
+	fee := auth.NewStdFee(200000, sdk.NewCoins(sdk.NewInt64Coin(token, 2000))) //Fee handling
 	memo := "Faucet Transfer"
 
 	sigs := make([]auth.StdSignature, 1)

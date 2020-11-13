@@ -294,7 +294,8 @@ func BroadcastTransaction(rpcAddr string, txBytes []byte) (string, error) {
 		Jsonrpc string `json:"jsonrpc"`
 		ID      int    `json:"id"`
 		Result  struct {
-			Hash string `json:"hash"`
+			Height string `json:"height"`
+			Hash   string `json:"hash"`
 		} `json:"result,omitempty"`
 		Error struct {
 			Message string `json:"message"`
@@ -309,6 +310,10 @@ func BroadcastTransaction(rpcAddr string, txBytes []byte) (string, error) {
 
 	if resp.StatusCode != http.StatusOK {
 		return "", errors.New(result.Error.Message)
+	}
+
+	if result.Result.Height == "0" {
+		return "", fmt.Errorf("failed to send tokens")
 	}
 
 	return result.Result.Hash, nil
