@@ -103,6 +103,16 @@ message MsgRemoveBlacklistRolePermission {
   uint32 permission = 3;
 }
 
+enum NetworkProperty {
+  option (gogoproto.goproto_enum_prefix) = false;
+
+  MIN_TX_FEE = 0 [(gogoproto.enumvalue_customname) = "MinTxFee"];
+  MAX_TX_FEE = 1 [(gogoproto.enumvalue_customname) = "MaxTxFee"];
+  VOTE_QUORUM = 2 [(gogoproto.enumvalue_customname) = "VoteQuorum"];
+  PROPOSAL_END_TIME = 3 [(gogoproto.enumvalue_customname) = "ProposalEndTime"];
+  PROPOSAL_ENACTMENT_TIME = 4 [(gogoproto.enumvalue_customname) = "ProposalEnactmentTime"];
+  ENABLE_FOREIGN_TX_FEE_PAYMENTS = 5 [(gogoproto.enumvalue_customname) = "EnableForeignFeePayments"];
+}
 
 message NetworkProperties {
   uint64 min_tx_fee = 1;
