@@ -1343,7 +1343,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 		expectedErr  error
 	}{
 		{
-			"Voter does not have permission to vote this proposal",
+			"Voter does not have permission to vote this proposal: Assign Permission",
 			types.NewMsgVoteProposal(
 				1, voterAddr, types.OptionAbstain,
 			),
@@ -1373,6 +1373,40 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 				app.CustomGovKeeper.SaveProposal(ctx, proposal)
 			},
 			fmt.Errorf("%s: not enough permissions", types.PermVoteSetPermissionProposal.String()),
+		},
+		{
+			"Voter does not have permission to vote this proposal: Change Data Registry",
+			types.NewMsgVoteProposal(
+				1, voterAddr, types.OptionAbstain,
+			),
+			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+				actor := types.NewNetworkActor(
+					voterAddr,
+					types.Roles{},
+					types.Active,
+					[]types.VoteOption{},
+					types.NewPermissions(nil, nil),
+					1,
+				)
+				app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
+
+				// Create proposal
+				proposal, err := types.NewProposal(
+					1,
+					types.NewUpsertDataRegistryProposal(
+						"theKey",
+						"theHash",
+						"theEncoding",
+						1234,
+					),
+					ctx.BlockTime(),
+					ctx.BlockTime().Add(time.Second*1),
+					ctx.BlockTime().Add(time.Second*10),
+				)
+				require.NoError(t, err)
+				app.CustomGovKeeper.SaveProposal(ctx, proposal)
+			},
+			fmt.Errorf("%s: not enough permissions", types.PermVoteUpsertDataRegistryProposal.String()),
 		},
 		{
 			"Proposal does not exist",
