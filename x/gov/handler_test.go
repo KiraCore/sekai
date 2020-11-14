@@ -1347,8 +1347,32 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 			types.NewMsgVoteProposal(
 				1, voterAddr, types.OptionAbstain,
 			),
-			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
-			fmt.Errorf("PermVoteSetPermissionProposal: not enough permissions"),
+			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+				actor := types.NewNetworkActor(
+					voterAddr,
+					types.Roles{},
+					types.Active,
+					[]types.VoteOption{},
+					types.NewPermissions(nil, nil),
+					1,
+				)
+				app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
+
+				// Create proposal
+				proposal, err := types.NewProposal(
+					1,
+					types.NewAssignPermissionProposal(
+						voterAddr,
+						types.PermClaimCouncilor,
+					),
+					ctx.BlockTime(),
+					ctx.BlockTime().Add(time.Second*1),
+					ctx.BlockTime().Add(time.Second*10),
+				)
+				require.NoError(t, err)
+				app.CustomGovKeeper.SaveProposal(ctx, proposal)
+			},
+			fmt.Errorf("%s: not enough permissions", types.PermVoteSetPermissionProposal.String()),
 		},
 		{
 			"Proposal does not exist",

@@ -65,19 +65,19 @@ func handleMsgVoteProposal(
 	ck keeper.Keeper,
 	msg *customgovtypes.MsgVoteProposal,
 ) (*sdk.Result, error) {
-	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Voter, customgovtypes.PermVoteSetPermissionProposal)
-	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermVoteSetPermissionProposal")
-	}
-
 	actor, found := ck.GetNetworkActorByAddress(ctx, msg.Voter)
 	if !found || !actor.IsActive() {
 		return nil, customgovtypes.ErrActorIsNotActive
 	}
 
-	_, found = ck.GetProposal(ctx, msg.ProposalId)
+	proposal, found := ck.GetProposal(ctx, msg.ProposalId)
 	if !found {
 		return nil, customgovtypes.ErrProposalDoesNotExist
+	}
+
+	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Voter, proposal.GetContent().VotePermission())
+	if !isAllowed {
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, proposal.GetContent().VotePermission().String())
 	}
 
 	vote := customgovtypes.NewVote(msg.ProposalId, msg.Voter, msg.Option)
