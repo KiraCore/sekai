@@ -77,12 +77,13 @@ func (m *AssignPermissionProposal) VotePermission() PermValue {
 	return PermVoteSetPermissionProposal
 }
 
-func NewUpsertDataRegistryProposal(key, hash, encoding string, size uint64) Content {
+func NewUpsertDataRegistryProposal(key, hash, reference, encoding string, size uint64) Content {
 	return &UpsertDataRegistryProposal{
-		Key:      key,
-		Hash:     hash,
-		Encoding: encoding,
-		Size_:    size,
+		Key:       key,
+		Hash:      hash,
+		Reference: reference,
+		Encoding:  encoding,
+		Size_:     size,
 	}
 }
 

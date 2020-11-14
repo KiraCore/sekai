@@ -100,6 +100,7 @@ func handleMsgProposalUpsertDataRegistry(
 		customgovtypes.NewUpsertDataRegistryProposal(
 			msg.Key,
 			msg.Hash,
+			msg.Reference,
 			msg.Encoding,
 			msg.Size_,
 		),

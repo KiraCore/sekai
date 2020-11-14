@@ -80,9 +80,11 @@ message MsgProposalUpsertDataRegistry {
 
   string hash = 3;
 
-  string encoding = 4;
+  string reference = 4;
 
-  uint64 size = 5;
+  string encoding = 5;
+
+  uint64 size = 6;
 }
 
 message Proposal {
@@ -126,7 +128,9 @@ message UpsertDataRegistryProposal {
 
   string hash = 2;
 
-  string encoding = 3;
+  string reference = 3;
 
-  uint64 size = 4;
+  string encoding = 4;
+
+  uint64 size = 5;
 }

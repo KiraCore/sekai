@@ -454,13 +454,14 @@ func (m *MsgProposalAssignPermission) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgProposalUpsertDataRegistry(proposer sdk.AccAddress, key, hash, encoding string, size uint64) *MsgProposalUpsertDataRegistry {
+func NewMsgProposalUpsertDataRegistry(proposer sdk.AccAddress, key, hash, reference, encoding string, size uint64) *MsgProposalUpsertDataRegistry {
 	return &MsgProposalUpsertDataRegistry{
-		Proposer: proposer,
-		Key:      key,
-		Hash:     hash,
-		Encoding: encoding,
-		Size_:    size,
+		Proposer:  proposer,
+		Key:       key,
+		Hash:      hash,
+		Reference: reference,
+		Encoding:  encoding,
+		Size_:     size,
 	}
 }
 

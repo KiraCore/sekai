@@ -1245,6 +1245,7 @@ func TestHandler_CreateProposalUpsertDataRegistry_Errors(t *testing.T) {
 				proposerAddr,
 				"theKey",
 				"theHash",
+				"theReference",
 				"theEncoding",
 				1234,
 			),
@@ -1293,6 +1294,7 @@ func TestHandler_ProposalUpsertDataRegistry(t *testing.T) {
 			proposerAddr,
 			"theKey",
 			"theHash",
+			"theReference",
 			"theEncoding",
 			1234,
 		),
@@ -1308,6 +1310,7 @@ func TestHandler_ProposalUpsertDataRegistry(t *testing.T) {
 		types.NewUpsertDataRegistryProposal(
 			"theKey",
 			"theHash",
+			"theReference",
 			"theEncoding",
 			1234,
 		),
@@ -1396,6 +1399,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 					types.NewUpsertDataRegistryProposal(
 						"theKey",
 						"theHash",
+						"theReference",
 						"theEncoding",
 						1234,
 					),
