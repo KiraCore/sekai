@@ -572,9 +572,17 @@ func GetTxProposalSetNetworkProperty() *cobra.Command {
 		Use:   "set-network-property <property> <value>",
 		Short: "Create a proposal to set a value on a network property.",
 		Long: `
-		$ %s tx customgov proposal set-network-property MinTxFee 100 --from=<key_or_address>
+		$ %s tx customgov proposal set-network-property MIN_TX_FEE 100 --from=<key_or_address>
+
+		Available properties:
+			MIN_TX_FEE
+			MAX_TX_FEE
+			VOTE_QUORUM
+			PROPOSAL_END_TIME
+			PROPOSAL_ENACTMENT_TIME
+			ENABLE_FOREIGN_TX_FEE_PAYMENTS
 		`,
-		Args: cobra.ExactArgs(1),
+		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
