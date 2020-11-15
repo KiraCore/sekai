@@ -14,6 +14,7 @@ import (
 const (
 	AssignPermissionProposalType   = "AssignPermission"
 	SetNetworkPropertyProposalType = "SetNetworkProperty"
+	UpsertDataRegistryProposalType = "UpsertDataRegistry"
 )
 
 var _ Content = &AssignPermissionProposal{}
@@ -93,14 +94,29 @@ func (m *SetNetworkPropertyProposal) ProposalType() string {
 	return SetNetworkPropertyProposalType
 }
 
-// VotePermissionByProposal returns required permission to vote on a proposal type
-func VotePermissionByProposal(proposalType string) PermValue {
-	switch proposalType {
-	case SetNetworkPropertyProposalType:
-		return PermVoteSetNetworkPropertyProposal
-	case AssignPermissionProposalType:
-		return PermVoteSetPermissionProposal
-	default:
-		return PermZero
+// VotePermission returns permission to vote on this proposal
+func (m *SetNetworkPropertyProposal) VotePermission() PermValue {
+	return PermVoteSetNetworkPropertyProposal
+}
+
+func (m *AssignPermissionProposal) VotePermission() PermValue {
+	return PermVoteSetPermissionProposal
+}
+
+func NewUpsertDataRegistryProposal(key, hash, reference, encoding string, size uint64) Content {
+	return &UpsertDataRegistryProposal{
+		Key:       key,
+		Hash:      hash,
+		Reference: reference,
+		Encoding:  encoding,
+		Size_:     size,
 	}
+}
+
+func (m *UpsertDataRegistryProposal) ProposalType() string {
+	return UpsertDataRegistryProposalType
+}
+
+func (m *UpsertDataRegistryProposal) VotePermission() PermValue {
+	return PermVoteUpsertDataRegistryProposal
 }

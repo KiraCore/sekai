@@ -26,8 +26,7 @@ func processProposal(ctx sdk.Context, k keeper.Keeper, proposalID uint64) {
 
 	votes := k.GetProposalVotes(ctx, proposalID)
 
-	requiredPermission := types.VotePermissionByProposal(proposal.GetContent().ProposalType())
-	availableVoters := k.GetNetworkActorsByAbsoluteWhitelistPermission(ctx, requiredPermission)
+	availableVoters := k.GetNetworkActorsByAbsoluteWhitelistPermission(ctx, proposal.GetContent().VotePermission())
 	totalVoters := len(availableVoters)
 	numVotes := len(votes)
 
@@ -64,10 +63,11 @@ func processEnactmentProposal(ctx sdk.Context, k keeper.Keeper, proposalID uint6
 			applyAssignPermissionProposal(ctx, k, proposal)
 		case types.SetNetworkPropertyProposalType:
 			applySetNetworkPropertyProposal(ctx, k, proposal)
+		case types.UpsertDataRegistryProposalType:
+			applyUpsertDataRegistryProposal(ctx, k, proposal)
 		default:
 			panic("invalid proposal type")
 		}
-
 	}
 
 	k.RemoveEnactmentProposal(ctx, proposal)
@@ -94,4 +94,12 @@ func applySetNetworkPropertyProposal(ctx sdk.Context, k keeper.Keeper, proposal 
 	if err != nil {
 		panic("error setting network property")
 	}
+}
+
+func applyUpsertDataRegistryProposal(ctx sdk.Context, k keeper.Keeper, proposal types.Proposal) {
+	p := proposal.GetContent().(*types.UpsertDataRegistryProposal)
+
+	entry := types.NewDataRegistryEntry(p.Hash, p.Reference, p.Encoding, p.Size_)
+
+	k.UpsertDataRegistryEntry(ctx, p.Key, entry)
 }
