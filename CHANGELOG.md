@@ -1,8 +1,9 @@
 # Changelog
 
-## [Unreleased] - 11.12.2020
+## [0.1.7.4] - 11.15.2020
 ### Added
 - Proposal to upsert the Data Registry. (CLI too)
+- Proposal to change Network Properties. (CLI too)
 
 ### Changed
 - Now it is more generic to be able to add new proposals in the complete flow.
