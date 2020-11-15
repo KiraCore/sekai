@@ -65,6 +65,7 @@ func NewTxProposalCmds() *cobra.Command {
 
 	proposalCmd.AddCommand(GetTxProposalAssignPermission())
 	proposalCmd.AddCommand(GetTxVoteProposal())
+	proposalCmd.AddCommand(GetTxProposalSetNetworkProperty())
 
 	return proposalCmd
 }
@@ -561,6 +562,49 @@ func GetTxRemoveRole() *cobra.Command {
 
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)
 	_ = cmd.MarkFlagRequired(cli.FlagAddr)
+
+	return cmd
+}
+
+// GetTxProposalSetNetworkProperty defines command to send proposal tx to modify a network property
+func GetTxProposalSetNetworkProperty() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "set-network-property <property> <value>",
+		Short: "Create a proposal to set a value on a network property.",
+		Long: `
+		$ %s tx customgov proposal set-network-property MinTxFee 100 --from=<key_or_address>
+		`,
+		Args: cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			property, ok := types.NetworkProperty_value[args[0]]
+			if !ok {
+				return fmt.Errorf("invalid network property name: %w", err)
+			}
+
+			value, err := strconv.Atoi(args[1])
+			if err != nil {
+				return fmt.Errorf("invalid network property value: %w", err)
+			}
+
+			msg := types.NewMsgProposalSetNetworkProperty(
+				clientCtx.FromAddress,
+				types.NetworkProperty(property),
+				uint64(value),
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
 }
