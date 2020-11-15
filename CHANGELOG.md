@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased] - 11.12.2020
+### Added
+- Proposal to upsert the Data Registry. (CLI too)
+
+### Changed
+- Now it is more generic to be able to add new proposals in the complete flow.
+
 ## [0.1.7.3] - 11.12.2020
 ### Added
 - Added CLI for querying proposals / individual proposal

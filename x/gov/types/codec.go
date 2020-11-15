@@ -64,6 +64,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgRemoveBlacklistRolePermission{},
 
 		&MsgProposalAssignPermission{},
+		&MsgProposalUpsertDataRegistry{},
 		&MsgVoteProposal{},
 	)
 

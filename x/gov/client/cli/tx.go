@@ -606,6 +606,49 @@ func GetTxProposalAssignPermission() *cobra.Command {
 	return cmd
 }
 
+func GetTxProposalUpsertDataRegistry() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "upsert-data-registry key hash",
+		Short: "Upsert a key in the data registry",
+		Args:  cobra.ExactArgs(5),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			key := args[0]
+			hash := args[1]
+			reference := args[2]
+			encoding := args[3]
+			size, err := strconv.Atoi(args[4])
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgProposalUpsertDataRegistry(
+				clientCtx.FromAddress,
+				key,
+				hash,
+				reference,
+				encoding,
+				uint64(size),
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	cmd.Flags().String(cli.FlagAddr, "", "the address to set permissions")
+
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+	_ = cmd.MarkFlagRequired(cli.FlagAddr)
+
+	return cmd
+}
+
 func GetTxVoteProposal() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "vote proposal-id vote-option",
