@@ -67,7 +67,7 @@ func handleMsgVoteProposal(
 ) (*sdk.Result, error) {
 	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Voter, customgovtypes.PermVoteSetPermissionProposal)
 	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermVoteSetPermissionProposal")
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermVoteSetPermissionProposal.String())
 	}
 
 	actor, found := ck.GetNetworkActorByAddress(ctx, msg.Voter)

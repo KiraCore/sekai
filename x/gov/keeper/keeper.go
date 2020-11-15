@@ -69,28 +69,24 @@ func (k Keeper) SetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 	switch property {
 	case types.MinTxFee:
 		properties.MinTxFee = value
-		return nil
 	case types.MaxTxFee:
 		properties.MaxTxFee = value
-		return nil
 	case types.VoteQuorum:
 		properties.VoteQuorum = value
-		return nil
 	case types.ProposalEndTime:
 		properties.ProposalEndTime = value
-		return nil
 	case types.ProposalEnactmentTime:
 		properties.ProposalEnactmentTime = value
-		return nil
 	case types.EnableForeignFeePayments:
 		if value > 0 {
 			properties.EnableForeignFeePayments = true
 		}
 		properties.EnableForeignFeePayments = false
-		return nil
 	default:
 		return errors.New("trying to set network property that does not exist")
 	}
+	k.SetNetworkProperties(ctx, properties)
+	return nil
 }
 
 // SetExecutionFee set fee by execution function name
