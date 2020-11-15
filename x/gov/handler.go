@@ -138,7 +138,7 @@ func handleMsgProposalSetNetworkProperty(
 ) (*sdk.Result, error) {
 	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Proposer, customgovtypes.PermCreateSetNetworkPropertyProposal)
 	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermCreateSetNetworkPropertyProposal")
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermCreateSetNetworkPropertyProposal.String())
 	}
 
 	property, err := ck.GetNetworkProperty(ctx, msg.NetworkProperty)
