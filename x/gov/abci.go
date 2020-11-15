@@ -61,6 +61,8 @@ func processEnactmentProposal(ctx sdk.Context, k keeper.Keeper, proposalID uint6
 		switch proposal.GetContent().ProposalType() {
 		case types.AssignPermissionProposalType:
 			applyAssignPermissionProposal(ctx, k, proposal)
+		case types.SetNetworkPropertyProposalType:
+			applySetNetworkPropertyProposal(ctx, k, proposal)
 		case types.UpsertDataRegistryProposalType:
 			applyUpsertDataRegistryProposal(ctx, k, proposal)
 		default:
@@ -82,6 +84,15 @@ func applyAssignPermissionProposal(ctx sdk.Context, k keeper.Keeper, proposal ty
 	err := k.AddWhitelistPermission(ctx, actor, types.PermValue(p.Permission))
 	if err != nil {
 		panic("network actor has this permission")
+	}
+}
+
+func applySetNetworkPropertyProposal(ctx sdk.Context, k keeper.Keeper, proposal types.Proposal) {
+	p := proposal.GetContent().(*types.SetNetworkPropertyProposal)
+
+	err := k.SetNetworkProperty(ctx, p.NetworkProperty, p.Value)
+	if err != nil {
+		panic("error setting network property")
 	}
 }
 

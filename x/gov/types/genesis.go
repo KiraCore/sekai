@@ -16,6 +16,8 @@ func DefaultGenesis() *GenesisState {
 				PermClaimValidator,
 				PermCreateSetPermissionsProposal,
 				PermVoteSetPermissionProposal,
+				PermCreateSetNetworkPropertyProposal,
+				PermVoteSetNetworkPropertyProposal,
 				PermUpsertDataRegistryProposal,
 				PermVoteUpsertDataRegistryProposal,
 				PermUpsertRole,

@@ -346,5 +346,11 @@ sekaid tx claim-validator-seat --from validator --keyring-backend=test --home=$H
 # sekaid tx claim-validator-seat --from val2 --keyring-backend=test --home=$HOME/.sekaid --pubkey=kiravalconspub1zcjduepqdllep3v5wv04hmu987rv46ax7fml65j3dh5tf237ayn5p59jyamq04048n --validator-key=kiravaloper1ewgq8gtsefakhal687t8hnsw5zl4y8eksup39w --moniker="val2" --chain-id=testing --fees=100ukex --yes
 # sekaid tx claim-validator-seat --from val2 --keyring-backend=test --home=$HOME/.sekaid --validator-key=kiravaloper1ewgq8gtsefakhal687t8hnsw5zl4y8eksup39w --moniker="val2" --chain-id=testing --fees=100ukex --yes
 ```
+
+# Tx for set network property proposal
+
+```
+sekaid tx customgov proposal set-network-property MIN_TX_FEE 101 --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes
+```
 ---
 `dev` branch

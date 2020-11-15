@@ -5,6 +5,7 @@ import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/any.proto";
 import "cosmos_proto/cosmos.proto";
+import "role.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/gov/types";
 
@@ -118,6 +119,26 @@ message AssignPermissionProposal {
   ];
 
   uint32 permission = 2;
+}
+
+message MsgProposalSetNetworkProperty {
+  bytes proposer = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  NetworkProperty network_property = 2; // enum value
+
+  uint64 value = 3;
+}
+
+message SetNetworkPropertyProposal {
+  option (cosmos_proto.implements_interface) = "Content";
+  option (gogoproto.equal) = true;
+
+  NetworkProperty network_property = 1;
+
+  uint64 value = 2;
 }
 
 message UpsertDataRegistryProposal {

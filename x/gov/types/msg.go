@@ -454,6 +454,47 @@ func (m *MsgProposalAssignPermission) GetSigners() []sdk.AccAddress {
 	}
 }
 
+func NewMsgProposalSetNetworkProperty(proposer sdk.AccAddress, property NetworkProperty, value uint64) *MsgProposalSetNetworkProperty {
+	return &MsgProposalSetNetworkProperty{Proposer: proposer, NetworkProperty: property, Value: value}
+}
+
+func (m *MsgProposalSetNetworkProperty) Route() string {
+	return ModuleName
+}
+
+func (m *MsgProposalSetNetworkProperty) Type() string {
+	return MsgTypeProposalAssignPermission
+}
+
+func (m *MsgProposalSetNetworkProperty) ValidateBasic() error {
+	if m.Proposer.Empty() {
+		return ErrEmptyProposerAccAddress
+	}
+
+	switch m.NetworkProperty {
+	case MinTxFee,
+		MaxTxFee,
+		VoteQuorum,
+		ProposalEndTime,
+		ProposalEnactmentTime,
+		EnableForeignFeePayments:
+		return nil
+	default:
+		return ErrInvalidNetworkProperty
+	}
+}
+
+func (m *MsgProposalSetNetworkProperty) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *MsgProposalSetNetworkProperty) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{
+		m.Proposer,
+	}
+}
+
 func NewMsgProposalUpsertDataRegistry(proposer sdk.AccAddress, key, hash, reference, encoding string, size uint64) *MsgProposalUpsertDataRegistry {
 	return &MsgProposalUpsertDataRegistry{
 		Proposer:  proposer,
