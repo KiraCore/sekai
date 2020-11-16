@@ -6,16 +6,18 @@ import (
 	"io/ioutil"
 
 	sekaiapp "github.com/KiraCore/sekai/app"
+	middleware "github.com/KiraCore/sekai/middleware"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	bytesize "github.com/inhies/go-bytesize"
 	"github.com/tendermint/tendermint/crypto"
-	"github.com/tendermint/tendermint/crypto/secp256k1"
 	"github.com/tendermint/tendermint/crypto/sr25519"
 	"github.com/tyler-smith/go-bip39"
 )
 
 func readConfig() InterxConfig {
 	sekaiapp.SetConfig()
+	middleware.RegisterStdMsgs()
 
 	type ConfigFromFile struct {
 		Mnemonic        string `json:"mnemonic"`

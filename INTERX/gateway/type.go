@@ -17,6 +17,20 @@ type ResponseSign struct {
 	Response  string `json:"response"`
 }
 
+// Transaction is a struct to be used for transaction
+type Transaction struct {
+	Address string `json:"address"`
+	Type    string `json:"type"`
+	Denom   string `json:"denom,omitempty"`
+	Amount  int64  `json:"amount"`
+}
+
+// TransactionResult is a struct to be used for query transaction response
+type TransactionResult struct {
+	Time int64         `json:"time"`
+	Txs  []Transaction `json:"txs"`
+}
+
 // Coin is a struct for coin
 type Coin struct {
 	Amount string `json:"amount"`

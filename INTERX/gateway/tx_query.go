@@ -24,78 +24,36 @@ import (
 )
 
 const (
-	queryFunctions = "/api/functions"
-	queryWithdraws = "/api/withdraws"
-	queryDeposits  = "/api/deposits"
+	queryKiraFunctions = "/api/kira/metadata"
+	queryWithdraws     = "/api/withdraws"
+	queryDeposits      = "/api/deposits"
 )
-
-// Transaction is a struct to be used for transaction
-type Transaction struct {
-	Address string `json:"address"`
-	Type    string `json:"type"`
-	Denom   string `json:"denom,omitempty"`
-	Amount  int64  `json:"amount"`
-}
-
-// TransactionResult is a struct to be used for query transaction response
-type TransactionResult struct {
-	Time int64         `json:"time"`
-	Txs  []Transaction `json:"txs"`
-}
 
 // RegisterTxQueryRoutes registers tx query routers.
 func RegisterTxQueryRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr string) {
-	r.HandleFunc("/api/functions/{address}", QueryFunctions(rpcAddr)).Methods(GET)
+	r.HandleFunc(queryKiraFunctions, QueryKiraFunctions(rpcAddr)).Methods(GET)
 	r.HandleFunc(queryWithdraws, QueryWithdraws(rpcAddr)).Methods(GET)
 	r.HandleFunc(queryDeposits, QueryDeposits(rpcAddr)).Methods(GET)
 
-	AddRPCMethod(GET, queryFunctions, "This is an API to list functions and metadata.", true)
+	AddRPCMethod(GET, queryKiraFunctions, "This is an API to list functions and metadata.", true)
 	AddRPCMethod(GET, queryWithdraws, "This is an API to query withdraw transactions.", true)
 	AddRPCMethod(GET, queryDeposits, "This is an API to query deposit transactions.", true)
 }
 
-func queryFunctionsHandle(rpcAddr string, address string) (interface{}, interface{}, int) {
-	permittedTxTypes, err := GetPermittedTxTypes(rpcAddr, address)
+func queryKiraFunctionsHandle(rpcAddr string) (interface{}, interface{}, int) {
+	functions := functions.GetAllFunctions()
 
-	if err != nil {
-		return ServeError(0, "", err.Error(), http.StatusBadRequest)
-	}
-
-	type FunctionsResponse struct {
-		FunctionID  string                                 `json:"function_id"`
-		Description string                                 `json:"description"`
-		Parameters  map[string]functions.FunctionMetaField `json:"parameters"`
-	}
-
-	response := map[string]FunctionsResponse{}
-
-	for k, v := range permittedTxTypes {
-		if function, ok := functions.AllFunctions[k]; ok {
-			response[k] = FunctionsResponse{
-				FunctionID:  v,
-				Description: function.Description,
-				Parameters:  function.Parameters,
-			}
-		}
-	}
-
-	return response, nil, http.StatusOK
+	return functions, nil, http.StatusOK
 }
 
-// QueryFunctions is a function to list functions and metadata.
-func QueryFunctions(rpcAddr string) http.HandlerFunc {
+// QueryKiraFunctions is a function to list functions and metadata.
+func QueryKiraFunctions(rpcAddr string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		queries := mux.Vars(r)
-		bech32addr := queries["address"]
-		request := InterxRequest{
-			Method:   r.Method,
-			Endpoint: queryBalances,
-			Params:   []byte(bech32addr),
-		}
+		request := GetInterxRequest(r)
 		response := GetResponseFormat(request, rpcAddr)
 		statusCode := http.StatusOK
 
-		response.Response, response.Error, statusCode = queryFunctionsHandle(rpcAddr, bech32addr)
+		response.Response, response.Error, statusCode = queryKiraFunctionsHandle(rpcAddr)
 
 		WrapResponse(w, request, *response, statusCode, false)
 	}
