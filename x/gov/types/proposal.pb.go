@@ -285,6 +285,90 @@ func (m *MsgProposalAssignPermission) GetPermission() uint32 {
 	return 0
 }
 
+type MsgProposalUpsertDataRegistry struct {
+	Proposer  github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=proposer,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"proposer,omitempty" yaml:"address"`
+	Key       string                                        `protobuf:"bytes,2,opt,name=key,proto3" json:"key,omitempty"`
+	Hash      string                                        `protobuf:"bytes,3,opt,name=hash,proto3" json:"hash,omitempty"`
+	Reference string                                        `protobuf:"bytes,4,opt,name=reference,proto3" json:"reference,omitempty"`
+	Encoding  string                                        `protobuf:"bytes,5,opt,name=encoding,proto3" json:"encoding,omitempty"`
+	Size_     uint64                                        `protobuf:"varint,6,opt,name=size,proto3" json:"size,omitempty"`
+}
+
+func (m *MsgProposalUpsertDataRegistry) Reset()         { *m = MsgProposalUpsertDataRegistry{} }
+func (m *MsgProposalUpsertDataRegistry) String() string { return proto.CompactTextString(m) }
+func (*MsgProposalUpsertDataRegistry) ProtoMessage()    {}
+func (*MsgProposalUpsertDataRegistry) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c3ac5ce23bf32d05, []int{3}
+}
+func (m *MsgProposalUpsertDataRegistry) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgProposalUpsertDataRegistry) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgProposalUpsertDataRegistry.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgProposalUpsertDataRegistry) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgProposalUpsertDataRegistry.Merge(m, src)
+}
+func (m *MsgProposalUpsertDataRegistry) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgProposalUpsertDataRegistry) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgProposalUpsertDataRegistry.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgProposalUpsertDataRegistry proto.InternalMessageInfo
+
+func (m *MsgProposalUpsertDataRegistry) GetProposer() github_com_cosmos_cosmos_sdk_types.AccAddress {
+	if m != nil {
+		return m.Proposer
+	}
+	return nil
+}
+
+func (m *MsgProposalUpsertDataRegistry) GetKey() string {
+	if m != nil {
+		return m.Key
+	}
+	return ""
+}
+
+func (m *MsgProposalUpsertDataRegistry) GetHash() string {
+	if m != nil {
+		return m.Hash
+	}
+	return ""
+}
+
+func (m *MsgProposalUpsertDataRegistry) GetReference() string {
+	if m != nil {
+		return m.Reference
+	}
+	return ""
+}
+
+func (m *MsgProposalUpsertDataRegistry) GetEncoding() string {
+	if m != nil {
+		return m.Encoding
+	}
+	return ""
+}
+
+func (m *MsgProposalUpsertDataRegistry) GetSize_() uint64 {
+	if m != nil {
+		return m.Size_
+	}
+	return 0
+}
+
 type Proposal struct {
 	ProposalId       uint64     `protobuf:"varint,1,opt,name=proposal_id,json=proposalId,proto3" json:"proposal_id,omitempty"`
 	Content          *types.Any `protobuf:"bytes,2,opt,name=content,proto3" json:"content,omitempty"`
@@ -299,7 +383,7 @@ func (m *Proposal) Reset()         { *m = Proposal{} }
 func (m *Proposal) String() string { return proto.CompactTextString(m) }
 func (*Proposal) ProtoMessage()    {}
 func (*Proposal) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c3ac5ce23bf32d05, []int{3}
+	return fileDescriptor_c3ac5ce23bf32d05, []int{4}
 }
 func (m *Proposal) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -337,7 +421,7 @@ func (m *AssignPermissionProposal) Reset()         { *m = AssignPermissionPropos
 func (m *AssignPermissionProposal) String() string { return proto.CompactTextString(m) }
 func (*AssignPermissionProposal) ProtoMessage()    {}
 func (*AssignPermissionProposal) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c3ac5ce23bf32d05, []int{4}
+	return fileDescriptor_c3ac5ce23bf32d05, []int{5}
 }
 func (m *AssignPermissionProposal) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -380,75 +464,280 @@ func (m *AssignPermissionProposal) GetPermission() uint32 {
 	return 0
 }
 
+type MsgProposalSetNetworkProperty struct {
+	Proposer        github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=proposer,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"proposer,omitempty" yaml:"address"`
+	NetworkProperty NetworkProperty                               `protobuf:"varint,2,opt,name=network_property,json=networkProperty,proto3,enum=kira.gov.NetworkProperty" json:"network_property,omitempty"`
+	Value           uint64                                        `protobuf:"varint,3,opt,name=value,proto3" json:"value,omitempty"`
+}
+
+func (m *MsgProposalSetNetworkProperty) Reset()         { *m = MsgProposalSetNetworkProperty{} }
+func (m *MsgProposalSetNetworkProperty) String() string { return proto.CompactTextString(m) }
+func (*MsgProposalSetNetworkProperty) ProtoMessage()    {}
+func (*MsgProposalSetNetworkProperty) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c3ac5ce23bf32d05, []int{6}
+}
+func (m *MsgProposalSetNetworkProperty) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgProposalSetNetworkProperty) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgProposalSetNetworkProperty.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgProposalSetNetworkProperty) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgProposalSetNetworkProperty.Merge(m, src)
+}
+func (m *MsgProposalSetNetworkProperty) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgProposalSetNetworkProperty) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgProposalSetNetworkProperty.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgProposalSetNetworkProperty proto.InternalMessageInfo
+
+func (m *MsgProposalSetNetworkProperty) GetProposer() github_com_cosmos_cosmos_sdk_types.AccAddress {
+	if m != nil {
+		return m.Proposer
+	}
+	return nil
+}
+
+func (m *MsgProposalSetNetworkProperty) GetNetworkProperty() NetworkProperty {
+	if m != nil {
+		return m.NetworkProperty
+	}
+	return MinTxFee
+}
+
+func (m *MsgProposalSetNetworkProperty) GetValue() uint64 {
+	if m != nil {
+		return m.Value
+	}
+	return 0
+}
+
+type SetNetworkPropertyProposal struct {
+	NetworkProperty NetworkProperty `protobuf:"varint,1,opt,name=network_property,json=networkProperty,proto3,enum=kira.gov.NetworkProperty" json:"network_property,omitempty"`
+	Value           uint64          `protobuf:"varint,2,opt,name=value,proto3" json:"value,omitempty"`
+}
+
+func (m *SetNetworkPropertyProposal) Reset()         { *m = SetNetworkPropertyProposal{} }
+func (m *SetNetworkPropertyProposal) String() string { return proto.CompactTextString(m) }
+func (*SetNetworkPropertyProposal) ProtoMessage()    {}
+func (*SetNetworkPropertyProposal) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c3ac5ce23bf32d05, []int{7}
+}
+func (m *SetNetworkPropertyProposal) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *SetNetworkPropertyProposal) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_SetNetworkPropertyProposal.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *SetNetworkPropertyProposal) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SetNetworkPropertyProposal.Merge(m, src)
+}
+func (m *SetNetworkPropertyProposal) XXX_Size() int {
+	return m.Size()
+}
+func (m *SetNetworkPropertyProposal) XXX_DiscardUnknown() {
+	xxx_messageInfo_SetNetworkPropertyProposal.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SetNetworkPropertyProposal proto.InternalMessageInfo
+
+func (m *SetNetworkPropertyProposal) GetNetworkProperty() NetworkProperty {
+	if m != nil {
+		return m.NetworkProperty
+	}
+	return MinTxFee
+}
+
+func (m *SetNetworkPropertyProposal) GetValue() uint64 {
+	if m != nil {
+		return m.Value
+	}
+	return 0
+}
+
+type UpsertDataRegistryProposal struct {
+	Key       string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
+	Hash      string `protobuf:"bytes,2,opt,name=hash,proto3" json:"hash,omitempty"`
+	Reference string `protobuf:"bytes,3,opt,name=reference,proto3" json:"reference,omitempty"`
+	Encoding  string `protobuf:"bytes,4,opt,name=encoding,proto3" json:"encoding,omitempty"`
+	Size_     uint64 `protobuf:"varint,5,opt,name=size,proto3" json:"size,omitempty"`
+}
+
+func (m *UpsertDataRegistryProposal) Reset()         { *m = UpsertDataRegistryProposal{} }
+func (m *UpsertDataRegistryProposal) String() string { return proto.CompactTextString(m) }
+func (*UpsertDataRegistryProposal) ProtoMessage()    {}
+func (*UpsertDataRegistryProposal) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c3ac5ce23bf32d05, []int{8}
+}
+func (m *UpsertDataRegistryProposal) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *UpsertDataRegistryProposal) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_UpsertDataRegistryProposal.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *UpsertDataRegistryProposal) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UpsertDataRegistryProposal.Merge(m, src)
+}
+func (m *UpsertDataRegistryProposal) XXX_Size() int {
+	return m.Size()
+}
+func (m *UpsertDataRegistryProposal) XXX_DiscardUnknown() {
+	xxx_messageInfo_UpsertDataRegistryProposal.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_UpsertDataRegistryProposal proto.InternalMessageInfo
+
+func (m *UpsertDataRegistryProposal) GetKey() string {
+	if m != nil {
+		return m.Key
+	}
+	return ""
+}
+
+func (m *UpsertDataRegistryProposal) GetHash() string {
+	if m != nil {
+		return m.Hash
+	}
+	return ""
+}
+
+func (m *UpsertDataRegistryProposal) GetReference() string {
+	if m != nil {
+		return m.Reference
+	}
+	return ""
+}
+
+func (m *UpsertDataRegistryProposal) GetEncoding() string {
+	if m != nil {
+		return m.Encoding
+	}
+	return ""
+}
+
+func (m *UpsertDataRegistryProposal) GetSize_() uint64 {
+	if m != nil {
+		return m.Size_
+	}
+	return 0
+}
+
 func init() {
 	proto.RegisterEnum("kira.gov.VoteOption", VoteOption_name, VoteOption_value)
 	proto.RegisterEnum("kira.gov.VoteResult", VoteResult_name, VoteResult_value)
 	proto.RegisterType((*Vote)(nil), "kira.gov.Vote")
 	proto.RegisterType((*MsgVoteProposal)(nil), "kira.gov.MsgVoteProposal")
 	proto.RegisterType((*MsgProposalAssignPermission)(nil), "kira.gov.MsgProposalAssignPermission")
+	proto.RegisterType((*MsgProposalUpsertDataRegistry)(nil), "kira.gov.MsgProposalUpsertDataRegistry")
 	proto.RegisterType((*Proposal)(nil), "kira.gov.Proposal")
 	proto.RegisterType((*AssignPermissionProposal)(nil), "kira.gov.AssignPermissionProposal")
+	proto.RegisterType((*MsgProposalSetNetworkProperty)(nil), "kira.gov.MsgProposalSetNetworkProperty")
+	proto.RegisterType((*SetNetworkPropertyProposal)(nil), "kira.gov.SetNetworkPropertyProposal")
+	proto.RegisterType((*UpsertDataRegistryProposal)(nil), "kira.gov.UpsertDataRegistryProposal")
 }
 
 func init() { proto.RegisterFile("proposal.proto", fileDescriptor_c3ac5ce23bf32d05) }
 
 var fileDescriptor_c3ac5ce23bf32d05 = []byte{
-	// 875 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xd4, 0x54, 0x41, 0x6f, 0xe3, 0x44,
-	0x18, 0xcd, 0xb4, 0xd9, 0x34, 0x4c, 0xda, 0xc6, 0x3b, 0x44, 0x10, 0x8c, 0xb0, 0x2d, 0x6b, 0x41,
-	0x55, 0xd5, 0x3a, 0x52, 0xb9, 0xa0, 0x72, 0x40, 0x49, 0x6a, 0x20, 0x2c, 0xeb, 0x44, 0x4e, 0xda,
-	0xaa, 0x20, 0x64, 0x39, 0xf1, 0xac, 0xd7, 0x34, 0x9e, 0xb1, 0x3c, 0xd3, 0x42, 0xfe, 0xc1, 0x2a,
-	0xa7, 0xfd, 0x03, 0x91, 0x56, 0xe2, 0xc6, 0x89, 0x03, 0x37, 0xc4, 0x7d, 0xc5, 0x69, 0xc5, 0x89,
-	0x0b, 0x05, 0xb5, 0x12, 0xe2, 0xbc, 0x47, 0x24, 0x24, 0x14, 0x8f, 0x9d, 0x7a, 0xbb, 0x2b, 0x95,
-	0x43, 0x39, 0x70, 0x4a, 0xfc, 0x7d, 0xef, 0x7b, 0xef, 0x7d, 0xe3, 0x37, 0x86, 0xeb, 0x51, 0x4c,
-	0x23, 0xca, 0xdc, 0xb1, 0x11, 0xc5, 0x94, 0x53, 0x54, 0x3e, 0x0e, 0x62, 0xd7, 0xf0, 0xe9, 0xa9,
-	0x5c, 0xf3, 0xa9, 0x4f, 0x93, 0x62, 0x63, 0xfe, 0x4f, 0xf4, 0x65, 0xd5, 0xa7, 0xd4, 0x1f, 0xe3,
-	0x46, 0xf2, 0x34, 0x3c, 0xb9, 0xdf, 0xe0, 0x41, 0x88, 0x19, 0x77, 0xc3, 0x28, 0x05, 0xbc, 0x71,
-	0x15, 0xe0, 0x92, 0x49, 0xd6, 0x1a, 0x51, 0x16, 0x52, 0xe6, 0x08, 0x52, 0xf1, 0x20, 0x5a, 0xfa,
-	0x77, 0x00, 0x16, 0x0f, 0x28, 0xc7, 0x48, 0x85, 0x95, 0xcc, 0x91, 0x13, 0x78, 0x75, 0xa0, 0x81,
-	0x8d, 0xa2, 0x0d, 0xb3, 0x52, 0xc7, 0x43, 0x47, 0xf0, 0xd6, 0x29, 0xe5, 0x38, 0xae, 0x2f, 0x69,
-	0x60, 0x63, 0xb5, 0xd5, 0x7e, 0x76, 0xa6, 0xae, 0x4f, 0xdc, 0x70, 0xbc, 0xab, 0xbb, 0x9e, 0x17,
-	0x63, 0xc6, 0xf4, 0xbf, 0xce, 0xd4, 0x6d, 0x3f, 0xe0, 0x0f, 0x4e, 0x86, 0xc6, 0x88, 0x86, 0xa9,
-	0x4e, 0xfa, 0xb3, 0xcd, 0xbc, 0xe3, 0x06, 0x9f, 0x44, 0x98, 0x19, 0xcd, 0xd1, 0xa8, 0x29, 0x26,
-	0x6c, 0xc1, 0x88, 0xb6, 0x60, 0x89, 0x46, 0x3c, 0xa0, 0xa4, 0xbe, 0xac, 0x81, 0x8d, 0xf5, 0x9d,
-	0x9a, 0x91, 0x1d, 0x86, 0x31, 0xf7, 0xd6, 0x4d, 0x7a, 0x76, 0x8a, 0xd1, 0x7f, 0x00, 0xb0, 0x7a,
-	0x8f, 0xf9, 0xf3, 0x4e, 0x2f, 0xb5, 0xf7, 0x3f, 0x72, 0xff, 0x37, 0x80, 0x6f, 0xde, 0x63, 0x7e,
-	0xe6, 0xbc, 0xc9, 0x58, 0xe0, 0x93, 0x1e, 0x8e, 0xc3, 0x80, 0xb1, 0x80, 0x12, 0xe4, 0xc0, 0xb2,
-	0xb0, 0x8d, 0xe3, 0x64, 0x8d, 0x1b, 0xf2, 0xba, 0x20, 0x45, 0x5f, 0xc0, 0x95, 0x94, 0xe6, 0x26,
-	0xcf, 0x22, 0xe3, 0x44, 0x0a, 0x84, 0xd1, 0x62, 0x9b, 0xe4, 0x44, 0xd6, 0xec, 0x5c, 0x45, 0xff,
-	0xb1, 0x08, 0xcb, 0xff, 0xfe, 0xb5, 0xbd, 0x0f, 0x57, 0x46, 0x94, 0x70, 0x4c, 0x78, 0x62, 0xb6,
-	0xb2, 0x53, 0x33, 0x44, 0xcc, 0x8d, 0x2c, 0xe6, 0x46, 0x93, 0x4c, 0x5a, 0x95, 0x9f, 0xbe, 0xdf,
-	0x5e, 0x69, 0x0b, 0xa0, 0x9d, 0x4d, 0xa0, 0xcf, 0x61, 0x85, 0x9d, 0x0c, 0xc3, 0x80, 0x3b, 0xf3,
-	0xbb, 0x92, 0x78, 0xa9, 0xec, 0xc8, 0x2f, 0x10, 0x0c, 0xb2, 0x8b, 0xd4, 0x52, 0x9e, 0x9c, 0xa9,
-	0x85, 0x67, 0x67, 0x2a, 0x12, 0xa7, 0x91, 0x1b, 0xd6, 0x1f, 0xfd, 0xa6, 0x02, 0x1b, 0x8a, 0xca,
-	0x7c, 0x00, 0x8d, 0xe1, 0xed, 0x53, 0xca, 0x03, 0xe2, 0x3b, 0x8c, 0xbb, 0x71, 0x2a, 0x51, 0xbc,
-	0x56, 0xe2, 0x4e, 0x2a, 0x51, 0x17, 0x12, 0x2f, 0x50, 0x08, 0xa1, 0xaa, 0xa8, 0xf7, 0xe7, 0xe5,
-	0x44, 0xed, 0x3e, 0x4c, 0x4b, 0x0e, 0x26, 0x9e, 0xd0, 0xba, 0x75, 0xad, 0x96, 0x9e, 0x6a, 0xbd,
-	0xf6, 0x9c, 0x56, 0x46, 0x20, 0x94, 0xd6, 0x44, 0xd5, 0x24, 0x5e, 0xba, 0x15, 0xc2, 0xc4, 0x1d,
-	0xf1, 0x10, 0x13, 0x7e, 0x29, 0x55, 0xba, 0x11, 0x29, 0x69, 0xc1, 0x9c, 0xa9, 0x6d, 0xc1, 0x52,
-	0x8c, 0xd9, 0xc9, 0x98, 0xd7, 0xcb, 0x2f, 0xbb, 0x39, 0x76, 0xd2, 0xb3, 0x53, 0xcc, 0x6e, 0xf1,
-	0xe1, 0x63, 0xb5, 0xa0, 0x7f, 0x0b, 0x60, 0xfd, 0xea, 0xa5, 0x59, 0xe4, 0x29, 0x97, 0x6d, 0xf0,
-	0x9f, 0x67, 0x7b, 0xe9, 0x6a, 0xb6, 0x77, 0xab, 0x7f, 0x3e, 0x56, 0xc1, 0xcf, 0x97, 0x51, 0xdc,
-	0xfc, 0x03, 0x40, 0x78, 0xf9, 0x0d, 0x40, 0x5b, 0xf0, 0xf5, 0x83, 0xee, 0xc0, 0x74, 0xba, 0xbd,
-	0x41, 0xa7, 0x6b, 0x39, 0xfb, 0x56, 0xbf, 0x67, 0xb6, 0x3b, 0x1f, 0x76, 0xcc, 0x3d, 0xa9, 0x20,
-	0x57, 0xa7, 0x33, 0xad, 0x22, 0x80, 0x66, 0x18, 0xf1, 0x09, 0xd2, 0x61, 0x35, 0x8f, 0x3e, 0x32,
-	0xfb, 0x12, 0x90, 0xd7, 0xa6, 0x33, 0xed, 0x15, 0x81, 0x3a, 0xc2, 0x0c, 0x6d, 0xc2, 0x57, 0xf3,
-	0x98, 0x66, 0xab, 0x3f, 0x68, 0x76, 0x2c, 0x69, 0x49, 0xbe, 0x3d, 0x9d, 0x69, 0x6b, 0x02, 0xd7,
-	0x1c, 0x32, 0xee, 0x06, 0x04, 0x69, 0x70, 0x3d, 0x8f, 0xb5, 0xba, 0xd2, 0xb2, 0xbc, 0x3a, 0x9d,
-	0x69, 0x65, 0x01, 0xb3, 0x28, 0xda, 0x81, 0xf5, 0xe7, 0x11, 0xce, 0x61, 0x67, 0xf0, 0xb1, 0x73,
-	0x60, 0x0e, 0xba, 0x52, 0x51, 0xae, 0x4d, 0x67, 0x9a, 0x94, 0x61, 0x0f, 0x03, 0xfe, 0xe0, 0x00,
-	0x73, 0x2a, 0x17, 0x1f, 0x7e, 0xa3, 0x14, 0x36, 0x7f, 0x4d, 0x17, 0x15, 0xaf, 0x0c, 0xdd, 0x49,
-	0x6d, 0xd9, 0x66, 0x7f, 0xff, 0xd3, 0x81, 0xb3, 0x6f, 0xdd, 0xb5, 0xba, 0x87, 0x96, 0x54, 0x90,
-	0x2b, 0xd3, 0x99, 0xb6, 0xb2, 0x4f, 0x8e, 0x09, 0xfd, 0x8a, 0x20, 0x1d, 0xa2, 0x3c, 0xaa, 0xd7,
-	0xec, 0xf7, 0xcd, 0x3d, 0x09, 0xc8, 0x70, 0x3a, 0xd3, 0x4a, 0x3d, 0x97, 0x31, 0xec, 0xa1, 0x77,
-	0x60, 0x2d, 0x8f, 0xb1, 0xcd, 0x4f, 0xcc, 0xf6, 0xc0, 0xdc, 0x93, 0x96, 0x84, 0x75, 0x1b, 0x7f,
-	0x89, 0x47, 0x1c, 0x7b, 0xe8, 0x3d, 0xa8, 0xbc, 0x0c, 0x97, 0x5b, 0x60, 0x59, 0x2c, 0x90, 0x4d,
-	0x64, 0x0b, 0xa0, 0xb7, 0xe0, 0x6a, 0x32, 0xd9, 0x33, 0xad, 0xbd, 0x8e, 0xf5, 0x91, 0x54, 0x14,
-	0x26, 0x7b, 0x98, 0x78, 0x01, 0xf1, 0xc5, 0x7e, 0xad, 0x0f, 0x9e, 0x9c, 0x2b, 0xe0, 0xe9, 0xb9,
-	0x02, 0x7e, 0x3f, 0x57, 0xc0, 0xa3, 0x0b, 0xa5, 0xf0, 0xf4, 0x42, 0x29, 0xfc, 0x72, 0xa1, 0x14,
-	0x3e, 0x7b, 0x3b, 0x97, 0xa5, 0xbb, 0x41, 0xec, 0xb6, 0x69, 0x8c, 0x1b, 0x0c, 0x1f, 0xbb, 0x41,
-	0xe3, 0xeb, 0x86, 0x4f, 0x4f, 0x45, 0x9c, 0x86, 0xa5, 0xe4, 0xd2, 0xbc, 0xfb, 0x4f, 0x00, 0x00,
-	0x00, 0xff, 0xff, 0x49, 0x82, 0x36, 0xc6, 0xf7, 0x07, 0x00, 0x00,
+	// 1074 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xd4, 0x55, 0x41, 0x6f, 0xe3, 0x44,
+	0x14, 0xce, 0xa4, 0x6e, 0x9a, 0x4e, 0xb6, 0x8d, 0x77, 0x88, 0x20, 0x6b, 0xd8, 0xc4, 0xb2, 0x16,
+	0xb4, 0xaa, 0xda, 0x44, 0x2a, 0x17, 0x54, 0x0e, 0x28, 0x6d, 0x0c, 0x84, 0x65, 0x9d, 0xc8, 0x49,
+	0x5b, 0x15, 0x84, 0x2c, 0x37, 0x99, 0xba, 0x26, 0xc9, 0x4c, 0xe4, 0x99, 0x76, 0x09, 0xbf, 0x60,
+	0xc9, 0x69, 0xff, 0x40, 0xa4, 0x45, 0xdc, 0x38, 0x71, 0xe0, 0x86, 0xb8, 0xaf, 0x38, 0xad, 0x38,
+	0x71, 0x80, 0x82, 0x5a, 0x09, 0x71, 0x5e, 0x71, 0x42, 0x42, 0x42, 0xf6, 0xd8, 0x89, 0xdb, 0x74,
+	0x59, 0x84, 0xba, 0x48, 0x9c, 0x32, 0xf3, 0xde, 0xf7, 0xde, 0xf7, 0xbd, 0x97, 0x79, 0xcf, 0x70,
+	0x79, 0xe0, 0xd1, 0x01, 0x65, 0x76, 0xaf, 0x34, 0xf0, 0x28, 0xa7, 0x28, 0xdd, 0x75, 0x3d, 0xbb,
+	0xe4, 0xd0, 0x63, 0x25, 0xe7, 0x50, 0x87, 0x06, 0xc6, 0xb2, 0x7f, 0x12, 0x7e, 0xa5, 0xe8, 0x50,
+	0xea, 0xf4, 0x70, 0x39, 0xb8, 0xed, 0x1f, 0x1d, 0x94, 0xb9, 0xdb, 0xc7, 0x8c, 0xdb, 0xfd, 0x41,
+	0x08, 0xb8, 0x71, 0x11, 0x60, 0x93, 0x61, 0xe4, 0x6a, 0x53, 0xd6, 0xa7, 0xcc, 0x12, 0x49, 0xc5,
+	0x25, 0x74, 0x41, 0x8f, 0xf6, 0xb0, 0x38, 0x6b, 0x5f, 0x01, 0x28, 0xed, 0x50, 0x8e, 0x51, 0x11,
+	0x66, 0x22, 0x75, 0x96, 0xdb, 0xc9, 0x03, 0x15, 0xdc, 0x96, 0x4c, 0x18, 0x99, 0x6a, 0x1d, 0xb4,
+	0x07, 0xe7, 0x8f, 0x29, 0xc7, 0x5e, 0x3e, 0xa9, 0x82, 0xdb, 0xd7, 0x36, 0xb7, 0x9e, 0x9c, 0x14,
+	0x97, 0x87, 0x76, 0xbf, 0xb7, 0xa1, 0xd9, 0x9d, 0x8e, 0x87, 0x19, 0xd3, 0xfe, 0x38, 0x29, 0xae,
+	0x39, 0x2e, 0x3f, 0x3c, 0xda, 0x2f, 0xb5, 0x69, 0x3f, 0xe4, 0x0c, 0x7f, 0xd6, 0x58, 0xa7, 0x5b,
+	0xe6, 0xc3, 0x01, 0x66, 0xa5, 0x4a, 0xbb, 0x5d, 0x11, 0x11, 0xa6, 0xc8, 0x88, 0x56, 0x61, 0x8a,
+	0x0e, 0xb8, 0x4b, 0x49, 0x7e, 0x4e, 0x05, 0xb7, 0x97, 0xd7, 0x73, 0xa5, 0xa8, 0x31, 0x25, 0x5f,
+	0x5b, 0x3d, 0xf0, 0x99, 0x21, 0x46, 0xfb, 0x06, 0xc0, 0xec, 0x5d, 0xe6, 0xf8, 0x9e, 0x46, 0x28,
+	0xef, 0x7f, 0xa4, 0xfe, 0x4f, 0x00, 0x5f, 0xbe, 0xcb, 0x9c, 0x48, 0x79, 0x85, 0x31, 0xd7, 0x21,
+	0x0d, 0xec, 0xf5, 0x5d, 0xc6, 0x5c, 0x4a, 0x90, 0x05, 0xd3, 0x42, 0x36, 0xf6, 0x82, 0x32, 0xae,
+	0x48, 0xeb, 0x24, 0x29, 0xfa, 0x08, 0x2e, 0x84, 0x69, 0xae, 0xb2, 0x17, 0x51, 0x4e, 0x54, 0x80,
+	0x70, 0x30, 0xa9, 0x26, 0xe8, 0xc8, 0x92, 0x19, 0xb3, 0x68, 0xbf, 0x03, 0x78, 0x33, 0x56, 0xff,
+	0xf6, 0x80, 0x61, 0x8f, 0x57, 0x6d, 0x6e, 0x9b, 0xd8, 0x71, 0x19, 0xf7, 0x86, 0xcf, 0xbf, 0x03,
+	0x32, 0x9c, 0xeb, 0xe2, 0x61, 0x50, 0xfd, 0xa2, 0xe9, 0x1f, 0x11, 0x82, 0xd2, 0xa1, 0xcd, 0x0e,
+	0x03, 0xb9, 0x8b, 0x66, 0x70, 0x46, 0xaf, 0xc0, 0x45, 0x0f, 0x1f, 0x60, 0x0f, 0x93, 0x36, 0xce,
+	0x4b, 0x81, 0x63, 0x6a, 0x40, 0x0a, 0x4c, 0x63, 0xd2, 0xa6, 0x1d, 0x97, 0x38, 0xf9, 0xf9, 0xc0,
+	0x39, 0xb9, 0xfb, 0xd9, 0x98, 0xfb, 0x29, 0xce, 0xa7, 0x82, 0x57, 0x18, 0x9c, 0xb5, 0x6f, 0x25,
+	0x98, 0xfe, 0xe7, 0xaf, 0xf5, 0x4d, 0xb8, 0xd0, 0xa6, 0x84, 0x63, 0xc2, 0x03, 0x95, 0x99, 0xf5,
+	0x5c, 0x49, 0x4c, 0x7a, 0x29, 0x9a, 0xf4, 0x52, 0x85, 0x0c, 0x37, 0x33, 0xdf, 0x7d, 0xbd, 0xb6,
+	0xb0, 0x25, 0x80, 0x66, 0x14, 0x81, 0x3e, 0x84, 0x19, 0x76, 0xb4, 0xdf, 0x77, 0xb9, 0xe5, 0xaf,
+	0x8b, 0xa0, 0xa6, 0xcc, 0xba, 0x32, 0x93, 0xa0, 0x15, 0xed, 0x92, 0xcd, 0xc2, 0xa3, 0x93, 0x62,
+	0xe2, 0xc9, 0x49, 0x11, 0x89, 0x16, 0xc7, 0x82, 0xb5, 0x07, 0x3f, 0x17, 0x81, 0x09, 0x85, 0xc5,
+	0x0f, 0x40, 0x3d, 0x78, 0xfd, 0x98, 0x72, 0x97, 0x38, 0x16, 0xe3, 0xb6, 0x17, 0x52, 0x48, 0xcf,
+	0xa4, 0xb8, 0x15, 0x52, 0xe4, 0x05, 0xc5, 0x4c, 0x0a, 0x41, 0x94, 0x15, 0xf6, 0xa6, 0x6f, 0x0e,
+	0xd8, 0x0e, 0x60, 0x68, 0xb2, 0x30, 0xe9, 0x08, 0xae, 0xf9, 0x67, 0x72, 0x69, 0x21, 0xd7, 0x8b,
+	0xe7, 0xb8, 0xa2, 0x04, 0x82, 0x69, 0x49, 0x58, 0x75, 0xd2, 0x09, 0xab, 0x42, 0x98, 0xd8, 0x6d,
+	0xde, 0xc7, 0x84, 0x4f, 0xa9, 0x52, 0x57, 0x42, 0x25, 0x4f, 0x32, 0x47, 0x6c, 0xab, 0x30, 0xe5,
+	0x61, 0x76, 0xd4, 0xe3, 0xf9, 0xf4, 0x65, 0x0b, 0xc3, 0x0c, 0x7c, 0x66, 0x88, 0xd9, 0x90, 0xee,
+	0x3f, 0x2c, 0x26, 0xb4, 0x2f, 0x01, 0xcc, 0x5f, 0xdc, 0x15, 0x93, 0xf7, 0x14, 0x1b, 0x69, 0xf0,
+	0xdc, 0x47, 0x3a, 0x79, 0x71, 0xa4, 0x37, 0xb2, 0xbf, 0x3d, 0x2c, 0x82, 0xef, 0xa7, 0x4f, 0x51,
+	0xfb, 0xf1, 0xfc, 0x8c, 0x37, 0x31, 0x37, 0x30, 0xbf, 0x47, 0xbd, 0xae, 0x6f, 0xc1, 0x1e, 0xff,
+	0x0f, 0x66, 0xbc, 0x0a, 0x65, 0x22, 0x38, 0xfd, 0x2f, 0x60, 0x40, 0x1a, 0x28, 0x5f, 0x5e, 0xbf,
+	0x31, 0xed, 0xf6, 0x05, 0x55, 0x66, 0x96, 0x5c, 0x90, 0x99, 0x83, 0xf3, 0xc7, 0x76, 0xef, 0x48,
+	0x0c, 0x91, 0x64, 0x8a, 0x8b, 0xf6, 0x19, 0x80, 0xca, 0x6c, 0x4d, 0x93, 0x7f, 0xe3, 0x32, 0x6a,
+	0xf0, 0xef, 0xa9, 0x93, 0x31, 0xea, 0xd9, 0x56, 0x7f, 0x0e, 0xa0, 0x32, 0xbb, 0x43, 0x27, 0x5a,
+	0xc2, 0x55, 0x07, 0x66, 0x57, 0x5d, 0xf2, 0x69, 0xab, 0x6e, 0xee, 0xef, 0x56, 0x9d, 0xf4, 0x94,
+	0x55, 0x37, 0x3f, 0x5d, 0x75, 0x33, 0x1a, 0x57, 0x7e, 0x05, 0x10, 0x4e, 0xbf, 0x84, 0x68, 0x15,
+	0xbe, 0xb4, 0x53, 0x6f, 0xe9, 0x56, 0xbd, 0xd1, 0xaa, 0xd5, 0x0d, 0x6b, 0xdb, 0x68, 0x36, 0xf4,
+	0xad, 0xda, 0xdb, 0x35, 0xbd, 0x2a, 0x27, 0x94, 0xec, 0x68, 0xac, 0x66, 0x04, 0x50, 0xef, 0x0f,
+	0xf8, 0x10, 0x69, 0x30, 0x1b, 0x47, 0xef, 0xe9, 0x4d, 0x19, 0x28, 0x4b, 0xa3, 0xb1, 0xba, 0x28,
+	0x50, 0x7b, 0x98, 0xa1, 0x15, 0xf8, 0x42, 0x1c, 0x53, 0xd9, 0x6c, 0xb6, 0x2a, 0x35, 0x43, 0x4e,
+	0x2a, 0xd7, 0x47, 0x63, 0x75, 0x49, 0xe0, 0x2a, 0xfb, 0x8c, 0xdb, 0x2e, 0x41, 0x2a, 0x5c, 0x8e,
+	0x63, 0x8d, 0xba, 0x3c, 0xa7, 0x5c, 0x1b, 0x8d, 0xd5, 0xb4, 0x80, 0x19, 0x14, 0xad, 0xc3, 0xfc,
+	0x79, 0x84, 0xb5, 0x5b, 0x6b, 0xbd, 0x6b, 0xed, 0xe8, 0xad, 0xba, 0x2c, 0x29, 0xb9, 0xd1, 0x58,
+	0x95, 0x23, 0xec, 0xae, 0xcb, 0x0f, 0x77, 0x30, 0xa7, 0x8a, 0x74, 0xff, 0x8b, 0x42, 0x62, 0xe5,
+	0xa7, 0xb0, 0x50, 0x31, 0xc1, 0xe8, 0x56, 0x28, 0xcb, 0xd4, 0x9b, 0xdb, 0xef, 0xb7, 0xac, 0x6d,
+	0xe3, 0x8e, 0x51, 0xdf, 0x35, 0xe4, 0x84, 0x92, 0x19, 0x8d, 0xd5, 0x85, 0x6d, 0xd2, 0x25, 0xf4,
+	0x1e, 0x41, 0x1a, 0x44, 0x71, 0x54, 0xa3, 0xd2, 0x6c, 0xea, 0x55, 0x19, 0x28, 0x70, 0x34, 0x56,
+	0x53, 0x0d, 0x9b, 0x31, 0xdc, 0x41, 0xaf, 0xc1, 0x5c, 0x1c, 0x63, 0xea, 0xef, 0xe9, 0x5b, 0x2d,
+	0xbd, 0x2a, 0x27, 0x85, 0x74, 0x13, 0x7f, 0x8c, 0xdb, 0x1c, 0x77, 0xd0, 0x1b, 0xb0, 0x70, 0x19,
+	0x2e, 0x56, 0xc0, 0x9c, 0x28, 0x20, 0x8a, 0x88, 0x0a, 0x40, 0x37, 0xe1, 0xb5, 0x20, 0xb2, 0xa1,
+	0x1b, 0xd5, 0x9a, 0xf1, 0x8e, 0x2c, 0x09, 0x91, 0x0d, 0x4c, 0xfc, 0xff, 0x59, 0xd4, 0xb7, 0xf9,
+	0xd6, 0xa3, 0xd3, 0x02, 0x78, 0x7c, 0x5a, 0x00, 0xbf, 0x9c, 0x16, 0xc0, 0x83, 0xb3, 0x42, 0xe2,
+	0xf1, 0x59, 0x21, 0xf1, 0xc3, 0x59, 0x21, 0xf1, 0xc1, 0xab, 0xb1, 0x39, 0xbd, 0xe3, 0x7a, 0xf6,
+	0x16, 0xf5, 0x70, 0x99, 0xe1, 0xae, 0xed, 0x96, 0x3f, 0x29, 0x3b, 0xf4, 0x58, 0x8c, 0xea, 0x7e,
+	0x2a, 0xd8, 0xa1, 0xaf, 0xff, 0x15, 0x00, 0x00, 0xff, 0xff, 0xb0, 0x54, 0x60, 0x6b, 0x09, 0x0b,
+	0x00, 0x00,
 }
 
 func (this *AssignPermissionProposal) Equal(that interface{}) bool {
@@ -474,6 +763,69 @@ func (this *AssignPermissionProposal) Equal(that interface{}) bool {
 		return false
 	}
 	if this.Permission != that1.Permission {
+		return false
+	}
+	return true
+}
+func (this *SetNetworkPropertyProposal) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*SetNetworkPropertyProposal)
+	if !ok {
+		that2, ok := that.(SetNetworkPropertyProposal)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.NetworkProperty != that1.NetworkProperty {
+		return false
+	}
+	if this.Value != that1.Value {
+		return false
+	}
+	return true
+}
+func (this *UpsertDataRegistryProposal) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*UpsertDataRegistryProposal)
+	if !ok {
+		that2, ok := that.(UpsertDataRegistryProposal)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.Key != that1.Key {
+		return false
+	}
+	if this.Hash != that1.Hash {
+		return false
+	}
+	if this.Reference != that1.Reference {
+		return false
+	}
+	if this.Encoding != that1.Encoding {
+		return false
+	}
+	if this.Size_ != that1.Size_ {
 		return false
 	}
 	return true
@@ -600,6 +952,69 @@ func (m *MsgProposalAssignPermission) MarshalToSizedBuffer(dAtA []byte) (int, er
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgProposalUpsertDataRegistry) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgProposalUpsertDataRegistry) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgProposalUpsertDataRegistry) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Size_ != 0 {
+		i = encodeVarintProposal(dAtA, i, uint64(m.Size_))
+		i--
+		dAtA[i] = 0x30
+	}
+	if len(m.Encoding) > 0 {
+		i -= len(m.Encoding)
+		copy(dAtA[i:], m.Encoding)
+		i = encodeVarintProposal(dAtA, i, uint64(len(m.Encoding)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.Reference) > 0 {
+		i -= len(m.Reference)
+		copy(dAtA[i:], m.Reference)
+		i = encodeVarintProposal(dAtA, i, uint64(len(m.Reference)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Hash) > 0 {
+		i -= len(m.Hash)
+		copy(dAtA[i:], m.Hash)
+		i = encodeVarintProposal(dAtA, i, uint64(len(m.Hash)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Key) > 0 {
+		i -= len(m.Key)
+		copy(dAtA[i:], m.Key)
+		i = encodeVarintProposal(dAtA, i, uint64(len(m.Key)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Proposer) > 0 {
+		i -= len(m.Proposer)
+		copy(dAtA[i:], m.Proposer)
+		i = encodeVarintProposal(dAtA, i, uint64(len(m.Proposer)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func (m *Proposal) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -712,6 +1127,135 @@ func (m *AssignPermissionProposal) MarshalToSizedBuffer(dAtA []byte) (int, error
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgProposalSetNetworkProperty) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgProposalSetNetworkProperty) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgProposalSetNetworkProperty) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Value != 0 {
+		i = encodeVarintProposal(dAtA, i, uint64(m.Value))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.NetworkProperty != 0 {
+		i = encodeVarintProposal(dAtA, i, uint64(m.NetworkProperty))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Proposer) > 0 {
+		i -= len(m.Proposer)
+		copy(dAtA[i:], m.Proposer)
+		i = encodeVarintProposal(dAtA, i, uint64(len(m.Proposer)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *SetNetworkPropertyProposal) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *SetNetworkPropertyProposal) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *SetNetworkPropertyProposal) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Value != 0 {
+		i = encodeVarintProposal(dAtA, i, uint64(m.Value))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.NetworkProperty != 0 {
+		i = encodeVarintProposal(dAtA, i, uint64(m.NetworkProperty))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *UpsertDataRegistryProposal) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *UpsertDataRegistryProposal) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *UpsertDataRegistryProposal) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Size_ != 0 {
+		i = encodeVarintProposal(dAtA, i, uint64(m.Size_))
+		i--
+		dAtA[i] = 0x28
+	}
+	if len(m.Encoding) > 0 {
+		i -= len(m.Encoding)
+		copy(dAtA[i:], m.Encoding)
+		i = encodeVarintProposal(dAtA, i, uint64(len(m.Encoding)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Reference) > 0 {
+		i -= len(m.Reference)
+		copy(dAtA[i:], m.Reference)
+		i = encodeVarintProposal(dAtA, i, uint64(len(m.Reference)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Hash) > 0 {
+		i -= len(m.Hash)
+		copy(dAtA[i:], m.Hash)
+		i = encodeVarintProposal(dAtA, i, uint64(len(m.Hash)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Key) > 0 {
+		i -= len(m.Key)
+		copy(dAtA[i:], m.Key)
+		i = encodeVarintProposal(dAtA, i, uint64(len(m.Key)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintProposal(dAtA []byte, offset int, v uint64) int {
 	offset -= sovProposal(v)
 	base := offset
@@ -781,6 +1325,38 @@ func (m *MsgProposalAssignPermission) Size() (n int) {
 	return n
 }
 
+func (m *MsgProposalUpsertDataRegistry) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Proposer)
+	if l > 0 {
+		n += 1 + l + sovProposal(uint64(l))
+	}
+	l = len(m.Key)
+	if l > 0 {
+		n += 1 + l + sovProposal(uint64(l))
+	}
+	l = len(m.Hash)
+	if l > 0 {
+		n += 1 + l + sovProposal(uint64(l))
+	}
+	l = len(m.Reference)
+	if l > 0 {
+		n += 1 + l + sovProposal(uint64(l))
+	}
+	l = len(m.Encoding)
+	if l > 0 {
+		n += 1 + l + sovProposal(uint64(l))
+	}
+	if m.Size_ != 0 {
+		n += 1 + sovProposal(uint64(m.Size_))
+	}
+	return n
+}
+
 func (m *Proposal) Size() (n int) {
 	if m == nil {
 		return 0
@@ -820,6 +1396,68 @@ func (m *AssignPermissionProposal) Size() (n int) {
 	}
 	if m.Permission != 0 {
 		n += 1 + sovProposal(uint64(m.Permission))
+	}
+	return n
+}
+
+func (m *MsgProposalSetNetworkProperty) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Proposer)
+	if l > 0 {
+		n += 1 + l + sovProposal(uint64(l))
+	}
+	if m.NetworkProperty != 0 {
+		n += 1 + sovProposal(uint64(m.NetworkProperty))
+	}
+	if m.Value != 0 {
+		n += 1 + sovProposal(uint64(m.Value))
+	}
+	return n
+}
+
+func (m *SetNetworkPropertyProposal) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.NetworkProperty != 0 {
+		n += 1 + sovProposal(uint64(m.NetworkProperty))
+	}
+	if m.Value != 0 {
+		n += 1 + sovProposal(uint64(m.Value))
+	}
+	return n
+}
+
+func (m *UpsertDataRegistryProposal) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Key)
+	if l > 0 {
+		n += 1 + l + sovProposal(uint64(l))
+	}
+	l = len(m.Hash)
+	if l > 0 {
+		n += 1 + l + sovProposal(uint64(l))
+	}
+	l = len(m.Reference)
+	if l > 0 {
+		n += 1 + l + sovProposal(uint64(l))
+	}
+	l = len(m.Encoding)
+	if l > 0 {
+		n += 1 + l + sovProposal(uint64(l))
+	}
+	if m.Size_ != 0 {
+		n += 1 + sovProposal(uint64(m.Size_))
 	}
 	return n
 }
@@ -1220,6 +1858,240 @@ func (m *MsgProposalAssignPermission) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+func (m *MsgProposalUpsertDataRegistry) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowProposal
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgProposalUpsertDataRegistry: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgProposalUpsertDataRegistry: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Proposer", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowProposal
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthProposal
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthProposal
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Proposer = append(m.Proposer[:0], dAtA[iNdEx:postIndex]...)
+			if m.Proposer == nil {
+				m.Proposer = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Key", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowProposal
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthProposal
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthProposal
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Key = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Hash", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowProposal
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthProposal
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthProposal
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Hash = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Reference", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowProposal
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthProposal
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthProposal
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Reference = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Encoding", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowProposal
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthProposal
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthProposal
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Encoding = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Size_", wireType)
+			}
+			m.Size_ = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowProposal
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Size_ |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipProposal(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthProposal
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthProposal
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
 func (m *Proposal) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1557,6 +2429,422 @@ func (m *AssignPermissionProposal) Unmarshal(dAtA []byte) error {
 				b := dAtA[iNdEx]
 				iNdEx++
 				m.Permission |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipProposal(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthProposal
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthProposal
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgProposalSetNetworkProperty) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowProposal
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgProposalSetNetworkProperty: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgProposalSetNetworkProperty: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Proposer", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowProposal
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthProposal
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthProposal
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Proposer = append(m.Proposer[:0], dAtA[iNdEx:postIndex]...)
+			if m.Proposer == nil {
+				m.Proposer = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NetworkProperty", wireType)
+			}
+			m.NetworkProperty = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowProposal
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.NetworkProperty |= NetworkProperty(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Value", wireType)
+			}
+			m.Value = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowProposal
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Value |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipProposal(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthProposal
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthProposal
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *SetNetworkPropertyProposal) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowProposal
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: SetNetworkPropertyProposal: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: SetNetworkPropertyProposal: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NetworkProperty", wireType)
+			}
+			m.NetworkProperty = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowProposal
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.NetworkProperty |= NetworkProperty(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Value", wireType)
+			}
+			m.Value = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowProposal
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Value |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipProposal(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthProposal
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthProposal
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *UpsertDataRegistryProposal) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowProposal
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: UpsertDataRegistryProposal: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: UpsertDataRegistryProposal: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Key", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowProposal
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthProposal
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthProposal
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Key = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Hash", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowProposal
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthProposal
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthProposal
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Hash = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Reference", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowProposal
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthProposal
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthProposal
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Reference = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Encoding", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowProposal
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthProposal
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthProposal
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Encoding = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Size_", wireType)
+			}
+			m.Size_ = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowProposal
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Size_ |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}

@@ -2,6 +2,7 @@ package types
 
 import "github.com/cosmos/cosmos-sdk/types/errors"
 
+// errors
 var (
 	ErrSetPermissions             = errors.Register(ModuleName, 2, "error setting permissions")
 	ErrEmptyProposerAccAddress    = errors.Register(ModuleName, 3, "empty proposer key")
@@ -20,4 +21,5 @@ var (
 	ErrUserIsNotCouncilor         = errors.Register(ModuleName, 16, "user is not councilor")
 	ErrProposalDoesNotExist       = errors.Register(ModuleName, 17, "proposal does not exist")
 	ErrActorIsNotActive           = errors.Register(ModuleName, 18, "actor is not active")
+	ErrInvalidNetworkProperty     = errors.Register(ModuleName, 19, "invalid network property")
 )

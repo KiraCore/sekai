@@ -15,6 +15,8 @@ package keeper
 // 0x31<permissionID_Bytes + actor_address_bytes> : NetworkActorAddress. This is used to get all the actors that have a specific whitelist.
 // 0x32<roleID_Bytes + actor_address_bytes> : NetworkActorAddress. This is used to get all the actors that have a specific role.
 // 0x33<permissionID_Bytes + RoleID_Bytes> : RoleID_Bytes. This is used to get all the actors that have a specific role.
+//
+// 0x40<key_Bytes> : DataRegistryEntry
 var (
 	NextProposalIDPrefix     = []byte{0x00}
 	ProposalsPrefix          = []byte{0x01}
@@ -29,4 +31,6 @@ var (
 	WhitelistActorPrefix = []byte{0x31}
 	RoleActorPrefix      = []byte{0x32}
 	WhitelistRolePrefix  = []byte{0x33}
+
+	DataRegistryPrefix  = []byte{0x40}
 )

@@ -1229,6 +1229,112 @@ func TestHandler_ProposalAssignPermission(t *testing.T) {
 	require.True(t, iterator.Valid())
 }
 
+func TestHandler_CreateProposalUpsertDataRegistry_Errors(t *testing.T) {
+	proposerAddr, err := sdk.AccAddressFromBech32("kira1alzyfq40zjsveat87jlg8jxetwqmr0a29sgd0f")
+	require.NoError(t, err)
+
+	tests := []struct {
+		name         string
+		msg          *types.MsgProposalUpsertDataRegistry
+		preparePerms func(t *testing.T, app *simapp.SimApp, ctx sdk.Context)
+		expectedErr  error
+	}{
+		{
+			"Proposer does not have Perm",
+			types.NewMsgProposalUpsertDataRegistry(
+				proposerAddr,
+				"theKey",
+				"theHash",
+				"theReference",
+				"theEncoding",
+				1234,
+			),
+			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
+			errors.Wrap(types.ErrNotEnoughPermissions, types.PermUpsertDataRegistryProposal.String()),
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			app := simapp.Setup(false)
+			ctx := app.NewContext(false, tmproto.Header{})
+
+			tt.preparePerms(t, app, ctx)
+
+			handler := gov.NewHandler(app.CustomGovKeeper)
+			_, err := handler(ctx, tt.msg)
+			require.EqualError(t, err, tt.expectedErr.Error())
+		})
+	}
+}
+
+func TestHandler_ProposalUpsertDataRegistry(t *testing.T) {
+	proposerAddr, err := sdk.AccAddressFromBech32("kira1alzyfq40zjsveat87jlg8jxetwqmr0a29sgd0f")
+	require.NoError(t, err)
+
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{
+		Time: time.Now(),
+	})
+
+	// Set proposer Permissions
+	proposerActor := types.NewDefaultActor(proposerAddr)
+	err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerActor, types.PermUpsertDataRegistryProposal)
+	require.NoError(t, err2)
+
+	properties := app.CustomGovKeeper.GetNetworkProperties(ctx)
+	properties.ProposalEndTime = 10
+	app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
+
+	handler := gov.NewHandler(app.CustomGovKeeper)
+	res, err := handler(
+		ctx,
+		types.NewMsgProposalUpsertDataRegistry(
+			proposerAddr,
+			"theKey",
+			"theHash",
+			"theReference",
+			"theEncoding",
+			1234,
+		),
+	)
+	require.NoError(t, err)
+	require.Equal(t, types2.GetProposalIDBytes(1), res.Data)
+
+	savedProposal, found := app.CustomGovKeeper.GetProposal(ctx, 1)
+	require.True(t, found)
+
+	expectedSavedProposal, err := types.NewProposal(
+		1,
+		types.NewUpsertDataRegistryProposal(
+			"theKey",
+			"theHash",
+			"theReference",
+			"theEncoding",
+			1234,
+		),
+		ctx.BlockTime(),
+		ctx.BlockTime().Add(time.Minute*time.Duration(properties.ProposalEndTime)),
+		ctx.BlockTime().Add(time.Minute*time.Duration(properties.ProposalEnactmentTime)),
+	)
+	require.NoError(t, err)
+	require.Equal(t, expectedSavedProposal, savedProposal)
+
+	// Next proposal ID is increased.
+	id, err := app.CustomGovKeeper.GetNextProposalID(ctx)
+	require.NoError(t, err)
+	require.Equal(t, uint64(2), id)
+
+	// Is not on finished active proposals.
+	iterator := app.CustomGovKeeper.GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx, ctx.BlockTime())
+	require.False(t, iterator.Valid())
+
+	ctx = ctx.WithBlockTime(ctx.BlockTime().Add(time.Minute * 10))
+	iterator = app.CustomGovKeeper.GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx, ctx.BlockTime())
+	require.True(t, iterator.Valid())
+}
+
 func TestHandler_VoteProposal_Errors(t *testing.T) {
 	voterAddr, err := sdk.AccAddressFromBech32("kira15ky9du8a2wlstz6fpx3p4mqpjyrm5cgqzp4f3d")
 	require.NoError(t, err)
@@ -1240,12 +1346,71 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 		expectedErr  error
 	}{
 		{
-			"Voter does not have permission to vote this proposal",
+			"Voter does not have permission to vote this proposal: Assign Permission",
 			types.NewMsgVoteProposal(
 				1, voterAddr, types.OptionAbstain,
 			),
-			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
-			fmt.Errorf("PermVoteSetPermissionProposal: not enough permissions"),
+			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+				actor := types.NewNetworkActor(
+					voterAddr,
+					types.Roles{},
+					types.Active,
+					[]types.VoteOption{},
+					types.NewPermissions(nil, nil),
+					1,
+				)
+				app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
+
+				// Create proposal
+				proposal, err := types.NewProposal(
+					1,
+					types.NewAssignPermissionProposal(
+						voterAddr,
+						types.PermClaimCouncilor,
+					),
+					ctx.BlockTime(),
+					ctx.BlockTime().Add(time.Second*1),
+					ctx.BlockTime().Add(time.Second*10),
+				)
+				require.NoError(t, err)
+				app.CustomGovKeeper.SaveProposal(ctx, proposal)
+			},
+			fmt.Errorf("%s: not enough permissions", types.PermVoteSetPermissionProposal.String()),
+		},
+		{
+			"Voter does not have permission to vote this proposal: Change Data Registry",
+			types.NewMsgVoteProposal(
+				1, voterAddr, types.OptionAbstain,
+			),
+			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+				actor := types.NewNetworkActor(
+					voterAddr,
+					types.Roles{},
+					types.Active,
+					[]types.VoteOption{},
+					types.NewPermissions(nil, nil),
+					1,
+				)
+				app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
+
+				// Create proposal
+				proposal, err := types.NewProposal(
+					1,
+					types.NewUpsertDataRegistryProposal(
+						"theKey",
+						"theHash",
+						"theReference",
+						"theEncoding",
+						1234,
+					),
+					ctx.BlockTime(),
+					ctx.BlockTime().Add(time.Second*1),
+					ctx.BlockTime().Add(time.Second*10),
+				)
+				require.NoError(t, err)
+				app.CustomGovKeeper.SaveProposal(ctx, proposal)
+			},
+			fmt.Errorf("%s: not enough permissions", types.PermVoteUpsertDataRegistryProposal.String()),
 		},
 		{
 			"Proposal does not exist",
@@ -1279,6 +1444,38 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 				require.NoError(t, err2)
 			},
 			types.ErrActorIsNotActive,
+		},
+		{
+			"Voter does not have permission to vote this proposal: Change Network Property",
+			types.NewMsgVoteProposal(
+				1, voterAddr, types.OptionAbstain,
+			),
+			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+				actor := types.NewNetworkActor(
+					voterAddr,
+					types.Roles{},
+					types.Active,
+					[]types.VoteOption{},
+					types.NewPermissions(nil, nil),
+					1,
+				)
+				app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
+
+				// Create proposal
+				proposal, err := types.NewProposal(
+					1,
+					types.NewSetNetworkPropertyProposal(
+						types.MinTxFee,
+						1234,
+					),
+					ctx.BlockTime(),
+					ctx.BlockTime().Add(time.Second*1),
+					ctx.BlockTime().Add(time.Second*10),
+				)
+				require.NoError(t, err)
+				app.CustomGovKeeper.SaveProposal(ctx, proposal)
+			},
+			fmt.Errorf("%s: not enough permissions", types.PermVoteSetNetworkPropertyProposal.String()),
 		},
 	}
 
@@ -1347,4 +1544,101 @@ func setPermissionToAddr(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addr
 	require.NoError(t, err)
 
 	return nil
+}
+
+func TestHandler_CreateProposalSetNetworkProperty_Errors(t *testing.T) {
+	proposerAddr, err := sdk.AccAddressFromBech32("kira1alzyfq40zjsveat87jlg8jxetwqmr0a29sgd0f")
+	require.NoError(t, err)
+
+	tests := []struct {
+		name         string
+		msg          *types.MsgProposalSetNetworkProperty
+		preparePerms func(t *testing.T, app *simapp.SimApp, ctx sdk.Context)
+		expectedErr  error
+	}{
+		{
+			"Proposer does not have Perm",
+			types.NewMsgProposalSetNetworkProperty(
+				proposerAddr,
+				types.MaxTxFee,
+				100000,
+			),
+			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
+			errors.Wrap(types.ErrNotEnoughPermissions, types.PermCreateSetNetworkPropertyProposal.String()),
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			app := simapp.Setup(false)
+			ctx := app.NewContext(false, tmproto.Header{})
+
+			tt.preparePerms(t, app, ctx)
+
+			handler := gov.NewHandler(app.CustomGovKeeper)
+			_, err := handler(ctx, tt.msg)
+			require.EqualError(t, err, tt.expectedErr.Error())
+		})
+	}
+}
+
+func TestHandler_ProposalSetNetworkProperty(t *testing.T) {
+	proposerAddr, err := sdk.AccAddressFromBech32("kira1alzyfq40zjsveat87jlg8jxetwqmr0a29sgd0f")
+	require.NoError(t, err)
+
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{
+		Time: time.Now(),
+	})
+
+	// Set proposer Permissions
+	proposerActor := types.NewDefaultActor(proposerAddr)
+	err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerActor, types.PermCreateSetNetworkPropertyProposal)
+	require.NoError(t, err2)
+
+	properties := app.CustomGovKeeper.GetNetworkProperties(ctx)
+	properties.ProposalEndTime = 10
+	app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
+
+	handler := gov.NewHandler(app.CustomGovKeeper)
+	res, err := handler(
+		ctx,
+		types.NewMsgProposalSetNetworkProperty(
+			proposerAddr,
+			types.MinTxFee,
+			1234,
+		),
+	)
+	require.NoError(t, err)
+	require.Equal(t, types2.GetProposalIDBytes(1), res.Data)
+
+	savedProposal, found := app.CustomGovKeeper.GetProposal(ctx, 1)
+	require.True(t, found)
+
+	expectedSavedProposal, err := types.NewProposal(
+		1,
+		types.NewSetNetworkPropertyProposal(
+			types.MinTxFee,
+			1234,
+		),
+		ctx.BlockTime(),
+		ctx.BlockTime().Add(time.Minute*time.Duration(properties.ProposalEndTime)),
+		ctx.BlockTime().Add(time.Minute*time.Duration(properties.ProposalEnactmentTime)),
+	)
+	require.NoError(t, err)
+	require.Equal(t, expectedSavedProposal, savedProposal)
+
+	// Next proposal ID is increased.
+	id, err := app.CustomGovKeeper.GetNextProposalID(ctx)
+	require.NoError(t, err)
+	require.Equal(t, uint64(2), id)
+
+	// Is not on finished active proposals.
+	iterator := app.CustomGovKeeper.GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx, ctx.BlockTime())
+	require.False(t, iterator.Valid())
+
+	ctx = ctx.WithBlockTime(ctx.BlockTime().Add(time.Minute * 10))
+	iterator = app.CustomGovKeeper.GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx, ctx.BlockTime())
+	require.True(t, iterator.Valid())
 }
