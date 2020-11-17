@@ -10,10 +10,16 @@ import (
 	"github.com/cosmos/cosmos-sdk/types"
 )
 
-const AssignPermissionProposalType = "AssignPermission"
+// constants
+const (
+	AssignPermissionProposalType   = "AssignPermission"
+	SetNetworkPropertyProposalType = "SetNetworkProperty"
+	UpsertDataRegistryProposalType = "UpsertDataRegistry"
+)
 
 var _ Content = &AssignPermissionProposal{}
 
+// NewProposal creates a new proposal
 func NewProposal(
 	proposalID uint64,
 	content Content,
@@ -56,6 +62,7 @@ func (p Proposal) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
 	return unpacker.UnpackAny(p.Content, &content)
 }
 
+// NewAssignPermissionProposal creates a new assign permission proposal
 func NewAssignPermissionProposal(
 	address types.AccAddress,
 	permission PermValue,
@@ -66,6 +73,50 @@ func NewAssignPermissionProposal(
 	}
 }
 
+// ProposalType returns proposal's type
 func (m *AssignPermissionProposal) ProposalType() string {
 	return AssignPermissionProposalType
+}
+
+// NewSetNetworkPropertyProposal creates a new set network property proposal
+func NewSetNetworkPropertyProposal(
+	property NetworkProperty,
+	value uint64,
+) Content {
+	return &SetNetworkPropertyProposal{
+		NetworkProperty: property,
+		Value:           value,
+	}
+}
+
+// ProposalType returns proposal's type
+func (m *SetNetworkPropertyProposal) ProposalType() string {
+	return SetNetworkPropertyProposalType
+}
+
+// VotePermission returns permission to vote on this proposal
+func (m *SetNetworkPropertyProposal) VotePermission() PermValue {
+	return PermVoteSetNetworkPropertyProposal
+}
+
+func (m *AssignPermissionProposal) VotePermission() PermValue {
+	return PermVoteSetPermissionProposal
+}
+
+func NewUpsertDataRegistryProposal(key, hash, reference, encoding string, size uint64) Content {
+	return &UpsertDataRegistryProposal{
+		Key:       key,
+		Hash:      hash,
+		Reference: reference,
+		Encoding:  encoding,
+		Size_:     size,
+	}
+}
+
+func (m *UpsertDataRegistryProposal) ProposalType() string {
+	return UpsertDataRegistryProposalType
+}
+
+func (m *UpsertDataRegistryProposal) VotePermission() PermValue {
+	return PermVoteUpsertDataRegistryProposal
 }

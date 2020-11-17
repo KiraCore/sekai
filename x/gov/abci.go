@@ -19,10 +19,14 @@ func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 }
 
 func processProposal(ctx sdk.Context, k keeper.Keeper, proposalID uint64) {
+	proposal, found := k.GetProposal(ctx, proposalID)
+	if !found {
+		panic("proposal was expected to exist")
+	}
+
 	votes := k.GetProposalVotes(ctx, proposalID)
 
-	// TODO: this should get availableVoters by proposal type
-	availableVoters := k.GetNetworkActorsByAbsoluteWhitelistPermission(ctx, types.PermVoteSetPermissionProposal)
+	availableVoters := k.GetNetworkActorsByAbsoluteWhitelistPermission(ctx, proposal.GetContent().VotePermission())
 	totalVoters := len(availableVoters)
 	numVotes := len(votes)
 
@@ -39,11 +43,6 @@ func processProposal(ctx sdk.Context, k keeper.Keeper, proposalID uint64) {
 
 	numActorsWithVeto := len(types.GetActorsWithVoteWithVeto(availableVoters))
 	calculatedVote := types.CalculateVotes(votes, uint64(numActorsWithVeto))
-
-	proposal, found := k.GetProposal(ctx, proposalID)
-	if !found {
-		panic("proposal was expected to exist")
-	}
 
 	proposal.Result = calculatedVote.ProcessResult()
 
@@ -62,10 +61,13 @@ func processEnactmentProposal(ctx sdk.Context, k keeper.Keeper, proposalID uint6
 		switch proposal.GetContent().ProposalType() {
 		case types.AssignPermissionProposalType:
 			applyAssignPermissionProposal(ctx, k, proposal)
+		case types.SetNetworkPropertyProposalType:
+			applySetNetworkPropertyProposal(ctx, k, proposal)
+		case types.UpsertDataRegistryProposalType:
+			applyUpsertDataRegistryProposal(ctx, k, proposal)
 		default:
 			panic("invalid proposal type")
 		}
-
 	}
 
 	k.RemoveEnactmentProposal(ctx, proposal)
@@ -83,4 +85,21 @@ func applyAssignPermissionProposal(ctx sdk.Context, k keeper.Keeper, proposal ty
 	if err != nil {
 		panic("network actor has this permission")
 	}
+}
+
+func applySetNetworkPropertyProposal(ctx sdk.Context, k keeper.Keeper, proposal types.Proposal) {
+	p := proposal.GetContent().(*types.SetNetworkPropertyProposal)
+
+	err := k.SetNetworkProperty(ctx, p.NetworkProperty, p.Value)
+	if err != nil {
+		panic("error setting network property")
+	}
+}
+
+func applyUpsertDataRegistryProposal(ctx sdk.Context, k keeper.Keeper, proposal types.Proposal) {
+	p := proposal.GetContent().(*types.UpsertDataRegistryProposal)
+
+	entry := types.NewDataRegistryEntry(p.Hash, p.Reference, p.Encoding, p.Size_)
+
+	k.UpsertDataRegistryEntry(ctx, p.Key, entry)
 }

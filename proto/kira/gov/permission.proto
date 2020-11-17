@@ -20,7 +20,7 @@ enum PermValue {
   // PERMISSION_CLAIM_COUNCILOR defines the permission that allows to Claim a Councilor Seat.
   PERMISSION_CLAIM_COUNCILOR = 3 [(gogoproto.enumvalue_customname) = "PermClaimCouncilor"];
 
-  // PERMISSION_CREATE_SET_PERMISSIONS_PROPOSAL defines the permission needed to create proposals.
+  // PERMISSION_CREATE_SET_PERMISSIONS_PROPOSAL defines the permission needed to create proposals for setting permissions.
   PERMISSION_CREATE_SET_PERMISSIONS_PROPOSAL = 4 [(gogoproto.enumvalue_customname) = "PermCreateSetPermissionsProposal"];
 
   // PERMISSION_VOTE_SET_PERMISSIONS_PROPOSAL defines the permission that an actor must have in order to vote a
@@ -38,5 +38,19 @@ enum PermValue {
 
   // PERMISSION_UPSERT_ROLE makes possible to add, modify and assign roles.
   PERMISSION_UPSERT_ROLE = 9  [(gogoproto.enumvalue_customname) = "PermUpsertRole"];
+
+  // PERMISSION_UPSERT_DATA_REGISTRY_PROPOSAL makes possible to create a proposal to change the Data Registry.
+  PERMISSION_UPSERT_DATA_REGISTRY_PROPOSAL = 10 [(gogoproto.enumvalue_customname) = "PermUpsertDataRegistryProposal"];
+
+  // PERMISSION_VOTE_UPSERT_DATA_REGISTRY_PROPOSAL makes possible to create a proposal to change the Data Registry.
+  PERMISSION_VOTE_UPSERT_DATA_REGISTRY_PROPOSAL = 11 [(gogoproto.enumvalue_customname) = "PermVoteUpsertDataRegistryProposal"];
+
+  // PERMISSION_CREATE_SET_NETWORK_PROPERTY_PROPOSAL defines the permission needed to create proposals for setting network property.
+  PERMISSION_CREATE_SET_NETWORK_PROPERTY_PROPOSAL = 12 [(gogoproto.enumvalue_customname) = "PermCreateSetNetworkPropertyProposal"];
+
+  // PERMISSION_VOTE_SET_NETWORK_PROPERTY_PROPOSAL defines the permission that an actor must have in order to vote a
+  // Proposal to set network property.
+  PERMISSION_VOTE_SET_NETWORK_PROPERTY_PROPOSAL = 13 [(gogoproto.enumvalue_customname) = "PermVoteSetNetworkPropertyProposal"];
+
 }
 

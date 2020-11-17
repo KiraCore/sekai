@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"errors"
+
 	"github.com/KiraCore/sekai/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
@@ -37,6 +39,56 @@ func (k Keeper) GetNetworkProperties(ctx sdk.Context) *types.NetworkProperties {
 	return properties
 }
 
+// GetNetworkProperty get single network property by key
+func (k Keeper) GetNetworkProperty(ctx sdk.Context, property types.NetworkProperty) (uint64, error) {
+	properties := k.GetNetworkProperties(ctx)
+	switch property {
+	case types.MinTxFee:
+		return properties.MinTxFee, nil
+	case types.MaxTxFee:
+		return properties.MaxTxFee, nil
+	case types.VoteQuorum:
+		return properties.VoteQuorum, nil
+	case types.ProposalEndTime:
+		return properties.ProposalEndTime, nil
+	case types.ProposalEnactmentTime:
+		return properties.ProposalEnactmentTime, nil
+	case types.EnableForeignFeePayments:
+		if properties.EnableForeignFeePayments {
+			return 1, nil
+		}
+		return 0, nil
+	default:
+		return 0, errors.New("trying to fetch network property that does not exist")
+	}
+}
+
+// SetNetworkProperty set single network property by key
+func (k Keeper) SetNetworkProperty(ctx sdk.Context, property types.NetworkProperty, value uint64) error {
+	properties := k.GetNetworkProperties(ctx)
+	switch property {
+	case types.MinTxFee:
+		properties.MinTxFee = value
+	case types.MaxTxFee:
+		properties.MaxTxFee = value
+	case types.VoteQuorum:
+		properties.VoteQuorum = value
+	case types.ProposalEndTime:
+		properties.ProposalEndTime = value
+	case types.ProposalEnactmentTime:
+		properties.ProposalEnactmentTime = value
+	case types.EnableForeignFeePayments:
+		if value > 0 {
+			properties.EnableForeignFeePayments = true
+		}
+		properties.EnableForeignFeePayments = false
+	default:
+		return errors.New("trying to set network property that does not exist")
+	}
+	k.SetNetworkProperties(ctx, properties)
+	return nil
+}
+
 // SetExecutionFee set fee by execution function name
 func (k Keeper) SetExecutionFee(ctx sdk.Context, fee *types.ExecutionFee) {
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixExecutionFee)
@@ -57,3 +109,4 @@ func (k Keeper) GetExecutionFee(ctx sdk.Context, txType string) *types.Execution
 	k.cdc.MustUnmarshalBinaryBare(bz, fee)
 	return fee
 }
+

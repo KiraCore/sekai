@@ -49,6 +49,10 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 		// Proposal related
 		case *customgovtypes.MsgProposalAssignPermission:
 			return handleMsgProposalAssignPermission(ctx, ck, msg)
+		case *customgovtypes.MsgProposalSetNetworkProperty:
+			return handleMsgProposalSetNetworkProperty(ctx, ck, msg)
+		case *customgovtypes.MsgProposalUpsertDataRegistry:
+			return handleMsgProposalUpsertDataRegistry(ctx, ck, msg)
 		case *customgovtypes.MsgVoteProposal:
 			return handleMsgVoteProposal(ctx, ck, msg)
 
@@ -63,25 +67,46 @@ func handleMsgVoteProposal(
 	ck keeper.Keeper,
 	msg *customgovtypes.MsgVoteProposal,
 ) (*sdk.Result, error) {
-	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Voter, customgovtypes.PermVoteSetPermissionProposal)
-	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermVoteSetPermissionProposal")
-	}
-
 	actor, found := ck.GetNetworkActorByAddress(ctx, msg.Voter)
 	if !found || !actor.IsActive() {
 		return nil, customgovtypes.ErrActorIsNotActive
 	}
 
-	_, found = ck.GetProposal(ctx, msg.ProposalId)
+	proposal, found := ck.GetProposal(ctx, msg.ProposalId)
 	if !found {
 		return nil, customgovtypes.ErrProposalDoesNotExist
+	}
+
+	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Voter, proposal.GetContent().VotePermission())
+	if !isAllowed {
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, proposal.GetContent().VotePermission().String())
 	}
 
 	vote := customgovtypes.NewVote(msg.ProposalId, msg.Voter, msg.Option)
 	ck.SaveVote(ctx, vote)
 
 	return &sdk.Result{}, nil
+}
+
+func handleMsgProposalUpsertDataRegistry(
+	ctx sdk.Context,
+	ck keeper.Keeper,
+	msg *customgovtypes.MsgProposalUpsertDataRegistry,
+) (*sdk.Result, error) {
+	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Proposer, customgovtypes.PermUpsertDataRegistryProposal)
+	if !isAllowed {
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermUpsertDataRegistryProposal.String())
+	}
+
+	return createAndSaveProposalWithContent(ctx, ck,
+		customgovtypes.NewUpsertDataRegistryProposal(
+			msg.Key,
+			msg.Hash,
+			msg.Reference,
+			msg.Encoding,
+			msg.Size_,
+		),
+	)
 }
 
 func handleMsgProposalAssignPermission(
@@ -101,6 +126,13 @@ func handleMsgProposalAssignPermission(
 		}
 	}
 
+	return createAndSaveProposalWithContent(ctx, ck, customgovtypes.NewAssignPermissionProposal(
+		msg.Address,
+		customgovtypes.PermValue(msg.Permission),
+	))
+}
+
+func createAndSaveProposalWithContent(ctx sdk.Context, ck keeper.Keeper, content customgovtypes.Content) (*sdk.Result, error) {
 	blockTime := ctx.BlockTime()
 	proposalID, err := ck.GetNextProposalID(ctx)
 	if err != nil {
@@ -111,9 +143,51 @@ func handleMsgProposalAssignPermission(
 
 	proposal, err := customgovtypes.NewProposal(
 		proposalID,
-		customgovtypes.NewAssignPermissionProposal(
-			msg.Address,
-			customgovtypes.PermValue(msg.Permission),
+		content,
+		blockTime,
+		blockTime.Add(time.Minute*time.Duration(properties.ProposalEndTime)),
+		blockTime.Add(time.Minute*time.Duration(properties.ProposalEnactmentTime)),
+	)
+
+	ck.SaveProposal(ctx, proposal)
+	ck.AddToActiveProposals(ctx, proposal)
+
+	return &sdk.Result{
+		Data: keeper.ProposalIDToBytes(proposalID),
+	}, nil
+}
+
+func handleMsgProposalSetNetworkProperty(
+	ctx sdk.Context,
+	ck keeper.Keeper,
+	msg *customgovtypes.MsgProposalSetNetworkProperty,
+) (*sdk.Result, error) {
+	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Proposer, customgovtypes.PermCreateSetNetworkPropertyProposal)
+	if !isAllowed {
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermCreateSetNetworkPropertyProposal.String())
+	}
+
+	property, err := ck.GetNetworkProperty(ctx, msg.NetworkProperty)
+	if err != nil {
+		return nil, errors.Wrap(errors.ErrInvalidRequest, err.Error())
+	}
+	if property == msg.Value {
+		return nil, errors.Wrap(errors.ErrInvalidRequest, "network property already set as proposed value")
+	}
+
+	blockTime := ctx.BlockTime()
+	proposalID, err := ck.GetNextProposalID(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	properties := ck.GetNetworkProperties(ctx)
+
+	proposal, err := customgovtypes.NewProposal(
+		proposalID,
+		customgovtypes.NewSetNetworkPropertyProposal(
+			msg.NetworkProperty,
+			msg.Value,
 		),
 		blockTime,
 		blockTime.Add(time.Minute*time.Duration(properties.ProposalEndTime)),

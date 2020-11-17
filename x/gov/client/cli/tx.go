@@ -65,6 +65,7 @@ func NewTxProposalCmds() *cobra.Command {
 
 	proposalCmd.AddCommand(GetTxProposalAssignPermission())
 	proposalCmd.AddCommand(GetTxVoteProposal())
+	proposalCmd.AddCommand(GetTxProposalSetNetworkProperty())
 
 	return proposalCmd
 }
@@ -565,6 +566,57 @@ func GetTxRemoveRole() *cobra.Command {
 	return cmd
 }
 
+// GetTxProposalSetNetworkProperty defines command to send proposal tx to modify a network property
+func GetTxProposalSetNetworkProperty() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "set-network-property <property> <value>",
+		Short: "Create a proposal to set a value on a network property.",
+		Long: `
+		$ %s tx customgov proposal set-network-property MIN_TX_FEE 100 --from=<key_or_address>
+
+		Available properties:
+			MIN_TX_FEE
+			MAX_TX_FEE
+			VOTE_QUORUM
+			PROPOSAL_END_TIME
+			PROPOSAL_ENACTMENT_TIME
+			ENABLE_FOREIGN_TX_FEE_PAYMENTS
+		`,
+		Args: cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			property, ok := types.NetworkProperty_value[args[0]]
+			if !ok {
+				return fmt.Errorf("invalid network property name: %w", err)
+			}
+
+			value, err := strconv.Atoi(args[1])
+			if err != nil {
+				return fmt.Errorf("invalid network property value: %w", err)
+			}
+
+			msg := types.NewMsgProposalSetNetworkProperty(
+				clientCtx.FromAddress,
+				types.NetworkProperty(property),
+				uint64(value),
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
 func GetTxProposalAssignPermission() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "assign-permission permission",
@@ -591,6 +643,49 @@ func GetTxProposalAssignPermission() *cobra.Command {
 				clientCtx.FromAddress,
 				addr,
 				types.PermValue(perm),
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	cmd.Flags().String(cli.FlagAddr, "", "the address to set permissions")
+
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+	_ = cmd.MarkFlagRequired(cli.FlagAddr)
+
+	return cmd
+}
+
+func GetTxProposalUpsertDataRegistry() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "upsert-data-registry key hash",
+		Short: "Upsert a key in the data registry",
+		Args:  cobra.ExactArgs(5),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			key := args[0]
+			hash := args[1]
+			reference := args[2]
+			encoding := args[3]
+			size, err := strconv.Atoi(args[4])
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgProposalUpsertDataRegistry(
+				clientCtx.FromAddress,
+				key,
+				hash,
+				reference,
+				encoding,
+				uint64(size),
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)

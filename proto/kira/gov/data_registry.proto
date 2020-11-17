@@ -1,0 +1,11 @@
+syntax = "proto3";
+package kira.gov;
+
+option go_package = "github.com/KiraCore/sekai/x/gov/types";
+
+message DataRegistryEntry {
+  string hash = 1;
+  string reference = 2;
+  string encoding = 3;
+  uint64 size = 4;
+}
