@@ -1,12 +1,34 @@
 # Changelog
 
-## [0.1.7.4] - 11.15.2020
+## [0.1.12.1] - 11.15.2020
 ### Added
 - Proposal to upsert the Data Registry. (CLI too)
 - Proposal to change Network Properties. (CLI too)
 
 ### Changed
 - Now it is more generic to be able to add new proposals in the complete flow.
+
+## [0.1.12] - 11.13.2020
+
+### Added
+
+KIP_8
+- Added grpc gateway
+- Added status, balances, transaction hash queries
+- Added transaction encode/broadcast
+- Added response format
+
+KIP_9
+- Added endpoint whitelist
+
+KIP_48
+- Added INTERX faucet
+
+KIP_47
+- Added response caching
+
+KIP_32
+- Added withdraws, deposits
 
 ## [0.1.7.3] - 11.12.2020
 ### Added
