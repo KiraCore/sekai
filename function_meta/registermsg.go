@@ -1,4 +1,4 @@
-package middleware
+package functionmeta
 
 import (
 	"encoding/json"
@@ -13,7 +13,7 @@ import (
 	gov "github.com/cosmos/cosmos-sdk/x/gov/types"
 	staking "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/iancoleman/strcase"
-	amino "github.com/tendermint/go-amino"
+	"github.com/tendermint/go-amino"
 )
 
 var (

@@ -1,11 +1,11 @@
 package functions
 
 import (
-	middleware "github.com/KiraCore/sekai/middleware"
+	functionmeta "github.com/KiraCore/sekai/function_meta"
 	sekaitypes "github.com/KiraCore/sekai/types"
 )
 
 // GetAllFunctions is a function to get all functions registered
 func GetAllFunctions() sekaitypes.FunctionList {
-	return middleware.GetFunctionList()
+	return functionmeta.GetFunctionList()
 }
