@@ -10,6 +10,7 @@ require (
 	github.com/golang/protobuf v1.4.2
 	github.com/gorilla/mux v1.8.0
 	github.com/grpc-ecosystem/grpc-gateway v1.14.8
+	github.com/iancoleman/strcase v0.1.2
 	github.com/otiai10/copy v1.2.0
 	github.com/pkg/errors v0.9.1
 	github.com/regen-network/cosmos-proto v0.3.0
@@ -21,6 +22,7 @@ require (
 	github.com/tendermint/go-amino v0.16.0
 	github.com/tendermint/tendermint v0.34.0-rc3.0.20200907055413-3359e0bf2f84
 	github.com/tendermint/tm-db v0.6.2
+	gitlab.com/c0b/go-ordered-json v0.0.0-20201030195603-febf46534d5a
 	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a
 	google.golang.org/grpc v1.32.0
 )

@@ -2,6 +2,7 @@ package types
 
 type FunctionParameter struct {
 	Type        string              `json:"type"`
+	Optional    bool                `json:"optional"`
 	Description string              `json:"description"`
 	Fields      *FunctionParameters `json:"fields,omitempty"`
 }
@@ -15,18 +16,3 @@ type FunctionMeta struct {
 }
 
 type FunctionList = map[string]FunctionMeta
-
-func NewFunctionMeta(funcID int64, desc string, params FunctionParameters) FunctionMeta {
-	return FunctionMeta{
-		FunctionID:  funcID,
-		Description: desc,
-		Parameters:  params,
-	}
-}
-
-func NewFunctionParameter(paramType string, desc string) FunctionParameter {
-	return FunctionParameter{
-		Type:        paramType,
-		Description: desc,
-	}
-}
