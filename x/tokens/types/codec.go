@@ -61,7 +61,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 
 	functionmeta.AddNewFunction((&MsgUpsertTokenRate{}).Type(), `{
 		"function_id": 0,
-		"description": "MsgUpsertTokenRate represents a message to register token alias.",
+		"description": "MsgUpsertTokenRate represents a message to register token rate.",
 		"parameters": {
 			"denom": {
 				"type":        "string",
