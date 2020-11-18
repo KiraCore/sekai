@@ -88,6 +88,17 @@ message MsgProposalUpsertDataRegistry {
   uint64 size = 6;
 }
 
+message MsgProposalSetNetworkProperty {
+  bytes proposer = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  NetworkProperty network_property = 2; // enum value
+
+  uint64 value = 3;
+}
+
 message Proposal {
   option (gogoproto.goproto_getters) = false;
   uint64     proposal_id = 1;
@@ -119,17 +130,6 @@ message AssignPermissionProposal {
   ];
 
   uint32 permission = 2;
-}
-
-message MsgProposalSetNetworkProperty {
-  bytes proposer = 1 [
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
-    (gogoproto.moretags) = "yaml:\"address\""
-  ];
-
-  NetworkProperty network_property = 2; // enum value
-
-  uint64 value = 3;
 }
 
 message SetNetworkPropertyProposal {
