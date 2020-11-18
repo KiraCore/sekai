@@ -11,6 +11,8 @@ import (
 	distribution "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	evidence "github.com/cosmos/cosmos-sdk/x/evidence/types"
 	gov "github.com/cosmos/cosmos-sdk/x/gov/types"
+	ibc "github.com/cosmos/cosmos-sdk/x/ibc-transfer/types"
+	slashing "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	staking "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/iancoleman/strcase"
 	"github.com/tendermint/go-amino"
@@ -49,6 +51,8 @@ func RegisterStdMsgs() {
 	registerDistributionMsgs()
 	registerEvidenceMsgs()
 	registerGovMsgs()
+	registerIbcMsgs()
+	registerSlashingMsgs()
 	registerStakingMsgs()
 }
 
@@ -56,7 +60,6 @@ func registerBankMsgs() {
 	AddNewFunction(
 		(bank.MsgSend{}).Type(),
 		`{
-			"function_id": 0,
 			"description": "MsgSend represents a message to send coins from one account to another.",
 			"parameters": {
 				"from_address": {
@@ -88,7 +91,6 @@ func registerBankMsgs() {
 	AddNewFunction(
 		(bank.MsgMultiSend{}).Type(),
 		`{
-			"function_id": 1,
 			"description": "MsgMultiSend represents an arbitrary multi-in, multi-out send message.",
 			"parameters": {
 				"inputs": {
@@ -148,7 +150,6 @@ func registerCrisisMsgs() {
 	AddNewFunction(
 		(crisis.MsgVerifyInvariant{}).Type(),
 		`{
-			"function_id": 0,
 			"description": "MsgVerifyInvariant represents a message to verify a particular invariance.",
 			"parameters": {
 				"sender": {
@@ -172,7 +173,6 @@ func registerDistributionMsgs() {
 	AddNewFunction(
 		(distribution.MsgSetWithdrawAddress{}).Type(),
 		`{
-			"function_id": 0,
 			"description": "MsgSetWithdrawAddress sets the withdraw address for a delegator (or validator self-delegation).",
 			"parameters": {
 				"delegator_address": {
@@ -190,7 +190,6 @@ func registerDistributionMsgs() {
 	AddNewFunction(
 		(distribution.MsgWithdrawDelegatorReward{}).Type(),
 		`{
-			"function_id": 0,
 			"description": "MsgWithdrawDelegatorReward represents delegation withdrawal to a delegator from a single validator.",
 			"parameters": {
 				"delegator_address": {
@@ -208,7 +207,6 @@ func registerDistributionMsgs() {
 	AddNewFunction(
 		(distribution.MsgWithdrawValidatorCommission{}).Type(),
 		`{
-			"function_id": 0,
 			"description": "MsgWithdrawValidatorCommission withdraws the full commission to the validator address.",
 			"parameters": {
 				"validator_address": {
@@ -222,7 +220,6 @@ func registerDistributionMsgs() {
 	AddNewFunction(
 		(distribution.MsgFundCommunityPool{}).Type(),
 		`{
-			"function_id": 0,
 			"description": "MsgFundCommunityPool allows an account to directly fund the community pool.",
 			"parameters": {
 				"amount": {
@@ -252,7 +249,6 @@ func registerEvidenceMsgs() {
 	AddNewFunction(
 		(evidence.MsgSubmitEvidence{}).Type(),
 		`{
-			"function_id": 0,
 			"description": "MsgSubmitEvidence represents a message that supports submitting arbitrary Evidence of misbehavior such as equivocation or counterfactual signing.",
 			"parameters": {
 				"submitter": {
@@ -272,7 +268,6 @@ func registerGovMsgs() {
 	AddNewFunction(
 		(gov.MsgSubmitProposal{}).Type(),
 		`{
-			"function_id": 0,
 			"description": "MsgSubmitProposal defines an sdk.Msg type that supports submitting arbitrary proposal Content.",
 			"parameters": {
 				"content": {
@@ -304,7 +299,6 @@ func registerGovMsgs() {
 	AddNewFunction(
 		(gov.MsgDeposit{}).Type(),
 		`{
-			"function_id": 0,
 			"description": "MsgDeposit defines a message to submit a deposit to an existing proposal.",
 			"parameters": {
 				"proposal_id": {
@@ -336,7 +330,6 @@ func registerGovMsgs() {
 	AddNewFunction(
 		(gov.MsgVote{}).Type(),
 		`{
-			"function_id": 0,
 			"description": "MsgVote defines a message to cast a vote.",
 			"parameters": {
 				"proposal_id": {
@@ -356,11 +349,84 @@ func registerGovMsgs() {
 	)
 }
 
+func registerIbcMsgs() {
+	AddNewFunction(
+		(ibc.MsgTransfer{}).Type(),
+		`{
+			"description": "MsgTransfer defines a msg to transfer fungible tokens (i.e Coins) between ICS20 enabled chains. See ICS Spec here: https://github.com/cosmos/ics/tree/master/spec/ics-020-fungible-token-transfer#data-structures",
+			"parameters": {
+				"source_port": {
+					"type":        "string",
+					"description": "the port on which the packet will be sent"
+				},
+				"source_channel": {
+					"type":        "string",
+					"description": "the channel by which the packet will be sent"
+				},
+				"amount": {
+					"type":        "Coin",
+					"description": "the tokens to be transferred",
+					"fields": {
+						"denom": {
+							"type":        "string",
+							"description": "This is the denomination of each coin"
+						},
+						"amount": {
+							"type":        "int",
+							"description": "This is the amount of each coin"
+						}
+					}
+				},
+				"sender": {
+					"type":        "byte[]",
+					"description": "the sender address"
+				},
+				"receiver": {
+					"type":        "string",
+					"description": "the recipient address on the destination chain"
+				},
+				"timeout_height": {
+					"type":        "Height",
+					"description": "Height is a monotonically increasing data type that can be compared against another Height for the purposes of updating and freezing clients.",
+					"fields": {
+						"epoch_number": {
+							"type":        "Uint64",
+							"description": "the epoch that the client is currently on"
+						},
+						"epoch_height": {
+							"type":        "Uint64",
+							"description": "the height within the given epoch"
+						}
+					}
+				},
+				"timeout_timestamp": {
+					"type":        "Uint64",
+					"description": "Timeout timestamp (in nanoseconds) relative to the current block timestamp. The timeout is disabled when set to 0."
+				}
+			}
+		}`,
+	)
+}
+
+func registerSlashingMsgs() {
+	AddNewFunction(
+		(slashing.MsgUnjail{}).Type(),
+		`{
+			"description": "MsgUnjail is an sdk.Msg used for unjailing a jailed validator, thus returning them into the bonded validator set, so they can begin receiving provisions and rewards again.",
+			"parameters": {
+				"validator_addr": {
+					"type":        "byte[]",
+					"description": "validator address"
+				}
+			}
+		}`,
+	)
+}
+
 func registerStakingMsgs() {
 	AddNewFunction(
 		(staking.MsgCreateValidator{}).Type(),
 		`{
-			"function_id": 0,
 			"description": "MsgCreateValidator defines an SDK message for creating a new validator.",
 			"parameters": {
 				"description": {
@@ -444,7 +510,6 @@ func registerStakingMsgs() {
 	AddNewFunction(
 		(staking.MsgEditValidator{}).Type(),
 		`{
-			"function_id": 0,
 			"description": "MsgEditValidator defines an SDK message for editing an existing validator.",
 			"parameters": {
 				"description": {
@@ -492,7 +557,6 @@ func registerStakingMsgs() {
 	AddNewFunction(
 		(staking.MsgDelegate{}).Type(),
 		`{
-			"function_id": 0,
 			"description": "MsgDelegate defines an SDK message for performing a delegation of coins from a delegator to a validator.",
 			"parameters": {
 				"delegator_address": {
@@ -524,7 +588,6 @@ func registerStakingMsgs() {
 	AddNewFunction(
 		(staking.MsgBeginRedelegate{}).Type(),
 		`{
-			"function_id": 0,
 			"description": "MsgBeginRedelegate defines an SDK message for performing a redelegation of coins from a delegator and source validator to a destination validator.",
 			"parameters": {
 				"delegator_address": {
@@ -560,7 +623,6 @@ func registerStakingMsgs() {
 	AddNewFunction(
 		(staking.MsgUndelegate{}).Type(),
 		`{
-			"function_id": 0,
 			"description": "MsgUndelegate defines an SDK message for performing an undelegation from a delegate and a validator.",
 			"parameters": {
 				"delegator_address": {

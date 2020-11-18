@@ -16,8 +16,8 @@ import (
 )
 
 func readConfig() InterxConfig {
-	sekaiapp.SetConfig()
 	functionmeta.RegisterStdMsgs()
+	sekaiapp.SetConfig()
 
 	type ConfigFromFile struct {
 		Mnemonic        string `json:"mnemonic"`
