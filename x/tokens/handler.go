@@ -1,6 +1,10 @@
 package tokens
 
 import (
+	"time"
+
+	keeper2 "github.com/KiraCore/sekai/x/gov/keeper"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -20,13 +24,37 @@ func NewHandler(ck keeper.Keeper, cgk types.CustomGovKeeper) sdk.Handler {
 			return handleUpsertTokenAlias(ctx, ck, cgk, msg)
 		case *types.MsgUpsertTokenRate:
 			return handleUpsertTokenRate(ctx, ck, cgk, msg)
+
+		// Proposals
+		case *types.MsgProposalUpsertTokenAlias:
+			return handleProposalUpsertTokenAlias(ctx, ck, cgk, msg)
 		default:
 			return nil, errors.Wrapf(errors.ErrUnknownRequest, "unrecognized %s message type: %T", types.ModuleName, msg)
 		}
 	}
 }
 
-func handleUpsertTokenAlias(ctx sdk.Context, ck keeper.Keeper, cgk types.CustomGovKeeper, msg *types.MsgUpsertTokenAlias) (*sdk.Result, error) {
+func handleProposalUpsertTokenAlias(ctx sdk.Context, ck keeper.Keeper, cgk types.CustomGovKeeper, msg *types.MsgProposalUpsertTokenAlias) (*sdk.Result, error) {
+	isAllowed := cgk.CheckIfAllowedPermission(ctx, msg.Proposer, customgovtypes.PermCreateUpsertTokenAliasProposal)
+	if !isAllowed {
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermCreateUpsertTokenAliasProposal.String())
+	}
+
+	return CreateAndSaveProposalWithContent(ctx, cgk, types.NewProposalUpsertTokenAlias(
+		msg.Symbol,
+		msg.Name,
+		msg.Icon,
+		msg.Decimals,
+		msg.Denoms,
+	))
+}
+
+func handleUpsertTokenAlias(
+	ctx sdk.Context,
+	ck keeper.Keeper,
+	cgk types.CustomGovKeeper,
+	msg *types.MsgUpsertTokenAlias,
+) (*sdk.Result, error) {
 	isAllowed := cgk.CheckIfAllowedPermission(ctx, msg.Proposer, customgovtypes.PermUpsertTokenAlias)
 	if !isAllowed {
 		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermUpsertTokenAlias")
@@ -67,4 +95,29 @@ func handleUpsertTokenRate(ctx sdk.Context, ck keeper.Keeper, cgk types.CustomGo
 		return nil, errors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
 	}
 	return &sdk.Result{}, nil
+}
+
+func CreateAndSaveProposalWithContent(ctx sdk.Context, ck types.CustomGovKeeper, content customgovtypes.Content) (*sdk.Result, error) {
+	blockTime := ctx.BlockTime()
+	proposalID, err := ck.GetNextProposalID(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	properties := ck.GetNetworkProperties(ctx)
+
+	proposal, err := customgovtypes.NewProposal(
+		proposalID,
+		content,
+		blockTime,
+		blockTime.Add(time.Minute*time.Duration(properties.ProposalEndTime)),
+		blockTime.Add(time.Minute*time.Duration(properties.ProposalEnactmentTime)),
+	)
+
+	ck.SaveProposal(ctx, proposal)
+	ck.AddToActiveProposals(ctx, proposal)
+
+	return &sdk.Result{
+		Data: keeper2.ProposalIDToBytes(proposalID),
+	}, nil
 }

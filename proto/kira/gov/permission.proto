@@ -52,5 +52,7 @@ enum PermValue {
   // Proposal to set network property.
   PERMISSION_VOTE_SET_NETWORK_PROPERTY_PROPOSAL = 13 [(gogoproto.enumvalue_customname) = "PermVoteSetNetworkPropertyProposal"];
 
+  // PERMISSION_CREATE_UPSERT_TOKEN_ALIAS_PROPOSAL defines the permission needed to create proposals for upsert token proposal.
+  PERMISSION_CREATE_UPSERT_TOKEN_ALIAS_PROPOSAL = 14 [(gogoproto.enumvalue_customname) = "PermCreateUpsertTokenAliasProposal"];
 }
 
