@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 
+	functions "github.com/KiraCore/sekai/INTERX/functions"
 	sekaiapp "github.com/KiraCore/sekai/app"
 	functionmeta "github.com/KiraCore/sekai/function_meta"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
@@ -16,6 +17,7 @@ import (
 )
 
 func readConfig() InterxConfig {
+	functions.RegisterInterxFunctions()
 	functionmeta.RegisterStdMsgs()
 	sekaiapp.SetConfig()
 

@@ -5,7 +5,12 @@ import (
 	sekaitypes "github.com/KiraCore/sekai/types"
 )
 
-// GetAllFunctions is a function to get all functions registered
-func GetAllFunctions() sekaitypes.FunctionList {
+// GetKiraFunctions is a function to get all kira functions registered
+func GetKiraFunctions() sekaitypes.FunctionList {
 	return functionmeta.GetFunctionList()
+}
+
+// GetInterxFunctions is a function to get all interx functions registered
+func GetInterxFunctions() sekaitypes.FunctionList {
+	return interxFunctions
 }

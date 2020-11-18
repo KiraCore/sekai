@@ -11,6 +11,7 @@ require (
 	github.com/golang/protobuf v1.4.2
 	github.com/gorilla/mux v1.8.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.0.0-beta.4
+	github.com/iancoleman/strcase v0.1.2
 	github.com/igorsobreira/kvstore v0.0.0-20131025205959-a8574822a4b3
 	github.com/inhies/go-bytesize v0.0.0-20200716184324-4fe85e9b81b2
 	github.com/juju/fslock v0.0.0-20160525022230-4d5c94c67b4b
@@ -27,4 +28,5 @@ require (
 )
 
 replace github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.2-alpha.regen.4
+
 replace github.com/KiraCore/sekai => ../

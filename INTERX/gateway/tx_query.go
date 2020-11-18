@@ -35,13 +35,13 @@ func RegisterTxQueryRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr
 	r.HandleFunc(queryWithdraws, QueryWithdraws(rpcAddr)).Methods(GET)
 	r.HandleFunc(queryDeposits, QueryDeposits(rpcAddr)).Methods(GET)
 
-	AddRPCMethod(GET, queryKiraFunctions, "This is an API to list functions and metadata.", true)
+	AddRPCMethod(GET, queryKiraFunctions, "This is an API to query kira functions and metadata.", true)
 	AddRPCMethod(GET, queryWithdraws, "This is an API to query withdraw transactions.", true)
 	AddRPCMethod(GET, queryDeposits, "This is an API to query deposit transactions.", true)
 }
 
 func queryKiraFunctionsHandle(rpcAddr string) (interface{}, interface{}, int) {
-	functions := functions.GetAllFunctions()
+	functions := functions.GetKiraFunctions()
 
 	return functions, nil, http.StatusOK
 }
