@@ -364,7 +364,13 @@ func NewSimApp(
 		evidence.NewAppModule(app.EvidenceKeeper),
 		ibc.NewAppModule(app.IBCKeeper),
 		params.NewAppModule(app.ParamsKeeper),
-		customgov.NewAppModule(app.CustomGovKeeper),
+		customgov.NewAppModule(app.CustomGovKeeper, customgov.NewProposalRouter(
+			[]customgov.ProposalHandler{
+				customgov.NewApplyAssignPermissionProposalHandler(app.CustomGovKeeper),
+				customgov.NewApplySetNetworkPropertyProposalHandler(app.CustomGovKeeper),
+				customgov.NewApplyUpsertDataRegistryProposalHandler(app.CustomGovKeeper),
+			},
+		)),
 		tokens.NewAppModule(app.TokensKeeper, app.CustomGovKeeper),
 		feeprocessing.NewAppModule(app.FeeProcessingKeeper),
 		transferModule,

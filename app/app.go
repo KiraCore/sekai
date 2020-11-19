@@ -352,7 +352,13 @@ func NewInitApp(
 		params.NewAppModule(app.paramsKeeper),
 		transferModule,
 		customstaking.NewAppModule(app.customStakingKeeper, app.customGovKeeper),
-		customgov.NewAppModule(app.customGovKeeper),
+		customgov.NewAppModule(app.customGovKeeper, customgov.NewProposalRouter(
+			[]customgov.ProposalHandler{
+				customgov.NewApplyAssignPermissionProposalHandler(app.customGovKeeper),
+				customgov.NewApplySetNetworkPropertyProposalHandler(app.customGovKeeper),
+				customgov.NewApplyUpsertDataRegistryProposalHandler(app.customGovKeeper),
+			},
+		)),
 		tokens.NewAppModule(app.tokensKeeper, app.customGovKeeper),
 		feeprocessing.NewAppModule(app.feeprocessingKeeper),
 	)

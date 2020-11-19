@@ -9,13 +9,13 @@ type ProposalRouter struct {
 	routes map[string]ProposalHandler
 }
 
-func NewProposalRouter(handlers []ProposalHandler) *ProposalRouter {
+func NewProposalRouter(handlers []ProposalHandler) ProposalRouter {
 	routes := make(map[string]ProposalHandler, len(handlers))
 	for _, h := range handlers {
 		routes[h.ProposalType()] = h
 	}
 
-	return &ProposalRouter{routes: routes}
+	return ProposalRouter{routes: routes}
 }
 
 func (r ProposalRouter) ApplyProposal(ctx sdk.Context, proposal types.Content) {
