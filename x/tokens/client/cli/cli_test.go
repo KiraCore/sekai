@@ -75,9 +75,6 @@ func (s *IntegrationTestSuite) TestUpsertTokenAliasAndQuery() {
 	cmd.SetArgs(
 		[]string{
 			fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
-			fmt.Sprintf("--%s=%d", cli.FlagExpiration, 0),
-			fmt.Sprintf("--%s=%d", cli.FlagEnactment, 0),
-			fmt.Sprintf("--%s=%s", cli.FlagAllowedVoteTypes, "0,1"),
 			fmt.Sprintf("--%s=%s", cli.FlagSymbol, "ETH"),
 			fmt.Sprintf("--%s=%s", cli.FlagName, "Ethereum"),
 			fmt.Sprintf("--%s=%s", cli.FlagIcon, "myiconurl"),
@@ -108,9 +105,6 @@ func (s *IntegrationTestSuite) TestUpsertTokenAliasAndQuery() {
 	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &tokenAliasResponse)
 	tokenAlias := tokenAliasResponse.Data
 
-	s.Require().Equal(tokenAlias.Expiration, 0)
-	s.Require().Equal(tokenAlias.Enactment, 0)
-	s.Require().Equal(tokenAlias.AllowedVoteTypes, []tokenstypes.VoteType{tokenstypes.VoteType_yes, tokenstypes.VoteType_no})
 	s.Require().Equal(tokenAlias.Symbol, "ETH")
 	s.Require().Equal(tokenAlias.Name, "Ethereum")
 	s.Require().Equal(tokenAlias.Icon, "myiconurl")

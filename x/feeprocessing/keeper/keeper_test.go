@@ -46,7 +46,7 @@ func TestNewKeeper_Executions(t *testing.T) {
 	executions = app.FeeProcessingKeeper.GetExecutionsStatus(ctx)
 	require.True(t, len(executions) == 1)
 
-	msg2 := tokenstypes.NewMsgUpsertTokenAlias(addr, 0, 0, []tokenstypes.VoteType{}, "KEX", "Kira", "", 10, []string{"ukex"}, tokenstypes.ProposalStatus_active)
+	msg2 := tokenstypes.NewMsgUpsertTokenAlias(addr, "KEX", "Kira", "", 10, []string{"ukex"})
 	app.FeeProcessingKeeper.AddExecutionStart(ctx, msg2)
 	executions = app.FeeProcessingKeeper.GetExecutionsStatus(ctx)
 	require.True(t, len(executions) == 2)

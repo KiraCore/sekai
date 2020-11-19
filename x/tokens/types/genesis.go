@@ -8,7 +8,7 @@ import (
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
 		Aliases: map[string]*TokenAlias{
-			"KEX": NewTokenAlias(0, 0, []VoteType{0, 1}, "KEX", "Kira", "", 6, []string{"ukex", "mkex"}, ProposalStatus_active),
+			"KEX": NewTokenAlias("KEX", "Kira", "", 6, []string{"ukex", "mkex"}),
 		},
 		Rates: map[string]*TokenRate{
 			"ukex": NewTokenRate("ukex", sdk.NewDec(1), true),            // 1

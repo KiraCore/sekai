@@ -70,14 +70,11 @@ func TestNewHandler_MsgUpsertTokenAlias(t *testing.T) {
 				require.NoError(t, err)
 				return tokenstypes.NewMsgUpsertTokenAlias(
 					addr,
-					0, 0,
-					[]tokenstypes.VoteType{tokenstypes.VoteType_no, tokenstypes.VoteType_yes},
 					"ETH",
 					"Ethereum",
 					"icon",
 					6,
 					[]string{"finney"},
-					tokenstypes.ProposalStatus_active,
 				), nil
 			},
 		},
@@ -86,14 +83,11 @@ func TestNewHandler_MsgUpsertTokenAlias(t *testing.T) {
 			constructor: func(addr sdk.AccAddress) (*tokenstypes.MsgUpsertTokenAlias, error) {
 				return tokenstypes.NewMsgUpsertTokenAlias(
 					addr,
-					0, 0,
-					[]tokenstypes.VoteType{tokenstypes.VoteType_no, tokenstypes.VoteType_yes},
 					"ETH",
 					"Ethereum",
 					"icon",
 					6,
 					[]string{"finney"},
-					tokenstypes.ProposalStatus_active,
 				), nil
 			},
 			handlerErr: "PermUpsertTokenAlias: not enough permissions",

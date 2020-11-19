@@ -61,15 +61,11 @@ func handleUpsertTokenAlias(
 	}
 
 	err := ck.UpsertTokenAlias(ctx, *types.NewTokenAlias(
-		msg.Expiration,
-		msg.Enactment,
-		msg.AllowedVoteTypes,
 		msg.Symbol,
 		msg.Name,
 		msg.Icon,
 		msg.Decimals,
 		msg.Denoms,
-		msg.Status,
 	))
 	return &sdk.Result{}, err
 }
