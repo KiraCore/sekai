@@ -354,6 +354,7 @@ func NewInitApp(
 				customgov.NewApplyAssignPermissionProposalHandler(app.customGovKeeper),
 				customgov.NewApplySetNetworkPropertyProposalHandler(app.customGovKeeper),
 				customgov.NewApplyUpsertDataRegistryProposalHandler(app.customGovKeeper),
+				tokens.NewApplyUpsertTokenAliasProposalHandler(app.tokensKeeper),
 			},
 		)),
 		tokens.NewAppModule(app.tokensKeeper, app.customGovKeeper),

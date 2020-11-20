@@ -195,6 +195,8 @@ type SimApp struct {
 	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
 	ScopedIBCMockKeeper  capabilitykeeper.ScopedKeeper
 
+	ProposalRouter customgov.ProposalRouter
+
 	// the module manager
 	mm *module.Manager
 
@@ -345,6 +347,14 @@ func NewSimApp(
 
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
+	app.ProposalRouter = customgov.NewProposalRouter(
+		[]customgov.ProposalHandler{
+			customgov.NewApplyAssignPermissionProposalHandler(app.CustomGovKeeper),
+			customgov.NewApplySetNetworkPropertyProposalHandler(app.CustomGovKeeper),
+			customgov.NewApplyUpsertDataRegistryProposalHandler(app.CustomGovKeeper),
+			tokens.NewApplyUpsertTokenAliasProposalHandler(app.TokensKeeper),
+		},
+	)
 	app.mm = module.NewManager(
 		genutil.NewAppModule(
 			app.AccountKeeper, app.StakingKeeper, app.BaseApp.DeliverTx,
@@ -364,13 +374,7 @@ func NewSimApp(
 		evidence.NewAppModule(app.EvidenceKeeper),
 		ibc.NewAppModule(app.IBCKeeper),
 		params.NewAppModule(app.ParamsKeeper),
-		customgov.NewAppModule(app.CustomGovKeeper, customgov.NewProposalRouter(
-			[]customgov.ProposalHandler{
-				customgov.NewApplyAssignPermissionProposalHandler(app.CustomGovKeeper),
-				customgov.NewApplySetNetworkPropertyProposalHandler(app.CustomGovKeeper),
-				customgov.NewApplyUpsertDataRegistryProposalHandler(app.CustomGovKeeper),
-			},
-		)),
+		customgov.NewAppModule(app.CustomGovKeeper, app.ProposalRouter),
 		tokens.NewAppModule(app.TokensKeeper, app.CustomGovKeeper),
 		feeprocessing.NewAppModule(app.FeeProcessingKeeper),
 		transferModule,

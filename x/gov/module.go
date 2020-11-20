@@ -160,7 +160,7 @@ func (am AppModule) LegacyQuerierHandler(marshaler *codec.LegacyAmino) sdk.Queri
 func (am AppModule) BeginBlock(context sdk.Context, block abci.RequestBeginBlock) {}
 
 func (am AppModule) EndBlock(ctx sdk.Context, block abci.RequestEndBlock) []abci.ValidatorUpdate {
-	EndBlocker(ctx, am.customGovKeeper)
+	EndBlocker(ctx, am.customGovKeeper, am.proposalRouter)
 
 	return []abci.ValidatorUpdate{}
 }

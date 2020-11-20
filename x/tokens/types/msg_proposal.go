@@ -10,7 +10,7 @@ var (
 	_ types.Content = &ProposalUpsertTokenAlias{}
 )
 
-const ProposalUpsertTokenAliasType = "propose-upsert-token-alias"
+const MsgProposalUpsertTokenAliasType = "propose-upsert-token-alias"
 
 func NewMsgProposalUpsertTokenAlias(
 	proposer sdk.AccAddress,
@@ -35,7 +35,7 @@ func (m *MsgProposalUpsertTokenAlias) Route() string {
 }
 
 func (m *MsgProposalUpsertTokenAlias) Type() string {
-	return ProposalUpsertTokenAliasType
+	return MsgProposalUpsertTokenAliasType
 }
 
 func (m *MsgProposalUpsertTokenAlias) ValidateBasic() error {
@@ -51,26 +51,3 @@ func (m *MsgProposalUpsertTokenAlias) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{m.Proposer}
 }
 
-func NewProposalUpsertTokenAlias(
-	symbol string,
-	name string,
-	icon string,
-	decimals uint32,
-	denoms []string,
-) *ProposalUpsertTokenAlias {
-	return &ProposalUpsertTokenAlias{
-		Symbol:   symbol,
-		Name:     name,
-		Icon:     icon,
-		Decimals: decimals,
-		Denoms:   denoms,
-	}
-}
-
-func (m *ProposalUpsertTokenAlias) ProposalType() string {
-	panic("implement me")
-}
-
-func (m *ProposalUpsertTokenAlias) VotePermission() types.PermValue {
-	panic("implement me")
-}
