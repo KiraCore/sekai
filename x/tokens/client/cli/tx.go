@@ -117,6 +117,65 @@ func GetTxUpsertTokenAliasCmd() *cobra.Command {
 	return cmd
 }
 
+// GetTxUpsertTokenAliasCmd implement cli command for MsgUpsertTokenAlias
+func GetTxProposalUpsertTokenAliasCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "proposal-upsert-alias",
+		Short: "Creates an Upsert token alias",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			symbol, err := cmd.Flags().GetString(FlagSymbol)
+			if err != nil {
+				return fmt.Errorf("invalid symbol: %w", err)
+			}
+
+			name, err := cmd.Flags().GetString(FlagName)
+			if err != nil {
+				return fmt.Errorf("invalid name: %w", err)
+			}
+
+			icon, err := cmd.Flags().GetString(FlagIcon)
+			if err != nil {
+				return fmt.Errorf("invalid icon: %w", err)
+			}
+
+			decimals, err := cmd.Flags().GetUint32(FlagDecimals)
+			if err != nil {
+				return fmt.Errorf("invalid decimals: %w", err)
+			}
+
+			denoms := args[4]
+
+			msg := types.NewMsgProposalUpsertTokenAlias(
+				clientCtx.FromAddress,
+				symbol,
+				name,
+				icon,
+				decimals,
+				strings.Split(denoms, ","),
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	cmd.Flags().String(FlagSymbol, "KEX", "Ticker (eg. ATOM, KEX, BTC)")
+	cmd.Flags().String(FlagName, "Kira", "Token Name (e.g. Cosmos, Kira, Bitcoin)")
+	cmd.Flags().String(FlagIcon, "", "Graphical Symbol (url link to graphics)")
+	cmd.Flags().Uint32(FlagDecimals, 6, "Integer number of max decimals")
+	cmd.Flags().String(FlagDenoms, "ukex,mkex", "An array of token denoms to be aliased")
+
+	flags.AddTxFlagsToCmd(cmd)
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
 // GetTxUpsertTokenRateCmd implement cli command for MsgUpsertTokenRate
 func GetTxUpsertTokenRateCmd() *cobra.Command {
 	cmd := &cobra.Command{

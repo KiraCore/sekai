@@ -16,6 +16,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgUpsertTokenRate{},
 		&MsgUpsertTokenAlias{},
+		&MsgProposalUpsertTokenAlias{},
 	)
 
 	registry.RegisterInterface(
