@@ -289,8 +289,8 @@ func registerGovMsgs() {
 					}
 				},
 				"proposer": {
-					"type":        "byte[]",
-					"description": "Proposer address"
+					"type":        "string",
+					"description": "proposer who propose this message."
 				}
 			}
 		}`,

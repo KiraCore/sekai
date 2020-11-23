@@ -54,7 +54,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 			},
 			"proposer": {
 				"type":        "address",
-				"description": "proposer of this message"
+				"description": "proposer who propose this message."
 			}
 		}
 	}`)
@@ -77,7 +77,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 			},
 			"proposer": {
 				"type":        "address",
-				"description": "proposer of this message"
+				"description": "proposer who propose this message."
 			}
 		}
 	}`)

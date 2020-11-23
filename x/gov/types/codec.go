@@ -53,11 +53,45 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 			},
 			"proposer": {
 				"type":        "address",
-				"description": "proposer who propose setting network properties."
+				"description": "proposer who propose this message."
 			}
 		}
 	}`)
 	cdc.RegisterConcrete(&MsgSetExecutionFee{}, "kiraHub/MsgSetExecutionFee", nil)
+	functionmeta.AddNewFunction((&MsgSetExecutionFee{}).Type(), `{
+		"function_id": 0,
+		"description": "MsgSetExecutionFee defines a message to set execution fee with specific permission.",
+		"parameters": {
+			"name": {
+				"type":        "string",
+				"description": "Friendly Name of the Function (max 128 characters)"
+			},
+			"transaction_type": {
+				"type":        "string",
+				"description": "Type of the transaction that given permission allows to execute"
+			},
+			"execution_fee": {
+				"type":        "uint64",
+				"description": "How much user should pay for executing this specific function"
+			},
+			"failure_fee": {
+				"type":        "uint64",
+				"description": "How much user should pay if function fails to execute"
+			},
+			"timeout": {
+				"type":        "uint64",
+				"description": "After what time function execution should fail"
+			},
+			"default_parameters": {
+				"type":        "bool",
+				"description": "Default values that the function in question will consume as input parameters before execution"
+			},
+			"proposer": {
+				"type":        "address",
+				"description": "proposer who propose this message."
+			}
+		}
+	}`)
 }
 
 func registerProposalCodec(cdc *codec.LegacyAmino) {
