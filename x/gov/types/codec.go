@@ -1,11 +1,13 @@
 package types
 
 import (
+	functionmeta "github.com/KiraCore/sekai/function_meta"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+// RegisterCodec register codec and metadata
 func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterInterface((*Content)(nil), nil)
 
@@ -15,6 +17,46 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	registerProposalCodec(cdc)
 
 	cdc.RegisterConcrete(&MsgSetNetworkProperties{}, "kiraHub/MsgSetNetworkProperties", nil)
+	functionmeta.AddNewFunction((&MsgSetNetworkProperties{}).Type(), `{
+		"function_id": 0,
+		"description": "MsgSetNetworkProperties defines a message to set network properties with specific permission.",
+		"parameters": {
+			"network_properties": {
+				"type":        "<Object>",
+				"description": "network properties to be set.",
+				"fields": {
+					"min_tx_fee": {
+						"type":        "uint64",
+						"description": "minimum transaction fee"
+					},
+					"max_tx_fee": {
+						"type":        "uint64",
+						"description": "maximum transaction fee"
+					},
+					"vote_quorum": {
+						"type":        "uint64",
+						"description": "vote quorum"
+					},
+					"proposal_end_time": {
+						"type":        "uint64",
+						"description": "proposal end time"
+					},
+					"proposal_enactment_time": {
+						"type":        "uint64",
+						"description": "proposal enactment time"
+					},
+					"enable_foreign_fee_payments": {
+						"type":        "bool",
+						"description": "flag to show if foreign fee payment is enabled"
+					}
+				}
+			},
+			"proposer": {
+				"type":        "address",
+				"description": "proposer who propose setting network properties."
+			}
+		}
+	}`)
 	cdc.RegisterConcrete(&MsgSetExecutionFee{}, "kiraHub/MsgSetExecutionFee", nil)
 }
 

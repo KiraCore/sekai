@@ -39,8 +39,7 @@ message Vote {
   uint64     proposal_id = 1;
 
   bytes voter = 2 [
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
-    (gogoproto.moretags) = "yaml:\"address\""
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
   ];
 
   VoteOption option      = 3;
@@ -50,8 +49,7 @@ message MsgVoteProposal {
   uint64     proposal_id = 1;
 
   bytes voter = 2 [
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
-    (gogoproto.moretags) = "yaml:\"address\""
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
   ];
 
   VoteOption option      = 3;
@@ -59,8 +57,7 @@ message MsgVoteProposal {
 
 message MsgProposalAssignPermission {
   bytes proposer = 1 [
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
-    (gogoproto.moretags) = "yaml:\"address\""
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
   ];
 
   bytes address = 2 [
@@ -73,8 +70,7 @@ message MsgProposalAssignPermission {
 
 message MsgProposalUpsertDataRegistry {
   bytes proposer = 1 [
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
-    (gogoproto.moretags) = "yaml:\"address\""
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
   ];
 
   string key = 2;
@@ -123,8 +119,7 @@ message AssignPermissionProposal {
 
 message MsgProposalSetNetworkProperty {
   bytes proposer = 1 [
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
-    (gogoproto.moretags) = "yaml:\"address\""
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
   ];
 
   NetworkProperty network_property = 2; // enum value
