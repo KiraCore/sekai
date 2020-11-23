@@ -103,6 +103,32 @@ func registerProposalCodec(cdc *codec.LegacyAmino) {
 
 func registerCouncilorCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgClaimCouncilor{}, "kiraHub/MsgClaimCouncilor", nil)
+	functionmeta.AddNewFunction((&MsgClaimCouncilor{}).Type(), `{
+		"function_id": 0,
+		"description": "MsgClaimCouncilor defines a message to claim councilor when the proposer.",
+		"parameters": {
+			"moniker": {
+				"type":        "string",
+				"description": "validator's name or nickname."
+			},
+			"website": {
+				"type":        "string",
+				"description": "validator's website."
+			},
+			"social": {
+				"type":        "string",
+				"description": "validator's social link."
+			},
+			"identity": {
+				"type":        "string",
+				"description": "validator's identity information."
+			},
+			"address": {
+				"type":        "string",
+				"description": "Address to be set as councilor. This address should be proposer address as well."
+			}
+		}
+	}`)
 }
 
 func registerPermissionsCodec(cdc *codec.LegacyAmino) {
