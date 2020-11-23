@@ -202,9 +202,81 @@ func registerRolesCodec(cdc *codec.LegacyAmino) {
 	}`)
 
 	cdc.RegisterConcrete(&MsgWhitelistRolePermission{}, "kiraHub/MsgWhitelistRolePermission", nil)
+	functionmeta.AddNewFunction((&MsgWhitelistRolePermission{}).Type(), `{
+		"function_id": 0,
+		"description": "MsgWhitelistRolePermission defines a message to whitelist permission for a role.",
+		"parameters": {
+			"proposer": {
+				"type":        "string",
+				"description": "proposer who propose this message."
+			},
+			"role": {
+				"type":        "uint32",
+				"description": "role identifier."
+			},
+			"permission": {
+				"type":        "uint32",
+				"description": "Permission to be whitelisted."
+			},
+		}
+	}`)
 	cdc.RegisterConcrete(&MsgBlacklistRolePermission{}, "kiraHub/MsgBlacklistRolePermission", nil)
+	functionmeta.AddNewFunction((&MsgBlacklistRolePermission{}).Type(), `{
+		"function_id": 0,
+		"description": "MsgBlacklistRolePermission defines a message to blacklist permission for a role.",
+		"parameters": {
+			"proposer": {
+				"type":        "string",
+				"description": "proposer who propose this message."
+			},
+			"role": {
+				"type":        "uint32",
+				"description": "role identifier."
+			},
+			"permission": {
+				"type":        "uint32",
+				"description": "Permission to be blacklisted."
+			},
+		}
+	}`)
 	cdc.RegisterConcrete(&MsgRemoveWhitelistRolePermission{}, "kiraHub/MsgRemoveWhitelistRolePermission", nil)
+	functionmeta.AddNewFunction((&MsgRemoveWhitelistRolePermission{}).Type(), `{
+		"function_id": 0,
+		"description": "MsgRemoveWhitelistRolePermission defines a message to remove whitelisted permission for a role.",
+		"parameters": {
+			"proposer": {
+				"type":        "string",
+				"description": "proposer who propose this message."
+			},
+			"role": {
+				"type":        "uint32",
+				"description": "role identifier."
+			},
+			"permission": {
+				"type":        "uint32",
+				"description": "Permission to be removed from whitelisted listing."
+			},
+		}
+	}`)
 	cdc.RegisterConcrete(&MsgRemoveBlacklistRolePermission{}, "kiraHub/MsgRemoveBlacklistRolePermission", nil)
+	functionmeta.AddNewFunction((&MsgRemoveBlacklistRolePermission{}).Type(), `{
+		"function_id": 0,
+		"description": "MsgRemoveBlacklistRolePermission defines a message to remove blacklisted permission for a role.",
+		"parameters": {
+			"proposer": {
+				"type":        "string",
+				"description": "proposer who propose this message."
+			},
+			"role": {
+				"type":        "uint32",
+				"description": "role identifier."
+			},
+			"permission": {
+				"type":        "uint32",
+				"description": "Permission to be removed from blacklisted listing."
+			},
+		}
+	}`)
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {
