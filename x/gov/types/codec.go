@@ -107,7 +107,43 @@ func registerCouncilorCodec(cdc *codec.LegacyAmino) {
 
 func registerPermissionsCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgWhitelistPermissions{}, "kiraHub/MsgWhitelistPermissions", nil)
+	functionmeta.AddNewFunction((&MsgWhitelistPermissions{}).Type(), `{
+		"function_id": 0,
+		"description": "MsgWhitelistPermissions defines a message to whitelist permission of an address.",
+		"parameters": {
+			"proposer": {
+				"type":        "string",
+				"description": "proposer who propose this message."
+			},
+			"address": {
+				"type":        "string",
+				"description": "Address to whitelist permission to."
+			},
+			"permission": {
+				"type":        "uint32",
+				"description": "Permission to be whitelisted."
+			}
+		}
+	}`)
 	cdc.RegisterConcrete(&MsgBlacklistPermissions{}, "kiraHub/MsgBlacklistPermissions", nil)
+	functionmeta.AddNewFunction((&MsgBlacklistPermissions{}).Type(), `{
+		"function_id": 0,
+		"description": "MsgBlacklistPermissions defines a message to blacklist permission of an address.",
+		"parameters": {
+			"proposer": {
+				"type":        "string",
+				"description": "proposer who propose this message."
+			},
+			"address": {
+				"type":        "string",
+				"description": "Address to blacklist permission to."
+			},
+			"permission": {
+				"type":        "uint32",
+				"description": "Permission to be blacklisted."
+			}
+		}
+	}`)
 }
 
 func registerRolesCodec(cdc *codec.LegacyAmino) {
