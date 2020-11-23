@@ -148,8 +148,58 @@ func registerPermissionsCodec(cdc *codec.LegacyAmino) {
 
 func registerRolesCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgCreateRole{}, "kiraHub/MsgCreateRole", nil)
+	functionmeta.AddNewFunction((&MsgCreateRole{}).Type(), `{
+		"function_id": 0,
+		"description": "MsgCreateRole defines a message to create a role.",
+		"parameters": {
+			"proposer": {
+				"type":        "string",
+				"description": "proposer who propose this message."
+			},
+			"role": {
+				"type":        "uint32",
+				"description": "Identifier of this role."
+			}
+		}
+	}`)
 	cdc.RegisterConcrete(&MsgAssignRole{}, "kiraHub/MsgAssignRole", nil)
+	functionmeta.AddNewFunction((&MsgAssignRole{}).Type(), `{
+		"function_id": 0,
+		"description": "MsgAssignRole defines a message to assign a role to an address.",
+		"parameters": {
+			"proposer": {
+				"type":        "string",
+				"description": "proposer who propose this message."
+			},
+			"address": {
+				"type":        "string",
+				"description": "Address to set role to."
+			},
+			"role": {
+				"type":        "uint32",
+				"description": "role identifier."
+			}
+		}
+	}`)
 	cdc.RegisterConcrete(&MsgRemoveRole{}, "kiraHub/MsgRemoveRole", nil)
+	functionmeta.AddNewFunction((&MsgRemoveRole{}).Type(), `{
+		"function_id": 0,
+		"description": "MsgRemoveRole defines a message to remove a role from an address.",
+		"parameters": {
+			"proposer": {
+				"type":        "string",
+				"description": "proposer who propose this message."
+			},
+			"address": {
+				"type":        "string",
+				"description": "Address to remove role from."
+			},
+			"role": {
+				"type":        "uint32",
+				"description": "role identifier."
+			}
+		}
+	}`)
 
 	cdc.RegisterConcrete(&MsgWhitelistRolePermission{}, "kiraHub/MsgWhitelistRolePermission", nil)
 	cdc.RegisterConcrete(&MsgBlacklistRolePermission{}, "kiraHub/MsgBlacklistRolePermission", nil)
