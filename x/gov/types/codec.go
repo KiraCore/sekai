@@ -327,7 +327,7 @@ func registerRolesCodec(cdc *codec.LegacyAmino) {
 			"permission": {
 				"type":        "uint32",
 				"description": "Permission to be whitelisted."
-			},
+			}
 		}
 	}`)
 	cdc.RegisterConcrete(&MsgBlacklistRolePermission{}, "kiraHub/MsgBlacklistRolePermission", nil)
@@ -346,7 +346,7 @@ func registerRolesCodec(cdc *codec.LegacyAmino) {
 			"permission": {
 				"type":        "uint32",
 				"description": "Permission to be blacklisted."
-			},
+			}
 		}
 	}`)
 	cdc.RegisterConcrete(&MsgRemoveWhitelistRolePermission{}, "kiraHub/MsgRemoveWhitelistRolePermission", nil)
@@ -365,7 +365,7 @@ func registerRolesCodec(cdc *codec.LegacyAmino) {
 			"permission": {
 				"type":        "uint32",
 				"description": "Permission to be removed from whitelisted listing."
-			},
+			}
 		}
 	}`)
 	cdc.RegisterConcrete(&MsgRemoveBlacklistRolePermission{}, "kiraHub/MsgRemoveBlacklistRolePermission", nil)
@@ -384,7 +384,7 @@ func registerRolesCodec(cdc *codec.LegacyAmino) {
 			"permission": {
 				"type":        "uint32",
 				"description": "Permission to be removed from blacklisted listing."
-			},
+			}
 		}
 	}`)
 }
