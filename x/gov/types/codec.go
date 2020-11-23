@@ -96,9 +96,93 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 
 func registerProposalCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgProposalAssignPermission{}, "kiraHub/MsgProposalAssignPermission", nil)
+	functionmeta.AddNewFunction((&MsgProposalAssignPermission{}).Type(), `{
+		"function_id": 0,
+		"description": "MsgProposalAssignPermission defines a proposal message to whitelist permission of an address.",
+		"parameters": {
+			"proposer": {
+				"type":        "string",
+				"description": "proposer who propose this message."
+			},
+			"address": {
+				"type":        "string",
+				"description": "Address to whitelist permission to."
+			},
+			"permission": {
+				"type":        "uint32",
+				"description": "Permission to be whitelisted."
+			}
+		}
+	}`)
 	cdc.RegisterConcrete(&MsgProposalSetNetworkProperty{}, "kiraHub/MsgProposalSetNetworkProperty", nil)
+	functionmeta.AddNewFunction((&MsgProposalSetNetworkProperty{}).Type(), `{
+		"function_id": 0,
+		"description": "MsgProposalSetNetworkProperty defines a proposal message to modify a single network property.",
+		"parameters": {
+			"proposer": {
+				"type":        "string",
+				"description": "proposer who propose this message."
+			},
+			"network_property": {
+				"type":        "enum<NetworkProperty>",
+				"description": "network property to be modified."
+			},
+			"value": {
+				"type":        "uint64",
+				"description": "network property value to be set."
+			}
+		}
+	}`)
 	cdc.RegisterConcrete(&MsgProposalUpsertDataRegistry{}, "kiraHub/MsgProposalUpsertDataRegistry", nil)
+	functionmeta.AddNewFunction((&MsgProposalUpsertDataRegistry{}).Type(), `{
+		"function_id": 0,
+		"description": "MsgProposalUpsertDataRegistry defines a proposal message to upsert data registry.",
+		"parameters": {
+			"proposer": {
+				"type":        "string",
+				"description": "proposer who propose this message."
+			},
+			"key": {
+				"type":        "string",
+				"description": "key of data registry."
+			},
+			"hash": {
+				"type":        "string",
+				"description": "hash value of data."
+			},
+			"reference": {
+				"type":        "string",
+				"description": "reference of data."
+			},
+			"encoding": {
+				"type":        "string",
+				"description": "encoding type of data."
+			},
+			"size": {
+				"type":        "uint64",
+				"description": "size of data."
+			}
+		}
+	}`)
 	cdc.RegisterConcrete(&MsgVoteProposal{}, "kiraHub/MsgVoteProposal", nil)
+	functionmeta.AddNewFunction((&MsgVoteProposal{}).Type(), `{
+		"function_id": 0,
+		"description": "MsgVoteProposal defines a proposal message to vote on a submitted proposal.",
+		"parameters": {
+			"proposal_id": {
+				"type":        "uint64",
+				"description": "id of proposal to be voted."
+			},
+			"voter": {
+				"type":        "address",
+				"description": "the address of the voter who vote on the proposal."
+			},
+			"value": {
+				"type":        "enum<VoteOption>",
+				"description": "vote option: [yes, no, veto, abstain]"
+			}
+		}
+	}`)
 }
 
 func registerCouncilorCodec(cdc *codec.LegacyAmino) {
