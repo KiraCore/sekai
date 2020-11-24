@@ -13,7 +13,6 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgUpsertTokenRate{}, "kiraHub/MsgUpsertTokenRate", nil)
 
 	functionmeta.AddNewFunction((&MsgUpsertTokenAlias{}).Type(), `{
-		"function_id": 0,
 		"description": "MsgUpsertTokenAlias represents a message to register token alias.",
 		"parameters": {
 			"expiration": {
@@ -60,7 +59,6 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	}`)
 
 	functionmeta.AddNewFunction((&MsgUpsertTokenRate{}).Type(), `{
-		"function_id": 0,
 		"description": "MsgUpsertTokenRate represents a message to register token rate.",
 		"parameters": {
 			"denom": {

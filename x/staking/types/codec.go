@@ -12,7 +12,6 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgClaimValidator{}, "kiraHub/MsgClaimValidator", nil)
 
 	functionmeta.AddNewFunction((&MsgClaimValidator{}).Type(), `{
-		"function_id": 0,
 		"description": "MsgClaimValidator defines a message for claiming a new validator..",
 		"parameters": {
 			"moniker": {

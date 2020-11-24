@@ -18,7 +18,6 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 
 	cdc.RegisterConcrete(&MsgSetNetworkProperties{}, "kiraHub/MsgSetNetworkProperties", nil)
 	functionmeta.AddNewFunction((&MsgSetNetworkProperties{}).Type(), `{
-		"function_id": 0,
 		"description": "MsgSetNetworkProperties defines a message to set network properties with specific permission.",
 		"parameters": {
 			"network_properties": {
@@ -59,7 +58,6 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	}`)
 	cdc.RegisterConcrete(&MsgSetExecutionFee{}, "kiraHub/MsgSetExecutionFee", nil)
 	functionmeta.AddNewFunction((&MsgSetExecutionFee{}).Type(), `{
-		"function_id": 0,
 		"description": "MsgSetExecutionFee defines a message to set execution fee with specific permission.",
 		"parameters": {
 			"name": {
@@ -97,7 +95,6 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 func registerProposalCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgProposalAssignPermission{}, "kiraHub/MsgProposalAssignPermission", nil)
 	functionmeta.AddNewFunction((&MsgProposalAssignPermission{}).Type(), `{
-		"function_id": 0,
 		"description": "MsgProposalAssignPermission defines a proposal message to whitelist permission of an address.",
 		"parameters": {
 			"proposer": {
@@ -116,7 +113,6 @@ func registerProposalCodec(cdc *codec.LegacyAmino) {
 	}`)
 	cdc.RegisterConcrete(&MsgProposalSetNetworkProperty{}, "kiraHub/MsgProposalSetNetworkProperty", nil)
 	functionmeta.AddNewFunction((&MsgProposalSetNetworkProperty{}).Type(), `{
-		"function_id": 0,
 		"description": "MsgProposalSetNetworkProperty defines a proposal message to modify a single network property.",
 		"parameters": {
 			"proposer": {
@@ -135,7 +131,6 @@ func registerProposalCodec(cdc *codec.LegacyAmino) {
 	}`)
 	cdc.RegisterConcrete(&MsgProposalUpsertDataRegistry{}, "kiraHub/MsgProposalUpsertDataRegistry", nil)
 	functionmeta.AddNewFunction((&MsgProposalUpsertDataRegistry{}).Type(), `{
-		"function_id": 0,
 		"description": "MsgProposalUpsertDataRegistry defines a proposal message to upsert data registry.",
 		"parameters": {
 			"proposer": {
@@ -166,7 +161,6 @@ func registerProposalCodec(cdc *codec.LegacyAmino) {
 	}`)
 	cdc.RegisterConcrete(&MsgVoteProposal{}, "kiraHub/MsgVoteProposal", nil)
 	functionmeta.AddNewFunction((&MsgVoteProposal{}).Type(), `{
-		"function_id": 0,
 		"description": "MsgVoteProposal defines a proposal message to vote on a submitted proposal.",
 		"parameters": {
 			"proposal_id": {
@@ -188,7 +182,6 @@ func registerProposalCodec(cdc *codec.LegacyAmino) {
 func registerCouncilorCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgClaimCouncilor{}, "kiraHub/MsgClaimCouncilor", nil)
 	functionmeta.AddNewFunction((&MsgClaimCouncilor{}).Type(), `{
-		"function_id": 0,
 		"description": "MsgClaimCouncilor defines a message to claim councilor when the proposer.",
 		"parameters": {
 			"moniker": {
@@ -218,7 +211,6 @@ func registerCouncilorCodec(cdc *codec.LegacyAmino) {
 func registerPermissionsCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgWhitelistPermissions{}, "kiraHub/MsgWhitelistPermissions", nil)
 	functionmeta.AddNewFunction((&MsgWhitelistPermissions{}).Type(), `{
-		"function_id": 0,
 		"description": "MsgWhitelistPermissions defines a message to whitelist permission of an address.",
 		"parameters": {
 			"proposer": {
@@ -237,7 +229,6 @@ func registerPermissionsCodec(cdc *codec.LegacyAmino) {
 	}`)
 	cdc.RegisterConcrete(&MsgBlacklistPermissions{}, "kiraHub/MsgBlacklistPermissions", nil)
 	functionmeta.AddNewFunction((&MsgBlacklistPermissions{}).Type(), `{
-		"function_id": 0,
 		"description": "MsgBlacklistPermissions defines a message to blacklist permission of an address.",
 		"parameters": {
 			"proposer": {
@@ -259,7 +250,6 @@ func registerPermissionsCodec(cdc *codec.LegacyAmino) {
 func registerRolesCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgCreateRole{}, "kiraHub/MsgCreateRole", nil)
 	functionmeta.AddNewFunction((&MsgCreateRole{}).Type(), `{
-		"function_id": 0,
 		"description": "MsgCreateRole defines a message to create a role.",
 		"parameters": {
 			"proposer": {
@@ -274,7 +264,6 @@ func registerRolesCodec(cdc *codec.LegacyAmino) {
 	}`)
 	cdc.RegisterConcrete(&MsgAssignRole{}, "kiraHub/MsgAssignRole", nil)
 	functionmeta.AddNewFunction((&MsgAssignRole{}).Type(), `{
-		"function_id": 0,
 		"description": "MsgAssignRole defines a message to assign a role to an address.",
 		"parameters": {
 			"proposer": {
@@ -293,7 +282,6 @@ func registerRolesCodec(cdc *codec.LegacyAmino) {
 	}`)
 	cdc.RegisterConcrete(&MsgRemoveRole{}, "kiraHub/MsgRemoveRole", nil)
 	functionmeta.AddNewFunction((&MsgRemoveRole{}).Type(), `{
-		"function_id": 0,
 		"description": "MsgRemoveRole defines a message to remove a role from an address.",
 		"parameters": {
 			"proposer": {
@@ -313,7 +301,6 @@ func registerRolesCodec(cdc *codec.LegacyAmino) {
 
 	cdc.RegisterConcrete(&MsgWhitelistRolePermission{}, "kiraHub/MsgWhitelistRolePermission", nil)
 	functionmeta.AddNewFunction((&MsgWhitelistRolePermission{}).Type(), `{
-		"function_id": 0,
 		"description": "MsgWhitelistRolePermission defines a message to whitelist permission for a role.",
 		"parameters": {
 			"proposer": {
@@ -332,7 +319,6 @@ func registerRolesCodec(cdc *codec.LegacyAmino) {
 	}`)
 	cdc.RegisterConcrete(&MsgBlacklistRolePermission{}, "kiraHub/MsgBlacklistRolePermission", nil)
 	functionmeta.AddNewFunction((&MsgBlacklistRolePermission{}).Type(), `{
-		"function_id": 0,
 		"description": "MsgBlacklistRolePermission defines a message to blacklist permission for a role.",
 		"parameters": {
 			"proposer": {
@@ -351,7 +337,6 @@ func registerRolesCodec(cdc *codec.LegacyAmino) {
 	}`)
 	cdc.RegisterConcrete(&MsgRemoveWhitelistRolePermission{}, "kiraHub/MsgRemoveWhitelistRolePermission", nil)
 	functionmeta.AddNewFunction((&MsgRemoveWhitelistRolePermission{}).Type(), `{
-		"function_id": 0,
 		"description": "MsgRemoveWhitelistRolePermission defines a message to remove whitelisted permission for a role.",
 		"parameters": {
 			"proposer": {
@@ -370,7 +355,6 @@ func registerRolesCodec(cdc *codec.LegacyAmino) {
 	}`)
 	cdc.RegisterConcrete(&MsgRemoveBlacklistRolePermission{}, "kiraHub/MsgRemoveBlacklistRolePermission", nil)
 	functionmeta.AddNewFunction((&MsgRemoveBlacklistRolePermission{}).Type(), `{
-		"function_id": 0,
 		"description": "MsgRemoveBlacklistRolePermission defines a message to remove blacklisted permission for a role.",
 		"parameters": {
 			"proposer": {
