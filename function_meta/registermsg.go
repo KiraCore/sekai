@@ -35,7 +35,10 @@ func AddNewFunction(functionType string, meta string) {
 	if err := json.Unmarshal([]byte(meta), &metadata); err != nil {
 		panic(err)
 	}
-
+	metadata.FunctionID = types.MsgFuncIDMapping[functionType]
+	if metadata.FunctionID == 0 { // error if not exist
+		panic("function id should be available for all the function types")
+	}
 	functionList[strcase.ToCamel(functionType)] = metadata
 }
 
