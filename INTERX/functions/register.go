@@ -26,16 +26,17 @@ func RegisterInterxFunctions() {
 	AddInterxFunction(
 		"Faucet",
 		`{
-			"function_id": 1,
-			"description": "Faucet is a function to claim tokens to the account for free.",
+			"description": "Faucet is a function to claim tokens to the account for free. Returns the available faucet amount when 'claim' and 'token' is unset.",
 			"parameters": {
 				"claim": {
 					"type":        "string",
-					"description": "This represents the kira account address."
+					"description": "This represents the kira account address.",
+					"optional": true
 				},
 				"token": {
 					"type":        "string",
-					"description": "This represents the token name."
+					"description": "This represents the token name.",
+					"optional": true
 				}
 			}
 		}`,
@@ -44,8 +45,7 @@ func RegisterInterxFunctions() {
 	AddInterxFunction(
 		"Withdraws",
 		`{
-			"function_id": 2,
-			"description": "Withdraws is a function to query withdraw transactions of the account",
+			"description": "Withdraws is a function to query withdraw transactions of the account.",
 			"parameters": {
 				"account": {
 					"type":        "string",
@@ -73,8 +73,7 @@ func RegisterInterxFunctions() {
 	AddInterxFunction(
 		"Deposits",
 		`{
-			"function_id": 3,
-			"description": "Deposits is a function to query deposit transactions of the account",
+			"description": "Deposits is a function to query deposit transactions of the account.",
 			"parameters": {
 				"account": {
 					"type":        "string",
@@ -94,6 +93,70 @@ func RegisterInterxFunctions() {
 					"type":        "string",
 					"description": "This represents the last transaction hash.",
 					"optional": true
+				}
+			}
+		}`,
+	)
+
+	AddInterxFunction(
+		"Broadcast",
+		`{
+			"description": "Broadcast is a function to broadcast signed transaction.",
+			"parameters": {
+				"tx": {
+					"type":        "byte[]",
+					"description": "This represents the transaction bytes."
+				},
+				"mode": {
+					"type":        "string",
+					"description": "This represents the broadcast mode. (block, sync, async)",
+					"optional": true
+				}
+			}
+		}`,
+	)
+
+	AddInterxFunction(
+		"QueryStatus",
+		`{
+			"description": "QueryStatus is a function to query the node status"
+		}`,
+	)
+
+	AddInterxFunction(
+		"QueryAccount",
+		`{
+			"description": "QueryAccount is a function to query the account info.",
+			"parameters": {
+				"address": {
+					"type":        "string",
+					"description": "This represents the account address."
+				}
+			}
+		}`,
+	)
+
+	AddInterxFunction(
+		"QueryBalance",
+		`{
+			"description": "QueryBalance is a function to query the account balances.",
+			"parameters": {
+				"address": {
+					"type":        "string",
+					"description": "This represents the account address."
+				}
+			}
+		}`,
+	)
+
+	AddInterxFunction(
+		"QueryTransactionHash",
+		`{
+			"description": "QueryTransactionHash is a function to query transaction details from transaction hash.",
+			"parameters": {
+				"hash": {
+					"type":        "string",
+					"description": "This represents the transaction hash. (e.g. 0x20.....)"
 				}
 			}
 		}`,
