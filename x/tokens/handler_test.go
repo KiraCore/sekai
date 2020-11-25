@@ -351,3 +351,65 @@ func TestHandler_CreateProposalUpsertTokenRates_Errors(t *testing.T) {
 		})
 	}
 }
+
+func TestHandler_CreateProposalUpsertTokenRates(t *testing.T) {
+	proposerAddr, err := sdk.AccAddressFromBech32("kira1alzyfq40zjsveat87jlg8jxetwqmr0a29sgd0f")
+	require.NoError(t, err)
+
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{
+		Time: time.Now(),
+	})
+
+	// Set proposer Permissions
+	proposerActor := types.NewDefaultActor(proposerAddr)
+	err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerActor, types.PermCreateUpsertTokenRateProposal)
+	require.NoError(t, err2)
+
+	properties := app.CustomGovKeeper.GetNetworkProperties(ctx)
+	properties.ProposalEndTime = 10
+	app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
+
+	handler := tokens.NewHandler(app.TokensKeeper, app.CustomGovKeeper)
+	res, err := handler(
+		ctx,
+		tokenstypes.NewMsgProposalUpsertTokenRates(
+			proposerAddr,
+			"btc",
+			sdk.NewDec(1234),
+			false,
+		),
+	)
+	require.NoError(t, err)
+	require.Equal(t, types2.GetProposalIDBytes(1), res.Data)
+
+	savedProposal, found := app.CustomGovKeeper.GetProposal(ctx, 1)
+	require.True(t, found)
+
+	expectedSavedProposal, err := types.NewProposal(
+		1,
+		tokenstypes.NewProposalUpsertTokenRates(
+			"btc",
+			sdk.NewDec(1234),
+			false,
+		),
+		ctx.BlockTime(),
+		ctx.BlockTime().Add(time.Minute*time.Duration(properties.ProposalEndTime)),
+		ctx.BlockTime().Add(time.Minute*time.Duration(properties.ProposalEnactmentTime)),
+	)
+	require.NoError(t, err)
+	require.Equal(t, expectedSavedProposal, savedProposal)
+
+	// Next proposal ID is increased.
+	id, err := app.CustomGovKeeper.GetNextProposalID(ctx)
+	require.NoError(t, err)
+	require.Equal(t, uint64(2), id)
+
+	// Is not on finished active proposals.
+	iterator := app.CustomGovKeeper.GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx, ctx.BlockTime())
+	require.False(t, iterator.Valid())
+
+	ctx = ctx.WithBlockTime(ctx.BlockTime().Add(time.Minute * 10))
+	iterator = app.CustomGovKeeper.GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx, ctx.BlockTime())
+	require.True(t, iterator.Valid())
+}

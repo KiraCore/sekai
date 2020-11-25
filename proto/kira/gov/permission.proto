@@ -60,5 +60,8 @@ enum PermValue {
 
   // PERMISSION_CREATE_UPSERT_TOKEN_RATE_PROPOSAL defines the permission needed to create proposals for upsert token rate.
   PERMISSION_CREATE_UPSERT_TOKEN_RATE_PROPOSAL = 16 [(gogoproto.enumvalue_customname) = "PermCreateUpsertTokenRateProposal"];
+
+  // PERMISSION_VOTE_UPSERT_TOKEN_RATE_PROPOSAL defines the permission needed to vote proposals for upsert token rate.
+  PERMISSION_VOTE_UPSERT_TOKEN_RATE_PROPOSAL = 17 [(gogoproto.enumvalue_customname) = "PermVoteUpsertTokenRateProposal"];
 }
 

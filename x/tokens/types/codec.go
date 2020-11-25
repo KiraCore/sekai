@@ -17,12 +17,14 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgUpsertTokenRate{},
 		&MsgUpsertTokenAlias{},
 		&MsgProposalUpsertTokenAlias{},
+		&MsgProposalUpsertTokenRates{},
 	)
 
 	registry.RegisterInterface(
 		"kira.gov.Content",
 		(*govtypes.Content)(nil),
 		&ProposalUpsertTokenAlias{},
+		&ProposalUpsertTokenRates{},
 	)
 }
 

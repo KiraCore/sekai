@@ -42,3 +42,16 @@ message MsgProposalUpsertTokenRates {
     (gogoproto.moretags) = "yaml:\"proposer\""
   ];
 }
+
+message ProposalUpsertTokenRates {
+  option (cosmos_proto.implements_interface) = "Content";
+  option (gogoproto.equal) = true;
+
+  string denom = 1; // denomination target
+  string rate = 2 [
+    (gogoproto.moretags)   = "yaml:\"rate\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable)   = false
+  ]; // Exchange rate in terms of KEX token
+  bool fee_payments = 3; // Properties defining if it is enabled or disabled as fee payment methodß
+}

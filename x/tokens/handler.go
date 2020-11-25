@@ -42,7 +42,11 @@ func handleProposalUpsertTokenRates(ctx sdk.Context, ck keeper.Keeper, cgk types
 		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermCreateUpsertTokenRateProposal.String())
 	}
 
-	return &sdk.Result{}, nil
+	return CreateAndSaveProposalWithContent(ctx, cgk, types.NewProposalUpsertTokenRates(
+		msg.Denom,
+		msg.Rate,
+		msg.FeePayments,
+	))
 }
 
 func handleProposalUpsertTokenAlias(ctx sdk.Context, ck keeper.Keeper, cgk types.CustomGovKeeper, msg *types.MsgProposalUpsertTokenAlias) (*sdk.Result, error) {
