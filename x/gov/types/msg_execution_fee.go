@@ -1,6 +1,9 @@
 package types
 
-import sdk "github.com/cosmos/cosmos-sdk/types"
+import (
+	"github.com/KiraCore/sekai/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+)
 
 var _ sdk.Msg = &MsgSetExecutionFee{}
 
@@ -29,7 +32,7 @@ func (m *MsgSetExecutionFee) Route() string {
 }
 
 func (m *MsgSetExecutionFee) Type() string {
-	return SetExecutionFee
+	return types.MsgTypeSetExecutionFee
 }
 
 func (m *MsgSetExecutionFee) ValidateBasic() error {

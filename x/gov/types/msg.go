@@ -1,30 +1,8 @@
 package types
 
 import (
+	"github.com/KiraCore/sekai/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-)
-
-// Msg types
-const (
-	MsgTypeProposalAssignPermission   = "proposal-assign-permission"
-	MsgTypeProposalUpsertDataRegistry = "proposal-upsert-data-registry"
-	MsgTypeVoteProposal               = "vote-proposal"
-
-	MsgTypeWhitelistPermissions = "whitelist-permissions"
-	MsgTypeBlacklistPermissions = "blacklist-permissions"
-
-	MsgTypeClaimCouncilor = "claim-councilor"
-	SetNetworkProperties  = "set-network-properties"
-	SetExecutionFee       = "set-execution-fee"
-
-	MsgTypeCreateRole = "create-role"
-	MsgTypeAssignRole = "assign-role"
-	MsgTypeRemoveRole = "remove-role"
-
-	MsgTypeWhitelistRolePermission       = "whitelist-role-permission"
-	MsgTypeBlacklistRolePermission       = "blacklist-role-permission"
-	MsgTypeRemoveWhitelistRolePermission = "remove-whitelist-role-permission"
-	MsgTypeRemoveBlacklistRolePermission = "remove-blacklist-role-permission"
 )
 
 var (
@@ -67,7 +45,7 @@ func (m *MsgWhitelistPermissions) Route() string {
 }
 
 func (m *MsgWhitelistPermissions) Type() string {
-	return MsgTypeWhitelistPermissions
+	return types.MsgTypeWhitelistPermissions
 }
 
 func (m *MsgWhitelistPermissions) ValidateBasic() error {
@@ -109,7 +87,7 @@ func (m *MsgBlacklistPermissions) Route() string {
 }
 
 func (m *MsgBlacklistPermissions) Type() string {
-	return MsgTypeBlacklistPermissions
+	return types.MsgTypeBlacklistPermissions
 }
 
 func (m *MsgBlacklistPermissions) ValidateBasic() error {
@@ -156,7 +134,7 @@ func (m *MsgClaimCouncilor) Route() string {
 }
 
 func (m *MsgClaimCouncilor) Type() string {
-	return MsgTypeClaimCouncilor
+	return types.MsgTypeClaimCouncilor
 }
 
 func (m *MsgClaimCouncilor) ValidateBasic() error {
@@ -191,7 +169,7 @@ func (m *MsgWhitelistRolePermission) Route() string {
 }
 
 func (m *MsgWhitelistRolePermission) Type() string {
-	return MsgTypeWhitelistRolePermission
+	return types.MsgTypeWhitelistRolePermission
 }
 
 func (m *MsgWhitelistRolePermission) ValidateBasic() error {
@@ -226,7 +204,7 @@ func (m *MsgBlacklistRolePermission) Route() string {
 }
 
 func (m *MsgBlacklistRolePermission) Type() string {
-	return MsgTypeBlacklistRolePermission
+	return types.MsgTypeBlacklistRolePermission
 }
 
 func (m *MsgBlacklistRolePermission) ValidateBasic() error {
@@ -261,7 +239,7 @@ func (m *MsgRemoveWhitelistRolePermission) Route() string {
 }
 
 func (m *MsgRemoveWhitelistRolePermission) Type() string {
-	return MsgTypeRemoveWhitelistRolePermission
+	return types.MsgTypeRemoveWhitelistRolePermission
 }
 
 func (m *MsgRemoveWhitelistRolePermission) ValidateBasic() error {
@@ -296,7 +274,7 @@ func (m *MsgRemoveBlacklistRolePermission) Route() string {
 }
 
 func (m *MsgRemoveBlacklistRolePermission) Type() string {
-	return MsgTypeRemoveBlacklistRolePermission
+	return types.MsgTypeRemoveBlacklistRolePermission
 }
 
 func (m *MsgRemoveBlacklistRolePermission) ValidateBasic() error {
@@ -327,7 +305,7 @@ func (m *MsgCreateRole) Route() string {
 }
 
 func (m *MsgCreateRole) Type() string {
-	return MsgTypeCreateRole
+	return types.MsgTypeCreateRole
 }
 
 func (m *MsgCreateRole) ValidateBasic() error {
@@ -358,7 +336,7 @@ func (m *MsgAssignRole) Route() string {
 }
 
 func (m *MsgAssignRole) Type() string {
-	return MsgTypeAssignRole
+	return types.MsgTypeAssignRole
 }
 
 func (m *MsgAssignRole) ValidateBasic() error {
@@ -393,7 +371,7 @@ func (m *MsgRemoveRole) Route() string {
 }
 
 func (m *MsgRemoveRole) Type() string {
-	return MsgTypeRemoveRole
+	return types.MsgTypeRemoveRole
 }
 
 func (m *MsgRemoveRole) ValidateBasic() error {
@@ -428,7 +406,7 @@ func (m *MsgProposalAssignPermission) Route() string {
 }
 
 func (m *MsgProposalAssignPermission) Type() string {
-	return MsgTypeProposalAssignPermission
+	return types.MsgTypeProposalAssignPermission
 }
 
 func (m *MsgProposalAssignPermission) ValidateBasic() error {
@@ -463,7 +441,7 @@ func (m *MsgProposalSetNetworkProperty) Route() string {
 }
 
 func (m *MsgProposalSetNetworkProperty) Type() string {
-	return MsgTypeProposalAssignPermission
+	return types.MsgTypeProposalSetNetworkProperty
 }
 
 func (m *MsgProposalSetNetworkProperty) ValidateBasic() error {
@@ -511,7 +489,7 @@ func (m *MsgProposalUpsertDataRegistry) Route() string {
 }
 
 func (m *MsgProposalUpsertDataRegistry) Type() string {
-	return MsgTypeProposalUpsertDataRegistry
+	return types.MsgTypeProposalUpsertDataRegistry
 }
 
 func (m *MsgProposalUpsertDataRegistry) ValidateBasic() error {
@@ -545,7 +523,7 @@ func (m *MsgVoteProposal) Route() string {
 }
 
 func (m *MsgVoteProposal) Type() string {
-	return MsgTypeVoteProposal
+	return types.MsgTypeVoteProposal
 }
 
 func (m *MsgVoteProposal) ValidateBasic() error {
