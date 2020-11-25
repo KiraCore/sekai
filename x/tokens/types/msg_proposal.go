@@ -7,10 +7,14 @@ import (
 
 var (
 	_ sdk.Msg       = &MsgProposalUpsertTokenAlias{}
+	_ sdk.Msg       = &MsgProposalUpsertTokenRates{}
 	_ types.Content = &ProposalUpsertTokenAlias{}
 )
 
-const MsgProposalUpsertTokenAliasType = "propose-upsert-token-alias"
+const (
+	MsgProposalUpsertTokenAliasType = "propose-upsert-token-alias"
+	MsgProposalUpsertTokenRatesType = "propose-upsert-token-rates"
+)
 
 func NewMsgProposalUpsertTokenAlias(
 	proposer sdk.AccAddress,
@@ -51,3 +55,27 @@ func (m *MsgProposalUpsertTokenAlias) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{m.Proposer}
 }
 
+func NewMsgProposalUpsertTokenRates(proposer sdk.AccAddress, denom string, rate sdk.Dec, feePayments bool) *MsgProposalUpsertTokenRates {
+	return &MsgProposalUpsertTokenRates{Denom: denom, Rate: rate, FeePayments: feePayments, Proposer: proposer}
+}
+
+func (m *MsgProposalUpsertTokenRates) Route() string {
+	return ModuleName
+}
+
+func (m *MsgProposalUpsertTokenRates) Type() string {
+	return MsgProposalUpsertTokenRatesType
+}
+
+func (m *MsgProposalUpsertTokenRates) ValidateBasic() error {
+	return nil
+}
+
+func (m *MsgProposalUpsertTokenRates) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *MsgProposalUpsertTokenRates) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{m.Proposer}
+}
