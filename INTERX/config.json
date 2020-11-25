@@ -23,12 +23,14 @@
             "GET": {
                 "/api/cosmos/status": {
                     "rate_limit": 0.1,
-                    "auth_rate_limit": 1
+                    "auth_rate_limit": 1,
+                    "caching_duration": 30
                 },
                 "/api/cosmos/bank/supply": {
                     "disable": true,
                     "auth_rate_limit": 1,
-                    "caching_disable": true
+                    "caching_disable": true,
+                    "caching_duration": 30
                 }
             },
             "POST": {

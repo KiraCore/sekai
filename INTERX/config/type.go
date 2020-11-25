@@ -17,10 +17,11 @@ type FaucetConfig struct {
 
 // RPCSetting is a struct to be used for endpoint setting
 type RPCSetting struct {
-	Disable        bool    `json:"disable"`
-	RateLimit      float64 `json:"rate_limit,omitempty"`
-	AuthRateLimit  float64 `json:"auth_rate_limit,omitempty"`
-	CachingDisable bool    `json:"caching_disable"`
+	Disable         bool    `json:"disable"`
+	RateLimit       float64 `json:"rate_limit,omitempty"`
+	AuthRateLimit   float64 `json:"auth_rate_limit,omitempty"`
+	CachingDisable  bool    `json:"caching_disable"`
+	CachingDuration int64   `json:"caching_duration,omitempty"`
 }
 
 // RPCConfig is a struct to be used for PRC configuration
