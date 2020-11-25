@@ -326,16 +326,14 @@ func TestHandler_CreateProposalUpsertTokenRates_Errors(t *testing.T) {
 	}{
 		{
 			"Proposer does not have Perm",
-			tokenstypes.NewMsgProposalUpsertTokenAlias(
+			tokenstypes.NewMsgProposalUpsertTokenRates(
 				proposerAddr,
-				"BTC",
-				"Bitcoin",
-				"http://theicon.com",
-				18,
-				[]string{},
+				"btc",
+				sdk.NewDec(1234),
+				false,
 			),
 			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
-			errors.Wrap(types.ErrNotEnoughPermissions, types.PermCreateUpsertTokenAliasProposal.String()),
+			errors.Wrap(types.ErrNotEnoughPermissions, types.PermCreateUpsertTokenRateProposal.String()),
 		},
 	}
 
@@ -353,4 +351,3 @@ func TestHandler_CreateProposalUpsertTokenRates_Errors(t *testing.T) {
 		})
 	}
 }
-

@@ -28,10 +28,21 @@ func NewHandler(ck keeper.Keeper, cgk types.CustomGovKeeper) sdk.Handler {
 		// Proposals
 		case *types.MsgProposalUpsertTokenAlias:
 			return handleProposalUpsertTokenAlias(ctx, ck, cgk, msg)
+		case *types.MsgProposalUpsertTokenRates:
+			return handleProposalUpsertTokenRates(ctx, ck, cgk, msg)
 		default:
 			return nil, errors.Wrapf(errors.ErrUnknownRequest, "unrecognized %s message type: %T", types.ModuleName, msg)
 		}
 	}
+}
+
+func handleProposalUpsertTokenRates(ctx sdk.Context, ck keeper.Keeper, cgk types.CustomGovKeeper, msg *types.MsgProposalUpsertTokenRates) (*sdk.Result, error) {
+	isAllowed := cgk.CheckIfAllowedPermission(ctx, msg.Proposer, customgovtypes.PermCreateUpsertTokenRateProposal)
+	if !isAllowed {
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermCreateUpsertTokenRateProposal.String())
+	}
+
+	return &sdk.Result{}, nil
 }
 
 func handleProposalUpsertTokenAlias(ctx sdk.Context, ck keeper.Keeper, cgk types.CustomGovKeeper, msg *types.MsgProposalUpsertTokenAlias) (*sdk.Result, error) {
