@@ -35,23 +35,34 @@ func serveFaucetInfo(r *http.Request, gwCosmosmux *runtime.ServeMux) (interface{
 	return faucetInfo, nil, http.StatusOK
 }
 
+/**
+ * Error Codes
+ * 0 : InternalServerError
+ * 1 : Fail to send tokens
+ * 100: Invalid address
+ * 101: Claim time left
+ * 102: Invalid token
+ * 103: No need to send tokens
+ * 104: Can't send tokens, less than minimum amount
+ * 105: Not enough tokens
+ */
 func serveFaucet(r *http.Request, gwCosmosmux *runtime.ServeMux, request InterxRequest, rpcAddr string, bech32addr string, token string) (interface{}, interface{}, int) {
 	// check address
 	faucetAccAddr, err := sdk.AccAddressFromBech32(interx.Config.Faucet.Address)
 	if err != nil {
-		return ServeError(0, "", fmt.Sprintf("internal server error: %s", err), http.StatusBadRequest)
+		return ServeError(0, "", fmt.Sprintf("internal server error: %s", err), http.StatusInternalServerError)
 	}
 
 	// check address
 	claimAccAddr, err := sdk.AccAddressFromBech32(bech32addr)
 	if err != nil {
-		return ServeError(0, "", fmt.Sprintf("invalid address: %s", err), http.StatusBadRequest)
+		return ServeError(100, "", fmt.Sprintf("invalid address: %s", err), http.StatusBadRequest)
 	}
 
 	// check claim limit
 	timeLeft := database.GetClaimTimeLeft(bech32addr)
 	if timeLeft > 0 {
-		return ServeError(0, "", fmt.Sprintf("cliam limit: %d second(s) left", timeLeft), http.StatusBadRequest)
+		return ServeError(101, "", fmt.Sprintf("cliam limit: %d second(s) left", timeLeft), http.StatusBadRequest)
 	}
 
 	availableBalances := GetAccountBalances(gwCosmosmux, r.Clone(r.Context()), interx.Config.Faucet.Address)
@@ -77,22 +88,40 @@ func serveFaucet(r *http.Request, gwCosmosmux *runtime.ServeMux, request InterxR
 		}
 	}
 
-	faucetAmount, ok := interx.Config.Faucet.FaucetAmounts[token]               // X
-	faucetMininumAmount, ok := interx.Config.Faucet.FaucetMinimumAmounts[token] // M
+	faucetAmount, ok := interx.Config.Faucet.FaucetAmounts[token] // X
+
 	if !ok {
-		return ServeError(0, "", "invalid token", http.StatusBadRequest)
+		return ServeError(102, "", "invalid token", http.StatusBadRequest)
+	}
+
+	faucetMininumAmount, ok := interx.Config.Faucet.FaucetMinimumAmounts[token] // M
+
+	if !ok {
+		return ServeError(102, "", "invalid token", http.StatusBadRequest)
+	}
+
+	coinStr, ok := interx.Config.Faucet.FeeAmounts[token]
+
+	if !ok {
+		return ServeError(102, "", "invalid token", http.StatusBadRequest)
+	}
+
+	feeAmount, err := sdk.ParseCoin(coinStr)
+
+	if err != nil {
+		return ServeError(102, "", "invalid token", http.StatusBadRequest)
 	}
 
 	if faucetAmount <= claimAmount {
-		return ServeError(0, "", "no need to send tokens", http.StatusBadRequest)
+		return ServeError(103, "", "no need to send tokens", http.StatusBadRequest)
 	}
 
 	if faucetAmount-claimAmount <= faucetMininumAmount {
-		return ServeError(0, "", "can't send tokens, less than minimum amount", http.StatusBadRequest)
+		return ServeError(104, "", "can't send tokens, less than minimum amount", http.StatusBadRequest)
 	}
 
 	if faucetAmount-claimAmount > availableAmount-faucetMininumAmount {
-		return ServeError(0, "", "not enough tokens", http.StatusBadRequest)
+		return ServeError(105, "", "not enough tokens", http.StatusBadRequest)
 	}
 
 	// GET AccountNumber and Sequence
@@ -107,7 +136,7 @@ func serveFaucet(r *http.Request, gwCosmosmux *runtime.ServeMux, request InterxR
 	}
 
 	msgs := []sdk.Msg{msgSend}
-	fee := auth.NewStdFee(200000, sdk.NewCoins(sdk.NewInt64Coin(token, 2000))) //Fee handling
+	fee := auth.NewStdFee(200000, sdk.NewCoins(feeAmount)) //Fee handling
 	memo := "Faucet Transfer"
 
 	sigs := make([]auth.StdSignature, 1)
@@ -125,19 +154,19 @@ func serveFaucet(r *http.Request, gwCosmosmux *runtime.ServeMux, request InterxR
 	txBuilder := interx.EncodingCg.TxConfig.NewTxBuilder()
 	err = txBuilder.SetMsgs(stdTx.GetMsgs()...)
 	if err != nil {
-		return ServeError(0, "failed to set TX Msgs", err.Error(), http.StatusBadRequest)
+		return ServeError(1, "failed to set TX Msgs", err.Error(), http.StatusInternalServerError)
 	}
 
 	sigV2, err := stdTx.GetSignaturesV2()
 	if err != nil {
-		return ServeError(0, "failed to get SignaturesV2", err.Error(), http.StatusBadRequest)
+		return ServeError(1, "failed to get SignaturesV2", err.Error(), http.StatusInternalServerError)
 	}
 
 	sigV2[0].Sequence = sequence
 
 	err = txBuilder.SetSignatures(sigV2...)
 	if err != nil {
-		return ServeError(0, "failed to set Signatures", err.Error(), http.StatusBadRequest)
+		return ServeError(1, "failed to set Signatures", err.Error(), http.StatusInternalServerError)
 	}
 
 	txBuilder.SetMemo(stdTx.GetMemo())
@@ -146,13 +175,13 @@ func serveFaucet(r *http.Request, gwCosmosmux *runtime.ServeMux, request InterxR
 
 	txBytes, err := interx.EncodingCg.TxConfig.TxEncoder()(txBuilder.GetTx())
 	if err != nil {
-		return ServeError(0, "failed to get TX bytes", err.Error(), http.StatusBadRequest)
+		return ServeError(1, "failed to get TX bytes", err.Error(), http.StatusBadRequest)
 	}
 
 	// send tokens
 	txHash, err := BroadcastTransaction(rpcAddr, txBytes)
 	if err != nil {
-		return ServeError(0, "", err.Error(), http.StatusInternalServerError)
+		return ServeError(1, "", err.Error(), http.StatusInternalServerError)
 	}
 
 	// add new claim

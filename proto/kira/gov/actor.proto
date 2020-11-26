@@ -53,8 +53,7 @@ message MsgWhitelistPermissions {
   option (gogoproto.equal)            = true;
 
   bytes proposer = 1 [
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
-    (gogoproto.moretags) = "yaml:\"address\""
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
   ];
 
   bytes address = 2 [
@@ -67,8 +66,7 @@ message MsgWhitelistPermissions {
 
 message MsgBlacklistPermissions {
   bytes proposer = 1 [
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
-    (gogoproto.moretags) = "yaml:\"address\""
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
   ];
 
   bytes address = 2 [

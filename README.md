@@ -4,6 +4,7 @@ Kira Hub
 ## Set permission environment variables
 
 ```sh
+# permissions
 export PermZero=0
 export PermSetPermissions=1
 export PermClaimValidator=2
@@ -13,6 +14,85 @@ export PermVoteSetPermissionProposal=5
 export PermUpsertTokenAlias=6
 export PermChangeTxFee=7
 export PermUpsertTokenRate=8
+
+# transaction_type
+export TypeMsgSend      = "send"
+export TypeMsgMultiSend = "multisend"
+export TypeMsgVerifyInvariant = "verify_invariant"
+export TypeMsgSetWithdrawAddress          = "set_withdraw_address"
+export TypeMsgWithdrawDelegatorReward     = "withdraw_delegator_reward"
+export TypeMsgWithdrawValidatorCommission = "withdraw_validator_commission"
+export TypeMsgFundCommunityPool           = "fund_community_pool"
+export TypeMsgSubmitEvidence = "submit_evidence"
+export TypeMsgDeposit        = "deposit"
+export TypeMsgVote           = "vote"
+export TypeMsgSubmitProposal = "submit_proposal"
+export TypeMsgTransfer = "transfer"
+export TypeMsgUnjail = "unjail"
+export TypeMsgUndelegate      = "begin_unbonding"
+export TypeMsgEditValidator   = "edit_validator"
+export TypeMsgCreateValidator = "create_validator"
+export TypeMsgDelegate        = "delegate"
+export TypeMsgBeginRedelegate = "begin_redelegate"
+export MsgTypeProposalSetNetworkProperty = "proposal-set-network-property"
+export MsgTypeProposalAssignPermission   = "proposal-assign-permission"
+export MsgTypeProposalUpsertDataRegistry = "proposal-upsert-data-registry"
+export MsgTypeProposalUpsertTokenAlias   = "proposal-upsert-token-alias"
+export MsgTypeVoteProposal               = "vote-proposal"
+export MsgTypeWhitelistPermissions = "whitelist-permissions"
+export MsgTypeBlacklistPermissions = "blacklist-permissions"
+export MsgTypeClaimCouncilor       = "claim-councilor"
+export MsgTypeSetNetworkProperties = "set-network-properties"
+export MsgTypeSetExecutionFee      = "set-execution-fee"
+export MsgTypeCreateRole = "create-role"
+export MsgTypeAssignRole = "assign-role"
+export MsgTypeRemoveRole = "remove-role"
+export MsgTypeWhitelistRolePermission       = "whitelist-role-permission"
+export MsgTypeBlacklistRolePermission       = "blacklist-role-permission"
+export MsgTypeRemoveWhitelistRolePermission = "remove-whitelist-role-permission"
+export MsgTypeRemoveBlacklistRolePermission = "remove-blacklist-role-permission"
+export MsgTypeClaimValidator = "claim-validator"
+export MsgTypeUpsertTokenAlias = "upsert-token-alias"
+export MsgTypeUpsertTokenRate  = "upsert-token-rate"
+
+export FuncIDMsgSend   = 1
+export FuncIDMultiSend = 2
+export FuncIDMsgVerifyInvariant = 3
+export FuncIDMsgSetWithdrawAddress          = 4
+export FuncIDMsgWithdrawDelegatorReward     = 5
+export FuncIDMsgWithdrawValidatorCommission = 6
+export FuncIDMsgFundCommunityPool           = 7
+export FuncIDMsgSubmitEvidence = 8
+export FuncIDMsgDeposit        = 9
+export FuncIDMsgVote           = 10
+export FuncIDMsgSubmitProposal = 11
+export FuncIDMsgTransfer = 12
+export FuncIDMsgUnjail = 13
+export FuncIDMsgUndelegate      = 14
+export FuncIDMsgEditValidator   = 15
+export FuncIDMsgCreateValidator = 16
+export FuncIDMsgDelegate        = 17
+export FuncIDMsgBeginRedelegate = 18
+export FuncIDMsgProposalSetNetworkProperty = 19
+export FuncIDMsgProposalAssignPermission   = 20
+export FuncIDMsgProposalUpsertDataRegistry = 21
+export FuncIDMsgVoteProposal               = 22
+export FuncIDMsgWhitelistPermissions = 23
+export FuncIDMsgBlacklistPermissions = 24
+export FuncIDMsgClaimCouncilor       = 25
+export FuncIDMsgSetNetworkProperties = 26
+export FuncIDMsgSetExecutionFee      = 27
+export FuncIDMsgCreateRole = 28
+export FuncIDMsgAssignRole = 29
+export FuncIDMsgRemoveRole = 30
+export FuncIDMsgWhitelistRolePermission       = 31
+export FuncIDMsgBlacklistRolePermission       = 32
+export FuncIDMsgRemoveWhitelistRolePermission = 33
+export FuncIDMsgRemoveBlacklistRolePermission = 34
+export FuncIDMsgClaimValidator = 35
+export FuncIDMsgUpsertTokenAlias = 36
+export FuncIDMsgUpsertTokenRate  = 37
+export FuncIDMsgProposalUpsertTokenAlias = 38
 ```
 
 ## Set ChangeTxFee permission

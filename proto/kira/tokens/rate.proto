@@ -22,7 +22,7 @@ message MsgUpsertTokenRate {
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
         (gogoproto.nullable)   = false
     ]; // Exchange rate in terms of KEX token
-    bool fee_payments = 3; // Properties defining if it is enabled or disabled as fee payment methodß
+    bool fee_payments = 3; // Properties defining if it is enabled or disabled as fee payment method
     bytes proposer = 4 [
         (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
         (gogoproto.moretags) = "yaml:\"proposer\""

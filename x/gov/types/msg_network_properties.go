@@ -1,6 +1,9 @@
 package types
 
-import sdk "github.com/cosmos/cosmos-sdk/types"
+import (
+	"github.com/KiraCore/sekai/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+)
 
 var _ sdk.Msg = &MsgSetNetworkProperties{}
 
@@ -19,7 +22,7 @@ func (m *MsgSetNetworkProperties) Route() string {
 }
 
 func (m *MsgSetNetworkProperties) Type() string {
-	return SetNetworkProperties
+	return types.MsgTypeSetNetworkProperties
 }
 
 func (m *MsgSetNetworkProperties) ValidateBasic() error {

@@ -5,16 +5,20 @@ import (
 	"fmt"
 	"io/ioutil"
 
+	functions "github.com/KiraCore/sekai/INTERX/functions"
 	sekaiapp "github.com/KiraCore/sekai/app"
+	functionmeta "github.com/KiraCore/sekai/function_meta"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	bytesize "github.com/inhies/go-bytesize"
 	"github.com/tendermint/tendermint/crypto"
-	"github.com/tendermint/tendermint/crypto/secp256k1"
 	"github.com/tendermint/tendermint/crypto/sr25519"
 	"github.com/tyler-smith/go-bip39"
 )
 
 func readConfig() InterxConfig {
+	functions.RegisterInterxFunctions()
+	functionmeta.RegisterStdMsgs()
 	sekaiapp.SetConfig()
 
 	type ConfigFromFile struct {
@@ -24,10 +28,11 @@ func readConfig() InterxConfig {
 		MaxCacheSize    string `json:"max_cache_size"`
 		CachingDuration int64  `json:"caching_duration"`
 		Faucet          struct {
-			Mnemonic             string           `json:"mnemonic"`
-			FaucetAmounts        map[string]int64 `json:"faucet_amounts"`
-			FaucetMinimumAmounts map[string]int64 `json:"faucet_minimum_amounts"`
-			TimeLimit            int64            `json:"time_limit"`
+			Mnemonic             string            `json:"mnemonic"`
+			FaucetAmounts        map[string]int64  `json:"faucet_amounts"`
+			FaucetMinimumAmounts map[string]int64  `json:"faucet_minimum_amounts"`
+			FeeAmounts           map[string]string `json:"fee_amounts"`
+			TimeLimit            int64             `json:"time_limit"`
 		} `json:"faucet"`
 		RPC RPCConfig `json:"rpc"`
 	}
@@ -67,6 +72,7 @@ func readConfig() InterxConfig {
 		Mnemonic:             configFromFile.Faucet.Mnemonic,
 		FaucetAmounts:        configFromFile.Faucet.FaucetAmounts,
 		FaucetMinimumAmounts: configFromFile.Faucet.FaucetMinimumAmounts,
+		FeeAmounts:           configFromFile.Faucet.FeeAmounts,
 		TimeLimit:            configFromFile.Faucet.TimeLimit,
 	}
 

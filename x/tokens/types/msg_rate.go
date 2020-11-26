@@ -3,13 +3,8 @@ package types
 import (
 	"errors"
 
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
+	"github.com/KiraCore/sekai/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-)
-
-// Msg types
-const (
-	UpsertTokenRate = customgovtypes.UpsertTokenRate
 )
 
 var (
@@ -38,7 +33,7 @@ func (m *MsgUpsertTokenRate) Route() string {
 
 // Type returns return message type
 func (m *MsgUpsertTokenRate) Type() string {
-	return UpsertTokenRate
+	return types.MsgTypeUpsertTokenRate
 }
 
 // ValidateBasic returns basic validation result

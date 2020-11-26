@@ -17,6 +17,20 @@ type ResponseSign struct {
 	Response  string `json:"response"`
 }
 
+// Transaction is a struct to be used for transaction
+type Transaction struct {
+	Address string `json:"address"`
+	Type    string `json:"type"`
+	Denom   string `json:"denom,omitempty"`
+	Amount  int64  `json:"amount"`
+}
+
+// TransactionResult is a struct to be used for query transaction response
+type TransactionResult struct {
+	Time int64         `json:"time"`
+	Txs  []Transaction `json:"txs"`
+}
+
 // Coin is a struct for coin
 type Coin struct {
 	Amount string `json:"amount"`
@@ -31,11 +45,12 @@ type FaucetAccountInfo struct {
 
 // RPCMethod is a struct to be used for rpc_methods API
 type RPCMethod struct {
-	Description    string  `json:"description"`
-	Enabled        bool    `json:"enabled"`
-	RateLimit      float64 `json:"rate_limit,omitempty"`
-	AuthRateLimit  float64 `json:"auth_rate_limit,omitempty"`
-	CachingEnabled bool    `json:"caching_enabled"`
+	Description     string  `json:"description"`
+	Enabled         bool    `json:"enabled"`
+	RateLimit       float64 `json:"rate_limit,omitempty"`
+	AuthRateLimit   float64 `json:"auth_rate_limit,omitempty"`
+	CachingEnabled  bool    `json:"caching_enabled"`
+	CachingDuration int64   `json:"caching_duration,omitempty"`
 }
 
 // InterxRequest is a struct to be used for request hash

@@ -3,6 +3,7 @@ package types
 import (
 	"fmt"
 
+	"github.com/KiraCore/sekai/types"
 	"github.com/tendermint/tendermint/crypto"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -45,7 +46,7 @@ func (m *MsgClaimValidator) Route() string {
 }
 
 func (m *MsgClaimValidator) Type() string {
-	return ClaimValidator
+	return types.MsgTypeClaimValidator
 }
 
 func (m *MsgClaimValidator) ValidateBasic() error {

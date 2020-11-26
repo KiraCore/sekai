@@ -142,8 +142,7 @@ message QueryVoteRequest {
 
   // voter defines the oter address for the proposals.
   bytes voter = 2[
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
-    (gogoproto.moretags) = "yaml:\"address\""
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
   ];
 }
 

@@ -29,12 +29,16 @@ func AddRPCMethod(method string, url string, description string, canCache bool) 
 	newMethod.Description = description
 	newMethod.Enabled = true
 	newMethod.CachingEnabled = true
+	newMethod.CachingDuration = interx.Config.CachingDuration
 
 	if conf, ok := interx.Config.RPC.API[method][url]; ok {
 		newMethod.Enabled = !conf.Disable
 		newMethod.CachingEnabled = !conf.CachingDisable
 		newMethod.RateLimit = conf.RateLimit
 		newMethod.AuthRateLimit = conf.AuthRateLimit
+		if conf.CachingDuration != 0 {
+			newMethod.CachingDuration = conf.CachingDuration
+		}
 	}
 
 	if !canCache {
@@ -165,16 +169,17 @@ func WrapResponse(w http.ResponseWriter, request InterxRequest, response common.
 		chainIDHash := GetHash(response.Chainid)
 		endpointHash := GetHash(request.Endpoint)
 		requestHash := GetHash(request)
-
-		err := PutCache(chainIDHash, endpointHash, requestHash, common.InterxResponse{
-			Response: response,
-			Status:   statusCode,
-			ExpireAt: time.Now().Add(time.Duration(interx.Config.CachingDuration) * time.Second),
-		})
-		if err != nil {
-			fmt.Printf("failed to save in the cache : %s\n", err.Error())
+		if conf, ok := rpcMethods[request.Method][request.Endpoint]; ok {
+			err := PutCache(chainIDHash, endpointHash, requestHash, common.InterxResponse{
+				Response: response,
+				Status:   statusCode,
+				ExpireAt: time.Now().Add(time.Duration(conf.CachingDuration) * time.Second),
+			})
+			if err != nil {
+				fmt.Printf("failed to save in the cache : %s\n", err.Error())
+			}
+			fmt.Println("save finished")
 		}
-		fmt.Println("save finished")
 	}
 
 	w.Header().Add("Content-Type", "application/json")
@@ -307,6 +312,9 @@ func BroadcastTransaction(rpcAddr string, txBytes []byte) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
+	res, _ := json.Marshal(*result)
+	fmt.Println(string(res))
 
 	if resp.StatusCode != http.StatusOK {
 		return "", errors.New(result.Error.Message)

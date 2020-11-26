@@ -444,7 +444,7 @@
 			"response": []
 		},
 		{
-			"name": "Query Functions",
+			"name": "Query Kira Functions",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -468,7 +468,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://0.0.0.0:11000/api/functions",
+					"raw": "http://0.0.0.0:11000/api/kira/metadata",
 					"protocol": "http",
 					"host": [
 						"0",
@@ -479,7 +479,8 @@
 					"port": "11000",
 					"path": [
 						"api",
-						"functions"
+						"kira",
+						"metadata"
 					]
 				}
 			},
@@ -566,7 +567,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://0.0.0.0:11000/api/deposits?account=kira1h9s2k2s9624kdghp5ztcdgnausg77rdj9cyat6&type=Send&last=0x9C9FD016B905AFA81E7BC9FC6C38C1AAE06EF0D0399080A7AAFA6481B91101D8",
+					"raw": "http://0.0.0.0:11000/api/deposits?account=kira1h9s2k2s9624kdghp5ztcdgnausg77rdj9cyat6&type=Send",
 					"protocol": "http",
 					"host": [
 						"0",
@@ -587,10 +588,6 @@
 						{
 							"key": "type",
 							"value": "Send"
-						},
-						{
-							"key": "last",
-							"value": "0x9C9FD016B905AFA81E7BC9FC6C38C1AAE06EF0D0399080A7AAFA6481B91101D8"
 						}
 					]
 				}
