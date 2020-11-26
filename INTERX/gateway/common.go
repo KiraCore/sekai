@@ -313,6 +313,9 @@ func BroadcastTransaction(rpcAddr string, txBytes []byte) (string, error) {
 		return "", err
 	}
 
+	res, _ := json.Marshal(*result)
+	fmt.Println(string(res))
+
 	if resp.StatusCode != http.StatusOK {
 		return "", errors.New(result.Error.Message)
 	}
