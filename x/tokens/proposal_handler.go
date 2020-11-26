@@ -30,3 +30,25 @@ func (a ApplyUpsertTokenAliasProposalHandler) Apply(ctx sdk.Context, proposal ty
 		panic(err)
 	}
 }
+
+type ApplyUpsertTokenRatesProposalHandler struct {
+	keeper keeper.Keeper
+}
+
+func NewApplyUpsertTokenRatesProposalHandler(keeper keeper.Keeper) *ApplyUpsertTokenRatesProposalHandler {
+	return &ApplyUpsertTokenRatesProposalHandler{keeper: keeper}
+}
+
+func (a ApplyUpsertTokenRatesProposalHandler) ProposalType() string {
+	return types2.ProposalTypeUpsertTokenRates
+}
+
+func (a ApplyUpsertTokenRatesProposalHandler) Apply(ctx sdk.Context, proposal types.Content) {
+	p := proposal.(*types2.ProposalUpsertTokenRates)
+
+	tokenAlians := types2.NewTokenRate(p.Denom, p.Rate, p.FeePayments)
+	err := a.keeper.UpsertTokenRate(ctx, *tokenAlians)
+	if err != nil {
+		panic(err)
+	}
+}

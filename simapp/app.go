@@ -353,6 +353,7 @@ func NewSimApp(
 			customgov.NewApplySetNetworkPropertyProposalHandler(app.CustomGovKeeper),
 			customgov.NewApplyUpsertDataRegistryProposalHandler(app.CustomGovKeeper),
 			tokens.NewApplyUpsertTokenAliasProposalHandler(app.TokensKeeper),
+			tokens.NewApplyUpsertTokenRatesProposalHandler(app.TokensKeeper),
 		},
 	)
 	app.mm = module.NewManager(
