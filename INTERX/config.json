@@ -16,6 +16,11 @@
             "validatortoken": 100,
             "ukex": 100
         },
+        "fee_amounts": {
+            "stake": "1000ukex",
+            "validatortoken": "1000ukex",
+            "ukex": "1000ukex"
+        },
         "time_limit": 20
     },
     "rpc": {

@@ -6,13 +6,14 @@ import (
 
 // FaucetConfig is a struct to be used for Faucet configuration
 type FaucetConfig struct {
-	Mnemonic             string           `json:"mnemonic"`
-	FaucetAmounts        map[string]int64 `json:"faucet_amounts"`
-	FaucetMinimumAmounts map[string]int64 `json:"faucet_minimum_amounts"`
-	TimeLimit            int64            `json:"time_limit"`
-	PrivKey              crypto.PrivKey   `json:"privkey"`
-	PubKey               crypto.PubKey    `json:"pubkey"`
-	Address              string           `json:"address"`
+	Mnemonic             string            `json:"mnemonic"`
+	FaucetAmounts        map[string]int64  `json:"faucet_amounts"`
+	FaucetMinimumAmounts map[string]int64  `json:"faucet_minimum_amounts"`
+	FeeAmounts           map[string]string `json:"fee_amounts"`
+	TimeLimit            int64             `json:"time_limit"`
+	PrivKey              crypto.PrivKey    `json:"privkey"`
+	PubKey               crypto.PubKey     `json:"pubkey"`
+	Address              string            `json:"address"`
 }
 
 // RPCSetting is a struct to be used for endpoint setting

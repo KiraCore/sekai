@@ -28,10 +28,11 @@ func readConfig() InterxConfig {
 		MaxCacheSize    string `json:"max_cache_size"`
 		CachingDuration int64  `json:"caching_duration"`
 		Faucet          struct {
-			Mnemonic             string           `json:"mnemonic"`
-			FaucetAmounts        map[string]int64 `json:"faucet_amounts"`
-			FaucetMinimumAmounts map[string]int64 `json:"faucet_minimum_amounts"`
-			TimeLimit            int64            `json:"time_limit"`
+			Mnemonic             string            `json:"mnemonic"`
+			FaucetAmounts        map[string]int64  `json:"faucet_amounts"`
+			FaucetMinimumAmounts map[string]int64  `json:"faucet_minimum_amounts"`
+			FeeAmounts           map[string]string `json:"fee_amounts"`
+			TimeLimit            int64             `json:"time_limit"`
 		} `json:"faucet"`
 		RPC RPCConfig `json:"rpc"`
 	}
@@ -71,6 +72,7 @@ func readConfig() InterxConfig {
 		Mnemonic:             configFromFile.Faucet.Mnemonic,
 		FaucetAmounts:        configFromFile.Faucet.FaucetAmounts,
 		FaucetMinimumAmounts: configFromFile.Faucet.FaucetMinimumAmounts,
+		FeeAmounts:           configFromFile.Faucet.FeeAmounts,
 		TimeLimit:            configFromFile.Faucet.TimeLimit,
 	}
 
