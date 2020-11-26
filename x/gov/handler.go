@@ -98,7 +98,7 @@ func handleMsgProposalUpsertDataRegistry(
 		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermUpsertDataRegistryProposal.String())
 	}
 
-	return createAndSaveProposalWithContent(ctx, ck,
+	return CreateAndSaveProposalWithContent(ctx, ck,
 		customgovtypes.NewUpsertDataRegistryProposal(
 			msg.Key,
 			msg.Hash,
@@ -126,13 +126,13 @@ func handleMsgProposalAssignPermission(
 		}
 	}
 
-	return createAndSaveProposalWithContent(ctx, ck, customgovtypes.NewAssignPermissionProposal(
+	return CreateAndSaveProposalWithContent(ctx, ck, customgovtypes.NewAssignPermissionProposal(
 		msg.Address,
 		customgovtypes.PermValue(msg.Permission),
 	))
 }
 
-func createAndSaveProposalWithContent(ctx sdk.Context, ck keeper.Keeper, content customgovtypes.Content) (*sdk.Result, error) {
+func CreateAndSaveProposalWithContent(ctx sdk.Context, ck keeper.Keeper, content customgovtypes.Content) (*sdk.Result, error) {
 	blockTime := ctx.BlockTime()
 	proposalID, err := ck.GetNextProposalID(ctx)
 	if err != nil {

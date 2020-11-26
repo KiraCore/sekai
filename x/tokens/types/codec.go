@@ -2,6 +2,7 @@ package types
 
 import (
 	functionmeta "github.com/KiraCore/sekai/function_meta"
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -86,6 +87,13 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgUpsertTokenRate{},
 		&MsgUpsertTokenAlias{},
+		&MsgProposalUpsertTokenAlias{},
+	)
+
+	registry.RegisterInterface(
+		"kira.gov.Content",
+		(*govtypes.Content)(nil),
+		&ProposalUpsertTokenAlias{},
 	)
 }
 

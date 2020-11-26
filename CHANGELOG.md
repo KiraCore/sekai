@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.1.13] - 11.20.2020
+### Added
+- Proposal to upsert the Token Aliases KIP_24. (CLI too)
+
 ## [0.1.12.1] - 11.15.2020
 ### Added
 - Proposal to upsert the Data Registry. (CLI too)

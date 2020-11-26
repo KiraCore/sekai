@@ -9,30 +9,22 @@ var (
 	_ sdk.Msg = &MsgUpsertTokenAlias{}
 )
 
-// NewMsgUpsertTokenAlias returns an instance of MsgUpserTokenAlias
+// NewMsgUpsertTokenAlias returns an instance of MsgUpsertTokenAlias
 func NewMsgUpsertTokenAlias(
 	proposer sdk.AccAddress,
-	expiration uint32,
-	enactment uint32,
-	allowedVoteTypes []VoteType,
 	symbol string,
 	name string,
 	icon string,
 	decimals uint32,
 	denoms []string,
-	status ProposalStatus,
 ) *MsgUpsertTokenAlias {
 	return &MsgUpsertTokenAlias{
-		Proposer:         proposer,
-		Expiration:       expiration,
-		Enactment:        enactment,
-		AllowedVoteTypes: allowedVoteTypes,
-		Symbol:           symbol,
-		Name:             name,
-		Icon:             icon,
-		Decimals:         decimals,
-		Denoms:           denoms,
-		Status:           status,
+		Proposer: proposer,
+		Symbol:   symbol,
+		Name:     name,
+		Icon:     icon,
+		Decimals: decimals,
+		Denoms:   denoms,
 	}
 }
 

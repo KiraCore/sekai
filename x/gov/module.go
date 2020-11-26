@@ -85,6 +85,7 @@ func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
 type AppModule struct {
 	AppModuleBasic
 	customGovKeeper keeper2.Keeper
+	proposalRouter  ProposalRouter
 }
 
 func (am AppModule) RegisterInterfaces(registry types2.InterfaceRegistry) {
@@ -159,7 +160,7 @@ func (am AppModule) LegacyQuerierHandler(marshaler *codec.LegacyAmino) sdk.Queri
 func (am AppModule) BeginBlock(context sdk.Context, block abci.RequestBeginBlock) {}
 
 func (am AppModule) EndBlock(ctx sdk.Context, block abci.RequestEndBlock) []abci.ValidatorUpdate {
-	EndBlocker(ctx, am.customGovKeeper)
+	EndBlocker(ctx, am.customGovKeeper, am.proposalRouter)
 
 	return []abci.ValidatorUpdate{}
 }
@@ -183,8 +184,10 @@ func (am AppModule) RegisterQueryService(server grpc.Server) {
 // NewAppModule returns a new Custom Staking module.
 func NewAppModule(
 	keeper keeper2.Keeper,
+	proposalRouter ProposalRouter,
 ) AppModule {
 	return AppModule{
 		customGovKeeper: keeper,
+		proposalRouter:  proposalRouter,
 	}
 }

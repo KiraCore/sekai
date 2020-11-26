@@ -21,28 +21,20 @@ enum ProposalStatus {
 }
 
 message TokenAlias {
-    uint32 expiration = 1; // Configurable in genesis expiration time (uint32) - seconds since submission
-    uint32 enactment = 2; // Configurable in genesis enactment time (uint32) - seconds since expiration
-    repeated VoteType allowed_vote_types = 3; // yes, no, veto, abstain
-    string symbol = 4;// Ticker (eg. ATOM, KEX, BTC)
-    string name = 5; // Token Name (e.g. Cosmos, Kira, Bitcoin)
-    string icon = 6; // Graphical Symbol (url link to graphics)
-    uint32 decimals = 7; // Integer number of max decimals
-    repeated string denoms = 8; // An array of token denoms to be aliased
-    ProposalStatus status = 9; // undefined, active, rejected, passed, enacted
+    string symbol = 1;// Ticker (eg. ATOM, KEX, BTC)
+    string name = 2; // Token Name (e.g. Cosmos, Kira, Bitcoin)
+    string icon = 3; // Graphical Symbol (url link to graphics)
+    uint32 decimals = 4; // Integer number of max decimals
+    repeated string denoms = 5; // An array of token denoms to be aliased
 }
 
 message MsgUpsertTokenAlias {
-    uint32 expiration = 1; // Configurable in genesis expiration time (uint32) - seconds since submission
-    uint32 enactment = 2; // Configurable in genesis enactment time (uint32) - seconds since expiration
-    repeated VoteType allowed_vote_types = 3; // yes, no, veto, abstain
-    string symbol = 4;// Ticker (eg. ATOM, KEX, BTC)
-    string name = 5; // Token Name (e.g. Cosmos, Kira, Bitcoin)
-    string icon = 6; // Graphical Symbol (url link to graphics)
-    uint32 decimals = 7; // Integer number of max decimals
-    repeated string denoms = 8; // An array of token denoms to be aliased
-    ProposalStatus status = 9; // undefined, active, rejected, passed, enacted
-    bytes proposer = 10 [
+    string symbol = 1;// Ticker (eg. ATOM, KEX, BTC)
+    string name = 2; // Token Name (e.g. Cosmos, Kira, Bitcoin)
+    string icon = 3; // Graphical Symbol (url link to graphics)
+    uint32 decimals = 4; // Integer number of max decimals
+    repeated string denoms = 5; // An array of token denoms to be aliased
+    bytes proposer = 6 [
         (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
         (gogoproto.moretags) = "yaml:\"proposer\""
     ];
