@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.14] - 11.26.2020
+### Added
+- Added a wrapper to register messages with function metadata.
+- Added function_id for message types.
+- Registered function meta for existing messages.
+- Added INTERX api for Kira functions list.
+- Added INTERX api for INTERX functions list.
+
 ## [0.1.13] - 11.20.2020
 ### Added
 - Proposal to upsert the Token Aliases KIP_24. (CLI too)
