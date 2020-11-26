@@ -37,6 +37,7 @@ export TypeMsgBeginRedelegate = "begin_redelegate"
 export MsgTypeProposalSetNetworkProperty = "proposal-set-network-property"
 export MsgTypeProposalAssignPermission   = "proposal-assign-permission"
 export MsgTypeProposalUpsertDataRegistry = "proposal-upsert-data-registry"
+export MsgTypeProposalUpsertTokenAlias   = "proposal-upsert-token-alias"
 export MsgTypeVoteProposal               = "vote-proposal"
 export MsgTypeWhitelistPermissions = "whitelist-permissions"
 export MsgTypeBlacklistPermissions = "blacklist-permissions"
@@ -91,6 +92,7 @@ export FuncIDMsgRemoveBlacklistRolePermission = 34
 export FuncIDMsgClaimValidator = 35
 export FuncIDMsgUpsertTokenAlias = 36
 export FuncIDMsgUpsertTokenRate  = 37
+export FuncIDMsgProposalUpsertTokenAlias = 38
 ```
 
 ## Set ChangeTxFee permission

@@ -17,6 +17,7 @@ const (
 	MsgTypeProposalSetNetworkProperty = "proposal-set-network-property"
 	MsgTypeProposalAssignPermission   = "proposal-assign-permission"
 	MsgTypeProposalUpsertDataRegistry = "proposal-upsert-data-registry"
+	MsgTypeProposalUpsertTokenAlias   = "proposal-upsert-token-alias"
 	MsgTypeVoteProposal               = "vote-proposal"
 
 	MsgTypeWhitelistPermissions = "whitelist-permissions"
@@ -82,4 +83,5 @@ var MsgFuncIDMapping = map[string]int64{
 	MsgTypeClaimValidator:                           35,
 	MsgTypeUpsertTokenAlias:                         36,
 	MsgTypeUpsertTokenRate:                          37,
+	MsgTypeProposalUpsertTokenAlias:                 38,
 }

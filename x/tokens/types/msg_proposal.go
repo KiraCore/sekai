@@ -1,6 +1,7 @@
 package types
 
 import (
+	kiratypes "github.com/KiraCore/sekai/types"
 	"github.com/KiraCore/sekai/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -9,8 +10,6 @@ var (
 	_ sdk.Msg       = &MsgProposalUpsertTokenAlias{}
 	_ types.Content = &ProposalUpsertTokenAlias{}
 )
-
-const MsgProposalUpsertTokenAliasType = "propose-upsert-token-alias"
 
 func NewMsgProposalUpsertTokenAlias(
 	proposer sdk.AccAddress,
@@ -35,7 +34,7 @@ func (m *MsgProposalUpsertTokenAlias) Route() string {
 }
 
 func (m *MsgProposalUpsertTokenAlias) Type() string {
-	return MsgProposalUpsertTokenAliasType
+	return kiratypes.MsgTypeProposalUpsertTokenAlias
 }
 
 func (m *MsgProposalUpsertTokenAlias) ValidateBasic() error {
@@ -50,4 +49,3 @@ func (m *MsgProposalUpsertTokenAlias) GetSignBytes() []byte {
 func (m *MsgProposalUpsertTokenAlias) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{m.Proposer}
 }
-

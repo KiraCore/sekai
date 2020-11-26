@@ -11,54 +11,37 @@ import (
 // RegisterCodec register codec and metadata
 func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgUpsertTokenAlias{}, "kiraHub/MsgUpsertTokenAlias", nil)
-	cdc.RegisterConcrete(&MsgUpsertTokenRate{}, "kiraHub/MsgUpsertTokenRate", nil)
-
 	functionmeta.AddNewFunction((&MsgUpsertTokenAlias{}).Type(), `{
 		"description": "MsgUpsertTokenAlias represents a message to register token alias.",
 		"parameters": {
-			"expiration": {
-				"type":        "uint32",
-				"description": "expiration time (uint32) - seconds since submission."
-			},
-			"enactment": {
-				"type":        "uint32",
-				"description": "enactment time (uint32) - seconds since expiration."
-			},
-			"allowed_vote_types": {
-				"type":        "array<VoteType>",
-				"description": "Allowed vote types: yes, no, veto, abstain."
-			},
 			"symbol": {
 				"type":        "string",
-				"description": "Ticker (eg. ATOM, KEX, BTC)"
+				"description": "Ticker (eg. ATOM, KEX, BTC)."
 			},
 			"name": {
 				"type":        "string",
-				"description": "Token Name (e.g. Cosmos, Kira, Bitcoin)"
+				"description": "Token Name (e.g. Cosmos, Kira, Bitcoin)."
 			},
 			"icon": {
 				"type":        "string",
-				"description": "Graphical Symbol (url link to graphics)"
+				"description": "Graphical Symbol (url link to graphics)."
 			},
 			"decimals": {
-				"type":        "int",
-				"description": "Integer number of max decimals"
+				"type":        "uint32",
+				"description": "Integer number of max decimals."
 			},
 			"denoms": {
 				"type":        "array<string>",
-				"description": "An array of token denoms to be aliased"
-			},
-			"status": {
-				"type":        "enum",
-				"description": "token alias voting status: undefined, active, rejected, passed, enacted"
+				"description": "An array of token denoms to be aliased."
 			},
 			"proposer": {
-				"type":        "address",
+				"type":        "string",
 				"description": "proposer who propose this message."
 			}
 		}
 	}`)
 
+	cdc.RegisterConcrete(&MsgUpsertTokenRate{}, "kiraHub/MsgUpsertTokenRate", nil)
 	functionmeta.AddNewFunction((&MsgUpsertTokenRate{}).Type(), `{
 		"description": "MsgUpsertTokenRate represents a message to register token rate.",
 		"parameters": {
@@ -76,6 +59,37 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 			},
 			"proposer": {
 				"type":        "address",
+				"description": "proposer who propose this message."
+			}
+		}
+	}`)
+
+	cdc.RegisterConcrete(&MsgProposalUpsertTokenAlias{}, "kiraHub/MsgProposalUpsertTokenAlias", nil)
+	functionmeta.AddNewFunction((&MsgProposalUpsertTokenAlias{}).Type(), `{
+		"description": "MsgProposalUpsertTokenAlias defines a proposal message to upsert token alias.",
+		"parameters": {
+			"symbol": {
+				"type":        "string",
+				"description": "Ticker (eg. ATOM, KEX, BTC)."
+			},
+			"name": {
+				"type":        "string",
+				"description": "Token Name (e.g. Cosmos, Kira, Bitcoin)."
+			},
+			"icon": {
+				"type":        "string",
+				"description": "Graphical Symbol (url link to graphics)."
+			},
+			"decimals": {
+				"type":        "uint32",
+				"description": "Integer number of max decimals."
+			},
+			"denoms": {
+				"type":        "array<string>",
+				"description": "An array of token denoms to be aliased."
+			},
+			"proposer": {
+				"type":        "string",
 				"description": "proposer who propose this message."
 			}
 		}
