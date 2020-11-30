@@ -163,6 +163,50 @@ func (s *IntegrationTestSuite) TestUpsertTokenRateAndQuery() {
 	s.Require().Equal(tokenRate.FeePayments, true)
 }
 
+func (s IntegrationTestSuite) TestCreateProposalUpsertTokenRates() {
+	// Query permissions for role Validator
+	val := s.network.Validators[0]
+
+	cmd := cli.GetTxProposalUpsertTokenRatesCmd()
+	_, out := testutil.ApplyMockIO(cmd)
+	clientCtx := val.ClientCtx.WithOutput(out).WithOutputFormat("json")
+
+	ctx := context.Background()
+	ctx = context.WithValue(ctx, client.ClientContextKey, &clientCtx)
+
+	cmd.SetArgs([]string{
+		fmt.Sprintf("%s", "theKey"),
+		fmt.Sprintf("%s", "theHash"),
+		fmt.Sprintf("%s", "theReference"),
+		fmt.Sprintf("%s", "theEncoding"),
+		fmt.Sprintf("%d", 12345),
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(100))).String()),
+	})
+
+	err := cmd.ExecuteContext(ctx)
+	s.Require().NoError(err)
+	fmt.Printf("%s", out.String())
+
+	// Vote Proposal
+	out.Reset()
+	cmd = cli3.GetTxVoteProposal()
+	cmd.SetArgs([]string{
+		fmt.Sprintf("%d", 1), // Proposal ID
+		fmt.Sprintf("%d", customgovtypes.OptionYes),
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(100))).String()),
+	})
+
+	err = cmd.ExecuteContext(ctx)
+	s.Require().NoError(err)
+	fmt.Printf("%s", out.String())
+}
+
 func (s IntegrationTestSuite) TestCreateProposalUpsertDataRegistry() {
 	// Query permissions for role Validator
 	val := s.network.Validators[0]
