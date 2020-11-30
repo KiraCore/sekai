@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.1.14.1] - 11.30.2020
+### Added
+- Proposal to upsert the Token Rates. (CLI too)
+
 ## [0.1.14] - 11.26.2020
 ### Added
 - Added a wrapper to register messages with function metadata.
