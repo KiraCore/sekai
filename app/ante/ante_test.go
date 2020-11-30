@@ -6,6 +6,7 @@ import (
 
 	"github.com/tendermint/tendermint/crypto"
 
+	"github.com/KiraCore/sekai/types"
 	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -17,8 +18,8 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 
 	// set execution fee for set network properties
 	suite.app.CustomGovKeeper.SetExecutionFee(suite.ctx, &customgovtypes.ExecutionFee{
-		Name:              customgovtypes.SetNetworkProperties,
-		TransactionType:   customgovtypes.SetNetworkProperties,
+		Name:              types.MsgTypeSetNetworkProperties,
+		TransactionType:   types.MsgTypeSetNetworkProperties,
 		ExecutionFee:      10000,
 		FailureFee:        1000,
 		Timeout:           0,
@@ -82,8 +83,8 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 			func() ([]sdk.Msg, []crypto.PrivKey, []uint64, []uint64, sdk.Coins) {
 				msgs := []sdk.Msg{
 					customgovtypes.NewMsgSetExecutionFee(
-						customgovtypes.SetNetworkProperties,
-						customgovtypes.SetNetworkProperties,
+						types.MsgTypeSetNetworkProperties,
+						types.MsgTypeSetNetworkProperties,
 						10000,
 						1000,
 						0,
@@ -102,8 +103,8 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 			func() ([]sdk.Msg, []crypto.PrivKey, []uint64, []uint64, sdk.Coins) {
 				msgs := []sdk.Msg{
 					customgovtypes.NewMsgSetExecutionFee(
-						customgovtypes.SetNetworkProperties,
-						customgovtypes.SetNetworkProperties,
+						types.MsgTypeSetNetworkProperties,
+						types.MsgTypeSetNetworkProperties,
 						10000,
 						1000,
 						0,
@@ -122,8 +123,8 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 			func() ([]sdk.Msg, []crypto.PrivKey, []uint64, []uint64, sdk.Coins) {
 				msgs := []sdk.Msg{
 					customgovtypes.NewMsgSetExecutionFee(
-						customgovtypes.SetNetworkProperties,
-						customgovtypes.SetNetworkProperties,
+						types.MsgTypeSetNetworkProperties,
+						types.MsgTypeSetNetworkProperties,
 						10000,
 						1000,
 						0,
@@ -147,8 +148,8 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 				})
 				msgs := []sdk.Msg{
 					customgovtypes.NewMsgSetExecutionFee(
-						customgovtypes.SetNetworkProperties,
-						customgovtypes.SetNetworkProperties,
+						types.MsgTypeSetNetworkProperties,
+						types.MsgTypeSetNetworkProperties,
 						10000,
 						1000,
 						0,
@@ -173,8 +174,8 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 				})
 				msgs := []sdk.Msg{
 					customgovtypes.NewMsgSetExecutionFee(
-						customgovtypes.SetNetworkProperties,
-						customgovtypes.SetNetworkProperties,
+						types.MsgTypeSetNetworkProperties,
+						types.MsgTypeSetNetworkProperties,
 						10000,
 						1000,
 						0,

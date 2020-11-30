@@ -12,6 +12,7 @@ import (
 	"github.com/KiraCore/sekai/app"
 	"github.com/KiraCore/sekai/middleware"
 	"github.com/KiraCore/sekai/simapp"
+	"github.com/KiraCore/sekai/types"
 	"github.com/KiraCore/sekai/x/gov"
 	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 )
@@ -85,8 +86,8 @@ func TestNewHandler_SetNetworkProperties(t *testing.T) {
 			// set execution fee
 			_, err = handler(ctx, &customgovtypes.MsgSetExecutionFee{
 				Proposer:          changeFeeAddr,
-				Name:              customgovtypes.SetNetworkProperties,
-				TransactionType:   customgovtypes.SetNetworkProperties,
+				Name:              types.MsgTypeSetNetworkProperties,
+				TransactionType:   types.MsgTypeSetNetworkProperties,
 				ExecutionFee:      10000,
 				FailureFee:        1000,
 				Timeout:           1,
