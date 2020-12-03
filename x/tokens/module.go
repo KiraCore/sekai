@@ -28,6 +28,10 @@ var (
 
 type AppModuleBasic struct{}
 
+func (b AppModuleBasic) RegisterGRPCGatewayRoutes(context client.Context, serveMux *runtime.ServeMux) {
+	panic("implement me")
+}
+
 func (b AppModuleBasic) Name() string {
 	return tokenstypes.ModuleName
 }
@@ -82,6 +86,10 @@ type AppModule struct {
 	AppModuleBasic
 	tokensKeeper    keeper2.Keeper
 	customGovKeeper tokenstypes.CustomGovKeeper
+}
+
+func (am AppModule) RegisterServices(configurator module.Configurator) {
+	panic("implement me")
 }
 
 func (am AppModule) RegisterInterfaces(registry types2.InterfaceRegistry) {

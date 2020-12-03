@@ -3,6 +3,8 @@ package functionmeta
 import (
 	"encoding/json"
 
+	types2 "github.com/cosmos/cosmos-sdk/x/ibc/applications/transfer/types"
+
 	"github.com/KiraCore/sekai/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -11,7 +13,6 @@ import (
 	distribution "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	evidence "github.com/cosmos/cosmos-sdk/x/evidence/types"
 	gov "github.com/cosmos/cosmos-sdk/x/gov/types"
-	ibc "github.com/cosmos/cosmos-sdk/x/ibc-transfer/types"
 	slashing "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	staking "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/iancoleman/strcase"
@@ -354,7 +355,7 @@ func registerGovMsgs() {
 
 func registerIbcMsgs() {
 	AddNewFunction(
-		(ibc.MsgTransfer{}).Type(),
+		(types2.MsgTransfer{}).Type(),
 		`{
 			"description": "MsgTransfer defines a msg to transfer fungible tokens (i.e Coins) between ICS20 enabled chains. See ICS Spec here: https://github.com/cosmos/ics/tree/master/spec/ics-020-fungible-token-transfer#data-structures",
 			"parameters": {

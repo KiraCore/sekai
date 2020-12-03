@@ -26,6 +26,10 @@ var (
 
 type AppModuleBasic struct{}
 
+func (b AppModuleBasic) RegisterGRPCGatewayRoutes(context client.Context, serveMux *runtime.ServeMux) {
+	panic("implement me")
+}
+
 func (b AppModuleBasic) Name() string {
 	return feeprocessingtypes.ModuleName
 }
@@ -63,6 +67,10 @@ func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
 type AppModule struct {
 	AppModuleBasic
 	keeper feeprocessingkeeper.Keeper
+}
+
+func (am AppModule) RegisterServices(configurator module.Configurator) {
+	panic("implement me")
 }
 
 func (am AppModule) RegisterInterfaces(registry types2.InterfaceRegistry) {

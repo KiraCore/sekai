@@ -6,7 +6,7 @@ import (
 	distribution "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	evidence "github.com/cosmos/cosmos-sdk/x/evidence/types"
 	gov "github.com/cosmos/cosmos-sdk/x/gov/types"
-	ibc "github.com/cosmos/cosmos-sdk/x/ibc-transfer/types"
+	"github.com/cosmos/cosmos-sdk/x/ibc/applications/transfer/types"
 	slashing "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	staking "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
@@ -57,7 +57,7 @@ var MsgFuncIDMapping = map[string]int64{
 	gov.TypeMsgSubmitProposal:                       9,
 	gov.TypeMsgDeposit:                              10,
 	gov.TypeMsgVote:                                 11,
-	ibc.TypeMsgTransfer:                             12,
+	types.TypeMsgTransfer:                           12,
 	slashing.TypeMsgUnjail:                          13,
 	staking.TypeMsgCreateValidator:                  14,
 	staking.TypeMsgEditValidator:                    15,
