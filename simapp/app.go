@@ -136,6 +136,7 @@ var (
 		upgrade.AppModuleBasic{},
 		evidence.AppModuleBasic{},
 		transfer.AppModuleBasic{},
+		vesting.AppModuleBasic{},
 
 		customstaking.AppModuleBasic{},
 		customgov.AppModuleBasic{},
