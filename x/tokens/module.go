@@ -88,9 +88,7 @@ type AppModule struct {
 	customGovKeeper tokenstypes.CustomGovKeeper
 }
 
-func (am AppModule) RegisterServices(configurator module.Configurator) {
-	panic("implement me")
-}
+func (am AppModule) RegisterServices(configurator module.Configurator) {}
 
 func (am AppModule) RegisterInterfaces(registry types2.InterfaceRegistry) {
 	tokenstypes.RegisterInterfaces(registry)

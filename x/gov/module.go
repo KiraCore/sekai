@@ -29,7 +29,6 @@ var (
 type AppModuleBasic struct{}
 
 func (b AppModuleBasic) RegisterGRPCGatewayRoutes(context client.Context, serveMux *runtime.ServeMux) {
-	panic("implement me")
 }
 
 func (b AppModuleBasic) Name() string {
@@ -48,14 +47,11 @@ func (b AppModuleBasic) ValidateGenesis(marshaler codec.JSONMarshaler, config cl
 	return nil
 }
 
-func (b AppModuleBasic) RegisterRESTRoutes(context client.Context, router *mux.Router) {
-}
+func (b AppModuleBasic) RegisterRESTRoutes(context client.Context, router *mux.Router) {}
 
-func (b AppModuleBasic) RegisterGRPCRoutes(context client.Context, serveMux *runtime.ServeMux) {
-}
+func (b AppModuleBasic) RegisterGRPCRoutes(context client.Context, serveMux *runtime.ServeMux) {}
 
-func (b AppModuleBasic) RegisterLegacyAminoCodec(amino *codec.LegacyAmino) {
-}
+func (b AppModuleBasic) RegisterLegacyAminoCodec(amino *codec.LegacyAmino) {}
 
 func (b AppModuleBasic) GetTxCmd() *cobra.Command {
 	return cli2.NewTxCmd()
@@ -92,9 +88,7 @@ type AppModule struct {
 	proposalRouter  ProposalRouter
 }
 
-func (am AppModule) RegisterServices(configurator module.Configurator) {
-	panic("implement me")
-}
+func (am AppModule) RegisterServices(configurator module.Configurator) {}
 
 func (am AppModule) RegisterInterfaces(registry types2.InterfaceRegistry) {
 	customgovtypes.RegisterInterfaces(registry)

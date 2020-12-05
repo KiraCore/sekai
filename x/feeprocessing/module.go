@@ -70,7 +70,6 @@ type AppModule struct {
 }
 
 func (am AppModule) RegisterServices(configurator module.Configurator) {
-	panic("implement me")
 }
 
 func (am AppModule) RegisterInterfaces(registry types2.InterfaceRegistry) {

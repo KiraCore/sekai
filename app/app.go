@@ -1,6 +1,10 @@
 package app
 
 import (
+	"github.com/KiraCore/sekai/x/feeprocessing"
+	customgov "github.com/KiraCore/sekai/x/gov"
+	customstaking "github.com/KiraCore/sekai/x/staking"
+	"github.com/KiraCore/sekai/x/tokens"
 	"io"
 	"net/http"
 	"os"
@@ -13,15 +17,12 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/x/auth/simulation"
 
-	customgov "github.com/KiraCore/sekai/x/gov"
 	customgovkeeper "github.com/KiraCore/sekai/x/gov/keeper"
 	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 
-	"github.com/KiraCore/sekai/x/tokens"
 	tokenskeeper "github.com/KiraCore/sekai/x/tokens/keeper"
 	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
 
-	"github.com/KiraCore/sekai/x/feeprocessing"
 	feeprocessingkeeper "github.com/KiraCore/sekai/x/feeprocessing/keeper"
 	feeprocessingtypes "github.com/KiraCore/sekai/x/feeprocessing/types"
 
@@ -41,8 +42,6 @@ import (
 	customstakingtypes "github.com/KiraCore/sekai/x/staking/types"
 
 	customante "github.com/KiraCore/sekai/app/ante"
-	customstaking "github.com/KiraCore/sekai/x/staking"
-
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 
 	"github.com/cosmos/cosmos-sdk/codec/types"
@@ -127,7 +126,6 @@ var (
 		bank.AppModuleBasic{},
 		capability.AppModuleBasic{},
 		staking.AppModuleBasic{},
-		//distr.AppModuleBasic{},
 		gov.NewAppModuleBasic(
 			paramsclient.ProposalHandler, distrclient.ProposalHandler, upgradeclient.ProposalHandler, upgradeclient.CancelProposalHandler,
 		),
