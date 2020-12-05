@@ -33,7 +33,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.T().Log("setting up integration test suite")
 
 	cfg := network.DefaultConfig()
-	encodingConfig := simapp.MakeEncodingConfig()
+	encodingConfig := app.MakeEncodingConfig()
 	cfg.Codec = encodingConfig.Marshaler
 	cfg.TxConfig = encodingConfig.TxConfig
 
