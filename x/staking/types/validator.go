@@ -35,8 +35,8 @@ func NewValidator(moniker string, website string, social string,
 
 // UnpackInterfaces implements UnpackInterfacesMessage.UnpackInterfaces
 func (v Validator) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
-	var content crypto.PubKey
-	return unpacker.UnpackAny(v.PubKey, &content)
+	var pubkey crypto.PubKey
+	return unpacker.UnpackAny(v.PubKey, &pubkey)
 }
 
 // Validate validates if a validator is correct.

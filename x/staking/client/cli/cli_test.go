@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/suite"
+	"github.com/tendermint/tendermint/crypto"
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
@@ -91,7 +92,9 @@ func (s *IntegrationTestSuite) TestQueryValidator() {
 	s.Require().Equal(sdk.NewDec(1), respValidator.Commission)
 	s.Require().Equal(val.ValAddress, respValidator.ValKey)
 
-	pubkey, err := sdk.GetPubKeyFromBech32(sdk.Bech32PubKeyTypeConsPub, respValidator.PubKey)
+	// pubkey, err := sdk.GetPubKeyFromBech32(sdk.Bech32PubKeyTypeConsPub, respValidator.PubKey)
+	var pubkey crypto.PubKey
+	err = s.cfg.Codec.UnpackAny(respValidator.PubKey, &pubkey)
 	s.Require().NoError(err)
 	s.Require().Equal(val.PubKey, pubkey)
 
@@ -118,7 +121,8 @@ func (s *IntegrationTestSuite) TestQueryValidator() {
 	s.Require().Equal(sdk.NewDec(1), respValidator.Commission)
 	s.Require().Equal(val.ValAddress, respValidator.ValKey)
 
-	pubkey, err = sdk.GetPubKeyFromBech32(sdk.Bech32PubKeyTypeConsPub, respValidator.PubKey)
+	// pubkey, err = sdk.GetPubKeyFromBech32(sdk.Bech32PubKeyTypeConsPub, respValidator.PubKey)
+	err = s.cfg.Codec.UnpackAny(respValidator.PubKey, &pubkey)
 	s.Require().NoError(err)
 	s.Require().Equal(val.PubKey, pubkey)
 
@@ -145,7 +149,8 @@ func (s *IntegrationTestSuite) TestQueryValidator() {
 	s.Require().Equal(sdk.NewDec(1), respValidator.Commission)
 	s.Require().Equal(val.ValAddress, respValidator.ValKey)
 
-	pubkey, err = sdk.GetPubKeyFromBech32(sdk.Bech32PubKeyTypeConsPub, respValidator.PubKey)
+	// pubkey, err = sdk.GetPubKeyFromBech32(sdk.Bech32PubKeyTypeConsPub, respValidator.PubKey)
+	err = s.cfg.Codec.UnpackAny(respValidator.PubKey, &pubkey)
 	s.Require().NoError(err)
 	s.Require().Equal(val.PubKey, pubkey)
 }
