@@ -5,7 +5,7 @@ import (
 
 	functions "github.com/KiraCore/sekai/INTERX/functions"
 	"github.com/gorilla/mux"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 )
 
 const (
