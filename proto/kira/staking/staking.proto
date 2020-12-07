@@ -5,7 +5,7 @@ import "gogoproto/gogo.proto";
 import "google/protobuf/any.proto";
 import "cosmos_proto/cosmos.proto";
 
-option go_package = "github.com/cosmos/cosmos-sdk/x/staking/types";
+option go_package = "github.com/KiraCore/sekai/x/staking/types";
 
 message MsgClaimValidator {
   option (gogoproto.equal)            = true;
@@ -23,7 +23,8 @@ message MsgClaimValidator {
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.ValAddress",
     (gogoproto.moretags) = "yaml:\"val_key\""
   ];
-  string pub_key = 7;
+  google.protobuf.Any pub_key = 7
+  [(cosmos_proto.accepts_interface) = "cosmos.crypto.PubKey", (gogoproto.moretags) = "yaml:\"pub_key\""];
 }
 
 message Validator {
