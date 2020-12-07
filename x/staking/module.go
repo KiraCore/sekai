@@ -130,6 +130,7 @@ func (am AppModule) EndBlock(ctx sdk.Context, block abci.RequestEndBlock) []abci
 
 	for i, val := range valSet {
 		am.customStakingKeeper.AddValidator(ctx, val)
+
 		proto, err := encoding.PubKeyToProto(val.GetConsPubKey())
 		if err != nil {
 			panic("invalid key")

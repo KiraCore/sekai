@@ -55,5 +55,10 @@ func (v Validator) Validate() error {
 }
 
 func (v Validator) GetConsPubKey() crypto.PubKey {
-	return sdk.MustGetPubKeyFromBech32(sdk.Bech32PubKeyTypeConsPub, v.PubKey)
+	pk, ok := v.PubKey.GetCachedValue().(crypto.PubKey)
+	if !ok {
+		panic("invalid key")
+	}
+
+	return pk
 }
