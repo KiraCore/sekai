@@ -33,5 +33,5 @@ func TestQuerier_ValidatorByAddress(t *testing.T) {
 	qValidatorResp, err := querier.ValidatorByAddress(types.WrapSDKContext(ctx), &types2.ValidatorByAddressRequest{ValAddr: valAddr1})
 	require.NoError(t, err)
 
-	require.Equal(t, val, qValidatorResp.Validator)
+	require.True(t, val.Equal(qValidatorResp.Validator))
 }
