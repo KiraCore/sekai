@@ -28,6 +28,8 @@ message MsgClaimValidator {
 }
 
 message Validator {
+  option (gogoproto.equal)            = true;
+
   string moniker = 1;
   string website = 2;
   string social = 3;

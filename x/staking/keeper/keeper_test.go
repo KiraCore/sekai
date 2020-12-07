@@ -40,7 +40,7 @@ func TestKeeper_AddValidator(t *testing.T) {
 	// Get By Validator Address.
 	getValidator, err := app.CustomStakingKeeper.GetValidator(ctx, validator.ValKey)
 	require.NoError(t, err)
-	require.Equal(t, validator, getValidator)
+	require.True(t, validator.Equal(getValidator))
 
 	// Non existing validator Addr.
 	_, err = app.CustomStakingKeeper.GetValidator(ctx, types2.ValAddress("non existing"))
@@ -49,7 +49,7 @@ func TestKeeper_AddValidator(t *testing.T) {
 	// Get by AccAddress.
 	getValidator, err = app.CustomStakingKeeper.GetValidatorByAccAddress(ctx, addr1)
 	require.NoError(t, err)
-	require.Equal(t, validator, getValidator)
+	require.True(t, validator.Equal(getValidator))
 
 	// Non existing AccAddress.
 	_, err = app.CustomStakingKeeper.GetValidatorByAccAddress(ctx, types2.AccAddress("non existing"))
@@ -58,7 +58,7 @@ func TestKeeper_AddValidator(t *testing.T) {
 	// Get by Moniker.
 	getValidator, err = app.CustomStakingKeeper.GetValidatorByMoniker(ctx, validator.Moniker)
 	require.NoError(t, err)
-	require.Equal(t, validator, getValidator)
+	require.True(t, validator.Equal(getValidator))
 
 	// Non existing moniker
 	_, err = app.CustomStakingKeeper.GetValidatorByMoniker(ctx, "UnexistingMoniker")
