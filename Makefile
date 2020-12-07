@@ -30,5 +30,5 @@ lint:
 	@go mod verify
 
 proto-gen:
-	@./scripts/protocgen.sh
+	docker run --rm -v $(CURDIR):/workspace --workdir /workspace tendermintdev/sdk-proto-gen sh ./scripts/protocgen.sh
 
