@@ -16,7 +16,7 @@ import (
 	database "github.com/KiraCore/sekai/INTERX/database"
 	tasks "github.com/KiraCore/sekai/INTERX/tasks"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	tmjson "github.com/tendermint/tendermint/libs/json"
 	tmTypes "github.com/tendermint/tendermint/rpc/core/types"
 	tmJsonRPCTypes "github.com/tendermint/tendermint/rpc/jsonrpc/types"
@@ -205,9 +205,12 @@ func WrapResponse(w http.ResponseWriter, request InterxRequest, response common.
 
 // ServeGRPC is a function to server GRPC
 func ServeGRPC(r *http.Request, gwCosmosmux *runtime.ServeMux) (interface{}, interface{}, int) {
+	fmt.Println("serveGRPC", r)
 	recorder := httptest.NewRecorder()
 	gwCosmosmux.ServeHTTP(recorder, r)
 	resp := recorder.Result()
+
+	fmt.Println(resp)
 
 	result := new(interface{})
 	if json.NewDecoder(resp.Body).Decode(result) == nil {

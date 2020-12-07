@@ -1,0 +1,61 @@
+syntax="proto3";
+
+package kira.gov;
+
+import "google/api/annotations.proto";
+import "kira/gov/data_registry.proto";
+import "kira/gov/pagination.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+// Defines the import path that should be used to import the generated package,
+// and the package name.
+option go_package = "github.com/KiraCore/sekai/INTERX/proto";
+
+// These annotations are used when generating the OpenAPI file.
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    version: "1.0";
+  };
+  external_docs: {
+    url: "https://github.com/KiraCore/sekai/INTERX";
+    description: "gRPC-gateway";
+  }
+  schemes: HTTP;
+};
+
+service Query {
+  // Query all data reference keys with pagination.
+  rpc GetAllDataReferenceKeys(kira.gov.PageRequest) returns (QueryDataReferenceKeysResponse) {
+    option (google.api.http).get = "/api/kira/gov/data_keys";
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Query All Data Reference Keys"
+      description: "Query Data Reference Keys."
+      tags: "query"
+    };
+  }
+  // Query data reference by key.
+  rpc GetDataReferenceByKey(QueryDataReferenceRequest) returns (QueryDataReferenceResponse) {
+    option (google.api.http).get = "/api/kira/gov/data/{key}";
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Query Data Refernce"
+      description: "Query Data Reference."
+      tags: "query"
+    };
+  }
+}
+
+// QueryDataReferenceKeysResponse is the response type for data reference keys query.
+message QueryDataReferenceKeysResponse {
+  repeated string keys = 1;
+  kira.gov.PageResponse pagination = 2;
+}
+
+// QueryDataReferenceRequest is the response type for data reference query.
+message QueryDataReferenceRequest {
+  string key = 1;
+}
+
+// QueryDataReferenceResponse is the response type for data referencequery.
+message QueryDataReferenceResponse {
+  kira.gov.DataRegistryEntry data = 1;
+}
