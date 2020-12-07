@@ -1,6 +1,7 @@
 package types
 
 import (
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/tendermint/tendermint/crypto"
 )
@@ -8,9 +9,10 @@ import (
 // NewValidator generates new Validator.
 func NewValidator(moniker string, website string, social string,
 	identity string, comission sdk.Dec, valKey sdk.ValAddress, pubKey crypto.PubKey) (Validator, error) {
-	var pkStr string
-	if pubKey != nil {
-		pkStr = sdk.MustBech32ifyPubKey(sdk.Bech32PubKeyTypeConsPub, pubKey)
+
+	pkAny, err := codectypes.PackAny(pubKey)
+	if err != nil {
+		return Validator{}, err
 	}
 
 	v := Validator{
@@ -20,10 +22,10 @@ func NewValidator(moniker string, website string, social string,
 		Identity:   identity,
 		Commission: comission,
 		ValKey:     valKey,
-		PubKey:     pkStr,
+		PubKey:     pkAny,
 	}
 
-	err := v.Validate()
+	err = v.Validate()
 	if err != nil {
 		return v, err
 	}

@@ -3,6 +3,8 @@ package types
 import (
 	"fmt"
 
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+
 	"github.com/KiraCore/sekai/types"
 	"github.com/tendermint/tendermint/crypto"
 
@@ -28,7 +30,10 @@ func NewMsgClaimValidator(
 		return nil, fmt.Errorf("public key not set")
 	}
 
-	pkStr := sdk.MustBech32ifyPubKey(sdk.Bech32PubKeyTypeConsPub, pubKey)
+	pkAny, err := codectypes.PackAny(pubKey)
+	if err != nil {
+		return nil, err
+	}
 
 	return &MsgClaimValidator{
 		Moniker:    moniker,
@@ -37,7 +42,7 @@ func NewMsgClaimValidator(
 		Identity:   identity,
 		Commission: comission,
 		ValKey:     valKey,
-		PubKey:     pkStr,
+		PubKey:     pkAny,
 	}, nil
 }
 
@@ -52,10 +57,6 @@ func (m *MsgClaimValidator) Type() string {
 func (m *MsgClaimValidator) ValidateBasic() error {
 	if m.ValKey.Empty() {
 		return fmt.Errorf("validator not set")
-	}
-
-	if m.PubKey == "" {
-		return fmt.Errorf("public key not set")
 	}
 
 	return nil
