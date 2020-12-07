@@ -4,6 +4,7 @@ import (
 	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/tendermint/tendermint/crypto"
 
 	govkeeper "github.com/KiraCore/sekai/x/gov/keeper"
 	customkeeper "github.com/KiraCore/sekai/x/staking/keeper"
@@ -29,12 +30,12 @@ func handleMsgClaimValidator(ctx sdk.Context, k customkeeper.Keeper, gk govkeepe
 		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermClaimValidator")
 	}
 
-	valPubKey, err := sdk.GetPubKeyFromBech32(sdk.Bech32PubKeyTypeConsPub, msg.PubKey)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to get consensus node public key")
+	pk, ok := msg.PubKey.GetCachedValue().(crypto.PubKey)
+	if !ok {
+		return nil, errors.Wrap(errors.ErrInvalidPubKey, "Invalid pub key")
 	}
 
-	validator, err := types.NewValidator(msg.Moniker, msg.Website, msg.Social, msg.Identity, msg.Commission, msg.ValKey, valPubKey)
+	validator, err := types.NewValidator(msg.Moniker, msg.Website, msg.Social, msg.Identity, msg.Commission, msg.ValKey, pk)
 	if err != nil {
 		return nil, err
 	}

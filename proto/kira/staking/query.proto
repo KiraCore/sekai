@@ -16,6 +16,10 @@ service Query {
 }
 
 message ValidatorByAddressRequest {
+  bytes val_addr = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.ValAddress",
+    (gogoproto.moretags) = "yaml:\"val_addr\""
+  ];
 }
 
 message ValidatorByMonikerRequest {
