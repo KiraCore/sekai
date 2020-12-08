@@ -29,7 +29,6 @@ var (
 type AppModuleBasic struct{}
 
 func (b AppModuleBasic) RegisterGRPCGatewayRoutes(context client.Context, serveMux *runtime.ServeMux) {
-	panic("implement me")
 }
 
 func (b AppModuleBasic) Name() string {
