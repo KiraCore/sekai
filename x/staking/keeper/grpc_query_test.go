@@ -1,11 +1,11 @@
-package staking_test
+package keeper_test
 
 import (
 	"testing"
 
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/KiraCore/sekai/x/staking"
+	stakingkeeper "github.com/KiraCore/sekai/x/staking/keeper"
 
 	types2 "github.com/KiraCore/sekai/x/staking/types"
 
@@ -28,7 +28,7 @@ func TestQuerier_ValidatorByAddress(t *testing.T) {
 
 	app.CustomStakingKeeper.AddValidator(ctx, val)
 
-	querier := staking.NewQuerier(app.CustomStakingKeeper)
+	querier := stakingkeeper.NewQuerier(app.CustomStakingKeeper)
 
 	qValidatorResp, err := querier.ValidatorByAddress(types.WrapSDKContext(ctx), &types2.ValidatorByAddressRequest{ValAddr: valAddr1})
 	require.NoError(t, err)

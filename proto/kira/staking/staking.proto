@@ -7,6 +7,12 @@ import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/staking/types";
 
+// Msg defines the staking Msg service.
+service Msg {
+  // ClaimValidator defines a method for claiming a new validator.
+  rpc ClaimValidator(MsgClaimValidator) returns (MsgClaimValidatorResponse);
+}
+
 message MsgClaimValidator {
   option (gogoproto.equal)            = true;
 
@@ -26,6 +32,9 @@ message MsgClaimValidator {
   google.protobuf.Any pub_key = 7
   [(cosmos_proto.accepts_interface) = "cosmos.crypto.PubKey", (gogoproto.moretags) = "yaml:\"pub_key\""];
 }
+
+// MsgClaimValidatorResponse defines the Msg/ClaimValidator response type.
+message MsgClaimValidatorResponse {}
 
 message Validator {
   option (gogoproto.equal)            = true;

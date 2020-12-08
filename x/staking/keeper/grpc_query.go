@@ -1,4 +1,4 @@
-package staking
+package keeper
 
 import (
 	"context"
@@ -7,17 +7,18 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/KiraCore/sekai/x/staking/keeper"
 	"github.com/KiraCore/sekai/x/staking/types"
 )
 
 type Querier struct {
-	keeper keeper.Keeper
+	keeper Keeper
 }
 
-func NewQuerier(keeper keeper.Keeper) types.QueryServer {
+func NewQuerier(keeper Keeper) types.QueryServer {
 	return &Querier{keeper: keeper}
 }
+
+var _ types.QueryServer = Querier{}
 
 func (q Querier) ValidatorByAddress(ctx context.Context, request *types.ValidatorByAddressRequest) (*types.ValidatorResponse, error) {
 	c := sdk.UnwrapSDKContext(ctx)

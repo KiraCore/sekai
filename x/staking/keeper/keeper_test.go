@@ -1,9 +1,8 @@
 package keeper_test
 
 import (
+	"os"
 	"testing"
-
-	app2 "github.com/KiraCore/sekai/app"
 
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
@@ -11,10 +10,15 @@ import (
 	"github.com/KiraCore/sekai/x/staking/types"
 	types2 "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
+	app2 "github.com/KiraCore/sekai/app"
 )
 
-func TestKeeper_AddValidator(t *testing.T) {
+func TestMain(m *testing.M) {
 	app2.SetConfig()
+	os.Exit(m.Run())
+}
+
+func TestKeeper_AddValidator(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
