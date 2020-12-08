@@ -96,10 +96,17 @@ func (am AppModule) InitGenesis(
 
 	for i, val := range genesisState.Validators {
 		am.customStakingKeeper.AddValidator(ctx, val)
-		pk, err := encoding.PubKeyToProto(val.GetConsPubKey())
+
+		consPk, err := val.TmConsPubKey()
 		if err != nil {
-			panic("invalid key")
+			panic(err)
 		}
+
+		pk, err := encoding.PubKeyToProto(consPk)
+		if err != nil {
+			panic(err)
+		}
+
 		valUpdate[i] = abci.ValidatorUpdate{
 			Power:  1,
 			PubKey: pk,
