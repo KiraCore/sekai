@@ -1,8 +1,6 @@
 package gov
 
 import (
-	"time"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -11,418 +9,71 @@ import (
 )
 
 func NewHandler(ck keeper.Keeper) sdk.Handler {
+	msgServer := keeper.NewMsgServerImpl(ck)
+
 	return func(ctx sdk.Context, msg sdk.Msg) (*sdk.Result, error) {
 		ctx = ctx.WithEventManager(sdk.NewEventManager())
 
 		switch msg := msg.(type) {
 		case *customgovtypes.MsgSetNetworkProperties:
-			return handleSetNetworkProperties(ctx, ck, msg)
+			res, err := msgServer.SetNetworkProperties(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
 		case *customgovtypes.MsgSetExecutionFee:
-			return handleSetExecutionFee(ctx, ck, msg)
+			res, err := msgServer.SetExecutionFee(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
 
 		// Permission Related
 		case *customgovtypes.MsgWhitelistPermissions:
-			return handleWhitelistPermissions(ctx, ck, msg)
+			res, err := msgServer.WhitelistPermissions(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
 		case *customgovtypes.MsgBlacklistPermissions:
-			return handleBlacklistPermissions(ctx, ck, msg)
+			res, err := msgServer.BlacklistPermissions(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
 
 		// Councilor Related
 		case *customgovtypes.MsgClaimCouncilor:
-			return handleClaimCouncilor(ctx, ck, msg)
+			res, err := msgServer.ClaimCouncilor(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
 
 		// Role Related
 		case *customgovtypes.MsgWhitelistRolePermission:
-			return handleWhitelistRolePermission(ctx, ck, msg)
+			res, err := msgServer.WhitelistRolePermission(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
 		case *customgovtypes.MsgBlacklistRolePermission:
-			return handleBlacklistRolePermission(ctx, ck, msg)
+			res, err := msgServer.BlacklistRolePermission(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
 		case *customgovtypes.MsgRemoveWhitelistRolePermission:
-			return handleRemoveWhitelistRolePermission(ctx, ck, msg)
+			res, err := msgServer.RemoveWhitelistRolePermission(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
 		case *customgovtypes.MsgRemoveBlacklistRolePermission:
-			return handleRemoveBlacklistRolePermission(ctx, ck, msg)
+			res, err := msgServer.RemoveBlacklistRolePermission(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
 		case *customgovtypes.MsgCreateRole:
-			return handleCreateRole(ctx, ck, msg)
+			res, err := msgServer.CreateRole(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
 		case *customgovtypes.MsgAssignRole:
-			return handleAssignRole(ctx, ck, msg)
+			res, err := msgServer.AssignRole(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
 		case *customgovtypes.MsgRemoveRole:
-			return handleMsgRemoveRole(ctx, ck, msg)
+			res, err := msgServer.RemoveRole(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
 
 		// Proposal related
 		case *customgovtypes.MsgProposalAssignPermission:
-			return handleMsgProposalAssignPermission(ctx, ck, msg)
+			res, err := msgServer.ProposalAssignPermission(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
 		case *customgovtypes.MsgProposalSetNetworkProperty:
-			return handleMsgProposalSetNetworkProperty(ctx, ck, msg)
+			res, err := msgServer.ProposalSetNetworkProperty(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
 		case *customgovtypes.MsgProposalUpsertDataRegistry:
-			return handleMsgProposalUpsertDataRegistry(ctx, ck, msg)
+			res, err := msgServer.ProposalUpsertDataRegistry(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
 		case *customgovtypes.MsgVoteProposal:
-			return handleMsgVoteProposal(ctx, ck, msg)
+			res, err := msgServer.VoteProposal(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
 
 		default:
 			return nil, errors.Wrapf(errors.ErrUnknownRequest, "unrecognized %s message type: %T", customgovtypes.ModuleName, msg)
 		}
 	}
-}
-
-func handleMsgVoteProposal(
-	ctx sdk.Context,
-	ck keeper.Keeper,
-	msg *customgovtypes.MsgVoteProposal,
-) (*sdk.Result, error) {
-	actor, found := ck.GetNetworkActorByAddress(ctx, msg.Voter)
-	if !found || !actor.IsActive() {
-		return nil, customgovtypes.ErrActorIsNotActive
-	}
-
-	proposal, found := ck.GetProposal(ctx, msg.ProposalId)
-	if !found {
-		return nil, customgovtypes.ErrProposalDoesNotExist
-	}
-
-	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Voter, proposal.GetContent().VotePermission())
-	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, proposal.GetContent().VotePermission().String())
-	}
-
-	vote := customgovtypes.NewVote(msg.ProposalId, msg.Voter, msg.Option)
-	ck.SaveVote(ctx, vote)
-
-	return &sdk.Result{}, nil
-}
-
-func handleMsgProposalUpsertDataRegistry(
-	ctx sdk.Context,
-	ck keeper.Keeper,
-	msg *customgovtypes.MsgProposalUpsertDataRegistry,
-) (*sdk.Result, error) {
-	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Proposer, customgovtypes.PermUpsertDataRegistryProposal)
-	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermUpsertDataRegistryProposal.String())
-	}
-
-	return CreateAndSaveProposalWithContent(ctx, ck,
-		customgovtypes.NewUpsertDataRegistryProposal(
-			msg.Key,
-			msg.Hash,
-			msg.Reference,
-			msg.Encoding,
-			msg.Size_,
-		),
-	)
-}
-
-func handleMsgProposalAssignPermission(
-	ctx sdk.Context,
-	ck keeper.Keeper,
-	msg *customgovtypes.MsgProposalAssignPermission,
-) (*sdk.Result, error) {
-	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Proposer, customgovtypes.PermCreateSetPermissionsProposal)
-	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermCreateSetPermissionsProposal")
-	}
-
-	actor, found := ck.GetNetworkActorByAddress(ctx, msg.Address)
-	if found { // Actor exists
-		if actor.Permissions.IsWhitelisted(customgovtypes.PermValue(msg.Permission)) {
-			return nil, errors.Wrap(customgovtypes.ErrWhitelisting, "permission already whitelisted")
-		}
-	}
-
-	return CreateAndSaveProposalWithContent(ctx, ck, customgovtypes.NewAssignPermissionProposal(
-		msg.Address,
-		customgovtypes.PermValue(msg.Permission),
-	))
-}
-
-func CreateAndSaveProposalWithContent(ctx sdk.Context, ck keeper.Keeper, content customgovtypes.Content) (*sdk.Result, error) {
-	blockTime := ctx.BlockTime()
-	proposalID, err := ck.GetNextProposalID(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	properties := ck.GetNetworkProperties(ctx)
-
-	proposal, err := customgovtypes.NewProposal(
-		proposalID,
-		content,
-		blockTime,
-		blockTime.Add(time.Minute*time.Duration(properties.ProposalEndTime)),
-		blockTime.Add(time.Minute*time.Duration(properties.ProposalEnactmentTime)),
-	)
-
-	ck.SaveProposal(ctx, proposal)
-	ck.AddToActiveProposals(ctx, proposal)
-
-	return &sdk.Result{
-		Data: keeper.ProposalIDToBytes(proposalID),
-	}, nil
-}
-
-func handleMsgProposalSetNetworkProperty(
-	ctx sdk.Context,
-	ck keeper.Keeper,
-	msg *customgovtypes.MsgProposalSetNetworkProperty,
-) (*sdk.Result, error) {
-	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Proposer, customgovtypes.PermCreateSetNetworkPropertyProposal)
-	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermCreateSetNetworkPropertyProposal.String())
-	}
-
-	property, err := ck.GetNetworkProperty(ctx, msg.NetworkProperty)
-	if err != nil {
-		return nil, errors.Wrap(errors.ErrInvalidRequest, err.Error())
-	}
-	if property == msg.Value {
-		return nil, errors.Wrap(errors.ErrInvalidRequest, "network property already set as proposed value")
-	}
-
-	blockTime := ctx.BlockTime()
-	proposalID, err := ck.GetNextProposalID(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	properties := ck.GetNetworkProperties(ctx)
-
-	proposal, err := customgovtypes.NewProposal(
-		proposalID,
-		customgovtypes.NewSetNetworkPropertyProposal(
-			msg.NetworkProperty,
-			msg.Value,
-		),
-		blockTime,
-		blockTime.Add(time.Minute*time.Duration(properties.ProposalEndTime)),
-		blockTime.Add(time.Minute*time.Duration(properties.ProposalEnactmentTime)),
-	)
-
-	ck.SaveProposal(ctx, proposal)
-
-	ck.AddToActiveProposals(ctx, proposal)
-
-	return &sdk.Result{
-		Data: keeper.ProposalIDToBytes(proposalID),
-	}, nil
-}
-
-func handleMsgRemoveRole(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgRemoveRole) (*sdk.Result, error) {
-	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Proposer, customgovtypes.PermUpsertRole)
-	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermUpsertRole.String())
-	}
-
-	_, found := ck.GetPermissionsForRole(ctx, customgovtypes.Role(msg.Role))
-	if !found {
-		return nil, customgovtypes.ErrRoleDoesNotExist
-	}
-
-	actor, found := ck.GetNetworkActorByAddress(ctx, msg.Address)
-	if !found {
-		actor = customgovtypes.NewDefaultActor(msg.Address)
-	}
-
-	if !actor.HasRole(customgovtypes.Role(msg.Role)) {
-		return nil, customgovtypes.ErrRoleNotAssigned
-	}
-
-	ck.RemoveRoleFromActor(ctx, actor, customgovtypes.Role(msg.Role))
-
-	return &sdk.Result{}, nil
-}
-
-func handleAssignRole(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgAssignRole) (*sdk.Result, error) {
-	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Proposer, customgovtypes.PermUpsertRole)
-	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermUpsertRole.String())
-	}
-
-	_, found := ck.GetPermissionsForRole(ctx, customgovtypes.Role(msg.Role))
-	if !found {
-		return nil, customgovtypes.ErrRoleDoesNotExist
-	}
-
-	actor, found := ck.GetNetworkActorByAddress(ctx, msg.Address)
-	if !found {
-		actor = customgovtypes.NewDefaultActor(msg.Address)
-	}
-
-	if actor.HasRole(customgovtypes.Role(msg.Role)) {
-		return nil, customgovtypes.ErrRoleAlreadyAssigned
-	}
-
-	ck.AssignRoleToActor(ctx, actor, customgovtypes.Role(msg.Role))
-
-	return &sdk.Result{}, nil
-}
-
-func handleCreateRole(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgCreateRole) (*sdk.Result, error) {
-	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Proposer, customgovtypes.PermUpsertRole)
-	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermUpsertRole")
-	}
-
-	_, found := ck.GetPermissionsForRole(ctx, customgovtypes.Role(msg.Role))
-	if found {
-		return nil, customgovtypes.ErrRoleExist
-	}
-
-	ck.CreateRole(ctx, customgovtypes.Role(msg.Role))
-
-	return &sdk.Result{}, nil
-}
-
-func handleRemoveBlacklistRolePermission(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgRemoveBlacklistRolePermission) (*sdk.Result, error) {
-	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Proposer, customgovtypes.PermUpsertRole)
-	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermUpsertRole.String())
-	}
-
-	err := ck.RemoveBlacklistRolePermission(ctx, customgovtypes.Role(msg.Role), customgovtypes.PermValue(msg.Permission))
-	if err != nil {
-		return nil, err
-	}
-
-	return &sdk.Result{}, nil
-}
-
-func handleRemoveWhitelistRolePermission(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgRemoveWhitelistRolePermission) (*sdk.Result, error) {
-	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Proposer, customgovtypes.PermUpsertRole)
-	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermUpsertRole.String())
-	}
-
-	err := ck.RemoveWhitelistRolePermission(ctx, customgovtypes.Role(msg.Role), customgovtypes.PermValue(msg.Permission))
-	if err != nil {
-		return nil, err
-	}
-
-	return &sdk.Result{}, nil
-}
-
-func handleBlacklistRolePermission(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgBlacklistRolePermission) (*sdk.Result, error) {
-	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Proposer, customgovtypes.PermUpsertRole)
-	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermUpsertRole.String())
-	}
-
-	err := ck.BlacklistRolePermission(ctx, customgovtypes.Role(msg.Role), customgovtypes.PermValue(msg.Permission))
-	if err != nil {
-		return nil, err
-	}
-
-	return &sdk.Result{}, nil
-}
-
-func handleWhitelistRolePermission(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgWhitelistRolePermission) (*sdk.Result, error) {
-	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Proposer, customgovtypes.PermUpsertRole)
-	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermUpsertRole.String())
-	}
-
-	err := ck.WhitelistRolePermission(ctx, customgovtypes.Role(msg.Role), customgovtypes.PermValue(msg.Permission))
-	if err != nil {
-		return nil, err
-	}
-
-	return &sdk.Result{}, nil
-}
-
-func handleWhitelistPermissions(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgWhitelistPermissions) (*sdk.Result, error) {
-	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Proposer, customgovtypes.PermSetPermissions)
-	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermSetPermissions")
-	}
-
-	actor, found := ck.GetNetworkActorByAddress(ctx, msg.Address)
-	if !found {
-		actor = customgovtypes.NewDefaultActor(msg.Address)
-	}
-
-	err := ck.AddWhitelistPermission(ctx, actor, customgovtypes.PermValue(msg.Permission))
-	if err != nil {
-		return nil, errors.Wrapf(customgovtypes.ErrSetPermissions, "error setting %d to whitelist: %s", msg.Permission, err)
-	}
-
-	return &sdk.Result{}, nil
-}
-
-func handleBlacklistPermissions(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgBlacklistPermissions) (*sdk.Result, error) {
-	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Proposer, customgovtypes.PermSetPermissions)
-	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermSetPermissions")
-	}
-
-	actor, found := ck.GetNetworkActorByAddress(ctx, msg.Address)
-	if !found {
-		actor = customgovtypes.NewDefaultActor(msg.Address)
-	}
-
-	err := actor.Permissions.AddToBlacklist(customgovtypes.PermValue(msg.Permission))
-	if err != nil {
-		return nil, errors.Wrapf(customgovtypes.ErrSetPermissions, "error setting %d to whitelist", msg.Permission)
-	}
-
-	ck.SaveNetworkActor(ctx, actor)
-
-	return &sdk.Result{}, nil
-}
-
-func handleSetNetworkProperties(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgSetNetworkProperties) (*sdk.Result, error) {
-	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Proposer, customgovtypes.PermChangeTxFee)
-	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermChangeTxFee")
-	}
-	ck.SetNetworkProperties(ctx, msg.NetworkProperties)
-	return &sdk.Result{}, nil
-}
-
-func handleSetExecutionFee(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgSetExecutionFee) (*sdk.Result, error) {
-	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Proposer, customgovtypes.PermChangeTxFee)
-	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermChangeTxFee")
-	}
-
-	ck.SetExecutionFee(ctx, &customgovtypes.ExecutionFee{
-		Name:              msg.Name,
-		TransactionType:   msg.TransactionType,
-		ExecutionFee:      msg.ExecutionFee,
-		FailureFee:        msg.FailureFee,
-		Timeout:           msg.Timeout,
-		DefaultParameters: msg.DefaultParameters,
-	})
-	return &sdk.Result{}, nil
-}
-
-func handleClaimCouncilor(ctx sdk.Context, ck keeper.Keeper, msg *customgovtypes.MsgClaimCouncilor) (*sdk.Result, error) {
-	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, msg.Address, customgovtypes.PermClaimCouncilor)
-	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermClaimCouncilor")
-	}
-
-	councilor := customgovtypes.NewCouncilor(msg.Moniker, msg.Website, msg.Social, msg.Identity, msg.Address)
-
-	ck.SaveCouncilor(ctx, councilor)
-
-	return &sdk.Result{}, nil
-}
-
-// validateAndGetPermissionsForRole checks if:
-// - Proposer has permissions to SetPermissions.
-// - Role exists.
-// And returns the permissions.
-func validateAndGetPermissionsForRole(
-	ctx sdk.Context,
-	ck keeper.Keeper,
-	proposer sdk.AccAddress,
-	role customgovtypes.Role,
-) (*customgovtypes.Permissions, error) {
-	isAllowed := keeper.CheckIfAllowedPermission(ctx, ck, proposer, customgovtypes.PermSetPermissions)
-	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermSetPermissions")
-	}
-
-	perms, found := ck.GetPermissionsForRole(ctx, role)
-	if !found {
-		return nil, customgovtypes.ErrRoleDoesNotExist
-	}
-
-	return &perms, nil
 }

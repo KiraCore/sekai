@@ -15,7 +15,6 @@ import (
 	types2 "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/gogo/protobuf/grpc"
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 	abci "github.com/tendermint/tendermint/abci/types"
@@ -28,7 +27,8 @@ var (
 
 type AppModuleBasic struct{}
 
-func (b AppModuleBasic) RegisterGRPCGatewayRoutes(context client.Context, serveMux *runtime.ServeMux) {
+// RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the staking module.
+func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {
 }
 
 func (b AppModuleBasic) Name() string {
@@ -88,7 +88,12 @@ type AppModule struct {
 	proposalRouter  ProposalRouter
 }
 
-func (am AppModule) RegisterServices(configurator module.Configurator) {}
+// RegisterServices registers a GRPC query service to respond to the
+// module-specific GRPC queries.
+func (am AppModule) RegisterServices(cfg module.Configurator) {
+	customgovtypes.RegisterMsgServer(cfg.MsgServer(), keeper2.NewMsgServerImpl(am.customGovKeeper))
+	customgovtypes.RegisterQueryServer(cfg.QueryServer(), keeper2.NewQuerier(am.customGovKeeper))
+}
 
 func (am AppModule) RegisterInterfaces(registry types2.InterfaceRegistry) {
 	customgovtypes.RegisterInterfaces(registry)
@@ -153,9 +158,12 @@ func (am AppModule) ExportGenesis(context sdk.Context, marshaler codec.JSONMarsh
 
 func (am AppModule) RegisterInvariants(registry sdk.InvariantRegistry) {}
 
-func (am AppModule) QuerierRoute() string { return "" }
+func (am AppModule) QuerierRoute() string {
+	return customgovtypes.QuerierRoute
+}
 
-func (am AppModule) LegacyQuerierHandler(marshaler *codec.LegacyAmino) sdk.Querier {
+// LegacyQuerierHandler returns the staking module sdk.Querier.
+func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {
 	return nil
 }
 
@@ -174,13 +182,6 @@ func (am AppModule) Name() string {
 // Route returns the message routing key for the staking module.
 func (am AppModule) Route() sdk.Route {
 	return middleware.NewRoute(customgovtypes.ModuleName, NewHandler(am.customGovKeeper))
-}
-
-// RegisterQueryService registers a GRPC query service to respond to the
-// module-specific GRPC queries.
-func (am AppModule) RegisterQueryService(server grpc.Server) {
-	querier := NewQuerier(am.customGovKeeper)
-	customgovtypes.RegisterQueryServer(server, querier)
 }
 
 // NewAppModule returns a new Custom Staking module.

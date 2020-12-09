@@ -1,11 +1,11 @@
-package gov_test
+package keeper_test
 
 import (
 	"testing"
 
 	types2 "github.com/KiraCore/sekai/x/staking/types"
 
-	"github.com/KiraCore/sekai/x/gov"
+	customgovkeeper "github.com/KiraCore/sekai/x/gov/keeper"
 
 	"github.com/stretchr/testify/require"
 
@@ -42,7 +42,7 @@ func TestQuerier_PermissionsByAddress(t *testing.T) {
 
 	app.CustomGovKeeper.SaveNetworkActor(ctx, networkActor)
 
-	querier := gov.NewQuerier(app.CustomGovKeeper)
+	querier := customgovkeeper.NewQuerier(app.CustomGovKeeper)
 
 	resp, err := querier.PermissionsByAddress(sdk.WrapSDKContext(ctx), &types.PermissionsByAddressRequest{ValAddr: addr1})
 	require.NoError(t, err)
@@ -80,7 +80,7 @@ func TestQuerier_RolesByAddress(t *testing.T) {
 
 	app.CustomGovKeeper.SaveNetworkActor(ctx, networkActor)
 
-	querier := gov.NewQuerier(app.CustomGovKeeper)
+	querier := customgovkeeper.NewQuerier(app.CustomGovKeeper)
 
 	resp, err := querier.RolesByAddress(sdk.WrapSDKContext(ctx), &types.RolesByAddressRequest{ValAddr: addr1})
 	require.NoError(t, err)
@@ -113,7 +113,7 @@ func TestQuerier_CouncilorByAddress(t *testing.T) {
 
 	app.CustomGovKeeper.SaveCouncilor(ctx, councilor)
 
-	querier := gov.NewQuerier(app.CustomGovKeeper)
+	querier := customgovkeeper.NewQuerier(app.CustomGovKeeper)
 
 	resp, err := querier.CouncilorByAddress(
 		sdk.WrapSDKContext(ctx),

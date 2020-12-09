@@ -1,4 +1,4 @@
-package gov
+package keeper
 
 import (
 	"context"
@@ -6,18 +6,17 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/KiraCore/sekai/x/gov/keeper"
 	"github.com/KiraCore/sekai/x/gov/types"
 	cumstomtypes "github.com/KiraCore/sekai/x/staking/types"
 )
 
 // Querier describes grpc querier
 type Querier struct {
-	keeper keeper.Keeper
+	keeper Keeper
 }
 
 // NewQuerier returns Querier instance
-func NewQuerier(keeper keeper.Keeper) types.QueryServer {
+func NewQuerier(keeper Keeper) types.QueryServer {
 	return &Querier{keeper: keeper}
 }
 

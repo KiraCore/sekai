@@ -1,9 +1,13 @@
 package types
 
-const ModuleName = "customgov"
-
-// RouterKey to be used for routing msgs
-const RouterKey = ModuleName
+// constants
+const (
+	ModuleName = "customgov"
+	// RouterKey to be used for routing msgs
+	RouterKey = ModuleName
+	// QuerierRoute is the querier route for the staking module
+	QuerierRoute = ModuleName
+)
 
 // constants
 var (
