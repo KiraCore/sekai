@@ -7,10 +7,10 @@ import (
 	"time"
 
 	types3 "github.com/KiraCore/sekai/x/tokens/types"
+	"github.com/gogo/protobuf/proto"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
-	types2 "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
@@ -1199,7 +1199,9 @@ func TestHandler_ProposalAssignPermission(t *testing.T) {
 		types.NewMsgProposalAssignPermission(proposerAddr, addr, types.PermValue(1)),
 	)
 	require.NoError(t, err)
-	require.Equal(t, types2.GetProposalIDBytes(1), res.Data)
+
+	expData, _ := proto.Marshal(&types.MsgProposalAssignPermissionResponse{ProposalID: 1})
+	require.Equal(t, expData, res.Data)
 
 	savedProposal, found := app.CustomGovKeeper.GetProposal(ctx, 1)
 	require.True(t, found)
@@ -1302,7 +1304,9 @@ func TestHandler_ProposalUpsertDataRegistry(t *testing.T) {
 		),
 	)
 	require.NoError(t, err)
-	require.Equal(t, types2.GetProposalIDBytes(1), res.Data)
+
+	expData, _ := proto.Marshal(&types.MsgProposalUpsertDataRegistryResponse{ProposalID: 1})
+	require.Equal(t, expData, res.Data)
 
 	savedProposal, found := app.CustomGovKeeper.GetProposal(ctx, 1)
 	require.True(t, found)
@@ -1648,7 +1652,9 @@ func TestHandler_ProposalSetNetworkProperty(t *testing.T) {
 		),
 	)
 	require.NoError(t, err)
-	require.Equal(t, types2.GetProposalIDBytes(1), res.Data)
+
+	expData, _ := proto.Marshal(&types.MsgProposalSetNetworkPropertyResponse{ProposalID: 1})
+	require.Equal(t, expData, res.Data)
 
 	savedProposal, found := app.CustomGovKeeper.GetProposal(ctx, 1)
 	require.True(t, found)
