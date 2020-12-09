@@ -19,12 +19,7 @@ import (
 
 // Proposal flags
 const (
-	FlagRole         = "role"
-	FlagTitle        = "title"
-	FlagDescription  = "description"
-	FlagProposalType = "type"
 	flagVoter        = "voter"
-	FlagProposal     = "proposal"
 )
 
 // GetCmdQueryPermissions the query delegation command.

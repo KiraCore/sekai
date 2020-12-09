@@ -81,8 +81,7 @@ type AppModule struct {
 // module-specific GRPC queries.
 func (am AppModule) RegisterServices(cfg module.Configurator) {
 	cumstomtypes.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.customStakingKeeper, am.customGovKeeper))
-	querier := keeper.NewQuerier(am.customStakingKeeper)
-	cumstomtypes.RegisterQueryServer(cfg.QueryServer(), querier)
+	cumstomtypes.RegisterQueryServer(cfg.QueryServer(), keeper.NewQuerier(am.customStakingKeeper))
 }
 
 func (am AppModule) RegisterInterfaces(registry types2.InterfaceRegistry) {
@@ -146,13 +145,19 @@ func (am AppModule) EndBlock(ctx sdk.Context, block abci.RequestEndBlock) []abci
 	for i, val := range valSet {
 		am.customStakingKeeper.AddValidator(ctx, val)
 
-		proto, err := encoding.PubKeyToProto(val.GetConsPubKey())
+		consPk, err := val.TmConsPubKey()
 		if err != nil {
-			panic("invalid key")
+			panic(err)
 		}
+
+		pk, err := encoding.PubKeyToProto(consPk)
+		if err != nil {
+			panic(err)
+		}
+
 		valUpdate[i] = abci.ValidatorUpdate{
 			Power:  1,
-			PubKey: proto,
+			PubKey: pk,
 		}
 	}
 
