@@ -87,6 +87,7 @@ func (s *IntegrationTestSuite) TestUpsertTokenAliasAndQuery() {
 			fmt.Sprintf("--%s=%s", cli.FlagIcon, "myiconurl"),
 			fmt.Sprintf("--%s=%d", cli.FlagDecimals, 6),
 			fmt.Sprintf("--%s=%s", cli.FlagDenoms, "finney"),
+			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		},
 	)
 
@@ -99,10 +100,10 @@ func (s *IntegrationTestSuite) TestUpsertTokenAliasAndQuery() {
 	_, err = s.network.WaitForHeight(height + 2)
 	s.Require().NoError(err)
 
+	out.Reset()
+
 	query := cli.GetCmdQueryTokenAlias()
 	query.SetArgs([]string{"ETH"})
-
-	out.Reset()
 
 	clientCtx = clientCtx.WithOutputFormat("json")
 	err = query.ExecuteContext(ctx)
