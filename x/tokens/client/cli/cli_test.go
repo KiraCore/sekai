@@ -47,7 +47,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	cfg.AppConstructor = func(val network.Validator) servertypes.Application {
 		return app.NewInitApp(
 			val.Ctx.Logger, dbm.NewMemDB(), nil, true, make(map[int64]bool), val.Ctx.Config.RootDir, 0,
-			app.MakeEncodingConfig(),
+			simapp.MakeEncodingConfig(),
 			simapp.EmptyAppOptions{},
 			baseapp.SetPruning(types.NewPruningOptionsFromString(val.AppConfig.Pruning)),
 			baseapp.SetMinGasPrices(val.AppConfig.MinGasPrices),
@@ -67,12 +67,14 @@ func (s *IntegrationTestSuite) TearDownSuite() {
 }
 
 func (s *IntegrationTestSuite) TestUpsertTokenAliasAndQuery() {
-	s.T().SkipNow()
+	// s.T().SkipNow()
 	val := s.network.Validators[0]
+
+	s.WhitelistPermissions(val.Address, customgovtypes.PermUpsertTokenAlias)
 
 	cmd := cli.GetTxUpsertTokenAliasCmd()
 	_, out := testutil.ApplyMockIO(cmd)
-	clientCtx := val.ClientCtx.WithOutput(out)
+	clientCtx := val.ClientCtx.WithOutput(out).WithOutputFormat("json")
 
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, client.ClientContextKey, &clientCtx)

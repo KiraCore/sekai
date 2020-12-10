@@ -117,7 +117,7 @@ func GetTxUpsertTokenAliasCmd() *cobra.Command {
 	return cmd
 }
 
-// GetTxUpsertTokenAliasCmd implement cli command for MsgUpsertTokenAlias
+// GetTxProposalUpsertTokenAliasCmd implement cli command for MsgUpsertTokenAlias
 func GetTxProposalUpsertTokenAliasCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "proposal-upsert-alias",
@@ -176,7 +176,7 @@ func GetTxProposalUpsertTokenAliasCmd() *cobra.Command {
 	return cmd
 }
 
-// GetTxUpsertTokenAliasCmd implement cli command for MsgUpsertTokenAlias
+// GetTxProposalUpsertTokenRatesCmd implement cli command for MsgUpsertTokenAlias
 func GetTxProposalUpsertTokenRatesCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "proposal-upsert-rate",

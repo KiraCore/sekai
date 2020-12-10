@@ -95,6 +95,28 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 			}
 		}
 	}`)
+	cdc.RegisterConcrete(&MsgProposalUpsertTokenRates{}, "kiraHub/MsgProposalUpsertTokenRates", nil)
+	functionmeta.AddNewFunction((&MsgProposalUpsertTokenRates{}).Type(), `{
+		"description": "MsgProposalUpsertTokenRates defines a proposal message to upsert token rate.",
+		"parameters": {
+			"denom": {
+				"type":        "string",
+				"description": "denominator, ukex, uatom etc."
+			},
+			"rate": {
+				"type":        "decimal",
+				"description": "e.g. 1.20"
+			},
+			"fee_payments": {
+				"type":        "bool",
+				"description": "describe if specified denom can be used for fee payment."
+			},
+			"proposer": {
+				"type":        "string",
+				"description": "proposer who propose this message."
+			}
+		}
+	}`)
 }
 
 // RegisterInterfaces register Msg and structs

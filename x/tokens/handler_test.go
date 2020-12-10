@@ -89,7 +89,7 @@ func TestNewHandler_MsgUpsertTokenAlias(t *testing.T) {
 					[]string{"finney"},
 				), nil
 			},
-			handlerErr: "PermUpsertTokenAlias: not enough permissions",
+			handlerErr: "PERMISSION_UPSERT_TOKEN_ALIAS: not enough permissions",
 		},
 	}
 	for i, tt := range tests {
@@ -153,7 +153,7 @@ func TestNewHandler_MsgUpsertTokenRate(t *testing.T) {
 					true,
 				), nil
 			},
-			handlerErr: "PermUpsertTokenRate: not enough permissions",
+			handlerErr: "PERMISSION_UPSERT_TOKEN_RATE: not enough permissions",
 		},
 		{
 			name: "negative rate value test",

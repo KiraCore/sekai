@@ -40,8 +40,10 @@ const (
 	MsgTypeClaimValidator = "claim-validator"
 
 	// tokens module
-	MsgTypeUpsertTokenAlias = "upsert-token-alias"
-	MsgTypeUpsertTokenRate  = "upsert-token-rate"
+	MsgTypeUpsertTokenAlias         = "upsert-token-alias"
+	MsgTypeUpsertTokenRate          = "upsert-token-rate"
+	MsgProposalUpsertTokenAliasType = "propose-upsert-token-alias"
+	MsgProposalUpsertTokenRatesType = "propose-upsert-token-rates"
 )
 
 // MsgFuncIDMapping defines function_id mapping
@@ -84,4 +86,6 @@ var MsgFuncIDMapping = map[string]int64{
 	MsgTypeUpsertTokenAlias:                         36,
 	MsgTypeUpsertTokenRate:                          37,
 	MsgTypeProposalUpsertTokenAlias:                 38,
+	MsgProposalUpsertTokenAliasType:                 39,
+	MsgProposalUpsertTokenRatesType:                 40,
 }

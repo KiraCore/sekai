@@ -74,7 +74,7 @@ func (k msgServer) UpsertTokenAlias(
 
 	isAllowed := k.cgk.CheckIfAllowedPermission(ctx, msg.Proposer, customgovtypes.PermUpsertTokenAlias)
 	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermUpsertTokenAlias")
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermUpsertTokenAlias.String())
 	}
 
 	err := k.keeper.UpsertTokenAlias(ctx, *types.NewTokenAlias(
@@ -97,7 +97,7 @@ func (k msgServer) UpsertTokenRate(goCtx context.Context, msg *types.MsgUpsertTo
 
 	isAllowed := k.cgk.CheckIfAllowedPermission(ctx, msg.Proposer, customgovtypes.PermUpsertTokenRate)
 	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermUpsertTokenRate")
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermUpsertTokenRate.String())
 	}
 
 	err = k.keeper.UpsertTokenRate(ctx, *types.NewTokenRate(

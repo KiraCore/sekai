@@ -12,11 +12,6 @@ var (
 	_ sdk.Msg       = &MsgProposalUpsertTokenRates{}
 )
 
-const (
-	MsgProposalUpsertTokenAliasType = "propose-upsert-token-alias"
-	MsgProposalUpsertTokenRatesType = "propose-upsert-token-rates"
-)
-
 func NewMsgProposalUpsertTokenAlias(
 	proposer sdk.AccAddress,
 	symbol string,
@@ -65,7 +60,7 @@ func (m *MsgProposalUpsertTokenRates) Route() string {
 }
 
 func (m *MsgProposalUpsertTokenRates) Type() string {
-	return MsgProposalUpsertTokenRatesType
+	return kiratypes.MsgProposalUpsertTokenRatesType
 }
 
 func (m *MsgProposalUpsertTokenRates) ValidateBasic() error {
