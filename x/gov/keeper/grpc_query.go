@@ -7,7 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/KiraCore/sekai/x/gov/types"
-	cumstomtypes "github.com/KiraCore/sekai/x/staking/types"
+	customstakingtypes "github.com/KiraCore/sekai/x/staking/types"
 )
 
 // Querier describes grpc querier
@@ -20,11 +20,13 @@ func NewQuerier(keeper Keeper) types.QueryServer {
 	return &Querier{keeper: keeper}
 }
 
+var _ types.QueryServer = Querier{}
+
 // RolesByAddress return roles associated to an address
 func (q Querier) RolesByAddress(ctx context.Context, request *types.RolesByAddressRequest) (*types.RolesByAddressResponse, error) {
 	actor, found := q.keeper.GetNetworkActorByAddress(sdk.UnwrapSDKContext(ctx), request.ValAddr)
 	if !found {
-		return nil, cumstomtypes.ErrNetworkActorNotFound
+		return nil, customstakingtypes.ErrNetworkActorNotFound
 	}
 
 	return &types.RolesByAddressResponse{
@@ -58,7 +60,7 @@ func (q Querier) PermissionsByAddress(ctx context.Context, request *types.Permis
 
 	networkActor, found := q.keeper.GetNetworkActorByAddress(sdkContext, request.ValAddr)
 	if !found {
-		return nil, cumstomtypes.ErrNetworkActorNotFound
+		return nil, customstakingtypes.ErrNetworkActorNotFound
 	}
 
 	return &types.PermissionsResponse{Permissions: networkActor.Permissions}, nil

@@ -22,7 +22,7 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/KiraCore/sekai/x/staking/client/cli"
-	cumstomtypes "github.com/KiraCore/sekai/x/staking/types"
+	customstakingtypes "github.com/KiraCore/sekai/x/staking/types"
 )
 
 var (
@@ -37,11 +37,11 @@ func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *r
 }
 
 func (b AppModuleBasic) Name() string {
-	return cumstomtypes.ModuleName
+	return customstakingtypes.ModuleName
 }
 
 func (b AppModuleBasic) RegisterInterfaces(registry types2.InterfaceRegistry) {
-	cumstomtypes.RegisterInterfaces(registry)
+	customstakingtypes.RegisterInterfaces(registry)
 }
 
 func (b AppModuleBasic) DefaultGenesis(marshaler codec.JSONMarshaler) json.RawMessage {
@@ -63,7 +63,7 @@ func (b AppModuleBasic) GetTxCmd() *cobra.Command {
 }
 
 func (b AppModuleBasic) RegisterLegacyAminoCodec(amino *codec.LegacyAmino) {
-	cumstomtypes.RegisterCodec(amino)
+	customstakingtypes.RegisterCodec(amino)
 }
 
 func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
@@ -80,12 +80,12 @@ type AppModule struct {
 // RegisterQueryService registers a GRPC query service to respond to the
 // module-specific GRPC queries.
 func (am AppModule) RegisterServices(cfg module.Configurator) {
-	cumstomtypes.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.customStakingKeeper, am.customGovKeeper))
-	cumstomtypes.RegisterQueryServer(cfg.QueryServer(), keeper.NewQuerier(am.customStakingKeeper))
+	customstakingtypes.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.customStakingKeeper, am.customGovKeeper))
+	customstakingtypes.RegisterQueryServer(cfg.QueryServer(), keeper.NewQuerier(am.customStakingKeeper))
 }
 
 func (am AppModule) RegisterInterfaces(registry types2.InterfaceRegistry) {
-	cumstomtypes.RegisterInterfaces(registry)
+	customstakingtypes.RegisterInterfaces(registry)
 }
 
 func (am AppModule) InitGenesis(
@@ -165,12 +165,12 @@ func (am AppModule) EndBlock(ctx sdk.Context, block abci.RequestEndBlock) []abci
 }
 
 func (am AppModule) Name() string {
-	return cumstomtypes.ModuleName
+	return customstakingtypes.ModuleName
 }
 
 // Route returns the message routing key for the staking module.
 func (am AppModule) Route() sdk.Route {
-	return middleware.NewRoute(cumstomtypes.ModuleName, NewHandler(am.customStakingKeeper, am.customGovKeeper))
+	return middleware.NewRoute(customstakingtypes.ModuleName, NewHandler(am.customStakingKeeper, am.customGovKeeper))
 }
 
 // NewAppModule returns a new Custom Staking module.

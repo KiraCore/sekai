@@ -7,7 +7,7 @@ import (
 	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 
-	cumstomtypes "github.com/KiraCore/sekai/x/staking/types"
+	customstakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/server"
@@ -71,7 +71,7 @@ func GenTxClaimCmd(genBalIterator types2.GenesisBalancesIterator, defaultNodeHom
 
 			website, _ := cmd.Flags().GetString(FlagWebsite)
 			identity, _ := cmd.Flags().GetString(FlagIdentity)
-			validator, err := cumstomtypes.NewValidator(
+			validator, err := customstakingtypes.NewValidator(
 				moniker,
 				website,
 				"social",
@@ -84,10 +84,10 @@ func GenTxClaimCmd(genBalIterator types2.GenesisBalancesIterator, defaultNodeHom
 				return errors.Wrap(err, "failed to create new validator")
 			}
 
-			var stakingGenesisState cumstomtypes.GenesisState
+			var stakingGenesisState customstakingtypes.GenesisState
 			stakingGenesisState.Validators = append(stakingGenesisState.Validators, validator)
 			bzStakingGen := cdc.MustMarshalJSON(&stakingGenesisState)
-			appState[cumstomtypes.ModuleName] = bzStakingGen
+			appState[customstakingtypes.ModuleName] = bzStakingGen
 
 			var customGovGenState customgovtypes.GenesisState
 			cdc.MustUnmarshalJSON(appState[customgovtypes.ModuleName], &customGovGenState)
