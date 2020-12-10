@@ -110,19 +110,17 @@ func (s *IntegrationTestSuite) TestUpsertTokenAliasAndQuery() {
 	err = query.ExecuteContext(ctx)
 	s.Require().NoError(err)
 
-	var tokenAliasResponse tokenstypes.TokenAliasResponse
-	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &tokenAliasResponse)
-	tokenAlias := tokenAliasResponse.Data
+	var tokenAlias tokenstypes.TokenAlias
+	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &tokenAlias)
 
 	s.Require().Equal(tokenAlias.Symbol, "ETH")
 	s.Require().Equal(tokenAlias.Name, "Ethereum")
 	s.Require().Equal(tokenAlias.Icon, "myiconurl")
-	s.Require().Equal(tokenAlias.Decimals, 6)
+	s.Require().Equal(tokenAlias.Decimals, uint32(6))
 	s.Require().Equal(tokenAlias.Denoms, []string{"finney"})
 }
 
 func (s *IntegrationTestSuite) TestUpsertTokenRateAndQuery() {
-	s.T().SkipNow()
 	val := s.network.Validators[0]
 
 	cmd := cli.GetTxUpsertTokenRateCmd()
@@ -138,6 +136,9 @@ func (s *IntegrationTestSuite) TestUpsertTokenRateAndQuery() {
 			fmt.Sprintf("--%s=%s", cli.FlagDenom, "ubtc"),
 			fmt.Sprintf("--%s=%f", cli.FlagRate, 0.00001),
 			fmt.Sprintf("--%s=%s", cli.FlagFeePayments, "true"),
+			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+			fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(100))).String()),
 		},
 	)
 
@@ -159,12 +160,11 @@ func (s *IntegrationTestSuite) TestUpsertTokenRateAndQuery() {
 	err = query.ExecuteContext(ctx)
 	s.Require().NoError(err)
 
-	var tokenRateResponse tokenstypes.TokenRateResponse
-	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &tokenRateResponse)
-	tokenRate := tokenRateResponse.Data
+	var tokenRate tokenstypes.TokenRate
+	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &tokenRate)
 
 	s.Require().Equal(tokenRate.Denom, "ubtc")
-	s.Require().Equal(tokenRate.Rate, 0.00001)
+	s.Require().Equal(tokenRate.Rate, types3.NewDec(10))
 	s.Require().Equal(tokenRate.FeePayments, true)
 }
 
