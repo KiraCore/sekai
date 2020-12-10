@@ -67,7 +67,6 @@ func (s *IntegrationTestSuite) TearDownSuite() {
 }
 
 func (s *IntegrationTestSuite) TestUpsertTokenAliasAndQuery() {
-	// s.T().SkipNow()
 	val := s.network.Validators[0]
 
 	s.WhitelistPermissions(val.Address, customgovtypes.PermUpsertTokenAlias)
@@ -88,6 +87,8 @@ func (s *IntegrationTestSuite) TestUpsertTokenAliasAndQuery() {
 			fmt.Sprintf("--%s=%d", cli.FlagDecimals, 6),
 			fmt.Sprintf("--%s=%s", cli.FlagDenoms, "finney"),
 			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+			fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(100))).String()),
 		},
 	)
 
