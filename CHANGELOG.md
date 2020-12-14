@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.1.14.2] - 11.30.2020
+### Added
+- Update Cosmos SDK to v0.40.0-rc4.
+
 ## [0.1.14.1] - 11.30.2020
 ### Added
 - Proposal to upsert the Token Rates. (CLI too)
