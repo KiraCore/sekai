@@ -138,30 +138,7 @@ func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sd
 func (am AppModule) BeginBlock(context sdk.Context, block abci.RequestBeginBlock) {}
 
 func (am AppModule) EndBlock(ctx sdk.Context, block abci.RequestEndBlock) []abci.ValidatorUpdate {
-	valSet := am.customStakingKeeper.GetValidatorSet(ctx)
-
-	valUpdate := make([]abci.ValidatorUpdate, len(valSet))
-
-	for i, val := range valSet {
-		am.customStakingKeeper.AddValidator(ctx, val)
-
-		consPk, err := val.TmConsPubKey()
-		if err != nil {
-			panic(err)
-		}
-
-		pk, err := encoding.PubKeyToProto(consPk)
-		if err != nil {
-			panic(err)
-		}
-
-		valUpdate[i] = abci.ValidatorUpdate{
-			Power:  1,
-			PubKey: pk,
-		}
-	}
-
-	return valUpdate
+	return EndBlocker(ctx, am.customStakingKeeper)
 }
 
 func (am AppModule) Name() string {
