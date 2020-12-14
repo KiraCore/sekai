@@ -33,6 +33,17 @@ func (k Keeper) AddValidator(ctx sdk.Context, validator types.Validator) {
 	store.Set(GetValidatorByMonikerKey(validator.Moniker), GetValidatorKey(validator.ValKey))
 }
 
+func (k Keeper) AddPendingValidator(ctx sdk.Context, validator types.Validator) {
+	store := ctx.KVStore(k.storeKey)
+	bz := k.cdc.MustMarshalBinaryBare(&validator)
+	store.Set(GetPendingValidatorKey(validator.ValKey), bz)
+}
+
+func (k Keeper) RemovePendingValidator(ctx sdk.Context, validator types.Validator) {
+	store := ctx.KVStore(k.storeKey)
+	store.Delete(GetPendingValidatorKey(validator.ValKey))
+}
+
 func (k Keeper) GetValidator(ctx sdk.Context, address sdk.ValAddress) (types.Validator, error) {
 	return k.getValidatorByKey(ctx, GetValidatorKey(address))
 }
@@ -70,6 +81,22 @@ func (k Keeper) GetValidatorSet(ctx sdk.Context) []types.Validator {
 	store := ctx.KVStore(k.storeKey)
 
 	iter := sdk.KVStorePrefixIterator(store, ValidatorsKey)
+	defer iter.Close()
+
+	var validators []types.Validator
+	for ; iter.Valid(); iter.Next() {
+		var validator types.Validator
+		k.cdc.MustUnmarshalBinaryBare(iter.Value(), &validator)
+		validators = append(validators, validator)
+	}
+
+	return validators
+}
+
+func (k Keeper) GetPendingValidatorSet(ctx sdk.Context) []types.Validator {
+	store := ctx.KVStore(k.storeKey)
+
+	iter := sdk.KVStorePrefixIterator(store, PendingValidatorQueue)
 	defer iter.Close()
 
 	var validators []types.Validator
