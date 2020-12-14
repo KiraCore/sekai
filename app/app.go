@@ -33,7 +33,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/server/api"
 	authrest "github.com/cosmos/cosmos-sdk/x/auth/client/rest"
 
-	customkeeper "github.com/KiraCore/sekai/x/staking/keeper"
+	customstakingkeeper "github.com/KiraCore/sekai/x/staking/keeper"
 
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 	crisiskeeper "github.com/cosmos/cosmos-sdk/x/crisis/keeper"
@@ -53,6 +53,9 @@ import (
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/KiraCore/sekai/middleware"
+	customslashing "github.com/KiraCore/sekai/x/slashing"
+	customslashingkeeper "github.com/KiraCore/sekai/x/slashing/keeper"
+	customslashingtypes "github.com/KiraCore/sekai/x/slashing/types"
 	bam "github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -133,6 +136,7 @@ var (
 		params.AppModuleBasic{},
 		crisis.AppModuleBasic{},
 		slashing.AppModuleBasic{},
+		customslashing.AppModuleBasic{},
 		ibc.AppModuleBasic{},
 		upgrade.AppModuleBasic{},
 		evidence.AppModuleBasic{},
@@ -190,10 +194,11 @@ type SekaiApp struct {
 	evidenceKeeper   evidencekeeper.Keeper
 	transferKeeper   ibctransferkeeper.Keeper
 
-	customStakingKeeper customkeeper.Keeper
-	customGovKeeper     customgovkeeper.Keeper
-	tokensKeeper        tokenskeeper.Keeper
-	feeprocessingKeeper feeprocessingkeeper.Keeper
+	customSlashingKeeper customslashingkeeper.Keeper
+	customStakingKeeper  customstakingkeeper.Keeper
+	customGovKeeper      customgovkeeper.Keeper
+	tokensKeeper         tokenskeeper.Keeper
+	feeprocessingKeeper  feeprocessingkeeper.Keeper
 
 	// make scoped keepers public for test purposes
 	scopedIBCKeeper      capabilitykeeper.ScopedKeeper
@@ -238,6 +243,7 @@ func NewInitApp(
 		distrtypes.StoreKey, slashingtypes.StoreKey,
 		govtypes.StoreKey, paramstypes.StoreKey, ibchost.StoreKey, upgradetypes.StoreKey,
 		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey,
+		customslashingtypes.ModuleName,
 		customstakingtypes.ModuleName, customgovtypes.ModuleName, tokenstypes.ModuleName, feeprocessingtypes.ModuleName,
 	)
 	tKeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -284,6 +290,9 @@ func NewInitApp(
 	app.slashingKeeper = slashingkeeper.NewKeeper(
 		appCodec, keys[slashingtypes.StoreKey], &stakingKeeper, app.GetSubspace(slashingtypes.ModuleName),
 	)
+	app.customSlashingKeeper = customslashingkeeper.NewKeeper(
+		appCodec, keys[slashingtypes.StoreKey], &stakingKeeper, app.GetSubspace(slashingtypes.ModuleName),
+	)
 	app.crisisKeeper = crisiskeeper.NewKeeper(
 		app.GetSubspace(crisistypes.ModuleName), invCheckPeriod, app.bankKeeper, authtypes.FeeCollectorName,
 	)
@@ -306,7 +315,7 @@ func NewInitApp(
 		stakingtypes.NewMultiStakingHooks(app.distrKeeper.Hooks(), app.slashingKeeper.Hooks()),
 	)
 
-	app.customStakingKeeper = customkeeper.NewKeeper(keys[customstakingtypes.ModuleName], cdc)
+	app.customStakingKeeper = customstakingkeeper.NewKeeper(keys[customstakingtypes.ModuleName], cdc)
 	app.customGovKeeper = customgovkeeper.NewKeeper(keys[customgovtypes.ModuleName], appCodec)
 	app.tokensKeeper = tokenskeeper.NewKeeper(keys[tokenstypes.ModuleName], appCodec)
 
@@ -357,6 +366,7 @@ func NewInitApp(
 		crisis.NewAppModule(&app.crisisKeeper, skipGenesisInvariants),
 		gov.NewAppModule(appCodec, app.govKeeper, app.accountKeeper, app.bankKeeper),
 		slashing.NewAppModule(appCodec, app.slashingKeeper, app.accountKeeper, app.bankKeeper, app.stakingKeeper),
+		customslashing.NewAppModule(appCodec, app.customSlashingKeeper, app.accountKeeper, app.bankKeeper, app.stakingKeeper),
 		upgrade.NewAppModule(app.upgradeKeeper),
 		evidence.NewAppModule(app.evidenceKeeper),
 		ibc.NewAppModule(app.ibcKeeper),
@@ -380,7 +390,7 @@ func NewInitApp(
 	// CanWithdrawInvariant invariant.
 
 	app.mm.SetOrderBeginBlockers(
-		upgradetypes.ModuleName, /*distrtypes.ModuleName, slashingtypes.ModuleName,*/
+		upgradetypes.ModuleName, /*distrtypes.ModuleName, slashingtypes.ModuleName, customslashingtypes.ModuleName,*/
 		evidencetypes.ModuleName /*stakingtypes.ModuleName,*/, ibchost.ModuleName,
 	)
 	app.mm.SetOrderEndBlockers(
@@ -399,7 +409,7 @@ func NewInitApp(
 	// can do so safely.
 	app.mm.SetOrderInitGenesis(
 		capabilitytypes.ModuleName, authtypes.ModuleName /*distrtypes.ModuleName */ /*stakingtypes.ModuleName,*/, banktypes.ModuleName,
-		/*slashingtypes.ModuleName,*/ govtypes.ModuleName, crisistypes.ModuleName,
+		/*slashingtypes.ModuleName, customslashingtypes.ModuleName*/ govtypes.ModuleName, crisistypes.ModuleName,
 		ibchost.ModuleName, genutiltypes.ModuleName, evidencetypes.ModuleName, ibctransfertypes.ModuleName,
 		customstakingtypes.ModuleName, customgovtypes.ModuleName, tokenstypes.ModuleName, feeprocessingtypes.ModuleName,
 	)
@@ -423,6 +433,7 @@ func NewInitApp(
 		staking.NewAppModule(appCodec, app.stakingKeeper, app.accountKeeper, app.bankKeeper),
 		//distr.NewAppModule(appCodec, app.distrKeeper, app.accountKeeper, app.bankKeeper, app.stakingKeeper),
 		slashing.NewAppModule(appCodec, app.slashingKeeper, app.accountKeeper, app.bankKeeper, app.stakingKeeper),
+		customslashing.NewAppModule(appCodec, app.customSlashingKeeper, app.accountKeeper, app.bankKeeper, app.stakingKeeper),
 		params.NewAppModule(app.paramsKeeper),
 		evidence.NewAppModule(app.evidenceKeeper),
 	)
@@ -640,6 +651,7 @@ func initParamsKeeper(appCodec codec.BinaryMarshaler, legacyAmino *codec.LegacyA
 	paramsKeeper.Subspace(minttypes.ModuleName)
 	paramsKeeper.Subspace(distrtypes.ModuleName)
 	paramsKeeper.Subspace(slashingtypes.ModuleName)
+	paramsKeeper.Subspace(customslashingtypes.ModuleName)
 	paramsKeeper.Subspace(govtypes.ModuleName).WithKeyTable(govtypes.ParamKeyTable())
 	paramsKeeper.Subspace(crisistypes.ModuleName)
 	paramsKeeper.Subspace(ibctransfertypes.ModuleName)
