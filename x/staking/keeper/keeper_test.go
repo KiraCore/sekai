@@ -153,4 +153,8 @@ func TestKeeper_GetPendingValidators(t *testing.T) {
 
 	validatorSet := app.CustomStakingKeeper.GetPendingValidatorSet(ctx)
 	require.Equal(t, 2, len(validatorSet))
+
+	app.CustomStakingKeeper.RemovePendingValidator(ctx, validator1)
+	validatorSet = app.CustomStakingKeeper.GetPendingValidatorSet(ctx)
+	require.Equal(t, 1, len(validatorSet))
 }
