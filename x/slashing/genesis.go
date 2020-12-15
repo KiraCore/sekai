@@ -11,7 +11,7 @@ import (
 // and the keeper's address to pubkey map
 func InitGenesis(ctx sdk.Context, keeper keeper.Keeper, stakingKeeper types.StakingKeeper, data *types.GenesisState) {
 	stakingKeeper.IterateValidators(ctx,
-		func(index int64, validator stakingtypes.ValidatorI) bool {
+		func(index int64, validator *stakingtypes.Validator) bool {
 			consPk, err := validator.TmConsPubKey()
 			if err != nil {
 				panic(err)
