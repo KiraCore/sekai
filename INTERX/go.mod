@@ -18,6 +18,7 @@ require (
 	github.com/juju/fslock v0.0.0-20160525022230-4d5c94c67b4b
 	github.com/nightlyone/lockfile v1.0.0
 	github.com/rakyll/statik v0.1.7
+	github.com/rs/cors v1.7.0
 	github.com/sonyarouje/simdb v0.0.0-20181202125413-c2488dfc374a
 	github.com/tendermint/tendermint v0.34.0-rc3.0.20200907055413-3359e0bf2f84
 	github.com/tyler-smith/go-bip32 v0.0.0-20170922074101-2c9cfd177564

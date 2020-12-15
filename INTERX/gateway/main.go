@@ -17,6 +17,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/rakyll/statik/fs"
+	"github.com/rs/cors"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	grpclog "google.golang.org/grpc/grpclog"
@@ -97,10 +98,15 @@ func Run(grpcAddr string, rpcAddr string, log grpclog.LoggerV2) error {
 
 	router.PathPrefix("/").Handler(oaHander)
 
+	c := cors.New(cors.Options{
+		AllowedOrigins: []string{"*"},
+		AllowedHeaders: []string{"*"},
+	})
+
 	gatewayAddr := "0.0.0.0:" + port
 	gwServer := &http.Server{
 		Addr:    gatewayAddr,
-		Handler: router,
+		Handler: c.Handler(router),
 	}
 
 	// SERVE_HTTP: Empty parameters mean use the TLS Config specified with the server.

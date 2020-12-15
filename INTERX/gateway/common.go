@@ -188,6 +188,9 @@ func WrapResponse(w http.ResponseWriter, request InterxRequest, response common.
 	w.Header().Add("Interx_blocktime", response.Blocktime)
 	w.Header().Add("Interx_timestamp", strconv.FormatInt(response.Timestamp, 10))
 	w.Header().Add("Interx_request_hash", response.RequestHash)
+	if request.Endpoint == queryDataReference {
+		w.Header().Add("Interx_ref", "/api/download/"+string(request.Params))
+	}
 
 	if response.Response != nil {
 		response.Signature, response.Hash = GetResponseSignature(response)
@@ -205,12 +208,9 @@ func WrapResponse(w http.ResponseWriter, request InterxRequest, response common.
 
 // ServeGRPC is a function to server GRPC
 func ServeGRPC(r *http.Request, gwCosmosmux *runtime.ServeMux) (interface{}, interface{}, int) {
-	fmt.Println("serveGRPC", r)
 	recorder := httptest.NewRecorder()
 	gwCosmosmux.ServeHTTP(recorder, r)
 	resp := recorder.Result()
-
-	fmt.Println(resp)
 
 	result := new(interface{})
 	if json.NewDecoder(resp.Body).Decode(result) == nil {
@@ -315,9 +315,6 @@ func BroadcastTransaction(rpcAddr string, txBytes []byte) (string, error) {
 	if err != nil {
 		return "", err
 	}
-
-	res, _ := json.Marshal(*result)
-	fmt.Println(string(res))
 
 	if resp.StatusCode != http.StatusOK {
 		return "", errors.New(result.Error.Message)
