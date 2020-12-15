@@ -10,7 +10,7 @@ import (
 
 const (
 	queryKiraFunctions = "/api/kira/metadata"
-	queryStatus        = "/api/kira/status"
+	queryStatus        = "/api/cosmos/status"
 )
 
 // RegisterKiraQueryRoutes registers tx query routers.
