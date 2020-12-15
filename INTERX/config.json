@@ -27,7 +27,7 @@
     "rpc": {
         "API": {
             "GET": {
-                "/api/cosmos/kira": {
+                "/api/cosmos/status": {
                     "rate_limit": 0.1,
                     "auth_rate_limit": 1,
                     "caching_duration": 30
