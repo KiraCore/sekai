@@ -30,7 +30,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://0.0.0.0:11000/api/cosmos/status",
+					"raw": "http://0.0.0.0:11000/api/kira/status",
 					"protocol": "http",
 					"host": [
 						"0",
@@ -41,7 +41,7 @@
 					"port": "11000",
 					"path": [
 						"api",
-						"cosmos",
+						"kira",
 						"status"
 					]
 				}
@@ -444,49 +444,6 @@
 			"response": []
 		},
 		{
-			"name": "Query Kira Functions",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"name": "Content-Type",
-						"type": "text",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://0.0.0.0:11000/api/kira/metadata",
-					"protocol": "http",
-					"host": [
-						"0",
-						"0",
-						"0",
-						"0"
-					],
-					"port": "11000",
-					"path": [
-						"api",
-						"kira",
-						"metadata"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Query Withdraws",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
@@ -589,6 +546,237 @@
 							"key": "type",
 							"value": "Send"
 						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Query Kira Functions",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/kira/metadata",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"kira",
+						"metadata"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Query Interx Functions",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/metadata",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"metadata"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Query Data Reference Keys",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/kira/gov/data_keys?limit=2&offset=0&count_total=true",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"kira",
+						"gov",
+						"data_keys"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "2"
+						},
+						{
+							"key": "offset",
+							"value": "0"
+						},
+						{
+							"key": "count_total",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Query Data Reference",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/kira/gov/data/CodeOfConduct",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"kira",
+						"gov",
+						"data",
+						"CodeOfConduct"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Download",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/download/CodeOfConduct",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"download",
+						"CodeOfConduct"
 					]
 				}
 			},

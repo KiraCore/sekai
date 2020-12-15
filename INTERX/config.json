@@ -4,6 +4,7 @@
     "cache_dir": "cache",
     "max_cache_size": "2 GB",
     "caching_duration": 10,
+    "download_file_size_limitation": "10 MG",
     "faucet": {
         "mnemonic": "equip exercise shoot mad inside floor wheel loan visual stereo build frozen potato always bulb naive subway foster marine erosion shuffle flee action there",
         "faucet_amounts": {
@@ -26,7 +27,7 @@
     "rpc": {
         "API": {
             "GET": {
-                "/api/cosmos/status": {
+                "/api/cosmos/kira": {
                     "rate_limit": 0.1,
                     "auth_rate_limit": 1,
                     "caching_duration": 30

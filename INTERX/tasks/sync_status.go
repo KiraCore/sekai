@@ -58,13 +58,16 @@ func getStatus(rpcAddr string) {
 }
 
 // SyncStatus is a function for syncing sekaid status.
-func SyncStatus(rpcAddr string) {
+func SyncStatus(rpcAddr string, isLog bool) {
 	for {
 		getStatus(rpcAddr)
-		fmt.Println("\nsync node status	: ")
-		fmt.Println("	chain id	: ", NodeStatus.Chainid)
-		fmt.Println("	block		: ", NodeStatus.Block)
-		fmt.Println("	blocktime	: ", NodeStatus.Blocktime)
+
+		if isLog {
+			fmt.Println("\nsync node status	: ")
+			fmt.Println("	chain id	: ", NodeStatus.Chainid)
+			fmt.Println("	block		: ", NodeStatus.Block)
+			fmt.Println("	blocktime	: ", NodeStatus.Blocktime)
+		}
 
 		time.Sleep(time.Duration(interx.Config.StatusSync) * time.Second)
 	}

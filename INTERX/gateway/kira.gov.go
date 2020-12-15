@@ -1,10 +1,12 @@
 package gateway
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"strings"
 
+	common "github.com/KiraCore/sekai/INTERX/common"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 )
@@ -56,8 +58,6 @@ func QueryDataReferenceKeysRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string
 		response := GetResponseFormat(request, rpcAddr)
 		statusCode := http.StatusOK
 
-		fmt.Println("here", request.Params)
-
 		if !rpcMethods[GET][queryDataReferenceKeys].Enabled {
 			response.Response, response.Error, statusCode = ServeError(0, "", "", http.StatusForbidden)
 		} else {
@@ -78,7 +78,23 @@ func QueryDataReferenceKeysRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string
 }
 
 func queryDataReferenceHandle(r *http.Request, gwCosmosmux *runtime.ServeMux) (interface{}, interface{}, int) {
-	return ServeGRPC(r, gwCosmosmux)
+	success, failure, status := ServeGRPC(r, gwCosmosmux)
+
+	if success != nil {
+		type DataReferenceTempResponse struct {
+			Data common.DataReferenceEntry `json:"data"`
+		}
+		result := DataReferenceTempResponse{}
+
+		byteData, _ := json.Marshal(success)
+		json.Unmarshal(byteData, &result)
+
+		success = result.Data
+
+		common.UpdateKey(mux.Vars(r)["key"], result.Data)
+	}
+
+	return success, failure, status
 }
 
 // QueryDataReferenceRequest is a function to query data reference by key.
