@@ -8,14 +8,14 @@ import (
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/KiraCore/sekai/x/slashing/testslashing"
+	"github.com/KiraCore/sekai/x/staking"
+	"github.com/KiraCore/sekai/x/staking/teststaking"
+	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/simapp"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/staking"
-	"github.com/cosmos/cosmos-sdk/x/staking/teststaking"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
 
-func TestUnJailNotBonded(t *testing.T) {
+func TestActivateNotBonded(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 
@@ -37,13 +37,6 @@ func TestUnJailNotBonded(t *testing.T) {
 	staking.EndBlocker(ctx, app.StakingKeeper)
 	ctx = ctx.WithBlockHeight(ctx.BlockHeight() + 1)
 
-	// create a 6th validator with less power than the cliff validator (won't be bonded)
-	addr, val := valAddrs[5], pks[5]
-	amt := sdk.TokensFromConsensusPower(50)
-	msg := tstaking.CreateValidatorMsg(addr, val, amt.Int64())
-	msg.MinSelfDelegation = amt
-	tstaking.Handle(msg, true)
-
 	staking.EndBlocker(ctx, app.StakingKeeper)
 	ctx = ctx.WithBlockHeight(ctx.BlockHeight() + 1)
 
@@ -59,8 +52,8 @@ func TestUnJailNotBonded(t *testing.T) {
 	// verify that validator is jailed
 	tstaking.CheckValidator(addr, -1, true)
 
-	// verify we cannot unjail (yet)
-	require.Error(t, app.SlashingKeeper.Unjail(ctx, addr))
+	// verify we cannot activate (yet)
+	require.Error(t, app.SlashingKeeper.Activate(ctx, addr))
 
 	staking.EndBlocker(ctx, app.StakingKeeper)
 	ctx = ctx.WithBlockHeight(ctx.BlockHeight() + 1)
@@ -70,8 +63,8 @@ func TestUnJailNotBonded(t *testing.T) {
 	staking.EndBlocker(ctx, app.StakingKeeper)
 	ctx = ctx.WithBlockHeight(ctx.BlockHeight() + 1)
 
-	// verify we can immediately unjail
-	require.NoError(t, app.SlashingKeeper.Unjail(ctx, addr))
+	// verify we can immediately activate
+	require.NoError(t, app.SlashingKeeper.Activate(ctx, addr))
 
 	tstaking.CheckValidator(addr, -1, false)
 }
@@ -257,7 +250,7 @@ func TestValidatorDippingInAndOut(t *testing.T) {
 	ctx = ctx.WithBlockHeight(height)
 
 	// validator rejoins and starts signing again
-	app.StakingKeeper.Unjail(ctx, consAddr)
+	app.StakingKeeper.Activate(ctx, consAddr)
 	app.SlashingKeeper.HandleValidatorSignature(ctx, val.Address(), newPower, true)
 	height++
 

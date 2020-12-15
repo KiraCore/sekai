@@ -20,18 +20,18 @@ func NewTxCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	slashingTxCmd.AddCommand(NewUnjailTxCmd())
+	slashingTxCmd.AddCommand(NewActivateTxCmd())
 	return slashingTxCmd
 }
 
-func NewUnjailTxCmd() *cobra.Command {
+func NewActivateTxCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "unjail",
+		Use:   "activate",
 		Args:  cobra.NoArgs,
-		Short: "unjail validator previously jailed for downtime",
-		Long: `unjail a jailed validator:
+		Short: "activate validator previously jailed for downtime",
+		Long: `activate a jailed validator:
 
-$ <appd> tx slashing unjail --from mykey
+$ <appd> tx slashing activate --from mykey
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
@@ -42,7 +42,7 @@ $ <appd> tx slashing unjail --from mykey
 
 			valAddr := clientCtx.GetFromAddress()
 
-			msg := types.NewMsgUnjail(sdk.ValAddress(valAddr))
+			msg := types.NewMsgActivate(sdk.ValAddress(valAddr))
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

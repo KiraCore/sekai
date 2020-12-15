@@ -33,11 +33,11 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 // liveness activity.
 type ValidatorSigningInfo struct {
 	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
-	// height at which validator was first a candidate OR was unjailed
+	// height at which validator was first a candidate OR was activated
 	StartHeight int64 `protobuf:"varint,2,opt,name=start_height,json=startHeight,proto3" json:"start_height,omitempty" yaml:"start_height"`
 	// index offset into signed block bit array
 	IndexOffset int64 `protobuf:"varint,3,opt,name=index_offset,json=indexOffset,proto3" json:"index_offset,omitempty" yaml:"index_offset"`
-	// timestamp validator cannot be unjailed until
+	// timestamp validator cannot be activated until
 	JailedUntil time.Time `protobuf:"bytes,4,opt,name=jailed_until,json=jailedUntil,proto3,stdtime" json:"jailed_until" yaml:"jailed_until"`
 	// whether or not a validator has been tombstoned (killed out of validator
 	// set)

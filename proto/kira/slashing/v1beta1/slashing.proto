@@ -15,11 +15,11 @@ message ValidatorSigningInfo {
   option (gogoproto.goproto_stringer) = false;
 
   string address = 1;
-  // height at which validator was first a candidate OR was unjailed
+  // height at which validator was first a candidate OR was activated
   int64 start_height = 2 [(gogoproto.moretags) = "yaml:\"start_height\""];
   // index offset into signed block bit array
   int64 index_offset = 3 [(gogoproto.moretags) = "yaml:\"index_offset\""];
-  // timestamp validator cannot be unjailed until
+  // timestamp validator cannot be activated until
   google.protobuf.Timestamp jailed_until = 4
       [(gogoproto.moretags) = "yaml:\"jailed_until\"", (gogoproto.stdtime) = true, (gogoproto.nullable) = false];
   // whether or not a validator has been tombstoned (killed out of validator

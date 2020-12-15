@@ -6,23 +6,23 @@ import (
 
 // slashing message types
 const (
-	TypeMsgUnjail = "unjail"
+	TypeMsgActivate = "activate"
 )
 
 // verify interface at compile time
-var _ sdk.Msg = &MsgUnjail{}
+var _ sdk.Msg = &MsgActivate{}
 
-// NewMsgUnjail creates a new MsgUnjail instance
+// NewMsgActivate creates a new MsgActivate instance
 //nolint:interfacer
-func NewMsgUnjail(validatorAddr sdk.ValAddress) *MsgUnjail {
-	return &MsgUnjail{
+func NewMsgActivate(validatorAddr sdk.ValAddress) *MsgActivate {
+	return &MsgActivate{
 		ValidatorAddr: validatorAddr.String(),
 	}
 }
 
-func (msg MsgUnjail) Route() string { return RouterKey }
-func (msg MsgUnjail) Type() string  { return TypeMsgUnjail }
-func (msg MsgUnjail) GetSigners() []sdk.AccAddress {
+func (msg MsgActivate) Route() string { return RouterKey }
+func (msg MsgActivate) Type() string  { return TypeMsgActivate }
+func (msg MsgActivate) GetSigners() []sdk.AccAddress {
 	valAddr, err := sdk.ValAddressFromBech32(msg.ValidatorAddr)
 	if err != nil {
 		panic(err)
@@ -31,13 +31,13 @@ func (msg MsgUnjail) GetSigners() []sdk.AccAddress {
 }
 
 // GetSignBytes gets the bytes for the message signer to sign on
-func (msg MsgUnjail) GetSignBytes() []byte {
+func (msg MsgActivate) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(&msg)
 	return sdk.MustSortJSON(bz)
 }
 
 // ValidateBasic validity check for the AnteHandler
-func (msg MsgUnjail) ValidateBasic() error {
+func (msg MsgActivate) ValidateBasic() error {
 	if msg.ValidatorAddr == "" {
 		return ErrBadValidatorAddr
 	}

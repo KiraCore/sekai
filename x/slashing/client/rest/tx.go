@@ -14,22 +14,22 @@ import (
 )
 
 func registerTxHandlers(clientCtx client.Context, r *mux.Router) {
-	r.HandleFunc("/slashing/validators/{validatorAddr}/unjail", NewUnjailRequestHandlerFn(clientCtx)).Methods("POST")
+	r.HandleFunc("/slashing/validators/{validatorAddr}/activate", NewActivateRequestHandlerFn(clientCtx)).Methods("POST")
 }
 
-// Unjail TX body
-type UnjailReq struct {
+// Activate TX body
+type ActivateReq struct {
 	BaseReq rest.BaseReq `json:"base_req" yaml:"base_req"`
 }
 
-// NewUnjailRequestHandlerFn returns an HTTP REST handler for creating a MsgUnjail
+// NewActivateRequestHandlerFn returns an HTTP REST handler for creating a MsgActivate
 // transaction.
-func NewUnjailRequestHandlerFn(clientCtx client.Context) http.HandlerFunc {
+func NewActivateRequestHandlerFn(clientCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		bech32Validator := vars["validatorAddr"]
 
-		var req UnjailReq
+		var req ActivateReq
 		if !rest.ReadRESTReq(w, r, clientCtx.LegacyAmino, &req) {
 			return
 		}
@@ -54,7 +54,7 @@ func NewUnjailRequestHandlerFn(clientCtx client.Context) http.HandlerFunc {
 			return
 		}
 
-		msg := types.NewMsgUnjail(valAddr)
+		msg := types.NewMsgActivate(valAddr)
 		if rest.CheckBadRequestError(w, msg.ValidateBasic()) {
 			return
 		}

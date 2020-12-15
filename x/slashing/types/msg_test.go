@@ -8,13 +8,13 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func TestMsgUnjailGetSignBytes(t *testing.T) {
+func TestMsgActivateGetSignBytes(t *testing.T) {
 	addr := sdk.AccAddress("abcd")
-	msg := NewMsgUnjail(sdk.ValAddress(addr))
+	msg := NewMsgActivate(sdk.ValAddress(addr))
 	bytes := msg.GetSignBytes()
 	require.Equal(
 		t,
-		`{"type":"cosmos-sdk/MsgUnjail","value":{"address":"cosmosvaloper1v93xxeqhg9nn6"}}`,
+		`{"type":"cosmos-sdk/MsgActivate","value":{"address":"cosmosvaloper1v93xxeqhg9nn6"}}`,
 		string(bytes),
 	)
 }

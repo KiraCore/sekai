@@ -11,13 +11,12 @@ import (
 
 	"github.com/KiraCore/sekai/x/slashing/simulation"
 	"github.com/KiraCore/sekai/x/slashing/types"
+	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/simapp"
 	simappparams "github.com/cosmos/cosmos-sdk/simapp/params"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
-	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
 
 // TestWeightedOperations tests the weights of the operations.
@@ -36,7 +35,7 @@ func TestWeightedOperations(t *testing.T) {
 		weight     int
 		opMsgRoute string
 		opMsgName  string
-	}{{simappparams.DefaultWeightMsgUnjail, types.ModuleName, types.TypeMsgUnjail}}
+	}{{simappparams.DefaultWeightMsgUnjail, types.ModuleName, types.TypeMsgActivate}}
 
 	weightesOps := simulation.WeightedOperations(appParams, cdc, app.AccountKeeper, app.BankKeeper, app.SlashingKeeper, app.StakingKeeper)
 	for i, w := range weightesOps {
@@ -50,9 +49,9 @@ func TestWeightedOperations(t *testing.T) {
 	}
 }
 
-// TestSimulateMsgUnjail tests the normal scenario of a valid message of type types.MsgUnjail.
+// TestSimulateMsgActivate tests the normal scenario of a valid message of type types.MsgActivate.
 // Abonormal scenarios, where the message is created by an errors, are not tested here.
-func TestSimulateMsgUnjail(t *testing.T) {
+func TestSimulateMsgActivate(t *testing.T) {
 	app, ctx := createTestApp(false)
 	blockTime := time.Now().UTC()
 	ctx = ctx.WithBlockTime(blockTime)
@@ -81,23 +80,20 @@ func TestSimulateMsgUnjail(t *testing.T) {
 	validator0, issuedShares := validator0.AddTokensFromDel(delTokens)
 	val0AccAddress, err := sdk.ValAddressFromBech32(validator0.OperatorAddress)
 	require.NoError(t, err)
-	selfDelegation := stakingtypes.NewDelegation(val0AccAddress.Bytes(), validator0.GetOperator(), issuedShares)
-	app.StakingKeeper.SetDelegation(ctx, selfDelegation)
-	app.DistrKeeper.SetDelegatorStartingInfo(ctx, validator0.GetOperator(), val0AccAddress.Bytes(), distrtypes.NewDelegatorStartingInfo(2, sdk.OneDec(), 200))
 
 	// begin a new block
 	app.BeginBlock(abci.RequestBeginBlock{Header: tmproto.Header{Height: app.LastBlockHeight() + 1, AppHash: app.LastCommitID().Hash, Time: blockTime}})
 
 	// execute operation
-	op := simulation.SimulateMsgUnjail(app.AccountKeeper, app.BankKeeper, app.SlashingKeeper, app.StakingKeeper)
+	op := simulation.SimulateMsgActivate(app.AccountKeeper, app.BankKeeper, app.SlashingKeeper, app.StakingKeeper)
 	operationMsg, futureOperations, err := op(r, app.BaseApp, ctx, accounts, "")
 	require.NoError(t, err)
 
-	var msg types.MsgUnjail
+	var msg types.MsgActivate
 	types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
 
 	require.True(t, operationMsg.OK)
-	require.Equal(t, types.TypeMsgUnjail, msg.Type())
+	require.Equal(t, types.TypeMsgActivate, msg.Type())
 	require.Equal(t, "cosmosvaloper1tnh2q55v8wyygtt9srz5safamzdengsn9dsd7z", msg.ValidatorAddr)
 	require.Len(t, futureOperations, 0)
 }

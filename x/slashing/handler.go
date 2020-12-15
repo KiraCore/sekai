@@ -15,8 +15,8 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 		msgServer := keeper.NewMsgServerImpl(k)
 
 		switch msg := msg.(type) {
-		case *types.MsgUnjail:
-			res, err := msgServer.Unjail(sdk.WrapSDKContext(ctx), msg)
+		case *types.MsgActivate:
+			res, err := msgServer.Activate(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 
 		default:

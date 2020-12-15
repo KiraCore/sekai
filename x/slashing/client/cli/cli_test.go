@@ -143,7 +143,7 @@ slash_fraction_downtime: "0.010000000000000000"`,
 	}
 }
 
-func (s *IntegrationTestSuite) TestNewUnjailTxCmd() {
+func (s *IntegrationTestSuite) TestNewActivateTxCmd() {
 	val := s.network.Validators[0]
 
 	testCases := []struct {
@@ -169,7 +169,7 @@ func (s *IntegrationTestSuite) TestNewUnjailTxCmd() {
 		tc := tc
 
 		s.Run(tc.name, func() {
-			cmd := cli.NewUnjailTxCmd()
+			cmd := cli.NewActivateTxCmd()
 			clientCtx := val.ClientCtx
 
 			out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, tc.args)

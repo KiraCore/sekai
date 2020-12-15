@@ -28,23 +28,23 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// MsgUnjail defines the Msg/Unjail request type
-type MsgUnjail struct {
+// MsgActivate defines the Msg/Activate request type
+type MsgActivate struct {
 	ValidatorAddr string `protobuf:"bytes,1,opt,name=validator_addr,json=validatorAddr,proto3" json:"address" yaml:"address"`
 }
 
-func (m *MsgUnjail) Reset()         { *m = MsgUnjail{} }
-func (m *MsgUnjail) String() string { return proto.CompactTextString(m) }
-func (*MsgUnjail) ProtoMessage()    {}
-func (*MsgUnjail) Descriptor() ([]byte, []int) {
+func (m *MsgActivate) Reset()         { *m = MsgActivate{} }
+func (m *MsgActivate) String() string { return proto.CompactTextString(m) }
+func (*MsgActivate) ProtoMessage()    {}
+func (*MsgActivate) Descriptor() ([]byte, []int) {
 	return fileDescriptor_3c5611c0c4a59d9d, []int{0}
 }
-func (m *MsgUnjail) XXX_Unmarshal(b []byte) error {
+func (m *MsgActivate) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgUnjail) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgActivate) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgUnjail.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgActivate.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -54,34 +54,34 @@ func (m *MsgUnjail) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-func (m *MsgUnjail) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgUnjail.Merge(m, src)
+func (m *MsgActivate) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgActivate.Merge(m, src)
 }
-func (m *MsgUnjail) XXX_Size() int {
+func (m *MsgActivate) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgUnjail) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgUnjail.DiscardUnknown(m)
+func (m *MsgActivate) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgActivate.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgUnjail proto.InternalMessageInfo
+var xxx_messageInfo_MsgActivate proto.InternalMessageInfo
 
-// MsgUnjailResponse defines the Msg/Unjail response type
-type MsgUnjailResponse struct {
+// MsgActivateResponse defines the Msg/Activate response type
+type MsgActivateResponse struct {
 }
 
-func (m *MsgUnjailResponse) Reset()         { *m = MsgUnjailResponse{} }
-func (m *MsgUnjailResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgUnjailResponse) ProtoMessage()    {}
-func (*MsgUnjailResponse) Descriptor() ([]byte, []int) {
+func (m *MsgActivateResponse) Reset()         { *m = MsgActivateResponse{} }
+func (m *MsgActivateResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgActivateResponse) ProtoMessage()    {}
+func (*MsgActivateResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_3c5611c0c4a59d9d, []int{1}
 }
-func (m *MsgUnjailResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgActivateResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgUnjailResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgActivateResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgUnjailResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgActivateResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -91,21 +91,21 @@ func (m *MsgUnjailResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, e
 		return b[:n], nil
 	}
 }
-func (m *MsgUnjailResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgUnjailResponse.Merge(m, src)
+func (m *MsgActivateResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgActivateResponse.Merge(m, src)
 }
-func (m *MsgUnjailResponse) XXX_Size() int {
+func (m *MsgActivateResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgUnjailResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgUnjailResponse.DiscardUnknown(m)
+func (m *MsgActivateResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgActivateResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgUnjailResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgActivateResponse proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterType((*MsgUnjail)(nil), "cosmos.slashing.v1beta1.MsgUnjail")
-	proto.RegisterType((*MsgUnjailResponse)(nil), "cosmos.slashing.v1beta1.MsgUnjailResponse")
+	proto.RegisterType((*MsgActivate)(nil), "cosmos.slashing.v1beta1.MsgActivate")
+	proto.RegisterType((*MsgActivateResponse)(nil), "cosmos.slashing.v1beta1.MsgActivateResponse")
 }
 
 func init() { proto.RegisterFile("cosmos/slashing/v1beta1/tx.proto", fileDescriptor_3c5611c0c4a59d9d) }
@@ -131,14 +131,14 @@ var fileDescriptor_3c5611c0c4a59d9d = []byte{
 	0x02, 0x00, 0x00, 0xff, 0xff, 0x1b, 0xa7, 0xdc, 0xcf, 0x79, 0x01, 0x00, 0x00,
 }
 
-func (this *MsgUnjail) Equal(that interface{}) bool {
+func (this *MsgActivate) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
 	}
 
-	that1, ok := that.(*MsgUnjail)
+	that1, ok := that.(*MsgActivate)
 	if !ok {
-		that2, ok := that.(MsgUnjail)
+		that2, ok := that.(MsgActivate)
 		if ok {
 			that1 = &that2
 		} else {
@@ -155,14 +155,14 @@ func (this *MsgUnjail) Equal(that interface{}) bool {
 	}
 	return true
 }
-func (this *MsgUnjailResponse) Equal(that interface{}) bool {
+func (this *MsgActivateResponse) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
 	}
 
-	that1, ok := that.(*MsgUnjailResponse)
+	that1, ok := that.(*MsgActivateResponse)
 	if !ok {
-		that2, ok := that.(MsgUnjailResponse)
+		that2, ok := that.(MsgActivateResponse)
 		if ok {
 			that1 = &that2
 		} else {
@@ -189,10 +189,10 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
-	// Unjail defines a method for unjailing a jailed validator, thus returning
+	// Activate defines a method for activating a jailed validator, thus returning
 	// them into the bonded validator set, so they can begin receiving provisions
 	// and rewards again.
-	Unjail(ctx context.Context, in *MsgUnjail, opts ...grpc.CallOption) (*MsgUnjailResponse, error)
+	Activate(ctx context.Context, in *MsgActivate, opts ...grpc.CallOption) (*MsgActivateResponse, error)
 }
 
 type msgClient struct {
@@ -203,9 +203,9 @@ func NewMsgClient(cc grpc1.ClientConn) MsgClient {
 	return &msgClient{cc}
 }
 
-func (c *msgClient) Unjail(ctx context.Context, in *MsgUnjail, opts ...grpc.CallOption) (*MsgUnjailResponse, error) {
-	out := new(MsgUnjailResponse)
-	err := c.cc.Invoke(ctx, "/cosmos.slashing.v1beta1.Msg/Unjail", in, out, opts...)
+func (c *msgClient) Activate(ctx context.Context, in *MsgActivate, opts ...grpc.CallOption) (*MsgActivateResponse, error) {
+	out := new(MsgActivateResponse)
+	err := c.cc.Invoke(ctx, "/cosmos.slashing.v1beta1.Msg/Activate", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -214,38 +214,38 @@ func (c *msgClient) Unjail(ctx context.Context, in *MsgUnjail, opts ...grpc.Call
 
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
-	// Unjail defines a method for unjailing a jailed validator, thus returning
+	// Activate defines a method for activating a jailed validator, thus returning
 	// them into the bonded validator set, so they can begin receiving provisions
 	// and rewards again.
-	Unjail(context.Context, *MsgUnjail) (*MsgUnjailResponse, error)
+	Activate(context.Context, *MsgActivate) (*MsgActivateResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
 type UnimplementedMsgServer struct {
 }
 
-func (*UnimplementedMsgServer) Unjail(ctx context.Context, req *MsgUnjail) (*MsgUnjailResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Unjail not implemented")
+func (*UnimplementedMsgServer) Activate(ctx context.Context, req *MsgActivate) (*MsgActivateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Activate not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
 	s.RegisterService(&_Msg_serviceDesc, srv)
 }
 
-func _Msg_Unjail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUnjail)
+func _Msg_Activate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgActivate)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).Unjail(ctx, in)
+		return srv.(MsgServer).Activate(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/cosmos.slashing.v1beta1.Msg/Unjail",
+		FullMethod: "/cosmos.slashing.v1beta1.Msg/Activate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).Unjail(ctx, req.(*MsgUnjail))
+		return srv.(MsgServer).Activate(ctx, req.(*MsgActivate))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -255,15 +255,15 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Unjail",
-			Handler:    _Msg_Unjail_Handler,
+			MethodName: "Activate",
+			Handler:    _Msg_Activate_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "cosmos/slashing/v1beta1/tx.proto",
 }
 
-func (m *MsgUnjail) Marshal() (dAtA []byte, err error) {
+func (m *MsgActivate) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -273,12 +273,12 @@ func (m *MsgUnjail) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgUnjail) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgActivate) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgUnjail) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgActivate) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -293,7 +293,7 @@ func (m *MsgUnjail) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgUnjailResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgActivateResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -303,12 +303,12 @@ func (m *MsgUnjailResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgUnjailResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgActivateResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgUnjailResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgActivateResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -327,7 +327,7 @@ func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *MsgUnjail) Size() (n int) {
+func (m *MsgActivate) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -340,7 +340,7 @@ func (m *MsgUnjail) Size() (n int) {
 	return n
 }
 
-func (m *MsgUnjailResponse) Size() (n int) {
+func (m *MsgActivateResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -355,7 +355,7 @@ func sovTx(x uint64) (n int) {
 func sozTx(x uint64) (n int) {
 	return sovTx(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *MsgUnjail) Unmarshal(dAtA []byte) error {
+func (m *MsgActivate) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -378,10 +378,10 @@ func (m *MsgUnjail) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgUnjail: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgActivate: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgUnjail: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgActivate: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -440,7 +440,7 @@ func (m *MsgUnjail) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgUnjailResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgActivateResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -463,10 +463,10 @@ func (m *MsgUnjailResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgUnjailResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgActivateResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgUnjailResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgActivateResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
