@@ -14,14 +14,12 @@ func (k Keeper) Activate(ctx sdk.Context, validatorAddr sdk.ValAddress) error {
 	}
 
 	// cannot be activated if not jailed
-	if !validator.IsJailed() {
+	if !validator.IsInactivated() {
 		return types.ErrValidatorNotJailed
 	}
 
-	consAddr, err := validator.GetConsAddr()
-	if err != nil {
-		return err
-	}
+	consAddr := validator.GetConsAddr()
+
 	// If the validator has a ValidatorSigningInfo object that signals that the
 	// validator was bonded and so we must check that the validator is not tombstoned
 	// and can be activated at the current block.
