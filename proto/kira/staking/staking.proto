@@ -54,4 +54,6 @@ message Validator {
   ];
   google.protobuf.Any pub_key = 7
   [(cosmos_proto.accepts_interface) = "cosmos.crypto.PubKey", (gogoproto.moretags) = "yaml:\"pub_key\""];
+  bool inactivated = 8;
+  bool paused = 9;
 }

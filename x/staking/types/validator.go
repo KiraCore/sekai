@@ -62,6 +62,7 @@ func (v Validator) Validate() error {
 	return nil
 }
 
+// GetConsPubKey returns the validator PubKey as a cryptotypes.PubKey.
 func (v Validator) GetConsPubKey() crypto.PubKey {
 	pk, ok := v.PubKey.GetCachedValue().(crypto.PubKey)
 	if !ok {
@@ -69,6 +70,21 @@ func (v Validator) GetConsPubKey() crypto.PubKey {
 	}
 
 	return pk
+}
+
+// GetConsAddr extracts Consensus key address
+func (v Validator) GetConsAddr() sdk.ConsAddress {
+	return sdk.ConsAddress(v.GetConsPubKey().Address())
+}
+
+// IsInactivated returns if validator is inactivated
+func (v Validator) IsInactivated() bool {
+	return v.Inactivated
+}
+
+// IsPaused returns if validator is paused
+func (v Validator) IsPaused() bool {
+	return v.Paused
 }
 
 // TmConsPubKey casts Validator.ConsensusPubkey to crypto.PubKey
