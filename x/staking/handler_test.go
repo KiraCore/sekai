@@ -58,15 +58,14 @@ func TestNewHandler_MsgClaimValidator_HappyPath(t *testing.T) {
 	)
 	require.NoError(t, err)
 
+	validatorSet := app.CustomStakingKeeper.GetPendingValidatorSet(ctx)
+	require.Len(t, validatorSet, 0)
+
 	_, err = handler(ctx, theMsg)
 	require.NoError(t, err)
 
-	validatorSet := app.CustomStakingKeeper.GetValidatorSet(ctx)
+	validatorSet = app.CustomStakingKeeper.GetPendingValidatorSet(ctx)
 	require.Len(t, validatorSet, 1)
-	val, err := app.CustomStakingKeeper.GetValidator(ctx, valAddr1)
-	require.NoError(t, err)
-
-	validatorIsEqualThanClaimMsg(t, val, theMsg)
 }
 
 func TestNewHandler_MsgClaimValidator_ItFailsIfUserDoesNotHavePermissionsToClaimValidator(t *testing.T) {
@@ -127,20 +126,6 @@ func TestNewHandler_SetPermissions_ActorWithRole(t *testing.T) {
 	_, err = handler(ctx, theMsg)
 	require.NoError(t, err)
 
-	validatorSet := app.CustomStakingKeeper.GetValidatorSet(ctx)
+	validatorSet := app.CustomStakingKeeper.GetPendingValidatorSet(ctx)
 	require.Len(t, validatorSet, 1)
-	val, err := app.CustomStakingKeeper.GetValidator(ctx, valAddr1)
-	require.NoError(t, err)
-
-	validatorIsEqualThanClaimMsg(t, val, theMsg)
-}
-
-func validatorIsEqualThanClaimMsg(t *testing.T, val types2.Validator, msg *types2.MsgClaimValidator) {
-	require.Equal(t, msg.Moniker, val.Moniker)
-	require.Equal(t, msg.PubKey, val.PubKey)
-	require.Equal(t, msg.ValKey, val.ValKey)
-	require.Equal(t, msg.Commission, val.Commission)
-	require.Equal(t, msg.Identity, val.Identity)
-	require.Equal(t, msg.Social, val.Social)
-	require.Equal(t, msg.Website, val.Website)
 }

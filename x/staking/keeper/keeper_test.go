@@ -6,11 +6,11 @@ import (
 
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
+	app2 "github.com/KiraCore/sekai/app"
 	"github.com/KiraCore/sekai/simapp"
 	"github.com/KiraCore/sekai/x/staking/types"
 	types2 "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
-	app2 "github.com/KiraCore/sekai/app"
 )
 
 func TestMain(m *testing.M) {
@@ -110,4 +110,51 @@ func TestKeeper_GetValidatorSet(t *testing.T) {
 
 	validatorSet := app.CustomStakingKeeper.GetValidatorSet(ctx)
 	require.Equal(t, 2, len(validatorSet))
+}
+
+func TestKeeper_GetPendingValidators(t *testing.T) {
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, types2.TokensFromConsensusPower(10))
+	addr1 := addrs[0]
+	valAddr1 := types2.ValAddress(addr1)
+
+	addr2 := addrs[1]
+	valAddr2 := types2.ValAddress(addr2)
+
+	pubKey, err := types2.GetPubKeyFromBech32(types2.Bech32PubKeyTypeConsPub, "kiravalconspub1zcjduepqylc5k8r40azmw0xt7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsq4xg7em")
+	require.NoError(t, err)
+
+	validator1, err := types.NewValidator(
+		"validator 1",
+		"some-web.com",
+		"A Social",
+		"My Identity",
+		types2.NewDec(1234),
+		valAddr1,
+		pubKey,
+	)
+	require.NoError(t, err)
+
+	validator2, err := types.NewValidator(
+		"validator 2",
+		"some-web.com",
+		"A Social",
+		"My Identity",
+		types2.NewDec(1234),
+		valAddr2,
+		pubKey,
+	)
+	require.NoError(t, err)
+
+	app.CustomStakingKeeper.AddPendingValidator(ctx, validator1)
+	app.CustomStakingKeeper.AddPendingValidator(ctx, validator2)
+
+	validatorSet := app.CustomStakingKeeper.GetPendingValidatorSet(ctx)
+	require.Equal(t, 2, len(validatorSet))
+
+	app.CustomStakingKeeper.RemovePendingValidator(ctx, validator1)
+	validatorSet = app.CustomStakingKeeper.GetPendingValidatorSet(ctx)
+	require.Equal(t, 1, len(validatorSet))
 }
