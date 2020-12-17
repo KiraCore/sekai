@@ -108,3 +108,20 @@ func (k Keeper) GetPendingValidatorSet(ctx sdk.Context) []types.Validator {
 
 	return validators
 }
+
+// IterateValidators iterate through validators by operator address, execute func for each validator
+func (k Keeper) IterateValidators(sdk.Context,
+	func(index int64, validator *types.Validator) (stop bool)) {
+	// TODO: don't do anything for now, implement this
+}
+
+// GetValidatorByConsAddr get validator by sdk.ConsAddress
+func (k Keeper) GetValidatorByConsAddr(sdk.Context, sdk.ConsAddress) *types.Validator { // get a particular validator by consensus address
+	return nil
+}
+
+// MaxValidators returns the maximum amount of bonded validators
+func (k Keeper) MaxValidators(sdk.Context) uint32 {
+	// TODO: don't do anything for now, implement this
+	return 10
+}
