@@ -31,6 +31,15 @@ func (k Keeper) AddValidator(ctx sdk.Context, validator types.Validator) {
 
 	// Save by moniker
 	store.Set(GetValidatorByMonikerKey(validator.Moniker), GetValidatorKey(validator.ValKey))
+	k.AddValidatorByConsAddr(ctx, validator)
+}
+
+// validator index
+func (k Keeper) AddValidatorByConsAddr(ctx sdk.Context, validator types.Validator) {
+	consPk := validator.GetConsAddr()
+
+	store := ctx.KVStore(k.storeKey)
+	store.Set(GetValidatorByConsAddrKey(consPk), validator.ValKey)
 }
 
 func (k Keeper) AddPendingValidator(ctx sdk.Context, validator types.Validator) {
@@ -116,8 +125,19 @@ func (k Keeper) IterateValidators(sdk.Context,
 }
 
 // GetValidatorByConsAddr get validator by sdk.ConsAddress
-func (k Keeper) GetValidatorByConsAddr(sdk.Context, sdk.ConsAddress) *types.Validator { // get a particular validator by consensus address
-	return nil
+func (k Keeper) GetValidatorByConsAddr(ctx sdk.Context, consAddr sdk.ConsAddress) (types.Validator, error) {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(GetValidatorByConsAddrKey(consAddr))
+	if bz == nil {
+		return types.Validator{}, fmt.Errorf("validator not found")
+	}
+
+	validator, err := k.GetValidatorByAccAddress(ctx, bz)
+	if err != nil {
+		return types.Validator{}, err
+	}
+
+	return validator, nil
 }
 
 // MaxValidators returns the maximum amount of bonded validators

@@ -64,6 +64,11 @@ func TestKeeper_AddValidator(t *testing.T) {
 	require.NoError(t, err)
 	require.True(t, validator.Equal(getValidator))
 
+	// Get by ConsAddress
+	getByConsAddrValidator, err := app.CustomStakingKeeper.GetValidatorByConsAddr(ctx, validator.GetConsAddr())
+	require.NoError(t, err)
+	require.True(t, validator.Equal(getByConsAddrValidator))
+
 	// Non existing moniker
 	_, err = app.CustomStakingKeeper.GetValidatorByMoniker(ctx, "UnexistingMoniker")
 	require.EqualError(t, err, "validator with moniker UnexistingMoniker not found")
