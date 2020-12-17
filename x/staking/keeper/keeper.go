@@ -119,9 +119,14 @@ func (k Keeper) GetPendingValidatorSet(ctx sdk.Context) []types.Validator {
 }
 
 // IterateValidators iterate through validators by operator address, execute func for each validator
-func (k Keeper) IterateValidators(sdk.Context,
-	func(index int64, validator *types.Validator) (stop bool)) {
-	// TODO: don't do anything for now, implement this
+func (k Keeper) IterateValidators(ctx sdk.Context,
+	handler func(index int64, validator *types.Validator) (stop bool)) {
+	validators := k.GetValidatorSet(ctx)
+	for i, val := range validators {
+		if handler(int64(i), &val) {
+			break
+		}
+	}
 }
 
 // GetValidatorByConsAddr get validator by sdk.ConsAddress
