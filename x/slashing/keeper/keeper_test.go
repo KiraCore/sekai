@@ -49,7 +49,7 @@ func TestActivateNotBonded(t *testing.T) {
 	staking.EndBlocker(ctx, app.StakingKeeper)
 	ctx = ctx.WithBlockHeight(ctx.BlockHeight() + 1)
 
-	// verify that validator is jailed
+	// verify that validator is inactivated
 	tstaking.CheckValidator(addr, -1, true)
 
 	// verify we cannot activate (yet)
@@ -71,7 +71,7 @@ func TestActivateNotBonded(t *testing.T) {
 
 // Test a new validator entering the validator set
 // Ensure that SigningInfo.StartHeight is set correctly
-// and that they are not immediately jailed
+// and that they are not immediately inactivated
 func TestHandleNewValidator(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
@@ -103,9 +103,9 @@ func TestHandleNewValidator(t *testing.T) {
 	require.Equal(t, app.SlashingKeeper.SignedBlocksWindow(ctx)+1, info.StartHeight)
 	require.Equal(t, int64(2), info.IndexOffset)
 	require.Equal(t, int64(1), info.MissedBlocksCounter)
-	require.Equal(t, time.Unix(0, 0).UTC(), info.JailedUntil)
+	require.Equal(t, time.Unix(0, 0).UTC(), info.InactiveUntil)
 
-	// validator should be bonded still, should not have been jailed or slashed
+	// validator should be bonded still, should not have been inactivated or slashed
 	validator, _ := app.StakingKeeper.GetValidatorByConsAddr(ctx, sdk.GetConsAddress(val))
 	require.Equal(t, stakingtypes.Bonded, validator.GetStatus())
 	bondPool := app.StakingKeeper.GetBondedPool(ctx)
@@ -113,7 +113,7 @@ func TestHandleNewValidator(t *testing.T) {
 	require.Equal(t, expTokens.Int64(), app.BankKeeper.GetBalance(ctx, bondPool.GetAddress(), app.StakingKeeper.BondDenom(ctx)).Amount.Int64())
 }
 
-// Test a jailed validator being "down" twice
+// Test a inactivated validator being "down" twice
 // Ensure that they're only slashed once
 func TestHandleAlreadyJailed(t *testing.T) {
 	// initial setup
@@ -147,7 +147,7 @@ func TestHandleAlreadyJailed(t *testing.T) {
 	// end block
 	staking.EndBlocker(ctx, app.StakingKeeper)
 
-	// validator should have been jailed and slashed
+	// validator should have been inactivated and slashed
 	validator, _ := app.StakingKeeper.GetValidatorByConsAddr(ctx, sdk.GetConsAddress(val))
 	require.Equal(t, stakingtypes.Unbonding, validator.GetStatus())
 
@@ -220,7 +220,7 @@ func TestValidatorDippingInAndOut(t *testing.T) {
 	app.SlashingKeeper.HandleValidatorSignature(ctx, val.Address(), newPower, false)
 	height++
 
-	// shouldn't be jailed/kicked yet
+	// shouldn't be inactivated/kicked yet
 	tstaking.CheckValidator(valAddr, stakingtypes.Bonded, false)
 
 	// validator misses 500 more blocks, 501 total
@@ -230,7 +230,7 @@ func TestValidatorDippingInAndOut(t *testing.T) {
 		app.SlashingKeeper.HandleValidatorSignature(ctx, val.Address(), newPower, false)
 	}
 
-	// should now be jailed & kicked
+	// should now be inactivated & kicked
 	staking.EndBlocker(ctx, app.StakingKeeper)
 	tstaking.CheckValidator(valAddr, stakingtypes.Unbonding, true)
 
@@ -254,7 +254,7 @@ func TestValidatorDippingInAndOut(t *testing.T) {
 	app.SlashingKeeper.HandleValidatorSignature(ctx, val.Address(), newPower, true)
 	height++
 
-	// validator should not be kicked since we reset counter/array when it was jailed
+	// validator should not be kicked since we reset counter/array when it was inactivated
 	staking.EndBlocker(ctx, app.StakingKeeper)
 	tstaking.CheckValidator(valAddr, stakingtypes.Bonded, false)
 
@@ -265,7 +265,7 @@ func TestValidatorDippingInAndOut(t *testing.T) {
 		app.SlashingKeeper.HandleValidatorSignature(ctx, val.Address(), newPower, false)
 	}
 
-	// validator should now be jailed & kicked
+	// validator should now be inactivated & kicked
 	staking.EndBlocker(ctx, app.StakingKeeper)
 	tstaking.CheckValidator(valAddr, stakingtypes.Unbonding, true)
 }

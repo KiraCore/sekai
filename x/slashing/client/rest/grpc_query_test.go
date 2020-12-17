@@ -66,8 +66,8 @@ func (s *IntegrationTestSuite) TestGRPCQueries() {
 			&types.QuerySigningInfosResponse{
 				Info: []types.ValidatorSigningInfo{
 					{
-						Address:     sdk.ConsAddress(val.PubKey.Address()).String(),
-						JailedUntil: time.Unix(0, 0),
+						Address:       sdk.ConsAddress(val.PubKey.Address()).String(),
+						InactiveUntil: time.Unix(0, 0),
 					},
 				},
 				Pagination: &query.PageResponse{
@@ -85,8 +85,8 @@ func (s *IntegrationTestSuite) TestGRPCQueries() {
 			&types.QuerySigningInfoResponse{},
 			&types.QuerySigningInfoResponse{
 				ValSigningInfo: types.ValidatorSigningInfo{
-					Address:     sdk.ConsAddress(val.PubKey.Address()).String(),
-					JailedUntil: time.Unix(0, 0),
+					Address:       sdk.ConsAddress(val.PubKey.Address()).String(),
+					InactiveUntil: time.Unix(0, 0),
 				},
 			},
 		},

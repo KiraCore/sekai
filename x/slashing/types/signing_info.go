@@ -12,14 +12,14 @@ import (
 //nolint:interfacer
 func NewValidatorSigningInfo(
 	condAddr sdk.ConsAddress, startHeight, indexOffset int64,
-	jailedUntil time.Time, tombstoned bool, missedBlocksCounter int64,
+	inactivatedUntil time.Time, tombstoned bool, missedBlocksCounter int64,
 ) ValidatorSigningInfo {
 
 	return ValidatorSigningInfo{
 		Address:             condAddr.String(),
 		StartHeight:         startHeight,
 		IndexOffset:         indexOffset,
-		JailedUntil:         jailedUntil,
+		InactiveUntil:       inactivatedUntil,
 		Tombstoned:          tombstoned,
 		MissedBlocksCounter: missedBlocksCounter,
 	}
@@ -34,7 +34,7 @@ func (i ValidatorSigningInfo) String() string {
   Jailed Until:          %v
   Tombstoned:            %t
   Missed Blocks Counter: %d`,
-		i.Address, i.StartHeight, i.IndexOffset, i.JailedUntil,
+		i.Address, i.StartHeight, i.IndexOffset, i.InactiveUntil,
 		i.Tombstoned, i.MissedBlocksCounter)
 }
 

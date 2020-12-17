@@ -43,9 +43,8 @@ type StakingKeeper interface {
 	ValidatorByConsAddr(sdk.Context, sdk.ConsAddress) *stakingtypes.Validator // get a particular validator by consensus address
 
 	// slash the validator and delegators of the validator, specifying offence height, offence power, and slash fraction
-	Slash(sdk.Context, sdk.ConsAddress, int64, int64, sdk.Dec)
-	Jail(sdk.Context, sdk.ConsAddress)     // jail a validator
-	Activate(sdk.Context, sdk.ConsAddress) // activate a validator
+	Inactivate(sdk.Context, sdk.ConsAddress) // inactivate a validator
+	Activate(sdk.Context, sdk.ConsAddress)   // activate a validator
 
 	// MaxValidators returns the maximum amount of bonded validators
 	MaxValidators(sdk.Context) uint32

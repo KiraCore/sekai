@@ -90,5 +90,5 @@ func TestSlashingMsgs(t *testing.T) {
 	_, res, err := simapp.SignCheckDeliver(t, txGen, app.BaseApp, header, []sdk.Msg{activateMsg}, "", []uint64{0}, []uint64{1}, false, false, priv1)
 	require.Error(t, err)
 	require.Nil(t, res)
-	require.True(t, errors.Is(types.ErrValidatorNotJailed, err))
+	require.True(t, errors.Is(types.ErrValidatorNotInactivated, err))
 }

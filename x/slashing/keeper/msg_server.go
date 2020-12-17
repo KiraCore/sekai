@@ -21,7 +21,7 @@ var _ types.MsgServer = msgServer{}
 
 // Activate implements MsgServer.Activate method.
 // Validators must submit a transaction to activate itself after
-// having been jailed (and thus unbonded) for downtime
+// having been inactivated (and thus unbonded) for downtime
 func (k msgServer) Activate(goCtx context.Context, msg *types.MsgActivate) (*types.MsgActivateResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 

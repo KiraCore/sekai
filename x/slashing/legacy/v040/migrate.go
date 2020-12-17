@@ -24,7 +24,7 @@ func Migrate(oldGenState v039slashing.GenesisState) *v040slashing.GenesisState {
 				Address:             signingInfo.Address.String(),
 				StartHeight:         signingInfo.StartHeight,
 				IndexOffset:         signingInfo.IndexOffset,
-				JailedUntil:         signingInfo.JailedUntil,
+				InactiveUntil:       signingInfo.InactiveUntil,
 				Tombstoned:          signingInfo.Tombstoned,
 				MissedBlocksCounter: signingInfo.MissedBlocksCounter,
 			},

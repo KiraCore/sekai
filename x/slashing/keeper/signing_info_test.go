@@ -32,7 +32,7 @@ func TestGetSetValidatorSigningInfo(t *testing.T) {
 	require.True(t, found)
 	require.Equal(t, info.StartHeight, int64(4))
 	require.Equal(t, info.IndexOffset, int64(3))
-	require.Equal(t, info.JailedUntil, time.Unix(2, 0).UTC())
+	require.Equal(t, info.InactiveUntil, time.Unix(2, 0).UTC())
 	require.Equal(t, info.MissedBlocksCounter, int64(10))
 }
 
@@ -92,5 +92,5 @@ func TestJailUntil(t *testing.T) {
 
 	info, ok := app.SlashingKeeper.GetValidatorSigningInfo(ctx, sdk.ConsAddress(addrDels[0]))
 	require.True(t, ok)
-	require.Equal(t, time.Unix(253402300799, 0).UTC(), info.JailedUntil)
+	require.Equal(t, time.Unix(253402300799, 0).UTC(), info.InactiveUntil)
 }

@@ -106,7 +106,7 @@ func TestMigrate(t *testing.T) {
       "validator_signing_info": {
         "address": "cosmosvalcons104cjmxkrg8y8lmrp25de02e4zf00zle4mzs685",
         "index_offset": "2",
-        "jailed_until": "0001-01-01T00:00:00Z",
+        "inactivated_until": "0001-01-01T00:00:00Z",
         "missed_blocks_counter": "2",
         "start_height": "0",
         "tombstoned": false
@@ -117,7 +117,7 @@ func TestMigrate(t *testing.T) {
       "validator_signing_info": {
         "address": "cosmosvalcons10e4c5p6qk0sycy9u6u43t7csmlx9fyadr9yxph",
         "index_offset": "615501",
-        "jailed_until": "0001-01-01T00:00:00Z",
+        "inactivated_until": "0001-01-01T00:00:00Z",
         "missed_blocks_counter": "1",
         "start_height": "0",
         "tombstoned": false

@@ -101,7 +101,7 @@ func (k Keeper) GetValidatorMissedBlocks(ctx sdk.Context, address sdk.ConsAddres
 	return missedBlocks
 }
 
-// JailUntil attempts to set a validator's JailedUntil attribute in its signing
+// JailUntil attempts to set a validator's InactiveUntil attribute in its signing
 // info. It will panic if the signing info does not exist for the validator.
 func (k Keeper) JailUntil(ctx sdk.Context, consAddr sdk.ConsAddress, jailTime time.Time) {
 	signInfo, ok := k.GetValidatorSigningInfo(ctx, consAddr)
@@ -109,7 +109,7 @@ func (k Keeper) JailUntil(ctx sdk.Context, consAddr sdk.ConsAddress, jailTime ti
 		panic("cannot jail validator that does not have any signing information")
 	}
 
-	signInfo.JailedUntil = jailTime
+	signInfo.InactiveUntil = jailTime
 	k.SetValidatorSigningInfo(ctx, consAddr, signInfo)
 }
 

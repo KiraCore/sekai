@@ -10,7 +10,7 @@ const (
 	AttributeKeyHeight       = "height"
 	AttributeKeyPower        = "power"
 	AttributeKeyReason       = "reason"
-	AttributeKeyJailed       = "jailed"
+	AttributeKeyInactivated  = "inactivated"
 	AttributeKeyMissedBlocks = "missed_blocks"
 
 	AttributeValueDoubleSign       = "double_sign"

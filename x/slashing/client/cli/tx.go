@@ -28,8 +28,8 @@ func NewActivateTxCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "activate",
 		Args:  cobra.NoArgs,
-		Short: "activate validator previously jailed for downtime",
-		Long: `activate a jailed validator:
+		Short: "activate validator previously inactivated for downtime",
+		Long: `activate an inactivated validator:
 
 $ <appd> tx slashing activate --from mykey
 `,

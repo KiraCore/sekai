@@ -38,7 +38,7 @@ type ValidatorSigningInfo struct {
 	// index offset into signed block bit array
 	IndexOffset int64 `protobuf:"varint,3,opt,name=index_offset,json=indexOffset,proto3" json:"index_offset,omitempty" yaml:"index_offset"`
 	// timestamp validator cannot be activated until
-	JailedUntil time.Time `protobuf:"bytes,4,opt,name=jailed_until,json=jailedUntil,proto3,stdtime" json:"jailed_until" yaml:"jailed_until"`
+	InactiveUntil time.Time `protobuf:"bytes,4,opt,name=inactivated_until,json=inactivatedUntil,proto3,stdtime" json:"inactivated_until" yaml:"inactivated_until"`
 	// whether or not a validator has been tombstoned (killed out of validator
 	// set)
 	Tombstoned bool `protobuf:"varint,5,opt,name=tombstoned,proto3" json:"tombstoned,omitempty"`
@@ -99,9 +99,9 @@ func (m *ValidatorSigningInfo) GetIndexOffset() int64 {
 	return 0
 }
 
-func (m *ValidatorSigningInfo) GetJailedUntil() time.Time {
+func (m *ValidatorSigningInfo) GetInactiveUntil() time.Time {
 	if m != nil {
-		return m.JailedUntil
+		return m.InactiveUntil
 	}
 	return time.Time{}
 }
@@ -257,7 +257,7 @@ func (this *ValidatorSigningInfo) Equal(that interface{}) bool {
 	if this.IndexOffset != that1.IndexOffset {
 		return false
 	}
-	if !this.JailedUntil.Equal(that1.JailedUntil) {
+	if !this.InactiveUntil.Equal(that1.InactiveUntil) {
 		return false
 	}
 	if this.Tombstoned != that1.Tombstoned {
@@ -339,7 +339,7 @@ func (m *ValidatorSigningInfo) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x28
 	}
-	n1, err1 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.JailedUntil, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.JailedUntil):])
+	n1, err1 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.InactiveUntil, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.InactiveUntil):])
 	if err1 != nil {
 		return 0, err1
 	}
@@ -460,7 +460,7 @@ func (m *ValidatorSigningInfo) Size() (n int) {
 	if m.IndexOffset != 0 {
 		n += 1 + sovSlashing(uint64(m.IndexOffset))
 	}
-	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.JailedUntil)
+	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.InactiveUntil)
 	n += 1 + l + sovSlashing(uint64(l))
 	if m.Tombstoned {
 		n += 2
@@ -598,7 +598,7 @@ func (m *ValidatorSigningInfo) Unmarshal(dAtA []byte) error {
 			}
 		case 4:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field JailedUntil", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field InactiveUntil", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -625,7 +625,7 @@ func (m *ValidatorSigningInfo) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.JailedUntil, dAtA[iNdEx:postIndex]); err != nil {
+			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.InactiveUntil, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

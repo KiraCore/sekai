@@ -44,7 +44,7 @@ func TestCannotActivateUnlessInactivated(t *testing.T) {
 	res, err := slh(ctx, types.NewMsgActivate(addr))
 	require.Error(t, err)
 	require.Nil(t, res)
-	require.True(t, errors.Is(types.ErrValidatorNotJailed, err))
+	require.True(t, errors.Is(types.ErrValidatorNotInactivated, err))
 }
 
 func TestInvalidMsg(t *testing.T) {
@@ -87,7 +87,7 @@ func TestHandleAbsentValidator(t *testing.T) {
 	require.Equal(t, int64(0), info.StartHeight)
 	require.Equal(t, int64(0), info.IndexOffset)
 	require.Equal(t, int64(0), info.MissedBlocksCounter)
-	require.Equal(t, time.Unix(0, 0).UTC(), info.JailedUntil)
+	require.Equal(t, time.Unix(0, 0).UTC(), info.InactiveUntil)
 	height := int64(0)
 
 	// 1000 first blocks OK
@@ -129,7 +129,7 @@ func TestHandleAbsentValidator(t *testing.T) {
 	// end block
 	staking.EndBlocker(ctx, app.StakingKeeper)
 
-	// validator should have been jailed
+	// validator should have been inactivated
 	validator, _ = app.StakingKeeper.GetValidatorByConsAddr(ctx, sdk.GetConsAddress(val))
 	require.Equal(t, stakingtypes.Unbonding, validator.GetStatus())
 
@@ -150,7 +150,7 @@ func TestHandleAbsentValidator(t *testing.T) {
 	// end block
 	staking.EndBlocker(ctx, app.StakingKeeper)
 
-	// validator should not have been slashed any more, since it was already jailed
+	// validator should not have been slashed any more, since it was already inactivated
 	validator, _ = app.StakingKeeper.GetValidatorByConsAddr(ctx, sdk.GetConsAddress(val))
 	require.Equal(t, amt.Int64()-slashAmt, validator.GetTokens().Int64())
 
@@ -182,7 +182,7 @@ func TestHandleAbsentValidator(t *testing.T) {
 	// we've missed 2 blocks more than the maximum, so the counter was reset to 0 at 1 block more and is now 1
 	require.Equal(t, int64(1), info.MissedBlocksCounter)
 
-	// validator should not be immediately jailed again
+	// validator should not be immediately inactivated again
 	height++
 	ctx = ctx.WithBlockHeight(height)
 	app.SlashingKeeper.HandleValidatorSignature(ctx, val.Address(), power, false)
@@ -199,7 +199,7 @@ func TestHandleAbsentValidator(t *testing.T) {
 	// end block
 	staking.EndBlocker(ctx, app.StakingKeeper)
 
-	// validator should be jailed again after 500 unsigned blocks
+	// validator should be inactivated again after 500 unsigned blocks
 	nextHeight = height + app.SlashingKeeper.MinSignedPerWindow(ctx) + 1
 	for ; height <= nextHeight; height++ {
 		ctx = ctx.WithBlockHeight(height)
