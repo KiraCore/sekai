@@ -122,8 +122,15 @@ func TestKeeper_GetValidatorSet(t *testing.T) {
 		passed++
 		return false
 	})
-
 	require.Equal(t, 2, passed)
+
+	// Iterate validators with stop
+	passed = 0
+	app.CustomStakingKeeper.IterateValidators(ctx, func(index int64, validator *types.Validator) (stop bool) {
+		passed++
+		return true
+	})
+	require.Equal(t, 1, passed)
 }
 
 func TestKeeper_GetPendingValidators(t *testing.T) {
