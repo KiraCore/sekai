@@ -39,8 +39,8 @@ type StakingKeeper interface {
 	IterateValidators(sdk.Context,
 		func(index int64, validator *stakingtypes.Validator) (stop bool))
 
-	GetValidator(sdk.Context, sdk.ValAddress) *stakingtypes.Validator            // get a particular validator by operator address
-	GetValidatorByConsAddr(sdk.Context, sdk.ConsAddress) *stakingtypes.Validator // get a particular validator by consensus address
+	GetValidator(sdk.Context, sdk.ValAddress) (stakingtypes.Validator, error)            // get a particular validator by operator address
+	GetValidatorByConsAddr(sdk.Context, sdk.ConsAddress) (stakingtypes.Validator, error) // get a particular validator by consensus address
 
 	// slash the validator and delegators of the validator, specifying offence height, offence power, and slash fraction
 	Inactivate(sdk.Context, sdk.ConsAddress) // inactivate a validator

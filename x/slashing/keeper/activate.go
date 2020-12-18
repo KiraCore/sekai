@@ -8,8 +8,8 @@ import (
 // Activate calls the staking Activate function to activate a validator if the
 // inactivated period has concluded
 func (k Keeper) Activate(ctx sdk.Context, validatorAddr sdk.ValAddress) error {
-	validator := k.sk.GetValidator(ctx, validatorAddr)
-	if validator == nil {
+	validator, err := k.sk.GetValidator(ctx, validatorAddr)
+	if err != nil {
 		return types.ErrNoValidatorForAddress
 	}
 
