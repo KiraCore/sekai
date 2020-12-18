@@ -64,6 +64,11 @@ func TestKeeper_AddValidator(t *testing.T) {
 	require.NoError(t, err)
 	require.True(t, validator.Equal(getValidator))
 
+	// Get by ConsAddress
+	getByConsAddrValidator, err := app.CustomStakingKeeper.GetValidatorByConsAddr(ctx, validator.GetConsAddr())
+	require.NoError(t, err)
+	require.True(t, validator.Equal(getByConsAddrValidator))
+
 	// Non existing moniker
 	_, err = app.CustomStakingKeeper.GetValidatorByMoniker(ctx, "UnexistingMoniker")
 	require.EqualError(t, err, "validator with moniker UnexistingMoniker not found")
@@ -110,6 +115,22 @@ func TestKeeper_GetValidatorSet(t *testing.T) {
 
 	validatorSet := app.CustomStakingKeeper.GetValidatorSet(ctx)
 	require.Equal(t, 2, len(validatorSet))
+
+	// Iterate validators
+	passed := 0
+	app.CustomStakingKeeper.IterateValidators(ctx, func(index int64, validator *types.Validator) (stop bool) {
+		passed++
+		return false
+	})
+	require.Equal(t, 2, passed)
+
+	// Iterate validators with stop
+	passed = 0
+	app.CustomStakingKeeper.IterateValidators(ctx, func(index int64, validator *types.Validator) (stop bool) {
+		passed++
+		return true
+	})
+	require.Equal(t, 1, passed)
 }
 
 func TestKeeper_GetPendingValidators(t *testing.T) {

@@ -25,6 +25,7 @@ func NewValidator(moniker string, website string, social string,
 		Commission: comission,
 		ValKey:     valKey,
 		PubKey:     pkAny,
+		Status:     Active,
 	}
 
 	err = v.Validate()
@@ -79,12 +80,17 @@ func (v Validator) GetConsAddr() sdk.ConsAddress {
 
 // IsInactivated returns if validator is inactivated
 func (v Validator) IsInactivated() bool {
-	return v.Inactivated
+	return v.Status == Inactive
 }
 
 // IsPaused returns if validator is paused
 func (v Validator) IsPaused() bool {
-	return v.Paused
+	return v.Status == Paused
+}
+
+// IsActive returns if validator is active
+func (v Validator) IsActive() bool {
+	return v.Status == Active
 }
 
 // TmConsPubKey casts Validator.ConsensusPubkey to crypto.PubKey

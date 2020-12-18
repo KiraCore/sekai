@@ -36,6 +36,22 @@ message MsgClaimValidator {
 // MsgClaimValidatorResponse defines the Msg/ClaimValidator response type.
 message MsgClaimValidatorResponse {}
 
+enum ValidatorStatus {
+  option (gogoproto.goproto_enum_prefix) = false;
+
+  // Undefined status
+  UNDEFINED = 0 [(gogoproto.enumvalue_customname) = "Undefined"];
+
+  // Active status
+  ACTIVE = 1 [(gogoproto.enumvalue_customname) = "Active"];
+
+  // Inactive status
+  INACTIVE = 2 [(gogoproto.enumvalue_customname) = "Inactive"];
+
+  // Paused status
+  PAUSED = 3 [(gogoproto.enumvalue_customname) = "Paused"];
+}
+
 message Validator {
   option (gogoproto.equal)            = true;
 
@@ -54,6 +70,5 @@ message Validator {
   ];
   google.protobuf.Any pub_key = 7
   [(cosmos_proto.accepts_interface) = "cosmos.crypto.PubKey", (gogoproto.moretags) = "yaml:\"pub_key\""];
-  bool inactivated = 8;
-  bool paused = 9;
+  ValidatorStatus status = 8;
 }

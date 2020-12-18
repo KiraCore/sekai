@@ -7,9 +7,10 @@ import sdk "github.com/cosmos/cosmos-sdk/types"
 // 0x01<moniker_bytes> : The Key of the Validator.
 // 0x02<ValAddress> : The Validator
 var (
-	ValidatorsKey          = []byte{0x00} // Validators key prefix.
-	ValidatorsByMonikerKey = []byte{0x01} // Validators by moniker prefix.
-	PendingValidatorQueue  = []byte{0x02} // Validators that are pending to join into the end blocker.
+	ValidatorsKey              = []byte{0x00} // Validators key prefix.
+	ValidatorsByMonikerKey     = []byte{0x01} // Validators by moniker prefix.
+	ValidatorsByConsAddressKey = []byte{0x02} // Validators by consensus addres (PubKey).
+	PendingValidatorQueue      = []byte{0x03} // Validators that are pending to join into the end blocker.
 )
 
 // GetValidatorKey gets the key for the validator with address
@@ -23,6 +24,10 @@ func GetValidatorKeyAcc(address sdk.AccAddress) []byte {
 
 func GetValidatorByMonikerKey(moniker string) []byte {
 	return append(ValidatorsByMonikerKey, []byte(moniker)...)
+}
+
+func GetValidatorByConsAddrKey(addr sdk.ConsAddress) []byte {
+	return append(ValidatorsByMonikerKey, addr.Bytes()...)
 }
 
 func GetPendingValidatorKey(operatorAddress sdk.ValAddress) []byte {
