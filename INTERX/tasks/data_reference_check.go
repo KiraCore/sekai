@@ -1,12 +1,10 @@
 package tasks
 
 import (
+	"encoding/json"
 	"fmt"
-	"io"
-	"log"
+	"io/ioutil"
 	"net/http"
-	"os"
-	"path"
 	"strconv"
 	"time"
 
@@ -18,6 +16,12 @@ import (
 type RefMeta struct {
 	ContentLength int64     `json:"content_length"`
 	LastModified  time.Time `json:"last_modified"`
+}
+
+// RefCache is a struct to be used for saving reference metadata
+type RefCache struct {
+	Path   string      `json:"path"`
+	Header http.Header `json:"header"`
 }
 
 var references = make(map[string]RefMeta)
@@ -43,29 +47,66 @@ func getMeta(url string) (*RefMeta, error) {
 	}, nil
 }
 
-func saveReference(url string, dir string) error {
+func saveReference(url string, path string) error {
 	resp, err := http.Get(url)
 	if err != nil {
 		return err
 	}
 	defer resp.Body.Close()
 
-	common.Mutex.Lock()
+	if resp.StatusCode == http.StatusOK {
+		bodyBytes, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return err
+		}
 
-	file, err := os.Create(dir + path.Base(url))
-	if err != nil {
-		return err
+		common.Mutex.Lock()
+
+		err = ioutil.WriteFile(path, bodyBytes, 0644)
+		if err != nil {
+			return err
+		}
+
+		common.Mutex.Unlock()
+
+		cache := RefCache{
+			Path:   path,
+			Header: resp.Header,
+		}
+
+		data, err := json.Marshal(cache)
+		if err != nil {
+			return err
+		}
+
+		common.Mutex.Lock()
+
+		err = ioutil.WriteFile(path+".meta", data, 0644)
+		if err != nil {
+			return err
+		}
+
+		common.Mutex.Unlock()
 	}
-	defer file.Close()
-
-	_, err = io.Copy(file, resp.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	common.Mutex.Unlock()
 
 	return nil
+}
+
+// LoadRefCacheMeta is a function to load reference cache
+func LoadRefCacheMeta(key string) (RefCache, error) {
+	filePath := interx.Config.CacheDir + "/reference/" + key + ".meta"
+
+	common.Mutex.Lock()
+	data, err := ioutil.ReadFile(filePath)
+	common.Mutex.Unlock()
+
+	cache := RefCache{}
+
+	if err == nil {
+		err = json.Unmarshal([]byte(data), &cache)
+	}
+
+	return cache, err
 }
 
 // DataReferenceCheck is a function to check cache data for data references.
@@ -77,17 +118,24 @@ func DataReferenceCheck(isLog bool) {
 				continue
 			}
 
+			// Check if reference has changed (check length and last modified)
 			if references[k].ContentLength == ref.ContentLength && ref.LastModified.Equal(references[k].LastModified) {
 				continue
 			}
 
-			if isLog {
-				fmt.Println(k, "(", v.Reference, ") - ContentLength: ", ref.ContentLength, " Last Modified", ref.LastModified)
+			fmt.Println(ref, interx.Config.DownloadFileSizeLimitation)
+			// Check the download file size limitation
+			if ref.ContentLength > interx.Config.DownloadFileSizeLimitation {
+				continue
 			}
 
-			err = saveReference(v.Reference, interx.Config.CacheDir+"/reference/")
+			err = saveReference(v.Reference, interx.Config.CacheDir+"/reference/"+k)
 			if err != nil {
 				continue
+			}
+
+			if isLog {
+				fmt.Println("save response: (key - " + k + ", ref - " + v.Reference + ")")
 			}
 
 			references[k] = RefMeta{

@@ -450,7 +450,7 @@ func QueryWithdraws(rpcAddr string) http.HandlerFunc {
 		statusCode := http.StatusOK
 
 		if !rpcMethods[GET][queryWithdraws].Enabled {
-			response.Response, response.Error, statusCode = ServeError(0, "", "", http.StatusForbidden)
+			response.Response, response.Error, statusCode = ServeError(0, "", "API disabled", http.StatusForbidden)
 		} else {
 			if rpcMethods[GET][queryWithdraws].CachingEnabled {
 				found, cacheResponse, cacheError, cacheStatus := SearchCache(request, response)
@@ -476,7 +476,7 @@ func QueryDeposits(rpcAddr string) http.HandlerFunc {
 		statusCode := http.StatusOK
 
 		if !rpcMethods[GET][queryDeposits].Enabled {
-			response.Response, response.Error, statusCode = ServeError(0, "", "", http.StatusForbidden)
+			response.Response, response.Error, statusCode = ServeError(0, "", "API disabled", http.StatusForbidden)
 		} else {
 			if rpcMethods[GET][queryDeposits].CachingEnabled {
 				found, cacheResponse, cacheError, cacheStatus := SearchCache(request, response)

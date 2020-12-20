@@ -49,7 +49,7 @@ func QueryAccountsRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.Ha
 		statusCode := http.StatusOK
 
 		if !rpcMethods[GET][queryAccounts].Enabled {
-			response.Response, response.Error, statusCode = ServeError(0, "", "", http.StatusForbidden)
+			response.Response, response.Error, statusCode = ServeError(0, "", "API disabled", http.StatusForbidden)
 		} else {
 			if rpcMethods[GET][queryAccounts].CachingEnabled {
 				found, cacheResponse, cacheError, cacheStatus := SearchCache(request, response)
