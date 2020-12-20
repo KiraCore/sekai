@@ -80,7 +80,7 @@ func PostTxRequest(rpcAddr string) http.HandlerFunc {
 		statusCode := http.StatusOK
 
 		if !rpcMethods[POST][postTransaction].Enabled {
-			response.Response, response.Error, statusCode = ServeError(0, "", "", http.StatusForbidden)
+			response.Response, response.Error, statusCode = ServeError(0, "", "API disabled", http.StatusForbidden)
 		} else {
 			response.Response, response.Error, statusCode = postTxHandle(r, request, rpcAddr)
 		}
@@ -107,7 +107,7 @@ func QueryTxHashRequest(rpcAddr string) http.HandlerFunc {
 		statusCode := http.StatusOK
 
 		if !rpcMethods[GET][queryTransactionHash].Enabled {
-			response.Response, response.Error, statusCode = ServeError(0, "", "", http.StatusForbidden)
+			response.Response, response.Error, statusCode = ServeError(0, "", "API disabled", http.StatusForbidden)
 		} else {
 			if rpcMethods[GET][queryTransactionHash].CachingEnabled {
 				found, cacheResponse, cacheError, cacheStatus := SearchCache(request, response)
@@ -160,7 +160,7 @@ func EncodeTransaction(rpcAddr string) http.HandlerFunc {
 		statusCode := http.StatusOK
 
 		if !rpcMethods[POST][encodeTransaction].Enabled {
-			response.Response, response.Error, statusCode = ServeError(0, "", "", http.StatusForbidden)
+			response.Response, response.Error, statusCode = ServeError(0, "", "API disabled", http.StatusForbidden)
 		} else {
 			if rpcMethods[POST][encodeTransaction].CachingEnabled {
 				found, cacheResponse, cacheError, cacheStatus := SearchCache(request, response)

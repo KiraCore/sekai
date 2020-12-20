@@ -59,7 +59,7 @@ func QueryDataReferenceKeysRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string
 		statusCode := http.StatusOK
 
 		if !rpcMethods[GET][queryDataReferenceKeys].Enabled {
-			response.Response, response.Error, statusCode = ServeError(0, "", "", http.StatusForbidden)
+			response.Response, response.Error, statusCode = ServeError(0, "", "API disabled", http.StatusForbidden)
 		} else {
 			if rpcMethods[GET][queryDataReferenceKeys].CachingEnabled {
 				found, cacheResponse, cacheError, cacheStatus := SearchCache(request, response)
@@ -111,7 +111,7 @@ func QueryDataReferenceRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string) ht
 		statusCode := http.StatusOK
 
 		if !rpcMethods[GET][queryDataReference].Enabled {
-			response.Response, response.Error, statusCode = ServeError(0, "", "", http.StatusForbidden)
+			response.Response, response.Error, statusCode = ServeError(0, "", "API disabled", http.StatusForbidden)
 		} else {
 			if rpcMethods[GET][queryDataReference].CachingEnabled {
 				found, cacheResponse, cacheError, cacheStatus := SearchCache(request, response)

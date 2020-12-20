@@ -53,7 +53,7 @@ func QueryStatusRequest(rpcAddr string) http.HandlerFunc {
 		statusCode := http.StatusOK
 
 		if !rpcMethods[GET][queryStatus].Enabled {
-			response.Response, response.Error, statusCode = ServeError(0, "", "", http.StatusForbidden)
+			response.Response, response.Error, statusCode = ServeError(0, "", "API disabled", http.StatusForbidden)
 		} else {
 			if rpcMethods[GET][queryStatus].CachingEnabled {
 				found, cacheResponse, cacheError, cacheStatus := SearchCache(request, response)
