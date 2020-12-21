@@ -30,7 +30,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://0.0.0.0:11000/api/kira/status",
+					"raw": "http://0.0.0.0:11000/api/status",
 					"protocol": "http",
 					"host": [
 						"0",
@@ -41,7 +41,6 @@
 					"port": "11000",
 					"path": [
 						"api",
-						"kira",
 						"status"
 					]
 				}
