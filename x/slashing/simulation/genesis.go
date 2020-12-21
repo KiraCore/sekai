@@ -16,11 +16,9 @@ import (
 
 // Simulation parameter constants
 const (
-	SignedBlocksWindow      = "signed_blocks_window"
-	MinSignedPerWindow      = "min_signed_per_window"
-	DowntimeJailDuration    = "downtime_jail_duration"
-	SlashFractionDoubleSign = "slash_fraction_double_sign"
-	SlashFractionDowntime   = "slash_fraction_downtime"
+	SignedBlocksWindow   = "signed_blocks_window"
+	MinSignedPerWindow   = "min_signed_per_window"
+	DowntimeJailDuration = "downtime_jail_duration"
 )
 
 // GenSignedBlocksWindow randomized SignedBlocksWindow
@@ -36,16 +34,6 @@ func GenMinSignedPerWindow(r *rand.Rand) sdk.Dec {
 // GenDowntimeJailDuration randomized DowntimeJailDuration
 func GenDowntimeJailDuration(r *rand.Rand) time.Duration {
 	return time.Duration(simulation.RandIntBetween(r, 60, 60*60*24)) * time.Second
-}
-
-// GenSlashFractionDoubleSign randomized SlashFractionDoubleSign
-func GenSlashFractionDoubleSign(r *rand.Rand) sdk.Dec {
-	return sdk.NewDec(1).Quo(sdk.NewDec(int64(r.Intn(50) + 1)))
-}
-
-// GenSlashFractionDowntime randomized SlashFractionDowntime
-func GenSlashFractionDowntime(r *rand.Rand) sdk.Dec {
-	return sdk.NewDec(1).Quo(sdk.NewDec(int64(r.Intn(200) + 1)))
 }
 
 // RandomizedGenState generates a random GenesisState for slashing
@@ -68,21 +56,8 @@ func RandomizedGenState(simState *module.SimulationState) {
 		func(r *rand.Rand) { downtimeJailDuration = GenDowntimeJailDuration(r) },
 	)
 
-	var slashFractionDoubleSign sdk.Dec
-	simState.AppParams.GetOrGenerate(
-		simState.Cdc, SlashFractionDoubleSign, &slashFractionDoubleSign, simState.Rand,
-		func(r *rand.Rand) { slashFractionDoubleSign = GenSlashFractionDoubleSign(r) },
-	)
-
-	var slashFractionDowntime sdk.Dec
-	simState.AppParams.GetOrGenerate(
-		simState.Cdc, SlashFractionDowntime, &slashFractionDowntime, simState.Rand,
-		func(r *rand.Rand) { slashFractionDowntime = GenSlashFractionDowntime(r) },
-	)
-
 	params := types.NewParams(
 		signedBlocksWindow, minSignedPerWindow, downtimeJailDuration,
-		slashFractionDoubleSign, slashFractionDowntime,
 	)
 
 	slashingGenesis := types.NewGenesisState(params, []types.SigningInfo{}, []types.ValidatorMissedBlocks{})

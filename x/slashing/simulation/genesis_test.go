@@ -42,12 +42,8 @@ func TestRandomizedGenState(t *testing.T) {
 	simState.Cdc.MustUnmarshalJSON(simState.GenState[types.ModuleName], &slashingGenesis)
 
 	dec1, _ := sdk.NewDecFromStr("0.600000000000000000")
-	dec2, _ := sdk.NewDecFromStr("0.022222222222222222")
-	dec3, _ := sdk.NewDecFromStr("0.008928571428571429")
 
 	require.Equal(t, dec1, slashingGenesis.Params.MinSignedPerWindow)
-	require.Equal(t, dec2, slashingGenesis.Params.SlashFractionDoubleSign)
-	require.Equal(t, dec3, slashingGenesis.Params.SlashFractionDowntime)
 	require.Equal(t, int64(720), slashingGenesis.Params.SignedBlocksWindow)
 	require.Equal(t, time.Duration(34800000000000), slashingGenesis.Params.DowntimeJailDuration)
 	require.Len(t, slashingGenesis.MissedBlocks, 0)

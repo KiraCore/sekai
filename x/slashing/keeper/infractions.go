@@ -77,7 +77,7 @@ func (k Keeper) HandleValidatorSignature(ctx sdk.Context, addr crypto.Address, p
 
 			ctx.EventManager().EmitEvent(
 				sdk.NewEvent(
-					types.EventTypeSlash,
+					types.EventTypeInactivate,
 					sdk.NewAttribute(types.AttributeKeyAddress, consAddr.String()),
 					sdk.NewAttribute(types.AttributeKeyPower, fmt.Sprintf("%d", power)),
 					sdk.NewAttribute(types.AttributeKeyReason, types.AttributeValueMissingSignature),
@@ -88,14 +88,14 @@ func (k Keeper) HandleValidatorSignature(ctx sdk.Context, addr crypto.Address, p
 
 			signInfo.InactiveUntil = ctx.BlockHeader().Time.Add(k.DowntimeJailDuration(ctx))
 
-			// We need to reset the counter & array so that the validator won't be immediately slashed for downtime upon rebonding.
+			// We need to reset the counter & array so that the validator won't be immediately inactivated for downtime upon rebonding.
 			signInfo.MissedBlocksCounter = 0
 			signInfo.IndexOffset = 0
 			k.clearValidatorMissedBlockBitArray(ctx, consAddr)
 		} else {
 			// Validator was (a) not found or (b) already inactivated, don't slash
 			logger.Info(
-				fmt.Sprintf("Validator %s would have been slashed for downtime, but was either not found in store or already inactivated", consAddr),
+				fmt.Sprintf("Validator %s would have been inactivated for downtime, but was either not found in store or already inactivated", consAddr),
 			)
 		}
 	}

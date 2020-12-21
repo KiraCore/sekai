@@ -42,7 +42,7 @@ type StakingKeeper interface {
 	GetValidator(sdk.Context, sdk.ValAddress) (stakingtypes.Validator, error)            // get a particular validator by operator address
 	GetValidatorByConsAddr(sdk.Context, sdk.ConsAddress) (stakingtypes.Validator, error) // get a particular validator by consensus address
 
-	// slash the validator and delegators of the validator, specifying offence height, offence power, and slash fraction
+	// activate/inactivate the validator and delegators of the validator, specifying offence height, offence power, and slash fraction
 	Inactivate(sdk.Context, sdk.ConsAddress) // inactivate a validator
 	Activate(sdk.Context, sdk.ConsAddress)   // activate a validator
 

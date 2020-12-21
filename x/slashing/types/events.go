@@ -3,8 +3,8 @@ package types
 
 // Slashing module event types
 const (
-	EventTypeSlash    = "slash"
-	EventTypeLiveness = "liveness"
+	EventTypeInactivate = "inactivate"
+	EventTypeLiveness   = "liveness"
 
 	AttributeKeyAddress      = "address"
 	AttributeKeyHeight       = "height"

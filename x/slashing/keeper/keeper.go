@@ -76,7 +76,7 @@ func (k Keeper) GetPubkey(ctx sdk.Context, address crypto.Address) (crypto.PubKe
 func (k Keeper) Inactivate(ctx sdk.Context, consAddr sdk.ConsAddress) {
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
-			types.EventTypeSlash,
+			types.EventTypeInactivate,
 			sdk.NewAttribute(types.AttributeKeyInactivated, consAddr.String()),
 		),
 	)

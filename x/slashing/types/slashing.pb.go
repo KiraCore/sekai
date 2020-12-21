@@ -122,11 +122,9 @@ func (m *ValidatorSigningInfo) GetMissedBlocksCounter() int64 {
 
 // Params represents the parameters used for by the slashing module.
 type Params struct {
-	SignedBlocksWindow      int64                                  `protobuf:"varint,1,opt,name=signed_blocks_window,json=signedBlocksWindow,proto3" json:"signed_blocks_window,omitempty" yaml:"signed_blocks_window"`
-	MinSignedPerWindow      github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,2,opt,name=min_signed_per_window,json=minSignedPerWindow,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"min_signed_per_window" yaml:"min_signed_per_window"`
-	DowntimeJailDuration    time.Duration                          `protobuf:"bytes,3,opt,name=downtime_jail_duration,json=downtimeJailDuration,proto3,stdduration" json:"downtime_jail_duration" yaml:"downtime_jail_duration"`
-	SlashFractionDoubleSign github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,4,opt,name=slash_fraction_double_sign,json=slashFractionDoubleSign,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"slash_fraction_double_sign" yaml:"slash_fraction_double_sign"`
-	SlashFractionDowntime   github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,5,opt,name=slash_fraction_downtime,json=slashFractionDowntime,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"slash_fraction_downtime" yaml:"slash_fraction_downtime"`
+	SignedBlocksWindow   int64                                  `protobuf:"varint,1,opt,name=signed_blocks_window,json=signedBlocksWindow,proto3" json:"signed_blocks_window,omitempty" yaml:"signed_blocks_window"`
+	MinSignedPerWindow   github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,2,opt,name=min_signed_per_window,json=minSignedPerWindow,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"min_signed_per_window" yaml:"min_signed_per_window"`
+	DowntimeJailDuration time.Duration                          `protobuf:"bytes,3,opt,name=downtime_jail_duration,json=downtimeJailDuration,proto3,stdduration" json:"downtime_jail_duration" yaml:"downtime_jail_duration"`
 }
 
 func (m *Params) Reset()         { *m = Params{} }
@@ -296,12 +294,6 @@ func (this *Params) Equal(that interface{}) bool {
 	if this.DowntimeJailDuration != that1.DowntimeJailDuration {
 		return false
 	}
-	if !this.SlashFractionDoubleSign.Equal(that1.SlashFractionDoubleSign) {
-		return false
-	}
-	if !this.SlashFractionDowntime.Equal(that1.SlashFractionDowntime) {
-		return false
-	}
 	return true
 }
 func (m *ValidatorSigningInfo) Marshal() (dAtA []byte, err error) {
@@ -387,24 +379,6 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	{
-		size := m.SlashFractionDowntime.Size()
-		i -= size
-		if _, err := m.SlashFractionDowntime.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintSlashing(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0x2a
-	{
-		size := m.SlashFractionDoubleSign.Size()
-		i -= size
-		if _, err := m.SlashFractionDoubleSign.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintSlashing(dAtA, i, uint64(size))
-	}
 	i--
 	dAtA[i] = 0x22
 	n2, err2 := github_com_gogo_protobuf_types.StdDurationMarshalTo(m.DowntimeJailDuration, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdDuration(m.DowntimeJailDuration):])
@@ -484,9 +458,7 @@ func (m *Params) Size() (n int) {
 	n += 1 + l + sovSlashing(uint64(l))
 	l = github_com_gogo_protobuf_types.SizeOfStdDuration(m.DowntimeJailDuration)
 	n += 1 + l + sovSlashing(uint64(l))
-	l = m.SlashFractionDoubleSign.Size()
 	n += 1 + l + sovSlashing(uint64(l))
-	l = m.SlashFractionDowntime.Size()
 	n += 1 + l + sovSlashing(uint64(l))
 	return n
 }
@@ -807,9 +779,6 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			}
 			iNdEx = postIndex
 		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field SlashFractionDoubleSign", wireType)
-			}
 			var byteLen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
@@ -834,15 +803,9 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
-			}
-			if err := m.SlashFractionDoubleSign.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
 			}
 			iNdEx = postIndex
 		case 5:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field SlashFractionDowntime", wireType)
-			}
 			var byteLen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
@@ -867,9 +830,6 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
-			}
-			if err := m.SlashFractionDowntime.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
 			}
 			iNdEx = postIndex
 		default:

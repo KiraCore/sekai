@@ -21,7 +21,6 @@ func TestParamChanges(t *testing.T) {
 	}{
 		{"slashing/SignedBlocksWindow", "SignedBlocksWindow", "\"231\"", "slashing"},
 		{"slashing/MinSignedPerWindow", "MinSignedPerWindow", "\"0.700000000000000000\"", "slashing"},
-		{"slashing/SlashFractionDowntime", "SlashFractionDowntime", "\"0.020833333333333333\"", "slashing"},
 	}
 
 	paramChanges := simulation.ParamChanges(r)

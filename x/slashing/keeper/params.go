@@ -30,18 +30,6 @@ func (k Keeper) DowntimeJailDuration(ctx sdk.Context) (res time.Duration) {
 	return
 }
 
-// SlashFractionDoubleSign - fraction of power slashed in case of double sign
-func (k Keeper) SlashFractionDoubleSign(ctx sdk.Context) (res sdk.Dec) {
-	k.paramspace.Get(ctx, types.KeySlashFractionDoubleSign, &res)
-	return
-}
-
-// SlashFractionDowntime - fraction of power slashed for downtime
-func (k Keeper) SlashFractionDowntime(ctx sdk.Context) (res sdk.Dec) {
-	k.paramspace.Get(ctx, types.KeySlashFractionDowntime, &res)
-	return
-}
-
 // GetParams returns the total set of slashing parameters.
 func (k Keeper) GetParams(ctx sdk.Context) (params types.Params) {
 	k.paramspace.GetParamSet(ctx, &params)

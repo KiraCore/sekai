@@ -15,18 +15,14 @@ const (
 )
 
 var (
-	DefaultMinSignedPerWindow      = sdk.NewDecWithPrec(5, 1)
-	DefaultSlashFractionDoubleSign = sdk.NewDec(1).Quo(sdk.NewDec(20))
-	DefaultSlashFractionDowntime   = sdk.NewDec(1).Quo(sdk.NewDec(100))
+	DefaultMinSignedPerWindow = sdk.NewDecWithPrec(5, 1)
 )
 
 // Parameter store keys
 var (
-	KeySignedBlocksWindow      = []byte("SignedBlocksWindow")
-	KeyMinSignedPerWindow      = []byte("MinSignedPerWindow")
-	KeyDowntimeJailDuration    = []byte("DowntimeJailDuration")
-	KeySlashFractionDoubleSign = []byte("SlashFractionDoubleSign")
-	KeySlashFractionDowntime   = []byte("SlashFractionDowntime")
+	KeySignedBlocksWindow   = []byte("SignedBlocksWindow")
+	KeyMinSignedPerWindow   = []byte("MinSignedPerWindow")
+	KeyDowntimeJailDuration = []byte("DowntimeJailDuration")
 )
 
 // ParamKeyTable for slashing module
@@ -37,15 +33,12 @@ func ParamKeyTable() paramtypes.KeyTable {
 // NewParams creates a new Params object
 func NewParams(
 	signedBlocksWindow int64, minSignedPerWindow sdk.Dec, downtimeJailDuration time.Duration,
-	slashFractionDoubleSign, slashFractionDowntime sdk.Dec,
 ) Params {
 
 	return Params{
-		SignedBlocksWindow:      signedBlocksWindow,
-		MinSignedPerWindow:      minSignedPerWindow,
-		DowntimeJailDuration:    downtimeJailDuration,
-		SlashFractionDoubleSign: slashFractionDoubleSign,
-		SlashFractionDowntime:   slashFractionDowntime,
+		SignedBlocksWindow:   signedBlocksWindow,
+		MinSignedPerWindow:   minSignedPerWindow,
+		DowntimeJailDuration: downtimeJailDuration,
 	}
 }
 
@@ -55,8 +48,6 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(KeySignedBlocksWindow, &p.SignedBlocksWindow, validateSignedBlocksWindow),
 		paramtypes.NewParamSetPair(KeyMinSignedPerWindow, &p.MinSignedPerWindow, validateMinSignedPerWindow),
 		paramtypes.NewParamSetPair(KeyDowntimeJailDuration, &p.DowntimeJailDuration, validateDowntimeJailDuration),
-		paramtypes.NewParamSetPair(KeySlashFractionDoubleSign, &p.SlashFractionDoubleSign, validateSlashFractionDoubleSign),
-		paramtypes.NewParamSetPair(KeySlashFractionDowntime, &p.SlashFractionDowntime, validateSlashFractionDowntime),
 	}
 }
 
@@ -64,7 +55,6 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 func DefaultParams() Params {
 	return NewParams(
 		DefaultSignedBlocksWindow, DefaultMinSignedPerWindow, DefaultDowntimeJailDuration,
-		DefaultSlashFractionDoubleSign, DefaultSlashFractionDowntime,
 	)
 }
 
@@ -105,38 +95,6 @@ func validateDowntimeJailDuration(i interface{}) error {
 
 	if v <= 0 {
 		return fmt.Errorf("downtime jail duration must be positive: %s", v)
-	}
-
-	return nil
-}
-
-func validateSlashFractionDoubleSign(i interface{}) error {
-	v, ok := i.(sdk.Dec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	if v.IsNegative() {
-		return fmt.Errorf("double sign slash fraction cannot be negative: %s", v)
-	}
-	if v.GT(sdk.OneDec()) {
-		return fmt.Errorf("double sign slash fraction too large: %s", v)
-	}
-
-	return nil
-}
-
-func validateSlashFractionDowntime(i interface{}) error {
-	v, ok := i.(sdk.Dec)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
-	}
-
-	if v.IsNegative() {
-		return fmt.Errorf("downtime slash fraction cannot be negative: %s", v)
-	}
-	if v.GT(sdk.OneDec()) {
-		return fmt.Errorf("downtime slash fraction too large: %s", v)
 	}
 
 	return nil
