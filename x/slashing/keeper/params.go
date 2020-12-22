@@ -24,9 +24,9 @@ func (k Keeper) MinSignedPerWindow(ctx sdk.Context) int64 {
 	return minSignedPerWindow.MulInt64(signedBlocksWindow).RoundInt64()
 }
 
-// DowntimeJailDuration - Downtime unbond duration
-func (k Keeper) DowntimeJailDuration(ctx sdk.Context) (res time.Duration) {
-	k.paramspace.Get(ctx, types.KeyDowntimeJailDuration, &res)
+// DowntimeInactiveDuration - Downtime unbond duration
+func (k Keeper) DowntimeInactiveDuration(ctx sdk.Context) (res time.Duration) {
+	k.paramspace.Get(ctx, types.KeyDowntimeInactiveDuration, &res)
 	return
 }
 

@@ -45,7 +45,7 @@ func TestRandomizedGenState(t *testing.T) {
 
 	require.Equal(t, dec1, slashingGenesis.Params.MinSignedPerWindow)
 	require.Equal(t, int64(720), slashingGenesis.Params.SignedBlocksWindow)
-	require.Equal(t, time.Duration(34800000000000), slashingGenesis.Params.DowntimeJailDuration)
+	require.Equal(t, time.Duration(34800000000000), slashingGenesis.Params.DowntimeInactiveDuration)
 	require.Len(t, slashingGenesis.MissedBlocks, 0)
 	require.Len(t, slashingGenesis.SigningInfos, 0)
 

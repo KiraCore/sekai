@@ -16,9 +16,9 @@ import (
 
 // Simulation parameter constants
 const (
-	SignedBlocksWindow   = "signed_blocks_window"
-	MinSignedPerWindow   = "min_signed_per_window"
-	DowntimeJailDuration = "downtime_jail_duration"
+	SignedBlocksWindow       = "signed_blocks_window"
+	MinSignedPerWindow       = "min_signed_per_window"
+	DowntimeInactiveDuration = "downtime_inactive_duration"
 )
 
 // GenSignedBlocksWindow randomized SignedBlocksWindow
@@ -31,8 +31,8 @@ func GenMinSignedPerWindow(r *rand.Rand) sdk.Dec {
 	return sdk.NewDecWithPrec(int64(r.Intn(10)), 1)
 }
 
-// GenDowntimeJailDuration randomized DowntimeJailDuration
-func GenDowntimeJailDuration(r *rand.Rand) time.Duration {
+// GenDowntimeInactiveDuration randomized DowntimeInactiveDuration
+func GenDowntimeInactiveDuration(r *rand.Rand) time.Duration {
 	return time.Duration(simulation.RandIntBetween(r, 60, 60*60*24)) * time.Second
 }
 
@@ -50,14 +50,14 @@ func RandomizedGenState(simState *module.SimulationState) {
 		func(r *rand.Rand) { minSignedPerWindow = GenMinSignedPerWindow(r) },
 	)
 
-	var downtimeJailDuration time.Duration
+	var DowntimeInactiveDuration time.Duration
 	simState.AppParams.GetOrGenerate(
-		simState.Cdc, DowntimeJailDuration, &downtimeJailDuration, simState.Rand,
-		func(r *rand.Rand) { downtimeJailDuration = GenDowntimeJailDuration(r) },
+		simState.Cdc, DowntimeInactiveDuration, &DowntimeInactiveDuration, simState.Rand,
+		func(r *rand.Rand) { DowntimeInactiveDuration = GenDowntimeInactiveDuration(r) },
 	)
 
 	params := types.NewParams(
-		signedBlocksWindow, minSignedPerWindow, downtimeJailDuration,
+		signedBlocksWindow, minSignedPerWindow, DowntimeInactiveDuration,
 	)
 
 	slashingGenesis := types.NewGenesisState(params, []types.SigningInfo{}, []types.ValidatorMissedBlocks{})

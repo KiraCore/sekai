@@ -122,9 +122,9 @@ func (m *ValidatorSigningInfo) GetMissedBlocksCounter() int64 {
 
 // Params represents the parameters used for by the slashing module.
 type Params struct {
-	SignedBlocksWindow   int64                                  `protobuf:"varint,1,opt,name=signed_blocks_window,json=signedBlocksWindow,proto3" json:"signed_blocks_window,omitempty" yaml:"signed_blocks_window"`
-	MinSignedPerWindow   github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,2,opt,name=min_signed_per_window,json=minSignedPerWindow,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"min_signed_per_window" yaml:"min_signed_per_window"`
-	DowntimeJailDuration time.Duration                          `protobuf:"bytes,3,opt,name=downtime_jail_duration,json=downtimeJailDuration,proto3,stdduration" json:"downtime_jail_duration" yaml:"downtime_jail_duration"`
+	SignedBlocksWindow       int64                                  `protobuf:"varint,1,opt,name=signed_blocks_window,json=signedBlocksWindow,proto3" json:"signed_blocks_window,omitempty" yaml:"signed_blocks_window"`
+	MinSignedPerWindow       github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,2,opt,name=min_signed_per_window,json=minSignedPerWindow,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"min_signed_per_window" yaml:"min_signed_per_window"`
+	DowntimeInactiveDuration time.Duration                          `protobuf:"bytes,3,opt,name=downtime_inactive_duration,json=DowntimeInactiveDuration,proto3,stdduration" json:"downtime_inactive_duration" yaml:"downtime_inactive_duration"`
 }
 
 func (m *Params) Reset()         { *m = Params{} }
@@ -167,9 +167,9 @@ func (m *Params) GetSignedBlocksWindow() int64 {
 	return 0
 }
 
-func (m *Params) GetDowntimeJailDuration() time.Duration {
+func (m *Params) GetDowntimeInactiveDuration() time.Duration {
 	if m != nil {
-		return m.DowntimeJailDuration
+		return m.DowntimeInactiveDuration
 	}
 	return 0
 }
@@ -291,7 +291,7 @@ func (this *Params) Equal(that interface{}) bool {
 	if !this.MinSignedPerWindow.Equal(that1.MinSignedPerWindow) {
 		return false
 	}
-	if this.DowntimeJailDuration != that1.DowntimeJailDuration {
+	if this.DowntimeInactiveDuration != that1.DowntimeInactiveDuration {
 		return false
 	}
 	return true
@@ -381,7 +381,7 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = l
 	i--
 	dAtA[i] = 0x22
-	n2, err2 := github_com_gogo_protobuf_types.StdDurationMarshalTo(m.DowntimeJailDuration, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdDuration(m.DowntimeJailDuration):])
+	n2, err2 := github_com_gogo_protobuf_types.StdDurationMarshalTo(m.DowntimeInactiveDuration, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdDuration(m.DowntimeInactiveDuration):])
 	if err2 != nil {
 		return 0, err2
 	}
@@ -456,7 +456,7 @@ func (m *Params) Size() (n int) {
 	}
 	l = m.MinSignedPerWindow.Size()
 	n += 1 + l + sovSlashing(uint64(l))
-	l = github_com_gogo_protobuf_types.SizeOfStdDuration(m.DowntimeJailDuration)
+	l = github_com_gogo_protobuf_types.SizeOfStdDuration(m.DowntimeInactiveDuration)
 	n += 1 + l + sovSlashing(uint64(l))
 	n += 1 + l + sovSlashing(uint64(l))
 	n += 1 + l + sovSlashing(uint64(l))
@@ -747,7 +747,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DowntimeJailDuration", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field DowntimeInactiveDuration", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -774,7 +774,7 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := github_com_gogo_protobuf_types.StdDurationUnmarshal(&m.DowntimeJailDuration, dAtA[iNdEx:postIndex]); err != nil {
+			if err := github_com_gogo_protobuf_types.StdDurationUnmarshal(&m.DowntimeInactiveDuration, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

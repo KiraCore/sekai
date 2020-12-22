@@ -31,7 +31,7 @@ func (i ValidatorSigningInfo) String() string {
   Address:               %s
   Start Height:          %d
   Index Offset:          %d
-  Jailed Until:          %v
+  Inactivated Until:          %v
   Tombstoned:            %t
   Missed Blocks Counter: %d`,
 		i.Address, i.StartHeight, i.IndexOffset, i.InactiveUntil,

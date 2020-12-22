@@ -10,8 +10,8 @@ import (
 
 // Default parameter namespace
 const (
-	DefaultSignedBlocksWindow   = int64(100)
-	DefaultDowntimeJailDuration = 60 * 10 * time.Second
+	DefaultSignedBlocksWindow       = int64(100)
+	DefaultDowntimeInactiveDuration = 60 * 10 * time.Second
 )
 
 var (
@@ -20,9 +20,9 @@ var (
 
 // Parameter store keys
 var (
-	KeySignedBlocksWindow   = []byte("SignedBlocksWindow")
-	KeyMinSignedPerWindow   = []byte("MinSignedPerWindow")
-	KeyDowntimeJailDuration = []byte("DowntimeJailDuration")
+	KeySignedBlocksWindow       = []byte("SignedBlocksWindow")
+	KeyMinSignedPerWindow       = []byte("MinSignedPerWindow")
+	KeyDowntimeInactiveDuration = []byte("DowntimeInactiveDuration")
 )
 
 // ParamKeyTable for slashing module
@@ -32,13 +32,13 @@ func ParamKeyTable() paramtypes.KeyTable {
 
 // NewParams creates a new Params object
 func NewParams(
-	signedBlocksWindow int64, minSignedPerWindow sdk.Dec, downtimeJailDuration time.Duration,
+	signedBlocksWindow int64, minSignedPerWindow sdk.Dec, DowntimeInactiveDuration time.Duration,
 ) Params {
 
 	return Params{
-		SignedBlocksWindow:   signedBlocksWindow,
-		MinSignedPerWindow:   minSignedPerWindow,
-		DowntimeJailDuration: downtimeJailDuration,
+		SignedBlocksWindow:       signedBlocksWindow,
+		MinSignedPerWindow:       minSignedPerWindow,
+		DowntimeInactiveDuration: DowntimeInactiveDuration,
 	}
 }
 
@@ -47,14 +47,14 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 	return paramtypes.ParamSetPairs{
 		paramtypes.NewParamSetPair(KeySignedBlocksWindow, &p.SignedBlocksWindow, validateSignedBlocksWindow),
 		paramtypes.NewParamSetPair(KeyMinSignedPerWindow, &p.MinSignedPerWindow, validateMinSignedPerWindow),
-		paramtypes.NewParamSetPair(KeyDowntimeJailDuration, &p.DowntimeJailDuration, validateDowntimeJailDuration),
+		paramtypes.NewParamSetPair(KeyDowntimeInactiveDuration, &p.DowntimeInactiveDuration, validateDowntimeInactiveDuration),
 	}
 }
 
 // DefaultParams defines the parameters for this module
 func DefaultParams() Params {
 	return NewParams(
-		DefaultSignedBlocksWindow, DefaultMinSignedPerWindow, DefaultDowntimeJailDuration,
+		DefaultSignedBlocksWindow, DefaultMinSignedPerWindow, DefaultDowntimeInactiveDuration,
 	)
 }
 
@@ -87,14 +87,14 @@ func validateMinSignedPerWindow(i interface{}) error {
 	return nil
 }
 
-func validateDowntimeJailDuration(i interface{}) error {
+func validateDowntimeInactiveDuration(i interface{}) error {
 	v, ok := i.(time.Duration)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
 
 	if v <= 0 {
-		return fmt.Errorf("downtime jail duration must be positive: %s", v)
+		return fmt.Errorf("downtime inactive duration must be positive: %s", v)
 	}
 
 	return nil

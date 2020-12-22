@@ -10,7 +10,7 @@ import (
 func TestParams() types.Params {
 	params := types.DefaultParams()
 	params.SignedBlocksWindow = 1000
-	params.DowntimeJailDuration = 60 * 60
+	params.DowntimeInactiveDuration = 60 * 60
 
 	return params
 }

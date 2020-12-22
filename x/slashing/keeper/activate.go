@@ -35,7 +35,7 @@ func (k Keeper) Activate(ctx sdk.Context, validatorAddr sdk.ValAddress) error {
 			return types.ErrValidatorInactivated
 		}
 
-		// cannot be activated until out of inactivation
+		// cannot be activated until out of inactive period finish
 		if ctx.BlockHeader().Time.Before(info.InactiveUntil) {
 			return types.ErrValidatorInactivated
 		}

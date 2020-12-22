@@ -71,7 +71,7 @@ func (k Keeper) HandleValidatorSignature(ctx sdk.Context, addr crypto.Address, p
 		validator, err := k.sk.GetValidatorByConsAddr(ctx, consAddr)
 		if err == nil && !validator.IsInactivated() {
 
-			// Downtime confirmed: slash and jail the validator
+			// Downtime confirmed: slash and inactivate the validator
 			logger.Info(fmt.Sprintf("Validator %s past min height of %d and below signed blocks threshold of %d",
 				consAddr, minHeight, k.MinSignedPerWindow(ctx)))
 
@@ -86,7 +86,7 @@ func (k Keeper) HandleValidatorSignature(ctx sdk.Context, addr crypto.Address, p
 			)
 			k.sk.Inactivate(ctx, consAddr)
 
-			signInfo.InactiveUntil = ctx.BlockHeader().Time.Add(k.DowntimeJailDuration(ctx))
+			signInfo.InactiveUntil = ctx.BlockHeader().Time.Add(k.DowntimeInactiveDuration(ctx))
 
 			// We need to reset the counter & array so that the validator won't be immediately inactivated for downtime upon rebonding.
 			signInfo.MissedBlocksCounter = 0
