@@ -50,14 +50,14 @@ func RandomizedGenState(simState *module.SimulationState) {
 		func(r *rand.Rand) { minSignedPerWindow = GenMinSignedPerWindow(r) },
 	)
 
-	var DowntimeInactiveDuration time.Duration
+	var downtimeInactiveDuration time.Duration
 	simState.AppParams.GetOrGenerate(
-		simState.Cdc, DowntimeInactiveDuration, &DowntimeInactiveDuration, simState.Rand,
-		func(r *rand.Rand) { DowntimeInactiveDuration = GenDowntimeInactiveDuration(r) },
+		simState.Cdc, DowntimeInactiveDuration, &downtimeInactiveDuration, simState.Rand,
+		func(r *rand.Rand) { downtimeInactiveDuration = GenDowntimeInactiveDuration(r) },
 	)
 
 	params := types.NewParams(
-		signedBlocksWindow, minSignedPerWindow, DowntimeInactiveDuration,
+		signedBlocksWindow, minSignedPerWindow, downtimeInactiveDuration,
 	)
 
 	slashingGenesis := types.NewGenesisState(params, []types.SigningInfo{}, []types.ValidatorMissedBlocks{})

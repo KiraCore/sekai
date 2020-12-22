@@ -58,7 +58,12 @@ func (k Keeper) SigningInfos(c context.Context, req *types.QuerySigningInfosRequ
 	var signInfos []types.ValidatorSigningInfo
 
 	sigInfoStore := prefix.NewStore(store, types.ValidatorSigningInfoKeyPrefix)
-	pageRes, err := query.Paginate(sigInfoStore, req.Pagination, func(key []byte, value []byte) error {
+	pageRes, err := query.Paginate(sigInfoStore, &query.PageRequest{
+		Key:        req.Pagination.Key,
+		Offset:     req.Pagination.Offset,
+		Limit:      req.Pagination.Limit,
+		CountTotal: req.Pagination.CountTotal,
+	}, func(key []byte, value []byte) error {
 		var info types.ValidatorSigningInfo
 		err := k.cdc.UnmarshalBinaryBare(value, &info)
 		if err != nil {
@@ -70,5 +75,8 @@ func (k Keeper) SigningInfos(c context.Context, req *types.QuerySigningInfosRequ
 	if err != nil {
 		return nil, err
 	}
-	return &types.QuerySigningInfosResponse{Info: signInfos, Pagination: pageRes}, nil
+	return &types.QuerySigningInfosResponse{Info: signInfos, Pagination: &types.PageResponse{
+		NextKey: pageRes.NextKey,
+		Total:   pageRes.Total,
+	}}, nil
 }
