@@ -43,3 +43,4 @@ func (k Keeper) Unpause(sdk.Context, sdk.ConsAddress) { // inactivate a validato
 // Activate is not possible if it's paused
 // Pause is not possible if it's inactivated
 // Unpause is not possible if it's inactivated
+// Paused / Inactivated validator shouldn't participate in block generation (Previous Jailed = Paused | Inactivated)
