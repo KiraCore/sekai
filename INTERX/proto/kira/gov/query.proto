@@ -25,7 +25,7 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
 
 service Query {
   // Query all data reference keys with pagination.
-  rpc GetAllDataReferenceKeys(kira.gov.PageRequest) returns (QueryDataReferenceKeysResponse) {
+  rpc GetAllDataReferenceKeys(QueryDataReferenceKeysRequest) returns (QueryDataReferenceKeysResponse) {
     option (google.api.http).get = "/api/kira/gov/data_keys";
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Query All Data Reference Keys"
@@ -42,6 +42,11 @@ service Query {
       tags: "query"
     };
   }
+}
+
+// QueryDataReferenceKeysRequest is the response type for data reference keys query.
+message QueryDataReferenceKeysRequest {
+  kira.gov.PageRequest pagination = 1;
 }
 
 // QueryDataReferenceKeysResponse is the response type for data reference keys query.

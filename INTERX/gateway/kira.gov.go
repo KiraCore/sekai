@@ -4,9 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"path/filepath"
 	"strings"
+	"time"
 
 	common "github.com/KiraCore/sekai/INTERX/common"
+	database "github.com/KiraCore/sekai/INTERX/database"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 )
@@ -77,7 +80,7 @@ func QueryDataReferenceKeysRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string
 	}
 }
 
-func queryDataReferenceHandle(r *http.Request, gwCosmosmux *runtime.ServeMux) (interface{}, interface{}, int) {
+func queryDataReferenceHandle(r *http.Request, gwCosmosmux *runtime.ServeMux, key string) (interface{}, interface{}, int) {
 	success, failure, status := ServeGRPC(r, gwCosmosmux)
 
 	if success != nil {
@@ -91,7 +94,7 @@ func queryDataReferenceHandle(r *http.Request, gwCosmosmux *runtime.ServeMux) (i
 
 		success = result.Data
 
-		common.UpdateKey(mux.Vars(r)["key"], result.Data)
+		database.AddReference(key, result.Data.Reference, 0, time.Now(), key+filepath.Ext(result.Data.Reference))
 	}
 
 	return success, failure, status
@@ -122,7 +125,7 @@ func QueryDataReferenceRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string) ht
 				}
 			}
 
-			response.Response, response.Error, statusCode = queryDataReferenceHandle(r, gwCosmosmux)
+			response.Response, response.Error, statusCode = queryDataReferenceHandle(r, gwCosmosmux, key)
 		}
 
 		WrapResponse(w, request, *response, statusCode, rpcMethods[GET][queryDataReference].CachingEnabled)

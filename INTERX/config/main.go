@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"os"
 
 	functions "github.com/KiraCore/sekai/INTERX/functions"
 	sekaiapp "github.com/KiraCore/sekai/app"
@@ -33,6 +34,7 @@ func readConfig() InterxConfig {
 		MaxCacheSize               string `json:"max_cache_size"`
 		CachingDuration            int64  `json:"caching_duration"`
 		DownloadFileSizeLimitation string `json:"download_file_size_limitation"`
+		FileHostingServer          string `json:"file_hosting_server"`
 		Faucet                     struct {
 			Mnemonic             string            `json:"mnemonic"`
 			FaucetAmounts        map[string]int64  `json:"faucet_amounts"`
@@ -62,9 +64,13 @@ func readConfig() InterxConfig {
 	config.MaxCacheSize = parseSizeString(configFromFile.MaxCacheSize)
 	config.CachingDuration = configFromFile.CachingDuration
 	config.DownloadFileSizeLimitation = parseSizeString(configFromFile.DownloadFileSizeLimitation)
+	config.FileHostingServer = configFromFile.FileHostingServer
 	config.PrivKey = secp256k1.GenPrivKeyFromSecret(bip39.NewSeed(config.Mnemonic, ""))
 	config.PubKey = config.PrivKey.PubKey()
 	config.Address = sdk.MustBech32ifyAddressBytes(sdk.GetConfig().GetBech32AccountAddrPrefix(), config.PubKey.Address())
+
+	fmt.Printf("%x\n", config.PrivKey.Bytes())
+	fmt.Printf("%x\n", config.PubKey.Bytes())
 
 	// Display mnemonic and keys
 	fmt.Println("Interx Mnemonic   : ", config.Mnemonic)
@@ -94,6 +100,19 @@ func readConfig() InterxConfig {
 	// RPC Configuration
 	config.RPC = configFromFile.RPC
 
+	if _, err := os.Stat(config.CacheDir); os.IsNotExist(err) {
+		os.Mkdir(config.CacheDir, os.ModePerm)
+	}
+	if _, err := os.Stat(config.CacheDir + "/reference/"); os.IsNotExist(err) {
+		os.Mkdir(config.CacheDir+"/reference/", os.ModePerm)
+	}
+	if _, err := os.Stat(config.CacheDir + "/response/"); os.IsNotExist(err) {
+		os.Mkdir(config.CacheDir+"/response/", os.ModePerm)
+	}
+	if _, err := os.Stat(config.CacheDir + "/db/"); os.IsNotExist(err) {
+		os.Mkdir(config.CacheDir+"/db/", os.ModePerm)
+	}
+
 	return config
 }
 
@@ -108,3 +127,18 @@ var (
 	// EncodingCg is a configuration for Amino Encoding
 	EncodingCg = sekaiapp.MakeEncodingConfig()
 )
+
+// GetReferenceCacheDir is a function to get reference directory
+func GetReferenceCacheDir() string {
+	return Config.CacheDir + "/reference/"
+}
+
+// GetResponseCacheDir is a function to get reference directory
+func GetResponseCacheDir() string {
+	return Config.CacheDir + "/response/"
+}
+
+// GetDbCacheDir is a function to get db directory
+func GetDbCacheDir() string {
+	return Config.CacheDir + "/db/"
+}

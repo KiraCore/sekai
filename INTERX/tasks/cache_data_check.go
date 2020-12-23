@@ -16,7 +16,7 @@ import (
 // CacheDataCheck is a function to check cache data if it's expired.
 func CacheDataCheck(rpcAddr string, isLog bool) {
 	for {
-		err := filepath.Walk(interx.Config.CacheDir+"/response",
+		err := filepath.Walk(interx.GetResponseCacheDir(),
 			func(path string, info os.FileInfo, err error) error {
 				if err != nil {
 					return err
@@ -39,7 +39,7 @@ func CacheDataCheck(rpcAddr string, isLog bool) {
 					}
 				}
 
-				if path != interx.Config.CacheDir+"/response" && delete {
+				if path != interx.GetResponseCacheDir() && delete {
 					if isLog {
 						fmt.Println("deleting file ... ", path)
 					}

@@ -117,8 +117,14 @@ go run main.go
 
 ### Run server with environment configuration.
 
+PORT will be the interx port. (Default: 11000)
 ```bash
 PORT=11100 go run main.go
+```
+
+HOSTING_PORT will be file hosting server port. (Default: 12000)
+```bash
+HOSTING_PORT=12000 go run main.go
 ```
 
 ## Config gRPC-gateway server

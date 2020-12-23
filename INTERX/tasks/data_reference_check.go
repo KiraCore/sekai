@@ -1,7 +1,6 @@
 package tasks
 
 import (
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -10,6 +9,7 @@ import (
 
 	common "github.com/KiraCore/sekai/INTERX/common"
 	interx "github.com/KiraCore/sekai/INTERX/config"
+	database "github.com/KiraCore/sekai/INTERX/database"
 )
 
 // RefMeta is a struct to be used for reference metadata
@@ -48,6 +48,7 @@ func getMeta(url string) (*RefMeta, error) {
 }
 
 func saveReference(url string, path string) error {
+	path = interx.GetReferenceCacheDir() + path
 	resp, err := http.Get(url)
 	if err != nil {
 		return err
@@ -68,79 +69,42 @@ func saveReference(url string, path string) error {
 		}
 
 		common.Mutex.Unlock()
-
-		cache := RefCache{
-			Path:   path,
-			Header: resp.Header,
-		}
-
-		data, err := json.Marshal(cache)
-		if err != nil {
-			return err
-		}
-
-		common.Mutex.Lock()
-
-		err = ioutil.WriteFile(path+".meta", data, 0644)
-		if err != nil {
-			return err
-		}
-
-		common.Mutex.Unlock()
 	}
 
 	return nil
 }
 
-// LoadRefCacheMeta is a function to load reference cache
-func LoadRefCacheMeta(key string) (RefCache, error) {
-	filePath := interx.Config.CacheDir + "/reference/" + key + ".meta"
-
-	common.Mutex.Lock()
-	data, err := ioutil.ReadFile(filePath)
-	common.Mutex.Unlock()
-
-	cache := RefCache{}
-
-	if err == nil {
-		err = json.Unmarshal([]byte(data), &cache)
-	}
-
-	return cache, err
-}
-
 // DataReferenceCheck is a function to check cache data for data references.
 func DataReferenceCheck(isLog bool) {
 	for {
-		for k, v := range common.DataRefs {
-			ref, err := getMeta(v.Reference)
-			if err != nil {
-				continue
-			}
+		references, err := database.GetAllReferences()
+		if err == nil {
+			for _, v := range references {
+				ref, err := getMeta(v.URL)
+				if err != nil {
+					continue
+				}
 
-			// Check if reference has changed (check length and last modified)
-			if references[k].ContentLength == ref.ContentLength && ref.LastModified.Equal(references[k].LastModified) {
-				continue
-			}
+				// Check if reference has changed (check length and last modified)
+				if v.ContentLength == ref.ContentLength && ref.LastModified.Equal(v.LastModified) {
+					continue
+				}
 
-			fmt.Println(ref, interx.Config.DownloadFileSizeLimitation)
-			// Check the download file size limitation
-			if ref.ContentLength > interx.Config.DownloadFileSizeLimitation {
-				continue
-			}
+				// Check the download file size limitation
+				if ref.ContentLength > interx.Config.DownloadFileSizeLimitation {
+					continue
+				}
 
-			err = saveReference(v.Reference, interx.Config.CacheDir+"/reference/"+k)
-			if err != nil {
-				continue
-			}
+				err = saveReference(v.URL, v.FilePath)
+				if err != nil {
+					continue
+				}
 
-			if isLog {
-				fmt.Println("save response: (key - " + k + ", ref - " + v.Reference + ")")
-			}
+				if isLog {
+					fmt.Println("save response: (key - " + v.Key + ", ref - " + v.URL + ")")
+				}
 
-			references[k] = RefMeta{
-				ContentLength: ref.ContentLength,
-				LastModified:  ref.LastModified,
+				database.AddReference(v.Key, v.URL, ref.ContentLength, ref.LastModified, v.FilePath)
 			}
 		}
 	}
