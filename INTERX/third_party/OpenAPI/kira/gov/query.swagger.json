@@ -67,7 +67,7 @@
         },
         "parameters": [
           {
-            "name": "key",
+            "name": "pagination.key",
             "description": "key is a value returned in PageResponse.next_key to begin\nquerying the next page most efficiently. Only one of offset or key\nshould be set.",
             "in": "query",
             "required": false,
@@ -75,7 +75,7 @@
             "format": "byte"
           },
           {
-            "name": "offset",
+            "name": "pagination.offset",
             "description": "offset is a numeric offset that can be used when key is unavailable.\nIt is less efficient than using key. Only one of offset or key should\nbe set.",
             "in": "query",
             "required": false,
@@ -83,7 +83,7 @@
             "format": "uint64"
           },
           {
-            "name": "limit",
+            "name": "pagination.limit",
             "description": "limit is the total number of results to be returned in the result page.\nIf left empty it will default to a value to be set by each app.",
             "in": "query",
             "required": false,
@@ -91,7 +91,7 @@
             "format": "uint64"
           },
           {
-            "name": "countTotal",
+            "name": "pagination.countTotal",
             "description": "count_total is set to true  to indicate that the result set should include\na count of the total number of items available for pagination in UIs. count_total\nis only respected when offset is used. It is ignored when key is set.",
             "in": "query",
             "required": false,
@@ -123,6 +123,33 @@
           "format": "uint64"
         }
       }
+    },
+    "govPageRequest": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string",
+          "format": "byte",
+          "description": "key is a value returned in PageResponse.next_key to begin\nquerying the next page most efficiently. Only one of offset or key\nshould be set."
+        },
+        "offset": {
+          "type": "string",
+          "format": "uint64",
+          "description": "offset is a numeric offset that can be used when key is unavailable.\nIt is less efficient than using key. Only one of offset or key should\nbe set."
+        },
+        "limit": {
+          "type": "string",
+          "format": "uint64",
+          "description": "limit is the total number of results to be returned in the result page.\nIf left empty it will default to a value to be set by each app."
+        },
+        "countTotal": {
+          "type": "boolean",
+          "format": "boolean",
+          "description": "count_total is set to true  to indicate that the result set should include\na count of the total number of items available for pagination in UIs. count_total\nis only respected when offset is used. It is ignored when key is set."
+        }
+      },
+      "description": "message SomeRequest {\n         Foo some_parameter = 1;\n         PageRequest pagination = 2;\n }",
+      "title": "PageRequest is to be embedded in gRPC request messages for efficient\npagination. Ex:"
     },
     "govPageResponse": {
       "type": "object",

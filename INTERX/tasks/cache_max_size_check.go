@@ -14,7 +14,7 @@ import (
 func CacheMaxSizeCheck(isLog bool) {
 	for {
 		var cacheSize int64 = 0
-		_ = filepath.Walk(interx.Config.CacheDir+"/response", func(_ string, info os.FileInfo, err error) error {
+		_ = filepath.Walk(interx.GetResponseCacheDir(), func(_ string, info os.FileInfo, err error) error {
 			if err != nil {
 				return err
 			}
@@ -30,7 +30,7 @@ func CacheMaxSizeCheck(isLog bool) {
 			}
 
 			for {
-				_ = filepath.Walk(interx.Config.CacheDir+"/response", func(path string, info os.FileInfo, err error) error {
+				_ = filepath.Walk(interx.GetResponseCacheDir(), func(path string, info os.FileInfo, err error) error {
 					if err != nil || cacheSize*10 < interx.Config.MaxCacheSize*9 { // current size < 90% of max cache size
 						return err
 					}

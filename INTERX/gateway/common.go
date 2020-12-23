@@ -189,7 +189,10 @@ func WrapResponse(w http.ResponseWriter, request InterxRequest, response common.
 	w.Header().Add("Interx_timestamp", strconv.FormatInt(response.Timestamp, 10))
 	w.Header().Add("Interx_request_hash", response.RequestHash)
 	if request.Endpoint == queryDataReference {
-		w.Header().Add("Interx_ref", "/api/download/"+string(request.Params))
+		reference, err := database.GetReference(string(request.Params))
+		if err == nil {
+			w.Header().Add("Interx_ref", interx.Config.FileHostingServer+reference.FilePath)
+		}
 	}
 
 	if response.Response != nil {

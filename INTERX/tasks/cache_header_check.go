@@ -15,7 +15,7 @@ import (
 // CacheHeaderCheck is a function to check cache headers if it's expired.
 func CacheHeaderCheck(rpcAddr string, isLog bool) {
 	for {
-		err := filepath.Walk(interx.Config.CacheDir+"/response",
+		err := filepath.Walk(interx.GetResponseCacheDir(),
 			func(path string, info os.FileInfo, err error) error {
 				if err != nil {
 					return err
@@ -33,7 +33,7 @@ func CacheHeaderCheck(rpcAddr string, isLog bool) {
 					delete = true
 				}
 
-				if path != interx.Config.CacheDir+"/response" && delete {
+				if path != interx.GetResponseCacheDir() && delete {
 					if isLog {
 						fmt.Println("deleting file ... ", path)
 					}

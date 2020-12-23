@@ -36,7 +36,7 @@ var (
 )
 
 func request_Query_GetAllDataReferenceKeys_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq PageRequest
+	var protoReq QueryDataReferenceKeysRequest
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {
@@ -52,7 +52,7 @@ func request_Query_GetAllDataReferenceKeys_0(ctx context.Context, marshaler runt
 }
 
 func local_request_Query_GetAllDataReferenceKeys_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq PageRequest
+	var protoReq QueryDataReferenceKeysRequest
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {
