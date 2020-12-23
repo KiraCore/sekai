@@ -46,6 +46,10 @@ type StakingKeeper interface {
 	Inactivate(sdk.Context, sdk.ConsAddress) // inactivate a validator
 	Activate(sdk.Context, sdk.ConsAddress)   // activate a validator
 
+	// pause/unpause the validator and delegators of the validator, specifying offence height, offence power, and slash fraction
+	Pause(sdk.Context, sdk.ConsAddress)   // pause a validator
+	Unpause(sdk.Context, sdk.ConsAddress) // unpause a validator
+
 	// MaxValidators returns the maximum amount of bonded validators
 	MaxValidators(sdk.Context) uint32
 }

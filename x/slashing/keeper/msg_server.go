@@ -44,3 +44,55 @@ func (k msgServer) Activate(goCtx context.Context, msg *types.MsgActivate) (*typ
 
 	return &types.MsgActivateResponse{}, nil
 }
+
+// Pause implements MsgServer.Pause method.
+// Validators must submit a transaction to pause itself after
+// having been paused (and thus unbonded) for downtime
+func (k msgServer) Pause(goCtx context.Context, msg *types.MsgPause) (*types.MsgPauseResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	valAddr, valErr := sdk.ValAddressFromBech32(msg.ValidatorAddr)
+	if valErr != nil {
+		return nil, valErr
+	}
+	err := k.Keeper.Pause(ctx, valAddr)
+	if err != nil {
+		return nil, err
+	}
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.ValidatorAddr),
+		),
+	)
+
+	return &types.MsgPauseResponse{}, nil
+}
+
+// Unpause implements MsgServer.Unpause method.
+// Validators must submit a transaction to unpause itself after
+// having been paused (and thus unbonded) for downtime
+func (k msgServer) Unpause(goCtx context.Context, msg *types.MsgUnpause) (*types.MsgUnpauseResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	valAddr, valErr := sdk.ValAddressFromBech32(msg.ValidatorAddr)
+	if valErr != nil {
+		return nil, valErr
+	}
+	err := k.Keeper.Unpause(ctx, valAddr)
+	if err != nil {
+		return nil, err
+	}
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.ValidatorAddr),
+		),
+	)
+
+	return &types.MsgUnpauseResponse{}, nil
+}

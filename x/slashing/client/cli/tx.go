@@ -20,10 +20,15 @@ func NewTxCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	slashingTxCmd.AddCommand(NewActivateTxCmd())
+	slashingTxCmd.AddCommand(
+		NewActivateTxCmd(),
+		NewPauseTxCmd(),
+		NewUnpauseTxCmd(),
+	)
 	return slashingTxCmd
 }
 
+// NewActivateTxCmd defines MsgActivate tx
 func NewActivateTxCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "activate",
@@ -43,6 +48,72 @@ $ <appd> tx slashing activate --from mykey
 			valAddr := clientCtx.GetFromAddress()
 
 			msg := types.NewMsgActivate(sdk.ValAddress(valAddr))
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// NewPauseTxCmd defines MsgPause tx
+func NewPauseTxCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "pause",
+		Args:  cobra.NoArgs,
+		Short: "pause validator previously paused for downtime",
+		Long: `pause a paused validator:
+
+$ <appd> tx slashing pause --from mykey
+`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			valAddr := clientCtx.GetFromAddress()
+
+			msg := types.NewMsgPause(sdk.ValAddress(valAddr))
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// NewUnpauseTxCmd defines MsgUnpause tx
+func NewUnpauseTxCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "unpause",
+		Args:  cobra.NoArgs,
+		Short: "unpause validator previously paused for downtime",
+		Long: `unpause a paused validator:
+
+$ <appd> tx slashing unpause --from mykey
+`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			valAddr := clientCtx.GetFromAddress()
+
+			msg := types.NewMsgUnpause(sdk.ValAddress(valAddr))
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

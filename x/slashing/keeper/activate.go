@@ -44,3 +44,42 @@ func (k Keeper) Activate(ctx sdk.Context, validatorAddr sdk.ValAddress) error {
 	k.sk.Activate(ctx, consAddr)
 	return nil
 }
+
+// Pause calls the staking Pause function to pause a validator if validator is not paused / inactivated
+func (k Keeper) Pause(ctx sdk.Context, validatorAddr sdk.ValAddress) error {
+	validator, err := k.sk.GetValidator(ctx, validatorAddr)
+	if err != nil {
+		return types.ErrNoValidatorForAddress
+	}
+
+	// cannot be paused if not paused already
+	if validator.IsPaused() {
+		return types.ErrValidatorPaused
+	}
+
+	// cannot be paused if not paused already
+	if validator.IsInactivated() {
+		return types.ErrValidatorInactivated
+	}
+
+	consAddr := validator.GetConsAddr()
+	k.sk.Pause(ctx, consAddr)
+	return nil
+}
+
+// Unpause calls the staking Unpause function to unpause a validator if validator is paused
+func (k Keeper) Unpause(ctx sdk.Context, validatorAddr sdk.ValAddress) error {
+	validator, err := k.sk.GetValidator(ctx, validatorAddr)
+	if err != nil {
+		return types.ErrNoValidatorForAddress
+	}
+
+	// cannot be unpaused if not paused
+	if !validator.IsPaused() {
+		return types.ErrValidatorNotPaused
+	}
+
+	consAddr := validator.GetConsAddr()
+	k.sk.Unpause(ctx, consAddr)
+	return nil
+}

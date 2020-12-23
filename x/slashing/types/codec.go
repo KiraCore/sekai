@@ -11,11 +11,16 @@ import (
 // RegisterLegacyAminoCodec registers concrete types on LegacyAmino codec
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgActivate{}, "cosmos-sdk/MsgActivate", nil)
+	cdc.RegisterConcrete(&MsgPause{}, "cosmos-sdk/MsgPause", nil)
+	cdc.RegisterConcrete(&MsgUnpause{}, "cosmos-sdk/MsgUnpause", nil)
 }
 
+// RegisterInterfaces register interfaces on registry
 func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgActivate{},
+		&MsgPause{},
+		&MsgUnpause{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
