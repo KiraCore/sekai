@@ -20,8 +20,8 @@ require (
 	github.com/tendermint/tendermint v0.34.0-rc6
 	github.com/tendermint/tm-db v0.6.2
 	gitlab.com/c0b/go-ordered-json v0.0.0-20201030195603-febf46534d5a
-	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a
-	google.golang.org/genproto v0.0.0-20200825200019-8632dd797987
+	golang.org/x/crypto v0.0.0-20201012173705-84dcc777aaee
+	google.golang.org/genproto v0.0.0-20201014134559-03b6142f0dc9
 	google.golang.org/grpc v1.33.0
 )
 

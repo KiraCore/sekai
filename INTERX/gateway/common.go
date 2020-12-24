@@ -245,12 +245,12 @@ func ServeError(code int, data string, message string, statusCode int) (interfac
 
 // GetAccountBalances is a function to get balances of an address
 func GetAccountBalances(gwCosmosmux *runtime.ServeMux, r *http.Request, bech32addr string) []Coin {
-	addr, err := sdk.AccAddressFromBech32(bech32addr)
+	_, err := sdk.AccAddressFromBech32(bech32addr)
 	if err != nil {
 		return nil
 	}
 
-	r.URL.Path = fmt.Sprintf("/api/cosmos/bank/balances/%s", base64.URLEncoding.EncodeToString([]byte(addr)))
+	r.URL.Path = fmt.Sprintf("/api/cosmos/bank/balances/%s", base64.URLEncoding.EncodeToString([]byte(bech32addr)))
 	r.URL.RawQuery = ""
 	r.Method = "GET"
 
@@ -270,12 +270,12 @@ func GetAccountBalances(gwCosmosmux *runtime.ServeMux, r *http.Request, bech32ad
 
 // GetAccountNumberSequence is a function to get AccountNumber and Sequence
 func GetAccountNumberSequence(gwCosmosmux *runtime.ServeMux, r *http.Request, bech32addr string) (uint64, uint64) {
-	addr, err := sdk.AccAddressFromBech32(bech32addr)
+	_, err := sdk.AccAddressFromBech32(bech32addr)
 	if err != nil {
 		return 0, 0
 	}
 
-	r.URL.Path = fmt.Sprintf("/api/cosmos/auth/accounts/%s", base64.URLEncoding.EncodeToString([]byte(addr)))
+	r.URL.Path = fmt.Sprintf("/api/cosmos/auth/accounts/%s", base64.URLEncoding.EncodeToString([]byte(bech32addr)))
 	r.URL.RawQuery = ""
 	r.Method = "GET"
 

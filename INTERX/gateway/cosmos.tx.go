@@ -7,8 +7,7 @@ import (
 	"net/http"
 
 	interx "github.com/KiraCore/sekai/INTERX/config"
-	"github.com/cosmos/cosmos-sdk/x/auth/types"
-	auth "github.com/cosmos/cosmos-sdk/x/auth/types"
+	legacytx "github.com/cosmos/cosmos-sdk/x/auth/legacy/legacytx"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 )
@@ -128,10 +127,10 @@ func QueryTxHashRequest(rpcAddr string) http.HandlerFunc {
 func encodeTransactionHandle(r *http.Request, request InterxRequest, rpcAddr string) (interface{}, interface{}, int) {
 	// TxEncodeReq defines a tx to be encoded.
 	type TxEncodeReq struct {
-		ChainID       string      `json:"chain_id" yaml:"chain_id"`
-		AccountNumber uint64      `json:"account_number" yaml:"account_number"`
-		Sequence      uint64      `json:"sequence" yaml:"sequence"`
-		Tx            types.StdTx `json:"tx" yaml:"tx"`
+		ChainID       string         `json:"chain_id" yaml:"chain_id"`
+		AccountNumber uint64         `json:"account_number" yaml:"account_number"`
+		Sequence      uint64         `json:"sequence" yaml:"sequence"`
+		Tx            legacytx.StdTx `json:"tx" yaml:"tx"`
 	}
 	var req TxEncodeReq
 
@@ -140,7 +139,7 @@ func encodeTransactionHandle(r *http.Request, request InterxRequest, rpcAddr str
 		return ServeError(0, "failed to unmarshal", err.Error(), http.StatusBadRequest)
 	}
 
-	signBytes := auth.StdSignBytes(req.ChainID, req.AccountNumber, req.Sequence, 0, req.Tx.Fee, req.Tx.Msgs, req.Tx.Memo)
+	signBytes := legacytx.StdSignBytes(req.ChainID, req.AccountNumber, req.Sequence, 0, req.Tx.Fee, req.Tx.Msgs, req.Tx.Memo)
 
 	// TxEncodeResponse defines base64 encoded transaction.
 	type TxEncodeResponse struct {
