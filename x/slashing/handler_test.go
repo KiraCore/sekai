@@ -20,5 +20,5 @@ func TestInvalidMsg(t *testing.T) {
 	res, err := h(sdk.NewContext(nil, tmproto.Header{}, false, nil), testdata.NewTestMsg())
 	require.Error(t, err)
 	require.Nil(t, res)
-	require.True(t, strings.Contains(err.Error(), "unrecognized slashing message type"))
+	require.True(t, strings.Contains(err.Error(), "unrecognized customslashing message type"))
 }
