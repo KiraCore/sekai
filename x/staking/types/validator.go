@@ -1,16 +1,20 @@
 package types
 
 import (
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+	"github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/tendermint/tendermint/crypto"
 )
 
 // NewValidator generates new Validator.
 func NewValidator(moniker string, website string, social string,
 	identity string, comission sdk.Dec, valKey sdk.ValAddress, pubKey crypto.PubKey) (Validator, error) {
-	var pkStr string
-	if pubKey != nil {
-		pkStr = sdk.MustBech32ifyPubKey(sdk.Bech32PubKeyTypeConsPub, pubKey)
+
+	pkAny, err := codectypes.PackAny(pubKey)
+	if err != nil {
+		return Validator{}, err
 	}
 
 	v := Validator{
@@ -20,15 +24,21 @@ func NewValidator(moniker string, website string, social string,
 		Identity:   identity,
 		Commission: comission,
 		ValKey:     valKey,
-		PubKey:     pkStr,
+		PubKey:     pkAny,
 	}
 
-	err := v.Validate()
+	err = v.Validate()
 	if err != nil {
 		return v, err
 	}
 
 	return v, nil
+}
+
+// UnpackInterfaces implements UnpackInterfacesMessage.UnpackInterfaces
+func (v Validator) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
+	var pubkey crypto.PubKey
+	return unpacker.UnpackAny(v.PubKey, &pubkey)
 }
 
 // Validate validates if a validator is correct.
@@ -53,5 +63,29 @@ func (v Validator) Validate() error {
 }
 
 func (v Validator) GetConsPubKey() crypto.PubKey {
-	return sdk.MustGetPubKeyFromBech32(sdk.Bech32PubKeyTypeConsPub, v.PubKey)
+	pk, ok := v.PubKey.GetCachedValue().(crypto.PubKey)
+	if !ok {
+		panic("invalid key")
+	}
+
+	return pk
+}
+
+// TmConsPubKey casts Validator.ConsensusPubkey to crypto.PubKey
+func (v Validator) TmConsPubKey() (crypto.PubKey, error) {
+	pk, ok := v.PubKey.GetCachedValue().(crypto.PubKey)
+	if !ok {
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "Expecting crypto.PubKey, got %T", pk)
+	}
+
+	// The way things are refactored now, v.ConsensusPubkey is sometimes a TM
+	// ed25519 pubkey, sometimes our own ed25519 pubkey. This is very ugly and
+	// inconsistent.
+	// Luckily, here we coerce it into a TM ed25519 pubkey always, as this
+	// pubkey will be passed into TM (eg calling encoding.PubKeyToProto).
+	if intoTmPk, ok := pk.(types.IntoTmPubKey); ok {
+		return intoTmPk.AsTmPubKey(), nil
+	}
+
+	return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidPubKey, "Logic error: ConsensusPubkey must be an SDK key and SDK PubKey types must be convertible to tendermint PubKey; got: %T", pk)
 }

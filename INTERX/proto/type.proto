@@ -1,0 +1,13 @@
+syntax="proto3";
+
+package type;
+
+// Defines the import path that should be used to import the generated package,
+// and the package name.
+option go_package = "github.com/KiraCore/sekai/INTERX/proto";
+
+message Error {
+  int64 code = 1;
+  string data = 2;
+  string message = 3;
+}

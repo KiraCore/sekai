@@ -3,8 +3,13 @@ package staking
 import (
 	"encoding/json"
 
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+
+	govkeeper "github.com/KiraCore/sekai/x/gov/keeper"
+
 	"github.com/tendermint/tendermint/crypto/encoding"
 
+	"github.com/KiraCore/sekai/middleware"
 	"github.com/KiraCore/sekai/x/staking/keeper"
 	"github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -12,13 +17,12 @@ import (
 	types2 "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/gogo/protobuf/grpc"
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/KiraCore/sekai/x/staking/client/cli"
-	cumstomtypes "github.com/KiraCore/sekai/x/staking/types"
+	customstakingtypes "github.com/KiraCore/sekai/x/staking/types"
 )
 
 var (
@@ -28,15 +32,16 @@ var (
 
 type AppModuleBasic struct{}
 
-func (b AppModuleBasic) RegisterCodec(amino *codec.LegacyAmino) {
-	cumstomtypes.RegisterCodec(amino)
+// RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the staking module.
+func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {
 }
 
 func (b AppModuleBasic) Name() string {
-	return cumstomtypes.ModuleName
+	return customstakingtypes.ModuleName
 }
 
 func (b AppModuleBasic) RegisterInterfaces(registry types2.InterfaceRegistry) {
+	customstakingtypes.RegisterInterfaces(registry)
 }
 
 func (b AppModuleBasic) DefaultGenesis(marshaler codec.JSONMarshaler) json.RawMessage {
@@ -47,6 +52,9 @@ func (b AppModuleBasic) ValidateGenesis(marshaler codec.JSONMarshaler, config cl
 	return nil
 }
 
+func (b AppModuleBasic) RegisterGRPCRoutes(context client.Context, serveMux *runtime.ServeMux) {
+}
+
 func (b AppModuleBasic) RegisterRESTRoutes(context client.Context, router *mux.Router) {
 }
 
@@ -54,18 +62,30 @@ func (b AppModuleBasic) GetTxCmd() *cobra.Command {
 	return cli.GetTxClaimValidatorCmd()
 }
 
+func (b AppModuleBasic) RegisterLegacyAminoCodec(amino *codec.LegacyAmino) {
+	customstakingtypes.RegisterCodec(amino)
+}
+
 func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
-	return cli.GetCmdQueryValidatorByAddress()
+	return cli.GetCmdQueryValidator()
 }
 
 // AppModule extends the cosmos SDK staking.
 type AppModule struct {
 	AppModuleBasic
 	customStakingKeeper keeper.Keeper
+	customGovKeeper     govkeeper.Keeper
+}
+
+// RegisterQueryService registers a GRPC query service to respond to the
+// module-specific GRPC queries.
+func (am AppModule) RegisterServices(cfg module.Configurator) {
+	customstakingtypes.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.customStakingKeeper, am.customGovKeeper))
+	customstakingtypes.RegisterQueryServer(cfg.QueryServer(), keeper.NewQuerier(am.customStakingKeeper))
 }
 
 func (am AppModule) RegisterInterfaces(registry types2.InterfaceRegistry) {
-	cumstomtypes.RegisterInterfaces(registry)
+	customstakingtypes.RegisterInterfaces(registry)
 }
 
 func (am AppModule) InitGenesis(
@@ -80,10 +100,17 @@ func (am AppModule) InitGenesis(
 
 	for i, val := range genesisState.Validators {
 		am.customStakingKeeper.AddValidator(ctx, val)
-		pk, err := encoding.PubKeyToProto(val.GetConsPubKey())
+
+		consPk, err := val.TmConsPubKey()
 		if err != nil {
-			panic("invalid key")
+			panic(err)
 		}
+
+		pk, err := encoding.PubKeyToProto(consPk)
+		if err != nil {
+			panic(err)
+		}
+
 		valUpdate[i] = abci.ValidatorUpdate{
 			Power:  1,
 			PubKey: pk,
@@ -99,9 +126,12 @@ func (am AppModule) ExportGenesis(context sdk.Context, marshaler codec.JSONMarsh
 
 func (am AppModule) RegisterInvariants(registry sdk.InvariantRegistry) {}
 
-func (am AppModule) QuerierRoute() string { return "" }
+func (am AppModule) QuerierRoute() string {
+	return types.QuerierRoute
+}
 
-func (am AppModule) LegacyQuerierHandler(marshaler codec.JSONMarshaler) sdk.Querier {
+// LegacyQuerierHandler returns the staking module sdk.Querier.
+func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {
 	return nil
 }
 
@@ -114,13 +144,20 @@ func (am AppModule) EndBlock(ctx sdk.Context, block abci.RequestEndBlock) []abci
 
 	for i, val := range valSet {
 		am.customStakingKeeper.AddValidator(ctx, val)
-		proto, err := encoding.PubKeyToProto(val.GetConsPubKey())
+
+		consPk, err := val.TmConsPubKey()
 		if err != nil {
-			panic("invalid key")
+			panic(err)
 		}
+
+		pk, err := encoding.PubKeyToProto(consPk)
+		if err != nil {
+			panic(err)
+		}
+
 		valUpdate[i] = abci.ValidatorUpdate{
 			Power:  1,
-			PubKey: proto,
+			PubKey: pk,
 		}
 	}
 
@@ -128,26 +165,21 @@ func (am AppModule) EndBlock(ctx sdk.Context, block abci.RequestEndBlock) []abci
 }
 
 func (am AppModule) Name() string {
-	return cumstomtypes.ModuleName
+	return customstakingtypes.ModuleName
 }
 
 // Route returns the message routing key for the staking module.
 func (am AppModule) Route() sdk.Route {
-	return sdk.NewRoute(cumstomtypes.ModuleName, NewHandler(am.customStakingKeeper))
-}
-
-// RegisterQueryService registers a GRPC query service to respond to the
-// module-specific GRPC queries.
-func (am AppModule) RegisterQueryService(server grpc.Server) {
-	querier := NewQuerier(am.customStakingKeeper)
-	cumstomtypes.RegisterQueryServer(server, querier)
+	return middleware.NewRoute(customstakingtypes.ModuleName, NewHandler(am.customStakingKeeper, am.customGovKeeper))
 }
 
 // NewAppModule returns a new Custom Staking module.
 func NewAppModule(
 	keeper keeper.Keeper,
+	govKeeper govkeeper.Keeper,
 ) AppModule {
 	return AppModule{
 		customStakingKeeper: keeper,
+		customGovKeeper:     govKeeper,
 	}
 }

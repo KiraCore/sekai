@@ -1,0 +1,599 @@
+{
+	"info": {
+		"_postman_id": "1dffbbbc-2be8-460f-be20-460ed275a4b4",
+		"name": "Kira",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Status",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/cosmos/status",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"cosmos",
+						"status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Total Supply",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/cosmos/bank/supply",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"cosmos",
+						"bank",
+						"supply"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Query All Banaces",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/cosmos/bank/balances/kira1gaadckc6g8ne62dzmscgyqkx3sd5p26wrapekd",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"cosmos",
+						"bank",
+						"balances",
+						"kira1gaadckc6g8ne62dzmscgyqkx3sd5p26wrapekd"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Query Accounts",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/cosmos/auth/accounts/kira1gaadckc6g8ne62dzmscgyqkx3sd5p26wrapekd",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"cosmos",
+						"auth",
+						"accounts",
+						"kira1gaadckc6g8ne62dzmscgyqkx3sd5p26wrapekd"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Transaction hash",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/cosmos/txs/0x4A41257AC228F6CE476E9C9AD67BB98057412A22B035E1C0A4CCEB0E4E8E364D",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"cosmos",
+						"txs",
+						"0x4A41257AC228F6CE476E9C9AD67BB98057412A22B035E1C0A4CCEB0E4E8E364D"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Transaction",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"tx\": {\n\t\t\"body\": {\n\t\t\t\"messages\": [\n\t\t\t\t{\n\t\t\t\t\t\"@type\": \"/cosmos.bank.v1beta1.MsgSend\",\n\t\t\t\t\t\"from_address\": \"kira1rsgnkecqgq575ynn6rczd96kc23uwtruqx9m0m\",\n\t\t\t\t\t\"to_address\": \"kira1h9s2k2s9624kdghp5ztcdgnausg77rdj9cyat6\",\n\t\t\t\t\t\"amount\": [\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\"denom\": \"stake\",\n\t\t\t\t\t\t\t\"amount\": \"250\"\n\t\t\t\t\t\t}\n\t\t\t\t\t]\n\t\t\t\t}\n\t\t\t],\n\t\t\t\"memo\": \"\",\n\t\t\t\"timeout_height\": \"0\",\n\t\t\t\"extension_options\": [],\n\t\t\t\"non_critical_extension_options\": []\n\t\t},\n\t\t\"auth_info\": {\n\t\t\t\"signer_infos\": [\n\t\t\t\t{\n\t\t\t\t\t\"public_key\": {\n\t\t\t\t\t\t\"secp256k1\": \"Alm0A4BIQyUWy8KXjP1BRMePguZWgFKQa5hzzwRlu3I8\"\n\t\t\t\t\t},\n\t\t\t\t\t\"mode_info\": {\n\t\t\t\t\t\t\"single\": {\n\t\t\t\t\t\t\t\"mode\": \"SIGN_MODE_DIRECT\"\n\t\t\t\t\t\t}\n\t\t\t\t\t},\n\t\t\t\t\t\"sequence\": \"0\"\n\t\t\t\t}\n\t\t\t],\n\t\t\t\"fee\": {\n\t\t\t\t\"amount\": [],\n\t\t\t\t\"gas_limit\": \"200000\"\n\t\t\t}\n\t\t},\n\t\t\"signatures\": [\n\t\t\t\"0BsM4jdGj/qqgtzMaVZkhDZguX6ol6hL18KxR17yr60MqW9yMNMA8bCwonLEPjSL0PgCzVCll5V9tlfAlKak1g==\"\n\t\t]\n\t},\n\t\"mode\": \"block\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/cosmos/txs",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"cosmos",
+						"txs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RPC Methods",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/rpc_methods",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"rpc_methods"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Faucet",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/faucet?claim=kira1kdnep4lm3z6yd3pah0rzfu3dvudgwfjejs9ans&token=stake",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"faucet"
+					],
+					"query": [
+						{
+							"key": "claim",
+							"value": "kira1kdnep4lm3z6yd3pah0rzfu3dvudgwfjejs9ans"
+						},
+						{
+							"key": "token",
+							"value": "stake"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FaucetInfo",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/faucet",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"faucet"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Transaction Encode",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"chain_id\": \"testing\",\n\t\"account_number\": \"4\",\n\t\"sequence\": \"0\",\n\t\"tx\": {\n        \"msg\": [\n            {\n                \"type\": \"cosmos-sdk/MsgSend\",\n                \"value\": {\n                    \"from_address\": \"kira1h9s2k2s9624kdghp5ztcdgnausg77rdj9cyat6\",\n                    \"to_address\": \"kira1kdnep4lm3z6yd3pah0rzfu3dvudgwfjejs9ans\",\n                    \"amount\": [\n                        {\n                            \"denom\": \"stake\",\n                            \"amount\": \"100000\"\n                        }\n                    ]\n                }\n            }\n        ],\n        \"fee\": {\n            \"amount\": [],\n            \"gas\": \"200000\"\n        },\n        \"signatures\": [],\n        \"memo\": \"\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/cosmos/txs/encode",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"cosmos",
+						"txs",
+						"encode"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Query Kira Functions",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/kira/metadata",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"kira",
+						"metadata"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Query Withdraws",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/withdraws?account=kira1eyvuhkj9r28sutr6n5vxgckejz2qy3hvanjk7k&type=send&max=4",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"withdraws"
+					],
+					"query": [
+						{
+							"key": "account",
+							"value": "kira1eyvuhkj9r28sutr6n5vxgckejz2qy3hvanjk7k"
+						},
+						{
+							"key": "type",
+							"value": "send"
+						},
+						{
+							"key": "max",
+							"value": "4"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Query Deposits",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/deposits?account=kira1h9s2k2s9624kdghp5ztcdgnausg77rdj9cyat6&type=Send",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"deposits"
+					],
+					"query": [
+						{
+							"key": "account",
+							"value": "kira1h9s2k2s9624kdghp5ztcdgnausg77rdj9cyat6"
+						},
+						{
+							"key": "type",
+							"value": "Send"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

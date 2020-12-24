@@ -1,0 +1,109 @@
+syntax="proto3";
+
+package cosmos.bank.v1beta1;
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+// Defines the import path that should be used to import the generated package,
+// and the package name.
+option go_package = "github.com/KiraCore/sekai/INTERX/proto";
+
+// These annotations are used when generating the OpenAPI file.
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    version: "1.0";
+  };
+  external_docs: {
+    url: "https://github.com/KiraCore/sekai/INTERX";
+    description: "gRPC-gateway";
+  }
+  schemes: HTTP;
+};
+
+service Query {
+  // AllBalances queries the balance of all coins for a single account.
+  rpc AllBalances(QueryAllBalancesRequest) returns (QueryAllBalancesResponse) {
+    option (google.api.http) = {
+      get: "/api/cosmos/bank/balances/{address}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Query Balances"
+      description: "Query Balances."
+      tags: "query"
+    };
+  }
+  rpc TotalSupply(QueryTotalSupplyRequest) returns (QueryTotalSupplyResponse) {
+    option (google.api.http) = {
+      get: "/api/cosmos/bank/supply"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Total Supply"
+      description: "Total Supply."
+      tags: "query"
+    };
+  }
+}
+
+message Coin {
+  string denom  = 1;
+  string amount = 2;
+}
+
+message PageRequest {
+    // key is a value returned in PageResponse.next_key to begin
+    // querying the next page most efficiently. Only one of offset or key
+    // should be set.
+    bytes key = 1;
+
+    // offset is a numeric offset that can be used when key is unavailable.
+    // It is less efficient than using key. Only one of offset or key should
+    // be set.
+    uint64 offset = 2;
+
+    // limit is the total number of results to be returned in the result page.
+    // If left empty it will default to a value to be set by each app.
+    uint64 limit = 3;
+
+    // count_total is set to true  to indicate that the result set should include
+    // a count of the total number of items available for pagination in UIs. count_total
+    // is only respected when offset is used. It is ignored when key is set.
+    bool count_total = 4;
+}
+
+message PageResponse {
+    // next_key is the key to be passed to PageRequest.key to
+    // query the next page most efficiently
+    bytes next_key = 1;
+
+    // total is total number of results available if PageRequest.count_total
+    // was set, its value is undefined otherwise
+    uint64 total = 2;
+}
+
+// QueryBalanceRequest is the request type for the Query/AllBalances RPC method.
+message QueryAllBalancesRequest {
+  // address is the address to query balances for.
+  bytes address = 1;
+
+  // pagination defines an optional pagination for the request.
+  PageRequest pagination = 2;
+}
+
+// QueryAllBalancesResponse is the response type for the Query/AllBalances RPC method.
+message QueryAllBalancesResponse {
+  // balances is the balances of all the coins.
+  repeated Coin balances = 1;
+
+  // pagination defines the pagination in the response.
+  PageResponse pagination = 2;
+}
+
+// QueryTotalSupplyRequest is the request type for the Query/TotalSupply RPC method.
+message QueryTotalSupplyRequest {}
+
+// QueryTotalSupplyResponse is the response type for the Query/TotalSupply RPC method
+message QueryTotalSupplyResponse {
+  // supply is the supply of the coins
+  repeated Coin supply = 1;
+}

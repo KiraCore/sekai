@@ -6,12 +6,11 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/suite"
+	"github.com/tendermint/tendermint/crypto"
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/cosmos/cosmos-sdk/client/keys"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	"github.com/cosmos/cosmos-sdk/store/types"
 	"github.com/cosmos/cosmos-sdk/testutil"
@@ -46,6 +45,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 		return app.NewInitApp(
 			val.Ctx.Logger, dbm.NewMemDB(), nil, true, make(map[int64]bool), val.Ctx.Config.RootDir, 0,
 			app.MakeEncodingConfig(),
+			simapp.EmptyAppOptions{},
 			baseapp.SetPruning(types.NewPruningOptionsFromString(val.AppConfig.Pruning)),
 			baseapp.SetMinGasPrices(val.AppConfig.MinGasPrices),
 		)
@@ -63,69 +63,43 @@ func (s *IntegrationTestSuite) TearDownSuite() {
 	s.network.Cleanup()
 }
 
-func (s *IntegrationTestSuite) TestClaimValidatorSet_AndQueriers() {
-	s.T().SkipNow()
+func (s *IntegrationTestSuite) TestQueryValidator() {
 	val := s.network.Validators[0]
 
-	cmd := cli.GetTxClaimValidatorCmd()
-	_, out := testutil.ApplyMockIO(cmd)
-	clientCtx := val.ClientCtx.WithOutput(out)
-
-	ctx := context.Background()
-	ctx = context.WithValue(ctx, client.ClientContextKey, &clientCtx)
-
-	pubKey := "kiravalconspub1zcjduepqylc5k8r40azmw0xt7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsq4xg7em"
+	cmd := cli.GetCmdQueryValidator()
 	cmd.SetArgs(
-		[]string{
-			fmt.Sprintf("--%s=%s", cli.FlagMoniker, "Moniker"),
-			fmt.Sprintf("--%s=%s", cli.FlagWebsite, "Website"),
-			fmt.Sprintf("--%s=%s", cli.FlagSocial, "Social"),
-			fmt.Sprintf("--%s=%s", cli.FlagIdentity, "Identity"),
-			fmt.Sprintf("--%s=%s", cli.FlagComission, "10"),
-			fmt.Sprintf("--%s=%s", keys.FlagPublicKey, pubKey),
-			fmt.Sprintf("--%s=%s", cli.FlagValKey, val.ValAddress.String()),
-			fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Moniker),
-			fmt.Sprintf("--%s", flags.FlagSkipConfirmation),
-			fmt.Sprintf("--%s=%s", flags.FlagFees, "2stake"),
-		},
-	)
-
-	err := cmd.ExecuteContext(ctx)
-	s.Require().NoError(err)
-
-	height, err := s.network.LatestHeight()
-	s.Require().NoError(err)
-
-	_, err = s.network.WaitForHeight(height + 2)
-	s.Require().NoError(err)
-
-	query := cli.GetCmdQueryValidatorByAddress()
-	query.SetArgs(
 		[]string{
 			fmt.Sprintf("--%s=%s", cli.FlagValAddr, val.ValAddress.String()),
 		},
 	)
 
-	out.Reset()
+	_, out := testutil.ApplyMockIO(cmd)
+	clientCtx := val.ClientCtx.WithOutput(out).WithOutputFormat("json")
 
-	clientCtx = clientCtx.WithOutputFormat("json")
-	err = query.ExecuteContext(ctx)
+	ctx := context.Background()
+	ctx = context.WithValue(ctx, client.ClientContextKey, &clientCtx)
+
+	err := cmd.ExecuteContext(ctx)
 	s.Require().NoError(err)
 
 	var respValidator customtypes.Validator
 	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &respValidator)
 
-	s.Require().Equal("Moniker", respValidator.Moniker)
-	s.Require().Equal("Website", respValidator.Website)
-	s.Require().Equal("Social", respValidator.Social)
-	s.Require().Equal("Identity", respValidator.Identity)
-	s.Require().Equal(sdk.NewDec(10), respValidator.Commission)
+	s.Require().Equal(val.Moniker, respValidator.Moniker)
+	s.Require().Equal("the Website", respValidator.Website)
+	s.Require().Equal("The social", respValidator.Social)
+	s.Require().Equal("The Identity", respValidator.Identity)
+	s.Require().Equal(sdk.NewDec(1), respValidator.Commission)
 	s.Require().Equal(val.ValAddress, respValidator.ValKey)
-	s.Require().Equal(pubKey, respValidator.PubKey)
+
+	var pubkey crypto.PubKey
+	err = s.cfg.Codec.UnpackAny(respValidator.PubKey, &pubkey)
+	s.Require().NoError(err)
+	s.Require().Equal(val.PubKey, pubkey)
 
 	// Query by Acc Addrs.
-	query = cli.GetCmdQueryValidatorByAddress()
-	query.SetArgs(
+	cmd = cli.GetCmdQueryValidator()
+	cmd.SetArgs(
 		[]string{
 			fmt.Sprintf("--%s=%s", cli.FlagAddr, val.Address.String()),
 		},
@@ -134,22 +108,25 @@ func (s *IntegrationTestSuite) TestClaimValidatorSet_AndQueriers() {
 	out.Reset()
 
 	clientCtx = clientCtx.WithOutputFormat("json")
-	err = query.ExecuteContext(ctx)
+	err = cmd.ExecuteContext(ctx)
 	s.Require().NoError(err)
 
 	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &respValidator)
 
-	s.Require().Equal("Moniker", respValidator.Moniker)
-	s.Require().Equal("Website", respValidator.Website)
-	s.Require().Equal("Social", respValidator.Social)
-	s.Require().Equal("Identity", respValidator.Identity)
-	s.Require().Equal(sdk.NewDec(10), respValidator.Commission)
+	s.Require().Equal(val.Moniker, respValidator.Moniker)
+	s.Require().Equal("the Website", respValidator.Website)
+	s.Require().Equal("The social", respValidator.Social)
+	s.Require().Equal("The Identity", respValidator.Identity)
+	s.Require().Equal(sdk.NewDec(1), respValidator.Commission)
 	s.Require().Equal(val.ValAddress, respValidator.ValKey)
-	s.Require().Equal(pubKey, respValidator.PubKey)
+
+	err = s.cfg.Codec.UnpackAny(respValidator.PubKey, &pubkey)
+	s.Require().NoError(err)
+	s.Require().Equal(val.PubKey, pubkey)
 
 	// Query by moniker.
-	query = cli.GetCmdQueryValidatorByAddress()
-	query.SetArgs(
+	cmd = cli.GetCmdQueryValidator()
+	cmd.SetArgs(
 		[]string{
 			fmt.Sprintf("--%s=%s", cli.FlagMoniker, val.Moniker),
 		},
@@ -158,18 +135,67 @@ func (s *IntegrationTestSuite) TestClaimValidatorSet_AndQueriers() {
 	out.Reset()
 
 	clientCtx = clientCtx.WithOutputFormat("json")
-	err = query.ExecuteContext(ctx)
+	err = cmd.ExecuteContext(ctx)
 	s.Require().NoError(err)
 
 	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &respValidator)
 
-	s.Require().Equal("Moniker", respValidator.Moniker)
-	s.Require().Equal("Website", respValidator.Website)
-	s.Require().Equal("Social", respValidator.Social)
-	s.Require().Equal("Identity", respValidator.Identity)
-	s.Require().Equal(sdk.NewDec(10), respValidator.Commission)
+	s.Require().Equal(val.Moniker, respValidator.Moniker)
+	s.Require().Equal("the Website", respValidator.Website)
+	s.Require().Equal("The social", respValidator.Social)
+	s.Require().Equal("The Identity", respValidator.Identity)
+	s.Require().Equal(sdk.NewDec(1), respValidator.Commission)
 	s.Require().Equal(val.ValAddress, respValidator.ValKey)
-	s.Require().Equal(pubKey, respValidator.PubKey)
+
+	err = s.cfg.Codec.UnpackAny(respValidator.PubKey, &pubkey)
+	s.Require().NoError(err)
+	s.Require().Equal(val.PubKey, pubkey)
+}
+
+func (s *IntegrationTestSuite) TestQueryValidator_Errors() {
+	val := s.network.Validators[0]
+
+	nonExistingAddr, err := sdk.ValAddressFromBech32("kiravaloper15ky9du8a2wlstz6fpx3p4mqpjyrm5cgpv3al5n")
+	s.Require().NoError(err)
+
+	cmd := cli.GetCmdQueryValidator()
+	_, out := testutil.ApplyMockIO(cmd)
+	clientCtx := val.ClientCtx.WithOutput(out).WithOutputFormat("json")
+
+	ctx := context.Background()
+	ctx = context.WithValue(ctx, client.ClientContextKey, &clientCtx)
+
+	cmd.SetArgs(
+		[]string{
+			fmt.Sprintf("--%s=%s", cli.FlagValAddr, nonExistingAddr.String()),
+		},
+	)
+	err = cmd.ExecuteContext(ctx)
+	s.Require().EqualError(err, "validator not found: key not found: invalid request")
+
+	// Non existing moniker.
+	cmd = cli.GetCmdQueryValidator()
+	cmd.SetArgs(
+		[]string{
+			fmt.Sprintf("--%s=%s", cli.FlagAddr, sdk.AccAddress(nonExistingAddr).String()),
+		},
+	)
+	out.Reset()
+
+	err = cmd.ExecuteContext(ctx)
+	s.Require().EqualError(err, "validator not found: key not found: invalid request")
+
+	// Non existing moniker.
+	cmd = cli.GetCmdQueryValidator()
+	cmd.SetArgs(
+		[]string{
+			fmt.Sprintf("--%s=%s", cli.FlagMoniker, "weirdMoniker"),
+		},
+	)
+	out.Reset()
+
+	err = cmd.ExecuteContext(ctx)
+	s.Require().EqualError(err, "validator with moniker weirdMoniker not found: key not found: invalid request")
 }
 
 func TestIntegrationTestSuite(t *testing.T) {

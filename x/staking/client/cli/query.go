@@ -14,7 +14,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	cumstomtypes "github.com/KiraCore/sekai/x/staking/types"
+	customstakingtypes "github.com/KiraCore/sekai/x/staking/types"
 )
 
 const (
@@ -22,8 +22,8 @@ const (
 	FlagAddr    = "addr"
 )
 
-// GetCmdQueryValidatorByAddress the query delegation command.
-func GetCmdQueryValidatorByAddress() *cobra.Command {
+// GetCmdQueryValidator the query delegation command.
+func GetCmdQueryValidator() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "validator [--addr || --val-addr || --flagMoniker] ",
 		Short: "Query a validator based on address",
@@ -56,9 +56,9 @@ func GetCmdQueryValidatorByAddress() *cobra.Command {
 					}
 				}
 
-				params := &cumstomtypes.ValidatorByAddressRequest{ValAddr: valAddr}
+				params := &customstakingtypes.ValidatorByAddressRequest{ValAddr: valAddr}
 
-				queryClient := cumstomtypes.NewQueryClient(clientCtx)
+				queryClient := customstakingtypes.NewQueryClient(clientCtx)
 				res, err := queryClient.ValidatorByAddress(context.Background(), params)
 				if err != nil {
 					return err
@@ -69,9 +69,9 @@ func GetCmdQueryValidatorByAddress() *cobra.Command {
 
 			moniker, _ := cmd.Flags().GetString(FlagMoniker)
 			if moniker != "" {
-				params := &cumstomtypes.ValidatorByMonikerRequest{Moniker: moniker}
+				params := &customstakingtypes.ValidatorByMonikerRequest{Moniker: moniker}
 
-				queryClient := cumstomtypes.NewQueryClient(clientCtx)
+				queryClient := customstakingtypes.NewQueryClient(clientCtx)
 				res, err := queryClient.ValidatorByMoniker(context.Background(), params)
 				if err != nil {
 					return err

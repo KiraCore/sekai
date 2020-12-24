@@ -4,14 +4,14 @@ import (
 	"encoding/json"
 	"fmt"
 
+	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 
-	cumstomtypes "github.com/KiraCore/sekai/x/staking/types"
+	customstakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/server"
 	"github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/module"
 	types2 "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	"github.com/cosmos/cosmos-sdk/x/staking/client/cli"
@@ -19,7 +19,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func GenTxClaimCmd(mbm module.BasicManager, txEncCfg client.TxEncodingConfig, genBalIterator types2.GenesisBalancesIterator, defaultNodeHome string) *cobra.Command {
+func GenTxClaimCmd(genBalIterator types2.GenesisBalancesIterator, defaultNodeHome string) *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:   "gentx-claim [key_name]",
 		Short: "Adds validator into the genesis set",
@@ -45,7 +45,7 @@ func GenTxClaimCmd(mbm module.BasicManager, txEncCfg client.TxEncodingConfig, ge
 				}
 			}
 
-			appState, genDoc, err := genutiltypes.GenesisStateFromGenFile(cdc, config.GenesisFile())
+			appState, genDoc, err := genutiltypes.GenesisStateFromGenFile(config.GenesisFile())
 
 			name := args[0]
 			key, err := clientCtx.Keyring.Key(name)
@@ -71,7 +71,7 @@ func GenTxClaimCmd(mbm module.BasicManager, txEncCfg client.TxEncodingConfig, ge
 
 			website, _ := cmd.Flags().GetString(FlagWebsite)
 			identity, _ := cmd.Flags().GetString(FlagIdentity)
-			validator, err := cumstomtypes.NewValidator(
+			validator, err := customstakingtypes.NewValidator(
 				moniker,
 				website,
 				"social",
@@ -84,15 +84,33 @@ func GenTxClaimCmd(mbm module.BasicManager, txEncCfg client.TxEncodingConfig, ge
 				return errors.Wrap(err, "failed to create new validator")
 			}
 
-			var stakingGenesisState cumstomtypes.GenesisState
+			var stakingGenesisState customstakingtypes.GenesisState
 			stakingGenesisState.Validators = append(stakingGenesisState.Validators, validator)
+			bzStakingGen := cdc.MustMarshalJSON(&stakingGenesisState)
+			appState[customstakingtypes.ModuleName] = bzStakingGen
 
-			bzStakingGen, err := cdc.MarshalJSON(&stakingGenesisState)
-			if err != nil {
-				return fmt.Errorf("failed to marshal staking genesis state: %w", err)
-			}
+			var customGovGenState customgovtypes.GenesisState
+			cdc.MustUnmarshalJSON(appState[customgovtypes.ModuleName], &customGovGenState)
 
-			appState[cumstomtypes.ModuleName] = bzStakingGen
+			// Only first validator is network actor
+			networkActor := customgovtypes.NewNetworkActor(
+				types.AccAddress(validator.ValKey),
+				customgovtypes.Roles{
+					uint64(customgovtypes.RoleSudo),
+				},
+				customgovtypes.Active,
+				[]customgovtypes.VoteOption{
+					customgovtypes.OptionYes,
+					customgovtypes.OptionAbstain,
+					customgovtypes.OptionNo,
+					customgovtypes.OptionNoWithVeto,
+				},
+				customgovtypes.NewPermissions(nil, nil),
+				1,
+			)
+			customGovGenState.NetworkActors = append(customGovGenState.NetworkActors, &networkActor)
+			appState[customgovtypes.ModuleName] = cdc.MustMarshalJSON(&customGovGenState)
+
 			appGenStateJSON, err := json.Marshal(appState)
 			if err != nil {
 				return err

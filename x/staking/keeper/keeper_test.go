@@ -1,9 +1,8 @@
 package keeper_test
 
 import (
+	"os"
 	"testing"
-
-	app2 "github.com/KiraCore/sekai/app"
 
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
@@ -11,10 +10,15 @@ import (
 	"github.com/KiraCore/sekai/x/staking/types"
 	types2 "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
+	app2 "github.com/KiraCore/sekai/app"
 )
 
-func TestKeeper_AddValidator(t *testing.T) {
+func TestMain(m *testing.M) {
 	app2.SetConfig()
+	os.Exit(m.Run())
+}
+
+func TestKeeper_AddValidator(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
@@ -38,16 +42,31 @@ func TestKeeper_AddValidator(t *testing.T) {
 	app.CustomStakingKeeper.AddValidator(ctx, validator)
 
 	// Get By Validator Address.
-	getValidator := app.CustomStakingKeeper.GetValidator(ctx, validator.ValKey)
-	require.Equal(t, validator, getValidator)
+	getValidator, err := app.CustomStakingKeeper.GetValidator(ctx, validator.ValKey)
+	require.NoError(t, err)
+	require.True(t, validator.Equal(getValidator))
+
+	// Non existing validator Addr.
+	_, err = app.CustomStakingKeeper.GetValidator(ctx, types2.ValAddress("non existing"))
+	require.EqualError(t, err, "validator not found")
 
 	// Get by AccAddress.
-	getValidator = app.CustomStakingKeeper.GetValidatorByAccAddress(ctx, addr1)
-	require.Equal(t, validator, getValidator)
+	getValidator, err = app.CustomStakingKeeper.GetValidatorByAccAddress(ctx, addr1)
+	require.NoError(t, err)
+	require.True(t, validator.Equal(getValidator))
+
+	// Non existing AccAddress.
+	_, err = app.CustomStakingKeeper.GetValidatorByAccAddress(ctx, types2.AccAddress("non existing"))
+	require.EqualError(t, err, "validator not found")
 
 	// Get by Moniker.
-	getValidator = app.CustomStakingKeeper.GetValidatorByMoniker(ctx, validator.Moniker)
-	require.Equal(t, validator, getValidator)
+	getValidator, err = app.CustomStakingKeeper.GetValidatorByMoniker(ctx, validator.Moniker)
+	require.NoError(t, err)
+	require.True(t, validator.Equal(getValidator))
+
+	// Non existing moniker
+	_, err = app.CustomStakingKeeper.GetValidatorByMoniker(ctx, "UnexistingMoniker")
+	require.EqualError(t, err, "validator with moniker UnexistingMoniker not found")
 }
 
 func TestKeeper_GetValidatorSet(t *testing.T) {

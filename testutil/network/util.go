@@ -5,6 +5,8 @@ import (
 	"path/filepath"
 	"time"
 
+	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
+
 	"github.com/pkg/errors"
 
 	types2 "github.com/cosmos/cosmos-sdk/types"
@@ -64,12 +66,18 @@ func startInProcess(cfg Config, val *Validator) error {
 		val.RPCClient = local.New(tmNode)
 	}
 
-	if val.APIAddress != "" {
+	// We'll need a RPC client if the validator exposes a gRPC or REST endpoint.
+	if val.APIAddress != "" || val.AppConfig.GRPC.Enable {
 		val.ClientCtx = val.ClientCtx.
 			WithClient(val.RPCClient)
 
+		// Add the tx service in the gRPC router.
+		app.RegisterTxService(val.ClientCtx)
+	}
+
+	if val.APIAddress != "" {
 		apiSrv := api.New(val.ClientCtx, logger.With("module", "api-server"))
-		app.RegisterAPIRoutes(apiSrv)
+		app.RegisterAPIRoutes(apiSrv, val.AppConfig.API)
 
 		errCh := make(chan error)
 
@@ -136,7 +144,6 @@ func collectGenFiles(cfg Config, vals []*Validator, outputDir string) error {
 }
 
 func initGenFiles(cfg Config, vals []*Validator, genAccounts []authtypes.GenesisAccount, genBalances []banktypes.Balance, genFiles []string) error {
-
 	// set the accounts in the genesis state
 	var authGenState authtypes.GenesisState
 	cfg.Codec.MustUnmarshalJSON(cfg.GenesisState[authtypes.ModuleName], &authGenState)
@@ -165,6 +172,31 @@ func initGenFiles(cfg Config, vals []*Validator, genAccounts []authtypes.Genesis
 		customStakingGenState.Validators = append(customStakingGenState.Validators, validator)
 	}
 	cfg.GenesisState[customtypes.ModuleName] = cfg.Codec.MustMarshalJSON(&customStakingGenState)
+
+	var customGovGenState customgovtypes.GenesisState
+	cfg.Codec.MustUnmarshalJSON(cfg.GenesisState[customgovtypes.ModuleName], &customGovGenState)
+
+	// Add permissions to RoleInTest, num 0. This included:
+	// - Whitelisted PermClaimValidator.
+	// - Blacklisted PermClaimCouncilor.
+	customGovGenState.Permissions[uint64(customgovtypes.RoleUndefined)] = customgovtypes.NewPermissions(
+		[]customgovtypes.PermValue{
+			customgovtypes.PermClaimValidator,
+		}, []customgovtypes.PermValue{
+			customgovtypes.PermClaimCouncilor,
+		})
+
+	// Only first validator is network actor
+	networkActor := customgovtypes.NewNetworkActor(
+		vals[0].Address,
+		customgovtypes.Roles{uint64(customgovtypes.RoleSudo)},
+		customgovtypes.Active,
+		nil,
+		customgovtypes.NewPermissions(nil, nil),
+		1,
+	)
+	customGovGenState.NetworkActors = append(customGovGenState.NetworkActors, &networkActor)
+	cfg.GenesisState[customgovtypes.ModuleName] = cfg.Codec.MustMarshalJSON(&customGovGenState)
 
 	appGenStateJSON, err := json.MarshalIndent(cfg.GenesisState, "", "  ")
 	if err != nil {

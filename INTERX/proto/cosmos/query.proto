@@ -1,0 +1,151 @@
+syntax="proto3";
+
+package cosmos.query;
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "type.proto";
+
+// Defines the import path that should be used to import the generated package,
+// and the package name.
+option go_package = "github.com/KiraCore/sekai/INTERX/proto";
+
+// These annotations are used when generating the OpenAPI file.
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    version: "1.0";
+  };
+  external_docs: {
+    url: "https://github.com/KiraCore/sekai/INTERX";
+    description: "gRPC-gateway";
+  }
+  schemes: HTTP;
+};
+
+service Query {
+  rpc Status(StatusRequest) returns (StatusResponse) {
+    option (google.api.http) = {
+      get: "/api/cosmos/status"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Query Status"
+      description: "Query Status."
+      tags: "query"
+    };
+  }
+  rpc TransactionHash(TransactionHashRequest) returns (TransactionHashResponse) {
+    option (google.api.http) = {
+      get: "/api/cosmos/txs/{hash}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Query Transaction Hash"
+      description: "Query Transaction Hash."
+      tags: "query"
+    };
+  }
+}
+
+message ProtocolVersion {
+  string p2p = 1;
+  string block = 2;
+  string app = 3;
+}
+
+message NodeOtherInfo {
+  string tx_index = 1;
+  string rpc_address = 2;
+}
+
+message NodeInfo {
+  ProtocolVersion protocol_version = 1;
+  string id = 2;
+  string listen_addr = 3;
+  string network = 4;
+  string version = 5;
+  string channels = 6;
+  string moniker = 7;
+  NodeOtherInfo other = 8;
+}
+
+message SyncInfo {
+  string latest_block_hash = 1;
+  string latest_app_hash = 2;
+  string latest_block_height = 3;
+  string latest_block_time = 4;
+  string earliest_block_hash = 5;
+  string earliest_app_hash = 6;
+  string earliest_block_height = 7;
+  string earliest_block_time = 8;
+  bool catching_up = 9;
+}
+
+message PubKey {
+  string type = 1;
+  string value = 2;
+}
+
+message ValidatorInfo {
+  string address = 1;
+  PubKey pub_key = 2;
+  string voting_power = 3;
+}
+
+message Status {
+  NodeInfo node_info = 1;
+  SyncInfo sync_info = 2;
+  ValidatorInfo validator_info = 3;
+}
+
+// StatusRequest is the request type for the Query/Status RPC method.
+message StatusRequest {}
+
+// StatusResponse is the response type for the Query/Status RPC method
+message StatusResponse {
+  string chain_id = 1;
+  uint64 block = 2;
+  string block_time = 3;
+  uint64 timestamp = 4;
+  Status response = 5;
+  type.Error error = 6;
+  string signature = 7;
+  string hash = 8;
+}
+
+message Event {
+  string key = 1;
+  string value = 2;
+  bool index = 3;
+}
+
+message TxResult {
+  string log = 1;
+  string gas_wanted = 2;
+  string gas_used = 3;
+  repeated Event tags = 4;
+}
+
+message Transaction {
+  string hash = 1;
+  string height = 2;
+  uint64 index = 3;
+  TxResult tx_result = 4;
+  string tx = 5;
+}
+
+// TransactionHashRequest is the request type for the Query/TransactionHash RPC method.
+message TransactionHashRequest {
+  // transaction hash.
+  bytes hash = 1;
+}
+
+// TransactionHashResponse is the response type for the Query/TransactionHash RPC method.
+message TransactionHashResponse {
+  string chain_id = 1;
+  uint64 block = 2;
+  string block_time = 3;
+  uint64 timestamp = 4;
+  Transaction response = 5;
+  type.Error error = 6;
+  string signature = 7;
+  string hash = 8;
+}

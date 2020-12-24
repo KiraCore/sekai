@@ -1,0 +1,66 @@
+syntax="proto3";
+
+package cosmos.auth.v1beta1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/any.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+// Defines the import path that should be used to import the generated package,
+// and the package name.
+option go_package = "github.com/KiraCore/sekai/INTERX/proto";
+
+// These annotations are used when generating the OpenAPI file.
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    version: "1.0";
+  };
+  external_docs: {
+    url: "https://github.com/KiraCore/sekai/INTERX";
+    description: "gRPC-gateway";
+  }
+  schemes: HTTP;
+};
+
+service Query {
+  // Account returns account details based on address.
+  rpc Account (QueryAccountRequest) returns (QueryAccountResponse) {
+    option (google.api.http) = {
+      get: "/api/cosmos/auth/accounts/{address}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Query Account"
+      description: "Query Account."
+      tags: "query"
+    };
+  }
+}
+
+// QueryAccountRequest is the request type for the Query/Account RPC method.
+message QueryAccountRequest{
+  // address defines the address to query for.
+  bytes address = 1;
+}
+
+// QueryAccountResponse is the response type for the Query/Account RPC method.
+message QueryAccountResponse{
+  // account defines the account of the corresponding address.
+  google.protobuf.Any account = 1;
+}
+
+// BaseAccount defines a base account type. It contains all the necessary fields
+// for basic account functionality. Any custom account type should extend this
+// type for additional functionality (e.g. vesting).
+message BaseAccount {
+  bytes  address = 1;
+  bytes  pub_key = 2;
+  uint64 account_number = 3;
+  uint64 sequence       = 4;
+}
+
+// ModuleAccount defines an account for modules that holds coins on a pool.
+message ModuleAccount {
+  BaseAccount     base_account = 1;
+  string          name         = 2;
+  repeated string permissions  = 3;
+}

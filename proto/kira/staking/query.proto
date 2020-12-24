@@ -4,7 +4,7 @@ package kira.staking;
 import "staking.proto";
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/cosmos/cosmos-sdk/x/staking/types";
+option go_package = "github.com/KiraCore/sekai/x/staking/types";
 
 // Query defines the gRPC querier service
 service Query {

@@ -3,6 +3,9 @@ package types
 import (
 	"fmt"
 
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+
+	"github.com/KiraCore/sekai/types"
 	"github.com/tendermint/tendermint/crypto"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -27,7 +30,10 @@ func NewMsgClaimValidator(
 		return nil, fmt.Errorf("public key not set")
 	}
 
-	pkStr := sdk.MustBech32ifyPubKey(sdk.Bech32PubKeyTypeConsPub, pubKey)
+	pkAny, err := codectypes.PackAny(pubKey)
+	if err != nil {
+		return nil, err
+	}
 
 	return &MsgClaimValidator{
 		Moniker:    moniker,
@@ -36,29 +42,32 @@ func NewMsgClaimValidator(
 		Identity:   identity,
 		Commission: comission,
 		ValKey:     valKey,
-		PubKey:     pkStr,
+		PubKey:     pkAny,
 	}, nil
 }
 
-func (m MsgClaimValidator) Route() string {
+func (m *MsgClaimValidator) Route() string {
 	return ModuleName
 }
 
-func (m MsgClaimValidator) Type() string {
-	return ClaimValidator
+func (m *MsgClaimValidator) Type() string {
+	return types.MsgTypeClaimValidator
 }
 
-func (m MsgClaimValidator) ValidateBasic() error {
+func (m *MsgClaimValidator) ValidateBasic() error {
+	if m.ValKey.Empty() {
+		return fmt.Errorf("validator not set")
+	}
+
 	return nil
 }
 
-func (m MsgClaimValidator) GetSignBytes() []byte {
-	//bz := ModuleCdc.MustMarshalJSON(m)
-	//return sdk.MustSortJSON(bz)
-	return nil
+func (m *MsgClaimValidator) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
 }
 
-func (m MsgClaimValidator) GetSigners() []sdk.AccAddress {
+func (m *MsgClaimValidator) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{
 		sdk.AccAddress(m.ValKey),
 	}

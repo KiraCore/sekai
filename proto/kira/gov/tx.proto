@@ -1,0 +1,70 @@
+syntax = "proto3";
+package kira.gov;
+
+import "gogoproto/gogo.proto";
+
+import "actor.proto";
+import "councilor.proto";
+import "proposal.proto";
+import "role.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/gov/types";
+
+// Msg defines the staking Msg service.
+service Msg {
+    // WhitelistPermissions defines a method for whitelisting a permission for an address.
+    rpc WhitelistPermissions(MsgWhitelistPermissions) returns (MsgWhitelistPermissionsResponse);
+    // BlacklistPermissions defines a method for blacklisting a permission for an address.
+    rpc BlacklistPermissions(MsgBlacklistPermissions) returns (MsgBlacklistPermissionsResponse);
+    // ClaimCouncilor defines a method for claiming a councilor
+    rpc ClaimCouncilor(MsgClaimCouncilor) returns (MsgClaimCouncilorResponse);
+    // VoteProposal defines a method for voting a proposal
+    rpc VoteProposal(MsgVoteProposal) returns (MsgVoteProposalResponse);
+    // ProposalAssignPermission defines a method for assigning a permission proposal
+    rpc ProposalAssignPermission(MsgProposalAssignPermission) returns (MsgProposalAssignPermissionResponse);
+    // ProposalUpsertDataRegistry defines a method for upserting data registry proposal
+    rpc ProposalUpsertDataRegistry(MsgProposalUpsertDataRegistry) returns (MsgProposalUpsertDataRegistryResponse);
+    // ProposalSetNetworkProperty defines a method for setting a network property proposal
+    rpc ProposalSetNetworkProperty(MsgProposalSetNetworkProperty) returns (MsgProposalSetNetworkPropertyResponse);
+    // CreateRole defines a method for creating a role
+    rpc CreateRole(MsgCreateRole) returns (MsgCreateRoleResponse);
+    // AssignRole defines a method for assigning a role to an address
+    rpc AssignRole(MsgAssignRole) returns (MsgAssignRoleResponse);
+    // RemoveRole defines a method for removing a role from an address
+    rpc RemoveRole(MsgRemoveRole) returns (MsgRemoveRoleResponse);
+    // SetNetworkProperties defines a method for setting network properties
+    rpc SetNetworkProperties(MsgSetNetworkProperties) returns (MsgSetNetworkPropertiesResponse);
+    // SetExecutionFee defines a method for setting execution fee
+    rpc SetExecutionFee(MsgSetExecutionFee) returns (MsgSetExecutionFeeResponse);
+    // WhitelistRolePermission defines a method for whitelisting a permission for a role
+    rpc WhitelistRolePermission(MsgWhitelistRolePermission) returns (MsgWhitelistRolePermissionResponse);
+    // BlacklistRolePermission defines a method for blacklisting a permission for a role
+    rpc BlacklistRolePermission(MsgBlacklistRolePermission) returns (MsgBlacklistRolePermissionResponse);
+    // RemoveWhitelistRolePermission defines a method for removing whitelisted permission from a role
+    rpc RemoveWhitelistRolePermission(MsgRemoveWhitelistRolePermission) returns (MsgRemoveWhitelistRolePermissionResponse);
+    // RemoveBlacklistRolePermission defines a method for removing blacklisted permission from a role
+    rpc RemoveBlacklistRolePermission(MsgRemoveBlacklistRolePermission) returns (MsgRemoveBlacklistRolePermissionResponse);
+}
+
+message MsgWhitelistPermissionsResponse {}
+message MsgBlacklistPermissionsResponse {}
+message MsgClaimCouncilorResponse {}
+message MsgVoteProposalResponse {}
+message MsgProposalAssignPermissionResponse {
+  uint64 proposalID = 1;
+}
+message MsgProposalUpsertDataRegistryResponse {
+    uint64 proposalID = 1;
+}
+message MsgProposalSetNetworkPropertyResponse {
+    uint64 proposalID = 1;
+}
+message MsgCreateRoleResponse {}
+message MsgAssignRoleResponse {}
+message MsgRemoveRoleResponse {}
+message MsgSetNetworkPropertiesResponse {}
+message MsgSetExecutionFeeResponse {}
+message MsgWhitelistRolePermissionResponse {}
+message MsgBlacklistRolePermissionResponse {}
+message MsgRemoveWhitelistRolePermissionResponse {}
+message MsgRemoveBlacklistRolePermissionResponse {}
