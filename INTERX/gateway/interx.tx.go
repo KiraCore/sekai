@@ -250,20 +250,20 @@ func queryTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw bool) 
 			if txType == "send" {
 				msgSend := msg.(*bank.MsgSend)
 
-				if isWithdraw && msgSend.GetFromAddress().String() == account {
-					for _, coin := range msgSend.GetAmount() {
+				if isWithdraw && msgSend.FromAddress == account {
+					for _, coin := range msgSend.Amount {
 						txResponses = append(txResponses, Transaction{
-							Address: msgSend.GetToAddress().String(),
+							Address: msgSend.ToAddress,
 							Type:    txType,
 							Denom:   coin.GetDenom(),
 							Amount:  coin.Amount.Int64(),
 						})
 					}
 				}
-				if !isWithdraw && msgSend.GetToAddress().String() == account {
-					for _, coin := range msgSend.GetAmount() {
+				if !isWithdraw && msgSend.ToAddress == account {
+					for _, coin := range msgSend.Amount {
 						txResponses = append(txResponses, Transaction{
-							Address: msgSend.GetFromAddress().String(),
+							Address: msgSend.FromAddress,
 							Type:    txType,
 							Denom:   coin.GetDenom(),
 							Amount:  coin.Amount.Int64(),
@@ -276,13 +276,13 @@ func queryTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw bool) 
 				outputs := msgMultiSend.GetOutputs()
 				if isWithdraw {
 					for _, input := range inputs {
-						if input.GetAddress().String() == account {
+						if input.Address == account {
 							// found input
 							if len(inputs) == 1 {
 								for _, output := range outputs {
-									for _, coin := range output.GetCoins() {
+									for _, coin := range output.Coins {
 										txResponses = append(txResponses, Transaction{
-											Address: output.GetAddress().String(),
+											Address: output.Address,
 											Type:    txType,
 											Denom:   coin.GetDenom(),
 											Amount:  coin.Amount.Int64(),
@@ -290,9 +290,9 @@ func queryTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw bool) 
 									}
 								}
 							} else if len(outputs) == 1 {
-								for _, coin := range input.GetCoins() {
+								for _, coin := range input.Coins {
 									txResponses = append(txResponses, Transaction{
-										Address: outputs[0].GetAddress().String(),
+										Address: outputs[0].Address,
 										Type:    txType,
 										Denom:   coin.GetDenom(),
 										Amount:  coin.Amount.Int64(),
@@ -304,12 +304,12 @@ func queryTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw bool) 
 					}
 				} else {
 					for _, output := range outputs {
-						if output.GetAddress().String() == account {
+						if output.Address == account {
 							// found output
 							if len(inputs) == 1 {
-								for _, coin := range output.GetCoins() {
+								for _, coin := range output.Coins {
 									txResponses = append(txResponses, Transaction{
-										Address: inputs[0].GetAddress().String(),
+										Address: inputs[0].Address,
 										Type:    txType,
 										Denom:   coin.GetDenom(),
 										Amount:  coin.Amount.Int64(),
@@ -317,9 +317,9 @@ func queryTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw bool) 
 								}
 							} else if len(outputs) == 1 {
 								for _, input := range inputs {
-									for _, coin := range input.GetCoins() {
+									for _, coin := range input.Coins {
 										txResponses = append(txResponses, Transaction{
-											Address: input.GetAddress().String(),
+											Address: input.Address,
 											Type:    txType,
 											Denom:   coin.GetDenom(),
 											Amount:  coin.Amount.Int64(),
@@ -334,97 +334,97 @@ func queryTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw bool) 
 			} else if txType == "create_validator" {
 				createValidatorMsg := msg.(*staking.MsgCreateValidator)
 
-				if isWithdraw && createValidatorMsg.GetDelegatorAddress().String() == account {
+				if isWithdraw && createValidatorMsg.DelegatorAddress == account {
 					txResponses = append(txResponses, Transaction{
-						Address: createValidatorMsg.GetValidatorAddress().String(),
+						Address: createValidatorMsg.DelegatorAddress,
 						Type:    txType,
-						Denom:   createValidatorMsg.GetValue().Denom,
-						Amount:  createValidatorMsg.GetValue().Amount.Int64(),
+						Denom:   createValidatorMsg.Value.Denom,
+						Amount:  createValidatorMsg.Value.Amount.Int64(),
 					})
-				} else if !isWithdraw && createValidatorMsg.GetValidatorAddress().String() == account {
+				} else if !isWithdraw && createValidatorMsg.DelegatorAddress == account {
 					txResponses = append(txResponses, Transaction{
-						Address: createValidatorMsg.GetDelegatorAddress().String(),
+						Address: createValidatorMsg.DelegatorAddress,
 						Type:    txType,
-						Denom:   createValidatorMsg.GetValue().Denom,
-						Amount:  createValidatorMsg.GetValue().Amount.Int64(),
+						Denom:   createValidatorMsg.Value.Denom,
+						Amount:  createValidatorMsg.Value.Amount.Int64(),
 					})
 				}
 			} else if txType == "delegate" {
 				delegateMsg := msg.(*staking.MsgDelegate)
 
-				if isWithdraw && delegateMsg.GetDelegatorAddress().String() == account {
+				if isWithdraw && delegateMsg.DelegatorAddress == account {
 					txResponses = append(txResponses, Transaction{
-						Address: delegateMsg.GetValidatorAddress().String(),
+						Address: delegateMsg.ValidatorAddress,
 						Type:    txType,
-						Denom:   delegateMsg.GetAmount().Denom,
-						Amount:  delegateMsg.GetAmount().Amount.Int64(),
+						Denom:   delegateMsg.Amount.Denom,
+						Amount:  delegateMsg.Amount.Amount.Int64(),
 					})
-				} else if !isWithdraw && delegateMsg.GetValidatorAddress().String() == account {
+				} else if !isWithdraw && delegateMsg.ValidatorAddress == account {
 					txResponses = append(txResponses, Transaction{
-						Address: delegateMsg.GetDelegatorAddress().String(),
+						Address: delegateMsg.DelegatorAddress,
 						Type:    txType,
-						Denom:   delegateMsg.GetAmount().Denom,
-						Amount:  delegateMsg.GetAmount().Amount.Int64(),
+						Denom:   delegateMsg.Amount.Denom,
+						Amount:  delegateMsg.Amount.Amount.Int64(),
 					})
 				}
 			} else if txType == "begin_redelegate" {
 				reDelegateMsg := msg.(*staking.MsgBeginRedelegate)
 
-				if isWithdraw && reDelegateMsg.GetValidatorSrcAddress().String() == account {
+				if isWithdraw && reDelegateMsg.ValidatorSrcAddress == account {
 					txResponses = append(txResponses, Transaction{
-						Address: reDelegateMsg.GetValidatorDstAddress().String(),
+						Address: reDelegateMsg.ValidatorDstAddress,
 						Type:    txType,
-						Denom:   reDelegateMsg.GetAmount().Denom,
-						Amount:  reDelegateMsg.GetAmount().Amount.Int64(),
+						Denom:   reDelegateMsg.Amount.Denom,
+						Amount:  reDelegateMsg.Amount.Amount.Int64(),
 					})
-				} else if !isWithdraw && reDelegateMsg.GetValidatorDstAddress().String() == account {
+				} else if !isWithdraw && reDelegateMsg.ValidatorDstAddress == account {
 					txResponses = append(txResponses, Transaction{
-						Address: reDelegateMsg.GetValidatorSrcAddress().String(),
+						Address: reDelegateMsg.ValidatorSrcAddress,
 						Type:    txType,
-						Denom:   reDelegateMsg.GetAmount().Denom,
-						Amount:  reDelegateMsg.GetAmount().Amount.Int64(),
+						Denom:   reDelegateMsg.Amount.Denom,
+						Amount:  reDelegateMsg.Amount.Amount.Int64(),
 					})
 				}
 			} else if txType == "begin_unbonding" {
 				unDelegateMsg := msg.(*staking.MsgUndelegate)
 
-				if isWithdraw && unDelegateMsg.GetValidatorAddress().String() == account {
+				if isWithdraw && unDelegateMsg.ValidatorAddress == account {
 					txResponses = append(txResponses, Transaction{
-						Address: unDelegateMsg.GetDelegatorAddress().String(),
+						Address: unDelegateMsg.DelegatorAddress,
 						Type:    txType,
-						Denom:   unDelegateMsg.GetAmount().Denom,
-						Amount:  unDelegateMsg.GetAmount().Amount.Int64(),
+						Denom:   unDelegateMsg.Amount.Denom,
+						Amount:  unDelegateMsg.Amount.Amount.Int64(),
 					})
-				} else if !isWithdraw && unDelegateMsg.GetDelegatorAddress().String() == account {
+				} else if !isWithdraw && unDelegateMsg.DelegatorAddress == account {
 					txResponses = append(txResponses, Transaction{
-						Address: unDelegateMsg.GetValidatorAddress().String(),
+						Address: unDelegateMsg.ValidatorAddress,
 						Type:    txType,
-						Denom:   unDelegateMsg.GetAmount().Denom,
-						Amount:  unDelegateMsg.GetAmount().Amount.Int64(),
+						Denom:   unDelegateMsg.Amount.Denom,
+						Amount:  unDelegateMsg.Amount.Amount.Int64(),
 					})
 				}
 			} else if txType == "withdraw_delegator_reward" {
 				var coin sdk.Coin
 				if v, found := evMap["withdraw_rewards"]; found && len(v) >= 2 {
 					if v[0].GetKey() == "amount" {
-						coin, _ = sdk.ParseCoin(v[0].GetValue())
+						coin, _ = sdk.ParseCoin(v[0].Value)
 					} else if v[1].GetKey() == "amount" {
-						coin, _ = sdk.ParseCoin(v[1].GetValue())
+						coin, _ = sdk.ParseCoin(v[1].Value)
 					}
 				}
 
 				withdrawDelegatorRewardMsg := msg.(*distribution.MsgWithdrawDelegatorReward)
 
-				if isWithdraw && withdrawDelegatorRewardMsg.GetValidatorAddress().String() == account {
+				if isWithdraw && withdrawDelegatorRewardMsg.ValidatorAddress == account {
 					txResponses = append(txResponses, Transaction{
-						Address: withdrawDelegatorRewardMsg.GetDelegatorAddress().String(),
+						Address: withdrawDelegatorRewardMsg.DelegatorAddress,
 						Type:    txType,
 						Denom:   coin.Denom,
 						Amount:  coin.Amount.Int64(),
 					})
-				} else if !isWithdraw && withdrawDelegatorRewardMsg.GetDelegatorAddress().String() == account {
+				} else if !isWithdraw && withdrawDelegatorRewardMsg.DelegatorAddress == account {
 					txResponses = append(txResponses, Transaction{
-						Address: withdrawDelegatorRewardMsg.GetValidatorAddress().String(),
+						Address: withdrawDelegatorRewardMsg.ValidatorAddress,
 						Type:    txType,
 						Denom:   coin.Denom,
 						Amount:  coin.Amount.Int64(),

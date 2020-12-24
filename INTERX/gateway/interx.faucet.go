@@ -10,7 +10,7 @@ import (
 	database "github.com/KiraCore/sekai/INTERX/database"
 	tasks "github.com/KiraCore/sekai/INTERX/tasks"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	auth "github.com/cosmos/cosmos-sdk/x/auth/types"
+	legacytx "github.com/cosmos/cosmos-sdk/x/auth/legacy/legacytx"
 	bank "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
@@ -130,26 +130,26 @@ func serveFaucet(r *http.Request, gwCosmosmux *runtime.ServeMux, request InterxR
 	fmt.Println("sequence: ", sequence)
 
 	msgSend := &bank.MsgSend{
-		FromAddress: faucetAccAddr,
-		ToAddress:   claimAccAddr,
+		FromAddress: faucetAccAddr.String(),
+		ToAddress:   claimAccAddr.String(),
 		Amount:      sdk.NewCoins(sdk.NewInt64Coin(token, faucetAmount-claimAmount)),
 	}
 
 	msgs := []sdk.Msg{msgSend}
-	fee := auth.NewStdFee(200000, sdk.NewCoins(feeAmount)) //Fee handling
+	fee := legacytx.NewStdFee(200000, sdk.NewCoins(feeAmount)) //Fee handling
 	memo := "Faucet Transfer"
 
-	sigs := make([]auth.StdSignature, 1)
-	signBytes := auth.StdSignBytes(tasks.NodeStatus.Chainid, accountNumber, sequence, 0, fee, msgs, memo)
+	sigs := make([]legacytx.StdSignature, 1)
+	signBytes := legacytx.StdSignBytes(tasks.NodeStatus.Chainid, accountNumber, sequence, 0, fee, msgs, memo)
 
 	sig, err := interx.Config.Faucet.PrivKey.Sign(signBytes)
 	if err != nil {
 		panic(err)
 	}
 
-	sigs[0] = auth.StdSignature{PubKey: interx.Config.Faucet.PubKey, Signature: sig}
+	sigs[0] = legacytx.StdSignature{PubKey: interx.Config.Faucet.PubKey, Signature: sig}
 
-	stdTx := auth.NewStdTx(msgs, fee, sigs, memo)
+	stdTx := legacytx.NewStdTx(msgs, fee, sigs, memo)
 
 	txBuilder := interx.EncodingCg.TxConfig.NewTxBuilder()
 	err = txBuilder.SetMsgs(stdTx.GetMsgs()...)

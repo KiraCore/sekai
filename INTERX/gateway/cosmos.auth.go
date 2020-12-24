@@ -25,12 +25,12 @@ func queryAccountsHandle(r *http.Request, gwCosmosmux *runtime.ServeMux) (interf
 	queries := mux.Vars(r)
 	bech32addr := queries["address"]
 
-	addr, err := sdk.AccAddressFromBech32(bech32addr)
+	_, err := sdk.AccAddressFromBech32(bech32addr)
 	if err != nil {
 		return ServeError(0, "", err.Error(), http.StatusBadRequest)
 	}
 
-	r.URL.Path = fmt.Sprintf("/api/cosmos/auth/accounts/%s", base64.URLEncoding.EncodeToString([]byte(addr)))
+	r.URL.Path = fmt.Sprintf("/api/cosmos/auth/accounts/%s", base64.URLEncoding.EncodeToString([]byte(bech32addr)))
 	return ServeGRPC(r, gwCosmosmux)
 
 }
