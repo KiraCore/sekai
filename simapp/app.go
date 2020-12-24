@@ -1,11 +1,12 @@
 package simapp
 
 import (
-	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	"io"
 	"net/http"
 	"os"
 	"path/filepath"
+
+	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/server/config"
@@ -103,6 +104,10 @@ import (
 	customgovkeeper "github.com/KiraCore/sekai/x/gov/keeper"
 	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 
+	customslashing "github.com/KiraCore/sekai/x/slashing"
+	customslashingkeeper "github.com/KiraCore/sekai/x/slashing/keeper"
+	customslashingtypes "github.com/KiraCore/sekai/x/slashing/types"
+
 	"github.com/KiraCore/sekai/x/tokens"
 	tokenskeeper "github.com/KiraCore/sekai/x/tokens/keeper"
 	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
@@ -142,6 +147,7 @@ var (
 		vesting.AppModuleBasic{},
 
 		customstaking.AppModuleBasic{},
+		customslashing.AppModuleBasic{},
 		customgov.AppModuleBasic{},
 		tokens.AppModuleBasic{},
 		feeprocessing.AppModuleBasic{},
@@ -201,10 +207,11 @@ type SimApp struct {
 	EvidenceKeeper   evidencekeeper.Keeper
 	TransferKeeper   ibctransferkeeper.Keeper
 
-	CustomStakingKeeper keeper.Keeper
-	CustomGovKeeper     customgovkeeper.Keeper
-	TokensKeeper        tokenskeeper.Keeper
-	FeeProcessingKeeper feeprocessingkeeper.Keeper
+	CustomStakingKeeper  keeper.Keeper
+	CustomSlashingKeeper customslashingkeeper.Keeper
+	CustomGovKeeper      customgovkeeper.Keeper
+	TokensKeeper         tokenskeeper.Keeper
+	FeeProcessingKeeper  feeprocessingkeeper.Keeper
 
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
@@ -251,7 +258,7 @@ func NewSimApp(
 		minttypes.StoreKey, distrtypes.StoreKey, slashingtypes.StoreKey,
 		govtypes.StoreKey, paramstypes.StoreKey, ibchost.StoreKey, upgradetypes.StoreKey,
 		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey,
-		customstakingtypes.ModuleName, customgovtypes.ModuleName,
+		customstakingtypes.ModuleName, customslashingtypes.ModuleName, customgovtypes.ModuleName,
 		customgovtypes.ModuleName, tokenstypes.ModuleName, feeprocessingtypes.ModuleName,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -282,6 +289,7 @@ func NewSimApp(
 	scopedIBCMockKeeper := app.CapabilityKeeper.ScopeToModule(ibcmock.ModuleName)
 
 	app.CustomStakingKeeper = keeper.NewKeeper(keys[customstakingtypes.ModuleName], legacyAmino)
+	app.CustomSlashingKeeper = customslashingkeeper.NewKeeper(appCodec, keys[customslashingtypes.ModuleName], &app.CustomStakingKeeper, app.GetSubspace(customslashingtypes.ModuleName))
 	app.CustomGovKeeper = customgovkeeper.NewKeeper(keys[customgovtypes.ModuleName], appCodec)
 	app.TokensKeeper = tokenskeeper.NewKeeper(keys[tokenstypes.ModuleName], appCodec)
 
@@ -397,6 +405,7 @@ func NewSimApp(
 		evidence.NewAppModule(app.EvidenceKeeper),
 		ibc.NewAppModule(app.IBCKeeper),
 		params.NewAppModule(app.ParamsKeeper),
+		customslashing.NewAppModule(appCodec, app.CustomSlashingKeeper, app.AccountKeeper, app.BankKeeper, app.CustomStakingKeeper),
 		customgov.NewAppModule(app.CustomGovKeeper, app.ProposalRouter),
 		tokens.NewAppModule(app.TokensKeeper, app.CustomGovKeeper),
 		feeprocessing.NewAppModule(app.FeeProcessingKeeper),
@@ -408,7 +417,7 @@ func NewSimApp(
 	// CanWithdrawInvariant invariant.
 	// NOTE: staking module is required if HistoricalEntries param > 0
 	app.mm.SetOrderBeginBlockers(
-		upgradetypes.ModuleName, minttypes.ModuleName, distrtypes.ModuleName, slashingtypes.ModuleName,
+		upgradetypes.ModuleName, minttypes.ModuleName, distrtypes.ModuleName, slashingtypes.ModuleName, customslashingtypes.ModuleName,
 		evidencetypes.ModuleName, stakingtypes.ModuleName, ibchost.ModuleName,
 	)
 	app.mm.SetOrderEndBlockers(
@@ -427,7 +436,7 @@ func NewSimApp(
 	app.mm.SetOrderInitGenesis(
 		capabilitytypes.ModuleName, authtypes.ModuleName, banktypes.ModuleName, distrtypes.ModuleName, stakingtypes.ModuleName, banktypes.ModuleName,
 		slashingtypes.ModuleName, govtypes.ModuleName, minttypes.ModuleName, crisistypes.ModuleName,
-		ibchost.ModuleName, genutiltypes.ModuleName, evidencetypes.ModuleName, ibctransfertypes.ModuleName, customgovtypes.ModuleName,
+		ibchost.ModuleName, genutiltypes.ModuleName, evidencetypes.ModuleName, ibctransfertypes.ModuleName, customgovtypes.ModuleName, customslashingtypes.ModuleName,
 		tokenstypes.ModuleName, feeprocessingtypes.ModuleName,
 	)
 
@@ -675,6 +684,7 @@ func initParamsKeeper(appCodec codec.BinaryMarshaler, legacyAmino *codec.LegacyA
 	paramsKeeper.Subspace(minttypes.ModuleName)
 	paramsKeeper.Subspace(distrtypes.ModuleName)
 	paramsKeeper.Subspace(slashingtypes.ModuleName)
+	paramsKeeper.Subspace(customslashingtypes.ModuleName)
 	paramsKeeper.Subspace(govtypes.ModuleName).WithKeyTable(govtypes.ParamKeyTable())
 	paramsKeeper.Subspace(crisistypes.ModuleName)
 	paramsKeeper.Subspace(ibctransfertypes.ModuleName)

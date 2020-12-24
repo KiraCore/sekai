@@ -8,19 +8,19 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
+	"github.com/KiraCore/sekai/simapp"
 	"github.com/KiraCore/sekai/x/slashing/keeper"
 	"github.com/KiraCore/sekai/x/slashing/testslashing"
 	"github.com/KiraCore/sekai/x/slashing/types"
 	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/simapp"
 )
 
 func TestNewQuerier(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
-	app.SlashingKeeper.SetParams(ctx, testslashing.TestParams())
+	app.CustomSlashingKeeper.SetParams(ctx, testslashing.TestParams())
 	legacyQuerierCdc := codec.NewAminoCodec(app.LegacyAmino())
-	querier := keeper.NewQuerier(app.SlashingKeeper, legacyQuerierCdc.LegacyAmino)
+	querier := keeper.NewQuerier(app.CustomSlashingKeeper, legacyQuerierCdc.LegacyAmino)
 
 	query := abci.RequestQuery{
 		Path: "",
@@ -36,9 +36,9 @@ func TestQueryParams(t *testing.T) {
 	legacyQuerierCdc := codec.NewAminoCodec(cdc)
 	app := simapp.Setup(false)
 	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
-	app.SlashingKeeper.SetParams(ctx, testslashing.TestParams())
+	app.CustomSlashingKeeper.SetParams(ctx, testslashing.TestParams())
 
-	querier := keeper.NewQuerier(app.SlashingKeeper, legacyQuerierCdc.LegacyAmino)
+	querier := keeper.NewQuerier(app.CustomSlashingKeeper, legacyQuerierCdc.LegacyAmino)
 
 	query := abci.RequestQuery{
 		Path: "",
@@ -52,5 +52,5 @@ func TestQueryParams(t *testing.T) {
 
 	err = cdc.UnmarshalJSON(res, &params)
 	require.NoError(t, err)
-	require.Equal(t, app.SlashingKeeper.GetParams(ctx), params)
+	require.Equal(t, app.CustomSlashingKeeper.GetParams(ctx), params)
 }
