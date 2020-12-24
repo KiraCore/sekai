@@ -34,7 +34,6 @@ func readConfig() InterxConfig {
 		MaxCacheSize               string `json:"max_cache_size"`
 		CachingDuration            int64  `json:"caching_duration"`
 		DownloadFileSizeLimitation string `json:"download_file_size_limitation"`
-		FileHostingServer          string `json:"file_hosting_server"`
 		Faucet                     struct {
 			Mnemonic             string            `json:"mnemonic"`
 			FaucetAmounts        map[string]int64  `json:"faucet_amounts"`
@@ -64,13 +63,9 @@ func readConfig() InterxConfig {
 	config.MaxCacheSize = parseSizeString(configFromFile.MaxCacheSize)
 	config.CachingDuration = configFromFile.CachingDuration
 	config.DownloadFileSizeLimitation = parseSizeString(configFromFile.DownloadFileSizeLimitation)
-	config.FileHostingServer = configFromFile.FileHostingServer
 	config.PrivKey = secp256k1.GenPrivKeyFromSecret(bip39.NewSeed(config.Mnemonic, ""))
 	config.PubKey = config.PrivKey.PubKey()
 	config.Address = sdk.MustBech32ifyAddressBytes(sdk.GetConfig().GetBech32AccountAddrPrefix(), config.PubKey.Address())
-
-	fmt.Printf("%x\n", config.PrivKey.Bytes())
-	fmt.Printf("%x\n", config.PubKey.Bytes())
 
 	// Display mnemonic and keys
 	fmt.Println("Interx Mnemonic   : ", config.Mnemonic)

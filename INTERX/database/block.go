@@ -35,6 +35,7 @@ func GetBlockTime(height int64) (int64, error) {
 	data := BlockData{}
 	err := blockDb.Open(BlockData{}).Where("height", "=", height).First().AsEntity(&data)
 	if err != nil {
+		common.EnableStdout()
 		return 0, err
 	}
 

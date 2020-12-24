@@ -48,8 +48,6 @@ var temp = os.Stdout
 
 // DisableStdout is a function to disable stdout
 func DisableStdout() {
-	temp = os.Stdout
-
 	os.Stdout = nil // turn it off
 }
 

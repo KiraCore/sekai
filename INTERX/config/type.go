@@ -41,7 +41,6 @@ type InterxConfig struct {
 	MaxCacheSize               int64          `json:"max_cache_size"`
 	CachingDuration            int64          `json:"caching_duration"`
 	DownloadFileSizeLimitation int64          `json:"download_file_size_limitation"`
-	FileHostingServer          string         `json:"file_hosting_server"`
 	Faucet                     FaucetConfig   `json:"faucet"`
 	RPC                        RPCConfig      `json:"rpc"`
 }
