@@ -179,3 +179,27 @@ func TestKeeper_GetPendingValidators(t *testing.T) {
 	validatorSet = app.CustomStakingKeeper.GetPendingValidatorSet(ctx)
 	require.Equal(t, 1, len(validatorSet))
 }
+
+func TestPauseValidator(t *testing.T) {
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, types2.TokensFromConsensusPower(10))
+	addr1 := addrs[0]
+	valAddr1 := types2.ValAddress(addr1)
+
+	pubKey, err := types2.GetPubKeyFromBech32(types2.Bech32PubKeyTypeConsPub, "kiravalconspub1zcjduepqylc5k8r40azmw0xt7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsq4xg7em")
+	require.NoError(t, err)
+	validator1, err := types.NewValidator(
+		"validator 1",
+		"some-web.com",
+		"A Social",
+		"My Identity",
+		types2.NewDec(1234),
+		valAddr1,
+		pubKey,
+	)
+
+	require.NoError(t, err)
+	app.CustomStakingKeeper.AddValidator(ctx, validator1)
+}

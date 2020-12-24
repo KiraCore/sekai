@@ -22,7 +22,7 @@ func (k Keeper) Inactivate(sdk.Context, sdk.ConsAddress) { // inactivate a valid
 }
 
 // Pause a validator
-func (k Keeper) Pause(ctx sdk.Context, consAddr sdk.ConsAddress) {
+func (k Keeper) Pause(ctx sdk.Context, consAddr sdk.ValAddress) {
 	// TODO: don't do anything for now, implement this
 	// validator := k.GetValidatorByConsAddr(ctx, consAddr)
 	// if !validator.Inactivated {
@@ -34,7 +34,7 @@ func (k Keeper) Pause(ctx sdk.Context, consAddr sdk.ConsAddress) {
 }
 
 // Unpause unpause the validator
-func (k Keeper) Unpause(sdk.Context, sdk.ConsAddress) { // inactivate a validator
+func (k Keeper) Unpause(sdk.Context, sdk.ValAddress) { // inactivate a validator
 	// TODO: don't do anything for now, implement this
 }
 
