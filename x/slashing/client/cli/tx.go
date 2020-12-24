@@ -66,8 +66,8 @@ func NewPauseTxCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "pause",
 		Args:  cobra.NoArgs,
-		Short: "pause validator previously paused for downtime",
-		Long: `pause a paused validator:
+		Short: "pause validator",
+		Long: `pause a validator before stopping of a node to avoid automatic inactivation:
 
 $ <appd> tx slashing pause --from mykey
 `,
