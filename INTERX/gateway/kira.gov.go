@@ -17,6 +17,8 @@ import (
 const (
 	queryDataReferenceKeys = "/api/kira/gov/data_keys"
 	queryDataReference     = "/api/kira/gov/data"
+
+	dataReferenceRegistry = "DRR"
 )
 
 // RegisterKiraGovRoutes registers kira gov query routers.
@@ -94,7 +96,9 @@ func queryDataReferenceHandle(r *http.Request, gwCosmosmux *runtime.ServeMux, ke
 
 		success = result.Data
 
-		database.AddReference(key, result.Data.Reference, 0, time.Now(), key+filepath.Ext(result.Data.Reference))
+		filePath := key + filepath.Ext(result.Data.Reference)
+
+		database.AddReference(key, result.Data.Reference, 0, time.Now(), dataReferenceRegistry+"/"+GetMD5Hash(filePath))
 	}
 
 	return success, failure, status

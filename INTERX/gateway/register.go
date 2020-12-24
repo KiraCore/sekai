@@ -11,6 +11,7 @@ func RegisterRequest(router *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr 
 	RegisterCosmosBankRoutes(router, gwCosmosmux, rpcAddr)
 	RegisterCosmosTxRoutes(router, gwCosmosmux, rpcAddr)
 
+	RegisterInterxDownloadRoutes(router, gwCosmosmux, rpcAddr)
 	RegisterInterxFaucetRoutes(router, gwCosmosmux, rpcAddr)
 	RegisterInterxQueryRoutes(router, gwCosmosmux, rpcAddr)
 	RegisterInterxTxRoutes(router, gwCosmosmux, rpcAddr)

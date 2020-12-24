@@ -5,7 +5,6 @@
     "max_cache_size": "2 GB",
     "caching_duration": 10,
     "download_file_size_limitation": "10 MB",
-    "file_hosting_server": "http://0.0.0.0:12000/",
     "faucet": {
         "mnemonic": "equip exercise shoot mad inside floor wheel loan visual stereo build frozen potato always bulb naive subway foster marine erosion shuffle flee action there",
         "faucet_amounts": {

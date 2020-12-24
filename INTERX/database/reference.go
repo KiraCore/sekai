@@ -59,8 +59,6 @@ func GetReference(key string) (ReferenceData, error) {
 
 // AddReference is a function to add reference
 func AddReference(key string, url string, contentLength int64, lastModified time.Time, filepath string) {
-	common.DisableStdout()
-
 	data := ReferenceData{
 		Key:           key,
 		URL:           url,
@@ -70,6 +68,8 @@ func AddReference(key string, url string, contentLength int64, lastModified time
 	}
 
 	_, err := GetReference(key)
+
+	common.DisableStdout()
 
 	if err == nil {
 		err := refDb.Open(ReferenceData{}).Update(data)

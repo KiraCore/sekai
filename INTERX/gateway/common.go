@@ -1,6 +1,7 @@
 package gateway
 
 import (
+	"crypto/md5"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
@@ -95,11 +96,19 @@ func GetInterxRequest(r *http.Request) InterxRequest {
 	return request
 }
 
-// GetHash is a function to get hash
-func GetHash(request interface{}) string {
+// GetBlake2bHash is a function to get hash
+func GetBlake2bHash(request interface{}) string {
 	// Calculate blake2b hash
 	requestJSON, _ := json.Marshal(request)
 	hash := blake2b.Sum256([]byte(requestJSON))
+	return fmt.Sprintf("%X", hash)
+}
+
+// GetMD5Hash is a function to get hash
+func GetMD5Hash(request interface{}) string {
+	// Calculate md5 hash
+	requestJSON, _ := json.Marshal(request)
+	hash := md5.Sum([]byte(requestJSON))
 	return fmt.Sprintf("%X", hash)
 }
 
@@ -107,7 +116,7 @@ func GetHash(request interface{}) string {
 func GetResponseFormat(request InterxRequest, rpcAddr string) *common.ProxyResponse {
 	response := new(common.ProxyResponse)
 	response.Timestamp = time.Now().Unix()
-	response.RequestHash = GetHash(request)
+	response.RequestHash = GetBlake2bHash(request)
 	response.Chainid = tasks.NodeStatus.Chainid
 	response.Block = tasks.NodeStatus.Block
 	response.Blocktime = tasks.NodeStatus.Blocktime
@@ -118,7 +127,7 @@ func GetResponseFormat(request InterxRequest, rpcAddr string) *common.ProxyRespo
 // GetResponseSignature is a function to get response signature
 func GetResponseSignature(response common.ProxyResponse) (string, string) {
 	// Get Response Hash
-	responseHash := GetHash(response.Response)
+	responseHash := GetBlake2bHash(response.Response)
 
 	// Generate json to be signed
 	sign := new(ResponseSign)
@@ -143,11 +152,9 @@ func GetResponseSignature(response common.ProxyResponse) (string, string) {
 
 // SearchCache is a function to search response in cache
 func SearchCache(request InterxRequest, response *common.ProxyResponse) (bool, interface{}, interface{}, int) {
-	fmt.Println("searching in the cache")
-
-	chainIDHash := GetHash(response.Chainid)
-	endpointHash := GetHash(request.Endpoint)
-	requestHash := GetHash(request)
+	chainIDHash := GetBlake2bHash(response.Chainid)
+	endpointHash := GetBlake2bHash(request.Endpoint)
+	requestHash := GetBlake2bHash(request)
 
 	result, err := GetCache(chainIDHash, endpointHash, requestHash)
 
@@ -166,9 +173,9 @@ func SearchCache(request InterxRequest, response *common.ProxyResponse) (bool, i
 func WrapResponse(w http.ResponseWriter, request InterxRequest, response common.ProxyResponse, statusCode int, saveToCashe bool) {
 	if saveToCashe {
 		fmt.Println("saving in the cache")
-		chainIDHash := GetHash(response.Chainid)
-		endpointHash := GetHash(request.Endpoint)
-		requestHash := GetHash(request)
+		chainIDHash := GetBlake2bHash(response.Chainid)
+		endpointHash := GetBlake2bHash(request.Endpoint)
+		requestHash := GetBlake2bHash(request)
 		if conf, ok := rpcMethods[request.Method][request.Endpoint]; ok {
 			err := PutCache(chainIDHash, endpointHash, requestHash, common.InterxResponse{
 				Response: response,
@@ -191,7 +198,7 @@ func WrapResponse(w http.ResponseWriter, request InterxRequest, response common.
 	if request.Endpoint == queryDataReference {
 		reference, err := database.GetReference(string(request.Params))
 		if err == nil {
-			w.Header().Add("Interx_ref", interx.Config.FileHostingServer+reference.FilePath)
+			w.Header().Add("Interx_ref", "/download/"+reference.FilePath)
 		}
 	}
 
@@ -280,7 +287,7 @@ func GetAccountNumberSequence(gwCosmosmux *runtime.ServeMux, r *http.Request, be
 		Account struct {
 			Address       string `json:"addresss"`
 			PubKey        string `json:"pubKey"`
-			AccountNumber string `json:"accountNumber"`
+			AccountNumber string `json:"account_number"`
 			Sequence      string `json:"sequence"`
 		} `json:"account"`
 	}
