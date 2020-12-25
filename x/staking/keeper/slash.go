@@ -6,20 +6,37 @@ import (
 )
 
 // Activate a validator
-func (k Keeper) Activate(ctx sdk.Context, consAddr sdk.ConsAddress) {
-	// TODO: don't do anything for now, implement this
-	// validator := k.GetValidatorByConsAddr(ctx, consAddr)
-	// if !validator.Inactivated {
-	// 	panic(fmt.Sprintf("cannot unjail already inactivated validator, validator: %v\n", validator))
-	// }
+func (k Keeper) Activate(ctx sdk.Context, valAddress sdk.ValAddress) error {
+	validator, err := k.GetValidator(ctx, valAddress)
+	if err != nil {
+		return err
+	}
 
-	// validator.Inactivated = false
-	// k.SetValidator(ctx, validator)
+	if validator.IsPaused() {
+		return customstakingtypes.ErrValidatorPaused
+	}
+
+	validator.Status = customstakingtypes.Active
+	k.AddValidator(ctx, validator)
+
+	return nil
 }
 
 // Inactivate inactivate the validator
-func (k Keeper) Inactivate(sdk.Context, sdk.ConsAddress) { // inactivate a validator
-	// TODO: don't do anything for now, implement this
+func (k Keeper) Inactivate(ctx sdk.Context, valAddress sdk.ValAddress) error { // inactivate a validator
+	validator, err := k.GetValidator(ctx, valAddress)
+	if err != nil {
+		return err
+	}
+
+	if validator.IsPaused() {
+		return customstakingtypes.ErrValidatorPaused
+	}
+
+	validator.Status = customstakingtypes.Inactive
+	k.AddValidator(ctx, validator)
+
+	return nil
 }
 
 // Pause a validator
@@ -29,6 +46,10 @@ func (k Keeper) Pause(ctx sdk.Context, valAddress sdk.ValAddress) error {
 		return err
 	}
 
+	if validator.IsInactivated() {
+		return customstakingtypes.ErrValidatorInactive
+	}
+
 	validator.Status = customstakingtypes.Paused
 	k.AddValidator(ctx, validator)
 
@@ -36,7 +57,19 @@ func (k Keeper) Pause(ctx sdk.Context, valAddress sdk.ValAddress) error {
 }
 
 // Unpause unpause the validator
-func (k Keeper) Unpause(sdk.Context, sdk.ValAddress) error { // inactivate a validator
+func (k Keeper) Unpause(ctx sdk.Context, valAddress sdk.ValAddress) error { // inactivate a validator
+	validator, err := k.GetValidator(ctx, valAddress)
+	if err != nil {
+		return err
+	}
+
+	if validator.IsInactivated() {
+		return customstakingtypes.ErrValidatorInactive
+	}
+
+	validator.Status = customstakingtypes.Active
+	k.AddValidator(ctx, validator)
+
 	return nil
 }
 

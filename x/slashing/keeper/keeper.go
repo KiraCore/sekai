@@ -81,7 +81,7 @@ func (k Keeper) Inactivate(ctx sdk.Context, consAddr sdk.ConsAddress) {
 		),
 	)
 
-	k.sk.Inactivate(ctx, consAddr)
+	//k.sk.Inactivate(ctx, consAddr) // TODO needs consensus address
 }
 
 func (k Keeper) setAddrPubkeyRelation(ctx sdk.Context, addr crypto.Address, pubkey string) {

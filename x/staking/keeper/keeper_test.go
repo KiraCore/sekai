@@ -111,56 +111,6 @@ func TestKeeper_GetPendingValidators(t *testing.T) {
 	require.Equal(t, 1, len(validatorSet))
 }
 
-func TestPauseValidator(t *testing.T) {
-	app := simapp.Setup(false)
-	ctx := app.NewContext(false, tmproto.Header{})
-
-	validators := createValidators(t, app, ctx, 2)
-	validator1 := validators[0]
-	validator2 := validators[1]
-
-	app.CustomStakingKeeper.AddValidator(ctx, validator1)
-
-	savedValidator, err := app.CustomStakingKeeper.GetValidator(ctx, validator1.ValKey)
-	require.NoError(t, err)
-	require.False(t, savedValidator.IsPaused())
-
-	err = app.CustomStakingKeeper.Pause(ctx, savedValidator.ValKey)
-	require.NoError(t, err)
-	pausedValidator, err := app.CustomStakingKeeper.GetValidator(ctx, validator1.ValKey)
-	require.NoError(t, err)
-	require.True(t, pausedValidator.IsPaused())
-
-	// Validator does not exist, fail.
-	err = app.CustomStakingKeeper.Pause(ctx, validator2.ValKey)
-	require.Error(t, err)
-}
-
-func TestUnpauseValidator(t *testing.T) {
-	app := simapp.Setup(false)
-	ctx := app.NewContext(false, tmproto.Header{})
-
-	validators := createValidators(t, app, ctx, 2)
-	validator1 := validators[0]
-	validator2 := validators[1]
-
-	app.CustomStakingKeeper.AddValidator(ctx, validator1)
-
-	savedValidator, err := app.CustomStakingKeeper.GetValidator(ctx, validator1.ValKey)
-	require.NoError(t, err)
-	require.False(t, savedValidator.IsPaused())
-
-	err = app.CustomStakingKeeper.Pause(ctx, savedValidator.ValKey)
-	require.NoError(t, err)
-	pausedValidator, err := app.CustomStakingKeeper.GetValidator(ctx, validator1.ValKey)
-	require.NoError(t, err)
-	require.True(t, pausedValidator.IsPaused())
-
-	// Validator does not exist, fail.
-	err = app.CustomStakingKeeper.Pause(ctx, validator2.ValKey)
-	require.Error(t, err)
-}
-
 func createValidators(t *testing.T, app *simapp.SimApp, ctx sdk.Context, accNum int) (validators []types.Validator) {
 	addrs := simapp.AddTestAddrsIncremental(app, ctx, accNum, types2.TokensFromConsensusPower(10))
 

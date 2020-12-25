@@ -41,7 +41,11 @@ func (k Keeper) Activate(ctx sdk.Context, validatorAddr sdk.ValAddress) error {
 		}
 	}
 
-	k.sk.Activate(ctx, consAddr)
+	err = k.sk.Activate(ctx, validator.ValKey)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
