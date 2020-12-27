@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"github.com/KiraCore/sekai/x/staking/types"
 	customstakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -52,6 +53,7 @@ func (k Keeper) Pause(ctx sdk.Context, valAddress sdk.ValAddress) error {
 
 	validator.Status = customstakingtypes.Paused
 	k.AddValidator(ctx, validator)
+	k.addRemovingValidator(ctx, validator)
 
 	return nil
 }
@@ -71,6 +73,27 @@ func (k Keeper) Unpause(ctx sdk.Context, valAddress sdk.ValAddress) error { // i
 	k.AddValidator(ctx, validator)
 
 	return nil
+}
+
+// GetRemovingValidatorSet returns the keys of the validators that needs to be removed from
+// the set.
+func (k Keeper) GetRemovingValidatorSet(ctx sdk.Context) [][]byte {
+	store := ctx.KVStore(k.storeKey)
+
+	iter := sdk.KVStorePrefixIterator(store, RemovingValidatorQueue)
+	defer iter.Close()
+
+	var validatorKeys [][]byte
+	for ; iter.Valid(); iter.Next() {
+		validatorKeys = append(validatorKeys, iter.Value())
+	}
+
+	return validatorKeys
+}
+
+func (k Keeper) addRemovingValidator(ctx sdk.Context, validator types.Validator) {
+	store := ctx.KVStore(k.storeKey)
+	store.Set(GetRemovingValidatorKey(validator.ValKey), GetValidatorKey(validator.ValKey))
 }
 
 // TODO: should take care of relation between Activate / Pause

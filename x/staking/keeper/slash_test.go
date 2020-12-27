@@ -69,6 +69,9 @@ func TestPauseValidator(t *testing.T) {
 	pausedValidator, err := app.CustomStakingKeeper.GetValidator(ctx, validator1.ValKey)
 	require.NoError(t, err)
 	require.True(t, pausedValidator.IsPaused())
+
+	valKeys := app.CustomStakingKeeper.GetRemovingValidatorSet(ctx)
+	require.Len(t, valKeys, 1)
 }
 
 func TestUnpauseValidator_Errors(t *testing.T) {
