@@ -184,6 +184,9 @@ func TestInactiveValidator(t *testing.T) {
 	inactiveValidator, err := app.CustomStakingKeeper.GetValidator(ctx, validator1.ValKey)
 	require.NoError(t, err)
 	require.True(t, inactiveValidator.IsInactivated())
+
+	valKeys := app.CustomStakingKeeper.GetRemovingValidatorSet(ctx)
+	require.Len(t, valKeys, 1)
 }
 
 func TestValidatorActivate_Errors(t *testing.T) {

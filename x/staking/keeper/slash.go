@@ -36,6 +36,7 @@ func (k Keeper) Inactivate(ctx sdk.Context, valAddress sdk.ValAddress) error { /
 
 	validator.Status = customstakingtypes.Inactive
 	k.AddValidator(ctx, validator)
+	k.addRemovingValidator(ctx, validator)
 
 	return nil
 }
