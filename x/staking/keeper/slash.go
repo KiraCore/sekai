@@ -94,7 +94,12 @@ func (k Keeper) GetRemovingValidatorSet(ctx sdk.Context) [][]byte {
 
 func (k Keeper) addRemovingValidator(ctx sdk.Context, validator types.Validator) {
 	store := ctx.KVStore(k.storeKey)
-	store.Set(GetRemovingValidatorKey(validator.ValKey), GetValidatorKey(validator.ValKey))
+	store.Set(GetRemovingValidatorKey(validator.ValKey), validator.ValKey)
+}
+
+func (k Keeper) RemoveRemovingValidator(ctx sdk.Context, validator types.Validator) {
+	store := ctx.KVStore(k.storeKey)
+	store.Delete(GetRemovingValidatorKey(validator.ValKey))
 }
 
 // TODO: should take care of relation between Activate / Pause

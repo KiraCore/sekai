@@ -250,3 +250,23 @@ func TestActivateValidator(t *testing.T) {
 	require.NoError(t, err)
 	require.True(t, inactiveValidator.IsActive())
 }
+
+func TestRemoveFromRemovingValidatorQueue(t *testing.T) {
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	validators := createValidators(t, app, ctx, 1)
+	validator1 := validators[0]
+
+	app.CustomStakingKeeper.AddValidator(ctx, validator1)
+	err := app.CustomStakingKeeper.Inactivate(ctx, validator1.ValKey)
+	require.NoError(t, err)
+
+	valKeys := app.CustomStakingKeeper.GetRemovingValidatorSet(ctx)
+	require.Len(t, valKeys, 1)
+
+	app.CustomStakingKeeper.RemoveRemovingValidator(ctx, validator1)
+
+	valKeys = app.CustomStakingKeeper.GetRemovingValidatorSet(ctx)
+	require.Len(t, valKeys, 0)
+}
