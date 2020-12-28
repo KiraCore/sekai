@@ -44,6 +44,11 @@ const (
 	MsgTypeUpsertTokenRate          = "upsert-token-rate"
 	MsgProposalUpsertTokenAliasType = "propose-upsert-token-alias"
 	MsgProposalUpsertTokenRatesType = "propose-upsert-token-rates"
+
+	// slashing module
+	MsgTypeActivate = "activate"
+	MsgTypePause    = "pause"
+	MsgTypeUnpause  = "unpause"
 )
 
 // MsgFuncIDMapping defines function_id mapping
@@ -88,4 +93,7 @@ var MsgFuncIDMapping = map[string]int64{
 	MsgTypeProposalUpsertTokenAlias:                 38,
 	MsgProposalUpsertTokenAliasType:                 39,
 	MsgProposalUpsertTokenRatesType:                 40,
+	MsgTypeActivate:                                 41,
+	MsgTypePause:                                    42,
+	MsgTypeUnpause:                                  43,
 }

@@ -1,6 +1,7 @@
 package types
 
 import (
+	functionmeta "github.com/KiraCore/sekai/function_meta"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/codec/types"
 	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
@@ -11,8 +12,35 @@ import (
 // RegisterLegacyAminoCodec registers concrete types on LegacyAmino codec
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgActivate{}, "cosmos-sdk/MsgActivate", nil)
+	functionmeta.AddNewFunction((&MsgActivate{}).Type(), `{
+		"description": "MsgActivate defines a message to activate an inactive validator.",
+		"parameters": {
+			"validator_addr": {
+				"type":        "string",
+				"description": "bech32 format of validator address. e.g. kiravaloper1ewgq8gtsefakhal687t8hnsw5zl4y8eksup39w"
+			}
+		}
+	}`)
 	cdc.RegisterConcrete(&MsgPause{}, "cosmos-sdk/MsgPause", nil)
+	functionmeta.AddNewFunction((&MsgPause{}).Type(), `{
+		"description": "MsgPause defines a message to pause an active validator.",
+		"parameters": {
+			"validator_addr": {
+				"type":        "string",
+				"description": "bech32 format of validator address. e.g. kiravaloper1ewgq8gtsefakhal687t8hnsw5zl4y8eksup39w"
+			}
+		}
+	}`)
 	cdc.RegisterConcrete(&MsgUnpause{}, "cosmos-sdk/MsgUnpause", nil)
+	functionmeta.AddNewFunction((&MsgUnpause{}).Type(), `{
+		"description": "MsgUnpause defines a message to unpause a paused validator.",
+		"parameters": {
+			"validator_addr": {
+				"type":        "string",
+				"description": "bech32 format of validator address. e.g. kiravaloper1ewgq8gtsefakhal687t8hnsw5zl4y8eksup39w"
+			}
+		}
+	}`)
 }
 
 // RegisterInterfaces register interfaces on registry

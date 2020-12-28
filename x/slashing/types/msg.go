@@ -1,14 +1,8 @@
 package types
 
 import (
+	"github.com/KiraCore/sekai/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-)
-
-// slashing message types
-const (
-	TypeMsgActivate = "activate"
-	TypeMsgPause    = "pause"
-	TypeMsgUnpause  = "unpause"
 )
 
 // verify interface at compile time
@@ -23,7 +17,7 @@ func NewMsgActivate(validatorAddr sdk.ValAddress) *MsgActivate {
 }
 
 func (msg MsgActivate) Route() string { return RouterKey }
-func (msg MsgActivate) Type() string  { return TypeMsgActivate }
+func (msg MsgActivate) Type() string  { return types.MsgTypeActivate }
 func (msg MsgActivate) GetSigners() []sdk.AccAddress {
 	valAddr, err := sdk.ValAddressFromBech32(msg.ValidatorAddr)
 	if err != nil {
@@ -59,7 +53,7 @@ func NewMsgUnpause(validatorAddr sdk.ValAddress) *MsgUnpause {
 }
 
 func (msg MsgUnpause) Route() string { return RouterKey }
-func (msg MsgUnpause) Type() string  { return TypeMsgUnpause }
+func (msg MsgUnpause) Type() string  { return types.MsgTypeUnpause }
 func (msg MsgUnpause) GetSigners() []sdk.AccAddress {
 	valAddr, err := sdk.ValAddressFromBech32(msg.ValidatorAddr)
 	if err != nil {
@@ -95,7 +89,7 @@ func NewMsgPause(validatorAddr sdk.ValAddress) *MsgPause {
 }
 
 func (msg MsgPause) Route() string { return RouterKey }
-func (msg MsgPause) Type() string  { return TypeMsgPause }
+func (msg MsgPause) Type() string  { return types.MsgTypePause }
 func (msg MsgPause) GetSigners() []sdk.AccAddress {
 	valAddr, err := sdk.ValAddressFromBech32(msg.ValidatorAddr)
 	if err != nil {
