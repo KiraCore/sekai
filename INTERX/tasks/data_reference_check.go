@@ -20,14 +20,6 @@ type RefMeta struct {
 	LastModified  time.Time `json:"last_modified"`
 }
 
-// RefCache is a struct to be used for saving reference metadata
-type RefCache struct {
-	Path   string      `json:"path"`
-	Header http.Header `json:"header"`
-}
-
-var references = make(map[string]RefMeta)
-
 func getMeta(url string) (*RefMeta, error) {
 	resp, err := http.Head(url)
 	if err != nil {

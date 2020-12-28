@@ -9,8 +9,9 @@ import (
 	"path/filepath"
 	"time"
 
-	common "github.com/KiraCore/sekai/INTERX/common"
+	"github.com/KiraCore/sekai/INTERX/common"
 	interx "github.com/KiraCore/sekai/INTERX/config"
+	"github.com/KiraCore/sekai/INTERX/types"
 )
 
 // CacheDataCheck is a function to check cache data if it's expired.
@@ -31,10 +32,10 @@ func CacheDataCheck(rpcAddr string, isLog bool) {
 					data, _ := ioutil.ReadFile(path)
 					common.Mutex.Unlock()
 
-					result := common.InterxResponse{}
+					result := types.InterxResponse{}
 					err := json.Unmarshal([]byte(data), &result)
 
-					if err == nil && result.ExpireAt.Before(time.Now()) && result.Response.Block != NodeStatus.Block {
+					if err == nil && result.ExpireAt.Before(time.Now()) && result.Response.Block != common.NodeStatus.Block {
 						delete = true
 					}
 				}

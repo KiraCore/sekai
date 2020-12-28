@@ -1,4 +1,4 @@
-package gateway
+package interx
 
 import (
 	"encoding/json"
@@ -10,7 +10,9 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/KiraCore/sekai/INTERX/common"
 	interx "github.com/KiraCore/sekai/INTERX/config"
+	"github.com/KiraCore/sekai/INTERX/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	bank "github.com/cosmos/cosmos-sdk/x/bank/types"
 	distribution "github.com/cosmos/cosmos-sdk/x/distribution/types"
@@ -22,19 +24,14 @@ import (
 	tmJsonRPCTypes "github.com/tendermint/tendermint/rpc/jsonrpc/types"
 )
 
-const (
-	queryWithdraws = "/api/withdraws"
-	queryDeposits  = "/api/deposits"
-)
-
 // RegisterInterxTxRoutes registers tx query routers.
 func RegisterInterxTxRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr string) {
-	r.HandleFunc(queryWithdraws, QueryWithdraws(rpcAddr)).Methods(GET)
-	r.HandleFunc(queryDeposits, QueryDeposits(rpcAddr)).Methods(GET)
+	r.HandleFunc(common.QueryWithdraws, QueryWithdraws(rpcAddr)).Methods("GET")
+	r.HandleFunc(common.QueryDeposits, QueryDeposits(rpcAddr)).Methods("GET")
 
-	AddRPCMethod(GET, queryKiraFunctions, "This is an API to query kira functions and metadata.", true)
-	AddRPCMethod(GET, queryWithdraws, "This is an API to query withdraw transactions.", true)
-	AddRPCMethod(GET, queryDeposits, "This is an API to query deposit transactions.", true)
+	common.AddRPCMethod("GET", common.QueryKiraFunctions, "This is an API to query kira functions and metadata.", true)
+	common.AddRPCMethod("GET", common.QueryWithdraws, "This is an API to query withdraw transactions.", true)
+	common.AddRPCMethod("GET", common.QueryDeposits, "This is an API to query deposit transactions.", true)
 }
 
 func toSnakeCase(str string) string {
@@ -128,7 +125,7 @@ func getBlockHeight(rpcAddr string, hash string) (int64, error) {
 func queryTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw bool) (interface{}, interface{}, int) {
 	err := r.ParseForm()
 	if err != nil {
-		return ServeError(0, "failed to parse query parameters", err.Error(), http.StatusBadRequest)
+		return common.ServeError(0, "failed to parse query parameters", err.Error(), http.StatusBadRequest)
 	}
 
 	var (
@@ -142,7 +139,7 @@ func queryTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw bool) 
 
 	account = r.FormValue("account")
 	if account == "" {
-		return ServeError(0, "'account' is not set", "", http.StatusBadRequest)
+		return common.ServeError(0, "'account' is not set", "", http.StatusBadRequest)
 	}
 
 	if isWithdraw {
@@ -153,10 +150,10 @@ func queryTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw bool) 
 
 	if maxStr := r.FormValue("max"); maxStr != "" {
 		if limit, err = strconv.Atoi(maxStr); err != nil {
-			return ServeError(0, "failed to parse parameter 'max'", err.Error(), http.StatusBadRequest)
+			return common.ServeError(0, "failed to parse parameter 'max'", err.Error(), http.StatusBadRequest)
 		}
 		if limit < 1 || limit > 1000 {
-			return ServeError(0, "'max' should be 1 ~ 1000", "", http.StatusBadRequest)
+			return common.ServeError(0, "'max' should be 1 ~ 1000", "", http.StatusBadRequest)
 		}
 	}
 
@@ -173,7 +170,7 @@ func queryTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw bool) 
 	if last == "" {
 		searchResult, err := searchTxHashHandle(rpcAddr, sender, recipient, txType, limit, -1, -1)
 		if err != nil {
-			return ServeError(0, "", err.Error(), http.StatusInternalServerError)
+			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
 		}
 
 		transactions = searchResult.Txs
@@ -184,13 +181,13 @@ func queryTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw bool) 
 
 		blockHeight, err := getBlockHeight(rpcAddr, last)
 		if err != nil {
-			return ServeError(0, "", err.Error(), http.StatusInternalServerError)
+			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
 		}
 
 		// get current block
 		searchResult, err := searchTxHashHandle(rpcAddr, sender, recipient, txType, limit, blockHeight, blockHeight)
 		if err != nil {
-			return ServeError(0, "", err.Error(), http.StatusInternalServerError)
+			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
 		}
 
 		beforeLast := true
@@ -210,7 +207,7 @@ func queryTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw bool) 
 		if len(transactions) < limit && blockHeight > 0 {
 			searchResult, err := searchTxHashHandle(rpcAddr, sender, recipient, txType, limit-len(transactions), -1, blockHeight-1)
 			if err != nil {
-				return ServeError(0, "", err.Error(), http.StatusInternalServerError)
+				return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
 			}
 
 			for _, tx := range searchResult.Txs {
@@ -219,25 +216,25 @@ func queryTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw bool) 
 		}
 	}
 
-	var response = make(map[string]TransactionResult)
+	var response = make(map[string]types.TransactionResult)
 
 	for _, transaction := range transactions {
 		tx, err := interx.EncodingCg.TxConfig.TxDecoder()(transaction.Tx)
 		if err != nil {
-			return ServeError(0, "", err.Error(), http.StatusInternalServerError)
+			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
 		}
 
-		blockTime, err := GetBlockTime(rpcAddr, transaction.Height)
+		blockTime, err := common.GetBlockTime(rpcAddr, transaction.Height)
 		if err != nil {
-			return ServeError(0, "", fmt.Sprintf("block not found: %d", transaction.Height), http.StatusInternalServerError)
+			return common.ServeError(0, "", fmt.Sprintf("block not found: %d", transaction.Height), http.StatusInternalServerError)
 		}
 
 		logs, err := sdk.ParseABCILogs(transaction.TxResult.GetLog())
 		if err != nil {
-			return ServeError(0, "", err.Error(), http.StatusInternalServerError)
+			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
 		}
 
-		var txResponses []Transaction
+		var txResponses []types.Transaction
 
 		for index, msg := range tx.GetMsgs() {
 			txType := msg.Type()
@@ -252,7 +249,7 @@ func queryTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw bool) 
 
 				if isWithdraw && msgSend.FromAddress == account {
 					for _, coin := range msgSend.Amount {
-						txResponses = append(txResponses, Transaction{
+						txResponses = append(txResponses, types.Transaction{
 							Address: msgSend.ToAddress,
 							Type:    txType,
 							Denom:   coin.GetDenom(),
@@ -262,7 +259,7 @@ func queryTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw bool) 
 				}
 				if !isWithdraw && msgSend.ToAddress == account {
 					for _, coin := range msgSend.Amount {
-						txResponses = append(txResponses, Transaction{
+						txResponses = append(txResponses, types.Transaction{
 							Address: msgSend.FromAddress,
 							Type:    txType,
 							Denom:   coin.GetDenom(),
@@ -281,7 +278,7 @@ func queryTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw bool) 
 							if len(inputs) == 1 {
 								for _, output := range outputs {
 									for _, coin := range output.Coins {
-										txResponses = append(txResponses, Transaction{
+										txResponses = append(txResponses, types.Transaction{
 											Address: output.Address,
 											Type:    txType,
 											Denom:   coin.GetDenom(),
@@ -291,7 +288,7 @@ func queryTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw bool) 
 								}
 							} else if len(outputs) == 1 {
 								for _, coin := range input.Coins {
-									txResponses = append(txResponses, Transaction{
+									txResponses = append(txResponses, types.Transaction{
 										Address: outputs[0].Address,
 										Type:    txType,
 										Denom:   coin.GetDenom(),
@@ -308,7 +305,7 @@ func queryTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw bool) 
 							// found output
 							if len(inputs) == 1 {
 								for _, coin := range output.Coins {
-									txResponses = append(txResponses, Transaction{
+									txResponses = append(txResponses, types.Transaction{
 										Address: inputs[0].Address,
 										Type:    txType,
 										Denom:   coin.GetDenom(),
@@ -318,7 +315,7 @@ func queryTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw bool) 
 							} else if len(outputs) == 1 {
 								for _, input := range inputs {
 									for _, coin := range input.Coins {
-										txResponses = append(txResponses, Transaction{
+										txResponses = append(txResponses, types.Transaction{
 											Address: input.Address,
 											Type:    txType,
 											Denom:   coin.GetDenom(),
@@ -335,14 +332,14 @@ func queryTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw bool) 
 				createValidatorMsg := msg.(*staking.MsgCreateValidator)
 
 				if isWithdraw && createValidatorMsg.DelegatorAddress == account {
-					txResponses = append(txResponses, Transaction{
+					txResponses = append(txResponses, types.Transaction{
 						Address: createValidatorMsg.DelegatorAddress,
 						Type:    txType,
 						Denom:   createValidatorMsg.Value.Denom,
 						Amount:  createValidatorMsg.Value.Amount.Int64(),
 					})
 				} else if !isWithdraw && createValidatorMsg.DelegatorAddress == account {
-					txResponses = append(txResponses, Transaction{
+					txResponses = append(txResponses, types.Transaction{
 						Address: createValidatorMsg.DelegatorAddress,
 						Type:    txType,
 						Denom:   createValidatorMsg.Value.Denom,
@@ -353,14 +350,14 @@ func queryTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw bool) 
 				delegateMsg := msg.(*staking.MsgDelegate)
 
 				if isWithdraw && delegateMsg.DelegatorAddress == account {
-					txResponses = append(txResponses, Transaction{
+					txResponses = append(txResponses, types.Transaction{
 						Address: delegateMsg.ValidatorAddress,
 						Type:    txType,
 						Denom:   delegateMsg.Amount.Denom,
 						Amount:  delegateMsg.Amount.Amount.Int64(),
 					})
 				} else if !isWithdraw && delegateMsg.ValidatorAddress == account {
-					txResponses = append(txResponses, Transaction{
+					txResponses = append(txResponses, types.Transaction{
 						Address: delegateMsg.DelegatorAddress,
 						Type:    txType,
 						Denom:   delegateMsg.Amount.Denom,
@@ -371,14 +368,14 @@ func queryTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw bool) 
 				reDelegateMsg := msg.(*staking.MsgBeginRedelegate)
 
 				if isWithdraw && reDelegateMsg.ValidatorSrcAddress == account {
-					txResponses = append(txResponses, Transaction{
+					txResponses = append(txResponses, types.Transaction{
 						Address: reDelegateMsg.ValidatorDstAddress,
 						Type:    txType,
 						Denom:   reDelegateMsg.Amount.Denom,
 						Amount:  reDelegateMsg.Amount.Amount.Int64(),
 					})
 				} else if !isWithdraw && reDelegateMsg.ValidatorDstAddress == account {
-					txResponses = append(txResponses, Transaction{
+					txResponses = append(txResponses, types.Transaction{
 						Address: reDelegateMsg.ValidatorSrcAddress,
 						Type:    txType,
 						Denom:   reDelegateMsg.Amount.Denom,
@@ -389,14 +386,14 @@ func queryTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw bool) 
 				unDelegateMsg := msg.(*staking.MsgUndelegate)
 
 				if isWithdraw && unDelegateMsg.ValidatorAddress == account {
-					txResponses = append(txResponses, Transaction{
+					txResponses = append(txResponses, types.Transaction{
 						Address: unDelegateMsg.DelegatorAddress,
 						Type:    txType,
 						Denom:   unDelegateMsg.Amount.Denom,
 						Amount:  unDelegateMsg.Amount.Amount.Int64(),
 					})
 				} else if !isWithdraw && unDelegateMsg.DelegatorAddress == account {
-					txResponses = append(txResponses, Transaction{
+					txResponses = append(txResponses, types.Transaction{
 						Address: unDelegateMsg.ValidatorAddress,
 						Type:    txType,
 						Denom:   unDelegateMsg.Amount.Denom,
@@ -416,14 +413,14 @@ func queryTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw bool) 
 				withdrawDelegatorRewardMsg := msg.(*distribution.MsgWithdrawDelegatorReward)
 
 				if isWithdraw && withdrawDelegatorRewardMsg.ValidatorAddress == account {
-					txResponses = append(txResponses, Transaction{
+					txResponses = append(txResponses, types.Transaction{
 						Address: withdrawDelegatorRewardMsg.DelegatorAddress,
 						Type:    txType,
 						Denom:   coin.Denom,
 						Amount:  coin.Amount.Int64(),
 					})
 				} else if !isWithdraw && withdrawDelegatorRewardMsg.DelegatorAddress == account {
-					txResponses = append(txResponses, Transaction{
+					txResponses = append(txResponses, types.Transaction{
 						Address: withdrawDelegatorRewardMsg.ValidatorAddress,
 						Type:    txType,
 						Denom:   coin.Denom,
@@ -433,7 +430,7 @@ func queryTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw bool) 
 			}
 		}
 
-		response[fmt.Sprintf("0x%X", transaction.Hash)] = TransactionResult{
+		response[fmt.Sprintf("0x%X", transaction.Hash)] = types.TransactionResult{
 			Time: blockTime,
 			Txs:  txResponses,
 		}
@@ -445,18 +442,18 @@ func queryTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw bool) 
 // QueryWithdraws is a function to query withdraw transactions.
 func QueryWithdraws(rpcAddr string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		request := GetInterxRequest(r)
-		response := GetResponseFormat(request, rpcAddr)
+		request := common.GetInterxRequest(r)
+		response := common.GetResponseFormat(request, rpcAddr)
 		statusCode := http.StatusOK
 
-		if !rpcMethods[GET][queryWithdraws].Enabled {
-			response.Response, response.Error, statusCode = ServeError(0, "", "API disabled", http.StatusForbidden)
+		if !common.RPCMethods["GET"][common.QueryWithdraws].Enabled {
+			response.Response, response.Error, statusCode = common.ServeError(0, "", "API disabled", http.StatusForbidden)
 		} else {
-			if rpcMethods[GET][queryWithdraws].CachingEnabled {
-				found, cacheResponse, cacheError, cacheStatus := SearchCache(request, response)
+			if common.RPCMethods["GET"][common.QueryWithdraws].CachingEnabled {
+				found, cacheResponse, cacheError, cacheStatus := common.SearchCache(request, response)
 				if found {
 					response.Response, response.Error, statusCode = cacheResponse, cacheError, cacheStatus
-					WrapResponse(w, request, *response, statusCode, false)
+					common.WrapResponse(w, request, *response, statusCode, false)
 					return
 				}
 			}
@@ -464,25 +461,25 @@ func QueryWithdraws(rpcAddr string) http.HandlerFunc {
 			response.Response, response.Error, statusCode = queryTransactionsHandler(rpcAddr, r, true)
 		}
 
-		WrapResponse(w, request, *response, statusCode, rpcMethods[GET][queryStatus].CachingEnabled)
+		common.WrapResponse(w, request, *response, statusCode, common.RPCMethods["GET"][common.QueryStatus].CachingEnabled)
 	}
 }
 
 // QueryDeposits is a function to query deposit transactions.
 func QueryDeposits(rpcAddr string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		request := GetInterxRequest(r)
-		response := GetResponseFormat(request, rpcAddr)
+		request := common.GetInterxRequest(r)
+		response := common.GetResponseFormat(request, rpcAddr)
 		statusCode := http.StatusOK
 
-		if !rpcMethods[GET][queryDeposits].Enabled {
-			response.Response, response.Error, statusCode = ServeError(0, "", "API disabled", http.StatusForbidden)
+		if !common.RPCMethods["GET"][common.QueryDeposits].Enabled {
+			response.Response, response.Error, statusCode = common.ServeError(0, "", "API disabled", http.StatusForbidden)
 		} else {
-			if rpcMethods[GET][queryDeposits].CachingEnabled {
-				found, cacheResponse, cacheError, cacheStatus := SearchCache(request, response)
+			if common.RPCMethods["GET"][common.QueryDeposits].CachingEnabled {
+				found, cacheResponse, cacheError, cacheStatus := common.SearchCache(request, response)
 				if found {
 					response.Response, response.Error, statusCode = cacheResponse, cacheError, cacheStatus
-					WrapResponse(w, request, *response, statusCode, false)
+					common.WrapResponse(w, request, *response, statusCode, false)
 					return
 				}
 			}
@@ -490,6 +487,6 @@ func QueryDeposits(rpcAddr string) http.HandlerFunc {
 			response.Response, response.Error, statusCode = queryTransactionsHandler(rpcAddr, r, false)
 		}
 
-		WrapResponse(w, request, *response, statusCode, rpcMethods[GET][queryStatus].CachingEnabled)
+		common.WrapResponse(w, request, *response, statusCode, common.RPCMethods["GET"][common.QueryStatus].CachingEnabled)
 	}
 }

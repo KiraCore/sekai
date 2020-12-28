@@ -1,4 +1,4 @@
-package gateway
+package cosmos
 
 import (
 	"encoding/base64"
@@ -6,27 +6,23 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/KiraCore/sekai/INTERX/common"
 	interx "github.com/KiraCore/sekai/INTERX/config"
+	"github.com/KiraCore/sekai/INTERX/types"
 	legacytx "github.com/cosmos/cosmos-sdk/x/auth/legacy/legacytx"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 )
 
-const (
-	postTransaction      = "/api/cosmos/txs"
-	queryTransactionHash = "/api/cosmos/txs"
-	encodeTransaction    = "/api/cosmos/txs/encode"
-)
-
 // RegisterCosmosTxRoutes registers query routers.
 func RegisterCosmosTxRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr string) {
-	r.HandleFunc(postTransaction, PostTxRequest(rpcAddr)).Methods(POST)
-	r.HandleFunc(encodeTransaction, EncodeTransaction(rpcAddr)).Methods(POST)
-	r.HandleFunc("/api/cosmos/txs/{hash}", QueryTxHashRequest(rpcAddr)).Methods(GET)
+	r.HandleFunc(common.PostTransaction, PostTxRequest(rpcAddr)).Methods("POST")
+	r.HandleFunc(common.EncodeTransaction, EncodeTransaction(rpcAddr)).Methods("POST")
+	r.HandleFunc("/api/cosmos/txs/{hash}", QueryTxHashRequest(rpcAddr)).Methods("GET")
 
-	AddRPCMethod(POST, postTransaction, "This is an API to post transaction.", false)
-	AddRPCMethod(POST, encodeTransaction, "This is an API to encode transaction.", true)
-	AddRPCMethod(GET, queryTransactionHash, "This is an API to query transaction from transaction hash.", true)
+	common.AddRPCMethod("POST", common.PostTransaction, "This is an API to post transaction.", false)
+	common.AddRPCMethod("POST", common.EncodeTransaction, "This is an API to encode transaction.", true)
+	common.AddRPCMethod("GET", common.QueryTransactionHash, "This is an API to query transaction from transaction hash.", true)
 }
 
 // PostTxReq defines a tx broadcasting request.
@@ -35,26 +31,26 @@ type PostTxReq struct {
 	Mode string          `json:"mode" yaml:"mode"`
 }
 
-func postTxHandle(r *http.Request, request InterxRequest, rpcAddr string) (interface{}, interface{}, int) {
+func postTxHandle(r *http.Request, request types.InterxRequest, rpcAddr string) (interface{}, interface{}, int) {
 	var req PostTxReq
 	err := json.Unmarshal(request.Params, &req)
 	if err != nil {
-		return ServeError(0, "failed to unmarshal", err.Error(), http.StatusBadRequest)
+		return common.ServeError(0, "failed to unmarshal", err.Error(), http.StatusBadRequest)
 	}
 
 	signedTx, err := interx.EncodingCg.TxConfig.TxJSONDecoder()(req.Tx)
 	if err != nil {
-		return ServeError(0, "failed to get signed TX", err.Error(), http.StatusBadRequest)
+		return common.ServeError(0, "failed to get signed TX", err.Error(), http.StatusBadRequest)
 	}
 
 	txBuilder, err := interx.EncodingCg.TxConfig.WrapTxBuilder(signedTx)
 	if err != nil {
-		return ServeError(0, "failed to get TX builder", err.Error(), http.StatusBadRequest)
+		return common.ServeError(0, "failed to get TX builder", err.Error(), http.StatusBadRequest)
 	}
 
 	txBytes, err := interx.EncodingCg.TxConfig.TxEncoder()(txBuilder.GetTx())
 	if err != nil {
-		return ServeError(0, "failed to get TX bytes", err.Error(), http.StatusBadRequest)
+		return common.ServeError(0, "failed to get TX bytes", err.Error(), http.StatusBadRequest)
 	}
 
 	url := ""
@@ -65,31 +61,31 @@ func postTxHandle(r *http.Request, request InterxRequest, rpcAddr string) (inter
 	} else if req.Mode == "async" {
 		url = "/broadcast_tx_async"
 	} else {
-		return ServeError(0, "", "invalid mode", http.StatusBadRequest)
+		return common.ServeError(0, "", "invalid mode", http.StatusBadRequest)
 	}
 
-	return MakeGetRequest(rpcAddr, url, fmt.Sprintf("tx=0x%X", txBytes))
+	return common.MakeGetRequest(rpcAddr, url, fmt.Sprintf("tx=0x%X", txBytes))
 }
 
 // PostTxRequest is a function to post transaction.
 func PostTxRequest(rpcAddr string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		request := GetInterxRequest(r)
-		response := GetResponseFormat(request, rpcAddr)
+		request := common.GetInterxRequest(r)
+		response := common.GetResponseFormat(request, rpcAddr)
 		statusCode := http.StatusOK
 
-		if !rpcMethods[POST][postTransaction].Enabled {
-			response.Response, response.Error, statusCode = ServeError(0, "", "API disabled", http.StatusForbidden)
+		if !common.RPCMethods["POST"][common.PostTransaction].Enabled {
+			response.Response, response.Error, statusCode = common.ServeError(0, "", "API disabled", http.StatusForbidden)
 		} else {
 			response.Response, response.Error, statusCode = postTxHandle(r, request, rpcAddr)
 		}
 
-		WrapResponse(w, request, *response, statusCode, false)
+		common.WrapResponse(w, request, *response, statusCode, false)
 	}
 }
 
 func queryTxHashHandle(hash string, rpcAddr string) (interface{}, interface{}, int) {
-	return MakeGetRequest(rpcAddr, "/tx", fmt.Sprintf("hash=%s", hash))
+	return common.MakeGetRequest(rpcAddr, "/tx", fmt.Sprintf("hash=%s", hash))
 }
 
 // QueryTxHashRequest is a function to query transaction hash.
@@ -97,22 +93,22 @@ func QueryTxHashRequest(rpcAddr string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		queries := mux.Vars(r)
 		hash := queries["hash"]
-		request := InterxRequest{
+		request := types.InterxRequest{
 			Method:   r.Method,
-			Endpoint: queryTransactionHash,
+			Endpoint: common.QueryTransactionHash,
 			Params:   []byte(hash),
 		}
-		response := GetResponseFormat(request, rpcAddr)
+		response := common.GetResponseFormat(request, rpcAddr)
 		statusCode := http.StatusOK
 
-		if !rpcMethods[GET][queryTransactionHash].Enabled {
-			response.Response, response.Error, statusCode = ServeError(0, "", "API disabled", http.StatusForbidden)
+		if !common.RPCMethods["GET"][common.QueryTransactionHash].Enabled {
+			response.Response, response.Error, statusCode = common.ServeError(0, "", "API disabled", http.StatusForbidden)
 		} else {
-			if rpcMethods[GET][queryTransactionHash].CachingEnabled {
-				found, cacheResponse, cacheError, cacheStatus := SearchCache(request, response)
+			if common.RPCMethods["GET"][common.QueryTransactionHash].CachingEnabled {
+				found, cacheResponse, cacheError, cacheStatus := common.SearchCache(request, response)
 				if found {
 					response.Response, response.Error, statusCode = cacheResponse, cacheError, cacheStatus
-					WrapResponse(w, request, *response, statusCode, false)
+					common.WrapResponse(w, request, *response, statusCode, false)
 					return
 				}
 			}
@@ -120,11 +116,11 @@ func QueryTxHashRequest(rpcAddr string) http.HandlerFunc {
 			response.Response, response.Error, statusCode = queryTxHashHandle(hash, rpcAddr)
 		}
 
-		WrapResponse(w, request, *response, statusCode, rpcMethods[GET][queryTransactionHash].CachingEnabled)
+		common.WrapResponse(w, request, *response, statusCode, common.RPCMethods["GET"][common.QueryTransactionHash].CachingEnabled)
 	}
 }
 
-func encodeTransactionHandle(r *http.Request, request InterxRequest, rpcAddr string) (interface{}, interface{}, int) {
+func encodeTransactionHandle(r *http.Request, request types.InterxRequest, rpcAddr string) (interface{}, interface{}, int) {
 	// TxEncodeReq defines a tx to be encoded.
 	type TxEncodeReq struct {
 		ChainID       string         `json:"chain_id" yaml:"chain_id"`
@@ -136,7 +132,7 @@ func encodeTransactionHandle(r *http.Request, request InterxRequest, rpcAddr str
 
 	err := interx.EncodingCg.Amino.UnmarshalJSON(request.Params, &req)
 	if err != nil {
-		return ServeError(0, "failed to unmarshal", err.Error(), http.StatusBadRequest)
+		return common.ServeError(0, "failed to unmarshal", err.Error(), http.StatusBadRequest)
 	}
 
 	signBytes := legacytx.StdSignBytes(req.ChainID, req.AccountNumber, req.Sequence, 0, req.Tx.Fee, req.Tx.Msgs, req.Tx.Memo)
@@ -154,18 +150,18 @@ func encodeTransactionHandle(r *http.Request, request InterxRequest, rpcAddr str
 // EncodeTransaction is a function to encode unsigned transaction.
 func EncodeTransaction(rpcAddr string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		request := GetInterxRequest(r)
-		response := GetResponseFormat(request, rpcAddr)
+		request := common.GetInterxRequest(r)
+		response := common.GetResponseFormat(request, rpcAddr)
 		statusCode := http.StatusOK
 
-		if !rpcMethods[POST][encodeTransaction].Enabled {
-			response.Response, response.Error, statusCode = ServeError(0, "", "API disabled", http.StatusForbidden)
+		if !common.RPCMethods["POST"][common.EncodeTransaction].Enabled {
+			response.Response, response.Error, statusCode = common.ServeError(0, "", "API disabled", http.StatusForbidden)
 		} else {
-			if rpcMethods[POST][encodeTransaction].CachingEnabled {
-				found, cacheResponse, cacheError, cacheStatus := SearchCache(request, response)
+			if common.RPCMethods["POST"][common.EncodeTransaction].CachingEnabled {
+				found, cacheResponse, cacheError, cacheStatus := common.SearchCache(request, response)
 				if found {
 					response.Response, response.Error, statusCode = cacheResponse, cacheError, cacheStatus
-					WrapResponse(w, request, *response, statusCode, false)
+					common.WrapResponse(w, request, *response, statusCode, false)
 					return
 				}
 			}
@@ -173,6 +169,6 @@ func EncodeTransaction(rpcAddr string) http.HandlerFunc {
 			response.Response, response.Error, statusCode = encodeTransactionHandle(r, request, rpcAddr)
 		}
 
-		WrapResponse(w, request, *response, statusCode, rpcMethods[POST][encodeTransaction].CachingEnabled)
+		common.WrapResponse(w, request, *response, statusCode, common.RPCMethods["POST"][common.EncodeTransaction].CachingEnabled)
 	}
 }

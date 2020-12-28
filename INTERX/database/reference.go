@@ -3,7 +3,6 @@ package database
 import (
 	"time"
 
-	common "github.com/KiraCore/sekai/INTERX/common"
 	interx "github.com/KiraCore/sekai/INTERX/config"
 	"github.com/sonyarouje/simdb/db"
 )
@@ -35,24 +34,24 @@ func getReferenceDbDriver() *db.Driver {
 
 // GetAllReferences is a function to get all references
 func GetAllReferences() ([]ReferenceData, error) {
-	common.DisableStdout()
+	DisableStdout()
 
 	var references []ReferenceData
 	err := refDb.Open(ReferenceData{}).Get().AsEntity(&references)
 
-	common.EnableStdout()
+	EnableStdout()
 
 	return references, err
 }
 
 // GetReference is a function to get reference by key
 func GetReference(key string) (ReferenceData, error) {
-	common.DisableStdout()
+	DisableStdout()
 
 	data := ReferenceData{}
 	err := refDb.Open(ReferenceData{}).Where("key", "=", key).First().AsEntity(&data)
 
-	common.EnableStdout()
+	EnableStdout()
 
 	return data, err
 }
@@ -69,7 +68,7 @@ func AddReference(key string, url string, contentLength int64, lastModified time
 
 	_, err := GetReference(key)
 
-	common.DisableStdout()
+	DisableStdout()
 
 	if err == nil {
 		err := refDb.Open(ReferenceData{}).Update(data)
@@ -83,7 +82,7 @@ func AddReference(key string, url string, contentLength int64, lastModified time
 		}
 	}
 
-	common.EnableStdout()
+	EnableStdout()
 }
 
 var (
