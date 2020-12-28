@@ -82,6 +82,13 @@ func TestItRemovesFromTheValidatorSetWhenInRemovingQueue(t *testing.T) {
 				require.NoError(t, err)
 			},
 		},
+		{
+			name: "remove because it is inactive",
+			prepareFunc: func(app *simapp.SimApp, ctx types.Context, validator types2.Validator) {
+				err := app.CustomStakingKeeper.Inactivate(ctx, validator.ValKey)
+				require.NoError(t, err)
+			},
+		},
 	}
 
 	for _, tt := range tests {
