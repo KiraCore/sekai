@@ -57,5 +57,30 @@ func EndBlocker(ctx sdk.Context, k keeper.Keeper) []abci.ValidatorUpdate {
 		k.RemoveRemovingValidator(ctx, validator)
 	}
 
+	// Remove validators from the set, paused or inactivated.
+	reactivateVals := k.GetReactivatingValidatorSet(ctx)
+	for _, val := range reactivateVals {
+		validator, err := k.GetValidator(ctx, val)
+		if err != nil {
+			panic("validator not found")
+		}
+
+		consPk, err := validator.TmConsPubKey()
+		if err != nil {
+			panic(err)
+		}
+
+		pk, err := encoding.PubKeyToProto(consPk)
+		if err != nil {
+			panic(err)
+		}
+
+		valUpdate = append(valUpdate, abci.ValidatorUpdate{
+			Power:  1,
+			PubKey: pk,
+		})
+		k.RemoveRemovingValidator(ctx, validator)
+	}
+
 	return valUpdate
 }

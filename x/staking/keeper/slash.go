@@ -125,3 +125,8 @@ func (k Keeper) addReactivatingValidator(ctx sdk.Context, validator types.Valida
 	store := ctx.KVStore(k.storeKey)
 	store.Set(GetReactivatingValidatorKey(validator.ValKey), validator.ValKey)
 }
+
+func (k Keeper) RemoveReactivatingValidator(ctx sdk.Context, validator types.Validator) {
+	store := ctx.KVStore(k.storeKey)
+	store.Delete(GetReactivatingValidatorKey(validator.ValKey))
+}
