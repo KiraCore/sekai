@@ -7,17 +7,10 @@ import (
 	"strconv"
 	"time"
 
-	common "github.com/KiraCore/sekai/INTERX/common"
+	"github.com/KiraCore/sekai/INTERX/common"
 	interx "github.com/KiraCore/sekai/INTERX/config"
-	database "github.com/KiraCore/sekai/INTERX/database"
+	"github.com/KiraCore/sekai/INTERX/database"
 )
-
-// NodeStatus is a struct to be used for node status
-var NodeStatus struct {
-	Chainid   string `json:"chain_id"`
-	Block     int64  `json:"block"`
-	Blocktime string `json:"block_time"`
-}
 
 func getStatus(rpcAddr string) {
 	resp, err := http.Get(fmt.Sprintf("%s/block", rpcAddr))
@@ -47,14 +40,14 @@ func getStatus(rpcAddr string) {
 	}
 
 	common.Mutex.Lock()
-	NodeStatus.Chainid = result.Result.Block.Header.Chainid
-	NodeStatus.Block, _ = strconv.ParseInt(result.Result.Block.Header.Height, 10, 64)
-	NodeStatus.Blocktime = result.Result.Block.Header.Time
+	common.NodeStatus.Chainid = result.Result.Block.Header.Chainid
+	common.NodeStatus.Block, _ = strconv.ParseInt(result.Result.Block.Header.Height, 10, 64)
+	common.NodeStatus.Blocktime = result.Result.Block.Header.Time
 	common.Mutex.Unlock()
 
 	// save block height/time
-	t, _ := time.Parse(time.RFC3339, NodeStatus.Blocktime)
-	database.AddBlockTime(NodeStatus.Block, t.Unix())
+	t, _ := time.Parse(time.RFC3339, common.NodeStatus.Blocktime)
+	database.AddBlockTime(common.NodeStatus.Block, t.Unix())
 }
 
 // SyncStatus is a function for syncing sekaid status.
@@ -64,9 +57,9 @@ func SyncStatus(rpcAddr string, isLog bool) {
 
 		if isLog {
 			fmt.Println("\nsync node status	: ")
-			fmt.Println("	chain id	: ", NodeStatus.Chainid)
-			fmt.Println("	block		: ", NodeStatus.Block)
-			fmt.Println("	blocktime	: ", NodeStatus.Blocktime)
+			fmt.Println("	chain id	: ", common.NodeStatus.Chainid)
+			fmt.Println("	block		: ", common.NodeStatus.Block)
+			fmt.Println("	blocktime	: ", common.NodeStatus.Blocktime)
 		}
 
 		time.Sleep(time.Duration(interx.Config.StatusSync) * time.Second)

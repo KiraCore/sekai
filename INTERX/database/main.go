@@ -1,104 +1,15 @@
 package database
 
-import (
-	"time"
+import "os"
 
-	common "github.com/KiraCore/sekai/INTERX/common"
-	interx "github.com/KiraCore/sekai/INTERX/config"
-	"github.com/sonyarouje/simdb/db"
-)
+var temp = os.Stdout
 
-// FaucetClaim is a struct for facuet claim.
-type FaucetClaim struct {
-	Address string    `json:"address"`
-	Claim   time.Time `json:"claim"`
+// DisableStdout is a function to disable stdout
+func DisableStdout() {
+	os.Stdout = nil // turn it off
 }
 
-// ID is a field for facuet claim struct.
-func (c FaucetClaim) ID() (jsonField string, value interface{}) {
-	value = c.Address
-	jsonField = "address"
-	return
+// EnableStdout is a function to enable stdout
+func EnableStdout() {
+	os.Stdout = temp // turn it off
 }
-
-func getFaucetDbDriver() *db.Driver {
-	driver, err := db.New(interx.GetDbCacheDir() + "faucet")
-	if err != nil {
-		panic(err)
-	}
-
-	return driver
-}
-
-func isClaimExist(address string) bool {
-	common.DisableStdout()
-
-	data := FaucetClaim{}
-	err := faucetDb.Open(FaucetClaim{}).Where("address", "=", address).First().AsEntity(&data)
-
-	common.EnableStdout()
-
-	if err != nil {
-		return false
-	}
-
-	return true
-}
-
-func getClaim(address string) time.Time {
-	common.DisableStdout()
-
-	data := FaucetClaim{}
-	err := faucetDb.Open(FaucetClaim{}).Where("address", "=", address).First().AsEntity(&data)
-
-	common.DisableStdout()
-
-	if err != nil {
-		panic(err)
-	}
-
-	return data.Claim
-}
-
-// GetClaimTimeLeft is a function to get left time for next claim
-func GetClaimTimeLeft(address string) int64 {
-	if !isClaimExist(address) {
-		return 0
-	}
-
-	diff := time.Now().Unix() - getClaim(address).Unix()
-
-	if diff > interx.Config.Faucet.TimeLimit {
-		return 0
-	}
-
-	return interx.Config.Faucet.TimeLimit - diff
-}
-
-// AddNewClaim is a function to add current claim time
-func AddNewClaim(address string, claim time.Time) {
-	common.DisableStdout()
-
-	data := FaucetClaim{
-		Address: address,
-		Claim:   claim,
-	}
-
-	if isClaimExist(address) {
-		err := faucetDb.Open(FaucetClaim{}).Update(data)
-		if err != nil {
-			panic(err)
-		}
-	} else {
-		err := faucetDb.Open(FaucetClaim{}).Insert(data)
-		if err != nil {
-			panic(err)
-		}
-	}
-
-	common.EnableStdout()
-}
-
-var (
-	faucetDb *db.Driver = getFaucetDbDriver()
-)

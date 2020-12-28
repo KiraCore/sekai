@@ -1,7 +1,6 @@
 package database
 
 import (
-	common "github.com/KiraCore/sekai/INTERX/common"
 	interx "github.com/KiraCore/sekai/INTERX/config"
 	"github.com/sonyarouje/simdb/db"
 )
@@ -30,22 +29,22 @@ func getBlockDbDriver() *db.Driver {
 
 // GetBlockTime is a function to get blockTime
 func GetBlockTime(height int64) (int64, error) {
-	common.DisableStdout()
+	DisableStdout()
 
 	data := BlockData{}
 	err := blockDb.Open(BlockData{}).Where("height", "=", height).First().AsEntity(&data)
 	if err != nil {
-		common.EnableStdout()
+		EnableStdout()
 		return 0, err
 	}
 
-	common.EnableStdout()
+	EnableStdout()
 	return data.Timestamp, nil
 }
 
 // AddBlockTime is a function to add blockTime
 func AddBlockTime(height int64, timestamp int64) {
-	common.DisableStdout()
+	DisableStdout()
 
 	data := BlockData{
 		Height:    height,
@@ -61,7 +60,7 @@ func AddBlockTime(height int64, timestamp int64) {
 		}
 	}
 
-	common.EnableStdout()
+	EnableStdout()
 }
 
 var (
