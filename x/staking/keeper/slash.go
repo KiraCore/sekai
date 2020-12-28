@@ -19,6 +19,7 @@ func (k Keeper) Activate(ctx sdk.Context, valAddress sdk.ValAddress) error {
 
 	validator.Status = customstakingtypes.Active
 	k.AddValidator(ctx, validator)
+	k.addReactivatingValidator(ctx, validator)
 
 	return nil
 }
@@ -72,6 +73,7 @@ func (k Keeper) Unpause(ctx sdk.Context, valAddress sdk.ValAddress) error { // i
 
 	validator.Status = customstakingtypes.Active
 	k.AddValidator(ctx, validator)
+	k.addReactivatingValidator(ctx, validator)
 
 	return nil
 }
@@ -92,6 +94,23 @@ func (k Keeper) GetRemovingValidatorSet(ctx sdk.Context) [][]byte {
 	return validatorKeys
 }
 
+// GetReactivatingValidatorSet returns the keys of the validators need to be reactivated, this
+// is used in the Enblock function to reactivate those validators who have been unpaused
+// or activated.
+func (k Keeper) GetReactivatingValidatorSet(ctx sdk.Context) [][]byte {
+	store := ctx.KVStore(k.storeKey)
+
+	iter := sdk.KVStorePrefixIterator(store, ReactivatingValidatorQueue)
+	defer iter.Close()
+
+	var validatorKeys [][]byte
+	for ; iter.Valid(); iter.Next() {
+		validatorKeys = append(validatorKeys, iter.Value())
+	}
+
+	return validatorKeys
+}
+
 func (k Keeper) addRemovingValidator(ctx sdk.Context, validator types.Validator) {
 	store := ctx.KVStore(k.storeKey)
 	store.Set(GetRemovingValidatorKey(validator.ValKey), validator.ValKey)
@@ -102,9 +121,7 @@ func (k Keeper) RemoveRemovingValidator(ctx sdk.Context, validator types.Validat
 	store.Delete(GetRemovingValidatorKey(validator.ValKey))
 }
 
-// TODO: should take care of relation between Activate / Pause
-// Inactivate is not possible if it's paused
-// Activate is not possible if it's paused
-// Pause is not possible if it's inactivated
-// Unpause is not possible if it's inactivated
-// Paused / Inactivated validator shouldn't participate in block generation (Previous Jailed = Paused | Inactivated)
+func (k Keeper) addReactivatingValidator(ctx sdk.Context, validator types.Validator) {
+	store := ctx.KVStore(k.storeKey)
+	store.Set(GetReactivatingValidatorKey(validator.ValKey), validator.ValKey)
+}

@@ -270,3 +270,62 @@ func TestRemoveFromRemovingValidatorQueue(t *testing.T) {
 	valKeys = app.CustomStakingKeeper.GetRemovingValidatorSet(ctx)
 	require.Len(t, valKeys, 0)
 }
+
+func TestReactivatingValidator(t *testing.T) {
+	tests := []struct {
+		name                string
+		prepareDeactivation func(app *simapp.SimApp, ctx sdk.Context, validator types.Validator)
+		prepare             func(app *simapp.SimApp, ctx sdk.Context, validator types.Validator)
+	}{
+		{
+			name: "reactivating from pause",
+			prepareDeactivation: func(app *simapp.SimApp, ctx sdk.Context, validator types.Validator) {
+				err := app.CustomStakingKeeper.Pause(ctx, validator.ValKey)
+				require.NoError(t, err)
+			},
+			prepare: func(app *simapp.SimApp, ctx sdk.Context, validator types.Validator) {
+				err := app.CustomStakingKeeper.Unpause(ctx, validator.ValKey)
+				require.NoError(t, err)
+			},
+		},
+		{
+			name: "reactivating from inactivate",
+			prepareDeactivation: func(app *simapp.SimApp, ctx sdk.Context, validator types.Validator) {
+				err := app.CustomStakingKeeper.Inactivate(ctx, validator.ValKey)
+				require.NoError(t, err)
+			},
+			prepare: func(app *simapp.SimApp, ctx sdk.Context, validator types.Validator) {
+				err := app.CustomStakingKeeper.Activate(ctx, validator.ValKey)
+				require.NoError(t, err)
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			app := simapp.Setup(false)
+			ctx := app.NewContext(false, tmproto.Header{})
+
+			validators := createValidators(t, app, ctx, 1)
+			validator1 := validators[0]
+			app.CustomStakingKeeper.AddValidator(ctx, validator1)
+
+			tt.prepareDeactivation(app, ctx, validator1)
+
+			validator, err := app.CustomStakingKeeper.GetValidator(ctx, validator1.ValKey)
+			require.NoError(t, err)
+			require.False(t, validator.IsActive())
+
+			tt.prepare(app, ctx, validator1)
+
+			validator, err = app.CustomStakingKeeper.GetValidator(ctx, validator1.ValKey)
+			require.NoError(t, err)
+			require.True(t, validator.IsActive())
+
+			// And it is included in the set of ReactivatingValidators
+			reactivatingVals := app.CustomStakingKeeper.GetReactivatingValidatorSet(ctx)
+			require.Len(t, reactivatingVals, 1)
+		})
+	}
+}
