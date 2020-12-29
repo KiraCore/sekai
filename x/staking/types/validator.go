@@ -111,3 +111,13 @@ func (v Validator) TmConsPubKey() (crypto.PubKey, error) {
 
 	return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidPubKey, "Logic error: ConsensusPubkey must be an SDK key and SDK PubKey types must be convertible to tendermint PubKey; got: %T", pk)
 }
+
+// ConsensusPower gets the consensus-engine power. Aa reduction of 10^6 from
+// validator tokens is applied
+func (v Validator) ConsensusPower() int64 {
+	if v.IsActive() {
+		return 1
+	}
+
+	return 0
+}
