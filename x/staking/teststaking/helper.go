@@ -6,7 +6,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	govkeeper "github.com/KiraCore/sekai/x/gov/keeper"
+	customgovkeeper "github.com/KiraCore/sekai/x/gov/keeper"
+	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/staking"
 	"github.com/KiraCore/sekai/x/staking/keeper"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
@@ -17,21 +18,36 @@ import (
 // Helper is a structure which wraps the staking handler
 // and provides methods useful in tests
 type Helper struct {
-	t *testing.T
-	h sdk.Handler
-	k keeper.Keeper
+	t         *testing.T
+	h         sdk.Handler
+	k         keeper.Keeper
+	govKeeper customgovkeeper.Keeper
 
 	Ctx        sdk.Context
 	Commission sdk.Dec
 }
 
 // NewHelper creates staking Handler wrapper for tests
-func NewHelper(t *testing.T, ctx sdk.Context, k keeper.Keeper, govkeeper govkeeper.Keeper) *Helper {
-	return &Helper{t, staking.NewHandler(k, govkeeper), k, ctx, sdk.ZeroDec()}
+func NewHelper(t *testing.T, ctx sdk.Context, k keeper.Keeper, govKeeper customgovkeeper.Keeper) *Helper {
+	return &Helper{t, staking.NewHandler(k, govKeeper), k, govKeeper, ctx, sdk.ZeroDec()}
 }
 
 // CreateValidator calls handler to create a new staking validator
 func (sh *Helper) CreateValidator(addr sdk.ValAddress, pk cryptotypes.PubKey, ok bool) {
+	// create permission whitelisted actor
+	actor := customgovtypes.NewNetworkActor(
+		sdk.AccAddress(addr),
+		nil,
+		1,
+		nil,
+		customgovtypes.NewPermissions([]customgovtypes.PermValue{
+			customgovtypes.PermClaimValidator,
+		}, nil),
+		1,
+	)
+	sh.govKeeper.SaveNetworkActor(sh.Ctx, actor)
+
+	// claim validator
 	sh.createValidator(addr, pk, ok)
 }
 
