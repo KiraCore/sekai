@@ -22,6 +22,8 @@ func DownloadReference() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		filename := strings.TrimPrefix(r.URL.Path, common.Download+"/")
 
+		common.GetLogger().Info("[download] Entering reference download: ", filename)
+
 		if len(filename) != 0 {
 			http.ServeFile(w, r, interx.GetReferenceCacheDir()+filename)
 		}

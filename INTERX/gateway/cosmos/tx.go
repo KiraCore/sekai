@@ -35,22 +35,8 @@ func postTxHandle(r *http.Request, request types.InterxRequest, rpcAddr string) 
 	var req PostTxReq
 	err := json.Unmarshal(request.Params, &req)
 	if err != nil {
+		common.GetLogger().Error("[post-transaction] Failed to unmarshal request: ", err)
 		return common.ServeError(0, "failed to unmarshal", err.Error(), http.StatusBadRequest)
-	}
-
-	signedTx, err := interx.EncodingCg.TxConfig.TxJSONDecoder()(req.Tx)
-	if err != nil {
-		return common.ServeError(0, "failed to get signed TX", err.Error(), http.StatusBadRequest)
-	}
-
-	txBuilder, err := interx.EncodingCg.TxConfig.WrapTxBuilder(signedTx)
-	if err != nil {
-		return common.ServeError(0, "failed to get TX builder", err.Error(), http.StatusBadRequest)
-	}
-
-	txBytes, err := interx.EncodingCg.TxConfig.TxEncoder()(txBuilder.GetTx())
-	if err != nil {
-		return common.ServeError(0, "failed to get TX bytes", err.Error(), http.StatusBadRequest)
 	}
 
 	url := ""
@@ -61,7 +47,26 @@ func postTxHandle(r *http.Request, request types.InterxRequest, rpcAddr string) 
 	} else if req.Mode == "async" {
 		url = "/broadcast_tx_async"
 	} else {
+		common.GetLogger().Error("[post-transaction] Invalid mode: ", req.Mode)
 		return common.ServeError(0, "", "invalid mode", http.StatusBadRequest)
+	}
+
+	signedTx, err := interx.EncodingCg.TxConfig.TxJSONDecoder()(req.Tx)
+	if err != nil {
+		common.GetLogger().Error("[post-transaction] Failed to decode tx request: ", err)
+		return common.ServeError(0, "failed to get signed TX", err.Error(), http.StatusBadRequest)
+	}
+
+	txBuilder, err := interx.EncodingCg.TxConfig.WrapTxBuilder(signedTx)
+	if err != nil {
+		common.GetLogger().Error("[post-transaction] Failed to get tx builder: ", err)
+		return common.ServeError(0, "failed to get TX builder", err.Error(), http.StatusBadRequest)
+	}
+
+	txBytes, err := interx.EncodingCg.TxConfig.TxEncoder()(txBuilder.GetTx())
+	if err != nil {
+		common.GetLogger().Error("[post-transaction] Failed to get tx bytes: ", err)
+		return common.ServeError(0, "failed to get TX bytes", err.Error(), http.StatusBadRequest)
 	}
 
 	return common.MakeGetRequest(rpcAddr, url, fmt.Sprintf("tx=0x%X", txBytes))
@@ -73,6 +78,8 @@ func PostTxRequest(rpcAddr string) http.HandlerFunc {
 		request := common.GetInterxRequest(r)
 		response := common.GetResponseFormat(request, rpcAddr)
 		statusCode := http.StatusOK
+
+		common.GetLogger().Info("[post-transaction] Entering transaction broadcast: ")
 
 		if !common.RPCMethods["POST"][common.PostTransaction].Enabled {
 			response.Response, response.Error, statusCode = common.ServeError(0, "", "API disabled", http.StatusForbidden)
@@ -101,6 +108,8 @@ func QueryTxHashRequest(rpcAddr string) http.HandlerFunc {
 		response := common.GetResponseFormat(request, rpcAddr)
 		statusCode := http.StatusOK
 
+		common.GetLogger().Info("[query-txhash] Entering transaction hash query: ", hash)
+
 		if !common.RPCMethods["GET"][common.QueryTransactionHash].Enabled {
 			response.Response, response.Error, statusCode = common.ServeError(0, "", "API disabled", http.StatusForbidden)
 		} else {
@@ -109,6 +118,8 @@ func QueryTxHashRequest(rpcAddr string) http.HandlerFunc {
 				if found {
 					response.Response, response.Error, statusCode = cacheResponse, cacheError, cacheStatus
 					common.WrapResponse(w, request, *response, statusCode, false)
+
+					common.GetLogger().Info("[query-txhash] Returning from the cache: ", hash)
 					return
 				}
 			}
@@ -132,6 +143,7 @@ func encodeTransactionHandle(r *http.Request, request types.InterxRequest, rpcAd
 
 	err := interx.EncodingCg.Amino.UnmarshalJSON(request.Params, &req)
 	if err != nil {
+		common.GetLogger().Error("[encode-transaction] Failed to decode tx request: ", err)
 		return common.ServeError(0, "failed to unmarshal", err.Error(), http.StatusBadRequest)
 	}
 
@@ -154,6 +166,8 @@ func EncodeTransaction(rpcAddr string) http.HandlerFunc {
 		response := common.GetResponseFormat(request, rpcAddr)
 		statusCode := http.StatusOK
 
+		common.GetLogger().Info("[encode-transaction] Entering transaction request encoding")
+
 		if !common.RPCMethods["POST"][common.EncodeTransaction].Enabled {
 			response.Response, response.Error, statusCode = common.ServeError(0, "", "API disabled", http.StatusForbidden)
 		} else {
@@ -162,6 +176,8 @@ func EncodeTransaction(rpcAddr string) http.HandlerFunc {
 				if found {
 					response.Response, response.Error, statusCode = cacheResponse, cacheError, cacheStatus
 					common.WrapResponse(w, request, *response, statusCode, false)
+
+					common.GetLogger().Info("[encode-transaction] Returning from the cache")
 					return
 				}
 			}

@@ -2,7 +2,6 @@ package tasks
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -42,7 +41,7 @@ func CacheDataCheck(rpcAddr string, isLog bool) {
 
 				if path != interx.GetResponseCacheDir() && delete {
 					if isLog {
-						fmt.Println("deleting file ... ", path)
+						common.GetLogger().Info("[cache] Deleting file: ", path)
 					}
 
 					common.Mutex.Lock()
@@ -51,7 +50,7 @@ func CacheDataCheck(rpcAddr string, isLog bool) {
 
 					if err != nil {
 						if isLog {
-							fmt.Println("Error deleting file: ", err)
+							common.GetLogger().Error("[cache] Error deleting file: ", err)
 						}
 						return err
 					}

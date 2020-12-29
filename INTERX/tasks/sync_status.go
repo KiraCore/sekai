@@ -13,8 +13,10 @@ import (
 )
 
 func getStatus(rpcAddr string) {
-	resp, err := http.Get(fmt.Sprintf("%s/block", rpcAddr))
+	url := fmt.Sprintf("%s/block", rpcAddr)
+	resp, err := http.Get(url)
 	if err != nil {
+		common.GetLogger().Error("[node-status] Unable to connect to ", url)
 		return
 	}
 	defer resp.Body.Close()
@@ -36,6 +38,7 @@ func getStatus(rpcAddr string) {
 
 	result := new(RPCTempResponse)
 	if json.NewDecoder(resp.Body).Decode(result) != nil {
+		common.GetLogger().Error("[node-status] Unexpected response: ", url)
 		return
 	}
 
@@ -56,10 +59,10 @@ func SyncStatus(rpcAddr string, isLog bool) {
 		getStatus(rpcAddr)
 
 		if isLog {
-			fmt.Println("\nsync node status	: ")
-			fmt.Println("	chain id	: ", common.NodeStatus.Chainid)
-			fmt.Println("	block		: ", common.NodeStatus.Block)
-			fmt.Println("	blocktime	: ", common.NodeStatus.Blocktime)
+			common.GetLogger().Info("[node-status] Syncing node status")
+			common.GetLogger().Info("[node-status] Chain_id = ", common.NodeStatus.Chainid)
+			common.GetLogger().Info("[node-status] Block = ", common.NodeStatus.Block)
+			common.GetLogger().Info("[node-status] Blocktime = ", common.NodeStatus.Blocktime)
 		}
 
 		time.Sleep(time.Duration(interx.Config.StatusSync) * time.Second)

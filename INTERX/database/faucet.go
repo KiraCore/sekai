@@ -76,14 +76,16 @@ func GetClaimTimeLeft(address string) int64 {
 
 // AddNewClaim is a function to add current claim time
 func AddNewClaim(address string, claim time.Time) {
-	DisableStdout()
-
 	data := FaucetClaim{
 		Address: address,
 		Claim:   claim,
 	}
 
-	if isClaimExist(address) {
+	exists := isClaimExist(address)
+
+	DisableStdout()
+
+	if exists {
 		err := faucetDb.Open(FaucetClaim{}).Update(data)
 		if err != nil {
 			panic(err)

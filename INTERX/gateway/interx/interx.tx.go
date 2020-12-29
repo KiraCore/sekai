@@ -71,8 +71,12 @@ func searchTxHashHandle(rpcAddr string, sender string, recipient string, txType 
 	}
 
 	// search transactions
-	resp, err := http.Get(fmt.Sprintf("%s/tx_search?query=\"%s\"&per_page=%d&order_by=\"desc\"", rpcAddr, strings.Join(events, "%20AND%20"), limit))
+	endpoint := fmt.Sprintf("%s/tx_search?query=\"%s\"&per_page=%d&order_by=\"desc\"", rpcAddr, strings.Join(events, "%20AND%20"), limit)
+	common.GetLogger().Info("[query-transaction] Entering transaction search: ", endpoint)
+
+	resp, err := http.Get(endpoint)
 	if err != nil {
+		common.GetLogger().Error("[query-transaction] Unable to connect to ", endpoint)
 		return nil, err
 	}
 	defer resp.Body.Close()
@@ -82,15 +86,18 @@ func searchTxHashHandle(rpcAddr string, sender string, recipient string, txType 
 	response := new(tmJsonRPCTypes.RPCResponse)
 
 	if err := json.Unmarshal(respBody, response); err != nil {
+		common.GetLogger().Error("[query-transaction] Unable to decode response: ", err)
 		return nil, err
 	}
 
 	if response.Error != nil {
+		common.GetLogger().Error("[query-transaction] Error response:", response.Error.Message)
 		return nil, errors.New(response.Error.Message)
 	}
 
 	result := new(tmTypes.ResultTxSearch)
 	if err := tmjson.Unmarshal(response.Result, result); err != nil {
+		common.GetLogger().Error("[query-transaction] Failed to unmarshal result:", err)
 		return nil, fmt.Errorf("error unmarshalling result: %w", err)
 	}
 
@@ -98,8 +105,12 @@ func searchTxHashHandle(rpcAddr string, sender string, recipient string, txType 
 }
 
 func getBlockHeight(rpcAddr string, hash string) (int64, error) {
-	resp, err := http.Get(fmt.Sprintf("%s/tx?hash=%s", rpcAddr, hash))
+	endpoint := fmt.Sprintf("%s/tx?hash=%s", rpcAddr, hash)
+	common.GetLogger().Info("[query-block] Entering block query: ", endpoint)
+
+	resp, err := http.Get(endpoint)
 	if err != nil {
+		common.GetLogger().Error("[query-block] Unable to connect to ", endpoint)
 		return 0, err
 	}
 	defer resp.Body.Close()
@@ -108,14 +119,17 @@ func getBlockHeight(rpcAddr string, hash string) (int64, error) {
 	response := new(tmJsonRPCTypes.RPCResponse)
 
 	if err := json.Unmarshal(respBody, response); err != nil {
+		common.GetLogger().Error("[query-block] Unable to decode response: ", err)
 		return 0, err
 	}
 	if response.Error != nil {
+		common.GetLogger().Error("[query-block] Error response:", response.Error.Message)
 		return 0, errors.New(response.Error.Message)
 	}
 
 	result := new(tmTypes.ResultTx)
 	if err := tmjson.Unmarshal(response.Result, result); err != nil {
+		common.GetLogger().Error("[query-block] Failed to unmarshal result:", err)
 		return 0, fmt.Errorf("error unmarshalling result: %w", err)
 	}
 
@@ -125,6 +139,7 @@ func getBlockHeight(rpcAddr string, hash string) (int64, error) {
 func queryTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw bool) (interface{}, interface{}, int) {
 	err := r.ParseForm()
 	if err != nil {
+		common.GetLogger().Error("[query-transactions] Failed to parse query parameters:", err)
 		return common.ServeError(0, "failed to parse query parameters", err.Error(), http.StatusBadRequest)
 	}
 
@@ -139,6 +154,7 @@ func queryTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw bool) 
 
 	account = r.FormValue("account")
 	if account == "" {
+		common.GetLogger().Error("[query-transactions] 'account' is not set")
 		return common.ServeError(0, "'account' is not set", "", http.StatusBadRequest)
 	}
 
@@ -150,9 +166,11 @@ func queryTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw bool) 
 
 	if maxStr := r.FormValue("max"); maxStr != "" {
 		if limit, err = strconv.Atoi(maxStr); err != nil {
+			common.GetLogger().Error("[query-transactions] Failed to parse parameter 'max': ", err)
 			return common.ServeError(0, "failed to parse parameter 'max'", err.Error(), http.StatusBadRequest)
 		}
 		if limit < 1 || limit > 1000 {
+			common.GetLogger().Error("[query-transactions] Invalid 'max' range: ", limit)
 			return common.ServeError(0, "'max' should be 1 ~ 1000", "", http.StatusBadRequest)
 		}
 	}
@@ -170,6 +188,7 @@ func queryTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw bool) 
 	if last == "" {
 		searchResult, err := searchTxHashHandle(rpcAddr, sender, recipient, txType, limit, -1, -1)
 		if err != nil {
+			common.GetLogger().Error("[query-transactions] Failed to search transaction hash: ", err)
 			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
 		}
 
@@ -181,12 +200,14 @@ func queryTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw bool) 
 
 		blockHeight, err := getBlockHeight(rpcAddr, last)
 		if err != nil {
+			common.GetLogger().Error("[query-transactions] Failed to query block height: ", err)
 			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
 		}
 
 		// get current block
 		searchResult, err := searchTxHashHandle(rpcAddr, sender, recipient, txType, limit, blockHeight, blockHeight)
 		if err != nil {
+			common.GetLogger().Error("[query-transactions] Failed to search transaction hash: ", err)
 			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
 		}
 
@@ -207,6 +228,7 @@ func queryTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw bool) 
 		if len(transactions) < limit && blockHeight > 0 {
 			searchResult, err := searchTxHashHandle(rpcAddr, sender, recipient, txType, limit-len(transactions), -1, blockHeight-1)
 			if err != nil {
+				common.GetLogger().Error("[query-transactions] Failed to search transaction hash: ", err)
 				return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
 			}
 
@@ -221,16 +243,19 @@ func queryTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw bool) 
 	for _, transaction := range transactions {
 		tx, err := interx.EncodingCg.TxConfig.TxDecoder()(transaction.Tx)
 		if err != nil {
+			common.GetLogger().Error("[query-transactions] Failed to decode transaction: ", err)
 			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
 		}
 
 		blockTime, err := common.GetBlockTime(rpcAddr, transaction.Height)
 		if err != nil {
+			common.GetLogger().Error("[query-transactions] Block not found: ", transaction.Height)
 			return common.ServeError(0, "", fmt.Sprintf("block not found: %d", transaction.Height), http.StatusInternalServerError)
 		}
 
 		logs, err := sdk.ParseABCILogs(transaction.TxResult.GetLog())
 		if err != nil {
+			common.GetLogger().Error("[query-transactions] Failed to parse ABCI logs: ", err)
 			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
 		}
 
@@ -446,6 +471,8 @@ func QueryWithdraws(rpcAddr string) http.HandlerFunc {
 		response := common.GetResponseFormat(request, rpcAddr)
 		statusCode := http.StatusOK
 
+		common.GetLogger().Info("[query-withdraws] Entering withdraws query")
+
 		if !common.RPCMethods["GET"][common.QueryWithdraws].Enabled {
 			response.Response, response.Error, statusCode = common.ServeError(0, "", "API disabled", http.StatusForbidden)
 		} else {
@@ -454,6 +481,8 @@ func QueryWithdraws(rpcAddr string) http.HandlerFunc {
 				if found {
 					response.Response, response.Error, statusCode = cacheResponse, cacheError, cacheStatus
 					common.WrapResponse(w, request, *response, statusCode, false)
+
+					common.GetLogger().Info("[query-withdraws] Returning from the cache")
 					return
 				}
 			}
@@ -472,6 +501,8 @@ func QueryDeposits(rpcAddr string) http.HandlerFunc {
 		response := common.GetResponseFormat(request, rpcAddr)
 		statusCode := http.StatusOK
 
+		common.GetLogger().Error("[query-deposits] Entering withdraws query")
+
 		if !common.RPCMethods["GET"][common.QueryDeposits].Enabled {
 			response.Response, response.Error, statusCode = common.ServeError(0, "", "API disabled", http.StatusForbidden)
 		} else {
@@ -480,6 +511,8 @@ func QueryDeposits(rpcAddr string) http.HandlerFunc {
 				if found {
 					response.Response, response.Error, statusCode = cacheResponse, cacheError, cacheStatus
 					common.WrapResponse(w, request, *response, statusCode, false)
+
+					common.GetLogger().Info("[query-deposits] Returning from the cache")
 					return
 				}
 			}

@@ -21,8 +21,12 @@ import (
 
 // MakeGetRequest is a function to make GET request
 func MakeGetRequest(rpcAddr string, url string, query string) (interface{}, interface{}, int) {
-	resp, err := http.Get(fmt.Sprintf("%s%s?%s", rpcAddr, url, query))
+	endpoint := fmt.Sprintf("%s%s?%s", rpcAddr, url, query)
+	GetLogger().Info("[rpc-call] Entering rpc call: ", endpoint)
+
+	resp, err := http.Get(endpoint)
 	if err != nil {
+		GetLogger().Error("[rpc-call] Unable to connect to ", endpoint)
 		return ServeError(0, "", err.Error(), http.StatusInternalServerError)
 	}
 	defer resp.Body.Close()
@@ -30,6 +34,7 @@ func MakeGetRequest(rpcAddr string, url string, query string) (interface{}, inte
 	response := new(types.RPCResponse)
 	err = json.NewDecoder(resp.Body).Decode(response)
 	if err != nil {
+		GetLogger().Error("[rpc-call] Unable to decode response: : ", err)
 		return nil, err.Error(), resp.StatusCode
 	}
 
@@ -37,8 +42,12 @@ func MakeGetRequest(rpcAddr string, url string, query string) (interface{}, inte
 }
 
 func makePostRequest(r *http.Request) (*types.RPCResponse, error) {
-	resp, err := http.PostForm(fmt.Sprintf("%s%s", r.Host, r.URL), r.Form)
+	endpoint := fmt.Sprintf("%s%s", r.Host, r.URL)
+	GetLogger().Info("[rpc-call] Entering rpc call: ", endpoint)
+
+	resp, err := http.PostForm(endpoint, r.Form)
 	if err != nil {
+		GetLogger().Error("[rpc-call] Unable to connect to ", endpoint)
 		return nil, err
 	}
 	defer resp.Body.Close()
@@ -46,6 +55,7 @@ func makePostRequest(r *http.Request) (*types.RPCResponse, error) {
 	result := new(types.RPCResponse)
 	err = json.NewDecoder(resp.Body).Decode(result)
 	if err != nil {
+		GetLogger().Error("[rpc-call] Unable to decode response: : ", err)
 		return nil, err
 	}
 
@@ -56,12 +66,15 @@ func makePostRequest(r *http.Request) (*types.RPCResponse, error) {
 func GetAccountBalances(gwCosmosmux *runtime.ServeMux, r *http.Request, bech32addr string) []types.Coin {
 	_, err := sdk.AccAddressFromBech32(bech32addr)
 	if err != nil {
+		GetLogger().Error("[grpc-call] Invalid bech32addr: ", bech32addr)
 		return nil
 	}
 
 	r.URL.Path = fmt.Sprintf("/api/cosmos/bank/balances/%s", base64.URLEncoding.EncodeToString([]byte(bech32addr)))
 	r.URL.RawQuery = ""
 	r.Method = "GET"
+
+	GetLogger().Info("[grpc-call] Entering grpc call: ", r.URL.Path)
 
 	recorder := httptest.NewRecorder()
 	gwCosmosmux.ServeHTTP(recorder, r)
@@ -72,7 +85,10 @@ func GetAccountBalances(gwCosmosmux *runtime.ServeMux, r *http.Request, bech32ad
 	}
 
 	result := BalancesResponse{}
-	json.NewDecoder(resp.Body).Decode(&result)
+	err = json.NewDecoder(resp.Body).Decode(&result)
+	if err != nil {
+		GetLogger().Error("[grpc-call] Unable to decode response: ", err)
+	}
 
 	return result.Balances
 }
@@ -81,12 +97,15 @@ func GetAccountBalances(gwCosmosmux *runtime.ServeMux, r *http.Request, bech32ad
 func GetAccountNumberSequence(gwCosmosmux *runtime.ServeMux, r *http.Request, bech32addr string) (uint64, uint64) {
 	_, err := sdk.AccAddressFromBech32(bech32addr)
 	if err != nil {
+		GetLogger().Error("[grpc-call] Invalid bech32addr: ", bech32addr)
 		return 0, 0
 	}
 
 	r.URL.Path = fmt.Sprintf("/api/cosmos/auth/accounts/%s", base64.URLEncoding.EncodeToString([]byte(bech32addr)))
 	r.URL.RawQuery = ""
 	r.Method = "GET"
+
+	GetLogger().Info("[grpc-call] Entering grpc call: ", r.URL.Path)
 
 	recorder := httptest.NewRecorder()
 	gwCosmosmux.ServeHTTP(recorder, r)
@@ -101,7 +120,10 @@ func GetAccountNumberSequence(gwCosmosmux *runtime.ServeMux, r *http.Request, be
 		} `json:"account"`
 	}
 	result := QueryAccountResponse{}
-	json.NewDecoder(resp.Body).Decode(&result)
+	err = json.NewDecoder(resp.Body).Decode(&result)
+	if err != nil {
+		GetLogger().Error("[grpc-call] Unable to decode response: ", err)
+	}
 
 	accountNumber, _ := strconv.ParseInt(result.Account.AccountNumber, 10, 64)
 	sequence, _ := strconv.ParseInt(result.Account.Sequence, 10, 64)
@@ -111,8 +133,12 @@ func GetAccountNumberSequence(gwCosmosmux *runtime.ServeMux, r *http.Request, be
 
 // BroadcastTransaction is a function to post transaction, returns txHash
 func BroadcastTransaction(rpcAddr string, txBytes []byte) (string, error) {
-	resp, err := http.Get(fmt.Sprintf("%s/broadcast_tx_commit?tx=0x%X", rpcAddr, txBytes))
+	endpoint := fmt.Sprintf("%s/broadcast_tx_commit?tx=0x%X", rpcAddr, txBytes)
+	GetLogger().Info("[rpc-call] Entering rpc call: ", endpoint)
+
+	resp, err := http.Get(endpoint)
 	if err != nil {
+		GetLogger().Error("[rpc-call] Unable to connect to ", endpoint)
 		return "", err
 	}
 	defer resp.Body.Close()
@@ -132,14 +158,17 @@ func BroadcastTransaction(rpcAddr string, txBytes []byte) (string, error) {
 	result := new(RPCTempResponse)
 	err = json.NewDecoder(resp.Body).Decode(result)
 	if err != nil {
+		GetLogger().Error("[rpc-call] Unable to decode response: ", err)
 		return "", err
 	}
 
 	if resp.StatusCode != http.StatusOK {
+		GetLogger().Error("[rpc-call] Unable to broadcast transaction: ", result.Error.Message)
 		return "", errors.New(result.Error.Message)
 	}
 
 	if result.Result.Height == "0" {
+		GetLogger().Error("[rpc-call] Failed to broadcast transaction")
 		return "", fmt.Errorf("failed to send tokens")
 	}
 
@@ -160,8 +189,12 @@ func GetBlockTime(rpcAddr string, height int64) (int64, error) {
 		return blockTime, nil
 	}
 
-	resp, err := http.Get(fmt.Sprintf("%s/block?height=%d", rpcAddr, height))
+	endpoint := fmt.Sprintf("%s/block?height=%d", rpcAddr, height)
+	GetLogger().Info("[rpc-call] Entering rpc call: ", endpoint)
+
+	resp, err := http.Get(endpoint)
 	if err != nil {
+		GetLogger().Error("[rpc-call] Unable to connect to ", endpoint)
 		return 0, fmt.Errorf("block not found: %d", height)
 	}
 	defer resp.Body.Close()
@@ -171,15 +204,18 @@ func GetBlockTime(rpcAddr string, height int64) (int64, error) {
 	response := new(tmJsonRPCTypes.RPCResponse)
 
 	if err := json.Unmarshal(respBody, response); err != nil {
+		GetLogger().Error("[rpc-call] Unable to decode response: ", err)
 		return 0, err
 	}
 
 	if response.Error != nil {
+		GetLogger().Error("[rpc-call] Block not found: ", height)
 		return 0, fmt.Errorf("block not found: %d", height)
 	}
 
 	result := new(tmTypes.ResultBlock)
 	if err := tmjson.Unmarshal(response.Result, result); err != nil {
+		GetLogger().Error("[rpc-call] Unable to decode response: ", err)
 		return 0, err
 	}
 

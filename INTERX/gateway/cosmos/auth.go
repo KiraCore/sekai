@@ -25,12 +25,12 @@ func queryAccountsHandle(r *http.Request, gwCosmosmux *runtime.ServeMux) (interf
 
 	_, err := sdk.AccAddressFromBech32(bech32addr)
 	if err != nil {
+		common.GetLogger().Error("[query-account] Invalid bech32addr: ", bech32addr)
 		return common.ServeError(0, "", err.Error(), http.StatusBadRequest)
 	}
 
 	r.URL.Path = fmt.Sprintf("/api/cosmos/auth/accounts/%s", base64.URLEncoding.EncodeToString([]byte(bech32addr)))
 	return common.ServeGRPC(r, gwCosmosmux)
-
 }
 
 // QueryAccountsRequest is a function to query balances.
@@ -46,6 +46,8 @@ func QueryAccountsRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.Ha
 		response := common.GetResponseFormat(request, rpcAddr)
 		statusCode := http.StatusOK
 
+		common.GetLogger().Info("[query-account] Entering account query: ", bech32addr)
+
 		if !common.RPCMethods["GET"][common.QueryAccounts].Enabled {
 			response.Response, response.Error, statusCode = common.ServeError(0, "", "API disabled", http.StatusForbidden)
 		} else {
@@ -54,6 +56,8 @@ func QueryAccountsRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.Ha
 				if found {
 					response.Response, response.Error, statusCode = cacheResponse, cacheError, cacheStatus
 					common.WrapResponse(w, request, *response, statusCode, false)
+
+					common.GetLogger().Info("[query-account] Returning from the cache: ", bech32addr)
 					return
 				}
 			}

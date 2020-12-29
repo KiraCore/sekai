@@ -12,6 +12,8 @@ import (
 
 // PutCache is a function to save value to cache
 func PutCache(chainIDHash string, endpointHash string, requestHash string, value types.InterxResponse) error {
+	GetLogger().Info("[cache] Saving interx response")
+
 	data, err := json.Marshal(value)
 	if err != nil {
 		return err
@@ -24,11 +26,17 @@ func PutCache(chainIDHash string, endpointHash string, requestHash string, value
 	err = os.MkdirAll(folderPath, os.ModePerm)
 	if err != nil {
 		Mutex.Unlock()
+
+		GetLogger().Error("[cache] Unable to create a folder: ", folderPath)
 		return err
 	}
 
 	err = ioutil.WriteFile(filePath, data, 0644)
 	Mutex.Unlock()
+
+	if err != nil {
+		GetLogger().Error("[cache] Unable to save response: ", filePath)
+	}
 
 	return err
 }
@@ -43,6 +51,10 @@ func GetCache(chainIDHash string, endpointHash string, requestHash string) (type
 
 	response := types.InterxResponse{}
 	err := json.Unmarshal([]byte(data), &response)
+
+	if err != nil {
+		GetLogger().Error("[cache] Unable to save response: ", filePath)
+	}
 
 	return response, err
 }

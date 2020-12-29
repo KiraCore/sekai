@@ -44,8 +44,6 @@ func GetBlockTime(height int64) (int64, error) {
 
 // AddBlockTime is a function to add blockTime
 func AddBlockTime(height int64, timestamp int64) {
-	DisableStdout()
-
 	data := BlockData{
 		Height:    height,
 		Timestamp: timestamp,
@@ -54,13 +52,15 @@ func AddBlockTime(height int64, timestamp int64) {
 	_, err := GetBlockTime(height)
 
 	if err != nil {
+		DisableStdout()
+
 		err = blockDb.Open(BlockData{}).Insert(data)
 		if err != nil {
 			panic(err)
 		}
-	}
 
-	EnableStdout()
+		EnableStdout()
+	}
 }
 
 var (
