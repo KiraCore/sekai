@@ -41,7 +41,11 @@ func (k Keeper) Activate(ctx sdk.Context, validatorAddr sdk.ValAddress) error {
 		}
 	}
 
-	k.sk.Activate(ctx, consAddr)
+	err = k.sk.Activate(ctx, validator.ValKey)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -62,8 +66,7 @@ func (k Keeper) Pause(ctx sdk.Context, validatorAddr sdk.ValAddress) error {
 		return types.ErrValidatorInactivated
 	}
 
-	consAddr := validator.GetConsAddr()
-	k.sk.Pause(ctx, consAddr)
+	k.sk.Pause(ctx, validator.ValKey)
 	return nil
 }
 
@@ -79,7 +82,6 @@ func (k Keeper) Unpause(ctx sdk.Context, validatorAddr sdk.ValAddress) error {
 		return types.ErrValidatorNotPaused
 	}
 
-	consAddr := validator.GetConsAddr()
-	k.sk.Unpause(ctx, consAddr)
+	k.sk.Unpause(ctx, validator.ValKey)
 	return nil
 }

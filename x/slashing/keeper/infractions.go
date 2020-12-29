@@ -84,7 +84,7 @@ func (k Keeper) HandleValidatorSignature(ctx sdk.Context, addr crypto.Address, p
 					sdk.NewAttribute(types.AttributeKeyInactivated, consAddr.String()),
 				),
 			)
-			k.sk.Inactivate(ctx, consAddr)
+			k.sk.Inactivate(ctx, validator.ValKey)
 
 			signInfo.InactiveUntil = ctx.BlockHeader().Time.Add(k.DowntimeInactiveDuration(ctx))
 
