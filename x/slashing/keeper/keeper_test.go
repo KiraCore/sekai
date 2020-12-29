@@ -27,7 +27,7 @@ func TestHandleNewValidator(t *testing.T) {
 	pks := simapp.CreateTestPubKeys(1)
 	addr, val := valAddrs[0], pks[0]
 	tstaking := teststaking.NewHelper(t, ctx, app.CustomStakingKeeper, app.CustomGovKeeper)
-	ctx = ctx.WithBlockHeight(app.SlashingKeeper.SignedBlocksWindow(ctx) + 1)
+	ctx = ctx.WithBlockHeight(app.CustomSlashingKeeper.SignedBlocksWindow(ctx) + 1)
 
 	// Validator created
 	tstaking.CreateValidator(addr, val, true)
@@ -35,23 +35,20 @@ func TestHandleNewValidator(t *testing.T) {
 	staking.EndBlocker(ctx, app.CustomStakingKeeper)
 
 	// Now a validator, for two blocks
-	app.SlashingKeeper.HandleValidatorSignature(ctx, val.Address(), 100, true)
-	ctx = ctx.WithBlockHeight(app.SlashingKeeper.SignedBlocksWindow(ctx) + 2)
-	app.SlashingKeeper.HandleValidatorSignature(ctx, val.Address(), 100, false)
+	app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), 100, true)
+	ctx = ctx.WithBlockHeight(app.CustomSlashingKeeper.SignedBlocksWindow(ctx) + 2)
+	app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), 100, false)
 
-	info, found := app.SlashingKeeper.GetValidatorSigningInfo(ctx, sdk.ConsAddress(val.Address()))
+	info, found := app.CustomSlashingKeeper.GetValidatorSigningInfo(ctx, sdk.ConsAddress(val.Address()))
 	require.True(t, found)
-	require.Equal(t, app.SlashingKeeper.SignedBlocksWindow(ctx)+1, info.StartHeight)
+	require.Equal(t, app.CustomSlashingKeeper.SignedBlocksWindow(ctx)+1, info.StartHeight)
 	require.Equal(t, int64(2), info.IndexOffset)
 	require.Equal(t, int64(1), info.MissedBlocksCounter)
-	require.Equal(t, time.Unix(0, 0).UTC(), info.JailedUntil)
+	require.Equal(t, time.Unix(0, 0).UTC(), info.InactiveUntil)
 
 	// validator should be bonded still, should not have been jailed or slashed
-	validator, _ := app.StakingKeeper.GetValidatorByConsAddr(ctx, sdk.GetConsAddress(val))
+	validator, _ := app.CustomStakingKeeper.GetValidatorByConsAddr(ctx, sdk.GetConsAddress(val))
 	require.Equal(t, stakingtypes.Active, validator.GetStatus())
-	bondPool := app.StakingKeeper.GetBondedPool(ctx)
-	expTokens := sdk.TokensFromConsensusPower(100)
-	require.True(t, expTokens.Equal(app.BankKeeper.GetBalance(ctx, bondPool.GetAddress(), app.StakingKeeper.BondDenom(ctx)).Amount))
 }
 
 // Test an inactivated validator being "down" twice
@@ -74,30 +71,30 @@ func TestHandleAlreadyInactive(t *testing.T) {
 
 	// 1000 first blocks OK
 	height := int64(0)
-	for ; height < app.SlashingKeeper.SignedBlocksWindow(ctx); height++ {
+	for ; height < app.CustomSlashingKeeper.SignedBlocksWindow(ctx); height++ {
 		ctx = ctx.WithBlockHeight(height)
-		app.SlashingKeeper.HandleValidatorSignature(ctx, val.Address(), power, true)
+		app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), power, true)
 	}
 
 	// 501 blocks missed
-	for ; height < app.SlashingKeeper.SignedBlocksWindow(ctx)+(app.SlashingKeeper.SignedBlocksWindow(ctx)-app.SlashingKeeper.MinSignedPerWindow(ctx))+1; height++ {
+	for ; height < app.CustomSlashingKeeper.SignedBlocksWindow(ctx)+(app.CustomSlashingKeeper.SignedBlocksWindow(ctx)-app.CustomSlashingKeeper.MinSignedPerWindow(ctx))+1; height++ {
 		ctx = ctx.WithBlockHeight(height)
-		app.SlashingKeeper.HandleValidatorSignature(ctx, val.Address(), power, false)
+		app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), power, false)
 	}
 
 	// end block
 	staking.EndBlocker(ctx, app.CustomStakingKeeper)
 
 	// validator should have been inactivated
-	validator, _ := app.StakingKeeper.GetValidatorByConsAddr(ctx, sdk.GetConsAddress(val))
+	validator, _ := app.CustomStakingKeeper.GetValidatorByConsAddr(ctx, sdk.GetConsAddress(val))
 	require.Equal(t, stakingtypes.Inactive, validator.GetStatus())
 
 	// another block missed
 	ctx = ctx.WithBlockHeight(height)
-	app.SlashingKeeper.HandleValidatorSignature(ctx, val.Address(), power, false)
+	app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), power, false)
 
 	// validator should be in inactive status yet
-	validator, _ = app.StakingKeeper.GetValidatorByConsAddr(ctx, sdk.GetConsAddress(val))
+	validator, _ = app.CustomStakingKeeper.GetValidatorByConsAddr(ctx, sdk.GetConsAddress(val))
 	require.Equal(t, stakingtypes.Inactive, validator.GetStatus())
 }
 
@@ -111,9 +108,6 @@ func TestValidatorDippingInAndOut(t *testing.T) {
 	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 	app.CustomSlashingKeeper.SetParams(ctx, testslashing.TestParams())
 
-	params := app.StakingKeeper.GetParams(ctx)
-	params.MaxValidators = 1
-	app.StakingKeeper.SetParams(ctx, params)
 	power := int64(100)
 
 	pks := simapp.CreateTestPubKeys(3)
@@ -131,7 +125,7 @@ func TestValidatorDippingInAndOut(t *testing.T) {
 	height := int64(0)
 	for ; height < int64(100); height++ {
 		ctx = ctx.WithBlockHeight(height)
-		app.SlashingKeeper.HandleValidatorSignature(ctx, val.Address(), power, true)
+		app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), power, true)
 	}
 
 	// kick first validator out of validator set
@@ -163,13 +157,13 @@ func TestValidatorDippingInAndOut(t *testing.T) {
 	tstaking.CheckValidator(valAddr, stakingtypes.Inactive, true)
 
 	// check all the signing information
-	signInfo, found := app.SlashingKeeper.GetValidatorSigningInfo(ctx, consAddr)
+	signInfo, found := app.CustomSlashingKeeper.GetValidatorSigningInfo(ctx, consAddr)
 	require.True(t, found)
 	require.Equal(t, int64(0), signInfo.MissedBlocksCounter)
 	require.Equal(t, int64(0), signInfo.IndexOffset)
 	// array should be cleared
-	for offset := int64(0); offset < app.SlashingKeeper.SignedBlocksWindow(ctx); offset++ {
-		missed := app.SlashingKeeper.GetValidatorMissedBlockBitArray(ctx, consAddr, offset)
+	for offset := int64(0); offset < app.CustomSlashingKeeper.SignedBlocksWindow(ctx); offset++ {
+		missed := app.CustomSlashingKeeper.GetValidatorMissedBlockBitArray(ctx, consAddr, offset)
 		require.False(t, missed)
 	}
 
@@ -178,8 +172,8 @@ func TestValidatorDippingInAndOut(t *testing.T) {
 	ctx = ctx.WithBlockHeight(height)
 
 	// validator rejoins and starts signing again
-	app.StakingKeeper.Unjail(ctx, consAddr)
-	app.SlashingKeeper.HandleValidatorSignature(ctx, val.Address(), 1, true)
+	app.CustomStakingKeeper.Activate(ctx, valAddr)
+	app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), 1, true)
 	height++
 
 	// validator should not be kicked since we reset counter/array when it was jailed
@@ -190,7 +184,7 @@ func TestValidatorDippingInAndOut(t *testing.T) {
 	latest = height
 	for ; height < latest+501; height++ {
 		ctx = ctx.WithBlockHeight(height)
-		app.SlashingKeeper.HandleValidatorSignature(ctx, val.Address(), 1, false)
+		app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), 1, false)
 	}
 
 	// validator should now be jailed & kicked
