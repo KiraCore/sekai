@@ -53,12 +53,17 @@ func (k Keeper) AddPubkey(ctx sdk.Context, pubkey crypto.PubKey) {
 	k.setAddrPubkeyRelation(ctx, addr, pkStr)
 }
 
-// GetPubkey returns the pubkey from the adddress-pubkey relation
+// GetPubkey returns the pubkey from the address-pubkey relation
 func (k Keeper) GetPubkey(ctx sdk.Context, address crypto.Address) (crypto.PubKey, error) {
 	store := ctx.KVStore(k.storeKey)
 
+	relationKey := types.AddrPubkeyRelationKey(address)
+	if !store.Has(relationKey) {
+		return nil, fmt.Errorf("relation key for address %s not found", sdk.ConsAddress(address))
+	}
+
 	var pubkey gogotypes.StringValue
-	err := k.cdc.UnmarshalBinaryBare(store.Get(types.AddrPubkeyRelationKey(address)), &pubkey)
+	err := k.cdc.UnmarshalBinaryBare(store.Get(relationKey), &pubkey)
 	if err != nil {
 		return nil, fmt.Errorf("address %s not found", sdk.ConsAddress(address))
 	}
