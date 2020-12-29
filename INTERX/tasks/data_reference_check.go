@@ -1,7 +1,6 @@
 package tasks
 
 import (
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -99,7 +98,9 @@ func DataReferenceCheck(isLog bool) {
 				}
 
 				if isLog {
-					fmt.Println("save response: (key - " + v.Key + ", ref - " + v.URL + ")")
+					common.GetLogger().Info("[cache] Data reference updated")
+					common.GetLogger().Info("[cache] Key = ", v.Key)
+					common.GetLogger().Info("[cache] Ref = ", v.URL)
 				}
 
 				database.AddReference(v.Key, v.URL, ref.ContentLength, ref.LastModified, v.FilePath)

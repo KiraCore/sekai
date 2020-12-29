@@ -70,17 +70,20 @@ func queryStatusHandle(rpcAddr string) (interface{}, interface{}, int) {
 		byteData, err := json.Marshal(success)
 		err = json.Unmarshal(byteData, &result)
 		if err != nil {
-			panic(err)
+			common.GetLogger().Error("[query-status] Invalid response format", err)
+			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
 		}
 
 		pubkeyBytes, err := interx.EncodingCg.Amino.MarshalJSON(interx.Config.PubKey)
 		if err != nil {
-			panic(err)
+			common.GetLogger().Error("[query-status] Failed to marshal interx pubkey", err)
+			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
 		}
 
 		err = json.Unmarshal(pubkeyBytes, &result.InterxInfo.PubKey)
 		if err != nil {
-			panic(err)
+			common.GetLogger().Error("[query-status] Failed to add interx pubkey to status response", err)
+			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
 		}
 
 		success = result
@@ -96,6 +99,8 @@ func QueryStatusRequest(rpcAddr string) http.HandlerFunc {
 		response := common.GetResponseFormat(request, rpcAddr)
 		statusCode := http.StatusOK
 
+		common.GetLogger().Info("[query-status] Entering status query")
+
 		if !common.RPCMethods["GET"][common.QueryStatus].Enabled {
 			response.Response, response.Error, statusCode = common.ServeError(0, "", "API disabled", http.StatusForbidden)
 		} else {
@@ -104,6 +109,8 @@ func QueryStatusRequest(rpcAddr string) http.HandlerFunc {
 				if found {
 					response.Response, response.Error, statusCode = cacheResponse, cacheError, cacheStatus
 					common.WrapResponse(w, request, *response, statusCode, false)
+
+					common.GetLogger().Info("[query-status] Returning from the cache")
 					return
 				}
 			}

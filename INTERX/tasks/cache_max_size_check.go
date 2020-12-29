@@ -1,7 +1,6 @@
 package tasks
 
 import (
-	"fmt"
 	"math/rand"
 	"os"
 	"path/filepath"
@@ -26,7 +25,7 @@ func CacheMaxSizeCheck(isLog bool) {
 
 		if cacheSize >= interx.Config.MaxCacheSize {
 			if isLog {
-				fmt.Println("Cache reached the maximum size")
+				common.GetLogger().Info("[cache] Reached the maximum size")
 			}
 
 			for {
@@ -38,7 +37,7 @@ func CacheMaxSizeCheck(isLog bool) {
 						cacheSize -= info.Size()
 
 						if isLog {
-							fmt.Println("deleting file ... ", path)
+							common.GetLogger().Info("[cache] Deleting file: ", path)
 						}
 
 						common.Mutex.Lock()
@@ -47,7 +46,7 @@ func CacheMaxSizeCheck(isLog bool) {
 
 						if err != nil {
 							if isLog {
-								fmt.Println("Error deleting file: ", err)
+								common.GetLogger().Error("[cache] Error deleting file: ", err)
 							}
 							return err
 						}

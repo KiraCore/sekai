@@ -57,6 +57,8 @@ func QueryDataReferenceKeysRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string
 		response := common.GetResponseFormat(request, rpcAddr)
 		statusCode := http.StatusOK
 
+		common.GetLogger().Info("[query-reference-keys] Entering data reference keys query")
+
 		if !common.RPCMethods["GET"][common.QueryDataReferenceKeys].Enabled {
 			response.Response, response.Error, statusCode = common.ServeError(0, "", "API disabled", http.StatusForbidden)
 		} else {
@@ -65,6 +67,8 @@ func QueryDataReferenceKeysRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string
 				if found {
 					response.Response, response.Error, statusCode = cacheResponse, cacheError, cacheStatus
 					common.WrapResponse(w, request, *response, statusCode, false)
+
+					common.GetLogger().Info("[query-reference-keys] Returning from the cache")
 					return
 				}
 			}
@@ -85,8 +89,17 @@ func queryDataReferenceHandle(r *http.Request, gwCosmosmux *runtime.ServeMux, ke
 		}
 		result := DataReferenceTempResponse{}
 
-		byteData, _ := json.Marshal(success)
-		json.Unmarshal(byteData, &result)
+		byteData, err := json.Marshal(success)
+		if err != nil {
+			common.GetLogger().Error("[query-reference] Invalid response format", err)
+			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
+		}
+
+		err = json.Unmarshal(byteData, &result)
+		if err != nil {
+			common.GetLogger().Error("[query-reference] Invalid response format", err)
+			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
+		}
 
 		success = result.Data
 
@@ -111,6 +124,8 @@ func QueryDataReferenceRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string) ht
 		response := common.GetResponseFormat(request, rpcAddr)
 		statusCode := http.StatusOK
 
+		common.GetLogger().Info("[query-reference] Entering data reference query by key: ", key)
+
 		if !common.RPCMethods["GET"][common.QueryDataReference].Enabled {
 			response.Response, response.Error, statusCode = common.ServeError(0, "", "API disabled", http.StatusForbidden)
 		} else {
@@ -119,6 +134,8 @@ func QueryDataReferenceRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string) ht
 				if found {
 					response.Response, response.Error, statusCode = cacheResponse, cacheError, cacheStatus
 					common.WrapResponse(w, request, *response, statusCode, false)
+
+					common.GetLogger().Info("[query-reference] Returning from the cache")
 					return
 				}
 			}
