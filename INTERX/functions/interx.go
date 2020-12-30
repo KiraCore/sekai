@@ -178,7 +178,7 @@ func RegisterInterxFunctions() {
 				"count_total": {
 					"type":        "number",
 					"description": "This represents the option to return total count of data reference keys.",
-					"optional", true
+					"optional": true
 				}
 			}
 		}`,
