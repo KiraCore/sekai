@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.1.14.3] - 12.30.2020
+### Added
+- Added GRPC query for Data Reference Registry.
+- Update response caching for data references. (KIP_47.1)
+- Added file hosting feature. (KIP_47.1)
+
 ## [0.1.14.2] - 11.30.2020
 ### Added
 - Update Cosmos SDK to v0.40.0-rc4.
