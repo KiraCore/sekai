@@ -1,0 +1,197 @@
+syntax = "proto3";
+package kira.gov;
+
+import "actor.proto";
+import "councilor.proto";
+import "data_registry.proto";
+import "pagination.proto";
+import "role.proto";
+import "proposal.proto";
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/gov/types";
+
+// Query defines the gRPC querier service
+service Query {
+  // Returns the permissions an actor has by address.
+  rpc PermissionsByAddress (PermissionsByAddressRequest) returns (PermissionsResponse) {}
+  // Returns the roles that are assigned to an address.
+  rpc RolesByAddress (RolesByAddressRequest) returns (RolesByAddressResponse) {}
+  // RolePermissions returns the permissions of the roles available in the registry.
+  rpc RolePermissions (RolePermissionsRequest) returns (RolePermissionsResponse) {}
+  // CouncilorByAddress returns the councilor object from its address
+  rpc CouncilorByAddress (CouncilorByAddressRequest) returns (CouncilorResponse) {}
+  // CouncilorByMoniker returns the councilor object from its moniker
+  rpc CouncilorByMoniker (CouncilorByMonikerRequest) returns (CouncilorResponse) {}
+  // GetNetworkProperties returns network properties
+  rpc GetNetworkProperties (NetworkPropertiesRequest) returns (NetworkPropertiesResponse) {}
+  // GetExecutionFee returns execution fee from msg type
+  rpc GetExecutionFee (ExecutionFeeRequest) returns (ExecutionFeeResponse) {}
+  // Proposal queries proposal details based on ProposalID.
+  rpc Proposal(QueryProposalRequest) returns (QueryProposalResponse) {}
+  // Proposals queries all proposals based on given status.
+  rpc Proposals(QueryProposalsRequest) returns (QueryProposalsResponse) {}
+  // GetWhitelistedProposalVoters returns whitelisted voters for a proposal for tracking
+  rpc GetWhitelistedProposalVoters(QueryWhitelistedProposalVotersRequest) returns (QueryWhitelistedProposalVotersResponse) {}
+  // Vote queries voted information based on proposalID, voterAddr.
+  rpc Vote(QueryVoteRequest) returns (QueryVoteResponse) {}
+  // Votes queries votes of a given proposal.
+  rpc Votes(QueryVotesRequest) returns (QueryVotesResponse) {}
+  // Query all data reference keys with pagination.
+  rpc GetAllDataReferenceKeys(QueryDataReferenceKeysRequest) returns (QueryDataReferenceKeysResponse) {
+    option (google.api.http).get = "/kira/gov/data_keys";
+  }
+  // Query data reference by key.
+  rpc GetDataReferenceByKey(QueryDataReferenceRequest) returns (QueryDataReferenceResponse) {
+    option (google.api.http).get = "/kira/gov/data/{key}";
+  }
+}
+
+message NetworkPropertiesRequest {}
+
+message NetworkPropertiesResponse {
+  kira.gov.NetworkProperties properties = 1;
+}
+
+message PermissionsByAddressRequest {
+  bytes val_addr = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"val_addr\""
+  ];
+}
+
+message PermissionsResponse {
+  kira.gov.Permissions permissions = 1;
+}
+
+message RolesByAddressRequest {
+  bytes val_addr = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"val_addr\""
+  ];
+}
+
+message RolesByAddressResponse {
+  repeated uint64 roles = 1;
+}
+
+message RolePermissionsRequest {
+  uint64 role = 1;
+}
+
+message RolePermissionsResponse {
+  Permissions permissions = 1;
+}
+
+message ExecutionFeeRequest {
+  string transaction_type = 1;
+}
+message ExecutionFeeResponse {
+  kira.gov.ExecutionFee fee = 1;
+}
+
+message CouncilorByAddressRequest {
+  bytes val_addr = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"val_addr\""
+  ];
+}
+
+message CouncilorByMonikerRequest {
+  string moniker = 1;
+}
+
+message CouncilorResponse {
+  kira.gov.Councilor councilor = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryProposalRequest is the request type for the Query/Proposal RPC method.
+message QueryProposalRequest {
+  // proposal_id defines the unique id of the proposal.
+  uint64 proposal_id = 1;
+}
+
+// QueryProposalResponse is the response type for the Query/Proposal RPC method.
+message QueryProposalResponse {
+  kira.gov.Proposal proposal = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryProposalsRequest is the request type for the Query/Proposals RPC method.
+message QueryProposalsRequest {
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // voter defines the voter address for the proposals.
+  string voter = 1;
+}
+
+// QueryProposalsResponse is the response type for the Query/Proposals RPC
+// method.
+message QueryProposalsResponse {
+  repeated kira.gov.Proposal proposals = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryWhitelistedProposalVotersRequest is the request type for Query/WhitelistedProposalVoters RPC method.
+message QueryWhitelistedProposalVotersRequest {
+  // proposal_id defines the unique id of the proposal.
+  uint64 proposal_id = 1;
+}
+
+// QueryWhitelistedProposalVotersResponse is the response type for Query/WhitelistedProposalVoters RPC method.
+message QueryWhitelistedProposalVotersResponse {
+  repeated kira.gov.NetworkActor voters = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryVoteRequest is the request type for the Query/Vote RPC method.
+message QueryVoteRequest {
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // proposal_id defines the unique id of the proposal.
+  uint64 proposal_id = 1;
+
+  // voter defines the oter address for the proposals.
+  bytes voter = 2[
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
+  ];
+}
+
+// QueryVoteResponse is the response type for the Query/Vote RPC method.
+message QueryVoteResponse {
+  // vote defined the queried vote.
+  kira.gov.Vote vote = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryVotesRequest is the request type for the Query/Votes RPC method.
+message QueryVotesRequest {
+  // proposal_id defines the unique id of the proposal.
+  uint64 proposal_id = 1;
+}
+
+// QueryVotesResponse is the response type for the Query/Votes RPC method.
+message QueryVotesResponse {
+  // votes defined the queried votes.
+  repeated kira.gov.Vote votes = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryDataReferenceKeysRequest is the request type for data reference keys query.
+message QueryDataReferenceKeysRequest {
+  kira.gov.PageRequest pagination = 1 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
+}
+
+// QueryDataReferenceKeysResponse is the response type for data reference keys query.
+message QueryDataReferenceKeysResponse {
+  repeated string keys = 1;
+  kira.gov.PageResponse pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
+}
+
+// QueryDataReferenceRequest is the response type for data reference query.
+message QueryDataReferenceRequest {
+  string key = 1;
+}
+
+// QueryDataReferenceResponse is the response type for data referencequery.
+message QueryDataReferenceResponse {
+  kira.gov.DataRegistryEntry data = 1;
+}

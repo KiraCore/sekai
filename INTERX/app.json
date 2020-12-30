@@ -1,0 +1,25 @@
+{
+  "name": "grpc-gateway",
+  "env": {
+      "SERVE_HTTP": {
+          "description": "Whether to use HTTP to serve, instead of HTTPS",
+          "value": "true",
+          "required": false
+      },
+      "WITH_TRANSPORT_CREDENTIALS": {
+          "description": "Whether to use transport credentials",
+          "value": "false",
+          "required": false
+      },
+      "GRPC": {
+          "description": "GRPC endpoint",
+          "value": "dns:///0.0.0.0:9090",
+          "required": false
+      },
+      "RPC": {
+          "description": "RPC endpoint",
+          "value": "http://0.0.0.0:26657",
+          "required": false
+      }
+  }
+}

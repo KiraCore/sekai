@@ -1,0 +1,79 @@
+syntax = "proto3";
+package kira.gov;
+
+import "gogoproto/gogo.proto";
+import "proposal.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/gov/types";
+
+enum ActorStatus {
+  option (gogoproto.goproto_enum_prefix) = false;
+
+  // Undefined status
+  UNDEFINED = 0 [(gogoproto.enumvalue_customname) = "Undefined"];
+
+  // Unclaimed status
+  UNCLAIMED = 1 [(gogoproto.enumvalue_customname) = "Unclaimed"];
+
+  // Active status
+  ACTIVE = 2 [(gogoproto.enumvalue_customname) = "Active"];
+
+  // Paused status
+  PAUSED = 3 [(gogoproto.enumvalue_customname) = "Paused"];
+
+  // Inactive status
+  INACTIVE = 4 [(gogoproto.enumvalue_customname) = "Inactive"];
+
+  // Jailed status
+  JAILED = 5 [(gogoproto.enumvalue_customname) = "Jailed"];
+
+  // Removed status
+  REMOVED = 6 [(gogoproto.enumvalue_customname) = "Removed"];
+}
+
+message Permissions {
+  repeated uint32 blacklist = 1;
+  repeated uint32 whitelist = 2;
+}
+
+message NetworkActor {
+  bytes address = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  repeated uint64 roles = 2;
+  ActorStatus status = 3;
+  repeated VoteOption votes = 4;
+  Permissions permissions = 5;
+  uint64 skin = 6;
+}
+
+message MsgWhitelistPermissions {
+  option (gogoproto.equal)            = true;
+
+  bytes proposer = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
+  ];
+
+  bytes address = 2 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  uint32 permission = 3;
+}
+
+message MsgBlacklistPermissions {
+  bytes proposer = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
+  ];
+
+  bytes address = 2 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  uint32 permission = 3;
+}
+
