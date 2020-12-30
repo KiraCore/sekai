@@ -161,4 +161,52 @@ func RegisterInterxFunctions() {
 			}
 		}`,
 	)
+
+	AddInterxFunction(
+		"QueryDataReferenceKeys",
+		`{
+			"description": "QueryDataReferenceKeys is a function to query data reference keys with pagination.",
+			"parameters": {
+				"limit": {
+					"type":        "number",
+					"description": "This represents the page size"
+				},
+				"offset": {
+					"type":        "number",
+					"description": "This represents the page number"
+				},
+				"count_total": {
+					"type":        "number",
+					"description": "This represents the option to return total count of data reference keys.",
+					"optional": true
+				}
+			}
+		}`,
+	)
+
+	AddInterxFunction(
+		"QueryDataReference",
+		`{
+			"description": "QueryDataReference is a function to query data reference by a key.",
+			"parameters": {
+				"key": {
+					"type":        "string",
+					"description": "This represents data reference key."
+				}
+			}
+		}`,
+	)
+
+	AddInterxFunction(
+		"Download",
+		`{
+			"description": "Download is a function to download a data reference or arbitrary data.",
+			"parameters": {
+				"path": {
+					"type":        "string",
+					"description": "This represents the path to download the reference."
+				}
+			}
+		}`,
+	)
 }

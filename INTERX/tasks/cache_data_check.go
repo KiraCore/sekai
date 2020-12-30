@@ -2,21 +2,21 @@ package tasks
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
 	"time"
 
-	common "github.com/KiraCore/sekai/INTERX/common"
+	"github.com/KiraCore/sekai/INTERX/common"
 	interx "github.com/KiraCore/sekai/INTERX/config"
+	"github.com/KiraCore/sekai/INTERX/types"
 )
 
 // CacheDataCheck is a function to check cache data if it's expired.
-func CacheDataCheck(rpcAddr string) {
+func CacheDataCheck(rpcAddr string, isLog bool) {
 	for {
-		err := filepath.Walk(interx.Config.CacheDir,
+		err := filepath.Walk(interx.GetResponseCacheDir(),
 			func(path string, info os.FileInfo, err error) error {
 				if err != nil {
 					return err
@@ -31,23 +31,27 @@ func CacheDataCheck(rpcAddr string) {
 					data, _ := ioutil.ReadFile(path)
 					common.Mutex.Unlock()
 
-					result := common.InterxResponse{}
+					result := types.InterxResponse{}
 					err := json.Unmarshal([]byte(data), &result)
 
-					if err == nil && result.ExpireAt.Before(time.Now()) && result.Response.Block != NodeStatus.Block {
+					if err == nil && result.ExpireAt.Before(time.Now()) && result.Response.Block != common.NodeStatus.Block {
 						delete = true
 					}
 				}
 
-				if path != interx.Config.CacheDir && delete {
-					fmt.Println("deleting file ... ", path)
+				if path != interx.GetResponseCacheDir() && delete {
+					if isLog {
+						common.GetLogger().Info("[cache] Deleting file: ", path)
+					}
 
 					common.Mutex.Lock()
 					err := os.Remove(path)
 					common.Mutex.Unlock()
 
 					if err != nil {
-						fmt.Println("Error deleting file: ", err)
+						if isLog {
+							common.GetLogger().Error("[cache] Error deleting file: ", err)
+						}
 						return err
 					}
 
