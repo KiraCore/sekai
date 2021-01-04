@@ -41,6 +41,7 @@ type StakingKeeper interface {
 
 	GetValidator(sdk.Context, sdk.ValAddress) (stakingtypes.Validator, error)            // get a particular validator by operator address
 	GetValidatorByConsAddr(sdk.Context, sdk.ConsAddress) (stakingtypes.Validator, error) // get a particular validator by consensus address
+	GetValidatorSet(ctx sdk.Context) []stakingtypes.Validator                            // get all validator set
 
 	// activate/inactivate the validator and delegators of the validator, specifying offence height, offence power, and slash fraction
 	Inactivate(sdk.Context, sdk.ValAddress) error // inactivate a validator
@@ -58,6 +59,4 @@ type StakingKeeper interface {
 type StakingHooks interface {
 	AfterValidatorCreated(ctx sdk.Context, valAddr sdk.ValAddress)                           // Must be called when a validator is created
 	AfterValidatorRemoved(ctx sdk.Context, consAddr sdk.ConsAddress, valAddr sdk.ValAddress) // Must be called when a validator is deleted
-
-	AfterValidatorBonded(ctx sdk.Context, consAddr sdk.ConsAddress, valAddr sdk.ValAddress) // Must be called when a validator is bonded
 }

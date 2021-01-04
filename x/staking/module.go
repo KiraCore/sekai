@@ -91,6 +91,7 @@ func (am AppModule) RegisterInterfaces(registry types2.InterfaceRegistry) {
 func (am AppModule) InitGenesis(
 	ctx sdk.Context,
 	cdc codec.JSONMarshaler,
+	// keeper keeper.Keeper,
 	data json.RawMessage,
 ) []abci.ValidatorUpdate {
 	var genesisState types.GenesisState
@@ -115,6 +116,9 @@ func (am AppModule) InitGenesis(
 			Power:  1,
 			PubKey: pk,
 		}
+
+		// Call the creation hook if not exported
+		// keeper.AfterValidatorCreated(ctx, val.ValKey)
 	}
 
 	return valUpdate

@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"time"
+	"fmt"
 
 	"github.com/tendermint/tendermint/crypto"
 
@@ -9,33 +9,26 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (k Keeper) AfterValidatorBonded(ctx sdk.Context, address sdk.ConsAddress, _ sdk.ValAddress) {
-	// Update the signing info start height or create a new signing info
-	_, found := k.GetValidatorSigningInfo(ctx, address)
-	if !found {
-		signingInfo := types.NewValidatorSigningInfo(
-			address,
-			ctx.BlockHeight(),
-			0,
-			time.Unix(0, 0),
-			false,
-			0,
-		)
-		k.SetValidatorSigningInfo(ctx, address, signingInfo)
-	}
-}
-
 // AfterValidatorCreated adds the address-pubkey relation when a validator is created.
 func (k Keeper) AfterValidatorCreated(ctx sdk.Context, valAddr sdk.ValAddress) error {
+	fmt.Println("AfterValidatorCreated.hooks1")
 	validator, err := k.sk.GetValidator(ctx, valAddr)
+	fmt.Println("AfterValidatorCreated.hooks2", validator.ValKey.String(), err.Error())
+	validators := k.sk.GetValidatorSet(ctx)
+	fmt.Println("registered validators count", len(validators))
+	for i, val := range validators {
+		fmt.Println("registered validators", i, val.ValKey.String())
+	}
 	if err != nil {
 		return err
 	}
 
 	consPk, err := validator.TmConsPubKey()
+	fmt.Println("AfterValidatorCreated.hooks3", consPk.Address().String())
 	if err != nil {
 		return err
 	}
+	fmt.Println("AfterValidatorCreated.hooks4")
 	k.AddPubkey(ctx, consPk)
 	return nil
 }
@@ -60,11 +53,6 @@ func (k Keeper) Hooks() Hooks {
 }
 
 // Implements sdk.ValidatorHooks
-func (h Hooks) AfterValidatorBonded(ctx sdk.Context, consAddr sdk.ConsAddress, valAddr sdk.ValAddress) {
-	h.k.AfterValidatorBonded(ctx, consAddr, valAddr)
-}
-
-// Implements sdk.ValidatorHooks
 func (h Hooks) AfterValidatorRemoved(ctx sdk.Context, consAddr sdk.ConsAddress, _ sdk.ValAddress) {
 	h.k.AfterValidatorRemoved(ctx, consAddr)
 }
@@ -74,5 +62,4 @@ func (h Hooks) AfterValidatorCreated(ctx sdk.Context, valAddr sdk.ValAddress) {
 	h.k.AfterValidatorCreated(ctx, valAddr)
 }
 
-func (h Hooks) AfterValidatorBeginUnbonding(_ sdk.Context, _ sdk.ConsAddress, _ sdk.ValAddress) {}
-func (h Hooks) BeforeValidatorModified(_ sdk.Context, _ sdk.ValAddress)                         {}
+func (h Hooks) BeforeValidatorModified(_ sdk.Context, _ sdk.ValAddress) {}

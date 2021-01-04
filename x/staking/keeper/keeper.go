@@ -12,6 +12,7 @@ import (
 type Keeper struct {
 	storeKey sdk.StoreKey
 	cdc      *codec.LegacyAmino
+	hooks    types.StakingHooks
 }
 
 // NewKeeper returns new keeper.
@@ -22,6 +23,17 @@ func NewKeeper(storeKey sdk.StoreKey, cdc *codec.LegacyAmino) Keeper {
 // BondDenom returns the denom that is basically used for fee payment
 func (k Keeper) BondDenom(ctx sdk.Context) string {
 	return "ukex"
+}
+
+// Set the validator hooks
+func (k *Keeper) SetHooks(sh types.StakingHooks) *Keeper {
+	if k.hooks != nil {
+		panic("cannot set validator hooks twice")
+	}
+
+	k.hooks = sh
+
+	return k
 }
 
 func (k Keeper) AddValidator(ctx sdk.Context, validator types.Validator) {

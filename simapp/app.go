@@ -288,10 +288,13 @@ func NewSimApp(
 	// note replicate if you do not need to test core IBC or light clients.
 	scopedIBCMockKeeper := app.CapabilityKeeper.ScopeToModule(ibcmock.ModuleName)
 
-	app.CustomStakingKeeper = keeper.NewKeeper(keys[customstakingtypes.ModuleName], legacyAmino)
-	app.CustomSlashingKeeper = customslashingkeeper.NewKeeper(appCodec, keys[customslashingtypes.ModuleName], &app.CustomStakingKeeper, app.GetSubspace(customslashingtypes.ModuleName))
+	customStakingKeeper := keeper.NewKeeper(keys[customstakingtypes.ModuleName], legacyAmino)
+	app.CustomSlashingKeeper = customslashingkeeper.NewKeeper(appCodec, keys[customslashingtypes.ModuleName], &customStakingKeeper, app.GetSubspace(customslashingtypes.ModuleName))
 	app.CustomGovKeeper = customgovkeeper.NewKeeper(keys[customgovtypes.ModuleName], appCodec)
 	app.TokensKeeper = tokenskeeper.NewKeeper(keys[tokenstypes.ModuleName], appCodec)
+	app.CustomStakingKeeper = *customStakingKeeper.SetHooks(
+		customstakingtypes.NewMultiStakingHooks(app.CustomSlashingKeeper.Hooks()),
+	)
 
 	// add keepers
 	app.AccountKeeper = authkeeper.NewAccountKeeper(

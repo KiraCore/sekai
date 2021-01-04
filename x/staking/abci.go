@@ -13,6 +13,7 @@ func EndBlocker(ctx sdk.Context, k keeper.Keeper) []abci.ValidatorUpdate {
 	valSet := k.GetPendingValidatorSet(ctx)
 	for _, val := range valSet {
 		k.AddValidator(ctx, val)
+		k.AfterValidatorCreated(ctx, val.ValKey)
 
 		consPk, err := val.TmConsPubKey()
 		if err != nil {

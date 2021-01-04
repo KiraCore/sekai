@@ -312,12 +312,16 @@ func NewInitApp(
 		stakingtypes.NewMultiStakingHooks(app.distrKeeper.Hooks(), app.slashingKeeper.Hooks()),
 	)
 
-	app.customStakingKeeper = customstakingkeeper.NewKeeper(keys[customstakingtypes.ModuleName], cdc)
+	customStakingKeeper := customstakingkeeper.NewKeeper(keys[customstakingtypes.ModuleName], cdc)
 	app.customSlashingKeeper = customslashingkeeper.NewKeeper(
-		appCodec, keys[slashingtypes.StoreKey], &app.customStakingKeeper, app.GetSubspace(slashingtypes.ModuleName),
+		appCodec, keys[slashingtypes.StoreKey], &customStakingKeeper, app.GetSubspace(slashingtypes.ModuleName),
 	)
 	app.customGovKeeper = customgovkeeper.NewKeeper(keys[customgovtypes.ModuleName], appCodec)
 	app.tokensKeeper = tokenskeeper.NewKeeper(keys[tokenstypes.ModuleName], appCodec)
+	// NOTE: customStakingKeeper above is passed by reference, so that it will contain these hooks
+	app.customStakingKeeper = *customStakingKeeper.SetHooks(
+		customstakingtypes.NewMultiStakingHooks(app.customSlashingKeeper.Hooks()),
+	)
 
 	app.ibcKeeper = ibckeeper.NewKeeper(
 		appCodec, keys[ibchost.StoreKey], app.stakingKeeper, scopedIBCKeeper,
