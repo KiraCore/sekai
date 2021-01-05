@@ -36,20 +36,28 @@ func mnemonicFromFile(filename string) string {
 	return string(mnemonic)
 }
 
+func loadMnemonic(mnemonic string) string {
+	if bip39.IsMnemonicValid(mnemonic) {
+		return mnemonic
+	}
+
+	return mnemonicFromFile(mnemonic)
+}
+
 func readConfig() InterxConfig {
 	functions.RegisterInterxFunctions()
 	functionmeta.RegisterStdMsgs()
 	sekaiapp.SetConfig()
 
 	type ConfigFromFile struct {
-		MnemonicFile               string `json:"mnemonic_file"`
+		MnemonicFile               string `json:"mnemonic"`
 		StatusSync                 int64  `json:"status_sync"`
 		CacheDir                   string `json:"cache_dir"`
 		MaxCacheSize               string `json:"max_cache_size"`
 		CachingDuration            int64  `json:"caching_duration"`
 		DownloadFileSizeLimitation string `json:"download_file_size_limitation"`
 		Faucet                     struct {
-			MnemonicFile         string            `json:"mnemonic_file"`
+			MnemonicFile         string            `json:"mnemonic"`
 			FaucetAmounts        map[string]int64  `json:"faucet_amounts"`
 			FaucetMinimumAmounts map[string]int64  `json:"faucet_minimum_amounts"`
 			FeeAmounts           map[string]string `json:"fee_amounts"`
@@ -71,7 +79,7 @@ func readConfig() InterxConfig {
 	config := InterxConfig{}
 
 	// Interx Main Configuration
-	config.Mnemonic = mnemonicFromFile(configFromFile.MnemonicFile)
+	config.Mnemonic = loadMnemonic(configFromFile.MnemonicFile)
 	config.StatusSync = configFromFile.StatusSync
 	config.CacheDir = configFromFile.CacheDir
 	config.MaxCacheSize = parseSizeString(configFromFile.MaxCacheSize)
@@ -95,7 +103,7 @@ func readConfig() InterxConfig {
 
 	// Faucet Configuration
 	config.Faucet = FaucetConfig{
-		Mnemonic:             mnemonicFromFile(configFromFile.Faucet.MnemonicFile),
+		Mnemonic:             loadMnemonic(configFromFile.Faucet.MnemonicFile),
 		FaucetAmounts:        configFromFile.Faucet.FaucetAmounts,
 		FaucetMinimumAmounts: configFromFile.Faucet.FaucetMinimumAmounts,
 		FeeAmounts:           configFromFile.Faucet.FeeAmounts,
