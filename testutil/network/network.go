@@ -31,7 +31,6 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/crypto/hd"
@@ -47,7 +46,6 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/genutil"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
 
 // DefaultBondDenom defines default denom for fee
@@ -247,7 +245,6 @@ func New(t *testing.T, cfg Config) *Network {
 		nodeDirName := fmt.Sprintf("node%d", i)
 		nodeDir := filepath.Join(network.BaseDir, nodeDirName, "simd")
 		clientDir := filepath.Join(network.BaseDir, nodeDirName, "simcli")
-		gentxsDir := filepath.Join(network.BaseDir, "gentxs")
 
 		require.NoError(t, os.MkdirAll(filepath.Join(nodeDir, "config"), 0755))
 		require.NoError(t, os.MkdirAll(clientDir, 0755))
@@ -296,41 +293,6 @@ func New(t *testing.T, cfg Config) *Network {
 		genFiles = append(genFiles, tmCfg.GenesisFile())
 		genBalances = append(genBalances, banktypes.Balance{Address: addr.String(), Coins: balances.Sort()})
 		genAccounts = append(genAccounts, authtypes.NewBaseAccount(addr, nil, 0, 0))
-
-		commission, err := sdk.NewDecFromStr("0.5")
-		require.NoError(t, err)
-
-		createValMsg, err := stakingtypes.NewMsgCreateValidator(
-			sdk.ValAddress(addr),
-			valPubKeys[i],
-			sdk.NewCoin(DefaultBondDenom, cfg.BondedTokens),
-			stakingtypes.NewDescription(nodeDirName, "", "", "", ""),
-			stakingtypes.NewCommissionRates(commission, sdk.OneDec(), sdk.OneDec()),
-			sdk.OneInt(),
-		)
-		require.NoError(t, err)
-
-		p2pURL, err := url.Parse(p2pAddr)
-		require.NoError(t, err)
-
-		memo := fmt.Sprintf("%s@%s:%s", nodeIDs[i], p2pURL.Hostname(), p2pURL.Port())
-		txBuilder := cfg.TxConfig.NewTxBuilder()
-		require.NoError(t, txBuilder.SetMsgs(createValMsg))
-		txBuilder.SetMemo(memo)
-
-		txFactory := tx.Factory{}
-		txFactory = txFactory.
-			WithChainID(cfg.ChainID).
-			WithMemo(memo).
-			WithKeybase(kb).
-			WithTxConfig(cfg.TxConfig)
-
-		err = tx.Sign(txFactory, nodeDirName, txBuilder)
-		require.NoError(t, err)
-
-		txBz, err := cfg.TxConfig.TxJSONEncoder()(txBuilder.GetTx())
-		require.NoError(t, err)
-		require.NoError(t, writeFile(fmt.Sprintf("%v.json", nodeDirName), gentxsDir, txBz))
 
 		srvconfig.WriteConfigFile(filepath.Join(nodeDir, "config/app.toml"), appCfg)
 
