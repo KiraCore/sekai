@@ -77,17 +77,14 @@ import (
 	capabilitytypes "github.com/cosmos/cosmos-sdk/x/capability/types"
 	crisistypes "github.com/cosmos/cosmos-sdk/x/crisis/types"
 	distrclient "github.com/cosmos/cosmos-sdk/x/distribution/client"
-	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
 	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	"github.com/cosmos/cosmos-sdk/x/evidence"
 	evidencekeeper "github.com/cosmos/cosmos-sdk/x/evidence/keeper"
 	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	"github.com/cosmos/cosmos-sdk/x/gov"
-	govkeeper "github.com/cosmos/cosmos-sdk/x/gov/keeper"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	transfer "github.com/cosmos/cosmos-sdk/x/ibc/applications/transfer"
-	ibctransferkeeper "github.com/cosmos/cosmos-sdk/x/ibc/applications/transfer/keeper"
 	ibctransfertypes "github.com/cosmos/cosmos-sdk/x/ibc/applications/transfer/types"
 	ibchost "github.com/cosmos/cosmos-sdk/x/ibc/core/24-host"
 	ibcmock "github.com/cosmos/cosmos-sdk/x/ibc/testing/mock"
@@ -97,7 +94,6 @@ import (
 	paramskeeper "github.com/cosmos/cosmos-sdk/x/params/keeper"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
-	slashingkeeper "github.com/cosmos/cosmos-sdk/x/slashing/keeper"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/x/upgrade"
@@ -169,19 +165,13 @@ type SekaiApp struct {
 	memKeys map[string]*sdk.MemoryStoreKey
 
 	// keepers
-	accountKeeper authkeeper.AccountKeeper
-	bankKeeper    bankkeeper.Keeper
-	//kiraHubKeeper    kiraHub.Keeper
+	accountKeeper    authkeeper.AccountKeeper
+	bankKeeper       bankkeeper.Keeper
 	capabilityKeeper *capabilitykeeper.Keeper
-	slashingKeeper   slashingkeeper.Keeper
-	distrKeeper      distrkeeper.Keeper
-	govKeeper        govkeeper.Keeper
 	crisisKeeper     crisiskeeper.Keeper
 	upgradeKeeper    upgradekeeper.Keeper
 	paramsKeeper     paramskeeper.Keeper
-	//ibcKeeper        *ibckeeper.Keeper // IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
-	evidenceKeeper evidencekeeper.Keeper
-	transferKeeper ibctransferkeeper.Keeper
+	evidenceKeeper   evidencekeeper.Keeper
 
 	customSlashingKeeper customslashingkeeper.Keeper
 	customStakingKeeper  customstakingkeeper.Keeper
@@ -269,31 +259,10 @@ func NewInitApp(
 	app.bankKeeper = bankkeeper.NewBaseKeeper(
 		appCodec, keys[banktypes.StoreKey], app.accountKeeper, app.GetSubspace(banktypes.ModuleName), app.BlockedAddrs(),
 	)
-	////stakingKeeper := stakingkeeper.NewKeeper(
-	////	appCodec, keys[stakingtypes.StoreKey], app.accountKeeper, app.bankKeeper, app.GetSubspace(stakingtypes.ModuleName),
-	////)
-	//app.distrKeeper = distrkeeper.NewKeeper(
-	//	appCodec, keys[distrtypes.StoreKey], app.GetSubspace(distrtypes.ModuleName), app.accountKeeper, app.bankKeeper,
-	//	&stakingKeeper, authtypes.FeeCollectorName, app.ModuleAccountAddrs(),
-	//)
-	//app.slashingKeeper = slashingkeeper.NewKeeper(
-	//	appCodec, keys[slashingtypes.StoreKey], &stakingKeeper, app.GetSubspace(slashingtypes.ModuleName),
-	//)
 	app.crisisKeeper = crisiskeeper.NewKeeper(
 		app.GetSubspace(crisistypes.ModuleName), invCheckPeriod, app.bankKeeper, authtypes.FeeCollectorName,
 	)
 	app.upgradeKeeper = upgradekeeper.NewKeeper(skipUpgradeHeights, keys[upgradetypes.StoreKey], appCodec, homePath)
-
-	//// register the proposal types
-	//govRouter := govtypes.NewRouter()
-	//govRouter.AddRoute(govtypes.RouterKey, govtypes.ProposalHandler).
-	//	AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(app.paramsKeeper)).
-	//	AddRoute(distrtypes.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.distrKeeper)).
-	//	AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.upgradeKeeper))
-	//app.govKeeper = govkeeper.NewKeeper(
-	//	appCodec, keys[govtypes.StoreKey], app.GetSubspace(govtypes.ModuleName), app.accountKeeper, app.bankKeeper,
-	//	&stakingKeeper, govRouter,
-	//)
 
 	customStakingKeeper := customstakingkeeper.NewKeeper(keys[customstakingtypes.ModuleName], cdc)
 	app.customSlashingKeeper = customslashingkeeper.NewKeeper(
@@ -306,30 +275,8 @@ func NewInitApp(
 		customstakingtypes.NewMultiStakingHooks(app.customSlashingKeeper.Hooks()),
 	)
 
-	//app.ibcKeeper = ibckeeper.NewKeeper(
-	//	appCodec, keys[ibchost.StoreKey], app.stakingKeeper, scopedIBCKeeper,
-	//)
-	//
-	// Create Transfer Keepers
-	//app.transferKeeper = ibctransferkeeper.NewKeeper(
-	//	appCodec, keys[ibctransfertypes.StoreKey], app.GetSubspace(ibctransfertypes.ModuleName),
-	//	app.ibcKeeper.ChannelKeeper, &app.ibcKeeper.PortKeeper,
-	//	app.accountKeeper, app.bankKeeper, scopedTransferKeeper,
-	//)
-	//transferModule := transfer.NewAppModule(app.transferKeeper)
-
-	// NOTE: the IBC mock keeper and application module is used only for testing core IBC. Do
-	// note replicate if you do not need to test core IBC or light clients.
-	//mockModule := ibcmock.NewAppModule(scopedIBCMockKeeper)
-	//
-	//// Create static IBC router, add transfer route, then set and seal it
-	//ibcRouter := porttypes.NewRouter()
-	//ibcRouter.AddRoute(ibctransfertypes.ModuleName, transferModule)
-	//ibcRouter.AddRoute(ibcmock.ModuleName, mockModule)
-	//app.ibcKeeper.SetRouter(ibcRouter)
-	//
 	app.feeprocessingKeeper = feeprocessingkeeper.NewKeeper(keys[feeprocessingtypes.ModuleName], appCodec, app.bankKeeper, app.tokensKeeper, app.customGovKeeper)
-	//
+
 	/****  Module Options ****/
 
 	// NOTE: we may consider parsing `appOpts` inside module constructors. For the moment
@@ -343,13 +290,10 @@ func NewInitApp(
 		bank.NewAppModule(appCodec, app.bankKeeper, app.accountKeeper),
 		capability.NewAppModule(appCodec, *app.capabilityKeeper),
 		crisis.NewAppModule(&app.crisisKeeper, skipGenesisInvariants),
-		gov.NewAppModule(appCodec, app.govKeeper, app.accountKeeper, app.bankKeeper),
 		customslashing.NewAppModule(appCodec, app.customSlashingKeeper, app.accountKeeper, app.bankKeeper, app.customStakingKeeper),
 		upgrade.NewAppModule(app.upgradeKeeper),
 		evidence.NewAppModule(app.evidenceKeeper),
-		//ibc.NewAppModule(app.ibcKeeper),
 		params.NewAppModule(app.paramsKeeper),
-		//transferModule,
 		customstaking.NewAppModule(app.customStakingKeeper, app.customGovKeeper),
 		customgov.NewAppModule(app.customGovKeeper, customgov.NewProposalRouter(
 			[]customgov.ProposalHandler{
@@ -363,21 +307,19 @@ func NewInitApp(
 		tokens.NewAppModule(app.tokensKeeper, app.customGovKeeper),
 		feeprocessing.NewAppModule(app.feeprocessingKeeper),
 	)
+
 	// During begin block slashing happens after distr.BeginBlocker so that
 	// there is nothing left over in the validator fee pool, so as to keep the
 	// CanWithdrawInvariant invariant.
-
 	app.mm.SetOrderBeginBlockers(
-		upgradetypes.ModuleName,  /*distrtypes.ModuleName, slashingtypes.ModuleName, customslashingtypes.ModuleName,*/
-		evidencetypes.ModuleName, /*stakingtypes.ModuleName, ibchost.ModuleName,*/
+		upgradetypes.ModuleName,
+		evidencetypes.ModuleName,
 	)
 	app.mm.SetOrderEndBlockers(
 		crisistypes.ModuleName,
-		/*govtypes.ModuleName,*/
 		customgovtypes.ModuleName,
 		customstakingtypes.ModuleName,
 		feeprocessingtypes.ModuleName,
-		/*stakingtypes.ModuleName*/
 	)
 
 	// NOTE: The genutils moodule must occur after staking so that pools are
@@ -408,8 +350,6 @@ func NewInitApp(
 		auth.NewAppModule(appCodec, app.accountKeeper, simulation.RandomGenesisAccounts),
 		bank.NewAppModule(appCodec, app.bankKeeper, app.accountKeeper),
 		capability.NewAppModule(appCodec, *app.capabilityKeeper),
-		//gov.NewAppModule(appCodec, app.govKeeper, app.accountKeeper, app.bankKeeper),
-		//distr.NewAppModule(appCodec, app.distrKeeper, app.accountKeeper, app.bankKeeper, app.stakingKeeper),
 		customslashing.NewAppModule(appCodec, app.customSlashingKeeper, app.accountKeeper, app.bankKeeper, app.customStakingKeeper),
 		params.NewAppModule(app.paramsKeeper),
 		evidence.NewAppModule(app.evidenceKeeper),
