@@ -74,15 +74,20 @@ Configurations are available using `config.json`.
 
 ### `mnemonic`
 
-The 24-words seed string.
-
+The 24-words seed string or the file path to the mnemonic file.
 This is for generating interx priv/pub keys which will be used for response signing.
 
 ```
 "mnemonic": "swap exercise equip shoot mad inside floor wheel loan visual stereo build frozen always bulb naive subway foster marine erosion shuffle flee action there"
+
+"mnemonic": "interx.mnemonic"
 ```
 
-### `status_sync`
+### `cache`
+
+Cache configurations.
+
+#### `status_sync`
 
 Interx has a feature to sync node status.
 `status_sync` refers the time in seconds and INTERX syncs node status every `status_sync` seconds.
@@ -91,7 +96,7 @@ Interx has a feature to sync node status.
 "status_sync": 5
 ```
 
-### `cache_dir`
+#### `cache_dir`
 
 Interx has a caching feature.
 `cache_dir` refers the cache directory.
@@ -100,7 +105,7 @@ Interx has a caching feature.
 "cache_dir": "cache"
 ```
 
-### `max_cache_size`
+#### `max_cache_size`
 
 Interx has a gabage collection feature.
 `max_cache_size` refers the maximum cache size. If cache size is over maximum cache size, it will remove random caches. (it remains 90% of maximum cache size)
@@ -109,7 +114,7 @@ Interx has a gabage collection feature.
 "max_cache_size": "2 GB"
 ```
 
-### `caching_duration`
+#### `caching_duration`
 
 Interx has a gabage collection feature.
 `caching_duration` refers the caching clear duration in seconds
@@ -118,7 +123,7 @@ Interx has a gabage collection feature.
 "caching_duration": 10
 ```
 
-### `download_file_size_limitation`
+#### `download_file_size_limitation`
 
 Interx has a download feature.
 `download_file_size_limitation` refers the maximum download file size.
@@ -133,10 +138,13 @@ Interx has a faucet feature.
 
 #### `mnemonic`
 
-`mnemonic` refers the 24-words seed string. It will be used to generate faucet account priv/pub keys and address.
+`mnemonic` refers the 24-words seed string or the file path to the mnemonic file.
+It will be used to generate faucet account priv/pub keys and address.
 
 ```
 "mnemonic": "equip exercise shoot mad inside floor wheel loan visual stereo build frozen potato always bulb naive subway foster marine erosion shuffle flee action there"
+
+"mnemonic": "faucet.mnemonic"
 ```
 
 #### `faucet_amounts`

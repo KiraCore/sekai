@@ -22,7 +22,7 @@ func AddRPCMethod(method string, url string, description string, canCache bool) 
 	newMethod.Description = description
 	newMethod.Enabled = true
 	newMethod.CachingEnabled = true
-	newMethod.CachingDuration = interx.Config.CachingDuration
+	newMethod.CachingDuration = interx.Config.Cache.CachingDuration
 
 	if conf, ok := interx.Config.RPC.API[method][url]; ok {
 		newMethod.Enabled = !conf.Disable

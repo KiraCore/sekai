@@ -88,7 +88,7 @@ func DataReferenceCheck(isLog bool) {
 				}
 
 				// Check the download file size limitation
-				if ref.ContentLength > interx.Config.DownloadFileSizeLimitation {
+				if ref.ContentLength > interx.Config.Cache.DownloadFileSizeLimitation {
 					continue
 				}
 

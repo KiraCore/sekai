@@ -65,6 +65,6 @@ func SyncStatus(rpcAddr string, isLog bool) {
 			common.GetLogger().Info("[node-status] Blocktime = ", common.NodeStatus.Blocktime)
 		}
 
-		time.Sleep(time.Duration(interx.Config.StatusSync) * time.Second)
+		time.Sleep(time.Duration(interx.Config.Cache.StatusSync) * time.Second)
 	}
 }
