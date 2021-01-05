@@ -1,12 +1,12 @@
 {
-    "mnemonic_file": "interx.mnemonic",
+    "mnemonic": "interx.mnemonic",
     "status_sync": 5,
     "cache_dir": "cache",
     "max_cache_size": "2 GB",
     "caching_duration": 10,
     "download_file_size_limitation": "10 MB",
     "faucet": {
-        "mnemonic_file": "faucet.mnemonic",
+        "mnemonic": "faucet.mnemonic",
         "faucet_amounts": {
             "stake": 100000,
             "validatortoken": 100000,
