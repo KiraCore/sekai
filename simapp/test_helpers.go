@@ -237,7 +237,7 @@ func createIncrementalAccounts(accNum int) []sdk.AccAddress {
 
 // AddTestAddrsFromPubKeys adds the addresses into the SimApp providing only the public keys.
 func AddTestAddrsFromPubKeys(app *SimApp, ctx sdk.Context, pubKeys []cryptotypes.PubKey, accAmt sdk.Int) {
-	initCoins := sdk.NewCoins(sdk.NewCoin(app.StakingKeeper.BondDenom(ctx), accAmt))
+	initCoins := sdk.NewCoins(sdk.NewCoin(app.CustomStakingKeeper.BondDenom(ctx), accAmt))
 
 	setTotalSupply(app, ctx, accAmt, len(pubKeys))
 
@@ -249,7 +249,7 @@ func AddTestAddrsFromPubKeys(app *SimApp, ctx sdk.Context, pubKeys []cryptotypes
 
 // setTotalSupply provides the total supply based on accAmt * totalAccounts.
 func setTotalSupply(app *SimApp, ctx sdk.Context, accAmt sdk.Int, totalAccounts int) {
-	totalSupply := sdk.NewCoins(sdk.NewCoin(app.StakingKeeper.BondDenom(ctx), accAmt.MulRaw(int64(totalAccounts))))
+	totalSupply := sdk.NewCoins(sdk.NewCoin(app.CustomStakingKeeper.BondDenom(ctx), accAmt.MulRaw(int64(totalAccounts))))
 	prevSupply := app.BankKeeper.GetSupply(ctx)
 	app.BankKeeper.SetSupply(ctx, banktypes.NewSupply(prevSupply.GetTotal().Add(totalSupply...)))
 }
@@ -269,7 +269,7 @@ func AddTestAddrsIncremental(app *SimApp, ctx sdk.Context, accNum int, accAmt sd
 func addTestAddrs(app *SimApp, ctx sdk.Context, accNum int, accAmt sdk.Int, strategy GenerateAccountStrategy) []sdk.AccAddress {
 	testAddrs := strategy(accNum)
 
-	initCoins := sdk.NewCoins(sdk.NewCoin(app.StakingKeeper.BondDenom(ctx), accAmt))
+	initCoins := sdk.NewCoins(sdk.NewCoin(app.CustomStakingKeeper.BondDenom(ctx), accAmt))
 	setTotalSupply(app, ctx, accAmt, accNum)
 
 	// fill all the addresses with some coins, set the loose pool tokens simultaneously
