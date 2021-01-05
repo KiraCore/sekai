@@ -22,20 +22,34 @@ func parseSizeString(size string) int64 {
 	return int64(b)
 }
 
+func mnemonicFromFile(filename string) string {
+	if len(filename) == 0 {
+		return ""
+	}
+
+	mnemonic, err := ioutil.ReadFile(filename)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return string(mnemonic)
+}
+
 func readConfig() InterxConfig {
 	functions.RegisterInterxFunctions()
 	functionmeta.RegisterStdMsgs()
 	sekaiapp.SetConfig()
 
 	type ConfigFromFile struct {
-		Mnemonic                   string `json:"mnemonic"`
+		MnemonicFile               string `json:"mnemonic_file"`
 		StatusSync                 int64  `json:"status_sync"`
 		CacheDir                   string `json:"cache_dir"`
 		MaxCacheSize               string `json:"max_cache_size"`
 		CachingDuration            int64  `json:"caching_duration"`
 		DownloadFileSizeLimitation string `json:"download_file_size_limitation"`
 		Faucet                     struct {
-			Mnemonic             string            `json:"mnemonic"`
+			MnemonicFile         string            `json:"mnemonic_file"`
 			FaucetAmounts        map[string]int64  `json:"faucet_amounts"`
 			FaucetMinimumAmounts map[string]int64  `json:"faucet_minimum_amounts"`
 			FeeAmounts           map[string]string `json:"fee_amounts"`
@@ -57,12 +71,17 @@ func readConfig() InterxConfig {
 	config := InterxConfig{}
 
 	// Interx Main Configuration
-	config.Mnemonic = configFromFile.Mnemonic
+	config.Mnemonic = mnemonicFromFile(configFromFile.MnemonicFile)
 	config.StatusSync = configFromFile.StatusSync
 	config.CacheDir = configFromFile.CacheDir
 	config.MaxCacheSize = parseSizeString(configFromFile.MaxCacheSize)
 	config.CachingDuration = configFromFile.CachingDuration
 	config.DownloadFileSizeLimitation = parseSizeString(configFromFile.DownloadFileSizeLimitation)
+
+	if !bip39.IsMnemonicValid(config.Mnemonic) {
+		fmt.Println("Invalid Interx Mnemonic: ", config.Mnemonic)
+		panic("Invalid Interx Mnemonic")
+	}
 	config.PrivKey = secp256k1.GenPrivKeyFromSecret(bip39.NewSeed(config.Mnemonic, ""))
 	config.PubKey = config.PrivKey.PubKey()
 	config.Address = sdk.MustBech32ifyAddressBytes(sdk.GetConfig().GetBech32AccountAddrPrefix(), config.PubKey.Address())
@@ -76,13 +95,17 @@ func readConfig() InterxConfig {
 
 	// Faucet Configuration
 	config.Faucet = FaucetConfig{
-		Mnemonic:             configFromFile.Faucet.Mnemonic,
+		Mnemonic:             mnemonicFromFile(configFromFile.Faucet.MnemonicFile),
 		FaucetAmounts:        configFromFile.Faucet.FaucetAmounts,
 		FaucetMinimumAmounts: configFromFile.Faucet.FaucetMinimumAmounts,
 		FeeAmounts:           configFromFile.Faucet.FeeAmounts,
 		TimeLimit:            configFromFile.Faucet.TimeLimit,
 	}
 
+	if !bip39.IsMnemonicValid(config.Faucet.Mnemonic) {
+		fmt.Println("Invalid Faucet Mnemonic: ", config.Faucet.Mnemonic)
+		panic("Invalid Faucet Mnemonic")
+	}
 	config.Faucet.PrivKey = secp256k1.GenPrivKeyFromSecret(bip39.NewSeed(config.Faucet.Mnemonic, ""))
 	config.Faucet.PubKey = config.Faucet.PrivKey.PubKey()
 	config.Faucet.Address = sdk.MustBech32ifyAddressBytes(sdk.GetConfig().GetBech32AccountAddrPrefix(), config.Faucet.PubKey.Address())
