@@ -1,10 +1,12 @@
 {
     "mnemonic": "interx.mnemonic",
-    "status_sync": 5,
-    "cache_dir": "cache",
-    "max_cache_size": "2 GB",
-    "caching_duration": 10,
-    "download_file_size_limitation": "10 MB",
+    "cache": {
+        "status_sync": 5,
+        "cache_dir": "cache",
+        "max_cache_size": "2 GB",
+        "caching_duration": 10,
+        "download_file_size_limitation": "10 MB"
+    },
     "faucet": {
         "mnemonic": "faucet.mnemonic",
         "faucet_amounts": {

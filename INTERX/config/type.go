@@ -30,17 +30,22 @@ type RPCConfig struct {
 	API map[string]map[string]RPCSetting `json:"API"`
 }
 
+// CacheConfig is a struct to be used for cache configuration
+type CacheConfig struct {
+	StatusSync                 int64  `json:"status_sync"`
+	CacheDir                   string `json:"cache_dir"`
+	MaxCacheSize               int64  `json:"max_cache_size"`
+	CachingDuration            int64  `json:"caching_duration"`
+	DownloadFileSizeLimitation int64  `json:"download_file_size_limitation"`
+}
+
 // InterxConfig is a struct to be used for interx configuration
 type InterxConfig struct {
-	Mnemonic                   string         `json:"mnemonic"`
-	PrivKey                    crypto.PrivKey `json:"privkey"`
-	PubKey                     crypto.PubKey  `json:"pubkey"`
-	Address                    string         `json:"address"`
-	StatusSync                 int64          `json:"status_sync"`
-	CacheDir                   string         `json:"cache_dir"`
-	MaxCacheSize               int64          `json:"max_cache_size"`
-	CachingDuration            int64          `json:"caching_duration"`
-	DownloadFileSizeLimitation int64          `json:"download_file_size_limitation"`
-	Faucet                     FaucetConfig   `json:"faucet"`
-	RPC                        RPCConfig      `json:"rpc"`
+	Mnemonic string         `json:"mnemonic"`
+	PrivKey  crypto.PrivKey `json:"privkey"`
+	PubKey   crypto.PubKey  `json:"pubkey"`
+	Address  string         `json:"address"`
+	Cache    CacheConfig    `json:"cache"`
+	Faucet   FaucetConfig   `json:"faucet"`
+	RPC      RPCConfig      `json:"rpc"`
 }

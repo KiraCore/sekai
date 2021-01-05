@@ -50,13 +50,15 @@ func readConfig() InterxConfig {
 	sekaiapp.SetConfig()
 
 	type ConfigFromFile struct {
-		MnemonicFile               string `json:"mnemonic"`
-		StatusSync                 int64  `json:"status_sync"`
-		CacheDir                   string `json:"cache_dir"`
-		MaxCacheSize               string `json:"max_cache_size"`
-		CachingDuration            int64  `json:"caching_duration"`
-		DownloadFileSizeLimitation string `json:"download_file_size_limitation"`
-		Faucet                     struct {
+		MnemonicFile string `json:"mnemonic"`
+		Cache        struct {
+			StatusSync                 int64  `json:"status_sync"`
+			CacheDir                   string `json:"cache_dir"`
+			MaxCacheSize               string `json:"max_cache_size"`
+			CachingDuration            int64  `json:"caching_duration"`
+			DownloadFileSizeLimitation string `json:"download_file_size_limitation"`
+		} `json:"cache"`
+		Faucet struct {
 			MnemonicFile         string            `json:"mnemonic"`
 			FaucetAmounts        map[string]int64  `json:"faucet_amounts"`
 			FaucetMinimumAmounts map[string]int64  `json:"faucet_minimum_amounts"`
@@ -80,11 +82,11 @@ func readConfig() InterxConfig {
 
 	// Interx Main Configuration
 	config.Mnemonic = loadMnemonic(configFromFile.MnemonicFile)
-	config.StatusSync = configFromFile.StatusSync
-	config.CacheDir = configFromFile.CacheDir
-	config.MaxCacheSize = parseSizeString(configFromFile.MaxCacheSize)
-	config.CachingDuration = configFromFile.CachingDuration
-	config.DownloadFileSizeLimitation = parseSizeString(configFromFile.DownloadFileSizeLimitation)
+	config.Cache.StatusSync = configFromFile.Cache.StatusSync
+	config.Cache.CacheDir = configFromFile.Cache.CacheDir
+	config.Cache.MaxCacheSize = parseSizeString(configFromFile.Cache.MaxCacheSize)
+	config.Cache.CachingDuration = configFromFile.Cache.CachingDuration
+	config.Cache.DownloadFileSizeLimitation = parseSizeString(configFromFile.Cache.DownloadFileSizeLimitation)
 
 	if !bip39.IsMnemonicValid(config.Mnemonic) {
 		fmt.Println("Invalid Interx Mnemonic: ", config.Mnemonic)
@@ -98,8 +100,10 @@ func readConfig() InterxConfig {
 	fmt.Println("Interx Mnemonic   : ", config.Mnemonic)
 	fmt.Println("Interx Address    : ", config.Address)
 	fmt.Println("Interx Public Key : ", sdk.MustBech32ifyPubKey(sdk.Bech32PubKeyTypeAccPub, config.PubKey))
-	fmt.Println("Max Cache Size    : ", config.MaxCacheSize)
-	fmt.Println("Caching Duration  : ", config.CachingDuration)
+
+	fmt.Println("Max Cache Size    : ", config.Cache.MaxCacheSize)
+	fmt.Println("Caching Duration  : ", config.Cache.CachingDuration)
+	fmt.Println("Download File Size Limitation  : ", config.Cache.DownloadFileSizeLimitation)
 
 	// Faucet Configuration
 	config.Faucet = FaucetConfig{
@@ -126,17 +130,17 @@ func readConfig() InterxConfig {
 	// RPC Configuration
 	config.RPC = configFromFile.RPC
 
-	if _, err := os.Stat(config.CacheDir); os.IsNotExist(err) {
-		os.Mkdir(config.CacheDir, os.ModePerm)
+	if _, err := os.Stat(config.Cache.CacheDir); os.IsNotExist(err) {
+		os.Mkdir(config.Cache.CacheDir, os.ModePerm)
 	}
-	if _, err := os.Stat(config.CacheDir + "/reference/"); os.IsNotExist(err) {
-		os.Mkdir(config.CacheDir+"/reference/", os.ModePerm)
+	if _, err := os.Stat(config.Cache.CacheDir + "/reference/"); os.IsNotExist(err) {
+		os.Mkdir(config.Cache.CacheDir+"/reference/", os.ModePerm)
 	}
-	if _, err := os.Stat(config.CacheDir + "/response/"); os.IsNotExist(err) {
-		os.Mkdir(config.CacheDir+"/response/", os.ModePerm)
+	if _, err := os.Stat(config.Cache.CacheDir + "/response/"); os.IsNotExist(err) {
+		os.Mkdir(config.Cache.CacheDir+"/response/", os.ModePerm)
 	}
-	if _, err := os.Stat(config.CacheDir + "/db/"); os.IsNotExist(err) {
-		os.Mkdir(config.CacheDir+"/db/", os.ModePerm)
+	if _, err := os.Stat(config.Cache.CacheDir + "/db/"); os.IsNotExist(err) {
+		os.Mkdir(config.Cache.CacheDir+"/db/", os.ModePerm)
 	}
 
 	return config
@@ -156,15 +160,15 @@ var (
 
 // GetReferenceCacheDir is a function to get reference directory
 func GetReferenceCacheDir() string {
-	return Config.CacheDir + "/reference/"
+	return Config.Cache.CacheDir + "/reference/"
 }
 
 // GetResponseCacheDir is a function to get reference directory
 func GetResponseCacheDir() string {
-	return Config.CacheDir + "/response/"
+	return Config.Cache.CacheDir + "/response/"
 }
 
 // GetDbCacheDir is a function to get db directory
 func GetDbCacheDir() string {
-	return Config.CacheDir + "/db/"
+	return Config.Cache.CacheDir + "/db/"
 }

@@ -23,14 +23,14 @@ func CacheMaxSizeCheck(isLog bool) {
 			return err
 		})
 
-		if cacheSize >= interx.Config.MaxCacheSize {
+		if cacheSize >= interx.Config.Cache.MaxCacheSize {
 			if isLog {
 				common.GetLogger().Info("[cache] Reached the maximum size")
 			}
 
 			for {
 				_ = filepath.Walk(interx.GetResponseCacheDir(), func(path string, info os.FileInfo, err error) error {
-					if err != nil || cacheSize*10 < interx.Config.MaxCacheSize*9 { // current size < 90% of max cache size
+					if err != nil || cacheSize*10 < interx.Config.Cache.MaxCacheSize*9 { // current size < 90% of max cache size
 						return err
 					}
 					if !info.IsDir() && rand.Intn(5) == 0 {
@@ -56,7 +56,7 @@ func CacheMaxSizeCheck(isLog bool) {
 					return err
 				})
 
-				if cacheSize*10 < interx.Config.MaxCacheSize*9 {
+				if cacheSize*10 < interx.Config.Cache.MaxCacheSize*9 {
 					break
 				}
 			}
