@@ -128,18 +128,19 @@ func TestValidatorDippingInAndOut(t *testing.T) {
 		app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), power, true)
 	}
 
-	// kick first validator out of validator set
+	// add one more validator into the set
 	tstaking.CreateValidator(sdk.ValAddress(pks[1].Address()), pks[1], true)
 	validatorUpdates := staking.EndBlocker(ctx, app.CustomStakingKeeper)
-	require.Equal(t, 2, len(validatorUpdates))
-	tstaking.CheckValidator(valAddr, stakingtypes.Inactive, false)
+	require.Equal(t, 1, len(validatorUpdates))
+	tstaking.CheckValidator(valAddr, stakingtypes.Active, false)
+	tstaking.CheckValidator(sdk.ValAddress(pks[1].Address()), stakingtypes.Active, false)
 
 	// 600 more blocks happened
 	height = 700
 	ctx = ctx.WithBlockHeight(height)
 
 	validatorUpdates = staking.EndBlocker(ctx, app.CustomStakingKeeper)
-	require.Equal(t, 2, len(validatorUpdates))
+	require.Equal(t, 0, len(validatorUpdates))
 	tstaking.CheckValidator(valAddr, stakingtypes.Active, false)
 
 	// shouldn't be inactive/kicked yet
@@ -147,9 +148,9 @@ func TestValidatorDippingInAndOut(t *testing.T) {
 
 	// validator misses 500 more blocks, 501 total
 	latest := height
-	for ; height < latest+500; height++ {
+	for ; height < latest+501; height++ {
 		ctx = ctx.WithBlockHeight(height)
-		app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), 1, false)
+		app.CustomSlashingKeeper.HandleValidatorSignature(ctx, addr, 1, false)
 	}
 
 	// should now be inactive & kicked
