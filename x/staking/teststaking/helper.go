@@ -82,7 +82,7 @@ func (sh *Helper) Handle(msg sdk.Msg, ok bool) *sdk.Result {
 func (sh *Helper) CheckValidator(addr sdk.ValAddress, status stakingtypes.ValidatorStatus, inactive bool) stakingtypes.Validator {
 	v, err := sh.k.GetValidator(sh.Ctx, addr)
 	require.NoError(sh.t, err)
-	require.Equal(sh.t, inactive, v.IsInactivated, "wrong Inactive status")
+	require.Equal(sh.t, inactive, v.IsInactivated(), "wrong Inactive status")
 	if status >= 0 {
 		require.Equal(sh.t, status, v.Status)
 	}
