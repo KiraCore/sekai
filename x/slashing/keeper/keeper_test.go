@@ -172,6 +172,10 @@ func TestValidatorDippingInAndOut(t *testing.T) {
 	height = int64(5000)
 	ctx = ctx.WithBlockHeight(height)
 
+	// Try pausing on inactive node here, should fail
+	err := app.CustomStakingKeeper.Pause(ctx, valAddr)
+	require.Error(t, err)
+
 	// validator rejoins and starts signing again
 	app.CustomStakingKeeper.Activate(ctx, valAddr)
 	app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), 1, true)
@@ -181,6 +185,12 @@ func TestValidatorDippingInAndOut(t *testing.T) {
 	staking.EndBlocker(ctx, app.CustomStakingKeeper)
 	tstaking.CheckValidator(valAddr, stakingtypes.Active, false)
 
+	// Try pausing on active node here, should success
+	err = app.CustomStakingKeeper.Pause(ctx, valAddr)
+	require.NoError(t, err)
+	staking.EndBlocker(ctx, app.CustomStakingKeeper)
+	tstaking.CheckValidator(valAddr, stakingtypes.Paused, false)
+
 	// validator misses 501 blocks
 	latest = height
 	for ; height < latest+501; height++ {
@@ -188,7 +198,36 @@ func TestValidatorDippingInAndOut(t *testing.T) {
 		app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), 1, false)
 	}
 
-	// validator should now be jailed & kicked
+	// validator should not be in inactive status since node is paused
+	staking.EndBlocker(ctx, app.CustomStakingKeeper)
+	tstaking.CheckValidator(valAddr, stakingtypes.Paused, false)
+
+	// Try activating paused node: should unpause but it's activating - should fail
+	err = app.CustomStakingKeeper.Activate(ctx, valAddr)
+	require.Error(t, err)
+	staking.EndBlocker(ctx, app.CustomStakingKeeper)
+	tstaking.CheckValidator(valAddr, stakingtypes.Paused, false)
+
+	// Unpause node and it should be active
+	err = app.CustomStakingKeeper.Unpause(ctx, valAddr)
+	require.NoError(t, err)
+	staking.EndBlocker(ctx, app.CustomStakingKeeper)
+	tstaking.CheckValidator(valAddr, stakingtypes.Active, false)
+
+	// After reentering after unpause, check if signature info is recovered correctly
+	for offset := int64(0); offset < app.CustomSlashingKeeper.SignedBlocksWindow(ctx); offset++ {
+		missed := app.CustomSlashingKeeper.GetValidatorMissedBlockBitArray(ctx, consAddr, offset)
+		require.False(t, missed)
+	}
+
+	// Miss another 501 blocks
+	latest = height
+	for ; height < latest+501; height++ {
+		ctx = ctx.WithBlockHeight(height)
+		app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), 1, false)
+	}
+
+	// validator should be in inactive status
 	staking.EndBlocker(ctx, app.CustomStakingKeeper)
 	tstaking.CheckValidator(valAddr, stakingtypes.Inactive, true)
 }
