@@ -3,12 +3,12 @@ package keeper
 import (
 	"context"
 
-	"github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/tendermint/tendermint/crypto"
+	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 
 	govkeeper "github.com/KiraCore/sekai/x/gov/keeper"
 	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/staking/types"
+	"github.com/cosmos/cosmos-sdk/types/errors"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -37,7 +37,7 @@ func (k msgServer) ClaimValidator(goCtx context.Context, msg *types.MsgClaimVali
 		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermClaimValidator")
 	}
 
-	pk, ok := msg.PubKey.GetCachedValue().(crypto.PubKey)
+	pk, ok := msg.PubKey.GetCachedValue().(cryptotypes.PubKey)
 	if !ok {
 		return nil, errors.Wrap(errors.ErrInvalidPubKey, "Invalid pub key")
 	}

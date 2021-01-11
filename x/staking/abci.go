@@ -4,7 +4,6 @@ import (
 	"github.com/KiraCore/sekai/x/staking/keeper"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	abci "github.com/tendermint/tendermint/abci/types"
-	"github.com/tendermint/tendermint/crypto/encoding"
 )
 
 func EndBlocker(ctx sdk.Context, k keeper.Keeper) []abci.ValidatorUpdate {
@@ -20,14 +19,9 @@ func EndBlocker(ctx sdk.Context, k keeper.Keeper) []abci.ValidatorUpdate {
 			panic(err)
 		}
 
-		pk, err := encoding.PubKeyToProto(consPk)
-		if err != nil {
-			panic(err)
-		}
-
 		valUpdate = append(valUpdate, abci.ValidatorUpdate{
 			Power:  1,
-			PubKey: pk,
+			PubKey: consPk,
 		})
 
 		k.RemovePendingValidator(ctx, val)
@@ -46,14 +40,9 @@ func EndBlocker(ctx sdk.Context, k keeper.Keeper) []abci.ValidatorUpdate {
 			panic(err)
 		}
 
-		pk, err := encoding.PubKeyToProto(consPk)
-		if err != nil {
-			panic(err)
-		}
-
 		valUpdate = append(valUpdate, abci.ValidatorUpdate{
 			Power:  0,
-			PubKey: pk,
+			PubKey: consPk,
 		})
 		k.RemoveRemovingValidator(ctx, validator)
 	}
@@ -71,14 +60,9 @@ func EndBlocker(ctx sdk.Context, k keeper.Keeper) []abci.ValidatorUpdate {
 			panic(err)
 		}
 
-		pk, err := encoding.PubKeyToProto(consPk)
-		if err != nil {
-			panic(err)
-		}
-
 		valUpdate = append(valUpdate, abci.ValidatorUpdate{
 			Power:  1,
-			PubKey: pk,
+			PubKey: consPk,
 		})
 		k.RemoveRemovingValidator(ctx, validator)
 	}

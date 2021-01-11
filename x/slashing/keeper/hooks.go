@@ -33,7 +33,7 @@ func (k Keeper) AfterValidatorCreated(ctx sdk.Context, valAddr sdk.ValAddress) e
 		return err
 	}
 
-	consPk, err := validator.TmConsPubKey()
+	consPk, err := validator.ConsPubKey()
 	if err != nil {
 		return err
 	}

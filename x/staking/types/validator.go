@@ -2,17 +2,19 @@ package types
 
 import (
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	"github.com/cosmos/cosmos-sdk/crypto/types"
+	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
+	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/tendermint/tendermint/crypto"
+	tmprotocrypto "github.com/tendermint/tendermint/proto/tendermint/crypto"
 )
 
 // NewValidator generates new Validator.
 func NewValidator(moniker string, website string, social string,
-	identity string, comission sdk.Dec, valKey sdk.ValAddress, pubKey crypto.PubKey) (Validator, error) {
+	identity string, comission sdk.Dec, valKey sdk.ValAddress, pubKey cryptotypes.PubKey) (Validator, error) {
 
-	pkAny, err := codectypes.PackAny(pubKey)
+	pkAny, err := codectypes.NewAnyWithValue(pubKey)
 	if err != nil {
 		return Validator{}, err
 	}
@@ -93,23 +95,29 @@ func (v Validator) IsActive() bool {
 	return v.Status == Active
 }
 
-// TmConsPubKey casts Validator.ConsensusPubkey to crypto.PubKey
-func (v Validator) TmConsPubKey() (crypto.PubKey, error) {
-	pk, ok := v.PubKey.GetCachedValue().(crypto.PubKey)
+// ConsPubKey returns the validator PubKey as a cryptotypes.PubKey.
+func (v Validator) ConsPubKey() (cryptotypes.PubKey, error) {
+	pk, ok := v.PubKey.GetCachedValue().(cryptotypes.PubKey)
 	if !ok {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "Expecting crypto.PubKey, got %T", pk)
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "expecting cryptotypes.PubKey, got %T", pk)
 	}
 
-	// The way things are refactored now, v.ConsensusPubkey is sometimes a TM
-	// ed25519 pubkey, sometimes our own ed25519 pubkey. This is very ugly and
-	// inconsistent.
-	// Luckily, here we coerce it into a TM ed25519 pubkey always, as this
-	// pubkey will be passed into TM (eg calling encoding.PubKeyToProto).
-	if intoTmPk, ok := pk.(types.IntoTmPubKey); ok {
-		return intoTmPk.AsTmPubKey(), nil
+	return pk, nil
+}
+
+// TmConsPubKey casts Validator.ConsensusPubkey to crypto.PubKey
+func (v Validator) TmConsPubKey() (tmprotocrypto.PublicKey, error) {
+	pk, err := v.ConsPubKey()
+	if err != nil {
+		return tmprotocrypto.PublicKey{}, err
 	}
 
-	return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidPubKey, "Logic error: ConsensusPubkey must be an SDK key and SDK PubKey types must be convertible to tendermint PubKey; got: %T", pk)
+	tmPk, err := cryptocodec.ToTmProtoPublicKey(pk)
+	if err != nil {
+		return tmprotocrypto.PublicKey{}, err
+	}
+
+	return tmPk, nil
 }
 
 // ConsensusPower gets the consensus-engine power. Aa reduction of 10^6 from

@@ -3,6 +3,8 @@ package keeper
 import (
 	"fmt"
 
+	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
+
 	gogotypes "github.com/gogo/protobuf/types"
 
 	"github.com/tendermint/tendermint/crypto"
@@ -42,7 +44,7 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 }
 
 // AddPubkey sets a address-pubkey relation
-func (k Keeper) AddPubkey(ctx sdk.Context, pubkey crypto.PubKey) {
+func (k Keeper) AddPubkey(ctx sdk.Context, pubkey cryptotypes.PubKey) {
 	addr := pubkey.Address()
 
 	pkStr, err := sdk.Bech32ifyPubKey(sdk.Bech32PubKeyTypeConsPub, pubkey)
@@ -54,7 +56,7 @@ func (k Keeper) AddPubkey(ctx sdk.Context, pubkey crypto.PubKey) {
 }
 
 // GetPubkey returns the pubkey from the address-pubkey relation
-func (k Keeper) GetPubkey(ctx sdk.Context, address crypto.Address) (crypto.PubKey, error) {
+func (k Keeper) GetPubkey(ctx sdk.Context, address crypto.Address) (cryptotypes.PubKey, error) {
 	store := ctx.KVStore(k.storeKey)
 
 	relationKey := types.AddrPubkeyRelationKey(address)

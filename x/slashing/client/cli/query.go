@@ -46,10 +46,6 @@ $ <appd> query slashing signing-info cosmosvalconspub1zcjduepqfhvwcmt7p06fvdgexx
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
-			if err != nil {
-				return err
-			}
 
 			queryClient := types.NewQueryClient(clientCtx)
 
@@ -65,7 +61,7 @@ $ <appd> query slashing signing-info cosmosvalconspub1zcjduepqfhvwcmt7p06fvdgexx
 				return err
 			}
 
-			return clientCtx.PrintOutput(&res.ValSigningInfo)
+			return clientCtx.PrintProto(&res.ValSigningInfo)
 		},
 	}
 
@@ -86,10 +82,6 @@ $ <appd> query slashing signing-infos
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
-			if err != nil {
-				return err
-			}
 
 			queryClient := types.NewQueryClient(clientCtx)
 
@@ -109,7 +101,7 @@ $ <appd> query slashing signing-infos
 				return err
 			}
 
-			return clientCtx.PrintOutput(res)
+			return clientCtx.PrintProto(res)
 		},
 	}
 
@@ -131,10 +123,6 @@ $ <appd> query slashing params
 `),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
-			if err != nil {
-				return err
-			}
 
 			queryClient := types.NewQueryClient(clientCtx)
 
@@ -144,7 +132,7 @@ $ <appd> query slashing params
 				return err
 			}
 
-			return clientCtx.PrintOutput(&res.Params)
+			return clientCtx.PrintProto(&res.Params)
 		},
 	}
 

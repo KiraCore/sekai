@@ -40,10 +40,6 @@ $ <appd> tx slashing activate --from mykey
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
-			if err != nil {
-				return err
-			}
 
 			valAddr := clientCtx.GetFromAddress()
 
@@ -73,10 +69,6 @@ $ <appd> tx slashing pause --from mykey
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
-			if err != nil {
-				return err
-			}
 
 			valAddr := clientCtx.GetFromAddress()
 
@@ -106,10 +98,6 @@ $ <appd> tx slashing unpause --from mykey
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
-			if err != nil {
-				return err
-			}
 
 			valAddr := clientCtx.GetFromAddress()
 
