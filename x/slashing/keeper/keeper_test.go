@@ -46,9 +46,47 @@ func TestHandleNewValidator(t *testing.T) {
 	require.Equal(t, int64(1), info.MissedBlocksCounter)
 	require.Equal(t, time.Unix(0, 0).UTC(), info.InactiveUntil)
 
-	// validator should be bonded still, should not have been jailed or slashed
+	// validator should be active still, should not have been inactivated
 	validator, _ := app.CustomStakingKeeper.GetValidatorByConsAddr(ctx, sdk.GetConsAddress(val))
 	require.Equal(t, stakingtypes.Active, validator.GetStatus())
+}
+
+// Test an missed block counter changes
+func TestMissedBlockCounter(t *testing.T) {
+	app := simapp.Setup(false)
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+
+	addrDels := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(200))
+	valAddrs := simapp.ConvertAddrsToValAddrs(addrDels)
+	pks := simapp.CreateTestPubKeys(1)
+	addr, val := valAddrs[0], pks[0]
+	tstaking := teststaking.NewHelper(t, ctx, app.CustomStakingKeeper, app.CustomGovKeeper)
+	ctx = ctx.WithBlockHeight(app.CustomSlashingKeeper.SignedBlocksWindow(ctx) + 1)
+
+	// Validator created
+	tstaking.CreateValidator(addr, val, true)
+
+	staking.EndBlocker(ctx, app.CustomStakingKeeper)
+
+	// Now a validator, for two blocks
+	app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), 100, true)
+	ctx = ctx.WithBlockHeight(app.CustomSlashingKeeper.SignedBlocksWindow(ctx) + 2)
+	app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), 100, false)
+
+	info, found := app.CustomSlashingKeeper.GetValidatorSigningInfo(ctx, sdk.ConsAddress(val.Address()))
+	require.True(t, found)
+	require.Equal(t, int64(1), info.MissedBlocksCounter)
+
+	height := ctx.BlockHeight() + 1
+	for i := int64(0); i < 10; i++ {
+		ctx = ctx.WithBlockHeight(height + i)
+		app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), 100, false)
+	}
+	ctx = ctx.WithBlockHeight(height + 10)
+	app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), 100, true)
+	info, found = app.CustomSlashingKeeper.GetValidatorSigningInfo(ctx, sdk.ConsAddress(val.Address()))
+	require.True(t, found)
+	require.Equal(t, int64(0), info.MissedBlocksCounter)
 }
 
 // Test an inactivated validator being "down" twice

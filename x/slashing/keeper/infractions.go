@@ -38,15 +38,18 @@ func (k Keeper) HandleValidatorSignature(ctx sdk.Context, addr crypto.Address, p
 	missed := !signed
 	switch {
 	case !previous && missed:
-		// Array value has changed from not missed to missed, increment counter
+		// Array value has changed from not missed to missed
 		k.SetValidatorMissedBlockBitArray(ctx, consAddr, index, true)
-		signInfo.MissedBlocksCounter++
 	case previous && !missed:
-		// Array value has changed from missed to not missed, decrement counter
+		// Array value has changed from missed to not missed
 		k.SetValidatorMissedBlockBitArray(ctx, consAddr, index, false)
-		signInfo.MissedBlocksCounter--
 	default:
 		// Array value at this index has not changed, no need to update counter
+	}
+	if missed { // increment counter
+		signInfo.MissedBlocksCounter++
+	} else { // set counter to 0
+		signInfo.MissedBlocksCounter = 0
 	}
 
 	if missed {
