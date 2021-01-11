@@ -6,7 +6,6 @@ import (
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/tendermint/tendermint/crypto"
 	tmprotocrypto "github.com/tendermint/tendermint/proto/tendermint/crypto"
 )
 
@@ -40,7 +39,7 @@ func NewValidator(moniker string, website string, social string,
 
 // UnpackInterfaces implements UnpackInterfacesMessage.UnpackInterfaces
 func (v Validator) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
-	var pubkey crypto.PubKey
+	var pubkey cryptotypes.PubKey
 	return unpacker.UnpackAny(v.PubKey, &pubkey)
 }
 
@@ -65,16 +64,6 @@ func (v Validator) Validate() error {
 	return nil
 }
 
-// GetConsPubKey returns the validator PubKey as a cryptotypes.PubKey.
-func (v Validator) GetConsPubKey() crypto.PubKey {
-	pk, ok := v.PubKey.GetCachedValue().(crypto.PubKey)
-	if !ok {
-		panic("invalid key")
-	}
-
-	return pk
-}
-
 // GetConsAddr extracts Consensus key address
 func (v Validator) GetConsAddr() sdk.ConsAddress {
 	return sdk.ConsAddress(v.GetConsPubKey().Address())
@@ -93,6 +82,16 @@ func (v Validator) IsPaused() bool {
 // IsActive returns if validator is active
 func (v Validator) IsActive() bool {
 	return v.Status == Active
+}
+
+// GetConsPubKey returns the validator PubKey as a cryptotypes.PubKey.
+func (v Validator) GetConsPubKey() cryptotypes.PubKey {
+	pk, ok := v.PubKey.GetCachedValue().(cryptotypes.PubKey)
+	if !ok {
+		panic("invalid key")
+	}
+
+	return pk
 }
 
 // ConsPubKey returns the validator PubKey as a cryptotypes.PubKey.
