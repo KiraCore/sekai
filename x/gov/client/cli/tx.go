@@ -126,11 +126,7 @@ func GetTxSetWhitelistPermissions() *cobra.Command {
 		Use:   "whitelist-permission",
 		Short: "Whitelists permission into an address",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
-			if err != nil {
-				return err
-			}
+			clientCtx, err := client.GetClientTxContext(cmd)
 
 			perm, err := cmd.Flags().GetUint32(FlagPermission)
 			if err != nil {
@@ -165,8 +161,7 @@ func GetTxSetBlacklistPermissions() *cobra.Command {
 		Use:   "blacklist-permission",
 		Short: "Blacklist permission into an address",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
@@ -205,11 +200,11 @@ func GetTxSetNetworkProperties() *cobra.Command {
 		Use:   "set-network-properties",
 		Short: "Set network properties",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
+
 			minTxFee, err := cmd.Flags().GetUint64(FlagMinTxFee)
 			if err != nil {
 				return fmt.Errorf("invalid minimum tx fee")
@@ -244,8 +239,7 @@ func GetTxWhitelistRolePermission() *cobra.Command {
 		Short: "Whitelist role permission",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
@@ -282,11 +276,11 @@ func GetTxSetExecutionFee() *cobra.Command {
 		Use:   "set-execution-fee",
 		Short: "Set execution fee",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
+
 			execName, err := cmd.Flags().GetString(FlagExecName)
 			if err != nil {
 				return fmt.Errorf("invalid execution name")
@@ -344,8 +338,7 @@ func GetTxBlacklistRolePermission() *cobra.Command {
 		Short: "Blacklist role permissions",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
@@ -382,8 +375,7 @@ func GetTxRemoveWhitelistRolePermission() *cobra.Command {
 		Short: "Remove whitelist role permissions",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
@@ -420,8 +412,7 @@ func GetTxRemoveBlacklistRolePermission() *cobra.Command {
 		Short: "Remove blacklist role permissions",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
@@ -458,8 +449,7 @@ func GetTxCreateRole() *cobra.Command {
 		Short: "Create new role",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
@@ -490,8 +480,7 @@ func GetTxAssignRole() *cobra.Command {
 		Short: "Assign new role",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
@@ -507,7 +496,7 @@ func GetTxAssignRole() *cobra.Command {
 			}
 
 			msg := types.NewMsgAssignRole(
-				clientCtx.FromAddress,
+				clientCtx.GetFromAddress(),
 				addr,
 				uint32(role),
 			)
@@ -531,8 +520,7 @@ func GetTxRemoveRole() *cobra.Command {
 		Short: "Remove role",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
@@ -584,15 +572,14 @@ func GetTxProposalSetNetworkProperty() *cobra.Command {
 		`,
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
 			property, ok := types.NetworkProperty_value[args[0]]
 			if !ok {
-				return fmt.Errorf("invalid network property name: %w", err)
+				return fmt.Errorf("invalid network property name: %s", args[0])
 			}
 
 			value, err := strconv.Atoi(args[1])
@@ -623,8 +610,7 @@ func GetTxProposalAssignPermission() *cobra.Command {
 		Short: "Create a proposal to assign a permission to an address.",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
@@ -664,8 +650,7 @@ func GetTxProposalUpsertDataRegistry() *cobra.Command {
 		Short: "Upsert a key in the data registry",
 		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
@@ -707,8 +692,7 @@ func GetTxVoteProposal() *cobra.Command {
 		Short: "Vote a proposal.",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
@@ -766,8 +750,7 @@ func GetTxClaimCouncilorSeatCmd() *cobra.Command {
 		Use:   "claim-seat",
 		Short: "Claim councilor seat",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}

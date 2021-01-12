@@ -7,8 +7,6 @@ import (
 
 	govkeeper "github.com/KiraCore/sekai/x/gov/keeper"
 
-	"github.com/tendermint/tendermint/crypto/encoding"
-
 	"github.com/KiraCore/sekai/middleware"
 	"github.com/KiraCore/sekai/x/staking/keeper"
 	"github.com/KiraCore/sekai/x/staking/types"
@@ -107,14 +105,9 @@ func (am AppModule) InitGenesis(
 			panic(err)
 		}
 
-		pk, err := encoding.PubKeyToProto(consPk)
-		if err != nil {
-			panic(err)
-		}
-
 		valUpdate[i] = abci.ValidatorUpdate{
 			Power:  1,
-			PubKey: pk,
+			PubKey: consPk,
 		}
 
 		// Call the creation hook if not exported

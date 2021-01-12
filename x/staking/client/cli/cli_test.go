@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"testing"
 
+	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
+
 	"github.com/stretchr/testify/suite"
-	"github.com/tendermint/tendermint/crypto"
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
@@ -92,7 +93,7 @@ func (s *IntegrationTestSuite) TestQueryValidator() {
 	s.Require().Equal(sdk.NewDec(1), respValidator.Commission)
 	s.Require().Equal(val.ValAddress, respValidator.ValKey)
 
-	var pubkey crypto.PubKey
+	var pubkey cryptotypes.PubKey
 	err = s.cfg.Codec.UnpackAny(respValidator.PubKey, &pubkey)
 	s.Require().NoError(err)
 	s.Require().Equal(val.PubKey, pubkey)

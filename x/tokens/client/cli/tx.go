@@ -49,11 +49,7 @@ func GetTxUpsertTokenAliasCmd() *cobra.Command {
 		Use:   "upsert-alias",
 		Short: "Upsert token alias",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
-			if err != nil {
-				return err
-			}
+			clientCtx, err := client.GetClientTxContext(cmd)
 
 			symbol, err := cmd.Flags().GetString(FlagSymbol)
 			if err != nil {
@@ -123,11 +119,7 @@ func GetTxProposalUpsertTokenAliasCmd() *cobra.Command {
 		Use:   "proposal-upsert-alias",
 		Short: "Creates an Upsert token alias",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
-			if err != nil {
-				return err
-			}
+			clientCtx, err := client.GetClientTxContext(cmd)
 
 			symbol, err := cmd.Flags().GetString(FlagSymbol)
 			if err != nil {
@@ -182,11 +174,7 @@ func GetTxProposalUpsertTokenRatesCmd() *cobra.Command {
 		Use:   "proposal-upsert-rate",
 		Short: "Creates an Upsert token rate",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
-			if err != nil {
-				return err
-			}
+			clientCtx, err := client.GetClientTxContext(cmd)
 
 			denom, err := cmd.Flags().GetString(FlagDenom)
 			if err != nil {
@@ -243,11 +231,7 @@ func GetTxUpsertTokenRateCmd() *cobra.Command {
 		Use:   "upsert-rate",
 		Short: "Upsert token rate",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
-			if err != nil {
-				return err
-			}
+			clientCtx, err := client.GetClientTxContext(cmd)
 
 			denom, err := cmd.Flags().GetString(FlagDenom)
 			if err != nil {

@@ -19,7 +19,7 @@ import (
 
 // Proposal flags
 const (
-	flagVoter        = "voter"
+	flagVoter = "voter"
 )
 
 // GetCmdQueryPermissions the query delegation command.
@@ -29,10 +29,6 @@ func GetCmdQueryPermissions() *cobra.Command {
 		Short: "Get the permissions of an address",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
-			if err != nil {
-				return err
-			}
 
 			accAddr, err := sdk.AccAddressFromBech32(args[0])
 			if err != nil {
@@ -47,7 +43,7 @@ func GetCmdQueryPermissions() *cobra.Command {
 				return err
 			}
 
-			return clientCtx.PrintOutput(res.Permissions)
+			return clientCtx.PrintProto(res.Permissions)
 		},
 	}
 
@@ -63,10 +59,6 @@ func GetCmdQueryRolesByAddress() *cobra.Command {
 		Short: "Get the roles assigned to an address",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
-			if err != nil {
-				return err
-			}
 
 			accAddr, err := sdk.AccAddressFromBech32(args[0])
 			if err != nil {
@@ -81,7 +73,7 @@ func GetCmdQueryRolesByAddress() *cobra.Command {
 				return err
 			}
 
-			return clientCtx.PrintOutput(res)
+			return clientCtx.PrintProto(res)
 		},
 	}
 
@@ -97,10 +89,6 @@ func GetCmdQueryRolePermissions() *cobra.Command {
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
-			if err != nil {
-				return err
-			}
 
 			roleNum, err := strconv.ParseUint(args[0], 10, 64)
 			if err != nil {
@@ -117,7 +105,7 @@ func GetCmdQueryRolePermissions() *cobra.Command {
 				return err
 			}
 
-			return clientCtx.PrintOutput(res.Permissions)
+			return clientCtx.PrintProto(res.Permissions)
 		},
 	}
 
@@ -134,17 +122,14 @@ func GetCmdQueryNetworkProperties() *cobra.Command {
 		Args:  cobra.MinimumNArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
-			if err != nil {
-				return err
-			}
+
 			params := &types.NetworkPropertiesRequest{}
 			queryClient := types.NewQueryClient(clientCtx)
 			res, err := queryClient.GetNetworkProperties(context.Background(), params)
 			if err != nil {
 				return err
 			}
-			return clientCtx.PrintOutput(res)
+			return clientCtx.PrintProto(res)
 		},
 	}
 
@@ -161,10 +146,7 @@ func GetCmdQueryExecutionFee() *cobra.Command {
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
-			if err != nil {
-				return err
-			}
+
 			params := &types.ExecutionFeeRequest{
 				TransactionType: args[0],
 			}
@@ -174,7 +156,7 @@ func GetCmdQueryExecutionFee() *cobra.Command {
 				return err
 			}
 
-			return clientCtx.PrintOutput(res)
+			return clientCtx.PrintProto(res)
 		},
 	}
 
@@ -188,10 +170,6 @@ func GetCmdQueryCouncilRegistry() *cobra.Command {
 		Short: "Query the governance registry.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
-			if err != nil {
-				return err
-			}
 
 			addr, err := cmd.Flags().GetString(FlagAddress)
 			if err != nil {
@@ -230,7 +208,7 @@ func GetCmdQueryCouncilRegistry() *cobra.Command {
 				}
 			}
 
-			return clientCtx.PrintOutput(&res.Councilor)
+			return clientCtx.PrintProto(&res.Councilor)
 		},
 	}
 
@@ -269,10 +247,6 @@ $ %s query gov proposals --voter cosmos1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
 			}
 
 			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
-			if err != nil {
-				return err
-			}
 			queryClient := types.NewQueryClient(clientCtx)
 
 			res, err := queryClient.Proposals(
@@ -289,7 +263,7 @@ $ %s query gov proposals --voter cosmos1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
 				return fmt.Errorf("no proposals found")
 			}
 
-			return clientCtx.PrintOutput(res)
+			return clientCtx.PrintProto(res)
 		},
 	}
 
@@ -317,10 +291,7 @@ $ %s query gov proposal 1
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
-			if err != nil {
-				return err
-			}
+
 			queryClient := types.NewQueryClient(clientCtx)
 
 			// validate that the proposal id is a uint
@@ -338,7 +309,7 @@ $ %s query gov proposal 1
 				return err
 			}
 
-			return clientCtx.PrintOutput(&res.Proposal)
+			return clientCtx.PrintProto(&res.Proposal)
 		},
 	}
 
@@ -365,10 +336,7 @@ $ %s query gov vote 1 kira1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
-			if err != nil {
-				return err
-			}
+
 			queryClient := types.NewQueryClient(clientCtx)
 
 			// validate that the proposal id is a uint
@@ -399,7 +367,7 @@ $ %s query gov vote 1 kira1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
 				return err
 			}
 
-			return clientCtx.PrintOutput(&res.Vote)
+			return clientCtx.PrintProto(&res.Vote)
 		},
 	}
 
@@ -425,10 +393,7 @@ $ %[1]s query gov votes 1
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
-			if err != nil {
-				return err
-			}
+
 			queryClient := types.NewQueryClient(clientCtx)
 
 			// validate that the proposal id is a uint
@@ -446,7 +411,7 @@ $ %[1]s query gov votes 1
 				return err
 			}
 
-			return clientCtx.PrintOutput(res)
+			return clientCtx.PrintProto(res)
 
 		},
 	}
@@ -473,10 +438,6 @@ $ %[1]s query gov voters 1
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
-			if err != nil {
-				return err
-			}
 			queryClient := types.NewQueryClient(clientCtx)
 
 			// validate that the proposal id is a uint
@@ -494,7 +455,7 @@ $ %[1]s query gov voters 1
 				return err
 			}
 
-			return clientCtx.PrintOutput(res)
+			return clientCtx.PrintProto(res)
 
 		},
 	}
