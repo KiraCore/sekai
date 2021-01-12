@@ -18,4 +18,5 @@ const (
 	QueryKiraFunctions     = "/api/kira/metadata"
 	Download               = "/download"
 	DataReferenceRegistry  = "DRR"
+	QueryValidators        = "/api/validators"
 )

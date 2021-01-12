@@ -8,6 +8,7 @@ require (
 	github.com/KiraCore/sekai v0.0.0-20200823002648-c9c157f71380
 	github.com/cosmos/cosmos-sdk v0.40.0-rc4
 	github.com/gofrs/uuid v3.2.0+incompatible
+	github.com/gogo/protobuf v1.3.1
 	github.com/golang/protobuf v1.4.3
 	github.com/gorilla/mux v1.8.0
 	github.com/grpc-ecosystem/grpc-gateway v1.15.2
@@ -18,6 +19,7 @@ require (
 	github.com/juju/fslock v0.0.0-20160525022230-4d5c94c67b4b
 	github.com/nightlyone/lockfile v1.0.0
 	github.com/rakyll/statik v0.1.7
+	github.com/regen-network/cosmos-proto v0.3.0
 	github.com/rs/cors v1.7.0
 	github.com/sonyarouje/simdb v0.0.0-20181202125413-c2488dfc374a
 	github.com/tendermint/tendermint v0.34.0-rc6
