@@ -71,4 +71,11 @@ message Validator {
   google.protobuf.Any pub_key = 7
   [(cosmos_proto.accepts_interface) = "cosmos.crypto.PubKey", (gogoproto.moretags) = "yaml:\"pub_key\""];
   ValidatorStatus status = 8;
+
+  // To judge validator performance a streak and rank properties should be created (as part of each validator status data). The streak would imply consecutive number of times that given validator managed to successfully propose a block (since the last time he failed) that was accepted into the blockchain state. The streak property should be zeroed every time validator misses to propose a block and the mischance property is incremented.
+  // The rank property should be set to rank = MIN(MAX(rank, streak),rank+streak) every time a streak is larger than rank. Every time a mischance is incremented rank should be decremented by X. Every time node status changes to inactive the rank should be decremented by Y. Finally, every time a node is paused a rank should be decremented by Z.
+  // Parameters X (default 10), Y (default 100), Z (default 1), with the appropriate naming schemes should be configurable within the Network Properties Registry.
+  // The streak and rank will enable governance to judge real life performance of validators on the mainnet or testnet, and potentially propose eviction of the weakest and least reliable operators.
+  int64 rank = 9;
+  int64 streak = 10;
 }

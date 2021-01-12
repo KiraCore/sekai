@@ -112,6 +112,15 @@ message NetworkProperties {
   uint64 proposal_end_time = 4;
   uint64 proposal_enactment_time = 5;
   bool enable_foreign_fee_payments = 6;
+
+  // Every time a mischance is incremented rank should be decremented by X.
+  // Every time node status changes to inactive the rank should be decremented by Y.
+  // Finally, every time a node is paused a rank should be decremented by Z.
+  // Parameters X (default 10), Y (default 100), Z (default 1)
+  // with the appropriate naming schemes should be configurable within the Network Properties Registry.
+  uint64 mischance_rank_decrease_amount = 7; // X (default 10)
+  uint64 inactive_rank_decrease_amount = 8; // Y (default 100)
+  uint64 pause_rank_decrease_amount = 9; // Z (default 1)
 }
 
 message ExecutionFee {
