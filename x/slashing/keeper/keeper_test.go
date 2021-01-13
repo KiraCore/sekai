@@ -52,7 +52,7 @@ func TestHandleNewValidator(t *testing.T) {
 }
 
 // Test an missed block counter changes
-func TestMissedBlockCounter(t *testing.T) {
+func TestMissedBlockAndRankStreakCounter(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 
@@ -60,6 +60,7 @@ func TestMissedBlockCounter(t *testing.T) {
 	valAddrs := simapp.ConvertAddrsToValAddrs(addrDels)
 	pks := simapp.CreateTestPubKeys(1)
 	addr, val := valAddrs[0], pks[0]
+	valAddr := sdk.ValAddress(addr)
 	tstaking := teststaking.NewHelper(t, ctx, app.CustomStakingKeeper, app.CustomGovKeeper)
 	ctx = ctx.WithBlockHeight(app.CustomSlashingKeeper.SignedBlocksWindow(ctx) + 1)
 
@@ -72,6 +73,10 @@ func TestMissedBlockCounter(t *testing.T) {
 	app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), 100, true)
 	ctx = ctx.WithBlockHeight(app.CustomSlashingKeeper.SignedBlocksWindow(ctx) + 2)
 	app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), 100, false)
+
+	v := tstaking.CheckValidator(valAddr, stakingtypes.Active, false)
+	require.Equal(t, v.Rank, int64(0))
+	require.Equal(t, v.Streak, int64(0))
 
 	info, found := app.CustomSlashingKeeper.GetValidatorSigningInfo(ctx, sdk.ConsAddress(val.Address()))
 	require.True(t, found)
@@ -87,6 +92,33 @@ func TestMissedBlockCounter(t *testing.T) {
 	info, found = app.CustomSlashingKeeper.GetValidatorSigningInfo(ctx, sdk.ConsAddress(val.Address()))
 	require.True(t, found)
 	require.Equal(t, int64(0), info.MissedBlocksCounter)
+
+	v = tstaking.CheckValidator(valAddr, stakingtypes.Active, false)
+	require.Equal(t, v.Rank, int64(1))
+	require.Equal(t, v.Streak, int64(1))
+
+	// sign 100 blocks successfully
+	height = ctx.BlockHeight() + 1
+	for i := int64(0); i < 100; i++ {
+		ctx = ctx.WithBlockHeight(height + i)
+		app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), 100, true)
+	}
+
+	v = tstaking.CheckValidator(valAddr, stakingtypes.Active, false)
+	require.Equal(t, v.Rank, int64(101))
+	require.Equal(t, v.Streak, int64(101))
+
+	// miss one block
+	ctx = ctx.WithBlockHeight(height + 100)
+	app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), 100, false)
+	v = tstaking.CheckValidator(valAddr, stakingtypes.Active, false)
+	require.Equal(t, v.Rank, int64(91))
+	require.Equal(t, v.Streak, int64(0))
+
+	app.CustomStakingKeeper.Inactivate(ctx, valAddr)
+	v = tstaking.CheckValidator(valAddr, stakingtypes.Inactive, true)
+	require.Equal(t, v.Rank, int64(45))
+	require.Equal(t, v.Streak, int64(0))
 }
 
 // Test an inactivated validator being "down" twice
