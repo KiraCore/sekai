@@ -119,6 +119,17 @@ func TestMissedBlockAndRankStreakCounter(t *testing.T) {
 	v = tstaking.CheckValidator(valAddr, stakingtypes.Inactive, true)
 	require.Equal(t, v.Rank, int64(45))
 	require.Equal(t, v.Streak, int64(0))
+
+	app.CustomStakingKeeper.Activate(ctx, valAddr)
+	// miss 5 blocks
+	height = ctx.BlockHeight() + 1
+	for i := int64(0); i < 5; i++ {
+		ctx = ctx.WithBlockHeight(height + i)
+		app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), 100, false)
+	}
+	v = tstaking.CheckValidator(valAddr, stakingtypes.Active, false)
+	require.Equal(t, v.Rank, int64(0))
+	require.Equal(t, v.Streak, int64(0))
 }
 
 // Test an inactivated validator being "down" twice
