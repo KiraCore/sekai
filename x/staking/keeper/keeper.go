@@ -10,14 +10,15 @@ import (
 
 // Keeper represents the keeper that maintains the Validator Registry.
 type Keeper struct {
-	storeKey sdk.StoreKey
-	cdc      *codec.LegacyAmino
-	hooks    types.StakingHooks
+	storeKey  sdk.StoreKey
+	cdc       *codec.LegacyAmino
+	hooks     types.StakingHooks
+	govkeeper types.GovKeeper
 }
 
 // NewKeeper returns new keeper.
-func NewKeeper(storeKey sdk.StoreKey, cdc *codec.LegacyAmino) Keeper {
-	return Keeper{storeKey: storeKey, cdc: cdc}
+func NewKeeper(storeKey sdk.StoreKey, cdc *codec.LegacyAmino, govkeeper types.GovKeeper) Keeper {
+	return Keeper{storeKey: storeKey, cdc: cdc, govkeeper: govkeeper}
 }
 
 // BondDenom returns the denom that is basically used for fee payment

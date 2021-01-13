@@ -190,9 +190,9 @@ func NewSimApp(
 	// set the BaseApp's parameter store
 	bApp.SetParamStore(app.ParamsKeeper.Subspace(baseapp.Paramspace).WithKeyTable(paramskeeper.ConsensusParamsKeyTable()))
 
-	customStakingKeeper := keeper.NewKeeper(keys[customstakingtypes.ModuleName], legacyAmino)
-	app.CustomSlashingKeeper = customslashingkeeper.NewKeeper(appCodec, keys[customslashingtypes.ModuleName], &customStakingKeeper, app.GetSubspace(customslashingtypes.ModuleName))
 	app.CustomGovKeeper = customgovkeeper.NewKeeper(keys[customgovtypes.ModuleName], appCodec)
+	customStakingKeeper := keeper.NewKeeper(keys[customstakingtypes.ModuleName], legacyAmino, app.CustomGovKeeper)
+	app.CustomSlashingKeeper = customslashingkeeper.NewKeeper(appCodec, keys[customslashingtypes.ModuleName], &customStakingKeeper, app.GetSubspace(customslashingtypes.ModuleName))
 	app.TokensKeeper = tokenskeeper.NewKeeper(keys[tokenstypes.ModuleName], appCodec)
 	app.CustomStakingKeeper = *customStakingKeeper.SetHooks(
 		customstakingtypes.NewMultiStakingHooks(app.CustomSlashingKeeper.Hooks()),

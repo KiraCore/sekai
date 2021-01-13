@@ -28,12 +28,14 @@ func DefaultGenesis() *GenesisState {
 		},
 		StartingProposalId: 1,
 		NetworkProperties: &NetworkProperties{
-			MinTxFee:                 100,
-			MaxTxFee:                 1000000,
-			VoteQuorum:               33,
-			ProposalEndTime:          1, // 1min
-			ProposalEnactmentTime:    2, // 2min
-			EnableForeignFeePayments: true,
+			MinTxFee:                    100,
+			MaxTxFee:                    1000000,
+			VoteQuorum:                  33,
+			ProposalEndTime:             1, // 1min
+			ProposalEnactmentTime:       2, // 2min
+			EnableForeignFeePayments:    true,
+			MischanceRankDecreaseAmount: 10,
+			InactiveRankDecreasePercent: 50, // 50%
 		},
 		ExecutionFees: []*ExecutionFee{
 			{

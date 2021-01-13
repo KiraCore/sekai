@@ -35,10 +35,38 @@ func (k Keeper) Inactivate(ctx sdk.Context, valAddress sdk.ValAddress) error { /
 		return customstakingtypes.ErrValidatorPaused
 	}
 
+	networkProperties := k.govkeeper.GetNetworkProperties(ctx)
 	validator.Status = customstakingtypes.Inactive
+	validator.Rank = validator.Rank * int64(100-networkProperties.InactiveRankDecreasePercent) / 100
+
 	k.AddValidator(ctx, validator)
 	k.addRemovingValidator(ctx, validator)
 
+	return nil
+}
+
+// HandleValidatorSignature manage rank and streak by block miss / sign result
+func (k Keeper) HandleValidatorSignature(ctx sdk.Context, valAddress sdk.ValAddress, missed bool) error {
+	validator, err := k.GetValidator(ctx, valAddress)
+	if err != nil {
+		return err
+	}
+	networkProperties := k.govkeeper.GetNetworkProperties(ctx)
+	if missed {
+		// set validator streak by 0 and decrease rank by X
+		validator.Streak = 0
+		validator.Rank -= int64(networkProperties.MischanceRankDecreaseAmount)
+		if validator.Rank < 0 {
+			validator.Rank = 0
+		}
+	} else {
+		// increase streak and reset rank if streak is higher than rank
+		validator.Streak++
+		if validator.Streak > validator.Rank {
+			validator.Rank = validator.Streak
+		}
+	}
+	k.AddValidator(ctx, validator)
 	return nil
 }
 
