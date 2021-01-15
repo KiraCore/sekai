@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"strings"
+
 	"github.com/KiraCore/sekai/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -27,4 +29,20 @@ func (k Keeper) GetDataRegistryEntry(ctx sdk.Context, key string) (types.DataReg
 	k.cdc.MustUnmarshalBinaryBare(bz, &na)
 
 	return na, true
+}
+
+// ListDataRegistryEntry returns all keys of data registry
+func (k Keeper) ListDataRegistryEntry(ctx sdk.Context) []string {
+	var keys []string
+
+	// get iterator for token aliases
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, DataRegistryPrefix)
+
+	for ; iterator.Valid(); iterator.Next() {
+		key := strings.TrimPrefix(string(iterator.Key()), string(DataRegistryPrefix))
+		keys = append(keys, key)
+	}
+
+	return keys
 }

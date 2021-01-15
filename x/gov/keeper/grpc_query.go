@@ -140,3 +140,15 @@ func (q Querier) Votes(ctx context.Context, request *types.QueryVotesRequest) (*
 	votes := q.keeper.GetProposalVotes(sdkContext, request.ProposalId)
 	return &types.QueryVotesResponse{Votes: votes}, nil
 }
+
+// GetAllDataReferenceKeys queries all data reference keys with pagination
+func (q Querier) GetAllDataReferenceKeys(ctx context.Context, request *types.QueryDataReferenceKeysRequest) (*types.QueryDataReferenceKeysResponse, error) {
+	sdkContext := sdk.UnwrapSDKContext(ctx)
+	return q.keeper.GetAllDataReferenceKeys(sdkContext, request)
+}
+
+// GetDataReferenceByKey queries data reference by key
+func (q Querier) GetDataReferenceByKey(ctx context.Context, request *types.QueryDataReferenceRequest) (*types.QueryDataReferenceResponse, error) {
+	sdkContext := sdk.UnwrapSDKContext(ctx)
+	return q.keeper.GetDataReferenceByKey(sdkContext, request)
+}

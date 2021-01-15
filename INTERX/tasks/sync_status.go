@@ -7,21 +7,16 @@ import (
 	"strconv"
 	"time"
 
-	common "github.com/KiraCore/sekai/INTERX/common"
+	"github.com/KiraCore/sekai/INTERX/common"
 	interx "github.com/KiraCore/sekai/INTERX/config"
-	database "github.com/KiraCore/sekai/INTERX/database"
+	"github.com/KiraCore/sekai/INTERX/database"
 )
 
-// NodeStatus is a struct to be used for node status
-var NodeStatus struct {
-	Chainid   string `json:"chain_id"`
-	Block     int64  `json:"block"`
-	Blocktime string `json:"block_time"`
-}
-
 func getStatus(rpcAddr string) {
-	resp, err := http.Get(fmt.Sprintf("%s/block", rpcAddr))
+	url := fmt.Sprintf("%s/block", rpcAddr)
+	resp, err := http.Get(url)
 	if err != nil {
+		common.GetLogger().Error("[node-status] Unable to connect to ", url)
 		return
 	}
 	defer resp.Body.Close()
@@ -43,28 +38,32 @@ func getStatus(rpcAddr string) {
 
 	result := new(RPCTempResponse)
 	if json.NewDecoder(resp.Body).Decode(result) != nil {
+		common.GetLogger().Error("[node-status] Unexpected response: ", url)
 		return
 	}
 
 	common.Mutex.Lock()
-	NodeStatus.Chainid = result.Result.Block.Header.Chainid
-	NodeStatus.Block, _ = strconv.ParseInt(result.Result.Block.Header.Height, 10, 64)
-	NodeStatus.Blocktime = result.Result.Block.Header.Time
+	common.NodeStatus.Chainid = result.Result.Block.Header.Chainid
+	common.NodeStatus.Block, _ = strconv.ParseInt(result.Result.Block.Header.Height, 10, 64)
+	common.NodeStatus.Blocktime = result.Result.Block.Header.Time
 	common.Mutex.Unlock()
 
 	// save block height/time
-	t, _ := time.Parse(time.RFC3339, NodeStatus.Blocktime)
-	database.AddBlockTime(NodeStatus.Block, t.Unix())
+	t, _ := time.Parse(time.RFC3339, common.NodeStatus.Blocktime)
+	database.AddBlockTime(common.NodeStatus.Block, t.Unix())
 }
 
 // SyncStatus is a function for syncing sekaid status.
-func SyncStatus(rpcAddr string) {
+func SyncStatus(rpcAddr string, isLog bool) {
 	for {
 		getStatus(rpcAddr)
-		fmt.Println("\nsync node status	: ")
-		fmt.Println("	chain id	: ", NodeStatus.Chainid)
-		fmt.Println("	block		: ", NodeStatus.Block)
-		fmt.Println("	blocktime	: ", NodeStatus.Blocktime)
+
+		if isLog {
+			common.GetLogger().Info("[node-status] Syncing node status")
+			common.GetLogger().Info("[node-status] Chain_id = ", common.NodeStatus.Chainid)
+			common.GetLogger().Info("[node-status] Block = ", common.NodeStatus.Block)
+			common.GetLogger().Info("[node-status] Blocktime = ", common.NodeStatus.Blocktime)
+		}
 
 		time.Sleep(time.Duration(interx.Config.StatusSync) * time.Second)
 	}
