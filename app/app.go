@@ -211,10 +211,10 @@ func NewInitApp(
 
 	// create evidence keeper with router
 	evidenceKeeper := evidencekeeper.NewKeeper(
-		appCodec, keys[evidencetypes.StoreKey], &app.StakingKeeper, app.SlashingKeeper,
+		appCodec, keys[evidencetypes.StoreKey], &app.customStakingKeeper, app.customSlashingKeeper,
 	)
 	// If evidence needs to be handled for the app, set routes in router here and seal
-	app.EvidenceKeeper = *evidenceKeeper
+	app.evidenceKeeper = *evidenceKeeper
 
 	/****  Module Options ****/
 
@@ -238,7 +238,7 @@ func NewInitApp(
 		)),
 		tokens.NewAppModule(app.tokensKeeper, app.customGovKeeper),
 		feeprocessing.NewAppModule(app.feeprocessingKeeper),
-		evidence.NewAppModule(app.EvidenceKeeper),
+		evidence.NewAppModule(app.evidenceKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -284,7 +284,7 @@ func NewInitApp(
 		bank.NewAppModule(appCodec, app.bankKeeper, app.accountKeeper),
 		customslashing.NewAppModule(appCodec, app.customSlashingKeeper, app.accountKeeper, app.bankKeeper, app.customStakingKeeper),
 		params.NewAppModule(app.paramsKeeper),
-		evidence.NewAppModule(app.EvidenceKeeper),
+		evidence.NewAppModule(app.evidenceKeeper),
 	)
 
 	app.sm.RegisterStoreDecoders()

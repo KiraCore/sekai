@@ -5,7 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/cosmos/cosmos-sdk/x/evidence/types"
+	"github.com/KiraCore/sekai/x/evidence/types"
 )
 
 // HandleEquivocationEvidence implements an equivocation evidence handler. Assuming the
@@ -63,8 +63,8 @@ func (k Keeper) HandleEquivocationEvidence(ctx sdk.Context, evidence *types.Equi
 		}
 	}
 
-	validator := k.stakingKeeper.ValidatorByConsAddr(ctx, consAddr)
-	if validator == nil || validator.IsUnbonded() {
+	validator, err := k.stakingKeeper.GetValidatorByConsAddr(ctx, consAddr)
+	if err != nil || validator.IsInactivated() {
 		// Defensive: Simulation doesn't take unbonding periods into account, and
 		// Tendermint might break this assumption at some point.
 		return

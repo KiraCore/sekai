@@ -5,8 +5,8 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/simapp"
 
-	"github.com/cosmos/cosmos-sdk/x/evidence/exported"
-	"github.com/cosmos/cosmos-sdk/x/evidence/types"
+	"github.com/KiraCore/sekai/x/evidence/exported"
+	"github.com/KiraCore/sekai/x/evidence/types"
 
 	abci "github.com/tendermint/tendermint/abci/types"
 )

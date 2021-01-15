@@ -3,10 +3,10 @@ package keeper_test
 import (
 	"fmt"
 
+	"github.com/KiraCore/sekai/x/evidence/exported"
+	"github.com/KiraCore/sekai/x/evidence/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	"github.com/cosmos/cosmos-sdk/x/evidence/exported"
-	"github.com/cosmos/cosmos-sdk/x/evidence/types"
 
 	tmbytes "github.com/tendermint/tendermint/libs/bytes"
 )

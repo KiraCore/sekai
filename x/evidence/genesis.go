@@ -5,11 +5,11 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 
+	"github.com/KiraCore/sekai/x/evidence/exported"
+	"github.com/KiraCore/sekai/x/evidence/keeper"
+	"github.com/KiraCore/sekai/x/evidence/types"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/evidence/exported"
-	"github.com/cosmos/cosmos-sdk/x/evidence/keeper"
-	"github.com/cosmos/cosmos-sdk/x/evidence/types"
 )
 
 // InitGenesis initializes the evidence module's state from a provided genesis

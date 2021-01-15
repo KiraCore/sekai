@@ -1,8 +1,8 @@
 package cli
 
 import (
+	"github.com/KiraCore/sekai/x/evidence/types"
 	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/x/evidence/types"
 
 	"github.com/spf13/cobra"
 )

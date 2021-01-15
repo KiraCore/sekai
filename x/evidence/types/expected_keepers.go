@@ -3,16 +3,16 @@ package types
 import (
 	"time"
 
+	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
 
 type (
 	// StakingKeeper defines the staking module interface contract needed by the
 	// evidence module.
 	StakingKeeper interface {
-		ValidatorByConsAddr(sdk.Context, sdk.ConsAddress) stakingtypes.ValidatorI
+		GetValidatorByConsAddr(sdk.Context, sdk.ConsAddress) (stakingtypes.Validator, error)
 	}
 
 	// SlashingKeeper defines the slashing module interface contract needed by the

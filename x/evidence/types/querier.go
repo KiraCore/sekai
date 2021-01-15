@@ -2,8 +2,6 @@ package types
 
 import (
 	tmbytes "github.com/tendermint/tendermint/libs/bytes"
-
-	query "github.com/cosmos/cosmos-sdk/types/query"
 )
 
 // Querier routes for the evidence module
@@ -18,7 +16,7 @@ func NewQueryEvidenceRequest(hash tmbytes.HexBytes) *QueryEvidenceRequest {
 }
 
 // NewQueryAllEvidenceRequest creates a new instance of QueryAllEvidenceRequest.
-func NewQueryAllEvidenceRequest(pageReq *query.PageRequest) *QueryAllEvidenceRequest {
+func NewQueryAllEvidenceRequest(pageReq *PageRequest) *QueryAllEvidenceRequest {
 	return &QueryAllEvidenceRequest{Pagination: pageReq}
 }
 

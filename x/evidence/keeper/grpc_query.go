@@ -11,9 +11,9 @@ import (
 
 	proto "github.com/gogo/protobuf/proto"
 
+	"github.com/KiraCore/sekai/x/evidence/types"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/evidence/types"
 )
 
 var _ types.QueryServer = Keeper{}
@@ -61,7 +61,12 @@ func (k Keeper) AllEvidence(c context.Context, req *types.QueryAllEvidenceReques
 	store := ctx.KVStore(k.storeKey)
 	evidenceStore := prefix.NewStore(store, types.KeyPrefixEvidence)
 
-	pageRes, err := query.Paginate(evidenceStore, req.Pagination, func(key []byte, value []byte) error {
+	pageRes, err := query.Paginate(evidenceStore, &query.PageRequest{
+		Key:        req.Pagination.Key,
+		Offset:     req.Pagination.Offset,
+		Limit:      req.Pagination.Limit,
+		CountTotal: req.Pagination.CountTotal,
+	}, func(key []byte, value []byte) error {
 		result, err := k.UnmarshalEvidence(value)
 		if err != nil {
 			return err
@@ -84,5 +89,8 @@ func (k Keeper) AllEvidence(c context.Context, req *types.QueryAllEvidenceReques
 		return &types.QueryAllEvidenceResponse{}, err
 	}
 
-	return &types.QueryAllEvidenceResponse{Evidence: evidence, Pagination: pageRes}, nil
+	return &types.QueryAllEvidenceResponse{Evidence: evidence, Pagination: &types.PageResponse{
+		NextKey: pageRes.NextKey,
+		Total:   pageRes.Total,
+	}}, nil
 }
