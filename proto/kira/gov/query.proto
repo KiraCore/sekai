@@ -3,9 +3,12 @@ package kira.gov;
 
 import "actor.proto";
 import "councilor.proto";
+import "data_registry.proto";
+import "pagination.proto";
 import "role.proto";
 import "proposal.proto";
 import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/gov/types";
 
@@ -35,6 +38,14 @@ service Query {
   rpc Vote(QueryVoteRequest) returns (QueryVoteResponse) {}
   // Votes queries votes of a given proposal.
   rpc Votes(QueryVotesRequest) returns (QueryVotesResponse) {}
+  // Query all data reference keys with pagination.
+  rpc GetAllDataReferenceKeys(QueryDataReferenceKeysRequest) returns (QueryDataReferenceKeysResponse) {
+    option (google.api.http).get = "/kira/gov/data_keys";
+  }
+  // Query data reference by key.
+  rpc GetDataReferenceByKey(QueryDataReferenceRequest) returns (QueryDataReferenceResponse) {
+    option (google.api.http).get = "/kira/gov/data/{key}";
+  }
 }
 
 message NetworkPropertiesRequest {}
@@ -162,4 +173,25 @@ message QueryVotesRequest {
 message QueryVotesResponse {
   // votes defined the queried votes.
   repeated kira.gov.Vote votes = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryDataReferenceKeysRequest is the request type for data reference keys query.
+message QueryDataReferenceKeysRequest {
+  kira.gov.PageRequest pagination = 1 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
+}
+
+// QueryDataReferenceKeysResponse is the response type for data reference keys query.
+message QueryDataReferenceKeysResponse {
+  repeated string keys = 1;
+  kira.gov.PageResponse pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
+}
+
+// QueryDataReferenceRequest is the response type for data reference query.
+message QueryDataReferenceRequest {
+  string key = 1;
+}
+
+// QueryDataReferenceResponse is the response type for data referencequery.
+message QueryDataReferenceResponse {
+  kira.gov.DataRegistryEntry data = 1;
 }

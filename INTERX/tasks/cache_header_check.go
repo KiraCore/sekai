@@ -1,7 +1,6 @@
 package tasks
 
 import (
-	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -13,9 +12,9 @@ import (
 )
 
 // CacheHeaderCheck is a function to check cache headers if it's expired.
-func CacheHeaderCheck(rpcAddr string) {
+func CacheHeaderCheck(rpcAddr string, isLog bool) {
 	for {
-		err := filepath.Walk(interx.Config.CacheDir,
+		err := filepath.Walk(interx.GetResponseCacheDir(),
 			func(path string, info os.FileInfo, err error) error {
 				if err != nil {
 					return err
@@ -33,15 +32,19 @@ func CacheHeaderCheck(rpcAddr string) {
 					delete = true
 				}
 
-				if path != interx.Config.CacheDir && delete {
-					fmt.Println("deleting file ... ", path)
+				if path != interx.GetResponseCacheDir() && delete {
+					if isLog {
+						common.GetLogger().Info("[cache] Deleting file: ", path)
+					}
 
 					common.Mutex.Lock()
 					err := os.Remove(path)
 					common.Mutex.Unlock()
 
 					if err != nil {
-						fmt.Println("Error deleting file: ", err)
+						if isLog {
+							common.GetLogger().Error("[cache] Error deleting file: ", err)
+						}
 						return err
 					}
 
