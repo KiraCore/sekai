@@ -46,6 +46,9 @@ import (
 
 	customante "github.com/KiraCore/sekai/app/ante"
 	"github.com/KiraCore/sekai/middleware"
+	"github.com/KiraCore/sekai/x/evidence"
+	evidencekeeper "github.com/KiraCore/sekai/x/evidence/keeper"
+	evidencetypes "github.com/KiraCore/sekai/x/evidence/types"
 	"github.com/KiraCore/sekai/x/feeprocessing"
 	feeprocessingkeeper "github.com/KiraCore/sekai/x/feeprocessing/keeper"
 	feeprocessingtypes "github.com/KiraCore/sekai/x/feeprocessing/types"
@@ -80,6 +83,7 @@ var (
 		customslashing.AppModuleBasic{},
 		customstaking.AppModuleBasic{},
 		customgov.AppModuleBasic{},
+		evidence.AppModuleBasic{},
 		tokens.AppModuleBasic{},
 		feeprocessing.AppModuleBasic{},
 	)
@@ -118,6 +122,7 @@ type SekaiApp struct {
 	customGovKeeper      customgovkeeper.Keeper
 	tokensKeeper         tokenskeeper.Keeper
 	feeprocessingKeeper  feeprocessingkeeper.Keeper
+	evidenceKeeper       evidencekeeper.Keeper
 
 	// Module Manager
 	mm *module.Manager
@@ -162,6 +167,7 @@ func NewInitApp(
 		customgovtypes.ModuleName,
 		tokenstypes.ModuleName,
 		feeprocessingtypes.ModuleName,
+		evidencetypes.StoreKey,
 	)
 	tKeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 
@@ -203,6 +209,13 @@ func NewInitApp(
 
 	app.feeprocessingKeeper = feeprocessingkeeper.NewKeeper(keys[feeprocessingtypes.ModuleName], appCodec, app.bankKeeper, app.tokensKeeper, app.customGovKeeper)
 
+	// create evidence keeper with router
+	evidenceKeeper := evidencekeeper.NewKeeper(
+		appCodec, keys[evidencetypes.StoreKey], &app.StakingKeeper, app.SlashingKeeper,
+	)
+	// If evidence needs to be handled for the app, set routes in router here and seal
+	app.EvidenceKeeper = *evidenceKeeper
+
 	/****  Module Options ****/
 
 	// NOTE: Any module instantiated in the module manager that is later modified
@@ -225,6 +238,7 @@ func NewInitApp(
 		)),
 		tokens.NewAppModule(app.tokensKeeper, app.customGovKeeper),
 		feeprocessing.NewAppModule(app.feeprocessingKeeper),
+		evidence.NewAppModule(app.EvidenceKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -232,6 +246,7 @@ func NewInitApp(
 	// CanWithdrawInvariant invariant.
 	app.mm.SetOrderBeginBlockers(
 		upgradetypes.ModuleName,
+		evidencetypes.ModuleName,
 	)
 	app.mm.SetOrderEndBlockers(
 		customgovtypes.ModuleName,
@@ -251,6 +266,7 @@ func NewInitApp(
 		customgovtypes.ModuleName,
 		tokenstypes.ModuleName,
 		feeprocessingtypes.ModuleName,
+		evidencetypes.ModuleName,
 	)
 
 	app.mm.RegisterRoutes(app.Router(), app.QueryRouter(), encodingConfig.Amino)
@@ -268,6 +284,7 @@ func NewInitApp(
 		bank.NewAppModule(appCodec, app.bankKeeper, app.accountKeeper),
 		customslashing.NewAppModule(appCodec, app.customSlashingKeeper, app.accountKeeper, app.bankKeeper, app.customStakingKeeper),
 		params.NewAppModule(app.paramsKeeper),
+		evidence.NewAppModule(app.EvidenceKeeper),
 	)
 
 	app.sm.RegisterStoreDecoders()
