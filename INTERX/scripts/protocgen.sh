@@ -6,7 +6,8 @@ proto_dirs=$(find ./proto -path -prune -o -name '*.proto' -print0 | xargs -0 -n1
 
 for dir in $proto_dirs; do
 	protoc \
-		-I proto \
+		-I "./proto" \
+  		-I "$dir" \
 		-I third_party/grpc-gateway/ \
 		-I third_party/googleapis/ \
 		-I third_party/proto/ \
