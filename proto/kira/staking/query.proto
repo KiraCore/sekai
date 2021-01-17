@@ -2,7 +2,9 @@ syntax = "proto3";
 package kira.staking;
 
 import "staking.proto";
+import "kira/gov/pagination.proto";
 import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/staking/types";
 
@@ -13,6 +15,11 @@ service Query {
 
   // Validators queries a validator by moniker.
   rpc ValidatorByMoniker (ValidatorByMonikerRequest) returns (ValidatorResponse) {}
+
+  // Validators queries all validators by pagination
+  rpc Validators(ValidatorsRequest) returns (ValidatorsResponse) {
+    option (google.api.http).get = "/kira/staking/validators";
+  }
 }
 
 message ValidatorByAddressRequest {
@@ -28,4 +35,27 @@ message ValidatorByMonikerRequest {
 
 message ValidatorResponse {
   kira.staking.Validator validator = 1 [(gogoproto.nullable) = false];
+}
+
+// ValidatorsRequest is the request type for validators query.
+message ValidatorsRequest {
+  kira.gov.PageRequest pagination = 1 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
+}
+
+message QueryValidator {
+  option (gogoproto.equal)            = true;
+
+  string moniker = 1;
+  string website = 2;
+  string social = 3;
+  string identity = 4;
+  string commission = 5;
+  string val_key = 6;
+  string pub_key = 7;
+}
+
+// ValidatorsResponse is the response type for validators query.
+message ValidatorsResponse {
+  repeated QueryValidator validators = 1 [(gogoproto.nullable) = false];
+  kira.gov.PageResponse pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
 }
