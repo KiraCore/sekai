@@ -84,6 +84,11 @@ func (v Validator) IsActive() bool {
 	return v.Status == Active
 }
 
+// IsJailed returns if validator is jailed
+func (v Validator) IsJailed() bool {
+	return v.Status == Jailed
+}
+
 // GetConsPubKey returns the validator PubKey as a cryptotypes.PubKey.
 func (v Validator) GetConsPubKey() cryptotypes.PubKey {
 	pk, ok := v.PubKey.GetCachedValue().(cryptotypes.PubKey)
