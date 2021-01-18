@@ -90,6 +90,13 @@ func TestItRemovesFromTheValidatorSetWhenInRemovingQueue(t *testing.T) {
 				require.NoError(t, err)
 			},
 		},
+		{
+			name: "remove because it is jailed",
+			prepareFunc: func(app *simapp.SimApp, ctx types.Context, validator customstakingtypes.Validator) {
+				err := app.CustomStakingKeeper.Jail(ctx, validator.ValKey)
+				require.NoError(t, err)
+			},
+		},
 	}
 
 	for _, tt := range tests {
@@ -159,6 +166,20 @@ func TestItIncludesItBackToValidatorSetOnceReactivatingIt(t *testing.T) {
 			},
 			prepareFunc: func(app *simapp.SimApp, ctx types.Context, validator customstakingtypes.Validator) {
 				err := app.CustomStakingKeeper.Activate(ctx, validator.ValKey)
+				require.NoError(t, err)
+			},
+		},
+		{
+			name: "reactivating from jailed",
+			prepareDeactivation: func(app *simapp.SimApp, ctx types.Context, validator customstakingtypes.Validator) {
+				err := app.CustomStakingKeeper.Jail(ctx, validator.ValKey)
+				require.NoError(t, err)
+
+				// We end the block so the validator is paused
+				staking.EndBlocker(ctx, app.CustomStakingKeeper)
+			},
+			prepareFunc: func(app *simapp.SimApp, ctx types.Context, validator customstakingtypes.Validator) {
+				err := app.CustomStakingKeeper.Unjail(ctx, validator.ValKey)
 				require.NoError(t, err)
 			},
 		},

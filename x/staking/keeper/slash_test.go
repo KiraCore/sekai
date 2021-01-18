@@ -379,3 +379,57 @@ func TestJailValidator(t *testing.T) {
 	valKeys := app.CustomStakingKeeper.GetRemovingValidatorSet(ctx)
 	require.Len(t, valKeys, 1)
 }
+
+func TestValidatorUnjail_Errors(t *testing.T) {
+	tests := []struct {
+		name            string
+		expectedError   error
+		prepareScenario func(app *simapp.SimApp, ctx sdk.Context, validator types.Validator)
+	}{
+		{
+			name:          "validator does not exist",
+			expectedError: fmt.Errorf("validator not found"),
+			prepareScenario: func(app *simapp.SimApp, ctx sdk.Context, validator types.Validator) {
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			app := simapp.Setup(false)
+			ctx := app.NewContext(false, tmproto.Header{})
+
+			validators := createValidators(t, app, ctx, 1)
+			validator1 := validators[0]
+
+			tt.prepareScenario(app, ctx, validators[0])
+
+			err := app.CustomStakingKeeper.Unjail(ctx, validator1.GetValKey())
+			require.EqualError(t, err, tt.expectedError.Error())
+		})
+	}
+}
+
+func TestUnjailValidator(t *testing.T) {
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	validators := createValidators(t, app, ctx, 1)
+	validator1 := validators[0]
+
+	app.CustomStakingKeeper.AddValidator(ctx, validator1)
+	err := app.CustomStakingKeeper.Jail(ctx, validator1.ValKey)
+	require.NoError(t, err)
+
+	inactiveValidator, err := app.CustomStakingKeeper.GetValidator(ctx, validator1.ValKey)
+	require.NoError(t, err)
+	require.True(t, inactiveValidator.IsJailed())
+
+	err = app.CustomStakingKeeper.Unjail(ctx, validator1.ValKey)
+	require.NoError(t, err)
+
+	inactiveValidator, err = app.CustomStakingKeeper.GetValidator(ctx, validator1.ValKey)
+	require.NoError(t, err)
+	require.True(t, inactiveValidator.IsActive())
+}

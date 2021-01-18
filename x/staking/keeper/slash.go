@@ -111,8 +111,20 @@ func (k Keeper) Jail(ctx sdk.Context, valAddress sdk.ValAddress) error {
 	}
 
 	k.setStatusToValidator(ctx, validator, customstakingtypes.Jailed)
-
 	k.addRemovingValidator(ctx, validator)
+
+	return nil
+}
+
+// Unjail a validator
+func (k Keeper) Unjail(ctx sdk.Context, valAddress sdk.ValAddress) error {
+	validator, err := k.GetValidator(ctx, valAddress)
+	if err != nil {
+		return err
+	}
+
+	k.setStatusToValidator(ctx, validator, customstakingtypes.Active)
+	k.addReactivatingValidator(ctx, validator)
 
 	return nil
 }
