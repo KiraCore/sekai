@@ -1,7 +1,7 @@
 package config
 
 import (
-	"github.com/tendermint/tendermint/crypto"
+	crypto "github.com/cosmos/cosmos-sdk/crypto/types"
 )
 
 // FaucetConfig is a struct to be used for Faucet configuration

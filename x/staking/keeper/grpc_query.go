@@ -2,13 +2,13 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	"github.com/tendermint/tendermint/crypto/ed25519"
 
 	"github.com/KiraCore/sekai/x/staking/types"
 
@@ -57,22 +57,30 @@ func (q Querier) Validators(ctx context.Context, request *types.ValidatorsReques
 	}
 
 	store := sdk.UnwrapSDKContext(ctx).KVStore(q.keeper.storeKey)
-	validatorStore := prefix.NewStore(store, types.ValidatorsKey)
+	validatorStore := prefix.NewStore(store, ValidatorsKey)
 
 	var validators []types.QueryValidator
 
 	pageRes, err := query.Paginate(validatorStore, request.Pagination, func(key []byte, value []byte) error {
 		var validator types.Validator
 		q.keeper.cdc.MustUnmarshalBinaryBare(value, &validator)
-		pubkey, _ := sdk.Bech32ifyPubKey(sdk.Bech32PubKeyTypeValPub, ed25519.PubKey(validator.PubKey.Value))
+		consPubkey, _ := sdk.Bech32ifyPubKey(sdk.Bech32PubKeyTypeConsPub, validator.GetConsPubKey())
+		fmt.Println("GetConsPubKey", validator.GetConsPubKey().String())
+		fmt.Println("GetConsAddr", validator.GetConsAddr().String())
+
+		fmt.Println("Rank", validator.Rank)
 		validators = append(validators, types.QueryValidator{
+			Address:    sdk.AccAddress(validator.ValKey).String(),
+			ValKey:     validator.ValKey.String(),
+			PubKey:     consPubkey,
 			Moniker:    validator.Moniker,
 			Website:    validator.Website,
 			Social:     validator.Social,
 			Identity:   validator.Identity,
 			Commission: validator.Commission.String(),
-			ValKey:     validator.ValKey.String(),
-			PubKey:     pubkey,
+			Status:     validator.Status.String(),
+			Rank:       validator.Rank,
+			Streak:     validator.Streak,
 		})
 		return nil
 	})
@@ -81,6 +89,7 @@ func (q Querier) Validators(ctx context.Context, request *types.ValidatorsReques
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
+	fmt.Println("validators ========>", validators)
 	response := types.ValidatorsResponse{Validators: validators, Pagination: pageRes}
 
 	return &response, nil
