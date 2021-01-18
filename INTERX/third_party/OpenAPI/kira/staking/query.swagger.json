@@ -153,6 +153,15 @@
     "stakingQueryValidator": {
       "type": "object",
       "properties": {
+        "address": {
+          "type": "string"
+        },
+        "valKey": {
+          "type": "string"
+        },
+        "pubKey": {
+          "type": "string"
+        },
         "moniker": {
           "type": "string"
         },
@@ -168,11 +177,20 @@
         "commission": {
           "type": "string"
         },
-        "valKey": {
+        "status": {
           "type": "string"
         },
-        "pubKey": {
-          "type": "string"
+        "rank": {
+          "type": "string",
+          "format": "int64"
+        },
+        "streak": {
+          "type": "string",
+          "format": "int64"
+        },
+        "mischance": {
+          "type": "string",
+          "format": "int64"
         }
       }
     },

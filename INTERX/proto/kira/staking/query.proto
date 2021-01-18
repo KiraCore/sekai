@@ -43,13 +43,18 @@ message ValidatorsRequest {
 message QueryValidator {
   option (gogoproto.equal)            = true;
 
-  string moniker = 1;
-  string website = 2;
-  string social = 3;
-  string identity = 4;
-  string commission = 5;
-  string val_key = 6;
-  string pub_key = 7;
+  string address = 1;
+  string val_key = 2;
+  string pub_key = 3;
+  string moniker = 4;
+  string website = 5;
+  string social = 6;
+  string identity = 7;
+  string commission = 8;
+  string status = 9;
+  int64 rank = 10;
+  int64 streak = 11;
+  int64 mischance = 12;
 }
 
 // ValidatorsResponse is response type for the Query/Validators RPC method

@@ -42,55 +42,6 @@ func queryValidatorsHandle(r *http.Request, gwCosmosmux *runtime.ServeMux) (inte
 	fmt.Println(r.URL.RawQuery)
 
 	return common.ServeGRPC(r, gwCosmosmux)
-	// type ValidatorsResponse struct {
-	// 	Validators []struct {
-	// 		Address    string  `json:"address"`
-	// 		Valkey     string  `json:"valkey"`
-	// 		Pubkey     string  `json:"pubkey"`
-	// 		Moniker    string  `json:"moniker"`
-	// 		Website    string  `json:"website"`
-	// 		Social     string  `json:"social"`
-	// 		Identity   string  `json:"identity"`
-	// 		Commission sdk.Dec `json:"commission"`
-	// 		Status     string  `json:"status"`
-	// 		Rank       int64   `json:"rank"`
-	// 		Streak     int64   `json:"streak"`
-	// 		Mischance  int64   `json:"mischance"`
-	// 	} `json:"validators"`
-	// 	Pagination struct {
-	// 		NextKey []byte `protobuf:"bytes,1,opt,name=next_key,json=nextKey,proto3" json:"next_key,omitempty"`
-	// 		Total   uint64 `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"`
-	// 	} `json:"pagination"`
-	// }
-
-	// validatorsJSON := `{
-	// 	"validators": [
-	// 		{
-	// 			"address": "kira1lrh9pcmlnywlpphj8vtm0j0alhrrjwjsdxmjts",
-	// 			"valkey": "kiravaloper1lrh9pcmlnywlpphj8vtm0j0alhrrjwjs7q83nu",
-	// 			"pubkey": "kiravalconspub1zcjduepqm98ffgul4ppzzur6l67v3mj2vsyc7tr9nrzwk3e0ffx0z7l9sgsqnln467",
-	// 			"moniker": "hello",
-	// 			"website": "",
-	// 			"social": "social",
-	// 			"identity": "",
-	// 			"commission": "1.000000000000000000",
-	// 			"status": "active",
-	// 			"rank": 1,
-	// 			"streak": 1,
-	// 			"mischance": 1
-	// 		}
-	// 	],
-	// 	"pagination": {
-	// 		"total": 2
-	// 	}
-	// }`
-
-	// response := ValidatorsResponse{}
-	// if err := json.Unmarshal([]byte(validatorsJSON), &response); err != nil {
-	// 	panic(err)
-	// }
-
-	// return response, nil, http.StatusOK
 }
 
 // QueryValidators is a function to list validators.
