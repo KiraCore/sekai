@@ -109,7 +109,7 @@ func serveFaucet(r *http.Request, gwCosmosmux *runtime.ServeMux, request types.I
 		return common.ServeError(102, "", "invalid token", http.StatusBadRequest)
 	}
 
-	feeAmount, err := sdk.ParseCoin(coinStr)
+	feeAmount, err := sdk.ParseCoinNormalized(coinStr)
 
 	if err != nil {
 		common.GetLogger().Error("[faucet] Failed to parse fee amount from the configuration: ", coinStr)

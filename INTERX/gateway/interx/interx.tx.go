@@ -429,9 +429,9 @@ func queryTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw bool) 
 				var coin sdk.Coin
 				if v, found := evMap["withdraw_rewards"]; found && len(v) >= 2 {
 					if v[0].GetKey() == "amount" {
-						coin, _ = sdk.ParseCoin(v[0].Value)
+						coin, _ = sdk.ParseCoinNormalized(v[0].Value)
 					} else if v[1].GetKey() == "amount" {
-						coin, _ = sdk.ParseCoin(v[1].Value)
+						coin, _ = sdk.ParseCoinNormalized(v[1].Value)
 					}
 				}
 
