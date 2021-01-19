@@ -6,26 +6,47 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
+	"github.com/KiraCore/sekai/app"
+	"github.com/KiraCore/sekai/simapp"
+	"github.com/KiraCore/sekai/testutil/network"
 	"github.com/KiraCore/sekai/x/evidence/client/cli"
+	"github.com/cosmos/cosmos-sdk/baseapp"
+	servertypes "github.com/cosmos/cosmos-sdk/server/types"
+	"github.com/cosmos/cosmos-sdk/store/types"
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
-	testnet "github.com/cosmos/cosmos-sdk/testutil/network"
+	dbm "github.com/tendermint/tm-db"
 )
 
 type IntegrationTestSuite struct {
 	suite.Suite
 
-	cfg     testnet.Config
-	network *testnet.Network
+	cfg     network.Config
+	network *network.Network
 }
 
 func (s *IntegrationTestSuite) SetupSuite() {
+	app.SetConfig()
 	s.T().Log("setting up integration test suite")
 
-	cfg := testnet.DefaultConfig()
+	cfg := network.DefaultConfig()
+	encodingConfig := app.MakeEncodingConfig()
+	cfg.Codec = encodingConfig.Marshaler
+	cfg.TxConfig = encodingConfig.TxConfig
+
 	cfg.NumValidators = 1
 
+	cfg.AppConstructor = func(val network.Validator) servertypes.Application {
+		return app.NewInitApp(
+			val.Ctx.Logger, dbm.NewMemDB(), nil, true, make(map[int64]bool), val.Ctx.Config.RootDir, 0,
+			simapp.MakeEncodingConfig(),
+			simapp.EmptyAppOptions{},
+			baseapp.SetPruning(types.NewPruningOptionsFromString(val.AppConfig.Pruning)),
+			baseapp.SetMinGasPrices(val.AppConfig.MinGasPrices),
+		)
+	}
+
 	s.cfg = cfg
-	s.network = testnet.New(s.T(), cfg)
+	s.network = network.New(s.T(), cfg)
 
 	_, err := s.network.WaitForHeight(1)
 	s.Require().NoError(err)
