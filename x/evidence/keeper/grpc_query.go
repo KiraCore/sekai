@@ -61,29 +61,25 @@ func (k Keeper) AllEvidence(c context.Context, req *types.QueryAllEvidenceReques
 	store := ctx.KVStore(k.storeKey)
 	evidenceStore := prefix.NewStore(store, types.KeyPrefixEvidence)
 
-	pageRes, err := query.Paginate(evidenceStore, &query.PageRequest{
-		Key:        req.Pagination.Key,
-		Offset:     req.Pagination.Offset,
-		Limit:      req.Pagination.Limit,
-		CountTotal: req.Pagination.CountTotal,
-	}, func(key []byte, value []byte) error {
-		result, err := k.UnmarshalEvidence(value)
-		if err != nil {
-			return err
-		}
+	pageRes, err := query.Paginate(evidenceStore, types.SDKQueryPageReqFromCustomPageReq(req.Pagination),
+		func(key []byte, value []byte) error {
+			result, err := k.UnmarshalEvidence(value)
+			if err != nil {
+				return err
+			}
 
-		msg, ok := result.(proto.Message)
-		if !ok {
-			return status.Errorf(codes.Internal, "can't protomarshal %T", msg)
-		}
+			msg, ok := result.(proto.Message)
+			if !ok {
+				return status.Errorf(codes.Internal, "can't protomarshal %T", msg)
+			}
 
-		evidenceAny, err := codectypes.NewAnyWithValue(msg)
-		if err != nil {
-			return err
-		}
-		evidence = append(evidence, evidenceAny)
-		return nil
-	})
+			evidenceAny, err := codectypes.NewAnyWithValue(msg)
+			if err != nil {
+				return err
+			}
+			evidence = append(evidence, evidenceAny)
+			return nil
+		})
 
 	if err != nil {
 		return &types.QueryAllEvidenceResponse{}, err
