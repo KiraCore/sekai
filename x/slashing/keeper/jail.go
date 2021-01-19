@@ -17,7 +17,6 @@ func (k Keeper) Jail(ctx sdk.Context, consAddr sdk.ConsAddress) {
 			),
 		)
 
-		// TODO: should be modified to k.sk.Jail() function call
-		k.sk.Inactivate(ctx, validator.ValKey)
+		k.sk.Jail(ctx, validator.ValKey)
 	}
 }
