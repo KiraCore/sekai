@@ -14,7 +14,6 @@ type Evidence interface {
 
 	Route() string
 	Type() string
-	String() string
 	Hash() tmbytes.HexBytes
 	ValidateBasic() error
 
