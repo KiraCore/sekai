@@ -66,6 +66,9 @@ import (
 	"github.com/KiraCore/sekai/x/tokens"
 	tokenskeeper "github.com/KiraCore/sekai/x/tokens/keeper"
 	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
+	"github.com/KiraCore/sekai/x/evidence"
+	evidencekeeper "github.com/KiraCore/sekai/x/evidence/keeper"
+	evidencetypes "github.com/KiraCore/sekai/x/evidence/types"
 )
 
 const appName = "KiraSimApp"
@@ -89,6 +92,7 @@ var (
 		customgov.AppModuleBasic{},
 		tokens.AppModuleBasic{},
 		feeprocessing.AppModuleBasic{},
+		evidence.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -132,6 +136,7 @@ type SimApp struct {
 	CustomGovKeeper      customgovkeeper.Keeper
 	TokensKeeper         tokenskeeper.Keeper
 	FeeProcessingKeeper  feeprocessingkeeper.Keeper
+	EvidenceKeeper       evidencekeeper.Keeper
 
 	ProposalRouter customgov.ProposalRouter
 
@@ -172,6 +177,7 @@ func NewSimApp(
 		authtypes.StoreKey, banktypes.StoreKey, paramstypes.StoreKey,
 		customstakingtypes.ModuleName, customslashingtypes.ModuleName, customgovtypes.ModuleName,
 		customgovtypes.ModuleName, tokenstypes.ModuleName, feeprocessingtypes.ModuleName,
+		evidencetypes.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 
@@ -208,6 +214,13 @@ func NewSimApp(
 	app.UpgradeKeeper = upgradekeeper.NewKeeper(skipUpgradeHeights, keys[upgradetypes.StoreKey], appCodec, homePath)
 	app.FeeProcessingKeeper = feeprocessingkeeper.NewKeeper(keys[feeprocessingtypes.ModuleName], appCodec, app.BankKeeper, app.TokensKeeper, app.CustomGovKeeper)
 
+	// create evidence keeper with router
+	evidenceKeeper := evidencekeeper.NewKeeper(
+		appCodec, keys[evidencetypes.StoreKey], &app.CustomStakingKeeper, app.CustomSlashingKeeper,
+	)
+	// If evidence needs to be handled for the app, set routes in router here and seal
+	app.EvidenceKeeper = *evidenceKeeper
+
 	/****  Module Options ****/
 
 	// NOTE: Any module instantiated in the module manager that is later modified
@@ -230,6 +243,7 @@ func NewSimApp(
 		customgov.NewAppModule(app.CustomGovKeeper, app.ProposalRouter),
 		tokens.NewAppModule(app.TokensKeeper, app.CustomGovKeeper),
 		feeprocessing.NewAppModule(app.FeeProcessingKeeper),
+		evidence.NewAppModule(app.EvidenceKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -237,7 +251,7 @@ func NewSimApp(
 	// CanWithdrawInvariant invariant.
 	// NOTE: staking module is required if HistoricalEntries param > 0
 	app.mm.SetOrderBeginBlockers(
-		upgradetypes.ModuleName, customslashingtypes.ModuleName,
+		upgradetypes.ModuleName, customslashingtypes.ModuleName, evidencetypes.ModuleName,
 	)
 	app.mm.SetOrderEndBlockers(
 		customgovtypes.ModuleName,
@@ -253,7 +267,7 @@ func NewSimApp(
 	app.mm.SetOrderInitGenesis(
 		authtypes.ModuleName, banktypes.ModuleName, banktypes.ModuleName,
 		customgovtypes.ModuleName, customslashingtypes.ModuleName,
-		tokenstypes.ModuleName, feeprocessingtypes.ModuleName,
+		tokenstypes.ModuleName, feeprocessingtypes.ModuleName, evidencetypes.ModuleName,
 	)
 
 	app.mm.RegisterRoutes(app.Router(), app.QueryRouter(), encodingConfig.Amino)
@@ -270,6 +284,7 @@ func NewSimApp(
 		auth.NewAppModule(appCodec, app.AccountKeeper, authsims.RandomGenesisAccounts),
 		bank.NewAppModule(appCodec, app.BankKeeper, app.AccountKeeper),
 		params.NewAppModule(app.ParamsKeeper),
+		evidence.NewAppModule(app.EvidenceKeeper),
 	)
 
 	app.sm.RegisterStoreDecoders()

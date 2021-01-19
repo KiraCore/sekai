@@ -51,7 +51,7 @@ enum ValidatorStatus {
   // Paused status
   PAUSED = 3 [(gogoproto.enumvalue_customname) = "Paused"];
 
-  // Paused status
+  // Jailed status
   JAILED = 4 [(gogoproto.enumvalue_customname) = "Jailed"];
 }
 

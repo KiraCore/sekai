@@ -43,7 +43,7 @@ const (
 	Inactive ValidatorStatus = 2
 	// Paused status
 	Paused ValidatorStatus = 3
-	// Paused status
+	// Jailed status
 	Jailed ValidatorStatus = 4
 )
 
