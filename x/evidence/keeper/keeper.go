@@ -25,6 +25,7 @@ type Keeper struct {
 	slashingKeeper types.SlashingKeeper
 }
 
+// NewKeeper returns an instance of a keeper
 func NewKeeper(
 	cdc codec.BinaryMarshaler, storeKey sdk.StoreKey, stakingKeeper types.StakingKeeper,
 	slashingKeeper types.SlashingKeeper,
