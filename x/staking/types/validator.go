@@ -74,11 +74,6 @@ func (v Validator) IsInactivated() bool {
 	return v.Status == Inactive
 }
 
-// IsJailed returns if validator is jailed
-func (v Validator) IsJailed() bool {
-	return v.Status == Jailed
-}
-
 // IsPaused returns if validator is paused
 func (v Validator) IsPaused() bool {
 	return v.Status == Paused
