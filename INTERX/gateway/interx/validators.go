@@ -19,12 +19,17 @@ func RegisterValidatorsQueryRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux,
 
 func queryValidatorsHandle(r *http.Request, gwCosmosmux *runtime.ServeMux) (interface{}, interface{}, int) {
 	queries := r.URL.Query()
+	address := queries["address"]
+	valkey := queries["valkey"]
+	pubkey := queries["pubkey"]
+	moniker := queries["moniker"]
+	status := queries["status"]
 	key := queries["key"]
 	offset := queries["offset"]
 	limit := queries["limit"]
 	countTotal := queries["count_total"]
 
-	var events = make([]string, 0, 4)
+	var events = make([]string, 0, 9)
 	if len(key) == 1 {
 		events = append(events, fmt.Sprintf("pagination.key=%s", key[0]))
 	}
@@ -36,6 +41,21 @@ func queryValidatorsHandle(r *http.Request, gwCosmosmux *runtime.ServeMux) (inte
 	}
 	if len(countTotal) == 1 {
 		events = append(events, fmt.Sprintf("pagination.count_total=%s", countTotal[0]))
+	}
+	if len(address) == 1 {
+		events = append(events, fmt.Sprintf("address=%s", address[0]))
+	}
+	if len(valkey) == 1 {
+		events = append(events, fmt.Sprintf("valkey=%s", valkey[0]))
+	}
+	if len(pubkey) == 1 {
+		events = append(events, fmt.Sprintf("pubkey=%s", pubkey[0]))
+	}
+	if len(moniker) == 1 {
+		events = append(events, fmt.Sprintf("moniker=%s", moniker[0]))
+	}
+	if len(status) == 1 {
+		events = append(events, fmt.Sprintf("status=%s", status[0]))
 	}
 
 	r.URL.RawQuery = strings.Join(events, "&")
