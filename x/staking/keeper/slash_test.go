@@ -435,6 +435,8 @@ func TestUnjailValidator(t *testing.T) {
 	inactiveValidator, err := app.CustomStakingKeeper.GetValidator(ctx, validator1.ValKey)
 	require.NoError(t, err)
 	require.True(t, inactiveValidator.IsJailed())
+	_, found := app.CustomStakingKeeper.GetValidatorJailInfo(ctx, validator1.ValKey)
+	require.True(t, found)
 
 	err = app.CustomStakingKeeper.Unjail(ctx, validator1.ValKey)
 	require.NoError(t, err)
@@ -442,4 +444,6 @@ func TestUnjailValidator(t *testing.T) {
 	inactiveValidator, err = app.CustomStakingKeeper.GetValidator(ctx, validator1.ValKey)
 	require.NoError(t, err)
 	require.True(t, inactiveValidator.IsActive())
+	_, found = app.CustomStakingKeeper.GetValidatorJailInfo(ctx, validator1.ValKey)
+	require.False(t, found)
 }
