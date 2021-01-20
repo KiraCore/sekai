@@ -35,6 +35,36 @@
         },
         "parameters": [
           {
+            "name": "address",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "valkey",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "pubkey",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "moniker",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
             "name": "pagination.key",
             "description": "key is a value returned in PageResponse.next_key to begin\nquerying the next page most efficiently. Only one of offset or key\nshould be set.",
             "in": "query",
@@ -156,10 +186,10 @@
         "address": {
           "type": "string"
         },
-        "valKey": {
+        "valkey": {
           "type": "string"
         },
-        "pubKey": {
+        "pubkey": {
           "type": "string"
         },
         "moniker": {

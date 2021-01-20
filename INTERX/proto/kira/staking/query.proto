@@ -36,16 +36,22 @@ service Query {
 
 // ValidatorsRequest is the request type for the Query/AllValidators RPC method.
 message ValidatorsRequest {
+  string address = 1;
+  string valkey = 2;
+  string pubkey = 3;
+  string moniker = 4;
+  string status = 5;
+  
   // pagination defines an optional pagination for the request.
-  kira.staking.PageRequest pagination = 1 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
+  kira.staking.PageRequest pagination = 6 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
 }
 
 message QueryValidator {
   option (gogoproto.equal)            = true;
 
   string address = 1;
-  string val_key = 2;
-  string pub_key = 3;
+  string valkey = 2;
+  string pubkey = 3;
   string moniker = 4;
   string website = 5;
   string social = 6;
