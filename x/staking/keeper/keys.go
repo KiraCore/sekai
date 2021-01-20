@@ -48,3 +48,7 @@ func GetRemovingValidatorKey(operatorAddress sdk.ValAddress) []byte {
 func GetReactivatingValidatorKey(operatorAddress sdk.ValAddress) []byte {
 	return append(ReactivatingValidatorQueue, operatorAddress.Bytes()...)
 }
+
+func GetValidatorJailInfoKey(operatorAddress sdk.ValAddress) []byte {
+	return append(ValidatorJailInfo, operatorAddress.Bytes()...)
+}

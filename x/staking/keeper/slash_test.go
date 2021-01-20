@@ -3,6 +3,7 @@ package keeper_test
 import (
 	"fmt"
 	"testing"
+	"time"
 
 	"github.com/KiraCore/sekai/x/staking/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -362,8 +363,12 @@ func TestValidatorJail_Errors(t *testing.T) {
 }
 
 func TestJailValidator(t *testing.T) {
+	blockTime := time.Now()
+
 	app := simapp.Setup(false)
-	ctx := app.NewContext(false, tmproto.Header{})
+	ctx := app.NewContext(false, tmproto.Header{
+		Time: blockTime,
+	})
 
 	validators := createValidators(t, app, ctx, 1)
 	validator1 := validators[0]
@@ -378,6 +383,11 @@ func TestJailValidator(t *testing.T) {
 
 	valKeys := app.CustomStakingKeeper.GetRemovingValidatorSet(ctx)
 	require.Len(t, valKeys, 1)
+
+	// It saved the jailing info.
+	valInfo, found := app.CustomStakingKeeper.GetValidatorJailInfo(ctx, validator1.ValKey)
+	require.True(t, found)
+	require.True(t, valInfo.Time.Equal(blockTime))
 }
 
 func TestValidatorUnjail_Errors(t *testing.T) {

@@ -113,7 +113,30 @@ func (k Keeper) Jail(ctx sdk.Context, valAddress sdk.ValAddress) error {
 	k.setStatusToValidator(ctx, validator, customstakingtypes.Jailed)
 	k.addRemovingValidator(ctx, validator)
 
+	jailInfo := customstakingtypes.ValidatorJailInfo{
+		Time: ctx.BlockTime(),
+	}
+	bz := k.cdc.MustMarshalBinaryBare(jailInfo)
+	store := ctx.KVStore(k.storeKey)
+	store.Set(GetValidatorJailInfoKey(validator.ValKey), bz)
+
 	return nil
+}
+
+// GetValidatorJailInfo returns information about a jailed validor, found is false
+// if there is no validator, so a validator that is not jailed should return false.
+func (k Keeper) GetValidatorJailInfo(ctx sdk.Context, valAddress sdk.ValAddress) (customstakingtypes.ValidatorJailInfo, bool) {
+	store := ctx.KVStore(k.storeKey)
+
+	bz := store.Get(GetValidatorJailInfoKey(valAddress))
+	if bz == nil {
+		return customstakingtypes.ValidatorJailInfo{}, false
+	}
+
+	var info customstakingtypes.ValidatorJailInfo
+	k.cdc.MustUnmarshalBinaryBare(bz, &info)
+
+	return info, true
 }
 
 // Unjail a validator
