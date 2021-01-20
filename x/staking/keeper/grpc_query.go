@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -56,33 +57,62 @@ func (q Querier) Validators(ctx context.Context, request *types.ValidatorsReques
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
+	// validate the provided status, return all the validators if the status is empty
+	if request.Status != "" && !strings.EqualFold(request.Status, types.Active.String()) && !strings.EqualFold(request.Status, types.Inactive.String()) && !strings.EqualFold(request.Status, types.Paused.String()) {
+		return nil, status.Errorf(codes.InvalidArgument, "invalid validator status %s", request.Status)
+	}
+
 	store := sdk.UnwrapSDKContext(ctx).KVStore(q.keeper.storeKey)
 	validatorStore := prefix.NewStore(store, ValidatorsKey)
 
 	var validators []types.QueryValidator
 
-	pageRes, err := query.Paginate(validatorStore, request.Pagination, func(key []byte, value []byte) error {
-		var validator types.Validator
-		q.keeper.cdc.MustUnmarshalBinaryBare(value, &validator)
-		consPubkey, _ := sdk.Bech32ifyPubKey(sdk.Bech32PubKeyTypeConsPub, validator.GetConsPubKey())
-		fmt.Println("GetConsPubKey", validator.GetConsPubKey().String())
-		fmt.Println("GetConsAddr", validator.GetConsAddr().String())
+	pageRes, err := query.FilteredPaginate(validatorStore, request.Pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
+		var val types.Validator
+		err := q.keeper.cdc.UnmarshalBinaryBare(value, &val)
+		if err != nil {
+			return false, err
+		}
 
-		fmt.Println("Rank", validator.Rank)
-		validators = append(validators, types.QueryValidator{
-			Address:    sdk.AccAddress(validator.ValKey).String(),
-			ValKey:     validator.ValKey.String(),
-			PubKey:     consPubkey,
-			Moniker:    validator.Moniker,
-			Website:    validator.Website,
-			Social:     validator.Social,
-			Identity:   validator.Identity,
-			Commission: validator.Commission.String(),
-			Status:     validator.Status.String(),
-			Rank:       validator.Rank,
-			Streak:     validator.Streak,
-		})
-		return nil
+		consPubkey, _ := sdk.Bech32ifyPubKey(sdk.Bech32PubKeyTypeConsPub, val.GetConsPubKey())
+		validator := types.QueryValidator{
+			Address:    sdk.AccAddress(val.ValKey).String(),
+			Valkey:     val.ValKey.String(),
+			Pubkey:     consPubkey,
+			Moniker:    val.Moniker,
+			Website:    val.Website,
+			Social:     val.Social,
+			Identity:   val.Identity,
+			Commission: val.Commission.String(),
+			Status:     val.Status.String(),
+			Rank:       val.Rank,
+			Streak:     val.Streak,
+		}
+
+		if request.Status != "" && !strings.EqualFold(validator.Status, request.Status) {
+			return false, nil
+		}
+
+		if request.Address != "" && request.Address != validator.Address {
+			return false, nil
+		}
+
+		if request.Valkey != "" && request.Valkey != validator.Valkey {
+			return false, nil
+		}
+
+		if request.Pubkey != "" && request.Pubkey != validator.Pubkey {
+			return false, nil
+		}
+
+		if request.Moniker != "" && request.Moniker != validator.Moniker {
+			return false, nil
+		}
+
+		if accumulate {
+			validators = append(validators, validator)
+		}
+		return true, nil
 	})
 
 	if err != nil {
