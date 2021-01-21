@@ -17,6 +17,9 @@ const (
 	QueryDataReference     = "/api/kira/gov/data"
 	QueryKiraFunctions     = "/api/kira/metadata"
 	Download               = "/download"
-	DataReferenceRegistry  = "DRR"
 	QueryValidators        = "/api/valopers"
+	QueryGenesis           = "/api/genesis"
+	QueryGenesisSum        = "/api/gensum"
+
+	DataReferenceRegistry = "DRR"
 )
