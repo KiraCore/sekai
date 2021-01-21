@@ -89,6 +89,7 @@ func init() {
 		queryCommand(),
 		txCommand(),
 		keys.Commands(app.DefaultNodeHome),
+		GetValAddressFromAddressCmd(),
 	)
 }
 
@@ -108,6 +109,32 @@ func main() {
 
 func addModuleInitFlags(startCmd *cobra.Command) {
 	crisis.AddModuleInitFlags(startCmd)
+}
+
+// GetValAddressFromAddressCmd returns a ValAddress from general address, used for conversion
+func GetValAddressFromAddressCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "val-address [address]",
+		Short: "Get ValAddress from AccAddress",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+			key, err := sdk.AccAddressFromBech32(args[0])
+			if err != nil {
+				return err
+			}
+
+			valAddr := sdk.ValAddress(key)
+			return clientCtx.PrintString(valAddr.String())
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
 }
 
 func queryCommand() *cobra.Command {
