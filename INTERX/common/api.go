@@ -5,9 +5,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strconv"
 
 	"github.com/KiraCore/sekai/INTERX/database"
@@ -39,6 +41,28 @@ func MakeGetRequest(rpcAddr string, url string, query string) (interface{}, inte
 	}
 
 	return response.Result, response.Error, resp.StatusCode
+}
+
+// DownloadResponseToFile is a function to save GET response as a file
+func DownloadResponseToFile(rpcAddr string, url string, query string, filepath string) error {
+	endpoint := fmt.Sprintf("%s%s?%s", rpcAddr, url, query)
+	GetLogger().Info("[rpc-call] Entering rpc call: ", endpoint)
+
+	resp, err := http.Get(endpoint)
+	if err != nil {
+		GetLogger().Error("[rpc-call] Unable to connect to ", endpoint)
+		return err
+	}
+	defer resp.Body.Close()
+
+	fileout, _ := os.Create(filepath)
+	defer fileout.Close()
+
+	Mutex.Lock()
+	io.Copy(fileout, resp.Body)
+	Mutex.Unlock()
+
+	return err
 }
 
 func makePostRequest(r *http.Request) (*types.RPCResponse, error) {
