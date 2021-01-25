@@ -53,7 +53,7 @@ func saveGenesis(rpcAddr string) error {
 	common.Mutex.Lock()
 	err = genesis.Genesis.SaveAs(genesisPath)
 	common.Mutex.Unlock()
-	
+
 	return err
 }
 
