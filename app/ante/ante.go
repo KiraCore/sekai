@@ -3,6 +3,7 @@ package ante
 import (
 	"fmt"
 
+	kiratypes "github.com/KiraCore/sekai/types"
 	feeprocessingkeeper "github.com/KiraCore/sekai/x/feeprocessing/keeper"
 	customgovkeeper "github.com/KiraCore/sekai/x/gov/keeper"
 	customstakingkeeper "github.com/KiraCore/sekai/x/staking/keeper"
@@ -13,6 +14,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	"github.com/cosmos/cosmos-sdk/x/auth/signing"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
+	bank "github.com/cosmos/cosmos-sdk/x/bank/types"
 )
 
 // NewAnteHandler returns an AnteHandler that checks and increments sequence
@@ -41,6 +43,8 @@ func NewAnteHandler(
 		ante.NewSetPubKeyDecorator(ak), // SetPubKeyDecorator must be called before all signature verification decorators
 		ante.NewValidateSigCountDecorator(ak),
 		ante.NewDeductFeeDecorator(ak, fk),
+		// poor network management decorator
+		NewPoorNetworkManagementDecorator(ak, cgk, fk),
 		// custom execution fee consume decorator
 		NewExecutionFeeRegistrationDecorator(ak, cgk, fk),
 		ante.NewSigGasConsumeDecorator(ak, sigGasConsumer),
@@ -147,6 +151,62 @@ func (sgcd ExecutionFeeRegistrationDecorator) AnteHandle(ctx sdk.Context, tx sdk
 		fee := sgcd.cgk.GetExecutionFee(ctx, msg.Type())
 		if fee != nil { // execution fee exist
 			sgcd.fk.AddExecutionStart(ctx, msg)
+		}
+	}
+
+	return next(ctx, tx, simulate)
+}
+
+// PoorNetworkManagementDecorator register poor network manager
+type PoorNetworkManagementDecorator struct {
+	ak  keeper.AccountKeeper
+	cgk customgovkeeper.Keeper
+	fk  feeprocessingkeeper.Keeper
+}
+
+// NewPoorNetworkManagementDecorator returns instance of CustomExecutionFeeConsumeDecorator
+func NewPoorNetworkManagementDecorator(ak keeper.AccountKeeper, cgk customgovkeeper.Keeper, fk feeprocessingkeeper.Keeper) PoorNetworkManagementDecorator {
+	return PoorNetworkManagementDecorator{
+		ak,
+		cgk,
+		fk,
+	}
+}
+
+// AnteHandle handle NewPoorNetworkManagementDecorator
+func (pnmd PoorNetworkManagementDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
+	sigTx, ok := tx.(sdk.FeeTx)
+	if !ok {
+		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "invalid transaction type")
+	}
+
+	// TODO if not poor network, skip this process
+	// handle messages on poor network
+	for _, msg := range sigTx.GetMsgs() {
+		switch msg.Type() {
+		case bank.TypeMsgSend:
+			// on poor network, we introduce POOR_NETWORK_MAX_BANK_TX_SEND network property to limit transaction send amount
+			// TODO: we could do restriction to send only when target account does not exist on chain yet for more restriction
+		default:
+			// for msgs except BankSend, it's allowance is managed by governance allowed messages array
+		case kiratypes.MsgTypeProposalAssignPermission:
+		case kiratypes.MsgTypeProposalSetNetworkProperty:
+		case kiratypes.MsgTypeSetNetworkProperties:
+		case kiratypes.MsgTypeVoteProposal:
+		case kiratypes.MsgTypeClaimCouncilor:
+		case kiratypes.MsgTypeWhitelistPermissions:
+		case kiratypes.MsgTypeBlacklistPermissions:
+		case kiratypes.MsgTypeCreateRole:
+		case kiratypes.MsgTypeAssignRole:
+		case kiratypes.MsgTypeRemoveRole:
+		case kiratypes.MsgTypeWhitelistRolePermission:
+		case kiratypes.MsgTypeBlacklistRolePermission:
+		case kiratypes.MsgTypeRemoveWhitelistRolePermission:
+		case kiratypes.MsgTypeRemoveBlacklistRolePermission:
+		case kiratypes.MsgTypeClaimValidator:
+		case kiratypes.MsgTypeActivate:
+		case kiratypes.MsgTypePause:
+		case kiratypes.MsgTypeUnpause:
 		}
 	}
 

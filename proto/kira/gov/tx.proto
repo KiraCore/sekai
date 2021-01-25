@@ -7,6 +7,8 @@ import "actor.proto";
 import "councilor.proto";
 import "proposal.proto";
 import "role.proto";
+import "execution_fee.proto";
+import "network_properties.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/gov/types";
 
