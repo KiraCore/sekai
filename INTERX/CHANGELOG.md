@@ -11,3 +11,7 @@
 ### Added
 
 - Add mnemonic validation step.
+- Add query validators.
+- Add query validator by address, valley, pubkey, moniker and status.
+- Add query genesis, genesis-checksum.
+
