@@ -41,11 +41,37 @@ type CacheConfig struct {
 
 // InterxConfig is a struct to be used for interx configuration
 type InterxConfig struct {
-	Mnemonic string         `json:"mnemonic"`
-	PrivKey  crypto.PrivKey `json:"privkey"`
-	PubKey   crypto.PubKey  `json:"pubkey"`
-	Address  string         `json:"address"`
-	Cache    CacheConfig    `json:"cache"`
-	Faucet   FaucetConfig   `json:"faucet"`
-	RPC      RPCConfig      `json:"rpc"`
+	GRPC       string         `json:"grpc"`
+	RPC        string         `json:"rpc"`
+	PORT       string         `json:"port"`
+	Mnemonic   string         `json:"mnemonic"`
+	PrivKey    crypto.PrivKey `json:"privkey"`
+	PubKey     crypto.PubKey  `json:"pubkey"`
+	Address    string         `json:"address"`
+	Cache      CacheConfig    `json:"cache"`
+	Faucet     FaucetConfig   `json:"faucet"`
+	RPCMethods RPCConfig      `json:"rpc_methods"`
+}
+
+// InterxConfigFromFile is a struct to be used for interx configuration file
+type InterxConfigFromFile struct {
+	GRPC         string `json:"grpc"`
+	RPC          string `json:"rpc"`
+	PORT         string `json:"port"`
+	MnemonicFile string `json:"mnemonic"`
+	Cache        struct {
+		StatusSync                 int64  `json:"status_sync"`
+		CacheDir                   string `json:"cache_dir"`
+		MaxCacheSize               string `json:"max_cache_size"`
+		CachingDuration            int64  `json:"caching_duration"`
+		DownloadFileSizeLimitation string `json:"download_file_size_limitation"`
+	} `json:"cache"`
+	Faucet struct {
+		MnemonicFile         string            `json:"mnemonic"`
+		FaucetAmounts        map[string]int64  `json:"faucet_amounts"`
+		FaucetMinimumAmounts map[string]int64  `json:"faucet_minimum_amounts"`
+		FeeAmounts           map[string]string `json:"fee_amounts"`
+		TimeLimit            int64             `json:"time_limit"`
+	} `json:"faucet"`
+	RPCMethods RPCConfig `json:"rpc_methods"`
 }

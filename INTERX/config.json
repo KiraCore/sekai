@@ -1,4 +1,7 @@
 {
+    "grpc": "dns:///0.0.0.0:9090",
+    "rpc": "http://0.0.0.0:26657",
+    "port": "11000",
     "mnemonic": "interx.mnemonic",
     "cache": {
         "status_sync": 5,
@@ -26,7 +29,7 @@
         },
         "time_limit": 20
     },
-    "rpc": {
+    "rpc_methods": {
         "API": {
             "GET": {
                 "/api/cosmos/status": {

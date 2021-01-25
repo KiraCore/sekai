@@ -26,7 +26,7 @@ func (c ReferenceData) ID() (jsonField string, value interface{}) {
 func getReferenceDbDriver() *db.Driver {
 	driver, err := db.New(interx.GetDbCacheDir() + "ref")
 	if err != nil {
-		panic(err)
+		return nil
 	}
 
 	return driver
@@ -34,6 +34,10 @@ func getReferenceDbDriver() *db.Driver {
 
 // GetAllReferences is a function to get all references
 func GetAllReferences() ([]ReferenceData, error) {
+	if refDb == nil {
+		panic("cache dir not set")
+	}
+
 	DisableStdout()
 
 	var references []ReferenceData
@@ -46,6 +50,10 @@ func GetAllReferences() ([]ReferenceData, error) {
 
 // GetReference is a function to get reference by key
 func GetReference(key string) (ReferenceData, error) {
+	if refDb == nil {
+		panic("cache dir not set")
+	}
+
 	DisableStdout()
 
 	data := ReferenceData{}
@@ -58,6 +66,10 @@ func GetReference(key string) (ReferenceData, error) {
 
 // AddReference is a function to add reference
 func AddReference(key string, url string, contentLength int64, lastModified time.Time, filepath string) {
+	if refDb == nil {
+		panic("cache dir not set")
+	}
+
 	data := ReferenceData{
 		Key:           key,
 		URL:           url,
