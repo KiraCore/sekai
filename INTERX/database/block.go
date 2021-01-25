@@ -21,7 +21,7 @@ func (c BlockData) ID() (jsonField string, value interface{}) {
 func getBlockDbDriver() *db.Driver {
 	driver, err := db.New(interx.GetDbCacheDir() + "block")
 	if err != nil {
-		panic(err)
+		return nil
 	}
 
 	return driver
@@ -29,6 +29,10 @@ func getBlockDbDriver() *db.Driver {
 
 // GetBlockTime is a function to get blockTime
 func GetBlockTime(height int64) (int64, error) {
+	if blockDb == nil {
+		panic("cache dir not set")
+	}
+
 	DisableStdout()
 
 	data := BlockData{}
@@ -44,6 +48,10 @@ func GetBlockTime(height int64) (int64, error) {
 
 // AddBlockTime is a function to add blockTime
 func AddBlockTime(height int64, timestamp int64) {
+	if blockDb == nil {
+		panic("cache dir not set")
+	}
+
 	data := BlockData{
 		Height:    height,
 		Timestamp: timestamp,
