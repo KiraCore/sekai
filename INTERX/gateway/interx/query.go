@@ -18,7 +18,7 @@ func RegisterInterxQueryRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpc
 	r.HandleFunc(common.QueryStatus, QueryStatusRequest(rpcAddr)).Methods("GET")
 
 	common.AddRPCMethod("GET", common.QueryInterxFunctions, "This is an API to query interx functions.", true)
-	common.AddRPCMethod("GET", common.QueryStatus, "This is an API to query status.", true)
+	common.AddRPCMethod("GET", common.QueryStatus, "This is an API to query interx status.", true)
 }
 
 // QueryRPCMethods is a function to query RPC methods.
@@ -54,42 +54,27 @@ func QueryInterxFunctions(rpcAddr string) http.HandlerFunc {
 }
 
 func queryStatusHandle(rpcAddr string) (interface{}, interface{}, int) {
-	success, failure, status := common.MakeGetRequest(rpcAddr, "/status", "")
-
-	if success != nil {
-		type StatusTempResponse struct {
-			NodeInfo      interface{} `json:"node_info,omitempty"`
-			SyncInfo      interface{} `json:"sync_info,omitempty"`
-			ValidatorInfo interface{} `json:"validator_info,omitempty"`
-			InterxInfo    struct {
-				PubKey interface{} `json:"pub_key,omitempty"`
-			} `json:"interx_info,omitempty"`
-		}
-
-		result := StatusTempResponse{}
-		byteData, err := json.Marshal(success)
-		err = json.Unmarshal(byteData, &result)
-		if err != nil {
-			common.GetLogger().Error("[query-status] Invalid response format", err)
-			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
-		}
-
-		pubkeyBytes, err := interx.EncodingCg.Amino.MarshalJSON(interx.Config.PubKey)
-		if err != nil {
-			common.GetLogger().Error("[query-status] Failed to marshal interx pubkey", err)
-			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
-		}
-
-		err = json.Unmarshal(pubkeyBytes, &result.InterxInfo.PubKey)
-		if err != nil {
-			common.GetLogger().Error("[query-status] Failed to add interx pubkey to status response", err)
-			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
-		}
-
-		success = result
+	type StatusTempResponse struct {
+		InterxInfo struct {
+			PubKey interface{} `json:"pub_key,omitempty"`
+		} `json:"interx_info,omitempty"`
 	}
 
-	return success, failure, status
+	result := StatusTempResponse{}
+
+	pubkeyBytes, err := interx.EncodingCg.Amino.MarshalJSON(interx.Config.PubKey)
+	if err != nil {
+		common.GetLogger().Error("[query-status] Failed to marshal interx pubkey", err)
+		return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
+	}
+
+	err = json.Unmarshal(pubkeyBytes, &result.InterxInfo.PubKey)
+	if err != nil {
+		common.GetLogger().Error("[query-status] Failed to add interx pubkey to status response", err)
+		return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
+	}
+
+	return result, nil, http.StatusOK
 }
 
 // QueryStatusRequest is a function to query status.
