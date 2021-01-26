@@ -21,7 +21,10 @@ enum NetworkProperty {
     PROPOSAL_END_TIME = 3 [(gogoproto.enumvalue_customname) = "ProposalEndTime"];
     PROPOSAL_ENACTMENT_TIME = 4 [(gogoproto.enumvalue_customname) = "ProposalEnactmentTime"];
     ENABLE_FOREIGN_TX_FEE_PAYMENTS = 5 [(gogoproto.enumvalue_customname) = "EnableForeignFeePayments"];
-    POOR_NETWORK_MAX_BANK_SEND = 6 [(gogoproto.enumvalue_customname) = "PoorNetworkMaxBankSend"];
+    MISCHANCE_RANK_DECREASE_AMOUNT = 6 [(gogoproto.enumvalue_customname) = "MischanceRankDecreaseAmount"];
+    INACTIVE_RANK_DECREASE_PERCENT = 7 [(gogoproto.enumvalue_customname) = "InactiveRankDecreasePercent"];
+    POOR_NETWORK_MAX_BANK_SEND = 8 [(gogoproto.enumvalue_customname) = "PoorNetworkMaxBankSend"];
+    MIN_VALIDATORS = 9 [(gogoproto.enumvalue_customname) = "MinValidators"];
 }
   
 message NetworkProperties {
