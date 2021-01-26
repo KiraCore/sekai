@@ -119,5 +119,27 @@ func DefaultGenesis() *GenesisState {
 				DefaultParameters: 0,
 			},
 		},
+		PoorNetworkMessages: &AllowedMessages{
+			Messages: []string{
+				kiratypes.MsgTypeProposalAssignPermission,
+				kiratypes.MsgTypeProposalSetNetworkProperty,
+				kiratypes.MsgTypeSetNetworkProperties,
+				kiratypes.MsgTypeVoteProposal,
+				kiratypes.MsgTypeClaimCouncilor,
+				kiratypes.MsgTypeWhitelistPermissions,
+				kiratypes.MsgTypeBlacklistPermissions,
+				kiratypes.MsgTypeCreateRole,
+				kiratypes.MsgTypeAssignRole,
+				kiratypes.MsgTypeRemoveRole,
+				kiratypes.MsgTypeWhitelistRolePermission,
+				kiratypes.MsgTypeBlacklistRolePermission,
+				kiratypes.MsgTypeRemoveWhitelistRolePermission,
+				kiratypes.MsgTypeRemoveBlacklistRolePermission,
+				kiratypes.MsgTypeClaimValidator,
+				kiratypes.MsgTypeActivate,
+				kiratypes.MsgTypePause,
+				kiratypes.MsgTypeUnpause,
+			},
+		},
 	}
 }

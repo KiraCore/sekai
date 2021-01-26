@@ -153,6 +153,8 @@ func (am AppModule) InitGenesis(
 		am.customGovKeeper.SetExecutionFee(ctx, fee)
 	}
 
+	am.customGovKeeper.SavePoorNetworkMsgs(ctx, genesisState.PoorNetworkMessages)
+
 	return nil
 }
 
