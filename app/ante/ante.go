@@ -3,9 +3,9 @@ package ante
 import (
 	"fmt"
 
-	kiratypes "github.com/KiraCore/sekai/types"
 	feeprocessingkeeper "github.com/KiraCore/sekai/x/feeprocessing/keeper"
 	customgovkeeper "github.com/KiraCore/sekai/x/gov/keeper"
+	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 	customstakingkeeper "github.com/KiraCore/sekai/x/staking/keeper"
 	tokenskeeper "github.com/KiraCore/sekai/x/tokens/keeper"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -44,7 +44,7 @@ func NewAnteHandler(
 		ante.NewValidateSigCountDecorator(ak),
 		ante.NewDeductFeeDecorator(ak, fk),
 		// poor network management decorator
-		NewPoorNetworkManagementDecorator(ak, cgk, fk),
+		NewPoorNetworkManagementDecorator(ak, cgk, sk),
 		// custom execution fee consume decorator
 		NewExecutionFeeRegistrationDecorator(ak, cgk, fk),
 		ante.NewSigGasConsumeDecorator(ak, sigGasConsumer),
@@ -161,16 +161,25 @@ func (sgcd ExecutionFeeRegistrationDecorator) AnteHandle(ctx sdk.Context, tx sdk
 type PoorNetworkManagementDecorator struct {
 	ak  keeper.AccountKeeper
 	cgk customgovkeeper.Keeper
-	fk  feeprocessingkeeper.Keeper
+	csk customstakingkeeper.Keeper
 }
 
 // NewPoorNetworkManagementDecorator returns instance of CustomExecutionFeeConsumeDecorator
-func NewPoorNetworkManagementDecorator(ak keeper.AccountKeeper, cgk customgovkeeper.Keeper, fk feeprocessingkeeper.Keeper) PoorNetworkManagementDecorator {
+func NewPoorNetworkManagementDecorator(ak keeper.AccountKeeper, cgk customgovkeeper.Keeper, csk customstakingkeeper.Keeper) PoorNetworkManagementDecorator {
 	return PoorNetworkManagementDecorator{
 		ak,
 		cgk,
-		fk,
+		csk,
 	}
+}
+
+func findString(a []string, x string) int {
+	for i, n := range a {
+		if x == n {
+			return i
+		}
+	}
+	return -1
 }
 
 // AnteHandle handle NewPoorNetworkManagementDecorator
@@ -182,32 +191,20 @@ func (pnmd PoorNetworkManagementDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx
 
 	// TODO if not poor network, skip this process
 	// handle messages on poor network
+	poorNetworkMsgs, found := pnmd.cgk.GetPoorNetworkMsgs(ctx)
+	if !found {
+		poorNetworkMsgs = &customgovtypes.AllowedMessages{}
+	}
 	for _, msg := range sigTx.GetMsgs() {
-		switch msg.Type() {
-		case bank.TypeMsgSend:
+		if msg.Type() == bank.TypeMsgSend {
 			// on poor network, we introduce POOR_NETWORK_MAX_BANK_TX_SEND network property to limit transaction send amount
 			// TODO: we could do restriction to send only when target account does not exist on chain yet for more restriction
-		default:
-			// for msgs except BankSend, it's allowance is managed by governance allowed messages array
-		case kiratypes.MsgTypeProposalAssignPermission:
-		case kiratypes.MsgTypeProposalSetNetworkProperty:
-		case kiratypes.MsgTypeSetNetworkProperties:
-		case kiratypes.MsgTypeVoteProposal:
-		case kiratypes.MsgTypeClaimCouncilor:
-		case kiratypes.MsgTypeWhitelistPermissions:
-		case kiratypes.MsgTypeBlacklistPermissions:
-		case kiratypes.MsgTypeCreateRole:
-		case kiratypes.MsgTypeAssignRole:
-		case kiratypes.MsgTypeRemoveRole:
-		case kiratypes.MsgTypeWhitelistRolePermission:
-		case kiratypes.MsgTypeBlacklistRolePermission:
-		case kiratypes.MsgTypeRemoveWhitelistRolePermission:
-		case kiratypes.MsgTypeRemoveBlacklistRolePermission:
-		case kiratypes.MsgTypeClaimValidator:
-		case kiratypes.MsgTypeActivate:
-		case kiratypes.MsgTypePause:
-		case kiratypes.MsgTypeUnpause:
+			return next(ctx, tx, simulate)
 		}
+		if findString(poorNetworkMsgs.Messages, msg.Type()) >= 0 {
+			return next(ctx, tx, simulate)
+		}
+		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid transaction type on poor network")
 	}
 
 	return next(ctx, tx, simulate)
