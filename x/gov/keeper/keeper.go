@@ -85,6 +85,8 @@ func (k Keeper) SetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 			properties.EnableForeignFeePayments = true
 		}
 		properties.EnableForeignFeePayments = false
+	case types.PoorNetworkMaxBankSend:
+		properties.PoorNetworkMaxBankSend = value
 	default:
 		return errors.New("trying to set network property that does not exist")
 	}

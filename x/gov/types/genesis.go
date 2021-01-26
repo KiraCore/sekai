@@ -35,7 +35,8 @@ func DefaultGenesis() *GenesisState {
 			ProposalEnactmentTime:       2, // 2min
 			EnableForeignFeePayments:    true,
 			MischanceRankDecreaseAmount: 10,
-			InactiveRankDecreasePercent: 50, // 50%
+			InactiveRankDecreasePercent: 50,    // 50%
+			PoorNetworkMaxBankSend:      10000, // 10k ukex
 		},
 		ExecutionFees: []*ExecutionFee{
 			{
