@@ -189,7 +189,10 @@ func (pnmd PoorNetworkManagementDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx
 		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "invalid transaction type")
 	}
 
-	// TODO if not poor network, skip this process
+	// if not poor network, skip this process
+	if pnmd.csk.IsNetworkActive(ctx) {
+		next(ctx, tx, simulate)
+	}
 	// handle messages on poor network
 	poorNetworkMsgs, found := pnmd.cgk.GetPoorNetworkMsgs(ctx)
 	if !found {
@@ -198,6 +201,13 @@ func (pnmd PoorNetworkManagementDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx
 	for _, msg := range sigTx.GetMsgs() {
 		if msg.Type() == bank.TypeMsgSend {
 			// on poor network, we introduce POOR_NETWORK_MAX_BANK_TX_SEND network property to limit transaction send amount
+			msg := msg.(*bank.MsgSend)
+			if len(msg.Amount) > 1 || msg.Amount[0].Denom != pnmd.csk.BondDenom(ctx) {
+				return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "only bond denom is allowed on poor network")
+			}
+			if msg.Amount[0].Amount.Uint64() > pnmd.cgk.GetNetworkProperties(ctx).PoorNetworkMaxBankSend {
+				return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "only restricted amount send is allowed on poor network")
+			}
 			// TODO: we could do restriction to send only when target account does not exist on chain yet for more restriction
 			return next(ctx, tx, simulate)
 		}
