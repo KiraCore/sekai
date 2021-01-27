@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/KiraCore/sekai/INTERX/common"
-	interx "github.com/KiraCore/sekai/INTERX/config"
+	"github.com/KiraCore/sekai/INTERX/config"
 	functions "github.com/KiraCore/sekai/INTERX/functions"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
@@ -62,7 +62,7 @@ func queryStatusHandle(rpcAddr string) (interface{}, interface{}, int) {
 
 	result := StatusTempResponse{}
 
-	pubkeyBytes, err := interx.EncodingCg.Amino.MarshalJSON(interx.Config.PubKey)
+	pubkeyBytes, err := config.EncodingCg.Amino.MarshalJSON(config.Config.PubKey)
 	if err != nil {
 		common.GetLogger().Error("[query-status] Failed to marshal interx pubkey", err)
 		return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)

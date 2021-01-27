@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	"github.com/KiraCore/sekai/INTERX/common"
-	interx "github.com/KiraCore/sekai/INTERX/config"
+	"github.com/KiraCore/sekai/INTERX/config"
 	"github.com/KiraCore/sekai/INTERX/types"
 	legacytx "github.com/cosmos/cosmos-sdk/x/auth/legacy/legacytx"
 	"github.com/gorilla/mux"
@@ -51,19 +51,19 @@ func postTxHandle(r *http.Request, request types.InterxRequest, rpcAddr string) 
 		return common.ServeError(0, "", "invalid mode", http.StatusBadRequest)
 	}
 
-	signedTx, err := interx.EncodingCg.TxConfig.TxJSONDecoder()(req.Tx)
+	signedTx, err := config.EncodingCg.TxConfig.TxJSONDecoder()(req.Tx)
 	if err != nil {
 		common.GetLogger().Error("[post-transaction] Failed to decode tx request: ", err)
 		return common.ServeError(0, "failed to get signed TX", err.Error(), http.StatusBadRequest)
 	}
 
-	txBuilder, err := interx.EncodingCg.TxConfig.WrapTxBuilder(signedTx)
+	txBuilder, err := config.EncodingCg.TxConfig.WrapTxBuilder(signedTx)
 	if err != nil {
 		common.GetLogger().Error("[post-transaction] Failed to get tx builder: ", err)
 		return common.ServeError(0, "failed to get TX builder", err.Error(), http.StatusBadRequest)
 	}
 
-	txBytes, err := interx.EncodingCg.TxConfig.TxEncoder()(txBuilder.GetTx())
+	txBytes, err := config.EncodingCg.TxConfig.TxEncoder()(txBuilder.GetTx())
 	if err != nil {
 		common.GetLogger().Error("[post-transaction] Failed to get tx bytes: ", err)
 		return common.ServeError(0, "failed to get TX bytes", err.Error(), http.StatusBadRequest)
@@ -141,7 +141,7 @@ func encodeTransactionHandle(r *http.Request, request types.InterxRequest, rpcAd
 	}
 	var req TxEncodeReq
 
-	err := interx.EncodingCg.Amino.UnmarshalJSON(request.Params, &req)
+	err := config.EncodingCg.Amino.UnmarshalJSON(request.Params, &req)
 	if err != nil {
 		common.GetLogger().Error("[encode-transaction] Failed to decode tx request: ", err)
 		return common.ServeError(0, "failed to unmarshal", err.Error(), http.StatusBadRequest)

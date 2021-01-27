@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/KiraCore/sekai/INTERX/common"
-	interx "github.com/KiraCore/sekai/INTERX/config"
+	"github.com/KiraCore/sekai/INTERX/config"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 )
@@ -25,7 +25,7 @@ func DownloadReference() http.HandlerFunc {
 		common.GetLogger().Info("[download] Entering reference download: ", filename)
 
 		if len(filename) != 0 {
-			http.ServeFile(w, r, interx.GetReferenceCacheDir()+filename)
+			http.ServeFile(w, r, config.GetReferenceCacheDir()+filename)
 		}
 	}
 }

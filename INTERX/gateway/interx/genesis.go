@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	"github.com/KiraCore/sekai/INTERX/common"
-	interx "github.com/KiraCore/sekai/INTERX/config"
+	"github.com/KiraCore/sekai/INTERX/config"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	tmjson "github.com/tendermint/tendermint/libs/json"
@@ -23,7 +23,7 @@ func RegisterGenesisQueryRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rp
 	common.AddRPCMethod("GET", common.QueryGenesisSum, "This is an API to get genesis checksum.", true)
 }
 
-var genesisPath = interx.GetReferenceCacheDir() + "/genesis.json"
+var genesisPath = config.GetReferenceCacheDir() + "/genesis.json"
 
 func saveGenesis(rpcAddr string) error {
 	_, err := getGenesis()
