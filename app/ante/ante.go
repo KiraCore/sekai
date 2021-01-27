@@ -191,7 +191,7 @@ func (pnmd PoorNetworkManagementDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx
 
 	// if not poor network, skip this process
 	if pnmd.csk.IsNetworkActive(ctx) {
-		next(ctx, tx, simulate)
+		return next(ctx, tx, simulate)
 	}
 	// handle messages on poor network
 	poorNetworkMsgs, found := pnmd.cgk.GetPoorNetworkMsgs(ctx)
