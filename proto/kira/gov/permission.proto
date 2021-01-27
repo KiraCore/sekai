@@ -66,5 +66,8 @@ enum PermValue {
 
   // PERMISSION_VOTE_SET_POOR_NETWORK_MESSAGES defines the permission needed to vote proposals to set poor network messages
   PERMISSION_VOTE_SET_POOR_NETWORK_MESSAGES = 18 [(gogoproto.enumvalue_customname) = "PermVoteSetPoorNetworkMessages"];
+
+  // PERMISSION_CREATE_UNJAIL_VALIDATOR_PROPOSAL defines the permission needed to create a proposal to unjail a validator.
+  PERMISSION_CREATE_UNJAIL_VALIDATOR_PROPOSAL = 19 [(gogoproto.enumvalue_customname) = "PermCreateUnjailValidatorProposal"];
 }
 

@@ -5,6 +5,7 @@ import "gogoproto/gogo.proto";
 import "google/protobuf/any.proto";
 import "cosmos_proto/cosmos.proto";
 import "google/protobuf/timestamp.proto";
+import "proposal.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/staking/types";
 
@@ -12,6 +13,9 @@ option go_package = "github.com/KiraCore/sekai/x/staking/types";
 service Msg {
   // ClaimValidator defines a method for claiming a new validator.
   rpc ClaimValidator(MsgClaimValidator) returns (MsgClaimValidatorResponse);
+
+  // ClaimValidator defines a method for claiming a new validator.
+  rpc ProposalUnjailValidator(MsgProposalUnjailValidator) returns (MsgProposalUnjailValidatorResponse);
 }
 
 message MsgClaimValidator {
@@ -36,6 +40,9 @@ message MsgClaimValidator {
 
 // MsgClaimValidatorResponse defines the Msg/ClaimValidator response type.
 message MsgClaimValidatorResponse {}
+
+// MsgClaimValidatorResponse defines the Msg/ProposalUnjailValidator response type.
+message MsgProposalUnjailValidatorResponse {}
 
 enum ValidatorStatus {
   option (gogoproto.goproto_enum_prefix) = false;

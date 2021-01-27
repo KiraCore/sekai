@@ -1,0 +1,13 @@
+syntax = "proto3";
+package kira.staking;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/staking/types";
+
+message MsgProposalUnjailValidator {
+  bytes proposer = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"proposer\""
+  ];
+}

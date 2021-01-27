@@ -51,3 +51,7 @@ func (k msgServer) ClaimValidator(goCtx context.Context, msg *types.MsgClaimVali
 
 	return &types.MsgClaimValidatorResponse{}, nil
 }
+
+func (k msgServer) ProposalUnjailValidator(ctx context.Context, validator *types.MsgProposalUnjailValidator) (*types.MsgProposalUnjailValidatorResponse, error) {
+	panic("implement me")
+}

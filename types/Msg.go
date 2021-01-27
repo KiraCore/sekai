@@ -30,7 +30,8 @@ const (
 	MsgTypeRemoveBlacklistRolePermission = "remove-blacklist-role-permission"
 
 	// staking module
-	MsgTypeClaimValidator = "claim-validator"
+	MsgTypeClaimValidator          = "claim-validator"
+	MsgTypeProposalUnjailValidator = "proposal-unjail-validator"
 
 	// tokens module
 	MsgTypeUpsertTokenAlias         = "upsert-token-alias"
@@ -73,4 +74,5 @@ var MsgFuncIDMapping = map[string]int64{
 	MsgTypeActivate:                      25,
 	MsgTypePause:                         26,
 	MsgTypeUnpause:                       27,
+	MsgTypeProposalUnjailValidator:       28,
 }

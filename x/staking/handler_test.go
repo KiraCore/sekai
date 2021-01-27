@@ -3,10 +3,10 @@ package staking_test
 import (
 	"os"
 	"testing"
-
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
+	"time"
 
 	"github.com/KiraCore/sekai/app"
+	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 
 	"github.com/KiraCore/sekai/x/staking"
 
@@ -128,4 +128,67 @@ func TestNewHandler_SetPermissions_ActorWithRole(t *testing.T) {
 
 	validatorSet := app.CustomStakingKeeper.GetPendingValidatorSet(ctx)
 	require.Len(t, validatorSet, 1)
+}
+
+func TestHandler_ProposalUpsertDataRegistry(t *testing.T) {
+	proposerAddr, err := types.AccAddressFromBech32("kira1alzyfq40zjsveat87jlg8jxetwqmr0a29sgd0f")
+	require.NoError(t, err)
+
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{
+		Time: time.Now(),
+	})
+
+	// Set proposer Permissions
+	proposerActor := customgovtypes.NewDefaultActor(proposerAddr)
+	err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerActor, customgovtypes.PermCreateUnjailValidatorProposal)
+	require.NoError(t, err2)
+
+	properties := app.CustomGovKeeper.GetNetworkProperties(ctx)
+	properties.ProposalEndTime = 10
+	app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
+
+	handler := staking.NewHandler(app.CustomStakingKeeper, app.CustomGovKeeper)
+	_, err = handler(
+		ctx,
+		types2.NewMsgProposalUnjailValidator(
+			proposerAddr,
+		),
+	)
+	require.NoError(t, err)
+
+	//expData, _ := proto.Marshal(&types.MsgProposalUpsertDataRegistryResponse{ProposalID: 1})
+	//require.Equal(t, expData, res.Data)
+	//
+	//savedProposal, found := app.CustomGovKeeper.GetProposal(ctx, 1)
+	//require.True(t, found)
+	//
+	//expectedSavedProposal, err := types.NewProposal(
+	//	1,
+	//	types.NewUpsertDataRegistryProposal(
+	//		"theKey",
+	//		"theHash",
+	//		"theReference",
+	//		"theEncoding",
+	//		1234,
+	//	),
+	//	ctx.BlockTime(),
+	//	ctx.BlockTime().Add(time.Minute*time.Duration(properties.ProposalEndTime)),
+	//	ctx.BlockTime().Add(time.Minute*time.Duration(properties.ProposalEnactmentTime)),
+	//)
+	//require.NoError(t, err)
+	//require.Equal(t, expectedSavedProposal, savedProposal)
+	//
+	//// Next proposal ID is increased.
+	//id, err := app.CustomGovKeeper.GetNextProposalID(ctx)
+	//require.NoError(t, err)
+	//require.Equal(t, uint64(2), id)
+	//
+	//// Is not on finished active proposals.
+	//iterator := app.CustomGovKeeper.GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx, ctx.BlockTime())
+	//require.False(t, iterator.Valid())
+	//
+	//ctx = ctx.WithBlockTime(ctx.BlockTime().Add(time.Minute * 10))
+	//iterator = app.CustomGovKeeper.GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx, ctx.BlockTime())
+	//require.True(t, iterator.Valid())
 }
