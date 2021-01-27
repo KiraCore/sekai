@@ -6,7 +6,7 @@ import (
 	"mime"
 	"net/http"
 
-	interx "github.com/KiraCore/sekai/INTERX/config"
+	"github.com/KiraCore/sekai/INTERX/config"
 	cosmosAuth "github.com/KiraCore/sekai/INTERX/proto-gen/cosmos/auth"
 	cosmosBank "github.com/KiraCore/sekai/INTERX/proto-gen/cosmos/bank"
 	kiraGov "github.com/KiraCore/sekai/INTERX/proto-gen/kira/gov"
@@ -82,11 +82,11 @@ func GetGrpcServeMux(grpcAddr string) (*runtime.ServeMux, error) {
 
 // Run runs the gRPC-Gateway, dialling the provided address.
 func Run(configFilePath string, log grpclog.LoggerV2) error {
-	interx.LoadConfig(configFilePath)
+	config.LoadConfig(configFilePath)
 
-	grpcAddr := interx.Config.GRPC
-	rpcAddr := interx.Config.RPC
-	port := interx.Config.PORT
+	grpcAddr := config.Config.GRPC
+	rpcAddr := config.Config.RPC
+	port := config.Config.PORT
 
 	tasks.RunTasks(rpcAddr)
 

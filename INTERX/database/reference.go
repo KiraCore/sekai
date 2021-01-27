@@ -3,7 +3,7 @@ package database
 import (
 	"time"
 
-	interx "github.com/KiraCore/sekai/INTERX/config"
+	"github.com/KiraCore/sekai/INTERX/config"
 	"github.com/sonyarouje/simdb/db"
 )
 
@@ -24,7 +24,7 @@ func (c ReferenceData) ID() (jsonField string, value interface{}) {
 }
 
 func getReferenceDbDriver() *db.Driver {
-	driver, err := db.New(interx.GetDbCacheDir() + "ref")
+	driver, err := db.New(config.GetDbCacheDir() + "ref")
 	if err != nil {
 		return nil
 	}

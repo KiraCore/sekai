@@ -9,7 +9,7 @@ import (
 	"time"
 
 	common "github.com/KiraCore/sekai/INTERX/common"
-	interx "github.com/KiraCore/sekai/INTERX/config"
+	"github.com/KiraCore/sekai/INTERX/config"
 	database "github.com/KiraCore/sekai/INTERX/database"
 )
 
@@ -41,7 +41,7 @@ func getMeta(url string) (*RefMeta, error) {
 }
 
 func saveReference(url string, path string) error {
-	path = interx.GetReferenceCacheDir() + path
+	path = config.GetReferenceCacheDir() + path
 	resp, err := http.Get(url)
 	if err != nil {
 		return err
@@ -88,7 +88,7 @@ func DataReferenceCheck(isLog bool) {
 				}
 
 				// Check the download file size limitation
-				if ref.ContentLength > interx.Config.Cache.DownloadFileSizeLimitation {
+				if ref.ContentLength > config.Config.Cache.DownloadFileSizeLimitation {
 					continue
 				}
 

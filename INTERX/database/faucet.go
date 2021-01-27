@@ -3,7 +3,7 @@ package database
 import (
 	"time"
 
-	interx "github.com/KiraCore/sekai/INTERX/config"
+	"github.com/KiraCore/sekai/INTERX/config"
 	"github.com/sonyarouje/simdb/db"
 )
 
@@ -21,7 +21,7 @@ func (c FaucetClaim) ID() (jsonField string, value interface{}) {
 }
 
 func getFaucetDbDriver() *db.Driver {
-	driver, err := db.New(interx.GetDbCacheDir() + "faucet")
+	driver, err := db.New(config.GetDbCacheDir() + "faucet")
 	if err != nil {
 		return nil
 	}
@@ -79,11 +79,11 @@ func GetClaimTimeLeft(address string) int64 {
 
 	diff := time.Now().Unix() - getClaim(address).Unix()
 
-	if diff > interx.Config.Faucet.TimeLimit {
+	if diff > config.Config.Faucet.TimeLimit {
 		return 0
 	}
 
-	return interx.Config.Faucet.TimeLimit - diff
+	return config.Config.Faucet.TimeLimit - diff
 }
 
 // AddNewClaim is a function to add current claim time
