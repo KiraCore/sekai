@@ -7,11 +7,12 @@ import (
 	"net/http"
 
 	"github.com/KiraCore/sekai/INTERX/config"
+	"github.com/KiraCore/sekai/INTERX/database"
 	cosmosAuth "github.com/KiraCore/sekai/INTERX/proto-gen/cosmos/auth"
 	cosmosBank "github.com/KiraCore/sekai/INTERX/proto-gen/cosmos/bank"
 	kiraGov "github.com/KiraCore/sekai/INTERX/proto-gen/kira/gov"
 	kiraStaking "github.com/KiraCore/sekai/INTERX/proto-gen/kira/staking"
-	tasks "github.com/KiraCore/sekai/INTERX/tasks"
+	"github.com/KiraCore/sekai/INTERX/tasks"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/rakyll/statik/fs"
@@ -83,6 +84,9 @@ func GetGrpcServeMux(grpcAddr string) (*runtime.ServeMux, error) {
 // Run runs the gRPC-Gateway, dialling the provided address.
 func Run(configFilePath string, log grpclog.LoggerV2) error {
 	config.LoadConfig(configFilePath)
+	database.LoadBlockDbDriver()
+	database.LoadFaucetDbDriver()
+	database.LoadReferenceDbDriver()
 
 	grpcAddr := config.Config.GRPC
 	rpcAddr := config.Config.RPC

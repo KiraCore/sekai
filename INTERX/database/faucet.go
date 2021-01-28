@@ -20,13 +20,9 @@ func (c FaucetClaim) ID() (jsonField string, value interface{}) {
 	return
 }
 
-func getFaucetDbDriver() *db.Driver {
-	driver, err := db.New(config.GetDbCacheDir() + "faucet")
-	if err != nil {
-		return nil
-	}
-
-	return driver
+func LoadFaucetDbDriver() {
+	driver, _ := db.New(config.GetDbCacheDir() + "/faucet")
+	faucetDb = driver
 }
 
 func isClaimExist(address string) bool {
@@ -117,5 +113,5 @@ func AddNewClaim(address string, claim time.Time) {
 }
 
 var (
-	faucetDb *db.Driver = getFaucetDbDriver()
+	faucetDb *db.Driver
 )

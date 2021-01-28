@@ -67,6 +67,8 @@ func main() {
 				// Check which subcommand was Parsed using the FlagSet.Parsed() function. Handle each case accordingly.
 				// FlagSet.Parse() will evaluate to false if no flags were parsed (i.e. the user did not provide any flags)
 				config.InitConfig(*initConfigFilePtr, *initGrpcPtr, *initRpcPtr, *initPortPtr, *initSigningMnemonicPtr, *initFaucetMnemonicPtr)
+
+				fmt.Printf("Created interx configuration file: %s\n", *initConfigFilePtr)
 				return
 			}
 		case "start":

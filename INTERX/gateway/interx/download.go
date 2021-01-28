@@ -25,7 +25,7 @@ func DownloadReference() http.HandlerFunc {
 		common.GetLogger().Info("[download] Entering reference download: ", filename)
 
 		if len(filename) != 0 {
-			http.ServeFile(w, r, config.GetReferenceCacheDir()+filename)
+			http.ServeFile(w, r, config.GetReferenceCacheDir()+"/"+filename)
 		}
 	}
 }

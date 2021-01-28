@@ -59,7 +59,6 @@ func queryValidatorsHandle(r *http.Request, gwCosmosmux *runtime.ServeMux) (inte
 	}
 
 	r.URL.RawQuery = strings.Join(events, "&")
-	fmt.Println(r.URL.RawQuery)
 
 	return common.ServeGRPC(r, gwCosmosmux)
 }

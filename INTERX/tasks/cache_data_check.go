@@ -18,6 +18,10 @@ func CacheDataCheck(rpcAddr string, isLog bool) {
 	for {
 		err := filepath.Walk(config.GetResponseCacheDir(),
 			func(path string, info os.FileInfo, err error) error {
+				if _, err := os.Stat(path); os.IsNotExist(err) {
+					return nil
+				}
+
 				if err != nil {
 					return err
 				}

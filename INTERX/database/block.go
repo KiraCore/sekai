@@ -18,13 +18,9 @@ func (c BlockData) ID() (jsonField string, value interface{}) {
 	return
 }
 
-func getBlockDbDriver() *db.Driver {
-	driver, err := db.New(config.GetDbCacheDir() + "block")
-	if err != nil {
-		return nil
-	}
-
-	return driver
+func LoadBlockDbDriver() {
+	driver, _ := db.New(config.GetDbCacheDir() + "/block")
+	blockDb = driver
 }
 
 // GetBlockTime is a function to get blockTime
@@ -72,5 +68,5 @@ func AddBlockTime(height int64, timestamp int64) {
 }
 
 var (
-	blockDb *db.Driver = getBlockDbDriver()
+	blockDb *db.Driver
 )
