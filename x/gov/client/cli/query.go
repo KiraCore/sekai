@@ -138,6 +138,30 @@ func GetCmdQueryNetworkProperties() *cobra.Command {
 	return cmd
 }
 
+// GetCmdQueryPoorNetworkMessages query for poor network messages
+func GetCmdQueryPoorNetworkMessages() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "poor-network-messages",
+		Short: "Get poor network messages",
+		Args:  cobra.MinimumNArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			params := &types.PoorNetworkMessagesRequest{}
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.GetPoorNetworkMessages(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	return cmd
+}
+
 // GetCmdQueryExecutionFee query for execution fee by execution name
 func GetCmdQueryExecutionFee() *cobra.Command {
 	cmd := &cobra.Command{

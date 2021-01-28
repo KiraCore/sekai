@@ -11,6 +11,7 @@ const (
 	MsgTypeProposalAssignPermission   = "proposal-assign-permission"
 	MsgTypeProposalUpsertDataRegistry = "proposal-upsert-data-registry"
 	MsgTypeProposalUpsertTokenAlias   = "proposal-upsert-token-alias"
+	MsgTypeProposalSetPoorNetworkMsgs = "proposal-set-poor-network-messages"
 	MsgTypeVoteProposal               = "vote-proposal"
 
 	MsgTypeWhitelistPermissions = "whitelist-permissions"

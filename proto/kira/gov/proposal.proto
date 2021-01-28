@@ -86,7 +86,10 @@ message MsgProposalUpsertDataRegistry {
 }
 
 message MsgProposalSetPoorNetworkMessages {
-  repeated string messages = 1;
+  bytes proposer = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
+  ];
+  repeated string messages = 2;
 }
 
 message Proposal {

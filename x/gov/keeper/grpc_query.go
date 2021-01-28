@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -94,6 +95,16 @@ func (q Querier) GetExecutionFee(ctx context.Context, request *types.ExecutionFe
 		return nil, fmt.Errorf("fee does not exist for %s", request.TransactionType)
 	}
 	return &types.ExecutionFeeResponse{Fee: fee}, nil
+}
+
+// GetPoorNetworkMessages queries poor network messages
+func (q Querier) GetPoorNetworkMessages(ctx context.Context, request *types.PoorNetworkMessagesRequest) (*types.PoorNetworkMessagesResponse, error) {
+	sdkContext := sdk.UnwrapSDKContext(ctx)
+	msg, ok := q.keeper.GetPoorNetworkMsgs(sdkContext)
+	if !ok {
+		return nil, errors.New("poor network messages are not set")
+	}
+	return &types.PoorNetworkMessagesResponse{Messages: msg.Messages}, nil
 }
 
 // Proposal returns a proposal by id

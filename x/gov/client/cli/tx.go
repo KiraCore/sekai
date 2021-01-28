@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -42,11 +43,12 @@ func NewTxCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	txCmd.AddCommand(NewTxCouncilorCmds())
-	txCmd.AddCommand(NewTxProposalCmds())
-	txCmd.AddCommand(NewTxRoleCmds())
-	txCmd.AddCommand(NewTxPermissionCmds())
-	txCmd.AddCommand(GetTxSetNetworkProperties(),
+	txCmd.AddCommand(
+		NewTxCouncilorCmds(),
+		NewTxProposalCmds(),
+		NewTxRoleCmds(),
+		NewTxPermissionCmds(),
+		GetTxSetNetworkProperties(),
 		GetTxSetExecutionFee(),
 	)
 
@@ -66,6 +68,7 @@ func NewTxProposalCmds() *cobra.Command {
 	proposalCmd.AddCommand(GetTxProposalAssignPermission())
 	proposalCmd.AddCommand(GetTxVoteProposal())
 	proposalCmd.AddCommand(GetTxProposalSetNetworkProperty())
+	proposalCmd.AddCommand(GetTxProposalSetPoorNetworkMsgs())
 
 	return proposalCmd
 }
@@ -550,6 +553,45 @@ func GetTxRemoveRole() *cobra.Command {
 
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)
 	_ = cmd.MarkFlagRequired(cli.FlagAddr)
+
+	return cmd
+}
+
+// GetTxProposalSetPoorNetworkMsgs defines command to send proposal tx to modify poor network messages
+func GetTxProposalSetPoorNetworkMsgs() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "set-poor-network-msgs <messages>",
+		Short: "Create a proposal to set a value on a network property.",
+		Long: `
+		$ %s tx customgov proposal set-poor-network-msgs XXXX,YYY --from=<key_or_address>
+
+		All the message types supported could be added here
+			create-role
+			assign-role
+			remove-role
+			...
+		`,
+		Args: cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			messages := strings.Split(args[0], ",")
+
+			msg := types.NewMsgProposalSetPoorNetworkMessages(
+				clientCtx.FromAddress,
+				messages,
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
 }

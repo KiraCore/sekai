@@ -133,5 +133,5 @@ func (m *SetPoorNetworkMessagesProposal) ProposalType() string {
 }
 
 func (m *SetPoorNetworkMessagesProposal) VotePermission() PermValue {
-	return PermVoteSetPoorNetworkMessages
+	return PermVoteSetPoorNetworkMessagesProposal
 }

@@ -30,6 +30,8 @@ service Query {
   rpc GetNetworkProperties (NetworkPropertiesRequest) returns (NetworkPropertiesResponse) {}
   // GetExecutionFee returns execution fee from msg type
   rpc GetExecutionFee (ExecutionFeeRequest) returns (ExecutionFeeResponse) {}
+  // GetPoorNetworkMessages returns poor network messages
+  rpc GetPoorNetworkMessages (PoorNetworkMessagesRequest) returns (PoorNetworkMessagesResponse) {}
   // Proposal queries proposal details based on ProposalID.
   rpc Proposal(QueryProposalRequest) returns (QueryProposalResponse) {}
   // Proposals queries all proposals based on given status.
@@ -91,6 +93,11 @@ message ExecutionFeeRequest {
 }
 message ExecutionFeeResponse {
   kira.gov.ExecutionFee fee = 1;
+}
+
+message PoorNetworkMessagesRequest {}
+message PoorNetworkMessagesResponse {
+  repeated string messages = 1;
 }
 
 message CouncilorByAddressRequest {
