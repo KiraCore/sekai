@@ -139,9 +139,14 @@ func TestHandler_ProposalUnjailValidator_Errors(t *testing.T) {
 	tests := []struct {
 		name        string
 		expectedErr error
+		prepareFunc
 	}{
 		{
 			name:        "not enough permissions to create validator",
+			expectedErr: errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermCreateUnjailValidatorProposal.String()),
+		},
+		{
+			name:        "validator is not jailed",
 			expectedErr: errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermCreateUnjailValidatorProposal.String()),
 		},
 	}
