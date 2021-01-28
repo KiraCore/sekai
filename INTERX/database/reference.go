@@ -23,13 +23,9 @@ func (c ReferenceData) ID() (jsonField string, value interface{}) {
 	return
 }
 
-func getReferenceDbDriver() *db.Driver {
-	driver, err := db.New(config.GetDbCacheDir() + "ref")
-	if err != nil {
-		return nil
-	}
-
-	return driver
+func LoadReferenceDbDriver() {
+	driver, _ := db.New(config.GetDbCacheDir() + "/ref")
+	refDb = driver
 }
 
 // GetAllReferences is a function to get all references
@@ -98,5 +94,5 @@ func AddReference(key string, url string, contentLength int64, lastModified time
 }
 
 var (
-	refDb *db.Driver = getReferenceDbDriver()
+	refDb *db.Driver
 )

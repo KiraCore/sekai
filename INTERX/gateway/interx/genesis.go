@@ -2,7 +2,6 @@ package interx
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 
@@ -44,7 +43,6 @@ func saveGenesis(rpcAddr string) error {
 		return err
 	}
 
-	fmt.Println(genesis.Genesis)
 	err = genesis.Genesis.ValidateAndComplete()
 	if err != nil {
 		return err

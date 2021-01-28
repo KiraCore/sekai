@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	functions "github.com/KiraCore/sekai/INTERX/functions"
+	"github.com/KiraCore/sekai/INTERX/functions"
 	sekaiapp "github.com/KiraCore/sekai/app"
 	functionmeta "github.com/KiraCore/sekai/function_meta"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
@@ -43,7 +43,8 @@ func mnemonicFromFile(filename string) string {
 	return string(mnemonic)
 }
 
-func loadMnemonic(mnemonic string) string {
+// LoadMnemonic is a function to extract mnemonic
+func LoadMnemonic(mnemonic string) string {
 	if bip39.IsMnemonicValid(mnemonic) {
 		return mnemonic
 	}
@@ -52,7 +53,7 @@ func loadMnemonic(mnemonic string) string {
 }
 
 // LoadConfig is a function to load interx configurations from a given file
-func LoadConfig(configFilePath string) InterxConfig {
+func LoadConfig(configFilePath string) {
 	functions.RegisterInterxFunctions()
 	functionmeta.RegisterStdMsgs()
 	sekaiapp.SetConfig()
@@ -77,7 +78,7 @@ func LoadConfig(configFilePath string) InterxConfig {
 	Config.GRPC = configFromFile.GRPC
 	Config.RPC = configFromFile.RPC
 	Config.PORT = configFromFile.PORT
-	Config.Mnemonic = loadMnemonic(configFromFile.MnemonicFile)
+	Config.Mnemonic = LoadMnemonic(configFromFile.MnemonicFile)
 	Config.Cache.StatusSync = configFromFile.Cache.StatusSync
 	Config.Cache.CacheDir = configFromFile.Cache.CacheDir
 	Config.Cache.MaxCacheSize = parseSizeString(configFromFile.Cache.MaxCacheSize)
@@ -103,7 +104,7 @@ func LoadConfig(configFilePath string) InterxConfig {
 
 	// Faucet Configuration
 	Config.Faucet = FaucetConfig{
-		Mnemonic:             loadMnemonic(configFromFile.Faucet.MnemonicFile),
+		Mnemonic:             LoadMnemonic(configFromFile.Faucet.MnemonicFile),
 		FaucetAmounts:        configFromFile.Faucet.FaucetAmounts,
 		FaucetMinimumAmounts: configFromFile.Faucet.FaucetMinimumAmounts,
 		FeeAmounts:           configFromFile.Faucet.FeeAmounts,
@@ -139,7 +140,6 @@ func LoadConfig(configFilePath string) InterxConfig {
 		os.Mkdir(Config.Cache.CacheDir+"/db/", os.ModePerm)
 	}
 
-	return Config
 }
 
 // GenPrivKey is a function to generate a privKey
@@ -149,15 +149,15 @@ func GenPrivKey() crypto.PrivKey {
 
 // GetReferenceCacheDir is a function to get reference directory
 func GetReferenceCacheDir() string {
-	return Config.Cache.CacheDir + "/reference/"
+	return Config.Cache.CacheDir + "/reference"
 }
 
 // GetResponseCacheDir is a function to get reference directory
 func GetResponseCacheDir() string {
-	return Config.Cache.CacheDir + "/response/"
+	return Config.Cache.CacheDir + "/response"
 }
 
 // GetDbCacheDir is a function to get db directory
 func GetDbCacheDir() string {
-	return Config.Cache.CacheDir + "/db/"
+	return Config.Cache.CacheDir + "/db"
 }

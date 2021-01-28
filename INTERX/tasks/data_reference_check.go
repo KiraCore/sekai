@@ -41,7 +41,7 @@ func getMeta(url string) (*RefMeta, error) {
 }
 
 func saveReference(url string, path string) error {
-	path = config.GetReferenceCacheDir() + path
+	path = config.GetReferenceCacheDir() + "/" + path
 	resp, err := http.Get(url)
 	if err != nil {
 		return err

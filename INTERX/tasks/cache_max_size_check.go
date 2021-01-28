@@ -30,6 +30,10 @@ func CacheMaxSizeCheck(isLog bool) {
 
 			for {
 				_ = filepath.Walk(config.GetResponseCacheDir(), func(path string, info os.FileInfo, err error) error {
+					if _, err := os.Stat(path); os.IsNotExist(err) {
+						return nil
+					}
+
 					if err != nil || cacheSize*10 < config.Config.Cache.MaxCacheSize*9 { // current size < 90% of max cache size
 						return err
 					}
