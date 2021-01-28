@@ -42,7 +42,9 @@ message MsgClaimValidator {
 message MsgClaimValidatorResponse {}
 
 // MsgClaimValidatorResponse defines the Msg/ProposalUnjailValidator response type.
-message MsgProposalUnjailValidatorResponse {}
+message MsgProposalUnjailValidatorResponse {
+  uint64 proposalID = 1;
+}
 
 enum ValidatorStatus {
   option (gogoproto.goproto_enum_prefix) = false;

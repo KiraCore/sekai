@@ -4,10 +4,12 @@
 package types
 
 import (
+	bytes "bytes"
 	fmt "fmt"
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
+	_ "github.com/regen-network/cosmos-proto"
 	io "io"
 	math "math"
 	math_bits "math/bits"
@@ -68,31 +70,102 @@ func (m *MsgProposalUnjailValidator) GetProposer() github_com_cosmos_cosmos_sdk_
 	return nil
 }
 
+type ProposalUnjailValidator struct {
+	Proposer github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=proposer,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"proposer,omitempty" yaml:"proposer"`
+}
+
+func (m *ProposalUnjailValidator) Reset()         { *m = ProposalUnjailValidator{} }
+func (m *ProposalUnjailValidator) String() string { return proto.CompactTextString(m) }
+func (*ProposalUnjailValidator) ProtoMessage()    {}
+func (*ProposalUnjailValidator) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c3ac5ce23bf32d05, []int{1}
+}
+func (m *ProposalUnjailValidator) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ProposalUnjailValidator) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ProposalUnjailValidator.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ProposalUnjailValidator) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ProposalUnjailValidator.Merge(m, src)
+}
+func (m *ProposalUnjailValidator) XXX_Size() int {
+	return m.Size()
+}
+func (m *ProposalUnjailValidator) XXX_DiscardUnknown() {
+	xxx_messageInfo_ProposalUnjailValidator.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ProposalUnjailValidator proto.InternalMessageInfo
+
+func (m *ProposalUnjailValidator) GetProposer() github_com_cosmos_cosmos_sdk_types.AccAddress {
+	if m != nil {
+		return m.Proposer
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*MsgProposalUnjailValidator)(nil), "kira.staking.MsgProposalUnjailValidator")
+	proto.RegisterType((*ProposalUnjailValidator)(nil), "kira.staking.ProposalUnjailValidator")
 }
 
 func init() { proto.RegisterFile("proposal.proto", fileDescriptor_c3ac5ce23bf32d05) }
 
 var fileDescriptor_c3ac5ce23bf32d05 = []byte{
-	// 226 bytes of a gzipped FileDescriptorProto
+	// 262 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x2b, 0x28, 0xca, 0x2f,
 	0xc8, 0x2f, 0x4e, 0xcc, 0xd1, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0xc9, 0xce, 0x2c, 0x4a,
 	0xd4, 0x2b, 0x2e, 0x49, 0xcc, 0xce, 0xcc, 0x4b, 0x97, 0x12, 0x49, 0xcf, 0x4f, 0xcf, 0x07, 0x4b,
-	0xe8, 0x83, 0x58, 0x10, 0x35, 0x4a, 0x75, 0x5c, 0x52, 0xbe, 0xc5, 0xe9, 0x01, 0x50, 0x8d, 0xa1,
-	0x79, 0x59, 0x89, 0x99, 0x39, 0x61, 0x89, 0x39, 0x99, 0x29, 0x89, 0x25, 0xf9, 0x45, 0x42, 0x09,
-	0x5c, 0x1c, 0x10, 0x33, 0x53, 0x8b, 0x24, 0x18, 0x15, 0x18, 0x35, 0x78, 0x9c, 0x5c, 0x3e, 0xdd,
-	0x93, 0xe7, 0xaf, 0x4c, 0xcc, 0xcd, 0xb1, 0x52, 0x82, 0xc9, 0x28, 0xfd, 0xba, 0x27, 0xaf, 0x9b,
-	0x9e, 0x59, 0x92, 0x51, 0x9a, 0xa4, 0x97, 0x9c, 0x9f, 0xab, 0x9f, 0x9c, 0x5f, 0x9c, 0x9b, 0x5f,
-	0x0c, 0xa5, 0x74, 0x8b, 0x53, 0xb2, 0xf5, 0x4b, 0x2a, 0x0b, 0x52, 0x8b, 0xf5, 0x1c, 0x93, 0x93,
-	0x1d, 0x53, 0x52, 0x8a, 0x52, 0x8b, 0x8b, 0x83, 0xe0, 0xa6, 0x3a, 0x39, 0x9f, 0x78, 0x24, 0xc7,
-	0x78, 0xe1, 0x91, 0x1c, 0xe3, 0x83, 0x47, 0x72, 0x8c, 0x13, 0x1e, 0xcb, 0x31, 0x5c, 0x78, 0x2c,
-	0xc7, 0x70, 0xe3, 0xb1, 0x1c, 0x43, 0x94, 0x26, 0x92, 0x91, 0xde, 0x99, 0x45, 0x89, 0xce, 0xf9,
-	0x45, 0xa9, 0xfa, 0xc5, 0xa9, 0xd9, 0x89, 0x99, 0xfa, 0x15, 0xfa, 0x50, 0x4f, 0x41, 0x4c, 0x4e,
-	0x62, 0x03, 0xfb, 0xc5, 0x18, 0x10, 0x00, 0x00, 0xff, 0xff, 0xcb, 0x23, 0xe6, 0xd6, 0x01, 0x01,
-	0x00, 0x00,
+	0xe8, 0x83, 0x58, 0x10, 0x35, 0x52, 0x92, 0xc9, 0xf9, 0xc5, 0xb9, 0xf9, 0xc5, 0xf1, 0x10, 0x09,
+	0x08, 0x07, 0x22, 0xa5, 0x54, 0xc7, 0x25, 0xe5, 0x5b, 0x9c, 0x1e, 0x00, 0x35, 0x33, 0x34, 0x2f,
+	0x2b, 0x31, 0x33, 0x27, 0x2c, 0x31, 0x27, 0x33, 0x25, 0xb1, 0x24, 0xbf, 0x48, 0x28, 0x81, 0x8b,
+	0x03, 0x62, 0x5d, 0x6a, 0x91, 0x04, 0xa3, 0x02, 0xa3, 0x06, 0x8f, 0x93, 0xcb, 0xa7, 0x7b, 0xf2,
+	0xfc, 0x95, 0x89, 0xb9, 0x39, 0x56, 0x4a, 0x30, 0x19, 0xa5, 0x5f, 0xf7, 0xe4, 0x75, 0xd3, 0x33,
+	0x4b, 0x32, 0x4a, 0x93, 0xf4, 0x92, 0xf3, 0x73, 0xa1, 0xe6, 0x43, 0x29, 0xdd, 0xe2, 0x94, 0x6c,
+	0xfd, 0x92, 0xca, 0x82, 0xd4, 0x62, 0x3d, 0xc7, 0xe4, 0x64, 0xc7, 0x94, 0x94, 0xa2, 0xd4, 0xe2,
+	0xe2, 0x20, 0xb8, 0xa9, 0x4a, 0x3d, 0x8c, 0x5c, 0xe2, 0x03, 0x66, 0xbb, 0x15, 0xff, 0x8b, 0x05,
+	0xf2, 0x8c, 0x97, 0xb6, 0xe8, 0xb2, 0x3b, 0xe7, 0xe7, 0x95, 0xa4, 0xe6, 0x95, 0x38, 0x39, 0x9f,
+	0x78, 0x24, 0xc7, 0x78, 0xe1, 0x91, 0x1c, 0xe3, 0x83, 0x47, 0x72, 0x8c, 0x13, 0x1e, 0xcb, 0x31,
+	0x5c, 0x78, 0x2c, 0xc7, 0x70, 0xe3, 0xb1, 0x1c, 0x43, 0x94, 0x26, 0x92, 0x1d, 0xde, 0x99, 0x45,
+	0x89, 0xce, 0xf9, 0x45, 0xa9, 0xfa, 0xc5, 0xa9, 0xd9, 0x89, 0x99, 0xfa, 0x15, 0xfa, 0xd0, 0xe0,
+	0x87, 0x58, 0x95, 0xc4, 0x06, 0x0e, 0x5a, 0x63, 0x40, 0x00, 0x00, 0x00, 0xff, 0xff, 0x41, 0x57,
+	0x72, 0x31, 0xab, 0x01, 0x00, 0x00,
 }
 
+func (this *ProposalUnjailValidator) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ProposalUnjailValidator)
+	if !ok {
+		that2, ok := that.(ProposalUnjailValidator)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if !bytes.Equal(this.Proposer, that1.Proposer) {
+		return false
+	}
+	return true
+}
 func (m *MsgProposalUnjailValidator) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -123,6 +196,36 @@ func (m *MsgProposalUnjailValidator) MarshalToSizedBuffer(dAtA []byte) (int, err
 	return len(dAtA) - i, nil
 }
 
+func (m *ProposalUnjailValidator) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ProposalUnjailValidator) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ProposalUnjailValidator) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Proposer) > 0 {
+		i -= len(m.Proposer)
+		copy(dAtA[i:], m.Proposer)
+		i = encodeVarintProposal(dAtA, i, uint64(len(m.Proposer)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintProposal(dAtA []byte, offset int, v uint64) int {
 	offset -= sovProposal(v)
 	base := offset
@@ -135,6 +238,19 @@ func encodeVarintProposal(dAtA []byte, offset int, v uint64) int {
 	return base
 }
 func (m *MsgProposalUnjailValidator) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Proposer)
+	if l > 0 {
+		n += 1 + l + sovProposal(uint64(l))
+	}
+	return n
+}
+
+func (m *ProposalUnjailValidator) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -180,6 +296,93 @@ func (m *MsgProposalUnjailValidator) Unmarshal(dAtA []byte) error {
 		}
 		if fieldNum <= 0 {
 			return fmt.Errorf("proto: MsgProposalUnjailValidator: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Proposer", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowProposal
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthProposal
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthProposal
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Proposer = append(m.Proposer[:0], dAtA[iNdEx:postIndex]...)
+			if m.Proposer == nil {
+				m.Proposer = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipProposal(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthProposal
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthProposal
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ProposalUnjailValidator) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowProposal
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ProposalUnjailValidator: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ProposalUnjailValidator: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:

@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"time"
 
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 
@@ -52,6 +53,45 @@ func (k msgServer) ClaimValidator(goCtx context.Context, msg *types.MsgClaimVali
 	return &types.MsgClaimValidatorResponse{}, nil
 }
 
-func (k msgServer) ProposalUnjailValidator(ctx context.Context, validator *types.MsgProposalUnjailValidator) (*types.MsgProposalUnjailValidatorResponse, error) {
-	panic("implement me")
+func (k msgServer) ProposalUnjailValidator(goCtx context.Context, msg *types.MsgProposalUnjailValidator) (*types.MsgProposalUnjailValidatorResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	isAllowed := govkeeper.CheckIfAllowedPermission(ctx, k.govKeeper, msg.Proposer, customgovtypes.PermCreateUnjailValidatorProposal)
+	if !isAllowed {
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermCreateUnjailValidatorProposal.String())
+	}
+
+	proposalID, err := k.CreateAndSaveProposalWithContent(ctx, types.NewProposalUnjailValidator(
+		msg.Proposer,
+	))
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.MsgProposalUnjailValidatorResponse{
+		ProposalID: proposalID,
+	}, nil
+}
+
+func (k msgServer) CreateAndSaveProposalWithContent(ctx sdk.Context, content customgovtypes.Content) (uint64, error) {
+	blockTime := ctx.BlockTime()
+	proposalID, err := k.govKeeper.GetNextProposalID(ctx)
+	if err != nil {
+		return 0, err
+	}
+
+	properties := k.govKeeper.GetNetworkProperties(ctx)
+
+	proposal, err := customgovtypes.NewProposal(
+		proposalID,
+		content,
+		blockTime,
+		blockTime.Add(time.Minute*time.Duration(properties.ProposalEndTime)),
+		blockTime.Add(time.Minute*time.Duration(properties.ProposalEnactmentTime)),
+	)
+
+	k.govKeeper.SaveProposal(ctx, proposal)
+	k.govKeeper.AddToActiveProposals(ctx, proposal)
+
+	return proposalID, nil
 }
