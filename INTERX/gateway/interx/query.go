@@ -13,12 +13,12 @@ import (
 
 // RegisterInterxQueryRoutes registers query routers.
 func RegisterInterxQueryRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr string) {
-	r.HandleFunc(common.QueryRPCMethods, QueryRPCMethods(rpcAddr)).Methods("GET")
-	r.HandleFunc(common.QueryInterxFunctions, QueryInterxFunctions(rpcAddr)).Methods("GET")
-	r.HandleFunc(common.QueryStatus, QueryStatusRequest(rpcAddr)).Methods("GET")
+	r.HandleFunc(config.QueryRPCMethods, QueryRPCMethods(rpcAddr)).Methods("GET")
+	r.HandleFunc(config.QueryInterxFunctions, QueryInterxFunctions(rpcAddr)).Methods("GET")
+	r.HandleFunc(config.QueryStatus, QueryStatusRequest(rpcAddr)).Methods("GET")
 
-	common.AddRPCMethod("GET", common.QueryInterxFunctions, "This is an API to query interx functions.", true)
-	common.AddRPCMethod("GET", common.QueryStatus, "This is an API to query interx status.", true)
+	common.AddRPCMethod("GET", config.QueryInterxFunctions, "This is an API to query interx functions.", true)
+	common.AddRPCMethod("GET", config.QueryStatus, "This is an API to query interx status.", true)
 }
 
 // QueryRPCMethods is a function to query RPC methods.
@@ -86,10 +86,10 @@ func QueryStatusRequest(rpcAddr string) http.HandlerFunc {
 
 		common.GetLogger().Info("[query-status] Entering status query")
 
-		if !common.RPCMethods["GET"][common.QueryStatus].Enabled {
+		if !common.RPCMethods["GET"][config.QueryStatus].Enabled {
 			response.Response, response.Error, statusCode = common.ServeError(0, "", "API disabled", http.StatusForbidden)
 		} else {
-			if common.RPCMethods["GET"][common.QueryStatus].CachingEnabled {
+			if common.RPCMethods["GET"][config.QueryStatus].CachingEnabled {
 				found, cacheResponse, cacheError, cacheStatus := common.SearchCache(request, response)
 				if found {
 					response.Response, response.Error, statusCode = cacheResponse, cacheError, cacheStatus
@@ -103,6 +103,6 @@ func QueryStatusRequest(rpcAddr string) http.HandlerFunc {
 			response.Response, response.Error, statusCode = queryStatusHandle(rpcAddr)
 		}
 
-		common.WrapResponse(w, request, *response, statusCode, common.RPCMethods["GET"][common.QueryStatus].CachingEnabled)
+		common.WrapResponse(w, request, *response, statusCode, common.RPCMethods["GET"][config.QueryStatus].CachingEnabled)
 	}
 }

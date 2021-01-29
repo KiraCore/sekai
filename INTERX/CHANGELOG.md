@@ -8,6 +8,7 @@
 - Update configuration to group cache related configurations.
 - Update Readme.md
 - Update Interx Status API
+- Changed interx to interxd (cli command are available: `interxd init`, `interxd start`)
 
 ### Added
 
@@ -15,4 +16,3 @@
 - Add query validators.
 - Add query validator by address, valley, pubkey, moniker and status.
 - Add query genesis, genesis-checksum.
-

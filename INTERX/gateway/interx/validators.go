@@ -6,15 +6,16 @@ import (
 	"strings"
 
 	"github.com/KiraCore/sekai/INTERX/common"
+	"github.com/KiraCore/sekai/INTERX/config"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 )
 
 // RegisterValidatorsQueryRoutes registers validators query routers.
 func RegisterValidatorsQueryRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr string) {
-	r.HandleFunc(common.QueryValidators, QueryValidators(gwCosmosmux, rpcAddr)).Methods("GET")
+	r.HandleFunc(config.QueryValidators, QueryValidators(gwCosmosmux, rpcAddr)).Methods("GET")
 
-	common.AddRPCMethod("GET", common.QueryValidators, "This is an API to query validators.", true)
+	common.AddRPCMethod("GET", config.QueryValidators, "This is an API to query validators.", true)
 }
 
 func queryValidatorsHandle(r *http.Request, gwCosmosmux *runtime.ServeMux) (interface{}, interface{}, int) {
@@ -72,6 +73,23 @@ func QueryValidators(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.Handler
 
 		response.Response, response.Error, statusCode = queryValidatorsHandle(r, gwCosmosmux)
 
-		common.WrapResponse(w, request, *response, statusCode, false)
+		if !common.RPCMethods["GET"][config.QueryValidators].Enabled {
+			response.Response, response.Error, statusCode = common.ServeError(0, "", "API disabled", http.StatusForbidden)
+		} else {
+			if common.RPCMethods["GET"][config.QueryValidators].CachingEnabled {
+				found, cacheResponse, cacheError, cacheStatus := common.SearchCache(request, response)
+				if found {
+					response.Response, response.Error, statusCode = cacheResponse, cacheError, cacheStatus
+					common.WrapResponse(w, request, *response, statusCode, false)
+
+					common.GetLogger().Info("[encode-transaction] Returning from the cache")
+					return
+				}
+			}
+
+			response.Response, response.Error, statusCode = queryValidatorsHandle(r, gwCosmosmux)
+		}
+
+		common.WrapResponse(w, request, *response, statusCode, true)
 	}
 }

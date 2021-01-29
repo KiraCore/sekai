@@ -12,15 +12,15 @@ import (
 
 // RegisterInterxDownloadRoutes registers download routers.
 func RegisterInterxDownloadRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr string) {
-	r.PathPrefix(common.Download).HandlerFunc(DownloadReference()).Methods("GET")
+	r.PathPrefix(config.Download).HandlerFunc(DownloadReference()).Methods("GET")
 
-	common.AddRPCMethod("GET", common.Download, "This is an API to download files.", true)
+	common.AddRPCMethod("GET", config.Download, "This is an API to download files.", true)
 }
 
 // DownloadReference is a function to download reference.
 func DownloadReference() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		filename := strings.TrimPrefix(r.URL.Path, common.Download+"/")
+		filename := strings.TrimPrefix(r.URL.Path, config.Download+"/")
 
 		common.GetLogger().Info("[download] Entering reference download: ", filename)
 

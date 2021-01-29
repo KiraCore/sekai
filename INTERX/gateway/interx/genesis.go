@@ -15,11 +15,11 @@ import (
 
 // RegisterGenesisQueryRoutes registers genesis query routers.
 func RegisterGenesisQueryRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr string) {
-	r.HandleFunc(common.QueryGenesis, QueryGenesis(rpcAddr)).Methods("GET")
-	r.HandleFunc(common.QueryGenesisSum, QueryGenesisSum(rpcAddr)).Methods("GET")
+	r.HandleFunc(config.QueryGenesis, QueryGenesis(rpcAddr)).Methods("GET")
+	r.HandleFunc(config.QueryGenesisSum, QueryGenesisSum(rpcAddr)).Methods("GET")
 
-	common.AddRPCMethod("GET", common.QueryGenesis, "This is an API to query genesis.", true)
-	common.AddRPCMethod("GET", common.QueryGenesisSum, "This is an API to get genesis checksum.", true)
+	common.AddRPCMethod("GET", config.QueryGenesis, "This is an API to query genesis.", true)
+	common.AddRPCMethod("GET", config.QueryGenesisSum, "This is an API to get genesis checksum.", true)
 }
 
 var genesisPath = config.GetReferenceCacheDir() + "/genesis.json"

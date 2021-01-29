@@ -19,9 +19,9 @@ import (
 
 // RegisterInterxFaucetRoutes registers faucet services.
 func RegisterInterxFaucetRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr string) {
-	r.HandleFunc(common.FaucetRequestURL, FaucetRequest(gwCosmosmux, rpcAddr)).Methods("GET")
+	r.HandleFunc(config.FaucetRequestURL, FaucetRequest(gwCosmosmux, rpcAddr)).Methods("GET")
 
-	common.AddRPCMethod("GET", common.FaucetRequestURL, "This is an API for faucet service.", false)
+	common.AddRPCMethod("GET", config.FaucetRequestURL, "This is an API for faucet service.", false)
 }
 
 func serveFaucetInfo(r *http.Request, gwCosmosmux *runtime.ServeMux) (interface{}, interface{}, int) {
