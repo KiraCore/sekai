@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/KiraCore/sekai/INTERX/common"
+	"github.com/KiraCore/sekai/INTERX/config"
 	database "github.com/KiraCore/sekai/INTERX/database"
 	"github.com/KiraCore/sekai/INTERX/types"
 	"github.com/gorilla/mux"
@@ -17,11 +18,11 @@ import (
 
 // RegisterKiraGovRoutes registers kira gov query routers.
 func RegisterKiraGovRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr string) {
-	r.HandleFunc(common.QueryDataReferenceKeys, QueryDataReferenceKeysRequest(gwCosmosmux, rpcAddr)).Methods("GET")
+	r.HandleFunc(config.QueryDataReferenceKeys, QueryDataReferenceKeysRequest(gwCosmosmux, rpcAddr)).Methods("GET")
 	r.HandleFunc("/api/kira/gov/data/{key}", QueryDataReferenceRequest(gwCosmosmux, rpcAddr)).Methods("GET")
 
-	common.AddRPCMethod("GET", common.QueryDataReferenceKeys, "This is an API to query all data reference keys.", true)
-	common.AddRPCMethod("GET", common.QueryDataReference, "This is an API to query data reference by key.", true)
+	common.AddRPCMethod("GET", config.QueryDataReferenceKeys, "This is an API to query all data reference keys.", true)
+	common.AddRPCMethod("GET", config.QueryDataReference, "This is an API to query data reference by key.", true)
 }
 
 func queryDataReferenceKeysHandle(r *http.Request, gwCosmosmux *runtime.ServeMux) (interface{}, interface{}, int) {
@@ -59,10 +60,10 @@ func QueryDataReferenceKeysRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string
 
 		common.GetLogger().Info("[query-reference-keys] Entering data reference keys query")
 
-		if !common.RPCMethods["GET"][common.QueryDataReferenceKeys].Enabled {
+		if !common.RPCMethods["GET"][config.QueryDataReferenceKeys].Enabled {
 			response.Response, response.Error, statusCode = common.ServeError(0, "", "API disabled", http.StatusForbidden)
 		} else {
-			if common.RPCMethods["GET"][common.QueryDataReferenceKeys].CachingEnabled {
+			if common.RPCMethods["GET"][config.QueryDataReferenceKeys].CachingEnabled {
 				found, cacheResponse, cacheError, cacheStatus := common.SearchCache(request, response)
 				if found {
 					response.Response, response.Error, statusCode = cacheResponse, cacheError, cacheStatus
@@ -76,7 +77,7 @@ func QueryDataReferenceKeysRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string
 			response.Response, response.Error, statusCode = queryDataReferenceKeysHandle(r, gwCosmosmux)
 		}
 
-		common.WrapResponse(w, request, *response, statusCode, common.RPCMethods["GET"][common.QueryDataReferenceKeys].CachingEnabled)
+		common.WrapResponse(w, request, *response, statusCode, common.RPCMethods["GET"][config.QueryDataReferenceKeys].CachingEnabled)
 	}
 }
 
@@ -105,7 +106,7 @@ func queryDataReferenceHandle(r *http.Request, gwCosmosmux *runtime.ServeMux, ke
 
 		filePath := key + filepath.Ext(result.Data.Reference)
 
-		database.AddReference(key, result.Data.Reference, 0, time.Now(), common.DataReferenceRegistry+"/"+common.GetMD5Hash(filePath))
+		database.AddReference(key, result.Data.Reference, 0, time.Now(), config.DataReferenceRegistry+"/"+common.GetMD5Hash(filePath))
 	}
 
 	return success, failure, status
@@ -118,7 +119,7 @@ func QueryDataReferenceRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string) ht
 		key := queries["key"]
 		request := types.InterxRequest{
 			Method:   r.Method,
-			Endpoint: common.QueryDataReference,
+			Endpoint: config.QueryDataReference,
 			Params:   []byte(key),
 		}
 		response := common.GetResponseFormat(request, rpcAddr)
@@ -126,10 +127,10 @@ func QueryDataReferenceRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string) ht
 
 		common.GetLogger().Info("[query-reference] Entering data reference query by key: ", key)
 
-		if !common.RPCMethods["GET"][common.QueryDataReference].Enabled {
+		if !common.RPCMethods["GET"][config.QueryDataReference].Enabled {
 			response.Response, response.Error, statusCode = common.ServeError(0, "", "API disabled", http.StatusForbidden)
 		} else {
-			if common.RPCMethods["GET"][common.QueryDataReference].CachingEnabled {
+			if common.RPCMethods["GET"][config.QueryDataReference].CachingEnabled {
 				found, cacheResponse, cacheError, cacheStatus := common.SearchCache(request, response)
 				if found {
 					response.Response, response.Error, statusCode = cacheResponse, cacheError, cacheStatus
@@ -143,6 +144,6 @@ func QueryDataReferenceRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string) ht
 			response.Response, response.Error, statusCode = queryDataReferenceHandle(r, gwCosmosmux, key)
 		}
 
-		common.WrapResponse(w, request, *response, statusCode, common.RPCMethods["GET"][common.QueryDataReference].CachingEnabled)
+		common.WrapResponse(w, request, *response, statusCode, common.RPCMethods["GET"][config.QueryDataReference].CachingEnabled)
 	}
 }

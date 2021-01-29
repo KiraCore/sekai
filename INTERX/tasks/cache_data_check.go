@@ -9,15 +9,19 @@ import (
 	"time"
 
 	"github.com/KiraCore/sekai/INTERX/common"
-	interx "github.com/KiraCore/sekai/INTERX/config"
+	"github.com/KiraCore/sekai/INTERX/config"
 	"github.com/KiraCore/sekai/INTERX/types"
 )
 
 // CacheDataCheck is a function to check cache data if it's expired.
 func CacheDataCheck(rpcAddr string, isLog bool) {
 	for {
-		err := filepath.Walk(interx.GetResponseCacheDir(),
+		err := filepath.Walk(config.GetResponseCacheDir(),
 			func(path string, info os.FileInfo, err error) error {
+				if _, err := os.Stat(path); os.IsNotExist(err) {
+					return nil
+				}
+
 				if err != nil {
 					return err
 				}
@@ -39,7 +43,7 @@ func CacheDataCheck(rpcAddr string, isLog bool) {
 					}
 				}
 
-				if path != interx.GetResponseCacheDir() && delete {
+				if path != config.GetResponseCacheDir() && delete {
 					if isLog {
 						common.GetLogger().Info("[cache] Deleting file: ", path)
 					}

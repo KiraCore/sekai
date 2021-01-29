@@ -1,0 +1,73 @@
+syntax="proto3";
+package kira.staking;
+
+import "kira/staking/pagination.proto";
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+// Defines the import path that should be used to import the generated package,
+// and the package name.
+option go_package = "github.com/KiraCore/sekai/INTERX/proto";
+
+// These annotations are used when generating the OpenAPI file.
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    version: "1.0";
+  };
+  external_docs: {
+    url: "https://github.com/KiraCore/sekai/INTERX";
+    description: "gRPC-gateway";
+  }
+  schemes: HTTP;
+};
+
+service Query {
+  // Validators queries all validators that match the given status.
+  rpc Validators(ValidatorsRequest) returns (ValidatorsResponse) {
+    option (google.api.http).get = "/api/valopers";
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Query All Validators"
+      description: "Query Validators."
+      tags: "query"
+    };
+  }
+}
+
+// ValidatorsRequest is the request type for the Query/AllValidators RPC method.
+message ValidatorsRequest {
+  string address = 1;
+  string valkey = 2;
+  string pubkey = 3;
+  string moniker = 4;
+  string status = 5;
+  
+  // pagination defines an optional pagination for the request.
+  kira.staking.PageRequest pagination = 6 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
+}
+
+message QueryValidator {
+  option (gogoproto.equal)            = true;
+
+  string address = 1;
+  string valkey = 2;
+  string pubkey = 3;
+  string moniker = 4;
+  string website = 5;
+  string social = 6;
+  string identity = 7;
+  string commission = 8;
+  string status = 9;
+  int64 rank = 10;
+  int64 streak = 11;
+  int64 mischance = 12;
+}
+
+// ValidatorsResponse is response type for the Query/Validators RPC method
+message ValidatorsResponse {
+  // validators contains all the queried validators.
+  repeated QueryValidator validators = 1;
+
+  // pagination defines the pagination in the response.
+  kira.staking.PageResponse pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
+}

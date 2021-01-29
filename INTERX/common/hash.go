@@ -8,6 +8,12 @@ import (
 	"golang.org/x/crypto/blake2b"
 )
 
+// GetBlake2bHashFromBytes is a function to get hash
+func GetBlake2bHashFromBytes(data []byte) string {
+	hash := blake2b.Sum256(data)
+	return fmt.Sprintf("%X", hash)
+}
+
 // GetBlake2bHash is a function to get hash
 func GetBlake2bHash(request interface{}) string {
 	// Calculate blake2b hash
@@ -16,8 +22,7 @@ func GetBlake2bHash(request interface{}) string {
 		GetLogger().Error("[blake2b-hash] Unable to marshal request: ", err)
 	}
 
-	hash := blake2b.Sum256([]byte(requestJSON))
-	return fmt.Sprintf("%X", hash)
+	return GetBlake2bHashFromBytes(requestJSON)
 }
 
 // GetMD5Hash is a function to get hash

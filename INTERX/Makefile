@@ -18,7 +18,7 @@ generate:
 	statik -m -f -src third_party/OpenAPI/
 
 install: go.sum
-		go install .
+		go build -o $(GOBIN)/interxd
 
 start:
 	go run main.go

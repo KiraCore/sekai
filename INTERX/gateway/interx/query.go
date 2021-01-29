@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/KiraCore/sekai/INTERX/common"
-	interx "github.com/KiraCore/sekai/INTERX/config"
+	"github.com/KiraCore/sekai/INTERX/config"
 	functions "github.com/KiraCore/sekai/INTERX/functions"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
@@ -13,12 +13,12 @@ import (
 
 // RegisterInterxQueryRoutes registers query routers.
 func RegisterInterxQueryRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr string) {
-	r.HandleFunc(common.QueryRPCMethods, QueryRPCMethods(rpcAddr)).Methods("GET")
-	r.HandleFunc(common.QueryInterxFunctions, QueryInterxFunctions(rpcAddr)).Methods("GET")
-	r.HandleFunc(common.QueryStatus, QueryStatusRequest(rpcAddr)).Methods("GET")
+	r.HandleFunc(config.QueryRPCMethods, QueryRPCMethods(rpcAddr)).Methods("GET")
+	r.HandleFunc(config.QueryInterxFunctions, QueryInterxFunctions(rpcAddr)).Methods("GET")
+	r.HandleFunc(config.QueryStatus, QueryStatusRequest(rpcAddr)).Methods("GET")
 
-	common.AddRPCMethod("GET", common.QueryInterxFunctions, "This is an API to query interx functions.", true)
-	common.AddRPCMethod("GET", common.QueryStatus, "This is an API to query status.", true)
+	common.AddRPCMethod("GET", config.QueryInterxFunctions, "This is an API to query interx functions.", true)
+	common.AddRPCMethod("GET", config.QueryStatus, "This is an API to query interx status.", true)
 }
 
 // QueryRPCMethods is a function to query RPC methods.
@@ -54,42 +54,27 @@ func QueryInterxFunctions(rpcAddr string) http.HandlerFunc {
 }
 
 func queryStatusHandle(rpcAddr string) (interface{}, interface{}, int) {
-	success, failure, status := common.MakeGetRequest(rpcAddr, "/status", "")
-
-	if success != nil {
-		type StatusTempResponse struct {
-			NodeInfo      interface{} `json:"node_info,omitempty"`
-			SyncInfo      interface{} `json:"sync_info,omitempty"`
-			ValidatorInfo interface{} `json:"validator_info,omitempty"`
-			InterxInfo    struct {
-				PubKey interface{} `json:"pub_key,omitempty"`
-			} `json:"interx_info,omitempty"`
-		}
-
-		result := StatusTempResponse{}
-		byteData, err := json.Marshal(success)
-		err = json.Unmarshal(byteData, &result)
-		if err != nil {
-			common.GetLogger().Error("[query-status] Invalid response format", err)
-			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
-		}
-
-		pubkeyBytes, err := interx.EncodingCg.Amino.MarshalJSON(interx.Config.PubKey)
-		if err != nil {
-			common.GetLogger().Error("[query-status] Failed to marshal interx pubkey", err)
-			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
-		}
-
-		err = json.Unmarshal(pubkeyBytes, &result.InterxInfo.PubKey)
-		if err != nil {
-			common.GetLogger().Error("[query-status] Failed to add interx pubkey to status response", err)
-			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
-		}
-
-		success = result
+	type StatusTempResponse struct {
+		InterxInfo struct {
+			PubKey interface{} `json:"pub_key,omitempty"`
+		} `json:"interx_info,omitempty"`
 	}
 
-	return success, failure, status
+	result := StatusTempResponse{}
+
+	pubkeyBytes, err := config.EncodingCg.Amino.MarshalJSON(config.Config.PubKey)
+	if err != nil {
+		common.GetLogger().Error("[query-status] Failed to marshal interx pubkey", err)
+		return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
+	}
+
+	err = json.Unmarshal(pubkeyBytes, &result.InterxInfo.PubKey)
+	if err != nil {
+		common.GetLogger().Error("[query-status] Failed to add interx pubkey to status response", err)
+		return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
+	}
+
+	return result, nil, http.StatusOK
 }
 
 // QueryStatusRequest is a function to query status.
@@ -101,10 +86,10 @@ func QueryStatusRequest(rpcAddr string) http.HandlerFunc {
 
 		common.GetLogger().Info("[query-status] Entering status query")
 
-		if !common.RPCMethods["GET"][common.QueryStatus].Enabled {
+		if !common.RPCMethods["GET"][config.QueryStatus].Enabled {
 			response.Response, response.Error, statusCode = common.ServeError(0, "", "API disabled", http.StatusForbidden)
 		} else {
-			if common.RPCMethods["GET"][common.QueryStatus].CachingEnabled {
+			if common.RPCMethods["GET"][config.QueryStatus].CachingEnabled {
 				found, cacheResponse, cacheError, cacheStatus := common.SearchCache(request, response)
 				if found {
 					response.Response, response.Error, statusCode = cacheResponse, cacheError, cacheStatus
@@ -118,6 +103,6 @@ func QueryStatusRequest(rpcAddr string) http.HandlerFunc {
 			response.Response, response.Error, statusCode = queryStatusHandle(rpcAddr)
 		}
 
-		common.WrapResponse(w, request, *response, statusCode, common.RPCMethods["GET"][common.QueryStatus].CachingEnabled)
+		common.WrapResponse(w, request, *response, statusCode, common.RPCMethods["GET"][config.QueryStatus].CachingEnabled)
 	}
 }
