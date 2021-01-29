@@ -15,58 +15,33 @@ Use following command in the root respository of INTERX.
 make install
 ```
 
-It will install INTERX binary to `$GOBIN`.
+It will install INTERX binary(`interxd`) to `$GOBIN`.
 
 ### How to start
 
-#### Start with default settings
-
-##### Environment Configuration
-
-- `PORT` will be the INTERX port. (default = `11000`)
-- `SERVE_HTTP` will be the INTERX protocol option. (default = `true`)
-- `GRPC` will be the sekai GRPC endpoint. (default = `dns:///0.0.0.0:9090`)
-- `RPC` will be the sekai Tendermint RPC endpoint. (default = `RPC=http://0.0.0.0:26657`)
-
-##### Run INTERX
-
-You can run interx using the following command after installation.
-
-- Default Setting
-
+Simple start:
 ```bash
-interx
+interxd init
+interxd start
 ```
 
-It will be the same as following:
+#### `interxd init`
+Generate configuration file.
 
-```bash
-PORT=11100 SERVE_HTTP=false GRPC=dns:///0.0.0.0:9090 RPC=http://0.0.0.0:26657 interx
-```
+Parameters:
+- `config` - The interx configuration file path. (default = "./config.json")
+- `grpc` - The grpc endpoint of the sekaid. (default = "dns:///0.0.0.0:9090")
+- `rpc` - The tendermint rpc endpoint of the sekaid (default = "http://0.0.0.0:26657")
+- `port` - The interx port. (default = "11000")
+- `signing_mnemonic` - The mnemonic file path or word seeds for interx singing service. (deafult = auto generated word seeds)
+- `faucet_mnemonic` - The mnemonic file path or word seeds for faucet service. (deafult = auto generated word seeds)
+- `cache_dir` - The interx cache directory path. (deafult = "cache")
 
-- `PORT`
+#### `interxd start`
+Start interx service.
 
-```bash
-PORT=11100 interx
-```
-
-- `SERVE_HTTP`
-
-```bash
-SERVE_HTTP=false interx
-```
-
-- `GRPC`
-
-```bash
-GRPC=dns:///0.0.0.0:9090 interx
-```
-
-- `RPC`
-
-```bash
-RPC=http://0.0.0.0:26657 interx
-```
+Parameters:
+- `config` - The interx configuration file path. (default = "./config.json")
 
 ## Configuration
 

@@ -26,12 +26,12 @@ import (
 
 // RegisterInterxTxRoutes registers tx query routers.
 func RegisterInterxTxRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr string) {
-	r.HandleFunc(common.QueryWithdraws, QueryWithdraws(rpcAddr)).Methods("GET")
-	r.HandleFunc(common.QueryDeposits, QueryDeposits(rpcAddr)).Methods("GET")
+	r.HandleFunc(config.QueryWithdraws, QueryWithdraws(rpcAddr)).Methods("GET")
+	r.HandleFunc(config.QueryDeposits, QueryDeposits(rpcAddr)).Methods("GET")
 
-	common.AddRPCMethod("GET", common.QueryKiraFunctions, "This is an API to query kira functions and metadata.", true)
-	common.AddRPCMethod("GET", common.QueryWithdraws, "This is an API to query withdraw transactions.", true)
-	common.AddRPCMethod("GET", common.QueryDeposits, "This is an API to query deposit transactions.", true)
+	common.AddRPCMethod("GET", config.QueryKiraFunctions, "This is an API to query kira functions and metadata.", true)
+	common.AddRPCMethod("GET", config.QueryWithdraws, "This is an API to query withdraw transactions.", true)
+	common.AddRPCMethod("GET", config.QueryDeposits, "This is an API to query deposit transactions.", true)
 }
 
 func toSnakeCase(str string) string {
@@ -473,10 +473,10 @@ func QueryWithdraws(rpcAddr string) http.HandlerFunc {
 
 		common.GetLogger().Info("[query-withdraws] Entering withdraws query")
 
-		if !common.RPCMethods["GET"][common.QueryWithdraws].Enabled {
+		if !common.RPCMethods["GET"][config.QueryWithdraws].Enabled {
 			response.Response, response.Error, statusCode = common.ServeError(0, "", "API disabled", http.StatusForbidden)
 		} else {
-			if common.RPCMethods["GET"][common.QueryWithdraws].CachingEnabled {
+			if common.RPCMethods["GET"][config.QueryWithdraws].CachingEnabled {
 				found, cacheResponse, cacheError, cacheStatus := common.SearchCache(request, response)
 				if found {
 					response.Response, response.Error, statusCode = cacheResponse, cacheError, cacheStatus
@@ -490,7 +490,7 @@ func QueryWithdraws(rpcAddr string) http.HandlerFunc {
 			response.Response, response.Error, statusCode = queryTransactionsHandler(rpcAddr, r, true)
 		}
 
-		common.WrapResponse(w, request, *response, statusCode, common.RPCMethods["GET"][common.QueryStatus].CachingEnabled)
+		common.WrapResponse(w, request, *response, statusCode, common.RPCMethods["GET"][config.QueryStatus].CachingEnabled)
 	}
 }
 
@@ -503,10 +503,10 @@ func QueryDeposits(rpcAddr string) http.HandlerFunc {
 
 		common.GetLogger().Error("[query-deposits] Entering withdraws query")
 
-		if !common.RPCMethods["GET"][common.QueryDeposits].Enabled {
+		if !common.RPCMethods["GET"][config.QueryDeposits].Enabled {
 			response.Response, response.Error, statusCode = common.ServeError(0, "", "API disabled", http.StatusForbidden)
 		} else {
-			if common.RPCMethods["GET"][common.QueryDeposits].CachingEnabled {
+			if common.RPCMethods["GET"][config.QueryDeposits].CachingEnabled {
 				found, cacheResponse, cacheError, cacheStatus := common.SearchCache(request, response)
 				if found {
 					response.Response, response.Error, statusCode = cacheResponse, cacheError, cacheStatus
@@ -520,6 +520,6 @@ func QueryDeposits(rpcAddr string) http.HandlerFunc {
 			response.Response, response.Error, statusCode = queryTransactionsHandler(rpcAddr, r, false)
 		}
 
-		common.WrapResponse(w, request, *response, statusCode, common.RPCMethods["GET"][common.QueryStatus].CachingEnabled)
+		common.WrapResponse(w, request, *response, statusCode, common.RPCMethods["GET"][config.QueryStatus].CachingEnabled)
 	}
 }

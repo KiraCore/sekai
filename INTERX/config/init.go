@@ -6,6 +6,29 @@ import (
 	"io/ioutil"
 )
 
+func getGetMethods() []string {
+	return []string{
+		QueryAccounts,
+		QueryTotalSupply,
+		QueryBalances,
+		QueryTransactionHash,
+		QueryDataReferenceKeys,
+		QueryDataReference,
+		QueryKiraStatus,
+		QueryWithdraws,
+		QueryDeposits,
+		QueryStatus,
+		QueryValidators, //
+	}
+}
+
+func getPostMethods() []string {
+	return []string{
+		PostTransaction,
+		EncodeTransaction,
+	}
+}
+
 func defaultConfig() InterxConfigFromFile {
 	configFromFile := InterxConfigFromFile{}
 
@@ -36,11 +59,29 @@ func defaultConfig() InterxConfigFromFile {
 	configFromFile.Faucet.FeeAmounts["ukex"] = "1000ukex"
 	configFromFile.Faucet.TimeLimit = 20
 
+	defaultRpcSetting := RPCSetting{
+		Disable:         false,
+		RateLimit:       0,
+		AuthRateLimit:   0,
+		CachingDisable:  false,
+		CachingDuration: 30,
+	}
+
+	configFromFile.RPCMethods.API = make(map[string]map[string]RPCSetting)
+	configFromFile.RPCMethods.API["GET"] = make(map[string]RPCSetting)
+	configFromFile.RPCMethods.API["POST"] = make(map[string]RPCSetting)
+	for _, item := range getGetMethods() {
+		configFromFile.RPCMethods.API["GET"][item] = defaultRpcSetting
+	}
+	for _, item := range getPostMethods() {
+		configFromFile.RPCMethods.API["POST"][item] = defaultRpcSetting
+	}
+
 	return configFromFile
 }
 
 // InitConfig is a function to load interx configurations from a given file
-func InitConfig(configFilePath string, grpc string, rpc string, port string, signingMnemonic string, faucetMnemonic string) {
+func InitConfig(configFilePath string, grpc string, rpc string, port string, signingMnemonic string, faucetMnemonic string, cacheDir string) {
 	fmt.Println(configFilePath, grpc, rpc, port)
 	configFromFile := defaultConfig()
 
@@ -48,6 +89,10 @@ func InitConfig(configFilePath string, grpc string, rpc string, port string, sig
 	configFromFile.RPC = rpc
 	configFromFile.PORT = port
 	configFromFile.MnemonicFile = LoadMnemonic(signingMnemonic)
+
+	configFromFile.Cache.CacheDir = cacheDir
+
+	configFromFile.Faucet.MnemonicFile = LoadMnemonic(signingMnemonic)
 
 	bytes, err := json.MarshalIndent(&configFromFile, "", "    ")
 	if err != nil {

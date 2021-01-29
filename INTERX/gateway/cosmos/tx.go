@@ -16,13 +16,13 @@ import (
 
 // RegisterCosmosTxRoutes registers query routers.
 func RegisterCosmosTxRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr string) {
-	r.HandleFunc(common.PostTransaction, PostTxRequest(rpcAddr)).Methods("POST")
-	r.HandleFunc(common.EncodeTransaction, EncodeTransaction(rpcAddr)).Methods("POST")
+	r.HandleFunc(config.PostTransaction, PostTxRequest(rpcAddr)).Methods("POST")
+	r.HandleFunc(config.EncodeTransaction, EncodeTransaction(rpcAddr)).Methods("POST")
 	r.HandleFunc("/api/cosmos/txs/{hash}", QueryTxHashRequest(rpcAddr)).Methods("GET")
 
-	common.AddRPCMethod("POST", common.PostTransaction, "This is an API to post transaction.", false)
-	common.AddRPCMethod("POST", common.EncodeTransaction, "This is an API to encode transaction.", true)
-	common.AddRPCMethod("GET", common.QueryTransactionHash, "This is an API to query transaction from transaction hash.", true)
+	common.AddRPCMethod("POST", config.PostTransaction, "This is an API to post transaction.", false)
+	common.AddRPCMethod("POST", config.EncodeTransaction, "This is an API to encode transaction.", true)
+	common.AddRPCMethod("GET", config.QueryTransactionHash, "This is an API to query transaction from transaction hash.", true)
 }
 
 // PostTxReq defines a tx broadcasting request.
@@ -81,7 +81,7 @@ func PostTxRequest(rpcAddr string) http.HandlerFunc {
 
 		common.GetLogger().Info("[post-transaction] Entering transaction broadcast: ")
 
-		if !common.RPCMethods["POST"][common.PostTransaction].Enabled {
+		if !common.RPCMethods["POST"][config.PostTransaction].Enabled {
 			response.Response, response.Error, statusCode = common.ServeError(0, "", "API disabled", http.StatusForbidden)
 		} else {
 			response.Response, response.Error, statusCode = postTxHandle(r, request, rpcAddr)
@@ -102,7 +102,7 @@ func QueryTxHashRequest(rpcAddr string) http.HandlerFunc {
 		hash := queries["hash"]
 		request := types.InterxRequest{
 			Method:   r.Method,
-			Endpoint: common.QueryTransactionHash,
+			Endpoint: config.QueryTransactionHash,
 			Params:   []byte(hash),
 		}
 		response := common.GetResponseFormat(request, rpcAddr)
@@ -110,10 +110,10 @@ func QueryTxHashRequest(rpcAddr string) http.HandlerFunc {
 
 		common.GetLogger().Info("[query-txhash] Entering transaction hash query: ", hash)
 
-		if !common.RPCMethods["GET"][common.QueryTransactionHash].Enabled {
+		if !common.RPCMethods["GET"][config.QueryTransactionHash].Enabled {
 			response.Response, response.Error, statusCode = common.ServeError(0, "", "API disabled", http.StatusForbidden)
 		} else {
-			if common.RPCMethods["GET"][common.QueryTransactionHash].CachingEnabled {
+			if common.RPCMethods["GET"][config.QueryTransactionHash].CachingEnabled {
 				found, cacheResponse, cacheError, cacheStatus := common.SearchCache(request, response)
 				if found {
 					response.Response, response.Error, statusCode = cacheResponse, cacheError, cacheStatus
@@ -127,7 +127,7 @@ func QueryTxHashRequest(rpcAddr string) http.HandlerFunc {
 			response.Response, response.Error, statusCode = queryTxHashHandle(hash, rpcAddr)
 		}
 
-		common.WrapResponse(w, request, *response, statusCode, common.RPCMethods["GET"][common.QueryTransactionHash].CachingEnabled)
+		common.WrapResponse(w, request, *response, statusCode, common.RPCMethods["GET"][config.QueryTransactionHash].CachingEnabled)
 	}
 }
 
@@ -168,10 +168,10 @@ func EncodeTransaction(rpcAddr string) http.HandlerFunc {
 
 		common.GetLogger().Info("[encode-transaction] Entering transaction request encoding")
 
-		if !common.RPCMethods["POST"][common.EncodeTransaction].Enabled {
+		if !common.RPCMethods["POST"][config.EncodeTransaction].Enabled {
 			response.Response, response.Error, statusCode = common.ServeError(0, "", "API disabled", http.StatusForbidden)
 		} else {
-			if common.RPCMethods["POST"][common.EncodeTransaction].CachingEnabled {
+			if common.RPCMethods["POST"][config.EncodeTransaction].CachingEnabled {
 				found, cacheResponse, cacheError, cacheStatus := common.SearchCache(request, response)
 				if found {
 					response.Response, response.Error, statusCode = cacheResponse, cacheError, cacheStatus
@@ -185,6 +185,6 @@ func EncodeTransaction(rpcAddr string) http.HandlerFunc {
 			response.Response, response.Error, statusCode = encodeTransactionHandle(r, request, rpcAddr)
 		}
 
-		common.WrapResponse(w, request, *response, statusCode, common.RPCMethods["POST"][common.EncodeTransaction].CachingEnabled)
+		common.WrapResponse(w, request, *response, statusCode, common.RPCMethods["POST"][config.EncodeTransaction].CachingEnabled)
 	}
 }

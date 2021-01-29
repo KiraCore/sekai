@@ -1,7 +1,7 @@
-package common
+package config
 
 const (
-	QueryAccounts        = "/api/cosmos/auth/accounts/{address}"
+	QueryAccounts        = "/api/cosmos/auth/accounts"
 	QueryTotalSupply     = "/api/cosmos/bank/supply"
 	QueryBalances        = "/api/cosmos/bank/balances"
 	PostTransaction      = "/api/cosmos/txs"

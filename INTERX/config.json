@@ -2,7 +2,7 @@
     "grpc": "dns:///0.0.0.0:9090",
     "rpc": "http://0.0.0.0:26657",
     "port": "11000",
-    "mnemonic": "swap exercise equip shoot mad inside floor wheel loan visual stereo build frozen always bulb naive subway foster marine erosion shuffle flee action there",
+    "mnemonic": "blouse reject scene ordinary enrich device only huge taste still thrive cherry cereal labor road equal baby aim green pumpkin slice fabric flower museum",
     "cache": {
         "status_sync": 5,
         "cache_dir": "cache",
@@ -11,7 +11,7 @@
         "download_file_size_limitation": "10 MB"
     },
     "faucet": {
-        "mnemonic": "equip exercise shoot mad inside floor wheel loan visual stereo build frozen potato always bulb naive subway foster marine erosion shuffle flee action there",
+        "mnemonic": "blouse reject scene ordinary enrich device only huge taste still thrive cherry cereal labor road equal baby aim green pumpkin slice fabric flower museum",
         "faucet_amounts": {
             "stake": 100000,
             "ukex": 100000,
@@ -30,6 +30,102 @@
         "time_limit": 20
     },
     "rpc_methods": {
-        "API": null
+        "API": {
+            "GET": {
+                "/api/cosmos/auth/accounts": {
+                    "disable": false,
+                    "rate_limit": 0,
+                    "auth_rate_limit": 0,
+                    "caching_disable": false,
+                    "caching_duration": 30
+                },
+                "/api/cosmos/bank/balances": {
+                    "disable": false,
+                    "rate_limit": 0,
+                    "auth_rate_limit": 0,
+                    "caching_disable": false,
+                    "caching_duration": 30
+                },
+                "/api/cosmos/bank/supply": {
+                    "disable": false,
+                    "rate_limit": 0,
+                    "auth_rate_limit": 0,
+                    "caching_disable": false,
+                    "caching_duration": 30
+                },
+                "/api/cosmos/txs": {
+                    "disable": false,
+                    "rate_limit": 0,
+                    "auth_rate_limit": 0,
+                    "caching_disable": false,
+                    "caching_duration": 30
+                },
+                "/api/deposits": {
+                    "disable": false,
+                    "rate_limit": 0,
+                    "auth_rate_limit": 0,
+                    "caching_disable": false,
+                    "caching_duration": 30
+                },
+                "/api/kira/gov/data": {
+                    "disable": false,
+                    "rate_limit": 0,
+                    "auth_rate_limit": 0,
+                    "caching_disable": false,
+                    "caching_duration": 30
+                },
+                "/api/kira/gov/data_keys": {
+                    "disable": false,
+                    "rate_limit": 0,
+                    "auth_rate_limit": 0,
+                    "caching_disable": false,
+                    "caching_duration": 30
+                },
+                "/api/kira/status": {
+                    "disable": false,
+                    "rate_limit": 0,
+                    "auth_rate_limit": 0,
+                    "caching_disable": false,
+                    "caching_duration": 30
+                },
+                "/api/status": {
+                    "disable": false,
+                    "rate_limit": 0,
+                    "auth_rate_limit": 0,
+                    "caching_disable": false,
+                    "caching_duration": 30
+                },
+                "/api/valopers": {
+                    "disable": false,
+                    "rate_limit": 0,
+                    "auth_rate_limit": 0,
+                    "caching_disable": false,
+                    "caching_duration": 30
+                },
+                "/api/withdraws": {
+                    "disable": false,
+                    "rate_limit": 0,
+                    "auth_rate_limit": 0,
+                    "caching_disable": false,
+                    "caching_duration": 30
+                }
+            },
+            "POST": {
+                "/api/cosmos/txs": {
+                    "disable": false,
+                    "rate_limit": 0,
+                    "auth_rate_limit": 0,
+                    "caching_disable": false,
+                    "caching_duration": 30
+                },
+                "/api/cosmos/txs/encode": {
+                    "disable": false,
+                    "rate_limit": 0,
+                    "auth_rate_limit": 0,
+                    "caching_disable": false,
+                    "caching_duration": 30
+                }
+            }
+        }
     }
 }
