@@ -58,16 +58,16 @@ func GenTxClaimCmd(genBalIterator types2.GenesisBalancesIterator, defaultNodeHom
 				moniker = m
 			}
 
-			amount, _ := cmd.Flags().GetString(cli.FlagAmount)
-			coins, err := types.ParseCoins(amount)
-			if err != nil {
-				return errors.Wrap(err, "failed to parse coins")
-			}
+			//amount, _ := cmd.Flags().GetString(cli.FlagAmount)
+			//coins, err := types.ParseCoins(amount)
+			//if err != nil {
+			//	return errors.Wrap(err, "failed to parse coins")
+			//}
 
-			err = genutil.ValidateAccountInGenesis(appState, genBalIterator, key.GetAddress(), coins, cdc)
-			if err != nil {
-				return errors.Wrap(err, "failed to validate account in genesis")
-			}
+			//err = genutil.ValidateAccountInGenesis(appState, genBalIterator, key.GetAddress(), coins, cdc)
+			//if err != nil {
+			//	return errors.Wrap(err, "failed to validate account in genesis")
+			//}
 
 			website, _ := cmd.Flags().GetString(FlagWebsite)
 			identity, _ := cmd.Flags().GetString(FlagIdentity)

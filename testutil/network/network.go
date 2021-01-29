@@ -20,7 +20,6 @@ import (
 
 	"github.com/stretchr/testify/require"
 	tmcfg "github.com/tendermint/tendermint/config"
-	"github.com/tendermint/tendermint/crypto"
 	tmflags "github.com/tendermint/tendermint/libs/cli/flags"
 	"github.com/tendermint/tendermint/libs/log"
 	tmrand "github.com/tendermint/tendermint/libs/rand"
@@ -31,11 +30,11 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/crypto/hd"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
+	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	"github.com/cosmos/cosmos-sdk/server"
 	"github.com/cosmos/cosmos-sdk/server/api"
 	srvconfig "github.com/cosmos/cosmos-sdk/server/config"
@@ -47,7 +46,6 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/genutil"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
 
 // DefaultBondDenom defines default denom for fee
@@ -154,7 +152,7 @@ type (
 		Ctx        *server.Context
 		Dir        string
 		NodeID     string
-		PubKey     crypto.PubKey
+		PubKey     cryptotypes.PubKey
 		Moniker    string
 		APIAddress string
 		RPCAddress string
@@ -189,7 +187,7 @@ func New(t *testing.T, cfg Config) *Network {
 
 	monikers := make([]string, cfg.NumValidators)
 	nodeIDs := make([]string, cfg.NumValidators)
-	valPubKeys := make([]crypto.PubKey, cfg.NumValidators)
+	valPubKeys := make([]cryptotypes.PubKey, cfg.NumValidators)
 
 	var (
 		genAccounts []authtypes.GenesisAccount
@@ -247,7 +245,6 @@ func New(t *testing.T, cfg Config) *Network {
 		nodeDirName := fmt.Sprintf("node%d", i)
 		nodeDir := filepath.Join(network.BaseDir, nodeDirName, "simd")
 		clientDir := filepath.Join(network.BaseDir, nodeDirName, "simcli")
-		gentxsDir := filepath.Join(network.BaseDir, "gentxs")
 
 		require.NoError(t, os.MkdirAll(filepath.Join(nodeDir, "config"), 0755))
 		require.NoError(t, os.MkdirAll(clientDir, 0755))
@@ -296,41 +293,6 @@ func New(t *testing.T, cfg Config) *Network {
 		genFiles = append(genFiles, tmCfg.GenesisFile())
 		genBalances = append(genBalances, banktypes.Balance{Address: addr.String(), Coins: balances.Sort()})
 		genAccounts = append(genAccounts, authtypes.NewBaseAccount(addr, nil, 0, 0))
-
-		commission, err := sdk.NewDecFromStr("0.5")
-		require.NoError(t, err)
-
-		createValMsg, err := stakingtypes.NewMsgCreateValidator(
-			sdk.ValAddress(addr),
-			valPubKeys[i],
-			sdk.NewCoin(DefaultBondDenom, cfg.BondedTokens),
-			stakingtypes.NewDescription(nodeDirName, "", "", "", ""),
-			stakingtypes.NewCommissionRates(commission, sdk.OneDec(), sdk.OneDec()),
-			sdk.OneInt(),
-		)
-		require.NoError(t, err)
-
-		p2pURL, err := url.Parse(p2pAddr)
-		require.NoError(t, err)
-
-		memo := fmt.Sprintf("%s@%s:%s", nodeIDs[i], p2pURL.Hostname(), p2pURL.Port())
-		txBuilder := cfg.TxConfig.NewTxBuilder()
-		require.NoError(t, txBuilder.SetMsgs(createValMsg))
-		txBuilder.SetMemo(memo)
-
-		txFactory := tx.Factory{}
-		txFactory = txFactory.
-			WithChainID(cfg.ChainID).
-			WithMemo(memo).
-			WithKeybase(kb).
-			WithTxConfig(cfg.TxConfig)
-
-		err = tx.Sign(txFactory, nodeDirName, txBuilder)
-		require.NoError(t, err)
-
-		txBz, err := cfg.TxConfig.TxJSONEncoder()(txBuilder.GetTx())
-		require.NoError(t, err)
-		require.NoError(t, writeFile(fmt.Sprintf("%v.json", nodeDirName), gentxsDir, txBz))
 
 		srvconfig.WriteConfigFile(filepath.Join(nodeDir, "config/app.toml"), appCfg)
 

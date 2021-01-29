@@ -1,9 +1,7 @@
 package types
 
-// special messages managed by governance
-const (
-	UpsertTokenAlias = "upsert-token-alias"
-	UpsertTokenRate  = "upsert-token-rate"
+import (
+	kiratypes "github.com/KiraCore/sekai/types"
 )
 
 // DefaultGenesis returns the default CustomGo genesis state
@@ -30,12 +28,14 @@ func DefaultGenesis() *GenesisState {
 		},
 		StartingProposalId: 1,
 		NetworkProperties: &NetworkProperties{
-			MinTxFee:                 100,
-			MaxTxFee:                 1000000,
-			VoteQuorum:               33,
-			ProposalEndTime:          1, // 1min
-			ProposalEnactmentTime:    2, // 2min
-			EnableForeignFeePayments: true,
+			MinTxFee:                    100,
+			MaxTxFee:                    1000000,
+			VoteQuorum:                  33,
+			ProposalEndTime:             1, // 1min
+			ProposalEnactmentTime:       2, // 2min
+			EnableForeignFeePayments:    true,
+			MischanceRankDecreaseAmount: 10,
+			InactiveRankDecreasePercent: 50, // 50%
 		},
 		ExecutionFees: []*ExecutionFee{
 			{
@@ -88,9 +88,33 @@ func DefaultGenesis() *GenesisState {
 			},
 			{
 				Name:              "Upsert Token Alias Execution Fee",
-				TransactionType:   UpsertTokenAlias,
+				TransactionType:   kiratypes.MsgTypeUpsertTokenAlias,
 				ExecutionFee:      10,
 				FailureFee:        1,
+				Timeout:           10,
+				DefaultParameters: 0,
+			},
+			{
+				Name:              "Activate a validator",
+				TransactionType:   kiratypes.MsgTypeActivate,
+				ExecutionFee:      100,
+				FailureFee:        1000,
+				Timeout:           10,
+				DefaultParameters: 0,
+			},
+			{
+				Name:              "Pause a validator",
+				TransactionType:   kiratypes.MsgTypePause,
+				ExecutionFee:      10,
+				FailureFee:        100,
+				Timeout:           10,
+				DefaultParameters: 0,
+			},
+			{
+				Name:              "Unpause a validator",
+				TransactionType:   kiratypes.MsgTypeUnpause,
+				ExecutionFee:      10,
+				FailureFee:        100,
 				Timeout:           10,
 				DefaultParameters: 0,
 			},

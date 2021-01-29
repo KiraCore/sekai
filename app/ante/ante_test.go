@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/tendermint/tendermint/crypto"
+	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 
 	"github.com/KiraCore/sekai/types"
 	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
@@ -42,13 +42,13 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[4].acc.GetAddress(), sdk.NewInt64Coin("ubtc", 10000))
 	defaultFee := sdk.NewCoins(sdk.NewInt64Coin("ukex", 100))
 	gasLimit := testdata.NewTestGasLimit()
-	privs := []crypto.PrivKey{accounts[0].priv, accounts[1].priv, accounts[2].priv, accounts[3].priv, accounts[4].priv}
+	privs := []cryptotypes.PrivKey{accounts[0].priv, accounts[1].priv, accounts[2].priv, accounts[3].priv, accounts[4].priv}
 	accNums := []uint64{0, 1, 2, 3, 4}
 
 	testCases := []TestCase{
 		{
 			"insufficient max execution fee set",
-			func() ([]sdk.Msg, []crypto.PrivKey, []uint64, []uint64, sdk.Coins) {
+			func() ([]sdk.Msg, []cryptotypes.PrivKey, []uint64, []uint64, sdk.Coins) {
 				msgs := []sdk.Msg{
 					customgovtypes.NewMsgSetNetworkProperties(accounts[0].acc.GetAddress(), &customgovtypes.NetworkProperties{
 						MinTxFee:                 2,
@@ -64,7 +64,7 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 		},
 		{
 			"execution failure fee deduction",
-			func() ([]sdk.Msg, []crypto.PrivKey, []uint64, []uint64, sdk.Coins) {
+			func() ([]sdk.Msg, []cryptotypes.PrivKey, []uint64, []uint64, sdk.Coins) {
 				msgs := []sdk.Msg{
 					customgovtypes.NewMsgSetNetworkProperties(accounts[1].acc.GetAddress(), &customgovtypes.NetworkProperties{
 						MinTxFee:                 2,
@@ -80,7 +80,7 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 		},
 		{
 			"no execution fee deduction when does not exist",
-			func() ([]sdk.Msg, []crypto.PrivKey, []uint64, []uint64, sdk.Coins) {
+			func() ([]sdk.Msg, []cryptotypes.PrivKey, []uint64, []uint64, sdk.Coins) {
 				msgs := []sdk.Msg{
 					customgovtypes.NewMsgSetExecutionFee(
 						types.MsgTypeSetNetworkProperties,
@@ -100,7 +100,7 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 		},
 		{
 			"insufficient balance to pay for fee",
-			func() ([]sdk.Msg, []crypto.PrivKey, []uint64, []uint64, sdk.Coins) {
+			func() ([]sdk.Msg, []cryptotypes.PrivKey, []uint64, []uint64, sdk.Coins) {
 				msgs := []sdk.Msg{
 					customgovtypes.NewMsgSetExecutionFee(
 						types.MsgTypeSetNetworkProperties,
@@ -120,7 +120,7 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 		},
 		{
 			"fee out of range",
-			func() ([]sdk.Msg, []crypto.PrivKey, []uint64, []uint64, sdk.Coins) {
+			func() ([]sdk.Msg, []cryptotypes.PrivKey, []uint64, []uint64, sdk.Coins) {
 				msgs := []sdk.Msg{
 					customgovtypes.NewMsgSetExecutionFee(
 						types.MsgTypeSetNetworkProperties,
@@ -140,7 +140,7 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 		},
 		{
 			"foreign currency as fee payment when EnableForeignFeePayments is enabled by governance",
-			func() ([]sdk.Msg, []crypto.PrivKey, []uint64, []uint64, sdk.Coins) {
+			func() ([]sdk.Msg, []cryptotypes.PrivKey, []uint64, []uint64, sdk.Coins) {
 				suite.app.CustomGovKeeper.SetNetworkProperties(suite.ctx, &customgovtypes.NetworkProperties{
 					MinTxFee:                 2,
 					MaxTxFee:                 10000,
@@ -165,7 +165,7 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 		},
 		{
 			"foreign currency as fee payment when EnableForeignFeePayments is disabled by governance",
-			func() ([]sdk.Msg, []crypto.PrivKey, []uint64, []uint64, sdk.Coins) {
+			func() ([]sdk.Msg, []cryptotypes.PrivKey, []uint64, []uint64, sdk.Coins) {
 
 				suite.app.CustomGovKeeper.SetNetworkProperties(suite.ctx, &customgovtypes.NetworkProperties{
 					MinTxFee:                 2,

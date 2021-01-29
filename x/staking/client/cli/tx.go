@@ -3,7 +3,7 @@ package cli
 import (
 	"fmt"
 
-	"github.com/tendermint/tendermint/crypto"
+	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 
 	"github.com/cosmos/cosmos-sdk/server"
 
@@ -32,12 +32,12 @@ func GetTxClaimValidatorCmd() *cobra.Command {
 		Use:   "claim-validator-seat",
 		Short: "Claim validator seat to become a Validator",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-			serverCtx := server.GetServerContextFromCmd(cmd)
-			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
+
+			serverCtx := server.GetServerContextFromCmd(cmd)
 
 			moniker, _ := cmd.Flags().GetString(FlagMoniker)
 			website, _ := cmd.Flags().GetString(FlagWebsite)
@@ -46,8 +46,10 @@ func GetTxClaimValidatorCmd() *cobra.Command {
 			comission, _ := cmd.Flags().GetString(FlagComission)
 			valKeyStr, _ := cmd.Flags().GetString(FlagValKey)
 
-			// read --pubkey, if empty take it from priv_validator.json
-			var valPubKey crypto.PubKey
+			var (
+				// read --pubkey, if empty take it from priv_validator.json
+				valPubKey cryptotypes.PubKey
+			)
 			if valPubKeyString, _ := cmd.Flags().GetString(cli.FlagPubKey); valPubKeyString != "" {
 				valPubKey, err = types.GetPubKeyFromBech32(types.Bech32PubKeyTypeConsPub, valPubKeyString)
 				if err != nil {

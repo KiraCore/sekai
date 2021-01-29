@@ -3,18 +3,18 @@ package keeper
 import (
 	"context"
 
-	"github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/tendermint/tendermint/crypto"
+	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 
 	govkeeper "github.com/KiraCore/sekai/x/gov/keeper"
 	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/staking/types"
-	
+	"github.com/cosmos/cosmos-sdk/types/errors"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 type msgServer struct {
-	keeper Keeper
+	keeper    Keeper
 	govKeeper govkeeper.Keeper
 }
 
@@ -22,14 +22,14 @@ type msgServer struct {
 // for the provided Keeper.
 func NewMsgServerImpl(keeper Keeper, govKeeper govkeeper.Keeper) types.MsgServer {
 	return &msgServer{
-		keeper: keeper,
+		keeper:    keeper,
 		govKeeper: govKeeper,
 	}
 }
 
 var _ types.MsgServer = msgServer{}
 
-func (k msgServer) ClaimValidator(goCtx context.Context, msg *types.MsgClaimValidator) (*types.MsgClaimValidatorResponse, error) {	
+func (k msgServer) ClaimValidator(goCtx context.Context, msg *types.MsgClaimValidator) (*types.MsgClaimValidatorResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	isAllowed := govkeeper.CheckIfAllowedPermission(ctx, k.govKeeper, sdk.AccAddress(msg.ValKey), customgovtypes.PermClaimValidator)
@@ -37,7 +37,7 @@ func (k msgServer) ClaimValidator(goCtx context.Context, msg *types.MsgClaimVali
 		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermClaimValidator")
 	}
 
-	pk, ok := msg.PubKey.GetCachedValue().(crypto.PubKey)
+	pk, ok := msg.PubKey.GetCachedValue().(cryptotypes.PubKey)
 	if !ok {
 		return nil, errors.Wrap(errors.ErrInvalidPubKey, "Invalid pub key")
 	}
@@ -47,7 +47,7 @@ func (k msgServer) ClaimValidator(goCtx context.Context, msg *types.MsgClaimVali
 		return nil, err
 	}
 
-	k.keeper.AddValidator(ctx, validator)
+	k.keeper.AddPendingValidator(ctx, validator)
 
 	return &types.MsgClaimValidatorResponse{}, nil
 }

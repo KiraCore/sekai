@@ -1,4 +1,4 @@
-package types
+package keeper
 
 import (
 	"testing"
@@ -12,6 +12,6 @@ func TestValidatorKey(t *testing.T) {
 	valAddr := types.ValAddress("valAddr")
 	valAddr2 := types.ValAddress("valAddr2")
 
-	require.Equal(t, append([]byte{0x21}, valAddr.Bytes()...), GetValidatorKey(valAddr))
-	require.Equal(t, append([]byte{0x21}, valAddr2.Bytes()...), GetValidatorKey(valAddr2))
+	require.Equal(t, append([]byte{0x00}, valAddr.Bytes()...), GetValidatorKey(valAddr))
+	require.Equal(t, append([]byte{0x00}, valAddr2.Bytes()...), GetValidatorKey(valAddr2))
 }

@@ -6,7 +6,7 @@ import (
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 
 	"github.com/KiraCore/sekai/types"
-	"github.com/tendermint/tendermint/crypto"
+	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -20,7 +20,7 @@ func NewMsgClaimValidator(
 	identity string,
 	comission sdk.Dec,
 	valKey sdk.ValAddress,
-	pubKey crypto.PubKey,
+	pubKey cryptotypes.PubKey,
 ) (*MsgClaimValidator, error) {
 	if valKey == nil {
 		return nil, fmt.Errorf("validator not set")
@@ -30,7 +30,7 @@ func NewMsgClaimValidator(
 		return nil, fmt.Errorf("public key not set")
 	}
 
-	pkAny, err := codectypes.PackAny(pubKey)
+	pkAny, err := codectypes.NewAnyWithValue(pubKey)
 	if err != nil {
 		return nil, err
 	}

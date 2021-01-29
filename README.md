@@ -18,22 +18,6 @@ export PermUpsertTokenRate=8
 # transaction_type
 export TypeMsgSend      = "send"
 export TypeMsgMultiSend = "multisend"
-export TypeMsgVerifyInvariant = "verify_invariant"
-export TypeMsgSetWithdrawAddress          = "set_withdraw_address"
-export TypeMsgWithdrawDelegatorReward     = "withdraw_delegator_reward"
-export TypeMsgWithdrawValidatorCommission = "withdraw_validator_commission"
-export TypeMsgFundCommunityPool           = "fund_community_pool"
-export TypeMsgSubmitEvidence = "submit_evidence"
-export TypeMsgDeposit        = "deposit"
-export TypeMsgVote           = "vote"
-export TypeMsgSubmitProposal = "submit_proposal"
-export TypeMsgTransfer = "transfer"
-export TypeMsgUnjail = "unjail"
-export TypeMsgUndelegate      = "begin_unbonding"
-export TypeMsgEditValidator   = "edit_validator"
-export TypeMsgCreateValidator = "create_validator"
-export TypeMsgDelegate        = "delegate"
-export TypeMsgBeginRedelegate = "begin_redelegate"
 export MsgTypeProposalSetNetworkProperty = "proposal-set-network-property"
 export MsgTypeProposalAssignPermission   = "proposal-assign-permission"
 export MsgTypeProposalUpsertDataRegistry = "proposal-upsert-data-registry"
@@ -57,42 +41,26 @@ export MsgTypeUpsertTokenRate  = "upsert-token-rate"
 
 export FuncIDMsgSend   = 1
 export FuncIDMultiSend = 2
-export FuncIDMsgVerifyInvariant = 3
-export FuncIDMsgSetWithdrawAddress          = 4
-export FuncIDMsgWithdrawDelegatorReward     = 5
-export FuncIDMsgWithdrawValidatorCommission = 6
-export FuncIDMsgFundCommunityPool           = 7
-export FuncIDMsgSubmitEvidence = 8
-export FuncIDMsgDeposit        = 9
-export FuncIDMsgVote           = 10
-export FuncIDMsgSubmitProposal = 11
-export FuncIDMsgTransfer = 12
-export FuncIDMsgUnjail = 13
-export FuncIDMsgUndelegate      = 14
-export FuncIDMsgEditValidator   = 15
-export FuncIDMsgCreateValidator = 16
-export FuncIDMsgDelegate        = 17
-export FuncIDMsgBeginRedelegate = 18
-export FuncIDMsgProposalSetNetworkProperty = 19
-export FuncIDMsgProposalAssignPermission   = 20
-export FuncIDMsgProposalUpsertDataRegistry = 21
-export FuncIDMsgVoteProposal               = 22
-export FuncIDMsgWhitelistPermissions = 23
-export FuncIDMsgBlacklistPermissions = 24
-export FuncIDMsgClaimCouncilor       = 25
-export FuncIDMsgSetNetworkProperties = 26
-export FuncIDMsgSetExecutionFee      = 27
-export FuncIDMsgCreateRole = 28
-export FuncIDMsgAssignRole = 29
-export FuncIDMsgRemoveRole = 30
-export FuncIDMsgWhitelistRolePermission       = 31
-export FuncIDMsgBlacklistRolePermission       = 32
-export FuncIDMsgRemoveWhitelistRolePermission = 33
-export FuncIDMsgRemoveBlacklistRolePermission = 34
-export FuncIDMsgClaimValidator = 35
-export FuncIDMsgUpsertTokenAlias = 36
-export FuncIDMsgUpsertTokenRate  = 37
-export FuncIDMsgProposalUpsertTokenAlias = 38
+export FuncIDMsgProposalSetNetworkProperty = 3
+export FuncIDMsgProposalAssignPermission   = 4
+export FuncIDMsgProposalUpsertDataRegistry = 5
+export FuncIDMsgVoteProposal               = 6
+export FuncIDMsgWhitelistPermissions = 7
+export FuncIDMsgBlacklistPermissions = 8
+export FuncIDMsgClaimCouncilor       = 9
+export FuncIDMsgSetNetworkProperties = 10
+export FuncIDMsgSetExecutionFee      = 11
+export FuncIDMsgCreateRole = 12
+export FuncIDMsgAssignRole = 13
+export FuncIDMsgRemoveRole = 14
+export FuncIDMsgWhitelistRolePermission       = 15
+export FuncIDMsgBlacklistRolePermission       = 16
+export FuncIDMsgRemoveWhitelistRolePermission = 17
+export FuncIDMsgRemoveBlacklistRolePermission = 18
+export FuncIDMsgClaimValidator = 19
+export FuncIDMsgUpsertTokenAlias = 20
+export FuncIDMsgUpsertTokenRate  = 21
+export FuncIDMsgProposalUpsertTokenAlias = 22
 ```
 
 ## Set ChangeTxFee permission
@@ -422,6 +390,9 @@ sekaid query customgov proposal 1
 sekaid tx customgov proposal vote 1 1 --from validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes 
 
 sekaid tx claim-validator-seat --from validator --keyring-backend=test --home=$HOME/.sekaid --validator-key=kiravaloper1ntk7n5y38en5dvnhvmruwagmkemq76x8s4pnwu --moniker="validator" --chain-id=testing --fees=100ukex --yes
+
+# get ValAddress (kiravaloperxxx) from validator key
+sekaid val-address $(sekaid keys show -a validator --keyring-backend=test)
 
 # sekaid tx claim-validator-seat --from val2 --keyring-backend=test --home=$HOME/.sekaid --pubkey=kiravalconspub1zcjduepqdllep3v5wv04hmu987rv46ax7fml65j3dh5tf237ayn5p59jyamq04048n --validator-key=kiravaloper1ewgq8gtsefakhal687t8hnsw5zl4y8eksup39w --moniker="val2" --chain-id=testing --fees=100ukex --yes
 # sekaid tx claim-validator-seat --from val2 --keyring-backend=test --home=$HOME/.sekaid --validator-key=kiravaloper1ewgq8gtsefakhal687t8hnsw5zl4y8eksup39w --moniker="val2" --chain-id=testing --fees=100ukex --yes

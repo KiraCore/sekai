@@ -112,6 +112,15 @@ message NetworkProperties {
   uint64 proposal_end_time = 4;
   uint64 proposal_enactment_time = 5;
   bool enable_foreign_fee_payments = 6;
+
+  // The rank property is a long term statistics implying the "longest" streak that validator ever achieved,
+  // it can be expressed as rank = MAX(rank, streak).
+  // Under certain circumstances we should however decrease the rank of the validator.
+  // If the mischance property is incremented, the rank should be decremented by X (default 10), that is rank = MAX(rank - X, 0).
+  // Every time node status changes to inactive the rank should be divided by 2, that is rank = FLOOR(rank / 2)
+  // The streak and rank will enable governance to judge real life performance of validators on the mainnet or testnet, and potentially propose eviction of the weakest and least reliable operators.
+  uint64 mischance_rank_decrease_amount = 7; // X (default 10)
+  uint64 inactive_rank_decrease_percent = 8; // Y (default 50%)
 }
 
 message ExecutionFee {

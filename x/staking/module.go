@@ -7,8 +7,6 @@ import (
 
 	govkeeper "github.com/KiraCore/sekai/x/gov/keeper"
 
-	"github.com/tendermint/tendermint/crypto/encoding"
-
 	"github.com/KiraCore/sekai/middleware"
 	"github.com/KiraCore/sekai/x/staking/keeper"
 	"github.com/KiraCore/sekai/x/staking/types"
@@ -91,6 +89,7 @@ func (am AppModule) RegisterInterfaces(registry types2.InterfaceRegistry) {
 func (am AppModule) InitGenesis(
 	ctx sdk.Context,
 	cdc codec.JSONMarshaler,
+	// keeper keeper.Keeper,
 	data json.RawMessage,
 ) []abci.ValidatorUpdate {
 	var genesisState types.GenesisState
@@ -106,15 +105,13 @@ func (am AppModule) InitGenesis(
 			panic(err)
 		}
 
-		pk, err := encoding.PubKeyToProto(consPk)
-		if err != nil {
-			panic(err)
-		}
-
 		valUpdate[i] = abci.ValidatorUpdate{
 			Power:  1,
-			PubKey: pk,
+			PubKey: consPk,
 		}
+
+		// Call the creation hook if not exported
+		// keeper.AfterValidatorCreated(ctx, val.ValKey)
 	}
 
 	return valUpdate
@@ -138,30 +135,7 @@ func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sd
 func (am AppModule) BeginBlock(context sdk.Context, block abci.RequestBeginBlock) {}
 
 func (am AppModule) EndBlock(ctx sdk.Context, block abci.RequestEndBlock) []abci.ValidatorUpdate {
-	valSet := am.customStakingKeeper.GetValidatorSet(ctx)
-
-	valUpdate := make([]abci.ValidatorUpdate, len(valSet))
-
-	for i, val := range valSet {
-		am.customStakingKeeper.AddValidator(ctx, val)
-
-		consPk, err := val.TmConsPubKey()
-		if err != nil {
-			panic(err)
-		}
-
-		pk, err := encoding.PubKeyToProto(consPk)
-		if err != nil {
-			panic(err)
-		}
-
-		valUpdate[i] = abci.ValidatorUpdate{
-			Power:  1,
-			PubKey: pk,
-		}
-	}
-
-	return valUpdate
+	return EndBlocker(ctx, am.customStakingKeeper)
 }
 
 func (am AppModule) Name() string {

@@ -29,12 +29,8 @@ func GetCmdQueryValidator() *cobra.Command {
 		Short: "Query a validator based on address",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
-			if err != nil {
-				return err
-			}
 
-			err = validateQueryValidatorFlags(cmd.Flags())
+			err := validateQueryValidatorFlags(cmd.Flags())
 			if err != nil {
 				return err
 			}
@@ -64,7 +60,7 @@ func GetCmdQueryValidator() *cobra.Command {
 					return err
 				}
 
-				return clientCtx.PrintOutput(&res.Validator)
+				return clientCtx.PrintProto(&res.Validator)
 			}
 
 			moniker, _ := cmd.Flags().GetString(FlagMoniker)
@@ -77,7 +73,7 @@ func GetCmdQueryValidator() *cobra.Command {
 					return err
 				}
 
-				return clientCtx.PrintOutput(&res.Validator)
+				return clientCtx.PrintProto(&res.Validator)
 			}
 
 			return nil

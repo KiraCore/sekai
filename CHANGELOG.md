@@ -1,5 +1,24 @@
 # Changelog
 
+## [v0.1.15.2] - 01.21.2021
+
+### Added
+- CLI command GetTxProposalUpsertTokenAliasCmd and GetTxProposalUpsertTokenRatesCmd are now exposed.
+
+## [v0.1.15.1] - 01.21.2021
+
+### Added
+- CLI command to get ValAddress from AccAddress
+
+## [0.1.15] - 01.15.2021
+### Added
+- Added custom slashing module for validator's block signing info management, inactivate, activate, pause, unpause
+- Added validator performance calculator using `rank` and `streak`
+- Upgraded Cosmos SDK to v0.40.0 (stargate)
+
+### Removed
+- Old staking, slashing, evidence, distribution module
+
 ## [0.1.14.3] - 12.30.2020
 ### Added
 - Added GRPC query for Data Reference Registry.
