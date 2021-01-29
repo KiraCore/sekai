@@ -61,6 +61,8 @@ func (k Keeper) GetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 			return 1, nil
 		}
 		return 0, nil
+	case types.JailMaxTime:
+		return properties.JailMaxTime, nil
 	default:
 		return 0, errors.New("trying to fetch network property that does not exist")
 	}
@@ -85,6 +87,8 @@ func (k Keeper) SetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 			properties.EnableForeignFeePayments = true
 		}
 		properties.EnableForeignFeePayments = false
+	case types.JailMaxTime:
+		properties.JailMaxTime = value
 	default:
 		return errors.New("trying to set network property that does not exist")
 	}

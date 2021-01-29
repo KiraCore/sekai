@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
@@ -59,6 +60,15 @@ func (k msgServer) ProposalUnjailValidator(goCtx context.Context, msg *types.Msg
 	isAllowed := govkeeper.CheckIfAllowedPermission(ctx, k.govKeeper, msg.Proposer, customgovtypes.PermCreateUnjailValidatorProposal)
 	if !isAllowed {
 		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermCreateUnjailValidatorProposal.String())
+	}
+
+	validator, err := k.keeper.GetValidatorByAccAddress(ctx, msg.Proposer)
+	if err != nil {
+		return nil, err
+	}
+
+	if !validator.IsJailed() {
+		return nil, fmt.Errorf("validator is not jailed")
 	}
 
 	proposalID, err := k.CreateAndSaveProposalWithContent(ctx, types.NewProposalUnjailValidator(

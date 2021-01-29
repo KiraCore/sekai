@@ -1,6 +1,7 @@
 package staking_test
 
 import (
+	"fmt"
 	"os"
 	"testing"
 	"time"
@@ -135,19 +136,56 @@ func TestNewHandler_SetPermissions_ActorWithRole(t *testing.T) {
 func TestHandler_ProposalUnjailValidator_Errors(t *testing.T) {
 	proposerAddr, err := types.AccAddressFromBech32("kira1alzyfq40zjsveat87jlg8jxetwqmr0a29sgd0f")
 	require.NoError(t, err)
+	valAddr := types.ValAddress(proposerAddr)
+
+	pubKey, err := types.GetPubKeyFromBech32(types.Bech32PubKeyTypeConsPub, "kiravalconspub1zcjduepqylc5k8r40azmw0xt7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsq4xg7em")
+	require.NoError(t, err)
 
 	tests := []struct {
 		name        string
 		expectedErr error
-		prepareFunc
+		prepareFunc func(ctx types.Context, app *simapp.SimApp)
 	}{
 		{
 			name:        "not enough permissions to create validator",
 			expectedErr: errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermCreateUnjailValidatorProposal.String()),
 		},
 		{
+			name:        "validator does not exist",
+			expectedErr: fmt.Errorf("validator not found"),
+			prepareFunc: func(ctx types.Context, app *simapp.SimApp) {
+				proposerActor := customgovtypes.NewDefaultActor(proposerAddr)
+				err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerActor, customgovtypes.PermCreateUnjailValidatorProposal)
+				require.NoError(t, err2)
+			},
+		},
+		{
 			name:        "validator is not jailed",
-			expectedErr: errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermCreateUnjailValidatorProposal.String()),
+			expectedErr: fmt.Errorf("validator is not jailed"),
+			prepareFunc: func(ctx types.Context, app *simapp.SimApp) {
+				proposerActor := customgovtypes.NewDefaultActor(proposerAddr)
+				err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerActor, customgovtypes.PermCreateUnjailValidatorProposal)
+				require.NoError(t, err2)
+
+				val, err := types2.NewValidator("Moniker", "Website", "Social", "identity", types.NewDec(123), valAddr, pubKey)
+				require.NoError(t, err)
+
+				app.CustomStakingKeeper.AddValidator(ctx, val)
+			},
+		},
+		{
+			name:        "it passed the time when validator cannot be unjailed",
+			expectedErr: fmt.Errorf("validator is not jailed"),
+			prepareFunc: func(ctx types.Context, app *simapp.SimApp) {
+				proposerActor := customgovtypes.NewDefaultActor(proposerAddr)
+				err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerActor, customgovtypes.PermCreateUnjailValidatorProposal)
+				require.NoError(t, err2)
+
+				val, err := types2.NewValidator("Moniker", "Website", "Social", "identity", types.NewDec(123), valAddr, pubKey)
+				require.NoError(t, err)
+
+				app.CustomStakingKeeper.AddValidator(ctx, val)
+			},
 		},
 	}
 
@@ -158,6 +196,8 @@ func TestHandler_ProposalUnjailValidator_Errors(t *testing.T) {
 			ctx := app.NewContext(false, tmproto.Header{
 				Time: time.Now(),
 			})
+
+			tt.prepareFunc(ctx, app)
 
 			handler := staking.NewHandler(app.CustomStakingKeeper, app.CustomGovKeeper)
 			_, err := handler(
