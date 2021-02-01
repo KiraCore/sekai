@@ -8,6 +8,7 @@ import (
 
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // constants
@@ -30,7 +31,7 @@ func NewProposal(
 ) (Proposal, error) {
 	msg, ok := content.(proto.Message)
 	if !ok {
-		return Proposal{}, fmt.Errorf("%T does not implement proto.Message", content)
+		return Proposal{}, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("%T does not implement proto.Message", content))
 	}
 
 	any, err := codectypes.NewAnyWithValue(msg)

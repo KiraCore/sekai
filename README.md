@@ -377,8 +377,16 @@ sekaid query customgov vote 1 $(sekaid keys show -a validator --keyring-backend=
 ```sh
 # create proposal for setting poor network msgs
 sekaid tx customgov proposal set-poor-network-msgs AAA,BBB --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=1000ukex --yes
+# query for proposals
+sekaid query customgov proposals
+# set permission to vote on proposal
+sekaid tx customgov permission whitelist-permission --permission=19 --addr=$(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes 
 # vote on the proposal
 sekaid tx customgov proposal vote 1 1 --from validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes 
+# check votes
+sekaid query customgov votes 1 
+# wait until vote end time finish
+sekaid query customgov proposals
 # query poor network messages
 sekaid query customgov poor-network-messages
 ```
