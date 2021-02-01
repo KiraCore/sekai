@@ -18,7 +18,7 @@ import (
 func RegisterCosmosTxRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr string) {
 	r.HandleFunc(config.PostTransaction, PostTxRequest(rpcAddr)).Methods("POST")
 	r.HandleFunc(config.EncodeTransaction, EncodeTransaction(rpcAddr)).Methods("POST")
-	r.HandleFunc("/api/cosmos/txs/{hash}", QueryTxHashRequest(rpcAddr)).Methods("GET")
+	r.HandleFunc(config.QueryTransactionHash, QueryTxHashRequest(rpcAddr)).Methods("GET")
 
 	common.AddRPCMethod("POST", config.PostTransaction, "This is an API to post transaction.", false)
 	common.AddRPCMethod("POST", config.EncodeTransaction, "This is an API to encode transaction.", true)

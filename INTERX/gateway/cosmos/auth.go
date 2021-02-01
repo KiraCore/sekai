@@ -15,7 +15,7 @@ import (
 
 // RegisterCosmosAuthRoutes registers query routers.
 func RegisterCosmosAuthRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr string) {
-	r.HandleFunc("/api/cosmos/auth/accounts/{address}", QueryAccountsRequest(gwCosmosmux, rpcAddr)).Methods("GET")
+	r.HandleFunc(config.QueryAccounts, QueryAccountsRequest(gwCosmosmux, rpcAddr)).Methods("GET")
 
 	common.AddRPCMethod("GET", config.QueryAccounts, "This is an API to query account address.", true)
 }
