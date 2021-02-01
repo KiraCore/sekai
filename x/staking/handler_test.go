@@ -149,6 +149,7 @@ func TestHandler_ProposalUnjailValidator_Errors(t *testing.T) {
 		{
 			name:        "not enough permissions to create validator",
 			expectedErr: errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermCreateUnjailValidatorProposal.String()),
+			prepareFunc: func(ctx types.Context, app *simapp.SimApp) {},
 		},
 		{
 			name:        "validator does not exist",
@@ -175,8 +176,12 @@ func TestHandler_ProposalUnjailValidator_Errors(t *testing.T) {
 		},
 		{
 			name:        "it passed the time when validator cannot be unjailed",
-			expectedErr: fmt.Errorf("validator is not jailed"),
+			expectedErr: fmt.Errorf("time to unjail passed"),
 			prepareFunc: func(ctx types.Context, app *simapp.SimApp) {
+				networkProperties := app.CustomGovKeeper.GetNetworkProperties(ctx)
+				networkProperties.JailMaxTime = 5
+				app.CustomGovKeeper.SetNetworkProperties(ctx, networkProperties)
+
 				proposerActor := customgovtypes.NewDefaultActor(proposerAddr)
 				err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerActor, customgovtypes.PermCreateUnjailValidatorProposal)
 				require.NoError(t, err2)
@@ -185,6 +190,10 @@ func TestHandler_ProposalUnjailValidator_Errors(t *testing.T) {
 				require.NoError(t, err)
 
 				app.CustomStakingKeeper.AddValidator(ctx, val)
+
+				// Jail Validator
+				err = app.CustomStakingKeeper.Jail(ctx, val.ValKey)
+				require.NoError(t, err)
 			},
 		},
 	}
@@ -198,6 +207,9 @@ func TestHandler_ProposalUnjailValidator_Errors(t *testing.T) {
 			})
 
 			tt.prepareFunc(ctx, app)
+
+			// After 10 minutes
+			ctx = ctx.WithBlockTime(ctx.BlockTime().Add(time.Minute * 10))
 
 			handler := staking.NewHandler(app.CustomStakingKeeper, app.CustomGovKeeper)
 			_, err := handler(
@@ -215,6 +227,11 @@ func TestHandler_ProposalUnjailValidator(t *testing.T) {
 	proposerAddr, err := types.AccAddressFromBech32("kira1alzyfq40zjsveat87jlg8jxetwqmr0a29sgd0f")
 	require.NoError(t, err)
 
+	valAddr := types.ValAddress(proposerAddr)
+
+	pubKey, err := types.GetPubKeyFromBech32(types.Bech32PubKeyTypeConsPub, "kiravalconspub1zcjduepqylc5k8r40azmw0xt7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsq4xg7em")
+	require.NoError(t, err)
+
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{
 		Time: time.Now(),
@@ -228,6 +245,13 @@ func TestHandler_ProposalUnjailValidator(t *testing.T) {
 	properties := app.CustomGovKeeper.GetNetworkProperties(ctx)
 	properties.ProposalEndTime = 10
 	app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
+
+	val, err := types2.NewValidator("Moniker", "Website", "Social", "identity", types.NewDec(123), valAddr, pubKey)
+	require.NoError(t, err)
+	app.CustomStakingKeeper.AddValidator(ctx, val)
+
+	err = app.CustomStakingKeeper.Jail(ctx, val.ValKey)
+	require.NoError(t, err)
 
 	handler := staking.NewHandler(app.CustomStakingKeeper, app.CustomGovKeeper)
 	_, err = handler(

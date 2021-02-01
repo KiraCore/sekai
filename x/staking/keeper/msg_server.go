@@ -71,6 +71,18 @@ func (k msgServer) ProposalUnjailValidator(goCtx context.Context, msg *types.Msg
 		return nil, fmt.Errorf("validator is not jailed")
 	}
 
+	networkProperties := k.govKeeper.GetNetworkProperties(ctx)
+	maxUnjailingTime := networkProperties.JailMaxTime
+
+	info, found := k.keeper.GetValidatorJailInfo(ctx, validator.ValKey)
+	if !found {
+		return nil, fmt.Errorf("validator jailing info not found")
+	}
+
+	if info.Time.Add(time.Duration(maxUnjailingTime) * time.Minute).Before(ctx.BlockTime()) {
+		return nil, fmt.Errorf("time to unjail passed")
+	}
+
 	proposalID, err := k.CreateAndSaveProposalWithContent(ctx, types.NewProposalUnjailValidator(
 		msg.Proposer,
 	))
