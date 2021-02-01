@@ -6,7 +6,7 @@
 	},
 	"item": [
 		{
-			"name": "Status",
+			"name": "Kira Status",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -30,7 +30,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://0.0.0.0:11000/api/status",
+					"raw": "http://0.0.0.0:11000/api/kira/status",
 					"protocol": "http",
 					"host": [
 						"0",
@@ -41,7 +41,154 @@
 					"port": "11000",
 					"path": [
 						"api",
+						"kira",
 						"status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Query Kira Functions",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/kira/metadata",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"kira",
+						"metadata"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Query Data Reference Keys",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/kira/gov/data_keys?limit=2&offset=0&count_total=true",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"kira",
+						"gov",
+						"data_keys"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "2"
+						},
+						{
+							"key": "offset",
+							"value": "0"
+						},
+						{
+							"key": "count_total",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Query Data Reference",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/kira/gov/data/sample_png_file",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"kira",
+						"gov",
+						"data",
+						"sample_png_file"
 					]
 				}
 			},
@@ -266,6 +413,89 @@
 			"response": []
 		},
 		{
+			"name": "Transaction Encode",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"chain_id\": \"testing\",\n\t\"account_number\": \"4\",\n\t\"sequence\": \"0\",\n\t\"tx\": {\n        \"msg\": [\n            {\n                \"type\": \"cosmos-sdk/MsgSend\",\n                \"value\": {\n                    \"from_address\": \"kira1h9s2k2s9624kdghp5ztcdgnausg77rdj9cyat6\",\n                    \"to_address\": \"kira1kdnep4lm3z6yd3pah0rzfu3dvudgwfjejs9ans\",\n                    \"amount\": [\n                        {\n                            \"denom\": \"stake\",\n                            \"amount\": \"100000\"\n                        }\n                    ]\n                }\n            }\n        ],\n        \"fee\": {\n            \"amount\": [],\n            \"gas\": \"200000\"\n        },\n        \"signatures\": [],\n        \"memo\": \"\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/cosmos/txs/encode",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"cosmos",
+						"txs",
+						"encode"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Interx Status",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/status",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "RPC Methods",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
@@ -402,47 +632,6 @@
 			"response": []
 		},
 		{
-			"name": "Transaction Encode",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"name": "Content-Type",
-						"type": "text",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"chain_id\": \"testing\",\n\t\"account_number\": \"4\",\n\t\"sequence\": \"0\",\n\t\"tx\": {\n        \"msg\": [\n            {\n                \"type\": \"cosmos-sdk/MsgSend\",\n                \"value\": {\n                    \"from_address\": \"kira1h9s2k2s9624kdghp5ztcdgnausg77rdj9cyat6\",\n                    \"to_address\": \"kira1kdnep4lm3z6yd3pah0rzfu3dvudgwfjejs9ans\",\n                    \"amount\": [\n                        {\n                            \"denom\": \"stake\",\n                            \"amount\": \"100000\"\n                        }\n                    ]\n                }\n            }\n        ],\n        \"fee\": {\n            \"amount\": [],\n            \"gas\": \"200000\"\n        },\n        \"signatures\": [],\n        \"memo\": \"\"\n    }\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://0.0.0.0:11000/api/cosmos/txs/encode",
-					"protocol": "http",
-					"host": [
-						"0",
-						"0",
-						"0",
-						"0"
-					],
-					"port": "11000",
-					"path": [
-						"api",
-						"cosmos",
-						"txs",
-						"encode"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Query Withdraws",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
@@ -551,49 +740,6 @@
 			"response": []
 		},
 		{
-			"name": "Query Kira Functions",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"name": "Content-Type",
-						"type": "text",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://0.0.0.0:11000/api/kira/metadata",
-					"protocol": "http",
-					"host": [
-						"0",
-						"0",
-						"0",
-						"0"
-					],
-					"port": "11000",
-					"path": [
-						"api",
-						"kira",
-						"metadata"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Query Interx Functions",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
@@ -636,7 +782,7 @@
 			"response": []
 		},
 		{
-			"name": "Query Data Reference Keys",
+			"name": "Query Validators",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -660,7 +806,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://0.0.0.0:11000/api/kira/gov/data_keys?limit=2&offset=0&count_total=true",
+					"raw": "http://0.0.0.0:11000/api/valopers",
 					"protocol": "http",
 					"host": [
 						"0",
@@ -671,30 +817,14 @@
 					"port": "11000",
 					"path": [
 						"api",
-						"kira",
-						"gov",
-						"data_keys"
-					],
-					"query": [
-						{
-							"key": "limit",
-							"value": "2"
-						},
-						{
-							"key": "offset",
-							"value": "0"
-						},
-						{
-							"key": "count_total",
-							"value": "true"
-						}
+						"valopers"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Query Data Reference",
+			"name": "Genesis",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -718,7 +848,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://0.0.0.0:11000/api/kira/gov/data/sample_png_file",
+					"raw": "http://0.0.0.0:11000/api/genesis",
 					"protocol": "http",
 					"host": [
 						"0",
@@ -729,10 +859,49 @@
 					"port": "11000",
 					"path": [
 						"api",
-						"kira",
-						"gov",
-						"data",
-						"sample_png_file"
+						"genesis"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Genesis Checksum",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/gensum",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"gensum"
 					]
 				}
 			},
@@ -782,7 +951,7 @@
 			"response": []
 		},
 		{
-			"name": "Query Validators",
+			"name": "Query Blocks",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -806,7 +975,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://0.0.0.0:11000/api/valopers",
+					"raw": "http://0.0.0.0:11000/api/cosmos/blocks",
 					"protocol": "http",
 					"host": [
 						"0",
@@ -817,7 +986,52 @@
 					"port": "11000",
 					"path": [
 						"api",
-						"valopers"
+						"cosmos",
+						"blocks"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Query Block By Height",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/cosmos/blocks/1",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"cosmos",
+						"blocks",
+						"1"
 					]
 				}
 			},
