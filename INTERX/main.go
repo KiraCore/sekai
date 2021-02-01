@@ -43,7 +43,7 @@ func main() {
 
 	initConfigFilePtr := initCommand.String("config", "./config.json", "The interx configuration path.")
 	initGrpcPtr := initCommand.String("grpc", "dns:///0.0.0.0:9090", "The grpc endpoint of the sekaid.")
-	initRpcPtr := initCommand.String("rpc", "http://0.0.0.0:26657", "The rpc endpoint of the sekaid.")
+	initRPCPtr := initCommand.String("rpc", "http://0.0.0.0:26657", "The rpc endpoint of the sekaid.")
 	initPortPtr := initCommand.String("port", "11000", "The interx port.")
 	initSigningMnemonicPtr := initCommand.String("signing_mnemonic", signing_mnemonic, "The interx signing mnemonic file path or seeds.")
 	initCacheDirPtr := initCommand.String("cache_dir", "cache", "The interx cache directory path.")
@@ -70,7 +70,7 @@ func main() {
 			if initCommand.Parsed() {
 				// Check which subcommand was Parsed using the FlagSet.Parsed() function. Handle each case accordingly.
 				// FlagSet.Parse() will evaluate to false if no flags were parsed (i.e. the user did not provide any flags)
-				config.InitConfig(*initConfigFilePtr, *initGrpcPtr, *initRpcPtr, *initPortPtr, *initSigningMnemonicPtr, *initFaucetMnemonicPtr, *initCacheDirPtr)
+				config.InitConfig(*initConfigFilePtr, *initGrpcPtr, *initRPCPtr, *initPortPtr, *initSigningMnemonicPtr, *initFaucetMnemonicPtr, *initCacheDirPtr)
 
 				fmt.Printf("Created interx configuration file: %s\n", *initConfigFilePtr)
 				return
