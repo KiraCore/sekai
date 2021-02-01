@@ -456,7 +456,11 @@ func (m *MsgProposalSetNetworkProperty) ValidateBasic() error {
 		VoteQuorum,
 		ProposalEndTime,
 		ProposalEnactmentTime,
-		EnableForeignFeePayments:
+		EnableForeignFeePayments,
+		MischanceRankDecreaseAmount,
+		InactiveRankDecreasePercent,
+		PoorNetworkMaxBankSend,
+		MinValidators:
 		return nil
 	default:
 		return ErrInvalidNetworkProperty
