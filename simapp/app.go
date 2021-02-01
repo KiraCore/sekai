@@ -51,6 +51,9 @@ import (
 
 	customante "github.com/KiraCore/sekai/app/ante"
 	"github.com/KiraCore/sekai/middleware"
+	"github.com/KiraCore/sekai/x/evidence"
+	evidencekeeper "github.com/KiraCore/sekai/x/evidence/keeper"
+	evidencetypes "github.com/KiraCore/sekai/x/evidence/types"
 	"github.com/KiraCore/sekai/x/feeprocessing"
 	feeprocessingkeeper "github.com/KiraCore/sekai/x/feeprocessing/keeper"
 	feeprocessingtypes "github.com/KiraCore/sekai/x/feeprocessing/types"
@@ -66,9 +69,6 @@ import (
 	"github.com/KiraCore/sekai/x/tokens"
 	tokenskeeper "github.com/KiraCore/sekai/x/tokens/keeper"
 	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
-	"github.com/KiraCore/sekai/x/evidence"
-	evidencekeeper "github.com/KiraCore/sekai/x/evidence/keeper"
-	evidencetypes "github.com/KiraCore/sekai/x/evidence/types"
 )
 
 const appName = "KiraSimApp"
@@ -232,6 +232,7 @@ func NewSimApp(
 			customgov.NewApplyUpsertDataRegistryProposalHandler(app.CustomGovKeeper),
 			tokens.NewApplyUpsertTokenAliasProposalHandler(app.TokensKeeper),
 			tokens.NewApplyUpsertTokenRatesProposalHandler(app.TokensKeeper),
+			customstaking.NewApplyUnjailValidatorProposalHandler(app.CustomStakingKeeper),
 		},
 	)
 	app.mm = module.NewManager(

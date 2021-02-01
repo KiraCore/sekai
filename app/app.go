@@ -234,6 +234,7 @@ func NewInitApp(
 				customgov.NewApplyUpsertDataRegistryProposalHandler(app.customGovKeeper),
 				tokens.NewApplyUpsertTokenAliasProposalHandler(app.tokensKeeper),
 				tokens.NewApplyUpsertTokenRatesProposalHandler(app.tokensKeeper),
+				customstaking.NewApplyUnjailValidatorProposalHandler(app.customStakingKeeper),
 			},
 		)),
 		tokens.NewAppModule(app.tokensKeeper, app.customGovKeeper),
