@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"testing"
 
+	cli2 "github.com/cosmos/cosmos-sdk/testutil/cli"
+
 	cli3 "github.com/KiraCore/sekai/x/gov/client/cli"
 	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -207,39 +209,35 @@ func (s IntegrationTestSuite) TestCreateProposalUnjailValidator() {
 	// Query permissions for role Validator
 	val := s.network.Validators[0]
 
-	cmd := cli.GetTxProposalUnjailValidatorCmd()
-	_, out := testutil.ApplyMockIO(cmd)
-	clientCtx := val.ClientCtx.WithOutput(out).WithOutputFormat("json")
-
-	ctx := context.Background()
-	ctx = context.WithValue(ctx, client.ClientContextKey, &clientCtx)
-
-	cmd.SetArgs([]string{
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
-		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
-		"theReference",
-		"theHash",
-	})
-
-	err := cmd.ExecuteContext(ctx)
+	clientCtx := val.ClientCtx.WithOutputFormat("json")
+	out, err := cli2.ExecTestCLICmd(
+		clientCtx,
+		cli.GetTxProposalUnjailValidatorCmd(),
+		[]string{
+			fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+			fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
+			"theReference",
+			"theHash",
+		},
+	)
 	s.Require().NoError(err)
 	fmt.Printf("%s", out.String())
 
 	// Vote Proposal
-	out.Reset()
-	cmd = cli3.GetTxVoteProposal()
-	cmd.SetArgs([]string{
-		fmt.Sprintf("%d", 1), // Proposal ID
-		fmt.Sprintf("%d", customgovtypes.OptionYes),
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
-		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
-	})
-
-	err = cmd.ExecuteContext(ctx)
+	out, err = cli2.ExecTestCLICmd(
+		clientCtx,
+		cli3.GetTxVoteProposal(),
+		[]string{
+			fmt.Sprintf("%d", 1), // Proposal ID
+			fmt.Sprintf("%d", customgovtypes.OptionYes),
+			fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+			fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
+		},
+	)
 	s.Require().NoError(err)
 	fmt.Printf("%s", out.String())
 }
