@@ -90,14 +90,20 @@ func GetTxProposalUnjailValidatorCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "proposal-unjail-validator",
 		Short: "Creates an proposal to unjail validator (the from address is the validator)",
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
+			hash := args[0]
+			reference := args[1]
+
 			msg := customstakingtypes.NewMsgProposalUnjailValidator(
 				clientCtx.FromAddress,
+				hash,
+				reference,
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)

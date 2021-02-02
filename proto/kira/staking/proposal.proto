@@ -11,6 +11,10 @@ message MsgProposalUnjailValidator {
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
     (gogoproto.moretags) = "yaml:\"proposer\""
   ];
+
+  string hash = 2;
+
+  string reference = 3;
 }
 
 message ProposalUnjailValidator {
@@ -21,4 +25,8 @@ message ProposalUnjailValidator {
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
     (gogoproto.moretags) = "yaml:\"proposer\""
   ];
+
+  string hash = 2;
+
+  string reference = 3;
 }

@@ -216,6 +216,8 @@ func TestHandler_ProposalUnjailValidator_Errors(t *testing.T) {
 				ctx,
 				types2.NewMsgProposalUnjailValidator(
 					proposerAddr,
+					"thehash",
+					"theReference",
 				),
 			)
 			require.EqualError(t, err, tt.expectedErr.Error())
@@ -258,6 +260,8 @@ func TestHandler_ProposalUnjailValidator(t *testing.T) {
 		ctx,
 		types2.NewMsgProposalUnjailValidator(
 			proposerAddr,
+			"thehash",
+			"theReference",
 		),
 	)
 	require.NoError(t, err)

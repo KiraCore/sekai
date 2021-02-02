@@ -219,6 +219,8 @@ func (s IntegrationTestSuite) TestCreateProposalUnjailValidator() {
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
+		"theReference",
+		"theHash",
 	})
 
 	err := cmd.ExecuteContext(ctx)

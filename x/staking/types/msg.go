@@ -76,8 +76,12 @@ func (m *MsgClaimValidator) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgProposalUnjailValidator(proposer sdk.AccAddress) *MsgProposalUnjailValidator {
-	return &MsgProposalUnjailValidator{Proposer: proposer}
+func NewMsgProposalUnjailValidator(proposer sdk.AccAddress, hash, reference string) *MsgProposalUnjailValidator {
+	return &MsgProposalUnjailValidator{
+		Proposer:  proposer,
+		Hash:      hash,
+		Reference: reference,
+	}
 }
 
 func (m *MsgProposalUnjailValidator) Route() string {
