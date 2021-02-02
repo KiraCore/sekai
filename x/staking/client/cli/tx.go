@@ -84,3 +84,28 @@ func GetTxClaimValidatorCmd() *cobra.Command {
 
 	return cmd
 }
+
+// GetTxProposalUnjailValidatorCmd implement cli command for MsgUpsertTokenAlias
+func GetTxProposalUnjailValidatorCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "proposal-unjail-validator",
+		Short: "Creates an proposal to unjail validator (the from address is the validator)",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := customstakingtypes.NewMsgProposalUnjailValidator(
+				clientCtx.FromAddress,
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
