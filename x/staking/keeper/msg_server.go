@@ -85,6 +85,8 @@ func (k msgServer) ProposalUnjailValidator(goCtx context.Context, msg *types.Msg
 
 	proposalID, err := k.CreateAndSaveProposalWithContent(ctx, types.NewProposalUnjailValidator(
 		msg.Proposer,
+		msg.Hash,
+		msg.Reference,
 	))
 	if err != nil {
 		return nil, err

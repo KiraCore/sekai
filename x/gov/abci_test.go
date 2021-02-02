@@ -402,6 +402,8 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					proposalID,
 					types3.NewProposalUnjailValidator(
 						addrs[0],
+						"theHash",
+						"theProposal",
 					),
 					time.Now(),
 					time.Now().Add(10*time.Second),

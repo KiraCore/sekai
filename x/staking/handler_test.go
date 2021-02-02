@@ -273,6 +273,8 @@ func TestHandler_ProposalUnjailValidator(t *testing.T) {
 		1,
 		types2.NewProposalUnjailValidator(
 			proposerAddr,
+			"thehash",
+			"theReference",
 		),
 		ctx.BlockTime(),
 		ctx.BlockTime().Add(time.Minute*time.Duration(properties.ProposalEndTime)),
