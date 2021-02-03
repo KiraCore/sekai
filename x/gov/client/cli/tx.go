@@ -8,7 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
-	types2 "github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
 
 	"github.com/KiraCore/sekai/x/gov/types"
@@ -49,8 +49,8 @@ func NewTxCmd() *cobra.Command {
 		NewTxProposalCmds(),
 		NewTxRoleCmds(),
 		NewTxPermissionCmds(),
-		GetTxSetNetworkProperties(),
-		GetTxSetExecutionFee(),
+		NewTxSetNetworkProperties(),
+		NewTxSetExecutionFee(),
 	)
 
 	return txCmd
@@ -198,8 +198,8 @@ func GetTxSetBlacklistPermissions() *cobra.Command {
 	return cmd
 }
 
-// GetTxSetNetworkProperties is a function to set network properties tx command
-func GetTxSetNetworkProperties() *cobra.Command {
+// NewTxSetNetworkProperties is a function to set network properties tx command
+func NewTxSetNetworkProperties() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "set-network-properties",
 		Short: "Set network properties",
@@ -288,8 +288,8 @@ func GetTxWhitelistRolePermission() *cobra.Command {
 	return cmd
 }
 
-// GetTxSetExecutionFee is a function to set network properties tx command
-func GetTxSetExecutionFee() *cobra.Command {
+// NewTxSetExecutionFee is a function to set network properties tx command
+func NewTxSetExecutionFee() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "set-execution-fee",
 		Short: "Set execution fee",
@@ -788,13 +788,13 @@ func setPermissionFlags(cmd *cobra.Command) {
 }
 
 // getAddressFromFlag returns the AccAddress from FlagAddr in Command.
-func getAddressFromFlag(cmd *cobra.Command) (types2.AccAddress, error) {
+func getAddressFromFlag(cmd *cobra.Command) (sdk.AccAddress, error) {
 	addr, err := cmd.Flags().GetString(cli.FlagAddr)
 	if err != nil {
 		return nil, fmt.Errorf("error getting address")
 	}
 
-	bech, err := types2.AccAddressFromBech32(addr)
+	bech, err := sdk.AccAddressFromBech32(addr)
 	if err != nil {
 		return nil, fmt.Errorf("invalid address")
 	}
@@ -818,7 +818,7 @@ func GetTxClaimCouncilorSeatCmd() *cobra.Command {
 			identity, _ := cmd.Flags().GetString(FlagIdentity)
 			address, _ := cmd.Flags().GetString(FlagAddress)
 
-			bech32, err := types2.AccAddressFromBech32(address)
+			bech32, err := sdk.AccAddressFromBech32(address)
 			if err != nil {
 				return err
 			}

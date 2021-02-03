@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	cli2 "github.com/KiraCore/sekai/x/staking/client/cli"
+	stakingcli "github.com/KiraCore/sekai/x/staking/client/cli"
 	"github.com/cosmos/cosmos-sdk/client/flags"
-	types3 "github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/KiraCore/sekai/x/gov/client/cli"
 	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
@@ -19,7 +19,7 @@ func (s IntegrationTestSuite) TestCreateProposalAssignPermission() {
 	val := s.network.Validators[0]
 
 	// We create some random address where we will give perms.
-	addr, err := types3.AccAddressFromBech32("kira1alzyfq40zjsveet87jlg8jxetwqmr0a2x50lqq")
+	addr, err := sdk.AccAddressFromBech32("kira1alzyfq40zjsveet87jlg8jxetwqmr0a2x50lqq")
 	s.Require().NoError(err)
 
 	cmd := cli.GetTxProposalAssignPermission()
@@ -32,10 +32,10 @@ func (s IntegrationTestSuite) TestCreateProposalAssignPermission() {
 	cmd.SetArgs([]string{
 		fmt.Sprintf("%d", customgovtypes.PermClaimValidator),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
-		fmt.Sprintf("--%s=%s", cli2.FlagAddr, addr.String()),
+		fmt.Sprintf("--%s=%s", stakingcli.FlagAddr, addr.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(100))).String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
 	})
 
 	err = cmd.ExecuteContext(ctx)
@@ -50,7 +50,7 @@ func (s IntegrationTestSuite) TestCreateProposalAssignPermission() {
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(100))).String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
 	})
 
 	err = cmd.ExecuteContext(ctx)
@@ -62,7 +62,7 @@ func (s IntegrationTestSuite) TestCreateProposalUpsertDataRegistry() {
 	val := s.network.Validators[0]
 
 	// We create some random address where we will give perms.
-	addr, err := types3.AccAddressFromBech32("kira1alzyfq30zjsveet87jlg8jxetwqmr0a22c9uz9")
+	addr, err := sdk.AccAddressFromBech32("kira1alzyfq30zjsveet87jlg8jxetwqmr0a22c9uz9")
 	s.Require().NoError(err)
 
 	cmd := cli.GetTxProposalUpsertDataRegistry()
@@ -79,10 +79,10 @@ func (s IntegrationTestSuite) TestCreateProposalUpsertDataRegistry() {
 		fmt.Sprintf("%s", "theEncoding"),
 		fmt.Sprintf("%d", 12345),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
-		fmt.Sprintf("--%s=%s", cli2.FlagAddr, addr.String()),
+		fmt.Sprintf("--%s=%s", stakingcli.FlagAddr, addr.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(100))).String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
 	})
 
 	err = cmd.ExecuteContext(ctx)
@@ -97,7 +97,7 @@ func (s IntegrationTestSuite) TestCreateProposalUpsertDataRegistry() {
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(100))).String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
 	})
 
 	err = cmd.ExecuteContext(ctx)
@@ -122,7 +122,7 @@ func (s IntegrationTestSuite) TestCreateProposalSetNetworkProperty() {
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(100))).String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
 	})
 
 	err := cmd.ExecuteContext(ctx)
@@ -137,7 +137,7 @@ func (s IntegrationTestSuite) TestCreateProposalSetNetworkProperty() {
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(100))).String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
 	})
 
 	err = cmd.ExecuteContext(ctx)
