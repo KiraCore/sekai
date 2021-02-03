@@ -1,6 +1,6 @@
 # Changelog
 
-## [v0.1.16] - 01.29.2021
+## [v0.1.16.1] - 02.04.2021
 ### Added
 - CLI command to set poor network messages
 - CLI command to query poor network messages
