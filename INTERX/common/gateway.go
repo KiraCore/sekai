@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"time"
 
-	interx "github.com/KiraCore/sekai/INTERX/config"
+	"github.com/KiraCore/sekai/INTERX/config"
 	"github.com/KiraCore/sekai/INTERX/database"
 	"github.com/KiraCore/sekai/INTERX/types"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
@@ -57,7 +57,7 @@ func GetResponseSignature(response types.ProxyResponse) (string, string) {
 	}
 
 	// Get Signature
-	signature, err := interx.Config.PrivKey.Sign(signBytes)
+	signature, err := config.Config.PrivKey.Sign(signBytes)
 	if err != nil {
 		return "", responseHash
 	}
@@ -111,7 +111,7 @@ func WrapResponse(w http.ResponseWriter, request types.InterxRequest, response t
 	w.Header().Add("Interx_blocktime", response.Blocktime)
 	w.Header().Add("Interx_timestamp", strconv.FormatInt(response.Timestamp, 10))
 	w.Header().Add("Interx_request_hash", response.RequestHash)
-	if request.Endpoint == QueryDataReference {
+	if request.Endpoint == config.QueryDataReference {
 		reference, err := database.GetReference(string(request.Params))
 		if err == nil {
 			w.Header().Add("Interx_ref", "/download/"+reference.FilePath)

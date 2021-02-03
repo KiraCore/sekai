@@ -117,7 +117,7 @@ func file_interx_type_proto_rawDescGZIP() []byte {
 
 var file_interx_type_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_interx_type_proto_goTypes = []interface{}{
-	(*Error)(nil), // 0: interx.Error
+	(*Error)(nil), // 0: config.Error
 }
 var file_interx_type_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
