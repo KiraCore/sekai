@@ -5,6 +5,12 @@ import (
 	"fmt"
 	"testing"
 
+	cli2 "github.com/cosmos/cosmos-sdk/testutil/cli"
+
+	cli3 "github.com/KiraCore/sekai/x/gov/client/cli"
+	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
+	"github.com/cosmos/cosmos-sdk/client/flags"
+
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 
 	"github.com/stretchr/testify/suite"
@@ -197,6 +203,43 @@ func (s *IntegrationTestSuite) TestQueryValidator_Errors() {
 
 	err = cmd.ExecuteContext(ctx)
 	s.Require().EqualError(err, "validator with moniker weirdMoniker not found: key not found: invalid request")
+}
+
+func (s IntegrationTestSuite) TestCreateProposalUnjailValidator() {
+	// Query permissions for role Validator
+	val := s.network.Validators[0]
+
+	clientCtx := val.ClientCtx.WithOutputFormat("json")
+	out, err := cli2.ExecTestCLICmd(
+		clientCtx,
+		cli.GetTxProposalUnjailValidatorCmd(),
+		[]string{
+			fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+			fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
+			"theReference",
+			"theHash",
+		},
+	)
+	s.Require().NoError(err)
+	fmt.Printf("%s", out.String())
+
+	// Vote Proposal
+	out, err = cli2.ExecTestCLICmd(
+		clientCtx,
+		cli3.GetTxVoteProposal(),
+		[]string{
+			fmt.Sprintf("%d", 1), // Proposal ID
+			fmt.Sprintf("%d", customgovtypes.OptionYes),
+			fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+			fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
+		},
+	)
+	s.Require().NoError(err)
+	fmt.Printf("%s", out.String())
 }
 
 func TestIntegrationTestSuite(t *testing.T) {

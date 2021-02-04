@@ -23,6 +23,7 @@ func DefaultGenesis() *GenesisState {
 				PermCreateUpsertTokenRateProposal,
 				PermVoteUpsertTokenRateProposal,
 				PermUpsertRole,
+				PermCreateUnjailValidatorProposal,
 			}, nil),
 			uint64(RoleValidator): NewPermissions([]PermValue{PermClaimValidator}, nil),
 		},
@@ -38,6 +39,7 @@ func DefaultGenesis() *GenesisState {
 			InactiveRankDecreasePercent: 50,      // 50%
 			PoorNetworkMaxBankSend:      1000000, // 1M ukex
 			MinValidators:               1,
+			JailMaxTime:                 10, // 10 mins
 		},
 		ExecutionFees: []*ExecutionFee{
 			{

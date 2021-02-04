@@ -25,6 +25,7 @@ enum NetworkProperty {
     INACTIVE_RANK_DECREASE_PERCENT = 7 [(gogoproto.enumvalue_customname) = "InactiveRankDecreasePercent"];
     POOR_NETWORK_MAX_BANK_SEND = 8 [(gogoproto.enumvalue_customname) = "PoorNetworkMaxBankSend"];
     MIN_VALIDATORS = 9 [(gogoproto.enumvalue_customname) = "MinValidators"];
+    JAIL_MAX_TIME = 10 [(gogoproto.enumvalue_customname) = "JailMaxTime"];
 }
   
 message NetworkProperties {
@@ -46,4 +47,5 @@ message NetworkProperties {
   
     uint64 min_validators = 9;
     uint64 poor_network_max_bank_send = 10; // default 10000 ukex
+    uint64 jail_max_time = 11; // Jailing validator maximum time in minutes
 }

@@ -112,8 +112,25 @@ func (k Keeper) Jail(ctx sdk.Context, valAddress sdk.ValAddress) error {
 
 	k.setStatusToValidator(ctx, validator, customstakingtypes.Jailed)
 	k.addRemovingValidator(ctx, validator)
+	k.setJailValidatorInfo(ctx, validator)
 
 	return nil
+}
+
+// GetValidatorJailInfo returns information about a jailed validor, found is false
+// if there is no validator, so a validator that is not jailed should return false.
+func (k Keeper) GetValidatorJailInfo(ctx sdk.Context, valAddress sdk.ValAddress) (customstakingtypes.ValidatorJailInfo, bool) {
+	store := ctx.KVStore(k.storeKey)
+
+	bz := store.Get(GetValidatorJailInfoKey(valAddress))
+	if bz == nil {
+		return customstakingtypes.ValidatorJailInfo{}, false
+	}
+
+	var info customstakingtypes.ValidatorJailInfo
+	k.cdc.MustUnmarshalBinaryBare(bz, &info)
+
+	return info, true
 }
 
 // Unjail a validator
@@ -125,6 +142,7 @@ func (k Keeper) Unjail(ctx sdk.Context, valAddress sdk.ValAddress) error {
 
 	k.setStatusToValidator(ctx, validator, customstakingtypes.Active)
 	k.addReactivatingValidator(ctx, validator)
+	k.removeJailValidatorInfo(ctx, validator)
 
 	return nil
 }
@@ -132,6 +150,22 @@ func (k Keeper) Unjail(ctx sdk.Context, valAddress sdk.ValAddress) error {
 func (k Keeper) setStatusToValidator(ctx sdk.Context, validator customstakingtypes.Validator, status customstakingtypes.ValidatorStatus) {
 	validator.Status = status
 	k.AddValidator(ctx, validator)
+}
+
+func (k Keeper) setJailValidatorInfo(ctx sdk.Context, validator customstakingtypes.Validator) {
+	jailInfo := customstakingtypes.ValidatorJailInfo{
+		Time: ctx.BlockTime(),
+	}
+
+	bz := k.cdc.MustMarshalBinaryBare(jailInfo)
+
+	store := ctx.KVStore(k.storeKey)
+	store.Set(GetValidatorJailInfoKey(validator.ValKey), bz)
+}
+
+func (k Keeper) removeJailValidatorInfo(ctx sdk.Context, validator customstakingtypes.Validator) {
+	store := ctx.KVStore(k.storeKey)
+	store.Delete(GetValidatorJailInfoKey(validator.ValKey))
 }
 
 // GetRemovingValidatorSet returns the keys of the validators that needs to be removed from

@@ -703,7 +703,7 @@ func GetTxProposalAssignPermission() *cobra.Command {
 
 func GetTxProposalUpsertDataRegistry() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "upsert-data-registry key hash",
+		Use:   "upsert-data-registry key hash reference encoding size",
 		Short: "Upsert a key in the data registry",
 		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) error {

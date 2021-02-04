@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strings"
 
+	cli3 "github.com/cosmos/cosmos-sdk/testutil/cli"
+
 	"github.com/cosmos/cosmos-sdk/crypto/hd"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 
@@ -21,18 +23,14 @@ func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions() {
 	val := s.network.Validators[0]
 	cmd := cli.GetTxSetWhitelistPermissions()
 
-	_, out := testutil.ApplyMockIO(cmd)
-
-	clientCtx := val.ClientCtx.WithOutput(out).WithOutputFormat("json")
-
-	ctx := context.Background()
-	ctx = context.WithValue(ctx, client.ClientContextKey, &clientCtx)
-
 	// We create some random address where we will give perms.
 	addr, err := sdk.AccAddressFromBech32("kira15ky9du8a2wlstz6fpx3p4mqpjyrm5cgqzp4f3d")
 	s.Require().NoError(err)
 
-	cmd.SetArgs(
+	clientCtx := val.ClientCtx.WithOutputFormat("json")
+	out, err := cli3.ExecTestCLICmd(
+		clientCtx,
+		cmd,
 		[]string{
 			fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 			fmt.Sprintf("--%s=%s", stakingcli.FlagAddr, addr.String()),
@@ -42,8 +40,6 @@ func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions() {
 			fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
 		},
 	)
-
-	err = cmd.ExecuteContext(ctx)
 	s.Require().NoError(err)
 
 	err = s.network.WaitForNextBlock()
@@ -51,15 +47,14 @@ func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions() {
 
 	// We check if the user has the permissions
 	cmd = cli.GetCmdQueryPermissions()
-	out.Reset()
 
-	cmd.SetArgs(
+	out, err = cli3.ExecTestCLICmd(
+		clientCtx,
+		cmd,
 		[]string{
 			addr.String(),
 		},
 	)
-
-	err = cmd.ExecuteContext(ctx)
 	s.Require().NoError(err)
 
 	var perms customgovtypes.Permissions
@@ -72,20 +67,16 @@ func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions() {
 
 func (s IntegrationTestSuite) TestGetTxSetBlacklistPermissions() {
 	val := s.network.Validators[0]
-	cmd := cli.GetTxSetBlacklistPermissions()
-
-	_, out := testutil.ApplyMockIO(cmd)
-
-	clientCtx := val.ClientCtx.WithOutput(out).WithOutputFormat("json")
-
-	ctx := context.Background()
-	ctx = context.WithValue(ctx, client.ClientContextKey, &clientCtx)
 
 	// We create some random address where we will give perms.
 	addr, err := sdk.AccAddressFromBech32("kira1alzyfq40zjsveat87jlg8jxetwqmr0a29sgd0f")
 	s.Require().NoError(err)
 
-	cmd.SetArgs(
+	clientCtx := val.ClientCtx.WithOutputFormat("json")
+
+	out, err := cli3.ExecTestCLICmd(
+		clientCtx,
+		cli.GetTxSetBlacklistPermissions(),
 		[]string{
 			fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 			fmt.Sprintf("--%s=%s", stakingcli.FlagAddr, addr.String()),
@@ -95,8 +86,6 @@ func (s IntegrationTestSuite) TestGetTxSetBlacklistPermissions() {
 			fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
 		},
 	)
-
-	err = cmd.ExecuteContext(ctx)
 	s.Require().NoError(err)
 	s.T().Logf("error %s", out.String())
 
@@ -104,16 +93,14 @@ func (s IntegrationTestSuite) TestGetTxSetBlacklistPermissions() {
 	s.Require().NoError(err)
 
 	// We check if the user has the permissions
-	cmd = cli.GetCmdQueryPermissions()
-	out.Reset()
-
-	cmd.SetArgs(
+	cmd := cli.GetCmdQueryPermissions()
+	out, err = cli3.ExecTestCLICmd(
+		clientCtx,
+		cmd,
 		[]string{
 			addr.String(),
 		},
 	)
-
-	err = cmd.ExecuteContext(ctx)
 	s.Require().NoError(err)
 
 	var perms customgovtypes.Permissions

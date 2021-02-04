@@ -69,6 +69,8 @@ func (k Keeper) GetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 		return properties.PoorNetworkMaxBankSend, nil
 	case types.MinValidators:
 		return properties.MinValidators, nil
+	case types.JailMaxTime:
+		return properties.JailMaxTime, nil
 	default:
 		return 0, errors.New("trying to fetch network property that does not exist")
 	}
@@ -101,6 +103,8 @@ func (k Keeper) SetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 		properties.PoorNetworkMaxBankSend = value
 	case types.MinValidators:
 		properties.MinValidators = value
+	case types.JailMaxTime:
+		properties.JailMaxTime = value
 	default:
 		return errors.New("trying to set network property that does not exist")
 	}

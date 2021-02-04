@@ -4,6 +4,8 @@ import (
 	"testing"
 	"time"
 
+	types3 "github.com/KiraCore/sekai/x/staking/types"
+
 	types2 "github.com/KiraCore/sekai/x/tokens/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -376,6 +378,57 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				require.Equal(t, sdk.NewDec(1234), token.Rate)
 				require.Equal(t, "btc", token.Denom)
 				require.Equal(t, false, token.FeePayments)
+			},
+		},
+		{
+			name: "Passed proposal in enactment is applied and removed from enactment list: Unjail Validator",
+			prepareScenario: func(app *simapp.SimApp, ctx sdk.Context) []sdk.AccAddress {
+				addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.NewInt(100))
+				valAddr := sdk.ValAddress(addrs[0])
+				pubKey, err := sdk.GetPubKeyFromBech32(sdk.Bech32PubKeyTypeConsPub, "kiravalconspub1zcjduepqylc5k8r40azmw0xt7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsq4xg7em")
+				require.NoError(t, err)
+
+				actor := types.NewDefaultActor(addrs[0])
+				app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
+
+				val, err := types3.NewValidator("Moniker", "Website", "Social", "identity", sdk.NewDec(123), valAddr, pubKey)
+				require.NoError(t, err)
+				app.CustomStakingKeeper.AddValidator(ctx, val)
+				err = app.CustomStakingKeeper.Jail(ctx, val.ValKey)
+				require.NoError(t, err)
+
+				proposalID := uint64(1234)
+				proposal, err := types.NewProposal(
+					proposalID,
+					types3.NewProposalUnjailValidator(
+						addrs[0],
+						"theHash",
+						"theProposal",
+					),
+					time.Now(),
+					time.Now().Add(10*time.Second),
+					time.Now().Add(20*time.Second),
+				)
+				require.NoError(t, err)
+
+				proposal.Result = types.Passed
+				app.CustomGovKeeper.SaveProposal(ctx, proposal)
+
+				app.CustomGovKeeper.AddToEnactmentProposals(ctx, proposal)
+
+				iterator := app.CustomGovKeeper.GetEnactmentProposalsWithFinishedEnactmentEndTimeIterator(ctx, time.Now().Add(25*time.Second))
+				requireIteratorCount(t, iterator, 1)
+
+				return addrs
+			},
+			validateScenario: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addrs []sdk.AccAddress) {
+				iterator := app.CustomGovKeeper.GetEnactmentProposalsWithFinishedEnactmentEndTimeIterator(ctx, time.Now().Add(25*time.Second))
+				requireIteratorCount(t, iterator, 0)
+
+				validator, err := app.CustomStakingKeeper.GetValidator(ctx, sdk.ValAddress(addrs[0]))
+				require.NoError(t, err)
+
+				require.False(t, validator.IsJailed())
 			},
 		},
 	}

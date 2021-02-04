@@ -435,26 +435,3 @@ func (k msgServer) ClaimCouncilor(
 
 	return &customgovtypes.MsgClaimCouncilorResponse{}, nil
 }
-
-// validateAndGetPermissionsForRole checks if:
-// - Proposer has permissions to SetPermissions.
-// - Role exists.
-// And returns the permissions.
-func validateAndGetPermissionsForRole(
-	ctx sdk.Context,
-	ck Keeper,
-	proposer sdk.AccAddress,
-	role customgovtypes.Role,
-) (*customgovtypes.Permissions, error) {
-	isAllowed := CheckIfAllowedPermission(ctx, ck, proposer, customgovtypes.PermSetPermissions)
-	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermSetPermissions")
-	}
-
-	perms, found := ck.GetPermissionsForRole(ctx, role)
-	if !found {
-		return nil, customgovtypes.ErrRoleDoesNotExist
-	}
-
-	return &perms, nil
-}
