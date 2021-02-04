@@ -15,58 +15,33 @@ Use following command in the root respository of INTERX.
 make install
 ```
 
-It will install INTERX binary to `$GOBIN`.
+It will install INTERX binary(`interxd`) to `$GOBIN`.
 
 ### How to start
 
-#### Start with default settings
-
-##### Environment Configuration
-
-- `PORT` will be the INTERX port. (default = `11000`)
-- `SERVE_HTTP` will be the INTERX protocol option. (default = `true`)
-- `GRPC` will be the sekai GRPC endpoint. (default = `dns:///0.0.0.0:9090`)
-- `RPC` will be the sekai Tendermint RPC endpoint. (default = `RPC=http://0.0.0.0:26657`)
-
-##### Run INTERX
-
-You can run interx using the following command after installation.
-
-- Default Setting
-
+Simple start:
 ```bash
-interx
+interxd init
+interxd start
 ```
 
-It will be the same as following:
+#### `interxd init`
+Generate configuration file.
 
-```bash
-PORT=11100 SERVE_HTTP=false GRPC=dns:///0.0.0.0:9090 RPC=http://0.0.0.0:26657 interx
-```
+Parameters:
+- `config` - The interx configuration file path. (default = "./config.json")
+- `grpc` - The grpc endpoint of the sekaid. (default = "dns:///0.0.0.0:9090")
+- `rpc` - The tendermint rpc endpoint of the sekaid (default = "http://0.0.0.0:26657")
+- `port` - The interx port. (default = "11000")
+- `signing_mnemonic` - The mnemonic file path or word seeds for interx singing service. (deafult = auto generated word seeds)
+- `faucet_mnemonic` - The mnemonic file path or word seeds for faucet service. (deafult = auto generated word seeds)
+- `cache_dir` - The interx cache directory path. (deafult = "cache")
 
-- `PORT`
+#### `interxd start`
+Start interx service.
 
-```bash
-PORT=11100 interx
-```
-
-- `SERVE_HTTP`
-
-```bash
-SERVE_HTTP=false interx
-```
-
-- `GRPC`
-
-```bash
-GRPC=dns:///0.0.0.0:9090 interx
-```
-
-- `RPC`
-
-```bash
-RPC=http://0.0.0.0:26657 interx
-```
+Parameters:
+- `config` - The interx configuration file path. (default = "./config.json")
 
 ## Configuration
 
@@ -74,15 +49,20 @@ Configurations are available using `config.json`.
 
 ### `mnemonic`
 
-The 24-words seed string.
-
+The 24-words seed string or the file path to the mnemonic file.
 This is for generating interx priv/pub keys which will be used for response signing.
 
 ```
 "mnemonic": "swap exercise equip shoot mad inside floor wheel loan visual stereo build frozen always bulb naive subway foster marine erosion shuffle flee action there"
+
+"mnemonic": "interx.mnemonic"
 ```
 
-### `status_sync`
+### `cache`
+
+Cache configurations.
+
+#### `status_sync`
 
 Interx has a feature to sync node status.
 `status_sync` refers the time in seconds and INTERX syncs node status every `status_sync` seconds.
@@ -91,7 +71,7 @@ Interx has a feature to sync node status.
 "status_sync": 5
 ```
 
-### `cache_dir`
+#### `cache_dir`
 
 Interx has a caching feature.
 `cache_dir` refers the cache directory.
@@ -100,7 +80,7 @@ Interx has a caching feature.
 "cache_dir": "cache"
 ```
 
-### `max_cache_size`
+#### `max_cache_size`
 
 Interx has a gabage collection feature.
 `max_cache_size` refers the maximum cache size. If cache size is over maximum cache size, it will remove random caches. (it remains 90% of maximum cache size)
@@ -109,7 +89,7 @@ Interx has a gabage collection feature.
 "max_cache_size": "2 GB"
 ```
 
-### `caching_duration`
+#### `caching_duration`
 
 Interx has a gabage collection feature.
 `caching_duration` refers the caching clear duration in seconds
@@ -118,7 +98,7 @@ Interx has a gabage collection feature.
 "caching_duration": 10
 ```
 
-### `download_file_size_limitation`
+#### `download_file_size_limitation`
 
 Interx has a download feature.
 `download_file_size_limitation` refers the maximum download file size.
@@ -133,10 +113,13 @@ Interx has a faucet feature.
 
 #### `mnemonic`
 
-`mnemonic` refers the 24-words seed string. It will be used to generate faucet account priv/pub keys and address.
+`mnemonic` refers the 24-words seed string or the file path to the mnemonic file.
+It will be used to generate faucet account priv/pub keys and address.
 
 ```
 "mnemonic": "equip exercise shoot mad inside floor wheel loan visual stereo build frozen potato always bulb naive subway foster marine erosion shuffle flee action there"
+
+"mnemonic": "faucet.mnemonic"
 ```
 
 #### `faucet_amounts`

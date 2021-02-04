@@ -1,0 +1,49 @@
+syntax = "proto3";
+package kira.gov;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/gov/types";
+
+message MsgSetNetworkProperties {
+    NetworkProperties network_properties = 1;
+    bytes proposer = 2 [
+      (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
+    ];
+}
+
+enum NetworkProperty {
+    option (gogoproto.goproto_enum_prefix) = false;
+  
+    MIN_TX_FEE = 0 [(gogoproto.enumvalue_customname) = "MinTxFee"];
+    MAX_TX_FEE = 1 [(gogoproto.enumvalue_customname) = "MaxTxFee"];
+    VOTE_QUORUM = 2 [(gogoproto.enumvalue_customname) = "VoteQuorum"];
+    PROPOSAL_END_TIME = 3 [(gogoproto.enumvalue_customname) = "ProposalEndTime"];
+    PROPOSAL_ENACTMENT_TIME = 4 [(gogoproto.enumvalue_customname) = "ProposalEnactmentTime"];
+    ENABLE_FOREIGN_TX_FEE_PAYMENTS = 5 [(gogoproto.enumvalue_customname) = "EnableForeignFeePayments"];
+    MISCHANCE_RANK_DECREASE_AMOUNT = 6 [(gogoproto.enumvalue_customname) = "MischanceRankDecreaseAmount"];
+    INACTIVE_RANK_DECREASE_PERCENT = 7 [(gogoproto.enumvalue_customname) = "InactiveRankDecreasePercent"];
+    POOR_NETWORK_MAX_BANK_SEND = 8 [(gogoproto.enumvalue_customname) = "PoorNetworkMaxBankSend"];
+    MIN_VALIDATORS = 9 [(gogoproto.enumvalue_customname) = "MinValidators"];
+}
+  
+message NetworkProperties {
+    uint64 min_tx_fee = 1;
+    uint64 max_tx_fee = 2;
+    uint64 vote_quorum = 3;
+    uint64 proposal_end_time = 4;
+    uint64 proposal_enactment_time = 5;
+    bool enable_foreign_fee_payments = 6;
+  
+    // The rank property is a long term statistics implying the "longest" streak that validator ever achieved,
+    // it can be expressed as rank = MAX(rank, streak).
+    // Under certain circumstances we should however decrease the rank of the validator.
+    // If the mischance property is incremented, the rank should be decremented by X (default 10), that is rank = MAX(rank - X, 0).
+    // Every time node status changes to inactive the rank should be divided by 2, that is rank = FLOOR(rank / 2)
+    // The streak and rank will enable governance to judge real life performance of validators on the mainnet or testnet, and potentially propose eviction of the weakest and least reliable operators.
+    uint64 mischance_rank_decrease_amount = 7; // X (default 10)
+    uint64 inactive_rank_decrease_percent = 8; // Y (default 50%)
+  
+    uint64 min_validators = 9;
+    uint64 poor_network_max_bank_send = 10; // default 10000 ukex
+}

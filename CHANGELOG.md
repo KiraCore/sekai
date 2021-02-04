@@ -1,5 +1,22 @@
 # Changelog
 
+## [v0.1.16.1] - 02.04.2021
+### Added
+- CLI command to set poor network messages
+- CLI command to query poor network messages
+- Add POOR_NETWORK_MAX_BANK_TX_SEND feature for poor network for restriction (only bond denom is allowed)
+- Reject feature for not allowed messages on poor network
+
+## [v0.1.15.2] - 01.21.2021
+
+### Added
+- CLI command GetTxProposalUpsertTokenAliasCmd and GetTxProposalUpsertTokenRatesCmd are now exposed.
+
+## [v0.1.15.1] - 01.21.2021
+
+### Added
+- CLI command to get ValAddress from AccAddress
+
 ## [0.1.15] - 01.15.2021
 ### Added
 - Added custom slashing module for validator's block signing info management, inactivate, activate, pause, unpause

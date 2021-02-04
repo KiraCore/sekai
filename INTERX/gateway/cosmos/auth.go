@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/KiraCore/sekai/INTERX/common"
+	"github.com/KiraCore/sekai/INTERX/config"
 	"github.com/KiraCore/sekai/INTERX/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/gorilla/mux"
@@ -14,9 +15,9 @@ import (
 
 // RegisterCosmosAuthRoutes registers query routers.
 func RegisterCosmosAuthRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr string) {
-	r.HandleFunc(common.QueryAccounts, QueryAccountsRequest(gwCosmosmux, rpcAddr)).Methods("GET")
+	r.HandleFunc("/api/cosmos/auth/accounts/{address}", QueryAccountsRequest(gwCosmosmux, rpcAddr)).Methods("GET")
 
-	common.AddRPCMethod("GET", common.QueryAccounts, "This is an API to query account address.", true)
+	common.AddRPCMethod("GET", config.QueryAccounts, "This is an API to query account address.", true)
 }
 
 func queryAccountsHandle(r *http.Request, gwCosmosmux *runtime.ServeMux) (interface{}, interface{}, int) {
@@ -40,7 +41,7 @@ func QueryAccountsRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.Ha
 		bech32addr := queries["address"]
 		request := types.InterxRequest{
 			Method:   r.Method,
-			Endpoint: common.QueryAccounts,
+			Endpoint: config.QueryAccounts,
 			Params:   []byte(bech32addr),
 		}
 		response := common.GetResponseFormat(request, rpcAddr)
@@ -48,10 +49,10 @@ func QueryAccountsRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.Ha
 
 		common.GetLogger().Info("[query-account] Entering account query: ", bech32addr)
 
-		if !common.RPCMethods["GET"][common.QueryAccounts].Enabled {
+		if !common.RPCMethods["GET"][config.QueryAccounts].Enabled {
 			response.Response, response.Error, statusCode = common.ServeError(0, "", "API disabled", http.StatusForbidden)
 		} else {
-			if common.RPCMethods["GET"][common.QueryAccounts].CachingEnabled {
+			if common.RPCMethods["GET"][config.QueryAccounts].CachingEnabled {
 				found, cacheResponse, cacheError, cacheStatus := common.SearchCache(request, response)
 				if found {
 					response.Response, response.Error, statusCode = cacheResponse, cacheError, cacheStatus
@@ -65,6 +66,6 @@ func QueryAccountsRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.Ha
 			response.Response, response.Error, statusCode = queryAccountsHandle(r, gwCosmosmux)
 		}
 
-		common.WrapResponse(w, request, *response, statusCode, common.RPCMethods["GET"][common.QueryAccounts].CachingEnabled)
+		common.WrapResponse(w, request, *response, statusCode, common.RPCMethods["GET"][config.QueryAccounts].CachingEnabled)
 	}
 }

@@ -11,7 +11,7 @@ import (
 	"strings"
 
 	"github.com/KiraCore/sekai/INTERX/common"
-	interx "github.com/KiraCore/sekai/INTERX/config"
+	"github.com/KiraCore/sekai/INTERX/config"
 	"github.com/KiraCore/sekai/INTERX/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	bank "github.com/cosmos/cosmos-sdk/x/bank/types"
@@ -26,12 +26,12 @@ import (
 
 // RegisterInterxTxRoutes registers tx query routers.
 func RegisterInterxTxRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr string) {
-	r.HandleFunc(common.QueryWithdraws, QueryWithdraws(rpcAddr)).Methods("GET")
-	r.HandleFunc(common.QueryDeposits, QueryDeposits(rpcAddr)).Methods("GET")
+	r.HandleFunc(config.QueryWithdraws, QueryWithdraws(rpcAddr)).Methods("GET")
+	r.HandleFunc(config.QueryDeposits, QueryDeposits(rpcAddr)).Methods("GET")
 
-	common.AddRPCMethod("GET", common.QueryKiraFunctions, "This is an API to query kira functions and metadata.", true)
-	common.AddRPCMethod("GET", common.QueryWithdraws, "This is an API to query withdraw transactions.", true)
-	common.AddRPCMethod("GET", common.QueryDeposits, "This is an API to query deposit transactions.", true)
+	common.AddRPCMethod("GET", config.QueryKiraFunctions, "This is an API to query kira functions and metadata.", true)
+	common.AddRPCMethod("GET", config.QueryWithdraws, "This is an API to query withdraw transactions.", true)
+	common.AddRPCMethod("GET", config.QueryDeposits, "This is an API to query deposit transactions.", true)
 }
 
 func toSnakeCase(str string) string {
@@ -241,7 +241,7 @@ func queryTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw bool) 
 	var response = make(map[string]types.TransactionResult)
 
 	for _, transaction := range transactions {
-		tx, err := interx.EncodingCg.TxConfig.TxDecoder()(transaction.Tx)
+		tx, err := config.EncodingCg.TxConfig.TxDecoder()(transaction.Tx)
 		if err != nil {
 			common.GetLogger().Error("[query-transactions] Failed to decode transaction: ", err)
 			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
@@ -429,9 +429,9 @@ func queryTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw bool) 
 				var coin sdk.Coin
 				if v, found := evMap["withdraw_rewards"]; found && len(v) >= 2 {
 					if v[0].GetKey() == "amount" {
-						coin, _ = sdk.ParseCoin(v[0].Value)
+						coin, _ = sdk.ParseCoinNormalized(v[0].Value)
 					} else if v[1].GetKey() == "amount" {
-						coin, _ = sdk.ParseCoin(v[1].Value)
+						coin, _ = sdk.ParseCoinNormalized(v[1].Value)
 					}
 				}
 
@@ -473,10 +473,10 @@ func QueryWithdraws(rpcAddr string) http.HandlerFunc {
 
 		common.GetLogger().Info("[query-withdraws] Entering withdraws query")
 
-		if !common.RPCMethods["GET"][common.QueryWithdraws].Enabled {
+		if !common.RPCMethods["GET"][config.QueryWithdraws].Enabled {
 			response.Response, response.Error, statusCode = common.ServeError(0, "", "API disabled", http.StatusForbidden)
 		} else {
-			if common.RPCMethods["GET"][common.QueryWithdraws].CachingEnabled {
+			if common.RPCMethods["GET"][config.QueryWithdraws].CachingEnabled {
 				found, cacheResponse, cacheError, cacheStatus := common.SearchCache(request, response)
 				if found {
 					response.Response, response.Error, statusCode = cacheResponse, cacheError, cacheStatus
@@ -490,7 +490,7 @@ func QueryWithdraws(rpcAddr string) http.HandlerFunc {
 			response.Response, response.Error, statusCode = queryTransactionsHandler(rpcAddr, r, true)
 		}
 
-		common.WrapResponse(w, request, *response, statusCode, common.RPCMethods["GET"][common.QueryStatus].CachingEnabled)
+		common.WrapResponse(w, request, *response, statusCode, common.RPCMethods["GET"][config.QueryStatus].CachingEnabled)
 	}
 }
 
@@ -503,10 +503,10 @@ func QueryDeposits(rpcAddr string) http.HandlerFunc {
 
 		common.GetLogger().Error("[query-deposits] Entering withdraws query")
 
-		if !common.RPCMethods["GET"][common.QueryDeposits].Enabled {
+		if !common.RPCMethods["GET"][config.QueryDeposits].Enabled {
 			response.Response, response.Error, statusCode = common.ServeError(0, "", "API disabled", http.StatusForbidden)
 		} else {
-			if common.RPCMethods["GET"][common.QueryDeposits].CachingEnabled {
+			if common.RPCMethods["GET"][config.QueryDeposits].CachingEnabled {
 				found, cacheResponse, cacheError, cacheStatus := common.SearchCache(request, response)
 				if found {
 					response.Response, response.Error, statusCode = cacheResponse, cacheError, cacheStatus
@@ -520,6 +520,6 @@ func QueryDeposits(rpcAddr string) http.HandlerFunc {
 			response.Response, response.Error, statusCode = queryTransactionsHandler(rpcAddr, r, false)
 		}
 
-		common.WrapResponse(w, request, *response, statusCode, common.RPCMethods["GET"][common.QueryStatus].CachingEnabled)
+		common.WrapResponse(w, request, *response, statusCode, common.RPCMethods["GET"][config.QueryStatus].CachingEnabled)
 	}
 }

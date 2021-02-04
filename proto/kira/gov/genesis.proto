@@ -3,6 +3,9 @@ package kira.gov;
 
 import "actor.proto";
 import "role.proto";
+import "execution_fee.proto";
+import "network_properties.proto";
+import "allowed_messages.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/gov/types";
 
@@ -16,4 +19,6 @@ message GenesisState {
 
   NetworkProperties network_properties = 4;
   repeated ExecutionFee execution_fees = 5;
+  AllowedMessages poor_network_messages = 6; 
+  uint64 poor_network_max_bank_send = 7;
 }

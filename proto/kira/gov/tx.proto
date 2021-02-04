@@ -7,6 +7,9 @@ import "actor.proto";
 import "councilor.proto";
 import "proposal.proto";
 import "role.proto";
+import "execution_fee.proto";
+import "network_properties.proto";
+import "allowed_messages.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/gov/types";
 
@@ -26,6 +29,8 @@ service Msg {
     rpc ProposalUpsertDataRegistry(MsgProposalUpsertDataRegistry) returns (MsgProposalUpsertDataRegistryResponse);
     // ProposalSetNetworkProperty defines a method for setting a network property proposal
     rpc ProposalSetNetworkProperty(MsgProposalSetNetworkProperty) returns (MsgProposalSetNetworkPropertyResponse);
+    // ProposalSetPoorNetworkMsgs defines a method for setting poor network allowed messages
+    rpc ProposalSetPoorNetworkMsgs(MsgProposalSetPoorNetworkMessages) returns (MsgProposalSetPoorNetworkMessagesResponse);
     // CreateRole defines a method for creating a role
     rpc CreateRole(MsgCreateRole) returns (MsgCreateRoleResponse);
     // AssignRole defines a method for assigning a role to an address
@@ -57,6 +62,9 @@ message MsgProposalUpsertDataRegistryResponse {
     uint64 proposalID = 1;
 }
 message MsgProposalSetNetworkPropertyResponse {
+    uint64 proposalID = 1;
+}
+message MsgProposalSetPoorNetworkMessagesResponse {
     uint64 proposalID = 1;
 }
 message MsgCreateRoleResponse {}

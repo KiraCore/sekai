@@ -52,6 +52,24 @@ func (k msgServer) VoteProposal(
 	return &customgovtypes.MsgVoteProposalResponse{}, nil
 }
 
+func (k msgServer) ProposalSetPoorNetworkMsgs(
+	goCtx context.Context,
+	msg *customgovtypes.MsgProposalSetPoorNetworkMessages,
+) (*customgovtypes.MsgProposalSetPoorNetworkMessagesResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, customgovtypes.PermCreateSetNetworkPropertyProposal)
+	if !isAllowed {
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermCreateSetNetworkPropertyProposal.String())
+	}
+
+	proposalID, err := k.CreateAndSaveProposalWithContent(ctx, customgovtypes.NewSetPoorNetworkMessagesProposal(msg.Messages))
+
+	return &types.MsgProposalSetPoorNetworkMessagesResponse{
+		ProposalID: proposalID,
+	}, err
+}
+
 func (k msgServer) ProposalUpsertDataRegistry(
 	goCtx context.Context,
 	msg *customgovtypes.MsgProposalUpsertDataRegistry,

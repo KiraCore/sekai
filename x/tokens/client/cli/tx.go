@@ -38,6 +38,8 @@ func NewTxCmd() *cobra.Command {
 	txCmd.AddCommand(
 		GetTxUpsertTokenAliasCmd(),
 		GetTxUpsertTokenRateCmd(),
+		GetTxProposalUpsertTokenAliasCmd(),
+		GetTxProposalUpsertTokenRatesCmd(),
 	)
 
 	return txCmd

@@ -8,15 +8,15 @@ import (
 	"github.com/KiraCore/sekai/x/gov/client/cli"
 	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/testutil"
-
 	"github.com/KiraCore/sekai/app"
 	"github.com/KiraCore/sekai/simapp"
 	"github.com/KiraCore/sekai/testutil/network"
 	"github.com/cosmos/cosmos-sdk/baseapp"
+	"github.com/cosmos/cosmos-sdk/client"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	"github.com/cosmos/cosmos-sdk/store/types"
+	"github.com/cosmos/cosmos-sdk/testutil"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/suite"
 	dbm "github.com/tendermint/tm-db"
 )
@@ -33,11 +33,21 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.T().Log("setting up integration test suite")
 
 	cfg := network.DefaultConfig()
-	encodingConfig := app.MakeEncodingConfig()
-	cfg.Codec = encodingConfig.Marshaler
-	cfg.TxConfig = encodingConfig.TxConfig
+	encCfg := app.MakeEncodingConfig()
+	cfg.Codec = encCfg.Marshaler
+	cfg.TxConfig = encCfg.TxConfig
 
 	cfg.NumValidators = 1
+
+	// customize proposal end time and enactment time
+	govGen := customgovtypes.DefaultGenesis()
+	// govGen.NetworkProperties.ProposalEndTime = 1
+	// govGen.NetworkProperties.ProposalEnactmentTime = 2
+	govGenRaw := encCfg.Marshaler.MustMarshalJSON(govGen)
+
+	genesis := app.ModuleBasics.DefaultGenesis(encCfg.Marshaler)
+	genesis[customgovtypes.ModuleName] = govGenRaw
+	cfg.GenesisState = genesis
 
 	cfg.AppConstructor = func(val network.Validator) servertypes.Application {
 		return app.NewInitApp(
@@ -137,6 +147,74 @@ func (s IntegrationTestSuite) TestClaimCouncilor_HappyPath() {
 	s.Require().NoError(err)
 	s.Require().Equal(val.Moniker, councilorByMoniker.Moniker)
 	s.Require().Equal(val.Address, councilorByMoniker.Address)
+}
+
+func (s IntegrationTestSuite) TestProposalAndVoteSetPoorNetworkMessages_HappyPath() {
+	val := s.network.Validators[0]
+
+	// create proposal for setting poor network msgs
+	result := s.SetPoorNetworkMessages("AAA,BBB")
+	s.Require().Contains(result.RawLog, "invalid transaction type on poor network")
+
+	// query for proposals
+	s.QueryProposals()
+
+	// set permission to vote on proposal
+	s.WhitelistPermission(val.Address, "19") // 19 is permission for vote on poor network message set proposal
+
+	// vote on the proposal
+	s.VoteWithValidator0(1, customgovtypes.OptionYes)
+
+	// check votes
+	s.QueryProposalVotes(1)
+
+	// check proposal status until gov process it
+	s.network.WaitForNextBlock()
+
+	// query poor network messages
+	s.QueryPoorNetworkMessages()
+}
+
+func (s IntegrationTestSuite) TestProposalAndVotePoorNetworkMaxBankSend_HappyPath() {
+	val := s.network.Validators[0]
+
+	// set min validators to 2
+	s.SetNetworkProperties(1, 10000, 2)
+
+	// try setting network property by governance to allow more amount sending
+	s.SetNetworkPropertyProposal("POOR_NETWORK_MAX_BANK_SEND", 100000000)
+
+	// vote on the proposal
+	s.VoteWithValidator0(1, customgovtypes.OptionYes)
+
+	// check votes
+	s.QueryProposalVotes(1)
+
+	// check proposal status until gov process it
+	s.network.WaitForNextBlock()
+
+	// try sending after modification of poor network bank send param
+	s.SendValue(val.ClientCtx, val.Address, val.Address, sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100000000)))
+}
+
+func (s IntegrationTestSuite) TestPoorNetworkRestrictions_HappyPath() {
+	val := s.network.Validators[0]
+
+	// whitelist permission for modifying network properties
+	s.WhitelistPermission(val.Address, "7")
+
+	// test poor network messages after modifying min_validators section
+	s.SetNetworkProperties(1, 10000, 2)
+
+	// set permission for upsert token rate
+	s.WhitelistPermission(val.Address, "8")
+
+	// try running upser token rate which is not allowed on poor network
+	result := s.UpsertRate("mykex", "1.5", true)
+	s.Require().Contains(result.RawLog, "invalid transaction type on poor network")
+
+	// try sending more than allowed amount via bank send
+	s.SendValue(val.ClientCtx, val.Address, val.Address, sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100000000)))
 }
 
 func TestIntegrationTestSuite(t *testing.T) {

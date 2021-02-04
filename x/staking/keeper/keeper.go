@@ -163,3 +163,9 @@ func (k Keeper) MaxValidators(sdk.Context) uint32 {
 	// TODO: don't do anything for now, implement this
 	return 10
 }
+
+// IsNetworkActive returns true if network has more than the validators required in network property
+func (k Keeper) IsNetworkActive(ctx sdk.Context) bool {
+	vals := k.GetValidatorSet(ctx)
+	return len(vals) >= int(k.govkeeper.GetNetworkProperties(ctx).MinValidators)
+}

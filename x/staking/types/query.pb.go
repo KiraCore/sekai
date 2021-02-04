@@ -7,9 +7,11 @@ import (
 	context "context"
 	fmt "fmt"
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
+	github_com_cosmos_cosmos_sdk_types_query "github.com/cosmos/cosmos-sdk/types/query"
 	_ "github.com/gogo/protobuf/gogoproto"
 	grpc1 "github.com/gogo/protobuf/grpc"
 	proto "github.com/gogo/protobuf/proto"
+	_ "google.golang.org/genproto/googleapis/api/annotations"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -161,38 +163,389 @@ func (m *ValidatorResponse) GetValidator() Validator {
 	return Validator{}
 }
 
+// ValidatorsRequest is the request type for validators query.
+type ValidatorsRequest struct {
+	Address    string                                                `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+	Valkey     string                                                `protobuf:"bytes,2,opt,name=valkey,proto3" json:"valkey,omitempty"`
+	Pubkey     string                                                `protobuf:"bytes,3,opt,name=pubkey,proto3" json:"pubkey,omitempty"`
+	Moniker    string                                                `protobuf:"bytes,4,opt,name=moniker,proto3" json:"moniker,omitempty"`
+	Status     string                                                `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
+	Pagination *github_com_cosmos_cosmos_sdk_types_query.PageRequest `protobuf:"bytes,6,opt,name=pagination,proto3,casttype=github.com/cosmos/cosmos-sdk/types/query.PageRequest" json:"pagination,omitempty"`
+}
+
+func (m *ValidatorsRequest) Reset()         { *m = ValidatorsRequest{} }
+func (m *ValidatorsRequest) String() string { return proto.CompactTextString(m) }
+func (*ValidatorsRequest) ProtoMessage()    {}
+func (*ValidatorsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5c6ac9b241082464, []int{3}
+}
+func (m *ValidatorsRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ValidatorsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ValidatorsRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ValidatorsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ValidatorsRequest.Merge(m, src)
+}
+func (m *ValidatorsRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *ValidatorsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ValidatorsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ValidatorsRequest proto.InternalMessageInfo
+
+func (m *ValidatorsRequest) GetAddress() string {
+	if m != nil {
+		return m.Address
+	}
+	return ""
+}
+
+func (m *ValidatorsRequest) GetValkey() string {
+	if m != nil {
+		return m.Valkey
+	}
+	return ""
+}
+
+func (m *ValidatorsRequest) GetPubkey() string {
+	if m != nil {
+		return m.Pubkey
+	}
+	return ""
+}
+
+func (m *ValidatorsRequest) GetMoniker() string {
+	if m != nil {
+		return m.Moniker
+	}
+	return ""
+}
+
+func (m *ValidatorsRequest) GetStatus() string {
+	if m != nil {
+		return m.Status
+	}
+	return ""
+}
+
+func (m *ValidatorsRequest) GetPagination() *github_com_cosmos_cosmos_sdk_types_query.PageRequest {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+type QueryValidator struct {
+	Address    string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+	Valkey     string `protobuf:"bytes,2,opt,name=valkey,proto3" json:"valkey,omitempty"`
+	Pubkey     string `protobuf:"bytes,3,opt,name=pubkey,proto3" json:"pubkey,omitempty"`
+	Moniker    string `protobuf:"bytes,4,opt,name=moniker,proto3" json:"moniker,omitempty"`
+	Website    string `protobuf:"bytes,5,opt,name=website,proto3" json:"website,omitempty"`
+	Social     string `protobuf:"bytes,6,opt,name=social,proto3" json:"social,omitempty"`
+	Identity   string `protobuf:"bytes,7,opt,name=identity,proto3" json:"identity,omitempty"`
+	Commission string `protobuf:"bytes,8,opt,name=commission,proto3" json:"commission,omitempty"`
+	Status     string `protobuf:"bytes,9,opt,name=status,proto3" json:"status,omitempty"`
+	Rank       int64  `protobuf:"varint,10,opt,name=rank,proto3" json:"rank,omitempty"`
+	Streak     int64  `protobuf:"varint,11,opt,name=streak,proto3" json:"streak,omitempty"`
+	Mischance  int64  `protobuf:"varint,12,opt,name=mischance,proto3" json:"mischance,omitempty"`
+}
+
+func (m *QueryValidator) Reset()         { *m = QueryValidator{} }
+func (m *QueryValidator) String() string { return proto.CompactTextString(m) }
+func (*QueryValidator) ProtoMessage()    {}
+func (*QueryValidator) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5c6ac9b241082464, []int{4}
+}
+func (m *QueryValidator) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryValidator) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryValidator.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryValidator) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryValidator.Merge(m, src)
+}
+func (m *QueryValidator) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryValidator) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryValidator.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryValidator proto.InternalMessageInfo
+
+func (m *QueryValidator) GetAddress() string {
+	if m != nil {
+		return m.Address
+	}
+	return ""
+}
+
+func (m *QueryValidator) GetValkey() string {
+	if m != nil {
+		return m.Valkey
+	}
+	return ""
+}
+
+func (m *QueryValidator) GetPubkey() string {
+	if m != nil {
+		return m.Pubkey
+	}
+	return ""
+}
+
+func (m *QueryValidator) GetMoniker() string {
+	if m != nil {
+		return m.Moniker
+	}
+	return ""
+}
+
+func (m *QueryValidator) GetWebsite() string {
+	if m != nil {
+		return m.Website
+	}
+	return ""
+}
+
+func (m *QueryValidator) GetSocial() string {
+	if m != nil {
+		return m.Social
+	}
+	return ""
+}
+
+func (m *QueryValidator) GetIdentity() string {
+	if m != nil {
+		return m.Identity
+	}
+	return ""
+}
+
+func (m *QueryValidator) GetCommission() string {
+	if m != nil {
+		return m.Commission
+	}
+	return ""
+}
+
+func (m *QueryValidator) GetStatus() string {
+	if m != nil {
+		return m.Status
+	}
+	return ""
+}
+
+func (m *QueryValidator) GetRank() int64 {
+	if m != nil {
+		return m.Rank
+	}
+	return 0
+}
+
+func (m *QueryValidator) GetStreak() int64 {
+	if m != nil {
+		return m.Streak
+	}
+	return 0
+}
+
+func (m *QueryValidator) GetMischance() int64 {
+	if m != nil {
+		return m.Mischance
+	}
+	return 0
+}
+
+// ValidatorsResponse is the response type for validators query.
+type ValidatorsResponse struct {
+	Validators []QueryValidator                                       `protobuf:"bytes,1,rep,name=validators,proto3" json:"validators"`
+	Pagination *github_com_cosmos_cosmos_sdk_types_query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3,casttype=github.com/cosmos/cosmos-sdk/types/query.PageResponse" json:"pagination,omitempty"`
+}
+
+func (m *ValidatorsResponse) Reset()         { *m = ValidatorsResponse{} }
+func (m *ValidatorsResponse) String() string { return proto.CompactTextString(m) }
+func (*ValidatorsResponse) ProtoMessage()    {}
+func (*ValidatorsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5c6ac9b241082464, []int{5}
+}
+func (m *ValidatorsResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ValidatorsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ValidatorsResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ValidatorsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ValidatorsResponse.Merge(m, src)
+}
+func (m *ValidatorsResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *ValidatorsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_ValidatorsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ValidatorsResponse proto.InternalMessageInfo
+
+func (m *ValidatorsResponse) GetValidators() []QueryValidator {
+	if m != nil {
+		return m.Validators
+	}
+	return nil
+}
+
+func (m *ValidatorsResponse) GetPagination() *github_com_cosmos_cosmos_sdk_types_query.PageResponse {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*ValidatorByAddressRequest)(nil), "kira.staking.ValidatorByAddressRequest")
 	proto.RegisterType((*ValidatorByMonikerRequest)(nil), "kira.staking.ValidatorByMonikerRequest")
 	proto.RegisterType((*ValidatorResponse)(nil), "kira.staking.ValidatorResponse")
+	proto.RegisterType((*ValidatorsRequest)(nil), "kira.staking.ValidatorsRequest")
+	proto.RegisterType((*QueryValidator)(nil), "kira.staking.QueryValidator")
+	proto.RegisterType((*ValidatorsResponse)(nil), "kira.staking.ValidatorsResponse")
 }
 
 func init() { proto.RegisterFile("query.proto", fileDescriptor_5c6ac9b241082464) }
 
 var fileDescriptor_5c6ac9b241082464 = []byte{
-	// 341 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x2e, 0x2c, 0x4d, 0x2d,
-	0xaa, 0xd4, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0xc9, 0xce, 0x2c, 0x4a, 0xd4, 0x2b, 0x2e,
-	0x49, 0xcc, 0xce, 0xcc, 0x4b, 0x97, 0xe2, 0x85, 0x32, 0x20, 0x92, 0x52, 0x22, 0xe9, 0xf9, 0xe9,
-	0xf9, 0x60, 0xa6, 0x3e, 0x88, 0x05, 0x11, 0x55, 0xaa, 0xe1, 0x92, 0x0c, 0x4b, 0xcc, 0xc9, 0x4c,
-	0x49, 0x2c, 0xc9, 0x2f, 0x72, 0xaa, 0x74, 0x4c, 0x49, 0x29, 0x4a, 0x2d, 0x2e, 0x0e, 0x4a, 0x2d,
-	0x2c, 0x4d, 0x2d, 0x2e, 0x11, 0x8a, 0xe7, 0xe2, 0x28, 0x4b, 0xcc, 0x89, 0x4f, 0x4c, 0x49, 0x29,
-	0x92, 0x60, 0x54, 0x60, 0xd4, 0xe0, 0x71, 0x72, 0xf9, 0x74, 0x4f, 0x9e, 0xbf, 0x32, 0x31, 0x37,
-	0xc7, 0x4a, 0x09, 0x26, 0xa3, 0xf4, 0xeb, 0x9e, 0xbc, 0x6e, 0x7a, 0x66, 0x49, 0x46, 0x69, 0x92,
-	0x5e, 0x72, 0x7e, 0xae, 0x7e, 0x72, 0x7e, 0x71, 0x6e, 0x7e, 0x31, 0x94, 0xd2, 0x2d, 0x4e, 0xc9,
-	0xd6, 0x2f, 0xa9, 0x2c, 0x48, 0x2d, 0xd6, 0x0b, 0x4b, 0xcc, 0x81, 0x19, 0xcf, 0x5e, 0x06, 0x61,
-	0x2b, 0x99, 0xa2, 0xd8, 0xee, 0x9b, 0x9f, 0x97, 0x99, 0x9d, 0x5a, 0x04, 0xb3, 0x5d, 0x82, 0x8b,
-	0x3d, 0x17, 0x22, 0x02, 0xb6, 0x9c, 0x33, 0x08, 0xc6, 0x55, 0x0a, 0xe0, 0x12, 0x84, 0x6b, 0x0b,
-	0x4a, 0x2d, 0x2e, 0xc8, 0xcf, 0x2b, 0x4e, 0x15, 0xb2, 0xe6, 0xe2, 0x2c, 0x83, 0x09, 0x82, 0x35,
-	0x70, 0x1b, 0x89, 0xeb, 0x21, 0x07, 0x88, 0x1e, 0xc2, 0x2a, 0x96, 0x13, 0xf7, 0xe4, 0x19, 0x82,
-	0x10, 0xea, 0x8d, 0x4e, 0x33, 0x72, 0xb1, 0x06, 0x82, 0x42, 0x52, 0x28, 0x81, 0x4b, 0x08, 0x33,
-	0x40, 0x84, 0xd4, 0x71, 0x99, 0x84, 0x16, 0x64, 0x52, 0xf2, 0x38, 0x14, 0xc2, 0x9c, 0xa9, 0xc4,
-	0x80, 0x66, 0x03, 0xd4, 0xd3, 0x78, 0x6c, 0x40, 0x0d, 0x16, 0x22, 0x6c, 0x70, 0x72, 0x3e, 0xf1,
-	0x48, 0x8e, 0xf1, 0xc2, 0x23, 0x39, 0xc6, 0x07, 0x8f, 0xe4, 0x18, 0x27, 0x3c, 0x96, 0x63, 0xb8,
-	0xf0, 0x58, 0x8e, 0xe1, 0xc6, 0x63, 0x39, 0x86, 0x28, 0x4d, 0xa4, 0x88, 0xf2, 0xce, 0x2c, 0x4a,
-	0x74, 0xce, 0x2f, 0x4a, 0xd5, 0x2f, 0x4e, 0xcd, 0x4e, 0xcc, 0xd4, 0xaf, 0xd0, 0x87, 0x1a, 0x09,
-	0x89, 0xaf, 0x24, 0x36, 0x70, 0x02, 0x31, 0x06, 0x04, 0x00, 0x00, 0xff, 0xff, 0xdb, 0x80, 0x0f,
-	0xd2, 0x62, 0x02, 0x00, 0x00,
+	// 665 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x54, 0x3d, 0x6f, 0xd3, 0x40,
+	0x18, 0x8e, 0xd3, 0xb4, 0x69, 0x2e, 0xe5, 0xeb, 0x84, 0xc0, 0x8d, 0x2a, 0x3b, 0xf2, 0x42, 0x19,
+	0x1a, 0x4b, 0x85, 0x4a, 0x50, 0x26, 0x52, 0x36, 0x84, 0x54, 0x32, 0x74, 0x60, 0x29, 0x97, 0xf8,
+	0xe4, 0x9e, 0xfc, 0x71, 0xa9, 0xef, 0x12, 0xb0, 0xc4, 0x84, 0xf8, 0x01, 0x48, 0xfc, 0x01, 0x7e,
+	0x09, 0x73, 0xc5, 0x42, 0x25, 0x16, 0xa6, 0x08, 0xb5, 0x0c, 0xcc, 0x8c, 0x99, 0x90, 0xef, 0xce,
+	0xf6, 0xb9, 0x22, 0x7c, 0x2c, 0x4c, 0xbe, 0xf7, 0xeb, 0x9e, 0xf7, 0x9e, 0xf7, 0xf1, 0x0b, 0xda,
+	0xc7, 0x13, 0x9c, 0xa4, 0xbd, 0x71, 0x42, 0x39, 0x85, 0x6b, 0x01, 0x49, 0x50, 0x8f, 0x71, 0x14,
+	0x90, 0xd8, 0xef, 0x5c, 0x52, 0x07, 0x19, 0xec, 0x5c, 0x1d, 0x23, 0x9f, 0xc4, 0x88, 0x13, 0x1a,
+	0x2b, 0xcf, 0x75, 0x9f, 0xfa, 0x54, 0x1c, 0xdd, 0xec, 0xa4, 0xbc, 0x1b, 0x3e, 0xa5, 0x7e, 0x88,
+	0x5d, 0x34, 0x26, 0x2e, 0x8a, 0x63, 0xca, 0x45, 0x09, 0x93, 0x51, 0xe7, 0x15, 0x58, 0x3f, 0x40,
+	0x21, 0xf1, 0x10, 0xa7, 0x49, 0x3f, 0x7d, 0xe8, 0x79, 0x09, 0x66, 0x6c, 0x80, 0x8f, 0x27, 0x98,
+	0x71, 0x78, 0x08, 0x56, 0xa7, 0x28, 0x3c, 0x44, 0x9e, 0x97, 0x98, 0x46, 0xd7, 0xd8, 0x5c, 0xeb,
+	0x3f, 0xfa, 0x31, 0xb3, 0xaf, 0xa4, 0x28, 0x0a, 0x77, 0x9d, 0x3c, 0xe2, 0xcc, 0x67, 0xf6, 0x96,
+	0x4f, 0xf8, 0xd1, 0x64, 0xd8, 0x1b, 0xd1, 0xc8, 0x1d, 0x51, 0x16, 0x51, 0xa6, 0x3e, 0x5b, 0xcc,
+	0x0b, 0x5c, 0x9e, 0x8e, 0x31, 0xeb, 0x1d, 0xa0, 0x30, 0xbf, 0xbe, 0x39, 0x95, 0x67, 0x67, 0xa7,
+	0x82, 0xfe, 0x84, 0xc6, 0x24, 0xc0, 0x49, 0x8e, 0x6e, 0x82, 0x66, 0x24, 0x3d, 0x02, 0xbc, 0x35,
+	0xc8, 0x4d, 0x67, 0x1f, 0x5c, 0x2b, 0xca, 0x06, 0x98, 0x8d, 0x69, 0xcc, 0x30, 0x7c, 0x00, 0x5a,
+	0xd3, 0xdc, 0x29, 0x0a, 0xda, 0xdb, 0x37, 0x7b, 0x3a, 0x81, 0xbd, 0x12, 0xaa, 0x71, 0x32, 0xb3,
+	0x6b, 0x83, 0x32, 0xdf, 0x79, 0x53, 0xd7, 0xae, 0x64, 0x5a, 0x07, 0x48, 0xb6, 0x9c, 0x77, 0xa0,
+	0x4c, 0x78, 0x03, 0xac, 0x4c, 0x51, 0x18, 0xe0, 0xd4, 0xac, 0x8b, 0x80, 0xb2, 0x32, 0xff, 0x78,
+	0x32, 0xcc, 0xfc, 0x4b, 0xd2, 0x2f, 0x2d, 0xfd, 0x2d, 0x8d, 0xca, 0x5b, 0xb2, 0x0a, 0xc6, 0x11,
+	0x9f, 0x30, 0x73, 0x59, 0x56, 0x48, 0x0b, 0x32, 0x00, 0xca, 0x01, 0x9b, 0x2b, 0xe2, 0x3d, 0xeb,
+	0xd5, 0xf7, 0xec, 0x23, 0x1f, 0xab, 0x56, 0xfb, 0xf7, 0xe6, 0x33, 0xfb, 0xee, 0x9f, 0xa7, 0xe0,
+	0x4a, 0x79, 0x69, 0x95, 0x03, 0x0d, 0xc6, 0xf9, 0x58, 0x07, 0x97, 0x9f, 0x66, 0x19, 0x05, 0x17,
+	0xff, 0x85, 0x03, 0x13, 0x34, 0x5f, 0xe0, 0x21, 0x23, 0x1c, 0x2b, 0x12, 0x72, 0x53, 0xb0, 0x43,
+	0x47, 0x04, 0x85, 0x82, 0x81, 0x8c, 0x1d, 0x61, 0xc1, 0x0e, 0x58, 0x25, 0x1e, 0x8e, 0x39, 0xe1,
+	0xa9, 0xd9, 0x14, 0x91, 0xc2, 0x86, 0x16, 0x00, 0x23, 0x1a, 0x45, 0x84, 0xb1, 0x8c, 0xb9, 0x55,
+	0x11, 0xd5, 0x3c, 0x1a, 0xe3, 0xad, 0x0a, 0xe3, 0x10, 0x34, 0x12, 0x14, 0x07, 0x26, 0xe8, 0x1a,
+	0x9b, 0x4b, 0x03, 0x71, 0x96, 0xb9, 0x09, 0x46, 0x81, 0xd9, 0x16, 0x5e, 0x65, 0xc1, 0x0d, 0xd0,
+	0x8a, 0x08, 0x1b, 0x1d, 0xa1, 0x78, 0x84, 0xcd, 0x35, 0x11, 0x2a, 0x1d, 0xbb, 0x8d, 0xef, 0xef,
+	0x6d, 0xc3, 0xf9, 0x64, 0x00, 0xa8, 0x6b, 0x4a, 0xe9, 0xb4, 0x0f, 0x40, 0xa1, 0xbb, 0x8c, 0xd3,
+	0xa5, 0xcd, 0xf6, 0xf6, 0x46, 0x75, 0xb0, 0xd5, 0x11, 0x28, 0xb5, 0x6a, 0x55, 0x70, 0x52, 0x11,
+	0x47, 0x5d, 0x88, 0xa3, 0xf3, 0x2b, 0x71, 0x48, 0xcc, 0xfe, 0xfd, 0xf9, 0xcc, 0xde, 0xf9, 0x47,
+	0x75, 0xc8, 0x52, 0x5d, 0x1e, 0xdb, 0x1f, 0xea, 0x60, 0x59, 0xf4, 0x06, 0x9f, 0x6b, 0x4f, 0x2b,
+	0xd6, 0x06, 0xbc, 0xb5, 0xe8, 0x7f, 0xbb, 0xb0, 0x58, 0x3a, 0xf6, 0x82, 0xc4, 0x1c, 0xd5, 0xa9,
+	0x5d, 0x40, 0x50, 0xab, 0xe1, 0x37, 0x08, 0xd5, 0xe5, 0xf1, 0x37, 0x08, 0xc7, 0x00, 0x94, 0xe3,
+	0x81, 0x8b, 0x0a, 0x8a, 0x9e, 0xbb, 0x8b, 0x13, 0xd4, 0x95, 0xdd, 0xd7, 0x9f, 0xbf, 0xbd, 0xab,
+	0x77, 0xa0, 0xe9, 0x66, 0x99, 0xae, 0xca, 0x74, 0xcb, 0xb9, 0xf5, 0xf7, 0x4e, 0xce, 0x2c, 0xe3,
+	0xf4, 0xcc, 0x32, 0xbe, 0x9e, 0x59, 0xc6, 0xdb, 0x73, 0xab, 0x76, 0x7a, 0x6e, 0xd5, 0xbe, 0x9c,
+	0x5b, 0xb5, 0x67, 0xb7, 0xb5, 0xe9, 0x3c, 0x26, 0x09, 0xda, 0xa3, 0x09, 0x76, 0x19, 0x0e, 0x10,
+	0x71, 0x5f, 0x16, 0x37, 0x89, 0x21, 0x0d, 0x57, 0xc4, 0xe6, 0xbe, 0xf3, 0x33, 0x00, 0x00, 0xff,
+	0xff, 0xc4, 0xd1, 0x76, 0xdf, 0x2b, 0x06, 0x00, 0x00,
+}
+
+func (this *QueryValidator) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*QueryValidator)
+	if !ok {
+		that2, ok := that.(QueryValidator)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.Address != that1.Address {
+		return false
+	}
+	if this.Valkey != that1.Valkey {
+		return false
+	}
+	if this.Pubkey != that1.Pubkey {
+		return false
+	}
+	if this.Moniker != that1.Moniker {
+		return false
+	}
+	if this.Website != that1.Website {
+		return false
+	}
+	if this.Social != that1.Social {
+		return false
+	}
+	if this.Identity != that1.Identity {
+		return false
+	}
+	if this.Commission != that1.Commission {
+		return false
+	}
+	if this.Status != that1.Status {
+		return false
+	}
+	if this.Rank != that1.Rank {
+		return false
+	}
+	if this.Streak != that1.Streak {
+		return false
+	}
+	if this.Mischance != that1.Mischance {
+		return false
+	}
+	return true
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -211,6 +564,8 @@ type QueryClient interface {
 	ValidatorByAddress(ctx context.Context, in *ValidatorByAddressRequest, opts ...grpc.CallOption) (*ValidatorResponse, error)
 	// Validators queries a validator by moniker.
 	ValidatorByMoniker(ctx context.Context, in *ValidatorByMonikerRequest, opts ...grpc.CallOption) (*ValidatorResponse, error)
+	// Validators queries all validators by pagination
+	Validators(ctx context.Context, in *ValidatorsRequest, opts ...grpc.CallOption) (*ValidatorsResponse, error)
 }
 
 type queryClient struct {
@@ -239,12 +594,23 @@ func (c *queryClient) ValidatorByMoniker(ctx context.Context, in *ValidatorByMon
 	return out, nil
 }
 
+func (c *queryClient) Validators(ctx context.Context, in *ValidatorsRequest, opts ...grpc.CallOption) (*ValidatorsResponse, error) {
+	out := new(ValidatorsResponse)
+	err := c.cc.Invoke(ctx, "/kira.staking.Query/Validators", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 type QueryServer interface {
 	// Validators queries a validator by address.
 	ValidatorByAddress(context.Context, *ValidatorByAddressRequest) (*ValidatorResponse, error)
 	// Validators queries a validator by moniker.
 	ValidatorByMoniker(context.Context, *ValidatorByMonikerRequest) (*ValidatorResponse, error)
+	// Validators queries all validators by pagination
+	Validators(context.Context, *ValidatorsRequest) (*ValidatorsResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -256,6 +622,9 @@ func (*UnimplementedQueryServer) ValidatorByAddress(ctx context.Context, req *Va
 }
 func (*UnimplementedQueryServer) ValidatorByMoniker(ctx context.Context, req *ValidatorByMonikerRequest) (*ValidatorResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ValidatorByMoniker not implemented")
+}
+func (*UnimplementedQueryServer) Validators(ctx context.Context, req *ValidatorsRequest) (*ValidatorsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Validators not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -298,6 +667,24 @@ func _Query_ValidatorByMoniker_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_Validators_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ValidatorsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Validators(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.staking.Query/Validators",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Validators(ctx, req.(*ValidatorsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "kira.staking.Query",
 	HandlerType: (*QueryServer)(nil),
@@ -309,6 +696,10 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ValidatorByMoniker",
 			Handler:    _Query_ValidatorByMoniker_Handler,
+		},
+		{
+			MethodName: "Validators",
+			Handler:    _Query_Validators_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -408,6 +799,226 @@ func (m *ValidatorResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *ValidatorsRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ValidatorsRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ValidatorsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x32
+	}
+	if len(m.Status) > 0 {
+		i -= len(m.Status)
+		copy(dAtA[i:], m.Status)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Status)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.Moniker) > 0 {
+		i -= len(m.Moniker)
+		copy(dAtA[i:], m.Moniker)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Moniker)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Pubkey) > 0 {
+		i -= len(m.Pubkey)
+		copy(dAtA[i:], m.Pubkey)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Pubkey)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Valkey) > 0 {
+		i -= len(m.Valkey)
+		copy(dAtA[i:], m.Valkey)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Valkey)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryValidator) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryValidator) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryValidator) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Mischance != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Mischance))
+		i--
+		dAtA[i] = 0x60
+	}
+	if m.Streak != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Streak))
+		i--
+		dAtA[i] = 0x58
+	}
+	if m.Rank != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Rank))
+		i--
+		dAtA[i] = 0x50
+	}
+	if len(m.Status) > 0 {
+		i -= len(m.Status)
+		copy(dAtA[i:], m.Status)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Status)))
+		i--
+		dAtA[i] = 0x4a
+	}
+	if len(m.Commission) > 0 {
+		i -= len(m.Commission)
+		copy(dAtA[i:], m.Commission)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Commission)))
+		i--
+		dAtA[i] = 0x42
+	}
+	if len(m.Identity) > 0 {
+		i -= len(m.Identity)
+		copy(dAtA[i:], m.Identity)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Identity)))
+		i--
+		dAtA[i] = 0x3a
+	}
+	if len(m.Social) > 0 {
+		i -= len(m.Social)
+		copy(dAtA[i:], m.Social)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Social)))
+		i--
+		dAtA[i] = 0x32
+	}
+	if len(m.Website) > 0 {
+		i -= len(m.Website)
+		copy(dAtA[i:], m.Website)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Website)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.Moniker) > 0 {
+		i -= len(m.Moniker)
+		copy(dAtA[i:], m.Moniker)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Moniker)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Pubkey) > 0 {
+		i -= len(m.Pubkey)
+		copy(dAtA[i:], m.Pubkey)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Pubkey)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Valkey) > 0 {
+		i -= len(m.Valkey)
+		copy(dAtA[i:], m.Valkey)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Valkey)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ValidatorsResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ValidatorsResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ValidatorsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Validators) > 0 {
+		for iNdEx := len(m.Validators) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Validators[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	offset -= sovQuery(v)
 	base := offset
@@ -453,6 +1064,112 @@ func (m *ValidatorResponse) Size() (n int) {
 	_ = l
 	l = m.Validator.Size()
 	n += 1 + l + sovQuery(uint64(l))
+	return n
+}
+
+func (m *ValidatorsRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Valkey)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Pubkey)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Moniker)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Status)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryValidator) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Valkey)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Pubkey)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Moniker)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Website)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Social)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Identity)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Commission)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Status)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.Rank != 0 {
+		n += 1 + sovQuery(uint64(m.Rank))
+	}
+	if m.Streak != 0 {
+		n += 1 + sovQuery(uint64(m.Streak))
+	}
+	if m.Mischance != 0 {
+		n += 1 + sovQuery(uint64(m.Mischance))
+	}
+	return n
+}
+
+func (m *ValidatorsResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Validators) > 0 {
+		for _, e := range m.Validators {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
 	return n
 }
 
@@ -693,6 +1410,776 @@ func (m *ValidatorResponse) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if err := m.Validator.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ValidatorsRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ValidatorsRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ValidatorsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Address = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Valkey", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Valkey = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pubkey", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Pubkey = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Moniker", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Moniker = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Status", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Status = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &github_com_cosmos_cosmos_sdk_types_query.PageRequest{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryValidator) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryValidator: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryValidator: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Address = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Valkey", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Valkey = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pubkey", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Pubkey = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Moniker", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Moniker = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Website", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Website = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Social", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Social = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Identity", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Identity = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 8:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Commission", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Commission = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 9:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Status", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Status = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 10:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Rank", wireType)
+			}
+			m.Rank = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Rank |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 11:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Streak", wireType)
+			}
+			m.Streak = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Streak |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 12:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Mischance", wireType)
+			}
+			m.Mischance = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Mischance |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ValidatorsResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ValidatorsResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ValidatorsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Validators", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Validators = append(m.Validators, QueryValidator{})
+			if err := m.Validators[len(m.Validators)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &github_com_cosmos_cosmos_sdk_types_query.PageResponse{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

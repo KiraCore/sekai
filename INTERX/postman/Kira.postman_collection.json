@@ -718,7 +718,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://0.0.0.0:11000/api/kira/gov/data/CodeOfConduct",
+					"raw": "http://0.0.0.0:11000/api/kira/gov/data/sample_png_file",
 					"protocol": "http",
 					"host": [
 						"0",
@@ -732,7 +732,7 @@
 						"kira",
 						"gov",
 						"data",
-						"CodeOfConduct"
+						"sample_png_file"
 					]
 				}
 			},
@@ -763,7 +763,50 @@
 					}
 				},
 				"url": {
-					"raw": "http://0.0.0.0:11000/api/download/CodeOfConduct",
+					"raw": "http://0.0.0.0:11000/download/DRR/2CEE6B1689EDDDD6F08EB1EAEC7D3C4E",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"download",
+						"DRR",
+						"2CEE6B1689EDDDD6F08EB1EAEC7D3C4E"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Query Validators",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/valopers",
 					"protocol": "http",
 					"host": [
 						"0",
@@ -774,8 +817,7 @@
 					"port": "11000",
 					"path": [
 						"api",
-						"download",
-						"CodeOfConduct"
+						"valopers"
 					]
 				}
 			},

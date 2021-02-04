@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	interx "github.com/KiraCore/sekai/INTERX/config"
+	"github.com/KiraCore/sekai/INTERX/config"
 	"github.com/KiraCore/sekai/INTERX/types"
 )
 
@@ -19,7 +19,7 @@ func PutCache(chainIDHash string, endpointHash string, requestHash string, value
 		return err
 	}
 
-	folderPath := fmt.Sprintf("%s/%s/%s", interx.GetResponseCacheDir(), chainIDHash, endpointHash)
+	folderPath := fmt.Sprintf("%s/%s/%s", config.GetResponseCacheDir(), chainIDHash, endpointHash)
 	filePath := fmt.Sprintf("%s/%s", folderPath, requestHash)
 
 	Mutex.Lock()
@@ -43,18 +43,19 @@ func PutCache(chainIDHash string, endpointHash string, requestHash string, value
 
 // GetCache is a function to get value from cache
 func GetCache(chainIDHash string, endpointHash string, requestHash string) (types.InterxResponse, error) {
-	filePath := fmt.Sprintf("%s/%s/%s/%s", interx.GetResponseCacheDir(), chainIDHash, endpointHash, requestHash)
-
-	Mutex.Lock()
-	data, _ := ioutil.ReadFile(filePath)
-	Mutex.Unlock()
+	filePath := fmt.Sprintf("%s/%s/%s/%s", config.GetResponseCacheDir(), chainIDHash, endpointHash, requestHash)
 
 	response := types.InterxResponse{}
-	err := json.Unmarshal([]byte(data), &response)
+
+	Mutex.Lock()
+	data, err := ioutil.ReadFile(filePath)
+	Mutex.Unlock()
 
 	if err != nil {
-		GetLogger().Error("[cache] Unable to save response: ", filePath)
+		return response, nil
 	}
+
+	err = json.Unmarshal([]byte(data), &response)
 
 	return response, err
 }

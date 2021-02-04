@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/KiraCore/sekai/INTERX/common"
+	"github.com/KiraCore/sekai/INTERX/config"
 	"github.com/KiraCore/sekai/INTERX/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/gorilla/mux"
@@ -14,11 +15,11 @@ import (
 
 // RegisterCosmosBankRoutes registers query routers.
 func RegisterCosmosBankRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr string) {
-	r.HandleFunc(common.QueryTotalSupply, QuerySupplyRequest(gwCosmosmux, rpcAddr)).Methods("GET")
+	r.HandleFunc(config.QueryTotalSupply, QuerySupplyRequest(gwCosmosmux, rpcAddr)).Methods("GET")
 	r.HandleFunc("/api/cosmos/bank/balances/{address}", QueryBalancesRequest(gwCosmosmux, rpcAddr)).Methods("GET")
 
-	common.AddRPCMethod("GET", common.QueryTotalSupply, "This is an API to query total supply.", true)
-	common.AddRPCMethod("GET", common.QueryBalances, "This is an API to query balances of an address.", true)
+	common.AddRPCMethod("GET", config.QueryTotalSupply, "This is an API to query total supply.", true)
+	common.AddRPCMethod("GET", config.QueryBalances, "This is an API to query balances of an address.", true)
 }
 
 func querySupplyHandle(r *http.Request, gwCosmosmux *runtime.ServeMux) (interface{}, interface{}, int) {
@@ -34,10 +35,10 @@ func QuerySupplyRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.Hand
 
 		common.GetLogger().Info("[query-supply] Entering total supply query")
 
-		if !common.RPCMethods["GET"][common.QueryTotalSupply].Enabled {
+		if !common.RPCMethods["GET"][config.QueryTotalSupply].Enabled {
 			response.Response, response.Error, statusCode = common.ServeError(0, "", "API disabled", http.StatusForbidden)
 		} else {
-			if common.RPCMethods["GET"][common.QueryTotalSupply].CachingEnabled {
+			if common.RPCMethods["GET"][config.QueryTotalSupply].CachingEnabled {
 				found, cacheResponse, cacheError, cacheStatus := common.SearchCache(request, response)
 				if found {
 					response.Response, response.Error, statusCode = cacheResponse, cacheError, cacheStatus
@@ -51,7 +52,7 @@ func QuerySupplyRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.Hand
 			response.Response, response.Error, statusCode = querySupplyHandle(r, gwCosmosmux)
 		}
 
-		common.WrapResponse(w, request, *response, statusCode, common.RPCMethods["GET"][common.QueryTotalSupply].CachingEnabled)
+		common.WrapResponse(w, request, *response, statusCode, common.RPCMethods["GET"][config.QueryTotalSupply].CachingEnabled)
 	}
 }
 
@@ -76,7 +77,7 @@ func QueryBalancesRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.Ha
 		bech32addr := queries["address"]
 		request := types.InterxRequest{
 			Method:   r.Method,
-			Endpoint: common.QueryBalances,
+			Endpoint: config.QueryBalances,
 			Params:   []byte(bech32addr),
 		}
 		response := common.GetResponseFormat(request, rpcAddr)
@@ -84,10 +85,10 @@ func QueryBalancesRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.Ha
 
 		common.GetLogger().Info("[query-balances] Entering balances query: ", bech32addr)
 
-		if !common.RPCMethods["GET"][common.QueryBalances].Enabled {
+		if !common.RPCMethods["GET"][config.QueryBalances].Enabled {
 			response.Response, response.Error, statusCode = common.ServeError(0, "", "API disabled", http.StatusForbidden)
 		} else {
-			if common.RPCMethods["GET"][common.QueryBalances].CachingEnabled {
+			if common.RPCMethods["GET"][config.QueryBalances].CachingEnabled {
 				found, cacheResponse, cacheError, cacheStatus := common.SearchCache(request, response)
 				if found {
 					response.Response, response.Error, statusCode = cacheResponse, cacheError, cacheStatus
@@ -101,6 +102,6 @@ func QueryBalancesRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.Ha
 			response.Response, response.Error, statusCode = queryBalancesHandle(r, gwCosmosmux)
 		}
 
-		common.WrapResponse(w, request, *response, statusCode, common.RPCMethods["GET"][common.QueryBalances].CachingEnabled)
+		common.WrapResponse(w, request, *response, statusCode, common.RPCMethods["GET"][config.QueryBalances].CachingEnabled)
 	}
 }

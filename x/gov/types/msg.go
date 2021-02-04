@@ -14,6 +14,7 @@ var (
 	_ sdk.Msg = &MsgBlacklistPermissions{}
 	_ sdk.Msg = &MsgProposalAssignPermission{}
 	_ sdk.Msg = &MsgProposalUpsertDataRegistry{}
+	_ sdk.Msg = &MsgProposalSetPoorNetworkMessages{}
 
 	// Councilor
 	_ sdk.Msg = &MsgClaimCouncilor{}
@@ -455,7 +456,11 @@ func (m *MsgProposalSetNetworkProperty) ValidateBasic() error {
 		VoteQuorum,
 		ProposalEndTime,
 		ProposalEnactmentTime,
-		EnableForeignFeePayments:
+		EnableForeignFeePayments,
+		MischanceRankDecreaseAmount,
+		InactiveRankDecreasePercent,
+		PoorNetworkMaxBankSend,
+		MinValidators:
 		return nil
 	default:
 		return ErrInvalidNetworkProperty
@@ -508,6 +513,34 @@ func (m *MsgProposalUpsertDataRegistry) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{
 		m.Proposer,
 	}
+}
+
+func NewMsgProposalSetPoorNetworkMessages(proposer sdk.AccAddress, messages []string) *MsgProposalSetPoorNetworkMessages {
+	return &MsgProposalSetPoorNetworkMessages{
+		Messages: messages,
+		Proposer: proposer,
+	}
+}
+
+func (m *MsgProposalSetPoorNetworkMessages) Route() string {
+	return ModuleName
+}
+
+func (m *MsgProposalSetPoorNetworkMessages) Type() string {
+	return types.MsgTypeProposalSetPoorNetworkMsgs
+}
+
+func (m *MsgProposalSetPoorNetworkMessages) ValidateBasic() error {
+	return nil
+}
+
+func (m *MsgProposalSetPoorNetworkMessages) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *MsgProposalSetPoorNetworkMessages) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{m.Proposer}
 }
 
 func NewMsgVoteProposal(proposalID uint64, voter sdk.AccAddress, option VoteOption) *MsgVoteProposal {

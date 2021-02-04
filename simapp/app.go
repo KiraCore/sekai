@@ -230,6 +230,7 @@ func NewSimApp(
 			customgov.NewApplyAssignPermissionProposalHandler(app.CustomGovKeeper),
 			customgov.NewApplySetNetworkPropertyProposalHandler(app.CustomGovKeeper),
 			customgov.NewApplyUpsertDataRegistryProposalHandler(app.CustomGovKeeper),
+			customgov.NewApplySetPoorNetworkMessagesProposalHandler(app.CustomGovKeeper),
 			tokens.NewApplyUpsertTokenAliasProposalHandler(app.TokensKeeper),
 			tokens.NewApplyUpsertTokenRatesProposalHandler(app.TokensKeeper),
 		},

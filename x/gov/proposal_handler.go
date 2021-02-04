@@ -70,3 +70,21 @@ func (a ApplyUpsertDataRegistryProposalHandler) Apply(ctx sdk.Context, proposal 
 	entry := types.NewDataRegistryEntry(p.Hash, p.Reference, p.Encoding, p.Size_)
 	a.keeper.UpsertDataRegistryEntry(ctx, p.Key, entry)
 }
+
+type ApplySetPoorNetworkMessagesProposalHandler struct {
+	keeper keeper.Keeper
+}
+
+func NewApplySetPoorNetworkMessagesProposalHandler(keeper keeper.Keeper) *ApplySetPoorNetworkMessagesProposalHandler {
+	return &ApplySetPoorNetworkMessagesProposalHandler{keeper: keeper}
+}
+
+func (a ApplySetPoorNetworkMessagesProposalHandler) ProposalType() string {
+	return types.SetPoorNetworkMsgsProposalType
+}
+
+func (a ApplySetPoorNetworkMessagesProposalHandler) Apply(ctx sdk.Context, proposal types.Content) {
+	p := proposal.(*types.SetPoorNetworkMessagesProposal)
+	msgs := types.AllowedMessages{Messages: p.Messages}
+	a.keeper.SavePoorNetworkMsgs(ctx, &msgs)
+}

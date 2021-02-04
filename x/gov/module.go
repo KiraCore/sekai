@@ -71,6 +71,7 @@ func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
 		cli2.GetCmdQueryPermissions(),
 		cli2.GetCmdQueryNetworkProperties(),
 		cli2.GetCmdQueryExecutionFee(),
+		cli2.GetCmdQueryPoorNetworkMessages(),
 		cli2.GetCmdQueryRolePermissions(),
 		cli2.GetCmdQueryRolesByAddress(),
 		cli2.GetCmdQueryProposals(),
@@ -152,6 +153,8 @@ func (am AppModule) InitGenesis(
 	for _, fee := range genesisState.ExecutionFees {
 		am.customGovKeeper.SetExecutionFee(ctx, fee)
 	}
+
+	am.customGovKeeper.SavePoorNetworkMsgs(ctx, genesisState.PoorNetworkMessages)
 
 	return nil
 }

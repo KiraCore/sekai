@@ -232,6 +232,7 @@ func NewInitApp(
 				customgov.NewApplyAssignPermissionProposalHandler(app.customGovKeeper),
 				customgov.NewApplySetNetworkPropertyProposalHandler(app.customGovKeeper),
 				customgov.NewApplyUpsertDataRegistryProposalHandler(app.customGovKeeper),
+				customgov.NewApplySetPoorNetworkMessagesProposalHandler(app.customGovKeeper),
 				tokens.NewApplyUpsertTokenAliasProposalHandler(app.tokensKeeper),
 				tokens.NewApplyUpsertTokenRatesProposalHandler(app.tokensKeeper),
 			},

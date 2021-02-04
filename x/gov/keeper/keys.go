@@ -32,5 +32,7 @@ var (
 	RoleActorPrefix      = []byte{0x32}
 	WhitelistRolePrefix  = []byte{0x33}
 
-	DataRegistryPrefix  = []byte{0x40}
+	DataRegistryPrefix = []byte{0x40}
+
+	PoorNetworkMsgsPrefix = []byte{0x41}
 )
