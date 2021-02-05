@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "1dffbbbc-2be8-460f-be20-460ed275a4b4",
+		"_postman_id": "50345ce8-1849-4913-86e7-bebcd9101c02",
 		"name": "Kira",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -994,7 +994,7 @@
 			"response": []
 		},
 		{
-			"name": "Query Block By Height",
+			"name": "Query Block By Height or Hash",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -1018,7 +1018,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://0.0.0.0:11000/api/cosmos/blocks/1",
+					"raw": "http://0.0.0.0:11000/api/cosmos/blocks/2",
 					"protocol": "http",
 					"host": [
 						"0",
@@ -1031,12 +1031,56 @@
 						"api",
 						"cosmos",
 						"blocks",
-						"1"
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Query Block Transactions",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/cosmos/blocks/2/transactions",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"cosmos",
+						"blocks",
+						"2",
+						"transactions"
 					]
 				}
 			},
 			"response": []
 		}
-	],
-	"protocolProfileBehavior": {}
+	]
 }

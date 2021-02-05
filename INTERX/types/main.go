@@ -66,18 +66,45 @@ type ResponseSign struct {
 	Response  string `json:"response"`
 }
 
-// Transaction is a struct to be used for transaction
-type Transaction struct {
+// DepositWithdrawTransaction is a struct to be used for deposit/withdraw transaction
+type DepositWithdrawTransaction struct {
 	Address string `json:"address"`
 	Type    string `json:"type"`
 	Denom   string `json:"denom,omitempty"`
 	Amount  int64  `json:"amount"`
 }
 
+// DepositWithdrawResult is a struct to be used for query deposit/withdraw transaction response
+type DepositWithdrawResult struct {
+	Time int64                        `json:"time"`
+	Txs  []DepositWithdrawTransaction `json:"txs"`
+}
+
+// Transaction is a struct to be used for query transaction response
+type Transaction struct {
+	From   string `json:"from,omitempty"`
+	To     string `json:"to,omitempty"`
+	Amount int64  `json:"amount,omitempty"`
+	Denom  string `json:"denom,omitempty"`
+}
+
 // TransactionResult is a struct to be used for query transaction response
 type TransactionResult struct {
-	Time int64         `json:"time"`
-	Txs  []Transaction `json:"txs"`
+	Hash           string        `json:"hash"`
+	Status         string        `json:"status"`
+	BlockHeight    int64         `json:"block_height"`
+	BlockTimestamp int64         `json:"block_timestamp"`
+	Confirmation   int64         `json:"confirmation"`
+	Transactions   []Transaction `json:"transactions"`
+	Fees           []Transaction `json:"fees"`
+	GasWanted      int64         `json:"gas_wanted"`
+	GasUsed        int64         `json:"gas_used"`
+}
+
+// TransactionSearchResult is a struct to be used for query transaction response
+type TransactionSearchResult struct {
+	Txs        []TransactionResult `json:"txs"`
+	TotalCount int                 `json:"total_count"`
 }
 
 // Coin is a struct for coin

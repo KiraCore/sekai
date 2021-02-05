@@ -1,3 +1,5 @@
+GOBIN=${HOME}/go/bin
+
 generate:
 	# Generate go, gRPC-Gateway, OpenAPI output.
 	#

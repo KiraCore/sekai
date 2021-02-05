@@ -1,14 +1,15 @@
 package config
 
 const (
-	QueryAccounts        = "/api/cosmos/auth/accounts/{address}"
-	QueryTotalSupply     = "/api/cosmos/bank/supply"
-	QueryBalances        = "/api/cosmos/bank/balances/{address}"
-	PostTransaction      = "/api/cosmos/txs"
-	QueryTransactionHash = "/api/cosmos/txs/{hash}"
-	EncodeTransaction    = "/api/cosmos/txs/encode"
-	QueryBlocks          = "/api/cosmos/blocks"
-	QueryBlockByHeight   = "/api/cosmos/blocks/{height}"
+	QueryAccounts            = "/api/cosmos/auth/accounts/{address}"
+	QueryTotalSupply         = "/api/cosmos/bank/supply"
+	QueryBalances            = "/api/cosmos/bank/balances/{address}"
+	PostTransaction          = "/api/cosmos/txs"
+	QueryTransactionHash     = "/api/cosmos/txs/{hash}"
+	EncodeTransaction        = "/api/cosmos/txs/encode"
+	QueryBlocks              = "/api/cosmos/blocks"
+	QueryBlockByHeightOrHash = "/api/cosmos/blocks/{height}"
+	QueryBlockTransactions   = "/api/cosmos/blocks/{height}/transactions"
 
 	QueryDataReferenceKeys = "/api/kira/gov/data_keys"
 	QueryDataReference     = "/api/kira/gov/data/{key}"
