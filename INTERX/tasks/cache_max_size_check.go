@@ -4,6 +4,7 @@ import (
 	"math/rand"
 	"os"
 	"path/filepath"
+	"time"
 
 	common "github.com/KiraCore/sekai/INTERX/common"
 	"github.com/KiraCore/sekai/INTERX/config"
@@ -45,6 +46,10 @@ func CacheMaxSizeCheck(isLog bool) {
 						}
 
 						common.Mutex.Lock()
+						// check if file or path exists
+						if _, err := os.Stat(path); os.IsNotExist(err) {
+							return nil
+						}
 						err := os.Remove(path)
 						common.Mutex.Unlock()
 
@@ -65,5 +70,7 @@ func CacheMaxSizeCheck(isLog bool) {
 				}
 			}
 		}
+
+		time.Sleep(2 * time.Second)
 	}
 }

@@ -106,5 +106,7 @@ func DataReferenceCheck(isLog bool) {
 				database.AddReference(v.Key, v.URL, ref.ContentLength, ref.LastModified, v.FilePath)
 			}
 		}
+
+		time.Sleep(2 * time.Second)
 	}
 }
