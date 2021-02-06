@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	cli3 "github.com/KiraCore/sekai/x/gov/client/cli"
+	customgovcli "github.com/KiraCore/sekai/x/gov/client/cli"
 	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 	types3 "github.com/cosmos/cosmos-sdk/types"
 
@@ -159,7 +159,7 @@ func (s IntegrationTestSuite) TestCreateProposalUpsertTokenRates() {
 	fmt.Printf("%s", out.String())
 
 	// Vote Proposal
-	cmd = cli3.GetTxVoteProposal()
+	cmd = customgovcli.GetTxVoteProposal()
 	out, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("%d", 1), // Proposal ID
 		fmt.Sprintf("%d", customgovtypes.OptionYes),
@@ -194,7 +194,7 @@ func (s IntegrationTestSuite) TestCreateProposalUpsertDataRegistry() {
 
 	// Vote Proposal
 	out.Reset()
-	cmd = cli3.GetTxVoteProposal()
+	cmd = customgovcli.GetTxVoteProposal()
 	out, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("%d", 1), // Proposal ID
 		fmt.Sprintf("%d", customgovtypes.OptionYes),

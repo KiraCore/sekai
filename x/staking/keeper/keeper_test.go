@@ -4,18 +4,16 @@ import (
 	"os"
 	"testing"
 
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-
-	app2 "github.com/KiraCore/sekai/app"
+	"github.com/KiraCore/sekai/app"
 	"github.com/KiraCore/sekai/simapp"
 	"github.com/KiraCore/sekai/x/staking/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	types2 "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
 
 func TestMain(m *testing.M) {
-	app2.SetConfig()
+	app.SetConfig()
 	os.Exit(m.Run())
 }
 
@@ -34,16 +32,16 @@ func TestKeeper_AddValidator(t *testing.T) {
 	require.True(t, validator.Equal(getValidator))
 
 	// Non existing validator Addr.
-	_, err = app.CustomStakingKeeper.GetValidator(ctx, types2.ValAddress("non existing"))
+	_, err = app.CustomStakingKeeper.GetValidator(ctx, sdk.ValAddress("non existing"))
 	require.EqualError(t, err, "validator not found")
 
 	// Get by AccAddress.
-	getValidator, err = app.CustomStakingKeeper.GetValidatorByAccAddress(ctx, types2.AccAddress(validator.ValKey))
+	getValidator, err = app.CustomStakingKeeper.GetValidatorByAccAddress(ctx, sdk.AccAddress(validator.ValKey))
 	require.NoError(t, err)
 	require.True(t, validator.Equal(getValidator))
 
 	// Non existing AccAddress.
-	_, err = app.CustomStakingKeeper.GetValidatorByAccAddress(ctx, types2.AccAddress("non existing"))
+	_, err = app.CustomStakingKeeper.GetValidatorByAccAddress(ctx, sdk.AccAddress("non existing"))
 	require.EqualError(t, err, "validator not found")
 
 	// Get by Moniker.
@@ -112,11 +110,11 @@ func TestKeeper_GetPendingValidators(t *testing.T) {
 }
 
 func createValidators(t *testing.T, app *simapp.SimApp, ctx sdk.Context, accNum int) (validators []types.Validator) {
-	addrs := simapp.AddTestAddrsIncremental(app, ctx, accNum, types2.TokensFromConsensusPower(10))
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, accNum, sdk.TokensFromConsensusPower(10))
 
 	for _, addr := range addrs {
-		valAddr := types2.ValAddress(addr)
-		pubKey, err := types2.GetPubKeyFromBech32(types2.Bech32PubKeyTypeConsPub, "kiravalconspub1zcjduepqylc5k8r40azmw0xt7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsq4xg7em")
+		valAddr := sdk.ValAddress(addr)
+		pubKey, err := sdk.GetPubKeyFromBech32(sdk.Bech32PubKeyTypeConsPub, "kiravalconspub1zcjduepqylc5k8r40azmw0xt7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsq4xg7em")
 		require.NoError(t, err)
 
 		validator, err := types.NewValidator(
@@ -124,7 +122,7 @@ func createValidators(t *testing.T, app *simapp.SimApp, ctx sdk.Context, accNum 
 			"some-web.com",
 			"A Social",
 			"My Identity",
-			types2.NewDec(1234),
+			sdk.NewDec(1234),
 			valAddr,
 			pubKey,
 		)

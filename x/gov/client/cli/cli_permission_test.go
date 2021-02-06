@@ -4,15 +4,12 @@ import (
 	"fmt"
 	"strings"
 
-	cli3 "github.com/cosmos/cosmos-sdk/testutil/cli"
-
-	"github.com/cosmos/cosmos-sdk/crypto/hd"
-	"github.com/cosmos/cosmos-sdk/crypto/keyring"
-
 	"github.com/KiraCore/sekai/x/gov/client/cli"
 	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 	stakingcli "github.com/KiraCore/sekai/x/staking/client/cli"
 	"github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/cosmos/cosmos-sdk/crypto/hd"
+	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -26,7 +23,7 @@ func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions() {
 	s.Require().NoError(err)
 
 	clientCtx := val.ClientCtx.WithOutputFormat("json")
-	out, err := cli3.ExecTestCLICmd(
+	out, err := clitestutil.ExecTestCLICmd(
 		clientCtx,
 		cmd,
 		[]string{
@@ -46,7 +43,7 @@ func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions() {
 	// We check if the user has the permissions
 	cmd = cli.GetCmdQueryPermissions()
 
-	out, err = cli3.ExecTestCLICmd(
+	out, err = clitestutil.ExecTestCLICmd(
 		clientCtx,
 		cmd,
 		[]string{
@@ -72,7 +69,7 @@ func (s IntegrationTestSuite) TestGetTxSetBlacklistPermissions() {
 
 	clientCtx := val.ClientCtx.WithOutputFormat("json")
 
-	out, err := cli3.ExecTestCLICmd(
+	out, err := clitestutil.ExecTestCLICmd(
 		clientCtx,
 		cli.GetTxSetBlacklistPermissions(),
 		[]string{
@@ -92,7 +89,7 @@ func (s IntegrationTestSuite) TestGetTxSetBlacklistPermissions() {
 
 	// We check if the user has the permissions
 	cmd := cli.GetCmdQueryPermissions()
-	out, err = cli3.ExecTestCLICmd(
+	out, err = clitestutil.ExecTestCLICmd(
 		clientCtx,
 		cmd,
 		[]string{

@@ -14,7 +14,7 @@ import (
 	"github.com/KiraCore/sekai/x/staking"
 
 	"github.com/KiraCore/sekai/simapp"
-	types2 "github.com/KiraCore/sekai/x/staking/types"
+	customstakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
@@ -50,7 +50,7 @@ func TestNewHandler_MsgClaimValidator_HappyPath(t *testing.T) {
 
 	handler := staking.NewHandler(app.CustomStakingKeeper, app.CustomGovKeeper)
 
-	theMsg, err := types2.NewMsgClaimValidator(
+	theMsg, err := customstakingtypes.NewMsgClaimValidator(
 		"aMoniker",
 		"some-web.com",
 		"A Sociale",
@@ -83,7 +83,7 @@ func TestNewHandler_MsgClaimValidator_ItFailsIfUserDoesNotHavePermissionsToClaim
 
 	handler := staking.NewHandler(app.CustomStakingKeeper, app.CustomGovKeeper)
 
-	theMsg, err := types2.NewMsgClaimValidator(
+	theMsg, err := customstakingtypes.NewMsgClaimValidator(
 		"aMoniker",
 		"some-web.com",
 		"A Social",
@@ -115,7 +115,7 @@ func TestNewHandler_SetPermissions_ActorWithRole(t *testing.T) {
 
 	handler := staking.NewHandler(app.CustomStakingKeeper, app.CustomGovKeeper)
 
-	theMsg, err := types2.NewMsgClaimValidator(
+	theMsg, err := customstakingtypes.NewMsgClaimValidator(
 		"aMoniker",
 		"some-web.com",
 		"A Social",
@@ -168,7 +168,7 @@ func TestHandler_ProposalUnjailValidator_Errors(t *testing.T) {
 				err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerActor, customgovtypes.PermCreateUnjailValidatorProposal)
 				require.NoError(t, err2)
 
-				val, err := types2.NewValidator("Moniker", "Website", "Social", "identity", types.NewDec(123), valAddr, pubKey)
+				val, err := customstakingtypes.NewValidator("Moniker", "Website", "Social", "identity", types.NewDec(123), valAddr, pubKey)
 				require.NoError(t, err)
 
 				app.CustomStakingKeeper.AddValidator(ctx, val)
@@ -186,7 +186,7 @@ func TestHandler_ProposalUnjailValidator_Errors(t *testing.T) {
 				err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerActor, customgovtypes.PermCreateUnjailValidatorProposal)
 				require.NoError(t, err2)
 
-				val, err := types2.NewValidator("Moniker", "Website", "Social", "identity", types.NewDec(123), valAddr, pubKey)
+				val, err := customstakingtypes.NewValidator("Moniker", "Website", "Social", "identity", types.NewDec(123), valAddr, pubKey)
 				require.NoError(t, err)
 
 				app.CustomStakingKeeper.AddValidator(ctx, val)
@@ -214,7 +214,7 @@ func TestHandler_ProposalUnjailValidator_Errors(t *testing.T) {
 			handler := staking.NewHandler(app.CustomStakingKeeper, app.CustomGovKeeper)
 			_, err := handler(
 				ctx,
-				types2.NewMsgProposalUnjailValidator(
+				customstakingtypes.NewMsgProposalUnjailValidator(
 					proposerAddr,
 					"thehash",
 					"theReference",
@@ -248,7 +248,7 @@ func TestHandler_ProposalUnjailValidator(t *testing.T) {
 	properties.ProposalEndTime = 10
 	app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
 
-	val, err := types2.NewValidator("Moniker", "Website", "Social", "identity", types.NewDec(123), valAddr, pubKey)
+	val, err := customstakingtypes.NewValidator("Moniker", "Website", "Social", "identity", types.NewDec(123), valAddr, pubKey)
 	require.NoError(t, err)
 	app.CustomStakingKeeper.AddValidator(ctx, val)
 
@@ -258,7 +258,7 @@ func TestHandler_ProposalUnjailValidator(t *testing.T) {
 	handler := staking.NewHandler(app.CustomStakingKeeper, app.CustomGovKeeper)
 	_, err = handler(
 		ctx,
-		types2.NewMsgProposalUnjailValidator(
+		customstakingtypes.NewMsgProposalUnjailValidator(
 			proposerAddr,
 			"thehash",
 			"theReference",
@@ -271,7 +271,7 @@ func TestHandler_ProposalUnjailValidator(t *testing.T) {
 
 	expectedSavedProposal, err := customgovtypes.NewProposal(
 		1,
-		types2.NewProposalUnjailValidator(
+		customstakingtypes.NewProposalUnjailValidator(
 			proposerAddr,
 			"thehash",
 			"theReference",

@@ -6,7 +6,7 @@ import (
 
 	types3 "github.com/KiraCore/sekai/x/staking/types"
 
-	types2 "github.com/KiraCore/sekai/x/tokens/types"
+	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
@@ -304,7 +304,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				proposalID := uint64(1234)
 				proposal, err := types.NewProposal(
 					proposalID,
-					types2.NewProposalUpsertTokenAlias(
+					tokenstypes.NewProposalUpsertTokenAlias(
 						"EUR",
 						"Euro",
 						"http://www.google.es",
@@ -349,7 +349,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				proposalID := uint64(1234)
 				proposal, err := types.NewProposal(
 					proposalID,
-					types2.NewProposalUpsertTokenRates(
+					tokenstypes.NewProposalUpsertTokenRates(
 						"btc",
 						sdk.NewDec(1234),
 						false,

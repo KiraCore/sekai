@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/KiraCore/sekai/x/gov/types"
-	types2 "github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/stretchr/testify/require"
 
@@ -26,7 +26,7 @@ func TestKeeper_EncodingContentType(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, types2.TokensFromConsensusPower(10))
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10))
 	addr := addrs[0]
 
 	proposal1, err := types.NewProposal(
@@ -58,7 +58,7 @@ func TestKeeper_GetProposals(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, types2.TokensFromConsensusPower(10))
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10))
 	addr := addrs[0]
 
 	proposal1, err := types.NewProposal(
@@ -110,7 +110,7 @@ func TestSaveProposalReturnsTheProposalID_AndIncreasesLast(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, uint64(1), proposalID)
 
-	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, types2.TokensFromConsensusPower(10))
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10))
 	addr := addrs[0]
 
 	proposal, err := types.NewProposal(
@@ -141,7 +141,7 @@ func TestKeeper_SaveVote(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, types2.TokensFromConsensusPower(10))
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10))
 	addr := addrs[0]
 
 	// Vote not saved yet
@@ -161,7 +161,7 @@ func TestKeeper_AddProposalToActiveQueue(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, types2.TokensFromConsensusPower(10))
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10))
 	addr := addrs[0]
 
 	baseEndTime := time.Now()
@@ -204,7 +204,7 @@ func TestKeeper_AddProposalToEnactmentQueue(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, types2.TokensFromConsensusPower(10))
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10))
 	addr := addrs[0]
 
 	baseEndTime := time.Now()
@@ -246,7 +246,7 @@ func TestKeeper_GetProposalVotesIterator(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, types2.TokensFromConsensusPower(10))
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, sdk.TokensFromConsensusPower(10))
 	addr1 := addrs[0]
 	addr2 := addrs[1]
 

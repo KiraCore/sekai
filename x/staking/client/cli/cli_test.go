@@ -4,9 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	cli2 "github.com/cosmos/cosmos-sdk/testutil/cli"
-
-	cli3 "github.com/KiraCore/sekai/x/gov/client/cli"
+	customgovcli "github.com/KiraCore/sekai/x/gov/client/cli"
 	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 
@@ -167,7 +165,7 @@ func (s IntegrationTestSuite) TestCreateProposalUnjailValidator() {
 	val := s.network.Validators[0]
 
 	clientCtx := val.ClientCtx.WithOutputFormat("json")
-	out, err := cli2.ExecTestCLICmd(
+	out, err := clitestutil.ExecTestCLICmd(
 		clientCtx,
 		cli.GetTxProposalUnjailValidatorCmd(),
 		[]string{
@@ -183,9 +181,9 @@ func (s IntegrationTestSuite) TestCreateProposalUnjailValidator() {
 	fmt.Printf("%s", out.String())
 
 	// Vote Proposal
-	out, err = cli2.ExecTestCLICmd(
+	out, err = clitestutil.ExecTestCLICmd(
 		clientCtx,
-		cli3.GetTxVoteProposal(),
+		customgovcli.GetTxVoteProposal(),
 		[]string{
 			fmt.Sprintf("%d", 1), // Proposal ID
 			fmt.Sprintf("%d", customgovtypes.OptionYes),

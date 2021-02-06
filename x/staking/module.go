@@ -13,7 +13,7 @@ import (
 	"github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
-	types2 "github.com/cosmos/cosmos-sdk/codec/types"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/gorilla/mux"
@@ -39,7 +39,7 @@ func (b AppModuleBasic) Name() string {
 	return customstakingtypes.ModuleName
 }
 
-func (b AppModuleBasic) RegisterInterfaces(registry types2.InterfaceRegistry) {
+func (b AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 	customstakingtypes.RegisterInterfaces(registry)
 }
 
@@ -103,7 +103,7 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 	customstakingtypes.RegisterQueryServer(cfg.QueryServer(), keeper.NewQuerier(am.customStakingKeeper))
 }
 
-func (am AppModule) RegisterInterfaces(registry types2.InterfaceRegistry) {
+func (am AppModule) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 	customstakingtypes.RegisterInterfaces(registry)
 }
 

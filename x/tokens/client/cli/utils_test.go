@@ -5,7 +5,7 @@ import (
 
 	"github.com/KiraCore/sekai/x/gov/client/cli"
 	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
-	cli2 "github.com/KiraCore/sekai/x/staking/client/cli"
+	customstakingcli "github.com/KiraCore/sekai/x/staking/client/cli"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -18,7 +18,7 @@ func (s IntegrationTestSuite) WhitelistPermissions(addr sdk.AccAddress, perm cus
 	cmd := cli.GetTxSetWhitelistPermissions()
 	_, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
-		fmt.Sprintf("--%s=%s", cli2.FlagAddr, addr.String()),
+		fmt.Sprintf("--%s=%s", customstakingcli.FlagAddr, addr.String()),
 		fmt.Sprintf("--%s=%d", cli.FlagPermission, perm),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),

@@ -10,7 +10,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
-	types2 "github.com/cosmos/cosmos-sdk/codec/types"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/gogo/protobuf/grpc"
@@ -33,7 +33,7 @@ func (b AppModuleBasic) Name() string {
 	return feeprocessingtypes.ModuleName
 }
 
-func (b AppModuleBasic) RegisterInterfaces(registry types2.InterfaceRegistry) {
+func (b AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 }
 
 func (b AppModuleBasic) DefaultGenesis(cdc codec.JSONMarshaler) json.RawMessage {
@@ -71,7 +71,7 @@ type AppModule struct {
 func (am AppModule) RegisterServices(configurator module.Configurator) {
 }
 
-func (am AppModule) RegisterInterfaces(registry types2.InterfaceRegistry) {
+func (am AppModule) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 }
 
 func (am AppModule) InitGenesis(

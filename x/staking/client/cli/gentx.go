@@ -12,14 +12,14 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/server"
 	"github.com/cosmos/cosmos-sdk/types"
-	types2 "github.com/cosmos/cosmos-sdk/x/bank/types"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	"github.com/cosmos/cosmos-sdk/x/staking/client/cli"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
-func GenTxClaimCmd(genBalIterator types2.GenesisBalancesIterator, defaultNodeHome string) *cobra.Command {
+func GenTxClaimCmd(genBalIterator banktypes.GenesisBalancesIterator, defaultNodeHome string) *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:   "gentx-claim [key_name]",
 		Short: "Adds validator into the genesis set",
