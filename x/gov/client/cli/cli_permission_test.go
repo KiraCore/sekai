@@ -1,7 +1,6 @@
 package cli_test
 
 import (
-	"context"
 	"fmt"
 	"strings"
 
@@ -13,9 +12,8 @@ import (
 	"github.com/KiraCore/sekai/x/gov/client/cli"
 	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 	stakingcli "github.com/KiraCore/sekai/x/staking/client/cli"
-	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/cosmos/cosmos-sdk/testutil"
+	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -121,25 +119,15 @@ func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions_WithUserThatDoesN
 
 	// Now we try to set permissions with a user that does not have.
 	cmd := cli.GetTxSetWhitelistPermissions()
-	_, out := testutil.ApplyMockIO(cmd)
-	clientCtx := val.ClientCtx.WithOutput(out).WithOutputFormat("json")
-
-	ctx := context.Background()
-	ctx = context.WithValue(ctx, client.ClientContextKey, &clientCtx)
-
-	cmd.SetArgs(
-		[]string{
-			fmt.Sprintf("--%s=%s", flags.FlagFrom, newAccount.GetAddress().String()),
-			fmt.Sprintf("--%s=%s", stakingcli.FlagAddr, val.Address.String()),
-			fmt.Sprintf("--%s=%s", cli.FlagPermission, "1"),
-			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-			fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
-		},
-	)
-
-	err = cmd.ExecuteContext(ctx)
+	clientCtx := val.ClientCtx
+	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, newAccount.GetAddress().String()),
+		fmt.Sprintf("--%s=%s", stakingcli.FlagAddr, val.Address.String()),
+		fmt.Sprintf("--%s=%s", cli.FlagPermission, "1"),
+		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
+	})
 	s.Require().NoError(err)
-
 	strings.Contains(out.String(), "SetPermissions: not enough permissions")
 }

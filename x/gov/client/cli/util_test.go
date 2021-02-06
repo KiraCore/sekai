@@ -1,7 +1,6 @@
 package cli_test
 
 import (
-	"context"
 	"fmt"
 	"strconv"
 	"testing"
@@ -13,7 +12,6 @@ import (
 	tokenscli "github.com/KiraCore/sekai/x/tokens/client/cli"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/cosmos/cosmos-sdk/testutil"
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	bankcli "github.com/cosmos/cosmos-sdk/x/bank/client/cli"
@@ -23,18 +21,12 @@ import (
 // GetRolesByAddress calls the CLI command GetCmdQueryRolesByAddress and returns the roles.
 func GetRolesByAddress(t *testing.T, network *network.Network, address sdk.AccAddress) []uint64 {
 	val := network.Validators[0]
-
+	clientCtx := val.ClientCtx
 	cmd := cli.GetCmdQueryRolesByAddress()
-	_, out := testutil.ApplyMockIO(cmd)
-	clientCtx := val.ClientCtx.WithOutput(out).WithOutputFormat("json")
-
-	ctx := context.WithValue(context.Background(), client.ClientContextKey, &clientCtx)
-
-	cmd.SetArgs([]string{
+	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		address.String(),
 	})
-
-	err := cmd.ExecuteContext(ctx)
+	require.NoError(t, err)
 
 	var roles customgovtypes.RolesByAddressResponse
 	err = val.ClientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &roles)
@@ -46,26 +38,17 @@ func GetRolesByAddress(t *testing.T, network *network.Network, address sdk.AccAd
 // SetCouncilor calls CLI to set address in the Councilor Registry. The Validator 1 is the caller.
 func (s IntegrationTestSuite) SetCouncilor(address sdk.Address) {
 	val := s.network.Validators[0]
+	clientCtx := val.ClientCtx
 
 	cmd := cli.GetTxClaimCouncilorSeatCmd()
-	_, out := testutil.ApplyMockIO(cmd)
-	clientCtx := val.ClientCtx.WithOutput(out).WithOutputFormat("json")
-
-	ctx := context.Background()
-	ctx = context.WithValue(ctx, client.ClientContextKey, &clientCtx)
-
-	cmd.SetArgs(
-		[]string{
-			fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
-			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-			fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
-			fmt.Sprintf("--%s=%s", cli.FlagAddress, address.String()),
-			fmt.Sprintf("--%s=%s", cli.FlagMoniker, val.Moniker),
-		},
-	)
-
-	err := cmd.ExecuteContext(ctx)
+	_, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
+		fmt.Sprintf("--%s=%s", cli.FlagAddress, address.String()),
+		fmt.Sprintf("--%s=%s", cli.FlagMoniker, val.Moniker),
+	})
 	s.Require().NoError(err)
 
 	err = s.network.WaitForNextBlock()
@@ -75,24 +58,14 @@ func (s IntegrationTestSuite) SetCouncilor(address sdk.Address) {
 // SendValue sends Coins from A to B using CLI.
 func (s IntegrationTestSuite) SendValue(cCtx client.Context, from sdk.AccAddress, to sdk.AccAddress, coin sdk.Coin) {
 	cmd := bankcli.NewSendTxCmd()
-	_, out := testutil.ApplyMockIO(cmd)
-	cCtx = cCtx.WithOutput(out).WithOutputFormat("json")
-
-	cmd.SetArgs(
-		[]string{
-			from.String(),
-			to.String(),
-			coin.String(),
-			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-			fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
-		},
-	)
-
-	ctx := context.Background()
-	ctx = context.WithValue(ctx, client.ClientContextKey, &cCtx)
-
-	err := cmd.ExecuteContext(ctx)
+	_, err := clitestutil.ExecTestCLICmd(cCtx, cmd, []string{
+		from.String(),
+		to.String(),
+		coin.String(),
+		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
+	})
 	s.Require().NoError(err)
 
 	err = s.network.WaitForNextBlock()

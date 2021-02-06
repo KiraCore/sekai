@@ -1,7 +1,6 @@
 package cli_test
 
 import (
-	"context"
 	"fmt"
 	"testing"
 
@@ -12,10 +11,9 @@ import (
 	"github.com/KiraCore/sekai/simapp"
 	"github.com/KiraCore/sekai/testutil/network"
 	"github.com/cosmos/cosmos-sdk/baseapp"
-	"github.com/cosmos/cosmos-sdk/client"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	"github.com/cosmos/cosmos-sdk/store/types"
-	"github.com/cosmos/cosmos-sdk/testutil"
+	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/suite"
 	dbm "github.com/tendermint/tm-db"
@@ -68,29 +66,22 @@ func (s *IntegrationTestSuite) SetupSuite() {
 
 func (s IntegrationTestSuite) TestRolePermissions_QueryCommand_DefaultRolePerms() {
 	val := s.network.Validators[0]
+	clientCtx := val.ClientCtx
 
 	cmd := cli.GetCmdQueryRolePermissions()
-	_, out := testutil.ApplyMockIO(cmd)
-	clientCtx := val.ClientCtx.WithOutput(out).WithOutputFormat("json")
-
-	ctx := context.Background()
-	ctx = context.WithValue(ctx, client.ClientContextKey, &clientCtx)
-
-	cmd.SetArgs([]string{
+	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		"2", // RoleValidator
 	})
-
-	err := cmd.ExecuteContext(ctx)
 	s.Require().NoError(err)
 
 	var perms customgovtypes.Permissions
 	val.ClientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &perms)
-
 	s.Require().True(perms.IsWhitelisted(customgovtypes.PermClaimValidator))
 }
 
 func (s IntegrationTestSuite) TestClaimCouncilor_HappyPath() {
 	val := s.network.Validators[0]
+	clientCtx := val.ClientCtx
 
 	s.SetCouncilor(val.Address)
 
@@ -101,28 +92,17 @@ func (s IntegrationTestSuite) TestClaimCouncilor_HappyPath() {
 	// Mandatory flags
 	cmd := cli.GetCmdQueryCouncilRegistry()
 
-	_, out := testutil.ApplyMockIO(cmd)
-	clientCtx := val.ClientCtx.WithOutput(out).WithOutputFormat("json")
-
-	ctx := context.Background()
-	ctx = context.WithValue(ctx, client.ClientContextKey, &clientCtx)
-
-	cmd.SetArgs([]string{
-		"",
-	})
-
-	err = cmd.ExecuteContext(ctx)
+	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{""})
 	s.Require().Error(err)
 
 	// From address
 	out.Reset()
 
 	cmd = cli.GetCmdQueryCouncilRegistry()
-	cmd.SetArgs([]string{
+
+	out, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("--%s=%s", cli.FlagAddress, val.Address.String()),
 	})
-
-	err = cmd.ExecuteContext(ctx)
 	s.Require().NoError(err)
 
 	var councilorByAddress customgovtypes.Councilor
@@ -132,14 +112,10 @@ func (s IntegrationTestSuite) TestClaimCouncilor_HappyPath() {
 	s.Require().Equal(val.Address, councilorByAddress.Address)
 
 	// From Moniker
-	out.Reset()
-
 	cmd = cli.GetCmdQueryCouncilRegistry()
-	cmd.SetArgs([]string{
+	out, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("--%s=%s", cli.FlagMoniker, val.Moniker),
 	})
-
-	err = cmd.ExecuteContext(ctx)
 	s.Require().NoError(err)
 
 	var councilorByMoniker customgovtypes.Councilor

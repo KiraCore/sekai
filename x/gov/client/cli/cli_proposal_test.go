@@ -1,7 +1,6 @@
 package cli_test
 
 import (
-	"context"
 	"fmt"
 
 	stakingcli "github.com/KiraCore/sekai/x/staking/client/cli"
@@ -10,8 +9,7 @@ import (
 
 	"github.com/KiraCore/sekai/x/gov/client/cli"
 	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/testutil"
+	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 )
 
 func (s IntegrationTestSuite) TestCreateProposalAssignPermission() {
@@ -23,13 +21,8 @@ func (s IntegrationTestSuite) TestCreateProposalAssignPermission() {
 	s.Require().NoError(err)
 
 	cmd := cli.GetTxProposalAssignPermission()
-	_, out := testutil.ApplyMockIO(cmd)
-	clientCtx := val.ClientCtx.WithOutput(out).WithOutputFormat("json")
-
-	ctx := context.Background()
-	ctx = context.WithValue(ctx, client.ClientContextKey, &clientCtx)
-
-	cmd.SetArgs([]string{
+	clientCtx := val.ClientCtx
+	_, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("%d", customgovtypes.PermClaimValidator),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=%s", stakingcli.FlagAddr, addr.String()),
@@ -37,14 +30,10 @@ func (s IntegrationTestSuite) TestCreateProposalAssignPermission() {
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
 	})
-
-	err = cmd.ExecuteContext(ctx)
 	s.Require().NoError(err)
 
-	// Vote Proposal
-	out.Reset()
 	cmd = cli.GetTxVoteProposal()
-	cmd.SetArgs([]string{
+	_, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("%d", 1), // Proposal ID
 		fmt.Sprintf("%d", customgovtypes.OptionYes),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
@@ -52,8 +41,6 @@ func (s IntegrationTestSuite) TestCreateProposalAssignPermission() {
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
 	})
-
-	err = cmd.ExecuteContext(ctx)
 	s.Require().NoError(err)
 }
 
@@ -66,13 +53,8 @@ func (s IntegrationTestSuite) TestCreateProposalUpsertDataRegistry() {
 	s.Require().NoError(err)
 
 	cmd := cli.GetTxProposalUpsertDataRegistry()
-	_, out := testutil.ApplyMockIO(cmd)
-	clientCtx := val.ClientCtx.WithOutput(out).WithOutputFormat("json")
-
-	ctx := context.Background()
-	ctx = context.WithValue(ctx, client.ClientContextKey, &clientCtx)
-
-	cmd.SetArgs([]string{
+	clientCtx := val.ClientCtx
+	_, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("%s", "theKey"),
 		fmt.Sprintf("%s", "theHash"),
 		fmt.Sprintf("%s", "theReference"),
@@ -84,14 +66,11 @@ func (s IntegrationTestSuite) TestCreateProposalUpsertDataRegistry() {
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
 	})
-
-	err = cmd.ExecuteContext(ctx)
 	s.Require().NoError(err)
 
 	// Vote Proposal
-	out.Reset()
 	cmd = cli.GetTxVoteProposal()
-	cmd.SetArgs([]string{
+	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("%d", 2), // Proposal ID
 		fmt.Sprintf("%d", customgovtypes.OptionYes),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
@@ -99,8 +78,6 @@ func (s IntegrationTestSuite) TestCreateProposalUpsertDataRegistry() {
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
 	})
-
-	err = cmd.ExecuteContext(ctx)
 	s.Require().NoError(err)
 	fmt.Printf("%s", out.String())
 }
@@ -110,13 +87,8 @@ func (s IntegrationTestSuite) TestCreateProposalSetNetworkProperty() {
 	val := s.network.Validators[0]
 
 	cmd := cli.GetTxProposalSetNetworkProperty()
-	_, out := testutil.ApplyMockIO(cmd)
-	clientCtx := val.ClientCtx.WithOutput(out).WithOutputFormat("json")
-
-	ctx := context.Background()
-	ctx = context.WithValue(ctx, client.ClientContextKey, &clientCtx)
-
-	cmd.SetArgs([]string{
+	clientCtx := val.ClientCtx
+	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("%s", "MIN_TX_FEE"),
 		fmt.Sprintf("%d", 12345),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
@@ -124,14 +96,11 @@ func (s IntegrationTestSuite) TestCreateProposalSetNetworkProperty() {
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
 	})
-
-	err := cmd.ExecuteContext(ctx)
 	s.Require().NoError(err)
 
 	// Vote Proposal
-	out.Reset()
 	cmd = cli.GetTxVoteProposal()
-	cmd.SetArgs([]string{
+	out, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("%d", 2), // Proposal ID
 		fmt.Sprintf("%d", customgovtypes.OptionYes),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
@@ -139,8 +108,6 @@ func (s IntegrationTestSuite) TestCreateProposalSetNetworkProperty() {
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
 	})
-
-	err = cmd.ExecuteContext(ctx)
 	s.Require().NoError(err)
 	fmt.Printf("%s", out.String())
 }
