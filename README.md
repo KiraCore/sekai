@@ -436,5 +436,89 @@ sekaid val-address $(sekaid keys show -a validator --keyring-backend=test)
 ```
 sekaid tx customgov proposal set-network-property MIN_TX_FEE 101 --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes
 ```
----
-`dev` branch
+
+# Tx for Unjailing
+
+Modify genesis json to have jailed validator for Unjail testing
+
+```json
+{
+  "accounts": [
+    {
+      "@type": "/cosmos.auth.v1beta1.BaseAccount",
+      "address": "kira126f48ukar7ntqqvk0qxgd3juu7r42mjmsddjrq",
+      "pub_key": null,
+      "account_number": "0",
+      "sequence": "0"
+    }
+  ],
+  "balances": [
+    {
+      "address": "kira126f48ukar7ntqqvk0qxgd3juu7r42mjmsddjrq",
+      "coins": [
+        {
+          "denom": "stake",
+          "amount": "1000000000"
+        },
+        {
+          "denom": "ukex",
+          "amount": "1000000000"
+        },
+        {
+          "denom": "validatortoken",
+          "amount": "1000000000"
+        }
+      ]
+    }
+  ],
+  "validators": [
+    {
+      "moniker": "hello2",
+      "website": "",
+      "social": "social2",
+      "identity": "",
+      "commission": "1.000000000000000000",
+      "val_key": "kiravaloper126f48ukar7ntqqvk0qxgd3juu7r42mjmrt33mv",
+      "pub_key": {
+        "@type": "/cosmos.crypto.ed25519.PubKey",
+        "key": "tC8mzxDI3bzfZtToxU6ZpZIOw6nqQx87OZ1fD6FpD7E="
+      },
+      "status": "JAILED",
+      "rank": "0",
+      "streak": "0"
+    }
+  ],
+  "network_actors": [
+    {
+      "address": "kira126f48ukar7ntqqvk0qxgd3juu7r42mjmsddjrq",
+      "roles": ["1"],
+      "status": "ACTIVE",
+      "votes": [
+        "VOTE_OPTION_YES",
+        "VOTE_OPTION_ABSTAIN",
+        "VOTE_OPTION_NO",
+        "VOTE_OPTION_NO_WITH_VETO"
+      ],
+      "permissions": {
+        "blacklist": [],
+        "whitelist": []
+      },
+      "skin": "1"
+    }
+  ],
+}
+```
+
+Add jailed validator key to kms.
+```sh
+  sekaid keys add jailed_validator --keyring-backend=test --home=$HOME/.sekaid --recover
+  "dish rather zoo connect cross inhale security utility occur spell price cute one catalog coconut sort shuffle palm crop surface label foster slender inherit"
+```
+
+```sh
+# make proposal to unjail validator from jailed_validator
+sekaid tx customstaking proposal proposal-unjail-validator hash reference --from=jailed_validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes
+
+# vote on unjail validator proposal
+sekaid tx customgov proposal vote 1 1 --from validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes 
+```

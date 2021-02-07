@@ -78,7 +78,7 @@ func (b AppModuleBasic) GetTxCmd() *cobra.Command {
 
 	txCommand.AddCommand(cli.GetTxClaimValidatorCmd(), proposalCmd)
 
-	return cli.GetTxClaimValidatorCmd()
+	return txCommand
 }
 
 func (b AppModuleBasic) RegisterLegacyAminoCodec(amino *codec.LegacyAmino) {
