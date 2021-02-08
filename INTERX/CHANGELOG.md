@@ -2,6 +2,20 @@
 
 ## [0.1.x.x] - xx.xx.2021
 
+### Added
+
+- Add query blocks.
+- Add query block by height or hash.
+- Add query block tractions.
+- Add query transaction by hash.
+
+### Fix
+
+- Fix caching issues
+- Fix mutex issues
+
+## [0.1.16] - 01.29.2021
+
 ### Changed
 
 - Update configuration to have mnemonic filename. And read mnemonic from the file.

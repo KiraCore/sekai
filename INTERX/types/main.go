@@ -80,12 +80,18 @@ type DepositWithdrawResult struct {
 	Txs  []DepositWithdrawTransaction `json:"txs"`
 }
 
-// Transaction is a struct to be used for query transaction response
-type Transaction struct {
-	From   string `json:"from,omitempty"`
-	To     string `json:"to,omitempty"`
+// TxAmount is a struct to be used for query transaction response
+type TxAmount struct {
 	Amount int64  `json:"amount,omitempty"`
 	Denom  string `json:"denom,omitempty"`
+}
+
+// Transaction is a struct to be used for query transaction response
+type Transaction struct {
+	Type    string     `json:"type,omitempty"`
+	From    string     `json:"from,omitemtpy"`
+	To      string     `json:"to,omitempty"`
+	Amounts []TxAmount `json:"amounts,omitempty"`
 }
 
 // TransactionResult is a struct to be used for query transaction response
@@ -96,7 +102,7 @@ type TransactionResult struct {
 	BlockTimestamp int64         `json:"block_timestamp"`
 	Confirmation   int64         `json:"confirmation"`
 	Transactions   []Transaction `json:"transactions"`
-	Fees           []Transaction `json:"fees"`
+	Fees           []TxAmount    `json:"fees"`
 	GasWanted      int64         `json:"gas_wanted"`
 	GasUsed        int64         `json:"gas_used"`
 }

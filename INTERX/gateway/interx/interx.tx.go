@@ -48,7 +48,7 @@ func parseTxType(txType string) string {
 }
 
 // SearchTxHashHandle is a function to query transactions
-func SearchTxHashHandle(rpcAddr string, sender string, recipient string, txType string, limit int, txMinHeight int64, txMaxHeight int64) (*tmTypes.ResultTxSearch, error) {
+func SearchTxHashHandle(rpcAddr string, sender string, recipient string, txType string, limit int, txMinHeight int64, txMaxHeight int64, txHash string) (*tmTypes.ResultTxSearch, error) {
 	var events = make([]string, 0, 5)
 
 	if sender != "" {
@@ -61,6 +61,10 @@ func SearchTxHashHandle(rpcAddr string, sender string, recipient string, txType 
 
 	if txType != "all" && txType != "" {
 		events = append(events, fmt.Sprintf("message.action='%s'", txType))
+	}
+
+	if txHash != "" {
+		events = append(events, fmt.Sprintf("tx.hash='%s'", txHash))
 	}
 
 	if txMinHeight >= 0 {
@@ -188,7 +192,7 @@ func QueryBlockTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw b
 	var transactions []*tmTypes.ResultTx
 
 	if last == "" {
-		searchResult, err := SearchTxHashHandle(rpcAddr, sender, recipient, txType, limit, -1, -1)
+		searchResult, err := SearchTxHashHandle(rpcAddr, sender, recipient, txType, limit, -1, -1, "")
 		if err != nil {
 			common.GetLogger().Error("[query-transactions] Failed to search transaction hash: ", err)
 			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
@@ -207,7 +211,7 @@ func QueryBlockTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw b
 		}
 
 		// get current block
-		searchResult, err := SearchTxHashHandle(rpcAddr, sender, recipient, txType, limit, blockHeight, blockHeight)
+		searchResult, err := SearchTxHashHandle(rpcAddr, sender, recipient, txType, limit, blockHeight, blockHeight, "")
 		if err != nil {
 			common.GetLogger().Error("[query-transactions] Failed to search transaction hash: ", err)
 			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
@@ -228,7 +232,7 @@ func QueryBlockTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw b
 		}
 
 		if len(transactions) < limit && blockHeight > 0 {
-			searchResult, err := SearchTxHashHandle(rpcAddr, sender, recipient, txType, limit-len(transactions), -1, blockHeight-1)
+			searchResult, err := SearchTxHashHandle(rpcAddr, sender, recipient, txType, limit-len(transactions), -1, blockHeight-1, "")
 			if err != nil {
 				common.GetLogger().Error("[query-transactions] Failed to search transaction hash: ", err)
 				return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
@@ -301,7 +305,6 @@ func QueryBlockTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw b
 				if isWithdraw {
 					for _, input := range inputs {
 						if input.Address == account {
-							// found input
 							if len(inputs) == 1 {
 								for _, output := range outputs {
 									for _, coin := range output.Coins {
@@ -329,7 +332,6 @@ func QueryBlockTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw b
 				} else {
 					for _, output := range outputs {
 						if output.Address == account {
-							// found output
 							if len(inputs) == 1 {
 								for _, coin := range output.Coins {
 									txResponses = append(txResponses, types.DepositWithdrawTransaction{
@@ -360,12 +362,12 @@ func QueryBlockTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw b
 
 				if isWithdraw && createValidatorMsg.DelegatorAddress == account {
 					txResponses = append(txResponses, types.DepositWithdrawTransaction{
-						Address: createValidatorMsg.DelegatorAddress,
+						Address: createValidatorMsg.ValidatorAddress,
 						Type:    txType,
 						Denom:   createValidatorMsg.Value.Denom,
 						Amount:  createValidatorMsg.Value.Amount.Int64(),
 					})
-				} else if !isWithdraw && createValidatorMsg.DelegatorAddress == account {
+				} else if !isWithdraw && createValidatorMsg.ValidatorAddress == account {
 					txResponses = append(txResponses, types.DepositWithdrawTransaction{
 						Address: createValidatorMsg.DelegatorAddress,
 						Type:    txType,

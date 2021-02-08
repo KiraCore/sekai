@@ -62,6 +62,7 @@ func saveReference(url string, path string) error {
 
 		err = ioutil.WriteFile(path, bodyBytes, 0644)
 		if err != nil {
+			common.Mutex.Unlock()
 			return err
 		}
 

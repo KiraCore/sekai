@@ -975,7 +975,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://0.0.0.0:11000/api/cosmos/blocks",
+					"raw": "http://0.0.0.0:11000/api/blocks",
 					"protocol": "http",
 					"host": [
 						"0",
@@ -986,7 +986,6 @@
 					"port": "11000",
 					"path": [
 						"api",
-						"cosmos",
 						"blocks"
 					]
 				}
@@ -1018,7 +1017,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://0.0.0.0:11000/api/cosmos/blocks/2",
+					"raw": "http://0.0.0.0:11000/api/blocks/2",
 					"protocol": "http",
 					"host": [
 						"0",
@@ -1029,7 +1028,6 @@
 					"port": "11000",
 					"path": [
 						"api",
-						"cosmos",
 						"blocks",
 						"2"
 					]
@@ -1062,7 +1060,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://0.0.0.0:11000/api/cosmos/blocks/2/transactions",
+					"raw": "http://0.0.0.0:11000/api/blocks/2/transactions",
 					"protocol": "http",
 					"host": [
 						"0",
@@ -1073,10 +1071,52 @@
 					"port": "11000",
 					"path": [
 						"api",
-						"cosmos",
 						"blocks",
 						"2",
 						"transactions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Query Transaction Result by hash",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/transactions/0x4A41257AC228F6CE476E9C9AD67BB98057412A22B035E1C0A4CCEB0E4E8E364D",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"transactions",
+						"0x4A41257AC228F6CE476E9C9AD67BB98057412A22B035E1C0A4CCEB0E4E8E364D"
 					]
 				}
 			},

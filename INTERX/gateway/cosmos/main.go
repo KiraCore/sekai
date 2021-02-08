@@ -10,5 +10,4 @@ func RegisterRequest(router *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr 
 	RegisterCosmosAuthRoutes(router, gwCosmosmux, rpcAddr)
 	RegisterCosmosBankRoutes(router, gwCosmosmux, rpcAddr)
 	RegisterCosmosTxRoutes(router, gwCosmosmux, rpcAddr)
-	RegisterCosmosBlockRoutes(router, gwCosmosmux, rpcAddr)
 }
