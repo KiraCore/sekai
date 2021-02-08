@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.1.16.2a] - 02.08.2021
+### Added
+- Custom evidence module to jail a double signed validator 
+- CLI command for writing proposal to unjail a validator
+- CLI command for setting max jail time network property proposal
+
 ## [v0.1.16.1] - 02.04.2021
 ### Added
 - CLI command to set poor network messages
