@@ -3,7 +3,7 @@ package keeper_test
 import (
 	"testing"
 
-	types2 "github.com/KiraCore/sekai/x/staking/types"
+	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 
 	customgovkeeper "github.com/KiraCore/sekai/x/gov/keeper"
 
@@ -51,7 +51,7 @@ func TestQuerier_PermissionsByAddress(t *testing.T) {
 
 	// Get permissions by address that is not saved.
 	_, err = querier.PermissionsByAddress(sdk.WrapSDKContext(ctx), &types.PermissionsByAddressRequest{ValAddr: addr2})
-	require.EqualError(t, err, types2.ErrNetworkActorNotFound.Error())
+	require.EqualError(t, err, stakingtypes.ErrNetworkActorNotFound.Error())
 }
 
 func TestQuerier_RolesByAddress(t *testing.T) {

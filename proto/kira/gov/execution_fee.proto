@@ -1,0 +1,28 @@
+syntax = "proto3";
+package kira.gov;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/gov/types";
+
+message ExecutionFee {
+    string name = 1; // Friendly Name of the Function (max 128 characters)
+    string transaction_type = 2; // Type of the transaction that given permission allows to execute
+    uint64 execution_fee = 3; // How much user should pay for executing this specific function
+    uint64 failure_fee = 4; // How much user should pay if function fails to execute
+    uint64 timeout = 5; // After what time function execution should fail
+    uint64 default_parameters = 6; // Default values that the function in question will consume as input parameters before execution
+}
+
+message MsgSetExecutionFee {
+    string name = 1;
+    string transaction_type = 2;
+    uint64 execution_fee = 3;
+    uint64 failure_fee = 4;
+    uint64 timeout = 5;
+    uint64 default_parameters = 6;
+    bytes proposer = 7 [
+      (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
+    ];
+}
+  

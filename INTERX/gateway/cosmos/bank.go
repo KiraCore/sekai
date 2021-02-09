@@ -16,7 +16,7 @@ import (
 // RegisterCosmosBankRoutes registers query routers.
 func RegisterCosmosBankRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr string) {
 	r.HandleFunc(config.QueryTotalSupply, QuerySupplyRequest(gwCosmosmux, rpcAddr)).Methods("GET")
-	r.HandleFunc("/api/cosmos/bank/balances/{address}", QueryBalancesRequest(gwCosmosmux, rpcAddr)).Methods("GET")
+	r.HandleFunc(config.QueryBalances, QueryBalancesRequest(gwCosmosmux, rpcAddr)).Methods("GET")
 
 	common.AddRPCMethod("GET", config.QueryTotalSupply, "This is an API to query total supply.", true)
 	common.AddRPCMethod("GET", config.QueryBalances, "This is an API to query balances of an address.", true)

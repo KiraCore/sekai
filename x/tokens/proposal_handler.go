@@ -3,7 +3,7 @@ package tokens
 import (
 	"github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/tokens/keeper"
-	types2 "github.com/KiraCore/sekai/x/tokens/types"
+	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -18,13 +18,13 @@ func NewApplyUpsertTokenAliasProposalHandler(keeper keeper.Keeper) *ApplyUpsertT
 }
 
 func (a ApplyUpsertTokenAliasProposalHandler) ProposalType() string {
-	return types2.ProposalTypeUpsertTokenAlias
+	return tokenstypes.ProposalTypeUpsertTokenAlias
 }
 
 func (a ApplyUpsertTokenAliasProposalHandler) Apply(ctx sdk.Context, proposal types.Content) {
-	p := proposal.(*types2.ProposalUpsertTokenAlias)
+	p := proposal.(*tokenstypes.ProposalUpsertTokenAlias)
 
-	tokenAlians := types2.NewTokenAlias(p.Symbol, p.Name, p.Icon, p.Decimals, p.Denoms)
+	tokenAlians := tokenstypes.NewTokenAlias(p.Symbol, p.Name, p.Icon, p.Decimals, p.Denoms)
 	err := a.keeper.UpsertTokenAlias(ctx, *tokenAlians)
 	if err != nil {
 		panic(err)
@@ -40,13 +40,13 @@ func NewApplyUpsertTokenRatesProposalHandler(keeper keeper.Keeper) *ApplyUpsertT
 }
 
 func (a ApplyUpsertTokenRatesProposalHandler) ProposalType() string {
-	return types2.ProposalTypeUpsertTokenRates
+	return tokenstypes.ProposalTypeUpsertTokenRates
 }
 
 func (a ApplyUpsertTokenRatesProposalHandler) Apply(ctx sdk.Context, proposal types.Content) {
-	p := proposal.(*types2.ProposalUpsertTokenRates)
+	p := proposal.(*tokenstypes.ProposalUpsertTokenRates)
 
-	tokenAlians := types2.NewTokenRate(p.Denom, p.Rate, p.FeePayments)
+	tokenAlians := tokenstypes.NewTokenRate(p.Denom, p.Rate, p.FeePayments)
 	err := a.keeper.UpsertTokenRate(ctx, *tokenAlians)
 	if err != nil {
 		panic(err)

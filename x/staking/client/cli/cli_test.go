@@ -1,9 +1,12 @@
 package cli_test
 
 import (
-	"context"
 	"fmt"
 	"testing"
+
+	customgovcli "github.com/KiraCore/sekai/x/gov/client/cli"
+	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
+	"github.com/cosmos/cosmos-sdk/client/flags"
 
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 
@@ -11,10 +14,8 @@ import (
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
-	"github.com/cosmos/cosmos-sdk/client"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	"github.com/cosmos/cosmos-sdk/store/types"
-	"github.com/cosmos/cosmos-sdk/testutil"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/KiraCore/sekai/app"
@@ -22,6 +23,7 @@ import (
 	"github.com/KiraCore/sekai/testutil/network"
 	"github.com/KiraCore/sekai/x/staking/client/cli"
 	customtypes "github.com/KiraCore/sekai/x/staking/types"
+	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 )
 
 type IntegrationTestSuite struct {
@@ -66,21 +68,12 @@ func (s *IntegrationTestSuite) TearDownSuite() {
 
 func (s *IntegrationTestSuite) TestQueryValidator() {
 	val := s.network.Validators[0]
+	clientCtx := val.ClientCtx
 
 	cmd := cli.GetCmdQueryValidator()
-	cmd.SetArgs(
-		[]string{
-			fmt.Sprintf("--%s=%s", cli.FlagValAddr, val.ValAddress.String()),
-		},
-	)
-
-	_, out := testutil.ApplyMockIO(cmd)
-	clientCtx := val.ClientCtx.WithOutput(out).WithOutputFormat("json")
-
-	ctx := context.Background()
-	ctx = context.WithValue(ctx, client.ClientContextKey, &clientCtx)
-
-	err := cmd.ExecuteContext(ctx)
+	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
+		fmt.Sprintf("--%s=%s", cli.FlagValAddr, val.ValAddress.String()),
+	})
 	s.Require().NoError(err)
 
 	var respValidator customtypes.Validator
@@ -100,16 +93,9 @@ func (s *IntegrationTestSuite) TestQueryValidator() {
 
 	// Query by Acc Addrs.
 	cmd = cli.GetCmdQueryValidator()
-	cmd.SetArgs(
-		[]string{
-			fmt.Sprintf("--%s=%s", cli.FlagAddr, val.Address.String()),
-		},
-	)
-
-	out.Reset()
-
-	clientCtx = clientCtx.WithOutputFormat("json")
-	err = cmd.ExecuteContext(ctx)
+	out, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
+		fmt.Sprintf("--%s=%s", cli.FlagAddr, val.Address.String()),
+	})
 	s.Require().NoError(err)
 
 	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &respValidator)
@@ -127,16 +113,9 @@ func (s *IntegrationTestSuite) TestQueryValidator() {
 
 	// Query by moniker.
 	cmd = cli.GetCmdQueryValidator()
-	cmd.SetArgs(
-		[]string{
-			fmt.Sprintf("--%s=%s", cli.FlagMoniker, val.Moniker),
-		},
-	)
-
-	out.Reset()
-
-	clientCtx = clientCtx.WithOutputFormat("json")
-	err = cmd.ExecuteContext(ctx)
+	out, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
+		fmt.Sprintf("--%s=%s", cli.FlagMoniker, val.Moniker),
+	})
 	s.Require().NoError(err)
 
 	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &respValidator)
@@ -155,48 +134,67 @@ func (s *IntegrationTestSuite) TestQueryValidator() {
 
 func (s *IntegrationTestSuite) TestQueryValidator_Errors() {
 	val := s.network.Validators[0]
+	clientCtx := val.ClientCtx
 
 	nonExistingAddr, err := sdk.ValAddressFromBech32("kiravaloper15ky9du8a2wlstz6fpx3p4mqpjyrm5cgpv3al5n")
 	s.Require().NoError(err)
 
 	cmd := cli.GetCmdQueryValidator()
-	_, out := testutil.ApplyMockIO(cmd)
-	clientCtx := val.ClientCtx.WithOutput(out).WithOutputFormat("json")
-
-	ctx := context.Background()
-	ctx = context.WithValue(ctx, client.ClientContextKey, &clientCtx)
-
-	cmd.SetArgs(
-		[]string{
-			fmt.Sprintf("--%s=%s", cli.FlagValAddr, nonExistingAddr.String()),
-		},
-	)
-	err = cmd.ExecuteContext(ctx)
+	_, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
+		fmt.Sprintf("--%s=%s", cli.FlagValAddr, nonExistingAddr.String()),
+	})
 	s.Require().EqualError(err, "validator not found: key not found: invalid request")
 
 	// Non existing moniker.
 	cmd = cli.GetCmdQueryValidator()
-	cmd.SetArgs(
-		[]string{
-			fmt.Sprintf("--%s=%s", cli.FlagAddr, sdk.AccAddress(nonExistingAddr).String()),
-		},
-	)
-	out.Reset()
-
-	err = cmd.ExecuteContext(ctx)
+	_, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
+		fmt.Sprintf("--%s=%s", cli.FlagAddr, sdk.AccAddress(nonExistingAddr).String()),
+	})
 	s.Require().EqualError(err, "validator not found: key not found: invalid request")
 
 	// Non existing moniker.
 	cmd = cli.GetCmdQueryValidator()
-	cmd.SetArgs(
-		[]string{
-			fmt.Sprintf("--%s=%s", cli.FlagMoniker, "weirdMoniker"),
-		},
-	)
-	out.Reset()
-
-	err = cmd.ExecuteContext(ctx)
+	_, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
+		fmt.Sprintf("--%s=%s", cli.FlagMoniker, "weirdMoniker"),
+	})
 	s.Require().EqualError(err, "validator with moniker weirdMoniker not found: key not found: invalid request")
+}
+
+func (s IntegrationTestSuite) TestCreateProposalUnjailValidator() {
+	// Query permissions for role Validator
+	val := s.network.Validators[0]
+
+	clientCtx := val.ClientCtx.WithOutputFormat("json")
+	out, err := clitestutil.ExecTestCLICmd(
+		clientCtx,
+		cli.GetTxProposalUnjailValidatorCmd(),
+		[]string{
+			fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+			fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
+			"theReference",
+			"theHash",
+		},
+	)
+	s.Require().NoError(err)
+	fmt.Printf("%s", out.String())
+
+	// Vote Proposal
+	out, err = clitestutil.ExecTestCLICmd(
+		clientCtx,
+		customgovcli.GetTxVoteProposal(),
+		[]string{
+			fmt.Sprintf("%d", 1), // Proposal ID
+			fmt.Sprintf("%d", customgovtypes.OptionYes),
+			fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+			fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
+		},
+	)
+	s.Require().NoError(err)
+	fmt.Printf("%s", out.String())
 }
 
 func TestIntegrationTestSuite(t *testing.T) {

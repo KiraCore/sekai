@@ -1,6 +1,8 @@
 package types
 
-import "github.com/cosmos/cosmos-sdk/types/errors"
+import (
+	"github.com/cosmos/cosmos-sdk/types/errors"
+)
 
 // errors
 var (
@@ -10,11 +12,11 @@ var (
 	ErrNotEnoughPermissions       = errors.Register(ModuleName, 5, "not enough permissions")
 	ErrCouncilorEmptyAddress      = errors.Register(ModuleName, 6, "empty councilor address")
 	ErrRoleDoesNotExist           = errors.Register(ModuleName, 7, "role does not exist")
-	ErrRoleExist                  = errors.Register(ModuleName, 12, "role already exist")
 	ErrWhitelisting               = errors.Register(ModuleName, 8, "error adding to whitelist")
 	ErrBlacklisting               = errors.Register(ModuleName, 9, "error adding to blacklist")
 	ErrRemovingWhitelist          = errors.Register(ModuleName, 10, "error removing from whitelist")
 	ErrRemovingBlacklist          = errors.Register(ModuleName, 11, "error removing from blacklist")
+	ErrRoleExist                  = errors.Register(ModuleName, 12, "role already exist")
 	ErrRoleAlreadyAssigned        = errors.Register(ModuleName, 13, "role already assigned")
 	ErrRoleNotAssigned            = errors.Register(ModuleName, 14, "role not assigned")
 	ErrCouncilorNotFound          = errors.Register(ModuleName, 15, "councilor not found")
@@ -22,4 +24,9 @@ var (
 	ErrProposalDoesNotExist       = errors.Register(ModuleName, 17, "proposal does not exist")
 	ErrActorIsNotActive           = errors.Register(ModuleName, 18, "actor is not active")
 	ErrInvalidNetworkProperty     = errors.Register(ModuleName, 19, "invalid network property")
+	ErrFeeNotExist                = errors.Register(ModuleName, 20, "fee does not exist")
+	ErrPoorNetworkMsgsNotSet      = errors.Register(ModuleName, 21, "poor network messages not set")
+	ErrProposalNotExist           = errors.Register(ModuleName, 22, "proposal not exist")
+	ErrGettingProposals           = errors.Register(ModuleName, 23, "error getting proposals")
+	ErrGettingProposalVotes       = errors.Register(ModuleName, 24, "error getting votes for proposal")
 )

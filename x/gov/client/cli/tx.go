@@ -3,11 +3,12 @@ package cli
 import (
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
-	types2 "github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
 
 	"github.com/KiraCore/sekai/x/gov/types"
@@ -19,6 +20,7 @@ const (
 	FlagPermission        = "permission"
 	FlagMinTxFee          = "min_tx_fee"
 	FlagMaxTxFee          = "max_tx_fee"
+	FlagMinValidators     = "min_validators"
 	FlagExecName          = "execution_name"
 	FlagTxType            = "transaction_type"
 	FlagExecutionFee      = "execution_fee"
@@ -42,12 +44,13 @@ func NewTxCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	txCmd.AddCommand(NewTxCouncilorCmds())
-	txCmd.AddCommand(NewTxProposalCmds())
-	txCmd.AddCommand(NewTxRoleCmds())
-	txCmd.AddCommand(NewTxPermissionCmds())
-	txCmd.AddCommand(GetTxSetNetworkProperties(),
-		GetTxSetExecutionFee(),
+	txCmd.AddCommand(
+		NewTxCouncilorCmds(),
+		NewTxProposalCmds(),
+		NewTxRoleCmds(),
+		NewTxPermissionCmds(),
+		NewTxSetNetworkProperties(),
+		NewTxSetExecutionFee(),
 	)
 
 	return txCmd
@@ -66,6 +69,7 @@ func NewTxProposalCmds() *cobra.Command {
 	proposalCmd.AddCommand(GetTxProposalAssignPermission())
 	proposalCmd.AddCommand(GetTxVoteProposal())
 	proposalCmd.AddCommand(GetTxProposalSetNetworkProperty())
+	proposalCmd.AddCommand(GetTxProposalSetPoorNetworkMsgs())
 
 	return proposalCmd
 }
@@ -194,8 +198,8 @@ func GetTxSetBlacklistPermissions() *cobra.Command {
 	return cmd
 }
 
-// GetTxSetNetworkProperties is a function to set network properties tx command
-func GetTxSetNetworkProperties() *cobra.Command {
+// NewTxSetNetworkProperties is a function to set network properties tx command
+func NewTxSetNetworkProperties() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "set-network-properties",
 		Short: "Set network properties",
@@ -213,12 +217,25 @@ func GetTxSetNetworkProperties() *cobra.Command {
 			if err != nil {
 				return fmt.Errorf("invalid maximum tx fee")
 			}
+			minValidators, err := cmd.Flags().GetUint64(FlagMinValidators)
+			if err != nil {
+				return fmt.Errorf("invalid min validators")
+			}
 
+			// TODO: should set more by flags
 			msg := types.NewMsgSetNetworkProperties(
 				clientCtx.FromAddress,
 				&types.NetworkProperties{
-					MinTxFee: minTxFee,
-					MaxTxFee: maxTxFee,
+					MinTxFee:                    minTxFee,
+					MaxTxFee:                    maxTxFee,
+					VoteQuorum:                  33,
+					ProposalEndTime:             1, // 1min
+					ProposalEnactmentTime:       2, // 2min
+					EnableForeignFeePayments:    true,
+					MischanceRankDecreaseAmount: 10,
+					InactiveRankDecreasePercent: 50,      // 50%
+					PoorNetworkMaxBankSend:      1000000, // 1M ukex
+					MinValidators:               minValidators,
 				},
 			)
 
@@ -227,6 +244,7 @@ func GetTxSetNetworkProperties() *cobra.Command {
 	}
 	cmd.Flags().Uint64(FlagMinTxFee, 1, "min tx fee")
 	cmd.Flags().Uint64(FlagMaxTxFee, 10000, "max tx fee")
+	cmd.Flags().Uint64(FlagMinValidators, 2, "min validators")
 	flags.AddTxFlagsToCmd(cmd)
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)
 
@@ -270,8 +288,8 @@ func GetTxWhitelistRolePermission() *cobra.Command {
 	return cmd
 }
 
-// GetTxSetExecutionFee is a function to set network properties tx command
-func GetTxSetExecutionFee() *cobra.Command {
+// NewTxSetExecutionFee is a function to set network properties tx command
+func NewTxSetExecutionFee() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "set-execution-fee",
 		Short: "Set execution fee",
@@ -554,6 +572,45 @@ func GetTxRemoveRole() *cobra.Command {
 	return cmd
 }
 
+// GetTxProposalSetPoorNetworkMsgs defines command to send proposal tx to modify poor network messages
+func GetTxProposalSetPoorNetworkMsgs() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "set-poor-network-msgs <messages>",
+		Short: "Create a proposal to set a value on a network property.",
+		Long: `
+		$ %s tx customgov proposal set-poor-network-msgs XXXX,YYY --from=<key_or_address>
+
+		All the message types supported could be added here
+			create-role
+			assign-role
+			remove-role
+			...
+		`,
+		Args: cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			messages := strings.Split(args[0], ",")
+
+			msg := types.NewMsgProposalSetPoorNetworkMessages(
+				clientCtx.FromAddress,
+				messages,
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
 // GetTxProposalSetNetworkProperty defines command to send proposal tx to modify a network property
 func GetTxProposalSetNetworkProperty() *cobra.Command {
 	cmd := &cobra.Command{
@@ -646,7 +703,7 @@ func GetTxProposalAssignPermission() *cobra.Command {
 
 func GetTxProposalUpsertDataRegistry() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "upsert-data-registry key hash",
+		Use:   "upsert-data-registry key hash reference encoding size",
 		Short: "Upsert a key in the data registry",
 		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -731,13 +788,13 @@ func setPermissionFlags(cmd *cobra.Command) {
 }
 
 // getAddressFromFlag returns the AccAddress from FlagAddr in Command.
-func getAddressFromFlag(cmd *cobra.Command) (types2.AccAddress, error) {
+func getAddressFromFlag(cmd *cobra.Command) (sdk.AccAddress, error) {
 	addr, err := cmd.Flags().GetString(cli.FlagAddr)
 	if err != nil {
 		return nil, fmt.Errorf("error getting address")
 	}
 
-	bech, err := types2.AccAddressFromBech32(addr)
+	bech, err := sdk.AccAddressFromBech32(addr)
 	if err != nil {
 		return nil, fmt.Errorf("invalid address")
 	}
@@ -761,7 +818,7 @@ func GetTxClaimCouncilorSeatCmd() *cobra.Command {
 			identity, _ := cmd.Flags().GetString(FlagIdentity)
 			address, _ := cmd.Flags().GetString(FlagAddress)
 
-			bech32, err := types2.AccAddressFromBech32(address)
+			bech32, err := sdk.AccAddressFromBech32(address)
 			if err != nil {
 				return err
 			}

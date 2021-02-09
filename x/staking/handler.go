@@ -19,7 +19,9 @@ func NewHandler(ck customkeeper.Keeper, govkeeper govkeeper.Keeper) sdk.Handler 
 		case *types.MsgClaimValidator:
 			res, err := msgServer.ClaimValidator(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-
+		case *types.MsgProposalUnjailValidator:
+			res, err := msgServer.ProposalUnjailValidator(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
 		default:
 			return nil, errors.Wrapf(errors.ErrUnknownRequest, "unrecognized %s message type: %T", types.ModuleName, msg)
 		}

@@ -71,7 +71,9 @@ func SearchCache(request types.InterxRequest, response *types.ProxyResponse) (bo
 	endpointHash := GetBlake2bHash(request.Endpoint)
 	requestHash := GetBlake2bHash(request)
 
+	GetLogger().Info(chainIDHash, endpointHash, requestHash)
 	result, err := GetCache(chainIDHash, endpointHash, requestHash)
+	GetLogger().Info(result)
 
 	if err != nil {
 		return false, nil, nil, -1

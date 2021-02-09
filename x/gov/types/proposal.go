@@ -8,6 +8,7 @@ import (
 
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // constants
@@ -15,6 +16,7 @@ const (
 	AssignPermissionProposalType   = "AssignPermission"
 	SetNetworkPropertyProposalType = "SetNetworkProperty"
 	UpsertDataRegistryProposalType = "UpsertDataRegistry"
+	SetPoorNetworkMsgsProposalType = "SetPoorNetworkMsgs"
 )
 
 var _ Content = &AssignPermissionProposal{}
@@ -29,7 +31,7 @@ func NewProposal(
 ) (Proposal, error) {
 	msg, ok := content.(proto.Message)
 	if !ok {
-		return Proposal{}, fmt.Errorf("%T does not implement proto.Message", content)
+		return Proposal{}, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("%T does not implement proto.Message", content))
 	}
 
 	any, err := codectypes.NewAnyWithValue(msg)
@@ -119,4 +121,18 @@ func (m *UpsertDataRegistryProposal) ProposalType() string {
 
 func (m *UpsertDataRegistryProposal) VotePermission() PermValue {
 	return PermVoteUpsertDataRegistryProposal
+}
+
+func NewSetPoorNetworkMessagesProposal(msgs []string) Content {
+	return &SetPoorNetworkMessagesProposal{
+		Messages: msgs,
+	}
+}
+
+func (m *SetPoorNetworkMessagesProposal) ProposalType() string {
+	return SetPoorNetworkMsgsProposalType
+}
+
+func (m *SetPoorNetworkMessagesProposal) VotePermission() PermValue {
+	return PermVoteSetPoorNetworkMessagesProposal
 }

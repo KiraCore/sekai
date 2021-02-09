@@ -13,7 +13,7 @@ import (
 	"github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
-	types2 "github.com/cosmos/cosmos-sdk/codec/types"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/gorilla/mux"
@@ -39,7 +39,7 @@ func (b AppModuleBasic) Name() string {
 	return customstakingtypes.ModuleName
 }
 
-func (b AppModuleBasic) RegisterInterfaces(registry types2.InterfaceRegistry) {
+func (b AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 	customstakingtypes.RegisterInterfaces(registry)
 }
 
@@ -59,7 +59,26 @@ func (b AppModuleBasic) RegisterRESTRoutes(context client.Context, router *mux.R
 }
 
 func (b AppModuleBasic) GetTxCmd() *cobra.Command {
-	return cli.GetTxClaimValidatorCmd()
+	proposalCmd := &cobra.Command{
+		Use:                        "proposal",
+		Short:                      "Proposal subcommands",
+		DisableFlagParsing:         true,
+		SuggestionsMinimumDistance: 2,
+		RunE:                       client.ValidateCmd,
+	}
+	proposalCmd.AddCommand(cli.GetTxProposalUnjailValidatorCmd())
+
+	txCommand := &cobra.Command{
+		Use:                        "customstaking",
+		Short:                      "staking module subcommands",
+		DisableFlagParsing:         true,
+		SuggestionsMinimumDistance: 2,
+		RunE:                       client.ValidateCmd,
+	}
+
+	txCommand.AddCommand(cli.GetTxClaimValidatorCmd(), proposalCmd)
+
+	return txCommand
 }
 
 func (b AppModuleBasic) RegisterLegacyAminoCodec(amino *codec.LegacyAmino) {
@@ -84,7 +103,7 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 	customstakingtypes.RegisterQueryServer(cfg.QueryServer(), keeper.NewQuerier(am.customStakingKeeper))
 }
 
-func (am AppModule) RegisterInterfaces(registry types2.InterfaceRegistry) {
+func (am AppModule) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 	customstakingtypes.RegisterInterfaces(registry)
 }
 
@@ -111,9 +130,6 @@ func (am AppModule) InitGenesis(
 			Power:  1,
 			PubKey: consPk,
 		}
-
-		// Call the creation hook if not exported
-		// keeper.AfterValidatorCreated(ctx, val.ValKey)
 	}
 
 	return valUpdate

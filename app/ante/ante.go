@@ -5,6 +5,7 @@ import (
 
 	feeprocessingkeeper "github.com/KiraCore/sekai/x/feeprocessing/keeper"
 	customgovkeeper "github.com/KiraCore/sekai/x/gov/keeper"
+	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 	customstakingkeeper "github.com/KiraCore/sekai/x/staking/keeper"
 	tokenskeeper "github.com/KiraCore/sekai/x/tokens/keeper"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -13,6 +14,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	"github.com/cosmos/cosmos-sdk/x/auth/signing"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
+	bank "github.com/cosmos/cosmos-sdk/x/bank/types"
 )
 
 // NewAnteHandler returns an AnteHandler that checks and increments sequence
@@ -41,6 +43,8 @@ func NewAnteHandler(
 		ante.NewSetPubKeyDecorator(ak), // SetPubKeyDecorator must be called before all signature verification decorators
 		ante.NewValidateSigCountDecorator(ak),
 		ante.NewDeductFeeDecorator(ak, fk),
+		// poor network management decorator
+		NewPoorNetworkManagementDecorator(ak, cgk, sk),
 		// custom execution fee consume decorator
 		NewExecutionFeeRegistrationDecorator(ak, cgk, fk),
 		ante.NewSigGasConsumeDecorator(ak, sigGasConsumer),
@@ -148,6 +152,69 @@ func (sgcd ExecutionFeeRegistrationDecorator) AnteHandle(ctx sdk.Context, tx sdk
 		if fee != nil { // execution fee exist
 			sgcd.fk.AddExecutionStart(ctx, msg)
 		}
+	}
+
+	return next(ctx, tx, simulate)
+}
+
+// PoorNetworkManagementDecorator register poor network manager
+type PoorNetworkManagementDecorator struct {
+	ak  keeper.AccountKeeper
+	cgk customgovkeeper.Keeper
+	csk customstakingkeeper.Keeper
+}
+
+// NewPoorNetworkManagementDecorator returns instance of CustomExecutionFeeConsumeDecorator
+func NewPoorNetworkManagementDecorator(ak keeper.AccountKeeper, cgk customgovkeeper.Keeper, csk customstakingkeeper.Keeper) PoorNetworkManagementDecorator {
+	return PoorNetworkManagementDecorator{
+		ak,
+		cgk,
+		csk,
+	}
+}
+
+func findString(a []string, x string) int {
+	for i, n := range a {
+		if x == n {
+			return i
+		}
+	}
+	return -1
+}
+
+// AnteHandle handle NewPoorNetworkManagementDecorator
+func (pnmd PoorNetworkManagementDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
+	sigTx, ok := tx.(sdk.FeeTx)
+	if !ok {
+		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "invalid transaction type")
+	}
+
+	// if not poor network, skip this process
+	if pnmd.csk.IsNetworkActive(ctx) {
+		return next(ctx, tx, simulate)
+	}
+	// handle messages on poor network
+	poorNetworkMsgs, found := pnmd.cgk.GetPoorNetworkMsgs(ctx)
+	if !found {
+		poorNetworkMsgs = &customgovtypes.AllowedMessages{}
+	}
+	for _, msg := range sigTx.GetMsgs() {
+		if msg.Type() == bank.TypeMsgSend {
+			// on poor network, we introduce POOR_NETWORK_MAX_BANK_TX_SEND network property to limit transaction send amount
+			msg := msg.(*bank.MsgSend)
+			if len(msg.Amount) > 1 || msg.Amount[0].Denom != pnmd.csk.BondDenom(ctx) {
+				return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "only bond denom is allowed on poor network")
+			}
+			if msg.Amount[0].Amount.Uint64() > pnmd.cgk.GetNetworkProperties(ctx).PoorNetworkMaxBankSend {
+				return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "only restricted amount send is allowed on poor network")
+			}
+			// TODO: we could do restriction to send only when target account does not exist on chain yet for more restriction
+			return next(ctx, tx, simulate)
+		}
+		if findString(poorNetworkMsgs.Messages, msg.Type()) >= 0 {
+			return next(ctx, tx, simulate)
+		}
+		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid transaction type on poor network")
 	}
 
 	return next(ctx, tx, simulate)

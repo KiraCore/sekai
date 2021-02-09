@@ -55,13 +55,22 @@ enum PermValue {
   // PERMISSION_CREATE_UPSERT_TOKEN_ALIAS_PROPOSAL defines the permission needed to create proposals for upsert token Alias.
   PERMISSION_CREATE_UPSERT_TOKEN_ALIAS_PROPOSAL = 14 [(gogoproto.enumvalue_customname) = "PermCreateUpsertTokenAliasProposal"];
 
+  // PERMISSION_CREATE_SET_POOR_NETWORK_MESSAGES defines the permission needed to create proposals for setting poor network messages
+  PERMISSION_CREATE_SET_POOR_NETWORK_MESSAGES = 15 [(gogoproto.enumvalue_customname) = "PermCreateSetPoorNetworkMessagesProposal"];
+
   // PERMISSION_VOTE_UPSERT_TOKEN_ALIAS_PROPOSAL defines the permission needed to vote proposals for upsert token.
-  PERMISSION_VOTE_UPSERT_TOKEN_ALIAS_PROPOSAL = 15 [(gogoproto.enumvalue_customname) = "PermVoteUpsertTokenAliasProposal"];
+  PERMISSION_VOTE_UPSERT_TOKEN_ALIAS_PROPOSAL = 16 [(gogoproto.enumvalue_customname) = "PermVoteUpsertTokenAliasProposal"];
 
   // PERMISSION_CREATE_UPSERT_TOKEN_RATE_PROPOSAL defines the permission needed to create proposals for upsert token rate.
-  PERMISSION_CREATE_UPSERT_TOKEN_RATE_PROPOSAL = 16 [(gogoproto.enumvalue_customname) = "PermCreateUpsertTokenRateProposal"];
+  PERMISSION_CREATE_UPSERT_TOKEN_RATE_PROPOSAL = 17 [(gogoproto.enumvalue_customname) = "PermCreateUpsertTokenRateProposal"];
 
   // PERMISSION_VOTE_UPSERT_TOKEN_RATE_PROPOSAL defines the permission needed to vote proposals for upsert token rate.
-  PERMISSION_VOTE_UPSERT_TOKEN_RATE_PROPOSAL = 17 [(gogoproto.enumvalue_customname) = "PermVoteUpsertTokenRateProposal"];
+  PERMISSION_VOTE_UPSERT_TOKEN_RATE_PROPOSAL = 18 [(gogoproto.enumvalue_customname) = "PermVoteUpsertTokenRateProposal"];
+
+  // PERMISSION_VOTE_SET_POOR_NETWORK_MESSAGES_PROPOSAL defines the permission needed to vote proposals to set poor network messages
+  PERMISSION_VOTE_SET_POOR_NETWORK_MESSAGES_PROPOSAL = 19 [(gogoproto.enumvalue_customname) = "PermVoteSetPoorNetworkMessagesProposal"];
+
+  // PERMISSION_CREATE_UNJAIL_VALIDATOR_PROPOSAL defines the permission needed to create a proposal to unjail a validator.
+  PERMISSION_CREATE_UNJAIL_VALIDATOR_PROPOSAL = 20 [(gogoproto.enumvalue_customname) = "PermCreateUnjailValidatorProposal"];
 }
 

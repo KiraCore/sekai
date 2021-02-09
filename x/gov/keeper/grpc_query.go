@@ -8,6 +8,7 @@ import (
 
 	"github.com/KiraCore/sekai/x/gov/types"
 	customstakingtypes "github.com/KiraCore/sekai/x/staking/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // Querier describes grpc querier
@@ -91,9 +92,19 @@ func (q Querier) GetExecutionFee(ctx context.Context, request *types.ExecutionFe
 	sdkContext := sdk.UnwrapSDKContext(ctx)
 	fee := q.keeper.GetExecutionFee(sdkContext, request.TransactionType)
 	if fee == nil {
-		return nil, fmt.Errorf("fee does not exist for %s", request.TransactionType)
+		return nil, sdkerrors.Wrap(types.ErrFeeNotExist, fmt.Sprintf("fee does not exist for %s", request.TransactionType))
 	}
 	return &types.ExecutionFeeResponse{Fee: fee}, nil
+}
+
+// GetPoorNetworkMessages queries poor network messages
+func (q Querier) GetPoorNetworkMessages(ctx context.Context, request *types.PoorNetworkMessagesRequest) (*types.PoorNetworkMessagesResponse, error) {
+	sdkContext := sdk.UnwrapSDKContext(ctx)
+	msg, ok := q.keeper.GetPoorNetworkMsgs(sdkContext)
+	if !ok {
+		return nil, types.ErrPoorNetworkMsgsNotSet
+	}
+	return &types.PoorNetworkMessagesResponse{Messages: msg.Messages}, nil
 }
 
 // Proposal returns a proposal by id
@@ -101,7 +112,7 @@ func (q Querier) Proposal(ctx context.Context, request *types.QueryProposalReque
 	sdkContext := sdk.UnwrapSDKContext(ctx)
 	proposal, found := q.keeper.GetProposal(sdkContext, request.ProposalId)
 	if found == false {
-		return nil, fmt.Errorf("proposal does not exist for %d", request.ProposalId)
+		return nil, sdkerrors.Wrap(types.ErrGettingProposals, fmt.Sprintf("proposal does not exist for %d", request.ProposalId))
 	}
 	return &types.QueryProposalResponse{Proposal: proposal}, nil
 }
@@ -111,7 +122,7 @@ func (q Querier) Proposals(ctx context.Context, request *types.QueryProposalsReq
 	sdkContext := sdk.UnwrapSDKContext(ctx)
 	proposals, err := q.keeper.GetProposals(sdkContext)
 	if err != nil {
-		return nil, fmt.Errorf("error getting proposals: %s", err.Error())
+		return nil, sdkerrors.Wrap(types.ErrGettingProposals, fmt.Sprintf("error getting proposals: %s", err.Error()))
 	}
 	return &types.QueryProposalsResponse{Proposals: proposals}, nil
 }
@@ -129,7 +140,7 @@ func (q Querier) Vote(ctx context.Context, request *types.QueryVoteRequest) (*ty
 	sdkContext := sdk.UnwrapSDKContext(ctx)
 	vote, found := q.keeper.GetVote(sdkContext, request.ProposalId, request.Voter)
 	if !found {
-		return &types.QueryVoteResponse{Vote: vote}, fmt.Errorf("error getting votes for proposal %d, voter %s", request.ProposalId, request.Voter.String())
+		return &types.QueryVoteResponse{Vote: vote}, sdkerrors.Wrap(types.ErrGettingProposalVotes, fmt.Sprintf("error getting votes for proposal %d, voter %s", request.ProposalId, request.Voter.String()))
 	}
 	return &types.QueryVoteResponse{Vote: vote}, nil
 }

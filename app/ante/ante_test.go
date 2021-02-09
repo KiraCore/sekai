@@ -10,6 +10,7 @@ import (
 	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	bank "github.com/cosmos/cosmos-sdk/x/bank/types"
 )
 
 // Test that simulate transaction process execution fee correctly on ante handler step
@@ -166,7 +167,6 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 		{
 			"foreign currency as fee payment when EnableForeignFeePayments is disabled by governance",
 			func() ([]sdk.Msg, []cryptotypes.PrivKey, []uint64, []uint64, sdk.Coins) {
-
 				suite.app.CustomGovKeeper.SetNetworkProperties(suite.ctx, &customgovtypes.NetworkProperties{
 					MinTxFee:                 2,
 					MaxTxFee:                 10000,
@@ -188,6 +188,126 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 			false,
 			false,
 			errors.New("foreign fee payments is disabled by governance: invalid request"),
+		},
+		{
+			"try sending non bond denom coins on poor network",
+			func() ([]sdk.Msg, []cryptotypes.PrivKey, []uint64, []uint64, sdk.Coins) {
+				suite.app.CustomGovKeeper.SetNetworkProperties(suite.ctx, &customgovtypes.NetworkProperties{
+					MinTxFee:                 2,
+					MaxTxFee:                 10000,
+					EnableForeignFeePayments: true,
+					MinValidators:            100,
+				})
+				msgs := []sdk.Msg{
+					bank.NewMsgSend(
+						accounts[4].acc.GetAddress(),
+						accounts[3].acc.GetAddress(),
+						sdk.NewCoins(sdk.NewInt64Coin("ubtc", 10)),
+					),
+				}
+				return msgs, privs[4:5], accNums[4:5], []uint64{0}, sdk.NewCoins(sdk.NewInt64Coin("ukex", 10))
+			},
+			false,
+			false,
+			errors.New("only bond denom is allowed on poor network: invalid request"),
+		},
+		{
+			"try sending more bond denom than restricted amount on poor network",
+			func() ([]sdk.Msg, []cryptotypes.PrivKey, []uint64, []uint64, sdk.Coins) {
+				suite.app.CustomGovKeeper.SetNetworkProperties(suite.ctx, &customgovtypes.NetworkProperties{
+					MinTxFee:                 2,
+					MaxTxFee:                 10000,
+					EnableForeignFeePayments: true,
+					MinValidators:            100,
+					PoorNetworkMaxBankSend:   1000,
+				})
+				msgs := []sdk.Msg{
+					bank.NewMsgSend(
+						accounts[4].acc.GetAddress(),
+						accounts[3].acc.GetAddress(),
+						sdk.NewCoins(sdk.NewInt64Coin("ukex", 10000000)),
+					),
+				}
+				return msgs, privs[4:5], accNums[4:5], []uint64{0}, sdk.NewCoins(sdk.NewInt64Coin("ukex", 10))
+			},
+			false,
+			false,
+			errors.New("only restricted amount send is allowed on poor network: invalid request"),
+		},
+		{
+			"try sending lower than restriction amount on poor network",
+			func() ([]sdk.Msg, []cryptotypes.PrivKey, []uint64, []uint64, sdk.Coins) {
+				suite.app.CustomGovKeeper.SetNetworkProperties(suite.ctx, &customgovtypes.NetworkProperties{
+					MinTxFee:                 2,
+					MaxTxFee:                 10000,
+					EnableForeignFeePayments: true,
+					MinValidators:            100,
+					PoorNetworkMaxBankSend:   1000,
+				})
+				msgs := []sdk.Msg{
+					bank.NewMsgSend(
+						accounts[4].acc.GetAddress(),
+						accounts[3].acc.GetAddress(),
+						sdk.NewCoins(sdk.NewInt64Coin("ukex", 1000)),
+					),
+				}
+				return msgs, privs[4:5], accNums[4:5], []uint64{1}, sdk.NewCoins(sdk.NewInt64Coin("ubtc", 10))
+			},
+			false,
+			true,
+			nil,
+		},
+		{
+			"try sending enabled message on poor network",
+			func() ([]sdk.Msg, []cryptotypes.PrivKey, []uint64, []uint64, sdk.Coins) {
+				suite.app.CustomGovKeeper.SetNetworkProperties(suite.ctx, &customgovtypes.NetworkProperties{
+					MinTxFee:                 2,
+					MaxTxFee:                 10000,
+					EnableForeignFeePayments: true,
+					MinValidators:            100,
+				})
+				msgs := []sdk.Msg{
+					customgovtypes.NewMsgSetNetworkProperties(
+						accounts[4].acc.GetAddress(),
+						&customgovtypes.NetworkProperties{
+							MinTxFee:                 2,
+							MaxTxFee:                 10000,
+							EnableForeignFeePayments: true,
+							MinValidators:            100,
+						},
+					),
+				}
+				return msgs, privs[4:5], accNums[4:5], []uint64{2}, sdk.NewCoins(sdk.NewInt64Coin("ubtc", 1000))
+			},
+			false,
+			true,
+			nil,
+		},
+		{
+			"try sending not enabled message on poor network",
+			func() ([]sdk.Msg, []cryptotypes.PrivKey, []uint64, []uint64, sdk.Coins) {
+				suite.app.CustomGovKeeper.SetNetworkProperties(suite.ctx, &customgovtypes.NetworkProperties{
+					MinTxFee:                 2,
+					MaxTxFee:                 10000,
+					EnableForeignFeePayments: true,
+					MinValidators:            100,
+				})
+				msgs := []sdk.Msg{
+					customgovtypes.NewMsgSetExecutionFee(
+						types.MsgTypeSetNetworkProperties,
+						types.MsgTypeSetNetworkProperties,
+						10000,
+						1000,
+						0,
+						0,
+						accounts[4].acc.GetAddress(),
+					),
+				}
+				return msgs, privs[4:5], accNums[4:5], []uint64{0}, sdk.NewCoins(sdk.NewInt64Coin("ubtc", 10))
+			},
+			false,
+			false,
+			errors.New("invalid transaction type on poor network: invalid request"),
 		},
 	}
 

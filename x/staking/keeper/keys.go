@@ -9,6 +9,7 @@ import sdk "github.com/cosmos/cosmos-sdk/types"
 // 0x03<ValAddress> : The Validator
 // 0x04<ValAddress> : The Validator Address
 // 0x05<ValAddress> : The Validator Address
+// 0x06<ValAddress> : Validator Jail Info
 var (
 	ValidatorsKey              = []byte{0x00} // Validators key prefix.
 	ValidatorsByMonikerKey     = []byte{0x01} // Validators by moniker prefix.
@@ -16,6 +17,7 @@ var (
 	PendingValidatorQueue      = []byte{0x03} // Validators that are pending to join into the end blocker.
 	RemovingValidatorQueue     = []byte{0x04} // Validators that are pending to be removed from the validator set.
 	ReactivatingValidatorQueue = []byte{0x05} // Validators that are pending to be reactivated in the set.
+	ValidatorJailInfo          = []byte{0x06} // Validator Jail Info (JailTime, etc)
 )
 
 // GetValidatorKey gets the key for the validator with address
@@ -45,4 +47,8 @@ func GetRemovingValidatorKey(operatorAddress sdk.ValAddress) []byte {
 
 func GetReactivatingValidatorKey(operatorAddress sdk.ValAddress) []byte {
 	return append(ReactivatingValidatorQueue, operatorAddress.Bytes()...)
+}
+
+func GetValidatorJailInfoKey(operatorAddress sdk.ValAddress) []byte {
+	return append(ValidatorJailInfo, operatorAddress.Bytes()...)
 }

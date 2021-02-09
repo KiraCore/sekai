@@ -38,16 +38,23 @@ func main() {
 	startCommand := flag.NewFlagSet("start", flag.ExitOnError)
 
 	entropy, _ := bip39.NewEntropy(256)
-	signing_mnemonic, _ := bip39.NewMnemonic(entropy)
-	faucet_mnemonic, _ := bip39.NewMnemonic(entropy)
+	signingMnemonic, _ := bip39.NewMnemonic(entropy)
+	faucetMnemonic, _ := bip39.NewMnemonic(entropy)
 
 	initConfigFilePtr := initCommand.String("config", "./config.json", "The interx configuration path.")
 	initGrpcPtr := initCommand.String("grpc", "dns:///0.0.0.0:9090", "The grpc endpoint of the sekaid.")
-	initRpcPtr := initCommand.String("rpc", "http://0.0.0.0:26657", "The rpc endpoint of the sekaid.")
+	initRPCPtr := initCommand.String("rpc", "http://0.0.0.0:26657", "The rpc endpoint of the sekaid.")
 	initPortPtr := initCommand.String("port", "11000", "The interx port.")
-	initSigningMnemonicPtr := initCommand.String("signing_mnemonic", signing_mnemonic, "The interx signing mnemonic file path or seeds.")
+	initSigningMnemonicPtr := initCommand.String("signing_mnemonic", signingMnemonic, "The interx signing mnemonic file path or seeds.")
+
+	initSyncStatus := initCommand.Int64("status_sync", 5, "The time in seconds and INTERX syncs node status.")
 	initCacheDirPtr := initCommand.String("cache_dir", "cache", "The interx cache directory path.")
-	initFaucetMnemonicPtr := initCommand.String("faucet_mnemonic", faucet_mnemonic, "The interx faucet mnemonic file path or seeds.")
+	initMaxCacheSize := initCommand.String("max_cache_size", "2GB", "The maximum cache size.")
+	initCachingDuration := initCommand.Int64("caching_duration", 5, "The caching clear duration in seconds.")
+	initMaxDownloadSize := initCommand.String("download_file_size_limitation", "10MB", "The maximum download file size.")
+
+	initFaucetMnemonicPtr := initCommand.String("faucet_mnemonic", faucetMnemonic, "The interx faucet mnemonic file path or seeds.")
+	initFaucetTimeLimit := initCommand.Int64("faucet_time_limit", 20, "The claim time limitation in seconds.")
 
 	startConfigPtr := startCommand.String("config", "./config.json", "The interx configurtion path. (Required)")
 
@@ -70,7 +77,20 @@ func main() {
 			if initCommand.Parsed() {
 				// Check which subcommand was Parsed using the FlagSet.Parsed() function. Handle each case accordingly.
 				// FlagSet.Parse() will evaluate to false if no flags were parsed (i.e. the user did not provide any flags)
-				config.InitConfig(*initConfigFilePtr, *initGrpcPtr, *initRpcPtr, *initPortPtr, *initSigningMnemonicPtr, *initFaucetMnemonicPtr, *initCacheDirPtr)
+				config.InitConfig(
+					*initConfigFilePtr,
+					*initGrpcPtr,
+					*initRPCPtr,
+					*initPortPtr,
+					*initSigningMnemonicPtr,
+					*initSyncStatus,
+					*initCacheDirPtr,
+					*initMaxCacheSize,
+					*initCachingDuration,
+					*initMaxDownloadSize,
+					*initFaucetMnemonicPtr,
+					*initFaucetTimeLimit,
+				)
 
 				fmt.Printf("Created interx configuration file: %s\n", *initConfigFilePtr)
 				return

@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	types2 "github.com/KiraCore/sekai/x/staking/types"
+	customstakingtypes "github.com/KiraCore/sekai/x/staking/types"
 
 	"github.com/stretchr/testify/require"
 
@@ -28,7 +28,7 @@ func TestNewValidator_Errors(t *testing.T) {
 			name:        "moniker longer than 64",
 			expectError: true,
 			newVal: func() error {
-				_, err := types2.NewValidator(
+				_, err := customstakingtypes.NewValidator(
 					strings.Repeat("A", 65),
 					"some-web.com",
 					"some-web.com",
@@ -40,13 +40,13 @@ func TestNewValidator_Errors(t *testing.T) {
 
 				return err
 			},
-			err: types2.ErrInvalidMonikerLength,
+			err: customstakingtypes.ErrInvalidMonikerLength,
 		},
 		{
 			name:        "website longer than 64",
 			expectError: true,
 			newVal: func() error {
-				_, err := types2.NewValidator(
+				_, err := customstakingtypes.NewValidator(
 					"the moniker",
 					strings.Repeat("A", 65),
 					"some-web.com",
@@ -58,13 +58,13 @@ func TestNewValidator_Errors(t *testing.T) {
 
 				return err
 			},
-			err: types2.ErrInvalidWebsiteLength,
+			err: customstakingtypes.ErrInvalidWebsiteLength,
 		},
 		{
 			name:        "social longer than 64",
 			expectError: true,
 			newVal: func() error {
-				_, err := types2.NewValidator(
+				_, err := customstakingtypes.NewValidator(
 					"the moniker",
 					"some-web.com",
 					strings.Repeat("A", 65),
@@ -76,13 +76,13 @@ func TestNewValidator_Errors(t *testing.T) {
 
 				return err
 			},
-			err: types2.ErrInvalidSocialLength,
+			err: customstakingtypes.ErrInvalidSocialLength,
 		},
 		{
 			name:        "identity longer than 64",
 			expectError: true,
 			newVal: func() error {
-				_, err := types2.NewValidator(
+				_, err := customstakingtypes.NewValidator(
 					"the moniker",
 					"some-web.com",
 					"some-web.com",
@@ -94,7 +94,7 @@ func TestNewValidator_Errors(t *testing.T) {
 
 				return err
 			},
-			err: types2.ErrInvalidIdentityLength,
+			err: customstakingtypes.ErrInvalidIdentityLength,
 		},
 	}
 
@@ -119,7 +119,7 @@ func TestNewValidator_IsActiveByDefault(t *testing.T) {
 	pubKey, err := types.GetPubKeyFromBech32(types.Bech32PubKeyTypeConsPub, "kiravalconspub1zcjduepqylc5k8r40azmw0xt7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsq4xg7em")
 	require.NoError(t, err)
 
-	validator, err := types2.NewValidator(
+	validator, err := customstakingtypes.NewValidator(
 		"the moniker",
 		"some-web.com",
 		"some-web.com",

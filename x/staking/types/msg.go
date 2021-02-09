@@ -11,7 +11,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-var _ sdk.Msg = &MsgClaimValidator{}
+var (
+	_ sdk.Msg = &MsgClaimValidator{}
+	_ sdk.Msg = &MsgProposalUnjailValidator{}
+)
 
 func NewMsgClaimValidator(
 	moniker string,
@@ -71,4 +74,37 @@ func (m *MsgClaimValidator) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{
 		sdk.AccAddress(m.ValKey),
 	}
+}
+
+func NewMsgProposalUnjailValidator(proposer sdk.AccAddress, hash, reference string) *MsgProposalUnjailValidator {
+	return &MsgProposalUnjailValidator{
+		Proposer:  proposer,
+		Hash:      hash,
+		Reference: reference,
+	}
+}
+
+func (m *MsgProposalUnjailValidator) Route() string {
+	return ModuleName
+}
+
+func (m *MsgProposalUnjailValidator) Type() string {
+	return types.MsgTypeProposalUnjailValidator
+}
+
+func (m *MsgProposalUnjailValidator) ValidateBasic() error {
+	if m.Proposer.Empty() {
+		return fmt.Errorf("proposer not set")
+	}
+
+	return nil
+}
+
+func (m *MsgProposalUnjailValidator) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *MsgProposalUnjailValidator) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{m.Proposer}
 }

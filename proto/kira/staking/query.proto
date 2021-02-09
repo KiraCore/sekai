@@ -2,7 +2,7 @@ syntax = "proto3";
 package kira.staking;
 
 import "staking.proto";
-import "kira/gov/pagination.proto";
+import "pagination.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 
@@ -44,7 +44,7 @@ message ValidatorsRequest {
   string pubkey = 3;
   string moniker = 4;
   string status = 5;
-  kira.gov.PageRequest pagination = 6 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
+  kira.staking.PageRequest pagination = 6 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
 }
 
 message QueryValidator {
@@ -67,5 +67,5 @@ message QueryValidator {
 // ValidatorsResponse is the response type for validators query.
 message ValidatorsResponse {
   repeated QueryValidator validators = 1 [(gogoproto.nullable) = false];
-  kira.gov.PageResponse pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
+  kira.staking.PageResponse pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
 }

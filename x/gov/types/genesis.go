@@ -23,6 +23,7 @@ func DefaultGenesis() *GenesisState {
 				PermCreateUpsertTokenRateProposal,
 				PermVoteUpsertTokenRateProposal,
 				PermUpsertRole,
+				PermCreateUnjailValidatorProposal,
 			}, nil),
 			uint64(RoleValidator): NewPermissions([]PermValue{PermClaimValidator}, nil),
 		},
@@ -35,7 +36,10 @@ func DefaultGenesis() *GenesisState {
 			ProposalEnactmentTime:       2, // 2min
 			EnableForeignFeePayments:    true,
 			MischanceRankDecreaseAmount: 10,
-			InactiveRankDecreasePercent: 50, // 50%
+			InactiveRankDecreasePercent: 50,      // 50%
+			PoorNetworkMaxBankSend:      1000000, // 1M ukex
+			MinValidators:               1,
+			JailMaxTime:                 10, // 10 mins
 		},
 		ExecutionFees: []*ExecutionFee{
 			{
@@ -117,6 +121,28 @@ func DefaultGenesis() *GenesisState {
 				FailureFee:        100,
 				Timeout:           10,
 				DefaultParameters: 0,
+			},
+		},
+		PoorNetworkMessages: &AllowedMessages{
+			Messages: []string{
+				kiratypes.MsgTypeProposalAssignPermission,
+				kiratypes.MsgTypeProposalSetNetworkProperty,
+				kiratypes.MsgTypeSetNetworkProperties,
+				kiratypes.MsgTypeVoteProposal,
+				kiratypes.MsgTypeClaimCouncilor,
+				kiratypes.MsgTypeWhitelistPermissions,
+				kiratypes.MsgTypeBlacklistPermissions,
+				kiratypes.MsgTypeCreateRole,
+				kiratypes.MsgTypeAssignRole,
+				kiratypes.MsgTypeRemoveRole,
+				kiratypes.MsgTypeWhitelistRolePermission,
+				kiratypes.MsgTypeBlacklistRolePermission,
+				kiratypes.MsgTypeRemoveWhitelistRolePermission,
+				kiratypes.MsgTypeRemoveBlacklistRolePermission,
+				kiratypes.MsgTypeClaimValidator,
+				kiratypes.MsgTypeActivate,
+				kiratypes.MsgTypePause,
+				kiratypes.MsgTypeUnpause,
 			},
 		},
 	}

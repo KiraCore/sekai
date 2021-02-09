@@ -2,16 +2,16 @@
     "grpc": "dns:///0.0.0.0:9090",
     "rpc": "http://0.0.0.0:26657",
     "port": "11000",
-    "mnemonic": "blouse reject scene ordinary enrich device only huge taste still thrive cherry cereal labor road equal baby aim green pumpkin slice fabric flower museum",
+    "mnemonic": "foil cinnamon iron walk crucial mobile vast rhythm pupil direct champion soft medal capable long firm fuel lemon explain menu visit immense task youth",
     "cache": {
         "status_sync": 5,
         "cache_dir": "cache",
-        "max_cache_size": "2 GB",
+        "max_cache_size": "2GB",
         "caching_duration": 5,
-        "download_file_size_limitation": "10 MB"
+        "download_file_size_limitation": "10MB"
     },
     "faucet": {
-        "mnemonic": "blouse reject scene ordinary enrich device only huge taste still thrive cherry cereal labor road equal baby aim green pumpkin slice fabric flower museum",
+        "mnemonic": "foil cinnamon iron walk crucial mobile vast rhythm pupil direct champion soft medal capable long firm fuel lemon explain menu visit immense task youth",
         "faucet_amounts": {
             "stake": 100000,
             "ukex": 100000,
@@ -32,14 +32,35 @@
     "rpc_methods": {
         "API": {
             "GET": {
-                "/api/cosmos/auth/accounts": {
+                "/api/blocks": {
                     "disable": false,
                     "rate_limit": 0,
                     "auth_rate_limit": 0,
                     "caching_disable": false,
                     "caching_duration": 30
                 },
-                "/api/cosmos/bank/balances": {
+                "/api/blocks/{height}": {
+                    "disable": false,
+                    "rate_limit": 0,
+                    "auth_rate_limit": 0,
+                    "caching_disable": false,
+                    "caching_duration": 30
+                },
+                "/api/blocks/{height}/transactions": {
+                    "disable": false,
+                    "rate_limit": 0,
+                    "auth_rate_limit": 0,
+                    "caching_disable": false,
+                    "caching_duration": 30
+                },
+                "/api/cosmos/auth/accounts/{address}": {
+                    "disable": false,
+                    "rate_limit": 0,
+                    "auth_rate_limit": 0,
+                    "caching_disable": false,
+                    "caching_duration": 30
+                },
+                "/api/cosmos/bank/balances/{address}": {
                     "disable": false,
                     "rate_limit": 0,
                     "auth_rate_limit": 0,
@@ -53,7 +74,7 @@
                     "caching_disable": false,
                     "caching_duration": 30
                 },
-                "/api/cosmos/txs": {
+                "/api/cosmos/txs/{hash}": {
                     "disable": false,
                     "rate_limit": 0,
                     "auth_rate_limit": 0,
@@ -67,7 +88,7 @@
                     "caching_disable": false,
                     "caching_duration": 30
                 },
-                "/api/kira/gov/data": {
+                "/api/kira/gov/data/{key}": {
                     "disable": false,
                     "rate_limit": 0,
                     "auth_rate_limit": 0,
@@ -89,6 +110,13 @@
                     "caching_duration": 30
                 },
                 "/api/status": {
+                    "disable": false,
+                    "rate_limit": 0,
+                    "auth_rate_limit": 0,
+                    "caching_disable": false,
+                    "caching_duration": 30
+                },
+                "/api/transactions/{txHash}": {
                     "disable": false,
                     "rate_limit": 0,
                     "auth_rate_limit": 0,

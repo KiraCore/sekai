@@ -52,6 +52,24 @@ func (k msgServer) VoteProposal(
 	return &customgovtypes.MsgVoteProposalResponse{}, nil
 }
 
+func (k msgServer) ProposalSetPoorNetworkMsgs(
+	goCtx context.Context,
+	msg *customgovtypes.MsgProposalSetPoorNetworkMessages,
+) (*customgovtypes.MsgProposalSetPoorNetworkMessagesResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, customgovtypes.PermCreateSetNetworkPropertyProposal)
+	if !isAllowed {
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermCreateSetNetworkPropertyProposal.String())
+	}
+
+	proposalID, err := k.CreateAndSaveProposalWithContent(ctx, customgovtypes.NewSetPoorNetworkMessagesProposal(msg.Messages))
+
+	return &types.MsgProposalSetPoorNetworkMessagesResponse{
+		ProposalID: proposalID,
+	}, err
+}
+
 func (k msgServer) ProposalUpsertDataRegistry(
 	goCtx context.Context,
 	msg *customgovtypes.MsgProposalUpsertDataRegistry,
@@ -416,27 +434,4 @@ func (k msgServer) ClaimCouncilor(
 	k.keeper.SaveCouncilor(ctx, councilor)
 
 	return &customgovtypes.MsgClaimCouncilorResponse{}, nil
-}
-
-// validateAndGetPermissionsForRole checks if:
-// - Proposer has permissions to SetPermissions.
-// - Role exists.
-// And returns the permissions.
-func validateAndGetPermissionsForRole(
-	ctx sdk.Context,
-	ck Keeper,
-	proposer sdk.AccAddress,
-	role customgovtypes.Role,
-) (*customgovtypes.Permissions, error) {
-	isAllowed := CheckIfAllowedPermission(ctx, ck, proposer, customgovtypes.PermSetPermissions)
-	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermSetPermissions")
-	}
-
-	perms, found := ck.GetPermissionsForRole(ctx, role)
-	if !found {
-		return nil, customgovtypes.ErrRoleDoesNotExist
-	}
-
-	return &perms, nil
 }

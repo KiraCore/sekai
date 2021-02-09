@@ -32,6 +32,11 @@ func CacheDataCheck(rpcAddr string, isLog bool) {
 					// check cache json data
 
 					common.Mutex.Lock()
+					// check if file or path exists
+					if _, err := os.Stat(path); os.IsNotExist(err) {
+						common.Mutex.Unlock()
+						return nil
+					}
 					data, _ := ioutil.ReadFile(path)
 					common.Mutex.Unlock()
 
@@ -49,6 +54,11 @@ func CacheDataCheck(rpcAddr string, isLog bool) {
 					}
 
 					common.Mutex.Lock()
+					// check if file or path exists
+					if _, err := os.Stat(path); os.IsNotExist(err) {
+						common.Mutex.Unlock()
+						return nil
+					}
 					err := os.Remove(path)
 					common.Mutex.Unlock()
 
@@ -68,5 +78,7 @@ func CacheDataCheck(rpcAddr string, isLog bool) {
 		if err != nil {
 			log.Println(err)
 		}
+
+		time.Sleep(2 * time.Second)
 	}
 }

@@ -6,15 +6,15 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
-	cli2 "github.com/KiraCore/sekai/x/gov/client/cli"
-	keeper2 "github.com/KiraCore/sekai/x/gov/keeper"
+	customgovcli "github.com/KiraCore/sekai/x/gov/client/cli"
+	customgovkeeper "github.com/KiraCore/sekai/x/gov/keeper"
 	"github.com/KiraCore/sekai/x/gov/types"
 	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 
 	"github.com/KiraCore/sekai/middleware"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
-	types2 "github.com/cosmos/cosmos-sdk/codec/types"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/gorilla/mux"
@@ -37,7 +37,7 @@ func (b AppModuleBasic) Name() string {
 	return customgovtypes.ModuleName
 }
 
-func (b AppModuleBasic) RegisterInterfaces(registry types2.InterfaceRegistry) {
+func (b AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 	customgovtypes.RegisterInterfaces(registry)
 }
 
@@ -58,7 +58,7 @@ func (b AppModuleBasic) RegisterGRPCRoutes(clientCtx client.Context, serveMux *r
 func (b AppModuleBasic) RegisterLegacyAminoCodec(amino *codec.LegacyAmino) {}
 
 func (b AppModuleBasic) GetTxCmd() *cobra.Command {
-	return cli2.NewTxCmd()
+	return customgovcli.NewTxCmd()
 }
 
 // GetQueryCmd implement query commands for this module
@@ -68,17 +68,18 @@ func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
 		Short: "query commands for the customgov module",
 	}
 	queryCmd.AddCommand(
-		cli2.GetCmdQueryPermissions(),
-		cli2.GetCmdQueryNetworkProperties(),
-		cli2.GetCmdQueryExecutionFee(),
-		cli2.GetCmdQueryRolePermissions(),
-		cli2.GetCmdQueryRolesByAddress(),
-		cli2.GetCmdQueryProposals(),
-		cli2.GetCmdQueryCouncilRegistry(),
-		cli2.GetCmdQueryProposal(),
-		cli2.GetCmdQueryVote(),
-		cli2.GetCmdQueryVotes(),
-		cli2.GetCmdQueryWhitelistedProposalVoters(),
+		customgovcli.GetCmdQueryPermissions(),
+		customgovcli.GetCmdQueryNetworkProperties(),
+		customgovcli.GetCmdQueryExecutionFee(),
+		customgovcli.GetCmdQueryPoorNetworkMessages(),
+		customgovcli.GetCmdQueryRolePermissions(),
+		customgovcli.GetCmdQueryRolesByAddress(),
+		customgovcli.GetCmdQueryProposals(),
+		customgovcli.GetCmdQueryCouncilRegistry(),
+		customgovcli.GetCmdQueryProposal(),
+		customgovcli.GetCmdQueryVote(),
+		customgovcli.GetCmdQueryVotes(),
+		customgovcli.GetCmdQueryWhitelistedProposalVoters(),
 	)
 
 	queryCmd.PersistentFlags().String("node", "tcp://localhost:26657", "<host>:<port> to Tendermint RPC interface for this chain")
@@ -88,18 +89,18 @@ func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
 // AppModule extends the cosmos SDK gov.
 type AppModule struct {
 	AppModuleBasic
-	customGovKeeper keeper2.Keeper
+	customGovKeeper customgovkeeper.Keeper
 	proposalRouter  ProposalRouter
 }
 
 // RegisterServices registers a GRPC query service to respond to the
 // module-specific GRPC queries.
 func (am AppModule) RegisterServices(cfg module.Configurator) {
-	customgovtypes.RegisterMsgServer(cfg.MsgServer(), keeper2.NewMsgServerImpl(am.customGovKeeper))
-	customgovtypes.RegisterQueryServer(cfg.QueryServer(), keeper2.NewQuerier(am.customGovKeeper))
+	customgovtypes.RegisterMsgServer(cfg.MsgServer(), customgovkeeper.NewMsgServerImpl(am.customGovKeeper))
+	customgovtypes.RegisterQueryServer(cfg.QueryServer(), customgovkeeper.NewQuerier(am.customGovKeeper))
 }
 
-func (am AppModule) RegisterInterfaces(registry types2.InterfaceRegistry) {
+func (am AppModule) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 	customgovtypes.RegisterInterfaces(registry)
 }
 
@@ -153,6 +154,8 @@ func (am AppModule) InitGenesis(
 		am.customGovKeeper.SetExecutionFee(ctx, fee)
 	}
 
+	am.customGovKeeper.SavePoorNetworkMsgs(ctx, genesisState.PoorNetworkMessages)
+
 	return nil
 }
 
@@ -190,7 +193,7 @@ func (am AppModule) Route() sdk.Route {
 
 // NewAppModule returns a new Custom Staking module.
 func NewAppModule(
-	keeper keeper2.Keeper,
+	keeper customgovkeeper.Keeper,
 	proposalRouter ProposalRouter,
 ) AppModule {
 	return AppModule{

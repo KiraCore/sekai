@@ -1,5 +1,18 @@
 # Changelog
 
+## [v0.1.16.2a] - 02.08.2021
+### Added
+- Custom evidence module to jail a double signed validator 
+- CLI command for writing proposal to unjail a validator
+- CLI command for setting max jail time network property proposal
+
+## [v0.1.16.1] - 02.04.2021
+### Added
+- CLI command to set poor network messages
+- CLI command to query poor network messages
+- Add POOR_NETWORK_MAX_BANK_TX_SEND feature for poor network for restriction (only bond denom is allowed)
+- Reject feature for not allowed messages on poor network
+
 ## [v0.1.15.2] - 01.21.2021
 
 ### Added

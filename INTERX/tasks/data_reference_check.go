@@ -62,6 +62,7 @@ func saveReference(url string, path string) error {
 
 		err = ioutil.WriteFile(path, bodyBytes, 0644)
 		if err != nil {
+			common.Mutex.Unlock()
 			return err
 		}
 
@@ -106,5 +107,7 @@ func DataReferenceCheck(isLog bool) {
 				database.AddReference(v.Key, v.URL, ref.ContentLength, ref.LastModified, v.FilePath)
 			}
 		}
+
+		time.Sleep(2 * time.Second)
 	}
 }
