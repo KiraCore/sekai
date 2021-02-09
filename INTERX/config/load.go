@@ -79,11 +79,10 @@ func LoadConfig(configFilePath string) {
 	Config.RPC = configFromFile.RPC
 	Config.PORT = configFromFile.PORT
 	Config.Mnemonic = LoadMnemonic(configFromFile.MnemonicFile)
-	Config.Cache.StatusSync = configFromFile.Cache.StatusSync
-	Config.Cache.CacheDir = configFromFile.Cache.CacheDir
-	Config.Cache.MaxCacheSize = parseSizeString(configFromFile.Cache.MaxCacheSize)
-	Config.Cache.CachingDuration = configFromFile.Cache.CachingDuration
-	Config.Cache.DownloadFileSizeLimitation = parseSizeString(configFromFile.Cache.DownloadFileSizeLimitation)
+
+	fmt.Println("Interx GRPC: ", Config.GRPC)
+	fmt.Println("Interx RPC : ", Config.RPC)
+	fmt.Println("Interx PORT: ", Config.PORT)
 
 	if !bip39.IsMnemonicValid(Config.Mnemonic) {
 		fmt.Println("Invalid Interx Mnemonic: ", Config.Mnemonic)
@@ -94,13 +93,22 @@ func LoadConfig(configFilePath string) {
 	Config.Address = sdk.MustBech32ifyAddressBytes(sdk.GetConfig().GetBech32AccountAddrPrefix(), Config.PubKey.Address())
 
 	// Display mnemonic and keys
-	fmt.Println("Interx Mnemonic   : ", Config.Mnemonic)
-	fmt.Println("Interx Address    : ", Config.Address)
-	fmt.Println("Interx Public Key : ", sdk.MustBech32ifyPubKey(sdk.Bech32PubKeyTypeAccPub, Config.PubKey))
+	fmt.Println("Interx Mnemonic  : ", Config.Mnemonic)
+	fmt.Println("Interx Address   : ", Config.Address)
+	fmt.Println("Interx Public Key: ", sdk.MustBech32ifyPubKey(sdk.Bech32PubKeyTypeAccPub, Config.PubKey))
 
-	fmt.Println("Max Cache Size    : ", Config.Cache.MaxCacheSize)
-	fmt.Println("Caching Duration  : ", Config.Cache.CachingDuration)
-	fmt.Println("Download File Size Limitation  : ", Config.Cache.DownloadFileSizeLimitation)
+	Config.Cache.StatusSync = configFromFile.Cache.StatusSync
+	Config.Cache.CacheDir = configFromFile.Cache.CacheDir
+	Config.Cache.MaxCacheSize = parseSizeString(configFromFile.Cache.MaxCacheSize)
+	Config.Cache.CachingDuration = configFromFile.Cache.CachingDuration
+	Config.Cache.DownloadFileSizeLimitation = parseSizeString(configFromFile.Cache.DownloadFileSizeLimitation)
+
+	// Display cache configurations
+	fmt.Println("Interx Cache StatusSync                : ", Config.Cache.StatusSync)
+	fmt.Println("Interx Cache CacheDir                  : ", Config.Cache.CacheDir)
+	fmt.Println("Interx Cache MaxCacheSize              : ", Config.Cache.MaxCacheSize)
+	fmt.Println("Interx Cache CachingDuration           : ", Config.Cache.CachingDuration)
+	fmt.Println("Interx Cache DownloadFileSizeLimitation: ", Config.Cache.DownloadFileSizeLimitation)
 
 	// Faucet Configuration
 	Config.Faucet = FaucetConfig{
@@ -120,9 +128,15 @@ func LoadConfig(configFilePath string) {
 	Config.Faucet.Address = sdk.MustBech32ifyAddressBytes(sdk.GetConfig().GetBech32AccountAddrPrefix(), Config.Faucet.PubKey.Address())
 
 	// Display mnemonic and keys
-	fmt.Println("Faucet Mnemonic   : ", Config.Faucet.Mnemonic)
-	fmt.Println("Faucet Address    : ", Config.Faucet.Address)
-	fmt.Println("Faucet Public Key : ", sdk.MustBech32ifyPubKey(sdk.Bech32PubKeyTypeAccPub, Config.Faucet.PubKey))
+	fmt.Println("Faucet Mnemonic  : ", Config.Faucet.Mnemonic)
+	fmt.Println("Faucet Address   : ", Config.Faucet.Address)
+	fmt.Println("Faucet Public Key: ", sdk.MustBech32ifyPubKey(sdk.Bech32PubKeyTypeAccPub, Config.Faucet.PubKey))
+
+	// Faucet configurations
+	fmt.Println("Interx Faucet FaucetAmounts       : ", Config.Faucet.FaucetAmounts)
+	fmt.Println("Interx Faucet FaucetMinimumAmounts: ", Config.Faucet.FaucetMinimumAmounts)
+	fmt.Println("Interx Faucet FeeAmounts          : ", Config.Faucet.FeeAmounts)
+	fmt.Println("Interx Faucet TimeLimit           : ", Config.Faucet.TimeLimit)
 
 	// RPC Configuration
 	Config.RPCMethods = configFromFile.RPCMethods

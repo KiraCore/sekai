@@ -8,6 +8,7 @@
 - Add query block by height or hash.
 - Add query block tractions.
 - Add query transaction by hash.
+- Add cli configurations: `max_cache_size`, `max_download_size`, `cache_dir`, `caching_duration`, `faucet_time_limit`
 
 ### Fix
 

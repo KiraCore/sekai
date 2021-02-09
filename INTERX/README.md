@@ -34,8 +34,13 @@ Parameters:
 - `rpc` - The tendermint rpc endpoint of the sekaid (default = "http://0.0.0.0:26657")
 - `port` - The interx port. (default = "11000")
 - `signing_mnemonic` - The mnemonic file path or word seeds for interx singing service. (deafult = auto generated word seeds)
-- `faucet_mnemonic` - The mnemonic file path or word seeds for faucet service. (deafult = auto generated word seeds)
+- `status_sync` - The time in seconds and INTERX syncs node status. (deafult = 5)
 - `cache_dir` - The interx cache directory path. (deafult = "cache")
+- `max_cache_size`- The maximum cache size. (default = "2GB")
+- `caching_duration` - The caching clear duration in seconds. (deafult = 5)
+- `download_file_size_limitation`- The maximum download file size. (default = "10MB")
+- `faucet_mnemonic` - The mnemonic file path or word seeds for faucet service. (deafult = auto generated word seeds)
+- `faucet_time_limit` - The claim time limitation in seconds. (default = 20)
 
 #### `interxd start`
 Start interx service.

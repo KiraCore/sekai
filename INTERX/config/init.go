@@ -2,7 +2,6 @@ package config
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 )
 
@@ -44,9 +43,9 @@ func defaultConfig() InterxConfigFromFile {
 
 	configFromFile.Cache.StatusSync = 5
 	configFromFile.Cache.CacheDir = "cache"
-	configFromFile.Cache.MaxCacheSize = "2 GB"
+	configFromFile.Cache.MaxCacheSize = "2GB"
 	configFromFile.Cache.CachingDuration = 5
-	configFromFile.Cache.DownloadFileSizeLimitation = "10 MB"
+	configFromFile.Cache.DownloadFileSizeLimitation = "10MB"
 
 	configFromFile.Faucet.MnemonicFile = LoadMnemonic("equip exercise shoot mad inside floor wheel loan visual stereo build frozen potato always bulb naive subway foster marine erosion shuffle flee action there")
 	configFromFile.Faucet.FaucetAmounts = make(map[string]int64)
@@ -63,7 +62,7 @@ func defaultConfig() InterxConfigFromFile {
 	configFromFile.Faucet.FeeAmounts["ukex"] = "1000ukex"
 	configFromFile.Faucet.TimeLimit = 20
 
-	defaultRpcSetting := RPCSetting{
+	defaultRPCSetting := RPCSetting{
 		Disable:         false,
 		RateLimit:       0,
 		AuthRateLimit:   0,
@@ -75,18 +74,30 @@ func defaultConfig() InterxConfigFromFile {
 	configFromFile.RPCMethods.API["GET"] = make(map[string]RPCSetting)
 	configFromFile.RPCMethods.API["POST"] = make(map[string]RPCSetting)
 	for _, item := range getGetMethods() {
-		configFromFile.RPCMethods.API["GET"][item] = defaultRpcSetting
+		configFromFile.RPCMethods.API["GET"][item] = defaultRPCSetting
 	}
 	for _, item := range getPostMethods() {
-		configFromFile.RPCMethods.API["POST"][item] = defaultRpcSetting
+		configFromFile.RPCMethods.API["POST"][item] = defaultRPCSetting
 	}
 
 	return configFromFile
 }
 
 // InitConfig is a function to load interx configurations from a given file
-func InitConfig(configFilePath string, grpc string, rpc string, port string, signingMnemonic string, faucetMnemonic string, cacheDir string) {
-	fmt.Println(configFilePath, grpc, rpc, port)
+func InitConfig(
+	configFilePath string,
+	grpc string,
+	rpc string,
+	port string,
+	signingMnemonic string,
+	syncStatus int64,
+	cacheDir string,
+	maxCacheSize string,
+	cachingDuration int64,
+	maxDownloadSize string,
+	faucetMnemonic string,
+	faucetTimeLimit int64,
+) {
 	configFromFile := defaultConfig()
 
 	configFromFile.GRPC = grpc
@@ -94,9 +105,14 @@ func InitConfig(configFilePath string, grpc string, rpc string, port string, sig
 	configFromFile.PORT = port
 	configFromFile.MnemonicFile = LoadMnemonic(signingMnemonic)
 
+	configFromFile.Cache.StatusSync = syncStatus
 	configFromFile.Cache.CacheDir = cacheDir
+	configFromFile.Cache.MaxCacheSize = maxCacheSize
+	configFromFile.Cache.CachingDuration = cachingDuration
+	configFromFile.Cache.DownloadFileSizeLimitation = maxDownloadSize
 
 	configFromFile.Faucet.MnemonicFile = LoadMnemonic(signingMnemonic)
+	configFromFile.Faucet.TimeLimit = faucetTimeLimit
 
 	bytes, err := json.MarshalIndent(&configFromFile, "", "    ")
 	if err != nil {
