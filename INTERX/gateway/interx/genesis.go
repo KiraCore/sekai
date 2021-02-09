@@ -22,7 +22,9 @@ func RegisterGenesisQueryRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rp
 	common.AddRPCMethod("GET", config.QueryGenesisSum, "This is an API to get genesis checksum.", true)
 }
 
-var genesisPath = config.GetReferenceCacheDir() + "/genesis.json"
+func genesisPath() string {
+	return config.GetReferenceCacheDir() + "/genesis.json"
+}
 
 func saveGenesis(rpcAddr string) error {
 	_, err := getGenesis()
@@ -49,7 +51,7 @@ func saveGenesis(rpcAddr string) error {
 	}
 
 	common.Mutex.Lock()
-	err = genesis.Genesis.SaveAs(genesisPath)
+	err = genesis.Genesis.SaveAs(genesisPath())
 	common.Mutex.Unlock()
 
 	return err
@@ -57,7 +59,7 @@ func saveGenesis(rpcAddr string) error {
 
 func getGenesis() (string, error) {
 	common.Mutex.Lock()
-	data, err := ioutil.ReadFile(genesisPath)
+	data, err := ioutil.ReadFile(genesisPath())
 	common.Mutex.Unlock()
 
 	if err != nil {
@@ -73,7 +75,7 @@ func QueryGenesis(rpcAddr string) http.HandlerFunc {
 		if saveGenesis(rpcAddr) != nil {
 			common.ServeError(0, "", "interx error", http.StatusInternalServerError)
 		} else {
-			http.ServeFile(w, r, genesisPath)
+			http.ServeFile(w, r, genesisPath())
 		}
 	}
 }
