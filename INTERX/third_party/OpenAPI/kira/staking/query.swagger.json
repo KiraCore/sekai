@@ -192,6 +192,9 @@
         "pubkey": {
           "type": "string"
         },
+        "proposer": {
+          "type": "string"
+        },
         "moniker": {
           "type": "string"
         },

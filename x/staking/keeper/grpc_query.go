@@ -79,6 +79,7 @@ func (q Querier) Validators(ctx context.Context, request *types.ValidatorsReques
 			Address:    sdk.AccAddress(val.ValKey).String(),
 			Valkey:     val.ValKey.String(),
 			Pubkey:     consPubkey,
+			Proposer:   val.GetConsPubKey().Address().String(),
 			Moniker:    val.Moniker,
 			Website:    val.Website,
 			Social:     val.Social,
@@ -106,6 +107,10 @@ func (q Querier) Validators(ctx context.Context, request *types.ValidatorsReques
 		}
 
 		if request.Moniker != "" && request.Moniker != validator.Moniker {
+			return false, nil
+		}
+
+		if request.Proposer != "" && request.Proposer != validator.Proposer {
 			return false, nil
 		}
 
