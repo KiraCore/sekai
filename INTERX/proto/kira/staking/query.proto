@@ -41,9 +41,10 @@ message ValidatorsRequest {
   string pubkey = 3;
   string moniker = 4;
   string status = 5;
+  string proposer = 6;
   
   // pagination defines an optional pagination for the request.
-  kira.staking.PageRequest pagination = 6 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
+  kira.staking.PageRequest pagination = 7 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
 }
 
 message QueryValidator {

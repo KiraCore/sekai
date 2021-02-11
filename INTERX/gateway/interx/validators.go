@@ -28,6 +28,7 @@ func queryValidatorsHandle(r *http.Request, gwCosmosmux *runtime.ServeMux) (inte
 	key := queries["key"]
 	offset := queries["offset"]
 	limit := queries["limit"]
+	proposer := queries["proposer"]
 	countTotal := queries["count_total"]
 
 	var events = make([]string, 0, 9)
@@ -51,6 +52,9 @@ func queryValidatorsHandle(r *http.Request, gwCosmosmux *runtime.ServeMux) (inte
 	}
 	if len(pubkey) == 1 {
 		events = append(events, fmt.Sprintf("pubkey=%s", pubkey[0]))
+	}
+	if len(proposer) == 1 {
+		events = append(events, fmt.Sprintf("proposer=%s", proposer[0]))
 	}
 	if len(moniker) == 1 {
 		events = append(events, fmt.Sprintf("moniker=%s", moniker[0]))
