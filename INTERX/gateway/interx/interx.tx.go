@@ -77,7 +77,6 @@ func SearchTxHashHandle(rpcAddr string, sender string, recipient string, txType 
 
 	// search transactions
 	endpoint := fmt.Sprintf("%s/tx_search?query=\"%s\"&per_page=%d&order_by=\"desc\"", rpcAddr, strings.Join(events, "%20AND%20"), limit)
-	fmt.Println(endpoint)
 	common.GetLogger().Info("[query-transaction] Entering transaction search: ", endpoint)
 
 	resp, err := http.Get(endpoint)
