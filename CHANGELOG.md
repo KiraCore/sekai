@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Fixed
 - Problem with ClaimValidator and PubKey encoding due to protocol buff Any type.
+- Fix bug that made that you can vote when the proposal ended.
 
 ## [v0.1.16.2a] - 02.08.2021
 ### Added
