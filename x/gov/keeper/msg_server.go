@@ -41,6 +41,10 @@ func (k msgServer) VoteProposal(
 		return nil, customgovtypes.ErrProposalDoesNotExist
 	}
 
+	if proposal.VotingEndTime.Before(ctx.BlockTime()) {
+		return nil, customgovtypes.ErrVotingTimeEnded
+	}
+
 	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Voter, proposal.GetContent().VotePermission())
 	if !isAllowed {
 		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, proposal.GetContent().VotePermission().String())

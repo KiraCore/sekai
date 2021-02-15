@@ -25,7 +25,7 @@ var _ Content = &AssignPermissionProposal{}
 func NewProposal(
 	proposalID uint64,
 	content Content,
-	votingStartTime time.Time,
+	submitTime time.Time,
 	votingEndTime time.Time,
 	enactmentEndTime time.Time,
 ) (Proposal, error) {
@@ -41,7 +41,7 @@ func NewProposal(
 
 	return Proposal{
 		ProposalId:       proposalID,
-		VotingStartTime:  votingStartTime,
+		SubmitTime:       submitTime,
 		VotingEndTime:    votingEndTime,
 		EnactmentEndTime: enactmentEndTime,
 		Content:          any,

@@ -1352,6 +1352,42 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 		expectedErr  error
 	}{
 		{
+			"voting time has finished",
+			types.NewMsgVoteProposal(
+				1, voterAddr, types.OptionAbstain,
+			),
+			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+				actor := types.NewNetworkActor(
+					voterAddr,
+					types.Roles{},
+					types.Active,
+					[]types.VoteOption{},
+					types.NewPermissions(nil, nil),
+					1,
+				)
+				app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
+
+				err = app.CustomGovKeeper.AddWhitelistPermission(ctx, actor, types.PermVoteSetPermissionProposal)
+				require.NoError(t, err)
+
+				// Create proposal
+				proposal, err := types.NewProposal(
+					1,
+					types.NewAssignPermissionProposal(
+						voterAddr,
+						types.PermClaimCouncilor,
+					),
+					ctx.BlockTime(),
+					ctx.BlockTime().Add(time.Second*9),
+					ctx.BlockTime().Add(time.Second*20),
+				)
+
+				require.NoError(t, err)
+				app.CustomGovKeeper.SaveProposal(ctx, proposal)
+			},
+			types.ErrVotingTimeEnded,
+		},
+		{
 			"Voter does not have permission to vote this proposal: Assign Permission",
 			types.NewMsgVoteProposal(
 				1, voterAddr, types.OptionAbstain,
@@ -1375,8 +1411,8 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 						types.PermClaimCouncilor,
 					),
 					ctx.BlockTime(),
-					ctx.BlockTime().Add(time.Second*1),
-					ctx.BlockTime().Add(time.Second*10),
+					ctx.BlockTime().Add(time.Second*20),
+					ctx.BlockTime().Add(time.Second*30),
 				)
 				require.NoError(t, err)
 				app.CustomGovKeeper.SaveProposal(ctx, proposal)
@@ -1410,8 +1446,8 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 						1234,
 					),
 					ctx.BlockTime(),
-					ctx.BlockTime().Add(time.Second*1),
-					ctx.BlockTime().Add(time.Second*10),
+					ctx.BlockTime().Add(time.Second*20),
+					ctx.BlockTime().Add(time.Second*30),
 				)
 				require.NoError(t, err)
 				app.CustomGovKeeper.SaveProposal(ctx, proposal)
@@ -1475,8 +1511,8 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 						1234,
 					),
 					ctx.BlockTime(),
-					ctx.BlockTime().Add(time.Second*1),
-					ctx.BlockTime().Add(time.Second*10),
+					ctx.BlockTime().Add(time.Second*20),
+					ctx.BlockTime().Add(time.Second*30),
 				)
 				require.NoError(t, err)
 				app.CustomGovKeeper.SaveProposal(ctx, proposal)
@@ -1510,8 +1546,8 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 						[]string{},
 					),
 					ctx.BlockTime(),
-					ctx.BlockTime().Add(time.Second*1),
-					ctx.BlockTime().Add(time.Second*10),
+					ctx.BlockTime().Add(time.Second*20),
+					ctx.BlockTime().Add(time.Second*30),
 				)
 				require.NoError(t, err)
 				app.CustomGovKeeper.SaveProposal(ctx, proposal)
@@ -1524,9 +1560,12 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			app := simapp.Setup(false)
-			ctx := app.NewContext(false, tmproto.Header{})
+			ctx := app.NewContext(false, tmproto.Header{}).WithBlockTime(time.Now())
 
 			tt.preparePerms(t, app, ctx)
+
+			// Add some BlockTime.
+			ctx = ctx.WithBlockTime(ctx.BlockTime().Add(time.Second * 10))
 
 			handler := gov.NewHandler(app.CustomGovKeeper)
 			_, err := handler(ctx, tt.msg)

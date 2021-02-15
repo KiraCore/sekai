@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+### Fixed
+- Problem with ClaimValidator and PubKey encoding due to protocol buff Any type.
+
 ## [v0.1.16.2a] - 02.08.2021
 ### Added
 - Custom evidence module to jail a double signed validator 
