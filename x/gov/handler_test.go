@@ -1190,7 +1190,7 @@ func TestHandler_ProposalAssignPermission(t *testing.T) {
 	require.NoError(t, err2)
 
 	properties := app.CustomGovKeeper.GetNetworkProperties(ctx)
-	properties.ProposalEndTime = 10
+	properties.ProposalEndTime = 600 // Seconds, 10 mints
 	app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
 
 	handler := gov.NewHandler(app.CustomGovKeeper)
@@ -1213,8 +1213,8 @@ func TestHandler_ProposalAssignPermission(t *testing.T) {
 			types.PermValue(1),
 		),
 		ctx.BlockTime(),
-		ctx.BlockTime().Add(time.Minute*time.Duration(properties.ProposalEndTime)),
-		ctx.BlockTime().Add(time.Minute*time.Duration(properties.ProposalEnactmentTime)),
+		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEndTime)),
+		ctx.BlockTime().Add((time.Second*time.Duration(properties.ProposalEndTime))+(time.Second*time.Duration(properties.ProposalEnactmentTime))),
 	)
 	require.NoError(t, err)
 	require.Equal(t, expectedSavedProposal, savedProposal)
@@ -1321,8 +1321,8 @@ func TestHandler_ProposalUpsertDataRegistry(t *testing.T) {
 			1234,
 		),
 		ctx.BlockTime(),
-		ctx.BlockTime().Add(time.Minute*time.Duration(properties.ProposalEndTime)),
-		ctx.BlockTime().Add(time.Minute*time.Duration(properties.ProposalEnactmentTime)),
+		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEndTime)),
+		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEnactmentTime)+time.Second*time.Duration(properties.ProposalEndTime)),
 	)
 	require.NoError(t, err)
 	require.Equal(t, expectedSavedProposal, savedProposal)
@@ -1705,8 +1705,8 @@ func TestHandler_ProposalSetNetworkProperty(t *testing.T) {
 			1234,
 		),
 		ctx.BlockTime(),
-		ctx.BlockTime().Add(time.Minute*time.Duration(properties.ProposalEndTime)),
-		ctx.BlockTime().Add(time.Minute*time.Duration(properties.ProposalEnactmentTime)),
+		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEndTime)),
+		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEnactmentTime)+time.Second*time.Duration(properties.ProposalEndTime)),
 	)
 	require.NoError(t, err)
 	require.Equal(t, expectedSavedProposal, savedProposal)

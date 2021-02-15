@@ -140,8 +140,10 @@ func (k msgServer) CreateAndSaveProposalWithContent(ctx sdk.Context, content cus
 		proposalID,
 		content,
 		blockTime,
-		blockTime.Add(time.Minute*time.Duration(properties.ProposalEndTime)),
-		blockTime.Add(time.Minute*time.Duration(properties.ProposalEnactmentTime)),
+		blockTime.Add(time.Second*time.Duration(properties.ProposalEndTime)),
+		blockTime.Add(time.Second*time.Duration(properties.ProposalEndTime)+
+			time.Second*time.Duration(properties.ProposalEnactmentTime),
+		),
 	)
 
 	k.keeper.SaveProposal(ctx, proposal)
