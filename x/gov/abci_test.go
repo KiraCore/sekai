@@ -63,6 +63,18 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				actor, found := app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addrs[0])
 				require.True(t, found)
 				require.False(t, actor.Permissions.IsWhitelisted(types.PermSetPermissions))
+
+				// We check that is not in the ActiveProposals
+				iterator := app.CustomGovKeeper.GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx, time.Now().Add(15*time.Second))
+				requireIteratorCount(t, iterator, 0)
+
+				// And it is in the EnactmentProposals
+				iterator = app.CustomGovKeeper.GetEnactmentProposalsWithFinishedEnactmentEndTimeIterator(ctx, time.Now().Add(25*time.Second))
+				requireIteratorCount(t, iterator, 1)
+
+				proposal, found := app.CustomGovKeeper.GetProposal(ctx, 1234)
+				require.True(t, found)
+				require.Equal(t, types.QuorumNotReached, proposal.Result)
 			},
 		},
 		{
