@@ -33,8 +33,9 @@ func NewMsgClaimValidator(
 		return nil, fmt.Errorf("public key not set")
 	}
 
-	pkAny, err := codectypes.NewAnyWithValue(pubKey)
-	if err != nil {
+	var pkAny *codectypes.Any
+	var err error
+	if pkAny, err = codectypes.NewAnyWithValue(pubKey); err != nil {
 		return nil, err
 	}
 
@@ -74,6 +75,12 @@ func (m *MsgClaimValidator) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{
 		sdk.AccAddress(m.ValKey),
 	}
+}
+
+// UnpackInterfaces implements UnpackInterfacesMessage.UnpackInterfaces
+func (m *MsgClaimValidator) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
+	var pubKey cryptotypes.PubKey
+	return unpacker.UnpackAny(m.PubKey, &pubKey)
 }
 
 func NewMsgProposalUnjailValidator(proposer sdk.AccAddress, hash, reference string) *MsgProposalUnjailValidator {
