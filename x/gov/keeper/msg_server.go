@@ -41,6 +41,10 @@ func (k msgServer) VoteProposal(
 		return nil, customgovtypes.ErrProposalDoesNotExist
 	}
 
+	if proposal.VotingEndTime.Before(ctx.BlockTime()) {
+		return nil, customgovtypes.ErrVotingTimeEnded
+	}
+
 	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Voter, proposal.GetContent().VotePermission())
 	if !isAllowed {
 		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, proposal.GetContent().VotePermission().String())
@@ -136,8 +140,10 @@ func (k msgServer) CreateAndSaveProposalWithContent(ctx sdk.Context, content cus
 		proposalID,
 		content,
 		blockTime,
-		blockTime.Add(time.Minute*time.Duration(properties.ProposalEndTime)),
-		blockTime.Add(time.Minute*time.Duration(properties.ProposalEnactmentTime)),
+		blockTime.Add(time.Second*time.Duration(properties.ProposalEndTime)),
+		blockTime.Add(time.Second*time.Duration(properties.ProposalEndTime)+
+			time.Second*time.Duration(properties.ProposalEnactmentTime),
+		),
 	)
 
 	k.keeper.SaveProposal(ctx, proposal)

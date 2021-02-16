@@ -37,14 +37,14 @@ func processProposal(ctx sdk.Context, k keeper.Keeper, proposalID uint64) {
 		panic(err)
 	}
 
-	if !isQuorum {
-		return
+	if isQuorum {
+		numActorsWithVeto := len(types.GetActorsWithVoteWithVeto(availableVoters))
+		calculatedVote := types.CalculateVotes(votes, uint64(numActorsWithVeto))
+
+		proposal.Result = calculatedVote.ProcessResult()
+	} else {
+		proposal.Result = types.QuorumNotReached
 	}
-
-	numActorsWithVeto := len(types.GetActorsWithVoteWithVeto(availableVoters))
-	calculatedVote := types.CalculateVotes(votes, uint64(numActorsWithVeto))
-
-	proposal.Result = calculatedVote.ProcessResult()
 
 	k.SaveProposal(ctx, proposal)
 	k.RemoveActiveProposal(ctx, proposal)

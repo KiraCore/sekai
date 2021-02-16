@@ -41,7 +41,7 @@ func (k msgServer) ClaimValidator(goCtx context.Context, msg *types.MsgClaimVali
 
 	pk, ok := msg.PubKey.GetCachedValue().(cryptotypes.PubKey)
 	if !ok {
-		return nil, errors.Wrap(errors.ErrInvalidPubKey, "Invalid pub key")
+		return nil, errors.Wrapf(errors.ErrInvalidPubKey, "Expecting cryptotypes.PubKey, got %T", pk)
 	}
 
 	validator, err := types.NewValidator(msg.Moniker, msg.Website, msg.Social, msg.Identity, msg.Commission, msg.ValKey, pk)

@@ -2,6 +2,7 @@ package keeper_test
 
 import (
 	"testing"
+	"time"
 
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 
@@ -93,6 +94,44 @@ func TestQuerier_RolesByAddress(t *testing.T) {
 	// Get roles for actor that does not exist
 	_, err = querier.RolesByAddress(sdk.WrapSDKContext(ctx), &types.RolesByAddressRequest{ValAddr: addr2})
 	require.EqualError(t, err, "network actor not found")
+}
+
+func TestQuerier_Proposal(t *testing.T) {
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, sdk.TokensFromConsensusPower(10))
+
+	proposalID := uint64(1234)
+	proposal, err := types.NewProposal(
+		proposalID,
+		types.NewAssignPermissionProposal(
+			addrs[0],
+			types.PermSetPermissions,
+		),
+		time.Now(),
+		time.Now().Add(10*time.Second),
+		time.Now().Add(20*time.Second),
+	)
+	require.NoError(t, err)
+
+	app.CustomGovKeeper.SaveProposal(ctx, proposal)
+
+	app.CustomGovKeeper.SaveVote(ctx, types.Vote{
+		ProposalId: proposalID,
+		Voter:      addrs[0],
+		Option:     types.OptionNo,
+	})
+
+	querier := customgovkeeper.NewQuerier(app.CustomGovKeeper)
+
+	resp, err := querier.Proposal(
+		sdk.WrapSDKContext(ctx),
+		&types.QueryProposalRequest{ProposalId: proposalID},
+	)
+	require.NoError(t, err)
+	require.Equal(t, proposalID, resp.Proposal.ProposalId)
+	require.Len(t, resp.Votes, 1)
 }
 
 func TestQuerier_CouncilorByAddress(t *testing.T) {

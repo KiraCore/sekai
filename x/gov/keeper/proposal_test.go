@@ -94,10 +94,9 @@ func TestKeeper_GetProposals(t *testing.T) {
 	require.NoError(t, err)
 	require.Len(t, proposals, 2)
 	require.Equal(t, proposals[1].ProposalId, proposal2.ProposalId)
-	require.Equal(t, proposals[1].SubmitTime, proposal2.SubmitTime)
 	require.Equal(t, proposals[1].Content, proposal2.Content)
 	require.Equal(t, proposals[1].Result, proposal2.Result)
-	require.Equal(t, proposals[1].VotingStartTime.UTC().String(), proposal2.VotingStartTime.UTC().String())
+	require.Equal(t, proposals[1].SubmitTime.UTC().String(), proposal2.SubmitTime.UTC().String())
 	require.Equal(t, proposals[1].VotingEndTime.UTC().String(), proposal2.VotingEndTime.UTC().String())
 	require.Equal(t, proposals[1].EnactmentEndTime.UTC().String(), proposal2.EnactmentEndTime.UTC().String())
 }

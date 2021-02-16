@@ -44,10 +44,8 @@ func GetTxClaimValidatorCmd() *cobra.Command {
 			social, _ := cmd.Flags().GetString(FlagSocial)
 			identity, _ := cmd.Flags().GetString(FlagIdentity)
 			comission, _ := cmd.Flags().GetString(FlagComission)
-			valKeyStr, _ := cmd.Flags().GetString(FlagValKey)
 
 			var (
-				// read --pubkey, if empty take it from priv_validator.json
 				valPubKey cryptotypes.PubKey
 			)
 			if valPubKeyString, _ := cmd.Flags().GetString(cli.FlagPubKey); valPubKeyString != "" {
@@ -63,10 +61,7 @@ func GetTxClaimValidatorCmd() *cobra.Command {
 			}
 
 			comm, err := types.NewDecFromStr(comission)
-			val, err := types.ValAddressFromBech32(valKeyStr)
-			if err != nil {
-				return errors.Wrap(err, "--validator-key param error")
-			}
+			val := types.ValAddress(clientCtx.GetFromAddress())
 
 			msg, err := customstakingtypes.NewMsgClaimValidator(moniker, website, social, identity, comm, val, valPubKey)
 			if err != nil {

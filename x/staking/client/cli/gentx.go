@@ -37,7 +37,6 @@ func GenTxClaimCmd(genBalIterator banktypes.GenesisBalancesIterator, defaultNode
 				return errors.Wrap(err, "failed to initialize node validator files")
 			}
 
-			// read --pubkey, if empty take it from priv_validator.json
 			if valPubKeyString, _ := cmd.Flags().GetString(cli.FlagPubKey); valPubKeyString != "" {
 				valPubKey, err = types.GetPubKeyFromBech32(types.Bech32PubKeyTypeConsPub, valPubKeyString)
 				if err != nil {
@@ -57,17 +56,6 @@ func GenTxClaimCmd(genBalIterator banktypes.GenesisBalancesIterator, defaultNode
 			if m, _ := cmd.Flags().GetString(cli.FlagMoniker); m != "" {
 				moniker = m
 			}
-
-			//amount, _ := cmd.Flags().GetString(cli.FlagAmount)
-			//coins, err := types.ParseCoins(amount)
-			//if err != nil {
-			//	return errors.Wrap(err, "failed to parse coins")
-			//}
-
-			//err = genutil.ValidateAccountInGenesis(appState, genBalIterator, key.GetAddress(), coins, cdc)
-			//if err != nil {
-			//	return errors.Wrap(err, "failed to validate account in genesis")
-			//}
 
 			website, _ := cmd.Flags().GetString(FlagWebsite)
 			identity, _ := cmd.Flags().GetString(FlagIdentity)
