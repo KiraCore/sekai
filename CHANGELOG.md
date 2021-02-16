@@ -6,6 +6,7 @@
 - Fix bug that made that you can vote when the proposal ended.
 - When a proposal does not reach quorum it ends being Quorum not reached.
 - Proposal voting time and enactment time now are defined in seconds.
+- It shows the votes that a proposal has on client query.
 
 ## [v0.1.16.2a] - 02.08.2021
 ### Added

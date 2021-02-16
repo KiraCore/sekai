@@ -124,6 +124,7 @@ message QueryProposalRequest {
 // QueryProposalResponse is the response type for the Query/Proposal RPC method.
 message QueryProposalResponse {
   kira.gov.Proposal proposal = 1 [(gogoproto.nullable) = false];
+  repeated kira.gov.Vote votes = 2 [(gogoproto.nullable) = false];
 }
 
 // QueryProposalsRequest is the request type for the Query/Proposals RPC method.

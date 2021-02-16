@@ -114,7 +114,11 @@ func (q Querier) Proposal(ctx context.Context, request *types.QueryProposalReque
 	if found == false {
 		return nil, sdkerrors.Wrap(types.ErrGettingProposals, fmt.Sprintf("proposal does not exist for %d", request.ProposalId))
 	}
-	return &types.QueryProposalResponse{Proposal: proposal}, nil
+	votes := q.keeper.GetProposalVotes(sdkContext, request.ProposalId)
+	return &types.QueryProposalResponse{
+		Proposal: proposal,
+		Votes: votes,
+	}, nil
 }
 
 // Proposals query proposals by querying params
