@@ -46,6 +46,8 @@ message ValidatorsRequest {
   string status = 5;
   string proposer = 6;
   kira.staking.PageRequest pagination = 7 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
+
+  bool all = 8;
 }
 
 message QueryValidator {

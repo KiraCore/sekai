@@ -30,6 +30,7 @@ func queryValidatorsHandle(r *http.Request, gwCosmosmux *runtime.ServeMux) (inte
 	limit := queries["limit"]
 	proposer := queries["proposer"]
 	countTotal := queries["count_total"]
+	all := queries["all"]
 
 	var events = make([]string, 0, 9)
 	if len(key) == 1 {
@@ -61,6 +62,9 @@ func queryValidatorsHandle(r *http.Request, gwCosmosmux *runtime.ServeMux) (inte
 	}
 	if len(status) == 1 {
 		events = append(events, fmt.Sprintf("status=%s", status[0]))
+	}
+	if len(all) == 1 {
+		events = append(events, fmt.Sprintf("all=%s", all[0]))
 	}
 
 	r.URL.RawQuery = strings.Join(events, "&")

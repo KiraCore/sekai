@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-	"fmt"
 	"strings"
 
 	"github.com/cosmos/cosmos-sdk/types/errors"
@@ -63,9 +62,10 @@ func (q Querier) Validators(ctx context.Context, request *types.ValidatorsReques
 	}
 
 	store := sdk.UnwrapSDKContext(ctx).KVStore(q.keeper.storeKey)
-	validatorStore := prefix.NewStore(store, ValidatorsKey)
 
 	var validators []types.QueryValidator
+
+	validatorStore := prefix.NewStore(store, ValidatorsKey)
 
 	pageRes, err := query.FilteredPaginate(validatorStore, request.Pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
 		var val types.Validator
@@ -114,7 +114,7 @@ func (q Querier) Validators(ctx context.Context, request *types.ValidatorsReques
 			return false, nil
 		}
 
-		if accumulate {
+		if request.All || accumulate {
 			validators = append(validators, validator)
 		}
 		return true, nil
@@ -124,7 +124,10 @@ func (q Querier) Validators(ctx context.Context, request *types.ValidatorsReques
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	fmt.Println("validators ========>", validators)
+	if request.All {
+		pageRes = nil
+	}
+
 	response := types.ValidatorsResponse{Validators: validators, Pagination: pageRes}
 
 	return &response, nil

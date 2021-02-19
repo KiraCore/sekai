@@ -45,6 +45,8 @@ message ValidatorsRequest {
   
   // pagination defines an optional pagination for the request.
   kira.staking.PageRequest pagination = 7 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
+
+  bool all = 8;
 }
 
 message QueryValidator {
