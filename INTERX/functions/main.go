@@ -11,6 +11,6 @@ func GetKiraFunctions() sekaitypes.FunctionList {
 }
 
 // GetInterxFunctions is a function to get all interx functions registered
-func GetInterxFunctions() sekaitypes.FunctionList {
+func GetInterxFunctions() InterxFunctionList {
 	return interxFunctions
 }

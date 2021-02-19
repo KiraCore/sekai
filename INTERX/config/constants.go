@@ -13,9 +13,10 @@ const (
 	QueryKiraFunctions     = "/api/kira/metadata"
 	QueryKiraStatus        = "/api/kira/status"
 
+	QueryInterxFunctions = "/api/metadata"
+
 	FaucetRequestURL         = "/api/faucet"
 	QueryRPCMethods          = "/api/rpc_methods"
-	QueryInterxFunctions     = "/api/metadata"
 	QueryWithdraws           = "/api/withdraws"
 	QueryDeposits            = "/api/deposits"
 	QueryBlocks              = "/api/blocks"

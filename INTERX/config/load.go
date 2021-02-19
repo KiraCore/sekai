@@ -6,9 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/KiraCore/sekai/INTERX/functions"
 	sekaiapp "github.com/KiraCore/sekai/app"
-	functionmeta "github.com/KiraCore/sekai/function_meta"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	bytesize "github.com/inhies/go-bytesize"
@@ -54,8 +52,6 @@ func LoadMnemonic(mnemonic string) string {
 
 // LoadConfig is a function to load interx configurations from a given file
 func LoadConfig(configFilePath string) {
-	functions.RegisterInterxFunctions()
-	functionmeta.RegisterStdMsgs()
 	sekaiapp.SetConfig()
 
 	Config = InterxConfig{}

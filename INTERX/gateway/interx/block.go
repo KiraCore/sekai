@@ -30,7 +30,7 @@ func RegisterBlockRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr s
 	common.AddRPCMethod("GET", config.QueryBlocks, "This is an API to query blocks by parameters.", true)
 	common.AddRPCMethod("GET", config.QueryBlockByHeightOrHash, "This is an API to query block by height", true)
 	common.AddRPCMethod("GET", config.QueryBlockTransactions, "This is an API to query block transactions by height", true)
-	common.AddRPCMethod("GET", config.QueryTransactionResult, "This is an API to query block transactions by height", true)
+	common.AddRPCMethod("GET", config.QueryTransactionResult, "This is an API to query transaction result by hash", true)
 }
 
 func queryBlocksHandle(rpcAddr string, r *http.Request, gwCosmosmux *runtime.ServeMux) (interface{}, interface{}, int) {
