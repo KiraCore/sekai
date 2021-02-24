@@ -1,6 +1,11 @@
 # Changelog
 
-## [0.1.x.x] - xx.xx.2021
+## [v0.1.17.1] - 02.24.2021
+### Added
+- Add proposals query
+- Add proposal query by a given proposal_id
+
+## [v0.1.16.3]] - 02.09.2021
 
 ### Added
 
