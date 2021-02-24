@@ -3,6 +3,7 @@
 ## [v0.1.17.1] - 02.24.2021
 ### Added
 - GRPC query for proposals
+
 ## [v0.1.17] - 02.16.2021
 ### Fixed
 - Problem with ClaimValidator and PubKey encoding due to protocol buff Any type.
