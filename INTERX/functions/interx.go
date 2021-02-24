@@ -138,6 +138,28 @@ func RegisterInterxFunctions() {
 	)
 
 	AddInterxFunction(
+		"QueryProposals",
+		config.QueryProposals,
+		`{
+			"description": "QueryProposals is a function to query all proposals."
+		}`,
+	)
+
+	AddInterxFunction(
+		"QueryProposal",
+		config.QueryProposal,
+		`{
+			"description": "QueryProposal is a function to query a proposal by a given proposal_id.",
+			"parameters": {
+				"proposal_id": {
+					"type":        "number",
+					"description": "This is an option of a proposal id"
+				}
+			}
+		}`,
+	)
+
+	AddInterxFunction(
 		"Withdraws",
 		config.QueryWithdraws,
 		`{

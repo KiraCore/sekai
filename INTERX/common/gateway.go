@@ -142,12 +142,17 @@ func ServeGRPC(r *http.Request, gwCosmosmux *runtime.ServeMux) (interface{}, int
 
 	result := new(interface{})
 	if json.NewDecoder(resp.Body).Decode(result) == nil {
+		fmt.Println("1")
 		if resp.StatusCode == http.StatusOK {
+			fmt.Println("2")
 			return result, nil, resp.StatusCode
 		}
 
+		fmt.Println("3")
 		return nil, result, resp.StatusCode
 	}
+
+	fmt.Println("123")
 
 	return nil, nil, resp.StatusCode
 }

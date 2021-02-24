@@ -13,6 +13,7 @@ import (
 	"strconv"
 
 	"github.com/KiraCore/sekai/INTERX/database"
+	"github.com/KiraCore/sekai/INTERX/global"
 	"github.com/KiraCore/sekai/INTERX/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
@@ -58,9 +59,9 @@ func DownloadResponseToFile(rpcAddr string, url string, query string, filepath s
 	fileout, _ := os.Create(filepath)
 	defer fileout.Close()
 
-	Mutex.Lock()
+	global.Mutex.Lock()
 	io.Copy(fileout, resp.Body)
-	Mutex.Unlock()
+	global.Mutex.Unlock()
 
 	return err
 }

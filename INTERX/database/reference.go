@@ -24,7 +24,10 @@ func (c ReferenceData) ID() (jsonField string, value interface{}) {
 }
 
 func LoadReferenceDbDriver() {
+	DisableStdout()
 	driver, _ := db.New(config.GetDbCacheDir() + "/ref")
+	EnableStdout()
+
 	refDb = driver
 }
 
@@ -34,11 +37,10 @@ func GetAllReferences() ([]ReferenceData, error) {
 		panic("cache dir not set")
 	}
 
-	DisableStdout()
-
 	var references []ReferenceData
-	err := refDb.Open(ReferenceData{}).Get().AsEntity(&references)
 
+	DisableStdout()
+	err := refDb.Open(ReferenceData{}).Get().AsEntity(&references)
 	EnableStdout()
 
 	return references, err
@@ -50,11 +52,10 @@ func GetReference(key string) (ReferenceData, error) {
 		panic("cache dir not set")
 	}
 
-	DisableStdout()
-
 	data := ReferenceData{}
-	err := refDb.Open(ReferenceData{}).Where("key", "=", key).First().AsEntity(&data)
 
+	DisableStdout()
+	err := refDb.Open(ReferenceData{}).Where("key", "=", key).First().AsEntity(&data)
 	EnableStdout()
 
 	return data, err
@@ -76,21 +77,24 @@ func AddReference(key string, url string, contentLength int64, lastModified time
 
 	_, err := GetReference(key)
 
-	DisableStdout()
-
 	if err == nil {
+		DisableStdout()
 		err := refDb.Open(ReferenceData{}).Update(data)
+		EnableStdout()
+
 		if err != nil {
 			panic(err)
 		}
 	} else {
+		DisableStdout()
 		err := refDb.Open(ReferenceData{}).Insert(data)
+		EnableStdout()
+
 		if err != nil {
 			panic(err)
 		}
 	}
 
-	EnableStdout()
 }
 
 var (

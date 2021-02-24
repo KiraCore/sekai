@@ -7,6 +7,7 @@ import (
 
 	"github.com/KiraCore/sekai/INTERX/common"
 	"github.com/KiraCore/sekai/INTERX/config"
+	"github.com/KiraCore/sekai/INTERX/global"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	tmjson "github.com/tendermint/tendermint/libs/json"
@@ -50,17 +51,17 @@ func saveGenesis(rpcAddr string) error {
 		return err
 	}
 
-	common.Mutex.Lock()
+	global.Mutex.Lock()
 	err = genesis.Genesis.SaveAs(genesisPath())
-	common.Mutex.Unlock()
+	global.Mutex.Unlock()
 
 	return err
 }
 
 func getGenesis() (string, error) {
-	common.Mutex.Lock()
+	global.Mutex.Lock()
 	data, err := ioutil.ReadFile(genesisPath())
-	common.Mutex.Unlock()
+	global.Mutex.Unlock()
 
 	if err != nil {
 		return "", err

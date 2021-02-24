@@ -21,7 +21,10 @@ func (c FaucetClaim) ID() (jsonField string, value interface{}) {
 }
 
 func LoadFaucetDbDriver() {
+	DisableStdout()
 	driver, _ := db.New(config.GetDbCacheDir() + "/faucet")
+	EnableStdout()
+
 	faucetDb = driver
 }
 
@@ -30,11 +33,10 @@ func isClaimExist(address string) bool {
 		panic("cache dir not set")
 	}
 
-	DisableStdout()
-
 	data := FaucetClaim{}
-	err := faucetDb.Open(FaucetClaim{}).Where("address", "=", address).First().AsEntity(&data)
 
+	DisableStdout()
+	err := faucetDb.Open(FaucetClaim{}).Where("address", "=", address).First().AsEntity(&data)
 	EnableStdout()
 
 	if err != nil {
@@ -49,12 +51,11 @@ func getClaim(address string) time.Time {
 		panic("cache dir not set")
 	}
 
-	DisableStdout()
-
 	data := FaucetClaim{}
-	err := faucetDb.Open(FaucetClaim{}).Where("address", "=", address).First().AsEntity(&data)
 
 	DisableStdout()
+	err := faucetDb.Open(FaucetClaim{}).Where("address", "=", address).First().AsEntity(&data)
+	EnableStdout()
 
 	if err != nil {
 		panic(err)
@@ -95,21 +96,23 @@ func AddNewClaim(address string, claim time.Time) {
 
 	exists := isClaimExist(address)
 
-	DisableStdout()
-
 	if exists {
+		DisableStdout()
 		err := faucetDb.Open(FaucetClaim{}).Update(data)
+		EnableStdout()
+
 		if err != nil {
 			panic(err)
 		}
 	} else {
+		DisableStdout()
 		err := faucetDb.Open(FaucetClaim{}).Insert(data)
+		EnableStdout()
+
 		if err != nil {
 			panic(err)
 		}
 	}
-
-	EnableStdout()
 }
 
 var (

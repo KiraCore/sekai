@@ -22,6 +22,8 @@ func getGetMethods() []string {
 		QueryBlockByHeightOrHash,
 		QueryBlockTransactions,
 		QueryTransactionResult,
+		QueryProposals,
+		QueryProposal,
 	}
 }
 
