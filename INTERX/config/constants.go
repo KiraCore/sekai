@@ -27,6 +27,7 @@ const (
 	QueryTransactionResult   = "/api/transactions/{txHash}"
 	QueryStatus              = "/api/status"
 	QueryValidators          = "/api/valopers"
+	QueryValidatorInfos      = "/api/valoperinfos"
 	QueryGenesis             = "/api/genesis"
 	QueryGenesisSum          = "/api/gensum"
 

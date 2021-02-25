@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "50345ce8-1849-4913-86e7-bebcd9101c02",
+		"_postman_id": "5a89ad02-e8c7-4864-bbec-838b872f2205",
 		"name": "Kira",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -189,6 +189,95 @@
 						"gov",
 						"data",
 						"sample_png_file"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Query Proposals",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/kira/gov/proposals",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"kira",
+						"gov",
+						"proposals"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Query Proposal by proposal_id",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/kira/gov/proposals/1",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"kira",
+						"gov",
+						"proposals",
+						"1"
 					]
 				}
 			},
@@ -386,7 +475,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"tx\": {\n\t\t\"body\": {\n\t\t\t\"messages\": [\n\t\t\t\t{\n\t\t\t\t\t\"@type\": \"/cosmos.bank.v1beta1.MsgSend\",\n\t\t\t\t\t\"from_address\": \"kira1rsgnkecqgq575ynn6rczd96kc23uwtruqx9m0m\",\n\t\t\t\t\t\"to_address\": \"kira1h9s2k2s9624kdghp5ztcdgnausg77rdj9cyat6\",\n\t\t\t\t\t\"amount\": [\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\"denom\": \"stake\",\n\t\t\t\t\t\t\t\"amount\": \"250\"\n\t\t\t\t\t\t}\n\t\t\t\t\t]\n\t\t\t\t}\n\t\t\t],\n\t\t\t\"memo\": \"\",\n\t\t\t\"timeout_height\": \"0\",\n\t\t\t\"extension_options\": [],\n\t\t\t\"non_critical_extension_options\": []\n\t\t},\n\t\t\"auth_info\": {\n\t\t\t\"signer_infos\": [\n\t\t\t\t{\n\t\t\t\t\t\"public_key\": {\n\t\t\t\t\t\t\"secp256k1\": \"Alm0A4BIQyUWy8KXjP1BRMePguZWgFKQa5hzzwRlu3I8\"\n\t\t\t\t\t},\n\t\t\t\t\t\"mode_info\": {\n\t\t\t\t\t\t\"single\": {\n\t\t\t\t\t\t\t\"mode\": \"SIGN_MODE_DIRECT\"\n\t\t\t\t\t\t}\n\t\t\t\t\t},\n\t\t\t\t\t\"sequence\": \"0\"\n\t\t\t\t}\n\t\t\t],\n\t\t\t\"fee\": {\n\t\t\t\t\"amount\": [],\n\t\t\t\t\"gas_limit\": \"200000\"\n\t\t\t}\n\t\t},\n\t\t\"signatures\": [\n\t\t\t\"0BsM4jdGj/qqgtzMaVZkhDZguX6ol6hL18KxR17yr60MqW9yMNMA8bCwonLEPjSL0PgCzVCll5V9tlfAlKak1g==\"\n\t\t]\n\t},\n\t\"mode\": \"block\"\n}",
+					"raw": "{\n\t\"tx\": {\n\t\t\"body\": {\n\t\t\t\"messages\": [\n\t\t\t\t{\n\t\t\t\t\t\"@type\": \"/cosmos.bank.v1beta1.MsgSend\",\n\t\t\t\t\t\"from_address\": \"kira1rsgnkecqgq575ynn6rczd96kc23uwtruqx9m0m\",\n\t\t\t\t\t\"to_address\": \"kira1h9s2k2s9624kdghp5ztcdgnausg77rdj9cyat6\",\n\t\t\t\t\t\"amount\": [\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\"denom\": \"stake\",\n\t\t\t\t\t\t\t\"amount\": \"250\"\n\t\t\t\t\t\t}\n\t\t\t\t\t]\n\t\t\t\t}\n\t\t\t],\n\t\t\t\"memo\": \"\",\n\t\t\t\"timeout_height\": \"0\",\n\t\t\t\"extension_options\": [],\n\t\t\t\"non_critical_extension_options\": []\n\t\t},\n\t\t\"auth_info\": {\n\t\t\t\"signer_infos\": [\n\t\t\t\t{\n\t\t\t\t\t\"public_key\": {\n                        \"@type\": \"/cosmos.crypto.secp256k1.PubKey\",\n\t\t\t\t\t\t\"key\": \"Alm0A4BIQyUWy8KXjP1BRMePguZWgFKQa5hzzwRlu3I8\"\n\t\t\t\t\t},\n\t\t\t\t\t\"mode_info\": {\n\t\t\t\t\t\t\"single\": {\n\t\t\t\t\t\t\t\"mode\": \"SIGN_MODE_DIRECT\"\n\t\t\t\t\t\t}\n\t\t\t\t\t},\n\t\t\t\t\t\"sequence\": \"0\"\n\t\t\t\t}\n\t\t\t],\n\t\t\t\"fee\": {\n\t\t\t\t\"amount\": [],\n\t\t\t\t\"gas_limit\": \"200000\"\n\t\t\t}\n\t\t},\n\t\t\"signatures\": [\n\t\t\t\"0BsM4jdGj/qqgtzMaVZkhDZguX6ol6hL18KxR17yr60MqW9yMNMA8bCwonLEPjSL0PgCzVCll5V9tlfAlKak1g==\"\n\t\t]\n\t},\n\t\"mode\": \"block\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -818,6 +907,48 @@
 					"path": [
 						"api",
 						"valopers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Query Validator Infos",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://0.0.0.0:11000/api/valoperinfos",
+					"protocol": "http",
+					"host": [
+						"0",
+						"0",
+						"0",
+						"0"
+					],
+					"port": "11000",
+					"path": [
+						"api",
+						"valoperinfos"
 					]
 				}
 			},

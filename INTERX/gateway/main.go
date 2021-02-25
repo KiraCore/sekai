@@ -12,6 +12,7 @@ import (
 	cosmosAuth "github.com/KiraCore/sekai/INTERX/proto-gen/cosmos/auth"
 	cosmosBank "github.com/KiraCore/sekai/INTERX/proto-gen/cosmos/bank"
 	kiraGov "github.com/KiraCore/sekai/INTERX/proto-gen/kira/gov"
+	kiraSlashing "github.com/KiraCore/sekai/INTERX/proto-gen/kira/slashing"
 	kiraStaking "github.com/KiraCore/sekai/INTERX/proto-gen/kira/staking"
 	"github.com/KiraCore/sekai/INTERX/tasks"
 	functionmeta "github.com/KiraCore/sekai/function_meta"
@@ -76,6 +77,11 @@ func GetGrpcServeMux(grpcAddr string) (*runtime.ServeMux, error) {
 	}
 
 	err = kiraStaking.RegisterQueryHandler(context.Background(), gwCosmosmux, conn)
+	if err != nil {
+		return nil, fmt.Errorf("failed to register gateway: %w", err)
+	}
+
+	err = kiraSlashing.RegisterQueryHandler(context.Background(), gwCosmosmux, conn)
 	if err != nil {
 		return nil, fmt.Errorf("failed to register gateway: %w", err)
 	}

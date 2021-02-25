@@ -72,6 +72,8 @@ message ValidatorsResponse {
   // validators contains all the queried validators.
   repeated QueryValidator validators = 1;
 
+  repeated string actors = 2;
+
   // pagination defines the pagination in the response.
-  kira.staking.PageResponse pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
+  kira.staking.PageResponse pagination = 3 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
 }

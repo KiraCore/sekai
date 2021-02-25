@@ -1,8 +1,9 @@
 # Changelog
 
-## [v0.1.17.1] - 02.24.2021
+## [v0.1.17.1] - 02.25.2021
 ### Added
 - GRPC query for proposals
+- GRPC query for validators + validator_signing_infos
 
 ## [v0.1.17] - 02.16.2021
 ### Fixed

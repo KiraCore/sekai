@@ -1,0 +1,70 @@
+syntax = "proto3";
+package kira.slashing;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "kira/slashing/pagination.proto";
+
+option go_package = "github.com/KiraCore/sekai/INTERX/proto";
+
+// These annotations are used when generating the OpenAPI file.
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    version: "1.0";
+  };
+  external_docs: {
+    url: "https://github.com/KiraCore/sekai/INTERX";
+    description: "gRPC-gateway";
+  }
+  schemes: HTTP;
+};
+
+// Query provides defines the gRPC querier service
+service Query {
+  // SigningInfos queries signing info of all validators
+  rpc SigningInfos(QuerySigningInfosRequest) returns (QuerySigningInfosResponse) {
+    option (google.api.http).get = "/api/valoperinfos";
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Query Signing Infos of Validators"
+      description: "Query Signing Infos of Validators"
+      tags: "query"
+    };
+  }
+}
+
+// ValidatorSigningInfo defines a validator's signing info for monitoring their
+// liveness activity.
+message ValidatorSigningInfo {
+  option (gogoproto.equal)            = true;
+  option (gogoproto.goproto_stringer) = false;
+
+  string address = 1;
+  // height at which validator was first a candidate OR was activated
+  int64 start_height = 2 [(gogoproto.moretags) = "yaml:\"start_height\""];
+  // index offset into signed block bit array
+  int64 index_offset = 3 [(gogoproto.moretags) = "yaml:\"index_offset\""];
+  // timestamp validator cannot be activated until
+  google.protobuf.Timestamp inactive_until = 4
+      [(gogoproto.moretags) = "yaml:\"inactive_until\"", (gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  // whether or not a validator has been tombstoned (killed out of validator
+  // set)
+  bool tombstoned = 5;
+  // missed blocks counter (to avoid scanning the array every time)
+  int64 missed_blocks_counter = 6 [(gogoproto.moretags) = "yaml:\"missed_blocks_counter\""];
+}
+
+// QuerySigningInfosRequest is the request type for the Query/SigningInfos RPC
+// method
+message QuerySigningInfosRequest {
+  kira.slashing.PageRequest pagination = 1;
+}
+
+// QuerySigningInfosResponse is the response type for the Query/SigningInfos RPC
+// method
+message QuerySigningInfosResponse {
+  // info is the signing info of all validators
+  repeated ValidatorSigningInfo info       = 1 [(gogoproto.nullable) = false];
+  kira.slashing.PageResponse                  pagination = 2;
+}

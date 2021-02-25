@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "kira/staking/query.proto",
+    "title": "kira/slashing/query.proto",
     "version": "1.0"
   },
   "schemes": [
@@ -14,16 +14,16 @@
     "application/json"
   ],
   "paths": {
-    "/api/valopers": {
+    "/api/valoperinfos": {
       "get": {
-        "summary": "Query All Validators",
-        "description": "Query Validators.",
-        "operationId": "Query_Validators",
+        "summary": "Query Signing Infos of Validators",
+        "description": "Query Signing Infos of Validators",
+        "operationId": "Query_SigningInfos",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/stakingValidatorsResponse"
+              "$ref": "#/definitions/slashingQuerySigningInfosResponse"
             }
           },
           "default": {
@@ -34,42 +34,6 @@
           }
         },
         "parameters": [
-          {
-            "name": "address",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "valkey",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "pubkey",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "moniker",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "status",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "proposer",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
           {
             "name": "pagination.key",
             "description": "key is a value returned in PageResponse.next_key to begin\nquerying the next page most efficiently. Only one of offset or key\nshould be set.",
@@ -97,13 +61,6 @@
           {
             "name": "pagination.countTotal",
             "description": "count_total is set to true  to indicate that the result set should include\na count of the total number of items available for pagination in UIs. count_total\nis only respected when offset is used. It is ignored when key is set.",
-            "in": "query",
-            "required": false,
-            "type": "boolean",
-            "format": "boolean"
-          },
-          {
-            "name": "all",
             "in": "query",
             "required": false,
             "type": "boolean",
@@ -150,7 +107,7 @@
         }
       }
     },
-    "stakingPageRequest": {
+    "slashingPageRequest": {
       "type": "object",
       "properties": {
         "key": {
@@ -177,7 +134,7 @@
       "description": "message SomeRequest {\n         Foo some_parameter = 1;\n         PageRequest pagination = 2;\n }",
       "title": "PageRequest is to be embedded in gRPC request messages for efficient\npagination. Ex:"
     },
-    "stakingPageResponse": {
+    "slashingPageResponse": {
       "type": "object",
       "properties": {
         "nextKey": {
@@ -193,75 +150,55 @@
       },
       "description": "PageResponse is to be embedded in gRPC response messages where the corresponding\nrequest message has used PageRequest.\n\n message SomeResponse {\n         repeated Bar results = 1;\n         PageResponse page = 2;\n }"
     },
-    "stakingQueryValidator": {
+    "slashingQuerySigningInfosResponse": {
+      "type": "object",
+      "properties": {
+        "info": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/slashingValidatorSigningInfo"
+          },
+          "title": "info is the signing info of all validators"
+        },
+        "pagination": {
+          "$ref": "#/definitions/slashingPageResponse"
+        }
+      },
+      "title": "QuerySigningInfosResponse is the response type for the Query/SigningInfos RPC\nmethod"
+    },
+    "slashingValidatorSigningInfo": {
       "type": "object",
       "properties": {
         "address": {
           "type": "string"
         },
-        "valkey": {
-          "type": "string"
-        },
-        "pubkey": {
-          "type": "string"
-        },
-        "proposer": {
-          "type": "string"
-        },
-        "moniker": {
-          "type": "string"
-        },
-        "website": {
-          "type": "string"
-        },
-        "social": {
-          "type": "string"
-        },
-        "identity": {
-          "type": "string"
-        },
-        "commission": {
-          "type": "string"
-        },
-        "status": {
-          "type": "string"
-        },
-        "rank": {
+        "startHeight": {
           "type": "string",
-          "format": "int64"
+          "format": "int64",
+          "title": "height at which validator was first a candidate OR was activated"
         },
-        "streak": {
+        "indexOffset": {
           "type": "string",
-          "format": "int64"
+          "format": "int64",
+          "title": "index offset into signed block bit array"
         },
-        "mischance": {
+        "inactiveUntil": {
           "type": "string",
-          "format": "int64"
-        }
-      }
-    },
-    "stakingValidatorsResponse": {
-      "type": "object",
-      "properties": {
-        "validators": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/stakingQueryValidator"
-          },
-          "description": "validators contains all the queried validators."
+          "format": "date-time",
+          "title": "timestamp validator cannot be activated until"
         },
-        "actors": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+        "tombstoned": {
+          "type": "boolean",
+          "format": "boolean",
+          "title": "whether or not a validator has been tombstoned (killed out of validator\nset)"
         },
-        "pagination": {
-          "$ref": "#/definitions/stakingPageResponse",
-          "description": "pagination defines the pagination in the response."
+        "missedBlocksCounter": {
+          "type": "string",
+          "format": "int64",
+          "title": "missed blocks counter (to avoid scanning the array every time)"
         }
       },
-      "title": "ValidatorsResponse is response type for the Query/Validators RPC method"
+      "description": "ValidatorSigningInfo defines a validator's signing info for monitoring their\nliveness activity."
     }
   },
   "externalDocs": {

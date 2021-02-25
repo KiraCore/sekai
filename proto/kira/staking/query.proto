@@ -71,5 +71,6 @@ message QueryValidator {
 // ValidatorsResponse is the response type for validators query.
 message ValidatorsResponse {
   repeated QueryValidator validators = 1 [(gogoproto.nullable) = false];
-  kira.staking.PageResponse pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
+  repeated string actors = 2;
+  kira.staking.PageResponse pagination = 3 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
 }

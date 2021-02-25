@@ -1,9 +1,10 @@
 # Changelog
 
-## [v0.1.17.1] - 02.24.2021
+## [v0.1.17.1] - 02.25.2021
 ### Added
 - Add proposals query
 - Add proposal query by a given proposal_id
+- Add query for validators + validator_signing_infos
 
 ## [v0.1.16.3]] - 02.09.2021
 
