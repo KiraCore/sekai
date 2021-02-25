@@ -11,6 +11,7 @@ import (
 
 // HandleValidatorSignature handles a validator signature, must be called once per validator per block.
 func (k Keeper) HandleValidatorSignature(ctx sdk.Context, addr crypto.Address, power int64, signed bool) {
+	fmt.Println("HandleValidatorSignature1")
 	logger := k.Logger(ctx)
 	height := ctx.BlockHeight()
 
@@ -108,6 +109,7 @@ func (k Keeper) HandleValidatorSignature(ctx sdk.Context, addr crypto.Address, p
 		}
 	}
 
+	fmt.Println("HandleValidatorSignature2", consAddr.String(), signInfo)
 	// Set the updated signing info
 	k.SetValidatorSigningInfo(ctx, consAddr, signInfo)
 }

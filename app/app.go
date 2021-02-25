@@ -247,8 +247,8 @@ func NewInitApp(
 	// there is nothing left over in the validator fee pool, so as to keep the
 	// CanWithdrawInvariant invariant.
 	app.mm.SetOrderBeginBlockers(
-		upgradetypes.ModuleName,
-		evidencetypes.ModuleName,
+		upgradetypes.ModuleName, customslashingtypes.ModuleName,
+		evidencetypes.ModuleName, customstakingtypes.ModuleName,
 	)
 	app.mm.SetOrderEndBlockers(
 		customgovtypes.ModuleName,
@@ -265,6 +265,7 @@ func NewInitApp(
 		authtypes.ModuleName,
 		banktypes.ModuleName,
 		customstakingtypes.ModuleName,
+		customslashingtypes.ModuleName,
 		customgovtypes.ModuleName,
 		tokenstypes.ModuleName,
 		feeprocessingtypes.ModuleName,
