@@ -8,5 +8,7 @@ import (
 // RegisterRequest is a function to register requests.
 func RegisterRequest(router *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr string) {
 	RegisterKiraGovRoutes(router, gwCosmosmux, rpcAddr)
+	RegisterKiraGovProposalRoutes(router, gwCosmosmux, rpcAddr)
+
 	RegisterKiraQueryRoutes(router, gwCosmosmux, rpcAddr)
 }

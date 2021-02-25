@@ -58,19 +58,23 @@ func (k Keeper) SigningInfos(c context.Context, req *types.QuerySigningInfosRequ
 	var signInfos []types.ValidatorSigningInfo
 
 	sigInfoStore := prefix.NewStore(store, types.ValidatorSigningInfoKeyPrefix)
-	pageRes, err := query.Paginate(sigInfoStore, types.SDKQueryPageReqFromCustomPageReq(req.Pagination),
-		func(key []byte, value []byte) error {
-			var info types.ValidatorSigningInfo
-			err := k.cdc.UnmarshalBinaryBare(value, &info)
-			if err != nil {
-				return err
-			}
+	pageRes, err := query.FilteredPaginate(sigInfoStore, types.SDKQueryPageReqFromCustomPageReq(req.Pagination), func(key []byte, value []byte, accumulate bool) (bool, error) {
+		var info types.ValidatorSigningInfo
+		err := k.cdc.UnmarshalBinaryBare(value, &info)
+		if err != nil {
+			return false, err
+		}
+
+		if req.All || accumulate {
 			signInfos = append(signInfos, info)
-			return nil
-		})
+		}
+		return !req.All, nil
+	})
+
 	if err != nil {
 		return nil, err
 	}
+
 	return &types.QuerySigningInfosResponse{Info: signInfos, Pagination: &types.PageResponse{
 		NextKey: pageRes.NextKey,
 		Total:   pageRes.Total,

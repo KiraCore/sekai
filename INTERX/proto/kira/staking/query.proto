@@ -41,9 +41,12 @@ message ValidatorsRequest {
   string pubkey = 3;
   string moniker = 4;
   string status = 5;
+  string proposer = 6;
   
   // pagination defines an optional pagination for the request.
-  kira.staking.PageRequest pagination = 6 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
+  kira.staking.PageRequest pagination = 7 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
+
+  bool all = 8;
 }
 
 message QueryValidator {
@@ -52,15 +55,16 @@ message QueryValidator {
   string address = 1;
   string valkey = 2;
   string pubkey = 3;
-  string moniker = 4;
-  string website = 5;
-  string social = 6;
-  string identity = 7;
-  string commission = 8;
-  string status = 9;
-  int64 rank = 10;
-  int64 streak = 11;
-  int64 mischance = 12;
+  string proposer = 4;
+  string moniker = 5;
+  string website = 6;
+  string social = 7;
+  string identity = 8;
+  string commission = 9;
+  string status = 10;
+  int64 rank = 11;
+  int64 streak = 12;
+  int64 mischance = 13;
 }
 
 // ValidatorsResponse is response type for the Query/Validators RPC method
@@ -68,6 +72,8 @@ message ValidatorsResponse {
   // validators contains all the queried validators.
   repeated QueryValidator validators = 1;
 
+  repeated string actors = 2;
+
   // pagination defines the pagination in the response.
-  kira.staking.PageResponse pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
+  kira.staking.PageResponse pagination = 3 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
 }

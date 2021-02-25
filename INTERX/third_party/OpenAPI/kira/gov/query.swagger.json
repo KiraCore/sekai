@@ -103,6 +103,73 @@
           "query"
         ]
       }
+    },
+    "/api/kira/gov/proposals": {
+      "get": {
+        "summary": "Query Proposals",
+        "description": "Query Proposals.",
+        "operationId": "Query_Proposals",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/govQueryProposalsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "voter",
+            "description": "voter defines the voter address for the proposals.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "query"
+        ]
+      }
+    },
+    "/api/kira/gov/proposals/{proposalId}": {
+      "get": {
+        "summary": "Query Proposal",
+        "description": "Query Proposal.",
+        "operationId": "Query_Proposal",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/govQueryProposalResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "proposalId",
+            "description": "proposal_id defines the unique id of the proposal.",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "query"
+        ]
+      }
     }
   },
   "definitions": {
@@ -167,6 +234,37 @@
       },
       "description": "PageResponse is to be embedded in gRPC response messages where the corresponding\nrequest message has used PageRequest.\n\n message SomeResponse {\n         repeated Bar results = 1;\n         PageResponse page = 2;\n }"
     },
+    "govProposal": {
+      "type": "object",
+      "properties": {
+        "proposalId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "content": {
+          "$ref": "#/definitions/protobufAny"
+        },
+        "submitTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "votingStartTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "votingEndTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "enactmentEndTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "result": {
+          "$ref": "#/definitions/govVoteResult"
+        }
+      }
+    },
     "govQueryDataReferenceKeysResponse": {
       "type": "object",
       "properties": {
@@ -190,6 +288,38 @@
         }
       },
       "description": "QueryDataReferenceResponse is the response type for data referencequery."
+    },
+    "govQueryProposalResponse": {
+      "type": "object",
+      "properties": {
+        "proposal": {
+          "$ref": "#/definitions/govProposal"
+        }
+      },
+      "description": "QueryProposalResponse is the response type for the Query/Proposal RPC method."
+    },
+    "govQueryProposalsResponse": {
+      "type": "object",
+      "properties": {
+        "proposals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/govProposal"
+          }
+        }
+      },
+      "description": "QueryProposalsResponse is the response type for the Query/Proposals RPC\nmethod."
+    },
+    "govVoteResult": {
+      "type": "string",
+      "enum": [
+        "VOTE_RESULT_UNKNOWN",
+        "VOTE_RESULT_PASSED",
+        "VOTE_RESULT_REJECTED",
+        "VOTE_RESULT_REJECTED_WITH_VETO",
+        "VOTE_PENDING"
+      ],
+      "default": "VOTE_RESULT_UNKNOWN"
     },
     "protobufAny": {
       "type": "object",

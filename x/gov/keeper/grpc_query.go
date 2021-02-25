@@ -109,6 +109,7 @@ func (q Querier) GetPoorNetworkMessages(ctx context.Context, request *types.Poor
 
 // Proposal returns a proposal by id
 func (q Querier) Proposal(ctx context.Context, request *types.QueryProposalRequest) (*types.QueryProposalResponse, error) {
+	fmt.Println("Proposal request", request)
 	sdkContext := sdk.UnwrapSDKContext(ctx)
 	proposal, found := q.keeper.GetProposal(sdkContext, request.ProposalId)
 	if found == false {
@@ -123,8 +124,10 @@ func (q Querier) Proposal(ctx context.Context, request *types.QueryProposalReque
 
 // Proposals query proposals by querying params
 func (q Querier) Proposals(ctx context.Context, request *types.QueryProposalsRequest) (*types.QueryProposalsResponse, error) {
+	fmt.Println("proposals request", request)
 	sdkContext := sdk.UnwrapSDKContext(ctx)
 	proposals, err := q.keeper.GetProposals(sdkContext)
+	fmt.Println("proposals", proposals, err)
 	if err != nil {
 		return nil, sdkerrors.Wrap(types.ErrGettingProposals, fmt.Sprintf("error getting proposals: %s", err.Error()))
 	}
