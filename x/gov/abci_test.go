@@ -135,7 +135,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 
 				proposal, found := app.CustomGovKeeper.GetProposal(ctx, 1234)
 				require.True(t, found)
-				require.Equal(t, types.Passed, proposal.Result)
+				require.Equal(t, types.Enactment, proposal.Result)
 			},
 		},
 		{
@@ -159,7 +159,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				)
 				require.NoError(t, err)
 
-				proposal.Result = types.Passed
+				proposal.Result = types.Enactment
 				app.CustomGovKeeper.SaveProposal(ctx, proposal)
 
 				app.CustomGovKeeper.AddToEnactmentProposals(ctx, proposal)
@@ -197,7 +197,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				)
 				require.NoError(t, err)
 
-				proposal.Result = types.Passed
+				proposal.Result = types.Enactment
 				app.CustomGovKeeper.SaveProposal(ctx, proposal)
 
 				app.CustomGovKeeper.AddToEnactmentProposals(ctx, proposal)
@@ -241,7 +241,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				)
 				require.NoError(t, err)
 
-				proposal.Result = types.Passed
+				proposal.Result = types.Enactment
 				app.CustomGovKeeper.SaveProposal(ctx, proposal)
 
 				app.CustomGovKeeper.AddToEnactmentProposals(ctx, proposal)
@@ -285,7 +285,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				)
 				require.NoError(t, err)
 
-				proposal.Result = types.Passed
+				proposal.Result = types.Enactment
 				app.CustomGovKeeper.SaveProposal(ctx, proposal)
 
 				app.CustomGovKeeper.AddToEnactmentProposals(ctx, proposal)
@@ -332,7 +332,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				)
 				require.NoError(t, err)
 
-				proposal.Result = types.Passed
+				proposal.Result = types.Enactment
 				app.CustomGovKeeper.SaveProposal(ctx, proposal)
 
 				app.CustomGovKeeper.AddToEnactmentProposals(ctx, proposal)
@@ -372,7 +372,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				)
 				require.NoError(t, err)
 
-				proposal.Result = types.Passed
+				proposal.Result = types.Enactment
 				app.CustomGovKeeper.SaveProposal(ctx, proposal)
 
 				app.CustomGovKeeper.AddToEnactmentProposals(ctx, proposal)
@@ -423,7 +423,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				)
 				require.NoError(t, err)
 
-				proposal.Result = types.Passed
+				proposal.Result = types.Enactment
 				app.CustomGovKeeper.SaveProposal(ctx, proposal)
 
 				app.CustomGovKeeper.AddToEnactmentProposals(ctx, proposal)
