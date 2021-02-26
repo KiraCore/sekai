@@ -31,8 +31,8 @@ type MsgCreateRole struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Proposer []byte `protobuf:"bytes,1,opt,name=proposer,proto3" json:"proposer"`
-	Role     uint32 `protobuf:"varint,2,opt,name=role,proto3" json:"role"`
+	Proposer []byte `protobuf:"bytes,1,opt,name=proposer,proto3" json:"proposer,omitempty"`
+	Role     uint32 `protobuf:"varint,2,opt,name=role,proto3" json:"role,omitempty"`
 }
 
 func (x *MsgCreateRole) Reset() {
@@ -86,9 +86,9 @@ type MsgAssignRole struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Proposer []byte `protobuf:"bytes,1,opt,name=proposer,proto3" json:"proposer"`
-	Address  []byte `protobuf:"bytes,2,opt,name=address,proto3" json:"address"`
-	Role     uint32 `protobuf:"varint,3,opt,name=role,proto3" json:"role"`
+	Proposer []byte `protobuf:"bytes,1,opt,name=proposer,proto3" json:"proposer,omitempty"`
+	Address  []byte `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
+	Role     uint32 `protobuf:"varint,3,opt,name=role,proto3" json:"role,omitempty"`
 }
 
 func (x *MsgAssignRole) Reset() {
@@ -149,9 +149,9 @@ type MsgRemoveRole struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Proposer []byte `protobuf:"bytes,1,opt,name=proposer,proto3" json:"proposer"`
-	Address  []byte `protobuf:"bytes,2,opt,name=address,proto3" json:"address"`
-	Role     uint32 `protobuf:"varint,3,opt,name=role,proto3" json:"role"`
+	Proposer []byte `protobuf:"bytes,1,opt,name=proposer,proto3" json:"proposer,omitempty"`
+	Address  []byte `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
+	Role     uint32 `protobuf:"varint,3,opt,name=role,proto3" json:"role,omitempty"`
 }
 
 func (x *MsgRemoveRole) Reset() {
@@ -212,9 +212,9 @@ type MsgWhitelistRolePermission struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Proposer   []byte `protobuf:"bytes,1,opt,name=proposer,proto3" json:"proposer"`
-	Role       uint32 `protobuf:"varint,2,opt,name=role,proto3" json:"role"`
-	Permission uint32 `protobuf:"varint,3,opt,name=permission,proto3" json:"permission"`
+	Proposer   []byte `protobuf:"bytes,1,opt,name=proposer,proto3" json:"proposer,omitempty"`
+	Role       uint32 `protobuf:"varint,2,opt,name=role,proto3" json:"role,omitempty"`
+	Permission uint32 `protobuf:"varint,3,opt,name=permission,proto3" json:"permission,omitempty"`
 }
 
 func (x *MsgWhitelistRolePermission) Reset() {
@@ -275,9 +275,9 @@ type MsgBlacklistRolePermission struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Proposer   []byte `protobuf:"bytes,1,opt,name=proposer,proto3" json:"proposer"`
-	Role       uint32 `protobuf:"varint,2,opt,name=role,proto3" json:"role"`
-	Permission uint32 `protobuf:"varint,3,opt,name=permission,proto3" json:"permission"`
+	Proposer   []byte `protobuf:"bytes,1,opt,name=proposer,proto3" json:"proposer,omitempty"`
+	Role       uint32 `protobuf:"varint,2,opt,name=role,proto3" json:"role,omitempty"`
+	Permission uint32 `protobuf:"varint,3,opt,name=permission,proto3" json:"permission,omitempty"`
 }
 
 func (x *MsgBlacklistRolePermission) Reset() {
@@ -338,9 +338,9 @@ type MsgRemoveWhitelistRolePermission struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Proposer   []byte `protobuf:"bytes,1,opt,name=proposer,proto3" json:"proposer"`
-	Role       uint32 `protobuf:"varint,2,opt,name=role,proto3" json:"role"`
-	Permission uint32 `protobuf:"varint,3,opt,name=permission,proto3" json:"permission"`
+	Proposer   []byte `protobuf:"bytes,1,opt,name=proposer,proto3" json:"proposer,omitempty"`
+	Role       uint32 `protobuf:"varint,2,opt,name=role,proto3" json:"role,omitempty"`
+	Permission uint32 `protobuf:"varint,3,opt,name=permission,proto3" json:"permission,omitempty"`
 }
 
 func (x *MsgRemoveWhitelistRolePermission) Reset() {
@@ -401,9 +401,9 @@ type MsgRemoveBlacklistRolePermission struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Proposer   []byte `protobuf:"bytes,1,opt,name=proposer,proto3" json:"proposer"`
-	Role       uint32 `protobuf:"varint,2,opt,name=role,proto3" json:"role"`
-	Permission uint32 `protobuf:"varint,3,opt,name=permission,proto3" json:"permission"`
+	Proposer   []byte `protobuf:"bytes,1,opt,name=proposer,proto3" json:"proposer,omitempty"`
+	Role       uint32 `protobuf:"varint,2,opt,name=role,proto3" json:"role,omitempty"`
+	Permission uint32 `protobuf:"varint,3,opt,name=permission,proto3" json:"permission,omitempty"`
 }
 
 func (x *MsgRemoveBlacklistRolePermission) Reset() {

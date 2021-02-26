@@ -39,7 +39,7 @@ type QueryAccountRequest struct {
 	unknownFields protoimpl.UnknownFields
 
 	// address defines the address to query for.
-	Address []byte `protobuf:"bytes,1,opt,name=address,proto3" json:"address"`
+	Address []byte `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
 }
 
 func (x *QueryAccountRequest) Reset() {
@@ -88,7 +88,7 @@ type QueryAccountResponse struct {
 	unknownFields protoimpl.UnknownFields
 
 	// account defines the account of the corresponding address.
-	Account *any.Any `protobuf:"bytes,1,opt,name=account,proto3" json:"account"`
+	Account *any.Any `protobuf:"bytes,1,opt,name=account,proto3" json:"account,omitempty"`
 }
 
 func (x *QueryAccountResponse) Reset() {
@@ -138,10 +138,10 @@ type BaseAccount struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Address       []byte `protobuf:"bytes,1,opt,name=address,proto3" json:"address"`
-	PubKey        []byte `protobuf:"bytes,2,opt,name=pub_key,json=pubKey,proto3" json:"pub_key"`
-	AccountNumber uint64 `protobuf:"varint,3,opt,name=account_number,json=accountNumber,proto3" json:"account_number"`
-	Sequence      uint64 `protobuf:"varint,4,opt,name=sequence,proto3" json:"sequence"`
+	Address       []byte `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+	PubKey        []byte `protobuf:"bytes,2,opt,name=pub_key,json=pubKey,proto3" json:"pub_key,omitempty"`
+	AccountNumber uint64 `protobuf:"varint,3,opt,name=account_number,json=accountNumber,proto3" json:"account_number,omitempty"`
+	Sequence      uint64 `protobuf:"varint,4,opt,name=sequence,proto3" json:"sequence,omitempty"`
 }
 
 func (x *BaseAccount) Reset() {
@@ -210,9 +210,9 @@ type ModuleAccount struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	BaseAccount *BaseAccount `protobuf:"bytes,1,opt,name=base_account,json=baseAccount,proto3" json:"base_account"`
-	Name        string       `protobuf:"bytes,2,opt,name=name,proto3" json:"name"`
-	Permissions []string     `protobuf:"bytes,3,rep,name=permissions,proto3" json:"permissions"`
+	BaseAccount *BaseAccount `protobuf:"bytes,1,opt,name=base_account,json=baseAccount,proto3" json:"base_account,omitempty"`
+	Name        string       `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Permissions []string     `protobuf:"bytes,3,rep,name=permissions,proto3" json:"permissions,omitempty"`
 }
 
 func (x *ModuleAccount) Reset() {

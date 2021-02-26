@@ -150,9 +150,9 @@ type Vote struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	ProposalId uint64     `protobuf:"varint,1,opt,name=proposal_id,json=proposalId,proto3" json:"proposal_id"`
-	Voter      []byte     `protobuf:"bytes,2,opt,name=voter,proto3" json:"voter"`
-	Option     VoteOption `protobuf:"varint,3,opt,name=option,proto3,enum=kira.gov.VoteOption" json:"option"`
+	ProposalId uint64     `protobuf:"varint,1,opt,name=proposal_id,json=proposalId,proto3" json:"proposal_id,omitempty"`
+	Voter      []byte     `protobuf:"bytes,2,opt,name=voter,proto3" json:"voter,omitempty"`
+	Option     VoteOption `protobuf:"varint,3,opt,name=option,proto3,enum=kira.gov.VoteOption" json:"option,omitempty"`
 }
 
 func (x *Vote) Reset() {
@@ -213,9 +213,9 @@ type MsgVoteProposal struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	ProposalId uint64     `protobuf:"varint,1,opt,name=proposal_id,json=proposalId,proto3" json:"proposal_id"`
-	Voter      []byte     `protobuf:"bytes,2,opt,name=voter,proto3" json:"voter"`
-	Option     VoteOption `protobuf:"varint,3,opt,name=option,proto3,enum=kira.gov.VoteOption" json:"option"`
+	ProposalId uint64     `protobuf:"varint,1,opt,name=proposal_id,json=proposalId,proto3" json:"proposal_id,omitempty"`
+	Voter      []byte     `protobuf:"bytes,2,opt,name=voter,proto3" json:"voter,omitempty"`
+	Option     VoteOption `protobuf:"varint,3,opt,name=option,proto3,enum=kira.gov.VoteOption" json:"option,omitempty"`
 }
 
 func (x *MsgVoteProposal) Reset() {
@@ -276,9 +276,9 @@ type MsgProposalAssignPermission struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Proposer   []byte `protobuf:"bytes,1,opt,name=proposer,proto3" json:"proposer"`
-	Address    []byte `protobuf:"bytes,2,opt,name=address,proto3" json:"address"`
-	Permission uint32 `protobuf:"varint,3,opt,name=permission,proto3" json:"permission"`
+	Proposer   []byte `protobuf:"bytes,1,opt,name=proposer,proto3" json:"proposer,omitempty"`
+	Address    []byte `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
+	Permission uint32 `protobuf:"varint,3,opt,name=permission,proto3" json:"permission,omitempty"`
 }
 
 func (x *MsgProposalAssignPermission) Reset() {
@@ -339,12 +339,12 @@ type MsgProposalUpsertDataRegistry struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Proposer  []byte `protobuf:"bytes,1,opt,name=proposer,proto3" json:"proposer"`
-	Key       string `protobuf:"bytes,2,opt,name=key,proto3" json:"key"`
-	Hash      string `protobuf:"bytes,3,opt,name=hash,proto3" json:"hash"`
-	Reference string `protobuf:"bytes,4,opt,name=reference,proto3" json:"reference"`
-	Encoding  string `protobuf:"bytes,5,opt,name=encoding,proto3" json:"encoding"`
-	Size      uint64 `protobuf:"varint,6,opt,name=size,proto3" json:"size"`
+	Proposer  []byte `protobuf:"bytes,1,opt,name=proposer,proto3" json:"proposer,omitempty"`
+	Key       string `protobuf:"bytes,2,opt,name=key,proto3" json:"key,omitempty"`
+	Hash      string `protobuf:"bytes,3,opt,name=hash,proto3" json:"hash,omitempty"`
+	Reference string `protobuf:"bytes,4,opt,name=reference,proto3" json:"reference,omitempty"`
+	Encoding  string `protobuf:"bytes,5,opt,name=encoding,proto3" json:"encoding,omitempty"`
+	Size      uint64 `protobuf:"varint,6,opt,name=size,proto3" json:"size,omitempty"`
 }
 
 func (x *MsgProposalUpsertDataRegistry) Reset() {
@@ -426,8 +426,8 @@ type MsgProposalSetPoorNetworkMessages struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Proposer []byte   `protobuf:"bytes,1,opt,name=proposer,proto3" json:"proposer"`
-	Messages []string `protobuf:"bytes,2,rep,name=messages,proto3" json:"messages"`
+	Proposer []byte   `protobuf:"bytes,1,opt,name=proposer,proto3" json:"proposer,omitempty"`
+	Messages []string `protobuf:"bytes,2,rep,name=messages,proto3" json:"messages,omitempty"`
 }
 
 func (x *MsgProposalSetPoorNetworkMessages) Reset() {
@@ -481,13 +481,13 @@ type Proposal struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	ProposalId       uint64               `protobuf:"varint,1,opt,name=proposal_id,json=proposalId,proto3" json:"proposal_id"`
-	Content          *any.Any             `protobuf:"bytes,2,opt,name=content,proto3" json:"content"`
-	SubmitTime       *timestamp.Timestamp `protobuf:"bytes,3,opt,name=submit_time,json=submitTime,proto3" json:"submit_time"`
-	VotingStartTime  *timestamp.Timestamp `protobuf:"bytes,4,opt,name=voting_start_time,json=votingStartTime,proto3" json:"voting_start_time"`
-	VotingEndTime    *timestamp.Timestamp `protobuf:"bytes,5,opt,name=voting_end_time,json=votingEndTime,proto3" json:"voting_end_time"`
-	EnactmentEndTime *timestamp.Timestamp `protobuf:"bytes,6,opt,name=enactment_end_time,json=enactmentEndTime,proto3" json:"enactment_end_time"`
-	Result           VoteResult           `protobuf:"varint,8,opt,name=result,proto3,enum=kira.gov.VoteResult" json:"result"`
+	ProposalId       uint64               `protobuf:"varint,1,opt,name=proposal_id,json=proposalId,proto3" json:"proposal_id,omitempty"`
+	Content          *any.Any             `protobuf:"bytes,2,opt,name=content,proto3" json:"content,omitempty"`
+	SubmitTime       *timestamp.Timestamp `protobuf:"bytes,3,opt,name=submit_time,json=submitTime,proto3" json:"submit_time,omitempty"`
+	VotingStartTime  *timestamp.Timestamp `protobuf:"bytes,4,opt,name=voting_start_time,json=votingStartTime,proto3" json:"voting_start_time,omitempty"`
+	VotingEndTime    *timestamp.Timestamp `protobuf:"bytes,5,opt,name=voting_end_time,json=votingEndTime,proto3" json:"voting_end_time,omitempty"`
+	EnactmentEndTime *timestamp.Timestamp `protobuf:"bytes,6,opt,name=enactment_end_time,json=enactmentEndTime,proto3" json:"enactment_end_time,omitempty"`
+	Result           VoteResult           `protobuf:"varint,8,opt,name=result,proto3,enum=kira.gov.VoteResult" json:"result,omitempty"`
 }
 
 func (x *Proposal) Reset() {
@@ -576,8 +576,8 @@ type AssignPermissionProposal struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Address    []byte `protobuf:"bytes,1,opt,name=address,proto3" json:"address"`
-	Permission uint32 `protobuf:"varint,2,opt,name=permission,proto3" json:"permission"`
+	Address    []byte `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+	Permission uint32 `protobuf:"varint,2,opt,name=permission,proto3" json:"permission,omitempty"`
 }
 
 func (x *AssignPermissionProposal) Reset() {
@@ -631,9 +631,9 @@ type MsgProposalSetNetworkProperty struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Proposer        []byte          `protobuf:"bytes,1,opt,name=proposer,proto3" json:"proposer"`
-	NetworkProperty NetworkProperty `protobuf:"varint,2,opt,name=network_property,json=networkProperty,proto3,enum=kira.gov.NetworkProperty" json:"network_property"` // enum value
-	Value           uint64          `protobuf:"varint,3,opt,name=value,proto3" json:"value"`
+	Proposer        []byte          `protobuf:"bytes,1,opt,name=proposer,proto3" json:"proposer,omitempty"`
+	NetworkProperty NetworkProperty `protobuf:"varint,2,opt,name=network_property,json=networkProperty,proto3,enum=kira.gov.NetworkProperty" json:"network_property,omitempty"` // enum value
+	Value           uint64          `protobuf:"varint,3,opt,name=value,proto3" json:"value,omitempty"`
 }
 
 func (x *MsgProposalSetNetworkProperty) Reset() {
@@ -694,8 +694,8 @@ type SetNetworkPropertyProposal struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	NetworkProperty NetworkProperty `protobuf:"varint,1,opt,name=network_property,json=networkProperty,proto3,enum=kira.gov.NetworkProperty" json:"network_property"`
-	Value           uint64          `protobuf:"varint,2,opt,name=value,proto3" json:"value"`
+	NetworkProperty NetworkProperty `protobuf:"varint,1,opt,name=network_property,json=networkProperty,proto3,enum=kira.gov.NetworkProperty" json:"network_property,omitempty"`
+	Value           uint64          `protobuf:"varint,2,opt,name=value,proto3" json:"value,omitempty"`
 }
 
 func (x *SetNetworkPropertyProposal) Reset() {
@@ -749,11 +749,11 @@ type UpsertDataRegistryProposal struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Key       string `protobuf:"bytes,1,opt,name=key,proto3" json:"key"`
-	Hash      string `protobuf:"bytes,2,opt,name=hash,proto3" json:"hash"`
-	Reference string `protobuf:"bytes,3,opt,name=reference,proto3" json:"reference"`
-	Encoding  string `protobuf:"bytes,4,opt,name=encoding,proto3" json:"encoding"`
-	Size      uint64 `protobuf:"varint,5,opt,name=size,proto3" json:"size"`
+	Key       string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
+	Hash      string `protobuf:"bytes,2,opt,name=hash,proto3" json:"hash,omitempty"`
+	Reference string `protobuf:"bytes,3,opt,name=reference,proto3" json:"reference,omitempty"`
+	Encoding  string `protobuf:"bytes,4,opt,name=encoding,proto3" json:"encoding,omitempty"`
+	Size      uint64 `protobuf:"varint,5,opt,name=size,proto3" json:"size,omitempty"`
 }
 
 func (x *UpsertDataRegistryProposal) Reset() {
@@ -828,7 +828,7 @@ type SetPoorNetworkMessagesProposal struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Messages []string `protobuf:"bytes,1,rep,name=messages,proto3" json:"messages"`
+	Messages []string `protobuf:"bytes,1,rep,name=messages,proto3" json:"messages,omitempty"`
 }
 
 func (x *SetPoorNetworkMessagesProposal) Reset() {

@@ -40,18 +40,18 @@ type ValidatorSigningInfo struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address"`
+	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
 	// height at which validator was first a candidate OR was activated
-	StartHeight int64 `protobuf:"varint,2,opt,name=start_height,json=startHeight,proto3" json:"start_height"`
+	StartHeight int64 `protobuf:"varint,2,opt,name=start_height,json=startHeight,proto3" json:"start_height,omitempty"`
 	// index offset into signed block bit array
-	IndexOffset int64 `protobuf:"varint,3,opt,name=index_offset,json=indexOffset,proto3" json:"index_offset"`
+	IndexOffset int64 `protobuf:"varint,3,opt,name=index_offset,json=indexOffset,proto3" json:"index_offset,omitempty"`
 	// timestamp validator cannot be activated until
-	InactiveUntil *timestamp.Timestamp `protobuf:"bytes,4,opt,name=inactive_until,json=inactiveUntil,proto3" json:"inactive_until"`
+	InactiveUntil *timestamp.Timestamp `protobuf:"bytes,4,opt,name=inactive_until,json=inactiveUntil,proto3" json:"inactive_until,omitempty"`
 	// whether or not a validator has been tombstoned (killed out of validator
 	// set)
-	Tombstoned bool `protobuf:"varint,5,opt,name=tombstoned,proto3" json:"tombstoned"`
+	Tombstoned bool `protobuf:"varint,5,opt,name=tombstoned,proto3" json:"tombstoned,omitempty"`
 	// missed blocks counter (to avoid scanning the array every time)
-	MissedBlocksCounter int64 `protobuf:"varint,6,opt,name=missed_blocks_counter,json=missedBlocksCounter,proto3" json:"missed_blocks_counter"`
+	MissedBlocksCounter int64 `protobuf:"varint,6,opt,name=missed_blocks_counter,json=missedBlocksCounter,proto3" json:"missed_blocks_counter,omitempty"`
 }
 
 func (x *ValidatorSigningInfo) Reset() {
@@ -135,7 +135,7 @@ type QuerySigningInfosRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Pagination *PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination"`
+	Pagination *PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
 func (x *QuerySigningInfosRequest) Reset() {
@@ -185,8 +185,8 @@ type QuerySigningInfosResponse struct {
 	unknownFields protoimpl.UnknownFields
 
 	// info is the signing info of all validators
-	Info       []*ValidatorSigningInfo `protobuf:"bytes,1,rep,name=info,proto3" json:"info"`
-	Pagination *PageResponse           `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination"`
+	Info       []*ValidatorSigningInfo `protobuf:"bytes,1,rep,name=info,proto3" json:"info,omitempty"`
+	Pagination *PageResponse           `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
 func (x *QuerySigningInfosResponse) Reset() {
