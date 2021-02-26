@@ -91,7 +91,7 @@ func queryValidatorsHandle(r *http.Request, gwCosmosmux *runtime.ServeMux) (inte
 	r.URL.RawQuery = strings.Join(events, "&")
 
 	success, failure, statusCode := common.ServeGRPC(r, gwCosmosmux)
-	if isQueryAll && success != nil {
+	if success != nil {
 		result := struct {
 			Validators []types.QueryValidator `json:"validators,omitempty"`
 			Actors     []string               `json:"actors,omitempty"`
@@ -110,49 +110,54 @@ func queryValidatorsHandle(r *http.Request, gwCosmosmux *runtime.ServeMux) (inte
 			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
 		}
 
-		allValidators := types.AllValidators{}
+		if isQueryAll {
 
-		allValidators.Validators = result.Validators
-		allValidators.Waiting = make([]string, 0)
-		for _, actor := range result.Actors {
-			isWaiting := true
-			for _, validator := range result.Validators {
-				if validator.Address == actor {
-					isWaiting = false
-					break
+			allValidators := types.AllValidators{}
+
+			allValidators.Validators = result.Validators
+			allValidators.Waiting = make([]string, 0)
+			for _, actor := range result.Actors {
+				isWaiting := true
+				for _, validator := range result.Validators {
+					if validator.Address == actor {
+						isWaiting = false
+						break
+					}
+				}
+
+				if isWaiting {
+					allValidators.Waiting = append(allValidators.Waiting, actor)
 				}
 			}
 
-			if isWaiting {
-				allValidators.Waiting = append(allValidators.Waiting, actor)
+			allValidators.Status.TotalValidators = len(result.Validators)
+			allValidators.Status.WaitingValidators = len(allValidators.Waiting)
+
+			allValidators.Status.ActiveValidators = 0
+			allValidators.Status.PausedValidators = 0
+			allValidators.Status.InactiveValidators = 0
+			allValidators.Status.JailedValidators = 0
+			for _, validator := range result.Validators {
+				if validator.Status == Active {
+					allValidators.Status.ActiveValidators++
+				}
+				if validator.Status == Inactive {
+					allValidators.Status.InactiveValidators++
+				}
+				if validator.Status == Paused {
+					allValidators.Status.PausedValidators++
+				}
+				if validator.Status == Jailed {
+					allValidators.Status.JailedValidators++
+				}
 			}
+
+			allValidators.Status.ConsensusStopped = float64(allValidators.Status.ActiveValidators) < math.Floor(float64(allValidators.Status.TotalValidators)*2/3)+1
+
+			return allValidators, nil, statusCode
 		}
 
-		allValidators.Status.TotalValidators = len(result.Validators)
-		allValidators.Status.TotalWaiting = len(allValidators.Waiting)
-
-		allValidators.Status.ActiveValidators = 0
-		allValidators.Status.PausedValidators = 0
-		allValidators.Status.InactiveValidators = 0
-		allValidators.Status.JailedValidators = 0
-		for _, validator := range result.Validators {
-			if validator.Status == Active {
-				allValidators.Status.ActiveValidators++
-			}
-			if validator.Status == Inactive {
-				allValidators.Status.InactiveValidators++
-			}
-			if validator.Status == Paused {
-				allValidators.Status.PausedValidators++
-			}
-			if validator.Status == Jailed {
-				allValidators.Status.JailedValidators++
-			}
-		}
-
-		allValidators.Status.NetworkStopped = float64(allValidators.Status.ActiveValidators) < math.Floor(float64(allValidators.Status.TotalValidators)*2/3)+1
-
-		return allValidators, nil, statusCode
+		return result, nil, statusCode
 	}
 
 	return success, failure, statusCode

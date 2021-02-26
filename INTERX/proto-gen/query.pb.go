@@ -36,8 +36,8 @@ type Endpoint struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Url    string `protobuf:"bytes,1,opt,name=url,proto3" json:"url,omitempty"`
-	Method string `protobuf:"bytes,2,opt,name=method,proto3" json:"method,omitempty"`
+	Url    string `protobuf:"bytes,1,opt,name=url,proto3" json:"url"`
+	Method string `protobuf:"bytes,2,opt,name=method,proto3" json:"method"`
 }
 
 func (x *Endpoint) Reset() {
@@ -91,10 +91,10 @@ type RPCMethod struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Description   string  `protobuf:"bytes,1,opt,name=description,proto3" json:"description,omitempty"`
-	Enabled       bool    `protobuf:"varint,2,opt,name=enabled,proto3" json:"enabled,omitempty"`
-	RateLimit     float64 `protobuf:"fixed64,3,opt,name=rate_limit,json=rateLimit,proto3" json:"rate_limit,omitempty"`
-	AuthRateLimit float64 `protobuf:"fixed64,4,opt,name=auth_rate_limit,json=authRateLimit,proto3" json:"auth_rate_limit,omitempty"`
+	Description   string  `protobuf:"bytes,1,opt,name=description,proto3" json:"description"`
+	Enabled       bool    `protobuf:"varint,2,opt,name=enabled,proto3" json:"enabled"`
+	RateLimit     float64 `protobuf:"fixed64,3,opt,name=rate_limit,json=rateLimit,proto3" json:"rate_limit"`
+	AuthRateLimit float64 `protobuf:"fixed64,4,opt,name=auth_rate_limit,json=authRateLimit,proto3" json:"auth_rate_limit"`
 }
 
 func (x *RPCMethod) Reset() {
@@ -162,8 +162,8 @@ type RPCMethods struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	GET  map[string]*RPCMethod `protobuf:"bytes,1,rep,name=GET,proto3" json:"GET,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-	POST map[string]*RPCMethod `protobuf:"bytes,2,rep,name=POST,proto3" json:"POST,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	GET  map[string]*RPCMethod `protobuf:"bytes,1,rep,name=GET,proto3" json:"GET" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	POST map[string]*RPCMethod `protobuf:"bytes,2,rep,name=POST,proto3" json:"POST" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 }
 
 func (x *RPCMethods) Reset() {
@@ -257,14 +257,14 @@ type RPCMethodsResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	ChainId   string      `protobuf:"bytes,1,opt,name=chain_id,json=chainId,proto3" json:"chain_id,omitempty"`
-	Block     uint64      `protobuf:"varint,2,opt,name=block,proto3" json:"block,omitempty"`
-	BlockTime string      `protobuf:"bytes,3,opt,name=block_time,json=blockTime,proto3" json:"block_time,omitempty"`
-	Timestamp uint64      `protobuf:"varint,4,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
-	Response  *RPCMethods `protobuf:"bytes,5,opt,name=response,proto3" json:"response,omitempty"`
-	Error     *Error      `protobuf:"bytes,6,opt,name=error,proto3" json:"error,omitempty"`
-	Signature string      `protobuf:"bytes,7,opt,name=signature,proto3" json:"signature,omitempty"`
-	Hash      string      `protobuf:"bytes,8,opt,name=hash,proto3" json:"hash,omitempty"`
+	ChainId   string      `protobuf:"bytes,1,opt,name=chain_id,json=chainId,proto3" json:"chain_id"`
+	Block     uint64      `protobuf:"varint,2,opt,name=block,proto3" json:"block"`
+	BlockTime string      `protobuf:"bytes,3,opt,name=block_time,json=blockTime,proto3" json:"block_time"`
+	Timestamp uint64      `protobuf:"varint,4,opt,name=timestamp,proto3" json:"timestamp"`
+	Response  *RPCMethods `protobuf:"bytes,5,opt,name=response,proto3" json:"response"`
+	Error     *Error      `protobuf:"bytes,6,opt,name=error,proto3" json:"error"`
+	Signature string      `protobuf:"bytes,7,opt,name=signature,proto3" json:"signature"`
+	Hash      string      `protobuf:"bytes,8,opt,name=hash,proto3" json:"hash"`
 }
 
 func (x *RPCMethodsResponse) Reset() {

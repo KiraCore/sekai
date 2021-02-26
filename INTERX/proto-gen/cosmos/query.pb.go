@@ -36,9 +36,9 @@ type ProtocolVersion struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	P2P   string `protobuf:"bytes,1,opt,name=p2p,proto3" json:"p2p,omitempty"`
-	Block string `protobuf:"bytes,2,opt,name=block,proto3" json:"block,omitempty"`
-	App   string `protobuf:"bytes,3,opt,name=app,proto3" json:"app,omitempty"`
+	P2P   string `protobuf:"bytes,1,opt,name=p2p,proto3" json:"p2p"`
+	Block string `protobuf:"bytes,2,opt,name=block,proto3" json:"block"`
+	App   string `protobuf:"bytes,3,opt,name=app,proto3" json:"app"`
 }
 
 func (x *ProtocolVersion) Reset() {
@@ -99,8 +99,8 @@ type NodeOtherInfo struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	TxIndex    string `protobuf:"bytes,1,opt,name=tx_index,json=txIndex,proto3" json:"tx_index,omitempty"`
-	RpcAddress string `protobuf:"bytes,2,opt,name=rpc_address,json=rpcAddress,proto3" json:"rpc_address,omitempty"`
+	TxIndex    string `protobuf:"bytes,1,opt,name=tx_index,json=txIndex,proto3" json:"tx_index"`
+	RpcAddress string `protobuf:"bytes,2,opt,name=rpc_address,json=rpcAddress,proto3" json:"rpc_address"`
 }
 
 func (x *NodeOtherInfo) Reset() {
@@ -154,14 +154,14 @@ type NodeInfo struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	ProtocolVersion *ProtocolVersion `protobuf:"bytes,1,opt,name=protocol_version,json=protocolVersion,proto3" json:"protocol_version,omitempty"`
-	Id              string           `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
-	ListenAddr      string           `protobuf:"bytes,3,opt,name=listen_addr,json=listenAddr,proto3" json:"listen_addr,omitempty"`
-	Network         string           `protobuf:"bytes,4,opt,name=network,proto3" json:"network,omitempty"`
-	Version         string           `protobuf:"bytes,5,opt,name=version,proto3" json:"version,omitempty"`
-	Channels        string           `protobuf:"bytes,6,opt,name=channels,proto3" json:"channels,omitempty"`
-	Moniker         string           `protobuf:"bytes,7,opt,name=moniker,proto3" json:"moniker,omitempty"`
-	Other           *NodeOtherInfo   `protobuf:"bytes,8,opt,name=other,proto3" json:"other,omitempty"`
+	ProtocolVersion *ProtocolVersion `protobuf:"bytes,1,opt,name=protocol_version,json=protocolVersion,proto3" json:"protocol_version"`
+	Id              string           `protobuf:"bytes,2,opt,name=id,proto3" json:"id"`
+	ListenAddr      string           `protobuf:"bytes,3,opt,name=listen_addr,json=listenAddr,proto3" json:"listen_addr"`
+	Network         string           `protobuf:"bytes,4,opt,name=network,proto3" json:"network"`
+	Version         string           `protobuf:"bytes,5,opt,name=version,proto3" json:"version"`
+	Channels        string           `protobuf:"bytes,6,opt,name=channels,proto3" json:"channels"`
+	Moniker         string           `protobuf:"bytes,7,opt,name=moniker,proto3" json:"moniker"`
+	Other           *NodeOtherInfo   `protobuf:"bytes,8,opt,name=other,proto3" json:"other"`
 }
 
 func (x *NodeInfo) Reset() {
@@ -257,15 +257,15 @@ type SyncInfo struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	LatestBlockHash     string `protobuf:"bytes,1,opt,name=latest_block_hash,json=latestBlockHash,proto3" json:"latest_block_hash,omitempty"`
-	LatestAppHash       string `protobuf:"bytes,2,opt,name=latest_app_hash,json=latestAppHash,proto3" json:"latest_app_hash,omitempty"`
-	LatestBlockHeight   string `protobuf:"bytes,3,opt,name=latest_block_height,json=latestBlockHeight,proto3" json:"latest_block_height,omitempty"`
-	LatestBlockTime     string `protobuf:"bytes,4,opt,name=latest_block_time,json=latestBlockTime,proto3" json:"latest_block_time,omitempty"`
-	EarliestBlockHash   string `protobuf:"bytes,5,opt,name=earliest_block_hash,json=earliestBlockHash,proto3" json:"earliest_block_hash,omitempty"`
-	EarliestAppHash     string `protobuf:"bytes,6,opt,name=earliest_app_hash,json=earliestAppHash,proto3" json:"earliest_app_hash,omitempty"`
-	EarliestBlockHeight string `protobuf:"bytes,7,opt,name=earliest_block_height,json=earliestBlockHeight,proto3" json:"earliest_block_height,omitempty"`
-	EarliestBlockTime   string `protobuf:"bytes,8,opt,name=earliest_block_time,json=earliestBlockTime,proto3" json:"earliest_block_time,omitempty"`
-	CatchingUp          bool   `protobuf:"varint,9,opt,name=catching_up,json=catchingUp,proto3" json:"catching_up,omitempty"`
+	LatestBlockHash     string `protobuf:"bytes,1,opt,name=latest_block_hash,json=latestBlockHash,proto3" json:"latest_block_hash"`
+	LatestAppHash       string `protobuf:"bytes,2,opt,name=latest_app_hash,json=latestAppHash,proto3" json:"latest_app_hash"`
+	LatestBlockHeight   string `protobuf:"bytes,3,opt,name=latest_block_height,json=latestBlockHeight,proto3" json:"latest_block_height"`
+	LatestBlockTime     string `protobuf:"bytes,4,opt,name=latest_block_time,json=latestBlockTime,proto3" json:"latest_block_time"`
+	EarliestBlockHash   string `protobuf:"bytes,5,opt,name=earliest_block_hash,json=earliestBlockHash,proto3" json:"earliest_block_hash"`
+	EarliestAppHash     string `protobuf:"bytes,6,opt,name=earliest_app_hash,json=earliestAppHash,proto3" json:"earliest_app_hash"`
+	EarliestBlockHeight string `protobuf:"bytes,7,opt,name=earliest_block_height,json=earliestBlockHeight,proto3" json:"earliest_block_height"`
+	EarliestBlockTime   string `protobuf:"bytes,8,opt,name=earliest_block_time,json=earliestBlockTime,proto3" json:"earliest_block_time"`
+	CatchingUp          bool   `protobuf:"varint,9,opt,name=catching_up,json=catchingUp,proto3" json:"catching_up"`
 }
 
 func (x *SyncInfo) Reset() {
@@ -368,8 +368,8 @@ type PubKey struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Type  string `protobuf:"bytes,1,opt,name=type,proto3" json:"type,omitempty"`
-	Value string `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
+	Type  string `protobuf:"bytes,1,opt,name=type,proto3" json:"type"`
+	Value string `protobuf:"bytes,2,opt,name=value,proto3" json:"value"`
 }
 
 func (x *PubKey) Reset() {
@@ -423,9 +423,9 @@ type ValidatorInfo struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Address     string  `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
-	PubKey      *PubKey `protobuf:"bytes,2,opt,name=pub_key,json=pubKey,proto3" json:"pub_key,omitempty"`
-	VotingPower string  `protobuf:"bytes,3,opt,name=voting_power,json=votingPower,proto3" json:"voting_power,omitempty"`
+	Address     string  `protobuf:"bytes,1,opt,name=address,proto3" json:"address"`
+	PubKey      *PubKey `protobuf:"bytes,2,opt,name=pub_key,json=pubKey,proto3" json:"pub_key"`
+	VotingPower string  `protobuf:"bytes,3,opt,name=voting_power,json=votingPower,proto3" json:"voting_power"`
 }
 
 func (x *ValidatorInfo) Reset() {
@@ -486,9 +486,9 @@ type Status struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	NodeInfo      *NodeInfo      `protobuf:"bytes,1,opt,name=node_info,json=nodeInfo,proto3" json:"node_info,omitempty"`
-	SyncInfo      *SyncInfo      `protobuf:"bytes,2,opt,name=sync_info,json=syncInfo,proto3" json:"sync_info,omitempty"`
-	ValidatorInfo *ValidatorInfo `protobuf:"bytes,3,opt,name=validator_info,json=validatorInfo,proto3" json:"validator_info,omitempty"`
+	NodeInfo      *NodeInfo      `protobuf:"bytes,1,opt,name=node_info,json=nodeInfo,proto3" json:"node_info"`
+	SyncInfo      *SyncInfo      `protobuf:"bytes,2,opt,name=sync_info,json=syncInfo,proto3" json:"sync_info"`
+	ValidatorInfo *ValidatorInfo `protobuf:"bytes,3,opt,name=validator_info,json=validatorInfo,proto3" json:"validator_info"`
 }
 
 func (x *Status) Reset() {
@@ -589,14 +589,14 @@ type StatusResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	ChainId   string  `protobuf:"bytes,1,opt,name=chain_id,json=chainId,proto3" json:"chain_id,omitempty"`
-	Block     uint64  `protobuf:"varint,2,opt,name=block,proto3" json:"block,omitempty"`
-	BlockTime string  `protobuf:"bytes,3,opt,name=block_time,json=blockTime,proto3" json:"block_time,omitempty"`
-	Timestamp uint64  `protobuf:"varint,4,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
-	Response  *Status `protobuf:"bytes,5,opt,name=response,proto3" json:"response,omitempty"`
-	Error     *Error  `protobuf:"bytes,6,opt,name=error,proto3" json:"error,omitempty"`
-	Signature string  `protobuf:"bytes,7,opt,name=signature,proto3" json:"signature,omitempty"`
-	Hash      string  `protobuf:"bytes,8,opt,name=hash,proto3" json:"hash,omitempty"`
+	ChainId   string  `protobuf:"bytes,1,opt,name=chain_id,json=chainId,proto3" json:"chain_id"`
+	Block     uint64  `protobuf:"varint,2,opt,name=block,proto3" json:"block"`
+	BlockTime string  `protobuf:"bytes,3,opt,name=block_time,json=blockTime,proto3" json:"block_time"`
+	Timestamp uint64  `protobuf:"varint,4,opt,name=timestamp,proto3" json:"timestamp"`
+	Response  *Status `protobuf:"bytes,5,opt,name=response,proto3" json:"response"`
+	Error     *Error  `protobuf:"bytes,6,opt,name=error,proto3" json:"error"`
+	Signature string  `protobuf:"bytes,7,opt,name=signature,proto3" json:"signature"`
+	Hash      string  `protobuf:"bytes,8,opt,name=hash,proto3" json:"hash"`
 }
 
 func (x *StatusResponse) Reset() {
@@ -692,9 +692,9 @@ type Event struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Key   string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
-	Value string `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
-	Index bool   `protobuf:"varint,3,opt,name=index,proto3" json:"index,omitempty"`
+	Key   string `protobuf:"bytes,1,opt,name=key,proto3" json:"key"`
+	Value string `protobuf:"bytes,2,opt,name=value,proto3" json:"value"`
+	Index bool   `protobuf:"varint,3,opt,name=index,proto3" json:"index"`
 }
 
 func (x *Event) Reset() {
@@ -755,10 +755,10 @@ type TxResult struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Log       string   `protobuf:"bytes,1,opt,name=log,proto3" json:"log,omitempty"`
-	GasWanted string   `protobuf:"bytes,2,opt,name=gas_wanted,json=gasWanted,proto3" json:"gas_wanted,omitempty"`
-	GasUsed   string   `protobuf:"bytes,3,opt,name=gas_used,json=gasUsed,proto3" json:"gas_used,omitempty"`
-	Tags      []*Event `protobuf:"bytes,4,rep,name=tags,proto3" json:"tags,omitempty"`
+	Log       string   `protobuf:"bytes,1,opt,name=log,proto3" json:"log"`
+	GasWanted string   `protobuf:"bytes,2,opt,name=gas_wanted,json=gasWanted,proto3" json:"gas_wanted"`
+	GasUsed   string   `protobuf:"bytes,3,opt,name=gas_used,json=gasUsed,proto3" json:"gas_used"`
+	Tags      []*Event `protobuf:"bytes,4,rep,name=tags,proto3" json:"tags"`
 }
 
 func (x *TxResult) Reset() {
@@ -826,11 +826,11 @@ type Transaction struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Hash     string    `protobuf:"bytes,1,opt,name=hash,proto3" json:"hash,omitempty"`
-	Height   string    `protobuf:"bytes,2,opt,name=height,proto3" json:"height,omitempty"`
-	Index    uint64    `protobuf:"varint,3,opt,name=index,proto3" json:"index,omitempty"`
-	TxResult *TxResult `protobuf:"bytes,4,opt,name=tx_result,json=txResult,proto3" json:"tx_result,omitempty"`
-	Tx       string    `protobuf:"bytes,5,opt,name=tx,proto3" json:"tx,omitempty"`
+	Hash     string    `protobuf:"bytes,1,opt,name=hash,proto3" json:"hash"`
+	Height   string    `protobuf:"bytes,2,opt,name=height,proto3" json:"height"`
+	Index    uint64    `protobuf:"varint,3,opt,name=index,proto3" json:"index"`
+	TxResult *TxResult `protobuf:"bytes,4,opt,name=tx_result,json=txResult,proto3" json:"tx_result"`
+	Tx       string    `protobuf:"bytes,5,opt,name=tx,proto3" json:"tx"`
 }
 
 func (x *Transaction) Reset() {
@@ -907,7 +907,7 @@ type TransactionHashRequest struct {
 	unknownFields protoimpl.UnknownFields
 
 	// transaction hash.
-	Hash []byte `protobuf:"bytes,1,opt,name=hash,proto3" json:"hash,omitempty"`
+	Hash []byte `protobuf:"bytes,1,opt,name=hash,proto3" json:"hash"`
 }
 
 func (x *TransactionHashRequest) Reset() {
@@ -955,14 +955,14 @@ type TransactionHashResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	ChainId   string       `protobuf:"bytes,1,opt,name=chain_id,json=chainId,proto3" json:"chain_id,omitempty"`
-	Block     uint64       `protobuf:"varint,2,opt,name=block,proto3" json:"block,omitempty"`
-	BlockTime string       `protobuf:"bytes,3,opt,name=block_time,json=blockTime,proto3" json:"block_time,omitempty"`
-	Timestamp uint64       `protobuf:"varint,4,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
-	Response  *Transaction `protobuf:"bytes,5,opt,name=response,proto3" json:"response,omitempty"`
-	Error     *Error       `protobuf:"bytes,6,opt,name=error,proto3" json:"error,omitempty"`
-	Signature string       `protobuf:"bytes,7,opt,name=signature,proto3" json:"signature,omitempty"`
-	Hash      string       `protobuf:"bytes,8,opt,name=hash,proto3" json:"hash,omitempty"`
+	ChainId   string       `protobuf:"bytes,1,opt,name=chain_id,json=chainId,proto3" json:"chain_id"`
+	Block     uint64       `protobuf:"varint,2,opt,name=block,proto3" json:"block"`
+	BlockTime string       `protobuf:"bytes,3,opt,name=block_time,json=blockTime,proto3" json:"block_time"`
+	Timestamp uint64       `protobuf:"varint,4,opt,name=timestamp,proto3" json:"timestamp"`
+	Response  *Transaction `protobuf:"bytes,5,opt,name=response,proto3" json:"response"`
+	Error     *Error       `protobuf:"bytes,6,opt,name=error,proto3" json:"error"`
+	Signature string       `protobuf:"bytes,7,opt,name=signature,proto3" json:"signature"`
+	Hash      string       `protobuf:"bytes,8,opt,name=hash,proto3" json:"hash"`
 }
 
 func (x *TransactionHashResponse) Reset() {

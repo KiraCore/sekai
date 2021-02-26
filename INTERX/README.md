@@ -30,6 +30,7 @@ Generate configuration file.
 
 Parameters:
 - `config` - The interx configuration file path. (default = "./config.json")
+- `serve_https` - https or http. (default = false)
 - `grpc` - The grpc endpoint of the sekaid. (default = "dns:///0.0.0.0:9090")
 - `rpc` - The tendermint rpc endpoint of the sekaid (default = "http://0.0.0.0:26657")
 - `port` - The interx port. (default = "11000")

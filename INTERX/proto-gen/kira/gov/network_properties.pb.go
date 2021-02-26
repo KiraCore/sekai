@@ -104,8 +104,8 @@ type MsgSetNetworkProperties struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	NetworkProperties *NetworkProperties `protobuf:"bytes,1,opt,name=network_properties,json=networkProperties,proto3" json:"network_properties,omitempty"`
-	Proposer          []byte             `protobuf:"bytes,2,opt,name=proposer,proto3" json:"proposer,omitempty"`
+	NetworkProperties *NetworkProperties `protobuf:"bytes,1,opt,name=network_properties,json=networkProperties,proto3" json:"network_properties"`
+	Proposer          []byte             `protobuf:"bytes,2,opt,name=proposer,proto3" json:"proposer"`
 }
 
 func (x *MsgSetNetworkProperties) Reset() {
@@ -159,23 +159,23 @@ type NetworkProperties struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	MinTxFee                 uint64 `protobuf:"varint,1,opt,name=min_tx_fee,json=minTxFee,proto3" json:"min_tx_fee,omitempty"`
-	MaxTxFee                 uint64 `protobuf:"varint,2,opt,name=max_tx_fee,json=maxTxFee,proto3" json:"max_tx_fee,omitempty"`
-	VoteQuorum               uint64 `protobuf:"varint,3,opt,name=vote_quorum,json=voteQuorum,proto3" json:"vote_quorum,omitempty"`
-	ProposalEndTime          uint64 `protobuf:"varint,4,opt,name=proposal_end_time,json=proposalEndTime,proto3" json:"proposal_end_time,omitempty"`
-	ProposalEnactmentTime    uint64 `protobuf:"varint,5,opt,name=proposal_enactment_time,json=proposalEnactmentTime,proto3" json:"proposal_enactment_time,omitempty"`
-	EnableForeignFeePayments bool   `protobuf:"varint,6,opt,name=enable_foreign_fee_payments,json=enableForeignFeePayments,proto3" json:"enable_foreign_fee_payments,omitempty"`
+	MinTxFee                 uint64 `protobuf:"varint,1,opt,name=min_tx_fee,json=minTxFee,proto3" json:"min_tx_fee"`
+	MaxTxFee                 uint64 `protobuf:"varint,2,opt,name=max_tx_fee,json=maxTxFee,proto3" json:"max_tx_fee"`
+	VoteQuorum               uint64 `protobuf:"varint,3,opt,name=vote_quorum,json=voteQuorum,proto3" json:"vote_quorum"`
+	ProposalEndTime          uint64 `protobuf:"varint,4,opt,name=proposal_end_time,json=proposalEndTime,proto3" json:"proposal_end_time"`
+	ProposalEnactmentTime    uint64 `protobuf:"varint,5,opt,name=proposal_enactment_time,json=proposalEnactmentTime,proto3" json:"proposal_enactment_time"`
+	EnableForeignFeePayments bool   `protobuf:"varint,6,opt,name=enable_foreign_fee_payments,json=enableForeignFeePayments,proto3" json:"enable_foreign_fee_payments"`
 	// The rank property is a long term statistics implying the "longest" streak that validator ever achieved,
 	// it can be expressed as rank = MAX(rank, streak).
 	// Under certain circumstances we should however decrease the rank of the validator.
 	// If the mischance property is incremented, the rank should be decremented by X (default 10), that is rank = MAX(rank - X, 0).
 	// Every time node status changes to inactive the rank should be divided by 2, that is rank = FLOOR(rank / 2)
 	// The streak and rank will enable governance to judge real life performance of validators on the mainnet or testnet, and potentially propose eviction of the weakest and least reliable operators.
-	MischanceRankDecreaseAmount uint64 `protobuf:"varint,7,opt,name=mischance_rank_decrease_amount,json=mischanceRankDecreaseAmount,proto3" json:"mischance_rank_decrease_amount,omitempty"` // X (default 10)
-	InactiveRankDecreasePercent uint64 `protobuf:"varint,8,opt,name=inactive_rank_decrease_percent,json=inactiveRankDecreasePercent,proto3" json:"inactive_rank_decrease_percent,omitempty"` // Y (default 50%)
-	MinValidators               uint64 `protobuf:"varint,9,opt,name=min_validators,json=minValidators,proto3" json:"min_validators,omitempty"`
-	PoorNetworkMaxBankSend      uint64 `protobuf:"varint,10,opt,name=poor_network_max_bank_send,json=poorNetworkMaxBankSend,proto3" json:"poor_network_max_bank_send,omitempty"` // default 10000 ukex
-	JailMaxTime                 uint64 `protobuf:"varint,11,opt,name=jail_max_time,json=jailMaxTime,proto3" json:"jail_max_time,omitempty"`                                      // Jailing validator maximum time in minutes
+	MischanceRankDecreaseAmount uint64 `protobuf:"varint,7,opt,name=mischance_rank_decrease_amount,json=mischanceRankDecreaseAmount,proto3" json:"mischance_rank_decrease_amount"` // X (default 10)
+	InactiveRankDecreasePercent uint64 `protobuf:"varint,8,opt,name=inactive_rank_decrease_percent,json=inactiveRankDecreasePercent,proto3" json:"inactive_rank_decrease_percent"` // Y (default 50%)
+	MinValidators               uint64 `protobuf:"varint,9,opt,name=min_validators,json=minValidators,proto3" json:"min_validators"`
+	PoorNetworkMaxBankSend      uint64 `protobuf:"varint,10,opt,name=poor_network_max_bank_send,json=poorNetworkMaxBankSend,proto3" json:"poor_network_max_bank_send"` // default 10000 ukex
+	JailMaxTime                 uint64 `protobuf:"varint,11,opt,name=jail_max_time,json=jailMaxTime,proto3" json:"jail_max_time"`                                      // Jailing validator maximum time in minutes
 }
 
 func (x *NetworkProperties) Reset() {

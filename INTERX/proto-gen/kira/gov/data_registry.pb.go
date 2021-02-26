@@ -30,10 +30,10 @@ type DataRegistryEntry struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Hash      string `protobuf:"bytes,1,opt,name=hash,proto3" json:"hash,omitempty"`
-	Reference string `protobuf:"bytes,2,opt,name=reference,proto3" json:"reference,omitempty"`
-	Encoding  string `protobuf:"bytes,3,opt,name=encoding,proto3" json:"encoding,omitempty"`
-	Size      uint64 `protobuf:"varint,4,opt,name=size,proto3" json:"size,omitempty"`
+	Hash      string `protobuf:"bytes,1,opt,name=hash,proto3" json:"hash"`
+	Reference string `protobuf:"bytes,2,opt,name=reference,proto3" json:"reference"`
+	Encoding  string `protobuf:"bytes,3,opt,name=encoding,proto3" json:"encoding"`
+	Size      uint64 `protobuf:"varint,4,opt,name=size,proto3" json:"size"`
 }
 
 func (x *DataRegistryEntry) Reset() {

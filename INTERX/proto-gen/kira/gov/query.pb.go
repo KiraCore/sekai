@@ -39,7 +39,7 @@ type QueryProposalRequest struct {
 	unknownFields protoimpl.UnknownFields
 
 	// proposal_id defines the unique id of the proposal.
-	ProposalId uint64 `protobuf:"varint,1,opt,name=proposal_id,json=proposalId,proto3" json:"proposal_id,omitempty"`
+	ProposalId uint64 `protobuf:"varint,1,opt,name=proposal_id,json=proposalId,proto3" json:"proposal_id"`
 }
 
 func (x *QueryProposalRequest) Reset() {
@@ -87,7 +87,7 @@ type QueryProposalResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Proposal *Proposal `protobuf:"bytes,1,opt,name=proposal,proto3" json:"proposal,omitempty"`
+	Proposal *Proposal `protobuf:"bytes,1,opt,name=proposal,proto3" json:"proposal"`
 }
 
 func (x *QueryProposalResponse) Reset() {
@@ -136,7 +136,7 @@ type QueryProposalsRequest struct {
 	unknownFields protoimpl.UnknownFields
 
 	// voter defines the voter address for the proposals.
-	Voter string `protobuf:"bytes,1,opt,name=voter,proto3" json:"voter,omitempty"`
+	Voter string `protobuf:"bytes,1,opt,name=voter,proto3" json:"voter"`
 }
 
 func (x *QueryProposalsRequest) Reset() {
@@ -185,7 +185,7 @@ type QueryProposalsResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Proposals []*Proposal `protobuf:"bytes,1,rep,name=proposals,proto3" json:"proposals,omitempty"`
+	Proposals []*Proposal `protobuf:"bytes,1,rep,name=proposals,proto3" json:"proposals"`
 }
 
 func (x *QueryProposalsResponse) Reset() {
@@ -233,7 +233,7 @@ type QueryDataReferenceKeysRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Pagination *PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
+	Pagination *PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination"`
 }
 
 func (x *QueryDataReferenceKeysRequest) Reset() {
@@ -281,8 +281,8 @@ type QueryDataReferenceKeysResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Keys       []string      `protobuf:"bytes,1,rep,name=keys,proto3" json:"keys,omitempty"`
-	Pagination *PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+	Keys       []string      `protobuf:"bytes,1,rep,name=keys,proto3" json:"keys"`
+	Pagination *PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination"`
 }
 
 func (x *QueryDataReferenceKeysResponse) Reset() {
@@ -337,7 +337,7 @@ type QueryDataReferenceRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Key string `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
+	Key string `protobuf:"bytes,1,opt,name=key,proto3" json:"key"`
 }
 
 func (x *QueryDataReferenceRequest) Reset() {
@@ -385,7 +385,7 @@ type QueryDataReferenceResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Data *DataRegistryEntry `protobuf:"bytes,1,opt,name=data,proto3" json:"data,omitempty"`
+	Data *DataRegistryEntry `protobuf:"bytes,1,opt,name=data,proto3" json:"data"`
 }
 
 func (x *QueryDataReferenceResponse) Reset() {

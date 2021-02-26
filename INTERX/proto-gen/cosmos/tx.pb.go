@@ -36,11 +36,11 @@ type PostTransactionResult struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Code      string `protobuf:"bytes,1,opt,name=code,proto3" json:"code,omitempty"`
-	Data      string `protobuf:"bytes,2,opt,name=data,proto3" json:"data,omitempty"`
-	Log       string `protobuf:"bytes,3,opt,name=log,proto3" json:"log,omitempty"`
-	Codespace string `protobuf:"bytes,4,opt,name=codespace,proto3" json:"codespace,omitempty"`
-	Hash      string `protobuf:"bytes,5,opt,name=hash,proto3" json:"hash,omitempty"`
+	Code      string `protobuf:"bytes,1,opt,name=code,proto3" json:"code"`
+	Data      string `protobuf:"bytes,2,opt,name=data,proto3" json:"data"`
+	Log       string `protobuf:"bytes,3,opt,name=log,proto3" json:"log"`
+	Codespace string `protobuf:"bytes,4,opt,name=codespace,proto3" json:"codespace"`
+	Hash      string `protobuf:"bytes,5,opt,name=hash,proto3" json:"hash"`
 }
 
 func (x *PostTransactionResult) Reset() {
@@ -117,7 +117,7 @@ type PostTransactionRequest struct {
 	unknownFields protoimpl.UnknownFields
 
 	// transaction hash.
-	Tx []byte `protobuf:"bytes,1,opt,name=tx,proto3" json:"tx,omitempty"`
+	Tx []byte `protobuf:"bytes,1,opt,name=tx,proto3" json:"tx"`
 }
 
 func (x *PostTransactionRequest) Reset() {
@@ -165,14 +165,14 @@ type PostTransactionResponse struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	ChainId   string                 `protobuf:"bytes,1,opt,name=chain_id,json=chainId,proto3" json:"chain_id,omitempty"`
-	Block     uint64                 `protobuf:"varint,2,opt,name=block,proto3" json:"block,omitempty"`
-	BlockTime string                 `protobuf:"bytes,3,opt,name=block_time,json=blockTime,proto3" json:"block_time,omitempty"`
-	Timestamp uint64                 `protobuf:"varint,4,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
-	Response  *PostTransactionResult `protobuf:"bytes,5,opt,name=response,proto3" json:"response,omitempty"`
-	Error     *Error                 `protobuf:"bytes,6,opt,name=error,proto3" json:"error,omitempty"`
-	Signature string                 `protobuf:"bytes,7,opt,name=signature,proto3" json:"signature,omitempty"`
-	Hash      string                 `protobuf:"bytes,8,opt,name=hash,proto3" json:"hash,omitempty"`
+	ChainId   string                 `protobuf:"bytes,1,opt,name=chain_id,json=chainId,proto3" json:"chain_id"`
+	Block     uint64                 `protobuf:"varint,2,opt,name=block,proto3" json:"block"`
+	BlockTime string                 `protobuf:"bytes,3,opt,name=block_time,json=blockTime,proto3" json:"block_time"`
+	Timestamp uint64                 `protobuf:"varint,4,opt,name=timestamp,proto3" json:"timestamp"`
+	Response  *PostTransactionResult `protobuf:"bytes,5,opt,name=response,proto3" json:"response"`
+	Error     *Error                 `protobuf:"bytes,6,opt,name=error,proto3" json:"error"`
+	Signature string                 `protobuf:"bytes,7,opt,name=signature,proto3" json:"signature"`
+	Hash      string                 `protobuf:"bytes,8,opt,name=hash,proto3" json:"hash"`
 }
 
 func (x *PostTransactionResponse) Reset() {

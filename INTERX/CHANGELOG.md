@@ -1,5 +1,16 @@
 # Changelog
 
+## [v0.1.x.x] - xx.xx.xxxx
+
+### Added
+
+- Added configuration for https/http
+
+### Updated
+
+- Updated validators statistics
+- Updated validators query to include zero values.
+
 ## [v0.1.17.1] - 02.25.2021
 ### Added
 - Add proposals query

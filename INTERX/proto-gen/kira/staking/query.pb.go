@@ -38,15 +38,15 @@ type ValidatorsRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Address  string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
-	Valkey   string `protobuf:"bytes,2,opt,name=valkey,proto3" json:"valkey,omitempty"`
-	Pubkey   string `protobuf:"bytes,3,opt,name=pubkey,proto3" json:"pubkey,omitempty"`
-	Moniker  string `protobuf:"bytes,4,opt,name=moniker,proto3" json:"moniker,omitempty"`
-	Status   string `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
-	Proposer string `protobuf:"bytes,6,opt,name=proposer,proto3" json:"proposer,omitempty"`
+	Address  string `protobuf:"bytes,1,opt,name=address,proto3" json:"address"`
+	Valkey   string `protobuf:"bytes,2,opt,name=valkey,proto3" json:"valkey"`
+	Pubkey   string `protobuf:"bytes,3,opt,name=pubkey,proto3" json:"pubkey"`
+	Moniker  string `protobuf:"bytes,4,opt,name=moniker,proto3" json:"moniker"`
+	Status   string `protobuf:"bytes,5,opt,name=status,proto3" json:"status"`
+	Proposer string `protobuf:"bytes,6,opt,name=proposer,proto3" json:"proposer"`
 	// pagination defines an optional pagination for the request.
-	Pagination *PageRequest `protobuf:"bytes,7,opt,name=pagination,proto3" json:"pagination,omitempty"`
-	All        bool         `protobuf:"varint,8,opt,name=all,proto3" json:"all,omitempty"`
+	Pagination *PageRequest `protobuf:"bytes,7,opt,name=pagination,proto3" json:"pagination"`
+	All        bool         `protobuf:"varint,8,opt,name=all,proto3" json:"all"`
 }
 
 func (x *ValidatorsRequest) Reset() {
@@ -142,19 +142,19 @@ type QueryValidator struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Address    string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
-	Valkey     string `protobuf:"bytes,2,opt,name=valkey,proto3" json:"valkey,omitempty"`
-	Pubkey     string `protobuf:"bytes,3,opt,name=pubkey,proto3" json:"pubkey,omitempty"`
-	Proposer   string `protobuf:"bytes,4,opt,name=proposer,proto3" json:"proposer,omitempty"`
-	Moniker    string `protobuf:"bytes,5,opt,name=moniker,proto3" json:"moniker,omitempty"`
-	Website    string `protobuf:"bytes,6,opt,name=website,proto3" json:"website,omitempty"`
-	Social     string `protobuf:"bytes,7,opt,name=social,proto3" json:"social,omitempty"`
-	Identity   string `protobuf:"bytes,8,opt,name=identity,proto3" json:"identity,omitempty"`
-	Commission string `protobuf:"bytes,9,opt,name=commission,proto3" json:"commission,omitempty"`
-	Status     string `protobuf:"bytes,10,opt,name=status,proto3" json:"status,omitempty"`
-	Rank       int64  `protobuf:"varint,11,opt,name=rank,proto3" json:"rank,omitempty"`
-	Streak     int64  `protobuf:"varint,12,opt,name=streak,proto3" json:"streak,omitempty"`
-	Mischance  int64  `protobuf:"varint,13,opt,name=mischance,proto3" json:"mischance,omitempty"`
+	Address    string `protobuf:"bytes,1,opt,name=address,proto3" json:"address"`
+	Valkey     string `protobuf:"bytes,2,opt,name=valkey,proto3" json:"valkey"`
+	Pubkey     string `protobuf:"bytes,3,opt,name=pubkey,proto3" json:"pubkey"`
+	Proposer   string `protobuf:"bytes,4,opt,name=proposer,proto3" json:"proposer"`
+	Moniker    string `protobuf:"bytes,5,opt,name=moniker,proto3" json:"moniker"`
+	Website    string `protobuf:"bytes,6,opt,name=website,proto3" json:"website"`
+	Social     string `protobuf:"bytes,7,opt,name=social,proto3" json:"social"`
+	Identity   string `protobuf:"bytes,8,opt,name=identity,proto3" json:"identity"`
+	Commission string `protobuf:"bytes,9,opt,name=commission,proto3" json:"commission"`
+	Status     string `protobuf:"bytes,10,opt,name=status,proto3" json:"status"`
+	Rank       int64  `protobuf:"varint,11,opt,name=rank,proto3" json:"rank"`
+	Streak     int64  `protobuf:"varint,12,opt,name=streak,proto3" json:"streak"`
+	Mischance  int64  `protobuf:"varint,13,opt,name=mischance,proto3" json:"mischance"`
 }
 
 func (x *QueryValidator) Reset() {
@@ -287,10 +287,10 @@ type ValidatorsResponse struct {
 	unknownFields protoimpl.UnknownFields
 
 	// validators contains all the queried validators.
-	Validators []*QueryValidator `protobuf:"bytes,1,rep,name=validators,proto3" json:"validators,omitempty"`
-	Actors     []string          `protobuf:"bytes,2,rep,name=actors,proto3" json:"actors,omitempty"`
+	Validators []*QueryValidator `protobuf:"bytes,1,rep,name=validators,proto3" json:"validators"`
+	Actors     []string          `protobuf:"bytes,2,rep,name=actors,proto3" json:"actors"`
 	// pagination defines the pagination in the response.
-	Pagination *PageResponse `protobuf:"bytes,3,opt,name=pagination,proto3" json:"pagination,omitempty"`
+	Pagination *PageResponse `protobuf:"bytes,3,opt,name=pagination,proto3" json:"pagination"`
 }
 
 func (x *ValidatorsResponse) Reset() {
