@@ -438,7 +438,7 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
 	// Activate defines a method for activating an inactivated validator, thus returning
-	// them into the bonded validator set, so they can begin receiving provisions
+	// them into the joined validator set, so they can begin receiving provisions
 	// and rewards again.
 	Activate(ctx context.Context, in *MsgActivate, opts ...grpc.CallOption) (*MsgActivateResponse, error)
 	// Pause defines a method for pausing an active validator
@@ -485,7 +485,7 @@ func (c *msgClient) Unpause(ctx context.Context, in *MsgUnpause, opts ...grpc.Ca
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
 	// Activate defines a method for activating an inactivated validator, thus returning
-	// them into the bonded validator set, so they can begin receiving provisions
+	// them into the joined validator set, so they can begin receiving provisions
 	// and rewards again.
 	Activate(context.Context, *MsgActivate) (*MsgActivateResponse, error)
 	// Pause defines a method for pausing an active validator

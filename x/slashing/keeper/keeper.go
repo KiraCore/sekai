@@ -52,9 +52,6 @@ func (k Keeper) AddPubkey(ctx sdk.Context, pubkey cryptotypes.PubKey) {
 		panic(fmt.Errorf("error while setting address-pubkey relation: %s", addr))
 	}
 
-	fmt.Println("AddPubkey setAddrPubkeyRelation", sdk.AccAddress(addr).String(), pkStr)
-	fmt.Println("AddPubkey setAddrPubkeyRelation", sdk.ValAddress(addr).String(), pkStr)
-	fmt.Println("AddPubkey setAddrPubkeyRelation", sdk.ConsAddress(addr).String(), pkStr)
 	k.setAddrPubkeyRelation(ctx, addr, pkStr)
 }
 
