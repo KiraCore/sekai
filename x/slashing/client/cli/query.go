@@ -8,7 +8,6 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/KiraCore/sekai/x/slashing/types"
 )
@@ -37,11 +36,11 @@ func GetQueryCmd() *cobra.Command {
 // GetCmdQuerySigningInfo implements the command to query signing info.
 func GetCmdQuerySigningInfo() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "signing-info [validator-conspub]",
+		Use:   "signing-info [valconsaddr]",
 		Short: "Query a validator's signing information",
 		Long: strings.TrimSpace(`Use a validators' consensus public key to find the signing-info for that validator:
 
-$ <appd> query slashing signing-info cosmosvalconspub1zcjduepqfhvwcmt7p06fvdgexxhmz0l8c7sgswl7ulv7aulk364x4g5xsw7sr0k2g5
+$ <appd> query customslashing signing-info kiravalcons15nxzg5lrmyu42vuzlztdnlhq9sngerenu520ey
 `),
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -49,13 +48,7 @@ $ <appd> query slashing signing-info cosmosvalconspub1zcjduepqfhvwcmt7p06fvdgexx
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			pk, err := sdk.GetPubKeyFromBech32(sdk.Bech32PubKeyTypeConsPub, args[0])
-			if err != nil {
-				return err
-			}
-
-			consAddr := sdk.ConsAddress(pk.Address())
-			params := &types.QuerySigningInfoRequest{ConsAddress: consAddr.String()}
+			params := &types.QuerySigningInfoRequest{ConsAddress: args[0]}
 			res, err := queryClient.SigningInfo(context.Background(), params)
 			if err != nil {
 				return err
