@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.1.17.1] - 03.02.2021
+### Fixed
+- Mischance querying CLI command
+### Added
+- genutil module to handle validator status
+- CLI utility command to get valcons address from account address
+- ValidatorJoined hook that's derivated from Cosmos SDK's `ValidatorBonded` hook
+
 ## [v0.1.17] - 02.16.2021
 ### Fixed
 - Problem with ClaimValidator and PubKey encoding due to protocol buff Any type.
