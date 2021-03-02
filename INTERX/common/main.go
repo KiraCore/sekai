@@ -3,15 +3,11 @@ package common
 import (
 	"io/ioutil"
 	"os"
-	"sync"
 
 	"github.com/KiraCore/sekai/INTERX/config"
 	"github.com/KiraCore/sekai/INTERX/types"
 	"google.golang.org/grpc/grpclog"
 )
-
-// Mutex will be used for Sync
-var Mutex = sync.Mutex{}
 
 // RPCMethods is a variable for rpc methods
 var RPCMethods = make(map[string]map[string]types.RPCMethod)

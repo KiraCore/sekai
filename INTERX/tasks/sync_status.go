@@ -10,6 +10,7 @@ import (
 	"github.com/KiraCore/sekai/INTERX/common"
 	"github.com/KiraCore/sekai/INTERX/config"
 	"github.com/KiraCore/sekai/INTERX/database"
+	"github.com/KiraCore/sekai/INTERX/global"
 )
 
 func getStatus(rpcAddr string) {
@@ -42,11 +43,11 @@ func getStatus(rpcAddr string) {
 		return
 	}
 
-	common.Mutex.Lock()
+	global.Mutex.Lock()
 	common.NodeStatus.Chainid = result.Result.Block.Header.Chainid
 	common.NodeStatus.Block, _ = strconv.ParseInt(result.Result.Block.Header.Height, 10, 64)
 	common.NodeStatus.Blocktime = result.Result.Block.Header.Time
-	common.Mutex.Unlock()
+	global.Mutex.Unlock()
 
 	// save block height/time
 	t, _ := time.Parse(time.RFC3339, common.NodeStatus.Blocktime)

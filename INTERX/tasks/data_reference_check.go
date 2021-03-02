@@ -11,6 +11,7 @@ import (
 	common "github.com/KiraCore/sekai/INTERX/common"
 	"github.com/KiraCore/sekai/INTERX/config"
 	database "github.com/KiraCore/sekai/INTERX/database"
+	"github.com/KiraCore/sekai/INTERX/global"
 )
 
 // RefMeta is a struct to be used for reference metadata
@@ -54,7 +55,7 @@ func saveReference(url string, path string) error {
 			return err
 		}
 
-		common.Mutex.Lock()
+		global.Mutex.Lock()
 
 		if _, err := os.Stat(filepath.Dir(path)); os.IsNotExist(err) {
 			os.MkdirAll(filepath.Dir(path), 0700)
@@ -62,11 +63,11 @@ func saveReference(url string, path string) error {
 
 		err = ioutil.WriteFile(path, bodyBytes, 0644)
 		if err != nil {
-			common.Mutex.Unlock()
+			global.Mutex.Unlock()
 			return err
 		}
 
-		common.Mutex.Unlock()
+		global.Mutex.Unlock()
 	}
 
 	return nil

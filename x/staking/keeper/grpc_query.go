@@ -11,6 +11,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 
+	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/staking/types"
 
 	"google.golang.org/grpc/codes"
@@ -53,6 +54,8 @@ func (q Querier) ValidatorByMoniker(ctx context.Context, request *types.Validato
 
 // Validators implements the Query all validators gRPC method
 func (q Querier) Validators(ctx context.Context, request *types.ValidatorsRequest) (*types.ValidatorsResponse, error) {
+	c := sdk.UnwrapSDKContext(ctx)
+
 	if request == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
@@ -62,10 +65,11 @@ func (q Querier) Validators(ctx context.Context, request *types.ValidatorsReques
 		return nil, status.Errorf(codes.InvalidArgument, "invalid validator status %s", request.Status)
 	}
 
-	store := sdk.UnwrapSDKContext(ctx).KVStore(q.keeper.storeKey)
-	validatorStore := prefix.NewStore(store, ValidatorsKey)
+	store := c.KVStore(q.keeper.storeKey)
 
 	var validators []types.QueryValidator
+
+	validatorStore := prefix.NewStore(store, ValidatorsKey)
 
 	pageRes, err := query.FilteredPaginate(validatorStore, request.Pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
 		var val types.Validator
@@ -79,6 +83,7 @@ func (q Querier) Validators(ctx context.Context, request *types.ValidatorsReques
 			Address:    sdk.AccAddress(val.ValKey).String(),
 			Valkey:     val.ValKey.String(),
 			Pubkey:     consPubkey,
+			Proposer:   val.GetConsPubKey().Address().String(),
 			Moniker:    val.Moniker,
 			Website:    val.Website,
 			Social:     val.Social,
@@ -109,18 +114,33 @@ func (q Querier) Validators(ctx context.Context, request *types.ValidatorsReques
 			return false, nil
 		}
 
-		if accumulate {
+		if request.Proposer != "" && request.Proposer != validator.Proposer {
+			return false, nil
+		}
+
+		if request.All || accumulate {
 			validators = append(validators, validator)
 		}
-		return true, nil
+		return !request.All, nil
 	})
+
+	var actors []string
+	if request.All {
+		for _, actor := range q.keeper.govkeeper.GetNetworkActorsByAbsoluteWhitelistPermission(c, customgovtypes.PermClaimValidator) {
+			fmt.Println(actor.Address)
+			actors = append(actors, actor.Address.String())
+		}
+	}
 
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	fmt.Println("validators ========>", validators)
-	response := types.ValidatorsResponse{Validators: validators, Pagination: pageRes}
+	if request.All {
+		pageRes = nil
+	}
+
+	response := types.ValidatorsResponse{Validators: validators, Pagination: pageRes, Actors: actors}
 
 	return &response, nil
 }

@@ -17,4 +17,7 @@ type StakingHooks interface {
 type GovKeeper interface {
 	// returns network properties
 	GetNetworkProperties(sdk.Context) *customgovtypes.NetworkProperties
+	// GetNetworkActorsByAbsoluteWhitelistPermission returns all actors that have a specific whitelist permission,
+	// it does not matter if it is by role or by individual permission.
+	GetNetworkActorsByAbsoluteWhitelistPermission(ctx sdk.Context, perm customgovtypes.PermValue) []customgovtypes.NetworkActor
 }
