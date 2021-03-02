@@ -3,6 +3,8 @@ package kira.tokens;
 
 import "alias.proto";
 import "rate.proto";
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/tokens/types";
 
@@ -10,11 +12,15 @@ option go_package = "github.com/KiraCore/sekai/x/tokens/types";
 service Query {
   // Returns the token alias
   rpc GetTokenAlias (TokenAliasRequest) returns (TokenAliasResponse) {}
-  rpc GetAllTokenAliases (AllTokenAliasesRequest) returns (AllTokenAliasesResponse) {}
+  rpc GetAllTokenAliases (AllTokenAliasesRequest) returns (AllTokenAliasesResponse) {
+    option (google.api.http).get = "/kira/tokens/aliases";
+  }
   rpc GetTokenAliasesByDenom (TokenAliasesByDenomRequest) returns (TokenAliasesByDenomResponse) {}
   // Returns the token rates
   rpc GetTokenRate (TokenRateRequest) returns (TokenRateResponse) {}
-  rpc GetAllTokenRates (AllTokenRatesRequest) returns (AllTokenRatesResponse) {}
+  rpc GetAllTokenRates (AllTokenRatesRequest) returns (AllTokenRatesResponse) {
+    option (google.api.http).get = "/kira/tokens/rates";
+  }
   rpc GetTokenRatesByDenom (TokenRatesByDenomRequest) returns (TokenRatesByDenomResponse) {}
 }
 

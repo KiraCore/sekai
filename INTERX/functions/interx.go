@@ -160,6 +160,22 @@ func RegisterInterxFunctions() {
 	)
 
 	AddInterxFunction(
+		"QueryKiraTokensAliases",
+		config.QueryKiraTokensAliases,
+		`{
+			"description": "QueryKiraTokensAliases is a function to query all tokens aliases."
+		}`,
+	)
+
+	AddInterxFunction(
+		"QueryKiraTokensRates",
+		config.QueryKiraTokensRates,
+		`{
+			"description": "QueryKiraTokensRates is a function to query all tokens rates."
+		}`,
+	)
+
+	AddInterxFunction(
 		"Withdraws",
 		config.QueryWithdraws,
 		`{
