@@ -158,7 +158,7 @@ func (k Keeper) GetValidatorByConsAddr(ctx sdk.Context, consAddr sdk.ConsAddress
 	return validator, nil
 }
 
-// MaxValidators returns the maximum amount of bonded validators
+// MaxValidators returns the maximum amount of joined validators
 func (k Keeper) MaxValidators(sdk.Context) uint32 {
 	// TODO: don't do anything for now, implement this
 	return 10

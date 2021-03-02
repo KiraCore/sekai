@@ -18,6 +18,7 @@ import (
 	"github.com/tendermint/tendermint/libs/log"
 	dbm "github.com/tendermint/tm-db"
 
+	genutilcli "github.com/KiraCore/sekai/x/genutil/client/cli"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/debug"
@@ -34,7 +35,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/crisis"
-	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 
 	"github.com/KiraCore/sekai/app"
 	customstaking "github.com/KiraCore/sekai/x/staking/client/cli"
@@ -71,7 +71,6 @@ func init() {
 
 	rootCmd.AddCommand(
 		genutilcli.InitCmd(app.ModuleBasics, app.DefaultNodeHome),
-		genutilcli.MigrateGenesisCmd(),
 		genutilcli.GenTxCmd(app.ModuleBasics, encodingConfig.TxConfig, banktypes.GenesisBalancesIterator{}, app.DefaultNodeHome),
 		customstaking.GenTxClaimCmd(banktypes.GenesisBalancesIterator{}, app.DefaultNodeHome),
 		genutilcli.ValidateGenesisCmd(app.ModuleBasics),
@@ -90,6 +89,7 @@ func init() {
 		txCommand(),
 		keys.Commands(app.DefaultNodeHome),
 		GetValAddressFromAddressCmd(),
+		GetValConsAddressFromAddressCmd(),
 	)
 }
 
@@ -128,6 +128,32 @@ func GetValAddressFromAddressCmd() *cobra.Command {
 			}
 
 			valAddr := sdk.ValAddress(key)
+			return clientCtx.PrintString(valAddr.String())
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// GetValConsAddressFromAddressCmd returns a ValConsAddress from general address, used for conversion
+func GetValConsAddressFromAddressCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "valcons-address [address]",
+		Short: "Get ValAddress from AccAddress",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+			key, err := sdk.AccAddressFromBech32(args[0])
+			if err != nil {
+				return err
+			}
+
+			valAddr := sdk.ConsAddress(key)
 			return clientCtx.PrintString(valAddr.String())
 		},
 	}

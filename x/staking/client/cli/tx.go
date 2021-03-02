@@ -7,7 +7,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/server"
 
-	"github.com/cosmos/cosmos-sdk/x/genutil"
+	"github.com/KiraCore/sekai/x/genutil"
 	"github.com/cosmos/cosmos-sdk/x/staking/client/cli"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"

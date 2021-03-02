@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
-	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
+	genutiltypes "github.com/KiraCore/sekai/x/genutil/types"
 
 	customstakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -13,7 +13,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/server"
 	"github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"github.com/cosmos/cosmos-sdk/x/genutil"
+	"github.com/KiraCore/sekai/x/genutil"
 	"github.com/cosmos/cosmos-sdk/x/staking/client/cli"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"

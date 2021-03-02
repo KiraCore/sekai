@@ -54,7 +54,7 @@ type StakingKeeper interface {
 
 	HandleValidatorSignature(sdk.Context, sdk.ValAddress, bool) error
 
-	// MaxValidators returns the maximum amount of bonded validators
+	// MaxValidators returns the maximum amount of joined validators
 	MaxValidators(sdk.Context) uint32
 }
 
@@ -62,4 +62,5 @@ type StakingKeeper interface {
 type StakingHooks interface {
 	AfterValidatorCreated(ctx sdk.Context, valAddr sdk.ValAddress)                           // Must be called when a validator is created
 	AfterValidatorRemoved(ctx sdk.Context, consAddr sdk.ConsAddress, valAddr sdk.ValAddress) // Must be called when a validator is deleted
+	AfterValidatorJoined(ctx sdk.Context, consAddr sdk.ConsAddress, valAddr sdk.ValAddress)  // Must be called when a validator is joined
 }

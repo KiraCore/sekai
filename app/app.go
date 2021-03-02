@@ -6,10 +6,31 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
-
+	customante "github.com/KiraCore/sekai/app/ante"
+	"github.com/KiraCore/sekai/middleware"
+	"github.com/KiraCore/sekai/x/evidence"
+	evidencekeeper "github.com/KiraCore/sekai/x/evidence/keeper"
+	evidencetypes "github.com/KiraCore/sekai/x/evidence/types"
+	"github.com/KiraCore/sekai/x/feeprocessing"
+	feeprocessingkeeper "github.com/KiraCore/sekai/x/feeprocessing/keeper"
+	feeprocessingtypes "github.com/KiraCore/sekai/x/feeprocessing/types"
+	"github.com/KiraCore/sekai/x/genutil"
+	genutiltypes "github.com/KiraCore/sekai/x/genutil/types"
+	customgov "github.com/KiraCore/sekai/x/gov"
+	customgovkeeper "github.com/KiraCore/sekai/x/gov/keeper"
+	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
+	customslashing "github.com/KiraCore/sekai/x/slashing"
+	customslashingkeeper "github.com/KiraCore/sekai/x/slashing/keeper"
+	customslashingtypes "github.com/KiraCore/sekai/x/slashing/types"
+	customstaking "github.com/KiraCore/sekai/x/staking"
+	customstakingkeeper "github.com/KiraCore/sekai/x/staking/keeper"
+	customstakingtypes "github.com/KiraCore/sekai/x/staking/types"
+	"github.com/KiraCore/sekai/x/tokens"
+	tokenskeeper "github.com/KiraCore/sekai/x/tokens/keeper"
+	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
 	bam "github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
 	"github.com/cosmos/cosmos-sdk/client/rpc"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/codec/types"
@@ -43,27 +64,6 @@ import (
 	"github.com/tendermint/tendermint/libs/log"
 	tmos "github.com/tendermint/tendermint/libs/os"
 	dbm "github.com/tendermint/tm-db"
-
-	customante "github.com/KiraCore/sekai/app/ante"
-	"github.com/KiraCore/sekai/middleware"
-	"github.com/KiraCore/sekai/x/evidence"
-	evidencekeeper "github.com/KiraCore/sekai/x/evidence/keeper"
-	evidencetypes "github.com/KiraCore/sekai/x/evidence/types"
-	"github.com/KiraCore/sekai/x/feeprocessing"
-	feeprocessingkeeper "github.com/KiraCore/sekai/x/feeprocessing/keeper"
-	feeprocessingtypes "github.com/KiraCore/sekai/x/feeprocessing/types"
-	customgov "github.com/KiraCore/sekai/x/gov"
-	customgovkeeper "github.com/KiraCore/sekai/x/gov/keeper"
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
-	customslashing "github.com/KiraCore/sekai/x/slashing"
-	customslashingkeeper "github.com/KiraCore/sekai/x/slashing/keeper"
-	customslashingtypes "github.com/KiraCore/sekai/x/slashing/types"
-	customstaking "github.com/KiraCore/sekai/x/staking"
-	customstakingkeeper "github.com/KiraCore/sekai/x/staking/keeper"
-	customstakingtypes "github.com/KiraCore/sekai/x/staking/types"
-	"github.com/KiraCore/sekai/x/tokens"
-	tokenskeeper "github.com/KiraCore/sekai/x/tokens/keeper"
-	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
 )
 
 const appName = "Sekai"
@@ -77,6 +77,7 @@ var (
 	// and genesis verification.
 	ModuleBasics = module.NewBasicManager(
 		auth.AppModuleBasic{},
+		genutil.AppModuleBasic{},
 		bank.AppModuleBasic{},
 		params.AppModuleBasic{},
 		upgrade.AppModuleBasic{},
@@ -222,6 +223,10 @@ func NewInitApp(
 	// must be passed by reference here.
 	app.mm = module.NewManager(
 		auth.NewAppModule(appCodec, app.accountKeeper, simulation.RandomGenesisAccounts),
+		genutil.NewAppModule(
+			app.accountKeeper, app.customStakingKeeper, app.BaseApp.DeliverTx,
+			encodingConfig.TxConfig,
+		),
 		bank.NewAppModule(appCodec, app.bankKeeper, app.accountKeeper),
 		upgrade.NewAppModule(app.upgradeKeeper),
 		params.NewAppModule(app.paramsKeeper),
@@ -247,8 +252,8 @@ func NewInitApp(
 	// there is nothing left over in the validator fee pool, so as to keep the
 	// CanWithdrawInvariant invariant.
 	app.mm.SetOrderBeginBlockers(
-		upgradetypes.ModuleName,
-		evidencetypes.ModuleName,
+		upgradetypes.ModuleName, customslashingtypes.ModuleName,
+		evidencetypes.ModuleName, customstakingtypes.ModuleName,
 	)
 	app.mm.SetOrderEndBlockers(
 		customgovtypes.ModuleName,
@@ -265,9 +270,11 @@ func NewInitApp(
 		authtypes.ModuleName,
 		banktypes.ModuleName,
 		customstakingtypes.ModuleName,
+		customslashingtypes.ModuleName,
 		customgovtypes.ModuleName,
 		tokenstypes.ModuleName,
 		feeprocessingtypes.ModuleName,
+		genutiltypes.ModuleName,
 		evidencetypes.ModuleName,
 	)
 
