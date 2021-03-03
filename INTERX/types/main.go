@@ -146,6 +146,13 @@ type QueryValidator struct {
 	Rank       int64  `json:"rank,string"`
 	Streak     int64  `json:"streak,string"`
 	Mischance  int64  `json:"mischance,string"`
+
+	// Additional
+	StartHeight         int64  `json:"start_height,string"`
+	IndexOffset         int64  `json:"index_offset,string"`
+	InactiveUntil       string `json:"inactive_until"`
+	Tombstoned          bool   `json:"tombstoned,string"`
+	MissedBlocksCounter int64  `json:"missed_blocks_counter,string"`
 }
 
 type AllValidators struct {
@@ -163,11 +170,11 @@ type AllValidators struct {
 }
 
 type ValidatorSigningInfo struct {
-	Address             string `json:"address,omitempty"`
-	StartHeight         int64  `json:"start_height,string"`
-	IndexOffset         int64  `json:"index_offset,string"`
-	InactiveUntil       string `json:"inactive_until"`
-	Tombstoned          bool   `json:"tombstoned,string"`
+	Address             string `json:"address"`
+	StartHeight         int64  `json:"start_height,string,omitempty"`
+	IndexOffset         int64  `json:"index_offset,string,omitempty"`
+	InactiveUntil       string `json:"inactive_until,omitempty"`
+	Tombstoned          bool   `json:"tombstoned,string,omitempty"`
 	MissedBlocksCounter int64  `json:"missed_blocks_counter,string"`
 }
 

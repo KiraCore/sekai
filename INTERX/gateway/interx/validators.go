@@ -148,6 +148,11 @@ func queryValidatorsHandle(r *http.Request, gwCosmosmux *runtime.ServeMux) (inte
 				fmt.Println(signInfoResponse)
 
 				validator.Mischance = signInfoResponse.ValSigningInfo.MissedBlocksCounter
+				validator.StartHeight = signInfoResponse.ValSigningInfo.StartHeight
+				validator.IndexOffset = signInfoResponse.ValSigningInfo.IndexOffset
+				validator.InactiveUntil = signInfoResponse.ValSigningInfo.InactiveUntil
+				validator.Tombstoned = signInfoResponse.ValSigningInfo.Tombstoned
+				validator.MissedBlocksCounter = signInfoResponse.ValSigningInfo.MissedBlocksCounter
 			}
 		}
 
