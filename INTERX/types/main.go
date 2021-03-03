@@ -133,19 +133,19 @@ type InterxRequest struct {
 }
 
 type QueryValidator struct {
-	Address    string `json:"address,omitempty"`
-	Valkey     string `json:"valkey,omitempty"`
-	Pubkey     string `json:"pubkey,omitempty"`
-	Proposer   string `json:"proposer,omitempty"`
-	Moniker    string `json:"moniker,omitempty"`
-	Website    string `json:"website,omitempty"`
-	Social     string `json:"social,omitempty"`
-	Identity   string `json:"identity,omitempty"`
-	Commission string `json:"commission,omitempty"`
-	Status     string `json:"status,omitempty"`
-	Rank       int64  `json:"rank,string,omitempty"`
-	Streak     int64  `json:"streak,string,omitempty"`
-	Mischance  int64  `json:"mischance,string,omitempty"`
+	Address    string `json:"address"`
+	Valkey     string `json:"valkey"`
+	Pubkey     string `json:"pubkey"`
+	Proposer   string `json:"proposer"`
+	Moniker    string `json:"moniker"`
+	Website    string `json:"website"`
+	Social     string `json:"social"`
+	Identity   string `json:"identity"`
+	Commission string `json:"commission"`
+	Status     string `json:"status"`
+	Rank       int64  `json:"rank,string"`
+	Streak     int64  `json:"streak,string"`
+	Mischance  int64  `json:"mischance,string"`
 }
 
 type AllValidators struct {
@@ -160,6 +160,15 @@ type AllValidators struct {
 	} `json:"status"`
 	Waiting    []string         `json:"waiting"`
 	Validators []QueryValidator `json:"validators"`
+}
+
+type ValidatorSigningInfo struct {
+	Address             string `json:"address,omitempty"`
+	StartHeight         int64  `json:"start_height,string"`
+	IndexOffset         int64  `json:"index_offset,string"`
+	InactiveUntil       string `json:"inactive_until"`
+	Tombstoned          bool   `json:"tombstoned,string"`
+	MissedBlocksCounter int64  `json:"missed_blocks_counter,string"`
 }
 
 const (

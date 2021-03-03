@@ -10,6 +10,7 @@ import (
 	"github.com/KiraCore/sekai/INTERX/common"
 	"github.com/KiraCore/sekai/INTERX/config"
 	"github.com/KiraCore/sekai/INTERX/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 )
@@ -37,6 +38,8 @@ const (
 )
 
 func queryValidatorsHandle(r *http.Request, gwCosmosmux *runtime.ServeMux) (interface{}, interface{}, int) {
+	tempRequest := r.Clone(r.Context())
+
 	queries := r.URL.Query()
 	address := queries["address"]
 	valkey := queries["valkey"]
@@ -100,14 +103,52 @@ func queryValidatorsHandle(r *http.Request, gwCosmosmux *runtime.ServeMux) (inte
 
 		byteData, err := json.Marshal(success)
 		if err != nil {
-			common.GetLogger().Error("[query-reference] Invalid response format: ", err)
+			common.GetLogger().Error("[query-validators] Invalid response format: ", err)
 			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
 		}
 
 		err = json.Unmarshal(byteData, &result)
 		if err != nil {
-			common.GetLogger().Error("[query-reference] Invalid response format: ", err)
+			common.GetLogger().Error("[query-validators] Invalid response format: ", err)
 			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
+		}
+
+		for _, validator := range result.Validators {
+			fmt.Println(validator)
+			fmt.Println(validator.Pubkey)
+
+			pubkey, _ := sdk.GetPubKeyFromBech32(sdk.Bech32PubKeyTypeConsPub, validator.Pubkey)
+
+			newReq := tempRequest.Clone(tempRequest.Context())
+			newReq.URL.Path = config.QueryValidatorInfos + "/" + sdk.GetConsAddress(pubkey).String()
+
+			fmt.Println(newReq.URL.Path)
+
+			signInfoRes, signInfoErr, signInfoStatus := common.ServeGRPC(newReq, gwCosmosmux)
+
+			fmt.Println(signInfoRes, signInfoErr, signInfoStatus)
+
+			if signInfoRes != nil {
+				signInfoResponse := struct {
+					ValSigningInfo types.ValidatorSigningInfo `json:"val_signing_info,omitempty"`
+				}{}
+
+				byteData, err := json.Marshal(signInfoRes)
+				if err != nil {
+					common.GetLogger().Error("[query-validator-signinginfo] Invalid response format: ", err)
+					return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
+				}
+
+				err = json.Unmarshal(byteData, &signInfoResponse)
+				if err != nil {
+					common.GetLogger().Error("[query-validator-signinginfo] Invalid response format: ", err)
+					return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
+				}
+
+				fmt.Println(signInfoResponse)
+
+				validator.Mischance = signInfoResponse.ValSigningInfo.MissedBlocksCounter
+			}
 		}
 
 		if isQueryAll {
