@@ -133,19 +133,19 @@ type InterxRequest struct {
 }
 
 type QueryValidator struct {
-	Address    string `protobuf:"bytes,1,opt,name=address,proto3" json:"address"`
-	Valkey     string `protobuf:"bytes,2,opt,name=valkey,proto3" json:"valkey"`
-	Pubkey     string `protobuf:"bytes,3,opt,name=pubkey,proto3" json:"pubkey"`
-	Proposer   string `protobuf:"bytes,4,opt,name=proposer,proto3" json:"proposer"`
-	Moniker    string `protobuf:"bytes,5,opt,name=moniker,proto3" json:"moniker"`
-	Website    string `protobuf:"bytes,6,opt,name=website,proto3" json:"website"`
-	Social     string `protobuf:"bytes,7,opt,name=social,proto3" json:"social"`
-	Identity   string `protobuf:"bytes,8,opt,name=identity,proto3" json:"identity"`
-	Commission string `protobuf:"bytes,9,opt,name=commission,proto3" json:"commission"`
-	Status     string `protobuf:"bytes,10,opt,name=status,proto3" json:"status"`
-	Rank       int64  `protobuf:"varint,11,opt,name=rank,proto3" json:"rank"`
-	Streak     int64  `protobuf:"varint,12,opt,name=streak,proto3" json:"streak"`
-	Mischance  int64  `protobuf:"varint,13,opt,name=mischance,proto3" json:"mischance"`
+	Address    string `json:"address,omitempty"`
+	Valkey     string `json:"valkey,omitempty"`
+	Pubkey     string `json:"pubkey,omitempty"`
+	Proposer   string `json:"proposer,omitempty"`
+	Moniker    string `json:"moniker,omitempty"`
+	Website    string `json:"website,omitempty"`
+	Social     string `json:"social,omitempty"`
+	Identity   string `json:"identity,omitempty"`
+	Commission string `json:"commission,omitempty"`
+	Status     string `json:"status,omitempty"`
+	Rank       int64  `json:"rank,string,omitempty"`
+	Streak     int64  `json:"streak,string,omitempty"`
+	Mischance  int64  `json:"mischance,string,omitempty"`
 }
 
 type AllValidators struct {
