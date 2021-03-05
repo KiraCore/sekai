@@ -10,6 +10,8 @@ const (
 
 	QueryProposals         = "/api/kira/gov/proposals"
 	QueryProposal          = "/api/kira/gov/proposals/{proposal_id}"
+	QueryVoters            = "/api/kira/gov/voters/{proposal_id}"
+	QueryVotes             = "/api/kira/gov/votes/{proposal_id}"
 	QueryDataReferenceKeys = "/api/kira/gov/data_keys"
 	QueryDataReference     = "/api/kira/gov/data/{key}"
 	QueryKiraTokensAliases = "/api/kira/tokens/aliases"

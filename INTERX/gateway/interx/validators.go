@@ -114,19 +114,12 @@ func queryValidatorsHandle(r *http.Request, gwCosmosmux *runtime.ServeMux) (inte
 		}
 
 		for _, validator := range result.Validators {
-			fmt.Println(validator)
-			fmt.Println(validator.Pubkey)
-
 			pubkey, _ := sdk.GetPubKeyFromBech32(sdk.Bech32PubKeyTypeConsPub, validator.Pubkey)
 
 			newReq := tempRequest.Clone(tempRequest.Context())
 			newReq.URL.Path = config.QueryValidatorInfos + "/" + sdk.GetConsAddress(pubkey).String()
 
-			fmt.Println(newReq.URL.Path)
-
-			signInfoRes, signInfoErr, signInfoStatus := common.ServeGRPC(newReq, gwCosmosmux)
-
-			fmt.Println(signInfoRes, signInfoErr, signInfoStatus)
+			signInfoRes, _, _ := common.ServeGRPC(newReq, gwCosmosmux)
 
 			if signInfoRes != nil {
 				signInfoResponse := struct {
@@ -144,8 +137,6 @@ func queryValidatorsHandle(r *http.Request, gwCosmosmux *runtime.ServeMux) (inte
 					common.GetLogger().Error("[query-validator-signinginfo] Invalid response format: ", err)
 					return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
 				}
-
-				fmt.Println(signInfoResponse)
 
 				validator.Mischance = signInfoResponse.ValSigningInfo.MissedBlocksCounter
 				validator.StartHeight = signInfoResponse.ValSigningInfo.StartHeight
