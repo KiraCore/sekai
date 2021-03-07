@@ -40,6 +40,8 @@ func DefaultGenesis() *GenesisState {
 			PoorNetworkMaxBankSend:      1000000, // 1M ukex
 			MinValidators:               1,
 			JailMaxTime:                 10, // 10 mins
+			EnableTokenWhitelist:        false,
+			EnableTokenBlacklist:        false,
 		},
 		ExecutionFees: []*ExecutionFee{
 			{
