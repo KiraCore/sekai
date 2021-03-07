@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased] - 03.02.2021
+### Added
+- Now when the proposal passes it enter ins status Enactment.
+
 ## [v0.1.17.2] - 03.02.2021
 ### Fixed
 - Mischance querying CLI command
@@ -7,6 +11,7 @@
 - genutil module to handle validator status
 - CLI utility command to get valcons address from account address
 - ValidatorJoined hook that's derivated from Cosmos SDK's `ValidatorBonded` hook
+
 ## [v0.1.17.1] - 02.25.2021
 ### Added
 - GRPC query for proposals
