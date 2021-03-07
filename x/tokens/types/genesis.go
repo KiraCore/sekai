@@ -15,5 +15,9 @@ func DefaultGenesis() *GenesisState {
 			"ubtc": NewTokenRate("ubtc", sdk.NewDec(10), true),           // 10
 			"xeth": NewTokenRate("xeth", sdk.NewDecWithPrec(1, 1), true), // 0.1
 		},
+		TokenBlackWhites: &TokensWhiteBlack{
+			Whitelisted: []string{"ukex"},
+			Blacklisted: []string{},
+		},
 	}
 }

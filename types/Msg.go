@@ -35,10 +35,11 @@ const (
 	MsgTypeProposalUnjailValidator = "proposal-unjail-validator"
 
 	// tokens module
-	MsgTypeUpsertTokenAlias         = "upsert-token-alias"
-	MsgTypeUpsertTokenRate          = "upsert-token-rate"
-	MsgProposalUpsertTokenAliasType = "propose-upsert-token-alias"
-	MsgProposalUpsertTokenRatesType = "propose-upsert-token-rates"
+	MsgTypeUpsertTokenAlias               = "upsert-token-alias"
+	MsgTypeUpsertTokenRate                = "upsert-token-rate"
+	MsgProposalUpsertTokenAliasType       = "propose-upsert-token-alias"
+	MsgProposalUpsertTokenRatesType       = "propose-upsert-token-rates"
+	MsgProposalTokensWhiteBlackChangeType = "propose-tokens-white-black-change"
 
 	// slashing module
 	MsgTypeActivate = "activate"

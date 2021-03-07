@@ -33,6 +33,10 @@ func NewHandler(ck keeper.Keeper, cgk types.CustomGovKeeper) sdk.Handler {
 			res, err := msgServer.ProposalUpsertTokenRates(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 
+		case *types.MsgProposalTokensWhiteBlackChange:
+			res, err := msgServer.ProposalTokensWhiteBlackChange(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
+
 		default:
 			return nil, errors.Wrapf(errors.ErrUnknownRequest, "unrecognized %s message type: %T", types.ModuleName, msg)
 		}

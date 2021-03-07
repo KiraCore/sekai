@@ -13,6 +13,26 @@ import (
 	"github.com/KiraCore/sekai/x/tokens/types"
 )
 
+// NewQueryCmd returns a root CLI command handler for all x/tokens transaction commands.
+func NewQueryCmd() *cobra.Command {
+	queryCmd := &cobra.Command{
+		Use:   types.RouterKey,
+		Short: "query commands for the tokens module",
+	}
+	queryCmd.AddCommand(
+		GetCmdQueryTokenAlias(),
+		GetCmdQueryAllTokenAliases(),
+		GetCmdQueryTokenAliasesByDenom(),
+		GetCmdQueryTokenRate(),
+		GetCmdQueryAllTokenRates(),
+		GetCmdQueryTokenRatesByDenom(),
+		GetCmdQueryTokenBlackWhites(),
+	)
+
+	queryCmd.PersistentFlags().String("node", "tcp://localhost:26657", "<host>:<port> to Tendermint RPC interface for this chain")
+	return queryCmd
+}
+
 // GetCmdQueryTokenAlias the query token alias command.
 func GetCmdQueryTokenAlias() *cobra.Command {
 	cmd := &cobra.Command{
@@ -168,6 +188,31 @@ func GetCmdQueryTokenRatesByDenom() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 			res, err := queryClient.GetTokenRatesByDenom(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// GetCmdQueryTokenBlackWhites the query token blacklists / whitelists
+func GetCmdQueryTokenBlackWhites() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "token-black-whites",
+		Short: "Get token black whites",
+		Args:  cobra.MinimumNArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			params := &types.TokenBlackWhitesRequest{}
+
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.GetTokenBlackWhites(context.Background(), params)
 			if err != nil {
 				return err
 			}

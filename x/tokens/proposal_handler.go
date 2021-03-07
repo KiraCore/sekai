@@ -52,3 +52,33 @@ func (a ApplyUpsertTokenRatesProposalHandler) Apply(ctx sdk.Context, proposal ty
 		panic(err)
 	}
 }
+
+type ApplyWhiteBlackChangeProposalHandler struct {
+	keeper keeper.Keeper
+}
+
+func NewApplyWhiteBlackChangeProposalHandler(keeper keeper.Keeper) *ApplyWhiteBlackChangeProposalHandler {
+	return &ApplyWhiteBlackChangeProposalHandler{keeper: keeper}
+}
+
+func (a ApplyWhiteBlackChangeProposalHandler) ProposalType() string {
+	return tokenstypes.ProposalTypeTokensWhiteBlackChange
+}
+
+func (a ApplyWhiteBlackChangeProposalHandler) Apply(ctx sdk.Context, proposal types.Content) {
+	p := proposal.(*tokenstypes.ProposalTokensWhiteBlackChange)
+
+	if p.IsBlacklist {
+		if p.IsAdd {
+			a.keeper.AddTokensToBlacklist(ctx, p.Tokens)
+		} else {
+			a.keeper.RemoveTokensFromBlacklist(ctx, p.Tokens)
+		}
+	} else {
+		if p.IsAdd {
+			a.keeper.AddTokensToWhitelist(ctx, p.Tokens)
+		} else {
+			a.keeper.RemoveTokensFromWhitelist(ctx, p.Tokens)
+		}
+	}
+}

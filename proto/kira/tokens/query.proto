@@ -3,6 +3,7 @@ package kira.tokens;
 
 import "alias.proto";
 import "rate.proto";
+import "freeze.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/tokens/types";
 
@@ -16,6 +17,8 @@ service Query {
   rpc GetTokenRate (TokenRateRequest) returns (TokenRateResponse) {}
   rpc GetAllTokenRates (AllTokenRatesRequest) returns (AllTokenRatesResponse) {}
   rpc GetTokenRatesByDenom (TokenRatesByDenomRequest) returns (TokenRatesByDenomResponse) {}
+  // Returns tokens black/white lists
+  rpc GetTokenBlackWhites (TokenBlackWhitesRequest) returns (TokenBlackWhitesResponse) {}
 }
 
 message TokenAliasRequest {
@@ -60,4 +63,9 @@ message TokenRatesByDenomRequest {
   
 message TokenRatesByDenomResponse {
   map<string, kira.tokens.TokenRate> data = 1;
+}
+
+message TokenBlackWhitesRequest {}
+message TokenBlackWhitesResponse {
+  TokensWhiteBlack data = 1;
 }

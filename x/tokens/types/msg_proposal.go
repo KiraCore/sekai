@@ -75,3 +75,28 @@ func (m *MsgProposalUpsertTokenRates) GetSignBytes() []byte {
 func (m *MsgProposalUpsertTokenRates) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{m.Proposer}
 }
+
+func NewMsgProposalTokensWhiteBlackChange(proposer sdk.AccAddress, isBlacklist, isAdd bool, tokens []string) *MsgProposalTokensWhiteBlackChange {
+	return &MsgProposalTokensWhiteBlackChange{IsBlacklist: isBlacklist, IsAdd: isAdd, Tokens: tokens, Proposer: proposer}
+}
+
+func (m *MsgProposalTokensWhiteBlackChange) Route() string {
+	return ModuleName
+}
+
+func (m *MsgProposalTokensWhiteBlackChange) Type() string {
+	return kiratypes.MsgProposalTokensWhiteBlackChangeType
+}
+
+func (m *MsgProposalTokensWhiteBlackChange) ValidateBasic() error {
+	return nil
+}
+
+func (m *MsgProposalTokensWhiteBlackChange) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *MsgProposalTokensWhiteBlackChange) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{m.Proposer}
+}

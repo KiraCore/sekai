@@ -66,6 +66,24 @@ func (k msgServer) ProposalUpsertTokenAlias(goCtx context.Context, msg *types.Ms
 	}, err
 }
 
+func (k msgServer) ProposalTokensWhiteBlackChange(goCtx context.Context, msg *types.MsgProposalTokensWhiteBlackChange) (*types.MsgProposalTokensWhiteBlackChangeResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	isAllowed := k.cgk.CheckIfAllowedPermission(ctx, msg.Proposer, customgovtypes.PermCreateTokensWhiteBlackChangeProposal)
+	if !isAllowed {
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermCreateTokensWhiteBlackChangeProposal.String())
+	}
+
+	proposalID, err := k.CreateAndSaveProposalWithContent(ctx, types.NewProposalTokensWhiteBlackChange(
+		msg.IsBlacklist,
+		msg.IsAdd,
+		msg.Tokens,
+	))
+	return &types.MsgProposalTokensWhiteBlackChangeResponse{
+		ProposalID: proposalID,
+	}, err
+}
+
 func (k msgServer) UpsertTokenAlias(
 	goCtx context.Context,
 	msg *types.MsgUpsertTokenAlias,

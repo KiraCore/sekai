@@ -63,21 +63,7 @@ func (b AppModuleBasic) GetTxCmd() *cobra.Command {
 
 // GetQueryCmd implement query commands for this module
 func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
-	queryCmd := &cobra.Command{
-		Use:   tokenstypes.RouterKey,
-		Short: "query commands for the customgov module",
-	}
-	queryCmd.AddCommand(
-		tokenscli.GetCmdQueryTokenAlias(),
-		tokenscli.GetCmdQueryAllTokenAliases(),
-		tokenscli.GetCmdQueryTokenAliasesByDenom(),
-		tokenscli.GetCmdQueryTokenRate(),
-		tokenscli.GetCmdQueryAllTokenRates(),
-		tokenscli.GetCmdQueryTokenRatesByDenom(),
-	)
-
-	queryCmd.PersistentFlags().String("node", "tcp://localhost:26657", "<host>:<port> to Tendermint RPC interface for this chain")
-	return queryCmd
+	return tokenscli.NewQueryCmd()
 }
 
 // AppModule for tokens management
@@ -114,6 +100,8 @@ func (am AppModule) InitGenesis(
 	for _, rate := range genesisState.Rates {
 		am.tokensKeeper.UpsertTokenRate(ctx, *rate)
 	}
+
+	am.tokensKeeper.SetTokenBlackWhites(ctx, genesisState.TokenBlackWhites)
 
 	return nil
 }

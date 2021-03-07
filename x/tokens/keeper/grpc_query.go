@@ -53,3 +53,8 @@ func (q Querier) GetAllTokenRates(ctx context.Context, request *types.AllTokenRa
 	rates := q.keeper.ListTokenRate(sdk.UnwrapSDKContext(ctx))
 	return &types.AllTokenRatesResponse{Data: rates}, nil
 }
+
+func (q Querier) GetTokenBlackWhites(ctx context.Context, request *types.TokenBlackWhitesRequest) (*types.TokenBlackWhitesResponse, error) {
+	data := q.keeper.GetTokenBlackWhites(sdk.UnwrapSDKContext(ctx))
+	return &types.TokenBlackWhitesResponse{Data: data}, nil
+}

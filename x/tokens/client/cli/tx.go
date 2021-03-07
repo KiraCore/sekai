@@ -23,6 +23,9 @@ const (
 	FlagDenom       = "denom"
 	FlagRate        = "rate"
 	FlagFeePayments = "fee_payments"
+	FlagIsBlacklist = "is_blacklist"
+	FlagIsAdd       = "is_add"
+	FlagTokens      = "tokens"
 )
 
 // NewTxCmd returns a root CLI command handler for all x/bank transaction commands.
@@ -40,6 +43,7 @@ func NewTxCmd() *cobra.Command {
 		GetTxUpsertTokenRateCmd(),
 		GetTxProposalUpsertTokenAliasCmd(),
 		GetTxProposalUpsertTokenRatesCmd(),
+		GetTxProposalTokensBlackWhiteChangeCmd(),
 	)
 
 	return txCmd
@@ -277,6 +281,50 @@ func GetTxUpsertTokenRateCmd() *cobra.Command {
 	cmd.Flags().String(FlagDenom, "tbtc", "denom - identifier for token rates")
 	cmd.Flags().String(FlagRate, "1.0", "rate to register, max decimal 9, max value 10^10")
 	cmd.Flags().Bool(FlagFeePayments, true, "use registry as fee payment")
+
+	flags.AddTxFlagsToCmd(cmd)
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+// GetTxProposalTokensBlackWhiteChangeCmd implement cli command for proposing tokens blacklist / whitelist update
+func GetTxProposalTokensBlackWhiteChangeCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "propose-update-tokens-blackwhite",
+		Short: "Propose update whitelisted and blacklisted tokens",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+
+			isBlacklist, err := cmd.Flags().GetBool(FlagIsBlacklist)
+			if err != nil {
+				return fmt.Errorf("invalid is_blacklist flag: %w", err)
+			}
+
+			isAdd, err := cmd.Flags().GetBool(FlagIsAdd)
+			if err != nil {
+				return fmt.Errorf("invalid is_add flag: %w", err)
+			}
+
+			tokens, err := cmd.Flags().GetStringArray(FlagTokens)
+			if err != nil {
+				return fmt.Errorf("invalid tokens flag: %w", err)
+			}
+
+			msg := types.NewMsgProposalTokensWhiteBlackChange(
+				clientCtx.FromAddress,
+				isBlacklist,
+				isAdd,
+				tokens,
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	cmd.Flags().Bool(FlagIsBlacklist, true, "true to modify blacklist otherwise false")
+	cmd.Flags().Bool(FlagIsAdd, true, "true to add otherwise false")
+	cmd.Flags().StringArray(FlagTokens, []string{}, "tokens array (eg. ATOM, KEX, BTC)")
 
 	flags.AddTxFlagsToCmd(cmd)
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)
