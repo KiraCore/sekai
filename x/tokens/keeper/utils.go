@@ -1,17 +1,12 @@
 package keeper
 
-func findTokenIndex(tokens []string, token string) int {
-	for index, t := range tokens {
-		if t == token {
-			return index
-		}
-	}
-	return -1
-}
+import (
+	"github.com/KiraCore/sekai/x/tokens/types"
+)
 
 func addTokens(origin, addings []string) []string {
 	for _, adding := range addings {
-		index := findTokenIndex(origin, adding)
+		index := types.FindTokenIndex(origin, adding)
 		if index >= 0 {
 			continue
 		}
@@ -22,7 +17,7 @@ func addTokens(origin, addings []string) []string {
 
 func removeTokens(origin, removings []string) []string {
 	for _, removing := range removings {
-		index := findTokenIndex(origin, removing)
+		index := types.FindTokenIndex(origin, removing)
 		if index < 0 {
 			continue
 		}
