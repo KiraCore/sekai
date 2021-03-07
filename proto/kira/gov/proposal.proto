@@ -166,4 +166,13 @@ message MsgProposalCreateRole {
   bytes proposer = 1 [
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
   ];
+
+  uint32 role = 2;
+}
+
+message CreateRoleProposal {
+  option (cosmos_proto.implements_interface) = "Content";
+  option (gogoproto.equal) = true;
+
+  uint32 role = 1;
 }

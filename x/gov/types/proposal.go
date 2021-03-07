@@ -136,3 +136,17 @@ func (m *SetPoorNetworkMessagesProposal) ProposalType() string {
 func (m *SetPoorNetworkMessagesProposal) VotePermission() PermValue {
 	return PermVoteSetPoorNetworkMessagesProposal
 }
+
+func NewCreateRoleProposal(role Role) Content {
+	return &CreateRoleProposal{
+		Role: uint32(role),
+	}
+}
+
+func (m *CreateRoleProposal) ProposalType() string {
+	panic("implement me")
+}
+
+func (m *CreateRoleProposal) VotePermission() PermValue {
+	panic("implement me")
+}

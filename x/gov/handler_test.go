@@ -1731,19 +1731,18 @@ func TestHandler_CreateProposalCreateRole_Errors(t *testing.T) {
 
 	tests := []struct {
 		name         string
-		msg          *types.MsgProposalSetNetworkProperty
+		msg          *types.MsgProposalCreateRole
 		preparePerms func(t *testing.T, app *simapp.SimApp, ctx sdk.Context)
 		expectedErr  error
 	}{
 		{
 			"Proposer does not have Perm",
-			types.NewMsgProposalSetNetworkProperty(
+			types.NewMsgProposalCreateRole(
 				proposerAddr,
-				types.MaxTxFee,
-				100000,
+				types.Role(1),
 			),
 			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
-			errors.Wrap(types.ErrNotEnoughPermissions, types.PermCreateSetNetworkPropertyProposal.String()),
+			errors.Wrap(types.ErrNotEnoughPermissions, types.PermCreateRoleProposal.String()),
 		},
 	}
 
@@ -1760,4 +1759,64 @@ func TestHandler_CreateProposalCreateRole_Errors(t *testing.T) {
 			require.EqualError(t, err, tt.expectedErr.Error())
 		})
 	}
+}
+
+func TestHandler_ProposalCreateRole(t *testing.T) {
+	proposerAddr, err := sdk.AccAddressFromBech32("kira1alzyfq40zjsveat87jlg8jxetwqmr0a29sgd0f")
+	require.NoError(t, err)
+
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{
+		Time: time.Now(),
+	})
+
+	// Set proposer Permissions
+	proposerActor := types.NewDefaultActor(proposerAddr)
+	err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerActor, types.PermCreateRoleProposal)
+	require.NoError(t, err2)
+
+	properties := app.CustomGovKeeper.GetNetworkProperties(ctx)
+	properties.ProposalEndTime = 10
+	app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
+
+	handler := gov.NewHandler(app.CustomGovKeeper)
+	res, err := handler(
+		ctx,
+		types.NewMsgProposalCreateRole(
+			proposerAddr,
+			types.Role(1),
+		),
+	)
+	require.NoError(t, err)
+
+	expData, _ := proto.Marshal(&types.MsgProposalCreateRoleResponse{ProposalID: 1})
+	require.Equal(t, expData, res.Data)
+
+	savedProposal, found := app.CustomGovKeeper.GetProposal(ctx, 1)
+	require.True(t, found)
+
+	expectedSavedProposal, err := types.NewProposal(
+		1,
+		types.NewCreateRoleProposal(
+			types.Role(1),
+		),
+		ctx.BlockTime(),
+		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEndTime)),
+		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEnactmentTime)+time.Second*time.Duration(properties.ProposalEndTime)),
+	)
+	require.NoError(t, err)
+	require.Equal(t, expectedSavedProposal, savedProposal)
+
+	// Next proposal ID is increased.
+	id, err := app.CustomGovKeeper.GetNextProposalID(ctx)
+	require.NoError(t, err)
+	require.Equal(t, uint64(2), id)
+
+	// Is not on finished active proposals.
+	iterator := app.CustomGovKeeper.GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx, ctx.BlockTime())
+	require.False(t, iterator.Valid())
+
+	ctx = ctx.WithBlockTime(ctx.BlockTime().Add(time.Minute * 10))
+	iterator = app.CustomGovKeeper.GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx, ctx.BlockTime())
+	require.True(t, iterator.Valid())
 }

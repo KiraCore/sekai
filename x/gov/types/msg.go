@@ -28,6 +28,8 @@ var (
 	_ sdk.Msg = &MsgBlacklistRolePermission{}
 	_ sdk.Msg = &MsgRemoveWhitelistRolePermission{}
 	_ sdk.Msg = &MsgRemoveBlacklistRolePermission{}
+
+	_ sdk.Msg = &MsgProposalCreateRole{}
 )
 
 func NewMsgWhitelistPermissions(
@@ -576,4 +578,28 @@ func (m *MsgVoteProposal) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{
 		m.Voter,
 	}
+}
+
+func NewMsgProposalCreateRole(proposer sdk.AccAddress, role Role) *MsgProposalCreateRole {
+	return &MsgProposalCreateRole{Proposer: proposer, Role: uint32(role)}
+}
+
+func (m *MsgProposalCreateRole) Route() string {
+	panic("implement me")
+}
+
+func (m *MsgProposalCreateRole) Type() string {
+	panic("implement me")
+}
+
+func (m *MsgProposalCreateRole) ValidateBasic() error {
+	panic("implement me")
+}
+
+func (m *MsgProposalCreateRole) GetSignBytes() []byte {
+	panic("implement me")
+}
+
+func (m *MsgProposalCreateRole) GetSigners() []sdk.AccAddress {
+	panic("implement me")
 }

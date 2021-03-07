@@ -175,6 +175,9 @@ func (k msgServer) ProposalSetNetworkProperty(
 		msg.NetworkProperty,
 		msg.Value,
 	))
+	if err != nil {
+		return nil, err
+	}
 
 	return &customgovtypes.MsgProposalSetNetworkPropertyResponse{
 		ProposalID: proposalID,
@@ -440,4 +443,26 @@ func (k msgServer) ClaimCouncilor(
 	k.keeper.SaveCouncilor(ctx, councilor)
 
 	return &customgovtypes.MsgClaimCouncilorResponse{}, nil
+}
+
+func (k msgServer) ProposalCreateRole(goCtx context.Context, msg *customgovtypes.MsgProposalCreateRole) (*customgovtypes.MsgProposalCreateRoleResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, customgovtypes.PermCreateRoleProposal)
+	if !isAllowed {
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermCreateRoleProposal.String())
+	}
+
+	proposalID, err := k.CreateAndSaveProposalWithContent(ctx,
+		customgovtypes.NewCreateRoleProposal(
+			customgovtypes.Role(msg.Role),
+		),
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return &customgovtypes.MsgProposalCreateRoleResponse{
+		ProposalID: proposalID,
+	}, nil
 }

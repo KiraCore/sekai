@@ -406,6 +406,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&AssignPermissionProposal{},
 		&SetNetworkPropertyProposal{},
 		&UpsertDataRegistryProposal{},
+		&CreateRoleProposal{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
