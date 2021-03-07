@@ -117,7 +117,35 @@
           "caching_disable": false,
           "caching_duration": 30
         },
+        "/api/kira/gov/voters/{proposal_id}": {
+          "disable": false,
+          "rate_limit": 0,
+          "auth_rate_limit": 0,
+          "caching_disable": false,
+          "caching_duration": 30
+        },
+        "/api/kira/gov/votes/{proposal_id}": {
+          "disable": false,
+          "rate_limit": 0,
+          "auth_rate_limit": 0,
+          "caching_disable": false,
+          "caching_duration": 30
+        },
         "/api/kira/status": {
+          "disable": false,
+          "rate_limit": 0,
+          "auth_rate_limit": 0,
+          "caching_disable": false,
+          "caching_duration": 30
+        },
+        "/api/kira/tokens/aliases": {
+          "disable": false,
+          "rate_limit": 0,
+          "auth_rate_limit": 0,
+          "caching_disable": false,
+          "caching_duration": 30
+        },
+        "/api/kira/tokens/rates": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
