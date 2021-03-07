@@ -1724,3 +1724,40 @@ func TestHandler_ProposalSetNetworkProperty(t *testing.T) {
 	iterator = app.CustomGovKeeper.GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx, ctx.BlockTime())
 	require.True(t, iterator.Valid())
 }
+
+func TestHandler_CreateProposalCreateRole_Errors(t *testing.T) {
+	proposerAddr, err := sdk.AccAddressFromBech32("kira1alzyfq40zjsveat87jlg8jxetwqmr0a29sgd0f")
+	require.NoError(t, err)
+
+	tests := []struct {
+		name         string
+		msg          *types.MsgProposalSetNetworkProperty
+		preparePerms func(t *testing.T, app *simapp.SimApp, ctx sdk.Context)
+		expectedErr  error
+	}{
+		{
+			"Proposer does not have Perm",
+			types.NewMsgProposalSetNetworkProperty(
+				proposerAddr,
+				types.MaxTxFee,
+				100000,
+			),
+			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
+			errors.Wrap(types.ErrNotEnoughPermissions, types.PermCreateSetNetworkPropertyProposal.String()),
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			app := simapp.Setup(false)
+			ctx := app.NewContext(false, tmproto.Header{})
+
+			tt.preparePerms(t, app, ctx)
+
+			handler := gov.NewHandler(app.CustomGovKeeper)
+			_, err := handler(ctx, tt.msg)
+			require.EqualError(t, err, tt.expectedErr.Error())
+		})
+	}
+}

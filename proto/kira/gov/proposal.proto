@@ -161,3 +161,9 @@ message UpsertDataRegistryProposal {
 message SetPoorNetworkMessagesProposal {
   repeated string messages = 1;
 }
+
+message MsgProposalCreateRole {
+  bytes proposer = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
+  ];
+}
