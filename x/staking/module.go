@@ -120,6 +120,7 @@ func (am AppModule) InitGenesis(
 
 	for i, val := range genesisState.Validators {
 		am.customStakingKeeper.AddValidator(ctx, val)
+		am.customStakingKeeper.AfterValidatorJoined(ctx, val.GetConsAddr(), val.ValKey)
 
 		consPk, err := val.TmConsPubKey()
 		if err != nil {

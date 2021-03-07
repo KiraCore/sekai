@@ -4,6 +4,7 @@ go 1.14
 
 require (
 	github.com/cosmos/cosmos-sdk v0.40.0
+	github.com/cosmos/go-bip39 v1.0.0
 	github.com/gogo/protobuf v1.3.2
 	github.com/golang/protobuf v1.4.3
 	github.com/gorilla/mux v1.8.0
@@ -15,6 +16,7 @@ require (
 	github.com/spf13/cast v1.3.1
 	github.com/spf13/cobra v1.1.1
 	github.com/spf13/pflag v1.0.5
+	github.com/spf13/viper v1.7.1
 	github.com/stretchr/testify v1.6.1
 	github.com/tendermint/go-amino v0.16.0
 	github.com/tendermint/tendermint v0.34.1

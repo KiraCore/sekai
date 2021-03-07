@@ -19,7 +19,10 @@ func (c BlockData) ID() (jsonField string, value interface{}) {
 }
 
 func LoadBlockDbDriver() {
+	DisableStdout()
 	driver, _ := db.New(config.GetDbCacheDir() + "/block")
+	EnableStdout()
+
 	blockDb = driver
 }
 
@@ -29,16 +32,16 @@ func GetBlockTime(height int64) (int64, error) {
 		panic("cache dir not set")
 	}
 
-	DisableStdout()
-
 	data := BlockData{}
+
+	DisableStdout()
 	err := blockDb.Open(BlockData{}).Where("height", "=", height).First().AsEntity(&data)
+	EnableStdout()
+
 	if err != nil {
-		EnableStdout()
 		return 0, err
 	}
 
-	EnableStdout()
 	return data.Timestamp, nil
 }
 
@@ -57,13 +60,13 @@ func AddBlockTime(height int64, timestamp int64) {
 
 	if err != nil {
 		DisableStdout()
-
 		err = blockDb.Open(BlockData{}).Insert(data)
+		EnableStdout()
+
 		if err != nil {
 			panic(err)
 		}
 
-		EnableStdout()
 	}
 }
 

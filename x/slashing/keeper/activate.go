@@ -21,13 +21,13 @@ func (k Keeper) Activate(ctx sdk.Context, validatorAddr sdk.ValAddress) error {
 	consAddr := validator.GetConsAddr()
 
 	// If the validator has a ValidatorSigningInfo object that signals that the
-	// validator was bonded and so we must check that the validator is not tombstoned
+	// validator was joined and so we must check that the validator is not tombstoned
 	// and can be activated at the current block.
 	//
 	// A validator that is inactivated but has no ValidatorSigningInfo object signals
-	// that the validator was never bonded and must've been inactivated due to falling
+	// that the validator was never joined and must've been inactivated due to falling
 	// below their minimum self-delegation. The validator can activate at any point
-	// assuming they've now bonded above their minimum self-delegation.
+	// assuming they've now joined above their minimum self-delegation.
 	info, found := k.GetValidatorSigningInfo(ctx, consAddr)
 	if found {
 		// cannot be activated if tombstoned

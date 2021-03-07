@@ -8,6 +8,13 @@ import (
 // Implements StakingHooks interface
 var _ types.StakingHooks = Keeper{}
 
+// AfterValidatorJoined - call hook if registered
+func (k Keeper) AfterValidatorJoined(ctx sdk.Context, consAddr sdk.ConsAddress, valAddr sdk.ValAddress) {
+	if k.hooks != nil {
+		k.hooks.AfterValidatorJoined(ctx, consAddr, valAddr)
+	}
+}
+
 // AfterValidatorCreated - call hook if registered
 func (k Keeper) AfterValidatorCreated(ctx sdk.Context, valAddr sdk.ValAddress) {
 	if k.hooks != nil {

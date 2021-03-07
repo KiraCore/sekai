@@ -9,8 +9,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-// InitValidatorSigningInfo update the signing info start height or create a new signing info
-func (k Keeper) InitValidatorSigningInfo(ctx sdk.Context, address sdk.ConsAddress, _ sdk.ValAddress) {
+// AfterValidatorJoined update the signing info start height or create a new signing info
+func (k Keeper) AfterValidatorJoined(ctx sdk.Context, address sdk.ConsAddress, valAddr sdk.ValAddress) {
 	// Update the signing info start height or create a new signing info
 	_, found := k.GetValidatorSigningInfo(ctx, address)
 	if !found {
@@ -39,8 +39,6 @@ func (k Keeper) AfterValidatorCreated(ctx sdk.Context, valAddr sdk.ValAddress) e
 	}
 	k.AddPubkey(ctx, consPk)
 
-	// initialize validator signing info on validator creation
-	k.InitValidatorSigningInfo(ctx, validator.GetConsAddr(), valAddr)
 	return nil
 }
 
@@ -61,6 +59,11 @@ var _ types.StakingHooks = Hooks{}
 // Return the wrapper struct
 func (k Keeper) Hooks() Hooks {
 	return Hooks{k}
+}
+
+// Implements sdk.ValidatorHooks
+func (h Hooks) AfterValidatorJoined(ctx sdk.Context, consAddr sdk.ConsAddress, valAddr sdk.ValAddress) {
+	h.k.AfterValidatorJoined(ctx, consAddr, valAddr)
 }
 
 // Implements sdk.ValidatorHooks

@@ -26,3 +26,8 @@ func (h MultiStakingHooks) AfterValidatorRemoved(ctx sdk.Context, consAddr sdk.C
 		h[i].AfterValidatorRemoved(ctx, consAddr, valAddr)
 	}
 }
+func (h MultiStakingHooks) AfterValidatorJoined(ctx sdk.Context, consAddr sdk.ConsAddress, valAddr sdk.ValAddress) {
+	for i := range h {
+		h[i].AfterValidatorJoined(ctx, consAddr, valAddr)
+	}
+}

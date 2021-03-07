@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/KiraCore/sekai/INTERX/config"
+	"github.com/KiraCore/sekai/INTERX/global"
 	"github.com/KiraCore/sekai/INTERX/types"
 )
 
@@ -22,17 +23,17 @@ func PutCache(chainIDHash string, endpointHash string, requestHash string, value
 	folderPath := fmt.Sprintf("%s/%s/%s", config.GetResponseCacheDir(), chainIDHash, endpointHash)
 	filePath := fmt.Sprintf("%s/%s", folderPath, requestHash)
 
-	Mutex.Lock()
+	global.Mutex.Lock()
 	err = os.MkdirAll(folderPath, os.ModePerm)
 	if err != nil {
-		Mutex.Unlock()
+		global.Mutex.Unlock()
 
 		GetLogger().Error("[cache] Unable to create a folder: ", folderPath)
 		return err
 	}
 
 	err = ioutil.WriteFile(filePath, data, 0644)
-	Mutex.Unlock()
+	global.Mutex.Unlock()
 
 	if err != nil {
 		GetLogger().Error("[cache] Unable to save response: ", filePath)

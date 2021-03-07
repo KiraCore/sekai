@@ -3,8 +3,10 @@ syntax="proto3";
 package kira.gov;
 
 import "google/api/annotations.proto";
+import "gogoproto/gogo.proto";
 import "kira/gov/data_registry.proto";
 import "kira/gov/pagination.proto";
+import "kira/gov/proposal.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 
 // Defines the import path that should be used to import the generated package,
@@ -24,6 +26,24 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
 };
 
 service Query {
+  // Proposal queries proposal details based on ProposalID.
+  rpc Proposal(QueryProposalRequest) returns (QueryProposalResponse) {
+    option (google.api.http).get = "/api/kira/gov/proposals/{proposal_id}";
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Query Proposal"
+      description: "Query Proposal."
+      tags: "query"
+    };
+  }
+  // Proposals queries all proposals based on given status.
+  rpc Proposals(QueryProposalsRequest) returns (QueryProposalsResponse) {
+    option (google.api.http).get = "/api/kira/gov/proposals";
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Query Proposals"
+      description: "Query Proposals."
+      tags: "query"
+    };
+  }
   // Query all data reference keys with pagination.
   rpc GetAllDataReferenceKeys(QueryDataReferenceKeysRequest) returns (QueryDataReferenceKeysResponse) {
     option (google.api.http).get = "/api/kira/gov/data_keys";
@@ -44,15 +64,41 @@ service Query {
   }
 }
 
+// QueryProposalRequest is the request type for the Query/Proposal RPC method.
+message QueryProposalRequest {
+  // proposal_id defines the unique id of the proposal.
+  uint64 proposal_id = 1;
+}
+
+// QueryProposalResponse is the response type for the Query/Proposal RPC method.
+message QueryProposalResponse {
+  Proposal proposal = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryProposalsRequest is the request type for the Query/Proposals RPC method.
+message QueryProposalsRequest {
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
+  // voter defines the voter address for the proposals.
+  string voter = 1;
+}
+
+// QueryProposalsResponse is the response type for the Query/Proposals RPC
+// method.
+message QueryProposalsResponse {
+  repeated Proposal proposals = 1 [(gogoproto.nullable) = false];
+}
+
 // QueryDataReferenceKeysRequest is the response type for data reference keys query.
 message QueryDataReferenceKeysRequest {
-  kira.gov.PageRequest pagination = 1;
+  PageRequest pagination = 1;
 }
 
 // QueryDataReferenceKeysResponse is the response type for data reference keys query.
 message QueryDataReferenceKeysResponse {
   repeated string keys = 1;
-  kira.gov.PageResponse pagination = 2;
+  PageResponse pagination = 2;
 }
 
 // QueryDataReferenceRequest is the response type for data reference query.
@@ -62,5 +108,5 @@ message QueryDataReferenceRequest {
 
 // QueryDataReferenceResponse is the response type for data referencequery.
 message QueryDataReferenceResponse {
-  kira.gov.DataRegistryEntry data = 1;
+  DataRegistryEntry data = 1;
 }

@@ -33,9 +33,13 @@ service Query {
   // GetPoorNetworkMessages returns poor network messages
   rpc GetPoorNetworkMessages (PoorNetworkMessagesRequest) returns (PoorNetworkMessagesResponse) {}
   // Proposal queries proposal details based on ProposalID.
-  rpc Proposal(QueryProposalRequest) returns (QueryProposalResponse) {}
+  rpc Proposal(QueryProposalRequest) returns (QueryProposalResponse) {
+    option (google.api.http).get = "/kira/gov/proposals/{proposal_id}";
+  }
   // Proposals queries all proposals based on given status.
-  rpc Proposals(QueryProposalsRequest) returns (QueryProposalsResponse) {}
+  rpc Proposals(QueryProposalsRequest) returns (QueryProposalsResponse) {
+    option (google.api.http).get = "/kira/gov/proposals";
+  }
   // GetWhitelistedProposalVoters returns whitelisted voters for a proposal for tracking
   rpc GetWhitelistedProposalVoters(QueryWhitelistedProposalVotersRequest) returns (QueryWhitelistedProposalVotersResponse) {}
   // Vote queries voted information based on proposalID, voterAddr.

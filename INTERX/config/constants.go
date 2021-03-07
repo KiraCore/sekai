@@ -8,14 +8,17 @@ const (
 	QueryTransactionHash = "/api/cosmos/txs/{hash}"
 	EncodeTransaction    = "/api/cosmos/txs/encode"
 
+	QueryProposals         = "/api/kira/gov/proposals"
+	QueryProposal          = "/api/kira/gov/proposals/{proposal_id}"
 	QueryDataReferenceKeys = "/api/kira/gov/data_keys"
 	QueryDataReference     = "/api/kira/gov/data/{key}"
 	QueryKiraFunctions     = "/api/kira/metadata"
 	QueryKiraStatus        = "/api/kira/status"
 
+	QueryInterxFunctions = "/api/metadata"
+
 	FaucetRequestURL         = "/api/faucet"
 	QueryRPCMethods          = "/api/rpc_methods"
-	QueryInterxFunctions     = "/api/metadata"
 	QueryWithdraws           = "/api/withdraws"
 	QueryDeposits            = "/api/deposits"
 	QueryBlocks              = "/api/blocks"
@@ -24,6 +27,7 @@ const (
 	QueryTransactionResult   = "/api/transactions/{txHash}"
 	QueryStatus              = "/api/status"
 	QueryValidators          = "/api/valopers"
+	QueryValidatorInfos      = "/api/valoperinfos"
 	QueryGenesis             = "/api/genesis"
 	QueryGenesisSum          = "/api/gensum"
 
