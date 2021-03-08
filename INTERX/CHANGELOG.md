@@ -2,14 +2,16 @@
 
 ## [v0.1.x.x] - xx.xx.xxxx
 
-### Added
-
-- Added configuration for https/http
-
-### Updated
-
+## [v0.1.17.3] - 03.08.2021
+### Fixed
+- Validators query to include mischance.
 - Updated validators statistics
 - Updated validators query to include zero values.
+
+### Added
+- Tokens alias/rate query.
+- Voters/votes query.
+- Added configuration for https/http
 
 ## [v0.1.17.1] - 02.25.2021
 ### Added
