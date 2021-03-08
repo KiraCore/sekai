@@ -41,11 +41,15 @@ service Query {
     option (google.api.http).get = "/kira/gov/proposals";
   }
   // GetWhitelistedProposalVoters returns whitelisted voters for a proposal for tracking
-  rpc GetWhitelistedProposalVoters(QueryWhitelistedProposalVotersRequest) returns (QueryWhitelistedProposalVotersResponse) {}
+  rpc GetWhitelistedProposalVoters(QueryWhitelistedProposalVotersRequest) returns (QueryWhitelistedProposalVotersResponse) {
+    option (google.api.http).get = "/kira/gov/voters/{proposal_id}";
+  }
   // Vote queries voted information based on proposalID, voterAddr.
   rpc Vote(QueryVoteRequest) returns (QueryVoteResponse) {}
   // Votes queries votes of a given proposal.
-  rpc Votes(QueryVotesRequest) returns (QueryVotesResponse) {}
+  rpc Votes(QueryVotesRequest) returns (QueryVotesResponse) {
+    option (google.api.http).get = "/kira/gov/votes/{proposal_id}";
+  }
   // Query all data reference keys with pagination.
   rpc GetAllDataReferenceKeys(QueryDataReferenceKeysRequest) returns (QueryDataReferenceKeysResponse) {
     option (google.api.http).get = "/kira/gov/data_keys";

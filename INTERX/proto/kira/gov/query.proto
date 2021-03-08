@@ -7,6 +7,7 @@ import "gogoproto/gogo.proto";
 import "kira/gov/data_registry.proto";
 import "kira/gov/pagination.proto";
 import "kira/gov/proposal.proto";
+import "kira/gov/actor.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 
 // Defines the import path that should be used to import the generated package,
@@ -62,6 +63,24 @@ service Query {
       tags: "query"
     };
   }
+  // GetWhitelistedProposalVoters returns whitelisted voters for a proposal for tracking
+  rpc GetWhitelistedProposalVoters(QueryWhitelistedProposalVotersRequest) returns (QueryWhitelistedProposalVotersResponse) {
+    option (google.api.http).get = "/api/kira/gov/voters/{proposal_id}";
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Query whitelisted proposal voters by a given proposal_id"
+      description: "Query whitelisted proposal voters by a given proposal_id."
+      tags: "query"
+    };
+  }
+  // Votes queries votes of a given proposal.
+  rpc Votes(QueryVotesRequest) returns (QueryVotesResponse) {
+    option (google.api.http).get = "/api/kira/gov/votes/{proposal_id}";
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Query proposal votes by a given proposal_id"
+      description: "Query proposal votes by a given proposal_id."
+      tags: "query"
+    };
+  }
 }
 
 // QueryProposalRequest is the request type for the Query/Proposal RPC method.
@@ -109,4 +128,27 @@ message QueryDataReferenceRequest {
 // QueryDataReferenceResponse is the response type for data referencequery.
 message QueryDataReferenceResponse {
   DataRegistryEntry data = 1;
+}
+
+// QueryWhitelistedProposalVotersRequest is the request type for Query/WhitelistedProposalVoters RPC method.
+message QueryWhitelistedProposalVotersRequest {
+  // proposal_id defines the unique id of the proposal.
+  uint64 proposal_id = 1;
+}
+
+// QueryWhitelistedProposalVotersResponse is the response type for Query/WhitelistedProposalVoters RPC method.
+message QueryWhitelistedProposalVotersResponse {
+  repeated NetworkActor voters = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryVotesRequest is the request type for the Query/Votes RPC method.
+message QueryVotesRequest {
+  // proposal_id defines the unique id of the proposal.
+  uint64 proposal_id = 1;
+}
+
+// QueryVotesResponse is the response type for the Query/Votes RPC method.
+message QueryVotesResponse {
+  // votes defined the queried votes.
+  repeated Vote votes = 1 [(gogoproto.nullable) = false];
 }

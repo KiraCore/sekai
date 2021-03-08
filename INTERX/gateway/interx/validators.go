@@ -10,6 +10,7 @@ import (
 	"github.com/KiraCore/sekai/INTERX/common"
 	"github.com/KiraCore/sekai/INTERX/config"
 	"github.com/KiraCore/sekai/INTERX/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 )
@@ -37,6 +38,8 @@ const (
 )
 
 func queryValidatorsHandle(r *http.Request, gwCosmosmux *runtime.ServeMux) (interface{}, interface{}, int) {
+	tempRequest := r.Clone(r.Context())
+
 	queries := r.URL.Query()
 	address := queries["address"]
 	valkey := queries["valkey"]
@@ -91,7 +94,7 @@ func queryValidatorsHandle(r *http.Request, gwCosmosmux *runtime.ServeMux) (inte
 	r.URL.RawQuery = strings.Join(events, "&")
 
 	success, failure, statusCode := common.ServeGRPC(r, gwCosmosmux)
-	if isQueryAll && success != nil {
+	if success != nil {
 		result := struct {
 			Validators []types.QueryValidator `json:"validators,omitempty"`
 			Actors     []string               `json:"actors,omitempty"`
@@ -100,59 +103,98 @@ func queryValidatorsHandle(r *http.Request, gwCosmosmux *runtime.ServeMux) (inte
 
 		byteData, err := json.Marshal(success)
 		if err != nil {
-			common.GetLogger().Error("[query-reference] Invalid response format", err)
+			common.GetLogger().Error("[query-validators] Invalid response format: ", err)
 			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
 		}
 
 		err = json.Unmarshal(byteData, &result)
 		if err != nil {
-			common.GetLogger().Error("[query-reference] Invalid response format", err)
+			common.GetLogger().Error("[query-validators] Invalid response format: ", err)
 			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
 		}
 
-		allValidators := types.AllValidators{}
+		for _, validator := range result.Validators {
+			pubkey, _ := sdk.GetPubKeyFromBech32(sdk.Bech32PubKeyTypeConsPub, validator.Pubkey)
 
-		allValidators.Validators = result.Validators
-		allValidators.Waiting = make([]string, 0)
-		for _, actor := range result.Actors {
-			isWaiting := true
-			for _, validator := range result.Validators {
-				if validator.Address == actor {
-					isWaiting = false
-					break
+			newReq := tempRequest.Clone(tempRequest.Context())
+			newReq.URL.Path = config.QueryValidatorInfos + "/" + sdk.GetConsAddress(pubkey).String()
+
+			signInfoRes, _, _ := common.ServeGRPC(newReq, gwCosmosmux)
+
+			if signInfoRes != nil {
+				signInfoResponse := struct {
+					ValSigningInfo types.ValidatorSigningInfo `json:"val_signing_info,omitempty"`
+				}{}
+
+				byteData, err := json.Marshal(signInfoRes)
+				if err != nil {
+					common.GetLogger().Error("[query-validator-signinginfo] Invalid response format: ", err)
+					return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
+				}
+
+				err = json.Unmarshal(byteData, &signInfoResponse)
+				if err != nil {
+					common.GetLogger().Error("[query-validator-signinginfo] Invalid response format: ", err)
+					return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
+				}
+
+				validator.Mischance = signInfoResponse.ValSigningInfo.MissedBlocksCounter
+				validator.StartHeight = signInfoResponse.ValSigningInfo.StartHeight
+				validator.IndexOffset = signInfoResponse.ValSigningInfo.IndexOffset
+				validator.InactiveUntil = signInfoResponse.ValSigningInfo.InactiveUntil
+				validator.Tombstoned = signInfoResponse.ValSigningInfo.Tombstoned
+				validator.MissedBlocksCounter = signInfoResponse.ValSigningInfo.MissedBlocksCounter
+			}
+		}
+
+		if isQueryAll {
+
+			allValidators := types.AllValidators{}
+
+			allValidators.Validators = result.Validators
+			allValidators.Waiting = make([]string, 0)
+			for _, actor := range result.Actors {
+				isWaiting := true
+				for _, validator := range result.Validators {
+					if validator.Address == actor {
+						isWaiting = false
+						break
+					}
+				}
+
+				if isWaiting {
+					allValidators.Waiting = append(allValidators.Waiting, actor)
 				}
 			}
 
-			if isWaiting {
-				allValidators.Waiting = append(allValidators.Waiting, actor)
+			allValidators.Status.TotalValidators = len(result.Validators)
+			allValidators.Status.WaitingValidators = len(allValidators.Waiting)
+
+			allValidators.Status.ActiveValidators = 0
+			allValidators.Status.PausedValidators = 0
+			allValidators.Status.InactiveValidators = 0
+			allValidators.Status.JailedValidators = 0
+			for _, validator := range result.Validators {
+				if validator.Status == Active {
+					allValidators.Status.ActiveValidators++
+				}
+				if validator.Status == Inactive {
+					allValidators.Status.InactiveValidators++
+				}
+				if validator.Status == Paused {
+					allValidators.Status.PausedValidators++
+				}
+				if validator.Status == Jailed {
+					allValidators.Status.JailedValidators++
+				}
 			}
+
+			allValidators.Status.ConsensusStopped = float64(allValidators.Status.ActiveValidators) < math.Floor(float64(allValidators.Status.TotalValidators)*2/3)+1
+
+			return allValidators, nil, statusCode
 		}
 
-		allValidators.Status.TotalValidators = len(result.Validators)
-		allValidators.Status.TotalWaiting = len(allValidators.Waiting)
-
-		allValidators.Status.ActiveValidators = 0
-		allValidators.Status.PausedValidators = 0
-		allValidators.Status.InactiveValidators = 0
-		allValidators.Status.JailedValidators = 0
-		for _, validator := range result.Validators {
-			if validator.Status == Active {
-				allValidators.Status.ActiveValidators++
-			}
-			if validator.Status == Inactive {
-				allValidators.Status.InactiveValidators++
-			}
-			if validator.Status == Paused {
-				allValidators.Status.PausedValidators++
-			}
-			if validator.Status == Jailed {
-				allValidators.Status.JailedValidators++
-			}
-		}
-
-		allValidators.Status.NetworkStopped = float64(allValidators.Status.ActiveValidators) < math.Floor(float64(allValidators.Status.TotalValidators)*2/3)+1
-
-		return allValidators, nil, statusCode
+		return result, nil, statusCode
 	}
 
 	return success, failure, statusCode

@@ -100,18 +100,18 @@ type PageRequest struct {
 	// key is a value returned in PageResponse.next_key to begin
 	// querying the next page most efficiently. Only one of offset or key
 	// should be set.
-	Key []byte `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
+	Key []byte `protobuf:"bytes,1,opt,name=key,proto3" json:"key"`
 	// offset is a numeric offset that can be used when key is unavailable.
 	// It is less efficient than using key. Only one of offset or key should
 	// be set.
-	Offset uint64 `protobuf:"varint,2,opt,name=offset,proto3" json:"offset,omitempty"`
+	Offset uint64 `protobuf:"varint,2,opt,name=offset,proto3" json:"offset"`
 	// limit is the total number of results to be returned in the result page.
 	// If left empty it will default to a value to be set by each app.
-	Limit uint64 `protobuf:"varint,3,opt,name=limit,proto3" json:"limit,omitempty"`
+	Limit uint64 `protobuf:"varint,3,opt,name=limit,proto3" json:"limit"`
 	// count_total is set to true  to indicate that the result set should include
 	// a count of the total number of items available for pagination in UIs. count_total
 	// is only respected when offset is used. It is ignored when key is set.
-	CountTotal bool `protobuf:"varint,4,opt,name=count_total,json=countTotal,proto3" json:"count_total,omitempty"`
+	CountTotal bool `protobuf:"varint,4,opt,name=count_total,json=countTotal,proto3" json:"count_total"`
 }
 
 func (x *PageRequest) Reset() {
@@ -181,10 +181,10 @@ type PageResponse struct {
 
 	// next_key is the key to be passed to PageRequest.key to
 	// query the next page most efficiently
-	NextKey []byte `protobuf:"bytes,1,opt,name=next_key,json=nextKey,proto3" json:"next_key,omitempty"`
+	NextKey []byte `protobuf:"bytes,1,opt,name=next_key,json=nextKey,proto3" json:"next_key"`
 	// total is total number of results available if PageRequest.count_total
 	// was set, its value is undefined otherwise
-	Total uint64 `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"`
+	Total uint64 `protobuf:"varint,2,opt,name=total,proto3" json:"total"`
 }
 
 func (x *PageResponse) Reset() {
@@ -239,11 +239,11 @@ type Description struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Moniker         string `protobuf:"bytes,1,opt,name=moniker,proto3" json:"moniker,omitempty"`
-	Identity        string `protobuf:"bytes,2,opt,name=identity,proto3" json:"identity,omitempty"`
-	Website         string `protobuf:"bytes,3,opt,name=website,proto3" json:"website,omitempty"`
-	SecurityContact string `protobuf:"bytes,4,opt,name=security_contact,json=securityContact,proto3" json:"security_contact,omitempty"`
-	Details         string `protobuf:"bytes,5,opt,name=details,proto3" json:"details,omitempty"`
+	Moniker         string `protobuf:"bytes,1,opt,name=moniker,proto3" json:"moniker"`
+	Identity        string `protobuf:"bytes,2,opt,name=identity,proto3" json:"identity"`
+	Website         string `protobuf:"bytes,3,opt,name=website,proto3" json:"website"`
+	SecurityContact string `protobuf:"bytes,4,opt,name=security_contact,json=securityContact,proto3" json:"security_contact"`
+	Details         string `protobuf:"bytes,5,opt,name=details,proto3" json:"details"`
 }
 
 func (x *Description) Reset() {
@@ -320,9 +320,9 @@ type CommissionRates struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Rate          string `protobuf:"bytes,1,opt,name=rate,proto3" json:"rate,omitempty"`
-	MaxRate       string `protobuf:"bytes,2,opt,name=max_rate,json=maxRate,proto3" json:"max_rate,omitempty"`
-	MaxChangeRate string `protobuf:"bytes,3,opt,name=max_change_rate,json=maxChangeRate,proto3" json:"max_change_rate,omitempty"`
+	Rate          string `protobuf:"bytes,1,opt,name=rate,proto3" json:"rate"`
+	MaxRate       string `protobuf:"bytes,2,opt,name=max_rate,json=maxRate,proto3" json:"max_rate"`
+	MaxChangeRate string `protobuf:"bytes,3,opt,name=max_change_rate,json=maxChangeRate,proto3" json:"max_change_rate"`
 }
 
 func (x *CommissionRates) Reset() {
@@ -384,8 +384,8 @@ type Commission struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	CommissionRates *CommissionRates     `protobuf:"bytes,1,opt,name=commission_rates,json=commissionRates,proto3" json:"commission_rates,omitempty"`
-	UpdateTime      *timestamp.Timestamp `protobuf:"bytes,2,opt,name=update_time,json=updateTime,proto3" json:"update_time,omitempty"`
+	CommissionRates *CommissionRates     `protobuf:"bytes,1,opt,name=commission_rates,json=commissionRates,proto3" json:"commission_rates"`
+	UpdateTime      *timestamp.Timestamp `protobuf:"bytes,2,opt,name=update_time,json=updateTime,proto3" json:"update_time"`
 }
 
 func (x *Commission) Reset() {
@@ -447,17 +447,17 @@ type Validator struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	OperatorAddress   string               `protobuf:"bytes,1,opt,name=operator_address,json=operatorAddress,proto3" json:"operator_address,omitempty"`
-	ConsensusPubkey   *any.Any             `protobuf:"bytes,2,opt,name=consensus_pubkey,json=consensusPubkey,proto3" json:"consensus_pubkey,omitempty"`
-	Jailed            bool                 `protobuf:"varint,3,opt,name=jailed,proto3" json:"jailed,omitempty"`
-	Status            BondStatus           `protobuf:"varint,4,opt,name=status,proto3,enum=cosmos.staking.v1beta1.BondStatus" json:"status,omitempty"`
-	Tokens            string               `protobuf:"bytes,5,opt,name=tokens,proto3" json:"tokens,omitempty"`
-	DelegatorShares   string               `protobuf:"bytes,6,opt,name=delegator_shares,json=delegatorShares,proto3" json:"delegator_shares,omitempty"`
-	Description       *Description         `protobuf:"bytes,7,opt,name=description,proto3" json:"description,omitempty"`
-	UnbondingHeight   int64                `protobuf:"varint,8,opt,name=unbonding_height,json=unbondingHeight,proto3" json:"unbonding_height,omitempty"`
-	UnbondingTime     *timestamp.Timestamp `protobuf:"bytes,9,opt,name=unbonding_time,json=unbondingTime,proto3" json:"unbonding_time,omitempty"`
-	Commission        *Commission          `protobuf:"bytes,10,opt,name=commission,proto3" json:"commission,omitempty"`
-	MinSelfDelegation string               `protobuf:"bytes,11,opt,name=min_self_delegation,json=minSelfDelegation,proto3" json:"min_self_delegation,omitempty"`
+	OperatorAddress   string               `protobuf:"bytes,1,opt,name=operator_address,json=operatorAddress,proto3" json:"operator_address"`
+	ConsensusPubkey   *any.Any             `protobuf:"bytes,2,opt,name=consensus_pubkey,json=consensusPubkey,proto3" json:"consensus_pubkey"`
+	Jailed            bool                 `protobuf:"varint,3,opt,name=jailed,proto3" json:"jailed"`
+	Status            BondStatus           `protobuf:"varint,4,opt,name=status,proto3,enum=cosmos.staking.v1beta1.BondStatus" json:"status"`
+	Tokens            string               `protobuf:"bytes,5,opt,name=tokens,proto3" json:"tokens"`
+	DelegatorShares   string               `protobuf:"bytes,6,opt,name=delegator_shares,json=delegatorShares,proto3" json:"delegator_shares"`
+	Description       *Description         `protobuf:"bytes,7,opt,name=description,proto3" json:"description"`
+	UnbondingHeight   int64                `protobuf:"varint,8,opt,name=unbonding_height,json=unbondingHeight,proto3" json:"unbonding_height"`
+	UnbondingTime     *timestamp.Timestamp `protobuf:"bytes,9,opt,name=unbonding_time,json=unbondingTime,proto3" json:"unbonding_time"`
+	Commission        *Commission          `protobuf:"bytes,10,opt,name=commission,proto3" json:"commission"`
+	MinSelfDelegation string               `protobuf:"bytes,11,opt,name=min_self_delegation,json=minSelfDelegation,proto3" json:"min_self_delegation"`
 }
 
 func (x *Validator) Reset() {
@@ -576,9 +576,9 @@ type QueryValidatorsRequest struct {
 	unknownFields protoimpl.UnknownFields
 
 	// status is the status for validators.
-	Status string `protobuf:"bytes,1,opt,name=status,proto3" json:"status,omitempty"`
+	Status string `protobuf:"bytes,1,opt,name=status,proto3" json:"status"`
 	// pagination defines an optional pagination for the request.
-	Pagination *PageRequest `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+	Pagination *PageRequest `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination"`
 }
 
 func (x *QueryValidatorsRequest) Reset() {
@@ -634,9 +634,9 @@ type QueryValidatorsResponse struct {
 	unknownFields protoimpl.UnknownFields
 
 	// validators contains all the queried validators.
-	Validators []*Validator `protobuf:"bytes,1,rep,name=validators,proto3" json:"validators,omitempty"`
+	Validators []*Validator `protobuf:"bytes,1,rep,name=validators,proto3" json:"validators"`
 	// pagination defines the pagination in the response.
-	Pagination *PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+	Pagination *PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination"`
 }
 
 func (x *QueryValidatorsResponse) Reset() {

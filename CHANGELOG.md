@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.1.17.3] - 03.08.2021
+### Fixed
+- Validators query to include mischance.
+
+### Added
+- Tokens alias/rate query.
+- Voters/votes query.
+
 ## [v0.1.17.2] - 03.02.2021
 ### Fixed
 - Mischance querying CLI command
