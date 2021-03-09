@@ -1744,6 +1744,25 @@ func TestHandler_CreateProposalCreateRole_Errors(t *testing.T) {
 			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
 			errors.Wrap(types.ErrNotEnoughPermissions, types.PermCreateRoleProposal.String()),
 		},
+		{
+			"role already exist",
+			types.NewMsgProposalCreateRole(
+				proposerAddr,
+				types.Role(1),
+			),
+			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+				proposerActor := types.NewDefaultActor(proposerAddr)
+				err := app.CustomGovKeeper.AddWhitelistPermission(
+					ctx,
+					proposerActor,
+					types.PermCreateRoleProposal,
+				)
+				require.NoError(t, err)
+
+				app.CustomGovKeeper.CreateRole(ctx, types.Role(1))
+			},
+			types.ErrRoleExist,
+		},
 	}
 
 	for _, tt := range tests {

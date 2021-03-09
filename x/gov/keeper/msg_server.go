@@ -453,6 +453,11 @@ func (k msgServer) ProposalCreateRole(goCtx context.Context, msg *customgovtypes
 		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermCreateRoleProposal.String())
 	}
 
+	_, exists := k.keeper.GetPermissionsForRole(ctx, customgovtypes.Role(msg.Role))
+	if exists {
+		return nil, customgovtypes.ErrRoleExist
+	}
+
 	proposalID, err := k.CreateAndSaveProposalWithContent(ctx,
 		customgovtypes.NewCreateRoleProposal(
 			customgovtypes.Role(msg.Role),
