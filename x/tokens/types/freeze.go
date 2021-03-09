@@ -14,13 +14,13 @@ func FindTokenIndex(tokens []string, token string) int {
 func (t TokensWhiteBlack) IsFrozen(denom string, enableTokenBlacklist, enableTokenWhitelist bool) bool {
 	if enableTokenBlacklist {
 		if FindTokenIndex(t.Blacklisted, denom) >= 0 {
-			return false
+			return true
 		}
 	}
 	if enableTokenWhitelist {
 		if FindTokenIndex(t.Whitelisted, denom) < 0 {
-			return false
+			return true
 		}
 	}
-	return true
+	return false
 }

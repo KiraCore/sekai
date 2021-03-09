@@ -43,7 +43,7 @@ func DefaultGenesis() *GenesisState {
 			MinValidators:               1,
 			JailMaxTime:                 10, // 10 mins
 			EnableTokenWhitelist:        false,
-			EnableTokenBlacklist:        false,
+			EnableTokenBlacklist:        true,
 		},
 		ExecutionFees: []*ExecutionFee{
 			{

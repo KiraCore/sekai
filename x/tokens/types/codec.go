@@ -117,6 +117,28 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 			}
 		}
 	}`)
+	cdc.RegisterConcrete(&MsgProposalTokensWhiteBlackChange{}, "kiraHub/MsgProposalTokensWhiteBlackChange", nil)
+	functionmeta.AddNewFunction((&MsgProposalTokensWhiteBlackChange{}).Type(), `{
+		"description": "MsgProposalTokensWhiteBlackChange defines a proposal message to change tokens blacklists / whitelists.",
+		"parameters": {
+			"is_blacklist": {
+				"type":        "bool",
+				"description": "true if it's proposal for touching blacklist, otherwise false"
+			},
+			"is_add": {
+				"type":        "bool",
+				"description": "true if it's proposal for adding, otherwise false"
+			},
+			"tokens": {
+				"type":        "array<string>",
+				"description": "describe the tokens to be added / removed from whitelists / blacklists."
+			},
+			"proposer": {
+				"type":        "string",
+				"description": "proposer who propose this message."
+			}
+		}
+	}`)
 }
 
 // RegisterInterfaces register Msg and structs
@@ -126,6 +148,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgUpsertTokenAlias{},
 		&MsgProposalUpsertTokenAlias{},
 		&MsgProposalUpsertTokenRates{},
+		&MsgProposalTokensWhiteBlackChange{},
 	)
 
 	registry.RegisterInterface(
@@ -134,6 +157,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&ProposalUpsertTokenAlias{},
 		&ProposalUpsertTokenRates{},
 		&govtypes.SetPoorNetworkMessagesProposal{},
+		&ProposalTokensWhiteBlackChange{},
 	)
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 }

@@ -17,7 +17,7 @@ func DefaultGenesis() *GenesisState {
 		},
 		TokenBlackWhites: &TokensWhiteBlack{
 			Whitelisted: []string{"ukex"},
-			Blacklisted: []string{},
+			Blacklisted: []string{"frozen"},
 		},
 	}
 }
