@@ -88,3 +88,20 @@ func (a ApplySetPoorNetworkMessagesProposalHandler) Apply(ctx sdk.Context, propo
 	msgs := types.AllowedMessages{Messages: p.Messages}
 	a.keeper.SavePoorNetworkMsgs(ctx, &msgs)
 }
+
+type CreateRoleProposalHandler struct {
+	keeper keeper.Keeper
+}
+
+func (c CreateRoleProposalHandler) ProposalType() string {
+	return types.CreateRoleProposalType
+}
+
+func (c CreateRoleProposalHandler) Apply(ctx sdk.Context, proposal types.Content) {
+	p := proposal.(*types.CreateRoleProposal)
+	c.keeper.CreateRole(ctx, types.Role(p.Role))
+}
+
+func NewApplyCreateRoleProposalHandler(keeper keeper.Keeper) *CreateRoleProposalHandler {
+	return &CreateRoleProposalHandler{keeper: keeper}
+}

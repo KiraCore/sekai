@@ -1803,7 +1803,7 @@ func TestHandler_ProposalCreateRole(t *testing.T) {
 		ctx,
 		types.NewMsgProposalCreateRole(
 			proposerAddr,
-			types.Role(1),
+			types.Role(1000),
 		),
 	)
 	require.NoError(t, err)
@@ -1817,7 +1817,7 @@ func TestHandler_ProposalCreateRole(t *testing.T) {
 	expectedSavedProposal, err := types.NewProposal(
 		1,
 		types.NewCreateRoleProposal(
-			types.Role(1),
+			types.Role(1000),
 		),
 		ctx.BlockTime(),
 		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEndTime)),

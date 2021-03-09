@@ -17,6 +17,7 @@ const (
 	SetNetworkPropertyProposalType = "SetNetworkProperty"
 	UpsertDataRegistryProposalType = "UpsertDataRegistry"
 	SetPoorNetworkMsgsProposalType = "SetPoorNetworkMsgs"
+	CreateRoleProposalType         = "CreateRoleProposal"
 )
 
 var _ Content = &AssignPermissionProposal{}
@@ -144,9 +145,9 @@ func NewCreateRoleProposal(role Role) Content {
 }
 
 func (m *CreateRoleProposal) ProposalType() string {
-	panic("implement me")
+	return CreateRoleProposalType
 }
 
 func (m *CreateRoleProposal) VotePermission() PermValue {
-	panic("implement me")
+	return PermVoteCreateRoleProposal
 }

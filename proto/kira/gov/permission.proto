@@ -75,5 +75,8 @@ enum PermValue {
 
   // PERMISSION_CREATE_CREATE_ROLE_PROPOSAL defines the permission needed to create a proposal to create a role.
   PERMISSION_CREATE_CREATE_ROLE_PROPOSAL = 21 [(gogoproto.enumvalue_customname) = "PermCreateRoleProposal"];
+
+  // PERMISSION_VOTE_CREATE_ROLE_PROPOSAL defines the permission needed to vote a proposal to create a role.
+  PERMISSION_VOTE_CREATE_ROLE_PROPOSAL = 22 [(gogoproto.enumvalue_customname) = "PermVoteCreateRoleProposal"];
 }
 
