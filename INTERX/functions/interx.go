@@ -191,6 +191,22 @@ func RegisterInterxFunctions() {
 		"QueryKiraTokensAliases",
 		config.QueryKiraTokensAliases,
 		`{
+			"description": "QueryKiraTokensAliases is a function to query all registered tokens."
+		}`,
+	)
+
+	AddInterxFunction(
+		"QueryKiraTokensRates",
+		config.QueryKiraTokensRates,
+		`{
+			"description": "QueryKiraTokensRates is a function to query all registered token rates."
+		}`,
+	)
+
+	AddInterxFunction(
+		"QueryKiraTokensAliases",
+		config.QueryKiraTokensAliases,
+		`{
 			"description": "QueryKiraTokensAliases is a function to query all tokens aliases."
 		}`,
 	)
