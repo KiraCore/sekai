@@ -133,6 +133,8 @@ type InterxRequest struct {
 }
 
 type QueryValidator struct {
+	Top int `json:"top,string"`
+
 	Address    string `json:"address"`
 	Valkey     string `json:"valkey"`
 	Pubkey     string `json:"pubkey"`
@@ -153,6 +155,37 @@ type QueryValidator struct {
 	InactiveUntil       string `json:"inactive_until"`
 	Tombstoned          bool   `json:"tombstoned,string"`
 	MissedBlocksCounter int64  `json:"missed_blocks_counter,string"`
+}
+
+type QueryValidators []QueryValidator
+
+func (s QueryValidators) Len() int {
+	return len(s)
+}
+func (s QueryValidators) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
+}
+func (s QueryValidators) Less(i, j int) bool {
+	if s[i].Status != s[j].Status {
+		if s[j].Status == "ACTIVE" {
+			return false
+		}
+		if s[i].Status == "ACTIVE" {
+			return true
+		}
+		return s[i].Status > s[j].Status
+	}
+	if s[i].Rank != s[j].Rank {
+		return s[i].Rank > s[j].Rank
+	}
+	if s[i].Streak != s[j].Streak {
+		return s[i].Streak > s[j].Streak
+	}
+	if s[i].MissedBlocksCounter != s[j].MissedBlocksCounter {
+		return s[i].MissedBlocksCounter < s[j].MissedBlocksCounter
+	}
+
+	return false
 }
 
 type AllValidators struct {
