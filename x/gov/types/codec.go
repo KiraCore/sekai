@@ -397,6 +397,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgProposalSetNetworkProperty{},
 		&MsgProposalUpsertDataRegistry{},
 		&MsgProposalSetPoorNetworkMessages{},
+		&MsgProposalCreateRole{},
 		&MsgVoteProposal{},
 	)
 

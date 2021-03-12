@@ -585,21 +585,27 @@ func NewMsgProposalCreateRole(proposer sdk.AccAddress, role Role) *MsgProposalCr
 }
 
 func (m *MsgProposalCreateRole) Route() string {
-	panic("implement me")
+	return ModuleName
 }
 
 func (m *MsgProposalCreateRole) Type() string {
-	panic("implement me")
+	return types.MsgTypeProposalCreateRole
 }
 
 func (m *MsgProposalCreateRole) ValidateBasic() error {
-	panic("implement me")
+	if m.Proposer.Empty() {
+		return ErrEmptyProposerAccAddress
+	}
+	return nil
 }
 
 func (m *MsgProposalCreateRole) GetSignBytes() []byte {
-	panic("implement me")
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
 }
 
 func (m *MsgProposalCreateRole) GetSigners() []sdk.AccAddress {
-	panic("implement me")
+	return []sdk.AccAddress{
+		m.Proposer,
+	}
 }
