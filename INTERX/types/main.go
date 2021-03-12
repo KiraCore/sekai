@@ -89,7 +89,7 @@ type TxAmount struct {
 // Transaction is a struct to be used for query transaction response
 type Transaction struct {
 	Type    string     `json:"type,omitempty"`
-	From    string     `json:"from,omitemtpy"`
+	From    string     `json:"from,omitempty"`
 	To      string     `json:"to,omitempty"`
 	Amounts []TxAmount `json:"amounts,omitempty"`
 }
