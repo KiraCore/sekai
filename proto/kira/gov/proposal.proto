@@ -178,4 +178,6 @@ message CreateRoleProposal {
   option (gogoproto.equal) = true;
 
   uint32 role = 1;
+  repeated PermValue whitelisted_permissions = 2;
+  repeated PermValue blacklisted_permissions = 3;
 }
