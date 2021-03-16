@@ -1,5 +1,15 @@
 # Changelog
 
+### Updated
+
+- updated validators query to have `top` field - sort validators by `top` field
+- update interx metadata - sync to latest
+
+### Added
+
+- add rosetta - network list api
+- add rosetta - network options api
+
 ## [v0.1.x.x] - xx.xx.xxxx
 
 ## [v0.1.17.3] - 03.08.2021

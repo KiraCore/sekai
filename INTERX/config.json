@@ -3,7 +3,7 @@
   "grpc": "dns:///0.0.0.0:9090",
   "rpc": "http://0.0.0.0:26657",
   "port": "11000",
-  "mnemonic": "flush thumb poverty thought coral agree clutch raven piano wisdom craft youth struggle disagree script armed chief foster organ gasp hidden noodle seminar eagle",
+  "mnemonic": "vault offer thrive photo mistake broom pulp unable size vendor strike lady steel soon aware price lesson hope text august nice nation cart flee",
   "cache": {
     "status_sync": 5,
     "cache_dir": "cache",
@@ -12,7 +12,7 @@
     "download_file_size_limitation": "10MB"
   },
   "faucet": {
-    "mnemonic": "flush thumb poverty thought coral agree clutch raven piano wisdom craft youth struggle disagree script armed chief foster organ gasp hidden noodle seminar eagle",
+    "mnemonic": "vault offer thrive photo mistake broom pulp unable size vendor strike lady steel soon aware price lesson hope text august nice nation cart flee",
     "faucet_amounts": {
       "stake": 100000,
       "ukex": 100000,

@@ -129,6 +129,7 @@ func Run(configFilePath string, log grpclog.LoggerV2) error {
 	c := cors.New(cors.Options{
 		AllowedOrigins: []string{"*"},
 		AllowedHeaders: []string{"*"},
+		AllowedMethods: []string{"*"},
 	})
 
 	gatewayAddr := "0.0.0.0:" + port

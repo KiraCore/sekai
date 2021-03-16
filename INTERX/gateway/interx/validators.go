@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math"
 	"net/http"
+	"sort"
 	"strings"
 
 	"github.com/KiraCore/sekai/INTERX/common"
@@ -113,7 +114,7 @@ func queryValidatorsHandle(r *http.Request, gwCosmosmux *runtime.ServeMux) (inte
 			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
 		}
 
-		for _, validator := range result.Validators {
+		for index, validator := range result.Validators {
 			pubkey, _ := sdk.GetPubKeyFromBech32(sdk.Bech32PubKeyTypeConsPub, validator.Pubkey)
 
 			newReq := tempRequest.Clone(tempRequest.Context())
@@ -138,13 +139,18 @@ func queryValidatorsHandle(r *http.Request, gwCosmosmux *runtime.ServeMux) (inte
 					return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
 				}
 
-				validator.Mischance = signInfoResponse.ValSigningInfo.MissedBlocksCounter
-				validator.StartHeight = signInfoResponse.ValSigningInfo.StartHeight
-				validator.IndexOffset = signInfoResponse.ValSigningInfo.IndexOffset
-				validator.InactiveUntil = signInfoResponse.ValSigningInfo.InactiveUntil
-				validator.Tombstoned = signInfoResponse.ValSigningInfo.Tombstoned
-				validator.MissedBlocksCounter = signInfoResponse.ValSigningInfo.MissedBlocksCounter
+				result.Validators[index].Mischance = signInfoResponse.ValSigningInfo.MissedBlocksCounter
+				result.Validators[index].StartHeight = signInfoResponse.ValSigningInfo.StartHeight
+				result.Validators[index].IndexOffset = signInfoResponse.ValSigningInfo.IndexOffset
+				result.Validators[index].InactiveUntil = signInfoResponse.ValSigningInfo.InactiveUntil
+				result.Validators[index].Tombstoned = signInfoResponse.ValSigningInfo.Tombstoned
+				result.Validators[index].MissedBlocksCounter = signInfoResponse.ValSigningInfo.MissedBlocksCounter
 			}
+		}
+
+		sort.Sort(types.QueryValidators(result.Validators))
+		for index := range result.Validators {
+			result.Validators[index].Top = index + 1
 		}
 
 		if isQueryAll {

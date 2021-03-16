@@ -29,6 +29,8 @@ func getGetMethods() []string {
 		QueryKiraTokensRates,
 		QueryVoters,
 		QueryVotes,
+		QueryKiraTokensAliases,
+		QueryKiraTokensRates,
 	}
 }
 
