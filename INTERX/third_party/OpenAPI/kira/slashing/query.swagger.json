@@ -71,6 +71,39 @@
           "query"
         ]
       }
+    },
+    "/api/valoperinfos/{consAddress}": {
+      "get": {
+        "summary": "Query Signing Info of a Validator",
+        "description": "Query Signing Info of a Validator",
+        "operationId": "Query_SigningInfo",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/slashingQuerySigningInfoResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "consAddress",
+            "description": "cons_address is the address to query signing info of",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "query"
+        ]
+      }
     }
   },
   "definitions": {
@@ -149,6 +182,16 @@
         }
       },
       "description": "PageResponse is to be embedded in gRPC response messages where the corresponding\nrequest message has used PageRequest.\n\n message SomeResponse {\n         repeated Bar results = 1;\n         PageResponse page = 2;\n }"
+    },
+    "slashingQuerySigningInfoResponse": {
+      "type": "object",
+      "properties": {
+        "valSigningInfo": {
+          "$ref": "#/definitions/slashingValidatorSigningInfo",
+          "title": "val_signing_info is the signing info of requested val cons address"
+        }
+      },
+      "title": "QuerySigningInfoResponse is the response type for the Query/SigningInfo RPC\nmethod"
     },
     "slashingQuerySigningInfosResponse": {
       "type": "object",

@@ -9,6 +9,6 @@ import (
 func RegisterRequest(router *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr string) {
 	RegisterKiraGovRoutes(router, gwCosmosmux, rpcAddr)
 	RegisterKiraGovProposalRoutes(router, gwCosmosmux, rpcAddr)
-
 	RegisterKiraQueryRoutes(router, gwCosmosmux, rpcAddr)
+	RegisterKiraTokensRoutes(router, gwCosmosmux, rpcAddr)
 }

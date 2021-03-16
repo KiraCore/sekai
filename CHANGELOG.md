@@ -1,5 +1,14 @@
 # Changelog
 
+
+## [v0.1.17.3] - 03.08.2021
+### Fixed
+- Validators query to include mischance.
+
+### Added
+- Tokens alias/rate query.
+- Voters/votes query.
+
 ## [Unreleased] - 03.02.2021
 ### Added
 - Now when the proposal passes it enter ins status Enactment.

@@ -23,6 +23,16 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
 
 // Query provides defines the gRPC querier service
 service Query {
+  // SigningInfo queries the signing info of given cons address
+  rpc SigningInfo(QuerySigningInfoRequest) returns (QuerySigningInfoResponse) {
+    option (google.api.http).get = "/api/valoperinfos/{cons_address}";
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Query Signing Info of a Validator"
+      description: "Query Signing Info of a Validator"
+      tags: "query"
+    };
+  }
+
   // SigningInfos queries signing info of all validators
   rpc SigningInfos(QuerySigningInfosRequest) returns (QuerySigningInfosResponse) {
     option (google.api.http).get = "/api/valoperinfos";
@@ -53,6 +63,20 @@ message ValidatorSigningInfo {
   bool tombstoned = 5;
   // missed blocks counter (to avoid scanning the array every time)
   int64 missed_blocks_counter = 6 [(gogoproto.moretags) = "yaml:\"missed_blocks_counter\""];
+}
+
+// QuerySigningInfoRequest is the request type for the Query/SigningInfo RPC
+// method
+message QuerySigningInfoRequest {
+  // cons_address is the address to query signing info of
+  string cons_address = 1;
+}
+
+// QuerySigningInfoResponse is the response type for the Query/SigningInfo RPC
+// method
+message QuerySigningInfoResponse {
+  // val_signing_info is the signing info of requested val cons address
+  ValidatorSigningInfo val_signing_info = 1 [(gogoproto.nullable) = false];
 }
 
 // QuerySigningInfosRequest is the request type for the Query/SigningInfos RPC

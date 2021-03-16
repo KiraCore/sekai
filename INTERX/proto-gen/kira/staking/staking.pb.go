@@ -33,13 +33,13 @@ type Validator struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Moniker    string   `protobuf:"bytes,1,opt,name=moniker,proto3" json:"moniker,omitempty"`
-	Website    string   `protobuf:"bytes,2,opt,name=website,proto3" json:"website,omitempty"`
-	Social     string   `protobuf:"bytes,3,opt,name=social,proto3" json:"social,omitempty"`
-	Identity   string   `protobuf:"bytes,4,opt,name=identity,proto3" json:"identity,omitempty"`
-	Commission string   `protobuf:"bytes,5,opt,name=commission,proto3" json:"commission,omitempty"`
-	ValKey     string   `protobuf:"bytes,6,opt,name=val_key,json=valKey,proto3" json:"val_key,omitempty"`
-	PubKey     *any.Any `protobuf:"bytes,7,opt,name=pub_key,json=pubKey,proto3" json:"pub_key,omitempty"`
+	Moniker    string   `protobuf:"bytes,1,opt,name=moniker,proto3" json:"moniker"`
+	Website    string   `protobuf:"bytes,2,opt,name=website,proto3" json:"website"`
+	Social     string   `protobuf:"bytes,3,opt,name=social,proto3" json:"social"`
+	Identity   string   `protobuf:"bytes,4,opt,name=identity,proto3" json:"identity"`
+	Commission string   `protobuf:"bytes,5,opt,name=commission,proto3" json:"commission"`
+	ValKey     string   `protobuf:"bytes,6,opt,name=val_key,json=valKey,proto3" json:"val_key"`
+	PubKey     *any.Any `protobuf:"bytes,7,opt,name=pub_key,json=pubKey,proto3" json:"pub_key"`
 }
 
 func (x *Validator) Reset() {

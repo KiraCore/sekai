@@ -25,6 +25,12 @@ func getGetMethods() []string {
 		QueryTransactionResult,
 		QueryProposals,
 		QueryProposal,
+		QueryKiraTokensAliases,
+		QueryKiraTokensRates,
+		QueryVoters,
+		QueryVotes,
+		QueryKiraTokensAliases,
+		QueryKiraTokensRates,
 	}
 }
 
@@ -38,6 +44,7 @@ func getPostMethods() []string {
 func defaultConfig() InterxConfigFromFile {
 	configFromFile := InterxConfigFromFile{}
 
+	configFromFile.ServeHTTPS = false
 	configFromFile.GRPC = "dns:///0.0.0.0:9090"
 	configFromFile.RPC = "http://0.0.0.0:26657"
 	configFromFile.PORT = "11000"
@@ -89,6 +96,7 @@ func defaultConfig() InterxConfigFromFile {
 // InitConfig is a function to load interx configurations from a given file
 func InitConfig(
 	configFilePath string,
+	serveHTTPS bool,
 	grpc string,
 	rpc string,
 	port string,
@@ -103,6 +111,7 @@ func InitConfig(
 ) {
 	configFromFile := defaultConfig()
 
+	configFromFile.ServeHTTPS = serveHTTPS
 	configFromFile.GRPC = grpc
 	configFromFile.RPC = rpc
 	configFromFile.PORT = port
@@ -117,7 +126,7 @@ func InitConfig(
 	configFromFile.Faucet.MnemonicFile = LoadMnemonic(signingMnemonic)
 	configFromFile.Faucet.TimeLimit = faucetTimeLimit
 
-	bytes, err := json.MarshalIndent(&configFromFile, "", "    ")
+	bytes, err := json.MarshalIndent(&configFromFile, "", "  ")
 	if err != nil {
 		panic(err)
 	}
