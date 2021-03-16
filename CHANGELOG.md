@@ -1,5 +1,8 @@
 # Changelog
 
+## [Unreleased] - 03.02.2021
+### Added
+- Now when the proposal passes it enter ins status Enactment.
 
 ## [v0.1.17.3] - 03.08.2021
 ### Fixed
@@ -8,10 +11,6 @@
 ### Added
 - Tokens alias/rate query.
 - Voters/votes query.
-
-## [Unreleased] - 03.02.2021
-### Added
-- Now when the proposal passes it enter ins status Enactment.
 
 ## [v0.1.17.2] - 03.02.2021
 ### Fixed
