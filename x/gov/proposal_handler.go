@@ -100,6 +100,20 @@ func (c CreateRoleProposalHandler) ProposalType() string {
 func (c CreateRoleProposalHandler) Apply(ctx sdk.Context, proposal types.Content) {
 	p := proposal.(*types.CreateRoleProposal)
 	c.keeper.CreateRole(ctx, types.Role(p.Role))
+
+	for _, w := range p.WhitelistedPermissions {
+		err := c.keeper.WhitelistRolePermission(ctx, types.Role(p.Role), w)
+		if err != nil {
+			panic("unexpected error blacklisting permission proposal")
+		}
+	}
+
+	for _, b := range p.BlacklistedPermissions {
+		err := c.keeper.BlacklistRolePermission(ctx, types.Role(p.Role), b)
+		if err != nil {
+			panic("unexpected error blacklisting permission proposal")
+		}
+	}
 }
 
 func NewApplyCreateRoleProposalHandler(keeper keeper.Keeper) *CreateRoleProposalHandler {

@@ -580,8 +580,18 @@ func (m *MsgVoteProposal) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgProposalCreateRole(proposer sdk.AccAddress, role Role) *MsgProposalCreateRole {
-	return &MsgProposalCreateRole{Proposer: proposer, Role: uint32(role)}
+func NewMsgProposalCreateRole(
+	proposer sdk.AccAddress,
+	role Role,
+	whitelistPerms []PermValue,
+	blacklistPerms []PermValue,
+) *MsgProposalCreateRole {
+	return &MsgProposalCreateRole{
+		Proposer:               proposer,
+		Role:                   uint32(role),
+		WhitelistedPermissions: whitelistPerms,
+		BlacklistedPermissions: blacklistPerms,
+	}
 }
 
 func (m *MsgProposalCreateRole) Route() string {

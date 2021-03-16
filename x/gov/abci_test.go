@@ -456,6 +456,12 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					proposalID,
 					types.NewCreateRoleProposal(
 						types.Role(1000),
+						[]types.PermValue{
+							types.PermClaimValidator,
+						},
+						[]types.PermValue{
+							types.PermChangeTxFee,
+						},
 					),
 					time.Now(),
 					time.Now().Add(10*time.Second),
@@ -480,8 +486,10 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				iterator := app.CustomGovKeeper.GetEnactmentProposalsWithFinishedEnactmentEndTimeIterator(ctx, time.Now().Add(25*time.Second))
 				requireIteratorCount(t, iterator, 0)
 
-				_, found := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.Role(1000))
+				perms, found := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.Role(1000))
 				require.True(t, found)
+				require.True(t, perms.IsWhitelisted(types.PermClaimValidator))
+				require.True(t, perms.IsBlacklisted(types.PermChangeTxFee))
 			},
 		},
 	}

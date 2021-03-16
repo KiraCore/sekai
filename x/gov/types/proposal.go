@@ -138,9 +138,11 @@ func (m *SetPoorNetworkMessagesProposal) VotePermission() PermValue {
 	return PermVoteSetPoorNetworkMessagesProposal
 }
 
-func NewCreateRoleProposal(role Role) Content {
+func NewCreateRoleProposal(role Role, whitelist []PermValue, blacklist []PermValue) Content {
 	return &CreateRoleProposal{
-		Role: uint32(role),
+		Role:                   uint32(role),
+		WhitelistedPermissions: whitelist,
+		BlacklistedPermissions: blacklist,
 	}
 }
 

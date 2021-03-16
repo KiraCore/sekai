@@ -448,6 +448,10 @@ func (k msgServer) ClaimCouncilor(
 func (k msgServer) ProposalCreateRole(goCtx context.Context, msg *customgovtypes.MsgProposalCreateRole) (*customgovtypes.MsgProposalCreateRoleResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	if len(msg.WhitelistedPermissions) == 0 && len(msg.BlacklistedPermissions) == 0 {
+		return nil, customgovtypes.ErrEmptyPermissions
+	}
+
 	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, customgovtypes.PermCreateRoleProposal)
 	if !isAllowed {
 		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermCreateRoleProposal.String())
@@ -461,6 +465,8 @@ func (k msgServer) ProposalCreateRole(goCtx context.Context, msg *customgovtypes
 	proposalID, err := k.CreateAndSaveProposalWithContent(ctx,
 		customgovtypes.NewCreateRoleProposal(
 			customgovtypes.Role(msg.Role),
+			msg.WhitelistedPermissions,
+			msg.BlacklistedPermissions,
 		),
 	)
 	if err != nil {

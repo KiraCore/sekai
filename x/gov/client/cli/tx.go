@@ -867,6 +867,8 @@ func GetTxProposalCreateRole() *cobra.Command {
 			msg := types.NewMsgProposalCreateRole(
 				clientCtx.FromAddress,
 				types.Role(role),
+				[]types.PermValue{},
+				[]types.PermValue{},
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)

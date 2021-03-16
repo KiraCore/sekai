@@ -1740,6 +1740,8 @@ func TestHandler_CreateProposalCreateRole_Errors(t *testing.T) {
 			types.NewMsgProposalCreateRole(
 				proposerAddr,
 				types.Role(1),
+				[]types.PermValue{},
+				[]types.PermValue{types.PermClaimValidator},
 			),
 			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
 			errors.Wrap(types.ErrNotEnoughPermissions, types.PermCreateRoleProposal.String()),
@@ -1749,6 +1751,8 @@ func TestHandler_CreateProposalCreateRole_Errors(t *testing.T) {
 			types.NewMsgProposalCreateRole(
 				proposerAddr,
 				types.Role(1),
+				[]types.PermValue{types.PermClaimCouncilor},
+				[]types.PermValue{},
 			),
 			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
 				proposerActor := types.NewDefaultActor(proposerAddr)
@@ -1762,6 +1766,25 @@ func TestHandler_CreateProposalCreateRole_Errors(t *testing.T) {
 				app.CustomGovKeeper.CreateRole(ctx, types.Role(1))
 			},
 			types.ErrRoleExist,
+		},
+		{
+			"permissions are empty",
+			types.NewMsgProposalCreateRole(
+				proposerAddr,
+				types.Role(1000),
+				[]types.PermValue{},
+				[]types.PermValue{},
+			),
+			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+				proposerActor := types.NewDefaultActor(proposerAddr)
+				err := app.CustomGovKeeper.AddWhitelistPermission(
+					ctx,
+					proposerActor,
+					types.PermCreateRoleProposal,
+				)
+				require.NoError(t, err)
+			},
+			types.ErrEmptyPermissions,
 		},
 	}
 
@@ -1804,6 +1827,12 @@ func TestHandler_ProposalCreateRole(t *testing.T) {
 		types.NewMsgProposalCreateRole(
 			proposerAddr,
 			types.Role(1000),
+			[]types.PermValue{
+				types.PermClaimValidator,
+			},
+			[]types.PermValue{
+				types.PermChangeTxFee,
+			},
 		),
 	)
 	require.NoError(t, err)
@@ -1818,6 +1847,12 @@ func TestHandler_ProposalCreateRole(t *testing.T) {
 		1,
 		types.NewCreateRoleProposal(
 			types.Role(1000),
+			[]types.PermValue{
+				types.PermClaimValidator,
+			},
+			[]types.PermValue{
+				types.PermChangeTxFee,
+			},
 		),
 		ctx.BlockTime(),
 		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEndTime)),
