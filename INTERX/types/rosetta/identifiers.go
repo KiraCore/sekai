@@ -1,14 +1,14 @@
 package rosetta
 
 type SubNetworkIdentifier struct {
-	Network  string          `json:"network"`
-	Metadata NetworkMetadata `json:"metadata,omitempty"`
+	Network  string      `json:"network"`
+	Metadata interface{} `json:"metadata,omitempty"`
 }
 
 type NetworkIdentifier struct {
-	Blockchain           string               `json:"blockchain,omitempty"`
-	Network              string               `json:"network,omitempty"`
-	SubNetworkIdentifier SubNetworkIdentifier `json:"sub_network_identifier"`
+	Blockchain           string                `json:"blockchain"`
+	Network              string                `json:"network"`
+	SubNetworkIdentifier *SubNetworkIdentifier `json:"sub_network_identifier,omitempty"`
 }
 
 type BlockIdentifier struct {

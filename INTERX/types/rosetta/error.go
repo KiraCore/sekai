@@ -3,9 +3,9 @@ package rosetta
 type ErrorDetails interface{}
 
 type Error struct {
-	Code        int64        `json:"code"`
+	Code        int          `json:"code"`
 	Message     string       `json:"message"`
 	Description string       `json:"description,omitempty"`
 	Retriable   bool         `json:"retriable"`
-	details     ErrorDetails `json:"details,omitempty"`
+	Details     ErrorDetails `json:"details,omitempty"`
 }

@@ -15,7 +15,7 @@ type NetworkListResponse struct {
 }
 
 type NetworkRequest struct {
-	NetworkIdentifier rosetta.NetworkIdentifier `json:"network_identifier"`
+	NetworkIdentifier rosetta.NetworkIdentifier `json:"network_identifier,omitempty"` // make it omitable
 	Metadata          interface{}               `json:"metadata,omitempty"`
 }
 
