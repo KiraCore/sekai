@@ -98,7 +98,7 @@ func (svd ValidateFeeRangeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 		if rate == nil || !rate.FeePayments {
 			return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("currency you are trying to use was not whitelisted as fee payment"))
 		}
-		if tokensBlackWhite.IsFrozen(feeCoin.Denom, properties.EnableTokenBlacklist, properties.EnableTokenWhitelist) {
+		if tokensBlackWhite.IsFrozen(feeCoin.Denom, bondDenom, properties.EnableTokenBlacklist, properties.EnableTokenWhitelist) {
 			return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("currency you are trying to use as fee is frozen"))
 		}
 		feeAmount = feeAmount.Add(feeCoin.Amount.ToDec().Mul(rate.Rate))
@@ -248,13 +248,14 @@ func (pnmd BlackWhiteTokensCheckDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx
 		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "invalid transaction type")
 	}
 
+	bondDenom := pnmd.csk.BondDenom(ctx)
 	tokensBlackWhite := pnmd.tk.GetTokenBlackWhites(ctx)
 	properties := pnmd.cgk.GetNetworkProperties(ctx)
 	for _, msg := range sigTx.GetMsgs() {
 		if msg.Type() == bank.TypeMsgSend {
 			msg := msg.(*bank.MsgSend)
 			for _, amt := range msg.Amount {
-				if tokensBlackWhite.IsFrozen(amt.Denom, properties.EnableTokenBlacklist, properties.EnableTokenWhitelist) {
+				if tokensBlackWhite.IsFrozen(amt.Denom, bondDenom, properties.EnableTokenBlacklist, properties.EnableTokenWhitelist) {
 					return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "token is frozen")
 				}
 			}

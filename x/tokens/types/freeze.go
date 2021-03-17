@@ -11,7 +11,10 @@ func FindTokenIndex(tokens []string, token string) int {
 }
 
 // IsFrozen returns is frozen
-func (t TokensWhiteBlack) IsFrozen(denom string, enableTokenBlacklist, enableTokenWhitelist bool) bool {
+func (t TokensWhiteBlack) IsFrozen(denom string, bondDenom string, enableTokenBlacklist, enableTokenWhitelist bool) bool {
+	if denom == bondDenom {
+		return false
+	}
 	if enableTokenBlacklist {
 		if FindTokenIndex(t.Blacklisted, denom) >= 0 {
 			return true

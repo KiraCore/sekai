@@ -207,6 +207,13 @@ func (s IntegrationTestSuite) TestCreateProposalUpsertDataRegistry() {
 	fmt.Printf("%s", out.String())
 }
 
+// TODO: should add test for GetTxProposalTokensBlackWhiteChangeCmd
+// TODO: should add test for GetCmdQueryTokenBlackWhites
+// TODO: should add test for GetCmdQueryAllTokenAliases
+// TODO: should add test for GetCmdQueryTokenAliasesByDenom
+// TODO: should add test for GetCmdQueryAllTokenRates
+// TODO: should add test for GetCmdQueryTokenRatesByDenom
+
 func TestIntegrationTestSuite(t *testing.T) {
 	suite.Run(t, new(IntegrationTestSuite))
 }

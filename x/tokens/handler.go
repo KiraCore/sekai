@@ -1,11 +1,10 @@
 package tokens
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/errors"
-
 	"github.com/KiraCore/sekai/x/tokens/keeper"
 	"github.com/KiraCore/sekai/x/tokens/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // NewHandler returns new instance of handler
