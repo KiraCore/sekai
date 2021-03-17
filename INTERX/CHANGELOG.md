@@ -1,5 +1,19 @@
 # Changelog
 
+## [v0.1.x.x] - xx.xx.xxxx
+
+## [v0.1.17.5] - 03.17.2021
+
+### Updated
+
+- update cors allow headers
+
+### Added
+
+- add rosetta - network status api
+
+## [v0.1.17.4] - 03.16.2021
+
 ### Updated
 
 - updated validators query to have `top` field - sort validators by `top` field
@@ -9,8 +23,6 @@
 
 - add rosetta - network list api
 - add rosetta - network options api
-
-## [v0.1.x.x] - xx.xx.xxxx
 
 ## [v0.1.17.3] - 03.08.2021
 ### Fixed

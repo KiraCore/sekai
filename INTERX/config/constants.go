@@ -35,12 +35,11 @@ const (
 	QueryGenesis             = "/api/genesis"
 	QueryGenesisSum          = "/api/gensum"
 
-	Download = "/download"
-
+	Download              = "/download"
 	DataReferenceRegistry = "DRR"
+	InterxVersion         = "0.1.0"
 
 	QueryRosettaNetworkList    = "/rosetta/network/list"
 	QueryRosettaNetworkOptions = "/rosetta/network/options"
-
-	InterxVersion = "0.1.0"
+	QueryRosettaNetworkStatus  = "/rosetta/network/status"
 )

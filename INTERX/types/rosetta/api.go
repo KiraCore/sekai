@@ -10,7 +10,7 @@ type Version struct {
 type SyncStatus struct {
 	CurrentIndex int64  `json:"current_index,omitempty"`
 	TargetIndex  int64  `json:"target_index,omitempty"`
-	Stage        string `jsong:"stage,omitempty"`
+	Stage        string `json:"stage,omitempty"`
 	Synced       bool   `json:"synced,omitempty"`
 }
 
