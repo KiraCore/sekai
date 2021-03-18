@@ -3,6 +3,7 @@
 ## [Unreleased] - 03.02.2021
 ### Added
 - Now when the proposal passes it enter ins status Enactment.
+- Add proposal to create a Role.
 
 ## [v0.1.17.3] - 03.08.2021
 ### Fixed
