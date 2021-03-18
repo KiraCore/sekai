@@ -4,6 +4,7 @@
 ### Added
 - Now when the proposal passes it enter ins status Enactment.
 - Add proposal to create a Role.
+- Fix GetTxProposalUpsertDataRegistry and make it appear on client.
 
 ## [v0.1.17.3] - 03.08.2021
 ### Fixed

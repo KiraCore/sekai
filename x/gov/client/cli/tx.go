@@ -73,6 +73,7 @@ func NewTxProposalCmds() *cobra.Command {
 	proposalCmd.AddCommand(GetTxProposalSetNetworkProperty())
 	proposalCmd.AddCommand(GetTxProposalSetPoorNetworkMsgs())
 	proposalCmd.AddCommand(GetTxProposalCreateRole())
+	proposalCmd.AddCommand(GetTxProposalUpsertDataRegistry())
 
 	return proposalCmd
 }
