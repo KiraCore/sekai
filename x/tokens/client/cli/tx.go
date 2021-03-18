@@ -143,7 +143,10 @@ func GetTxProposalUpsertTokenAliasCmd() *cobra.Command {
 				return fmt.Errorf("invalid decimals: %w", err)
 			}
 
-			denoms := args[4]
+			denoms, err := cmd.Flags().GetString(FlagDenoms)
+			if err != nil {
+				return fmt.Errorf("invalid denoms: %w", err)
+			}
 
 			msg := types.NewMsgProposalUpsertTokenAlias(
 				clientCtx.FromAddress,
@@ -159,10 +162,15 @@ func GetTxProposalUpsertTokenAliasCmd() *cobra.Command {
 	}
 
 	cmd.Flags().String(FlagSymbol, "KEX", "Ticker (eg. ATOM, KEX, BTC)")
+	cmd.MarkFlagRequired(FlagSymbol)
 	cmd.Flags().String(FlagName, "Kira", "Token Name (e.g. Cosmos, Kira, Bitcoin)")
+	cmd.MarkFlagRequired(FlagName)
 	cmd.Flags().String(FlagIcon, "", "Graphical Symbol (url link to graphics)")
+	cmd.MarkFlagRequired(FlagIcon)
 	cmd.Flags().Uint32(FlagDecimals, 6, "Integer number of max decimals")
+	cmd.MarkFlagRequired(FlagDecimals)
 	cmd.Flags().String(FlagDenoms, "ukex,mkex", "An array of token denoms to be aliased")
+	cmd.MarkFlagRequired(FlagDenoms)
 
 	flags.AddTxFlagsToCmd(cmd)
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)
@@ -218,8 +226,11 @@ func GetTxProposalUpsertTokenRatesCmd() *cobra.Command {
 	}
 
 	cmd.Flags().String(FlagDenom, "tbtc", "denom - identifier for token rates")
+	cmd.MarkFlagRequired(FlagDenom)
 	cmd.Flags().String(FlagRate, "1.0", "rate to register, max decimal 9, max value 10^10")
+	cmd.MarkFlagRequired(FlagRate)
 	cmd.Flags().Bool(FlagFeePayments, true, "use registry as fee payment")
+	cmd.MarkFlagRequired(FlagFeePayments)
 
 	flags.AddTxFlagsToCmd(cmd)
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)
@@ -275,8 +286,11 @@ func GetTxUpsertTokenRateCmd() *cobra.Command {
 	}
 
 	cmd.Flags().String(FlagDenom, "tbtc", "denom - identifier for token rates")
+	cmd.MarkFlagRequired(FlagDenom)
 	cmd.Flags().String(FlagRate, "1.0", "rate to register, max decimal 9, max value 10^10")
+	cmd.MarkFlagRequired(FlagRate)
 	cmd.Flags().Bool(FlagFeePayments, true, "use registry as fee payment")
+	cmd.MarkFlagRequired(FlagFeePayments)
 
 	flags.AddTxFlagsToCmd(cmd)
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)

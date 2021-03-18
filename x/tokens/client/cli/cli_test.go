@@ -145,11 +145,9 @@ func (s IntegrationTestSuite) TestCreateProposalUpsertTokenRates() {
 
 	cmd := cli.GetTxProposalUpsertTokenRatesCmd()
 	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
-		fmt.Sprintf("%s", "theKey"),
-		fmt.Sprintf("%s", "theHash"),
-		fmt.Sprintf("%s", "theReference"),
-		fmt.Sprintf("%s", "theEncoding"),
-		fmt.Sprintf("%d", 12345),
+		fmt.Sprintf("--%s=%s", cli.FlagDenom, "ubtc"),
+		fmt.Sprintf("--%s=%f", cli.FlagRate, 0.00001),
+		fmt.Sprintf("--%s=%s", cli.FlagFeePayments, "true"),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
@@ -172,18 +170,18 @@ func (s IntegrationTestSuite) TestCreateProposalUpsertTokenRates() {
 	fmt.Printf("%s", out.String())
 }
 
-func (s IntegrationTestSuite) TestCreateProposalUpsertDataRegistry() {
+func (s IntegrationTestSuite) TestCreateProposalUpsertTokenAlias() {
 	// Query permissions for role Validator
 	val := s.network.Validators[0]
 	clientCtx := val.ClientCtx
 
 	cmd := cli.GetTxProposalUpsertTokenAliasCmd()
 	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
-		fmt.Sprintf("%s", "theKey"),
-		fmt.Sprintf("%s", "theHash"),
-		fmt.Sprintf("%s", "theReference"),
-		fmt.Sprintf("%s", "theEncoding"),
-		fmt.Sprintf("%d", 12345),
+		fmt.Sprintf("--%s=%s", cli.FlagSymbol, "ETH"),
+		fmt.Sprintf("--%s=%s", cli.FlagName, "Ethereum"),
+		fmt.Sprintf("--%s=%s", cli.FlagIcon, "myiconurl"),
+		fmt.Sprintf("--%s=%d", cli.FlagDecimals, 6),
+		fmt.Sprintf("--%s=%s", cli.FlagDenoms, "finney"),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
