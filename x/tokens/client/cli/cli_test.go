@@ -222,8 +222,6 @@ func (s IntegrationTestSuite) TestCreateProposalUpsertDataRegistry() {
 	fmt.Printf("%s", out.String())
 }
 
-// TODO: should add test for GetTxProposalTokensBlackWhiteChangeCmd
-// TODO: should add test for
 func (s IntegrationTestSuite) TestTxProposalTokensBlackWhiteChangeCmd() {
 	// Query permissions for role Validator
 	val := s.network.Validators[0]
