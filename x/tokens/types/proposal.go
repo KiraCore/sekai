@@ -10,8 +10,11 @@ var (
 	_ types.Content = &ProposalUpsertTokenRates{}
 )
 
-const ProposalTypeUpsertTokenAlias = "UpsertTokenAlias"
-const ProposalTypeUpsertTokenRates = "UpsertTokenRates"
+const (
+	ProposalTypeUpsertTokenAlias       = "UpsertTokenAlias"
+	ProposalTypeUpsertTokenRates       = "UpsertTokenRates"
+	ProposalTypeTokensWhiteBlackChange = "TokensWhiteBlackChange"
+)
 
 func NewProposalUpsertTokenAlias(
 	symbol string,
@@ -47,4 +50,16 @@ func (m *ProposalUpsertTokenRates) ProposalType() string {
 
 func (m *ProposalUpsertTokenRates) VotePermission() types.PermValue {
 	return types.PermVoteUpsertTokenRateProposal
+}
+
+func NewProposalTokensWhiteBlackChange(isBlacklist, isAdd bool, tokens []string) *ProposalTokensWhiteBlackChange {
+	return &ProposalTokensWhiteBlackChange{isBlacklist, isAdd, tokens}
+}
+
+func (m *ProposalTokensWhiteBlackChange) ProposalType() string {
+	return ProposalTypeTokensWhiteBlackChange
+}
+
+func (m *ProposalTokensWhiteBlackChange) VotePermission() types.PermValue {
+	return types.PermVoteTokensWhiteBlackChangeProposal
 }

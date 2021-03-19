@@ -26,6 +26,8 @@ func DefaultGenesis() *GenesisState {
 				PermCreateUnjailValidatorProposal,
 				PermCreateRoleProposal,
 				PermVoteCreateRoleProposal,
+				PermCreateTokensWhiteBlackChangeProposal,
+				PermVoteTokensWhiteBlackChangeProposal,
 			}, nil),
 			uint64(RoleValidator): NewPermissions([]PermValue{PermClaimValidator}, nil),
 		},
@@ -42,6 +44,8 @@ func DefaultGenesis() *GenesisState {
 			PoorNetworkMaxBankSend:      1000000, // 1M ukex
 			MinValidators:               1,
 			JailMaxTime:                 10, // 10 mins
+			EnableTokenWhitelist:        false,
+			EnableTokenBlacklist:        true,
 		},
 		ExecutionFees: []*ExecutionFee{
 			{

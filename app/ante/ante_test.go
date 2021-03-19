@@ -321,3 +321,8 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 		})
 	}
 }
+
+// TODO: should write test for ValidateFeeRangeDecorator
+// TODO: should write test for PoorNetworkManagementDecorator
+// TODO: should write test for BlackWhiteTokensCheckDecorator
+// TODO: should write tset for ExecutionFeeRegistrationDecorator

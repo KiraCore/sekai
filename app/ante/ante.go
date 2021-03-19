@@ -45,6 +45,7 @@ func NewAnteHandler(
 		ante.NewDeductFeeDecorator(ak, fk),
 		// poor network management decorator
 		NewPoorNetworkManagementDecorator(ak, cgk, sk),
+		NewBlackWhiteTokensCheckDecorator(cgk, sk, tk),
 		// custom execution fee consume decorator
 		NewExecutionFeeRegistrationDecorator(ak, cgk, fk),
 		ante.NewSigGasConsumeDecorator(ak, sigGasConsumer),
@@ -88,13 +89,17 @@ func (svd ValidateFeeRangeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 
 	feeAmount := sdk.NewDec(0)
 	feeCoins := feeTx.GetFee()
+	tokensBlackWhite := svd.tk.GetTokenBlackWhites(ctx)
 	for _, feeCoin := range feeCoins {
 		rate := svd.tk.GetTokenRate(ctx, feeCoin.Denom)
 		if !properties.EnableForeignFeePayments && feeCoin.Denom != bondDenom {
 			return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("foreign fee payments is disabled by governance"))
 		}
 		if rate == nil || !rate.FeePayments {
-			return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("currency you are tying to use was not whitelisted as fee payment"))
+			return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("currency you are trying to use was not whitelisted as fee payment"))
+		}
+		if tokensBlackWhite.IsFrozen(feeCoin.Denom, bondDenom, properties.EnableTokenBlacklist, properties.EnableTokenWhitelist) {
+			return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("currency you are trying to use as fee is frozen"))
 		}
 		feeAmount = feeAmount.Add(feeCoin.Amount.ToDec().Mul(rate.Rate))
 	}
@@ -164,7 +169,7 @@ type PoorNetworkManagementDecorator struct {
 	csk customstakingkeeper.Keeper
 }
 
-// NewPoorNetworkManagementDecorator returns instance of CustomExecutionFeeConsumeDecorator
+// NewPoorNetworkManagementDecorator returns instance of PoorNetworkManagementDecorator
 func NewPoorNetworkManagementDecorator(ak keeper.AccountKeeper, cgk customgovkeeper.Keeper, csk customstakingkeeper.Keeper) PoorNetworkManagementDecorator {
 	return PoorNetworkManagementDecorator{
 		ak,
@@ -182,7 +187,7 @@ func findString(a []string, x string) int {
 	return -1
 }
 
-// AnteHandle handle NewPoorNetworkManagementDecorator
+// AnteHandle handle PoorNetworkManagementDecorator
 func (pnmd PoorNetworkManagementDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
 	sigTx, ok := tx.(sdk.FeeTx)
 	if !ok {
@@ -215,6 +220,46 @@ func (pnmd PoorNetworkManagementDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx
 			return next(ctx, tx, simulate)
 		}
 		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid transaction type on poor network")
+	}
+
+	return next(ctx, tx, simulate)
+}
+
+// BlackWhiteTokensCheckDecorator register black white tokens check decorator
+type BlackWhiteTokensCheckDecorator struct {
+	cgk customgovkeeper.Keeper
+	csk customstakingkeeper.Keeper
+	tk  tokenskeeper.Keeper
+}
+
+// NewBlackWhiteTokensCheckDecorator returns instance of BlackWhiteTokensCheckDecorator
+func NewBlackWhiteTokensCheckDecorator(cgk customgovkeeper.Keeper, csk customstakingkeeper.Keeper, tk tokenskeeper.Keeper) BlackWhiteTokensCheckDecorator {
+	return BlackWhiteTokensCheckDecorator{
+		cgk,
+		csk,
+		tk,
+	}
+}
+
+// AnteHandle handle NewPoorNetworkManagementDecorator
+func (pnmd BlackWhiteTokensCheckDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
+	sigTx, ok := tx.(sdk.FeeTx)
+	if !ok {
+		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "invalid transaction type")
+	}
+
+	bondDenom := pnmd.csk.BondDenom(ctx)
+	tokensBlackWhite := pnmd.tk.GetTokenBlackWhites(ctx)
+	properties := pnmd.cgk.GetNetworkProperties(ctx)
+	for _, msg := range sigTx.GetMsgs() {
+		if msg.Type() == bank.TypeMsgSend {
+			msg := msg.(*bank.MsgSend)
+			for _, amt := range msg.Amount {
+				if tokensBlackWhite.IsFrozen(amt.Denom, bondDenom, properties.EnableTokenBlacklist, properties.EnableTokenWhitelist) {
+					return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "token is frozen")
+				}
+			}
+		}
 	}
 
 	return next(ctx, tx, simulate)

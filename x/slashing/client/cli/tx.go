@@ -68,7 +68,7 @@ func NewPauseTxCmd() *cobra.Command {
 		Short: "pause validator",
 		Long: `pause a validator before stopping of a node to avoid automatic inactivation:
 
-$ <appd> tx slashing pause --from mykey
+$ <appd> tx customslashing pause --from validator --chain-id=testing --keyring-backend=test --fees=100ukex --home=$HOME/.sekaid --yes
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)

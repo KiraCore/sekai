@@ -240,6 +240,7 @@ func NewInitApp(
 				customgov.NewApplySetPoorNetworkMessagesProposalHandler(app.customGovKeeper),
 				tokens.NewApplyUpsertTokenAliasProposalHandler(app.tokensKeeper),
 				tokens.NewApplyUpsertTokenRatesProposalHandler(app.tokensKeeper),
+				tokens.NewApplyWhiteBlackChangeProposalHandler(app.tokensKeeper),
 				customstaking.NewApplyUnjailValidatorProposalHandler(app.customStakingKeeper),
 				customgov.NewApplyCreateRoleProposalHandler(app.customGovKeeper),
 			},
