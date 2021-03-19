@@ -29,8 +29,8 @@ service Msg {
     rpc ProposalUpsertDataRegistry(MsgProposalUpsertDataRegistry) returns (MsgProposalUpsertDataRegistryResponse);
     // ProposalSetNetworkProperty defines a method for setting a network property proposal
     rpc ProposalSetNetworkProperty(MsgProposalSetNetworkProperty) returns (MsgProposalSetNetworkPropertyResponse);
-    // ProposalSetPoorNetworkMsgs defines a method for setting poor network allowed messages
-    rpc ProposalSetPoorNetworkMsgs(MsgProposalSetPoorNetworkMessages) returns (MsgProposalSetPoorNetworkMessagesResponse);
+    // ProposalSetPoorNetworkMessages defines a method for setting poor network allowed messages
+    rpc ProposalSetPoorNetworkMessages(MsgProposalSetPoorNetworkMessages) returns (MsgProposalSetPoorNetworkMessagesResponse);
     // ProposalCreateRole defines a method for creating a role proposal
     rpc ProposalCreateRole(MsgProposalCreateRole) returns (MsgProposalCreateRoleResponse);
     // CreateRole defines a method for creating a role

@@ -199,9 +199,9 @@ func (pnmd PoorNetworkManagementDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx
 		return next(ctx, tx, simulate)
 	}
 	// handle messages on poor network
-	poorNetworkMsgs, found := pnmd.cgk.GetPoorNetworkMsgs(ctx)
+	pnmsgs, found := pnmd.cgk.GetPoorNetworkMessages(ctx)
 	if !found {
-		poorNetworkMsgs = &customgovtypes.AllowedMessages{}
+		pnmsgs = &customgovtypes.AllowedMessages{}
 	}
 	for _, msg := range sigTx.GetMsgs() {
 		if msg.Type() == bank.TypeMsgSend {
@@ -216,7 +216,7 @@ func (pnmd PoorNetworkManagementDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx
 			// TODO: we could do restriction to send only when target account does not exist on chain yet for more restriction
 			return next(ctx, tx, simulate)
 		}
-		if findString(poorNetworkMsgs.Messages, msg.Type()) >= 0 {
+		if findString(pnmsgs.Messages, msg.Type()) >= 0 {
 			return next(ctx, tx, simulate)
 		}
 		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid transaction type on poor network")

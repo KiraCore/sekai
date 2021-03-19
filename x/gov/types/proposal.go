@@ -13,11 +13,11 @@ import (
 
 // constants
 const (
-	AssignPermissionProposalType   = "AssignPermission"
-	SetNetworkPropertyProposalType = "SetNetworkProperty"
-	UpsertDataRegistryProposalType = "UpsertDataRegistry"
-	SetPoorNetworkMsgsProposalType = "SetPoorNetworkMsgs"
-	CreateRoleProposalType         = "CreateRoleProposal"
+	AssignPermissionProposalType       = "AssignPermission"
+	SetNetworkPropertyProposalType     = "SetNetworkProperty"
+	UpsertDataRegistryProposalType     = "UpsertDataRegistry"
+	SetPoorNetworkMessagesProposalType = "SetPoorNetworkMessages"
+	CreateRoleProposalType             = "CreateRoleProposal"
 )
 
 var _ Content = &AssignPermissionProposal{}
@@ -131,7 +131,7 @@ func NewSetPoorNetworkMessagesProposal(msgs []string) Content {
 }
 
 func (m *SetPoorNetworkMessagesProposal) ProposalType() string {
-	return SetPoorNetworkMsgsProposalType
+	return SetPoorNetworkMessagesProposalType
 }
 
 func (m *SetPoorNetworkMessagesProposal) VotePermission() PermValue {

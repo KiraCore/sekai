@@ -20,5 +20,5 @@ func (m *ProposalUnjailValidator) ProposalType() string {
 }
 
 func (m *ProposalUnjailValidator) VotePermission() types.PermValue {
-	panic("implement me")
+	return types.PermVoteUnjailValidatorProposal
 }

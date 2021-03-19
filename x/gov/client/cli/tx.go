@@ -71,7 +71,7 @@ func NewTxProposalCmds() *cobra.Command {
 	proposalCmd.AddCommand(GetTxProposalAssignPermission())
 	proposalCmd.AddCommand(GetTxVoteProposal())
 	proposalCmd.AddCommand(GetTxProposalSetNetworkProperty())
-	proposalCmd.AddCommand(GetTxProposalSetPoorNetworkMsgs())
+	proposalCmd.AddCommand(GetTxProposalSetPoorNetworkMessages())
 	proposalCmd.AddCommand(GetTxProposalCreateRole())
 	proposalCmd.AddCommand(GetTxProposalUpsertDataRegistry())
 
@@ -576,8 +576,8 @@ func GetTxRemoveRole() *cobra.Command {
 	return cmd
 }
 
-// GetTxProposalSetPoorNetworkMsgs defines command to send proposal tx to modify poor network messages
-func GetTxProposalSetPoorNetworkMsgs() *cobra.Command {
+// GetTxProposalSetPoorNetworkMessages defines command to send proposal tx to modify poor network messages
+func GetTxProposalSetPoorNetworkMessages() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "set-poor-network-msgs <messages>",
 		Short: "Create a proposal to set a value on a network property.",
@@ -618,7 +618,7 @@ func GetTxProposalSetPoorNetworkMsgs() *cobra.Command {
 // GetTxProposalSetNetworkProperty defines command to send proposal tx to modify a network property
 func GetTxProposalSetNetworkProperty() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "set-network-property <property> <value>",
+		Use:   "set-network-property <property> <value> [flags]",
 		Short: "Create a proposal to set a value on a network property.",
 		Long: `
 		$ %s tx customgov proposal set-network-property MIN_TX_FEE 100 --from=<key_or_address>
@@ -707,7 +707,7 @@ func GetTxProposalAssignPermission() *cobra.Command {
 
 func GetTxProposalUpsertDataRegistry() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "upsert-data-registry key hash reference encoding size",
+		Use:   "upsert-data-registry [key] [hash] [reference] [encoding] [size] [flags]",
 		Short: "Upsert a key in the data registry",
 		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) error {

@@ -14,8 +14,23 @@ export PermVoteSetPermissionProposal=5
 export PermUpsertTokenAlias=6
 export PermChangeTxFee=7
 export PermUpsertTokenRate=8
-export PermCreateTokensWhiteBlackChangeProposal=21
-export PermVoteTokensWhiteBlackChangeProposal=22
+export PermUpsertRole=9
+export PermCreateUpsertDataRegistryProposal=10
+export PermVoteUpsertDataRegistryProposal=11
+export PermCreateSetNetworkPropertyProposal=12
+export PermVoteSetNetworkPropertyProposal=13
+export PermCreateUpsertTokenAliasProposal=14
+export PermVoteUpsertTokenAliasProposal=15
+export PermCreateSetPoorNetworkMessagesProposal=16
+export PermVoteSetPoorNetworkMessagesProposal=17
+export PermCreateUpsertTokenRateProposal=18
+export PermVoteUpsertTokenRateProposal=19
+export PermCreateUnjailValidatorProposal=20
+export PermVoteUnjailValidatorProposal=21
+export PermCreateRoleProposal=22
+export PermVoteCreateRoleProposal=23
+export PermCreateTokensWhiteBlackChangeProposal=24
+export PermVoteTokensWhiteBlackChangeProposal=25
 
 # transaction_type
 export TypeMsgSend      = "send"
