@@ -1,5 +1,15 @@
 # Changelog
 
+## [v0.1.18] - 19.03.2021
+### Added
+- Ante handler to check frozen tokens movement
+- Add network properties for ENABLE_TOKEN_WHITELIST / ENABLE_TOKEN_BLACKLIST
+- Add permissions for creation and vote on blacklist and whitelist change of tokens
+- Added CLI command to submit proposal to change blacklist and whitelist
+- Added CLI command to query current blacklist and whitelist
+- Network Properties management code modification for boolean properties
+
+### Fixed
 ## [v0.1.17.6] - 18.03.2021
 ### Added
 - Now when the proposal passes it enter ins status Enactment.
