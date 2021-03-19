@@ -30,9 +30,9 @@ type Error struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Code    int64  `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
-	Data    string `protobuf:"bytes,2,opt,name=data,proto3" json:"data,omitempty"`
-	Message string `protobuf:"bytes,3,opt,name=message,proto3" json:"message,omitempty"`
+	Code    int64  `protobuf:"varint,1,opt,name=code,proto3" json:"code"`
+	Data    string `protobuf:"bytes,2,opt,name=data,proto3" json:"data"`
+	Message string `protobuf:"bytes,3,opt,name=message,proto3" json:"message"`
 }
 
 func (x *Error) Reset() {

@@ -89,7 +89,7 @@ type TxAmount struct {
 // Transaction is a struct to be used for query transaction response
 type Transaction struct {
 	Type    string     `json:"type,omitempty"`
-	From    string     `json:"from,omitemtpy"`
+	From    string     `json:"from,omitempty"`
 	To      string     `json:"to,omitempty"`
 	Amounts []TxAmount `json:"amounts,omitempty"`
 }
@@ -133,33 +133,82 @@ type InterxRequest struct {
 }
 
 type QueryValidator struct {
-	Address    string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
-	Valkey     string `protobuf:"bytes,2,opt,name=valkey,proto3" json:"valkey,omitempty"`
-	Pubkey     string `protobuf:"bytes,3,opt,name=pubkey,proto3" json:"pubkey,omitempty"`
-	Proposer   string `protobuf:"bytes,4,opt,name=proposer,proto3" json:"proposer,omitempty"`
-	Moniker    string `protobuf:"bytes,5,opt,name=moniker,proto3" json:"moniker,omitempty"`
-	Website    string `protobuf:"bytes,6,opt,name=website,proto3" json:"website,omitempty"`
-	Social     string `protobuf:"bytes,7,opt,name=social,proto3" json:"social,omitempty"`
-	Identity   string `protobuf:"bytes,8,opt,name=identity,proto3" json:"identity,omitempty"`
-	Commission string `protobuf:"bytes,9,opt,name=commission,proto3" json:"commission,omitempty"`
-	Status     string `protobuf:"bytes,10,opt,name=status,proto3" json:"status,omitempty"`
-	Rank       int64  `protobuf:"varint,11,opt,name=rank,proto3" json:"rank,omitempty"`
-	Streak     int64  `protobuf:"varint,12,opt,name=streak,proto3" json:"streak,omitempty"`
-	Mischance  int64  `protobuf:"varint,13,opt,name=mischance,proto3" json:"mischance,omitempty"`
+	Top int `json:"top,string"`
+
+	Address    string `json:"address"`
+	Valkey     string `json:"valkey"`
+	Pubkey     string `json:"pubkey"`
+	Proposer   string `json:"proposer"`
+	Moniker    string `json:"moniker"`
+	Website    string `json:"website"`
+	Social     string `json:"social"`
+	Identity   string `json:"identity"`
+	Commission string `json:"commission"`
+	Status     string `json:"status"`
+	Rank       int64  `json:"rank,string"`
+	Streak     int64  `json:"streak,string"`
+	Mischance  int64  `json:"mischance,string"`
+
+	// Additional
+	StartHeight         int64  `json:"start_height,string"`
+	IndexOffset         int64  `json:"index_offset,string"`
+	InactiveUntil       string `json:"inactive_until"`
+	Tombstoned          bool   `json:"tombstoned,string"`
+	MissedBlocksCounter int64  `json:"missed_blocks_counter,string"`
+}
+
+type QueryValidators []QueryValidator
+
+func (s QueryValidators) Len() int {
+	return len(s)
+}
+func (s QueryValidators) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
+}
+func (s QueryValidators) Less(i, j int) bool {
+	if s[i].Status != s[j].Status {
+		if s[j].Status == "ACTIVE" {
+			return false
+		}
+		if s[i].Status == "ACTIVE" {
+			return true
+		}
+		return s[i].Status > s[j].Status
+	}
+	if s[i].Rank != s[j].Rank {
+		return s[i].Rank > s[j].Rank
+	}
+	if s[i].Streak != s[j].Streak {
+		return s[i].Streak > s[j].Streak
+	}
+	if s[i].MissedBlocksCounter != s[j].MissedBlocksCounter {
+		return s[i].MissedBlocksCounter < s[j].MissedBlocksCounter
+	}
+
+	return false
 }
 
 type AllValidators struct {
 	Status struct {
-		NetworkStopped     bool `json:"network_stopped"`
+		ConsensusStopped   bool `json:"consensus_stopped"`
 		ActiveValidators   int  `json:"active_validators"`
 		PausedValidators   int  `json:"paused_validators"`
 		InactiveValidators int  `json:"inactive_validators"`
 		JailedValidators   int  `json:"jailed_validators"`
 		TotalValidators    int  `json:"total_validators"`
-		TotalWaiting       int  `json:"total_waiting"`
+		WaitingValidators  int  `json:"waiting_validators"`
 	} `json:"status"`
 	Waiting    []string         `json:"waiting"`
 	Validators []QueryValidator `json:"validators"`
+}
+
+type ValidatorSigningInfo struct {
+	Address             string `json:"address"`
+	StartHeight         int64  `json:"start_height,string,omitempty"`
+	IndexOffset         int64  `json:"index_offset,string,omitempty"`
+	InactiveUntil       string `json:"inactive_until,omitempty"`
+	Tombstoned          bool   `json:"tombstoned,string,omitempty"`
+	MissedBlocksCounter int64  `json:"missed_blocks_counter,string"`
 }
 
 const (

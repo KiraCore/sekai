@@ -6,6 +6,7 @@ import "google/protobuf/timestamp.proto";
 import "google/protobuf/any.proto";
 import "cosmos_proto/cosmos.proto";
 import "role.proto";
+import "permission.proto";
 import "network_properties.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/gov/types";
@@ -35,6 +36,7 @@ enum VoteResult {
   VOTE_RESULT_REJECTED_WITH_VETO = 3 [(gogoproto.enumvalue_customname) = "RejectedWithVeto"];
   VOTE_PENDING = 4 [(gogoproto.enumvalue_customname) = "Pending"];
   VOTE_RESULT_QUORUM_NOT_REACHED = 5 [(gogoproto.enumvalue_customname) = "QuorumNotReached"];
+  VOTE_RESULT_ENACTMENT = 6 [(gogoproto.enumvalue_customname) = "Enactment"];
 }
 
 message Vote {
@@ -159,4 +161,23 @@ message UpsertDataRegistryProposal {
 
 message SetPoorNetworkMessagesProposal {
   repeated string messages = 1;
+}
+
+message MsgProposalCreateRole {
+  bytes proposer = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
+  ];
+
+  uint32 role = 2;
+  repeated PermValue whitelisted_permissions = 3;
+  repeated PermValue blacklisted_permissions = 4;
+}
+
+message CreateRoleProposal {
+  option (cosmos_proto.implements_interface) = "Content";
+  option (gogoproto.equal) = true;
+
+  uint32 role = 1;
+  repeated PermValue whitelisted_permissions = 2;
+  repeated PermValue blacklisted_permissions = 3;
 }

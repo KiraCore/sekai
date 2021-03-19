@@ -17,6 +17,7 @@ const (
 	SetNetworkPropertyProposalType = "SetNetworkProperty"
 	UpsertDataRegistryProposalType = "UpsertDataRegistry"
 	SetPoorNetworkMsgsProposalType = "SetPoorNetworkMsgs"
+	CreateRoleProposalType         = "CreateRoleProposal"
 )
 
 var _ Content = &AssignPermissionProposal{}
@@ -135,4 +136,20 @@ func (m *SetPoorNetworkMessagesProposal) ProposalType() string {
 
 func (m *SetPoorNetworkMessagesProposal) VotePermission() PermValue {
 	return PermVoteSetPoorNetworkMessagesProposal
+}
+
+func NewCreateRoleProposal(role Role, whitelist []PermValue, blacklist []PermValue) Content {
+	return &CreateRoleProposal{
+		Role:                   uint32(role),
+		WhitelistedPermissions: whitelist,
+		BlacklistedPermissions: blacklist,
+	}
+}
+
+func (m *CreateRoleProposal) ProposalType() string {
+	return CreateRoleProposalType
+}
+
+func (m *CreateRoleProposal) VotePermission() PermValue {
+	return PermVoteCreateRoleProposal
 }

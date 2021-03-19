@@ -135,7 +135,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 
 				proposal, found := app.CustomGovKeeper.GetProposal(ctx, 1234)
 				require.True(t, found)
-				require.Equal(t, types.Passed, proposal.Result)
+				require.Equal(t, types.Enactment, proposal.Result)
 			},
 		},
 		{
@@ -159,7 +159,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				)
 				require.NoError(t, err)
 
-				proposal.Result = types.Passed
+				proposal.Result = types.Enactment
 				app.CustomGovKeeper.SaveProposal(ctx, proposal)
 
 				app.CustomGovKeeper.AddToEnactmentProposals(ctx, proposal)
@@ -197,7 +197,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				)
 				require.NoError(t, err)
 
-				proposal.Result = types.Passed
+				proposal.Result = types.Enactment
 				app.CustomGovKeeper.SaveProposal(ctx, proposal)
 
 				app.CustomGovKeeper.AddToEnactmentProposals(ctx, proposal)
@@ -241,7 +241,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				)
 				require.NoError(t, err)
 
-				proposal.Result = types.Passed
+				proposal.Result = types.Enactment
 				app.CustomGovKeeper.SaveProposal(ctx, proposal)
 
 				app.CustomGovKeeper.AddToEnactmentProposals(ctx, proposal)
@@ -285,7 +285,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				)
 				require.NoError(t, err)
 
-				proposal.Result = types.Passed
+				proposal.Result = types.Enactment
 				app.CustomGovKeeper.SaveProposal(ctx, proposal)
 
 				app.CustomGovKeeper.AddToEnactmentProposals(ctx, proposal)
@@ -332,7 +332,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				)
 				require.NoError(t, err)
 
-				proposal.Result = types.Passed
+				proposal.Result = types.Enactment
 				app.CustomGovKeeper.SaveProposal(ctx, proposal)
 
 				app.CustomGovKeeper.AddToEnactmentProposals(ctx, proposal)
@@ -372,7 +372,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				)
 				require.NoError(t, err)
 
-				proposal.Result = types.Passed
+				proposal.Result = types.Enactment
 				app.CustomGovKeeper.SaveProposal(ctx, proposal)
 
 				app.CustomGovKeeper.AddToEnactmentProposals(ctx, proposal)
@@ -423,7 +423,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				)
 				require.NoError(t, err)
 
-				proposal.Result = types.Passed
+				proposal.Result = types.Enactment
 				app.CustomGovKeeper.SaveProposal(ctx, proposal)
 
 				app.CustomGovKeeper.AddToEnactmentProposals(ctx, proposal)
@@ -441,6 +441,55 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				require.NoError(t, err)
 
 				require.False(t, validator.IsJailed())
+			},
+		},
+		{
+			name: "Passed proposal in enactment is applied and removed from enactment list: Create Role",
+			prepareScenario: func(app *simapp.SimApp, ctx sdk.Context) []sdk.AccAddress {
+				addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.NewInt(100))
+
+				actor := types.NewDefaultActor(addrs[0])
+				app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
+
+				proposalID := uint64(1234)
+				proposal, err := types.NewProposal(
+					proposalID,
+					types.NewCreateRoleProposal(
+						types.Role(1000),
+						[]types.PermValue{
+							types.PermClaimValidator,
+						},
+						[]types.PermValue{
+							types.PermChangeTxFee,
+						},
+					),
+					time.Now(),
+					time.Now().Add(10*time.Second),
+					time.Now().Add(20*time.Second),
+				)
+				require.NoError(t, err)
+
+				proposal.Result = types.Enactment
+				app.CustomGovKeeper.SaveProposal(ctx, proposal)
+
+				app.CustomGovKeeper.AddToEnactmentProposals(ctx, proposal)
+
+				iterator := app.CustomGovKeeper.GetEnactmentProposalsWithFinishedEnactmentEndTimeIterator(ctx, time.Now().Add(25*time.Second))
+				requireIteratorCount(t, iterator, 1)
+
+				_, found := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.Role(1000))
+				require.False(t, found)
+
+				return addrs
+			},
+			validateScenario: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addrs []sdk.AccAddress) {
+				iterator := app.CustomGovKeeper.GetEnactmentProposalsWithFinishedEnactmentEndTimeIterator(ctx, time.Now().Add(25*time.Second))
+				requireIteratorCount(t, iterator, 0)
+
+				perms, found := app.CustomGovKeeper.GetPermissionsForRole(ctx, types.Role(1000))
+				require.True(t, found)
+				require.True(t, perms.IsWhitelisted(types.PermClaimValidator))
+				require.True(t, perms.IsBlacklisted(types.PermChangeTxFee))
 			},
 		},
 	}

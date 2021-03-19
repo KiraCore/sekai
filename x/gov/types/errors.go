@@ -13,6 +13,7 @@ var (
 	ErrCouncilorEmptyAddress      = errors.Register(ModuleName, 6, "empty councilor address")
 	ErrRoleDoesNotExist           = errors.Register(ModuleName, 7, "role does not exist")
 	ErrWhitelisting               = errors.Register(ModuleName, 8, "error adding to whitelist")
+	ErrEmptyPermissions           = errors.Register(ModuleName, 9, "empty permissions")
 	ErrRoleExist                  = errors.Register(ModuleName, 12, "role already exist")
 	ErrRoleAlreadyAssigned        = errors.Register(ModuleName, 13, "role already assigned")
 	ErrRoleNotAssigned            = errors.Register(ModuleName, 14, "role not assigned")

@@ -242,6 +242,7 @@ func NewInitApp(
 				tokens.NewApplyUpsertTokenRatesProposalHandler(app.tokensKeeper),
 				tokens.NewApplyWhiteBlackChangeProposalHandler(app.tokensKeeper),
 				customstaking.NewApplyUnjailValidatorProposalHandler(app.customStakingKeeper),
+				customgov.NewApplyCreateRoleProposalHandler(app.customGovKeeper),
 			},
 		)),
 		tokens.NewAppModule(app.tokensKeeper, app.customGovKeeper),

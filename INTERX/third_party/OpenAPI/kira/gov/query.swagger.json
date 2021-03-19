@@ -170,9 +170,91 @@
           "query"
         ]
       }
+    },
+    "/api/kira/gov/voters/{proposalId}": {
+      "get": {
+        "summary": "Query whitelisted proposal voters by a given proposal_id",
+        "description": "Query whitelisted proposal voters by a given proposal_id.",
+        "operationId": "Query_GetWhitelistedProposalVoters",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/govQueryWhitelistedProposalVotersResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "proposalId",
+            "description": "proposal_id defines the unique id of the proposal.",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "query"
+        ]
+      }
+    },
+    "/api/kira/gov/votes/{proposalId}": {
+      "get": {
+        "summary": "Query proposal votes by a given proposal_id",
+        "description": "Query proposal votes by a given proposal_id.",
+        "operationId": "Query_Votes",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/govQueryVotesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "proposalId",
+            "description": "proposal_id defines the unique id of the proposal.",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "query"
+        ]
+      }
     }
   },
   "definitions": {
+    "govActorStatus": {
+      "type": "string",
+      "enum": [
+        "UNDEFINED",
+        "UNCLAIMED",
+        "ACTIVE",
+        "PAUSED",
+        "INACTIVE",
+        "JAILED",
+        "REMOVED"
+      ],
+      "default": "UNDEFINED",
+      "title": "- UNDEFINED: Undefined status\n - UNCLAIMED: Unclaimed status\n - ACTIVE: Active status\n - PAUSED: Paused status\n - INACTIVE: Inactive status\n - JAILED: Jailed status\n - REMOVED: Removed status"
+    },
     "govDataRegistryEntry": {
       "type": "object",
       "properties": {
@@ -186,6 +268,38 @@
           "type": "string"
         },
         "size": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
+    },
+    "govNetworkActor": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string",
+          "format": "byte"
+        },
+        "roles": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uint64"
+          }
+        },
+        "status": {
+          "$ref": "#/definitions/govActorStatus"
+        },
+        "votes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/govVoteOption"
+          }
+        },
+        "permissions": {
+          "$ref": "#/definitions/govPermissions"
+        },
+        "skin": {
           "type": "string",
           "format": "uint64"
         }
@@ -233,6 +347,25 @@
         }
       },
       "description": "PageResponse is to be embedded in gRPC response messages where the corresponding\nrequest message has used PageRequest.\n\n message SomeResponse {\n         repeated Bar results = 1;\n         PageResponse page = 2;\n }"
+    },
+    "govPermissions": {
+      "type": "object",
+      "properties": {
+        "blacklist": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "whitelist": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      }
     },
     "govProposal": {
       "type": "object",
@@ -309,6 +442,59 @@
         }
       },
       "description": "QueryProposalsResponse is the response type for the Query/Proposals RPC\nmethod."
+    },
+    "govQueryVotesResponse": {
+      "type": "object",
+      "properties": {
+        "votes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/govVote"
+          },
+          "description": "votes defined the queried votes."
+        }
+      },
+      "description": "QueryVotesResponse is the response type for the Query/Votes RPC method."
+    },
+    "govQueryWhitelistedProposalVotersResponse": {
+      "type": "object",
+      "properties": {
+        "voters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/govNetworkActor"
+          }
+        }
+      },
+      "description": "QueryWhitelistedProposalVotersResponse is the response type for Query/WhitelistedProposalVoters RPC method."
+    },
+    "govVote": {
+      "type": "object",
+      "properties": {
+        "proposalId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "voter": {
+          "type": "string",
+          "format": "byte"
+        },
+        "option": {
+          "$ref": "#/definitions/govVoteOption"
+        }
+      }
+    },
+    "govVoteOption": {
+      "type": "string",
+      "enum": [
+        "VOTE_OPTION_UNSPECIFIED",
+        "VOTE_OPTION_YES",
+        "VOTE_OPTION_ABSTAIN",
+        "VOTE_OPTION_NO",
+        "VOTE_OPTION_NO_WITH_VETO"
+      ],
+      "default": "VOTE_OPTION_UNSPECIFIED",
+      "description": "VoteOption enumerates the valid vote options for a given governance proposal.\n\n - VOTE_OPTION_UNSPECIFIED: VOTE_OPTION_UNSPECIFIED defines a no-op vote option.\n - VOTE_OPTION_YES: VOTE_OPTION_YES defines a yes vote option.\n - VOTE_OPTION_ABSTAIN: VOTE_OPTION_ABSTAIN defines an abstain vote option.\n - VOTE_OPTION_NO: VOTE_OPTION_NO defines a no vote option.\n - VOTE_OPTION_NO_WITH_VETO: VOTE_OPTION_NO_WITH_VETO defines a no with veto vote option."
     },
     "govVoteResult": {
       "type": "string",

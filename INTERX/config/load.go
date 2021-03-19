@@ -71,6 +71,7 @@ func LoadConfig(configFilePath string) {
 	}
 
 	// Interx Main Configuration
+	Config.ServeHTTPS = configFromFile.ServeHTTPS
 	Config.GRPC = configFromFile.GRPC
 	Config.RPC = configFromFile.RPC
 	Config.PORT = configFromFile.PORT

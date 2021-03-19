@@ -73,10 +73,16 @@ enum PermValue {
   // PERMISSION_CREATE_UNJAIL_VALIDATOR_PROPOSAL defines the permission needed to create a proposal to unjail a validator.
   PERMISSION_CREATE_UNJAIL_VALIDATOR_PROPOSAL = 20 [(gogoproto.enumvalue_customname) = "PermCreateUnjailValidatorProposal"];
 
+  // PERMISSION_CREATE_CREATE_ROLE_PROPOSAL defines the permission needed to create a proposal to create a role.
+  PERMISSION_CREATE_CREATE_ROLE_PROPOSAL = 21 [(gogoproto.enumvalue_customname) = "PermCreateRoleProposal"];
+
+  // PERMISSION_VOTE_CREATE_ROLE_PROPOSAL defines the permission needed to vote a proposal to create a role.
+  PERMISSION_VOTE_CREATE_ROLE_PROPOSAL = 22 [(gogoproto.enumvalue_customname) = "PermVoteCreateRoleProposal"];
+
   // PERMISSION_CREATE_TOKENS_WHITE_BLACK_CHANGE_PROPOSAL defines the permission needed to create a proposal to blacklist/whitelisted tokens
-  PERMISSION_CREATE_TOKENS_WHITE_BLACK_CHANGE_PROPOSAL = 21 [(gogoproto.enumvalue_customname) = "PermCreateTokensWhiteBlackChangeProposal"];
+  PERMISSION_CREATE_TOKENS_WHITE_BLACK_CHANGE_PROPOSAL = 23 [(gogoproto.enumvalue_customname) = "PermCreateTokensWhiteBlackChangeProposal"];
 
   // PERMISSION_VOTE_TOKENS_WHITE_BLACK_CHANGE_PROPOSAL defines the permission needed to vote on blacklist/whitelisted tokens proposal
-  PERMISSION_VOTE_TOKENS_WHITE_BLACK_CHANGE_PROPOSAL = 22 [(gogoproto.enumvalue_customname) = "PermVoteTokensWhiteBlackChangeProposal"];
+  PERMISSION_VOTE_TOKENS_WHITE_BLACK_CHANGE_PROPOSAL = 24 [(gogoproto.enumvalue_customname) = "PermVoteTokensWhiteBlackChangeProposal"];  
 }
 

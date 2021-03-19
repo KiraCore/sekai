@@ -1,6 +1,7 @@
 package tokens
 
 import (
+	"context"
 	"encoding/json"
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
@@ -8,6 +9,7 @@ import (
 	"github.com/KiraCore/sekai/middleware"
 	tokenscli "github.com/KiraCore/sekai/x/tokens/client/cli"
 	tokenskeeper "github.com/KiraCore/sekai/x/tokens/keeper"
+	"github.com/KiraCore/sekai/x/tokens/types"
 	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -47,10 +49,11 @@ func (b AppModuleBasic) ValidateGenesis(marshaler codec.JSONMarshaler, config cl
 	return nil
 }
 
-func (b AppModuleBasic) RegisterRESTRoutes(context client.Context, router *mux.Router) {
+func (b AppModuleBasic) RegisterRESTRoutes(clientCtx client.Context, router *mux.Router) {
 }
 
-func (b AppModuleBasic) RegisterGRPCRoutes(context client.Context, serveMux *runtime.ServeMux) {
+func (b AppModuleBasic) RegisterGRPCRoutes(clientCtx client.Context, serveMux *runtime.ServeMux) {
+	tokenstypes.RegisterQueryHandlerClient(context.Background(), serveMux, types.NewQueryClient(clientCtx))
 }
 
 func (b AppModuleBasic) RegisterLegacyAminoCodec(amino *codec.LegacyAmino) {
@@ -106,7 +109,7 @@ func (am AppModule) InitGenesis(
 	return nil
 }
 
-func (am AppModule) ExportGenesis(context sdk.Context, marshaler codec.JSONMarshaler) json.RawMessage {
+func (am AppModule) ExportGenesis(clientCtx sdk.Context, marshaler codec.JSONMarshaler) json.RawMessage {
 	return nil
 }
 
@@ -121,7 +124,7 @@ func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sd
 	return nil
 }
 
-func (am AppModule) BeginBlock(context sdk.Context, block abci.RequestBeginBlock) {}
+func (am AppModule) BeginBlock(clientCtx sdk.Context, block abci.RequestBeginBlock) {}
 
 func (am AppModule) EndBlock(ctx sdk.Context, block abci.RequestEndBlock) []abci.ValidatorUpdate {
 	return nil

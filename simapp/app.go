@@ -234,6 +234,7 @@ func NewSimApp(
 			tokens.NewApplyUpsertTokenAliasProposalHandler(app.TokensKeeper),
 			tokens.NewApplyUpsertTokenRatesProposalHandler(app.TokensKeeper),
 			customstaking.NewApplyUnjailValidatorProposalHandler(app.CustomStakingKeeper),
+			customgov.NewApplyCreateRoleProposalHandler(app.CustomGovKeeper),
 		},
 	)
 	app.mm = module.NewManager(

@@ -397,6 +397,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgProposalSetNetworkProperty{},
 		&MsgProposalUpsertDataRegistry{},
 		&MsgProposalSetPoorNetworkMessages{},
+		&MsgProposalCreateRole{},
 		&MsgVoteProposal{},
 	)
 
@@ -406,6 +407,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&AssignPermissionProposal{},
 		&SetNetworkPropertyProposal{},
 		&UpsertDataRegistryProposal{},
+		&CreateRoleProposal{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)

@@ -31,6 +31,8 @@ service Msg {
     rpc ProposalSetNetworkProperty(MsgProposalSetNetworkProperty) returns (MsgProposalSetNetworkPropertyResponse);
     // ProposalSetPoorNetworkMsgs defines a method for setting poor network allowed messages
     rpc ProposalSetPoorNetworkMsgs(MsgProposalSetPoorNetworkMessages) returns (MsgProposalSetPoorNetworkMessagesResponse);
+    // ProposalCreateRole defines a method for creating a role proposal
+    rpc ProposalCreateRole(MsgProposalCreateRole) returns (MsgProposalCreateRoleResponse);
     // CreateRole defines a method for creating a role
     rpc CreateRole(MsgCreateRole) returns (MsgCreateRoleResponse);
     // AssignRole defines a method for assigning a role to an address
@@ -65,6 +67,9 @@ message MsgProposalSetNetworkPropertyResponse {
     uint64 proposalID = 1;
 }
 message MsgProposalSetPoorNetworkMessagesResponse {
+    uint64 proposalID = 1;
+}
+message MsgProposalCreateRoleResponse {
     uint64 proposalID = 1;
 }
 message MsgCreateRoleResponse {}
