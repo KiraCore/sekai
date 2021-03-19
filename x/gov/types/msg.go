@@ -28,6 +28,8 @@ var (
 	_ sdk.Msg = &MsgBlacklistRolePermission{}
 	_ sdk.Msg = &MsgRemoveWhitelistRolePermission{}
 	_ sdk.Msg = &MsgRemoveBlacklistRolePermission{}
+
+	_ sdk.Msg = &MsgProposalCreateRole{}
 )
 
 func NewMsgWhitelistPermissions(
@@ -575,5 +577,45 @@ func (m *MsgVoteProposal) GetSignBytes() []byte {
 func (m *MsgVoteProposal) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{
 		m.Voter,
+	}
+}
+
+func NewMsgProposalCreateRole(
+	proposer sdk.AccAddress,
+	role Role,
+	whitelistPerms []PermValue,
+	blacklistPerms []PermValue,
+) *MsgProposalCreateRole {
+	return &MsgProposalCreateRole{
+		Proposer:               proposer,
+		Role:                   uint32(role),
+		WhitelistedPermissions: whitelistPerms,
+		BlacklistedPermissions: blacklistPerms,
+	}
+}
+
+func (m *MsgProposalCreateRole) Route() string {
+	return ModuleName
+}
+
+func (m *MsgProposalCreateRole) Type() string {
+	return types.MsgTypeProposalCreateRole
+}
+
+func (m *MsgProposalCreateRole) ValidateBasic() error {
+	if m.Proposer.Empty() {
+		return ErrEmptyProposerAccAddress
+	}
+	return nil
+}
+
+func (m *MsgProposalCreateRole) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *MsgProposalCreateRole) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{
+		m.Proposer,
 	}
 }

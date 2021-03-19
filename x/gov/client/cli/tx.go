@@ -32,6 +32,8 @@ const (
 	FlagSocial            = "social"
 	FlagIdentity          = "identity"
 	FlagAddress           = "address"
+	FlagWhitelistPerms    = "whitelist"
+	FlagBlacklistPerms    = "blacklist"
 )
 
 // NewTxCmd returns a root CLI command handler for all x/bank transaction commands.
@@ -70,6 +72,8 @@ func NewTxProposalCmds() *cobra.Command {
 	proposalCmd.AddCommand(GetTxVoteProposal())
 	proposalCmd.AddCommand(GetTxProposalSetNetworkProperty())
 	proposalCmd.AddCommand(GetTxProposalSetPoorNetworkMsgs())
+	proposalCmd.AddCommand(GetTxProposalCreateRole())
+	proposalCmd.AddCommand(GetTxProposalUpsertDataRegistry())
 
 	return proposalCmd
 }
@@ -846,4 +850,62 @@ func GetTxClaimCouncilorSeatCmd() *cobra.Command {
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
+}
+
+func GetTxProposalCreateRole() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "create-role role",
+		Short: "Create a proposal to add a new role.",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			role, err := strconv.Atoi(args[0])
+			if err != nil {
+				return fmt.Errorf("invalid perm: %w", err)
+			}
+
+			wAsInts, err := cmd.Flags().GetInt32Slice(FlagWhitelistPerms)
+			if err != nil {
+				return fmt.Errorf("invalid whitelist perms: %w", err)
+			}
+			whitelistPerms := convertAsPermValues(wAsInts)
+
+			bAsInts, err := cmd.Flags().GetInt32Slice(FlagBlacklistPerms)
+			if err != nil {
+				return fmt.Errorf("invalid blacklist perms: %w", err)
+			}
+			blacklistPerms := convertAsPermValues(bAsInts)
+
+			msg := types.NewMsgProposalCreateRole(
+				clientCtx.FromAddress,
+				types.Role(role),
+				whitelistPerms,
+				blacklistPerms,
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	cmd.Flags().Int32Slice(FlagWhitelistPerms, []int32{}, "the whitelist value in format 1,2,3")
+	cmd.Flags().Int32Slice(FlagBlacklistPerms, []int32{}, "the blacklist values in format 1,2,3")
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+// convertAsPermValues convert array of int32 to PermValue array.
+func convertAsPermValues(values []int32) []types.PermValue {
+	var v []types.PermValue
+	for _, perm := range values {
+		v = append(v, types.PermValue(perm))
+	}
+
+	return v
 }

@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.1.17.6] - 18.03.2021
+### Added
+- Now when the proposal passes it enter ins status Enactment.
+- Add proposal to create a Role.
+- Fix GetTxProposalUpsertDataRegistry and make it appear on client.
+### Fixed
+- Fix and clean some CLI commands (proposal upsert token rates, proposal upsert token alias, proposal upsert data registry).
+
 ## [v0.1.17.3] - 03.08.2021
 ### Fixed
 - Validators query to include mischance.
@@ -15,6 +23,7 @@
 - genutil module to handle validator status
 - CLI utility command to get valcons address from account address
 - ValidatorJoined hook that's derivated from Cosmos SDK's `ValidatorBonded` hook
+
 ## [v0.1.17.1] - 02.25.2021
 ### Added
 - GRPC query for proposals

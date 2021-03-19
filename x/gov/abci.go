@@ -42,6 +42,9 @@ func processProposal(ctx sdk.Context, k keeper.Keeper, proposalID uint64) {
 		calculatedVote := types.CalculateVotes(votes, uint64(numActorsWithVeto))
 
 		proposal.Result = calculatedVote.ProcessResult()
+		if proposal.Result == types.Passed { // This is done in order to show that proposal is in enactment, but after enactment passes it will be passed.
+			proposal.Result = types.Enactment
+		}
 	} else {
 		proposal.Result = types.QuorumNotReached
 	}
@@ -57,8 +60,10 @@ func processEnactmentProposal(ctx sdk.Context, k keeper.Keeper, router ProposalR
 		panic("proposal was expected to exist")
 	}
 
-	if proposal.Result == types.Passed {
+	if proposal.Result == types.Enactment {
 		router.ApplyProposal(ctx, proposal.GetContent())
+		proposal.Result = types.Passed
+		k.SaveProposal(ctx, proposal)
 	}
 
 	k.RemoveEnactmentProposal(ctx, proposal)

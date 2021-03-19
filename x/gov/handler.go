@@ -74,7 +74,9 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 		case *customgovtypes.MsgVoteProposal:
 			res, err := msgServer.VoteProposal(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-
+		case *customgovtypes.MsgProposalCreateRole:
+			res, err := msgServer.ProposalCreateRole(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
 		default:
 			return nil, errors.Wrapf(errors.ErrUnknownRequest, "unrecognized %s message type: %T", customgovtypes.ModuleName, msg)
 		}
