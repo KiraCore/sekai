@@ -29,7 +29,7 @@ func QueryKiraTokensAliasesRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string
 		response := common.GetResponseFormat(request, rpcAddr)
 		statusCode := http.StatusOK
 
-		common.GetLogger().Info("[query-tokens-aliases] Entering proposals query")
+		common.GetLogger().Info("[query-tokens-aliases] Entering token aliases query")
 
 		if !common.RPCMethods["GET"][config.QueryKiraTokensAliases].Enabled {
 			response.Response, response.Error, statusCode = common.ServeError(0, "", "API disabled", http.StatusForbidden)
@@ -63,7 +63,7 @@ func QueryKiraTokensRatesRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string) 
 		response := common.GetResponseFormat(request, rpcAddr)
 		statusCode := http.StatusOK
 
-		common.GetLogger().Info("[query-tokens-rates] Entering proposals query")
+		common.GetLogger().Info("[query-tokens-rates] Entering token rates query")
 
 		if !common.RPCMethods["GET"][config.QueryKiraTokensRates].Enabled {
 			response.Response, response.Error, statusCode = common.ServeError(0, "", "API disabled", http.StatusForbidden)

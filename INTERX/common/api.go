@@ -12,6 +12,7 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/KiraCore/sekai/INTERX/config"
 	"github.com/KiraCore/sekai/INTERX/database"
 	"github.com/KiraCore/sekai/INTERX/global"
 	"github.com/KiraCore/sekai/INTERX/types"
@@ -250,4 +251,37 @@ func GetBlockTime(rpcAddr string, height int64) (int64, error) {
 	database.AddBlockTime(height, blockTime)
 
 	return blockTime, nil
+}
+
+// GetTokenAliases is a function to get token aliases
+func GetTokenAliases(gwCosmosmux *runtime.ServeMux, r *http.Request) []types.TokenAlias {
+	tokens, err := database.GetTokenAliases()
+	if err == nil {
+		return tokens
+	}
+
+	r.URL.Path = config.QueryKiraTokensAliases
+	r.URL.RawQuery = ""
+	r.Method = "GET"
+
+	GetLogger().Info("[grpc-call] Entering grpc call: ", r.URL.Path)
+
+	recorder := httptest.NewRecorder()
+	gwCosmosmux.ServeHTTP(recorder, r)
+	resp := recorder.Result()
+
+	type TokenAliasesResponse struct {
+		Data []types.TokenAlias `json:"data"`
+	}
+
+	result := TokenAliasesResponse{}
+	err = json.NewDecoder(resp.Body).Decode(&result)
+	if err != nil {
+		GetLogger().Error("[grpc-call] Unable to decode response: ", err)
+	}
+
+	// save block time
+	database.AddTokenAliases(result.Data)
+
+	return result.Data
 }

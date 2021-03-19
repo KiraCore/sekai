@@ -48,9 +48,7 @@ func GetCache(chainIDHash string, endpointHash string, requestHash string) (type
 
 	response := types.InterxResponse{}
 
-	GetLogger().Info("start here")
 	data, err := ioutil.ReadFile(filePath)
-	GetLogger().Info("end here")
 
 	if err != nil {
 		return response, nil

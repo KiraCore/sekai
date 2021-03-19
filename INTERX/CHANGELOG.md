@@ -2,6 +2,14 @@
 
 ## [v0.1.x.x] - xx.xx.xxxx
 
+### Updated
+
+- updated postman api collection to latest
+
+### Added
+
+- add rosetta - account balance api
+
 ## [v0.1.17.5] - 03.17.2021
 
 ### Updated
