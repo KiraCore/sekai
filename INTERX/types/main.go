@@ -119,6 +119,20 @@ type Coin struct {
 	Denom  string `json:"denom"`
 }
 
+type TokenAlias struct {
+	Decimals int64    `json:"decimals"`
+	Denoms   []string `json:"denoms"`
+	Name     string   `json:"name"`
+	Symbol   string   `json:"symbol"`
+}
+
+// ID is a field for facuet claim struct.
+func (c TokenAlias) ID() (jsonField string, value interface{}) {
+	value = c.Symbol
+	jsonField = "height"
+	return
+}
+
 // FaucetAccountInfo is a struct to be used for Faucet Account Info
 type FaucetAccountInfo struct {
 	Address  string `json:"address"`
