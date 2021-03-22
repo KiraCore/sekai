@@ -50,8 +50,10 @@ func getStatus(rpcAddr string) {
 	global.Mutex.Unlock()
 
 	// save block height/time
-	t, _ := time.Parse(time.RFC3339, common.NodeStatus.Blocktime)
-	database.AddBlockTime(common.NodeStatus.Block, t.Unix())
+
+	t, _ := common.GetBlockTime(config.Config.RPC, common.NodeStatus.Block)
+	database.AddBlockTime(common.NodeStatus.Block, t)
+	common.AddNewBlock(common.NodeStatus.Block)
 }
 
 // SyncStatus is a function for syncing sekaid status.

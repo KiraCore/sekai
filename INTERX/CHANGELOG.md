@@ -5,6 +5,7 @@
 ### Updated
 
 - updated postman api collection to latest
+- updated consensus stop logic with block times.
 
 ### Added
 
