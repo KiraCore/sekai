@@ -46,22 +46,19 @@ func AddNewBlock(height int64) {
 		return
 	}
 
-	if len(LatestNBlockTimes) > 0 && timestamp-prevBlockTimestamp >= int64(GetAverageBlockTime()*3) {
+	if len(LatestNBlockTimes) > 0 && float64(timestamp-prevBlockTimestamp) >= GetAverageBlockTime()*3 {
 		// a block just after a halt
 		GetLogger().Errorf("[AddNewBlock] block just after a halt: %d", height)
 		return
 	}
 
-	GetLogger().Infof("[GetAverageBlockTime] %v", LatestNBlockTimes)
 	// insert new block
 	LatestNBlockTimes = append(LatestNBlockTimes, BlockHeightTime{
 		Height:    height,
 		BlockTime: timestamp - prevBlockTimestamp,
 	})
 
-	GetLogger().Infof("[GetAverageBlockTime] %v", LatestNBlockTimes)
 	if len(LatestNBlockTimes) > N {
-		GetLogger().Infof("[GetAverageBlockTime] %v", LatestNBlockTimes)
 		LatestNBlockTimes = LatestNBlockTimes[len(LatestNBlockTimes)-N:]
 	}
 }
