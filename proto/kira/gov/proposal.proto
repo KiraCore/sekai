@@ -111,6 +111,8 @@ message Proposal {
   [(gogoproto.stdtime) = true, (gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"voting_end_time\""];
 
   VoteResult result = 8;
+
+  string description = 9;
 }
 
 message AssignPermissionProposal {
