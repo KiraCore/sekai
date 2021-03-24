@@ -1481,6 +1481,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 			),
 			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
 				actor := types.NewDefaultActor(voterAddr)
+				actor.Deactivate()
 				app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
 				err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, actor, types.PermVoteSetPermissionProposal)
 				require.NoError(t, err2)
