@@ -73,6 +73,9 @@ enum PermValue {
   // PERMISSION_CREATE_UNJAIL_VALIDATOR_PROPOSAL defines the permission needed to create a proposal to unjail a validator.
   PERMISSION_CREATE_UNJAIL_VALIDATOR_PROPOSAL = 20 [(gogoproto.enumvalue_customname) = "PermCreateUnjailValidatorProposal"];
 
+  // PERMISSION_VOTE_UNJAIL_VALIDATOR_PROPOSAL defines the permission needed to vote a proposal to unjail a validator.
+  PERMISSION_VOTE_UNJAIL_VALIDATOR_PROPOSAL = 23 [(gogoproto.enumvalue_customname) = "PermVoteUnjailValidatorProposal"];
+
   // PERMISSION_CREATE_CREATE_ROLE_PROPOSAL defines the permission needed to create a proposal to create a role.
   PERMISSION_CREATE_CREATE_ROLE_PROPOSAL = 21 [(gogoproto.enumvalue_customname) = "PermCreateRoleProposal"];
 
