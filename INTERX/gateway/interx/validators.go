@@ -370,6 +370,7 @@ func queryConsensusHandle(r *http.Request, gwCosmosmux *runtime.ServeMux, rpcAdd
 		response := struct {
 			RawData          tmRPCTypes.ResultDumpConsensusState `json:"raw_data,omitempty"`
 			ConsensusStopped bool                                `json:"consensus_stopped"`
+			AverageBlockTime float64                             `json:"average_block_time"`
 			Validators       []Validator                         `json:"validators"`
 			Proposer         Validator                           `json:"proposer"`
 			Votes            []Vote                              `json:"votes"`
@@ -386,6 +387,7 @@ func queryConsensusHandle(r *http.Request, gwCosmosmux *runtime.ServeMux, rpcAdd
 		}
 
 		response.ConsensusStopped = common.IsConsensusStopped(len(roundState.Validators.Validators))
+		response.AverageBlockTime = common.GetAverageBlockTime()
 		response.Validators = make([]Validator, 0)
 		for i := range roundState.Validators.Validators {
 			for _, validator := range AllValidators {
