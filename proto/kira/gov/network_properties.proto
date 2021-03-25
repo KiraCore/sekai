@@ -46,7 +46,6 @@ message NetworkProperties {
     // The streak and rank will enable governance to judge real life performance of validators on the mainnet or testnet, and potentially propose eviction of the weakest and least reliable operators.
     uint64 mischance_rank_decrease_amount = 7; // X (default 10)
     uint64 inactive_rank_decrease_percent = 8; // Y (default 50%)
-  
     uint64 min_validators = 9;
     uint64 poor_network_max_bank_send = 10; // default 10000 ukex
     uint64 jail_max_time = 11; // Jailing validator maximum time in minutes
