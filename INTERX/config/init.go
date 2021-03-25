@@ -35,6 +35,7 @@ func getGetMethods() []string {
 		QueryRosettaNetworkList,
 		QueryRosettaNetworkOptions,
 		QueryRosettaNetworkStatus,
+		QueryRosettaAccountBalance,
 	}
 }
 

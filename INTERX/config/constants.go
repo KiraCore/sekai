@@ -42,4 +42,5 @@ const (
 	QueryRosettaNetworkList    = "/rosetta/network/list"
 	QueryRosettaNetworkOptions = "/rosetta/network/options"
 	QueryRosettaNetworkStatus  = "/rosetta/network/status"
+	QueryRosettaAccountBalance = "/rosetta/account/balance"
 )
