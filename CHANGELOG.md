@@ -1,4 +1,10 @@
 # Changelog
+## [v0.1.18.2] - 25.03.2021
+### Changed
+- Permission numbers to an organized way
+- Cleanup gov codebase function names and vars
+- Fix SetPoorNetworkMessagesProposal codec registration
+- Add logic for Mischance and ProducedBlocksCounter, MissedBlocksCounter
 
 ## [v0.1.18] - 19.03.2021
 ### Added
