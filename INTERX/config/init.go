@@ -17,6 +17,7 @@ func getGetMethods() []string {
 		QueryWithdraws,
 		QueryDeposits,
 		QueryStatus,
+		QueryConsensus,
 		QueryValidators,
 		QueryValidatorInfos,
 		QueryBlocks,
