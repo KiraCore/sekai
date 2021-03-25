@@ -342,8 +342,14 @@ func GetTxProposalTokensBlackWhiteChangeCmd() *cobra.Command {
 				return fmt.Errorf("invalid tokens flag: %w", err)
 			}
 
+			description, err := cmd.Flags().GetString(FlagDescription)
+			if err != nil {
+				return fmt.Errorf("invalid description: %w", err)
+			}
+
 			msg := types.NewMsgProposalTokensWhiteBlackChange(
 				clientCtx.FromAddress,
+				description,
 				isBlacklist,
 				isAdd,
 				tokens,
@@ -356,6 +362,8 @@ func GetTxProposalTokensBlackWhiteChangeCmd() *cobra.Command {
 	cmd.Flags().Bool(FlagIsBlacklist, true, "true to modify blacklist otherwise false")
 	cmd.Flags().Bool(FlagIsAdd, true, "true to add otherwise false")
 	cmd.Flags().StringArray(FlagTokens, []string{}, "tokens array (eg. ATOM, KEX, BTC)")
+	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
+	cmd.MarkFlagRequired(FlagDescription)
 
 	flags.AddTxFlagsToCmd(cmd)
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)

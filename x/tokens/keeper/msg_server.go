@@ -39,10 +39,10 @@ func (k msgServer) ProposalUpsertTokenRates(goCtx context.Context, msg *types.Ms
 	proposalID, err := k.CreateAndSaveProposalWithContent(ctx,
 		msg.Description,
 		types.NewProposalUpsertTokenRates(
-		msg.Denom,
-		msg.Rate,
-		msg.FeePayments,
-	))
+			msg.Denom,
+			msg.Rate,
+			msg.FeePayments,
+		))
 	return &types.MsgProposalUpsertTokenRatesResponse{
 		ProposalID: proposalID,
 	}, err
@@ -60,12 +60,12 @@ func (k msgServer) ProposalUpsertTokenAlias(goCtx context.Context, msg *types.Ms
 		ctx,
 		msg.Description,
 		types.NewProposalUpsertTokenAlias(
-		msg.Symbol,
-		msg.Name,
-		msg.Icon,
-		msg.Decimals,
-		msg.Denoms,
-	))
+			msg.Symbol,
+			msg.Name,
+			msg.Icon,
+			msg.Decimals,
+			msg.Denoms,
+		))
 	return &types.MsgProposalUpsertTokenAliasResponse{
 		ProposalID: proposalID,
 	}, err
@@ -79,11 +79,14 @@ func (k msgServer) ProposalTokensWhiteBlackChange(goCtx context.Context, msg *ty
 		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermCreateTokensWhiteBlackChangeProposal.String())
 	}
 
-	proposalID, err := k.CreateAndSaveProposalWithContent(ctx, types.NewProposalTokensWhiteBlackChange(
-		msg.IsBlacklist,
-		msg.IsAdd,
-		msg.Tokens,
-	))
+	proposalID, err := k.CreateAndSaveProposalWithContent(
+		ctx,
+		msg.Description,
+		types.NewProposalTokensWhiteBlackChange(
+			msg.IsBlacklist,
+			msg.IsAdd,
+			msg.Tokens,
+		))
 	return &types.MsgProposalTokensWhiteBlackChangeResponse{
 		ProposalID: proposalID,
 	}, err

@@ -231,6 +231,7 @@ func (s IntegrationTestSuite) TestTxProposalTokensBlackWhiteChangeCmd() {
 	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("--%s=true", cli.FlagIsBlacklist),
 		fmt.Sprintf("--%s=true", cli.FlagIsAdd),
+		fmt.Sprintf("--%s=%s", cli.FlagDescription, "some desc"),
 		fmt.Sprintf("--%s=frozen1", cli.FlagTokens),
 		fmt.Sprintf("--%s=frozen2", cli.FlagTokens),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
