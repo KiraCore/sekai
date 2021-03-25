@@ -1,5 +1,7 @@
 # Changelog
 
+- add consensus api
+
 ## [v0.1.x.x] - xx.xx.xxxx
 
 ### Updated

@@ -204,13 +204,12 @@ func (s QueryValidators) Less(i, j int) bool {
 
 type AllValidators struct {
 	Status struct {
-		ConsensusStopped   bool `json:"consensus_stopped"`
-		ActiveValidators   int  `json:"active_validators"`
-		PausedValidators   int  `json:"paused_validators"`
-		InactiveValidators int  `json:"inactive_validators"`
-		JailedValidators   int  `json:"jailed_validators"`
-		TotalValidators    int  `json:"total_validators"`
-		WaitingValidators  int  `json:"waiting_validators"`
+		ActiveValidators   int `json:"active_validators"`
+		PausedValidators   int `json:"paused_validators"`
+		InactiveValidators int `json:"inactive_validators"`
+		JailedValidators   int `json:"jailed_validators"`
+		TotalValidators    int `json:"total_validators"`
+		WaitingValidators  int `json:"waiting_validators"`
 	} `json:"status"`
 	Waiting    []string         `json:"waiting"`
 	Validators []QueryValidator `json:"validators"`
