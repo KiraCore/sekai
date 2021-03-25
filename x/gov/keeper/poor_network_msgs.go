@@ -5,18 +5,18 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-// SavePoorNetworkMsgs store poor network messages by gov or by genesis
-func (k Keeper) SavePoorNetworkMsgs(ctx sdk.Context, allows *types.AllowedMessages) {
+// SavePoorNetworkMessages store poor network messages by gov or by genesis
+func (k Keeper) SavePoorNetworkMessages(ctx sdk.Context, allows *types.AllowedMessages) {
 	store := ctx.KVStore(k.storeKey)
 	bz := k.cdc.MustMarshalBinaryBare(allows)
-	store.Set(PoorNetworkMsgsPrefix, bz)
+	store.Set(PoorNetworkMessagesPrefix, bz)
 }
 
-// GetPoorNetworkMsgs returns poor network messages stored inside keeper
-func (k Keeper) GetPoorNetworkMsgs(ctx sdk.Context) (*types.AllowedMessages, bool) {
+// GetPoorNetworkMessages returns poor network messages stored inside keeper
+func (k Keeper) GetPoorNetworkMessages(ctx sdk.Context) (*types.AllowedMessages, bool) {
 	store := ctx.KVStore(k.storeKey)
 
-	bz := store.Get(PoorNetworkMsgsPrefix)
+	bz := store.Get(PoorNetworkMessagesPrefix)
 	if bz == nil {
 		return &types.AllowedMessages{}, false
 	}

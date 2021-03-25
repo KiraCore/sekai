@@ -135,7 +135,7 @@ func (s IntegrationTestSuite) QueryPoorNetworkMessages() {
 func (s IntegrationTestSuite) SetPoorNetworkMessages(messages string) sdk.TxResponse {
 	val := s.network.Validators[0]
 	clientCtx := val.ClientCtx
-	cmd := cli.GetTxProposalSetPoorNetworkMsgs()
+	cmd := cli.GetTxProposalSetPoorNetworkMessages()
 	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		messages,
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),

@@ -9,18 +9,16 @@ import (
 	"time"
 
 	"github.com/KiraCore/sekai/app"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/stretchr/testify/require"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-
 	"github.com/KiraCore/sekai/simapp"
 	"github.com/KiraCore/sekai/x/gov/types"
 	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 	tokens "github.com/KiraCore/sekai/x/tokens"
 	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/gogo/protobuf/proto"
+	"github.com/stretchr/testify/require"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
 
 func TestMain(m *testing.M) {
@@ -420,3 +418,5 @@ func TestHandler_CreateProposalUpsertTokenRates(t *testing.T) {
 	iterator = app.CustomGovKeeper.GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx, ctx.BlockTime())
 	require.True(t, iterator.Valid())
 }
+
+// TODO: should write test for MsgProposalTokensWhiteBlackChange

@@ -69,7 +69,7 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 			res, err := msgServer.ProposalUpsertDataRegistry(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 		case *customgovtypes.MsgProposalSetPoorNetworkMessages:
-			res, err := msgServer.ProposalSetPoorNetworkMsgs(sdk.WrapSDKContext(ctx), msg)
+			res, err := msgServer.ProposalSetPoorNetworkMessages(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 		case *customgovtypes.MsgVoteProposal:
 			res, err := msgServer.VoteProposal(sdk.WrapSDKContext(ctx), msg)

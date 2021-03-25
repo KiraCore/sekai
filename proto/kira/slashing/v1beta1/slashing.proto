@@ -25,8 +25,12 @@ message ValidatorSigningInfo {
   // whether or not a validator has been tombstoned (killed out of validator
   // set)
   bool tombstoned = 5;
+  // missed blocks sequentially
+  int64 mischance = 6;
   // missed blocks counter (to avoid scanning the array every time)
-  int64 missed_blocks_counter = 6 [(gogoproto.moretags) = "yaml:\"missed_blocks_counter\""];
+  int64 missed_blocks_counter = 7;
+  // count produced blocks so far by a validator
+  int64 produced_blocks_counter = 8;
 }
 
 // Params represents the parameters used for by the slashing module.

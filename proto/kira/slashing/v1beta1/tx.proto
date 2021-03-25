@@ -9,7 +9,7 @@ import "gogoproto/gogo.proto";
 // Msg defines the slashing Msg service.
 service Msg {
   // Activate defines a method for activating an inactivated validator, thus returning
-  // them into the bonded validator set, so they can begin receiving provisions
+  // them into the joined validator set, so they can begin receiving provisions
   // and rewards again.
   rpc Activate(MsgActivate) returns (MsgActivateResponse);
   // Pause defines a method for pausing an active validator

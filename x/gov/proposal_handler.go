@@ -80,13 +80,13 @@ func NewApplySetPoorNetworkMessagesProposalHandler(keeper keeper.Keeper) *ApplyS
 }
 
 func (a ApplySetPoorNetworkMessagesProposalHandler) ProposalType() string {
-	return types.SetPoorNetworkMsgsProposalType
+	return types.SetPoorNetworkMessagesProposalType
 }
 
 func (a ApplySetPoorNetworkMessagesProposalHandler) Apply(ctx sdk.Context, proposal types.Content) {
 	p := proposal.(*types.SetPoorNetworkMessagesProposal)
 	msgs := types.AllowedMessages{Messages: p.Messages}
-	a.keeper.SavePoorNetworkMsgs(ctx, &msgs)
+	a.keeper.SavePoorNetworkMessages(ctx, &msgs)
 }
 
 type CreateRoleProposalHandler struct {

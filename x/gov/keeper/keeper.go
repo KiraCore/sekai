@@ -57,10 +57,7 @@ func (k Keeper) GetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 	case types.ProposalEnactmentTime:
 		return properties.ProposalEnactmentTime, nil
 	case types.EnableForeignFeePayments:
-		if properties.EnableForeignFeePayments {
-			return 1, nil
-		}
-		return 0, nil
+		return BoolToInt(properties.EnableForeignFeePayments), nil
 	case types.MischanceRankDecreaseAmount:
 		return properties.MischanceRankDecreaseAmount, nil
 	case types.InactiveRankDecreasePercent:
@@ -71,6 +68,10 @@ func (k Keeper) GetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 		return properties.MinValidators, nil
 	case types.JailMaxTime:
 		return properties.JailMaxTime, nil
+	case types.EnableTokenWhitelist:
+		return BoolToInt(properties.EnableTokenWhitelist), nil
+	case types.EnableTokenBlacklist:
+		return BoolToInt(properties.EnableTokenBlacklist), nil
 	default:
 		return 0, errors.New("trying to fetch network property that does not exist")
 	}
@@ -105,6 +106,10 @@ func (k Keeper) SetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 		properties.MinValidators = value
 	case types.JailMaxTime:
 		properties.JailMaxTime = value
+	case types.EnableTokenBlacklist:
+		properties.EnableTokenBlacklist = IntToBool(value)
+	case types.EnableTokenWhitelist:
+		properties.EnableTokenWhitelist = IntToBool(value)
 	default:
 		return errors.New("trying to set network property that does not exist")
 	}

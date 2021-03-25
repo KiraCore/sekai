@@ -3,6 +3,7 @@ package kira.tokens;
 
 import "alias.proto";
 import "rate.proto";
+import "freeze.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 
@@ -22,6 +23,8 @@ service Query {
     option (google.api.http).get = "/kira/tokens/rates";
   }
   rpc GetTokenRatesByDenom (TokenRatesByDenomRequest) returns (TokenRatesByDenomResponse) {}
+  // Returns tokens black/white lists
+  rpc GetTokenBlackWhites (TokenBlackWhitesRequest) returns (TokenBlackWhitesResponse) {}
 }
 
 message TokenAliasRequest {
@@ -66,4 +69,9 @@ message TokenRatesByDenomRequest {
   
 message TokenRatesByDenomResponse {
   map<string, kira.tokens.TokenRate> data = 1;
+}
+
+message TokenBlackWhitesRequest {}
+message TokenBlackWhitesResponse {
+  TokensWhiteBlack data = 1;
 }

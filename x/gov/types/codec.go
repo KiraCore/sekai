@@ -407,6 +407,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&AssignPermissionProposal{},
 		&SetNetworkPropertyProposal{},
 		&UpsertDataRegistryProposal{},
+		&SetPoorNetworkMessagesProposal{},
 		&CreateRoleProposal{},
 	)
 

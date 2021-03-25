@@ -6,6 +6,153 @@
 	},
 	"item": [
 		{
+			"name": "Rosetta",
+			"item": [
+				{
+					"name": "Data",
+					"item": [
+						{
+							"name": "Network List",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://0.0.0.0:11000/rosetta/network/list",
+									"protocol": "http",
+									"host": [
+										"0",
+										"0",
+										"0",
+										"0"
+									],
+									"port": "11000",
+									"path": [
+										"rosetta",
+										"network",
+										"list"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Network Options",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"network_identifier\": {\n        \"blockchain\": \"app\",\n        \"network\": \"network\"\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://0.0.0.0:11000/rosetta/network/options",
+									"protocol": "http",
+									"host": [
+										"0",
+										"0",
+										"0",
+										"0"
+									],
+									"port": "11000",
+									"path": [
+										"rosetta",
+										"network",
+										"options"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Network Status",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"network_identifier\": {\n        \"blockchain\": \"app\",\n        \"network\": \"network\"\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://0.0.0.0:11000/rosetta/network/status",
+									"protocol": "http",
+									"host": [
+										"0",
+										"0",
+										"0",
+										"0"
+									],
+									"port": "11000",
+									"path": [
+										"rosetta",
+										"network",
+										"status"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Account",
+					"item": [
+						{
+							"name": "Account Balance",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"network_identifier\": {\n        \"blockchain\": \"app\",\n        \"network\": \"network\"\n    },\n    \"account_identifier\": {\n        \"address\": \"kira18hhcwgl2rg57we2vu5g7qshxrjk9q5wxaw3x4w\"\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://0.0.0.0:11000/rosetta/account/balance",
+									"protocol": "http",
+									"host": [
+										"0",
+										"0",
+										"0",
+										"0"
+									],
+									"port": "11000",
+									"path": [
+										"rosetta",
+										"account",
+										"balance"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
 			"name": "Kira Status",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true

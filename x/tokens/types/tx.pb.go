@@ -188,37 +188,89 @@ func (m *MsgProposalUpsertTokenRatesResponse) GetProposalID() uint64 {
 	return 0
 }
 
+type MsgProposalTokensWhiteBlackChangeResponse struct {
+	ProposalID uint64 `protobuf:"varint,1,opt,name=proposalID,proto3" json:"proposalID,omitempty"`
+}
+
+func (m *MsgProposalTokensWhiteBlackChangeResponse) Reset() {
+	*m = MsgProposalTokensWhiteBlackChangeResponse{}
+}
+func (m *MsgProposalTokensWhiteBlackChangeResponse) String() string {
+	return proto.CompactTextString(m)
+}
+func (*MsgProposalTokensWhiteBlackChangeResponse) ProtoMessage() {}
+func (*MsgProposalTokensWhiteBlackChangeResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_0fd2153dc07d3b5c, []int{4}
+}
+func (m *MsgProposalTokensWhiteBlackChangeResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgProposalTokensWhiteBlackChangeResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgProposalTokensWhiteBlackChangeResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgProposalTokensWhiteBlackChangeResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgProposalTokensWhiteBlackChangeResponse.Merge(m, src)
+}
+func (m *MsgProposalTokensWhiteBlackChangeResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgProposalTokensWhiteBlackChangeResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgProposalTokensWhiteBlackChangeResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgProposalTokensWhiteBlackChangeResponse proto.InternalMessageInfo
+
+func (m *MsgProposalTokensWhiteBlackChangeResponse) GetProposalID() uint64 {
+	if m != nil {
+		return m.ProposalID
+	}
+	return 0
+}
+
 func init() {
 	proto.RegisterType((*MsgUpsertTokenAliasResponse)(nil), "kira.tokens.MsgUpsertTokenAliasResponse")
 	proto.RegisterType((*MsgUpsertTokenRateResponse)(nil), "kira.tokens.MsgUpsertTokenRateResponse")
 	proto.RegisterType((*MsgProposalUpsertTokenAliasResponse)(nil), "kira.tokens.MsgProposalUpsertTokenAliasResponse")
 	proto.RegisterType((*MsgProposalUpsertTokenRatesResponse)(nil), "kira.tokens.MsgProposalUpsertTokenRatesResponse")
+	proto.RegisterType((*MsgProposalTokensWhiteBlackChangeResponse)(nil), "kira.tokens.MsgProposalTokensWhiteBlackChangeResponse")
 }
 
 func init() { proto.RegisterFile("tx.proto", fileDescriptor_0fd2153dc07d3b5c) }
 
 var fileDescriptor_0fd2153dc07d3b5c = []byte{
-	// 310 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x28, 0xa9, 0xd0, 0x2b,
-	0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0xce, 0xce, 0x2c, 0x4a, 0xd4, 0x2b, 0xc9, 0xcf, 0x4e, 0xcd,
-	0x2b, 0x96, 0x12, 0x49, 0xcf, 0x4f, 0xcf, 0x07, 0x8b, 0xeb, 0x83, 0x58, 0x10, 0x25, 0x52, 0xdc,
-	0x89, 0x39, 0x99, 0x89, 0xc5, 0x50, 0x0e, 0x5f, 0x41, 0x51, 0x7e, 0x41, 0x7e, 0x71, 0x62, 0x0e,
-	0x94, 0xcf, 0x55, 0x94, 0x58, 0x92, 0x0a, 0x61, 0x2b, 0xc9, 0x72, 0x49, 0xfb, 0x16, 0xa7, 0x87,
-	0x16, 0x14, 0xa7, 0x16, 0x95, 0x84, 0x80, 0x4c, 0x74, 0x04, 0x69, 0x0c, 0x4a, 0x2d, 0x2e, 0xc8,
-	0xcf, 0x2b, 0x4e, 0x55, 0x92, 0xe1, 0x92, 0x42, 0x95, 0x0e, 0x4a, 0x2c, 0x49, 0x85, 0xcb, 0xba,
-	0x72, 0x29, 0xfb, 0x16, 0xa7, 0x07, 0x40, 0x4d, 0xc7, 0x65, 0x88, 0x90, 0x1c, 0x17, 0x17, 0xcc,
-	0x05, 0x9e, 0x2e, 0x12, 0x8c, 0x0a, 0x8c, 0x1a, 0x2c, 0x41, 0x48, 0x22, 0xb8, 0x8d, 0x01, 0x59,
-	0x46, 0xb4, 0x31, 0x46, 0x9b, 0x98, 0xb9, 0x98, 0x7d, 0x8b, 0xd3, 0x85, 0xe2, 0xb8, 0x04, 0xd0,
-	0x9d, 0x22, 0xa4, 0xa0, 0x87, 0x14, 0x66, 0x7a, 0x58, 0x7c, 0x2c, 0xa5, 0x41, 0x48, 0x05, 0xdc,
-	0x1d, 0xd1, 0x5c, 0xfc, 0x68, 0x6e, 0x14, 0x92, 0xc7, 0xa3, 0x19, 0xa4, 0x40, 0x4a, 0x9d, 0x80,
-	0x02, 0xb8, 0xe1, 0x65, 0x5c, 0x12, 0xb8, 0xc2, 0x53, 0x08, 0xc3, 0x89, 0xb8, 0x54, 0x4a, 0x19,
-	0x10, 0xab, 0x92, 0x80, 0xbd, 0xe0, 0x08, 0x20, 0xca, 0x5e, 0xb0, 0x4a, 0xa2, 0xec, 0x45, 0x89,
-	0x54, 0x27, 0xa7, 0x13, 0x8f, 0xe4, 0x18, 0x2f, 0x3c, 0x92, 0x63, 0x7c, 0xf0, 0x48, 0x8e, 0x71,
-	0xc2, 0x63, 0x39, 0x86, 0x0b, 0x8f, 0xe5, 0x18, 0x6e, 0x3c, 0x96, 0x63, 0x88, 0xd2, 0x48, 0xcf,
-	0x2c, 0xc9, 0x28, 0x4d, 0xd2, 0x4b, 0xce, 0xcf, 0xd5, 0xf7, 0xce, 0x2c, 0x4a, 0x74, 0xce, 0x2f,
-	0x4a, 0xd5, 0x2f, 0x4e, 0xcd, 0x4e, 0xcc, 0xd4, 0xaf, 0xd0, 0x87, 0xd8, 0xa0, 0x5f, 0x52, 0x59,
-	0x90, 0x5a, 0x9c, 0xc4, 0x06, 0x4e, 0xca, 0xc6, 0x80, 0x00, 0x00, 0x00, 0xff, 0xff, 0x02, 0x76,
-	0x16, 0x5c, 0x22, 0x03, 0x00, 0x00,
+	// 363 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x93, 0xc1, 0x4b, 0x3a, 0x41,
+	0x14, 0xc7, 0x5d, 0x7e, 0xf2, 0x23, 0x9e, 0x51, 0x31, 0x74, 0x90, 0xa9, 0x26, 0xb1, 0x43, 0x76,
+	0xd9, 0x8d, 0x82, 0xee, 0x69, 0x1d, 0x42, 0x84, 0x90, 0x22, 0x28, 0x08, 0x46, 0x79, 0x8d, 0xcb,
+	0x9a, 0x33, 0xcc, 0x4c, 0x61, 0xfd, 0x05, 0x1d, 0xfb, 0x87, 0xba, 0x77, 0xf4, 0xd8, 0x31, 0xf4,
+	0x1f, 0x89, 0x5d, 0x57, 0x51, 0x73, 0x75, 0xbb, 0xcd, 0x9b, 0xf9, 0xec, 0xe7, 0xfb, 0x66, 0xdf,
+	0x2e, 0xac, 0xd8, 0xae, 0xab, 0xb4, 0xb4, 0x92, 0xe4, 0x02, 0x5f, 0x73, 0xd7, 0xca, 0x00, 0x3b,
+	0x86, 0x6e, 0x0a, 0x29, 0x64, 0xb4, 0xef, 0x85, 0xab, 0x21, 0x42, 0x73, 0xbc, 0xed, 0x73, 0x13,
+	0x17, 0x6b, 0x4a, 0x4b, 0x25, 0x0d, 0x6f, 0xc7, 0x35, 0x68, 0x6e, 0x31, 0x5e, 0xaf, 0x3e, 0x68,
+	0xc4, 0xd7, 0xb8, 0x2a, 0xee, 0xc0, 0x56, 0xcd, 0x88, 0x6b, 0x65, 0x50, 0xdb, 0xab, 0xd0, 0x7f,
+	0x1a, 0x6a, 0xea, 0x68, 0x94, 0xec, 0x18, 0x2c, 0x6e, 0x03, 0x9d, 0x3e, 0xae, 0x73, 0x8b, 0xe3,
+	0xd3, 0x73, 0xd8, 0xab, 0x19, 0x71, 0x19, 0x67, 0x25, 0x49, 0x08, 0x03, 0x18, 0xf5, 0x73, 0x71,
+	0x96, 0x77, 0x0a, 0x4e, 0x29, 0x5b, 0x9f, 0xd8, 0x49, 0xd6, 0x84, 0x61, 0xe9, 0x35, 0x55, 0x38,
+	0x98, 0xd0, 0x44, 0x02, 0x73, 0xd3, 0xf2, 0x2d, 0x96, 0xdb, 0xbc, 0x19, 0x54, 0x5a, 0xbc, 0x23,
+	0x30, 0xad, 0xec, 0xe8, 0x23, 0x0b, 0xff, 0x6a, 0x46, 0x90, 0x7b, 0xd8, 0x98, 0xbd, 0x17, 0x29,
+	0xb8, 0x13, 0xe3, 0x70, 0xe7, 0xbc, 0x3e, 0x5a, 0x5a, 0x46, 0x8c, 0xfb, 0xb8, 0x83, 0xf5, 0x99,
+	0x0b, 0x93, 0xdd, 0x05, 0x0f, 0x87, 0x00, 0xdd, 0x5f, 0x02, 0x8c, 0xe5, 0xcf, 0x90, 0x4f, 0x1a,
+	0x0e, 0xf9, 0xd5, 0x62, 0x12, 0x49, 0x0f, 0xd3, 0x92, 0x4b, 0x72, 0xa3, 0x69, 0xa6, 0xca, 0x8d,
+	0xc8, 0x54, 0xb9, 0xd3, 0x5f, 0xc8, 0x9b, 0x03, 0x6c, 0xf1, 0xfc, 0x89, 0x9b, 0x24, 0x9d, 0xcf,
+	0xd3, 0x93, 0xbf, 0xf1, 0xa3, 0x56, 0xca, 0xe5, 0xcf, 0x3e, 0x73, 0x7a, 0x7d, 0xe6, 0x7c, 0xf7,
+	0x99, 0xf3, 0x3e, 0x60, 0x99, 0xde, 0x80, 0x65, 0xbe, 0x06, 0x2c, 0x73, 0x5b, 0x12, 0xbe, 0x6d,
+	0x3d, 0x35, 0xdc, 0xa6, 0x7c, 0xf4, 0xaa, 0xbe, 0xe6, 0x15, 0xa9, 0xd1, 0x33, 0x18, 0x70, 0xdf,
+	0xeb, 0x7a, 0xc3, 0x1c, 0xcf, 0xbe, 0x28, 0x34, 0x8d, 0xff, 0xd1, 0x2f, 0x7a, 0xfc, 0x13, 0x00,
+	0x00, 0xff, 0xff, 0x9e, 0xdd, 0x0a, 0x6b, 0x08, 0x04, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -241,6 +293,8 @@ type MsgClient interface {
 	ProposalUpsertTokenAlias(ctx context.Context, in *MsgProposalUpsertTokenAlias, opts ...grpc.CallOption) (*MsgProposalUpsertTokenAliasResponse, error)
 	// ProposalUpsertTokenRates defines a method to create a proposal to upsert token rates
 	ProposalUpsertTokenRates(ctx context.Context, in *MsgProposalUpsertTokenRates, opts ...grpc.CallOption) (*MsgProposalUpsertTokenRatesResponse, error)
+	// ProposalTokensWhiteBlackChange defines a method for changing tokens whitelist / blacklist proposal
+	ProposalTokensWhiteBlackChange(ctx context.Context, in *MsgProposalTokensWhiteBlackChange, opts ...grpc.CallOption) (*MsgProposalTokensWhiteBlackChangeResponse, error)
 }
 
 type msgClient struct {
@@ -287,6 +341,15 @@ func (c *msgClient) ProposalUpsertTokenRates(ctx context.Context, in *MsgProposa
 	return out, nil
 }
 
+func (c *msgClient) ProposalTokensWhiteBlackChange(ctx context.Context, in *MsgProposalTokensWhiteBlackChange, opts ...grpc.CallOption) (*MsgProposalTokensWhiteBlackChangeResponse, error) {
+	out := new(MsgProposalTokensWhiteBlackChangeResponse)
+	err := c.cc.Invoke(ctx, "/kira.tokens.Msg/ProposalTokensWhiteBlackChange", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
 	// UpsertTokenAlias defines a method to upsert token alias
@@ -297,6 +360,8 @@ type MsgServer interface {
 	ProposalUpsertTokenAlias(context.Context, *MsgProposalUpsertTokenAlias) (*MsgProposalUpsertTokenAliasResponse, error)
 	// ProposalUpsertTokenRates defines a method to create a proposal to upsert token rates
 	ProposalUpsertTokenRates(context.Context, *MsgProposalUpsertTokenRates) (*MsgProposalUpsertTokenRatesResponse, error)
+	// ProposalTokensWhiteBlackChange defines a method for changing tokens whitelist / blacklist proposal
+	ProposalTokensWhiteBlackChange(context.Context, *MsgProposalTokensWhiteBlackChange) (*MsgProposalTokensWhiteBlackChangeResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
@@ -314,6 +379,9 @@ func (*UnimplementedMsgServer) ProposalUpsertTokenAlias(ctx context.Context, req
 }
 func (*UnimplementedMsgServer) ProposalUpsertTokenRates(ctx context.Context, req *MsgProposalUpsertTokenRates) (*MsgProposalUpsertTokenRatesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProposalUpsertTokenRates not implemented")
+}
+func (*UnimplementedMsgServer) ProposalTokensWhiteBlackChange(ctx context.Context, req *MsgProposalTokensWhiteBlackChange) (*MsgProposalTokensWhiteBlackChangeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProposalTokensWhiteBlackChange not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
@@ -392,6 +460,24 @@ func _Msg_ProposalUpsertTokenRates_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_ProposalTokensWhiteBlackChange_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgProposalTokensWhiteBlackChange)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).ProposalTokensWhiteBlackChange(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.tokens.Msg/ProposalTokensWhiteBlackChange",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).ProposalTokensWhiteBlackChange(ctx, req.(*MsgProposalTokensWhiteBlackChange))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "kira.tokens.Msg",
 	HandlerType: (*MsgServer)(nil),
@@ -411,6 +497,10 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ProposalUpsertTokenRates",
 			Handler:    _Msg_ProposalUpsertTokenRates_Handler,
+		},
+		{
+			MethodName: "ProposalTokensWhiteBlackChange",
+			Handler:    _Msg_ProposalTokensWhiteBlackChange_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -519,6 +609,34 @@ func (m *MsgProposalUpsertTokenRatesResponse) MarshalToSizedBuffer(dAtA []byte) 
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgProposalTokensWhiteBlackChangeResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgProposalTokensWhiteBlackChangeResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgProposalTokensWhiteBlackChangeResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.ProposalID != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.ProposalID))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	offset -= sovTx(v)
 	base := offset
@@ -561,6 +679,18 @@ func (m *MsgProposalUpsertTokenAliasResponse) Size() (n int) {
 }
 
 func (m *MsgProposalUpsertTokenRatesResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.ProposalID != 0 {
+		n += 1 + sovTx(uint64(m.ProposalID))
+	}
+	return n
+}
+
+func (m *MsgProposalTokensWhiteBlackChangeResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -783,6 +913,78 @@ func (m *MsgProposalUpsertTokenRatesResponse) Unmarshal(dAtA []byte) error {
 		}
 		if fieldNum <= 0 {
 			return fmt.Errorf("proto: MsgProposalUpsertTokenRatesResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ProposalID", wireType)
+			}
+			m.ProposalID = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ProposalID |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgProposalTokensWhiteBlackChangeResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgProposalTokensWhiteBlackChangeResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgProposalTokensWhiteBlackChangeResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:

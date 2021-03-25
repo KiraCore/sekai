@@ -25,7 +25,7 @@ const (
 	// PERMISSION_UPSERT_ROLE makes possible to add, modify and assign roles.
 	PermUpsertRole PermValue = 9
 	// PERMISSION_UPSERT_DATA_REGISTRY_PROPOSAL makes possible to create a proposal to change the Data Registry.
-	PermUpsertDataRegistryProposal PermValue = 10
+	PermCreateUpsertDataRegistryProposal PermValue = 10
 	// PERMISSION_VOTE_UPSERT_DATA_REGISTRY_PROPOSAL makes possible to create a proposal to change the Data Registry.
 	PermVoteUpsertDataRegistryProposal PermValue = 11
 	// PERMISSION_CREATE_SET_NETWORK_PROPERTY_PROPOSAL defines the permission needed to create proposals for setting network property.

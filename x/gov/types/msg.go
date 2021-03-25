@@ -541,7 +541,7 @@ func (m *MsgProposalSetPoorNetworkMessages) Route() string {
 }
 
 func (m *MsgProposalSetPoorNetworkMessages) Type() string {
-	return types.MsgTypeProposalSetPoorNetworkMsgs
+	return types.MsgTypeProposalSetPoorNetworkMessages
 }
 
 func (m *MsgProposalSetPoorNetworkMessages) ValidateBasic() error {

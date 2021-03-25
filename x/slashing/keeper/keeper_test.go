@@ -43,7 +43,9 @@ func TestHandleNewValidator(t *testing.T) {
 	require.True(t, found)
 	require.Equal(t, app.CustomSlashingKeeper.SignedBlocksWindow(ctx)+1, info.StartHeight)
 	require.Equal(t, int64(2), info.IndexOffset)
+	require.Equal(t, int64(1), info.Mischance)
 	require.Equal(t, int64(1), info.MissedBlocksCounter)
+	require.Equal(t, int64(1), info.ProducedBlocksCounter)
 	require.Equal(t, time.Unix(0, 0).UTC(), info.InactiveUntil)
 
 	// validator should be active still, should not have been inactivated
@@ -80,7 +82,9 @@ func TestMissedBlockAndRankStreakCounter(t *testing.T) {
 
 	info, found := app.CustomSlashingKeeper.GetValidatorSigningInfo(ctx, sdk.ConsAddress(val.Address()))
 	require.True(t, found)
+	require.Equal(t, int64(1), info.Mischance)
 	require.Equal(t, int64(1), info.MissedBlocksCounter)
+	require.Equal(t, int64(1), info.ProducedBlocksCounter)
 
 	height := ctx.BlockHeight() + 1
 	for i := int64(0); i < 10; i++ {
@@ -91,7 +95,9 @@ func TestMissedBlockAndRankStreakCounter(t *testing.T) {
 	app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), 100, true)
 	info, found = app.CustomSlashingKeeper.GetValidatorSigningInfo(ctx, sdk.ConsAddress(val.Address()))
 	require.True(t, found)
-	require.Equal(t, int64(0), info.MissedBlocksCounter)
+	require.Equal(t, int64(0), info.Mischance)
+	require.Equal(t, int64(11), info.MissedBlocksCounter)
+	require.Equal(t, int64(2), info.ProducedBlocksCounter)
 
 	v = tstaking.CheckValidator(valAddr, stakingtypes.Active, false)
 	require.Equal(t, v.Rank, int64(1))
@@ -241,7 +247,9 @@ func TestValidatorDippingInAndOut(t *testing.T) {
 	// check all the signing information
 	signInfo, found := app.CustomSlashingKeeper.GetValidatorSigningInfo(ctx, consAddr)
 	require.True(t, found)
-	require.Equal(t, int64(0), signInfo.MissedBlocksCounter)
+	require.Equal(t, int64(0), signInfo.Mischance)
+	require.Equal(t, int64(501), signInfo.MissedBlocksCounter)
+	require.Equal(t, int64(100), signInfo.ProducedBlocksCounter)
 	require.Equal(t, int64(0), signInfo.IndexOffset)
 	// array should be cleared
 	for offset := int64(0); offset < app.CustomSlashingKeeper.SignedBlocksWindow(ctx); offset++ {

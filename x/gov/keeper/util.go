@@ -72,3 +72,17 @@ func ProposalIDToBytes(proposalID uint64) []byte {
 func BytesToProposalID(bz []byte) uint64 {
 	return sdk.BigEndianToUint64(bz)
 }
+
+func BoolToInt(v bool) uint64 {
+	if v {
+		return 1
+	}
+	return 0
+}
+
+func IntToBool(v uint64) bool {
+	if v != 0 {
+		return true
+	}
+	return false
+}

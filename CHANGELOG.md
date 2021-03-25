@@ -1,11 +1,27 @@
 # Changelog
 
 ## [Unreleased] - 18.03.2021
-### Added 
+### Added
 - Add a field in the proposal to be able to set some description.
 ### Fixed
 - The actor when it receives a permission becomes active.
 - Fixed problem when voting unjail validator proposal.
+
+## [v0.1.18.2] - 25.03.2021
+### Changed
+- Permission numbers to an organized way
+- Cleanup gov codebase function names and vars
+- Fix SetPoorNetworkMessagesProposal codec registration
+- Add logic for Mischance and ProducedBlocksCounter, MissedBlocksCounter
+
+## [v0.1.18] - 19.03.2021
+### Added
+- Ante handler to check frozen tokens movement
+- Add network properties for ENABLE_TOKEN_WHITELIST / ENABLE_TOKEN_BLACKLIST
+- Add permissions for creation and vote on blacklist and whitelist change of tokens
+- Added CLI command to submit proposal to change blacklist and whitelist
+- Added CLI command to query current blacklist and whitelist
+- Network Properties management code modification for boolean properties
 
 ## [v0.1.17.6] - 18.03.2021
 ### Added

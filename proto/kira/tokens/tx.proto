@@ -6,6 +6,7 @@ import "gogoproto/gogo.proto";
 import "alias.proto";
 import "proposal.proto";
 import "rate.proto";
+import "freeze.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/tokens/types";
 
@@ -19,6 +20,8 @@ service Msg {
     rpc ProposalUpsertTokenAlias(MsgProposalUpsertTokenAlias) returns (MsgProposalUpsertTokenAliasResponse);
     // ProposalUpsertTokenRates defines a method to create a proposal to upsert token rates
     rpc ProposalUpsertTokenRates(MsgProposalUpsertTokenRates) returns (MsgProposalUpsertTokenRatesResponse);
+    // ProposalTokensWhiteBlackChange defines a method for changing tokens whitelist / blacklist proposal
+    rpc ProposalTokensWhiteBlackChange(MsgProposalTokensWhiteBlackChange) returns (MsgProposalTokensWhiteBlackChangeResponse);
 }
 
 message MsgUpsertTokenAliasResponse {}
@@ -27,5 +30,8 @@ message MsgProposalUpsertTokenAliasResponse {
     uint64 proposalID = 1;
 }
 message MsgProposalUpsertTokenRatesResponse {
+    uint64 proposalID = 1;
+}
+message MsgProposalTokensWhiteBlackChangeResponse {
     uint64 proposalID = 1;
 }

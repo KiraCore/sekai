@@ -3,7 +3,6 @@ package interx
 import (
 	"encoding/json"
 	"fmt"
-	"math"
 	"net/http"
 	"sort"
 	"strings"
@@ -195,7 +194,7 @@ func queryValidatorsHandle(r *http.Request, gwCosmosmux *runtime.ServeMux) (inte
 				}
 			}
 
-			allValidators.Status.ConsensusStopped = float64(allValidators.Status.ActiveValidators) < math.Floor(float64(allValidators.Status.TotalValidators)*2/3)+1
+			allValidators.Status.ConsensusStopped = common.IsConsensusStopped(allValidators.Status.ActiveValidators)
 
 			return allValidators, nil, statusCode
 		}

@@ -21,6 +21,8 @@ func (k Keeper) AfterValidatorJoined(ctx sdk.Context, address sdk.ConsAddress, v
 			time.Unix(0, 0),
 			false,
 			0,
+			0,
+			0,
 		)
 		k.SetValidatorSigningInfo(ctx, address, signingInfo)
 	}

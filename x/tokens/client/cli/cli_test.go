@@ -138,6 +138,21 @@ func (s *IntegrationTestSuite) TestUpsertTokenRateAndQuery() {
 	s.Require().Equal(tokenRate.FeePayments, true)
 }
 
+func (s *IntegrationTestSuite) TestGetCmdQueryTokenBlackWhites() {
+	val := s.network.Validators[0]
+	clientCtx := val.ClientCtx
+
+	cmd := cli.GetCmdQueryTokenBlackWhites()
+	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{})
+	s.Require().NoError(err)
+
+	var blackWhites tokenstypes.TokenBlackWhitesResponse
+	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &blackWhites)
+
+	s.Require().Equal(blackWhites.Data.Blacklisted, []string{"frozen"})
+	s.Require().Equal(blackWhites.Data.Whitelisted, []string{"ukex"})
+}
+
 func (s IntegrationTestSuite) TestCreateProposalUpsertTokenRates() {
 	// Query permissions for role Validator
 	val := s.network.Validators[0]
@@ -206,6 +221,46 @@ func (s IntegrationTestSuite) TestCreateProposalUpsertTokenAlias() {
 	s.Require().NoError(err)
 	fmt.Printf("%s", out.String())
 }
+
+func (s IntegrationTestSuite) TestTxProposalTokensBlackWhiteChangeCmd() {
+	// Query permissions for role Validator
+	val := s.network.Validators[0]
+	clientCtx := val.ClientCtx
+
+	cmd := cli.GetTxProposalTokensBlackWhiteChangeCmd()
+	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
+		fmt.Sprintf("--%s=true", cli.FlagIsBlacklist),
+		fmt.Sprintf("--%s=true", cli.FlagIsAdd),
+		fmt.Sprintf("--%s=frozen1", cli.FlagTokens),
+		fmt.Sprintf("--%s=frozen2", cli.FlagTokens),
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(100))).String()),
+	})
+
+	s.Require().NoError(err)
+	fmt.Printf("%s", out.String())
+
+	// Vote Proposal
+	out.Reset()
+	cmd = customgovcli.GetTxVoteProposal()
+	out, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
+		fmt.Sprintf("%d", 1), // Proposal ID
+		fmt.Sprintf("%d", customgovtypes.OptionYes),
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(100))).String()),
+	})
+	s.Require().NoError(err)
+	fmt.Printf("%s", out.String())
+}
+
+// TODO: should add test for GetCmdQueryAllTokenAliases
+// TODO: should add test for GetCmdQueryTokenAliasesByDenom
+// TODO: should add test for GetCmdQueryAllTokenRates
+// TODO: should add test for GetCmdQueryTokenRatesByDenom
 
 func TestIntegrationTestSuite(t *testing.T) {
 	suite.Run(t, new(IntegrationTestSuite))

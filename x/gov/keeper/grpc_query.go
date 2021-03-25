@@ -100,9 +100,9 @@ func (q Querier) GetExecutionFee(ctx context.Context, request *types.ExecutionFe
 // GetPoorNetworkMessages queries poor network messages
 func (q Querier) GetPoorNetworkMessages(ctx context.Context, request *types.PoorNetworkMessagesRequest) (*types.PoorNetworkMessagesResponse, error) {
 	sdkContext := sdk.UnwrapSDKContext(ctx)
-	msg, ok := q.keeper.GetPoorNetworkMsgs(sdkContext)
+	msg, ok := q.keeper.GetPoorNetworkMessages(sdkContext)
 	if !ok {
-		return nil, types.ErrPoorNetworkMsgsNotSet
+		return nil, types.ErrPoorNetworkMessagesNotSet
 	}
 	return &types.PoorNetworkMessagesResponse{Messages: msg.Messages}, nil
 }
@@ -134,8 +134,11 @@ func (q Querier) Proposals(ctx context.Context, request *types.QueryProposalsReq
 // GetWhitelistedProposalVoters returns whitelisted voters for a proposal for tracking
 func (q Querier) GetWhitelistedProposalVoters(ctx context.Context, request *types.QueryWhitelistedProposalVotersRequest) (*types.QueryWhitelistedProposalVotersResponse, error) {
 	sdkContext := sdk.UnwrapSDKContext(ctx)
-	// TODO: this should get availableVoters by proposal type
-	actors := q.keeper.GetNetworkActorsByAbsoluteWhitelistPermission(sdkContext, types.PermVoteSetPermissionProposal)
+	proposal, found := q.keeper.GetProposal(sdkContext, request.ProposalId)
+	if !found {
+		return nil, sdkerrors.Wrap(types.ErrGettingProposals, fmt.Sprintf("proposal does not exist for %d", request.ProposalId))
+	}
+	actors := q.keeper.GetNetworkActorsByAbsoluteWhitelistPermission(sdkContext, proposal.GetContent().VotePermission())
 	return &types.QueryWhitelistedProposalVotersResponse{Voters: actors}, nil
 }
 

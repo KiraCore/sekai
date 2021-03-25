@@ -299,3 +299,5 @@ func TestHandler_ProposalUnjailValidator(t *testing.T) {
 	iterator = app.CustomGovKeeper.GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx, ctx.BlockTime())
 	require.True(t, iterator.Valid())
 }
+
+// TODO: should add more tests for various types of cases by network properties status
