@@ -26,6 +26,8 @@ func TestGetSetValidatorSigningInfo(t *testing.T) {
 		time.Unix(2, 0),
 		false,
 		int64(10),
+		int64(10),
+		int64(10),
 	)
 	app.CustomSlashingKeeper.SetValidatorSigningInfo(ctx, sdk.ConsAddress(addrDels[0]), newInfo)
 	info, found = app.CustomSlashingKeeper.GetValidatorSigningInfo(ctx, sdk.ConsAddress(addrDels[0]))
@@ -33,7 +35,9 @@ func TestGetSetValidatorSigningInfo(t *testing.T) {
 	require.Equal(t, info.StartHeight, int64(4))
 	require.Equal(t, info.IndexOffset, int64(3))
 	require.Equal(t, info.InactiveUntil, time.Unix(2, 0).UTC())
+	require.Equal(t, info.Mischance, int64(10))
 	require.Equal(t, info.MissedBlocksCounter, int64(10))
+	require.Equal(t, info.ProducedBlocksCounter, int64(10))
 }
 
 func TestGetSetValidatorMissedBlockBitArray(t *testing.T) {
@@ -63,6 +67,8 @@ func TestTombstoned(t *testing.T) {
 		time.Unix(2, 0),
 		false,
 		int64(10),
+		int64(10),
+		int64(10),
 	)
 	app.CustomSlashingKeeper.SetValidatorSigningInfo(ctx, sdk.ConsAddress(addrDels[0]), newInfo)
 
@@ -85,6 +91,8 @@ func TestJailUntil(t *testing.T) {
 		int64(3),
 		time.Unix(2, 0),
 		false,
+		int64(10),
+		int64(10),
 		int64(10),
 	)
 	app.CustomSlashingKeeper.SetValidatorSigningInfo(ctx, sdk.ConsAddress(addrDels[0]), newInfo)

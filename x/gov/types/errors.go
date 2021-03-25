@@ -22,7 +22,7 @@ var (
 	ErrActorIsNotActive           = errors.Register(ModuleName, 18, "actor is not active")
 	ErrInvalidNetworkProperty     = errors.Register(ModuleName, 19, "invalid network property")
 	ErrFeeNotExist                = errors.Register(ModuleName, 20, "fee does not exist")
-	ErrPoorNetworkMsgsNotSet      = errors.Register(ModuleName, 21, "poor network messages not set")
+	ErrPoorNetworkMessagesNotSet  = errors.Register(ModuleName, 21, "poor network messages not set")
 	ErrGettingProposals           = errors.Register(ModuleName, 23, "error getting proposals")
 	ErrGettingProposalVotes       = errors.Register(ModuleName, 24, "error getting votes for proposal")
 	ErrVotingTimeEnded            = errors.Register(ModuleName, 25, "voting time has ended")

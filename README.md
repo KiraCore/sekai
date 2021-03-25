@@ -14,8 +14,23 @@ export PermVoteSetPermissionProposal=5
 export PermUpsertTokenAlias=6
 export PermChangeTxFee=7
 export PermUpsertTokenRate=8
-export PermCreateTokensWhiteBlackChangeProposal=21
-export PermVoteTokensWhiteBlackChangeProposal=22
+export PermUpsertRole=9
+export PermCreateUpsertDataRegistryProposal=10
+export PermVoteUpsertDataRegistryProposal=11
+export PermCreateSetNetworkPropertyProposal=12
+export PermVoteSetNetworkPropertyProposal=13
+export PermCreateUpsertTokenAliasProposal=14
+export PermVoteUpsertTokenAliasProposal=15
+export PermCreateSetPoorNetworkMessagesProposal=16
+export PermVoteSetPoorNetworkMessagesProposal=17
+export PermCreateUpsertTokenRateProposal=18
+export PermVoteUpsertTokenRateProposal=19
+export PermCreateUnjailValidatorProposal=20
+export PermVoteUnjailValidatorProposal=21
+export PermCreateRoleProposal=22
+export PermVoteCreateRoleProposal=23
+export PermCreateTokensWhiteBlackChangeProposal=24
+export PermVoteTokensWhiteBlackChangeProposal=25
 
 # transaction_type
 export TypeMsgSend      = "send"
@@ -63,6 +78,17 @@ export FuncIDMsgClaimValidator = 19
 export FuncIDMsgUpsertTokenAlias = 20
 export FuncIDMsgUpsertTokenRate  = 21
 export FuncIDMsgProposalUpsertTokenAlias = 22
+```
+
+### Set permission via governance process
+
+```sh
+sekaid tx customgov proposal assign-permission $PermClaimValidator --addr=$(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes
+
+sekaid query customgov proposals
+sekaid query customgov proposal 1
+
+sekaid tx customgov proposal vote 1 1 --from validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes 
 ```
 
 ## Set ChangeTxFee permission

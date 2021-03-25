@@ -60,7 +60,7 @@ func (m *MsgProposalUpsertTokenRates) Route() string {
 }
 
 func (m *MsgProposalUpsertTokenRates) Type() string {
-	return kiratypes.MsgProposalUpsertTokenRatesType
+	return kiratypes.MsgTypeProposalUpsertTokenRates
 }
 
 func (m *MsgProposalUpsertTokenRates) ValidateBasic() error {
@@ -85,7 +85,7 @@ func (m *MsgProposalTokensWhiteBlackChange) Route() string {
 }
 
 func (m *MsgProposalTokensWhiteBlackChange) Type() string {
-	return kiratypes.MsgProposalTokensWhiteBlackChangeType
+	return kiratypes.MsgTypeProposalTokensWhiteBlackChange
 }
 
 func (m *MsgProposalTokensWhiteBlackChange) ValidateBasic() error {

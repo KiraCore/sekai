@@ -156,7 +156,6 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		(*govtypes.Content)(nil),
 		&ProposalUpsertTokenAlias{},
 		&ProposalUpsertTokenRates{},
-		&govtypes.SetPoorNetworkMessagesProposal{},
 		&ProposalTokensWhiteBlackChange{},
 	)
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)

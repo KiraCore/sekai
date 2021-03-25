@@ -1254,7 +1254,7 @@ func TestHandler_CreateProposalUpsertDataRegistry_Errors(t *testing.T) {
 				1234,
 			),
 			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
-			errors.Wrap(types.ErrNotEnoughPermissions, types.PermUpsertDataRegistryProposal.String()),
+			errors.Wrap(types.ErrNotEnoughPermissions, types.PermCreateUpsertDataRegistryProposal.String()),
 		},
 	}
 
@@ -1284,7 +1284,7 @@ func TestHandler_ProposalUpsertDataRegistry(t *testing.T) {
 
 	// Set proposer Permissions
 	proposerActor := types.NewDefaultActor(proposerAddr)
-	err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerActor, types.PermUpsertDataRegistryProposal)
+	err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerActor, types.PermCreateUpsertDataRegistryProposal)
 	require.NoError(t, err2)
 
 	properties := app.CustomGovKeeper.GetNetworkProperties(ctx)

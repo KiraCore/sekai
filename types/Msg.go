@@ -7,13 +7,12 @@ import (
 // custom msg types
 const (
 	// governance
-	MsgTypeProposalSetNetworkProperty = "proposal-set-network-property"
-	MsgTypeProposalAssignPermission   = "proposal-assign-permission"
-	MsgTypeProposalUpsertDataRegistry = "proposal-upsert-data-registry"
-	MsgTypeProposalUpsertTokenAlias   = "proposal-upsert-token-alias"
-	MsgTypeProposalSetPoorNetworkMsgs = "proposal-set-poor-network-messages"
-	MsgTypeProposalCreateRole         = "proposal-create-role"
-	MsgTypeVoteProposal               = "vote-proposal"
+	MsgTypeProposalSetNetworkProperty     = "proposal-set-network-property"
+	MsgTypeProposalAssignPermission       = "proposal-assign-permission"
+	MsgTypeProposalUpsertDataRegistry     = "proposal-upsert-data-registry"
+	MsgTypeProposalSetPoorNetworkMessages = "proposal-set-poor-network-messages"
+	MsgTypeProposalCreateRole             = "proposal-create-role"
+	MsgTypeVoteProposal                   = "vote-proposal"
 
 	MsgTypeWhitelistPermissions = "whitelist-permissions"
 	MsgTypeBlacklistPermissions = "blacklist-permissions"
@@ -38,9 +37,9 @@ const (
 	// tokens module
 	MsgTypeUpsertTokenAlias               = "upsert-token-alias"
 	MsgTypeUpsertTokenRate                = "upsert-token-rate"
-	MsgProposalUpsertTokenAliasType       = "propose-upsert-token-alias"
-	MsgProposalUpsertTokenRatesType       = "propose-upsert-token-rates"
-	MsgProposalTokensWhiteBlackChangeType = "propose-tokens-white-black-change"
+	MsgTypeProposalUpsertTokenAlias       = "propose-upsert-token-alias"
+	MsgTypeProposalUpsertTokenRates       = "propose-upsert-token-rates"
+	MsgTypeProposalTokensWhiteBlackChange = "propose-tokens-white-black-change"
 
 	// slashing module
 	MsgTypeActivate = "activate"
@@ -50,33 +49,35 @@ const (
 
 // MsgFuncIDMapping defines function_id mapping
 var MsgFuncIDMapping = map[string]int64{
-	bank.TypeMsgSend:                      1,
-	bank.TypeMsgMultiSend:                 2,
-	MsgTypeSetNetworkProperties:           3,
-	MsgTypeSetExecutionFee:                4,
-	MsgTypeProposalAssignPermission:       5,
-	MsgTypeProposalSetNetworkProperty:     6,
-	MsgTypeProposalUpsertDataRegistry:     7,
-	MsgTypeVoteProposal:                   8,
-	MsgTypeClaimCouncilor:                 9,
-	MsgTypeWhitelistPermissions:           10,
-	MsgTypeBlacklistPermissions:           11,
-	MsgTypeCreateRole:                     12,
-	MsgTypeAssignRole:                     13,
-	MsgTypeRemoveRole:                     14,
-	MsgTypeWhitelistRolePermission:        15,
-	MsgTypeBlacklistRolePermission:        16,
-	MsgTypeRemoveWhitelistRolePermission:  17,
-	MsgTypeRemoveBlacklistRolePermission:  18,
-	MsgTypeClaimValidator:                 19,
-	MsgTypeUpsertTokenAlias:               20,
-	MsgTypeUpsertTokenRate:                21,
-	MsgTypeProposalUpsertTokenAlias:       22,
-	MsgProposalUpsertTokenAliasType:       23,
-	MsgProposalUpsertTokenRatesType:       24,
-	MsgProposalTokensWhiteBlackChangeType: 25,
-	MsgTypeActivate:                       26,
-	MsgTypePause:                          27,
-	MsgTypeUnpause:                        28,
-	MsgTypeProposalUnjailValidator:        29,
+	bank.TypeMsgSend:      1,
+	bank.TypeMsgMultiSend: 2,
+
+	MsgTypeProposalAssignPermission:       3,
+	MsgTypeProposalSetNetworkProperty:     4,
+	MsgTypeProposalUpsertDataRegistry:     5,
+	MsgTypeProposalSetPoorNetworkMessages: 6,
+	MsgTypeProposalUpsertTokenAlias:       7,
+	MsgTypeProposalUpsertTokenRates:       8,
+	MsgTypeProposalTokensWhiteBlackChange: 9,
+	MsgTypeProposalUnjailValidator:        10,
+	MsgTypeVoteProposal:                   11,
+
+	MsgTypeSetNetworkProperties:          20,
+	MsgTypeSetExecutionFee:               21,
+	MsgTypeClaimCouncilor:                22,
+	MsgTypeWhitelistPermissions:          23,
+	MsgTypeBlacklistPermissions:          24,
+	MsgTypeCreateRole:                    25,
+	MsgTypeAssignRole:                    26,
+	MsgTypeRemoveRole:                    27,
+	MsgTypeWhitelistRolePermission:       28,
+	MsgTypeBlacklistRolePermission:       29,
+	MsgTypeRemoveWhitelistRolePermission: 30,
+	MsgTypeRemoveBlacklistRolePermission: 31,
+	MsgTypeClaimValidator:                32,
+	MsgTypeUpsertTokenAlias:              33,
+	MsgTypeUpsertTokenRate:               34,
+	MsgTypeActivate:                      35,
+	MsgTypePause:                         36,
+	MsgTypeUnpause:                       37,
 }
