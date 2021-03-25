@@ -29,6 +29,7 @@ func NewProposal(
 	submitTime time.Time,
 	votingEndTime time.Time,
 	enactmentEndTime time.Time,
+	description string,
 ) (Proposal, error) {
 	msg, ok := content.(proto.Message)
 	if !ok {
@@ -47,6 +48,7 @@ func NewProposal(
 		EnactmentEndTime: enactmentEndTime,
 		Content:          any,
 		Result:           Pending,
+		Description:      description,
 	}, nil
 }
 

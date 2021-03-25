@@ -14,6 +14,7 @@ var (
 
 func NewMsgProposalUpsertTokenAlias(
 	proposer sdk.AccAddress,
+	description string,
 	symbol string,
 	name string,
 	icon string,
@@ -21,12 +22,13 @@ func NewMsgProposalUpsertTokenAlias(
 	denoms []string,
 ) *MsgProposalUpsertTokenAlias {
 	return &MsgProposalUpsertTokenAlias{
-		Proposer: proposer,
-		Symbol:   symbol,
-		Name:     name,
-		Icon:     icon,
-		Decimals: decimals,
-		Denoms:   denoms,
+		Proposer:    proposer,
+		Description: description,
+		Symbol:      symbol,
+		Name:        name,
+		Icon:        icon,
+		Decimals:    decimals,
+		Denoms:      denoms,
 	}
 }
 
@@ -51,8 +53,8 @@ func (m *MsgProposalUpsertTokenAlias) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{m.Proposer}
 }
 
-func NewMsgProposalUpsertTokenRates(proposer sdk.AccAddress, denom string, rate sdk.Dec, feePayments bool) *MsgProposalUpsertTokenRates {
-	return &MsgProposalUpsertTokenRates{Denom: denom, Rate: rate, FeePayments: feePayments, Proposer: proposer}
+func NewMsgProposalUpsertTokenRates(proposer sdk.AccAddress, description string, denom string, rate sdk.Dec, feePayments bool) *MsgProposalUpsertTokenRates {
+	return &MsgProposalUpsertTokenRates{Description: description, Denom: denom, Rate: rate, FeePayments: feePayments, Proposer: proposer}
 }
 
 func (m *MsgProposalUpsertTokenRates) Route() string {

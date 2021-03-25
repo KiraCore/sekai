@@ -67,7 +67,7 @@ func (k msgServer) ProposalSetPoorNetworkMsgs(
 		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermCreateSetNetworkPropertyProposal.String())
 	}
 
-	proposalID, err := k.CreateAndSaveProposalWithContent(ctx, customgovtypes.NewSetPoorNetworkMessagesProposal(msg.Messages))
+	proposalID, err := k.CreateAndSaveProposalWithContent(ctx, msg.Description, customgovtypes.NewSetPoorNetworkMessagesProposal(msg.Messages))
 
 	return &types.MsgProposalSetPoorNetworkMessagesResponse{
 		ProposalID: proposalID,
@@ -86,6 +86,7 @@ func (k msgServer) ProposalUpsertDataRegistry(
 	}
 
 	proposalID, err := k.CreateAndSaveProposalWithContent(ctx,
+		msg.Description,
 		customgovtypes.NewUpsertDataRegistryProposal(
 			msg.Key,
 			msg.Hash,
@@ -118,16 +119,19 @@ func (k msgServer) ProposalAssignPermission(
 		}
 	}
 
-	proposalID, err := k.CreateAndSaveProposalWithContent(ctx, customgovtypes.NewAssignPermissionProposal(
-		msg.Address,
-		customgovtypes.PermValue(msg.Permission),
-	))
+	proposalID, err := k.CreateAndSaveProposalWithContent(
+		ctx,
+		msg.Description,
+		customgovtypes.NewAssignPermissionProposal(
+			msg.Address,
+			customgovtypes.PermValue(msg.Permission),
+		))
 	return &types.MsgProposalAssignPermissionResponse{
 		ProposalID: proposalID,
 	}, err
 }
 
-func (k msgServer) CreateAndSaveProposalWithContent(ctx sdk.Context, content customgovtypes.Content) (uint64, error) {
+func (k msgServer) CreateAndSaveProposalWithContent(ctx sdk.Context, description string, content customgovtypes.Content) (uint64, error) {
 	blockTime := ctx.BlockTime()
 	proposalID, err := k.keeper.GetNextProposalID(ctx)
 	if err != nil {
@@ -144,6 +148,7 @@ func (k msgServer) CreateAndSaveProposalWithContent(ctx sdk.Context, content cus
 		blockTime.Add(time.Second*time.Duration(properties.ProposalEndTime)+
 			time.Second*time.Duration(properties.ProposalEnactmentTime),
 		),
+		description,
 	)
 
 	k.keeper.SaveProposal(ctx, proposal)
@@ -171,10 +176,14 @@ func (k msgServer) ProposalSetNetworkProperty(
 		return nil, errors.Wrap(errors.ErrInvalidRequest, "network property already set as proposed value")
 	}
 
-	proposalID, err := k.CreateAndSaveProposalWithContent(ctx, customgovtypes.NewSetNetworkPropertyProposal(
-		msg.NetworkProperty,
-		msg.Value,
-	))
+	proposalID, err := k.CreateAndSaveProposalWithContent(
+		ctx,
+		msg.Description,
+		customgovtypes.NewSetNetworkPropertyProposal(
+			msg.NetworkProperty,
+			msg.Value,
+		),
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -462,7 +471,9 @@ func (k msgServer) ProposalCreateRole(goCtx context.Context, msg *customgovtypes
 		return nil, customgovtypes.ErrRoleExist
 	}
 
-	proposalID, err := k.CreateAndSaveProposalWithContent(ctx,
+	proposalID, err := k.CreateAndSaveProposalWithContent(
+		ctx,
+		msg.Description,
 		customgovtypes.NewCreateRoleProposal(
 			customgovtypes.Role(msg.Role),
 			msg.WhitelistedPermissions,

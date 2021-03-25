@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased] - 18.03.2021
+### Added 
+- Add a field in the proposal to be able to set some description.
+### Fixed
+- The actor when it receives a permission becomes active.
+- Fixed problem when voting unjail validator proposal.
+
 ## [v0.1.17.6] - 18.03.2021
 ### Added
 - Now when the proposal passes it enter ins status Enactment.

@@ -38,6 +38,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now(),
 					time.Now(),
 					time.Now(),
+					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -92,6 +93,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now(),
 					time.Now().Add(10*time.Second),
 					time.Now().Add(20*time.Second),
+					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -156,6 +158,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now(),
 					time.Now().Add(10*time.Second),
 					time.Now().Add(20*time.Second),
+					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -194,6 +197,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now(),
 					time.Now().Add(10*time.Second),
 					time.Now().Add(20*time.Second),
+					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -238,6 +242,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now(),
 					time.Now().Add(10*time.Second),
 					time.Now().Add(20*time.Second),
+					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -282,6 +287,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now(),
 					time.Now().Add(10*time.Second),
 					time.Now().Add(20*time.Second),
+					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -329,6 +335,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now(),
 					time.Now().Add(10*time.Second),
 					time.Now().Add(20*time.Second),
+					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -369,6 +376,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now(),
 					time.Now().Add(10*time.Second),
 					time.Now().Add(20*time.Second),
+					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -420,6 +428,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now(),
 					time.Now().Add(10*time.Second),
 					time.Now().Add(20*time.Second),
+					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -466,6 +475,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now(),
 					time.Now().Add(10*time.Second),
 					time.Now().Add(20*time.Second),
+					"some desc",
 				)
 				require.NoError(t, err)
 

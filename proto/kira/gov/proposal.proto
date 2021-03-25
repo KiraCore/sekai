@@ -64,6 +64,8 @@ message MsgProposalAssignPermission {
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
   ];
 
+  string description = 4;
+
   bytes address = 2 [
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
     (gogoproto.moretags) = "yaml:\"address\""
@@ -76,6 +78,7 @@ message MsgProposalUpsertDataRegistry {
   bytes proposer = 1 [
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
   ];
+  string description = 7;
 
   string key = 2;
 
@@ -92,6 +95,7 @@ message MsgProposalSetPoorNetworkMessages {
   bytes proposer = 1 [
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
   ];
+  string description = 3;
   repeated string messages = 2;
 }
 
@@ -131,6 +135,7 @@ message MsgProposalSetNetworkProperty {
   bytes proposer = 1 [
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
   ];
+  string description = 4;
 
   NetworkProperty network_property = 2; // enum value
 
@@ -169,6 +174,7 @@ message MsgProposalCreateRole {
   bytes proposer = 1 [
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
   ];
+  string description = 5;
 
   uint32 role = 2;
   repeated PermValue whitelisted_permissions = 3;

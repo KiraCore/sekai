@@ -217,6 +217,7 @@ func TestHandler_CreateProposalUpsertTokenAliases_Errors(t *testing.T) {
 			"Proposer does not have Perm",
 			tokenstypes.NewMsgProposalUpsertTokenAlias(
 				proposerAddr,
+				"some desc",
 				"BTC",
 				"Bitcoin",
 				"http://theicon.com",
@@ -266,6 +267,7 @@ func TestHandler_CreateProposalUpsertTokenAliases(t *testing.T) {
 		ctx,
 		tokenstypes.NewMsgProposalUpsertTokenAlias(
 			proposerAddr,
+			"some desc",
 			"BTC",
 			"Bitcoin",
 			"http://sdlkfjalsdk.es",
@@ -296,6 +298,7 @@ func TestHandler_CreateProposalUpsertTokenAliases(t *testing.T) {
 		ctx.BlockTime(),
 		ctx.BlockTime().Add(time.Minute*time.Duration(properties.ProposalEndTime)),
 		ctx.BlockTime().Add(time.Minute*time.Duration(properties.ProposalEnactmentTime)),
+		"some desc",
 	)
 	require.NoError(t, err)
 	require.Equal(t, expectedSavedProposal, savedProposal)
@@ -328,6 +331,7 @@ func TestHandler_CreateProposalUpsertTokenRates_Errors(t *testing.T) {
 			"Proposer does not have Perm",
 			tokenstypes.NewMsgProposalUpsertTokenRates(
 				proposerAddr,
+				"some desc",
 				"btc",
 				sdk.NewDec(1234),
 				false,
@@ -375,6 +379,7 @@ func TestHandler_CreateProposalUpsertTokenRates(t *testing.T) {
 		ctx,
 		tokenstypes.NewMsgProposalUpsertTokenRates(
 			proposerAddr,
+			"some desc",
 			"btc",
 			sdk.NewDec(1234),
 			false,
@@ -397,6 +402,7 @@ func TestHandler_CreateProposalUpsertTokenRates(t *testing.T) {
 		ctx.BlockTime(),
 		ctx.BlockTime().Add(time.Minute*time.Duration(properties.ProposalEndTime)),
 		ctx.BlockTime().Add(time.Minute*time.Duration(properties.ProposalEnactmentTime)),
+		"some desc",
 	)
 	require.NoError(t, err)
 	require.Equal(t, expectedSavedProposal, savedProposal)
