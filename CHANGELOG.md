@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.1.18.5] - 25.03.2021
+### Fixed
+- Some proposals were created in minutes instead of seconds pattern.
+
 ## [v0.1.18.4] - 25.03.2021
 ### Added
 - Add a field in all proposals to be able to set some description.
