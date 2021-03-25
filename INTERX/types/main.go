@@ -164,11 +164,12 @@ type QueryValidator struct {
 	Mischance  int64  `json:"mischance,string"`
 
 	// Additional
-	StartHeight         int64  `json:"start_height,string"`
-	IndexOffset         int64  `json:"index_offset,string"`
-	InactiveUntil       string `json:"inactive_until"`
-	Tombstoned          bool   `json:"tombstoned,string"`
-	MissedBlocksCounter int64  `json:"missed_blocks_counter,string"`
+	StartHeight           int64  `json:"start_height,string"`
+	IndexOffset           int64  `json:"index_offset,string"`
+	InactiveUntil         string `json:"inactive_until"`
+	Tombstoned            bool   `json:"tombstoned,string"`
+	MissedBlocksCounter   int64  `json:"missed_blocks_counter,string"`
+	ProducedBlocksCounter int64  `json:"produced_blocks_counter,string"`
 }
 
 type QueryValidators []QueryValidator
@@ -216,12 +217,14 @@ type AllValidators struct {
 }
 
 type ValidatorSigningInfo struct {
-	Address             string `json:"address"`
-	StartHeight         int64  `json:"start_height,string,omitempty"`
-	IndexOffset         int64  `json:"index_offset,string,omitempty"`
-	InactiveUntil       string `json:"inactive_until,omitempty"`
-	Tombstoned          bool   `json:"tombstoned,string,omitempty"`
-	MissedBlocksCounter int64  `json:"missed_blocks_counter,string"`
+	Address               string `json:"address"`
+	StartHeight           int64  `json:"start_height,string,omitempty"`
+	IndexOffset           int64  `json:"index_offset,string,omitempty"`
+	InactiveUntil         string `json:"inactive_until,omitempty"`
+	Tombstoned            bool   `json:"tombstoned,string,omitempty"`
+	Mischance             int64  `json:"mischance,string,omitempty"`
+	MissedBlocksCounter   int64  `json:"missed_blocks_counter,string,omitempty"`
+	ProducedBlocksCounter int64  `json:"produced_blocks_counter,string,omitempty"`
 }
 
 const (

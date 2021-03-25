@@ -503,7 +503,9 @@
         "VOTE_RESULT_PASSED",
         "VOTE_RESULT_REJECTED",
         "VOTE_RESULT_REJECTED_WITH_VETO",
-        "VOTE_PENDING"
+        "VOTE_PENDING",
+        "VOTE_RESULT_QUORUM_NOT_REACHED",
+        "VOTE_RESULT_ENACTMENT"
       ],
       "default": "VOTE_RESULT_UNKNOWN"
     },

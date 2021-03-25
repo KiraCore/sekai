@@ -143,12 +143,13 @@ func queryValidatorsHandle(r *http.Request, gwCosmosmux *runtime.ServeMux) (inte
 					return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
 				}
 
-				result.Validators[index].Mischance = signInfoResponse.ValSigningInfo.MissedBlocksCounter
 				result.Validators[index].StartHeight = signInfoResponse.ValSigningInfo.StartHeight
 				result.Validators[index].IndexOffset = signInfoResponse.ValSigningInfo.IndexOffset
 				result.Validators[index].InactiveUntil = signInfoResponse.ValSigningInfo.InactiveUntil
 				result.Validators[index].Tombstoned = signInfoResponse.ValSigningInfo.Tombstoned
+				result.Validators[index].Mischance = signInfoResponse.ValSigningInfo.Mischance
 				result.Validators[index].MissedBlocksCounter = signInfoResponse.ValSigningInfo.MissedBlocksCounter
+				result.Validators[index].ProducedBlocksCounter = signInfoResponse.ValSigningInfo.ProducedBlocksCounter
 			}
 		}
 
