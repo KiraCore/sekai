@@ -26,6 +26,7 @@ const (
 	FlagIsBlacklist = "is_blacklist"
 	FlagIsAdd       = "is_add"
 	FlagTokens      = "tokens"
+	FlagDescription = "description"
 )
 
 // NewTxCmd returns a root CLI command handler for all x/bank transaction commands.
@@ -152,8 +153,14 @@ func GetTxProposalUpsertTokenAliasCmd() *cobra.Command {
 				return fmt.Errorf("invalid denoms: %w", err)
 			}
 
+			description, err := cmd.Flags().GetString(FlagDescription)
+			if err != nil {
+				return fmt.Errorf("invalid description: %w", err)
+			}
+
 			msg := types.NewMsgProposalUpsertTokenAlias(
 				clientCtx.FromAddress,
+				description,
 				symbol,
 				name,
 				icon,
@@ -175,6 +182,8 @@ func GetTxProposalUpsertTokenAliasCmd() *cobra.Command {
 	cmd.MarkFlagRequired(FlagDecimals)
 	cmd.Flags().String(FlagDenoms, "ukex,mkex", "An array of token denoms to be aliased")
 	cmd.MarkFlagRequired(FlagDenoms)
+	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
+	cmd.MarkFlagRequired(FlagDescription)
 
 	flags.AddTxFlagsToCmd(cmd)
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)
@@ -213,8 +222,14 @@ func GetTxProposalUpsertTokenRatesCmd() *cobra.Command {
 				return fmt.Errorf("invalid fee payments")
 			}
 
+			description, err := cmd.Flags().GetString(FlagDescription)
+			if err != nil {
+				return fmt.Errorf("invalid description: %w", err)
+			}
+
 			msg := types.NewMsgProposalUpsertTokenRates(
 				clientCtx.FromAddress,
+				description,
 				denom,
 				rate,
 				feePayments,
@@ -235,6 +250,8 @@ func GetTxProposalUpsertTokenRatesCmd() *cobra.Command {
 	cmd.MarkFlagRequired(FlagRate)
 	cmd.Flags().Bool(FlagFeePayments, true, "use registry as fee payment")
 	cmd.MarkFlagRequired(FlagFeePayments)
+	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
+	cmd.MarkFlagRequired(FlagDescription)
 
 	flags.AddTxFlagsToCmd(cmd)
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)
@@ -325,8 +342,14 @@ func GetTxProposalTokensBlackWhiteChangeCmd() *cobra.Command {
 				return fmt.Errorf("invalid tokens flag: %w", err)
 			}
 
+			description, err := cmd.Flags().GetString(FlagDescription)
+			if err != nil {
+				return fmt.Errorf("invalid description: %w", err)
+			}
+
 			msg := types.NewMsgProposalTokensWhiteBlackChange(
 				clientCtx.FromAddress,
+				description,
 				isBlacklist,
 				isAdd,
 				tokens,
@@ -339,6 +362,8 @@ func GetTxProposalTokensBlackWhiteChangeCmd() *cobra.Command {
 	cmd.Flags().Bool(FlagIsBlacklist, true, "true to modify blacklist otherwise false")
 	cmd.Flags().Bool(FlagIsAdd, true, "true to add otherwise false")
 	cmd.Flags().StringArray(FlagTokens, []string{}, "tokens array (eg. ATOM, KEX, BTC)")
+	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
+	cmd.MarkFlagRequired(FlagDescription)
 
 	flags.AddTxFlagsToCmd(cmd)
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)

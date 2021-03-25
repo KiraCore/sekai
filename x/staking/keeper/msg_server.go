@@ -83,11 +83,15 @@ func (k msgServer) ProposalUnjailValidator(goCtx context.Context, msg *types.Msg
 		return nil, fmt.Errorf("time to unjail passed")
 	}
 
-	proposalID, err := k.CreateAndSaveProposalWithContent(ctx, types.NewProposalUnjailValidator(
-		msg.Proposer,
-		msg.Hash,
-		msg.Reference,
-	))
+	proposalID, err := k.CreateAndSaveProposalWithContent(
+		ctx,
+		msg.Description,
+		types.NewProposalUnjailValidator(
+			msg.Proposer,
+			msg.Hash,
+			msg.Reference,
+		),
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -97,7 +101,7 @@ func (k msgServer) ProposalUnjailValidator(goCtx context.Context, msg *types.Msg
 	}, nil
 }
 
-func (k msgServer) CreateAndSaveProposalWithContent(ctx sdk.Context, content customgovtypes.Content) (uint64, error) {
+func (k msgServer) CreateAndSaveProposalWithContent(ctx sdk.Context, description string, content customgovtypes.Content) (uint64, error) {
 	blockTime := ctx.BlockTime()
 	proposalID, err := k.govKeeper.GetNextProposalID(ctx)
 	if err != nil {
@@ -112,6 +116,7 @@ func (k msgServer) CreateAndSaveProposalWithContent(ctx sdk.Context, content cus
 		blockTime,
 		blockTime.Add(time.Minute*time.Duration(properties.ProposalEndTime)),
 		blockTime.Add(time.Minute*time.Duration(properties.ProposalEnactmentTime)),
+		description,
 	)
 
 	k.govKeeper.SaveProposal(ctx, proposal)

@@ -400,8 +400,13 @@ func (m *MsgRemoveRole) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgProposalAssignPermission(proposer, address sdk.AccAddress, permission PermValue) *MsgProposalAssignPermission {
-	return &MsgProposalAssignPermission{Proposer: proposer, Address: address, Permission: uint32(permission)}
+func NewMsgProposalAssignPermission(proposer sdk.AccAddress, description string, address sdk.AccAddress, permission PermValue) *MsgProposalAssignPermission {
+	return &MsgProposalAssignPermission{
+		Proposer:    proposer,
+		Description: description,
+		Address:     address,
+		Permission:  uint32(permission),
+	}
 }
 
 func (m *MsgProposalAssignPermission) Route() string {
@@ -435,8 +440,13 @@ func (m *MsgProposalAssignPermission) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgProposalSetNetworkProperty(proposer sdk.AccAddress, property NetworkProperty, value uint64) *MsgProposalSetNetworkProperty {
-	return &MsgProposalSetNetworkProperty{Proposer: proposer, NetworkProperty: property, Value: value}
+func NewMsgProposalSetNetworkProperty(proposer sdk.AccAddress, description string, property NetworkProperty, value uint64) *MsgProposalSetNetworkProperty {
+	return &MsgProposalSetNetworkProperty{
+		Proposer:        proposer,
+		Description:     description,
+		NetworkProperty: property,
+		Value:           value,
+	}
 }
 
 func (m *MsgProposalSetNetworkProperty) Route() string {
@@ -480,14 +490,15 @@ func (m *MsgProposalSetNetworkProperty) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgProposalUpsertDataRegistry(proposer sdk.AccAddress, key, hash, reference, encoding string, size uint64) *MsgProposalUpsertDataRegistry {
+func NewMsgProposalUpsertDataRegistry(proposer sdk.AccAddress, description string, key, hash, reference, encoding string, size uint64) *MsgProposalUpsertDataRegistry {
 	return &MsgProposalUpsertDataRegistry{
-		Proposer:  proposer,
-		Key:       key,
-		Hash:      hash,
-		Reference: reference,
-		Encoding:  encoding,
-		Size_:     size,
+		Proposer:    proposer,
+		Description: description,
+		Key:         key,
+		Hash:        hash,
+		Reference:   reference,
+		Encoding:    encoding,
+		Size_:       size,
 	}
 }
 
@@ -517,10 +528,11 @@ func (m *MsgProposalUpsertDataRegistry) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgProposalSetPoorNetworkMessages(proposer sdk.AccAddress, messages []string) *MsgProposalSetPoorNetworkMessages {
+func NewMsgProposalSetPoorNetworkMessages(proposer sdk.AccAddress, description string, messages []string) *MsgProposalSetPoorNetworkMessages {
 	return &MsgProposalSetPoorNetworkMessages{
-		Messages: messages,
-		Proposer: proposer,
+		Proposer:    proposer,
+		Description: description,
+		Messages:    messages,
 	}
 }
 
@@ -582,12 +594,14 @@ func (m *MsgVoteProposal) GetSigners() []sdk.AccAddress {
 
 func NewMsgProposalCreateRole(
 	proposer sdk.AccAddress,
+	description string,
 	role Role,
 	whitelistPerms []PermValue,
 	blacklistPerms []PermValue,
 ) *MsgProposalCreateRole {
 	return &MsgProposalCreateRole{
 		Proposer:               proposer,
+		Description:            description,
 		Role:                   uint32(role),
 		WhitelistedPermissions: whitelistPerms,
 		BlacklistedPermissions: blacklistPerms,

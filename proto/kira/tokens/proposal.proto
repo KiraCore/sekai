@@ -7,6 +7,7 @@ import "cosmos_proto/cosmos.proto";
 option go_package = "github.com/KiraCore/sekai/x/tokens/types";
 
 message MsgProposalUpsertTokenAlias {
+  string description = 7;
   string symbol = 1;// Ticker (eg. ATOM, KEX, BTC)
   string name = 2; // Token Name (e.g. Cosmos, Kira, Bitcoin)
   string icon = 3; // Graphical Symbol (url link to graphics)
@@ -30,6 +31,7 @@ message ProposalUpsertTokenAlias {
 }
 
 message MsgProposalUpsertTokenRates {
+  string description = 5;
   string denom = 1; // denomination target
   string rate = 2 [
     (gogoproto.moretags)   = "yaml:\"rate\"",

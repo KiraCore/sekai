@@ -44,7 +44,7 @@ func TestNewNetworkActor_Status(t *testing.T) {
 	require.NoError(t, err)
 
 	actor := customgovtypes.NewDefaultActor(addr)
-	require.Equal(t, customgovtypes.Undefined, actor.Status)
+	require.Equal(t, customgovtypes.Active, actor.Status)
 
 	// Active Actor
 	actor = customgovtypes.NewNetworkActor(
@@ -57,6 +57,9 @@ func TestNewNetworkActor_Status(t *testing.T) {
 	)
 
 	require.True(t, actor.IsActive())
+	actor.Deactivate()
+	require.False(t, actor.IsActive())
+	require.True(t, actor.IsInactive())
 }
 
 func TestNewDefaultActor_CanVote(t *testing.T) {

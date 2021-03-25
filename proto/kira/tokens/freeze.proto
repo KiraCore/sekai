@@ -24,4 +24,5 @@ message MsgProposalTokensWhiteBlackChange {
         (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
         (gogoproto.moretags) = "yaml:\"proposer\""
     ];
+    string description = 5;
 }
