@@ -294,8 +294,10 @@ func TestHandler_CreateProposalUpsertTokenAliases(t *testing.T) {
 			},
 		),
 		ctx.BlockTime(),
-		ctx.BlockTime().Add(time.Minute*time.Duration(properties.ProposalEndTime)),
-		ctx.BlockTime().Add(time.Minute*time.Duration(properties.ProposalEnactmentTime)),
+		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEndTime)),
+		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEndTime)+
+			time.Second*time.Duration(properties.ProposalEnactmentTime),
+		),
 		"some desc",
 	)
 	require.NoError(t, err)
@@ -398,8 +400,10 @@ func TestHandler_CreateProposalUpsertTokenRates(t *testing.T) {
 			false,
 		),
 		ctx.BlockTime(),
-		ctx.BlockTime().Add(time.Minute*time.Duration(properties.ProposalEndTime)),
-		ctx.BlockTime().Add(time.Minute*time.Duration(properties.ProposalEnactmentTime)),
+		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEndTime)),
+		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEndTime)+
+			time.Second*time.Duration(properties.ProposalEnactmentTime),
+		),
 		"some desc",
 	)
 	require.NoError(t, err)

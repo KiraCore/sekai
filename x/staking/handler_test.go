@@ -279,8 +279,10 @@ func TestHandler_ProposalUnjailValidator(t *testing.T) {
 			"theReference",
 		),
 		ctx.BlockTime(),
-		ctx.BlockTime().Add(time.Minute*time.Duration(properties.ProposalEndTime)),
-		ctx.BlockTime().Add(time.Minute*time.Duration(properties.ProposalEnactmentTime)),
+		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEndTime)),
+		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEndTime)+
+			time.Second*time.Duration(properties.ProposalEnactmentTime),
+		),
 		"some desc",
 	)
 	require.NoError(t, err)
