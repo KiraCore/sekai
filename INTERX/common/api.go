@@ -250,6 +250,57 @@ func GetBlockTime(rpcAddr string, height int64) (int64, error) {
 	// save block time
 	database.AddBlockTime(height, blockTime)
 
+	// save block nano time
+	database.AddBlockNanoTime(height, result.Block.Header.Time.UnixNano())
+
+	return blockTime, nil
+}
+
+// GetBlockNanoTime is a function to get block nano time
+func GetBlockNanoTime(rpcAddr string, height int64) (int64, error) {
+	blockTime, err := database.GetBlockNanoTime(height)
+	if err == nil {
+		return blockTime, nil
+	}
+
+	endpoint := fmt.Sprintf("%s/block?height=%d", rpcAddr, height)
+	GetLogger().Info("[rpc-call] Entering rpc call: ", endpoint)
+
+	resp, err := http.Get(endpoint)
+	if err != nil {
+		GetLogger().Error("[rpc-call] Unable to connect to ", endpoint)
+		return 0, fmt.Errorf("block not found: %d", height)
+	}
+	defer resp.Body.Close()
+
+	respBody, _ := ioutil.ReadAll(resp.Body)
+
+	response := new(tmJsonRPCTypes.RPCResponse)
+
+	if err := json.Unmarshal(respBody, response); err != nil {
+		GetLogger().Error("[rpc-call] Unable to decode response: ", err)
+		return 0, err
+	}
+
+	if response.Error != nil {
+		GetLogger().Error("[rpc-call] Block not found: ", height)
+		return 0, fmt.Errorf("block not found: %d", height)
+	}
+
+	result := new(tmTypes.ResultBlock)
+	if err := tmjson.Unmarshal(response.Result, result); err != nil {
+		GetLogger().Error("[rpc-call] Unable to decode response: ", err)
+		return 0, err
+	}
+
+	blockTime = result.Block.Header.Time.UnixNano()
+
+	// save block time
+	database.AddBlockTime(height, result.Block.Header.Time.Unix())
+
+	// save block nano time
+	database.AddBlockNanoTime(height, blockTime)
+
 	return blockTime, nil
 }
 

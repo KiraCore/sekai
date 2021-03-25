@@ -33,6 +33,8 @@ enum VoteResult {
   VOTE_RESULT_REJECTED = 2 [(gogoproto.enumvalue_customname) = "Rejected"];
   VOTE_RESULT_REJECTED_WITH_VETO = 3 [(gogoproto.enumvalue_customname) = "RejectedWithVeto"];
   VOTE_PENDING = 4 [(gogoproto.enumvalue_customname) = "Pending"];
+  VOTE_RESULT_QUORUM_NOT_REACHED = 5 [(gogoproto.enumvalue_customname) = "QuorumNotReached"];
+  VOTE_RESULT_ENACTMENT = 6 [(gogoproto.enumvalue_customname) = "Enactment"];
 }
 
 message Vote {

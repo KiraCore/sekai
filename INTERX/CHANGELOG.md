@@ -1,5 +1,12 @@
 # Changelog
 
+## [v0.1.18.3] - 03.25.2021
+
+- add consensus api
+- fix proposal query
+- fix votes/voters query
+- update protos to latest release
+
 ## [v0.1.x.x] - xx.xx.xxxx
 
 ### Updated
