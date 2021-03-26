@@ -128,6 +128,7 @@ func (q Querier) Proposals(ctx context.Context, request *types.QueryProposalsReq
 	if err != nil {
 		return nil, sdkerrors.Wrap(types.ErrGettingProposals, fmt.Sprintf("error getting proposals: %s", err.Error()))
 	}
+	fmt.Println(proposals)
 	return &types.QueryProposalsResponse{Proposals: proposals}, nil
 }
 

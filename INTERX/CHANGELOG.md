@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.1.18.6] - 03.25.2021
+
+- fix proposals query to have description field.
+
 ## [v0.1.18.3] - 03.25.2021
 
 - add consensus api
