@@ -112,6 +112,7 @@ func TestQuerier_Proposal(t *testing.T) {
 		time.Now(),
 		time.Now().Add(10*time.Second),
 		time.Now().Add(20*time.Second),
+		"some desc",
 	)
 	require.NoError(t, err)
 
@@ -132,6 +133,7 @@ func TestQuerier_Proposal(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, proposalID, resp.Proposal.ProposalId)
 	require.Len(t, resp.Votes, 1)
+	require.Equal(t, proposal.Description, resp.Proposal.Description)
 }
 
 func TestQuerier_CouncilorByAddress(t *testing.T) {

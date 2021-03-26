@@ -18,6 +18,7 @@ func TestNewProposal_ProposalIsPendingByDefault(t *testing.T) {
 		time.Now(),
 		time.Now(),
 		time.Now(),
+		"some description",
 	)
 
 	require.NoError(t, err)

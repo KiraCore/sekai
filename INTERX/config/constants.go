@@ -30,6 +30,7 @@ const (
 	QueryBlockTransactions   = "/api/blocks/{height}/transactions"
 	QueryTransactionResult   = "/api/transactions/{txHash}"
 	QueryStatus              = "/api/status"
+	QueryConsensus           = "/api/consensus"
 	QueryValidators          = "/api/valopers"
 	QueryValidatorInfos      = "/api/valoperinfos"
 	QueryGenesis             = "/api/genesis"

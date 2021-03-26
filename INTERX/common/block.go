@@ -7,8 +7,8 @@ import (
 )
 
 type BlockHeightTime struct {
-	Height    int64 `json:"height"`
-	BlockTime int64 `json:"timestamp"`
+	Height    int64   `json:"height"`
+	BlockTime float64 `json:"timestamp"`
 }
 
 var (
@@ -17,45 +17,40 @@ var (
 )
 
 func GetAverageBlockTime() float64 {
-	var total int64 = 0
+	var total float64 = 0
 	for _, block := range LatestNBlockTimes {
 		total += block.BlockTime
 	}
 
 	GetLogger().Infof("[GetAverageBlockTime] %v", LatestNBlockTimes)
 
-	return float64(total) / float64(len(LatestNBlockTimes))
+	return total / float64(len(LatestNBlockTimes))
 }
 
-func AddNewBlock(height int64) {
-	timestamp, err := GetBlockTime(config.Config.RPC, height)
-	if err != nil {
-		GetLogger().Errorf("[AddNewBlock] Can't get block: %d", height)
-		return
-	}
-
+func AddNewBlock(height int64, timestamp int64) {
 	if len(LatestNBlockTimes) > 0 && LatestNBlockTimes[len(LatestNBlockTimes)-1].Height >= height {
 		// not a new block
 		GetLogger().Errorf("[AddNewBlock] not a new block: %d", height)
 		return
 	}
-
-	prevBlockTimestamp, err := GetBlockTime(config.Config.RPC, height-1)
+	prevBlockTimestamp, err := GetBlockNanoTime(config.Config.RPC, height-1)
 	if err != nil {
 		GetLogger().Errorf("[AddNewBlock] Can't get block: %d", height-1)
 		return
 	}
 
-	if len(LatestNBlockTimes) > 0 && float64(timestamp-prevBlockTimestamp) >= GetAverageBlockTime()*3 {
+	var timespan float64 = (float64(timestamp) - float64(prevBlockTimestamp)) / 1e9
+
+	if len(LatestNBlockTimes) > 0 && timespan >= GetAverageBlockTime()*3 {
 		// a block just after a halt
-		GetLogger().Errorf("[AddNewBlock] block just after a halt: %d", height)
+		GetLogger().Errorf("[AddNewBlock] block just after a halt: %d, timestamp: %f, average: %f", height, timespan, GetAverageBlockTime())
 		return
 	}
 
 	// insert new block
 	LatestNBlockTimes = append(LatestNBlockTimes, BlockHeightTime{
 		Height:    height,
-		BlockTime: timestamp - prevBlockTimestamp,
+		BlockTime: timespan,
 	})
 
 	if len(LatestNBlockTimes) > N {
@@ -70,31 +65,38 @@ func UpdateN(_N int) {
 		return
 	}
 
-	for N < _N {
-		var current = NodeStatus.Block - 1
-		if len(LatestNBlockTimes) > 0 {
-			current = LatestNBlockTimes[0].Height - 1
-		}
+	var current = NodeStatus.Block - 1
+	if len(LatestNBlockTimes) > 0 {
+		current = LatestNBlockTimes[0].Height - 1
+	}
 
-		currentBlockTimestamp, err := GetBlockTime(config.Config.RPC, current)
+	for N < _N {
+
+		currentBlockTimestamp, err := GetBlockNanoTime(config.Config.RPC, current)
 		if err != nil {
 			GetLogger().Errorf("[UpdateN] Can't get block: %d", current)
 			return
 		}
 
-		prevBlockTimestamp, err := GetBlockTime(config.Config.RPC, current-1)
+		prevBlockTimestamp, err := GetBlockNanoTime(config.Config.RPC, current-1)
 		if err != nil {
 			GetLogger().Errorf("[UpdateN] Can't get block: %d", current-1)
 			return
 		}
 
 		// insert new block
-		LatestNBlockTimes = append(LatestNBlockTimes, BlockHeightTime{
-			Height:    current,
-			BlockTime: currentBlockTimestamp - prevBlockTimestamp,
-		})
+		LatestNBlockTimes = append(
+			[]BlockHeightTime{
+				{
+					Height:    current,
+					BlockTime: (float64(currentBlockTimestamp) - float64(prevBlockTimestamp)) / 1e9,
+				},
+			},
+			LatestNBlockTimes...,
+		)
 
 		N++
+		current = current - 1
 	}
 }
 
@@ -116,5 +118,7 @@ func IsConsensusStopped(validatorCount int) bool {
 	blockHeight = NodeStatus.Block
 	blockTime, _ := time.Parse(time.RFC3339, NodeStatus.Blocktime)
 
-	return float64(time.Now().Unix()-blockTime.Unix()) >= GetAverageBlockTime()*3
+	_, err := GetBlockNanoTime(config.Config.RPC, blockHeight+1)
+
+	return err == nil && float64(time.Now().Unix()-blockTime.Unix()) >= GetAverageBlockTime()*3
 }

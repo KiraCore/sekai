@@ -1,4 +1,16 @@
 # Changelog
+
+## [v0.1.18.5] - 25.03.2021
+### Fixed
+- Some proposals were created in minutes instead of seconds pattern.
+
+## [v0.1.18.4] - 25.03.2021
+### Added
+- Add a field in all proposals to be able to set some description.
+### Fixed
+- The actor when it receives a permission becomes active.
+- Fixed problem when voting unjail validator proposal.
+
 ## [v0.1.18.2] - 25.03.2021
 ### Changed
 - Permission numbers to an organized way
@@ -15,7 +27,6 @@
 - Added CLI command to query current blacklist and whitelist
 - Network Properties management code modification for boolean properties
 
-### Fixed
 ## [v0.1.17.6] - 18.03.2021
 ### Added
 - Now when the proposal passes it enter ins status Enactment.

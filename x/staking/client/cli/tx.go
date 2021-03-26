@@ -20,11 +20,12 @@ import (
 )
 
 const (
-	FlagWebsite   = "website"
-	FlagSocial    = "social"
-	FlagIdentity  = "identity"
-	FlagComission = "commission"
-	FlagValKey    = "validator-key"
+	FlagWebsite     = "website"
+	FlagSocial      = "social"
+	FlagIdentity    = "identity"
+	FlagComission   = "commission"
+	FlagValKey      = "validator-key"
+	FlagDescription = "description"
 )
 
 func GetTxClaimValidatorCmd() *cobra.Command {
@@ -95,8 +96,14 @@ func GetTxProposalUnjailValidatorCmd() *cobra.Command {
 			hash := args[0]
 			reference := args[1]
 
+			description, err := cmd.Flags().GetString(FlagDescription)
+			if err != nil {
+				return fmt.Errorf("invalid description: %w", err)
+			}
+
 			msg := customstakingtypes.NewMsgProposalUnjailValidator(
 				clientCtx.FromAddress,
+				description,
 				hash,
 				reference,
 			)
@@ -104,6 +111,9 @@ func GetTxProposalUnjailValidatorCmd() *cobra.Command {
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
+
+	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
+	cmd.MarkFlagRequired(FlagDescription)
 
 	flags.AddTxFlagsToCmd(cmd)
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)

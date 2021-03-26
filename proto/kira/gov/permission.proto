@@ -86,6 +86,6 @@ enum PermValue {
   PERMISSION_CREATE_TOKENS_WHITE_BLACK_CHANGE_PROPOSAL = 24 [(gogoproto.enumvalue_customname) = "PermCreateTokensWhiteBlackChangeProposal"];
 
   // PERMISSION_VOTE_TOKENS_WHITE_BLACK_CHANGE_PROPOSAL defines the permission needed to vote on blacklist/whitelisted tokens proposal
-  PERMISSION_VOTE_TOKENS_WHITE_BLACK_CHANGE_PROPOSAL = 25 [(gogoproto.enumvalue_customname) = "PermVoteTokensWhiteBlackChangeProposal"];  
+  PERMISSION_VOTE_TOKENS_WHITE_BLACK_CHANGE_PROPOSAL = 25 [(gogoproto.enumvalue_customname) = "PermVoteTokensWhiteBlackChangeProposal"];
 }
 

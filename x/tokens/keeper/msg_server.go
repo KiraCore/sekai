@@ -36,11 +36,13 @@ func (k msgServer) ProposalUpsertTokenRates(goCtx context.Context, msg *types.Ms
 		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermCreateUpsertTokenRateProposal.String())
 	}
 
-	proposalID, err := k.CreateAndSaveProposalWithContent(ctx, types.NewProposalUpsertTokenRates(
-		msg.Denom,
-		msg.Rate,
-		msg.FeePayments,
-	))
+	proposalID, err := k.CreateAndSaveProposalWithContent(ctx,
+		msg.Description,
+		types.NewProposalUpsertTokenRates(
+			msg.Denom,
+			msg.Rate,
+			msg.FeePayments,
+		))
 	return &types.MsgProposalUpsertTokenRatesResponse{
 		ProposalID: proposalID,
 	}, err
@@ -54,13 +56,16 @@ func (k msgServer) ProposalUpsertTokenAlias(goCtx context.Context, msg *types.Ms
 		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermCreateUpsertTokenAliasProposal.String())
 	}
 
-	proposalID, err := k.CreateAndSaveProposalWithContent(ctx, types.NewProposalUpsertTokenAlias(
-		msg.Symbol,
-		msg.Name,
-		msg.Icon,
-		msg.Decimals,
-		msg.Denoms,
-	))
+	proposalID, err := k.CreateAndSaveProposalWithContent(
+		ctx,
+		msg.Description,
+		types.NewProposalUpsertTokenAlias(
+			msg.Symbol,
+			msg.Name,
+			msg.Icon,
+			msg.Decimals,
+			msg.Denoms,
+		))
 	return &types.MsgProposalUpsertTokenAliasResponse{
 		ProposalID: proposalID,
 	}, err
@@ -74,11 +79,14 @@ func (k msgServer) ProposalTokensWhiteBlackChange(goCtx context.Context, msg *ty
 		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermCreateTokensWhiteBlackChangeProposal.String())
 	}
 
-	proposalID, err := k.CreateAndSaveProposalWithContent(ctx, types.NewProposalTokensWhiteBlackChange(
-		msg.IsBlacklist,
-		msg.IsAdd,
-		msg.Tokens,
-	))
+	proposalID, err := k.CreateAndSaveProposalWithContent(
+		ctx,
+		msg.Description,
+		types.NewProposalTokensWhiteBlackChange(
+			msg.IsBlacklist,
+			msg.IsAdd,
+			msg.Tokens,
+		))
 	return &types.MsgProposalTokensWhiteBlackChangeResponse{
 		ProposalID: proposalID,
 	}, err
@@ -130,7 +138,7 @@ func (k msgServer) UpsertTokenRate(goCtx context.Context, msg *types.MsgUpsertTo
 	return &types.MsgUpsertTokenRateResponse{}, nil
 }
 
-func (k msgServer) CreateAndSaveProposalWithContent(ctx sdk.Context, content customgovtypes.Content) (uint64, error) {
+func (k msgServer) CreateAndSaveProposalWithContent(ctx sdk.Context, description string, content customgovtypes.Content) (uint64, error) {
 	blockTime := ctx.BlockTime()
 	proposalID, err := k.cgk.GetNextProposalID(ctx)
 	if err != nil {
@@ -143,8 +151,11 @@ func (k msgServer) CreateAndSaveProposalWithContent(ctx sdk.Context, content cus
 		proposalID,
 		content,
 		blockTime,
-		blockTime.Add(time.Minute*time.Duration(properties.ProposalEndTime)),
-		blockTime.Add(time.Minute*time.Duration(properties.ProposalEnactmentTime)),
+		blockTime.Add(time.Second*time.Duration(properties.ProposalEndTime)),
+		blockTime.Add(time.Second*time.Duration(properties.ProposalEndTime)+
+			time.Second*time.Duration(properties.ProposalEnactmentTime),
+		),
+		description,
 	)
 
 	k.cgk.SaveProposal(ctx, proposal)
