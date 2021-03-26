@@ -3,6 +3,7 @@
 ## [v0.1.18.7] - 26.03.2021
 ### Added
 - Shell script to setup environment variables especially for permissions
+- README for upsert token alias, upsert token rates by governance
 
 ## [v0.1.18.5] - 25.03.2021
 ### Fixed
