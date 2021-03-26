@@ -108,15 +108,15 @@ message Proposal {
   google.protobuf.Timestamp submit_time = 3
   [(gogoproto.stdtime) = true, (gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"submit_time\""];
 
-  google.protobuf.Timestamp voting_end_time = 5
+  google.protobuf.Timestamp voting_end_time = 4
   [(gogoproto.stdtime) = true, (gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"voting_end_time\""];
 
-  google.protobuf.Timestamp enactment_end_time = 6
-  [(gogoproto.stdtime) = true, (gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"voting_end_time\""];
+  google.protobuf.Timestamp enactment_end_time = 5
+  [(gogoproto.stdtime) = true, (gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"enactment_end_time\""];
 
-  VoteResult result = 8;
+  VoteResult result = 6;
 
-  string description = 9;
+  string description = 7;
 }
 
 message AssignPermissionProposal {
