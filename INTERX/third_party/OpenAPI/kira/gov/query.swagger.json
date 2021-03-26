@@ -381,10 +381,6 @@
           "type": "string",
           "format": "date-time"
         },
-        "votingStartTime": {
-          "type": "string",
-          "format": "date-time"
-        },
         "votingEndTime": {
           "type": "string",
           "format": "date-time"
@@ -395,6 +391,9 @@
         },
         "result": {
           "$ref": "#/definitions/govVoteResult"
+        },
+        "description": {
+          "type": "string"
         }
       }
     },
