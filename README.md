@@ -1,83 +1,10 @@
 # sekai
 Kira Hub
 
-## Set permission environment variables
+## Set environment variables
 
 ```sh
-# permissions
-export PermZero=0
-export PermSetPermissions=1
-export PermClaimValidator=2
-export PermClaimCouncilor=3
-export PermCreateSetPermissionsProposal=4
-export PermVoteSetPermissionProposal=5
-export PermUpsertTokenAlias=6
-export PermChangeTxFee=7
-export PermUpsertTokenRate=8
-export PermUpsertRole=9
-export PermCreateUpsertDataRegistryProposal=10
-export PermVoteUpsertDataRegistryProposal=11
-export PermCreateSetNetworkPropertyProposal=12
-export PermVoteSetNetworkPropertyProposal=13
-export PermCreateUpsertTokenAliasProposal=14
-export PermVoteUpsertTokenAliasProposal=15
-export PermCreateSetPoorNetworkMessagesProposal=16
-export PermVoteSetPoorNetworkMessagesProposal=17
-export PermCreateUpsertTokenRateProposal=18
-export PermVoteUpsertTokenRateProposal=19
-export PermCreateUnjailValidatorProposal=20
-export PermVoteUnjailValidatorProposal=21
-export PermCreateRoleProposal=22
-export PermVoteCreateRoleProposal=23
-export PermCreateTokensWhiteBlackChangeProposal=24
-export PermVoteTokensWhiteBlackChangeProposal=25
-
-# transaction_type
-export TypeMsgSend      = "send"
-export TypeMsgMultiSend = "multisend"
-export MsgTypeProposalSetNetworkProperty = "proposal-set-network-property"
-export MsgTypeProposalAssignPermission   = "proposal-assign-permission"
-export MsgTypeProposalUpsertDataRegistry = "proposal-upsert-data-registry"
-export MsgTypeProposalUpsertTokenAlias   = "proposal-upsert-token-alias"
-export MsgTypeVoteProposal               = "vote-proposal"
-export MsgTypeWhitelistPermissions = "whitelist-permissions"
-export MsgTypeBlacklistPermissions = "blacklist-permissions"
-export MsgTypeClaimCouncilor       = "claim-councilor"
-export MsgTypeSetNetworkProperties = "set-network-properties"
-export MsgTypeSetExecutionFee      = "set-execution-fee"
-export MsgTypeCreateRole = "create-role"
-export MsgTypeAssignRole = "assign-role"
-export MsgTypeRemoveRole = "remove-role"
-export MsgTypeWhitelistRolePermission       = "whitelist-role-permission"
-export MsgTypeBlacklistRolePermission       = "blacklist-role-permission"
-export MsgTypeRemoveWhitelistRolePermission = "remove-whitelist-role-permission"
-export MsgTypeRemoveBlacklistRolePermission = "remove-blacklist-role-permission"
-export MsgTypeClaimValidator = "claim-validator"
-export MsgTypeUpsertTokenAlias = "upsert-token-alias"
-export MsgTypeUpsertTokenRate  = "upsert-token-rate"
-
-export FuncIDMsgSend   = 1
-export FuncIDMultiSend = 2
-export FuncIDMsgProposalSetNetworkProperty = 3
-export FuncIDMsgProposalAssignPermission   = 4
-export FuncIDMsgProposalUpsertDataRegistry = 5
-export FuncIDMsgVoteProposal               = 6
-export FuncIDMsgWhitelistPermissions = 7
-export FuncIDMsgBlacklistPermissions = 8
-export FuncIDMsgClaimCouncilor       = 9
-export FuncIDMsgSetNetworkProperties = 10
-export FuncIDMsgSetExecutionFee      = 11
-export FuncIDMsgCreateRole = 12
-export FuncIDMsgAssignRole = 13
-export FuncIDMsgRemoveRole = 14
-export FuncIDMsgWhitelistRolePermission       = 15
-export FuncIDMsgBlacklistRolePermission       = 16
-export FuncIDMsgRemoveWhitelistRolePermission = 17
-export FuncIDMsgRemoveBlacklistRolePermission = 18
-export FuncIDMsgClaimValidator = 19
-export FuncIDMsgUpsertTokenAlias = 20
-export FuncIDMsgUpsertTokenRate  = 21
-export FuncIDMsgProposalUpsertTokenAlias = 22
+sh env.sh
 ```
 
 ### Set permission via governance process
@@ -220,7 +147,16 @@ fee:
 sekaid tx customgov permission whitelist-permission --from validator --keyring-backend=test --permission=$PermUpsertTokenAlias --addr=$(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --chain-id=testing --fees=100ukex --home=$HOME/.sekaid --yes
 # run upsert alias
 sekaid tx tokens upsert-alias --from validator --keyring-backend=test --expiration=0 --enactment=0 --allowed_vote_types=0,1 --symbol="ETH" --name="Ethereum" --icon="myiconurl" --decimals=6 --denoms="finney" --chain-id=testing --fees=100ukex --home=$HOME/.sekaid  --yes
+
+# upsert alias by governance
+## proposal
+sekaid tx tokens proposal-upsert-alias --from=validator --keyring-backend=test --symbol="ETH" --name="Ethereum" --icon="myiconurl" --decimals=6 --denoms="finney" --chain-id=testing --fees=100ukex --home=$HOME/.sekaid  --yes
+## query
+sekaid query proposals
+## vote
+sekaid tx customgov proposal vote 1 1 --from validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes 
 ```
+
 # Query token alias
 ```sh
 # command
@@ -287,7 +223,15 @@ data:
 # set PermUpsertTokenRate permission to validator address
 sekaid tx customgov permission whitelist-permission --from validator --keyring-backend=test --permission=$PermUpsertTokenRate --addr=$(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --chain-id=testing --fees=100ukex --home=$HOME/.sekaid --yes
 # run upsert rate
-sekaid tx tokens upsert-rate --from validator --keyring-backend=test --denom="mykex" --rate="1.5" --fee_payments=true --chain-id=testing --fees=100ukex --home=$HOME/.sekaid  --yes
+sekaid tx tokens upsert-rate --from=validator --keyring-backend=test --denom="mykex" --rate="1.5" --fee_payments=true --chain-id=testing --fees=100ukex --home=$HOME/.sekaid  --yes
+# upsert rate by governance
+## proposal
+sekaid tx tokens proposal-upsert-rate --from=validator --keyring-backend=test --denom="mykex" --rate="1.5" --fee_payments=true --chain-id=testing --fees=100ukex --home=$HOME/.sekaid  --yes
+## query
+sekaid query proposals
+## vote
+sekaid tx customgov proposal vote 1 1 --from validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes 
+
 ```
 # Query token rate
 ```sh
