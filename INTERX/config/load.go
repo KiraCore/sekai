@@ -44,22 +44,7 @@ func mnemonicFromFile(filename string) string {
 }
 
 func TrimMnemonic(mnemonic string) string {
-	if strings.HasSuffix(mnemonic, " ") {
-		return TrimMnemonic(strings.TrimSuffix(mnemonic, " "))
-	}
-	if strings.HasSuffix(mnemonic, "\n") {
-		return TrimMnemonic(strings.TrimSuffix(mnemonic, "\n"))
-	}
-	if strings.HasSuffix(mnemonic, "\t") {
-		return TrimMnemonic(strings.TrimSuffix(mnemonic, "\t"))
-	}
-	if strings.HasSuffix(mnemonic, "\r") {
-		return TrimMnemonic(strings.TrimSuffix(mnemonic, "\r"))
-	}
-	if strings.HasSuffix(mnemonic, "\\c") {
-		return TrimMnemonic(strings.TrimSuffix(mnemonic, "\\c"))
-	}
-	return mnemonic
+	return strings.Join(strings.Fields(mnemonic), " ")
 }
 
 // LoadMnemonic is a function to extract mnemonic
