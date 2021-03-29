@@ -6,6 +6,7 @@
 - fix validators query (calculate consensus_stopped after sync finished).
 - update consensus query responses.
 - fix configuration init for mnemonics.
+- fix privkey generation.
 
 ## [v0.1.18.6] - 03.25.2021
 
