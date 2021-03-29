@@ -3,6 +3,9 @@ package config
 import (
 	"encoding/json"
 	"io/ioutil"
+	"strings"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func getGetMethods() []string {
@@ -114,6 +117,9 @@ func InitConfig(
 	maxDownloadSize string,
 	faucetMnemonic string,
 	faucetTimeLimit int64,
+	faucetAmounts string,
+	faucetMinimumAmounts string,
+	feeAmounts string,
 ) {
 	configFromFile := defaultConfig()
 
@@ -129,8 +135,31 @@ func InitConfig(
 	configFromFile.Cache.CachingDuration = cachingDuration
 	configFromFile.Cache.DownloadFileSizeLimitation = maxDownloadSize
 
-	configFromFile.Faucet.MnemonicFile = LoadMnemonic(signingMnemonic)
+	configFromFile.Faucet.MnemonicFile = LoadMnemonic(faucetMnemonic)
 	configFromFile.Faucet.TimeLimit = faucetTimeLimit
+
+	configFromFile.Faucet.FaucetAmounts = make(map[string]int64)
+	for _, amount := range strings.Split(faucetAmounts, ",") {
+		coin, err := sdk.ParseCoinNormalized(amount)
+		if err == nil {
+			configFromFile.Faucet.FaucetAmounts[coin.Denom] = coin.Amount.Int64()
+		}
+	}
+
+	configFromFile.Faucet.FaucetMinimumAmounts = make(map[string]int64)
+	for _, amount := range strings.Split(faucetMinimumAmounts, ",") {
+		coin, err := sdk.ParseCoinNormalized(amount)
+		if err == nil {
+			configFromFile.Faucet.FaucetMinimumAmounts[coin.Denom] = coin.Amount.Int64()
+		}
+	}
+
+	configFromFile.Faucet.FeeAmounts = make(map[string]string)
+	for _, denom_amount := range strings.Split(feeAmounts, ",") {
+		denom := strings.Split(denom_amount, " ")[0]
+		amount := strings.Split(denom_amount, " ")[1]
+		configFromFile.Faucet.FeeAmounts[denom] = amount
+	}
 
 	bytes, err := json.MarshalIndent(&configFromFile, "", "  ")
 	if err != nil {

@@ -3,7 +3,7 @@
   "grpc": "dns:///0.0.0.0:9090",
   "rpc": "http://0.0.0.0:26657",
   "port": "11000",
-  "mnemonic": "knock abstract dutch office there movie two tail sail cable rebuild velvet acoustic remove royal marriage kiss bar blur sting subway very wait scatter",
+  "mnemonic": "title walk future ecology capital defy post pride dry want hollow strategy wing illness cancel access scheme merit expose combine radar pigeon cross jungle",
   "cache": {
     "status_sync": 5,
     "cache_dir": "cache",
@@ -12,23 +12,23 @@
     "download_file_size_limitation": "10MB"
   },
   "faucet": {
-    "mnemonic": "knock abstract dutch office there movie two tail sail cable rebuild velvet acoustic remove royal marriage kiss bar blur sting subway very wait scatter",
+    "mnemonic": "title walk future ecology capital defy post pride dry want hollow strategy wing illness cancel access scheme merit expose combine radar pigeon cross jungle",
     "faucet_amounts": {
-      "stake": 100000,
-      "ukex": 100000,
-      "validatortoken": 100000
+      "samolean": 300000000000000000,
+      "test": 20000000,
+      "ukex": 100000
     },
     "faucet_minimum_amounts": {
-      "stake": 100,
-      "ukex": 100,
-      "validatortoken": 100
+      "samolean": 250000000000000,
+      "test": 50000,
+      "ukex": 1000
     },
     "fee_amounts": {
-      "stake": "1000ukex",
-      "ukex": "1000ukex",
-      "validatortoken": "1000ukex"
+      "samolean": "250ukex",
+      "test": "500ukex",
+      "ukex": "1000ukex"
     },
-    "time_limit": 20
+    "time_limit": 30
   },
   "rpc_methods": {
     "API": {
@@ -48,6 +48,13 @@
           "caching_duration": 30
         },
         "/api/blocks/{height}/transactions": {
+          "disable": false,
+          "rate_limit": 0,
+          "auth_rate_limit": 0,
+          "caching_disable": false,
+          "caching_duration": 30
+        },
+        "/api/consensus": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
@@ -181,6 +188,13 @@
           "caching_duration": 30
         },
         "/api/withdraws": {
+          "disable": false,
+          "rate_limit": 0,
+          "auth_rate_limit": 0,
+          "caching_disable": false,
+          "caching_duration": 30
+        },
+        "/rosetta/account/balance": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,

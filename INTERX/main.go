@@ -57,6 +57,10 @@ func main() {
 	initFaucetMnemonicPtr := initCommand.String("faucet_mnemonic", faucetMnemonic, "The interx faucet mnemonic file path or seeds.")
 	initFaucetTimeLimit := initCommand.Int64("faucet_time_limit", 20, "The claim time limitation in seconds.")
 
+	initFaucetAmounts := initCommand.String("faucet_amounts", "100000stake,100000ukex,100000validatortoken", "The faucet amount for each asset.")
+	initFaucetMinimumAmounts := initCommand.String("faucet_minimum_amounts", "1000stake,1000ukex,1000validatortoken", "The minimum faucet amount for each asset.")
+	feeAmounts := initCommand.String("fee_amounts", "stake 1000ukex,ukex 1000ukex,validatortoken 1000ukex", "The fee amount for each denom. `stake 1000ukex` means it will use `1000ukex` for `stake` assets transfer.")
+
 	startConfigPtr := startCommand.String("config", "./config.json", "The interx configurtion path. (Required)")
 
 	flag.Usage = printUsage
@@ -92,6 +96,9 @@ func main() {
 					*initMaxDownloadSize,
 					*initFaucetMnemonicPtr,
 					*initFaucetTimeLimit,
+					*initFaucetAmounts,
+					*initFaucetMinimumAmounts,
+					*feeAmounts,
 				)
 
 				fmt.Printf("Created interx configuration file: %s\n", *initConfigFilePtr)

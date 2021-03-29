@@ -320,17 +320,44 @@ func queryConsensusHandle(r *http.Request, gwCosmosmux *runtime.ServeMux, rpcAdd
 
 		byteData, err := json.Marshal(success)
 		if err != nil {
-			common.GetLogger().Error("[query-validators] Invalid response format: ", err)
+			common.GetLogger().Error("[query-consensus] Invalid response format: ", err)
 			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
 		}
 
 		err = json.Unmarshal(byteData, &result)
 		if err != nil {
-			common.GetLogger().Error("[query-validators] Invalid response format: ", err)
+			common.GetLogger().Error("[query-consensus] Invalid response format: ", err)
 			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
 		}
 
 		AllValidators = result.Validators
+	} else {
+		return success, failure, statusCode
+	}
+
+	var catching_up bool
+	success, failure, statusCode = common.MakeGetRequest(rpcAddr, "/status", "")
+	if success != nil {
+		type TempResponse struct {
+			SyncInfo struct {
+				CatchingUp bool `json:"catching_up"`
+			} `json:"sync_info"`
+		}
+		result := TempResponse{}
+
+		byteData, err := json.Marshal(success)
+		if err != nil {
+			common.GetLogger().Error("[query-consensus] Invalid response format", err)
+			return common.RosettaServeError(0, "", err.Error(), http.StatusInternalServerError)
+		}
+
+		err = json.Unmarshal(byteData, &result)
+		if err != nil {
+			common.GetLogger().Error("[query-consensus] Invalid response format", err)
+			return common.RosettaServeError(0, "", err.Error(), http.StatusInternalServerError)
+		}
+
+		catching_up = result.SyncInfo.CatchingUp
 	} else {
 		return success, failure, statusCode
 	}
@@ -352,32 +379,6 @@ func queryConsensusHandle(r *http.Request, gwCosmosmux *runtime.ServeMux, rpcAdd
 			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
 		}
 
-		type Vote struct {
-			Round              int64             `json:"round"`
-			Prevotes           map[string]string `json:"prevotes"`
-			PrevotesBitArray   string            `json:"prevotes_bit_array"`
-			Precommits         map[string]string `json:"precommits"`
-			PrecommitsBitArray string            `json:"precommits_bit_array"`
-		}
-
-		type Validator struct {
-			Address  string `json:"address"`
-			Valkey   string `json:"valkey"`
-			Pubkey   string `json:"pubkey"`
-			Proposer string `json:"proposer"`
-		}
-
-		response := struct {
-			RawData          tmRPCTypes.ResultDumpConsensusState `json:"raw_data,omitempty"`
-			ConsensusStopped bool                                `json:"consensus_stopped"`
-			AverageBlockTime float64                             `json:"average_block_time"`
-			Validators       []Validator                         `json:"validators"`
-			Proposer         Validator                           `json:"proposer"`
-			Votes            []Vote                              `json:"votes"`
-		}{}
-
-		response.RawData = consensus
-
 		roundState := kira.RoundState{}
 
 		err = json.Unmarshal(consensus.RoundState, &roundState)
@@ -386,56 +387,68 @@ func queryConsensusHandle(r *http.Request, gwCosmosmux *runtime.ServeMux, rpcAdd
 			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
 		}
 
+		response := kira.ConsensusResponse{}
+		response.Height = roundState.Height
+		response.Round = roundState.Round
+		response.Step = roundState.Step.String()
+		response.StartTime = roundState.StartTime
+		response.CommitTime = roundState.CommitTime
+		response.TriggeredTimeoutPrecommit = roundState.TriggeredTimeoutPrecommit
 		response.ConsensusStopped = common.IsConsensusStopped(len(roundState.Validators.Validators))
-		response.AverageBlockTime = common.GetAverageBlockTime()
-		response.Validators = make([]Validator, 0)
-		for i := range roundState.Validators.Validators {
-			for _, validator := range AllValidators {
-				if validator.Proposer == roundState.Validators.Validators[i].Address {
-					response.Validators = append(response.Validators, Validator{
-						Address:  validator.Address,
-						Pubkey:   validator.Pubkey,
-						Valkey:   validator.Valkey,
-						Proposer: validator.Proposer,
-					})
-					break
-				}
-			}
+
+		if !catching_up {
+			response.ConsensusStopped = false
 		}
+
+		response.AverageBlockTime = common.GetAverageBlockTime()
+
+		// response.Proposer
 		for _, validator := range AllValidators {
 			if validator.Proposer == roundState.Validators.Proposer.Address {
-				response.Proposer = Validator{
-					Address:  validator.Address,
-					Pubkey:   validator.Pubkey,
-					Valkey:   validator.Valkey,
-					Proposer: validator.Proposer,
-				}
+				response.Proposer = validator.Address
 				break
 			}
 		}
 
-		response.Votes = make([]Vote, 0)
-
-		for _, vote := range roundState.Votes {
-			newVote := Vote{}
-
-			newVote.Round = vote.Round
-			newVote.PrevotesBitArray = vote.PrevotesBitArray
-			newVote.PrecommitsBitArray = vote.PrecommitsBitArray
-
-			newVote.Prevotes = make(map[string]string)
-			newVote.Precommits = make(map[string]string)
-
-			for i := range vote.Prevotes {
-				newVote.Prevotes[response.Validators[i].Address] = vote.Prevotes[i]
+		validators := make([]string, 0)
+		for i := range roundState.Validators.Validators {
+			for _, validator := range AllValidators {
+				if validator.Proposer == roundState.Validators.Validators[i].Address {
+					validators = append(validators, validator.Address)
+					break
+				}
 			}
-			for i := range vote.Precommits {
-				newVote.Precommits[response.Validators[i].Address] = vote.Precommits[i]
-			}
-
-			response.Votes = append(response.Votes, newVote)
 		}
 
+		response.Precommits = make([]string, 0)
+		response.Prevotes = make([]string, 0)
+		response.Noncommits = make([]string, 0)
+
+		flag := make([]bool, len(validators))
+		for i, vote := range roundState.Votes {
+			for j := range vote.Precommits {
+				if vote.Precommits[j] != "nil-Vote" {
+					flag[j] = true
+					if j == len(roundState.Votes)-1 {
+						response.Precommits = append(response.Precommits, validators[j])
+					}
+				}
+			}
+			if i == len(roundState.Votes)-1 {
+				for j := range vote.Prevotes {
+					if vote.Prevotes[j] != "nil-Vote" {
+						response.Prevotes = append(response.Prevotes, validators[j])
+					}
+				}
+			}
+		}
+
+		for i := range flag {
+			if flag[i] != true {
+				response.Noncommits = append(response.Noncommits, validators[i])
+			}
+		}
+		fmt.Println(response)
 		return response, failure, statusCode
 	}
 
