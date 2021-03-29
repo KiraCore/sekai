@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"strings"
 
 	sekaiapp "github.com/KiraCore/sekai/app"
 	"github.com/cosmos/cosmos-sdk/crypto/hd"
@@ -42,13 +43,32 @@ func mnemonicFromFile(filename string) string {
 	return string(mnemonic)
 }
 
+func TrimMnemonic(mnemonic string) string {
+	if strings.HasSuffix(mnemonic, " ") {
+		return TrimMnemonic(strings.TrimSuffix(mnemonic, " "))
+	}
+	if strings.HasSuffix(mnemonic, "\n") {
+		return TrimMnemonic(strings.TrimSuffix(mnemonic, "\n"))
+	}
+	if strings.HasSuffix(mnemonic, "\t") {
+		return TrimMnemonic(strings.TrimSuffix(mnemonic, "\t"))
+	}
+	if strings.HasSuffix(mnemonic, "\r") {
+		return TrimMnemonic(strings.TrimSuffix(mnemonic, "\r"))
+	}
+	if strings.HasSuffix(mnemonic, "\\c") {
+		return TrimMnemonic(strings.TrimSuffix(mnemonic, "\\c"))
+	}
+	return mnemonic
+}
+
 // LoadMnemonic is a function to extract mnemonic
 func LoadMnemonic(mnemonic string) string {
 	if bip39.IsMnemonicValid(mnemonic) {
-		return mnemonic
+		return TrimMnemonic(mnemonic)
 	}
 
-	return mnemonicFromFile(mnemonic)
+	return TrimMnemonic(mnemonicFromFile(mnemonic))
 }
 
 // LoadConfig is a function to load interx configurations from a given file
