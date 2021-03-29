@@ -7,6 +7,7 @@ import (
 	"os"
 
 	sekaiapp "github.com/KiraCore/sekai/app"
+	"github.com/cosmos/cosmos-sdk/crypto/hd"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	bytesize "github.com/inhies/go-bytesize"
@@ -85,7 +86,18 @@ func LoadConfig(configFilePath string) {
 		fmt.Println("Invalid Interx Mnemonic: ", Config.Mnemonic)
 		panic("Invalid Interx Mnemonic")
 	}
-	Config.PrivKey = secp256k1.GenPrivKeyFromSecret(bip39.NewSeed(Config.Mnemonic, ""))
+
+	seed, err := bip39.NewSeedWithErrorChecking(Config.Mnemonic, "")
+	if err != nil {
+		panic(err)
+	}
+	master, ch := hd.ComputeMastersFromSeed(seed)
+	priv, err := hd.DerivePrivateKeyForPath(master, ch, "44'/118'/0'/0/0")
+	if err != nil {
+		panic(err)
+	}
+
+	Config.PrivKey = &secp256k1.PrivKey{Key: priv}
 	Config.PubKey = Config.PrivKey.PubKey()
 	Config.Address = sdk.MustBech32ifyAddressBytes(sdk.GetConfig().GetBech32AccountAddrPrefix(), Config.PubKey.Address())
 
@@ -120,7 +132,18 @@ func LoadConfig(configFilePath string) {
 		fmt.Println("Invalid Faucet Mnemonic: ", Config.Faucet.Mnemonic)
 		panic("Invalid Faucet Mnemonic")
 	}
-	Config.Faucet.PrivKey = secp256k1.GenPrivKeyFromSecret(bip39.NewSeed(Config.Faucet.Mnemonic, ""))
+
+	seed, err = bip39.NewSeedWithErrorChecking(Config.Faucet.Mnemonic, "")
+	if err != nil {
+		panic(err)
+	}
+	master, ch = hd.ComputeMastersFromSeed(seed)
+	priv, err = hd.DerivePrivateKeyForPath(master, ch, "44'/118'/0'/0/0")
+	if err != nil {
+		panic(err)
+	}
+
+	Config.Faucet.PrivKey = &secp256k1.PrivKey{Key: priv}
 	Config.Faucet.PubKey = Config.Faucet.PrivKey.PubKey()
 	Config.Faucet.Address = sdk.MustBech32ifyAddressBytes(sdk.GetConfig().GetBech32AccountAddrPrefix(), Config.Faucet.PubKey.Address())
 
