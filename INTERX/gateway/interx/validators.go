@@ -396,7 +396,7 @@ func queryConsensusHandle(r *http.Request, gwCosmosmux *runtime.ServeMux, rpcAdd
 		response.TriggeredTimeoutPrecommit = roundState.TriggeredTimeoutPrecommit
 		response.ConsensusStopped = common.IsConsensusStopped(len(roundState.Validators.Validators))
 
-		if !catching_up {
+		if catching_up {
 			response.ConsensusStopped = false
 		}
 

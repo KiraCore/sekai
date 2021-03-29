@@ -102,6 +102,7 @@ func UpdateN(_N int) {
 
 func IsConsensusStopped(validatorCount int) bool {
 	blockHeight := NodeStatus.Block
+	blockTime, _ := time.Parse(time.RFC3339, NodeStatus.Blocktime)
 
 	if blockHeight <= 1 {
 		GetLogger().Errorf("[UpdateN] block <= 1: %d", blockHeight)
@@ -114,9 +115,6 @@ func IsConsensusStopped(validatorCount int) bool {
 	}
 
 	UpdateN(n)
-
-	blockHeight = NodeStatus.Block
-	blockTime, _ := time.Parse(time.RFC3339, NodeStatus.Blocktime)
 
 	_, err := GetBlockNanoTime(config.Config.RPC, blockHeight+1)
 
