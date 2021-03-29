@@ -1,5 +1,8 @@
 # Changelog
 
+## [v0.1.18.9] - 03.29.2021
+
+- add `faucet_amounts`, `faucet_minimum_amounts`, `fee_amounts` for interxd init cli configuration.
 - fix validators query (calculate consensus_stopped after sync finished).
 - update consensus query responses.
 - fix configuration init for mnemonics.
