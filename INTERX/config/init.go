@@ -129,7 +129,7 @@ func InitConfig(
 	configFromFile.Cache.CachingDuration = cachingDuration
 	configFromFile.Cache.DownloadFileSizeLimitation = maxDownloadSize
 
-	configFromFile.Faucet.MnemonicFile = LoadMnemonic(signingMnemonic)
+	configFromFile.Faucet.MnemonicFile = LoadMnemonic(faucetMnemonic)
 	configFromFile.Faucet.TimeLimit = faucetTimeLimit
 
 	bytes, err := json.MarshalIndent(&configFromFile, "", "  ")

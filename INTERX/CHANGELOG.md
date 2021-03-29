@@ -1,5 +1,9 @@
 # Changelog
 
+- fix validators query (calculate consensus_stopped after sync finished).
+- update consensus query responses.
+- fix configuration init for mnemonics.
+
 ## [v0.1.18.6] - 03.25.2021
 
 - fix proposals query to have description field.
