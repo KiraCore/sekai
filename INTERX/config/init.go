@@ -60,6 +60,8 @@ func defaultConfig() InterxConfigFromFile {
 
 	configFromFile.MnemonicFile = LoadMnemonic("swap exercise equip shoot mad inside floor wheel loan visual stereo build frozen always bulb naive subway foster marine erosion shuffle flee action there")
 
+	configFromFile.AddrBooks = "addrbook.json"
+
 	configFromFile.Cache.StatusSync = 5
 	configFromFile.Cache.CacheDir = "cache"
 	configFromFile.Cache.MaxCacheSize = "2GB"
@@ -120,6 +122,7 @@ func InitConfig(
 	faucetAmounts string,
 	faucetMinimumAmounts string,
 	feeAmounts string,
+	addrBooks string,
 ) {
 	configFromFile := defaultConfig()
 
@@ -128,6 +131,8 @@ func InitConfig(
 	configFromFile.RPC = rpc
 	configFromFile.PORT = port
 	configFromFile.MnemonicFile = LoadMnemonic(signingMnemonic)
+
+	configFromFile.AddrBooks = addrBooks
 
 	configFromFile.Cache.StatusSync = syncStatus
 	configFromFile.Cache.CacheDir = cacheDir

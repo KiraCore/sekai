@@ -46,6 +46,7 @@ type InterxConfig struct {
 	RPC        string         `json:"rpc"`
 	PORT       string         `json:"port"`
 	Mnemonic   string         `json:"mnemonic"`
+	AddrBooks  []string       `json:"addrbooks"`
 	PrivKey    crypto.PrivKey `json:"privkey"`
 	PubKey     crypto.PubKey  `json:"pubkey"`
 	Address    string         `json:"address"`
@@ -61,6 +62,7 @@ type InterxConfigFromFile struct {
 	RPC          string `json:"rpc"`
 	PORT         string `json:"port"`
 	MnemonicFile string `json:"mnemonic"`
+	AddrBooks    string `json:"addrbooks"`
 	Cache        struct {
 		StatusSync                 int64  `json:"status_sync"`
 		CacheDir                   string `json:"cache_dir"`

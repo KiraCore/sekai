@@ -3,7 +3,8 @@
   "grpc": "dns:///0.0.0.0:9090",
   "rpc": "http://0.0.0.0:26657",
   "port": "11000",
-  "mnemonic": "add rubber athlete vapor busy small spatial multiply envelope symptom demand cage enact pluck canoe rally armed fragile test prosper crane inch define elevator",
+  "mnemonic": "tennis grocery lunar divorce damp december code axis bleak verb barrel assist finish main latin lend play range rail helmet circle purity fault front",
+  "addrbooks": "addrbook1.json",
   "cache": {
     "status_sync": 5,
     "cache_dir": "cache",
@@ -12,7 +13,7 @@
     "download_file_size_limitation": "10MB"
   },
   "faucet": {
-    "mnemonic": "inhale cram exist ethics lend visit recall destroy pause food advance thumb admit today close use oil clown balcony danger swamp author verb business",
+    "mnemonic": "tennis grocery lunar divorce damp december code axis bleak verb barrel assist finish main latin lend play range rail helmet circle purity fault front",
     "faucet_amounts": {
       "stake": 100000,
       "ukex": 100000,
