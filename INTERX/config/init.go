@@ -69,14 +69,14 @@ func defaultConfig() InterxConfigFromFile {
 	configFromFile.Cache.DownloadFileSizeLimitation = "10MB"
 
 	configFromFile.Faucet.MnemonicFile = LoadMnemonic("equip exercise shoot mad inside floor wheel loan visual stereo build frozen potato always bulb naive subway foster marine erosion shuffle flee action there")
-	configFromFile.Faucet.FaucetAmounts = make(map[string]int64)
-	configFromFile.Faucet.FaucetAmounts["stake"] = 100000
-	configFromFile.Faucet.FaucetAmounts["validatortoken"] = 100000
-	configFromFile.Faucet.FaucetAmounts["ukex"] = 100000
-	configFromFile.Faucet.FaucetMinimumAmounts = make(map[string]int64)
-	configFromFile.Faucet.FaucetMinimumAmounts["stake"] = 100
-	configFromFile.Faucet.FaucetMinimumAmounts["validatortoken"] = 100
-	configFromFile.Faucet.FaucetMinimumAmounts["ukex"] = 100
+	configFromFile.Faucet.FaucetAmounts = make(map[string]string)
+	configFromFile.Faucet.FaucetAmounts["stake"] = "100000"
+	configFromFile.Faucet.FaucetAmounts["validatortoken"] = "100000"
+	configFromFile.Faucet.FaucetAmounts["ukex"] = "100000"
+	configFromFile.Faucet.FaucetMinimumAmounts = make(map[string]string)
+	configFromFile.Faucet.FaucetMinimumAmounts["stake"] = "100"
+	configFromFile.Faucet.FaucetMinimumAmounts["validatortoken"] = "100"
+	configFromFile.Faucet.FaucetMinimumAmounts["ukex"] = "100"
 	configFromFile.Faucet.FeeAmounts = make(map[string]string)
 	configFromFile.Faucet.FeeAmounts["stake"] = "1000ukex"
 	configFromFile.Faucet.FeeAmounts["validatortoken"] = "1000ukex"
@@ -143,19 +143,19 @@ func InitConfig(
 	configFromFile.Faucet.MnemonicFile = LoadMnemonic(faucetMnemonic)
 	configFromFile.Faucet.TimeLimit = faucetTimeLimit
 
-	configFromFile.Faucet.FaucetAmounts = make(map[string]int64)
+	configFromFile.Faucet.FaucetAmounts = make(map[string]string)
 	for _, amount := range strings.Split(faucetAmounts, ",") {
 		coin, err := sdk.ParseCoinNormalized(amount)
 		if err == nil {
-			configFromFile.Faucet.FaucetAmounts[coin.Denom] = coin.Amount.Int64()
+			configFromFile.Faucet.FaucetAmounts[coin.Denom] = coin.Amount.String()
 		}
 	}
 
-	configFromFile.Faucet.FaucetMinimumAmounts = make(map[string]int64)
+	configFromFile.Faucet.FaucetMinimumAmounts = make(map[string]string)
 	for _, amount := range strings.Split(faucetMinimumAmounts, ",") {
 		coin, err := sdk.ParseCoinNormalized(amount)
 		if err == nil {
-			configFromFile.Faucet.FaucetMinimumAmounts[coin.Denom] = coin.Amount.Int64()
+			configFromFile.Faucet.FaucetMinimumAmounts[coin.Denom] = coin.Amount.String()
 		}
 	}
 
