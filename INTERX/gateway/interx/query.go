@@ -58,10 +58,20 @@ func queryStatusHandle(rpcAddr string) (interface{}, interface{}, int) {
 		InterxInfo struct {
 			PubKey interface{} `json:"pub_key,omitempty"`
 		} `json:"interx_info,omitempty"`
+		Moniker          string `json:"moniker"`
+		KiraAddr         string `json:"kira_addr"`
+		GenesisChecksum  string `json:"genesis_checksum"`
+		ChainID          string `json:"chain_id"`
+		Version          string `json:"version"`
+		SentryNodeID     string `json:"sentry_node_id,omitemtpy"`
+		PrivSentryNodeID string `json:"priv_sentry_node_id,omitemtpy"`
+		ValidatorNodeID  string `json:"validator_node_id,omitemtpy"`
+		SeedNodeID       string `json:"seed_node_id,omitemtpy"`
 	}
 
 	result := StatusTempResponse{}
 
+	// Handle Interx Pubkey
 	pubkeyBytes, err := config.EncodingCg.Amino.MarshalJSON(config.Config.PubKey)
 	if err != nil {
 		common.GetLogger().Error("[query-status] Failed to marshal interx pubkey", err)
@@ -73,6 +83,27 @@ func queryStatusHandle(rpcAddr string) (interface{}, interface{}, int) {
 		common.GetLogger().Error("[query-status] Failed to add interx pubkey to status response", err)
 		return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
 	}
+
+	// Handle Genesis
+	genesis, checksum, err := GetGenesisResults(rpcAddr)
+	if err != nil {
+		common.GetLogger().Error("[query-status] Failed to query genesis ", err)
+		return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
+	}
+
+	// Get Kira Status
+	status := common.GetKiraStatus((rpcAddr))
+
+	if status != nil {
+		result.Moniker = status.NodeInfo.Moniker
+		result.Version = status.NodeInfo.Version
+		result.SeedNodeID = status.NodeInfo.Id
+		result.ValidatorNodeID = status.ValidatorInfo.Address
+	}
+
+	result.KiraAddr = config.Config.Address
+	result.GenesisChecksum = checksum
+	result.ChainID = genesis.ChainID
 
 	return result, nil, http.StatusOK
 }
