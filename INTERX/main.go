@@ -59,7 +59,9 @@ func main() {
 
 	initFaucetAmounts := initCommand.String("faucet_amounts", "100000stake,100000ukex,100000validatortoken", "The faucet amount for each asset.")
 	initFaucetMinimumAmounts := initCommand.String("faucet_minimum_amounts", "1000stake,1000ukex,1000validatortoken", "The minimum faucet amount for each asset.")
-	feeAmounts := initCommand.String("fee_amounts", "stake 1000ukex,ukex 1000ukex,validatortoken 1000ukex", "The fee amount for each denom. `stake 1000ukex` means it will use `1000ukex` for `stake` assets transfer.")
+	initFeeAmounts := initCommand.String("fee_amounts", "stake 1000ukex,ukex 1000ukex,validatortoken 1000ukex", "The fee amount for each denom. `stake 1000ukex` means it will use `1000ukex` for `stake` assets transfer.")
+
+	initAddrBook := initCommand.String("addrbook", "addrbook.json", "The address books")
 
 	startConfigPtr := startCommand.String("config", "./config.json", "The interx configurtion path. (Required)")
 
@@ -98,7 +100,8 @@ func main() {
 					*initFaucetTimeLimit,
 					*initFaucetAmounts,
 					*initFaucetMinimumAmounts,
-					*feeAmounts,
+					*initFeeAmounts,
+					*initAddrBook,
 				)
 
 				fmt.Printf("Created interx configuration file: %s\n", *initConfigFilePtr)
