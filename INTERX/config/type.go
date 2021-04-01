@@ -7,8 +7,8 @@ import (
 // FaucetConfig is a struct to be used for Faucet configuration
 type FaucetConfig struct {
 	Mnemonic             string            `json:"mnemonic"`
-	FaucetAmounts        map[string]int64  `json:"faucet_amounts"`
-	FaucetMinimumAmounts map[string]int64  `json:"faucet_minimum_amounts"`
+	FaucetAmounts        map[string]string `json:"faucet_amounts"`
+	FaucetMinimumAmounts map[string]string `json:"faucet_minimum_amounts"`
 	FeeAmounts           map[string]string `json:"fee_amounts"`
 	TimeLimit            int64             `json:"time_limit"`
 	PrivKey              crypto.PrivKey    `json:"privkey"`
@@ -46,6 +46,7 @@ type InterxConfig struct {
 	RPC        string         `json:"rpc"`
 	PORT       string         `json:"port"`
 	Mnemonic   string         `json:"mnemonic"`
+	AddrBooks  []string       `json:"addrbooks"`
 	PrivKey    crypto.PrivKey `json:"privkey"`
 	PubKey     crypto.PubKey  `json:"pubkey"`
 	Address    string         `json:"address"`
@@ -61,6 +62,7 @@ type InterxConfigFromFile struct {
 	RPC          string `json:"rpc"`
 	PORT         string `json:"port"`
 	MnemonicFile string `json:"mnemonic"`
+	AddrBooks    string `json:"addrbooks"`
 	Cache        struct {
 		StatusSync                 int64  `json:"status_sync"`
 		CacheDir                   string `json:"cache_dir"`
@@ -70,8 +72,8 @@ type InterxConfigFromFile struct {
 	} `json:"cache"`
 	Faucet struct {
 		MnemonicFile         string            `json:"mnemonic"`
-		FaucetAmounts        map[string]int64  `json:"faucet_amounts"`
-		FaucetMinimumAmounts map[string]int64  `json:"faucet_minimum_amounts"`
+		FaucetAmounts        map[string]string `json:"faucet_amounts"`
+		FaucetMinimumAmounts map[string]string `json:"faucet_minimum_amounts"`
 		FeeAmounts           map[string]string `json:"fee_amounts"`
 		TimeLimit            int64             `json:"time_limit"`
 	} `json:"faucet"`

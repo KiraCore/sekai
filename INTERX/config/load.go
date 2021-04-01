@@ -7,6 +7,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/KiraCore/sekai/INTERX/types"
 	sekaiapp "github.com/KiraCore/sekai/app"
 	"github.com/cosmos/cosmos-sdk/crypto/hd"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
@@ -106,6 +107,8 @@ func LoadConfig(configFilePath string) {
 	Config.PubKey = Config.PrivKey.PubKey()
 	Config.Address = sdk.MustBech32ifyAddressBytes(sdk.GetConfig().GetBech32AccountAddrPrefix(), Config.PubKey.Address())
 
+	Config.AddrBooks = strings.Split(configFromFile.AddrBooks, ",")
+
 	// Display mnemonic and keys
 	fmt.Println("Interx Mnemonic  : ", Config.Mnemonic)
 	fmt.Println("Interx Address   : ", Config.Address)
@@ -201,4 +204,49 @@ func GetResponseCacheDir() string {
 // GetDbCacheDir is a function to get db directory
 func GetDbCacheDir() string {
 	return Config.Cache.CacheDir + "/db"
+}
+
+func LoadAddressBooks() []types.AddrBookJSON {
+	addrBooks := make([]types.AddrBookJSON, 0)
+	for _, addrFile := range Config.AddrBooks {
+		file, _ := ioutil.ReadFile(addrFile)
+
+		book := types.AddrBookJSON{}
+
+		err := json.Unmarshal([]byte(file), &book)
+
+		if err != nil {
+			fmt.Println("Failed to load addrBook: ", addrFile)
+		}
+
+		addrBooks = append(addrBooks, book)
+	}
+
+	return addrBooks
+}
+
+func LoadUniqueAddresses() []types.KnownAddress {
+	addrBooks := make([]types.KnownAddress, 0)
+
+	flag := make(map[string]bool)
+	for _, addrFile := range Config.AddrBooks {
+		file, _ := ioutil.ReadFile(addrFile)
+
+		book := types.AddrBookJSON{}
+
+		err := json.Unmarshal([]byte(file), &book)
+
+		if err != nil {
+			fmt.Println("Failed to load addrBook: ", addrFile)
+		}
+
+		for _, addr := range book.Addrs {
+			if _, ok := flag[addr.Addr.IP]; ok {
+				addrBooks = append(addrBooks, addr)
+			}
+			flag[addr.Addr.IP] = true
+		}
+	}
+
+	return addrBooks
 }
