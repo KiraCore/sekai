@@ -118,5 +118,5 @@ func IsConsensusStopped(validatorCount int) bool {
 
 	_, err := GetBlockNanoTime(config.Config.RPC, blockHeight+1)
 
-	return err == nil && float64(time.Now().Unix()-blockTime.Unix()) >= GetAverageBlockTime()*3
+	return err != nil && float64(time.Now().Unix()-blockTime.Unix()) >= GetAverageBlockTime()*3
 }

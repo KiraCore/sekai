@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.1.18.12] - 04.2.2021
+
+- update interx status api
+- add nodes cli configurations
+- fix consensus_stopped logic
+
 ## [v0.1.18.10] - 03.31.2021
 
 - add `addrbook` cli option
