@@ -41,6 +41,7 @@ func (k Keeper) Inactivate(ctx sdk.Context, valAddress sdk.ValAddress) error { /
 
 	k.AddValidator(ctx, validator)
 	k.addRemovingValidator(ctx, validator)
+	k.RemoveReactivatingValidator(ctx, validator)
 
 	return nil
 }
@@ -83,6 +84,7 @@ func (k Keeper) Pause(ctx sdk.Context, valAddress sdk.ValAddress) error {
 
 	k.setStatusToValidator(ctx, validator, customstakingtypes.Paused)
 	k.addRemovingValidator(ctx, validator)
+	k.RemoveReactivatingValidator(ctx, validator)
 
 	return nil
 }
@@ -115,6 +117,7 @@ func (k Keeper) Jail(ctx sdk.Context, valAddress sdk.ValAddress) error {
 	k.setStatusToValidator(ctx, validator, customstakingtypes.Jailed)
 	k.addRemovingValidator(ctx, validator)
 	k.setJailValidatorInfo(ctx, validator)
+	k.RemoveReactivatingValidator(ctx, validator)
 
 	return nil
 }
@@ -145,6 +148,7 @@ func (k Keeper) Unjail(ctx sdk.Context, valAddress sdk.ValAddress) error {
 	k.setStatusToValidator(ctx, validator, customstakingtypes.Active)
 	k.addReactivatingValidator(ctx, validator)
 	k.removeJailValidatorInfo(ctx, validator)
+	k.RemoveRemovingValidator(ctx, validator)
 
 	return nil
 }
