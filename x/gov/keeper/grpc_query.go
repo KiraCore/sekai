@@ -157,7 +157,6 @@ func (q Querier) Vote(ctx context.Context, request *types.QueryVoteRequest) (*ty
 func (q Querier) Votes(ctx context.Context, request *types.QueryVotesRequest) (*types.QueryVotesResponse, error) {
 	sdkContext := sdk.UnwrapSDKContext(ctx)
 	votes := q.keeper.GetProposalVotes(sdkContext, request.ProposalId)
-	fmt.Println(votes)
 	return &types.QueryVotesResponse{Votes: votes}, nil
 }
 

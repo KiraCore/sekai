@@ -2,7 +2,6 @@ package kira
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/KiraCore/sekai/INTERX/common"
@@ -211,8 +210,6 @@ func queryVotesHandler(r *http.Request, gwCosmosmux *runtime.ServeMux) (interfac
 			common.GetLogger().Error("[query-votes] Invalid response format: ", err)
 			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
 		}
-
-		fmt.Println("here", byteData)
 
 		err = json.Unmarshal(byteData, &result)
 		if err != nil {
