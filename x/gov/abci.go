@@ -52,6 +52,7 @@ func processProposal(ctx sdk.Context, k keeper.Keeper, proposalID uint64) {
 	k.SaveProposal(ctx, proposal)
 	k.RemoveActiveProposal(ctx, proposal)
 	k.AddToEnactmentProposals(ctx, proposal)
+	// TODO: proposal voting time should be at least 2 blocks
 }
 
 func processEnactmentProposal(ctx sdk.Context, k keeper.Keeper, router ProposalRouter, proposalID uint64) {
@@ -67,4 +68,5 @@ func processEnactmentProposal(ctx sdk.Context, k keeper.Keeper, router ProposalR
 	}
 
 	k.RemoveEnactmentProposal(ctx, proposal)
+	// TODO: proposal enactment time should be at least 1 block
 }
