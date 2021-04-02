@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.1.18.14] - 26.03.2021
+### Fixed
+- Fixed problem with network stopping on pause.
+- Validator cannot be claimed if already did.
+
 ## [v0.1.18.7] - 26.03.2021
 ### Added
 - Shell script to setup environment variables especially for permissions
