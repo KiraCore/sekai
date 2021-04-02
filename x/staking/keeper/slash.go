@@ -19,6 +19,7 @@ func (k Keeper) Activate(ctx sdk.Context, valAddress sdk.ValAddress) error {
 
 	k.setStatusToValidator(ctx, validator, customstakingtypes.Active)
 	k.addReactivatingValidator(ctx, validator)
+	k.RemoveRemovingValidator(ctx, validator)
 
 	return nil
 }
@@ -99,6 +100,7 @@ func (k Keeper) Unpause(ctx sdk.Context, valAddress sdk.ValAddress) error { // i
 
 	k.setStatusToValidator(ctx, validator, customstakingtypes.Active)
 	k.addReactivatingValidator(ctx, validator)
+	k.RemoveRemovingValidator(ctx, validator)
 
 	return nil
 }

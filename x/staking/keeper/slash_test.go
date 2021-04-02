@@ -327,6 +327,9 @@ func TestReactivatingValidator(t *testing.T) {
 			// And it is included in the set of ReactivatingValidators
 			reactivatingVals := app.CustomStakingKeeper.GetReactivatingValidatorSet(ctx)
 			require.Len(t, reactivatingVals, 1)
+
+			removingValidatorSet := app.CustomStakingKeeper.GetRemovingValidatorSet(ctx)
+			require.Len(t, removingValidatorSet, 0)
 		})
 	}
 }
