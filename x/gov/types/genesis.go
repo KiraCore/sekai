@@ -13,7 +13,7 @@ func DefaultGenesis() *GenesisState {
 				PermClaimValidator,
 				PermClaimCouncilor,
 				PermUpsertTokenAlias,
-				PermChangeTxFee,
+				// PermChangeTxFee, // do not give this permission to sudo account - test does not pass
 				PermUpsertTokenRate,
 				PermUpsertRole,
 				PermCreateSetPermissionsProposal,
