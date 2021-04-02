@@ -58,6 +58,11 @@ func defaultConfig() InterxConfigFromFile {
 	configFromFile.RPC = "http://0.0.0.0:26657"
 	configFromFile.PORT = "11000"
 
+	configFromFile.SentryNodeID = ""
+	configFromFile.PrivSentryNodeID = ""
+	configFromFile.ValidatorNodeID = ""
+	configFromFile.SeedNodeID = ""
+
 	configFromFile.MnemonicFile = LoadMnemonic("swap exercise equip shoot mad inside floor wheel loan visual stereo build frozen always bulb naive subway foster marine erosion shuffle flee action there")
 
 	configFromFile.AddrBooks = "addrbook.json"
@@ -110,6 +115,10 @@ func InitConfig(
 	serveHTTPS bool,
 	grpc string,
 	rpc string,
+	sentryNodeId string,
+	privSentrynodeId string,
+	validatorNodeId string,
+	seedNodeId string,
 	port string,
 	signingMnemonic string,
 	syncStatus int64,
@@ -130,6 +139,12 @@ func InitConfig(
 	configFromFile.GRPC = grpc
 	configFromFile.RPC = rpc
 	configFromFile.PORT = port
+
+	configFromFile.SentryNodeID = sentryNodeId
+	configFromFile.PrivSentryNodeID = privSentrynodeId
+	configFromFile.ValidatorNodeID = validatorNodeId
+	configFromFile.SeedNodeID = seedNodeId
+
 	configFromFile.MnemonicFile = LoadMnemonic(signingMnemonic)
 
 	configFromFile.AddrBooks = addrBooks

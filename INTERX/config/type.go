@@ -41,29 +41,37 @@ type CacheConfig struct {
 
 // InterxConfig is a struct to be used for interx configuration
 type InterxConfig struct {
-	ServeHTTPS bool           `json:"serve_https"`
-	GRPC       string         `json:"grpc"`
-	RPC        string         `json:"rpc"`
-	PORT       string         `json:"port"`
-	Mnemonic   string         `json:"mnemonic"`
-	AddrBooks  []string       `json:"addrbooks"`
-	PrivKey    crypto.PrivKey `json:"privkey"`
-	PubKey     crypto.PubKey  `json:"pubkey"`
-	Address    string         `json:"address"`
-	Cache      CacheConfig    `json:"cache"`
-	Faucet     FaucetConfig   `json:"faucet"`
-	RPCMethods RPCConfig      `json:"rpc_methods"`
+	ServeHTTPS       bool           `json:"serve_https"`
+	GRPC             string         `json:"grpc"`
+	RPC              string         `json:"rpc"`
+	PORT             string         `json:"port"`
+	SentryNodeID     string         `json:"sentry_node_id"`
+	PrivSentryNodeID string         `json:"priv_sentry_node_id"`
+	ValidatorNodeID  string         `json:"validator_node_id"`
+	SeedNodeID       string         `json:"seed_node_id"`
+	Mnemonic         string         `json:"mnemonic"`
+	AddrBooks        []string       `json:"addrbooks"`
+	PrivKey          crypto.PrivKey `json:"privkey"`
+	PubKey           crypto.PubKey  `json:"pubkey"`
+	Address          string         `json:"address"`
+	Cache            CacheConfig    `json:"cache"`
+	Faucet           FaucetConfig   `json:"faucet"`
+	RPCMethods       RPCConfig      `json:"rpc_methods"`
 }
 
 // InterxConfigFromFile is a struct to be used for interx configuration file
 type InterxConfigFromFile struct {
-	ServeHTTPS   bool   `json:"serve_https"`
-	GRPC         string `json:"grpc"`
-	RPC          string `json:"rpc"`
-	PORT         string `json:"port"`
-	MnemonicFile string `json:"mnemonic"`
-	AddrBooks    string `json:"addrbooks"`
-	Cache        struct {
+	ServeHTTPS       bool   `json:"serve_https"`
+	GRPC             string `json:"grpc"`
+	RPC              string `json:"rpc"`
+	PORT             string `json:"port"`
+	SentryNodeID     string `json:"sentry_node_id"`
+	PrivSentryNodeID string `json:"priv_sentry_node_id"`
+	ValidatorNodeID  string `json:"validator_node_id"`
+	SeedNodeID       string `json:"seed_node_id"`
+	MnemonicFile     string `json:"mnemonic"`
+	AddrBooks        string `json:"addrbooks"`
+	Cache            struct {
 		StatusSync                 int64  `json:"status_sync"`
 		CacheDir                   string `json:"cache_dir"`
 		MaxCacheSize               string `json:"max_cache_size"`
