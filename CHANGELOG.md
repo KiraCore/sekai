@@ -1,6 +1,6 @@
 # Changelog
 
-## [v0.1.18.14] - 26.03.2021
+## [v0.1.18.14] - 01.04.2021
 ### Fixed
 - Fixed problem with network stopping on pause.
 - Validator cannot be claimed if already did.
