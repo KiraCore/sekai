@@ -3,6 +3,10 @@
   "grpc": "dns:///0.0.0.0:9090",
   "rpc": "http://0.0.0.0:26657",
   "port": "11000",
+  "sentry_node_id": "",
+  "priv_sentry_node_id": "",
+  "validator_node_id": "",
+  "seed_node_id": "",
   "mnemonic": "pact powder face gather across strike secret quiz cable marble carry vivid tag love fat lawsuit laugh diagram palm silk endless blame vocal canvas",
   "addrbooks": "addrbook.json",
   "cache": {

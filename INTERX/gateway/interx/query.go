@@ -67,6 +67,7 @@ func queryStatusHandle(rpcAddr string) (interface{}, interface{}, int) {
 		PrivSentryNodeID string `json:"priv_sentry_node_id,omitemtpy"`
 		ValidatorNodeID  string `json:"validator_node_id,omitemtpy"`
 		SeedNodeID       string `json:"seed_node_id,omitemtpy"`
+		InterxVersion    string `json:"interx_version"`
 	}
 
 	result := StatusTempResponse{}
@@ -92,18 +93,23 @@ func queryStatusHandle(rpcAddr string) (interface{}, interface{}, int) {
 	}
 
 	// Get Kira Status
-	status := common.GetKiraStatus((rpcAddr))
+	sentryStatus := common.GetKiraStatus((rpcAddr))
 
-	if status != nil {
-		result.Moniker = status.NodeInfo.Moniker
-		result.Version = status.NodeInfo.Version
-		result.SeedNodeID = status.NodeInfo.Id
-		result.ValidatorNodeID = status.ValidatorInfo.Address
+	if sentryStatus != nil {
+		result.Moniker = sentryStatus.NodeInfo.Moniker
+		result.Version = sentryStatus.NodeInfo.Version
 	}
+
+	result.SentryNodeID = config.Config.SentryNodeID
+	result.PrivSentryNodeID = config.Config.PrivSentryNodeID
+	result.ValidatorNodeID = config.Config.ValidatorNodeID
+	result.SeedNodeID = config.Config.SeedNodeID
 
 	result.KiraAddr = config.Config.Address
 	result.GenesisChecksum = checksum
 	result.ChainID = genesis.ChainID
+
+	result.InterxVersion = config.InterxVersion
 
 	return result, nil, http.StatusOK
 }
