@@ -1,6 +1,6 @@
 # Changelog
 
-## [v0.1.18.12] - 02.04.2021
+## [v0.1.18.13] - 02.04.2021
 ## Added
 - Add event manager to all msg handlers
 - Fix few permission issues
