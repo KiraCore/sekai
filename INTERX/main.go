@@ -45,6 +45,12 @@ func main() {
 	initServeHTTPS := initCommand.Bool("serve_https", false, "http or https.")
 	initGrpcPtr := initCommand.String("grpc", "dns:///0.0.0.0:9090", "The grpc endpoint of the sekaid.")
 	initRPCPtr := initCommand.String("rpc", "http://0.0.0.0:26657", "The rpc endpoint of the sekaid.")
+
+	initSentryNodeId := initCommand.String("sentry_node_id", "", "The sentry node id.")
+	initPrivSentryNodeId := initCommand.String("priv_sentry_node_id", "", "The private sentry node id.")
+	initValidatorNodeId := initCommand.String("validator_node_id", "", "The validator node id.")
+	initSeedNodeId := initCommand.String("seed_node_id", "", "The seed node id.")
+
 	initPortPtr := initCommand.String("port", "11000", "The interx port.")
 	initSigningMnemonicPtr := initCommand.String("signing_mnemonic", signingMnemonic, "The interx signing mnemonic file path or seeds.")
 
@@ -59,7 +65,9 @@ func main() {
 
 	initFaucetAmounts := initCommand.String("faucet_amounts", "100000stake,100000ukex,100000validatortoken", "The faucet amount for each asset.")
 	initFaucetMinimumAmounts := initCommand.String("faucet_minimum_amounts", "1000stake,1000ukex,1000validatortoken", "The minimum faucet amount for each asset.")
-	feeAmounts := initCommand.String("fee_amounts", "stake 1000ukex,ukex 1000ukex,validatortoken 1000ukex", "The fee amount for each denom. `stake 1000ukex` means it will use `1000ukex` for `stake` assets transfer.")
+	initFeeAmounts := initCommand.String("fee_amounts", "stake 1000ukex,ukex 1000ukex,validatortoken 1000ukex", "The fee amount for each denom. `stake 1000ukex` means it will use `1000ukex` for `stake` assets transfer.")
+
+	initAddrBook := initCommand.String("addrbook", "addrbook.json", "The address books")
 
 	startConfigPtr := startCommand.String("config", "./config.json", "The interx configurtion path. (Required)")
 
@@ -87,6 +95,10 @@ func main() {
 					*initServeHTTPS,
 					*initGrpcPtr,
 					*initRPCPtr,
+					*initSentryNodeId,
+					*initPrivSentryNodeId,
+					*initValidatorNodeId,
+					*initSeedNodeId,
 					*initPortPtr,
 					*initSigningMnemonicPtr,
 					*initSyncStatus,
@@ -98,7 +110,8 @@ func main() {
 					*initFaucetTimeLimit,
 					*initFaucetAmounts,
 					*initFaucetMinimumAmounts,
-					*feeAmounts,
+					*initFeeAmounts,
+					*initAddrBook,
 				)
 
 				fmt.Printf("Created interx configuration file: %s\n", *initConfigFilePtr)

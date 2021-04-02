@@ -6,7 +6,7 @@ import (
 
 	customgovcli "github.com/KiraCore/sekai/x/gov/client/cli"
 	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
-	types3 "github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/stretchr/testify/suite"
 	dbm "github.com/tendermint/tm-db"
@@ -80,7 +80,7 @@ func (s *IntegrationTestSuite) TestUpsertTokenAliasAndQuery() {
 		fmt.Sprintf("--%s=%s", cli.FlagDenoms, "finney"),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(100))).String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
 	})
 	s.Require().NoError(err)
 
@@ -116,7 +116,7 @@ func (s *IntegrationTestSuite) TestUpsertTokenRateAndQuery() {
 		fmt.Sprintf("--%s=%s", cli.FlagFeePayments, "true"),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(100))).String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
 	})
 	s.Require().NoError(err)
 
@@ -134,7 +134,7 @@ func (s *IntegrationTestSuite) TestUpsertTokenRateAndQuery() {
 	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &tokenRate)
 
 	s.Require().Equal(tokenRate.Denom, "ubtc")
-	s.Require().Equal(tokenRate.Rate, types3.NewDec(10))
+	s.Require().Equal(tokenRate.Rate, sdk.NewDecWithPrec(1, 5))
 	s.Require().Equal(tokenRate.FeePayments, true)
 }
 
@@ -167,7 +167,7 @@ func (s IntegrationTestSuite) TestCreateProposalUpsertTokenRates() {
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(100))).String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
 	})
 	s.Require().NoError(err)
 	fmt.Printf("%s", out.String())
@@ -180,7 +180,7 @@ func (s IntegrationTestSuite) TestCreateProposalUpsertTokenRates() {
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(100))).String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
 	})
 	s.Require().NoError(err)
 	fmt.Printf("%s", out.String())
@@ -202,7 +202,7 @@ func (s IntegrationTestSuite) TestCreateProposalUpsertTokenAlias() {
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(100))).String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
 	})
 	s.Require().NoError(err)
 	fmt.Printf("%s", out.String())
@@ -216,7 +216,7 @@ func (s IntegrationTestSuite) TestCreateProposalUpsertTokenAlias() {
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(100))).String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
 	})
 	s.Require().NoError(err)
 	fmt.Printf("%s", out.String())
@@ -237,7 +237,7 @@ func (s IntegrationTestSuite) TestTxProposalTokensBlackWhiteChangeCmd() {
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(100))).String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
 	})
 
 	s.Require().NoError(err)
@@ -252,7 +252,7 @@ func (s IntegrationTestSuite) TestTxProposalTokensBlackWhiteChangeCmd() {
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, types3.NewCoins(types3.NewCoin(s.cfg.BondDenom, types3.NewInt(100))).String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
 	})
 	s.Require().NoError(err)
 	fmt.Printf("%s", out.String())

@@ -2,8 +2,8 @@ package interx
 
 import (
 	"fmt"
+	"math/big"
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/KiraCore/sekai/INTERX/common"
@@ -68,39 +68,42 @@ func serveFaucet(r *http.Request, gwCosmosmux *runtime.ServeMux, request types.I
 	availableBalances := common.GetAccountBalances(gwCosmosmux, r.Clone(r.Context()), config.Config.Faucet.Address)
 	claimBalances := common.GetAccountBalances(gwCosmosmux, r.Clone(r.Context()), bech32addr)
 
-	availableAmount := int64(0)
+	availableAmount := new(big.Int)
+	availableAmount.SetString("0", 10)
+	fmt.Println(availableBalances)
 	for _, balance := range availableBalances {
 		if balance.Denom == token {
-			amount, err := strconv.ParseInt(balance.Amount, 10, 64)
-			if err == nil {
-				availableAmount = amount
-			}
+			availableAmount.SetString(balance.Amount, 10)
 		}
 	}
 
-	claimAmount := int64(0) // Y
+	claimAmount := new(big.Int)
+	claimAmount.SetString("0", 10)
 	for _, balance := range claimBalances {
 		if balance.Denom == token {
-			amount, err := strconv.ParseInt(balance.Amount, 10, 64)
-			if err == nil {
-				claimAmount = amount
-			}
+			claimAmount.SetString(balance.Amount, 10)
 		}
 	}
 
-	faucetAmount, ok := config.Config.Faucet.FaucetAmounts[token] // X
+	faucetAmount := new(big.Int)
+	faucetAmountString, ok := config.Config.Faucet.FaucetAmounts[token] // X
 
 	if !ok {
 		common.GetLogger().Error("[faucet] Failed to get faucet amount from the configuration")
 		return common.ServeError(102, "", "invalid token", http.StatusBadRequest)
 	}
 
-	faucetMininumAmount, ok := config.Config.Faucet.FaucetMinimumAmounts[token] // M
+	faucetAmount.SetString(faucetAmountString, 10)
+
+	faucetMininumAmount := new(big.Int)
+	faucetMininumAmountString, ok := config.Config.Faucet.FaucetMinimumAmounts[token] // M
 
 	if !ok {
 		common.GetLogger().Error("[faucet] Failed to get faucet minimum amount from the configuration")
 		return common.ServeError(102, "", "invalid token", http.StatusBadRequest)
 	}
+
+	faucetMininumAmount.SetString(faucetMininumAmountString, 10)
 
 	coinStr, ok := config.Config.Faucet.FeeAmounts[token]
 
@@ -121,17 +124,23 @@ func serveFaucet(r *http.Request, gwCosmosmux *runtime.ServeMux, request types.I
 	common.GetLogger().Info("[faucet] Faucet amount: ", faucetAmount)
 	common.GetLogger().Info("[faucet] Faucet minimum amount: ", faucetMininumAmount)
 
-	if faucetAmount <= claimAmount {
+	if faucetAmount.Cmp(claimAmount) <= 0 {
 		common.GetLogger().Error("[faucet] No need to send tokens: faucetAmount <= claimAmount")
 		return common.ServeError(103, "", "no need to send tokens", http.StatusBadRequest)
 	}
 
-	if faucetAmount-claimAmount <= faucetMininumAmount {
+	claimingAmount := new(big.Int)
+	claimingAmount.SetString("0", 10)
+	claimingAmount = claimingAmount.Sub(faucetAmount, claimAmount)
+	if claimingAmount.Cmp(faucetMininumAmount) <= 0 {
 		common.GetLogger().Error("[faucet] Less than minimum amount: faucetAmount-claimAmount <= faucetMininumAmount")
 		return common.ServeError(104, "", "can't send tokens, less than minimum amount", http.StatusBadRequest)
 	}
 
-	if faucetAmount-claimAmount > availableAmount-faucetMininumAmount {
+	remainingAmount := new(big.Int)
+	remainingAmount.SetString("0", 10)
+	remainingAmount = remainingAmount.Sub(availableAmount, faucetMininumAmount)
+	if claimingAmount.Cmp(remainingAmount) > 0 {
 		common.GetLogger().Error("[faucet] Not enough tokens: faucetAmount-claimAmount > availableAmount-faucetMininumAmount")
 		return common.ServeError(105, "", "not enough tokens", http.StatusBadRequest)
 	}
@@ -144,7 +153,7 @@ func serveFaucet(r *http.Request, gwCosmosmux *runtime.ServeMux, request types.I
 	msgSend := &bank.MsgSend{
 		FromAddress: faucetAccAddr.String(),
 		ToAddress:   claimAccAddr.String(),
-		Amount:      sdk.NewCoins(sdk.NewInt64Coin(token, faucetAmount-claimAmount)),
+		Amount:      sdk.NewCoins(sdk.NewCoin(token, sdk.NewIntFromBigInt(claimingAmount))),
 	}
 
 	msgs := []sdk.Msg{msgSend}

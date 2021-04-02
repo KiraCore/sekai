@@ -1,5 +1,16 @@
 # Changelog
 
+## [v0.1.18.12] - 04.2.2021
+
+- update interx status api
+- add nodes cli configurations
+- fix consensus_stopped logic
+
+## [v0.1.18.10] - 03.31.2021
+
+- add `addrbook` cli option
+- fix faucet amount handling (e.g. 18 decimal)
+
 ## [v0.1.18.9] - 03.29.2021
 
 - add `faucet_amounts`, `faucet_minimum_amounts`, `fee_amounts` for interxd init cli configuration.

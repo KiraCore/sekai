@@ -199,21 +199,21 @@ func queryVotesHandler(r *http.Request, gwCosmosmux *runtime.ServeMux) (interfac
 	if success != nil {
 		result := struct {
 			Votes []struct {
-				ProposalID uint64 `json:"proposal_id,omitempty"`
+				ProposalID uint64 `json:"proposal_id,string,omitempty"`
 				Voter      []byte `json:"voter,omitempty"`
 				Option     string `json:"option,omitempty"`
-			} `json:"voters,omitempty"`
+			} `json:"votes,omitempty"`
 		}{}
 
 		byteData, err := json.Marshal(success)
 		if err != nil {
-			common.GetLogger().Error("[query-voters] Invalid response format: ", err)
+			common.GetLogger().Error("[query-votes] Invalid response format: ", err)
 			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
 		}
 
 		err = json.Unmarshal(byteData, &result)
 		if err != nil {
-			common.GetLogger().Error("[query-voters] Invalid response format: ", err)
+			common.GetLogger().Error("[query-votes] Invalid response format: ", err)
 			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
 		}
 

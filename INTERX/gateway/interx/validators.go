@@ -448,7 +448,7 @@ func queryConsensusHandle(r *http.Request, gwCosmosmux *runtime.ServeMux, rpcAdd
 				response.Noncommits = append(response.Noncommits, validators[i])
 			}
 		}
-		fmt.Println(response)
+
 		return response, failure, statusCode
 	}
 

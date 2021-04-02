@@ -56,6 +56,18 @@ func (k msgServer) ClaimValidator(goCtx context.Context, msg *types.MsgClaimVali
 
 	k.keeper.AddPendingValidator(ctx, validator)
 
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeClaimValidator,
+			sdk.NewAttribute(types.AttributeKeyMoniker, msg.Moniker),
+			sdk.NewAttribute(types.AttributeKeyWebsite, msg.Website),
+			sdk.NewAttribute(types.AttributeKeySocial, msg.Social),
+			sdk.NewAttribute(types.AttributeKeyIdentity, msg.Identity),
+			sdk.NewAttribute(types.AttributeKeyCommission, msg.Commission.String()),
+			sdk.NewAttribute(types.AttributeKeyValKey, msg.ValKey.String()),
+			sdk.NewAttribute(types.AttributeKeyPubKey, msg.PubKey.String()),
+		),
+	)
 	return &types.MsgClaimValidatorResponse{}, nil
 }
 
@@ -100,7 +112,16 @@ func (k msgServer) ProposalUnjailValidator(goCtx context.Context, msg *types.Msg
 	if err != nil {
 		return nil, err
 	}
-
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			customgovtypes.EventTypeSubmitProposal,
+			sdk.NewAttribute(customgovtypes.AttributeKeyProposalId, fmt.Sprintf("%d", proposalID)),
+			sdk.NewAttribute(customgovtypes.AttributeKeyProposalType, msg.Type()),
+			sdk.NewAttribute(types.AttributeKeyDescription, msg.Description),
+			sdk.NewAttribute(types.AttributeKeyHash, msg.Hash),
+			sdk.NewAttribute(types.AttributeKeyReference, msg.Reference),
+		),
+	)
 	return &types.MsgProposalUnjailValidatorResponse{
 		ProposalID: proposalID,
 	}, nil
