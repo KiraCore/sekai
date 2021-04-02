@@ -44,6 +44,11 @@ func (k msgServer) ClaimValidator(goCtx context.Context, msg *types.MsgClaimVali
 		return nil, errors.Wrapf(errors.ErrInvalidPubKey, "Expecting cryptotypes.PubKey, got %T", pk)
 	}
 
+	_, err := k.keeper.GetValidator(ctx, msg.ValKey)
+	if err == nil {
+		return nil, types.ErrValidatorAlreadyClaimed
+	}
+
 	validator, err := types.NewValidator(msg.Moniker, msg.Website, msg.Social, msg.Identity, msg.Commission, msg.ValKey, pk)
 	if err != nil {
 		return nil, err

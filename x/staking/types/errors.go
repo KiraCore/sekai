@@ -14,6 +14,7 @@ var ErrValidatorInactive = fmt.Errorf("validator is inactive")
 var ErrValidatorPaused = fmt.Errorf("validator is paused")
 
 var (
-	ErrNetworkActorNotFound = errors.Register(ModuleName, 2, "network actor not found")
-	ErrNotEnoughPermissions = errors.Register(ModuleName, 3, "not enough permissions")
+	ErrNetworkActorNotFound    = errors.Register(ModuleName, 2, "network actor not found")
+	ErrNotEnoughPermissions    = errors.Register(ModuleName, 3, "not enough permissions")
+	ErrValidatorAlreadyClaimed = errors.Register(ModuleName, 4, "validator already claimed")
 )
