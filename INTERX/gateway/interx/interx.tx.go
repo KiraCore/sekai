@@ -14,6 +14,8 @@ import (
 	"github.com/KiraCore/sekai/INTERX/config"
 	"github.com/KiraCore/sekai/INTERX/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	txSinging "github.com/cosmos/cosmos-sdk/types/tx/signing"
+	"github.com/cosmos/cosmos-sdk/x/auth/signing"
 	bank "github.com/cosmos/cosmos-sdk/x/bank/types"
 	distribution "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	staking "github.com/cosmos/cosmos-sdk/x/staking/types"
@@ -28,10 +30,12 @@ import (
 func RegisterInterxTxRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr string) {
 	r.HandleFunc(config.QueryWithdraws, QueryWithdraws(rpcAddr)).Methods("GET")
 	r.HandleFunc(config.QueryDeposits, QueryDeposits(rpcAddr)).Methods("GET")
+	r.HandleFunc(config.QueryUnconfirmedTxs, QueryUnconfirmedTxs(rpcAddr)).Methods("GET")
 
 	common.AddRPCMethod("GET", config.QueryKiraFunctions, "This is an API to query kira functions and metadata.", true)
 	common.AddRPCMethod("GET", config.QueryWithdraws, "This is an API to query withdraw transactions.", true)
 	common.AddRPCMethod("GET", config.QueryDeposits, "This is an API to query deposit transactions.", true)
+	common.AddRPCMethod("GET", config.QueryUnconfirmedTxs, "This is an API to query unconfirmed transactions.", true)
 }
 
 func toSnakeCase(str string) string {
@@ -524,5 +528,119 @@ func QueryDeposits(rpcAddr string) http.HandlerFunc {
 		}
 
 		common.WrapResponse(w, request, *response, statusCode, common.RPCMethods["GET"][config.QueryStatus].CachingEnabled)
+	}
+}
+
+func searchUnconfirmed(rpcAddr string, limit string) (*tmTypes.ResultUnconfirmedTxs, error) {
+	endpoint := fmt.Sprintf("%s/unconfirmed_txs?limit=%s", rpcAddr, limit)
+	fmt.Println(endpoint)
+	common.GetLogger().Info("[query-unconfirmed-txs] Entering transaction search: ", endpoint)
+
+	resp, err := http.Get(endpoint)
+	if err != nil {
+		common.GetLogger().Error("[query-unconfirmed-txs] Unable to connect to ", endpoint)
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	respBody, _ := ioutil.ReadAll(resp.Body)
+
+	response := new(tmJsonRPCTypes.RPCResponse)
+
+	if err := json.Unmarshal(respBody, response); err != nil {
+		common.GetLogger().Error("[query-unconfirmed-txs] Unable to decode response: ", err)
+		return nil, err
+	}
+
+	if response.Error != nil {
+		common.GetLogger().Error("[query-unconfirmed-txs] Error response:", response.Error.Message)
+		return nil, errors.New(response.Error.Message)
+	}
+
+	result := new(tmTypes.ResultUnconfirmedTxs)
+	if err := tmjson.Unmarshal(response.Result, result); err != nil {
+		common.GetLogger().Error("[query-unconfirmed-txs] Failed to unmarshal result:", err)
+		return nil, fmt.Errorf("error unmarshalling result: %w", err)
+	}
+
+	return result, nil
+}
+
+func queryUnconfirmedTransactionsHandler(rpcAddr string, r *http.Request) (interface{}, interface{}, int) {
+	limit := r.FormValue("limit")
+	result, err := searchUnconfirmed(rpcAddr, limit)
+	if err != nil {
+		common.GetLogger().Error("[query-unconfirmed-txs] Failed to query unconfirmed txs: %w ", err)
+		return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
+	}
+
+	type TxFee struct {
+		Gas    uint64    `json:"gas"`
+		Amount sdk.Coins `json:"amount"`
+	}
+
+	type TxResult struct {
+		Msg       []sdk.Msg               `json:"msg"`
+		Fee       TxFee                   `json:"fee"`
+		Signature []txSinging.SignatureV2 `json:"signature"`
+		Memo      string                  `json:"memo"`
+	}
+	response := struct {
+		Count      int        `json:"n_txs"`
+		Total      int        `json:"total"`
+		TotalBytes int64      `json:"total_bytes"`
+		Txs        []TxResult `json:"txs"`
+	}{}
+
+	response.Count = result.Count
+	response.Total = result.Total
+	response.TotalBytes = result.TotalBytes
+	response.Txs = make([]TxResult, 0)
+
+	for _, tx := range result.Txs {
+		decodedTx, err := config.EncodingCg.TxConfig.TxDecoder()(tx)
+		if err != nil {
+			common.GetLogger().Error("[post-unconfirmed-txs] Failed to decode transaction: ", err)
+			return common.ServeError(0, "failed to decode signed TX", err.Error(), http.StatusBadRequest)
+		}
+
+		txResult, ok := decodedTx.(signing.Tx)
+		if !ok {
+			common.GetLogger().Error("[post-unconfirmed-txs] Failed to decode transaction")
+			return common.ServeError(0, "failed to decode signed TX", err.Error(), http.StatusBadRequest)
+		}
+
+		signature, _ := txResult.GetSignaturesV2()
+
+		response.Txs = append(response.Txs, TxResult{
+			Msg: txResult.GetMsgs(),
+			Fee: TxFee{
+				Amount: txResult.GetFee(),
+				Gas:    txResult.GetGas(),
+			},
+			Signature: signature,
+			Memo:      txResult.GetMemo(),
+		})
+	}
+
+	return response, nil, http.StatusOK
+}
+
+// QueryUnconfirmedTxs is a function to query unconfirmed transactions.
+func QueryUnconfirmedTxs(rpcAddr string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		request := common.GetInterxRequest(r)
+		response := common.GetResponseFormat(request, rpcAddr)
+		statusCode := http.StatusOK
+
+		common.GetLogger().Error("[query-unconfirmed-txs] Entering query")
+
+		if !common.RPCMethods["GET"][config.QueryUnconfirmedTxs].Enabled {
+			response.Response, response.Error, statusCode = common.ServeError(0, "", "API disabled", http.StatusForbidden)
+		} else {
+			response.Response, response.Error, statusCode = queryUnconfirmedTransactionsHandler(rpcAddr, r)
+		}
+
+		common.WrapResponse(w, request, *response, statusCode, false)
 	}
 }
