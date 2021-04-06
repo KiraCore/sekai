@@ -1,6 +1,9 @@
 # Changelog
 
-## [v0.1.18.12] - 04.2.2021
+- update consensus stopped after 6 * average block time.
+- add unconfirmed_txs query (wip).
+
+## [v0.1.18.12] - 04.02.2021
 
 - update interx status api
 - add nodes cli configurations
