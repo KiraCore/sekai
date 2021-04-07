@@ -29,6 +29,8 @@ func NewProposal(
 	submitTime time.Time,
 	votingEndTime time.Time,
 	enactmentEndTime time.Time,
+	minVotingEndBlockHeight int64,
+	minEnactmentEndBlockHeight int64,
 	description string,
 ) (Proposal, error) {
 	msg, ok := content.(proto.Message)
@@ -42,13 +44,15 @@ func NewProposal(
 	}
 
 	return Proposal{
-		ProposalId:       proposalID,
-		SubmitTime:       submitTime,
-		VotingEndTime:    votingEndTime,
-		EnactmentEndTime: enactmentEndTime,
-		Content:          any,
-		Result:           Pending,
-		Description:      description,
+		ProposalId:                 proposalID,
+		SubmitTime:                 submitTime,
+		VotingEndTime:              votingEndTime,
+		EnactmentEndTime:           enactmentEndTime,
+		MinVotingEndBlockHeight:    minVotingEndBlockHeight,
+		MinEnactmentEndBlockHeight: minEnactmentEndBlockHeight,
+		Content:                    any,
+		Result:                     Pending,
+		Description:                description,
 	}, nil
 }
 

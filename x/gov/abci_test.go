@@ -38,6 +38,8 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now(),
 					time.Now(),
 					time.Now(),
+					ctx.BlockHeight()+2,
+					ctx.BlockHeight()+3,
 					"some desc",
 				)
 				require.NoError(t, err)
@@ -93,6 +95,8 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now(),
 					time.Now().Add(10*time.Second),
 					time.Now().Add(20*time.Second),
+					ctx.BlockHeight()+2,
+					ctx.BlockHeight()+3,
 					"some desc",
 				)
 				require.NoError(t, err)
@@ -158,6 +162,8 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now(),
 					time.Now().Add(10*time.Second),
 					time.Now().Add(20*time.Second),
+					ctx.BlockHeight()+2,
+					ctx.BlockHeight()+3,
 					"some desc",
 				)
 				require.NoError(t, err)
@@ -197,6 +203,8 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now(),
 					time.Now().Add(10*time.Second),
 					time.Now().Add(20*time.Second),
+					ctx.BlockHeight()+2,
+					ctx.BlockHeight()+3,
 					"some desc",
 				)
 				require.NoError(t, err)
@@ -242,6 +250,8 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now(),
 					time.Now().Add(10*time.Second),
 					time.Now().Add(20*time.Second),
+					ctx.BlockHeight()+2,
+					ctx.BlockHeight()+3,
 					"some desc",
 				)
 				require.NoError(t, err)
@@ -287,6 +297,8 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now(),
 					time.Now().Add(10*time.Second),
 					time.Now().Add(20*time.Second),
+					ctx.BlockHeight()+2,
+					ctx.BlockHeight()+3,
 					"some desc",
 				)
 				require.NoError(t, err)
@@ -335,6 +347,8 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now(),
 					time.Now().Add(10*time.Second),
 					time.Now().Add(20*time.Second),
+					ctx.BlockHeight()+2,
+					ctx.BlockHeight()+3,
 					"some desc",
 				)
 				require.NoError(t, err)
@@ -376,6 +390,8 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now(),
 					time.Now().Add(10*time.Second),
 					time.Now().Add(20*time.Second),
+					ctx.BlockHeight()+2,
+					ctx.BlockHeight()+3,
 					"some desc",
 				)
 				require.NoError(t, err)
@@ -428,6 +444,8 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now(),
 					time.Now().Add(10*time.Second),
 					time.Now().Add(20*time.Second),
+					ctx.BlockHeight()+2,
+					ctx.BlockHeight()+3,
 					"some desc",
 				)
 				require.NoError(t, err)
@@ -475,6 +493,8 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now(),
 					time.Now().Add(10*time.Second),
 					time.Now().Add(20*time.Second),
+					ctx.BlockHeight()+2,
+					ctx.BlockHeight()+3,
 					"some desc",
 				)
 				require.NoError(t, err)
