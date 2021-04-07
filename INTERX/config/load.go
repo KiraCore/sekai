@@ -84,6 +84,11 @@ func LoadConfig(configFilePath string) {
 	Config.PORT = configFromFile.PORT
 	Config.Mnemonic = LoadMnemonic(configFromFile.MnemonicFile)
 
+	Config.SentryNodeID = configFromFile.SentryNodeID
+	Config.PrivSentryNodeID = configFromFile.PrivSentryNodeID
+	Config.ValidatorNodeID = configFromFile.ValidatorNodeID
+	Config.SeedNodeID = configFromFile.SeedNodeID
+
 	fmt.Println("Interx GRPC: ", Config.GRPC)
 	fmt.Println("Interx RPC : ", Config.RPC)
 	fmt.Println("Interx PORT: ", Config.PORT)

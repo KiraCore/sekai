@@ -1137,7 +1137,7 @@ func TestHandler_CreateProposalAssignPermission_Errors(t *testing.T) {
 				proposerAddr, "some desc", addr, types.PermClaimValidator,
 			),
 			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
-			errors.Wrap(types.ErrNotEnoughPermissions, "PermCreateSetPermissionsProposal"),
+			errors.Wrap(types.ErrNotEnoughPermissions, "PERMISSION_CREATE_SET_PERMISSIONS_PROPOSAL"),
 		},
 		{
 			"address already has that permission",

@@ -1,5 +1,16 @@
 # Changelog
 
+## [v0.1.18.14] - 01.04.2021
+### Fixed
+- Fixed problem with network stopping on pause.
+- Validator cannot be claimed if already did.
+
+## [v0.1.18.13] - 02.04.2021
+## Added
+- Add event manager to all msg handlers
+- Fix few permission issues
+- Fix tests
+
 ## [v0.1.18.11] - 01.04.2021
 ## Added
 - Add missing permissions to sudo role

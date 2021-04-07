@@ -70,6 +70,26 @@ func getGenesis() (string, error) {
 	return common.GetBlake2bHashFromBytes(data), nil
 }
 
+func GetGenesisResults(rpcAddr string) (*tmtypes.GenesisDoc, string, error) {
+	err := saveGenesis(rpcAddr)
+	if err != nil {
+		return nil, "", err
+	}
+
+	global.Mutex.Lock()
+	data, err := ioutil.ReadFile(genesisPath())
+	global.Mutex.Unlock()
+
+	if err != nil {
+		return nil, "", err
+	}
+
+	genesis := tmtypes.GenesisDoc{}
+	err = tmjson.Unmarshal(data, &genesis)
+
+	return &genesis, common.GetBlake2bHashFromBytes(data), err
+}
+
 // QueryGenesis is a function to query genesis.
 func QueryGenesis(rpcAddr string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {

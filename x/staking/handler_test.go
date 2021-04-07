@@ -71,31 +71,80 @@ func TestNewHandler_MsgClaimValidator_HappyPath(t *testing.T) {
 	require.Len(t, validatorSet, 1)
 }
 
-func TestNewHandler_MsgClaimValidator_ItFailsIfUserDoesNotHavePermissionsToClaimValidator(t *testing.T) {
+func TestNewHandler_MsgClaimValidator_Errors(t *testing.T) {
 	valAddr1, err := types.ValAddressFromBech32("kiravaloper15ky9du8a2wlstz6fpx3p4mqpjyrm5cgq38f2fp")
 	require.NoError(t, err)
 
 	pubKey, err := types.GetPubKeyFromBech32(types.Bech32PubKeyTypeConsPub, "kiravalconspub1zcjduepqylc5k8r40azmw0xt7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsq4xg7em")
 	require.NoError(t, err)
 
-	app := simapp.Setup(false)
-	ctx := app.NewContext(false, tmproto.Header{})
+	tests := []struct {
+		name          string
+		prepareFunc   func(ctx types.Context, app *simapp.SimApp)
+		expectedError error
+	}{
+		{
+			"user does not have permissions",
+			func(ctx types.Context, app *simapp.SimApp) {},
+			errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermClaimValidator"),
+		},
+		{
+			"validator already exist",
+			func(ctx types.Context, app *simapp.SimApp) {
+				// First we give user permissions
+				networkActor := customgovtypes.NewNetworkActor(
+					types.AccAddress(valAddr1),
+					nil,
+					1,
+					nil,
+					customgovtypes.NewPermissions([]customgovtypes.PermValue{
+						customgovtypes.PermClaimValidator,
+					}, nil),
+					1,
+				)
+				app.CustomGovKeeper.SaveNetworkActor(ctx, networkActor)
 
-	handler := staking.NewHandler(app.CustomStakingKeeper, app.CustomGovKeeper)
+				validator, err := customstakingtypes.NewValidator(
+					"aMoniker",
+					"some-web.com",
+					"A Sociale",
+					"My Identity",
+					types.NewDec(1234),
+					valAddr1,
+					pubKey,
+				)
+				require.NoError(t, err)
+				app.CustomStakingKeeper.AddValidator(ctx, validator)
+			},
+			customstakingtypes.ErrValidatorAlreadyClaimed,
+		},
+	}
 
-	theMsg, err := customstakingtypes.NewMsgClaimValidator(
-		"aMoniker",
-		"some-web.com",
-		"A Social",
-		"My Identity",
-		types.NewDec(1234),
-		valAddr1,
-		pubKey,
-	)
-	require.NoError(t, err)
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			app := simapp.Setup(false)
+			ctx := app.NewContext(false, tmproto.Header{})
 
-	_, err = handler(ctx, theMsg)
-	require.EqualError(t, err, "PermClaimValidator: not enough permissions")
+			tt.prepareFunc(ctx, app)
+
+			handler := staking.NewHandler(app.CustomStakingKeeper, app.CustomGovKeeper)
+
+			theMsg, err := customstakingtypes.NewMsgClaimValidator(
+				"aMoniker",
+				"some-web.com",
+				"A Social",
+				"My Identity",
+				types.NewDec(1234),
+				valAddr1,
+				pubKey,
+			)
+			require.NoError(t, err)
+
+			_, err = handler(ctx, theMsg)
+			require.EqualError(t, err, tt.expectedError.Error())
+		})
+	}
 }
 
 func TestNewHandler_SetPermissions_ActorWithRole(t *testing.T) {

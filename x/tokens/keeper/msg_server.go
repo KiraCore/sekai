@@ -2,6 +2,8 @@ package keeper
 
 import (
 	"context"
+	"fmt"
+	"strings"
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -43,6 +45,19 @@ func (k msgServer) ProposalUpsertTokenRates(goCtx context.Context, msg *types.Ms
 			msg.Rate,
 			msg.FeePayments,
 		))
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			customgovtypes.EventTypeSubmitProposal,
+			sdk.NewAttribute(customgovtypes.AttributeKeyProposalId, fmt.Sprintf("%d", proposalID)),
+			sdk.NewAttribute(customgovtypes.AttributeKeyProposalType, msg.Type()),
+			sdk.NewAttribute(types.AttributeKeyDescription, msg.Description),
+			sdk.NewAttribute(types.AttributeKeyDenom, msg.Denom),
+			sdk.NewAttribute(types.AttributeKeyRate, msg.Rate.String()),
+			sdk.NewAttribute(types.AttributeKeyFeePayments, fmt.Sprintf("%t", msg.FeePayments)),
+			sdk.NewAttribute(types.AttributeKeyProposer, msg.Proposer.String()),
+		),
+	)
+
 	return &types.MsgProposalUpsertTokenRatesResponse{
 		ProposalID: proposalID,
 	}, err
@@ -66,6 +81,19 @@ func (k msgServer) ProposalUpsertTokenAlias(goCtx context.Context, msg *types.Ms
 			msg.Decimals,
 			msg.Denoms,
 		))
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			customgovtypes.EventTypeSubmitProposal,
+			sdk.NewAttribute(customgovtypes.AttributeKeyProposalId, fmt.Sprintf("%d", proposalID)),
+			sdk.NewAttribute(customgovtypes.AttributeKeyProposalType, msg.Type()),
+			sdk.NewAttribute(types.AttributeKeySymbol, msg.Symbol),
+			sdk.NewAttribute(types.AttributeKeyName, msg.Name),
+			sdk.NewAttribute(types.AttributeKeyIcon, msg.Icon),
+			sdk.NewAttribute(types.AttributeKeyDecimals, fmt.Sprintf("%d", msg.Decimals)),
+			sdk.NewAttribute(types.AttributeKeyDenoms, strings.Join(msg.Denoms, ",")),
+			sdk.NewAttribute(types.AttributeKeyProposer, msg.Proposer.String()),
+		),
+	)
 	return &types.MsgProposalUpsertTokenAliasResponse{
 		ProposalID: proposalID,
 	}, err
@@ -87,6 +115,19 @@ func (k msgServer) ProposalTokensWhiteBlackChange(goCtx context.Context, msg *ty
 			msg.IsAdd,
 			msg.Tokens,
 		))
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			customgovtypes.EventTypeSubmitProposal,
+			sdk.NewAttribute(customgovtypes.AttributeKeyProposalId, fmt.Sprintf("%d", proposalID)),
+			sdk.NewAttribute(customgovtypes.AttributeKeyProposalType, msg.Type()),
+			sdk.NewAttribute(types.AttributeKeyProposer, msg.Proposer.String()),
+			sdk.NewAttribute(types.AttributeKeyIsBlacklist, fmt.Sprintf("%t", msg.IsBlacklist)),
+			sdk.NewAttribute(types.AttributeKeyIsAdd, fmt.Sprintf("%t", msg.IsAdd)),
+			sdk.NewAttribute(types.AttributeKeyTokens, strings.Join(msg.Tokens, ",")),
+			sdk.NewAttribute(types.AttributeKeyDescription, msg.Description),
+			sdk.NewAttribute(types.AttributeKeyProposer, msg.Proposer.String()),
+		),
+	)
 	return &types.MsgProposalTokensWhiteBlackChangeResponse{
 		ProposalID: proposalID,
 	}, err
@@ -110,6 +151,17 @@ func (k msgServer) UpsertTokenAlias(
 		msg.Decimals,
 		msg.Denoms,
 	))
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeUpsertTokenAlias,
+			sdk.NewAttribute(types.AttributeKeyProposer, msg.Proposer.String()),
+			sdk.NewAttribute(types.AttributeKeySymbol, msg.Symbol),
+			sdk.NewAttribute(types.AttributeKeyName, msg.Name),
+			sdk.NewAttribute(types.AttributeKeyIcon, msg.Icon),
+			sdk.NewAttribute(types.AttributeKeyDecimals, fmt.Sprintf("%d", msg.Decimals)),
+			sdk.NewAttribute(types.AttributeKeyDenoms, strings.Join(msg.Denoms, ",")),
+		),
+	)
 	return &types.MsgUpsertTokenAliasResponse{}, err
 }
 
@@ -135,6 +187,16 @@ func (k msgServer) UpsertTokenRate(goCtx context.Context, msg *types.MsgUpsertTo
 	if err != nil {
 		return nil, errors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
 	}
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeUpsertTokenRate,
+			sdk.NewAttribute(types.AttributeKeyProposer, msg.Proposer.String()),
+			sdk.NewAttribute(types.AttributeKeyDenom, msg.Denom),
+			sdk.NewAttribute(types.AttributeKeyRate, msg.Rate.String()),
+			sdk.NewAttribute(types.AttributeKeyFeePayments, fmt.Sprintf("%t", msg.FeePayments)),
+		),
+	)
+
 	return &types.MsgUpsertTokenRateResponse{}, nil
 }
 
