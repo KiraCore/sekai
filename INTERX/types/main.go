@@ -126,6 +126,11 @@ type TokenAlias struct {
 	Symbol   string   `json:"symbol"`
 }
 
+type TokenSupply struct {
+	Amount int64  `json:"amount,string"`
+	Denom  string `json:"denom"`
+}
+
 // ID is a field for facuet claim struct.
 func (c TokenAlias) ID() (jsonField string, value interface{}) {
 	value = c.Symbol

@@ -337,6 +337,31 @@ func GetTokenAliases(gwCosmosmux *runtime.ServeMux, r *http.Request) []types.Tok
 	return result.Data
 }
 
+// GetTokenSupply is a function to get token supply
+func GetTokenSupply(gwCosmosmux *runtime.ServeMux, r *http.Request) []types.TokenSupply {
+	r.URL.Path = config.QueryTotalSupply
+	r.URL.RawQuery = ""
+	r.Method = "GET"
+
+	GetLogger().Info("[grpc-call] Entering grpc call: ", r.URL.Path)
+
+	recorder := httptest.NewRecorder()
+	gwCosmosmux.ServeHTTP(recorder, r)
+	resp := recorder.Result()
+
+	type TokenAliasesResponse struct {
+		Supply []types.TokenSupply `json:"supply"`
+	}
+
+	result := TokenAliasesResponse{}
+	err := json.NewDecoder(resp.Body).Decode(&result)
+	if err != nil {
+		GetLogger().Error("[grpc-call] Unable to decode response: ", err)
+	}
+
+	return result.Supply
+}
+
 func GetKiraStatus(rpcAddr string) *types.KiraStatus {
 	success, _, _ := MakeGetRequest(rpcAddr, "/status", "")
 

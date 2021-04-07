@@ -1,5 +1,9 @@
 # Changelog
 
+- merge token aliases query and token supply.
+
+## [v0.1.18.15] - 04.06.2021
+
 - update consensus stopped after 6 * average block time.
 - add unconfirmed_txs query (wip).
 
