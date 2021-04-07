@@ -2,6 +2,9 @@ package types
 
 import (
 	"time"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	txSinging "github.com/cosmos/cosmos-sdk/types/tx/signing"
 )
 
 // ProxyResponse is a struct to be used for proxy response
@@ -80,18 +83,12 @@ type DepositWithdrawResult struct {
 	Txs  []DepositWithdrawTransaction `json:"txs"`
 }
 
-// TxAmount is a struct to be used for query transaction response
-type TxAmount struct {
-	Amount int64  `json:"amount,omitempty"`
-	Denom  string `json:"denom,omitempty"`
-}
-
 // Transaction is a struct to be used for query transaction response
 type Transaction struct {
 	Type    string     `json:"type,omitempty"`
 	From    string     `json:"from,omitempty"`
 	To      string     `json:"to,omitempty"`
-	Amounts []TxAmount `json:"amounts,omitempty"`
+	Amounts []sdk.Coin `json:"amounts,omitempty"`
 }
 
 // TransactionResult is a struct to be used for query transaction response
@@ -101,10 +98,19 @@ type TransactionResult struct {
 	BlockHeight    int64         `json:"block_height"`
 	BlockTimestamp int64         `json:"block_timestamp"`
 	Confirmation   int64         `json:"confirmation"`
+	Msgs           []sdk.Msg     `json:"msgs"`
 	Transactions   []Transaction `json:"transactions"`
-	Fees           []TxAmount    `json:"fees"`
+	Fees           []sdk.Coin    `json:"fees"`
 	GasWanted      int64         `json:"gas_wanted"`
 	GasUsed        int64         `json:"gas_used"`
+}
+
+type TransactionUnconfirmedResult struct {
+	Msgs      []sdk.Msg               `json:"msgs"`
+	Fees      []sdk.Coin              `json:"fees"`
+	Gas       uint64                  `json:"gas"`
+	Signature []txSinging.SignatureV2 `json:"signature"`
+	Memo      string                  `json:"memo"`
 }
 
 // TransactionSearchResult is a struct to be used for query transaction response

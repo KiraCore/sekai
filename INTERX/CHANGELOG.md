@@ -1,6 +1,8 @@
 # Changelog
 
 - merge token aliases query and token supply.
+- update response type for uncomfirmed_txs
+- update postman API collection
 
 ## [v0.1.18.15] - 04.06.2021
 
