@@ -93,20 +93,20 @@ type Transaction struct {
 
 // TransactionResult is a struct to be used for query transaction response
 type TransactionResult struct {
-	Hash           string        `json:"hash"`
-	Status         string        `json:"status"`
-	BlockHeight    int64         `json:"block_height"`
-	BlockTimestamp int64         `json:"block_timestamp"`
-	Confirmation   int64         `json:"confirmation"`
-	Msgs           []sdk.Msg     `json:"msgs"`
-	Transactions   []Transaction `json:"transactions"`
-	Fees           []sdk.Coin    `json:"fees"`
-	GasWanted      int64         `json:"gas_wanted"`
-	GasUsed        int64         `json:"gas_used"`
+	Hash           string             `json:"hash"`
+	Status         string             `json:"status"`
+	BlockHeight    int64              `json:"block_height"`
+	BlockTimestamp int64              `json:"block_timestamp"`
+	Confirmation   int64              `json:"confirmation"`
+	Msgs           map[string]sdk.Msg `json:"msgs"`
+	Transactions   []Transaction      `json:"transactions"`
+	Fees           []sdk.Coin         `json:"fees"`
+	GasWanted      int64              `json:"gas_wanted"`
+	GasUsed        int64              `json:"gas_used"`
 }
 
 type TransactionUnconfirmedResult struct {
-	Msgs      []sdk.Msg               `json:"msgs"`
+	Msgs      map[string]sdk.Msg      `json:"msgs"`
 	Fees      []sdk.Coin              `json:"fees"`
 	Gas       uint64                  `json:"gas"`
 	Signature []txSinging.SignatureV2 `json:"signature"`

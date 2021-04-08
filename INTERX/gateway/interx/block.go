@@ -196,7 +196,10 @@ func parseTransaction(rpcAddr string, transaction tmTypes.ResultTx) (types.Trans
 	txResult.GasWanted = transaction.TxResult.GetGasWanted()
 	txResult.GasUsed = transaction.TxResult.GetGasUsed()
 
-	txResult.Msgs = tx.GetMsgs()
+	txResult.Msgs = make(map[string]sdk.Msg)
+	for _, msg := range tx.GetMsgs() {
+		txResult.Msgs[msg.Type()] = msg
+	}
 
 	txResult.Transactions = []types.Transaction{}
 	txResult.Fees = []sdk.Coin{}
