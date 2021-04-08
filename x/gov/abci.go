@@ -35,7 +35,8 @@ func processProposal(ctx sdk.Context, k keeper.Keeper, proposalID uint64) {
 	totalVoters := len(availableVoters)
 	numVotes := len(votes)
 
-	quorum := k.GetNetworkProperties(ctx).VoteQuorum
+	properties := k.GetNetworkProperties(ctx)
+	quorum := properties.VoteQuorum
 
 	isQuorum, err := types.IsQuorum(quorum, uint64(numVotes), uint64(totalVoters))
 	if err != nil {
@@ -55,7 +56,7 @@ func processProposal(ctx sdk.Context, k keeper.Keeper, proposalID uint64) {
 	}
 
 	// enactment time should be at least 1 block from voting period finish
-	proposal.MinEnactmentEndBlockHeight = ctx.BlockHeight() + 1
+	proposal.MinEnactmentEndBlockHeight = ctx.BlockHeight() + int64(properties.MinProposalEnactmentBlocks)
 	k.SaveProposal(ctx, proposal)
 	k.RemoveActiveProposal(ctx, proposal)
 	k.AddToEnactmentProposals(ctx, proposal)
