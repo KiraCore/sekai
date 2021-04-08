@@ -600,10 +600,13 @@ func queryUnconfirmedTransactionsHandler(rpcAddr string, r *http.Request) (inter
 
 		signature, _ := txResult.GetSignaturesV2()
 
-		var msgs map[string]sdk.Msg = make(map[string]sdk.Msg)
+		var msgs []types.TxMsg = make([]types.TxMsg, 0)
 
 		for _, msg := range txResult.GetMsgs() {
-			msgs[msg.Type()] = msg
+			msgs = append(msgs, types.TxMsg{
+				Type: msg.Type(),
+				Data: msg,
+			})
 		}
 
 		response.Txs = append(response.Txs, types.TransactionUnconfirmedResult{

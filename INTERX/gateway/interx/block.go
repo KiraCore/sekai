@@ -196,9 +196,12 @@ func parseTransaction(rpcAddr string, transaction tmTypes.ResultTx) (types.Trans
 	txResult.GasWanted = transaction.TxResult.GetGasWanted()
 	txResult.GasUsed = transaction.TxResult.GetGasUsed()
 
-	txResult.Msgs = make(map[string]sdk.Msg)
+	txResult.Msgs = make([]types.TxMsg, 0)
 	for _, msg := range tx.GetMsgs() {
-		txResult.Msgs[msg.Type()] = msg
+		txResult.Msgs = append(txResult.Msgs, types.TxMsg{
+			Type: msg.Type(),
+			Data: msg,
+		})
 	}
 
 	txResult.Transactions = []types.Transaction{}
