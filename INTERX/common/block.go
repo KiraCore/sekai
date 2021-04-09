@@ -41,7 +41,7 @@ func AddNewBlock(height int64, timestamp int64) {
 
 	var timespan float64 = (float64(timestamp) - float64(prevBlockTimestamp)) / 1e9
 
-	if len(LatestNBlockTimes) > 0 && timespan >= GetAverageBlockTime()*6 {
+	if len(LatestNBlockTimes) > 0 && timespan >= GetAverageBlockTime()*float64(config.Config.Block.HaltedAvgBlockTimes) {
 		// a block just after a halt
 		GetLogger().Errorf("[AddNewBlock] block just after a halt: %d, timestamp: %f, average: %f", height, timespan, GetAverageBlockTime())
 		return
@@ -116,7 +116,7 @@ func IsConsensusStopped(validatorCount int) bool {
 
 	UpdateN(n)
 
-	if float64(time.Now().Unix()-blockTime.Unix()) < GetAverageBlockTime()*6 {
+	if float64(time.Now().Unix()-blockTime.Unix()) < GetAverageBlockTime()*float64(config.Config.Block.HaltedAvgBlockTimes) {
 		return false
 	}
 

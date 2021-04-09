@@ -55,6 +55,8 @@ func main() {
 	initSigningMnemonicPtr := initCommand.String("signing_mnemonic", signingMnemonic, "The interx signing mnemonic file path or seeds.")
 
 	initSyncStatus := initCommand.Int64("status_sync", 5, "The time in seconds and INTERX syncs node status.")
+	initHaltedAvgBlockTimes := initCommand.Int64("halted_avg_block_times", 10, "This will be used for checking consensus halted.")
+
 	initCacheDirPtr := initCommand.String("cache_dir", "cache", "The interx cache directory path.")
 	initMaxCacheSize := initCommand.String("max_cache_size", "2GB", "The maximum cache size.")
 	initCachingDuration := initCommand.Int64("caching_duration", 5, "The caching clear duration in seconds.")
@@ -68,6 +70,7 @@ func main() {
 	initFeeAmounts := initCommand.String("fee_amounts", "stake 1000ukex,ukex 1000ukex,validatortoken 1000ukex", "The fee amount for each denom. `stake 1000ukex` means it will use `1000ukex` for `stake` assets transfer.")
 
 	initAddrBook := initCommand.String("addrbook", "addrbook.json", "The address books")
+	initTxModes := initCommand.String("tx_modes", "sync,async,block", "The allowed transaction modes")
 
 	startConfigPtr := startCommand.String("config", "./config.json", "The interx configurtion path. (Required)")
 
@@ -102,6 +105,7 @@ func main() {
 					*initPortPtr,
 					*initSigningMnemonicPtr,
 					*initSyncStatus,
+					*initHaltedAvgBlockTimes,
 					*initCacheDirPtr,
 					*initMaxCacheSize,
 					*initCachingDuration,
@@ -112,6 +116,7 @@ func main() {
 					*initFaucetMinimumAmounts,
 					*initFeeAmounts,
 					*initAddrBook,
+					*initTxModes,
 				)
 
 				fmt.Printf("Created interx configuration file: %s\n", *initConfigFilePtr)
