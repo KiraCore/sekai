@@ -4,6 +4,7 @@ import (
 	"github.com/KiraCore/sekai/x/staking/types"
 	customstakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // Activate a validator
@@ -14,7 +15,7 @@ func (k Keeper) Activate(ctx sdk.Context, valAddress sdk.ValAddress) error {
 	}
 
 	if validator.IsPaused() {
-		return customstakingtypes.ErrValidatorPaused
+		return sdkerrors.Wrap(customstakingtypes.ErrValidatorPaused, "Can NOT activate paused validator, you must unpause")
 	}
 
 	k.setStatusToValidator(ctx, validator, customstakingtypes.Active)

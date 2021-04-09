@@ -158,10 +158,11 @@ func (k Keeper) GetValidatorByConsAddr(ctx sdk.Context, consAddr sdk.ConsAddress
 	return validator, nil
 }
 
-// MaxValidators returns the maximum amount of joined validators
+// MaxValidators returns the maximum number of joined validators
 func (k Keeper) MaxValidators(sdk.Context) uint32 {
-	// TODO: don't do anything for now, implement this
-	return 10
+	// TODO: this needs to be calculated dynamically by code by looking around validator iterator?
+	// This number was discussed with @asmo
+	return 1000
 }
 
 // IsNetworkActive returns true if network has more than the validators required in network property
