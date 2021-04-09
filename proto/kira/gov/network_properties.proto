@@ -22,7 +22,7 @@ enum NetworkProperty {
     PROPOSAL_ENACTMENT_TIME = 4 [(gogoproto.enumvalue_customname) = "ProposalEnactmentTime"];
     MIN_PROPOSAL_END_BLOCKS = 5 [(gogoproto.enumvalue_customname) = "MinProposalEndBlocks"];
     MIN_PROPOSAL_ENACTMENT_BLOCKS = 6 [(gogoproto.enumvalue_customname) = "MinProposalEnactmentBlocks"];
-    ENABLE_FOREIGN_TX_FEE_PAYMENTS = 7 [(gogoproto.enumvalue_customname) = "EnableForeignFeePayments"];
+    ENABLE_FOREIGN_FEE_PAYMENTS = 7 [(gogoproto.enumvalue_customname) = "EnableForeignFeePayments"];
     MISCHANCE_RANK_DECREASE_AMOUNT = 8 [(gogoproto.enumvalue_customname) = "MischanceRankDecreaseAmount"];
     INACTIVE_RANK_DECREASE_PERCENT = 9 [(gogoproto.enumvalue_customname) = "InactiveRankDecreasePercent"];
     POOR_NETWORK_MAX_BANK_SEND = 10 [(gogoproto.enumvalue_customname) = "PoorNetworkMaxBankSend"];
@@ -38,10 +38,10 @@ message NetworkProperties {
     uint64 vote_quorum = 3;
     uint64 proposal_end_time = 4;
     uint64 proposal_enactment_time = 5;
-    bool enable_foreign_fee_payments = 6;
-    uint64 min_proposal_end_blocks = 7; // minimum blocks required for proposal voting
-    uint64 min_proposal_enactment_blocks = 8; // min blocks required for proposal enactment
-  
+    uint64 min_proposal_end_blocks = 6; // minimum blocks required for proposal voting
+    uint64 min_proposal_enactment_blocks = 7; // min blocks required for proposal enactment
+    bool enable_foreign_fee_payments = 8;
+
     // The rank property is a long term statistics implying the "longest" streak that validator ever achieved,
     // it can be expressed as rank = MAX(rank, streak).
     // Under certain circumstances we should however decrease the rank of the validator.
