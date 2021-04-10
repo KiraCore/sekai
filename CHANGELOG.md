@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.1.18.16] - 09.04.2021
+### Fixed
+- Add minimum blocks for voting and enactment time on-chain param and implement logic
+- Modify error messages for slashing module
+
 ## [v0.1.18.14] - 01.04.2021
 ### Fixed
 - Fixed problem with network stopping on pause.

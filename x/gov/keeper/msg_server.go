@@ -188,6 +188,8 @@ func (k msgServer) CreateAndSaveProposalWithContent(ctx sdk.Context, description
 		blockTime.Add(time.Second*time.Duration(properties.ProposalEndTime)+
 			time.Second*time.Duration(properties.ProposalEnactmentTime),
 		),
+		ctx.BlockHeight()+int64(properties.MinProposalEndBlocks),
+		ctx.BlockHeight()+int64(properties.MinProposalEndBlocks+properties.MinProposalEnactmentBlocks),
 		description,
 	)
 

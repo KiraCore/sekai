@@ -332,6 +332,8 @@ func TestHandler_ProposalUnjailValidator(t *testing.T) {
 		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEndTime)+
 			time.Second*time.Duration(properties.ProposalEnactmentTime),
 		),
+		ctx.BlockHeight()+2,
+		ctx.BlockHeight()+3,
 		"some desc",
 	)
 	require.NoError(t, err)

@@ -1215,6 +1215,8 @@ func TestHandler_ProposalAssignPermission(t *testing.T) {
 		ctx.BlockTime(),
 		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEndTime)),
 		ctx.BlockTime().Add((time.Second*time.Duration(properties.ProposalEndTime))+(time.Second*time.Duration(properties.ProposalEnactmentTime))),
+		ctx.BlockHeight()+2,
+		ctx.BlockHeight()+3,
 		"some desc",
 	)
 	require.NoError(t, err)
@@ -1326,6 +1328,8 @@ func TestHandler_ProposalUpsertDataRegistry(t *testing.T) {
 		ctx.BlockTime(),
 		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEndTime)),
 		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEnactmentTime)+time.Second*time.Duration(properties.ProposalEndTime)),
+		ctx.BlockHeight()+2,
+		ctx.BlockHeight()+3,
 		"some desc",
 	)
 	require.NoError(t, err)
@@ -1384,6 +1388,8 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 					ctx.BlockTime(),
 					ctx.BlockTime().Add(time.Second*9),
 					ctx.BlockTime().Add(time.Second*20),
+					ctx.BlockHeight()+2,
+					ctx.BlockHeight()+3,
 					"some desc",
 				)
 
@@ -1418,6 +1424,8 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 					ctx.BlockTime(),
 					ctx.BlockTime().Add(time.Second*20),
 					ctx.BlockTime().Add(time.Second*30),
+					ctx.BlockHeight()+2,
+					ctx.BlockHeight()+3,
 					"some desc",
 				)
 				require.NoError(t, err)
@@ -1454,6 +1462,8 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 					ctx.BlockTime(),
 					ctx.BlockTime().Add(time.Second*20),
 					ctx.BlockTime().Add(time.Second*30),
+					ctx.BlockHeight()+2,
+					ctx.BlockHeight()+3,
 					"some desc",
 				)
 				require.NoError(t, err)
@@ -1521,6 +1531,8 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 					ctx.BlockTime(),
 					ctx.BlockTime().Add(time.Second*20),
 					ctx.BlockTime().Add(time.Second*30),
+					ctx.BlockHeight()+2,
+					ctx.BlockHeight()+3,
 					"some desc",
 				)
 				require.NoError(t, err)
@@ -1557,6 +1569,8 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 					ctx.BlockTime(),
 					ctx.BlockTime().Add(time.Second*20),
 					ctx.BlockTime().Add(time.Second*30),
+					ctx.BlockHeight()+2,
+					ctx.BlockHeight()+3,
 					"some desc",
 				)
 				require.NoError(t, err)
@@ -1614,6 +1628,8 @@ func TestHandler_VoteProposal(t *testing.T) {
 		ctx.BlockTime(),
 		ctx.BlockTime().Add(time.Second*1),
 		ctx.BlockTime().Add(time.Second*10),
+		ctx.BlockHeight()+2,
+		ctx.BlockHeight()+3,
 		"some desc",
 	)
 	require.NoError(t, err)
@@ -1720,6 +1736,8 @@ func TestHandler_ProposalSetNetworkProperty(t *testing.T) {
 		ctx.BlockTime(),
 		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEndTime)),
 		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEnactmentTime)+time.Second*time.Duration(properties.ProposalEndTime)),
+		ctx.BlockHeight()+2,
+		ctx.BlockHeight()+3,
 		"some desc",
 	)
 	require.NoError(t, err)
@@ -1875,6 +1893,8 @@ func TestHandler_ProposalCreateRole(t *testing.T) {
 		ctx.BlockTime(),
 		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEndTime)),
 		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEnactmentTime)+time.Second*time.Duration(properties.ProposalEndTime)),
+		ctx.BlockHeight()+2,
+		ctx.BlockHeight()+3,
 		"some desc",
 	)
 	require.NoError(t, err)

@@ -24,13 +24,19 @@ func processProposal(ctx sdk.Context, k keeper.Keeper, proposalID uint64) {
 		panic("proposal was expected to exist")
 	}
 
+	// skip execution if block height condition does not meet
+	if proposal.MinVotingEndBlockHeight > ctx.BlockHeight() {
+		return
+	}
+
 	votes := k.GetProposalVotes(ctx, proposalID)
 
 	availableVoters := k.GetNetworkActorsByAbsoluteWhitelistPermission(ctx, proposal.GetContent().VotePermission())
 	totalVoters := len(availableVoters)
 	numVotes := len(votes)
 
-	quorum := k.GetNetworkProperties(ctx).VoteQuorum
+	properties := k.GetNetworkProperties(ctx)
+	quorum := properties.VoteQuorum
 
 	isQuorum, err := types.IsQuorum(quorum, uint64(numVotes), uint64(totalVoters))
 	if err != nil {
@@ -49,6 +55,8 @@ func processProposal(ctx sdk.Context, k keeper.Keeper, proposalID uint64) {
 		proposal.Result = types.QuorumNotReached
 	}
 
+	// enactment time should be at least 1 block from voting period finish
+	proposal.MinEnactmentEndBlockHeight = ctx.BlockHeight() + int64(properties.MinProposalEnactmentBlocks)
 	k.SaveProposal(ctx, proposal)
 	k.RemoveActiveProposal(ctx, proposal)
 	k.AddToEnactmentProposals(ctx, proposal)
@@ -58,6 +66,11 @@ func processEnactmentProposal(ctx sdk.Context, k keeper.Keeper, router ProposalR
 	proposal, found := k.GetProposal(ctx, proposalID)
 	if !found {
 		panic("proposal was expected to exist")
+	}
+
+	// skip execution if block height condition does not meet
+	if proposal.MinEnactmentEndBlockHeight > ctx.BlockHeight() {
+		return
 	}
 
 	if proposal.Result == types.Enactment {
