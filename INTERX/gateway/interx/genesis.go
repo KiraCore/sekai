@@ -28,7 +28,7 @@ func genesisPath() string {
 }
 
 func saveGenesis(rpcAddr string) error {
-	_, err := getGenesis()
+	_, err := getGenesisCheckSum()
 	if err == nil {
 		return nil
 	}
@@ -58,7 +58,7 @@ func saveGenesis(rpcAddr string) error {
 	return err
 }
 
-func getGenesis() (string, error) {
+func getGenesisCheckSum() (string, error) {
 	global.Mutex.Lock()
 	data, err := ioutil.ReadFile(genesisPath())
 	global.Mutex.Unlock()
@@ -67,7 +67,7 @@ func getGenesis() (string, error) {
 		return "", err
 	}
 
-	return common.GetBlake2bHashFromBytes(data), nil
+	return common.GetSha256SumFromBytes(data), nil
 }
 
 func GetGenesisResults(rpcAddr string) (*tmtypes.GenesisDoc, string, error) {
@@ -87,7 +87,7 @@ func GetGenesisResults(rpcAddr string) (*tmtypes.GenesisDoc, string, error) {
 	genesis := tmtypes.GenesisDoc{}
 	err = tmjson.Unmarshal(data, &genesis)
 
-	return &genesis, common.GetBlake2bHashFromBytes(data), err
+	return &genesis, common.GetSha256SumFromBytes(data), err
 }
 
 // QueryGenesis is a function to query genesis.
@@ -103,7 +103,7 @@ func QueryGenesis(rpcAddr string) http.HandlerFunc {
 
 func queryGenesisSumHandler(rpcAddr string) (interface{}, interface{}, int) {
 	saveGenesis(rpcAddr)
-	checksum, err := getGenesis()
+	checksum, err := getGenesisCheckSum()
 	if err != nil {
 		return common.ServeError(0, "", "interx error", http.StatusInternalServerError)
 	}
