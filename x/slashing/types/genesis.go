@@ -3,27 +3,16 @@ package types
 import (
 	"fmt"
 	"time"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // NewGenesisState creates a new GenesisState object
 func NewGenesisState(
-	params Params, signingInfos []SigningInfo, missedBlocks []ValidatorMissedBlocks,
+	params Params, signingInfos []SigningInfo,
 ) *GenesisState {
 
 	return &GenesisState{
 		Params:       params,
 		SigningInfos: signingInfos,
-		MissedBlocks: missedBlocks,
-	}
-}
-
-// NewMissedBlock creates a new MissedBlock instance
-func NewMissedBlock(index int64, missed bool) MissedBlock {
-	return MissedBlock{
-		Index:  index,
-		Missed: missed,
 	}
 }
 
@@ -32,15 +21,14 @@ func DefaultGenesisState() *GenesisState {
 	return &GenesisState{
 		Params:       DefaultParams(),
 		SigningInfos: []SigningInfo{},
-		MissedBlocks: []ValidatorMissedBlocks{},
 	}
 }
 
 // ValidateGenesis validates the slashing genesis parameters
 func ValidateGenesis(data GenesisState) error {
-	minSign := data.Params.MinSignedPerWindow
-	if minSign.IsNegative() || minSign.GT(sdk.OneDec()) {
-		return fmt.Errorf("min signed per window should be less than or equal to one and greater than zero, is %s", minSign.String())
+	maxMischance := data.Params.MaxMischance
+	if maxMischance <= 0 {
+		return fmt.Errorf("max mischance should be positive, is %d", maxMischance)
 	}
 
 	downtimeInactive := data.Params.DowntimeInactiveDuration

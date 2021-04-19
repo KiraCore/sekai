@@ -27,7 +27,7 @@ func TestHandleNewValidator(t *testing.T) {
 	pks := simapp.CreateTestPubKeys(1)
 	addr, val := valAddrs[0], pks[0]
 	tstaking := teststaking.NewHelper(t, ctx, app.CustomStakingKeeper, app.CustomGovKeeper)
-	ctx = ctx.WithBlockHeight(app.CustomSlashingKeeper.SignedBlocksWindow(ctx) + 1)
+	ctx = ctx.WithBlockHeight(1)
 
 	// Validator created
 	tstaking.CreateValidator(addr, val, true)
@@ -36,14 +36,13 @@ func TestHandleNewValidator(t *testing.T) {
 
 	// Now a validator, for two blocks
 	app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), 100, true)
-	ctx = ctx.WithBlockHeight(app.CustomSlashingKeeper.SignedBlocksWindow(ctx) + 2)
+	ctx = ctx.WithBlockHeight(2)
 	app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), 100, false)
 
 	info, found := app.CustomSlashingKeeper.GetValidatorSigningInfo(ctx, sdk.ConsAddress(val.Address()))
 	require.True(t, found)
-	require.Equal(t, app.CustomSlashingKeeper.SignedBlocksWindow(ctx)+1, info.StartHeight)
-	require.Equal(t, int64(2), info.IndexOffset)
-	require.Equal(t, int64(1), info.Mischance)
+	require.Equal(t, int64(1), info.StartHeight)
+	require.Equal(t, int64(0), info.Mischance)
 	require.Equal(t, int64(1), info.MissedBlocksCounter)
 	require.Equal(t, int64(1), info.ProducedBlocksCounter)
 	require.Equal(t, time.Unix(0, 0).UTC(), info.InactiveUntil)
@@ -53,7 +52,7 @@ func TestHandleNewValidator(t *testing.T) {
 	require.Equal(t, stakingtypes.Active, validator.GetStatus())
 }
 
-// Test an missed block counter changes
+// Test missed blocks, produced blocks, mischance counter changes
 func TestMissedBlockAndRankStreakCounter(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
@@ -64,16 +63,16 @@ func TestMissedBlockAndRankStreakCounter(t *testing.T) {
 	addr, val := valAddrs[0], pks[0]
 	valAddr := sdk.ValAddress(addr)
 	tstaking := teststaking.NewHelper(t, ctx, app.CustomStakingKeeper, app.CustomGovKeeper)
-	ctx = ctx.WithBlockHeight(app.CustomSlashingKeeper.SignedBlocksWindow(ctx) + 1)
+	ctx = ctx.WithBlockHeight(1)
 
 	// Validator created
 	tstaking.CreateValidator(addr, val, true)
 
 	staking.EndBlocker(ctx, app.CustomStakingKeeper)
 
-	// Now a validator, for two blocks
+	// sign first 100 blocks successfully
 	app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), 100, true)
-	ctx = ctx.WithBlockHeight(app.CustomSlashingKeeper.SignedBlocksWindow(ctx) + 2)
+	ctx = ctx.WithBlockHeight(2)
 	app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), 100, false)
 
 	v := tstaking.CheckValidator(valAddr, stakingtypes.Active, false)
@@ -82,7 +81,7 @@ func TestMissedBlockAndRankStreakCounter(t *testing.T) {
 
 	info, found := app.CustomSlashingKeeper.GetValidatorSigningInfo(ctx, sdk.ConsAddress(val.Address()))
 	require.True(t, found)
-	require.Equal(t, int64(1), info.Mischance)
+	require.Equal(t, int64(0), info.Mischance)
 	require.Equal(t, int64(1), info.MissedBlocksCounter)
 	require.Equal(t, int64(1), info.ProducedBlocksCounter)
 
@@ -158,13 +157,25 @@ func TestHandleAlreadyInactive(t *testing.T) {
 
 	// 1000 first blocks OK
 	height := int64(0)
-	for ; height < app.CustomSlashingKeeper.SignedBlocksWindow(ctx); height++ {
+	for ; height < 1000; height++ {
 		ctx = ctx.WithBlockHeight(height)
 		app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), power, true)
 	}
 
-	// 501 blocks missed
-	for ; height < app.CustomSlashingKeeper.SignedBlocksWindow(ctx)+(app.CustomSlashingKeeper.SignedBlocksWindow(ctx)-app.CustomSlashingKeeper.MinSignedPerWindow(ctx))+1; height++ {
+	// miss 11 blocks for mischance confidence
+	for ; height < 1000+app.CustomSlashingKeeper.GetParams(ctx).MischanceConfidence+1; height++ {
+		ctx = ctx.WithBlockHeight(height)
+		app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), power, false)
+	}
+
+	// info correctness after the overflow of mischance confidence
+	info, found := app.CustomSlashingKeeper.GetValidatorSigningInfo(ctx, sdk.ConsAddress(val.Address()))
+	require.True(t, found)
+	require.Equal(t, int64(1), info.Mischance)
+	require.Equal(t, int64(999), info.LastPresentBlock)
+
+	// miss 110 blocks after mischance confidence happen
+	for ; height < 1000+app.CustomSlashingKeeper.MaxMischance(ctx)+app.CustomSlashingKeeper.GetParams(ctx).MischanceConfidence+1; height++ {
 		ctx = ctx.WithBlockHeight(height)
 		app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), power, false)
 	}
@@ -186,11 +197,9 @@ func TestHandleAlreadyInactive(t *testing.T) {
 }
 
 // Test a validator dipping in and out of the validator set
-// Ensure that missed blocks are tracked correctly and that
-// the start height of the signing info is reset correctly
+// Ensure that counters for mischance, last block produced are correct and uptime counters are reset correctly
 func TestValidatorDippingInAndOut(t *testing.T) {
 	// initial setup
-	// TestParams set the SignedBlocksWindow to 1000 and MaxMissedBlocksPerWindow to 500
 	app := simapp.Setup(false)
 	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 	app.CustomSlashingKeeper.SetParams(ctx, testslashing.TestParams())
@@ -247,15 +256,10 @@ func TestValidatorDippingInAndOut(t *testing.T) {
 	// check all the signing information
 	signInfo, found := app.CustomSlashingKeeper.GetValidatorSigningInfo(ctx, consAddr)
 	require.True(t, found)
-	require.Equal(t, int64(0), signInfo.Mischance)
+	require.Equal(t, int64(390), signInfo.Mischance)
+	require.Equal(t, int64(99), signInfo.LastPresentBlock)
 	require.Equal(t, int64(501), signInfo.MissedBlocksCounter)
 	require.Equal(t, int64(100), signInfo.ProducedBlocksCounter)
-	require.Equal(t, int64(0), signInfo.IndexOffset)
-	// array should be cleared
-	for offset := int64(0); offset < app.CustomSlashingKeeper.SignedBlocksWindow(ctx); offset++ {
-		missed := app.CustomSlashingKeeper.GetValidatorMissedBlockBitArray(ctx, consAddr, offset)
-		require.False(t, missed)
-	}
 
 	// some blocks pass
 	height = int64(5000)
@@ -304,10 +308,12 @@ func TestValidatorDippingInAndOut(t *testing.T) {
 	tstaking.CheckValidator(valAddr, stakingtypes.Active, false)
 
 	// After reentering after unpause, check if signature info is recovered correctly
-	for offset := int64(0); offset < app.CustomSlashingKeeper.SignedBlocksWindow(ctx); offset++ {
-		missed := app.CustomSlashingKeeper.GetValidatorMissedBlockBitArray(ctx, consAddr, offset)
-		require.False(t, missed)
-	}
+	signInfo, found = app.CustomSlashingKeeper.GetValidatorSigningInfo(ctx, consAddr)
+	require.True(t, found)
+	require.Equal(t, int64(491), signInfo.Mischance)
+	require.Equal(t, int64(5000), signInfo.LastPresentBlock)
+	require.Equal(t, int64(1002), signInfo.MissedBlocksCounter)
+	require.Equal(t, int64(101), signInfo.ProducedBlocksCounter)
 
 	// Miss another 501 blocks
 	latest = height

@@ -4,25 +4,23 @@ import (
 	"fmt"
 	"time"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 )
 
 // Default parameter namespace
 const (
 	DefaultSignedBlocksWindow       = int64(100)
+	DefaultMaxMischance             = int64(110)
 	DefaultDowntimeInactiveDuration = 60 * 10 * time.Second
-)
-
-var (
-	DefaultMinSignedPerWindow = sdk.NewDecWithPrec(5, 1)
+	DefaultMischanceConfidence      = int64(10)
 )
 
 // Parameter store keys
 var (
 	KeySignedBlocksWindow       = []byte("SignedBlocksWindow")
-	KeyMinSignedPerWindow       = []byte("MinSignedPerWindow")
+	KeyMaxMischance             = []byte("MaxMischance")
 	KeyDowntimeInactiveDuration = []byte("DowntimeInactiveDuration")
+	KeyMischanceConfidence      = []byte("MischanceConfidence")
 )
 
 // ParamKeyTable for slashing module
@@ -32,13 +30,14 @@ func ParamKeyTable() paramtypes.KeyTable {
 
 // NewParams creates a new Params object
 func NewParams(
-	signedBlocksWindow int64, minSignedPerWindow sdk.Dec, DowntimeInactiveDuration time.Duration,
+	signedBlocksWindow int64, maxMischance int64, downtimeInactiveDuration time.Duration, mischanceConfidence int64,
 ) Params {
 
 	return Params{
 		SignedBlocksWindow:       signedBlocksWindow,
-		MinSignedPerWindow:       minSignedPerWindow,
-		DowntimeInactiveDuration: DowntimeInactiveDuration,
+		MaxMischance:             maxMischance,
+		DowntimeInactiveDuration: downtimeInactiveDuration,
+		MischanceConfidence:      mischanceConfidence,
 	}
 }
 
@@ -46,22 +45,23 @@ func NewParams(
 func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 	return paramtypes.ParamSetPairs{
 		paramtypes.NewParamSetPair(KeySignedBlocksWindow, &p.SignedBlocksWindow, validateSignedBlocksWindow),
-		paramtypes.NewParamSetPair(KeyMinSignedPerWindow, &p.MinSignedPerWindow, validateMinSignedPerWindow),
+		paramtypes.NewParamSetPair(KeyMaxMischance, &p.MaxMischance, validateMaxMischance),
 		paramtypes.NewParamSetPair(KeyDowntimeInactiveDuration, &p.DowntimeInactiveDuration, validateDowntimeInactiveDuration),
+		paramtypes.NewParamSetPair(KeyMischanceConfidence, &p.MischanceConfidence, validateMischanceConfidence),
 	}
 }
 
 // DefaultParams defines the parameters for this module
 func DefaultParams() Params {
 	return NewParams(
-		DefaultSignedBlocksWindow, DefaultMinSignedPerWindow, DefaultDowntimeInactiveDuration,
+		DefaultSignedBlocksWindow, DefaultMaxMischance, DefaultDowntimeInactiveDuration, DefaultMischanceConfidence,
 	)
 }
 
 func validateSignedBlocksWindow(i interface{}) error {
 	v, ok := i.(int64)
 	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
+		return fmt.Errorf("invalid signed_blocks_window parameter type: %T", i)
 	}
 
 	if v <= 0 {
@@ -71,17 +71,14 @@ func validateSignedBlocksWindow(i interface{}) error {
 	return nil
 }
 
-func validateMinSignedPerWindow(i interface{}) error {
-	v, ok := i.(sdk.Dec)
+func validateMaxMischance(i interface{}) error {
+	v, ok := i.(int64)
 	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
+		return fmt.Errorf("invalid max_mischance parameter type: %T", i)
 	}
 
-	if v.IsNegative() {
-		return fmt.Errorf("min signed per window cannot be negative: %s", v)
-	}
-	if v.GT(sdk.OneDec()) {
-		return fmt.Errorf("min signed per window too large: %s", v)
+	if v <= 0 {
+		return fmt.Errorf("max mischance cannot be negative or equal to zero: %d", v)
 	}
 
 	return nil
@@ -90,11 +87,24 @@ func validateMinSignedPerWindow(i interface{}) error {
 func validateDowntimeInactiveDuration(i interface{}) error {
 	v, ok := i.(time.Duration)
 	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", i)
+		return fmt.Errorf("invalid downtime_inactive_duration parameter type: %T", i)
 	}
 
 	if v <= 0 {
 		return fmt.Errorf("downtime inactive duration must be positive: %s", v)
+	}
+
+	return nil
+}
+
+func validateMischanceConfidence(i interface{}) error {
+	v, ok := i.(int64)
+	if !ok {
+		return fmt.Errorf("invalid mischance_confidence parameter type: %T", i)
+	}
+
+	if v < 0 {
+		return fmt.Errorf("mischance confidence cannot be negative: %d", v)
 	}
 
 	return nil
