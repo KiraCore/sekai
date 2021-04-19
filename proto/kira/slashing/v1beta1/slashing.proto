@@ -35,7 +35,6 @@ message ValidatorSigningInfo {
 
 // Params represents the parameters used for by the slashing module.
 message Params {
-  int64 signed_blocks_window  = 1 [(gogoproto.moretags) = "yaml:\"signed_blocks_window\""];
   int64 max_mischance = 2 [(gogoproto.moretags)   = "yaml:\"max_mischance\""];
   google.protobuf.Duration downtime_inactive_duration = 3 [
     (gogoproto.nullable)    = false,

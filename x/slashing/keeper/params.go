@@ -7,12 +7,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-// SignedBlocksWindow - sliding window for downtime slashing
-func (k Keeper) SignedBlocksWindow(ctx sdk.Context) (res int64) {
-	k.paramspace.Get(ctx, types.KeySignedBlocksWindow, &res)
-	return
-}
-
 // MaxMischance - minimum blocks signed per window
 func (k Keeper) MaxMischance(ctx sdk.Context) int64 {
 	var maxMischance int64

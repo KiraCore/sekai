@@ -9,7 +9,6 @@ import (
 
 // Default parameter namespace
 const (
-	DefaultSignedBlocksWindow       = int64(100)
 	DefaultMaxMischance             = int64(110)
 	DefaultDowntimeInactiveDuration = 60 * 10 * time.Second
 	DefaultMischanceConfidence      = int64(10)
@@ -17,7 +16,6 @@ const (
 
 // Parameter store keys
 var (
-	KeySignedBlocksWindow       = []byte("SignedBlocksWindow")
 	KeyMaxMischance             = []byte("MaxMischance")
 	KeyDowntimeInactiveDuration = []byte("DowntimeInactiveDuration")
 	KeyMischanceConfidence      = []byte("MischanceConfidence")
@@ -30,11 +28,10 @@ func ParamKeyTable() paramtypes.KeyTable {
 
 // NewParams creates a new Params object
 func NewParams(
-	signedBlocksWindow int64, maxMischance int64, downtimeInactiveDuration time.Duration, mischanceConfidence int64,
+	maxMischance int64, downtimeInactiveDuration time.Duration, mischanceConfidence int64,
 ) Params {
 
 	return Params{
-		SignedBlocksWindow:       signedBlocksWindow,
 		MaxMischance:             maxMischance,
 		DowntimeInactiveDuration: downtimeInactiveDuration,
 		MischanceConfidence:      mischanceConfidence,
@@ -44,7 +41,6 @@ func NewParams(
 // ParamSetPairs - Implements params.ParamSet
 func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 	return paramtypes.ParamSetPairs{
-		paramtypes.NewParamSetPair(KeySignedBlocksWindow, &p.SignedBlocksWindow, validateSignedBlocksWindow),
 		paramtypes.NewParamSetPair(KeyMaxMischance, &p.MaxMischance, validateMaxMischance),
 		paramtypes.NewParamSetPair(KeyDowntimeInactiveDuration, &p.DowntimeInactiveDuration, validateDowntimeInactiveDuration),
 		paramtypes.NewParamSetPair(KeyMischanceConfidence, &p.MischanceConfidence, validateMischanceConfidence),
@@ -54,21 +50,8 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 // DefaultParams defines the parameters for this module
 func DefaultParams() Params {
 	return NewParams(
-		DefaultSignedBlocksWindow, DefaultMaxMischance, DefaultDowntimeInactiveDuration, DefaultMischanceConfidence,
+		DefaultMaxMischance, DefaultDowntimeInactiveDuration, DefaultMischanceConfidence,
 	)
-}
-
-func validateSignedBlocksWindow(i interface{}) error {
-	v, ok := i.(int64)
-	if !ok {
-		return fmt.Errorf("invalid signed_blocks_window parameter type: %T", i)
-	}
-
-	if v <= 0 {
-		return fmt.Errorf("signed blocks window must be positive: %d", v)
-	}
-
-	return nil
 }
 
 func validateMaxMischance(i interface{}) error {
