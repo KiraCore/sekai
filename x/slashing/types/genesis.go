@@ -26,10 +26,6 @@ func DefaultGenesisState() *GenesisState {
 
 // ValidateGenesis validates the slashing genesis parameters
 func ValidateGenesis(data GenesisState) error {
-	maxMischance := data.Params.MaxMischance
-	if maxMischance <= 0 {
-		return fmt.Errorf("max mischance should be positive, is %d", maxMischance)
-	}
 
 	downtimeInactive := data.Params.DowntimeInactiveDuration
 	if downtimeInactive < 1*time.Minute {

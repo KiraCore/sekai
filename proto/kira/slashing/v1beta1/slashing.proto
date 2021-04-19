@@ -35,13 +35,9 @@ message ValidatorSigningInfo {
 
 // Params represents the parameters used for by the slashing module.
 message Params {
-  int64 max_mischance = 2 [(gogoproto.moretags)   = "yaml:\"max_mischance\""];
-  google.protobuf.Duration downtime_inactive_duration = 3 [
+  google.protobuf.Duration downtime_inactive_duration = 1 [
     (gogoproto.nullable)    = false,
     (gogoproto.stdduration) = true,
     (gogoproto.moretags)    = "yaml:\"downtime_inactive_duration\""
   ];
-  // the number of blocks validator miss to start counting mischance
-  // default 10, modifiable by governance
-  int64 mischance_confidence = 4;
 }

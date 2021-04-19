@@ -162,8 +162,9 @@ func TestHandleAlreadyInactive(t *testing.T) {
 		app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), power, true)
 	}
 
+	properties := app.CustomGovKeeper.GetNetworkProperties(ctx)
 	// miss 11 blocks for mischance confidence
-	for ; height < 1000+app.CustomSlashingKeeper.GetParams(ctx).MischanceConfidence+1; height++ {
+	for ; height < 1000+int64(properties.MischanceConfidence)+1; height++ {
 		ctx = ctx.WithBlockHeight(height)
 		app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), power, false)
 	}
@@ -175,7 +176,7 @@ func TestHandleAlreadyInactive(t *testing.T) {
 	require.Equal(t, int64(999), info.LastPresentBlock)
 
 	// miss 110 blocks after mischance confidence happen
-	for ; height < 1000+app.CustomSlashingKeeper.MaxMischance(ctx)+app.CustomSlashingKeeper.GetParams(ctx).MischanceConfidence+1; height++ {
+	for ; height < 1000+int64(properties.MaxMischance+properties.MischanceConfidence)+1; height++ {
 		ctx = ctx.WithBlockHeight(height)
 		app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), power, false)
 	}

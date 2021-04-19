@@ -26,16 +26,15 @@ func (k Keeper) HandleValidatorSignature(ctx sdk.Context, addr crypto.Address, p
 		panic(fmt.Sprintf("Expected signing info for validator %s but not found", consAddr))
 	}
 
-	params := k.GetParams(ctx)
+	properties := k.gk.GetNetworkProperties(ctx)
 
 	// Update uptime counter
 	missed := !signed
 	if missed { // increment counter
 		signInfo.MissedBlocksCounter++
 		// increment mischance only when missed blocks are bigger than mischance confidence
-		if ctx.BlockHeight()-signInfo.LastPresentBlock > params.MischanceConfidence {
+		if ctx.BlockHeight()-signInfo.LastPresentBlock > int64(properties.MischanceConfidence) {
 			signInfo.Mischance++
-			fmt.Println("mischance", signInfo.Mischance, ctx.BlockHeight(), signInfo.LastPresentBlock, params.MischanceConfidence)
 		}
 	} else { // set counter to 0
 		signInfo.Mischance = 0
@@ -62,19 +61,17 @@ func (k Keeper) HandleValidatorSignature(ctx sdk.Context, addr crypto.Address, p
 		)
 
 		logger.Info(
-			fmt.Sprintf("Absent validator %s at height %d, %d mischance, %d missed blocks, %d produced blocks, threshold %d", consAddr, height, signInfo.Mischance, signInfo.MissedBlocksCounter, signInfo.ProducedBlocksCounter, k.MaxMischance(ctx)))
+			fmt.Sprintf("Absent validator %s at height %d, %d mischance, %d missed blocks, %d produced blocks, threshold %d", consAddr, height, signInfo.Mischance, signInfo.MissedBlocksCounter, signInfo.ProducedBlocksCounter, properties.MaxMischance))
 	}
 
-	maxMischance := k.MaxMischance(ctx)
-
 	// if mischance overflow max value, we punish them
-	if signInfo.Mischance > maxMischance {
+	if signInfo.Mischance > int64(properties.MaxMischance) {
 		validator, err := k.sk.GetValidatorByConsAddr(ctx, consAddr)
 		if err == nil && validator.IsActive() {
 
 			// Downtime confirmed: slash and inactivate the validator
 			logger.Info(fmt.Sprintf("Validator %s past max mischance threshold of %d",
-				consAddr, maxMischance))
+				consAddr, properties.MaxMischance))
 
 			ctx.EventManager().EmitEvent(
 				sdk.NewEvent(

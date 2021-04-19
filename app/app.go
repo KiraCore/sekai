@@ -199,7 +199,7 @@ func NewInitApp(
 	app.customGovKeeper = customgovkeeper.NewKeeper(keys[customgovtypes.ModuleName], appCodec)
 	customStakingKeeper := customstakingkeeper.NewKeeper(keys[customstakingtypes.ModuleName], cdc, app.customGovKeeper)
 	app.customSlashingKeeper = customslashingkeeper.NewKeeper(
-		appCodec, keys[customslashingtypes.StoreKey], &customStakingKeeper, app.GetSubspace(customslashingtypes.ModuleName),
+		appCodec, keys[customslashingtypes.StoreKey], &customStakingKeeper, app.customGovKeeper, app.GetSubspace(customslashingtypes.ModuleName),
 	)
 	app.tokensKeeper = tokenskeeper.NewKeeper(keys[tokenstypes.ModuleName], appCodec)
 	// NOTE: customStakingKeeper above is passed by reference, so that it will contain these hooks

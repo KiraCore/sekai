@@ -7,13 +7,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-// MaxMischance - minimum blocks signed per window
-func (k Keeper) MaxMischance(ctx sdk.Context) int64 {
-	var maxMischance int64
-	k.paramspace.Get(ctx, types.KeyMaxMischance, &maxMischance)
-	return maxMischance
-}
-
 // DowntimeInactiveDuration - Downtime unbond duration
 func (k Keeper) DowntimeInactiveDuration(ctx sdk.Context) (res time.Duration) {
 	k.paramspace.Get(ctx, types.KeyDowntimeInactiveDuration, &res)
