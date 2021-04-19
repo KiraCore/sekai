@@ -70,7 +70,7 @@ func TestMissedBlockAndRankStreakCounter(t *testing.T) {
 
 	staking.EndBlocker(ctx, app.CustomStakingKeeper)
 
-	// sign first 100 blocks successfully
+	// Now a validator, for two blocks
 	app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), 100, true)
 	ctx = ctx.WithBlockHeight(2)
 	app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), 100, false)
