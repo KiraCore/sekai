@@ -327,3 +327,152 @@ func TestValidatorDippingInAndOut(t *testing.T) {
 	staking.EndBlocker(ctx, app.CustomStakingKeeper)
 	tstaking.CheckValidator(valAddr, stakingtypes.Inactive, true)
 }
+
+func TestValidatorLifecycle(t *testing.T) {
+	// initial setup
+	app := simapp.Setup(false)
+	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	app.CustomSlashingKeeper.SetParams(ctx, testslashing.TestParams())
+	properties := app.CustomGovKeeper.GetNetworkProperties(ctx)
+
+	power := int64(100)
+
+	pks := simapp.CreateTestPubKeys(3)
+	simapp.AddTestAddrsFromPubKeys(app, ctx, pks, sdk.TokensFromConsensusPower(200))
+
+	addr, val := pks[0].Address(), pks[0]
+	consAddr := sdk.ConsAddress(addr)
+	tstaking := teststaking.NewHelper(t, ctx, app.CustomStakingKeeper, app.CustomGovKeeper)
+	valAddr := sdk.ValAddress(addr)
+
+	tstaking.CreateValidator(valAddr, val, true)
+	staking.EndBlocker(ctx, app.CustomStakingKeeper)
+
+	// 100 first blocks OK
+	height := int64(0)
+	for ; height < int64(100); height++ {
+		ctx = ctx.WithBlockHeight(height)
+		app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), power, true)
+	}
+
+	// check info
+	signInfo, found := app.CustomSlashingKeeper.GetValidatorSigningInfo(ctx, consAddr)
+	require.True(t, found)
+	require.Equal(t, consAddr.String(), signInfo.Address)
+	require.Equal(t, int64(0), signInfo.StartHeight)
+	require.Equal(t, time.Unix(0, 0).UTC(), signInfo.InactiveUntil.UTC())
+	require.Equal(t, false, signInfo.Tombstoned)
+	require.Equal(t, int64(0), signInfo.Mischance)
+	require.Equal(t, int64(99), signInfo.LastPresentBlock)
+	require.Equal(t, int64(0), signInfo.MissedBlocksCounter)
+	require.Equal(t, int64(100), signInfo.ProducedBlocksCounter)
+
+	// add one more validator into the set
+	tstaking.CreateValidator(sdk.ValAddress(pks[1].Address()), pks[1], true)
+	validatorUpdates := staking.EndBlocker(ctx, app.CustomStakingKeeper)
+	require.Equal(t, 1, len(validatorUpdates))
+	tstaking.CheckValidator(valAddr, stakingtypes.Active, false)
+	tstaking.CheckValidator(sdk.ValAddress(pks[1].Address()), stakingtypes.Active, false)
+
+	// 600 more blocks happened
+	height = 100
+
+	// validator misses 11 blocks
+	latest := height
+	for ; height < latest+int64(properties.MischanceConfidence)+1; height++ {
+		ctx = ctx.WithBlockHeight(height)
+		app.CustomSlashingKeeper.HandleValidatorSignature(ctx, addr, 1, false)
+	}
+
+	// should now have 1 mischance
+	signInfo, found = app.CustomSlashingKeeper.GetValidatorSigningInfo(ctx, consAddr)
+	require.True(t, found)
+	require.Equal(t, consAddr.String(), signInfo.Address)
+	require.Equal(t, int64(0), signInfo.StartHeight)
+	require.Equal(t, time.Unix(0, 0).UTC(), signInfo.InactiveUntil.UTC())
+	require.Equal(t, false, signInfo.Tombstoned)
+	require.Equal(t, int64(1), signInfo.Mischance)
+	require.Equal(t, int64(99), signInfo.LastPresentBlock)
+	require.Equal(t, int64(11), signInfo.MissedBlocksCounter)
+	require.Equal(t, int64(100), signInfo.ProducedBlocksCounter)
+
+	// validator misses 100 blocks
+	latest = height
+	for ; height < latest+int64(properties.MaxMischance); height++ {
+		ctx = ctx.WithBlockHeight(height)
+		app.CustomSlashingKeeper.HandleValidatorSignature(ctx, addr, 1, false)
+	}
+
+	// should now be inactive & kicked
+	staking.EndBlocker(ctx, app.CustomStakingKeeper)
+	tstaking.CheckValidator(valAddr, stakingtypes.Inactive, true)
+
+	// some blocks pass
+	height = int64(5000)
+	ctx = ctx.WithBlockHeight(height)
+
+	// Try pausing on inactive node here, should fail
+	err := app.CustomStakingKeeper.Pause(ctx, valAddr)
+	require.Error(t, err)
+
+	// validator rejoins and starts signing again
+	app.CustomStakingKeeper.Activate(ctx, valAddr)
+	app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), 1, true)
+	height++
+
+	// validator should not be kicked since we reset counter/array when it was jailed
+	staking.EndBlocker(ctx, app.CustomStakingKeeper)
+	tstaking.CheckValidator(valAddr, stakingtypes.Active, false)
+
+	// Try pausing on active node here, should success
+	err = app.CustomStakingKeeper.Pause(ctx, valAddr)
+	require.NoError(t, err)
+	staking.EndBlocker(ctx, app.CustomStakingKeeper)
+	tstaking.CheckValidator(valAddr, stakingtypes.Paused, false)
+
+	// validator misses 501 blocks
+	latest = height
+	for ; height < latest+501; height++ {
+		ctx = ctx.WithBlockHeight(height)
+		app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), 1, false)
+	}
+
+	// validator should not be in inactive status since node is paused
+	staking.EndBlocker(ctx, app.CustomStakingKeeper)
+	tstaking.CheckValidator(valAddr, stakingtypes.Paused, false)
+
+	// Try activating paused node: should unpause but it's activating - should fail
+	err = app.CustomStakingKeeper.Activate(ctx, valAddr)
+	require.Error(t, err)
+	staking.EndBlocker(ctx, app.CustomStakingKeeper)
+	tstaking.CheckValidator(valAddr, stakingtypes.Paused, false)
+
+	// Unpause node and it should be active
+	err = app.CustomStakingKeeper.Unpause(ctx, valAddr)
+	require.NoError(t, err)
+	staking.EndBlocker(ctx, app.CustomStakingKeeper)
+	tstaking.CheckValidator(valAddr, stakingtypes.Active, false)
+
+	// After reentering after unpause, check if signature info is recovered correctly
+	signInfo, found = app.CustomSlashingKeeper.GetValidatorSigningInfo(ctx, consAddr)
+	require.True(t, found)
+	require.Equal(t, consAddr.String(), signInfo.Address)
+	require.Equal(t, int64(0), signInfo.StartHeight)
+	require.Equal(t, ctx.BlockTime().Add(app.CustomSlashingKeeper.DowntimeInactiveDuration(ctx)).String(), signInfo.InactiveUntil.String())
+	require.Equal(t, false, signInfo.Tombstoned)
+	require.Equal(t, int64(491), signInfo.Mischance)
+	require.Equal(t, int64(5000), signInfo.LastPresentBlock)
+	require.Equal(t, int64(622), signInfo.MissedBlocksCounter)
+	require.Equal(t, int64(101), signInfo.ProducedBlocksCounter)
+
+	// Miss another 120 blocks
+	latest = height
+	for ; height < latest+120; height++ {
+		ctx = ctx.WithBlockHeight(height)
+		app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), 1, false)
+	}
+
+	// validator should be in inactive status
+	staking.EndBlocker(ctx, app.CustomStakingKeeper)
+	tstaking.CheckValidator(valAddr, stakingtypes.Inactive, true)
+}
