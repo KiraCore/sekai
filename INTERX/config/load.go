@@ -254,7 +254,7 @@ func LoadUniqueAddresses() []types.KnownAddress {
 		}
 
 		for _, addr := range book.Addrs {
-			if _, ok := flag[addr.Addr.IP]; ok {
+			if _, ok := flag[addr.Addr.IP]; !ok {
 				addrBooks = append(addrBooks, addr)
 			}
 			flag[addr.Addr.IP] = true

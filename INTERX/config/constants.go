@@ -36,6 +36,7 @@ const (
 	QueryValidatorInfos      = "/api/valoperinfos"
 	QueryGenesis             = "/api/genesis"
 	QueryGenesisSum          = "/api/gensum"
+	QueryNodeList            = "/api/node_list"
 
 	Download              = "/download"
 	DataReferenceRegistry = "DRR"
