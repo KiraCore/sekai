@@ -25,6 +25,7 @@ func NewTxCmd() *cobra.Command {
 		NewActivateTxCmd(),
 		NewPauseTxCmd(),
 		NewUnpauseTxCmd(),
+		GetTxProposalResetWholeValidatorRankCmd(),
 	)
 	return slashingTxCmd
 }
