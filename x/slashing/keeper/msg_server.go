@@ -14,7 +14,6 @@ import (
 
 type msgServer struct {
 	Keeper
-	govKeeper govkeeper.Keeper
 }
 
 // NewMsgServerImpl returns an implementation of the slashing MsgServer interface
@@ -106,7 +105,8 @@ func (k msgServer) Unpause(goCtx context.Context, msg *types.MsgUnpause) (*types
 func (k msgServer) ProposalResetWholeValidatorRank(goCtx context.Context, msg *types.MsgProposalResetWholeValidatorRank) (*types.MsgProposalResetWholeValidatorRankResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	isAllowed := govkeeper.CheckIfAllowedPermission(ctx, k.govKeeper, msg.Proposer, govtypes.PermCreateResetWholeValidatorRankProposal)
+	govKeeper := k.gk.(govkeeper.Keeper)
+	isAllowed := govkeeper.CheckIfAllowedPermission(ctx, govKeeper, msg.Proposer, govtypes.PermCreateResetWholeValidatorRankProposal)
 	if !isAllowed {
 		return nil, errors.Wrap(govtypes.ErrNotEnoughPermissions, govtypes.PermCreateResetWholeValidatorRankProposal.String())
 	}
@@ -135,13 +135,15 @@ func (k msgServer) ProposalResetWholeValidatorRank(goCtx context.Context, msg *t
 }
 
 func (k msgServer) CreateAndSaveProposalWithContent(ctx sdk.Context, description string, content govtypes.Content) (uint64, error) {
+
+	govKeeper := k.gk.(govkeeper.Keeper)
 	blockTime := ctx.BlockTime()
-	proposalID, err := k.govKeeper.GetNextProposalID(ctx)
+	proposalID, err := govKeeper.GetNextProposalID(ctx)
 	if err != nil {
 		return 0, err
 	}
 
-	properties := k.govKeeper.GetNetworkProperties(ctx)
+	properties := govKeeper.GetNetworkProperties(ctx)
 
 	proposal, err := govtypes.NewProposal(
 		proposalID,
@@ -156,8 +158,8 @@ func (k msgServer) CreateAndSaveProposalWithContent(ctx sdk.Context, description
 		description,
 	)
 
-	k.govKeeper.SaveProposal(ctx, proposal)
-	k.govKeeper.AddToActiveProposals(ctx, proposal)
+	govKeeper.SaveProposal(ctx, proposal)
+	govKeeper.AddToActiveProposals(ctx, proposal)
 
 	return proposalID, nil
 }
