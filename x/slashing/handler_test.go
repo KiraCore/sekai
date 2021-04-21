@@ -22,3 +22,5 @@ func TestInvalidMsg(t *testing.T) {
 	require.Nil(t, res)
 	require.True(t, strings.Contains(err.Error(), "unrecognized customslashing message type"))
 }
+
+// TODO: add test for ProposalResetWholeValidatorRank

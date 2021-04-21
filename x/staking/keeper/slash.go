@@ -25,6 +25,18 @@ func (k Keeper) Activate(ctx sdk.Context, valAddress sdk.ValAddress) error {
 	return nil
 }
 
+// ResetWholeValidatorRank reset whole validators' status, rank and streak
+func (k Keeper) ResetWholeValidatorRank(ctx sdk.Context) {
+	// TODO: is it correct to use this iterator @Jonathan?
+	k.IterateValidators(ctx, func(index int64, validator *types.Validator) (stop bool) {
+		validator.Status = customstakingtypes.Active
+		validator.Rank = 0
+		validator.Streak = 0
+		k.AddValidator(ctx, *validator)
+		return false
+	})
+}
+
 // Inactivate inactivate the validator
 func (k Keeper) Inactivate(ctx sdk.Context, valAddress sdk.ValAddress) error { // inactivate a validator
 	validator, err := k.GetValidator(ctx, valAddress)

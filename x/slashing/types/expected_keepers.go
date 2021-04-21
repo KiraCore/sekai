@@ -48,6 +48,7 @@ type StakingKeeper interface {
 	Inactivate(sdk.Context, sdk.ValAddress) error // inactivate a validator
 	Activate(sdk.Context, sdk.ValAddress) error   // activate a validator
 	Jail(sdk.Context, sdk.ValAddress) error       // jail a validator
+	ResetWholeValidatorRank(sdk.Context)          // reset whole validator rank
 
 	// pause/unpause the validator and delegators of the validator, specifying offence height, offence power, and slash fraction
 	Pause(sdk.Context, sdk.ValAddress) error   // pause a validator

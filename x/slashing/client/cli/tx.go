@@ -1,13 +1,14 @@
 package cli
 
 import (
-	"github.com/spf13/cobra"
+	"fmt"
 
 	"github.com/KiraCore/sekai/x/slashing/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/spf13/cobra"
 )
 
 // NewTxCmd returns a root CLI command handler for all x/slashing transaction commands.
@@ -120,6 +121,41 @@ $ <appd> tx slashing unpause --from mykey
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// GetTxProposalResetWholeValidatorRankCmd implement cli command for MsgProposalResetWholeValidatorRank
+func GetTxProposalResetWholeValidatorRankCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "proposal-reset-whole-validator-rank",
+		Short: "Creates an proposal to unjail validator (the from address is the validator)",
+		Args:  cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			description, err := cmd.Flags().GetString(FlagDescription)
+			if err != nil {
+				return fmt.Errorf("invalid description: %w", err)
+			}
+
+			msg := types.NewMsgProposalResetWholeValidatorRank(
+				clientCtx.FromAddress,
+				description,
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
+	cmd.MarkFlagRequired(FlagDescription)
+
+	flags.AddTxFlagsToCmd(cmd)
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
 }

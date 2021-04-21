@@ -15,6 +15,7 @@ const (
 	AttributeKeyLastPresentBlock = "last_present_block"
 	AttributeKeyMissedBlocks     = "missed_blocks"
 	AttributeKeyProducedBlocks   = "produced_blocks"
+	AttributeKeyDescription      = "description"
 
 	AttributeValueDoubleSign       = "double_sign"
 	AttributeValueMissingSignature = "missing_signature"

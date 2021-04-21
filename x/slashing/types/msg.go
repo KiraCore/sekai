@@ -1,12 +1,15 @@
 package types
 
 import (
+	"fmt"
+
 	"github.com/KiraCore/sekai/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // verify interface at compile time
 var _ sdk.Msg = &MsgActivate{}
+var _ sdk.Msg = &MsgProposalResetWholeValidatorRank{}
 
 // NewMsgActivate creates a new MsgActivate instance
 //nolint:interfacer
@@ -111,4 +114,36 @@ func (msg MsgPause) ValidateBasic() error {
 	}
 
 	return nil
+}
+
+func NewMsgProposalResetWholeValidatorRank(proposer sdk.AccAddress, description string) *MsgProposalResetWholeValidatorRank {
+	return &MsgProposalResetWholeValidatorRank{
+		Proposer:    proposer,
+		Description: description,
+	}
+}
+
+func (m *MsgProposalResetWholeValidatorRank) Route() string {
+	return ModuleName
+}
+
+func (m *MsgProposalResetWholeValidatorRank) Type() string {
+	return types.MsgTypeProposalResetWholeValidatorRank
+}
+
+func (m *MsgProposalResetWholeValidatorRank) ValidateBasic() error {
+	if m.Proposer.Empty() {
+		return fmt.Errorf("proposer not set")
+	}
+
+	return nil
+}
+
+func (m *MsgProposalResetWholeValidatorRank) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *MsgProposalResetWholeValidatorRank) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{m.Proposer}
 }

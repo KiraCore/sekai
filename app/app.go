@@ -241,6 +241,7 @@ func NewInitApp(
 				tokens.NewApplyUpsertTokenRatesProposalHandler(app.tokensKeeper),
 				tokens.NewApplyWhiteBlackChangeProposalHandler(app.tokensKeeper),
 				customstaking.NewApplyUnjailValidatorProposalHandler(app.customStakingKeeper),
+				customslashing.NewApplyResetWholeValidatorRankProposalHandler(app.customSlashingKeeper),
 				customgov.NewApplyCreateRoleProposalHandler(app.customGovKeeper),
 			},
 		)),

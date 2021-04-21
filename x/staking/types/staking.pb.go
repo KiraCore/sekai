@@ -569,7 +569,7 @@ const _ = grpc.SupportPackageIsVersion4
 type MsgClient interface {
 	// ClaimValidator defines a method for claiming a new validator.
 	ClaimValidator(ctx context.Context, in *MsgClaimValidator, opts ...grpc.CallOption) (*MsgClaimValidatorResponse, error)
-	// ClaimValidator defines a method for claiming a new validator.
+	// ProposalUnjailValidator defines a method to unjail a validator
 	ProposalUnjailValidator(ctx context.Context, in *MsgProposalUnjailValidator, opts ...grpc.CallOption) (*MsgProposalUnjailValidatorResponse, error)
 }
 
@@ -603,7 +603,7 @@ func (c *msgClient) ProposalUnjailValidator(ctx context.Context, in *MsgProposal
 type MsgServer interface {
 	// ClaimValidator defines a method for claiming a new validator.
 	ClaimValidator(context.Context, *MsgClaimValidator) (*MsgClaimValidatorResponse, error)
-	// ClaimValidator defines a method for claiming a new validator.
+	// ProposalUnjailValidator defines a method to unjail a validator
 	ProposalUnjailValidator(context.Context, *MsgProposalUnjailValidator) (*MsgProposalUnjailValidatorResponse, error)
 }
 

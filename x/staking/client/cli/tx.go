@@ -3,20 +3,17 @@ package cli
 import (
 	"fmt"
 
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
-
-	"github.com/cosmos/cosmos-sdk/server"
-
 	"github.com/KiraCore/sekai/x/genutil"
-	"github.com/cosmos/cosmos-sdk/x/staking/client/cli"
-	"github.com/pkg/errors"
-	"github.com/spf13/cobra"
-
 	customstakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
+	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
+	"github.com/cosmos/cosmos-sdk/server"
 	"github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/x/staking/client/cli"
+	"github.com/pkg/errors"
+	"github.com/spf13/cobra"
 )
 
 const (
