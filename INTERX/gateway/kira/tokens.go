@@ -1,6 +1,7 @@
 package kira
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/KiraCore/sekai/INTERX/common"
@@ -19,7 +20,45 @@ func RegisterKiraTokensRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpcA
 }
 
 func queryKiraTokensAliasesHandler(r *http.Request, gwCosmosmux *runtime.ServeMux) (interface{}, interface{}, int) {
-	return common.ServeGRPC(r, gwCosmosmux)
+	type TokenAliasesResult struct {
+		Decimals int64    `json:"decimals"`
+		Denoms   []string `json:"denoms"`
+		Name     string   `json:"name"`
+		Symbol   string   `json:"symbol"`
+		Amount   int64    `json:"amount,string"`
+	}
+
+	tokens := common.GetTokenAliases(gwCosmosmux, r.Clone(r.Context()))
+	tokensSupply := common.GetTokenSupply(gwCosmosmux, r.Clone(r.Context()))
+
+	fmt.Println(tokens, tokensSupply)
+
+	result := make([]TokenAliasesResult, 0)
+
+	for _, token := range tokens {
+		flag := false
+		for _, denom := range token.Denoms {
+			for _, supply := range tokensSupply {
+				if denom == supply.Denom {
+					result = append(result, TokenAliasesResult{
+						Decimals: token.Decimals,
+						Denoms:   token.Denoms,
+						Name:     token.Name,
+						Symbol:   token.Symbol,
+						Amount:   supply.Amount,
+					})
+
+					flag = true
+					break
+				}
+			}
+			if flag {
+				break
+			}
+		}
+	}
+
+	return result, nil, http.StatusOK
 }
 
 // QueryKiraTokensAliasesRequest is a function to query all tokens aliases.

@@ -66,8 +66,11 @@ func defaultConfig() InterxConfigFromFile {
 	configFromFile.MnemonicFile = LoadMnemonic("swap exercise equip shoot mad inside floor wheel loan visual stereo build frozen always bulb naive subway foster marine erosion shuffle flee action there")
 
 	configFromFile.AddrBooks = "addrbook.json"
+	configFromFile.TxModes = "sync,async,block"
 
-	configFromFile.Cache.StatusSync = 5
+	configFromFile.Block.StatusSync = 5
+	configFromFile.Block.HaltedAvgBlockTimes = 10
+
 	configFromFile.Cache.CacheDir = "cache"
 	configFromFile.Cache.MaxCacheSize = "2GB"
 	configFromFile.Cache.CachingDuration = 5
@@ -122,6 +125,7 @@ func InitConfig(
 	port string,
 	signingMnemonic string,
 	syncStatus int64,
+	haltedAvgBlockTimes int64,
 	cacheDir string,
 	maxCacheSize string,
 	cachingDuration int64,
@@ -132,6 +136,7 @@ func InitConfig(
 	faucetMinimumAmounts string,
 	feeAmounts string,
 	addrBooks string,
+	txModes string,
 ) {
 	configFromFile := defaultConfig()
 
@@ -148,8 +153,11 @@ func InitConfig(
 	configFromFile.MnemonicFile = LoadMnemonic(signingMnemonic)
 
 	configFromFile.AddrBooks = addrBooks
+	configFromFile.TxModes = txModes
 
-	configFromFile.Cache.StatusSync = syncStatus
+	configFromFile.Block.StatusSync = syncStatus
+	configFromFile.Block.HaltedAvgBlockTimes = haltedAvgBlockTimes
+
 	configFromFile.Cache.CacheDir = cacheDir
 	configFromFile.Cache.MaxCacheSize = maxCacheSize
 	configFromFile.Cache.CachingDuration = cachingDuration

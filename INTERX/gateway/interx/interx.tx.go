@@ -14,7 +14,6 @@ import (
 	"github.com/KiraCore/sekai/INTERX/config"
 	"github.com/KiraCore/sekai/INTERX/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	txSinging "github.com/cosmos/cosmos-sdk/types/tx/signing"
 	"github.com/cosmos/cosmos-sdk/x/auth/signing"
 	bank "github.com/cosmos/cosmos-sdk/x/bank/types"
 	distribution "github.com/cosmos/cosmos-sdk/x/distribution/types"
@@ -574,28 +573,17 @@ func queryUnconfirmedTransactionsHandler(rpcAddr string, r *http.Request) (inter
 		return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
 	}
 
-	type TxFee struct {
-		Gas    uint64    `json:"gas"`
-		Amount sdk.Coins `json:"amount"`
-	}
-
-	type TxResult struct {
-		Msg       []sdk.Msg               `json:"msg"`
-		Fee       TxFee                   `json:"fee"`
-		Signature []txSinging.SignatureV2 `json:"signature"`
-		Memo      string                  `json:"memo"`
-	}
 	response := struct {
-		Count      int        `json:"n_txs"`
-		Total      int        `json:"total"`
-		TotalBytes int64      `json:"total_bytes"`
-		Txs        []TxResult `json:"txs"`
+		Count      int                                  `json:"n_txs"`
+		Total      int                                  `json:"total"`
+		TotalBytes int64                                `json:"total_bytes"`
+		Txs        []types.TransactionUnconfirmedResult `json:"txs"`
 	}{}
 
 	response.Count = result.Count
 	response.Total = result.Total
 	response.TotalBytes = result.TotalBytes
-	response.Txs = make([]TxResult, 0)
+	response.Txs = make([]types.TransactionUnconfirmedResult, 0)
 
 	for _, tx := range result.Txs {
 		decodedTx, err := config.EncodingCg.TxConfig.TxDecoder()(tx)
@@ -612,12 +600,19 @@ func queryUnconfirmedTransactionsHandler(rpcAddr string, r *http.Request) (inter
 
 		signature, _ := txResult.GetSignaturesV2()
 
-		response.Txs = append(response.Txs, TxResult{
-			Msg: txResult.GetMsgs(),
-			Fee: TxFee{
-				Amount: txResult.GetFee(),
-				Gas:    txResult.GetGas(),
-			},
+		var msgs []types.TxMsg = make([]types.TxMsg, 0)
+
+		for _, msg := range txResult.GetMsgs() {
+			msgs = append(msgs, types.TxMsg{
+				Type: msg.Type(),
+				Data: msg,
+			})
+		}
+
+		response.Txs = append(response.Txs, types.TransactionUnconfirmedResult{
+			Msgs:      msgs,
+			Fees:      txResult.GetFee(),
+			Gas:       txResult.GetGas(),
 			Signature: signature,
 			Memo:      txResult.GetMemo(),
 		})
