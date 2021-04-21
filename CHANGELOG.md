@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased] - 21.04.2021
+### Changed
+- Upgrade SDK to version o.42.4
+
 ## [v0.1.18.16] - 09.04.2021
 ### Fixed
 - Add minimum blocks for voting and enactment time on-chain param and implement logic
