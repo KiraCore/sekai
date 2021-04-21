@@ -5,6 +5,8 @@ import (
 	"testing"
 	"time"
 
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	"github.com/KiraCore/sekai/x/staking/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -301,7 +303,7 @@ func TestValidatorActivate_Errors(t *testing.T) {
 		},
 		{
 			name:          "validator is paused",
-			expectedError: types.ErrValidatorPaused,
+			expectedError: sdkerrors.Wrap(types.ErrValidatorPaused, "Can NOT activate paused validator, you must unpause"),
 			prepareScenario: func(app *simapp.SimApp, ctx sdk.Context, validator types.Validator) {
 				validator.Status = types.Paused
 				app.CustomStakingKeeper.AddValidator(ctx, validator)
