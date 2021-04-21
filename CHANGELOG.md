@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.1.19] - 21.04.2021
+### Added
+- New uptime counter
+- Move properties from slashing to gov for uptime properties
+- Proposal to reset whole validators rank
+
 ## [v0.1.18.17] - 17.04.2021
 ### Added
 - Implement infinite gas meter decorator
