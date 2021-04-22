@@ -44,6 +44,11 @@ func (k Keeper) Activate(ctx sdk.Context, validatorAddr sdk.ValAddress) error {
 			duration := info.InactiveUntil.Sub(ctx.BlockTime())
 			return sdkerrors.Wrap(types.ErrValidatorInactivated, fmt.Sprintf("Can NOT activate inactivate validator, jail time remaining %d seconds", duration/time.Second))
 		}
+
+		// automatically set the mischance to 0 and last_present_block to latest_block_height
+		info.Mischance = 0
+		info.LastPresentBlock = ctx.BlockHeight()
+		k.SetValidatorSigningInfo(ctx, consAddr, info)
 	}
 
 	err = k.sk.Activate(ctx, validator.ValKey)

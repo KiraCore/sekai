@@ -48,6 +48,8 @@ func DefaultGenesis() *GenesisState {
 			MinProposalEnactmentBlocks:  1,
 			EnableForeignFeePayments:    true,
 			MischanceRankDecreaseAmount: 10,
+			MischanceConfidence:         10,
+			MaxMischance:                110,
 			InactiveRankDecreasePercent: 50,      // 50%
 			PoorNetworkMaxBankSend:      1000000, // 1M ukex
 			MinValidators:               1,

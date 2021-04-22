@@ -470,6 +470,8 @@ func (m *MsgProposalSetNetworkProperty) ValidateBasic() error {
 		ProposalEnactmentTime,
 		EnableForeignFeePayments,
 		MischanceRankDecreaseAmount,
+		MischanceConfidence,
+		MaxMischance,
 		InactiveRankDecreasePercent,
 		PoorNetworkMaxBankSend,
 		MinValidators:
