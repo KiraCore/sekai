@@ -118,6 +118,41 @@ func TestNewHandler_MsgClaimValidator_Errors(t *testing.T) {
 			},
 			customstakingtypes.ErrValidatorAlreadyClaimed,
 		},
+		{
+			"validator moniker exists",
+			func(ctx types.Context, app *simapp.SimApp) {
+				pubKey, err := types.GetPubKeyFromBech32(types.Bech32PubKeyTypeConsPub, "kiravalconspub1zcjduepqylc5k8r40azmw0xa7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsqgrkp48")
+				require.NoError(t, err)
+
+				valAddr2, err := types.ValAddressFromBech32("kiravaloper15ky9du8a2wlstz6fpx3p4mqpryrm5cgqeyf3v0")
+				require.NoError(t, err)
+
+				networkActor := customgovtypes.NewNetworkActor(
+					types.AccAddress(valAddr1),
+					nil,
+					1,
+					nil,
+					customgovtypes.NewPermissions([]customgovtypes.PermValue{
+						customgovtypes.PermClaimValidator,
+					}, nil),
+					1,
+				)
+				app.CustomGovKeeper.SaveNetworkActor(ctx, networkActor)
+
+				validator, err := customstakingtypes.NewValidator(
+					"aMoniker", // Other validator with repeated moniker.
+					"some-web.com",
+					"A Sociale",
+					"My Identity",
+					types.NewDec(1234),
+					valAddr2,
+					pubKey,
+				)
+				require.NoError(t, err)
+				app.CustomStakingKeeper.AddValidator(ctx, validator)
+			},
+			customstakingtypes.ErrValidatorMonikerExists,
+		},
 	}
 
 	for _, tt := range tests {

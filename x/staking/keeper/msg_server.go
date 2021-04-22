@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
@@ -49,7 +50,12 @@ func (k msgServer) ClaimValidator(goCtx context.Context, msg *types.MsgClaimVali
 		return nil, types.ErrValidatorAlreadyClaimed
 	}
 
-	validator, err := types.NewValidator(msg.Moniker, msg.Website, msg.Social, msg.Identity, msg.Commission, msg.ValKey, pk)
+	_, err = k.keeper.GetValidatorByMoniker(ctx, msg.Moniker)
+	if err == nil {
+		return nil, types.ErrValidatorMonikerExists
+	}
+
+	validator, err := types.NewValidator(strings.Trim(msg.Moniker, " "), msg.Website, msg.Social, msg.Identity, msg.Commission, msg.ValKey, pk)
 	if err != nil {
 		return nil, err
 	}
