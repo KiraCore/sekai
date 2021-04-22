@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased] - 21.04.2021
+## [v0.1.18.19] - 22.04.2021
 ### Changed
 - Upgrade SDK to version 0.42.4
 - Validators cannot use same moniker and is space trimmed.
