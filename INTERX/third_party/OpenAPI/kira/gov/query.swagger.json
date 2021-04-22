@@ -389,6 +389,14 @@
           "type": "string",
           "format": "date-time"
         },
+        "minVotingEndBlockHeight": {
+          "type": "string",
+          "format": "int64"
+        },
+        "minEnactmentEndBlockHeight": {
+          "type": "string",
+          "format": "int64"
+        },
         "result": {
           "$ref": "#/definitions/govVoteResult"
         },

@@ -113,20 +113,28 @@ func LoadConfig(configFilePath string) {
 	Config.Address = sdk.MustBech32ifyAddressBytes(sdk.GetConfig().GetBech32AccountAddrPrefix(), Config.PubKey.Address())
 
 	Config.AddrBooks = strings.Split(configFromFile.AddrBooks, ",")
+	Config.TxModes = strings.Split(configFromFile.TxModes, ",")
+	if len(Config.TxModes) == 0 {
+		Config.TxModes = strings.Split("sync,async,block", ",")
+	}
 
 	// Display mnemonic and keys
 	fmt.Println("Interx Mnemonic  : ", Config.Mnemonic)
 	fmt.Println("Interx Address   : ", Config.Address)
 	fmt.Println("Interx Public Key: ", sdk.MustBech32ifyPubKey(sdk.Bech32PubKeyTypeAccPub, Config.PubKey))
 
-	Config.Cache.StatusSync = configFromFile.Cache.StatusSync
+	Config.Block.StatusSync = configFromFile.Block.StatusSync
+	Config.Block.HaltedAvgBlockTimes = configFromFile.Block.HaltedAvgBlockTimes
+
 	Config.Cache.CacheDir = configFromFile.Cache.CacheDir
 	Config.Cache.MaxCacheSize = parseSizeString(configFromFile.Cache.MaxCacheSize)
 	Config.Cache.CachingDuration = configFromFile.Cache.CachingDuration
 	Config.Cache.DownloadFileSizeLimitation = parseSizeString(configFromFile.Cache.DownloadFileSizeLimitation)
 
 	// Display cache configurations
-	fmt.Println("Interx Cache StatusSync                : ", Config.Cache.StatusSync)
+	fmt.Println("Interx Block StatusSync                : ", Config.Block.StatusSync)
+	fmt.Println("Halted Avg Block Times                 : ", Config.Block.HaltedAvgBlockTimes)
+
 	fmt.Println("Interx Cache CacheDir                  : ", Config.Cache.CacheDir)
 	fmt.Println("Interx Cache MaxCacheSize              : ", Config.Cache.MaxCacheSize)
 	fmt.Println("Interx Cache CachingDuration           : ", Config.Cache.CachingDuration)
