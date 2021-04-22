@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.1.18.17] - 17.04.2021
+### Added
+- Implement infinite gas meter decorator
+
 ## [v0.1.18.16] - 09.04.2021
 ### Fixed
 - Add minimum blocks for voting and enactment time on-chain param and implement logic

@@ -51,6 +51,7 @@ func NewAnteHandler(
 		ante.NewSigGasConsumeDecorator(ak, sigGasConsumer),
 		ante.NewSigVerificationDecorator(ak, signModeHandler),
 		ante.NewIncrementSequenceDecorator(ak),
+		NewInfiniteGasMeterDecorator(),
 	)
 }
 
@@ -263,4 +264,17 @@ func (pnmd BlackWhiteTokensCheckDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx
 	}
 
 	return next(ctx, tx, simulate)
+}
+
+// InfiniteGasMeterDecorator uses infinite gas decorator to avoid gas usage in the network
+type InfiniteGasMeterDecorator struct{}
+
+// NewInfiniteGasMeterDecorator returns instance of InfiniteGasMeterDecorator
+func NewInfiniteGasMeterDecorator() InfiniteGasMeterDecorator {
+	return InfiniteGasMeterDecorator{}
+}
+
+func (igm InfiniteGasMeterDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
+	newCtx = ctx.WithGasMeter(sdk.NewInfiniteGasMeter())
+	return next(newCtx, tx, simulate)
 }
