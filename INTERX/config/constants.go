@@ -40,7 +40,8 @@ const (
 
 	Download              = "/download"
 	DataReferenceRegistry = "DRR"
-	InterxVersion         = "0.1.1"
+	InterxVersion         = "0.1.2"
+	DefaultInterxPort     = "11000"
 
 	QueryRosettaNetworkList    = "/rosetta/network/list"
 	QueryRosettaNetworkOptions = "/rosetta/network/options"

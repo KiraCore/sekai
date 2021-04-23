@@ -72,6 +72,9 @@ func main() {
 	initAddrBook := initCommand.String("addrbook", "addrbook.json", "The address books")
 	initTxModes := initCommand.String("tx_modes", "sync,async,block", "The allowed transaction modes")
 
+	initNodeDiscoveryUseHttps := initCommand.Bool("node_discovery_use_https", false, "The option to use https in node discovery")
+	initNodeDiscoveryPort := initCommand.String("node_discovery_port", "11000", "The default interx port to be used in ndoe discovery")
+
 	startConfigPtr := startCommand.String("config", "./config.json", "The interx configurtion path. (Required)")
 
 	flag.Usage = printUsage
@@ -117,6 +120,8 @@ func main() {
 					*initFeeAmounts,
 					*initAddrBook,
 					*initTxModes,
+					*initNodeDiscoveryUseHttps,
+					*initNodeDiscoveryPort,
 				)
 
 				fmt.Printf("Created interx configuration file: %s\n", *initConfigFilePtr)

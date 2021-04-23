@@ -14,6 +14,10 @@
     "status_sync": 5,
     "halted_avg_block_times": 10
   },
+  "node_discovery": {
+    "use_https": false,
+    "default_interx_port": "11000"
+  },
   "cache": {
     "cache_dir": "cache",
     "max_cache_size": "2GB",

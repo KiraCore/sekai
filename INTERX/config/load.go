@@ -123,6 +123,8 @@ func LoadConfig(configFilePath string) {
 	fmt.Println("Interx Address   : ", Config.Address)
 	fmt.Println("Interx Public Key: ", sdk.MustBech32ifyPubKey(sdk.Bech32PubKeyTypeAccPub, Config.PubKey))
 
+	Config.NodeDiscovery = configFromFile.NodeDiscovery
+
 	Config.Block.StatusSync = configFromFile.Block.StatusSync
 	Config.Block.HaltedAvgBlockTimes = configFromFile.Block.HaltedAvgBlockTimes
 
