@@ -1,6 +1,8 @@
 package teststaking
 
 import (
+	"fmt"
+	"math/rand"
 	"testing"
 	"time"
 
@@ -59,7 +61,15 @@ func (sh *Helper) ClaimValidatorMsg(addr sdk.ValAddress, pk cryptotypes.PubKey) 
 }
 
 func (sh *Helper) createValidator(addr sdk.ValAddress, pk cryptotypes.PubKey, ok bool) {
-	msg, err := stakingtypes.NewMsgClaimValidator("moniker", "website", "social", "identity", sh.Commission, addr, pk)
+	msg, err := stakingtypes.NewMsgClaimValidator(
+		fmt.Sprintf("%s-%d","moniker", rand.Intn(100)),
+		"website",
+		"social",
+		"identity",
+		sh.Commission,
+		addr,
+		pk,
+	)
 	require.NoError(sh.t, err)
 	sh.Handle(msg, ok)
 }

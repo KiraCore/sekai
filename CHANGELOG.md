@@ -6,6 +6,11 @@
 - Move properties from slashing to gov for uptime properties
 - Proposal to reset whole validators rank
 
+## [v0.1.18.19] - 22.04.2021
+### Changed
+- Upgrade SDK to version 0.42.4
+- Validators cannot use same moniker and is space trimmed.
+
 ## [v0.1.18.17] - 17.04.2021
 ### Added
 - Implement infinite gas meter decorator

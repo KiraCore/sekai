@@ -19,4 +19,5 @@ var (
 	ErrNetworkActorNotFound    = errors.Register(ModuleName, 2, "network actor not found")
 	ErrNotEnoughPermissions    = errors.Register(ModuleName, 3, "not enough permissions")
 	ErrValidatorAlreadyClaimed = errors.Register(ModuleName, 4, "validator already claimed")
+	ErrValidatorMonikerExists = errors.Register(ModuleName, 5, "validator moniker exists")
 )
