@@ -29,11 +29,11 @@ func NodeDiscover(isLog bool) {
 				interxUrl = "https://" + ipAddr + ":" + config.Config.NodeDiscovery.DefaultInterxPort
 			}
 
-			interxStatus := common.GetInterxStatus(interxUrl)
+			// interxStatus := common.GetInterxStatus(interxUrl)
 
-			if interxStatus == nil {
+			// if interxStatus == nil {
 
-			}
+			// }
 
 			common.GetLogger().Info(interxUrl)
 		}
