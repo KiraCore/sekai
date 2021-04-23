@@ -9,7 +9,6 @@ import (
 // lest the tests take forever
 func TestParams() types.Params {
 	params := types.DefaultParams()
-	params.SignedBlocksWindow = 1000
 	params.DowntimeInactiveDuration = 60 * 60
 
 	return params

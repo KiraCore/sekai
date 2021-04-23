@@ -1,5 +1,20 @@
 # Changelog
 
+## [v0.1.19] - 21.04.2021
+### Added
+- New uptime counter
+- Move properties from slashing to gov for uptime properties
+- Proposal to reset whole validators rank
+
+## [v0.1.18.17] - 17.04.2021
+### Added
+- Implement infinite gas meter decorator
+
+## [v0.1.18.16] - 09.04.2021
+### Fixed
+- Add minimum blocks for voting and enactment time on-chain param and implement logic
+- Modify error messages for slashing module
+
 ## [v0.1.18.14] - 01.04.2021
 ### Fixed
 - Fixed problem with network stopping on pause.

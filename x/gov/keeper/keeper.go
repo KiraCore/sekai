@@ -56,10 +56,18 @@ func (k Keeper) GetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 		return properties.ProposalEndTime, nil
 	case types.ProposalEnactmentTime:
 		return properties.ProposalEnactmentTime, nil
+	case types.MinProposalEndBlocks:
+		return properties.MinProposalEndBlocks, nil
+	case types.MinProposalEnactmentBlocks:
+		return properties.MinProposalEnactmentBlocks, nil
 	case types.EnableForeignFeePayments:
 		return BoolToInt(properties.EnableForeignFeePayments), nil
 	case types.MischanceRankDecreaseAmount:
 		return properties.MischanceRankDecreaseAmount, nil
+	case types.MaxMischance:
+		return properties.MaxMischance, nil
+	case types.MischanceConfidence:
+		return properties.MischanceConfidence, nil
 	case types.InactiveRankDecreasePercent:
 		return properties.InactiveRankDecreasePercent, nil
 	case types.PoorNetworkMaxBankSend:
@@ -91,6 +99,10 @@ func (k Keeper) SetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 		properties.ProposalEndTime = value
 	case types.ProposalEnactmentTime:
 		properties.ProposalEnactmentTime = value
+	case types.MinProposalEndBlocks:
+		properties.MinProposalEndBlocks = value
+	case types.MinProposalEnactmentBlocks:
+		properties.MinProposalEnactmentBlocks = value
 	case types.EnableForeignFeePayments:
 		if value > 0 {
 			properties.EnableForeignFeePayments = true
@@ -98,6 +110,10 @@ func (k Keeper) SetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 		properties.EnableForeignFeePayments = false
 	case types.MischanceRankDecreaseAmount:
 		properties.MischanceRankDecreaseAmount = value
+	case types.MaxMischance:
+		properties.MaxMischance = value
+	case types.MischanceConfidence:
+		properties.MischanceConfidence = value
 	case types.InactiveRankDecreasePercent:
 		properties.InactiveRankDecreasePercent = value
 	case types.PoorNetworkMaxBankSend:

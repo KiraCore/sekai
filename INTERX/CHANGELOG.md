@@ -1,5 +1,11 @@
 # Changelog
 
+- merge token aliases query and token supply.
+- update response type for uncomfirmed_txs
+- update postman API collection
+
+## [v0.1.18.15] - 04.06.2021
+
 - update consensus stopped after 6 * average block time.
 - add unconfirmed_txs query (wip).
 

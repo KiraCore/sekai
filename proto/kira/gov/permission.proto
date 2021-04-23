@@ -87,5 +87,11 @@ enum PermValue {
 
   // PERMISSION_VOTE_TOKENS_WHITE_BLACK_CHANGE_PROPOSAL defines the permission needed to vote on blacklist/whitelisted tokens proposal
   PERMISSION_VOTE_TOKENS_WHITE_BLACK_CHANGE_PROPOSAL = 25 [(gogoproto.enumvalue_customname) = "PermVoteTokensWhiteBlackChangeProposal"];
+
+  // PERMISSION_CREATE_RESET_WHOLE_VALIDATOR_RANK_PROPOSAL defines the permission needed to create a proposal to reset whole validator rank
+  PERMISSION_CREATE_RESET_WHOLE_VALIDATOR_RANK_PROPOSAL = 26 [(gogoproto.enumvalue_customname) = "PermCreateResetWholeValidatorRankProposal"];
+
+  // PERMISSION_VOTE_RESET_WHOLE_VALIDATOR_RANK_PROPOSAL defines the permission needed to vote on reset whole validator rank proposal
+  PERMISSION_VOTE_RESET_WHOLE_VALIDATOR_RANK_PROPOSAL = 27 [(gogoproto.enumvalue_customname) = "PermVoteResetWholeValidatorRankProposal"];
 }
 

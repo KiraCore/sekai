@@ -39,6 +39,19 @@ func postTxHandle(r *http.Request, request types.InterxRequest, rpcAddr string) 
 		return common.ServeError(0, "failed to unmarshal", err.Error(), http.StatusBadRequest)
 	}
 
+	txModeAllowed := false
+	for _, txMode := range config.Config.TxModes {
+		if txMode == req.Mode {
+			txModeAllowed = true
+			break
+		}
+	}
+
+	if txModeAllowed == false {
+		common.GetLogger().Error("[post-transaction] Invalid transaction mode")
+		return common.ServeError(0, "invalid transaction mode: ", req.Mode, http.StatusBadRequest)
+	}
+
 	url := ""
 	if req.Mode == "block" {
 		url = "/broadcast_tx_commit"

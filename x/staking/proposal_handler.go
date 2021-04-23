@@ -1,9 +1,9 @@
 package staking
 
 import (
-	"github.com/KiraCore/sekai/x/gov/types"
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/staking/keeper"
-	types3 "github.com/KiraCore/sekai/x/staking/types"
+	"github.com/KiraCore/sekai/x/staking/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -18,11 +18,11 @@ func NewApplyUnjailValidatorProposalHandler(keeper keeper.Keeper) *ApplyUnjailVa
 }
 
 func (a ApplyUnjailValidatorProposalHandler) ProposalType() string {
-	return types3.ProposalTypeUnjailValidator
+	return types.ProposalTypeUnjailValidator
 }
 
-func (a ApplyUnjailValidatorProposalHandler) Apply(ctx sdk.Context, proposal types.Content) {
-	p := proposal.(*types3.ProposalUnjailValidator)
+func (a ApplyUnjailValidatorProposalHandler) Apply(ctx sdk.Context, proposal govtypes.Content) {
+	p := proposal.(*types.ProposalUnjailValidator)
 
 	err := a.keeper.Unjail(ctx, sdk.ValAddress(p.Proposer))
 	if err != nil {

@@ -42,9 +42,10 @@ const (
 	MsgTypeProposalTokensWhiteBlackChange = "propose-tokens-white-black-change"
 
 	// slashing module
-	MsgTypeActivate = "activate"
-	MsgTypePause    = "pause"
-	MsgTypeUnpause  = "unpause"
+	MsgTypeActivate                        = "activate"
+	MsgTypePause                           = "pause"
+	MsgTypeUnpause                         = "unpause"
+	MsgTypeProposalResetWholeValidatorRank = "proposal-reset-whole-validator-rank"
 )
 
 // MsgFuncIDMapping defines function_id mapping

@@ -278,6 +278,21 @@ func RegisterInterxFunctions() {
 	)
 
 	AddInterxFunction(
+		"QueryUnconfirmedTxs",
+		config.QueryUnconfirmedTxs,
+		`{
+			"description": "QueryUnconfirmedTxs is a function to query unconfirmed transactions.",
+			"parameters": {
+				"limit": {
+					"type":        "int",
+					"description": "This represents the limit of the transaction. (1 ~ 1000)",
+					"optional": true
+				}
+			}
+		}`,
+	)
+
+	AddInterxFunction(
 		"Broadcast",
 		config.PostTransaction,
 		`{
@@ -393,6 +408,41 @@ func RegisterInterxFunctions() {
 				"countTotal": {
 					"type":        "string",
 					"description": "This is an option to validators pagination. count_total is set to true  to indicate that the result set should include a count of the total number of items available for pagination in UIs. count_total is only respected when offset is used. It is ignored when key is set.",
+					"optional": true
+				}
+			}
+		}`,
+	)
+
+	AddInterxFunction(
+		"QueryValidatorInfos",
+		config.QueryValidatorInfos,
+		`{
+			"description": "QueryValidatorInfos is a function to query validator infos.",
+			"parameters": {
+				"key": {
+					"type":        "string",
+					"description": "This is an option to validators pagination. key is a value returned in PageResponse.next_key to begin querying the next page most efficiently. Only one of offset or key should be set.",
+					"optional": true
+				},
+				"offset": {
+					"type":        "string",
+					"description": "This is an option to validators pagination. offset is a numeric offset that can be used when key is unavailable. It is less efficient than using key. Only one of offset or key should be set.",
+					"optional": true
+				},
+				"limit": {
+					"type":        "string",
+					"description": "This is an option to validators pagination. limit is the total number of results to be returned in the result page. If left empty it will default to a value to be set by each app.",
+					"optional": true
+				},
+				"countTotal": {
+					"type":        "string",
+					"description": "This is an option to validators pagination. count_total is set to true  to indicate that the result set should include a count of the total number of items available for pagination in UIs. count_total is only respected when offset is used. It is ignored when key is set.",
+					"optional": true
+				},
+				"all": {
+					"type":        "boolean",
+					"description": "This is an option to validators pagination. all is set to true  to indicate that all the results should be returned.",
 					"optional": true
 				}
 			}

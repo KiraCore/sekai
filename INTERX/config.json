@@ -9,8 +9,12 @@
   "seed_node_id": "",
   "mnemonic": "pact powder face gather across strike secret quiz cable marble carry vivid tag love fat lawsuit laugh diagram palm silk endless blame vocal canvas",
   "addrbooks": "addrbook.json",
-  "cache": {
+  "tx_modes": "sync,async,block",
+  "block": {
     "status_sync": 5,
+    "halted_avg_block_times": 10
+  },
+  "cache": {
     "cache_dir": "cache",
     "max_cache_size": "2GB",
     "caching_duration": 5,

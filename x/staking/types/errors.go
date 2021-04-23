@@ -6,12 +6,14 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-var ErrInvalidMonikerLength = fmt.Errorf("invalid moniker length (max 64 bytes)")
-var ErrInvalidWebsiteLength = fmt.Errorf("invalid website length (max 64 bytes)")
-var ErrInvalidSocialLength = fmt.Errorf("invalid social length (max 64 bytes)")
-var ErrInvalidIdentityLength = fmt.Errorf("invalid identity length (max 64 bytes)")
-var ErrValidatorInactive = fmt.Errorf("validator is inactive")
-var ErrValidatorPaused = fmt.Errorf("validator is paused")
+var (
+	ErrInvalidMonikerLength  = fmt.Errorf("invalid moniker length (max 64 bytes)")
+	ErrInvalidWebsiteLength  = fmt.Errorf("invalid website length (max 64 bytes)")
+	ErrInvalidSocialLength   = fmt.Errorf("invalid social length (max 64 bytes)")
+	ErrInvalidIdentityLength = fmt.Errorf("invalid identity length (max 64 bytes)")
+	ErrValidatorInactive     = fmt.Errorf("validator is inactive")
+	ErrValidatorPaused       = fmt.Errorf("validator is paused")
+)
 
 var (
 	ErrNetworkActorNotFound    = errors.Register(ModuleName, 2, "network actor not found")

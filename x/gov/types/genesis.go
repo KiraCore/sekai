@@ -44,8 +44,12 @@ func DefaultGenesis() *GenesisState {
 			VoteQuorum:                  33,
 			ProposalEndTime:             600, // 600 seconds / 10 mins
 			ProposalEnactmentTime:       300, // 300 seconds / 5 mins
+			MinProposalEndBlocks:        2,
+			MinProposalEnactmentBlocks:  1,
 			EnableForeignFeePayments:    true,
 			MischanceRankDecreaseAmount: 10,
+			MischanceConfidence:         10,
+			MaxMischance:                110,
 			InactiveRankDecreasePercent: 50,      // 50%
 			PoorNetworkMaxBankSend:      1000000, // 1M ukex
 			MinValidators:               1,

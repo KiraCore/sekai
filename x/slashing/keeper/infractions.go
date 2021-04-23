@@ -26,32 +26,20 @@ func (k Keeper) HandleValidatorSignature(ctx sdk.Context, addr crypto.Address, p
 		panic(fmt.Sprintf("Expected signing info for validator %s but not found", consAddr))
 	}
 
-	// this is a relative index, so it counts blocks the validator *should* have signed
-	// will use the 0-value default signing info if not present, except for start height
-	index := signInfo.IndexOffset % k.SignedBlocksWindow(ctx)
-	signInfo.IndexOffset++
+	properties := k.gk.GetNetworkProperties(ctx)
 
-	// Update signed block bit array & counter
-	// This counter just tracks the sum of the bit array
-	// That way we avoid needing to read/write the whole array each time
-	previous := k.GetValidatorMissedBlockBitArray(ctx, consAddr, index)
+	// Update uptime counter
 	missed := !signed
-	switch {
-	case !previous && missed:
-		// Array value has changed from not missed to missed
-		k.SetValidatorMissedBlockBitArray(ctx, consAddr, index, true)
-	case previous && !missed:
-		// Array value has changed from missed to not missed
-		k.SetValidatorMissedBlockBitArray(ctx, consAddr, index, false)
-	default:
-		// Array value at this index has not changed, no need to update counter
-	}
 	if missed { // increment counter
-		signInfo.Mischance++
 		signInfo.MissedBlocksCounter++
+		// increment mischance only when missed blocks are bigger than mischance confidence
+		if ctx.BlockHeight()-signInfo.LastPresentBlock > int64(properties.MischanceConfidence) {
+			signInfo.Mischance++
+		}
 	} else { // set counter to 0
 		signInfo.Mischance = 0
 		signInfo.ProducedBlocksCounter++
+		signInfo.LastPresentBlock = ctx.BlockHeight()
 	}
 
 	validator, err := k.sk.GetValidatorByConsAddr(ctx, consAddr)
@@ -65,6 +53,7 @@ func (k Keeper) HandleValidatorSignature(ctx sdk.Context, addr crypto.Address, p
 				types.EventTypeLiveness,
 				sdk.NewAttribute(types.AttributeKeyAddress, consAddr.String()),
 				sdk.NewAttribute(types.AttributeKeyMischance, fmt.Sprintf("%d", signInfo.Mischance)),
+				sdk.NewAttribute(types.AttributeKeyLastPresentBlock, fmt.Sprintf("%d", signInfo.LastPresentBlock)),
 				sdk.NewAttribute(types.AttributeKeyMissedBlocks, fmt.Sprintf("%d", signInfo.MissedBlocksCounter)),
 				sdk.NewAttribute(types.AttributeKeyProducedBlocks, fmt.Sprintf("%d", signInfo.ProducedBlocksCounter)),
 				sdk.NewAttribute(types.AttributeKeyHeight, fmt.Sprintf("%d", height)),
@@ -72,20 +61,17 @@ func (k Keeper) HandleValidatorSignature(ctx sdk.Context, addr crypto.Address, p
 		)
 
 		logger.Info(
-			fmt.Sprintf("Absent validator %s at height %d, %d mischance, %d missed blocks, %d produced blocks, threshold %d", consAddr, height, signInfo.Mischance, signInfo.MissedBlocksCounter, signInfo.ProducedBlocksCounter, k.MinSignedPerWindow(ctx)))
+			fmt.Sprintf("Absent validator %s at height %d, %d mischance, %d missed blocks, %d produced blocks, threshold %d", consAddr, height, signInfo.Mischance, signInfo.MissedBlocksCounter, signInfo.ProducedBlocksCounter, properties.MaxMischance))
 	}
 
-	minHeight := signInfo.StartHeight + k.SignedBlocksWindow(ctx)
-	maxMissed := k.SignedBlocksWindow(ctx) - k.MinSignedPerWindow(ctx)
-
-	// if we are past the minimum height and the validator has missed too many blocks, punish them
-	if height > minHeight && signInfo.Mischance > maxMissed {
+	// if mischance overflow max value, we punish them
+	if signInfo.Mischance > int64(properties.MaxMischance) {
 		validator, err := k.sk.GetValidatorByConsAddr(ctx, consAddr)
-		if err == nil && !validator.IsInactivated() {
+		if err == nil && validator.IsActive() {
 
 			// Downtime confirmed: slash and inactivate the validator
-			logger.Info(fmt.Sprintf("Validator %s past min height of %d and below signed blocks threshold of %d",
-				consAddr, minHeight, k.MinSignedPerWindow(ctx)))
+			logger.Info(fmt.Sprintf("Validator %s past max mischance threshold of %d",
+				consAddr, properties.MaxMischance))
 
 			ctx.EventManager().EmitEvent(
 				sdk.NewEvent(
@@ -102,8 +88,6 @@ func (k Keeper) HandleValidatorSignature(ctx sdk.Context, addr crypto.Address, p
 
 			// We need to reset the counter & array so that the validator won't be immediately inactivated for downtime upon rebonding.
 			signInfo.Mischance = 0
-			signInfo.IndexOffset = 0
-			k.clearValidatorMissedBlockBitArray(ctx, consAddr)
 		} else {
 			// Validator was (a) not found or (b) already inactivated, don't slash
 			logger.Info(

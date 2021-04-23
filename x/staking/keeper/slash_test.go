@@ -301,7 +301,7 @@ func TestValidatorActivate_Errors(t *testing.T) {
 		},
 		{
 			name:          "validator is paused",
-			expectedError: types.ErrValidatorPaused,
+			expectedError: fmt.Errorf("Can NOT activate paused validator, you must unpause: validator is paused"),
 			prepareScenario: func(app *simapp.SimApp, ctx sdk.Context, validator types.Validator) {
 				validator.Status = types.Paused
 				app.CustomStakingKeeper.AddValidator(ctx, validator)

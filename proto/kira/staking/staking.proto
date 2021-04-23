@@ -14,7 +14,7 @@ service Msg {
   // ClaimValidator defines a method for claiming a new validator.
   rpc ClaimValidator(MsgClaimValidator) returns (MsgClaimValidatorResponse);
 
-  // ClaimValidator defines a method for claiming a new validator.
+  // ProposalUnjailValidator defines a method to unjail a validator
   rpc ProposalUnjailValidator(MsgProposalUnjailValidator) returns (MsgProposalUnjailValidatorResponse);
 }
 
