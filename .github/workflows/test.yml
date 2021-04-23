@@ -1,7 +1,5 @@
 
-name: Tests / Code Coverage
-#  Tests / Code Coverage workflow runs unit tests and uploads a code coverage report
-#  This workflow is run on pushes to master & every Pull Requests where a .go, .mod, .sum have been changed
+name: Tests
 on:
   pull_request:
   push:
