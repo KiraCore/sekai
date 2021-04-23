@@ -1,6 +1,7 @@
 package interx
 
 import (
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -10,16 +11,20 @@ import (
 	"github.com/KiraCore/sekai/INTERX/common"
 	"github.com/KiraCore/sekai/INTERX/config"
 	"github.com/KiraCore/sekai/INTERX/types"
+	"github.com/KiraCore/sekai/INTERX/types/kira"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	tmRPCTypes "github.com/tendermint/tendermint/rpc/core/types"
 )
 
 // RegisterValidatorsQueryRoutes registers validators query routers.
 func RegisterValidatorsQueryRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr string) {
+	r.HandleFunc(config.QueryConsensus, QueryConsensus(gwCosmosmux, rpcAddr)).Methods("GET")
 	r.HandleFunc(config.QueryValidators, QueryValidators(gwCosmosmux, rpcAddr)).Methods("GET")
 	r.HandleFunc(config.QueryValidatorInfos, QueryValidatorInfos(gwCosmosmux, rpcAddr)).Methods("GET")
 
+	common.AddRPCMethod("GET", config.QueryConsensus, "This is an API to query consensus.", true)
 	common.AddRPCMethod("GET", config.QueryValidators, "This is an API to query validators.", true)
 	common.AddRPCMethod("GET", config.QueryValidatorInfos, "This is an API to query validator infos.", true)
 }
@@ -138,12 +143,13 @@ func queryValidatorsHandle(r *http.Request, gwCosmosmux *runtime.ServeMux) (inte
 					return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
 				}
 
-				result.Validators[index].Mischance = signInfoResponse.ValSigningInfo.MissedBlocksCounter
 				result.Validators[index].StartHeight = signInfoResponse.ValSigningInfo.StartHeight
 				result.Validators[index].IndexOffset = signInfoResponse.ValSigningInfo.IndexOffset
 				result.Validators[index].InactiveUntil = signInfoResponse.ValSigningInfo.InactiveUntil
 				result.Validators[index].Tombstoned = signInfoResponse.ValSigningInfo.Tombstoned
+				result.Validators[index].Mischance = signInfoResponse.ValSigningInfo.Mischance
 				result.Validators[index].MissedBlocksCounter = signInfoResponse.ValSigningInfo.MissedBlocksCounter
+				result.Validators[index].ProducedBlocksCounter = signInfoResponse.ValSigningInfo.ProducedBlocksCounter
 			}
 		}
 
@@ -193,8 +199,6 @@ func queryValidatorsHandle(r *http.Request, gwCosmosmux *runtime.ServeMux) (inte
 					allValidators.Status.JailedValidators++
 				}
 			}
-
-			allValidators.Status.ConsensusStopped = common.IsConsensusStopped(allValidators.Status.ActiveValidators)
 
 			return allValidators, nil, statusCode
 		}
@@ -285,6 +289,194 @@ func QueryValidatorInfos(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.Han
 			}
 
 			response.Response, response.Error, statusCode = queryValidatorInfosHandle(r, gwCosmosmux)
+		}
+
+		common.WrapResponse(w, request, *response, statusCode, true)
+	}
+}
+
+func GetValidator(consAddrHex string) string {
+	bytes, err := hex.DecodeString(consAddrHex)
+	if err != nil {
+		return ""
+	}
+
+	return sdk.AccAddress(bytes).String()
+}
+
+func queryConsensusHandle(r *http.Request, gwCosmosmux *runtime.ServeMux, rpcAddr string) (interface{}, interface{}, int) {
+	// Query All Validators
+	var AllValidators []types.QueryValidator = make([]types.QueryValidator, 0)
+
+	r.URL.RawQuery = "all=true"
+	r.URL.Path = config.QueryValidators
+	success, failure, statusCode := common.ServeGRPC(r, gwCosmosmux)
+	if success != nil {
+		result := struct {
+			Validators []types.QueryValidator `json:"validators,omitempty"`
+			Actors     []string               `json:"actors,omitempty"`
+			Pagination interface{}            `json:"pagination,omitempty"`
+		}{}
+
+		byteData, err := json.Marshal(success)
+		if err != nil {
+			common.GetLogger().Error("[query-consensus] Invalid response format: ", err)
+			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
+		}
+
+		err = json.Unmarshal(byteData, &result)
+		if err != nil {
+			common.GetLogger().Error("[query-consensus] Invalid response format: ", err)
+			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
+		}
+
+		AllValidators = result.Validators
+	} else {
+		return success, failure, statusCode
+	}
+
+	var catching_up bool
+	success, failure, statusCode = common.MakeGetRequest(rpcAddr, "/status", "")
+	if success != nil {
+		type TempResponse struct {
+			SyncInfo struct {
+				CatchingUp bool `json:"catching_up"`
+			} `json:"sync_info"`
+		}
+		result := TempResponse{}
+
+		byteData, err := json.Marshal(success)
+		if err != nil {
+			common.GetLogger().Error("[query-consensus] Invalid response format", err)
+			return common.RosettaServeError(0, "", err.Error(), http.StatusInternalServerError)
+		}
+
+		err = json.Unmarshal(byteData, &result)
+		if err != nil {
+			common.GetLogger().Error("[query-consensus] Invalid response format", err)
+			return common.RosettaServeError(0, "", err.Error(), http.StatusInternalServerError)
+		}
+
+		catching_up = result.SyncInfo.CatchingUp
+	} else {
+		return success, failure, statusCode
+	}
+
+	// Query consensus
+	success, failure, statusCode = common.MakeGetRequest(rpcAddr, "/dump_consensus_state", "")
+	if success != nil {
+		consensus := tmRPCTypes.ResultDumpConsensusState{}
+
+		byteData, err := json.Marshal(success)
+		if err != nil {
+			common.GetLogger().Error("[query-consensus] Invalid response format: ", err)
+			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
+		}
+
+		err = json.Unmarshal(byteData, &consensus)
+		if err != nil {
+			common.GetLogger().Error("[query-consensus] Invalid response format: ", err)
+			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
+		}
+
+		roundState := kira.RoundState{}
+
+		err = json.Unmarshal(consensus.RoundState, &roundState)
+		if err != nil {
+			common.GetLogger().Error("[query-consensus] Invalid round state: ", err)
+			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
+		}
+
+		response := kira.ConsensusResponse{}
+		response.Height = roundState.Height
+		response.Round = roundState.Round
+		response.Step = roundState.Step.String()
+		response.StartTime = roundState.StartTime
+		response.CommitTime = roundState.CommitTime
+		response.TriggeredTimeoutPrecommit = roundState.TriggeredTimeoutPrecommit
+		response.ConsensusStopped = common.IsConsensusStopped(len(roundState.Validators.Validators))
+
+		if catching_up {
+			response.ConsensusStopped = false
+		}
+
+		response.AverageBlockTime = common.GetAverageBlockTime()
+
+		// response.Proposer
+		for _, validator := range AllValidators {
+			if validator.Proposer == roundState.Validators.Proposer.Address {
+				response.Proposer = validator.Address
+				break
+			}
+		}
+
+		validators := make([]string, 0)
+		for i := range roundState.Validators.Validators {
+			for _, validator := range AllValidators {
+				if validator.Proposer == roundState.Validators.Validators[i].Address {
+					validators = append(validators, validator.Address)
+					break
+				}
+			}
+		}
+
+		response.Precommits = make([]string, 0)
+		response.Prevotes = make([]string, 0)
+		response.Noncommits = make([]string, 0)
+
+		flag := make([]bool, len(validators))
+		for i, vote := range roundState.Votes {
+			for j := range vote.Precommits {
+				if vote.Precommits[j] != "nil-Vote" {
+					flag[j] = true
+					if j == len(roundState.Votes)-1 {
+						response.Precommits = append(response.Precommits, validators[j])
+					}
+				}
+			}
+			if i == len(roundState.Votes)-1 {
+				for j := range vote.Prevotes {
+					if vote.Prevotes[j] != "nil-Vote" {
+						response.Prevotes = append(response.Prevotes, validators[j])
+					}
+				}
+			}
+		}
+
+		for i := range flag {
+			if flag[i] != true {
+				response.Noncommits = append(response.Noncommits, validators[i])
+			}
+		}
+
+		return response, failure, statusCode
+	}
+
+	return success, failure, statusCode
+}
+
+// QueryConsensus is a function to query consensus.
+func QueryConsensus(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		request := common.GetInterxRequest(r)
+		response := common.GetResponseFormat(request, rpcAddr)
+		statusCode := http.StatusOK
+
+		if !common.RPCMethods["GET"][config.QueryConsensus].Enabled {
+			response.Response, response.Error, statusCode = common.ServeError(0, "", "API disabled", http.StatusForbidden)
+		} else {
+			if common.RPCMethods["GET"][config.QueryConsensus].CachingEnabled {
+				found, cacheResponse, cacheError, cacheStatus := common.SearchCache(request, response)
+				if found {
+					response.Response, response.Error, statusCode = cacheResponse, cacheError, cacheStatus
+					common.WrapResponse(w, request, *response, statusCode, false)
+
+					common.GetLogger().Info("[encode-transaction] Returning from the cache")
+					return
+				}
+			}
+
+			response.Response, response.Error, statusCode = queryConsensusHandle(r, gwCosmosmux, rpcAddr)
 		}
 
 		common.WrapResponse(w, request, *response, statusCode, true)

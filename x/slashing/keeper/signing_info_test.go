@@ -22,30 +22,20 @@ func TestGetSetValidatorSigningInfo(t *testing.T) {
 	newInfo := types.NewValidatorSigningInfo(
 		sdk.ConsAddress(addrDels[0]),
 		int64(4),
-		int64(3),
 		time.Unix(2, 0),
 		false,
+		int64(10),
+		int64(10),
 		int64(10),
 	)
 	app.CustomSlashingKeeper.SetValidatorSigningInfo(ctx, sdk.ConsAddress(addrDels[0]), newInfo)
 	info, found = app.CustomSlashingKeeper.GetValidatorSigningInfo(ctx, sdk.ConsAddress(addrDels[0]))
 	require.True(t, found)
 	require.Equal(t, info.StartHeight, int64(4))
-	require.Equal(t, info.IndexOffset, int64(3))
 	require.Equal(t, info.InactiveUntil, time.Unix(2, 0).UTC())
+	require.Equal(t, info.Mischance, int64(10))
 	require.Equal(t, info.MissedBlocksCounter, int64(10))
-}
-
-func TestGetSetValidatorMissedBlockBitArray(t *testing.T) {
-	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
-	addrDels := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(200))
-
-	missed := app.CustomSlashingKeeper.GetValidatorMissedBlockBitArray(ctx, sdk.ConsAddress(addrDels[0]), 0)
-	require.False(t, missed) // treat empty key as not missed
-	app.CustomSlashingKeeper.SetValidatorMissedBlockBitArray(ctx, sdk.ConsAddress(addrDels[0]), 0, true)
-	missed = app.CustomSlashingKeeper.GetValidatorMissedBlockBitArray(ctx, sdk.ConsAddress(addrDels[0]), 0)
-	require.True(t, missed) // now should be missed
+	require.Equal(t, info.ProducedBlocksCounter, int64(10))
 }
 
 func TestTombstoned(t *testing.T) {
@@ -59,9 +49,10 @@ func TestTombstoned(t *testing.T) {
 	newInfo := types.NewValidatorSigningInfo(
 		sdk.ConsAddress(addrDels[0]),
 		int64(4),
-		int64(3),
 		time.Unix(2, 0),
 		false,
+		int64(10),
+		int64(10),
 		int64(10),
 	)
 	app.CustomSlashingKeeper.SetValidatorSigningInfo(ctx, sdk.ConsAddress(addrDels[0]), newInfo)
@@ -82,9 +73,10 @@ func TestJailUntil(t *testing.T) {
 	newInfo := types.NewValidatorSigningInfo(
 		sdk.ConsAddress(addrDels[0]),
 		int64(4),
-		int64(3),
 		time.Unix(2, 0),
 		false,
+		int64(10),
+		int64(10),
 		int64(10),
 	)
 	app.CustomSlashingKeeper.SetValidatorSigningInfo(ctx, sdk.ConsAddress(addrDels[0]), newInfo)

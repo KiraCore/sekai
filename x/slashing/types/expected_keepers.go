@@ -3,6 +3,7 @@
 package types
 
 import (
+	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	auth "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -47,6 +48,7 @@ type StakingKeeper interface {
 	Inactivate(sdk.Context, sdk.ValAddress) error // inactivate a validator
 	Activate(sdk.Context, sdk.ValAddress) error   // activate a validator
 	Jail(sdk.Context, sdk.ValAddress) error       // jail a validator
+	ResetWholeValidatorRank(sdk.Context)          // reset whole validator rank
 
 	// pause/unpause the validator and delegators of the validator, specifying offence height, offence power, and slash fraction
 	Pause(sdk.Context, sdk.ValAddress) error   // pause a validator
@@ -63,4 +65,13 @@ type StakingHooks interface {
 	AfterValidatorCreated(ctx sdk.Context, valAddr sdk.ValAddress)                           // Must be called when a validator is created
 	AfterValidatorRemoved(ctx sdk.Context, consAddr sdk.ConsAddress, valAddr sdk.ValAddress) // Must be called when a validator is deleted
 	AfterValidatorJoined(ctx sdk.Context, consAddr sdk.ConsAddress, valAddr sdk.ValAddress)  // Must be called when a validator is joined
+}
+
+// GovKeeper expected governance keeper
+type GovKeeper interface {
+	GetNetworkProperties(sdk.Context) *customgovtypes.NetworkProperties // returns network properties
+	CheckIfAllowedPermission(ctx sdk.Context, addr sdk.AccAddress, permValue customgovtypes.PermValue) bool
+	GetNextProposalID(ctx sdk.Context) (uint64, error)
+	SaveProposal(ctx sdk.Context, proposal customgovtypes.Proposal)
+	AddToActiveProposals(ctx sdk.Context, proposal customgovtypes.Proposal)
 }

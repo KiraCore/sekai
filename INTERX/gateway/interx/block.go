@@ -131,8 +131,8 @@ func QueryBlockByHeightOrHashRequest(gwCosmosmux *runtime.ServeMux, rpcAddr stri
 	}
 }
 
-func getTransactionsFromLog(attributes []abciTypes.EventAttribute) []types.TxAmount {
-	feeTxs := []types.TxAmount{}
+func getTransactionsFromLog(attributes []abciTypes.EventAttribute) []sdk.Coin {
+	feeTxs := []sdk.Coin{}
 
 	var evMap = make(map[string]string)
 	for _, attribute := range attributes {
@@ -142,8 +142,8 @@ func getTransactionsFromLog(attributes []abciTypes.EventAttribute) []types.TxAmo
 		if _, ok := evMap[key]; ok {
 			coin, err := sdk.ParseCoinNormalized(evMap["amount"])
 			if err == nil {
-				feeTx := types.TxAmount{
-					Amount: coin.Amount.Int64(),
+				feeTx := sdk.Coin{
+					Amount: sdk.NewInt(coin.Amount.Int64()),
 					Denom:  coin.GetDenom(),
 				}
 				feeTxs = append(feeTxs, feeTx)
@@ -158,8 +158,8 @@ func getTransactionsFromLog(attributes []abciTypes.EventAttribute) []types.TxAmo
 	if _, ok := evMap["amount"]; ok {
 		coin, err := sdk.ParseCoinNormalized(evMap["amount"])
 		if err == nil {
-			feeTx := types.TxAmount{
-				Amount: coin.Amount.Int64(),
+			feeTx := sdk.Coin{
+				Amount: sdk.NewInt(coin.Amount.Int64()),
 				Denom:  coin.GetDenom(),
 			}
 			feeTxs = append(feeTxs, feeTx)
@@ -196,8 +196,16 @@ func parseTransaction(rpcAddr string, transaction tmTypes.ResultTx) (types.Trans
 	txResult.GasWanted = transaction.TxResult.GetGasWanted()
 	txResult.GasUsed = transaction.TxResult.GetGasUsed()
 
+	txResult.Msgs = make([]types.TxMsg, 0)
+	for _, msg := range tx.GetMsgs() {
+		txResult.Msgs = append(txResult.Msgs, types.TxMsg{
+			Type: msg.Type(),
+			Data: msg,
+		})
+	}
+
 	txResult.Transactions = []types.Transaction{}
-	txResult.Fees = []types.TxAmount{}
+	txResult.Fees = []sdk.Coin{}
 
 	logs, err := sdk.ParseABCILogs(transaction.TxResult.GetLog())
 	if err != nil {
@@ -224,11 +232,11 @@ func parseTransaction(rpcAddr string, transaction tmTypes.ResultTx) (types.Trans
 		if txType == "send" {
 			msgSend := msg.(*bank.MsgSend)
 
-			amounts := []types.TxAmount{}
+			amounts := []sdk.Coin{}
 			for _, coin := range msgSend.Amount {
-				amounts = append(amounts, types.TxAmount{
+				amounts = append(amounts, sdk.Coin{
 					Denom:  coin.GetDenom(),
-					Amount: coin.Amount.Int64(),
+					Amount: sdk.NewInt(coin.Amount.Int64()),
 				})
 			}
 
@@ -245,12 +253,12 @@ func parseTransaction(rpcAddr string, transaction tmTypes.ResultTx) (types.Trans
 			if len(inputs) == 1 && len(outputs) == 1 {
 				input := inputs[0]
 				output := outputs[0]
-				amounts := []types.TxAmount{}
+				amounts := []sdk.Coin{}
 
 				for _, coin := range input.Coins {
-					amounts = append(amounts, types.TxAmount{
+					amounts = append(amounts, sdk.Coin{
 						Denom:  coin.GetDenom(),
-						Amount: coin.Amount.Int64(),
+						Amount: sdk.NewInt(coin.Amount.Int64()),
 					})
 				}
 
@@ -269,10 +277,10 @@ func parseTransaction(rpcAddr string, transaction tmTypes.ResultTx) (types.Trans
 				Type: txType,
 				From: createValidatorMsg.DelegatorAddress,
 				To:   createValidatorMsg.ValidatorAddress,
-				Amounts: []types.TxAmount{
+				Amounts: []sdk.Coin{
 					{
 						Denom:  createValidatorMsg.Value.Denom,
-						Amount: createValidatorMsg.Value.Amount.Int64(),
+						Amount: sdk.NewInt(createValidatorMsg.Value.Amount.Int64()),
 					},
 				},
 			})
@@ -283,10 +291,10 @@ func parseTransaction(rpcAddr string, transaction tmTypes.ResultTx) (types.Trans
 				Type: txType,
 				From: delegateMsg.DelegatorAddress,
 				To:   delegateMsg.ValidatorAddress,
-				Amounts: []types.TxAmount{
+				Amounts: []sdk.Coin{
 					{
 						Denom:  delegateMsg.Amount.Denom,
-						Amount: delegateMsg.Amount.Amount.Int64(),
+						Amount: sdk.NewInt(delegateMsg.Amount.Amount.Int64()),
 					},
 				},
 			})
@@ -297,10 +305,10 @@ func parseTransaction(rpcAddr string, transaction tmTypes.ResultTx) (types.Trans
 				Type: txType,
 				From: reDelegateMsg.ValidatorSrcAddress,
 				To:   reDelegateMsg.ValidatorDstAddress,
-				Amounts: []types.TxAmount{
+				Amounts: []sdk.Coin{
 					{
 						Denom:  reDelegateMsg.Amount.Denom,
-						Amount: reDelegateMsg.Amount.Amount.Int64(),
+						Amount: sdk.NewInt(reDelegateMsg.Amount.Amount.Int64()),
 					},
 				},
 			})
@@ -311,10 +319,10 @@ func parseTransaction(rpcAddr string, transaction tmTypes.ResultTx) (types.Trans
 				Type: txType,
 				From: unDelegateMsg.ValidatorAddress,
 				To:   unDelegateMsg.DelegatorAddress,
-				Amounts: []types.TxAmount{
+				Amounts: []sdk.Coin{
 					{
 						Denom:  unDelegateMsg.Amount.Denom,
-						Amount: unDelegateMsg.Amount.Amount.Int64(),
+						Amount: sdk.NewInt(unDelegateMsg.Amount.Amount.Int64()),
 					},
 				},
 			})
@@ -334,10 +342,10 @@ func parseTransaction(rpcAddr string, transaction tmTypes.ResultTx) (types.Trans
 				Type: txType,
 				From: withdrawDelegatorRewardMsg.ValidatorAddress,
 				To:   withdrawDelegatorRewardMsg.DelegatorAddress,
-				Amounts: []types.TxAmount{
+				Amounts: []sdk.Coin{
 					{
 						Denom:  coin.Denom,
-						Amount: coin.Amount.Int64(),
+						Amount: sdk.NewInt(coin.Amount.Int64()),
 					},
 				},
 			})
@@ -363,10 +371,10 @@ func parseTransaction(rpcAddr string, transaction tmTypes.ResultTx) (types.Trans
 							Type: txType,
 							From: evMap["sender"],
 							To:   evMap["recipient"],
-							Amounts: []types.TxAmount{
+							Amounts: []sdk.Coin{
 								{
 									Denom:  coin.Denom,
-									Amount: coin.Amount.Int64(),
+									Amount: sdk.NewInt(coin.Amount.Int64()),
 								},
 							},
 						})
@@ -385,10 +393,10 @@ func parseTransaction(rpcAddr string, transaction tmTypes.ResultTx) (types.Trans
 						Type: txType,
 						From: evMap["sender"],
 						To:   evMap["recipient"],
-						Amounts: []types.TxAmount{
+						Amounts: []sdk.Coin{
 							{
 								Denom:  coin.Denom,
-								Amount: coin.Amount.Int64(),
+								Amount: sdk.NewInt(coin.Amount.Int64()),
 							},
 						},
 					})
@@ -402,7 +410,7 @@ func parseTransaction(rpcAddr string, transaction tmTypes.ResultTx) (types.Trans
 			for _, amount := range transfer.Amounts {
 				i := 0
 				for i < len(txResult.Fees) {
-					if txResult.Fees[i].Amount == amount.Amount && txResult.Fees[i].Denom == amount.Denom {
+					if txResult.Fees[i].Amount.Equal(amount.Amount) && txResult.Fees[i].Denom == amount.Denom {
 						break
 					}
 					i++

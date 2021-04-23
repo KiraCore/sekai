@@ -71,31 +71,115 @@ func TestNewHandler_MsgClaimValidator_HappyPath(t *testing.T) {
 	require.Len(t, validatorSet, 1)
 }
 
-func TestNewHandler_MsgClaimValidator_ItFailsIfUserDoesNotHavePermissionsToClaimValidator(t *testing.T) {
+func TestNewHandler_MsgClaimValidator_Errors(t *testing.T) {
 	valAddr1, err := types.ValAddressFromBech32("kiravaloper15ky9du8a2wlstz6fpx3p4mqpjyrm5cgq38f2fp")
 	require.NoError(t, err)
 
 	pubKey, err := types.GetPubKeyFromBech32(types.Bech32PubKeyTypeConsPub, "kiravalconspub1zcjduepqylc5k8r40azmw0xt7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsq4xg7em")
 	require.NoError(t, err)
 
-	app := simapp.Setup(false)
-	ctx := app.NewContext(false, tmproto.Header{})
+	tests := []struct {
+		name          string
+		prepareFunc   func(ctx types.Context, app *simapp.SimApp)
+		expectedError error
+	}{
+		{
+			"user does not have permissions",
+			func(ctx types.Context, app *simapp.SimApp) {},
+			errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermClaimValidator"),
+		},
+		{
+			"validator already exist",
+			func(ctx types.Context, app *simapp.SimApp) {
+				// First we give user permissions
+				networkActor := customgovtypes.NewNetworkActor(
+					types.AccAddress(valAddr1),
+					nil,
+					1,
+					nil,
+					customgovtypes.NewPermissions([]customgovtypes.PermValue{
+						customgovtypes.PermClaimValidator,
+					}, nil),
+					1,
+				)
+				app.CustomGovKeeper.SaveNetworkActor(ctx, networkActor)
 
-	handler := staking.NewHandler(app.CustomStakingKeeper, app.CustomGovKeeper)
+				validator, err := customstakingtypes.NewValidator(
+					"aMoniker",
+					"some-web.com",
+					"A Sociale",
+					"My Identity",
+					types.NewDec(1234),
+					valAddr1,
+					pubKey,
+				)
+				require.NoError(t, err)
+				app.CustomStakingKeeper.AddValidator(ctx, validator)
+			},
+			customstakingtypes.ErrValidatorAlreadyClaimed,
+		},
+		{
+			"validator moniker exists",
+			func(ctx types.Context, app *simapp.SimApp) {
+				pubKey, err := types.GetPubKeyFromBech32(types.Bech32PubKeyTypeConsPub, "kiravalconspub1zcjduepqylc5k8r40azmw0xa7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsqgrkp48")
+				require.NoError(t, err)
 
-	theMsg, err := customstakingtypes.NewMsgClaimValidator(
-		"aMoniker",
-		"some-web.com",
-		"A Social",
-		"My Identity",
-		types.NewDec(1234),
-		valAddr1,
-		pubKey,
-	)
-	require.NoError(t, err)
+				valAddr2, err := types.ValAddressFromBech32("kiravaloper15ky9du8a2wlstz6fpx3p4mqpryrm5cgqeyf3v0")
+				require.NoError(t, err)
 
-	_, err = handler(ctx, theMsg)
-	require.EqualError(t, err, "PermClaimValidator: not enough permissions")
+				networkActor := customgovtypes.NewNetworkActor(
+					types.AccAddress(valAddr1),
+					nil,
+					1,
+					nil,
+					customgovtypes.NewPermissions([]customgovtypes.PermValue{
+						customgovtypes.PermClaimValidator,
+					}, nil),
+					1,
+				)
+				app.CustomGovKeeper.SaveNetworkActor(ctx, networkActor)
+
+				validator, err := customstakingtypes.NewValidator(
+					"aMoniker", // Other validator with repeated moniker.
+					"some-web.com",
+					"A Sociale",
+					"My Identity",
+					types.NewDec(1234),
+					valAddr2,
+					pubKey,
+				)
+				require.NoError(t, err)
+				app.CustomStakingKeeper.AddValidator(ctx, validator)
+			},
+			customstakingtypes.ErrValidatorMonikerExists,
+		},
+	}
+
+	for _, tt := range tests {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			app := simapp.Setup(false)
+			ctx := app.NewContext(false, tmproto.Header{})
+
+			tt.prepareFunc(ctx, app)
+
+			handler := staking.NewHandler(app.CustomStakingKeeper, app.CustomGovKeeper)
+
+			theMsg, err := customstakingtypes.NewMsgClaimValidator(
+				"aMoniker",
+				"some-web.com",
+				"A Social",
+				"My Identity",
+				types.NewDec(1234),
+				valAddr1,
+				pubKey,
+			)
+			require.NoError(t, err)
+
+			_, err = handler(ctx, theMsg)
+			require.EqualError(t, err, tt.expectedError.Error())
+		})
+	}
 }
 
 func TestNewHandler_SetPermissions_ActorWithRole(t *testing.T) {
@@ -216,6 +300,7 @@ func TestHandler_ProposalUnjailValidator_Errors(t *testing.T) {
 				ctx,
 				customstakingtypes.NewMsgProposalUnjailValidator(
 					proposerAddr,
+					"some desc",
 					"thehash",
 					"theReference",
 				),
@@ -260,6 +345,7 @@ func TestHandler_ProposalUnjailValidator(t *testing.T) {
 		ctx,
 		customstakingtypes.NewMsgProposalUnjailValidator(
 			proposerAddr,
+			"some desc",
 			"thehash",
 			"theReference",
 		),
@@ -277,8 +363,13 @@ func TestHandler_ProposalUnjailValidator(t *testing.T) {
 			"theReference",
 		),
 		ctx.BlockTime(),
-		ctx.BlockTime().Add(time.Minute*time.Duration(properties.ProposalEndTime)),
-		ctx.BlockTime().Add(time.Minute*time.Duration(properties.ProposalEnactmentTime)),
+		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEndTime)),
+		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEndTime)+
+			time.Second*time.Duration(properties.ProposalEnactmentTime),
+		),
+		ctx.BlockHeight()+2,
+		ctx.BlockHeight()+3,
+		"some desc",
 	)
 	require.NoError(t, err)
 	require.Equal(t, expectedSavedProposal, savedProposal)

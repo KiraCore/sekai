@@ -6,6 +6,7 @@ import "google/protobuf/timestamp.proto";
 import "google/protobuf/any.proto";
 import "cosmos_proto/cosmos.proto";
 import "kira/gov/network_properties.proto";
+import "kira/gov/permission.proto";
 
 option go_package = "github.com/KiraCore/sekai/INTERX/proto";
 
@@ -33,6 +34,8 @@ enum VoteResult {
   VOTE_RESULT_REJECTED = 2 [(gogoproto.enumvalue_customname) = "Rejected"];
   VOTE_RESULT_REJECTED_WITH_VETO = 3 [(gogoproto.enumvalue_customname) = "RejectedWithVeto"];
   VOTE_PENDING = 4 [(gogoproto.enumvalue_customname) = "Pending"];
+  VOTE_RESULT_QUORUM_NOT_REACHED = 5 [(gogoproto.enumvalue_customname) = "QuorumNotReached"];
+  VOTE_RESULT_ENACTMENT = 6 [(gogoproto.enumvalue_customname) = "Enactment"];
 }
 
 message Vote {
@@ -100,16 +103,19 @@ message Proposal {
   google.protobuf.Timestamp submit_time = 3
   [(gogoproto.stdtime) = true, (gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"submit_time\""];
 
-  google.protobuf.Timestamp voting_start_time = 4
-  [(gogoproto.stdtime) = true, (gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"voting_start_time\""];
+  google.protobuf.Timestamp voting_end_time = 4
+    [(gogoproto.stdtime) = true, (gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"voting_end_time\""];
 
-  google.protobuf.Timestamp voting_end_time = 5
-  [(gogoproto.stdtime) = true, (gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"voting_end_time\""];
+  google.protobuf.Timestamp enactment_end_time = 5
+  [(gogoproto.stdtime) = true, (gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"enactment_end_time\""];
 
-  google.protobuf.Timestamp enactment_end_time = 6
-  [(gogoproto.stdtime) = true, (gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"voting_end_time\""];
+  int64 min_voting_end_block_height = 6;
+
+  int64 min_enactment_end_block_height = 7;
 
   VoteResult result = 8;
+
+  string description = 9;
 }
 
 message AssignPermissionProposal {
@@ -160,4 +166,24 @@ message UpsertDataRegistryProposal {
 
 message SetPoorNetworkMessagesProposal {
   repeated string messages = 1;
+}
+
+message MsgProposalCreateRole {
+  bytes proposer = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
+  ];
+  string description = 5;
+
+  uint32 role = 2;
+  repeated PermValue whitelisted_permissions = 3;
+  repeated PermValue blacklisted_permissions = 4;
+}
+
+message CreateRoleProposal {
+  option (cosmos_proto.implements_interface) = "Content";
+  option (gogoproto.equal) = true;
+
+  uint32 role = 1;
+  repeated PermValue whitelisted_permissions = 2;
+  repeated PermValue blacklisted_permissions = 3;
 }

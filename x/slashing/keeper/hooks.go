@@ -17,9 +17,10 @@ func (k Keeper) AfterValidatorJoined(ctx sdk.Context, address sdk.ConsAddress, v
 		signingInfo := types.NewValidatorSigningInfo(
 			address,
 			ctx.BlockHeight(),
-			0,
 			time.Unix(0, 0),
 			false,
+			0,
+			0,
 			0,
 		)
 		k.SetValidatorSigningInfo(ctx, address, signingInfo)

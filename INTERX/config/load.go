@@ -5,8 +5,11 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"strings"
 
+	"github.com/KiraCore/sekai/INTERX/types"
 	sekaiapp "github.com/KiraCore/sekai/app"
+	"github.com/cosmos/cosmos-sdk/crypto/hd"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	bytesize "github.com/inhies/go-bytesize"
@@ -41,13 +44,17 @@ func mnemonicFromFile(filename string) string {
 	return string(mnemonic)
 }
 
+func TrimMnemonic(mnemonic string) string {
+	return strings.Join(strings.Fields(mnemonic), " ")
+}
+
 // LoadMnemonic is a function to extract mnemonic
 func LoadMnemonic(mnemonic string) string {
 	if bip39.IsMnemonicValid(mnemonic) {
-		return mnemonic
+		return TrimMnemonic(mnemonic)
 	}
 
-	return mnemonicFromFile(mnemonic)
+	return TrimMnemonic(mnemonicFromFile(mnemonic))
 }
 
 // LoadConfig is a function to load interx configurations from a given file
@@ -77,6 +84,11 @@ func LoadConfig(configFilePath string) {
 	Config.PORT = configFromFile.PORT
 	Config.Mnemonic = LoadMnemonic(configFromFile.MnemonicFile)
 
+	Config.SentryNodeID = configFromFile.SentryNodeID
+	Config.PrivSentryNodeID = configFromFile.PrivSentryNodeID
+	Config.ValidatorNodeID = configFromFile.ValidatorNodeID
+	Config.SeedNodeID = configFromFile.SeedNodeID
+
 	fmt.Println("Interx GRPC: ", Config.GRPC)
 	fmt.Println("Interx RPC : ", Config.RPC)
 	fmt.Println("Interx PORT: ", Config.PORT)
@@ -85,23 +97,44 @@ func LoadConfig(configFilePath string) {
 		fmt.Println("Invalid Interx Mnemonic: ", Config.Mnemonic)
 		panic("Invalid Interx Mnemonic")
 	}
-	Config.PrivKey = secp256k1.GenPrivKeyFromSecret(bip39.NewSeed(Config.Mnemonic, ""))
+
+	seed, err := bip39.NewSeedWithErrorChecking(Config.Mnemonic, "")
+	if err != nil {
+		panic(err)
+	}
+	master, ch := hd.ComputeMastersFromSeed(seed)
+	priv, err := hd.DerivePrivateKeyForPath(master, ch, "44'/118'/0'/0/0")
+	if err != nil {
+		panic(err)
+	}
+
+	Config.PrivKey = &secp256k1.PrivKey{Key: priv}
 	Config.PubKey = Config.PrivKey.PubKey()
 	Config.Address = sdk.MustBech32ifyAddressBytes(sdk.GetConfig().GetBech32AccountAddrPrefix(), Config.PubKey.Address())
+
+	Config.AddrBooks = strings.Split(configFromFile.AddrBooks, ",")
+	Config.TxModes = strings.Split(configFromFile.TxModes, ",")
+	if len(Config.TxModes) == 0 {
+		Config.TxModes = strings.Split("sync,async,block", ",")
+	}
 
 	// Display mnemonic and keys
 	fmt.Println("Interx Mnemonic  : ", Config.Mnemonic)
 	fmt.Println("Interx Address   : ", Config.Address)
 	fmt.Println("Interx Public Key: ", sdk.MustBech32ifyPubKey(sdk.Bech32PubKeyTypeAccPub, Config.PubKey))
 
-	Config.Cache.StatusSync = configFromFile.Cache.StatusSync
+	Config.Block.StatusSync = configFromFile.Block.StatusSync
+	Config.Block.HaltedAvgBlockTimes = configFromFile.Block.HaltedAvgBlockTimes
+
 	Config.Cache.CacheDir = configFromFile.Cache.CacheDir
 	Config.Cache.MaxCacheSize = parseSizeString(configFromFile.Cache.MaxCacheSize)
 	Config.Cache.CachingDuration = configFromFile.Cache.CachingDuration
 	Config.Cache.DownloadFileSizeLimitation = parseSizeString(configFromFile.Cache.DownloadFileSizeLimitation)
 
 	// Display cache configurations
-	fmt.Println("Interx Cache StatusSync                : ", Config.Cache.StatusSync)
+	fmt.Println("Interx Block StatusSync                : ", Config.Block.StatusSync)
+	fmt.Println("Halted Avg Block Times                 : ", Config.Block.HaltedAvgBlockTimes)
+
 	fmt.Println("Interx Cache CacheDir                  : ", Config.Cache.CacheDir)
 	fmt.Println("Interx Cache MaxCacheSize              : ", Config.Cache.MaxCacheSize)
 	fmt.Println("Interx Cache CachingDuration           : ", Config.Cache.CachingDuration)
@@ -120,7 +153,18 @@ func LoadConfig(configFilePath string) {
 		fmt.Println("Invalid Faucet Mnemonic: ", Config.Faucet.Mnemonic)
 		panic("Invalid Faucet Mnemonic")
 	}
-	Config.Faucet.PrivKey = secp256k1.GenPrivKeyFromSecret(bip39.NewSeed(Config.Faucet.Mnemonic, ""))
+
+	seed, err = bip39.NewSeedWithErrorChecking(Config.Faucet.Mnemonic, "")
+	if err != nil {
+		panic(err)
+	}
+	master, ch = hd.ComputeMastersFromSeed(seed)
+	priv, err = hd.DerivePrivateKeyForPath(master, ch, "44'/118'/0'/0/0")
+	if err != nil {
+		panic(err)
+	}
+
+	Config.Faucet.PrivKey = &secp256k1.PrivKey{Key: priv}
 	Config.Faucet.PubKey = Config.Faucet.PrivKey.PubKey()
 	Config.Faucet.Address = sdk.MustBech32ifyAddressBytes(sdk.GetConfig().GetBech32AccountAddrPrefix(), Config.Faucet.PubKey.Address())
 
@@ -173,4 +217,49 @@ func GetResponseCacheDir() string {
 // GetDbCacheDir is a function to get db directory
 func GetDbCacheDir() string {
 	return Config.Cache.CacheDir + "/db"
+}
+
+func LoadAddressBooks() []types.AddrBookJSON {
+	addrBooks := make([]types.AddrBookJSON, 0)
+	for _, addrFile := range Config.AddrBooks {
+		file, _ := ioutil.ReadFile(addrFile)
+
+		book := types.AddrBookJSON{}
+
+		err := json.Unmarshal([]byte(file), &book)
+
+		if err != nil {
+			fmt.Println("Failed to load addrBook: ", addrFile)
+		}
+
+		addrBooks = append(addrBooks, book)
+	}
+
+	return addrBooks
+}
+
+func LoadUniqueAddresses() []types.KnownAddress {
+	addrBooks := make([]types.KnownAddress, 0)
+
+	flag := make(map[string]bool)
+	for _, addrFile := range Config.AddrBooks {
+		file, _ := ioutil.ReadFile(addrFile)
+
+		book := types.AddrBookJSON{}
+
+		err := json.Unmarshal([]byte(file), &book)
+
+		if err != nil {
+			fmt.Println("Failed to load addrBook: ", addrFile)
+		}
+
+		for _, addr := range book.Addrs {
+			if _, ok := flag[addr.Addr.IP]; ok {
+				addrBooks = append(addrBooks, addr)
+			}
+			flag[addr.Addr.IP] = true
+		}
+	}
+
+	return addrBooks
 }

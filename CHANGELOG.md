@@ -1,5 +1,65 @@
 # Changelog
 
+## [v0.1.19] - 21.04.2021
+### Added
+- New uptime counter
+- Move properties from slashing to gov for uptime properties
+- Proposal to reset whole validators rank
+
+## [v0.1.18.19] - 22.04.2021
+### Changed
+- Upgrade SDK to version 0.42.4
+- Validators cannot use same moniker and is space trimmed.
+
+## [v0.1.18.17] - 17.04.2021
+### Added
+- Implement infinite gas meter decorator
+
+## [v0.1.18.16] - 09.04.2021
+### Fixed
+- Add minimum blocks for voting and enactment time on-chain param and implement logic
+- Modify error messages for slashing module
+
+## [v0.1.18.14] - 01.04.2021
+### Fixed
+- Fixed problem with network stopping on pause.
+- Validator cannot be claimed if already did.
+
+## [v0.1.18.13] - 02.04.2021
+## Added
+- Add event manager to all msg handlers
+- Fix few permission issues
+- Fix tests
+
+## [v0.1.18.11] - 01.04.2021
+## Added
+- Add missing permissions to sudo role
+- Fix vote result unknown state for set poor network messages proposal
+- Split huge README into several shell scripts
+
+## [v0.1.18.7] - 26.03.2021
+### Added
+- Shell script to setup environment variables especially for permissions
+- README for upsert token alias, upsert token rates by governance
+
+## [v0.1.18.5] - 25.03.2021
+### Fixed
+- Some proposals were created in minutes instead of seconds pattern.
+
+## [v0.1.18.4] - 25.03.2021
+### Added
+- Add a field in all proposals to be able to set some description.
+### Fixed
+- The actor when it receives a permission becomes active.
+- Fixed problem when voting unjail validator proposal.
+
+## [v0.1.18.2] - 25.03.2021
+### Changed
+- Permission numbers to an organized way
+- Cleanup gov codebase function names and vars
+- Fix SetPoorNetworkMessagesProposal codec registration
+- Add logic for Mischance and ProducedBlocksCounter, MissedBlocksCounter
+
 ## [v0.1.18] - 19.03.2021
 ### Added
 - Ante handler to check frozen tokens movement
@@ -9,7 +69,6 @@
 - Added CLI command to query current blacklist and whitelist
 - Network Properties management code modification for boolean properties
 
-### Fixed
 ## [v0.1.17.6] - 18.03.2021
 ### Added
 - Now when the proposal passes it enter ins status Enactment.

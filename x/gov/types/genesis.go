@@ -10,24 +10,30 @@ func DefaultGenesis() *GenesisState {
 		Permissions: map[uint64]*Permissions{
 			uint64(RoleSudo): NewPermissions([]PermValue{
 				PermSetPermissions,
-				PermClaimCouncilor,
 				PermClaimValidator,
+				PermClaimCouncilor,
+				PermUpsertTokenAlias,
+				// PermChangeTxFee, // do not give this permission to sudo account - test does not pass
+				PermUpsertTokenRate,
+				PermUpsertRole,
 				PermCreateSetPermissionsProposal,
 				PermVoteSetPermissionProposal,
 				PermCreateSetNetworkPropertyProposal,
 				PermVoteSetNetworkPropertyProposal,
-				PermUpsertDataRegistryProposal,
+				PermCreateUpsertDataRegistryProposal,
 				PermVoteUpsertDataRegistryProposal,
 				PermCreateUpsertTokenAliasProposal,
 				PermVoteUpsertTokenAliasProposal,
 				PermCreateUpsertTokenRateProposal,
 				PermVoteUpsertTokenRateProposal,
-				PermUpsertRole,
 				PermCreateUnjailValidatorProposal,
+				PermVoteUnjailValidatorProposal,
 				PermCreateRoleProposal,
 				PermVoteCreateRoleProposal,
 				PermCreateTokensWhiteBlackChangeProposal,
 				PermVoteTokensWhiteBlackChangeProposal,
+				PermCreateSetPoorNetworkMessagesProposal,
+				PermVoteSetPoorNetworkMessagesProposal,
 			}, nil),
 			uint64(RoleValidator): NewPermissions([]PermValue{PermClaimValidator}, nil),
 		},
@@ -38,8 +44,12 @@ func DefaultGenesis() *GenesisState {
 			VoteQuorum:                  33,
 			ProposalEndTime:             600, // 600 seconds / 10 mins
 			ProposalEnactmentTime:       300, // 300 seconds / 5 mins
+			MinProposalEndBlocks:        2,
+			MinProposalEnactmentBlocks:  1,
 			EnableForeignFeePayments:    true,
 			MischanceRankDecreaseAmount: 10,
+			MischanceConfidence:         10,
+			MaxMischance:                110,
 			InactiveRankDecreasePercent: 50,      // 50%
 			PoorNetworkMaxBankSend:      1000000, // 1M ukex
 			MinValidators:               1,

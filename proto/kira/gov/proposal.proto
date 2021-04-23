@@ -64,6 +64,8 @@ message MsgProposalAssignPermission {
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
   ];
 
+  string description = 4;
+
   bytes address = 2 [
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
     (gogoproto.moretags) = "yaml:\"address\""
@@ -76,6 +78,7 @@ message MsgProposalUpsertDataRegistry {
   bytes proposer = 1 [
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
   ];
+  string description = 7;
 
   string key = 2;
 
@@ -92,6 +95,7 @@ message MsgProposalSetPoorNetworkMessages {
   bytes proposer = 1 [
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
   ];
+  string description = 3;
   repeated string messages = 2;
 }
 
@@ -104,13 +108,19 @@ message Proposal {
   google.protobuf.Timestamp submit_time = 3
   [(gogoproto.stdtime) = true, (gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"submit_time\""];
 
-  google.protobuf.Timestamp voting_end_time = 5
-  [(gogoproto.stdtime) = true, (gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"voting_end_time\""];
+  google.protobuf.Timestamp voting_end_time = 4
+    [(gogoproto.stdtime) = true, (gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"voting_end_time\""];
 
-  google.protobuf.Timestamp enactment_end_time = 6
-  [(gogoproto.stdtime) = true, (gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"voting_end_time\""];
+  google.protobuf.Timestamp enactment_end_time = 5
+  [(gogoproto.stdtime) = true, (gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"enactment_end_time\""];
+
+  int64 min_voting_end_block_height = 6;
+
+  int64 min_enactment_end_block_height = 7;
 
   VoteResult result = 8;
+
+  string description = 9;
 }
 
 message AssignPermissionProposal {
@@ -129,6 +139,7 @@ message MsgProposalSetNetworkProperty {
   bytes proposer = 1 [
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
   ];
+  string description = 4;
 
   NetworkProperty network_property = 2; // enum value
 
@@ -167,6 +178,7 @@ message MsgProposalCreateRole {
   bytes proposer = 1 [
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
   ];
+  string description = 5;
 
   uint32 role = 2;
   repeated PermValue whitelisted_permissions = 3;

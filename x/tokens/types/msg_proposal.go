@@ -14,6 +14,7 @@ var (
 
 func NewMsgProposalUpsertTokenAlias(
 	proposer sdk.AccAddress,
+	description string,
 	symbol string,
 	name string,
 	icon string,
@@ -21,12 +22,13 @@ func NewMsgProposalUpsertTokenAlias(
 	denoms []string,
 ) *MsgProposalUpsertTokenAlias {
 	return &MsgProposalUpsertTokenAlias{
-		Proposer: proposer,
-		Symbol:   symbol,
-		Name:     name,
-		Icon:     icon,
-		Decimals: decimals,
-		Denoms:   denoms,
+		Proposer:    proposer,
+		Description: description,
+		Symbol:      symbol,
+		Name:        name,
+		Icon:        icon,
+		Decimals:    decimals,
+		Denoms:      denoms,
 	}
 }
 
@@ -51,8 +53,8 @@ func (m *MsgProposalUpsertTokenAlias) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{m.Proposer}
 }
 
-func NewMsgProposalUpsertTokenRates(proposer sdk.AccAddress, denom string, rate sdk.Dec, feePayments bool) *MsgProposalUpsertTokenRates {
-	return &MsgProposalUpsertTokenRates{Denom: denom, Rate: rate, FeePayments: feePayments, Proposer: proposer}
+func NewMsgProposalUpsertTokenRates(proposer sdk.AccAddress, description string, denom string, rate sdk.Dec, feePayments bool) *MsgProposalUpsertTokenRates {
+	return &MsgProposalUpsertTokenRates{Description: description, Denom: denom, Rate: rate, FeePayments: feePayments, Proposer: proposer}
 }
 
 func (m *MsgProposalUpsertTokenRates) Route() string {
@@ -60,7 +62,7 @@ func (m *MsgProposalUpsertTokenRates) Route() string {
 }
 
 func (m *MsgProposalUpsertTokenRates) Type() string {
-	return kiratypes.MsgProposalUpsertTokenRatesType
+	return kiratypes.MsgTypeProposalUpsertTokenRates
 }
 
 func (m *MsgProposalUpsertTokenRates) ValidateBasic() error {
@@ -76,8 +78,14 @@ func (m *MsgProposalUpsertTokenRates) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{m.Proposer}
 }
 
-func NewMsgProposalTokensWhiteBlackChange(proposer sdk.AccAddress, isBlacklist, isAdd bool, tokens []string) *MsgProposalTokensWhiteBlackChange {
-	return &MsgProposalTokensWhiteBlackChange{IsBlacklist: isBlacklist, IsAdd: isAdd, Tokens: tokens, Proposer: proposer}
+func NewMsgProposalTokensWhiteBlackChange(proposer sdk.AccAddress, description string, isBlacklist, isAdd bool, tokens []string) *MsgProposalTokensWhiteBlackChange {
+	return &MsgProposalTokensWhiteBlackChange{
+		Description: description,
+		IsBlacklist: isBlacklist,
+		IsAdd:       isAdd,
+		Tokens:      tokens,
+		Proposer:    proposer,
+	}
 }
 
 func (m *MsgProposalTokensWhiteBlackChange) Route() string {
@@ -85,7 +93,7 @@ func (m *MsgProposalTokensWhiteBlackChange) Route() string {
 }
 
 func (m *MsgProposalTokensWhiteBlackChange) Type() string {
-	return kiratypes.MsgProposalTokensWhiteBlackChangeType
+	return kiratypes.MsgTypeProposalTokensWhiteBlackChange
 }
 
 func (m *MsgProposalTokensWhiteBlackChange) ValidateBasic() error {

@@ -135,11 +135,12 @@ func (s IntegrationTestSuite) QueryPoorNetworkMessages() {
 func (s IntegrationTestSuite) SetPoorNetworkMessages(messages string) sdk.TxResponse {
 	val := s.network.Validators[0]
 	clientCtx := val.ClientCtx
-	cmd := cli.GetTxProposalSetPoorNetworkMsgs()
+	cmd := cli.GetTxProposalSetPoorNetworkMessages()
 	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		messages,
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+		fmt.Sprintf("--%s=%s", cli.FlagDescription, "some desc"),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
 	})
@@ -186,6 +187,7 @@ func (s IntegrationTestSuite) SetNetworkPropertyProposal(property string, value 
 		property,
 		fmt.Sprintf("%d", value),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+		fmt.Sprintf("--%s=%s", cli.FlagDescription, "some desc"),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),

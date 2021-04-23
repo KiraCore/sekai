@@ -48,6 +48,15 @@ func (m *NetworkActor) IsActive() bool {
 	return m.Status == Active
 }
 
+func (m *NetworkActor) IsInactive() bool {
+	return m.Status == Inactive
+}
+
+// Deactivate the actor
+func (m *NetworkActor) Deactivate() {
+	m.Status = Inactive
+}
+
 // CanVote returns if the actor can vote a specific vote option.
 func (m *NetworkActor) CanVote(voteOption VoteOption) bool {
 	for _, v := range m.Votes {
@@ -70,7 +79,7 @@ func NewDefaultActor(addr types.AccAddress) NetworkActor {
 	return NewNetworkActor(
 		addr,
 		nil,
-		Undefined,
+		Active,
 		[]VoteOption{
 			OptionYes,
 			OptionNo,

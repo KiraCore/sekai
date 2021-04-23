@@ -34,5 +34,5 @@ var (
 
 	DataRegistryPrefix = []byte{0x40}
 
-	PoorNetworkMsgsPrefix = []byte{0x41}
+	PoorNetworkMessagesPrefix = []byte{0x41}
 )

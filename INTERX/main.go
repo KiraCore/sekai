@@ -45,10 +45,18 @@ func main() {
 	initServeHTTPS := initCommand.Bool("serve_https", false, "http or https.")
 	initGrpcPtr := initCommand.String("grpc", "dns:///0.0.0.0:9090", "The grpc endpoint of the sekaid.")
 	initRPCPtr := initCommand.String("rpc", "http://0.0.0.0:26657", "The rpc endpoint of the sekaid.")
+
+	initSentryNodeId := initCommand.String("sentry_node_id", "", "The sentry node id.")
+	initPrivSentryNodeId := initCommand.String("priv_sentry_node_id", "", "The private sentry node id.")
+	initValidatorNodeId := initCommand.String("validator_node_id", "", "The validator node id.")
+	initSeedNodeId := initCommand.String("seed_node_id", "", "The seed node id.")
+
 	initPortPtr := initCommand.String("port", "11000", "The interx port.")
 	initSigningMnemonicPtr := initCommand.String("signing_mnemonic", signingMnemonic, "The interx signing mnemonic file path or seeds.")
 
 	initSyncStatus := initCommand.Int64("status_sync", 5, "The time in seconds and INTERX syncs node status.")
+	initHaltedAvgBlockTimes := initCommand.Int64("halted_avg_block_times", 10, "This will be used for checking consensus halted.")
+
 	initCacheDirPtr := initCommand.String("cache_dir", "cache", "The interx cache directory path.")
 	initMaxCacheSize := initCommand.String("max_cache_size", "2GB", "The maximum cache size.")
 	initCachingDuration := initCommand.Int64("caching_duration", 5, "The caching clear duration in seconds.")
@@ -56,6 +64,13 @@ func main() {
 
 	initFaucetMnemonicPtr := initCommand.String("faucet_mnemonic", faucetMnemonic, "The interx faucet mnemonic file path or seeds.")
 	initFaucetTimeLimit := initCommand.Int64("faucet_time_limit", 20, "The claim time limitation in seconds.")
+
+	initFaucetAmounts := initCommand.String("faucet_amounts", "100000stake,100000ukex,100000validatortoken", "The faucet amount for each asset.")
+	initFaucetMinimumAmounts := initCommand.String("faucet_minimum_amounts", "1000stake,1000ukex,1000validatortoken", "The minimum faucet amount for each asset.")
+	initFeeAmounts := initCommand.String("fee_amounts", "stake 1000ukex,ukex 1000ukex,validatortoken 1000ukex", "The fee amount for each denom. `stake 1000ukex` means it will use `1000ukex` for `stake` assets transfer.")
+
+	initAddrBook := initCommand.String("addrbook", "addrbook.json", "The address books")
+	initTxModes := initCommand.String("tx_modes", "sync,async,block", "The allowed transaction modes")
 
 	startConfigPtr := startCommand.String("config", "./config.json", "The interx configurtion path. (Required)")
 
@@ -83,15 +98,25 @@ func main() {
 					*initServeHTTPS,
 					*initGrpcPtr,
 					*initRPCPtr,
+					*initSentryNodeId,
+					*initPrivSentryNodeId,
+					*initValidatorNodeId,
+					*initSeedNodeId,
 					*initPortPtr,
 					*initSigningMnemonicPtr,
 					*initSyncStatus,
+					*initHaltedAvgBlockTimes,
 					*initCacheDirPtr,
 					*initMaxCacheSize,
 					*initCachingDuration,
 					*initMaxDownloadSize,
 					*initFaucetMnemonicPtr,
 					*initFaucetTimeLimit,
+					*initFaucetAmounts,
+					*initFaucetMinimumAmounts,
+					*initFeeAmounts,
+					*initAddrBook,
+					*initTxModes,
 				)
 
 				fmt.Printf("Created interx configuration file: %s\n", *initConfigFilePtr)

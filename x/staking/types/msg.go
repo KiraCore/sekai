@@ -83,11 +83,12 @@ func (m *MsgClaimValidator) UnpackInterfaces(unpacker codectypes.AnyUnpacker) er
 	return unpacker.UnpackAny(m.PubKey, &pubKey)
 }
 
-func NewMsgProposalUnjailValidator(proposer sdk.AccAddress, hash, reference string) *MsgProposalUnjailValidator {
+func NewMsgProposalUnjailValidator(proposer sdk.AccAddress, description string, hash, reference string) *MsgProposalUnjailValidator {
 	return &MsgProposalUnjailValidator{
-		Proposer:  proposer,
-		Hash:      hash,
-		Reference: reference,
+		Proposer:    proposer,
+		Description: description,
+		Hash:        hash,
+		Reference:   reference,
 	}
 }
 

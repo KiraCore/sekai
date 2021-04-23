@@ -17,6 +17,7 @@ import (
 
 // define flags
 const (
+	FlagDescription       = "description"
 	FlagPermission        = "permission"
 	FlagMinTxFee          = "min_tx_fee"
 	FlagMaxTxFee          = "max_tx_fee"
@@ -71,7 +72,7 @@ func NewTxProposalCmds() *cobra.Command {
 	proposalCmd.AddCommand(GetTxProposalAssignPermission())
 	proposalCmd.AddCommand(GetTxVoteProposal())
 	proposalCmd.AddCommand(GetTxProposalSetNetworkProperty())
-	proposalCmd.AddCommand(GetTxProposalSetPoorNetworkMsgs())
+	proposalCmd.AddCommand(GetTxProposalSetPoorNetworkMessages())
 	proposalCmd.AddCommand(GetTxProposalCreateRole())
 	proposalCmd.AddCommand(GetTxProposalUpsertDataRegistry())
 
@@ -576,8 +577,8 @@ func GetTxRemoveRole() *cobra.Command {
 	return cmd
 }
 
-// GetTxProposalSetPoorNetworkMsgs defines command to send proposal tx to modify poor network messages
-func GetTxProposalSetPoorNetworkMsgs() *cobra.Command {
+// GetTxProposalSetPoorNetworkMessages defines command to send proposal tx to modify poor network messages
+func GetTxProposalSetPoorNetworkMessages() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "set-poor-network-msgs <messages>",
 		Short: "Create a proposal to set a value on a network property.",
@@ -599,8 +600,14 @@ func GetTxProposalSetPoorNetworkMsgs() *cobra.Command {
 
 			messages := strings.Split(args[0], ",")
 
+			description, err := cmd.Flags().GetString(FlagDescription)
+			if err != nil {
+				return fmt.Errorf("invalid description: %w", err)
+			}
+
 			msg := types.NewMsgProposalSetPoorNetworkMessages(
 				clientCtx.FromAddress,
+				description,
 				messages,
 			)
 
@@ -608,8 +615,10 @@ func GetTxProposalSetPoorNetworkMsgs() *cobra.Command {
 		},
 	}
 
-	flags.AddTxFlagsToCmd(cmd)
+	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
+	cmd.MarkFlagRequired(FlagDescription)
 
+	flags.AddTxFlagsToCmd(cmd)
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
@@ -618,7 +627,7 @@ func GetTxProposalSetPoorNetworkMsgs() *cobra.Command {
 // GetTxProposalSetNetworkProperty defines command to send proposal tx to modify a network property
 func GetTxProposalSetNetworkProperty() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "set-network-property <property> <value>",
+		Use:   "set-network-property <property> <value> [flags]",
 		Short: "Create a proposal to set a value on a network property.",
 		Long: `
 		$ %s tx customgov proposal set-network-property MIN_TX_FEE 100 --from=<key_or_address>
@@ -648,8 +657,14 @@ func GetTxProposalSetNetworkProperty() *cobra.Command {
 				return fmt.Errorf("invalid network property value: %w", err)
 			}
 
+			description, err := cmd.Flags().GetString(FlagDescription)
+			if err != nil {
+				return fmt.Errorf("invalid description: %w", err)
+			}
+
 			msg := types.NewMsgProposalSetNetworkProperty(
 				clientCtx.FromAddress,
+				description,
 				types.NetworkProperty(property),
 				uint64(value),
 			)
@@ -658,8 +673,10 @@ func GetTxProposalSetNetworkProperty() *cobra.Command {
 		},
 	}
 
-	flags.AddTxFlagsToCmd(cmd)
+	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
+	cmd.MarkFlagRequired(FlagDescription)
 
+	flags.AddTxFlagsToCmd(cmd)
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
@@ -686,8 +703,14 @@ func GetTxProposalAssignPermission() *cobra.Command {
 				return fmt.Errorf("error getting address: %w", err)
 			}
 
+			description, err := cmd.Flags().GetString(FlagDescription)
+			if err != nil {
+				return fmt.Errorf("invalid description: %w", err)
+			}
+
 			msg := types.NewMsgProposalAssignPermission(
 				clientCtx.FromAddress,
+				description,
 				addr,
 				types.PermValue(perm),
 			)
@@ -695,6 +718,9 @@ func GetTxProposalAssignPermission() *cobra.Command {
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
+
+	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
+	cmd.MarkFlagRequired(FlagDescription)
 
 	flags.AddTxFlagsToCmd(cmd)
 	cmd.Flags().String(cli.FlagAddr, "", "the address to set permissions")
@@ -707,7 +733,7 @@ func GetTxProposalAssignPermission() *cobra.Command {
 
 func GetTxProposalUpsertDataRegistry() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "upsert-data-registry key hash reference encoding size",
+		Use:   "upsert-data-registry [key] [hash] [reference] [encoding] [size] [flags]",
 		Short: "Upsert a key in the data registry",
 		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -725,8 +751,14 @@ func GetTxProposalUpsertDataRegistry() *cobra.Command {
 				return err
 			}
 
+			description, err := cmd.Flags().GetString(FlagDescription)
+			if err != nil {
+				return fmt.Errorf("invalid description: %w", err)
+			}
+
 			msg := types.NewMsgProposalUpsertDataRegistry(
 				clientCtx.FromAddress,
+				description,
 				key,
 				hash,
 				reference,
@@ -740,6 +772,9 @@ func GetTxProposalUpsertDataRegistry() *cobra.Command {
 
 	flags.AddTxFlagsToCmd(cmd)
 	cmd.Flags().String(cli.FlagAddr, "", "the address to set permissions")
+
+	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
+	cmd.MarkFlagRequired(FlagDescription)
 
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)
 	_ = cmd.MarkFlagRequired(cli.FlagAddr)
@@ -880,8 +915,14 @@ func GetTxProposalCreateRole() *cobra.Command {
 			}
 			blacklistPerms := convertAsPermValues(bAsInts)
 
+			description, err := cmd.Flags().GetString(FlagDescription)
+			if err != nil {
+				return fmt.Errorf("invalid description: %w", err)
+			}
+
 			msg := types.NewMsgProposalCreateRole(
 				clientCtx.FromAddress,
+				description,
 				types.Role(role),
 				whitelistPerms,
 				blacklistPerms,
@@ -893,6 +934,8 @@ func GetTxProposalCreateRole() *cobra.Command {
 
 	flags.AddTxFlagsToCmd(cmd)
 
+	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
+	cmd.MarkFlagRequired(FlagDescription)
 	cmd.Flags().Int32Slice(FlagWhitelistPerms, []int32{}, "the whitelist value in format 1,2,3")
 	cmd.Flags().Int32Slice(FlagBlacklistPerms, []int32{}, "the blacklist values in format 1,2,3")
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)

@@ -51,6 +51,7 @@ func NewAnteHandler(
 		ante.NewSigGasConsumeDecorator(ak, sigGasConsumer),
 		ante.NewSigVerificationDecorator(ak, signModeHandler),
 		ante.NewIncrementSequenceDecorator(ak),
+		NewInfiniteGasMeterDecorator(),
 	)
 }
 
@@ -199,9 +200,9 @@ func (pnmd PoorNetworkManagementDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx
 		return next(ctx, tx, simulate)
 	}
 	// handle messages on poor network
-	poorNetworkMsgs, found := pnmd.cgk.GetPoorNetworkMsgs(ctx)
+	pnmsgs, found := pnmd.cgk.GetPoorNetworkMessages(ctx)
 	if !found {
-		poorNetworkMsgs = &customgovtypes.AllowedMessages{}
+		pnmsgs = &customgovtypes.AllowedMessages{}
 	}
 	for _, msg := range sigTx.GetMsgs() {
 		if msg.Type() == bank.TypeMsgSend {
@@ -216,7 +217,7 @@ func (pnmd PoorNetworkManagementDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx
 			// TODO: we could do restriction to send only when target account does not exist on chain yet for more restriction
 			return next(ctx, tx, simulate)
 		}
-		if findString(poorNetworkMsgs.Messages, msg.Type()) >= 0 {
+		if findString(pnmsgs.Messages, msg.Type()) >= 0 {
 			return next(ctx, tx, simulate)
 		}
 		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid transaction type on poor network")
@@ -263,4 +264,17 @@ func (pnmd BlackWhiteTokensCheckDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx
 	}
 
 	return next(ctx, tx, simulate)
+}
+
+// InfiniteGasMeterDecorator uses infinite gas decorator to avoid gas usage in the network
+type InfiniteGasMeterDecorator struct{}
+
+// NewInfiniteGasMeterDecorator returns instance of InfiniteGasMeterDecorator
+func NewInfiniteGasMeterDecorator() InfiniteGasMeterDecorator {
+	return InfiniteGasMeterDecorator{}
+}
+
+func (igm InfiniteGasMeterDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
+	newCtx = ctx.WithGasMeter(sdk.NewInfiniteGasMeter())
+	return next(newCtx, tx, simulate)
 }

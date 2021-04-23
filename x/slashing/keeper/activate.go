@@ -1,8 +1,12 @@
 package keeper
 
 import (
+	"fmt"
+	"time"
+
 	"github.com/KiraCore/sekai/x/slashing/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // Activate calls the staking Activate function to activate a validator if the
@@ -15,7 +19,7 @@ func (k Keeper) Activate(ctx sdk.Context, validatorAddr sdk.ValAddress) error {
 
 	// cannot be activated if not inactivated
 	if !validator.IsInactivated() {
-		return types.ErrValidatorNotInactivated
+		return sdkerrors.Wrap(types.ErrValidatorNotInactivated, "Can NOT activate NOT inactivated validator")
 	}
 
 	consAddr := validator.GetConsAddr()
@@ -32,13 +36,19 @@ func (k Keeper) Activate(ctx sdk.Context, validatorAddr sdk.ValAddress) error {
 	if found {
 		// cannot be activated if tombstoned
 		if info.Tombstoned {
-			return types.ErrValidatorInactivated
+			return sdkerrors.Wrap(types.ErrValidatorInactivated, "Can NOT activate tombstoned validator, governance proposal required")
 		}
 
 		// cannot be activated until out of inactive period finish
-		if ctx.BlockHeader().Time.Before(info.InactiveUntil) {
-			return types.ErrValidatorInactivated
+		if ctx.BlockTime().Before(info.InactiveUntil) {
+			duration := info.InactiveUntil.Sub(ctx.BlockTime())
+			return sdkerrors.Wrap(types.ErrValidatorInactivated, fmt.Sprintf("Can NOT activate inactivate validator, jail time remaining %d seconds", duration/time.Second))
 		}
+
+		// automatically set the mischance to 0 and last_present_block to latest_block_height
+		info.Mischance = 0
+		info.LastPresentBlock = ctx.BlockHeight()
+		k.SetValidatorSigningInfo(ctx, consAddr, info)
 	}
 
 	err = k.sk.Activate(ctx, validator.ValKey)
@@ -58,12 +68,12 @@ func (k Keeper) Pause(ctx sdk.Context, validatorAddr sdk.ValAddress) error {
 
 	// cannot be paused if not paused already
 	if validator.IsPaused() {
-		return types.ErrValidatorPaused
+		return sdkerrors.Wrap(types.ErrValidatorPaused, "Can NOT pause already paused validator")
 	}
 
 	// cannot be paused if not paused already
 	if validator.IsInactivated() {
-		return types.ErrValidatorInactivated
+		return sdkerrors.Wrap(types.ErrValidatorInactivated, "Can NOT pause inactivated validator")
 	}
 
 	k.sk.Pause(ctx, validator.ValKey)
@@ -79,7 +89,7 @@ func (k Keeper) Unpause(ctx sdk.Context, validatorAddr sdk.ValAddress) error {
 
 	// cannot be unpaused if not paused
 	if !validator.IsPaused() {
-		return types.ErrValidatorNotPaused
+		return sdkerrors.Wrap(types.ErrValidatorNotPaused, "Can NOT pause inactivated validator")
 	}
 
 	k.sk.Unpause(ctx, validator.ValKey)

@@ -20,36 +20,46 @@ enum NetworkProperty {
     VOTE_QUORUM = 2 [(gogoproto.enumvalue_customname) = "VoteQuorum"];
     PROPOSAL_END_TIME = 3 [(gogoproto.enumvalue_customname) = "ProposalEndTime"];
     PROPOSAL_ENACTMENT_TIME = 4 [(gogoproto.enumvalue_customname) = "ProposalEnactmentTime"];
-    ENABLE_FOREIGN_TX_FEE_PAYMENTS = 5 [(gogoproto.enumvalue_customname) = "EnableForeignFeePayments"];
-    MISCHANCE_RANK_DECREASE_AMOUNT = 6 [(gogoproto.enumvalue_customname) = "MischanceRankDecreaseAmount"];
-    INACTIVE_RANK_DECREASE_PERCENT = 7 [(gogoproto.enumvalue_customname) = "InactiveRankDecreasePercent"];
-    POOR_NETWORK_MAX_BANK_SEND = 8 [(gogoproto.enumvalue_customname) = "PoorNetworkMaxBankSend"];
-    MIN_VALIDATORS = 9 [(gogoproto.enumvalue_customname) = "MinValidators"];
-    JAIL_MAX_TIME = 10 [(gogoproto.enumvalue_customname) = "JailMaxTime"];
-    ENABLE_TOKEN_WHITELIST = 11 [(gogoproto.enumvalue_customname) = "EnableTokenWhitelist"];
-    ENABLE_TOKEN_BLACKLIST = 12 [(gogoproto.enumvalue_customname) = "EnableTokenBlacklist"];
+    MIN_PROPOSAL_END_BLOCKS = 5 [(gogoproto.enumvalue_customname) = "MinProposalEndBlocks"];
+    MIN_PROPOSAL_ENACTMENT_BLOCKS = 6 [(gogoproto.enumvalue_customname) = "MinProposalEnactmentBlocks"];
+    ENABLE_FOREIGN_FEE_PAYMENTS = 7 [(gogoproto.enumvalue_customname) = "EnableForeignFeePayments"];
+    MISCHANCE_RANK_DECREASE_AMOUNT = 8 [(gogoproto.enumvalue_customname) = "MischanceRankDecreaseAmount"];
+    MAX_MISCHANCE = 9 [(gogoproto.enumvalue_customname) = "MaxMischance"];
+    MISCHANCE_CONFIDENCE = 10 [(gogoproto.enumvalue_customname) = "MischanceConfidence"];
+    INACTIVE_RANK_DECREASE_PERCENT = 11 [(gogoproto.enumvalue_customname) = "InactiveRankDecreasePercent"];
+    POOR_NETWORK_MAX_BANK_SEND = 12 [(gogoproto.enumvalue_customname) = "PoorNetworkMaxBankSend"];
+    MIN_VALIDATORS = 13 [(gogoproto.enumvalue_customname) = "MinValidators"];
+    JAIL_MAX_TIME = 14 [(gogoproto.enumvalue_customname) = "JailMaxTime"];
+    ENABLE_TOKEN_WHITELIST = 15 [(gogoproto.enumvalue_customname) = "EnableTokenWhitelist"];
+    ENABLE_TOKEN_BLACKLIST = 16 [(gogoproto.enumvalue_customname) = "EnableTokenBlacklist"];
 }
-  
+
 message NetworkProperties {
     uint64 min_tx_fee = 1;
     uint64 max_tx_fee = 2;
     uint64 vote_quorum = 3;
     uint64 proposal_end_time = 4;
     uint64 proposal_enactment_time = 5;
-    bool enable_foreign_fee_payments = 6;
-  
+    uint64 min_proposal_end_blocks = 6; // minimum blocks required for proposal voting
+    uint64 min_proposal_enactment_blocks = 7; // min blocks required for proposal enactment
+    bool enable_foreign_fee_payments = 8;
+
     // The rank property is a long term statistics implying the "longest" streak that validator ever achieved,
     // it can be expressed as rank = MAX(rank, streak).
     // Under certain circumstances we should however decrease the rank of the validator.
     // If the mischance property is incremented, the rank should be decremented by X (default 10), that is rank = MAX(rank - X, 0).
     // Every time node status changes to inactive the rank should be divided by 2, that is rank = FLOOR(rank / 2)
     // The streak and rank will enable governance to judge real life performance of validators on the mainnet or testnet, and potentially propose eviction of the weakest and least reliable operators.
-    uint64 mischance_rank_decrease_amount = 7; // X (default 10)
-    uint64 inactive_rank_decrease_percent = 8; // Y (default 50%)
-  
-    uint64 min_validators = 9;
-    uint64 poor_network_max_bank_send = 10; // default 10000 ukex
-    uint64 jail_max_time = 11; // Jailing validator maximum time in minutes
-    bool enable_token_whitelist = 12; // TokenWhitelist is valid when this param is set
-    bool enable_token_blacklist = 13; // TokenBlacklist is valid when this param is set
+    uint64 mischance_rank_decrease_amount = 9; // X (default 10)
+    // maximum mischance to validator inactivation
+    uint64 max_mischance = 10;
+    // the number of blocks validator miss to start counting mischance
+    // default 10, modifiable by governance
+    uint64 mischance_confidence = 11;
+    uint64 inactive_rank_decrease_percent = 12; // Y (default 50%)
+    uint64 min_validators = 13;
+    uint64 poor_network_max_bank_send = 14; // default 10000 ukex
+    uint64 jail_max_time = 15; // Jailing validator maximum time in minutes
+    bool enable_token_whitelist = 16; // TokenWhitelist is valid when this param is set
+    bool enable_token_blacklist = 17; // TokenBlacklist is valid when this param is set
 }

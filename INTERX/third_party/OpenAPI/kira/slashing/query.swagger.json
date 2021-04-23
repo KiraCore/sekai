@@ -235,10 +235,20 @@
           "format": "boolean",
           "title": "whether or not a validator has been tombstoned (killed out of validator\nset)"
         },
+        "mischance": {
+          "type": "string",
+          "format": "int64",
+          "title": "missed blocks sequentially"
+        },
         "missedBlocksCounter": {
           "type": "string",
           "format": "int64",
           "title": "missed blocks counter (to avoid scanning the array every time)"
+        },
+        "producedBlocksCounter": {
+          "type": "string",
+          "format": "int64",
+          "title": "count produced blocks so far by a validator"
         }
       },
       "description": "ValidatorSigningInfo defines a validator's signing info for monitoring their\nliveness activity."

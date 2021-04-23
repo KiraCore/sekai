@@ -6,15 +6,21 @@ import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/slashing/types";
 
-message MsgProposalUnjailValidator {
-  string symbol = 1;// Ticker (eg. ATOM, KEX, BTC)
-  string name = 2; // Token Name (e.g. Cosmos, Kira, Bitcoin)
-  string icon = 3; // Graphical Symbol (url link to graphics)
-  uint32 decimals = 4; // Integer number of max decimals
-  repeated string denoms = 5; // An array of token denoms to be aliased
-  bytes proposer = 6 [
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
-    (gogoproto.moretags) = "yaml:\"proposer\""
-  ];
+message MsgProposalResetWholeValidatorRank {
+    bytes proposer = 1 [
+      (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
+    ];
+    string description = 2;
 }
 
+// MsgProposalResetWholeValidatorRankResponse defines the Msg/ProposalResetWholeValidatorRank response type.
+message MsgProposalResetWholeValidatorRankResponse {
+    uint64 proposalID = 1;
+}
+
+message ProposalResetWholeValidatorRank {
+    bytes proposer = 1 [
+      (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
+    ];
+    string description = 2;
+}

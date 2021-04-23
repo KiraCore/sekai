@@ -1,8 +1,6 @@
 package database
 
 import (
-	"fmt"
-
 	"github.com/KiraCore/sekai/INTERX/config"
 	"github.com/sonyarouje/simdb/db"
 )
@@ -52,8 +50,6 @@ func AddBlockTime(height int64, timestamp int64) {
 	if blockDb == nil {
 		panic("cache dir not set")
 	}
-
-	fmt.Println("database.block", height, timestamp)
 
 	data := BlockData{
 		Height:    height,

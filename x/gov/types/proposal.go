@@ -13,11 +13,11 @@ import (
 
 // constants
 const (
-	AssignPermissionProposalType   = "AssignPermission"
-	SetNetworkPropertyProposalType = "SetNetworkProperty"
-	UpsertDataRegistryProposalType = "UpsertDataRegistry"
-	SetPoorNetworkMsgsProposalType = "SetPoorNetworkMsgs"
-	CreateRoleProposalType         = "CreateRoleProposal"
+	AssignPermissionProposalType       = "AssignPermission"
+	SetNetworkPropertyProposalType     = "SetNetworkProperty"
+	UpsertDataRegistryProposalType     = "UpsertDataRegistry"
+	SetPoorNetworkMessagesProposalType = "SetPoorNetworkMessages"
+	CreateRoleProposalType             = "CreateRoleProposal"
 )
 
 var _ Content = &AssignPermissionProposal{}
@@ -29,6 +29,9 @@ func NewProposal(
 	submitTime time.Time,
 	votingEndTime time.Time,
 	enactmentEndTime time.Time,
+	minVotingEndBlockHeight int64,
+	minEnactmentEndBlockHeight int64,
+	description string,
 ) (Proposal, error) {
 	msg, ok := content.(proto.Message)
 	if !ok {
@@ -41,12 +44,15 @@ func NewProposal(
 	}
 
 	return Proposal{
-		ProposalId:       proposalID,
-		SubmitTime:       submitTime,
-		VotingEndTime:    votingEndTime,
-		EnactmentEndTime: enactmentEndTime,
-		Content:          any,
-		Result:           Pending,
+		ProposalId:                 proposalID,
+		SubmitTime:                 submitTime,
+		VotingEndTime:              votingEndTime,
+		EnactmentEndTime:           enactmentEndTime,
+		MinVotingEndBlockHeight:    minVotingEndBlockHeight,
+		MinEnactmentEndBlockHeight: minEnactmentEndBlockHeight,
+		Content:                    any,
+		Result:                     Pending,
+		Description:                description,
 	}, nil
 }
 
@@ -131,7 +137,7 @@ func NewSetPoorNetworkMessagesProposal(msgs []string) Content {
 }
 
 func (m *SetPoorNetworkMessagesProposal) ProposalType() string {
-	return SetPoorNetworkMsgsProposalType
+	return SetPoorNetworkMessagesProposalType
 }
 
 func (m *SetPoorNetworkMessagesProposal) VotePermission() PermValue {

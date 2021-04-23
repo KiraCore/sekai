@@ -2,6 +2,9 @@ package types
 
 import (
 	"time"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	txSinging "github.com/cosmos/cosmos-sdk/types/tx/signing"
 )
 
 // ProxyResponse is a struct to be used for proxy response
@@ -80,18 +83,17 @@ type DepositWithdrawResult struct {
 	Txs  []DepositWithdrawTransaction `json:"txs"`
 }
 
-// TxAmount is a struct to be used for query transaction response
-type TxAmount struct {
-	Amount int64  `json:"amount,omitempty"`
-	Denom  string `json:"denom,omitempty"`
-}
-
 // Transaction is a struct to be used for query transaction response
 type Transaction struct {
 	Type    string     `json:"type,omitempty"`
 	From    string     `json:"from,omitempty"`
 	To      string     `json:"to,omitempty"`
-	Amounts []TxAmount `json:"amounts,omitempty"`
+	Amounts []sdk.Coin `json:"amounts,omitempty"`
+}
+
+type TxMsg struct {
+	Type string  `json:"type"`
+	Data sdk.Msg `json:"data"`
 }
 
 // TransactionResult is a struct to be used for query transaction response
@@ -101,10 +103,19 @@ type TransactionResult struct {
 	BlockHeight    int64         `json:"block_height"`
 	BlockTimestamp int64         `json:"block_timestamp"`
 	Confirmation   int64         `json:"confirmation"`
+	Msgs           []TxMsg       `json:"msgs"`
 	Transactions   []Transaction `json:"transactions"`
-	Fees           []TxAmount    `json:"fees"`
+	Fees           []sdk.Coin    `json:"fees"`
 	GasWanted      int64         `json:"gas_wanted"`
 	GasUsed        int64         `json:"gas_used"`
+}
+
+type TransactionUnconfirmedResult struct {
+	Msgs      []TxMsg                 `json:"msgs"`
+	Fees      []sdk.Coin              `json:"fees"`
+	Gas       uint64                  `json:"gas"`
+	Signature []txSinging.SignatureV2 `json:"signature"`
+	Memo      string                  `json:"memo"`
 }
 
 // TransactionSearchResult is a struct to be used for query transaction response
@@ -124,6 +135,11 @@ type TokenAlias struct {
 	Denoms   []string `json:"denoms"`
 	Name     string   `json:"name"`
 	Symbol   string   `json:"symbol"`
+}
+
+type TokenSupply struct {
+	Amount int64  `json:"amount,string"`
+	Denom  string `json:"denom"`
 }
 
 // ID is a field for facuet claim struct.
@@ -164,11 +180,12 @@ type QueryValidator struct {
 	Mischance  int64  `json:"mischance,string"`
 
 	// Additional
-	StartHeight         int64  `json:"start_height,string"`
-	IndexOffset         int64  `json:"index_offset,string"`
-	InactiveUntil       string `json:"inactive_until"`
-	Tombstoned          bool   `json:"tombstoned,string"`
-	MissedBlocksCounter int64  `json:"missed_blocks_counter,string"`
+	StartHeight           int64  `json:"start_height,string"`
+	IndexOffset           int64  `json:"index_offset,string"`
+	InactiveUntil         string `json:"inactive_until"`
+	Tombstoned            bool   `json:"tombstoned,string"`
+	MissedBlocksCounter   int64  `json:"missed_blocks_counter,string"`
+	ProducedBlocksCounter int64  `json:"produced_blocks_counter,string"`
 }
 
 type QueryValidators []QueryValidator
@@ -204,25 +221,26 @@ func (s QueryValidators) Less(i, j int) bool {
 
 type AllValidators struct {
 	Status struct {
-		ConsensusStopped   bool `json:"consensus_stopped"`
-		ActiveValidators   int  `json:"active_validators"`
-		PausedValidators   int  `json:"paused_validators"`
-		InactiveValidators int  `json:"inactive_validators"`
-		JailedValidators   int  `json:"jailed_validators"`
-		TotalValidators    int  `json:"total_validators"`
-		WaitingValidators  int  `json:"waiting_validators"`
+		ActiveValidators   int `json:"active_validators"`
+		PausedValidators   int `json:"paused_validators"`
+		InactiveValidators int `json:"inactive_validators"`
+		JailedValidators   int `json:"jailed_validators"`
+		TotalValidators    int `json:"total_validators"`
+		WaitingValidators  int `json:"waiting_validators"`
 	} `json:"status"`
 	Waiting    []string         `json:"waiting"`
 	Validators []QueryValidator `json:"validators"`
 }
 
 type ValidatorSigningInfo struct {
-	Address             string `json:"address"`
-	StartHeight         int64  `json:"start_height,string,omitempty"`
-	IndexOffset         int64  `json:"index_offset,string,omitempty"`
-	InactiveUntil       string `json:"inactive_until,omitempty"`
-	Tombstoned          bool   `json:"tombstoned,string,omitempty"`
-	MissedBlocksCounter int64  `json:"missed_blocks_counter,string"`
+	Address               string `json:"address"`
+	StartHeight           int64  `json:"start_height,string,omitempty"`
+	IndexOffset           int64  `json:"index_offset,string,omitempty"`
+	InactiveUntil         string `json:"inactive_until,omitempty"`
+	Tombstoned            bool   `json:"tombstoned,string,omitempty"`
+	Mischance             int64  `json:"mischance,string,omitempty"`
+	MissedBlocksCounter   int64  `json:"missed_blocks_counter,string,omitempty"`
+	ProducedBlocksCounter int64  `json:"produced_blocks_counter,string,omitempty"`
 }
 
 const (

@@ -381,10 +381,6 @@
           "type": "string",
           "format": "date-time"
         },
-        "votingStartTime": {
-          "type": "string",
-          "format": "date-time"
-        },
         "votingEndTime": {
           "type": "string",
           "format": "date-time"
@@ -393,8 +389,19 @@
           "type": "string",
           "format": "date-time"
         },
+        "minVotingEndBlockHeight": {
+          "type": "string",
+          "format": "int64"
+        },
+        "minEnactmentEndBlockHeight": {
+          "type": "string",
+          "format": "int64"
+        },
         "result": {
           "$ref": "#/definitions/govVoteResult"
+        },
+        "description": {
+          "type": "string"
         }
       }
     },
@@ -503,7 +510,9 @@
         "VOTE_RESULT_PASSED",
         "VOTE_RESULT_REJECTED",
         "VOTE_RESULT_REJECTED_WITH_VETO",
-        "VOTE_PENDING"
+        "VOTE_PENDING",
+        "VOTE_RESULT_QUORUM_NOT_REACHED",
+        "VOTE_RESULT_ENACTMENT"
       ],
       "default": "VOTE_RESULT_UNKNOWN"
     },

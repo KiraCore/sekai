@@ -157,7 +157,6 @@ func NewInitApp(
 	bApp.SetAppVersion(version.Version)
 	bApp.SetInterfaceRegistry(interfaceRegistry)
 
-	// TODO: Add the keys that module requires
 	keys := sdk.NewKVStoreKeys(
 		authtypes.StoreKey,
 		banktypes.StoreKey,
@@ -200,7 +199,7 @@ func NewInitApp(
 	app.customGovKeeper = customgovkeeper.NewKeeper(keys[customgovtypes.ModuleName], appCodec)
 	customStakingKeeper := customstakingkeeper.NewKeeper(keys[customstakingtypes.ModuleName], cdc, app.customGovKeeper)
 	app.customSlashingKeeper = customslashingkeeper.NewKeeper(
-		appCodec, keys[customslashingtypes.StoreKey], &customStakingKeeper, app.GetSubspace(customslashingtypes.ModuleName),
+		appCodec, keys[customslashingtypes.StoreKey], &customStakingKeeper, app.customGovKeeper, app.GetSubspace(customslashingtypes.ModuleName),
 	)
 	app.tokensKeeper = tokenskeeper.NewKeeper(keys[tokenstypes.ModuleName], appCodec)
 	// NOTE: customStakingKeeper above is passed by reference, so that it will contain these hooks
@@ -242,6 +241,7 @@ func NewInitApp(
 				tokens.NewApplyUpsertTokenRatesProposalHandler(app.tokensKeeper),
 				tokens.NewApplyWhiteBlackChangeProposalHandler(app.tokensKeeper),
 				customstaking.NewApplyUnjailValidatorProposalHandler(app.customStakingKeeper),
+				customslashing.NewApplyResetWholeValidatorRankProposalHandler(app.customSlashingKeeper),
 				customgov.NewApplyCreateRoleProposalHandler(app.customGovKeeper),
 			},
 		)),

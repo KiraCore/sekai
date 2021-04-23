@@ -1,5 +1,44 @@
 # Changelog
 
+- merge token aliases query and token supply.
+- update response type for uncomfirmed_txs
+- update postman API collection
+
+## [v0.1.18.15] - 04.06.2021
+
+- update consensus stopped after 6 * average block time.
+- add unconfirmed_txs query (wip).
+
+## [v0.1.18.12] - 04.02.2021
+
+- update interx status api
+- add nodes cli configurations
+- fix consensus_stopped logic
+
+## [v0.1.18.10] - 03.31.2021
+
+- add `addrbook` cli option
+- fix faucet amount handling (e.g. 18 decimal)
+
+## [v0.1.18.9] - 03.29.2021
+
+- add `faucet_amounts`, `faucet_minimum_amounts`, `fee_amounts` for interxd init cli configuration.
+- fix validators query (calculate consensus_stopped after sync finished).
+- update consensus query responses.
+- fix configuration init for mnemonics.
+- fix privkey generation.
+
+## [v0.1.18.6] - 03.25.2021
+
+- fix proposals query to have description field.
+
+## [v0.1.18.3] - 03.25.2021
+
+- add consensus api
+- fix proposal query
+- fix votes/voters query
+- update protos to latest release
+
 ## [v0.1.x.x] - xx.xx.xxxx
 
 ### Updated

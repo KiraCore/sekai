@@ -1134,15 +1134,15 @@ func TestHandler_CreateProposalAssignPermission_Errors(t *testing.T) {
 		{
 			"Proposer does not have Perm",
 			types.NewMsgProposalAssignPermission(
-				proposerAddr, addr, types.PermClaimValidator,
+				proposerAddr, "some desc", addr, types.PermClaimValidator,
 			),
 			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
-			errors.Wrap(types.ErrNotEnoughPermissions, "PermCreateSetPermissionsProposal"),
+			errors.Wrap(types.ErrNotEnoughPermissions, "PERMISSION_CREATE_SET_PERMISSIONS_PROPOSAL"),
 		},
 		{
 			"address already has that permission",
 			types.NewMsgProposalAssignPermission(
-				proposerAddr, addr, types.PermClaimValidator,
+				proposerAddr, "some desc", addr, types.PermClaimValidator,
 			),
 			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
 				proposerActor := types.NewDefaultActor(proposerAddr)
@@ -1196,7 +1196,7 @@ func TestHandler_ProposalAssignPermission(t *testing.T) {
 	handler := gov.NewHandler(app.CustomGovKeeper)
 	res, err := handler(
 		ctx,
-		types.NewMsgProposalAssignPermission(proposerAddr, addr, types.PermValue(1)),
+		types.NewMsgProposalAssignPermission(proposerAddr, "some desc", addr, types.PermValue(1)),
 	)
 	require.NoError(t, err)
 
@@ -1215,6 +1215,9 @@ func TestHandler_ProposalAssignPermission(t *testing.T) {
 		ctx.BlockTime(),
 		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEndTime)),
 		ctx.BlockTime().Add((time.Second*time.Duration(properties.ProposalEndTime))+(time.Second*time.Duration(properties.ProposalEnactmentTime))),
+		ctx.BlockHeight()+2,
+		ctx.BlockHeight()+3,
+		"some desc",
 	)
 	require.NoError(t, err)
 	require.Equal(t, expectedSavedProposal, savedProposal)
@@ -1247,6 +1250,7 @@ func TestHandler_CreateProposalUpsertDataRegistry_Errors(t *testing.T) {
 			"Proposer does not have Perm",
 			types.NewMsgProposalUpsertDataRegistry(
 				proposerAddr,
+				"some desc",
 				"theKey",
 				"theHash",
 				"theReference",
@@ -1254,7 +1258,7 @@ func TestHandler_CreateProposalUpsertDataRegistry_Errors(t *testing.T) {
 				1234,
 			),
 			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
-			errors.Wrap(types.ErrNotEnoughPermissions, types.PermUpsertDataRegistryProposal.String()),
+			errors.Wrap(types.ErrNotEnoughPermissions, types.PermCreateUpsertDataRegistryProposal.String()),
 		},
 	}
 
@@ -1284,7 +1288,7 @@ func TestHandler_ProposalUpsertDataRegistry(t *testing.T) {
 
 	// Set proposer Permissions
 	proposerActor := types.NewDefaultActor(proposerAddr)
-	err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerActor, types.PermUpsertDataRegistryProposal)
+	err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerActor, types.PermCreateUpsertDataRegistryProposal)
 	require.NoError(t, err2)
 
 	properties := app.CustomGovKeeper.GetNetworkProperties(ctx)
@@ -1296,6 +1300,7 @@ func TestHandler_ProposalUpsertDataRegistry(t *testing.T) {
 		ctx,
 		types.NewMsgProposalUpsertDataRegistry(
 			proposerAddr,
+			"some desc",
 			"theKey",
 			"theHash",
 			"theReference",
@@ -1323,6 +1328,9 @@ func TestHandler_ProposalUpsertDataRegistry(t *testing.T) {
 		ctx.BlockTime(),
 		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEndTime)),
 		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEnactmentTime)+time.Second*time.Duration(properties.ProposalEndTime)),
+		ctx.BlockHeight()+2,
+		ctx.BlockHeight()+3,
+		"some desc",
 	)
 	require.NoError(t, err)
 	require.Equal(t, expectedSavedProposal, savedProposal)
@@ -1380,6 +1388,9 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 					ctx.BlockTime(),
 					ctx.BlockTime().Add(time.Second*9),
 					ctx.BlockTime().Add(time.Second*20),
+					ctx.BlockHeight()+2,
+					ctx.BlockHeight()+3,
+					"some desc",
 				)
 
 				require.NoError(t, err)
@@ -1413,6 +1424,9 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 					ctx.BlockTime(),
 					ctx.BlockTime().Add(time.Second*20),
 					ctx.BlockTime().Add(time.Second*30),
+					ctx.BlockHeight()+2,
+					ctx.BlockHeight()+3,
+					"some desc",
 				)
 				require.NoError(t, err)
 				app.CustomGovKeeper.SaveProposal(ctx, proposal)
@@ -1448,6 +1462,9 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 					ctx.BlockTime(),
 					ctx.BlockTime().Add(time.Second*20),
 					ctx.BlockTime().Add(time.Second*30),
+					ctx.BlockHeight()+2,
+					ctx.BlockHeight()+3,
+					"some desc",
 				)
 				require.NoError(t, err)
 				app.CustomGovKeeper.SaveProposal(ctx, proposal)
@@ -1481,6 +1498,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 			),
 			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
 				actor := types.NewDefaultActor(voterAddr)
+				actor.Deactivate()
 				app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
 				err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, actor, types.PermVoteSetPermissionProposal)
 				require.NoError(t, err2)
@@ -1513,6 +1531,9 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 					ctx.BlockTime(),
 					ctx.BlockTime().Add(time.Second*20),
 					ctx.BlockTime().Add(time.Second*30),
+					ctx.BlockHeight()+2,
+					ctx.BlockHeight()+3,
+					"some desc",
 				)
 				require.NoError(t, err)
 				app.CustomGovKeeper.SaveProposal(ctx, proposal)
@@ -1548,6 +1569,9 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 					ctx.BlockTime(),
 					ctx.BlockTime().Add(time.Second*20),
 					ctx.BlockTime().Add(time.Second*30),
+					ctx.BlockHeight()+2,
+					ctx.BlockHeight()+3,
+					"some desc",
 				)
 				require.NoError(t, err)
 				app.CustomGovKeeper.SaveProposal(ctx, proposal)
@@ -1604,6 +1628,9 @@ func TestHandler_VoteProposal(t *testing.T) {
 		ctx.BlockTime(),
 		ctx.BlockTime().Add(time.Second*1),
 		ctx.BlockTime().Add(time.Second*10),
+		ctx.BlockHeight()+2,
+		ctx.BlockHeight()+3,
+		"some desc",
 	)
 	require.NoError(t, err)
 	app.CustomGovKeeper.SaveProposal(ctx, proposal)
@@ -1640,6 +1667,7 @@ func TestHandler_CreateProposalSetNetworkProperty_Errors(t *testing.T) {
 			"Proposer does not have Perm",
 			types.NewMsgProposalSetNetworkProperty(
 				proposerAddr,
+				"some desc",
 				types.MaxTxFee,
 				100000,
 			),
@@ -1686,6 +1714,7 @@ func TestHandler_ProposalSetNetworkProperty(t *testing.T) {
 		ctx,
 		types.NewMsgProposalSetNetworkProperty(
 			proposerAddr,
+			"some desc",
 			types.MinTxFee,
 			1234,
 		),
@@ -1707,6 +1736,9 @@ func TestHandler_ProposalSetNetworkProperty(t *testing.T) {
 		ctx.BlockTime(),
 		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEndTime)),
 		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEnactmentTime)+time.Second*time.Duration(properties.ProposalEndTime)),
+		ctx.BlockHeight()+2,
+		ctx.BlockHeight()+3,
+		"some desc",
 	)
 	require.NoError(t, err)
 	require.Equal(t, expectedSavedProposal, savedProposal)
@@ -1739,6 +1771,7 @@ func TestHandler_CreateProposalCreateRole_Errors(t *testing.T) {
 			"Proposer does not have Perm",
 			types.NewMsgProposalCreateRole(
 				proposerAddr,
+				"some desc",
 				types.Role(1),
 				[]types.PermValue{},
 				[]types.PermValue{types.PermClaimValidator},
@@ -1750,6 +1783,7 @@ func TestHandler_CreateProposalCreateRole_Errors(t *testing.T) {
 			"role already exist",
 			types.NewMsgProposalCreateRole(
 				proposerAddr,
+				"some desc",
 				types.Role(1),
 				[]types.PermValue{types.PermClaimCouncilor},
 				[]types.PermValue{},
@@ -1771,6 +1805,7 @@ func TestHandler_CreateProposalCreateRole_Errors(t *testing.T) {
 			"permissions are empty",
 			types.NewMsgProposalCreateRole(
 				proposerAddr,
+				"some desc",
 				types.Role(1000),
 				[]types.PermValue{},
 				[]types.PermValue{},
@@ -1826,6 +1861,7 @@ func TestHandler_ProposalCreateRole(t *testing.T) {
 		ctx,
 		types.NewMsgProposalCreateRole(
 			proposerAddr,
+			"some desc",
 			types.Role(1000),
 			[]types.PermValue{
 				types.PermClaimValidator,
@@ -1857,6 +1893,9 @@ func TestHandler_ProposalCreateRole(t *testing.T) {
 		ctx.BlockTime(),
 		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEndTime)),
 		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEnactmentTime)+time.Second*time.Duration(properties.ProposalEndTime)),
+		ctx.BlockHeight()+2,
+		ctx.BlockHeight()+3,
+		"some desc",
 	)
 	require.NoError(t, err)
 	require.Equal(t, expectedSavedProposal, savedProposal)

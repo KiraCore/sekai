@@ -25,11 +25,13 @@ const (
 	QueryRPCMethods          = "/api/rpc_methods"
 	QueryWithdraws           = "/api/withdraws"
 	QueryDeposits            = "/api/deposits"
+	QueryUnconfirmedTxs      = "/api/unconfirmed_txs"
 	QueryBlocks              = "/api/blocks"
 	QueryBlockByHeightOrHash = "/api/blocks/{height}"
 	QueryBlockTransactions   = "/api/blocks/{height}/transactions"
 	QueryTransactionResult   = "/api/transactions/{txHash}"
 	QueryStatus              = "/api/status"
+	QueryConsensus           = "/api/consensus"
 	QueryValidators          = "/api/valopers"
 	QueryValidatorInfos      = "/api/valoperinfos"
 	QueryGenesis             = "/api/genesis"
@@ -37,7 +39,7 @@ const (
 
 	Download              = "/download"
 	DataReferenceRegistry = "DRR"
-	InterxVersion         = "0.1.0"
+	InterxVersion         = "0.1.1"
 
 	QueryRosettaNetworkList    = "/rosetta/network/list"
 	QueryRosettaNetworkOptions = "/rosetta/network/options"

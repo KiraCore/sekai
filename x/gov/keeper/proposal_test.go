@@ -38,6 +38,9 @@ func TestKeeper_EncodingContentType(t *testing.T) {
 		time.Now(),
 		time.Now().Add(1*time.Second),
 		time.Now().Add(10*time.Second),
+		ctx.BlockHeight()+2,
+		ctx.BlockHeight()+3,
+		"some desc",
 	)
 	require.NoError(t, err)
 
@@ -70,6 +73,9 @@ func TestKeeper_GetProposals(t *testing.T) {
 		time.Now(),
 		time.Now().Add(1*time.Second),
 		time.Now().Add(10*time.Second),
+		ctx.BlockHeight()+2,
+		ctx.BlockHeight()+3,
+		"some desc",
 	)
 	require.NoError(t, err)
 
@@ -88,6 +94,9 @@ func TestKeeper_GetProposals(t *testing.T) {
 		time.Now(),
 		time.Now().Add(1*time.Second),
 		time.Now().Add(10*time.Second),
+		ctx.BlockHeight()+2,
+		ctx.BlockHeight()+3,
+		"some desc",
 	)
 	app.CustomGovKeeper.SaveProposal(ctx, proposal2)
 	proposals, err = app.CustomGovKeeper.GetProposals(ctx)
@@ -121,6 +130,9 @@ func TestSaveProposalReturnsTheProposalID_AndIncreasesLast(t *testing.T) {
 		ctx.BlockTime(),
 		ctx.BlockTime().Add(10*time.Minute),
 		ctx.BlockTime().Add(20*time.Minute),
+		ctx.BlockHeight()+2,
+		ctx.BlockHeight()+3,
+		"some desc",
 	)
 	require.NoError(t, err)
 	app.CustomGovKeeper.SaveProposal(ctx, proposal)
@@ -176,6 +188,9 @@ func TestKeeper_AddProposalToActiveQueue(t *testing.T) {
 			baseEndTime,
 			endTime,
 			endTime,
+			ctx.BlockHeight()+2,
+			ctx.BlockHeight()+3,
+			"some desc",
 		)
 		require.NoError(t, err)
 
@@ -218,6 +233,9 @@ func TestKeeper_AddProposalToEnactmentQueue(t *testing.T) {
 			baseEndTime,
 			baseEndTime,
 			enactmentEndTime,
+			ctx.BlockHeight()+2,
+			ctx.BlockHeight()+3,
+			"some desc",
 		)
 		require.NoError(t, err)
 
@@ -258,6 +276,9 @@ func TestKeeper_GetProposalVotesIterator(t *testing.T) {
 		time.Now(),
 		time.Now().Add(1*time.Second),
 		time.Now().Add(10*time.Second),
+		ctx.BlockHeight()+2,
+		ctx.BlockHeight()+3,
+		"some desc",
 	)
 	require.NoError(t, err)
 
@@ -270,6 +291,9 @@ func TestKeeper_GetProposalVotesIterator(t *testing.T) {
 		time.Now(),
 		time.Now().Add(1*time.Second),
 		time.Now().Add(10*time.Second),
+		ctx.BlockHeight()+2,
+		ctx.BlockHeight()+3,
+		"some desc",
 	)
 	require.NoError(t, err)
 

@@ -4,6 +4,7 @@ import (
 	"github.com/KiraCore/sekai/x/staking/types"
 	customstakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // Activate a validator
@@ -14,13 +15,26 @@ func (k Keeper) Activate(ctx sdk.Context, valAddress sdk.ValAddress) error {
 	}
 
 	if validator.IsPaused() {
-		return customstakingtypes.ErrValidatorPaused
+		return sdkerrors.Wrap(customstakingtypes.ErrValidatorPaused, "Can NOT activate paused validator, you must unpause")
 	}
 
 	k.setStatusToValidator(ctx, validator, customstakingtypes.Active)
 	k.addReactivatingValidator(ctx, validator)
+	k.RemoveRemovingValidator(ctx, validator)
 
 	return nil
+}
+
+// ResetWholeValidatorRank reset whole validators' status, rank and streak
+func (k Keeper) ResetWholeValidatorRank(ctx sdk.Context) {
+	// TODO: is it correct to use this iterator @Jonathan?
+	k.IterateValidators(ctx, func(index int64, validator *types.Validator) (stop bool) {
+		validator.Status = customstakingtypes.Active
+		validator.Rank = 0
+		validator.Streak = 0
+		k.AddValidator(ctx, *validator)
+		return false
+	})
 }
 
 // Inactivate inactivate the validator
@@ -40,6 +54,7 @@ func (k Keeper) Inactivate(ctx sdk.Context, valAddress sdk.ValAddress) error { /
 
 	k.AddValidator(ctx, validator)
 	k.addRemovingValidator(ctx, validator)
+	k.RemoveReactivatingValidator(ctx, validator)
 
 	return nil
 }
@@ -82,6 +97,7 @@ func (k Keeper) Pause(ctx sdk.Context, valAddress sdk.ValAddress) error {
 
 	k.setStatusToValidator(ctx, validator, customstakingtypes.Paused)
 	k.addRemovingValidator(ctx, validator)
+	k.RemoveReactivatingValidator(ctx, validator)
 
 	return nil
 }
@@ -99,6 +115,7 @@ func (k Keeper) Unpause(ctx sdk.Context, valAddress sdk.ValAddress) error { // i
 
 	k.setStatusToValidator(ctx, validator, customstakingtypes.Active)
 	k.addReactivatingValidator(ctx, validator)
+	k.RemoveRemovingValidator(ctx, validator)
 
 	return nil
 }
@@ -113,6 +130,7 @@ func (k Keeper) Jail(ctx sdk.Context, valAddress sdk.ValAddress) error {
 	k.setStatusToValidator(ctx, validator, customstakingtypes.Jailed)
 	k.addRemovingValidator(ctx, validator)
 	k.setJailValidatorInfo(ctx, validator)
+	k.RemoveReactivatingValidator(ctx, validator)
 
 	return nil
 }
@@ -143,6 +161,7 @@ func (k Keeper) Unjail(ctx sdk.Context, valAddress sdk.ValAddress) error {
 	k.setStatusToValidator(ctx, validator, customstakingtypes.Active)
 	k.addReactivatingValidator(ctx, validator)
 	k.removeJailValidatorInfo(ctx, validator)
+	k.RemoveRemovingValidator(ctx, validator)
 
 	return nil
 }

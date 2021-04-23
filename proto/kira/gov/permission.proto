@@ -39,8 +39,8 @@ enum PermValue {
   // PERMISSION_UPSERT_ROLE makes possible to add, modify and assign roles.
   PERMISSION_UPSERT_ROLE = 9  [(gogoproto.enumvalue_customname) = "PermUpsertRole"];
 
-  // PERMISSION_UPSERT_DATA_REGISTRY_PROPOSAL makes possible to create a proposal to change the Data Registry.
-  PERMISSION_UPSERT_DATA_REGISTRY_PROPOSAL = 10 [(gogoproto.enumvalue_customname) = "PermUpsertDataRegistryProposal"];
+  // PERMISSION_CREATE_UPSERT_DATA_REGISTRY_PROPOSAL makes possible to create a proposal to change the Data Registry.
+  PERMISSION_CREATE_UPSERT_DATA_REGISTRY_PROPOSAL = 10 [(gogoproto.enumvalue_customname) = "PermCreateUpsertDataRegistryProposal"];
 
   // PERMISSION_VOTE_UPSERT_DATA_REGISTRY_PROPOSAL makes possible to create a proposal to change the Data Registry.
   PERMISSION_VOTE_UPSERT_DATA_REGISTRY_PROPOSAL = 11 [(gogoproto.enumvalue_customname) = "PermVoteUpsertDataRegistryProposal"];
@@ -55,41 +55,49 @@ enum PermValue {
   // PERMISSION_CREATE_UPSERT_TOKEN_ALIAS_PROPOSAL defines the permission needed to create proposals for upsert token Alias.
   PERMISSION_CREATE_UPSERT_TOKEN_ALIAS_PROPOSAL = 14 [(gogoproto.enumvalue_customname) = "PermCreateUpsertTokenAliasProposal"];
 
-  // PERMISSION_CREATE_SET_POOR_NETWORK_MESSAGES defines the permission needed to create proposals for setting poor network messages
-  PERMISSION_CREATE_SET_POOR_NETWORK_MESSAGES = 15 [(gogoproto.enumvalue_customname) = "PermCreateSetPoorNetworkMessagesProposal"];
-
   // PERMISSION_VOTE_UPSERT_TOKEN_ALIAS_PROPOSAL defines the permission needed to vote proposals for upsert token.
-  PERMISSION_VOTE_UPSERT_TOKEN_ALIAS_PROPOSAL = 16 [(gogoproto.enumvalue_customname) = "PermVoteUpsertTokenAliasProposal"];
+  PERMISSION_VOTE_UPSERT_TOKEN_ALIAS_PROPOSAL = 15 [(gogoproto.enumvalue_customname) = "PermVoteUpsertTokenAliasProposal"];
 
-  // PERMISSION_CREATE_UPSERT_TOKEN_RATE_PROPOSAL defines the permission needed to create proposals for upsert token rate.
-  PERMISSION_CREATE_UPSERT_TOKEN_RATE_PROPOSAL = 17 [(gogoproto.enumvalue_customname) = "PermCreateUpsertTokenRateProposal"];
-
-  // PERMISSION_VOTE_UPSERT_TOKEN_RATE_PROPOSAL defines the permission needed to vote proposals for upsert token rate.
-  PERMISSION_VOTE_UPSERT_TOKEN_RATE_PROPOSAL = 18 [(gogoproto.enumvalue_customname) = "PermVoteUpsertTokenRateProposal"];
+  // PERMISSION_CREATE_SET_POOR_NETWORK_MESSAGES defines the permission needed to create proposals for setting poor network messages
+  PERMISSION_CREATE_SET_POOR_NETWORK_MESSAGES = 16 [(gogoproto.enumvalue_customname) = "PermCreateSetPoorNetworkMessagesProposal"];
 
   // PERMISSION_VOTE_SET_POOR_NETWORK_MESSAGES_PROPOSAL defines the permission needed to vote proposals to set poor network messages
-  PERMISSION_VOTE_SET_POOR_NETWORK_MESSAGES_PROPOSAL = 19 [(gogoproto.enumvalue_customname) = "PermVoteSetPoorNetworkMessagesProposal"];
+  PERMISSION_VOTE_SET_POOR_NETWORK_MESSAGES_PROPOSAL = 17 [(gogoproto.enumvalue_customname) = "PermVoteSetPoorNetworkMessagesProposal"];
+
+  // PERMISSION_CREATE_UPSERT_TOKEN_RATE_PROPOSAL defines the permission needed to create proposals for upsert token rate.
+  PERMISSION_CREATE_UPSERT_TOKEN_RATE_PROPOSAL = 18 [(gogoproto.enumvalue_customname) = "PermCreateUpsertTokenRateProposal"];
+
+  // PERMISSION_VOTE_UPSERT_TOKEN_RATE_PROPOSAL defines the permission needed to vote proposals for upsert token rate.
+  PERMISSION_VOTE_UPSERT_TOKEN_RATE_PROPOSAL = 19 [(gogoproto.enumvalue_customname) = "PermVoteUpsertTokenRateProposal"];
 
   // PERMISSION_CREATE_UNJAIL_VALIDATOR_PROPOSAL defines the permission needed to create a proposal to unjail a validator.
   PERMISSION_CREATE_UNJAIL_VALIDATOR_PROPOSAL = 20 [(gogoproto.enumvalue_customname) = "PermCreateUnjailValidatorProposal"];
 
+  // PERMISSION_VOTE_UNJAIL_VALIDATOR_PROPOSAL defines the permission needed to vote a proposal to unjail a validator.
+  PERMISSION_VOTE_UNJAIL_VALIDATOR_PROPOSAL = 21 [(gogoproto.enumvalue_customname) = "PermVoteUnjailValidatorProposal"];
+
   // PERMISSION_CREATE_CREATE_ROLE_PROPOSAL defines the permission needed to create a proposal to create a role.
-  PERMISSION_CREATE_CREATE_ROLE_PROPOSAL = 21 [(gogoproto.enumvalue_customname) = "PermCreateRoleProposal"];
+  PERMISSION_CREATE_CREATE_ROLE_PROPOSAL = 22 [(gogoproto.enumvalue_customname) = "PermCreateRoleProposal"];
 
   // PERMISSION_VOTE_CREATE_ROLE_PROPOSAL defines the permission needed to vote a proposal to create a role.
-  PERMISSION_VOTE_CREATE_ROLE_PROPOSAL = 22 [(gogoproto.enumvalue_customname) = "PermVoteCreateRoleProposal"];
+  PERMISSION_VOTE_CREATE_ROLE_PROPOSAL = 23 [(gogoproto.enumvalue_customname) = "PermVoteCreateRoleProposal"];
 
   // PERMISSION_CREATE_TOKENS_WHITE_BLACK_CHANGE_PROPOSAL defines the permission needed to create a proposal to blacklist/whitelisted tokens
-  PERMISSION_CREATE_TOKENS_WHITE_BLACK_CHANGE_PROPOSAL = 23 [(gogoproto.enumvalue_customname) = "PermCreateTokensWhiteBlackChangeProposal"];
+  PERMISSION_CREATE_TOKENS_WHITE_BLACK_CHANGE_PROPOSAL = 24 [(gogoproto.enumvalue_customname) = "PermCreateTokensWhiteBlackChangeProposal"];
 
   // PERMISSION_VOTE_TOKENS_WHITE_BLACK_CHANGE_PROPOSAL defines the permission needed to vote on blacklist/whitelisted tokens proposal
-  PERMISSION_VOTE_TOKENS_WHITE_BLACK_CHANGE_PROPOSAL = 24 [(gogoproto.enumvalue_customname) = "PermVoteTokensWhiteBlackChangeProposal"];
+  PERMISSION_VOTE_TOKENS_WHITE_BLACK_CHANGE_PROPOSAL = 25 [(gogoproto.enumvalue_customname) = "PermVoteTokensWhiteBlackChangeProposal"];
+
+  // PERMISSION_CREATE_RESET_WHOLE_VALIDATOR_RANK_PROPOSAL defines the permission needed to create a proposal to reset whole validator rank
+  PERMISSION_CREATE_RESET_WHOLE_VALIDATOR_RANK_PROPOSAL = 26 [(gogoproto.enumvalue_customname) = "PermCreateResetWholeValidatorRankProposal"];
+
+  // PERMISSION_VOTE_RESET_WHOLE_VALIDATOR_RANK_PROPOSAL defines the permission needed to vote on reset whole validator rank proposal
+  PERMISSION_VOTE_RESET_WHOLE_VALIDATOR_RANK_PROPOSAL = 27 [(gogoproto.enumvalue_customname) = "PermVoteResetWholeValidatorRankProposal"];
 
   // PERMISSION_CREATE_SOFTWARE_UPGRADE_PROPOSAL defines the permission needed to create a proposal for software upgrade
-  PERMISSION_CREATE_SOFTWARE_UPGRADE_PROPOSAL = 25 [(gogoproto.enumvalue_customname) = "PermCreateSoftwareUpgradeProposal"];
+  PERMISSION_CREATE_SOFTWARE_UPGRADE_PROPOSAL = 28 [(gogoproto.enumvalue_customname) = "PermCreateSoftwareUpgradeProposal"];
 
   // PERMISSION_SOFTWARE_UPGRADE_PROPOSAL defines the permission needed to vote on software upgrade proposal
-  PERMISSION_SOFTWARE_UPGRADE_PROPOSAL = 26 [(gogoproto.enumvalue_customname) = "PermVoteSoftwareUpgradeProposal"];
-
+  PERMISSION_SOFTWARE_UPGRADE_PROPOSAL = 29 [(gogoproto.enumvalue_customname) = "PermVoteSoftwareUpgradeProposal"];
 }
 

@@ -19,10 +19,76 @@ import (
 
 func TestEndBlocker_ActiveProposal(t *testing.T) {
 	tests := []struct {
-		name             string
-		prepareScenario  func(app *simapp.SimApp, ctx sdk.Context) []sdk.AccAddress
-		validateScenario func(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addrs []sdk.AccAddress)
+		name              string
+		prepareScenario   func(app *simapp.SimApp, ctx sdk.Context) []sdk.AccAddress
+		validateScenario  func(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addrs []sdk.AccAddress)
+		blockHeightChange int64
 	}{
+		{
+			name: "proposal passes: min block height for proposal voting time not reached",
+			prepareScenario: func(app *simapp.SimApp, ctx sdk.Context) []sdk.AccAddress {
+				addrs := simapp.AddTestAddrsIncremental(app, ctx, 10, sdk.NewInt(100))
+
+				proposalID := uint64(1234)
+				proposal, err := types.NewProposal(
+					proposalID,
+					types.NewAssignPermissionProposal(
+						addrs[0],
+						types.PermSetPermissions,
+					),
+					time.Now(),
+					time.Now().Add(10*time.Second),
+					time.Now().Add(20*time.Second),
+					ctx.BlockHeight()+2,
+					ctx.BlockHeight()+3,
+					"some desc",
+				)
+				require.NoError(t, err)
+
+				app.CustomGovKeeper.SaveProposal(ctx, proposal)
+				require.NoError(t, err)
+				app.CustomGovKeeper.AddToActiveProposals(ctx, proposal)
+
+				// We set permissions to Vote The proposal to all the actors. 10 in total.
+				for i, addr := range addrs {
+					actor := types.NewDefaultActor(addr)
+					err := app.CustomGovKeeper.AddWhitelistPermission(ctx, actor, types.PermVoteSetPermissionProposal)
+					require.NoError(t, err)
+
+					// Only 4 first users vote yes. We reach quorum but not half of the votes are yes.
+					if i < 4 {
+						vote := types.NewVote(proposalID, addr, types.OptionYes)
+						app.CustomGovKeeper.SaveVote(ctx, vote)
+					}
+				}
+
+				iterator := app.CustomGovKeeper.GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx, time.Now().Add(10*time.Second))
+				requireIteratorCount(t, iterator, 1)
+
+				iterator = app.CustomGovKeeper.GetEnactmentProposalsWithFinishedEnactmentEndTimeIterator(ctx, time.Now().Add(25*time.Second))
+				requireIteratorCount(t, iterator, 0)
+
+				return addrs
+			},
+			validateScenario: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addrs []sdk.AccAddress) {
+				actor, found := app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addrs[0])
+				require.True(t, found)
+				require.False(t, actor.Permissions.IsWhitelisted(types.PermSetPermissions))
+
+				// We check that is not in the ActiveProposals
+				iterator := app.CustomGovKeeper.GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx, time.Now().Add(15*time.Second))
+				requireIteratorCount(t, iterator, 1)
+
+				// And it is in the EnactmentProposals
+				iterator = app.CustomGovKeeper.GetEnactmentProposalsWithFinishedEnactmentEndTimeIterator(ctx, time.Now().Add(25*time.Second))
+				requireIteratorCount(t, iterator, 0)
+
+				proposal, found := app.CustomGovKeeper.GetProposal(ctx, 1234)
+				require.True(t, found)
+				require.Equal(t, types.Pending, proposal.Result)
+			},
+			blockHeightChange: 1,
+		},
 		{
 			name: "proposal passes: quorum not reached",
 			prepareScenario: func(app *simapp.SimApp, ctx sdk.Context) []sdk.AccAddress {
@@ -38,6 +104,9 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now(),
 					time.Now(),
 					time.Now(),
+					ctx.BlockHeight()+2,
+					ctx.BlockHeight()+3,
+					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -76,6 +145,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				require.True(t, found)
 				require.Equal(t, types.QuorumNotReached, proposal.Result)
 			},
+			blockHeightChange: 3,
 		},
 		{
 			name: "proposal passes and joins Enactment place",
@@ -92,6 +162,9 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now(),
 					time.Now().Add(10*time.Second),
 					time.Now().Add(20*time.Second),
+					ctx.BlockHeight()+2,
+					ctx.BlockHeight()+3,
+					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -137,6 +210,47 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				require.True(t, found)
 				require.Equal(t, types.Enactment, proposal.Result)
 			},
+			blockHeightChange: 3,
+		},
+		{
+			name: "Passed proposal in enactment is applied and min block height for enactment not reached",
+			prepareScenario: func(app *simapp.SimApp, ctx sdk.Context) []sdk.AccAddress {
+				addrs := simapp.AddTestAddrsIncremental(app, ctx, 10, sdk.NewInt(100))
+
+				actor := types.NewDefaultActor(addrs[0])
+				app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
+
+				proposalID := uint64(1234)
+				proposal, err := types.NewProposal(
+					proposalID,
+					types.NewAssignPermissionProposal(
+						addrs[0],
+						types.PermSetPermissions,
+					),
+					time.Now(),
+					time.Now().Add(10*time.Second),
+					time.Now().Add(20*time.Second),
+					ctx.BlockHeight()+2,
+					ctx.BlockHeight()+3,
+					"some desc",
+				)
+				require.NoError(t, err)
+
+				proposal.Result = types.Enactment
+				app.CustomGovKeeper.SaveProposal(ctx, proposal)
+
+				app.CustomGovKeeper.AddToEnactmentProposals(ctx, proposal)
+
+				iterator := app.CustomGovKeeper.GetEnactmentProposalsWithFinishedEnactmentEndTimeIterator(ctx, time.Now().Add(25*time.Second))
+				requireIteratorCount(t, iterator, 1)
+
+				return addrs
+			},
+			validateScenario: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addrs []sdk.AccAddress) {
+				iterator := app.CustomGovKeeper.GetEnactmentProposalsWithFinishedEnactmentEndTimeIterator(ctx, time.Now().Add(25*time.Second))
+				requireIteratorCount(t, iterator, 1)
+			},
+			blockHeightChange: 0,
 		},
 		{
 			name: "Passed proposal in enactment is applied and removed from enactment list: Assign permission",
@@ -156,6 +270,9 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now(),
 					time.Now().Add(10*time.Second),
 					time.Now().Add(20*time.Second),
+					ctx.BlockHeight()+2,
+					ctx.BlockHeight()+3,
+					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -178,6 +295,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 
 				require.True(t, actor.Permissions.IsWhitelisted(types.PermSetPermissions))
 			},
+			blockHeightChange: 3,
 		},
 		{
 			name: "Passed proposal in enactment is applied and removed from enactment list, actor does not exist",
@@ -194,6 +312,9 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now(),
 					time.Now().Add(10*time.Second),
 					time.Now().Add(20*time.Second),
+					ctx.BlockHeight()+2,
+					ctx.BlockHeight()+3,
+					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -216,6 +337,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 
 				require.True(t, actor.Permissions.IsWhitelisted(types.PermSetPermissions))
 			},
+			blockHeightChange: 3,
 		},
 		{
 			name: "Passed proposal in enactment is applied and removed from enactment list: Upsert Data Registry",
@@ -238,6 +360,9 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now(),
 					time.Now().Add(10*time.Second),
 					time.Now().Add(20*time.Second),
+					ctx.BlockHeight()+2,
+					ctx.BlockHeight()+3,
+					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -263,6 +388,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				require.Equal(t, "theReference", entry.Reference)
 				require.Equal(t, uint64(1234), entry.Size_)
 			},
+			blockHeightChange: 3,
 		},
 		{
 			name: "Passed proposal in enactment is applied and removed from enactment list: Set Network Property",
@@ -282,6 +408,9 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now(),
 					time.Now().Add(10*time.Second),
 					time.Now().Add(20*time.Second),
+					ctx.BlockHeight()+2,
+					ctx.BlockHeight()+3,
+					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -304,6 +433,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 
 				require.Equal(t, uint64(300), minTxFee)
 			},
+			blockHeightChange: 3,
 		},
 		{
 			name: "Passed proposal in enactment is applied and removed from enactment list: Set Token Alias",
@@ -329,6 +459,9 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now(),
 					time.Now().Add(10*time.Second),
 					time.Now().Add(20*time.Second),
+					ctx.BlockHeight()+2,
+					ctx.BlockHeight()+3,
+					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -349,6 +482,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				token := app.TokensKeeper.GetTokenAlias(ctx, "EUR")
 				require.Equal(t, "Euro", token.Name)
 			},
+			blockHeightChange: 3,
 		},
 		{
 			name: "Passed proposal in enactment is applied and removed from enactment list: Set Token Rates",
@@ -369,6 +503,9 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now(),
 					time.Now().Add(10*time.Second),
 					time.Now().Add(20*time.Second),
+					ctx.BlockHeight()+2,
+					ctx.BlockHeight()+3,
+					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -391,6 +528,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				require.Equal(t, "btc", token.Denom)
 				require.Equal(t, false, token.FeePayments)
 			},
+			blockHeightChange: 3,
 		},
 		{
 			name: "Passed proposal in enactment is applied and removed from enactment list: Unjail Validator",
@@ -420,6 +558,9 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now(),
 					time.Now().Add(10*time.Second),
 					time.Now().Add(20*time.Second),
+					ctx.BlockHeight()+2,
+					ctx.BlockHeight()+3,
+					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -442,6 +583,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 
 				require.False(t, validator.IsJailed())
 			},
+			blockHeightChange: 3,
 		},
 		{
 			name: "Passed proposal in enactment is applied and removed from enactment list: Create Role",
@@ -466,6 +608,9 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now(),
 					time.Now().Add(10*time.Second),
 					time.Now().Add(20*time.Second),
+					ctx.BlockHeight()+2,
+					ctx.BlockHeight()+3,
+					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -491,6 +636,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				require.True(t, perms.IsWhitelisted(types.PermClaimValidator))
 				require.True(t, perms.IsBlacklisted(types.PermChangeTxFee))
 			},
+			blockHeightChange: 3,
 		},
 	}
 
@@ -503,6 +649,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 			addrs := tt.prepareScenario(app, ctx)
 
 			ctx = ctx.WithBlockTime(time.Now().Add(time.Second * 25))
+			ctx = ctx.WithBlockHeight(ctx.BlockHeight() + tt.blockHeightChange)
 
 			gov.EndBlocker(ctx, app.CustomGovKeeper, app.ProposalRouter)
 
