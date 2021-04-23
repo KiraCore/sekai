@@ -1,0 +1,27 @@
+syntax = "proto3";
+package kira.upgrade;
+
+import "google/protobuf/any.proto";
+import "google/api/annotations.proto";
+import "upgrade.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/upgrade/types";
+
+// Query defines the gRPC upgrade querier service.
+service Query {
+  // CurrentPlan queries the current upgrade plan.
+  rpc CurrentPlan(QueryCurrentPlanRequest) returns (QueryCurrentPlanResponse) {
+    option (google.api.http).get = "/kira/upgrade/current_plan";
+  }
+}
+
+// QueryCurrentPlanRequest is the request type for the Query/CurrentPlan RPC
+// method.
+message QueryCurrentPlanRequest {}
+
+// QueryCurrentPlanResponse is the response type for the Query/CurrentPlan RPC
+// method.
+message QueryCurrentPlanResponse {
+  // plan is the current upgrade plan.
+  ProposalSoftwareUpgrade plan = 1;
+}

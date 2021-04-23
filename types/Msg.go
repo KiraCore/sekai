@@ -46,6 +46,9 @@ const (
 	MsgTypeActivate = "activate"
 	MsgTypePause    = "pause"
 	MsgTypeUnpause  = "unpause"
+
+	//upgrade module
+	MsgProposalSoftwareUpgrade = "propose-software-upgrade"
 )
 
 // MsgFuncIDMapping defines function_id mapping
