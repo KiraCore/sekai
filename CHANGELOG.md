@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.1.19.1] - 26.04.2021
+### Added
+- Update validator signing info query based on the latest release
+- Add configurations for node discovery
+
 ## [v0.1.19] - 21.04.2021
 ### Added
 - New uptime counter
