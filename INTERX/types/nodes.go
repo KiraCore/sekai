@@ -30,3 +30,24 @@ type AddrBookJSON struct {
 	Key   string         `json:"key"`
 	Addrs []KnownAddress `json:"addrs"`
 }
+type NodePeer struct {
+	ID   string `json:"id"`
+	Ping int64  `json:"ping"`
+}
+
+type NodeList struct {
+	ID        string     `json:"id"`
+	IP        string     `json:"ip"`
+	Moniker   string     `json:"moniker"`
+	KiraAddr  string     `json:"kira_addr"`
+	Version   string     `json:"version"`
+	Seed      bool       `json:"seed"`
+	Validator bool       `json:"validator"`
+	Peers     []NodePeer `json:"peers"`
+}
+
+type NodeListResponse struct {
+	LastUpdate int64      `json:"last_update"`
+	Scanning   bool       `json:"scanning"`
+	NodeList   []NodeList `json:"node_list"`
+}
