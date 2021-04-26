@@ -68,7 +68,6 @@ func processProposal(ctx sdk.Context, k keeper.Keeper, proposalID uint64) {
 			types.EventTypeAddToEnactment,
 			sdk.NewAttribute(types.AttributeKeyProposalId, fmt.Sprintf("%d", proposal.ProposalId)),
 			sdk.NewAttribute(types.AttributeKeyProposalDescription, proposal.Description),
-			sdk.NewAttribute(types.AttributeKeyProposalContent, proposal.String()),
 		),
 	)
 }
@@ -96,7 +95,6 @@ func processEnactmentProposal(ctx sdk.Context, k keeper.Keeper, router ProposalR
 			types.EventTypeRemoveEnactment,
 			sdk.NewAttribute(types.AttributeKeyProposalId, fmt.Sprintf("%d", proposal.ProposalId)),
 			sdk.NewAttribute(types.AttributeKeyProposalDescription, proposal.Description),
-			sdk.NewAttribute(types.AttributeKeyProposalContent, proposal.String()),
 		),
 	)
 }
