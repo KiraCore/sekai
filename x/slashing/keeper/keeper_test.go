@@ -83,8 +83,8 @@ func TestMissedBlockAndRankStreakCounter(t *testing.T) {
 	app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), 100, false)
 
 	v := tstaking.CheckValidator(valAddr, stakingtypes.Active, false)
-	require.Equal(t, v.Rank, int64(0))
-	require.Equal(t, v.Streak, int64(0))
+	require.Equal(t, v.Rank, int64(1))
+	require.Equal(t, v.Streak, int64(1))
 
 	info, found := app.CustomSlashingKeeper.GetValidatorSigningInfo(ctx, sdk.ConsAddress(val.Address()))
 	require.True(t, found)
@@ -124,12 +124,12 @@ func TestMissedBlockAndRankStreakCounter(t *testing.T) {
 	ctx = ctx.WithBlockHeight(height + 100)
 	app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), 100, false)
 	v = tstaking.CheckValidator(valAddr, stakingtypes.Active, false)
-	require.Equal(t, v.Rank, int64(91))
-	require.Equal(t, v.Streak, int64(0))
+	require.Equal(t, v.Rank, int64(101))
+	require.Equal(t, v.Streak, int64(101))
 
 	app.CustomStakingKeeper.Inactivate(ctx, valAddr)
 	v = tstaking.CheckValidator(valAddr, stakingtypes.Inactive, true)
-	require.Equal(t, v.Rank, int64(45))
+	require.Equal(t, v.Rank, int64(50))
 	require.Equal(t, v.Streak, int64(0))
 
 	app.CustomStakingKeeper.Activate(ctx, valAddr)
@@ -140,7 +140,7 @@ func TestMissedBlockAndRankStreakCounter(t *testing.T) {
 		app.CustomSlashingKeeper.HandleValidatorSignature(ctx, val.Address(), 100, false)
 	}
 	v = tstaking.CheckValidator(valAddr, stakingtypes.Active, false)
-	require.Equal(t, v.Rank, int64(0))
+	require.Equal(t, v.Rank, int64(50))
 	require.Equal(t, v.Streak, int64(0))
 }
 
@@ -381,12 +381,66 @@ func TestValidatorLifecycle(t *testing.T) {
 	tstaking.CheckValidator(valAddr, stakingtypes.Active, false)
 	tstaking.CheckValidator(sdk.ValAddress(pks[1].Address()), stakingtypes.Active, false)
 
-	// 600 more blocks happened
+	// validator misses 1st block
 	height = 100
+	ctx = ctx.WithBlockHeight(height)
+	app.CustomSlashingKeeper.HandleValidatorSignature(ctx, addr, 1, false)
+	signInfo, found = app.CustomSlashingKeeper.GetValidatorSigningInfo(ctx, consAddr)
+	require.True(t, found)
+	require.Equal(t, consAddr.String(), signInfo.Address)
+	require.Equal(t, int64(0), signInfo.StartHeight)
+	require.Equal(t, time.Unix(0, 0).UTC(), signInfo.InactiveUntil.UTC())
+	require.Equal(t, false, signInfo.Tombstoned)
+	require.Equal(t, int64(0), signInfo.Mischance)
+	require.Equal(t, int64(99), signInfo.LastPresentBlock)
+	require.Equal(t, int64(1), signInfo.MissedBlocksCounter)
+	require.Equal(t, int64(100), signInfo.ProducedBlocksCounter)
+	validator, err := app.CustomStakingKeeper.GetValidatorByConsAddr(ctx, sdk.ConsAddress(addr))
+	require.NoError(t, err)
+	require.Equal(t, validator.Rank, int64(100))
+	require.Equal(t, validator.Streak, int64(100))
 
-	// validator misses 11 blocks
+	// validator misses 2nd block
+	height++
+	ctx = ctx.WithBlockHeight(height)
+	app.CustomSlashingKeeper.HandleValidatorSignature(ctx, addr, 1, false)
+	signInfo, found = app.CustomSlashingKeeper.GetValidatorSigningInfo(ctx, consAddr)
+	require.True(t, found)
+	require.Equal(t, consAddr.String(), signInfo.Address)
+	require.Equal(t, int64(0), signInfo.StartHeight)
+	require.Equal(t, time.Unix(0, 0).UTC(), signInfo.InactiveUntil.UTC())
+	require.Equal(t, false, signInfo.Tombstoned)
+	require.Equal(t, int64(0), signInfo.Mischance)
+	require.Equal(t, int64(99), signInfo.LastPresentBlock)
+	require.Equal(t, int64(2), signInfo.MissedBlocksCounter)
+	require.Equal(t, int64(100), signInfo.ProducedBlocksCounter)
+	validator, err = app.CustomStakingKeeper.GetValidatorByConsAddr(ctx, sdk.ConsAddress(addr))
+	require.NoError(t, err)
+	require.Equal(t, validator.Rank, int64(100))
+	require.Equal(t, validator.Streak, int64(100))
+
+	// validator misses 3rd block
+	height++
+	ctx = ctx.WithBlockHeight(height)
+	app.CustomSlashingKeeper.HandleValidatorSignature(ctx, addr, 1, false)
+	signInfo, found = app.CustomSlashingKeeper.GetValidatorSigningInfo(ctx, consAddr)
+	require.True(t, found)
+	require.Equal(t, consAddr.String(), signInfo.Address)
+	require.Equal(t, int64(0), signInfo.StartHeight)
+	require.Equal(t, time.Unix(0, 0).UTC(), signInfo.InactiveUntil.UTC())
+	require.Equal(t, false, signInfo.Tombstoned)
+	require.Equal(t, int64(0), signInfo.Mischance)
+	require.Equal(t, int64(99), signInfo.LastPresentBlock)
+	require.Equal(t, int64(3), signInfo.MissedBlocksCounter)
+	require.Equal(t, int64(100), signInfo.ProducedBlocksCounter)
+	validator, err = app.CustomStakingKeeper.GetValidatorByConsAddr(ctx, sdk.ConsAddress(addr))
+	require.NoError(t, err)
+	require.Equal(t, validator.Rank, int64(100))
+	require.Equal(t, validator.Streak, int64(100))
+
+	// validator misses 9 more blocks
 	latest := height
-	for ; height < latest+int64(properties.MischanceConfidence)+1; height++ {
+	for ; height < latest+int64(properties.MischanceConfidence)-1; height++ {
 		ctx = ctx.WithBlockHeight(height)
 		app.CustomSlashingKeeper.HandleValidatorSignature(ctx, addr, 1, false)
 	}
@@ -400,7 +454,7 @@ func TestValidatorLifecycle(t *testing.T) {
 	require.Equal(t, false, signInfo.Tombstoned)
 	require.Equal(t, int64(1), signInfo.Mischance)
 	require.Equal(t, int64(99), signInfo.LastPresentBlock)
-	require.Equal(t, int64(11), signInfo.MissedBlocksCounter)
+	require.Equal(t, int64(12), signInfo.MissedBlocksCounter)
 	require.Equal(t, int64(100), signInfo.ProducedBlocksCounter)
 
 	// validator misses 100 blocks
@@ -419,7 +473,7 @@ func TestValidatorLifecycle(t *testing.T) {
 	ctx = ctx.WithBlockHeight(height)
 
 	// Try pausing on inactive node here, should fail
-	err := app.CustomStakingKeeper.Pause(ctx, valAddr)
+	err = app.CustomStakingKeeper.Pause(ctx, valAddr)
 	require.Error(t, err)
 
 	// validator rejoins and starts signing again
@@ -469,7 +523,7 @@ func TestValidatorLifecycle(t *testing.T) {
 	require.Equal(t, false, signInfo.Tombstoned)
 	require.Equal(t, int64(491), signInfo.Mischance)
 	require.Equal(t, int64(5000), signInfo.LastPresentBlock)
-	require.Equal(t, int64(622), signInfo.MissedBlocksCounter)
+	require.Equal(t, int64(623), signInfo.MissedBlocksCounter)
 	require.Equal(t, int64(101), signInfo.ProducedBlocksCounter)
 
 	// Miss another 120 blocks

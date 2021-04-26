@@ -54,7 +54,7 @@ type StakingKeeper interface {
 	Pause(sdk.Context, sdk.ValAddress) error   // pause a validator
 	Unpause(sdk.Context, sdk.ValAddress) error // unpause a validator
 
-	HandleValidatorSignature(sdk.Context, sdk.ValAddress, bool) error
+	HandleValidatorSignature(sdk.Context, sdk.ValAddress, bool, int64) error
 
 	// MaxValidators returns the maximum amount of joined validators
 	MaxValidators(sdk.Context) uint32
