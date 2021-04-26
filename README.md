@@ -8,9 +8,8 @@ sh env.sh
 ```
 # Adding more validators
 
-```sh
-sh scripts/commands/adding-validators.sh
-```
+[scripts/commands/adding-validators.sh](scripts/commands/adding-validators.sh)
+
 ## Set ChangeTxFee permission
 ```sh
 sh scripts/commands/set-permission.sh
