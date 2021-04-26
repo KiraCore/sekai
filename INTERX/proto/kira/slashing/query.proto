@@ -53,16 +53,16 @@ message ValidatorSigningInfo {
   string address = 1;
   // height at which validator was first a candidate OR was activated
   int64 start_height = 2 [(gogoproto.moretags) = "yaml:\"start_height\""];
-  // index offset into signed block bit array
-  int64 index_offset = 3 [(gogoproto.moretags) = "yaml:\"index_offset\""];
   // timestamp validator cannot be activated until
-  google.protobuf.Timestamp inactive_until = 4
+  google.protobuf.Timestamp inactive_until = 3
       [(gogoproto.moretags) = "yaml:\"inactive_until\"", (gogoproto.stdtime) = true, (gogoproto.nullable) = false];
   // whether or not a validator has been tombstoned (killed out of validator
   // set)
-  bool tombstoned = 5;
+  bool tombstoned = 4;
   // missed blocks sequentially
-  int64 mischance = 6;
+  int64 mischance = 5;
+  // last signed block height by the validator
+  int64 last_present_block = 6;
   // missed blocks counter (to avoid scanning the array every time)
   int64 missed_blocks_counter = 7;
   // count produced blocks so far by a validator

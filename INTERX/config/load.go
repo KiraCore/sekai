@@ -123,6 +123,8 @@ func LoadConfig(configFilePath string) {
 	fmt.Println("Interx Address   : ", Config.Address)
 	fmt.Println("Interx Public Key: ", sdk.MustBech32ifyPubKey(sdk.Bech32PubKeyTypeAccPub, Config.PubKey))
 
+	Config.NodeDiscovery = configFromFile.NodeDiscovery
+
 	Config.Block.StatusSync = configFromFile.Block.StatusSync
 	Config.Block.HaltedAvgBlockTimes = configFromFile.Block.HaltedAvgBlockTimes
 
@@ -254,7 +256,7 @@ func LoadUniqueAddresses() []types.KnownAddress {
 		}
 
 		for _, addr := range book.Addrs {
-			if _, ok := flag[addr.Addr.IP]; ok {
+			if _, ok := flag[addr.Addr.IP]; !ok {
 				addrBooks = append(addrBooks, addr)
 			}
 			flag[addr.Addr.IP] = true

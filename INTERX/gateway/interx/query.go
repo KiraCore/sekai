@@ -1,12 +1,14 @@
 package interx
 
 import (
+	"encoding/hex"
 	"encoding/json"
 	"net/http"
 
 	"github.com/KiraCore/sekai/INTERX/common"
 	"github.com/KiraCore/sekai/INTERX/config"
 	functions "github.com/KiraCore/sekai/INTERX/functions"
+	"github.com/KiraCore/sekai/INTERX/types"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 )
@@ -54,25 +56,7 @@ func QueryInterxFunctions(rpcAddr string) http.HandlerFunc {
 }
 
 func queryStatusHandle(rpcAddr string) (interface{}, interface{}, int) {
-	type StatusTempResponse struct {
-		InterxInfo struct {
-			PubKey interface{} `json:"pub_key,omitempty"`
-		} `json:"interx_info,omitempty"`
-		Moniker           string `json:"moniker"`
-		KiraAddr          string `json:"kira_addr"`
-		GenesisChecksum   string `json:"genesis_checksum"`
-		ChainID           string `json:"chain_id"`
-		Version           string `json:"version"`
-		LatestBlockHeight string `json:"latest_block_height"`
-		CatchingUp        bool   `json:"catching_up"`
-		SentryNodeID      string `json:"sentry_node_id,omitemtpy"`
-		PrivSentryNodeID  string `json:"priv_sentry_node_id,omitemtpy"`
-		ValidatorNodeID   string `json:"validator_node_id,omitemtpy"`
-		SeedNodeID        string `json:"seed_node_id,omitemtpy"`
-		InterxVersion     string `json:"interx_version"`
-	}
-
-	result := StatusTempResponse{}
+	result := types.InterxStatus{}
 
 	// Handle Interx Pubkey
 	pubkeyBytes, err := config.EncodingCg.Amino.MarshalJSON(config.Config.PubKey)
@@ -86,6 +70,8 @@ func queryStatusHandle(rpcAddr string) (interface{}, interface{}, int) {
 		common.GetLogger().Error("[query-status] Failed to add interx pubkey to status response", err)
 		return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
 	}
+
+	result.ID = hex.EncodeToString(config.Config.PubKey.Address())
 
 	// Handle Genesis
 	genesis, checksum, err := GetGenesisResults(rpcAddr)

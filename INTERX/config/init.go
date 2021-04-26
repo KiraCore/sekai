@@ -71,6 +71,9 @@ func defaultConfig() InterxConfigFromFile {
 	configFromFile.Block.StatusSync = 5
 	configFromFile.Block.HaltedAvgBlockTimes = 10
 
+	configFromFile.NodeDiscovery.UseHttps = false
+	configFromFile.NodeDiscovery.DefaultInterxPort = "11000"
+
 	configFromFile.Cache.CacheDir = "cache"
 	configFromFile.Cache.MaxCacheSize = "2GB"
 	configFromFile.Cache.CachingDuration = 5
@@ -137,6 +140,8 @@ func InitConfig(
 	feeAmounts string,
 	addrBooks string,
 	txModes string,
+	nodeDiscoveryUseHttps bool,
+	nodeDiscoveryPort string,
 ) {
 	configFromFile := defaultConfig()
 
@@ -154,6 +159,9 @@ func InitConfig(
 
 	configFromFile.AddrBooks = addrBooks
 	configFromFile.TxModes = txModes
+
+	configFromFile.NodeDiscovery.UseHttps = nodeDiscoveryUseHttps
+	configFromFile.NodeDiscovery.DefaultInterxPort = nodeDiscoveryPort
 
 	configFromFile.Block.StatusSync = syncStatus
 	configFromFile.Block.HaltedAvgBlockTimes = haltedAvgBlockTimes
