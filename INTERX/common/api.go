@@ -400,3 +400,25 @@ func GetInterxStatus(interxAddr string) *types.InterxStatus {
 
 	return nil
 }
+
+func GetInterxNodeList(interxAddr string) *types.NodeListResponse {
+	success, _, _ := MakeGetRequest(interxAddr, "/api/node_list", "")
+
+	if success != nil {
+		result := types.NodeListResponse{}
+
+		byteData, err := json.Marshal(success)
+		if err != nil {
+			GetLogger().Error("[interx-nodelist] Invalid response format", err)
+		}
+
+		err = json.Unmarshal(byteData, &result)
+		if err != nil {
+			GetLogger().Error("[interx-nodelist] Invalid response format", err)
+		}
+
+		return &result
+	}
+
+	return nil
+}
