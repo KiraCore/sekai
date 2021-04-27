@@ -44,7 +44,7 @@ func (k Keeper) HandleValidatorSignature(ctx sdk.Context, addr crypto.Address, p
 
 	validator, err := k.sk.GetValidatorByConsAddr(ctx, consAddr)
 	if err == nil && !validator.IsInactivated() {
-		k.sk.HandleValidatorSignature(ctx, validator.ValKey, missed)
+		k.sk.HandleValidatorSignature(ctx, validator.ValKey, missed, signInfo.Mischance)
 	}
 
 	if missed {

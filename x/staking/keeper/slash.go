@@ -51,6 +51,7 @@ func (k Keeper) Inactivate(ctx sdk.Context, valAddress sdk.ValAddress) error { /
 	networkProperties := k.govkeeper.GetNetworkProperties(ctx)
 	validator.Status = customstakingtypes.Inactive
 	validator.Rank = validator.Rank * int64(100-networkProperties.InactiveRankDecreasePercent) / 100
+	validator.Streak = 0
 
 	k.AddValidator(ctx, validator)
 	k.addRemovingValidator(ctx, validator)
@@ -60,18 +61,20 @@ func (k Keeper) Inactivate(ctx sdk.Context, valAddress sdk.ValAddress) error { /
 }
 
 // HandleValidatorSignature manage rank and streak by block miss / sign result
-func (k Keeper) HandleValidatorSignature(ctx sdk.Context, valAddress sdk.ValAddress, missed bool) error {
+func (k Keeper) HandleValidatorSignature(ctx sdk.Context, valAddress sdk.ValAddress, missed bool, mischance int64) error {
 	validator, err := k.GetValidator(ctx, valAddress)
 	if err != nil {
 		return err
 	}
 	networkProperties := k.govkeeper.GetNetworkProperties(ctx)
 	if missed {
-		// set validator streak by 0 and decrease rank by X
-		validator.Streak = 0
-		validator.Rank -= int64(networkProperties.MischanceRankDecreaseAmount)
-		if validator.Rank < 0 {
-			validator.Rank = 0
+		if mischance > 0 { // it means mischance confidence is set, we update streak and rank properties
+			// set validator streak by 0 and decrease rank by X
+			validator.Streak = 0
+			validator.Rank -= int64(networkProperties.MischanceRankDecreaseAmount)
+			if validator.Rank < 0 {
+				validator.Rank = 0
+			}
 		}
 	} else {
 		// increase streak and reset rank if streak is higher than rank

@@ -53,7 +53,7 @@ func DefaultGenesis() *GenesisState {
 			InactiveRankDecreasePercent: 50,      // 50%
 			PoorNetworkMaxBankSend:      1000000, // 1M ukex
 			MinValidators:               1,
-			JailMaxTime:                 10, // 10 mins
+			JailMaxTime:                 600, // 600  seconds / 10 mins
 			EnableTokenWhitelist:        false,
 			EnableTokenBlacklist:        true,
 		},

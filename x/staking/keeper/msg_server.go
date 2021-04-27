@@ -102,7 +102,7 @@ func (k msgServer) ProposalUnjailValidator(goCtx context.Context, msg *types.Msg
 		return nil, fmt.Errorf("validator jailing info not found")
 	}
 
-	if info.Time.Add(time.Duration(maxUnjailingTime) * time.Minute).Before(ctx.BlockTime()) {
+	if info.Time.Add(time.Duration(maxUnjailingTime) * time.Second).Before(ctx.BlockTime()) {
 		return nil, fmt.Errorf("time to unjail passed")
 	}
 
