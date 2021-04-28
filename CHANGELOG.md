@@ -1,5 +1,12 @@
 # Changelog
 
+## [v0.1.19.2] - 28.04.2021
+### Added
+- [Interx] MischanceConfidence in ValidatorQuery
+
+### Fixed
+- [Interx] MissedBlocksCounter in ValidatorQuery
+
 ## [v0.1.19.1] - 26.04.2021
 ### Added
 - Update validator signing info query based on the latest release
