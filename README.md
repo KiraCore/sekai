@@ -57,6 +57,9 @@ sh env.sh
 [scripts/commands/governance/set-network-property.sh](scripts/commands/governance/set-network-property.sh)
 # Unjail via governance process
 
+[scripts/commands/governance/unjail-validator.sh](scripts/commands/governance/unjail-validator.sh)
+
+**Local test environment setup for unjail**
 Modify genesis json to have jailed validator for Unjail testing
 
 ```json
@@ -133,4 +136,3 @@ Add jailed validator key to kms.
   "dish rather zoo connect cross inhale security utility occur spell price cute one catalog coconut sort shuffle palm crop surface label foster slender inherit"
 ```
 
-[scripts/commands/governance/unjail-validator.sh](scripts/commands/governance/unjail-validator.sh)
