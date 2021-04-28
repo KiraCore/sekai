@@ -14,6 +14,7 @@ const (
 	QueryVotes             = "/api/kira/gov/votes/{proposal_id}"
 	QueryDataReferenceKeys = "/api/kira/gov/data_keys"
 	QueryDataReference     = "/api/kira/gov/data/{key}"
+	QueryNetworkProperties = "/api/kira/gov/network_properties"
 	QueryKiraTokensAliases = "/api/kira/tokens/aliases"
 	QueryKiraTokensRates   = "/api/kira/tokens/rates"
 	QueryKiraFunctions     = "/api/kira/metadata"

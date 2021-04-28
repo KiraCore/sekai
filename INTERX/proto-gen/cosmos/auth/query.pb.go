@@ -7,12 +7,12 @@ import (
 	context "context"
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
-	any "github.com/golang/protobuf/ptypes/any"
 	_ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	anypb "google.golang.org/protobuf/types/known/anypb"
 	math "math"
 )
 
@@ -71,10 +71,10 @@ func (m *QueryAccountRequest) GetAddress() []byte {
 // QueryAccountResponse is the response type for the Query/Account RPC method.
 type QueryAccountResponse struct {
 	// account defines the account of the corresponding address.
-	Account              *any.Any `protobuf:"bytes,1,opt,name=account,proto3" json:"account,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	Account              *anypb.Any `protobuf:"bytes,1,opt,name=account,proto3" json:"account,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}   `json:"-"`
+	XXX_unrecognized     []byte     `json:"-"`
+	XXX_sizecache        int32      `json:"-"`
 }
 
 func (m *QueryAccountResponse) Reset()         { *m = QueryAccountResponse{} }
@@ -102,7 +102,7 @@ func (m *QueryAccountResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryAccountResponse proto.InternalMessageInfo
 
-func (m *QueryAccountResponse) GetAccount() *any.Any {
+func (m *QueryAccountResponse) GetAccount() *anypb.Any {
 	if m != nil {
 		return m.Account
 	}

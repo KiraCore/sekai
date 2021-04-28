@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/KiraCore/sekai/INTERX/common"
@@ -42,7 +43,7 @@ const (
 	Jailed string = "JAILED"
 )
 
-func queryValidatorsHandle(r *http.Request, gwCosmosmux *runtime.ServeMux) (interface{}, interface{}, int) {
+func queryValidatorsHandle(r *http.Request, gwCosmosmux *runtime.ServeMux, rpcAddr string) (interface{}, interface{}, int) {
 	tempRequest := r.Clone(r.Context())
 
 	queries := r.URL.Query()
@@ -126,7 +127,14 @@ func queryValidatorsHandle(r *http.Request, gwCosmosmux *runtime.ServeMux) (inte
 
 			signInfoRes, _, _ := common.ServeGRPC(newReq, gwCosmosmux)
 
-			if signInfoRes != nil {
+			newReq = tempRequest.Clone(tempRequest.Context())
+			newReq.URL.Path = config.QueryNetworkProperties
+
+			networkPropertiesRes, _, _ := common.ServeGRPC(newReq, gwCosmosmux)
+
+			kiraStatus := common.GetKiraStatus(rpcAddr)
+
+			if signInfoRes != nil && networkPropertiesRes != nil && kiraStatus != nil {
 				signInfoResponse := struct {
 					ValSigningInfo types.ValidatorSigningInfo `json:"val_signing_info,omitempty"`
 				}{}
@@ -143,10 +151,32 @@ func queryValidatorsHandle(r *http.Request, gwCosmosmux *runtime.ServeMux) (inte
 					return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
 				}
 
+				networkPropertiesResponse := struct {
+					ValNetworkProperties types.NetworkProperties `json:"properties,omitempty"`
+				}{}
+
+				byteData, err = json.Marshal(networkPropertiesRes)
+				if err != nil {
+					common.GetLogger().Error("[query-validator-networkproperties] Invalid response format: ", err)
+					return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
+				}
+
+				err = json.Unmarshal(byteData, &networkPropertiesResponse)
+				if err != nil {
+					common.GetLogger().Error("[query-validator-networkproperties] Invalid response format: ", err)
+					return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
+				}
+
+				latestBlockHeight, _ := strconv.ParseInt(kiraStatus.SyncInfo.LatestBlockHeight, 10, 64)
+
 				result.Validators[index].StartHeight = signInfoResponse.ValSigningInfo.StartHeight
 				result.Validators[index].InactiveUntil = signInfoResponse.ValSigningInfo.InactiveUntil
 				result.Validators[index].Tombstoned = signInfoResponse.ValSigningInfo.Tombstoned
 				result.Validators[index].Mischance = signInfoResponse.ValSigningInfo.Mischance
+				result.Validators[index].MischanceConfidence = latestBlockHeight - signInfoResponse.ValSigningInfo.LastPresentBlock
+				if result.Validators[index].MischanceConfidence > int64(networkPropertiesResponse.ValNetworkProperties.MischanceConfidence) {
+					result.Validators[index].MischanceConfidence = int64(networkPropertiesResponse.ValNetworkProperties.MischanceConfidence)
+				}
 				result.Validators[index].LastPresentBlock = signInfoResponse.ValSigningInfo.LastPresentBlock
 				result.Validators[index].MissedBlocksCounter = signInfoResponse.ValSigningInfo.MissedBlocksCounter
 				result.Validators[index].ProducedBlocksCounter = signInfoResponse.ValSigningInfo.ProducedBlocksCounter
@@ -230,7 +260,7 @@ func QueryValidators(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.Handler
 				}
 			}
 
-			response.Response, response.Error, statusCode = queryValidatorsHandle(r, gwCosmosmux)
+			response.Response, response.Error, statusCode = queryValidatorsHandle(r, gwCosmosmux, rpcAddr)
 		}
 
 		common.WrapResponse(w, request, *response, statusCode, true)

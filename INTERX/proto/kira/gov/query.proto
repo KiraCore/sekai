@@ -9,6 +9,7 @@ import "kira/gov/pagination.proto";
 import "kira/gov/proposal.proto";
 import "kira/gov/actor.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
+import "kira/gov/network_properties.proto";
 
 // Defines the import path that should be used to import the generated package,
 // and the package name.
@@ -78,6 +79,15 @@ service Query {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Query proposal votes by a given proposal_id"
       description: "Query proposal votes by a given proposal_id."
+      tags: "query"
+    };
+  }
+  // GetNetworkProperties returns network properties
+  rpc GetNetworkProperties (NetworkPropertiesRequest) returns (NetworkPropertiesResponse) {
+    option (google.api.http).get = "/api/kira/gov/network_properties";
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Query network properties"
+      description: "Query network properties."
       tags: "query"
     };
   }
@@ -151,4 +161,12 @@ message QueryVotesRequest {
 message QueryVotesResponse {
   // votes defined the queried votes.
   repeated Vote votes = 1 [(gogoproto.nullable) = false];
+}
+
+// NetworkPropertiesRequest is the request type for the NetworkProperties Query
+message NetworkPropertiesRequest {}
+
+// NetworkPropertiesResponse is the response type for the NetworkProperties Query
+message NetworkPropertiesResponse {
+  NetworkProperties properties = 1;
 }
