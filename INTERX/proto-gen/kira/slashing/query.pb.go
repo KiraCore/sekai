@@ -8,12 +8,12 @@ import (
 	fmt "fmt"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/golang/protobuf/proto"
-	timestamp "github.com/golang/protobuf/ptypes/timestamp"
 	_ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2/options"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	math "math"
 )
 
@@ -35,7 +35,7 @@ type ValidatorSigningInfo struct {
 	// height at which validator was first a candidate OR was activated
 	StartHeight int64 `protobuf:"varint,2,opt,name=start_height,json=startHeight,proto3" json:"start_height,omitempty"`
 	// timestamp validator cannot be activated until
-	InactiveUntil *timestamp.Timestamp `protobuf:"bytes,3,opt,name=inactive_until,json=inactiveUntil,proto3" json:"inactive_until,omitempty"`
+	InactiveUntil *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=inactive_until,json=inactiveUntil,proto3" json:"inactive_until,omitempty"`
 	// whether or not a validator has been tombstoned (killed out of validator
 	// set)
 	Tombstoned bool `protobuf:"varint,4,opt,name=tombstoned,proto3" json:"tombstoned,omitempty"`
@@ -91,7 +91,7 @@ func (m *ValidatorSigningInfo) GetStartHeight() int64 {
 	return 0
 }
 
-func (m *ValidatorSigningInfo) GetInactiveUntil() *timestamp.Timestamp {
+func (m *ValidatorSigningInfo) GetInactiveUntil() *timestamppb.Timestamp {
 	if m != nil {
 		return m.InactiveUntil
 	}
