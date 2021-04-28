@@ -1,6 +1,7 @@
 package tasks
 
 import (
+	"regexp"
 	"time"
 
 	"github.com/KiraCore/sekai/INTERX/common"
@@ -10,10 +11,13 @@ import (
 )
 
 var (
-	NodeListResponse types.NodeListResponse
+	PubP2PNodeListResponse    types.P2PNodeListResponse
+	PrivP2PNodeListResponse   types.P2PNodeListResponse
+	InterxP2PNodeListResponse types.InterxNodeListResponse
+	SnapNodeListResponse      types.SnapNodeListResponse
 )
 
-func getPingInfo() {
+func getP2PNodeInfo(ipAddr string) {
 
 }
 
@@ -22,81 +26,57 @@ func NodeDiscover(isLog bool) {
 
 	for {
 		global.Mutex.Lock()
-		NodeListResponse.Scanning = true
+		PubP2PNodeListResponse.Scanning = true
+		PrivP2PNodeListResponse.Scanning = true
 		global.Mutex.Unlock()
-		uniqueAddresses := config.LoadUniqueAddresses()
-		nodeList := []types.NodeList{}
+		uniqueIPAddresses := config.LoadUniqueIPAddresses()
+		pubNodeList := []types.P2PNode{}
+		privNodeList := []types.P2PNode{}
 
 		common.GetLogger().Info(config.Config.AddrBooks)
-		common.GetLogger().Info("[node-discover] addresses = ", uniqueAddresses)
+		common.GetLogger().Info("[node-discover] addresses = ", uniqueIPAddresses)
 
-		for _, addr := range uniqueAddresses {
-			ipAddr := addr.Addr.IP
+		// matchPubIPAddr := regexp.MustCompile("^([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(?<!172\.(16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31))(?<!127)(?<!^10)(?<!^0)\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(?<!192\.168)(?<!172\.(16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31))\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(?<!\.255$)(?<!\b255.255.255.0\b)(?<!\b255.255.255.242\b)$")
+		matchPubIPAddr := regexp.MustCompile("")
+
+		for _, ipAddr := range uniqueIPAddresses {
 			interxUrl := "http://" + ipAddr + ":" + config.Config.NodeDiscovery.DefaultInterxPort
 			if config.Config.NodeDiscovery.UseHttps {
 				interxUrl = "https://" + ipAddr + ":" + config.Config.NodeDiscovery.DefaultInterxPort
 			}
+
 			common.GetLogger().Info(interxUrl)
 
-			interxNodeList := common.GetInterxNodeList(interxUrl)
-			if interxNodeList != nil {
-				for _, node := range interxNodeList.NodeList {
-					if !flag[node.ID] {
-						flag[node.ID] = true
-						global.Mutex.Lock()
-						nodeList = append(nodeList, node)
-						global.Mutex.Unlock()
-					}
+			info := getP2PNodeInfo(ipAddr)
+
+			if matchPubIPAddr.MatchString(ipAddr) {
+				// interxNodeList := common.GetInterxNodeList(interxUrl)
+				// if interxNodeList != nil {
+				// 	for _, node := range interxNodeList.NodeList {
+				// 		if !flag[node.ID] {
+				// 			flag[node.ID] = true
+				// 			global.Mutex.Lock()
+				// 			nodeList = append(nodeList, node)
+				// 			global.Mutex.Unlock()
+				// 		}
+				// 	}
+				// }
+
+				interxStatus := common.GetInterxStatus(interxUrl)
+				if interxStatus != nil {
+					newNode := types.P2PNodeList{}
+					newNode.IP = ipAddr
+					// newNode.Connected = true
+					// newNode.Port =
+					// newNode.Ping =
+					// newNode.Peers =
+					// newNode.ID = interxStatus.ValidatorNodeID
+					pubNodeList = append(pubNodeList, newNode)
+				} else {
+
 				}
-			}
+			} else {
 
-			interxStatus := common.GetInterxStatus(interxUrl)
-			if interxStatus != nil {
-				newNode := types.NodeList{}
-				newNode.Moniker = interxStatus.Moniker
-				newNode.KiraAddr = interxStatus.KiraAddr
-				newNode.Version = interxStatus.Version
-
-				// Validator Node
-				if len(interxStatus.ValidatorNodeID) > 0 {
-					newNode.ID = interxStatus.ValidatorNodeID
-					newNode.IP = ""
-					newNode.Validator = true
-					newNode.Seed = false
-					global.Mutex.Lock()
-					nodeList = append(nodeList, newNode)
-					global.Mutex.Unlock()
-				}
-
-				newNode.IP = ipAddr
-				newNode.Validator = false
-
-				// Seed Node
-				if len(interxStatus.SeedNodeID) > 0 {
-					newNode.ID = interxStatus.SeedNodeID
-					newNode.Seed = true
-					global.Mutex.Lock()
-					nodeList = append(nodeList, newNode)
-					global.Mutex.Unlock()
-				}
-
-				newNode.Seed = false
-
-				// Sentry Node
-				if len(interxStatus.SentryNodeID) > 0 {
-					newNode.ID = interxStatus.SentryNodeID
-					global.Mutex.Lock()
-					nodeList = append(nodeList, newNode)
-					global.Mutex.Unlock()
-				}
-
-				// Priv Sentry Node
-				if len(interxStatus.PrivSentryNodeID) > 0 {
-					newNode.ID = interxStatus.PrivSentryNodeID
-					global.Mutex.Lock()
-					nodeList = append(nodeList, newNode)
-					global.Mutex.Unlock()
-				}
 			}
 		}
 
