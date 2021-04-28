@@ -30,24 +30,47 @@ type AddrBookJSON struct {
 	Key   string         `json:"key"`
 	Addrs []KnownAddress `json:"addrs"`
 }
-type NodePeer struct {
-	ID   string `json:"id"`
-	Ping int64  `json:"ping"`
+
+type P2PNode struct {
+	ID        string   `json:"id"`
+	IP        string   `json:"ip"`
+	Port      uint16   `json:"port"`
+	Ping      int64    `json:"ping"`
+	Connected bool     `json:"connected"`
+	Peers     []string `json:"peers"`
 }
 
-type NodeList struct {
-	ID        string     `json:"id"`
-	IP        string     `json:"ip"`
-	Moniker   string     `json:"moniker"`
-	KiraAddr  string     `json:"kira_addr"`
-	Version   string     `json:"version"`
-	Seed      bool       `json:"seed"`
-	Validator bool       `json:"validator"`
-	Peers     []NodePeer `json:"peers"`
+type InterxNode struct {
+	ID      string `json:"id"`
+	IP      string `json:"ip"`
+	Ping    int64  `json:"ping"`
+	Moniker string `json:"moniker"`
+	Faucet  string `json:"faucet"`
+	Type    string `json:"type"`
+	Version string `json:"version"`
 }
 
-type NodeListResponse struct {
+type SnapNode struct {
+	IP       string `json:"ip"`
+	Port     uint16 `json:"port"`
+	Size     string `json:"size"`
+	Checksum string `json:"checksum"`
+}
+
+type P2PNodeListResponse struct {
+	LastUpdate int64     `json:"last_update"`
+	Scanning   bool      `json:"scanning"`
+	NodeList   []P2PNode `json:"node_list"`
+}
+
+type InterxNodeListResponse struct {
+	LastUpdate int64        `json:"last_update"`
+	Scanning   bool         `json:"scanning"`
+	NodeList   []InterxNode `json:"node_list"`
+}
+
+type SnapNodeListResponse struct {
 	LastUpdate int64      `json:"last_update"`
 	Scanning   bool       `json:"scanning"`
-	NodeList   []NodeList `json:"node_list"`
+	NodeList   []SnapNode `json:"node_list"`
 }
