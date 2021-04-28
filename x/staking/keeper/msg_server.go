@@ -84,7 +84,7 @@ func (k msgServer) ProposalUnjailValidator(goCtx context.Context, msg *types.Msg
 		return nil, err
 	}
 
-	if !validator.IsJailed() {
+	if !validator.IsJailed() { // TODO: check other statuses Active | Inactive | Paused | Jailed
 		return nil, fmt.Errorf("validator is not jailed")
 	}
 

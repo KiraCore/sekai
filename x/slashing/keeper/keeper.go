@@ -84,7 +84,7 @@ func (k Keeper) GetPubkey(ctx sdk.Context, address crypto.Address) (cryptotypes.
 // to make the necessary validator changes.
 func (k Keeper) Inactivate(ctx sdk.Context, consAddr sdk.ConsAddress) {
 	validator, err := k.sk.GetValidatorByConsAddr(ctx, consAddr)
-	if err == nil && !validator.IsInactivated() {
+	if err == nil && !validator.IsInactivated() { // TODO: check other statuses Active | Inactive | Paused | Jailed
 		ctx.EventManager().EmitEvent(
 			sdk.NewEvent(
 				types.EventTypeInactivate,

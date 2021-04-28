@@ -14,7 +14,7 @@ func (k Keeper) Activate(ctx sdk.Context, valAddress sdk.ValAddress) error {
 		return err
 	}
 
-	if validator.IsPaused() {
+	if validator.IsPaused() { // TODO: check other statuses Active | Inactive | Paused | Jailed
 		return sdkerrors.Wrap(customstakingtypes.ErrValidatorPaused, "Can NOT activate paused validator, you must unpause")
 	}
 
@@ -44,7 +44,7 @@ func (k Keeper) Inactivate(ctx sdk.Context, valAddress sdk.ValAddress) error { /
 		return err
 	}
 
-	if validator.IsPaused() {
+	if validator.IsPaused() { // TODO: check other statuses Active | Inactive | Paused | Jailed
 		return customstakingtypes.ErrValidatorPaused
 	}
 
@@ -94,7 +94,7 @@ func (k Keeper) Pause(ctx sdk.Context, valAddress sdk.ValAddress) error {
 		return err
 	}
 
-	if validator.IsInactivated() {
+	if validator.IsInactivated() { // TODO: check other statuses Active | Inactive | Paused | Jailed
 		return customstakingtypes.ErrValidatorInactive
 	}
 
@@ -112,7 +112,7 @@ func (k Keeper) Unpause(ctx sdk.Context, valAddress sdk.ValAddress) error { // i
 		return err
 	}
 
-	if validator.IsInactivated() {
+	if validator.IsInactivated() { // TODO: check other statuses Active | Inactive | Paused | Jailed
 		return customstakingtypes.ErrValidatorInactive
 	}
 

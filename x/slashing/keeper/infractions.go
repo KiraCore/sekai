@@ -43,7 +43,7 @@ func (k Keeper) HandleValidatorSignature(ctx sdk.Context, addr crypto.Address, p
 	}
 
 	validator, err := k.sk.GetValidatorByConsAddr(ctx, consAddr)
-	if err == nil && !validator.IsInactivated() {
+	if err == nil && !validator.IsInactivated() && !validator.IsPaused() { // TODO: check other statuses Active | Inactive | Paused | Jailed
 		k.sk.HandleValidatorSignature(ctx, validator.ValKey, missed, signInfo.Mischance)
 	}
 
@@ -67,7 +67,7 @@ func (k Keeper) HandleValidatorSignature(ctx sdk.Context, addr crypto.Address, p
 	// if mischance overflow max value, we punish them
 	if signInfo.Mischance > int64(properties.MaxMischance) {
 		validator, err := k.sk.GetValidatorByConsAddr(ctx, consAddr)
-		if err == nil && validator.IsActive() {
+		if err == nil && validator.IsActive() { // TODO: check other statuses Active | Inactive | Paused | Jailed
 
 			// Downtime confirmed: slash and inactivate the validator
 			logger.Info(fmt.Sprintf("Validator %s past max mischance threshold of %d",

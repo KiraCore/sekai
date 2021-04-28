@@ -18,7 +18,7 @@ func (k Keeper) Activate(ctx sdk.Context, validatorAddr sdk.ValAddress) error {
 	}
 
 	// cannot be activated if not inactivated
-	if !validator.IsInactivated() {
+	if !validator.IsInactivated() { // TODO: check other statuses Active | Inactive | Paused | Jailed
 		return sdkerrors.Wrap(types.ErrValidatorNotInactivated, "Can NOT activate NOT inactivated validator")
 	}
 
@@ -67,12 +67,12 @@ func (k Keeper) Pause(ctx sdk.Context, validatorAddr sdk.ValAddress) error {
 	}
 
 	// cannot be paused if not paused already
-	if validator.IsPaused() {
+	if validator.IsPaused() { // TODO: check other statuses Active | Inactive | Paused | Jailed
 		return sdkerrors.Wrap(types.ErrValidatorPaused, "Can NOT pause already paused validator")
 	}
 
 	// cannot be paused if not paused already
-	if validator.IsInactivated() {
+	if validator.IsInactivated() { // TODO: check other statuses Active | Inactive | Paused | Jailed
 		return sdkerrors.Wrap(types.ErrValidatorInactivated, "Can NOT pause inactivated validator")
 	}
 
@@ -88,7 +88,7 @@ func (k Keeper) Unpause(ctx sdk.Context, validatorAddr sdk.ValAddress) error {
 	}
 
 	// cannot be unpaused if not paused
-	if !validator.IsPaused() {
+	if !validator.IsPaused() { // TODO: check other statuses Active | Inactive | Paused | Jailed
 		return sdkerrors.Wrap(types.ErrValidatorNotPaused, "Can NOT pause inactivated validator")
 	}
 

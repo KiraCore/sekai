@@ -64,7 +64,7 @@ func (k Keeper) HandleEquivocationEvidence(ctx sdk.Context, evidence *types.Equi
 	}
 
 	validator, err := k.stakingKeeper.GetValidatorByConsAddr(ctx, consAddr)
-	if err != nil || validator.IsInactivated() {
+	if err != nil || validator.IsInactivated() { // TODO: check other statuses Active | Inactive | Paused | Jailed
 		// Defensive: Simulation doesn't take unbonding periods into account, and
 		// Tendermint might break this assumption at some point.
 		return
@@ -94,10 +94,11 @@ func (k Keeper) HandleEquivocationEvidence(ctx sdk.Context, evidence *types.Equi
 
 	// Jail the validator if not already jailed. This will begin unbonding the
 	// validator if not already unbonding (tombstoned).
-	if !validator.IsJailed() {
+	if !validator.IsJailed() { // TODO: check other statuses Active | Inactive | Paused | Jailed
 		k.slashingKeeper.Jail(ctx, consAddr)
 	}
 
 	k.slashingKeeper.JailUntil(ctx, consAddr, types.DoubleSignJailEndTime)
 	k.slashingKeeper.Tombstone(ctx, consAddr)
+	k.SetEvidence(ctx, evidence)
 }
