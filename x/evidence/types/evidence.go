@@ -9,8 +9,8 @@ import (
 	tmbytes "github.com/tendermint/tendermint/libs/bytes"
 	"gopkg.in/yaml.v2"
 
-	"github.com/KiraCore/sekai/x/evidence/exported"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/x/evidence/exported"
 )
 
 // Evidence type constants
@@ -88,7 +88,8 @@ func (e Equivocation) GetTotalPower() int64 { return 0 }
 // FromABCIEvidence converts a Tendermint concrete Evidence type to
 // SDK Evidence using Equivocation as the concrete type.
 func FromABCIEvidence(e abci.Evidence) exported.Evidence {
-	consAddr, err := sdk.Bech32ifyAddressBytes(sdk.Bech32PrefixConsAddr, e.Validator.Address)
+	bech32PrefixConsAddr := sdk.GetConfig().GetBech32ConsensusAddrPrefix()
+	consAddr, err := sdk.Bech32ifyAddressBytes(bech32PrefixConsAddr, e.Validator.Address)
 	if err != nil {
 		panic(err)
 	}
