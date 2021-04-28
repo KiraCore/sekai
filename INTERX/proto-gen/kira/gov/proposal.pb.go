@@ -7,9 +7,9 @@ import (
 	fmt "fmt"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/golang/protobuf/proto"
-	any "github.com/golang/protobuf/ptypes/any"
-	timestamp "github.com/golang/protobuf/ptypes/timestamp"
 	_ "github.com/regen-network/cosmos-proto"
+	anypb "google.golang.org/protobuf/types/known/anypb"
+	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	math "math"
 )
 
@@ -396,18 +396,18 @@ func (m *MsgProposalSetPoorNetworkMessages) GetMessages() []string {
 }
 
 type Proposal struct {
-	ProposalId                 uint64               `protobuf:"varint,1,opt,name=proposal_id,json=proposalId,proto3" json:"proposal_id,omitempty"`
-	Content                    *any.Any             `protobuf:"bytes,2,opt,name=content,proto3" json:"content,omitempty"`
-	SubmitTime                 *timestamp.Timestamp `protobuf:"bytes,3,opt,name=submit_time,json=submitTime,proto3" json:"submit_time,omitempty"`
-	VotingEndTime              *timestamp.Timestamp `protobuf:"bytes,4,opt,name=voting_end_time,json=votingEndTime,proto3" json:"voting_end_time,omitempty"`
-	EnactmentEndTime           *timestamp.Timestamp `protobuf:"bytes,5,opt,name=enactment_end_time,json=enactmentEndTime,proto3" json:"enactment_end_time,omitempty"`
-	MinVotingEndBlockHeight    int64                `protobuf:"varint,6,opt,name=min_voting_end_block_height,json=minVotingEndBlockHeight,proto3" json:"min_voting_end_block_height,omitempty"`
-	MinEnactmentEndBlockHeight int64                `protobuf:"varint,7,opt,name=min_enactment_end_block_height,json=minEnactmentEndBlockHeight,proto3" json:"min_enactment_end_block_height,omitempty"`
-	Result                     VoteResult           `protobuf:"varint,8,opt,name=result,proto3,enum=kira.gov.VoteResult" json:"result,omitempty"`
-	Description                string               `protobuf:"bytes,9,opt,name=description,proto3" json:"description,omitempty"`
-	XXX_NoUnkeyedLiteral       struct{}             `json:"-"`
-	XXX_unrecognized           []byte               `json:"-"`
-	XXX_sizecache              int32                `json:"-"`
+	ProposalId                 uint64                 `protobuf:"varint,1,opt,name=proposal_id,json=proposalId,proto3" json:"proposal_id,omitempty"`
+	Content                    *anypb.Any             `protobuf:"bytes,2,opt,name=content,proto3" json:"content,omitempty"`
+	SubmitTime                 *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=submit_time,json=submitTime,proto3" json:"submit_time,omitempty"`
+	VotingEndTime              *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=voting_end_time,json=votingEndTime,proto3" json:"voting_end_time,omitempty"`
+	EnactmentEndTime           *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=enactment_end_time,json=enactmentEndTime,proto3" json:"enactment_end_time,omitempty"`
+	MinVotingEndBlockHeight    int64                  `protobuf:"varint,6,opt,name=min_voting_end_block_height,json=minVotingEndBlockHeight,proto3" json:"min_voting_end_block_height,omitempty"`
+	MinEnactmentEndBlockHeight int64                  `protobuf:"varint,7,opt,name=min_enactment_end_block_height,json=minEnactmentEndBlockHeight,proto3" json:"min_enactment_end_block_height,omitempty"`
+	Result                     VoteResult             `protobuf:"varint,8,opt,name=result,proto3,enum=kira.gov.VoteResult" json:"result,omitempty"`
+	Description                string                 `protobuf:"bytes,9,opt,name=description,proto3" json:"description,omitempty"`
+	XXX_NoUnkeyedLiteral       struct{}               `json:"-"`
+	XXX_unrecognized           []byte                 `json:"-"`
+	XXX_sizecache              int32                  `json:"-"`
 }
 
 func (m *Proposal) Reset()         { *m = Proposal{} }
@@ -442,28 +442,28 @@ func (m *Proposal) GetProposalId() uint64 {
 	return 0
 }
 
-func (m *Proposal) GetContent() *any.Any {
+func (m *Proposal) GetContent() *anypb.Any {
 	if m != nil {
 		return m.Content
 	}
 	return nil
 }
 
-func (m *Proposal) GetSubmitTime() *timestamp.Timestamp {
+func (m *Proposal) GetSubmitTime() *timestamppb.Timestamp {
 	if m != nil {
 		return m.SubmitTime
 	}
 	return nil
 }
 
-func (m *Proposal) GetVotingEndTime() *timestamp.Timestamp {
+func (m *Proposal) GetVotingEndTime() *timestamppb.Timestamp {
 	if m != nil {
 		return m.VotingEndTime
 	}
 	return nil
 }
 
-func (m *Proposal) GetEnactmentEndTime() *timestamp.Timestamp {
+func (m *Proposal) GetEnactmentEndTime() *timestamppb.Timestamp {
 	if m != nil {
 		return m.EnactmentEndTime
 	}

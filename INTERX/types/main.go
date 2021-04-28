@@ -165,27 +165,28 @@ type InterxRequest struct {
 type QueryValidator struct {
 	Top int `json:"top,string"`
 
-	Address    string `json:"address"`
-	Valkey     string `json:"valkey"`
-	Pubkey     string `json:"pubkey"`
-	Proposer   string `json:"proposer"`
-	Moniker    string `json:"moniker"`
-	Website    string `json:"website"`
-	Social     string `json:"social"`
-	Identity   string `json:"identity"`
-	Commission string `json:"commission"`
-	Status     string `json:"status"`
-	Rank       int64  `json:"rank,string"`
-	Streak     int64  `json:"streak,string"`
-	Mischance  int64  `json:"mischance,string"`
+	Address             string `json:"address"`
+	Valkey              string `json:"valkey"`
+	Pubkey              string `json:"pubkey"`
+	Proposer            string `json:"proposer"`
+	Moniker             string `json:"moniker"`
+	Website             string `json:"website"`
+	Social              string `json:"social"`
+	Identity            string `json:"identity"`
+	Commission          string `json:"commission"`
+	Status              string `json:"status"`
+	Rank                int64  `json:"rank,string"`
+	Streak              int64  `json:"streak,string"`
+	Mischance           int64  `json:"mischance,string"`
+	MischanceConfidence int64  `json:"mischance_confidence,string"`
 
 	// Additional
-	StartHeight           int64  `json:"start_height,string,omitempty"`
-	InactiveUntil         string `json:"inactive_until,omitempty"`
-	Tombstoned            bool   `json:"tombstoned,string,omitempty"`
-	LastPresentBlock      int64  `json:"last_present_block,string,omitempty"`
-	MissedBlocksCounter   int64  `json:"missed_blocks_counter,string,omitempty"`
-	ProducedBlocksCounter int64  `json:"produced_blocks_counter,string,omitempty"`
+	StartHeight           int64  `json:"start_height,string"`
+	InactiveUntil         string `json:"inactive_until"`
+	Tombstoned            bool   `json:"tombstoned"`
+	LastPresentBlock      int64  `json:"last_present_block,string"`
+	MissedBlocksCounter   int64  `json:"missed_blocks_counter,string"`
+	ProducedBlocksCounter int64  `json:"produced_blocks_counter,string"`
 }
 
 type QueryValidators []QueryValidator
@@ -234,13 +235,33 @@ type AllValidators struct {
 
 type ValidatorSigningInfo struct {
 	Address               string `json:"address"`
-	StartHeight           int64  `json:"start_height,string,omitempty"`
-	InactiveUntil         string `json:"inactive_until,omitempty"`
-	Tombstoned            bool   `json:"tombstoned,string,omitempty"`
-	Mischance             int64  `json:"mischance,string,omitempty"`
-	LastPresentBlock      int64  `json:"last_present_block,string,omitempty"`
-	MissedBlocksCounter   int64  `json:"missed_blocks_counter,string,omitempty"`
-	ProducedBlocksCounter int64  `json:"produced_blocks_counter,string,omitempty"`
+	StartHeight           int64  `json:"start_height,string"`
+	InactiveUntil         string `json:"inactive_until"`
+	Tombstoned            bool   `json:"tombstoned"`
+	Mischance             int64  `json:"mischance,string"`
+	LastPresentBlock      int64  `json:"last_present_block,string"`
+	MissedBlocksCounter   int64  `json:"missed_blocks_counter,string"`
+	ProducedBlocksCounter int64  `json:"produced_blocks_counter,string"`
+}
+
+type NetworkProperties struct {
+	MinTxFee                    uint64 `json:"min_tx_fee,string,omitempty"`
+	MaxTxFee                    uint64 `json:"max_tx_fee,string,omitempty"`
+	VoteQuorum                  uint64 `json:"vote_quorum,string,omitempty"`
+	ProposalEndTime             uint64 `json:"proposal_end_time,string,omitempty"`
+	ProposalEnactmentTime       uint64 `json:"proposal_enactment_time,string,omitempty"`
+	MinProposalEndBlocks        uint64 `json:"min_proposal_end_blocks,string,omitempty"`
+	MinProposalEnactmentBlocks  uint64 `json:"min_proposal_enactment_blocks,string,omitempty"`
+	EnableForeignFeePayments    bool   `json:"enable_foreign_fee_payments,omitempty"`
+	MischanceRankDecreaseAmount uint64 `json:"mischance_rank_decrease_amount,string,omitempty"`
+	MaxMischance                uint64 `json:"max_mischance,string,omitempty"`
+	MischanceConfidence         uint64 `json:"mischance_confidence,string,omitempty"`
+	InactiveRankDecreasePercent uint64 `json:"inactive_rank_decrease_percent,string,omitempty"`
+	MinValidators               uint64 `json:"min_validators,string,omitempty"`
+	PoorNetworkMaxBankSend      uint64 `json:"poor_network_max_bank_send,string,omitempty"`
+	JailMaxTime                 uint64 `json:"jail_max_time,string,omitempty"`
+	EnableTokenWhitelist        bool   `json:"enable_token_whitelist,omitempty"`
+	EnableTokenBlacklist        bool   `json:"enable_token_blacklist,omitempty"`
 }
 
 const (
