@@ -11,9 +11,9 @@ import (
 
 	proto "github.com/gogo/protobuf/proto"
 
+	"github.com/KiraCore/sekai/x/evidence/types"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/evidence/types"
 )
 
 var _ types.QueryServer = Keeper{}
