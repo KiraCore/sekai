@@ -124,34 +124,44 @@ func queryValidatorsHandle(r *http.Request, gwCosmosmux *runtime.ServeMux, rpcAd
 
 		networkPropertiesRes, _, _ := common.ServeGRPC(newReq, gwCosmosmux)
 
-		if networkPropertiesRes != nil {
+		newReq = tempRequest.Clone(tempRequest.Context())
+		newReq.URL.Path = config.QueryValidatorInfos
+		newReq.URL.RawQuery = "all=true"
+
+		validatorInfosRes, _, _ := common.ServeGRPC(newReq, gwCosmosmux)
+
+		if networkPropertiesRes != nil && validatorInfosRes != nil {
+			validatorInfosResponse := struct {
+				ValValidatorInfos []types.ValidatorSigningInfo `json:"info,omitempty"`
+			}{}
+
+			byteData, err = json.Marshal(validatorInfosRes)
+			if err != nil {
+				common.GetLogger().Error("[query-validator-infos] Invalid response format: ", err)
+				return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
+			}
+
+			err = json.Unmarshal(byteData, &validatorInfosResponse)
+			if err != nil {
+				common.GetLogger().Error("[query-validator-infos] Invalid response format: ", err)
+				return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
+			}
+
 			for index, validator := range result.Validators {
 				pubkey, _ := sdk.GetPubKeyFromBech32(sdk.Bech32PubKeyTypeConsPub, validator.Pubkey)
+				address := sdk.GetConsAddress(pubkey).String()
 
-				newReq = tempRequest.Clone(tempRequest.Context())
-				newReq.URL.Path = config.QueryValidatorInfos + "/" + sdk.GetConsAddress(pubkey).String()
-
-				signInfoRes, _, _ := common.ServeGRPC(newReq, gwCosmosmux)
+				var valSigningInfo types.ValidatorSigningInfo
+				for _, signingInfo := range validatorInfosResponse.ValValidatorInfos {
+					if signingInfo.Address == address {
+						valSigningInfo = signingInfo
+						break
+					}
+				}
 
 				kiraStatus := common.GetKiraStatus(rpcAddr)
 
-				if signInfoRes != nil && kiraStatus != nil {
-					signInfoResponse := struct {
-						ValSigningInfo types.ValidatorSigningInfo `json:"val_signing_info,omitempty"`
-					}{}
-
-					byteData, err := json.Marshal(signInfoRes)
-					if err != nil {
-						common.GetLogger().Error("[query-validator-signinginfo] Invalid response format: ", err)
-						return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
-					}
-
-					err = json.Unmarshal(byteData, &signInfoResponse)
-					if err != nil {
-						common.GetLogger().Error("[query-validator-signinginfo] Invalid response format: ", err)
-						return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
-					}
-
+				if kiraStatus != nil {
 					networkPropertiesResponse := struct {
 						ValNetworkProperties types.NetworkProperties `json:"properties,omitempty"`
 					}{}
@@ -170,17 +180,17 @@ func queryValidatorsHandle(r *http.Request, gwCosmosmux *runtime.ServeMux, rpcAd
 
 					latestBlockHeight, _ := strconv.ParseInt(kiraStatus.SyncInfo.LatestBlockHeight, 10, 64)
 
-					result.Validators[index].StartHeight = signInfoResponse.ValSigningInfo.StartHeight
-					result.Validators[index].InactiveUntil = signInfoResponse.ValSigningInfo.InactiveUntil
-					result.Validators[index].Tombstoned = signInfoResponse.ValSigningInfo.Tombstoned
-					result.Validators[index].Mischance = signInfoResponse.ValSigningInfo.Mischance
-					result.Validators[index].MischanceConfidence = latestBlockHeight - signInfoResponse.ValSigningInfo.LastPresentBlock
+					result.Validators[index].StartHeight = valSigningInfo.StartHeight
+					result.Validators[index].InactiveUntil = valSigningInfo.InactiveUntil
+					result.Validators[index].Tombstoned = valSigningInfo.Tombstoned
+					result.Validators[index].Mischance = valSigningInfo.Mischance
+					result.Validators[index].MischanceConfidence = latestBlockHeight - valSigningInfo.LastPresentBlock
 					if result.Validators[index].MischanceConfidence > int64(networkPropertiesResponse.ValNetworkProperties.MischanceConfidence) {
 						result.Validators[index].MischanceConfidence = int64(networkPropertiesResponse.ValNetworkProperties.MischanceConfidence)
 					}
-					result.Validators[index].LastPresentBlock = signInfoResponse.ValSigningInfo.LastPresentBlock
-					result.Validators[index].MissedBlocksCounter = signInfoResponse.ValSigningInfo.MissedBlocksCounter
-					result.Validators[index].ProducedBlocksCounter = signInfoResponse.ValSigningInfo.ProducedBlocksCounter
+					result.Validators[index].LastPresentBlock = valSigningInfo.LastPresentBlock
+					result.Validators[index].MissedBlocksCounter = valSigningInfo.MissedBlocksCounter
+					result.Validators[index].ProducedBlocksCounter = valSigningInfo.ProducedBlocksCounter
 				}
 			}
 		}
