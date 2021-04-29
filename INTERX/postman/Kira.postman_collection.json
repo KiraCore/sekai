@@ -810,7 +810,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://0.0.0.0:11000/api/kira/gov/proposals",
+							"raw": "http://0.0.0.0:11000/api/kira/gov/proposals?limit=2&count_total=true&offset=2",
 							"protocol": "http",
 							"host": [
 								"0",
@@ -824,6 +824,20 @@
 								"kira",
 								"gov",
 								"proposals"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "2"
+								},
+								{
+									"key": "count_total",
+									"value": "true"
+								},
+								{
+									"key": "offset",
+									"value": "2"
+								}
 							]
 						}
 					},

@@ -111,12 +111,15 @@ message QueryProposalsRequest {
 
   // voter defines the voter address for the proposals.
   string voter = 1;
+  PageRequest pagination = 2;
+  bool all = 3;
 }
 
 // QueryProposalsResponse is the response type for the Query/Proposals RPC
 // method.
 message QueryProposalsResponse {
   repeated Proposal proposals = 1 [(gogoproto.nullable) = false];
+  PageResponse pagination = 2;
 }
 
 // QueryDataReferenceKeysRequest is the response type for data reference keys query.
