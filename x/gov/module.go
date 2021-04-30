@@ -146,7 +146,7 @@ func (am AppModule) InitGenesis(
 		}
 	}
 
-	am.customGovKeeper.SaveProposalID(ctx, genesisState.StartingProposalId)
+	am.customGovKeeper.SetProposalID(ctx, genesisState.StartingProposalId)
 
 	am.customGovKeeper.SetNetworkProperties(ctx, genesisState.NetworkProperties)
 

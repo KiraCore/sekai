@@ -135,10 +135,7 @@ func (k msgServer) ProposalUnjailValidator(goCtx context.Context, msg *types.Msg
 
 func (k msgServer) CreateAndSaveProposalWithContent(ctx sdk.Context, description string, content customgovtypes.Content) (uint64, error) {
 	blockTime := ctx.BlockTime()
-	proposalID, err := k.govKeeper.GetNextProposalID(ctx)
-	if err != nil {
-		return 0, err
-	}
+	proposalID := k.govKeeper.GetNextProposalIDAndIncrement(ctx)
 
 	properties := k.govKeeper.GetNetworkProperties(ctx)
 
@@ -154,6 +151,10 @@ func (k msgServer) CreateAndSaveProposalWithContent(ctx sdk.Context, description
 		ctx.BlockHeight()+int64(properties.MinProposalEndBlocks+properties.MinProposalEnactmentBlocks),
 		description,
 	)
+
+	if err != nil {
+		return proposalID, err
+	}
 
 	k.govKeeper.SaveProposal(ctx, proposal)
 	k.govKeeper.AddToActiveProposals(ctx, proposal)

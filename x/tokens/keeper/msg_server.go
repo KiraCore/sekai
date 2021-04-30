@@ -202,11 +202,7 @@ func (k msgServer) UpsertTokenRate(goCtx context.Context, msg *types.MsgUpsertTo
 
 func (k msgServer) CreateAndSaveProposalWithContent(ctx sdk.Context, description string, content customgovtypes.Content) (uint64, error) {
 	blockTime := ctx.BlockTime()
-	proposalID, err := k.cgk.GetNextProposalID(ctx)
-	if err != nil {
-		return 0, err
-	}
-
+	proposalID := k.cgk.GetNextProposalIDAndIncrement(ctx)
 	properties := k.cgk.GetNetworkProperties(ctx)
 
 	proposal, err := customgovtypes.NewProposal(
@@ -221,6 +217,10 @@ func (k msgServer) CreateAndSaveProposalWithContent(ctx sdk.Context, description
 		ctx.BlockHeight()+3,
 		description,
 	)
+
+	if err != nil {
+		return proposalID, err
+	}
 
 	k.cgk.SaveProposal(ctx, proposal)
 	k.cgk.AddToActiveProposals(ctx, proposal)
