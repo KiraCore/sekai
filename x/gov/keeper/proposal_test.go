@@ -17,8 +17,7 @@ func TestDefaultProposalIdAtDefaultGenesis(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	proposalID, err := app.CustomGovKeeper.GetNextProposalID(ctx)
-	require.NoError(t, err)
+	proposalID := app.CustomGovKeeper.GetNextProposalID(ctx)
 	require.Equal(t, uint64(1), proposalID)
 }
 
@@ -114,15 +113,14 @@ func TestSaveProposalReturnsTheProposalID_AndIncreasesLast(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	proposalID, err := app.CustomGovKeeper.GetNextProposalID(ctx)
-	require.NoError(t, err)
+	proposalID := app.CustomGovKeeper.GetNextProposalIDAndIncrement(ctx)
 	require.Equal(t, uint64(1), proposalID)
 
 	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10))
 	addr := addrs[0]
 
 	proposal, err := types.NewProposal(
-		1,
+		proposalID,
 		types.NewAssignPermissionProposal(
 			addr,
 			types.PermClaimValidator,
@@ -138,8 +136,7 @@ func TestSaveProposalReturnsTheProposalID_AndIncreasesLast(t *testing.T) {
 	app.CustomGovKeeper.SaveProposal(ctx, proposal)
 
 	// nextProposalID should be 2
-	proposalID, err = app.CustomGovKeeper.GetNextProposalID(ctx)
-	require.NoError(t, err)
+	proposalID = app.CustomGovKeeper.GetNextProposalID(ctx)
 	require.Equal(t, uint64(2), proposalID)
 
 	// Get proposal
