@@ -173,10 +173,7 @@ func (k msgServer) ProposalAssignPermission(
 
 func (k msgServer) CreateAndSaveProposalWithContent(ctx sdk.Context, description string, content customgovtypes.Content) (uint64, error) {
 	blockTime := ctx.BlockTime()
-	proposalID, err := k.keeper.GetNextProposalID(ctx)
-	if err != nil {
-		return 0, err
-	}
+	proposalID := k.keeper.GetNextProposalIDAndIncrement(ctx)
 
 	properties := k.keeper.GetNetworkProperties(ctx)
 
@@ -192,6 +189,10 @@ func (k msgServer) CreateAndSaveProposalWithContent(ctx sdk.Context, description
 		ctx.BlockHeight()+int64(properties.MinProposalEndBlocks+properties.MinProposalEnactmentBlocks),
 		description,
 	)
+
+	if err != nil {
+		return proposalID, err
+	}
 
 	k.keeper.SaveProposal(ctx, proposal)
 	k.keeper.AddToActiveProposals(ctx, proposal)

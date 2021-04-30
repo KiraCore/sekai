@@ -71,7 +71,7 @@ type StakingHooks interface {
 type GovKeeper interface {
 	GetNetworkProperties(sdk.Context) *customgovtypes.NetworkProperties // returns network properties
 	CheckIfAllowedPermission(ctx sdk.Context, addr sdk.AccAddress, permValue customgovtypes.PermValue) bool
-	GetNextProposalID(ctx sdk.Context) (uint64, error)
+	GetNextProposalID(ctx sdk.Context) uint64
 	SaveProposal(ctx sdk.Context, proposal customgovtypes.Proposal)
 	AddToActiveProposals(ctx sdk.Context, proposal customgovtypes.Proposal)
 }
