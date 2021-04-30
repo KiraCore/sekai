@@ -375,8 +375,7 @@ func TestHandler_ProposalUnjailValidator(t *testing.T) {
 	require.Equal(t, expectedSavedProposal, savedProposal)
 
 	// Next proposal ID is increased.
-	id, err := app.CustomGovKeeper.GetNextProposalID(ctx)
-	require.NoError(t, err)
+	id := app.CustomGovKeeper.GetNextProposalID(ctx)
 	require.Equal(t, uint64(2), id)
 
 	// Is not on finished active proposals.

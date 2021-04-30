@@ -4,28 +4,30 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/errors"
-	sdktypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	"github.com/KiraCore/sekai/x/gov/types"
 )
 
-func (k Keeper) GetNextProposalID(ctx sdk.Context) (uint64, error) {
+func (k Keeper) GetNextProposalIDAndIncrement(ctx sdk.Context) uint64 {
+	proposalID := k.GetNextProposalID(ctx)
+	k.SetProposalID(ctx, proposalID+1)
+	return proposalID
+}
+
+func (k Keeper) GetNextProposalID(ctx sdk.Context) uint64 {
 	store := ctx.KVStore(k.storeKey)
 
 	bz := store.Get(NextProposalIDPrefix)
 	if bz == nil {
-		return 0, errors.Wrap(sdktypes.ErrInvalidGenesis, "initial proposal ID hasn't been set")
+		return 1
 	}
 
 	proposalID := BytesToProposalID(bz)
-
-	return proposalID, nil
+	return proposalID
 }
 
-func (k Keeper) SaveProposalID(ctx sdk.Context, proposalID uint64) {
+func (k Keeper) SetProposalID(ctx sdk.Context, proposalID uint64) {
 	store := ctx.KVStore(k.storeKey)
-
 	store.Set(NextProposalIDPrefix, ProposalIDToBytes(proposalID))
 }
 
@@ -34,9 +36,6 @@ func (k Keeper) SaveProposal(ctx sdk.Context, proposal types.Proposal) {
 
 	bz := k.cdc.MustMarshalBinaryBare(&proposal)
 	store.Set(GetProposalKey(proposal.ProposalId), bz)
-
-	// Update NextProposal
-	k.SaveProposalID(ctx, proposal.ProposalId+1)
 }
 
 func (k Keeper) GetProposal(ctx sdk.Context, proposalID uint64) (types.Proposal, bool) {
