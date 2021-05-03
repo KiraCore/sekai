@@ -40,7 +40,7 @@ func saveGenesis(rpcAddr string) error {
 	}
 
 	genesis := GenesisResponse{}
-	byteData, err := json.Marshal(data)
+	byteData, _ := json.Marshal(data)
 	err = tmjson.Unmarshal(byteData, &genesis)
 	if err != nil {
 		return err

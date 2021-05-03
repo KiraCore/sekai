@@ -119,67 +119,79 @@ func queryValidatorsHandle(r *http.Request, gwCosmosmux *runtime.ServeMux, rpcAd
 			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
 		}
 
-		for index, validator := range result.Validators {
-			pubkey, _ := sdk.GetPubKeyFromBech32(sdk.Bech32PubKeyTypeConsPub, validator.Pubkey)
+		newReq := tempRequest.Clone(tempRequest.Context())
+		newReq.URL.Path = config.QueryNetworkProperties
 
-			newReq := tempRequest.Clone(tempRequest.Context())
-			newReq.URL.Path = config.QueryValidatorInfos + "/" + sdk.GetConsAddress(pubkey).String()
+		networkPropertiesRes, _, _ := common.ServeGRPC(newReq, gwCosmosmux)
 
-			signInfoRes, _, _ := common.ServeGRPC(newReq, gwCosmosmux)
+		newReq = tempRequest.Clone(tempRequest.Context())
+		newReq.URL.Path = config.QueryValidatorInfos
+		newReq.URL.RawQuery = "all=true"
 
-			newReq = tempRequest.Clone(tempRequest.Context())
-			newReq.URL.Path = config.QueryNetworkProperties
+		validatorInfosRes, _, _ := common.ServeGRPC(newReq, gwCosmosmux)
 
-			networkPropertiesRes, _, _ := common.ServeGRPC(newReq, gwCosmosmux)
+		if networkPropertiesRes != nil && validatorInfosRes != nil {
+			validatorInfosResponse := struct {
+				ValValidatorInfos []types.ValidatorSigningInfo `json:"info,omitempty"`
+			}{}
 
-			kiraStatus := common.GetKiraStatus(rpcAddr)
+			byteData, err = json.Marshal(validatorInfosRes)
+			if err != nil {
+				common.GetLogger().Error("[query-validator-infos] Invalid response format: ", err)
+				return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
+			}
 
-			if signInfoRes != nil && networkPropertiesRes != nil && kiraStatus != nil {
-				signInfoResponse := struct {
-					ValSigningInfo types.ValidatorSigningInfo `json:"val_signing_info,omitempty"`
-				}{}
+			err = json.Unmarshal(byteData, &validatorInfosResponse)
+			if err != nil {
+				common.GetLogger().Error("[query-validator-infos] Invalid response format: ", err)
+				return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
+			}
 
-				byteData, err := json.Marshal(signInfoRes)
-				if err != nil {
-					common.GetLogger().Error("[query-validator-signinginfo] Invalid response format: ", err)
-					return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
+			for index, validator := range result.Validators {
+				pubkey, _ := sdk.GetPubKeyFromBech32(sdk.Bech32PubKeyTypeConsPub, validator.Pubkey)
+				address := sdk.GetConsAddress(pubkey).String()
+
+				var valSigningInfo types.ValidatorSigningInfo
+				for _, signingInfo := range validatorInfosResponse.ValValidatorInfos {
+					if signingInfo.Address == address {
+						valSigningInfo = signingInfo
+						break
+					}
 				}
 
-				err = json.Unmarshal(byteData, &signInfoResponse)
-				if err != nil {
-					common.GetLogger().Error("[query-validator-signinginfo] Invalid response format: ", err)
-					return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
+				kiraStatus := common.GetKiraStatus(rpcAddr)
+
+				if kiraStatus != nil {
+					networkPropertiesResponse := struct {
+						ValNetworkProperties types.NetworkProperties `json:"properties,omitempty"`
+					}{}
+
+					byteData, err = json.Marshal(networkPropertiesRes)
+					if err != nil {
+						common.GetLogger().Error("[query-validator-networkproperties] Invalid response format: ", err)
+						return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
+					}
+
+					err = json.Unmarshal(byteData, &networkPropertiesResponse)
+					if err != nil {
+						common.GetLogger().Error("[query-validator-networkproperties] Invalid response format: ", err)
+						return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
+					}
+
+					latestBlockHeight, _ := strconv.ParseInt(kiraStatus.SyncInfo.LatestBlockHeight, 10, 64)
+
+					result.Validators[index].StartHeight = valSigningInfo.StartHeight
+					result.Validators[index].InactiveUntil = valSigningInfo.InactiveUntil
+					result.Validators[index].Tombstoned = valSigningInfo.Tombstoned
+					result.Validators[index].Mischance = valSigningInfo.Mischance
+					result.Validators[index].MischanceConfidence = latestBlockHeight - valSigningInfo.LastPresentBlock
+					if result.Validators[index].MischanceConfidence > int64(networkPropertiesResponse.ValNetworkProperties.MischanceConfidence) {
+						result.Validators[index].MischanceConfidence = int64(networkPropertiesResponse.ValNetworkProperties.MischanceConfidence)
+					}
+					result.Validators[index].LastPresentBlock = valSigningInfo.LastPresentBlock
+					result.Validators[index].MissedBlocksCounter = valSigningInfo.MissedBlocksCounter
+					result.Validators[index].ProducedBlocksCounter = valSigningInfo.ProducedBlocksCounter
 				}
-
-				networkPropertiesResponse := struct {
-					ValNetworkProperties types.NetworkProperties `json:"properties,omitempty"`
-				}{}
-
-				byteData, err = json.Marshal(networkPropertiesRes)
-				if err != nil {
-					common.GetLogger().Error("[query-validator-networkproperties] Invalid response format: ", err)
-					return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
-				}
-
-				err = json.Unmarshal(byteData, &networkPropertiesResponse)
-				if err != nil {
-					common.GetLogger().Error("[query-validator-networkproperties] Invalid response format: ", err)
-					return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
-				}
-
-				latestBlockHeight, _ := strconv.ParseInt(kiraStatus.SyncInfo.LatestBlockHeight, 10, 64)
-
-				result.Validators[index].StartHeight = signInfoResponse.ValSigningInfo.StartHeight
-				result.Validators[index].InactiveUntil = signInfoResponse.ValSigningInfo.InactiveUntil
-				result.Validators[index].Tombstoned = signInfoResponse.ValSigningInfo.Tombstoned
-				result.Validators[index].Mischance = signInfoResponse.ValSigningInfo.Mischance
-				result.Validators[index].MischanceConfidence = latestBlockHeight - signInfoResponse.ValSigningInfo.LastPresentBlock
-				if result.Validators[index].MischanceConfidence > int64(networkPropertiesResponse.ValNetworkProperties.MischanceConfidence) {
-					result.Validators[index].MischanceConfidence = int64(networkPropertiesResponse.ValNetworkProperties.MischanceConfidence)
-				}
-				result.Validators[index].LastPresentBlock = signInfoResponse.ValSigningInfo.LastPresentBlock
-				result.Validators[index].MissedBlocksCounter = signInfoResponse.ValSigningInfo.MissedBlocksCounter
-				result.Validators[index].ProducedBlocksCounter = signInfoResponse.ValSigningInfo.ProducedBlocksCounter
 			}
 		}
 
@@ -474,7 +486,7 @@ func queryConsensusHandle(r *http.Request, gwCosmosmux *runtime.ServeMux, rpcAdd
 		}
 
 		for i := range flag {
-			if flag[i] != true {
+			if !flag[i] {
 				response.Noncommits = append(response.Noncommits, validators[i])
 			}
 		}

@@ -188,6 +188,14 @@ func RegisterInterxFunctions() {
 	)
 
 	AddInterxFunction(
+		"QueryNetworkProperties",
+		config.QueryNetworkProperties,
+		`{
+			"description": "QueryNetworkProperties is a function to query network properties."
+		}`,
+	)
+
+	AddInterxFunction(
 		"QueryKiraTokensAliases",
 		config.QueryKiraTokensAliases,
 		`{

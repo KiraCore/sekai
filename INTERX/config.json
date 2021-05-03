@@ -126,6 +126,13 @@
           "caching_disable": false,
           "caching_duration": 30
         },
+        "/api/kira/gov/network_properties": {
+          "disable": false,
+          "rate_limit": 0,
+          "auth_rate_limit": 0,
+          "caching_disable": false,
+          "caching_duration": 30
+        },
         "/api/kira/gov/proposals": {
           "disable": false,
           "rate_limit": 0,
