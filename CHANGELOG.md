@@ -21,6 +21,17 @@
 - Accurate error logging
 - Fix tests for uptime counter and validator status transition modification
 - Add more tests to handle modified logic 
+## [v0.1.19.3] - 03.05.2021
+### Added
+- [Interx] Network Properties query endpoint
+- [Interx] Pagination in Proposal query
+- [Interx] Network Properties proto description
+
+### Changed
+- [Interx] Refactor validator query to use less call for the performance
+
+### Fixed
+- [Interx] Multiple lint issues
 
 ## [v0.1.19.3] - 03.05.2021
 ### Added
