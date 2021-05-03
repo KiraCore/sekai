@@ -4,11 +4,15 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	"github.com/KiraCore/sekai/x/gov/types"
 	customstakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/cosmos/cosmos-sdk/types/query"
 )
 
 // Querier describes grpc querier
@@ -121,15 +125,46 @@ func (q Querier) Proposal(ctx context.Context, request *types.QueryProposalReque
 	}, nil
 }
 
-// Proposals query proposals by querying params
+// Proposals query proposals by querying params with pagination
 func (q Querier) Proposals(ctx context.Context, request *types.QueryProposalsRequest) (*types.QueryProposalsResponse, error) {
-	sdkContext := sdk.UnwrapSDKContext(ctx)
-	proposals, err := q.keeper.GetProposals(sdkContext)
+	c := sdk.UnwrapSDKContext(ctx)
+	if request == nil {
+		err := status.Error(codes.InvalidArgument, "empty request")
+		return nil, sdkerrors.Wrap(types.ErrGettingProposals, fmt.Sprintf("error getting proposals: %s", err.Error()))
+	}
+
+	store := c.KVStore(q.keeper.storeKey)
+
+	var proposals []types.Proposal
+
+	proposalsStore := prefix.NewStore(store, ProposalsPrefix)
+
+	pageRes, err := query.FilteredPaginate(proposalsStore, request.Pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
+		var proposal types.Proposal
+		err := q.keeper.cdc.UnmarshalBinaryBare(value, &proposal)
+		if err != nil {
+			return false, err
+		}
+		if request.All || accumulate {
+			proposals = append(proposals, proposal)
+		}
+		return !request.All, nil
+	})
+
 	if err != nil {
 		return nil, sdkerrors.Wrap(types.ErrGettingProposals, fmt.Sprintf("error getting proposals: %s", err.Error()))
 	}
-	fmt.Println(proposals)
-	return &types.QueryProposalsResponse{Proposals: proposals}, nil
+
+	if request.All {
+		pageRes = nil
+	}
+
+	res := types.QueryProposalsResponse{
+		Proposals:  proposals,
+		Pagination: pageRes,
+	}
+
+	return &res, nil
 }
 
 // GetWhitelistedProposalVoters returns whitelisted voters for a proposal for tracking

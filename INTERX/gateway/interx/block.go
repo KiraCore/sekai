@@ -164,8 +164,6 @@ func getTransactionsFromLog(attributes []abciTypes.EventAttribute) []sdk.Coin {
 			}
 			feeTxs = append(feeTxs, feeTx)
 		}
-
-		evMap = make(map[string]string)
 	}
 
 	return feeTxs
@@ -268,7 +266,6 @@ func parseTransaction(rpcAddr string, transaction tmTypes.ResultTx) (types.Trans
 					To:      output.Address,
 					Amounts: amounts,
 				})
-			} else {
 			}
 		} else if txType == "create_validator" {
 			createValidatorMsg := msg.(*staking.MsgCreateValidator)

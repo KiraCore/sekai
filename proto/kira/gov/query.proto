@@ -142,12 +142,16 @@ message QueryProposalsRequest {
 
   // voter defines the voter address for the proposals.
   string voter = 1;
+  kira.gov.PageRequest pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
+  bool all = 3;
+
 }
 
 // QueryProposalsResponse is the response type for the Query/Proposals RPC
 // method.
 message QueryProposalsResponse {
   repeated kira.gov.Proposal proposals = 1 [(gogoproto.nullable) = false];
+  kira.gov.PageResponse pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
 }
 
 // QueryWhitelistedProposalVotersRequest is the request type for Query/WhitelistedProposalVoters RPC method.

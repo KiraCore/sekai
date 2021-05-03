@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "5a89ad02-e8c7-4864-bbec-838b872f2205",
+		"_postman_id": "bf52156d-d0b2-4263-9766-660024631aa6",
 		"name": "Kira",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -810,7 +810,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://0.0.0.0:11000/api/kira/gov/proposals",
+							"raw": "http://0.0.0.0:11000/api/kira/gov/proposals?limit=2&count_total=true&offset=2",
 							"protocol": "http",
 							"host": [
 								"0",
@@ -824,6 +824,20 @@
 								"kira",
 								"gov",
 								"proposals"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "2"
+								},
+								{
+									"key": "count_total",
+									"value": "true"
+								},
+								{
+									"key": "offset",
+									"value": "2"
+								}
 							]
 						}
 					},
@@ -1400,6 +1414,36 @@
 							"response": []
 						}
 					]
+				}
+			]
+		},
+		{
+			"name": "Network Properties",
+			"item": [
+				{
+					"name": "Query Network Properties",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://0.0.0.0:11000/api/kira/gov/network_properties",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "11000",
+							"path": [
+								"api",
+								"kira",
+								"gov",
+								"network_properties"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
