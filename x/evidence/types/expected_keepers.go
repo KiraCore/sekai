@@ -19,9 +19,7 @@ type (
 	// evidence module.
 	SlashingKeeper interface {
 		GetPubkey(sdk.Context, cryptotypes.Address) (cryptotypes.PubKey, error)
-		IsTombstoned(sdk.Context, sdk.ConsAddress) bool
 		HasValidatorSigningInfo(sdk.Context, sdk.ConsAddress) bool
-		Tombstone(sdk.Context, sdk.ConsAddress)
 		Jail(sdk.Context, sdk.ConsAddress)
 		JailUntil(sdk.Context, sdk.ConsAddress, time.Time)
 	}

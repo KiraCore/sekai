@@ -34,7 +34,6 @@ func (suite *KeeperTestSuite) TestHandleDoubleSign() {
 	// should be jailed and tombstoned
 	validator, _ := suite.app.CustomStakingKeeper.GetValidator(ctx, operatorAddr)
 	suite.True(validator.IsJailed())
-	suite.True(suite.app.CustomSlashingKeeper.IsTombstoned(ctx, sdk.ConsAddress(val.Address())))
 
 	// submit duplicate evidence
 	suite.app.EvidenceKeeper.HandleEquivocationEvidence(ctx, evidence)
@@ -75,5 +74,4 @@ func (suite *KeeperTestSuite) TestHandleDoubleSign_TooOld() {
 
 	validator, _ := suite.app.CustomStakingKeeper.GetValidator(ctx, operatorAddr)
 	suite.False(validator.IsJailed())
-	suite.False(suite.app.CustomSlashingKeeper.IsTombstoned(ctx, sdk.ConsAddress(val.Address())))
 }

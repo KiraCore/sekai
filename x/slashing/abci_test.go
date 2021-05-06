@@ -50,7 +50,6 @@ func TestBeginBlocker(t *testing.T) {
 	require.Equal(t, sdk.ConsAddress(pk.Address()).String(), info.Address)
 	require.Equal(t, int64(0), info.StartHeight)
 	require.Equal(t, time.Unix(0, 0).UTC(), info.InactiveUntil.UTC())
-	require.Equal(t, false, info.Tombstoned)
 	require.Equal(t, int64(0), info.Mischance)
 	require.Equal(t, int64(0), info.LastPresentBlock)
 	require.Equal(t, int64(0), info.MissedBlocksCounter)

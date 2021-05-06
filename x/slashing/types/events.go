@@ -4,6 +4,7 @@ package types
 // Slashing module event types
 const (
 	EventTypeInactivate = "inactivate"
+	EventTypeJail       = "jail"
 	EventTypeLiveness   = "liveness"
 
 	AttributeKeyAddress          = "address"
@@ -11,6 +12,7 @@ const (
 	AttributeKeyPower            = "power"
 	AttributeKeyReason           = "reason"
 	AttributeKeyInactivated      = "inactivated"
+	AttributeKeyJailed           = "jailed"
 	AttributeKeyMischance        = "mischance"
 	AttributeKeyLastPresentBlock = "last_present_block"
 	AttributeKeyMissedBlocks     = "missed_blocks"

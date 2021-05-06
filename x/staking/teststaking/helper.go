@@ -62,7 +62,7 @@ func (sh *Helper) ClaimValidatorMsg(addr sdk.ValAddress, pk cryptotypes.PubKey) 
 
 func (sh *Helper) createValidator(addr sdk.ValAddress, pk cryptotypes.PubKey, ok bool) {
 	msg, err := stakingtypes.NewMsgClaimValidator(
-		fmt.Sprintf("%s-%d","moniker", rand.Intn(100)),
+		fmt.Sprintf("%s-%d", "moniker", rand.Intn(100)),
 		"website",
 		"social",
 		"identity",
@@ -89,13 +89,10 @@ func (sh *Helper) Handle(msg sdk.Msg, ok bool) *sdk.Result {
 
 // CheckValidator asserts that a validor exists and has a given status (if status!="")
 // and if has a right inactive flag.
-func (sh *Helper) CheckValidator(addr sdk.ValAddress, status stakingtypes.ValidatorStatus, inactive bool) stakingtypes.Validator {
+func (sh *Helper) CheckValidator(addr sdk.ValAddress, status stakingtypes.ValidatorStatus) stakingtypes.Validator {
 	v, err := sh.k.GetValidator(sh.Ctx, addr)
 	require.NoError(sh.t, err)
-	require.Equal(sh.t, inactive, v.IsInactivated(), "wrong Inactive status")
-	if status >= 0 {
-		require.Equal(sh.t, status, v.Status)
-	}
+	require.Equal(sh.t, status, v.Status)
 	return v
 }
 

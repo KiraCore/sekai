@@ -44,7 +44,7 @@ func TestResetWholeValidatorRank(t *testing.T) {
 				}
 				info.StartHeight = 100
 				info.InactiveUntil = time.Unix(0, 0)
-				info.Tombstoned = false
+				info.MischanceConfidence = 0
 				info.Mischance = 0
 				info.MissedBlocksCounter = 0
 				info.ProducedBlocksCounter = 0
@@ -87,11 +87,10 @@ func TestResetWholeValidatorRank(t *testing.T) {
 			require.Len(t, infos, 1)
 			require.Equal(t, ctx.BlockHeight(), infos[0].StartHeight)
 			require.Equal(t, time.Unix(0, 0).UTC(), infos[0].InactiveUntil.UTC())
-			require.Equal(t, false, infos[0].Tombstoned)
+			require.Equal(t, int64(0), infos[0].MischanceConfidence)
 			require.Equal(t, int64(0), infos[0].Mischance)
 			require.Equal(t, int64(0), infos[0].MissedBlocksCounter)
 			require.Equal(t, int64(0), infos[0].ProducedBlocksCounter)
-			require.Equal(t, ctx.BlockHeight(), infos[0].LastPresentBlock)
 		})
 	}
 }
