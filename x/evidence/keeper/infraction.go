@@ -73,17 +73,6 @@ func (k Keeper) HandleEquivocationEvidence(ctx sdk.Context, evidence *types.Equi
 		panic(fmt.Sprintf("expected signing info for validator %s but not found", consAddr))
 	}
 
-	// ignore if the validator is already tombstoned
-	if k.slashingKeeper.IsTombstoned(ctx, consAddr) {
-		logger.Info(
-			"ignored equivocation; validator already tombstoned",
-			"validator", consAddr,
-			"infraction_height", infractionHeight,
-			"infraction_time", infractionTime,
-		)
-		return
-	}
-
 	logger.Info(
 		"confirmed equivocation",
 		"validator", consAddr,
@@ -98,6 +87,5 @@ func (k Keeper) HandleEquivocationEvidence(ctx sdk.Context, evidence *types.Equi
 	}
 
 	k.slashingKeeper.JailUntil(ctx, consAddr, types.DoubleSignJailEndTime)
-	k.slashingKeeper.Tombstone(ctx, consAddr)
 	k.SetEvidence(ctx, evidence)
 }

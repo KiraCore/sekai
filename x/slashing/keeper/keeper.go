@@ -80,11 +80,11 @@ func (k Keeper) GetPubkey(ctx sdk.Context, address crypto.Address) (cryptotypes.
 	return pkStr, nil
 }
 
-// Inactivate attempts to inactivate a validator. The slash is delegated to the staking module
-// to make the necessary validator changes.
+// Inactivate attempts to set validator's status to Inactive from Active.
 func (k Keeper) Inactivate(ctx sdk.Context, consAddr sdk.ConsAddress) {
 	validator, err := k.sk.GetValidatorByConsAddr(ctx, consAddr)
-	if err == nil && !validator.IsInactivated() {
+	if err == nil && validator.IsActive() {
+		// only when validator is active, it could move to Inactive status
 		ctx.EventManager().EmitEvent(
 			sdk.NewEvent(
 				types.EventTypeInactivate,

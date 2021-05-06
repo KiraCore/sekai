@@ -24,36 +24,26 @@ func (k Keeper) Activate(ctx sdk.Context, validatorAddr sdk.ValAddress) error {
 
 	consAddr := validator.GetConsAddr()
 
-	// If the validator has a ValidatorSigningInfo object that signals that the
-	// validator was joined and so we must check that the validator is not tombstoned
-	// and can be activated at the current block.
-	//
-	// A validator that is inactivated but has no ValidatorSigningInfo object signals
-	// that the validator was never joined and must've been inactivated due to falling
-	// below their minimum self-delegation. The validator can activate at any point
-	// assuming they've now joined above their minimum self-delegation.
-	info, found := k.GetValidatorSigningInfo(ctx, consAddr)
-	if found {
-		// cannot be activated if tombstoned
-		if info.Tombstoned {
-			return sdkerrors.Wrap(types.ErrValidatorInactivated, "Can NOT activate tombstoned validator, governance proposal required")
-		}
+	// update validator info to active status - exception will happen for jail case
+	err = k.sk.Activate(ctx, validator.ValKey)
+	if err != nil {
+		return err
+	}
 
+	// Update validator signing info to restart uptime counters
+	signInfo, found := k.GetValidatorSigningInfo(ctx, consAddr)
+	if found {
 		// cannot be activated until out of inactive period finish
-		if ctx.BlockTime().Before(info.InactiveUntil) {
-			duration := info.InactiveUntil.Sub(ctx.BlockTime())
+		if ctx.BlockTime().Before(signInfo.InactiveUntil) {
+			duration := signInfo.InactiveUntil.Sub(ctx.BlockTime())
 			return sdkerrors.Wrap(types.ErrValidatorInactivated, fmt.Sprintf("Can NOT activate inactivate validator, jail time remaining %d seconds", duration/time.Second))
 		}
 
 		// automatically set the mischance to 0 and last_present_block to latest_block_height
-		info.Mischance = 0
-		info.LastPresentBlock = ctx.BlockHeight()
-		k.SetValidatorSigningInfo(ctx, consAddr, info)
-	}
+		signInfo.Mischance = 0
+		signInfo.MischanceConfidence = 0
 
-	err = k.sk.Activate(ctx, validator.ValKey)
-	if err != nil {
-		return err
+		k.SetValidatorSigningInfo(ctx, consAddr, signInfo)
 	}
 
 	return nil
@@ -67,13 +57,18 @@ func (k Keeper) Pause(ctx sdk.Context, validatorAddr sdk.ValAddress) error {
 	}
 
 	// cannot be paused if not paused already
-	if validator.IsPaused() {
-		return sdkerrors.Wrap(types.ErrValidatorPaused, "Can NOT pause already paused validator")
+	if validator.IsJailed() {
+		return sdkerrors.Wrap(types.ErrValidatorJailed, "Can NOT pause jailed validator")
 	}
 
 	// cannot be paused if not paused already
 	if validator.IsInactivated() {
 		return sdkerrors.Wrap(types.ErrValidatorInactivated, "Can NOT pause inactivated validator")
+	}
+
+	// cannot be paused if not paused already
+	if validator.IsPaused() {
+		return sdkerrors.Wrap(types.ErrValidatorPaused, "Can NOT pause already paused validator")
 	}
 
 	k.sk.Pause(ctx, validator.ValKey)

@@ -12,7 +12,7 @@ import (
 //nolint:interfacer
 func NewValidatorSigningInfo(
 	condAddr sdk.ConsAddress, startHeight int64,
-	inactivatedUntil time.Time, tombstoned bool,
+	inactivatedUntil time.Time,
 	mischance, missedBlocksCounter, producedBlocksCounter int64,
 ) ValidatorSigningInfo {
 
@@ -20,7 +20,6 @@ func NewValidatorSigningInfo(
 		Address:               condAddr.String(),
 		StartHeight:           startHeight,
 		InactiveUntil:         inactivatedUntil,
-		Tombstoned:            tombstoned,
 		Mischance:             mischance,
 		MissedBlocksCounter:   missedBlocksCounter,
 		ProducedBlocksCounter: producedBlocksCounter,
@@ -33,12 +32,11 @@ func (i ValidatorSigningInfo) String() string {
   Address:                %s
   Start Height:           %d
   Inactivated Until:      %v
-  Tombstoned:             %t
   Mischance:              %d
   Missed Blocks Counter:  %d
   Produced Blocks Counter: %d`,
 		i.Address, i.StartHeight, i.InactiveUntil,
-		i.Tombstoned, i.Mischance, i.MissedBlocksCounter, i.ProducedBlocksCounter)
+		i.Mischance, i.MissedBlocksCounter, i.ProducedBlocksCounter)
 }
 
 // unmarshal a validator signing info from a store value
