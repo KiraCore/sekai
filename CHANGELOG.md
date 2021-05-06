@@ -1,5 +1,16 @@
 # Changelog
 
+## [v0.1.19.4] - 06.05.2021
+### Modified
+- Refactor jail / unjail logic
+- Modify mischance, MischanceConfidence counter logic
+- Implement additional logic for mischance_confidence to count only when active
+- Remove Tombstoned status on slashing module
+- Add more status checks for validator transition
+- Accurate error logging
+- Fix tests for uptime counter and validator status transition modification
+- Add more tests to handle modified logic 
+
 ## [v0.1.19.2] - 28.04.2021
 ### Added
 - [Interx] MischanceConfidence in ValidatorQuery
