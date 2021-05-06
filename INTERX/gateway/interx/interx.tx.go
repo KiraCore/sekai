@@ -202,10 +202,6 @@ func QueryBlockTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw b
 
 		transactions = searchResult.Txs
 	} else {
-		type TxResult struct {
-			Height string `json:"height"`
-		}
-
 		blockHeight, err := getBlockHeight(rpcAddr, last)
 		if err != nil {
 			common.GetLogger().Error("[query-transactions] Failed to query block height: ", err)
@@ -221,7 +217,7 @@ func QueryBlockTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw b
 
 		beforeLast := true
 		for _, tx := range searchResult.Txs {
-			if beforeLast == false {
+			if !beforeLast {
 				transactions = append(transactions, tx)
 			}
 			if fmt.Sprintf("0x%X", tx.Hash) == last {
@@ -240,9 +236,7 @@ func QueryBlockTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw b
 				return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
 			}
 
-			for _, tx := range searchResult.Txs {
-				transactions = append(transactions, tx)
-			}
+			transactions = append(transactions, searchResult.Txs...)
 		}
 	}
 
@@ -327,7 +321,6 @@ func QueryBlockTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw b
 										Amount:  coin.Amount.Int64(),
 									})
 								}
-							} else {
 							}
 						}
 					}
@@ -354,7 +347,6 @@ func QueryBlockTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw b
 										})
 									}
 								}
-							} else {
 							}
 						}
 					}

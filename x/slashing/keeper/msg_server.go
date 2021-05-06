@@ -138,10 +138,7 @@ func (k msgServer) CreateAndSaveProposalWithContent(ctx sdk.Context, description
 
 	govKeeper := k.gk.(govkeeper.Keeper)
 	blockTime := ctx.BlockTime()
-	proposalID, err := govKeeper.GetNextProposalID(ctx)
-	if err != nil {
-		return 0, err
-	}
+	proposalID := govKeeper.GetNextProposalIDAndIncrement(ctx)
 
 	properties := govKeeper.GetNetworkProperties(ctx)
 
@@ -157,6 +154,10 @@ func (k msgServer) CreateAndSaveProposalWithContent(ctx sdk.Context, description
 		ctx.BlockHeight()+int64(properties.MinProposalEndBlocks+properties.MinProposalEnactmentBlocks),
 		description,
 	)
+
+	if err != nil {
+		return proposalID, err
+	}
 
 	govKeeper.SaveProposal(ctx, proposal)
 	govKeeper.AddToActiveProposals(ctx, proposal)

@@ -35,6 +35,7 @@ func getGetMethods() []string {
 		QueryVotes,
 		QueryKiraTokensAliases,
 		QueryKiraTokensRates,
+		QueryNetworkProperties,
 
 		QueryRosettaNetworkList,
 		QueryRosettaNetworkOptions,

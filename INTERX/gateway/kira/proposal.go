@@ -2,7 +2,9 @@ package kira
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/KiraCore/sekai/INTERX/common"
 	"github.com/KiraCore/sekai/INTERX/config"
@@ -27,6 +29,32 @@ func RegisterKiraGovProposalRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux,
 }
 
 func queryProposalsHandler(r *http.Request, gwCosmosmux *runtime.ServeMux) (interface{}, interface{}, int) {
+	queries := r.URL.Query()
+	key := queries["key"]
+	offset := queries["offset"]
+	limit := queries["limit"]
+	countTotal := queries["count_total"]
+	all := queries["all"]
+
+	var events = make([]string, 0, 9)
+	if len(key) == 1 {
+		events = append(events, fmt.Sprintf("pagination.key=%s", key[0]))
+	}
+	if len(offset) == 1 {
+		events = append(events, fmt.Sprintf("pagination.offset=%s", offset[0]))
+	}
+	if len(limit) == 1 {
+		events = append(events, fmt.Sprintf("pagination.limit=%s", limit[0]))
+	}
+	if len(countTotal) == 1 {
+		events = append(events, fmt.Sprintf("pagination.count_total=%s", countTotal[0]))
+	}
+	if len(all) == 1 {
+		events = append(events, fmt.Sprintf("all=%s", all[0]))
+	}
+
+	r.URL.RawQuery = strings.Join(events, "&")
+
 	return common.ServeGRPC(r, gwCosmosmux)
 }
 
