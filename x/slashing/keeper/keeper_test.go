@@ -1,7 +1,6 @@
 package keeper_test
 
 import (
-	"fmt"
 	"os"
 	"testing"
 	"time"
@@ -586,14 +585,12 @@ func TestValidatorLifecycle(t *testing.T) {
 	require.Equal(t, int64(242), signInfo.MissedBlocksCounter)
 	require.Equal(t, int64(101), signInfo.ProducedBlocksCounter)
 
-	fmt.Println("Activate check", valAddr.String())
 	// Activate after unjail time pass and check changes
 	ctx = ctx.WithBlockTime(unjailTime)
 	err = app.CustomSlashingKeeper.Activate(ctx, valAddr)
 	require.NoError(t, err)
 
 	tstaking.CheckValidator(valAddr, stakingtypes.Active)
-	fmt.Println("consAddr check", consAddr.String())
 	signInfo, found = app.CustomSlashingKeeper.GetValidatorSigningInfo(ctx, consAddr)
 	require.True(t, found)
 	require.Equal(t, consAddr.String(), signInfo.Address)

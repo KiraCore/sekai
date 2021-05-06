@@ -33,8 +33,6 @@ func (k Keeper) Activate(ctx sdk.Context, validatorAddr sdk.ValAddress) error {
 	// Update validator signing info to restart uptime counters
 	signInfo, found := k.GetValidatorSigningInfo(ctx, consAddr)
 	if found {
-		fmt.Println("BlockTime", ctx.BlockTime().UTC().String())
-		fmt.Println("InactiveUntil", signInfo.InactiveUntil.UTC().String())
 		// cannot be activated until out of inactive period finish
 		if ctx.BlockTime().Before(signInfo.InactiveUntil) {
 			duration := signInfo.InactiveUntil.Sub(ctx.BlockTime())
