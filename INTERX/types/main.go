@@ -183,7 +183,6 @@ type QueryValidator struct {
 	// Additional
 	StartHeight           int64  `json:"start_height,string"`
 	InactiveUntil         string `json:"inactive_until"`
-	Tombstoned            bool   `json:"tombstoned"`
 	LastPresentBlock      int64  `json:"last_present_block,string"`
 	MissedBlocksCounter   int64  `json:"missed_blocks_counter,string"`
 	ProducedBlocksCounter int64  `json:"produced_blocks_counter,string"`
@@ -237,7 +236,7 @@ type ValidatorSigningInfo struct {
 	Address               string `json:"address"`
 	StartHeight           int64  `json:"start_height,string"`
 	InactiveUntil         string `json:"inactive_until"`
-	Tombstoned            bool   `json:"tombstoned"`
+	MischanceConfidence   int64  `json:"mischance_confidence,string"`
 	Mischance             int64  `json:"mischance,string"`
 	LastPresentBlock      int64  `json:"last_present_block,string"`
 	MissedBlocksCounter   int64  `json:"missed_blocks_counter,string"`
