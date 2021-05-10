@@ -4,6 +4,7 @@
 
 - update mischanceconfidence counter logic.
 - update protos to latest release.
+- add icon to tokens aliases query.
 
 ## [v0.1.19.4] - 06.05.2021
 ### Modified
