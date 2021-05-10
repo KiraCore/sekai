@@ -25,6 +25,7 @@ func queryKiraTokensAliasesHandler(r *http.Request, gwCosmosmux *runtime.ServeMu
 		Denoms   []string `json:"denoms"`
 		Name     string   `json:"name"`
 		Symbol   string   `json:"symbol"`
+		Icon     string   `json:"icon"`
 		Amount   int64    `json:"amount,string"`
 	}
 
@@ -45,6 +46,7 @@ func queryKiraTokensAliasesHandler(r *http.Request, gwCosmosmux *runtime.ServeMu
 						Denoms:   token.Denoms,
 						Name:     token.Name,
 						Symbol:   token.Symbol,
+						Icon:     token.Icon,
 						Amount:   supply.Amount,
 					})
 

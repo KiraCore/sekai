@@ -199,6 +199,10 @@ func LoadConfig(configFilePath string) {
 	if _, err := os.Stat(GetReferenceCacheDir() + "/genesis.json"); !os.IsNotExist(err) {
 		os.Remove(GetReferenceCacheDir() + "/genesis.json")
 	}
+
+	if _, err := os.Stat(GetDbCacheDir() + "/token-aliases.json"); !os.IsNotExist(err) {
+		os.Remove(GetDbCacheDir() + "/token-aliases.json")
+	}
 }
 
 // GenPrivKey is a function to generate a privKey

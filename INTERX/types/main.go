@@ -133,6 +133,7 @@ type Coin struct {
 type TokenAlias struct {
 	Decimals int64    `json:"decimals"`
 	Denoms   []string `json:"denoms"`
+	Icon     string   `json:"icon"`
 	Name     string   `json:"name"`
 	Symbol   string   `json:"symbol"`
 }
