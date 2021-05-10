@@ -139,6 +139,11 @@ func (q Querier) Proposals(ctx context.Context, request *types.QueryProposalsReq
 
 	proposalsStore := prefix.NewStore(store, ProposalsPrefix)
 
+	// TODO: proposals cli command should query from last in reverse order
+	// TODO: should provide last X proposals custom provided
+	// TODO: should be able to provide order of iteration on request
+	// TODO: should discuss request.All usecase with fantasy to avoid potential issues
+
 	pageRes, err := query.FilteredPaginate(proposalsStore, request.Pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
 		var proposal types.Proposal
 		err := q.keeper.cdc.UnmarshalBinaryBare(value, &proposal)
