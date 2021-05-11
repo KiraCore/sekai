@@ -5,7 +5,6 @@ import (
 
 	"github.com/KiraCore/sekai/INTERX/common"
 	"github.com/KiraCore/sekai/INTERX/config"
-	"github.com/KiraCore/sekai/INTERX/tasks"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 )
@@ -18,7 +17,7 @@ func RegisterNodeListQueryRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, r
 }
 
 func queryNodeListHandle(gwCosmosmux *runtime.ServeMux, rpcAddr string) (interface{}, interface{}, int) {
-	return tasks.NodeListResponse, nil, http.StatusOK
+	return nil, nil, http.StatusOK
 }
 
 // QueryNodeList is a function to query node list.
