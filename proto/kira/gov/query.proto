@@ -143,8 +143,9 @@ message QueryProposalsRequest {
   // voter defines the voter address for the proposals.
   string voter = 1;
   kira.gov.PageRequest pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
+  // TODO: should remove 'all' flag after checking that frontend / interx is not using this
   bool all = 3;
-
+  bool reverse = 4;
 }
 
 // QueryProposalsResponse is the response type for the Query/Proposals RPC

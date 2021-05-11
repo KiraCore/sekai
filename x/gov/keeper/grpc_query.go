@@ -9,6 +9,8 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
+	kiratypes "github.com/KiraCore/sekai/types"
+	kiraquery "github.com/KiraCore/sekai/types/query"
 	"github.com/KiraCore/sekai/x/gov/types"
 	customstakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -136,32 +138,43 @@ func (q Querier) Proposals(ctx context.Context, request *types.QueryProposalsReq
 	store := c.KVStore(q.keeper.storeKey)
 
 	var proposals []types.Proposal
+	var pageRes *query.PageResponse
+	var err error
 
 	proposalsStore := prefix.NewStore(store, ProposalsPrefix)
+
+	onResult := func(key []byte, value []byte, accumulate bool) (bool, error) {
+		var proposal types.Proposal
+		err := q.keeper.cdc.UnmarshalBinaryBare(value, &proposal)
+		if err != nil {
+			return false, err
+		}
+		if accumulate {
+			proposals = append(proposals, proposal)
+		}
+		return true, nil
+	}
 
 	// TODO: proposals cli command should query from last in reverse order
 	// TODO: should provide last X proposals custom provided
 	// TODO: should be able to provide order of iteration on request
 	// TODO: should discuss request.All usecase with fantasy to avoid potential issues
 
-	pageRes, err := query.FilteredPaginate(proposalsStore, request.Pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
-		var proposal types.Proposal
-		err := q.keeper.cdc.UnmarshalBinaryBare(value, &proposal)
-		if err != nil {
-			return false, err
-		}
-		if request.All || accumulate {
-			proposals = append(proposals, proposal)
-		}
-		return !request.All, nil
-	})
-
-	if err != nil {
-		return nil, sdkerrors.Wrap(types.ErrGettingProposals, fmt.Sprintf("error getting proposals: %s", err.Error()))
+	// we set maximum limit for safety of iteration
+	if request.Pagination.Limit > kiratypes.PageIterationLimit {
+		request.Pagination.Limit = kiratypes.PageIterationLimit
 	}
 
 	if request.All {
-		pageRes = nil
+		pageRes, err = kiraquery.IterateAll(proposalsStore, request.Pagination, onResult)
+	} else if request.Reverse {
+		pageRes, err = kiraquery.FilteredReversePaginate(proposalsStore, request.Pagination, onResult)
+	} else {
+		pageRes, err = query.FilteredPaginate(proposalsStore, request.Pagination, onResult)
+	}
+
+	if err != nil {
+		return nil, sdkerrors.Wrap(types.ErrGettingProposals, fmt.Sprintf("error getting proposals: %s", err.Error()))
 	}
 
 	res := types.QueryProposalsResponse{

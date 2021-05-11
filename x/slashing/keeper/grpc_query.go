@@ -3,13 +3,14 @@ package keeper
 import (
 	"context"
 
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
-
+	kiratypes "github.com/KiraCore/sekai/types"
+	kiraquery "github.com/KiraCore/sekai/types/query"
 	"github.com/KiraCore/sekai/x/slashing/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 var _ types.QueryServer = Keeper{}
@@ -48,28 +49,42 @@ func (k Keeper) SigningInfo(c context.Context, req *types.QuerySigningInfoReques
 	return &types.QuerySigningInfoResponse{ValSigningInfo: signingInfo}, nil
 }
 
-func (k Keeper) SigningInfos(c context.Context, req *types.QuerySigningInfosRequest) (*types.QuerySigningInfosResponse, error) {
-	if req == nil {
+func (k Keeper) SigningInfos(c context.Context, request *types.QuerySigningInfosRequest) (*types.QuerySigningInfosResponse, error) {
+	if request == nil {
 		return nil, status.Errorf(codes.InvalidArgument, "empty request")
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
 	store := ctx.KVStore(k.storeKey)
 	var signInfos []types.ValidatorSigningInfo
+	var pageRes *query.PageResponse
+	var err error
 
-	sigInfoStore := prefix.NewStore(store, types.ValidatorSigningInfoKeyPrefix)
-	pageRes, err := query.FilteredPaginate(sigInfoStore, types.SDKQueryPageReqFromCustomPageReq(req.Pagination), func(key []byte, value []byte, accumulate bool) (bool, error) {
+	onResult := func(key []byte, value []byte, accumulate bool) (bool, error) {
 		var info types.ValidatorSigningInfo
 		err := k.cdc.UnmarshalBinaryBare(value, &info)
 		if err != nil {
 			return false, err
 		}
 
-		if req.All || accumulate {
+		if accumulate {
 			signInfos = append(signInfos, info)
 		}
-		return !req.All, nil
-	})
+		return true, nil
+	}
+
+	// we set maximum limit for safety of iteration
+	if request.Pagination.Limit > kiratypes.PageIterationLimit {
+		request.Pagination.Limit = kiratypes.PageIterationLimit
+	}
+
+	pagination := types.SDKQueryPageReqFromCustomPageReq(request.Pagination)
+	sigInfoStore := prefix.NewStore(store, types.ValidatorSigningInfoKeyPrefix)
+	if request.All {
+		pageRes, err = kiraquery.IterateAll(sigInfoStore, pagination, onResult)
+	} else {
+		pageRes, err = query.FilteredPaginate(sigInfoStore, pagination, onResult)
+	}
 
 	if err != nil {
 		return nil, err
