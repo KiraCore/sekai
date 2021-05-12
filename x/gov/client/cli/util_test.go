@@ -110,8 +110,8 @@ func (s IntegrationTestSuite) QueryProposals() {
 	val := s.network.Validators[0]
 	clientCtx := val.ClientCtx
 	cmd := cli.GetCmdQueryProposals()
-	_, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{})
-	s.Require().NoError(err)
+	output, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{})
+	s.Require().NoError(err, string(output.Bytes()))
 }
 
 func (s IntegrationTestSuite) QueryProposalVotes(proposalID uint64) {

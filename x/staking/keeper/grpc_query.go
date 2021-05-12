@@ -123,7 +123,7 @@ func (q Querier) Validators(ctx context.Context, request *types.ValidatorsReques
 	}
 
 	// we set maximum limit for safety of iteration
-	if request.Pagination.Limit > kiratypes.PageIterationLimit {
+	if request.Pagination != nil && request.Pagination.Limit > kiratypes.PageIterationLimit {
 		request.Pagination.Limit = kiratypes.PageIterationLimit
 	}
 

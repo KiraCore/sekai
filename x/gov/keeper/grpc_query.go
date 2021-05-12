@@ -129,11 +129,13 @@ func (q Querier) Proposal(ctx context.Context, request *types.QueryProposalReque
 
 // Proposals query proposals by querying params with pagination
 func (q Querier) Proposals(ctx context.Context, request *types.QueryProposalsRequest) (*types.QueryProposalsResponse, error) {
+	fmt.Println("Proposals1")
 	c := sdk.UnwrapSDKContext(ctx)
 	if request == nil {
 		err := status.Error(codes.InvalidArgument, "empty request")
 		return nil, sdkerrors.Wrap(types.ErrGettingProposals, fmt.Sprintf("error getting proposals: %s", err.Error()))
 	}
+	fmt.Println("Proposals2")
 
 	store := c.KVStore(q.keeper.storeKey)
 
@@ -141,9 +143,11 @@ func (q Querier) Proposals(ctx context.Context, request *types.QueryProposalsReq
 	var pageRes *query.PageResponse
 	var err error
 
+	fmt.Println("Proposals3")
 	proposalsStore := prefix.NewStore(store, ProposalsPrefix)
 
 	onResult := func(key []byte, value []byte, accumulate bool) (bool, error) {
+		fmt.Println("Proposals3.1")
 		var proposal types.Proposal
 		err := q.keeper.cdc.UnmarshalBinaryBare(value, &proposal)
 		if err != nil {
@@ -155,28 +159,35 @@ func (q Querier) Proposals(ctx context.Context, request *types.QueryProposalsReq
 		return true, nil
 	}
 
+	fmt.Println("Proposals4")
 	// TODO: proposals cli command should query from last in reverse order
 	// TODO: should provide last X proposals custom provided
 	// TODO: should be able to provide order of iteration on request
 	// TODO: should discuss request.All usecase with fantasy to avoid potential issues
 
 	// we set maximum limit for safety of iteration
-	if request.Pagination.Limit > kiratypes.PageIterationLimit {
+	if request.Pagination != nil && request.Pagination.Limit > kiratypes.PageIterationLimit {
 		request.Pagination.Limit = kiratypes.PageIterationLimit
 	}
 
+	fmt.Println("Proposals5")
 	if request.All {
+		fmt.Println("Proposals5.1")
 		pageRes, err = kiraquery.IterateAll(proposalsStore, request.Pagination, onResult)
 	} else if request.Reverse {
+		fmt.Println("Proposals5.2")
 		pageRes, err = kiraquery.FilteredReversePaginate(proposalsStore, request.Pagination, onResult)
 	} else {
+		fmt.Println("Proposals5.3")
 		pageRes, err = query.FilteredPaginate(proposalsStore, request.Pagination, onResult)
 	}
 
+	fmt.Println("Proposals6")
 	if err != nil {
 		return nil, sdkerrors.Wrap(types.ErrGettingProposals, fmt.Sprintf("error getting proposals: %s", err.Error()))
 	}
 
+	fmt.Println("Proposals7")
 	res := types.QueryProposalsResponse{
 		Proposals:  proposals,
 		Pagination: pageRes,
