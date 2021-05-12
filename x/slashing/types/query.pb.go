@@ -209,7 +209,8 @@ func (m *QuerySigningInfoResponse) GetValSigningInfo() ValidatorSigningInfo {
 // method
 type QuerySigningInfosRequest struct {
 	Pagination *PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
-	All        bool         `protobuf:"varint,2,opt,name=all,proto3" json:"all,omitempty"`
+	// TODO: should remove 'all' flag when refactoring is done
+	All bool `protobuf:"varint,2,opt,name=all,proto3" json:"all,omitempty"`
 }
 
 func (m *QuerySigningInfosRequest) Reset()         { *m = QuerySigningInfosRequest{} }

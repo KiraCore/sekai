@@ -51,6 +51,7 @@ message QuerySigningInfoResponse {
 // method
 message QuerySigningInfosRequest {
   PageRequest pagination = 1;
+  // TODO: should remove 'all' flag when refactoring is done
   bool all = 2;
 }
 

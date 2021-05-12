@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.1.19.6] - 12.05.2021
+
+- Add reverse order querying for proposals querying
+- Add pagination limit of 512 in grpc execution level
+
 ## [v0.1.19.5] - 07.05.2021
 
 - update mischanceconfidence counter logic.

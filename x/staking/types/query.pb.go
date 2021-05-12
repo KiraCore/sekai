@@ -172,7 +172,8 @@ type ValidatorsRequest struct {
 	Status     string                                                `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
 	Proposer   string                                                `protobuf:"bytes,6,opt,name=proposer,proto3" json:"proposer,omitempty"`
 	Pagination *github_com_cosmos_cosmos_sdk_types_query.PageRequest `protobuf:"bytes,7,opt,name=pagination,proto3,casttype=github.com/cosmos/cosmos-sdk/types/query.PageRequest" json:"pagination,omitempty"`
-	All        bool                                                  `protobuf:"varint,8,opt,name=all,proto3" json:"all,omitempty"`
+	// TODO: should remove 'all' flag when refactoring is done
+	All bool `protobuf:"varint,8,opt,name=all,proto3" json:"all,omitempty"`
 }
 
 func (m *ValidatorsRequest) Reset()         { *m = ValidatorsRequest{} }
