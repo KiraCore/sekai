@@ -86,6 +86,7 @@ message QuerySigningInfoResponse {
 // method
 message QuerySigningInfosRequest {
   kira.slashing.PageRequest pagination = 1;
+  bool all = 2;
 }
 
 // QuerySigningInfosResponse is the response type for the Query/SigningInfos RPC
