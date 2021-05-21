@@ -11,6 +11,7 @@ import (
 	"github.com/KiraCore/sekai/INTERX/config"
 	"github.com/KiraCore/sekai/INTERX/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/x/auth/signing"
 	bank "github.com/cosmos/cosmos-sdk/x/bank/types"
 	distribution "github.com/cosmos/cosmos-sdk/x/distribution/types"
 	staking "github.com/cosmos/cosmos-sdk/x/staking/types"
@@ -194,6 +195,11 @@ func parseTransaction(rpcAddr string, transaction tmTypes.ResultTx) (types.Trans
 	txResult.GasWanted = transaction.TxResult.GetGasWanted()
 	txResult.GasUsed = transaction.TxResult.GetGasUsed()
 
+	txSigning, ok := tx.(signing.Tx)
+	if ok {
+		txResult.Memo = txSigning.GetMemo()
+	}
+
 	txResult.Msgs = make([]types.TxMsg, 0)
 	for _, msg := range tx.GetMsgs() {
 		txResult.Msgs = append(txResult.Msgs, types.TxMsg{
@@ -207,8 +213,7 @@ func parseTransaction(rpcAddr string, transaction tmTypes.ResultTx) (types.Trans
 
 	logs, err := sdk.ParseABCILogs(transaction.TxResult.GetLog())
 	if err != nil {
-		common.GetLogger().Error("[query-transactions] Failed to parse ABCI logs: ", err)
-		return txResult, err
+		return txResult, nil
 	}
 
 	for _, event := range transaction.TxResult.Events {
@@ -464,7 +469,7 @@ func QueryBlockTransactionsRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string
 		response := common.GetResponseFormat(request, rpcAddr)
 		statusCode := http.StatusOK
 
-		common.GetLogger().Info("[query-block-transactions-by-height] Entering Block query by height: %s", height)
+		common.GetLogger().Info("[query-block-transactions-by-height] Entering Block query by height: ", height)
 
 		if !common.RPCMethods["GET"][config.QueryBlockTransactions].Enabled {
 			response.Response, response.Error, statusCode = common.ServeError(0, "", "API disabled", http.StatusForbidden)
