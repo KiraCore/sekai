@@ -2,6 +2,7 @@ package upgrade
 
 import (
 	"encoding/json"
+
 	"github.com/KiraCore/sekai/middleware"
 	tokenscli "github.com/KiraCore/sekai/x/tokens/client/cli"
 	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
@@ -109,7 +110,9 @@ func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sd
 	return nil
 }
 
-func (am AppModule) BeginBlock(clientCtx sdk.Context, block abci.RequestBeginBlock) {}
+func (am AppModule) BeginBlock(clientCtx sdk.Context, block abci.RequestBeginBlock) {
+	BeginBlocker(am.upgradeKeeper, clientCtx, block)
+}
 
 func (am AppModule) EndBlock(ctx sdk.Context, block abci.RequestEndBlock) []abci.ValidatorUpdate {
 	return nil

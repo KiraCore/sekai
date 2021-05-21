@@ -28,6 +28,9 @@ import (
 	"github.com/KiraCore/sekai/x/tokens"
 	tokenskeeper "github.com/KiraCore/sekai/x/tokens/keeper"
 	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
+	"github.com/KiraCore/sekai/x/upgrade"
+	upgradekeeper "github.com/KiraCore/sekai/x/upgrade/keeper"
+	upgradetypes "github.com/KiraCore/sekai/x/upgrade/types"
 	bam "github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
@@ -55,9 +58,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/params"
 	paramskeeper "github.com/cosmos/cosmos-sdk/x/params/keeper"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	"github.com/cosmos/cosmos-sdk/x/upgrade"
-	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
-	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 	"github.com/gorilla/mux"
 	"github.com/rakyll/statik/fs"
 	abci "github.com/tendermint/tendermint/abci/types"
@@ -194,7 +194,7 @@ func NewInitApp(
 	app.bankKeeper = bankkeeper.NewBaseKeeper(
 		appCodec, keys[banktypes.StoreKey], app.accountKeeper, app.GetSubspace(banktypes.ModuleName), app.BlockedAddrs(),
 	)
-	app.upgradeKeeper = upgradekeeper.NewKeeper(skipUpgradeHeights, keys[upgradetypes.StoreKey], appCodec, homePath)
+	app.upgradeKeeper = upgradekeeper.NewKeeper(keys[upgradetypes.StoreKey], appCodec)
 
 	app.customGovKeeper = customgovkeeper.NewKeeper(keys[customgovtypes.ModuleName], appCodec)
 	customStakingKeeper := customstakingkeeper.NewKeeper(keys[customstakingtypes.ModuleName], cdc, app.customGovKeeper)
@@ -227,7 +227,7 @@ func NewInitApp(
 			encodingConfig.TxConfig,
 		),
 		bank.NewAppModule(appCodec, app.bankKeeper, app.accountKeeper),
-		upgrade.NewAppModule(app.upgradeKeeper),
+		upgrade.NewAppModule(app.upgradeKeeper, app.customGovKeeper),
 		params.NewAppModule(app.paramsKeeper),
 		customslashing.NewAppModule(appCodec, app.customSlashingKeeper, app.accountKeeper, app.bankKeeper, app.customStakingKeeper),
 		customstaking.NewAppModule(app.customStakingKeeper, app.customGovKeeper),

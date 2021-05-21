@@ -25,5 +25,5 @@ func (a ApplySoftwareUpgradeProposalHandler) Apply(ctx sdk.Context, proposal typ
 	p := proposal.(*upgradetypes.ProposalSoftwareUpgrade)
 
 	plan := upgradetypes.NewUpgradePlan(p.MinHaltTime, p.MaxEnrolmentDuration, p.Resources.Id, p.RollbackChecksum)
-	a.keeper.ApplyUpgradePlan(ctx, plan)
+	a.keeper.SaveUpgradePlan(ctx, plan)
 }

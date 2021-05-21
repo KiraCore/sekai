@@ -2,11 +2,12 @@ package keeper
 
 import (
 	"context"
+	"time"
+
 	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/upgrade/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
-	"time"
 )
 
 type msgServer struct {
@@ -31,7 +32,7 @@ func (m msgServer) ProposalSoftwareUpgrade(goCtx context.Context, msg *types.Msg
 		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermCreateUpsertTokenRateProposal.String())
 	}
 
-	proposalID, err := m.CreateAndSaveProposalWithContent(ctx, &types.ProposalSoftwareUpgrade{
+	proposalID, err := m.CreateAndSaveProposalWithContent(ctx, msg.Memo, &types.ProposalSoftwareUpgrade{
 		Resources:            msg.Resources,
 		MinHaltTime:          msg.MinHaltTime,
 		OldChainId:           msg.OldChainId,
@@ -46,7 +47,7 @@ func (m msgServer) ProposalSoftwareUpgrade(goCtx context.Context, msg *types.Msg
 	}, err
 }
 
-func (k msgServer) CreateAndSaveProposalWithContent(ctx sdk.Context, content customgovtypes.Content) (uint64, error) {
+func (k msgServer) CreateAndSaveProposalWithContent(ctx sdk.Context, description string, content customgovtypes.Content) (uint64, error) {
 	blockTime := ctx.BlockTime()
 	proposalID, err := k.cgk.GetNextProposalID(ctx)
 	if err != nil {
@@ -59,8 +60,13 @@ func (k msgServer) CreateAndSaveProposalWithContent(ctx sdk.Context, content cus
 		proposalID,
 		content,
 		blockTime,
-		blockTime.Add(time.Minute*time.Duration(properties.ProposalEndTime)),
-		blockTime.Add(time.Minute*time.Duration(properties.ProposalEnactmentTime)),
+		blockTime.Add(time.Second*time.Duration(properties.ProposalEndTime)),
+		blockTime.Add(time.Second*time.Duration(properties.ProposalEndTime)+
+			time.Second*time.Duration(properties.ProposalEnactmentTime),
+		),
+		ctx.BlockHeight()+int64(properties.MinProposalEndBlocks),
+		ctx.BlockHeight()+int64(properties.MinProposalEndBlocks+properties.MinProposalEnactmentBlocks),
+		description,
 	)
 
 	k.cgk.SaveProposal(ctx, proposal)
