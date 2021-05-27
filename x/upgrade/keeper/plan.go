@@ -31,7 +31,7 @@ func (k Keeper) SaveUpgradePlan(ctx sdk.Context, plan types.Plan) {
 }
 
 func (k Keeper) ApplyUpgradePlan(ctx sdk.Context, plan types.Plan) {
-	if ctx.BlockHeight() > plan.MinHaltTime {
+	if plan.ShouldExecute(ctx) {
 		panic(fmt.Sprintf("UPGRADE \"%s\" NEEDED at %s", plan.Name, time.Unix(plan.MinHaltTime, 0).String()))
 	}
 }
