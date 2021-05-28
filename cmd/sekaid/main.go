@@ -5,8 +5,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/cosmos/cosmos-sdk/simapp/params"
-
 	"github.com/cosmos/cosmos-sdk/snapshots"
 
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -266,7 +264,7 @@ func createAppAndExport(
 	logger log.Logger, db dbm.DB, traceStore io.Writer, height int64, forZeroHeight bool, jailAllowedAddrs []string,
 	appOpts servertypes.AppOptions) (servertypes.ExportedApp, error) {
 
-	encCfg := params.MakeTestEncodingConfig() // Ideally, we would reuse the one created by NewRootCmd.
+	encCfg := app.MakeEncodingConfig() // Ideally, we would reuse the one created by NewRootCmd.
 	encCfg.Marshaler = codec.NewProtoCodec(encCfg.InterfaceRegistry)
 	var sekaiApp *app.SekaiApp
 	if height != -1 {

@@ -4,10 +4,9 @@ import (
 	"encoding/json"
 
 	"github.com/KiraCore/sekai/middleware"
-	tokenscli "github.com/KiraCore/sekai/x/tokens/client/cli"
-	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
-	upgradekeeper "github.com/KiraCore/sekai/x/upgrade/keeper"
-	upgradetypes "github.com/KiraCore/sekai/x/upgrade/types"
+	"github.com/KiraCore/sekai/x/upgrade/client/cli"
+	"github.com/KiraCore/sekai/x/upgrade/keeper"
+	"github.com/KiraCore/sekai/x/upgrade/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
@@ -31,15 +30,16 @@ func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *r
 }
 
 func (b AppModuleBasic) Name() string {
-	return tokenstypes.ModuleName
+	return types.ModuleName
 }
 
 func (b AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
-	tokenstypes.RegisterInterfaces(registry)
+	types.RegisterInterfaces(registry)
 }
 
-func (b AppModuleBasic) DefaultGenesis(cdc codec.JSONMarshaler) json.RawMessage {
-	return cdc.MustMarshalJSON(tokenstypes.DefaultGenesis())
+func (b AppModuleBasic) DefaultGenesis(cdc codec.JSONMarshaler) json.RawMessage { // InitGenesis is ignored, no sense in serializing future upgrades
+	// DefaultGenesis is an empty object
+	return []byte("{}")
 }
 
 func (b AppModuleBasic) ValidateGenesis(marshaler codec.JSONMarshaler, config client.TxEncodingConfig, message json.RawMessage) error {
@@ -50,39 +50,39 @@ func (b AppModuleBasic) RegisterRESTRoutes(clientCtx client.Context, router *mux
 }
 
 func (b AppModuleBasic) RegisterGRPCRoutes(clientCtx client.Context, serveMux *runtime.ServeMux) {
-	//tokenstypes.RegisterQueryHandlerClient(context.Background(), serveMux, types.NewQueryClient(clientCtx))
+	//types.RegisterQueryHandlerClient(context.Background(), serveMux, types.NewQueryClient(clientCtx))
 }
 
 func (b AppModuleBasic) RegisterLegacyAminoCodec(amino *codec.LegacyAmino) {
-	tokenstypes.RegisterCodec(amino)
+	types.RegisterCodec(amino)
 }
 
 func (b AppModuleBasic) GetTxCmd() *cobra.Command {
-	return tokenscli.NewTxCmd()
+	return cli.GetTxCmd()
 }
 
 // GetQueryCmd implement query commands for this module
 func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
-	return tokenscli.NewQueryCmd()
+	return cli.GetQueryCmd()
 }
 
 // AppModule for tokens management
 type AppModule struct {
 	AppModuleBasic
-	upgradeKeeper   upgradekeeper.Keeper
-	customGovKeeper tokenstypes.CustomGovKeeper
+	upgradeKeeper   keeper.Keeper
+	customGovKeeper types.CustomGovKeeper
 }
 
 // RegisterQueryService registers a GRPC query service to respond to the
 // module-specific GRPC queries.
 func (am AppModule) RegisterServices(cfg module.Configurator) {
-	upgradetypes.RegisterMsgServer(cfg.MsgServer(), upgradekeeper.NewMsgServerImpl(am.upgradeKeeper, am.customGovKeeper))
-	querier := upgradekeeper.NewQuerier(am.upgradeKeeper)
-	upgradetypes.RegisterQueryServer(cfg.QueryServer(), querier)
+	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.upgradeKeeper, am.customGovKeeper))
+	querier := keeper.NewQuerier(am.upgradeKeeper)
+	types.RegisterQueryServer(cfg.QueryServer(), querier)
 }
 
 func (am AppModule) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
-	tokenstypes.RegisterInterfaces(registry)
+	types.RegisterInterfaces(registry)
 }
 
 func (am AppModule) InitGenesis(
@@ -90,7 +90,7 @@ func (am AppModule) InitGenesis(
 	cdc codec.JSONMarshaler,
 	data json.RawMessage,
 ) []abci.ValidatorUpdate {
-	//var genesisState tokenstypes.GenesisState
+	//var genesisState types.GenesisState
 	//cdc.MustUnmarshalJSON(data, &genesisState)
 	return nil
 }
@@ -102,7 +102,7 @@ func (am AppModule) ExportGenesis(clientCtx sdk.Context, marshaler codec.JSONMar
 func (am AppModule) RegisterInvariants(registry sdk.InvariantRegistry) {}
 
 func (am AppModule) QuerierRoute() string {
-	return tokenstypes.QuerierRoute
+	return types.QuerierRoute
 }
 
 // LegacyQuerierHandler returns the staking module sdk.Querier.
@@ -119,18 +119,18 @@ func (am AppModule) EndBlock(ctx sdk.Context, block abci.RequestEndBlock) []abci
 }
 
 func (am AppModule) Name() string {
-	return tokenstypes.ModuleName
+	return types.ModuleName
 }
 
 // Route returns the message routing key for the staking module.
 func (am AppModule) Route() sdk.Route {
-	return middleware.NewRoute(tokenstypes.ModuleName, NewHandler(am.upgradeKeeper, am.customGovKeeper))
+	return middleware.NewRoute(types.ModuleName, NewHandler(am.upgradeKeeper, am.customGovKeeper))
 }
 
 // NewAppModule returns a new Custom Staking module.
 func NewAppModule(
-	keeper upgradekeeper.Keeper,
-	customGovKeeper tokenstypes.CustomGovKeeper,
+	keeper keeper.Keeper,
+	customGovKeeper types.CustomGovKeeper,
 ) AppModule {
 	return AppModule{
 		upgradeKeeper:   keeper,
