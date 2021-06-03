@@ -108,6 +108,7 @@ type TransactionResult struct {
 	Fees           []sdk.Coin    `json:"fees"`
 	GasWanted      int64         `json:"gas_wanted"`
 	GasUsed        int64         `json:"gas_used"`
+	Memo           string        `json:"memo"`
 }
 
 type TransactionUnconfirmedResult struct {

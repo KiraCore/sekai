@@ -113,6 +113,7 @@ message QueryProposalsRequest {
   string voter = 1;
   PageRequest pagination = 2;
   bool all = 3;
+  bool reverse = 4;
 }
 
 // QueryProposalsResponse is the response type for the Query/Proposals RPC
