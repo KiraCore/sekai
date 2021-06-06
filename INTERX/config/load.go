@@ -199,6 +199,10 @@ func LoadConfig(configFilePath string) {
 	if _, err := os.Stat(GetReferenceCacheDir() + "/genesis.json"); !os.IsNotExist(err) {
 		os.Remove(GetReferenceCacheDir() + "/genesis.json")
 	}
+
+	if _, err := os.Stat(GetDbCacheDir() + "/token-aliases.json"); !os.IsNotExist(err) {
+		os.Remove(GetDbCacheDir() + "/token-aliases.json")
+	}
 }
 
 // GenPrivKey is a function to generate a privKey
@@ -240,8 +244,8 @@ func LoadAddressBooks() []types.AddrBookJSON {
 	return addrBooks
 }
 
-func LoadUniqueAddresses() []types.KnownAddress {
-	addrBooks := make([]types.KnownAddress, 0)
+func LoadUniqueIPAddresses() []string {
+	ipAddresses := make([]string, 0)
 
 	flag := make(map[string]bool)
 	for _, addrFile := range Config.AddrBooks {
@@ -257,11 +261,11 @@ func LoadUniqueAddresses() []types.KnownAddress {
 
 		for _, addr := range book.Addrs {
 			if _, ok := flag[addr.Addr.IP]; !ok {
-				addrBooks = append(addrBooks, addr)
+				ipAddresses = append(ipAddresses, addr.Addr.IP)
 			}
 			flag[addr.Addr.IP] = true
 		}
 	}
 
-	return addrBooks
+	return ipAddresses
 }

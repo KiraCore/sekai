@@ -9,11 +9,11 @@ import (
 // to make the necessary validator changes.
 func (k Keeper) Jail(ctx sdk.Context, consAddr sdk.ConsAddress) {
 	validator, err := k.sk.GetValidatorByConsAddr(ctx, consAddr)
-	if err == nil && !validator.IsInactivated() {
+	if err == nil && !validator.IsJailed() {
 		ctx.EventManager().EmitEvent(
 			sdk.NewEvent(
-				types.EventTypeInactivate,
-				sdk.NewAttribute(types.AttributeKeyInactivated, consAddr.String()),
+				types.EventTypeJail,
+				sdk.NewAttribute(types.AttributeKeyJailed, consAddr.String()),
 			),
 		)
 

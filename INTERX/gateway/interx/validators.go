@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"net/http"
 	"sort"
-	"strconv"
 	"strings"
 
 	"github.com/KiraCore/sekai/INTERX/common"
@@ -158,40 +157,29 @@ func queryValidatorsHandle(r *http.Request, gwCosmosmux *runtime.ServeMux, rpcAd
 						break
 					}
 				}
+				networkPropertiesResponse := struct {
+					ValNetworkProperties types.NetworkProperties `json:"properties,omitempty"`
+				}{}
 
-				kiraStatus := common.GetKiraStatus(rpcAddr)
-
-				if kiraStatus != nil {
-					networkPropertiesResponse := struct {
-						ValNetworkProperties types.NetworkProperties `json:"properties,omitempty"`
-					}{}
-
-					byteData, err = json.Marshal(networkPropertiesRes)
-					if err != nil {
-						common.GetLogger().Error("[query-validator-networkproperties] Invalid response format: ", err)
-						return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
-					}
-
-					err = json.Unmarshal(byteData, &networkPropertiesResponse)
-					if err != nil {
-						common.GetLogger().Error("[query-validator-networkproperties] Invalid response format: ", err)
-						return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
-					}
-
-					latestBlockHeight, _ := strconv.ParseInt(kiraStatus.SyncInfo.LatestBlockHeight, 10, 64)
-
-					result.Validators[index].StartHeight = valSigningInfo.StartHeight
-					result.Validators[index].InactiveUntil = valSigningInfo.InactiveUntil
-					result.Validators[index].Tombstoned = valSigningInfo.Tombstoned
-					result.Validators[index].Mischance = valSigningInfo.Mischance
-					result.Validators[index].MischanceConfidence = latestBlockHeight - valSigningInfo.LastPresentBlock
-					if result.Validators[index].MischanceConfidence > int64(networkPropertiesResponse.ValNetworkProperties.MischanceConfidence) {
-						result.Validators[index].MischanceConfidence = int64(networkPropertiesResponse.ValNetworkProperties.MischanceConfidence)
-					}
-					result.Validators[index].LastPresentBlock = valSigningInfo.LastPresentBlock
-					result.Validators[index].MissedBlocksCounter = valSigningInfo.MissedBlocksCounter
-					result.Validators[index].ProducedBlocksCounter = valSigningInfo.ProducedBlocksCounter
+				byteData, err = json.Marshal(networkPropertiesRes)
+				if err != nil {
+					common.GetLogger().Error("[query-validator-networkproperties] Invalid response format: ", err)
+					return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
 				}
+
+				err = json.Unmarshal(byteData, &networkPropertiesResponse)
+				if err != nil {
+					common.GetLogger().Error("[query-validator-networkproperties] Invalid response format: ", err)
+					return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
+				}
+
+				result.Validators[index].StartHeight = valSigningInfo.StartHeight
+				result.Validators[index].InactiveUntil = valSigningInfo.InactiveUntil
+				result.Validators[index].Mischance = valSigningInfo.Mischance
+				result.Validators[index].MischanceConfidence = valSigningInfo.MischanceConfidence
+				result.Validators[index].LastPresentBlock = valSigningInfo.LastPresentBlock
+				result.Validators[index].MissedBlocksCounter = valSigningInfo.MissedBlocksCounter
+				result.Validators[index].ProducedBlocksCounter = valSigningInfo.ProducedBlocksCounter
 			}
 		}
 

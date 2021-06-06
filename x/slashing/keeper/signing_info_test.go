@@ -23,7 +23,6 @@ func TestGetSetValidatorSigningInfo(t *testing.T) {
 		sdk.ConsAddress(addrDels[0]),
 		int64(4),
 		time.Unix(2, 0),
-		false,
 		int64(10),
 		int64(10),
 		int64(10),
@@ -38,31 +37,6 @@ func TestGetSetValidatorSigningInfo(t *testing.T) {
 	require.Equal(t, info.ProducedBlocksCounter, int64(10))
 }
 
-func TestTombstoned(t *testing.T) {
-	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
-	addrDels := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(200))
-
-	require.Panics(t, func() { app.CustomSlashingKeeper.Tombstone(ctx, sdk.ConsAddress(addrDels[0])) })
-	require.False(t, app.CustomSlashingKeeper.IsTombstoned(ctx, sdk.ConsAddress(addrDels[0])))
-
-	newInfo := types.NewValidatorSigningInfo(
-		sdk.ConsAddress(addrDels[0]),
-		int64(4),
-		time.Unix(2, 0),
-		false,
-		int64(10),
-		int64(10),
-		int64(10),
-	)
-	app.CustomSlashingKeeper.SetValidatorSigningInfo(ctx, sdk.ConsAddress(addrDels[0]), newInfo)
-
-	require.False(t, app.CustomSlashingKeeper.IsTombstoned(ctx, sdk.ConsAddress(addrDels[0])))
-	app.CustomSlashingKeeper.Tombstone(ctx, sdk.ConsAddress(addrDels[0]))
-	require.True(t, app.CustomSlashingKeeper.IsTombstoned(ctx, sdk.ConsAddress(addrDels[0])))
-	require.Panics(t, func() { app.CustomSlashingKeeper.Tombstone(ctx, sdk.ConsAddress(addrDels[0])) })
-}
-
 func TestJailUntil(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
@@ -74,7 +48,6 @@ func TestJailUntil(t *testing.T) {
 		sdk.ConsAddress(addrDels[0]),
 		int64(4),
 		time.Unix(2, 0),
-		false,
 		int64(10),
 		int64(10),
 		int64(10),
