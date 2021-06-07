@@ -20,8 +20,8 @@ const (
 	FlagOldChainId            = "old-chain-id"
 	FlagNewChainId            = "new-chain-id"
 	FlagRollbackMemo          = "rollback-memo"
-	FlagMaxEnrollmentDuration = "enrollment-duration"
-	FlagMemo                  = "memo"
+	FlagMaxEnrollmentDuration = "max-enrollment-duration"
+	FlagUpgradeMemo           = "upgrade-memo"
 )
 
 // GetTxCmd returns the transaction commands for this module
@@ -31,24 +31,11 @@ func GetTxCmd() *cobra.Command {
 		Short: "Upgrade transaction subcommands",
 	}
 
-	return cmd
-}
-
-// NewTxCmd returns a root CLI command handler for all x/bank transaction commands.
-func NewTxCmd() *cobra.Command {
-	txCmd := &cobra.Command{
-		Use:                        types.ModuleName,
-		Short:                      "Custom gov sub commands",
-		DisableFlagParsing:         true,
-		SuggestionsMinimumDistance: 2,
-		RunE:                       client.ValidateCmd,
-	}
-
-	txCmd.AddCommand(
+	cmd.AddCommand(
 		GetTxSetUpgradePlan(),
 	)
 
-	return txCmd
+	return cmd
 }
 
 func GetTxSetUpgradePlan() *cobra.Command {
@@ -103,15 +90,15 @@ func GetTxSetUpgradePlan() *cobra.Command {
 				return fmt.Errorf("invalid max enrollment duration")
 			}
 
-			memo, err := cmd.Flags().GetString(FlagMemo)
+			upgradeMemo, err := cmd.Flags().GetString(FlagUpgradeMemo)
 			if err != nil {
-				return fmt.Errorf("invalid memo")
+				return fmt.Errorf("invalid upgrade memo")
 			}
 
 			msg := types.NewMsgProposalSoftwareUpgradeRequest(
 				clientCtx.FromAddress,
 				resoureId, resourceGit, resourceCheckout, resourceChecksum,
-				minHaltTime, oldChainId, newChainId, rollBackMemo, maxEnrollmentDuration, memo,
+				minHaltTime, oldChainId, newChainId, rollBackMemo, maxEnrollmentDuration, upgradeMemo,
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
@@ -127,7 +114,7 @@ func GetTxSetUpgradePlan() *cobra.Command {
 	cmd.Flags().String(FlagNewChainId, "", "new chain id")
 	cmd.Flags().String(FlagRollbackMemo, "", "rollback memo")
 	cmd.Flags().Int64(FlagMaxEnrollmentDuration, 0, "max enrollment duration")
-	cmd.Flags().String(FlagMemo, "", "memo")
+	cmd.Flags().String(FlagUpgradeMemo, "", "upgrade memo")
 
 	flags.AddTxFlagsToCmd(cmd)
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)
