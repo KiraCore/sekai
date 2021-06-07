@@ -13,14 +13,16 @@ var (
 
 func NewMsgProposalSoftwareUpgradeRequest(
 	proposer sdk.AccAddress,
-	id string, git string, checkout string, minHaltTime int64,
-	oldChainId, newChainId, rollBackMemo, checkSum string, maxEnrollmentDuration int64, memo string) *MsgProposalSoftwareUpgradeRequest {
+	id string, git string, checkout string, checksum string,
+	minHaltTime int64,
+	oldChainId, newChainId, rollBackMemo string,
+	maxEnrollmentDuration int64, memo string) *MsgProposalSoftwareUpgradeRequest {
 	return &MsgProposalSoftwareUpgradeRequest{
 		Resources: &Resource{
 			Id:       id,
 			Git:      git,
 			Checkout: checkout,
-			Checksum: checkSum,
+			Checksum: checksum,
 		},
 		MinHaltTime:          minHaltTime,
 		OldChainId:           oldChainId,
