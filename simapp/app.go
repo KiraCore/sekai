@@ -177,7 +177,7 @@ func NewSimApp(
 		authtypes.StoreKey, banktypes.StoreKey, paramstypes.StoreKey,
 		customstakingtypes.ModuleName, customslashingtypes.ModuleName, customgovtypes.ModuleName,
 		customgovtypes.ModuleName, tokenstypes.ModuleName, feeprocessingtypes.ModuleName,
-		evidencetypes.StoreKey,
+		evidencetypes.StoreKey, upgradetypes.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 
