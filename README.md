@@ -55,6 +55,10 @@ sh env.sh
 [scripts/commands/governance/token-freeze.sh](scripts/commands/governance/token-freeze.sh)
 # Set network property proposal via governance process
 [scripts/commands/governance/set-network-property.sh](scripts/commands/governance/set-network-property.sh)
+
+# Set application upgrade proposal via governance process
+[scripts/commands/governance/upgrade-plan.sh](scripts/commands/governance/upgrade-plan.sh)
+
 # Unjail via governance process
 
 Modify genesis json to have jailed validator for Unjail testing
