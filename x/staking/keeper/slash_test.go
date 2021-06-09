@@ -514,7 +514,11 @@ func TestJailValidator_EdgeCases(t *testing.T) {
 				require.NoError(t, err)
 				require.Len(t, app.CustomStakingKeeper.GetRemovingValidatorSet(ctx), 1)
 
+				// unjail to get back to set again
 				err = app.CustomStakingKeeper.Unjail(ctx, validator.ValKey)
+				require.NoError(t, err)
+				// activate unjailed validator
+				err = app.CustomStakingKeeper.Activate(ctx, validator.ValKey)
 				require.NoError(t, err)
 				require.Len(t, app.CustomStakingKeeper.GetRemovingValidatorSet(ctx), 0)
 				require.Len(t, app.CustomStakingKeeper.GetReactivatingValidatorSet(ctx), 1)
@@ -611,6 +615,17 @@ func TestUnjailValidator(t *testing.T) {
 	require.True(t, found)
 
 	err = app.CustomStakingKeeper.Unjail(ctx, validator1.ValKey)
+	require.NoError(t, err)
+
+	// It's still in removing validator set until user send activate message
+	removingSet = app.CustomStakingKeeper.GetRemovingValidatorSet(ctx)
+	require.Len(t, removingSet, 1)
+
+	// reactivating set is still empty
+	removingSet = app.CustomStakingKeeper.GetReactivatingValidatorSet(ctx)
+	require.Len(t, removingSet, 0)
+
+	err = app.CustomStakingKeeper.Activate(ctx, validator1.ValKey)
 	require.NoError(t, err)
 
 	// We remove it from the removing validators set (case when it happens in the same block)

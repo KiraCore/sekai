@@ -18,6 +18,14 @@ func (k Keeper) Activate(ctx sdk.Context, valAddress sdk.ValAddress) error {
 		return sdkerrors.Wrap(customstakingtypes.ErrValidatorPaused, "Can NOT activate paused validator, you must unpause")
 	}
 
+	if validator.IsJailed() {
+		return sdkerrors.Wrap(customstakingtypes.ErrValidatorJailed, "Can NOT activate jailed validator, you must unjail via proposal")
+	}
+
+	if validator.IsActive() {
+		return sdkerrors.Wrap(customstakingtypes.ErrValidatorActive, "Can NOT activate already active validator")
+	}
+
 	k.setStatusToValidator(ctx, validator, customstakingtypes.Active)
 	k.addReactivatingValidator(ctx, validator)
 	k.RemoveRemovingValidator(ctx, validator)
@@ -51,6 +59,7 @@ func (k Keeper) Inactivate(ctx sdk.Context, valAddress sdk.ValAddress) error { /
 	networkProperties := k.govkeeper.GetNetworkProperties(ctx)
 	validator.Status = customstakingtypes.Inactive
 	validator.Rank = validator.Rank * int64(100-networkProperties.InactiveRankDecreasePercent) / 100
+	validator.Streak = 0
 
 	k.AddValidator(ctx, validator)
 	k.addRemovingValidator(ctx, validator)
@@ -60,18 +69,20 @@ func (k Keeper) Inactivate(ctx sdk.Context, valAddress sdk.ValAddress) error { /
 }
 
 // HandleValidatorSignature manage rank and streak by block miss / sign result
-func (k Keeper) HandleValidatorSignature(ctx sdk.Context, valAddress sdk.ValAddress, missed bool) error {
+func (k Keeper) HandleValidatorSignature(ctx sdk.Context, valAddress sdk.ValAddress, missed bool, mischance int64) error {
 	validator, err := k.GetValidator(ctx, valAddress)
 	if err != nil {
 		return err
 	}
 	networkProperties := k.govkeeper.GetNetworkProperties(ctx)
 	if missed {
-		// set validator streak by 0 and decrease rank by X
-		validator.Streak = 0
-		validator.Rank -= int64(networkProperties.MischanceRankDecreaseAmount)
-		if validator.Rank < 0 {
-			validator.Rank = 0
+		if mischance > 0 { // it means mischance confidence is set, we update streak and rank properties
+			// set validator streak by 0 and decrease rank by X
+			validator.Streak = 0
+			validator.Rank -= int64(networkProperties.MischanceRankDecreaseAmount)
+			if validator.Rank < 0 {
+				validator.Rank = 0
+			}
 		}
 	} else {
 		// increase streak and reset rank if streak is higher than rank
@@ -151,6 +162,11 @@ func (k Keeper) GetValidatorJailInfo(ctx sdk.Context, valAddress sdk.ValAddress)
 	return info, true
 }
 
+// TODO: add proposal to jail a validator by governance
+// TODO: Would be good to merge signInfo with validator to reduce complexity
+// TODO: Same evidence shouldn't be used again for another jail - is it already supported?
+// When unjail proposal come, all the evidence info should be disregarded at the time - that's older.
+
 // Unjail a validator
 func (k Keeper) Unjail(ctx sdk.Context, valAddress sdk.ValAddress) error {
 	validator, err := k.GetValidator(ctx, valAddress)
@@ -158,10 +174,10 @@ func (k Keeper) Unjail(ctx sdk.Context, valAddress sdk.ValAddress) error {
 		return err
 	}
 
-	k.setStatusToValidator(ctx, validator, customstakingtypes.Active)
-	k.addReactivatingValidator(ctx, validator)
+	// Unjail move validator status to Inactive from Jailed
+	// User can activate it after counting activation time - uptime counter is reset at that time
+	k.setStatusToValidator(ctx, validator, customstakingtypes.Inactive)
 	k.removeJailValidatorInfo(ctx, validator)
-	k.RemoveRemovingValidator(ctx, validator)
 
 	return nil
 }

@@ -7,108 +7,54 @@ Kira Hub
 sh env.sh
 ```
 # Adding more validators
-
-```sh
-sh scripts/commands/adding-validators.sh
-```
+[scripts/commands/adding-validators.sh](scripts/commands/adding-validators.sh)
 ## Set ChangeTxFee permission
-```sh
-sh scripts/commands/set-permission.sh
-```
+[scripts/commands/set-permission.sh](scripts/commands/set-permission.sh)
 ## Set network properties
-```sh
-sh scripts/commands/set-network-properties.sh
-```
+[scripts/commands/set-network-properties.sh](scripts/commands/set-network-properties.sh)
 ## Set Execution Fee
-```sh
-sh scripts/commands/set-execution-fee.sh
-```
+[scripts/commands/set-execution-fee.sh](scripts/commands/set-execution-fee.sh)
 ## Upsert token rates
-```sh
-sh scripts/commands/upsert-token-rates.sh
-```
+[scripts/commands/upsert-token-rates.sh](scripts/commands/upsert-token-rates.sh)
 ## Upsert token alias
-```sh
-sh scripts/commands/upsert-token-alias.sh
-```
+[scripts/commands/upsert-token-alias.sh](scripts/commands/upsert-token-alias.sh)
 # Fee payment in foreign currency
-```sh
-sh scripts/commands/foreign-fee-payments.sh
-```
+[scripts/commands/foreign-fee-payments.sh](scripts/commands/foreign-fee-payments.sh)
 # Fee payment in foreign currency returning failure - execution fee in foreign currency
-```sh
-sh scripts/commands/foreign-fee-payments-failure-return.sh
-```
+[scripts/commands/foreign-fee-payments-failure-return.sh](scripts/commands/foreign-fee-payments-failure-return.sh)
 ## Query permission of an address
-```sh
-sh scripts/commands/query-permission.sh
-```
+[scripts/commands/query-permission.sh](scripts/commands/query-permission.sh)
 ## Query network properties
-```sh
-sh scripts/commands/query-network-properties.sh
-```
+[scripts/commands/query-network-properties.sh](scripts/commands/query-network-properties.sh)
 ## Query execution fee
-```sh
-sh scripts/commands/query-execution-fee.sh
-```
+[scripts/commands/query-execution-fee.sh](scripts/commands/query-execution-fee.sh)
 # Query token alias
-```sh
-sh scripts/commands/query-token-alias.sh
-```
+[scripts/commands/query-token-alias.sh](scripts/commands/query-token-alias.sh)
 # Query token rate
-```sh
-sh scripts/commands/query-token-rate.sh
-```
+[scripts/commands/query-token-rate.sh](scripts/commands/query-token-rate.sh)
 # Query validator account
-```sh
-sh scripts/commands/query-validator.sh
-```
+[scripts/commands/query-validator.sh](scripts/commands/query-validator.sh)
 # Query for current frozen / unfronzen tokens
 **Notes**: these values are valid only when specific network property is enabled
-```sh
-sh scripts/commands/query-frozen-token.sh
-```
+[scripts/commands/query-frozen-token.sh](scripts/commands/query-frozen-token.sh)
 # Query poor network messages
-```
-sh scripts/commands/query-poor-network-messages.sh
-```
+[scripts/commands/query-poor-network-messages.sh](scripts/commands/query-poor-network-messages.sh)
 # Query signing infos per validator's consensus address
-```sh
-sh scripts/commands/query-signing-infos.sh
-```
+[scripts/commands/query-signing-infos.sh](scripts/commands/query-signing-infos.sh)
 # Common commands for governance process
-```sh
-sh scripts/commands/governance/common.sh
-```
+[scripts/commands/governance/common.sh](scripts/commands/governance/common.sh)
 ### Set permission via governance process
-
-```sh
-sh scripts/commands/governance/assign-permission.sh
-```
-
+[scripts/commands/governance/assign-permission.sh](scripts/commands/governance/assign-permission.sh)
 ## Upsert token alias via governance process
-```sh
-sh scripts/commands/governance/upsert-token-alias.sh
-```
-
+[scripts/commands/governance/upsert-token-alias.sh](scripts/commands/governance/upsert-token-alias.sh)
 ## Upsert token rates via governance process
-```sh
-sh scripts/commands/governance/upsert-token-rates.sh
-```
+[scripts/commands/governance/upsert-token-rates.sh](scripts/commands/governance/upsert-token-rates.sh)
 # Commands for poor network management via governance process
-```sh
-sh sh scripts/commands/governance/poor-network-messages.sh
-```
+[scripts/commands/governance/poor-network-messages.sh](scripts/commands/governance/poor-network-messages.sh)
 # Freeze / unfreeze tokens via governance process
-
-```sh
-sh scripts/commands/governance/token-freeze.sh
-```
+[scripts/commands/governance/token-freeze.sh](scripts/commands/governance/token-freeze.sh)
 # Set network property proposal via governance process
-
-```
-sh scripts/commands/governance/set-network-property.sh
-```
+[scripts/commands/governance/set-network-property.sh](scripts/commands/governance/set-network-property.sh)
 # Unjail via governance process
 
 Modify genesis json to have jailed validator for Unjail testing
@@ -187,7 +133,4 @@ Add jailed validator key to kms.
   "dish rather zoo connect cross inhale security utility occur spell price cute one catalog coconut sort shuffle palm crop surface label foster slender inherit"
 ```
 
-```sh
-sh scripts/commands/governance/unjail-validator.sh
-```
-
+[scripts/commands/governance/unjail-validator.sh](scripts/commands/governance/unjail-validator.sh)

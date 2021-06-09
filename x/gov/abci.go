@@ -1,6 +1,8 @@
 package gov
 
 import (
+	"fmt"
+
 	"github.com/KiraCore/sekai/x/gov/keeper"
 	"github.com/KiraCore/sekai/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -60,6 +62,14 @@ func processProposal(ctx sdk.Context, k keeper.Keeper, proposalID uint64) {
 	k.SaveProposal(ctx, proposal)
 	k.RemoveActiveProposal(ctx, proposal)
 	k.AddToEnactmentProposals(ctx, proposal)
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeAddToEnactment,
+			sdk.NewAttribute(types.AttributeKeyProposalId, fmt.Sprintf("%d", proposal.ProposalId)),
+			sdk.NewAttribute(types.AttributeKeyProposalDescription, proposal.Description),
+		),
+	)
 }
 
 func processEnactmentProposal(ctx sdk.Context, k keeper.Keeper, router ProposalRouter, proposalID uint64) {
@@ -80,4 +90,11 @@ func processEnactmentProposal(ctx sdk.Context, k keeper.Keeper, router ProposalR
 	}
 
 	k.RemoveEnactmentProposal(ctx, proposal)
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeRemoveEnactment,
+			sdk.NewAttribute(types.AttributeKeyProposalId, fmt.Sprintf("%d", proposal.ProposalId)),
+			sdk.NewAttribute(types.AttributeKeyProposalDescription, proposal.Description),
+		),
+	)
 }

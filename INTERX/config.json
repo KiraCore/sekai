@@ -9,10 +9,15 @@
   "seed_node_id": "",
   "mnemonic": "pact powder face gather across strike secret quiz cable marble carry vivid tag love fat lawsuit laugh diagram palm silk endless blame vocal canvas",
   "addrbooks": "addrbook.json",
+  "node_key": "node_key.json",
   "tx_modes": "sync,async,block",
   "block": {
     "status_sync": 5,
     "halted_avg_block_times": 10
+  },
+  "node_discovery": {
+    "use_https": false,
+    "default_interx_port": "11000"
   },
   "cache": {
     "cache_dir": "cache",
@@ -116,6 +121,13 @@
           "caching_duration": 30
         },
         "/api/kira/gov/data_keys": {
+          "disable": false,
+          "rate_limit": 0,
+          "auth_rate_limit": 0,
+          "caching_disable": false,
+          "caching_duration": 30
+        },
+        "/api/kira/gov/network_properties": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,

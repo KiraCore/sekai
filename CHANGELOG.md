@@ -1,5 +1,62 @@
 # Changelog
 
+## [v0.1.19.6] - 12.05.2021
+
+- Add reverse order querying for proposals querying
+- Add pagination limit of 512 in grpc execution level
+
+## [v0.1.19.5] - 07.05.2021
+
+- update mischanceconfidence counter logic.
+- update protos to latest release.
+- add icon to tokens aliases query.
+
+## [v0.1.19.4] - 06.05.2021
+### Modified
+- Refactor jail / unjail logic
+- Modify mischance, MischanceConfidence counter logic
+- Implement additional logic for mischance_confidence to count only when active
+- Remove Tombstoned status on slashing module
+- Add more status checks for validator transition
+- Accurate error logging
+- Fix tests for uptime counter and validator status transition modification
+- Add more tests to handle modified logic 
+## [v0.1.19.3] - 03.05.2021
+### Added
+- [Interx] Network Properties query endpoint
+- [Interx] Pagination in Proposal query
+- [Interx] Network Properties proto description
+
+### Changed
+- [Interx] Refactor validator query to use less call for the performance
+
+### Fixed
+- [Interx] Multiple lint issues
+
+## [v0.1.19.3] - 03.05.2021
+### Added
+- [Interx] Network Properties query endpoint
+- [Interx] Pagination in Proposal query
+- [Interx] Network Properties proto description
+
+### Changed
+- [Interx] Refactor validator query to use less call for the performance
+
+### Fixed
+- [Interx] Multiple lint issues
+
+## [v0.1.19.2] - 28.04.2021
+### Added
+- [Interx] MischanceConfidence in ValidatorQuery
+
+### Fixed
+- [Interx] MissedBlocksCounter in ValidatorQuery
+
+## [v0.1.19.1] - 26.04.2021
+### Added
+- Update validator signing info query based on the latest release
+- Add configurations for node discovery
+
 ## [v0.1.19] - 21.04.2021
 ### Added
 - New uptime counter

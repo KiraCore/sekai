@@ -64,25 +64,13 @@ func (k Keeper) HandleEquivocationEvidence(ctx sdk.Context, evidence *types.Equi
 	}
 
 	validator, err := k.stakingKeeper.GetValidatorByConsAddr(ctx, consAddr)
-	if err != nil || validator.IsInactivated() {
-		// Defensive: Simulation doesn't take unbonding periods into account, and
-		// Tendermint might break this assumption at some point.
+	if err != nil {
+		// If validator is not found, we just ignore handling evidence
 		return
 	}
 
 	if ok := k.slashingKeeper.HasValidatorSigningInfo(ctx, consAddr); !ok {
 		panic(fmt.Sprintf("expected signing info for validator %s but not found", consAddr))
-	}
-
-	// ignore if the validator is already tombstoned
-	if k.slashingKeeper.IsTombstoned(ctx, consAddr) {
-		logger.Info(
-			"ignored equivocation; validator already tombstoned",
-			"validator", consAddr,
-			"infraction_height", infractionHeight,
-			"infraction_time", infractionTime,
-		)
-		return
 	}
 
 	logger.Info(
@@ -99,5 +87,5 @@ func (k Keeper) HandleEquivocationEvidence(ctx sdk.Context, evidence *types.Equi
 	}
 
 	k.slashingKeeper.JailUntil(ctx, consAddr, types.DoubleSignJailEndTime)
-	k.slashingKeeper.Tombstone(ctx, consAddr)
+	k.SetEvidence(ctx, evidence)
 }

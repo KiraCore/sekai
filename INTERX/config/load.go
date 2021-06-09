@@ -15,6 +15,7 @@ import (
 	bytesize "github.com/inhies/go-bytesize"
 	"github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/crypto/sr25519"
+	"github.com/tendermint/tendermint/p2p"
 	"github.com/tyler-smith/go-bip39"
 )
 
@@ -113,6 +114,11 @@ func LoadConfig(configFilePath string) {
 	Config.Address = sdk.MustBech32ifyAddressBytes(sdk.GetConfig().GetBech32AccountAddrPrefix(), Config.PubKey.Address())
 
 	Config.AddrBooks = strings.Split(configFromFile.AddrBooks, ",")
+	Config.NodeKey, err = p2p.LoadOrGenNodeKey(configFromFile.NodeKey)
+	if err != nil {
+		panic(err)
+	}
+
 	Config.TxModes = strings.Split(configFromFile.TxModes, ",")
 	if len(Config.TxModes) == 0 {
 		Config.TxModes = strings.Split("sync,async,block", ",")
@@ -122,6 +128,8 @@ func LoadConfig(configFilePath string) {
 	fmt.Println("Interx Mnemonic  : ", Config.Mnemonic)
 	fmt.Println("Interx Address   : ", Config.Address)
 	fmt.Println("Interx Public Key: ", sdk.MustBech32ifyPubKey(sdk.Bech32PubKeyTypeAccPub, Config.PubKey))
+
+	Config.NodeDiscovery = configFromFile.NodeDiscovery
 
 	Config.Block.StatusSync = configFromFile.Block.StatusSync
 	Config.Block.HaltedAvgBlockTimes = configFromFile.Block.HaltedAvgBlockTimes
@@ -197,6 +205,10 @@ func LoadConfig(configFilePath string) {
 	if _, err := os.Stat(GetReferenceCacheDir() + "/genesis.json"); !os.IsNotExist(err) {
 		os.Remove(GetReferenceCacheDir() + "/genesis.json")
 	}
+
+	if _, err := os.Stat(GetDbCacheDir() + "/token-aliases.json"); !os.IsNotExist(err) {
+		os.Remove(GetDbCacheDir() + "/token-aliases.json")
+	}
 }
 
 // GenPrivKey is a function to generate a privKey
@@ -238,8 +250,8 @@ func LoadAddressBooks() []types.AddrBookJSON {
 	return addrBooks
 }
 
-func LoadUniqueAddresses() []types.KnownAddress {
-	addrBooks := make([]types.KnownAddress, 0)
+func LoadUniqueIPAddresses() []string {
+	ipAddresses := make([]string, 0)
 
 	flag := make(map[string]bool)
 	for _, addrFile := range Config.AddrBooks {
@@ -254,12 +266,12 @@ func LoadUniqueAddresses() []types.KnownAddress {
 		}
 
 		for _, addr := range book.Addrs {
-			if _, ok := flag[addr.Addr.IP]; ok {
-				addrBooks = append(addrBooks, addr)
+			if _, ok := flag[addr.Addr.IP]; !ok {
+				ipAddresses = append(ipAddresses, addr.Addr.IP)
 			}
 			flag[addr.Addr.IP] = true
 		}
 	}
 
-	return addrBooks
+	return ipAddresses
 }

@@ -14,6 +14,7 @@ const (
 	QueryVotes             = "/api/kira/gov/votes/{proposal_id}"
 	QueryDataReferenceKeys = "/api/kira/gov/data_keys"
 	QueryDataReference     = "/api/kira/gov/data/{key}"
+	QueryNetworkProperties = "/api/kira/gov/network_properties"
 	QueryKiraTokensAliases = "/api/kira/tokens/aliases"
 	QueryKiraTokensRates   = "/api/kira/tokens/rates"
 	QueryKiraFunctions     = "/api/kira/metadata"
@@ -36,10 +37,12 @@ const (
 	QueryValidatorInfos      = "/api/valoperinfos"
 	QueryGenesis             = "/api/genesis"
 	QueryGenesisSum          = "/api/gensum"
+	QueryNodeList            = "/api/node_list"
 
 	Download              = "/download"
 	DataReferenceRegistry = "DRR"
-	InterxVersion         = "0.1.1"
+	InterxVersion         = "0.1.2"
+	DefaultInterxPort     = "11000"
 
 	QueryRosettaNetworkList    = "/rosetta/network/list"
 	QueryRosettaNetworkOptions = "/rosetta/network/options"

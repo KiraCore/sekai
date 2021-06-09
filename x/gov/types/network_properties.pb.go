@@ -147,25 +147,16 @@ func (m *MsgSetNetworkProperties) GetProposer() github_com_cosmos_cosmos_sdk_typ
 }
 
 type NetworkProperties struct {
-	MinTxFee                   uint64 `protobuf:"varint,1,opt,name=min_tx_fee,json=minTxFee,proto3" json:"min_tx_fee,omitempty"`
-	MaxTxFee                   uint64 `protobuf:"varint,2,opt,name=max_tx_fee,json=maxTxFee,proto3" json:"max_tx_fee,omitempty"`
-	VoteQuorum                 uint64 `protobuf:"varint,3,opt,name=vote_quorum,json=voteQuorum,proto3" json:"vote_quorum,omitempty"`
-	ProposalEndTime            uint64 `protobuf:"varint,4,opt,name=proposal_end_time,json=proposalEndTime,proto3" json:"proposal_end_time,omitempty"`
-	ProposalEnactmentTime      uint64 `protobuf:"varint,5,opt,name=proposal_enactment_time,json=proposalEnactmentTime,proto3" json:"proposal_enactment_time,omitempty"`
-	MinProposalEndBlocks       uint64 `protobuf:"varint,6,opt,name=min_proposal_end_blocks,json=minProposalEndBlocks,proto3" json:"min_proposal_end_blocks,omitempty"`
-	MinProposalEnactmentBlocks uint64 `protobuf:"varint,7,opt,name=min_proposal_enactment_blocks,json=minProposalEnactmentBlocks,proto3" json:"min_proposal_enactment_blocks,omitempty"`
-	EnableForeignFeePayments   bool   `protobuf:"varint,8,opt,name=enable_foreign_fee_payments,json=enableForeignFeePayments,proto3" json:"enable_foreign_fee_payments,omitempty"`
-	// The rank property is a long term statistics implying the "longest" streak that validator ever achieved,
-	// it can be expressed as rank = MAX(rank, streak).
-	// Under certain circumstances we should however decrease the rank of the validator.
-	// If the mischance property is incremented, the rank should be decremented by X (default 10), that is rank = MAX(rank - X, 0).
-	// Every time node status changes to inactive the rank should be divided by 2, that is rank = FLOOR(rank / 2)
-	// The streak and rank will enable governance to judge real life performance of validators on the mainnet or testnet, and potentially propose eviction of the weakest and least reliable operators.
+	MinTxFee                    uint64 `protobuf:"varint,1,opt,name=min_tx_fee,json=minTxFee,proto3" json:"min_tx_fee,omitempty"`
+	MaxTxFee                    uint64 `protobuf:"varint,2,opt,name=max_tx_fee,json=maxTxFee,proto3" json:"max_tx_fee,omitempty"`
+	VoteQuorum                  uint64 `protobuf:"varint,3,opt,name=vote_quorum,json=voteQuorum,proto3" json:"vote_quorum,omitempty"`
+	ProposalEndTime             uint64 `protobuf:"varint,4,opt,name=proposal_end_time,json=proposalEndTime,proto3" json:"proposal_end_time,omitempty"`
+	ProposalEnactmentTime       uint64 `protobuf:"varint,5,opt,name=proposal_enactment_time,json=proposalEnactmentTime,proto3" json:"proposal_enactment_time,omitempty"`
+	MinProposalEndBlocks        uint64 `protobuf:"varint,6,opt,name=min_proposal_end_blocks,json=minProposalEndBlocks,proto3" json:"min_proposal_end_blocks,omitempty"`
+	MinProposalEnactmentBlocks  uint64 `protobuf:"varint,7,opt,name=min_proposal_enactment_blocks,json=minProposalEnactmentBlocks,proto3" json:"min_proposal_enactment_blocks,omitempty"`
+	EnableForeignFeePayments    bool   `protobuf:"varint,8,opt,name=enable_foreign_fee_payments,json=enableForeignFeePayments,proto3" json:"enable_foreign_fee_payments,omitempty"`
 	MischanceRankDecreaseAmount uint64 `protobuf:"varint,9,opt,name=mischance_rank_decrease_amount,json=mischanceRankDecreaseAmount,proto3" json:"mischance_rank_decrease_amount,omitempty"`
-	// maximum mischance to validator inactivation
-	MaxMischance uint64 `protobuf:"varint,10,opt,name=max_mischance,json=maxMischance,proto3" json:"max_mischance,omitempty"`
-	// the number of blocks validator miss to start counting mischance
-	// default 10, modifiable by governance
+	MaxMischance                uint64 `protobuf:"varint,10,opt,name=max_mischance,json=maxMischance,proto3" json:"max_mischance,omitempty"`
 	MischanceConfidence         uint64 `protobuf:"varint,11,opt,name=mischance_confidence,json=mischanceConfidence,proto3" json:"mischance_confidence,omitempty"`
 	InactiveRankDecreasePercent uint64 `protobuf:"varint,12,opt,name=inactive_rank_decrease_percent,json=inactiveRankDecreasePercent,proto3" json:"inactive_rank_decrease_percent,omitempty"`
 	MinValidators               uint64 `protobuf:"varint,13,opt,name=min_validators,json=minValidators,proto3" json:"min_validators,omitempty"`

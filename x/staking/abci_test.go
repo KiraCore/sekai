@@ -180,6 +180,8 @@ func TestItIncludesItBackToValidatorSetOnceReactivatingIt(t *testing.T) {
 			prepareFunc: func(app *simapp.SimApp, ctx types.Context, validator customstakingtypes.Validator) {
 				err := app.CustomStakingKeeper.Unjail(ctx, validator.ValKey)
 				require.NoError(t, err)
+				err = app.CustomStakingKeeper.Activate(ctx, validator.ValKey)
+				require.NoError(t, err)
 			},
 		},
 	}

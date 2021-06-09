@@ -7,4 +7,5 @@ func RunTasks(rpcAddr string) {
 	go CacheDataCheck(rpcAddr, false)
 	go CacheMaxSizeCheck(false)
 	go DataReferenceCheck(false)
+	go NodeDiscover(false)
 }

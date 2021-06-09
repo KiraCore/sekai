@@ -14,4 +14,5 @@ func RegisterRequest(router *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr 
 	RegisterInterxTxRoutes(router, gwCosmosmux, rpcAddr)
 	RegisterValidatorsQueryRoutes(router, gwCosmosmux, rpcAddr)
 	RegisterGenesisQueryRoutes(router, gwCosmosmux, rpcAddr)
+	RegisterNodeListQueryRoutes(router, gwCosmosmux, rpcAddr)
 }

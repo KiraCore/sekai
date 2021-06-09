@@ -35,6 +35,7 @@ func getGetMethods() []string {
 		QueryVotes,
 		QueryKiraTokensAliases,
 		QueryKiraTokensRates,
+		QueryNetworkProperties,
 
 		QueryRosettaNetworkList,
 		QueryRosettaNetworkOptions,
@@ -66,10 +67,14 @@ func defaultConfig() InterxConfigFromFile {
 	configFromFile.MnemonicFile = LoadMnemonic("swap exercise equip shoot mad inside floor wheel loan visual stereo build frozen always bulb naive subway foster marine erosion shuffle flee action there")
 
 	configFromFile.AddrBooks = "addrbook.json"
+	configFromFile.NodeKey = "node_key.json"
 	configFromFile.TxModes = "sync,async,block"
 
 	configFromFile.Block.StatusSync = 5
 	configFromFile.Block.HaltedAvgBlockTimes = 10
+
+	configFromFile.NodeDiscovery.UseHttps = false
+	configFromFile.NodeDiscovery.DefaultInterxPort = "11000"
 
 	configFromFile.Cache.CacheDir = "cache"
 	configFromFile.Cache.MaxCacheSize = "2GB"
@@ -137,6 +142,9 @@ func InitConfig(
 	feeAmounts string,
 	addrBooks string,
 	txModes string,
+	nodeDiscoveryUseHttps bool,
+	nodeDiscoveryPort string,
+	nodeKey string,
 ) {
 	configFromFile := defaultConfig()
 
@@ -153,7 +161,11 @@ func InitConfig(
 	configFromFile.MnemonicFile = LoadMnemonic(signingMnemonic)
 
 	configFromFile.AddrBooks = addrBooks
+	configFromFile.NodeKey = nodeKey
 	configFromFile.TxModes = txModes
+
+	configFromFile.NodeDiscovery.UseHttps = nodeDiscoveryUseHttps
+	configFromFile.NodeDiscovery.DefaultInterxPort = nodeDiscoveryPort
 
 	configFromFile.Block.StatusSync = syncStatus
 	configFromFile.Block.HaltedAvgBlockTimes = haltedAvgBlockTimes

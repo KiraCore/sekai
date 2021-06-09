@@ -17,7 +17,17 @@ func (k Keeper) HandleValidatorSignature(ctx sdk.Context, addr crypto.Address, p
 	// fetch the validator public key
 	consAddr := sdk.ConsAddress(addr)
 	if _, err := k.GetPubkey(ctx, addr); err != nil {
-		panic(fmt.Sprintf("Validator consensus-address %s not found: %s", consAddr, err.Error()))
+		panic(fmt.Sprintf("Validator consensus-address %s not found: %s", consAddr.String(), err.Error()))
+	}
+
+	validator, err := k.sk.GetValidatorByConsAddr(ctx, consAddr)
+	if err != nil {
+		panic(fmt.Sprintf("Validator not found by consensus-address: %s", consAddr.String()))
+	}
+
+	if !validator.IsActive() {
+		// if validator is not active, stop performance counter and status change by validator signature
+		return
 	}
 
 	// fetch signing info
@@ -33,19 +43,20 @@ func (k Keeper) HandleValidatorSignature(ctx sdk.Context, addr crypto.Address, p
 	if missed { // increment counter
 		signInfo.MissedBlocksCounter++
 		// increment mischance only when missed blocks are bigger than mischance confidence
-		if ctx.BlockHeight()-signInfo.LastPresentBlock > int64(properties.MischanceConfidence) {
+		if signInfo.MischanceConfidence >= int64(properties.MischanceConfidence) {
 			signInfo.Mischance++
+		} else {
+			signInfo.MischanceConfidence++
 		}
 	} else { // set counter to 0
 		signInfo.Mischance = 0
+		signInfo.MischanceConfidence = 0
 		signInfo.ProducedBlocksCounter++
 		signInfo.LastPresentBlock = ctx.BlockHeight()
 	}
 
-	validator, err := k.sk.GetValidatorByConsAddr(ctx, consAddr)
-	if err == nil && !validator.IsInactivated() {
-		k.sk.HandleValidatorSignature(ctx, validator.ValKey, missed)
-	}
+	// handle staking module's validator object update actions
+	k.sk.HandleValidatorSignature(ctx, validator.ValKey, missed, signInfo.Mischance)
 
 	if missed {
 		ctx.EventManager().EmitEvent(
@@ -66,34 +77,21 @@ func (k Keeper) HandleValidatorSignature(ctx sdk.Context, addr crypto.Address, p
 
 	// if mischance overflow max value, we punish them
 	if signInfo.Mischance > int64(properties.MaxMischance) {
-		validator, err := k.sk.GetValidatorByConsAddr(ctx, consAddr)
-		if err == nil && validator.IsActive() {
+		// Downtime confirmed: slash and inactivate the validator
+		logger.Info(fmt.Sprintf("Validator %s past max mischance threshold of %d",
+			consAddr, properties.MaxMischance))
 
-			// Downtime confirmed: slash and inactivate the validator
-			logger.Info(fmt.Sprintf("Validator %s past max mischance threshold of %d",
-				consAddr, properties.MaxMischance))
-
-			ctx.EventManager().EmitEvent(
-				sdk.NewEvent(
-					types.EventTypeInactivate,
-					sdk.NewAttribute(types.AttributeKeyAddress, consAddr.String()),
-					sdk.NewAttribute(types.AttributeKeyPower, fmt.Sprintf("%d", power)),
-					sdk.NewAttribute(types.AttributeKeyReason, types.AttributeValueMissingSignature),
-					sdk.NewAttribute(types.AttributeKeyInactivated, consAddr.String()),
-				),
-			)
-			k.sk.Inactivate(ctx, validator.ValKey)
-
-			signInfo.InactiveUntil = ctx.BlockHeader().Time.Add(k.DowntimeInactiveDuration(ctx))
-
-			// We need to reset the counter & array so that the validator won't be immediately inactivated for downtime upon rebonding.
-			signInfo.Mischance = 0
-		} else {
-			// Validator was (a) not found or (b) already inactivated, don't slash
-			logger.Info(
-				fmt.Sprintf("Validator %s would have been inactivated for downtime, but was either not found in store or already inactivated", consAddr),
-			)
-		}
+		ctx.EventManager().EmitEvent(
+			sdk.NewEvent(
+				types.EventTypeInactivate,
+				sdk.NewAttribute(types.AttributeKeyAddress, consAddr.String()),
+				sdk.NewAttribute(types.AttributeKeyPower, fmt.Sprintf("%d", power)),
+				sdk.NewAttribute(types.AttributeKeyReason, types.AttributeValueMissingSignature),
+				sdk.NewAttribute(types.AttributeKeyInactivated, consAddr.String()),
+			),
+		)
+		k.sk.Inactivate(ctx, validator.ValKey)
+		signInfo.InactiveUntil = ctx.BlockHeader().Time.Add(k.DowntimeInactiveDuration(ctx))
 	}
 
 	// Set the updated signing info

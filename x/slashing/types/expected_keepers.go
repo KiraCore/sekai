@@ -54,7 +54,7 @@ type StakingKeeper interface {
 	Pause(sdk.Context, sdk.ValAddress) error   // pause a validator
 	Unpause(sdk.Context, sdk.ValAddress) error // unpause a validator
 
-	HandleValidatorSignature(sdk.Context, sdk.ValAddress, bool) error
+	HandleValidatorSignature(sdk.Context, sdk.ValAddress, bool, int64) error
 
 	// MaxValidators returns the maximum amount of joined validators
 	MaxValidators(sdk.Context) uint32
@@ -71,7 +71,7 @@ type StakingHooks interface {
 type GovKeeper interface {
 	GetNetworkProperties(sdk.Context) *customgovtypes.NetworkProperties // returns network properties
 	CheckIfAllowedPermission(ctx sdk.Context, addr sdk.AccAddress, permValue customgovtypes.PermValue) bool
-	GetNextProposalID(ctx sdk.Context) (uint64, error)
+	GetNextProposalID(ctx sdk.Context) uint64
 	SaveProposal(ctx sdk.Context, proposal customgovtypes.Proposal)
 	AddToActiveProposals(ctx sdk.Context, proposal customgovtypes.Proposal)
 }

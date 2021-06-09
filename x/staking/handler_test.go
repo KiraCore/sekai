@@ -263,7 +263,7 @@ func TestHandler_ProposalUnjailValidator_Errors(t *testing.T) {
 			expectedErr: fmt.Errorf("time to unjail passed"),
 			prepareFunc: func(ctx types.Context, app *simapp.SimApp) {
 				networkProperties := app.CustomGovKeeper.GetNetworkProperties(ctx)
-				networkProperties.JailMaxTime = 5
+				networkProperties.JailMaxTime = 300 // 300 seconds = 5 min
 				app.CustomGovKeeper.SetNetworkProperties(ctx, networkProperties)
 
 				proposerActor := customgovtypes.NewDefaultActor(proposerAddr)
@@ -375,8 +375,7 @@ func TestHandler_ProposalUnjailValidator(t *testing.T) {
 	require.Equal(t, expectedSavedProposal, savedProposal)
 
 	// Next proposal ID is increased.
-	id, err := app.CustomGovKeeper.GetNextProposalID(ctx)
-	require.NoError(t, err)
+	id := app.CustomGovKeeper.GetNextProposalID(ctx)
 	require.Equal(t, uint64(2), id)
 
 	// Is not on finished active proposals.
