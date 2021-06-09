@@ -114,7 +114,7 @@ func LoadConfig(configFilePath string) {
 	Config.Address = sdk.MustBech32ifyAddressBytes(sdk.GetConfig().GetBech32AccountAddrPrefix(), Config.PubKey.Address())
 
 	Config.AddrBooks = strings.Split(configFromFile.AddrBooks, ",")
-	Config.NodeKey, err = p2p.LoadNodeKey(configFromFile.NodeKey)
+	Config.NodeKey, err = p2p.LoadOrGenNodeKey(configFromFile.NodeKey)
 	if err != nil {
 		panic(err)
 	}
