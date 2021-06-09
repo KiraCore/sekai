@@ -31,6 +31,7 @@ func (k Keeper) SaveUpgradePlan(ctx sdk.Context, plan types.Plan) {
 }
 
 func (k Keeper) ApplyUpgradePlan(ctx sdk.Context, plan types.Plan) {
+	// TODO: how do we check that upgrade is already done and not halt any more?
 	if plan.ShouldExecute(ctx) {
 		panic(fmt.Sprintf("UPGRADE \"%s\" NEEDED at %s", plan.Name, time.Unix(plan.MinHaltTime, 0).String()))
 	}

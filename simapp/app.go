@@ -9,6 +9,9 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	"github.com/KiraCore/sekai/x/genutil"
+	"github.com/KiraCore/sekai/x/upgrade"
+	upgradekeeper "github.com/KiraCore/sekai/x/upgrade/keeper"
+	upgradetypes "github.com/KiraCore/sekai/x/upgrade/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	_ "github.com/cosmos/cosmos-sdk/client/docs/statik"
@@ -38,9 +41,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/params"
 	paramskeeper "github.com/cosmos/cosmos-sdk/x/params/keeper"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	"github.com/cosmos/cosmos-sdk/x/upgrade"
-	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
-	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 	"github.com/gorilla/mux"
 	"github.com/rakyll/statik/fs"
 	abci "github.com/tendermint/tendermint/abci/types"
@@ -235,6 +235,7 @@ func NewSimApp(
 			tokens.NewApplyUpsertTokenRatesProposalHandler(app.TokensKeeper),
 			customstaking.NewApplyUnjailValidatorProposalHandler(app.CustomStakingKeeper),
 			customgov.NewApplyCreateRoleProposalHandler(app.CustomGovKeeper),
+			upgrade.NewApplySoftwareUpgradeProposalHandler(app.UpgradeKeeper),
 		},
 	)
 	app.mm = module.NewManager(

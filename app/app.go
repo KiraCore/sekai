@@ -243,6 +243,7 @@ func NewInitApp(
 				customstaking.NewApplyUnjailValidatorProposalHandler(app.customStakingKeeper),
 				customslashing.NewApplyResetWholeValidatorRankProposalHandler(app.customSlashingKeeper),
 				customgov.NewApplyCreateRoleProposalHandler(app.customGovKeeper),
+				upgrade.NewApplySoftwareUpgradeProposalHandler(app.upgradeKeeper),
 			},
 		)),
 		tokens.NewAppModule(app.tokensKeeper, app.customGovKeeper),
