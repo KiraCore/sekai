@@ -67,6 +67,7 @@ func defaultConfig() InterxConfigFromFile {
 	configFromFile.MnemonicFile = LoadMnemonic("swap exercise equip shoot mad inside floor wheel loan visual stereo build frozen always bulb naive subway foster marine erosion shuffle flee action there")
 
 	configFromFile.AddrBooks = "addrbook.json"
+	configFromFile.NodeKey = "node_key.json"
 	configFromFile.TxModes = "sync,async,block"
 
 	configFromFile.Block.StatusSync = 5
@@ -143,6 +144,7 @@ func InitConfig(
 	txModes string,
 	nodeDiscoveryUseHttps bool,
 	nodeDiscoveryPort string,
+	nodeKey string,
 ) {
 	configFromFile := defaultConfig()
 
@@ -159,6 +161,7 @@ func InitConfig(
 	configFromFile.MnemonicFile = LoadMnemonic(signingMnemonic)
 
 	configFromFile.AddrBooks = addrBooks
+	configFromFile.NodeKey = nodeKey
 	configFromFile.TxModes = txModes
 
 	configFromFile.NodeDiscovery.UseHttps = nodeDiscoveryUseHttps

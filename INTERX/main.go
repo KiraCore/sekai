@@ -70,6 +70,7 @@ func main() {
 	initFeeAmounts := initCommand.String("fee_amounts", "stake 1000ukex,ukex 1000ukex,validatortoken 1000ukex", "The fee amount for each denom. `stake 1000ukex` means it will use `1000ukex` for `stake` assets transfer.")
 
 	initAddrBook := initCommand.String("addrbook", "addrbook.json", "The address books")
+	initNodeKey := initCommand.String("node_key", "node_key.json", "The node key file path")
 	initTxModes := initCommand.String("tx_modes", "sync,async,block", "The allowed transaction modes")
 
 	initNodeDiscoveryUseHttps := initCommand.Bool("node_discovery_use_https", false, "The option to use https in node discovery")
@@ -122,6 +123,7 @@ func main() {
 					*initTxModes,
 					*initNodeDiscoveryUseHttps,
 					*initNodeDiscoveryPort,
+					*initNodeKey,
 				)
 
 				fmt.Printf("Created interx configuration file: %s\n", *initConfigFilePtr)
