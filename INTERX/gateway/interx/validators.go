@@ -120,11 +120,13 @@ func queryValidatorsHandle(r *http.Request, gwCosmosmux *runtime.ServeMux, rpcAd
 
 		newReq := tempRequest.Clone(tempRequest.Context())
 		newReq.URL.Path = config.QueryNetworkProperties
+		newReq.URL.RawQuery = ""
 
 		networkPropertiesRes, _, _ := common.ServeGRPC(newReq, gwCosmosmux)
 
 		newReq = tempRequest.Clone(tempRequest.Context())
 		newReq.URL.Path = config.QueryValidatorInfos
+		newReq.URL.RawQuery = ""
 
 		validatorInfosRes, _, _ := common.ServeGRPC(newReq, gwCosmosmux)
 
