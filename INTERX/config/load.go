@@ -15,6 +15,7 @@ import (
 	bytesize "github.com/inhies/go-bytesize"
 	"github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/crypto/sr25519"
+	"github.com/tendermint/tendermint/p2p"
 	"github.com/tyler-smith/go-bip39"
 )
 
@@ -113,6 +114,11 @@ func LoadConfig(configFilePath string) {
 	Config.Address = sdk.MustBech32ifyAddressBytes(sdk.GetConfig().GetBech32AccountAddrPrefix(), Config.PubKey.Address())
 
 	Config.AddrBooks = strings.Split(configFromFile.AddrBooks, ",")
+	Config.NodeKey, err = p2p.LoadOrGenNodeKey(configFromFile.NodeKey)
+	if err != nil {
+		panic(err)
+	}
+
 	Config.TxModes = strings.Split(configFromFile.TxModes, ",")
 	if len(Config.TxModes) == 0 {
 		Config.TxModes = strings.Split("sync,async,block", ",")
