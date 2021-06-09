@@ -2,6 +2,7 @@ package config
 
 import (
 	crypto "github.com/cosmos/cosmos-sdk/crypto/types"
+	"github.com/tendermint/tendermint/p2p"
 )
 
 // FaucetConfig is a struct to be used for Faucet configuration
@@ -60,6 +61,7 @@ type InterxConfig struct {
 	SeedNodeID       string              `json:"seed_node_id"`
 	Mnemonic         string              `json:"mnemonic"`
 	AddrBooks        []string            `json:"addrbooks"`
+	NodeKey          *p2p.NodeKey        `json:"node_key"`
 	TxModes          []string            `json:"tx_modes"`
 	PrivKey          crypto.PrivKey      `json:"privkey"`
 	PubKey           crypto.PubKey       `json:"pubkey"`
@@ -83,6 +85,7 @@ type InterxConfigFromFile struct {
 	SeedNodeID       string              `json:"seed_node_id"`
 	MnemonicFile     string              `json:"mnemonic"`
 	AddrBooks        string              `json:"addrbooks"`
+	NodeKey          string              `json:"node_key"`
 	TxModes          string              `json:"tx_modes"`
 	Block            BlockConfig         `json:"block"`
 	NodeDiscovery    NodeDiscoveryConfig `json:"node_discovery"`
