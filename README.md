@@ -59,6 +59,15 @@ sh env.sh
 # Set application upgrade proposal via governance process
 [scripts/commands/governance/upgrade-plan.sh](scripts/commands/governance/upgrade-plan.sh)
 
+Export the status of chain before halt (should kill the daemon process at the time of genesis export)
+[scripts/commands/export-state.sh](scripts/commands/export-state.sh)
+
+The script for creating new chain from exported state should be written or manual edition process is required.
+`ChainId` should be modified in this process.
+TODO:@Asmodat We need to discuss about this upgrade command. It has lots of versioning and upgrade command will need to take input version and output version.
+
+TODO:@Asmodat Export should also have a rollback flag in case we want to get genesis that allows to continue producing blocks on the old chain after chain was halted but upgrade failed This way no matter what happens chain remains operational.
+
 # Unjail via governance process
 
 Modify genesis json to have jailed validator for Unjail testing
