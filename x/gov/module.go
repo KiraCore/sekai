@@ -112,55 +112,13 @@ func (am AppModule) InitGenesis(
 	var genesisState customgovtypes.GenesisState
 	cdc.MustUnmarshalJSON(data, &genesisState)
 
-	for _, actor := range genesisState.NetworkActors {
-		am.customGovKeeper.SaveNetworkActor(ctx, *actor)
-		for _, role := range actor.Roles {
-			am.customGovKeeper.AssignRoleToActor(ctx, *actor, customgovtypes.Role(role))
-		}
-		for _, perm := range actor.Permissions.Whitelist {
-			err := am.customGovKeeper.AddWhitelistPermission(ctx, *actor, customgovtypes.PermValue(perm))
-			if err != nil {
-				panic(err)
-			}
-		}
-		// TODO when we add keeper function for managing blacklist mapping, we can just enable this
-		// for _, perm := range actor.Permissions.Blacklist {
-		// 	am.customGovKeeper.RemoveWhitelistPermission(ctx, *actor, customgovtypes.PermValue(perm))
-		// }
-	}
-
-	for index, perm := range genesisState.Permissions {
-		role := customgovtypes.Role(index)
-		am.customGovKeeper.CreateRole(ctx, role)
-		for _, white := range perm.Whitelist {
-			err := am.customGovKeeper.WhitelistRolePermission(ctx, role, customgovtypes.PermValue(white))
-			if err != nil {
-				panic(err)
-			}
-		}
-		for _, black := range perm.Blacklist {
-			err := am.customGovKeeper.BlacklistRolePermission(ctx, role, customgovtypes.PermValue(black))
-			if err != nil {
-				panic(err)
-			}
-		}
-	}
-
-	am.customGovKeeper.SetProposalID(ctx, genesisState.StartingProposalId)
-
-	am.customGovKeeper.SetNetworkProperties(ctx, genesisState.NetworkProperties)
-
-	for _, fee := range genesisState.ExecutionFees {
-		am.customGovKeeper.SetExecutionFee(ctx, fee)
-	}
-
-	am.customGovKeeper.SavePoorNetworkMessages(ctx, genesisState.PoorNetworkMessages)
-
+	InitGenesis(ctx, am.customGovKeeper, genesisState)
 	return nil
 }
 
-func (am AppModule) ExportGenesis(context sdk.Context, marshaler codec.JSONMarshaler) json.RawMessage {
-	return nil
+func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONMarshaler) json.RawMessage {
+	gs := ExportGenesis(ctx, am.customGovKeeper)
+	return cdc.MustMarshalJSON(gs)
 }
 
 func (am AppModule) RegisterInvariants(registry sdk.InvariantRegistry) {}

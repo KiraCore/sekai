@@ -13,16 +13,16 @@ func (k Keeper) SavePoorNetworkMessages(ctx sdk.Context, allows *types.AllowedMe
 }
 
 // GetPoorNetworkMessages returns poor network messages stored inside keeper
-func (k Keeper) GetPoorNetworkMessages(ctx sdk.Context) (*types.AllowedMessages, bool) {
+func (k Keeper) GetPoorNetworkMessages(ctx sdk.Context) *types.AllowedMessages {
+	var am types.AllowedMessages
 	store := ctx.KVStore(k.storeKey)
 
 	bz := store.Get(PoorNetworkMessagesPrefix)
 	if bz == nil {
-		return &types.AllowedMessages{}, false
+		return &am
 	}
 
-	var am types.AllowedMessages
 	k.cdc.MustUnmarshalBinaryBare(bz, &am)
 
-	return &am, true
+	return &am
 }
