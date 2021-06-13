@@ -82,6 +82,7 @@ func init() {
 	// add keybase, auxiliary RPC, query, and tx child commands
 	rootCmd.AddCommand(
 		rpc.StatusCommand(),
+		ExportRollbackStateCmd(createAppAndExport, app.DefaultNodeHome),
 		queryCommand(),
 		txCommand(),
 		keys.Commands(app.DefaultNodeHome),
@@ -277,5 +278,27 @@ func createAppAndExport(
 		sekaiApp = app.NewInitApp(logger, db, traceStore, true, map[int64]bool{}, "", uint(1), encCfg, appOpts)
 	}
 
-	return sekaiApp.ExportAppStateAndValidators(forZeroHeight, jailAllowedAddrs)
+	return sekaiApp.ExportAppStateAndValidators(forZeroHeight, jailAllowedAddrs, false)
+}
+
+// createAppAndExportRollbackState creates a new app (optionally at a given height)
+// and exports state that can start producing blocks again by removing upgrade plan
+func createAppAndExportRollbackState(
+	logger log.Logger, db dbm.DB, traceStore io.Writer, height int64, forZeroHeight bool, jailAllowedAddrs []string,
+	appOpts servertypes.AppOptions) (servertypes.ExportedApp, error) {
+
+	encCfg := app.MakeEncodingConfig() // Ideally, we would reuse the one created by NewRootCmd.
+	encCfg.Marshaler = codec.NewProtoCodec(encCfg.InterfaceRegistry)
+	var sekaiApp *app.SekaiApp
+	if height != -1 {
+		sekaiApp = app.NewInitApp(logger, db, traceStore, false, map[int64]bool{}, "", uint(1), encCfg, appOpts)
+
+		if err := sekaiApp.LoadHeight(height); err != nil {
+			return servertypes.ExportedApp{}, err
+		}
+	} else {
+		sekaiApp = app.NewInitApp(logger, db, traceStore, true, map[int64]bool{}, "", uint(1), encCfg, appOpts)
+	}
+
+	return sekaiApp.ExportAppStateAndValidators(forZeroHeight, jailAllowedAddrs, true)
 }

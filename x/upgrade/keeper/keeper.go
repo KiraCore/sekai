@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"encoding/json"
+
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -17,4 +19,8 @@ func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryMarshaler) Keeper {
 		storeKey: storeKey,
 		cdc:      cdc,
 	}
+}
+
+func (am Keeper) ExportGenesisRollbackState(clientCtx sdk.Context, marshaler codec.JSONMarshaler) json.RawMessage {
+	return nil
 }

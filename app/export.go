@@ -10,7 +10,7 @@ import (
 
 // ExportAppStateAndValidators export the state of Sekai for a genesis file
 func (app *SekaiApp) ExportAppStateAndValidators(
-	forZeroHeight bool, jailAllowedAddrs []string,
+	forZeroHeight bool, jailAllowedAddrs []string, rollbackState bool,
 ) (servertypes.ExportedApp, error) {
 
 	ctx := app.NewContext(true, tmproto.Header{Height: app.LastBlockHeight()})
@@ -19,6 +19,9 @@ func (app *SekaiApp) ExportAppStateAndValidators(
 	height := app.LastBlockHeight() + 1
 
 	genState := app.mm.ExportGenesis(ctx, app.appCodec)
+	if rollbackState {
+		genState["upgrade"] = app.upgradeKeeper.ExportGenesisRollbackState(ctx, app.appCodec)
+	}
 	appState, err := json.MarshalIndent(genState, "", "  ")
 	if err != nil {
 		return servertypes.ExportedApp{}, err
