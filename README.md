@@ -64,9 +64,13 @@ Export the status of chain before halt (should kill the daemon process at the ti
 
 The script for creating new chain from exported state should be written or manual edition process is required.
 `ChainId` should be modified in this process.
-TODO:@Asmodat We need to discuss about this upgrade command. It has lots of versioning and upgrade command will need to take input version and output version.
 
-TODO:@Asmodat Export should also have a rollback flag in case we want to get genesis that allows to continue producing blocks on the old chain after chain was halted but upgrade failed This way no matter what happens chain remains operational.
+For now, upgrade process requires manual conversion from old genesis to new genesis.
+At each time of upgrade, genesis upgrade command will be built and infra could run the command like `sekaid genesis-migrate`
+
+Note: export is not exporting the upgrade plan and if all validators run with exported genesis with the previous binary, consensus failure won't happen.
+
+TODO:@Asmodat If we need to export upgrade plan as well, export should also have a rollback flag in case we want to get genesis that allows to continue producing blocks on the old chain after chain was halted but upgrade failed This way no matter what happens chain remains operational.
 
 # Unjail via governance process
 
