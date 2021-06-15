@@ -120,7 +120,7 @@ func queryValidatorsHandle(r *http.Request, gwCosmosmux *runtime.ServeMux, rpcAd
 
 		newReq := tempRequest.Clone(tempRequest.Context())
 		newReq.URL.Path = config.QueryValidatorInfos
-		newReq.URL.RawQuery = ""
+		newReq.URL.RawQuery = "all=true"
 
 		validatorInfosRes, _, _ := common.ServeGRPC(newReq, gwCosmosmux)
 
@@ -253,6 +253,7 @@ func queryValidatorInfosHandle(r *http.Request, gwCosmosmux *runtime.ServeMux) (
 	offset := queries["offset"]
 	limit := queries["limit"]
 	countTotal := queries["count_total"]
+	all := queries["all"]
 
 	var events = make([]string, 0, 9)
 	if len(key) == 1 {
@@ -266,6 +267,9 @@ func queryValidatorInfosHandle(r *http.Request, gwCosmosmux *runtime.ServeMux) (
 	}
 	if len(countTotal) == 1 {
 		events = append(events, fmt.Sprintf("pagination.count_total=%s", countTotal[0]))
+	}
+	if len(all) == 1 {
+		events = append(events, fmt.Sprintf("all=%s", all[0]))
 	}
 
 	r.URL.RawQuery = strings.Join(events, "&")
