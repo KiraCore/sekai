@@ -119,18 +119,12 @@ func queryValidatorsHandle(r *http.Request, gwCosmosmux *runtime.ServeMux, rpcAd
 		}
 
 		newReq := tempRequest.Clone(tempRequest.Context())
-		newReq.URL.Path = config.QueryNetworkProperties
-		newReq.URL.RawQuery = ""
-
-		networkPropertiesRes, _, _ := common.ServeGRPC(newReq, gwCosmosmux)
-
-		newReq = tempRequest.Clone(tempRequest.Context())
 		newReq.URL.Path = config.QueryValidatorInfos
 		newReq.URL.RawQuery = ""
 
 		validatorInfosRes, _, _ := common.ServeGRPC(newReq, gwCosmosmux)
 
-		if networkPropertiesRes != nil && validatorInfosRes != nil {
+		if validatorInfosRes != nil {
 			validatorInfosResponse := struct {
 				ValValidatorInfos []types.ValidatorSigningInfo `json:"info,omitempty"`
 			}{}
@@ -157,21 +151,6 @@ func queryValidatorsHandle(r *http.Request, gwCosmosmux *runtime.ServeMux, rpcAd
 						valSigningInfo = signingInfo
 						break
 					}
-				}
-				networkPropertiesResponse := struct {
-					ValNetworkProperties types.NetworkProperties `json:"properties,omitempty"`
-				}{}
-
-				byteData, err = json.Marshal(networkPropertiesRes)
-				if err != nil {
-					common.GetLogger().Error("[query-validator-networkproperties] Invalid response format: ", err)
-					return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
-				}
-
-				err = json.Unmarshal(byteData, &networkPropertiesResponse)
-				if err != nil {
-					common.GetLogger().Error("[query-validator-networkproperties] Invalid response format: ", err)
-					return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
 				}
 
 				result.Validators[index].StartHeight = valSigningInfo.StartHeight

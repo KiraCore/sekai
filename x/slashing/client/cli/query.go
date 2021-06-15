@@ -83,12 +83,7 @@ $ <appd> query slashing signing-infos
 				return err
 			}
 
-			params := &types.QuerySigningInfosRequest{Pagination: &types.PageRequest{
-				Key:        pageReq.Key,
-				Offset:     pageReq.Offset,
-				Limit:      pageReq.Limit,
-				CountTotal: pageReq.CountTotal,
-			}}
+			params := &types.QuerySigningInfosRequest{Pagination: pageReq}
 			res, err := queryClient.SigningInfos(context.Background(), params)
 			if err != nil {
 				return err
