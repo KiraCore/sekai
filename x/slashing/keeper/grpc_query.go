@@ -78,20 +78,16 @@ func (k Keeper) SigningInfos(c context.Context, request *types.QuerySigningInfos
 		request.Pagination.Limit = kiratypes.PageIterationLimit
 	}
 
-	pagination := types.SDKQueryPageReqFromCustomPageReq(request.Pagination)
 	sigInfoStore := prefix.NewStore(store, types.ValidatorSigningInfoKeyPrefix)
 	if request.All {
-		pageRes, err = kiraquery.IterateAll(sigInfoStore, pagination, onResult)
+		pageRes, err = kiraquery.IterateAll(sigInfoStore, request.Pagination, onResult)
 	} else {
-		pageRes, err = query.FilteredPaginate(sigInfoStore, pagination, onResult)
+		pageRes, err = query.FilteredPaginate(sigInfoStore, request.Pagination, onResult)
 	}
 
 	if err != nil {
 		return nil, err
 	}
 
-	return &types.QuerySigningInfosResponse{Info: signInfos, Pagination: &types.PageResponse{
-		NextKey: pageRes.NextKey,
-		Total:   pageRes.Total,
-	}}, nil
+	return &types.QuerySigningInfosResponse{Info: signInfos, Pagination: pageRes}, nil
 }

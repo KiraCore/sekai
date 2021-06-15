@@ -50,7 +50,7 @@ message QuerySigningInfoResponse {
 // QuerySigningInfosRequest is the request type for the Query/SigningInfos RPC
 // method
 message QuerySigningInfosRequest {
-  PageRequest pagination = 1;
+  PageRequest pagination = 1 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
   // TODO: should remove 'all' flag when refactoring is done
   bool all = 2;
 }
@@ -60,7 +60,7 @@ message QuerySigningInfosRequest {
 message QuerySigningInfosResponse {
   // info is the signing info of all validators
   repeated ValidatorSigningInfo info       = 1 [(gogoproto.nullable) = false];
-  PageResponse                pagination = 2;
+  PageResponse pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
 }
 
 
