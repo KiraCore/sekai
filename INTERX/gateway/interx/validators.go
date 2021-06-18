@@ -5,11 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/KiraCore/sekai/INTERX/common"
 	"github.com/KiraCore/sekai/INTERX/config"
+	"github.com/KiraCore/sekai/INTERX/tasks"
 	"github.com/KiraCore/sekai/INTERX/types"
 	"github.com/KiraCore/sekai/INTERX/types/kira"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -43,180 +44,70 @@ const (
 )
 
 func queryValidatorsHandle(r *http.Request, gwCosmosmux *runtime.ServeMux, rpcAddr string) (interface{}, interface{}, int) {
-	tempRequest := r.Clone(r.Context())
-
 	queries := r.URL.Query()
 	address := queries["address"]
 	valkey := queries["valkey"]
 	pubkey := queries["pubkey"]
 	moniker := queries["moniker"]
 	status := queries["status"]
-	key := queries["key"]
 	offset := queries["offset"]
 	limit := queries["limit"]
 	proposer := queries["proposer"]
 	countTotal := queries["count_total"]
 	all := queries["all"]
 
-	isQueryAll := false
-
-	var events = make([]string, 0, 9)
-	if len(key) == 1 {
-		events = append(events, fmt.Sprintf("pagination.key=%s", key[0]))
+	if len(all) == 1 && all[0] == "true" {
+		// Query All Validators
+		return tasks.AllValidators, nil, http.StatusOK
 	}
+
+	response := struct {
+		Validators []types.QueryValidator `json:"validators,omitempty"`
+		Pagination struct {
+			Total int `json:"total,string,omitempty"`
+		} `json:"pagination,omitempty"`
+	}{}
+
+	validators := tasks.AllValidators.Validators
+	if len(countTotal) == 1 && countTotal[0] == "true" {
+		response.Pagination.Total = len(validators)
+	}
+
+	from := 0
+	count := len(validators)
 	if len(offset) == 1 {
-		events = append(events, fmt.Sprintf("pagination.offset=%s", offset[0]))
+		from, _ = strconv.Atoi(offset[0])
 	}
 	if len(limit) == 1 {
-		events = append(events, fmt.Sprintf("pagination.limit=%s", limit[0]))
-	}
-	if len(countTotal) == 1 {
-		events = append(events, fmt.Sprintf("pagination.count_total=%s", countTotal[0]))
-	}
-	if len(address) == 1 {
-		events = append(events, fmt.Sprintf("address=%s", address[0]))
-	}
-	if len(valkey) == 1 {
-		events = append(events, fmt.Sprintf("valkey=%s", valkey[0]))
-	}
-	if len(pubkey) == 1 {
-		events = append(events, fmt.Sprintf("pubkey=%s", pubkey[0]))
-	}
-	if len(proposer) == 1 {
-		events = append(events, fmt.Sprintf("proposer=%s", proposer[0]))
-	}
-	if len(moniker) == 1 {
-		events = append(events, fmt.Sprintf("moniker=%s", moniker[0]))
-	}
-	if len(status) == 1 {
-		events = append(events, fmt.Sprintf("status=%s", status[0]))
-	}
-	if len(all) == 1 {
-		events = append(events, fmt.Sprintf("all=%s", all[0]))
-		isQueryAll = all[0] == "true"
+		count, _ = strconv.Atoi(limit[0])
 	}
 
-	r.URL.RawQuery = strings.Join(events, "&")
-
-	success, failure, statusCode := common.ServeGRPC(r, gwCosmosmux)
-	if success != nil {
-		result := struct {
-			Validators []types.QueryValidator `json:"validators,omitempty"`
-			Actors     []string               `json:"actors,omitempty"`
-			Pagination interface{}            `json:"pagination,omitempty"`
-		}{}
-
-		byteData, err := json.Marshal(success)
-		if err != nil {
-			common.GetLogger().Error("[query-validators] Invalid response format: ", err)
-			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
+	for index, validator := range validators {
+		if from > index || index >= from+count {
+			continue
+		}
+		if len(address) == 1 && validator.Address != address[0] {
+			continue
+		}
+		if len(valkey) == 1 && validator.Valkey != valkey[0] {
+			continue
+		}
+		if len(pubkey) == 1 && validator.Pubkey != pubkey[0] {
+			continue
+		}
+		if len(proposer) == 1 && validator.Proposer != proposer[0] {
+			continue
+		}
+		if len(moniker) == 1 && validator.Moniker != moniker[0] {
+			continue
+		}
+		if len(status) == 1 && validator.Status != status[0] {
+			continue
 		}
 
-		err = json.Unmarshal(byteData, &result)
-		if err != nil {
-			common.GetLogger().Error("[query-validators] Invalid response format: ", err)
-			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
-		}
-
-		newReq := tempRequest.Clone(tempRequest.Context())
-		newReq.URL.Path = config.QueryValidatorInfos
-		newReq.URL.RawQuery = "all=true"
-
-		validatorInfosRes, _, _ := common.ServeGRPC(newReq, gwCosmosmux)
-
-		if validatorInfosRes != nil {
-			validatorInfosResponse := struct {
-				ValValidatorInfos []types.ValidatorSigningInfo `json:"info,omitempty"`
-			}{}
-
-			byteData, err = json.Marshal(validatorInfosRes)
-			if err != nil {
-				common.GetLogger().Error("[query-validator-infos] Invalid response format: ", err)
-				return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
-			}
-
-			err = json.Unmarshal(byteData, &validatorInfosResponse)
-			if err != nil {
-				common.GetLogger().Error("[query-validator-infos] Invalid response format: ", err)
-				return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
-			}
-
-			for index, validator := range result.Validators {
-				pubkey, _ := sdk.GetPubKeyFromBech32(sdk.Bech32PubKeyTypeConsPub, validator.Pubkey)
-				address := sdk.GetConsAddress(pubkey).String()
-
-				var valSigningInfo types.ValidatorSigningInfo
-				for _, signingInfo := range validatorInfosResponse.ValValidatorInfos {
-					if signingInfo.Address == address {
-						valSigningInfo = signingInfo
-						break
-					}
-				}
-
-				result.Validators[index].StartHeight = valSigningInfo.StartHeight
-				result.Validators[index].InactiveUntil = valSigningInfo.InactiveUntil
-				result.Validators[index].Mischance = valSigningInfo.Mischance
-				result.Validators[index].MischanceConfidence = valSigningInfo.MischanceConfidence
-				result.Validators[index].LastPresentBlock = valSigningInfo.LastPresentBlock
-				result.Validators[index].MissedBlocksCounter = valSigningInfo.MissedBlocksCounter
-				result.Validators[index].ProducedBlocksCounter = valSigningInfo.ProducedBlocksCounter
-			}
-		}
-
-		sort.Sort(types.QueryValidators(result.Validators))
-		for index := range result.Validators {
-			result.Validators[index].Top = index + 1
-		}
-
-		if isQueryAll {
-
-			allValidators := types.AllValidators{}
-
-			allValidators.Validators = result.Validators
-			allValidators.Waiting = make([]string, 0)
-			for _, actor := range result.Actors {
-				isWaiting := true
-				for _, validator := range result.Validators {
-					if validator.Address == actor {
-						isWaiting = false
-						break
-					}
-				}
-
-				if isWaiting {
-					allValidators.Waiting = append(allValidators.Waiting, actor)
-				}
-			}
-
-			allValidators.Status.TotalValidators = len(result.Validators)
-			allValidators.Status.WaitingValidators = len(allValidators.Waiting)
-
-			allValidators.Status.ActiveValidators = 0
-			allValidators.Status.PausedValidators = 0
-			allValidators.Status.InactiveValidators = 0
-			allValidators.Status.JailedValidators = 0
-			for _, validator := range result.Validators {
-				if validator.Status == Active {
-					allValidators.Status.ActiveValidators++
-				}
-				if validator.Status == Inactive {
-					allValidators.Status.InactiveValidators++
-				}
-				if validator.Status == Paused {
-					allValidators.Status.PausedValidators++
-				}
-				if validator.Status == Jailed {
-					allValidators.Status.JailedValidators++
-				}
-			}
-
-			return allValidators, nil, statusCode
-		}
-
-		return result, nil, statusCode
+		response.Validators = append(response.Validators, validator)
 	}
-
-	return success, failure, statusCode
+	return response, nil, http.StatusOK
 }
 
 // QueryValidators is a function to list validators.
