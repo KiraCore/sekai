@@ -113,8 +113,6 @@ func Run(configFilePath string, log grpclog.LoggerV2) error {
 	rpcAddr := config.Config.RPC
 	port := config.Config.PORT
 
-	tasks.RunTasks(rpcAddr)
-
 	gwCosmosmux, err := GetGrpcServeMux(grpcAddr)
 	if err != nil {
 		return fmt.Errorf("failed to register gateway: %w", err)
@@ -140,6 +138,8 @@ func Run(configFilePath string, log grpclog.LoggerV2) error {
 		Addr:    gatewayAddr,
 		Handler: c.Handler(router),
 	}
+
+	tasks.RunTasks(gwCosmosmux, rpcAddr, gatewayAddr)
 
 	if serveHTTPS {
 		gwServer.TLSConfig = &tls.Config{
