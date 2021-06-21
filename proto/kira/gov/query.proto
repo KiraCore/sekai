@@ -9,6 +9,7 @@ import "role.proto";
 import "execution_fee.proto";
 import "network_properties.proto";
 import "proposal.proto";
+import "identity_registrar.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 
@@ -58,6 +59,10 @@ service Query {
   rpc GetDataReferenceByKey(QueryDataReferenceRequest) returns (QueryDataReferenceResponse) {
     option (google.api.http).get = "/kira/gov/data/{key}";
   }
+  // Query identity records with verifications
+  rpc GetIdentityRecords(QueryIdentityRecordsRequest) returns (QueryIdentityRecordsResponse) {
+    option (google.api.http).get = "/kira/gov/identity_records/{address}";
+  }  
 }
 
 message NetworkPropertiesRequest {}
@@ -217,4 +222,18 @@ message QueryDataReferenceRequest {
 // QueryDataReferenceResponse is the response type for data referencequery.
 message QueryDataReferenceResponse {
   kira.gov.DataRegistryEntry data = 1;
+}
+
+message QueryIdentityRecordsRequest {
+  bytes address = 2 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
+  ];
+}
+
+message QueryIdentityRecordsResponse {
+  bytes address = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
+  ];
+  repeated kira.gov.IdentityRecord records = 2;
+  repeated kira.gov.VerifiedIdRecordsByAddress verifiers = 3;
 }
