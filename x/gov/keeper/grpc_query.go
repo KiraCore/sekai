@@ -220,8 +220,44 @@ func (q Querier) GetDataReferenceByKey(ctx context.Context, request *types.Query
 	return q.keeper.GetDataReferenceByKey(sdkContext, request)
 }
 
-// GetIdentityRecords identity records with verifications
+// GetIdentityRecord query identity record by id
+func (q Querier) GetIdentityRecord(ctx context.Context, request *types.QueryIdentityRecordRequest) (*types.QueryIdentityRecordResponse, error) {
+	sdkContext := sdk.UnwrapSDKContext(ctx)
+	return q.keeper.GetIdentityRecord(sdkContext, request)
+}
+
+// GetIdentityRecords query identity records by creator
 func (q Querier) GetIdentityRecords(ctx context.Context, request *types.QueryIdentityRecordsRequest) (*types.QueryIdentityRecordsResponse, error) {
 	sdkContext := sdk.UnwrapSDKContext(ctx)
 	return q.keeper.GetIdentityRecords(sdkContext, request)
+}
+
+// GetAllIdentityRecords query all identity records
+func (q Querier) GetAllIdentityRecords(ctx context.Context, request *types.QueryAllIdentityRecordsRequest) (*types.QueryAllIdentityRecordsResponse, error) {
+	sdkContext := sdk.UnwrapSDKContext(ctx)
+	return q.keeper.GetAllIdentityRecords(sdkContext, request)
+}
+
+// GetIdentityRecordVerifyRequest query identity record verify request by id
+func (q Querier) GetIdentityRecordVerifyRequest(ctx context.Context, request *types.QueryIdentityVerifyRecordRequest) (*types.QueryIdentityVerifyRecordResponse, error) {
+	sdkContext := sdk.UnwrapSDKContext(ctx)
+	return q.keeper.GetIdentityRecordVerifyRequest(sdkContext, request)
+}
+
+// GetIdentityRecordVerifyRequests query identity record verify request by id
+func (q Querier) GetIdentityRecordVerifyRequests(ctx context.Context, request *types.QueryIdentityRecordVerifyRequests) (*types.QueryIdentityRecordVerifyRequestsResponse, error) {
+	sdkContext := sdk.UnwrapSDKContext(ctx)
+	return q.keeper.GetIdentityRecordVerifyRequests(sdkContext, request)
+}
+
+// GetIdentityRecordVerifyRequestsByApprover query identity records verify requests by approver
+func (q Querier) GetIdentityRecordVerifyRequestsByApprover(ctx context.Context, request *types.QueryIdentityRecordVerifyRequestsByApprover) (*types.QueryIdentityRecordVerifyRequestsByApproverResponse, error) {
+	sdkContext := sdk.UnwrapSDKContext(ctx)
+	return q.keeper.GetIdentityRecordVerifyRequestsByApprover(sdkContext, request)
+}
+
+// GetAllIdentityRecordVerifyRequests query all identity records verify requests
+func (q Querier) GetAllIdentityRecordVerifyRequests(ctx context.Context, request *types.QueryAllIdentityRecordVerifyRequests) (*types.QueryAllIdentityRecordVerifyRequestsResponse, error) {
+	sdkContext := sdk.UnwrapSDKContext(ctx)
+	return q.keeper.GetAllIdentityRecordVerifyRequests(sdkContext, request)
 }

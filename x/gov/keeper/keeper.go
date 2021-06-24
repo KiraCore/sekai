@@ -200,6 +200,17 @@ func (k Keeper) GetDataReferenceByKey(sdkCtx sdk.Context, req *types.QueryDataRe
 	return &res, nil
 }
 
+// GetIdentityRecord query identity record by id
+func (q Keeper) GetIdentityRecord(sdkCtx sdk.Context, req *types.QueryIdentityRecordRequest) (*types.QueryIdentityRecordResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	res := types.QueryIdentityRecordResponse{}
+
+	return &res, nil
+}
+
 // GetIdentityRecords identity records with verifications
 func (k Keeper) GetIdentityRecords(sdkCtx sdk.Context, req *types.QueryIdentityRecordsRequest) (*types.QueryIdentityRecordsResponse, error) {
 	if req == nil {
@@ -207,9 +218,72 @@ func (k Keeper) GetIdentityRecords(sdkCtx sdk.Context, req *types.QueryIdentityR
 	}
 
 	res := types.QueryIdentityRecordsResponse{
-		Address:   req.Address,
-		Records:   nil,
-		Verifiers: nil,
+		Records: nil,
+	}
+
+	return &res, nil
+}
+
+// GetAllIdentityRecords query all identity records
+func (k Keeper) GetAllIdentityRecords(sdkCtx sdk.Context, req *types.QueryAllIdentityRecordsRequest) (*types.QueryAllIdentityRecordsResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	res := types.QueryAllIdentityRecordsResponse{
+		Records: nil,
+	}
+
+	return &res, nil
+}
+
+// GetIdentityRecordVerifyRequest query identity record verify request by id
+func (k Keeper) GetIdentityRecordVerifyRequest(sdkCtx sdk.Context, req *types.QueryIdentityVerifyRecordRequest) (*types.QueryIdentityVerifyRecordResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	res := types.QueryIdentityVerifyRecordResponse{
+		VerifyRecord: nil,
+	}
+
+	return &res, nil
+}
+
+// GetIdentityRecordVerifyRequests query identity record verify request by id
+func (k Keeper) GetIdentityRecordVerifyRequests(sdkCtx sdk.Context, req *types.QueryIdentityRecordVerifyRequests) (*types.QueryIdentityRecordVerifyRequestsResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	res := types.QueryIdentityRecordVerifyRequestsResponse{
+		VerifyRecords: nil,
+	}
+
+	return &res, nil
+}
+
+// GetIdentityRecordVerifyRequestsByApprover query identity records verify requests by approver
+func (k Keeper) GetIdentityRecordVerifyRequestsByApprover(sdkCtx sdk.Context, req *types.QueryIdentityRecordVerifyRequestsByApprover) (*types.QueryIdentityRecordVerifyRequestsByApproverResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	res := types.QueryIdentityRecordVerifyRequestsByApproverResponse{
+		VerifyRecords: nil,
+	}
+
+	return &res, nil
+}
+
+// GetAllIdentityRecordVerifyRequests query all identity records verify requests
+func (k Keeper) GetAllIdentityRecordVerifyRequests(sdkCtx sdk.Context, req *types.QueryAllIdentityRecordVerifyRequests) (*types.QueryAllIdentityRecordVerifyRequestsResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	res := types.QueryAllIdentityRecordVerifyRequestsResponse{
+		VerifyRecords: nil,
 	}
 
 	return &res, nil
