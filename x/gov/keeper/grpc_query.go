@@ -219,3 +219,9 @@ func (q Querier) GetDataReferenceByKey(ctx context.Context, request *types.Query
 	sdkContext := sdk.UnwrapSDKContext(ctx)
 	return q.keeper.GetDataReferenceByKey(sdkContext, request)
 }
+
+// GetIdentityRecords identity records with verifications
+func (q Querier) GetIdentityRecords(ctx context.Context, request *types.QueryIdentityRecordsRequest) (*types.QueryIdentityRecordsResponse, error) {
+	sdkContext := sdk.UnwrapSDKContext(ctx)
+	return q.keeper.GetIdentityRecords(sdkContext, request)
+}

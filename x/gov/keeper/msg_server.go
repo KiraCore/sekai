@@ -130,6 +130,24 @@ func (k msgServer) ProposalUpsertDataRegistry(
 	}, nil
 }
 
+// CreateIdentityRecord defines a method to create identity record
+func (k msgServer) CreateIdentityRecord(goCtx context.Context, msg *customgovtypes.MsgCreateIdentityRecord) (*customgovtypes.MsgCreateIdentityRecordResponse, error) {
+
+	return &customgovtypes.MsgCreateIdentityRecordResponse{}, nil
+}
+
+// RequestIdentityRecordsVerify defines a method to request verify request from specific verifier
+func (k msgServer) RequestIdentityRecordsVerify(goCtx context.Context, msg *customgovtypes.MsgRequestIdentityRecordsVerify) (*customgovtypes.MsgRequestIdentityRecordsVerifyResponse, error) {
+
+	return &customgovtypes.MsgRequestIdentityRecordsVerifyResponse{}, nil
+}
+
+// ApproveIdentityRecords defines a method to accept verification request
+func (k msgServer) ApproveIdentityRecords(goCtx context.Context, msg *customgovtypes.MsgApproveIdentityRecords) (*customgovtypes.MsgApproveIdentityRecordsResponse, error) {
+
+	return &customgovtypes.MsgApproveIdentityRecordsResponse{}, nil
+}
+
 func (k msgServer) ProposalAssignPermission(
 	goCtx context.Context,
 	msg *customgovtypes.MsgProposalAssignPermission,

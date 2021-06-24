@@ -14,6 +14,10 @@ var (
 	KeyPrefixNetworkProperties = []byte("network_properties")
 	KeyPrefixExecutionFee      = []byte("execution_fee")
 
+	// identity registrar
+	KeyPrefixIdentityRecord        = []byte("identity_record")
+	KeyPrefixIdRecordVerifyRequest = []byte("identity_record_verify_request")
+
 	// Roles
 	RoleUndefined Role = 0x0
 	RoleSudo      Role = 0x1

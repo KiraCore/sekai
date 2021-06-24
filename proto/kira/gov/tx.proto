@@ -52,6 +52,8 @@ service Msg {
     rpc RemoveWhitelistRolePermission(MsgRemoveWhitelistRolePermission) returns (MsgRemoveWhitelistRolePermissionResponse);
     // RemoveBlacklistRolePermission defines a method for removing blacklisted permission from a role
     rpc RemoveBlacklistRolePermission(MsgRemoveBlacklistRolePermission) returns (MsgRemoveBlacklistRolePermissionResponse);
+    // CreateIdentityRecord defines a method to create identity record
+    rpc CreateIdentityRecord(MsgCreateIdentityRecord) returns (MsgCreateIdentityRecordResponse);
     // RequestIdentityRecordsVerify defines a method to request verify request from specific verifier
     rpc RequestIdentityRecordsVerify(MsgRequestIdentityRecordsVerify) returns (MsgRequestIdentityRecordsVerifyResponse);
     // ApproveIdentityRecords defines a method to accept verification request
@@ -86,5 +88,10 @@ message MsgWhitelistRolePermissionResponse {}
 message MsgBlacklistRolePermissionResponse {}
 message MsgRemoveWhitelistRolePermissionResponse {}
 message MsgRemoveBlacklistRolePermissionResponse {}
-message MsgRequestIdentityRecordsVerifyResponse {}
+message MsgCreateIdentityRecordResponse {
+    uint64 recordId = 1;
+}
+message MsgRequestIdentityRecordsVerifyResponse {
+    uint64 requestId = 1;
+}
 message MsgApproveIdentityRecordsResponse {}

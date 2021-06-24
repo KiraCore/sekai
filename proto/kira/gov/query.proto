@@ -59,10 +59,34 @@ service Query {
   rpc GetDataReferenceByKey(QueryDataReferenceRequest) returns (QueryDataReferenceResponse) {
     option (google.api.http).get = "/kira/gov/data/{key}";
   }
-  // Query identity records with verifications
+  // Query identity record by id
+  rpc GetIdentityRecord(QueryIdentityRecordRequest) returns (QueryIdentityRecordResponse) {
+    option (google.api.http).get = "/kira/gov/identity_record/{id}";
+  }
+  // Query identity records by records creator
   rpc GetIdentityRecords(QueryIdentityRecordsRequest) returns (QueryIdentityRecordsResponse) {
-    option (google.api.http).get = "/kira/gov/identity_records/{address}";
-  }  
+    option (google.api.http).get = "/kira/gov/identity_records/{creator}";
+  }
+  // Query all identity records
+  rpc GetAllIdentityRecords(QueryAllIdentityRecordsRequest) returns (QueryAllIdentityRecordsResponse) {
+    option (google.api.http).get = "/kira/gov/all_identity_records";
+  }
+  // Query identity record verify request by id
+  rpc GetIdentityRecordVerifyRequest(QueryIdentityVerifyRecordRequest) returns (QueryIdentityVerifyRecordResponse) {
+    option (google.api.http).get = "/kira/gov/identity_verify_record/{request_id}";
+  }
+  // Query identity records verify requests by requester
+  rpc GetIdentityRecordVerifyRequests(QueryIdentityRecordVerifyRequests) returns (QueryIdentityRecordVerifyRequestsResponse) {
+    option (google.api.http).get = "/kira/gov/identity_verify_requests/{requester}";
+  }
+  // Query identity records verify requests by approver
+  rpc GetIdentityRecordVerifyRequestsByApprover(QueryIdentityRecordVerifyRequestsByApprover) returns (QueryIdentityRecordVerifyRequestsByApproverResponse) {
+    option (google.api.http).get = "/kira/gov/identity_verify_requests_by_approver/{approver}";
+  }
+  // Query all identity records verify requests
+  rpc GetAllIdentityRecordVerifyRequests(QueryAllIdentityRecordVerifyRequests) returns (QueryAllIdentityRecordVerifyRequestsResponse) {
+    option (google.api.http).get = "/kira/gov/all_identity_verify_requests";
+  }
 }
 
 message NetworkPropertiesRequest {}
@@ -224,16 +248,56 @@ message QueryDataReferenceResponse {
   kira.gov.DataRegistryEntry data = 1;
 }
 
-message QueryIdentityRecordsRequest {
-  bytes address = 2 [
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
-  ];
+message QueryIdentityRecordRequest {
+  uint64 id = 1;
+}
+message QueryIdentityRecordResponse {
+  kira.gov.IdentityRecord record = 1;
 }
 
-message QueryIdentityRecordsResponse {
-  bytes address = 1 [
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
+message QueryIdentityRecordsRequest {
+  bytes creator = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"creator\""
   ];
-  repeated kira.gov.IdentityRecord records = 2;
-  repeated kira.gov.VerifiedIdRecordsByAddress verifiers = 3;
+}
+message QueryIdentityRecordsResponse {
+  repeated kira.gov.IdentityRecord records = 1;
+}
+
+message QueryAllIdentityRecordsRequest {}
+message QueryAllIdentityRecordsResponse {
+  repeated kira.gov.IdentityRecord records = 1;
+}
+
+message QueryIdentityVerifyRecordRequest {
+  uint64 request_id = 1;
+}
+message QueryIdentityVerifyRecordResponse {
+  kira.gov.IdentityRecordsVerify verify_record = 1;
+}
+
+message QueryIdentityRecordVerifyRequestsByApprover {
+  bytes approver = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"approver\""
+  ];
+}
+message QueryIdentityRecordVerifyRequestsByApproverResponse {
+  repeated kira.gov.IdentityRecordsVerify verify_records = 1;
+}
+
+message QueryIdentityRecordVerifyRequests {
+  bytes requester = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"requester\""
+  ];
+}
+message QueryIdentityRecordVerifyRequestsResponse {
+  repeated kira.gov.IdentityRecordsVerify verify_records = 1;
+}
+
+message QueryAllIdentityRecordVerifyRequests {}
+message QueryAllIdentityRecordVerifyRequestsResponse {
+  repeated kira.gov.IdentityRecordsVerify verify_records = 1;
 }

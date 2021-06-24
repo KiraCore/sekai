@@ -199,3 +199,18 @@ func (k Keeper) GetDataReferenceByKey(sdkCtx sdk.Context, req *types.QueryDataRe
 
 	return &res, nil
 }
+
+// GetIdentityRecords identity records with verifications
+func (k Keeper) GetIdentityRecords(sdkCtx sdk.Context, req *types.QueryIdentityRecordsRequest) (*types.QueryIdentityRecordsResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	res := types.QueryIdentityRecordsResponse{
+		Address:   req.Address,
+		Records:   nil,
+		Verifiers: nil,
+	}
+
+	return &res, nil
+}
