@@ -100,14 +100,16 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) (data *types.GenesisState) 
 	proposals, _ := k.GetProposals(ctx)
 
 	return &types.GenesisState{
-		StartingProposalId:  k.GetNextProposalID(ctx),
-		Permissions:         rolePermissions,
-		NetworkActors:       networkActors,
-		NetworkProperties:   k.GetNetworkProperties(ctx),
-		ExecutionFees:       k.GetExecutionFees(ctx),
-		PoorNetworkMessages: k.GetPoorNetworkMessages(ctx),
-		Proposals:           proposals,
-		Votes:               k.GetVotes(ctx),
-		DataRegistry:        k.AllDataRegistry(ctx),
+		StartingProposalId:          k.GetNextProposalID(ctx),
+		Permissions:                 rolePermissions,
+		NetworkActors:               networkActors,
+		NetworkProperties:           k.GetNetworkProperties(ctx),
+		ExecutionFees:               k.GetExecutionFees(ctx),
+		PoorNetworkMessages:         k.GetPoorNetworkMessages(ctx),
+		Proposals:                   proposals,
+		Votes:                       k.GetVotes(ctx),
+		DataRegistry:                k.AllDataRegistry(ctx),
+		LastIdentityRecordId:        k.GetLastIdentityRecordId(ctx),
+		LastIdRecordVerifyRequestId: k.GetLastIdRecordVerifyRequestId(ctx),
 	}
 }
