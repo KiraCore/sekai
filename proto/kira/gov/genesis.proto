@@ -21,4 +21,6 @@ message GenesisState {
   repeated ExecutionFee execution_fees = 5;
   AllowedMessages poor_network_messages = 6; 
   uint64 poor_network_max_bank_send = 7;
+  uint64 last_identity_record_id = 8;
+  uint64 last_id_record_verify_request_id = 9;
 }

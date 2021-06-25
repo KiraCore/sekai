@@ -147,7 +147,6 @@ func (am AppModule) InitGenesis(
 	}
 
 	am.customGovKeeper.SetProposalID(ctx, genesisState.StartingProposalId)
-
 	am.customGovKeeper.SetNetworkProperties(ctx, genesisState.NetworkProperties)
 
 	for _, fee := range genesisState.ExecutionFees {
@@ -155,6 +154,9 @@ func (am AppModule) InitGenesis(
 	}
 
 	am.customGovKeeper.SavePoorNetworkMessages(ctx, genesisState.PoorNetworkMessages)
+
+	am.customGovKeeper.SetLastIdentityRecordId(ctx, genesisState.LastIdentityRecordId)
+	am.customGovKeeper.SetLastIdRecordVerifyRequestId(ctx, genesisState.LastIdRecordVerifyRequestId)
 
 	return nil
 }

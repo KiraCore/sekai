@@ -11,10 +11,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-// TODO: export genesis for lastIdentityRecordID
-// TODO: gov grpc query architecture simplification
-// TODO: export genesis for LastIdRecordVerifyRequestId
-
 func (k Keeper) GetLastIdentityRecordId(ctx sdk.Context) uint64 {
 	store := ctx.KVStore(k.storeKey)
 
