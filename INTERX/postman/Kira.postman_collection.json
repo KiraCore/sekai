@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "bf52156d-d0b2-4263-9766-660024631aa6",
+		"_postman_id": "5a89ad02-e8c7-4864-bbec-838b872f2205",
 		"name": "Kira",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -810,7 +810,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://0.0.0.0:11000/api/kira/gov/proposals?limit=2&count_total=true&offset=2",
+							"raw": "http://0.0.0.0:11000/api/kira/gov/proposals?all=true&reverse=true",
 							"protocol": "http",
 							"host": [
 								"0",
@@ -827,16 +827,12 @@
 							],
 							"query": [
 								{
-									"key": "limit",
-									"value": "2"
-								},
-								{
-									"key": "count_total",
+									"key": "all",
 									"value": "true"
 								},
 								{
-									"key": "offset",
-									"value": "2"
+									"key": "reverse",
+									"value": "true"
 								}
 							]
 						}
@@ -1418,15 +1414,34 @@
 			]
 		},
 		{
-			"name": "Network Properties",
+			"name": "Node Discovery",
 			"item": [
 				{
-					"name": "Query Network Properties",
+					"name": "Kira Status",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "http://0.0.0.0:11000/api/kira/gov/network_properties",
+							"raw": "http://0.0.0.0:11000/api/pub_p2p_list",
 							"protocol": "http",
 							"host": [
 								"0",
@@ -1437,9 +1452,7 @@
 							"port": "11000",
 							"path": [
 								"api",
-								"kira",
-								"gov",
-								"network_properties"
+								"pub_p2p_list"
 							]
 						}
 					},

@@ -154,7 +154,7 @@ func QueryValidators(gwCosmosmux *runtime.ServeMux, gatewayAddr string) error {
 
 	AllValidators = allValidators
 
-	common.GetLogger().Info(AllValidators)
+	// common.GetLogger().Info(AllValidators)
 
 	return nil
 }
