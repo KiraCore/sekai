@@ -97,7 +97,7 @@ type AppModule struct {
 // module-specific GRPC queries.
 func (am AppModule) RegisterServices(cfg module.Configurator) {
 	customgovtypes.RegisterMsgServer(cfg.MsgServer(), customgovkeeper.NewMsgServerImpl(am.customGovKeeper))
-	customgovtypes.RegisterQueryServer(cfg.QueryServer(), customgovkeeper.NewQuerier(am.customGovKeeper))
+	customgovtypes.RegisterQueryServer(cfg.QueryServer(), am.customGovKeeper)
 }
 
 func (am AppModule) RegisterInterfaces(registry codectypes.InterfaceRegistry) {

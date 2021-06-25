@@ -58,6 +58,8 @@ service Msg {
     rpc RequestIdentityRecordsVerify(MsgRequestIdentityRecordsVerify) returns (MsgRequestIdentityRecordsVerifyResponse);
     // ApproveIdentityRecords defines a method to accept verification request
     rpc ApproveIdentityRecords(MsgApproveIdentityRecords) returns (MsgApproveIdentityRecordsResponse);
+    // CancelIdentityRecordsVerifyRequest defines a method to cancel verification request
+    rpc CancelIdentityRecordsVerifyRequest(MsgCancelIdentityRecordsVerifyRequest) returns (MsgCancelIdentityRecordsVerifyRequestResponse);
 }
 
 message MsgWhitelistPermissionsResponse {}
@@ -95,3 +97,4 @@ message MsgRequestIdentityRecordsVerifyResponse {
     uint64 requestId = 1;
 }
 message MsgApproveIdentityRecordsResponse {}
+message MsgCancelIdentityRecordsVerifyRequestResponse {}

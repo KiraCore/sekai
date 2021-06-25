@@ -7,18 +7,20 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/query"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 type Keeper struct {
 	cdc      codec.BinaryMarshaler
 	storeKey sdk.StoreKey
+	bk       types.BankKeeper
 }
 
-func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryMarshaler) Keeper {
-	return Keeper{cdc: cdc, storeKey: storeKey}
+func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryMarshaler, bk types.BankKeeper) Keeper {
+	return Keeper{
+		cdc:      cdc,
+		storeKey: storeKey,
+		bk:       bk,
+	}
 }
 
 // BondDenom returns the denom that is basically used for fee payment
@@ -152,139 +154,4 @@ func (k Keeper) GetExecutionFee(ctx sdk.Context, txType string) *types.Execution
 	fee := new(types.ExecutionFee)
 	k.cdc.MustUnmarshalBinaryBare(bz, fee)
 	return fee
-}
-
-// GetAllDataReferenceKeys implements the Query all data reference keys gRPC method
-func (k Keeper) GetAllDataReferenceKeys(sdkCtx sdk.Context, req *types.QueryDataReferenceKeysRequest) (*types.QueryDataReferenceKeysResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "empty request")
-	}
-
-	var keys []string
-	store := sdkCtx.KVStore(k.storeKey)
-	dataReferenceStore := prefix.NewStore(store, DataRegistryPrefix)
-
-	pageRes, err := query.Paginate(dataReferenceStore, req.Pagination, func(key []byte, value []byte) error {
-		keys = append(keys, string(key))
-		return nil
-	})
-
-	if err != nil {
-		return &types.QueryDataReferenceKeysResponse{}, err
-	}
-
-	res := types.QueryDataReferenceKeysResponse{
-		Keys:       keys,
-		Pagination: pageRes,
-	}
-
-	return &res, nil
-}
-
-// GetDataReferenceByKey implements the Query data reference by key gRPC method
-func (k Keeper) GetDataReferenceByKey(sdkCtx sdk.Context, req *types.QueryDataReferenceRequest) (*types.QueryDataReferenceResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "empty request")
-	}
-
-	dataReference, ok := k.GetDataRegistryEntry(sdkCtx, req.GetKey())
-
-	if !ok {
-		return nil, status.Error(codes.NotFound, "not found")
-	}
-
-	res := types.QueryDataReferenceResponse{
-		Data: &dataReference,
-	}
-
-	return &res, nil
-}
-
-// GetIdentityRecord query identity record by id
-func (q Keeper) GetIdentityRecord(sdkCtx sdk.Context, req *types.QueryIdentityRecordRequest) (*types.QueryIdentityRecordResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "empty request")
-	}
-
-	res := types.QueryIdentityRecordResponse{}
-
-	return &res, nil
-}
-
-// GetIdentityRecords identity records with verifications
-func (k Keeper) GetIdentityRecords(sdkCtx sdk.Context, req *types.QueryIdentityRecordsRequest) (*types.QueryIdentityRecordsResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "empty request")
-	}
-
-	res := types.QueryIdentityRecordsResponse{
-		Records: nil,
-	}
-
-	return &res, nil
-}
-
-// GetAllIdentityRecords query all identity records
-func (k Keeper) GetAllIdentityRecords(sdkCtx sdk.Context, req *types.QueryAllIdentityRecordsRequest) (*types.QueryAllIdentityRecordsResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "empty request")
-	}
-
-	res := types.QueryAllIdentityRecordsResponse{
-		Records: nil,
-	}
-
-	return &res, nil
-}
-
-// GetIdentityRecordVerifyRequest query identity record verify request by id
-func (k Keeper) GetIdentityRecordVerifyRequest(sdkCtx sdk.Context, req *types.QueryIdentityVerifyRecordRequest) (*types.QueryIdentityVerifyRecordResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "empty request")
-	}
-
-	res := types.QueryIdentityVerifyRecordResponse{
-		VerifyRecord: nil,
-	}
-
-	return &res, nil
-}
-
-// GetIdentityRecordVerifyRequests query identity record verify request by id
-func (k Keeper) GetIdentityRecordVerifyRequests(sdkCtx sdk.Context, req *types.QueryIdentityRecordVerifyRequests) (*types.QueryIdentityRecordVerifyRequestsResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "empty request")
-	}
-
-	res := types.QueryIdentityRecordVerifyRequestsResponse{
-		VerifyRecords: nil,
-	}
-
-	return &res, nil
-}
-
-// GetIdentityRecordVerifyRequestsByApprover query identity records verify requests by approver
-func (k Keeper) GetIdentityRecordVerifyRequestsByApprover(sdkCtx sdk.Context, req *types.QueryIdentityRecordVerifyRequestsByApprover) (*types.QueryIdentityRecordVerifyRequestsByApproverResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "empty request")
-	}
-
-	res := types.QueryIdentityRecordVerifyRequestsByApproverResponse{
-		VerifyRecords: nil,
-	}
-
-	return &res, nil
-}
-
-// GetAllIdentityRecordVerifyRequests query all identity records verify requests
-func (k Keeper) GetAllIdentityRecordVerifyRequests(sdkCtx sdk.Context, req *types.QueryAllIdentityRecordVerifyRequests) (*types.QueryAllIdentityRecordVerifyRequestsResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "empty request")
-	}
-
-	res := types.QueryAllIdentityRecordVerifyRequestsResponse{
-		VerifyRecords: nil,
-	}
-
-	return &res, nil
 }

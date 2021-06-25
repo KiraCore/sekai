@@ -9,7 +9,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/KiraCore/sekai/x/gov/types"
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 )
 
 type msgServer struct {
@@ -18,74 +17,74 @@ type msgServer struct {
 
 // NewMsgServerImpl returns an implementation of the bank MsgServer interface
 // for the provided Keeper.
-func NewMsgServerImpl(keeper Keeper) customgovtypes.MsgServer {
+func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 	return &msgServer{
 		keeper: keeper,
 	}
 }
 
-var _ customgovtypes.MsgServer = msgServer{}
+var _ types.MsgServer = msgServer{}
 
 func (k msgServer) VoteProposal(
 	goCtx context.Context,
-	msg *customgovtypes.MsgVoteProposal,
-) (*customgovtypes.MsgVoteProposalResponse, error) {
+	msg *types.MsgVoteProposal,
+) (*types.MsgVoteProposalResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	actor, found := k.keeper.GetNetworkActorByAddress(ctx, msg.Voter)
 	if !found || !actor.IsActive() {
-		return nil, customgovtypes.ErrActorIsNotActive
+		return nil, types.ErrActorIsNotActive
 	}
 
 	proposal, found := k.keeper.GetProposal(ctx, msg.ProposalId)
 	if !found {
-		return nil, customgovtypes.ErrProposalDoesNotExist
+		return nil, types.ErrProposalDoesNotExist
 	}
 
 	if proposal.VotingEndTime.Before(ctx.BlockTime()) {
-		return nil, customgovtypes.ErrVotingTimeEnded
+		return nil, types.ErrVotingTimeEnded
 	}
 
 	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Voter, proposal.GetContent().VotePermission())
 	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, proposal.GetContent().VotePermission().String())
+		return nil, errors.Wrap(types.ErrNotEnoughPermissions, proposal.GetContent().VotePermission().String())
 	}
 
-	vote := customgovtypes.NewVote(msg.ProposalId, msg.Voter, msg.Option)
+	vote := types.NewVote(msg.ProposalId, msg.Voter, msg.Option)
 	k.keeper.SaveVote(ctx, vote)
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
-			customgovtypes.EventTypeProposalVote,
-			sdk.NewAttribute(customgovtypes.AttributeKeyProposalId, fmt.Sprintf("%d", msg.ProposalId)),
-			sdk.NewAttribute(customgovtypes.AttributeKeyVoter, msg.Voter.String()),
-			sdk.NewAttribute(customgovtypes.AttributeKeyOption, msg.Option.String()),
+			types.EventTypeProposalVote,
+			sdk.NewAttribute(types.AttributeKeyProposalId, fmt.Sprintf("%d", msg.ProposalId)),
+			sdk.NewAttribute(types.AttributeKeyVoter, msg.Voter.String()),
+			sdk.NewAttribute(types.AttributeKeyOption, msg.Option.String()),
 		),
 	)
-	return &customgovtypes.MsgVoteProposalResponse{}, nil
+	return &types.MsgVoteProposalResponse{}, nil
 }
 
 func (k msgServer) ProposalSetPoorNetworkMessages(
 	goCtx context.Context,
-	msg *customgovtypes.MsgProposalSetPoorNetworkMessages,
-) (*customgovtypes.MsgProposalSetPoorNetworkMessagesResponse, error) {
+	msg *types.MsgProposalSetPoorNetworkMessages,
+) (*types.MsgProposalSetPoorNetworkMessagesResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, customgovtypes.PermCreateSetPoorNetworkMessagesProposal)
+	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, types.PermCreateSetPoorNetworkMessagesProposal)
 	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermCreateSetPoorNetworkMessagesProposal.String())
+		return nil, errors.Wrap(types.ErrNotEnoughPermissions, types.PermCreateSetPoorNetworkMessagesProposal.String())
 	}
 
-	proposalID, err := k.CreateAndSaveProposalWithContent(ctx, msg.Description, customgovtypes.NewSetPoorNetworkMessagesProposal(msg.Messages))
+	proposalID, err := k.CreateAndSaveProposalWithContent(ctx, msg.Description, types.NewSetPoorNetworkMessagesProposal(msg.Messages))
 	if err != nil {
 		return nil, err
 	}
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
-			customgovtypes.EventTypeSubmitProposal,
-			sdk.NewAttribute(customgovtypes.AttributeKeyProposalId, fmt.Sprintf("%d", proposalID)),
-			sdk.NewAttribute(customgovtypes.AttributeKeyProposalType, msg.Type()),
-			sdk.NewAttribute(customgovtypes.AttributeKeyProposalContent, msg.String()),
+			types.EventTypeSubmitProposal,
+			sdk.NewAttribute(types.AttributeKeyProposalId, fmt.Sprintf("%d", proposalID)),
+			sdk.NewAttribute(types.AttributeKeyProposalType, msg.Type()),
+			sdk.NewAttribute(types.AttributeKeyProposalContent, msg.String()),
 		),
 	)
 	return &types.MsgProposalSetPoorNetworkMessagesResponse{
@@ -95,18 +94,18 @@ func (k msgServer) ProposalSetPoorNetworkMessages(
 
 func (k msgServer) ProposalUpsertDataRegistry(
 	goCtx context.Context,
-	msg *customgovtypes.MsgProposalUpsertDataRegistry,
-) (*customgovtypes.MsgProposalUpsertDataRegistryResponse, error) {
+	msg *types.MsgProposalUpsertDataRegistry,
+) (*types.MsgProposalUpsertDataRegistryResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, customgovtypes.PermCreateUpsertDataRegistryProposal)
+	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, types.PermCreateUpsertDataRegistryProposal)
 	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermCreateUpsertDataRegistryProposal.String())
+		return nil, errors.Wrap(types.ErrNotEnoughPermissions, types.PermCreateUpsertDataRegistryProposal.String())
 	}
 
 	proposalID, err := k.CreateAndSaveProposalWithContent(ctx,
 		msg.Description,
-		customgovtypes.NewUpsertDataRegistryProposal(
+		types.NewUpsertDataRegistryProposal(
 			msg.Key,
 			msg.Hash,
 			msg.Reference,
@@ -119,10 +118,10 @@ func (k msgServer) ProposalUpsertDataRegistry(
 	}
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
-			customgovtypes.EventTypeSubmitProposal,
-			sdk.NewAttribute(customgovtypes.AttributeKeyProposalId, fmt.Sprintf("%d", proposalID)),
-			sdk.NewAttribute(customgovtypes.AttributeKeyProposalType, msg.Type()),
-			sdk.NewAttribute(customgovtypes.AttributeKeyProposalContent, msg.String()),
+			types.EventTypeSubmitProposal,
+			sdk.NewAttribute(types.AttributeKeyProposalId, fmt.Sprintf("%d", proposalID)),
+			sdk.NewAttribute(types.AttributeKeyProposalType, msg.Type()),
+			sdk.NewAttribute(types.AttributeKeyProposalContent, msg.String()),
 		),
 	)
 	return &types.MsgProposalUpsertDataRegistryResponse{
@@ -131,57 +130,62 @@ func (k msgServer) ProposalUpsertDataRegistry(
 }
 
 // CreateIdentityRecord defines a method to create identity record
-func (k msgServer) CreateIdentityRecord(goCtx context.Context, msg *customgovtypes.MsgCreateIdentityRecord) (*customgovtypes.MsgCreateIdentityRecordResponse, error) {
+func (k msgServer) CreateIdentityRecord(goCtx context.Context, msg *types.MsgCreateIdentityRecord) (*types.MsgCreateIdentityRecordResponse, error) {
 
-	return &customgovtypes.MsgCreateIdentityRecordResponse{}, nil
+	return &types.MsgCreateIdentityRecordResponse{}, nil
 }
 
 // RequestIdentityRecordsVerify defines a method to request verify request from specific verifier
-func (k msgServer) RequestIdentityRecordsVerify(goCtx context.Context, msg *customgovtypes.MsgRequestIdentityRecordsVerify) (*customgovtypes.MsgRequestIdentityRecordsVerifyResponse, error) {
+func (k msgServer) RequestIdentityRecordsVerify(goCtx context.Context, msg *types.MsgRequestIdentityRecordsVerify) (*types.MsgRequestIdentityRecordsVerifyResponse, error) {
 
-	return &customgovtypes.MsgRequestIdentityRecordsVerifyResponse{}, nil
+	return &types.MsgRequestIdentityRecordsVerifyResponse{}, nil
 }
 
 // ApproveIdentityRecords defines a method to accept verification request
-func (k msgServer) ApproveIdentityRecords(goCtx context.Context, msg *customgovtypes.MsgApproveIdentityRecords) (*customgovtypes.MsgApproveIdentityRecordsResponse, error) {
+func (k msgServer) ApproveIdentityRecords(goCtx context.Context, msg *types.MsgApproveIdentityRecords) (*types.MsgApproveIdentityRecordsResponse, error) {
 
-	return &customgovtypes.MsgApproveIdentityRecordsResponse{}, nil
+	return &types.MsgApproveIdentityRecordsResponse{}, nil
+}
+
+func (k msgServer) CancelIdentityRecordsVerifyRequest(goCtx context.Context, msg *types.MsgCancelIdentityRecordsVerifyRequest) (*types.MsgCancelIdentityRecordsVerifyRequestResponse, error) {
+
+	return &types.MsgCancelIdentityRecordsVerifyRequestResponse{}, nil
 }
 
 func (k msgServer) ProposalAssignPermission(
 	goCtx context.Context,
-	msg *customgovtypes.MsgProposalAssignPermission,
-) (*customgovtypes.MsgProposalAssignPermissionResponse, error) {
+	msg *types.MsgProposalAssignPermission,
+) (*types.MsgProposalAssignPermissionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, customgovtypes.PermCreateSetPermissionsProposal)
+	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, types.PermCreateSetPermissionsProposal)
 	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermCreateSetPermissionsProposal.String())
+		return nil, errors.Wrap(types.ErrNotEnoughPermissions, types.PermCreateSetPermissionsProposal.String())
 	}
 
 	actor, found := k.keeper.GetNetworkActorByAddress(ctx, msg.Address)
 	if found { // Actor exists
-		if actor.Permissions.IsWhitelisted(customgovtypes.PermValue(msg.Permission)) {
-			return nil, errors.Wrap(customgovtypes.ErrWhitelisting, "permission already whitelisted")
+		if actor.Permissions.IsWhitelisted(types.PermValue(msg.Permission)) {
+			return nil, errors.Wrap(types.ErrWhitelisting, "permission already whitelisted")
 		}
 	}
 
 	proposalID, err := k.CreateAndSaveProposalWithContent(
 		ctx,
 		msg.Description,
-		customgovtypes.NewAssignPermissionProposal(
+		types.NewAssignPermissionProposal(
 			msg.Address,
-			customgovtypes.PermValue(msg.Permission),
+			types.PermValue(msg.Permission),
 		))
 	if err != nil {
 		return nil, err
 	}
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
-			customgovtypes.EventTypeSubmitProposal,
-			sdk.NewAttribute(customgovtypes.AttributeKeyProposalId, fmt.Sprintf("%d", proposalID)),
-			sdk.NewAttribute(customgovtypes.AttributeKeyProposalType, msg.Type()),
-			sdk.NewAttribute(customgovtypes.AttributeKeyProposalContent, msg.String()),
+			types.EventTypeSubmitProposal,
+			sdk.NewAttribute(types.AttributeKeyProposalId, fmt.Sprintf("%d", proposalID)),
+			sdk.NewAttribute(types.AttributeKeyProposalType, msg.Type()),
+			sdk.NewAttribute(types.AttributeKeyProposalContent, msg.String()),
 		),
 	)
 	return &types.MsgProposalAssignPermissionResponse{
@@ -189,13 +193,13 @@ func (k msgServer) ProposalAssignPermission(
 	}, nil
 }
 
-func (k msgServer) CreateAndSaveProposalWithContent(ctx sdk.Context, description string, content customgovtypes.Content) (uint64, error) {
+func (k msgServer) CreateAndSaveProposalWithContent(ctx sdk.Context, description string, content types.Content) (uint64, error) {
 	blockTime := ctx.BlockTime()
 	proposalID := k.keeper.GetNextProposalIDAndIncrement(ctx)
 
 	properties := k.keeper.GetNetworkProperties(ctx)
 
-	proposal, err := customgovtypes.NewProposal(
+	proposal, err := types.NewProposal(
 		proposalID,
 		content,
 		blockTime,
@@ -220,13 +224,13 @@ func (k msgServer) CreateAndSaveProposalWithContent(ctx sdk.Context, description
 
 func (k msgServer) ProposalSetNetworkProperty(
 	goCtx context.Context,
-	msg *customgovtypes.MsgProposalSetNetworkProperty,
-) (*customgovtypes.MsgProposalSetNetworkPropertyResponse, error) {
+	msg *types.MsgProposalSetNetworkProperty,
+) (*types.MsgProposalSetNetworkPropertyResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, customgovtypes.PermCreateSetNetworkPropertyProposal)
+	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, types.PermCreateSetNetworkPropertyProposal)
 	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermCreateSetNetworkPropertyProposal.String())
+		return nil, errors.Wrap(types.ErrNotEnoughPermissions, types.PermCreateSetNetworkPropertyProposal.String())
 	}
 
 	property, err := k.keeper.GetNetworkProperty(ctx, msg.NetworkProperty)
@@ -240,7 +244,7 @@ func (k msgServer) ProposalSetNetworkProperty(
 	proposalID, err := k.CreateAndSaveProposalWithContent(
 		ctx,
 		msg.Description,
-		customgovtypes.NewSetNetworkPropertyProposal(
+		types.NewSetNetworkPropertyProposal(
 			msg.NetworkProperty,
 			msg.Value,
 		),
@@ -250,40 +254,40 @@ func (k msgServer) ProposalSetNetworkProperty(
 	}
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
-			customgovtypes.EventTypeSubmitProposal,
-			sdk.NewAttribute(customgovtypes.AttributeKeyProposalId, fmt.Sprintf("%d", proposalID)),
-			sdk.NewAttribute(customgovtypes.AttributeKeyProposalType, msg.Type()),
-			sdk.NewAttribute(customgovtypes.AttributeKeyProposalContent, msg.String()),
+			types.EventTypeSubmitProposal,
+			sdk.NewAttribute(types.AttributeKeyProposalId, fmt.Sprintf("%d", proposalID)),
+			sdk.NewAttribute(types.AttributeKeyProposalType, msg.Type()),
+			sdk.NewAttribute(types.AttributeKeyProposalContent, msg.String()),
 		),
 	)
 
-	return &customgovtypes.MsgProposalSetNetworkPropertyResponse{
+	return &types.MsgProposalSetNetworkPropertyResponse{
 		ProposalID: proposalID,
 	}, nil
 }
 
-func (k msgServer) ProposalCreateRole(goCtx context.Context, msg *customgovtypes.MsgProposalCreateRole) (*customgovtypes.MsgProposalCreateRoleResponse, error) {
+func (k msgServer) ProposalCreateRole(goCtx context.Context, msg *types.MsgProposalCreateRole) (*types.MsgProposalCreateRoleResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if len(msg.WhitelistedPermissions) == 0 && len(msg.BlacklistedPermissions) == 0 {
-		return nil, customgovtypes.ErrEmptyPermissions
+		return nil, types.ErrEmptyPermissions
 	}
 
-	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, customgovtypes.PermCreateRoleProposal)
+	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, types.PermCreateRoleProposal)
 	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermCreateRoleProposal.String())
+		return nil, errors.Wrap(types.ErrNotEnoughPermissions, types.PermCreateRoleProposal.String())
 	}
 
-	_, exists := k.keeper.GetPermissionsForRole(ctx, customgovtypes.Role(msg.Role))
+	_, exists := k.keeper.GetPermissionsForRole(ctx, types.Role(msg.Role))
 	if exists {
-		return nil, customgovtypes.ErrRoleExist
+		return nil, types.ErrRoleExist
 	}
 
 	proposalID, err := k.CreateAndSaveProposalWithContent(
 		ctx,
 		msg.Description,
-		customgovtypes.NewCreateRoleProposal(
-			customgovtypes.Role(msg.Role),
+		types.NewCreateRoleProposal(
+			types.Role(msg.Role),
 			msg.WhitelistedPermissions,
 			msg.BlacklistedPermissions,
 		),
@@ -293,321 +297,321 @@ func (k msgServer) ProposalCreateRole(goCtx context.Context, msg *customgovtypes
 	}
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
-			customgovtypes.EventTypeSubmitProposal,
-			sdk.NewAttribute(customgovtypes.AttributeKeyProposalId, fmt.Sprintf("%d", proposalID)),
-			sdk.NewAttribute(customgovtypes.AttributeKeyProposalType, msg.Type()),
-			sdk.NewAttribute(customgovtypes.AttributeKeyProposalContent, msg.String()),
+			types.EventTypeSubmitProposal,
+			sdk.NewAttribute(types.AttributeKeyProposalId, fmt.Sprintf("%d", proposalID)),
+			sdk.NewAttribute(types.AttributeKeyProposalType, msg.Type()),
+			sdk.NewAttribute(types.AttributeKeyProposalContent, msg.String()),
 		),
 	)
 
-	return &customgovtypes.MsgProposalCreateRoleResponse{
+	return &types.MsgProposalCreateRoleResponse{
 		ProposalID: proposalID,
 	}, nil
 }
 
 func (k msgServer) RemoveRole(
 	goCtx context.Context,
-	msg *customgovtypes.MsgRemoveRole,
-) (*customgovtypes.MsgRemoveRoleResponse, error) {
+	msg *types.MsgRemoveRole,
+) (*types.MsgRemoveRoleResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, customgovtypes.PermUpsertRole)
+	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, types.PermUpsertRole)
 	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermUpsertRole.String())
+		return nil, errors.Wrap(types.ErrNotEnoughPermissions, types.PermUpsertRole.String())
 	}
 
-	_, found := k.keeper.GetPermissionsForRole(ctx, customgovtypes.Role(msg.Role))
+	_, found := k.keeper.GetPermissionsForRole(ctx, types.Role(msg.Role))
 	if !found {
-		return nil, customgovtypes.ErrRoleDoesNotExist
+		return nil, types.ErrRoleDoesNotExist
 	}
 
 	actor, found := k.keeper.GetNetworkActorByAddress(ctx, msg.Address)
 	if !found {
-		actor = customgovtypes.NewDefaultActor(msg.Address)
+		actor = types.NewDefaultActor(msg.Address)
 	}
 
-	if !actor.HasRole(customgovtypes.Role(msg.Role)) {
-		return nil, customgovtypes.ErrRoleNotAssigned
+	if !actor.HasRole(types.Role(msg.Role)) {
+		return nil, types.ErrRoleNotAssigned
 	}
 
-	k.keeper.RemoveRoleFromActor(ctx, actor, customgovtypes.Role(msg.Role))
+	k.keeper.RemoveRoleFromActor(ctx, actor, types.Role(msg.Role))
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
-			customgovtypes.EventTypeRemoveRole,
-			sdk.NewAttribute(customgovtypes.AttributeKeyProposer, msg.Proposer.String()),
-			sdk.NewAttribute(customgovtypes.AttributeKeyAddress, msg.Address.String()),
-			sdk.NewAttribute(customgovtypes.AttributeKeyRoleId, fmt.Sprintf("%d", msg.Role)),
+			types.EventTypeRemoveRole,
+			sdk.NewAttribute(types.AttributeKeyProposer, msg.Proposer.String()),
+			sdk.NewAttribute(types.AttributeKeyAddress, msg.Address.String()),
+			sdk.NewAttribute(types.AttributeKeyRoleId, fmt.Sprintf("%d", msg.Role)),
 		),
 	)
-	return &customgovtypes.MsgRemoveRoleResponse{}, nil
+	return &types.MsgRemoveRoleResponse{}, nil
 }
 
 func (k msgServer) AssignRole(
 	goCtx context.Context,
-	msg *customgovtypes.MsgAssignRole,
-) (*customgovtypes.MsgAssignRoleResponse, error) {
+	msg *types.MsgAssignRole,
+) (*types.MsgAssignRoleResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, customgovtypes.PermUpsertRole)
+	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, types.PermUpsertRole)
 	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermUpsertRole.String())
+		return nil, errors.Wrap(types.ErrNotEnoughPermissions, types.PermUpsertRole.String())
 	}
 
-	_, found := k.keeper.GetPermissionsForRole(ctx, customgovtypes.Role(msg.Role))
+	_, found := k.keeper.GetPermissionsForRole(ctx, types.Role(msg.Role))
 	if !found {
-		return nil, customgovtypes.ErrRoleDoesNotExist
+		return nil, types.ErrRoleDoesNotExist
 	}
 
 	actor, found := k.keeper.GetNetworkActorByAddress(ctx, msg.Address)
 	if !found {
-		actor = customgovtypes.NewDefaultActor(msg.Address)
+		actor = types.NewDefaultActor(msg.Address)
 	}
 
-	if actor.HasRole(customgovtypes.Role(msg.Role)) {
-		return nil, customgovtypes.ErrRoleAlreadyAssigned
+	if actor.HasRole(types.Role(msg.Role)) {
+		return nil, types.ErrRoleAlreadyAssigned
 	}
 
-	k.keeper.AssignRoleToActor(ctx, actor, customgovtypes.Role(msg.Role))
+	k.keeper.AssignRoleToActor(ctx, actor, types.Role(msg.Role))
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
-			customgovtypes.EventTypeAssignRole,
-			sdk.NewAttribute(customgovtypes.AttributeKeyProposer, msg.Proposer.String()),
-			sdk.NewAttribute(customgovtypes.AttributeKeyAddress, msg.Address.String()),
-			sdk.NewAttribute(customgovtypes.AttributeKeyRoleId, fmt.Sprintf("%d", msg.Role)),
+			types.EventTypeAssignRole,
+			sdk.NewAttribute(types.AttributeKeyProposer, msg.Proposer.String()),
+			sdk.NewAttribute(types.AttributeKeyAddress, msg.Address.String()),
+			sdk.NewAttribute(types.AttributeKeyRoleId, fmt.Sprintf("%d", msg.Role)),
 		),
 	)
-	return &customgovtypes.MsgAssignRoleResponse{}, nil
+	return &types.MsgAssignRoleResponse{}, nil
 }
 
 func (k msgServer) CreateRole(
 	goCtx context.Context,
-	msg *customgovtypes.MsgCreateRole,
-) (*customgovtypes.MsgCreateRoleResponse, error) {
+	msg *types.MsgCreateRole,
+) (*types.MsgCreateRoleResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, customgovtypes.PermUpsertRole)
+	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, types.PermUpsertRole)
 	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermUpsertRole")
+		return nil, errors.Wrap(types.ErrNotEnoughPermissions, "PermUpsertRole")
 	}
 
-	_, found := k.keeper.GetPermissionsForRole(ctx, customgovtypes.Role(msg.Role))
+	_, found := k.keeper.GetPermissionsForRole(ctx, types.Role(msg.Role))
 	if found {
-		return nil, customgovtypes.ErrRoleExist
+		return nil, types.ErrRoleExist
 	}
 
-	k.keeper.CreateRole(ctx, customgovtypes.Role(msg.Role))
+	k.keeper.CreateRole(ctx, types.Role(msg.Role))
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
-			customgovtypes.EventTypeCreateRole,
-			sdk.NewAttribute(customgovtypes.AttributeKeyProposer, msg.Proposer.String()),
-			sdk.NewAttribute(customgovtypes.AttributeKeyRoleId, fmt.Sprintf("%d", msg.Role)),
+			types.EventTypeCreateRole,
+			sdk.NewAttribute(types.AttributeKeyProposer, msg.Proposer.String()),
+			sdk.NewAttribute(types.AttributeKeyRoleId, fmt.Sprintf("%d", msg.Role)),
 		),
 	)
-	return &customgovtypes.MsgCreateRoleResponse{}, nil
+	return &types.MsgCreateRoleResponse{}, nil
 }
 
 func (k msgServer) RemoveBlacklistRolePermission(
 	goCtx context.Context,
-	msg *customgovtypes.MsgRemoveBlacklistRolePermission,
-) (*customgovtypes.MsgRemoveBlacklistRolePermissionResponse, error) {
+	msg *types.MsgRemoveBlacklistRolePermission,
+) (*types.MsgRemoveBlacklistRolePermissionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, customgovtypes.PermUpsertRole)
+	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, types.PermUpsertRole)
 	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermUpsertRole.String())
+		return nil, errors.Wrap(types.ErrNotEnoughPermissions, types.PermUpsertRole.String())
 	}
 
-	err := k.keeper.RemoveBlacklistRolePermission(ctx, customgovtypes.Role(msg.Role), customgovtypes.PermValue(msg.Permission))
+	err := k.keeper.RemoveBlacklistRolePermission(ctx, types.Role(msg.Role), types.PermValue(msg.Permission))
 	if err != nil {
 		return nil, err
 	}
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
-			customgovtypes.EventTypeRemoveBlacklistRolePermisison,
-			sdk.NewAttribute(customgovtypes.AttributeKeyProposer, msg.Proposer.String()),
-			sdk.NewAttribute(customgovtypes.AttributeKeyRoleId, fmt.Sprintf("%d", msg.Role)),
-			sdk.NewAttribute(customgovtypes.AttributeKeyPermission, fmt.Sprintf("%d", msg.Permission)),
+			types.EventTypeRemoveBlacklistRolePermisison,
+			sdk.NewAttribute(types.AttributeKeyProposer, msg.Proposer.String()),
+			sdk.NewAttribute(types.AttributeKeyRoleId, fmt.Sprintf("%d", msg.Role)),
+			sdk.NewAttribute(types.AttributeKeyPermission, fmt.Sprintf("%d", msg.Permission)),
 		),
 	)
-	return &customgovtypes.MsgRemoveBlacklistRolePermissionResponse{}, nil
+	return &types.MsgRemoveBlacklistRolePermissionResponse{}, nil
 }
 
 func (k msgServer) RemoveWhitelistRolePermission(
 	goCtx context.Context,
-	msg *customgovtypes.MsgRemoveWhitelistRolePermission,
-) (*customgovtypes.MsgRemoveWhitelistRolePermissionResponse, error) {
+	msg *types.MsgRemoveWhitelistRolePermission,
+) (*types.MsgRemoveWhitelistRolePermissionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, customgovtypes.PermUpsertRole)
+	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, types.PermUpsertRole)
 	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermUpsertRole.String())
+		return nil, errors.Wrap(types.ErrNotEnoughPermissions, types.PermUpsertRole.String())
 	}
 
-	err := k.keeper.RemoveWhitelistRolePermission(ctx, customgovtypes.Role(msg.Role), customgovtypes.PermValue(msg.Permission))
+	err := k.keeper.RemoveWhitelistRolePermission(ctx, types.Role(msg.Role), types.PermValue(msg.Permission))
 	if err != nil {
 		return nil, err
 	}
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
-			customgovtypes.EventTypeRemoveWhitelistRolePermisison,
-			sdk.NewAttribute(customgovtypes.AttributeKeyProposer, msg.Proposer.String()),
-			sdk.NewAttribute(customgovtypes.AttributeKeyRoleId, fmt.Sprintf("%d", msg.Role)),
-			sdk.NewAttribute(customgovtypes.AttributeKeyPermission, fmt.Sprintf("%d", msg.Permission)),
+			types.EventTypeRemoveWhitelistRolePermisison,
+			sdk.NewAttribute(types.AttributeKeyProposer, msg.Proposer.String()),
+			sdk.NewAttribute(types.AttributeKeyRoleId, fmt.Sprintf("%d", msg.Role)),
+			sdk.NewAttribute(types.AttributeKeyPermission, fmt.Sprintf("%d", msg.Permission)),
 		),
 	)
-	return &customgovtypes.MsgRemoveWhitelistRolePermissionResponse{}, nil
+	return &types.MsgRemoveWhitelistRolePermissionResponse{}, nil
 }
 
 func (k msgServer) BlacklistRolePermission(
 	goCtx context.Context,
-	msg *customgovtypes.MsgBlacklistRolePermission,
-) (*customgovtypes.MsgBlacklistRolePermissionResponse, error) {
+	msg *types.MsgBlacklistRolePermission,
+) (*types.MsgBlacklistRolePermissionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, customgovtypes.PermUpsertRole)
+	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, types.PermUpsertRole)
 	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermUpsertRole.String())
+		return nil, errors.Wrap(types.ErrNotEnoughPermissions, types.PermUpsertRole.String())
 	}
 
-	err := k.keeper.BlacklistRolePermission(ctx, customgovtypes.Role(msg.Role), customgovtypes.PermValue(msg.Permission))
+	err := k.keeper.BlacklistRolePermission(ctx, types.Role(msg.Role), types.PermValue(msg.Permission))
 	if err != nil {
 		return nil, err
 	}
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
-			customgovtypes.EventTypeBlacklistRolePermisison,
-			sdk.NewAttribute(customgovtypes.AttributeKeyProposer, msg.Proposer.String()),
-			sdk.NewAttribute(customgovtypes.AttributeKeyRoleId, fmt.Sprintf("%d", msg.Role)),
-			sdk.NewAttribute(customgovtypes.AttributeKeyPermission, fmt.Sprintf("%d", msg.Permission)),
+			types.EventTypeBlacklistRolePermisison,
+			sdk.NewAttribute(types.AttributeKeyProposer, msg.Proposer.String()),
+			sdk.NewAttribute(types.AttributeKeyRoleId, fmt.Sprintf("%d", msg.Role)),
+			sdk.NewAttribute(types.AttributeKeyPermission, fmt.Sprintf("%d", msg.Permission)),
 		),
 	)
-	return &customgovtypes.MsgBlacklistRolePermissionResponse{}, nil
+	return &types.MsgBlacklistRolePermissionResponse{}, nil
 }
 
 func (k msgServer) WhitelistRolePermission(
 	goCtx context.Context,
-	msg *customgovtypes.MsgWhitelistRolePermission,
-) (*customgovtypes.MsgWhitelistRolePermissionResponse, error) {
+	msg *types.MsgWhitelistRolePermission,
+) (*types.MsgWhitelistRolePermissionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, customgovtypes.PermUpsertRole)
+	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, types.PermUpsertRole)
 	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermUpsertRole.String())
+		return nil, errors.Wrap(types.ErrNotEnoughPermissions, types.PermUpsertRole.String())
 	}
 
-	err := k.keeper.WhitelistRolePermission(ctx, customgovtypes.Role(msg.Role), customgovtypes.PermValue(msg.Permission))
+	err := k.keeper.WhitelistRolePermission(ctx, types.Role(msg.Role), types.PermValue(msg.Permission))
 	if err != nil {
 		return nil, err
 	}
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
-			customgovtypes.EventTypeWhitelistRolePermisison,
-			sdk.NewAttribute(customgovtypes.AttributeKeyProposer, msg.Proposer.String()),
-			sdk.NewAttribute(customgovtypes.AttributeKeyRoleId, fmt.Sprintf("%d", msg.Role)),
-			sdk.NewAttribute(customgovtypes.AttributeKeyPermission, fmt.Sprintf("%d", msg.Permission)),
+			types.EventTypeWhitelistRolePermisison,
+			sdk.NewAttribute(types.AttributeKeyProposer, msg.Proposer.String()),
+			sdk.NewAttribute(types.AttributeKeyRoleId, fmt.Sprintf("%d", msg.Role)),
+			sdk.NewAttribute(types.AttributeKeyPermission, fmt.Sprintf("%d", msg.Permission)),
 		),
 	)
-	return &customgovtypes.MsgWhitelistRolePermissionResponse{}, nil
+	return &types.MsgWhitelistRolePermissionResponse{}, nil
 }
 
 func (k msgServer) WhitelistPermissions(
 	goCtx context.Context,
-	msg *customgovtypes.MsgWhitelistPermissions,
-) (*customgovtypes.MsgWhitelistPermissionsResponse, error) {
+	msg *types.MsgWhitelistPermissions,
+) (*types.MsgWhitelistPermissionsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, customgovtypes.PermSetPermissions)
+	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, types.PermSetPermissions)
 	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermSetPermissions")
+		return nil, errors.Wrap(types.ErrNotEnoughPermissions, "PermSetPermissions")
 	}
 
 	actor, found := k.keeper.GetNetworkActorByAddress(ctx, msg.Address)
 	if !found {
-		actor = customgovtypes.NewDefaultActor(msg.Address)
+		actor = types.NewDefaultActor(msg.Address)
 	}
 
-	err := k.keeper.AddWhitelistPermission(ctx, actor, customgovtypes.PermValue(msg.Permission))
+	err := k.keeper.AddWhitelistPermission(ctx, actor, types.PermValue(msg.Permission))
 	if err != nil {
-		return nil, errors.Wrapf(customgovtypes.ErrSetPermissions, "error setting %d to whitelist: %s", msg.Permission, err)
+		return nil, errors.Wrapf(types.ErrSetPermissions, "error setting %d to whitelist: %s", msg.Permission, err)
 	}
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
-			customgovtypes.EventTypeWhitelistPermisison,
-			sdk.NewAttribute(customgovtypes.AttributeKeyProposer, msg.Proposer.String()),
-			sdk.NewAttribute(customgovtypes.AttributeKeyRoleId, msg.Address.String()),
-			sdk.NewAttribute(customgovtypes.AttributeKeyPermission, fmt.Sprintf("%d", msg.Permission)),
+			types.EventTypeWhitelistPermisison,
+			sdk.NewAttribute(types.AttributeKeyProposer, msg.Proposer.String()),
+			sdk.NewAttribute(types.AttributeKeyRoleId, msg.Address.String()),
+			sdk.NewAttribute(types.AttributeKeyPermission, fmt.Sprintf("%d", msg.Permission)),
 		),
 	)
-	return &customgovtypes.MsgWhitelistPermissionsResponse{}, nil
+	return &types.MsgWhitelistPermissionsResponse{}, nil
 }
 
 func (k msgServer) BlacklistPermissions(
 	goCtx context.Context,
-	msg *customgovtypes.MsgBlacklistPermissions,
-) (*customgovtypes.MsgBlacklistPermissionsResponse, error) {
+	msg *types.MsgBlacklistPermissions,
+) (*types.MsgBlacklistPermissionsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, customgovtypes.PermSetPermissions)
+	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, types.PermSetPermissions)
 	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermSetPermissions")
+		return nil, errors.Wrap(types.ErrNotEnoughPermissions, "PermSetPermissions")
 	}
 
 	actor, found := k.keeper.GetNetworkActorByAddress(ctx, msg.Address)
 	if !found {
-		actor = customgovtypes.NewDefaultActor(msg.Address)
+		actor = types.NewDefaultActor(msg.Address)
 	}
 
-	err := actor.Permissions.AddToBlacklist(customgovtypes.PermValue(msg.Permission))
+	err := actor.Permissions.AddToBlacklist(types.PermValue(msg.Permission))
 	if err != nil {
-		return nil, errors.Wrapf(customgovtypes.ErrSetPermissions, "error setting %d to whitelist", msg.Permission)
+		return nil, errors.Wrapf(types.ErrSetPermissions, "error setting %d to whitelist", msg.Permission)
 	}
 
 	k.keeper.SaveNetworkActor(ctx, actor)
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
-			customgovtypes.EventTypeBlacklistPermisison,
-			sdk.NewAttribute(customgovtypes.AttributeKeyProposer, msg.Proposer.String()),
-			sdk.NewAttribute(customgovtypes.AttributeKeyRoleId, msg.Address.String()),
-			sdk.NewAttribute(customgovtypes.AttributeKeyPermission, fmt.Sprintf("%d", msg.Permission)),
+			types.EventTypeBlacklistPermisison,
+			sdk.NewAttribute(types.AttributeKeyProposer, msg.Proposer.String()),
+			sdk.NewAttribute(types.AttributeKeyRoleId, msg.Address.String()),
+			sdk.NewAttribute(types.AttributeKeyPermission, fmt.Sprintf("%d", msg.Permission)),
 		),
 	)
-	return &customgovtypes.MsgBlacklistPermissionsResponse{}, nil
+	return &types.MsgBlacklistPermissionsResponse{}, nil
 }
 
 func (k msgServer) SetNetworkProperties(
 	goCtx context.Context,
-	msg *customgovtypes.MsgSetNetworkProperties,
-) (*customgovtypes.MsgSetNetworkPropertiesResponse, error) {
+	msg *types.MsgSetNetworkProperties,
+) (*types.MsgSetNetworkPropertiesResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, customgovtypes.PermChangeTxFee)
+	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, types.PermChangeTxFee)
 	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermChangeTxFee")
+		return nil, errors.Wrap(types.ErrNotEnoughPermissions, "PermChangeTxFee")
 	}
 	k.keeper.SetNetworkProperties(ctx, msg.NetworkProperties)
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
-			customgovtypes.EventTypeSetNetworkProperties,
-			sdk.NewAttribute(customgovtypes.AttributeKeyProposer, msg.Proposer.String()),
-			sdk.NewAttribute(customgovtypes.AttributeKeyProperties, msg.NetworkProperties.String()),
+			types.EventTypeSetNetworkProperties,
+			sdk.NewAttribute(types.AttributeKeyProposer, msg.Proposer.String()),
+			sdk.NewAttribute(types.AttributeKeyProperties, msg.NetworkProperties.String()),
 		),
 	)
-	return &customgovtypes.MsgSetNetworkPropertiesResponse{}, nil
+	return &types.MsgSetNetworkPropertiesResponse{}, nil
 }
 
 func (k msgServer) SetExecutionFee(
 	goCtx context.Context,
-	msg *customgovtypes.MsgSetExecutionFee,
-) (*customgovtypes.MsgSetExecutionFeeResponse, error) {
+	msg *types.MsgSetExecutionFee,
+) (*types.MsgSetExecutionFeeResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, customgovtypes.PermChangeTxFee)
+	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, types.PermChangeTxFee)
 	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermChangeTxFee")
+		return nil, errors.Wrap(types.ErrNotEnoughPermissions, "PermChangeTxFee")
 	}
 
-	k.keeper.SetExecutionFee(ctx, &customgovtypes.ExecutionFee{
+	k.keeper.SetExecutionFee(ctx, &types.ExecutionFee{
 		Name:              msg.Name,
 		TransactionType:   msg.TransactionType,
 		ExecutionFee:      msg.ExecutionFee,
@@ -617,40 +621,40 @@ func (k msgServer) SetExecutionFee(
 	})
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
-			customgovtypes.EventTypeSetExecutionFee,
-			sdk.NewAttribute(customgovtypes.AttributeKeyProposer, msg.Proposer.String()),
-			sdk.NewAttribute(customgovtypes.AttributeKeyTransactionType, msg.TransactionType),
-			sdk.NewAttribute(customgovtypes.AttributeKeyExecutionFee, fmt.Sprintf("%d", msg.ExecutionFee)),
-			sdk.NewAttribute(customgovtypes.AttributeKeyFailureFee, fmt.Sprintf("%d", msg.FailureFee)),
-			sdk.NewAttribute(customgovtypes.AttributeKeyTimeout, fmt.Sprintf("%d", msg.FailureFee)),
-			sdk.NewAttribute(customgovtypes.AttributeKeyDefaultParameters, fmt.Sprintf("%d", msg.DefaultParameters)),
+			types.EventTypeSetExecutionFee,
+			sdk.NewAttribute(types.AttributeKeyProposer, msg.Proposer.String()),
+			sdk.NewAttribute(types.AttributeKeyTransactionType, msg.TransactionType),
+			sdk.NewAttribute(types.AttributeKeyExecutionFee, fmt.Sprintf("%d", msg.ExecutionFee)),
+			sdk.NewAttribute(types.AttributeKeyFailureFee, fmt.Sprintf("%d", msg.FailureFee)),
+			sdk.NewAttribute(types.AttributeKeyTimeout, fmt.Sprintf("%d", msg.FailureFee)),
+			sdk.NewAttribute(types.AttributeKeyDefaultParameters, fmt.Sprintf("%d", msg.DefaultParameters)),
 		),
 	)
-	return &customgovtypes.MsgSetExecutionFeeResponse{}, nil
+	return &types.MsgSetExecutionFeeResponse{}, nil
 }
 
 func (k msgServer) ClaimCouncilor(
 	goCtx context.Context,
-	msg *customgovtypes.MsgClaimCouncilor,
-) (*customgovtypes.MsgClaimCouncilorResponse, error) {
+	msg *types.MsgClaimCouncilor,
+) (*types.MsgClaimCouncilorResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Address, customgovtypes.PermClaimCouncilor)
+	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Address, types.PermClaimCouncilor)
 	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, "PermClaimCouncilor")
+		return nil, errors.Wrap(types.ErrNotEnoughPermissions, "PermClaimCouncilor")
 	}
 
-	councilor := customgovtypes.NewCouncilor(msg.Moniker, msg.Website, msg.Social, msg.Identity, msg.Address)
+	councilor := types.NewCouncilor(msg.Moniker, msg.Website, msg.Social, msg.Identity, msg.Address)
 
 	k.keeper.SaveCouncilor(ctx, councilor)
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
-			customgovtypes.EventTypeClaimCouncilor,
-			sdk.NewAttribute(customgovtypes.AttributeKeyAddress, msg.Address.String()),
-			sdk.NewAttribute(customgovtypes.AttributeKeyWebsite, msg.Website),
-			sdk.NewAttribute(customgovtypes.AttributeKeySocial, msg.Social),
-			sdk.NewAttribute(customgovtypes.AttributeKeyIdentity, msg.Identity),
+			types.EventTypeClaimCouncilor,
+			sdk.NewAttribute(types.AttributeKeyAddress, msg.Address.String()),
+			sdk.NewAttribute(types.AttributeKeyWebsite, msg.Website),
+			sdk.NewAttribute(types.AttributeKeySocial, msg.Social),
+			sdk.NewAttribute(types.AttributeKeyIdentity, msg.Identity),
 		),
 	)
-	return &customgovtypes.MsgClaimCouncilorResponse{}, nil
+	return &types.MsgClaimCouncilorResponse{}, nil
 }

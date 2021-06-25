@@ -1464,7 +1464,7 @@ func (m *QueryIdentityRecordsRequest) GetCreator() github_com_cosmos_cosmos_sdk_
 }
 
 type QueryIdentityRecordsResponse struct {
-	Records []*IdentityRecord `protobuf:"bytes,1,rep,name=records,proto3" json:"records,omitempty"`
+	Records []IdentityRecord `protobuf:"bytes,1,rep,name=records,proto3" json:"records"`
 }
 
 func (m *QueryIdentityRecordsResponse) Reset()         { *m = QueryIdentityRecordsResponse{} }
@@ -1500,7 +1500,7 @@ func (m *QueryIdentityRecordsResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryIdentityRecordsResponse proto.InternalMessageInfo
 
-func (m *QueryIdentityRecordsResponse) GetRecords() []*IdentityRecord {
+func (m *QueryIdentityRecordsResponse) GetRecords() []IdentityRecord {
 	if m != nil {
 		return m.Records
 	}
@@ -1544,7 +1544,7 @@ func (m *QueryAllIdentityRecordsRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_QueryAllIdentityRecordsRequest proto.InternalMessageInfo
 
 type QueryAllIdentityRecordsResponse struct {
-	Records []*IdentityRecord `protobuf:"bytes,1,rep,name=records,proto3" json:"records,omitempty"`
+	Records []IdentityRecord `protobuf:"bytes,1,rep,name=records,proto3" json:"records"`
 }
 
 func (m *QueryAllIdentityRecordsResponse) Reset()         { *m = QueryAllIdentityRecordsResponse{} }
@@ -1580,7 +1580,7 @@ func (m *QueryAllIdentityRecordsResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryAllIdentityRecordsResponse proto.InternalMessageInfo
 
-func (m *QueryAllIdentityRecordsResponse) GetRecords() []*IdentityRecord {
+func (m *QueryAllIdentityRecordsResponse) GetRecords() []IdentityRecord {
 	if m != nil {
 		return m.Records
 	}
@@ -1724,7 +1724,7 @@ func (m *QueryIdentityRecordVerifyRequestsByApprover) GetApprover() github_com_c
 }
 
 type QueryIdentityRecordVerifyRequestsByApproverResponse struct {
-	VerifyRecords []*IdentityRecordsVerify `protobuf:"bytes,1,rep,name=verify_records,json=verifyRecords,proto3" json:"verify_records,omitempty"`
+	VerifyRecords []IdentityRecordsVerify `protobuf:"bytes,1,rep,name=verify_records,json=verifyRecords,proto3" json:"verify_records"`
 }
 
 func (m *QueryIdentityRecordVerifyRequestsByApproverResponse) Reset() {
@@ -1764,7 +1764,7 @@ func (m *QueryIdentityRecordVerifyRequestsByApproverResponse) XXX_DiscardUnknown
 
 var xxx_messageInfo_QueryIdentityRecordVerifyRequestsByApproverResponse proto.InternalMessageInfo
 
-func (m *QueryIdentityRecordVerifyRequestsByApproverResponse) GetVerifyRecords() []*IdentityRecordsVerify {
+func (m *QueryIdentityRecordVerifyRequestsByApproverResponse) GetVerifyRecords() []IdentityRecordsVerify {
 	if m != nil {
 		return m.VerifyRecords
 	}
@@ -1816,7 +1816,7 @@ func (m *QueryIdentityRecordVerifyRequests) GetRequester() github_com_cosmos_cos
 }
 
 type QueryIdentityRecordVerifyRequestsResponse struct {
-	VerifyRecords []*IdentityRecordsVerify `protobuf:"bytes,1,rep,name=verify_records,json=verifyRecords,proto3" json:"verify_records,omitempty"`
+	VerifyRecords []IdentityRecordsVerify `protobuf:"bytes,1,rep,name=verify_records,json=verifyRecords,proto3" json:"verify_records"`
 }
 
 func (m *QueryIdentityRecordVerifyRequestsResponse) Reset() {
@@ -1856,7 +1856,7 @@ func (m *QueryIdentityRecordVerifyRequestsResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryIdentityRecordVerifyRequestsResponse proto.InternalMessageInfo
 
-func (m *QueryIdentityRecordVerifyRequestsResponse) GetVerifyRecords() []*IdentityRecordsVerify {
+func (m *QueryIdentityRecordVerifyRequestsResponse) GetVerifyRecords() []IdentityRecordsVerify {
 	if m != nil {
 		return m.VerifyRecords
 	}
@@ -1900,7 +1900,7 @@ func (m *QueryAllIdentityRecordVerifyRequests) XXX_DiscardUnknown() {
 var xxx_messageInfo_QueryAllIdentityRecordVerifyRequests proto.InternalMessageInfo
 
 type QueryAllIdentityRecordVerifyRequestsResponse struct {
-	VerifyRecords []*IdentityRecordsVerify `protobuf:"bytes,1,rep,name=verify_records,json=verifyRecords,proto3" json:"verify_records,omitempty"`
+	VerifyRecords []IdentityRecordsVerify `protobuf:"bytes,1,rep,name=verify_records,json=verifyRecords,proto3" json:"verify_records"`
 }
 
 func (m *QueryAllIdentityRecordVerifyRequestsResponse) Reset() {
@@ -1940,7 +1940,7 @@ func (m *QueryAllIdentityRecordVerifyRequestsResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryAllIdentityRecordVerifyRequestsResponse proto.InternalMessageInfo
 
-func (m *QueryAllIdentityRecordVerifyRequestsResponse) GetVerifyRecords() []*IdentityRecordsVerify {
+func (m *QueryAllIdentityRecordVerifyRequestsResponse) GetVerifyRecords() []IdentityRecordsVerify {
 	if m != nil {
 		return m.VerifyRecords
 	}
@@ -1996,124 +1996,122 @@ func init() {
 func init() { proto.RegisterFile("query.proto", fileDescriptor_5c6ac9b241082464) }
 
 var fileDescriptor_5c6ac9b241082464 = []byte{
-	// 1859 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x59, 0xcd, 0x73, 0x13, 0xc7,
-	0x12, 0xd7, 0xda, 0x32, 0xc8, 0x6d, 0xb0, 0xcd, 0x58, 0x16, 0x62, 0x6d, 0x4b, 0x66, 0xb0, 0xfd,
-	0x6c, 0xb0, 0xb5, 0x3c, 0x83, 0xe1, 0x01, 0x45, 0x3d, 0x64, 0x3e, 0xf4, 0x28, 0x1e, 0x3c, 0x3f,
-	0x55, 0x20, 0x54, 0xaa, 0x82, 0xb2, 0x48, 0x63, 0xb1, 0xa5, 0xb5, 0x56, 0xec, 0xae, 0x15, 0x54,
-	0xc6, 0xa9, 0x54, 0x0e, 0x09, 0x39, 0x85, 0x54, 0xf2, 0x07, 0x70, 0x4b, 0xe5, 0x96, 0x7b, 0x72,
-	0xcb, 0x85, 0x23, 0x55, 0xc9, 0x21, 0x27, 0x57, 0x0a, 0x38, 0xe4, 0xcc, 0x91, 0x53, 0x6a, 0x67,
-	0x67, 0xf6, 0x4b, 0xbb, 0x92, 0x6d, 0x48, 0x38, 0x79, 0x76, 0xe6, 0xd7, 0xdd, 0xbf, 0xee, 0xe9,
-	0x99, 0xe9, 0x96, 0x61, 0xe0, 0xfe, 0x3a, 0xd1, 0x5b, 0xb9, 0x86, 0xae, 0x99, 0x1a, 0x4a, 0xd4,
-	0x14, 0x5d, 0xce, 0x55, 0xb5, 0xa6, 0x38, 0x20, 0x97, 0x4d, 0x4d, 0xb7, 0xa7, 0xc5, 0xa1, 0xb2,
-	0xb6, 0x5e, 0x2f, 0x2b, 0xaa, 0x33, 0x31, 0x52, 0x91, 0x4d, 0xb9, 0xa4, 0x93, 0xaa, 0x62, 0x98,
-	0x5c, 0x58, 0x1c, 0x6e, 0xc8, 0x55, 0xa5, 0x2e, 0x9b, 0x8a, 0x56, 0x67, 0x33, 0xa0, 0x6b, 0x2a,
-	0xe1, 0x22, 0xe4, 0x01, 0x29, 0xaf, 0x5b, 0x8b, 0xa5, 0x55, 0xc2, 0x27, 0xd3, 0x75, 0x62, 0x7e,
-	0xac, 0xe9, 0xb5, 0x52, 0x43, 0xd7, 0x1a, 0x44, 0x37, 0x15, 0x62, 0xb0, 0x95, 0x41, 0x6b, 0x46,
-	0x33, 0x64, 0x95, 0x23, 0x95, 0x0a, 0xa9, 0x9b, 0x8a, 0xd9, 0xe2, 0x56, 0x65, 0xce, 0x25, 0x59,
-	0xd5, 0xaa, 0x1a, 0x1d, 0x4a, 0xd6, 0x88, 0xcd, 0x8e, 0x57, 0x35, 0xad, 0xaa, 0x12, 0x49, 0x6e,
-	0x28, 0x92, 0x5c, 0xaf, 0x6b, 0x26, 0xe5, 0xc5, 0xb4, 0x63, 0x11, 0xd2, 0x37, 0x6c, 0xcb, 0x2b,
-	0x8e, 0xe1, 0x22, 0xb9, 0xbf, 0x4e, 0x0c, 0x13, 0xdf, 0x86, 0x43, 0x21, 0x6b, 0x46, 0x43, 0xab,
-	0x1b, 0x04, 0x9d, 0x03, 0x70, 0xa9, 0xa6, 0x85, 0x49, 0x61, 0x76, 0x60, 0x71, 0x2c, 0xc7, 0xa3,
-	0x96, 0x6b, 0x17, 0xf4, 0xc0, 0xf1, 0x27, 0x30, 0xb6, 0x42, 0xf4, 0x35, 0xc5, 0x30, 0x2c, 0x2a,
-	0xcb, 0xad, 0x7c, 0xa5, 0xa2, 0x13, 0x83, 0x1b, 0x46, 0x25, 0x48, 0x34, 0x65, 0xb5, 0x24, 0x57,
-	0x2a, 0x3a, 0xd5, 0xbc, 0x6f, 0xf9, 0xd2, 0xab, 0xad, 0xec, 0x50, 0x4b, 0x5e, 0x53, 0xcf, 0x62,
-	0xbe, 0x82, 0x5f, 0x6f, 0x65, 0x17, 0xaa, 0x8a, 0x79, 0x6f, 0xfd, 0x6e, 0xae, 0xac, 0xad, 0x49,
-	0x65, 0xcd, 0x58, 0xd3, 0x0c, 0xf6, 0x67, 0xc1, 0xa8, 0xd4, 0x24, 0xb3, 0xd5, 0x20, 0x46, 0x2e,
-	0x5f, 0x2e, 0x73, 0xf5, 0x7b, 0x9b, 0xb2, 0x6a, 0x8d, 0xf1, 0x0d, 0x18, 0xf1, 0xd8, 0x77, 0x7c,
-	0x3a, 0x0d, 0x03, 0x0d, 0x77, 0x9a, 0x39, 0x35, 0xea, 0x3a, 0xe5, 0x95, 0xf1, 0x22, 0xf1, 0x03,
-	0x18, 0x2d, 0x6a, 0x2a, 0x79, 0x07, 0x9e, 0xe4, 0x20, 0x15, 0xb4, 0xcc, 0x9c, 0x49, 0x42, 0x9f,
-	0x95, 0x74, 0x96, 0x1b, 0xbd, 0xb3, 0xf1, 0xa2, 0xfd, 0x81, 0xe7, 0x6d, 0xbc, 0xcf, 0x7b, 0x9b,
-	0x2a, 0x82, 0xb8, 0x05, 0xa1, 0x34, 0xe3, 0x45, 0x3a, 0xc6, 0x45, 0x38, 0xd8, 0x86, 0x7e, 0xd3,
-	0x58, 0x5d, 0x80, 0x91, 0xcb, 0xfc, 0x00, 0x5c, 0x21, 0x84, 0x9b, 0x9f, 0x83, 0x61, 0x53, 0x97,
-	0xeb, 0x86, 0x5c, 0xa6, 0x27, 0xc3, 0xf2, 0x98, 0x2a, 0xed, 0x2f, 0x0e, 0x79, 0xe6, 0xdf, 0x6b,
-	0x35, 0x08, 0xbe, 0x00, 0x49, 0xbf, 0x06, 0x46, 0x69, 0x16, 0x7a, 0x57, 0x09, 0x61, 0x54, 0x52,
-	0x2e, 0x15, 0x1f, 0xd8, 0x82, 0xe0, 0x71, 0x10, 0x57, 0x34, 0x4d, 0x67, 0x49, 0x7a, 0x9d, 0x18,
-	0x86, 0x5c, 0x75, 0xf3, 0xfe, 0x0c, 0x8c, 0x85, 0xae, 0x32, 0x33, 0x22, 0x24, 0xd6, 0xd8, 0x1c,
-	0x8d, 0x6d, 0x7f, 0xd1, 0xf9, 0xc6, 0x0f, 0xe1, 0xd0, 0x45, 0x7e, 0x43, 0xfc, 0xfd, 0xc9, 0xb0,
-	0xe4, 0xb3, 0x7e, 0x5d, 0xab, 0x2b, 0x35, 0xa2, 0x73, 0xeb, 0x69, 0xd8, 0xbb, 0x66, 0xcf, 0xb0,
-	0xb8, 0xf2, 0x4f, 0xfc, 0x5f, 0x38, 0xe0, 0x88, 0x79, 0xf6, 0xb7, 0xdf, 0xb9, 0xeb, 0x58, 0x48,
-	0x47, 0xdc, 0x90, 0xba, 0x66, 0xe2, 0x4f, 0xb7, 0xb2, 0xb1, 0xa2, 0x8b, 0xc5, 0xa7, 0x21, 0xf9,
-	0x7f, 0xeb, 0x22, 0x5d, 0x61, 0xd7, 0x16, 0xb7, 0x9f, 0x85, 0x01, 0x7e, 0x93, 0x95, 0x94, 0x0a,
-	0x4b, 0x33, 0xe0, 0x53, 0x57, 0x2b, 0xb8, 0x05, 0xa3, 0x01, 0x41, 0x46, 0xe5, 0x24, 0x24, 0x38,
-	0x8c, 0x31, 0x41, 0x9e, 0x3c, 0x63, 0x2b, 0x8c, 0x88, 0x83, 0x44, 0x47, 0xa1, 0xaf, 0xa9, 0x99,
-	0xc4, 0x48, 0xf7, 0x4c, 0xf6, 0xce, 0x0e, 0x2c, 0x0e, 0xba, 0x22, 0xb7, 0x34, 0x93, 0x30, 0xb8,
-	0x0d, 0xc1, 0xbf, 0x0a, 0x01, 0xdb, 0xce, 0x9e, 0x25, 0x6d, 0x2d, 0x3c, 0x66, 0xf6, 0x07, 0xd2,
-	0x00, 0xdc, 0x2b, 0x3e, 0xdd, 0xd3, 0x96, 0xfb, 0x72, 0x95, 0xe7, 0xf5, 0xf2, 0xbf, 0x5e, 0x6f,
-	0x65, 0x4f, 0x76, 0xdf, 0x4f, 0xc9, 0x7e, 0x7c, 0x3c, 0x92, 0x45, 0x8f, 0x09, 0x34, 0x0c, 0xbd,
-	0xb2, 0xaa, 0xa6, 0x7b, 0x27, 0x85, 0xd9, 0x44, 0xd1, 0x1a, 0x5a, 0xdb, 0xa9, 0x93, 0x26, 0xd1,
-	0x0d, 0x92, 0x8e, 0xd3, 0x59, 0xfe, 0x79, 0x36, 0xf1, 0xe8, 0x49, 0x36, 0xf6, 0xc7, 0x93, 0x6c,
-	0x0c, 0xff, 0x2c, 0x40, 0x2a, 0xe8, 0x16, 0x8b, 0xe9, 0x29, 0xe8, 0xe7, 0x91, 0xb2, 0xb3, 0xb8,
-	0x53, 0x50, 0x5d, 0x28, 0xba, 0x1f, 0xe2, 0x79, 0x2a, 0xe8, 0xb9, 0x6d, 0x63, 0xf9, 0xcc, 0xeb,
-	0xad, 0xec, 0xd2, 0x0e, 0x5d, 0xb7, 0x45, 0xbd, 0xbe, 0xe3, 0xff, 0xc0, 0x34, 0x75, 0xe2, 0xfd,
-	0x7b, 0x8a, 0x49, 0x54, 0xc5, 0x30, 0x49, 0x85, 0xf3, 0xb3, 0x76, 0x52, 0x37, 0xb6, 0x9d, 0x61,
-	0x77, 0x60, 0xa6, 0x9b, 0x26, 0x27, 0xe5, 0xf6, 0xd0, 0x9d, 0xe6, 0xb1, 0x49, 0xb5, 0xbd, 0x6c,
-	0x79, 0xab, 0x2a, 0x60, 0xf1, 0x61, 0x58, 0xfc, 0xb9, 0x00, 0xc3, 0xd4, 0x80, 0xa5, 0x6d, 0xbb,
-	0xac, 0x50, 0x81, 0xa7, 0x58, 0x0f, 0xbd, 0x13, 0xfe, 0xb9, 0xf3, 0x0b, 0xc0, 0x96, 0xf7, 0x6c,
-	0xfc, 0x79, 0x38, 0xe0, 0xe1, 0xe1, 0x5c, 0x8f, 0x71, 0x0b, 0xc7, 0x8e, 0x50, 0xf8, 0x79, 0xa0,
-	0x08, 0x7c, 0xd2, 0x23, 0xbe, 0xfd, 0xe8, 0x5e, 0x00, 0xe4, 0x95, 0x62, 0x56, 0x9d, 0x63, 0x28,
-	0x74, 0x3f, 0x86, 0x8f, 0x05, 0x98, 0xa0, 0x2a, 0x2e, 0xc9, 0xa6, 0x5c, 0x24, 0xab, 0x44, 0x27,
-	0xf5, 0x32, 0xb9, 0x46, 0x5a, 0x0e, 0x09, 0xff, 0xc1, 0x13, 0xfe, 0xf2, 0x83, 0x87, 0xbf, 0x13,
-	0x20, 0x13, 0x45, 0x89, 0x79, 0x88, 0x20, 0x5e, 0x23, 0x2d, 0xfe, 0x16, 0xd0, 0xf1, 0xbb, 0x38,
-	0x26, 0x0b, 0x70, 0xa8, 0x9d, 0x28, 0x8f, 0xdb, 0x30, 0xf4, 0xd6, 0x48, 0x8b, 0x5d, 0x62, 0xd6,
-	0x10, 0x5f, 0x07, 0x31, 0x0c, 0xce, 0x7c, 0x92, 0x20, 0x6e, 0x15, 0xb6, 0xed, 0x75, 0x9d, 0x0d,
-	0xb7, 0xab, 0xdd, 0xcb, 0x75, 0x53, 0x6f, 0x15, 0x29, 0x10, 0xcf, 0x33, 0x75, 0x57, 0x59, 0x71,
-	0x5a, 0x24, 0x65, 0x4d, 0xaf, 0x70, 0xf3, 0x83, 0xd0, 0xe3, 0xa4, 0x4c, 0x8f, 0x52, 0xc1, 0xff,
-	0x83, 0xb1, 0x50, 0x34, 0xb3, 0x7e, 0x1c, 0xf6, 0xe8, 0x74, 0x86, 0xd9, 0x4f, 0xbb, 0xf6, 0x03,
-	0x12, 0x0c, 0x87, 0x1f, 0x86, 0x2a, 0x74, 0xd2, 0xe6, 0x43, 0xd8, 0x5b, 0xd6, 0x89, 0x6c, 0x6a,
-	0xfc, 0xe1, 0xbd, 0xf8, 0x6a, 0x2b, 0x3b, 0x68, 0x3f, 0xbc, 0x6c, 0x61, 0x37, 0xef, 0x2e, 0x17,
-	0x2d, 0xc2, 0x78, 0xb8, 0x75, 0xe6, 0xcf, 0xa2, 0x75, 0x57, 0xd3, 0x29, 0x76, 0x0a, 0xa2, 0x1d,
-	0xe2, 0x40, 0x3c, 0xc9, 0xf2, 0x2e, 0xaf, 0xaa, 0xe1, 0x4e, 0xe1, 0x9b, 0x90, 0x8d, 0x44, 0xbc,
-	0x81, 0xe1, 0x3c, 0x4c, 0xfa, 0x9c, 0xb9, 0x45, 0x74, 0x65, 0x35, 0xb0, 0x9f, 0x13, 0x00, 0xba,
-	0x3d, 0x74, 0xaf, 0x82, 0x7e, 0x36, 0x73, 0xb5, 0x82, 0x15, 0x38, 0xdc, 0x41, 0x05, 0xe3, 0x76,
-	0x09, 0xf6, 0x37, 0xe9, 0x7c, 0xc9, 0xb7, 0xd7, 0xd9, 0x28, 0x86, 0x06, 0xd3, 0xb2, 0xaf, 0xe9,
-	0xd1, 0x86, 0xbf, 0x12, 0xe0, 0x58, 0x48, 0xec, 0xb9, 0x45, 0xca, 0xc8, 0x2a, 0x8e, 0x1b, 0x0d,
-	0x5d, 0x6b, 0x12, 0x1d, 0x7d, 0x04, 0x09, 0x99, 0x8d, 0xdb, 0x6b, 0x30, 0xbe, 0xb2, 0x8b, 0x5c,
-	0x70, 0xb4, 0xe2, 0x4d, 0x38, 0xb1, 0x03, 0x42, 0x4e, 0x38, 0xae, 0xc0, 0xa0, 0x2f, 0x1c, 0x7c,
-	0xc7, 0xba, 0xc6, 0x63, 0xbf, 0x37, 0x1e, 0x06, 0x7e, 0x24, 0x04, 0x82, 0x1f, 0x66, 0x1f, 0x95,
-	0x81, 0x6f, 0x97, 0x13, 0x87, 0xcb, 0xaf, 0xb6, 0xb2, 0xc3, 0x76, 0x1c, 0x9c, 0xa5, 0x5d, 0x04,
-	0xc2, 0xd5, 0x8b, 0x0d, 0x98, 0xeb, 0xca, 0xe4, 0xad, 0xfb, 0x3f, 0x03, 0x53, 0xe1, 0xa7, 0xc2,
-	0x6f, 0x17, 0x37, 0x61, 0x7e, 0x3b, 0xb8, 0xb7, 0xcd, 0x6f, 0xf1, 0x8b, 0x14, 0xf4, 0x51, 0xc3,
-	0xe8, 0x0e, 0x24, 0xc3, 0x9a, 0x60, 0x34, 0x1d, 0xda, 0x44, 0x05, 0xbb, 0x09, 0x71, 0x22, 0xbc,
-	0xd7, 0x62, 0x7c, 0x71, 0x0c, 0xdd, 0x84, 0x41, 0x7f, 0x6b, 0x88, 0x3c, 0x5c, 0x43, 0xdb, 0x55,
-	0x71, 0x32, 0x1a, 0xe0, 0xa8, 0xbd, 0x0d, 0x43, 0x81, 0x9e, 0x10, 0x05, 0xc4, 0xda, 0x9b, 0x4b,
-	0xf1, 0x70, 0x07, 0x84, 0x47, 0x33, 0x6a, 0x6f, 0x9e, 0xd0, 0x91, 0xb0, 0xae, 0x23, 0x48, 0x7c,
-	0x2c, 0x04, 0x14, 0xa9, 0x99, 0x35, 0x46, 0x11, 0x9a, 0xfd, 0x6d, 0x53, 0x37, 0xcd, 0x32, 0x24,
-	0x0b, 0xc4, 0x6c, 0xfb, 0xb5, 0x03, 0xe1, 0x4e, 0x3f, 0x85, 0x30, 0xd5, 0x47, 0x3a, 0x62, 0x1c,
-	0x13, 0x45, 0x18, 0x2a, 0x10, 0xd3, 0xdb, 0xc4, 0xa2, 0x89, 0x88, 0xe6, 0x96, 0x29, 0xce, 0x44,
-	0x2d, 0x3b, 0x3a, 0xab, 0x90, 0x2a, 0x10, 0x33, 0xa4, 0xcb, 0x45, 0x53, 0x9e, 0xb4, 0x8a, 0x6c,
-	0x91, 0xc5, 0xe9, 0x2e, 0x28, 0xc7, 0x50, 0x13, 0x12, 0xbc, 0xc4, 0x46, 0x1e, 0x5a, 0x61, 0x1d,
-	0xa2, 0x98, 0x8d, 0x5c, 0x67, 0xea, 0xe6, 0x3e, 0xfb, 0xe5, 0xe5, 0x37, 0x3d, 0x47, 0xd0, 0x61,
-	0xc9, 0x02, 0x4a, 0x55, 0xad, 0x29, 0x39, 0x9d, 0x89, 0xb4, 0xe1, 0xa9, 0x4e, 0x37, 0x51, 0x0d,
-	0xfa, 0x9d, 0xa6, 0x07, 0x45, 0x29, 0x0e, 0xcb, 0xfb, 0xf0, 0x7e, 0x09, 0x8f, 0x51, 0xd3, 0xa3,
-	0x68, 0x24, 0xc4, 0x34, 0xfa, 0x5e, 0x80, 0xf1, 0x02, 0x31, 0x23, 0xdb, 0x0a, 0x24, 0x05, 0xf4,
-	0x77, 0x6b, 0x65, 0xc4, 0xe3, 0xdb, 0x17, 0x60, 0x04, 0x67, 0x28, 0xc1, 0x49, 0x94, 0x71, 0x09,
-	0xda, 0x5d, 0x49, 0x20, 0x30, 0x79, 0x88, 0x5b, 0x92, 0x48, 0x0c, 0x58, 0xf0, 0xb4, 0x2c, 0xde,
-	0x9c, 0x6f, 0x6b, 0x23, 0x70, 0x0c, 0x29, 0xd0, 0x47, 0x6b, 0x7c, 0x14, 0x86, 0x73, 0x5c, 0x18,
-	0x0f, 0x5f, 0x64, 0x5a, 0xa6, 0x29, 0xdd, 0x2c, 0x9a, 0xf0, 0xd3, 0x0d, 0xb2, 0xfd, 0x52, 0x80,
-	0x83, 0x05, 0x62, 0xe6, 0x55, 0xb5, 0xad, 0xfe, 0x46, 0xff, 0x08, 0x18, 0x88, 0x6a, 0x1a, 0xc4,
-	0xd9, 0xee, 0xc0, 0xe8, 0x5d, 0xa6, 0xbf, 0xef, 0xd2, 0x9a, 0xfe, 0x53, 0x01, 0x46, 0x0b, 0xc4,
-	0xf4, 0x49, 0x2f, 0xb7, 0xae, 0x91, 0x96, 0xf7, 0x22, 0x89, 0x2c, 0xc1, 0xc5, 0xa9, 0xce, 0x20,
-	0xc6, 0x60, 0x9c, 0x32, 0x48, 0xa1, 0xa4, 0x9f, 0x81, 0xb4, 0x51, 0x23, 0xad, 0x4d, 0xf4, 0x48,
-	0x80, 0x03, 0x05, 0x62, 0xfa, 0x1f, 0x1a, 0x14, 0xd4, 0x1c, 0x5a, 0x83, 0x7b, 0x8f, 0x6c, 0x87,
-	0xda, 0x3b, 0x2c, 0x8f, 0x3c, 0x3f, 0x38, 0x5b, 0x50, 0x69, 0xc3, 0xda, 0x99, 0xaf, 0x05, 0x40,
-	0x6d, 0x54, 0x7c, 0x8f, 0x57, 0x87, 0x82, 0x5c, 0x9c, 0xe9, 0x06, 0x63, 0x6c, 0xe6, 0x29, 0x9b,
-	0x19, 0x34, 0x15, 0xc9, 0xc6, 0x90, 0x36, 0x58, 0x19, 0xbe, 0x89, 0xbe, 0xb5, 0x77, 0xa8, 0xbd,
-	0x20, 0x46, 0xc1, 0x14, 0x88, 0xac, 0xaa, 0xc5, 0xb9, 0x6d, 0x20, 0xa3, 0x43, 0x25, 0xab, 0x56,
-	0xde, 0xfa, 0x09, 0xa2, 0x1f, 0x04, 0xc8, 0xb4, 0x85, 0xca, 0x57, 0x66, 0xa0, 0xa3, 0x11, 0xf1,
-	0x08, 0x29, 0xbe, 0xc5, 0x63, 0xdb, 0xc2, 0x32, 0x8e, 0x4b, 0x94, 0xa3, 0x84, 0x16, 0x42, 0x02,
-	0xe8, 0xab, 0x67, 0xa4, 0x0d, 0xb7, 0xa2, 0xdf, 0x44, 0x3f, 0x0a, 0x90, 0xed, 0x4c, 0xd9, 0x40,
-	0xc7, 0x3a, 0xee, 0xa1, 0x1f, 0x2c, 0x9e, 0xd8, 0x01, 0xd8, 0x21, 0x7f, 0x8a, 0x92, 0x3f, 0x8e,
-	0x72, 0x9d, 0xc8, 0xdb, 0x32, 0x0e, 0x7d, 0xa2, 0x6f, 0xa2, 0x97, 0x02, 0xcc, 0x75, 0x61, 0xef,
-	0x69, 0x09, 0x96, 0x76, 0x40, 0xcd, 0x15, 0x13, 0xcf, 0xef, 0x4a, 0xcc, 0xf1, 0x2d, 0x4f, 0x7d,
-	0x3b, 0x87, 0xce, 0x74, 0xf7, 0xad, 0x74, 0xb7, 0x55, 0xe2, 0xed, 0x85, 0xb4, 0xc1, 0x47, 0x9b,
-	0xe8, 0x27, 0x01, 0x70, 0x58, 0xba, 0x07, 0xf6, 0x29, 0xd7, 0x2d, 0xa3, 0x03, 0x5b, 0x75, 0x6a,
-	0x67, 0x78, 0xc7, 0xa3, 0x1c, 0xf5, 0x68, 0x16, 0xcd, 0x44, 0x1c, 0x87, 0x80, 0x57, 0xcb, 0xff,
-	0x7e, 0xfa, 0x3c, 0x23, 0x3c, 0x7b, 0x9e, 0x11, 0x7e, 0x7f, 0x9e, 0x11, 0x1e, 0xbf, 0xc8, 0xc4,
-	0x9e, 0xbd, 0xc8, 0xc4, 0x7e, 0x7b, 0x91, 0x89, 0x7d, 0x30, 0xed, 0x69, 0x39, 0xae, 0x29, 0xba,
-	0x7c, 0x51, 0xd3, 0x89, 0x64, 0x90, 0x9a, 0xac, 0x48, 0x0f, 0xa8, 0x5e, 0xda, 0x75, 0xdc, 0xdd,
-	0x43, 0xff, 0x85, 0x75, 0xe2, 0xcf, 0x00, 0x00, 0x00, 0xff, 0xff, 0x79, 0xf5, 0xc2, 0xde, 0xb9,
-	0x1b, 0x00, 0x00,
+	// 1840 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x59, 0xcd, 0x73, 0x13, 0x47,
+	0x16, 0xd7, 0xd8, 0x32, 0xc8, 0xcf, 0x60, 0x9b, 0xb6, 0xec, 0x95, 0xc7, 0xb6, 0x64, 0x1a, 0xdb,
+	0x6b, 0x83, 0xad, 0x61, 0x01, 0xf3, 0x59, 0xd4, 0x22, 0x03, 0xbb, 0x4b, 0xf1, 0xe5, 0x55, 0xed,
+	0xb2, 0xd4, 0xa6, 0x82, 0x32, 0x48, 0x6d, 0x31, 0xa5, 0xb1, 0x46, 0xcc, 0x8c, 0x15, 0xa6, 0x8c,
+	0x73, 0x48, 0x2a, 0x14, 0xa7, 0x84, 0x54, 0xfe, 0x01, 0x4e, 0xc9, 0x29, 0xf7, 0xe4, 0x9c, 0x0b,
+	0x47, 0xaa, 0x92, 0x43, 0x4e, 0x4e, 0x02, 0x39, 0xe4, 0xcc, 0x91, 0x53, 0x6a, 0x7a, 0xba, 0xe7,
+	0x4b, 0x33, 0x92, 0x6c, 0x8a, 0x70, 0xf2, 0x4c, 0xf7, 0xef, 0xbd, 0xf7, 0x7b, 0x1f, 0xdd, 0xf3,
+	0x9e, 0x0c, 0x03, 0xf7, 0x37, 0x88, 0x6e, 0xe5, 0x1b, 0xba, 0x66, 0x6a, 0x28, 0x55, 0x53, 0x74,
+	0x39, 0x5f, 0xd5, 0x9a, 0xe2, 0x80, 0x5c, 0x36, 0x35, 0xdd, 0x59, 0x16, 0x87, 0xca, 0xda, 0x46,
+	0xbd, 0xac, 0xa8, 0xee, 0xc2, 0x48, 0x45, 0x36, 0xe5, 0x92, 0x4e, 0xaa, 0x8a, 0x61, 0x72, 0x61,
+	0x71, 0xb8, 0x21, 0x57, 0x95, 0xba, 0x6c, 0x2a, 0x5a, 0x9d, 0xad, 0x80, 0xae, 0xa9, 0x84, 0x8b,
+	0x90, 0x07, 0xa4, 0xbc, 0x61, 0x6f, 0x96, 0xd6, 0x08, 0x5f, 0xcc, 0xd4, 0x89, 0xf9, 0xa1, 0xa6,
+	0xd7, 0x4a, 0x0d, 0x5d, 0x6b, 0x10, 0xdd, 0x54, 0x88, 0xc1, 0x76, 0x06, 0xed, 0x15, 0xcd, 0x90,
+	0x55, 0x8e, 0x54, 0x2a, 0xa4, 0x6e, 0x2a, 0xa6, 0xc5, 0xad, 0xca, 0x9c, 0x4b, 0xba, 0xaa, 0x55,
+	0x35, 0xfa, 0x28, 0xd9, 0x4f, 0x6c, 0x75, 0xb2, 0xaa, 0x69, 0x55, 0x95, 0x48, 0x72, 0x43, 0x91,
+	0xe4, 0x7a, 0x5d, 0x33, 0x29, 0x2f, 0xa6, 0x1d, 0x8b, 0x90, 0xb9, 0xe1, 0x58, 0x5e, 0x75, 0x0d,
+	0x17, 0xc9, 0xfd, 0x0d, 0x62, 0x98, 0xf8, 0x36, 0x8c, 0x47, 0xec, 0x19, 0x0d, 0xad, 0x6e, 0x10,
+	0x74, 0x0e, 0xc0, 0xa3, 0x9a, 0x11, 0xa6, 0x85, 0xf9, 0x81, 0x63, 0x13, 0x79, 0x1e, 0xb5, 0x7c,
+	0xab, 0xa0, 0x0f, 0x8e, 0x3f, 0x82, 0x89, 0x55, 0xa2, 0xaf, 0x2b, 0x86, 0x61, 0x53, 0x59, 0xb1,
+	0x0a, 0x95, 0x8a, 0x4e, 0x0c, 0x6e, 0x18, 0x95, 0x20, 0xd5, 0x94, 0xd5, 0x92, 0x5c, 0xa9, 0xe8,
+	0x54, 0xf3, 0xbe, 0x95, 0x4b, 0xaf, 0xb6, 0x73, 0x43, 0x96, 0xbc, 0xae, 0x9e, 0xc5, 0x7c, 0x07,
+	0xbf, 0xde, 0xce, 0x2d, 0x55, 0x15, 0xf3, 0xde, 0xc6, 0xdd, 0x7c, 0x59, 0x5b, 0x97, 0xca, 0x9a,
+	0xb1, 0xae, 0x19, 0xec, 0xcf, 0x92, 0x51, 0xa9, 0x49, 0xa6, 0xd5, 0x20, 0x46, 0xbe, 0x50, 0x2e,
+	0x73, 0xf5, 0x7b, 0x9b, 0xb2, 0x6a, 0x3f, 0xe3, 0x1b, 0x30, 0xe2, 0xb3, 0xef, 0xfa, 0x74, 0x0a,
+	0x06, 0x1a, 0xde, 0x32, 0x73, 0x6a, 0xd4, 0x73, 0xca, 0x2f, 0xe3, 0x47, 0xe2, 0x07, 0x30, 0x5a,
+	0xd4, 0x54, 0xf2, 0x0e, 0x3c, 0xc9, 0xc3, 0x58, 0xd8, 0x32, 0x73, 0x26, 0x0d, 0x7d, 0x76, 0xd1,
+	0xd9, 0x6e, 0xf4, 0xce, 0x27, 0x8b, 0xce, 0x0b, 0x5e, 0x74, 0xf0, 0x01, 0xef, 0x1d, 0xaa, 0x08,
+	0x92, 0x36, 0x84, 0xd2, 0x4c, 0x16, 0xe9, 0x33, 0x2e, 0xc2, 0x5f, 0x5a, 0xd0, 0x6f, 0x1a, 0xab,
+	0x0b, 0x30, 0x72, 0x99, 0x1f, 0x80, 0x7f, 0x10, 0xc2, 0xcd, 0x2f, 0xc0, 0xb0, 0xa9, 0xcb, 0x75,
+	0x43, 0x2e, 0xd3, 0x93, 0x61, 0x7b, 0x4c, 0x95, 0xf6, 0x17, 0x87, 0x7c, 0xeb, 0xff, 0xb1, 0x1a,
+	0x04, 0x5f, 0x80, 0x74, 0x50, 0x03, 0xa3, 0x34, 0x0f, 0xbd, 0x6b, 0x84, 0x30, 0x2a, 0x63, 0x1e,
+	0x95, 0x00, 0xd8, 0x86, 0xe0, 0x49, 0x10, 0x57, 0x35, 0x4d, 0x67, 0x45, 0x7a, 0x9d, 0x18, 0x86,
+	0x5c, 0xf5, 0xea, 0xfe, 0x0c, 0x4c, 0x44, 0xee, 0x32, 0x33, 0x22, 0xa4, 0xd6, 0xd9, 0x1a, 0x8d,
+	0x6d, 0x7f, 0xd1, 0x7d, 0xc7, 0x0f, 0x61, 0xfc, 0x22, 0xbf, 0x21, 0xfe, 0xfc, 0x62, 0x58, 0x0e,
+	0x58, 0xbf, 0xae, 0xd5, 0x95, 0x1a, 0xd1, 0xb9, 0xf5, 0x0c, 0xec, 0x5d, 0x77, 0x56, 0x58, 0x5c,
+	0xf9, 0x2b, 0xbe, 0x06, 0x07, 0x5c, 0x31, 0x5f, 0x7e, 0xfb, 0xdd, 0xbb, 0x8e, 0x85, 0x74, 0xc4,
+	0x0b, 0xa9, 0x67, 0x26, 0xf9, 0x6c, 0x3b, 0x97, 0x28, 0x7a, 0x58, 0x7c, 0x0a, 0xd2, 0xff, 0xb6,
+	0x2f, 0xd2, 0x55, 0x76, 0x6d, 0x71, 0xfb, 0x39, 0x18, 0xe0, 0x37, 0x59, 0x49, 0xa9, 0xb0, 0x32,
+	0x03, 0xbe, 0x74, 0xa5, 0x82, 0x2d, 0x18, 0x0d, 0x09, 0x32, 0x2a, 0x27, 0x20, 0xc5, 0x61, 0x8c,
+	0x09, 0xf2, 0xd5, 0x19, 0xdb, 0x61, 0x44, 0x5c, 0x24, 0x3a, 0x0c, 0x7d, 0x4d, 0xcd, 0x24, 0x46,
+	0xa6, 0x67, 0xba, 0x77, 0x7e, 0xe0, 0xd8, 0xa0, 0x27, 0x72, 0x4b, 0x33, 0x09, 0x83, 0x3b, 0x10,
+	0xfc, 0xa3, 0x10, 0xb2, 0xed, 0xe6, 0x2c, 0xed, 0x68, 0xe1, 0x31, 0x73, 0x5e, 0x90, 0x06, 0xe0,
+	0x5d, 0xf1, 0x99, 0x9e, 0x96, 0xda, 0x97, 0xab, 0xbc, 0xae, 0x57, 0x4e, 0xbf, 0xde, 0xce, 0x9d,
+	0xe8, 0x9c, 0x4f, 0xc9, 0xf9, 0xf8, 0xf8, 0x24, 0x8b, 0x3e, 0x13, 0x68, 0x18, 0x7a, 0x65, 0x55,
+	0xcd, 0xf4, 0x4e, 0x0b, 0xf3, 0xa9, 0xa2, 0xfd, 0x68, 0xa7, 0x53, 0x27, 0x4d, 0xa2, 0x1b, 0x24,
+	0x93, 0xa4, 0xab, 0xfc, 0xf5, 0x6c, 0xea, 0xf1, 0xd3, 0x5c, 0xe2, 0xf7, 0xa7, 0xb9, 0x04, 0xfe,
+	0x5e, 0x80, 0xb1, 0xb0, 0x5b, 0x2c, 0xa6, 0x27, 0xa1, 0x9f, 0x47, 0xca, 0xa9, 0xe2, 0x76, 0x41,
+	0xf5, 0xa0, 0xe8, 0x7e, 0x84, 0xe7, 0x63, 0x61, 0xcf, 0x1d, 0x1b, 0x2b, 0x67, 0x5e, 0x6f, 0xe7,
+	0x96, 0x77, 0xe8, 0xba, 0x23, 0xea, 0xf7, 0x1d, 0xff, 0x0b, 0x66, 0xa9, 0x13, 0xff, 0xbb, 0xa7,
+	0x98, 0x44, 0x55, 0x0c, 0x93, 0x54, 0x38, 0x3f, 0x3b, 0x93, 0xba, 0xd1, 0x75, 0x85, 0xdd, 0x81,
+	0xb9, 0x4e, 0x9a, 0xdc, 0x92, 0xdb, 0x43, 0x33, 0xcd, 0x63, 0x33, 0xd6, 0xf2, 0x65, 0x2b, 0xd8,
+	0x5d, 0x01, 0x8b, 0x0f, 0xc3, 0xe2, 0x47, 0x02, 0x0c, 0x53, 0x03, 0xb6, 0xb6, 0x6e, 0x59, 0xa1,
+	0x7f, 0xf2, 0x12, 0xeb, 0xa1, 0x77, 0xc2, 0xdf, 0x76, 0x7e, 0x01, 0x38, 0xf2, 0xbe, 0xc4, 0x9f,
+	0x87, 0x03, 0x3e, 0x1e, 0xee, 0xf5, 0x98, 0xb4, 0x71, 0xec, 0x08, 0x45, 0x9f, 0x07, 0x8a, 0xc0,
+	0x27, 0x7c, 0xe2, 0xdd, 0x47, 0xf7, 0x02, 0x20, 0xbf, 0x14, 0xb3, 0xea, 0x1e, 0x43, 0xa1, 0xf3,
+	0x31, 0x7c, 0x22, 0xc0, 0x14, 0x55, 0x71, 0x49, 0x36, 0xe5, 0x22, 0x59, 0x23, 0x3a, 0xa9, 0x97,
+	0xc9, 0x55, 0x62, 0xb9, 0x24, 0x82, 0x07, 0x4f, 0x78, 0xeb, 0x07, 0x0f, 0x7f, 0x2d, 0x40, 0x36,
+	0x8e, 0x12, 0xf3, 0x10, 0x41, 0xb2, 0x46, 0x2c, 0xfe, 0x2d, 0xa0, 0xcf, 0xef, 0xe2, 0x98, 0x2c,
+	0xc1, 0x78, 0x2b, 0x51, 0x1e, 0xb7, 0x61, 0xe8, 0xad, 0x11, 0x8b, 0x5d, 0x62, 0xf6, 0x23, 0xbe,
+	0x0e, 0x62, 0x14, 0x9c, 0xf9, 0x24, 0x41, 0xd2, 0x6e, 0x6c, 0x5b, 0xfb, 0x3a, 0x07, 0xee, 0x74,
+	0xbb, 0x97, 0xeb, 0xa6, 0x6e, 0x15, 0x29, 0x10, 0x2f, 0x32, 0x75, 0x57, 0x58, 0x73, 0x5a, 0x24,
+	0x65, 0x4d, 0xaf, 0x70, 0xf3, 0x83, 0xd0, 0xe3, 0x96, 0x4c, 0x8f, 0x52, 0xc1, 0x37, 0x61, 0x22,
+	0x12, 0xcd, 0xac, 0x1f, 0x85, 0x3d, 0x3a, 0x5d, 0x61, 0xf6, 0x33, 0x9e, 0xfd, 0x90, 0x04, 0xc3,
+	0xe1, 0x87, 0x91, 0x0a, 0xdd, 0xb2, 0x79, 0x1f, 0xf6, 0x96, 0x75, 0x22, 0x9b, 0x1a, 0xff, 0xf0,
+	0x5e, 0x7c, 0xb5, 0x9d, 0x1b, 0x74, 0x3e, 0xbc, 0x6c, 0x63, 0x37, 0xdf, 0x5d, 0x2e, 0x7a, 0x1b,
+	0x26, 0xa3, 0xad, 0x33, 0x7f, 0x4e, 0xdb, 0x77, 0x35, 0x5d, 0x62, 0xa7, 0x20, 0xd6, 0x21, 0x76,
+	0x1e, 0x38, 0x1c, 0x4f, 0xb3, 0xea, 0x2b, 0xa8, 0x6a, 0xb4, 0x6b, 0xf8, 0x3d, 0xc8, 0xc5, 0x22,
+	0xde, 0xd8, 0x7c, 0x01, 0xa6, 0x03, 0x8e, 0xdd, 0x22, 0xba, 0xb2, 0x16, 0xca, 0xed, 0x14, 0x80,
+	0xee, 0x3c, 0x7a, 0xd7, 0x42, 0x3f, 0x5b, 0xb9, 0x52, 0xc1, 0x0a, 0x1c, 0x6c, 0xa3, 0x82, 0x31,
+	0xbc, 0x04, 0xfb, 0x9b, 0x74, 0xbd, 0x14, 0xc8, 0x7b, 0x2e, 0x8e, 0xa7, 0xc1, 0xb4, 0xec, 0x6b,
+	0xfa, 0xb4, 0xe1, 0xcf, 0x05, 0x38, 0x12, 0x91, 0x07, 0x6e, 0x91, 0x32, 0xb2, 0x1b, 0xe5, 0x46,
+	0x43, 0xd7, 0x9a, 0x44, 0x47, 0x1f, 0x40, 0x4a, 0x66, 0xcf, 0xad, 0xfd, 0x18, 0xdf, 0xd9, 0x45,
+	0x5d, 0xb8, 0x5a, 0xf1, 0x27, 0x02, 0x1c, 0xdf, 0x01, 0x23, 0x37, 0x1e, 0xd7, 0x60, 0x30, 0x10,
+	0x0f, 0x9e, 0xb8, 0x4e, 0x01, 0x61, 0xf9, 0xdb, 0xef, 0x0f, 0x8b, 0x81, 0x1f, 0x0b, 0xa1, 0x1c,
+	0x44, 0xb1, 0x40, 0x65, 0xe0, 0x59, 0x73, 0xc3, 0x71, 0xf9, 0xd5, 0x76, 0x6e, 0xd8, 0x09, 0x87,
+	0xbb, 0xb5, 0x8b, 0x78, 0x78, 0x7a, 0xb1, 0x05, 0x0b, 0x1d, 0x99, 0xbc, 0xa5, 0x28, 0xcc, 0xc1,
+	0x4c, 0xf4, 0x41, 0x09, 0x5a, 0xc7, 0x0f, 0x61, 0xb1, 0x1b, 0xdc, 0xdb, 0x61, 0x79, 0xec, 0xe7,
+	0x51, 0xe8, 0xa3, 0xe6, 0xd1, 0x1d, 0x48, 0x47, 0xcd, 0xc8, 0x68, 0x36, 0x72, 0xc6, 0x0a, 0x0f,
+	0x1b, 0xe2, 0x54, 0xf4, 0x28, 0xc6, 0x58, 0xe3, 0x04, 0xfa, 0x2f, 0x0c, 0x06, 0x27, 0x47, 0xe4,
+	0x63, 0x1c, 0x39, 0xcd, 0x8a, 0xd3, 0xf1, 0x00, 0x57, 0xed, 0x6d, 0x18, 0x0a, 0x8d, 0x8c, 0x28,
+	0x24, 0xd6, 0x3a, 0x7b, 0x8a, 0x07, 0xdb, 0x20, 0x7c, 0x9a, 0x51, 0xeb, 0x6c, 0x85, 0x0e, 0x45,
+	0x0d, 0x25, 0x61, 0xe2, 0x13, 0x11, 0xa0, 0x58, 0xcd, 0x6c, 0x6e, 0x8a, 0xd1, 0x1c, 0x9c, 0xaa,
+	0x3a, 0x69, 0xbe, 0x03, 0x07, 0x5a, 0x7e, 0x09, 0x41, 0xb8, 0xdd, 0xcf, 0x24, 0x4c, 0xef, 0xa1,
+	0xb6, 0x18, 0x57, 0xff, 0x4d, 0xd8, 0xe7, 0x9f, 0x6e, 0xd1, 0x54, 0xcc, 0xd4, 0xcb, 0xb4, 0x66,
+	0xe3, 0xb6, 0x5d, 0x85, 0x15, 0x18, 0x89, 0x98, 0x7d, 0xd1, 0x8c, 0xaf, 0x9a, 0x62, 0x07, 0x67,
+	0x71, 0xb6, 0x03, 0xca, 0xb5, 0xd2, 0x84, 0x14, 0x6f, 0xbc, 0x91, 0x8f, 0x53, 0xd4, 0xdc, 0x28,
+	0xe6, 0x62, 0xf7, 0x99, 0xba, 0x85, 0x8f, 0x7f, 0xf8, 0xed, 0xcb, 0x9e, 0x43, 0xe8, 0xa0, 0x64,
+	0x03, 0xa5, 0xaa, 0xd6, 0x94, 0xdc, 0x79, 0x45, 0xda, 0xf4, 0xf5, 0xac, 0x5b, 0xa8, 0x06, 0xfd,
+	0xee, 0x28, 0x84, 0xe2, 0x14, 0x47, 0x95, 0x7b, 0xf4, 0x14, 0x85, 0x27, 0xa8, 0xe9, 0x51, 0x34,
+	0x12, 0x61, 0x1a, 0x7d, 0x25, 0xc0, 0x78, 0xec, 0xa4, 0x81, 0xa4, 0x90, 0xf2, 0x4e, 0xd3, 0x8d,
+	0x78, 0xb4, 0x7b, 0x01, 0xc6, 0x6e, 0x8e, 0xb2, 0x9b, 0x46, 0x59, 0x8f, 0x9d, 0x33, 0xa8, 0x84,
+	0xa2, 0x52, 0x80, 0xa4, 0x2d, 0x89, 0xc4, 0x90, 0x05, 0xdf, 0x14, 0xe3, 0xaf, 0xf3, 0x96, 0xc9,
+	0x02, 0x27, 0x90, 0x02, 0x7d, 0xb4, 0xed, 0x47, 0x51, 0x38, 0xd7, 0x85, 0xc9, 0xe8, 0x4d, 0xa6,
+	0x65, 0x96, 0xd2, 0xcd, 0xa1, 0xa9, 0x20, 0xdd, 0x30, 0xdb, 0x47, 0x02, 0xa4, 0x0b, 0xaa, 0xda,
+	0xd2, 0x8f, 0xa3, 0xbf, 0x86, 0xb4, 0xc7, 0x0d, 0x11, 0xe2, 0x7c, 0x67, 0x60, 0x7c, 0x7e, 0xe9,
+	0xef, 0xbd, 0xb4, 0xc7, 0xdf, 0x02, 0x14, 0x90, 0x5c, 0xb1, 0xae, 0x12, 0xcb, 0x7f, 0x6b, 0xc4,
+	0xb6, 0xe3, 0xe2, 0x4c, 0x7b, 0x10, 0xb3, 0x3e, 0x49, 0xad, 0x8f, 0xa1, 0x74, 0xd0, 0xba, 0xb4,
+	0x59, 0x23, 0xd6, 0x16, 0xfa, 0x54, 0x80, 0xc1, 0xe0, 0x87, 0x05, 0x85, 0xd5, 0x46, 0x36, 0xe3,
+	0xfe, 0x53, 0xda, 0xa6, 0x09, 0x8f, 0xaa, 0x1e, 0xdf, 0x2f, 0xcf, 0x36, 0x54, 0xda, 0xb4, 0xf3,
+	0xf1, 0x99, 0x00, 0x43, 0xa1, 0x0f, 0x1c, 0x6a, 0x6f, 0xc2, 0x4d, 0xc4, 0x5c, 0x27, 0x18, 0xa3,
+	0xb2, 0x48, 0xa9, 0xcc, 0xa1, 0x99, 0x58, 0x2a, 0x86, 0xb4, 0xc9, 0x9a, 0xf1, 0x2d, 0xf4, 0x85,
+	0x00, 0xa8, 0xb5, 0x1b, 0x46, 0xe1, 0xac, 0xc7, 0xb6, 0xd4, 0xe2, 0x42, 0x17, 0xc8, 0xf8, 0x20,
+	0xc9, 0xaa, 0x5d, 0xa7, 0x41, 0x76, 0xe8, 0x1b, 0x01, 0x26, 0xda, 0x74, 0x13, 0xe8, 0x70, 0x4c,
+	0x24, 0x22, 0x1a, 0x6e, 0xf1, 0x48, 0x57, 0x58, 0x46, 0x70, 0x99, 0x12, 0x94, 0xd0, 0x52, 0x44,
+	0xe8, 0x02, 0x6d, 0x8b, 0xb4, 0xe9, 0x75, 0xf1, 0x5b, 0xe8, 0x5b, 0x01, 0x26, 0xdb, 0x76, 0x8b,
+	0x47, 0xda, 0xa6, 0x2e, 0x08, 0x16, 0x8f, 0xef, 0x00, 0xec, 0x32, 0x3f, 0x49, 0x99, 0x1f, 0x45,
+	0xf9, 0x76, 0xcc, 0x1d, 0x19, 0x97, 0x3b, 0xd1, 0xb7, 0xd0, 0xaf, 0x02, 0xcc, 0x75, 0x39, 0x00,
+	0x2c, 0xef, 0x80, 0x97, 0x27, 0x26, 0x9e, 0xdf, 0x95, 0x98, 0xeb, 0x58, 0x81, 0x3a, 0x76, 0x0e,
+	0x9d, 0xe9, 0xec, 0x58, 0xe9, 0xae, 0x55, 0xe2, 0xc3, 0x84, 0xb4, 0xc9, 0x9f, 0xb6, 0xd0, 0x77,
+	0x02, 0xe4, 0x3a, 0xf4, 0xa7, 0x28, 0xdf, 0xa9, 0x8a, 0x43, 0x49, 0x3a, 0xb9, 0x33, 0xbc, 0xeb,
+	0x4e, 0x9e, 0xba, 0x33, 0x8f, 0xe6, 0x62, 0x8e, 0x40, 0xc8, 0xa5, 0x95, 0xbf, 0x3f, 0x7b, 0x91,
+	0x15, 0x9e, 0xbf, 0xc8, 0x0a, 0xbf, 0xbc, 0xc8, 0x0a, 0x4f, 0x5e, 0x66, 0x13, 0xcf, 0x5f, 0x66,
+	0x13, 0x3f, 0xbd, 0xcc, 0x26, 0xfe, 0x3f, 0xeb, 0x1b, 0x2b, 0xae, 0x2a, 0xba, 0x7c, 0x51, 0xd3,
+	0x89, 0x64, 0x90, 0x9a, 0xac, 0x48, 0x0f, 0xa8, 0x5e, 0x3a, 0x59, 0xdc, 0xdd, 0x43, 0xff, 0x73,
+	0x75, 0xfc, 0x8f, 0x00, 0x00, 0x00, 0xff, 0xff, 0xf3, 0x1b, 0x8b, 0x54, 0xb0, 0x1b, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -2138,40 +2136,40 @@ type QueryClient interface {
 	CouncilorByAddress(ctx context.Context, in *CouncilorByAddressRequest, opts ...grpc.CallOption) (*CouncilorResponse, error)
 	// CouncilorByMoniker returns the councilor object from its moniker
 	CouncilorByMoniker(ctx context.Context, in *CouncilorByMonikerRequest, opts ...grpc.CallOption) (*CouncilorResponse, error)
-	// GetNetworkProperties returns network properties
-	GetNetworkProperties(ctx context.Context, in *NetworkPropertiesRequest, opts ...grpc.CallOption) (*NetworkPropertiesResponse, error)
-	// GetExecutionFee returns execution fee from msg type
-	GetExecutionFee(ctx context.Context, in *ExecutionFeeRequest, opts ...grpc.CallOption) (*ExecutionFeeResponse, error)
-	// GetPoorNetworkMessages returns poor network messages
-	GetPoorNetworkMessages(ctx context.Context, in *PoorNetworkMessagesRequest, opts ...grpc.CallOption) (*PoorNetworkMessagesResponse, error)
+	// NetworkProperties returns network properties
+	NetworkProperties(ctx context.Context, in *NetworkPropertiesRequest, opts ...grpc.CallOption) (*NetworkPropertiesResponse, error)
+	// ExecutionFee returns execution fee from msg type
+	ExecutionFee(ctx context.Context, in *ExecutionFeeRequest, opts ...grpc.CallOption) (*ExecutionFeeResponse, error)
+	// PoorNetworkMessages returns poor network messages
+	PoorNetworkMessages(ctx context.Context, in *PoorNetworkMessagesRequest, opts ...grpc.CallOption) (*PoorNetworkMessagesResponse, error)
 	// Proposal queries proposal details based on ProposalID.
 	Proposal(ctx context.Context, in *QueryProposalRequest, opts ...grpc.CallOption) (*QueryProposalResponse, error)
 	// Proposals queries all proposals based on given status.
 	Proposals(ctx context.Context, in *QueryProposalsRequest, opts ...grpc.CallOption) (*QueryProposalsResponse, error)
-	// GetWhitelistedProposalVoters returns whitelisted voters for a proposal for tracking
-	GetWhitelistedProposalVoters(ctx context.Context, in *QueryWhitelistedProposalVotersRequest, opts ...grpc.CallOption) (*QueryWhitelistedProposalVotersResponse, error)
+	// WhitelistedProposalVoters returns whitelisted voters for a proposal for tracking
+	WhitelistedProposalVoters(ctx context.Context, in *QueryWhitelistedProposalVotersRequest, opts ...grpc.CallOption) (*QueryWhitelistedProposalVotersResponse, error)
 	// Vote queries voted information based on proposalID, voterAddr.
 	Vote(ctx context.Context, in *QueryVoteRequest, opts ...grpc.CallOption) (*QueryVoteResponse, error)
 	// Votes queries votes of a given proposal.
 	Votes(ctx context.Context, in *QueryVotesRequest, opts ...grpc.CallOption) (*QueryVotesResponse, error)
 	// Query all data reference keys with pagination.
-	GetAllDataReferenceKeys(ctx context.Context, in *QueryDataReferenceKeysRequest, opts ...grpc.CallOption) (*QueryDataReferenceKeysResponse, error)
+	AllDataReferenceKeys(ctx context.Context, in *QueryDataReferenceKeysRequest, opts ...grpc.CallOption) (*QueryDataReferenceKeysResponse, error)
 	// Query data reference by key.
-	GetDataReferenceByKey(ctx context.Context, in *QueryDataReferenceRequest, opts ...grpc.CallOption) (*QueryDataReferenceResponse, error)
+	DataReferenceByKey(ctx context.Context, in *QueryDataReferenceRequest, opts ...grpc.CallOption) (*QueryDataReferenceResponse, error)
 	// Query identity record by id
-	GetIdentityRecord(ctx context.Context, in *QueryIdentityRecordRequest, opts ...grpc.CallOption) (*QueryIdentityRecordResponse, error)
+	IdentityRecord(ctx context.Context, in *QueryIdentityRecordRequest, opts ...grpc.CallOption) (*QueryIdentityRecordResponse, error)
 	// Query identity records by records creator
-	GetIdentityRecords(ctx context.Context, in *QueryIdentityRecordsRequest, opts ...grpc.CallOption) (*QueryIdentityRecordsResponse, error)
+	IdentityRecords(ctx context.Context, in *QueryIdentityRecordsRequest, opts ...grpc.CallOption) (*QueryIdentityRecordsResponse, error)
 	// Query all identity records
-	GetAllIdentityRecords(ctx context.Context, in *QueryAllIdentityRecordsRequest, opts ...grpc.CallOption) (*QueryAllIdentityRecordsResponse, error)
+	AllIdentityRecords(ctx context.Context, in *QueryAllIdentityRecordsRequest, opts ...grpc.CallOption) (*QueryAllIdentityRecordsResponse, error)
 	// Query identity record verify request by id
-	GetIdentityRecordVerifyRequest(ctx context.Context, in *QueryIdentityVerifyRecordRequest, opts ...grpc.CallOption) (*QueryIdentityVerifyRecordResponse, error)
+	IdentityRecordVerifyRequest(ctx context.Context, in *QueryIdentityVerifyRecordRequest, opts ...grpc.CallOption) (*QueryIdentityVerifyRecordResponse, error)
 	// Query identity records verify requests by requester
-	GetIdentityRecordVerifyRequests(ctx context.Context, in *QueryIdentityRecordVerifyRequests, opts ...grpc.CallOption) (*QueryIdentityRecordVerifyRequestsResponse, error)
+	IdentityRecordVerifyRequests(ctx context.Context, in *QueryIdentityRecordVerifyRequests, opts ...grpc.CallOption) (*QueryIdentityRecordVerifyRequestsResponse, error)
 	// Query identity records verify requests by approver
-	GetIdentityRecordVerifyRequestsByApprover(ctx context.Context, in *QueryIdentityRecordVerifyRequestsByApprover, opts ...grpc.CallOption) (*QueryIdentityRecordVerifyRequestsByApproverResponse, error)
+	IdentityRecordVerifyRequestsByApprover(ctx context.Context, in *QueryIdentityRecordVerifyRequestsByApprover, opts ...grpc.CallOption) (*QueryIdentityRecordVerifyRequestsByApproverResponse, error)
 	// Query all identity records verify requests
-	GetAllIdentityRecordVerifyRequests(ctx context.Context, in *QueryAllIdentityRecordVerifyRequests, opts ...grpc.CallOption) (*QueryAllIdentityRecordVerifyRequestsResponse, error)
+	AllIdentityRecordVerifyRequests(ctx context.Context, in *QueryAllIdentityRecordVerifyRequests, opts ...grpc.CallOption) (*QueryAllIdentityRecordVerifyRequestsResponse, error)
 }
 
 type queryClient struct {
@@ -2227,27 +2225,27 @@ func (c *queryClient) CouncilorByMoniker(ctx context.Context, in *CouncilorByMon
 	return out, nil
 }
 
-func (c *queryClient) GetNetworkProperties(ctx context.Context, in *NetworkPropertiesRequest, opts ...grpc.CallOption) (*NetworkPropertiesResponse, error) {
+func (c *queryClient) NetworkProperties(ctx context.Context, in *NetworkPropertiesRequest, opts ...grpc.CallOption) (*NetworkPropertiesResponse, error) {
 	out := new(NetworkPropertiesResponse)
-	err := c.cc.Invoke(ctx, "/kira.gov.Query/GetNetworkProperties", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/kira.gov.Query/NetworkProperties", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) GetExecutionFee(ctx context.Context, in *ExecutionFeeRequest, opts ...grpc.CallOption) (*ExecutionFeeResponse, error) {
+func (c *queryClient) ExecutionFee(ctx context.Context, in *ExecutionFeeRequest, opts ...grpc.CallOption) (*ExecutionFeeResponse, error) {
 	out := new(ExecutionFeeResponse)
-	err := c.cc.Invoke(ctx, "/kira.gov.Query/GetExecutionFee", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/kira.gov.Query/ExecutionFee", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) GetPoorNetworkMessages(ctx context.Context, in *PoorNetworkMessagesRequest, opts ...grpc.CallOption) (*PoorNetworkMessagesResponse, error) {
+func (c *queryClient) PoorNetworkMessages(ctx context.Context, in *PoorNetworkMessagesRequest, opts ...grpc.CallOption) (*PoorNetworkMessagesResponse, error) {
 	out := new(PoorNetworkMessagesResponse)
-	err := c.cc.Invoke(ctx, "/kira.gov.Query/GetPoorNetworkMessages", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/kira.gov.Query/PoorNetworkMessages", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -2272,9 +2270,9 @@ func (c *queryClient) Proposals(ctx context.Context, in *QueryProposalsRequest, 
 	return out, nil
 }
 
-func (c *queryClient) GetWhitelistedProposalVoters(ctx context.Context, in *QueryWhitelistedProposalVotersRequest, opts ...grpc.CallOption) (*QueryWhitelistedProposalVotersResponse, error) {
+func (c *queryClient) WhitelistedProposalVoters(ctx context.Context, in *QueryWhitelistedProposalVotersRequest, opts ...grpc.CallOption) (*QueryWhitelistedProposalVotersResponse, error) {
 	out := new(QueryWhitelistedProposalVotersResponse)
-	err := c.cc.Invoke(ctx, "/kira.gov.Query/GetWhitelistedProposalVoters", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/kira.gov.Query/WhitelistedProposalVoters", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -2299,81 +2297,81 @@ func (c *queryClient) Votes(ctx context.Context, in *QueryVotesRequest, opts ...
 	return out, nil
 }
 
-func (c *queryClient) GetAllDataReferenceKeys(ctx context.Context, in *QueryDataReferenceKeysRequest, opts ...grpc.CallOption) (*QueryDataReferenceKeysResponse, error) {
+func (c *queryClient) AllDataReferenceKeys(ctx context.Context, in *QueryDataReferenceKeysRequest, opts ...grpc.CallOption) (*QueryDataReferenceKeysResponse, error) {
 	out := new(QueryDataReferenceKeysResponse)
-	err := c.cc.Invoke(ctx, "/kira.gov.Query/GetAllDataReferenceKeys", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/kira.gov.Query/AllDataReferenceKeys", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) GetDataReferenceByKey(ctx context.Context, in *QueryDataReferenceRequest, opts ...grpc.CallOption) (*QueryDataReferenceResponse, error) {
+func (c *queryClient) DataReferenceByKey(ctx context.Context, in *QueryDataReferenceRequest, opts ...grpc.CallOption) (*QueryDataReferenceResponse, error) {
 	out := new(QueryDataReferenceResponse)
-	err := c.cc.Invoke(ctx, "/kira.gov.Query/GetDataReferenceByKey", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/kira.gov.Query/DataReferenceByKey", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) GetIdentityRecord(ctx context.Context, in *QueryIdentityRecordRequest, opts ...grpc.CallOption) (*QueryIdentityRecordResponse, error) {
+func (c *queryClient) IdentityRecord(ctx context.Context, in *QueryIdentityRecordRequest, opts ...grpc.CallOption) (*QueryIdentityRecordResponse, error) {
 	out := new(QueryIdentityRecordResponse)
-	err := c.cc.Invoke(ctx, "/kira.gov.Query/GetIdentityRecord", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/kira.gov.Query/IdentityRecord", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) GetIdentityRecords(ctx context.Context, in *QueryIdentityRecordsRequest, opts ...grpc.CallOption) (*QueryIdentityRecordsResponse, error) {
+func (c *queryClient) IdentityRecords(ctx context.Context, in *QueryIdentityRecordsRequest, opts ...grpc.CallOption) (*QueryIdentityRecordsResponse, error) {
 	out := new(QueryIdentityRecordsResponse)
-	err := c.cc.Invoke(ctx, "/kira.gov.Query/GetIdentityRecords", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/kira.gov.Query/IdentityRecords", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) GetAllIdentityRecords(ctx context.Context, in *QueryAllIdentityRecordsRequest, opts ...grpc.CallOption) (*QueryAllIdentityRecordsResponse, error) {
+func (c *queryClient) AllIdentityRecords(ctx context.Context, in *QueryAllIdentityRecordsRequest, opts ...grpc.CallOption) (*QueryAllIdentityRecordsResponse, error) {
 	out := new(QueryAllIdentityRecordsResponse)
-	err := c.cc.Invoke(ctx, "/kira.gov.Query/GetAllIdentityRecords", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/kira.gov.Query/AllIdentityRecords", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) GetIdentityRecordVerifyRequest(ctx context.Context, in *QueryIdentityVerifyRecordRequest, opts ...grpc.CallOption) (*QueryIdentityVerifyRecordResponse, error) {
+func (c *queryClient) IdentityRecordVerifyRequest(ctx context.Context, in *QueryIdentityVerifyRecordRequest, opts ...grpc.CallOption) (*QueryIdentityVerifyRecordResponse, error) {
 	out := new(QueryIdentityVerifyRecordResponse)
-	err := c.cc.Invoke(ctx, "/kira.gov.Query/GetIdentityRecordVerifyRequest", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/kira.gov.Query/IdentityRecordVerifyRequest", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) GetIdentityRecordVerifyRequests(ctx context.Context, in *QueryIdentityRecordVerifyRequests, opts ...grpc.CallOption) (*QueryIdentityRecordVerifyRequestsResponse, error) {
+func (c *queryClient) IdentityRecordVerifyRequests(ctx context.Context, in *QueryIdentityRecordVerifyRequests, opts ...grpc.CallOption) (*QueryIdentityRecordVerifyRequestsResponse, error) {
 	out := new(QueryIdentityRecordVerifyRequestsResponse)
-	err := c.cc.Invoke(ctx, "/kira.gov.Query/GetIdentityRecordVerifyRequests", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/kira.gov.Query/IdentityRecordVerifyRequests", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) GetIdentityRecordVerifyRequestsByApprover(ctx context.Context, in *QueryIdentityRecordVerifyRequestsByApprover, opts ...grpc.CallOption) (*QueryIdentityRecordVerifyRequestsByApproverResponse, error) {
+func (c *queryClient) IdentityRecordVerifyRequestsByApprover(ctx context.Context, in *QueryIdentityRecordVerifyRequestsByApprover, opts ...grpc.CallOption) (*QueryIdentityRecordVerifyRequestsByApproverResponse, error) {
 	out := new(QueryIdentityRecordVerifyRequestsByApproverResponse)
-	err := c.cc.Invoke(ctx, "/kira.gov.Query/GetIdentityRecordVerifyRequestsByApprover", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/kira.gov.Query/IdentityRecordVerifyRequestsByApprover", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) GetAllIdentityRecordVerifyRequests(ctx context.Context, in *QueryAllIdentityRecordVerifyRequests, opts ...grpc.CallOption) (*QueryAllIdentityRecordVerifyRequestsResponse, error) {
+func (c *queryClient) AllIdentityRecordVerifyRequests(ctx context.Context, in *QueryAllIdentityRecordVerifyRequests, opts ...grpc.CallOption) (*QueryAllIdentityRecordVerifyRequestsResponse, error) {
 	out := new(QueryAllIdentityRecordVerifyRequestsResponse)
-	err := c.cc.Invoke(ctx, "/kira.gov.Query/GetAllIdentityRecordVerifyRequests", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/kira.gov.Query/AllIdentityRecordVerifyRequests", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -2392,40 +2390,40 @@ type QueryServer interface {
 	CouncilorByAddress(context.Context, *CouncilorByAddressRequest) (*CouncilorResponse, error)
 	// CouncilorByMoniker returns the councilor object from its moniker
 	CouncilorByMoniker(context.Context, *CouncilorByMonikerRequest) (*CouncilorResponse, error)
-	// GetNetworkProperties returns network properties
-	GetNetworkProperties(context.Context, *NetworkPropertiesRequest) (*NetworkPropertiesResponse, error)
-	// GetExecutionFee returns execution fee from msg type
-	GetExecutionFee(context.Context, *ExecutionFeeRequest) (*ExecutionFeeResponse, error)
-	// GetPoorNetworkMessages returns poor network messages
-	GetPoorNetworkMessages(context.Context, *PoorNetworkMessagesRequest) (*PoorNetworkMessagesResponse, error)
+	// NetworkProperties returns network properties
+	NetworkProperties(context.Context, *NetworkPropertiesRequest) (*NetworkPropertiesResponse, error)
+	// ExecutionFee returns execution fee from msg type
+	ExecutionFee(context.Context, *ExecutionFeeRequest) (*ExecutionFeeResponse, error)
+	// PoorNetworkMessages returns poor network messages
+	PoorNetworkMessages(context.Context, *PoorNetworkMessagesRequest) (*PoorNetworkMessagesResponse, error)
 	// Proposal queries proposal details based on ProposalID.
 	Proposal(context.Context, *QueryProposalRequest) (*QueryProposalResponse, error)
 	// Proposals queries all proposals based on given status.
 	Proposals(context.Context, *QueryProposalsRequest) (*QueryProposalsResponse, error)
-	// GetWhitelistedProposalVoters returns whitelisted voters for a proposal for tracking
-	GetWhitelistedProposalVoters(context.Context, *QueryWhitelistedProposalVotersRequest) (*QueryWhitelistedProposalVotersResponse, error)
+	// WhitelistedProposalVoters returns whitelisted voters for a proposal for tracking
+	WhitelistedProposalVoters(context.Context, *QueryWhitelistedProposalVotersRequest) (*QueryWhitelistedProposalVotersResponse, error)
 	// Vote queries voted information based on proposalID, voterAddr.
 	Vote(context.Context, *QueryVoteRequest) (*QueryVoteResponse, error)
 	// Votes queries votes of a given proposal.
 	Votes(context.Context, *QueryVotesRequest) (*QueryVotesResponse, error)
 	// Query all data reference keys with pagination.
-	GetAllDataReferenceKeys(context.Context, *QueryDataReferenceKeysRequest) (*QueryDataReferenceKeysResponse, error)
+	AllDataReferenceKeys(context.Context, *QueryDataReferenceKeysRequest) (*QueryDataReferenceKeysResponse, error)
 	// Query data reference by key.
-	GetDataReferenceByKey(context.Context, *QueryDataReferenceRequest) (*QueryDataReferenceResponse, error)
+	DataReferenceByKey(context.Context, *QueryDataReferenceRequest) (*QueryDataReferenceResponse, error)
 	// Query identity record by id
-	GetIdentityRecord(context.Context, *QueryIdentityRecordRequest) (*QueryIdentityRecordResponse, error)
+	IdentityRecord(context.Context, *QueryIdentityRecordRequest) (*QueryIdentityRecordResponse, error)
 	// Query identity records by records creator
-	GetIdentityRecords(context.Context, *QueryIdentityRecordsRequest) (*QueryIdentityRecordsResponse, error)
+	IdentityRecords(context.Context, *QueryIdentityRecordsRequest) (*QueryIdentityRecordsResponse, error)
 	// Query all identity records
-	GetAllIdentityRecords(context.Context, *QueryAllIdentityRecordsRequest) (*QueryAllIdentityRecordsResponse, error)
+	AllIdentityRecords(context.Context, *QueryAllIdentityRecordsRequest) (*QueryAllIdentityRecordsResponse, error)
 	// Query identity record verify request by id
-	GetIdentityRecordVerifyRequest(context.Context, *QueryIdentityVerifyRecordRequest) (*QueryIdentityVerifyRecordResponse, error)
+	IdentityRecordVerifyRequest(context.Context, *QueryIdentityVerifyRecordRequest) (*QueryIdentityVerifyRecordResponse, error)
 	// Query identity records verify requests by requester
-	GetIdentityRecordVerifyRequests(context.Context, *QueryIdentityRecordVerifyRequests) (*QueryIdentityRecordVerifyRequestsResponse, error)
+	IdentityRecordVerifyRequests(context.Context, *QueryIdentityRecordVerifyRequests) (*QueryIdentityRecordVerifyRequestsResponse, error)
 	// Query identity records verify requests by approver
-	GetIdentityRecordVerifyRequestsByApprover(context.Context, *QueryIdentityRecordVerifyRequestsByApprover) (*QueryIdentityRecordVerifyRequestsByApproverResponse, error)
+	IdentityRecordVerifyRequestsByApprover(context.Context, *QueryIdentityRecordVerifyRequestsByApprover) (*QueryIdentityRecordVerifyRequestsByApproverResponse, error)
 	// Query all identity records verify requests
-	GetAllIdentityRecordVerifyRequests(context.Context, *QueryAllIdentityRecordVerifyRequests) (*QueryAllIdentityRecordVerifyRequestsResponse, error)
+	AllIdentityRecordVerifyRequests(context.Context, *QueryAllIdentityRecordVerifyRequests) (*QueryAllIdentityRecordVerifyRequestsResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -2447,14 +2445,14 @@ func (*UnimplementedQueryServer) CouncilorByAddress(ctx context.Context, req *Co
 func (*UnimplementedQueryServer) CouncilorByMoniker(ctx context.Context, req *CouncilorByMonikerRequest) (*CouncilorResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CouncilorByMoniker not implemented")
 }
-func (*UnimplementedQueryServer) GetNetworkProperties(ctx context.Context, req *NetworkPropertiesRequest) (*NetworkPropertiesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetNetworkProperties not implemented")
+func (*UnimplementedQueryServer) NetworkProperties(ctx context.Context, req *NetworkPropertiesRequest) (*NetworkPropertiesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method NetworkProperties not implemented")
 }
-func (*UnimplementedQueryServer) GetExecutionFee(ctx context.Context, req *ExecutionFeeRequest) (*ExecutionFeeResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetExecutionFee not implemented")
+func (*UnimplementedQueryServer) ExecutionFee(ctx context.Context, req *ExecutionFeeRequest) (*ExecutionFeeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ExecutionFee not implemented")
 }
-func (*UnimplementedQueryServer) GetPoorNetworkMessages(ctx context.Context, req *PoorNetworkMessagesRequest) (*PoorNetworkMessagesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetPoorNetworkMessages not implemented")
+func (*UnimplementedQueryServer) PoorNetworkMessages(ctx context.Context, req *PoorNetworkMessagesRequest) (*PoorNetworkMessagesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PoorNetworkMessages not implemented")
 }
 func (*UnimplementedQueryServer) Proposal(ctx context.Context, req *QueryProposalRequest) (*QueryProposalResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Proposal not implemented")
@@ -2462,8 +2460,8 @@ func (*UnimplementedQueryServer) Proposal(ctx context.Context, req *QueryProposa
 func (*UnimplementedQueryServer) Proposals(ctx context.Context, req *QueryProposalsRequest) (*QueryProposalsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Proposals not implemented")
 }
-func (*UnimplementedQueryServer) GetWhitelistedProposalVoters(ctx context.Context, req *QueryWhitelistedProposalVotersRequest) (*QueryWhitelistedProposalVotersResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetWhitelistedProposalVoters not implemented")
+func (*UnimplementedQueryServer) WhitelistedProposalVoters(ctx context.Context, req *QueryWhitelistedProposalVotersRequest) (*QueryWhitelistedProposalVotersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WhitelistedProposalVoters not implemented")
 }
 func (*UnimplementedQueryServer) Vote(ctx context.Context, req *QueryVoteRequest) (*QueryVoteResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Vote not implemented")
@@ -2471,32 +2469,32 @@ func (*UnimplementedQueryServer) Vote(ctx context.Context, req *QueryVoteRequest
 func (*UnimplementedQueryServer) Votes(ctx context.Context, req *QueryVotesRequest) (*QueryVotesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Votes not implemented")
 }
-func (*UnimplementedQueryServer) GetAllDataReferenceKeys(ctx context.Context, req *QueryDataReferenceKeysRequest) (*QueryDataReferenceKeysResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAllDataReferenceKeys not implemented")
+func (*UnimplementedQueryServer) AllDataReferenceKeys(ctx context.Context, req *QueryDataReferenceKeysRequest) (*QueryDataReferenceKeysResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AllDataReferenceKeys not implemented")
 }
-func (*UnimplementedQueryServer) GetDataReferenceByKey(ctx context.Context, req *QueryDataReferenceRequest) (*QueryDataReferenceResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetDataReferenceByKey not implemented")
+func (*UnimplementedQueryServer) DataReferenceByKey(ctx context.Context, req *QueryDataReferenceRequest) (*QueryDataReferenceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DataReferenceByKey not implemented")
 }
-func (*UnimplementedQueryServer) GetIdentityRecord(ctx context.Context, req *QueryIdentityRecordRequest) (*QueryIdentityRecordResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetIdentityRecord not implemented")
+func (*UnimplementedQueryServer) IdentityRecord(ctx context.Context, req *QueryIdentityRecordRequest) (*QueryIdentityRecordResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IdentityRecord not implemented")
 }
-func (*UnimplementedQueryServer) GetIdentityRecords(ctx context.Context, req *QueryIdentityRecordsRequest) (*QueryIdentityRecordsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetIdentityRecords not implemented")
+func (*UnimplementedQueryServer) IdentityRecords(ctx context.Context, req *QueryIdentityRecordsRequest) (*QueryIdentityRecordsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IdentityRecords not implemented")
 }
-func (*UnimplementedQueryServer) GetAllIdentityRecords(ctx context.Context, req *QueryAllIdentityRecordsRequest) (*QueryAllIdentityRecordsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAllIdentityRecords not implemented")
+func (*UnimplementedQueryServer) AllIdentityRecords(ctx context.Context, req *QueryAllIdentityRecordsRequest) (*QueryAllIdentityRecordsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AllIdentityRecords not implemented")
 }
-func (*UnimplementedQueryServer) GetIdentityRecordVerifyRequest(ctx context.Context, req *QueryIdentityVerifyRecordRequest) (*QueryIdentityVerifyRecordResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetIdentityRecordVerifyRequest not implemented")
+func (*UnimplementedQueryServer) IdentityRecordVerifyRequest(ctx context.Context, req *QueryIdentityVerifyRecordRequest) (*QueryIdentityVerifyRecordResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IdentityRecordVerifyRequest not implemented")
 }
-func (*UnimplementedQueryServer) GetIdentityRecordVerifyRequests(ctx context.Context, req *QueryIdentityRecordVerifyRequests) (*QueryIdentityRecordVerifyRequestsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetIdentityRecordVerifyRequests not implemented")
+func (*UnimplementedQueryServer) IdentityRecordVerifyRequests(ctx context.Context, req *QueryIdentityRecordVerifyRequests) (*QueryIdentityRecordVerifyRequestsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IdentityRecordVerifyRequests not implemented")
 }
-func (*UnimplementedQueryServer) GetIdentityRecordVerifyRequestsByApprover(ctx context.Context, req *QueryIdentityRecordVerifyRequestsByApprover) (*QueryIdentityRecordVerifyRequestsByApproverResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetIdentityRecordVerifyRequestsByApprover not implemented")
+func (*UnimplementedQueryServer) IdentityRecordVerifyRequestsByApprover(ctx context.Context, req *QueryIdentityRecordVerifyRequestsByApprover) (*QueryIdentityRecordVerifyRequestsByApproverResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IdentityRecordVerifyRequestsByApprover not implemented")
 }
-func (*UnimplementedQueryServer) GetAllIdentityRecordVerifyRequests(ctx context.Context, req *QueryAllIdentityRecordVerifyRequests) (*QueryAllIdentityRecordVerifyRequestsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAllIdentityRecordVerifyRequests not implemented")
+func (*UnimplementedQueryServer) AllIdentityRecordVerifyRequests(ctx context.Context, req *QueryAllIdentityRecordVerifyRequests) (*QueryAllIdentityRecordVerifyRequestsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AllIdentityRecordVerifyRequests not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -2593,56 +2591,56 @@ func _Query_CouncilorByMoniker_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_GetNetworkProperties_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_NetworkProperties_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(NetworkPropertiesRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).GetNetworkProperties(ctx, in)
+		return srv.(QueryServer).NetworkProperties(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/kira.gov.Query/GetNetworkProperties",
+		FullMethod: "/kira.gov.Query/NetworkProperties",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).GetNetworkProperties(ctx, req.(*NetworkPropertiesRequest))
+		return srv.(QueryServer).NetworkProperties(ctx, req.(*NetworkPropertiesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_GetExecutionFee_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_ExecutionFee_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ExecutionFeeRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).GetExecutionFee(ctx, in)
+		return srv.(QueryServer).ExecutionFee(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/kira.gov.Query/GetExecutionFee",
+		FullMethod: "/kira.gov.Query/ExecutionFee",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).GetExecutionFee(ctx, req.(*ExecutionFeeRequest))
+		return srv.(QueryServer).ExecutionFee(ctx, req.(*ExecutionFeeRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_GetPoorNetworkMessages_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_PoorNetworkMessages_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(PoorNetworkMessagesRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).GetPoorNetworkMessages(ctx, in)
+		return srv.(QueryServer).PoorNetworkMessages(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/kira.gov.Query/GetPoorNetworkMessages",
+		FullMethod: "/kira.gov.Query/PoorNetworkMessages",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).GetPoorNetworkMessages(ctx, req.(*PoorNetworkMessagesRequest))
+		return srv.(QueryServer).PoorNetworkMessages(ctx, req.(*PoorNetworkMessagesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2683,20 +2681,20 @@ func _Query_Proposals_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_GetWhitelistedProposalVoters_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_WhitelistedProposalVoters_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryWhitelistedProposalVotersRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).GetWhitelistedProposalVoters(ctx, in)
+		return srv.(QueryServer).WhitelistedProposalVoters(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/kira.gov.Query/GetWhitelistedProposalVoters",
+		FullMethod: "/kira.gov.Query/WhitelistedProposalVoters",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).GetWhitelistedProposalVoters(ctx, req.(*QueryWhitelistedProposalVotersRequest))
+		return srv.(QueryServer).WhitelistedProposalVoters(ctx, req.(*QueryWhitelistedProposalVotersRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2737,164 +2735,164 @@ func _Query_Votes_Handler(srv interface{}, ctx context.Context, dec func(interfa
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_GetAllDataReferenceKeys_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_AllDataReferenceKeys_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryDataReferenceKeysRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).GetAllDataReferenceKeys(ctx, in)
+		return srv.(QueryServer).AllDataReferenceKeys(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/kira.gov.Query/GetAllDataReferenceKeys",
+		FullMethod: "/kira.gov.Query/AllDataReferenceKeys",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).GetAllDataReferenceKeys(ctx, req.(*QueryDataReferenceKeysRequest))
+		return srv.(QueryServer).AllDataReferenceKeys(ctx, req.(*QueryDataReferenceKeysRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_GetDataReferenceByKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_DataReferenceByKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryDataReferenceRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).GetDataReferenceByKey(ctx, in)
+		return srv.(QueryServer).DataReferenceByKey(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/kira.gov.Query/GetDataReferenceByKey",
+		FullMethod: "/kira.gov.Query/DataReferenceByKey",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).GetDataReferenceByKey(ctx, req.(*QueryDataReferenceRequest))
+		return srv.(QueryServer).DataReferenceByKey(ctx, req.(*QueryDataReferenceRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_GetIdentityRecord_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_IdentityRecord_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryIdentityRecordRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).GetIdentityRecord(ctx, in)
+		return srv.(QueryServer).IdentityRecord(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/kira.gov.Query/GetIdentityRecord",
+		FullMethod: "/kira.gov.Query/IdentityRecord",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).GetIdentityRecord(ctx, req.(*QueryIdentityRecordRequest))
+		return srv.(QueryServer).IdentityRecord(ctx, req.(*QueryIdentityRecordRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_GetIdentityRecords_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_IdentityRecords_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryIdentityRecordsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).GetIdentityRecords(ctx, in)
+		return srv.(QueryServer).IdentityRecords(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/kira.gov.Query/GetIdentityRecords",
+		FullMethod: "/kira.gov.Query/IdentityRecords",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).GetIdentityRecords(ctx, req.(*QueryIdentityRecordsRequest))
+		return srv.(QueryServer).IdentityRecords(ctx, req.(*QueryIdentityRecordsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_GetAllIdentityRecords_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_AllIdentityRecords_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryAllIdentityRecordsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).GetAllIdentityRecords(ctx, in)
+		return srv.(QueryServer).AllIdentityRecords(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/kira.gov.Query/GetAllIdentityRecords",
+		FullMethod: "/kira.gov.Query/AllIdentityRecords",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).GetAllIdentityRecords(ctx, req.(*QueryAllIdentityRecordsRequest))
+		return srv.(QueryServer).AllIdentityRecords(ctx, req.(*QueryAllIdentityRecordsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_GetIdentityRecordVerifyRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_IdentityRecordVerifyRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryIdentityVerifyRecordRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).GetIdentityRecordVerifyRequest(ctx, in)
+		return srv.(QueryServer).IdentityRecordVerifyRequest(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/kira.gov.Query/GetIdentityRecordVerifyRequest",
+		FullMethod: "/kira.gov.Query/IdentityRecordVerifyRequest",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).GetIdentityRecordVerifyRequest(ctx, req.(*QueryIdentityVerifyRecordRequest))
+		return srv.(QueryServer).IdentityRecordVerifyRequest(ctx, req.(*QueryIdentityVerifyRecordRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_GetIdentityRecordVerifyRequests_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_IdentityRecordVerifyRequests_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryIdentityRecordVerifyRequests)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).GetIdentityRecordVerifyRequests(ctx, in)
+		return srv.(QueryServer).IdentityRecordVerifyRequests(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/kira.gov.Query/GetIdentityRecordVerifyRequests",
+		FullMethod: "/kira.gov.Query/IdentityRecordVerifyRequests",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).GetIdentityRecordVerifyRequests(ctx, req.(*QueryIdentityRecordVerifyRequests))
+		return srv.(QueryServer).IdentityRecordVerifyRequests(ctx, req.(*QueryIdentityRecordVerifyRequests))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_GetIdentityRecordVerifyRequestsByApprover_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_IdentityRecordVerifyRequestsByApprover_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryIdentityRecordVerifyRequestsByApprover)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).GetIdentityRecordVerifyRequestsByApprover(ctx, in)
+		return srv.(QueryServer).IdentityRecordVerifyRequestsByApprover(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/kira.gov.Query/GetIdentityRecordVerifyRequestsByApprover",
+		FullMethod: "/kira.gov.Query/IdentityRecordVerifyRequestsByApprover",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).GetIdentityRecordVerifyRequestsByApprover(ctx, req.(*QueryIdentityRecordVerifyRequestsByApprover))
+		return srv.(QueryServer).IdentityRecordVerifyRequestsByApprover(ctx, req.(*QueryIdentityRecordVerifyRequestsByApprover))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_GetAllIdentityRecordVerifyRequests_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_AllIdentityRecordVerifyRequests_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryAllIdentityRecordVerifyRequests)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).GetAllIdentityRecordVerifyRequests(ctx, in)
+		return srv.(QueryServer).AllIdentityRecordVerifyRequests(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/kira.gov.Query/GetAllIdentityRecordVerifyRequests",
+		FullMethod: "/kira.gov.Query/AllIdentityRecordVerifyRequests",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).GetAllIdentityRecordVerifyRequests(ctx, req.(*QueryAllIdentityRecordVerifyRequests))
+		return srv.(QueryServer).AllIdentityRecordVerifyRequests(ctx, req.(*QueryAllIdentityRecordVerifyRequests))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2924,16 +2922,16 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Query_CouncilorByMoniker_Handler,
 		},
 		{
-			MethodName: "GetNetworkProperties",
-			Handler:    _Query_GetNetworkProperties_Handler,
+			MethodName: "NetworkProperties",
+			Handler:    _Query_NetworkProperties_Handler,
 		},
 		{
-			MethodName: "GetExecutionFee",
-			Handler:    _Query_GetExecutionFee_Handler,
+			MethodName: "ExecutionFee",
+			Handler:    _Query_ExecutionFee_Handler,
 		},
 		{
-			MethodName: "GetPoorNetworkMessages",
-			Handler:    _Query_GetPoorNetworkMessages_Handler,
+			MethodName: "PoorNetworkMessages",
+			Handler:    _Query_PoorNetworkMessages_Handler,
 		},
 		{
 			MethodName: "Proposal",
@@ -2944,8 +2942,8 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Proposals_Handler,
 		},
 		{
-			MethodName: "GetWhitelistedProposalVoters",
-			Handler:    _Query_GetWhitelistedProposalVoters_Handler,
+			MethodName: "WhitelistedProposalVoters",
+			Handler:    _Query_WhitelistedProposalVoters_Handler,
 		},
 		{
 			MethodName: "Vote",
@@ -2956,40 +2954,40 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Votes_Handler,
 		},
 		{
-			MethodName: "GetAllDataReferenceKeys",
-			Handler:    _Query_GetAllDataReferenceKeys_Handler,
+			MethodName: "AllDataReferenceKeys",
+			Handler:    _Query_AllDataReferenceKeys_Handler,
 		},
 		{
-			MethodName: "GetDataReferenceByKey",
-			Handler:    _Query_GetDataReferenceByKey_Handler,
+			MethodName: "DataReferenceByKey",
+			Handler:    _Query_DataReferenceByKey_Handler,
 		},
 		{
-			MethodName: "GetIdentityRecord",
-			Handler:    _Query_GetIdentityRecord_Handler,
+			MethodName: "IdentityRecord",
+			Handler:    _Query_IdentityRecord_Handler,
 		},
 		{
-			MethodName: "GetIdentityRecords",
-			Handler:    _Query_GetIdentityRecords_Handler,
+			MethodName: "IdentityRecords",
+			Handler:    _Query_IdentityRecords_Handler,
 		},
 		{
-			MethodName: "GetAllIdentityRecords",
-			Handler:    _Query_GetAllIdentityRecords_Handler,
+			MethodName: "AllIdentityRecords",
+			Handler:    _Query_AllIdentityRecords_Handler,
 		},
 		{
-			MethodName: "GetIdentityRecordVerifyRequest",
-			Handler:    _Query_GetIdentityRecordVerifyRequest_Handler,
+			MethodName: "IdentityRecordVerifyRequest",
+			Handler:    _Query_IdentityRecordVerifyRequest_Handler,
 		},
 		{
-			MethodName: "GetIdentityRecordVerifyRequests",
-			Handler:    _Query_GetIdentityRecordVerifyRequests_Handler,
+			MethodName: "IdentityRecordVerifyRequests",
+			Handler:    _Query_IdentityRecordVerifyRequests_Handler,
 		},
 		{
-			MethodName: "GetIdentityRecordVerifyRequestsByApprover",
-			Handler:    _Query_GetIdentityRecordVerifyRequestsByApprover_Handler,
+			MethodName: "IdentityRecordVerifyRequestsByApprover",
+			Handler:    _Query_IdentityRecordVerifyRequestsByApprover_Handler,
 		},
 		{
-			MethodName: "GetAllIdentityRecordVerifyRequests",
-			Handler:    _Query_GetAllIdentityRecordVerifyRequests_Handler,
+			MethodName: "AllIdentityRecordVerifyRequests",
+			Handler:    _Query_AllIdentityRecordVerifyRequests_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -7980,7 +7978,7 @@ func (m *QueryIdentityRecordsResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Records = append(m.Records, &IdentityRecord{})
+			m.Records = append(m.Records, IdentityRecord{})
 			if err := m.Records[len(m.Records)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -8120,7 +8118,7 @@ func (m *QueryAllIdentityRecordsResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Records = append(m.Records, &IdentityRecord{})
+			m.Records = append(m.Records, IdentityRecord{})
 			if err := m.Records[len(m.Records)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -8455,7 +8453,7 @@ func (m *QueryIdentityRecordVerifyRequestsByApproverResponse) Unmarshal(dAtA []b
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.VerifyRecords = append(m.VerifyRecords, &IdentityRecordsVerify{})
+			m.VerifyRecords = append(m.VerifyRecords, IdentityRecordsVerify{})
 			if err := m.VerifyRecords[len(m.VerifyRecords)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -8629,7 +8627,7 @@ func (m *QueryIdentityRecordVerifyRequestsResponse) Unmarshal(dAtA []byte) error
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.VerifyRecords = append(m.VerifyRecords, &IdentityRecordsVerify{})
+			m.VerifyRecords = append(m.VerifyRecords, IdentityRecordsVerify{})
 			if err := m.VerifyRecords[len(m.VerifyRecords)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -8769,7 +8767,7 @@ func (m *QueryAllIdentityRecordVerifyRequestsResponse) Unmarshal(dAtA []byte) er
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.VerifyRecords = append(m.VerifyRecords, &IdentityRecordsVerify{})
+			m.VerifyRecords = append(m.VerifyRecords, IdentityRecordsVerify{})
 			if err := m.VerifyRecords[len(m.VerifyRecords)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}

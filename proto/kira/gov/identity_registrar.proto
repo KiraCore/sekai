@@ -42,7 +42,7 @@ message IdentityRecordsVerify {
     string tip = 5 [
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
         (gogoproto.nullable) = false
-    ];    
+    ];
 }
 
 message MsgRequestIdentityRecordsVerify {
@@ -65,6 +65,13 @@ message MsgApproveIdentityRecords {
     bytes verifier = 1 [
         (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
         (gogoproto.moretags) = "yaml:\"verifier\""
+    ];
+    uint64 verifyRequestId = 2;
+}
+message MsgCancelIdentityRecordsVerifyRequest  {
+    bytes executor = 1 [
+        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+        (gogoproto.moretags) = "yaml:\"executor\""
     ];
     uint64 verifyRequestId = 2;
 }

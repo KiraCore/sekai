@@ -196,7 +196,7 @@ func NewInitApp(
 	)
 	app.upgradeKeeper = upgradekeeper.NewKeeper(skipUpgradeHeights, keys[upgradetypes.StoreKey], appCodec, homePath)
 
-	app.customGovKeeper = customgovkeeper.NewKeeper(keys[customgovtypes.ModuleName], appCodec)
+	app.customGovKeeper = customgovkeeper.NewKeeper(keys[customgovtypes.ModuleName], appCodec, app.bankKeeper)
 	customStakingKeeper := customstakingkeeper.NewKeeper(keys[customstakingtypes.ModuleName], cdc, app.customGovKeeper)
 	app.customSlashingKeeper = customslashingkeeper.NewKeeper(
 		appCodec, keys[customslashingtypes.StoreKey], &customStakingKeeper, app.customGovKeeper, app.GetSubspace(customslashingtypes.ModuleName),

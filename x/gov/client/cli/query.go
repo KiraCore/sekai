@@ -126,7 +126,7 @@ func GetCmdQueryNetworkProperties() *cobra.Command {
 
 			params := &types.NetworkPropertiesRequest{}
 			queryClient := types.NewQueryClient(clientCtx)
-			res, err := queryClient.GetNetworkProperties(context.Background(), params)
+			res, err := queryClient.NetworkProperties(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -150,7 +150,7 @@ func GetCmdQueryPoorNetworkMessages() *cobra.Command {
 
 			params := &types.PoorNetworkMessagesRequest{}
 			queryClient := types.NewQueryClient(clientCtx)
-			res, err := queryClient.GetPoorNetworkMessages(context.Background(), params)
+			res, err := queryClient.PoorNetworkMessages(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -176,7 +176,7 @@ func GetCmdQueryExecutionFee() *cobra.Command {
 				TransactionType: args[0],
 			}
 			queryClient := types.NewQueryClient(clientCtx)
-			res, err := queryClient.GetExecutionFee(context.Background(), params)
+			res, err := queryClient.ExecutionFee(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -481,7 +481,7 @@ $ %[1]s query gov voters 1
 				return fmt.Errorf("proposal-id %s not a valid int, please input a valid proposal-id", args[0])
 			}
 
-			res, err := queryClient.GetWhitelistedProposalVoters(
+			res, err := queryClient.WhitelistedProposalVoters(
 				context.Background(),
 				&types.QueryWhitelistedProposalVotersRequest{ProposalId: proposalID},
 			)

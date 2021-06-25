@@ -27,12 +27,12 @@ service Query {
   rpc CouncilorByAddress (CouncilorByAddressRequest) returns (CouncilorResponse) {}
   // CouncilorByMoniker returns the councilor object from its moniker
   rpc CouncilorByMoniker (CouncilorByMonikerRequest) returns (CouncilorResponse) {}
-  // GetNetworkProperties returns network properties
-  rpc GetNetworkProperties (NetworkPropertiesRequest) returns (NetworkPropertiesResponse) {}
-  // GetExecutionFee returns execution fee from msg type
-  rpc GetExecutionFee (ExecutionFeeRequest) returns (ExecutionFeeResponse) {}
-  // GetPoorNetworkMessages returns poor network messages
-  rpc GetPoorNetworkMessages (PoorNetworkMessagesRequest) returns (PoorNetworkMessagesResponse) {}
+  // NetworkProperties returns network properties
+  rpc NetworkProperties (NetworkPropertiesRequest) returns (NetworkPropertiesResponse) {}
+  // ExecutionFee returns execution fee from msg type
+  rpc ExecutionFee (ExecutionFeeRequest) returns (ExecutionFeeResponse) {}
+  // PoorNetworkMessages returns poor network messages
+  rpc PoorNetworkMessages (PoorNetworkMessagesRequest) returns (PoorNetworkMessagesResponse) {}
   // Proposal queries proposal details based on ProposalID.
   rpc Proposal(QueryProposalRequest) returns (QueryProposalResponse) {
     option (google.api.http).get = "/kira/gov/proposals/{proposal_id}";
@@ -41,8 +41,8 @@ service Query {
   rpc Proposals(QueryProposalsRequest) returns (QueryProposalsResponse) {
     option (google.api.http).get = "/kira/gov/proposals";
   }
-  // GetWhitelistedProposalVoters returns whitelisted voters for a proposal for tracking
-  rpc GetWhitelistedProposalVoters(QueryWhitelistedProposalVotersRequest) returns (QueryWhitelistedProposalVotersResponse) {
+  // WhitelistedProposalVoters returns whitelisted voters for a proposal for tracking
+  rpc WhitelistedProposalVoters(QueryWhitelistedProposalVotersRequest) returns (QueryWhitelistedProposalVotersResponse) {
     option (google.api.http).get = "/kira/gov/voters/{proposal_id}";
   }
   // Vote queries voted information based on proposalID, voterAddr.
@@ -52,39 +52,39 @@ service Query {
     option (google.api.http).get = "/kira/gov/votes/{proposal_id}";
   }
   // Query all data reference keys with pagination.
-  rpc GetAllDataReferenceKeys(QueryDataReferenceKeysRequest) returns (QueryDataReferenceKeysResponse) {
+  rpc AllDataReferenceKeys(QueryDataReferenceKeysRequest) returns (QueryDataReferenceKeysResponse) {
     option (google.api.http).get = "/kira/gov/data_keys";
   }
   // Query data reference by key.
-  rpc GetDataReferenceByKey(QueryDataReferenceRequest) returns (QueryDataReferenceResponse) {
+  rpc DataReferenceByKey(QueryDataReferenceRequest) returns (QueryDataReferenceResponse) {
     option (google.api.http).get = "/kira/gov/data/{key}";
   }
   // Query identity record by id
-  rpc GetIdentityRecord(QueryIdentityRecordRequest) returns (QueryIdentityRecordResponse) {
+  rpc IdentityRecord(QueryIdentityRecordRequest) returns (QueryIdentityRecordResponse) {
     option (google.api.http).get = "/kira/gov/identity_record/{id}";
   }
   // Query identity records by records creator
-  rpc GetIdentityRecords(QueryIdentityRecordsRequest) returns (QueryIdentityRecordsResponse) {
+  rpc IdentityRecords(QueryIdentityRecordsRequest) returns (QueryIdentityRecordsResponse) {
     option (google.api.http).get = "/kira/gov/identity_records/{creator}";
   }
   // Query all identity records
-  rpc GetAllIdentityRecords(QueryAllIdentityRecordsRequest) returns (QueryAllIdentityRecordsResponse) {
+  rpc AllIdentityRecords(QueryAllIdentityRecordsRequest) returns (QueryAllIdentityRecordsResponse) {
     option (google.api.http).get = "/kira/gov/all_identity_records";
   }
   // Query identity record verify request by id
-  rpc GetIdentityRecordVerifyRequest(QueryIdentityVerifyRecordRequest) returns (QueryIdentityVerifyRecordResponse) {
+  rpc IdentityRecordVerifyRequest(QueryIdentityVerifyRecordRequest) returns (QueryIdentityVerifyRecordResponse) {
     option (google.api.http).get = "/kira/gov/identity_verify_record/{request_id}";
   }
   // Query identity records verify requests by requester
-  rpc GetIdentityRecordVerifyRequests(QueryIdentityRecordVerifyRequests) returns (QueryIdentityRecordVerifyRequestsResponse) {
+  rpc IdentityRecordVerifyRequests(QueryIdentityRecordVerifyRequests) returns (QueryIdentityRecordVerifyRequestsResponse) {
     option (google.api.http).get = "/kira/gov/identity_verify_requests/{requester}";
   }
   // Query identity records verify requests by approver
-  rpc GetIdentityRecordVerifyRequestsByApprover(QueryIdentityRecordVerifyRequestsByApprover) returns (QueryIdentityRecordVerifyRequestsByApproverResponse) {
+  rpc IdentityRecordVerifyRequestsByApprover(QueryIdentityRecordVerifyRequestsByApprover) returns (QueryIdentityRecordVerifyRequestsByApproverResponse) {
     option (google.api.http).get = "/kira/gov/identity_verify_requests_by_approver/{approver}";
   }
   // Query all identity records verify requests
-  rpc GetAllIdentityRecordVerifyRequests(QueryAllIdentityRecordVerifyRequests) returns (QueryAllIdentityRecordVerifyRequestsResponse) {
+  rpc AllIdentityRecordVerifyRequests(QueryAllIdentityRecordVerifyRequests) returns (QueryAllIdentityRecordVerifyRequestsResponse) {
     option (google.api.http).get = "/kira/gov/all_identity_verify_requests";
   }
 }
@@ -262,12 +262,12 @@ message QueryIdentityRecordsRequest {
   ];
 }
 message QueryIdentityRecordsResponse {
-  repeated kira.gov.IdentityRecord records = 1;
+  repeated kira.gov.IdentityRecord records = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryAllIdentityRecordsRequest {}
 message QueryAllIdentityRecordsResponse {
-  repeated kira.gov.IdentityRecord records = 1;
+  repeated kira.gov.IdentityRecord records = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryIdentityVerifyRecordRequest {
@@ -284,7 +284,7 @@ message QueryIdentityRecordVerifyRequestsByApprover {
   ];
 }
 message QueryIdentityRecordVerifyRequestsByApproverResponse {
-  repeated kira.gov.IdentityRecordsVerify verify_records = 1;
+  repeated kira.gov.IdentityRecordsVerify verify_records = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryIdentityRecordVerifyRequests {
@@ -294,10 +294,10 @@ message QueryIdentityRecordVerifyRequests {
   ];
 }
 message QueryIdentityRecordVerifyRequestsResponse {
-  repeated kira.gov.IdentityRecordsVerify verify_records = 1;
+  repeated kira.gov.IdentityRecordsVerify verify_records = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryAllIdentityRecordVerifyRequests {}
 message QueryAllIdentityRecordVerifyRequestsResponse {
-  repeated kira.gov.IdentityRecordsVerify verify_records = 1;
+  repeated kira.gov.IdentityRecordsVerify verify_records = 1 [(gogoproto.nullable) = false];
 }
