@@ -9,6 +9,9 @@ import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
 	"github.com/KiraCore/sekai/x/genutil"
+	"github.com/KiraCore/sekai/x/upgrade"
+	upgradekeeper "github.com/KiraCore/sekai/x/upgrade/keeper"
+	upgradetypes "github.com/KiraCore/sekai/x/upgrade/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	_ "github.com/cosmos/cosmos-sdk/client/docs/statik"
@@ -38,9 +41,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/params"
 	paramskeeper "github.com/cosmos/cosmos-sdk/x/params/keeper"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	"github.com/cosmos/cosmos-sdk/x/upgrade"
-	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
-	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 	"github.com/gorilla/mux"
 	"github.com/rakyll/statik/fs"
 	abci "github.com/tendermint/tendermint/abci/types"
@@ -177,7 +177,7 @@ func NewSimApp(
 		authtypes.StoreKey, banktypes.StoreKey, paramstypes.StoreKey,
 		customstakingtypes.ModuleName, customslashingtypes.ModuleName, customgovtypes.ModuleName,
 		customgovtypes.ModuleName, tokenstypes.ModuleName, feeprocessingtypes.ModuleName,
-		evidencetypes.StoreKey,
+		evidencetypes.StoreKey, upgradetypes.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 
@@ -212,7 +212,8 @@ func NewSimApp(
 		customstakingtypes.NewMultiStakingHooks(app.CustomSlashingKeeper.Hooks()),
 	)
 
-	app.UpgradeKeeper = upgradekeeper.NewKeeper(skipUpgradeHeights, keys[upgradetypes.StoreKey], appCodec, homePath)
+	app.UpgradeKeeper = upgradekeeper.NewKeeper(keys[upgradetypes.StoreKey], appCodec)
+
 	app.FeeProcessingKeeper = feeprocessingkeeper.NewKeeper(keys[feeprocessingtypes.ModuleName], appCodec, app.BankKeeper, app.TokensKeeper, app.CustomGovKeeper)
 
 	// create evidence keeper with router
@@ -236,12 +237,13 @@ func NewSimApp(
 			tokens.NewApplyUpsertTokenRatesProposalHandler(app.TokensKeeper),
 			customstaking.NewApplyUnjailValidatorProposalHandler(app.CustomStakingKeeper),
 			customgov.NewApplyCreateRoleProposalHandler(app.CustomGovKeeper),
+			upgrade.NewApplySoftwareUpgradeProposalHandler(app.UpgradeKeeper),
 		},
 	)
 	app.mm = module.NewManager(
 		auth.NewAppModule(appCodec, app.AccountKeeper, authsims.RandomGenesisAccounts),
 		bank.NewAppModule(appCodec, app.BankKeeper, app.AccountKeeper),
-		upgrade.NewAppModule(app.UpgradeKeeper),
+		upgrade.NewAppModule(app.UpgradeKeeper, app.CustomGovKeeper),
 		params.NewAppModule(app.ParamsKeeper),
 		customslashing.NewAppModule(appCodec, app.CustomSlashingKeeper, app.AccountKeeper, app.BankKeeper, app.CustomStakingKeeper),
 		customgov.NewAppModule(app.CustomGovKeeper, app.ProposalRouter),

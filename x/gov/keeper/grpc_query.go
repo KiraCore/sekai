@@ -96,10 +96,7 @@ func (k Keeper) ExecutionFee(goCtx context.Context, request *types.ExecutionFeeR
 // PoorNetworkMessages queries poor network messages
 func (k Keeper) PoorNetworkMessages(goCtx context.Context, request *types.PoorNetworkMessagesRequest) (*types.PoorNetworkMessagesResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	msg, ok := k.GetPoorNetworkMessages(ctx)
-	if !ok {
-		return nil, types.ErrPoorNetworkMessagesNotSet
-	}
+	msg := k.GetPoorNetworkMessages(ctx)
 	return &types.PoorNetworkMessagesResponse{Messages: msg.Messages}, nil
 }
 

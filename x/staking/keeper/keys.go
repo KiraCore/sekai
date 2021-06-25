@@ -18,6 +18,7 @@ var (
 	RemovingValidatorQueue     = []byte{0x04} // Validators that are pending to be removed from the validator set.
 	ReactivatingValidatorQueue = []byte{0x05} // Validators that are pending to be reactivated in the set.
 	ValidatorJailInfo          = []byte{0x06} // Validator Jail Info (JailTime, etc)
+	LastValidatorPowerKey      = []byte{0x07}
 )
 
 // GetValidatorKey gets the key for the validator with address

@@ -46,6 +46,9 @@ const (
 	MsgTypePause                           = "pause"
 	MsgTypeUnpause                         = "unpause"
 	MsgTypeProposalResetWholeValidatorRank = "proposal-reset-whole-validator-rank"
+
+	//upgrade module
+	MsgProposalSoftwareUpgrade = "propose-software-upgrade"
 )
 
 // MsgFuncIDMapping defines function_id mapping
@@ -61,7 +64,8 @@ var MsgFuncIDMapping = map[string]int64{
 	MsgTypeProposalUpsertTokenRates:       8,
 	MsgTypeProposalTokensWhiteBlackChange: 9,
 	MsgTypeProposalUnjailValidator:        10,
-	MsgTypeVoteProposal:                   11,
+	MsgProposalSoftwareUpgrade:            11,
+	MsgTypeVoteProposal:                   12,
 
 	MsgTypeSetNetworkProperties:          20,
 	MsgTypeSetExecutionFee:               21,

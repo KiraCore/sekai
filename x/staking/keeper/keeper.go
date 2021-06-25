@@ -142,6 +142,31 @@ func (k Keeper) IterateValidators(ctx sdk.Context,
 	}
 }
 
+// iterate through the active validator set and perform the provided function
+func (k Keeper) IterateLastValidators(ctx sdk.Context, fn func(index int64, validator types.Validator) (stop bool)) {
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, LastValidatorPowerKey)
+
+	defer iterator.Close()
+
+	i := int64(0)
+
+	for ; iterator.Valid(); iterator.Next() {
+		address := AddressFromLastValidatorPowerKey(iterator.Key())
+
+		validator, err := k.GetValidator(ctx, address)
+		if err != nil {
+			panic(fmt.Sprintf("validator record not found for address: %v\n", address))
+		}
+
+		stop := fn(i, validator) // XXX is this safe will the validator unexposed fields be able to get written to?
+		if stop {
+			break
+		}
+		i++
+	}
+}
+
 // GetValidatorByConsAddr get validator by sdk.ConsAddress
 func (k Keeper) GetValidatorByConsAddr(ctx sdk.Context, consAddr sdk.ConsAddress) (types.Validator, error) {
 	store := ctx.KVStore(k.storeKey)
@@ -169,4 +194,8 @@ func (k Keeper) MaxValidators(sdk.Context) uint32 {
 func (k Keeper) IsNetworkActive(ctx sdk.Context) bool {
 	vals := k.GetValidatorSet(ctx)
 	return len(vals) >= int(k.govkeeper.GetNetworkProperties(ctx).MinValidators)
+}
+
+func AddressFromLastValidatorPowerKey(key []byte) []byte {
+	return key[2:] // remove prefix bytes and address length
 }

@@ -27,6 +27,18 @@ func (k Keeper) GetNetworkActorByAddress(ctx sdk.Context, address sdk.AccAddress
 	return na, true
 }
 
+func (k Keeper) GetNetworkActorFromIterator(iterator sdk.Iterator) *types.NetworkActor {
+	bz := iterator.Value()
+	if bz == nil {
+		return nil
+	}
+
+	var na types.NetworkActor
+	k.cdc.MustUnmarshalBinaryBare(bz, &na)
+
+	return &na
+}
+
 // AddWhitelistPermission whitelist a permission to an address. It saves the actor after it.
 func (k Keeper) AddWhitelistPermission(ctx sdk.Context, actor types.NetworkActor, perm types.PermValue) error {
 	err := actor.Permissions.AddToWhitelist(perm)
@@ -71,6 +83,12 @@ func (k Keeper) RemoveRoleFromActor(ctx sdk.Context, actor types.NetworkActor, r
 
 	store := ctx.KVStore(k.storeKey)
 	store.Delete(roleAddressKey(role, actor.Address))
+}
+
+// GetNetworkActorsIterator returns all the actors iterator
+func (k Keeper) GetNetworkActorsIterator(ctx sdk.Context) sdk.Iterator {
+	store := ctx.KVStore(k.storeKey)
+	return sdk.KVStorePrefixIterator(store, NetworkActorsPrefix)
 }
 
 // GetNetworkActorsByWhitelistedPermission returns all the actors that have Perm in individual whitelist.

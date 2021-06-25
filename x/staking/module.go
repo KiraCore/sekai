@@ -137,7 +137,8 @@ func (am AppModule) InitGenesis(
 }
 
 func (am AppModule) ExportGenesis(context sdk.Context, marshaler codec.JSONMarshaler) json.RawMessage {
-	return nil
+	gs := ExportGenesis(context, am.customStakingKeeper)
+	return marshaler.MustMarshalJSON(gs)
 }
 
 func (am AppModule) RegisterInvariants(registry sdk.InvariantRegistry) {}

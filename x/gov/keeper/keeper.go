@@ -7,6 +7,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/query"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type Keeper struct {
@@ -154,4 +157,63 @@ func (k Keeper) GetExecutionFee(ctx sdk.Context, txType string) *types.Execution
 	fee := new(types.ExecutionFee)
 	k.cdc.MustUnmarshalBinaryBare(bz, fee)
 	return fee
+}
+
+// GetExecutionFees get fees from execution function name
+func (k Keeper) GetExecutionFees(ctx sdk.Context) []*types.ExecutionFee {
+	iterator := sdk.KVStorePrefixIterator(ctx.KVStore(k.storeKey), types.KeyPrefixExecutionFee)
+	defer iterator.Close()
+	fees := []*types.ExecutionFee{}
+	for ; iterator.Valid(); iterator.Next() {
+		bz := iterator.Value()
+		fee := new(types.ExecutionFee)
+		k.cdc.MustUnmarshalBinaryBare(bz, fee)
+	}
+	return fees
+}
+
+// GetAllDataReferenceKeys implements the Query all data reference keys gRPC method
+func (k Keeper) GetAllDataReferenceKeys(sdkCtx sdk.Context, req *types.QueryDataReferenceKeysRequest) (*types.QueryDataReferenceKeysResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	var keys []string
+	store := sdkCtx.KVStore(k.storeKey)
+	dataReferenceStore := prefix.NewStore(store, DataRegistryPrefix)
+
+	pageRes, err := query.Paginate(dataReferenceStore, req.Pagination, func(key []byte, value []byte) error {
+		keys = append(keys, string(key))
+		return nil
+	})
+
+	if err != nil {
+		return &types.QueryDataReferenceKeysResponse{}, err
+	}
+
+	res := types.QueryDataReferenceKeysResponse{
+		Keys:       keys,
+		Pagination: pageRes,
+	}
+
+	return &res, nil
+}
+
+// GetDataReferenceByKey implements the Query data reference by key gRPC method
+func (k Keeper) GetDataReferenceByKey(sdkCtx sdk.Context, req *types.QueryDataReferenceRequest) (*types.QueryDataReferenceResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	dataReference, ok := k.GetDataRegistryEntry(sdkCtx, req.GetKey())
+
+	if !ok {
+		return nil, status.Error(codes.NotFound, "not found")
+	}
+
+	res := types.QueryDataReferenceResponse{
+		Data: &dataReference,
+	}
+
+	return &res, nil
 }
