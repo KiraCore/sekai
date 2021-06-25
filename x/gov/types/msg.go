@@ -1,6 +1,8 @@
 package types
 
 import (
+	"time"
+
 	"github.com/KiraCore/sekai/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -633,5 +635,194 @@ func (m *MsgProposalCreateRole) GetSignBytes() []byte {
 func (m *MsgProposalCreateRole) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{
 		m.Proposer,
+	}
+}
+
+func NewMsgCreateIdentityRecord(address sdk.AccAddress, infos map[string]string, date time.Time) *MsgCreateIdentityRecord {
+	return &MsgCreateIdentityRecord{
+		Address: address,
+		Infos:   infos,
+		Date:    date,
+	}
+}
+
+func (m *MsgCreateIdentityRecord) Route() string {
+	return ModuleName
+}
+
+func (m *MsgCreateIdentityRecord) Type() string {
+	return types.MsgTypeCreateIdentityRecord
+}
+
+func (m *MsgCreateIdentityRecord) ValidateBasic() error {
+	if m.Address.Empty() {
+		return ErrEmptyProposerAccAddress
+	}
+	if m.Date.IsZero() {
+		return ErrInvalidDate
+	}
+	return nil
+}
+
+func (m *MsgCreateIdentityRecord) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *MsgCreateIdentityRecord) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{
+		m.Address,
+	}
+}
+
+func NewMsgEditIdentityRecord(recordId uint64, address sdk.AccAddress, infos map[string]string, date time.Time) *MsgEditIdentityRecord {
+	return &MsgEditIdentityRecord{
+		RecordId: recordId,
+		Address:  address,
+		Infos:    infos,
+		Date:     date,
+	}
+}
+
+func (m *MsgEditIdentityRecord) Route() string {
+	return ModuleName
+}
+
+func (m *MsgEditIdentityRecord) Type() string {
+	return types.MsgTypeEditIdentityRecord
+}
+
+func (m *MsgEditIdentityRecord) ValidateBasic() error {
+	if m.Address.Empty() {
+		return ErrEmptyProposerAccAddress
+	}
+	if m.RecordId == 0 {
+		return ErrInvalidRecordId
+	}
+	if m.Date.IsZero() {
+		return ErrInvalidDate
+	}
+	return nil
+}
+
+func (m *MsgEditIdentityRecord) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *MsgEditIdentityRecord) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{
+		m.Address,
+	}
+}
+
+func NewMsgRequestIdentityRecordsVerify(address, verifier sdk.AccAddress, recordIds []uint64, tip sdk.Coin) *MsgRequestIdentityRecordsVerify {
+	return &MsgRequestIdentityRecordsVerify{
+		Address:   address,
+		Verifier:  verifier,
+		RecordIds: recordIds,
+		Tip:       tip,
+	}
+}
+
+func (m *MsgRequestIdentityRecordsVerify) Route() string {
+	return ModuleName
+}
+
+func (m *MsgRequestIdentityRecordsVerify) Type() string {
+	return types.MsgTypeRequestIdentityRecordsVerify
+}
+
+func (m *MsgRequestIdentityRecordsVerify) ValidateBasic() error {
+	if m.Address.Empty() {
+		return ErrEmptyProposerAccAddress
+	}
+	if m.Verifier.Empty() {
+		return ErrEmptyVerifierAccAddress
+	}
+	return nil
+}
+
+func (m *MsgRequestIdentityRecordsVerify) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *MsgRequestIdentityRecordsVerify) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{
+		m.Address,
+	}
+}
+
+func NewMsgApproveIdentityRecords(proposer, verifier sdk.AccAddress, requestId uint64) *MsgApproveIdentityRecords {
+	return &MsgApproveIdentityRecords{
+		Proposer:        proposer,
+		Verifier:        verifier,
+		VerifyRequestId: requestId,
+	}
+}
+
+func (m *MsgApproveIdentityRecords) Route() string {
+	return ModuleName
+}
+
+func (m *MsgApproveIdentityRecords) Type() string {
+	return types.MsgTypeApproveIdentityRecords
+}
+
+func (m *MsgApproveIdentityRecords) ValidateBasic() error {
+	if m.Proposer.Empty() {
+		return ErrEmptyProposerAccAddress
+	}
+	if m.Verifier.Empty() {
+		return ErrEmptyVerifierAccAddress
+	}
+	return nil
+}
+
+func (m *MsgApproveIdentityRecords) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *MsgApproveIdentityRecords) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{
+		m.Proposer,
+	}
+}
+
+func NewMsgCancelIdentityRecordsVerifyRequest(executor sdk.AccAddress, verifyRequestId uint64) *MsgCancelIdentityRecordsVerifyRequest {
+	return &MsgCancelIdentityRecordsVerifyRequest{
+		Executor:        executor,
+		VerifyRequestId: verifyRequestId,
+	}
+}
+
+func (m *MsgCancelIdentityRecordsVerifyRequest) Route() string {
+	return ModuleName
+}
+
+func (m *MsgCancelIdentityRecordsVerifyRequest) Type() string {
+	return types.MsgTypeCancelIdentityRecordsVerifyRequest
+}
+
+func (m *MsgCancelIdentityRecordsVerifyRequest) ValidateBasic() error {
+	if m.Executor.Empty() {
+		return ErrEmptyProposerAccAddress
+	}
+	if m.VerifyRequestId == 0 {
+		return ErrInvalidVerifyRequestId
+	}
+	return nil
+}
+
+func (m *MsgCancelIdentityRecordsVerifyRequest) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *MsgCancelIdentityRecordsVerifyRequest) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{
+		m.Executor,
 	}
 }

@@ -135,6 +135,11 @@ func (k msgServer) CreateIdentityRecord(goCtx context.Context, msg *types.MsgCre
 	return &types.MsgCreateIdentityRecordResponse{}, nil
 }
 
+func (k msgServer) EditIdentityRecord(goCtx context.Context, msg *types.MsgEditIdentityRecord) (*types.MsgEditIdentityRecordResponse, error) {
+
+	return &types.MsgEditIdentityRecordResponse{}, nil
+}
+
 // RequestIdentityRecordsVerify defines a method to request verify request from specific verifier
 func (k msgServer) RequestIdentityRecordsVerify(goCtx context.Context, msg *types.MsgRequestIdentityRecordsVerify) (*types.MsgRequestIdentityRecordsVerifyResponse, error) {
 

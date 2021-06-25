@@ -30,6 +30,12 @@ const (
 	MsgTypeRemoveWhitelistRolePermission = "remove-whitelist-role-permission"
 	MsgTypeRemoveBlacklistRolePermission = "remove-blacklist-role-permission"
 
+	MsgTypeCreateIdentityRecord               = "create-identity-record"
+	MsgTypeEditIdentityRecord                 = "edit-identity-record"
+	MsgTypeRequestIdentityRecordsVerify       = "request-identity-records-verify"
+	MsgTypeApproveIdentityRecords             = "approve-identity-records"
+	MsgTypeCancelIdentityRecordsVerifyRequest = "cancel-identity-records-verify-request"
+
 	// staking module
 	MsgTypeClaimValidator          = "claim-validator"
 	MsgTypeProposalUnjailValidator = "proposal-unjail-validator"
