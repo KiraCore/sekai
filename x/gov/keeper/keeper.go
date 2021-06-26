@@ -154,6 +154,19 @@ func (k Keeper) GetExecutionFee(ctx sdk.Context, txType string) *types.Execution
 	return fee
 }
 
+// GetExecutionFees get fees from execution function name
+func (k Keeper) GetExecutionFees(ctx sdk.Context) []*types.ExecutionFee {
+	iterator := sdk.KVStorePrefixIterator(ctx.KVStore(k.storeKey), types.KeyPrefixExecutionFee)
+	defer iterator.Close()
+	fees := []*types.ExecutionFee{}
+	for ; iterator.Valid(); iterator.Next() {
+		bz := iterator.Value()
+		fee := new(types.ExecutionFee)
+		k.cdc.MustUnmarshalBinaryBare(bz, fee)
+	}
+	return fees
+}
+
 // GetAllDataReferenceKeys implements the Query all data reference keys gRPC method
 func (k Keeper) GetAllDataReferenceKeys(sdkCtx sdk.Context, req *types.QueryDataReferenceKeysRequest) (*types.QueryDataReferenceKeysResponse, error) {
 	if req == nil {

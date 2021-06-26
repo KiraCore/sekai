@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.1.20] - 10.06.2021
+
+- Add own upgrade module
+
 ## [v0.1.19.6] - 12.05.2021
 
 - Add reverse order querying for proposals querying

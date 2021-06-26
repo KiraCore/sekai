@@ -5,7 +5,6 @@ import (
 
 	feeprocessingkeeper "github.com/KiraCore/sekai/x/feeprocessing/keeper"
 	customgovkeeper "github.com/KiraCore/sekai/x/gov/keeper"
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 	customstakingkeeper "github.com/KiraCore/sekai/x/staking/keeper"
 	tokenskeeper "github.com/KiraCore/sekai/x/tokens/keeper"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -200,10 +199,7 @@ func (pnmd PoorNetworkManagementDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx
 		return next(ctx, tx, simulate)
 	}
 	// handle messages on poor network
-	pnmsgs, found := pnmd.cgk.GetPoorNetworkMessages(ctx)
-	if !found {
-		pnmsgs = &customgovtypes.AllowedMessages{}
-	}
+	pnmsgs := pnmd.cgk.GetPoorNetworkMessages(ctx)
 	for _, msg := range sigTx.GetMsgs() {
 		if msg.Type() == bank.TypeMsgSend {
 			// on poor network, we introduce POOR_NETWORK_MAX_BANK_TX_SEND network property to limit transaction send amount

@@ -121,6 +121,21 @@ func (k Keeper) RemoveBlacklistRolePermission(ctx sdk.Context, role types.Role, 
 	return nil
 }
 
+func (k Keeper) IterateRoles(ctx sdk.Context) sdk.Iterator {
+	return sdk.KVStorePrefixIterator(ctx.KVStore(k.storeKey), RolePermissionRegistry)
+}
+
+func (k Keeper) GetPermissionsFromIterator(iterator sdk.Iterator) types.Permissions {
+	bz := iterator.Value()
+	if bz == nil {
+		return types.Permissions{}
+	}
+
+	var perms types.Permissions
+	k.cdc.MustUnmarshalBinaryBare(bz, &perms)
+	return perms
+}
+
 func (k Keeper) GetRolesByWhitelistedPerm(ctx sdk.Context, perm types.PermValue) sdk.Iterator {
 	store := ctx.KVStore(k.storeKey)
 	return sdk.KVStorePrefixIterator(store, prefixWhitelist(perm))

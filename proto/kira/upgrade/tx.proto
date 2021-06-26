@@ -1,0 +1,33 @@
+syntax = "proto3";
+package kira.upgrade;
+
+import "gogoproto/gogo.proto";
+import "upgrade.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/upgrade/types";
+
+// Msg defines the tokens Msg service.
+service Msg {
+  rpc ProposalSoftwareUpgrade(MsgProposalSoftwareUpgradeRequest) returns (MsgProposalSoftwareUpgradeResponse);
+}
+
+message MsgProposalSoftwareUpgradeRequest{
+  option (gogoproto.equal) = true;
+
+  resource resources = 1;
+
+  int64 min_halt_time = 2;
+  string old_chain_id = 3;
+  string new_chain_id = 4;
+  string rollback_checksum = 5;
+  int64 max_enrolment_duration = 6;
+  string memo = 7;
+  bytes proposer = 8 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"proposer\""
+  ];
+}
+
+message MsgProposalSoftwareUpgradeResponse{
+  uint64 proposalID = 1;
+}

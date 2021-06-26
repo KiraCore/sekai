@@ -1,0 +1,14 @@
+syntax = "proto3";
+package kira.upgrade;
+
+option go_package = "github.com/KiraCore/sekai/x/upgrade/types";
+
+message Plan{
+  int64 min_halt_time = 1;
+  string rollback_checksum = 2;
+  int64 max_enrolment_duration = 3;
+  string name = 4;
+}
+
+
+
