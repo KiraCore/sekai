@@ -264,6 +264,7 @@ func (k Keeper) IdentityRecordsByAddress(goCtx context.Context, request *types.Q
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
+	// TODO: add pagination for QueryIdentityRecordsByAddressRequest
 	res := types.QueryIdentityRecordsByAddressResponse{
 		Records: k.GetIdRecordsByAddress(ctx, request.Creator),
 	}
@@ -278,6 +279,7 @@ func (k Keeper) AllIdentityRecords(goCtx context.Context, request *types.QueryAl
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
+	// TODO: add pagination for QueryAllIdentityRecordsRequest
 	res := types.QueryAllIdentityRecordsResponse{
 		Records: k.GetAllIdentityRecords(ctx),
 	}
@@ -306,6 +308,7 @@ func (k Keeper) IdentityRecordVerifyRequestsByRequester(goCtx context.Context, r
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
+	// TODO: add pagination for QueryIdentityRecordVerifyRequestsByRequester
 	res := types.QueryIdentityRecordVerifyRequestsByRequesterResponse{
 		VerifyRecords: k.GetIdRecordsVerifyRequestsByRequester(ctx, request.Requester),
 	}
@@ -320,6 +323,7 @@ func (k Keeper) IdentityRecordVerifyRequestsByApprover(goCtx context.Context, re
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
+	// TODO: add pagination for QueryIdentityRecordVerifyRequestsByApprover
 	res := types.QueryIdentityRecordVerifyRequestsByApproverResponse{
 		VerifyRecords: k.GetIdRecordsVerifyRequestsByApprover(ctx, request.Approver),
 	}
@@ -334,6 +338,7 @@ func (k Keeper) AllIdentityRecordVerifyRequests(goCtx context.Context, request *
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
+	// TODO: add pagination for QueryAllIdentityRecordVerifyRequests
 	res := types.QueryAllIdentityRecordVerifyRequestsResponse{
 		VerifyRecords: k.GetAllIdRecordsVerifyRequests(ctx),
 	}
