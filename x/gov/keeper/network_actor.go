@@ -110,6 +110,8 @@ func (k Keeper) GetNetworkActorsByAbsoluteWhitelistPermission(ctx sdk.Context, p
 
 	var actors []types.NetworkActor
 	iterator := k.GetNetworkActorsByWhitelistedPermission(ctx, perm)
+	defer iterator.Close()
+
 	for ; iterator.Valid(); iterator.Next() {
 		if _, ok := duplicateMap[sdk.AccAddress(iterator.Value()).String()]; !ok {
 			duplicateMap[sdk.AccAddress(iterator.Value()).String()] = true
@@ -118,6 +120,8 @@ func (k Keeper) GetNetworkActorsByAbsoluteWhitelistPermission(ctx sdk.Context, p
 	}
 
 	rolesIter := k.GetRolesByWhitelistedPerm(ctx, perm)
+	defer rolesIter.Close()
+
 	for ; rolesIter.Valid(); rolesIter.Next() {
 		actorIter := k.GetNetworkActorsByRole(ctx, bytesToRole(rolesIter.Value()))
 

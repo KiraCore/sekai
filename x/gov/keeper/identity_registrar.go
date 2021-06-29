@@ -130,6 +130,7 @@ func (k Keeper) GetAllIdentityRecords(ctx sdk.Context) []types.IdentityRecord {
 	records := []types.IdentityRecord{}
 	store := ctx.KVStore(k.storeKey)
 	iterator := sdk.KVStorePrefixIterator(store, types.KeyPrefixIdentityRecord)
+	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
 		record := types.IdentityRecord{}
@@ -145,6 +146,7 @@ func (k Keeper) GetIdRecordsByAddress(ctx sdk.Context, creator sdk.AccAddress) [
 	records := []types.IdentityRecord{}
 	store := ctx.KVStore(k.storeKey)
 	iterator := sdk.KVStorePrefixIterator(store, append(types.KeyPrefixIdentityRecordByAddress, []byte(creator)...))
+	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
 		recordId := sdk.BigEndianToUint64(iterator.Value())
@@ -272,6 +274,7 @@ func (k Keeper) GetIdRecordsVerifyRequestsByRequester(ctx sdk.Context, requester
 	requests := []types.IdentityRecordsVerify{}
 	store := ctx.KVStore(k.storeKey)
 	iterator := sdk.KVStorePrefixIterator(store, append(types.KeyPrefixIdRecordVerifyRequestByRequester, []byte(requester)...))
+	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
 		requestId := sdk.BigEndianToUint64(iterator.Value())
@@ -290,6 +293,7 @@ func (k Keeper) GetIdRecordsVerifyRequestsByApprover(ctx sdk.Context, requester 
 	requests := []types.IdentityRecordsVerify{}
 	store := ctx.KVStore(k.storeKey)
 	iterator := sdk.KVStorePrefixIterator(store, append(types.KeyPrefixIdRecordVerifyRequestByApprover, []byte(requester)...))
+	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
 		requestId := sdk.BigEndianToUint64(iterator.Value())
@@ -308,6 +312,7 @@ func (k Keeper) GetAllIdRecordsVerifyRequests(ctx sdk.Context) []types.IdentityR
 	requests := []types.IdentityRecordsVerify{}
 	store := ctx.KVStore(k.storeKey)
 	iterator := sdk.KVStorePrefixIterator(store, types.KeyPrefixIdRecordVerifyRequest)
+	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
 		request := types.IdentityRecordsVerify{}

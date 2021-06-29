@@ -9,14 +9,16 @@ import (
 )
 
 func EndBlocker(ctx sdk.Context, k keeper.Keeper, router ProposalRouter) {
-	iterator := k.GetEnactmentProposalsWithFinishedEnactmentEndTimeIterator(ctx, ctx.BlockTime())
-	for ; iterator.Valid(); iterator.Next() {
-		processEnactmentProposal(ctx, k, router, keeper.BytesToProposalID(iterator.Value()))
+	enactmentIterator := k.GetEnactmentProposalsWithFinishedEnactmentEndTimeIterator(ctx, ctx.BlockTime())
+	defer enactmentIterator.Close()
+	for ; enactmentIterator.Valid(); enactmentIterator.Next() {
+		processEnactmentProposal(ctx, k, router, keeper.BytesToProposalID(enactmentIterator.Value()))
 	}
 
-	iterator = k.GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx, ctx.BlockTime())
-	for ; iterator.Valid(); iterator.Next() {
-		processProposal(ctx, k, keeper.BytesToProposalID(iterator.Value()))
+	activeIterator := k.GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx, ctx.BlockTime())
+	defer activeIterator.Close()
+	for ; activeIterator.Valid(); activeIterator.Next() {
+		processProposal(ctx, k, keeper.BytesToProposalID(activeIterator.Value()))
 	}
 }
 
