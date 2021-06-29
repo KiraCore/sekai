@@ -64,7 +64,7 @@ service Query {
     option (google.api.http).get = "/kira/gov/identity_record/{id}";
   }
   // Query identity records by records creator
-  rpc IdentityRecords(QueryIdentityRecordsRequest) returns (QueryIdentityRecordsResponse) {
+  rpc IdentityRecordsByAddress(QueryIdentityRecordsByAddressRequest) returns (QueryIdentityRecordsByAddressResponse) {
     option (google.api.http).get = "/kira/gov/identity_records/{creator}";
   }
   // Query all identity records
@@ -76,8 +76,8 @@ service Query {
     option (google.api.http).get = "/kira/gov/identity_verify_record/{request_id}";
   }
   // Query identity records verify requests by requester
-  rpc IdentityRecordVerifyRequests(QueryIdentityRecordVerifyRequests) returns (QueryIdentityRecordVerifyRequestsResponse) {
-    option (google.api.http).get = "/kira/gov/identity_verify_requests/{requester}";
+  rpc IdentityRecordVerifyRequestsByRequester(QueryIdentityRecordVerifyRequestsByRequester) returns (QueryIdentityRecordVerifyRequestsByRequesterResponse) {
+    option (google.api.http).get = "/kira/gov/identity_verify_requests_by_requester/{requester}";
   }
   // Query identity records verify requests by approver
   rpc IdentityRecordVerifyRequestsByApprover(QueryIdentityRecordVerifyRequestsByApprover) returns (QueryIdentityRecordVerifyRequestsByApproverResponse) {
@@ -255,13 +255,13 @@ message QueryIdentityRecordResponse {
   kira.gov.IdentityRecord record = 1;
 }
 
-message QueryIdentityRecordsRequest {
+message QueryIdentityRecordsByAddressRequest {
   bytes creator = 1 [
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
     (gogoproto.moretags) = "yaml:\"creator\""
   ];
 }
-message QueryIdentityRecordsResponse {
+message QueryIdentityRecordsByAddressResponse {
   repeated kira.gov.IdentityRecord records = 1 [(gogoproto.nullable) = false];
 }
 
@@ -287,13 +287,13 @@ message QueryIdentityRecordVerifyRequestsByApproverResponse {
   repeated kira.gov.IdentityRecordsVerify verify_records = 1 [(gogoproto.nullable) = false];
 }
 
-message QueryIdentityRecordVerifyRequests {
+message QueryIdentityRecordVerifyRequestsByRequester {
   bytes requester = 1 [
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
     (gogoproto.moretags) = "yaml:\"requester\""
   ];
 }
-message QueryIdentityRecordVerifyRequestsResponse {
+message QueryIdentityRecordVerifyRequestsByRequesterResponse {
   repeated kira.gov.IdentityRecordsVerify verify_records = 1 [(gogoproto.nullable) = false];
 }
 

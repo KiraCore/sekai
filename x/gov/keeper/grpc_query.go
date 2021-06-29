@@ -258,15 +258,14 @@ func (k Keeper) IdentityRecord(goCtx context.Context, request *types.QueryIdenti
 }
 
 // IdentityRecords query identity records by creator
-func (k Keeper) IdentityRecords(goCtx context.Context, request *types.QueryIdentityRecordsRequest) (*types.QueryIdentityRecordsResponse, error) {
-	// ctx := sdk.UnwrapSDKContext(goCtx)
+func (k Keeper) IdentityRecordsByAddress(goCtx context.Context, request *types.QueryIdentityRecordsByAddressRequest) (*types.QueryIdentityRecordsByAddressResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
 	if request == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	// TODO: implement
-	res := types.QueryIdentityRecordsResponse{
-		Records: nil,
+	res := types.QueryIdentityRecordsByAddressResponse{
+		Records: k.GetIdRecordsByAddress(ctx, request.Creator),
 	}
 
 	return &res, nil
@@ -300,16 +299,15 @@ func (k Keeper) IdentityRecordVerifyRequest(goCtx context.Context, request *type
 	return &res, nil
 }
 
-// IdentityRecordVerifyRequests query identity record verify requests by requester
-func (k Keeper) IdentityRecordVerifyRequests(goCtx context.Context, request *types.QueryIdentityRecordVerifyRequests) (*types.QueryIdentityRecordVerifyRequestsResponse, error) {
-	// ctx := sdk.UnwrapSDKContext(goCtx)
+// IdentityRecordVerifyRequestsByRequester query identity record verify requests by requester
+func (k Keeper) IdentityRecordVerifyRequestsByRequester(goCtx context.Context, request *types.QueryIdentityRecordVerifyRequestsByRequester) (*types.QueryIdentityRecordVerifyRequestsByRequesterResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
 	if request == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	// TODO: implement
-	res := types.QueryIdentityRecordVerifyRequestsResponse{
-		VerifyRecords: nil,
+	res := types.QueryIdentityRecordVerifyRequestsByRequesterResponse{
+		VerifyRecords: k.GetIdRecordsVerifyRequestsByRequester(ctx, request.Requester),
 	}
 
 	return &res, nil
@@ -317,14 +315,13 @@ func (k Keeper) IdentityRecordVerifyRequests(goCtx context.Context, request *typ
 
 // IdentityRecordVerifyRequestsByApprover query identity records verify requests by approver
 func (k Keeper) IdentityRecordVerifyRequestsByApprover(goCtx context.Context, request *types.QueryIdentityRecordVerifyRequestsByApprover) (*types.QueryIdentityRecordVerifyRequestsByApproverResponse, error) {
-	// ctx := sdk.UnwrapSDKContext(goCtx)
+	ctx := sdk.UnwrapSDKContext(goCtx)
 	if request == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	// TODO: implement
 	res := types.QueryIdentityRecordVerifyRequestsByApproverResponse{
-		VerifyRecords: nil,
+		VerifyRecords: k.GetIdRecordsVerifyRequestsByApprover(ctx, request.Approver),
 	}
 
 	return &res, nil
@@ -332,14 +329,13 @@ func (k Keeper) IdentityRecordVerifyRequestsByApprover(goCtx context.Context, re
 
 // AllIdentityRecordVerifyRequests query all identity records verify requests
 func (k Keeper) AllIdentityRecordVerifyRequests(goCtx context.Context, request *types.QueryAllIdentityRecordVerifyRequests) (*types.QueryAllIdentityRecordVerifyRequestsResponse, error) {
-	// ctx := sdk.UnwrapSDKContext(goCtx)
+	ctx := sdk.UnwrapSDKContext(goCtx)
 	if request == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	// TODO: implement
 	res := types.QueryAllIdentityRecordVerifyRequestsResponse{
-		VerifyRecords: nil,
+		VerifyRecords: k.GetAllIdRecordsVerifyRequests(ctx),
 	}
 
 	return &res, nil

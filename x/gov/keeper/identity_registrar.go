@@ -73,8 +73,13 @@ func (k Keeper) GetIdentityRecord(ctx sdk.Context, recordId uint64) *types.Ident
 
 // DeleteIdentityRecord defines a method to delete identity record by id
 func (k Keeper) DeleteIdentityRecord(ctx sdk.Context, recordId uint64) {
-	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixIdentityRecord)
-	prefixStore.Delete(sdk.Uint64ToBigEndian(recordId))
+	record := k.GetIdentityRecord(ctx, recordId)
+	if record == nil {
+		return
+	}
+	recordKey := sdk.Uint64ToBigEndian(recordId)
+	prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixIdentityRecord).Delete(recordKey)
+	prefix.NewStore(ctx.KVStore(k.storeKey), append(types.KeyPrefixIdentityRecordByAddress, record.Address...)).Delete(recordKey)
 }
 
 // CreateIdentityRecord defines a method to create identity record
@@ -89,6 +94,11 @@ func (k Keeper) CreateIdentityRecord(ctx sdk.Context, address sdk.AccAddress, in
 		Verifiers: []sdk.AccAddress{},
 	})
 
+	prefix.NewStore(
+		ctx.KVStore(k.storeKey),
+		append(types.KeyPrefixIdentityRecordByAddress, address...),
+	).Set(sdk.Uint64ToBigEndian(recordId), sdk.Uint64ToBigEndian(recordId))
+
 	k.SetLastIdentityRecordId(ctx, recordId)
 	return recordId
 }
@@ -98,6 +108,10 @@ func (k Keeper) EditIdentityRecord(ctx sdk.Context, recordId uint64, address sdk
 	prevRecord := k.GetIdentityRecord(ctx, recordId)
 	if prevRecord == nil {
 		return fmt.Errorf("identity record with specified id does NOT exist: id=%d", recordId)
+	}
+
+	if !bytes.Equal(address, prevRecord.Address) {
+		return fmt.Errorf("identity record is owned by someone else: %s", prevRecord.Address.String())
 	}
 
 	k.SetIdentityRecord(ctx, types.IdentityRecord{
@@ -114,7 +128,6 @@ func (k Keeper) EditIdentityRecord(ctx sdk.Context, recordId uint64, address sdk
 // GetAllIdentityRecords query all identity records
 func (k Keeper) GetAllIdentityRecords(ctx sdk.Context) []types.IdentityRecord {
 	records := []types.IdentityRecord{}
-	// get iterator for token aliases
 	store := ctx.KVStore(k.storeKey)
 	iterator := sdk.KVStorePrefixIterator(store, types.KeyPrefixIdentityRecord)
 
@@ -122,6 +135,24 @@ func (k Keeper) GetAllIdentityRecords(ctx sdk.Context) []types.IdentityRecord {
 		record := types.IdentityRecord{}
 		k.cdc.MustUnmarshalBinaryBare(iterator.Value(), &record)
 		records = append(records, record)
+	}
+
+	return records
+}
+
+// GetIdRecordsByAddress query identity records by address
+func (k Keeper) GetIdRecordsByAddress(ctx sdk.Context, creator sdk.AccAddress) []types.IdentityRecord {
+	records := []types.IdentityRecord{}
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, append(types.KeyPrefixIdentityRecordByAddress, []byte(creator)...))
+
+	for ; iterator.Valid(); iterator.Next() {
+		recordId := sdk.BigEndianToUint64(iterator.Value())
+		record := k.GetIdentityRecord(ctx, recordId)
+		if record == nil {
+			panic(fmt.Errorf("invalid id available on records by creator: %d", recordId))
+		}
+		records = append(records, *record)
 	}
 
 	return records
@@ -137,9 +168,18 @@ func (k Keeper) RequestIdentityRecordsVerify(ctx sdk.Context, address, verifier 
 		RecordIds: recordIds,
 		Tip:       tip,
 	}
-	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixIdRecordVerifyRequest)
+
 	bz := k.cdc.MustMarshalBinaryBare(&request)
-	prefixStore.Set(sdk.Uint64ToBigEndian(requestId), bz)
+	prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixIdRecordVerifyRequest).Set(sdk.Uint64ToBigEndian(requestId), bz)
+	prefix.NewStore(
+		ctx.KVStore(k.storeKey),
+		append(types.KeyPrefixIdRecordVerifyRequestByRequester, request.Address...),
+	).Set(sdk.Uint64ToBigEndian(requestId), sdk.Uint64ToBigEndian(requestId))
+	prefix.NewStore(
+		ctx.KVStore(k.storeKey),
+		append(types.KeyPrefixIdRecordVerifyRequestByApprover, request.Verifier...),
+	).Set(sdk.Uint64ToBigEndian(requestId), sdk.Uint64ToBigEndian(requestId))
+
 	k.SetLastIdRecordVerifyRequestId(ctx, requestId)
 
 	if err := k.bk.SendCoinsFromAccountToModule(ctx, address, types.ModuleName, sdk.Coins{tip}); err != nil {
@@ -163,8 +203,19 @@ func (k Keeper) GetIdRecordsVerifyRequest(ctx sdk.Context, requestId uint64) *ty
 
 // DeleteIdRecordsVerifyRequest defines a method to get an identity records verify request by id
 func (k Keeper) DeleteIdRecordsVerifyRequest(ctx sdk.Context, requestId uint64) {
-	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixIdRecordVerifyRequest)
-	prefixStore.Delete(sdk.Uint64ToBigEndian(requestId))
+	request := k.GetIdRecordsVerifyRequest(ctx, requestId)
+	if request == nil {
+		return
+	}
+	prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixIdRecordVerifyRequest).Delete(sdk.Uint64ToBigEndian(requestId))
+	prefix.NewStore(
+		ctx.KVStore(k.storeKey),
+		append(types.KeyPrefixIdRecordVerifyRequestByRequester, request.Address...),
+	).Delete(sdk.Uint64ToBigEndian(requestId))
+	prefix.NewStore(
+		ctx.KVStore(k.storeKey),
+		append(types.KeyPrefixIdRecordVerifyRequestByApprover, request.Verifier...),
+	).Delete(sdk.Uint64ToBigEndian(requestId))
 }
 
 // ApproveIdentityRecords defines a method to accept verification request
@@ -194,6 +245,7 @@ func (k Keeper) ApproveIdentityRecords(ctx sdk.Context, verifier sdk.AccAddress,
 		return err
 	}
 
+	k.DeleteIdRecordsVerifyRequest(ctx, requestId)
 	return nil
 }
 
@@ -207,6 +259,61 @@ func (k Keeper) CancelIdentityRecordsVerifyRequest(ctx sdk.Context, executor sdk
 		return errors.New("executor is not identity record creator")
 	}
 
+	if err := k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, request.Address, sdk.Coins{request.Tip}); err != nil {
+		return err
+	}
+
 	k.DeleteIdRecordsVerifyRequest(ctx, requestId)
 	return nil
+}
+
+// GetIdRecordsVerifyRequestsByRequester query identity record verify requests by requester
+func (k Keeper) GetIdRecordsVerifyRequestsByRequester(ctx sdk.Context, requester sdk.AccAddress) []types.IdentityRecordsVerify {
+	requests := []types.IdentityRecordsVerify{}
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, append(types.KeyPrefixIdRecordVerifyRequestByRequester, []byte(requester)...))
+
+	for ; iterator.Valid(); iterator.Next() {
+		requestId := sdk.BigEndianToUint64(iterator.Value())
+		request := k.GetIdRecordsVerifyRequest(ctx, requestId)
+		if request == nil {
+			panic(fmt.Errorf("invalid id available on requests by requester: %d", requestId))
+		}
+		requests = append(requests, *request)
+	}
+
+	return requests
+}
+
+// GetIdRecordsVerifyRequestsByApprover query identity records verify requests by approver
+func (k Keeper) GetIdRecordsVerifyRequestsByApprover(ctx sdk.Context, requester sdk.AccAddress) []types.IdentityRecordsVerify {
+	requests := []types.IdentityRecordsVerify{}
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, append(types.KeyPrefixIdRecordVerifyRequestByApprover, []byte(requester)...))
+
+	for ; iterator.Valid(); iterator.Next() {
+		requestId := sdk.BigEndianToUint64(iterator.Value())
+		request := k.GetIdRecordsVerifyRequest(ctx, requestId)
+		if request == nil {
+			panic(fmt.Errorf("invalid id available on requests by approver: %d", requestId))
+		}
+		requests = append(requests, *request)
+	}
+
+	return requests
+}
+
+// GetAllIdRecordsVerifyRequests query all identity records verify requests
+func (k Keeper) GetAllIdRecordsVerifyRequests(ctx sdk.Context) []types.IdentityRecordsVerify {
+	requests := []types.IdentityRecordsVerify{}
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, types.KeyPrefixIdRecordVerifyRequest)
+
+	for ; iterator.Valid(); iterator.Next() {
+		request := types.IdentityRecordsVerify{}
+		k.cdc.MustUnmarshalBinaryBare(iterator.Value(), &request)
+		requests = append(requests, request)
+	}
+
+	return requests
 }
