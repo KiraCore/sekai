@@ -93,6 +93,24 @@ func (k Keeper) CreateIdentityRecord(ctx sdk.Context, address sdk.AccAddress, in
 	return recordId
 }
 
+// EditIdentityRecord defines a method to edit identity record, it removes all verifiers for the record
+func (k Keeper) EditIdentityRecord(ctx sdk.Context, recordId uint64, address sdk.AccAddress, infos map[string]string, date time.Time) error {
+	prevRecord := k.GetIdentityRecord(ctx, recordId)
+	if prevRecord == nil {
+		return fmt.Errorf("identity record with specified id does NOT exist: id=%d", recordId)
+	}
+
+	k.SetIdentityRecord(ctx, types.IdentityRecord{
+		Id:        recordId,
+		Address:   address,
+		Infos:     infos,
+		Date:      date,
+		Verifiers: []sdk.AccAddress{},
+	})
+
+	return nil
+}
+
 // GetAllIdentityRecords query all identity records
 func (k Keeper) GetAllIdentityRecords(ctx sdk.Context) []types.IdentityRecord {
 	records := []types.IdentityRecord{}
@@ -149,8 +167,8 @@ func (k Keeper) DeleteIdRecordsVerifyRequest(ctx sdk.Context, requestId uint64) 
 	prefixStore.Delete(sdk.Uint64ToBigEndian(requestId))
 }
 
-// ApproveIdentityRecordsVerifyRequest defines a method to accept verification request
-func (k Keeper) ApproveIdentityRecordsVerifyRequest(ctx sdk.Context, verifier sdk.AccAddress, requestId uint64) error {
+// ApproveIdentityRecords defines a method to accept verification request
+func (k Keeper) ApproveIdentityRecords(ctx sdk.Context, verifier sdk.AccAddress, requestId uint64) error {
 	request := k.GetIdRecordsVerifyRequest(ctx, requestId)
 	if request == nil {
 		return fmt.Errorf("specified identity record verify request does NOT exist: id=%d", requestId)
@@ -165,10 +183,11 @@ func (k Keeper) ApproveIdentityRecordsVerifyRequest(ctx sdk.Context, verifier sd
 			return fmt.Errorf("identity record with specified id does NOT exist: id=%d", recordId)
 		}
 		// if already exist, skip
-		if !CheckIfWithinAddressArray(verifier, record.Verifiers) {
-			record.Verifiers = append(record.Verifiers, verifier)
-			k.SetIdentityRecord(ctx, *record)
+		if CheckIfWithinAddressArray(verifier, record.Verifiers) {
+			continue
 		}
+		record.Verifiers = append(record.Verifiers, verifier)
+		k.SetIdentityRecord(ctx, *record)
 	}
 
 	if err := k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, verifier, sdk.Coins{request.Tip}); err != nil {

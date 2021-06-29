@@ -6,12 +6,10 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
-	customgovcli "github.com/KiraCore/sekai/x/gov/client/cli"
-	customgovkeeper "github.com/KiraCore/sekai/x/gov/keeper"
-	"github.com/KiraCore/sekai/x/gov/types"
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
-
 	"github.com/KiraCore/sekai/middleware"
+	"github.com/KiraCore/sekai/x/gov/client/cli"
+	"github.com/KiraCore/sekai/x/gov/keeper"
+	"github.com/KiraCore/sekai/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
@@ -34,15 +32,15 @@ func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *r
 }
 
 func (b AppModuleBasic) Name() string {
-	return customgovtypes.ModuleName
+	return types.ModuleName
 }
 
 func (b AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
-	customgovtypes.RegisterInterfaces(registry)
+	types.RegisterInterfaces(registry)
 }
 
 func (b AppModuleBasic) DefaultGenesis(cdc codec.JSONMarshaler) json.RawMessage {
-	return cdc.MustMarshalJSON(customgovtypes.DefaultGenesis())
+	return cdc.MustMarshalJSON(types.DefaultGenesis())
 }
 
 func (b AppModuleBasic) ValidateGenesis(marshaler codec.JSONMarshaler, config client.TxEncodingConfig, message json.RawMessage) error {
@@ -52,34 +50,34 @@ func (b AppModuleBasic) ValidateGenesis(marshaler codec.JSONMarshaler, config cl
 func (b AppModuleBasic) RegisterRESTRoutes(context client.Context, router *mux.Router) {}
 
 func (b AppModuleBasic) RegisterGRPCRoutes(clientCtx client.Context, serveMux *runtime.ServeMux) {
-	customgovtypes.RegisterQueryHandlerClient(context.Background(), serveMux, types.NewQueryClient(clientCtx))
+	types.RegisterQueryHandlerClient(context.Background(), serveMux, types.NewQueryClient(clientCtx))
 }
 
 func (b AppModuleBasic) RegisterLegacyAminoCodec(amino *codec.LegacyAmino) {}
 
 func (b AppModuleBasic) GetTxCmd() *cobra.Command {
-	return customgovcli.NewTxCmd()
+	return cli.NewTxCmd()
 }
 
 // GetQueryCmd implement query commands for this module
 func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
 	queryCmd := &cobra.Command{
-		Use:   customgovtypes.RouterKey,
+		Use:   types.RouterKey,
 		Short: "query commands for the customgov module",
 	}
 	queryCmd.AddCommand(
-		customgovcli.GetCmdQueryPermissions(),
-		customgovcli.GetCmdQueryNetworkProperties(),
-		customgovcli.GetCmdQueryExecutionFee(),
-		customgovcli.GetCmdQueryPoorNetworkMessages(),
-		customgovcli.GetCmdQueryRolePermissions(),
-		customgovcli.GetCmdQueryRolesByAddress(),
-		customgovcli.GetCmdQueryProposals(),
-		customgovcli.GetCmdQueryCouncilRegistry(),
-		customgovcli.GetCmdQueryProposal(),
-		customgovcli.GetCmdQueryVote(),
-		customgovcli.GetCmdQueryVotes(),
-		customgovcli.GetCmdQueryWhitelistedProposalVoters(),
+		cli.GetCmdQueryPermissions(),
+		cli.GetCmdQueryNetworkProperties(),
+		cli.GetCmdQueryExecutionFee(),
+		cli.GetCmdQueryPoorNetworkMessages(),
+		cli.GetCmdQueryRolePermissions(),
+		cli.GetCmdQueryRolesByAddress(),
+		cli.GetCmdQueryProposals(),
+		cli.GetCmdQueryCouncilRegistry(),
+		cli.GetCmdQueryProposal(),
+		cli.GetCmdQueryVote(),
+		cli.GetCmdQueryVotes(),
+		cli.GetCmdQueryWhitelistedProposalVoters(),
 	)
 
 	queryCmd.PersistentFlags().String("node", "tcp://localhost:26657", "<host>:<port> to Tendermint RPC interface for this chain")
@@ -89,19 +87,19 @@ func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
 // AppModule extends the cosmos SDK gov.
 type AppModule struct {
 	AppModuleBasic
-	customGovKeeper customgovkeeper.Keeper
+	customGovKeeper keeper.Keeper
 	proposalRouter  ProposalRouter
 }
 
 // RegisterServices registers a GRPC query service to respond to the
 // module-specific GRPC queries.
 func (am AppModule) RegisterServices(cfg module.Configurator) {
-	customgovtypes.RegisterMsgServer(cfg.MsgServer(), customgovkeeper.NewMsgServerImpl(am.customGovKeeper))
-	customgovtypes.RegisterQueryServer(cfg.QueryServer(), am.customGovKeeper)
+	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.customGovKeeper))
+	types.RegisterQueryServer(cfg.QueryServer(), am.customGovKeeper)
 }
 
 func (am AppModule) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
-	customgovtypes.RegisterInterfaces(registry)
+	types.RegisterInterfaces(registry)
 }
 
 func (am AppModule) InitGenesis(
@@ -109,7 +107,7 @@ func (am AppModule) InitGenesis(
 	cdc codec.JSONMarshaler,
 	data json.RawMessage,
 ) []abci.ValidatorUpdate {
-	var genesisState customgovtypes.GenesisState
+	var genesisState types.GenesisState
 	cdc.MustUnmarshalJSON(data, &genesisState)
 
 	InitGenesis(ctx, am.customGovKeeper, genesisState)
@@ -124,7 +122,7 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONMarshaler) json
 func (am AppModule) RegisterInvariants(registry sdk.InvariantRegistry) {}
 
 func (am AppModule) QuerierRoute() string {
-	return customgovtypes.QuerierRoute
+	return types.QuerierRoute
 }
 
 // LegacyQuerierHandler returns the staking module sdk.Querier.
@@ -141,17 +139,17 @@ func (am AppModule) EndBlock(ctx sdk.Context, block abci.RequestEndBlock) []abci
 }
 
 func (am AppModule) Name() string {
-	return customgovtypes.ModuleName
+	return types.ModuleName
 }
 
 // Route returns the message routing key for the staking module.
 func (am AppModule) Route() sdk.Route {
-	return middleware.NewRoute(customgovtypes.ModuleName, NewHandler(am.customGovKeeper))
+	return middleware.NewRoute(types.ModuleName, NewHandler(am.customGovKeeper))
 }
 
 // NewAppModule returns a new Custom Staking module.
 func NewAppModule(
-	keeper customgovkeeper.Keeper,
+	keeper keeper.Keeper,
 	proposalRouter ProposalRouter,
 ) AppModule {
 	return AppModule{
