@@ -11,6 +11,15 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+func CheckIfWithinAddressArray(addr sdk.AccAddress, array []sdk.AccAddress) bool {
+	for _, itemAddr := range array {
+		if bytes.Equal(addr, itemAddr) {
+			return true
+		}
+	}
+	return false
+}
+
 func (k Keeper) GetLastIdentityRecordId(ctx sdk.Context) uint64 {
 	store := ctx.KVStore(k.storeKey)
 
@@ -36,15 +45,6 @@ func (k Keeper) GetLastIdRecordVerifyRequestId(ctx sdk.Context) uint64 {
 	}
 
 	return sdk.BigEndianToUint64(bz)
-}
-
-func CheckIfWithinAddressArray(addr sdk.AccAddress, array []sdk.AccAddress) bool {
-	for _, itemAddr := range array {
-		if bytes.Equal(addr, itemAddr) {
-			return true
-		}
-	}
-	return false
 }
 
 func (k Keeper) SetLastIdRecordVerifyRequestId(ctx sdk.Context, id uint64) {
