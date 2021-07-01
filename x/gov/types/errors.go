@@ -30,4 +30,5 @@ var (
 	ErrEmptyVerifierAccAddress    = errors.Register(ModuleName, 27, "empty verifier account address")
 	ErrInvalidRecordId            = errors.Register(ModuleName, 28, "invalid record id")
 	ErrInvalidVerifyRequestId     = errors.Register(ModuleName, 29, "invalid verify request id")
+	ErrInvalidTip                 = errors.Register(ModuleName, 30, "invalid tip")
 )

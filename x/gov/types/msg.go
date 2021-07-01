@@ -740,6 +740,9 @@ func (m *MsgRequestIdentityRecordsVerify) ValidateBasic() error {
 	if m.Verifier.Empty() {
 		return ErrEmptyVerifierAccAddress
 	}
+	if m.Tip.IsValid() {
+		return ErrInvalidTip
+	}
 	return nil
 }
 

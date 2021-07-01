@@ -98,6 +98,7 @@ var (
 	// module account permissions
 	maccPerms = map[string][]string{
 		authtypes.FeeCollectorName: nil,
+		customgovtypes.ModuleName:  nil,
 	}
 
 	// module accounts that are allowed to receive tokens

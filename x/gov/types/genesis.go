@@ -161,5 +161,7 @@ func DefaultGenesis() *GenesisState {
 				kiratypes.MsgTypeUnpause,
 			},
 		},
+		LastIdentityRecordId:        0,
+		LastIdRecordVerifyRequestId: 0,
 	}
 }

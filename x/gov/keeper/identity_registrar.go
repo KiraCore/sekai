@@ -163,6 +163,14 @@ func (k Keeper) GetIdRecordsByAddress(ctx sdk.Context, creator sdk.AccAddress) [
 // RequestIdentityRecordsVerify defines a method to request verify request from specific verifier
 func (k Keeper) RequestIdentityRecordsVerify(ctx sdk.Context, address, verifier sdk.AccAddress, recordIds []uint64, tip sdk.Coin) (uint64, error) {
 	requestId := k.GetLastIdRecordVerifyRequestId(ctx) + 1
+
+	for _, recordId := range recordIds {
+		record := k.GetIdentityRecord(ctx, recordId)
+		if record == nil {
+			return requestId, fmt.Errorf("identity record with specified id does NOT exist: id=%d", recordId)
+		}
+	}
+
 	request := types.IdentityRecordsVerify{
 		Id:        requestId,
 		Address:   address,
