@@ -192,6 +192,7 @@ func (k Keeper) RequestIdentityRecordsVerify(ctx sdk.Context, address, verifier 
 
 	k.SetLastIdRecordVerifyRequestId(ctx, requestId)
 
+	// TODO: ask non-tip request exist and if so, implement
 	if err := k.bk.SendCoinsFromAccountToModule(ctx, address, types.ModuleName, sdk.Coins{tip}); err != nil {
 		return 0, err
 	}

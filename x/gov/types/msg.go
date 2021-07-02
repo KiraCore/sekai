@@ -661,6 +661,9 @@ func (m *MsgCreateIdentityRecord) ValidateBasic() error {
 	if m.Date.IsZero() {
 		return ErrInvalidDate
 	}
+	if len(m.Infos) == 0 {
+		return ErrEmptyInfos
+	}
 	return nil
 }
 
@@ -702,6 +705,9 @@ func (m *MsgEditIdentityRecord) ValidateBasic() error {
 	if m.Date.IsZero() {
 		return ErrInvalidDate
 	}
+	if len(m.Infos) == 0 {
+		return ErrEmptyInfos
+	}
 	return nil
 }
 
@@ -740,8 +746,14 @@ func (m *MsgRequestIdentityRecordsVerify) ValidateBasic() error {
 	if m.Verifier.Empty() {
 		return ErrEmptyVerifierAccAddress
 	}
-	if m.Tip.IsValid() {
+	if !m.Tip.IsValid() {
 		return ErrInvalidTip
+	}
+	if m.Tip.Amount.IsZero() {
+		return ErrInvalidTip
+	}
+	if len(m.RecordIds) == 0 {
+		return ErrInvalidRecordIds
 	}
 	return nil
 }
@@ -779,6 +791,9 @@ func (m *MsgApproveIdentityRecords) ValidateBasic() error {
 	}
 	if m.Verifier.Empty() {
 		return ErrEmptyVerifierAccAddress
+	}
+	if m.VerifyRequestId == 0 {
+		return ErrInvalidVerifyRequestId
 	}
 	return nil
 }

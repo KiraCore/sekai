@@ -52,15 +52,18 @@ func TestSimappExportGenesis(t *testing.T) {
 			"poor_network_max_bank_send":"1000000",
 			"jail_max_time":"600",
 			"enable_token_whitelist":false,
-			"enable_token_blacklist":true},
-			"execution_fees":[],
-			"poor_network_messages":{
-				"messages":["proposal-assign-permission","proposal-set-network-property","set-network-properties","vote-proposal","claim-councilor","whitelist-permissions","blacklist-permissions","create-role","assign-role","remove-role","whitelist-role-permission","blacklist-role-permission","remove-whitelist-role-permission","remove-blacklist-role-permission","claim-validator","activate","pause","unpause"]
-			},
-			"proposals":[],
-			"votes":[],
-			"data_registry":{}
-		}`))
+			"enable_token_blacklist":true
+		},
+		"execution_fees":[],
+		"poor_network_messages":{
+			"messages":["proposal-assign-permission","proposal-set-network-property","set-network-properties","vote-proposal","claim-councilor","whitelist-permissions","blacklist-permissions","create-role","assign-role","remove-role","whitelist-role-permission","blacklist-role-permission","remove-whitelist-role-permission","remove-blacklist-role-permission","claim-validator","activate","pause","unpause"]
+		},
+		"proposals":[],
+		"votes":[],
+		"data_registry":{},
+		"last_identity_record_id":"0",
+		"last_id_record_verify_request_id":"0"
+	}`))
 	require.NoError(t, err)
 	require.Equal(t, string(bz), buffer.String())
 }
@@ -129,7 +132,9 @@ func TestExportInitGenesis(t *testing.T) {
 	buffer := new(bytes.Buffer)
 	err = json.Compact(buffer, []byte(`{
 		"starting_proposal_id":"1",
-		"permissions":{"1":{"blacklist":[],"whitelist":[1,2,3,6]}},
+		"permissions":{
+			"1":{"blacklist":[],"whitelist":[1,2,3,6]}
+		},
 		"network_actors":[],
 		"network_properties":{
 			"min_tx_fee":"100",
@@ -148,15 +153,18 @@ func TestExportInitGenesis(t *testing.T) {
 			"poor_network_max_bank_send":"0",
 			"jail_max_time":"0",
 			"enable_token_whitelist":false,
-			"enable_token_blacklist":false},
-			"execution_fees":[],
-			"poor_network_messages":{
-				"messages":["proposal-assign-permission","proposal-set-network-property","set-network-properties"]
-			},
-			"proposals":[],
-			"votes":[],
-			"data_registry":{}
-		}`))
+			"enable_token_blacklist":false
+		},
+		"execution_fees":[],
+		"poor_network_messages":{
+			"messages":["proposal-assign-permission","proposal-set-network-property","set-network-properties"]
+		},
+		"proposals":[],
+		"votes":[],
+		"data_registry":{},
+		"last_identity_record_id":"0",
+		"last_id_record_verify_request_id":"0"
+	}`))
 	require.NoError(t, err)
 	require.Equal(t, string(bz), buffer.String())
 }
