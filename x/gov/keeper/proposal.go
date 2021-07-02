@@ -10,7 +10,7 @@ import (
 
 func (k Keeper) GetNextProposalIDAndIncrement(ctx sdk.Context) uint64 {
 	proposalID := k.GetNextProposalID(ctx)
-	k.SetProposalID(ctx, proposalID+1)
+	k.SetNextProposalID(ctx, proposalID+1)
 	return proposalID
 }
 
@@ -26,7 +26,7 @@ func (k Keeper) GetNextProposalID(ctx sdk.Context) uint64 {
 	return proposalID
 }
 
-func (k Keeper) SetProposalID(ctx sdk.Context, proposalID uint64) {
+func (k Keeper) SetNextProposalID(ctx sdk.Context, proposalID uint64) {
 	store := ctx.KVStore(k.storeKey)
 	store.Set(NextProposalIDPrefix, ProposalIDToBytes(proposalID))
 }
@@ -84,6 +84,20 @@ func (k Keeper) GetVote(ctx sdk.Context, proposalID uint64, address sdk.AccAddre
 	k.cdc.MustUnmarshalBinaryBare(bz, &vote)
 
 	return vote, true
+}
+
+func (k Keeper) GetVotes(ctx sdk.Context) []types.Vote {
+	votes := []types.Vote{}
+	iterator := sdk.KVStorePrefixIterator(ctx.KVStore(k.storeKey), VotesPrefix)
+
+	for ; iterator.Valid(); iterator.Next() {
+		var vote types.Vote
+		bz := iterator.Value()
+		k.cdc.MustUnmarshalBinaryBare(bz, &vote)
+		votes = append(votes, vote)
+	}
+
+	return votes
 }
 
 func (k Keeper) GetProposalVotesIterator(ctx sdk.Context, proposalID uint64) sdk.Iterator {

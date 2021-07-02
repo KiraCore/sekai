@@ -106,10 +106,7 @@ func (q Querier) GetExecutionFee(ctx context.Context, request *types.ExecutionFe
 // GetPoorNetworkMessages queries poor network messages
 func (q Querier) GetPoorNetworkMessages(ctx context.Context, request *types.PoorNetworkMessagesRequest) (*types.PoorNetworkMessagesResponse, error) {
 	sdkContext := sdk.UnwrapSDKContext(ctx)
-	msg, ok := q.keeper.GetPoorNetworkMessages(sdkContext)
-	if !ok {
-		return nil, types.ErrPoorNetworkMessagesNotSet
-	}
+	msg := q.keeper.GetPoorNetworkMessages(sdkContext)
 	return &types.PoorNetworkMessagesResponse{Messages: msg.Messages}, nil
 }
 

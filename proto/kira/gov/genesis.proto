@@ -1,8 +1,11 @@
 syntax = "proto3";
 package kira.gov;
 
+import "gogoproto/gogo.proto";
 import "actor.proto";
 import "role.proto";
+import "proposal.proto";
+import "data_registry.proto";
 import "execution_fee.proto";
 import "network_properties.proto";
 import "allowed_messages.proto";
@@ -20,5 +23,8 @@ message GenesisState {
   NetworkProperties network_properties = 4;
   repeated ExecutionFee execution_fees = 5;
   AllowedMessages poor_network_messages = 6; 
-  uint64 poor_network_max_bank_send = 7;
+
+  repeated Proposal proposals = 7 [ (gogoproto.nullable) = false ];
+  repeated Vote votes = 8 [ (gogoproto.nullable) = false ];
+  map<string, kira.gov.DataRegistryEntry> data_registry = 9;
 }
