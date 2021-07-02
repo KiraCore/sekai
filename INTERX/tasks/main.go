@@ -9,6 +9,6 @@ func RunTasks(gwCosmosmux *runtime.ServeMux, rpcAddr string, gatewayAddr string)
 	go CacheDataCheck(rpcAddr, false)
 	go CacheMaxSizeCheck(false)
 	go DataReferenceCheck(false)
-	// go NodeDiscover(rpcAddr, false)
+	go NodeDiscover(rpcAddr, true)
 	go SyncValidators(gwCosmosmux, gatewayAddr, false)
 }

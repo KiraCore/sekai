@@ -107,103 +107,90 @@ func QueryKiraStatus(rpcAddr string) (tmTypes.ResultStatus, error) {
 	return result, nil
 }
 
-func getP2PNodeInfo(ipAddr string) {
-
-}
-
 func NodeDiscover(rpcAddr string, isLog bool) {
 	initPrivateIps()
 
-	PubP2PNodeListResponse.Scanning = true
-	PrivP2PNodeListResponse.Scanning = true
-	InterxP2PNodeListResponse.Scanning = true
-	SnapNodeListResponse.Scanning = true
-
 	for {
-		pubP2PNodes := []types.P2PNode{}
-		privP2PNodes := []types.P2PNode{}
-		interxNodes := []types.InterxNode{}
-		snapNodes := []types.SnapNode{}
+		PubP2PNodeListResponse.Scanning = true
+		PrivP2PNodeListResponse.Scanning = true
+		InterxP2PNodeListResponse.Scanning = true
+		SnapNodeListResponse.Scanning = true
 
-		isQueriedIP := make(map[string]bool) // check if ip is already queried
-		// isQueriedID := make(map[string]bool) // check if node id is already queried
+		PubP2PNodeListResponse.NodeList = []types.P2PNode{}
+		PrivP2PNodeListResponse.NodeList = []types.P2PNode{}
+		InterxP2PNodeListResponse.NodeList = []types.InterxNode{}
+		SnapNodeListResponse.NodeList = []types.SnapNode{}
+
+		isQueriedIP := make(map[string]bool)  // check if ip is already queried
+		isPrivNodeID := make(map[string]bool) // check if ip is already queried
 
 		uniqueIPAddresses := config.LoadUniqueIPAddresses()
 
 		isLocalPeer := make(map[string]bool)
 		localPeers, _ := QueryPeers(rpcAddr)
-		// localKiraStatus, _ := QueryKiraStatus(rpcAddr)
 		for _, peer := range localPeers {
 			isLocalPeer[string(peer.NodeInfo.ID())] = true
 		}
 
 		peersFromIP := make(map[string]([]tmTypes.Peer))
-		// kiraStatusFromIP := make(map[string](tmTypes.ResultStatus))
 
 		index := 0
 		for index < len(uniqueIPAddresses) {
 			ipAddr := uniqueIPAddresses[index]
 			index++
-
-			if _, ok := isQueriedIP[ipAddr]; ok {
-				continue
-			}
 			isQueriedIP[ipAddr] = true
 
-			common.GetLogger().Info(ipAddr)
+			if isLog {
+				common.GetLogger().Info("[node-discovery] ", ipAddr)
+			}
+
+			kiraStatus, err := QueryKiraStatus(getRPCAddress(ipAddr))
+			if err != nil {
+				continue
+			}
+
+			nodeInfo := types.P2PNode{}
+			nodeInfo.ID = string(kiraStatus.NodeInfo.ID())
+			nodeInfo.IP = ipAddr
+			nodeInfo.Port = getPort(kiraStatus.NodeInfo.ListenAddr)
+
+			if _, ok := isLocalPeer[nodeInfo.ID]; ok {
+				nodeInfo.Connected = true
+			}
 
 			if _, ok := peersFromIP[ipAddr]; !ok {
 				peersFromIP[ipAddr], _ = QueryPeers(getRPCAddress(ipAddr))
-			} else {
-				continue
 			}
 
-			// if _, ok := kiraStatusFromIP[ipAddr]; !ok {
-			// 	kiraStatusFromIP[ipAddr], _ = QueryKiraStatus(getRPCAddress(ipAddr))
-			// }
-
 			peers := peersFromIP[ipAddr]
-			// kiraStatus := kiraStatusFromIP[ipAddr]
-
 			for _, peer := range peers {
-				isPrivate := isPrivateIP(peer.RemoteIP)
+				nodeInfo.Peers = append(nodeInfo.Peers, string(peer.NodeInfo.ID()))
 
-				u, err := url.Parse(peer.NodeInfo.ListenAddr)
-				portNumber, err := strconv.ParseUint(u.Port(), 10, 16)
+				if isPrivateIP(peer.RemoteIP) {
+					privNodeInfo := types.P2PNode{}
+					privNodeInfo.ID = string(peer.NodeInfo.ID())
+					privNodeInfo.IP = peer.RemoteIP
+					privNodeInfo.Port = getPort(peer.NodeInfo.ListenAddr)
 
-				if err != nil {
-					common.GetLogger().Info(peer.NodeInfo.ListenAddr, err)
-				}
+					if _, ok := isLocalPeer[privNodeInfo.ID]; ok {
+						privNodeInfo.Connected = true
+					}
 
-				nodeInfo := types.P2PNode{}
-				nodeInfo.ID = string(peer.NodeInfo.ID())
-				nodeInfo.IP = peer.RemoteIP
-				nodeInfo.Port = uint16(portNumber)
-
-				if _, ok := isLocalPeer[nodeInfo.ID]; ok {
-					nodeInfo.Connected = true
-				}
-
-				// ping & check out node_id
-
-				if isPrivate {
-					privP2PNodes = append(privP2PNodes, nodeInfo)
+					if _, ok := isPrivNodeID[privNodeInfo.ID]; !ok {
+						PrivP2PNodeListResponse.NodeList = append(PrivP2PNodeListResponse.NodeList, privNodeInfo)
+						isPrivNodeID[privNodeInfo.ID] = true
+					}
 				} else {
-					pubP2PNodes = append(pubP2PNodes, nodeInfo)
-
-					if _, ok := isQueriedIP[nodeInfo.IP]; !ok {
-						uniqueIPAddresses = append(uniqueIPAddresses, nodeInfo.IP)
+					if _, ok := isQueriedIP[peer.RemoteIP]; !ok {
+						uniqueIPAddresses = append(uniqueIPAddresses, peer.RemoteIP)
 					}
 				}
 			}
+
+			PubP2PNodeListResponse.NodeList = append(PubP2PNodeListResponse.NodeList, nodeInfo)
 		}
 
 		lastUpdate := time.Now().Unix()
-
-		PubP2PNodeListResponse.NodeList = pubP2PNodes
-		PrivP2PNodeListResponse.NodeList = privP2PNodes
-		InterxP2PNodeListResponse.NodeList = interxNodes
-		SnapNodeListResponse.NodeList = snapNodes
 
 		PubP2PNodeListResponse.LastUpdate = lastUpdate
 		PrivP2PNodeListResponse.LastUpdate = lastUpdate
@@ -214,8 +201,119 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 		PrivP2PNodeListResponse.Scanning = false
 		InterxP2PNodeListResponse.Scanning = false
 		SnapNodeListResponse.Scanning = false
-		time.Sleep(30 * time.Minute)
+
+		if isLog {
+			common.GetLogger().Info("[node-discovery] finished!")
+		}
+
+		time.Sleep(24 * time.Hour)
 	}
+
+	/*
+		PubP2PNodeListResponse.Scanning = true
+		PrivP2PNodeListResponse.Scanning = true
+		InterxP2PNodeListResponse.Scanning = true
+		SnapNodeListResponse.Scanning = true
+
+		for {
+			pubP2PNodes := []types.P2PNode{}
+			privP2PNodes := []types.P2PNode{}
+			interxNodes := []types.InterxNode{}
+			snapNodes := []types.SnapNode{}
+
+			isQueriedIP := make(map[string]bool) // check if ip is already queried
+			// isQueriedID := make(map[string]bool) // check if node id is already queried
+
+			uniqueIPAddresses := config.LoadUniqueIPAddresses()
+
+			isLocalPeer := make(map[string]bool)
+			localPeers, _ := QueryPeers(rpcAddr)
+			// localKiraStatus, _ := QueryKiraStatus(rpcAddr)
+			for _, peer := range localPeers {
+				isLocalPeer[string(peer.NodeInfo.ID())] = true
+			}
+
+			peersFromIP := make(map[string]([]tmTypes.Peer))
+			// kiraStatusFromIP := make(map[string](tmTypes.ResultStatus))
+
+			index := 0
+			for index < len(uniqueIPAddresses) {
+				ipAddr := uniqueIPAddresses[index]
+				index++
+
+				if _, ok := isQueriedIP[ipAddr]; ok {
+					continue
+				}
+				isQueriedIP[ipAddr] = true
+
+				common.GetLogger().Info(ipAddr)
+
+				if _, ok := peersFromIP[ipAddr]; !ok {
+					peersFromIP[ipAddr], _ = QueryPeers(getRPCAddress(ipAddr))
+				} else {
+					continue
+				}
+
+				// if _, ok := kiraStatusFromIP[ipAddr]; !ok {
+				// 	kiraStatusFromIP[ipAddr], _ = QueryKiraStatus(getRPCAddress(ipAddr))
+				// }
+
+				peers := peersFromIP[ipAddr]
+				// kiraStatus := kiraStatusFromIP[ipAddr]
+
+				for _, peer := range peers {
+					isPrivate := isPrivateIP(peer.RemoteIP)
+
+					u, err := url.Parse(peer.NodeInfo.ListenAddr)
+					portNumber, err := strconv.ParseUint(u.Port(), 10, 16)
+
+					if err != nil {
+						common.GetLogger().Info(peer.NodeInfo.ListenAddr, err)
+					}
+
+					nodeInfo := types.P2PNode{}
+					nodeInfo.ID = string(peer.NodeInfo.ID())
+					nodeInfo.IP = peer.RemoteIP
+					nodeInfo.Port = uint16(portNumber)
+
+					if _, ok := isLocalPeer[nodeInfo.ID]; ok {
+						nodeInfo.Connected = true
+					}
+
+					// ping & check out node_id
+
+					if isPrivate {
+						privP2PNodes = append(privP2PNodes, nodeInfo)
+					} else {
+						pubP2PNodes = append(pubP2PNodes, nodeInfo)
+
+						if _, ok := isQueriedIP[nodeInfo.IP]; !ok {
+							uniqueIPAddresses = append(uniqueIPAddresses, nodeInfo.IP)
+						}
+					}
+				}
+			}
+
+			lastUpdate := time.Now().Unix()
+
+			PubP2PNodeListResponse.NodeList = pubP2PNodes
+			PrivP2PNodeListResponse.NodeList = privP2PNodes
+			InterxP2PNodeListResponse.NodeList = interxNodes
+			SnapNodeListResponse.NodeList = snapNodes
+
+			PubP2PNodeListResponse.LastUpdate = lastUpdate
+			PrivP2PNodeListResponse.LastUpdate = lastUpdate
+			InterxP2PNodeListResponse.LastUpdate = lastUpdate
+			SnapNodeListResponse.LastUpdate = lastUpdate
+
+			PubP2PNodeListResponse.Scanning = false
+			PrivP2PNodeListResponse.Scanning = false
+			InterxP2PNodeListResponse.Scanning = false
+			SnapNodeListResponse.Scanning = false
+
+			time.Sleep(30 * time.Minute)
+		}*/
+
 	/*
 		flag := make(map[string]bool)
 
@@ -319,4 +417,11 @@ func isPrivateIP(ipAddr string) bool {
 		}
 	}
 	return false
+}
+
+func getPort(listenAddr string) uint16 {
+	u, _ := url.Parse(listenAddr)
+	portNumber, _ := strconv.ParseUint(u.Port(), 10, 16)
+
+	return uint16(portNumber)
 }

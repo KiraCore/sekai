@@ -1417,7 +1417,7 @@
 			"name": "Node Discovery",
 			"item": [
 				{
-					"name": "Kira Status",
+					"name": "Pub P2P Node List",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -1453,6 +1453,48 @@
 							"path": [
 								"api",
 								"pub_p2p_list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Priv P2P Node List",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://0.0.0.0:11000/api/priv_p2p_list",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "11000",
+							"path": [
+								"api",
+								"priv_p2p_list"
 							]
 						}
 					},

@@ -90,7 +90,7 @@ func SearchCache(request types.InterxRequest, response *types.ProxyResponse) (bo
 // WrapResponse is a function to wrap response
 func WrapResponse(w http.ResponseWriter, request types.InterxRequest, response types.ProxyResponse, statusCode int, saveToCashe bool) {
 	if saveToCashe {
-		GetLogger().Info("[gateway] Saving in the cache")
+		// GetLogger().Info("[gateway] Saving in the cache")
 
 		chainIDHash := GetBlake2bHash(response.Chainid)
 		endpointHash := GetBlake2bHash(request.Endpoint)
@@ -102,9 +102,9 @@ func WrapResponse(w http.ResponseWriter, request types.InterxRequest, response t
 				ExpireAt: time.Now().Add(time.Duration(conf.CachingDuration) * time.Second),
 			})
 			if err != nil {
-				GetLogger().Error("[gateway] Failed to save in the cache: ", err.Error())
+				// GetLogger().Error("[gateway] Failed to save in the cache: ", err.Error())
 			}
-			GetLogger().Info("[gateway] Save finished")
+			// GetLogger().Info("[gateway] Save finished")
 		}
 	}
 
