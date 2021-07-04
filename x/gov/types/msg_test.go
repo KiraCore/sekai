@@ -61,7 +61,7 @@ func TestMsgRequestIdentityRecordsVerify_ValidateBasic(t *testing.T) {
 		RecordIds: []uint64{1},
 		Tip:       sdk.NewInt64Coin(sdk.DefaultBondDenom, 0),
 	}
-	require.Error(t, msg.ValidateBasic())
+	require.NoError(t, msg.ValidateBasic())
 
 	msg = MsgRequestIdentityRecordsVerify{
 		Address:   addr1,

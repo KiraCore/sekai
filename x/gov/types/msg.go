@@ -749,9 +749,6 @@ func (m *MsgRequestIdentityRecordsVerify) ValidateBasic() error {
 	if !m.Tip.IsValid() {
 		return ErrInvalidTip
 	}
-	if m.Tip.Amount.IsZero() {
-		return ErrInvalidTip
-	}
 	if len(m.RecordIds) == 0 {
 		return ErrInvalidRecordIds
 	}

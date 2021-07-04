@@ -192,9 +192,10 @@ func (k Keeper) RequestIdentityRecordsVerify(ctx sdk.Context, address, verifier 
 
 	k.SetLastIdRecordVerifyRequestId(ctx, requestId)
 
-	// TODO: ask non-tip request exist and if so, implement
-	if err := k.bk.SendCoinsFromAccountToModule(ctx, address, types.ModuleName, sdk.Coins{tip}); err != nil {
-		return 0, err
+	if !tip.Amount.IsZero() {
+		if err := k.bk.SendCoinsFromAccountToModule(ctx, address, types.ModuleName, sdk.Coins{tip}); err != nil {
+			return 0, err
+		}
 	}
 	return requestId, nil
 }
@@ -252,8 +253,10 @@ func (k Keeper) ApproveIdentityRecords(ctx sdk.Context, verifier sdk.AccAddress,
 		k.SetIdentityRecord(ctx, *record)
 	}
 
-	if err := k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, verifier, sdk.Coins{request.Tip}); err != nil {
-		return err
+	if !request.Tip.Amount.IsZero() {
+		if err := k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, verifier, sdk.Coins{request.Tip}); err != nil {
+			return err
+		}
 	}
 
 	k.DeleteIdRecordsVerifyRequest(ctx, requestId)
@@ -270,8 +273,10 @@ func (k Keeper) CancelIdentityRecordsVerifyRequest(ctx sdk.Context, executor sdk
 		return errors.New("executor is not identity record creator")
 	}
 
-	if err := k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, request.Address, sdk.Coins{request.Tip}); err != nil {
-		return err
+	if !request.Tip.Amount.IsZero() {
+		if err := k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, request.Address, sdk.Coins{request.Tip}); err != nil {
+			return err
+		}
 	}
 
 	k.DeleteIdRecordsVerifyRequest(ctx, requestId)
