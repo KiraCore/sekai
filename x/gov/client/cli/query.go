@@ -499,3 +499,337 @@ $ %[1]s query gov voters 1
 
 	return cmd
 }
+
+// GetCmdQueryIdentityRecord implements the command to query identity record by id
+func GetCmdQueryIdentityRecord() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "identity-record [id]",
+		Args:  cobra.ExactArgs(1),
+		Short: "Query identity record by id",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query identity record by id.
+
+Example:
+$ %[1]s query gov identity-record 1
+`,
+				version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			queryClient := types.NewQueryClient(clientCtx)
+
+			// validate that the id is a uint
+			id, err := strconv.ParseUint(args[0], 10, 64)
+			if err != nil {
+				return fmt.Errorf("id %s not a valid int, please input a valid id", args[0])
+			}
+
+			res, err := queryClient.IdentityRecord(
+				context.Background(),
+				&types.QueryIdentityRecordRequest{Id: id},
+			)
+
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// GetCmdQueryIdentityRecordsByAddress implements the command to query identity records by records creator
+func GetCmdQueryIdentityRecordsByAddress() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "identity-records-by-addr [addr]",
+		Args:  cobra.ExactArgs(1),
+		Short: "Query identity records by owner",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query identity records by owner.
+
+Example:
+$ %[1]s query gov identity-records-by-addr [addr]
+`,
+				version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			queryClient := types.NewQueryClient(clientCtx)
+
+			// validate address
+			addr, err := sdk.AccAddressFromBech32(args[0])
+			if err != nil {
+				return err
+			}
+
+			pageReq, err := client.ReadPageRequest(cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			res, err := queryClient.IdentityRecordsByAddress(
+				context.Background(),
+				&types.QueryIdentityRecordsByAddressRequest{
+					Creator:    addr,
+					Pagination: pageReq,
+				},
+			)
+
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	flags.AddPaginationFlagsToCmd(cmd, "customgov")
+
+	return cmd
+}
+
+// GetCmdQueryAllIdentityRecords implements the command to query all identity records
+func GetCmdQueryAllIdentityRecords() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "all-identity-records",
+		Args:  cobra.ExactArgs(0),
+		Short: "Query all identity records",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query all identity records.
+
+Example:
+$ %[1]s query gov all-identity-records
+`,
+				version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			queryClient := types.NewQueryClient(clientCtx)
+
+			pageReq, err := client.ReadPageRequest(cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			res, err := queryClient.AllIdentityRecords(
+				context.Background(),
+				&types.QueryAllIdentityRecordsRequest{
+					Pagination: pageReq,
+				},
+			)
+
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	flags.AddPaginationFlagsToCmd(cmd, "customgov")
+
+	return cmd
+}
+
+// GetCmdQueryIdentityRecordVerifyRequest implements the command to query identity record verify request by id
+func GetCmdQueryIdentityRecordVerifyRequest() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "identity-record-verify-request [id]",
+		Args:  cobra.ExactArgs(1),
+		Short: "Query identity record verify request by id",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query identity record verify request by id.
+
+Example:
+$ %[1]s query gov identity-record-verify-request 1
+`,
+				version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			queryClient := types.NewQueryClient(clientCtx)
+
+			// validate that the id is a uint
+			id, err := strconv.ParseUint(args[0], 10, 64)
+			if err != nil {
+				return fmt.Errorf("id %s not a valid int, please input a valid id", args[0])
+			}
+
+			res, err := queryClient.IdentityRecordVerifyRequest(
+				context.Background(),
+				&types.QueryIdentityVerifyRecordRequest{
+					RequestId: id,
+				},
+			)
+
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// GetCmdQueryIdentityRecordVerifyRequestsByRequester implements the command to query identity records verify requests by requester
+func GetCmdQueryIdentityRecordVerifyRequestsByRequester() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "identity-record-verify-requests-by-requester [addr]",
+		Args:  cobra.ExactArgs(1),
+		Short: "Query identity records verify requests by requester",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query identity records verify requests by requester.
+
+Example:
+$ %[1]s query gov identity-record-verify-requests-by-requester [addr]
+`,
+				version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			queryClient := types.NewQueryClient(clientCtx)
+
+			// validate address
+			addr, err := sdk.AccAddressFromBech32(args[0])
+			if err != nil {
+				return err
+			}
+
+			pageReq, err := client.ReadPageRequest(cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			res, err := queryClient.IdentityRecordVerifyRequestsByRequester(
+				context.Background(),
+				&types.QueryIdentityRecordVerifyRequestsByRequester{
+					Requester:  addr,
+					Pagination: pageReq,
+				},
+			)
+
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	flags.AddPaginationFlagsToCmd(cmd, "customgov")
+
+	return cmd
+}
+
+// GetCmdQueryIdentityRecordVerifyRequestsByApprover implements the command to query identity records verify requests by approver
+func GetCmdQueryIdentityRecordVerifyRequestsByApprover() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "identity-record-verify-requests-by-approver [addr]",
+		Args:  cobra.ExactArgs(1),
+		Short: "Query identity record verify request by approver",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query identity record verify requests by approver.
+
+Example:
+$ %[1]s query gov identity-record-verify-requests-by-approver [addr]
+`,
+				version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			queryClient := types.NewQueryClient(clientCtx)
+
+			// validate address
+			addr, err := sdk.AccAddressFromBech32(args[0])
+			if err != nil {
+				return err
+			}
+
+			pageReq, err := client.ReadPageRequest(cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			res, err := queryClient.IdentityRecordVerifyRequestsByRequester(
+				context.Background(),
+				&types.QueryIdentityRecordVerifyRequestsByRequester{
+					Requester:  addr,
+					Pagination: pageReq,
+				},
+			)
+
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	flags.AddPaginationFlagsToCmd(cmd, "customgov")
+
+	return cmd
+}
+
+// GetCmdQueryAllIdentityRecordVerifyRequests implements the command to query all identity records verify requests
+func GetCmdQueryAllIdentityRecordVerifyRequests() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "all-identity-record-verify-requests",
+		Args:  cobra.ExactArgs(0),
+		Short: "Query all identity records verify requests",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query all identity records verify requests.
+
+Example:
+$ %[1]s query gov all-identity-record-verify-requests
+`,
+				version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			queryClient := types.NewQueryClient(clientCtx)
+
+			pageReq, err := client.ReadPageRequest(cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			res, err := queryClient.AllIdentityRecordVerifyRequests(
+				context.Background(),
+				&types.QueryAllIdentityRecordVerifyRequests{
+					Pagination: pageReq,
+				},
+			)
+
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	flags.AddPaginationFlagsToCmd(cmd, "customgov")
+
+	return cmd
+}

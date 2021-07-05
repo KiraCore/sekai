@@ -1,15 +1,19 @@
 package cli
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 
 	"github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/staking/client/cli"
@@ -35,6 +39,12 @@ const (
 	FlagAddress           = "address"
 	FlagWhitelistPerms    = "whitelist"
 	FlagBlacklistPerms    = "blacklist"
+	FlagInfosFile         = "infos-file"
+	FlagTimestamp         = "timestamp"
+	FlagRecordId          = "record-id"
+	FlagVerifier          = "verifier"
+	FlagRecordIds         = "record-ids"
+	FlagTip               = "tip"
 )
 
 // NewTxCmd returns a root CLI command handler for all x/bank transaction commands.
@@ -54,6 +64,11 @@ func NewTxCmd() *cobra.Command {
 		NewTxPermissionCmds(),
 		NewTxSetNetworkProperties(),
 		NewTxSetExecutionFee(),
+		GetTxCreateIdentityRecord(),
+		GetTxEditIdentityRecord(),
+		GetTxRequestIdentityRecordsVerify(),
+		GetTxApproveIdentityRecords(),
+		GetTxCancelIdentityRecordsVerifyRequest(),
 	)
 
 	return txCmd
@@ -160,7 +175,7 @@ func GetTxSetWhitelistPermissions() *cobra.Command {
 	setPermissionFlags(cmd)
 
 	flags.AddTxFlagsToCmd(cmd)
-	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
 }
@@ -198,7 +213,7 @@ func GetTxSetBlacklistPermissions() *cobra.Command {
 	setPermissionFlags(cmd)
 
 	flags.AddTxFlagsToCmd(cmd)
-	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
 }
@@ -251,7 +266,7 @@ func NewTxSetNetworkProperties() *cobra.Command {
 	cmd.Flags().Uint64(FlagMaxTxFee, 10000, "max tx fee")
 	cmd.Flags().Uint64(FlagMinValidators, 2, "min validators")
 	flags.AddTxFlagsToCmd(cmd)
-	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
 }
@@ -288,7 +303,7 @@ func GetTxWhitelistRolePermission() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
-	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
 }
@@ -350,7 +365,7 @@ func NewTxSetExecutionFee() *cobra.Command {
 	cmd.Flags().Uint64(FlagTimeout, 0, "timeout")
 	cmd.Flags().Uint64(FlagDefaultParameters, 0, "default parameters")
 	flags.AddTxFlagsToCmd(cmd)
-	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
 }
@@ -387,7 +402,7 @@ func GetTxBlacklistRolePermission() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
-	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
 }
@@ -424,7 +439,7 @@ func GetTxRemoveWhitelistRolePermission() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
-	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
 }
@@ -461,7 +476,7 @@ func GetTxRemoveBlacklistRolePermission() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
-	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
 }
@@ -492,7 +507,7 @@ func GetTxCreateRole() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
-	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
 }
@@ -531,8 +546,8 @@ func GetTxAssignRole() *cobra.Command {
 	flags.AddTxFlagsToCmd(cmd)
 	cmd.Flags().String(cli.FlagAddr, "", "the address to set permissions")
 
-	_ = cmd.MarkFlagRequired(flags.FlagFrom)
-	_ = cmd.MarkFlagRequired(cli.FlagAddr)
+	cmd.MarkFlagRequired(flags.FlagFrom)
+	cmd.MarkFlagRequired(cli.FlagAddr)
 
 	return cmd
 }
@@ -571,8 +586,8 @@ func GetTxRemoveRole() *cobra.Command {
 	flags.AddTxFlagsToCmd(cmd)
 	cmd.Flags().String(cli.FlagAddr, "", "the address to set permissions")
 
-	_ = cmd.MarkFlagRequired(flags.FlagFrom)
-	_ = cmd.MarkFlagRequired(cli.FlagAddr)
+	cmd.MarkFlagRequired(flags.FlagFrom)
+	cmd.MarkFlagRequired(cli.FlagAddr)
 
 	return cmd
 }
@@ -619,7 +634,7 @@ func GetTxProposalSetPoorNetworkMessages() *cobra.Command {
 	cmd.MarkFlagRequired(FlagDescription)
 
 	flags.AddTxFlagsToCmd(cmd)
-	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
 }
@@ -677,7 +692,7 @@ func GetTxProposalSetNetworkProperty() *cobra.Command {
 	cmd.MarkFlagRequired(FlagDescription)
 
 	flags.AddTxFlagsToCmd(cmd)
-	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
 }
@@ -725,8 +740,8 @@ func GetTxProposalAssignPermission() *cobra.Command {
 	flags.AddTxFlagsToCmd(cmd)
 	cmd.Flags().String(cli.FlagAddr, "", "the address to set permissions")
 
-	_ = cmd.MarkFlagRequired(flags.FlagFrom)
-	_ = cmd.MarkFlagRequired(cli.FlagAddr)
+	cmd.MarkFlagRequired(flags.FlagFrom)
+	cmd.MarkFlagRequired(cli.FlagAddr)
 
 	return cmd
 }
@@ -776,8 +791,8 @@ func GetTxProposalUpsertDataRegistry() *cobra.Command {
 	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
 	cmd.MarkFlagRequired(FlagDescription)
 
-	_ = cmd.MarkFlagRequired(flags.FlagFrom)
-	_ = cmd.MarkFlagRequired(cli.FlagAddr)
+	cmd.MarkFlagRequired(flags.FlagFrom)
+	cmd.MarkFlagRequired(cli.FlagAddr)
 
 	return cmd
 }
@@ -814,7 +829,7 @@ func GetTxVoteProposal() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
-	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
 }
@@ -882,7 +897,7 @@ func GetTxClaimCouncilorSeatCmd() *cobra.Command {
 	cmd.Flags().String(FlagIdentity, "", "the Identity")
 	cmd.Flags().String(FlagAddress, "", "the address")
 
-	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
 }
@@ -938,9 +953,252 @@ func GetTxProposalCreateRole() *cobra.Command {
 	cmd.MarkFlagRequired(FlagDescription)
 	cmd.Flags().Int32Slice(FlagWhitelistPerms, []int32{}, "the whitelist value in format 1,2,3")
 	cmd.Flags().Int32Slice(FlagBlacklistPerms, []int32{}, "the blacklist values in format 1,2,3")
-	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
+}
+
+func GetTxCreateIdentityRecord() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "create-identity-record",
+		Short: "Submit a transaction to create an identity record.",
+		Args:  cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			infos, err := parseIdInfoJSON(cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			timestamp, err := cmd.Flags().GetInt64(FlagTimestamp)
+			if err != nil {
+				return err
+			}
+
+			date := time.Unix(timestamp, 0)
+
+			msg := types.NewMsgCreateIdentityRecord(
+				clientCtx.FromAddress,
+				infos,
+				date,
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	cmd.Flags().Int64(FlagTimestamp, 0, "The date for the info.")
+	cmd.Flags().String(FlagInfosFile, "", "The infos file for identity request.")
+	cmd.MarkFlagRequired(FlagInfosFile)
+	cmd.MarkFlagRequired(FlagTimestamp)
+	cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+func GetTxEditIdentityRecord() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "edit-identity-record",
+		Short: "Submit a transaction to edit an identity record.",
+		Args:  cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			infos, err := parseIdInfoJSON(cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			timestamp, err := cmd.Flags().GetInt64(FlagTimestamp)
+			if err != nil {
+				return err
+			}
+			date := time.Unix(timestamp, 0)
+
+			recordId, err := cmd.Flags().GetUint64(FlagRecordId)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgEditIdentityRecord(
+				recordId,
+				clientCtx.FromAddress,
+				infos,
+				date,
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	cmd.Flags().Int64(FlagTimestamp, 0, "The date for the info.")
+	cmd.Flags().String(FlagInfosFile, "", "The infos file for identity request.")
+	cmd.Flags().Uint64(FlagRecordId, 0, "Identity record to edit.")
+	cmd.MarkFlagRequired(FlagTimestamp)
+	cmd.MarkFlagRequired(FlagInfosFile)
+	cmd.MarkFlagRequired(FlagRecordId)
+	cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+func GetTxRequestIdentityRecordsVerify() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "request-identity-record-verify",
+		Short: "Submit a transaction to request an identity verify record.",
+		Args:  cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			verifierText, err := cmd.Flags().GetString(FlagVerifier)
+			if err != nil {
+				return err
+			}
+			verifier, err := sdk.AccAddressFromBech32(verifierText)
+
+			recordIdsStr, err := cmd.Flags().GetString(FlagRecordIds)
+			if err != nil {
+				return err
+			}
+
+			recordIdsSplit := strings.Split(recordIdsStr, ",")
+			recordIds := []uint64{}
+			for _, str := range recordIdsSplit {
+				id, err := strconv.ParseUint(str, 10, 64)
+				if err != nil {
+					return err
+				}
+				recordIds = append(recordIds, id)
+			}
+
+			tipStr, err := cmd.Flags().GetString(FlagTip)
+			if err != nil {
+				return err
+			}
+			coin, err := sdk.ParseCoinNormalized(tipStr)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgRequestIdentityRecordsVerify(
+				clientCtx.FromAddress,
+				verifier,
+				recordIds,
+				coin,
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	cmd.Flags().Int64(FlagTip, 0, "The tip to be given to the verifier.")
+	cmd.Flags().String(FlagRecordIds, "", "Concatenated identity record ids array. e.g. 1,2")
+	cmd.Flags().String(FlagVerifier, "", "The verifier of the record ids")
+	cmd.MarkFlagRequired(FlagRecordIds)
+	cmd.MarkFlagRequired(FlagVerifier)
+	cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+func GetTxApproveIdentityRecords() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "approve-identity-records [id]",
+		Short: "Submit a transaction to approve identity records.",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			requestId, err := cmd.Flags().GetUint64(args[0])
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgApproveIdentityRecords(
+				clientCtx.FromAddress,
+				requestId,
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+func GetTxCancelIdentityRecordsVerifyRequest() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "cancel-identity-records-verify-request [id]",
+		Short: "Submit a transaction to cancel identity records verification request.",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			requestId, err := cmd.Flags().GetUint64(args[0])
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgCancelIdentityRecordsVerifyRequest(
+				clientCtx.FromAddress,
+				requestId,
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+func parseIdInfoJSON(fs *pflag.FlagSet) (map[string]string, error) {
+	infos := make(map[string]string)
+	infosFile, _ := fs.GetString(FlagInfosFile)
+
+	if infosFile == "" {
+		return nil, fmt.Errorf("should input infos file json using the --%s flag", FlagInfosFile)
+	}
+
+	contents, err := ioutil.ReadFile(infosFile)
+	if err != nil {
+		return nil, err
+	}
+
+	// make exception if unknown field exists
+	err = json.Unmarshal(contents, &infos)
+	if err != nil {
+		return nil, err
+	}
+
+	return infos, nil
 }
 
 // convertAsPermValues convert array of int32 to PermValue array.

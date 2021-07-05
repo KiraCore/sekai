@@ -766,9 +766,8 @@ func (m *MsgRequestIdentityRecordsVerify) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgApproveIdentityRecords(proposer, verifier sdk.AccAddress, requestId uint64) *MsgApproveIdentityRecords {
+func NewMsgApproveIdentityRecords(verifier sdk.AccAddress, requestId uint64) *MsgApproveIdentityRecords {
 	return &MsgApproveIdentityRecords{
-		Proposer:        proposer,
 		Verifier:        verifier,
 		VerifyRequestId: requestId,
 	}
@@ -783,9 +782,6 @@ func (m *MsgApproveIdentityRecords) Type() string {
 }
 
 func (m *MsgApproveIdentityRecords) ValidateBasic() error {
-	if m.Proposer.Empty() {
-		return ErrEmptyProposerAccAddress
-	}
 	if m.Verifier.Empty() {
 		return ErrEmptyVerifierAccAddress
 	}
@@ -802,7 +798,7 @@ func (m *MsgApproveIdentityRecords) GetSignBytes() []byte {
 
 func (m *MsgApproveIdentityRecords) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{
-		m.Proposer,
+		m.Verifier,
 	}
 }
 
