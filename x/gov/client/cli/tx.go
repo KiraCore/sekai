@@ -1107,7 +1107,7 @@ func GetTxRequestIdentityRecordsVerify() *cobra.Command {
 
 	flags.AddTxFlagsToCmd(cmd)
 
-	cmd.Flags().Int64(FlagTip, 0, "The tip to be given to the verifier.")
+	cmd.Flags().String(FlagTip, "", "The tip to be given to the verifier.")
 	cmd.Flags().String(FlagRecordIds, "", "Concatenated identity record ids array. e.g. 1,2")
 	cmd.Flags().String(FlagVerifier, "", "The verifier of the record ids")
 	cmd.MarkFlagRequired(FlagRecordIds)
@@ -1128,7 +1128,7 @@ func GetTxApproveIdentityRecords() *cobra.Command {
 				return err
 			}
 
-			requestId, err := cmd.Flags().GetUint64(args[0])
+			requestId, err := strconv.ParseUint(args[0], 10, 64)
 			if err != nil {
 				return err
 			}
@@ -1159,7 +1159,7 @@ func GetTxCancelIdentityRecordsVerifyRequest() *cobra.Command {
 				return err
 			}
 
-			requestId, err := cmd.Flags().GetUint64(args[0])
+			requestId, err := strconv.ParseUint(args[0], 10, 64)
 			if err != nil {
 				return err
 			}

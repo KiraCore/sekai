@@ -399,6 +399,12 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgProposalSetPoorNetworkMessages{},
 		&MsgProposalCreateRole{},
 		&MsgVoteProposal{},
+
+		&MsgCreateIdentityRecord{},
+		&MsgEditIdentityRecord{},
+		&MsgRequestIdentityRecordsVerify{},
+		&MsgApproveIdentityRecords{},
+		&MsgCancelIdentityRecordsVerifyRequest{},
 	)
 
 	registry.RegisterInterface(
