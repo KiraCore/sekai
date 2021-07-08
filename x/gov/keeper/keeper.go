@@ -15,10 +15,15 @@ import (
 type Keeper struct {
 	cdc      codec.BinaryMarshaler
 	storeKey sdk.StoreKey
+	bk       types.BankKeeper
 }
 
-func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryMarshaler) Keeper {
-	return Keeper{cdc: cdc, storeKey: storeKey}
+func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryMarshaler, bk types.BankKeeper) Keeper {
+	return Keeper{
+		cdc:      cdc,
+		storeKey: storeKey,
+		bk:       bk,
+	}
 }
 
 // BondDenom returns the denom that is basically used for fee payment

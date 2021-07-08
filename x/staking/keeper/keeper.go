@@ -146,7 +146,6 @@ func (k Keeper) IterateValidators(ctx sdk.Context,
 func (k Keeper) IterateLastValidators(ctx sdk.Context, fn func(index int64, validator types.Validator) (stop bool)) {
 	store := ctx.KVStore(k.storeKey)
 	iterator := sdk.KVStorePrefixIterator(store, LastValidatorPowerKey)
-
 	defer iterator.Close()
 
 	i := int64(0)

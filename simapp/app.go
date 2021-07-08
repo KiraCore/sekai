@@ -98,6 +98,7 @@ var (
 	// module account permissions
 	maccPerms = map[string][]string{
 		authtypes.FeeCollectorName: nil,
+		customgovtypes.ModuleName:  nil,
 	}
 
 	// module accounts that are allowed to receive tokens
@@ -196,14 +197,6 @@ func NewSimApp(
 	// set the BaseApp's parameter store
 	bApp.SetParamStore(app.ParamsKeeper.Subspace(baseapp.Paramspace).WithKeyTable(paramskeeper.ConsensusParamsKeyTable()))
 
-	app.CustomGovKeeper = customgovkeeper.NewKeeper(keys[customgovtypes.ModuleName], appCodec)
-	customStakingKeeper := keeper.NewKeeper(keys[customstakingtypes.ModuleName], legacyAmino, app.CustomGovKeeper)
-	app.CustomSlashingKeeper = customslashingkeeper.NewKeeper(appCodec, keys[customslashingtypes.ModuleName], &customStakingKeeper, app.CustomGovKeeper, app.GetSubspace(customslashingtypes.ModuleName))
-	app.TokensKeeper = tokenskeeper.NewKeeper(keys[tokenstypes.ModuleName], appCodec)
-	app.CustomStakingKeeper = *customStakingKeeper.SetHooks(
-		customstakingtypes.NewMultiStakingHooks(app.CustomSlashingKeeper.Hooks()),
-	)
-
 	// add keepers
 	app.AccountKeeper = authkeeper.NewAccountKeeper(
 		appCodec, keys[authtypes.StoreKey], app.GetSubspace(authtypes.ModuleName), authtypes.ProtoBaseAccount, maccPerms,
@@ -211,7 +204,17 @@ func NewSimApp(
 	app.BankKeeper = bankkeeper.NewBaseKeeper(
 		appCodec, keys[banktypes.StoreKey], app.AccountKeeper, app.GetSubspace(banktypes.ModuleName), app.BlockedAddrs(),
 	)
+
+	app.CustomGovKeeper = customgovkeeper.NewKeeper(keys[customgovtypes.ModuleName], appCodec, app.BankKeeper)
+	customStakingKeeper := keeper.NewKeeper(keys[customstakingtypes.ModuleName], legacyAmino, app.CustomGovKeeper)
+	app.CustomSlashingKeeper = customslashingkeeper.NewKeeper(appCodec, keys[customslashingtypes.ModuleName], &customStakingKeeper, app.CustomGovKeeper, app.GetSubspace(customslashingtypes.ModuleName))
+	app.TokensKeeper = tokenskeeper.NewKeeper(keys[tokenstypes.ModuleName], appCodec)
+	app.CustomStakingKeeper = *customStakingKeeper.SetHooks(
+		customstakingtypes.NewMultiStakingHooks(app.CustomSlashingKeeper.Hooks()),
+	)
+
 	app.UpgradeKeeper = upgradekeeper.NewKeeper(keys[upgradetypes.StoreKey], appCodec)
+
 	app.FeeProcessingKeeper = feeprocessingkeeper.NewKeeper(keys[feeprocessingtypes.ModuleName], appCodec, app.BankKeeper, app.TokensKeeper, app.CustomGovKeeper)
 
 	// create evidence keeper with router

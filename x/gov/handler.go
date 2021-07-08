@@ -5,7 +5,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/KiraCore/sekai/x/gov/keeper"
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
+	"github.com/KiraCore/sekai/x/gov/types"
 )
 
 func NewHandler(ck keeper.Keeper) sdk.Handler {
@@ -15,70 +15,87 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 		ctx = ctx.WithEventManager(sdk.NewEventManager())
 
 		switch msg := msg.(type) {
-		case *customgovtypes.MsgSetNetworkProperties:
+		case *types.MsgSetNetworkProperties:
 			res, err := msgServer.SetNetworkProperties(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-		case *customgovtypes.MsgSetExecutionFee:
+		case *types.MsgSetExecutionFee:
 			res, err := msgServer.SetExecutionFee(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 
 		// Permission Related
-		case *customgovtypes.MsgWhitelistPermissions:
+		case *types.MsgWhitelistPermissions:
 			res, err := msgServer.WhitelistPermissions(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-		case *customgovtypes.MsgBlacklistPermissions:
+		case *types.MsgBlacklistPermissions:
 			res, err := msgServer.BlacklistPermissions(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 
 		// Councilor Related
-		case *customgovtypes.MsgClaimCouncilor:
+		case *types.MsgClaimCouncilor:
 			res, err := msgServer.ClaimCouncilor(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 
 		// Role Related
-		case *customgovtypes.MsgWhitelistRolePermission:
+		case *types.MsgWhitelistRolePermission:
 			res, err := msgServer.WhitelistRolePermission(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-		case *customgovtypes.MsgBlacklistRolePermission:
+		case *types.MsgBlacklistRolePermission:
 			res, err := msgServer.BlacklistRolePermission(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-		case *customgovtypes.MsgRemoveWhitelistRolePermission:
+		case *types.MsgRemoveWhitelistRolePermission:
 			res, err := msgServer.RemoveWhitelistRolePermission(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-		case *customgovtypes.MsgRemoveBlacklistRolePermission:
+		case *types.MsgRemoveBlacklistRolePermission:
 			res, err := msgServer.RemoveBlacklistRolePermission(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-		case *customgovtypes.MsgCreateRole:
+		case *types.MsgCreateRole:
 			res, err := msgServer.CreateRole(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-		case *customgovtypes.MsgAssignRole:
+		case *types.MsgAssignRole:
 			res, err := msgServer.AssignRole(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-		case *customgovtypes.MsgRemoveRole:
+		case *types.MsgRemoveRole:
 			res, err := msgServer.RemoveRole(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 
 		// Proposal related
-		case *customgovtypes.MsgProposalAssignPermission:
+		case *types.MsgProposalAssignPermission:
 			res, err := msgServer.ProposalAssignPermission(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-		case *customgovtypes.MsgProposalSetNetworkProperty:
+		case *types.MsgProposalSetNetworkProperty:
 			res, err := msgServer.ProposalSetNetworkProperty(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-		case *customgovtypes.MsgProposalUpsertDataRegistry:
+		case *types.MsgProposalUpsertDataRegistry:
 			res, err := msgServer.ProposalUpsertDataRegistry(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-		case *customgovtypes.MsgProposalSetPoorNetworkMessages:
+		case *types.MsgProposalSetPoorNetworkMessages:
 			res, err := msgServer.ProposalSetPoorNetworkMessages(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-		case *customgovtypes.MsgVoteProposal:
+		case *types.MsgVoteProposal:
 			res, err := msgServer.VoteProposal(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-		case *customgovtypes.MsgProposalCreateRole:
+		case *types.MsgProposalCreateRole:
 			res, err := msgServer.ProposalCreateRole(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
+
+		// identity registrar related
+		case *types.MsgCreateIdentityRecord:
+			res, err := msgServer.CreateIdentityRecord(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgEditIdentityRecord:
+			res, err := msgServer.EditIdentityRecord(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgRequestIdentityRecordsVerify:
+			res, err := msgServer.RequestIdentityRecordsVerify(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgApproveIdentityRecords:
+			res, err := msgServer.ApproveIdentityRecords(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgCancelIdentityRecordsVerifyRequest:
+			res, err := msgServer.CancelIdentityRecordsVerifyRequest(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
 		default:
-			return nil, errors.Wrapf(errors.ErrUnknownRequest, "unrecognized %s message type: %T", customgovtypes.ModuleName, msg)
+			return nil, errors.Wrapf(errors.ErrUnknownRequest, "unrecognized %s message type: %T", types.ModuleName, msg)
 		}
 	}
 }

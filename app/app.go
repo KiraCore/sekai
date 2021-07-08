@@ -92,6 +92,7 @@ var (
 	// module account permissions
 	maccPerms = map[string][]string{
 		authtypes.FeeCollectorName: nil,
+		customgovtypes.ModuleName:  nil,
 	}
 
 	// module accounts that are allowed to receive tokens
@@ -196,7 +197,7 @@ func NewInitApp(
 	)
 	app.upgradeKeeper = upgradekeeper.NewKeeper(keys[upgradetypes.StoreKey], appCodec)
 
-	app.customGovKeeper = customgovkeeper.NewKeeper(keys[customgovtypes.ModuleName], appCodec)
+	app.customGovKeeper = customgovkeeper.NewKeeper(keys[customgovtypes.ModuleName], appCodec, app.bankKeeper)
 	customStakingKeeper := customstakingkeeper.NewKeeper(keys[customstakingtypes.ModuleName], cdc, app.customGovKeeper)
 	app.customSlashingKeeper = customslashingkeeper.NewKeeper(
 		appCodec, keys[customslashingtypes.StoreKey], &customStakingKeeper, app.customGovKeeper, app.GetSubspace(customslashingtypes.ModuleName),

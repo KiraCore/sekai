@@ -7,7 +7,7 @@ import (
 
 	"github.com/KiraCore/sekai/testutil/network"
 	"github.com/KiraCore/sekai/x/gov/client/cli"
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
+	"github.com/KiraCore/sekai/x/gov/types"
 	customstakingcli "github.com/KiraCore/sekai/x/staking/client/cli"
 	tokenscli "github.com/KiraCore/sekai/x/tokens/client/cli"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -28,7 +28,7 @@ func GetRolesByAddress(t *testing.T, network *network.Network, address sdk.AccAd
 	})
 	require.NoError(t, err)
 
-	var roles customgovtypes.RolesByAddressResponse
+	var roles types.RolesByAddressResponse
 	err = val.ClientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &roles)
 	require.NoError(t, err)
 
@@ -88,7 +88,7 @@ func (s IntegrationTestSuite) WhitelistPermission(address sdk.AccAddress, perm s
 	fmt.Println("IntegrationTestSuite::WhitelistPermission", out.String())
 }
 
-func (s IntegrationTestSuite) VoteWithValidator0(proposalID uint64, voteOption customgovtypes.VoteOption) {
+func (s IntegrationTestSuite) VoteWithValidator0(proposalID uint64, voteOption types.VoteOption) {
 	val := s.network.Validators[0]
 	clientCtx := val.ClientCtx
 	cmd := cli.GetTxVoteProposal()

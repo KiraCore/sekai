@@ -159,7 +159,14 @@ func DefaultGenesis() *GenesisState {
 				kiratypes.MsgTypeActivate,
 				kiratypes.MsgTypePause,
 				kiratypes.MsgTypeUnpause,
+				kiratypes.MsgTypeCreateIdentityRecord,
+				kiratypes.MsgTypeEditIdentityRecord,
+				kiratypes.MsgTypeRequestIdentityRecordsVerify,
+				kiratypes.MsgTypeApproveIdentityRecords,
+				kiratypes.MsgTypeCancelIdentityRecordsVerifyRequest,
 			},
 		},
+		LastIdentityRecordId:        0,
+		LastIdRecordVerifyRequestId: 0,
 	}
 }

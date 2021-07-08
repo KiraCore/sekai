@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.1.21] - 08.07.2021
+
+- Implement identity registrar
+- Code cleanup for package names
+
 ## [v0.1.20] - 10.06.2021
 
 - Add own upgrade module
