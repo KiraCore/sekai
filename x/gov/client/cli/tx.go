@@ -1179,7 +1179,7 @@ func GetTxCancelIdentityRecordsVerifyRequest() *cobra.Command {
 	return cmd
 }
 
-func parseIdInfoJSON(fs *pflag.FlagSet) (map[string]string, error) {
+func parseIdInfoJSON(fs *pflag.FlagSet) ([]types.IdentityInfoEntry, error) {
 	infos := make(map[string]string)
 	infosFile, _ := fs.GetString(FlagInfosFile)
 
@@ -1198,7 +1198,7 @@ func parseIdInfoJSON(fs *pflag.FlagSet) (map[string]string, error) {
 		return nil, err
 	}
 
-	return infos, nil
+	return types.WrapInfos(infos), nil
 }
 
 // convertAsPermValues convert array of int32 to PermValue array.

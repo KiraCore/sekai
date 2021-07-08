@@ -83,13 +83,13 @@ func (k Keeper) DeleteIdentityRecord(ctx sdk.Context, recordId uint64) {
 }
 
 // CreateIdentityRecord defines a method to create identity record
-func (k Keeper) CreateIdentityRecord(ctx sdk.Context, address sdk.AccAddress, infos map[string]string, date time.Time) uint64 {
+func (k Keeper) CreateIdentityRecord(ctx sdk.Context, address sdk.AccAddress, infos []types.IdentityInfoEntry, date time.Time) uint64 {
 	recordId := k.GetLastIdentityRecordId(ctx) + 1
 
 	k.SetIdentityRecord(ctx, types.IdentityRecord{
 		Id:        recordId,
 		Address:   address,
-		Infos:     infos,
+		Infos:     types.UnwrapInfos(infos),
 		Date:      date,
 		Verifiers: []sdk.AccAddress{},
 	})
@@ -104,7 +104,7 @@ func (k Keeper) CreateIdentityRecord(ctx sdk.Context, address sdk.AccAddress, in
 }
 
 // EditIdentityRecord defines a method to edit identity record, it removes all verifiers for the record
-func (k Keeper) EditIdentityRecord(ctx sdk.Context, recordId uint64, address sdk.AccAddress, infos map[string]string, date time.Time) error {
+func (k Keeper) EditIdentityRecord(ctx sdk.Context, recordId uint64, address sdk.AccAddress, infos []types.IdentityInfoEntry, date time.Time) error {
 	prevRecord := k.GetIdentityRecord(ctx, recordId)
 	if prevRecord == nil {
 		return fmt.Errorf("identity record with specified id does NOT exist: id=%d", recordId)
@@ -117,7 +117,7 @@ func (k Keeper) EditIdentityRecord(ctx sdk.Context, recordId uint64, address sdk
 	k.SetIdentityRecord(ctx, types.IdentityRecord{
 		Id:        recordId,
 		Address:   address,
-		Infos:     infos,
+		Infos:     types.UnwrapInfos(infos),
 		Date:      date,
 		Verifiers: []sdk.AccAddress{},
 	})

@@ -19,12 +19,17 @@ message IdentityRecord {
     ];
 }
 
+message IdentityInfoEntry {
+    string key = 1;
+    string info = 2;
+}
+
 message MsgCreateIdentityRecord {
     bytes address = 1 [
         (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
         (gogoproto.moretags) = "yaml:\"address\""
     ];
-    map<string, string> infos = 2;
+    repeated IdentityInfoEntry infos = 2 [ (gogoproto.nullable) = false ];
     google.protobuf.Timestamp date = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 }
 
@@ -34,7 +39,7 @@ message MsgEditIdentityRecord {
         (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
         (gogoproto.moretags) = "yaml:\"address\""
     ];
-    map<string, string> infos = 3;
+    repeated IdentityInfoEntry infos = 3 [ (gogoproto.nullable) = false ];
     google.protobuf.Timestamp date = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 }
 

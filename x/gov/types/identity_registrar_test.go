@@ -28,7 +28,7 @@ func TestMarshalUnmarshalIdentityRecord(t *testing.T) {
 func TestMarshalUnmarshalMsgCreateIdentityRecord(t *testing.T) {
 	record := MsgCreateIdentityRecord{
 		Address: sdk.AccAddress{},
-		Infos:   make(map[string]string),
+		Infos:   WrapInfos(make(map[string]string)),
 		Date:    time.Now(),
 	}
 

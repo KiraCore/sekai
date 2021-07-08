@@ -56,7 +56,9 @@ func TestSimappExportGenesis(t *testing.T) {
 		},
 		"execution_fees":[],
 		"poor_network_messages":{
-			"messages":["proposal-assign-permission","proposal-set-network-property","set-network-properties","vote-proposal","claim-councilor","whitelist-permissions","blacklist-permissions","create-role","assign-role","remove-role","whitelist-role-permission","blacklist-role-permission","remove-whitelist-role-permission","remove-blacklist-role-permission","claim-validator","activate","pause","unpause"]
+			"messages":[
+				"proposal-assign-permission","proposal-set-network-property","set-network-properties","vote-proposal","claim-councilor","whitelist-permissions","blacklist-permissions","create-role","assign-role","remove-role","whitelist-role-permission","blacklist-role-permission","remove-whitelist-role-permission","remove-blacklist-role-permission","claim-validator","activate","pause","unpause","create-identity-record","edit-identity-record","request-identity-records-verify","approve-identity-records","cancel-identity-records-verify-request"
+			]
 		},
 		"proposals":[],
 		"votes":[],

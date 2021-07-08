@@ -638,7 +638,7 @@ func (m *MsgProposalCreateRole) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgCreateIdentityRecord(address sdk.AccAddress, infos map[string]string, date time.Time) *MsgCreateIdentityRecord {
+func NewMsgCreateIdentityRecord(address sdk.AccAddress, infos []IdentityInfoEntry, date time.Time) *MsgCreateIdentityRecord {
 	return &MsgCreateIdentityRecord{
 		Address: address,
 		Infos:   infos,
@@ -678,7 +678,7 @@ func (m *MsgCreateIdentityRecord) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgEditIdentityRecord(recordId uint64, address sdk.AccAddress, infos map[string]string, date time.Time) *MsgEditIdentityRecord {
+func NewMsgEditIdentityRecord(recordId uint64, address sdk.AccAddress, infos []IdentityInfoEntry, date time.Time) *MsgEditIdentityRecord {
 	return &MsgEditIdentityRecord{
 		RecordId: recordId,
 		Address:  address,
