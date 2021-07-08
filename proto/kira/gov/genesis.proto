@@ -9,6 +9,7 @@ import "data_registry.proto";
 import "execution_fee.proto";
 import "network_properties.proto";
 import "allowed_messages.proto";
+import "identity_registrar.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/gov/types";
 
@@ -28,6 +29,9 @@ message GenesisState {
   repeated Vote votes = 8 [ (gogoproto.nullable) = false ];
   map<string, kira.gov.DataRegistryEntry> data_registry = 9;
 
-  uint64 last_identity_record_id = 10;
-  uint64 last_id_record_verify_request_id = 11;
+  repeated kira.gov.IdentityRecord identity_records = 10 [ (gogoproto.nullable) = false ];
+  uint64 last_identity_record_id = 11;
+
+  repeated kira.gov.IdentityRecordsVerify id_records_verify_requests = 12 [ (gogoproto.nullable) = false ];
+  uint64 last_id_record_verify_request_id = 13;
 }

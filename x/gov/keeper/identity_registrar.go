@@ -160,6 +160,21 @@ func (k Keeper) GetIdRecordsByAddress(ctx sdk.Context, creator sdk.AccAddress) [
 	return records
 }
 
+// SetIdentityRecordsVerifyRequest saves identity verify request into the store
+func (k Keeper) SetIdentityRecordsVerifyRequest(ctx sdk.Context, request types.IdentityRecordsVerify) {
+	requestId := request.Id
+	bz := k.cdc.MustMarshalBinaryBare(&request)
+	prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixIdRecordVerifyRequest).Set(sdk.Uint64ToBigEndian(requestId), bz)
+	prefix.NewStore(
+		ctx.KVStore(k.storeKey),
+		append(types.KeyPrefixIdRecordVerifyRequestByRequester, request.Address...),
+	).Set(sdk.Uint64ToBigEndian(requestId), sdk.Uint64ToBigEndian(requestId))
+	prefix.NewStore(
+		ctx.KVStore(k.storeKey),
+		append(types.KeyPrefixIdRecordVerifyRequestByApprover, request.Verifier...),
+	).Set(sdk.Uint64ToBigEndian(requestId), sdk.Uint64ToBigEndian(requestId))
+}
+
 // RequestIdentityRecordsVerify defines a method to request verify request from specific verifier
 func (k Keeper) RequestIdentityRecordsVerify(ctx sdk.Context, address, verifier sdk.AccAddress, recordIds []uint64, tip sdk.Coin) (uint64, error) {
 	requestId := k.GetLastIdRecordVerifyRequestId(ctx) + 1
@@ -179,17 +194,7 @@ func (k Keeper) RequestIdentityRecordsVerify(ctx sdk.Context, address, verifier 
 		Tip:       tip,
 	}
 
-	bz := k.cdc.MustMarshalBinaryBare(&request)
-	prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixIdRecordVerifyRequest).Set(sdk.Uint64ToBigEndian(requestId), bz)
-	prefix.NewStore(
-		ctx.KVStore(k.storeKey),
-		append(types.KeyPrefixIdRecordVerifyRequestByRequester, request.Address...),
-	).Set(sdk.Uint64ToBigEndian(requestId), sdk.Uint64ToBigEndian(requestId))
-	prefix.NewStore(
-		ctx.KVStore(k.storeKey),
-		append(types.KeyPrefixIdRecordVerifyRequestByApprover, request.Verifier...),
-	).Set(sdk.Uint64ToBigEndian(requestId), sdk.Uint64ToBigEndian(requestId))
-
+	k.SetIdentityRecordsVerifyRequest(ctx, request)
 	k.SetLastIdRecordVerifyRequestId(ctx, requestId)
 
 	if !tip.Amount.IsZero() {

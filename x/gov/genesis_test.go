@@ -63,7 +63,9 @@ func TestSimappExportGenesis(t *testing.T) {
 		"proposals":[],
 		"votes":[],
 		"data_registry":{},
+		"identity_records":[],
 		"last_identity_record_id":"0",
+		"id_records_verify_requests":[],
 		"last_id_record_verify_request_id":"0"
 	}`))
 	require.NoError(t, err)
@@ -164,7 +166,9 @@ func TestExportInitGenesis(t *testing.T) {
 		"proposals":[],
 		"votes":[],
 		"data_registry":{},
+		"identity_records":[],
 		"last_identity_record_id":"0",
+		"id_records_verify_requests":[],
 		"last_id_record_verify_request_id":"0"
 	}`))
 	require.NoError(t, err)

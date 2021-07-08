@@ -71,6 +71,13 @@ func InitGenesis(
 		k.UpsertDataRegistryEntry(ctx, key, *entry)
 	}
 
+	for _, record := range genesisState.IdentityRecords {
+		k.SetIdentityRecord(ctx, record)
+	}
+	for _, request := range genesisState.IdRecordsVerifyRequests {
+		k.SetIdentityRecordsVerifyRequest(ctx, request)
+	}
+
 	k.SetLastIdentityRecordId(ctx, genesisState.LastIdentityRecordId)
 	k.SetLastIdRecordVerifyRequestId(ctx, genesisState.LastIdRecordVerifyRequestId)
 
@@ -109,7 +116,9 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) (data *types.GenesisState) 
 		Proposals:                   proposals,
 		Votes:                       k.GetVotes(ctx),
 		DataRegistry:                k.AllDataRegistry(ctx),
+		IdentityRecords:             k.GetAllIdentityRecords(ctx),
 		LastIdentityRecordId:        k.GetLastIdentityRecordId(ctx),
+		IdRecordsVerifyRequests:     k.GetAllIdRecordsVerifyRequests(ctx),
 		LastIdRecordVerifyRequestId: k.GetLastIdRecordVerifyRequestId(ctx),
 	}
 }
