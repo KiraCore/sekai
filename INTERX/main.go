@@ -42,6 +42,7 @@ func main() {
 	faucetMnemonic, _ := bip39.NewMnemonic(entropy)
 
 	initConfigFilePtr := initCommand.String("config", "./config.json", "The interx configuration path.")
+	initVersion := initCommand.String("version", "0.1.0", "The interxd version")
 	initServeHTTPS := initCommand.Bool("serve_https", false, "http or https.")
 	initGrpcPtr := initCommand.String("grpc", "dns:///0.0.0.0:9090", "The grpc endpoint of the sekaid.")
 	initRPCPtr := initCommand.String("rpc", "http://0.0.0.0:26657", "The rpc endpoint of the sekaid.")
@@ -98,6 +99,7 @@ func main() {
 				// Check which subcommand was Parsed using the FlagSet.Parsed() function. Handle each case accordingly.
 				// FlagSet.Parse() will evaluate to false if no flags were parsed (i.e. the user did not provide any flags)
 				config.InitConfig(
+					*initVersion,
 					*initConfigFilePtr,
 					*initServeHTTPS,
 					*initGrpcPtr,
