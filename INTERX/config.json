@@ -18,7 +18,9 @@
   },
   "node_discovery": {
     "use_https": false,
-    "default_interx_port": "11000"
+    "default_interx_port": "11000",
+    "default_tendermint_port": "26657",
+    "connection_timeout": "3s"
   },
   "cache": {
     "cache_dir": "cache",

@@ -75,7 +75,9 @@ func main() {
 	initTxModes := initCommand.String("tx_modes", "sync,async,block", "The allowed transaction modes")
 
 	initNodeDiscoveryUseHttps := initCommand.Bool("node_discovery_use_https", false, "The option to use https in node discovery")
-	initNodeDiscoveryPort := initCommand.String("node_discovery_port", "11000", "The default interx port to be used in ndoe discovery")
+	initNodeDiscoveryInterxPort := initCommand.String("node_discovery_interx_port", "11000", "The default interx port to be used in node discovery")
+	initNodeDiscoveryTendermintPort := initCommand.String("node_discovery_tendermint_port", "26657", "The default tendermint port to be used in node discovery")
+	initNodeDiscoveryTimeout := initCommand.String("node_discovery_timeout", "3s", "The connection timeout to be used in node discovery")
 
 	startConfigPtr := startCommand.String("config", "./config.json", "The interx configurtion path. (Required)")
 
@@ -124,7 +126,9 @@ func main() {
 					*initAddrBook,
 					*initTxModes,
 					*initNodeDiscoveryUseHttps,
-					*initNodeDiscoveryPort,
+					*initNodeDiscoveryInterxPort,
+					*initNodeDiscoveryTendermintPort,
+					*initNodeDiscoveryTimeout,
 					*initNodeKey,
 				)
 

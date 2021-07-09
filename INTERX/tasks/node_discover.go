@@ -32,18 +32,25 @@ var (
 	SnapNodeListResponse      types.SnapNodeListResponse
 )
 
-const TENDERMINT_PORT = "26657"
-const TIMEOUT = 3 * time.Second
+func timeout() time.Duration {
+	timeoutDuration, err := time.ParseDuration(config.Config.NodeDiscovery.ConnectionTimeout)
+
+	if err != nil {
+		return 3 * time.Second
+	}
+
+	return timeoutDuration
+}
 
 func getRPCAddress(ipAddr string) string {
-	return "http://" + ipAddr + ":" + TENDERMINT_PORT
+	return "http://" + ipAddr + ":" + config.Config.NodeDiscovery.DefaultTendermintPort
 }
 
 func QueryPeers(rpcAddr string) ([]tmTypes.Peer, error) {
 	peers := []tmTypes.Peer{}
 
 	u, err := url.Parse(rpcAddr)
-	_, err = net.DialTimeout("tcp", u.Host, TIMEOUT)
+	_, err = net.DialTimeout("tcp", u.Host, timeout())
 	if err != nil {
 		common.GetLogger().Info(err)
 		return peers, err
@@ -52,7 +59,7 @@ func QueryPeers(rpcAddr string) ([]tmTypes.Peer, error) {
 	endpoint := fmt.Sprintf("%s/net_info", rpcAddr)
 
 	client := http.Client{
-		Timeout: TIMEOUT,
+		Timeout: timeout(),
 	}
 
 	resp, err := client.Get(endpoint)
@@ -165,7 +172,7 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 			nodeInfo.Peers = []string{}
 
 			// verify p2p node_id via p2p connect
-			peerNodeInfo, ping := connect(p2p.NewNetAddressIPPort(parseIP(nodeInfo.IP), uint16(nodeInfo.Port)), TIMEOUT)
+			peerNodeInfo, ping := connect(p2p.NewNetAddressIPPort(parseIP(nodeInfo.IP), uint16(nodeInfo.Port)), timeout())
 			if peerNodeInfo == nil || nodeInfo.ID != string(peerNodeInfo.ID()) {
 				continue
 			}

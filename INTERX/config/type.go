@@ -45,8 +45,10 @@ type CacheConfig struct {
 }
 
 type NodeDiscoveryConfig struct {
-	UseHttps          bool   `json:"use_https"`
-	DefaultInterxPort string `json:"default_interx_port"`
+	UseHttps              bool   `json:"use_https"`
+	DefaultInterxPort     string `json:"default_interx_port"`
+	DefaultTendermintPort string `json:"default_tendermint_port"`
+	ConnectionTimeout     string `json:"connection_timeout"`
 }
 
 // InterxConfig is a struct to be used for interx configuration
