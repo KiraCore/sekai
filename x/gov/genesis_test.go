@@ -52,15 +52,22 @@ func TestSimappExportGenesis(t *testing.T) {
 			"poor_network_max_bank_send":"1000000",
 			"jail_max_time":"600",
 			"enable_token_whitelist":false,
-			"enable_token_blacklist":true},
-			"execution_fees":[],
-			"poor_network_messages":{
-				"messages":["proposal-assign-permission","proposal-set-network-property","set-network-properties","vote-proposal","claim-councilor","whitelist-permissions","blacklist-permissions","create-role","assign-role","remove-role","whitelist-role-permission","blacklist-role-permission","remove-whitelist-role-permission","remove-blacklist-role-permission","claim-validator","activate","pause","unpause"]
-			},
-			"proposals":[],
-			"votes":[],
-			"data_registry":{}
-		}`))
+			"enable_token_blacklist":true
+		},
+		"execution_fees":[],
+		"poor_network_messages":{
+			"messages":[
+				"proposal-assign-permission","proposal-set-network-property","set-network-properties","vote-proposal","claim-councilor","whitelist-permissions","blacklist-permissions","create-role","assign-role","remove-role","whitelist-role-permission","blacklist-role-permission","remove-whitelist-role-permission","remove-blacklist-role-permission","claim-validator","activate","pause","unpause","create-identity-record","edit-identity-record","request-identity-records-verify","approve-identity-records","cancel-identity-records-verify-request"
+			]
+		},
+		"proposals":[],
+		"votes":[],
+		"data_registry":{},
+		"identity_records":[],
+		"last_identity_record_id":"0",
+		"id_records_verify_requests":[],
+		"last_id_record_verify_request_id":"0"
+	}`))
 	require.NoError(t, err)
 	require.Equal(t, string(bz), buffer.String())
 }
@@ -80,7 +87,7 @@ func TestExportInitGenesis(t *testing.T) {
 		Time:   time.Date(2020, time.March, 1, 1, 0, 0, 0, time.UTC),
 	}, false, log.TestingLogger())
 
-	k := keeper.NewKeeper(keyGovernance, simapp.MakeEncodingConfig().Marshaler)
+	k := keeper.NewKeeper(keyGovernance, simapp.MakeEncodingConfig().Marshaler, nil)
 
 	genState := types.GenesisState{
 		Permissions: map[uint64]*types.Permissions{
@@ -129,7 +136,9 @@ func TestExportInitGenesis(t *testing.T) {
 	buffer := new(bytes.Buffer)
 	err = json.Compact(buffer, []byte(`{
 		"starting_proposal_id":"1",
-		"permissions":{"1":{"blacklist":[],"whitelist":[1,2,3,6]}},
+		"permissions":{
+			"1":{"blacklist":[],"whitelist":[1,2,3,6]}
+		},
 		"network_actors":[],
 		"network_properties":{
 			"min_tx_fee":"100",
@@ -148,15 +157,20 @@ func TestExportInitGenesis(t *testing.T) {
 			"poor_network_max_bank_send":"0",
 			"jail_max_time":"0",
 			"enable_token_whitelist":false,
-			"enable_token_blacklist":false},
-			"execution_fees":[],
-			"poor_network_messages":{
-				"messages":["proposal-assign-permission","proposal-set-network-property","set-network-properties"]
-			},
-			"proposals":[],
-			"votes":[],
-			"data_registry":{}
-		}`))
+			"enable_token_blacklist":false
+		},
+		"execution_fees":[],
+		"poor_network_messages":{
+			"messages":["proposal-assign-permission","proposal-set-network-property","set-network-properties"]
+		},
+		"proposals":[],
+		"votes":[],
+		"data_registry":{},
+		"identity_records":[],
+		"last_identity_record_id":"0",
+		"id_records_verify_requests":[],
+		"last_id_record_verify_request_id":"0"
+	}`))
 	require.NoError(t, err)
 	require.Equal(t, string(bz), buffer.String())
 }

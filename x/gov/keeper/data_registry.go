@@ -38,6 +38,7 @@ func (k Keeper) ListDataRegistryEntryKeys(ctx sdk.Context) []string {
 	// get iterator for token aliases
 	store := ctx.KVStore(k.storeKey)
 	iterator := sdk.KVStorePrefixIterator(store, DataRegistryPrefix)
+	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
 		key := strings.TrimPrefix(string(iterator.Key()), string(DataRegistryPrefix))

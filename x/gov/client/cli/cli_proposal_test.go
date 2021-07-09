@@ -3,13 +3,12 @@ package cli_test
 import (
 	"fmt"
 
+	"github.com/KiraCore/sekai/x/gov/client/cli"
+	"github.com/KiraCore/sekai/x/gov/types"
 	stakingcli "github.com/KiraCore/sekai/x/staking/client/cli"
 	"github.com/cosmos/cosmos-sdk/client/flags"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	"github.com/KiraCore/sekai/x/gov/client/cli"
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func (s IntegrationTestSuite) TestCreateProposalAssignPermission() {
@@ -23,7 +22,7 @@ func (s IntegrationTestSuite) TestCreateProposalAssignPermission() {
 	cmd := cli.GetTxProposalAssignPermission()
 	clientCtx := val.ClientCtx
 	_, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
-		fmt.Sprintf("%d", customgovtypes.PermClaimValidator),
+		fmt.Sprintf("%d", types.PermClaimValidator),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=%s", stakingcli.FlagAddr, addr.String()),
 		fmt.Sprintf("--%s=%s", cli.FlagDescription, "some desc"),
@@ -36,7 +35,7 @@ func (s IntegrationTestSuite) TestCreateProposalAssignPermission() {
 	cmd = cli.GetTxVoteProposal()
 	_, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("%d", 1), // Proposal ID
-		fmt.Sprintf("%d", customgovtypes.OptionYes),
+		fmt.Sprintf("%d", types.OptionYes),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
@@ -75,7 +74,7 @@ func (s IntegrationTestSuite) TestCreateProposalUpsertDataRegistry() {
 	cmd = cli.GetTxVoteProposal()
 	out, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("%d", 1), // Proposal ID
-		fmt.Sprintf("%d", customgovtypes.OptionYes),
+		fmt.Sprintf("%d", types.OptionYes),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
@@ -107,7 +106,7 @@ func (s IntegrationTestSuite) TestCreateProposalSetNetworkProperty() {
 	cmd = cli.GetTxVoteProposal()
 	out, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("%d", 1), // Proposal ID
-		fmt.Sprintf("%d", customgovtypes.OptionYes),
+		fmt.Sprintf("%d", types.OptionYes),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
@@ -139,7 +138,7 @@ func (s IntegrationTestSuite) TestCreateProposalCreateRole() {
 	cmd = cli.GetTxVoteProposal()
 	out, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("%d", 1), // Proposal ID
-		fmt.Sprintf("%d", customgovtypes.OptionYes),
+		fmt.Sprintf("%d", types.OptionYes),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),

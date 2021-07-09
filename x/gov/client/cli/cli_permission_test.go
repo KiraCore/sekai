@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/KiraCore/sekai/x/gov/client/cli"
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
+	"github.com/KiraCore/sekai/x/gov/types"
 	stakingcli "github.com/KiraCore/sekai/x/staking/client/cli"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/crypto/hd"
@@ -52,12 +52,12 @@ func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions() {
 	)
 	s.Require().NoError(err)
 
-	var perms customgovtypes.Permissions
+	var perms types.Permissions
 	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &perms)
 
 	// Validator 1 has permission to Add Permissions.
-	s.Require().True(perms.IsWhitelisted(customgovtypes.PermSetPermissions))
-	s.Require().False(perms.IsWhitelisted(customgovtypes.PermClaimValidator))
+	s.Require().True(perms.IsWhitelisted(types.PermSetPermissions))
+	s.Require().False(perms.IsWhitelisted(types.PermClaimValidator))
 }
 
 func (s IntegrationTestSuite) TestGetTxSetBlacklistPermissions() {
@@ -98,12 +98,12 @@ func (s IntegrationTestSuite) TestGetTxSetBlacklistPermissions() {
 	)
 	s.Require().NoError(err)
 
-	var perms customgovtypes.Permissions
+	var perms types.Permissions
 	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &perms)
 
 	// Validator 1 has permission to Add Permissions.
-	s.Require().True(perms.IsBlacklisted(customgovtypes.PermSetPermissions))
-	s.Require().False(perms.IsBlacklisted(customgovtypes.PermClaimValidator))
+	s.Require().True(perms.IsBlacklisted(types.PermSetPermissions))
+	s.Require().False(perms.IsBlacklisted(types.PermClaimValidator))
 }
 
 func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions_WithUserThatDoesNotHaveSetPermissions() {

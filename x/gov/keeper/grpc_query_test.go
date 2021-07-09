@@ -6,8 +6,6 @@ import (
 
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 
-	customgovkeeper "github.com/KiraCore/sekai/x/gov/keeper"
-
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -43,8 +41,7 @@ func TestQuerier_PermissionsByAddress(t *testing.T) {
 
 	app.CustomGovKeeper.SaveNetworkActor(ctx, networkActor)
 
-	querier := customgovkeeper.NewQuerier(app.CustomGovKeeper)
-
+	querier := app.CustomGovKeeper
 	resp, err := querier.PermissionsByAddress(sdk.WrapSDKContext(ctx), &types.PermissionsByAddressRequest{ValAddr: addr1})
 	require.NoError(t, err)
 
@@ -81,7 +78,7 @@ func TestQuerier_RolesByAddress(t *testing.T) {
 
 	app.CustomGovKeeper.SaveNetworkActor(ctx, networkActor)
 
-	querier := customgovkeeper.NewQuerier(app.CustomGovKeeper)
+	querier := app.CustomGovKeeper
 
 	resp, err := querier.RolesByAddress(sdk.WrapSDKContext(ctx), &types.RolesByAddressRequest{ValAddr: addr1})
 	require.NoError(t, err)
@@ -126,7 +123,7 @@ func TestQuerier_Proposal(t *testing.T) {
 		Option:     types.OptionNo,
 	})
 
-	querier := customgovkeeper.NewQuerier(app.CustomGovKeeper)
+	querier := app.CustomGovKeeper
 
 	resp, err := querier.Proposal(
 		sdk.WrapSDKContext(ctx),
@@ -156,7 +153,7 @@ func TestQuerier_CouncilorByAddress(t *testing.T) {
 
 	app.CustomGovKeeper.SaveCouncilor(ctx, councilor)
 
-	querier := customgovkeeper.NewQuerier(app.CustomGovKeeper)
+	querier := app.CustomGovKeeper
 
 	resp, err := querier.CouncilorByAddress(
 		sdk.WrapSDKContext(ctx),

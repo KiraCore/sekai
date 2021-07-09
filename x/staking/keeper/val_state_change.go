@@ -82,7 +82,7 @@ func (k Keeper) ApplyAndReturnValidatorSetUpdates(ctx sdk.Context) (updates []ab
 			Power:  1,
 			PubKey: consPk,
 		})
-		k.RemoveRemovingValidator(ctx, validator)
+		k.RemoveReactivatingValidator(ctx, validator)
 	}
 
 	return valUpdate, nil

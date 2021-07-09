@@ -5,21 +5,21 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/errors"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 func TestMsgWhitelistPermissions_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name        string
 		msg         *MsgWhitelistPermissions
-		expectedErr *errors.Error
+		expectedErr *sdkerrors.Error
 	}{
 		{
 			name: "empty proposer addr",
 			msg: NewMsgWhitelistPermissions(
-				types.AccAddress{},
-				types.AccAddress("some addr"),
+				sdk.AccAddress{},
+				sdk.AccAddress("some addr"),
 				0,
 			),
 			expectedErr: ErrEmptyProposerAccAddress,
@@ -27,8 +27,8 @@ func TestMsgWhitelistPermissions_ValidateBasic(t *testing.T) {
 		{
 			name: "empty addr",
 			msg: NewMsgWhitelistPermissions(
-				types.AccAddress("some addr"),
-				types.AccAddress{},
+				sdk.AccAddress("some addr"),
+				sdk.AccAddress{},
 				0,
 			),
 			expectedErr: ErrEmptyPermissionsAccAddress,
@@ -41,4 +41,56 @@ func TestMsgWhitelistPermissions_ValidateBasic(t *testing.T) {
 			require.Equal(t, test.expectedErr, test.msg.ValidateBasic())
 		})
 	}
+}
+
+func TestMsgRequestIdentityRecordsVerify_ValidateBasic(t *testing.T) {
+	addr1 := sdk.AccAddress("foo1________________")
+	addr3 := sdk.AccAddress("foo3________________")
+	empty := sdk.AccAddress("")
+	msg := MsgRequestIdentityRecordsVerify{
+		Address:   addr1,
+		Verifier:  addr3,
+		RecordIds: []uint64{1},
+		Tip:       sdk.Coin{},
+	}
+	require.Error(t, msg.ValidateBasic())
+
+	msg = MsgRequestIdentityRecordsVerify{
+		Address:   addr1,
+		Verifier:  addr3,
+		RecordIds: []uint64{1},
+		Tip:       sdk.NewInt64Coin(sdk.DefaultBondDenom, 0),
+	}
+	require.NoError(t, msg.ValidateBasic())
+
+	msg = MsgRequestIdentityRecordsVerify{
+		Address:   addr1,
+		Verifier:  addr3,
+		RecordIds: []uint64{},
+		Tip:       sdk.NewInt64Coin(sdk.DefaultBondDenom, 10),
+	}
+	require.Error(t, msg.ValidateBasic())
+
+	msg = MsgRequestIdentityRecordsVerify{
+		Address:   addr1,
+		Verifier:  empty,
+		RecordIds: []uint64{},
+		Tip:       sdk.NewInt64Coin(sdk.DefaultBondDenom, 10),
+	}
+	require.Error(t, msg.ValidateBasic())
+	msg = MsgRequestIdentityRecordsVerify{
+		Address:   empty,
+		Verifier:  addr1,
+		RecordIds: []uint64{},
+		Tip:       sdk.NewInt64Coin(sdk.DefaultBondDenom, 10),
+	}
+	require.Error(t, msg.ValidateBasic())
+
+	msg = MsgRequestIdentityRecordsVerify{
+		Address:   addr1,
+		Verifier:  addr3,
+		RecordIds: []uint64{1},
+		Tip:       sdk.NewInt64Coin(sdk.DefaultBondDenom, 10),
+	}
+	require.NoError(t, msg.ValidateBasic())
 }

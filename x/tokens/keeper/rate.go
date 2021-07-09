@@ -32,6 +32,7 @@ func (k Keeper) ListTokenRate(ctx sdk.Context) []*types.TokenRate {
 	// get iterator for token rates
 	store := ctx.KVStore(k.storeKey)
 	iterator := sdk.KVStorePrefixIterator(store, PrefixKeyTokenRate)
+	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
 		denom := strings.TrimPrefix(string(iterator.Key()), string(PrefixKeyTokenRate))

@@ -4,15 +4,14 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/KiraCore/sekai/x/gov/client/cli"
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
-
 	"github.com/KiraCore/sekai/app"
 	"github.com/KiraCore/sekai/simapp"
 	"github.com/KiraCore/sekai/testutil/network"
+	"github.com/KiraCore/sekai/x/gov/client/cli"
+	"github.com/KiraCore/sekai/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
-	"github.com/cosmos/cosmos-sdk/store/types"
+	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/suite"
@@ -38,13 +37,13 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	cfg.NumValidators = 1
 
 	// customize proposal end time and enactment time
-	govGen := customgovtypes.DefaultGenesis()
+	govGen := types.DefaultGenesis()
 	// govGen.NetworkProperties.ProposalEndTime = 1
 	// govGen.NetworkProperties.ProposalEnactmentTime = 2
 	govGenRaw := encCfg.Marshaler.MustMarshalJSON(govGen)
 
 	genesis := app.ModuleBasics.DefaultGenesis(encCfg.Marshaler)
-	genesis[customgovtypes.ModuleName] = govGenRaw
+	genesis[types.ModuleName] = govGenRaw
 	cfg.GenesisState = genesis
 
 	cfg.AppConstructor = func(val network.Validator) servertypes.Application {
@@ -52,7 +51,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 			val.Ctx.Logger, dbm.NewMemDB(), nil, true, make(map[int64]bool), val.Ctx.Config.RootDir, 0,
 			simapp.MakeEncodingConfig(),
 			simapp.EmptyAppOptions{},
-			baseapp.SetPruning(types.NewPruningOptionsFromString(val.AppConfig.Pruning)),
+			baseapp.SetPruning(storetypes.NewPruningOptionsFromString(val.AppConfig.Pruning)),
 			baseapp.SetMinGasPrices(val.AppConfig.MinGasPrices),
 		)
 	}
@@ -74,9 +73,9 @@ func (s IntegrationTestSuite) TestRolePermissions_QueryCommand_DefaultRolePerms(
 	})
 	s.Require().NoError(err)
 
-	var perms customgovtypes.Permissions
+	var perms types.Permissions
 	val.ClientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &perms)
-	s.Require().True(perms.IsWhitelisted(customgovtypes.PermClaimValidator))
+	s.Require().True(perms.IsWhitelisted(types.PermClaimValidator))
 }
 
 func (s IntegrationTestSuite) TestClaimCouncilor_HappyPath() {
@@ -105,7 +104,7 @@ func (s IntegrationTestSuite) TestClaimCouncilor_HappyPath() {
 	})
 	s.Require().NoError(err)
 
-	var councilorByAddress customgovtypes.Councilor
+	var councilorByAddress types.Councilor
 	err = val.ClientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &councilorByAddress)
 	s.Require().NoError(err)
 	s.Require().Equal(val.Moniker, councilorByAddress.Moniker)
@@ -118,7 +117,7 @@ func (s IntegrationTestSuite) TestClaimCouncilor_HappyPath() {
 	})
 	s.Require().NoError(err)
 
-	var councilorByMoniker customgovtypes.Councilor
+	var councilorByMoniker types.Councilor
 	err = val.ClientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &councilorByMoniker)
 	s.Require().NoError(err)
 	s.Require().Equal(val.Moniker, councilorByMoniker.Moniker)
@@ -139,7 +138,7 @@ func (s IntegrationTestSuite) TestProposalAndVoteSetPoorNetworkMessages_HappyPat
 	s.WhitelistPermission(val.Address, "19") // 19 is permission for vote on poor network message set proposal
 
 	// vote on the proposal
-	s.VoteWithValidator0(1, customgovtypes.OptionYes)
+	s.VoteWithValidator0(1, types.OptionYes)
 
 	// check votes
 	s.QueryProposalVotes(1)
@@ -161,7 +160,7 @@ func (s IntegrationTestSuite) TestProposalAndVotePoorNetworkMaxBankSend_HappyPat
 	s.SetNetworkPropertyProposal("POOR_NETWORK_MAX_BANK_SEND", 100000000)
 
 	// vote on the proposal
-	s.VoteWithValidator0(1, customgovtypes.OptionYes)
+	s.VoteWithValidator0(1, types.OptionYes)
 
 	// check votes
 	s.QueryProposalVotes(1)

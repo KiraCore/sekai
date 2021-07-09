@@ -1331,6 +1331,706 @@ func (m *QueryDataReferenceResponse) GetData() *DataRegistryEntry {
 	return nil
 }
 
+type QueryIdentityRecordRequest struct {
+	Id uint64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+}
+
+func (m *QueryIdentityRecordRequest) Reset()         { *m = QueryIdentityRecordRequest{} }
+func (m *QueryIdentityRecordRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryIdentityRecordRequest) ProtoMessage()    {}
+func (*QueryIdentityRecordRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5c6ac9b241082464, []int{29}
+}
+func (m *QueryIdentityRecordRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryIdentityRecordRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryIdentityRecordRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryIdentityRecordRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryIdentityRecordRequest.Merge(m, src)
+}
+func (m *QueryIdentityRecordRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryIdentityRecordRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryIdentityRecordRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryIdentityRecordRequest proto.InternalMessageInfo
+
+func (m *QueryIdentityRecordRequest) GetId() uint64 {
+	if m != nil {
+		return m.Id
+	}
+	return 0
+}
+
+type QueryIdentityRecordResponse struct {
+	Record *IdentityRecord `protobuf:"bytes,1,opt,name=record,proto3" json:"record,omitempty"`
+}
+
+func (m *QueryIdentityRecordResponse) Reset()         { *m = QueryIdentityRecordResponse{} }
+func (m *QueryIdentityRecordResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryIdentityRecordResponse) ProtoMessage()    {}
+func (*QueryIdentityRecordResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5c6ac9b241082464, []int{30}
+}
+func (m *QueryIdentityRecordResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryIdentityRecordResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryIdentityRecordResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryIdentityRecordResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryIdentityRecordResponse.Merge(m, src)
+}
+func (m *QueryIdentityRecordResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryIdentityRecordResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryIdentityRecordResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryIdentityRecordResponse proto.InternalMessageInfo
+
+func (m *QueryIdentityRecordResponse) GetRecord() *IdentityRecord {
+	if m != nil {
+		return m.Record
+	}
+	return nil
+}
+
+type QueryIdentityRecordsByAddressRequest struct {
+	Creator    github_com_cosmos_cosmos_sdk_types.AccAddress         `protobuf:"bytes,1,opt,name=creator,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"creator,omitempty" yaml:"creator"`
+	Pagination *github_com_cosmos_cosmos_sdk_types_query.PageRequest `protobuf:"bytes,2,opt,name=pagination,proto3,casttype=github.com/cosmos/cosmos-sdk/types/query.PageRequest" json:"pagination,omitempty"`
+}
+
+func (m *QueryIdentityRecordsByAddressRequest) Reset()         { *m = QueryIdentityRecordsByAddressRequest{} }
+func (m *QueryIdentityRecordsByAddressRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryIdentityRecordsByAddressRequest) ProtoMessage()    {}
+func (*QueryIdentityRecordsByAddressRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5c6ac9b241082464, []int{31}
+}
+func (m *QueryIdentityRecordsByAddressRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryIdentityRecordsByAddressRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryIdentityRecordsByAddressRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryIdentityRecordsByAddressRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryIdentityRecordsByAddressRequest.Merge(m, src)
+}
+func (m *QueryIdentityRecordsByAddressRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryIdentityRecordsByAddressRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryIdentityRecordsByAddressRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryIdentityRecordsByAddressRequest proto.InternalMessageInfo
+
+func (m *QueryIdentityRecordsByAddressRequest) GetCreator() github_com_cosmos_cosmos_sdk_types.AccAddress {
+	if m != nil {
+		return m.Creator
+	}
+	return nil
+}
+
+func (m *QueryIdentityRecordsByAddressRequest) GetPagination() *github_com_cosmos_cosmos_sdk_types_query.PageRequest {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+type QueryIdentityRecordsByAddressResponse struct {
+	Records    []IdentityRecord                                       `protobuf:"bytes,1,rep,name=records,proto3" json:"records"`
+	Pagination *github_com_cosmos_cosmos_sdk_types_query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3,casttype=github.com/cosmos/cosmos-sdk/types/query.PageResponse" json:"pagination,omitempty"`
+}
+
+func (m *QueryIdentityRecordsByAddressResponse) Reset()         { *m = QueryIdentityRecordsByAddressResponse{} }
+func (m *QueryIdentityRecordsByAddressResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryIdentityRecordsByAddressResponse) ProtoMessage()    {}
+func (*QueryIdentityRecordsByAddressResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5c6ac9b241082464, []int{32}
+}
+func (m *QueryIdentityRecordsByAddressResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryIdentityRecordsByAddressResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryIdentityRecordsByAddressResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryIdentityRecordsByAddressResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryIdentityRecordsByAddressResponse.Merge(m, src)
+}
+func (m *QueryIdentityRecordsByAddressResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryIdentityRecordsByAddressResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryIdentityRecordsByAddressResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryIdentityRecordsByAddressResponse proto.InternalMessageInfo
+
+func (m *QueryIdentityRecordsByAddressResponse) GetRecords() []IdentityRecord {
+	if m != nil {
+		return m.Records
+	}
+	return nil
+}
+
+func (m *QueryIdentityRecordsByAddressResponse) GetPagination() *github_com_cosmos_cosmos_sdk_types_query.PageResponse {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+type QueryAllIdentityRecordsRequest struct {
+	Pagination *github_com_cosmos_cosmos_sdk_types_query.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3,casttype=github.com/cosmos/cosmos-sdk/types/query.PageRequest" json:"pagination,omitempty"`
+}
+
+func (m *QueryAllIdentityRecordsRequest) Reset()         { *m = QueryAllIdentityRecordsRequest{} }
+func (m *QueryAllIdentityRecordsRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryAllIdentityRecordsRequest) ProtoMessage()    {}
+func (*QueryAllIdentityRecordsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5c6ac9b241082464, []int{33}
+}
+func (m *QueryAllIdentityRecordsRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryAllIdentityRecordsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryAllIdentityRecordsRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryAllIdentityRecordsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryAllIdentityRecordsRequest.Merge(m, src)
+}
+func (m *QueryAllIdentityRecordsRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryAllIdentityRecordsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryAllIdentityRecordsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryAllIdentityRecordsRequest proto.InternalMessageInfo
+
+func (m *QueryAllIdentityRecordsRequest) GetPagination() *github_com_cosmos_cosmos_sdk_types_query.PageRequest {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+type QueryAllIdentityRecordsResponse struct {
+	Records    []IdentityRecord                                       `protobuf:"bytes,1,rep,name=records,proto3" json:"records"`
+	Pagination *github_com_cosmos_cosmos_sdk_types_query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3,casttype=github.com/cosmos/cosmos-sdk/types/query.PageResponse" json:"pagination,omitempty"`
+}
+
+func (m *QueryAllIdentityRecordsResponse) Reset()         { *m = QueryAllIdentityRecordsResponse{} }
+func (m *QueryAllIdentityRecordsResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryAllIdentityRecordsResponse) ProtoMessage()    {}
+func (*QueryAllIdentityRecordsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5c6ac9b241082464, []int{34}
+}
+func (m *QueryAllIdentityRecordsResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryAllIdentityRecordsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryAllIdentityRecordsResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryAllIdentityRecordsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryAllIdentityRecordsResponse.Merge(m, src)
+}
+func (m *QueryAllIdentityRecordsResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryAllIdentityRecordsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryAllIdentityRecordsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryAllIdentityRecordsResponse proto.InternalMessageInfo
+
+func (m *QueryAllIdentityRecordsResponse) GetRecords() []IdentityRecord {
+	if m != nil {
+		return m.Records
+	}
+	return nil
+}
+
+func (m *QueryAllIdentityRecordsResponse) GetPagination() *github_com_cosmos_cosmos_sdk_types_query.PageResponse {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+type QueryIdentityVerifyRecordRequest struct {
+	RequestId uint64 `protobuf:"varint,1,opt,name=request_id,json=requestId,proto3" json:"request_id,omitempty"`
+}
+
+func (m *QueryIdentityVerifyRecordRequest) Reset()         { *m = QueryIdentityVerifyRecordRequest{} }
+func (m *QueryIdentityVerifyRecordRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryIdentityVerifyRecordRequest) ProtoMessage()    {}
+func (*QueryIdentityVerifyRecordRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5c6ac9b241082464, []int{35}
+}
+func (m *QueryIdentityVerifyRecordRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryIdentityVerifyRecordRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryIdentityVerifyRecordRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryIdentityVerifyRecordRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryIdentityVerifyRecordRequest.Merge(m, src)
+}
+func (m *QueryIdentityVerifyRecordRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryIdentityVerifyRecordRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryIdentityVerifyRecordRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryIdentityVerifyRecordRequest proto.InternalMessageInfo
+
+func (m *QueryIdentityVerifyRecordRequest) GetRequestId() uint64 {
+	if m != nil {
+		return m.RequestId
+	}
+	return 0
+}
+
+type QueryIdentityVerifyRecordResponse struct {
+	VerifyRecord *IdentityRecordsVerify `protobuf:"bytes,1,opt,name=verify_record,json=verifyRecord,proto3" json:"verify_record,omitempty"`
+}
+
+func (m *QueryIdentityVerifyRecordResponse) Reset()         { *m = QueryIdentityVerifyRecordResponse{} }
+func (m *QueryIdentityVerifyRecordResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryIdentityVerifyRecordResponse) ProtoMessage()    {}
+func (*QueryIdentityVerifyRecordResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5c6ac9b241082464, []int{36}
+}
+func (m *QueryIdentityVerifyRecordResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryIdentityVerifyRecordResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryIdentityVerifyRecordResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryIdentityVerifyRecordResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryIdentityVerifyRecordResponse.Merge(m, src)
+}
+func (m *QueryIdentityVerifyRecordResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryIdentityVerifyRecordResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryIdentityVerifyRecordResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryIdentityVerifyRecordResponse proto.InternalMessageInfo
+
+func (m *QueryIdentityVerifyRecordResponse) GetVerifyRecord() *IdentityRecordsVerify {
+	if m != nil {
+		return m.VerifyRecord
+	}
+	return nil
+}
+
+type QueryIdentityRecordVerifyRequestsByApprover struct {
+	Approver   github_com_cosmos_cosmos_sdk_types.AccAddress         `protobuf:"bytes,1,opt,name=approver,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"approver,omitempty" yaml:"approver"`
+	Pagination *github_com_cosmos_cosmos_sdk_types_query.PageRequest `protobuf:"bytes,2,opt,name=pagination,proto3,casttype=github.com/cosmos/cosmos-sdk/types/query.PageRequest" json:"pagination,omitempty"`
+}
+
+func (m *QueryIdentityRecordVerifyRequestsByApprover) Reset() {
+	*m = QueryIdentityRecordVerifyRequestsByApprover{}
+}
+func (m *QueryIdentityRecordVerifyRequestsByApprover) String() string {
+	return proto.CompactTextString(m)
+}
+func (*QueryIdentityRecordVerifyRequestsByApprover) ProtoMessage() {}
+func (*QueryIdentityRecordVerifyRequestsByApprover) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5c6ac9b241082464, []int{37}
+}
+func (m *QueryIdentityRecordVerifyRequestsByApprover) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryIdentityRecordVerifyRequestsByApprover) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryIdentityRecordVerifyRequestsByApprover.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryIdentityRecordVerifyRequestsByApprover) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryIdentityRecordVerifyRequestsByApprover.Merge(m, src)
+}
+func (m *QueryIdentityRecordVerifyRequestsByApprover) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryIdentityRecordVerifyRequestsByApprover) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryIdentityRecordVerifyRequestsByApprover.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryIdentityRecordVerifyRequestsByApprover proto.InternalMessageInfo
+
+func (m *QueryIdentityRecordVerifyRequestsByApprover) GetApprover() github_com_cosmos_cosmos_sdk_types.AccAddress {
+	if m != nil {
+		return m.Approver
+	}
+	return nil
+}
+
+func (m *QueryIdentityRecordVerifyRequestsByApprover) GetPagination() *github_com_cosmos_cosmos_sdk_types_query.PageRequest {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+type QueryIdentityRecordVerifyRequestsByApproverResponse struct {
+	VerifyRecords []IdentityRecordsVerify                                `protobuf:"bytes,1,rep,name=verify_records,json=verifyRecords,proto3" json:"verify_records"`
+	Pagination    *github_com_cosmos_cosmos_sdk_types_query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3,casttype=github.com/cosmos/cosmos-sdk/types/query.PageResponse" json:"pagination,omitempty"`
+}
+
+func (m *QueryIdentityRecordVerifyRequestsByApproverResponse) Reset() {
+	*m = QueryIdentityRecordVerifyRequestsByApproverResponse{}
+}
+func (m *QueryIdentityRecordVerifyRequestsByApproverResponse) String() string {
+	return proto.CompactTextString(m)
+}
+func (*QueryIdentityRecordVerifyRequestsByApproverResponse) ProtoMessage() {}
+func (*QueryIdentityRecordVerifyRequestsByApproverResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5c6ac9b241082464, []int{38}
+}
+func (m *QueryIdentityRecordVerifyRequestsByApproverResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryIdentityRecordVerifyRequestsByApproverResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryIdentityRecordVerifyRequestsByApproverResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryIdentityRecordVerifyRequestsByApproverResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryIdentityRecordVerifyRequestsByApproverResponse.Merge(m, src)
+}
+func (m *QueryIdentityRecordVerifyRequestsByApproverResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryIdentityRecordVerifyRequestsByApproverResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryIdentityRecordVerifyRequestsByApproverResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryIdentityRecordVerifyRequestsByApproverResponse proto.InternalMessageInfo
+
+func (m *QueryIdentityRecordVerifyRequestsByApproverResponse) GetVerifyRecords() []IdentityRecordsVerify {
+	if m != nil {
+		return m.VerifyRecords
+	}
+	return nil
+}
+
+func (m *QueryIdentityRecordVerifyRequestsByApproverResponse) GetPagination() *github_com_cosmos_cosmos_sdk_types_query.PageResponse {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+type QueryIdentityRecordVerifyRequestsByRequester struct {
+	Requester  github_com_cosmos_cosmos_sdk_types.AccAddress         `protobuf:"bytes,1,opt,name=requester,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"requester,omitempty" yaml:"requester"`
+	Pagination *github_com_cosmos_cosmos_sdk_types_query.PageRequest `protobuf:"bytes,2,opt,name=pagination,proto3,casttype=github.com/cosmos/cosmos-sdk/types/query.PageRequest" json:"pagination,omitempty"`
+}
+
+func (m *QueryIdentityRecordVerifyRequestsByRequester) Reset() {
+	*m = QueryIdentityRecordVerifyRequestsByRequester{}
+}
+func (m *QueryIdentityRecordVerifyRequestsByRequester) String() string {
+	return proto.CompactTextString(m)
+}
+func (*QueryIdentityRecordVerifyRequestsByRequester) ProtoMessage() {}
+func (*QueryIdentityRecordVerifyRequestsByRequester) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5c6ac9b241082464, []int{39}
+}
+func (m *QueryIdentityRecordVerifyRequestsByRequester) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryIdentityRecordVerifyRequestsByRequester) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryIdentityRecordVerifyRequestsByRequester.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryIdentityRecordVerifyRequestsByRequester) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryIdentityRecordVerifyRequestsByRequester.Merge(m, src)
+}
+func (m *QueryIdentityRecordVerifyRequestsByRequester) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryIdentityRecordVerifyRequestsByRequester) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryIdentityRecordVerifyRequestsByRequester.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryIdentityRecordVerifyRequestsByRequester proto.InternalMessageInfo
+
+func (m *QueryIdentityRecordVerifyRequestsByRequester) GetRequester() github_com_cosmos_cosmos_sdk_types.AccAddress {
+	if m != nil {
+		return m.Requester
+	}
+	return nil
+}
+
+func (m *QueryIdentityRecordVerifyRequestsByRequester) GetPagination() *github_com_cosmos_cosmos_sdk_types_query.PageRequest {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+type QueryIdentityRecordVerifyRequestsByRequesterResponse struct {
+	VerifyRecords []IdentityRecordsVerify                                `protobuf:"bytes,1,rep,name=verify_records,json=verifyRecords,proto3" json:"verify_records"`
+	Pagination    *github_com_cosmos_cosmos_sdk_types_query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3,casttype=github.com/cosmos/cosmos-sdk/types/query.PageResponse" json:"pagination,omitempty"`
+}
+
+func (m *QueryIdentityRecordVerifyRequestsByRequesterResponse) Reset() {
+	*m = QueryIdentityRecordVerifyRequestsByRequesterResponse{}
+}
+func (m *QueryIdentityRecordVerifyRequestsByRequesterResponse) String() string {
+	return proto.CompactTextString(m)
+}
+func (*QueryIdentityRecordVerifyRequestsByRequesterResponse) ProtoMessage() {}
+func (*QueryIdentityRecordVerifyRequestsByRequesterResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5c6ac9b241082464, []int{40}
+}
+func (m *QueryIdentityRecordVerifyRequestsByRequesterResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryIdentityRecordVerifyRequestsByRequesterResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryIdentityRecordVerifyRequestsByRequesterResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryIdentityRecordVerifyRequestsByRequesterResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryIdentityRecordVerifyRequestsByRequesterResponse.Merge(m, src)
+}
+func (m *QueryIdentityRecordVerifyRequestsByRequesterResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryIdentityRecordVerifyRequestsByRequesterResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryIdentityRecordVerifyRequestsByRequesterResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryIdentityRecordVerifyRequestsByRequesterResponse proto.InternalMessageInfo
+
+func (m *QueryIdentityRecordVerifyRequestsByRequesterResponse) GetVerifyRecords() []IdentityRecordsVerify {
+	if m != nil {
+		return m.VerifyRecords
+	}
+	return nil
+}
+
+func (m *QueryIdentityRecordVerifyRequestsByRequesterResponse) GetPagination() *github_com_cosmos_cosmos_sdk_types_query.PageResponse {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+type QueryAllIdentityRecordVerifyRequests struct {
+	Pagination *github_com_cosmos_cosmos_sdk_types_query.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3,casttype=github.com/cosmos/cosmos-sdk/types/query.PageRequest" json:"pagination,omitempty"`
+}
+
+func (m *QueryAllIdentityRecordVerifyRequests) Reset()         { *m = QueryAllIdentityRecordVerifyRequests{} }
+func (m *QueryAllIdentityRecordVerifyRequests) String() string { return proto.CompactTextString(m) }
+func (*QueryAllIdentityRecordVerifyRequests) ProtoMessage()    {}
+func (*QueryAllIdentityRecordVerifyRequests) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5c6ac9b241082464, []int{41}
+}
+func (m *QueryAllIdentityRecordVerifyRequests) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryAllIdentityRecordVerifyRequests) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryAllIdentityRecordVerifyRequests.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryAllIdentityRecordVerifyRequests) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryAllIdentityRecordVerifyRequests.Merge(m, src)
+}
+func (m *QueryAllIdentityRecordVerifyRequests) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryAllIdentityRecordVerifyRequests) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryAllIdentityRecordVerifyRequests.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryAllIdentityRecordVerifyRequests proto.InternalMessageInfo
+
+func (m *QueryAllIdentityRecordVerifyRequests) GetPagination() *github_com_cosmos_cosmos_sdk_types_query.PageRequest {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+type QueryAllIdentityRecordVerifyRequestsResponse struct {
+	VerifyRecords []IdentityRecordsVerify                                `protobuf:"bytes,1,rep,name=verify_records,json=verifyRecords,proto3" json:"verify_records"`
+	Pagination    *github_com_cosmos_cosmos_sdk_types_query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3,casttype=github.com/cosmos/cosmos-sdk/types/query.PageResponse" json:"pagination,omitempty"`
+}
+
+func (m *QueryAllIdentityRecordVerifyRequestsResponse) Reset() {
+	*m = QueryAllIdentityRecordVerifyRequestsResponse{}
+}
+func (m *QueryAllIdentityRecordVerifyRequestsResponse) String() string {
+	return proto.CompactTextString(m)
+}
+func (*QueryAllIdentityRecordVerifyRequestsResponse) ProtoMessage() {}
+func (*QueryAllIdentityRecordVerifyRequestsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5c6ac9b241082464, []int{42}
+}
+func (m *QueryAllIdentityRecordVerifyRequestsResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryAllIdentityRecordVerifyRequestsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryAllIdentityRecordVerifyRequestsResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryAllIdentityRecordVerifyRequestsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryAllIdentityRecordVerifyRequestsResponse.Merge(m, src)
+}
+func (m *QueryAllIdentityRecordVerifyRequestsResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryAllIdentityRecordVerifyRequestsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryAllIdentityRecordVerifyRequestsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryAllIdentityRecordVerifyRequestsResponse proto.InternalMessageInfo
+
+func (m *QueryAllIdentityRecordVerifyRequestsResponse) GetVerifyRecords() []IdentityRecordsVerify {
+	if m != nil {
+		return m.VerifyRecords
+	}
+	return nil
+}
+
+func (m *QueryAllIdentityRecordVerifyRequestsResponse) GetPagination() *github_com_cosmos_cosmos_sdk_types_query.PageResponse {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*NetworkPropertiesRequest)(nil), "kira.gov.NetworkPropertiesRequest")
 	proto.RegisterType((*NetworkPropertiesResponse)(nil), "kira.gov.NetworkPropertiesResponse")
@@ -1361,97 +2061,144 @@ func init() {
 	proto.RegisterType((*QueryDataReferenceKeysResponse)(nil), "kira.gov.QueryDataReferenceKeysResponse")
 	proto.RegisterType((*QueryDataReferenceRequest)(nil), "kira.gov.QueryDataReferenceRequest")
 	proto.RegisterType((*QueryDataReferenceResponse)(nil), "kira.gov.QueryDataReferenceResponse")
+	proto.RegisterType((*QueryIdentityRecordRequest)(nil), "kira.gov.QueryIdentityRecordRequest")
+	proto.RegisterType((*QueryIdentityRecordResponse)(nil), "kira.gov.QueryIdentityRecordResponse")
+	proto.RegisterType((*QueryIdentityRecordsByAddressRequest)(nil), "kira.gov.QueryIdentityRecordsByAddressRequest")
+	proto.RegisterType((*QueryIdentityRecordsByAddressResponse)(nil), "kira.gov.QueryIdentityRecordsByAddressResponse")
+	proto.RegisterType((*QueryAllIdentityRecordsRequest)(nil), "kira.gov.QueryAllIdentityRecordsRequest")
+	proto.RegisterType((*QueryAllIdentityRecordsResponse)(nil), "kira.gov.QueryAllIdentityRecordsResponse")
+	proto.RegisterType((*QueryIdentityVerifyRecordRequest)(nil), "kira.gov.QueryIdentityVerifyRecordRequest")
+	proto.RegisterType((*QueryIdentityVerifyRecordResponse)(nil), "kira.gov.QueryIdentityVerifyRecordResponse")
+	proto.RegisterType((*QueryIdentityRecordVerifyRequestsByApprover)(nil), "kira.gov.QueryIdentityRecordVerifyRequestsByApprover")
+	proto.RegisterType((*QueryIdentityRecordVerifyRequestsByApproverResponse)(nil), "kira.gov.QueryIdentityRecordVerifyRequestsByApproverResponse")
+	proto.RegisterType((*QueryIdentityRecordVerifyRequestsByRequester)(nil), "kira.gov.QueryIdentityRecordVerifyRequestsByRequester")
+	proto.RegisterType((*QueryIdentityRecordVerifyRequestsByRequesterResponse)(nil), "kira.gov.QueryIdentityRecordVerifyRequestsByRequesterResponse")
+	proto.RegisterType((*QueryAllIdentityRecordVerifyRequests)(nil), "kira.gov.QueryAllIdentityRecordVerifyRequests")
+	proto.RegisterType((*QueryAllIdentityRecordVerifyRequestsResponse)(nil), "kira.gov.QueryAllIdentityRecordVerifyRequestsResponse")
 }
 
 func init() { proto.RegisterFile("query.proto", fileDescriptor_5c6ac9b241082464) }
 
 var fileDescriptor_5c6ac9b241082464 = []byte{
-	// 1354 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x58, 0xcf, 0x6f, 0x13, 0xc7,
-	0x17, 0xf7, 0x26, 0x0e, 0x38, 0x2f, 0x88, 0x84, 0x89, 0x63, 0xcc, 0x26, 0xb1, 0xc3, 0x40, 0xf8,
-	0x86, 0xaf, 0x8a, 0xb7, 0xa5, 0x50, 0x0a, 0x55, 0x55, 0x12, 0xa0, 0x6e, 0x45, 0x41, 0xe9, 0xaa,
-	0x3f, 0x50, 0x0f, 0x44, 0x8b, 0xfd, 0x58, 0x56, 0x5e, 0x7b, 0xcc, 0xee, 0xc6, 0x65, 0x45, 0xa9,
-	0xaa, 0x1e, 0xaa, 0xf6, 0x86, 0xd4, 0x7f, 0x80, 0x5b, 0xd5, 0x7f, 0xa1, 0xd7, 0x5e, 0x38, 0x22,
-	0xb5, 0x87, 0x9e, 0xa2, 0x0a, 0x7a, 0xe8, 0xb9, 0x47, 0x4e, 0xd5, 0xce, 0xce, 0xec, 0xae, 0xd7,
-	0xbb, 0x71, 0x50, 0xd5, 0x72, 0xf2, 0xec, 0xcc, 0xe7, 0xbd, 0xf7, 0x79, 0x6f, 0xde, 0xbc, 0xf7,
-	0x64, 0x98, 0xb9, 0xbb, 0x8d, 0x8e, 0xdf, 0xe8, 0x3b, 0xcc, 0x63, 0xa4, 0xd4, 0xb1, 0x1c, 0xa3,
-	0x61, 0xb2, 0x81, 0x3a, 0x63, 0xb4, 0x3c, 0xe6, 0x84, 0xdb, 0xea, 0x6c, 0x8b, 0x6d, 0xf7, 0x5a,
-	0x96, 0x1d, 0x6d, 0xcc, 0xb7, 0x0d, 0xcf, 0xd8, 0x72, 0xd0, 0xb4, 0x5c, 0x4f, 0x0a, 0xab, 0x73,
-	0x7d, 0xc3, 0xb4, 0x7a, 0x86, 0x67, 0xb1, 0x9e, 0xd8, 0x01, 0x87, 0xd9, 0x28, 0x45, 0xf0, 0x1e,
-	0xb6, 0xb6, 0x83, 0xc3, 0xad, 0xdb, 0x28, 0x37, 0xab, 0x3d, 0xf4, 0x3e, 0x67, 0x4e, 0x67, 0xab,
-	0xef, 0xb0, 0x3e, 0x3a, 0x9e, 0x85, 0xae, 0x38, 0x39, 0x18, 0xec, 0x30, 0xd7, 0xb0, 0xc5, 0x77,
-	0xd9, 0x64, 0x26, 0xe3, 0x4b, 0x2d, 0x58, 0x89, 0xdd, 0x25, 0x93, 0x31, 0xd3, 0x46, 0xcd, 0xe8,
-	0x5b, 0x9a, 0xd1, 0xeb, 0x31, 0x8f, 0x5b, 0x17, 0x3a, 0xa8, 0x0a, 0xd5, 0xeb, 0xa1, 0xfe, 0xcd,
-	0x48, 0xbd, 0x8e, 0x77, 0xb7, 0xd1, 0xf5, 0xe8, 0x0d, 0x38, 0x92, 0x71, 0xe6, 0xf6, 0x59, 0xcf,
-	0x45, 0xf2, 0x16, 0x40, 0x4c, 0xa8, 0xaa, 0xac, 0x28, 0x6b, 0x33, 0xa7, 0x17, 0x1b, 0x32, 0x36,
-	0x8d, 0x51, 0xc1, 0x04, 0x9c, 0x7e, 0x09, 0x8b, 0x9b, 0xe8, 0x74, 0x2d, 0xd7, 0x0d, 0xa8, 0x6c,
-	0xf8, 0xeb, 0xed, 0xb6, 0x83, 0xae, 0x34, 0x4c, 0xb6, 0xa0, 0x34, 0x30, 0xec, 0x2d, 0xa3, 0xdd,
-	0x76, 0xb8, 0xe6, 0x03, 0x1b, 0x97, 0xff, 0xda, 0xa9, 0xcf, 0xfa, 0x46, 0xd7, 0xbe, 0x40, 0xe5,
-	0x09, 0x7d, 0xbe, 0x53, 0x3f, 0x65, 0x5a, 0xde, 0x9d, 0xed, 0x5b, 0x8d, 0x16, 0xeb, 0x6a, 0x2d,
-	0xe6, 0x76, 0x99, 0x2b, 0x7e, 0x4e, 0xb9, 0xed, 0x8e, 0xe6, 0xf9, 0x7d, 0x74, 0x1b, 0xeb, 0xad,
-	0x96, 0x54, 0xbf, 0x7f, 0x60, 0xd8, 0xc1, 0x9a, 0x5e, 0x87, 0xf9, 0x84, 0xfd, 0xc8, 0xa7, 0x73,
-	0x30, 0xd3, 0x8f, 0xb7, 0x85, 0x53, 0x0b, 0xb1, 0x53, 0x49, 0x99, 0x24, 0x92, 0xde, 0x83, 0x05,
-	0x9d, 0xd9, 0xf8, 0x12, 0x3c, 0x69, 0x40, 0x25, 0x6d, 0x59, 0x38, 0x53, 0x86, 0xa9, 0x20, 0xb5,
-	0x02, 0x37, 0x26, 0xd7, 0x8a, 0x7a, 0xf8, 0x41, 0x5f, 0x09, 0xf1, 0x43, 0xde, 0x87, 0x54, 0x09,
-	0x14, 0x03, 0x08, 0xa7, 0x59, 0xd4, 0xf9, 0x9a, 0xea, 0x70, 0x78, 0x04, 0xfd, 0x4f, 0x63, 0x75,
-	0x11, 0xe6, 0xaf, 0xc8, 0x34, 0x7f, 0x17, 0x51, 0x9a, 0x3f, 0x09, 0x73, 0x9e, 0x63, 0xf4, 0x5c,
-	0xa3, 0xc5, 0xf3, 0x3f, 0xf0, 0x98, 0x2b, 0x9d, 0xd6, 0x67, 0x13, 0xfb, 0x1f, 0xf9, 0x7d, 0xa4,
-	0x17, 0xa1, 0x3c, 0xac, 0x41, 0x50, 0x5a, 0x83, 0xc9, 0xdb, 0x88, 0x82, 0x4a, 0x25, 0xa6, 0x32,
-	0x04, 0x0e, 0x20, 0x74, 0x09, 0xd4, 0x4d, 0xc6, 0x1c, 0x91, 0xa4, 0xd7, 0xd0, 0x75, 0x0d, 0x33,
-	0xce, 0xfb, 0xf3, 0xb0, 0x98, 0x79, 0x2a, 0xcc, 0xa8, 0x50, 0xea, 0x8a, 0x3d, 0x1e, 0xdb, 0x69,
-	0x3d, 0xfa, 0xa6, 0x5f, 0xc0, 0x91, 0x4b, 0xb2, 0x0e, 0xfc, 0xf7, 0xc9, 0x70, 0x76, 0xc8, 0xfa,
-	0x35, 0xd6, 0xb3, 0x3a, 0xe8, 0x48, 0xeb, 0x55, 0xd8, 0xdf, 0x0d, 0x77, 0x44, 0x5c, 0xe5, 0x27,
-	0xfd, 0x00, 0x0e, 0x45, 0x62, 0x89, 0xfb, 0x9d, 0x8e, 0x2a, 0x9a, 0x08, 0xe9, 0x7c, 0x1c, 0xd2,
-	0xd8, 0x4c, 0xf1, 0xf1, 0x4e, 0xbd, 0xa0, 0xc7, 0x58, 0x7a, 0x0e, 0xca, 0x1f, 0x06, 0xe5, 0x72,
-	0x53, 0x14, 0x27, 0x69, 0xbf, 0x0e, 0x33, 0xb2, 0x5e, 0x6d, 0x59, 0x6d, 0x91, 0x66, 0x20, 0xb7,
-	0xde, 0x6f, 0x53, 0x1f, 0x16, 0x52, 0x82, 0x82, 0xca, 0x19, 0x28, 0x49, 0x98, 0x60, 0x42, 0x12,
-	0x79, 0x26, 0x4e, 0x04, 0x91, 0x08, 0x49, 0xfe, 0x0f, 0x53, 0x03, 0xe6, 0xa1, 0x5b, 0x9d, 0x58,
-	0x99, 0x5c, 0x9b, 0x39, 0x7d, 0x30, 0x16, 0xf9, 0x84, 0x79, 0x28, 0xe0, 0x21, 0x84, 0xfe, 0xaa,
-	0xa4, 0x6c, 0x47, 0x77, 0x56, 0x0e, 0xb5, 0xc8, 0x98, 0x85, 0x1f, 0x84, 0x01, 0xc4, 0x85, 0xbc,
-	0x3a, 0x31, 0x92, 0xfb, 0x86, 0x29, 0xf3, 0x7a, 0xe3, 0xcd, 0xe7, 0x3b, 0xf5, 0x33, 0xe3, 0xef,
-	0x53, 0x0b, 0x5b, 0x4c, 0x42, 0x52, 0x4f, 0x98, 0x20, 0x73, 0x30, 0x69, 0xd8, 0x76, 0x75, 0x72,
-	0x45, 0x59, 0x2b, 0xe9, 0xc1, 0x32, 0xb8, 0x4e, 0x07, 0x07, 0xe8, 0xb8, 0x58, 0x2d, 0xf2, 0x5d,
-	0xf9, 0x79, 0xa1, 0xf4, 0xed, 0xa3, 0x7a, 0xe1, 0xcf, 0x47, 0xf5, 0x02, 0xfd, 0x59, 0x81, 0x4a,
-	0xda, 0x2d, 0x11, 0xd3, 0x37, 0x60, 0x5a, 0x46, 0x2a, 0xcc, 0xe2, 0xdd, 0x82, 0x1a, 0x43, 0xc9,
-	0xdd, 0x0c, 0xcf, 0x2b, 0x69, 0xcf, 0x43, 0x1b, 0x1b, 0xe7, 0x9f, 0xef, 0xd4, 0xcf, 0xbe, 0xa0,
-	0xeb, 0xa1, 0x68, 0xd2, 0x77, 0xfa, 0x1e, 0xac, 0x72, 0x27, 0x3e, 0xbd, 0x63, 0x79, 0x68, 0x5b,
-	0xae, 0x87, 0x6d, 0xc9, 0x2f, 0xb8, 0x49, 0xc7, 0xdd, 0x73, 0x86, 0xdd, 0x84, 0x13, 0xe3, 0x34,
-	0x45, 0x29, 0xb7, 0x8f, 0xdf, 0xb4, 0x8c, 0x4d, 0x65, 0xa4, 0xb3, 0xad, 0x07, 0xbd, 0x5f, 0xc4,
-	0x47, 0x60, 0xe9, 0x37, 0x0a, 0xcc, 0x71, 0x03, 0x81, 0xb6, 0xbd, 0xb2, 0x22, 0x4d, 0x99, 0x62,
-	0x13, 0xbc, 0x26, 0xbc, 0xf6, 0xe2, 0x05, 0x20, 0x94, 0x4f, 0x5c, 0xfc, 0xdb, 0x70, 0x28, 0xc1,
-	0x23, 0x2a, 0x8f, 0xc5, 0x00, 0x27, 0x9e, 0x50, 0xf6, 0x7b, 0xe0, 0x08, 0x7a, 0x26, 0x21, 0xbe,
-	0xf7, 0xe8, 0x5e, 0x04, 0x92, 0x94, 0x12, 0x56, 0xa3, 0x67, 0xa8, 0x8c, 0x7f, 0x86, 0x0f, 0x15,
-	0x58, 0xe6, 0x2a, 0x2e, 0x1b, 0x9e, 0xa1, 0xe3, 0x6d, 0x74, 0xb0, 0xd7, 0xc2, 0xab, 0xe8, 0x47,
-	0x24, 0x86, 0x1f, 0x9e, 0xf2, 0xaf, 0x3f, 0x3c, 0xfa, 0x83, 0x02, 0xb5, 0x3c, 0x4a, 0xc2, 0x43,
-	0x02, 0xc5, 0x0e, 0xfa, 0xb2, 0x17, 0xf0, 0xf5, 0xcb, 0x78, 0x26, 0xa7, 0xe0, 0xc8, 0x28, 0x51,
-	0x19, 0xb7, 0x39, 0x98, 0xec, 0xa0, 0x2f, 0x8a, 0x58, 0xb0, 0xa4, 0xd7, 0x40, 0xcd, 0x82, 0x0b,
-	0x9f, 0x34, 0x28, 0x06, 0xe3, 0xeb, 0xe8, 0x5c, 0x17, 0xc2, 0xc3, 0x99, 0xf6, 0x4a, 0xcf, 0x73,
-	0x7c, 0x9d, 0x03, 0x4f, 0xff, 0x74, 0x00, 0xa6, 0xb8, 0x3e, 0x72, 0x13, 0xca, 0x59, 0xb3, 0x1d,
-	0x59, 0xcd, 0x9c, 0x0d, 0xd2, 0x4d, 0x52, 0x5d, 0xce, 0x1e, 0x21, 0x04, 0x31, 0x5a, 0x20, 0x1f,
-	0xc3, 0xc1, 0xe1, 0x89, 0x87, 0xd4, 0x63, 0x91, 0xcc, 0x29, 0x4c, 0x5d, 0xc9, 0x07, 0x44, 0x6a,
-	0x6f, 0xc0, 0x6c, 0x6a, 0xd4, 0x21, 0x29, 0xb1, 0xd1, 0x99, 0x49, 0x3d, 0xba, 0x0b, 0x22, 0xa1,
-	0x99, 0x8c, 0xce, 0x04, 0xe4, 0x58, 0x56, 0x33, 0x4d, 0x13, 0x5f, 0xcc, 0x00, 0xe5, 0x6a, 0x16,
-	0xfd, 0x3e, 0x47, 0xf3, 0xf0, 0x34, 0x30, 0x4e, 0xb3, 0x01, 0xe5, 0x26, 0x7a, 0x23, 0x43, 0x3c,
-	0xa1, 0xbb, 0x4d, 0xf8, 0x42, 0xf5, 0xb1, 0x5d, 0x31, 0x91, 0x09, 0x1d, 0x66, 0x9b, 0xe8, 0x25,
-	0x67, 0x33, 0xb2, 0x9c, 0x33, 0xb3, 0x09, 0xc5, 0xb5, 0xbc, 0xe3, 0x48, 0xa7, 0x09, 0x95, 0x26,
-	0x7a, 0x19, 0xc3, 0x1b, 0x39, 0x9e, 0x48, 0xab, 0xdc, 0xc9, 0x4f, 0x5d, 0x1d, 0x83, 0x8a, 0x0c,
-	0x0d, 0xa0, 0x24, 0x3b, 0x07, 0x49, 0xd0, 0xca, 0x1a, 0x7c, 0xd4, 0x7a, 0xee, 0xb9, 0x50, 0x77,
-	0xf2, 0xeb, 0x5f, 0xfe, 0xf8, 0x7e, 0xe2, 0x18, 0x39, 0xaa, 0x05, 0x40, 0xcd, 0x64, 0x03, 0x2d,
-	0x6a, 0xb8, 0xda, 0xfd, 0x44, 0xd1, 0x7d, 0x40, 0x3a, 0x30, 0x1d, 0xf5, 0x72, 0x92, 0xa7, 0x38,
-	0x2b, 0xef, 0xb3, 0xc7, 0x00, 0xba, 0xc8, 0x4d, 0x2f, 0x90, 0xf9, 0x0c, 0xd3, 0xe4, 0x47, 0x05,
-	0x96, 0x9a, 0xe8, 0xe5, 0x76, 0x4b, 0xa2, 0xa5, 0xf4, 0x8f, 0xeb, 0xd0, 0xea, 0xab, 0x7b, 0x17,
-	0x10, 0x04, 0x4f, 0x70, 0x82, 0x2b, 0xa4, 0x16, 0x13, 0x0c, 0x9b, 0x6d, 0x2a, 0x30, 0xeb, 0x50,
-	0x0c, 0x24, 0x89, 0x9a, 0xb2, 0x90, 0xe8, 0xc4, 0xc9, 0x9c, 0x1f, 0xe9, 0x8e, 0xb4, 0x40, 0x2c,
-	0x98, 0xe2, 0xad, 0x8b, 0x64, 0xe1, 0x22, 0x17, 0x96, 0xb2, 0x0f, 0x85, 0x96, 0x55, 0x4e, 0xb7,
-	0x4e, 0x96, 0x87, 0xe9, 0xa6, 0xd9, 0x7e, 0xa7, 0xc0, 0xe1, 0x26, 0x7a, 0xeb, 0xb6, 0x3d, 0xd2,
-	0x56, 0xc8, 0xff, 0x52, 0x06, 0xf2, 0x7a, 0xa1, 0xba, 0x36, 0x1e, 0x98, 0x7f, 0xcb, 0xfc, 0xcf,
-	0x09, 0xde, 0xaa, 0xbe, 0x52, 0x60, 0xa1, 0x89, 0xde, 0x90, 0xf4, 0x86, 0x7f, 0x15, 0xfd, 0x64,
-	0x21, 0xc9, 0xed, 0x2c, 0xea, 0xf1, 0xdd, 0x41, 0x82, 0xc1, 0x12, 0x67, 0x50, 0x21, 0xe5, 0x61,
-	0x06, 0xda, 0xfd, 0x0e, 0xfa, 0x0f, 0x36, 0xde, 0x79, 0xfc, 0xb4, 0xa6, 0x3c, 0x79, 0x5a, 0x53,
-	0x7e, 0x7f, 0x5a, 0x53, 0x1e, 0x3e, 0xab, 0x15, 0x9e, 0x3c, 0xab, 0x15, 0x7e, 0x7b, 0x56, 0x2b,
-	0x7c, 0xb6, 0x9a, 0xe8, 0x8b, 0x57, 0x2d, 0xc7, 0xb8, 0xc4, 0x1c, 0xd4, 0x5c, 0xec, 0x18, 0x96,
-	0x76, 0x8f, 0x6b, 0xe1, 0xad, 0xf1, 0xd6, 0x3e, 0xfe, 0x67, 0xc6, 0xeb, 0x7f, 0x07, 0x00, 0x00,
-	0xff, 0xff, 0x40, 0x1e, 0x54, 0xa7, 0xa9, 0x11, 0x00, 0x00,
+	// 1887 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xdc, 0x59, 0xcb, 0x6f, 0x1b, 0x5f,
+	0x15, 0xf6, 0x38, 0x4e, 0xeb, 0x9c, 0xf4, 0x97, 0xa4, 0x37, 0x4e, 0x70, 0x26, 0x89, 0x9d, 0x4e,
+	0x93, 0x34, 0x6d, 0x13, 0x4f, 0x69, 0x93, 0x3e, 0x55, 0xa8, 0x93, 0x16, 0xa8, 0xfa, 0x0a, 0x16,
+	0x94, 0x0a, 0x89, 0x9a, 0xa9, 0x7d, 0xe3, 0x8e, 0x3c, 0xf1, 0xb8, 0x77, 0x26, 0xa6, 0x56, 0x08,
+	0x42, 0x08, 0x2a, 0x96, 0xad, 0x58, 0xb0, 0xed, 0x8a, 0xc7, 0x82, 0x3f, 0x80, 0x35, 0x9b, 0xae,
+	0x50, 0x25, 0x58, 0xb0, 0x8a, 0xa0, 0x45, 0x88, 0x1d, 0x52, 0x17, 0x45, 0xea, 0x0a, 0xcd, 0x9d,
+	0x7b, 0xe7, 0x3d, 0xb6, 0x13, 0x44, 0x22, 0xba, 0xca, 0xf5, 0xbd, 0xdf, 0x39, 0xe7, 0x3b, 0x8f,
+	0xfb, 0x98, 0x13, 0x18, 0x7c, 0xb6, 0x85, 0x49, 0xbb, 0xd0, 0x24, 0xba, 0xa9, 0xa3, 0x74, 0x5d,
+	0x25, 0x4a, 0xa1, 0xa6, 0xb7, 0xc4, 0x41, 0xa5, 0x62, 0xea, 0xc4, 0x9e, 0x16, 0x87, 0x2b, 0xfa,
+	0x56, 0xa3, 0xa2, 0x6a, 0xce, 0xc4, 0x68, 0x55, 0x31, 0x95, 0x32, 0xc1, 0x35, 0xd5, 0x30, 0xb9,
+	0xb0, 0x38, 0xd2, 0x54, 0x6a, 0x6a, 0x43, 0x31, 0x55, 0xbd, 0xc1, 0x66, 0x80, 0xe8, 0x1a, 0xe6,
+	0x22, 0xf8, 0x39, 0xae, 0x6c, 0x59, 0x8b, 0xe5, 0x0d, 0xcc, 0x27, 0xb3, 0x0d, 0x6c, 0xfe, 0x40,
+	0x27, 0xf5, 0x72, 0x93, 0xe8, 0x4d, 0x4c, 0x4c, 0x15, 0x1b, 0x6c, 0x65, 0xc8, 0x9a, 0xd1, 0x0d,
+	0x45, 0xe3, 0x48, 0xb5, 0x8a, 0x1b, 0xa6, 0x6a, 0xb6, 0xb9, 0x55, 0x85, 0x73, 0xc9, 0xd4, 0xf4,
+	0x9a, 0x4e, 0x87, 0xb2, 0x35, 0x62, 0xb3, 0x53, 0x35, 0x5d, 0xaf, 0x69, 0x58, 0x56, 0x9a, 0xaa,
+	0xac, 0x34, 0x1a, 0xba, 0x49, 0x79, 0x31, 0xed, 0x92, 0x08, 0xd9, 0xfb, 0xb6, 0xe5, 0x75, 0xc7,
+	0x70, 0x09, 0x3f, 0xdb, 0xc2, 0x86, 0x29, 0x3d, 0x82, 0x89, 0x88, 0x35, 0xa3, 0xa9, 0x37, 0x0c,
+	0x8c, 0xae, 0x01, 0xb8, 0x54, 0xb3, 0xc2, 0x8c, 0xb0, 0x30, 0x78, 0x7e, 0xb2, 0xc0, 0xa3, 0x56,
+	0x08, 0x0b, 0x7a, 0xe0, 0xd2, 0x8f, 0x60, 0x72, 0x1d, 0x93, 0x4d, 0xd5, 0x30, 0x2c, 0x2a, 0xab,
+	0xed, 0x62, 0xb5, 0x4a, 0xb0, 0xc1, 0x0d, 0xa3, 0x32, 0xa4, 0x5b, 0x8a, 0x56, 0x56, 0xaa, 0x55,
+	0x42, 0x35, 0x1f, 0x5b, 0xbd, 0xf9, 0x61, 0x37, 0x3f, 0xdc, 0x56, 0x36, 0xb5, 0xab, 0x12, 0x5f,
+	0x91, 0x3e, 0xed, 0xe6, 0x97, 0x6a, 0xaa, 0xf9, 0x74, 0xeb, 0x49, 0xa1, 0xa2, 0x6f, 0xca, 0x15,
+	0xdd, 0xd8, 0xd4, 0x0d, 0xf6, 0x67, 0xc9, 0xa8, 0xd6, 0x65, 0xb3, 0xdd, 0xc4, 0x46, 0xa1, 0x58,
+	0xa9, 0x70, 0xf5, 0x47, 0x5b, 0x8a, 0x66, 0x8d, 0xa5, 0xfb, 0x30, 0xea, 0xb1, 0xef, 0xf8, 0x74,
+	0x09, 0x06, 0x9b, 0xee, 0x34, 0x73, 0x6a, 0xcc, 0x75, 0xca, 0x2b, 0xe3, 0x45, 0x4a, 0xcf, 0x61,
+	0xac, 0xa4, 0x6b, 0xf8, 0x10, 0x3c, 0x29, 0xc0, 0x78, 0xd0, 0x32, 0x73, 0x26, 0x03, 0xfd, 0x56,
+	0xd1, 0x59, 0x6e, 0xf4, 0x2d, 0xa4, 0x4a, 0xf6, 0x0f, 0x69, 0xd1, 0xc6, 0xfb, 0xbc, 0xb7, 0xa9,
+	0x22, 0x48, 0x59, 0x10, 0x4a, 0x33, 0x55, 0xa2, 0x63, 0xa9, 0x04, 0x5f, 0x0a, 0xa1, 0xff, 0xdb,
+	0x58, 0xdd, 0x80, 0xd1, 0x5b, 0x7c, 0x03, 0x7c, 0x0d, 0x63, 0x6e, 0xfe, 0x34, 0x8c, 0x98, 0x44,
+	0x69, 0x18, 0x4a, 0x85, 0xee, 0x0c, 0xcb, 0x63, 0xaa, 0x74, 0xa0, 0x34, 0xec, 0x99, 0xff, 0x56,
+	0xbb, 0x89, 0xa5, 0x1b, 0x90, 0xf1, 0x6b, 0x60, 0x94, 0x16, 0xa0, 0x6f, 0x03, 0x63, 0x46, 0x65,
+	0xdc, 0xa5, 0xe2, 0x03, 0x5b, 0x10, 0x69, 0x0a, 0xc4, 0x75, 0x5d, 0x27, 0xac, 0x48, 0xef, 0x61,
+	0xc3, 0x50, 0x6a, 0x6e, 0xdd, 0x5f, 0x81, 0xc9, 0xc8, 0x55, 0x66, 0x46, 0x84, 0xf4, 0x26, 0x9b,
+	0xa3, 0xb1, 0x1d, 0x28, 0x39, 0xbf, 0xa5, 0x1f, 0xc2, 0xc4, 0x1a, 0x3f, 0x21, 0x0e, 0xbe, 0x18,
+	0x56, 0x7c, 0xd6, 0xef, 0xe9, 0x0d, 0xb5, 0x8e, 0x09, 0xb7, 0x9e, 0x85, 0xa3, 0x9b, 0xf6, 0x0c,
+	0x8b, 0x2b, 0xff, 0x29, 0xdd, 0x85, 0xe3, 0x8e, 0x98, 0x27, 0xbf, 0x03, 0xce, 0x59, 0xc7, 0x42,
+	0x3a, 0xea, 0x86, 0xd4, 0x35, 0x93, 0x7a, 0xb3, 0x9b, 0x4f, 0x94, 0x5c, 0xac, 0x74, 0x09, 0x32,
+	0xdf, 0xb4, 0x0e, 0xd2, 0x75, 0x76, 0x6c, 0x71, 0xfb, 0x79, 0x18, 0xe4, 0x27, 0x59, 0x59, 0xad,
+	0xb2, 0x32, 0x03, 0x3e, 0x75, 0xbb, 0x2a, 0xb5, 0x61, 0x2c, 0x20, 0xc8, 0xa8, 0x2c, 0x43, 0x9a,
+	0xc3, 0x18, 0x13, 0xe4, 0xa9, 0x33, 0xb6, 0xc2, 0x88, 0x38, 0x48, 0x74, 0x06, 0xfa, 0x5b, 0xba,
+	0x89, 0x8d, 0x6c, 0x72, 0xa6, 0x6f, 0x61, 0xf0, 0xfc, 0x90, 0x2b, 0xf2, 0x50, 0x37, 0x31, 0x83,
+	0xdb, 0x10, 0xe9, 0xcf, 0x42, 0xc0, 0xb6, 0x93, 0xb3, 0x8c, 0xad, 0x85, 0xc7, 0xcc, 0xfe, 0x81,
+	0x74, 0x00, 0xf7, 0x88, 0xcf, 0x26, 0x43, 0xb5, 0xaf, 0xd4, 0x78, 0x5d, 0xaf, 0x5e, 0xfe, 0xb4,
+	0x9b, 0x5f, 0xee, 0x9e, 0x4f, 0xd9, 0xbe, 0x7c, 0x3c, 0x92, 0x25, 0x8f, 0x09, 0x34, 0x02, 0x7d,
+	0x8a, 0xa6, 0x65, 0xfb, 0x66, 0x84, 0x85, 0x74, 0xc9, 0x1a, 0x5a, 0xe9, 0x24, 0xb8, 0x85, 0x89,
+	0x81, 0xb3, 0x29, 0x3a, 0xcb, 0x7f, 0x5e, 0x4d, 0xff, 0xfc, 0x75, 0x3e, 0xf1, 0xcf, 0xd7, 0xf9,
+	0x84, 0xf4, 0x07, 0x01, 0xc6, 0x83, 0x6e, 0xb1, 0x98, 0x5e, 0x84, 0x01, 0x1e, 0x29, 0xbb, 0x8a,
+	0x3b, 0x05, 0xd5, 0x85, 0xa2, 0x67, 0x11, 0x9e, 0x8f, 0x07, 0x3d, 0xb7, 0x6d, 0xac, 0x5e, 0xf9,
+	0xb4, 0x9b, 0x5f, 0xd9, 0xa3, 0xeb, 0xb6, 0xa8, 0xd7, 0x77, 0xe9, 0x1b, 0x30, 0x47, 0x9d, 0xf8,
+	0xce, 0x53, 0xd5, 0xc4, 0x9a, 0x6a, 0x98, 0xb8, 0xca, 0xf9, 0x59, 0x99, 0x24, 0x46, 0xcf, 0x15,
+	0xf6, 0x18, 0xe6, 0xbb, 0x69, 0x72, 0x4a, 0xee, 0x08, 0xcd, 0x34, 0x8f, 0xcd, 0x78, 0xe8, 0x66,
+	0x2b, 0x5a, 0xaf, 0x02, 0x16, 0x1f, 0x86, 0x95, 0x5e, 0x08, 0x30, 0x42, 0x0d, 0x58, 0xda, 0x7a,
+	0x65, 0x85, 0xbe, 0xce, 0x4b, 0x2c, 0x49, 0xcf, 0x84, 0x2f, 0xef, 0xfd, 0x00, 0xb0, 0xe5, 0x3d,
+	0x89, 0xbf, 0x0e, 0xc7, 0x3d, 0x3c, 0x9c, 0xe3, 0x31, 0x65, 0xe1, 0xd8, 0x16, 0x8a, 0xde, 0x0f,
+	0x14, 0x21, 0x2d, 0x7b, 0xc4, 0x7b, 0x8f, 0xee, 0x0d, 0x40, 0x5e, 0x29, 0x66, 0xd5, 0xd9, 0x86,
+	0x42, 0xf7, 0x6d, 0xf8, 0x52, 0x80, 0x69, 0xaa, 0xe2, 0xa6, 0x62, 0x2a, 0x25, 0xbc, 0x81, 0x09,
+	0x6e, 0x54, 0xf0, 0x1d, 0xdc, 0x76, 0x48, 0xf8, 0x37, 0x9e, 0xf0, 0x3f, 0xdf, 0x78, 0xd2, 0xaf,
+	0x05, 0xc8, 0xc5, 0x51, 0x62, 0x1e, 0x22, 0x48, 0xd5, 0x71, 0x9b, 0xdf, 0x05, 0x74, 0x7c, 0x18,
+	0xdb, 0x64, 0x09, 0x26, 0xc2, 0x44, 0x79, 0xdc, 0x46, 0xa0, 0xaf, 0x8e, 0xdb, 0xec, 0x10, 0xb3,
+	0x86, 0xd2, 0x3d, 0x10, 0xa3, 0xe0, 0xcc, 0x27, 0x19, 0x52, 0xd6, 0xc3, 0x36, 0xfc, 0xae, 0xb3,
+	0xe1, 0xf6, 0x6b, 0xf7, 0x56, 0xc3, 0x24, 0xed, 0x12, 0x05, 0x4a, 0x8b, 0x4c, 0xdd, 0x6d, 0xf6,
+	0x38, 0x2d, 0xe1, 0x8a, 0x4e, 0xaa, 0xdc, 0xfc, 0x10, 0x24, 0x9d, 0x92, 0x49, 0xaa, 0x55, 0xe9,
+	0x01, 0x4c, 0x46, 0xa2, 0x99, 0xf5, 0x73, 0x70, 0x84, 0xd0, 0x19, 0x66, 0x3f, 0xeb, 0xda, 0x0f,
+	0x48, 0x30, 0x9c, 0xf4, 0x51, 0x80, 0xd9, 0x08, 0x8d, 0xe1, 0x07, 0xd9, 0xf7, 0xe0, 0x68, 0x85,
+	0x60, 0xc5, 0xd4, 0xf9, 0x15, 0xbc, 0xf6, 0x61, 0x37, 0x3f, 0x64, 0x5f, 0xc1, 0x6c, 0x61, 0x3f,
+	0x37, 0x30, 0x13, 0x3d, 0xf0, 0x8b, 0xc1, 0xba, 0xb9, 0xe6, 0xba, 0x38, 0xce, 0x82, 0x7a, 0xd9,
+	0xba, 0x30, 0xe8, 0x1a, 0xdb, 0x8a, 0xb1, 0x51, 0x65, 0x9b, 0x92, 0xc3, 0x0f, 0xa3, 0x98, 0x5f,
+	0xf1, 0x6d, 0x57, 0xd4, 0xb4, 0x80, 0x67, 0x87, 0x76, 0x14, 0xfc, 0x51, 0x80, 0x7c, 0x2c, 0xa7,
+	0xff, 0xc7, 0x20, 0x17, 0x61, 0xc6, 0x57, 0x3a, 0x0f, 0x31, 0x51, 0x37, 0x02, 0x3b, 0x77, 0x1a,
+	0x80, 0xd8, 0x43, 0xf7, 0xd0, 0x1f, 0x60, 0x33, 0xb7, 0xab, 0x92, 0x0a, 0x27, 0x3a, 0xa8, 0x60,
+	0x41, 0xb9, 0x09, 0x5f, 0xb4, 0xe8, 0x7c, 0xd9, 0xb7, 0xab, 0xf3, 0x71, 0xa1, 0x31, 0x98, 0x96,
+	0x63, 0x2d, 0x8f, 0x36, 0xe9, 0xc7, 0x49, 0x38, 0x1b, 0x51, 0xe9, 0xdc, 0x22, 0x65, 0x64, 0x95,
+	0x7d, 0xb3, 0x49, 0xf4, 0x16, 0x26, 0xe8, 0xfb, 0x90, 0x56, 0xd8, 0x38, 0xfc, 0xda, 0xe6, 0x2b,
+	0xfb, 0xd8, 0xeb, 0x8e, 0xd6, 0x83, 0xdf, 0xec, 0x1f, 0x05, 0xb8, 0xb0, 0x87, 0x10, 0x38, 0x09,
+	0xb8, 0x0b, 0x43, 0xbe, 0x04, 0xf0, 0xe2, 0xec, 0x96, 0x01, 0x56, 0xa3, 0x5f, 0x78, 0xf3, 0x70,
+	0x28, 0x95, 0xfa, 0xd3, 0x24, 0x2c, 0xf6, 0xe0, 0x38, 0x1b, 0x61, 0x82, 0x2a, 0xc0, 0x8b, 0xd4,
+	0xc9, 0xfe, 0xad, 0x0f, 0xbb, 0xf9, 0x11, 0x3b, 0xfb, 0xce, 0xd2, 0x3e, 0xd2, 0xef, 0xea, 0x3d,
+	0xf8, 0xfc, 0xff, 0x5b, 0x80, 0xe5, 0xbd, 0x84, 0xe1, 0xf3, 0x29, 0x80, 0x5f, 0xf2, 0xfb, 0x3d,
+	0x74, 0xf6, 0xfa, 0x9d, 0x3f, 0xf8, 0x5b, 0xe1, 0x5f, 0x02, 0x2b, 0xcd, 0x2e, 0xcc, 0x3e, 0x9b,
+	0x5c, 0x9c, 0xff, 0xcd, 0x38, 0xf4, 0x53, 0x8f, 0xd1, 0x63, 0xc8, 0x44, 0xb5, 0xf1, 0xd0, 0x5c,
+	0x64, 0x1b, 0x28, 0xf8, 0x16, 0x13, 0xa7, 0xa3, 0xbb, 0x45, 0xcc, 0xa6, 0x94, 0x40, 0xdf, 0x86,
+	0x21, 0x7f, 0x73, 0x0b, 0x79, 0x82, 0x14, 0xd9, 0x70, 0x13, 0x67, 0xe2, 0x01, 0x8e, 0xda, 0x47,
+	0x30, 0x1c, 0xe8, 0x6a, 0xa1, 0x80, 0x58, 0xb8, 0x3d, 0x26, 0x9e, 0xe8, 0x80, 0xf0, 0x68, 0x46,
+	0xe1, 0xf6, 0x0f, 0x3a, 0x19, 0xd5, 0x37, 0x09, 0x12, 0x9f, 0x8c, 0x00, 0xc5, 0x6a, 0x66, 0xad,
+	0x9d, 0x18, 0xcd, 0xfe, 0xc6, 0x4f, 0x37, 0xcd, 0x8f, 0xe1, 0x78, 0xa8, 0x59, 0x8b, 0xa4, 0x4e,
+	0x9d, 0x5c, 0xa6, 0xf7, 0x64, 0x47, 0x8c, 0xa3, 0xff, 0x01, 0x1c, 0xf3, 0x36, 0xe0, 0xd0, 0x74,
+	0x4c, 0x63, 0x8e, 0x69, 0xcd, 0xc5, 0x2d, 0x3b, 0x0a, 0xab, 0x30, 0x1a, 0xd1, 0x9e, 0x43, 0xb3,
+	0x9e, 0x6a, 0x8a, 0xed, 0xed, 0x89, 0x73, 0x5d, 0x50, 0x8e, 0x95, 0x16, 0xa4, 0x79, 0x6f, 0x00,
+	0x79, 0x38, 0x45, 0xb5, 0xb6, 0xc4, 0x7c, 0xec, 0x3a, 0x53, 0x77, 0xfa, 0x27, 0x7f, 0xfa, 0xfb,
+	0x2f, 0x92, 0x27, 0xd1, 0x09, 0xd9, 0x02, 0xca, 0x35, 0xbd, 0x25, 0x3b, 0x2d, 0x15, 0x79, 0xdb,
+	0xf3, 0x59, 0xbd, 0x83, 0xea, 0x30, 0xe0, 0x74, 0x6b, 0x50, 0x9c, 0xe2, 0xa8, 0x72, 0x8f, 0x6e,
+	0xf4, 0x48, 0x93, 0xd4, 0xf4, 0x18, 0x1a, 0x8d, 0x30, 0x8d, 0x7e, 0x25, 0xc0, 0x44, 0x6c, 0x33,
+	0x04, 0xc9, 0x01, 0xe5, 0xdd, 0x1a, 0x30, 0xe2, 0xb9, 0xde, 0x05, 0x18, 0xbb, 0x79, 0xca, 0x6e,
+	0x06, 0xe5, 0x5c, 0x76, 0x76, 0x2f, 0x25, 0x10, 0x95, 0x22, 0xa4, 0x2c, 0x49, 0x24, 0x06, 0x2c,
+	0x78, 0x1a, 0x2d, 0xde, 0x3a, 0x0f, 0x35, 0x3f, 0xa4, 0x04, 0x52, 0xa1, 0x9f, 0x76, 0x26, 0x50,
+	0x14, 0xce, 0x71, 0x61, 0x2a, 0x7a, 0x91, 0x69, 0x99, 0xa3, 0x74, 0xf3, 0x68, 0xda, 0x4f, 0x37,
+	0xc8, 0xf6, 0x85, 0x00, 0x99, 0xa2, 0xa6, 0x85, 0x5a, 0x06, 0xe8, 0x54, 0x40, 0x7b, 0x5c, 0x9f,
+	0x43, 0x5c, 0xe8, 0x0e, 0x8c, 0xcf, 0x2f, 0xfd, 0x97, 0x14, 0x6d, 0x43, 0xec, 0x00, 0xf2, 0x49,
+	0xae, 0xb6, 0xef, 0xe0, 0xb6, 0xf7, 0xd4, 0x88, 0xed, 0x18, 0x88, 0xb3, 0x9d, 0x41, 0xcc, 0xfa,
+	0x14, 0xb5, 0x3e, 0x8e, 0x32, 0x7e, 0xeb, 0xf2, 0x76, 0x1d, 0xb7, 0x77, 0xd0, 0xcf, 0x04, 0x18,
+	0xf2, 0xdf, 0x65, 0x28, 0xa8, 0x36, 0xb2, 0x5f, 0xe0, 0xdd, 0xa5, 0x1d, 0xfa, 0x04, 0x51, 0xd5,
+	0xe3, 0xf9, 0xe7, 0x98, 0x05, 0x95, 0xb7, 0xad, 0x7c, 0xfc, 0x56, 0x80, 0x6c, 0xdc, 0xf7, 0x31,
+	0x2a, 0x74, 0xb4, 0x15, 0xbe, 0x61, 0xe4, 0x9e, 0xf1, 0x8c, 0xe5, 0x22, 0x65, 0x39, 0x8f, 0x66,
+	0x63, 0x59, 0x1a, 0xf2, 0x36, 0x6b, 0x20, 0xec, 0xa0, 0x57, 0x02, 0xa0, 0xf0, 0x07, 0x26, 0x0a,
+	0x16, 0x44, 0xec, 0x77, 0xb1, 0x78, 0xba, 0x07, 0x64, 0x7c, 0xfc, 0x14, 0xcd, 0x2a, 0x61, 0x3f,
+	0x3b, 0xf4, 0x3b, 0x01, 0x26, 0x3b, 0xbc, 0x6d, 0xd0, 0x99, 0x98, 0x90, 0x44, 0x7c, 0x50, 0x8a,
+	0x67, 0x7b, 0xc2, 0x32, 0x82, 0x2b, 0x94, 0xa0, 0x8c, 0x96, 0x22, 0x42, 0xe7, 0x7b, 0x44, 0xc9,
+	0xdb, 0xee, 0x57, 0xea, 0x0e, 0xfa, 0x87, 0x00, 0xa7, 0x7a, 0xfd, 0x52, 0xb8, 0xd8, 0x31, 0x9d,
+	0xb1, 0x72, 0xe2, 0x57, 0xf6, 0x27, 0xe7, 0xb8, 0xb6, 0x46, 0x5d, 0xbb, 0x8e, 0xae, 0x75, 0x72,
+	0xcd, 0x16, 0x2f, 0x3f, 0x71, 0xc6, 0x98, 0x38, 0x9e, 0x62, 0xb2, 0x83, 0xfe, 0x26, 0xc0, 0x7c,
+	0x8f, 0x9f, 0xc3, 0x2b, 0x7b, 0xe2, 0xcb, 0xc5, 0xc4, 0xeb, 0xfb, 0x12, 0x73, 0xbc, 0x2c, 0x52,
+	0x2f, 0xaf, 0xa1, 0x2b, 0xbd, 0x79, 0xc9, 0x3f, 0xad, 0xe5, 0x6d, 0x3e, 0xda, 0x41, 0xbf, 0x17,
+	0x20, 0xdf, 0xed, 0xd5, 0x5f, 0xe8, 0x56, 0xf3, 0x7e, 0xbc, 0x78, 0x71, 0x6f, 0x78, 0xc7, 0x9d,
+	0x02, 0x75, 0x67, 0x01, 0xcd, 0xc7, 0x6c, 0x98, 0x80, 0x4b, 0xab, 0x5f, 0x7d, 0xf3, 0x2e, 0x27,
+	0xbc, 0x7d, 0x97, 0x13, 0xfe, 0xfa, 0x2e, 0x27, 0xbc, 0x7c, 0x9f, 0x4b, 0xbc, 0x7d, 0x9f, 0x4b,
+	0xfc, 0xe5, 0x7d, 0x2e, 0xf1, 0xdd, 0x39, 0xcf, 0x3b, 0xfc, 0x8e, 0x4a, 0x94, 0x35, 0x9d, 0x60,
+	0xd9, 0xc0, 0x75, 0x45, 0x95, 0x9f, 0x53, 0xbd, 0xf4, 0x29, 0xfe, 0xe4, 0x08, 0xfd, 0x2f, 0xfd,
+	0x85, 0xff, 0x04, 0x00, 0x00, 0xff, 0xff, 0x75, 0xc3, 0xee, 0xa2, 0x9c, 0x20, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -1476,26 +2223,40 @@ type QueryClient interface {
 	CouncilorByAddress(ctx context.Context, in *CouncilorByAddressRequest, opts ...grpc.CallOption) (*CouncilorResponse, error)
 	// CouncilorByMoniker returns the councilor object from its moniker
 	CouncilorByMoniker(ctx context.Context, in *CouncilorByMonikerRequest, opts ...grpc.CallOption) (*CouncilorResponse, error)
-	// GetNetworkProperties returns network properties
-	GetNetworkProperties(ctx context.Context, in *NetworkPropertiesRequest, opts ...grpc.CallOption) (*NetworkPropertiesResponse, error)
-	// GetExecutionFee returns execution fee from msg type
-	GetExecutionFee(ctx context.Context, in *ExecutionFeeRequest, opts ...grpc.CallOption) (*ExecutionFeeResponse, error)
-	// GetPoorNetworkMessages returns poor network messages
-	GetPoorNetworkMessages(ctx context.Context, in *PoorNetworkMessagesRequest, opts ...grpc.CallOption) (*PoorNetworkMessagesResponse, error)
+	// NetworkProperties returns network properties
+	NetworkProperties(ctx context.Context, in *NetworkPropertiesRequest, opts ...grpc.CallOption) (*NetworkPropertiesResponse, error)
+	// ExecutionFee returns execution fee from msg type
+	ExecutionFee(ctx context.Context, in *ExecutionFeeRequest, opts ...grpc.CallOption) (*ExecutionFeeResponse, error)
+	// PoorNetworkMessages returns poor network messages
+	PoorNetworkMessages(ctx context.Context, in *PoorNetworkMessagesRequest, opts ...grpc.CallOption) (*PoorNetworkMessagesResponse, error)
 	// Proposal queries proposal details based on ProposalID.
 	Proposal(ctx context.Context, in *QueryProposalRequest, opts ...grpc.CallOption) (*QueryProposalResponse, error)
 	// Proposals queries all proposals based on given status.
 	Proposals(ctx context.Context, in *QueryProposalsRequest, opts ...grpc.CallOption) (*QueryProposalsResponse, error)
-	// GetWhitelistedProposalVoters returns whitelisted voters for a proposal for tracking
-	GetWhitelistedProposalVoters(ctx context.Context, in *QueryWhitelistedProposalVotersRequest, opts ...grpc.CallOption) (*QueryWhitelistedProposalVotersResponse, error)
+	// WhitelistedProposalVoters returns whitelisted voters for a proposal for tracking
+	WhitelistedProposalVoters(ctx context.Context, in *QueryWhitelistedProposalVotersRequest, opts ...grpc.CallOption) (*QueryWhitelistedProposalVotersResponse, error)
 	// Vote queries voted information based on proposalID, voterAddr.
 	Vote(ctx context.Context, in *QueryVoteRequest, opts ...grpc.CallOption) (*QueryVoteResponse, error)
 	// Votes queries votes of a given proposal.
 	Votes(ctx context.Context, in *QueryVotesRequest, opts ...grpc.CallOption) (*QueryVotesResponse, error)
 	// Query all data reference keys with pagination.
-	GetAllDataReferenceKeys(ctx context.Context, in *QueryDataReferenceKeysRequest, opts ...grpc.CallOption) (*QueryDataReferenceKeysResponse, error)
+	AllDataReferenceKeys(ctx context.Context, in *QueryDataReferenceKeysRequest, opts ...grpc.CallOption) (*QueryDataReferenceKeysResponse, error)
 	// Query data reference by key.
-	GetDataReferenceByKey(ctx context.Context, in *QueryDataReferenceRequest, opts ...grpc.CallOption) (*QueryDataReferenceResponse, error)
+	DataReferenceByKey(ctx context.Context, in *QueryDataReferenceRequest, opts ...grpc.CallOption) (*QueryDataReferenceResponse, error)
+	// Query identity record by id
+	IdentityRecord(ctx context.Context, in *QueryIdentityRecordRequest, opts ...grpc.CallOption) (*QueryIdentityRecordResponse, error)
+	// Query identity records by records creator
+	IdentityRecordsByAddress(ctx context.Context, in *QueryIdentityRecordsByAddressRequest, opts ...grpc.CallOption) (*QueryIdentityRecordsByAddressResponse, error)
+	// Query all identity records
+	AllIdentityRecords(ctx context.Context, in *QueryAllIdentityRecordsRequest, opts ...grpc.CallOption) (*QueryAllIdentityRecordsResponse, error)
+	// Query identity record verify request by id
+	IdentityRecordVerifyRequest(ctx context.Context, in *QueryIdentityVerifyRecordRequest, opts ...grpc.CallOption) (*QueryIdentityVerifyRecordResponse, error)
+	// Query identity records verify requests by requester
+	IdentityRecordVerifyRequestsByRequester(ctx context.Context, in *QueryIdentityRecordVerifyRequestsByRequester, opts ...grpc.CallOption) (*QueryIdentityRecordVerifyRequestsByRequesterResponse, error)
+	// Query identity records verify requests by approver
+	IdentityRecordVerifyRequestsByApprover(ctx context.Context, in *QueryIdentityRecordVerifyRequestsByApprover, opts ...grpc.CallOption) (*QueryIdentityRecordVerifyRequestsByApproverResponse, error)
+	// Query all identity records verify requests
+	AllIdentityRecordVerifyRequests(ctx context.Context, in *QueryAllIdentityRecordVerifyRequests, opts ...grpc.CallOption) (*QueryAllIdentityRecordVerifyRequestsResponse, error)
 }
 
 type queryClient struct {
@@ -1551,27 +2312,27 @@ func (c *queryClient) CouncilorByMoniker(ctx context.Context, in *CouncilorByMon
 	return out, nil
 }
 
-func (c *queryClient) GetNetworkProperties(ctx context.Context, in *NetworkPropertiesRequest, opts ...grpc.CallOption) (*NetworkPropertiesResponse, error) {
+func (c *queryClient) NetworkProperties(ctx context.Context, in *NetworkPropertiesRequest, opts ...grpc.CallOption) (*NetworkPropertiesResponse, error) {
 	out := new(NetworkPropertiesResponse)
-	err := c.cc.Invoke(ctx, "/kira.gov.Query/GetNetworkProperties", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/kira.gov.Query/NetworkProperties", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) GetExecutionFee(ctx context.Context, in *ExecutionFeeRequest, opts ...grpc.CallOption) (*ExecutionFeeResponse, error) {
+func (c *queryClient) ExecutionFee(ctx context.Context, in *ExecutionFeeRequest, opts ...grpc.CallOption) (*ExecutionFeeResponse, error) {
 	out := new(ExecutionFeeResponse)
-	err := c.cc.Invoke(ctx, "/kira.gov.Query/GetExecutionFee", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/kira.gov.Query/ExecutionFee", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) GetPoorNetworkMessages(ctx context.Context, in *PoorNetworkMessagesRequest, opts ...grpc.CallOption) (*PoorNetworkMessagesResponse, error) {
+func (c *queryClient) PoorNetworkMessages(ctx context.Context, in *PoorNetworkMessagesRequest, opts ...grpc.CallOption) (*PoorNetworkMessagesResponse, error) {
 	out := new(PoorNetworkMessagesResponse)
-	err := c.cc.Invoke(ctx, "/kira.gov.Query/GetPoorNetworkMessages", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/kira.gov.Query/PoorNetworkMessages", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1596,9 +2357,9 @@ func (c *queryClient) Proposals(ctx context.Context, in *QueryProposalsRequest, 
 	return out, nil
 }
 
-func (c *queryClient) GetWhitelistedProposalVoters(ctx context.Context, in *QueryWhitelistedProposalVotersRequest, opts ...grpc.CallOption) (*QueryWhitelistedProposalVotersResponse, error) {
+func (c *queryClient) WhitelistedProposalVoters(ctx context.Context, in *QueryWhitelistedProposalVotersRequest, opts ...grpc.CallOption) (*QueryWhitelistedProposalVotersResponse, error) {
 	out := new(QueryWhitelistedProposalVotersResponse)
-	err := c.cc.Invoke(ctx, "/kira.gov.Query/GetWhitelistedProposalVoters", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/kira.gov.Query/WhitelistedProposalVoters", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1623,18 +2384,81 @@ func (c *queryClient) Votes(ctx context.Context, in *QueryVotesRequest, opts ...
 	return out, nil
 }
 
-func (c *queryClient) GetAllDataReferenceKeys(ctx context.Context, in *QueryDataReferenceKeysRequest, opts ...grpc.CallOption) (*QueryDataReferenceKeysResponse, error) {
+func (c *queryClient) AllDataReferenceKeys(ctx context.Context, in *QueryDataReferenceKeysRequest, opts ...grpc.CallOption) (*QueryDataReferenceKeysResponse, error) {
 	out := new(QueryDataReferenceKeysResponse)
-	err := c.cc.Invoke(ctx, "/kira.gov.Query/GetAllDataReferenceKeys", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/kira.gov.Query/AllDataReferenceKeys", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) GetDataReferenceByKey(ctx context.Context, in *QueryDataReferenceRequest, opts ...grpc.CallOption) (*QueryDataReferenceResponse, error) {
+func (c *queryClient) DataReferenceByKey(ctx context.Context, in *QueryDataReferenceRequest, opts ...grpc.CallOption) (*QueryDataReferenceResponse, error) {
 	out := new(QueryDataReferenceResponse)
-	err := c.cc.Invoke(ctx, "/kira.gov.Query/GetDataReferenceByKey", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/kira.gov.Query/DataReferenceByKey", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) IdentityRecord(ctx context.Context, in *QueryIdentityRecordRequest, opts ...grpc.CallOption) (*QueryIdentityRecordResponse, error) {
+	out := new(QueryIdentityRecordResponse)
+	err := c.cc.Invoke(ctx, "/kira.gov.Query/IdentityRecord", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) IdentityRecordsByAddress(ctx context.Context, in *QueryIdentityRecordsByAddressRequest, opts ...grpc.CallOption) (*QueryIdentityRecordsByAddressResponse, error) {
+	out := new(QueryIdentityRecordsByAddressResponse)
+	err := c.cc.Invoke(ctx, "/kira.gov.Query/IdentityRecordsByAddress", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) AllIdentityRecords(ctx context.Context, in *QueryAllIdentityRecordsRequest, opts ...grpc.CallOption) (*QueryAllIdentityRecordsResponse, error) {
+	out := new(QueryAllIdentityRecordsResponse)
+	err := c.cc.Invoke(ctx, "/kira.gov.Query/AllIdentityRecords", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) IdentityRecordVerifyRequest(ctx context.Context, in *QueryIdentityVerifyRecordRequest, opts ...grpc.CallOption) (*QueryIdentityVerifyRecordResponse, error) {
+	out := new(QueryIdentityVerifyRecordResponse)
+	err := c.cc.Invoke(ctx, "/kira.gov.Query/IdentityRecordVerifyRequest", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) IdentityRecordVerifyRequestsByRequester(ctx context.Context, in *QueryIdentityRecordVerifyRequestsByRequester, opts ...grpc.CallOption) (*QueryIdentityRecordVerifyRequestsByRequesterResponse, error) {
+	out := new(QueryIdentityRecordVerifyRequestsByRequesterResponse)
+	err := c.cc.Invoke(ctx, "/kira.gov.Query/IdentityRecordVerifyRequestsByRequester", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) IdentityRecordVerifyRequestsByApprover(ctx context.Context, in *QueryIdentityRecordVerifyRequestsByApprover, opts ...grpc.CallOption) (*QueryIdentityRecordVerifyRequestsByApproverResponse, error) {
+	out := new(QueryIdentityRecordVerifyRequestsByApproverResponse)
+	err := c.cc.Invoke(ctx, "/kira.gov.Query/IdentityRecordVerifyRequestsByApprover", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) AllIdentityRecordVerifyRequests(ctx context.Context, in *QueryAllIdentityRecordVerifyRequests, opts ...grpc.CallOption) (*QueryAllIdentityRecordVerifyRequestsResponse, error) {
+	out := new(QueryAllIdentityRecordVerifyRequestsResponse)
+	err := c.cc.Invoke(ctx, "/kira.gov.Query/AllIdentityRecordVerifyRequests", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1653,26 +2477,40 @@ type QueryServer interface {
 	CouncilorByAddress(context.Context, *CouncilorByAddressRequest) (*CouncilorResponse, error)
 	// CouncilorByMoniker returns the councilor object from its moniker
 	CouncilorByMoniker(context.Context, *CouncilorByMonikerRequest) (*CouncilorResponse, error)
-	// GetNetworkProperties returns network properties
-	GetNetworkProperties(context.Context, *NetworkPropertiesRequest) (*NetworkPropertiesResponse, error)
-	// GetExecutionFee returns execution fee from msg type
-	GetExecutionFee(context.Context, *ExecutionFeeRequest) (*ExecutionFeeResponse, error)
-	// GetPoorNetworkMessages returns poor network messages
-	GetPoorNetworkMessages(context.Context, *PoorNetworkMessagesRequest) (*PoorNetworkMessagesResponse, error)
+	// NetworkProperties returns network properties
+	NetworkProperties(context.Context, *NetworkPropertiesRequest) (*NetworkPropertiesResponse, error)
+	// ExecutionFee returns execution fee from msg type
+	ExecutionFee(context.Context, *ExecutionFeeRequest) (*ExecutionFeeResponse, error)
+	// PoorNetworkMessages returns poor network messages
+	PoorNetworkMessages(context.Context, *PoorNetworkMessagesRequest) (*PoorNetworkMessagesResponse, error)
 	// Proposal queries proposal details based on ProposalID.
 	Proposal(context.Context, *QueryProposalRequest) (*QueryProposalResponse, error)
 	// Proposals queries all proposals based on given status.
 	Proposals(context.Context, *QueryProposalsRequest) (*QueryProposalsResponse, error)
-	// GetWhitelistedProposalVoters returns whitelisted voters for a proposal for tracking
-	GetWhitelistedProposalVoters(context.Context, *QueryWhitelistedProposalVotersRequest) (*QueryWhitelistedProposalVotersResponse, error)
+	// WhitelistedProposalVoters returns whitelisted voters for a proposal for tracking
+	WhitelistedProposalVoters(context.Context, *QueryWhitelistedProposalVotersRequest) (*QueryWhitelistedProposalVotersResponse, error)
 	// Vote queries voted information based on proposalID, voterAddr.
 	Vote(context.Context, *QueryVoteRequest) (*QueryVoteResponse, error)
 	// Votes queries votes of a given proposal.
 	Votes(context.Context, *QueryVotesRequest) (*QueryVotesResponse, error)
 	// Query all data reference keys with pagination.
-	GetAllDataReferenceKeys(context.Context, *QueryDataReferenceKeysRequest) (*QueryDataReferenceKeysResponse, error)
+	AllDataReferenceKeys(context.Context, *QueryDataReferenceKeysRequest) (*QueryDataReferenceKeysResponse, error)
 	// Query data reference by key.
-	GetDataReferenceByKey(context.Context, *QueryDataReferenceRequest) (*QueryDataReferenceResponse, error)
+	DataReferenceByKey(context.Context, *QueryDataReferenceRequest) (*QueryDataReferenceResponse, error)
+	// Query identity record by id
+	IdentityRecord(context.Context, *QueryIdentityRecordRequest) (*QueryIdentityRecordResponse, error)
+	// Query identity records by records creator
+	IdentityRecordsByAddress(context.Context, *QueryIdentityRecordsByAddressRequest) (*QueryIdentityRecordsByAddressResponse, error)
+	// Query all identity records
+	AllIdentityRecords(context.Context, *QueryAllIdentityRecordsRequest) (*QueryAllIdentityRecordsResponse, error)
+	// Query identity record verify request by id
+	IdentityRecordVerifyRequest(context.Context, *QueryIdentityVerifyRecordRequest) (*QueryIdentityVerifyRecordResponse, error)
+	// Query identity records verify requests by requester
+	IdentityRecordVerifyRequestsByRequester(context.Context, *QueryIdentityRecordVerifyRequestsByRequester) (*QueryIdentityRecordVerifyRequestsByRequesterResponse, error)
+	// Query identity records verify requests by approver
+	IdentityRecordVerifyRequestsByApprover(context.Context, *QueryIdentityRecordVerifyRequestsByApprover) (*QueryIdentityRecordVerifyRequestsByApproverResponse, error)
+	// Query all identity records verify requests
+	AllIdentityRecordVerifyRequests(context.Context, *QueryAllIdentityRecordVerifyRequests) (*QueryAllIdentityRecordVerifyRequestsResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -1694,14 +2532,14 @@ func (*UnimplementedQueryServer) CouncilorByAddress(ctx context.Context, req *Co
 func (*UnimplementedQueryServer) CouncilorByMoniker(ctx context.Context, req *CouncilorByMonikerRequest) (*CouncilorResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CouncilorByMoniker not implemented")
 }
-func (*UnimplementedQueryServer) GetNetworkProperties(ctx context.Context, req *NetworkPropertiesRequest) (*NetworkPropertiesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetNetworkProperties not implemented")
+func (*UnimplementedQueryServer) NetworkProperties(ctx context.Context, req *NetworkPropertiesRequest) (*NetworkPropertiesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method NetworkProperties not implemented")
 }
-func (*UnimplementedQueryServer) GetExecutionFee(ctx context.Context, req *ExecutionFeeRequest) (*ExecutionFeeResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetExecutionFee not implemented")
+func (*UnimplementedQueryServer) ExecutionFee(ctx context.Context, req *ExecutionFeeRequest) (*ExecutionFeeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ExecutionFee not implemented")
 }
-func (*UnimplementedQueryServer) GetPoorNetworkMessages(ctx context.Context, req *PoorNetworkMessagesRequest) (*PoorNetworkMessagesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetPoorNetworkMessages not implemented")
+func (*UnimplementedQueryServer) PoorNetworkMessages(ctx context.Context, req *PoorNetworkMessagesRequest) (*PoorNetworkMessagesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PoorNetworkMessages not implemented")
 }
 func (*UnimplementedQueryServer) Proposal(ctx context.Context, req *QueryProposalRequest) (*QueryProposalResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Proposal not implemented")
@@ -1709,8 +2547,8 @@ func (*UnimplementedQueryServer) Proposal(ctx context.Context, req *QueryProposa
 func (*UnimplementedQueryServer) Proposals(ctx context.Context, req *QueryProposalsRequest) (*QueryProposalsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Proposals not implemented")
 }
-func (*UnimplementedQueryServer) GetWhitelistedProposalVoters(ctx context.Context, req *QueryWhitelistedProposalVotersRequest) (*QueryWhitelistedProposalVotersResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetWhitelistedProposalVoters not implemented")
+func (*UnimplementedQueryServer) WhitelistedProposalVoters(ctx context.Context, req *QueryWhitelistedProposalVotersRequest) (*QueryWhitelistedProposalVotersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WhitelistedProposalVoters not implemented")
 }
 func (*UnimplementedQueryServer) Vote(ctx context.Context, req *QueryVoteRequest) (*QueryVoteResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Vote not implemented")
@@ -1718,11 +2556,32 @@ func (*UnimplementedQueryServer) Vote(ctx context.Context, req *QueryVoteRequest
 func (*UnimplementedQueryServer) Votes(ctx context.Context, req *QueryVotesRequest) (*QueryVotesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Votes not implemented")
 }
-func (*UnimplementedQueryServer) GetAllDataReferenceKeys(ctx context.Context, req *QueryDataReferenceKeysRequest) (*QueryDataReferenceKeysResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAllDataReferenceKeys not implemented")
+func (*UnimplementedQueryServer) AllDataReferenceKeys(ctx context.Context, req *QueryDataReferenceKeysRequest) (*QueryDataReferenceKeysResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AllDataReferenceKeys not implemented")
 }
-func (*UnimplementedQueryServer) GetDataReferenceByKey(ctx context.Context, req *QueryDataReferenceRequest) (*QueryDataReferenceResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetDataReferenceByKey not implemented")
+func (*UnimplementedQueryServer) DataReferenceByKey(ctx context.Context, req *QueryDataReferenceRequest) (*QueryDataReferenceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DataReferenceByKey not implemented")
+}
+func (*UnimplementedQueryServer) IdentityRecord(ctx context.Context, req *QueryIdentityRecordRequest) (*QueryIdentityRecordResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IdentityRecord not implemented")
+}
+func (*UnimplementedQueryServer) IdentityRecordsByAddress(ctx context.Context, req *QueryIdentityRecordsByAddressRequest) (*QueryIdentityRecordsByAddressResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IdentityRecordsByAddress not implemented")
+}
+func (*UnimplementedQueryServer) AllIdentityRecords(ctx context.Context, req *QueryAllIdentityRecordsRequest) (*QueryAllIdentityRecordsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AllIdentityRecords not implemented")
+}
+func (*UnimplementedQueryServer) IdentityRecordVerifyRequest(ctx context.Context, req *QueryIdentityVerifyRecordRequest) (*QueryIdentityVerifyRecordResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IdentityRecordVerifyRequest not implemented")
+}
+func (*UnimplementedQueryServer) IdentityRecordVerifyRequestsByRequester(ctx context.Context, req *QueryIdentityRecordVerifyRequestsByRequester) (*QueryIdentityRecordVerifyRequestsByRequesterResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IdentityRecordVerifyRequestsByRequester not implemented")
+}
+func (*UnimplementedQueryServer) IdentityRecordVerifyRequestsByApprover(ctx context.Context, req *QueryIdentityRecordVerifyRequestsByApprover) (*QueryIdentityRecordVerifyRequestsByApproverResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IdentityRecordVerifyRequestsByApprover not implemented")
+}
+func (*UnimplementedQueryServer) AllIdentityRecordVerifyRequests(ctx context.Context, req *QueryAllIdentityRecordVerifyRequests) (*QueryAllIdentityRecordVerifyRequestsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AllIdentityRecordVerifyRequests not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -1819,56 +2678,56 @@ func _Query_CouncilorByMoniker_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_GetNetworkProperties_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_NetworkProperties_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(NetworkPropertiesRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).GetNetworkProperties(ctx, in)
+		return srv.(QueryServer).NetworkProperties(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/kira.gov.Query/GetNetworkProperties",
+		FullMethod: "/kira.gov.Query/NetworkProperties",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).GetNetworkProperties(ctx, req.(*NetworkPropertiesRequest))
+		return srv.(QueryServer).NetworkProperties(ctx, req.(*NetworkPropertiesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_GetExecutionFee_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_ExecutionFee_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ExecutionFeeRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).GetExecutionFee(ctx, in)
+		return srv.(QueryServer).ExecutionFee(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/kira.gov.Query/GetExecutionFee",
+		FullMethod: "/kira.gov.Query/ExecutionFee",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).GetExecutionFee(ctx, req.(*ExecutionFeeRequest))
+		return srv.(QueryServer).ExecutionFee(ctx, req.(*ExecutionFeeRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_GetPoorNetworkMessages_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_PoorNetworkMessages_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(PoorNetworkMessagesRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).GetPoorNetworkMessages(ctx, in)
+		return srv.(QueryServer).PoorNetworkMessages(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/kira.gov.Query/GetPoorNetworkMessages",
+		FullMethod: "/kira.gov.Query/PoorNetworkMessages",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).GetPoorNetworkMessages(ctx, req.(*PoorNetworkMessagesRequest))
+		return srv.(QueryServer).PoorNetworkMessages(ctx, req.(*PoorNetworkMessagesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1909,20 +2768,20 @@ func _Query_Proposals_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_GetWhitelistedProposalVoters_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_WhitelistedProposalVoters_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryWhitelistedProposalVotersRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).GetWhitelistedProposalVoters(ctx, in)
+		return srv.(QueryServer).WhitelistedProposalVoters(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/kira.gov.Query/GetWhitelistedProposalVoters",
+		FullMethod: "/kira.gov.Query/WhitelistedProposalVoters",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).GetWhitelistedProposalVoters(ctx, req.(*QueryWhitelistedProposalVotersRequest))
+		return srv.(QueryServer).WhitelistedProposalVoters(ctx, req.(*QueryWhitelistedProposalVotersRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1963,38 +2822,164 @@ func _Query_Votes_Handler(srv interface{}, ctx context.Context, dec func(interfa
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_GetAllDataReferenceKeys_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_AllDataReferenceKeys_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryDataReferenceKeysRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).GetAllDataReferenceKeys(ctx, in)
+		return srv.(QueryServer).AllDataReferenceKeys(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/kira.gov.Query/GetAllDataReferenceKeys",
+		FullMethod: "/kira.gov.Query/AllDataReferenceKeys",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).GetAllDataReferenceKeys(ctx, req.(*QueryDataReferenceKeysRequest))
+		return srv.(QueryServer).AllDataReferenceKeys(ctx, req.(*QueryDataReferenceKeysRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_GetDataReferenceByKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_DataReferenceByKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryDataReferenceRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).GetDataReferenceByKey(ctx, in)
+		return srv.(QueryServer).DataReferenceByKey(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/kira.gov.Query/GetDataReferenceByKey",
+		FullMethod: "/kira.gov.Query/DataReferenceByKey",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).GetDataReferenceByKey(ctx, req.(*QueryDataReferenceRequest))
+		return srv.(QueryServer).DataReferenceByKey(ctx, req.(*QueryDataReferenceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_IdentityRecord_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryIdentityRecordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).IdentityRecord(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.gov.Query/IdentityRecord",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).IdentityRecord(ctx, req.(*QueryIdentityRecordRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_IdentityRecordsByAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryIdentityRecordsByAddressRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).IdentityRecordsByAddress(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.gov.Query/IdentityRecordsByAddress",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).IdentityRecordsByAddress(ctx, req.(*QueryIdentityRecordsByAddressRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_AllIdentityRecords_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryAllIdentityRecordsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).AllIdentityRecords(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.gov.Query/AllIdentityRecords",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).AllIdentityRecords(ctx, req.(*QueryAllIdentityRecordsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_IdentityRecordVerifyRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryIdentityVerifyRecordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).IdentityRecordVerifyRequest(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.gov.Query/IdentityRecordVerifyRequest",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).IdentityRecordVerifyRequest(ctx, req.(*QueryIdentityVerifyRecordRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_IdentityRecordVerifyRequestsByRequester_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryIdentityRecordVerifyRequestsByRequester)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).IdentityRecordVerifyRequestsByRequester(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.gov.Query/IdentityRecordVerifyRequestsByRequester",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).IdentityRecordVerifyRequestsByRequester(ctx, req.(*QueryIdentityRecordVerifyRequestsByRequester))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_IdentityRecordVerifyRequestsByApprover_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryIdentityRecordVerifyRequestsByApprover)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).IdentityRecordVerifyRequestsByApprover(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.gov.Query/IdentityRecordVerifyRequestsByApprover",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).IdentityRecordVerifyRequestsByApprover(ctx, req.(*QueryIdentityRecordVerifyRequestsByApprover))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_AllIdentityRecordVerifyRequests_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryAllIdentityRecordVerifyRequests)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).AllIdentityRecordVerifyRequests(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.gov.Query/AllIdentityRecordVerifyRequests",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).AllIdentityRecordVerifyRequests(ctx, req.(*QueryAllIdentityRecordVerifyRequests))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2024,16 +3009,16 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Query_CouncilorByMoniker_Handler,
 		},
 		{
-			MethodName: "GetNetworkProperties",
-			Handler:    _Query_GetNetworkProperties_Handler,
+			MethodName: "NetworkProperties",
+			Handler:    _Query_NetworkProperties_Handler,
 		},
 		{
-			MethodName: "GetExecutionFee",
-			Handler:    _Query_GetExecutionFee_Handler,
+			MethodName: "ExecutionFee",
+			Handler:    _Query_ExecutionFee_Handler,
 		},
 		{
-			MethodName: "GetPoorNetworkMessages",
-			Handler:    _Query_GetPoorNetworkMessages_Handler,
+			MethodName: "PoorNetworkMessages",
+			Handler:    _Query_PoorNetworkMessages_Handler,
 		},
 		{
 			MethodName: "Proposal",
@@ -2044,8 +3029,8 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Proposals_Handler,
 		},
 		{
-			MethodName: "GetWhitelistedProposalVoters",
-			Handler:    _Query_GetWhitelistedProposalVoters_Handler,
+			MethodName: "WhitelistedProposalVoters",
+			Handler:    _Query_WhitelistedProposalVoters_Handler,
 		},
 		{
 			MethodName: "Vote",
@@ -2056,12 +3041,40 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Votes_Handler,
 		},
 		{
-			MethodName: "GetAllDataReferenceKeys",
-			Handler:    _Query_GetAllDataReferenceKeys_Handler,
+			MethodName: "AllDataReferenceKeys",
+			Handler:    _Query_AllDataReferenceKeys_Handler,
 		},
 		{
-			MethodName: "GetDataReferenceByKey",
-			Handler:    _Query_GetDataReferenceByKey_Handler,
+			MethodName: "DataReferenceByKey",
+			Handler:    _Query_DataReferenceByKey_Handler,
+		},
+		{
+			MethodName: "IdentityRecord",
+			Handler:    _Query_IdentityRecord_Handler,
+		},
+		{
+			MethodName: "IdentityRecordsByAddress",
+			Handler:    _Query_IdentityRecordsByAddress_Handler,
+		},
+		{
+			MethodName: "AllIdentityRecords",
+			Handler:    _Query_AllIdentityRecords_Handler,
+		},
+		{
+			MethodName: "IdentityRecordVerifyRequest",
+			Handler:    _Query_IdentityRecordVerifyRequest_Handler,
+		},
+		{
+			MethodName: "IdentityRecordVerifyRequestsByRequester",
+			Handler:    _Query_IdentityRecordVerifyRequestsByRequester_Handler,
+		},
+		{
+			MethodName: "IdentityRecordVerifyRequestsByApprover",
+			Handler:    _Query_IdentityRecordVerifyRequestsByApprover_Handler,
+		},
+		{
+			MethodName: "AllIdentityRecordVerifyRequests",
+			Handler:    _Query_AllIdentityRecordVerifyRequests_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -3066,6 +4079,573 @@ func (m *QueryDataReferenceResponse) MarshalToSizedBuffer(dAtA []byte) (int, err
 	return len(dAtA) - i, nil
 }
 
+func (m *QueryIdentityRecordRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryIdentityRecordRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryIdentityRecordRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Id != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.Id))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryIdentityRecordResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryIdentityRecordResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryIdentityRecordResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Record != nil {
+		{
+			size, err := m.Record.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryIdentityRecordsByAddressRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryIdentityRecordsByAddressRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryIdentityRecordsByAddressRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryIdentityRecordsByAddressResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryIdentityRecordsByAddressResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryIdentityRecordsByAddressResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Records) > 0 {
+		for iNdEx := len(m.Records) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Records[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryAllIdentityRecordsRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryAllIdentityRecordsRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryAllIdentityRecordsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryAllIdentityRecordsResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryAllIdentityRecordsResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryAllIdentityRecordsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Records) > 0 {
+		for iNdEx := len(m.Records) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Records[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryIdentityVerifyRecordRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryIdentityVerifyRecordRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryIdentityVerifyRecordRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.RequestId != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.RequestId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryIdentityVerifyRecordResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryIdentityVerifyRecordResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryIdentityVerifyRecordResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.VerifyRecord != nil {
+		{
+			size, err := m.VerifyRecord.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryIdentityRecordVerifyRequestsByApprover) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryIdentityRecordVerifyRequestsByApprover) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryIdentityRecordVerifyRequestsByApprover) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Approver) > 0 {
+		i -= len(m.Approver)
+		copy(dAtA[i:], m.Approver)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Approver)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryIdentityRecordVerifyRequestsByApproverResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryIdentityRecordVerifyRequestsByApproverResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryIdentityRecordVerifyRequestsByApproverResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.VerifyRecords) > 0 {
+		for iNdEx := len(m.VerifyRecords) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.VerifyRecords[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryIdentityRecordVerifyRequestsByRequester) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryIdentityRecordVerifyRequestsByRequester) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryIdentityRecordVerifyRequestsByRequester) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Requester) > 0 {
+		i -= len(m.Requester)
+		copy(dAtA[i:], m.Requester)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Requester)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryIdentityRecordVerifyRequestsByRequesterResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryIdentityRecordVerifyRequestsByRequesterResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryIdentityRecordVerifyRequestsByRequesterResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.VerifyRecords) > 0 {
+		for iNdEx := len(m.VerifyRecords) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.VerifyRecords[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryAllIdentityRecordVerifyRequests) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryAllIdentityRecordVerifyRequests) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryAllIdentityRecordVerifyRequests) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryAllIdentityRecordVerifyRequestsResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryAllIdentityRecordVerifyRequestsResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryAllIdentityRecordVerifyRequestsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.VerifyRecords) > 0 {
+		for iNdEx := len(m.VerifyRecords) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.VerifyRecords[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	offset -= sovQuery(v)
 	base := offset
@@ -3471,6 +5051,228 @@ func (m *QueryDataReferenceResponse) Size() (n int) {
 	_ = l
 	if m.Data != nil {
 		l = m.Data.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryIdentityRecordRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Id != 0 {
+		n += 1 + sovQuery(uint64(m.Id))
+	}
+	return n
+}
+
+func (m *QueryIdentityRecordResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Record != nil {
+		l = m.Record.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryIdentityRecordsByAddressRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryIdentityRecordsByAddressResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Records) > 0 {
+		for _, e := range m.Records {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryAllIdentityRecordsRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryAllIdentityRecordsResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Records) > 0 {
+		for _, e := range m.Records {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryIdentityVerifyRecordRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.RequestId != 0 {
+		n += 1 + sovQuery(uint64(m.RequestId))
+	}
+	return n
+}
+
+func (m *QueryIdentityVerifyRecordResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.VerifyRecord != nil {
+		l = m.VerifyRecord.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryIdentityRecordVerifyRequestsByApprover) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Approver)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryIdentityRecordVerifyRequestsByApproverResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.VerifyRecords) > 0 {
+		for _, e := range m.VerifyRecords {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryIdentityRecordVerifyRequestsByRequester) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Requester)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryIdentityRecordVerifyRequestsByRequesterResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.VerifyRecords) > 0 {
+		for _, e := range m.VerifyRecords {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryAllIdentityRecordVerifyRequests) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryAllIdentityRecordVerifyRequestsResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.VerifyRecords) > 0 {
+		for _, e := range m.VerifyRecords {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
 		n += 1 + l + sovQuery(uint64(l))
 	}
 	return n
@@ -6090,6 +7892,1490 @@ func (m *QueryDataReferenceResponse) Unmarshal(dAtA []byte) error {
 				m.Data = &DataRegistryEntry{}
 			}
 			if err := m.Data.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryIdentityRecordRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryIdentityRecordRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryIdentityRecordRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			m.Id = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Id |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryIdentityRecordResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryIdentityRecordResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryIdentityRecordResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Record", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Record == nil {
+				m.Record = &IdentityRecord{}
+			}
+			if err := m.Record.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryIdentityRecordsByAddressRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryIdentityRecordsByAddressRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryIdentityRecordsByAddressRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = append(m.Creator[:0], dAtA[iNdEx:postIndex]...)
+			if m.Creator == nil {
+				m.Creator = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &github_com_cosmos_cosmos_sdk_types_query.PageRequest{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryIdentityRecordsByAddressResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryIdentityRecordsByAddressResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryIdentityRecordsByAddressResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Records", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Records = append(m.Records, IdentityRecord{})
+			if err := m.Records[len(m.Records)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &github_com_cosmos_cosmos_sdk_types_query.PageResponse{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryAllIdentityRecordsRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryAllIdentityRecordsRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryAllIdentityRecordsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &github_com_cosmos_cosmos_sdk_types_query.PageRequest{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryAllIdentityRecordsResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryAllIdentityRecordsResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryAllIdentityRecordsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Records", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Records = append(m.Records, IdentityRecord{})
+			if err := m.Records[len(m.Records)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &github_com_cosmos_cosmos_sdk_types_query.PageResponse{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryIdentityVerifyRecordRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryIdentityVerifyRecordRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryIdentityVerifyRecordRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RequestId", wireType)
+			}
+			m.RequestId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.RequestId |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryIdentityVerifyRecordResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryIdentityVerifyRecordResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryIdentityVerifyRecordResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field VerifyRecord", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.VerifyRecord == nil {
+				m.VerifyRecord = &IdentityRecordsVerify{}
+			}
+			if err := m.VerifyRecord.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryIdentityRecordVerifyRequestsByApprover) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryIdentityRecordVerifyRequestsByApprover: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryIdentityRecordVerifyRequestsByApprover: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Approver", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Approver = append(m.Approver[:0], dAtA[iNdEx:postIndex]...)
+			if m.Approver == nil {
+				m.Approver = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &github_com_cosmos_cosmos_sdk_types_query.PageRequest{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryIdentityRecordVerifyRequestsByApproverResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryIdentityRecordVerifyRequestsByApproverResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryIdentityRecordVerifyRequestsByApproverResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field VerifyRecords", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.VerifyRecords = append(m.VerifyRecords, IdentityRecordsVerify{})
+			if err := m.VerifyRecords[len(m.VerifyRecords)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &github_com_cosmos_cosmos_sdk_types_query.PageResponse{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryIdentityRecordVerifyRequestsByRequester) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryIdentityRecordVerifyRequestsByRequester: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryIdentityRecordVerifyRequestsByRequester: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Requester", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Requester = append(m.Requester[:0], dAtA[iNdEx:postIndex]...)
+			if m.Requester == nil {
+				m.Requester = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &github_com_cosmos_cosmos_sdk_types_query.PageRequest{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryIdentityRecordVerifyRequestsByRequesterResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryIdentityRecordVerifyRequestsByRequesterResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryIdentityRecordVerifyRequestsByRequesterResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field VerifyRecords", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.VerifyRecords = append(m.VerifyRecords, IdentityRecordsVerify{})
+			if err := m.VerifyRecords[len(m.VerifyRecords)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &github_com_cosmos_cosmos_sdk_types_query.PageResponse{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryAllIdentityRecordVerifyRequests) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryAllIdentityRecordVerifyRequests: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryAllIdentityRecordVerifyRequests: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &github_com_cosmos_cosmos_sdk_types_query.PageRequest{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryAllIdentityRecordVerifyRequestsResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryAllIdentityRecordVerifyRequestsResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryAllIdentityRecordVerifyRequestsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field VerifyRecords", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.VerifyRecords = append(m.VerifyRecords, IdentityRecordsVerify{})
+			if err := m.VerifyRecords[len(m.VerifyRecords)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &github_com_cosmos_cosmos_sdk_types_query.PageResponse{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

@@ -1,0 +1,96 @@
+syntax = "proto3";
+package kira.gov;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/gov/types";
+
+message IdentityRecord {
+    uint64 id = 1;
+    bytes address = 2 [
+        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+        (gogoproto.moretags) = "yaml:\"address\""
+    ];
+    map<string, string> infos = 3;
+    google.protobuf.Timestamp date = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+    repeated bytes verifiers = 5 [
+        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
+    ];
+}
+
+message IdentityInfoEntry {
+    string key = 1;
+    string info = 2;
+}
+
+message MsgCreateIdentityRecord {
+    bytes address = 1 [
+        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+        (gogoproto.moretags) = "yaml:\"address\""
+    ];
+    repeated IdentityInfoEntry infos = 2 [ (gogoproto.nullable) = false ];
+    google.protobuf.Timestamp date = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+message MsgEditIdentityRecord {
+    uint64 record_id = 1;
+    bytes address = 2 [
+        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+        (gogoproto.moretags) = "yaml:\"address\""
+    ];
+    repeated IdentityInfoEntry infos = 3 [ (gogoproto.nullable) = false ];
+    google.protobuf.Timestamp date = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+message IdentityRecordsVerify {
+    uint64 id = 1;
+    bytes address = 2 [
+        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+        (gogoproto.moretags) = "yaml:\"address\""
+    ];
+    bytes verifier = 3 [
+        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+        (gogoproto.moretags) = "yaml:\"verifier\""
+    ];
+    repeated uint64 recordIds = 4;
+    string tip = 5 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+        (gogoproto.nullable) = false
+    ];
+}
+
+message MsgRequestIdentityRecordsVerify {
+    bytes address = 1 [
+        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+        (gogoproto.moretags) = "yaml:\"address\""
+    ];
+    bytes verifier = 2 [
+        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+        (gogoproto.moretags) = "yaml:\"verifier\""
+    ];
+    repeated uint64 recordIds = 3;
+    string tip = 4 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+        (gogoproto.nullable) = false
+    ];
+}
+
+message MsgApproveIdentityRecords {
+    bytes proposer = 1 [
+        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+        (gogoproto.moretags) = "yaml:\"proposer\""
+    ];
+    bytes verifier = 2 [
+        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+        (gogoproto.moretags) = "yaml:\"verifier\""
+    ];
+    uint64 verifyRequestId = 3;
+}
+message MsgCancelIdentityRecordsVerifyRequest  {
+    bytes executor = 1 [
+        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+        (gogoproto.moretags) = "yaml:\"executor\""
+    ];
+    uint64 verifyRequestId = 2;
+}
