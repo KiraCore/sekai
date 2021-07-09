@@ -14,7 +14,13 @@ import (
 	"github.com/KiraCore/sekai/INTERX/common"
 	"github.com/KiraCore/sekai/INTERX/config"
 	"github.com/KiraCore/sekai/INTERX/types"
+	"github.com/tendermint/tendermint/crypto"
+	"github.com/tendermint/tendermint/crypto/ed25519"
 	tmjson "github.com/tendermint/tendermint/libs/json"
+	"github.com/tendermint/tendermint/libs/protoio"
+	"github.com/tendermint/tendermint/p2p"
+	"github.com/tendermint/tendermint/p2p/conn"
+	tmp2p "github.com/tendermint/tendermint/proto/tendermint/p2p"
 	tmTypes "github.com/tendermint/tendermint/rpc/core/types"
 	tmJsonRPCTypes "github.com/tendermint/tendermint/rpc/jsonrpc/types"
 )
@@ -158,6 +164,14 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 			nodeInfo.Port = getPort(kiraStatus.NodeInfo.ListenAddr)
 			nodeInfo.Peers = []string{}
 
+			// verify p2p node_id via p2p connect
+			peerNodeInfo, ping := connect(p2p.NewNetAddressIPPort(parseIP(nodeInfo.IP), uint16(nodeInfo.Port)), TIMEOUT)
+			if peerNodeInfo == nil || nodeInfo.ID != string(peerNodeInfo.ID()) {
+				continue
+			}
+
+			nodeInfo.Ping = ping
+
 			if _, ok := isLocalPeer[nodeInfo.ID]; ok {
 				nodeInfo.Connected = true
 			}
@@ -258,4 +272,130 @@ func getPort(listenAddr string) uint16 {
 	portNumber, _ := strconv.ParseUint(u.Port(), 10, 16)
 
 	return uint16(portNumber)
+}
+
+func connect(
+	netAddress *p2p.NetAddress,
+	timeoutDuration time.Duration,
+) (*p2p.DefaultNodeInfo, int64) {
+	// load node_key
+	privKey := ed25519.GenPrivKey()
+	nodeKey := &p2p.NodeKey{
+		PrivKey: privKey,
+	}
+
+	// manual handshaking
+	// dial to address
+
+	startTime := makeTimestamp()
+	connection, err := netAddress.DialTimeout(timeoutDuration)
+	endTime := makeTimestamp()
+	connectionTime := endTime - startTime
+
+	if err != nil {
+		return nil, 0
+	}
+
+	// create secret connection
+	startTime = makeTimestamp()
+	secretConn, err := upgradeSecretConn(connection, timeoutDuration, nodeKey.PrivKey)
+	endTime = makeTimestamp()
+	if endTime-startTime > connectionTime {
+		connectionTime = endTime - startTime
+	}
+
+	if err != nil {
+		return nil, 0
+	}
+
+	// handshake
+
+	startTime = makeTimestamp()
+	peerNodeInfo, err := handshake(secretConn, timeoutDuration, p2p.DefaultNodeInfo{})
+	endTime = makeTimestamp()
+	if endTime-startTime > connectionTime {
+		connectionTime = endTime - startTime
+	}
+
+	if err != nil {
+		return nil, 0
+	}
+
+	return peerNodeInfo, connectionTime
+}
+
+func makeTimestamp() int64 {
+	return time.Now().UnixNano() / int64(time.Millisecond)
+}
+
+func parseIP(host string) net.IP {
+	ip := net.ParseIP(host)
+	if ip == nil {
+		ips, err := net.LookupIP(host)
+		if err != nil {
+			return nil
+		}
+		ip = ips[0]
+	}
+
+	return ip
+}
+
+func upgradeSecretConn(
+	c net.Conn,
+	timeout time.Duration,
+	privKey crypto.PrivKey,
+) (*conn.SecretConnection, error) {
+	if err := c.SetDeadline(time.Now().Add(timeout)); err != nil {
+		return nil, err
+	}
+
+	sc, err := conn.MakeSecretConnection(c, privKey)
+	if err != nil {
+		return nil, err
+	}
+
+	return sc, sc.SetDeadline(time.Time{})
+}
+
+func handshake(
+	c net.Conn,
+	timeout time.Duration,
+	nodeInfo p2p.NodeInfo,
+) (*p2p.DefaultNodeInfo, error) {
+	if err := c.SetDeadline(time.Now().Add(timeout)); err != nil {
+		return nil, err
+	}
+
+	var (
+		errc = make(chan error, 2)
+
+		pbpeerNodeInfo tmp2p.DefaultNodeInfo
+		peerNodeInfo   p2p.DefaultNodeInfo
+		ourNodeInfo    = nodeInfo.(p2p.DefaultNodeInfo)
+	)
+
+	go func(errc chan<- error, c net.Conn) {
+		_, err := protoio.NewDelimitedWriter(c).WriteMsg(ourNodeInfo.ToProto())
+		errc <- err
+	}(errc, c)
+	go func(errc chan<- error, c net.Conn) {
+		protoReader := protoio.NewDelimitedReader(c, p2p.MaxNodeInfoSize())
+		_, err := protoReader.ReadMsg(&pbpeerNodeInfo)
+		errc <- err
+	}(errc, c)
+
+	for i := 0; i < cap(errc); i++ {
+		err := <-errc
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	peerNodeInfo, err := p2p.DefaultNodeInfoFromToProto(&pbpeerNodeInfo)
+	if err != nil {
+		return nil, err
+	}
+
+	return &peerNodeInfo, c.SetDeadline(time.Time{})
 }
