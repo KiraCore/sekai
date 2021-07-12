@@ -31,3 +31,8 @@ func TestKeeperPlanGetSet(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, plan, &newPlan)
 }
+
+func TestPlanExecution(t *testing.T) {
+	// TODO: test the case handler is registered
+	// TODO: test the case handler is not registered
+}

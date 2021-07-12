@@ -30,9 +30,20 @@ func (k Keeper) SaveUpgradePlan(ctx sdk.Context, plan types.Plan) {
 	store.Set(types.KeyUpgradePlan, bz)
 }
 
+func (k Keeper) ClearUpgradePlan(ctx sdk.Context) {
+	store := ctx.KVStore(k.storeKey)
+	store.Delete(types.KeyUpgradePlan)
+}
+
 func (k Keeper) ApplyUpgradePlan(ctx sdk.Context, plan types.Plan) {
 	// TODO: how do we check that upgrade is already done and not halt any more?
 	if plan.ShouldExecute(ctx) {
-		panic(fmt.Sprintf("UPGRADE \"%s\" NEEDED at %s", plan.Name, time.Unix(plan.MinHaltTime, 0).String()))
+		handler := k.upgradeHandlers[plan.Name]
+		if handler == nil {
+			panic(fmt.Sprintf("UPGRADE \"%s\" NEEDED at %s", plan.Name, time.Unix(plan.MinHaltTime, 0).String()))
+		}
+
+		handler(ctx, plan)
+		k.ClearUpgradePlan(ctx)
 	}
 }

@@ -14,12 +14,13 @@ message ProposalSoftwareUpgrade {
 
   resource resources = 1;
 
-  int64 min_halt_time = 2;
-  string old_chain_id = 3;
-  string new_chain_id = 4;
-  string rollback_checksum = 5;
-  int64 max_enrolment_duration = 6;
-  string memo = 7;
+  int64 height = 2;
+  int64 min_halt_time = 3;
+  string old_chain_id = 4;
+  string new_chain_id = 5;
+  string rollback_checksum = 6;
+  int64 max_enrolment_duration = 7;
+  string memo = 8;
 }
 
 message resource{

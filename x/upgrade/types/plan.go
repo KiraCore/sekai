@@ -14,5 +14,5 @@ func NewUpgradePlan(minHaltTime, maxEnrollmentTime int64, name, rollbackChecksum
 }
 
 func (plan Plan) ShouldExecute(ctx sdk.Context) bool {
-	return ctx.BlockHeight() > plan.MinHaltTime
+	return ctx.BlockHeight() == plan.Height || ctx.BlockHeight() > plan.MinHaltTime
 }
