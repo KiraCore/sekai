@@ -2,7 +2,9 @@ package keeper_test
 
 import (
 	"testing"
+	"time"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 
 	"github.com/KiraCore/sekai/simapp"
@@ -32,7 +34,66 @@ func TestKeeperPlanGetSet(t *testing.T) {
 	require.Equal(t, plan, &newPlan)
 }
 
-func TestPlanExecution(t *testing.T) {
-	// TODO: test the case handler is registered
-	// TODO: test the case handler is not registered
+func TestPlanExecutionWithHandler(t *testing.T) {
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	minHaltTime := time.Now()
+
+	t.Log("Verify that a panic happens at the upgrade time/height")
+	newCtx := ctx.WithBlockHeight(10).WithBlockTime(minHaltTime.Add(time.Second))
+
+	t.Log("Verify that the upgrade can be successfully applied with a handler")
+	app.UpgradeKeeper.SetUpgradeHandler("test", func(ctx sdk.Context, plan types.Plan) {})
+	require.NotPanics(t, func() {
+		app.UpgradeKeeper.ApplyUpgradePlan(newCtx, types.Plan{
+			Height:               10,
+			MinHaltTime:          minHaltTime.Unix(),
+			RollbackChecksum:     "",
+			MaxEnrolmentDuration: 0,
+			Name:                 "test",
+		})
+	})
+
+	plan, err := app.UpgradeKeeper.GetUpgradePlan(ctx)
+	require.Nil(t, plan)
+	require.NoError(t, err)
+}
+
+func TestPlanExecutionWithoutHandler(t *testing.T) {
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	minHaltTime := time.Now()
+
+	newCtx := ctx.WithBlockHeight(10).WithBlockTime(minHaltTime.Add(time.Second))
+
+	require.Panics(t, func() {
+		app.UpgradeKeeper.ApplyUpgradePlan(newCtx, types.Plan{
+			Height:               10,
+			MinHaltTime:          minHaltTime.Unix(),
+			RollbackChecksum:     "",
+			MaxEnrolmentDuration: 0,
+			Name:                 "test",
+		})
+	})
+}
+
+func TestNoPlanExecutionBeforeTimeOrHeight(t *testing.T) {
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	minHaltTime := time.Now()
+
+	newCtx := ctx.WithBlockHeight(9).WithBlockTime(minHaltTime)
+
+	require.NotPanics(t, func() {
+		app.UpgradeKeeper.ApplyUpgradePlan(newCtx, types.Plan{
+			Height:               10,
+			MinHaltTime:          minHaltTime.Unix(),
+			RollbackChecksum:     "",
+			MaxEnrolmentDuration: 0,
+			Name:                 "test",
+		})
+	})
 }
