@@ -37,6 +37,7 @@ func TestKeeperPlanGetSet(t *testing.T) {
 func TestPlanExecutionWithHandler(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
+	acc1 := sdk.AccAddress("test________________")
 
 	minHaltTime := time.Now()
 
@@ -44,7 +45,12 @@ func TestPlanExecutionWithHandler(t *testing.T) {
 	newCtx := ctx.WithBlockHeight(10).WithBlockTime(minHaltTime.Add(time.Second))
 
 	t.Log("Verify that the upgrade can be successfully applied with a handler")
-	app.UpgradeKeeper.SetUpgradeHandler("test", func(ctx sdk.Context, plan types.Plan) {})
+	app.UpgradeKeeper.SetUpgradeHandler("test", func(ctx sdk.Context, plan types.Plan) {
+		err := app.BankKeeper.SetBalance(ctx, acc1, sdk.NewInt64Coin("ukex", 10000))
+		if err != nil {
+			panic(err)
+		}
+	})
 	require.NotPanics(t, func() {
 		app.UpgradeKeeper.ApplyUpgradePlan(newCtx, types.Plan{
 			Height:               10,
@@ -58,6 +64,9 @@ func TestPlanExecutionWithHandler(t *testing.T) {
 	plan, err := app.UpgradeKeeper.GetUpgradePlan(ctx)
 	require.Nil(t, plan)
 	require.NoError(t, err)
+
+	coin := app.BankKeeper.GetBalance(ctx, acc1, "ukex")
+	require.Equal(t, coin, sdk.NewInt64Coin("ukex", 10000))
 }
 
 func TestPlanExecutionWithoutHandler(t *testing.T) {
