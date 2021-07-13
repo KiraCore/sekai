@@ -26,7 +26,7 @@ func GetQueryCmd() *cobra.Command {
 // GetCmdQueryCurrentPlan the query current plan.
 func GetCmdQueryCurrentPlan() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "current-plan",
+		Use:   "show-plan",
 		Short: "Get the upgrade plan",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)

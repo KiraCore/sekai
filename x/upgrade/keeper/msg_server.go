@@ -51,7 +51,7 @@ func (m msgServer) ProposalSoftwareUpgrade(goCtx context.Context, msg *types.Msg
 
 func (k msgServer) CreateAndSaveProposalWithContent(ctx sdk.Context, description string, content customgovtypes.Content) (uint64, error) {
 	blockTime := ctx.BlockTime()
-	proposalID := k.cgk.GetNextProposalID(ctx)
+	proposalID := k.cgk.GetNextProposalIDAndIncrement(ctx)
 	properties := k.cgk.GetNetworkProperties(ctx)
 
 	proposal, err := customgovtypes.NewProposal(

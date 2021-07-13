@@ -197,6 +197,10 @@ func NewInitApp(
 	)
 	app.upgradeKeeper = upgradekeeper.NewKeeper(keys[upgradetypes.StoreKey], appCodec)
 
+	// app.upgradeKeeper.SetUpgradeHandler(
+	// 	"upgrade1", func(ctx sdk.Context, plan upgradetypes.Plan) {
+	// 	})
+
 	app.customGovKeeper = customgovkeeper.NewKeeper(keys[customgovtypes.ModuleName], appCodec, app.bankKeeper)
 	customStakingKeeper := customstakingkeeper.NewKeeper(keys[customstakingtypes.ModuleName], cdc, app.customGovKeeper)
 	app.customSlashingKeeper = customslashingkeeper.NewKeeper(

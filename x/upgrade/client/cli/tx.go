@@ -45,8 +45,8 @@ func GetTxCmd() *cobra.Command {
 
 func GetTxSetUpgradePlan() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "set-plan",
-		Short: "Set upgrade plan",
+		Use:   "propose-upgrade-plan",
+		Short: "Propose upgrade plan",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 
