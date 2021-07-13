@@ -42,6 +42,7 @@ func (m msgServer) ProposalSoftwareUpgrade(goCtx context.Context, msg *types.Msg
 		RollbackChecksum:     msg.RollbackChecksum,
 		MaxEnrolmentDuration: msg.MaxEnrolmentDuration,
 		Memo:                 msg.Memo,
+		InstateUpgrade:       msg.InstateUpgrade,
 	})
 
 	return &types.MsgProposalSoftwareUpgradeResponse{

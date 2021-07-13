@@ -31,6 +31,8 @@ sekaid tx upgrade propose-upgrade-plan --name="upgrade3" --instate-upgrade=true 
 
 sekaid tx upgrade propose-upgrade-plan --name="upgrade4" --instate-upgrade=true --resources="[{\"id\":\"infra\",\"git\":\"https://aaa/bbb.com\"}]" --min-upgrade-time=1626540651 --height=90  --old-chain-id=1 --new-chain-id=1 --rollback-memo=1 --max-enrollment-duration=1 --upgrade-memo="upgrade4 test" --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --log_level=debug --yes
 
+sekaid tx upgrade propose-upgrade-plan --name="upgrade5" --instate-upgrade=false --resources="[{\"id\":\"infra\",\"git\":\"https://aaa/bbb.com\"}]" --min-upgrade-time=1626540651 --height=90  --old-chain-id=1 --new-chain-id=1 --rollback-memo=1 --max-enrollment-duration=1 --upgrade-memo="upgrade5 test" --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --log_level=debug --yes
+
 sekaid tx upgrade propose-cancel-upgrade-plan --name="cancel-upgrade4" --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --log_level=debug --yes
 sekaid tx customgov proposal vote 2 1 --from validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes 
 sekaid query customgov proposals --log_level=debug

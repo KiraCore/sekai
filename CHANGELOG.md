@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.1.21.1] - 13.07.2021
+
+- Add instate upgrade feature
+
 ## [v0.1.21] - 08.07.2021
 
 - Implement identity registrar
