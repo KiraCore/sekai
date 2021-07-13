@@ -239,6 +239,7 @@ func NewSimApp(
 			customstaking.NewApplyUnjailValidatorProposalHandler(app.CustomStakingKeeper),
 			customgov.NewApplyCreateRoleProposalHandler(app.CustomGovKeeper),
 			upgrade.NewApplySoftwareUpgradeProposalHandler(app.UpgradeKeeper),
+			upgrade.NewApplyCancelSoftwareUpgradeProposalHandler(app.UpgradeKeeper),
 		},
 	)
 	app.mm = module.NewManager(

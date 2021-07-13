@@ -17,14 +17,14 @@ func GetQueryCmd() *cobra.Command {
 	}
 
 	cmd.AddCommand(
-		GetCmdQueryCurrentPlan(),
+		GetCmdQueryShowPlan(),
 	)
 
 	return cmd
 }
 
-// GetCmdQueryCurrentPlan the query current plan.
-func GetCmdQueryCurrentPlan() *cobra.Command {
+// GetCmdQueryShowPlan the query current plan.
+func GetCmdQueryShowPlan() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "show-plan",
 		Short: "Get the upgrade plan",

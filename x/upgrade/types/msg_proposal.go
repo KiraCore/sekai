@@ -8,7 +8,9 @@ import (
 
 var (
 	_ sdk.Msg       = &MsgProposalSoftwareUpgradeRequest{}
+	_ sdk.Msg       = &MsgProposalCancelSoftwareUpgradeRequest{}
 	_ types.Content = &ProposalSoftwareUpgrade{}
+	_ types.Content = &ProposalCancelSoftwareUpgrade{}
 )
 
 func NewMsgProposalSoftwareUpgradeRequest(
@@ -53,5 +55,35 @@ func (m *MsgProposalSoftwareUpgradeRequest) GetSignBytes() []byte {
 }
 
 func (m *MsgProposalSoftwareUpgradeRequest) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{m.Proposer}
+}
+
+func NewMsgProposalCancelSoftwareUpgradeRequest(
+	proposer sdk.AccAddress,
+	name string) *MsgProposalCancelSoftwareUpgradeRequest {
+	return &MsgProposalCancelSoftwareUpgradeRequest{
+		Name:     name,
+		Proposer: proposer,
+	}
+}
+
+func (m *MsgProposalCancelSoftwareUpgradeRequest) Route() string {
+	return ModuleName
+}
+
+func (m *MsgProposalCancelSoftwareUpgradeRequest) Type() string {
+	return kiratypes.MsgProposalCancelSoftwareUpgrade
+}
+
+func (m *MsgProposalCancelSoftwareUpgradeRequest) ValidateBasic() error {
+	return nil
+}
+
+func (m *MsgProposalCancelSoftwareUpgradeRequest) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *MsgProposalCancelSoftwareUpgradeRequest) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{m.Proposer}
 }

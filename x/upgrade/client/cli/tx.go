@@ -37,18 +37,22 @@ func GetTxCmd() *cobra.Command {
 	}
 
 	cmd.AddCommand(
-		GetTxSetUpgradePlan(),
+		GetTxProposeUpgradePlan(),
+		GetTxCancelUpgradePlan(),
 	)
 
 	return cmd
 }
 
-func GetTxSetUpgradePlan() *cobra.Command {
+func GetTxProposeUpgradePlan() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "propose-upgrade-plan",
 		Short: "Propose upgrade plan",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
 
 			// resoureId, err := cmd.Flags().GetString(FlagResourceId)
 			// if err != nil {
@@ -153,6 +157,38 @@ func GetTxSetUpgradePlan() *cobra.Command {
 	cmd.Flags().Int64(FlagMaxEnrollmentDuration, 0, "max enrollment duration")
 	cmd.Flags().String(FlagUpgradeMemo, "", "upgrade memo")
 	cmd.Flags().Bool(FlagInstateUpgrade, true, "instate upgrade flag")
+
+	flags.AddTxFlagsToCmd(cmd)
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+func GetTxCancelUpgradePlan() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "propose-cancel-upgrade-plan",
+		Short: "Propose cancel upgrade plan",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			name, err := cmd.Flags().GetString(FlagName)
+			if err != nil {
+				return fmt.Errorf("invalid name")
+			}
+
+			msg := types.NewMsgProposalCancelSoftwareUpgradeRequest(
+				clientCtx.FromAddress,
+				name,
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	cmd.Flags().String(FlagName, "upgrade1", "upgrade name")
 
 	flags.AddTxFlagsToCmd(cmd)
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)

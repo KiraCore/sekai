@@ -9,6 +9,7 @@ option go_package = "github.com/KiraCore/sekai/x/upgrade/types";
 // Msg defines the tokens Msg service.
 service Msg {
   rpc ProposalSoftwareUpgrade(MsgProposalSoftwareUpgradeRequest) returns (MsgProposalSoftwareUpgradeResponse);
+  rpc ProposalCancelSoftwareUpgrade(MsgProposalCancelSoftwareUpgradeRequest) returns (MsgProposalCancelSoftwareUpgradeResponse);
 }
 
 message MsgProposalSoftwareUpgradeRequest{
@@ -31,5 +32,17 @@ message MsgProposalSoftwareUpgradeRequest{
 }
 
 message MsgProposalSoftwareUpgradeResponse{
+  uint64 proposalID = 1;
+}
+
+message MsgProposalCancelSoftwareUpgradeRequest {
+  bytes proposer = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"proposer\""
+  ];
+  string name = 2;
+}
+
+message MsgProposalCancelSoftwareUpgradeResponse {
   uint64 proposalID = 1;
 }

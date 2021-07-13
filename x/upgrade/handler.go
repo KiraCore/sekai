@@ -18,7 +18,9 @@ func NewHandler(ck keeper.Keeper, cgk types.CustomGovKeeper) sdk.Handler {
 			res, err := msgServer.ProposalSoftwareUpgrade(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 
-		// TODO: we might need to add cancel upgrade request proposal
+		case *types.MsgProposalCancelSoftwareUpgradeRequest:
+			res, err := msgServer.ProposalCancelSoftwareUpgrade(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
 
 		default:
 			return nil, errors.Wrapf(errors.ErrUnknownRequest, "unrecognized %s message type: %T", types.ModuleName, msg)

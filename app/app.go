@@ -249,6 +249,7 @@ func NewInitApp(
 				customslashing.NewApplyResetWholeValidatorRankProposalHandler(app.customSlashingKeeper),
 				customgov.NewApplyCreateRoleProposalHandler(app.customGovKeeper),
 				upgrade.NewApplySoftwareUpgradeProposalHandler(app.upgradeKeeper),
+				upgrade.NewApplyCancelSoftwareUpgradeProposalHandler(app.upgradeKeeper),
 			},
 		)),
 		tokens.NewAppModule(app.tokensKeeper, app.customGovKeeper),
