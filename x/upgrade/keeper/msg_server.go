@@ -33,8 +33,10 @@ func (m msgServer) ProposalSoftwareUpgrade(goCtx context.Context, msg *types.Msg
 	}
 
 	proposalID, err := m.CreateAndSaveProposalWithContent(ctx, msg.Memo, &types.ProposalSoftwareUpgrade{
+		Name:                 msg.Name,
 		Resources:            msg.Resources,
-		MinHaltTime:          msg.MinHaltTime,
+		Height:               msg.Height,
+		MinUpgradeTime:       msg.MinUpgradeTime,
 		OldChainId:           msg.OldChainId,
 		NewChainId:           msg.NewChainId,
 		RollbackChecksum:     msg.RollbackChecksum,

@@ -12,22 +12,23 @@ option (gogoproto.goproto_getters_all)  = false;
 message ProposalSoftwareUpgrade {
   option (gogoproto.equal) = true;
 
-  resource resources = 1;
-
-  int64 height = 2;
-  int64 min_halt_time = 3;
-  string old_chain_id = 4;
-  string new_chain_id = 5;
-  string rollback_checksum = 6;
-  int64 max_enrolment_duration = 7;
-  string memo = 8;
+  string name = 1;
+  repeated Resource resources = 2 [ (gogoproto.nullable) = false ];
+  int64 height = 3;
+  int64 min_upgrade_time = 4;
+  string old_chain_id = 5;
+  string new_chain_id = 6;
+  string rollback_checksum = 7;
+  int64 max_enrolment_duration = 8;
+  string memo = 9;
+  bool instate_upgrade = 10;
 }
 
-message resource{
+message Resource {
   option (gogoproto.equal) = true;
 
   string id = 1;
-  string git =2;
+  string git = 2;
   string checkout = 3;
   string checksum = 4;
 }

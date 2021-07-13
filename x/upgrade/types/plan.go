@@ -4,15 +4,18 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func NewUpgradePlan(minHaltTime, maxEnrollmentTime int64, name, rollbackChecksum string) Plan {
+func NewUpgradePlan(name string, resources []Resource, height, minUpgradeTime, maxEnrollmentTime int64, rollbackChecksum string, instateUpgrade bool) Plan {
 	return Plan{
-		MinHaltTime:          minHaltTime,
+		Name:                 name,
+		Resources:            resources,
+		Height:               height,
+		MinUpgradeTime:       minUpgradeTime,
 		RollbackChecksum:     rollbackChecksum,
 		MaxEnrolmentDuration: maxEnrollmentTime,
-		Name:                 name,
+		InstateUpgrade:       instateUpgrade,
 	}
 }
 
 func (plan Plan) ShouldExecute(ctx sdk.Context) bool {
-	return ctx.BlockHeight() == plan.Height || ctx.BlockHeight() > plan.MinHaltTime
+	return ctx.BlockHeight() == plan.Height || ctx.BlockHeight() > plan.MinUpgradeTime
 }

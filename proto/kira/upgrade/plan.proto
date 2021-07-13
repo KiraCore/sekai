@@ -1,14 +1,19 @@
 syntax = "proto3";
 package kira.upgrade;
 
+import "gogoproto/gogo.proto";
+import "upgrade.proto";
+
 option go_package = "github.com/KiraCore/sekai/x/upgrade/types";
 
-message Plan{
-  int64 height = 1;
-  int64 min_halt_time = 2;
-  string rollback_checksum = 3;
-  int64 max_enrolment_duration = 4;
-  string name = 5;
+message Plan {
+  string name = 1;
+  repeated Resource resources = 2 [ (gogoproto.nullable) = false ];
+  int64 height = 3;
+  int64 min_upgrade_time = 4;
+  string rollback_checksum = 5;
+  int64 max_enrolment_duration = 6;
+  bool instate_upgrade = 7;
 }
 
 
