@@ -87,6 +87,7 @@ func (q Querier) Validators(ctx context.Context, request *types.ValidatorsReques
 			Status:     val.Status.String(),
 			Rank:       val.Rank,
 			Streak:     val.Streak,
+			Identity:   q.keeper.GetIdRecordsByAddress(c, sdk.AccAddress(val.ValKey)),
 		}
 
 		if request.Status != "" && !strings.EqualFold(validator.Status, request.Status) {
