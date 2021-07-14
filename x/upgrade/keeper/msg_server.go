@@ -27,19 +27,22 @@ func NewMsgServerImpl(keeper Keeper, cgk types.CustomGovKeeper) types.MsgServer 
 func (m msgServer) ProposalSoftwareUpgrade(goCtx context.Context, msg *types.MsgProposalSoftwareUpgradeRequest) (*types.MsgProposalSoftwareUpgradeResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	isAllowed := m.cgk.CheckIfAllowedPermission(ctx, msg.Proposer, customgovtypes.PermCreateUpsertTokenRateProposal)
+	isAllowed := m.cgk.CheckIfAllowedPermission(ctx, msg.Proposer, customgovtypes.PermCreateSoftwareUpgradeProposal)
 	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermCreateUpsertTokenRateProposal.String())
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermCreateSoftwareUpgradeProposal.String())
 	}
 
-	proposalID, err := m.CreateAndSaveProposalWithContent(ctx, msg.Memo, &types.ProposalSoftwareUpgrade{
+	proposalID, err := m.CreateAndSaveProposalWithContent(ctx, msg.Name, &types.ProposalSoftwareUpgrade{
+		Name:                 msg.Name,
 		Resources:            msg.Resources,
-		MinHaltTime:          msg.MinHaltTime,
+		Height:               msg.Height,
+		MinUpgradeTime:       msg.MinUpgradeTime,
 		OldChainId:           msg.OldChainId,
 		NewChainId:           msg.NewChainId,
 		RollbackChecksum:     msg.RollbackChecksum,
 		MaxEnrolmentDuration: msg.MaxEnrolmentDuration,
 		Memo:                 msg.Memo,
+		InstateUpgrade:       msg.InstateUpgrade,
 	})
 
 	return &types.MsgProposalSoftwareUpgradeResponse{
@@ -47,9 +50,26 @@ func (m msgServer) ProposalSoftwareUpgrade(goCtx context.Context, msg *types.Msg
 	}, err
 }
 
+func (m msgServer) ProposalCancelSoftwareUpgrade(goCtx context.Context, msg *types.MsgProposalCancelSoftwareUpgradeRequest) (*types.MsgProposalCancelSoftwareUpgradeResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	isAllowed := m.cgk.CheckIfAllowedPermission(ctx, msg.Proposer, customgovtypes.PermCreateSoftwareUpgradeProposal)
+	if !isAllowed {
+		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermCreateSoftwareUpgradeProposal.String())
+	}
+
+	proposalID, err := m.CreateAndSaveProposalWithContent(ctx, msg.Name, &types.ProposalCancelSoftwareUpgrade{
+		Name: msg.Name,
+	})
+
+	return &types.MsgProposalCancelSoftwareUpgradeResponse{
+		ProposalID: proposalID,
+	}, err
+}
+
 func (k msgServer) CreateAndSaveProposalWithContent(ctx sdk.Context, description string, content customgovtypes.Content) (uint64, error) {
 	blockTime := ctx.BlockTime()
-	proposalID := k.cgk.GetNextProposalID(ctx)
+	proposalID := k.cgk.GetNextProposalIDAndIncrement(ctx)
 	properties := k.cgk.GetNetworkProperties(ctx)
 
 	proposal, err := customgovtypes.NewProposal(

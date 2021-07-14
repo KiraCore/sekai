@@ -145,9 +145,6 @@ func TestQuerier_CouncilorByAddress(t *testing.T) {
 
 	councilor := types.NewCouncilor(
 		"TheMoniker",
-		"TheWebsite",
-		"TheSocial",
-		"TheIdentity",
 		addr1,
 	)
 

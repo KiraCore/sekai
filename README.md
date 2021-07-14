@@ -109,9 +109,6 @@ Modify genesis json to have jailed validator for Unjail testing
   "validators": [
     {
       "moniker": "hello2",
-      "website": "",
-      "social": "social2",
-      "identity": "",
       "commission": "1.000000000000000000",
       "val_key": "kiravaloper126f48ukar7ntqqvk0qxgd3juu7r42mjmrt33mv",
       "pub_key": {

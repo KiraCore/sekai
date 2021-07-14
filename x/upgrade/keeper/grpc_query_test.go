@@ -21,7 +21,7 @@ func TestGRPCCurrentPlan(t *testing.T) {
 	require.Equal(t, resp, &types.QueryCurrentPlanResponse{Plan: nil})
 
 	newPlan := types.Plan{
-		MinHaltTime:          1,
+		MinUpgradeTime:       1,
 		RollbackChecksum:     "checksum",
 		MaxEnrolmentDuration: 2,
 		Name:                 "plan",

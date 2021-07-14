@@ -23,7 +23,7 @@ func TestQuerier_ValidatorByAddress(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	val, err := stakingtypes.NewValidator("Moniker", "Website", "Social", "identity", types.NewDec(123), valAddr1, pubKey)
+	val, err := stakingtypes.NewValidator("Moniker", types.NewDec(123), valAddr1, pubKey)
 	require.NoError(t, err)
 
 	app.CustomStakingKeeper.AddValidator(ctx, val)

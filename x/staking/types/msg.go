@@ -18,9 +18,6 @@ var (
 
 func NewMsgClaimValidator(
 	moniker string,
-	website string,
-	social string,
-	identity string,
 	comission sdk.Dec,
 	valKey sdk.ValAddress,
 	pubKey cryptotypes.PubKey,
@@ -41,9 +38,6 @@ func NewMsgClaimValidator(
 
 	return &MsgClaimValidator{
 		Moniker:    moniker,
-		Website:    website,
-		Social:     social,
-		Identity:   identity,
 		Commission: comission,
 		ValKey:     valKey,
 		PubKey:     pkAny,

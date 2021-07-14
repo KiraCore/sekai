@@ -19,9 +19,6 @@ func TestKeeper_SaveCouncilor(t *testing.T) {
 
 	councilor := types.NewCouncilor(
 		"moniker",
-		"website",
-		"social",
-		"identity",
 		addr,
 	)
 

@@ -9,25 +9,40 @@ option go_package = "github.com/KiraCore/sekai/x/upgrade/types";
 // Msg defines the tokens Msg service.
 service Msg {
   rpc ProposalSoftwareUpgrade(MsgProposalSoftwareUpgradeRequest) returns (MsgProposalSoftwareUpgradeResponse);
+  rpc ProposalCancelSoftwareUpgrade(MsgProposalCancelSoftwareUpgradeRequest) returns (MsgProposalCancelSoftwareUpgradeResponse);
 }
 
 message MsgProposalSoftwareUpgradeRequest{
   option (gogoproto.equal) = true;
 
-  resource resources = 1;
-
-  int64 min_halt_time = 2;
-  string old_chain_id = 3;
-  string new_chain_id = 4;
-  string rollback_checksum = 5;
-  int64 max_enrolment_duration = 6;
-  string memo = 7;
-  bytes proposer = 8 [
+  string name = 1;
+  repeated Resource resources = 2 [ (gogoproto.nullable) = false ];
+  int64 height = 3;
+  int64 min_upgrade_time = 4;
+  string old_chain_id = 5;
+  string new_chain_id = 6;
+  string rollback_checksum = 7;
+  int64 max_enrolment_duration = 8;
+  string memo = 9;
+  bool instate_upgrade = 10;
+  bytes proposer = 11 [
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
     (gogoproto.moretags) = "yaml:\"proposer\""
   ];
 }
 
 message MsgProposalSoftwareUpgradeResponse{
+  uint64 proposalID = 1;
+}
+
+message MsgProposalCancelSoftwareUpgradeRequest {
+  bytes proposer = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"proposer\""
+  ];
+  string name = 2;
+}
+
+message MsgProposalCancelSoftwareUpgradeResponse {
   uint64 proposalID = 1;
 }

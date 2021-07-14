@@ -8,28 +8,31 @@ import (
 
 var (
 	_ sdk.Msg       = &MsgProposalSoftwareUpgradeRequest{}
+	_ sdk.Msg       = &MsgProposalCancelSoftwareUpgradeRequest{}
 	_ types.Content = &ProposalSoftwareUpgrade{}
+	_ types.Content = &ProposalCancelSoftwareUpgrade{}
 )
 
 func NewMsgProposalSoftwareUpgradeRequest(
 	proposer sdk.AccAddress,
-	id string, git string, checkout string, checksum string,
-	minHaltTime int64,
+	// id string, git string, checkout string, checksum string,
+	name string,
+	resources []Resource,
+	height, minUpgradeTime int64,
 	oldChainId, newChainId, rollBackMemo string,
-	maxEnrollmentDuration int64, memo string) *MsgProposalSoftwareUpgradeRequest {
+	maxEnrollmentDuration int64, memo string,
+	instateUpgrade bool) *MsgProposalSoftwareUpgradeRequest {
 	return &MsgProposalSoftwareUpgradeRequest{
-		Resources: &Resource{
-			Id:       id,
-			Git:      git,
-			Checkout: checkout,
-			Checksum: checksum,
-		},
-		MinHaltTime:          minHaltTime,
+		Name:                 name,
+		Resources:            resources,
+		Height:               height,
+		MinUpgradeTime:       minUpgradeTime,
 		OldChainId:           oldChainId,
 		NewChainId:           newChainId,
 		RollbackChecksum:     rollBackMemo,
 		MaxEnrolmentDuration: maxEnrollmentDuration,
 		Memo:                 memo,
+		InstateUpgrade:       instateUpgrade,
 		Proposer:             proposer,
 	}
 }
@@ -52,5 +55,35 @@ func (m *MsgProposalSoftwareUpgradeRequest) GetSignBytes() []byte {
 }
 
 func (m *MsgProposalSoftwareUpgradeRequest) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{m.Proposer}
+}
+
+func NewMsgProposalCancelSoftwareUpgradeRequest(
+	proposer sdk.AccAddress,
+	name string) *MsgProposalCancelSoftwareUpgradeRequest {
+	return &MsgProposalCancelSoftwareUpgradeRequest{
+		Name:     name,
+		Proposer: proposer,
+	}
+}
+
+func (m *MsgProposalCancelSoftwareUpgradeRequest) Route() string {
+	return ModuleName
+}
+
+func (m *MsgProposalCancelSoftwareUpgradeRequest) Type() string {
+	return kiratypes.MsgProposalCancelSoftwareUpgrade
+}
+
+func (m *MsgProposalCancelSoftwareUpgradeRequest) ValidateBasic() error {
+	return nil
+}
+
+func (m *MsgProposalCancelSoftwareUpgradeRequest) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *MsgProposalCancelSoftwareUpgradeRequest) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{m.Proposer}
 }
