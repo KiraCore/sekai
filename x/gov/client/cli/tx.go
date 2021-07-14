@@ -32,10 +32,7 @@ const (
 	FlagFailureFee        = "failure_fee"
 	FlagTimeout           = "timeout"
 	FlagDefaultParameters = "default_parameters"
-	FlagWebsite           = "website"
 	FlagMoniker           = "moniker"
-	FlagSocial            = "social"
-	FlagIdentity          = "identity"
 	FlagAddress           = "address"
 	FlagWhitelistPerms    = "whitelist"
 	FlagBlacklistPerms    = "blacklist"
@@ -867,9 +864,6 @@ func GetTxClaimCouncilorSeatCmd() *cobra.Command {
 			}
 
 			moniker, _ := cmd.Flags().GetString(FlagMoniker)
-			website, _ := cmd.Flags().GetString(FlagWebsite)
-			social, _ := cmd.Flags().GetString(FlagSocial)
-			identity, _ := cmd.Flags().GetString(FlagIdentity)
 			address, _ := cmd.Flags().GetString(FlagAddress)
 
 			bech32, err := sdk.AccAddressFromBech32(address)
@@ -879,9 +873,6 @@ func GetTxClaimCouncilorSeatCmd() *cobra.Command {
 
 			msg := types.NewMsgClaimCouncilor(
 				moniker,
-				website,
-				social,
-				identity,
 				bech32,
 			)
 
@@ -892,9 +883,6 @@ func GetTxClaimCouncilorSeatCmd() *cobra.Command {
 	flags.AddTxFlagsToCmd(cmd)
 
 	cmd.Flags().String(FlagMoniker, "", "the Moniker")
-	cmd.Flags().String(FlagWebsite, "", "the Website")
-	cmd.Flags().String(FlagSocial, "", "the social")
-	cmd.Flags().String(FlagIdentity, "", "the Identity")
 	cmd.Flags().String(FlagAddress, "", "the address")
 
 	cmd.MarkFlagRequired(flags.FlagFrom)

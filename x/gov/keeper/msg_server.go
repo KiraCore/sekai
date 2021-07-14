@@ -658,16 +658,13 @@ func (k msgServer) ClaimCouncilor(
 		return nil, errors.Wrap(types.ErrNotEnoughPermissions, "PermClaimCouncilor")
 	}
 
-	councilor := types.NewCouncilor(msg.Moniker, msg.Website, msg.Social, msg.Identity, msg.Address)
+	councilor := types.NewCouncilor(msg.Moniker, msg.Address)
 
 	k.keeper.SaveCouncilor(ctx, councilor)
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
 			types.EventTypeClaimCouncilor,
 			sdk.NewAttribute(types.AttributeKeyAddress, msg.Address.String()),
-			sdk.NewAttribute(types.AttributeKeyWebsite, msg.Website),
-			sdk.NewAttribute(types.AttributeKeySocial, msg.Social),
-			sdk.NewAttribute(types.AttributeKeyIdentity, msg.Identity),
 		),
 	)
 	return &types.MsgClaimCouncilorResponse{}, nil

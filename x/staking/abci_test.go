@@ -26,9 +26,6 @@ func TestItUpdatesTheValidatorSetBasedOnPendingValidators(t *testing.T) {
 
 	validator1, err := customstakingtypes.NewValidator(
 		"validator 1",
-		"some-web.com",
-		"A Social",
-		"My Identity",
 		types.NewDec(1234),
 		valAddr1,
 		pubKey,
@@ -113,9 +110,6 @@ func TestItRemovesFromTheValidatorSetWhenInRemovingQueue(t *testing.T) {
 
 			validator1, err := customstakingtypes.NewValidator(
 				"validator 1",
-				"some-web.com",
-				"A Social",
-				"My Identity",
 				types.NewDec(1234),
 				valAddr1,
 				pubKey,
@@ -201,9 +195,6 @@ func TestItIncludesItBackToValidatorSetOnceReactivatingIt(t *testing.T) {
 
 			validator1, err := customstakingtypes.NewValidator(
 				"validator 1",
-				"some-web.com",
-				"A Social",
-				"My Identity",
 				types.NewDec(1234),
 				valAddr1,
 				pubKey,

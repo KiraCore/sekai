@@ -417,11 +417,8 @@ func TestHandler_ClaimCouncilor_Fails(t *testing.T) {
 		{
 			name: "not enough permissions",
 			msg: &types.MsgClaimCouncilor{
-				Moniker:  "",
-				Website:  "",
-				Social:   "",
-				Identity: "",
-				Address:  addr,
+				Moniker: "",
+				Address: addr,
 			},
 			expectedErr: fmt.Errorf("PermClaimCouncilor: not enough permissions"),
 		},
@@ -451,11 +448,8 @@ func TestHandler_ClaimCouncilor_HappyPath(t *testing.T) {
 		{
 			name: "all correct",
 			msg: &types.MsgClaimCouncilor{
-				Moniker:  "TheMoniker",
-				Website:  "TheWebsite",
-				Social:   "The Social",
-				Identity: "The Identity",
-				Address:  addr,
+				Moniker: "TheMoniker",
+				Address: addr,
 			},
 		},
 	}
@@ -475,9 +469,6 @@ func TestHandler_ClaimCouncilor_HappyPath(t *testing.T) {
 
 			expectedCouncilor := types.NewCouncilor(
 				tt.msg.Moniker,
-				tt.msg.Website,
-				tt.msg.Social,
-				tt.msg.Identity,
 				tt.msg.Address,
 			)
 
