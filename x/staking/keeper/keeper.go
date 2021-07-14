@@ -198,3 +198,18 @@ func (k Keeper) IsNetworkActive(ctx sdk.Context) bool {
 func AddressFromLastValidatorPowerKey(key []byte) []byte {
 	return key[2:] // remove prefix bytes and address length
 }
+
+// GetIdRecordsByAddress query identity records by address
+func (k Keeper) GetIdRecordsByAddress(ctx sdk.Context, creator sdk.AccAddress) []types.IdentityRecord {
+	records := k.govkeeper.GetIdRecordsByAddress(ctx, creator)
+	sRecords := []types.IdentityRecord{}
+	for _, record := range records {
+		sRecords = append(sRecords, types.IdentityRecord{
+			Id:        record.Id,
+			Infos:     record.Infos,
+			Date:      record.Date,
+			Verifiers: record.Verifiers,
+		})
+	}
+	return sRecords
+}

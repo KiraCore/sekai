@@ -5,6 +5,7 @@ import "staking.proto";
 import "pagination.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/staking/types";
 
@@ -50,6 +51,17 @@ message ValidatorsRequest {
   bool all = 8;
 }
 
+message IdentityRecord {
+  option (gogoproto.equal)            = true;
+  
+  uint64 id = 1;
+  map<string, string> infos = 2;
+  google.protobuf.Timestamp date = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  repeated bytes verifiers = 4 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
+  ];
+}
+
 message QueryValidator {
   option (gogoproto.equal)            = true;
 
@@ -63,6 +75,7 @@ message QueryValidator {
   int64 rank = 8;
   int64 streak = 9;
   int64 mischance = 10;
+  repeated IdentityRecord identity = 11 [(gogoproto.nullable) = false];
 }
 
 // ValidatorsResponse is the response type for validators query.
