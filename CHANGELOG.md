@@ -1,5 +1,18 @@
 # Changelog
 
+## [v0.1.21.3] - 15.07.2021
+
+## Added
+
+- public p2p node list API
+- private p2p node list API
+- p2p node_id verification
+
+## Updated
+
+- validators query to use identity registrar
+- interx configurations/cli configurations
+
 ## [v0.1.21.2] - 14.07.2021
 
 - Remove identity part from claim validator
