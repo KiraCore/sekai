@@ -4,12 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 
+	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
+	"github.com/KiraCore/sekai/x/upgrade/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/spf13/cobra"
-
-	"github.com/KiraCore/sekai/x/upgrade/types"
 )
 
 const (
@@ -27,6 +27,7 @@ const (
 	FlagMaxEnrollmentDuration = "max-enrollment-duration"
 	FlagUpgradeMemo           = "upgrade-memo"
 	FlagInstateUpgrade        = "instate-upgrade"
+	FlagDescription           = "description"
 )
 
 // GetTxCmd returns the transaction commands for this module
@@ -130,14 +131,30 @@ func GetTxProposeUpgradePlan() *cobra.Command {
 				return fmt.Errorf("invalid instate upgrade flag")
 			}
 
-			msg := types.NewMsgProposalSoftwareUpgradeRequest(
+			description, err := cmd.Flags().GetString(FlagDescription)
+			if err != nil {
+				return fmt.Errorf("invalid description")
+			}
+
+			msg, err := customgovtypes.NewMsgSubmitProposal(
 				clientCtx.FromAddress,
-				name,
-				// resoureId, resourceGit, resourceCheckout, resourceChecksum,
-				resources,
-				height, minUpgradeTime, oldChainId, newChainId, rollBackMemo, maxEnrollmentDuration, upgradeMemo,
-				instateUpgrade,
+				description,
+				&types.ProposalSoftwareUpgrade{
+					Name:                 name,
+					Resources:            resources,
+					Height:               height,
+					MinUpgradeTime:       minUpgradeTime,
+					OldChainId:           oldChainId,
+					NewChainId:           newChainId,
+					RollbackChecksum:     rollBackMemo,
+					MaxEnrolmentDuration: maxEnrollmentDuration,
+					Memo:                 upgradeMemo,
+					InstateUpgrade:       instateUpgrade,
+				},
 			)
+			if err != nil {
+				return err
+			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
@@ -157,6 +174,7 @@ func GetTxProposeUpgradePlan() *cobra.Command {
 	cmd.Flags().Int64(FlagMaxEnrollmentDuration, 0, "max enrollment duration")
 	cmd.Flags().String(FlagUpgradeMemo, "", "upgrade memo")
 	cmd.Flags().Bool(FlagInstateUpgrade, true, "instate upgrade flag")
+	cmd.Flags().String(FlagDescription, "", "description")
 
 	flags.AddTxFlagsToCmd(cmd)
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)
@@ -179,16 +197,28 @@ func GetTxCancelUpgradePlan() *cobra.Command {
 				return fmt.Errorf("invalid name")
 			}
 
-			msg := types.NewMsgProposalCancelSoftwareUpgradeRequest(
+			description, err := cmd.Flags().GetString(FlagDescription)
+			if err != nil {
+				return fmt.Errorf("invalid description")
+			}
+
+			msg, err := customgovtypes.NewMsgSubmitProposal(
 				clientCtx.FromAddress,
-				name,
+				description,
+				&types.ProposalCancelSoftwareUpgrade{
+					Name: name,
+				},
 			)
+			if err != nil {
+				return err
+			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
 
 	cmd.Flags().String(FlagName, "upgrade1", "upgrade name")
+	cmd.Flags().String(FlagDescription, "", "description")
 
 	flags.AddTxFlagsToCmd(cmd)
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)

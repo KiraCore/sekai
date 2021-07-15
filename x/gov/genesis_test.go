@@ -121,8 +121,6 @@ func TestExportInitGenesis(t *testing.T) {
 		},
 		PoorNetworkMessages: &types.AllowedMessages{
 			Messages: []string{
-				kiratypes.MsgTypeProposalAssignPermission,
-				kiratypes.MsgTypeProposalSetNetworkProperty,
 				kiratypes.MsgTypeSetNetworkProperties,
 			},
 		},

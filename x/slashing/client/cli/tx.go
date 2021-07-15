@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 
+	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/slashing/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -143,10 +144,14 @@ func GetTxProposalResetWholeValidatorRankCmd() *cobra.Command {
 				return fmt.Errorf("invalid description: %w", err)
 			}
 
-			msg := types.NewMsgProposalResetWholeValidatorRank(
+			msg, err := customgovtypes.NewMsgSubmitProposal(
 				clientCtx.FromAddress,
 				description,
+				types.NewProposalResetWholeValidatorRank(clientCtx.FromAddress),
 			)
+			if err != nil {
+				return err
+			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},

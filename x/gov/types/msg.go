@@ -1,10 +1,15 @@
 package types
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/KiraCore/sekai/types"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	proto "github.com/gogo/protobuf/proto"
+	"gopkg.in/yaml.v2"
 )
 
 var (
@@ -14,9 +19,11 @@ var (
 	// Permissions
 	_ sdk.Msg = &MsgWhitelistPermissions{}
 	_ sdk.Msg = &MsgBlacklistPermissions{}
-	_ sdk.Msg = &MsgProposalAssignPermission{}
-	_ sdk.Msg = &MsgProposalUpsertDataRegistry{}
-	_ sdk.Msg = &MsgProposalSetPoorNetworkMessages{}
+	// _ sdk.Msg = &MsgProposalAssignPermission{}
+	// _ sdk.Msg = &MsgProposalUpsertDataRegistry{}
+	// _ sdk.Msg = &MsgProposalSetPoorNetworkMessages{}
+	// _ sdk.Msg = &MsgProposalCreateRole{}
+	_ sdk.Msg = &MsgSubmitProposal{}
 
 	// Councilor
 	_ sdk.Msg = &MsgClaimCouncilor{}
@@ -30,8 +37,6 @@ var (
 	_ sdk.Msg = &MsgBlacklistRolePermission{}
 	_ sdk.Msg = &MsgRemoveWhitelistRolePermission{}
 	_ sdk.Msg = &MsgRemoveBlacklistRolePermission{}
-
-	_ sdk.Msg = &MsgProposalCreateRole{}
 )
 
 func NewMsgWhitelistPermissions(
@@ -396,164 +401,117 @@ func (m *MsgRemoveRole) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgProposalAssignPermission(proposer sdk.AccAddress, description string, address sdk.AccAddress, permission PermValue) *MsgProposalAssignPermission {
-	return &MsgProposalAssignPermission{
-		Proposer:    proposer,
-		Description: description,
-		Address:     address,
-		Permission:  uint32(permission),
-	}
-}
+// func NewMsgProposalAssignPermission(proposer sdk.AccAddress, description string, address sdk.AccAddress, permission PermValue) *MsgProposalAssignPermission {
+// 	return &MsgProposalAssignPermission{
+// 		Proposer:    proposer,
+// 		Description: description,
+// 		Address:     address,
+// 		Permission:  uint32(permission),
+// 	}
+// }
 
-func (m *MsgProposalAssignPermission) Route() string {
-	return ModuleName
-}
+// func (m *MsgProposalAssignPermission) Route() string {
+// 	return ModuleName
+// }
 
-func (m *MsgProposalAssignPermission) Type() string {
-	return types.MsgTypeProposalAssignPermission
-}
+// func (m *MsgProposalAssignPermission) Type() string {
+// 	return types.MsgTypeProposalAssignPermission
+// }
 
-func (m *MsgProposalAssignPermission) ValidateBasic() error {
-	if m.Proposer.Empty() {
-		return ErrEmptyProposerAccAddress
-	}
+// func (m *MsgProposalAssignPermission) GetSignBytes() []byte {
+// 	bz := ModuleCdc.MustMarshalJSON(m)
+// 	return sdk.MustSortJSON(bz)
+// }
 
-	if m.Address.Empty() {
-		return ErrEmptyPermissionsAccAddress
-	}
+// func (m *MsgProposalAssignPermission) GetSigners() []sdk.AccAddress {
+// 	return []sdk.AccAddress{
+// 		m.Proposer,
+// 	}
+// }
 
-	return nil
-}
+// func NewMsgProposalSetNetworkProperty(proposer sdk.AccAddress, description string, property NetworkProperty, value uint64) *MsgProposalSetNetworkProperty {
+// 	return &MsgProposalSetNetworkProperty{
+// 		Proposer:        proposer,
+// 		Description:     description,
+// 		NetworkProperty: property,
+// 		Value:           value,
+// 	}
+// }
 
-func (m *MsgProposalAssignPermission) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(m)
-	return sdk.MustSortJSON(bz)
-}
+// func (m *MsgProposalSetNetworkProperty) Route() string {
+// 	return ModuleName
+// }
 
-func (m *MsgProposalAssignPermission) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{
-		m.Proposer,
-	}
-}
+// func (m *MsgProposalSetNetworkProperty) Type() string {
+// 	return types.MsgTypeProposalSetNetworkProperty
+// }
 
-func NewMsgProposalSetNetworkProperty(proposer sdk.AccAddress, description string, property NetworkProperty, value uint64) *MsgProposalSetNetworkProperty {
-	return &MsgProposalSetNetworkProperty{
-		Proposer:        proposer,
-		Description:     description,
-		NetworkProperty: property,
-		Value:           value,
-	}
-}
+// func (m *MsgProposalSetNetworkProperty) GetSignBytes() []byte {
+// 	bz := ModuleCdc.MustMarshalJSON(m)
+// 	return sdk.MustSortJSON(bz)
+// }
 
-func (m *MsgProposalSetNetworkProperty) Route() string {
-	return ModuleName
-}
+// func (m *MsgProposalSetNetworkProperty) GetSigners() []sdk.AccAddress {
+// 	return []sdk.AccAddress{
+// 		m.Proposer,
+// 	}
+// }
 
-func (m *MsgProposalSetNetworkProperty) Type() string {
-	return types.MsgTypeProposalSetNetworkProperty
-}
+// func NewMsgProposalUpsertDataRegistry(proposer sdk.AccAddress, description string, key, hash, reference, encoding string, size uint64) *MsgProposalUpsertDataRegistry {
+// 	return &MsgProposalUpsertDataRegistry{
+// 		Proposer:    proposer,
+// 		Description: description,
+// 		Key:         key,
+// 		Hash:        hash,
+// 		Reference:   reference,
+// 		Encoding:    encoding,
+// 		Size_:       size,
+// 	}
+// }
 
-func (m *MsgProposalSetNetworkProperty) ValidateBasic() error {
-	if m.Proposer.Empty() {
-		return ErrEmptyProposerAccAddress
-	}
+// func (m *MsgProposalUpsertDataRegistry) Route() string {
+// 	return ModuleName
+// }
 
-	switch m.NetworkProperty {
-	case MinTxFee,
-		MaxTxFee,
-		VoteQuorum,
-		ProposalEndTime,
-		ProposalEnactmentTime,
-		EnableForeignFeePayments,
-		MischanceRankDecreaseAmount,
-		MischanceConfidence,
-		MaxMischance,
-		InactiveRankDecreasePercent,
-		PoorNetworkMaxBankSend,
-		MinValidators:
-		return nil
-	default:
-		return ErrInvalidNetworkProperty
-	}
-}
+// func (m *MsgProposalUpsertDataRegistry) Type() string {
+// 	return types.MsgTypeProposalUpsertDataRegistry
+// }
 
-func (m *MsgProposalSetNetworkProperty) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(m)
-	return sdk.MustSortJSON(bz)
-}
+// func (m *MsgProposalUpsertDataRegistry) GetSignBytes() []byte {
+// 	bz := ModuleCdc.MustMarshalJSON(m)
+// 	return sdk.MustSortJSON(bz)
+// }
 
-func (m *MsgProposalSetNetworkProperty) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{
-		m.Proposer,
-	}
-}
+// func (m *MsgProposalUpsertDataRegistry) GetSigners() []sdk.AccAddress {
+// 	return []sdk.AccAddress{
+// 		m.Proposer,
+// 	}
+// }
 
-func NewMsgProposalUpsertDataRegistry(proposer sdk.AccAddress, description string, key, hash, reference, encoding string, size uint64) *MsgProposalUpsertDataRegistry {
-	return &MsgProposalUpsertDataRegistry{
-		Proposer:    proposer,
-		Description: description,
-		Key:         key,
-		Hash:        hash,
-		Reference:   reference,
-		Encoding:    encoding,
-		Size_:       size,
-	}
-}
+// func NewMsgProposalSetPoorNetworkMessages(proposer sdk.AccAddress, description string, messages []string) *MsgProposalSetPoorNetworkMessages {
+// 	return &MsgProposalSetPoorNetworkMessages{
+// 		Proposer:    proposer,
+// 		Description: description,
+// 		Messages:    messages,
+// 	}
+// }
 
-func (m *MsgProposalUpsertDataRegistry) Route() string {
-	return ModuleName
-}
+// func (m *MsgProposalSetPoorNetworkMessages) Route() string {
+// 	return ModuleName
+// }
 
-func (m *MsgProposalUpsertDataRegistry) Type() string {
-	return types.MsgTypeProposalUpsertDataRegistry
-}
+// func (m *MsgProposalSetPoorNetworkMessages) Type() string {
+// 	return types.MsgTypeProposalSetPoorNetworkMessages
+// }
 
-func (m *MsgProposalUpsertDataRegistry) ValidateBasic() error {
-	if m.Proposer.Empty() {
-		return ErrEmptyProposerAccAddress
-	}
-	return nil
-}
+// func (m *MsgProposalSetPoorNetworkMessages) GetSignBytes() []byte {
+// 	bz := ModuleCdc.MustMarshalJSON(m)
+// 	return sdk.MustSortJSON(bz)
+// }
 
-func (m *MsgProposalUpsertDataRegistry) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(m)
-	return sdk.MustSortJSON(bz)
-}
-
-func (m *MsgProposalUpsertDataRegistry) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{
-		m.Proposer,
-	}
-}
-
-func NewMsgProposalSetPoorNetworkMessages(proposer sdk.AccAddress, description string, messages []string) *MsgProposalSetPoorNetworkMessages {
-	return &MsgProposalSetPoorNetworkMessages{
-		Proposer:    proposer,
-		Description: description,
-		Messages:    messages,
-	}
-}
-
-func (m *MsgProposalSetPoorNetworkMessages) Route() string {
-	return ModuleName
-}
-
-func (m *MsgProposalSetPoorNetworkMessages) Type() string {
-	return types.MsgTypeProposalSetPoorNetworkMessages
-}
-
-func (m *MsgProposalSetPoorNetworkMessages) ValidateBasic() error {
-	return nil
-}
-
-func (m *MsgProposalSetPoorNetworkMessages) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(m)
-	return sdk.MustSortJSON(bz)
-}
-
-func (m *MsgProposalSetPoorNetworkMessages) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{m.Proposer}
-}
+// func (m *MsgProposalSetPoorNetworkMessages) GetSigners() []sdk.AccAddress {
+// 	return []sdk.AccAddress{m.Proposer}
+// }
 
 func NewMsgVoteProposal(proposalID uint64, voter sdk.AccAddress, option VoteOption) *MsgVoteProposal {
 	return &MsgVoteProposal{
@@ -590,47 +548,40 @@ func (m *MsgVoteProposal) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgProposalCreateRole(
-	proposer sdk.AccAddress,
-	description string,
-	role Role,
-	whitelistPerms []PermValue,
-	blacklistPerms []PermValue,
-) *MsgProposalCreateRole {
-	return &MsgProposalCreateRole{
-		Proposer:               proposer,
-		Description:            description,
-		Role:                   uint32(role),
-		WhitelistedPermissions: whitelistPerms,
-		BlacklistedPermissions: blacklistPerms,
-	}
-}
+// func NewMsgProposalCreateRole(
+// 	proposer sdk.AccAddress,
+// 	description string,
+// 	role Role,
+// 	whitelistPerms []PermValue,
+// 	blacklistPerms []PermValue,
+// ) *MsgProposalCreateRole {
+// 	return &MsgProposalCreateRole{
+// 		Proposer:               proposer,
+// 		Description:            description,
+// 		Role:                   uint32(role),
+// 		WhitelistedPermissions: whitelistPerms,
+// 		BlacklistedPermissions: blacklistPerms,
+// 	}
+// }
 
-func (m *MsgProposalCreateRole) Route() string {
-	return ModuleName
-}
+// func (m *MsgProposalCreateRole) Route() string {
+// 	return ModuleName
+// }
 
-func (m *MsgProposalCreateRole) Type() string {
-	return types.MsgTypeProposalCreateRole
-}
+// func (m *MsgProposalCreateRole) Type() string {
+// 	return types.MsgTypeProposalCreateRole
+// }
 
-func (m *MsgProposalCreateRole) ValidateBasic() error {
-	if m.Proposer.Empty() {
-		return ErrEmptyProposerAccAddress
-	}
-	return nil
-}
+// func (m *MsgProposalCreateRole) GetSignBytes() []byte {
+// 	bz := ModuleCdc.MustMarshalJSON(m)
+// 	return sdk.MustSortJSON(bz)
+// }
 
-func (m *MsgProposalCreateRole) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(m)
-	return sdk.MustSortJSON(bz)
-}
-
-func (m *MsgProposalCreateRole) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{
-		m.Proposer,
-	}
-}
+// func (m *MsgProposalCreateRole) GetSigners() []sdk.AccAddress {
+// 	return []sdk.AccAddress{
+// 		m.Proposer,
+// 	}
+// }
 
 func NewMsgCreateIdentityRecord(address sdk.AccAddress, infos []IdentityInfoEntry, date time.Time) *MsgCreateIdentityRecord {
 	return &MsgCreateIdentityRecord{
@@ -830,4 +781,88 @@ func (m *MsgCancelIdentityRecordsVerifyRequest) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{
 		m.Executor,
 	}
+}
+
+// NewMsgSubmitProposal creates a new MsgSubmitProposal.
+//nolint:interfacer
+func NewMsgSubmitProposal(proposer sdk.AccAddress, description string, content Content) (*MsgSubmitProposal, error) {
+	m := &MsgSubmitProposal{
+		Proposer: proposer,
+	}
+	err := m.SetContent(content)
+	if err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (m *MsgSubmitProposal) GetProposer() sdk.AccAddress {
+	return m.Proposer
+}
+
+func (m *MsgSubmitProposal) GetContent() Content {
+	content, ok := m.Content.GetCachedValue().(Content)
+	if !ok {
+		return nil
+	}
+	return content
+}
+
+func (m *MsgSubmitProposal) SetContent(content Content) error {
+	msg, ok := content.(proto.Message)
+	if !ok {
+		return fmt.Errorf("can't proto marshal %T", msg)
+	}
+	any, err := codectypes.NewAnyWithValue(msg)
+	if err != nil {
+		return err
+	}
+	m.Content = any
+	return nil
+}
+
+// Route implements Msg
+func (m MsgSubmitProposal) Route() string { return RouterKey }
+
+// Type implements Msg
+func (m MsgSubmitProposal) Type() string { return types.MsgTypeSubmitProposal }
+
+// ValidateBasic implements Msg
+func (m MsgSubmitProposal) ValidateBasic() error {
+	if m.Proposer.Empty() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, m.Proposer.String())
+	}
+
+	content := m.GetContent()
+	if content == nil {
+		return sdkerrors.Wrap(ErrInvalidProposalContent, "missing content")
+	}
+	if err := content.ValidateBasic(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// GetSignBytes implements Msg
+func (m MsgSubmitProposal) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(&m)
+	return sdk.MustSortJSON(bz)
+}
+
+// GetSigners implements Msg
+func (m MsgSubmitProposal) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{m.Proposer}
+}
+
+// String implements the Stringer interface
+func (m MsgSubmitProposal) String() string {
+	out, _ := yaml.Marshal(m)
+	return string(out)
+}
+
+// UnpackInterfaces implements UnpackInterfacesMessage.UnpackInterfaces
+func (m MsgSubmitProposal) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
+	var content Content
+	return unpacker.UnpackAny(m.Content, &content)
 }

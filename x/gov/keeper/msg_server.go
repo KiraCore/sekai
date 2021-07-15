@@ -3,7 +3,6 @@ package keeper
 import (
 	"context"
 	"fmt"
-	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
@@ -24,6 +23,46 @@ func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 }
 
 var _ types.MsgServer = msgServer{}
+
+func (k msgServer) SubmitProposal(goCtx context.Context, msg *types.MsgSubmitProposal) (*types.MsgSubmitProposalResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	content := msg.GetContent()
+
+	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, content.ProposalPermission())
+	if !isAllowed {
+		return nil, errors.Wrap(types.ErrNotEnoughPermissions, content.ProposalPermission().String())
+	}
+
+	proposalID, err := k.keeper.CreateAndSaveProposalWithContent(ctx, msg.Description, content)
+	if err != nil {
+		return nil, err
+	}
+
+	cacheCtx, _ := ctx.CacheContext()
+	router := k.keeper.GetProposalRouter()
+	proposal, found := k.keeper.GetProposal(cacheCtx, proposalID)
+	if !found {
+		return nil, types.ErrProposalDoesNotExist
+	}
+
+	err = router.ApplyProposal(cacheCtx, proposal.GetContent())
+	if err != nil {
+		return nil, err
+	}
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeSubmitProposal,
+			sdk.NewAttribute(types.AttributeKeyProposalId, fmt.Sprintf("%d", proposalID)),
+			sdk.NewAttribute(types.AttributeKeyProposalType, content.ProposalType()),
+			sdk.NewAttribute(types.AttributeKeyProposalContent, msg.String()),
+		),
+	)
+
+	return &types.MsgSubmitProposalResponse{
+		ProposalID: proposalID,
+	}, nil
+}
 
 func (k msgServer) VoteProposal(
 	goCtx context.Context,
@@ -64,71 +103,6 @@ func (k msgServer) VoteProposal(
 	return &types.MsgVoteProposalResponse{}, nil
 }
 
-func (k msgServer) ProposalSetPoorNetworkMessages(
-	goCtx context.Context,
-	msg *types.MsgProposalSetPoorNetworkMessages,
-) (*types.MsgProposalSetPoorNetworkMessagesResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, types.PermCreateSetPoorNetworkMessagesProposal)
-	if !isAllowed {
-		return nil, errors.Wrap(types.ErrNotEnoughPermissions, types.PermCreateSetPoorNetworkMessagesProposal.String())
-	}
-
-	proposalID, err := k.CreateAndSaveProposalWithContent(ctx, msg.Description, types.NewSetPoorNetworkMessagesProposal(msg.Messages))
-	if err != nil {
-		return nil, err
-	}
-	ctx.EventManager().EmitEvent(
-		sdk.NewEvent(
-			types.EventTypeSubmitProposal,
-			sdk.NewAttribute(types.AttributeKeyProposalId, fmt.Sprintf("%d", proposalID)),
-			sdk.NewAttribute(types.AttributeKeyProposalType, msg.Type()),
-			sdk.NewAttribute(types.AttributeKeyProposalContent, msg.String()),
-		),
-	)
-	return &types.MsgProposalSetPoorNetworkMessagesResponse{
-		ProposalID: proposalID,
-	}, nil
-}
-
-func (k msgServer) ProposalUpsertDataRegistry(
-	goCtx context.Context,
-	msg *types.MsgProposalUpsertDataRegistry,
-) (*types.MsgProposalUpsertDataRegistryResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, types.PermCreateUpsertDataRegistryProposal)
-	if !isAllowed {
-		return nil, errors.Wrap(types.ErrNotEnoughPermissions, types.PermCreateUpsertDataRegistryProposal.String())
-	}
-
-	proposalID, err := k.CreateAndSaveProposalWithContent(ctx,
-		msg.Description,
-		types.NewUpsertDataRegistryProposal(
-			msg.Key,
-			msg.Hash,
-			msg.Reference,
-			msg.Encoding,
-			msg.Size_,
-		),
-	)
-	if err != nil {
-		return nil, err
-	}
-	ctx.EventManager().EmitEvent(
-		sdk.NewEvent(
-			types.EventTypeSubmitProposal,
-			sdk.NewAttribute(types.AttributeKeyProposalId, fmt.Sprintf("%d", proposalID)),
-			sdk.NewAttribute(types.AttributeKeyProposalType, msg.Type()),
-			sdk.NewAttribute(types.AttributeKeyProposalContent, msg.String()),
-		),
-	)
-	return &types.MsgProposalUpsertDataRegistryResponse{
-		ProposalID: proposalID,
-	}, nil
-}
-
 // CreateIdentityRecord defines a method to create identity record
 func (k msgServer) CreateIdentityRecord(goCtx context.Context, msg *types.MsgCreateIdentityRecord) (*types.MsgCreateIdentityRecordResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
@@ -164,163 +138,6 @@ func (k msgServer) CancelIdentityRecordsVerifyRequest(goCtx context.Context, msg
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	err := k.keeper.CancelIdentityRecordsVerifyRequest(ctx, msg.Executor, msg.VerifyRequestId)
 	return &types.MsgCancelIdentityRecordsVerifyRequestResponse{}, err
-}
-
-func (k msgServer) ProposalAssignPermission(
-	goCtx context.Context,
-	msg *types.MsgProposalAssignPermission,
-) (*types.MsgProposalAssignPermissionResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, types.PermCreateSetPermissionsProposal)
-	if !isAllowed {
-		return nil, errors.Wrap(types.ErrNotEnoughPermissions, types.PermCreateSetPermissionsProposal.String())
-	}
-
-	actor, found := k.keeper.GetNetworkActorByAddress(ctx, msg.Address)
-	if found { // Actor exists
-		if actor.Permissions.IsWhitelisted(types.PermValue(msg.Permission)) {
-			return nil, errors.Wrap(types.ErrWhitelisting, "permission already whitelisted")
-		}
-	}
-
-	proposalID, err := k.CreateAndSaveProposalWithContent(
-		ctx,
-		msg.Description,
-		types.NewAssignPermissionProposal(
-			msg.Address,
-			types.PermValue(msg.Permission),
-		))
-	if err != nil {
-		return nil, err
-	}
-	ctx.EventManager().EmitEvent(
-		sdk.NewEvent(
-			types.EventTypeSubmitProposal,
-			sdk.NewAttribute(types.AttributeKeyProposalId, fmt.Sprintf("%d", proposalID)),
-			sdk.NewAttribute(types.AttributeKeyProposalType, msg.Type()),
-			sdk.NewAttribute(types.AttributeKeyProposalContent, msg.String()),
-		),
-	)
-	return &types.MsgProposalAssignPermissionResponse{
-		ProposalID: proposalID,
-	}, nil
-}
-
-func (k msgServer) CreateAndSaveProposalWithContent(ctx sdk.Context, description string, content types.Content) (uint64, error) {
-	blockTime := ctx.BlockTime()
-	proposalID := k.keeper.GetNextProposalIDAndIncrement(ctx)
-
-	properties := k.keeper.GetNetworkProperties(ctx)
-
-	proposal, err := types.NewProposal(
-		proposalID,
-		content,
-		blockTime,
-		blockTime.Add(time.Second*time.Duration(properties.ProposalEndTime)),
-		blockTime.Add(time.Second*time.Duration(properties.ProposalEndTime)+
-			time.Second*time.Duration(properties.ProposalEnactmentTime),
-		),
-		ctx.BlockHeight()+int64(properties.MinProposalEndBlocks),
-		ctx.BlockHeight()+int64(properties.MinProposalEndBlocks+properties.MinProposalEnactmentBlocks),
-		description,
-	)
-
-	if err != nil {
-		return proposalID, err
-	}
-
-	k.keeper.SaveProposal(ctx, proposal)
-	k.keeper.AddToActiveProposals(ctx, proposal)
-
-	return proposalID, nil
-}
-
-func (k msgServer) ProposalSetNetworkProperty(
-	goCtx context.Context,
-	msg *types.MsgProposalSetNetworkProperty,
-) (*types.MsgProposalSetNetworkPropertyResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, types.PermCreateSetNetworkPropertyProposal)
-	if !isAllowed {
-		return nil, errors.Wrap(types.ErrNotEnoughPermissions, types.PermCreateSetNetworkPropertyProposal.String())
-	}
-
-	property, err := k.keeper.GetNetworkProperty(ctx, msg.NetworkProperty)
-	if err != nil {
-		return nil, errors.Wrap(errors.ErrInvalidRequest, err.Error())
-	}
-	if property == msg.Value {
-		return nil, errors.Wrap(errors.ErrInvalidRequest, "network property already set as proposed value")
-	}
-
-	proposalID, err := k.CreateAndSaveProposalWithContent(
-		ctx,
-		msg.Description,
-		types.NewSetNetworkPropertyProposal(
-			msg.NetworkProperty,
-			msg.Value,
-		),
-	)
-	if err != nil {
-		return nil, err
-	}
-	ctx.EventManager().EmitEvent(
-		sdk.NewEvent(
-			types.EventTypeSubmitProposal,
-			sdk.NewAttribute(types.AttributeKeyProposalId, fmt.Sprintf("%d", proposalID)),
-			sdk.NewAttribute(types.AttributeKeyProposalType, msg.Type()),
-			sdk.NewAttribute(types.AttributeKeyProposalContent, msg.String()),
-		),
-	)
-
-	return &types.MsgProposalSetNetworkPropertyResponse{
-		ProposalID: proposalID,
-	}, nil
-}
-
-func (k msgServer) ProposalCreateRole(goCtx context.Context, msg *types.MsgProposalCreateRole) (*types.MsgProposalCreateRoleResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	if len(msg.WhitelistedPermissions) == 0 && len(msg.BlacklistedPermissions) == 0 {
-		return nil, types.ErrEmptyPermissions
-	}
-
-	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, types.PermCreateRoleProposal)
-	if !isAllowed {
-		return nil, errors.Wrap(types.ErrNotEnoughPermissions, types.PermCreateRoleProposal.String())
-	}
-
-	_, exists := k.keeper.GetPermissionsForRole(ctx, types.Role(msg.Role))
-	if exists {
-		return nil, types.ErrRoleExist
-	}
-
-	proposalID, err := k.CreateAndSaveProposalWithContent(
-		ctx,
-		msg.Description,
-		types.NewCreateRoleProposal(
-			types.Role(msg.Role),
-			msg.WhitelistedPermissions,
-			msg.BlacklistedPermissions,
-		),
-	)
-	if err != nil {
-		return nil, err
-	}
-	ctx.EventManager().EmitEvent(
-		sdk.NewEvent(
-			types.EventTypeSubmitProposal,
-			sdk.NewAttribute(types.AttributeKeyProposalId, fmt.Sprintf("%d", proposalID)),
-			sdk.NewAttribute(types.AttributeKeyProposalType, msg.Type()),
-			sdk.NewAttribute(types.AttributeKeyProposalContent, msg.String()),
-		),
-	)
-
-	return &types.MsgProposalCreateRoleResponse{
-		ProposalID: proposalID,
-	}, nil
 }
 
 func (k msgServer) RemoveRole(

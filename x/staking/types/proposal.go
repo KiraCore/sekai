@@ -19,6 +19,15 @@ func (m *ProposalUnjailValidator) ProposalType() string {
 	return ProposalTypeUnjailValidator
 }
 
+func (m *ProposalUnjailValidator) ProposalPermission() types.PermValue {
+	return types.PermCreateUnjailValidatorProposal
+}
+
 func (m *ProposalUnjailValidator) VotePermission() types.PermValue {
 	return types.PermVoteUnjailValidatorProposal
+}
+
+// ValidateBasic returns basic validation
+func (m *ProposalUnjailValidator) ValidateBasic() error {
+	return nil
 }

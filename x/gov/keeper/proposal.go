@@ -31,6 +31,35 @@ func (k Keeper) SetNextProposalID(ctx sdk.Context, proposalID uint64) {
 	store.Set(NextProposalIDPrefix, ProposalIDToBytes(proposalID))
 }
 
+func (k Keeper) CreateAndSaveProposalWithContent(ctx sdk.Context, description string, content types.Content) (uint64, error) {
+	blockTime := ctx.BlockTime()
+	proposalID := k.GetNextProposalIDAndIncrement(ctx)
+
+	properties := k.GetNetworkProperties(ctx)
+
+	proposal, err := types.NewProposal(
+		proposalID,
+		content,
+		blockTime,
+		blockTime.Add(time.Second*time.Duration(properties.ProposalEndTime)),
+		blockTime.Add(time.Second*time.Duration(properties.ProposalEndTime)+
+			time.Second*time.Duration(properties.ProposalEnactmentTime),
+		),
+		ctx.BlockHeight()+int64(properties.MinProposalEndBlocks),
+		ctx.BlockHeight()+int64(properties.MinProposalEndBlocks+properties.MinProposalEnactmentBlocks),
+		description,
+	)
+
+	if err != nil {
+		return proposalID, err
+	}
+
+	k.SaveProposal(ctx, proposal)
+	k.AddToActiveProposals(ctx, proposal)
+
+	return proposalID, nil
+}
+
 func (k Keeper) SaveProposal(ctx sdk.Context, proposal types.Proposal) {
 	store := ctx.KVStore(k.storeKey)
 

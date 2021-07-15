@@ -36,7 +36,6 @@ func (k Keeper) ClearUpgradePlan(ctx sdk.Context) {
 }
 
 func (k Keeper) ApplyUpgradePlan(ctx sdk.Context, plan types.Plan) {
-	// TODO: how do we check that upgrade is already done and not halt any more?
 	if plan.ShouldExecute(ctx) {
 		handler := k.upgradeHandlers[plan.Name]
 		if handler == nil {
