@@ -57,9 +57,7 @@ message IdentityRecord {
   uint64 id = 1;
   map<string, string> infos = 2;
   google.protobuf.Timestamp date = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  repeated bytes verifiers = 4 [
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
-  ];
+  repeated string verifiers = 4;
 }
 
 message QueryValidator {

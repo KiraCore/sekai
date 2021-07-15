@@ -4,6 +4,7 @@ package kira.staking;
 import "kira/staking/pagination.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 
 // Defines the import path that should be used to import the generated package,
@@ -49,6 +50,15 @@ message ValidatorsRequest {
   bool all = 8;
 }
 
+message IdentityRecord {
+  option (gogoproto.equal)            = true;
+
+  uint64 id = 1;
+  map<string, string> infos = 2;
+  google.protobuf.Timestamp date = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  repeated string verifiers = 4;
+}
+
 message QueryValidator {
   option (gogoproto.equal)            = true;
 
@@ -62,6 +72,7 @@ message QueryValidator {
   int64 rank = 8;
   int64 streak = 9;
   int64 mischance = 10;
+  repeated IdentityRecord identity = 11 [(gogoproto.nullable) = false];
 }
 
 // ValidatorsResponse is response type for the Query/Validators RPC method
