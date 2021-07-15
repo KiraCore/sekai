@@ -114,27 +114,3 @@ func (msg MsgPause) ValidateBasic() error {
 
 	return nil
 }
-
-// func NewMsgProposalResetWholeValidatorRank(proposer sdk.AccAddress, description string) *MsgProposalResetWholeValidatorRank {
-// 	return &MsgProposalResetWholeValidatorRank{
-// 		Proposer:    proposer,
-// 		Description: description,
-// 	}
-// }
-
-// func (m *MsgProposalResetWholeValidatorRank) Route() string {
-// 	return ModuleName
-// }
-
-// func (m *MsgProposalResetWholeValidatorRank) Type() string {
-// 	return types.MsgTypeProposalResetWholeValidatorRank
-// }
-
-// func (m *MsgProposalResetWholeValidatorRank) GetSignBytes() []byte {
-// 	bz := ModuleCdc.MustMarshalJSON(m)
-// 	return sdk.MustSortJSON(bz)
-// }
-
-// func (m *MsgProposalResetWholeValidatorRank) GetSigners() []sdk.AccAddress {
-// 	return []sdk.AccAddress{m.Proposer}
-// }

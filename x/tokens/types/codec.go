@@ -64,81 +64,6 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 			}
 		}
 	}`)
-
-	// cdc.RegisterConcrete(&MsgProposalUpsertTokenAlias{}, "kiraHub/MsgProposalUpsertTokenAlias", nil)
-	// functionmeta.AddNewFunction((&MsgProposalUpsertTokenAlias{}).Type(), `{
-	// 	"description": "MsgProposalUpsertTokenAlias defines a proposal message to upsert token alias.",
-	// 	"parameters": {
-	// 		"symbol": {
-	// 			"type":        "string",
-	// 			"description": "Ticker (eg. ATOM, KEX, BTC)."
-	// 		},
-	// 		"name": {
-	// 			"type":        "string",
-	// 			"description": "Token Name (e.g. Cosmos, Kira, Bitcoin)."
-	// 		},
-	// 		"icon": {
-	// 			"type":        "string",
-	// 			"description": "Graphical Symbol (url link to graphics)."
-	// 		},
-	// 		"decimals": {
-	// 			"type":        "uint32",
-	// 			"description": "Integer number of max decimals."
-	// 		},
-	// 		"denoms": {
-	// 			"type":        "array<string>",
-	// 			"description": "An array of token denoms to be aliased."
-	// 		},
-	// 		"proposer": {
-	// 			"type":        "string",
-	// 			"description": "proposer who propose this message."
-	// 		}
-	// 	}
-	// }`)
-	// cdc.RegisterConcrete(&MsgProposalUpsertTokenRates{}, "kiraHub/MsgProposalUpsertTokenRates", nil)
-	// functionmeta.AddNewFunction((&MsgProposalUpsertTokenRates{}).Type(), `{
-	// 	"description": "MsgProposalUpsertTokenRates defines a proposal message to upsert token rate.",
-	// 	"parameters": {
-	// 		"denom": {
-	// 			"type":        "string",
-	// 			"description": "denominator, ukex, uatom etc."
-	// 		},
-	// 		"rate": {
-	// 			"type":        "decimal",
-	// 			"description": "e.g. 1.20"
-	// 		},
-	// 		"fee_payments": {
-	// 			"type":        "bool",
-	// 			"description": "describe if specified denom can be used for fee payment."
-	// 		},
-	// 		"proposer": {
-	// 			"type":        "string",
-	// 			"description": "proposer who propose this message."
-	// 		}
-	// 	}
-	// }`)
-	// cdc.RegisterConcrete(&MsgProposalTokensWhiteBlackChange{}, "kiraHub/MsgProposalTokensWhiteBlackChange", nil)
-	// functionmeta.AddNewFunction((&MsgProposalTokensWhiteBlackChange{}).Type(), `{
-	// 	"description": "MsgProposalTokensWhiteBlackChange defines a proposal message to change tokens blacklists / whitelists.",
-	// 	"parameters": {
-	// 		"is_blacklist": {
-	// 			"type":        "bool",
-	// 			"description": "true if it's proposal for touching blacklist, otherwise false"
-	// 		},
-	// 		"is_add": {
-	// 			"type":        "bool",
-	// 			"description": "true if it's proposal for adding, otherwise false"
-	// 		},
-	// 		"tokens": {
-	// 			"type":        "array<string>",
-	// 			"description": "describe the tokens to be added / removed from whitelists / blacklists."
-	// 		},
-	// 		"proposer": {
-	// 			"type":        "string",
-	// 			"description": "proposer who propose this message."
-	// 		}
-	// 	}
-	// }`)
 }
 
 // RegisterInterfaces register Msg and structs
@@ -146,9 +71,6 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgUpsertTokenRate{},
 		&MsgUpsertTokenAlias{},
-		// &MsgProposalUpsertTokenAlias{},
-		// &MsgProposalUpsertTokenRates{},
-		// &MsgProposalTokensWhiteBlackChange{},
 	)
 
 	registry.RegisterInterface(
