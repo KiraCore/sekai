@@ -31,14 +31,17 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type MsgProposalSoftwareUpgradeRequest struct {
-	Resources            *Resource                                     `protobuf:"bytes,1,opt,name=resources,proto3" json:"resources,omitempty"`
-	MinHaltTime          int64                                         `protobuf:"varint,2,opt,name=min_halt_time,json=minHaltTime,proto3" json:"min_halt_time,omitempty"`
-	OldChainId           string                                        `protobuf:"bytes,3,opt,name=old_chain_id,json=oldChainId,proto3" json:"old_chain_id,omitempty"`
-	NewChainId           string                                        `protobuf:"bytes,4,opt,name=new_chain_id,json=newChainId,proto3" json:"new_chain_id,omitempty"`
-	RollbackChecksum     string                                        `protobuf:"bytes,5,opt,name=rollback_checksum,json=rollbackChecksum,proto3" json:"rollback_checksum,omitempty"`
-	MaxEnrolmentDuration int64                                         `protobuf:"varint,6,opt,name=max_enrolment_duration,json=maxEnrolmentDuration,proto3" json:"max_enrolment_duration,omitempty"`
-	Memo                 string                                        `protobuf:"bytes,7,opt,name=memo,proto3" json:"memo,omitempty"`
-	Proposer             github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,8,opt,name=proposer,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"proposer,omitempty" yaml:"proposer"`
+	Name                 string                                        `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Resources            []Resource                                    `protobuf:"bytes,2,rep,name=resources,proto3" json:"resources"`
+	Height               int64                                         `protobuf:"varint,3,opt,name=height,proto3" json:"height,omitempty"`
+	MinUpgradeTime       int64                                         `protobuf:"varint,4,opt,name=min_upgrade_time,json=minUpgradeTime,proto3" json:"min_upgrade_time,omitempty"`
+	OldChainId           string                                        `protobuf:"bytes,5,opt,name=old_chain_id,json=oldChainId,proto3" json:"old_chain_id,omitempty"`
+	NewChainId           string                                        `protobuf:"bytes,6,opt,name=new_chain_id,json=newChainId,proto3" json:"new_chain_id,omitempty"`
+	RollbackChecksum     string                                        `protobuf:"bytes,7,opt,name=rollback_checksum,json=rollbackChecksum,proto3" json:"rollback_checksum,omitempty"`
+	MaxEnrolmentDuration int64                                         `protobuf:"varint,8,opt,name=max_enrolment_duration,json=maxEnrolmentDuration,proto3" json:"max_enrolment_duration,omitempty"`
+	Memo                 string                                        `protobuf:"bytes,9,opt,name=memo,proto3" json:"memo,omitempty"`
+	InstateUpgrade       bool                                          `protobuf:"varint,10,opt,name=instate_upgrade,json=instateUpgrade,proto3" json:"instate_upgrade,omitempty"`
+	Proposer             github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,11,opt,name=proposer,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"proposer,omitempty" yaml:"proposer"`
 }
 
 func (m *MsgProposalSoftwareUpgradeRequest) Reset()         { *m = MsgProposalSoftwareUpgradeRequest{} }
@@ -74,16 +77,30 @@ func (m *MsgProposalSoftwareUpgradeRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgProposalSoftwareUpgradeRequest proto.InternalMessageInfo
 
-func (m *MsgProposalSoftwareUpgradeRequest) GetResources() *Resource {
+func (m *MsgProposalSoftwareUpgradeRequest) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *MsgProposalSoftwareUpgradeRequest) GetResources() []Resource {
 	if m != nil {
 		return m.Resources
 	}
 	return nil
 }
 
-func (m *MsgProposalSoftwareUpgradeRequest) GetMinHaltTime() int64 {
+func (m *MsgProposalSoftwareUpgradeRequest) GetHeight() int64 {
 	if m != nil {
-		return m.MinHaltTime
+		return m.Height
+	}
+	return 0
+}
+
+func (m *MsgProposalSoftwareUpgradeRequest) GetMinUpgradeTime() int64 {
+	if m != nil {
+		return m.MinUpgradeTime
 	}
 	return 0
 }
@@ -121,6 +138,13 @@ func (m *MsgProposalSoftwareUpgradeRequest) GetMemo() string {
 		return m.Memo
 	}
 	return ""
+}
+
+func (m *MsgProposalSoftwareUpgradeRequest) GetInstateUpgrade() bool {
+	if m != nil {
+		return m.InstateUpgrade
+	}
+	return false
 }
 
 func (m *MsgProposalSoftwareUpgradeRequest) GetProposer() github_com_cosmos_cosmos_sdk_types.AccAddress {
@@ -174,45 +198,154 @@ func (m *MsgProposalSoftwareUpgradeResponse) GetProposalID() uint64 {
 	return 0
 }
 
+type MsgProposalCancelSoftwareUpgradeRequest struct {
+	Proposer github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=proposer,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"proposer,omitempty" yaml:"proposer"`
+	Name     string                                        `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+}
+
+func (m *MsgProposalCancelSoftwareUpgradeRequest) Reset() {
+	*m = MsgProposalCancelSoftwareUpgradeRequest{}
+}
+func (m *MsgProposalCancelSoftwareUpgradeRequest) String() string { return proto.CompactTextString(m) }
+func (*MsgProposalCancelSoftwareUpgradeRequest) ProtoMessage()    {}
+func (*MsgProposalCancelSoftwareUpgradeRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_0fd2153dc07d3b5c, []int{2}
+}
+func (m *MsgProposalCancelSoftwareUpgradeRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgProposalCancelSoftwareUpgradeRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgProposalCancelSoftwareUpgradeRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgProposalCancelSoftwareUpgradeRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgProposalCancelSoftwareUpgradeRequest.Merge(m, src)
+}
+func (m *MsgProposalCancelSoftwareUpgradeRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgProposalCancelSoftwareUpgradeRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgProposalCancelSoftwareUpgradeRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgProposalCancelSoftwareUpgradeRequest proto.InternalMessageInfo
+
+func (m *MsgProposalCancelSoftwareUpgradeRequest) GetProposer() github_com_cosmos_cosmos_sdk_types.AccAddress {
+	if m != nil {
+		return m.Proposer
+	}
+	return nil
+}
+
+func (m *MsgProposalCancelSoftwareUpgradeRequest) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+type MsgProposalCancelSoftwareUpgradeResponse struct {
+	ProposalID uint64 `protobuf:"varint,1,opt,name=proposalID,proto3" json:"proposalID,omitempty"`
+}
+
+func (m *MsgProposalCancelSoftwareUpgradeResponse) Reset() {
+	*m = MsgProposalCancelSoftwareUpgradeResponse{}
+}
+func (m *MsgProposalCancelSoftwareUpgradeResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgProposalCancelSoftwareUpgradeResponse) ProtoMessage()    {}
+func (*MsgProposalCancelSoftwareUpgradeResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_0fd2153dc07d3b5c, []int{3}
+}
+func (m *MsgProposalCancelSoftwareUpgradeResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgProposalCancelSoftwareUpgradeResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgProposalCancelSoftwareUpgradeResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgProposalCancelSoftwareUpgradeResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgProposalCancelSoftwareUpgradeResponse.Merge(m, src)
+}
+func (m *MsgProposalCancelSoftwareUpgradeResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgProposalCancelSoftwareUpgradeResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgProposalCancelSoftwareUpgradeResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgProposalCancelSoftwareUpgradeResponse proto.InternalMessageInfo
+
+func (m *MsgProposalCancelSoftwareUpgradeResponse) GetProposalID() uint64 {
+	if m != nil {
+		return m.ProposalID
+	}
+	return 0
+}
+
 func init() {
 	proto.RegisterType((*MsgProposalSoftwareUpgradeRequest)(nil), "kira.upgrade.MsgProposalSoftwareUpgradeRequest")
 	proto.RegisterType((*MsgProposalSoftwareUpgradeResponse)(nil), "kira.upgrade.MsgProposalSoftwareUpgradeResponse")
+	proto.RegisterType((*MsgProposalCancelSoftwareUpgradeRequest)(nil), "kira.upgrade.MsgProposalCancelSoftwareUpgradeRequest")
+	proto.RegisterType((*MsgProposalCancelSoftwareUpgradeResponse)(nil), "kira.upgrade.MsgProposalCancelSoftwareUpgradeResponse")
 }
 
 func init() { proto.RegisterFile("tx.proto", fileDescriptor_0fd2153dc07d3b5c) }
 
 var fileDescriptor_0fd2153dc07d3b5c = []byte{
-	// 472 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x92, 0x4d, 0x6f, 0xd3, 0x4c,
-	0x10, 0x80, 0xb3, 0x6f, 0xf2, 0x96, 0x74, 0x9b, 0x0a, 0x58, 0x55, 0xc5, 0xca, 0xc1, 0x09, 0x3e,
-	0x05, 0xa1, 0xda, 0xa8, 0xf4, 0xd4, 0x5b, 0x9b, 0x20, 0x51, 0xa1, 0x4a, 0xc8, 0xc0, 0x85, 0x8b,
-	0xd9, 0xd8, 0x83, 0xb3, 0xb2, 0xd7, 0x63, 0x76, 0xd7, 0x4a, 0x2a, 0x71, 0xe3, 0x0f, 0xf0, 0x13,
-	0xfa, 0x73, 0x38, 0xf6, 0xc8, 0xa9, 0x42, 0xc9, 0x85, 0x33, 0x47, 0x4e, 0x28, 0xfe, 0xa0, 0xe1,
-	0xc0, 0xc7, 0xc9, 0xeb, 0x79, 0x9e, 0x9d, 0x1d, 0xcd, 0x0c, 0xed, 0x9a, 0x85, 0x9b, 0x2b, 0x34,
-	0xc8, 0x7a, 0x89, 0x50, 0xdc, 0x2d, 0xf2, 0x58, 0xf1, 0x08, 0xfa, 0x7b, 0x31, 0xc6, 0x58, 0x02,
-	0x6f, 0x7d, 0xaa, 0x9c, 0xfe, 0x6e, 0x8d, 0xab, 0x5f, 0xe7, 0xb2, 0x4d, 0xef, 0x9f, 0xeb, 0xf8,
-	0xb9, 0xc2, 0x1c, 0x35, 0x4f, 0x5f, 0xe0, 0x5b, 0x33, 0xe7, 0x0a, 0x5e, 0x55, 0x92, 0x0f, 0xef,
-	0x0a, 0xd0, 0x86, 0x1d, 0xd1, 0x6d, 0x05, 0x1a, 0x0b, 0x15, 0x82, 0xb6, 0xc8, 0x90, 0x8c, 0x76,
-	0x0e, 0xf7, 0xdd, 0xcd, 0xc7, 0xdc, 0x06, 0xfb, 0x37, 0x22, 0x73, 0xe8, 0xae, 0x14, 0x59, 0x30,
-	0xe3, 0xa9, 0x09, 0x8c, 0x90, 0x60, 0xfd, 0x37, 0x24, 0xa3, 0xb6, 0xbf, 0x23, 0x45, 0xf6, 0x94,
-	0xa7, 0xe6, 0xa5, 0x90, 0xc0, 0x86, 0xb4, 0x87, 0x69, 0x14, 0x84, 0x33, 0x2e, 0xb2, 0x40, 0x44,
-	0x56, 0x7b, 0x48, 0x46, 0xdb, 0x3e, 0xc5, 0x34, 0x1a, 0xaf, 0x43, 0x67, 0xd1, 0xda, 0xc8, 0x60,
-	0x7e, 0x63, 0x74, 0x2a, 0x23, 0x83, 0x79, 0x63, 0x3c, 0xa4, 0x77, 0x15, 0xa6, 0xe9, 0x94, 0x87,
-	0x49, 0x10, 0xce, 0x20, 0x4c, 0x74, 0x21, 0xad, 0xff, 0x4b, 0xed, 0x4e, 0x03, 0xc6, 0x75, 0x9c,
-	0x1d, 0xd1, 0x7d, 0xc9, 0x17, 0x01, 0x64, 0x0a, 0x53, 0x09, 0x99, 0x09, 0xa2, 0x42, 0x71, 0x23,
-	0x30, 0xb3, 0xb6, 0xca, 0xea, 0xf6, 0x24, 0x5f, 0x3c, 0x69, 0xe0, 0xa4, 0x66, 0x8c, 0xd1, 0x8e,
-	0x04, 0x89, 0xd6, 0xad, 0x32, 0x6b, 0x79, 0x66, 0x6f, 0x68, 0x37, 0x2f, 0xdb, 0x06, 0xca, 0xea,
-	0x0e, 0xc9, 0xa8, 0x77, 0x3a, 0xf9, 0x76, 0x3d, 0xb8, 0x7d, 0xc1, 0x65, 0x7a, 0xec, 0x34, 0xc4,
-	0xf9, 0x7e, 0x3d, 0x38, 0x88, 0x85, 0x99, 0x15, 0x53, 0x37, 0x44, 0xe9, 0x85, 0xa8, 0x25, 0xea,
-	0xfa, 0x73, 0xa0, 0xa3, 0xc4, 0x33, 0x17, 0x39, 0x68, 0xf7, 0x24, 0x0c, 0x4f, 0xa2, 0x48, 0x81,
-	0xd6, 0xfe, 0xcf, 0xac, 0xc7, 0x9d, 0xaf, 0x97, 0x03, 0xe2, 0x4c, 0xa8, 0xf3, 0xa7, 0x09, 0xe9,
-	0x1c, 0x33, 0x0d, 0xcc, 0xa6, 0x34, 0xaf, 0x95, 0xb3, 0x49, 0x39, 0xa3, 0x8e, 0xbf, 0x11, 0x39,
-	0xfc, 0x40, 0x68, 0xfb, 0x5c, 0xc7, 0xec, 0x3d, 0xbd, 0xf7, 0x9b, 0x54, 0xcc, 0xfb, 0x75, 0xa4,
-	0x7f, 0x5d, 0x8b, 0xfe, 0xa3, 0x7f, 0xbf, 0x50, 0x55, 0x79, 0x3a, 0xfe, 0xb4, 0xb4, 0xc9, 0xd5,
-	0xd2, 0x26, 0x5f, 0x96, 0x36, 0xf9, 0xb8, 0xb2, 0x5b, 0x57, 0x2b, 0xbb, 0xf5, 0x79, 0x65, 0xb7,
-	0x5e, 0x3f, 0xd8, 0x68, 0xd2, 0x33, 0xa1, 0xf8, 0x18, 0x15, 0x78, 0x1a, 0x12, 0x2e, 0xbc, 0x85,
-	0x57, 0xbf, 0x50, 0xf5, 0x6a, 0xba, 0x55, 0xae, 0xee, 0xe3, 0x1f, 0x01, 0x00, 0x00, 0xff, 0xff,
-	0x3b, 0xfe, 0xc1, 0x5b, 0xf9, 0x02, 0x00, 0x00,
+	// 579 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x54, 0x3f, 0x6f, 0x13, 0x4f,
+	0x10, 0xf5, 0xc6, 0xfe, 0xe5, 0xe7, 0x6c, 0x42, 0x12, 0x56, 0x51, 0x38, 0x59, 0xe2, 0x6c, 0xae,
+	0xc9, 0x21, 0x14, 0x1f, 0x0a, 0x7f, 0x8a, 0x74, 0x89, 0x4d, 0x11, 0x50, 0x24, 0x74, 0x40, 0x43,
+	0x73, 0x6c, 0xee, 0x86, 0xf3, 0xca, 0xb7, 0xbb, 0xc7, 0xee, 0x9e, 0xe2, 0x48, 0x34, 0x7c, 0x01,
+	0x44, 0x41, 0x0f, 0x1f, 0x27, 0x65, 0x4a, 0xaa, 0x08, 0x25, 0x0d, 0x35, 0x25, 0x15, 0xf2, 0xdd,
+	0x3a, 0x31, 0x45, 0xfe, 0x50, 0x50, 0x79, 0x76, 0xde, 0xdb, 0xf1, 0x7b, 0x33, 0xb3, 0x87, 0x9b,
+	0x66, 0xd4, 0xcd, 0x95, 0x34, 0x92, 0x2c, 0x0c, 0x99, 0xa2, 0xdd, 0x22, 0x4f, 0x15, 0x4d, 0xa0,
+	0xb5, 0x92, 0xca, 0x54, 0x96, 0x40, 0x30, 0x8e, 0x2a, 0x4e, 0xeb, 0x86, 0x85, 0xab, 0xa3, 0xf7,
+	0xa1, 0x81, 0xef, 0xec, 0xea, 0xf4, 0xb9, 0x92, 0xb9, 0xd4, 0x34, 0x7b, 0x21, 0xdf, 0x9a, 0x7d,
+	0xaa, 0xe0, 0x55, 0x45, 0x0a, 0xe1, 0x5d, 0x01, 0xda, 0x10, 0x82, 0x1b, 0x82, 0x72, 0x70, 0x50,
+	0x07, 0xf9, 0x73, 0x61, 0x19, 0x93, 0x4d, 0x3c, 0xa7, 0x40, 0xcb, 0x42, 0xc5, 0xa0, 0x9d, 0x99,
+	0x4e, 0xdd, 0x9f, 0xdf, 0x58, 0xed, 0x4e, 0x0b, 0xe8, 0x86, 0x16, 0xde, 0x6e, 0x1c, 0x1e, 0xb7,
+	0x6b, 0xe1, 0x39, 0x9d, 0xac, 0xe2, 0xd9, 0x01, 0xb0, 0x74, 0x60, 0x9c, 0x7a, 0x07, 0xf9, 0xf5,
+	0xd0, 0x9e, 0x88, 0x8f, 0x97, 0x39, 0x13, 0x91, 0x2d, 0x10, 0x19, 0xc6, 0xc1, 0x69, 0x94, 0x8c,
+	0x45, 0xce, 0x84, 0x15, 0xf5, 0x92, 0x71, 0x20, 0x1d, 0xbc, 0x20, 0xb3, 0x24, 0x8a, 0x07, 0x94,
+	0x89, 0x88, 0x25, 0xce, 0x7f, 0xa5, 0x32, 0x2c, 0xb3, 0xa4, 0x37, 0x4e, 0xed, 0x24, 0x63, 0x86,
+	0x80, 0xfd, 0x73, 0xc6, 0x6c, 0xc5, 0x10, 0xb0, 0x3f, 0x61, 0xdc, 0xc3, 0x37, 0x95, 0xcc, 0xb2,
+	0x3d, 0x1a, 0x0f, 0xa3, 0x78, 0x00, 0xf1, 0x50, 0x17, 0xdc, 0xf9, 0xbf, 0xa4, 0x2d, 0x4f, 0x80,
+	0x9e, 0xcd, 0x93, 0x87, 0x78, 0x95, 0xd3, 0x51, 0x04, 0x42, 0xc9, 0x8c, 0x83, 0x30, 0x51, 0x52,
+	0x28, 0x6a, 0x98, 0x14, 0x4e, 0xb3, 0x14, 0xb8, 0xc2, 0xe9, 0xe8, 0xc9, 0x04, 0xec, 0x5b, 0x6c,
+	0xdc, 0x38, 0x0e, 0x5c, 0x3a, 0x73, 0x55, 0xe3, 0xc6, 0x31, 0x59, 0xc3, 0x4b, 0x4c, 0x68, 0x43,
+	0x0d, 0x4c, 0x8c, 0x3a, 0xb8, 0x83, 0xfc, 0x66, 0xb8, 0x68, 0xd3, 0xd6, 0x27, 0x79, 0x83, 0x9b,
+	0x79, 0x39, 0x17, 0x50, 0xce, 0x7c, 0x07, 0xf9, 0x0b, 0xdb, 0xfd, 0x9f, 0xc7, 0xed, 0xa5, 0x03,
+	0xca, 0xb3, 0x4d, 0x6f, 0x82, 0x78, 0xbf, 0x8e, 0xdb, 0xeb, 0x29, 0x33, 0x83, 0x62, 0xaf, 0x1b,
+	0x4b, 0x1e, 0xc4, 0x52, 0x73, 0xa9, 0xed, 0xcf, 0xba, 0x4e, 0x86, 0x81, 0x39, 0xc8, 0x41, 0x77,
+	0xb7, 0xe2, 0x78, 0x2b, 0x49, 0x14, 0x68, 0x1d, 0x9e, 0x55, 0xdd, 0x6c, 0xfc, 0xf8, 0xda, 0x46,
+	0x5e, 0x1f, 0x7b, 0x97, 0xad, 0x80, 0xce, 0xa5, 0xd0, 0x40, 0x5c, 0x8c, 0x73, 0x4b, 0xd9, 0xe9,
+	0x97, 0x9b, 0xd0, 0x08, 0xa7, 0x32, 0xde, 0x17, 0x84, 0xd7, 0xa6, 0xca, 0xf4, 0xa8, 0x88, 0xe1,
+	0xa2, 0x7d, 0x9a, 0x76, 0x86, 0xfe, 0x85, 0xb3, 0xb3, 0x8d, 0x9d, 0x39, 0xdf, 0x58, 0xef, 0x29,
+	0xf6, 0xaf, 0x16, 0x78, 0x3d, 0xb7, 0x1b, 0x9f, 0x67, 0x70, 0x7d, 0x57, 0xa7, 0xe4, 0x3d, 0xbe,
+	0x75, 0x41, 0xe3, 0x48, 0xf0, 0xe7, 0x6b, 0xb8, 0xf2, 0x95, 0xb5, 0xee, 0x5f, 0xff, 0x82, 0x55,
+	0xf9, 0x11, 0xe1, 0xdb, 0x97, 0xfa, 0x21, 0x8f, 0x2e, 0xac, 0x79, 0xd9, 0x80, 0x5a, 0x8f, 0xff,
+	0xf6, 0x5a, 0x25, 0x68, 0xbb, 0x77, 0x78, 0xe2, 0xa2, 0xa3, 0x13, 0x17, 0x7d, 0x3f, 0x71, 0xd1,
+	0xa7, 0x53, 0xb7, 0x76, 0x74, 0xea, 0xd6, 0xbe, 0x9d, 0xba, 0xb5, 0xd7, 0x77, 0xa7, 0x26, 0xf9,
+	0x8c, 0x29, 0xda, 0x93, 0x0a, 0x02, 0x0d, 0x43, 0xca, 0x82, 0x51, 0x60, 0xff, 0xa7, 0x1a, 0xe8,
+	0xde, 0x6c, 0xf9, 0x69, 0x7a, 0xf0, 0x3b, 0x00, 0x00, 0xff, 0xff, 0xf3, 0xb0, 0x11, 0x9a, 0xd9,
+	0x04, 0x00, 0x00,
 }
 
 func (this *MsgProposalSoftwareUpgradeRequest) Equal(that interface{}) bool {
@@ -234,10 +367,21 @@ func (this *MsgProposalSoftwareUpgradeRequest) Equal(that interface{}) bool {
 	} else if this == nil {
 		return false
 	}
-	if !this.Resources.Equal(that1.Resources) {
+	if this.Name != that1.Name {
 		return false
 	}
-	if this.MinHaltTime != that1.MinHaltTime {
+	if len(this.Resources) != len(that1.Resources) {
+		return false
+	}
+	for i := range this.Resources {
+		if !this.Resources[i].Equal(&that1.Resources[i]) {
+			return false
+		}
+	}
+	if this.Height != that1.Height {
+		return false
+	}
+	if this.MinUpgradeTime != that1.MinUpgradeTime {
 		return false
 	}
 	if this.OldChainId != that1.OldChainId {
@@ -253,6 +397,9 @@ func (this *MsgProposalSoftwareUpgradeRequest) Equal(that interface{}) bool {
 		return false
 	}
 	if this.Memo != that1.Memo {
+		return false
+	}
+	if this.InstateUpgrade != that1.InstateUpgrade {
 		return false
 	}
 	if !bytes.Equal(this.Proposer, that1.Proposer) {
@@ -274,6 +421,7 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
 	ProposalSoftwareUpgrade(ctx context.Context, in *MsgProposalSoftwareUpgradeRequest, opts ...grpc.CallOption) (*MsgProposalSoftwareUpgradeResponse, error)
+	ProposalCancelSoftwareUpgrade(ctx context.Context, in *MsgProposalCancelSoftwareUpgradeRequest, opts ...grpc.CallOption) (*MsgProposalCancelSoftwareUpgradeResponse, error)
 }
 
 type msgClient struct {
@@ -293,9 +441,19 @@ func (c *msgClient) ProposalSoftwareUpgrade(ctx context.Context, in *MsgProposal
 	return out, nil
 }
 
+func (c *msgClient) ProposalCancelSoftwareUpgrade(ctx context.Context, in *MsgProposalCancelSoftwareUpgradeRequest, opts ...grpc.CallOption) (*MsgProposalCancelSoftwareUpgradeResponse, error) {
+	out := new(MsgProposalCancelSoftwareUpgradeResponse)
+	err := c.cc.Invoke(ctx, "/kira.upgrade.Msg/ProposalCancelSoftwareUpgrade", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
 	ProposalSoftwareUpgrade(context.Context, *MsgProposalSoftwareUpgradeRequest) (*MsgProposalSoftwareUpgradeResponse, error)
+	ProposalCancelSoftwareUpgrade(context.Context, *MsgProposalCancelSoftwareUpgradeRequest) (*MsgProposalCancelSoftwareUpgradeResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
@@ -304,6 +462,9 @@ type UnimplementedMsgServer struct {
 
 func (*UnimplementedMsgServer) ProposalSoftwareUpgrade(ctx context.Context, req *MsgProposalSoftwareUpgradeRequest) (*MsgProposalSoftwareUpgradeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProposalSoftwareUpgrade not implemented")
+}
+func (*UnimplementedMsgServer) ProposalCancelSoftwareUpgrade(ctx context.Context, req *MsgProposalCancelSoftwareUpgradeRequest) (*MsgProposalCancelSoftwareUpgradeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ProposalCancelSoftwareUpgrade not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
@@ -328,6 +489,24 @@ func _Msg_ProposalSoftwareUpgrade_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_ProposalCancelSoftwareUpgrade_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgProposalCancelSoftwareUpgradeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).ProposalCancelSoftwareUpgrade(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.upgrade.Msg/ProposalCancelSoftwareUpgrade",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).ProposalCancelSoftwareUpgrade(ctx, req.(*MsgProposalCancelSoftwareUpgradeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "kira.upgrade.Msg",
 	HandlerType: (*MsgServer)(nil),
@@ -335,6 +514,10 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ProposalSoftwareUpgrade",
 			Handler:    _Msg_ProposalSoftwareUpgrade_Handler,
+		},
+		{
+			MethodName: "ProposalCancelSoftwareUpgrade",
+			Handler:    _Msg_ProposalCancelSoftwareUpgrade_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -366,55 +549,79 @@ func (m *MsgProposalSoftwareUpgradeRequest) MarshalToSizedBuffer(dAtA []byte) (i
 		copy(dAtA[i:], m.Proposer)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Proposer)))
 		i--
-		dAtA[i] = 0x42
+		dAtA[i] = 0x5a
+	}
+	if m.InstateUpgrade {
+		i--
+		if m.InstateUpgrade {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x50
 	}
 	if len(m.Memo) > 0 {
 		i -= len(m.Memo)
 		copy(dAtA[i:], m.Memo)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Memo)))
 		i--
-		dAtA[i] = 0x3a
+		dAtA[i] = 0x4a
 	}
 	if m.MaxEnrolmentDuration != 0 {
 		i = encodeVarintTx(dAtA, i, uint64(m.MaxEnrolmentDuration))
 		i--
-		dAtA[i] = 0x30
+		dAtA[i] = 0x40
 	}
 	if len(m.RollbackChecksum) > 0 {
 		i -= len(m.RollbackChecksum)
 		copy(dAtA[i:], m.RollbackChecksum)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.RollbackChecksum)))
 		i--
-		dAtA[i] = 0x2a
+		dAtA[i] = 0x3a
 	}
 	if len(m.NewChainId) > 0 {
 		i -= len(m.NewChainId)
 		copy(dAtA[i:], m.NewChainId)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.NewChainId)))
 		i--
-		dAtA[i] = 0x22
+		dAtA[i] = 0x32
 	}
 	if len(m.OldChainId) > 0 {
 		i -= len(m.OldChainId)
 		copy(dAtA[i:], m.OldChainId)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.OldChainId)))
 		i--
-		dAtA[i] = 0x1a
+		dAtA[i] = 0x2a
 	}
-	if m.MinHaltTime != 0 {
-		i = encodeVarintTx(dAtA, i, uint64(m.MinHaltTime))
+	if m.MinUpgradeTime != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.MinUpgradeTime))
 		i--
-		dAtA[i] = 0x10
+		dAtA[i] = 0x20
 	}
-	if m.Resources != nil {
-		{
-			size, err := m.Resources.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
+	if m.Height != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.Height))
+		i--
+		dAtA[i] = 0x18
+	}
+	if len(m.Resources) > 0 {
+		for iNdEx := len(m.Resources) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Resources[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintTx(dAtA, i, uint64(size))
 			}
-			i -= size
-			i = encodeVarintTx(dAtA, i, uint64(size))
+			i--
+			dAtA[i] = 0x12
 		}
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Name)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -449,6 +656,71 @@ func (m *MsgProposalSoftwareUpgradeResponse) MarshalToSizedBuffer(dAtA []byte) (
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgProposalCancelSoftwareUpgradeRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgProposalCancelSoftwareUpgradeRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgProposalCancelSoftwareUpgradeRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Proposer) > 0 {
+		i -= len(m.Proposer)
+		copy(dAtA[i:], m.Proposer)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Proposer)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgProposalCancelSoftwareUpgradeResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgProposalCancelSoftwareUpgradeResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgProposalCancelSoftwareUpgradeResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.ProposalID != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.ProposalID))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	offset -= sovTx(v)
 	base := offset
@@ -466,12 +738,21 @@ func (m *MsgProposalSoftwareUpgradeRequest) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.Resources != nil {
-		l = m.Resources.Size()
+	l = len(m.Name)
+	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
-	if m.MinHaltTime != 0 {
-		n += 1 + sovTx(uint64(m.MinHaltTime))
+	if len(m.Resources) > 0 {
+		for _, e := range m.Resources {
+			l = e.Size()
+			n += 1 + l + sovTx(uint64(l))
+		}
+	}
+	if m.Height != 0 {
+		n += 1 + sovTx(uint64(m.Height))
+	}
+	if m.MinUpgradeTime != 0 {
+		n += 1 + sovTx(uint64(m.MinUpgradeTime))
 	}
 	l = len(m.OldChainId)
 	if l > 0 {
@@ -492,6 +773,9 @@ func (m *MsgProposalSoftwareUpgradeRequest) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
+	if m.InstateUpgrade {
+		n += 2
+	}
 	l = len(m.Proposer)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
@@ -500,6 +784,35 @@ func (m *MsgProposalSoftwareUpgradeRequest) Size() (n int) {
 }
 
 func (m *MsgProposalSoftwareUpgradeResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.ProposalID != 0 {
+		n += 1 + sovTx(uint64(m.ProposalID))
+	}
+	return n
+}
+
+func (m *MsgProposalCancelSoftwareUpgradeRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Proposer)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgProposalCancelSoftwareUpgradeResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -548,6 +861,38 @@ func (m *MsgProposalSoftwareUpgradeRequest) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Resources", wireType)
 			}
 			var msglen int
@@ -575,18 +920,16 @@ func (m *MsgProposalSoftwareUpgradeRequest) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.Resources == nil {
-				m.Resources = &Resource{}
-			}
-			if err := m.Resources.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			m.Resources = append(m.Resources, Resource{})
+			if err := m.Resources[len(m.Resources)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
-		case 2:
+		case 3:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MinHaltTime", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Height", wireType)
 			}
-			m.MinHaltTime = 0
+			m.Height = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowTx
@@ -596,12 +939,31 @@ func (m *MsgProposalSoftwareUpgradeRequest) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.MinHaltTime |= int64(b&0x7F) << shift
+				m.Height |= int64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-		case 3:
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MinUpgradeTime", wireType)
+			}
+			m.MinUpgradeTime = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.MinUpgradeTime |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 5:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field OldChainId", wireType)
 			}
@@ -633,7 +995,7 @@ func (m *MsgProposalSoftwareUpgradeRequest) Unmarshal(dAtA []byte) error {
 			}
 			m.OldChainId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 4:
+		case 6:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field NewChainId", wireType)
 			}
@@ -665,7 +1027,7 @@ func (m *MsgProposalSoftwareUpgradeRequest) Unmarshal(dAtA []byte) error {
 			}
 			m.NewChainId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 5:
+		case 7:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field RollbackChecksum", wireType)
 			}
@@ -697,7 +1059,7 @@ func (m *MsgProposalSoftwareUpgradeRequest) Unmarshal(dAtA []byte) error {
 			}
 			m.RollbackChecksum = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 6:
+		case 8:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field MaxEnrolmentDuration", wireType)
 			}
@@ -716,7 +1078,7 @@ func (m *MsgProposalSoftwareUpgradeRequest) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 7:
+		case 9:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Memo", wireType)
 			}
@@ -748,7 +1110,27 @@ func (m *MsgProposalSoftwareUpgradeRequest) Unmarshal(dAtA []byte) error {
 			}
 			m.Memo = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 8:
+		case 10:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field InstateUpgrade", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.InstateUpgrade = bool(v != 0)
+		case 11:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Proposer", wireType)
 			}
@@ -833,6 +1215,197 @@ func (m *MsgProposalSoftwareUpgradeResponse) Unmarshal(dAtA []byte) error {
 		}
 		if fieldNum <= 0 {
 			return fmt.Errorf("proto: MsgProposalSoftwareUpgradeResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ProposalID", wireType)
+			}
+			m.ProposalID = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ProposalID |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgProposalCancelSoftwareUpgradeRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgProposalCancelSoftwareUpgradeRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgProposalCancelSoftwareUpgradeRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Proposer", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Proposer = append(m.Proposer[:0], dAtA[iNdEx:postIndex]...)
+			if m.Proposer == nil {
+				m.Proposer = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgProposalCancelSoftwareUpgradeResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgProposalCancelSoftwareUpgradeResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgProposalCancelSoftwareUpgradeResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:

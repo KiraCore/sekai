@@ -54,7 +54,8 @@ const (
 	MsgTypeProposalResetWholeValidatorRank = "proposal-reset-whole-validator-rank"
 
 	//upgrade module
-	MsgProposalSoftwareUpgrade = "propose-software-upgrade"
+	MsgProposalSoftwareUpgrade       = "propose-software-upgrade"
+	MsgProposalCancelSoftwareUpgrade = "propose-cancel-software-upgrade"
 )
 
 // MsgFuncIDMapping defines function_id mapping
