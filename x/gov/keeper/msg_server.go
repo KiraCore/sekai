@@ -4,10 +4,9 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/KiraCore/sekai/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
-
-	"github.com/KiraCore/sekai/x/gov/types"
 )
 
 type msgServer struct {
@@ -27,6 +26,11 @@ var _ types.MsgServer = msgServer{}
 func (k msgServer) SubmitProposal(goCtx context.Context, msg *types.MsgSubmitProposal) (*types.MsgSubmitProposalResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	content := msg.GetContent()
+
+	err := content.ValidateBasic()
+	if err != nil {
+		return nil, err
+	}
 
 	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, content.ProposalPermission())
 	if !isAllowed {

@@ -32,7 +32,7 @@ func (k Keeper) BondDenom(ctx sdk.Context) string {
 	return "ukex"
 }
 
-func (k Keeper) SetProposalRouter(proposalRouter types.ProposalRouter) {
+func (k *Keeper) SetProposalRouter(proposalRouter types.ProposalRouter) {
 	k.proposalRouter = proposalRouter
 }
 

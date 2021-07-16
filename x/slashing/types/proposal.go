@@ -18,11 +18,11 @@ func (m *ProposalResetWholeValidatorRank) ProposalType() string {
 }
 
 func (m *ProposalResetWholeValidatorRank) ProposalPermission() types.PermValue {
-	return types.PermCreateUnjailValidatorProposal
+	return types.PermCreateResetWholeValidatorRankProposal
 }
 
 func (m *ProposalResetWholeValidatorRank) VotePermission() types.PermValue {
-	return types.PermVoteUnjailValidatorProposal
+	return types.PermVoteResetWholeValidatorRankProposal
 }
 
 // ValidateBasic returns basic validation

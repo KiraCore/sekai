@@ -6,18 +6,16 @@ import (
 	"testing"
 	"time"
 
-	types3 "github.com/KiraCore/sekai/x/tokens/types"
-	"github.com/gogo/protobuf/proto"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/stretchr/testify/require"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-
 	"github.com/KiraCore/sekai/app"
 	"github.com/KiraCore/sekai/simapp"
 	"github.com/KiraCore/sekai/x/gov"
 	"github.com/KiraCore/sekai/x/gov/types"
+	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/gogo/protobuf/proto"
+	"github.com/stretchr/testify/require"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
 
 func TestMain(m *testing.M) {
@@ -1157,7 +1155,7 @@ func TestHandler_CreateProposalAssignPermission_Errors(t *testing.T) {
 			tt.preparePerms(t, app, ctx)
 
 			handler := gov.NewHandler(app.CustomGovKeeper)
-			msg, err := types.NewMsgSubmitProposal(proposerAddr, "test", tt.content)
+			msg, err := types.NewMsgSubmitProposal(proposerAddr, "some desc", tt.content)
 			require.NoError(t, err)
 			_, err = handler(ctx, msg)
 			require.EqualError(t, err, tt.expectedErr.Error())
@@ -1188,7 +1186,7 @@ func TestHandler_ProposalAssignPermission(t *testing.T) {
 
 	handler := gov.NewHandler(app.CustomGovKeeper)
 	proposal := types.NewAssignPermissionProposal(addr, types.PermValue(1))
-	msg, err := types.NewMsgSubmitProposal(proposerAddr, "test", proposal)
+	msg, err := types.NewMsgSubmitProposal(proposerAddr, "some desc", proposal)
 	require.NoError(t, err)
 	res, err := handler(
 		ctx,
@@ -1264,7 +1262,7 @@ func TestHandler_CreateProposalUpsertDataRegistry_Errors(t *testing.T) {
 			tt.preparePerms(t, app, ctx)
 
 			handler := gov.NewHandler(app.CustomGovKeeper)
-			msg, err := types.NewMsgSubmitProposal(proposerAddr, "test", tt.content)
+			msg, err := types.NewMsgSubmitProposal(proposerAddr, "some desc", tt.content)
 			require.NoError(t, err)
 			_, err = handler(ctx, msg)
 			require.EqualError(t, err, tt.expectedErr.Error())
@@ -1298,7 +1296,7 @@ func TestHandler_ProposalUpsertDataRegistry(t *testing.T) {
 		"theEncoding",
 		1234,
 	)
-	msg, err := types.NewMsgSubmitProposal(proposerAddr, "test", proposal)
+	msg, err := types.NewMsgSubmitProposal(proposerAddr, "some desc", proposal)
 	require.NoError(t, err)
 	res, err := handler(
 		ctx, msg,
@@ -1553,7 +1551,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 				// Create proposal
 				proposal, err := types.NewProposal(
 					1,
-					types3.NewUpsertTokenAliasProposal(
+					tokenstypes.NewUpsertTokenAliasProposal(
 						"eur",
 						"Euro",
 						"theIcon",
@@ -1677,7 +1675,7 @@ func TestHandler_CreateProposalSetNetworkProperty_Errors(t *testing.T) {
 			tt.preparePerms(t, app, ctx)
 
 			handler := gov.NewHandler(app.CustomGovKeeper)
-			msg, err := types.NewMsgSubmitProposal(proposerAddr, "test", tt.content)
+			msg, err := types.NewMsgSubmitProposal(proposerAddr, "some desc", tt.content)
 			require.NoError(t, err)
 			_, err = handler(ctx, msg)
 			require.EqualError(t, err, tt.expectedErr.Error())
@@ -1708,7 +1706,7 @@ func TestHandler_ProposalSetNetworkProperty(t *testing.T) {
 		types.MinTxFee,
 		1234,
 	)
-	msg, err := types.NewMsgSubmitProposal(proposerAddr, "test", proposal)
+	msg, err := types.NewMsgSubmitProposal(proposerAddr, "some desc", proposal)
 	require.NoError(t, err)
 	res, err := handler(
 		ctx,
@@ -1820,7 +1818,7 @@ func TestHandler_CreateProposalCreateRole_Errors(t *testing.T) {
 			tt.preparePerms(t, app, ctx)
 
 			handler := gov.NewHandler(app.CustomGovKeeper)
-			msg, err := types.NewMsgSubmitProposal(proposerAddr, "test", tt.content)
+			msg, err := types.NewMsgSubmitProposal(proposerAddr, "some desc", tt.content)
 			require.NoError(t, err)
 			_, err = handler(ctx, msg)
 			require.EqualError(t, err, tt.expectedErr.Error())
@@ -1856,7 +1854,7 @@ func TestHandler_ProposalCreateRole(t *testing.T) {
 			types.PermChangeTxFee,
 		},
 	)
-	msg, err := types.NewMsgSubmitProposal(proposerAddr, "test", proposal)
+	msg, err := types.NewMsgSubmitProposal(proposerAddr, "some desc", proposal)
 	require.NoError(t, err)
 	res, err := handler(
 		ctx,

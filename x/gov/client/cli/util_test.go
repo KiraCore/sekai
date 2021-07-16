@@ -200,7 +200,7 @@ func (s IntegrationTestSuite) SetNetworkPropertyProposal(property string, value 
 	var result sdk.TxResponse
 	s.Require().NoError(val.ClientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &result))
 	s.Require().NotNil(result.Height)
-	s.Require().Contains(result.RawLog, "set-network-property")
+	s.Require().Contains(result.RawLog, "SetNetworkProperty")
 }
 
 func (s IntegrationTestSuite) UpsertRate(denom string, rate string, flagFeePayments bool) sdk.TxResponse {

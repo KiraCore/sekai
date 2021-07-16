@@ -640,7 +640,8 @@ func (m *MsgCancelIdentityRecordsVerifyRequest) GetSigners() []sdk.AccAddress {
 //nolint:interfacer
 func NewMsgSubmitProposal(proposer sdk.AccAddress, description string, content Content) (*MsgSubmitProposal, error) {
 	m := &MsgSubmitProposal{
-		Proposer: proposer,
+		Proposer:    proposer,
+		Description: description,
 	}
 	err := m.SetContent(content)
 	if err != nil {

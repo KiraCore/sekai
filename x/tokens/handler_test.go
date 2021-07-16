@@ -235,7 +235,7 @@ func TestHandler_CreateProposalUpsertTokenAliases_Errors(t *testing.T) {
 			tt.preparePerms(t, app, ctx)
 
 			handler := gov.NewHandler(app.CustomGovKeeper)
-			msg, err := customgovtypes.NewMsgSubmitProposal(proposerAddr, "test", tt.content)
+			msg, err := customgovtypes.NewMsgSubmitProposal(proposerAddr, "some desc", tt.content)
 			require.NoError(t, err)
 			_, err = handler(ctx, msg)
 			require.EqualError(t, err, tt.expectedErr.Error())
@@ -271,7 +271,7 @@ func TestHandler_CreateProposalUpsertTokenAliases(t *testing.T) {
 			"atom",
 		},
 	)
-	msg, err := customgovtypes.NewMsgSubmitProposal(proposerAddr, "test", proposal)
+	msg, err := customgovtypes.NewMsgSubmitProposal(proposerAddr, "some desc", proposal)
 	require.NoError(t, err)
 	res, err := handler(
 		ctx,
@@ -351,7 +351,7 @@ func TestHandler_CreateProposalUpsertTokenRates_Errors(t *testing.T) {
 			tt.preparePerms(t, app, ctx)
 
 			handler := gov.NewHandler(app.CustomGovKeeper)
-			msg, err := customgovtypes.NewMsgSubmitProposal(proposerAddr, "test", tt.content)
+			msg, err := customgovtypes.NewMsgSubmitProposal(proposerAddr, "some desc", tt.content)
 			require.NoError(t, err)
 			_, err = handler(ctx, msg)
 			require.EqualError(t, err, tt.expectedErr.Error())
@@ -383,7 +383,7 @@ func TestHandler_CreateProposalUpsertTokenRates(t *testing.T) {
 		sdk.NewDec(1234),
 		false,
 	)
-	msg, err := customgovtypes.NewMsgSubmitProposal(proposerAddr, "test", proposal)
+	msg, err := customgovtypes.NewMsgSubmitProposal(proposerAddr, "some desc", proposal)
 	require.NoError(t, err)
 	res, err := handler(
 		ctx,

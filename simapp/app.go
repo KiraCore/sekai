@@ -237,6 +237,7 @@ func NewSimApp(
 			tokens.NewApplyUpsertTokenAliasProposalHandler(app.TokensKeeper),
 			tokens.NewApplyUpsertTokenRatesProposalHandler(app.TokensKeeper),
 			customstaking.NewApplyUnjailValidatorProposalHandler(app.CustomStakingKeeper, app.CustomGovKeeper),
+			customslashing.NewApplyResetWholeValidatorRankProposalHandler(app.CustomSlashingKeeper),
 			customgov.NewApplyCreateRoleProposalHandler(app.CustomGovKeeper),
 			upgrade.NewApplySoftwareUpgradeProposalHandler(app.UpgradeKeeper),
 			upgrade.NewApplyCancelSoftwareUpgradeProposalHandler(app.UpgradeKeeper),

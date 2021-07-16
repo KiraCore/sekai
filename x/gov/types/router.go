@@ -30,7 +30,7 @@ func (r ProposalRouter) ApplyProposal(ctx sdk.Context, proposal Content) error {
 	if err == nil {
 		writeCache()
 	} else { // not halt the chain for proposal execution
-		fmt.Println("error applying proposal", err)
+		fmt.Println("error applying proposal:", err)
 	}
 	return err
 }

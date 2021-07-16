@@ -6,17 +6,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/cosmos/cosmos-sdk/types/errors"
-
 	"github.com/KiraCore/sekai/app"
+	"github.com/KiraCore/sekai/simapp"
 	"github.com/KiraCore/sekai/x/gov"
 	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
-
 	"github.com/KiraCore/sekai/x/staking"
-
-	"github.com/KiraCore/sekai/simapp"
 	customstakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
@@ -287,7 +284,7 @@ func TestHandler_ProposalUnjailValidator_Errors(t *testing.T) {
 				"thehash",
 				"theReference",
 			)
-			msg, err := customgovtypes.NewMsgSubmitProposal(proposerAddr, "test", proposal)
+			msg, err := customgovtypes.NewMsgSubmitProposal(proposerAddr, "some desc", proposal)
 			require.NoError(t, err)
 			_, err = handler(
 				ctx,
@@ -334,7 +331,7 @@ func TestHandler_ProposalUnjailValidator(t *testing.T) {
 		"thehash",
 		"theReference",
 	)
-	msg, err := customgovtypes.NewMsgSubmitProposal(proposerAddr, "test", proposal)
+	msg, err := customgovtypes.NewMsgSubmitProposal(proposerAddr, "some desc", proposal)
 	require.NoError(t, err)
 	_, err = handler(
 		ctx,
