@@ -100,7 +100,7 @@ func queryStatusHandle(rpcAddr string) (interface{}, interface{}, int) {
 	result.LatestBlockHeight = sentryStatus.SyncInfo.LatestBlockHeight
 	result.CatchingUp = sentryStatus.SyncInfo.CatchingUp
 
-	result.InterxVersion = config.InterxVersion
+	result.InterxVersion = config.Config.Version
 
 	return result, nil, http.StatusOK
 }

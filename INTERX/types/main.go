@@ -164,23 +164,28 @@ type InterxRequest struct {
 	Params   []byte `json:"params"`
 }
 
+type IdentityRecord struct {
+	ID        uint64            `json:"id,string"`
+	Infos     map[string]string `json:"infos"`
+	Date      string            `json:"date"`
+	Verifiers []string          `json:"verifiers"`
+}
+
 type QueryValidator struct {
 	Top int `json:"top,string"`
 
-	Address             string `json:"address"`
-	Valkey              string `json:"valkey"`
-	Pubkey              string `json:"pubkey"`
-	Proposer            string `json:"proposer"`
-	Moniker             string `json:"moniker"`
-	Website             string `json:"website"`
-	Social              string `json:"social"`
-	Identity            string `json:"identity"`
-	Commission          string `json:"commission"`
-	Status              string `json:"status"`
-	Rank                int64  `json:"rank,string"`
-	Streak              int64  `json:"streak,string"`
-	Mischance           int64  `json:"mischance,string"`
-	MischanceConfidence int64  `json:"mischance_confidence,string"`
+	Address             string           `json:"address"`
+	Valkey              string           `json:"valkey"`
+	Pubkey              string           `json:"pubkey"`
+	Proposer            string           `json:"proposer"`
+	Moniker             string           `json:"moniker"`
+	Commission          string           `json:"commission"`
+	Status              string           `json:"status"`
+	Rank                int64            `json:"rank,string"`
+	Streak              int64            `json:"streak,string"`
+	Mischance           int64            `json:"mischance,string"`
+	MischanceConfidence int64            `json:"mischance_confidence,string"`
+	Identity            []IdentityRecord `json:"identity"`
 
 	// Additional
 	StartHeight           int64  `json:"start_height,string"`

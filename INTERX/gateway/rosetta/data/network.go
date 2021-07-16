@@ -136,7 +136,7 @@ func queryNetworkOptionsHandler(r *http.Request, request types.InterxRequest, rp
 
 		response.Version = rosetta.Version{
 			NodeVersion:       result.NodeInfo.Version,
-			MiddlewareVersion: config.InterxVersion,
+			MiddlewareVersion: config.Config.Version,
 		}
 
 		return response, nil, http.StatusOK

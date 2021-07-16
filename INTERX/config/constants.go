@@ -37,11 +37,11 @@ const (
 	QueryValidatorInfos      = "/api/valoperinfos"
 	QueryGenesis             = "/api/genesis"
 	QueryGenesisSum          = "/api/gensum"
-	QueryNodeList            = "/api/node_list"
+	QueryPubP2PList          = "/api/pub_p2p_list"
+	QueryPrivP2PList         = "/api/priv_p2p_list"
 
 	Download              = "/download"
 	DataReferenceRegistry = "DRR"
-	InterxVersion         = "0.1.2"
 	DefaultInterxPort     = "11000"
 
 	QueryRosettaNetworkList    = "/rosetta/network/list"

@@ -1,4 +1,5 @@
 {
+  "version": "0.1.4",
   "serve_https": false,
   "grpc": "dns:///0.0.0.0:9090",
   "rpc": "http://0.0.0.0:26657",
@@ -17,7 +18,9 @@
   },
   "node_discovery": {
     "use_https": false,
-    "default_interx_port": "11000"
+    "default_interx_port": "11000",
+    "default_tendermint_port": "26657",
+    "connection_timeout": "3s"
   },
   "cache": {
     "cache_dir": "cache",
