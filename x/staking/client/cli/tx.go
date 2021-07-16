@@ -17,9 +17,6 @@ import (
 )
 
 const (
-	FlagWebsite     = "website"
-	FlagSocial      = "social"
-	FlagIdentity    = "identity"
 	FlagComission   = "commission"
 	FlagValKey      = "validator-key"
 	FlagDescription = "description"
@@ -38,9 +35,6 @@ func GetTxClaimValidatorCmd() *cobra.Command {
 			serverCtx := server.GetServerContextFromCmd(cmd)
 
 			moniker, _ := cmd.Flags().GetString(FlagMoniker)
-			website, _ := cmd.Flags().GetString(FlagWebsite)
-			social, _ := cmd.Flags().GetString(FlagSocial)
-			identity, _ := cmd.Flags().GetString(FlagIdentity)
 			comission, _ := cmd.Flags().GetString(FlagComission)
 
 			var (
@@ -61,7 +55,7 @@ func GetTxClaimValidatorCmd() *cobra.Command {
 			comm, err := types.NewDecFromStr(comission)
 			val := types.ValAddress(clientCtx.GetFromAddress())
 
-			msg, err := customstakingtypes.NewMsgClaimValidator(moniker, website, social, identity, comm, val, valPubKey)
+			msg, err := customstakingtypes.NewMsgClaimValidator(moniker, comm, val, valPubKey)
 			if err != nil {
 				return fmt.Errorf("error creating tx: %w", err)
 			}

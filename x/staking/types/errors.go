@@ -7,14 +7,11 @@ import (
 )
 
 var (
-	ErrInvalidMonikerLength  = fmt.Errorf("invalid moniker length (max 64 bytes)")
-	ErrInvalidWebsiteLength  = fmt.Errorf("invalid website length (max 64 bytes)")
-	ErrInvalidSocialLength   = fmt.Errorf("invalid social length (max 64 bytes)")
-	ErrInvalidIdentityLength = fmt.Errorf("invalid identity length (max 64 bytes)")
-	ErrValidatorInactive     = fmt.Errorf("validator is inactive")
-	ErrValidatorPaused       = fmt.Errorf("validator is paused")
-	ErrValidatorJailed       = fmt.Errorf("validator is jailed")
-	ErrValidatorActive       = fmt.Errorf("validator is active")
+	ErrInvalidMonikerLength = fmt.Errorf("invalid moniker length (max 64 bytes)")
+	ErrValidatorInactive    = fmt.Errorf("validator is inactive")
+	ErrValidatorPaused      = fmt.Errorf("validator is paused")
+	ErrValidatorJailed      = fmt.Errorf("validator is jailed")
+	ErrValidatorActive      = fmt.Errorf("validator is active")
 )
 
 var (

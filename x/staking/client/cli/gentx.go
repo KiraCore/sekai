@@ -4,16 +4,16 @@ import (
 	"encoding/json"
 	"fmt"
 
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 	genutiltypes "github.com/KiraCore/sekai/x/genutil/types"
+	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 
+	"github.com/KiraCore/sekai/x/genutil"
 	customstakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/server"
 	"github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"github.com/KiraCore/sekai/x/genutil"
 	"github.com/cosmos/cosmos-sdk/x/staking/client/cli"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
@@ -57,13 +57,8 @@ func GenTxClaimCmd(genBalIterator banktypes.GenesisBalancesIterator, defaultNode
 				moniker = m
 			}
 
-			website, _ := cmd.Flags().GetString(FlagWebsite)
-			identity, _ := cmd.Flags().GetString(FlagIdentity)
 			validator, err := customstakingtypes.NewValidator(
 				moniker,
-				website,
-				"social",
-				identity,
 				types.NewDec(1),
 				types.ValAddress(key.GetAddress()),
 				valPubKey,

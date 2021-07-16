@@ -189,18 +189,6 @@ func registerCouncilorCodec(cdc *codec.LegacyAmino) {
 				"type":        "string",
 				"description": "validator's name or nickname."
 			},
-			"website": {
-				"type":        "string",
-				"description": "validator's website."
-			},
-			"social": {
-				"type":        "string",
-				"description": "validator's social link."
-			},
-			"identity": {
-				"type":        "string",
-				"description": "validator's identity information."
-			},
 			"address": {
 				"type":        "string",
 				"description": "Address to be set as councilor. This address should be proposer address as well."

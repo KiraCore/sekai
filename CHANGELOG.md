@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.1.21.2] - 14.07.2021
+
+- Remove identity part from claim validator
+
 ## [v0.1.21.1] - 13.07.2021
 
 - Add instate upgrade feature

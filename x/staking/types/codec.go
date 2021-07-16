@@ -20,18 +20,6 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 				"type":        "string",
 				"description": "validator's name or nickname."
 			},
-			"website": {
-				"type":        "string",
-				"description": "validator's website."
-			},
-			"social": {
-				"type":        "string",
-				"description": "validator's social link."
-			},
-			"identity": {
-				"type":        "string",
-				"description": "validator's identity information."
-			},
 			"commission": {
 				"type":        "float",
 				"description": "commision rate for this validator"

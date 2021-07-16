@@ -30,9 +30,6 @@ func TestNewValidator_Errors(t *testing.T) {
 			newVal: func() error {
 				_, err := customstakingtypes.NewValidator(
 					strings.Repeat("A", 65),
-					"some-web.com",
-					"some-web.com",
-					"some-web.com",
 					types.NewDec(1234),
 					valAddr,
 					pubKey,
@@ -41,60 +38,6 @@ func TestNewValidator_Errors(t *testing.T) {
 				return err
 			},
 			err: customstakingtypes.ErrInvalidMonikerLength,
-		},
-		{
-			name:        "website longer than 64",
-			expectError: true,
-			newVal: func() error {
-				_, err := customstakingtypes.NewValidator(
-					"the moniker",
-					strings.Repeat("A", 65),
-					"some-web.com",
-					"some-web.com",
-					types.NewDec(1234),
-					valAddr,
-					pubKey,
-				)
-
-				return err
-			},
-			err: customstakingtypes.ErrInvalidWebsiteLength,
-		},
-		{
-			name:        "social longer than 64",
-			expectError: true,
-			newVal: func() error {
-				_, err := customstakingtypes.NewValidator(
-					"the moniker",
-					"some-web.com",
-					strings.Repeat("A", 65),
-					"some-web.com",
-					types.NewDec(1234),
-					valAddr,
-					pubKey,
-				)
-
-				return err
-			},
-			err: customstakingtypes.ErrInvalidSocialLength,
-		},
-		{
-			name:        "identity longer than 64",
-			expectError: true,
-			newVal: func() error {
-				_, err := customstakingtypes.NewValidator(
-					"the moniker",
-					"some-web.com",
-					"some-web.com",
-					strings.Repeat("A", 65),
-					types.NewDec(1234),
-					valAddr,
-					pubKey,
-				)
-
-				return err
-			},
-			err: customstakingtypes.ErrInvalidIdentityLength,
 		},
 	}
 
@@ -121,9 +64,6 @@ func TestNewValidator_IsActiveByDefault(t *testing.T) {
 
 	validator, err := customstakingtypes.NewValidator(
 		"the moniker",
-		"some-web.com",
-		"some-web.com",
-		strings.Repeat("A", 64),
 		types.NewDec(1234),
 		valAddr,
 		pubKey,

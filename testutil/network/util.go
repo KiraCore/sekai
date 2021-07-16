@@ -165,7 +165,7 @@ func initGenFiles(cfg Config, vals []*Validator, genAccounts []authtypes.Genesis
 
 	var customStakingGenState customtypes.GenesisState
 	for _, val := range vals {
-		validator, err := customtypes.NewValidator(val.Moniker, "the Website", "The social", "The Identity", sdk.NewDec(1), val.ValAddress, val.PubKey)
+		validator, err := customtypes.NewValidator(val.Moniker, sdk.NewDec(1), val.ValAddress, val.PubKey)
 		if err != nil {
 			return errors.Wrap(err, "error creating validator")
 		}

@@ -83,13 +83,11 @@ func (q Querier) Validators(ctx context.Context, request *types.ValidatorsReques
 			Pubkey:     consPubkey,
 			Proposer:   val.GetConsPubKey().Address().String(),
 			Moniker:    val.Moniker,
-			Website:    val.Website,
-			Social:     val.Social,
-			Identity:   val.Identity,
 			Commission: val.Commission.String(),
 			Status:     val.Status.String(),
 			Rank:       val.Rank,
 			Streak:     val.Streak,
+			Identity:   q.keeper.GetIdRecordsByAddress(c, sdk.AccAddress(val.ValKey)),
 		}
 
 		if request.Status != "" && !strings.EqualFold(validator.Status, request.Status) {

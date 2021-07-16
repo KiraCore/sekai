@@ -80,9 +80,6 @@ func (s *IntegrationTestSuite) TestQueryValidator() {
 	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &respValidator)
 
 	s.Require().Equal(val.Moniker, respValidator.Moniker)
-	s.Require().Equal("the Website", respValidator.Website)
-	s.Require().Equal("The social", respValidator.Social)
-	s.Require().Equal("The Identity", respValidator.Identity)
 	s.Require().Equal(sdk.NewDec(1), respValidator.Commission)
 	s.Require().Equal(val.ValAddress, respValidator.ValKey)
 
@@ -101,9 +98,6 @@ func (s *IntegrationTestSuite) TestQueryValidator() {
 	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &respValidator)
 
 	s.Require().Equal(val.Moniker, respValidator.Moniker)
-	s.Require().Equal("the Website", respValidator.Website)
-	s.Require().Equal("The social", respValidator.Social)
-	s.Require().Equal("The Identity", respValidator.Identity)
 	s.Require().Equal(sdk.NewDec(1), respValidator.Commission)
 	s.Require().Equal(val.ValAddress, respValidator.ValKey)
 
@@ -121,9 +115,6 @@ func (s *IntegrationTestSuite) TestQueryValidator() {
 	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &respValidator)
 
 	s.Require().Equal(val.Moniker, respValidator.Moniker)
-	s.Require().Equal("the Website", respValidator.Website)
-	s.Require().Equal("The social", respValidator.Social)
-	s.Require().Equal("The Identity", respValidator.Identity)
 	s.Require().Equal(sdk.NewDec(1), respValidator.Commission)
 	s.Require().Equal(val.ValAddress, respValidator.ValKey)
 
