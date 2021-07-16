@@ -7,7 +7,7 @@ import (
 
 const ProposalTypeResetWholeValidatorRank = "ResetWholeValidatorRank"
 
-func NewProposalResetWholeValidatorRank(proposer sdk.AccAddress) *ProposalResetWholeValidatorRank {
+func NewResetWholeValidatorRankProposal(proposer sdk.AccAddress) *ProposalResetWholeValidatorRank {
 	return &ProposalResetWholeValidatorRank{
 		Proposer: proposer,
 	}

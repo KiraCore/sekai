@@ -161,7 +161,7 @@ func GetTxProposalUpsertTokenAliasCmd() *cobra.Command {
 			msg, err := customgovtypes.NewMsgSubmitProposal(
 				clientCtx.FromAddress,
 				description,
-				types.NewProposalUpsertTokenAlias(
+				types.NewUpsertTokenAliasProposal(
 					symbol,
 					name,
 					icon,
@@ -235,7 +235,7 @@ func GetTxProposalUpsertTokenRatesCmd() *cobra.Command {
 			msg, err := customgovtypes.NewMsgSubmitProposal(
 				clientCtx.FromAddress,
 				description,
-				types.NewProposalUpsertTokenRates(
+				types.NewUpsertTokenRatesProposal(
 					denom,
 					rate,
 					feePayments,
@@ -360,7 +360,7 @@ func GetTxProposalTokensBlackWhiteChangeCmd() *cobra.Command {
 			msg, err := customgovtypes.NewMsgSubmitProposal(
 				clientCtx.FromAddress,
 				description,
-				types.NewProposalTokensWhiteBlackChange(
+				types.NewTokensWhiteBlackChangeProposal(
 					isBlacklist,
 					isAdd,
 					tokens,

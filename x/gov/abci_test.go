@@ -446,7 +446,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				proposalID := uint64(1234)
 				proposal, err := types.NewProposal(
 					proposalID,
-					tokenstypes.NewProposalUpsertTokenAlias(
+					tokenstypes.NewUpsertTokenAliasProposal(
 						"EUR",
 						"Euro",
 						"http://www.google.es",
@@ -495,7 +495,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				proposalID := uint64(1234)
 				proposal, err := types.NewProposal(
 					proposalID,
-					tokenstypes.NewProposalUpsertTokenRates(
+					tokenstypes.NewUpsertTokenRatesProposal(
 						"btc",
 						sdk.NewDec(1234),
 						false,
@@ -550,7 +550,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				proposalID := uint64(1234)
 				proposal, err := types.NewProposal(
 					proposalID,
-					types3.NewProposalUnjailValidator(
+					types3.NewUnjailValidatorProposal(
 						addrs[0],
 						"theHash",
 						"theProposal",
@@ -651,7 +651,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 			ctx = ctx.WithBlockTime(time.Now().Add(time.Second * 25))
 			ctx = ctx.WithBlockHeight(ctx.BlockHeight() + tt.blockHeightChange)
 
-			gov.EndBlocker(ctx, app.CustomGovKeeper, app.ProposalRouter)
+			gov.EndBlocker(ctx, app.CustomGovKeeper)
 
 			tt.validateScenario(t, app, ctx, addrs)
 		})

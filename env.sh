@@ -83,10 +83,6 @@ PermVoteTokensWhiteBlackChangeProposal=25
 ###################################### transaction_types ######################################
 TypeMsgSend="send"
 TypeMsgMultiSend="multisend"
-MsgTypeProposalSetNetworkProperty="proposal-set-network-property"
-MsgTypeProposalAssignPermission="proposal-assign-permission"
-MsgTypeProposalUpsertDataRegistry="proposal-upsert-data-registry"
-MsgTypeProposalUpsertTokenAlias="proposal-upsert-token-alias"
 MsgTypeVoteProposal="vote-proposal"
 MsgTypeWhitelistPermissions="whitelist-permissions"
 MsgTypeBlacklistPermissions="blacklist-permissions"
@@ -107,9 +103,6 @@ MsgTypeUpsertTokenRate="upsert-token-rate"
 ###################################### function IDs ######################################
 FuncIDMsgSend=1
 FuncIDMultiSend=2
-FuncIDMsgProposalSetNetworkProperty=3
-FuncIDMsgProposalAssignPermission=4
-FuncIDMsgProposalUpsertDataRegistry=5
 FuncIDMsgVoteProposal=6
 FuncIDMsgWhitelistPermissions=7
 FuncIDMsgBlacklistPermissions=8
@@ -126,4 +119,3 @@ FuncIDMsgRemoveBlacklistRolePermission=18
 FuncIDMsgClaimValidator=19
 FuncIDMsgUpsertTokenAlias=20
 FuncIDMsgUpsertTokenRate=21
-FuncIDMsgProposalUpsertTokenAlias=22

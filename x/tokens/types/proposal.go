@@ -17,7 +17,7 @@ const (
 	ProposalTypeTokensWhiteBlackChange = "TokensWhiteBlackChange"
 )
 
-func NewProposalUpsertTokenAlias(
+func NewUpsertTokenAliasProposal(
 	symbol string,
 	name string,
 	icon string,
@@ -50,7 +50,7 @@ func (m *ProposalUpsertTokenAlias) ValidateBasic() error {
 	return nil
 }
 
-func NewProposalUpsertTokenRates(denom string, rate sdk.Dec, feePayments bool) *ProposalUpsertTokenRates {
+func NewUpsertTokenRatesProposal(denom string, rate sdk.Dec, feePayments bool) *ProposalUpsertTokenRates {
 	return &ProposalUpsertTokenRates{Denom: denom, Rate: rate, FeePayments: feePayments}
 }
 
@@ -71,7 +71,7 @@ func (m *ProposalUpsertTokenRates) ValidateBasic() error {
 	return nil
 }
 
-func NewProposalTokensWhiteBlackChange(isBlacklist, isAdd bool, tokens []string) *ProposalTokensWhiteBlackChange {
+func NewTokensWhiteBlackChangeProposal(isBlacklist, isAdd bool, tokens []string) *ProposalTokensWhiteBlackChange {
 	return &ProposalTokensWhiteBlackChange{isBlacklist, isAdd, tokens}
 }
 

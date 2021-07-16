@@ -96,11 +96,7 @@ func GetTxProposalUnjailValidatorCmd() *cobra.Command {
 			msg, err := customgovtypes.NewMsgSubmitProposal(
 				clientCtx.FromAddress,
 				description,
-				&customstakingtypes.ProposalUnjailValidator{
-					Proposer:  clientCtx.FromAddress,
-					Hash:      hash,
-					Reference: reference,
-				},
+				customstakingtypes.NewUnjailValidatorProposal(clientCtx.FromAddress, hash, reference),
 			)
 			if err != nil {
 				return err

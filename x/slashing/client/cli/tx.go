@@ -147,7 +147,7 @@ func GetTxProposalResetWholeValidatorRankCmd() *cobra.Command {
 			msg, err := customgovtypes.NewMsgSubmitProposal(
 				clientCtx.FromAddress,
 				description,
-				types.NewProposalResetWholeValidatorRank(clientCtx.FromAddress),
+				types.NewResetWholeValidatorRankProposal(clientCtx.FromAddress),
 			)
 			if err != nil {
 				return err

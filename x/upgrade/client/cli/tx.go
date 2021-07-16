@@ -13,10 +13,6 @@ import (
 )
 
 const (
-	// FlagResourceId            = "resource-id"
-	// FlagResourceGit           = "resource-git"
-	// FlagResourceCheckout      = "resource-checkout"
-	// FlagResourceChecksum      = "resource-checksum"
 	FlagName                  = "name"
 	FlagResources             = "resources"
 	FlagHeight                = "height"
@@ -54,26 +50,6 @@ func GetTxProposeUpgradePlan() *cobra.Command {
 			if err != nil {
 				return err
 			}
-
-			// resoureId, err := cmd.Flags().GetString(FlagResourceId)
-			// if err != nil {
-			// 	return fmt.Errorf("invalid resource id")
-			// }
-
-			// resourceGit, err := cmd.Flags().GetString(FlagResourceGit)
-			// if err != nil {
-			// 	return fmt.Errorf("invalid resource git")
-			// }
-
-			// resourceCheckout, err := cmd.Flags().GetString(FlagResourceCheckout)
-			// if err != nil {
-			// 	return fmt.Errorf("invalid resource checkout")
-			// }
-
-			// resourceChecksum, err := cmd.Flags().GetString(FlagResourceChecksum)
-			// if err != nil {
-			// 	return fmt.Errorf("invalid resource checksum")
-			// }
 
 			name, err := cmd.Flags().GetString(FlagName)
 			if err != nil {
@@ -139,18 +115,18 @@ func GetTxProposeUpgradePlan() *cobra.Command {
 			msg, err := customgovtypes.NewMsgSubmitProposal(
 				clientCtx.FromAddress,
 				description,
-				&types.ProposalSoftwareUpgrade{
-					Name:                 name,
-					Resources:            resources,
-					Height:               height,
-					MinUpgradeTime:       minUpgradeTime,
-					OldChainId:           oldChainId,
-					NewChainId:           newChainId,
-					RollbackChecksum:     rollBackMemo,
-					MaxEnrolmentDuration: maxEnrollmentDuration,
-					Memo:                 upgradeMemo,
-					InstateUpgrade:       instateUpgrade,
-				},
+				types.NewSoftwareUpgradeProposal(
+					name,
+					resources,
+					height,
+					minUpgradeTime,
+					oldChainId,
+					newChainId,
+					rollBackMemo,
+					maxEnrollmentDuration,
+					upgradeMemo,
+					instateUpgrade,
+				),
 			)
 			if err != nil {
 				return err
@@ -160,10 +136,6 @@ func GetTxProposeUpgradePlan() *cobra.Command {
 		},
 	}
 
-	// cmd.Flags().String(FlagResourceId, "", "id of resource")
-	// cmd.Flags().String(FlagResourceGit, "", "git of resource")
-	// cmd.Flags().String(FlagResourceCheckout, "", "checkout of resource")
-	// cmd.Flags().String(FlagResourceChecksum, "", "checksum of resource")
 	cmd.Flags().String(FlagName, "upgrade1", "upgrade name")
 	cmd.Flags().String(FlagResources, "[]", "resource info")
 	cmd.Flags().Int64(FlagHeight, 0, "upgrade height")
@@ -205,9 +177,7 @@ func GetTxCancelUpgradePlan() *cobra.Command {
 			msg, err := customgovtypes.NewMsgSubmitProposal(
 				clientCtx.FromAddress,
 				description,
-				&types.ProposalCancelSoftwareUpgrade{
-					Name: name,
-				},
+				types.NewCancelSoftwareUpgradeProposal(name),
 			)
 			if err != nil {
 				return err

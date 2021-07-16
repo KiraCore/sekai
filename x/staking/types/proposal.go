@@ -7,7 +7,7 @@ import (
 
 const ProposalTypeUnjailValidator = "UnjailValidator"
 
-func NewProposalUnjailValidator(proposer sdk.AccAddress, hash, reference string) *ProposalUnjailValidator {
+func NewUnjailValidatorProposal(proposer sdk.AccAddress, hash, reference string) *ProposalUnjailValidator {
 	return &ProposalUnjailValidator{
 		Proposer:  proposer,
 		Hash:      "",

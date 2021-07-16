@@ -139,7 +139,7 @@ type SimApp struct {
 	FeeProcessingKeeper  feeprocessingkeeper.Keeper
 	EvidenceKeeper       evidencekeeper.Keeper
 
-	ProposalRouter customgov.ProposalRouter
+	ProposalRouter customgovtypes.ProposalRouter
 
 	// the module manager
 	mm *module.Manager
