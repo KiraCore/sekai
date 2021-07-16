@@ -54,6 +54,7 @@ func getPostMethods() []string {
 func defaultConfig() InterxConfigFromFile {
 	configFromFile := InterxConfigFromFile{}
 
+	configFromFile.Version = "0.1.0"
 	configFromFile.ServeHTTPS = false
 	configFromFile.GRPC = "dns:///0.0.0.0:9090"
 	configFromFile.RPC = "http://0.0.0.0:26657"
@@ -75,6 +76,8 @@ func defaultConfig() InterxConfigFromFile {
 
 	configFromFile.NodeDiscovery.UseHttps = false
 	configFromFile.NodeDiscovery.DefaultInterxPort = "11000"
+	configFromFile.NodeDiscovery.DefaultTendermintPort = "26657"
+	configFromFile.NodeDiscovery.ConnectionTimeout = "3s"
 
 	configFromFile.Cache.CacheDir = "cache"
 	configFromFile.Cache.MaxCacheSize = "2GB"
@@ -119,6 +122,7 @@ func defaultConfig() InterxConfigFromFile {
 
 // InitConfig is a function to load interx configurations from a given file
 func InitConfig(
+	version string,
 	configFilePath string,
 	serveHTTPS bool,
 	grpc string,
@@ -143,11 +147,14 @@ func InitConfig(
 	addrBooks string,
 	txModes string,
 	nodeDiscoveryUseHttps bool,
-	nodeDiscoveryPort string,
+	nodeDiscoveryInterxPort string,
+	nodeDiscoveryTendermintPort string,
+	nodeDiscoveryTimeout string,
 	nodeKey string,
 ) {
 	configFromFile := defaultConfig()
 
+	configFromFile.Version = version
 	configFromFile.ServeHTTPS = serveHTTPS
 	configFromFile.GRPC = grpc
 	configFromFile.RPC = rpc
@@ -165,7 +172,9 @@ func InitConfig(
 	configFromFile.TxModes = txModes
 
 	configFromFile.NodeDiscovery.UseHttps = nodeDiscoveryUseHttps
-	configFromFile.NodeDiscovery.DefaultInterxPort = nodeDiscoveryPort
+	configFromFile.NodeDiscovery.DefaultInterxPort = nodeDiscoveryInterxPort
+	configFromFile.NodeDiscovery.DefaultTendermintPort = nodeDiscoveryTendermintPort
+	configFromFile.NodeDiscovery.ConnectionTimeout = nodeDiscoveryTimeout
 
 	configFromFile.Block.StatusSync = syncStatus
 	configFromFile.Block.HaltedAvgBlockTimes = haltedAvgBlockTimes

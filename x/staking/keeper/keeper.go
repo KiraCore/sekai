@@ -204,11 +204,15 @@ func (k Keeper) GetIdRecordsByAddress(ctx sdk.Context, creator sdk.AccAddress) [
 	records := k.govkeeper.GetIdRecordsByAddress(ctx, creator)
 	sRecords := []types.IdentityRecord{}
 	for _, record := range records {
+		verifiers := []string{}
+		for _, verifier := range record.Verifiers {
+			verifiers = append(verifiers, verifier.String())
+		}
 		sRecords = append(sRecords, types.IdentityRecord{
 			Id:        record.Id,
 			Infos:     record.Infos,
 			Date:      record.Date,
-			Verifiers: record.Verifiers,
+			Verifiers: verifiers,
 		})
 	}
 	return sRecords

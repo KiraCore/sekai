@@ -93,5 +93,11 @@ enum PermValue {
 
   // PERMISSION_VOTE_RESET_WHOLE_VALIDATOR_RANK_PROPOSAL defines the permission needed to vote on reset whole validator rank proposal
   PERMISSION_VOTE_RESET_WHOLE_VALIDATOR_RANK_PROPOSAL = 27 [(gogoproto.enumvalue_customname) = "PermVoteResetWholeValidatorRankProposal"];
+
+  // PERMISSION_CREATE_SOFTWARE_UPGRADE_PROPOSAL defines the permission needed to create a proposal for software upgrade
+  PERMISSION_CREATE_SOFTWARE_UPGRADE_PROPOSAL = 28 [(gogoproto.enumvalue_customname) = "PermCreateSoftwareUpgradeProposal"];
+
+  // PERMISSION_SOFTWARE_UPGRADE_PROPOSAL defines the permission needed to vote on software upgrade proposal
+  PERMISSION_SOFTWARE_UPGRADE_PROPOSAL = 29 [(gogoproto.enumvalue_customname) = "PermVoteSoftwareUpgradeProposal"];
 }
 

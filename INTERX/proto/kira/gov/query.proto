@@ -7,6 +7,7 @@ import "gogoproto/gogo.proto";
 import "kira/gov/data_registry.proto";
 import "kira/gov/pagination.proto";
 import "kira/gov/proposal.proto";
+import "kira/gov/identity_registrar.proto";
 import "kira/gov/actor.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 import "kira/gov/network_properties.proto";
