@@ -47,6 +47,7 @@ func main() {
 	initGrpcPtr := initCommand.String("grpc", "dns:///0.0.0.0:9090", "The grpc endpoint of the sekaid.")
 	initRPCPtr := initCommand.String("rpc", "http://0.0.0.0:26657", "The rpc endpoint of the sekaid.")
 
+	initNodeType := initCommand.String("node_type", "seed", "The node type.")
 	initSentryNodeId := initCommand.String("sentry_node_id", "", "The sentry node id.")
 	initPrivSentryNodeId := initCommand.String("priv_sentry_node_id", "", "The private sentry node id.")
 	initValidatorNodeId := initCommand.String("validator_node_id", "", "The validator node id.")
@@ -106,6 +107,7 @@ func main() {
 					*initServeHTTPS,
 					*initGrpcPtr,
 					*initRPCPtr,
+					*initNodeType,
 					*initSentryNodeId,
 					*initPrivSentryNodeId,
 					*initValidatorNodeId,

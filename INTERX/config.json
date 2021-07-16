@@ -1,14 +1,17 @@
 {
-  "version": "0.1.4",
+  "version": "0.1.5",
   "serve_https": false,
   "grpc": "dns:///0.0.0.0:9090",
   "rpc": "http://0.0.0.0:26657",
   "port": "11000",
-  "sentry_node_id": "",
-  "priv_sentry_node_id": "",
-  "validator_node_id": "",
-  "seed_node_id": "",
-  "mnemonic": "pact powder face gather across strike secret quiz cable marble carry vivid tag love fat lawsuit laugh diagram palm silk endless blame vocal canvas",
+  "node": {
+    "node_type": "validator",
+    "sentry_node_id": "",
+    "priv_sentry_node_id": "",
+    "validator_node_id": "",
+    "seed_node_id": ""
+  },
+  "mnemonic": "jacket timber cook border disease during south bracket buffalo play parade enhance device leg jaguar gain source tattoo exclude slender host pet refuse engage",
   "addrbooks": "addrbook.json",
   "node_key": "node_key.json",
   "tx_modes": "sync,async,block",
@@ -29,21 +32,18 @@
     "download_file_size_limitation": "10MB"
   },
   "faucet": {
-    "mnemonic": "pact powder face gather across strike secret quiz cable marble carry vivid tag love fat lawsuit laugh diagram palm silk endless blame vocal canvas",
+    "mnemonic": "jacket timber cook border disease during south bracket buffalo play parade enhance device leg jaguar gain source tattoo exclude slender host pet refuse engage",
     "faucet_amounts": {
-      "samoleans": "300000000000000000",
       "stake": "100000",
       "ukex": "100000",
       "validatortoken": "100000"
     },
     "faucet_minimum_amounts": {
-      "samoleans": "250000000000000",
       "stake": "1000",
       "ukex": "1000",
       "validatortoken": "1000"
     },
     "fee_amounts": {
-      "samoleans": "250ukex",
       "stake": "1000ukex",
       "ukex": "1000ukex",
       "validatortoken": "1000ukex"
