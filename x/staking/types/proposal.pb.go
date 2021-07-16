@@ -26,74 +26,6 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type MsgProposalUnjailValidator struct {
-	Proposer    github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=proposer,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"proposer,omitempty" yaml:"proposer"`
-	Description string                                        `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
-	Hash        string                                        `protobuf:"bytes,2,opt,name=hash,proto3" json:"hash,omitempty"`
-	Reference   string                                        `protobuf:"bytes,3,opt,name=reference,proto3" json:"reference,omitempty"`
-}
-
-func (m *MsgProposalUnjailValidator) Reset()         { *m = MsgProposalUnjailValidator{} }
-func (m *MsgProposalUnjailValidator) String() string { return proto.CompactTextString(m) }
-func (*MsgProposalUnjailValidator) ProtoMessage()    {}
-func (*MsgProposalUnjailValidator) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c3ac5ce23bf32d05, []int{0}
-}
-func (m *MsgProposalUnjailValidator) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgProposalUnjailValidator) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgProposalUnjailValidator.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgProposalUnjailValidator) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgProposalUnjailValidator.Merge(m, src)
-}
-func (m *MsgProposalUnjailValidator) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgProposalUnjailValidator) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgProposalUnjailValidator.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgProposalUnjailValidator proto.InternalMessageInfo
-
-func (m *MsgProposalUnjailValidator) GetProposer() github_com_cosmos_cosmos_sdk_types.AccAddress {
-	if m != nil {
-		return m.Proposer
-	}
-	return nil
-}
-
-func (m *MsgProposalUnjailValidator) GetDescription() string {
-	if m != nil {
-		return m.Description
-	}
-	return ""
-}
-
-func (m *MsgProposalUnjailValidator) GetHash() string {
-	if m != nil {
-		return m.Hash
-	}
-	return ""
-}
-
-func (m *MsgProposalUnjailValidator) GetReference() string {
-	if m != nil {
-		return m.Reference
-	}
-	return ""
-}
-
 type ProposalUnjailValidator struct {
 	Proposer  github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=proposer,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"proposer,omitempty" yaml:"proposer"`
 	Hash      string                                        `protobuf:"bytes,2,opt,name=hash,proto3" json:"hash,omitempty"`
@@ -104,7 +36,7 @@ func (m *ProposalUnjailValidator) Reset()         { *m = ProposalUnjailValidator
 func (m *ProposalUnjailValidator) String() string { return proto.CompactTextString(m) }
 func (*ProposalUnjailValidator) ProtoMessage()    {}
 func (*ProposalUnjailValidator) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c3ac5ce23bf32d05, []int{1}
+	return fileDescriptor_c3ac5ce23bf32d05, []int{0}
 }
 func (m *ProposalUnjailValidator) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -155,35 +87,31 @@ func (m *ProposalUnjailValidator) GetReference() string {
 }
 
 func init() {
-	proto.RegisterType((*MsgProposalUnjailValidator)(nil), "kira.staking.MsgProposalUnjailValidator")
 	proto.RegisterType((*ProposalUnjailValidator)(nil), "kira.staking.ProposalUnjailValidator")
 }
 
 func init() { proto.RegisterFile("proposal.proto", fileDescriptor_c3ac5ce23bf32d05) }
 
 var fileDescriptor_c3ac5ce23bf32d05 = []byte{
-	// 322 bytes of a gzipped FileDescriptorProto
+	// 288 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x2b, 0x28, 0xca, 0x2f,
 	0xc8, 0x2f, 0x4e, 0xcc, 0xd1, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0xc9, 0xce, 0x2c, 0x4a,
 	0xd4, 0x2b, 0x2e, 0x49, 0xcc, 0xce, 0xcc, 0x4b, 0x97, 0x12, 0x49, 0xcf, 0x4f, 0xcf, 0x07, 0x4b,
 	0xe8, 0x83, 0x58, 0x10, 0x35, 0x52, 0x92, 0xc9, 0xf9, 0xc5, 0xb9, 0xf9, 0xc5, 0xf1, 0x10, 0x09,
-	0x08, 0x07, 0x22, 0xa5, 0x74, 0x89, 0x91, 0x4b, 0xca, 0xb7, 0x38, 0x3d, 0x00, 0x6a, 0x68, 0x68,
-	0x5e, 0x56, 0x62, 0x66, 0x4e, 0x58, 0x62, 0x4e, 0x66, 0x4a, 0x62, 0x49, 0x7e, 0x91, 0x50, 0x02,
-	0x17, 0x07, 0xc4, 0xbe, 0xd4, 0x22, 0x09, 0x46, 0x05, 0x46, 0x0d, 0x1e, 0x27, 0x97, 0x4f, 0xf7,
-	0xe4, 0xf9, 0x2b, 0x13, 0x73, 0x73, 0xac, 0x94, 0x60, 0x32, 0x4a, 0xbf, 0xee, 0xc9, 0xeb, 0xa6,
-	0x67, 0x96, 0x64, 0x94, 0x26, 0xe9, 0x25, 0xe7, 0xe7, 0x42, 0x2d, 0x80, 0x52, 0xba, 0xc5, 0x29,
-	0xd9, 0xfa, 0x25, 0x95, 0x05, 0xa9, 0xc5, 0x7a, 0x8e, 0xc9, 0xc9, 0x8e, 0x29, 0x29, 0x45, 0xa9,
-	0xc5, 0xc5, 0x41, 0x70, 0x53, 0x85, 0x14, 0xb8, 0xb8, 0x53, 0x52, 0x8b, 0x93, 0x8b, 0x32, 0x0b,
-	0x4a, 0x32, 0xf3, 0xf3, 0x24, 0x58, 0x14, 0x18, 0x35, 0x38, 0x83, 0x90, 0x85, 0x84, 0x84, 0xb8,
-	0x58, 0x32, 0x12, 0x8b, 0x33, 0x24, 0x98, 0xc0, 0x52, 0x60, 0xb6, 0x90, 0x0c, 0x17, 0x67, 0x51,
-	0x6a, 0x5a, 0x6a, 0x51, 0x6a, 0x5e, 0x72, 0xaa, 0x04, 0x33, 0x58, 0x02, 0x21, 0xa0, 0xb4, 0x8f,
-	0x91, 0x4b, 0x7c, 0xe0, 0x7c, 0x44, 0xb2, 0x7b, 0xad, 0xf8, 0x5f, 0x2c, 0x90, 0x67, 0xbc, 0xb4,
-	0x45, 0x97, 0xdd, 0x39, 0x3f, 0xaf, 0x24, 0x35, 0xaf, 0xc4, 0xc9, 0xf9, 0xc4, 0x23, 0x39, 0xc6,
-	0x0b, 0x8f, 0xe4, 0x18, 0x1f, 0x3c, 0x92, 0x63, 0x9c, 0xf0, 0x58, 0x8e, 0xe1, 0xc2, 0x63, 0x39,
-	0x86, 0x1b, 0x8f, 0xe5, 0x18, 0xa2, 0x34, 0x91, 0x5c, 0xe5, 0x9d, 0x59, 0x94, 0xe8, 0x9c, 0x5f,
-	0x94, 0xaa, 0x5f, 0x9c, 0x9a, 0x9d, 0x98, 0xa9, 0x5f, 0xa1, 0x0f, 0x4d, 0x05, 0x10, 0xc7, 0x25,
-	0xb1, 0x81, 0x63, 0xd8, 0x18, 0x10, 0x00, 0x00, 0xff, 0xff, 0xc6, 0xbf, 0x01, 0x08, 0x32, 0x02,
-	0x00, 0x00,
+	0x08, 0x07, 0x22, 0xa5, 0xb4, 0x8f, 0x91, 0x4b, 0x3c, 0x00, 0x6a, 0x62, 0x68, 0x5e, 0x56, 0x62,
+	0x66, 0x4e, 0x58, 0x62, 0x4e, 0x66, 0x4a, 0x62, 0x49, 0x7e, 0x91, 0x50, 0x02, 0x17, 0x07, 0xc4,
+	0xb2, 0xd4, 0x22, 0x09, 0x46, 0x05, 0x46, 0x0d, 0x1e, 0x27, 0x97, 0x4f, 0xf7, 0xe4, 0xf9, 0x2b,
+	0x13, 0x73, 0x73, 0xac, 0x94, 0x60, 0x32, 0x4a, 0xbf, 0xee, 0xc9, 0xeb, 0xa6, 0x67, 0x96, 0x64,
+	0x94, 0x26, 0xe9, 0x25, 0xe7, 0xe7, 0x42, 0x4d, 0x87, 0x52, 0xba, 0xc5, 0x29, 0xd9, 0xfa, 0x25,
+	0x95, 0x05, 0xa9, 0xc5, 0x7a, 0x8e, 0xc9, 0xc9, 0x8e, 0x29, 0x29, 0x45, 0xa9, 0xc5, 0xc5, 0x41,
+	0x70, 0x53, 0x85, 0x84, 0xb8, 0x58, 0x32, 0x12, 0x8b, 0x33, 0x24, 0x98, 0x14, 0x18, 0x35, 0x38,
+	0x83, 0xc0, 0x6c, 0x21, 0x19, 0x2e, 0xce, 0xa2, 0xd4, 0xb4, 0xd4, 0xa2, 0xd4, 0xbc, 0xe4, 0x54,
+	0x09, 0x66, 0xb0, 0x04, 0x42, 0xc0, 0x8a, 0xff, 0xc5, 0x02, 0x79, 0xc6, 0x4b, 0x5b, 0x74, 0xd9,
+	0x9d, 0xf3, 0xf3, 0x4a, 0x52, 0xf3, 0x4a, 0x9c, 0x9c, 0x4f, 0x3c, 0x92, 0x63, 0xbc, 0xf0, 0x48,
+	0x8e, 0xf1, 0xc1, 0x23, 0x39, 0xc6, 0x09, 0x8f, 0xe5, 0x18, 0x2e, 0x3c, 0x96, 0x63, 0xb8, 0xf1,
+	0x58, 0x8e, 0x21, 0x4a, 0x13, 0xc9, 0x55, 0xde, 0x99, 0x45, 0x89, 0xce, 0xf9, 0x45, 0xa9, 0xfa,
+	0xc5, 0xa9, 0xd9, 0x89, 0x99, 0xfa, 0x15, 0xfa, 0xd0, 0x00, 0x83, 0x38, 0x2e, 0x89, 0x0d, 0x1c,
+	0x18, 0xc6, 0x80, 0x00, 0x00, 0x00, 0xff, 0xff, 0xcc, 0x08, 0x6d, 0xe8, 0x5d, 0x01, 0x00, 0x00,
 }
 
 func (this *ProposalUnjailValidator) Equal(that interface{}) bool {
@@ -216,57 +144,6 @@ func (this *ProposalUnjailValidator) Equal(that interface{}) bool {
 	}
 	return true
 }
-func (m *MsgProposalUnjailValidator) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgProposalUnjailValidator) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgProposalUnjailValidator) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Description) > 0 {
-		i -= len(m.Description)
-		copy(dAtA[i:], m.Description)
-		i = encodeVarintProposal(dAtA, i, uint64(len(m.Description)))
-		i--
-		dAtA[i] = 0x22
-	}
-	if len(m.Reference) > 0 {
-		i -= len(m.Reference)
-		copy(dAtA[i:], m.Reference)
-		i = encodeVarintProposal(dAtA, i, uint64(len(m.Reference)))
-		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.Hash) > 0 {
-		i -= len(m.Hash)
-		copy(dAtA[i:], m.Hash)
-		i = encodeVarintProposal(dAtA, i, uint64(len(m.Hash)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.Proposer) > 0 {
-		i -= len(m.Proposer)
-		copy(dAtA[i:], m.Proposer)
-		i = encodeVarintProposal(dAtA, i, uint64(len(m.Proposer)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
 func (m *ProposalUnjailValidator) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -322,31 +199,6 @@ func encodeVarintProposal(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *MsgProposalUnjailValidator) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Proposer)
-	if l > 0 {
-		n += 1 + l + sovProposal(uint64(l))
-	}
-	l = len(m.Hash)
-	if l > 0 {
-		n += 1 + l + sovProposal(uint64(l))
-	}
-	l = len(m.Reference)
-	if l > 0 {
-		n += 1 + l + sovProposal(uint64(l))
-	}
-	l = len(m.Description)
-	if l > 0 {
-		n += 1 + l + sovProposal(uint64(l))
-	}
-	return n
-}
-
 func (m *ProposalUnjailValidator) Size() (n int) {
 	if m == nil {
 		return 0
@@ -373,189 +225,6 @@ func sovProposal(x uint64) (n int) {
 }
 func sozProposal(x uint64) (n int) {
 	return sovProposal(uint64((x << 1) ^ uint64((int64(x) >> 63))))
-}
-func (m *MsgProposalUnjailValidator) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowProposal
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgProposalUnjailValidator: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgProposalUnjailValidator: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Proposer", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProposal
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthProposal
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProposal
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Proposer = append(m.Proposer[:0], dAtA[iNdEx:postIndex]...)
-			if m.Proposer == nil {
-				m.Proposer = []byte{}
-			}
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Hash", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProposal
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthProposal
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProposal
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Hash = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Reference", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProposal
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthProposal
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProposal
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Reference = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Description", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProposal
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthProposal
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthProposal
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Description = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipProposal(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthProposal
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthProposal
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
 }
 func (m *ProposalUnjailValidator) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)

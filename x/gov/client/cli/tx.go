@@ -617,11 +617,14 @@ func GetTxProposalSetPoorNetworkMessages() *cobra.Command {
 				return fmt.Errorf("invalid description: %w", err)
 			}
 
-			msg := types.NewMsgProposalSetPoorNetworkMessages(
+			msg, err := types.NewMsgSubmitProposal(
 				clientCtx.FromAddress,
 				description,
-				messages,
+				types.NewSetPoorNetworkMessagesProposal(messages),
 			)
+			if err != nil {
+				return err
+			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
@@ -674,12 +677,14 @@ func GetTxProposalSetNetworkProperty() *cobra.Command {
 				return fmt.Errorf("invalid description: %w", err)
 			}
 
-			msg := types.NewMsgProposalSetNetworkProperty(
+			msg, err := types.NewMsgSubmitProposal(
 				clientCtx.FromAddress,
 				description,
-				types.NetworkProperty(property),
-				uint64(value),
+				types.NewSetNetworkPropertyProposal(types.NetworkProperty(property), uint64(value)),
 			)
+			if err != nil {
+				return err
+			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
@@ -720,12 +725,14 @@ func GetTxProposalAssignPermission() *cobra.Command {
 				return fmt.Errorf("invalid description: %w", err)
 			}
 
-			msg := types.NewMsgProposalAssignPermission(
+			msg, err := types.NewMsgSubmitProposal(
 				clientCtx.FromAddress,
 				description,
-				addr,
-				types.PermValue(perm),
+				types.NewAssignPermissionProposal(addr, types.PermValue(perm)),
 			)
+			if err != nil {
+				return err
+			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
@@ -768,15 +775,20 @@ func GetTxProposalUpsertDataRegistry() *cobra.Command {
 				return fmt.Errorf("invalid description: %w", err)
 			}
 
-			msg := types.NewMsgProposalUpsertDataRegistry(
+			msg, err := types.NewMsgSubmitProposal(
 				clientCtx.FromAddress,
 				description,
-				key,
-				hash,
-				reference,
-				encoding,
-				uint64(size),
+				types.NewUpsertDataRegistryProposal(
+					key,
+					hash,
+					reference,
+					encoding,
+					uint64(size),
+				),
 			)
+			if err != nil {
+				return err
+			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
@@ -923,13 +935,18 @@ func GetTxProposalCreateRole() *cobra.Command {
 				return fmt.Errorf("invalid description: %w", err)
 			}
 
-			msg := types.NewMsgProposalCreateRole(
+			msg, err := types.NewMsgSubmitProposal(
 				clientCtx.FromAddress,
 				description,
-				types.Role(role),
-				whitelistPerms,
-				blacklistPerms,
+				types.NewCreateRoleProposal(
+					types.Role(role),
+					whitelistPerms,
+					blacklistPerms,
+				),
 			)
+			if err != nil {
+				return err
+			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},

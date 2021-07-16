@@ -6,18 +6,6 @@ import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/slashing/types";
 
-message MsgProposalResetWholeValidatorRank {
-    bytes proposer = 1 [
-      (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
-    ];
-    string description = 2;
-}
-
-// MsgProposalResetWholeValidatorRankResponse defines the Msg/ProposalResetWholeValidatorRank response type.
-message MsgProposalResetWholeValidatorRankResponse {
-    uint64 proposalID = 1;
-}
-
 message ProposalResetWholeValidatorRank {
     bytes proposer = 1 [
       (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"

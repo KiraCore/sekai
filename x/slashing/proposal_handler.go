@@ -1,8 +1,6 @@
 package slashing
 
 import (
-	"fmt"
-
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/slashing/keeper"
 	"github.com/KiraCore/sekai/x/slashing/types"
@@ -23,11 +21,8 @@ func (a ApplyResetWholeValidatorRankProposalHandler) ProposalType() string {
 	return types.ProposalTypeResetWholeValidatorRank
 }
 
-func (a ApplyResetWholeValidatorRankProposalHandler) Apply(ctx sdk.Context, proposal govtypes.Content) {
+func (a ApplyResetWholeValidatorRankProposalHandler) Apply(ctx sdk.Context, proposal govtypes.Content) error {
 	_ = proposal.(*types.ProposalResetWholeValidatorRank)
 
-	err := a.keeper.ResetWholeValidatorRank(ctx)
-	if err != nil {
-		panic(fmt.Errorf("error resetting whole validator rank: %+v", err))
-	}
+	return a.keeper.ResetWholeValidatorRank(ctx)
 }

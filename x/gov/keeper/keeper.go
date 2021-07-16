@@ -13,9 +13,10 @@ import (
 )
 
 type Keeper struct {
-	cdc      codec.BinaryMarshaler
-	storeKey sdk.StoreKey
-	bk       types.BankKeeper
+	cdc            codec.BinaryMarshaler
+	storeKey       sdk.StoreKey
+	bk             types.BankKeeper
+	proposalRouter types.ProposalRouter
 }
 
 func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryMarshaler, bk types.BankKeeper) Keeper {
@@ -29,6 +30,14 @@ func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryMarshaler, bk types.BankKe
 // BondDenom returns the denom that is basically used for fee payment
 func (k Keeper) BondDenom(ctx sdk.Context) string {
 	return "ukex"
+}
+
+func (k *Keeper) SetProposalRouter(proposalRouter types.ProposalRouter) {
+	k.proposalRouter = proposalRouter
+}
+
+func (k Keeper) GetProposalRouter() types.ProposalRouter {
+	return k.proposalRouter
 }
 
 // SetNetworkProperties set network properties on KVStore

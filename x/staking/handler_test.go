@@ -6,16 +6,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/cosmos/cosmos-sdk/types/errors"
-
 	"github.com/KiraCore/sekai/app"
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
-
-	"github.com/KiraCore/sekai/x/staking"
-
 	"github.com/KiraCore/sekai/simapp"
+	"github.com/KiraCore/sekai/x/gov"
+	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
+	"github.com/KiraCore/sekai/x/staking"
 	customstakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
@@ -280,15 +278,17 @@ func TestHandler_ProposalUnjailValidator_Errors(t *testing.T) {
 			// After 10 minutes
 			ctx = ctx.WithBlockTime(ctx.BlockTime().Add(time.Minute * 10))
 
-			handler := staking.NewHandler(app.CustomStakingKeeper, app.CustomGovKeeper)
-			_, err := handler(
+			handler := gov.NewHandler(app.CustomGovKeeper)
+			proposal := customstakingtypes.NewUnjailValidatorProposal(
+				proposerAddr,
+				"thehash",
+				"theReference",
+			)
+			msg, err := customgovtypes.NewMsgSubmitProposal(proposerAddr, "some desc", proposal)
+			require.NoError(t, err)
+			_, err = handler(
 				ctx,
-				customstakingtypes.NewMsgProposalUnjailValidator(
-					proposerAddr,
-					"some desc",
-					"thehash",
-					"theReference",
-				),
+				msg,
 			)
 			require.EqualError(t, err, tt.expectedErr.Error())
 		})
@@ -325,15 +325,17 @@ func TestHandler_ProposalUnjailValidator(t *testing.T) {
 	err = app.CustomStakingKeeper.Jail(ctx, val.ValKey)
 	require.NoError(t, err)
 
-	handler := staking.NewHandler(app.CustomStakingKeeper, app.CustomGovKeeper)
+	handler := gov.NewHandler(app.CustomGovKeeper)
+	proposal := customstakingtypes.NewUnjailValidatorProposal(
+		proposerAddr,
+		"thehash",
+		"theReference",
+	)
+	msg, err := customgovtypes.NewMsgSubmitProposal(proposerAddr, "some desc", proposal)
+	require.NoError(t, err)
 	_, err = handler(
 		ctx,
-		customstakingtypes.NewMsgProposalUnjailValidator(
-			proposerAddr,
-			"some desc",
-			"thehash",
-			"theReference",
-		),
+		msg,
 	)
 	require.NoError(t, err)
 
@@ -342,7 +344,7 @@ func TestHandler_ProposalUnjailValidator(t *testing.T) {
 
 	expectedSavedProposal, err := customgovtypes.NewProposal(
 		1,
-		customstakingtypes.NewProposalUnjailValidator(
+		customstakingtypes.NewUnjailValidatorProposal(
 			proposerAddr,
 			"thehash",
 			"theReference",

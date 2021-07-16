@@ -221,6 +221,24 @@ func NewInitApp(
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	app.evidenceKeeper = *evidenceKeeper
 
+	proposalRouter := customgovtypes.NewProposalRouter(
+		[]customgovtypes.ProposalHandler{
+			customgov.NewApplyAssignPermissionProposalHandler(app.customGovKeeper),
+			customgov.NewApplySetNetworkPropertyProposalHandler(app.customGovKeeper),
+			customgov.NewApplyUpsertDataRegistryProposalHandler(app.customGovKeeper),
+			customgov.NewApplySetPoorNetworkMessagesProposalHandler(app.customGovKeeper),
+			tokens.NewApplyUpsertTokenAliasProposalHandler(app.tokensKeeper),
+			tokens.NewApplyUpsertTokenRatesProposalHandler(app.tokensKeeper),
+			tokens.NewApplyWhiteBlackChangeProposalHandler(app.tokensKeeper),
+			customstaking.NewApplyUnjailValidatorProposalHandler(app.customStakingKeeper, app.customGovKeeper),
+			customslashing.NewApplyResetWholeValidatorRankProposalHandler(app.customSlashingKeeper),
+			customgov.NewApplyCreateRoleProposalHandler(app.customGovKeeper),
+			upgrade.NewApplySoftwareUpgradeProposalHandler(app.upgradeKeeper),
+			upgrade.NewApplyCancelSoftwareUpgradeProposalHandler(app.upgradeKeeper),
+		})
+
+	app.customGovKeeper.SetProposalRouter(proposalRouter)
+
 	/****  Module Options ****/
 
 	// NOTE: Any module instantiated in the module manager that is later modified
@@ -236,22 +254,7 @@ func NewInitApp(
 		params.NewAppModule(app.paramsKeeper),
 		customslashing.NewAppModule(appCodec, app.customSlashingKeeper, app.accountKeeper, app.bankKeeper, app.customStakingKeeper),
 		customstaking.NewAppModule(app.customStakingKeeper, app.customGovKeeper),
-		customgov.NewAppModule(app.customGovKeeper, customgov.NewProposalRouter(
-			[]customgov.ProposalHandler{
-				customgov.NewApplyAssignPermissionProposalHandler(app.customGovKeeper),
-				customgov.NewApplySetNetworkPropertyProposalHandler(app.customGovKeeper),
-				customgov.NewApplyUpsertDataRegistryProposalHandler(app.customGovKeeper),
-				customgov.NewApplySetPoorNetworkMessagesProposalHandler(app.customGovKeeper),
-				tokens.NewApplyUpsertTokenAliasProposalHandler(app.tokensKeeper),
-				tokens.NewApplyUpsertTokenRatesProposalHandler(app.tokensKeeper),
-				tokens.NewApplyWhiteBlackChangeProposalHandler(app.tokensKeeper),
-				customstaking.NewApplyUnjailValidatorProposalHandler(app.customStakingKeeper),
-				customslashing.NewApplyResetWholeValidatorRankProposalHandler(app.customSlashingKeeper),
-				customgov.NewApplyCreateRoleProposalHandler(app.customGovKeeper),
-				upgrade.NewApplySoftwareUpgradeProposalHandler(app.upgradeKeeper),
-				upgrade.NewApplyCancelSoftwareUpgradeProposalHandler(app.upgradeKeeper),
-			},
-		)),
+		customgov.NewAppModule(app.customGovKeeper),
 		tokens.NewAppModule(app.tokensKeeper, app.customGovKeeper),
 		feeprocessing.NewAppModule(app.feeprocessingKeeper),
 		evidence.NewAppModule(app.evidenceKeeper),

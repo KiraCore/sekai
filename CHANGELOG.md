@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.1.21.4] - 16.07.2021
+
+- Refactor governance module for easier maintenance
+
 ## [v0.1.21.3] - 15.07.2021
 
 ## Added

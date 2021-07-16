@@ -2,6 +2,7 @@ syntax = "proto3";
 package kira.gov;
 
 import "gogoproto/gogo.proto";
+import "google/protobuf/any.proto";
 
 import "actor.proto";
 import "councilor.proto";
@@ -16,6 +17,8 @@ option go_package = "github.com/KiraCore/sekai/x/gov/types";
 
 // Msg defines the staking Msg service.
 service Msg {
+    // SubmitProposal defines a method to create new proposal given a content.
+    rpc SubmitProposal(MsgSubmitProposal) returns (MsgSubmitProposalResponse);
     // WhitelistPermissions defines a method for whitelisting a permission for an address.
     rpc WhitelistPermissions(MsgWhitelistPermissions) returns (MsgWhitelistPermissionsResponse);
     // BlacklistPermissions defines a method for blacklisting a permission for an address.
@@ -24,16 +27,6 @@ service Msg {
     rpc ClaimCouncilor(MsgClaimCouncilor) returns (MsgClaimCouncilorResponse);
     // VoteProposal defines a method for voting a proposal
     rpc VoteProposal(MsgVoteProposal) returns (MsgVoteProposalResponse);
-    // ProposalAssignPermission defines a method for assigning a permission proposal
-    rpc ProposalAssignPermission(MsgProposalAssignPermission) returns (MsgProposalAssignPermissionResponse);
-    // ProposalUpsertDataRegistry defines a method for upserting data registry proposal
-    rpc ProposalUpsertDataRegistry(MsgProposalUpsertDataRegistry) returns (MsgProposalUpsertDataRegistryResponse);
-    // ProposalSetNetworkProperty defines a method for setting a network property proposal
-    rpc ProposalSetNetworkProperty(MsgProposalSetNetworkProperty) returns (MsgProposalSetNetworkPropertyResponse);
-    // ProposalSetPoorNetworkMessages defines a method for setting poor network allowed messages
-    rpc ProposalSetPoorNetworkMessages(MsgProposalSetPoorNetworkMessages) returns (MsgProposalSetPoorNetworkMessagesResponse);
-    // ProposalCreateRole defines a method for creating a role proposal
-    rpc ProposalCreateRole(MsgProposalCreateRole) returns (MsgProposalCreateRoleResponse);
     // CreateRole defines a method for creating a role
     rpc CreateRole(MsgCreateRole) returns (MsgCreateRoleResponse);
     // AssignRole defines a method for assigning a role to an address
@@ -64,25 +57,31 @@ service Msg {
     rpc CancelIdentityRecordsVerifyRequest(MsgCancelIdentityRecordsVerifyRequest) returns (MsgCancelIdentityRecordsVerifyRequestResponse);
 }
 
+
+// MsgSubmitProposal defines an sdk.Msg type that supports submitting arbitrary
+// proposal Content.
+message MsgSubmitProposal {
+    option (gogoproto.equal)            = false;
+    option (gogoproto.goproto_stringer) = false;
+    option (gogoproto.stringer)         = false;
+    option (gogoproto.goproto_getters)  = false;
+  
+    bytes proposer = 1 [
+        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
+    ];
+    string description = 2;
+    google.protobuf.Any content = 3;
+}
+  
+// MsgSubmitProposalResponse defines the Msg/SubmitProposal response type.
+message MsgSubmitProposalResponse {
+    uint64 proposalID = 1;
+}
+
 message MsgWhitelistPermissionsResponse {}
 message MsgBlacklistPermissionsResponse {}
 message MsgClaimCouncilorResponse {}
 message MsgVoteProposalResponse {}
-message MsgProposalAssignPermissionResponse {
-  uint64 proposalID = 1;
-}
-message MsgProposalUpsertDataRegistryResponse {
-    uint64 proposalID = 1;
-}
-message MsgProposalSetNetworkPropertyResponse {
-    uint64 proposalID = 1;
-}
-message MsgProposalSetPoorNetworkMessagesResponse {
-    uint64 proposalID = 1;
-}
-message MsgProposalCreateRoleResponse {
-    uint64 proposalID = 1;
-}
 message MsgCreateRoleResponse {}
 message MsgAssignRoleResponse {}
 message MsgRemoveRoleResponse {}

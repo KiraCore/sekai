@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/tokens/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -157,15 +158,20 @@ func GetTxProposalUpsertTokenAliasCmd() *cobra.Command {
 				return fmt.Errorf("invalid description: %w", err)
 			}
 
-			msg := types.NewMsgProposalUpsertTokenAlias(
+			msg, err := customgovtypes.NewMsgSubmitProposal(
 				clientCtx.FromAddress,
 				description,
-				symbol,
-				name,
-				icon,
-				decimals,
-				strings.Split(denoms, ","),
+				types.NewUpsertTokenAliasProposal(
+					symbol,
+					name,
+					icon,
+					decimals,
+					strings.Split(denoms, ","),
+				),
 			)
+			if err != nil {
+				return err
+			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
@@ -226,13 +232,18 @@ func GetTxProposalUpsertTokenRatesCmd() *cobra.Command {
 				return fmt.Errorf("invalid description: %w", err)
 			}
 
-			msg := types.NewMsgProposalUpsertTokenRates(
+			msg, err := customgovtypes.NewMsgSubmitProposal(
 				clientCtx.FromAddress,
 				description,
-				denom,
-				rate,
-				feePayments,
+				types.NewUpsertTokenRatesProposal(
+					denom,
+					rate,
+					feePayments,
+				),
 			)
+			if err != nil {
+				return err
+			}
 
 			err = msg.ValidateBasic()
 			if err != nil {
@@ -346,13 +357,18 @@ func GetTxProposalTokensBlackWhiteChangeCmd() *cobra.Command {
 				return fmt.Errorf("invalid description: %w", err)
 			}
 
-			msg := types.NewMsgProposalTokensWhiteBlackChange(
+			msg, err := customgovtypes.NewMsgSubmitProposal(
 				clientCtx.FromAddress,
 				description,
-				isBlacklist,
-				isAdd,
-				tokens,
+				types.NewTokensWhiteBlackChangeProposal(
+					isBlacklist,
+					isAdd,
+					tokens,
+				),
 			)
+			if err != nil {
+				return err
+			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},

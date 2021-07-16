@@ -4,17 +4,14 @@ import (
 	"testing"
 	"time"
 
-	types3 "github.com/KiraCore/sekai/x/staking/types"
-
-	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/stretchr/testify/require"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-
 	"github.com/KiraCore/sekai/simapp"
 	"github.com/KiraCore/sekai/x/gov"
 	"github.com/KiraCore/sekai/x/gov/types"
+	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
+	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/stretchr/testify/require"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
 
 func TestEndBlocker_ActiveProposal(t *testing.T) {
@@ -446,7 +443,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				proposalID := uint64(1234)
 				proposal, err := types.NewProposal(
 					proposalID,
-					tokenstypes.NewProposalUpsertTokenAlias(
+					tokenstypes.NewUpsertTokenAliasProposal(
 						"EUR",
 						"Euro",
 						"http://www.google.es",
@@ -495,7 +492,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				proposalID := uint64(1234)
 				proposal, err := types.NewProposal(
 					proposalID,
-					tokenstypes.NewProposalUpsertTokenRates(
+					tokenstypes.NewUpsertTokenRatesProposal(
 						"btc",
 						sdk.NewDec(1234),
 						false,
@@ -541,7 +538,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				actor := types.NewDefaultActor(addrs[0])
 				app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
 
-				val, err := types3.NewValidator("Moniker", sdk.NewDec(123), valAddr, pubKey)
+				val, err := stakingtypes.NewValidator("Moniker", sdk.NewDec(123), valAddr, pubKey)
 				require.NoError(t, err)
 				app.CustomStakingKeeper.AddValidator(ctx, val)
 				err = app.CustomStakingKeeper.Jail(ctx, val.ValKey)
@@ -550,7 +547,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				proposalID := uint64(1234)
 				proposal, err := types.NewProposal(
 					proposalID,
-					types3.NewProposalUnjailValidator(
+					stakingtypes.NewUnjailValidatorProposal(
 						addrs[0],
 						"theHash",
 						"theProposal",
@@ -645,13 +642,14 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			app := simapp.Setup(false)
 			ctx := app.NewContext(false, tmproto.Header{})
+			ctx = ctx.WithBlockTime(time.Now())
 
 			addrs := tt.prepareScenario(app, ctx)
 
 			ctx = ctx.WithBlockTime(time.Now().Add(time.Second * 25))
 			ctx = ctx.WithBlockHeight(ctx.BlockHeight() + tt.blockHeightChange)
 
-			gov.EndBlocker(ctx, app.CustomGovKeeper, app.ProposalRouter)
+			gov.EndBlocker(ctx, app.CustomGovKeeper)
 
 			tt.validateScenario(t, app, ctx, addrs)
 		})

@@ -59,23 +59,11 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 			return sdk.WrapServiceResult(ctx, res, err)
 
 		// Proposal related
-		case *types.MsgProposalAssignPermission:
-			res, err := msgServer.ProposalAssignPermission(sdk.WrapSDKContext(ctx), msg)
-			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgProposalSetNetworkProperty:
-			res, err := msgServer.ProposalSetNetworkProperty(sdk.WrapSDKContext(ctx), msg)
-			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgProposalUpsertDataRegistry:
-			res, err := msgServer.ProposalUpsertDataRegistry(sdk.WrapSDKContext(ctx), msg)
-			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgProposalSetPoorNetworkMessages:
-			res, err := msgServer.ProposalSetPoorNetworkMessages(sdk.WrapSDKContext(ctx), msg)
+		case *types.MsgSubmitProposal:
+			res, err := msgServer.SubmitProposal(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 		case *types.MsgVoteProposal:
 			res, err := msgServer.VoteProposal(sdk.WrapSDKContext(ctx), msg)
-			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgProposalCreateRole:
-			res, err := msgServer.ProposalCreateRole(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 
 		// identity registrar related

@@ -152,7 +152,7 @@ func (k Keeper) GetIdRecordsByAddress(ctx sdk.Context, creator sdk.AccAddress) [
 		recordId := sdk.BigEndianToUint64(iterator.Value())
 		record := k.GetIdentityRecord(ctx, recordId)
 		if record == nil {
-			panic(fmt.Errorf("invalid id available on records by creator: %d", recordId))
+			panic(fmt.Errorf("invalid id available on records: %d", recordId))
 		}
 		records = append(records, *record)
 	}
@@ -299,7 +299,7 @@ func (k Keeper) GetIdRecordsVerifyRequestsByRequester(ctx sdk.Context, requester
 		requestId := sdk.BigEndianToUint64(iterator.Value())
 		request := k.GetIdRecordsVerifyRequest(ctx, requestId)
 		if request == nil {
-			panic(fmt.Errorf("invalid id available on requests by requester: %d", requestId))
+			panic(fmt.Errorf("invalid id available on requests: %d", requestId))
 		}
 		requests = append(requests, *request)
 	}
@@ -318,7 +318,7 @@ func (k Keeper) GetIdRecordsVerifyRequestsByApprover(ctx sdk.Context, requester 
 		requestId := sdk.BigEndianToUint64(iterator.Value())
 		request := k.GetIdRecordsVerifyRequest(ctx, requestId)
 		if request == nil {
-			panic(fmt.Errorf("invalid id available on requests by approver: %d", requestId))
+			panic(fmt.Errorf("invalid id available on requests: %d", requestId))
 		}
 		requests = append(requests, *request)
 	}

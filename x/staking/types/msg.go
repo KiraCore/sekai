@@ -13,7 +13,6 @@ import (
 
 var (
 	_ sdk.Msg = &MsgClaimValidator{}
-	_ sdk.Msg = &MsgProposalUnjailValidator{}
 )
 
 func NewMsgClaimValidator(
@@ -75,38 +74,4 @@ func (m *MsgClaimValidator) GetSigners() []sdk.AccAddress {
 func (m *MsgClaimValidator) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
 	var pubKey cryptotypes.PubKey
 	return unpacker.UnpackAny(m.PubKey, &pubKey)
-}
-
-func NewMsgProposalUnjailValidator(proposer sdk.AccAddress, description string, hash, reference string) *MsgProposalUnjailValidator {
-	return &MsgProposalUnjailValidator{
-		Proposer:    proposer,
-		Description: description,
-		Hash:        hash,
-		Reference:   reference,
-	}
-}
-
-func (m *MsgProposalUnjailValidator) Route() string {
-	return ModuleName
-}
-
-func (m *MsgProposalUnjailValidator) Type() string {
-	return types.MsgTypeProposalUnjailValidator
-}
-
-func (m *MsgProposalUnjailValidator) ValidateBasic() error {
-	if m.Proposer.Empty() {
-		return fmt.Errorf("proposer not set")
-	}
-
-	return nil
-}
-
-func (m *MsgProposalUnjailValidator) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(m)
-	return sdk.MustSortJSON(bz)
-}
-
-func (m *MsgProposalUnjailValidator) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{m.Proposer}
 }

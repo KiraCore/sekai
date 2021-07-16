@@ -14,8 +14,6 @@ service Msg {
   // ClaimValidator defines a method for claiming a new validator.
   rpc ClaimValidator(MsgClaimValidator) returns (MsgClaimValidatorResponse);
 
-  // ProposalUnjailValidator defines a method to unjail a validator
-  rpc ProposalUnjailValidator(MsgProposalUnjailValidator) returns (MsgProposalUnjailValidatorResponse);
 }
 
 message MsgClaimValidator {
@@ -38,10 +36,6 @@ message MsgClaimValidator {
 // MsgClaimValidatorResponse defines the Msg/ClaimValidator response type.
 message MsgClaimValidatorResponse {}
 
-// MsgClaimValidatorResponse defines the Msg/ProposalUnjailValidator response type.
-message MsgProposalUnjailValidatorResponse {
-  uint64 proposalID = 1;
-}
 
 enum ValidatorStatus {
   option (gogoproto.goproto_enum_prefix) = false;
