@@ -40,10 +40,9 @@ const (
 	MsgTypeUpsertTokenRate  = "upsert-token-rate"
 
 	// slashing module
-	MsgTypeActivate                        = "activate"
-	MsgTypePause                           = "pause"
-	MsgTypeUnpause                         = "unpause"
-	MsgTypeProposalResetWholeValidatorRank = "proposal-reset-whole-validator-rank"
+	MsgTypeActivate = "activate"
+	MsgTypePause    = "pause"
+	MsgTypeUnpause  = "unpause"
 
 	//upgrade module
 )
@@ -53,7 +52,13 @@ var MsgFuncIDMapping = map[string]int64{
 	bank.TypeMsgSend:      1,
 	bank.TypeMsgMultiSend: 2,
 
-	MsgTypeVoteProposal: 12,
+	MsgTypeSubmitProposal:                     10,
+	MsgTypeVoteProposal:                       11,
+	MsgTypeCreateIdentityRecord:               12,
+	MsgTypeEditIdentityRecord:                 13,
+	MsgTypeRequestIdentityRecordsVerify:       14,
+	MsgTypeApproveIdentityRecords:             15,
+	MsgTypeCancelIdentityRecordsVerifyRequest: 16,
 
 	MsgTypeSetNetworkProperties:          20,
 	MsgTypeSetExecutionFee:               21,
