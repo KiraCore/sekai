@@ -14,8 +14,6 @@ type Content interface {
 	// ValidateBasic returns basic validation result for the proposal
 	ValidateBasic() error
 
-	// GetTitle() string
-	// GetDescription() string
 	// ProposalRoute() string
 	// String() string
 }
