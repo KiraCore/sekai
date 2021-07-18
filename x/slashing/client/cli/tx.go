@@ -127,7 +127,7 @@ $ <appd> tx slashing unpause --from mykey
 	return cmd
 }
 
-// GetTxProposalResetWholeValidatorRankCmd implement cli command for MsgProposalResetWholeValidatorRank
+// GetTxProposalResetWholeValidatorRankCmd implement cli command for ProposalResetWholeValidatorRank
 func GetTxProposalResetWholeValidatorRankCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "proposal-reset-whole-validator-rank",

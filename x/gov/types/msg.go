@@ -19,10 +19,6 @@ var (
 	// Permissions
 	_ sdk.Msg = &MsgWhitelistPermissions{}
 	_ sdk.Msg = &MsgBlacklistPermissions{}
-	// _ sdk.Msg = &MsgProposalAssignPermission{}
-	// _ sdk.Msg = &MsgProposalUpsertDataRegistry{}
-	// _ sdk.Msg = &MsgProposalSetPoorNetworkMessages{}
-	// _ sdk.Msg = &MsgProposalCreateRole{}
 	_ sdk.Msg = &MsgSubmitProposal{}
 
 	// Councilor
