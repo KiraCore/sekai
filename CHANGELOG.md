@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.1.21.5] - 18.07.2021
+
+- Zero gas implementation
+
 ## [v0.1.21.4] - 16.07.2021
 
 - Refactor governance module for easier maintenance
