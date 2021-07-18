@@ -4,6 +4,7 @@ import (
 	"github.com/KiraCore/sekai/x/gov/keeper"
 	"github.com/KiraCore/sekai/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 type ApplyAssignPermissionProposalHandler struct {
@@ -18,18 +19,19 @@ func (a ApplyAssignPermissionProposalHandler) ProposalType() string {
 	return types.AssignPermissionProposalType
 }
 
-func (a ApplyAssignPermissionProposalHandler) Apply(ctx sdk.Context, proposal types.Content) {
+func (a ApplyAssignPermissionProposalHandler) Apply(ctx sdk.Context, proposal types.Content) error {
 	p := proposal.(*types.AssignPermissionProposal)
 
 	actor, found := a.keeper.GetNetworkActorByAddress(ctx, p.Address)
-	if !found {
+	if found {
+		if actor.Permissions.IsWhitelisted(types.PermValue(p.Permission)) {
+			return sdkerrors.Wrap(types.ErrWhitelisting, "permission already whitelisted")
+		}
+	} else {
 		actor = types.NewDefaultActor(p.Address)
 	}
 
-	err := a.keeper.AddWhitelistPermission(ctx, actor, types.PermValue(p.Permission))
-	if err != nil {
-		panic("network actor has this permission")
-	}
+	return a.keeper.AddWhitelistPermission(ctx, actor, types.PermValue(p.Permission))
 }
 
 type ApplySetNetworkPropertyProposalHandler struct {
@@ -44,13 +46,18 @@ func (a ApplySetNetworkPropertyProposalHandler) ProposalType() string {
 	return types.SetNetworkPropertyProposalType
 }
 
-func (a ApplySetNetworkPropertyProposalHandler) Apply(ctx sdk.Context, proposal types.Content) {
+func (a ApplySetNetworkPropertyProposalHandler) Apply(ctx sdk.Context, proposal types.Content) error {
 	p := proposal.(*types.SetNetworkPropertyProposal)
 
-	err := a.keeper.SetNetworkProperty(ctx, p.NetworkProperty, p.Value)
+	property, err := a.keeper.GetNetworkProperty(ctx, p.NetworkProperty)
 	if err != nil {
-		panic("error setting network property")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
 	}
+	if property == p.Value {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "network property already set as proposed value")
+	}
+
+	return a.keeper.SetNetworkProperty(ctx, p.NetworkProperty, p.Value)
 }
 
 type ApplyUpsertDataRegistryProposalHandler struct {
@@ -65,10 +72,11 @@ func (a ApplyUpsertDataRegistryProposalHandler) ProposalType() string {
 	return types.UpsertDataRegistryProposalType
 }
 
-func (a ApplyUpsertDataRegistryProposalHandler) Apply(ctx sdk.Context, proposal types.Content) {
+func (a ApplyUpsertDataRegistryProposalHandler) Apply(ctx sdk.Context, proposal types.Content) error {
 	p := proposal.(*types.UpsertDataRegistryProposal)
 	entry := types.NewDataRegistryEntry(p.Hash, p.Reference, p.Encoding, p.Size_)
 	a.keeper.UpsertDataRegistryEntry(ctx, p.Key, entry)
+	return nil
 }
 
 type ApplySetPoorNetworkMessagesProposalHandler struct {
@@ -83,10 +91,11 @@ func (a ApplySetPoorNetworkMessagesProposalHandler) ProposalType() string {
 	return types.SetPoorNetworkMessagesProposalType
 }
 
-func (a ApplySetPoorNetworkMessagesProposalHandler) Apply(ctx sdk.Context, proposal types.Content) {
+func (a ApplySetPoorNetworkMessagesProposalHandler) Apply(ctx sdk.Context, proposal types.Content) error {
 	p := proposal.(*types.SetPoorNetworkMessagesProposal)
 	msgs := types.AllowedMessages{Messages: p.Messages}
 	a.keeper.SavePoorNetworkMessages(ctx, &msgs)
+	return nil
 }
 
 type CreateRoleProposalHandler struct {
@@ -97,23 +106,30 @@ func (c CreateRoleProposalHandler) ProposalType() string {
 	return types.CreateRoleProposalType
 }
 
-func (c CreateRoleProposalHandler) Apply(ctx sdk.Context, proposal types.Content) {
+func (c CreateRoleProposalHandler) Apply(ctx sdk.Context, proposal types.Content) error {
 	p := proposal.(*types.CreateRoleProposal)
+
+	_, exists := c.keeper.GetPermissionsForRole(ctx, types.Role(p.Role))
+	if exists {
+		return types.ErrRoleExist
+	}
+
 	c.keeper.CreateRole(ctx, types.Role(p.Role))
 
 	for _, w := range p.WhitelistedPermissions {
 		err := c.keeper.WhitelistRolePermission(ctx, types.Role(p.Role), w)
 		if err != nil {
-			panic("unexpected error blacklisting permission proposal")
+			return err
 		}
 	}
 
 	for _, b := range p.BlacklistedPermissions {
 		err := c.keeper.BlacklistRolePermission(ctx, types.Role(p.Role), b)
 		if err != nil {
-			panic("unexpected error blacklisting permission proposal")
+			return err
 		}
 	}
+	return nil
 }
 
 func NewApplyCreateRoleProposalHandler(keeper keeper.Keeper) *CreateRoleProposalHandler {

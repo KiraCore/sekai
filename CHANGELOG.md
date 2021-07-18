@@ -1,5 +1,30 @@
 # Changelog
 
+## [v0.1.21.4] - 16.07.2021
+
+- Refactor governance module for easier maintenance
+
+## [v0.1.21.3] - 15.07.2021
+
+## Added
+
+- public p2p node list API
+- private p2p node list API
+- p2p node_id verification
+
+## Updated
+
+- validators query to use identity registrar
+- interx configurations/cli configurations
+
+## [v0.1.21.2] - 14.07.2021
+
+- Remove identity part from claim validator
+
+## [v0.1.21.1] - 13.07.2021
+
+- Add instate upgrade feature
+
 ## [v0.1.21] - 08.07.2021
 
 - Implement identity registrar

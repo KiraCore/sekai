@@ -141,8 +141,7 @@ func DefaultGenesis() *GenesisState {
 		},
 		PoorNetworkMessages: &AllowedMessages{
 			Messages: []string{
-				kiratypes.MsgTypeProposalAssignPermission,
-				kiratypes.MsgTypeProposalSetNetworkProperty,
+				kiratypes.MsgTypeSubmitProposal,
 				kiratypes.MsgTypeSetNetworkProperties,
 				kiratypes.MsgTypeVoteProposal,
 				kiratypes.MsgTypeClaimCouncilor,

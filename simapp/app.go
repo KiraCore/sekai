@@ -139,7 +139,7 @@ type SimApp struct {
 	FeeProcessingKeeper  feeprocessingkeeper.Keeper
 	EvidenceKeeper       evidencekeeper.Keeper
 
-	ProposalRouter customgov.ProposalRouter
+	ProposalRouter customgovtypes.ProposalRouter
 
 	// the module manager
 	mm *module.Manager
@@ -228,26 +228,30 @@ func NewSimApp(
 
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
-	app.ProposalRouter = customgov.NewProposalRouter(
-		[]customgov.ProposalHandler{
+	app.ProposalRouter = customgovtypes.NewProposalRouter(
+		[]customgovtypes.ProposalHandler{
 			customgov.NewApplyAssignPermissionProposalHandler(app.CustomGovKeeper),
 			customgov.NewApplySetNetworkPropertyProposalHandler(app.CustomGovKeeper),
 			customgov.NewApplyUpsertDataRegistryProposalHandler(app.CustomGovKeeper),
 			customgov.NewApplySetPoorNetworkMessagesProposalHandler(app.CustomGovKeeper),
 			tokens.NewApplyUpsertTokenAliasProposalHandler(app.TokensKeeper),
 			tokens.NewApplyUpsertTokenRatesProposalHandler(app.TokensKeeper),
-			customstaking.NewApplyUnjailValidatorProposalHandler(app.CustomStakingKeeper),
+			customstaking.NewApplyUnjailValidatorProposalHandler(app.CustomStakingKeeper, app.CustomGovKeeper),
+			customslashing.NewApplyResetWholeValidatorRankProposalHandler(app.CustomSlashingKeeper),
 			customgov.NewApplyCreateRoleProposalHandler(app.CustomGovKeeper),
 			upgrade.NewApplySoftwareUpgradeProposalHandler(app.UpgradeKeeper),
+			upgrade.NewApplyCancelSoftwareUpgradeProposalHandler(app.UpgradeKeeper),
 		},
 	)
+	app.CustomGovKeeper.SetProposalRouter(app.ProposalRouter)
+
 	app.mm = module.NewManager(
 		auth.NewAppModule(appCodec, app.AccountKeeper, authsims.RandomGenesisAccounts),
 		bank.NewAppModule(appCodec, app.BankKeeper, app.AccountKeeper),
 		upgrade.NewAppModule(app.UpgradeKeeper, app.CustomGovKeeper),
 		params.NewAppModule(app.ParamsKeeper),
 		customslashing.NewAppModule(appCodec, app.CustomSlashingKeeper, app.AccountKeeper, app.BankKeeper, app.CustomStakingKeeper),
-		customgov.NewAppModule(app.CustomGovKeeper, app.ProposalRouter),
+		customgov.NewAppModule(app.CustomGovKeeper),
 		tokens.NewAppModule(app.TokensKeeper, app.CustomGovKeeper),
 		feeprocessing.NewAppModule(app.FeeProcessingKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),

@@ -105,9 +105,6 @@ func createValidators(t *testing.T, app *simapp.SimApp, ctx sdk.Context, accNum 
 
 		validator, err := stakingtypes.NewValidator(
 			"validator 1",
-			"some-web.com",
-			"A Social",
-			"My Identity",
 			sdk.NewDec(1234),
 			valAddr,
 			pubKey,

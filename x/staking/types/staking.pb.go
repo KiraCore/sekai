@@ -77,12 +77,9 @@ func (ValidatorStatus) EnumDescriptor() ([]byte, []int) {
 
 type MsgClaimValidator struct {
 	Moniker    string                                        `protobuf:"bytes,1,opt,name=moniker,proto3" json:"moniker,omitempty"`
-	Website    string                                        `protobuf:"bytes,2,opt,name=website,proto3" json:"website,omitempty"`
-	Social     string                                        `protobuf:"bytes,3,opt,name=social,proto3" json:"social,omitempty"`
-	Identity   string                                        `protobuf:"bytes,4,opt,name=identity,proto3" json:"identity,omitempty"`
-	Commission github_com_cosmos_cosmos_sdk_types.Dec        `protobuf:"bytes,5,opt,name=commission,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"commission" yaml:"commission"`
-	ValKey     github_com_cosmos_cosmos_sdk_types.ValAddress `protobuf:"bytes,6,opt,name=val_key,json=valKey,proto3,casttype=github.com/cosmos/cosmos-sdk/types.ValAddress" json:"val_key,omitempty" yaml:"val_key"`
-	PubKey     *types.Any                                    `protobuf:"bytes,7,opt,name=pub_key,json=pubKey,proto3" json:"pub_key,omitempty" yaml:"pub_key"`
+	Commission github_com_cosmos_cosmos_sdk_types.Dec        `protobuf:"bytes,2,opt,name=commission,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"commission" yaml:"commission"`
+	ValKey     github_com_cosmos_cosmos_sdk_types.ValAddress `protobuf:"bytes,3,opt,name=val_key,json=valKey,proto3,casttype=github.com/cosmos/cosmos-sdk/types.ValAddress" json:"val_key,omitempty" yaml:"val_key"`
+	PubKey     *types.Any                                    `protobuf:"bytes,4,opt,name=pub_key,json=pubKey,proto3" json:"pub_key,omitempty" yaml:"pub_key"`
 }
 
 func (m *MsgClaimValidator) Reset()         { *m = MsgClaimValidator{} }
@@ -121,27 +118,6 @@ var xxx_messageInfo_MsgClaimValidator proto.InternalMessageInfo
 func (m *MsgClaimValidator) GetMoniker() string {
 	if m != nil {
 		return m.Moniker
-	}
-	return ""
-}
-
-func (m *MsgClaimValidator) GetWebsite() string {
-	if m != nil {
-		return m.Website
-	}
-	return ""
-}
-
-func (m *MsgClaimValidator) GetSocial() string {
-	if m != nil {
-		return m.Social
-	}
-	return ""
-}
-
-func (m *MsgClaimValidator) GetIdentity() string {
-	if m != nil {
-		return m.Identity
 	}
 	return ""
 }
@@ -197,73 +173,25 @@ func (m *MsgClaimValidatorResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgClaimValidatorResponse proto.InternalMessageInfo
 
-// MsgClaimValidatorResponse defines the Msg/ProposalUnjailValidator response type.
-type MsgProposalUnjailValidatorResponse struct {
-	ProposalID uint64 `protobuf:"varint,1,opt,name=proposalID,proto3" json:"proposalID,omitempty"`
-}
-
-func (m *MsgProposalUnjailValidatorResponse) Reset()         { *m = MsgProposalUnjailValidatorResponse{} }
-func (m *MsgProposalUnjailValidatorResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgProposalUnjailValidatorResponse) ProtoMessage()    {}
-func (*MsgProposalUnjailValidatorResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_289e7c8aea278311, []int{2}
-}
-func (m *MsgProposalUnjailValidatorResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgProposalUnjailValidatorResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgProposalUnjailValidatorResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgProposalUnjailValidatorResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgProposalUnjailValidatorResponse.Merge(m, src)
-}
-func (m *MsgProposalUnjailValidatorResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgProposalUnjailValidatorResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgProposalUnjailValidatorResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgProposalUnjailValidatorResponse proto.InternalMessageInfo
-
-func (m *MsgProposalUnjailValidatorResponse) GetProposalID() uint64 {
-	if m != nil {
-		return m.ProposalID
-	}
-	return 0
-}
-
 type Validator struct {
 	Moniker    string                                        `protobuf:"bytes,1,opt,name=moniker,proto3" json:"moniker,omitempty"`
-	Website    string                                        `protobuf:"bytes,2,opt,name=website,proto3" json:"website,omitempty"`
-	Social     string                                        `protobuf:"bytes,3,opt,name=social,proto3" json:"social,omitempty"`
-	Identity   string                                        `protobuf:"bytes,4,opt,name=identity,proto3" json:"identity,omitempty"`
-	Commission github_com_cosmos_cosmos_sdk_types.Dec        `protobuf:"bytes,5,opt,name=commission,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"commission" yaml:"commission"`
-	ValKey     github_com_cosmos_cosmos_sdk_types.ValAddress `protobuf:"bytes,6,opt,name=val_key,json=valKey,proto3,casttype=github.com/cosmos/cosmos-sdk/types.ValAddress" json:"val_key,omitempty" yaml:"val_key"`
-	PubKey     *types.Any                                    `protobuf:"bytes,7,opt,name=pub_key,json=pubKey,proto3" json:"pub_key,omitempty" yaml:"pub_key"`
-	Status     ValidatorStatus                               `protobuf:"varint,8,opt,name=status,proto3,enum=kira.staking.ValidatorStatus" json:"status,omitempty"`
+	Commission github_com_cosmos_cosmos_sdk_types.Dec        `protobuf:"bytes,2,opt,name=commission,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"commission" yaml:"commission"`
+	ValKey     github_com_cosmos_cosmos_sdk_types.ValAddress `protobuf:"bytes,3,opt,name=val_key,json=valKey,proto3,casttype=github.com/cosmos/cosmos-sdk/types.ValAddress" json:"val_key,omitempty" yaml:"val_key"`
+	PubKey     *types.Any                                    `protobuf:"bytes,4,opt,name=pub_key,json=pubKey,proto3" json:"pub_key,omitempty" yaml:"pub_key"`
+	Status     ValidatorStatus                               `protobuf:"varint,5,opt,name=status,proto3,enum=kira.staking.ValidatorStatus" json:"status,omitempty"`
 	// To judge validator performance a streak and rank properties should be created (as part of each validator status data).
 	// The streak would imply consecutive number of times that given validator managed to successfully propose a block (since the last time he failed) that was accepted into the blockchain state. The streak property should be zeroed every time validator misses to propose a block and the mischance property is incremented. You can treat streak in similar way to kill-streaks in video games - which imply your short term performance.
 	// The rank property is a long term statistics implying the "longest" streak that validator ever achieved, it can be expressed as rank = MAX(rank, streak). Under certain circumstances we should however decrease the rank of the validator. If the mischance property is incremented, the rank should be decremented by X (default 10), that is rank = MAX(rank - X, 0). Every time node status changes to inactive the rank should be divided by 2, that is rank = FLOOR(rank / 2)
 	// The streak and rank will enable governance to judge real life performance of validators on the mainnet or testnet, and potentially propose eviction of the weakest and least reliable operators.
-	Rank   int64 `protobuf:"varint,9,opt,name=rank,proto3" json:"rank,omitempty"`
-	Streak int64 `protobuf:"varint,10,opt,name=streak,proto3" json:"streak,omitempty"`
+	Rank   int64 `protobuf:"varint,6,opt,name=rank,proto3" json:"rank,omitempty"`
+	Streak int64 `protobuf:"varint,7,opt,name=streak,proto3" json:"streak,omitempty"`
 }
 
 func (m *Validator) Reset()         { *m = Validator{} }
 func (m *Validator) String() string { return proto.CompactTextString(m) }
 func (*Validator) ProtoMessage()    {}
 func (*Validator) Descriptor() ([]byte, []int) {
-	return fileDescriptor_289e7c8aea278311, []int{3}
+	return fileDescriptor_289e7c8aea278311, []int{2}
 }
 func (m *Validator) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -295,27 +223,6 @@ var xxx_messageInfo_Validator proto.InternalMessageInfo
 func (m *Validator) GetMoniker() string {
 	if m != nil {
 		return m.Moniker
-	}
-	return ""
-}
-
-func (m *Validator) GetWebsite() string {
-	if m != nil {
-		return m.Website
-	}
-	return ""
-}
-
-func (m *Validator) GetSocial() string {
-	if m != nil {
-		return m.Social
-	}
-	return ""
-}
-
-func (m *Validator) GetIdentity() string {
-	if m != nil {
-		return m.Identity
 	}
 	return ""
 }
@@ -363,7 +270,7 @@ func (m *ValidatorJailInfo) Reset()         { *m = ValidatorJailInfo{} }
 func (m *ValidatorJailInfo) String() string { return proto.CompactTextString(m) }
 func (*ValidatorJailInfo) ProtoMessage()    {}
 func (*ValidatorJailInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_289e7c8aea278311, []int{4}
+	return fileDescriptor_289e7c8aea278311, []int{3}
 }
 func (m *ValidatorJailInfo) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -403,7 +310,6 @@ func init() {
 	proto.RegisterEnum("kira.staking.ValidatorStatus", ValidatorStatus_name, ValidatorStatus_value)
 	proto.RegisterType((*MsgClaimValidator)(nil), "kira.staking.MsgClaimValidator")
 	proto.RegisterType((*MsgClaimValidatorResponse)(nil), "kira.staking.MsgClaimValidatorResponse")
-	proto.RegisterType((*MsgProposalUnjailValidatorResponse)(nil), "kira.staking.MsgProposalUnjailValidatorResponse")
 	proto.RegisterType((*Validator)(nil), "kira.staking.Validator")
 	proto.RegisterType((*ValidatorJailInfo)(nil), "kira.staking.ValidatorJailInfo")
 }
@@ -411,54 +317,49 @@ func init() {
 func init() { proto.RegisterFile("staking.proto", fileDescriptor_289e7c8aea278311) }
 
 var fileDescriptor_289e7c8aea278311 = []byte{
-	// 743 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xec, 0x54, 0x4d, 0x4f, 0xeb, 0x46,
-	0x14, 0x8d, 0x49, 0xea, 0x24, 0x03, 0xa4, 0xc1, 0x42, 0xd4, 0xb8, 0xad, 0x6d, 0x79, 0xd1, 0xa6,
-	0x48, 0x38, 0x55, 0xaa, 0x4a, 0x15, 0xbb, 0x7c, 0x55, 0x0a, 0x34, 0x28, 0x32, 0x04, 0xa9, 0xa8,
-	0x12, 0x9a, 0xd8, 0x83, 0x3b, 0xf5, 0xc7, 0x58, 0x1e, 0x87, 0xd6, 0xff, 0xa0, 0x62, 0xc5, 0xb6,
-	0x0b, 0xd4, 0x4a, 0xfd, 0x0b, 0xfd, 0x11, 0xa8, 0x2b, 0x96, 0xa8, 0x8b, 0xf4, 0x09, 0x36, 0x6f,
-	0xcd, 0x92, 0xd5, 0x93, 0xed, 0x49, 0xc8, 0x23, 0x42, 0x8f, 0xe5, 0x5b, 0xbc, 0x95, 0x7d, 0xee,
-	0x39, 0xf7, 0x5e, 0x8f, 0xcf, 0x9d, 0x0b, 0x56, 0x69, 0x04, 0x1d, 0xec, 0xdb, 0x7a, 0x10, 0x92,
-	0x88, 0x08, 0x2b, 0x0e, 0x0e, 0xa1, 0xce, 0x62, 0xd2, 0xba, 0x4d, 0x6c, 0x92, 0x12, 0xf5, 0xe4,
-	0x2d, 0xd3, 0x48, 0x9b, 0x36, 0x21, 0xb6, 0x8b, 0xea, 0x29, 0x1a, 0x8d, 0x4f, 0xeb, 0xd0, 0x8f,
-	0xa7, 0x94, 0x49, 0xa8, 0x47, 0xe8, 0x49, 0x96, 0x93, 0x01, 0x46, 0x29, 0x4f, 0xb3, 0x22, 0xec,
-	0x21, 0x1a, 0x41, 0x2f, 0x60, 0x82, 0x4a, 0x10, 0x92, 0x80, 0x50, 0xe8, 0x66, 0x58, 0xfb, 0x33,
-	0x0f, 0xd6, 0xfa, 0xd4, 0x6e, 0xbb, 0x10, 0x7b, 0x47, 0xd0, 0xc5, 0x16, 0x8c, 0x48, 0x28, 0x88,
-	0xa0, 0xe8, 0x11, 0x1f, 0x3b, 0x28, 0x14, 0x39, 0x95, 0xab, 0x95, 0x8d, 0x29, 0x4c, 0x98, 0x5f,
-	0xd1, 0x88, 0xe2, 0x08, 0x89, 0x4b, 0x19, 0xc3, 0xa0, 0xb0, 0x01, 0x78, 0x4a, 0x4c, 0x0c, 0x5d,
-	0x31, 0x9f, 0x12, 0x0c, 0x09, 0x12, 0x28, 0x61, 0x0b, 0xf9, 0x11, 0x8e, 0x62, 0xb1, 0x90, 0x32,
-	0x33, 0x2c, 0x98, 0x00, 0x98, 0xc4, 0xf3, 0x30, 0xa5, 0x98, 0xf8, 0xe2, 0x47, 0x09, 0xdb, 0x6a,
-	0x5f, 0x4d, 0x94, 0xdc, 0x7f, 0x13, 0xe5, 0x0b, 0x1b, 0x47, 0x3f, 0x8f, 0x47, 0xba, 0x49, 0x3c,
-	0x76, 0x46, 0xf6, 0xd8, 0xa6, 0x96, 0x53, 0x8f, 0xe2, 0x00, 0x51, 0xbd, 0x83, 0xcc, 0xfb, 0x89,
-	0xb2, 0x16, 0x43, 0xcf, 0xdd, 0xd1, 0x1e, 0x2b, 0x69, 0xc6, 0x5c, 0x59, 0xe1, 0x27, 0x50, 0x3c,
-	0x83, 0xee, 0x89, 0x83, 0x62, 0x91, 0x57, 0xb9, 0xda, 0x4a, 0xab, 0x7d, 0x3f, 0x51, 0x2a, 0x59,
-	0x0e, 0x23, 0xb4, 0x87, 0x89, 0xb2, 0xfd, 0x82, 0x7e, 0x47, 0xd0, 0x6d, 0x5a, 0x56, 0x88, 0x28,
-	0x35, 0xf8, 0x33, 0xe8, 0xee, 0xa1, 0x58, 0xf8, 0x11, 0x14, 0x83, 0xf1, 0x28, 0xad, 0x5e, 0x54,
-	0xb9, 0xda, 0x72, 0x63, 0x5d, 0xcf, 0x3c, 0xd0, 0xa7, 0x1e, 0xe8, 0x4d, 0x3f, 0x6e, 0x6d, 0x3d,
-	0xf6, 0x64, 0x72, 0xed, 0xdf, 0x7f, 0xb6, 0xd7, 0x99, 0x79, 0x66, 0x18, 0x07, 0x11, 0xd1, 0x07,
-	0xe3, 0xd1, 0x1e, 0x8a, 0x0d, 0x3e, 0x48, 0x9f, 0x3b, 0x85, 0xd7, 0x7f, 0x29, 0x9c, 0xf6, 0x29,
-	0xd8, 0x5c, 0x30, 0xc8, 0x40, 0x34, 0x20, 0x3e, 0x45, 0x5a, 0x07, 0x68, 0x7d, 0x6a, 0x0f, 0x98,
-	0xa7, 0x43, 0xff, 0x17, 0x88, 0xdd, 0x05, 0x95, 0x20, 0x03, 0x30, 0xb5, 0xbd, 0xd7, 0x49, 0x1d,
-	0x2d, 0x18, 0x73, 0x11, 0xed, 0x21, 0x0f, 0xca, 0x1f, 0xcc, 0x7f, 0xaf, 0xcc, 0x17, 0xbe, 0x05,
-	0x3c, 0x8d, 0x60, 0x34, 0xa6, 0x62, 0x49, 0xe5, 0x6a, 0x95, 0xc6, 0xe7, 0xfa, 0xfc, 0xd2, 0xd0,
-	0x67, 0x76, 0x1d, 0xa4, 0x22, 0x83, 0x89, 0x05, 0x01, 0x14, 0x42, 0xe8, 0x3b, 0x62, 0x59, 0xe5,
-	0x6a, 0x79, 0x23, 0x7d, 0x4f, 0xcd, 0x89, 0x42, 0x04, 0x1d, 0x11, 0xa4, 0x51, 0x86, 0xd8, 0x7c,
-	0xf5, 0xc1, 0xda, 0xac, 0xd8, 0x2e, 0xc4, 0x6e, 0xcf, 0x3f, 0x25, 0xc2, 0x77, 0xa0, 0x90, 0x6c,
-	0x8e, 0x74, 0x00, 0x96, 0x1b, 0xd2, 0xc2, 0xa9, 0x0e, 0xa7, 0x6b, 0xa5, 0x55, 0x4a, 0x1c, 0xbb,
-	0xf8, 0x5f, 0xe1, 0x8c, 0x34, 0x63, 0xeb, 0x0f, 0x0e, 0x7c, 0xfc, 0xe4, 0xe3, 0x84, 0xcf, 0x40,
-	0x79, 0xb8, 0xdf, 0xe9, 0x7e, 0xdf, 0xdb, 0xef, 0x76, 0xaa, 0x39, 0x69, 0xf5, 0xfc, 0x52, 0x2d,
-	0x0f, 0x7d, 0x0b, 0x9d, 0x62, 0x1f, 0x59, 0xc9, 0xe7, 0x35, 0xdb, 0x87, 0xbd, 0xa3, 0x6e, 0x95,
-	0x93, 0xc0, 0xf9, 0xa5, 0xca, 0x37, 0xcd, 0x08, 0x9f, 0xa1, 0x64, 0x76, 0x7a, 0xfb, 0x8c, 0x59,
-	0x92, 0x56, 0xce, 0x2f, 0xd5, 0x52, 0xcf, 0x87, 0x19, 0xb7, 0x01, 0xf8, 0x41, 0x73, 0x78, 0xd0,
-	0xed, 0x54, 0xf3, 0x59, 0xce, 0x00, 0x8e, 0x69, 0x56, 0x6b, 0xb7, 0xd9, 0xfb, 0xa1, 0xdb, 0xa9,
-	0x16, 0xb2, 0x78, 0x72, 0x22, 0x64, 0x49, 0x85, 0xdf, 0xff, 0x96, 0x73, 0x8d, 0x1b, 0x0e, 0xe4,
-	0xfb, 0xd4, 0x16, 0x8e, 0x41, 0xe5, 0xc9, 0xc2, 0x53, 0xde, 0xfe, 0xbb, 0x0b, 0x17, 0x4e, 0xfa,
-	0xf2, 0x1d, 0x82, 0xd9, 0x5d, 0x1b, 0x83, 0x4f, 0x9e, 0xb9, 0x8e, 0x42, 0x6d, 0xa1, 0xc6, 0x33,
-	0x4a, 0xe9, 0xeb, 0x97, 0x2a, 0xa7, 0x6d, 0x5b, 0xed, 0xab, 0x5b, 0x99, 0xbb, 0xbe, 0x95, 0xb9,
-	0x57, 0xb7, 0x32, 0x77, 0x71, 0x27, 0xe7, 0xae, 0xef, 0xe4, 0xdc, 0xcd, 0x9d, 0x9c, 0x3b, 0xfe,
-	0x6a, 0x6e, 0xb4, 0xf7, 0x70, 0x08, 0xdb, 0x24, 0x44, 0x75, 0x8a, 0x1c, 0x88, 0xeb, 0xbf, 0xd5,
-	0x59, 0x87, 0x6c, 0xc2, 0x47, 0x7c, 0xea, 0xef, 0x37, 0x6f, 0x02, 0x00, 0x00, 0xff, 0xff, 0xca,
-	0x5e, 0xcb, 0x00, 0xaf, 0x06, 0x00, 0x00,
+	// 659 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xec, 0x54, 0xcd, 0x6b, 0xd4, 0x4e,
+	0x18, 0xde, 0x74, 0xf7, 0xb7, 0xdb, 0x9d, 0xb6, 0xfb, 0xdb, 0x0e, 0xa5, 0xa4, 0x51, 0x93, 0x90,
+	0x83, 0xae, 0x85, 0x26, 0xb0, 0x22, 0x48, 0x6f, 0xfb, 0x25, 0x6c, 0x6b, 0x4b, 0x49, 0x3f, 0xc0,
+	0x22, 0x94, 0xd9, 0x64, 0x1a, 0x87, 0x7c, 0x4c, 0xc8, 0x64, 0x8b, 0xf9, 0x0f, 0xa4, 0xa7, 0x5e,
+	0x3d, 0x14, 0x04, 0xaf, 0x1e, 0xfd, 0x23, 0x8a, 0xa7, 0x7a, 0x13, 0x0f, 0xab, 0xb4, 0x17, 0xcf,
+	0x3d, 0x7a, 0x92, 0x24, 0xb3, 0x6d, 0x6d, 0x0f, 0x0a, 0x5e, 0x3d, 0x65, 0xde, 0x79, 0x9e, 0xf7,
+	0x99, 0x99, 0xe7, 0x7d, 0xdf, 0x80, 0x19, 0x16, 0x23, 0x97, 0x04, 0x8e, 0x1e, 0x46, 0x34, 0xa6,
+	0x70, 0xda, 0x25, 0x11, 0xd2, 0xf9, 0x9e, 0x34, 0xe7, 0x50, 0x87, 0x66, 0x80, 0x91, 0xae, 0x72,
+	0x8e, 0xb4, 0xe0, 0x50, 0xea, 0x78, 0xd8, 0xc8, 0xa2, 0xc1, 0x70, 0xdf, 0x40, 0x41, 0x32, 0x86,
+	0x2c, 0xca, 0x7c, 0xca, 0xf6, 0xf2, 0x9c, 0x3c, 0xe0, 0x90, 0x72, 0x33, 0x2b, 0x26, 0x3e, 0x66,
+	0x31, 0xf2, 0x43, 0x4e, 0xa8, 0x85, 0x11, 0x0d, 0x29, 0x43, 0x5e, 0x1e, 0x6b, 0x9f, 0x26, 0xc0,
+	0xec, 0x1a, 0x73, 0x3a, 0x1e, 0x22, 0xfe, 0x0e, 0xf2, 0x88, 0x8d, 0x62, 0x1a, 0x41, 0x11, 0x54,
+	0x7c, 0x1a, 0x10, 0x17, 0x47, 0xa2, 0xa0, 0x0a, 0x8d, 0xaa, 0x39, 0x0e, 0xa1, 0x05, 0x80, 0x45,
+	0x7d, 0x9f, 0x30, 0x46, 0x68, 0x20, 0x4e, 0xa4, 0x60, 0xbb, 0x73, 0x32, 0x52, 0x0a, 0x5f, 0x46,
+	0xca, 0x7d, 0x87, 0xc4, 0x2f, 0x87, 0x03, 0xdd, 0xa2, 0x3e, 0xbf, 0x15, 0xff, 0x2c, 0x31, 0xdb,
+	0x35, 0xe2, 0x24, 0xc4, 0x4c, 0xef, 0x62, 0xeb, 0x62, 0xa4, 0xcc, 0x26, 0xc8, 0xf7, 0x96, 0xb5,
+	0x2b, 0x25, 0xcd, 0xbc, 0x26, 0x0b, 0x5f, 0x80, 0xca, 0x01, 0xf2, 0xf6, 0x5c, 0x9c, 0x88, 0x45,
+	0x55, 0x68, 0x4c, 0xb7, 0x3b, 0x17, 0x23, 0xa5, 0x96, 0xe7, 0x70, 0x40, 0xfb, 0x31, 0x52, 0x96,
+	0xfe, 0xe0, 0xbc, 0x1d, 0xe4, 0xb5, 0x6c, 0x3b, 0xc2, 0x8c, 0x99, 0xe5, 0x03, 0xe4, 0xad, 0xe2,
+	0x04, 0x3e, 0x07, 0x95, 0x70, 0x38, 0xc8, 0xd4, 0x4b, 0xaa, 0xd0, 0x98, 0x6a, 0xce, 0xe9, 0xb9,
+	0x6b, 0xfa, 0xd8, 0x35, 0xbd, 0x15, 0x24, 0xed, 0xc5, 0xab, 0x33, 0x39, 0x5d, 0xfb, 0xf8, 0x61,
+	0x69, 0x8e, 0xdb, 0x6d, 0x45, 0x49, 0x18, 0x53, 0x7d, 0x63, 0x38, 0x58, 0xc5, 0x89, 0x59, 0x0e,
+	0xb3, 0xef, 0x72, 0xe9, 0xfb, 0x5b, 0x45, 0xd0, 0xee, 0x80, 0x85, 0x5b, 0x96, 0x9a, 0x98, 0x85,
+	0x34, 0x60, 0x58, 0x7b, 0x5f, 0x04, 0xd5, 0x7f, 0x46, 0xff, 0xa5, 0xd1, 0xf0, 0x31, 0x28, 0xb3,
+	0x18, 0xc5, 0x43, 0x26, 0xfe, 0xa7, 0x0a, 0x8d, 0x5a, 0xf3, 0x9e, 0x7e, 0x7d, 0xa4, 0xf4, 0x4b,
+	0x83, 0x37, 0x33, 0x92, 0xc9, 0xc9, 0x10, 0x82, 0x52, 0x84, 0x02, 0x57, 0x2c, 0xab, 0x42, 0xa3,
+	0x68, 0x66, 0x6b, 0x38, 0x9f, 0x4a, 0x45, 0x18, 0xb9, 0x62, 0x25, 0xdb, 0xe5, 0x11, 0xaf, 0xe5,
+	0x1a, 0x98, 0xbd, 0x14, 0x5b, 0x41, 0xc4, 0xeb, 0x07, 0xfb, 0x14, 0x3e, 0x01, 0xa5, 0x74, 0xae,
+	0xb2, 0x92, 0x4d, 0x35, 0xa5, 0x5b, 0xaf, 0xda, 0x1a, 0x0f, 0x5d, 0x7b, 0x32, 0xad, 0xd8, 0xd1,
+	0x57, 0x45, 0x30, 0xb3, 0x8c, 0xc5, 0x37, 0x02, 0xf8, 0xff, 0xc6, 0xe5, 0xe0, 0x5d, 0x50, 0xdd,
+	0x5e, 0xef, 0xf6, 0x9e, 0xf6, 0xd7, 0x7b, 0xdd, 0x7a, 0x41, 0x9a, 0x39, 0x3c, 0x56, 0xab, 0xdb,
+	0x81, 0x8d, 0xf7, 0x49, 0x80, 0xed, 0xf4, 0x7a, 0xad, 0xce, 0x56, 0x7f, 0xa7, 0x57, 0x17, 0x24,
+	0x70, 0x78, 0xac, 0x96, 0x5b, 0x56, 0x4c, 0x0e, 0x30, 0x94, 0xc0, 0x64, 0x7f, 0x9d, 0x23, 0x13,
+	0xd2, 0xf4, 0xe1, 0xb1, 0x3a, 0xd9, 0x0f, 0x50, 0x8e, 0xcd, 0x83, 0xf2, 0x46, 0x6b, 0x7b, 0xb3,
+	0xd7, 0xad, 0x17, 0xf3, 0x9c, 0x0d, 0x34, 0x64, 0xb9, 0xd6, 0x4a, 0xab, 0xff, 0xac, 0xd7, 0xad,
+	0x97, 0xf2, 0xfd, 0xf4, 0x45, 0xd8, 0x96, 0x4a, 0xaf, 0xdf, 0xc9, 0x85, 0x26, 0x02, 0xc5, 0x35,
+	0xe6, 0xc0, 0x5d, 0x50, 0xbb, 0xf1, 0x37, 0x50, 0x7e, 0x35, 0xf7, 0x56, 0x6f, 0x4b, 0x0f, 0x7e,
+	0x43, 0x18, 0x37, 0x7f, 0xbb, 0x73, 0x72, 0x26, 0x0b, 0xa7, 0x67, 0xb2, 0xf0, 0xed, 0x4c, 0x16,
+	0x8e, 0xce, 0xe5, 0xc2, 0xe9, 0xb9, 0x5c, 0xf8, 0x7c, 0x2e, 0x17, 0x76, 0x1f, 0x5e, 0x6b, 0xb1,
+	0x55, 0x12, 0xa1, 0x0e, 0x8d, 0xb0, 0xc1, 0xb0, 0x8b, 0x88, 0xf1, 0xca, 0xe0, 0xc2, 0x79, 0xa7,
+	0x0d, 0xca, 0x99, 0xcf, 0x8f, 0x7e, 0x06, 0x00, 0x00, 0xff, 0xff, 0x38, 0x27, 0xf0, 0x14, 0x55,
+	0x05, 0x00, 0x00,
 }
 
 func (this *MsgClaimValidator) Equal(that interface{}) bool {
@@ -481,15 +382,6 @@ func (this *MsgClaimValidator) Equal(that interface{}) bool {
 		return false
 	}
 	if this.Moniker != that1.Moniker {
-		return false
-	}
-	if this.Website != that1.Website {
-		return false
-	}
-	if this.Social != that1.Social {
-		return false
-	}
-	if this.Identity != that1.Identity {
 		return false
 	}
 	if !this.Commission.Equal(that1.Commission) {
@@ -523,15 +415,6 @@ func (this *Validator) Equal(that interface{}) bool {
 		return false
 	}
 	if this.Moniker != that1.Moniker {
-		return false
-	}
-	if this.Website != that1.Website {
-		return false
-	}
-	if this.Social != that1.Social {
-		return false
-	}
-	if this.Identity != that1.Identity {
 		return false
 	}
 	if !this.Commission.Equal(that1.Commission) {
@@ -569,8 +452,6 @@ const _ = grpc.SupportPackageIsVersion4
 type MsgClient interface {
 	// ClaimValidator defines a method for claiming a new validator.
 	ClaimValidator(ctx context.Context, in *MsgClaimValidator, opts ...grpc.CallOption) (*MsgClaimValidatorResponse, error)
-	// ProposalUnjailValidator defines a method to unjail a validator
-	ProposalUnjailValidator(ctx context.Context, in *MsgProposalUnjailValidator, opts ...grpc.CallOption) (*MsgProposalUnjailValidatorResponse, error)
 }
 
 type msgClient struct {
@@ -590,21 +471,10 @@ func (c *msgClient) ClaimValidator(ctx context.Context, in *MsgClaimValidator, o
 	return out, nil
 }
 
-func (c *msgClient) ProposalUnjailValidator(ctx context.Context, in *MsgProposalUnjailValidator, opts ...grpc.CallOption) (*MsgProposalUnjailValidatorResponse, error) {
-	out := new(MsgProposalUnjailValidatorResponse)
-	err := c.cc.Invoke(ctx, "/kira.staking.Msg/ProposalUnjailValidator", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
 	// ClaimValidator defines a method for claiming a new validator.
 	ClaimValidator(context.Context, *MsgClaimValidator) (*MsgClaimValidatorResponse, error)
-	// ProposalUnjailValidator defines a method to unjail a validator
-	ProposalUnjailValidator(context.Context, *MsgProposalUnjailValidator) (*MsgProposalUnjailValidatorResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
@@ -613,9 +483,6 @@ type UnimplementedMsgServer struct {
 
 func (*UnimplementedMsgServer) ClaimValidator(ctx context.Context, req *MsgClaimValidator) (*MsgClaimValidatorResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ClaimValidator not implemented")
-}
-func (*UnimplementedMsgServer) ProposalUnjailValidator(ctx context.Context, req *MsgProposalUnjailValidator) (*MsgProposalUnjailValidatorResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ProposalUnjailValidator not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
@@ -640,24 +507,6 @@ func _Msg_ClaimValidator_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_ProposalUnjailValidator_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgProposalUnjailValidator)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).ProposalUnjailValidator(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/kira.staking.Msg/ProposalUnjailValidator",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).ProposalUnjailValidator(ctx, req.(*MsgProposalUnjailValidator))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "kira.staking.Msg",
 	HandlerType: (*MsgServer)(nil),
@@ -665,10 +514,6 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ClaimValidator",
 			Handler:    _Msg_ClaimValidator_Handler,
-		},
-		{
-			MethodName: "ProposalUnjailValidator",
-			Handler:    _Msg_ProposalUnjailValidator_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -705,14 +550,14 @@ func (m *MsgClaimValidator) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			i = encodeVarintStaking(dAtA, i, uint64(size))
 		}
 		i--
-		dAtA[i] = 0x3a
+		dAtA[i] = 0x22
 	}
 	if len(m.ValKey) > 0 {
 		i -= len(m.ValKey)
 		copy(dAtA[i:], m.ValKey)
 		i = encodeVarintStaking(dAtA, i, uint64(len(m.ValKey)))
 		i--
-		dAtA[i] = 0x32
+		dAtA[i] = 0x1a
 	}
 	{
 		size := m.Commission.Size()
@@ -723,28 +568,7 @@ func (m *MsgClaimValidator) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintStaking(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x2a
-	if len(m.Identity) > 0 {
-		i -= len(m.Identity)
-		copy(dAtA[i:], m.Identity)
-		i = encodeVarintStaking(dAtA, i, uint64(len(m.Identity)))
-		i--
-		dAtA[i] = 0x22
-	}
-	if len(m.Social) > 0 {
-		i -= len(m.Social)
-		copy(dAtA[i:], m.Social)
-		i = encodeVarintStaking(dAtA, i, uint64(len(m.Social)))
-		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.Website) > 0 {
-		i -= len(m.Website)
-		copy(dAtA[i:], m.Website)
-		i = encodeVarintStaking(dAtA, i, uint64(len(m.Website)))
-		i--
-		dAtA[i] = 0x12
-	}
+	dAtA[i] = 0x12
 	if len(m.Moniker) > 0 {
 		i -= len(m.Moniker)
 		copy(dAtA[i:], m.Moniker)
@@ -778,34 +602,6 @@ func (m *MsgClaimValidatorResponse) MarshalToSizedBuffer(dAtA []byte) (int, erro
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgProposalUnjailValidatorResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgProposalUnjailValidatorResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgProposalUnjailValidatorResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.ProposalID != 0 {
-		i = encodeVarintStaking(dAtA, i, uint64(m.ProposalID))
-		i--
-		dAtA[i] = 0x8
-	}
-	return len(dAtA) - i, nil
-}
-
 func (m *Validator) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -829,17 +625,17 @@ func (m *Validator) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	if m.Streak != 0 {
 		i = encodeVarintStaking(dAtA, i, uint64(m.Streak))
 		i--
-		dAtA[i] = 0x50
+		dAtA[i] = 0x38
 	}
 	if m.Rank != 0 {
 		i = encodeVarintStaking(dAtA, i, uint64(m.Rank))
 		i--
-		dAtA[i] = 0x48
+		dAtA[i] = 0x30
 	}
 	if m.Status != 0 {
 		i = encodeVarintStaking(dAtA, i, uint64(m.Status))
 		i--
-		dAtA[i] = 0x40
+		dAtA[i] = 0x28
 	}
 	if m.PubKey != nil {
 		{
@@ -851,14 +647,14 @@ func (m *Validator) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			i = encodeVarintStaking(dAtA, i, uint64(size))
 		}
 		i--
-		dAtA[i] = 0x3a
+		dAtA[i] = 0x22
 	}
 	if len(m.ValKey) > 0 {
 		i -= len(m.ValKey)
 		copy(dAtA[i:], m.ValKey)
 		i = encodeVarintStaking(dAtA, i, uint64(len(m.ValKey)))
 		i--
-		dAtA[i] = 0x32
+		dAtA[i] = 0x1a
 	}
 	{
 		size := m.Commission.Size()
@@ -869,28 +665,7 @@ func (m *Validator) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintStaking(dAtA, i, uint64(size))
 	}
 	i--
-	dAtA[i] = 0x2a
-	if len(m.Identity) > 0 {
-		i -= len(m.Identity)
-		copy(dAtA[i:], m.Identity)
-		i = encodeVarintStaking(dAtA, i, uint64(len(m.Identity)))
-		i--
-		dAtA[i] = 0x22
-	}
-	if len(m.Social) > 0 {
-		i -= len(m.Social)
-		copy(dAtA[i:], m.Social)
-		i = encodeVarintStaking(dAtA, i, uint64(len(m.Social)))
-		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.Website) > 0 {
-		i -= len(m.Website)
-		copy(dAtA[i:], m.Website)
-		i = encodeVarintStaking(dAtA, i, uint64(len(m.Website)))
-		i--
-		dAtA[i] = 0x12
-	}
+	dAtA[i] = 0x12
 	if len(m.Moniker) > 0 {
 		i -= len(m.Moniker)
 		copy(dAtA[i:], m.Moniker)
@@ -953,18 +728,6 @@ func (m *MsgClaimValidator) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovStaking(uint64(l))
 	}
-	l = len(m.Website)
-	if l > 0 {
-		n += 1 + l + sovStaking(uint64(l))
-	}
-	l = len(m.Social)
-	if l > 0 {
-		n += 1 + l + sovStaking(uint64(l))
-	}
-	l = len(m.Identity)
-	if l > 0 {
-		n += 1 + l + sovStaking(uint64(l))
-	}
 	l = m.Commission.Size()
 	n += 1 + l + sovStaking(uint64(l))
 	l = len(m.ValKey)
@@ -987,18 +750,6 @@ func (m *MsgClaimValidatorResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgProposalUnjailValidatorResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.ProposalID != 0 {
-		n += 1 + sovStaking(uint64(m.ProposalID))
-	}
-	return n
-}
-
 func (m *Validator) Size() (n int) {
 	if m == nil {
 		return 0
@@ -1006,18 +757,6 @@ func (m *Validator) Size() (n int) {
 	var l int
 	_ = l
 	l = len(m.Moniker)
-	if l > 0 {
-		n += 1 + l + sovStaking(uint64(l))
-	}
-	l = len(m.Website)
-	if l > 0 {
-		n += 1 + l + sovStaking(uint64(l))
-	}
-	l = len(m.Social)
-	if l > 0 {
-		n += 1 + l + sovStaking(uint64(l))
-	}
-	l = len(m.Identity)
 	if l > 0 {
 		n += 1 + l + sovStaking(uint64(l))
 	}
@@ -1123,102 +862,6 @@ func (m *MsgClaimValidator) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Website", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowStaking
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthStaking
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthStaking
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Website = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Social", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowStaking
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthStaking
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthStaking
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Social = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Identity", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowStaking
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthStaking
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthStaking
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Identity = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 5:
-			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Commission", wireType)
 			}
 			var stringLen uint64
@@ -1251,7 +894,7 @@ func (m *MsgClaimValidator) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 6:
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field ValKey", wireType)
 			}
@@ -1285,7 +928,7 @@ func (m *MsgClaimValidator) Unmarshal(dAtA []byte) error {
 				m.ValKey = []byte{}
 			}
 			iNdEx = postIndex
-		case 7:
+		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field PubKey", wireType)
 			}
@@ -1398,78 +1041,6 @@ func (m *MsgClaimValidatorResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgProposalUnjailValidatorResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowStaking
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgProposalUnjailValidatorResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgProposalUnjailValidatorResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ProposalID", wireType)
-			}
-			m.ProposalID = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowStaking
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.ProposalID |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		default:
-			iNdEx = preIndex
-			skippy, err := skipStaking(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthStaking
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthStaking
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
 func (m *Validator) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1533,102 +1104,6 @@ func (m *Validator) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Website", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowStaking
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthStaking
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthStaking
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Website = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Social", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowStaking
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthStaking
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthStaking
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Social = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Identity", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowStaking
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthStaking
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthStaking
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Identity = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 5:
-			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Commission", wireType)
 			}
 			var stringLen uint64
@@ -1661,7 +1136,7 @@ func (m *Validator) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 6:
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field ValKey", wireType)
 			}
@@ -1695,7 +1170,7 @@ func (m *Validator) Unmarshal(dAtA []byte) error {
 				m.ValKey = []byte{}
 			}
 			iNdEx = postIndex
-		case 7:
+		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field PubKey", wireType)
 			}
@@ -1731,7 +1206,7 @@ func (m *Validator) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 8:
+		case 5:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Status", wireType)
 			}
@@ -1750,7 +1225,7 @@ func (m *Validator) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 9:
+		case 6:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Rank", wireType)
 			}
@@ -1769,7 +1244,7 @@ func (m *Validator) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 10:
+		case 7:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Streak", wireType)
 			}

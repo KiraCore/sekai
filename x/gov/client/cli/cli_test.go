@@ -129,7 +129,7 @@ func (s IntegrationTestSuite) TestProposalAndVoteSetPoorNetworkMessages_HappyPat
 
 	// create proposal for setting poor network msgs
 	result := s.SetPoorNetworkMessages("AAA,BBB")
-	s.Require().Contains(result.RawLog, "invalid transaction type on poor network")
+	s.Require().Contains(result.RawLog, "SetPoorNetworkMessages")
 
 	// query for proposals
 	s.QueryProposals()

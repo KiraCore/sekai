@@ -7,4 +7,15 @@ type Content interface {
 
 	// VotePermission returns the PermValue a user needs to have in order to be able to vote the proposal.
 	VotePermission() PermValue
+
+	// ProposalPermission returns PermValue a user needs to have in order to be able to submit the proposal.
+	ProposalPermission() PermValue
+
+	// ValidateBasic returns basic validation result for the proposal
+	ValidateBasic() error
+
+	// GetTitle() string
+	// GetDescription() string
+	// ProposalRoute() string
+	// String() string
 }

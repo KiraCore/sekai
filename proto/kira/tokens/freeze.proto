@@ -15,14 +15,3 @@ message ProposalTokensWhiteBlackChange {
     bool is_add = 2; // "add" | "remove"
     repeated string tokens = 3;
 }
-
-message MsgProposalTokensWhiteBlackChange {
-    bool is_blacklist = 1; // "blacklist" | "whitelist"
-    bool is_add = 2; // "add" | "remove"
-    repeated string tokens = 3;
-    bytes proposer = 4 [
-        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
-        (gogoproto.moretags) = "yaml:\"proposer\""
-    ];
-    string description = 5;
-}

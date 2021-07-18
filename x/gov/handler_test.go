@@ -6,18 +6,16 @@ import (
 	"testing"
 	"time"
 
-	types3 "github.com/KiraCore/sekai/x/tokens/types"
-	"github.com/gogo/protobuf/proto"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/stretchr/testify/require"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-
 	"github.com/KiraCore/sekai/app"
 	"github.com/KiraCore/sekai/simapp"
 	"github.com/KiraCore/sekai/x/gov"
 	"github.com/KiraCore/sekai/x/gov/types"
+	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/gogo/protobuf/proto"
+	"github.com/stretchr/testify/require"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
 
 func TestMain(m *testing.M) {
@@ -417,11 +415,8 @@ func TestHandler_ClaimCouncilor_Fails(t *testing.T) {
 		{
 			name: "not enough permissions",
 			msg: &types.MsgClaimCouncilor{
-				Moniker:  "",
-				Website:  "",
-				Social:   "",
-				Identity: "",
-				Address:  addr,
+				Moniker: "",
+				Address: addr,
 			},
 			expectedErr: fmt.Errorf("PermClaimCouncilor: not enough permissions"),
 		},
@@ -451,11 +446,8 @@ func TestHandler_ClaimCouncilor_HappyPath(t *testing.T) {
 		{
 			name: "all correct",
 			msg: &types.MsgClaimCouncilor{
-				Moniker:  "TheMoniker",
-				Website:  "TheWebsite",
-				Social:   "The Social",
-				Identity: "The Identity",
-				Address:  addr,
+				Moniker: "TheMoniker",
+				Address: addr,
 			},
 		},
 	}
@@ -475,9 +467,6 @@ func TestHandler_ClaimCouncilor_HappyPath(t *testing.T) {
 
 			expectedCouncilor := types.NewCouncilor(
 				tt.msg.Moniker,
-				tt.msg.Website,
-				tt.msg.Social,
-				tt.msg.Identity,
 				tt.msg.Address,
 			)
 
@@ -1127,22 +1116,22 @@ func TestHandler_CreateProposalAssignPermission_Errors(t *testing.T) {
 
 	tests := []struct {
 		name         string
-		msg          *types.MsgProposalAssignPermission
+		content      types.Content
 		preparePerms func(t *testing.T, app *simapp.SimApp, ctx sdk.Context)
 		expectedErr  error
 	}{
 		{
 			"Proposer does not have Perm",
-			types.NewMsgProposalAssignPermission(
-				proposerAddr, "some desc", addr, types.PermClaimValidator,
+			types.NewAssignPermissionProposal(
+				addr, types.PermClaimValidator,
 			),
 			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
 			errors.Wrap(types.ErrNotEnoughPermissions, "PERMISSION_CREATE_SET_PERMISSIONS_PROPOSAL"),
 		},
 		{
 			"address already has that permission",
-			types.NewMsgProposalAssignPermission(
-				proposerAddr, "some desc", addr, types.PermClaimValidator,
+			types.NewAssignPermissionProposal(
+				addr, types.PermClaimValidator,
 			),
 			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
 				proposerActor := types.NewDefaultActor(proposerAddr)
@@ -1166,7 +1155,9 @@ func TestHandler_CreateProposalAssignPermission_Errors(t *testing.T) {
 			tt.preparePerms(t, app, ctx)
 
 			handler := gov.NewHandler(app.CustomGovKeeper)
-			_, err := handler(ctx, tt.msg)
+			msg, err := types.NewMsgSubmitProposal(proposerAddr, "some desc", tt.content)
+			require.NoError(t, err)
+			_, err = handler(ctx, msg)
 			require.EqualError(t, err, tt.expectedErr.Error())
 		})
 	}
@@ -1194,13 +1185,16 @@ func TestHandler_ProposalAssignPermission(t *testing.T) {
 	app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
 
 	handler := gov.NewHandler(app.CustomGovKeeper)
+	proposal := types.NewAssignPermissionProposal(addr, types.PermValue(1))
+	msg, err := types.NewMsgSubmitProposal(proposerAddr, "some desc", proposal)
+	require.NoError(t, err)
 	res, err := handler(
 		ctx,
-		types.NewMsgProposalAssignPermission(proposerAddr, "some desc", addr, types.PermValue(1)),
+		msg,
 	)
 	require.NoError(t, err)
 
-	expData, _ := proto.Marshal(&types.MsgProposalAssignPermissionResponse{ProposalID: 1})
+	expData, _ := proto.Marshal(&types.MsgSubmitProposalResponse{ProposalID: 1})
 	require.Equal(t, expData, res.Data)
 
 	savedProposal, found := app.CustomGovKeeper.GetProposal(ctx, 1)
@@ -1241,15 +1235,13 @@ func TestHandler_CreateProposalUpsertDataRegistry_Errors(t *testing.T) {
 
 	tests := []struct {
 		name         string
-		msg          *types.MsgProposalUpsertDataRegistry
+		content      types.Content
 		preparePerms func(t *testing.T, app *simapp.SimApp, ctx sdk.Context)
 		expectedErr  error
 	}{
 		{
 			"Proposer does not have Perm",
-			types.NewMsgProposalUpsertDataRegistry(
-				proposerAddr,
-				"some desc",
+			types.NewUpsertDataRegistryProposal(
 				"theKey",
 				"theHash",
 				"theReference",
@@ -1270,7 +1262,9 @@ func TestHandler_CreateProposalUpsertDataRegistry_Errors(t *testing.T) {
 			tt.preparePerms(t, app, ctx)
 
 			handler := gov.NewHandler(app.CustomGovKeeper)
-			_, err := handler(ctx, tt.msg)
+			msg, err := types.NewMsgSubmitProposal(proposerAddr, "some desc", tt.content)
+			require.NoError(t, err)
+			_, err = handler(ctx, msg)
 			require.EqualError(t, err, tt.expectedErr.Error())
 		})
 	}
@@ -1295,21 +1289,21 @@ func TestHandler_ProposalUpsertDataRegistry(t *testing.T) {
 	app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
 
 	handler := gov.NewHandler(app.CustomGovKeeper)
+	proposal := types.NewUpsertDataRegistryProposal(
+		"theKey",
+		"theHash",
+		"theReference",
+		"theEncoding",
+		1234,
+	)
+	msg, err := types.NewMsgSubmitProposal(proposerAddr, "some desc", proposal)
+	require.NoError(t, err)
 	res, err := handler(
-		ctx,
-		types.NewMsgProposalUpsertDataRegistry(
-			proposerAddr,
-			"some desc",
-			"theKey",
-			"theHash",
-			"theReference",
-			"theEncoding",
-			1234,
-		),
+		ctx, msg,
 	)
 	require.NoError(t, err)
 
-	expData, _ := proto.Marshal(&types.MsgProposalUpsertDataRegistryResponse{ProposalID: 1})
+	expData, _ := proto.Marshal(&types.MsgSubmitProposalResponse{ProposalID: 1})
 	require.Equal(t, expData, res.Data)
 
 	savedProposal, found := app.CustomGovKeeper.GetProposal(ctx, 1)
@@ -1557,7 +1551,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 				// Create proposal
 				proposal, err := types.NewProposal(
 					1,
-					types3.NewProposalUpsertTokenAlias(
+					tokenstypes.NewUpsertTokenAliasProposal(
 						"eur",
 						"Euro",
 						"theIcon",
@@ -1657,15 +1651,13 @@ func TestHandler_CreateProposalSetNetworkProperty_Errors(t *testing.T) {
 
 	tests := []struct {
 		name         string
-		msg          *types.MsgProposalSetNetworkProperty
+		content      types.Content
 		preparePerms func(t *testing.T, app *simapp.SimApp, ctx sdk.Context)
 		expectedErr  error
 	}{
 		{
 			"Proposer does not have Perm",
-			types.NewMsgProposalSetNetworkProperty(
-				proposerAddr,
-				"some desc",
+			types.NewSetNetworkPropertyProposal(
 				types.MaxTxFee,
 				100000,
 			),
@@ -1683,7 +1675,9 @@ func TestHandler_CreateProposalSetNetworkProperty_Errors(t *testing.T) {
 			tt.preparePerms(t, app, ctx)
 
 			handler := gov.NewHandler(app.CustomGovKeeper)
-			_, err := handler(ctx, tt.msg)
+			msg, err := types.NewMsgSubmitProposal(proposerAddr, "some desc", tt.content)
+			require.NoError(t, err)
+			_, err = handler(ctx, msg)
 			require.EqualError(t, err, tt.expectedErr.Error())
 		})
 	}
@@ -1708,18 +1702,19 @@ func TestHandler_ProposalSetNetworkProperty(t *testing.T) {
 	app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
 
 	handler := gov.NewHandler(app.CustomGovKeeper)
+	proposal := types.NewSetNetworkPropertyProposal(
+		types.MinTxFee,
+		1234,
+	)
+	msg, err := types.NewMsgSubmitProposal(proposerAddr, "some desc", proposal)
+	require.NoError(t, err)
 	res, err := handler(
 		ctx,
-		types.NewMsgProposalSetNetworkProperty(
-			proposerAddr,
-			"some desc",
-			types.MinTxFee,
-			1234,
-		),
+		msg,
 	)
 	require.NoError(t, err)
 
-	expData, _ := proto.Marshal(&types.MsgProposalSetNetworkPropertyResponse{ProposalID: 1})
+	expData, _ := proto.Marshal(&types.MsgSubmitProposalResponse{ProposalID: 1})
 	require.Equal(t, expData, res.Data)
 
 	savedProposal, found := app.CustomGovKeeper.GetProposal(ctx, 1)
@@ -1760,15 +1755,13 @@ func TestHandler_CreateProposalCreateRole_Errors(t *testing.T) {
 
 	tests := []struct {
 		name         string
-		msg          *types.MsgProposalCreateRole
+		content      types.Content
 		preparePerms func(t *testing.T, app *simapp.SimApp, ctx sdk.Context)
 		expectedErr  error
 	}{
 		{
 			"Proposer does not have Perm",
-			types.NewMsgProposalCreateRole(
-				proposerAddr,
-				"some desc",
+			types.NewCreateRoleProposal(
 				types.Role(1),
 				[]types.PermValue{},
 				[]types.PermValue{types.PermClaimValidator},
@@ -1778,9 +1771,7 @@ func TestHandler_CreateProposalCreateRole_Errors(t *testing.T) {
 		},
 		{
 			"role already exist",
-			types.NewMsgProposalCreateRole(
-				proposerAddr,
-				"some desc",
+			types.NewCreateRoleProposal(
 				types.Role(1),
 				[]types.PermValue{types.PermClaimCouncilor},
 				[]types.PermValue{},
@@ -1800,9 +1791,7 @@ func TestHandler_CreateProposalCreateRole_Errors(t *testing.T) {
 		},
 		{
 			"permissions are empty",
-			types.NewMsgProposalCreateRole(
-				proposerAddr,
-				"some desc",
+			types.NewCreateRoleProposal(
 				types.Role(1000),
 				[]types.PermValue{},
 				[]types.PermValue{},
@@ -1829,7 +1818,9 @@ func TestHandler_CreateProposalCreateRole_Errors(t *testing.T) {
 			tt.preparePerms(t, app, ctx)
 
 			handler := gov.NewHandler(app.CustomGovKeeper)
-			_, err := handler(ctx, tt.msg)
+			msg, err := types.NewMsgSubmitProposal(proposerAddr, "some desc", tt.content)
+			require.NoError(t, err)
+			_, err = handler(ctx, msg)
 			require.EqualError(t, err, tt.expectedErr.Error())
 		})
 	}
@@ -1854,23 +1845,24 @@ func TestHandler_ProposalCreateRole(t *testing.T) {
 	app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
 
 	handler := gov.NewHandler(app.CustomGovKeeper)
+	proposal := types.NewCreateRoleProposal(
+		types.Role(1000),
+		[]types.PermValue{
+			types.PermClaimValidator,
+		},
+		[]types.PermValue{
+			types.PermChangeTxFee,
+		},
+	)
+	msg, err := types.NewMsgSubmitProposal(proposerAddr, "some desc", proposal)
+	require.NoError(t, err)
 	res, err := handler(
 		ctx,
-		types.NewMsgProposalCreateRole(
-			proposerAddr,
-			"some desc",
-			types.Role(1000),
-			[]types.PermValue{
-				types.PermClaimValidator,
-			},
-			[]types.PermValue{
-				types.PermChangeTxFee,
-			},
-		),
+		msg,
 	)
 	require.NoError(t, err)
 
-	expData, _ := proto.Marshal(&types.MsgProposalCreateRoleResponse{ProposalID: 1})
+	expData, _ := proto.Marshal(&types.MsgSubmitProposalResponse{ProposalID: 1})
 	require.Equal(t, expData, res.Data)
 
 	savedProposal, found := app.CustomGovKeeper.GetProposal(ctx, 1)

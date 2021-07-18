@@ -100,16 +100,10 @@ func (m *Permissions) RemoveFromBlacklist(perm PermValue) error {
 
 func NewCouncilor(
 	moniker string,
-	website string,
-	social string,
-	identity string,
 	address types.AccAddress,
 ) Councilor {
 	return Councilor{
-		Moniker:  moniker,
-		Website:  website,
-		Social:   social,
-		Identity: identity,
-		Address:  address,
+		Moniker: moniker,
+		Address: address,
 	}
 }

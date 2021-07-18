@@ -17,9 +17,6 @@ service Msg {
   rpc Pause(MsgPause) returns (MsgPauseResponse);
   // Unpause defines a method for a paused validator
   rpc Unpause(MsgUnpause) returns (MsgUnpauseResponse);
-
-  // ProposalResetWholeValidatorRank defines to reset whole validator rank
-  rpc ProposalResetWholeValidatorRank(MsgProposalResetWholeValidatorRank) returns (MsgProposalResetWholeValidatorRankResponse);
 }
 
 // MsgActivate defines the Msg/Activate request type

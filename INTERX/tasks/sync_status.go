@@ -13,7 +13,7 @@ import (
 	"github.com/KiraCore/sekai/INTERX/global"
 )
 
-func getStatus(rpcAddr string) {
+func getStatus(rpcAddr string, isLog bool) {
 	url := fmt.Sprintf("%s/block", rpcAddr)
 	resp, err := http.Get(url)
 	if err != nil {
@@ -49,7 +49,10 @@ func getStatus(rpcAddr string) {
 	common.NodeStatus.Blocktime = result.Result.Block.Header.Time
 	global.Mutex.Unlock()
 
-	common.GetLogger().Info("[node-status] (new block) height: ", common.NodeStatus.Block, " time: ", common.NodeStatus.Blocktime)
+	if isLog {
+		common.GetLogger().Info("[node-status] (new block) height: ", common.NodeStatus.Block, " time: ", common.NodeStatus.Blocktime)
+	}
+
 	// save block height/time
 	blockTime, _ := time.Parse(time.RFC3339, result.Result.Block.Header.Time)
 	database.AddBlockTime(common.NodeStatus.Block, blockTime.Unix())
@@ -60,7 +63,7 @@ func getStatus(rpcAddr string) {
 // SyncStatus is a function for syncing sekaid status.
 func SyncStatus(rpcAddr string, isLog bool) {
 	for {
-		getStatus(rpcAddr)
+		getStatus(rpcAddr, isLog)
 
 		if isLog {
 			common.GetLogger().Info("[node-status] Syncing node status")

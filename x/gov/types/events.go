@@ -34,9 +34,6 @@ const (
 	AttributeKeyFailureFee          = "failure_fee"
 	AttributeKeyTimeout             = "time_out"
 	AttributeKeyDefaultParameters   = "default_parameters"
-	AttributeKeyWebsite             = "website"
-	AttributeKeySocial              = "social"
-	AttributeKeyIdentity            = "identity"
 	AttributeKeyProposalDescription = "description"
 
 	// ---- Cosmos SDK gov native events ----

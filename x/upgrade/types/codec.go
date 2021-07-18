@@ -30,12 +30,15 @@ func RegisterCodec(cdc *codec.LegacyAmino) {}
 
 // RegisterInterfaces register Msg and structs
 func RegisterInterfaces(registry types.InterfaceRegistry) {
-	registry.RegisterImplementations((*sdk.Msg)(nil), &MsgProposalSoftwareUpgradeRequest{})
+	registry.RegisterImplementations(
+		(*sdk.Msg)(nil),
+	)
 
 	registry.RegisterInterface(
 		"kira.gov.Content",
 		(*customgovtypes.Content)(nil),
 		&ProposalSoftwareUpgrade{},
+		&ProposalCancelSoftwareUpgrade{},
 	)
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 }

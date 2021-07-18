@@ -26,13 +26,13 @@ func TestMsgClaimValidator_ValidateBasic(t *testing.T) {
 		{
 			name: "nil val key",
 			constructor: func() (*customstakingtypes.MsgClaimValidator, error) {
-				return customstakingtypes.NewMsgClaimValidator("me", "web", "social", "id", types.NewDec(10), nil, pubKey)
+				return customstakingtypes.NewMsgClaimValidator("me", types.NewDec(10), nil, pubKey)
 			},
 		},
 		{
 			name: "nil pub key",
 			constructor: func() (*customstakingtypes.MsgClaimValidator, error) {
-				return customstakingtypes.NewMsgClaimValidator("me", "web", "social", "id", types.NewDec(10), valAddr1, nil)
+				return customstakingtypes.NewMsgClaimValidator("me", types.NewDec(10), valAddr1, nil)
 			},
 		},
 	}

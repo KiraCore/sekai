@@ -21,14 +21,11 @@ func (a ApplyUpsertTokenAliasProposalHandler) ProposalType() string {
 	return tokenstypes.ProposalTypeUpsertTokenAlias
 }
 
-func (a ApplyUpsertTokenAliasProposalHandler) Apply(ctx sdk.Context, proposal types.Content) {
+func (a ApplyUpsertTokenAliasProposalHandler) Apply(ctx sdk.Context, proposal types.Content) error {
 	p := proposal.(*tokenstypes.ProposalUpsertTokenAlias)
 
 	tokenAlians := tokenstypes.NewTokenAlias(p.Symbol, p.Name, p.Icon, p.Decimals, p.Denoms)
-	err := a.keeper.UpsertTokenAlias(ctx, *tokenAlians)
-	if err != nil {
-		panic(err)
-	}
+	return a.keeper.UpsertTokenAlias(ctx, *tokenAlians)
 }
 
 type ApplyUpsertTokenRatesProposalHandler struct {
@@ -43,14 +40,11 @@ func (a ApplyUpsertTokenRatesProposalHandler) ProposalType() string {
 	return tokenstypes.ProposalTypeUpsertTokenRates
 }
 
-func (a ApplyUpsertTokenRatesProposalHandler) Apply(ctx sdk.Context, proposal types.Content) {
+func (a ApplyUpsertTokenRatesProposalHandler) Apply(ctx sdk.Context, proposal types.Content) error {
 	p := proposal.(*tokenstypes.ProposalUpsertTokenRates)
 
 	tokenAlians := tokenstypes.NewTokenRate(p.Denom, p.Rate, p.FeePayments)
-	err := a.keeper.UpsertTokenRate(ctx, *tokenAlians)
-	if err != nil {
-		panic(err)
-	}
+	return a.keeper.UpsertTokenRate(ctx, *tokenAlians)
 }
 
 type ApplyWhiteBlackChangeProposalHandler struct {
@@ -65,7 +59,7 @@ func (a ApplyWhiteBlackChangeProposalHandler) ProposalType() string {
 	return tokenstypes.ProposalTypeTokensWhiteBlackChange
 }
 
-func (a ApplyWhiteBlackChangeProposalHandler) Apply(ctx sdk.Context, proposal types.Content) {
+func (a ApplyWhiteBlackChangeProposalHandler) Apply(ctx sdk.Context, proposal types.Content) error {
 	p := proposal.(*tokenstypes.ProposalTokensWhiteBlackChange)
 
 	if p.IsBlacklist {
@@ -81,4 +75,5 @@ func (a ApplyWhiteBlackChangeProposalHandler) Apply(ctx sdk.Context, proposal ty
 			a.keeper.RemoveTokensFromWhitelist(ctx, p.Tokens)
 		}
 	}
+	return nil
 }

@@ -7,7 +7,7 @@ import (
 
 const ProposalTypeResetWholeValidatorRank = "ResetWholeValidatorRank"
 
-func NewProposalResetWholeValidatorRank(proposer sdk.AccAddress) *ProposalResetWholeValidatorRank {
+func NewResetWholeValidatorRankProposal(proposer sdk.AccAddress) *ProposalResetWholeValidatorRank {
 	return &ProposalResetWholeValidatorRank{
 		Proposer: proposer,
 	}
@@ -17,6 +17,15 @@ func (m *ProposalResetWholeValidatorRank) ProposalType() string {
 	return ProposalTypeResetWholeValidatorRank
 }
 
+func (m *ProposalResetWholeValidatorRank) ProposalPermission() types.PermValue {
+	return types.PermCreateResetWholeValidatorRankProposal
+}
+
 func (m *ProposalResetWholeValidatorRank) VotePermission() types.PermValue {
-	return types.PermVoteUnjailValidatorProposal
+	return types.PermVoteResetWholeValidatorRankProposal
+}
+
+// ValidateBasic returns basic validation
+func (m *ProposalResetWholeValidatorRank) ValidateBasic() error {
+	return nil
 }

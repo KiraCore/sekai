@@ -45,12 +45,15 @@ type CacheConfig struct {
 }
 
 type NodeDiscoveryConfig struct {
-	UseHttps          bool   `json:"use_https"`
-	DefaultInterxPort string `json:"default_interx_port"`
+	UseHttps              bool   `json:"use_https"`
+	DefaultInterxPort     string `json:"default_interx_port"`
+	DefaultTendermintPort string `json:"default_tendermint_port"`
+	ConnectionTimeout     string `json:"connection_timeout"`
 }
 
 // InterxConfig is a struct to be used for interx configuration
 type InterxConfig struct {
+	Version          string              `json:"version"`
 	ServeHTTPS       bool                `json:"serve_https"`
 	GRPC             string              `json:"grpc"`
 	RPC              string              `json:"rpc"`
@@ -75,6 +78,7 @@ type InterxConfig struct {
 
 // InterxConfigFromFile is a struct to be used for interx configuration file
 type InterxConfigFromFile struct {
+	Version          string              `json:"version"`
 	ServeHTTPS       bool                `json:"serve_https"`
 	GRPC             string              `json:"grpc"`
 	RPC              string              `json:"rpc"`

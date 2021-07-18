@@ -2,14 +2,9 @@ package keeper
 
 import (
 	"context"
-	"fmt"
-	"time"
 
-	govkeeper "github.com/KiraCore/sekai/x/gov/keeper"
-	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/slashing/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/pkg/errors"
 )
 
 type msgServer struct {
@@ -100,67 +95,4 @@ func (k msgServer) Unpause(goCtx context.Context, msg *types.MsgUnpause) (*types
 	)
 
 	return &types.MsgUnpauseResponse{}, nil
-}
-
-func (k msgServer) ProposalResetWholeValidatorRank(goCtx context.Context, msg *types.MsgProposalResetWholeValidatorRank) (*types.MsgProposalResetWholeValidatorRankResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	govKeeper := k.gk.(govkeeper.Keeper)
-	isAllowed := govkeeper.CheckIfAllowedPermission(ctx, govKeeper, msg.Proposer, govtypes.PermCreateResetWholeValidatorRankProposal)
-	if !isAllowed {
-		return nil, errors.Wrap(govtypes.ErrNotEnoughPermissions, govtypes.PermCreateResetWholeValidatorRankProposal.String())
-	}
-
-	proposalID, err := k.CreateAndSaveProposalWithContent(
-		ctx,
-		msg.Description,
-		types.NewProposalResetWholeValidatorRank(
-			msg.Proposer,
-		),
-	)
-	if err != nil {
-		return nil, err
-	}
-	ctx.EventManager().EmitEvent(
-		sdk.NewEvent(
-			govtypes.EventTypeSubmitProposal,
-			sdk.NewAttribute(govtypes.AttributeKeyProposalId, fmt.Sprintf("%d", proposalID)),
-			sdk.NewAttribute(govtypes.AttributeKeyProposalType, msg.Type()),
-			sdk.NewAttribute(types.AttributeKeyDescription, msg.Description),
-		),
-	)
-	return &types.MsgProposalResetWholeValidatorRankResponse{
-		ProposalID: proposalID,
-	}, nil
-}
-
-func (k msgServer) CreateAndSaveProposalWithContent(ctx sdk.Context, description string, content govtypes.Content) (uint64, error) {
-
-	govKeeper := k.gk.(govkeeper.Keeper)
-	blockTime := ctx.BlockTime()
-	proposalID := govKeeper.GetNextProposalIDAndIncrement(ctx)
-
-	properties := govKeeper.GetNetworkProperties(ctx)
-
-	proposal, err := govtypes.NewProposal(
-		proposalID,
-		content,
-		blockTime,
-		blockTime.Add(time.Second*time.Duration(properties.ProposalEndTime)),
-		blockTime.Add(time.Second*time.Duration(properties.ProposalEndTime)+
-			time.Second*time.Duration(properties.ProposalEnactmentTime),
-		),
-		ctx.BlockHeight()+int64(properties.MinProposalEndBlocks),
-		ctx.BlockHeight()+int64(properties.MinProposalEndBlocks+properties.MinProposalEnactmentBlocks),
-		description,
-	)
-
-	if err != nil {
-		return proposalID, err
-	}
-
-	govKeeper.SaveProposal(ctx, proposal)
-	govKeeper.AddToActiveProposals(ctx, proposal)
-
-	return proposalID, nil
 }

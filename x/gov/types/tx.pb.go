@@ -6,6 +6,8 @@ package types
 import (
 	context "context"
 	fmt "fmt"
+	types "github.com/cosmos/cosmos-sdk/codec/types"
+	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/gogo/protobuf/gogoproto"
 	grpc1 "github.com/gogo/protobuf/grpc"
 	proto "github.com/gogo/protobuf/proto"
@@ -28,6 +30,91 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+// MsgSubmitProposal defines an sdk.Msg type that supports submitting arbitrary
+// proposal Content.
+type MsgSubmitProposal struct {
+	Proposer    github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=proposer,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"proposer,omitempty"`
+	Description string                                        `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
+	Content     *types.Any                                    `protobuf:"bytes,3,opt,name=content,proto3" json:"content,omitempty"`
+}
+
+func (m *MsgSubmitProposal) Reset()      { *m = MsgSubmitProposal{} }
+func (*MsgSubmitProposal) ProtoMessage() {}
+func (*MsgSubmitProposal) Descriptor() ([]byte, []int) {
+	return fileDescriptor_0fd2153dc07d3b5c, []int{0}
+}
+func (m *MsgSubmitProposal) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgSubmitProposal) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgSubmitProposal.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgSubmitProposal) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSubmitProposal.Merge(m, src)
+}
+func (m *MsgSubmitProposal) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgSubmitProposal) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSubmitProposal.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgSubmitProposal proto.InternalMessageInfo
+
+// MsgSubmitProposalResponse defines the Msg/SubmitProposal response type.
+type MsgSubmitProposalResponse struct {
+	ProposalID uint64 `protobuf:"varint,1,opt,name=proposalID,proto3" json:"proposalID,omitempty"`
+}
+
+func (m *MsgSubmitProposalResponse) Reset()         { *m = MsgSubmitProposalResponse{} }
+func (m *MsgSubmitProposalResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgSubmitProposalResponse) ProtoMessage()    {}
+func (*MsgSubmitProposalResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_0fd2153dc07d3b5c, []int{1}
+}
+func (m *MsgSubmitProposalResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgSubmitProposalResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgSubmitProposalResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgSubmitProposalResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSubmitProposalResponse.Merge(m, src)
+}
+func (m *MsgSubmitProposalResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgSubmitProposalResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSubmitProposalResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgSubmitProposalResponse proto.InternalMessageInfo
+
+func (m *MsgSubmitProposalResponse) GetProposalID() uint64 {
+	if m != nil {
+		return m.ProposalID
+	}
+	return 0
+}
+
 type MsgWhitelistPermissionsResponse struct {
 }
 
@@ -35,7 +122,7 @@ func (m *MsgWhitelistPermissionsResponse) Reset()         { *m = MsgWhitelistPer
 func (m *MsgWhitelistPermissionsResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgWhitelistPermissionsResponse) ProtoMessage()    {}
 func (*MsgWhitelistPermissionsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0fd2153dc07d3b5c, []int{0}
+	return fileDescriptor_0fd2153dc07d3b5c, []int{2}
 }
 func (m *MsgWhitelistPermissionsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -71,7 +158,7 @@ func (m *MsgBlacklistPermissionsResponse) Reset()         { *m = MsgBlacklistPer
 func (m *MsgBlacklistPermissionsResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgBlacklistPermissionsResponse) ProtoMessage()    {}
 func (*MsgBlacklistPermissionsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0fd2153dc07d3b5c, []int{1}
+	return fileDescriptor_0fd2153dc07d3b5c, []int{3}
 }
 func (m *MsgBlacklistPermissionsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -107,7 +194,7 @@ func (m *MsgClaimCouncilorResponse) Reset()         { *m = MsgClaimCouncilorResp
 func (m *MsgClaimCouncilorResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgClaimCouncilorResponse) ProtoMessage()    {}
 func (*MsgClaimCouncilorResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0fd2153dc07d3b5c, []int{2}
+	return fileDescriptor_0fd2153dc07d3b5c, []int{4}
 }
 func (m *MsgClaimCouncilorResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -143,7 +230,7 @@ func (m *MsgVoteProposalResponse) Reset()         { *m = MsgVoteProposalResponse
 func (m *MsgVoteProposalResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgVoteProposalResponse) ProtoMessage()    {}
 func (*MsgVoteProposalResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0fd2153dc07d3b5c, []int{3}
+	return fileDescriptor_0fd2153dc07d3b5c, []int{5}
 }
 func (m *MsgVoteProposalResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -172,230 +259,6 @@ func (m *MsgVoteProposalResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgVoteProposalResponse proto.InternalMessageInfo
 
-type MsgProposalAssignPermissionResponse struct {
-	ProposalID uint64 `protobuf:"varint,1,opt,name=proposalID,proto3" json:"proposalID,omitempty"`
-}
-
-func (m *MsgProposalAssignPermissionResponse) Reset()         { *m = MsgProposalAssignPermissionResponse{} }
-func (m *MsgProposalAssignPermissionResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgProposalAssignPermissionResponse) ProtoMessage()    {}
-func (*MsgProposalAssignPermissionResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0fd2153dc07d3b5c, []int{4}
-}
-func (m *MsgProposalAssignPermissionResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgProposalAssignPermissionResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgProposalAssignPermissionResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgProposalAssignPermissionResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgProposalAssignPermissionResponse.Merge(m, src)
-}
-func (m *MsgProposalAssignPermissionResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgProposalAssignPermissionResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgProposalAssignPermissionResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgProposalAssignPermissionResponse proto.InternalMessageInfo
-
-func (m *MsgProposalAssignPermissionResponse) GetProposalID() uint64 {
-	if m != nil {
-		return m.ProposalID
-	}
-	return 0
-}
-
-type MsgProposalUpsertDataRegistryResponse struct {
-	ProposalID uint64 `protobuf:"varint,1,opt,name=proposalID,proto3" json:"proposalID,omitempty"`
-}
-
-func (m *MsgProposalUpsertDataRegistryResponse) Reset()         { *m = MsgProposalUpsertDataRegistryResponse{} }
-func (m *MsgProposalUpsertDataRegistryResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgProposalUpsertDataRegistryResponse) ProtoMessage()    {}
-func (*MsgProposalUpsertDataRegistryResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0fd2153dc07d3b5c, []int{5}
-}
-func (m *MsgProposalUpsertDataRegistryResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgProposalUpsertDataRegistryResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgProposalUpsertDataRegistryResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgProposalUpsertDataRegistryResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgProposalUpsertDataRegistryResponse.Merge(m, src)
-}
-func (m *MsgProposalUpsertDataRegistryResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgProposalUpsertDataRegistryResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgProposalUpsertDataRegistryResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgProposalUpsertDataRegistryResponse proto.InternalMessageInfo
-
-func (m *MsgProposalUpsertDataRegistryResponse) GetProposalID() uint64 {
-	if m != nil {
-		return m.ProposalID
-	}
-	return 0
-}
-
-type MsgProposalSetNetworkPropertyResponse struct {
-	ProposalID uint64 `protobuf:"varint,1,opt,name=proposalID,proto3" json:"proposalID,omitempty"`
-}
-
-func (m *MsgProposalSetNetworkPropertyResponse) Reset()         { *m = MsgProposalSetNetworkPropertyResponse{} }
-func (m *MsgProposalSetNetworkPropertyResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgProposalSetNetworkPropertyResponse) ProtoMessage()    {}
-func (*MsgProposalSetNetworkPropertyResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0fd2153dc07d3b5c, []int{6}
-}
-func (m *MsgProposalSetNetworkPropertyResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgProposalSetNetworkPropertyResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgProposalSetNetworkPropertyResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgProposalSetNetworkPropertyResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgProposalSetNetworkPropertyResponse.Merge(m, src)
-}
-func (m *MsgProposalSetNetworkPropertyResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgProposalSetNetworkPropertyResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgProposalSetNetworkPropertyResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgProposalSetNetworkPropertyResponse proto.InternalMessageInfo
-
-func (m *MsgProposalSetNetworkPropertyResponse) GetProposalID() uint64 {
-	if m != nil {
-		return m.ProposalID
-	}
-	return 0
-}
-
-type MsgProposalSetPoorNetworkMessagesResponse struct {
-	ProposalID uint64 `protobuf:"varint,1,opt,name=proposalID,proto3" json:"proposalID,omitempty"`
-}
-
-func (m *MsgProposalSetPoorNetworkMessagesResponse) Reset() {
-	*m = MsgProposalSetPoorNetworkMessagesResponse{}
-}
-func (m *MsgProposalSetPoorNetworkMessagesResponse) String() string {
-	return proto.CompactTextString(m)
-}
-func (*MsgProposalSetPoorNetworkMessagesResponse) ProtoMessage() {}
-func (*MsgProposalSetPoorNetworkMessagesResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0fd2153dc07d3b5c, []int{7}
-}
-func (m *MsgProposalSetPoorNetworkMessagesResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgProposalSetPoorNetworkMessagesResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgProposalSetPoorNetworkMessagesResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgProposalSetPoorNetworkMessagesResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgProposalSetPoorNetworkMessagesResponse.Merge(m, src)
-}
-func (m *MsgProposalSetPoorNetworkMessagesResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgProposalSetPoorNetworkMessagesResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgProposalSetPoorNetworkMessagesResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgProposalSetPoorNetworkMessagesResponse proto.InternalMessageInfo
-
-func (m *MsgProposalSetPoorNetworkMessagesResponse) GetProposalID() uint64 {
-	if m != nil {
-		return m.ProposalID
-	}
-	return 0
-}
-
-type MsgProposalCreateRoleResponse struct {
-	ProposalID uint64 `protobuf:"varint,1,opt,name=proposalID,proto3" json:"proposalID,omitempty"`
-}
-
-func (m *MsgProposalCreateRoleResponse) Reset()         { *m = MsgProposalCreateRoleResponse{} }
-func (m *MsgProposalCreateRoleResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgProposalCreateRoleResponse) ProtoMessage()    {}
-func (*MsgProposalCreateRoleResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0fd2153dc07d3b5c, []int{8}
-}
-func (m *MsgProposalCreateRoleResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgProposalCreateRoleResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgProposalCreateRoleResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgProposalCreateRoleResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgProposalCreateRoleResponse.Merge(m, src)
-}
-func (m *MsgProposalCreateRoleResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgProposalCreateRoleResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgProposalCreateRoleResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgProposalCreateRoleResponse proto.InternalMessageInfo
-
-func (m *MsgProposalCreateRoleResponse) GetProposalID() uint64 {
-	if m != nil {
-		return m.ProposalID
-	}
-	return 0
-}
-
 type MsgCreateRoleResponse struct {
 }
 
@@ -403,7 +266,7 @@ func (m *MsgCreateRoleResponse) Reset()         { *m = MsgCreateRoleResponse{} }
 func (m *MsgCreateRoleResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgCreateRoleResponse) ProtoMessage()    {}
 func (*MsgCreateRoleResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0fd2153dc07d3b5c, []int{9}
+	return fileDescriptor_0fd2153dc07d3b5c, []int{6}
 }
 func (m *MsgCreateRoleResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -439,7 +302,7 @@ func (m *MsgAssignRoleResponse) Reset()         { *m = MsgAssignRoleResponse{} }
 func (m *MsgAssignRoleResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgAssignRoleResponse) ProtoMessage()    {}
 func (*MsgAssignRoleResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0fd2153dc07d3b5c, []int{10}
+	return fileDescriptor_0fd2153dc07d3b5c, []int{7}
 }
 func (m *MsgAssignRoleResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -475,7 +338,7 @@ func (m *MsgRemoveRoleResponse) Reset()         { *m = MsgRemoveRoleResponse{} }
 func (m *MsgRemoveRoleResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgRemoveRoleResponse) ProtoMessage()    {}
 func (*MsgRemoveRoleResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0fd2153dc07d3b5c, []int{11}
+	return fileDescriptor_0fd2153dc07d3b5c, []int{8}
 }
 func (m *MsgRemoveRoleResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -511,7 +374,7 @@ func (m *MsgSetNetworkPropertiesResponse) Reset()         { *m = MsgSetNetworkPr
 func (m *MsgSetNetworkPropertiesResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgSetNetworkPropertiesResponse) ProtoMessage()    {}
 func (*MsgSetNetworkPropertiesResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0fd2153dc07d3b5c, []int{12}
+	return fileDescriptor_0fd2153dc07d3b5c, []int{9}
 }
 func (m *MsgSetNetworkPropertiesResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -547,7 +410,7 @@ func (m *MsgSetExecutionFeeResponse) Reset()         { *m = MsgSetExecutionFeeRe
 func (m *MsgSetExecutionFeeResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgSetExecutionFeeResponse) ProtoMessage()    {}
 func (*MsgSetExecutionFeeResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0fd2153dc07d3b5c, []int{13}
+	return fileDescriptor_0fd2153dc07d3b5c, []int{10}
 }
 func (m *MsgSetExecutionFeeResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -583,7 +446,7 @@ func (m *MsgWhitelistRolePermissionResponse) Reset()         { *m = MsgWhitelist
 func (m *MsgWhitelistRolePermissionResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgWhitelistRolePermissionResponse) ProtoMessage()    {}
 func (*MsgWhitelistRolePermissionResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0fd2153dc07d3b5c, []int{14}
+	return fileDescriptor_0fd2153dc07d3b5c, []int{11}
 }
 func (m *MsgWhitelistRolePermissionResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -619,7 +482,7 @@ func (m *MsgBlacklistRolePermissionResponse) Reset()         { *m = MsgBlacklist
 func (m *MsgBlacklistRolePermissionResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgBlacklistRolePermissionResponse) ProtoMessage()    {}
 func (*MsgBlacklistRolePermissionResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0fd2153dc07d3b5c, []int{15}
+	return fileDescriptor_0fd2153dc07d3b5c, []int{12}
 }
 func (m *MsgBlacklistRolePermissionResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -657,7 +520,7 @@ func (m *MsgRemoveWhitelistRolePermissionResponse) Reset() {
 func (m *MsgRemoveWhitelistRolePermissionResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgRemoveWhitelistRolePermissionResponse) ProtoMessage()    {}
 func (*MsgRemoveWhitelistRolePermissionResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0fd2153dc07d3b5c, []int{16}
+	return fileDescriptor_0fd2153dc07d3b5c, []int{13}
 }
 func (m *MsgRemoveWhitelistRolePermissionResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -695,7 +558,7 @@ func (m *MsgRemoveBlacklistRolePermissionResponse) Reset() {
 func (m *MsgRemoveBlacklistRolePermissionResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgRemoveBlacklistRolePermissionResponse) ProtoMessage()    {}
 func (*MsgRemoveBlacklistRolePermissionResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0fd2153dc07d3b5c, []int{17}
+	return fileDescriptor_0fd2153dc07d3b5c, []int{14}
 }
 func (m *MsgRemoveBlacklistRolePermissionResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -732,7 +595,7 @@ func (m *MsgCreateIdentityRecordResponse) Reset()         { *m = MsgCreateIdenti
 func (m *MsgCreateIdentityRecordResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgCreateIdentityRecordResponse) ProtoMessage()    {}
 func (*MsgCreateIdentityRecordResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0fd2153dc07d3b5c, []int{18}
+	return fileDescriptor_0fd2153dc07d3b5c, []int{15}
 }
 func (m *MsgCreateIdentityRecordResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -775,7 +638,7 @@ func (m *MsgEditIdentityRecordResponse) Reset()         { *m = MsgEditIdentityRe
 func (m *MsgEditIdentityRecordResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgEditIdentityRecordResponse) ProtoMessage()    {}
 func (*MsgEditIdentityRecordResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0fd2153dc07d3b5c, []int{19}
+	return fileDescriptor_0fd2153dc07d3b5c, []int{16}
 }
 func (m *MsgEditIdentityRecordResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -814,7 +677,7 @@ func (m *MsgRequestIdentityRecordsVerifyResponse) Reset() {
 func (m *MsgRequestIdentityRecordsVerifyResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgRequestIdentityRecordsVerifyResponse) ProtoMessage()    {}
 func (*MsgRequestIdentityRecordsVerifyResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0fd2153dc07d3b5c, []int{20}
+	return fileDescriptor_0fd2153dc07d3b5c, []int{17}
 }
 func (m *MsgRequestIdentityRecordsVerifyResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -857,7 +720,7 @@ func (m *MsgApproveIdentityRecordsResponse) Reset()         { *m = MsgApproveIde
 func (m *MsgApproveIdentityRecordsResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgApproveIdentityRecordsResponse) ProtoMessage()    {}
 func (*MsgApproveIdentityRecordsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0fd2153dc07d3b5c, []int{21}
+	return fileDescriptor_0fd2153dc07d3b5c, []int{18}
 }
 func (m *MsgApproveIdentityRecordsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -897,7 +760,7 @@ func (m *MsgCancelIdentityRecordsVerifyRequestResponse) String() string {
 }
 func (*MsgCancelIdentityRecordsVerifyRequestResponse) ProtoMessage() {}
 func (*MsgCancelIdentityRecordsVerifyRequestResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0fd2153dc07d3b5c, []int{22}
+	return fileDescriptor_0fd2153dc07d3b5c, []int{19}
 }
 func (m *MsgCancelIdentityRecordsVerifyRequestResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -927,15 +790,12 @@ func (m *MsgCancelIdentityRecordsVerifyRequestResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgCancelIdentityRecordsVerifyRequestResponse proto.InternalMessageInfo
 
 func init() {
+	proto.RegisterType((*MsgSubmitProposal)(nil), "kira.gov.MsgSubmitProposal")
+	proto.RegisterType((*MsgSubmitProposalResponse)(nil), "kira.gov.MsgSubmitProposalResponse")
 	proto.RegisterType((*MsgWhitelistPermissionsResponse)(nil), "kira.gov.MsgWhitelistPermissionsResponse")
 	proto.RegisterType((*MsgBlacklistPermissionsResponse)(nil), "kira.gov.MsgBlacklistPermissionsResponse")
 	proto.RegisterType((*MsgClaimCouncilorResponse)(nil), "kira.gov.MsgClaimCouncilorResponse")
 	proto.RegisterType((*MsgVoteProposalResponse)(nil), "kira.gov.MsgVoteProposalResponse")
-	proto.RegisterType((*MsgProposalAssignPermissionResponse)(nil), "kira.gov.MsgProposalAssignPermissionResponse")
-	proto.RegisterType((*MsgProposalUpsertDataRegistryResponse)(nil), "kira.gov.MsgProposalUpsertDataRegistryResponse")
-	proto.RegisterType((*MsgProposalSetNetworkPropertyResponse)(nil), "kira.gov.MsgProposalSetNetworkPropertyResponse")
-	proto.RegisterType((*MsgProposalSetPoorNetworkMessagesResponse)(nil), "kira.gov.MsgProposalSetPoorNetworkMessagesResponse")
-	proto.RegisterType((*MsgProposalCreateRoleResponse)(nil), "kira.gov.MsgProposalCreateRoleResponse")
 	proto.RegisterType((*MsgCreateRoleResponse)(nil), "kira.gov.MsgCreateRoleResponse")
 	proto.RegisterType((*MsgAssignRoleResponse)(nil), "kira.gov.MsgAssignRoleResponse")
 	proto.RegisterType((*MsgRemoveRoleResponse)(nil), "kira.gov.MsgRemoveRoleResponse")
@@ -955,65 +815,66 @@ func init() {
 func init() { proto.RegisterFile("tx.proto", fileDescriptor_0fd2153dc07d3b5c) }
 
 var fileDescriptor_0fd2153dc07d3b5c = []byte{
-	// 920 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x57, 0x51, 0x6f, 0xdc, 0x44,
-	0x10, 0xce, 0x09, 0x84, 0xc2, 0x80, 0x5a, 0x69, 0x09, 0x4d, 0xb2, 0x4d, 0x1d, 0xe2, 0x24, 0x4a,
-	0xd3, 0xd2, 0xb3, 0x48, 0x1f, 0x78, 0x42, 0x15, 0x4d, 0xd3, 0x2a, 0x2a, 0x87, 0xa2, 0x43, 0x2d,
-	0x12, 0x0f, 0x3d, 0xb9, 0xbe, 0xad, 0xbb, 0x9c, 0xcf, 0x6b, 0x76, 0xf7, 0xae, 0x89, 0x84, 0x84,
-	0xc4, 0x0f, 0x40, 0xfc, 0x2c, 0x1e, 0xfb, 0xc8, 0x23, 0x4a, 0xfe, 0x00, 0x3f, 0x01, 0xf9, 0x6c,
-	0xaf, 0xed, 0xf5, 0xae, 0xcf, 0xe1, 0xed, 0x3c, 0xf3, 0xcd, 0x37, 0x3b, 0xb3, 0x93, 0x6f, 0x36,
-	0xb0, 0x2a, 0xcf, 0xfb, 0x09, 0x67, 0x92, 0xa1, 0xd5, 0x09, 0xe5, 0x7e, 0x3f, 0x64, 0x73, 0xbc,
-	0x16, 0xb2, 0x90, 0x2d, 0x8c, 0x5e, 0xfa, 0x2b, 0xf3, 0xe3, 0x4f, 0xfc, 0x40, 0x32, 0x9e, 0x7f,
-	0xdc, 0x0c, 0xd8, 0x2c, 0x0e, 0x68, 0xa4, 0x0c, 0x37, 0x12, 0xce, 0x12, 0x26, 0xfc, 0x28, 0xff,
-	0x06, 0xce, 0x22, 0x92, 0xff, 0xfe, 0x8c, 0x9c, 0x93, 0x60, 0x26, 0x29, 0x8b, 0x47, 0x6f, 0x48,
-	0x61, 0xdc, 0x88, 0x89, 0x7c, 0xc7, 0xf8, 0x64, 0x94, 0x06, 0x12, 0x2e, 0x29, 0x11, 0xb9, 0xe7,
-	0x96, 0x1f, 0x45, 0xec, 0x1d, 0x19, 0x8f, 0xa6, 0x44, 0x08, 0x3f, 0x54, 0xf6, 0x0d, 0x3a, 0x26,
-	0xb1, 0xa4, 0xf2, 0x62, 0xc4, 0x49, 0x48, 0x85, 0xe4, 0x7e, 0x9e, 0xdc, 0xdd, 0x81, 0xed, 0x81,
-	0x08, 0x7f, 0x7c, 0x4b, 0x25, 0x89, 0xa8, 0x90, 0x67, 0x84, 0x4f, 0xa9, 0x10, 0x94, 0xc5, 0x62,
-	0x48, 0x44, 0xc2, 0x62, 0x41, 0x72, 0xc8, 0xe3, 0xc8, 0x0f, 0x26, 0x36, 0xc8, 0x6d, 0xd8, 0x1c,
-	0x88, 0xf0, 0x38, 0xf2, 0xe9, 0xf4, 0xb8, 0xa8, 0x4e, 0x39, 0x37, 0x61, 0x7d, 0x20, 0xc2, 0x97,
-	0x4c, 0x92, 0xb3, 0xbc, 0x50, 0xe5, 0x3a, 0x81, 0xdd, 0x81, 0x08, 0x0b, 0xf3, 0xb7, 0x42, 0xd0,
-	0x30, 0x2e, 0xf9, 0x0b, 0x18, 0x72, 0x00, 0x8a, 0x1e, 0x9d, 0x3e, 0xd9, 0xe8, 0x7d, 0xd1, 0xbb,
-	0xfb, 0xe1, 0xb0, 0x62, 0x71, 0x9f, 0xc1, 0x7e, 0x85, 0xe6, 0x45, 0x22, 0x08, 0x97, 0x4f, 0x7c,
-	0xe9, 0x0f, 0xb3, 0x62, 0x2f, 0xfe, 0x27, 0xd1, 0x0f, 0x44, 0x7e, 0x9f, 0x75, 0xfa, 0x2c, 0x6b,
-	0x74, 0x77, 0xa2, 0xe7, 0x70, 0x58, 0x27, 0x3a, 0x63, 0x8c, 0xe7, 0x64, 0x83, 0xfc, 0x6e, 0x3a,
-	0x93, 0x3d, 0x82, 0x3b, 0x15, 0xb2, 0x63, 0x4e, 0x7c, 0x49, 0x86, 0x2c, 0x22, 0x9d, 0x09, 0xd6,
-	0xe1, 0xf3, 0xf4, 0x7a, 0x1a, 0x81, 0xb9, 0x23, 0xeb, 0xbb, 0xc1, 0x31, 0x24, 0x53, 0x36, 0xaf,
-	0x47, 0x64, 0xc3, 0xd0, 0xe8, 0x0c, 0x2d, 0xcb, 0x71, 0xb7, 0x00, 0x67, 0x90, 0x93, 0x62, 0x76,
-	0x9f, 0x92, 0x92, 0x60, 0x0f, 0xdc, 0xea, 0xc0, 0xa5, 0xe4, 0xcd, 0x1b, 0xcf, 0x51, 0x6a, 0xe6,
-	0x2c, 0xa8, 0x7b, 0x70, 0x57, 0x9d, 0x72, 0x19, 0x63, 0x15, 0xbb, 0x8c, 0xf7, 0x9b, 0x45, 0x91,
-	0x59, 0xbf, 0x4e, 0xf3, 0xbf, 0x9c, 0x21, 0x09, 0x18, 0x1f, 0xab, 0x96, 0x63, 0x58, 0xe5, 0x0b,
-	0xcb, 0xe9, 0x38, 0x6f, 0xb8, 0xfa, 0x76, 0xb7, 0x17, 0xf7, 0x75, 0x32, 0xa6, 0xd2, 0x1c, 0xec,
-	0x3e, 0x83, 0x83, 0xc5, 0x59, 0x7e, 0x99, 0x11, 0xa1, 0x61, 0xc4, 0x4b, 0xc2, 0xe9, 0x9b, 0x72,
-	0xd0, 0xb6, 0xe0, 0x63, 0x5e, 0xe0, 0xf2, 0x44, 0xa5, 0xc1, 0xdd, 0x85, 0x9d, 0xf4, 0xfe, 0x92,
-	0x84, 0xb3, 0xb9, 0x76, 0xd2, 0xf2, 0x3e, 0x3c, 0x78, 0x90, 0x56, 0xe3, 0xc7, 0x01, 0x89, 0x2c,
-	0xc9, 0x16, 0x7c, 0x45, 0xc0, 0xd1, 0xbf, 0x08, 0x3e, 0x18, 0x88, 0x10, 0x8d, 0x61, 0xcd, 0x24,
-	0x0c, 0x68, 0xa7, 0x5f, 0xe8, 0x5d, 0xdf, 0xa2, 0x1d, 0xf8, 0x70, 0x29, 0x44, 0x55, 0x38, 0x86,
-	0x35, 0x93, 0xb6, 0x68, 0x59, 0x4c, 0x10, 0x2d, 0x4b, 0x9b, 0x42, 0xa1, 0x21, 0xdc, 0xa8, 0xcb,
-	0x13, 0xba, 0x5d, 0x0b, 0xae, 0x3b, 0xf1, 0x6e, 0x8b, 0x53, 0x71, 0x7e, 0x07, 0x9f, 0x56, 0x55,
-	0x0d, 0x6d, 0xd6, 0x82, 0xaa, 0x2e, 0xbc, 0x63, 0x75, 0x29, 0xb6, 0x04, 0x36, 0x6c, 0x42, 0x88,
-	0xf6, 0x6b, 0xe1, 0x36, 0x18, 0x7e, 0xd0, 0x09, 0xa6, 0x32, 0xce, 0x01, 0xdb, 0x35, 0x13, 0x1d,
-	0x18, 0xc9, 0x9a, 0x40, 0xec, 0x75, 0x04, 0x9a, 0xf2, 0x36, 0x25, 0xd6, 0x92, 0xb7, 0x09, 0xb4,
-	0xe4, 0x6d, 0x11, 0xed, 0xdf, 0x7b, 0xe0, 0xb4, 0x4b, 0x32, 0xba, 0x6f, 0xe3, 0x34, 0x80, 0xf1,
-	0xc3, 0x6b, 0x80, 0xd5, 0x21, 0x5e, 0x01, 0x6a, 0x2a, 0x39, 0xda, 0x36, 0x52, 0x95, 0x00, 0x7c,
-	0xb0, 0x04, 0xa0, 0xf8, 0x9f, 0x02, 0x54, 0x78, 0xd7, 0xeb, 0x73, 0x5c, 0xf2, 0x6d, 0x5b, 0x1c,
-	0x55, 0x9e, 0x72, 0x2f, 0x68, 0x3c, 0xa5, 0x43, 0xe3, 0x69, 0x6e, 0x92, 0x94, 0xa7, 0x5c, 0x23,
-	0x1a, 0x4f, 0xe9, 0xd0, 0x78, 0x9a, 0x8b, 0x27, 0x95, 0x09, 0xd3, 0xd6, 0xd1, 0x64, 0xc2, 0x04,
-	0xd1, 0x64, 0xa2, 0x6d, 0x77, 0xa1, 0x17, 0x70, 0x53, 0x5b, 0x5c, 0x68, 0x4b, 0x8f, 0xae, 0x7a,
-	0xf1, 0x5e, 0x9b, 0x57, 0xd1, 0x4e, 0x61, 0xdd, 0xb2, 0x9f, 0xd0, 0x9e, 0x59, 0x29, 0xeb, 0x28,
-	0xfc, 0x65, 0x17, 0x54, 0x35, 0x9d, 0x65, 0xc5, 0x69, 0xe9, 0x2c, 0x28, 0x2d, 0xdd, 0x92, 0x75,
-	0x89, 0x7e, 0x83, 0x3b, 0xad, 0x3b, 0x18, 0xdd, 0x33, 0x5c, 0xae, 0xad, 0xd2, 0xa3, 0xee, 0xd8,
-	0xe6, 0x01, 0x6c, 0x55, 0x9b, 0x0e, 0x60, 0xab, 0xfd, 0xa8, 0x3b, 0xb6, 0x3a, 0x9c, 0xa6, 0xd7,
-	0x82, 0x36, 0x9c, 0x26, 0x88, 0x36, 0x9c, 0xad, 0x6f, 0x8e, 0x57, 0x80, 0x9a, 0x8f, 0x0a, 0x4d,
-	0x3a, 0x9a, 0x00, 0x4d, 0x3a, 0xec, 0xcf, 0x12, 0xf4, 0x2b, 0x6c, 0xb5, 0xbd, 0x49, 0xd0, 0xa1,
-	0xd6, 0x19, 0x3b, 0x14, 0x7f, 0xd5, 0x19, 0xaa, 0xb2, 0xff, 0x0c, 0xb7, 0xcc, 0x0f, 0x19, 0x54,
-	0x5f, 0xc6, 0x66, 0x10, 0xbe, 0xdf, 0x01, 0xa4, 0x72, 0xfd, 0xd1, 0x03, 0x77, 0xf9, 0x83, 0x08,
-	0xd5, 0x37, 0xcc, 0xf2, 0x00, 0xfc, 0xf5, 0x35, 0x03, 0x8a, 0x03, 0x3d, 0x7e, 0xf4, 0xd7, 0xa5,
-	0xd3, 0x7b, 0x7f, 0xe9, 0xf4, 0xfe, 0xb9, 0x74, 0x7a, 0x7f, 0x5e, 0x39, 0x2b, 0xef, 0xaf, 0x9c,
-	0x95, 0xbf, 0xaf, 0x9c, 0x95, 0x9f, 0xf6, 0x43, 0x2a, 0xdf, 0xce, 0x5e, 0xf7, 0x03, 0x36, 0xf5,
-	0x9e, 0x53, 0xee, 0x1f, 0x33, 0x4e, 0x3c, 0x41, 0x26, 0x3e, 0xf5, 0xce, 0xbd, 0x90, 0xcd, 0x3d,
-	0x79, 0x91, 0x10, 0xf1, 0xfa, 0xa3, 0xc5, 0xbf, 0x73, 0x0f, 0xff, 0x0b, 0x00, 0x00, 0xff, 0xff,
-	0x46, 0x3b, 0xd4, 0xa1, 0x95, 0x0e, 0x00, 0x00,
+	// 942 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x56, 0x4f, 0x6f, 0xdc, 0x44,
+	0x14, 0xdf, 0xa5, 0x08, 0xd2, 0x97, 0x2a, 0x85, 0x21, 0x34, 0x1b, 0x37, 0xdd, 0xdd, 0xb8, 0x41,
+	0x4d, 0x0b, 0xb1, 0xd5, 0x70, 0x40, 0x02, 0x21, 0x94, 0x84, 0x16, 0x45, 0xb0, 0x28, 0x72, 0x45,
+	0x91, 0x38, 0x10, 0x39, 0xf6, 0x8b, 0x3b, 0xac, 0xd7, 0xb3, 0xcc, 0xcc, 0xa6, 0x59, 0x09, 0x09,
+	0x8e, 0x9c, 0x10, 0x47, 0x8e, 0xf9, 0x34, 0x88, 0x63, 0x8f, 0x1c, 0x10, 0x42, 0xc9, 0x85, 0xcf,
+	0x80, 0x84, 0x84, 0xec, 0xb5, 0xc7, 0xf6, 0xac, 0xbd, 0xbb, 0x9c, 0x76, 0x67, 0xde, 0xef, 0xfd,
+	0xde, 0xff, 0x37, 0x86, 0x25, 0x79, 0x6e, 0x0d, 0x39, 0x93, 0x8c, 0x2c, 0xf5, 0x29, 0x77, 0xad,
+	0x80, 0x9d, 0x19, 0xab, 0x01, 0x0b, 0x58, 0x72, 0x69, 0xc7, 0xff, 0x26, 0x72, 0x63, 0x3d, 0x60,
+	0x2c, 0x08, 0xd1, 0x4e, 0x4e, 0x27, 0xa3, 0x53, 0xdb, 0x8d, 0xc6, 0xa9, 0x68, 0xd9, 0xf5, 0x24,
+	0xe3, 0xe9, 0xe1, 0xa6, 0xc7, 0x46, 0x91, 0x47, 0x43, 0x75, 0xb1, 0x32, 0xe4, 0x6c, 0xc8, 0x84,
+	0x1b, 0xa6, 0x67, 0xe0, 0x2c, 0xc4, 0xf4, 0xff, 0x1b, 0x78, 0x8e, 0xde, 0x48, 0x52, 0x16, 0x1d,
+	0x9f, 0x62, 0x76, 0xd9, 0x8a, 0x50, 0x3e, 0x67, 0xbc, 0x7f, 0x1c, 0x2b, 0x22, 0x97, 0x14, 0x45,
+	0x2a, 0xb9, 0xe5, 0x86, 0x21, 0x7b, 0x8e, 0xfe, 0xf1, 0x00, 0x85, 0x70, 0x03, 0x75, 0xdf, 0xa2,
+	0x3e, 0x46, 0x92, 0xca, 0xf1, 0x31, 0xc7, 0x80, 0x0a, 0xc9, 0xdd, 0xd4, 0xb8, 0xf9, 0x6b, 0x13,
+	0x5e, 0xef, 0x89, 0xe0, 0xc9, 0xe8, 0x64, 0x40, 0xe5, 0x51, 0xea, 0x08, 0xe9, 0xc1, 0xd2, 0xc4,
+	0x29, 0xe4, 0xad, 0x66, 0xb7, 0xb9, 0x7d, 0x63, 0xff, 0xe1, 0x3f, 0x7f, 0x76, 0x76, 0x02, 0x2a,
+	0x9f, 0x8d, 0x4e, 0x2c, 0x8f, 0x0d, 0x6c, 0x8f, 0x89, 0x01, 0x13, 0xe9, 0xcf, 0x8e, 0xf0, 0xfb,
+	0xb6, 0x1c, 0x0f, 0x51, 0x58, 0x7b, 0x9e, 0xb7, 0xe7, 0xfb, 0x1c, 0x85, 0x70, 0x14, 0x05, 0xe9,
+	0xc2, 0xb2, 0x8f, 0xc2, 0xe3, 0x74, 0x18, 0x47, 0xd2, 0x7a, 0xa9, 0xdb, 0xdc, 0xbe, 0xee, 0x14,
+	0xaf, 0x88, 0x05, 0xaf, 0x7a, 0x2c, 0x92, 0x18, 0xc9, 0xd6, 0xb5, 0x6e, 0x73, 0x7b, 0x79, 0x77,
+	0xd5, 0x9a, 0xa4, 0xd3, 0xca, 0xd2, 0x69, 0xed, 0x45, 0x63, 0x27, 0x03, 0xbd, 0xff, 0xda, 0x8f,
+	0x17, 0x9d, 0xc6, 0x2f, 0x17, 0x9d, 0xc6, 0xdf, 0x17, 0x9d, 0xc6, 0x0f, 0x7f, 0x74, 0x1b, 0xe6,
+	0x07, 0xb0, 0x3e, 0x15, 0x87, 0x83, 0x62, 0xc8, 0x22, 0x81, 0xa4, 0x0d, 0x90, 0x25, 0xf9, 0xf0,
+	0xe3, 0x24, 0xa2, 0x97, 0x9d, 0xc2, 0x8d, 0xb9, 0x09, 0x9d, 0x9e, 0x08, 0xbe, 0x7c, 0x46, 0x25,
+	0x86, 0x54, 0xc8, 0x23, 0xe4, 0x03, 0x2a, 0x04, 0x65, 0x91, 0xc8, 0x28, 0x52, 0xc8, 0x7e, 0xe8,
+	0x7a, 0xfd, 0x3a, 0xc8, 0xed, 0xc4, 0x85, 0x83, 0xd0, 0xa5, 0x83, 0x83, 0xac, 0xc6, 0x4a, 0xb8,
+	0x0e, 0x6b, 0x3d, 0x11, 0x3c, 0x65, 0x12, 0x75, 0xef, 0xcc, 0x35, 0x78, 0x33, 0xd6, 0xe3, 0xe8,
+	0x4a, 0x74, 0x58, 0x88, 0x9a, 0x60, 0x4f, 0x08, 0x1a, 0x44, 0x15, 0x02, 0x07, 0x07, 0xec, 0xac,
+	0xac, 0x31, 0xf1, 0xf2, 0x09, 0xca, 0xcf, 0x27, 0x2d, 0x72, 0xa4, 0x3a, 0x44, 0x41, 0x36, 0xc0,
+	0x98, 0x40, 0x1e, 0x65, 0xad, 0xf5, 0x18, 0x73, 0x82, 0x2d, 0x30, 0x8b, 0x99, 0x88, 0xc9, 0xf3,
+	0x50, 0x35, 0x94, 0x4a, 0x46, 0x0d, 0xea, 0x01, 0x6c, 0x2b, 0x2f, 0xe7, 0x31, 0x16, 0xb1, 0xf3,
+	0x78, 0x3f, 0x4c, 0x82, 0x9c, 0xe4, 0xeb, 0x30, 0x6d, 0x6c, 0x07, 0x3d, 0xc6, 0x7d, 0x55, 0x70,
+	0x03, 0x96, 0x78, 0x72, 0x73, 0xe8, 0xa7, 0xe5, 0x56, 0x67, 0xb3, 0x03, 0x77, 0x7a, 0x22, 0x78,
+	0xe4, 0x53, 0x59, 0xad, 0x6c, 0x7e, 0x02, 0xf7, 0x12, 0x5f, 0xbe, 0x1d, 0xa1, 0xd0, 0x30, 0xe2,
+	0x29, 0x72, 0x7a, 0x3a, 0x56, 0x76, 0x36, 0xe0, 0x3a, 0xcf, 0x70, 0xa9, 0xa1, 0xfc, 0xc2, 0xbc,
+	0x0b, 0x9b, 0x71, 0xfd, 0x86, 0x43, 0xce, 0xce, 0x34, 0x4f, 0xf3, 0x7a, 0xd8, 0xb0, 0x13, 0x47,
+	0xe3, 0x46, 0x1e, 0x86, 0x35, 0xc6, 0x12, 0xbe, 0x4c, 0x61, 0xf7, 0xdf, 0x15, 0xb8, 0xd6, 0x13,
+	0x01, 0x71, 0x60, 0x45, 0x1b, 0xdb, 0xdb, 0x56, 0xb6, 0xa3, 0xac, 0xa9, 0x59, 0x30, 0xee, 0xce,
+	0x10, 0xaa, 0x78, 0x7c, 0x58, 0xad, 0x9a, 0x02, 0xb2, 0x59, 0x52, 0xae, 0x82, 0x18, 0xf7, 0xe7,
+	0x42, 0x8a, 0x56, 0xaa, 0x06, 0x49, 0xb3, 0x52, 0x05, 0xd1, 0xac, 0xcc, 0x1a, 0xc7, 0x38, 0x3f,
+	0xe5, 0x59, 0xd4, 0xf2, 0x53, 0x16, 0x6a, 0xf9, 0xa9, 0x9e, 0x62, 0xf2, 0x19, 0xdc, 0x28, 0x8e,
+	0x30, 0x59, 0x2f, 0x29, 0x15, 0x45, 0xc6, 0x66, 0xad, 0x48, 0xb1, 0x3d, 0x06, 0xc8, 0xa7, 0x9e,
+	0xac, 0x95, 0x1d, 0x50, 0x02, 0xa3, 0x53, 0x23, 0x28, 0xf2, 0xe4, 0x4b, 0x42, 0xe3, 0xc9, 0x05,
+	0x1a, 0xcf, 0xf4, 0x5a, 0x89, 0x79, 0xf2, 0x9d, 0xa2, 0xf1, 0xe4, 0x02, 0x8d, 0x67, 0x7a, 0x0b,
+	0xc5, 0xf5, 0xad, 0x5a, 0x41, 0x5a, 0x7d, 0xab, 0x20, 0x5a, 0x7d, 0x67, 0x2d, 0x32, 0xf2, 0x05,
+	0xdc, 0xd4, 0xb6, 0x18, 0xd9, 0xd0, 0xb5, 0x8b, 0x52, 0x63, 0x6b, 0x96, 0x54, 0xd1, 0x0e, 0x60,
+	0xad, 0x66, 0x59, 0x91, 0xad, 0xea, 0x16, 0x2f, 0xa3, 0x8c, 0x77, 0x16, 0x41, 0x15, 0xcd, 0xd5,
+	0xec, 0x3b, 0xcd, 0x5c, 0x0d, 0x4a, 0x33, 0x37, 0x67, 0x77, 0x92, 0xef, 0xe1, 0xce, 0xcc, 0x85,
+	0x4c, 0x1e, 0x54, 0x14, 0xb7, 0x2e, 0xd2, 0xdd, 0xc5, 0xb1, 0xd3, 0x0e, 0xd4, 0x45, 0x5d, 0xe5,
+	0x40, 0x5d, 0xec, 0xbb, 0x8b, 0x63, 0x8b, 0xcd, 0x59, 0xf5, 0x74, 0x68, 0xcd, 0x59, 0x05, 0xd1,
+	0x9a, 0x73, 0xe6, 0x03, 0xf4, 0x35, 0x90, 0xe9, 0x17, 0x86, 0x94, 0x27, 0x67, 0x1a, 0x60, 0xdc,
+	0x9b, 0x03, 0x50, 0xfc, 0xdf, 0xc1, 0xc6, 0xac, 0x07, 0x8a, 0xdc, 0xd7, 0x32, 0x53, 0x0f, 0x35,
+	0x1e, 0x2e, 0x0c, 0x55, 0xd6, 0xbf, 0x81, 0x5b, 0xd5, 0xaf, 0x1a, 0x29, 0x6f, 0xd1, 0x6a, 0x90,
+	0xf1, 0xf6, 0x02, 0x20, 0x65, 0xeb, 0xa7, 0x26, 0x98, 0xf3, 0x5f, 0x47, 0x62, 0x97, 0x6b, 0x33,
+	0x57, 0xc1, 0x78, 0xef, 0x7f, 0x2a, 0x64, 0x0e, 0xed, 0x7f, 0xf4, 0xdb, 0x65, 0xbb, 0xf9, 0xe2,
+	0xb2, 0xdd, 0xfc, 0xeb, 0xb2, 0xdd, 0xfc, 0xf9, 0xaa, 0xdd, 0x78, 0x71, 0xd5, 0x6e, 0xfc, 0x7e,
+	0xd5, 0x6e, 0x7c, 0xf5, 0x56, 0xe1, 0x03, 0xf9, 0x53, 0xca, 0xdd, 0x03, 0xc6, 0xd1, 0x16, 0xd8,
+	0x77, 0xa9, 0x7d, 0x6e, 0x07, 0xec, 0x6c, 0xf2, 0x8d, 0x7c, 0xf2, 0x4a, 0xf2, 0x4d, 0xfb, 0xee,
+	0x7f, 0x01, 0x00, 0x00, 0xff, 0xff, 0x88, 0xd0, 0xca, 0xc1, 0x5c, 0x0c, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -1028,6 +889,8 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
+	// SubmitProposal defines a method to create new proposal given a content.
+	SubmitProposal(ctx context.Context, in *MsgSubmitProposal, opts ...grpc.CallOption) (*MsgSubmitProposalResponse, error)
 	// WhitelistPermissions defines a method for whitelisting a permission for an address.
 	WhitelistPermissions(ctx context.Context, in *MsgWhitelistPermissions, opts ...grpc.CallOption) (*MsgWhitelistPermissionsResponse, error)
 	// BlacklistPermissions defines a method for blacklisting a permission for an address.
@@ -1036,16 +899,6 @@ type MsgClient interface {
 	ClaimCouncilor(ctx context.Context, in *MsgClaimCouncilor, opts ...grpc.CallOption) (*MsgClaimCouncilorResponse, error)
 	// VoteProposal defines a method for voting a proposal
 	VoteProposal(ctx context.Context, in *MsgVoteProposal, opts ...grpc.CallOption) (*MsgVoteProposalResponse, error)
-	// ProposalAssignPermission defines a method for assigning a permission proposal
-	ProposalAssignPermission(ctx context.Context, in *MsgProposalAssignPermission, opts ...grpc.CallOption) (*MsgProposalAssignPermissionResponse, error)
-	// ProposalUpsertDataRegistry defines a method for upserting data registry proposal
-	ProposalUpsertDataRegistry(ctx context.Context, in *MsgProposalUpsertDataRegistry, opts ...grpc.CallOption) (*MsgProposalUpsertDataRegistryResponse, error)
-	// ProposalSetNetworkProperty defines a method for setting a network property proposal
-	ProposalSetNetworkProperty(ctx context.Context, in *MsgProposalSetNetworkProperty, opts ...grpc.CallOption) (*MsgProposalSetNetworkPropertyResponse, error)
-	// ProposalSetPoorNetworkMessages defines a method for setting poor network allowed messages
-	ProposalSetPoorNetworkMessages(ctx context.Context, in *MsgProposalSetPoorNetworkMessages, opts ...grpc.CallOption) (*MsgProposalSetPoorNetworkMessagesResponse, error)
-	// ProposalCreateRole defines a method for creating a role proposal
-	ProposalCreateRole(ctx context.Context, in *MsgProposalCreateRole, opts ...grpc.CallOption) (*MsgProposalCreateRoleResponse, error)
 	// CreateRole defines a method for creating a role
 	CreateRole(ctx context.Context, in *MsgCreateRole, opts ...grpc.CallOption) (*MsgCreateRoleResponse, error)
 	// AssignRole defines a method for assigning a role to an address
@@ -1084,6 +937,15 @@ func NewMsgClient(cc grpc1.ClientConn) MsgClient {
 	return &msgClient{cc}
 }
 
+func (c *msgClient) SubmitProposal(ctx context.Context, in *MsgSubmitProposal, opts ...grpc.CallOption) (*MsgSubmitProposalResponse, error) {
+	out := new(MsgSubmitProposalResponse)
+	err := c.cc.Invoke(ctx, "/kira.gov.Msg/SubmitProposal", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *msgClient) WhitelistPermissions(ctx context.Context, in *MsgWhitelistPermissions, opts ...grpc.CallOption) (*MsgWhitelistPermissionsResponse, error) {
 	out := new(MsgWhitelistPermissionsResponse)
 	err := c.cc.Invoke(ctx, "/kira.gov.Msg/WhitelistPermissions", in, out, opts...)
@@ -1114,51 +976,6 @@ func (c *msgClient) ClaimCouncilor(ctx context.Context, in *MsgClaimCouncilor, o
 func (c *msgClient) VoteProposal(ctx context.Context, in *MsgVoteProposal, opts ...grpc.CallOption) (*MsgVoteProposalResponse, error) {
 	out := new(MsgVoteProposalResponse)
 	err := c.cc.Invoke(ctx, "/kira.gov.Msg/VoteProposal", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *msgClient) ProposalAssignPermission(ctx context.Context, in *MsgProposalAssignPermission, opts ...grpc.CallOption) (*MsgProposalAssignPermissionResponse, error) {
-	out := new(MsgProposalAssignPermissionResponse)
-	err := c.cc.Invoke(ctx, "/kira.gov.Msg/ProposalAssignPermission", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *msgClient) ProposalUpsertDataRegistry(ctx context.Context, in *MsgProposalUpsertDataRegistry, opts ...grpc.CallOption) (*MsgProposalUpsertDataRegistryResponse, error) {
-	out := new(MsgProposalUpsertDataRegistryResponse)
-	err := c.cc.Invoke(ctx, "/kira.gov.Msg/ProposalUpsertDataRegistry", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *msgClient) ProposalSetNetworkProperty(ctx context.Context, in *MsgProposalSetNetworkProperty, opts ...grpc.CallOption) (*MsgProposalSetNetworkPropertyResponse, error) {
-	out := new(MsgProposalSetNetworkPropertyResponse)
-	err := c.cc.Invoke(ctx, "/kira.gov.Msg/ProposalSetNetworkProperty", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *msgClient) ProposalSetPoorNetworkMessages(ctx context.Context, in *MsgProposalSetPoorNetworkMessages, opts ...grpc.CallOption) (*MsgProposalSetPoorNetworkMessagesResponse, error) {
-	out := new(MsgProposalSetPoorNetworkMessagesResponse)
-	err := c.cc.Invoke(ctx, "/kira.gov.Msg/ProposalSetPoorNetworkMessages", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *msgClient) ProposalCreateRole(ctx context.Context, in *MsgProposalCreateRole, opts ...grpc.CallOption) (*MsgProposalCreateRoleResponse, error) {
-	out := new(MsgProposalCreateRoleResponse)
-	err := c.cc.Invoke(ctx, "/kira.gov.Msg/ProposalCreateRole", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1293,6 +1110,8 @@ func (c *msgClient) CancelIdentityRecordsVerifyRequest(ctx context.Context, in *
 
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
+	// SubmitProposal defines a method to create new proposal given a content.
+	SubmitProposal(context.Context, *MsgSubmitProposal) (*MsgSubmitProposalResponse, error)
 	// WhitelistPermissions defines a method for whitelisting a permission for an address.
 	WhitelistPermissions(context.Context, *MsgWhitelistPermissions) (*MsgWhitelistPermissionsResponse, error)
 	// BlacklistPermissions defines a method for blacklisting a permission for an address.
@@ -1301,16 +1120,6 @@ type MsgServer interface {
 	ClaimCouncilor(context.Context, *MsgClaimCouncilor) (*MsgClaimCouncilorResponse, error)
 	// VoteProposal defines a method for voting a proposal
 	VoteProposal(context.Context, *MsgVoteProposal) (*MsgVoteProposalResponse, error)
-	// ProposalAssignPermission defines a method for assigning a permission proposal
-	ProposalAssignPermission(context.Context, *MsgProposalAssignPermission) (*MsgProposalAssignPermissionResponse, error)
-	// ProposalUpsertDataRegistry defines a method for upserting data registry proposal
-	ProposalUpsertDataRegistry(context.Context, *MsgProposalUpsertDataRegistry) (*MsgProposalUpsertDataRegistryResponse, error)
-	// ProposalSetNetworkProperty defines a method for setting a network property proposal
-	ProposalSetNetworkProperty(context.Context, *MsgProposalSetNetworkProperty) (*MsgProposalSetNetworkPropertyResponse, error)
-	// ProposalSetPoorNetworkMessages defines a method for setting poor network allowed messages
-	ProposalSetPoorNetworkMessages(context.Context, *MsgProposalSetPoorNetworkMessages) (*MsgProposalSetPoorNetworkMessagesResponse, error)
-	// ProposalCreateRole defines a method for creating a role proposal
-	ProposalCreateRole(context.Context, *MsgProposalCreateRole) (*MsgProposalCreateRoleResponse, error)
 	// CreateRole defines a method for creating a role
 	CreateRole(context.Context, *MsgCreateRole) (*MsgCreateRoleResponse, error)
 	// AssignRole defines a method for assigning a role to an address
@@ -1345,6 +1154,9 @@ type MsgServer interface {
 type UnimplementedMsgServer struct {
 }
 
+func (*UnimplementedMsgServer) SubmitProposal(ctx context.Context, req *MsgSubmitProposal) (*MsgSubmitProposalResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SubmitProposal not implemented")
+}
 func (*UnimplementedMsgServer) WhitelistPermissions(ctx context.Context, req *MsgWhitelistPermissions) (*MsgWhitelistPermissionsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method WhitelistPermissions not implemented")
 }
@@ -1356,21 +1168,6 @@ func (*UnimplementedMsgServer) ClaimCouncilor(ctx context.Context, req *MsgClaim
 }
 func (*UnimplementedMsgServer) VoteProposal(ctx context.Context, req *MsgVoteProposal) (*MsgVoteProposalResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VoteProposal not implemented")
-}
-func (*UnimplementedMsgServer) ProposalAssignPermission(ctx context.Context, req *MsgProposalAssignPermission) (*MsgProposalAssignPermissionResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ProposalAssignPermission not implemented")
-}
-func (*UnimplementedMsgServer) ProposalUpsertDataRegistry(ctx context.Context, req *MsgProposalUpsertDataRegistry) (*MsgProposalUpsertDataRegistryResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ProposalUpsertDataRegistry not implemented")
-}
-func (*UnimplementedMsgServer) ProposalSetNetworkProperty(ctx context.Context, req *MsgProposalSetNetworkProperty) (*MsgProposalSetNetworkPropertyResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ProposalSetNetworkProperty not implemented")
-}
-func (*UnimplementedMsgServer) ProposalSetPoorNetworkMessages(ctx context.Context, req *MsgProposalSetPoorNetworkMessages) (*MsgProposalSetPoorNetworkMessagesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ProposalSetPoorNetworkMessages not implemented")
-}
-func (*UnimplementedMsgServer) ProposalCreateRole(ctx context.Context, req *MsgProposalCreateRole) (*MsgProposalCreateRoleResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ProposalCreateRole not implemented")
 }
 func (*UnimplementedMsgServer) CreateRole(ctx context.Context, req *MsgCreateRole) (*MsgCreateRoleResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateRole not implemented")
@@ -1417,6 +1214,24 @@ func (*UnimplementedMsgServer) CancelIdentityRecordsVerifyRequest(ctx context.Co
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
 	s.RegisterService(&_Msg_serviceDesc, srv)
+}
+
+func _Msg_SubmitProposal_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgSubmitProposal)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).SubmitProposal(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.gov.Msg/SubmitProposal",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).SubmitProposal(ctx, req.(*MsgSubmitProposal))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Msg_WhitelistPermissions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -1487,96 +1302,6 @@ func _Msg_VoteProposal_Handler(srv interface{}, ctx context.Context, dec func(in
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).VoteProposal(ctx, req.(*MsgVoteProposal))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Msg_ProposalAssignPermission_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgProposalAssignPermission)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).ProposalAssignPermission(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/kira.gov.Msg/ProposalAssignPermission",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).ProposalAssignPermission(ctx, req.(*MsgProposalAssignPermission))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Msg_ProposalUpsertDataRegistry_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgProposalUpsertDataRegistry)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).ProposalUpsertDataRegistry(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/kira.gov.Msg/ProposalUpsertDataRegistry",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).ProposalUpsertDataRegistry(ctx, req.(*MsgProposalUpsertDataRegistry))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Msg_ProposalSetNetworkProperty_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgProposalSetNetworkProperty)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).ProposalSetNetworkProperty(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/kira.gov.Msg/ProposalSetNetworkProperty",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).ProposalSetNetworkProperty(ctx, req.(*MsgProposalSetNetworkProperty))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Msg_ProposalSetPoorNetworkMessages_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgProposalSetPoorNetworkMessages)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).ProposalSetPoorNetworkMessages(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/kira.gov.Msg/ProposalSetPoorNetworkMessages",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).ProposalSetPoorNetworkMessages(ctx, req.(*MsgProposalSetPoorNetworkMessages))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Msg_ProposalCreateRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgProposalCreateRole)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).ProposalCreateRole(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/kira.gov.Msg/ProposalCreateRole",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).ProposalCreateRole(ctx, req.(*MsgProposalCreateRole))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1838,6 +1563,10 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
+			MethodName: "SubmitProposal",
+			Handler:    _Msg_SubmitProposal_Handler,
+		},
+		{
 			MethodName: "WhitelistPermissions",
 			Handler:    _Msg_WhitelistPermissions_Handler,
 		},
@@ -1852,26 +1581,6 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "VoteProposal",
 			Handler:    _Msg_VoteProposal_Handler,
-		},
-		{
-			MethodName: "ProposalAssignPermission",
-			Handler:    _Msg_ProposalAssignPermission_Handler,
-		},
-		{
-			MethodName: "ProposalUpsertDataRegistry",
-			Handler:    _Msg_ProposalUpsertDataRegistry_Handler,
-		},
-		{
-			MethodName: "ProposalSetNetworkProperty",
-			Handler:    _Msg_ProposalSetNetworkProperty_Handler,
-		},
-		{
-			MethodName: "ProposalSetPoorNetworkMessages",
-			Handler:    _Msg_ProposalSetPoorNetworkMessages_Handler,
-		},
-		{
-			MethodName: "ProposalCreateRole",
-			Handler:    _Msg_ProposalCreateRole_Handler,
 		},
 		{
 			MethodName: "CreateRole",
@@ -1932,6 +1641,83 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "tx.proto",
+}
+
+func (m *MsgSubmitProposal) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgSubmitProposal) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgSubmitProposal) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Content != nil {
+		{
+			size, err := m.Content.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTx(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Description) > 0 {
+		i -= len(m.Description)
+		copy(dAtA[i:], m.Description)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Description)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Proposer) > 0 {
+		i -= len(m.Proposer)
+		copy(dAtA[i:], m.Proposer)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Proposer)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgSubmitProposalResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgSubmitProposalResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgSubmitProposalResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.ProposalID != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.ProposalID))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *MsgWhitelistPermissionsResponse) Marshal() (dAtA []byte, err error) {
@@ -2023,146 +1809,6 @@ func (m *MsgVoteProposalResponse) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	_ = i
 	var l int
 	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *MsgProposalAssignPermissionResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgProposalAssignPermissionResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgProposalAssignPermissionResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.ProposalID != 0 {
-		i = encodeVarintTx(dAtA, i, uint64(m.ProposalID))
-		i--
-		dAtA[i] = 0x8
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *MsgProposalUpsertDataRegistryResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgProposalUpsertDataRegistryResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgProposalUpsertDataRegistryResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.ProposalID != 0 {
-		i = encodeVarintTx(dAtA, i, uint64(m.ProposalID))
-		i--
-		dAtA[i] = 0x8
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *MsgProposalSetNetworkPropertyResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgProposalSetNetworkPropertyResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgProposalSetNetworkPropertyResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.ProposalID != 0 {
-		i = encodeVarintTx(dAtA, i, uint64(m.ProposalID))
-		i--
-		dAtA[i] = 0x8
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *MsgProposalSetPoorNetworkMessagesResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgProposalSetPoorNetworkMessagesResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgProposalSetPoorNetworkMessagesResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.ProposalID != 0 {
-		i = encodeVarintTx(dAtA, i, uint64(m.ProposalID))
-		i--
-		dAtA[i] = 0x8
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *MsgProposalCreateRoleResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgProposalCreateRoleResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgProposalCreateRoleResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.ProposalID != 0 {
-		i = encodeVarintTx(dAtA, i, uint64(m.ProposalID))
-		i--
-		dAtA[i] = 0x8
-	}
 	return len(dAtA) - i, nil
 }
 
@@ -2509,6 +2155,39 @@ func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+func (m *MsgSubmitProposal) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Proposer)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Description)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.Content != nil {
+		l = m.Content.Size()
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgSubmitProposalResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.ProposalID != 0 {
+		n += 1 + sovTx(uint64(m.ProposalID))
+	}
+	return n
+}
+
 func (m *MsgWhitelistPermissionsResponse) Size() (n int) {
 	if m == nil {
 		return 0
@@ -2542,66 +2221,6 @@ func (m *MsgVoteProposalResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
-	return n
-}
-
-func (m *MsgProposalAssignPermissionResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.ProposalID != 0 {
-		n += 1 + sovTx(uint64(m.ProposalID))
-	}
-	return n
-}
-
-func (m *MsgProposalUpsertDataRegistryResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.ProposalID != 0 {
-		n += 1 + sovTx(uint64(m.ProposalID))
-	}
-	return n
-}
-
-func (m *MsgProposalSetNetworkPropertyResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.ProposalID != 0 {
-		n += 1 + sovTx(uint64(m.ProposalID))
-	}
-	return n
-}
-
-func (m *MsgProposalSetPoorNetworkMessagesResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.ProposalID != 0 {
-		n += 1 + sovTx(uint64(m.ProposalID))
-	}
-	return n
-}
-
-func (m *MsgProposalCreateRoleResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.ProposalID != 0 {
-		n += 1 + sovTx(uint64(m.ProposalID))
-	}
 	return n
 }
 
@@ -2742,6 +2361,233 @@ func sovTx(x uint64) (n int) {
 }
 func sozTx(x uint64) (n int) {
 	return sovTx(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
+func (m *MsgSubmitProposal) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgSubmitProposal: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgSubmitProposal: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Proposer", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Proposer = append(m.Proposer[:0], dAtA[iNdEx:postIndex]...)
+			if m.Proposer == nil {
+				m.Proposer = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Description", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Description = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Content", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Content == nil {
+				m.Content = &types.Any{}
+			}
+			if err := m.Content.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgSubmitProposalResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgSubmitProposalResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgSubmitProposalResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ProposalID", wireType)
+			}
+			m.ProposalID = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ProposalID |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
 }
 func (m *MsgWhitelistPermissionsResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
@@ -2931,366 +2777,6 @@ func (m *MsgVoteProposalResponse) Unmarshal(dAtA []byte) error {
 			return fmt.Errorf("proto: MsgVoteProposalResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *MsgProposalAssignPermissionResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgProposalAssignPermissionResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgProposalAssignPermissionResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ProposalID", wireType)
-			}
-			m.ProposalID = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.ProposalID |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *MsgProposalUpsertDataRegistryResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgProposalUpsertDataRegistryResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgProposalUpsertDataRegistryResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ProposalID", wireType)
-			}
-			m.ProposalID = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.ProposalID |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *MsgProposalSetNetworkPropertyResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgProposalSetNetworkPropertyResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgProposalSetNetworkPropertyResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ProposalID", wireType)
-			}
-			m.ProposalID = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.ProposalID |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *MsgProposalSetPoorNetworkMessagesResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgProposalSetPoorNetworkMessagesResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgProposalSetPoorNetworkMessagesResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ProposalID", wireType)
-			}
-			m.ProposalID = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.ProposalID |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *MsgProposalCreateRoleResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgProposalCreateRoleResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgProposalCreateRoleResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ProposalID", wireType)
-			}
-			m.ProposalID = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.ProposalID |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])

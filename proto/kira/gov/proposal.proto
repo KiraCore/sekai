@@ -37,6 +37,7 @@ enum VoteResult {
   VOTE_PENDING = 4 [(gogoproto.enumvalue_customname) = "Pending"];
   VOTE_RESULT_QUORUM_NOT_REACHED = 5 [(gogoproto.enumvalue_customname) = "QuorumNotReached"];
   VOTE_RESULT_ENACTMENT = 6 [(gogoproto.enumvalue_customname) = "Enactment"];
+  VOTE_RESULT_PASSED_WITH_EXEC_FAIL = 7 [(gogoproto.enumvalue_customname) = "PassedWithExecFail"];
 }
 
 message Vote {
@@ -59,45 +60,6 @@ message MsgVoteProposal {
   VoteOption option      = 3;
 }
 
-message MsgProposalAssignPermission {
-  bytes proposer = 1 [
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
-  ];
-
-  string description = 4;
-
-  bytes address = 2 [
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
-    (gogoproto.moretags) = "yaml:\"address\""
-  ];
-
-  uint32 permission = 3;
-}
-
-message MsgProposalUpsertDataRegistry {
-  bytes proposer = 1 [
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
-  ];
-  string description = 7;
-
-  string key = 2;
-
-  string hash = 3;
-
-  string reference = 4;
-
-  string encoding = 5;
-
-  uint64 size = 6;
-}
-
-message MsgProposalSetPoorNetworkMessages {
-  bytes proposer = 1 [
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
-  ];
-  string description = 3;
-  repeated string messages = 2;
-}
 
 message Proposal {
   option (gogoproto.goproto_getters) = false;
@@ -121,6 +83,8 @@ message Proposal {
   VoteResult result = 8;
 
   string description = 9;
+
+  string exec_result = 10; // describes execution result
 }
 
 message AssignPermissionProposal {
@@ -135,16 +99,6 @@ message AssignPermissionProposal {
   uint32 permission = 2;
 }
 
-message MsgProposalSetNetworkProperty {
-  bytes proposer = 1 [
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
-  ];
-  string description = 4;
-
-  NetworkProperty network_property = 2; // enum value
-
-  uint64 value = 3;
-}
 
 message SetNetworkPropertyProposal {
   option (cosmos_proto.implements_interface) = "Content";
@@ -172,17 +126,6 @@ message UpsertDataRegistryProposal {
 
 message SetPoorNetworkMessagesProposal {
   repeated string messages = 1;
-}
-
-message MsgProposalCreateRole {
-  bytes proposer = 1 [
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
-  ];
-  string description = 5;
-
-  uint32 role = 2;
-  repeated PermValue whitelisted_permissions = 3;
-  repeated PermValue blacklisted_permissions = 4;
 }
 
 message CreateRoleProposal {

@@ -7,12 +7,8 @@ import (
 // custom msg types
 const (
 	// governance
-	MsgTypeProposalSetNetworkProperty     = "proposal-set-network-property"
-	MsgTypeProposalAssignPermission       = "proposal-assign-permission"
-	MsgTypeProposalUpsertDataRegistry     = "proposal-upsert-data-registry"
-	MsgTypeProposalSetPoorNetworkMessages = "proposal-set-poor-network-messages"
-	MsgTypeProposalCreateRole             = "proposal-create-role"
-	MsgTypeVoteProposal                   = "vote-proposal"
+	MsgTypeSubmitProposal = "submit-proposal"
+	MsgTypeVoteProposal   = "vote-proposal"
 
 	MsgTypeWhitelistPermissions = "whitelist-permissions"
 	MsgTypeBlacklistPermissions = "blacklist-permissions"
@@ -37,15 +33,11 @@ const (
 	MsgTypeCancelIdentityRecordsVerifyRequest = "cancel-identity-records-verify-request"
 
 	// staking module
-	MsgTypeClaimValidator          = "claim-validator"
-	MsgTypeProposalUnjailValidator = "proposal-unjail-validator"
+	MsgTypeClaimValidator = "claim-validator"
 
 	// tokens module
-	MsgTypeUpsertTokenAlias               = "upsert-token-alias"
-	MsgTypeUpsertTokenRate                = "upsert-token-rate"
-	MsgTypeProposalUpsertTokenAlias       = "propose-upsert-token-alias"
-	MsgTypeProposalUpsertTokenRates       = "propose-upsert-token-rates"
-	MsgTypeProposalTokensWhiteBlackChange = "propose-tokens-white-black-change"
+	MsgTypeUpsertTokenAlias = "upsert-token-alias"
+	MsgTypeUpsertTokenRate  = "upsert-token-rate"
 
 	// slashing module
 	MsgTypeActivate                        = "activate"
@@ -54,7 +46,6 @@ const (
 	MsgTypeProposalResetWholeValidatorRank = "proposal-reset-whole-validator-rank"
 
 	//upgrade module
-	MsgProposalSoftwareUpgrade = "propose-software-upgrade"
 )
 
 // MsgFuncIDMapping defines function_id mapping
@@ -62,16 +53,7 @@ var MsgFuncIDMapping = map[string]int64{
 	bank.TypeMsgSend:      1,
 	bank.TypeMsgMultiSend: 2,
 
-	MsgTypeProposalAssignPermission:       3,
-	MsgTypeProposalSetNetworkProperty:     4,
-	MsgTypeProposalUpsertDataRegistry:     5,
-	MsgTypeProposalSetPoorNetworkMessages: 6,
-	MsgTypeProposalUpsertTokenAlias:       7,
-	MsgTypeProposalUpsertTokenRates:       8,
-	MsgTypeProposalTokensWhiteBlackChange: 9,
-	MsgTypeProposalUnjailValidator:        10,
-	MsgProposalSoftwareUpgrade:            11,
-	MsgTypeVoteProposal:                   12,
+	MsgTypeVoteProposal: 12,
 
 	MsgTypeSetNetworkProperties:          20,
 	MsgTypeSetExecutionFee:               21,

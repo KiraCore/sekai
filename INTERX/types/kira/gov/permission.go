@@ -61,6 +61,10 @@ const (
 	PermCreateResetWholeValidatorRankProposal PermValue = 26
 	// PERMISSION_VOTE_RESET_WHOLE_VALIDATOR_RANK_PROPOSAL defines the permission needed to vote on reset whole validator rank proposal
 	PermVoteResetWholeValidatorRankProposal PermValue = 27
+	// PERMISSION_CREATE_SOFTWARE_UPGRADE_PROPOSAL defines the permission needed to create a proposal for software upgrade
+	PermCreateSoftwareUpgradeProposal PermValue = 28
+	// PERMISSION_SOFTWARE_UPGRADE_PROPOSAL defines the permission needed to vote on software upgrade proposal
+	PermVoteSoftwareUpgradeProposal PermValue = 29
 )
 
 var PermValue_name = map[int32]string{
@@ -92,6 +96,8 @@ var PermValue_name = map[int32]string{
 	25: "PERMISSION_VOTE_TOKENS_WHITE_BLACK_CHANGE_PROPOSAL",
 	26: "PERMISSION_CREATE_RESET_WHOLE_VALIDATOR_RANK_PROPOSAL",
 	27: "PERMISSION_VOTE_RESET_WHOLE_VALIDATOR_RANK_PROPOSAL",
+	28: "PERMISSION_CREATE_SOFTWARE_UPGRADE_PROPOSAL",
+	29: "PERMISSION_SOFTWARE_UPGRADE_PROPOSAL",
 }
 
 var PermValue_value = map[string]int32{
@@ -123,4 +129,6 @@ var PermValue_value = map[string]int32{
 	"PERMISSION_VOTE_TOKENS_WHITE_BLACK_CHANGE_PROPOSAL":    25,
 	"PERMISSION_CREATE_RESET_WHOLE_VALIDATOR_RANK_PROPOSAL": 26,
 	"PERMISSION_VOTE_RESET_WHOLE_VALIDATOR_RANK_PROPOSAL":   27,
+	"PERMISSION_CREATE_SOFTWARE_UPGRADE_PROPOSAL":           28,
+	"PERMISSION_SOFTWARE_UPGRADE_PROPOSAL":                  29,
 }
