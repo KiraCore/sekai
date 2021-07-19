@@ -61,7 +61,7 @@ func QueryKiraStatusRequest(rpcAddr string) http.HandlerFunc {
 				}
 			}
 
-			response.Response, response.Error, statusCode = common.MakeGetRequest(rpcAddr, "/status", "")
+			response.Response, response.Error, statusCode = common.MakeTendermintRPCRequest(rpcAddr, "/status", "")
 		}
 
 		common.WrapResponse(w, request, *response, statusCode, common.RPCMethods["GET"][config.QueryKiraStatus].CachingEnabled)

@@ -37,7 +37,7 @@ func queryNetworkListHandler(r *http.Request, request types.InterxRequest, rpcAd
 
 	var response dataapi.NetworkListResponse
 
-	success, failure, status := common.MakeGetRequest(rpcAddr, "/status", "")
+	success, failure, status := common.MakeTendermintRPCRequest(rpcAddr, "/status", "")
 
 	if success != nil {
 		type TempResponse struct {
@@ -112,7 +112,7 @@ func queryNetworkOptionsHandler(r *http.Request, request types.InterxRequest, rp
 
 	var response dataapi.NetworkOptionsResponse
 
-	success, failure, status := common.MakeGetRequest(rpcAddr, "/status", "")
+	success, failure, status := common.MakeTendermintRPCRequest(rpcAddr, "/status", "")
 
 	if success != nil {
 		type TempResponse struct {
@@ -186,7 +186,7 @@ func queryNetworkStatusHandler(r *http.Request, request types.InterxRequest, rpc
 
 	var response dataapi.NetworkStatusResponse
 
-	success, failure, status := common.MakeGetRequest(rpcAddr, "/status", "")
+	success, failure, status := common.MakeTendermintRPCRequest(rpcAddr, "/status", "")
 
 	if success != nil {
 		type TempResponse struct {

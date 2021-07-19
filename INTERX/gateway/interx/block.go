@@ -52,7 +52,7 @@ func queryBlocksHandle(rpcAddr string, r *http.Request, gwCosmosmux *runtime.Ser
 
 	// search blocks
 
-	return common.MakeGetRequest(rpcAddr, "/blockchain", strings.Join(events, "&"))
+	return common.MakeTendermintRPCRequest(rpcAddr, "/blockchain", strings.Join(events, "&"))
 }
 
 // QueryBlocksRequest is a function to query Blocks.
@@ -86,10 +86,10 @@ func QueryBlocksRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.Hand
 }
 
 func queryBlockByHeightOrHashHandle(rpcAddr string, height string) (interface{}, interface{}, int) {
-	success, err, statusCode := common.MakeGetRequest(rpcAddr, "/block", fmt.Sprintf("height=%s", height))
+	success, err, statusCode := common.MakeTendermintRPCRequest(rpcAddr, "/block", fmt.Sprintf("height=%s", height))
 
 	if err != nil {
-		success, err, statusCode = common.MakeGetRequest(rpcAddr, "/block_by_hash", fmt.Sprintf("hash=%s", height))
+		success, err, statusCode = common.MakeTendermintRPCRequest(rpcAddr, "/block_by_hash", fmt.Sprintf("hash=%s", height))
 	}
 
 	return success, err, statusCode

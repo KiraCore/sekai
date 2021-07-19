@@ -1,17 +1,17 @@
 {
-  "version": "0.1.5",
+  "version": "0.1.0",
   "serve_https": false,
   "grpc": "dns:///0.0.0.0:9090",
   "rpc": "http://0.0.0.0:26657",
   "port": "11000",
   "node": {
-    "node_type": "validator",
+    "node_type": "seed",
     "sentry_node_id": "",
     "priv_sentry_node_id": "",
     "validator_node_id": "",
     "seed_node_id": ""
   },
-  "mnemonic": "jacket timber cook border disease during south bracket buffalo play parade enhance device leg jaguar gain source tattoo exclude slender host pet refuse engage",
+  "mnemonic": "garment wisdom resist address lab barely sudden depend awake vessel protect differ annual island canyon festival broccoli script above tail hour tissue shine suggest",
   "addrbooks": "addrbook.json",
   "node_key": "node_key.json",
   "tx_modes": "sync,async,block",
@@ -32,7 +32,7 @@
     "download_file_size_limitation": "10MB"
   },
   "faucet": {
-    "mnemonic": "jacket timber cook border disease during south bracket buffalo play parade enhance device leg jaguar gain source tattoo exclude slender host pet refuse engage",
+    "mnemonic": "garment wisdom resist address lab barely sudden depend awake vessel protect differ annual island canyon festival broccoli script above tail hour tissue shine suggest",
     "faucet_amounts": {
       "stake": "100000",
       "ukex": "100000",
@@ -116,6 +116,13 @@
           "caching_disable": false,
           "caching_duration": 30
         },
+        "/api/interx_list": {
+          "disable": false,
+          "rate_limit": 0,
+          "auth_rate_limit": 0,
+          "caching_disable": false,
+          "caching_duration": 30
+        },
         "/api/kira/gov/data/{key}": {
           "disable": false,
           "rate_limit": 0,
@@ -180,6 +187,20 @@
           "caching_duration": 30
         },
         "/api/kira/tokens/rates": {
+          "disable": false,
+          "rate_limit": 0,
+          "auth_rate_limit": 0,
+          "caching_disable": false,
+          "caching_duration": 30
+        },
+        "/api/priv_p2p_list": {
+          "disable": false,
+          "rate_limit": 0,
+          "auth_rate_limit": 0,
+          "caching_disable": false,
+          "caching_duration": 30
+        },
+        "/api/pub_p2p_list": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
