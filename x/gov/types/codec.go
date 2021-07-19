@@ -100,11 +100,15 @@ func registerProposalCodec(cdc *codec.LegacyAmino) {
 		"description": "MsgSubmitProposal defines a proposal message to submit a proposal.",
 		"parameters": {
 			"proposer": {
-				"type":        "string",
+				"type":        "address",
 				"description": "the proposer of the proposal."
 			},
+			"title": {
+				"type":        "string",
+				"description": "the title of the proposal."
+			},
 			"description": {
-				"type":        "address",
+				"type":        "string",
 				"description": "the description of the proposal."
 			},
 			"content": {
@@ -146,10 +150,6 @@ func registerIdRecordsCodec(cdc *codec.LegacyAmino) {
 			"infos": {
 				"type":        "array",
 				"description": "key/value array for the mappings of the identity record."
-			},
-			"date": {
-				"type":        "time",
-				"description": "The time the identity record is registered at."
 			}
 		}
 	}`)
@@ -169,10 +169,6 @@ func registerIdRecordsCodec(cdc *codec.LegacyAmino) {
 			"infos": {
 				"type":        "array",
 				"description": "key/value array for the mappings of the identity record."
-			},
-			"date": {
-				"type":        "time",
-				"description": "The time the identity record is registered at."
 			}
 		}
 	}`)

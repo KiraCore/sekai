@@ -30,7 +30,6 @@ message MsgCreateIdentityRecord {
         (gogoproto.moretags) = "yaml:\"address\""
     ];
     repeated IdentityInfoEntry infos = 2 [ (gogoproto.nullable) = false ];
-    google.protobuf.Timestamp date = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 }
 
 message MsgEditIdentityRecord {
@@ -40,7 +39,6 @@ message MsgEditIdentityRecord {
         (gogoproto.moretags) = "yaml:\"address\""
     ];
     repeated IdentityInfoEntry infos = 3 [ (gogoproto.nullable) = false ];
-    google.protobuf.Timestamp date = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 }
 
 message IdentityRecordsVerify {

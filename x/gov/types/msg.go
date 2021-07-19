@@ -2,7 +2,6 @@ package types
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/KiraCore/sekai/types"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
@@ -432,11 +431,10 @@ func (m *MsgVoteProposal) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgCreateIdentityRecord(address sdk.AccAddress, infos []IdentityInfoEntry, date time.Time) *MsgCreateIdentityRecord {
+func NewMsgCreateIdentityRecord(address sdk.AccAddress, infos []IdentityInfoEntry) *MsgCreateIdentityRecord {
 	return &MsgCreateIdentityRecord{
 		Address: address,
 		Infos:   infos,
-		Date:    date,
 	}
 }
 
@@ -451,9 +449,6 @@ func (m *MsgCreateIdentityRecord) Type() string {
 func (m *MsgCreateIdentityRecord) ValidateBasic() error {
 	if m.Address.Empty() {
 		return ErrEmptyProposerAccAddress
-	}
-	if m.Date.IsZero() {
-		return ErrInvalidDate
 	}
 	if len(m.Infos) == 0 {
 		return ErrEmptyInfos
@@ -472,12 +467,11 @@ func (m *MsgCreateIdentityRecord) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgEditIdentityRecord(recordId uint64, address sdk.AccAddress, infos []IdentityInfoEntry, date time.Time) *MsgEditIdentityRecord {
+func NewMsgEditIdentityRecord(recordId uint64, address sdk.AccAddress, infos []IdentityInfoEntry) *MsgEditIdentityRecord {
 	return &MsgEditIdentityRecord{
 		RecordId: recordId,
 		Address:  address,
 		Infos:    infos,
-		Date:     date,
 	}
 }
 
@@ -495,9 +489,6 @@ func (m *MsgEditIdentityRecord) ValidateBasic() error {
 	}
 	if m.RecordId == 0 {
 		return ErrInvalidRecordId
-	}
-	if m.Date.IsZero() {
-		return ErrInvalidDate
 	}
 	if len(m.Infos) == 0 {
 		return ErrEmptyInfos

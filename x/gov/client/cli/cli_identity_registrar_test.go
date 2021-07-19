@@ -27,7 +27,6 @@ func (s IntegrationTestSuite) TestTxCreateIdentityRecord() {
 		cmd,
 		[]string{
 			fmt.Sprintf("--%s=%s", cli.FlagInfosFile, infosFile.Name()),
-			fmt.Sprintf("--%s=%d", cli.FlagTimestamp, 1625574681),
 			fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
@@ -60,7 +59,6 @@ func (s IntegrationTestSuite) TestTxEditIdentityRecord() {
 		[]string{
 			fmt.Sprintf("--%s=%d", cli.FlagRecordId, 1),
 			fmt.Sprintf("--%s=%s", cli.FlagInfosFile, infosFile.Name()),
-			fmt.Sprintf("--%s=%d", cli.FlagTimestamp, 1625574681),
 			fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),

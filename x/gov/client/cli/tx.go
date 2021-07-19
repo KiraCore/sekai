@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -38,7 +37,6 @@ const (
 	FlagWhitelistPerms    = "whitelist"
 	FlagBlacklistPerms    = "blacklist"
 	FlagInfosFile         = "infos-file"
-	FlagTimestamp         = "timestamp"
 	FlagRecordId          = "record-id"
 	FlagVerifier          = "verifier"
 	FlagRecordIds         = "record-ids"
@@ -1020,17 +1018,9 @@ func GetTxCreateIdentityRecord() *cobra.Command {
 				return err
 			}
 
-			timestamp, err := cmd.Flags().GetInt64(FlagTimestamp)
-			if err != nil {
-				return err
-			}
-
-			date := time.Unix(timestamp, 0)
-
 			msg := types.NewMsgCreateIdentityRecord(
 				clientCtx.FromAddress,
 				infos,
-				date,
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
@@ -1039,10 +1029,8 @@ func GetTxCreateIdentityRecord() *cobra.Command {
 
 	flags.AddTxFlagsToCmd(cmd)
 
-	cmd.Flags().Int64(FlagTimestamp, 0, "The date for the info.")
 	cmd.Flags().String(FlagInfosFile, "", "The infos file for identity request.")
 	cmd.MarkFlagRequired(FlagInfosFile)
-	cmd.MarkFlagRequired(FlagTimestamp)
 	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
@@ -1064,12 +1052,6 @@ func GetTxEditIdentityRecord() *cobra.Command {
 				return err
 			}
 
-			timestamp, err := cmd.Flags().GetInt64(FlagTimestamp)
-			if err != nil {
-				return err
-			}
-			date := time.Unix(timestamp, 0)
-
 			recordId, err := cmd.Flags().GetUint64(FlagRecordId)
 			if err != nil {
 				return err
@@ -1079,7 +1061,6 @@ func GetTxEditIdentityRecord() *cobra.Command {
 				recordId,
 				clientCtx.FromAddress,
 				infos,
-				date,
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
@@ -1088,10 +1069,8 @@ func GetTxEditIdentityRecord() *cobra.Command {
 
 	flags.AddTxFlagsToCmd(cmd)
 
-	cmd.Flags().Int64(FlagTimestamp, 0, "The date for the info.")
 	cmd.Flags().String(FlagInfosFile, "", "The infos file for identity request.")
 	cmd.Flags().Uint64(FlagRecordId, 0, "Identity record to edit.")
-	cmd.MarkFlagRequired(FlagTimestamp)
 	cmd.MarkFlagRequired(FlagInfosFile)
 	cmd.MarkFlagRequired(FlagRecordId)
 	cmd.MarkFlagRequired(flags.FlagFrom)
