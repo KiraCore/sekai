@@ -45,6 +45,8 @@ func NewProposal(
 
 	return Proposal{
 		ProposalId:                 proposalID,
+		Title:                      title,
+		Description:                description,
 		SubmitTime:                 submitTime,
 		VotingEndTime:              votingEndTime,
 		EnactmentEndTime:           enactmentEndTime,
@@ -52,7 +54,6 @@ func NewProposal(
 		MinEnactmentEndBlockHeight: minEnactmentEndBlockHeight,
 		Content:                    any,
 		Result:                     Pending,
-		Description:                description,
 	}, nil
 }
 
