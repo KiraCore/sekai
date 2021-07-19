@@ -21,6 +21,7 @@ import (
 
 // define flags
 const (
+	FlagTitle             = "title"
 	FlagDescription       = "description"
 	FlagPermission        = "permission"
 	FlagMinTxFee          = "min_tx_fee"
@@ -612,6 +613,11 @@ func GetTxProposalSetPoorNetworkMessages() *cobra.Command {
 
 			messages := strings.Split(args[0], ",")
 
+			title, err := cmd.Flags().GetString(FlagTitle)
+			if err != nil {
+				return fmt.Errorf("invalid title: %w", err)
+			}
+
 			description, err := cmd.Flags().GetString(FlagDescription)
 			if err != nil {
 				return fmt.Errorf("invalid description: %w", err)
@@ -619,6 +625,7 @@ func GetTxProposalSetPoorNetworkMessages() *cobra.Command {
 
 			msg, err := types.NewMsgSubmitProposal(
 				clientCtx.FromAddress,
+				title,
 				description,
 				types.NewSetPoorNetworkMessagesProposal(messages),
 			)
@@ -630,6 +637,8 @@ func GetTxProposalSetPoorNetworkMessages() *cobra.Command {
 		},
 	}
 
+	cmd.Flags().String(FlagTitle, "", "The title of the proposal.")
+	cmd.MarkFlagRequired(FlagTitle)
 	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
 	cmd.MarkFlagRequired(FlagDescription)
 
@@ -672,6 +681,11 @@ func GetTxProposalSetNetworkProperty() *cobra.Command {
 				return fmt.Errorf("invalid network property value: %w", err)
 			}
 
+			title, err := cmd.Flags().GetString(FlagTitle)
+			if err != nil {
+				return fmt.Errorf("invalid title: %w", err)
+			}
+
 			description, err := cmd.Flags().GetString(FlagDescription)
 			if err != nil {
 				return fmt.Errorf("invalid description: %w", err)
@@ -679,6 +693,7 @@ func GetTxProposalSetNetworkProperty() *cobra.Command {
 
 			msg, err := types.NewMsgSubmitProposal(
 				clientCtx.FromAddress,
+				title,
 				description,
 				types.NewSetNetworkPropertyProposal(types.NetworkProperty(property), uint64(value)),
 			)
@@ -690,6 +705,8 @@ func GetTxProposalSetNetworkProperty() *cobra.Command {
 		},
 	}
 
+	cmd.Flags().String(FlagTitle, "", "The title of the proposal.")
+	cmd.MarkFlagRequired(FlagTitle)
 	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
 	cmd.MarkFlagRequired(FlagDescription)
 
@@ -720,6 +737,11 @@ func GetTxProposalAssignPermission() *cobra.Command {
 				return fmt.Errorf("error getting address: %w", err)
 			}
 
+			title, err := cmd.Flags().GetString(FlagTitle)
+			if err != nil {
+				return fmt.Errorf("invalid title: %w", err)
+			}
+
 			description, err := cmd.Flags().GetString(FlagDescription)
 			if err != nil {
 				return fmt.Errorf("invalid description: %w", err)
@@ -727,6 +749,7 @@ func GetTxProposalAssignPermission() *cobra.Command {
 
 			msg, err := types.NewMsgSubmitProposal(
 				clientCtx.FromAddress,
+				title,
 				description,
 				types.NewAssignPermissionProposal(addr, types.PermValue(perm)),
 			)
@@ -738,6 +761,8 @@ func GetTxProposalAssignPermission() *cobra.Command {
 		},
 	}
 
+	cmd.Flags().String(FlagTitle, "", "The title of the proposal.")
+	cmd.MarkFlagRequired(FlagTitle)
 	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
 	cmd.MarkFlagRequired(FlagDescription)
 
@@ -770,6 +795,11 @@ func GetTxProposalUpsertDataRegistry() *cobra.Command {
 				return err
 			}
 
+			title, err := cmd.Flags().GetString(FlagTitle)
+			if err != nil {
+				return fmt.Errorf("invalid title: %w", err)
+			}
+
 			description, err := cmd.Flags().GetString(FlagDescription)
 			if err != nil {
 				return fmt.Errorf("invalid description: %w", err)
@@ -777,6 +807,7 @@ func GetTxProposalUpsertDataRegistry() *cobra.Command {
 
 			msg, err := types.NewMsgSubmitProposal(
 				clientCtx.FromAddress,
+				title,
 				description,
 				types.NewUpsertDataRegistryProposal(
 					key,
@@ -794,6 +825,8 @@ func GetTxProposalUpsertDataRegistry() *cobra.Command {
 		},
 	}
 
+	cmd.Flags().String(FlagTitle, "", "The title of the proposal.")
+	cmd.MarkFlagRequired(FlagTitle)
 	flags.AddTxFlagsToCmd(cmd)
 	cmd.Flags().String(cli.FlagAddr, "", "the address to set permissions")
 
@@ -930,6 +963,11 @@ func GetTxProposalCreateRole() *cobra.Command {
 			}
 			blacklistPerms := convertAsPermValues(bAsInts)
 
+			title, err := cmd.Flags().GetString(FlagTitle)
+			if err != nil {
+				return fmt.Errorf("invalid title: %w", err)
+			}
+
 			description, err := cmd.Flags().GetString(FlagDescription)
 			if err != nil {
 				return fmt.Errorf("invalid description: %w", err)
@@ -937,6 +975,7 @@ func GetTxProposalCreateRole() *cobra.Command {
 
 			msg, err := types.NewMsgSubmitProposal(
 				clientCtx.FromAddress,
+				title,
 				description,
 				types.NewCreateRoleProposal(
 					types.Role(role),
@@ -954,6 +993,8 @@ func GetTxProposalCreateRole() *cobra.Command {
 
 	flags.AddTxFlagsToCmd(cmd)
 
+	cmd.Flags().String(FlagTitle, "", "The title of the proposal.")
+	cmd.MarkFlagRequired(FlagTitle)
 	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
 	cmd.MarkFlagRequired(FlagDescription)
 	cmd.Flags().Int32Slice(FlagWhitelistPerms, []int32{}, "the whitelist value in format 1,2,3")

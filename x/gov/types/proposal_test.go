@@ -11,6 +11,8 @@ import (
 func TestNewProposal_ProposalIsPendingByDefault(t *testing.T) {
 	proposal, err := NewProposal(
 		1234,
+		"title",
+		"some desc",
 		NewAssignPermissionProposal(
 			types.AccAddress{0x12},
 			PermSetPermissions,
@@ -20,7 +22,6 @@ func TestNewProposal_ProposalIsPendingByDefault(t *testing.T) {
 		time.Now(),
 		2,
 		3,
-		"some description",
 	)
 
 	require.NoError(t, err)

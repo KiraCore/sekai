@@ -162,6 +162,7 @@ func (s IntegrationTestSuite) TestCreateProposalUpsertTokenRates() {
 	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("--%s=%s", cli.FlagDenom, "ubtc"),
 		fmt.Sprintf("--%s=%f", cli.FlagRate, 0.00001),
+		fmt.Sprintf("--%s=%s", cli.FlagTitle, "title"),
 		fmt.Sprintf("--%s=%s", cli.FlagDescription, "some desc"),
 		fmt.Sprintf("--%s=%s", cli.FlagFeePayments, "true"),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
@@ -195,6 +196,7 @@ func (s IntegrationTestSuite) TestCreateProposalUpsertTokenAlias() {
 	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("--%s=%s", cli.FlagSymbol, "ETH"),
 		fmt.Sprintf("--%s=%s", cli.FlagName, "Ethereum"),
+		fmt.Sprintf("--%s=%s", cli.FlagTitle, "title"),
 		fmt.Sprintf("--%s=%s", cli.FlagDescription, "some desc"),
 		fmt.Sprintf("--%s=%s", cli.FlagIcon, "myiconurl"),
 		fmt.Sprintf("--%s=%d", cli.FlagDecimals, 6),
@@ -231,6 +233,7 @@ func (s IntegrationTestSuite) TestTxProposalTokensBlackWhiteChangeCmd() {
 	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("--%s=true", cli.FlagIsBlacklist),
 		fmt.Sprintf("--%s=true", cli.FlagIsAdd),
+		fmt.Sprintf("--%s=%s", cli.FlagTitle, "title"),
 		fmt.Sprintf("--%s=%s", cli.FlagDescription, "some desc"),
 		fmt.Sprintf("--%s=frozen1", cli.FlagTokens),
 		fmt.Sprintf("--%s=frozen2", cli.FlagTokens),

@@ -1155,7 +1155,7 @@ func TestHandler_CreateProposalAssignPermission_Errors(t *testing.T) {
 			tt.preparePerms(t, app, ctx)
 
 			handler := gov.NewHandler(app.CustomGovKeeper)
-			msg, err := types.NewMsgSubmitProposal(proposerAddr, "some desc", tt.content)
+			msg, err := types.NewMsgSubmitProposal(proposerAddr, "title", "some desc", tt.content)
 			require.NoError(t, err)
 			_, err = handler(ctx, msg)
 			require.EqualError(t, err, tt.expectedErr.Error())
@@ -1186,7 +1186,7 @@ func TestHandler_ProposalAssignPermission(t *testing.T) {
 
 	handler := gov.NewHandler(app.CustomGovKeeper)
 	proposal := types.NewAssignPermissionProposal(addr, types.PermValue(1))
-	msg, err := types.NewMsgSubmitProposal(proposerAddr, "some desc", proposal)
+	msg, err := types.NewMsgSubmitProposal(proposerAddr, "title", "some desc", proposal)
 	require.NoError(t, err)
 	res, err := handler(
 		ctx,
@@ -1202,6 +1202,8 @@ func TestHandler_ProposalAssignPermission(t *testing.T) {
 
 	expectedSavedProposal, err := types.NewProposal(
 		1,
+		"title",
+		"some desc",
 		types.NewAssignPermissionProposal(
 			addr,
 			types.PermValue(1),
@@ -1211,7 +1213,6 @@ func TestHandler_ProposalAssignPermission(t *testing.T) {
 		ctx.BlockTime().Add((time.Second*time.Duration(properties.ProposalEndTime))+(time.Second*time.Duration(properties.ProposalEnactmentTime))),
 		ctx.BlockHeight()+2,
 		ctx.BlockHeight()+3,
-		"some desc",
 	)
 	require.NoError(t, err)
 	require.Equal(t, expectedSavedProposal, savedProposal)
@@ -1262,7 +1263,7 @@ func TestHandler_CreateProposalUpsertDataRegistry_Errors(t *testing.T) {
 			tt.preparePerms(t, app, ctx)
 
 			handler := gov.NewHandler(app.CustomGovKeeper)
-			msg, err := types.NewMsgSubmitProposal(proposerAddr, "some desc", tt.content)
+			msg, err := types.NewMsgSubmitProposal(proposerAddr, "title", "some desc", tt.content)
 			require.NoError(t, err)
 			_, err = handler(ctx, msg)
 			require.EqualError(t, err, tt.expectedErr.Error())
@@ -1296,7 +1297,7 @@ func TestHandler_ProposalUpsertDataRegistry(t *testing.T) {
 		"theEncoding",
 		1234,
 	)
-	msg, err := types.NewMsgSubmitProposal(proposerAddr, "some desc", proposal)
+	msg, err := types.NewMsgSubmitProposal(proposerAddr, "title", "some desc", proposal)
 	require.NoError(t, err)
 	res, err := handler(
 		ctx, msg,
@@ -1311,6 +1312,8 @@ func TestHandler_ProposalUpsertDataRegistry(t *testing.T) {
 
 	expectedSavedProposal, err := types.NewProposal(
 		1,
+		"title",
+		"some desc",
 		types.NewUpsertDataRegistryProposal(
 			"theKey",
 			"theHash",
@@ -1323,7 +1326,6 @@ func TestHandler_ProposalUpsertDataRegistry(t *testing.T) {
 		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEnactmentTime)+time.Second*time.Duration(properties.ProposalEndTime)),
 		ctx.BlockHeight()+2,
 		ctx.BlockHeight()+3,
-		"some desc",
 	)
 	require.NoError(t, err)
 	require.Equal(t, expectedSavedProposal, savedProposal)
@@ -1373,6 +1375,8 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 				// Create proposal
 				proposal, err := types.NewProposal(
 					1,
+					"title",
+					"some desc",
 					types.NewAssignPermissionProposal(
 						voterAddr,
 						types.PermClaimCouncilor,
@@ -1382,7 +1386,6 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 					ctx.BlockTime().Add(time.Second*20),
 					ctx.BlockHeight()+2,
 					ctx.BlockHeight()+3,
-					"some desc",
 				)
 
 				require.NoError(t, err)
@@ -1409,6 +1412,8 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 				// Create proposal
 				proposal, err := types.NewProposal(
 					1,
+					"title",
+					"some desc",
 					types.NewAssignPermissionProposal(
 						voterAddr,
 						types.PermClaimCouncilor,
@@ -1418,7 +1423,6 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 					ctx.BlockTime().Add(time.Second*30),
 					ctx.BlockHeight()+2,
 					ctx.BlockHeight()+3,
-					"some desc",
 				)
 				require.NoError(t, err)
 				app.CustomGovKeeper.SaveProposal(ctx, proposal)
@@ -1444,6 +1448,8 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 				// Create proposal
 				proposal, err := types.NewProposal(
 					1,
+					"title",
+					"some desc",
 					types.NewUpsertDataRegistryProposal(
 						"theKey",
 						"theHash",
@@ -1456,7 +1462,6 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 					ctx.BlockTime().Add(time.Second*30),
 					ctx.BlockHeight()+2,
 					ctx.BlockHeight()+3,
-					"some desc",
 				)
 				require.NoError(t, err)
 				app.CustomGovKeeper.SaveProposal(ctx, proposal)
@@ -1516,6 +1521,8 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 				// Create proposal
 				proposal, err := types.NewProposal(
 					1,
+					"title",
+					"some desc",
 					types.NewSetNetworkPropertyProposal(
 						types.MinTxFee,
 						1234,
@@ -1525,7 +1532,6 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 					ctx.BlockTime().Add(time.Second*30),
 					ctx.BlockHeight()+2,
 					ctx.BlockHeight()+3,
-					"some desc",
 				)
 				require.NoError(t, err)
 				app.CustomGovKeeper.SaveProposal(ctx, proposal)
@@ -1551,6 +1557,8 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 				// Create proposal
 				proposal, err := types.NewProposal(
 					1,
+					"title",
+					"some desc",
 					tokenstypes.NewUpsertTokenAliasProposal(
 						"eur",
 						"Euro",
@@ -1563,7 +1571,6 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 					ctx.BlockTime().Add(time.Second*30),
 					ctx.BlockHeight()+2,
 					ctx.BlockHeight()+3,
-					"some desc",
 				)
 				require.NoError(t, err)
 				app.CustomGovKeeper.SaveProposal(ctx, proposal)
@@ -1613,6 +1620,8 @@ func TestHandler_VoteProposal(t *testing.T) {
 	// Create proposal
 	proposal, err := types.NewProposal(
 		1,
+		"title",
+		"some desc",
 		types.NewAssignPermissionProposal(
 			voterAddr,
 			types.PermClaimCouncilor,
@@ -1622,7 +1631,6 @@ func TestHandler_VoteProposal(t *testing.T) {
 		ctx.BlockTime().Add(time.Second*10),
 		ctx.BlockHeight()+2,
 		ctx.BlockHeight()+3,
-		"some desc",
 	)
 	require.NoError(t, err)
 	app.CustomGovKeeper.SaveProposal(ctx, proposal)
@@ -1675,7 +1683,7 @@ func TestHandler_CreateProposalSetNetworkProperty_Errors(t *testing.T) {
 			tt.preparePerms(t, app, ctx)
 
 			handler := gov.NewHandler(app.CustomGovKeeper)
-			msg, err := types.NewMsgSubmitProposal(proposerAddr, "some desc", tt.content)
+			msg, err := types.NewMsgSubmitProposal(proposerAddr, "title", "some desc", tt.content)
 			require.NoError(t, err)
 			_, err = handler(ctx, msg)
 			require.EqualError(t, err, tt.expectedErr.Error())
@@ -1706,7 +1714,7 @@ func TestHandler_ProposalSetNetworkProperty(t *testing.T) {
 		types.MinTxFee,
 		1234,
 	)
-	msg, err := types.NewMsgSubmitProposal(proposerAddr, "some desc", proposal)
+	msg, err := types.NewMsgSubmitProposal(proposerAddr, "title", "some desc", proposal)
 	require.NoError(t, err)
 	res, err := handler(
 		ctx,
@@ -1722,6 +1730,8 @@ func TestHandler_ProposalSetNetworkProperty(t *testing.T) {
 
 	expectedSavedProposal, err := types.NewProposal(
 		1,
+		"title",
+		"some desc",
 		types.NewSetNetworkPropertyProposal(
 			types.MinTxFee,
 			1234,
@@ -1731,7 +1741,6 @@ func TestHandler_ProposalSetNetworkProperty(t *testing.T) {
 		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEnactmentTime)+time.Second*time.Duration(properties.ProposalEndTime)),
 		ctx.BlockHeight()+2,
 		ctx.BlockHeight()+3,
-		"some desc",
 	)
 	require.NoError(t, err)
 	require.Equal(t, expectedSavedProposal, savedProposal)
@@ -1818,7 +1827,7 @@ func TestHandler_CreateProposalCreateRole_Errors(t *testing.T) {
 			tt.preparePerms(t, app, ctx)
 
 			handler := gov.NewHandler(app.CustomGovKeeper)
-			msg, err := types.NewMsgSubmitProposal(proposerAddr, "some desc", tt.content)
+			msg, err := types.NewMsgSubmitProposal(proposerAddr, "title", "some desc", tt.content)
 			require.NoError(t, err)
 			_, err = handler(ctx, msg)
 			require.EqualError(t, err, tt.expectedErr.Error())
@@ -1854,7 +1863,7 @@ func TestHandler_ProposalCreateRole(t *testing.T) {
 			types.PermChangeTxFee,
 		},
 	)
-	msg, err := types.NewMsgSubmitProposal(proposerAddr, "some desc", proposal)
+	msg, err := types.NewMsgSubmitProposal(proposerAddr, "title", "some desc", proposal)
 	require.NoError(t, err)
 	res, err := handler(
 		ctx,
@@ -1870,6 +1879,8 @@ func TestHandler_ProposalCreateRole(t *testing.T) {
 
 	expectedSavedProposal, err := types.NewProposal(
 		1,
+		"title",
+		"some desc",
 		types.NewCreateRoleProposal(
 			types.Role(1000),
 			[]types.PermValue{
@@ -1884,7 +1895,6 @@ func TestHandler_ProposalCreateRole(t *testing.T) {
 		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEnactmentTime)+time.Second*time.Duration(properties.ProposalEndTime)),
 		ctx.BlockHeight()+2,
 		ctx.BlockHeight()+3,
-		"some desc",
 	)
 	require.NoError(t, err)
 	require.Equal(t, expectedSavedProposal, savedProposal)

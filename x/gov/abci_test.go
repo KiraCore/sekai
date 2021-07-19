@@ -29,6 +29,8 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				proposalID := uint64(1234)
 				proposal, err := types.NewProposal(
 					proposalID,
+					"title",
+					"some desc",
 					types.NewAssignPermissionProposal(
 						addrs[0],
 						types.PermSetPermissions,
@@ -38,7 +40,6 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now().Add(20*time.Second),
 					ctx.BlockHeight()+2,
 					ctx.BlockHeight()+3,
-					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -94,6 +95,8 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				proposalID := uint64(1234)
 				proposal, err := types.NewProposal(
 					proposalID,
+					"title",
+					"some desc",
 					types.NewAssignPermissionProposal(
 						addrs[0],
 						types.PermSetPermissions,
@@ -103,7 +106,6 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now(),
 					ctx.BlockHeight()+2,
 					ctx.BlockHeight()+3,
-					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -152,6 +154,8 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				proposalID := uint64(1234)
 				proposal, err := types.NewProposal(
 					proposalID,
+					"title",
+					"some desc",
 					types.NewAssignPermissionProposal(
 						addrs[0],
 						types.PermSetPermissions,
@@ -161,7 +165,6 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now().Add(20*time.Second),
 					ctx.BlockHeight()+2,
 					ctx.BlockHeight()+3,
-					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -220,6 +223,8 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				proposalID := uint64(1234)
 				proposal, err := types.NewProposal(
 					proposalID,
+					"title",
+					"some desc",
 					types.NewAssignPermissionProposal(
 						addrs[0],
 						types.PermSetPermissions,
@@ -229,7 +234,6 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now().Add(20*time.Second),
 					ctx.BlockHeight()+2,
 					ctx.BlockHeight()+3,
-					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -260,6 +264,8 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				proposalID := uint64(1234)
 				proposal, err := types.NewProposal(
 					proposalID,
+					"title",
+					"some desc",
 					types.NewAssignPermissionProposal(
 						addrs[0],
 						types.PermSetPermissions,
@@ -269,7 +275,6 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now().Add(20*time.Second),
 					ctx.BlockHeight()+2,
 					ctx.BlockHeight()+3,
-					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -302,6 +307,8 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				proposalID := uint64(1234)
 				proposal, err := types.NewProposal(
 					proposalID,
+					"title",
+					"some desc",
 					types.NewAssignPermissionProposal(
 						addrs[0],
 						types.PermSetPermissions,
@@ -311,7 +318,6 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now().Add(20*time.Second),
 					ctx.BlockHeight()+2,
 					ctx.BlockHeight()+3,
-					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -347,6 +353,8 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				proposalID := uint64(1234)
 				proposal, err := types.NewProposal(
 					proposalID,
+					"title",
+					"some desc",
 					types.NewUpsertDataRegistryProposal(
 						"theKey",
 						"theHash",
@@ -359,7 +367,6 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now().Add(20*time.Second),
 					ctx.BlockHeight()+2,
 					ctx.BlockHeight()+3,
-					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -398,6 +405,8 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				proposalID := uint64(1234)
 				proposal, err := types.NewProposal(
 					proposalID,
+					"title",
+					"some desc",
 					types.NewSetNetworkPropertyProposal(
 						types.MinTxFee,
 						300,
@@ -407,7 +416,6 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now().Add(20*time.Second),
 					ctx.BlockHeight()+2,
 					ctx.BlockHeight()+3,
-					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -443,6 +451,8 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				proposalID := uint64(1234)
 				proposal, err := types.NewProposal(
 					proposalID,
+					"title",
+					"some desc",
 					tokenstypes.NewUpsertTokenAliasProposal(
 						"EUR",
 						"Euro",
@@ -458,7 +468,6 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now().Add(20*time.Second),
 					ctx.BlockHeight()+2,
 					ctx.BlockHeight()+3,
-					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -492,6 +501,8 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				proposalID := uint64(1234)
 				proposal, err := types.NewProposal(
 					proposalID,
+					"title",
+					"some desc",
 					tokenstypes.NewUpsertTokenRatesProposal(
 						"btc",
 						sdk.NewDec(1234),
@@ -502,7 +513,6 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now().Add(20*time.Second),
 					ctx.BlockHeight()+2,
 					ctx.BlockHeight()+3,
-					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -547,6 +557,8 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				proposalID := uint64(1234)
 				proposal, err := types.NewProposal(
 					proposalID,
+					"title",
+					"some desc",
 					stakingtypes.NewUnjailValidatorProposal(
 						addrs[0],
 						"theHash",
@@ -557,7 +569,6 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now().Add(20*time.Second),
 					ctx.BlockHeight()+2,
 					ctx.BlockHeight()+3,
-					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -593,6 +604,8 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				proposalID := uint64(1234)
 				proposal, err := types.NewProposal(
 					proposalID,
+					"title",
+					"some desc",
 					types.NewCreateRoleProposal(
 						types.Role(1000),
 						[]types.PermValue{
@@ -607,7 +620,6 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now().Add(20*time.Second),
 					ctx.BlockHeight()+2,
 					ctx.BlockHeight()+3,
-					"some desc",
 				)
 				require.NoError(t, err)
 

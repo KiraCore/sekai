@@ -37,7 +37,7 @@ func (k msgServer) SubmitProposal(goCtx context.Context, msg *types.MsgSubmitPro
 		return nil, errors.Wrap(types.ErrNotEnoughPermissions, content.ProposalPermission().String())
 	}
 
-	proposalID, err := k.keeper.CreateAndSaveProposalWithContent(ctx, msg.Description, content)
+	proposalID, err := k.keeper.CreateAndSaveProposalWithContent(ctx, msg.Title, msg.Description, content)
 	if err != nil {
 		return nil, err
 	}

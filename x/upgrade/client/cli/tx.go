@@ -23,6 +23,7 @@ const (
 	FlagMaxEnrollmentDuration = "max-enrollment-duration"
 	FlagUpgradeMemo           = "upgrade-memo"
 	FlagInstateUpgrade        = "instate-upgrade"
+	FlagTitle                 = "title"
 	FlagDescription           = "description"
 )
 
@@ -107,6 +108,11 @@ func GetTxProposeUpgradePlan() *cobra.Command {
 				return fmt.Errorf("invalid instate upgrade flag")
 			}
 
+			title, err := cmd.Flags().GetString(FlagTitle)
+			if err != nil {
+				return fmt.Errorf("invalid title")
+			}
+
 			description, err := cmd.Flags().GetString(FlagDescription)
 			if err != nil {
 				return fmt.Errorf("invalid description")
@@ -114,6 +120,7 @@ func GetTxProposeUpgradePlan() *cobra.Command {
 
 			msg, err := customgovtypes.NewMsgSubmitProposal(
 				clientCtx.FromAddress,
+				title,
 				description,
 				types.NewSoftwareUpgradeProposal(
 					name,
@@ -146,6 +153,7 @@ func GetTxProposeUpgradePlan() *cobra.Command {
 	cmd.Flags().Int64(FlagMaxEnrollmentDuration, 0, "max enrollment duration")
 	cmd.Flags().String(FlagUpgradeMemo, "", "upgrade memo")
 	cmd.Flags().Bool(FlagInstateUpgrade, true, "instate upgrade flag")
+	cmd.Flags().String(FlagTitle, "", "title")
 	cmd.Flags().String(FlagDescription, "", "description")
 
 	flags.AddTxFlagsToCmd(cmd)
@@ -169,6 +177,11 @@ func GetTxCancelUpgradePlan() *cobra.Command {
 				return fmt.Errorf("invalid name")
 			}
 
+			title, err := cmd.Flags().GetString(FlagTitle)
+			if err != nil {
+				return fmt.Errorf("invalid title")
+			}
+
 			description, err := cmd.Flags().GetString(FlagDescription)
 			if err != nil {
 				return fmt.Errorf("invalid description")
@@ -176,6 +189,7 @@ func GetTxCancelUpgradePlan() *cobra.Command {
 
 			msg, err := customgovtypes.NewMsgSubmitProposal(
 				clientCtx.FromAddress,
+				title,
 				description,
 				types.NewCancelSoftwareUpgradeProposal(name),
 			)
@@ -188,6 +202,7 @@ func GetTxCancelUpgradePlan() *cobra.Command {
 	}
 
 	cmd.Flags().String(FlagName, "upgrade1", "upgrade name")
+	cmd.Flags().String(FlagTitle, "", "title")
 	cmd.Flags().String(FlagDescription, "", "description")
 
 	flags.AddTxFlagsToCmd(cmd)

@@ -25,13 +25,13 @@ var _ Content = &AssignPermissionProposal{}
 // NewProposal creates a new proposal
 func NewProposal(
 	proposalID uint64,
+	title, description string,
 	content Content,
 	submitTime time.Time,
 	votingEndTime time.Time,
 	enactmentEndTime time.Time,
 	minVotingEndBlockHeight int64,
 	minEnactmentEndBlockHeight int64,
-	description string,
 ) (Proposal, error) {
 	msg, ok := content.(proto.Message)
 	if !ok {

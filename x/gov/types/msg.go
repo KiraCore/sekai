@@ -634,9 +634,10 @@ func (m *MsgCancelIdentityRecordsVerifyRequest) GetSigners() []sdk.AccAddress {
 
 // NewMsgSubmitProposal creates a new MsgSubmitProposal.
 //nolint:interfacer
-func NewMsgSubmitProposal(proposer sdk.AccAddress, description string, content Content) (*MsgSubmitProposal, error) {
+func NewMsgSubmitProposal(proposer sdk.AccAddress, title, description string, content Content) (*MsgSubmitProposal, error) {
 	m := &MsgSubmitProposal{
 		Proposer:    proposer,
+		Title:       title,
 		Description: description,
 	}
 	err := m.SetContent(content)

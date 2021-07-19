@@ -102,6 +102,8 @@ func TestQuerier_Proposal(t *testing.T) {
 	proposalID := uint64(1234)
 	proposal, err := types.NewProposal(
 		proposalID,
+		"title",
+		"some desc",
 		types.NewAssignPermissionProposal(
 			addrs[0],
 			types.PermSetPermissions,
@@ -111,7 +113,6 @@ func TestQuerier_Proposal(t *testing.T) {
 		time.Now().Add(20*time.Second),
 		ctx.BlockHeight()+2,
 		ctx.BlockHeight()+3,
-		"some desc",
 	)
 	require.NoError(t, err)
 

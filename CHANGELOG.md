@@ -1,5 +1,17 @@
 # Changelog
 
+## [v0.1.21.6] - 19.07.2021
+
+- Update env to be latest
+- Remove unused message type
+- Remove commented codebase
+- Check changes to make for codec registration
+- Register codec meta for evidence module
+- Modify codec meta for gov module changes
+- Remove unused Proposer field from MsgApproveIdentityRecords
+- Resolve tests for codec registration
+- Add title into the proposal
+
 ## [v0.1.21.5] - 18.07.2021
 
 - Zero gas implementation
