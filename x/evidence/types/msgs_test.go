@@ -6,6 +6,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	kiratypes "github.com/KiraCore/sekai/types"
 	"github.com/KiraCore/sekai/x/evidence/exported"
 	"github.com/KiraCore/sekai/x/evidence/types"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
@@ -51,7 +52,7 @@ func TestMsgSubmitEvidence(t *testing.T) {
 
 	for i, tc := range testCases {
 		require.Equal(t, tc.msg.Route(), types.RouterKey, "unexpected result for tc #%d", i)
-		require.Equal(t, tc.msg.Type(), types.TypeMsgSubmitEvidence, "unexpected result for tc #%d", i)
+		require.Equal(t, tc.msg.Type(), kiratypes.TypeMsgSubmitEvidence, "unexpected result for tc #%d", i)
 		require.Equal(t, tc.expectErr, tc.msg.ValidateBasic() != nil, "unexpected result for tc #%d", i)
 
 		if !tc.expectErr {

@@ -135,7 +135,7 @@ func registerProposalCodec(cdc *codec.LegacyAmino) {
 }
 
 func registerIdRecordsCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgCreateIdentityRecord{}, "kiraHub/MsgVoteProposal", nil)
+	cdc.RegisterConcrete(&MsgCreateIdentityRecord{}, "kiraHub/MsgCreateIdentityRecord", nil)
 	functionmeta.AddNewFunction((&MsgCreateIdentityRecord{}).Type(), `{
 		"description": "MsgCreateIdentityRecord defines a proposal message to create a identity record.",
 		"parameters": {
@@ -154,7 +154,7 @@ func registerIdRecordsCodec(cdc *codec.LegacyAmino) {
 		}
 	}`)
 
-	cdc.RegisterConcrete(&MsgEditIdentityRecord{}, "kiraHub/MsgVoteProposal", nil)
+	cdc.RegisterConcrete(&MsgEditIdentityRecord{}, "kiraHub/MsgEditIdentityRecord", nil)
 	functionmeta.AddNewFunction((&MsgEditIdentityRecord{}).Type(), `{
 		"description": "MsgEditIdentityRecord defines a proposal message to edit an identity record.",
 		"parameters": {
@@ -177,7 +177,7 @@ func registerIdRecordsCodec(cdc *codec.LegacyAmino) {
 		}
 	}`)
 
-	cdc.RegisterConcrete(&MsgRequestIdentityRecordsVerify{}, "kiraHub/MsgVoteProposal", nil)
+	cdc.RegisterConcrete(&MsgRequestIdentityRecordsVerify{}, "kiraHub/MsgRequestIdentityRecordsVerify", nil)
 	functionmeta.AddNewFunction((&MsgRequestIdentityRecordsVerify{}).Type(), `{
 		"description": "MsgRequestIdentityRecordsVerify defines a proposal message to request an identity record verification from a specific verifier.",
 		"parameters": {
@@ -200,7 +200,7 @@ func registerIdRecordsCodec(cdc *codec.LegacyAmino) {
 		}
 	}`)
 
-	cdc.RegisterConcrete(&MsgApproveIdentityRecords{}, "kiraHub/MsgVoteProposal", nil)
+	cdc.RegisterConcrete(&MsgApproveIdentityRecords{}, "kiraHub/MsgApproveIdentityRecords", nil)
 	functionmeta.AddNewFunction((&MsgApproveIdentityRecords{}).Type(), `{
 		"description": "MsgApproveIdentityRecords defines a proposal message to approve an identity record request.",
 		"parameters": {
@@ -215,7 +215,7 @@ func registerIdRecordsCodec(cdc *codec.LegacyAmino) {
 		}
 	}`)
 
-	cdc.RegisterConcrete(&MsgCancelIdentityRecordsVerifyRequest{}, "kiraHub/MsgVoteProposal", nil)
+	cdc.RegisterConcrete(&MsgCancelIdentityRecordsVerifyRequest{}, "kiraHub/MsgCancelIdentityRecordsVerifyRequest", nil)
 	functionmeta.AddNewFunction((&MsgCancelIdentityRecordsVerifyRequest{}).Type(), `{
 		"description": "MsgCancelIdentityRecordsVerifyRequest defines a proposal message to cancel an identity record request.",
 		"parameters": {

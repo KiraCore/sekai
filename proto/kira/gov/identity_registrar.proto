@@ -77,15 +77,11 @@ message MsgRequestIdentityRecordsVerify {
 }
 
 message MsgApproveIdentityRecords {
-    bytes proposer = 1 [
-        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
-        (gogoproto.moretags) = "yaml:\"proposer\""
-    ];
-    bytes verifier = 2 [
+    bytes verifier = 1 [
         (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
         (gogoproto.moretags) = "yaml:\"verifier\""
     ];
-    uint64 verifyRequestId = 3;
+    uint64 verifyRequestId = 2;
 }
 message MsgCancelIdentityRecordsVerifyRequest  {
     bytes executor = 1 [

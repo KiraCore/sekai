@@ -3,17 +3,12 @@ package types
 import (
 	"fmt"
 
-	"github.com/gogo/protobuf/proto"
-
+	kiratypes "github.com/KiraCore/sekai/types"
 	"github.com/KiraCore/sekai/x/evidence/exported"
 	"github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-)
-
-// Message types for the evidence module
-const (
-	TypeMsgSubmitEvidence = "submit_evidence"
+	"github.com/gogo/protobuf/proto"
 )
 
 var (
@@ -40,7 +35,7 @@ func NewMsgSubmitEvidence(s sdk.AccAddress, evi exported.Evidence) (*MsgSubmitEv
 func (m MsgSubmitEvidence) Route() string { return RouterKey }
 
 // Type returns the MsgSubmitEvidence's type.
-func (m MsgSubmitEvidence) Type() string { return TypeMsgSubmitEvidence }
+func (m MsgSubmitEvidence) Type() string { return kiratypes.TypeMsgSubmitEvidence }
 
 // ValidateBasic performs basic (non-state-dependant) validation on a MsgSubmitEvidence.
 func (m MsgSubmitEvidence) ValidateBasic() error {

@@ -6,6 +6,9 @@ import (
 
 // custom msg types
 const (
+	//evidence
+	TypeMsgSubmitEvidence = "submit_evidence"
+
 	// governance
 	MsgTypeSubmitProposal = "submit-proposal"
 	MsgTypeVoteProposal   = "vote-proposal"
@@ -51,6 +54,8 @@ const (
 var MsgFuncIDMapping = map[string]int64{
 	bank.TypeMsgSend:      1,
 	bank.TypeMsgMultiSend: 2,
+
+	TypeMsgSubmitEvidence: 3,
 
 	MsgTypeSubmitProposal:                     10,
 	MsgTypeVoteProposal:                       11,
