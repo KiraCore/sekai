@@ -2,7 +2,6 @@ package types
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/KiraCore/sekai/types"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
@@ -19,10 +18,6 @@ var (
 	// Permissions
 	_ sdk.Msg = &MsgWhitelistPermissions{}
 	_ sdk.Msg = &MsgBlacklistPermissions{}
-	// _ sdk.Msg = &MsgProposalAssignPermission{}
-	// _ sdk.Msg = &MsgProposalUpsertDataRegistry{}
-	// _ sdk.Msg = &MsgProposalSetPoorNetworkMessages{}
-	// _ sdk.Msg = &MsgProposalCreateRole{}
 	_ sdk.Msg = &MsgSubmitProposal{}
 
 	// Councilor
@@ -436,11 +431,10 @@ func (m *MsgVoteProposal) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgCreateIdentityRecord(address sdk.AccAddress, infos []IdentityInfoEntry, date time.Time) *MsgCreateIdentityRecord {
+func NewMsgCreateIdentityRecord(address sdk.AccAddress, infos []IdentityInfoEntry) *MsgCreateIdentityRecord {
 	return &MsgCreateIdentityRecord{
 		Address: address,
 		Infos:   infos,
-		Date:    date,
 	}
 }
 
@@ -455,9 +449,6 @@ func (m *MsgCreateIdentityRecord) Type() string {
 func (m *MsgCreateIdentityRecord) ValidateBasic() error {
 	if m.Address.Empty() {
 		return ErrEmptyProposerAccAddress
-	}
-	if m.Date.IsZero() {
-		return ErrInvalidDate
 	}
 	if len(m.Infos) == 0 {
 		return ErrEmptyInfos
@@ -476,12 +467,11 @@ func (m *MsgCreateIdentityRecord) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgEditIdentityRecord(recordId uint64, address sdk.AccAddress, infos []IdentityInfoEntry, date time.Time) *MsgEditIdentityRecord {
+func NewMsgEditIdentityRecord(recordId uint64, address sdk.AccAddress, infos []IdentityInfoEntry) *MsgEditIdentityRecord {
 	return &MsgEditIdentityRecord{
 		RecordId: recordId,
 		Address:  address,
 		Infos:    infos,
-		Date:     date,
 	}
 }
 
@@ -499,9 +489,6 @@ func (m *MsgEditIdentityRecord) ValidateBasic() error {
 	}
 	if m.RecordId == 0 {
 		return ErrInvalidRecordId
-	}
-	if m.Date.IsZero() {
-		return ErrInvalidDate
 	}
 	if len(m.Infos) == 0 {
 		return ErrEmptyInfos
@@ -638,9 +625,10 @@ func (m *MsgCancelIdentityRecordsVerifyRequest) GetSigners() []sdk.AccAddress {
 
 // NewMsgSubmitProposal creates a new MsgSubmitProposal.
 //nolint:interfacer
-func NewMsgSubmitProposal(proposer sdk.AccAddress, description string, content Content) (*MsgSubmitProposal, error) {
+func NewMsgSubmitProposal(proposer sdk.AccAddress, title, description string, content Content) (*MsgSubmitProposal, error) {
 	m := &MsgSubmitProposal{
 		Proposer:    proposer,
+		Title:       title,
 		Description: description,
 	}
 	err := m.SetContent(content)

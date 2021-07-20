@@ -75,7 +75,7 @@ func TestHandler_CreateProposalResetWholeValidatorRank(t *testing.T) {
 			tt.preparePerms(t, app, ctx)
 
 			handler := gov.NewHandler(app.CustomGovKeeper)
-			msg, err := govtypes.NewMsgSubmitProposal(proposerAddr, "some desc", tt.content)
+			msg, err := govtypes.NewMsgSubmitProposal(proposerAddr, "title", "some desc", tt.content)
 			require.NoError(t, err)
 			_, err = handler(ctx, msg)
 			if tt.expectedErr == nil {

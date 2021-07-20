@@ -8,8 +8,6 @@ import (
 // verify interface at compile time
 var _ sdk.Msg = &MsgActivate{}
 
-// var _ sdk.Msg = &MsgProposalResetWholeValidatorRank{}
-
 // NewMsgActivate creates a new MsgActivate instance
 //nolint:interfacer
 func NewMsgActivate(validatorAddr sdk.ValAddress) *MsgActivate {

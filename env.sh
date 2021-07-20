@@ -80,6 +80,18 @@ PermCreateTokensWhiteBlackChangeProposal=24
 # permission to vote a proposal to change blacklist/whitelisted tokens
 PermVoteTokensWhiteBlackChangeProposal=25
 
+# permission needed to create a proposal to reset whole validator rank
+PermCreateResetWholeValidatorRankProposal=26
+
+# permission needed to vote on reset whole validator rank proposal
+PermVoteResetWholeValidatorRankProposal=27
+
+# permission needed to create a proposal for software upgrade
+PermCreateSoftwareUpgradeProposal=28
+
+# permission needed to vote on software upgrade proposal
+PermVoteSoftwareUpgradeProposal=29
+
 ###################################### transaction_types ######################################
 TypeMsgSend="send"
 TypeMsgMultiSend="multisend"
@@ -103,19 +115,30 @@ MsgTypeUpsertTokenRate="upsert-token-rate"
 ###################################### function IDs ######################################
 FuncIDMsgSend=1
 FuncIDMultiSend=2
-FuncIDMsgVoteProposal=6
-FuncIDMsgWhitelistPermissions=7
-FuncIDMsgBlacklistPermissions=8
-FuncIDMsgClaimCouncilor=9
-FuncIDMsgSetNetworkProperties=10
-FuncIDMsgSetExecutionFee=11
-FuncIDMsgCreateRole=12
-FuncIDMsgAssignRole=13
-FuncIDMsgRemoveRole=14
-FuncIDMsgWhitelistRolePermission=15
-FuncIDMsgBlacklistRolePermission=16
-FuncIDMsgRemoveWhitelistRolePermission=17
-FuncIDMsgRemoveBlacklistRolePermission=18
-FuncIDMsgClaimValidator=19
-FuncIDMsgUpsertTokenAlias=20
-FuncIDMsgUpsertTokenRate=21
+
+FuncIDMsgSubmitProposal=10
+FuncIDMsgVoteProposal=11
+FuncIDMsgCreateIdentityRecord=12
+FuncIDMsgEditIdentityRecord=13
+FuncIDMsgRequestIdentityRecordsVerify=14
+FuncIDMsgApproveIdentityRecords=15
+FuncIDMsgCancelIdentityRecordsVerifyRequest=16
+
+FuncIDMsgSetNetworkProperties=20
+FuncIDMsgSetExecutionFee=21
+FuncIDMsgClaimCouncilor=22
+FuncIDMsgWhitelistPermissions=23
+FuncIDMsgBlacklistPermissions=24
+FuncIDMsgCreateRole=25
+FuncIDMsgAssignRole=26
+FuncIDMsgRemoveRole=27
+FuncIDMsgWhitelistRolePermission=28
+FuncIDMsgBlacklistRolePermission=29
+FuncIDMsgRemoveWhitelistRolePermission=30
+FuncIDMsgRemoveBlacklistRolePermission=31
+FuncIDMsgClaimValidator=32
+FuncIDMsgUpsertTokenAlias=33
+FuncIDMsgUpsertTokenRate=34
+FuncIDMsgActivate=35
+FuncIDMsgPause=36
+FuncIDMsgUnpause=37

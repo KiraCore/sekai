@@ -1,5 +1,16 @@
 # Changelog
 
+## [v0.1.21.6] - 19.07.2021
+
+- Update env to be latest
+- Remove unused message type and commented codebase
+- Check changes to make for codec registration
+- Modification for codec meta registration
+- Remove unused Proposer field from MsgApproveIdentityRecords
+- Add title into the proposal
+- For identity record creation/edit, update date to use blockTime
+- Shell script modifications
+
 ## [v0.1.21.5] - 18.07.2021
 
 - Zero gas implementation

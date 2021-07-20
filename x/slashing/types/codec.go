@@ -50,7 +50,6 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgActivate{},
 		&MsgPause{},
 		&MsgUnpause{},
-		// &MsgProposalResetWholeValidatorRank{},
 	)
 
 	registry.RegisterInterface(

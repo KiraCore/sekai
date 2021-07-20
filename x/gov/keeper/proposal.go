@@ -31,7 +31,7 @@ func (k Keeper) SetNextProposalID(ctx sdk.Context, proposalID uint64) {
 	store.Set(NextProposalIDPrefix, ProposalIDToBytes(proposalID))
 }
 
-func (k Keeper) CreateAndSaveProposalWithContent(ctx sdk.Context, description string, content types.Content) (uint64, error) {
+func (k Keeper) CreateAndSaveProposalWithContent(ctx sdk.Context, title, description string, content types.Content) (uint64, error) {
 	blockTime := ctx.BlockTime()
 	proposalID := k.GetNextProposalIDAndIncrement(ctx)
 
@@ -39,6 +39,8 @@ func (k Keeper) CreateAndSaveProposalWithContent(ctx sdk.Context, description st
 
 	proposal, err := types.NewProposal(
 		proposalID,
+		title,
+		description,
 		content,
 		blockTime,
 		blockTime.Add(time.Second*time.Duration(properties.ProposalEndTime)),
@@ -47,7 +49,6 @@ func (k Keeper) CreateAndSaveProposalWithContent(ctx sdk.Context, description st
 		),
 		ctx.BlockHeight()+int64(properties.MinProposalEndBlocks),
 		ctx.BlockHeight()+int64(properties.MinProposalEndBlocks+properties.MinProposalEnactmentBlocks),
-		description,
 	)
 
 	if err != nil {

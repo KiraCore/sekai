@@ -127,7 +127,7 @@ $ <appd> tx slashing unpause --from mykey
 	return cmd
 }
 
-// GetTxProposalResetWholeValidatorRankCmd implement cli command for MsgProposalResetWholeValidatorRank
+// GetTxProposalResetWholeValidatorRankCmd implement cli command for ProposalResetWholeValidatorRank
 func GetTxProposalResetWholeValidatorRankCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "proposal-reset-whole-validator-rank",
@@ -138,7 +138,10 @@ func GetTxProposalResetWholeValidatorRankCmd() *cobra.Command {
 			if err != nil {
 				return err
 			}
-
+			title, err := cmd.Flags().GetString(FlagTitle)
+			if err != nil {
+				return fmt.Errorf("invalid title: %w", err)
+			}
 			description, err := cmd.Flags().GetString(FlagDescription)
 			if err != nil {
 				return fmt.Errorf("invalid description: %w", err)
@@ -146,6 +149,7 @@ func GetTxProposalResetWholeValidatorRankCmd() *cobra.Command {
 
 			msg, err := customgovtypes.NewMsgSubmitProposal(
 				clientCtx.FromAddress,
+				title,
 				description,
 				types.NewResetWholeValidatorRankProposal(clientCtx.FromAddress),
 			)
@@ -157,6 +161,8 @@ func GetTxProposalResetWholeValidatorRankCmd() *cobra.Command {
 		},
 	}
 
+	cmd.Flags().String(FlagTitle, "", "The title of the proposal.")
+	cmd.MarkFlagRequired(FlagTitle)
 	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
 	cmd.MarkFlagRequired(FlagDescription)
 

@@ -25,6 +25,7 @@ func (s IntegrationTestSuite) TestCreateProposalAssignPermission() {
 		fmt.Sprintf("%d", types.PermClaimValidator),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=%s", stakingcli.FlagAddr, addr.String()),
+		fmt.Sprintf("--%s=%s", cli.FlagTitle, "title"),
 		fmt.Sprintf("--%s=%s", cli.FlagDescription, "some desc"),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
@@ -60,6 +61,7 @@ func (s IntegrationTestSuite) TestCreateProposalUpsertDataRegistry() {
 		fmt.Sprintf("%s", "theReference"),
 		fmt.Sprintf("%s", "theEncoding"),
 		fmt.Sprintf("%d", 12345),
+		fmt.Sprintf("--%s=%s", cli.FlagTitle, "title"),
 		fmt.Sprintf("--%s=%s", cli.FlagDescription, "some desc"),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=%s", stakingcli.FlagAddr, addr.String()),
@@ -93,6 +95,7 @@ func (s IntegrationTestSuite) TestCreateProposalSetNetworkProperty() {
 	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("%s", "MIN_TX_FEE"),
 		fmt.Sprintf("%d", 12345),
+		fmt.Sprintf("--%s=%s", cli.FlagTitle, "title"),
 		fmt.Sprintf("--%s=%s", cli.FlagDescription, "some desc"),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
@@ -125,6 +128,7 @@ func (s IntegrationTestSuite) TestCreateProposalCreateRole() {
 	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("%d", 12345),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+		fmt.Sprintf("--%s=%s", cli.FlagTitle, "title"),
 		fmt.Sprintf("--%s=%s", cli.FlagDescription, "some desc"),
 		fmt.Sprintf("--%s=%s", cli.FlagWhitelistPerms, "1,2,3"),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),

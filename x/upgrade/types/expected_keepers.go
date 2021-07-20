@@ -12,5 +12,5 @@ type CustomGovKeeper interface {
 	GetNetworkProperties(ctx sdk.Context) *customgovtypes.NetworkProperties
 	SaveProposal(ctx sdk.Context, proposal customgovtypes.Proposal)
 	AddToActiveProposals(ctx sdk.Context, proposal customgovtypes.Proposal)
-	CreateAndSaveProposalWithContent(ctx sdk.Context, description string, content customgovtypes.Content) (uint64, error)
+	CreateAndSaveProposalWithContent(ctx sdk.Context, title, description string, content customgovtypes.Content) (uint64, error)
 }

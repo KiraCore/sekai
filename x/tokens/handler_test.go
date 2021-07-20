@@ -235,7 +235,7 @@ func TestHandler_CreateProposalUpsertTokenAliases_Errors(t *testing.T) {
 			tt.preparePerms(t, app, ctx)
 
 			handler := gov.NewHandler(app.CustomGovKeeper)
-			msg, err := customgovtypes.NewMsgSubmitProposal(proposerAddr, "some desc", tt.content)
+			msg, err := customgovtypes.NewMsgSubmitProposal(proposerAddr, "title", "some desc", tt.content)
 			require.NoError(t, err)
 			_, err = handler(ctx, msg)
 			require.EqualError(t, err, tt.expectedErr.Error())
@@ -271,7 +271,7 @@ func TestHandler_CreateProposalUpsertTokenAliases(t *testing.T) {
 			"atom",
 		},
 	)
-	msg, err := customgovtypes.NewMsgSubmitProposal(proposerAddr, "some desc", proposal)
+	msg, err := customgovtypes.NewMsgSubmitProposal(proposerAddr, "title", "some desc", proposal)
 	require.NoError(t, err)
 	res, err := handler(
 		ctx,
@@ -286,6 +286,8 @@ func TestHandler_CreateProposalUpsertTokenAliases(t *testing.T) {
 
 	expectedSavedProposal, err := types.NewProposal(
 		1,
+		"title",
+		"some desc",
 		tokenstypes.NewUpsertTokenAliasProposal(
 			"BTC",
 			"Bitcoin",
@@ -302,7 +304,6 @@ func TestHandler_CreateProposalUpsertTokenAliases(t *testing.T) {
 		),
 		ctx.BlockHeight()+2,
 		ctx.BlockHeight()+3,
-		"some desc",
 	)
 	require.NoError(t, err)
 	require.Equal(t, expectedSavedProposal, savedProposal)
@@ -351,7 +352,7 @@ func TestHandler_CreateProposalUpsertTokenRates_Errors(t *testing.T) {
 			tt.preparePerms(t, app, ctx)
 
 			handler := gov.NewHandler(app.CustomGovKeeper)
-			msg, err := customgovtypes.NewMsgSubmitProposal(proposerAddr, "some desc", tt.content)
+			msg, err := customgovtypes.NewMsgSubmitProposal(proposerAddr, "title", "some desc", tt.content)
 			require.NoError(t, err)
 			_, err = handler(ctx, msg)
 			require.EqualError(t, err, tt.expectedErr.Error())
@@ -383,7 +384,7 @@ func TestHandler_CreateProposalUpsertTokenRates(t *testing.T) {
 		sdk.NewDec(1234),
 		false,
 	)
-	msg, err := customgovtypes.NewMsgSubmitProposal(proposerAddr, "some desc", proposal)
+	msg, err := customgovtypes.NewMsgSubmitProposal(proposerAddr, "title", "some desc", proposal)
 	require.NoError(t, err)
 	res, err := handler(
 		ctx,
@@ -398,6 +399,8 @@ func TestHandler_CreateProposalUpsertTokenRates(t *testing.T) {
 
 	expectedSavedProposal, err := types.NewProposal(
 		1,
+		"title",
+		"some desc",
 		tokenstypes.NewUpsertTokenRatesProposal(
 			"btc",
 			sdk.NewDec(1234),
@@ -410,7 +413,6 @@ func TestHandler_CreateProposalUpsertTokenRates(t *testing.T) {
 		),
 		ctx.BlockHeight()+2,
 		ctx.BlockHeight()+3,
-		"some desc",
 	)
 	require.NoError(t, err)
 	require.Equal(t, expectedSavedProposal, savedProposal)
