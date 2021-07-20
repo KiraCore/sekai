@@ -441,8 +441,8 @@ func TestHandler_CreateProposalTokensWhiteBlackChange(t *testing.T) {
 
 	// Set proposer Permissions
 	proposerActor := types.NewDefaultActor(proposerAddr)
-	err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerActor, types.PermCreateUpsertTokenRateProposal)
-	require.NoError(t, err2)
+	err = app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerActor, types.PermCreateTokensWhiteBlackChangeProposal)
+	require.NoError(t, err)
 
 	properties := app.CustomGovKeeper.GetNetworkProperties(ctx)
 	properties.ProposalEndTime = 10

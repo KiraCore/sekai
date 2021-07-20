@@ -58,6 +58,8 @@ type StakingKeeper interface {
 
 	// MaxValidators returns the maximum amount of joined validators
 	MaxValidators(sdk.Context) uint32
+
+	GetIdRecordsByAddress(sdk.Context, sdk.AccAddress) []stakingtypes.IdentityRecord
 }
 
 // StakingHooks event hooks for staking validator object (noalias)

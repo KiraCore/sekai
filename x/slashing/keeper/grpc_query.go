@@ -4,7 +4,6 @@ import (
 	"context"
 
 	kiratypes "github.com/KiraCore/sekai/types"
-	kiraquery "github.com/KiraCore/sekai/types/query"
 	"github.com/KiraCore/sekai/x/slashing/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -46,7 +45,42 @@ func (k Keeper) SigningInfo(c context.Context, req *types.QuerySigningInfoReques
 		return nil, status.Errorf(codes.NotFound, "SigningInfo not found for validator %s", req.ConsAddress)
 	}
 
-	return &types.QuerySigningInfoResponse{ValSigningInfo: signingInfo}, nil
+	validator := types.QueryValidator{}
+	if req.IncludeValidator {
+		val, err := k.sk.GetValidatorByConsAddr(ctx, consAddr)
+		if err != nil {
+			return nil, err
+		}
+
+		consPubkey, _ := sdk.Bech32ifyPubKey(sdk.Bech32PubKeyTypeConsPub, val.GetConsPubKey())
+		identity := k.sk.GetIdRecordsByAddress(ctx, sdk.AccAddress(val.ValKey))
+		wrappedIdentity := []types.IdentityRecord{}
+		for _, id := range identity {
+			wrappedIdentity = append(wrappedIdentity, types.IdentityRecord{
+				Id:        id.Id,
+				Infos:     id.Infos,
+				Date:      id.Date,
+				Verifiers: id.Verifiers,
+			})
+		}
+		validator = types.QueryValidator{
+			Address:    sdk.AccAddress(val.ValKey).String(),
+			Valkey:     val.ValKey.String(),
+			Pubkey:     consPubkey,
+			Proposer:   val.GetConsPubKey().Address().String(),
+			Moniker:    val.Moniker,
+			Commission: val.Commission.String(),
+			Status:     val.Status.String(),
+			Rank:       val.Rank,
+			Streak:     val.Streak,
+			Identity:   wrappedIdentity,
+		}
+	}
+
+	return &types.QuerySigningInfoResponse{
+		ValSigningInfo: signingInfo,
+		Validator:      validator,
+	}, nil
 }
 
 func (k Keeper) SigningInfos(c context.Context, request *types.QuerySigningInfosRequest) (*types.QuerySigningInfosResponse, error) {
@@ -57,6 +91,7 @@ func (k Keeper) SigningInfos(c context.Context, request *types.QuerySigningInfos
 	ctx := sdk.UnwrapSDKContext(c)
 	store := ctx.KVStore(k.storeKey)
 	var signInfos []types.ValidatorSigningInfo
+	var validators []types.QueryValidator
 	var pageRes *query.PageResponse
 	var err error
 
@@ -69,6 +104,39 @@ func (k Keeper) SigningInfos(c context.Context, request *types.QuerySigningInfos
 
 		if accumulate {
 			signInfos = append(signInfos, info)
+			if request.IncludeValidator {
+				consAddr, err := sdk.ConsAddressFromBech32(info.Address)
+				if err != nil {
+					return false, err
+				}
+				val, err := k.sk.GetValidatorByConsAddr(ctx, consAddr)
+				if err != nil {
+					return false, err
+				}
+				consPubkey, _ := sdk.Bech32ifyPubKey(sdk.Bech32PubKeyTypeConsPub, val.GetConsPubKey())
+				identity := k.sk.GetIdRecordsByAddress(ctx, sdk.AccAddress(val.ValKey))
+				wrappedIdentity := []types.IdentityRecord{}
+				for _, id := range identity {
+					wrappedIdentity = append(wrappedIdentity, types.IdentityRecord{
+						Id:        id.Id,
+						Infos:     id.Infos,
+						Date:      id.Date,
+						Verifiers: id.Verifiers,
+					})
+				}
+				validators = append(validators, types.QueryValidator{
+					Address:    sdk.AccAddress(val.ValKey).String(),
+					Valkey:     val.ValKey.String(),
+					Pubkey:     consPubkey,
+					Proposer:   val.GetConsPubKey().Address().String(),
+					Moniker:    val.Moniker,
+					Commission: val.Commission.String(),
+					Status:     val.Status.String(),
+					Rank:       val.Rank,
+					Streak:     val.Streak,
+					Identity:   wrappedIdentity,
+				})
+			}
 		}
 		return true, nil
 	}
@@ -79,15 +147,15 @@ func (k Keeper) SigningInfos(c context.Context, request *types.QuerySigningInfos
 	}
 
 	sigInfoStore := prefix.NewStore(store, types.ValidatorSigningInfoKeyPrefix)
-	if request.All {
-		pageRes, err = kiraquery.IterateAll(sigInfoStore, request.Pagination, onResult)
-	} else {
-		pageRes, err = query.FilteredPaginate(sigInfoStore, request.Pagination, onResult)
-	}
+	pageRes, err = query.FilteredPaginate(sigInfoStore, request.Pagination, onResult)
 
 	if err != nil {
 		return nil, err
 	}
 
-	return &types.QuerySigningInfosResponse{Info: signInfos, Pagination: pageRes}, nil
+	return &types.QuerySigningInfosResponse{
+		Info:       signInfos,
+		Validators: validators,
+		Pagination: pageRes,
+	}, nil
 }

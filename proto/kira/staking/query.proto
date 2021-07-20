@@ -47,8 +47,6 @@ message ValidatorsRequest {
   string status = 5;
   string proposer = 6;
   kira.staking.PageRequest pagination = 7 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
-  // TODO: should remove 'all' flag when refactoring is done
-  bool all = 8;
 }
 
 message IdentityRecord {

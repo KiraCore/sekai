@@ -11,13 +11,13 @@ import (
 // NewValidatorSigningInfo creates a new ValidatorSigningInfo instance
 //nolint:interfacer
 func NewValidatorSigningInfo(
-	condAddr sdk.ConsAddress, startHeight int64,
+	consAddr sdk.ConsAddress, startHeight int64,
 	inactivatedUntil time.Time,
 	mischance, missedBlocksCounter, producedBlocksCounter int64,
 ) ValidatorSigningInfo {
 
 	return ValidatorSigningInfo{
-		Address:               condAddr.String(),
+		Address:               consAddr.String(),
 		StartHeight:           startHeight,
 		InactiveUntil:         inactivatedUntil,
 		Mischance:             mischance,
