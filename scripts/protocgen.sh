@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# TODO: currently proto generation script is not able to use proto files from cosmos-sdk protobuf files
+# and even other module's protobuf files, we should resolve this to reduce the duplication of protobuf files
+
 set -eo pipefail
 
 protoc_gen_gocosmos() {
