@@ -5,12 +5,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-// TODO: should write test for GetTokenRate
-// TODO: should write test for ListTokenRate
-// TODO: should write test for GetTokenRatesByDenom
-// TODO: should write test for UpsertTokenRate
-// TODO: should write test for DeleteTokenRate
-
 func (suite *KeeperTestSuite) TestTokenRates() {
 	suite.SetupTest()
 	ctx := suite.ctx
