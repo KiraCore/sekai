@@ -1,6 +1,7 @@
 package types
 
 import (
+	functionmeta "github.com/KiraCore/sekai/function_meta"
 	"github.com/KiraCore/sekai/x/evidence/exported"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/codec/types"
@@ -15,6 +16,20 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterInterface((*exported.Evidence)(nil), nil)
 	cdc.RegisterConcrete(&MsgSubmitEvidence{}, "cosmos-sdk/MsgSubmitEvidence", nil)
 	cdc.RegisterConcrete(&Equivocation{}, "cosmos-sdk/Equivocation", nil)
+
+	functionmeta.AddNewFunction((&MsgSubmitEvidence{}).Type(), `{
+		"description": "MsgSubmitEvidence defines a message to submit an evidence",
+		"parameters": {
+			"submitter": {
+				"type":        "string",
+				"description": "evidence submitter address"
+			},
+			"evidence": {
+				"type":        "object",
+				"description": "evidence object"
+			}
+		}
+	}`)
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {

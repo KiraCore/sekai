@@ -98,7 +98,8 @@ func TestKeeper_IdentityRecordAddEditRemove(t *testing.T) {
 	infos := make(map[string]string)
 	infos["key"] = "value"
 	now := time.Now().UTC()
-	recordId := app.CustomGovKeeper.CreateIdentityRecord(ctx, addr1, types.WrapInfos(infos), now)
+	ctx = ctx.WithBlockTime(now)
+	recordId := app.CustomGovKeeper.CreateIdentityRecord(ctx, addr1, types.WrapInfos(infos))
 	require.Equal(t, recordId, uint64(1))
 
 	record := app.CustomGovKeeper.GetIdentityRecord(ctx, 1)
@@ -111,9 +112,9 @@ func TestKeeper_IdentityRecordAddEditRemove(t *testing.T) {
 	}
 	require.Equal(t, *record, expectedRecord)
 
-	recordId = app.CustomGovKeeper.CreateIdentityRecord(ctx, addr1, types.WrapInfos(infos), now)
+	recordId = app.CustomGovKeeper.CreateIdentityRecord(ctx, addr1, types.WrapInfos(infos))
 	require.Equal(t, recordId, uint64(2))
-	recordId = app.CustomGovKeeper.CreateIdentityRecord(ctx, addr2, types.WrapInfos(infos), now)
+	recordId = app.CustomGovKeeper.CreateIdentityRecord(ctx, addr2, types.WrapInfos(infos))
 	require.Equal(t, recordId, uint64(3))
 
 	records := app.CustomGovKeeper.GetAllIdentityRecords(ctx)
@@ -134,13 +135,14 @@ func TestKeeper_IdentityRecordAddEditRemove(t *testing.T) {
 
 	infos["key1"] = "value1"
 	now = now.Add(time.Second)
+	ctx = ctx.WithBlockTime(now)
 
 	// try editing with other owner
-	err := app.CustomGovKeeper.EditIdentityRecord(ctx, 1, addr3, types.WrapInfos(infos), now)
+	err := app.CustomGovKeeper.EditIdentityRecord(ctx, 1, addr3, types.WrapInfos(infos))
 	require.Error(t, err)
 
 	// try editing deleted record
-	err = app.CustomGovKeeper.EditIdentityRecord(ctx, 2, addr2, types.WrapInfos(infos), now)
+	err = app.CustomGovKeeper.EditIdentityRecord(ctx, 2, addr2, types.WrapInfos(infos))
 	require.Error(t, err)
 
 	// set verifier of identity record
@@ -152,7 +154,7 @@ func TestKeeper_IdentityRecordAddEditRemove(t *testing.T) {
 		Verifiers: []sdk.AccAddress{addr3},
 	})
 
-	err = app.CustomGovKeeper.EditIdentityRecord(ctx, 1, addr1, types.WrapInfos(infos), now)
+	err = app.CustomGovKeeper.EditIdentityRecord(ctx, 1, addr1, types.WrapInfos(infos))
 	require.NoError(t, err)
 	record = app.CustomGovKeeper.GetIdentityRecord(ctx, 1)
 	require.NotNil(t, record)
@@ -185,7 +187,8 @@ func TestKeeper_IdentityRecordApproveFlow(t *testing.T) {
 	infos := make(map[string]string)
 	infos["key"] = "value"
 	now := time.Now().UTC()
-	recordId := app.CustomGovKeeper.CreateIdentityRecord(ctx, addr1, types.WrapInfos(infos), now)
+	ctx = ctx.WithBlockTime(now)
+	recordId := app.CustomGovKeeper.CreateIdentityRecord(ctx, addr1, types.WrapInfos(infos))
 	require.Equal(t, recordId, uint64(1))
 
 	record := app.CustomGovKeeper.GetIdentityRecord(ctx, 1)
@@ -197,9 +200,9 @@ func TestKeeper_IdentityRecordApproveFlow(t *testing.T) {
 		Date:    now,
 	}
 	require.Equal(t, *record, expectedRecord)
-	recordId = app.CustomGovKeeper.CreateIdentityRecord(ctx, addr1, types.WrapInfos(infos), now)
+	recordId = app.CustomGovKeeper.CreateIdentityRecord(ctx, addr1, types.WrapInfos(infos))
 	require.Equal(t, recordId, uint64(2))
-	recordId = app.CustomGovKeeper.CreateIdentityRecord(ctx, addr2, types.WrapInfos(infos), now)
+	recordId = app.CustomGovKeeper.CreateIdentityRecord(ctx, addr2, types.WrapInfos(infos))
 	require.Equal(t, recordId, uint64(3))
 
 	// bigger tip than balance
@@ -329,7 +332,7 @@ func TestKeeper_IdentityRecordApproveFlow(t *testing.T) {
 
 	// try edit and check if verification records all gone
 	infos["key1"] = "value1"
-	err = app.CustomGovKeeper.EditIdentityRecord(ctx, 1, addr1, types.WrapInfos(infos), now)
+	err = app.CustomGovKeeper.EditIdentityRecord(ctx, 1, addr1, types.WrapInfos(infos))
 	require.NoError(t, err)
 	record = app.CustomGovKeeper.GetIdentityRecord(ctx, 1)
 	require.NotNil(t, record)

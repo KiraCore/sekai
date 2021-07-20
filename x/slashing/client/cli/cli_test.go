@@ -199,6 +199,7 @@ func (s *IntegrationTestSuite) TestTxProposalResetWholeValidatorRankCmd() {
 			"valid reset whole validator rank proposal",
 			[]string{
 				fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+				fmt.Sprintf("--%s=%s", cli.FlagTitle, "title"),
 				fmt.Sprintf("--%s=%s", cli.FlagDescription, "resetvalidators"),
 				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync), // sync mode as there are no funds yet

@@ -20,6 +20,7 @@ import (
 const (
 	FlagComission   = "commission"
 	FlagValKey      = "validator-key"
+	FlagTitle       = "title"
 	FlagDescription = "description"
 )
 
@@ -88,6 +89,11 @@ func GetTxProposalUnjailValidatorCmd() *cobra.Command {
 			hash := args[0]
 			reference := args[1]
 
+			title, err := cmd.Flags().GetString(FlagTitle)
+			if err != nil {
+				return fmt.Errorf("invalid title: %w", err)
+			}
+
 			description, err := cmd.Flags().GetString(FlagDescription)
 			if err != nil {
 				return fmt.Errorf("invalid description: %w", err)
@@ -95,6 +101,7 @@ func GetTxProposalUnjailValidatorCmd() *cobra.Command {
 
 			msg, err := customgovtypes.NewMsgSubmitProposal(
 				clientCtx.FromAddress,
+				title,
 				description,
 				customstakingtypes.NewUnjailValidatorProposal(clientCtx.FromAddress, hash, reference),
 			)
@@ -106,6 +113,8 @@ func GetTxProposalUnjailValidatorCmd() *cobra.Command {
 		},
 	}
 
+	cmd.Flags().String(FlagTitle, "", "The title of the proposal.")
+	cmd.MarkFlagRequired(FlagTitle)
 	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
 	cmd.MarkFlagRequired(FlagDescription)
 

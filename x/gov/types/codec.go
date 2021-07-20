@@ -16,6 +16,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	registerRolesCodec(cdc)
 	registerCouncilorCodec(cdc)
 	registerProposalCodec(cdc)
+	registerIdRecordsCodec(cdc)
 
 	cdc.RegisterConcrete(&MsgSetNetworkProperties{}, "kiraHub/MsgSetNetworkProperties", nil)
 	functionmeta.AddNewFunction((&MsgSetNetworkProperties{}).Type(), `{
@@ -94,6 +95,29 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 }
 
 func registerProposalCodec(cdc *codec.LegacyAmino) {
+	cdc.RegisterConcrete(&MsgSubmitProposal{}, "kiraHub/MsgSubmitProposal", nil)
+	functionmeta.AddNewFunction((&MsgSubmitProposal{}).Type(), `{
+		"description": "MsgSubmitProposal defines a proposal message to submit a proposal.",
+		"parameters": {
+			"proposer": {
+				"type":        "address",
+				"description": "the proposer of the proposal."
+			},
+			"title": {
+				"type":        "string",
+				"description": "the title of the proposal."
+			},
+			"description": {
+				"type":        "string",
+				"description": "the description of the proposal."
+			},
+			"content": {
+				"type":        "object",
+				"description": "the content of the proposal - different by type of proposal"
+			}
+		}
+	}`)
+
 	cdc.RegisterConcrete(&MsgVoteProposal{}, "kiraHub/MsgVoteProposal", nil)
 	functionmeta.AddNewFunction((&MsgVoteProposal{}).Type(), `{
 		"description": "MsgVoteProposal defines a proposal message to vote on a submitted proposal.",
@@ -109,6 +133,95 @@ func registerProposalCodec(cdc *codec.LegacyAmino) {
 			"value": {
 				"type":        "enum<VoteOption>",
 				"description": "vote option: [yes, no, veto, abstain]"
+			}
+		}
+	}`)
+}
+
+func registerIdRecordsCodec(cdc *codec.LegacyAmino) {
+	cdc.RegisterConcrete(&MsgCreateIdentityRecord{}, "kiraHub/MsgCreateIdentityRecord", nil)
+	functionmeta.AddNewFunction((&MsgCreateIdentityRecord{}).Type(), `{
+		"description": "MsgCreateIdentityRecord defines a proposal message to create a identity record.",
+		"parameters": {
+			"address": {
+				"type":        "string",
+				"description": "the address for the identity record."
+			},
+			"infos": {
+				"type":        "array",
+				"description": "key/value array for the mappings of the identity record."
+			}
+		}
+	}`)
+
+	cdc.RegisterConcrete(&MsgEditIdentityRecord{}, "kiraHub/MsgEditIdentityRecord", nil)
+	functionmeta.AddNewFunction((&MsgEditIdentityRecord{}).Type(), `{
+		"description": "MsgEditIdentityRecord defines a proposal message to edit an identity record.",
+		"parameters": {
+			"record_id": {
+				"type":        "uint64",
+				"description": "the id of identity record to edit."
+			},
+			"address": {
+				"type":        "string",
+				"description": "the address for the identity record."
+			},
+			"infos": {
+				"type":        "array",
+				"description": "key/value array for the mappings of the identity record."
+			}
+		}
+	}`)
+
+	cdc.RegisterConcrete(&MsgRequestIdentityRecordsVerify{}, "kiraHub/MsgRequestIdentityRecordsVerify", nil)
+	functionmeta.AddNewFunction((&MsgRequestIdentityRecordsVerify{}).Type(), `{
+		"description": "MsgRequestIdentityRecordsVerify defines a proposal message to request an identity record verification from a specific verifier.",
+		"parameters": {
+			"address": {
+				"type":        "string",
+				"description": "the address of requester."
+			},
+			"verifier": {
+				"type":        "string",
+				"description": "the address of verifier."
+			},
+			"record_ids": {
+				"type":        "arraw<uint64>",
+				"description": "the id of records to be verified."
+			},
+			"tip": {
+				"type":        "coins",
+				"description": "the amount of coins to be given up-on accepting the request."
+			}
+		}
+	}`)
+
+	cdc.RegisterConcrete(&MsgApproveIdentityRecords{}, "kiraHub/MsgApproveIdentityRecords", nil)
+	functionmeta.AddNewFunction((&MsgApproveIdentityRecords{}).Type(), `{
+		"description": "MsgApproveIdentityRecords defines a proposal message to approve an identity record request.",
+		"parameters": {
+			"verifier": {
+				"type":        "string",
+				"description": "the address of verifier."
+			},
+			"verify_request_id": {
+				"type":        "uint64",
+				"description": "the id of verification request."
+			}
+		}
+	}`)
+
+	cdc.RegisterConcrete(&MsgCancelIdentityRecordsVerifyRequest{}, "kiraHub/MsgCancelIdentityRecordsVerifyRequest", nil)
+	functionmeta.AddNewFunction((&MsgCancelIdentityRecordsVerifyRequest{}).Type(), `{
+		"description": "MsgCancelIdentityRecordsVerifyRequest defines a proposal message to cancel an identity record request.",
+		"parameters": {
+			"executor": {
+				"type":        "string",
+				"description": "the address of requester."
+			},
+			"verify_request_id": {
+				"type":        "uint64",
+				"description": "the id of verification request."
 			}
 		}
 	}`)

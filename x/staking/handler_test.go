@@ -284,7 +284,7 @@ func TestHandler_ProposalUnjailValidator_Errors(t *testing.T) {
 				"thehash",
 				"theReference",
 			)
-			msg, err := customgovtypes.NewMsgSubmitProposal(proposerAddr, "some desc", proposal)
+			msg, err := customgovtypes.NewMsgSubmitProposal(proposerAddr, "title", "some desc", proposal)
 			require.NoError(t, err)
 			_, err = handler(
 				ctx,
@@ -331,7 +331,7 @@ func TestHandler_ProposalUnjailValidator(t *testing.T) {
 		"thehash",
 		"theReference",
 	)
-	msg, err := customgovtypes.NewMsgSubmitProposal(proposerAddr, "some desc", proposal)
+	msg, err := customgovtypes.NewMsgSubmitProposal(proposerAddr, "title", "some desc", proposal)
 	require.NoError(t, err)
 	_, err = handler(
 		ctx,
@@ -344,6 +344,8 @@ func TestHandler_ProposalUnjailValidator(t *testing.T) {
 
 	expectedSavedProposal, err := customgovtypes.NewProposal(
 		1,
+		"title",
+		"some desc",
 		customstakingtypes.NewUnjailValidatorProposal(
 			proposerAddr,
 			"thehash",
@@ -356,7 +358,6 @@ func TestHandler_ProposalUnjailValidator(t *testing.T) {
 		),
 		ctx.BlockHeight()+2,
 		ctx.BlockHeight()+3,
-		"some desc",
 	)
 	require.NoError(t, err)
 	require.Equal(t, expectedSavedProposal, savedProposal)

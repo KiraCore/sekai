@@ -30,6 +30,8 @@ func TestKeeper_EncodingContentType(t *testing.T) {
 
 	proposal1, err := types.NewProposal(
 		1,
+		"title",
+		"some desc",
 		types.NewAssignPermissionProposal(
 			addr,
 			types.PermSetPermissions,
@@ -39,7 +41,6 @@ func TestKeeper_EncodingContentType(t *testing.T) {
 		time.Now().Add(10*time.Second),
 		ctx.BlockHeight()+2,
 		ctx.BlockHeight()+3,
-		"some desc",
 	)
 	require.NoError(t, err)
 
@@ -65,6 +66,8 @@ func TestKeeper_GetProposals(t *testing.T) {
 
 	proposal1, err := types.NewProposal(
 		1,
+		"title",
+		"some desc",
 		types.NewAssignPermissionProposal(
 			addr,
 			types.PermSetPermissions,
@@ -74,7 +77,6 @@ func TestKeeper_GetProposals(t *testing.T) {
 		time.Now().Add(10*time.Second),
 		ctx.BlockHeight()+2,
 		ctx.BlockHeight()+3,
-		"some desc",
 	)
 	require.NoError(t, err)
 
@@ -86,6 +88,8 @@ func TestKeeper_GetProposals(t *testing.T) {
 
 	proposal2, err := types.NewProposal(
 		2,
+		"title",
+		"some desc",
 		types.NewAssignPermissionProposal(
 			addr,
 			types.PermSetPermissions,
@@ -95,7 +99,6 @@ func TestKeeper_GetProposals(t *testing.T) {
 		time.Now().Add(10*time.Second),
 		ctx.BlockHeight()+2,
 		ctx.BlockHeight()+3,
-		"some desc",
 	)
 	app.CustomGovKeeper.SaveProposal(ctx, proposal2)
 	proposals, err = app.CustomGovKeeper.GetProposals(ctx)
@@ -121,6 +124,8 @@ func TestSaveProposalReturnsTheProposalID_AndIncreasesLast(t *testing.T) {
 
 	proposal, err := types.NewProposal(
 		proposalID,
+		"title",
+		"some desc",
 		types.NewAssignPermissionProposal(
 			addr,
 			types.PermClaimValidator,
@@ -130,7 +135,6 @@ func TestSaveProposalReturnsTheProposalID_AndIncreasesLast(t *testing.T) {
 		ctx.BlockTime().Add(20*time.Minute),
 		ctx.BlockHeight()+2,
 		ctx.BlockHeight()+3,
-		"some desc",
 	)
 	require.NoError(t, err)
 	app.CustomGovKeeper.SaveProposal(ctx, proposal)
@@ -178,6 +182,8 @@ func TestKeeper_AddProposalToActiveQueue(t *testing.T) {
 
 		proposal, err := types.NewProposal(
 			i,
+			"title",
+			"some desc",
 			types.NewAssignPermissionProposal(
 				addr,
 				types.PermSetPermissions,
@@ -187,7 +193,6 @@ func TestKeeper_AddProposalToActiveQueue(t *testing.T) {
 			endTime,
 			ctx.BlockHeight()+2,
 			ctx.BlockHeight()+3,
-			"some desc",
 		)
 		require.NoError(t, err)
 
@@ -223,6 +228,8 @@ func TestKeeper_AddProposalToEnactmentQueue(t *testing.T) {
 		enactmentEndTime := baseEndTime.Add(time.Duration(i) * time.Second)
 		proposal, err := types.NewProposal(
 			i,
+			"title",
+			"some desc",
 			types.NewAssignPermissionProposal(
 				addr,
 				types.PermSetPermissions,
@@ -232,7 +239,6 @@ func TestKeeper_AddProposalToEnactmentQueue(t *testing.T) {
 			enactmentEndTime,
 			ctx.BlockHeight()+2,
 			ctx.BlockHeight()+3,
-			"some desc",
 		)
 		require.NoError(t, err)
 
@@ -266,6 +272,8 @@ func TestKeeper_GetProposalVotesIterator(t *testing.T) {
 
 	proposal1, err := types.NewProposal(
 		1,
+		"title",
+		"some desc",
 		types.NewAssignPermissionProposal(
 			addr1,
 			types.PermSetPermissions,
@@ -275,12 +283,13 @@ func TestKeeper_GetProposalVotesIterator(t *testing.T) {
 		time.Now().Add(10*time.Second),
 		ctx.BlockHeight()+2,
 		ctx.BlockHeight()+3,
-		"some desc",
 	)
 	require.NoError(t, err)
 
 	proposal2, err := types.NewProposal(
 		2,
+		"title",
+		"some desc",
 		types.NewAssignPermissionProposal(
 			addr2,
 			types.PermClaimCouncilor,
@@ -290,7 +299,6 @@ func TestKeeper_GetProposalVotesIterator(t *testing.T) {
 		time.Now().Add(10*time.Second),
 		ctx.BlockHeight()+2,
 		ctx.BlockHeight()+3,
-		"some desc",
 	)
 	require.NoError(t, err)
 

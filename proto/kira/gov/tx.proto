@@ -69,8 +69,9 @@ message MsgSubmitProposal {
     bytes proposer = 1 [
         (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
     ];
-    string description = 2;
-    google.protobuf.Any content = 3;
+    string title = 2;
+    string description = 3;
+    google.protobuf.Any content = 4;
 }
   
 // MsgSubmitProposalResponse defines the Msg/SubmitProposal response type.

@@ -347,7 +347,7 @@ func (suite *AnteTestSuite) TestInfiniteGasMeterDecorator() {
 	tx, err := suite.CreateTestTx(privs, accNums, accSeqs, suite.ctx.ChainID())
 	suite.Require().NoError(err)
 
-	sud := customante.NewInfiniteGasMeterDecorator()
+	sud := customante.NewZeroGasMeterDecorator()
 	antehandler := sdk.ChainAnteDecorators(sud)
 
 	// Set height to non-zero value for GasMeter to be set
@@ -362,7 +362,7 @@ func (suite *AnteTestSuite) TestInfiniteGasMeterDecorator() {
 	// Context GasMeter Limit should be set after InfiniteGasMeterDecorator runs
 	suite.Require().Equal(uint64(0x0), newCtx.GasMeter().Limit(), "GasMeter not set correctly")
 
-	sud = customante.NewInfiniteGasMeterDecorator()
+	sud = customante.NewZeroGasMeterDecorator()
 	antehandler = sdk.ChainAnteDecorators(sud, OutOfGasDecorator{})
 
 	// Set height to non-zero value for GasMeter to be set
