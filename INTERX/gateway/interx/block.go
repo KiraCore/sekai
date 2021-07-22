@@ -434,7 +434,7 @@ func parseTransaction(rpcAddr string, transaction tmTypes.ResultTx) (types.Trans
 // QueryBlockTransactionsHandle is a function to query transactions of a block.
 func QueryBlockTransactionsHandle(rpcAddr string, height string) (interface{}, interface{}, int) {
 	blockHeight, _ := strconv.Atoi(height)
-	response, err := SearchTxHashHandle(rpcAddr, "", "", "", 0, int64(blockHeight), int64(blockHeight), "")
+	response, err := SearchTxHashHandle(rpcAddr, "", "", "", 0, 0, int64(blockHeight), int64(blockHeight), "")
 	if err != nil {
 		return common.ServeError(0, "transaction query failed", "", http.StatusBadRequest)
 	}
@@ -494,7 +494,7 @@ func QueryBlockTransactionsRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string
 
 // QueryTransactionResultHandle is a function to query transaction by a given hash.
 func QueryTransactionResultHandle(rpcAddr string, txHash string) (interface{}, interface{}, int) {
-	response, err := SearchTxHashHandle(rpcAddr, "", "", "", 0, 0, 0, strings.TrimPrefix(txHash, "0x"))
+	response, err := SearchTxHashHandle(rpcAddr, "", "", "", 0, 0, 0, 0, strings.TrimPrefix(txHash, "0x"))
 	if err != nil {
 		return common.ServeError(0, "transaction query failed", "", http.StatusBadRequest)
 	}
