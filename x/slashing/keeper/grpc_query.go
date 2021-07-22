@@ -5,6 +5,7 @@ import (
 
 	kiratypes "github.com/KiraCore/sekai/types"
 	"github.com/KiraCore/sekai/x/slashing/types"
+	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
@@ -45,7 +46,7 @@ func (k Keeper) SigningInfo(c context.Context, req *types.QuerySigningInfoReques
 		return nil, status.Errorf(codes.NotFound, "SigningInfo not found for validator %s", req.ConsAddress)
 	}
 
-	validator := types.QueryValidator{}
+	validator := stakingtypes.QueryValidator{}
 	if req.IncludeValidator {
 		val, err := k.sk.GetValidatorByConsAddr(ctx, consAddr)
 		if err != nil {
@@ -54,16 +55,7 @@ func (k Keeper) SigningInfo(c context.Context, req *types.QuerySigningInfoReques
 
 		consPubkey, _ := sdk.Bech32ifyPubKey(sdk.Bech32PubKeyTypeConsPub, val.GetConsPubKey())
 		identity := k.sk.GetIdRecordsByAddress(ctx, sdk.AccAddress(val.ValKey))
-		wrappedIdentity := []types.IdentityRecord{}
-		for _, id := range identity {
-			wrappedIdentity = append(wrappedIdentity, types.IdentityRecord{
-				Id:        id.Id,
-				Infos:     id.Infos,
-				Date:      id.Date,
-				Verifiers: id.Verifiers,
-			})
-		}
-		validator = types.QueryValidator{
+		validator = stakingtypes.QueryValidator{
 			Address:    sdk.AccAddress(val.ValKey).String(),
 			Valkey:     val.ValKey.String(),
 			Pubkey:     consPubkey,
@@ -73,7 +65,7 @@ func (k Keeper) SigningInfo(c context.Context, req *types.QuerySigningInfoReques
 			Status:     val.Status.String(),
 			Rank:       val.Rank,
 			Streak:     val.Streak,
-			Identity:   wrappedIdentity,
+			Identity:   identity,
 		}
 	}
 
@@ -91,7 +83,7 @@ func (k Keeper) SigningInfos(c context.Context, request *types.QuerySigningInfos
 	ctx := sdk.UnwrapSDKContext(c)
 	store := ctx.KVStore(k.storeKey)
 	var signInfos []types.ValidatorSigningInfo
-	var validators []types.QueryValidator
+	var validators []stakingtypes.QueryValidator
 	var pageRes *query.PageResponse
 	var err error
 
@@ -114,17 +106,7 @@ func (k Keeper) SigningInfos(c context.Context, request *types.QuerySigningInfos
 					return false, err
 				}
 				consPubkey, _ := sdk.Bech32ifyPubKey(sdk.Bech32PubKeyTypeConsPub, val.GetConsPubKey())
-				identity := k.sk.GetIdRecordsByAddress(ctx, sdk.AccAddress(val.ValKey))
-				wrappedIdentity := []types.IdentityRecord{}
-				for _, id := range identity {
-					wrappedIdentity = append(wrappedIdentity, types.IdentityRecord{
-						Id:        id.Id,
-						Infos:     id.Infos,
-						Date:      id.Date,
-						Verifiers: id.Verifiers,
-					})
-				}
-				validators = append(validators, types.QueryValidator{
+				validators = append(validators, stakingtypes.QueryValidator{
 					Address:    sdk.AccAddress(val.ValKey).String(),
 					Valkey:     val.ValKey.String(),
 					Pubkey:     consPubkey,
@@ -134,7 +116,7 @@ func (k Keeper) SigningInfos(c context.Context, request *types.QuerySigningInfos
 					Status:     val.Status.String(),
 					Rank:       val.Rank,
 					Streak:     val.Streak,
-					Identity:   wrappedIdentity,
+					Identity:   k.sk.GetIdRecordsByAddress(ctx, sdk.AccAddress(val.ValKey)),
 				})
 			}
 		}

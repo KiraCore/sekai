@@ -6,6 +6,7 @@ import (
 	"github.com/KiraCore/sekai/x/evidence/exported"
 	"github.com/KiraCore/sekai/x/evidence/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/query"
 
 	tmbytes "github.com/tendermint/tendermint/libs/bytes"
 )
@@ -104,7 +105,7 @@ func (suite *KeeperTestSuite) TestQueryAllEvidence() {
 			func() {
 				numEvidence := 100
 				_ = suite.populateEvidence(suite.ctx, numEvidence)
-				pageReq := &types.PageRequest{
+				pageReq := &query.PageRequest{
 					Key:        nil,
 					Limit:      50,
 					CountTotal: false,

@@ -4,7 +4,7 @@ package kira.slashing;
 option go_package = "github.com/KiraCore/sekai/x/slashing/types";
 
 import "gogoproto/gogo.proto";
-import "slashing.proto";
+import "kira/slashing/v1beta1/slashing.proto";
 
 // GenesisState defines the slashing module's genesis state.
 message GenesisState {

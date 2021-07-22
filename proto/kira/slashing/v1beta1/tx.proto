@@ -5,7 +5,7 @@ option go_package            = "github.com/KiraCore/sekai/x/slashing/types";
 option (gogoproto.equal_all) = true;
 
 import "gogoproto/gogo.proto";
-import "proposal.proto";
+import "kira/slashing/v1beta1/proposal.proto";
 
 // Msg defines the slashing Msg service.
 service Msg {

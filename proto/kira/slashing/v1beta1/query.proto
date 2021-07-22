@@ -4,7 +4,9 @@ package kira.slashing;
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "google/protobuf/timestamp.proto";
-import "slashing.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "kira/slashing/v1beta1/slashing.proto";
+import "kira/staking/query.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/slashing/types";
 
@@ -43,22 +45,6 @@ message IdentityRecord {
   repeated string verifiers = 5;
 }
 
-message QueryValidator {
-  option (gogoproto.equal)            = true;
-
-  string address = 1;
-  string valkey = 2;
-  string pubkey = 3;
-  string proposer = 4;
-  string moniker = 5;
-  string commission = 6;
-  string status = 7;
-  int64 rank = 8;
-  int64 streak = 9;
-  int64 mischance = 10;
-  repeated IdentityRecord identity = 11 [(gogoproto.nullable) = false];
-}
-
 // QuerySigningInfoRequest is the request type for the Query/SigningInfo RPC
 // method
 message QuerySigningInfoRequest {
@@ -74,13 +60,13 @@ message QuerySigningInfoResponse {
   // val_signing_info is the signing info of requested val cons address
   ValidatorSigningInfo val_signing_info = 1 [(gogoproto.nullable) = false];
   // validator is the main info saved on native validator object
-  QueryValidator validator = 2 [(gogoproto.nullable) = false];
+  kira.staking.QueryValidator validator = 2 [(gogoproto.nullable) = false];
 }
 
 // QuerySigningInfosRequest is the request type for the Query/SigningInfos RPC
 // method
 message QuerySigningInfosRequest {
-  PageRequest pagination = 1 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
+  cosmos.base.query.v1beta1.PageRequest pagination = 1 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
   // include_validators is the flag to include validators info while querying signing info
   bool include_validator = 2;
 }
@@ -91,19 +77,6 @@ message QuerySigningInfosResponse {
   // info is the signing info of all validators
   repeated ValidatorSigningInfo info       = 1 [(gogoproto.nullable) = false];
   // validator is the main info saved on native validator object
-  repeated QueryValidator validators = 2 [(gogoproto.nullable) = false];
-  PageResponse pagination = 3 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
-}
-
-
-message PageRequest {
-  bytes key = 1;
-  uint64 offset = 2;
-  uint64 limit = 3;
-  bool count_total = 4;
-}
-
-message PageResponse {
-  bytes next_key = 1;
-  uint64 total = 2;
+  repeated kira.staking.QueryValidator validators = 2 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 3 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
 }

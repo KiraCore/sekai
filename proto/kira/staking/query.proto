@@ -1,8 +1,8 @@
 syntax = "proto3";
 package kira.staking;
 
-import "staking.proto";
-import "pagination.proto";
+import "kira/staking/staking.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "google/protobuf/timestamp.proto";
@@ -46,7 +46,7 @@ message ValidatorsRequest {
   string moniker = 4;
   string status = 5;
   string proposer = 6;
-  kira.staking.PageRequest pagination = 7 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
+  cosmos.base.query.v1beta1.PageRequest pagination = 7 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
 }
 
 message IdentityRecord {
@@ -78,5 +78,5 @@ message QueryValidator {
 message ValidatorsResponse {
   repeated QueryValidator validators = 1 [(gogoproto.nullable) = false];
   repeated string actors = 2;
-  kira.staking.PageResponse pagination = 3 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
+  cosmos.base.query.v1beta1.PageResponse pagination = 3 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
 }

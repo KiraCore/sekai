@@ -5,7 +5,7 @@ import "gogoproto/gogo.proto";
 import "google/protobuf/any.proto";
 import "cosmos_proto/cosmos.proto";
 import "google/protobuf/timestamp.proto";
-import "proposal.proto";
+import "kira/staking/proposal.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/staking/types";
 
