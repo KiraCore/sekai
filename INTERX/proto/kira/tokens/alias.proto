@@ -5,21 +5,6 @@ import "gogoproto/gogo.proto";
 
 option go_package = "github.com/KiraCore/sekai/INTERX/proto";
 
-enum VoteType {
-    yes = 0;
-    no = 1;
-    veto = 2;
-    abstain = 3;
-}
-
-enum ProposalStatus {
-    undefined = 0;
-    active = 1;
-    rejected = 2;
-    passed = 3;
-    enacted = 4;
-}
-
 message TokenAlias {
     string symbol = 1;// Ticker (eg. ATOM, KEX, BTC)
     string name = 2; // Token Name (e.g. Cosmos, Kira, Bitcoin)

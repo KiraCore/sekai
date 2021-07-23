@@ -128,7 +128,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://0.0.0.0:11000/api/withdraws?account=kira1eyvuhkj9r28sutr6n5vxgckejz2qy3hvanjk7k&type=send&max=4",
+							"raw": "http://0.0.0.0:11000/api/withdraws?account=kira1jyd4xpxvquwhgl58zsc7yahjfyyeyvpe43mmy8&type=send&page_size=3&page=2",
 							"protocol": "http",
 							"host": [
 								"0",
@@ -144,15 +144,19 @@
 							"query": [
 								{
 									"key": "account",
-									"value": "kira1eyvuhkj9r28sutr6n5vxgckejz2qy3hvanjk7k"
+									"value": "kira1jyd4xpxvquwhgl58zsc7yahjfyyeyvpe43mmy8"
 								},
 								{
 									"key": "type",
 									"value": "send"
 								},
 								{
-									"key": "max",
-									"value": "4"
+									"key": "page_size",
+									"value": "3"
+								},
+								{
+									"key": "page",
+									"value": "2"
 								}
 							]
 						}
@@ -309,7 +313,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://0.0.0.0:11000/api/deposits?account=kira1h9s2k2s9624kdghp5ztcdgnausg77rdj9cyat6&type=Send",
+							"raw": "http://0.0.0.0:11000/api/deposits?account=kira19l9lx50c2py0gzgk8huk8avhx9hcymgv3eyycr&type=Send&page_size=3&page=2",
 							"protocol": "http",
 							"host": [
 								"0",
@@ -325,11 +329,19 @@
 							"query": [
 								{
 									"key": "account",
-									"value": "kira1h9s2k2s9624kdghp5ztcdgnausg77rdj9cyat6"
+									"value": "kira19l9lx50c2py0gzgk8huk8avhx9hcymgv3eyycr"
 								},
 								{
 									"key": "type",
 									"value": "Send"
+								},
+								{
+									"key": "page_size",
+									"value": "3"
+								},
+								{
+									"key": "page",
+									"value": "2"
 								}
 							]
 						}
@@ -1495,6 +1507,48 @@
 							"path": [
 								"api",
 								"priv_p2p_list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Interx List",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://0.0.0.0:11000/api/interx_list",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "11000",
+							"path": [
+								"api",
+								"interx_list"
 							]
 						}
 					},

@@ -1,14 +1,17 @@
 {
-  "version": "0.1.4",
+  "version": "0.1.0",
   "serve_https": false,
   "grpc": "dns:///0.0.0.0:9090",
   "rpc": "http://0.0.0.0:26657",
   "port": "11000",
-  "sentry_node_id": "",
-  "priv_sentry_node_id": "",
-  "validator_node_id": "",
-  "seed_node_id": "",
-  "mnemonic": "pact powder face gather across strike secret quiz cable marble carry vivid tag love fat lawsuit laugh diagram palm silk endless blame vocal canvas",
+  "node": {
+    "node_type": "seed",
+    "sentry_node_id": "",
+    "priv_sentry_node_id": "",
+    "validator_node_id": "",
+    "seed_node_id": ""
+  },
+  "mnemonic": "garment wisdom resist address lab barely sudden depend awake vessel protect differ annual island canyon festival broccoli script above tail hour tissue shine suggest",
   "addrbooks": "addrbook.json",
   "node_key": "node_key.json",
   "tx_modes": "sync,async,block",
@@ -29,21 +32,18 @@
     "download_file_size_limitation": "10MB"
   },
   "faucet": {
-    "mnemonic": "pact powder face gather across strike secret quiz cable marble carry vivid tag love fat lawsuit laugh diagram palm silk endless blame vocal canvas",
+    "mnemonic": "garment wisdom resist address lab barely sudden depend awake vessel protect differ annual island canyon festival broccoli script above tail hour tissue shine suggest",
     "faucet_amounts": {
-      "samoleans": "300000000000000000",
       "stake": "100000",
       "ukex": "100000",
       "validatortoken": "100000"
     },
     "faucet_minimum_amounts": {
-      "samoleans": "250000000000000",
       "stake": "1000",
       "ukex": "1000",
       "validatortoken": "1000"
     },
     "fee_amounts": {
-      "samoleans": "250ukex",
       "stake": "1000ukex",
       "ukex": "1000ukex",
       "validatortoken": "1000ukex"
@@ -116,6 +116,13 @@
           "caching_disable": false,
           "caching_duration": 30
         },
+        "/api/interx_list": {
+          "disable": false,
+          "rate_limit": 0,
+          "auth_rate_limit": 0,
+          "caching_disable": false,
+          "caching_duration": 30
+        },
         "/api/kira/gov/data/{key}": {
           "disable": false,
           "rate_limit": 0,
@@ -180,6 +187,20 @@
           "caching_duration": 30
         },
         "/api/kira/tokens/rates": {
+          "disable": false,
+          "rate_limit": 0,
+          "auth_rate_limit": 0,
+          "caching_disable": false,
+          "caching_duration": 30
+        },
+        "/api/priv_p2p_list": {
+          "disable": false,
+          "rate_limit": 0,
+          "auth_rate_limit": 0,
+          "caching_disable": false,
+          "caching_duration": 30
+        },
+        "/api/pub_p2p_list": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,

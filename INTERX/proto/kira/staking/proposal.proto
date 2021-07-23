@@ -6,18 +6,6 @@ import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/KiraCore/sekai/INTERX/proto";
 
-message MsgProposalUnjailValidator {
-  bytes proposer = 1 [
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
-    (gogoproto.moretags) = "yaml:\"proposer\""
-  ];
-  string description = 4;
-
-  string hash = 2;
-
-  string reference = 3;
-}
-
 message ProposalUnjailValidator {
   option (cosmos_proto.implements_interface) = "Content";
   option (gogoproto.equal) = true;

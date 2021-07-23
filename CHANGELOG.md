@@ -1,5 +1,12 @@
 # Changelog
 
+## [v0.1.21.7] - 22.07.2021
+
+- update governance apis
+- add interx list query api
+- update deposit/withdraw transactions query
+- update interx functions query
+
 ## [v0.1.21.6] - 19.07.2021
 
 - Update env to be latest

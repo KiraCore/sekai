@@ -237,7 +237,7 @@ func queryConsensusHandle(r *http.Request, gwCosmosmux *runtime.ServeMux, rpcAdd
 	}
 
 	var catching_up bool
-	success, failure, statusCode = common.MakeGetRequest(rpcAddr, "/status", "")
+	success, failure, statusCode = common.MakeTendermintRPCRequest(rpcAddr, "/status", "")
 	if success != nil {
 		type TempResponse struct {
 			SyncInfo struct {
@@ -264,7 +264,7 @@ func queryConsensusHandle(r *http.Request, gwCosmosmux *runtime.ServeMux, rpcAdd
 	}
 
 	// Query consensus
-	success, failure, statusCode = common.MakeGetRequest(rpcAddr, "/dump_consensus_state", "")
+	success, failure, statusCode = common.MakeTendermintRPCRequest(rpcAddr, "/dump_consensus_state", "")
 	if success != nil {
 		consensus := tmRPCTypes.ResultDumpConsensusState{}
 
