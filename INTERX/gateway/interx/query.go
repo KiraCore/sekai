@@ -9,6 +9,7 @@ import (
 	"github.com/KiraCore/sekai/INTERX/config"
 	functions "github.com/KiraCore/sekai/INTERX/functions"
 	"github.com/KiraCore/sekai/INTERX/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 )
@@ -59,7 +60,8 @@ func queryStatusHandle(rpcAddr string) (interface{}, interface{}, int) {
 	result := types.InterxStatus{}
 
 	// Handle Interx Pubkey
-	pubkeyBytes, err := config.EncodingCg.Amino.MarshalJSON(config.Config.PubKey)
+	pubkeyBytes, err := config.EncodingCg.Amino.MarshalJSON(&config.Config.PubKey)
+
 	if err != nil {
 		common.GetLogger().Error("[query-status] Failed to marshal interx pubkey", err)
 		return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
@@ -97,6 +99,7 @@ func queryStatusHandle(rpcAddr string) (interface{}, interface{}, int) {
 	result.InterxInfo.Node = config.Config.Node
 
 	result.InterxInfo.KiraAddr = config.Config.Address
+	result.InterxInfo.KiraPubKey = sdk.MustBech32ifyPubKey(sdk.Bech32PubKeyTypeAccPub, config.Config.PubKey)
 	result.InterxInfo.FaucetAddr = config.Config.Faucet.Address
 	result.InterxInfo.GenesisChecksum = checksum
 	result.InterxInfo.ChainID = genesis.ChainID

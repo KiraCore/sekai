@@ -221,15 +221,17 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 
 			PubP2PNodeListResponse.NodeList = append(PubP2PNodeListResponse.NodeList, nodeInfo)
 
+			interxStartTime := makeTimestamp()
 			// interxStatus := common.GetInterxStatus(getInterxAddress(ipAddr))
 			interxStatus := common.GetInterxStatus(getInterxAddress("127.0.0.1"))
-			common.GetLogger().Info(interxStatus)
 
 			if interxStatus != nil {
+				interxEndTime := makeTimestamp()
+
 				interxInfo := types.InterxNode{}
 				interxInfo.ID = interxStatus.ID
 				interxInfo.IP = ipAddr
-				interxInfo.Ping = 0 // calculate and verify
+				interxInfo.Ping = interxEndTime - interxStartTime
 				interxInfo.Moniker = interxStatus.InterxInfo.Moniker
 				interxInfo.Faucet = interxStatus.InterxInfo.FaucetAddr
 				interxInfo.Type = interxStatus.InterxInfo.Node.NodeType
