@@ -30,3 +30,8 @@ type InterxStatus struct {
 	SyncInfo      SyncInfo      `json:"sync_info,omitempty"`
 	ValidatorInfo ValidatorInfo `json:"validator_info,omitempty"`
 }
+
+type SnapShotChecksumResponse struct {
+	Size     int    `json:"size,omitempty"`
+	Checksum string `json:"checksum,omitempty"`
+}
