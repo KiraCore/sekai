@@ -6,7 +6,7 @@ import (
 
 	customante "github.com/KiraCore/sekai/app/ante"
 	"github.com/KiraCore/sekai/types"
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -18,7 +18,7 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 	suite.SetupTest(false) // reset
 
 	// set execution fee for set network properties
-	suite.app.CustomGovKeeper.SetExecutionFee(suite.ctx, &customgovtypes.ExecutionFee{
+	suite.app.CustomGovKeeper.SetExecutionFee(suite.ctx, &govtypes.ExecutionFee{
 		Name:              types.MsgTypeSetNetworkProperties,
 		TransactionType:   types.MsgTypeSetNetworkProperties,
 		ExecutionFee:      10000,
@@ -26,7 +26,7 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 		Timeout:           0,
 		DefaultParameters: 0,
 	})
-	suite.app.CustomGovKeeper.SetNetworkProperties(suite.ctx, &customgovtypes.NetworkProperties{
+	suite.app.CustomGovKeeper.SetNetworkProperties(suite.ctx, &govtypes.NetworkProperties{
 		MinTxFee:                 2,
 		MaxTxFee:                 10000,
 		EnableForeignFeePayments: true,
@@ -51,7 +51,7 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 			"insufficient max execution fee set",
 			func() ([]sdk.Msg, []cryptotypes.PrivKey, []uint64, []uint64, sdk.Coins) {
 				msgs := []sdk.Msg{
-					customgovtypes.NewMsgSetNetworkProperties(accounts[0].acc.GetAddress(), &customgovtypes.NetworkProperties{
+					govtypes.NewMsgSetNetworkProperties(accounts[0].acc.GetAddress(), &govtypes.NetworkProperties{
 						MinTxFee:                 2,
 						MaxTxFee:                 10000,
 						EnableForeignFeePayments: true,
@@ -67,7 +67,7 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 			"execution failure fee deduction",
 			func() ([]sdk.Msg, []cryptotypes.PrivKey, []uint64, []uint64, sdk.Coins) {
 				msgs := []sdk.Msg{
-					customgovtypes.NewMsgSetNetworkProperties(accounts[1].acc.GetAddress(), &customgovtypes.NetworkProperties{
+					govtypes.NewMsgSetNetworkProperties(accounts[1].acc.GetAddress(), &govtypes.NetworkProperties{
 						MinTxFee:                 2,
 						MaxTxFee:                 10000,
 						EnableForeignFeePayments: true,
@@ -83,7 +83,7 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 			"no execution fee deduction when does not exist",
 			func() ([]sdk.Msg, []cryptotypes.PrivKey, []uint64, []uint64, sdk.Coins) {
 				msgs := []sdk.Msg{
-					customgovtypes.NewMsgSetExecutionFee(
+					govtypes.NewMsgSetExecutionFee(
 						types.MsgTypeSetNetworkProperties,
 						types.MsgTypeSetNetworkProperties,
 						10000,
@@ -103,7 +103,7 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 			"insufficient balance to pay for fee",
 			func() ([]sdk.Msg, []cryptotypes.PrivKey, []uint64, []uint64, sdk.Coins) {
 				msgs := []sdk.Msg{
-					customgovtypes.NewMsgSetExecutionFee(
+					govtypes.NewMsgSetExecutionFee(
 						types.MsgTypeSetNetworkProperties,
 						types.MsgTypeSetNetworkProperties,
 						10000,
@@ -123,7 +123,7 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 			"fee out of range",
 			func() ([]sdk.Msg, []cryptotypes.PrivKey, []uint64, []uint64, sdk.Coins) {
 				msgs := []sdk.Msg{
-					customgovtypes.NewMsgSetExecutionFee(
+					govtypes.NewMsgSetExecutionFee(
 						types.MsgTypeSetNetworkProperties,
 						types.MsgTypeSetNetworkProperties,
 						10000,
@@ -142,13 +142,13 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 		{
 			"foreign currency as fee payment when EnableForeignFeePayments is enabled by governance",
 			func() ([]sdk.Msg, []cryptotypes.PrivKey, []uint64, []uint64, sdk.Coins) {
-				suite.app.CustomGovKeeper.SetNetworkProperties(suite.ctx, &customgovtypes.NetworkProperties{
+				suite.app.CustomGovKeeper.SetNetworkProperties(suite.ctx, &govtypes.NetworkProperties{
 					MinTxFee:                 2,
 					MaxTxFee:                 10000,
 					EnableForeignFeePayments: true,
 				})
 				msgs := []sdk.Msg{
-					customgovtypes.NewMsgSetExecutionFee(
+					govtypes.NewMsgSetExecutionFee(
 						types.MsgTypeSetNetworkProperties,
 						types.MsgTypeSetNetworkProperties,
 						10000,
@@ -167,13 +167,13 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 		{
 			"foreign currency as fee payment when EnableForeignFeePayments is disabled by governance",
 			func() ([]sdk.Msg, []cryptotypes.PrivKey, []uint64, []uint64, sdk.Coins) {
-				suite.app.CustomGovKeeper.SetNetworkProperties(suite.ctx, &customgovtypes.NetworkProperties{
+				suite.app.CustomGovKeeper.SetNetworkProperties(suite.ctx, &govtypes.NetworkProperties{
 					MinTxFee:                 2,
 					MaxTxFee:                 10000,
 					EnableForeignFeePayments: false,
 				})
 				msgs := []sdk.Msg{
-					customgovtypes.NewMsgSetExecutionFee(
+					govtypes.NewMsgSetExecutionFee(
 						types.MsgTypeSetNetworkProperties,
 						types.MsgTypeSetNetworkProperties,
 						10000,
@@ -192,7 +192,7 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 		{
 			"try sending non bond denom coins on poor network",
 			func() ([]sdk.Msg, []cryptotypes.PrivKey, []uint64, []uint64, sdk.Coins) {
-				suite.app.CustomGovKeeper.SetNetworkProperties(suite.ctx, &customgovtypes.NetworkProperties{
+				suite.app.CustomGovKeeper.SetNetworkProperties(suite.ctx, &govtypes.NetworkProperties{
 					MinTxFee:                 2,
 					MaxTxFee:                 10000,
 					EnableForeignFeePayments: true,
@@ -214,7 +214,7 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 		{
 			"try sending more bond denom than restricted amount on poor network",
 			func() ([]sdk.Msg, []cryptotypes.PrivKey, []uint64, []uint64, sdk.Coins) {
-				suite.app.CustomGovKeeper.SetNetworkProperties(suite.ctx, &customgovtypes.NetworkProperties{
+				suite.app.CustomGovKeeper.SetNetworkProperties(suite.ctx, &govtypes.NetworkProperties{
 					MinTxFee:                 2,
 					MaxTxFee:                 10000,
 					EnableForeignFeePayments: true,
@@ -237,7 +237,7 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 		{
 			"try sending lower than restriction amount on poor network",
 			func() ([]sdk.Msg, []cryptotypes.PrivKey, []uint64, []uint64, sdk.Coins) {
-				suite.app.CustomGovKeeper.SetNetworkProperties(suite.ctx, &customgovtypes.NetworkProperties{
+				suite.app.CustomGovKeeper.SetNetworkProperties(suite.ctx, &govtypes.NetworkProperties{
 					MinTxFee:                 2,
 					MaxTxFee:                 10000,
 					EnableForeignFeePayments: true,
@@ -260,16 +260,16 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 		{
 			"try sending enabled message on poor network",
 			func() ([]sdk.Msg, []cryptotypes.PrivKey, []uint64, []uint64, sdk.Coins) {
-				suite.app.CustomGovKeeper.SetNetworkProperties(suite.ctx, &customgovtypes.NetworkProperties{
+				suite.app.CustomGovKeeper.SetNetworkProperties(suite.ctx, &govtypes.NetworkProperties{
 					MinTxFee:                 2,
 					MaxTxFee:                 10000,
 					EnableForeignFeePayments: true,
 					MinValidators:            100,
 				})
 				msgs := []sdk.Msg{
-					customgovtypes.NewMsgSetNetworkProperties(
+					govtypes.NewMsgSetNetworkProperties(
 						accounts[4].acc.GetAddress(),
-						&customgovtypes.NetworkProperties{
+						&govtypes.NetworkProperties{
 							MinTxFee:                 2,
 							MaxTxFee:                 10000,
 							EnableForeignFeePayments: true,
@@ -286,14 +286,14 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 		{
 			"try sending not enabled message on poor network",
 			func() ([]sdk.Msg, []cryptotypes.PrivKey, []uint64, []uint64, sdk.Coins) {
-				suite.app.CustomGovKeeper.SetNetworkProperties(suite.ctx, &customgovtypes.NetworkProperties{
+				suite.app.CustomGovKeeper.SetNetworkProperties(suite.ctx, &govtypes.NetworkProperties{
 					MinTxFee:                 2,
 					MaxTxFee:                 10000,
 					EnableForeignFeePayments: true,
 					MinValidators:            100,
 				})
 				msgs := []sdk.Msg{
-					customgovtypes.NewMsgSetExecutionFee(
+					govtypes.NewMsgSetExecutionFee(
 						types.MsgTypeSetNetworkProperties,
 						types.MsgTypeSetNetworkProperties,
 						10000,

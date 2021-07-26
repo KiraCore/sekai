@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	customstakingtypes "github.com/KiraCore/sekai/x/staking/types"
+	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 
 	"github.com/stretchr/testify/require"
 
@@ -28,7 +28,7 @@ func TestNewValidator_Errors(t *testing.T) {
 			name:        "moniker longer than 64",
 			expectError: true,
 			newVal: func() error {
-				_, err := customstakingtypes.NewValidator(
+				_, err := stakingtypes.NewValidator(
 					strings.Repeat("A", 65),
 					types.NewDec(1234),
 					valAddr,
@@ -37,7 +37,7 @@ func TestNewValidator_Errors(t *testing.T) {
 
 				return err
 			},
-			err: customstakingtypes.ErrInvalidMonikerLength,
+			err: stakingtypes.ErrInvalidMonikerLength,
 		},
 	}
 
@@ -62,7 +62,7 @@ func TestNewValidator_IsActiveByDefault(t *testing.T) {
 	pubKey, err := types.GetPubKeyFromBech32(types.Bech32PubKeyTypeConsPub, "kiravalconspub1zcjduepqylc5k8r40azmw0xt7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsq4xg7em")
 	require.NoError(t, err)
 
-	validator, err := customstakingtypes.NewValidator(
+	validator, err := stakingtypes.NewValidator(
 		"the moniker",
 		types.NewDec(1234),
 		valAddr,

@@ -3,7 +3,7 @@
 package types
 
 import (
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	auth "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -59,7 +59,7 @@ type StakingKeeper interface {
 	// MaxValidators returns the maximum amount of joined validators
 	MaxValidators(sdk.Context) uint32
 
-	GetIdRecordsByAddress(sdk.Context, sdk.AccAddress) []stakingtypes.IdentityRecord
+	GetIdRecordByAddress(sdk.Context, sdk.AccAddress) *govtypes.IdentityRecord
 }
 
 // StakingHooks event hooks for staking validator object (noalias)
@@ -71,9 +71,9 @@ type StakingHooks interface {
 
 // GovKeeper expected governance keeper
 type GovKeeper interface {
-	GetNetworkProperties(sdk.Context) *customgovtypes.NetworkProperties // returns network properties
-	CheckIfAllowedPermission(ctx sdk.Context, addr sdk.AccAddress, permValue customgovtypes.PermValue) bool
+	GetNetworkProperties(sdk.Context) *govtypes.NetworkProperties // returns network properties
+	CheckIfAllowedPermission(ctx sdk.Context, addr sdk.AccAddress, permValue govtypes.PermValue) bool
 	GetNextProposalID(ctx sdk.Context) uint64
-	SaveProposal(ctx sdk.Context, proposal customgovtypes.Proposal)
-	AddToActiveProposals(ctx sdk.Context, proposal customgovtypes.Proposal)
+	SaveProposal(ctx sdk.Context, proposal govtypes.Proposal)
+	AddToActiveProposals(ctx sdk.Context, proposal govtypes.Proposal)
 }

@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	customgovcli "github.com/KiraCore/sekai/x/gov/client/cli"
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
@@ -179,7 +179,7 @@ func (s IntegrationTestSuite) TestCreateProposalUnjailValidator() {
 		customgovcli.GetTxVoteProposal(),
 		[]string{
 			fmt.Sprintf("%d", 1), // Proposal ID
-			fmt.Sprintf("%d", customgovtypes.OptionYes),
+			fmt.Sprintf("%d", govtypes.OptionYes),
 			fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),

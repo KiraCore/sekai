@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/upgrade/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -118,7 +118,7 @@ func GetTxProposeUpgradePlan() *cobra.Command {
 				return fmt.Errorf("invalid description")
 			}
 
-			msg, err := customgovtypes.NewMsgSubmitProposal(
+			msg, err := govtypes.NewMsgSubmitProposal(
 				clientCtx.FromAddress,
 				title,
 				description,
@@ -187,7 +187,7 @@ func GetTxCancelUpgradePlan() *cobra.Command {
 				return fmt.Errorf("invalid description")
 			}
 
-			msg, err := customgovtypes.NewMsgSubmitProposal(
+			msg, err := govtypes.NewMsgSubmitProposal(
 				clientCtx.FromAddress,
 				title,
 				description,

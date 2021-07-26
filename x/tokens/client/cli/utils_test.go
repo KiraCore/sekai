@@ -4,14 +4,14 @@ import (
 	"fmt"
 
 	"github.com/KiraCore/sekai/x/gov/client/cli"
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	customstakingcli "github.com/KiraCore/sekai/x/staking/client/cli"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (s IntegrationTestSuite) WhitelistPermissions(addr sdk.AccAddress, perm customgovtypes.PermValue) {
+func (s IntegrationTestSuite) WhitelistPermissions(addr sdk.AccAddress, perm govtypes.PermValue) {
 	val := s.network.Validators[0]
 	clientCtx := val.ClientCtx
 
@@ -36,7 +36,7 @@ func (s IntegrationTestSuite) WhitelistPermissions(addr sdk.AccAddress, perm cus
 	})
 	s.Require().NoError(err)
 
-	var perms customgovtypes.Permissions
+	var perms govtypes.Permissions
 	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &perms)
 
 	// Validator 1 has permission to Add Permissions.

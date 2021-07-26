@@ -1,6 +1,7 @@
 syntax = "proto3";
 package kira.staking;
 
+import "kira/gov/identity_registrar.proto";
 import "kira/staking/staking.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "gogoproto/gogo.proto";
@@ -49,17 +50,7 @@ message ValidatorsRequest {
   cosmos.base.query.v1beta1.PageRequest pagination = 7 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
 }
 
-message IdentityRecord {
-  option (gogoproto.equal)            = true;
-  
-  uint64 id = 1;
-  map<string, string> infos = 2;
-  google.protobuf.Timestamp date = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  repeated string verifiers = 4;
-}
-
 message QueryValidator {
-  option (gogoproto.equal)            = true;
 
   string address = 1;
   string valkey = 2;
@@ -71,7 +62,7 @@ message QueryValidator {
   int64 rank = 8;
   int64 streak = 9;
   int64 mischance = 10;
-  repeated IdentityRecord identity = 11 [(gogoproto.nullable) = false];
+  kira.gov.IdentityRecord identity = 11;
 }
 
 // ValidatorsResponse is the response type for validators query.

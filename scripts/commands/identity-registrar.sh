@@ -10,7 +10,7 @@ sekaid tx customgov create-identity-record --infos-file="id.json" --from=validat
 
 sekaid query customgov all-identity-records --log_level=debug
 sekaid query customgov identity-record 1 --log_level=debug
-sekaid query customgov identity-records-by-addr $(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --log_level=debug
+sekaid query customgov identity-record-by-addr $(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --log_level=debug
 # pagination: null
 # records:
 # - address: kira1zakwshqmx92fkl7ps094u4aratk827knfl7hm2

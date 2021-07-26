@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	kiratypes "github.com/KiraCore/sekai/types"
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -86,7 +86,7 @@ func (q Querier) Validators(ctx context.Context, request *types.ValidatorsReques
 			Status:     val.Status.String(),
 			Rank:       val.Rank,
 			Streak:     val.Streak,
-			Identity:   q.keeper.GetIdRecordsByAddress(c, sdk.AccAddress(val.ValKey)),
+			Identity:   q.keeper.GetIdRecordByAddress(c, sdk.AccAddress(val.ValKey)),
 		}
 
 		if request.Status != "" && !strings.EqualFold(validator.Status, request.Status) {
@@ -125,7 +125,7 @@ func (q Querier) Validators(ctx context.Context, request *types.ValidatorsReques
 	}
 
 	var actors []string
-	for _, actor := range q.keeper.govkeeper.GetNetworkActorsByAbsoluteWhitelistPermission(c, customgovtypes.PermClaimValidator) {
+	for _, actor := range q.keeper.govkeeper.GetNetworkActorsByAbsoluteWhitelistPermission(c, govtypes.PermClaimValidator) {
 		actors = append(actors, actor.Address.String())
 	}
 

@@ -64,7 +64,7 @@ service Query {
     option (google.api.http).get = "/kira/gov/identity_record/{id}";
   }
   // Query identity records by records creator
-  rpc IdentityRecordsByAddress(QueryIdentityRecordsByAddressRequest) returns (QueryIdentityRecordsByAddressResponse) {
+  rpc IdentityRecordByAddress(QueryIdentityRecordByAddressRequest) returns (QueryIdentityRecordByAddressResponse) {
     option (google.api.http).get = "/kira/gov/identity_records/{creator}";
   }
   // Query all identity records
@@ -255,16 +255,14 @@ message QueryIdentityRecordResponse {
   kira.gov.IdentityRecord record = 1;
 }
 
-message QueryIdentityRecordsByAddressRequest {
+message QueryIdentityRecordByAddressRequest {
   bytes creator = 1 [
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
     (gogoproto.moretags) = "yaml:\"creator\""
   ];
-  cosmos.base.query.v1beta1.PageRequest pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
 }
-message QueryIdentityRecordsByAddressResponse {
-  repeated kira.gov.IdentityRecord records = 1 [(gogoproto.nullable) = false];
-  cosmos.base.query.v1beta1.PageResponse pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
+message QueryIdentityRecordByAddressResponse {
+  kira.gov.IdentityRecord record = 1;
 }
 
 message QueryAllIdentityRecordsRequest {

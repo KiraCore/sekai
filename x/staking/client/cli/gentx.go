@@ -5,10 +5,10 @@ import (
 	"fmt"
 
 	genutiltypes "github.com/KiraCore/sekai/x/genutil/types"
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
 
 	"github.com/KiraCore/sekai/x/genutil"
-	customstakingtypes "github.com/KiraCore/sekai/x/staking/types"
+	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/server"
@@ -57,7 +57,7 @@ func GenTxClaimCmd(genBalIterator banktypes.GenesisBalancesIterator, defaultNode
 				moniker = m
 			}
 
-			validator, err := customstakingtypes.NewValidator(
+			validator, err := stakingtypes.NewValidator(
 				moniker,
 				types.NewDec(1),
 				types.ValAddress(key.GetAddress()),
@@ -67,32 +67,32 @@ func GenTxClaimCmd(genBalIterator banktypes.GenesisBalancesIterator, defaultNode
 				return errors.Wrap(err, "failed to create new validator")
 			}
 
-			var stakingGenesisState customstakingtypes.GenesisState
+			var stakingGenesisState stakingtypes.GenesisState
 			stakingGenesisState.Validators = append(stakingGenesisState.Validators, validator)
 			bzStakingGen := cdc.MustMarshalJSON(&stakingGenesisState)
-			appState[customstakingtypes.ModuleName] = bzStakingGen
+			appState[stakingtypes.ModuleName] = bzStakingGen
 
-			var customGovGenState customgovtypes.GenesisState
-			cdc.MustUnmarshalJSON(appState[customgovtypes.ModuleName], &customGovGenState)
+			var customGovGenState govtypes.GenesisState
+			cdc.MustUnmarshalJSON(appState[govtypes.ModuleName], &customGovGenState)
 
 			// Only first validator is network actor
-			networkActor := customgovtypes.NewNetworkActor(
+			networkActor := govtypes.NewNetworkActor(
 				types.AccAddress(validator.ValKey),
-				customgovtypes.Roles{
-					uint64(customgovtypes.RoleSudo),
+				govtypes.Roles{
+					uint64(govtypes.RoleSudo),
 				},
-				customgovtypes.Active,
-				[]customgovtypes.VoteOption{
-					customgovtypes.OptionYes,
-					customgovtypes.OptionAbstain,
-					customgovtypes.OptionNo,
-					customgovtypes.OptionNoWithVeto,
+				govtypes.Active,
+				[]govtypes.VoteOption{
+					govtypes.OptionYes,
+					govtypes.OptionAbstain,
+					govtypes.OptionNo,
+					govtypes.OptionNoWithVeto,
 				},
-				customgovtypes.NewPermissions(nil, nil),
+				govtypes.NewPermissions(nil, nil),
 				1,
 			)
 			customGovGenState.NetworkActors = append(customGovGenState.NetworkActors, &networkActor)
-			appState[customgovtypes.ModuleName] = cdc.MustMarshalJSON(&customGovGenState)
+			appState[govtypes.ModuleName] = cdc.MustMarshalJSON(&customGovGenState)
 
 			appGenStateJSON, err := json.Marshal(appState)
 			if err != nil {

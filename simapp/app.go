@@ -6,8 +6,6 @@ import (
 	"os"
 	"path/filepath"
 
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-
 	"github.com/KiraCore/sekai/x/genutil"
 	"github.com/KiraCore/sekai/x/upgrade"
 	upgradekeeper "github.com/KiraCore/sekai/x/upgrade/keeper"
@@ -59,13 +57,13 @@ import (
 	feeprocessingtypes "github.com/KiraCore/sekai/x/feeprocessing/types"
 	customgov "github.com/KiraCore/sekai/x/gov"
 	customgovkeeper "github.com/KiraCore/sekai/x/gov/keeper"
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	customslashing "github.com/KiraCore/sekai/x/slashing"
 	customslashingkeeper "github.com/KiraCore/sekai/x/slashing/keeper"
-	customslashingtypes "github.com/KiraCore/sekai/x/slashing/types"
+	slashingtypes "github.com/KiraCore/sekai/x/slashing/types"
 	customstaking "github.com/KiraCore/sekai/x/staking"
 	"github.com/KiraCore/sekai/x/staking/keeper"
-	customstakingtypes "github.com/KiraCore/sekai/x/staking/types"
+	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	"github.com/KiraCore/sekai/x/tokens"
 	tokenskeeper "github.com/KiraCore/sekai/x/tokens/keeper"
 	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
@@ -98,7 +96,7 @@ var (
 	// module account permissions
 	maccPerms = map[string][]string{
 		authtypes.FeeCollectorName: nil,
-		customgovtypes.ModuleName:  nil,
+		govtypes.ModuleName:        nil,
 	}
 
 	// module accounts that are allowed to receive tokens
@@ -139,7 +137,7 @@ type SimApp struct {
 	FeeProcessingKeeper  feeprocessingkeeper.Keeper
 	EvidenceKeeper       evidencekeeper.Keeper
 
-	ProposalRouter customgovtypes.ProposalRouter
+	ProposalRouter govtypes.ProposalRouter
 
 	// the module manager
 	mm *module.Manager
@@ -176,8 +174,8 @@ func NewSimApp(
 
 	keys := sdk.NewKVStoreKeys(
 		authtypes.StoreKey, banktypes.StoreKey, paramstypes.StoreKey,
-		customstakingtypes.ModuleName, customslashingtypes.ModuleName, customgovtypes.ModuleName,
-		customgovtypes.ModuleName, tokenstypes.ModuleName, feeprocessingtypes.ModuleName,
+		stakingtypes.ModuleName, slashingtypes.ModuleName, govtypes.ModuleName,
+		tokenstypes.ModuleName, feeprocessingtypes.ModuleName,
 		evidencetypes.StoreKey, upgradetypes.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -205,12 +203,12 @@ func NewSimApp(
 		appCodec, keys[banktypes.StoreKey], app.AccountKeeper, app.GetSubspace(banktypes.ModuleName), app.BlockedAddrs(),
 	)
 
-	app.CustomGovKeeper = customgovkeeper.NewKeeper(keys[customgovtypes.ModuleName], appCodec, app.BankKeeper)
-	customStakingKeeper := keeper.NewKeeper(keys[customstakingtypes.ModuleName], legacyAmino, app.CustomGovKeeper)
-	app.CustomSlashingKeeper = customslashingkeeper.NewKeeper(appCodec, keys[customslashingtypes.ModuleName], &customStakingKeeper, app.CustomGovKeeper, app.GetSubspace(customslashingtypes.ModuleName))
+	app.CustomGovKeeper = customgovkeeper.NewKeeper(keys[govtypes.ModuleName], appCodec, app.BankKeeper)
+	customStakingKeeper := keeper.NewKeeper(keys[stakingtypes.ModuleName], legacyAmino, app.CustomGovKeeper)
+	app.CustomSlashingKeeper = customslashingkeeper.NewKeeper(appCodec, keys[slashingtypes.ModuleName], &customStakingKeeper, app.CustomGovKeeper, app.GetSubspace(slashingtypes.ModuleName))
 	app.TokensKeeper = tokenskeeper.NewKeeper(keys[tokenstypes.ModuleName], appCodec)
 	app.CustomStakingKeeper = *customStakingKeeper.SetHooks(
-		customstakingtypes.NewMultiStakingHooks(app.CustomSlashingKeeper.Hooks()),
+		stakingtypes.NewMultiStakingHooks(app.CustomSlashingKeeper.Hooks()),
 	)
 
 	app.UpgradeKeeper = upgradekeeper.NewKeeper(keys[upgradetypes.StoreKey], appCodec)
@@ -228,8 +226,8 @@ func NewSimApp(
 
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
-	app.ProposalRouter = customgovtypes.NewProposalRouter(
-		[]customgovtypes.ProposalHandler{
+	app.ProposalRouter = govtypes.NewProposalRouter(
+		[]govtypes.ProposalHandler{
 			customgov.NewApplyAssignPermissionProposalHandler(app.CustomGovKeeper),
 			customgov.NewApplySetNetworkPropertyProposalHandler(app.CustomGovKeeper),
 			customgov.NewApplyUpsertDataRegistryProposalHandler(app.CustomGovKeeper),
@@ -263,11 +261,11 @@ func NewSimApp(
 	// CanWithdrawInvariant invariant.
 	// NOTE: staking module is required if HistoricalEntries param > 0
 	app.mm.SetOrderBeginBlockers(
-		upgradetypes.ModuleName, customslashingtypes.ModuleName, evidencetypes.ModuleName,
+		upgradetypes.ModuleName, slashingtypes.ModuleName, evidencetypes.ModuleName,
 	)
 	app.mm.SetOrderEndBlockers(
-		customgovtypes.ModuleName,
-		customstakingtypes.ModuleName,
+		govtypes.ModuleName,
+		stakingtypes.ModuleName,
 		feeprocessingtypes.ModuleName,
 	)
 
@@ -278,7 +276,7 @@ func NewSimApp(
 	// can do so safely.
 	app.mm.SetOrderInitGenesis(
 		authtypes.ModuleName, banktypes.ModuleName, banktypes.ModuleName,
-		customgovtypes.ModuleName, customslashingtypes.ModuleName,
+		govtypes.ModuleName, slashingtypes.ModuleName,
 		tokenstypes.ModuleName, feeprocessingtypes.ModuleName, evidencetypes.ModuleName,
 	)
 
@@ -503,7 +501,7 @@ func initParamsKeeper(appCodec codec.BinaryMarshaler, legacyAmino *codec.LegacyA
 	paramsKeeper.Subspace(authtypes.ModuleName)
 	paramsKeeper.Subspace(banktypes.ModuleName)
 	paramsKeeper.Subspace(stakingtypes.ModuleName)
-	paramsKeeper.Subspace(customslashingtypes.ModuleName)
+	paramsKeeper.Subspace(slashingtypes.ModuleName)
 
 	return paramsKeeper
 }
