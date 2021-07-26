@@ -37,6 +37,8 @@ const (
 	QueryValidatorInfos      = "/api/valoperinfos"
 	QueryGenesis             = "/api/genesis"
 	QueryGenesisSum          = "/api/gensum"
+	QuerySnapShot            = "/api/snapshot"
+	QuerySnapShotInfo        = "/api/snapshot_info"
 	QueryPubP2PList          = "/api/pub_p2p_list"
 	QueryPrivP2PList         = "/api/priv_p2p_list"
 	QueryInterxList          = "/api/interx_list"
