@@ -66,6 +66,10 @@ import (
 	dbm "github.com/tendermint/tm-db"
 )
 
+// TODO: upgrade cosmos-sdk to be latest
+// TODO: After upgrade of cosmos SDK, there's a reverse flag defined already,
+// remove relevant codebase from sekai repo: FilteredReversePaginate, Reverse flag
+
 const appName = "Sekai"
 
 var (
