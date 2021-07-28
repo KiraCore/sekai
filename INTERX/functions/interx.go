@@ -279,9 +279,14 @@ func RegisterInterxFunctions() {
 					"description": "This represents the transaction type.",
 					"optional": true
 				},
-				"max": {
+				"page": {
 					"type":        "int",
-					"description": "This represents the maximum number of results. (1 ~ 1000)",
+					"description": "This represents the page number of results.",
+					"optional": true
+				},
+				"pageSize": {
+					"type":        "int",
+					"description": "This represents the pageSize number of results. (1 ~ 1000)",
 					"optional": true
 				},
 				"last": {
@@ -308,9 +313,14 @@ func RegisterInterxFunctions() {
 					"description": "This represents the transaction type.",
 					"optional": true
 				},
-				"max": {
+				"page": {
 					"type":        "int",
-					"description": "This represents the maximum number of results. (1 ~ 1000)",
+					"description": "This represents the page number of results.",
+					"optional": true
+				},
+				"pageSize": {
+					"type":        "int",
+					"description": "This represents the pageSize number of results. (1 ~ 1000)",
 					"optional": true
 				},
 				"last": {

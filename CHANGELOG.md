@@ -1,6 +1,6 @@
 # Changelog
 
-## [v0.1.21.7] - 28.07.2021
+## [v0.1.21.8] - 28.07.2021
 
 - Remove resolved TODO in readme for upgrade module
 - Add token rates keeper functions test
@@ -14,6 +14,13 @@
 - Utilize existing sdk protobuf
 - Resolve codebase to work with latest protobuf
 - Set IdentityRecord to be only one by address
+
+## [v0.1.21.7] - 22.07.2021
+
+- update governance apis
+- add interx list query api
+- update deposit/withdraw transactions query
+- update interx functions query
 
 ## [v0.1.21.6] - 19.07.2021
 

@@ -41,6 +41,10 @@ func getGetMethods() []string {
 		QueryRosettaNetworkOptions,
 		QueryRosettaNetworkStatus,
 		QueryRosettaAccountBalance,
+
+		QueryPrivP2PList,
+		QueryPubP2PList,
+		QueryInterxList,
 	}
 }
 
@@ -60,10 +64,11 @@ func defaultConfig() InterxConfigFromFile {
 	configFromFile.RPC = "http://0.0.0.0:26657"
 	configFromFile.PORT = "11000"
 
-	configFromFile.SentryNodeID = ""
-	configFromFile.PrivSentryNodeID = ""
-	configFromFile.ValidatorNodeID = ""
-	configFromFile.SeedNodeID = ""
+	configFromFile.Node.NodeType = "seed"
+	configFromFile.Node.SentryNodeID = ""
+	configFromFile.Node.PrivSentryNodeID = ""
+	configFromFile.Node.ValidatorNodeID = ""
+	configFromFile.Node.SeedNodeID = ""
 
 	configFromFile.MnemonicFile = LoadMnemonic("swap exercise equip shoot mad inside floor wheel loan visual stereo build frozen always bulb naive subway foster marine erosion shuffle flee action there")
 
@@ -127,6 +132,7 @@ func InitConfig(
 	serveHTTPS bool,
 	grpc string,
 	rpc string,
+	nodeType string,
 	sentryNodeId string,
 	privSentrynodeId string,
 	validatorNodeId string,
@@ -160,10 +166,11 @@ func InitConfig(
 	configFromFile.RPC = rpc
 	configFromFile.PORT = port
 
-	configFromFile.SentryNodeID = sentryNodeId
-	configFromFile.PrivSentryNodeID = privSentrynodeId
-	configFromFile.ValidatorNodeID = validatorNodeId
-	configFromFile.SeedNodeID = seedNodeId
+	configFromFile.Node.NodeType = nodeType
+	configFromFile.Node.SentryNodeID = sentryNodeId
+	configFromFile.Node.PrivSentryNodeID = privSentrynodeId
+	configFromFile.Node.ValidatorNodeID = validatorNodeId
+	configFromFile.Node.SeedNodeID = seedNodeId
 
 	configFromFile.MnemonicFile = LoadMnemonic(signingMnemonic)
 

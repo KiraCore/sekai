@@ -39,6 +39,7 @@ const (
 	QueryGenesisSum          = "/api/gensum"
 	QueryPubP2PList          = "/api/pub_p2p_list"
 	QueryPrivP2PList         = "/api/priv_p2p_list"
+	QueryInterxList          = "/api/interx_list"
 
 	Download              = "/download"
 	DataReferenceRegistry = "DRR"

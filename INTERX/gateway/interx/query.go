@@ -84,23 +84,24 @@ func queryStatusHandle(rpcAddr string) (interface{}, interface{}, int) {
 	sentryStatus := common.GetKiraStatus((rpcAddr))
 
 	if sentryStatus != nil {
-		result.Moniker = sentryStatus.NodeInfo.Moniker
-		result.Version = sentryStatus.NodeInfo.Version
+		result.NodeInfo = sentryStatus.NodeInfo
+		result.SyncInfo = sentryStatus.SyncInfo
+		result.ValidatorInfo = sentryStatus.ValidatorInfo
+
+		result.InterxInfo.Moniker = sentryStatus.NodeInfo.Moniker
+
+		result.InterxInfo.LatestBlockHeight = sentryStatus.SyncInfo.LatestBlockHeight
+		result.InterxInfo.CatchingUp = sentryStatus.SyncInfo.CatchingUp
 	}
 
-	result.SentryNodeID = config.Config.SentryNodeID
-	result.PrivSentryNodeID = config.Config.PrivSentryNodeID
-	result.ValidatorNodeID = config.Config.ValidatorNodeID
-	result.SeedNodeID = config.Config.SeedNodeID
+	result.InterxInfo.Node = config.Config.Node
 
-	result.KiraAddr = config.Config.Address
-	result.GenesisChecksum = checksum
-	result.ChainID = genesis.ChainID
+	result.InterxInfo.KiraAddr = config.Config.Address
+	result.InterxInfo.FaucetAddr = config.Config.Faucet.Address
+	result.InterxInfo.GenesisChecksum = checksum
+	result.InterxInfo.ChainID = genesis.ChainID
 
-	result.LatestBlockHeight = sentryStatus.SyncInfo.LatestBlockHeight
-	result.CatchingUp = sentryStatus.SyncInfo.CatchingUp
-
-	result.InterxVersion = config.Config.Version
+	result.InterxInfo.Version = config.Config.Version
 
 	return result, nil, http.StatusOK
 }

@@ -14,9 +14,11 @@ import (
 func RegisterNodeListQueryRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr string) {
 	r.HandleFunc(config.QueryPubP2PList, QueryPubP2PNodeList(gwCosmosmux, rpcAddr)).Methods("GET")
 	r.HandleFunc(config.QueryPrivP2PList, QueryPrivP2PNodeList(gwCosmosmux, rpcAddr)).Methods("GET")
+	r.HandleFunc(config.QueryInterxList, QueryInterxList(gwCosmosmux, rpcAddr)).Methods("GET")
 
 	common.AddRPCMethod("GET", config.QueryPubP2PList, "This is an API to query pub node list.", true)
 	common.AddRPCMethod("GET", config.QueryPrivP2PList, "This is an API to query priv node list.", true)
+	common.AddRPCMethod("GET", config.QueryInterxList, "This is an API to query interx list.", true)
 }
 
 func queryPubP2PNodeList(gwCosmosmux *runtime.ServeMux, rpcAddr string) (interface{}, interface{}, int) {
@@ -81,6 +83,40 @@ func QueryPrivP2PNodeList(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.Ha
 			}
 
 			response.Response, response.Error, statusCode = queryPrivP2PNodeList(gwCosmosmux, rpcAddr)
+		}
+
+		common.WrapResponse(w, request, *response, statusCode, common.RPCMethods["GET"][config.QueryStatus].CachingEnabled)
+	}
+}
+
+func queryInterxList(gwCosmosmux *runtime.ServeMux, rpcAddr string) (interface{}, interface{}, int) {
+	return tasks.InterxP2PNodeListResponse, nil, http.StatusOK
+}
+
+// QueryNodeList is a function to query node list.
+func QueryInterxList(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		request := common.GetInterxRequest(r)
+		response := common.GetResponseFormat(request, rpcAddr)
+		statusCode := http.StatusOK
+
+		common.GetLogger().Info("[query-interx-list] Entering interx lists query")
+
+		if !common.RPCMethods["GET"][config.QueryInterxList].Enabled {
+			response.Response, response.Error, statusCode = common.ServeError(0, "", "API disabled", http.StatusForbidden)
+		} else {
+			if common.RPCMethods["GET"][config.QueryInterxList].CachingEnabled {
+				found, cacheResponse, cacheError, cacheStatus := common.SearchCache(request, response)
+				if found {
+					response.Response, response.Error, statusCode = cacheResponse, cacheError, cacheStatus
+					common.WrapResponse(w, request, *response, statusCode, false)
+
+					common.GetLogger().Info("[query-interx-list] Returning from the cache")
+					return
+				}
+			}
+
+			response.Response, response.Error, statusCode = queryInterxList(gwCosmosmux, rpcAddr)
 		}
 
 		common.WrapResponse(w, request, *response, statusCode, common.RPCMethods["GET"][config.QueryStatus].CachingEnabled)

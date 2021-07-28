@@ -23,10 +23,10 @@ import (
 	tmJsonRPCTypes "github.com/tendermint/tendermint/rpc/jsonrpc/types"
 )
 
-// MakeGetRequest is a function to make GET request
-func MakeGetRequest(rpcAddr string, url string, query string) (interface{}, interface{}, int) {
+// MakeTendermintRPCRequest is a function to make GET request
+func MakeTendermintRPCRequest(rpcAddr string, url string, query string) (interface{}, interface{}, int) {
 	endpoint := fmt.Sprintf("%s%s?%s", rpcAddr, url, query)
-	GetLogger().Info("[rpc-call] Entering rpc call: ", endpoint)
+	GetLogger().Info("[rpc-call] Entering tendermint rpc call: ", endpoint)
 
 	resp, err := http.Get(endpoint)
 	if err != nil {
@@ -43,6 +43,29 @@ func MakeGetRequest(rpcAddr string, url string, query string) (interface{}, inte
 	}
 
 	return response.Result, response.Error, resp.StatusCode
+}
+
+// MakeGetRequest is a function to make GET request
+func MakeGetRequest(rpcAddr string, url string, query string) (Result interface{}, Error interface{}, StatusCode int) {
+	endpoint := fmt.Sprintf("%s%s?%s", rpcAddr, url, query)
+	GetLogger().Info("[rpc-call] Entering rpc call: ", endpoint)
+
+	resp, err := http.Get(endpoint)
+	if err != nil {
+		GetLogger().Error("[rpc-call] Unable to connect to ", endpoint)
+		return ServeError(0, "", err.Error(), http.StatusInternalServerError)
+	}
+	defer resp.Body.Close()
+
+	StatusCode = resp.StatusCode
+
+	err = json.NewDecoder(resp.Body).Decode(&Result)
+	if err != nil {
+		GetLogger().Error("[rpc-call] Unable to decode response: : ", err)
+		Error = err.Error()
+	}
+
+	return Result, Error, StatusCode
 }
 
 // DownloadResponseToFile is a function to save GET response as a file
@@ -358,7 +381,7 @@ func GetTokenSupply(gwCosmosmux *runtime.ServeMux, r *http.Request) []types.Toke
 }
 
 func GetKiraStatus(rpcAddr string) *types.KiraStatus {
-	success, _, _ := MakeGetRequest(rpcAddr, "/status", "")
+	success, _, _ := MakeTendermintRPCRequest(rpcAddr, "/status", "")
 
 	if success != nil {
 		result := types.KiraStatus{}
@@ -385,14 +408,17 @@ func GetInterxStatus(interxAddr string) *types.InterxStatus {
 	if success != nil {
 		result := types.InterxStatus{}
 
+		GetLogger().Info(success)
 		byteData, err := json.Marshal(success)
 		if err != nil {
 			GetLogger().Error("[interx-status] Invalid response format", err)
+			return nil
 		}
 
 		err = json.Unmarshal(byteData, &result)
 		if err != nil {
 			GetLogger().Error("[interx-status] Invalid response format", err)
+			return nil
 		}
 
 		return &result
