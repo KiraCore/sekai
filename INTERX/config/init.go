@@ -66,7 +66,7 @@ func defaultConfig() InterxConfigFromFile {
 
 	configFromFile.Node.NodeType = "seed"
 	configFromFile.Node.SentryNodeID = ""
-	configFromFile.Node.PrivSentryNodeID = ""
+	configFromFile.Node.SnapshotNodeID = ""
 	configFromFile.Node.ValidatorNodeID = ""
 	configFromFile.Node.SeedNodeID = ""
 
@@ -134,7 +134,7 @@ func InitConfig(
 	rpc string,
 	nodeType string,
 	sentryNodeId string,
-	privSentrynodeId string,
+	snapshotNodeId string,
 	validatorNodeId string,
 	seedNodeId string,
 	port string,
@@ -168,7 +168,7 @@ func InitConfig(
 
 	configFromFile.Node.NodeType = nodeType
 	configFromFile.Node.SentryNodeID = sentryNodeId
-	configFromFile.Node.PrivSentryNodeID = privSentrynodeId
+	configFromFile.Node.SnapshotNodeID = snapshotNodeId
 	configFromFile.Node.ValidatorNodeID = validatorNodeId
 	configFromFile.Node.SeedNodeID = seedNodeId
 

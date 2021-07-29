@@ -7,7 +7,7 @@
   "node": {
     "node_type": "seed",
     "sentry_node_id": "",
-    "priv_sentry_node_id": "",
+    "snapshot_node_id": "",
     "validator_node_id": "",
     "seed_node_id": ""
   },

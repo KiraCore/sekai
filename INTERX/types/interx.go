@@ -1,11 +1,11 @@
 package types
 
 type NodeConfig struct {
-	NodeType         string `json:"node_type"`
-	SentryNodeID     string `json:"sentry_node_id"`
-	PrivSentryNodeID string `json:"priv_sentry_node_id"`
-	ValidatorNodeID  string `json:"validator_node_id"`
-	SeedNodeID       string `json:"seed_node_id"`
+	NodeType        string `json:"node_type"`
+	SentryNodeID    string `json:"sentry_node_id"`
+	SnapshotNodeID  string `json:"snapshot_node_id"`
+	ValidatorNodeID string `json:"validator_node_id"`
+	SeedNodeID      string `json:"seed_node_id"`
 }
 
 type InterxStatus struct {
