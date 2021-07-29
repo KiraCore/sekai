@@ -1,9 +1,9 @@
 syntax = "proto3";
 package kira.tokens;
 
-import "alias.proto";
-import "rate.proto";
-import "freeze.proto";
+import "kira/tokens/alias.proto";
+import "kira/tokens/rate.proto";
+import "kira/tokens/freeze.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/tokens/types";
 

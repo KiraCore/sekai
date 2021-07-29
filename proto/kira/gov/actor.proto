@@ -2,7 +2,7 @@ syntax = "proto3";
 package kira.gov;
 
 import "gogoproto/gogo.proto";
-import "proposal.proto";
+import "kira/gov/proposal.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/gov/types";
 

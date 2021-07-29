@@ -110,10 +110,10 @@ func (k msgServer) VoteProposal(
 // CreateIdentityRecord defines a method to create identity record
 func (k msgServer) CreateIdentityRecord(goCtx context.Context, msg *types.MsgCreateIdentityRecord) (*types.MsgCreateIdentityRecordResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	recordId := k.keeper.CreateIdentityRecord(ctx, msg.Address, msg.Infos)
+	recordId, err := k.keeper.CreateIdentityRecord(ctx, msg.Address, msg.Infos)
 	return &types.MsgCreateIdentityRecordResponse{
 		RecordId: recordId,
-	}, nil
+	}, err
 }
 
 func (k msgServer) EditIdentityRecord(goCtx context.Context, msg *types.MsgEditIdentityRecord) (*types.MsgEditIdentityRecordResponse, error) {

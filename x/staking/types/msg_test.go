@@ -5,7 +5,7 @@ import (
 
 	"github.com/KiraCore/sekai/app"
 
-	customstakingtypes "github.com/KiraCore/sekai/x/staking/types"
+	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 
 	"github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
@@ -21,18 +21,18 @@ func TestMsgClaimValidator_ValidateBasic(t *testing.T) {
 
 	tests := []struct {
 		name        string
-		constructor func() (*customstakingtypes.MsgClaimValidator, error)
+		constructor func() (*stakingtypes.MsgClaimValidator, error)
 	}{
 		{
 			name: "nil val key",
-			constructor: func() (*customstakingtypes.MsgClaimValidator, error) {
-				return customstakingtypes.NewMsgClaimValidator("me", types.NewDec(10), nil, pubKey)
+			constructor: func() (*stakingtypes.MsgClaimValidator, error) {
+				return stakingtypes.NewMsgClaimValidator("me", types.NewDec(10), nil, pubKey)
 			},
 		},
 		{
 			name: "nil pub key",
-			constructor: func() (*customstakingtypes.MsgClaimValidator, error) {
-				return customstakingtypes.NewMsgClaimValidator("me", types.NewDec(10), valAddr1, nil)
+			constructor: func() (*stakingtypes.MsgClaimValidator, error) {
+				return stakingtypes.NewMsgClaimValidator("me", types.NewDec(10), valAddr1, nil)
 			},
 		},
 	}

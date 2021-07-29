@@ -4,14 +4,14 @@ package kira.gov;
 import "gogoproto/gogo.proto";
 import "google/protobuf/any.proto";
 
-import "actor.proto";
-import "councilor.proto";
-import "proposal.proto";
-import "role.proto";
-import "execution_fee.proto";
-import "network_properties.proto";
-import "allowed_messages.proto";
-import "identity_registrar.proto";
+import "kira/gov/actor.proto";
+import "kira/gov/councilor.proto";
+import "kira/gov/proposal.proto";
+import "kira/gov/role.proto";
+import "kira/gov/execution_fee.proto";
+import "kira/gov/network_properties.proto";
+import "kira/gov/allowed_messages.proto";
+import "kira/gov/identity_registrar.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/gov/types";
 

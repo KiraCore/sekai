@@ -1,6 +1,7 @@
 package types
 
 import (
+	query "github.com/cosmos/cosmos-sdk/types/query"
 	tmbytes "github.com/tendermint/tendermint/libs/bytes"
 )
 
@@ -16,7 +17,7 @@ func NewQueryEvidenceRequest(hash tmbytes.HexBytes) *QueryEvidenceRequest {
 }
 
 // NewQueryAllEvidenceRequest creates a new instance of QueryAllEvidenceRequest.
-func NewQueryAllEvidenceRequest(pageReq *PageRequest) *QueryAllEvidenceRequest {
+func NewQueryAllEvidenceRequest(pageReq *query.PageRequest) *QueryAllEvidenceRequest {
 	return &QueryAllEvidenceRequest{Pagination: pageReq}
 }
 

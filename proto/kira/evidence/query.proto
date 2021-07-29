@@ -1,6 +1,7 @@
 syntax = "proto3";
 package kira.evidence;
 
+import "cosmos/base/query/v1beta1/pagination.proto";
 import "gogoproto/gogo.proto";
 import "google/protobuf/any.proto";
 import "google/api/annotations.proto";
@@ -36,7 +37,7 @@ message QueryEvidenceResponse {
 // method.
 message QueryAllEvidenceRequest {
   // pagination defines an optional pagination for the request.
-  PageRequest pagination = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
 // QueryAllEvidenceResponse is the response type for the Query/AllEvidence RPC
@@ -46,17 +47,5 @@ message QueryAllEvidenceResponse {
   repeated google.protobuf.Any evidence = 1;
 
   // pagination defines the pagination in the response.
-  PageResponse pagination = 2;
-}
-
-message PageRequest {
-  bytes key = 1;
-  uint64 offset = 2;
-  uint64 limit = 3;
-  bool count_total = 4;
-}
-
-message PageResponse {
-  bytes next_key = 1;
-  uint64 total = 2;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }

@@ -153,10 +153,10 @@ func (s IntegrationTestSuite) TestCmdQueryIdentityRecord() {
 	s.Require().NoError(err)
 }
 
-func (s IntegrationTestSuite) TestCmdQueryIdentityRecordsByAddress() {
+func (s IntegrationTestSuite) TestCmdQueryIdentityRecordByAddress() {
 	val := s.network.Validators[0]
 	clientCtx := val.ClientCtx
-	cmd := cli.GetCmdQueryIdentityRecordsByAddress()
+	cmd := cli.GetCmdQueryIdentityRecordByAddress()
 	_, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("%s", val.Address.String()),
 	})

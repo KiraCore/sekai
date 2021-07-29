@@ -99,8 +99,9 @@ func TestKeeper_IdentityRecordAddEditRemove(t *testing.T) {
 	infos["key"] = "value"
 	now := time.Now().UTC()
 	ctx = ctx.WithBlockTime(now)
-	recordId := app.CustomGovKeeper.CreateIdentityRecord(ctx, addr1, types.WrapInfos(infos))
+	recordId, err := app.CustomGovKeeper.CreateIdentityRecord(ctx, addr1, types.WrapInfos(infos))
 	require.Equal(t, recordId, uint64(1))
+	require.NoError(t, err)
 
 	record := app.CustomGovKeeper.GetIdentityRecord(ctx, 1)
 	require.NotNil(t, record)
@@ -112,33 +113,36 @@ func TestKeeper_IdentityRecordAddEditRemove(t *testing.T) {
 	}
 	require.Equal(t, *record, expectedRecord)
 
-	recordId = app.CustomGovKeeper.CreateIdentityRecord(ctx, addr1, types.WrapInfos(infos))
+	cacheCtx, _ := ctx.CacheContext()
+	recordId, err = app.CustomGovKeeper.CreateIdentityRecord(cacheCtx, addr1, types.WrapInfos(infos))
+	require.Equal(t, recordId, uint64(0))
+	require.Error(t, err)
+	recordId, err = app.CustomGovKeeper.CreateIdentityRecord(ctx, addr2, types.WrapInfos(infos))
 	require.Equal(t, recordId, uint64(2))
-	recordId = app.CustomGovKeeper.CreateIdentityRecord(ctx, addr2, types.WrapInfos(infos))
-	require.Equal(t, recordId, uint64(3))
+	require.NoError(t, err)
 
 	records := app.CustomGovKeeper.GetAllIdentityRecords(ctx)
-	require.Len(t, records, 3)
-	records = app.CustomGovKeeper.GetIdRecordsByAddress(ctx, addr1)
 	require.Len(t, records, 2)
-	records = app.CustomGovKeeper.GetIdRecordsByAddress(ctx, addr2)
-	require.Len(t, records, 1)
+	record = app.CustomGovKeeper.GetIdRecordByAddress(ctx, addr1)
+	require.NotNil(t, records)
+	record = app.CustomGovKeeper.GetIdRecordByAddress(ctx, addr2)
+	require.NotNil(t, records)
 
 	// remove existing id and check
 	app.CustomGovKeeper.DeleteIdentityRecord(ctx, 2)
 	records = app.CustomGovKeeper.GetAllIdentityRecords(ctx)
-	require.Len(t, records, 2)
-	records = app.CustomGovKeeper.GetIdRecordsByAddress(ctx, addr1)
 	require.Len(t, records, 1)
-	records = app.CustomGovKeeper.GetIdRecordsByAddress(ctx, addr2)
-	require.Len(t, records, 1)
+	record = app.CustomGovKeeper.GetIdRecordByAddress(ctx, addr1)
+	require.NotNil(t, record)
+	record = app.CustomGovKeeper.GetIdRecordByAddress(ctx, addr2)
+	require.Nil(t, record)
 
 	infos["key1"] = "value1"
 	now = now.Add(time.Second)
 	ctx = ctx.WithBlockTime(now)
 
 	// try editing with other owner
-	err := app.CustomGovKeeper.EditIdentityRecord(ctx, 1, addr3, types.WrapInfos(infos))
+	err = app.CustomGovKeeper.EditIdentityRecord(ctx, 1, addr3, types.WrapInfos(infos))
 	require.Error(t, err)
 
 	// try editing deleted record
@@ -165,11 +169,11 @@ func TestKeeper_IdentityRecordAddEditRemove(t *testing.T) {
 		Date:    now,
 	})
 	records = app.CustomGovKeeper.GetAllIdentityRecords(ctx)
-	require.Len(t, records, 2)
-	records = app.CustomGovKeeper.GetIdRecordsByAddress(ctx, addr1)
 	require.Len(t, records, 1)
-	records = app.CustomGovKeeper.GetIdRecordsByAddress(ctx, addr2)
-	require.Len(t, records, 1)
+	record = app.CustomGovKeeper.GetIdRecordByAddress(ctx, addr1)
+	require.NotNil(t, record)
+	record = app.CustomGovKeeper.GetIdRecordByAddress(ctx, addr2)
+	require.Nil(t, record)
 }
 
 func TestKeeper_IdentityRecordApproveFlow(t *testing.T) {
@@ -188,8 +192,9 @@ func TestKeeper_IdentityRecordApproveFlow(t *testing.T) {
 	infos["key"] = "value"
 	now := time.Now().UTC()
 	ctx = ctx.WithBlockTime(now)
-	recordId := app.CustomGovKeeper.CreateIdentityRecord(ctx, addr1, types.WrapInfos(infos))
+	recordId, err := app.CustomGovKeeper.CreateIdentityRecord(ctx, addr1, types.WrapInfos(infos))
 	require.Equal(t, recordId, uint64(1))
+	require.NoError(t, err)
 
 	record := app.CustomGovKeeper.GetIdentityRecord(ctx, 1)
 	require.NotNil(t, record)
@@ -200,13 +205,17 @@ func TestKeeper_IdentityRecordApproveFlow(t *testing.T) {
 		Date:    now,
 	}
 	require.Equal(t, *record, expectedRecord)
-	recordId = app.CustomGovKeeper.CreateIdentityRecord(ctx, addr1, types.WrapInfos(infos))
+
+	ctxCache, _ := ctx.CacheContext()
+	recordId, err = app.CustomGovKeeper.CreateIdentityRecord(ctxCache, addr1, types.WrapInfos(infos))
+	require.Equal(t, recordId, uint64(0))
+	require.Error(t, err)
+	recordId, err = app.CustomGovKeeper.CreateIdentityRecord(ctx, addr2, types.WrapInfos(infos))
 	require.Equal(t, recordId, uint64(2))
-	recordId = app.CustomGovKeeper.CreateIdentityRecord(ctx, addr2, types.WrapInfos(infos))
-	require.Equal(t, recordId, uint64(3))
+	require.NoError(t, err)
 
 	// bigger tip than balance
-	ctxCache, _ := ctx.CacheContext()
+	ctxCache, _ = ctx.CacheContext()
 	reqId, err := app.CustomGovKeeper.RequestIdentityRecordsVerify(ctxCache, addr1, addr3, []uint64{1}, sdk.NewInt64Coin(sdk.DefaultBondDenom, 1000000000))
 	require.Equal(t, reqId, uint64(0))
 	require.Error(t, err)
@@ -266,8 +275,8 @@ func TestKeeper_IdentityRecordApproveFlow(t *testing.T) {
 		Verifiers: []sdk.AccAddress{addr3},
 	})
 
-	// request id record 1 and 3 to addr3 by addr1 again
-	reqId, err = app.CustomGovKeeper.RequestIdentityRecordsVerify(ctx, addr1, addr3, []uint64{1, 3}, sdk.NewInt64Coin(sdk.DefaultBondDenom, 10))
+	// request id record 1 and 2 to addr3 by addr1 again
+	reqId, err = app.CustomGovKeeper.RequestIdentityRecordsVerify(ctx, addr1, addr3, []uint64{1, 2}, sdk.NewInt64Coin(sdk.DefaultBondDenom, 10))
 	require.Equal(t, reqId, uint64(3))
 	require.NoError(t, err)
 	coins = app.BankKeeper.GetAllBalances(ctx, addr1)
@@ -285,10 +294,10 @@ func TestKeeper_IdentityRecordApproveFlow(t *testing.T) {
 		Date:      now,
 		Verifiers: []sdk.AccAddress{addr3},
 	})
-	record = app.CustomGovKeeper.GetIdentityRecord(ctx, 3)
+	record = app.CustomGovKeeper.GetIdentityRecord(ctx, 2)
 	require.NotNil(t, record)
 	require.Equal(t, *record, types.IdentityRecord{
-		Id:        3,
+		Id:        2,
 		Address:   addr2,
 		Infos:     infos,
 		Date:      now,
@@ -305,7 +314,7 @@ func TestKeeper_IdentityRecordApproveFlow(t *testing.T) {
 	require.NotNil(t, record)
 	require.Equal(t, *record, types.IdentityRecord{
 		Id:        2,
-		Address:   addr1,
+		Address:   addr2,
 		Infos:     infos,
 		Date:      now,
 		Verifiers: []sdk.AccAddress{addr3},

@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	customgovcli "github.com/KiraCore/sekai/x/gov/client/cli"
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/stretchr/testify/suite"
@@ -68,7 +68,7 @@ func (s *IntegrationTestSuite) TestUpsertTokenAliasAndQuery() {
 	val := s.network.Validators[0]
 	clientCtx := val.ClientCtx
 
-	s.WhitelistPermissions(val.Address, customgovtypes.PermUpsertTokenAlias)
+	s.WhitelistPermissions(val.Address, govtypes.PermUpsertTokenAlias)
 
 	cmd := cli.GetTxUpsertTokenAliasCmd()
 	_, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
@@ -177,7 +177,7 @@ func (s IntegrationTestSuite) TestCreateProposalUpsertTokenRates() {
 	cmd = customgovcli.GetTxVoteProposal()
 	out, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("%d", 1), // Proposal ID
-		fmt.Sprintf("%d", customgovtypes.OptionYes),
+		fmt.Sprintf("%d", govtypes.OptionYes),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
@@ -214,7 +214,7 @@ func (s IntegrationTestSuite) TestCreateProposalUpsertTokenAlias() {
 	cmd = customgovcli.GetTxVoteProposal()
 	out, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("%d", 1), // Proposal ID
-		fmt.Sprintf("%d", customgovtypes.OptionYes),
+		fmt.Sprintf("%d", govtypes.OptionYes),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
@@ -251,7 +251,7 @@ func (s IntegrationTestSuite) TestTxProposalTokensBlackWhiteChangeCmd() {
 	cmd = customgovcli.GetTxVoteProposal()
 	out, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("%d", 1), // Proposal ID
-		fmt.Sprintf("%d", customgovtypes.OptionYes),
+		fmt.Sprintf("%d", govtypes.OptionYes),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
@@ -261,10 +261,61 @@ func (s IntegrationTestSuite) TestTxProposalTokensBlackWhiteChangeCmd() {
 	fmt.Printf("%s", out.String())
 }
 
-// TODO: should add test for GetCmdQueryAllTokenAliases
-// TODO: should add test for GetCmdQueryTokenAliasesByDenom
-// TODO: should add test for GetCmdQueryAllTokenRates
-// TODO: should add test for GetCmdQueryTokenRatesByDenom
+func (s *IntegrationTestSuite) TestGetCmdQueryAllTokenAliases() {
+	val := s.network.Validators[0]
+	clientCtx := val.ClientCtx
+
+	cmd := cli.GetCmdQueryAllTokenAliases()
+	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{})
+	s.Require().NoError(err)
+
+	var resp tokenstypes.AllTokenAliasesResponse
+	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &resp)
+
+	s.Require().Greater(len(resp.Data), 0)
+}
+
+func (s *IntegrationTestSuite) TestGetCmdQueryTokenAliasesByDenom() {
+	val := s.network.Validators[0]
+	clientCtx := val.ClientCtx
+
+	cmd := cli.GetCmdQueryTokenAliasesByDenom()
+	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{"ukex", "mkex"})
+	s.Require().NoError(err)
+
+	var resp tokenstypes.TokenAliasesByDenomResponse
+	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &resp)
+
+	s.Require().Greater(len(resp.Data), 0)
+}
+
+func (s *IntegrationTestSuite) TestGetCmdQueryAllTokenRates() {
+	val := s.network.Validators[0]
+	clientCtx := val.ClientCtx
+
+	cmd := cli.GetCmdQueryAllTokenRates()
+	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{})
+	s.Require().NoError(err)
+
+	var resp tokenstypes.AllTokenRatesResponse
+	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &resp)
+
+	s.Require().Greater(len(resp.Data), 0)
+}
+
+func (s *IntegrationTestSuite) TestGetCmdQueryTokenRatesByDenom() {
+	val := s.network.Validators[0]
+	clientCtx := val.ClientCtx
+
+	cmd := cli.GetCmdQueryTokenRatesByDenom()
+	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{"ukex"})
+	s.Require().NoError(err)
+
+	var resp tokenstypes.TokenRatesByDenomResponse
+	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &resp)
+
+	s.Require().Greater(len(resp.Data), 0)
+}
 
 func TestIntegrationTestSuite(t *testing.T) {
 	suite.Run(t, new(IntegrationTestSuite))

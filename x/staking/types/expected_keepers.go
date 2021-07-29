@@ -1,7 +1,7 @@
 package types
 
 import (
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -16,10 +16,10 @@ type StakingHooks interface {
 // GovKeeper expected governance keeper
 type GovKeeper interface {
 	// returns network properties
-	GetNetworkProperties(sdk.Context) *customgovtypes.NetworkProperties
+	GetNetworkProperties(sdk.Context) *govtypes.NetworkProperties
 	// GetNetworkActorsByAbsoluteWhitelistPermission returns all actors that have a specific whitelist permission,
 	// it does not matter if it is by role or by individual permission.
-	GetNetworkActorsByAbsoluteWhitelistPermission(ctx sdk.Context, perm customgovtypes.PermValue) []customgovtypes.NetworkActor
-	// GetIdRecordsByAddress query identity records by address
-	GetIdRecordsByAddress(ctx sdk.Context, creator sdk.AccAddress) []customgovtypes.IdentityRecord
+	GetNetworkActorsByAbsoluteWhitelistPermission(ctx sdk.Context, perm govtypes.PermValue) []govtypes.NetworkActor
+	// GetIdRecordByAddress query identity record by address
+	GetIdRecordByAddress(ctx sdk.Context, creator sdk.AccAddress) *govtypes.IdentityRecord
 }

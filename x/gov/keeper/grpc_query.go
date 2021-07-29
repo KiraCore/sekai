@@ -12,7 +12,7 @@ import (
 	kiratypes "github.com/KiraCore/sekai/types"
 	kiraquery "github.com/KiraCore/sekai/types/query"
 	"github.com/KiraCore/sekai/x/gov/types"
-	customstakingtypes "github.com/KiraCore/sekai/x/staking/types"
+	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/types/query"
 )
@@ -23,7 +23,7 @@ var _ types.QueryServer = Keeper{}
 func (k Keeper) RolesByAddress(goCtx context.Context, request *types.RolesByAddressRequest) (*types.RolesByAddressResponse, error) {
 	actor, found := k.GetNetworkActorByAddress(sdk.UnwrapSDKContext(goCtx), request.ValAddr)
 	if !found {
-		return nil, customstakingtypes.ErrNetworkActorNotFound
+		return nil, stakingtypes.ErrNetworkActorNotFound
 	}
 
 	return &types.RolesByAddressResponse{
@@ -57,7 +57,7 @@ func (k Keeper) PermissionsByAddress(goCtx context.Context, request *types.Permi
 
 	networkActor, found := k.GetNetworkActorByAddress(ctx, request.ValAddr)
 	if !found {
-		return nil, customstakingtypes.ErrNetworkActorNotFound
+		return nil, stakingtypes.ErrNetworkActorNotFound
 	}
 
 	return &types.PermissionsResponse{Permissions: networkActor.Permissions}, nil
@@ -258,15 +258,14 @@ func (k Keeper) IdentityRecord(goCtx context.Context, request *types.QueryIdenti
 }
 
 // IdentityRecords query identity records by creator
-func (k Keeper) IdentityRecordsByAddress(goCtx context.Context, request *types.QueryIdentityRecordsByAddressRequest) (*types.QueryIdentityRecordsByAddressResponse, error) {
+func (k Keeper) IdentityRecordByAddress(goCtx context.Context, request *types.QueryIdentityRecordByAddressRequest) (*types.QueryIdentityRecordByAddressResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	if request == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	// TODO: add pagination for QueryIdentityRecordsByAddressRequest
-	res := types.QueryIdentityRecordsByAddressResponse{
-		Records: k.GetIdRecordsByAddress(ctx, request.Creator),
+	res := types.QueryIdentityRecordByAddressResponse{
+		Record: k.GetIdRecordByAddress(ctx, request.Creator),
 	}
 
 	return &res, nil
