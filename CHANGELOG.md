@@ -1,5 +1,20 @@
 # Changelog
 
+## [v0.1.21.8] - 28.07.2021
+
+- Remove resolved TODO in readme for upgrade module
+- Add token rates keeper functions test
+- Add token alias keeper functions test
+- Add test for tokens grpc query functions
+- Add test for ProposalTokensWhiteBlackChange
+- Add missing CLI test for tokens module
+- Remove 'all' flag for staking.ValidatorsRequest and slashing.SigningInfosRequest to prevent performance issue
+- Refactor proto-gen script
+- Remove duplications in protobuf definition
+- Utilize existing sdk protobuf
+- Resolve codebase to work with latest protobuf
+- Set IdentityRecord to be only one by address
+
 ## [v0.1.21.7] - 22.07.2021
 
 - update governance apis

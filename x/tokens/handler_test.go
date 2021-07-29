@@ -12,7 +12,7 @@ import (
 	"github.com/KiraCore/sekai/simapp"
 	"github.com/KiraCore/sekai/x/gov"
 	"github.com/KiraCore/sekai/x/gov/types"
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	tokens "github.com/KiraCore/sekai/x/tokens"
 	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -42,7 +42,7 @@ func NewAccountByIndex(accNum int) sdk.AccAddress {
 }
 
 func setPermissionToAddr(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addr sdk.AccAddress, perm types.PermValue) error {
-	proposerActor := customgovtypes.NewDefaultActor(addr)
+	proposerActor := govtypes.NewDefaultActor(addr)
 	err := proposerActor.Permissions.AddToWhitelist(perm)
 	require.NoError(t, err)
 
@@ -208,7 +208,7 @@ func TestHandler_CreateProposalUpsertTokenAliases_Errors(t *testing.T) {
 
 	tests := []struct {
 		name         string
-		content      customgovtypes.Content
+		content      govtypes.Content
 		preparePerms func(t *testing.T, app *simapp.SimApp, ctx sdk.Context)
 		expectedErr  error
 	}{
@@ -235,7 +235,7 @@ func TestHandler_CreateProposalUpsertTokenAliases_Errors(t *testing.T) {
 			tt.preparePerms(t, app, ctx)
 
 			handler := gov.NewHandler(app.CustomGovKeeper)
-			msg, err := customgovtypes.NewMsgSubmitProposal(proposerAddr, "title", "some desc", tt.content)
+			msg, err := govtypes.NewMsgSubmitProposal(proposerAddr, "title", "some desc", tt.content)
 			require.NoError(t, err)
 			_, err = handler(ctx, msg)
 			require.EqualError(t, err, tt.expectedErr.Error())
@@ -271,14 +271,14 @@ func TestHandler_CreateProposalUpsertTokenAliases(t *testing.T) {
 			"atom",
 		},
 	)
-	msg, err := customgovtypes.NewMsgSubmitProposal(proposerAddr, "title", "some desc", proposal)
+	msg, err := govtypes.NewMsgSubmitProposal(proposerAddr, "title", "some desc", proposal)
 	require.NoError(t, err)
 	res, err := handler(
 		ctx,
 		msg,
 	)
 	require.NoError(t, err)
-	expData, _ := proto.Marshal(&customgovtypes.MsgSubmitProposalResponse{ProposalID: 1})
+	expData, _ := proto.Marshal(&govtypes.MsgSubmitProposalResponse{ProposalID: 1})
 	require.Equal(t, expData, res.Data)
 
 	savedProposal, found := app.CustomGovKeeper.GetProposal(ctx, 1)
@@ -327,7 +327,7 @@ func TestHandler_CreateProposalUpsertTokenRates_Errors(t *testing.T) {
 
 	tests := []struct {
 		name         string
-		content      customgovtypes.Content
+		content      govtypes.Content
 		preparePerms func(t *testing.T, app *simapp.SimApp, ctx sdk.Context)
 		expectedErr  error
 	}{
@@ -352,7 +352,7 @@ func TestHandler_CreateProposalUpsertTokenRates_Errors(t *testing.T) {
 			tt.preparePerms(t, app, ctx)
 
 			handler := gov.NewHandler(app.CustomGovKeeper)
-			msg, err := customgovtypes.NewMsgSubmitProposal(proposerAddr, "title", "some desc", tt.content)
+			msg, err := govtypes.NewMsgSubmitProposal(proposerAddr, "title", "some desc", tt.content)
 			require.NoError(t, err)
 			_, err = handler(ctx, msg)
 			require.EqualError(t, err, tt.expectedErr.Error())
@@ -384,14 +384,14 @@ func TestHandler_CreateProposalUpsertTokenRates(t *testing.T) {
 		sdk.NewDec(1234),
 		false,
 	)
-	msg, err := customgovtypes.NewMsgSubmitProposal(proposerAddr, "title", "some desc", proposal)
+	msg, err := govtypes.NewMsgSubmitProposal(proposerAddr, "title", "some desc", proposal)
 	require.NoError(t, err)
 	res, err := handler(
 		ctx,
 		msg,
 	)
 	require.NoError(t, err)
-	expData, _ := proto.Marshal(&customgovtypes.MsgSubmitProposalResponse{ProposalID: 1})
+	expData, _ := proto.Marshal(&govtypes.MsgSubmitProposalResponse{ProposalID: 1})
 	require.Equal(t, expData, res.Data)
 
 	savedProposal, found := app.CustomGovKeeper.GetProposal(ctx, 1)
@@ -430,4 +430,68 @@ func TestHandler_CreateProposalUpsertTokenRates(t *testing.T) {
 	require.True(t, iterator.Valid())
 }
 
-// TODO: should write test for MsgProposalTokensWhiteBlackChange
+func TestHandler_CreateProposalTokensWhiteBlackChange(t *testing.T) {
+	proposerAddr, err := sdk.AccAddressFromBech32("kira1alzyfq40zjsveat87jlg8jxetwqmr0a29sgd0f")
+	require.NoError(t, err)
+
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{
+		Time: time.Now(),
+	})
+
+	// Set proposer Permissions
+	proposerActor := types.NewDefaultActor(proposerAddr)
+	err = app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerActor, types.PermCreateTokensWhiteBlackChangeProposal)
+	require.NoError(t, err)
+
+	properties := app.CustomGovKeeper.GetNetworkProperties(ctx)
+	properties.ProposalEndTime = 10
+	app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
+
+	handler := gov.NewHandler(app.CustomGovKeeper)
+	proposal := tokenstypes.NewTokensWhiteBlackChangeProposal(
+		false,
+		true,
+		[]string{"atom"},
+	)
+	msg, err := govtypes.NewMsgSubmitProposal(proposerAddr, "title", "some desc", proposal)
+	require.NoError(t, err)
+	res, err := handler(
+		ctx,
+		msg,
+	)
+	require.NoError(t, err)
+	expData, _ := proto.Marshal(&govtypes.MsgSubmitProposalResponse{ProposalID: 1})
+	require.Equal(t, expData, res.Data)
+
+	savedProposal, found := app.CustomGovKeeper.GetProposal(ctx, 1)
+	require.True(t, found)
+
+	expectedSavedProposal, err := types.NewProposal(
+		1,
+		"title",
+		"some desc",
+		proposal,
+		ctx.BlockTime(),
+		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEndTime)),
+		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEndTime)+
+			time.Second*time.Duration(properties.ProposalEnactmentTime),
+		),
+		ctx.BlockHeight()+2,
+		ctx.BlockHeight()+3,
+	)
+	require.NoError(t, err)
+	require.Equal(t, expectedSavedProposal, savedProposal)
+
+	// Next proposal ID is increased.
+	id := app.CustomGovKeeper.GetNextProposalID(ctx)
+	require.Equal(t, uint64(2), id)
+
+	// Is not on finished active proposals.
+	iterator := app.CustomGovKeeper.GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx, ctx.BlockTime())
+	require.False(t, iterator.Valid())
+
+	ctx = ctx.WithBlockTime(ctx.BlockTime().Add(time.Minute * 10))
+	iterator = app.CustomGovKeeper.GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx, ctx.BlockTime())
+	require.True(t, iterator.Valid())
+}

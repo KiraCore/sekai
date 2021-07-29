@@ -14,7 +14,7 @@ import (
 	"github.com/KiraCore/sekai/simapp"
 	"github.com/KiraCore/sekai/types"
 	"github.com/KiraCore/sekai/x/gov"
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
 )
 
 func TestMain(m *testing.M) {
@@ -36,8 +36,8 @@ func Test_Middleware_SetNetworkProperties(t *testing.T) {
 	}{
 		{
 			name: "Success run with ChangeTxFee permission",
-			msg: &customgovtypes.MsgSetNetworkProperties{
-				NetworkProperties: &customgovtypes.NetworkProperties{
+			msg: &govtypes.MsgSetNetworkProperties{
+				NetworkProperties: &govtypes.NetworkProperties{
 					MinTxFee: 100,
 					MaxTxFee: 1000,
 				},
@@ -47,8 +47,8 @@ func Test_Middleware_SetNetworkProperties(t *testing.T) {
 		},
 		{
 			name: "Failure run without ChangeTxFee permission",
-			msg: &customgovtypes.MsgSetNetworkProperties{
-				NetworkProperties: &customgovtypes.NetworkProperties{
+			msg: &govtypes.MsgSetNetworkProperties{
+				NetworkProperties: &govtypes.NetworkProperties{
 					MinTxFee: 100,
 					MaxTxFee: 1000,
 				},
@@ -68,23 +68,23 @@ func Test_Middleware_SetNetworkProperties(t *testing.T) {
 			app.BankKeeper.SetBalance(ctx, changeFeeAddr, sdk.NewInt64Coin("ukex", 100000))
 
 			// First we set Role Sudo to proposer Actor
-			proposerActor := customgovtypes.NewDefaultActor(sudoAddr)
-			proposerActor.SetRole(customgovtypes.RoleSudo)
+			proposerActor := govtypes.NewDefaultActor(sudoAddr)
+			proposerActor.SetRole(govtypes.RoleSudo)
 			require.NoError(t, err)
 			app.CustomGovKeeper.SaveNetworkActor(ctx, proposerActor)
 
 			handler := gov.NewHandler(app.CustomGovKeeper)
 
 			// set change fee permission to addr
-			_, err = handler(ctx, &customgovtypes.MsgWhitelistPermissions{
+			_, err = handler(ctx, &govtypes.MsgWhitelistPermissions{
 				Proposer:   sudoAddr,
 				Address:    changeFeeAddr,
-				Permission: uint32(customgovtypes.PermChangeTxFee),
+				Permission: uint32(govtypes.PermChangeTxFee),
 			})
 			require.NoError(t, err)
 
 			// set execution fee
-			_, err = handler(ctx, &customgovtypes.MsgSetExecutionFee{
+			_, err = handler(ctx, &govtypes.MsgSetExecutionFee{
 				Proposer:          changeFeeAddr,
 				Name:              types.MsgTypeSetNetworkProperties,
 				TransactionType:   types.MsgTypeSetNetworkProperties,
@@ -98,7 +98,7 @@ func Test_Middleware_SetNetworkProperties(t *testing.T) {
 			app.FeeProcessingKeeper.AddExecutionStart(ctx, tt.msg)
 
 			// test message with new middleware handler
-			newHandler := middleware.NewRoute(customgovtypes.ModuleName, gov.NewHandler(app.CustomGovKeeper)).Handler()
+			newHandler := middleware.NewRoute(govtypes.ModuleName, gov.NewHandler(app.CustomGovKeeper)).Handler()
 			_, err = newHandler(ctx, tt.msg)
 
 			if tt.desiredErr == "" {

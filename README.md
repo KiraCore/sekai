@@ -68,9 +68,7 @@ The script for creating new chain from exported state should be written or manua
 For now, upgrade process requires manual conversion from old genesis to new genesis.
 At each time of upgrade, genesis upgrade command will be built and infra could run the command like `sekaid genesis-migrate`
 
-Note: export is not exporting the upgrade plan and if all validators run with exported genesis with the previous binary, consensus failure won't happen.
-
-TODO:@Asmodat If we need to export upgrade plan as well, export should also have a rollback flag in case we want to get genesis that allows to continue producing blocks on the old chain after chain was halted but upgrade failed This way no matter what happens chain remains operational.
+Note: state export command is not exporting the upgrade plan and if all validators run with exported genesis with the previous binary, consensus failure won't happen.
 
 # Unjail via governance process
 

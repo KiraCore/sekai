@@ -91,7 +91,7 @@ func GetCmdQueryAllTokenAliases() *cobra.Command {
 // GetCmdQueryTokenAliasesByDenom the query token aliases by denom command.
 func GetCmdQueryTokenAliasesByDenom() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "aliases-by-denom",
+		Use:   "aliases-by-denom [aliases]",
 		Short: "Get token aliases by denom",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {

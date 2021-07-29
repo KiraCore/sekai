@@ -61,7 +61,7 @@ func (k Keeper) AllEvidence(c context.Context, req *types.QueryAllEvidenceReques
 	store := ctx.KVStore(k.storeKey)
 	evidenceStore := prefix.NewStore(store, types.KeyPrefixEvidence)
 
-	pageRes, err := query.Paginate(evidenceStore, types.SDKQueryPageReqFromCustomPageReq(req.Pagination),
+	pageRes, err := query.Paginate(evidenceStore, req.Pagination,
 		func(key []byte, value []byte) error {
 			result, err := k.UnmarshalEvidence(value)
 			if err != nil {
@@ -85,8 +85,5 @@ func (k Keeper) AllEvidence(c context.Context, req *types.QueryAllEvidenceReques
 		return &types.QueryAllEvidenceResponse{}, err
 	}
 
-	return &types.QueryAllEvidenceResponse{Evidence: evidence, Pagination: &types.PageResponse{
-		NextKey: pageRes.NextKey,
-		Total:   pageRes.Total,
-	}}, nil
+	return &types.QueryAllEvidenceResponse{Evidence: evidence, Pagination: pageRes}, nil
 }

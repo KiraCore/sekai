@@ -1,15 +1,15 @@
 syntax = "proto3";
 package kira.gov;
 
-import "actor.proto";
-import "councilor.proto";
-import "data_registry.proto";
-import "pagination.proto";
-import "role.proto";
-import "execution_fee.proto";
-import "network_properties.proto";
-import "proposal.proto";
-import "identity_registrar.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "kira/gov/actor.proto";
+import "kira/gov/councilor.proto";
+import "kira/gov/data_registry.proto";
+import "kira/gov/role.proto";
+import "kira/gov/execution_fee.proto";
+import "kira/gov/network_properties.proto";
+import "kira/gov/proposal.proto";
+import "kira/gov/identity_registrar.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 
@@ -64,7 +64,7 @@ service Query {
     option (google.api.http).get = "/kira/gov/identity_record/{id}";
   }
   // Query identity records by records creator
-  rpc IdentityRecordsByAddress(QueryIdentityRecordsByAddressRequest) returns (QueryIdentityRecordsByAddressResponse) {
+  rpc IdentityRecordByAddress(QueryIdentityRecordByAddressRequest) returns (QueryIdentityRecordByAddressResponse) {
     option (google.api.http).get = "/kira/gov/identity_records/{creator}";
   }
   // Query all identity records
@@ -171,7 +171,7 @@ message QueryProposalsRequest {
 
   // voter defines the voter address for the proposals.
   string voter = 1;
-  kira.gov.PageRequest pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
+  cosmos.base.query.v1beta1.PageRequest pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
   // TODO: should remove 'all' flag after checking that frontend / interx is not using this
   bool all = 3;
   bool reverse = 4;
@@ -181,7 +181,7 @@ message QueryProposalsRequest {
 // method.
 message QueryProposalsResponse {
   repeated kira.gov.Proposal proposals = 1 [(gogoproto.nullable) = false];
-  kira.gov.PageResponse pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
 }
 
 // QueryWhitelistedProposalVotersRequest is the request type for Query/WhitelistedProposalVoters RPC method.
@@ -229,13 +229,13 @@ message QueryVotesResponse {
 
 // QueryDataReferenceKeysRequest is the request type for data reference keys query.
 message QueryDataReferenceKeysRequest {
-  kira.gov.PageRequest pagination = 1 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
+  cosmos.base.query.v1beta1.PageRequest pagination = 1 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
 }
 
 // QueryDataReferenceKeysResponse is the response type for data reference keys query.
 message QueryDataReferenceKeysResponse {
   repeated string keys = 1;
-  kira.gov.PageResponse pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
 }
 
 // QueryDataReferenceRequest is the response type for data reference query.
@@ -255,24 +255,22 @@ message QueryIdentityRecordResponse {
   kira.gov.IdentityRecord record = 1;
 }
 
-message QueryIdentityRecordsByAddressRequest {
+message QueryIdentityRecordByAddressRequest {
   bytes creator = 1 [
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
     (gogoproto.moretags) = "yaml:\"creator\""
   ];
-  kira.gov.PageRequest pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
 }
-message QueryIdentityRecordsByAddressResponse {
-  repeated kira.gov.IdentityRecord records = 1 [(gogoproto.nullable) = false];
-  kira.gov.PageResponse pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
+message QueryIdentityRecordByAddressResponse {
+  kira.gov.IdentityRecord record = 1;
 }
 
 message QueryAllIdentityRecordsRequest {
-  kira.gov.PageRequest pagination = 1 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
+  cosmos.base.query.v1beta1.PageRequest pagination = 1 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
 }
 message QueryAllIdentityRecordsResponse {
   repeated kira.gov.IdentityRecord records = 1 [(gogoproto.nullable) = false];
-  kira.gov.PageResponse pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
 }
 
 message QueryIdentityVerifyRecordRequest {
@@ -287,11 +285,11 @@ message QueryIdentityRecordVerifyRequestsByApprover {
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
     (gogoproto.moretags) = "yaml:\"approver\""
   ];
-  kira.gov.PageRequest pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
+  cosmos.base.query.v1beta1.PageRequest pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
 }
 message QueryIdentityRecordVerifyRequestsByApproverResponse {
   repeated kira.gov.IdentityRecordsVerify verify_records = 1 [(gogoproto.nullable) = false];
-  kira.gov.PageResponse pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
 }
 
 message QueryIdentityRecordVerifyRequestsByRequester {
@@ -299,17 +297,17 @@ message QueryIdentityRecordVerifyRequestsByRequester {
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
     (gogoproto.moretags) = "yaml:\"requester\""
   ];
-  kira.gov.PageRequest pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
+  cosmos.base.query.v1beta1.PageRequest pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
 }
 message QueryIdentityRecordVerifyRequestsByRequesterResponse {
   repeated kira.gov.IdentityRecordsVerify verify_records = 1 [(gogoproto.nullable) = false];
-  kira.gov.PageResponse pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
 }
 
 message QueryAllIdentityRecordVerifyRequests {
-  kira.gov.PageRequest pagination = 1 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
+  cosmos.base.query.v1beta1.PageRequest pagination = 1 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
 }
 message QueryAllIdentityRecordVerifyRequestsResponse {
   repeated kira.gov.IdentityRecordsVerify verify_records = 1 [(gogoproto.nullable) = false];
-  kira.gov.PageResponse pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
 }
