@@ -2,11 +2,11 @@
 // source: kira/tokens/query.proto
 
 /*
-Package proto is a reverse proxy.
+Package tokens is a reverse proxy.
 
 It translates gRPC into RESTful JSON APIs.
 */
-package proto
+package tokens
 
 import (
 	"context"

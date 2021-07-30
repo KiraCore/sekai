@@ -4,7 +4,7 @@ package kira.staking;
 import "gogoproto/gogo.proto";
 import "cosmos_proto/cosmos.proto";
 
-option go_package = "github.com/KiraCore/sekai/INTERX/proto";
+option go_package = "github.com/KiraCore/sekai/INTERX/proto-gen/kira/staking";
 
 message ProposalUnjailValidator {
   option (cosmos_proto.implements_interface) = "Content";

@@ -1,7 +1,25 @@
-syntax = "proto3";
-package kira.gov;
+syntax="proto3";
 
-option go_package = "github.com/KiraCore/sekai/INTERX/proto";
+package cosmos.base.query.v1beta1;
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+// Defines the import path that should be used to import the generated package,
+// and the package name.
+option go_package = "github.com/KiraCore/sekai/INTERX/proto-gen/cosmos/base";
+
+// These annotations are used when generating the OpenAPI file.
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    version: "1.0";
+  };
+  external_docs: {
+    url: "https://github.com/KiraCore/sekai/INTERX";
+    description: "gRPC-gateway";
+  }
+  schemes: HTTP;
+};
 
 // PageRequest is to be embedded in gRPC request messages for efficient
 // pagination. Ex:
@@ -26,13 +44,14 @@ message PageRequest {
   uint64 limit = 3;
 
   // count_total is set to true  to indicate that the result set should include
-  // a count of the total number of items available for pagination in UIs. count_total
-  // is only respected when offset is used. It is ignored when key is set.
+  // a count of the total number of items available for pagination in UIs.
+  // count_total is only respected when offset is used. It is ignored when key
+  // is set.
   bool count_total = 4;
 }
 
-// PageResponse is to be embedded in gRPC response messages where the corresponding
-// request message has used PageRequest.
+// PageResponse is to be embedded in gRPC response messages where the
+// corresponding request message has used PageRequest.
 //
 //  message SomeResponse {
 //          repeated Bar results = 1;

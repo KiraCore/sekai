@@ -8,7 +8,7 @@ import "cosmos_proto/cosmos.proto";
 import "kira/gov/network_properties.proto";
 import "kira/gov/permission.proto";
 
-option go_package = "github.com/KiraCore/sekai/INTERX/proto";
+option go_package = "github.com/KiraCore/sekai/INTERX/proto-gen/kira/gov";
 
 // VoteOption enumerates the valid vote options for a given governance proposal.
 enum VoteOption {

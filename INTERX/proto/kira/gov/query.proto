@@ -4,17 +4,17 @@ package kira.gov;
 
 import "google/api/annotations.proto";
 import "gogoproto/gogo.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
 import "kira/gov/data_registry.proto";
-import "kira/gov/pagination.proto";
 import "kira/gov/proposal.proto";
 import "kira/gov/identity_registrar.proto";
 import "kira/gov/actor.proto";
-import "protoc-gen-openapiv2/options/annotations.proto";
 import "kira/gov/network_properties.proto";
 
 // Defines the import path that should be used to import the generated package,
 // and the package name.
-option go_package = "github.com/KiraCore/sekai/INTERX/proto";
+option go_package = "github.com/KiraCore/sekai/INTERX/proto-gen/kira/gov";
 
 // These annotations are used when generating the OpenAPI file.
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
@@ -112,7 +112,7 @@ message QueryProposalsRequest {
 
   // voter defines the voter address for the proposals.
   string voter = 1;
-  PageRequest pagination = 2;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2;
   bool all = 3;
   bool reverse = 4;
 }
@@ -121,18 +121,18 @@ message QueryProposalsRequest {
 // method.
 message QueryProposalsResponse {
   repeated Proposal proposals = 1 [(gogoproto.nullable) = false];
-  PageResponse pagination = 2;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // QueryDataReferenceKeysRequest is the response type for data reference keys query.
 message QueryDataReferenceKeysRequest {
-  PageRequest pagination = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
 // QueryDataReferenceKeysResponse is the response type for data reference keys query.
 message QueryDataReferenceKeysResponse {
   repeated string keys = 1;
-  PageResponse pagination = 2;
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // QueryDataReferenceRequest is the response type for data reference query.
