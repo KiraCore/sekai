@@ -426,3 +426,28 @@ func GetInterxStatus(interxAddr string) *types.InterxStatus {
 
 	return nil
 }
+
+func GetSnapshotInfo(interxAddr string) *types.SnapShotChecksumResponse {
+	success, _, _ := MakeGetRequest(interxAddr, "/api/snapshot_info", "")
+
+	if success != nil {
+		result := types.SnapShotChecksumResponse{}
+
+		GetLogger().Info(success)
+		byteData, err := json.Marshal(success)
+		if err != nil {
+			GetLogger().Error("[interx-snapshot_info] Invalid response format", err)
+			return nil
+		}
+
+		err = json.Unmarshal(byteData, &result)
+		if err != nil {
+			GetLogger().Error("[interx-snapshot_info] Invalid response format", err)
+			return nil
+		}
+
+		return &result
+	}
+
+	return nil
+}
