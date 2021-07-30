@@ -207,6 +207,13 @@
           "caching_disable": false,
           "caching_duration": 30
         },
+        "/api/snap_list": {
+          "disable": false,
+          "rate_limit": 0,
+          "auth_rate_limit": 0,
+          "caching_disable": false,
+          "caching_duration": 30
+        },
         "/api/status": {
           "disable": false,
           "rate_limit": 0,
