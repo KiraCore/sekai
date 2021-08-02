@@ -356,7 +356,6 @@ func (suite *AnteTestSuite) TestValidateFeeRangeDecorator() {
 	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[3].acc.GetAddress(), sdk.NewInt64Coin("ukex", 1))
 	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[4].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
 	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[4].acc.GetAddress(), sdk.NewInt64Coin("ubtc", 10000))
-	// defaultFee := sdk.NewCoins(sdk.NewInt64Coin("ukex", 100))
 	gasLimit := testdata.NewTestGasLimit()
 	privs := []cryptotypes.PrivKey{accounts[0].priv, accounts[1].priv, accounts[2].priv, accounts[3].priv, accounts[4].priv}
 	accNums := []uint64{0, 1, 2, 3, 4}
@@ -514,7 +513,6 @@ func (suite *AnteTestSuite) TestPoorNetworkManagementDecorator() {
 	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[3].acc.GetAddress(), sdk.NewInt64Coin("ukex", 1))
 	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[4].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
 	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[4].acc.GetAddress(), sdk.NewInt64Coin("ubtc", 10000))
-	// defaultFee := sdk.NewCoins(sdk.NewInt64Coin("ukex", 100))
 	gasLimit := testdata.NewTestGasLimit()
 	privs := []cryptotypes.PrivKey{accounts[0].priv, accounts[1].priv, accounts[2].priv, accounts[3].priv, accounts[4].priv}
 	accNums := []uint64{0, 1, 2, 3, 4}
@@ -605,7 +603,6 @@ func (suite *AnteTestSuite) TestBlackWhiteTokensCheckDecorator() {
 	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[4].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
 	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[4].acc.GetAddress(), sdk.NewInt64Coin("ubtc", 10000))
 	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[4].acc.GetAddress(), sdk.NewInt64Coin("frozen", 10000))
-	// defaultFee := sdk.NewCoins(sdk.NewInt64Coin("ukex", 100))
 	gasLimit := testdata.NewTestGasLimit()
 	privs := []cryptotypes.PrivKey{accounts[0].priv, accounts[1].priv, accounts[2].priv, accounts[3].priv, accounts[4].priv}
 	accNums := []uint64{0, 1, 2, 3, 4}
@@ -648,7 +645,77 @@ func (suite *AnteTestSuite) TestBlackWhiteTokensCheckDecorator() {
 	}
 }
 
-// TODO: should write tset for ExecutionFeeRegistrationDecorator
+// Test that simulate transaction process execution fee registration process
+func (suite *AnteTestSuite) TestExecutionFeeRegistrationDecorator() {
+	suite.SetupTest(false) // reset
+
+	// set execution fee for set network properties
+	suite.app.CustomGovKeeper.SetNetworkProperties(suite.ctx, &govtypes.NetworkProperties{
+		MinTxFee:                 2,
+		MaxTxFee:                 10000,
+		EnableForeignFeePayments: true,
+		EnableTokenBlacklist:     true,
+		EnableTokenWhitelist:     false,
+		MinValidators:            0,
+		PoorNetworkMaxBankSend:   1000,
+	})
+
+	suite.app.CustomGovKeeper.SetExecutionFee(suite.ctx, &govtypes.ExecutionFee{
+		Name:              types.MsgTypeSetNetworkProperties,
+		TransactionType:   types.MsgTypeSetNetworkProperties,
+		ExecutionFee:      10000,
+		FailureFee:        1000,
+		Timeout:           0,
+		DefaultParameters: 0,
+	})
+
+	// Same data for every test cases
+	accounts := suite.CreateTestAccounts(5)
+
+	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[0].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
+	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[0].acc.GetAddress(), sdk.NewInt64Coin("frozen", 10000))
+	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[0].acc.GetAddress(), sdk.NewInt64Coin("nofeetoken", 10000))
+	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[1].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
+	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[2].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
+	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[3].acc.GetAddress(), sdk.NewInt64Coin("ukex", 1))
+	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[4].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
+	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[4].acc.GetAddress(), sdk.NewInt64Coin("ubtc", 10000))
+	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[4].acc.GetAddress(), sdk.NewInt64Coin("frozen", 10000))
+	gasLimit := testdata.NewTestGasLimit()
+	privs := []cryptotypes.PrivKey{accounts[0].priv, accounts[1].priv, accounts[2].priv, accounts[3].priv, accounts[4].priv}
+	accNums := []uint64{0, 1, 2, 3, 4}
+
+	testCases := []TestCase{
+		{
+			"check correctly add executions",
+			func() ([]sdk.Msg, []cryptotypes.PrivKey, []uint64, []uint64, sdk.Coins) {
+				msgs := []sdk.Msg{
+					govtypes.NewMsgSetNetworkProperties(accounts[0].acc.GetAddress(), &govtypes.NetworkProperties{
+						MinTxFee:                 2,
+						MaxTxFee:                 10000,
+						EnableForeignFeePayments: true,
+					}),
+				}
+				return msgs, privs[0:1], accNums[0:1], []uint64{0}, sdk.NewCoins(sdk.NewInt64Coin("ukex", 10000))
+			},
+			true,
+			true,
+			nil,
+		},
+	}
+
+	for _, tc := range testCases {
+		suite.Run(fmt.Sprintf("Case %s", tc.desc), func() {
+			suite.txBuilder = suite.clientCtx.TxConfig.NewTxBuilder()
+			msgs, privs, accNums, accSeqs, feeAmount := tc.buildTest()
+
+			// this runs multi signature transaction with the params provided
+			suite.RunTestCase(privs, msgs, feeAmount, gasLimit, accNums, accSeqs, suite.ctx.ChainID(), tc)
+			execs := suite.app.FeeProcessingKeeper.GetExecutionsStatus(suite.ctx)
+			suite.Require().Len(execs, 1)
+		})
+	}
+}
 
 // Test that simulate transaction set gas limit correctly on ante handler step
 func (suite *AnteTestSuite) TestInfiniteGasMeterDecorator() {
