@@ -111,9 +111,9 @@ func TestQuerier_GetAllTokenRates(t *testing.T) {
 		&types.AllTokenRatesRequest{},
 	)
 	require.NoError(t, err)
-	require.Equal(t, len(resp.Data), 3)
-	require.Equal(t, "ubtc", resp.Data[0].Denom)
-	require.Equal(t, sdk.NewDec(10), resp.Data[0].Rate)
+	require.Equal(t, len(resp.Data), 4)
+	require.Equal(t, "frozen", resp.Data[0].Denom)
+	require.Equal(t, sdk.NewDecWithPrec(1, 1), resp.Data[0].Rate)
 	require.Equal(t, true, resp.Data[0].FeePayments)
 }
 
