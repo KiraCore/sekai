@@ -8,8 +8,8 @@ import (
 )
 
 type InterxFunctionParameter struct {
-	Type        string                    `json:"type"`
-	Optional    bool                      `json:"optional"`
+	Type        string                    `json:"type,omitempty"`
+	Optional    bool                      `json:"optional,omitempty"`
 	Description string                    `json:"description"`
 	Fields      *InterxFunctionParameters `json:"fields,omitempty"`
 }
@@ -20,12 +20,19 @@ type InterxFunctionMeta struct {
 	Endpoint    string                   `json:"endpoint"`
 	Description string                   `json:"description"`
 	Parameters  InterxFunctionParameters `json:"parameters"`
+	Response    InterxFunctionParameters `json:"response"`
 }
 
-type InterxFunctionList = map[string]InterxFunctionMeta
+type InterxMetadata struct {
+	Functions      map[string]InterxFunctionMeta `json:"functions"`
+	ResponseHeader InterxFunctionParameters      `json:"response_header"`
+}
 
 var (
-	interxFunctions InterxFunctionList = make(InterxFunctionList)
+	interxMetadata InterxMetadata = InterxMetadata{
+		Functions:      make(map[string]InterxFunctionMeta),
+		ResponseHeader: InterxFunctionParameters{},
+	}
 )
 
 // AddInterxFunction is a function to add a function
@@ -34,19 +41,62 @@ func AddInterxFunction(functionType string, endpoint string, meta string) {
 	if err := json.Unmarshal([]byte(meta), &metadata); err != nil {
 		panic(err)
 	}
-
 	metadata.Endpoint = endpoint
 
-	interxFunctions[strcase.ToCamel(functionType)] = metadata
+	interxMetadata.Functions[strcase.ToCamel(functionType)] = metadata
 }
 
 // RegisterInterxFunctions is a function to register all interx functions
 func RegisterInterxFunctions() {
+	interxMetadata.ResponseHeader["Interx_chain_id"] = InterxFunctionParameter{
+		Type:        "number",
+		Description: "This represents the current chain id.",
+	}
+	interxMetadata.ResponseHeader["Interx_block"] = InterxFunctionParameter{
+		Type:        "number",
+		Description: "This represents the current block number.",
+	}
+	interxMetadata.ResponseHeader["Interx_blocktime"] = InterxFunctionParameter{
+		Type:        "number",
+		Description: "This represents the current block timestamp.",
+	}
+	interxMetadata.ResponseHeader["Interx_timestamp"] = InterxFunctionParameter{
+		Type:        "string",
+		Description: "This represents the current interx timestamp.",
+	}
+	interxMetadata.ResponseHeader["Interx_request_hash"] = InterxFunctionParameter{
+		Type:        "string",
+		Description: "This represents the hash of request parameters.",
+	}
+	interxMetadata.ResponseHeader["Interx_signature"] = InterxFunctionParameter{
+		Type:        "string",
+		Description: "This represents the interx response signature.",
+	}
+	interxMetadata.ResponseHeader["Interx_hash"] = InterxFunctionParameter{
+		Type:        "string",
+		Description: "This represents the interx response hash.",
+	}
+	interxMetadata.ResponseHeader["Interx_ref"] = InterxFunctionParameter{
+		Type:        "string",
+		Description: "This represents link to download the data reference.",
+	}
+
 	AddInterxFunction(
-		"QueryNodeStatus",
+		"QueryKiraStatus",
 		config.QueryKiraStatus,
 		`{
-			"description": "QueryNodeStatus is a function to query the node status"
+			"description": "QueryKiraStatus is a function to query the node status",
+			"response": {
+				"node_info": {
+					"description": "The connected node information"
+				},
+				"sync_info": {
+					"description": "The sync status of connected node"
+				},
+				"validator_info": {
+					"description": "The validator information of connect node"
+				}
+			}
 		}`,
 	)
 
@@ -60,6 +110,11 @@ func RegisterInterxFunctions() {
 					"type":        "string",
 					"description": "This represents the account address."
 				}
+			},
+			"response": {
+				"account": {
+					"description": "The account info with address, pubkey and sequence."
+				}
 			}
 		}`,
 	)
@@ -68,7 +123,13 @@ func RegisterInterxFunctions() {
 		"QueryTotalSupply",
 		config.QueryTotalSupply,
 		`{
-			"description": "QueryTotalSupply is a function to query total supply."
+			"description": "QueryTotalSupply is a function to query total supply.",
+			"response": {
+				"supply": {
+					"type": "Coin[]",
+					"description": "The total supply of the network"
+				}
+			}
 		}`,
 	)
 
@@ -81,6 +142,28 @@ func RegisterInterxFunctions() {
 				"address": {
 					"type":        "string",
 					"description": "This represents the account address."
+				},
+				"limit": {
+					"type":        "number",
+					"description": "This represents the page size"
+				},
+				"offset": {
+					"type":        "number",
+					"description": "This represents the page number"
+				},
+				"count_total": {
+					"type":        "number",
+					"description": "This represents the option to return total count of data reference keys.",
+					"optional": true
+				}
+			},
+			"response": {
+				"balances": {
+					"type": "Coin[]",
+					"description": "The account balances with pagination"
+				},
+				"pagination": {
+					"description": "The pagination response information like total and next_key"
 				}
 			}
 		}`,
@@ -95,6 +178,20 @@ func RegisterInterxFunctions() {
 				"hash": {
 					"type":        "string",
 					"description": "This represents the transaction hash. (e.g. 0x20.....)"
+				}
+			},
+			"response": {
+				"hash": {
+					"description": "The transaction hash"
+				},
+				"height": {
+					"description": "The block height of transation"
+				},
+				"tx": {
+					"description": "The base-64 encoded transaction"
+				},
+				"tx_result": {
+					"description": "The result of transaction with events, gas info, logs and error code"
 				}
 			}
 		}`,

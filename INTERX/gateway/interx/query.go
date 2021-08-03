@@ -38,9 +38,9 @@ func QueryRPCMethods(rpcAddr string) http.HandlerFunc {
 }
 
 func queryInterxFunctionsHandle(rpcAddr string) (interface{}, interface{}, int) {
-	functions := functions.GetInterxFunctions()
+	metadata := functions.GetInterxMetadata()
 
-	return functions, nil, http.StatusOK
+	return metadata, nil, http.StatusOK
 }
 
 // QueryInterxFunctions is a function to list functions and metadata.
