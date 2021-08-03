@@ -112,7 +112,7 @@ func addModuleInitFlags(startCmd *cobra.Command) {
 func GetValAddressFromAddressCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "val-address [address]",
-		Short: "Get ValAddress from AccAddress",
+		Short: "Get validator address from account address",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -138,7 +138,7 @@ func GetValAddressFromAddressCmd() *cobra.Command {
 func GetValConsAddressFromAddressCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "valcons-address [address]",
-		Short: "Get ValAddress from AccAddress",
+		Short: "Get validator consensus address from account address",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)

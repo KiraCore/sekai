@@ -86,7 +86,7 @@ func (b AppModuleBasic) RegisterLegacyAminoCodec(amino *codec.LegacyAmino) {
 }
 
 func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
-	return cli.GetCmdQueryValidator()
+	return cli.GetQueryCmd()
 }
 
 // AppModule extends the cosmos SDK staking.

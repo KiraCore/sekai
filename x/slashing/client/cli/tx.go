@@ -36,7 +36,7 @@ func NewActivateTxCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "activate",
 		Args:  cobra.NoArgs,
-		Short: "activate validator previously inactivated for downtime",
+		Short: "Activate a validator previously inactivated for downtime",
 		Long: `activate an inactivated validator:
 
 $ <appd> tx slashing activate --from mykey
@@ -68,8 +68,8 @@ func NewPauseTxCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "pause",
 		Args:  cobra.NoArgs,
-		Short: "pause validator",
-		Long: `pause a validator before stopping of a node to avoid automatic inactivation:
+		Short: "Pause a validator",
+		Long: `Pause a validator before stopping of a node to avoid automatic inactivation:
 
 $ <appd> tx customslashing pause --from validator --chain-id=testing --keyring-backend=test --fees=100ukex --home=$HOME/.sekaid --yes
 `,
@@ -100,8 +100,8 @@ func NewUnpauseTxCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "unpause",
 		Args:  cobra.NoArgs,
-		Short: "unpause validator previously paused for downtime",
-		Long: `unpause a paused validator:
+		Short: "Unpause a validator previously paused for downtime",
+		Long: `Unpause a paused validator:
 
 $ <appd> tx slashing unpause --from mykey
 `,
@@ -131,7 +131,7 @@ $ <appd> tx slashing unpause --from mykey
 func GetTxProposalResetWholeValidatorRankCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "proposal-reset-whole-validator-rank",
-		Short: "Creates an proposal to unjail validator (the from address is the validator)",
+		Short: "Create a proposal to unjail validator (the from address is the validator)",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
