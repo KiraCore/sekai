@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/KiraCore/sekai/simapp"
+	simapp "github.com/KiraCore/sekai/app"
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/slashing/types"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"

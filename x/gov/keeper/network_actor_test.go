@@ -3,7 +3,7 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/KiraCore/sekai/simapp"
+	simapp "github.com/KiraCore/sekai/app"
 	"github.com/KiraCore/sekai/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
@@ -173,11 +173,11 @@ func TestKeeper_GetActorsByWhitelistedPerm(t *testing.T) {
 func TestKeeper_GetNetworkActorsByAbsoluteWhitelistPermission(t *testing.T) {
 	tests := []struct {
 		name       string
-		prepareApp func(app *simapp.SimApp, ctx sdk.Context) []types.NetworkActor
+		prepareApp func(app *simapp.SekaiApp, ctx sdk.Context) []types.NetworkActor
 	}{
 		{
 			name: "some addresses whitelisted",
-			prepareApp: func(app *simapp.SimApp, ctx sdk.Context) []types.NetworkActor {
+			prepareApp: func(app *simapp.SekaiApp, ctx sdk.Context) []types.NetworkActor {
 				addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, sdk.TokensFromConsensusPower(10))
 
 				err := whitelistPermToMultipleAddrs(app, ctx, addrs, types.PermSetPermissions)
@@ -193,7 +193,7 @@ func TestKeeper_GetNetworkActorsByAbsoluteWhitelistPermission(t *testing.T) {
 		},
 		{
 			name: "some addresses whitelisted by role",
-			prepareApp: func(app *simapp.SimApp, ctx sdk.Context) []types.NetworkActor {
+			prepareApp: func(app *simapp.SekaiApp, ctx sdk.Context) []types.NetworkActor {
 				addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, sdk.TokensFromConsensusPower(10))
 
 				// Create role
@@ -216,7 +216,7 @@ func TestKeeper_GetNetworkActorsByAbsoluteWhitelistPermission(t *testing.T) {
 		},
 		{
 			name: "whitelisted address whitelisted by role and personal permission (case 1)",
-			prepareApp: func(app *simapp.SimApp, ctx sdk.Context) []types.NetworkActor {
+			prepareApp: func(app *simapp.SekaiApp, ctx sdk.Context) []types.NetworkActor {
 				addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, sdk.TokensFromConsensusPower(10))
 
 				// Create role
@@ -243,7 +243,7 @@ func TestKeeper_GetNetworkActorsByAbsoluteWhitelistPermission(t *testing.T) {
 		},
 		{
 			name: "whitelisted address whitelisted by role and personal permission (case 2)",
-			prepareApp: func(app *simapp.SimApp, ctx sdk.Context) []types.NetworkActor {
+			prepareApp: func(app *simapp.SekaiApp, ctx sdk.Context) []types.NetworkActor {
 				addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, sdk.TokensFromConsensusPower(10))
 
 				// Create role
@@ -285,13 +285,13 @@ func TestKeeper_GetNetworkActorsByAbsoluteWhitelistPermission(t *testing.T) {
 	}
 }
 
-func addRoleToMultipleAddrs(app *simapp.SimApp, ctx sdk.Context, addrs []sdk.AccAddress, role types.Role) {
+func addRoleToMultipleAddrs(app *simapp.SekaiApp, ctx sdk.Context, addrs []sdk.AccAddress, role types.Role) {
 	for _, addr := range addrs {
 		app.CustomGovKeeper.AssignRoleToActor(ctx, types.NewDefaultActor(addr), role)
 	}
 }
 
-func whitelistPermToMultipleAddrs(app *simapp.SimApp, ctx sdk.Context, addrs []sdk.AccAddress, permissions types.PermValue) error {
+func whitelistPermToMultipleAddrs(app *simapp.SekaiApp, ctx sdk.Context, addrs []sdk.AccAddress, permissions types.PermValue) error {
 	for _, addr := range addrs {
 		err := app.CustomGovKeeper.AddWhitelistPermission(ctx, types.NewDefaultActor(addr), permissions)
 		if err != nil {
@@ -313,7 +313,7 @@ func requireIteratorCount(t *testing.T, iterator sdk.Iterator, expectedCount int
 
 func assertAddrsHaveWhitelistedPerm(
 	t *testing.T,
-	app *simapp.SimApp,
+	app *simapp.SekaiApp,
 	ctx sdk.Context,
 	addrs []sdk.AccAddress,
 	perm types.PermValue,
@@ -327,7 +327,7 @@ func assertAddrsHaveWhitelistedPerm(
 
 func assertAddrsHaveRole(
 	t *testing.T,
-	app *simapp.SimApp,
+	app *simapp.SekaiApp,
 	ctx sdk.Context,
 	addrs []sdk.AccAddress,
 	role types.Role,
@@ -341,7 +341,7 @@ func assertAddrsHaveRole(
 
 func assertAddrsDontHaveWhitelistedPerm(
 	t *testing.T,
-	app *simapp.SimApp,
+	app *simapp.SekaiApp,
 	ctx sdk.Context,
 	addrs []sdk.AccAddress,
 	perm types.PermValue,

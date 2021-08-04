@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/KiraCore/sekai/app"
-	"github.com/KiraCore/sekai/simapp"
+	simapp "github.com/KiraCore/sekai/app"
 	"github.com/KiraCore/sekai/testutil/network"
 	"github.com/KiraCore/sekai/x/gov/client/cli"
 	"github.com/KiraCore/sekai/x/gov/types"

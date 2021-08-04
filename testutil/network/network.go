@@ -14,7 +14,7 @@ import (
 	"testing"
 	"time"
 
-	customsimapp "github.com/KiraCore/sekai/simapp"
+	sekaiapp "github.com/KiraCore/sekai/app"
 
 	"github.com/KiraCore/sekai/app"
 
@@ -99,7 +99,7 @@ type Config struct {
 // DefaultConfig returns a sane default configuration suitable for nearly all
 // testing requirements.
 func DefaultConfig() Config {
-	encCfg := customsimapp.MakeEncodingConfig()
+	encCfg := sekaiapp.MakeEncodingConfig()
 
 	return Config{
 		Codec:             encCfg.Marshaler,

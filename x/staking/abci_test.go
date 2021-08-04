@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/KiraCore/sekai/simapp"
+	simapp "github.com/KiraCore/sekai/app"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 )
 
@@ -70,25 +70,25 @@ func TestItDoesNotReturnUpdatesIfThereIsNoPending(t *testing.T) {
 func TestItRemovesFromTheValidatorSetWhenInRemovingQueue(t *testing.T) {
 	tests := []struct {
 		name        string
-		prepareFunc func(app *simapp.SimApp, ctx types.Context, validator stakingtypes.Validator)
+		prepareFunc func(app *simapp.SekaiApp, ctx types.Context, validator stakingtypes.Validator)
 	}{
 		{
 			name: "remove because it is paused",
-			prepareFunc: func(app *simapp.SimApp, ctx types.Context, validator stakingtypes.Validator) {
+			prepareFunc: func(app *simapp.SekaiApp, ctx types.Context, validator stakingtypes.Validator) {
 				err := app.CustomStakingKeeper.Pause(ctx, validator.ValKey)
 				require.NoError(t, err)
 			},
 		},
 		{
 			name: "remove because it is inactive",
-			prepareFunc: func(app *simapp.SimApp, ctx types.Context, validator stakingtypes.Validator) {
+			prepareFunc: func(app *simapp.SekaiApp, ctx types.Context, validator stakingtypes.Validator) {
 				err := app.CustomStakingKeeper.Inactivate(ctx, validator.ValKey)
 				require.NoError(t, err)
 			},
 		},
 		{
 			name: "remove because it is jailed",
-			prepareFunc: func(app *simapp.SimApp, ctx types.Context, validator stakingtypes.Validator) {
+			prepareFunc: func(app *simapp.SekaiApp, ctx types.Context, validator stakingtypes.Validator) {
 				err := app.CustomStakingKeeper.Jail(ctx, validator.ValKey)
 				require.NoError(t, err)
 			},
@@ -131,47 +131,47 @@ func TestItRemovesFromTheValidatorSetWhenInRemovingQueue(t *testing.T) {
 func TestItIncludesItBackToValidatorSetOnceReactivatingIt(t *testing.T) {
 	tests := []struct {
 		name                string
-		prepareDeactivation func(app *simapp.SimApp, ctx types.Context, validator stakingtypes.Validator)
-		prepareFunc         func(app *simapp.SimApp, ctx types.Context, validator stakingtypes.Validator)
+		prepareDeactivation func(app *simapp.SekaiApp, ctx types.Context, validator stakingtypes.Validator)
+		prepareFunc         func(app *simapp.SekaiApp, ctx types.Context, validator stakingtypes.Validator)
 	}{
 		{
 			name: "reactivating from paused",
-			prepareDeactivation: func(app *simapp.SimApp, ctx types.Context, validator stakingtypes.Validator) {
+			prepareDeactivation: func(app *simapp.SekaiApp, ctx types.Context, validator stakingtypes.Validator) {
 				err := app.CustomStakingKeeper.Pause(ctx, validator.ValKey)
 				require.NoError(t, err)
 
 				// We end the block so the validator is paused
 				staking.EndBlocker(ctx, app.CustomStakingKeeper)
 			},
-			prepareFunc: func(app *simapp.SimApp, ctx types.Context, validator stakingtypes.Validator) {
+			prepareFunc: func(app *simapp.SekaiApp, ctx types.Context, validator stakingtypes.Validator) {
 				err := app.CustomStakingKeeper.Unpause(ctx, validator.ValKey)
 				require.NoError(t, err)
 			},
 		},
 		{
 			name: "reactivating from inactive",
-			prepareDeactivation: func(app *simapp.SimApp, ctx types.Context, validator stakingtypes.Validator) {
+			prepareDeactivation: func(app *simapp.SekaiApp, ctx types.Context, validator stakingtypes.Validator) {
 				err := app.CustomStakingKeeper.Inactivate(ctx, validator.ValKey)
 				require.NoError(t, err)
 
 				// We end the block so the validator is paused
 				staking.EndBlocker(ctx, app.CustomStakingKeeper)
 			},
-			prepareFunc: func(app *simapp.SimApp, ctx types.Context, validator stakingtypes.Validator) {
+			prepareFunc: func(app *simapp.SekaiApp, ctx types.Context, validator stakingtypes.Validator) {
 				err := app.CustomStakingKeeper.Activate(ctx, validator.ValKey)
 				require.NoError(t, err)
 			},
 		},
 		{
 			name: "reactivating from jailed",
-			prepareDeactivation: func(app *simapp.SimApp, ctx types.Context, validator stakingtypes.Validator) {
+			prepareDeactivation: func(app *simapp.SekaiApp, ctx types.Context, validator stakingtypes.Validator) {
 				err := app.CustomStakingKeeper.Jail(ctx, validator.ValKey)
 				require.NoError(t, err)
 
 				// We end the block so the validator is paused
 				staking.EndBlocker(ctx, app.CustomStakingKeeper)
 			},
-			prepareFunc: func(app *simapp.SimApp, ctx types.Context, validator stakingtypes.Validator) {
+			prepareFunc: func(app *simapp.SekaiApp, ctx types.Context, validator stakingtypes.Validator) {
 				err := app.CustomStakingKeeper.Unjail(ctx, validator.ValKey)
 				require.NoError(t, err)
 				err = app.CustomStakingKeeper.Activate(ctx, validator.ValKey)
