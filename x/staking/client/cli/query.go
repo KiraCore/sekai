@@ -4,23 +4,36 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pkg/errors"
-
-	"github.com/spf13/pflag"
-
-	"github.com/spf13/cobra"
-
+	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
+	"github.com/pkg/errors"
+	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 )
 
 const (
 	FlagValAddr = "val-addr"
 	FlagAddr    = "addr"
 )
+
+// GetQueryCmd returns the cli query commands for this module
+func GetQueryCmd() *cobra.Command {
+	queryCmd := &cobra.Command{
+		Use:                        stakingtypes.ModuleName,
+		Short:                      "Querying commands for the staking module",
+		DisableFlagParsing:         true,
+		SuggestionsMinimumDistance: 2,
+		RunE:                       client.ValidateCmd,
+	}
+
+	queryCmd.AddCommand(
+		GetCmdQueryValidator(),
+	)
+
+	return queryCmd
+}
 
 // GetCmdQueryValidator the query delegation command.
 func GetCmdQueryValidator() *cobra.Command {

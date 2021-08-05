@@ -125,7 +125,7 @@ func GetTxUpsertTokenAliasCmd() *cobra.Command {
 func GetTxProposalUpsertTokenAliasCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "proposal-upsert-alias",
-		Short: "Creates an Upsert token alias",
+		Short: "Create a proposal to upsert token alias",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 
@@ -210,7 +210,7 @@ func GetTxProposalUpsertTokenAliasCmd() *cobra.Command {
 func GetTxProposalUpsertTokenRatesCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "proposal-upsert-rate",
-		Short: "Creates an Upsert token rate",
+		Short: "Create a proposal to upsert token rate",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 
@@ -350,8 +350,8 @@ func GetTxUpsertTokenRateCmd() *cobra.Command {
 // GetTxProposalTokensBlackWhiteChangeCmd implement cli command for proposing tokens blacklist / whitelist update
 func GetTxProposalTokensBlackWhiteChangeCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "propose-update-tokens-blackwhite",
-		Short: "Propose update whitelisted and blacklisted tokens",
+		Use:   "proposal-update-tokens-blackwhite",
+		Short: "Create a proposal to update whitelisted and blacklisted tokens",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 

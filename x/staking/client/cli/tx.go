@@ -78,7 +78,7 @@ func GetTxClaimValidatorCmd() *cobra.Command {
 func GetTxProposalUnjailValidatorCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "proposal-unjail-validator hash reference",
-		Short: "Creates an proposal to unjail validator (the from address is the validator)",
+		Short: "Create a proposal to unjail validator (the from address is the validator)",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)

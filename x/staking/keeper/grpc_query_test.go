@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/KiraCore/sekai/simapp"
+	simapp "github.com/KiraCore/sekai/app"
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	stakingkeeper "github.com/KiraCore/sekai/x/staking/keeper"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"

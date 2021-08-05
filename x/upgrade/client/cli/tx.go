@@ -44,8 +44,8 @@ func GetTxCmd() *cobra.Command {
 
 func GetTxProposeUpgradePlan() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "propose-upgrade-plan",
-		Short: "Propose upgrade plan",
+		Use:   "proposal-set-plan",
+		Short: "Create a proposal to set an upgrade plan",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -164,8 +164,8 @@ func GetTxProposeUpgradePlan() *cobra.Command {
 
 func GetTxCancelUpgradePlan() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "propose-cancel-upgrade-plan",
-		Short: "Propose cancel upgrade plan",
+		Use:   "proposal-cancel-plan",
+		Short: "Create a proposal to cancel upgrade plan",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {

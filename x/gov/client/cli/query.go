@@ -26,8 +26,8 @@ const (
 // GetCmdQueryPermissions the query delegation command.
 func GetCmdQueryPermissions() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "permissions addr",
-		Short: "Get the permissions of an address",
+		Use:   "permissions [addr]",
+		Short: "Query permissions of an address",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
@@ -57,7 +57,7 @@ func GetCmdQueryPermissions() *cobra.Command {
 func GetCmdQueryRolesByAddress() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "roles addr",
-		Short: "Get the roles assigned to an address",
+		Short: "Query roles assigned to an address",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
@@ -86,7 +86,7 @@ func GetCmdQueryRolesByAddress() *cobra.Command {
 func GetCmdQueryRolePermissions() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "role-permissions arg-num",
-		Short: "Get the permissions of all the roles",
+		Short: "Query permissions of all the roles",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
@@ -119,7 +119,7 @@ func GetCmdQueryRolePermissions() *cobra.Command {
 func GetCmdQueryNetworkProperties() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "network-properties",
-		Short: "Get the network properties",
+		Short: "Query network properties",
 		Args:  cobra.MinimumNArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
@@ -143,7 +143,7 @@ func GetCmdQueryNetworkProperties() *cobra.Command {
 func GetCmdQueryPoorNetworkMessages() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "poor-network-messages",
-		Short: "Get poor network messages",
+		Short: "Query poor network messages",
 		Args:  cobra.MinimumNArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
@@ -166,8 +166,8 @@ func GetCmdQueryPoorNetworkMessages() *cobra.Command {
 // GetCmdQueryExecutionFee query for execution fee by execution name
 func GetCmdQueryExecutionFee() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "execution-fee",
-		Short: "Get the execution fee by [transaction_type]",
+		Use:   "execution-fee [transaction_type]",
+		Short: "Query execution fee by the type of transaction",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
@@ -192,7 +192,7 @@ func GetCmdQueryExecutionFee() *cobra.Command {
 func GetCmdQueryCouncilRegistry() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "council-registry [--addr || --flagMoniker]",
-		Short: "Query the governance registry.",
+		Short: "Query governance registry.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
@@ -313,7 +313,7 @@ func GetCmdQueryProposal() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "proposal [proposal-id]",
 		Args:  cobra.ExactArgs(1),
-		Short: "Query details of a single proposal",
+		Short: "Query proposal details",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Query details for a proposal. You can find the
 proposal-id by running "%s query gov proposals".

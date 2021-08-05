@@ -14,20 +14,7 @@ import (
 	"testing"
 	"time"
 
-	customsimapp "github.com/KiraCore/sekai/simapp"
-
 	"github.com/KiraCore/sekai/app"
-
-	"github.com/stretchr/testify/require"
-	tmcfg "github.com/tendermint/tendermint/config"
-	tmflags "github.com/tendermint/tendermint/libs/cli/flags"
-	"github.com/tendermint/tendermint/libs/log"
-	tmrand "github.com/tendermint/tendermint/libs/rand"
-	"github.com/tendermint/tendermint/node"
-	tmclient "github.com/tendermint/tendermint/rpc/client"
-	dbm "github.com/tendermint/tm-db"
-	"google.golang.org/grpc"
-
 	"github.com/KiraCore/sekai/x/genutil"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -46,6 +33,15 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	"github.com/stretchr/testify/require"
+	tmcfg "github.com/tendermint/tendermint/config"
+	tmflags "github.com/tendermint/tendermint/libs/cli/flags"
+	"github.com/tendermint/tendermint/libs/log"
+	tmrand "github.com/tendermint/tendermint/libs/rand"
+	"github.com/tendermint/tendermint/node"
+	tmclient "github.com/tendermint/tendermint/rpc/client"
+	dbm "github.com/tendermint/tm-db"
+	"google.golang.org/grpc"
 )
 
 // DefaultBondDenom defines default denom for fee
@@ -99,7 +95,7 @@ type Config struct {
 // DefaultConfig returns a sane default configuration suitable for nearly all
 // testing requirements.
 func DefaultConfig() Config {
-	encCfg := customsimapp.MakeEncodingConfig()
+	encCfg := app.MakeEncodingConfig()
 
 	return Config{
 		Codec:             encCfg.Marshaler,

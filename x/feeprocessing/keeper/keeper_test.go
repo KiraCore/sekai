@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/KiraCore/sekai/simapp"
+	simapp "github.com/KiraCore/sekai/app"
 	kiratypes "github.com/KiraCore/sekai/types"
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"

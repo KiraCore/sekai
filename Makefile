@@ -1,11 +1,11 @@
 PACKAGES=$(shell go list ./... | grep -v '/simulation')
 
-VERSION = 1.0.0
+VERSION = 0.1.21.8
 COMMIT := $(shell git log -1 --format='%H')
 
 # TODO: Update the ldflags with the app, client & server names
 ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=sekai \
-	-X github.com/cosmos/cosmos-sdk/version.ServerName=sekaid \
+	-X github.com/cosmos/cosmos-sdk/version.AppName=sekaid \
 	-X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
 	-X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT)
 

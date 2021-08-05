@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/KiraCore/sekai/app"
-	"github.com/KiraCore/sekai/simapp"
+	simapp "github.com/KiraCore/sekai/app"
 	"github.com/KiraCore/sekai/x/gov"
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/slashing"
@@ -41,7 +41,7 @@ func TestHandler_CreateProposalResetWholeValidatorRank(t *testing.T) {
 	tests := []struct {
 		name         string
 		content      govtypes.Content
-		preparePerms func(t *testing.T, app *simapp.SimApp, ctx sdk.Context)
+		preparePerms func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context)
 		expectedErr  error
 	}{
 		{
@@ -49,7 +49,7 @@ func TestHandler_CreateProposalResetWholeValidatorRank(t *testing.T) {
 			types.NewResetWholeValidatorRankProposal(
 				proposerAddr,
 			),
-			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
+			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {},
 			errors.Wrap(govtypes.ErrNotEnoughPermissions, "PERMISSION_CREATE_RESET_WHOLE_VALIDATOR_RANK_PROPOSAL"),
 		},
 		{
@@ -57,7 +57,7 @@ func TestHandler_CreateProposalResetWholeValidatorRank(t *testing.T) {
 			types.NewResetWholeValidatorRankProposal(
 				proposerAddr,
 			),
-			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				proposerActor := govtypes.NewDefaultActor(proposerAddr)
 				err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerActor, govtypes.PermCreateResetWholeValidatorRankProposal)
 				require.NoError(t, err2)

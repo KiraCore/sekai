@@ -24,7 +24,7 @@ func (app *SekaiApp) ExportAppStateAndValidators(
 		return servertypes.ExportedApp{}, err
 	}
 
-	validators, err := customstaking.WriteValidators(ctx, app.customStakingKeeper)
+	validators, err := customstaking.WriteValidators(ctx, app.CustomStakingKeeper)
 	return servertypes.ExportedApp{
 		AppState:        appState,
 		Validators:      validators,

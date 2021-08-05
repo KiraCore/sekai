@@ -1,5 +1,15 @@
 # Changelog
 
+## [v0.1.21.9] - 05.08.2021
+
+- Add pagination for identity registrar grpc_queries
+- Modify protogen script to use fixed cosmos sdk branch to prevent autoupgrade
+- Ante test for Ante decorators
+- Add version info on CLI
+- Modify CLI command to be more organized and descriptions to be well-formed along with scripts examples"
+- Combine SekaiApp with simap for easier maintenance
+- Remove unused codes
+
 ## [v0.1.21.8] - 28.07.2021
 
 - Remove resolved TODO in readme for upgrade module

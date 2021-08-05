@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/KiraCore/sekai/app"
-	"github.com/KiraCore/sekai/simapp"
+	simapp "github.com/KiraCore/sekai/app"
 	"github.com/KiraCore/sekai/x/gov"
 	"github.com/KiraCore/sekai/x/gov/types"
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
@@ -41,7 +41,7 @@ func NewAccountByIndex(accNum int) sdk.AccAddress {
 	return addr
 }
 
-func setPermissionToAddr(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addr sdk.AccAddress, perm types.PermValue) error {
+func setPermissionToAddr(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context, addr sdk.AccAddress, perm types.PermValue) error {
 	proposerActor := govtypes.NewDefaultActor(addr)
 	err := proposerActor.Permissions.AddToWhitelist(perm)
 	require.NoError(t, err)
@@ -209,7 +209,7 @@ func TestHandler_CreateProposalUpsertTokenAliases_Errors(t *testing.T) {
 	tests := []struct {
 		name         string
 		content      govtypes.Content
-		preparePerms func(t *testing.T, app *simapp.SimApp, ctx sdk.Context)
+		preparePerms func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context)
 		expectedErr  error
 	}{
 		{
@@ -221,7 +221,7 @@ func TestHandler_CreateProposalUpsertTokenAliases_Errors(t *testing.T) {
 				18,
 				[]string{},
 			),
-			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
+			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {},
 			errors.Wrap(types.ErrNotEnoughPermissions, types.PermCreateUpsertTokenAliasProposal.String()),
 		},
 	}
@@ -328,7 +328,7 @@ func TestHandler_CreateProposalUpsertTokenRates_Errors(t *testing.T) {
 	tests := []struct {
 		name         string
 		content      govtypes.Content
-		preparePerms func(t *testing.T, app *simapp.SimApp, ctx sdk.Context)
+		preparePerms func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context)
 		expectedErr  error
 	}{
 		{
@@ -338,7 +338,7 @@ func TestHandler_CreateProposalUpsertTokenRates_Errors(t *testing.T) {
 				sdk.NewDec(1234),
 				false,
 			),
-			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
+			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {},
 			errors.Wrap(types.ErrNotEnoughPermissions, types.PermCreateUpsertTokenRateProposal.String()),
 		},
 	}

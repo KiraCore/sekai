@@ -16,7 +16,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/store/types"
 
 	"github.com/KiraCore/sekai/app"
-	"github.com/KiraCore/sekai/simapp"
+	simapp "github.com/KiraCore/sekai/app"
 	"github.com/KiraCore/sekai/testutil/network"
 	"github.com/KiraCore/sekai/x/tokens/client/cli"
 	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"

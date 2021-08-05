@@ -3,18 +3,17 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/stretchr/testify/suite"
-	"github.com/KiraCore/sekai/simapp"
+	simapp "github.com/KiraCore/sekai/app"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/stretchr/testify/suite"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
-
 
 type KeeperTestSuite struct {
 	suite.Suite
 
-	ctx     sdk.Context
-	app     *simapp.SimApp
+	ctx sdk.Context
+	app *simapp.SekaiApp
 }
 
 func (suite *KeeperTestSuite) SetupTest() {

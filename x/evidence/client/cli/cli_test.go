@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/suite"
 
 	"github.com/KiraCore/sekai/app"
-	"github.com/KiraCore/sekai/simapp"
+	simapp "github.com/KiraCore/sekai/app"
 	"github.com/KiraCore/sekai/testutil/network"
 	"github.com/KiraCore/sekai/x/evidence/client/cli"
 	"github.com/cosmos/cosmos-sdk/baseapp"
