@@ -147,9 +147,7 @@ func (k Keeper) Proposals(goCtx context.Context, request *types.QueryProposalsRe
 		request.Pagination.Limit = kiratypes.PageIterationLimit
 	}
 
-	if request.All {
-		pageRes, err = kiraquery.IterateAll(proposalsStore, request.Pagination, onResult)
-	} else if request.Reverse {
+	if request.Reverse {
 		pageRes, err = kiraquery.FilteredReversePaginate(proposalsStore, request.Pagination, onResult)
 	} else {
 		pageRes, err = query.FilteredPaginate(proposalsStore, request.Pagination, onResult)
