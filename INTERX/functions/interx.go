@@ -245,11 +245,6 @@ func RegisterInterxFunctions() {
 					"description": "This represents the kira account address.",
 					"optional": true
 				},
-				"all": {
-					"type":        "bool",
-					"description": "This an option to query all proposals.",
-					"optional": true
-				},
 				"reverse": {
 					"type":        "bool",
 					"description": "This an option to sort proposals.",
@@ -275,6 +270,11 @@ func RegisterInterxFunctions() {
 					"description": "This is an option to validators pagination. count_total is set to true  to indicate that the result set should include a count of the total number of items available for pagination in UIs. count_total is only respected when offset is used. It is ignored when key is set.",
 					"optional": true
 				}
+			},
+			"response": {
+				"proposals": {
+					"description": "The array of proposals information"
+				}
 			}
 		}`,
 	)
@@ -288,6 +288,11 @@ func RegisterInterxFunctions() {
 				"proposal_id": {
 					"type":        "number",
 					"description": "This is an option of a proposal id"
+				}
+			},
+			"response": {
+				"proposal": {
+					"description": "The proposal information"
 				}
 			}
 		}`,
@@ -316,6 +321,11 @@ func RegisterInterxFunctions() {
 				"proposal_id": {
 					"type":        "number",
 					"description": "This is an option of a proposal id"
+				}
+			},
+			"response": {
+				"votes": {
+					"description": "The array of votes information"
 				}
 			}
 		}`,
@@ -391,6 +401,14 @@ func RegisterInterxFunctions() {
 					"description": "This represents the last transaction hash.",
 					"optional": true
 				}
+			},
+			"response": {
+				"transactions": {
+					"description": "The mapping from transaction hash to transaction information"
+				},
+				"total_count": {
+					"description": "The total transaction count"
+				}
 			}
 		}`,
 	)
@@ -424,6 +442,14 @@ func RegisterInterxFunctions() {
 					"type":        "string",
 					"description": "This represents the last transaction hash.",
 					"optional": true
+				}
+			},
+			"response": {
+				"transactions": {
+					"description": "The mapping from transaction hash to transaction information"
+				},
+				"total_count": {
+					"description": "The total transaction count"
 				}
 			}
 		}`,
@@ -464,10 +490,26 @@ func RegisterInterxFunctions() {
 	)
 
 	AddInterxFunction(
-		"Faucet",
+		"FaucetInfo",
 		config.FaucetRequestURL,
 		`{
-			"description": "Faucet is a function to claim tokens to the account for free. Returns the available faucet amount when 'claim' and 'token' is unset.",
+			"description": "FaucetInfo is a function to return the available faucet amount",
+			"response": {
+				"address": {
+					"description": "The faucet kira address"
+				},
+				"balances": {
+					"description": "The balances array (amount & denom)"
+				}
+			}
+		}`,
+	)
+
+	AddInterxFunction(
+		"Faucet",
+		config.FaucetRequestURL+"?",
+		`{
+			"description": "Faucet is a function to claim tokens to the account for free.",
 			"parameters": {
 				"claim": {
 					"type":        "string",
@@ -478,6 +520,11 @@ func RegisterInterxFunctions() {
 					"type":        "string",
 					"description": "This represents the token name.",
 					"optional": true
+				}
+			},
+			"response": {
+				"hash": {
+					"description": "The faucet transaction hash"
 				}
 			}
 		}`,
@@ -562,6 +609,14 @@ func RegisterInterxFunctions() {
 					"description": "This is an option to validators pagination. count_total is set to true  to indicate that the result set should include a count of the total number of items available for pagination in UIs. count_total is only respected when offset is used. It is ignored when key is set.",
 					"optional": true
 				}
+			},
+			"response": {
+				"validators": {
+					"description": "The array of validators information"
+				},
+				"pagination": {
+					"description": "The pagination response information like total and next_key"
+				}
 			}
 		}`,
 	)
@@ -591,11 +646,60 @@ func RegisterInterxFunctions() {
 					"type":        "string",
 					"description": "This is an option to validators pagination. count_total is set to true  to indicate that the result set should include a count of the total number of items available for pagination in UIs. count_total is only respected when offset is used. It is ignored when key is set.",
 					"optional": true
+				}
+			},
+			"response": {
+				"info": {
+					"description": "The array of validators information"
 				},
-				"all": {
-					"type":        "boolean",
-					"description": "This is an option to validators pagination. all is set to true  to indicate that all the results should be returned.",
-					"optional": true
+				"pagination": {
+					"description": "The pagination response information like total and next_key"
+				}
+			}
+		}`,
+	)
+
+	AddInterxFunction(
+		"QueryConsensus",
+		config.QueryConsensus,
+		`{
+			"description": "QueryConsensus is a function to query consensus info.",
+			"response": {
+				"average_block_time": {
+					"description": "average block time in seconds"
+				},
+				"commit_time": {
+					"description": "The latest commit timestamp"
+				},
+				"consensus_stopped": {
+					"description": "If the consensus is stopped or not"
+				},
+				"height": {
+					"description": "The latest block height"
+				},
+				"noncommits": {
+					"description": "The validators array with no commits"
+				},
+				"precommits": {
+					"description": "The validators array with pre commits"
+				},
+				"prevotes": {
+					"description": "The validators array with prevotes"
+				},
+				"proposer": {
+					"description": "The current proposer kira address"
+				},
+				"round": {
+					"description": "The consensus round"
+				},
+				"start_time": {
+					"description": "The consensus start timestamp"
+				},
+				"step": {
+					"description": "RoundStepNewHeight"
+				},
+				"triggered_timeout_precommit": {
+					"description": "true or false"
 				}
 			}
 		}`,
@@ -617,6 +721,14 @@ func RegisterInterxFunctions() {
 					"description": "This is the option of the maximum block height.",
 					"optional": true
 				}
+			},
+			"response": {
+				"block_metas": {
+					"description": "The array of block informations"
+				},
+				"last_height": {
+					"description": "The last block height"
+				}
 			}
 		}`,
 	)
@@ -631,6 +743,14 @@ func RegisterInterxFunctions() {
 					"type":        "string",
 					"description": "This is an option of block height or hash.",
 					"optional": true
+				}
+			},
+			"response": {
+				"block": {
+					"description": "The block information"
+				},
+				"block_id": {
+					"description": "The block hash inforamtion"
 				}
 			}
 		}`,
@@ -647,6 +767,14 @@ func RegisterInterxFunctions() {
 					"description": "This is an option of block height.",
 					"optional": true
 				}
+			},
+			"response": {
+				"txs": {
+					"description": "The transaction information array"
+				},
+				"total_count": {
+					"description": "The total transaction count"
+				}
 			}
 		}`,
 	)
@@ -661,6 +789,222 @@ func RegisterInterxFunctions() {
 					"type":        "string",
 					"description": "This is an option of a transaction hash.",
 					"optional": true
+				}
+			},
+			"response": {
+				"hash": {
+					"description": "The transaction hash"
+				},
+				"status": {
+					"description": "The transaction status"
+				},
+				"block_height": {
+					"description": "The block height"
+				},
+				"block_timestamp": {
+					"description": "The block timestamp"
+				},
+				"confirmation": {
+					"description": "The block confirmations of this transaction"
+				},
+				"msgs": {
+					"description": "The transaction msgs"
+				},
+				"fees": {
+					"description": "The transaction fee"
+				},
+				"gas_wanted": {
+					"description": "The gas limit amount for transaction"
+				},
+				"gas_used": {
+					"description": "The gas amount used in transaction"
+				},
+				"memo": {
+					"description": "The transaction memo"
+				}
+			}
+		}`,
+	)
+
+	AddInterxFunction(
+		"QueryPrivP2PList",
+		config.QueryPrivP2PList,
+		`{
+			"description": "QueryPrivP2PList is a function to query all private nodes list.",
+			"response": {
+				"last_update": {
+					"type": "number",
+					"description": "The last updated timestamp"
+				},
+				"scanning": {
+					"type": "bool",
+					"description": "If discovery is still running or not"
+				},
+				"node_list": {
+					"description": "The node list array",
+					"fields": {
+						"id": {
+							"type":        "string",
+							"description": "The private node id"
+						},
+						"ip": {
+							"type":        "string",
+							"description": "The local ip address"
+						},
+						"port": {
+							"type":        "number",
+							"description": "The p2p port number"
+						},
+						"ping": {
+							"type":        "number",
+							"description": "The time duration in miliseconds to dial p2p and verify p2p node id"
+						},
+						"connected": {
+							"type":        "bool",
+							"description": "If the node is connected with this node"
+						},
+						"peers": {
+							"type":        "array<string>",
+							"description": "The list of node ids"
+						}
+					}
+				}
+			}
+		}`,
+	)
+
+	AddInterxFunction(
+		"QueryPubP2PList",
+		config.QueryPubP2PList,
+		`{
+			"description": "QueryPubP2PList is a function to query all public nodes list.",
+			"response": {
+				"last_update": {
+					"type": "number",
+					"description": "The last updated timestamp"
+				},
+				"scanning": {
+					"type": "bool",
+					"description": "If discovery is still running or not"
+				},
+				"node_list": {
+					"description": "The node list array",
+					"fields": {
+						"id": {
+							"type":        "string",
+							"description": "The public node id"
+						},
+						"ip": {
+							"type":        "string",
+							"description": "The public ip address"
+						},
+						"port": {
+							"type":        "number",
+							"description": "The p2p port number"
+						},
+						"ping": {
+							"type":        "number",
+							"description": "The time duration in miliseconds to dial p2p and verify p2p node id"
+						},
+						"connected": {
+							"type":        "bool",
+							"description": "If the node is connected with this node"
+						},
+						"peers": {
+							"type":        "array<string>",
+							"description": "The list of node ids"
+						}
+					}
+				}
+			}
+		}`,
+	)
+
+	AddInterxFunction(
+		"QueryInterxList",
+		config.QueryInterxList,
+		`{
+			"description": "QueryInterxList is a function to query all interx list.",
+			"response": {
+				"last_update": {
+					"type": "number",
+					"description": "The last updated timestamp"
+				},
+				"scanning": {
+					"type": "bool",
+					"description": "If discovery is still running or not"
+				},
+				"node_list": {
+					"description": "The node list array",
+					"fields": {
+						"id": {
+							"type":        "string",
+							"description": "The interx public key"
+						},
+						"ip": {
+							"type":        "string",
+							"description": "The public ip address"
+						},
+						"ping": {
+							"type":        "number",
+							"description": "The time duration in miliseconds to dial INTERX and verify pub_key"
+						},
+						"moniker": {
+							"type":        "string",
+							"description": "From interx configuration"
+						},
+						"faucet": {
+							"type":        "string",
+							"description": "The faucet kira address"
+						},
+						"type": {
+							"type":        "string",
+							"description": "The node type from interx configuration"
+						},
+						"version": {
+							"type":        "string",
+							"description": "The interx version from interx configuration"
+						}
+					}
+				}
+			}
+		}`,
+	)
+
+	AddInterxFunction(
+		"QuerySnapList",
+		config.QuerySnapList,
+		`{
+			"description": "QuerySnapList is a function to query all snapshot node list.",
+			"response": {
+				"last_update": {
+					"type": "number",
+					"description": "The last updated timestamp"
+				},
+				"scanning": {
+					"type": "bool",
+					"description": "If discovery is still running or not"
+				},
+				"node_list": {
+					"description": "The node list array",
+					"fields": {
+						"ip": {
+							"type":        "string",
+							"description": "The public ip address"
+						},
+						"port": {
+							"type":        "number",
+							"description": "The interx port number"
+						},
+						"size": {
+							"type":        "number",
+							"description": "The snapshot size in bytes"
+						},
+						"checksum": {
+							"type":        "string",
+							"description": "The snapshot checksum (SHA256)"
+						}
+					}
 				}
 			}
 		}`,
