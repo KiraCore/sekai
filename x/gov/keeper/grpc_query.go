@@ -278,9 +278,35 @@ func (k Keeper) AllIdentityRecords(goCtx context.Context, request *types.QueryAl
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	// TODO: add pagination for QueryAllIdentityRecordsRequest
+	store := ctx.KVStore(k.storeKey)
+	recordStore := prefix.NewStore(store, types.KeyPrefixIdentityRecord)
+
+	records := []types.IdentityRecord{}
+	onResult := func(key []byte, value []byte, accumulate bool) (bool, error) {
+		var record types.IdentityRecord
+		err := k.cdc.UnmarshalBinaryBare(value, &record)
+		if err != nil {
+			return false, err
+		}
+		if accumulate {
+			records = append(records, record)
+		}
+		return true, nil
+	}
+
+	// we set maximum limit for safety of iteration
+	if request.Pagination != nil && request.Pagination.Limit > kiratypes.PageIterationLimit {
+		request.Pagination.Limit = kiratypes.PageIterationLimit
+	}
+
+	pageRes, err := query.FilteredPaginate(recordStore, request.Pagination, onResult)
+	if err != nil {
+		return nil, err
+	}
+
 	res := types.QueryAllIdentityRecordsResponse{
-		Records: k.GetAllIdentityRecords(ctx),
+		Records:    records,
+		Pagination: pageRes,
 	}
 
 	return &res, nil
@@ -307,9 +333,34 @@ func (k Keeper) IdentityRecordVerifyRequestsByRequester(goCtx context.Context, r
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	// TODO: add pagination for QueryIdentityRecordVerifyRequestsByRequester
+	requests := []types.IdentityRecordsVerify{}
+	store := ctx.KVStore(k.storeKey)
+	requestByRequesterStore := prefix.NewStore(store, append(types.KeyPrefixIdRecordVerifyRequestByRequester, []byte(request.Requester)...))
+	onResult := func(key []byte, value []byte, accumulate bool) (bool, error) {
+		requestId := sdk.BigEndianToUint64(value)
+		request := k.GetIdRecordsVerifyRequest(ctx, requestId)
+		if request == nil {
+			return false, fmt.Errorf("invalid id available on requests: %d", requestId)
+		}
+		if accumulate {
+			requests = append(requests, *request)
+		}
+		return true, nil
+	}
+
+	// we set maximum limit for safety of iteration
+	if request.Pagination != nil && request.Pagination.Limit > kiratypes.PageIterationLimit {
+		request.Pagination.Limit = kiratypes.PageIterationLimit
+	}
+
+	pageRes, err := query.FilteredPaginate(requestByRequesterStore, request.Pagination, onResult)
+	if err != nil {
+		return nil, err
+	}
+
 	res := types.QueryIdentityRecordVerifyRequestsByRequesterResponse{
-		VerifyRecords: k.GetIdRecordsVerifyRequestsByRequester(ctx, request.Requester),
+		VerifyRecords: requests,
+		Pagination:    pageRes,
 	}
 
 	return &res, nil
@@ -322,9 +373,34 @@ func (k Keeper) IdentityRecordVerifyRequestsByApprover(goCtx context.Context, re
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	// TODO: add pagination for QueryIdentityRecordVerifyRequestsByApprover
+	requests := []types.IdentityRecordsVerify{}
+	store := ctx.KVStore(k.storeKey)
+	requestByApproverStore := prefix.NewStore(store, append(types.KeyPrefixIdRecordVerifyRequestByApprover, []byte(request.Approver)...))
+	onResult := func(key []byte, value []byte, accumulate bool) (bool, error) {
+		requestId := sdk.BigEndianToUint64(value)
+		request := k.GetIdRecordsVerifyRequest(ctx, requestId)
+		if request == nil {
+			return false, fmt.Errorf("invalid id available on requests: %d", requestId)
+		}
+		if accumulate {
+			requests = append(requests, *request)
+		}
+		return true, nil
+	}
+
+	// we set maximum limit for safety of iteration
+	if request.Pagination != nil && request.Pagination.Limit > kiratypes.PageIterationLimit {
+		request.Pagination.Limit = kiratypes.PageIterationLimit
+	}
+
+	pageRes, err := query.FilteredPaginate(requestByApproverStore, request.Pagination, onResult)
+	if err != nil {
+		return nil, err
+	}
+
 	res := types.QueryIdentityRecordVerifyRequestsByApproverResponse{
-		VerifyRecords: k.GetIdRecordsVerifyRequestsByApprover(ctx, request.Approver),
+		VerifyRecords: requests,
+		Pagination:    pageRes,
 	}
 
 	return &res, nil
@@ -337,9 +413,29 @@ func (k Keeper) AllIdentityRecordVerifyRequests(goCtx context.Context, request *
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	// TODO: add pagination for QueryAllIdentityRecordVerifyRequests
+	requests := []types.IdentityRecordsVerify{}
+	store := ctx.KVStore(k.storeKey)
+	requestStore := prefix.NewStore(store, types.KeyPrefixIdRecordVerifyRequest)
+	onResult := func(key []byte, value []byte, accumulate bool) (bool, error) {
+		request := types.IdentityRecordsVerify{}
+		k.cdc.MustUnmarshalBinaryBare(value, &request)
+		requests = append(requests, request)
+		return true, nil
+	}
+
+	// we set maximum limit for safety of iteration
+	if request.Pagination != nil && request.Pagination.Limit > kiratypes.PageIterationLimit {
+		request.Pagination.Limit = kiratypes.PageIterationLimit
+	}
+
+	pageRes, err := query.FilteredPaginate(requestStore, request.Pagination, onResult)
+	if err != nil {
+		return nil, err
+	}
+
 	res := types.QueryAllIdentityRecordVerifyRequestsResponse{
-		VerifyRecords: k.GetAllIdRecordsVerifyRequests(ctx),
+		VerifyRecords: requests,
+		Pagination:    pageRes,
 	}
 
 	return &res, nil

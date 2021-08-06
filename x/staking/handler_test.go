@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/KiraCore/sekai/app"
-	"github.com/KiraCore/sekai/simapp"
+	simapp "github.com/KiraCore/sekai/app"
 	"github.com/KiraCore/sekai/x/gov"
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/staking"
@@ -75,17 +75,17 @@ func TestNewHandler_MsgClaimValidator_Errors(t *testing.T) {
 
 	tests := []struct {
 		name          string
-		prepareFunc   func(ctx types.Context, app *simapp.SimApp)
+		prepareFunc   func(ctx types.Context, app *simapp.SekaiApp)
 		expectedError error
 	}{
 		{
 			"user does not have permissions",
-			func(ctx types.Context, app *simapp.SimApp) {},
+			func(ctx types.Context, app *simapp.SekaiApp) {},
 			errors.Wrap(govtypes.ErrNotEnoughPermissions, "PermClaimValidator"),
 		},
 		{
 			"validator already exist",
-			func(ctx types.Context, app *simapp.SimApp) {
+			func(ctx types.Context, app *simapp.SekaiApp) {
 				// First we give user permissions
 				networkActor := govtypes.NewNetworkActor(
 					types.AccAddress(valAddr1),
@@ -112,7 +112,7 @@ func TestNewHandler_MsgClaimValidator_Errors(t *testing.T) {
 		},
 		{
 			"validator moniker exists",
-			func(ctx types.Context, app *simapp.SimApp) {
+			func(ctx types.Context, app *simapp.SekaiApp) {
 				pubKey, err := types.GetPubKeyFromBech32(types.Bech32PubKeyTypeConsPub, "kiravalconspub1zcjduepqylc5k8r40azmw0xa7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsqgrkp48")
 				require.NoError(t, err)
 
@@ -211,17 +211,17 @@ func TestHandler_ProposalUnjailValidator_Errors(t *testing.T) {
 	tests := []struct {
 		name        string
 		expectedErr error
-		prepareFunc func(ctx types.Context, app *simapp.SimApp)
+		prepareFunc func(ctx types.Context, app *simapp.SekaiApp)
 	}{
 		{
 			name:        "not enough permissions to create validator",
 			expectedErr: errors.Wrap(govtypes.ErrNotEnoughPermissions, govtypes.PermCreateUnjailValidatorProposal.String()),
-			prepareFunc: func(ctx types.Context, app *simapp.SimApp) {},
+			prepareFunc: func(ctx types.Context, app *simapp.SekaiApp) {},
 		},
 		{
 			name:        "validator does not exist",
 			expectedErr: fmt.Errorf("validator not found"),
-			prepareFunc: func(ctx types.Context, app *simapp.SimApp) {
+			prepareFunc: func(ctx types.Context, app *simapp.SekaiApp) {
 				proposerActor := govtypes.NewDefaultActor(proposerAddr)
 				err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerActor, govtypes.PermCreateUnjailValidatorProposal)
 				require.NoError(t, err2)
@@ -230,7 +230,7 @@ func TestHandler_ProposalUnjailValidator_Errors(t *testing.T) {
 		{
 			name:        "validator is not jailed",
 			expectedErr: fmt.Errorf("validator is not jailed"),
-			prepareFunc: func(ctx types.Context, app *simapp.SimApp) {
+			prepareFunc: func(ctx types.Context, app *simapp.SekaiApp) {
 				proposerActor := govtypes.NewDefaultActor(proposerAddr)
 				err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerActor, govtypes.PermCreateUnjailValidatorProposal)
 				require.NoError(t, err2)
@@ -244,7 +244,7 @@ func TestHandler_ProposalUnjailValidator_Errors(t *testing.T) {
 		{
 			name:        "it passed the time when validator cannot be unjailed",
 			expectedErr: fmt.Errorf("time to unjail passed"),
-			prepareFunc: func(ctx types.Context, app *simapp.SimApp) {
+			prepareFunc: func(ctx types.Context, app *simapp.SekaiApp) {
 				networkProperties := app.CustomGovKeeper.GetNetworkProperties(ctx)
 				networkProperties.JailMaxTime = 300 // 300 seconds = 5 min
 				app.CustomGovKeeper.SetNetworkProperties(ctx, networkProperties)

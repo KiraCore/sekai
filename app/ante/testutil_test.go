@@ -8,8 +8,8 @@ import (
 	"github.com/stretchr/testify/suite"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
+	simapp "github.com/KiraCore/sekai/app"
 	customante "github.com/KiraCore/sekai/app/ante"
-	"github.com/KiraCore/sekai/simapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
@@ -32,7 +32,7 @@ type TestAccount struct {
 type AnteTestSuite struct {
 	suite.Suite
 
-	app         *simapp.SimApp
+	app         *simapp.SekaiApp
 	anteHandler sdk.AnteHandler
 	ctx         sdk.Context
 	clientCtx   client.Context
@@ -40,7 +40,7 @@ type AnteTestSuite struct {
 }
 
 // returns context and app with params set on account keeper
-func createTestApp(isCheckTx bool) (*simapp.SimApp, sdk.Context) {
+func createTestApp(isCheckTx bool) (*simapp.SekaiApp, sdk.Context) {
 	app := simapp.Setup(isCheckTx)
 	ctx := app.BaseApp.NewContext(isCheckTx, tmproto.Header{})
 	app.AccountKeeper.SetParams(ctx, authtypes.DefaultParams())

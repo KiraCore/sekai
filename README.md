@@ -6,6 +6,8 @@ Kira Hub
 ```sh
 sh env.sh
 ```
+# Get version info
+[scripts/commands/version.sh](scripts/commands/version.sh)
 # Adding more validators
 [scripts/commands/adding-validators.sh](scripts/commands/adding-validators.sh)
 ## Set ChangeTxFee permission

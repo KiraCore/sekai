@@ -9,7 +9,7 @@ import (
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/KiraCore/sekai/app"
-	"github.com/KiraCore/sekai/simapp"
+	simapp "github.com/KiraCore/sekai/app"
 	"github.com/KiraCore/sekai/x/slashing/testslashing"
 	"github.com/KiraCore/sekai/x/staking"
 	"github.com/KiraCore/sekai/x/staking/teststaking"

@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/suite"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/KiraCore/sekai/simapp"
+	simapp "github.com/KiraCore/sekai/app"
 	"github.com/KiraCore/sekai/x/evidence/exported"
 	"github.com/KiraCore/sekai/x/evidence/keeper"
 	"github.com/KiraCore/sekai/x/evidence/types"
@@ -72,7 +72,7 @@ type KeeperTestSuite struct {
 
 	ctx     sdk.Context
 	querier sdk.Querier
-	app     *simapp.SimApp
+	app     *simapp.SekaiApp
 
 	queryClient types.QueryClient
 	stakingHdl  sdk.Handler

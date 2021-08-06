@@ -13,4 +13,3 @@ cat $HOME/.sekaid/config/genesis.json | jq '.app_state["customgov"]["network_pro
 cat $HOME/.sekaid/config/genesis.json | jq '.app_state["customgov"]["network_properties"]["proposal_enactment_time"]="10"' > $HOME/.sekaid/config/tmp_genesis.json && mv $HOME/.sekaid/config/tmp_genesis.json $HOME/.sekaid/config/genesis.json
 
 sekaid start --home=$HOME/.sekaid
-

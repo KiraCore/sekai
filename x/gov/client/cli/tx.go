@@ -218,7 +218,7 @@ func GetTxSetBlacklistPermissions() *cobra.Command {
 func NewTxSetNetworkProperties() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "set-network-properties",
-		Short: "Set network properties",
+		Short: "Submit a transaction to set network properties",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -270,7 +270,7 @@ func NewTxSetNetworkProperties() *cobra.Command {
 func GetTxWhitelistRolePermission() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "whitelist-permission role permission",
-		Short: "Whitelist role permission",
+		Short: "Whitelist a permission to a role",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -308,7 +308,7 @@ func GetTxWhitelistRolePermission() *cobra.Command {
 func NewTxSetExecutionFee() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "set-execution-fee",
-		Short: "Set execution fee",
+		Short: "Submit a transaction to set execution fee",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -369,7 +369,7 @@ func NewTxSetExecutionFee() *cobra.Command {
 func GetTxBlacklistRolePermission() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "blacklist-permission role permission",
-		Short: "Blacklist role permissions",
+		Short: "Blacklist a permission on a role",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -406,7 +406,7 @@ func GetTxBlacklistRolePermission() *cobra.Command {
 func GetTxRemoveWhitelistRolePermission() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "remove-whitelist-permission role permission",
-		Short: "Remove whitelist role permissions",
+		Short: "Remove a whitelisted permission from a role",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -443,7 +443,7 @@ func GetTxRemoveWhitelistRolePermission() *cobra.Command {
 func GetTxRemoveBlacklistRolePermission() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "remove-blacklist-permission role permission",
-		Short: "Remove blacklist role permissions",
+		Short: "Remove a blacklisted permission from a role",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -776,7 +776,7 @@ func GetTxProposalAssignPermission() *cobra.Command {
 func GetTxProposalUpsertDataRegistry() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "upsert-data-registry [key] [hash] [reference] [encoding] [size] [flags]",
-		Short: "Upsert a key in the data registry",
+		Short: "Create a proposal to upsert a key in the data registry",
 		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
