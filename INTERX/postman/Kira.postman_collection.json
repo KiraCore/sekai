@@ -502,7 +502,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://0.0.0.0:11000/api/transactions/2",
+							"raw": "http://0.0.0.0:11000/api/transactions/0x1A0FD4AF7726CE411E0376A631F24E1973110AD7B65C8F49046376C37481D1F0",
 							"protocol": "http",
 							"host": [
 								"0",
@@ -514,7 +514,7 @@
 							"path": [
 								"api",
 								"transactions",
-								"2"
+								"0x1A0FD4AF7726CE411E0376A631F24E1973110AD7B65C8F49046376C37481D1F0"
 							]
 						}
 					},
@@ -981,6 +981,50 @@
 								"gov",
 								"votes",
 								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Query Network Properties",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://0.0.0.0:11000/api/kira/gov/network_properties",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "11000",
+							"path": [
+								"api",
+								"kira",
+								"gov",
+								"network_properties"
 							]
 						}
 					},

@@ -48,7 +48,7 @@ service Query {
     };
   }
   // Query all data reference keys with pagination.
-  rpc GetAllDataReferenceKeys(QueryDataReferenceKeysRequest) returns (QueryDataReferenceKeysResponse) {
+  rpc AllDataReferenceKeys(QueryDataReferenceKeysRequest) returns (QueryDataReferenceKeysResponse) {
     option (google.api.http).get = "/api/kira/gov/data_keys";
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Query All Data Reference Keys"
@@ -57,7 +57,7 @@ service Query {
     };
   }
   // Query data reference by key.
-  rpc GetDataReferenceByKey(QueryDataReferenceRequest) returns (QueryDataReferenceResponse) {
+  rpc DataReferenceByKey(QueryDataReferenceRequest) returns (QueryDataReferenceResponse) {
     option (google.api.http).get = "/api/kira/gov/data/{key}";
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Query Data Refernce"
@@ -65,8 +65,8 @@ service Query {
       tags: "query"
     };
   }
-  // GetWhitelistedProposalVoters returns whitelisted voters for a proposal for tracking
-  rpc GetWhitelistedProposalVoters(QueryWhitelistedProposalVotersRequest) returns (QueryWhitelistedProposalVotersResponse) {
+  // WhitelistedProposalVoters returns whitelisted voters for a proposal for tracking
+  rpc WhitelistedProposalVoters(QueryWhitelistedProposalVotersRequest) returns (QueryWhitelistedProposalVotersResponse) {
     option (google.api.http).get = "/api/kira/gov/voters/{proposal_id}";
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Query whitelisted proposal voters by a given proposal_id"
@@ -83,8 +83,8 @@ service Query {
       tags: "query"
     };
   }
-  // GetNetworkProperties returns network properties
-  rpc GetNetworkProperties (NetworkPropertiesRequest) returns (NetworkPropertiesResponse) {
+  // NetworkProperties returns network properties
+  rpc NetworkProperties (NetworkPropertiesRequest) returns (NetworkPropertiesResponse) {
     option (google.api.http).get = "/api/kira/gov/network_properties";
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Query network properties"
