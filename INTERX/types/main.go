@@ -39,7 +39,7 @@ type DataReferenceEntry struct {
 	Hash      string `json:"hash"`
 	Reference string `json:"reference"`
 	Encoding  string `json:"encoding"`
-	Size      uint64 `json:"size"`
+	Size      uint64 `json:"size,string"`
 }
 
 // RPCMethod is a struct to be used for rpc_methods API
