@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sekaid query customgov voters 1 --log_level=debug
+sekaid query customgov voters 1
 
 # voters:
 # - address: kira1lcadkl3tcy69caqmwr4edt22zw87pcunfj0v75

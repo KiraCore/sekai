@@ -29,7 +29,6 @@ func NewQueryCmd() *cobra.Command {
 		GetCmdQueryTokenBlackWhites(),
 	)
 
-	queryCmd.PersistentFlags().String("node", "tcp://localhost:26657", "<host>:<port> to Tendermint RPC interface for this chain")
 	return queryCmd
 }
 

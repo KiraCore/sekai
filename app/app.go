@@ -143,7 +143,7 @@ func init() {
 		panic(err)
 	}
 
-	DefaultNodeHome = filepath.Join(userHomeDir, ".simapp")
+	DefaultNodeHome = filepath.Join(userHomeDir, ".sekaid")
 }
 
 // NewInitApp returns a reference to an initialized App.
