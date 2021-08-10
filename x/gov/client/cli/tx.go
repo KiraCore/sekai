@@ -824,15 +824,12 @@ func GetTxProposalUpsertDataRegistry() *cobra.Command {
 	}
 
 	cmd.Flags().String(FlagTitle, "", "The title of the proposal.")
-	cmd.MarkFlagRequired(FlagTitle)
-	flags.AddTxFlagsToCmd(cmd)
-	cmd.Flags().String(cli.FlagAddr, "", "the address to set permissions")
-
 	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
-	cmd.MarkFlagRequired(FlagDescription)
+	flags.AddTxFlagsToCmd(cmd)
 
+	cmd.MarkFlagRequired(FlagTitle)
+	cmd.MarkFlagRequired(FlagDescription)
 	cmd.MarkFlagRequired(flags.FlagFrom)
-	cmd.MarkFlagRequired(cli.FlagAddr)
 
 	return cmd
 }

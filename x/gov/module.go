@@ -85,6 +85,7 @@ func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
 		cli.GetCmdQueryIdentityRecordVerifyRequestsByRequester(),
 		cli.GetCmdQueryIdentityRecordVerifyRequestsByApprover(),
 		cli.GetCmdQueryAllIdentityRecordVerifyRequests(),
+		cli.GetCmdQueryAllDataReferenceKeys(),
 	)
 
 	queryCmd.PersistentFlags().String("node", "tcp://localhost:26657", "<host>:<port> to Tendermint RPC interface for this chain")
