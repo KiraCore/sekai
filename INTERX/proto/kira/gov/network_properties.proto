@@ -3,7 +3,7 @@ package kira.gov;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/KiraCore/sekai/INTERX/proto";
+option go_package = "github.com/KiraCore/sekai/INTERX/proto-gen/kira/gov";
 
 message MsgSetNetworkProperties {
     NetworkProperties network_properties = 1;

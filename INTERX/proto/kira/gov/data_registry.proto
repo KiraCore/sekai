@@ -1,7 +1,7 @@
 syntax = "proto3";
 package kira.gov;
 
-option go_package = "github.com/KiraCore/sekai/INTERX/proto";
+option go_package = "github.com/KiraCore/sekai/INTERX/proto-gen/kira/gov";
 
 message DataRegistryEntry {
   string hash = 1;

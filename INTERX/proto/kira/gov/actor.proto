@@ -4,7 +4,7 @@ package kira.gov;
 import "gogoproto/gogo.proto";
 import "kira/gov/proposal.proto";
 
-option go_package = "github.com/KiraCore/sekai/INTERX/proto";
+option go_package = "github.com/KiraCore/sekai/INTERX/proto-gen/kira/gov";
 
 enum ActorStatus {
   option (gogoproto.goproto_enum_prefix) = false;

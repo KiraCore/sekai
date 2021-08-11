@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/KiraCore/sekai/INTERX/common"
 	"github.com/KiraCore/sekai/INTERX/config"
@@ -57,8 +58,25 @@ func QuerySupplyRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.Hand
 }
 
 func queryBalancesHandle(r *http.Request, gwCosmosmux *runtime.ServeMux) (interface{}, interface{}, int) {
-	queries := mux.Vars(r)
-	bech32addr := queries["address"]
+	params := mux.Vars(r)
+	bech32addr := params["address"]
+	queries := r.URL.Query()
+	offset := queries["offset"]
+	limit := queries["limit"]
+	countTotal := queries["count_total"]
+
+	var events = make([]string, 0, 3)
+	if len(offset) == 1 {
+		events = append(events, fmt.Sprintf("pagination.offset=%s", offset[0]))
+	}
+	if len(limit) == 1 {
+		events = append(events, fmt.Sprintf("pagination.limit=%s", limit[0]))
+	}
+	if len(countTotal) == 1 {
+		events = append(events, fmt.Sprintf("pagination.count_total=%s", countTotal[0]))
+	}
+
+	r.URL.RawQuery = strings.Join(events, "&")
 
 	_, err := sdk.AccAddressFromBech32(bech32addr)
 	if err != nil {

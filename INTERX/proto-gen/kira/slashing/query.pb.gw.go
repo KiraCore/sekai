@@ -2,11 +2,11 @@
 // source: kira/slashing/query.proto
 
 /*
-Package proto is a reverse proxy.
+Package slashing is a reverse proxy.
 
 It translates gRPC into RESTful JSON APIs.
 */
-package proto
+package slashing
 
 import (
 	"context"

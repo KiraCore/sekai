@@ -207,37 +207,10 @@ func GetValidator(consAddrHex string) string {
 
 func queryConsensusHandle(r *http.Request, gwCosmosmux *runtime.ServeMux, rpcAddr string) (interface{}, interface{}, int) {
 	// Query All Validators
-	var AllValidators []types.QueryValidator = make([]types.QueryValidator, 0)
-
-	r.URL.RawQuery = "all=true"
-	r.URL.Path = config.QueryValidators
-	success, failure, statusCode := common.ServeGRPC(r, gwCosmosmux)
-	if success != nil {
-		result := struct {
-			Validators []types.QueryValidator `json:"validators,omitempty"`
-			Actors     []string               `json:"actors,omitempty"`
-			Pagination interface{}            `json:"pagination,omitempty"`
-		}{}
-
-		byteData, err := json.Marshal(success)
-		if err != nil {
-			common.GetLogger().Error("[query-consensus] Invalid response format: ", err)
-			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
-		}
-
-		err = json.Unmarshal(byteData, &result)
-		if err != nil {
-			common.GetLogger().Error("[query-consensus] Invalid response format: ", err)
-			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
-		}
-
-		AllValidators = result.Validators
-	} else {
-		return success, failure, statusCode
-	}
+	AllValidators := tasks.AllValidators.Validators
 
 	var catching_up bool
-	success, failure, statusCode = common.MakeTendermintRPCRequest(rpcAddr, "/status", "")
+	success, failure, statusCode := common.MakeTendermintRPCRequest(rpcAddr, "/status", "")
 	if success != nil {
 		type TempResponse struct {
 			SyncInfo struct {
@@ -249,13 +222,13 @@ func queryConsensusHandle(r *http.Request, gwCosmosmux *runtime.ServeMux, rpcAdd
 		byteData, err := json.Marshal(success)
 		if err != nil {
 			common.GetLogger().Error("[query-consensus] Invalid response format", err)
-			return common.RosettaServeError(0, "", err.Error(), http.StatusInternalServerError)
+			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
 		}
 
 		err = json.Unmarshal(byteData, &result)
 		if err != nil {
 			common.GetLogger().Error("[query-consensus] Invalid response format", err)
-			return common.RosettaServeError(0, "", err.Error(), http.StatusInternalServerError)
+			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
 		}
 
 		catching_up = result.SyncInfo.CatchingUp
