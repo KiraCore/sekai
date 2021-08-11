@@ -46,6 +46,8 @@ func getGetMethods() []string {
 		QueryPubP2PList,
 		QueryInterxList,
 		QuerySnapList,
+
+		QueryUpgradePlan,
 	}
 }
 

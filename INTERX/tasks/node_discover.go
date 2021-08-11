@@ -222,8 +222,7 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 			PubP2PNodeListResponse.NodeList = append(PubP2PNodeListResponse.NodeList, nodeInfo)
 
 			interxStartTime := makeTimestamp()
-			// interxAddress := getInterxAddress(ipAddr)
-			interxAddress := getInterxAddress("127.0.0.1")
+			interxAddress := getInterxAddress(ipAddr)
 			interxStatus := common.GetInterxStatus(interxAddress)
 
 			if interxStatus != nil {

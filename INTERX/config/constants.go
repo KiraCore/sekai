@@ -44,6 +44,8 @@ const (
 	QueryInterxList          = "/api/interx_list"
 	QuerySnapList            = "/api/snap_list"
 
+	QueryUpgradePlan = "/api/kira/upgrade/current_plan"
+
 	Download              = "/download"
 	DataReferenceRegistry = "DRR"
 	DefaultInterxPort     = "11000"

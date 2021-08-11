@@ -193,6 +193,13 @@
           "caching_disable": false,
           "caching_duration": 30
         },
+        "/api/kira/upgrade/current_plan": {
+          "disable": false,
+          "rate_limit": 0,
+          "auth_rate_limit": 0,
+          "caching_disable": false,
+          "caching_duration": 30
+        },
         "/api/priv_p2p_list": {
           "disable": false,
           "rate_limit": 0,
