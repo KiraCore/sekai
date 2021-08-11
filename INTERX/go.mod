@@ -5,7 +5,7 @@ go 1.14
 require (
 	github.com/FactomProject/basen v0.0.0-20150613233007-fe3947df716e // indirect
 	github.com/FactomProject/btcutilecc v0.0.0-20130527213604-d3a63a5752ec // indirect
-	github.com/KiraCore/sekai v0.0.0-20200823002648-c9c157f71380
+	github.com/KiraCore/sekai v0.0.0-20210729094731-26a50f249b55
 	github.com/cosmos/cosmos-sdk v0.42.4
 	github.com/gofrs/uuid v3.2.0+incompatible
 	github.com/gogo/protobuf v1.3.3

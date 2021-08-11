@@ -4,7 +4,7 @@ package kira.tokens;
 import "gogoproto/gogo.proto";
 import "cosmos_proto/cosmos.proto";
 
-option go_package = "github.com/KiraCore/sekai/INTERX/proto";
+option go_package = "github.com/KiraCore/sekai/INTERX/proto-gen/kira/tokens";
 
 message ProposalUpsertTokenAlias {
   option (cosmos_proto.implements_interface) = "Content";

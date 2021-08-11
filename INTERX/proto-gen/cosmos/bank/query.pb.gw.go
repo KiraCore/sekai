@@ -2,11 +2,11 @@
 // source: cosmos/bank/query.proto
 
 /*
-Package proto is a reverse proxy.
+Package bank is a reverse proxy.
 
 It translates gRPC into RESTful JSON APIs.
 */
-package proto
+package bank
 
 import (
 	"context"

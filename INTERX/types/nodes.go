@@ -53,7 +53,7 @@ type InterxNode struct {
 type SnapNode struct {
 	IP       string `json:"ip"`
 	Port     uint16 `json:"port"`
-	Size     string `json:"size"`
+	Size     int    `json:"size"`
 	Checksum string `json:"checksum"`
 }
 

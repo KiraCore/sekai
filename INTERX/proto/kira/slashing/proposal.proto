@@ -1,0 +1,14 @@
+syntax = "proto3";
+package kira.slashing;
+
+import "gogoproto/gogo.proto";
+import "kira/gov/proposal.proto";
+
+option go_package = "github.com/KiraCore/sekai/INTERX/proto-gen/kira/slashing";
+
+message ProposalResetWholeValidatorRank {
+    bytes proposer = 1 [
+      (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
+    ];
+    string description = 2;
+}

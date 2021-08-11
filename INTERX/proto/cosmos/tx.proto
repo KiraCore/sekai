@@ -8,7 +8,7 @@ import "type.proto";
 
 // Defines the import path that should be used to import the generated package,
 // and the package name.
-option go_package = "github.com/KiraCore/sekai/INTERX/proto";
+option go_package = "github.com/KiraCore/sekai/INTERX/proto-gen/cosmos";
 
 // These annotations are used when generating the OpenAPI file.
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {

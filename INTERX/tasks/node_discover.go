@@ -221,21 +221,35 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 
 			PubP2PNodeListResponse.NodeList = append(PubP2PNodeListResponse.NodeList, nodeInfo)
 
-			// interxStatus := common.GetInterxStatus(getInterxAddress(ipAddr))
-			interxStatus := common.GetInterxStatus(getInterxAddress("127.0.0.1"))
-			common.GetLogger().Info(interxStatus)
+			interxStartTime := makeTimestamp()
+			interxAddress := getInterxAddress(ipAddr)
+			interxStatus := common.GetInterxStatus(interxAddress)
 
 			if interxStatus != nil {
+				interxEndTime := makeTimestamp()
+
 				interxInfo := types.InterxNode{}
 				interxInfo.ID = interxStatus.ID
 				interxInfo.IP = ipAddr
-				interxInfo.Ping = 0 // calculate and verify
+				interxInfo.Ping = interxEndTime - interxStartTime
 				interxInfo.Moniker = interxStatus.InterxInfo.Moniker
 				interxInfo.Faucet = interxStatus.InterxInfo.FaucetAddr
 				interxInfo.Type = interxStatus.InterxInfo.Node.NodeType
 				interxInfo.Version = interxStatus.InterxInfo.Version
 
 				InterxP2PNodeListResponse.NodeList = append(InterxP2PNodeListResponse.NodeList, interxInfo)
+
+				// snapshotInfo := common.GetSnapshotInfo(getInterxAddress(ipAddr))
+				snapshotInfo := common.GetSnapshotInfo(interxAddress)
+				if snapshotInfo != nil {
+					snapNode := types.SnapNode{}
+					snapNode.IP = ipAddr
+					snapNode.Port = getPort(interxAddress)
+					snapNode.Checksum = snapshotInfo.Checksum
+					snapNode.Size = snapshotInfo.Size
+
+					SnapNodeListResponse.NodeList = append(SnapNodeListResponse.NodeList, snapNode)
+				}
 			}
 		}
 

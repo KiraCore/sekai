@@ -5,9 +5,9 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "google/protobuf/timestamp.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
-import "kira/slashing/pagination.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
 
-option go_package = "github.com/KiraCore/sekai/INTERX/proto";
+option go_package = "github.com/KiraCore/sekai/INTERX/proto-gen/kira/slashing";
 
 // These annotations are used when generating the OpenAPI file.
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
@@ -85,7 +85,7 @@ message QuerySigningInfoResponse {
 // QuerySigningInfosRequest is the request type for the Query/SigningInfos RPC
 // method
 message QuerySigningInfosRequest {
-  kira.slashing.PageRequest pagination = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
   bool all = 2;
 }
 
@@ -93,6 +93,6 @@ message QuerySigningInfosRequest {
 // method
 message QuerySigningInfosResponse {
   // info is the signing info of all validators
-  repeated ValidatorSigningInfo info       = 1 [(gogoproto.nullable) = false];
-  kira.slashing.PageResponse                  pagination = 2;
+  repeated ValidatorSigningInfo info = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse  pagination = 2;
 }

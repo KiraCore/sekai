@@ -49,7 +49,7 @@ func main() {
 
 	initNodeType := initCommand.String("node_type", "seed", "The node type.")
 	initSentryNodeId := initCommand.String("sentry_node_id", "", "The sentry node id.")
-	initPrivSentryNodeId := initCommand.String("priv_sentry_node_id", "", "The private sentry node id.")
+	initSnapshotNodeId := initCommand.String("snapshot_node_id", "", "The snapshot node id.")
 	initValidatorNodeId := initCommand.String("validator_node_id", "", "The validator node id.")
 	initSeedNodeId := initCommand.String("seed_node_id", "", "The seed node id.")
 
@@ -109,7 +109,7 @@ func main() {
 					*initRPCPtr,
 					*initNodeType,
 					*initSentryNodeId,
-					*initPrivSentryNodeId,
+					*initSnapshotNodeId,
 					*initValidatorNodeId,
 					*initSeedNodeId,
 					*initPortPtr,
