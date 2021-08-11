@@ -1,5 +1,14 @@
 # Changelog
 
+## [v0.1.21.11] - 11.08.2021
+
+- Upgrade cosmos sdk version to be latest
+- Remove all flag in proposals query
+- Resolve invalid default home flag
+- CLI modifications for missing endpoints
+- Remove deprecated use of FlagNode on gov and tokens query
+- Resolve CLI test caused by removing unused flag
+
 ## [v0.1.21.10] - 11.08.2021
 
 - INTERX: Update node discovery module.

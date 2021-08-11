@@ -4,8 +4,9 @@ set -eo pipefail
 
 # get protoc executions
 go get github.com/regen-network/cosmos-proto/protoc-gen-gocosmos 2>/dev/null
-# get cosmos sdk from github
-go get github.com/cosmos/cosmos-sdk@v0.42.4 2>/dev/null
+
+# get cosmos sdk from github - latest version is now v0.42.9
+go get github.com/cosmos/cosmos-sdk@latest 2>/dev/null
 
 # Get the path of the cosmos-sdk repo from go/pkg/mod
 cosmos_sdk_dir=$(go list -f '{{ .Dir }}' -m github.com/cosmos/cosmos-sdk)

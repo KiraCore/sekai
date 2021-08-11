@@ -49,10 +49,6 @@ func (s IntegrationTestSuite) TestCreateProposalUpsertDataRegistry() {
 	// Query permissions for role Validator
 	val := s.network.Validators[0]
 
-	// We create some random address where we will give perms.
-	addr, err := sdk.AccAddressFromBech32("kira1alzyfq30zjsveet87jlg8jxetwqmr0a22c9uz9")
-	s.Require().NoError(err)
-
 	cmd := cli.GetTxProposalUpsertDataRegistry()
 	clientCtx := val.ClientCtx
 	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
@@ -64,7 +60,6 @@ func (s IntegrationTestSuite) TestCreateProposalUpsertDataRegistry() {
 		fmt.Sprintf("--%s=%s", cli.FlagTitle, "title"),
 		fmt.Sprintf("--%s=%s", cli.FlagDescription, "some desc"),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
-		fmt.Sprintf("--%s=%s", stakingcli.FlagAddr, addr.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),

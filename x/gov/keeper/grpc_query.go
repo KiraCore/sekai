@@ -147,9 +147,7 @@ func (k Keeper) Proposals(goCtx context.Context, request *types.QueryProposalsRe
 		request.Pagination.Limit = kiratypes.PageIterationLimit
 	}
 
-	if request.All {
-		pageRes, err = kiraquery.IterateAll(proposalsStore, request.Pagination, onResult)
-	} else if request.Reverse {
+	if request.Reverse {
 		pageRes, err = kiraquery.FilteredReversePaginate(proposalsStore, request.Pagination, onResult)
 	} else {
 		pageRes, err = query.FilteredPaginate(proposalsStore, request.Pagination, onResult)
@@ -436,6 +434,52 @@ func (k Keeper) AllIdentityRecordVerifyRequests(goCtx context.Context, request *
 	res := types.QueryAllIdentityRecordVerifyRequestsResponse{
 		VerifyRecords: requests,
 		Pagination:    pageRes,
+	}
+
+	return &res, nil
+}
+
+// GetAllDataReferenceKeys implements the Query all data reference keys gRPC method
+func (k Keeper) GetAllDataReferenceKeys(sdkCtx sdk.Context, req *types.QueryDataReferenceKeysRequest) (*types.QueryDataReferenceKeysResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	var keys []string
+	store := sdkCtx.KVStore(k.storeKey)
+	dataReferenceStore := prefix.NewStore(store, DataRegistryPrefix)
+
+	pageRes, err := query.Paginate(dataReferenceStore, req.Pagination, func(key []byte, value []byte) error {
+		keys = append(keys, string(key))
+		return nil
+	})
+
+	if err != nil {
+		return &types.QueryDataReferenceKeysResponse{}, err
+	}
+
+	res := types.QueryDataReferenceKeysResponse{
+		Keys:       keys,
+		Pagination: pageRes,
+	}
+
+	return &res, nil
+}
+
+// GetDataReferenceByKey implements the Query data reference by key gRPC method
+func (k Keeper) GetDataReferenceByKey(sdkCtx sdk.Context, req *types.QueryDataReferenceRequest) (*types.QueryDataReferenceResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	dataReference, ok := k.GetDataRegistryEntry(sdkCtx, req.GetKey())
+
+	if !ok {
+		return nil, status.Error(codes.NotFound, "not found")
+	}
+
+	res := types.QueryDataReferenceResponse{
+		Data: &dataReference,
 	}
 
 	return &res, nil

@@ -826,3 +826,48 @@ $ %[1]s query gov all-identity-record-verify-requests
 
 	return cmd
 }
+
+// GetCmdQueryAllDataReferenceKeys implements the command to query data reference keys
+func GetCmdQueryAllDataReferenceKeys() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "all-data-reference-keys",
+		Args:  cobra.ExactArgs(0),
+		Short: "Query all data reference keys",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query all data reference keys.
+
+Example:
+$ %[1]s query gov all-data-reference-keys
+`,
+				version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			queryClient := types.NewQueryClient(clientCtx)
+
+			pageReq, err := client.ReadPageRequest(cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			res, err := queryClient.AllDataReferenceKeys(
+				context.Background(),
+				&types.QueryDataReferenceKeysRequest{
+					Pagination: pageReq,
+				},
+			)
+
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	flags.AddPaginationFlagsToCmd(cmd, "customgov")
+
+	return cmd
+}

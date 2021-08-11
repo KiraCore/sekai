@@ -1,9 +1,9 @@
 #!/bin/bash
 
-sekaid version --log_level=debug
+sekaid version
 # 1.0.0
 
-sekaid version --log_level=debug --long
+sekaid version --long
 # name: sekai
 # server_name: sekaid
 # version: 1.0.0
