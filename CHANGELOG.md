@@ -1,5 +1,14 @@
 # Changelog
 
+## [v0.1.21.10] - 11.08.2021
+
+- INTERX: Update node discovery module.
+- INTERX: Update proto-gen script.
+- INTERX: Update interx metadata query.
+- INTERX: Fix voters, DRR, network properties query.
+- INTERX: Update configurations/proposal proto types.
+- INTERX: Add upgrade plan query. (/api/kira/upgrade/current_plan)
+
 ## [v0.1.21.9] - 05.08.2021
 
 - Add pagination for identity registrar grpc_queries
