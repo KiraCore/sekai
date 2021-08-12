@@ -43,11 +43,11 @@ func (b AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry
 	stakingtypes.RegisterInterfaces(registry)
 }
 
-func (b AppModuleBasic) DefaultGenesis(marshaler codec.JSONMarshaler) json.RawMessage {
+func (b AppModuleBasic) DefaultGenesis(marshaler codec.JSONCodec) json.RawMessage {
 	return nil
 }
 
-func (b AppModuleBasic) ValidateGenesis(marshaler codec.JSONMarshaler, config client.TxEncodingConfig, message json.RawMessage) error {
+func (b AppModuleBasic) ValidateGenesis(marshaler codec.JSONCodec, config client.TxEncodingConfig, message json.RawMessage) error {
 	return nil
 }
 
@@ -109,7 +109,7 @@ func (am AppModule) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 
 func (am AppModule) InitGenesis(
 	ctx sdk.Context,
-	cdc codec.JSONMarshaler,
+	cdc codec.JSONCodec,
 	// keeper keeper.Keeper,
 	data json.RawMessage,
 ) []abci.ValidatorUpdate {
@@ -136,10 +136,13 @@ func (am AppModule) InitGenesis(
 	return valUpdate
 }
 
-func (am AppModule) ExportGenesis(context sdk.Context, marshaler codec.JSONMarshaler) json.RawMessage {
+func (am AppModule) ExportGenesis(context sdk.Context, marshaler codec.JSONCodec) json.RawMessage {
 	gs := ExportGenesis(context, am.customStakingKeeper)
 	return marshaler.MustMarshalJSON(gs)
 }
+
+// ConsensusVersion implements AppModule/ConsensusVersion.
+func (AppModule) ConsensusVersion() uint64 { return 1 }
 
 func (am AppModule) RegisterInvariants(registry sdk.InvariantRegistry) {}
 

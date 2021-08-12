@@ -1,6 +1,7 @@
 package types
 
 import (
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	bank "github.com/cosmos/cosmos-sdk/x/bank/types"
 )
 
@@ -49,6 +50,14 @@ const (
 
 	//upgrade module
 )
+
+// Msg defines the interface a transaction message must fulfill.
+type Msg interface {
+	sdk.Msg
+
+	// Type returns type of message
+	Type() string
+}
 
 // MsgFuncIDMapping defines function_id mapping
 var MsgFuncIDMapping = map[string]int64{
