@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.1.21.12] - 16.08.2021
+
+- Add description on the script to see the version
+- Add reference for identity registrar
+- Remove long json script for unjail testing
+
 ## [v0.1.21.11] - 11.08.2021
 
 - Upgrade cosmos sdk version to be latest
