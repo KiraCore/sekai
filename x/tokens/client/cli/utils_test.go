@@ -37,7 +37,7 @@ func (s IntegrationTestSuite) WhitelistPermissions(addr sdk.AccAddress, perm gov
 	s.Require().NoError(err)
 
 	var perms govtypes.Permissions
-	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &perms)
+	clientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &perms)
 
 	// Validator 1 has permission to Add Permissions.
 	s.Require().True(perms.IsWhitelisted(perm))

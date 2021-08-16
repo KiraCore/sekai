@@ -29,7 +29,7 @@ func GetRolesByAddress(t *testing.T, network *network.Network, address sdk.AccAd
 	require.NoError(t, err)
 
 	var roles types.RolesByAddressResponse
-	err = val.ClientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &roles)
+	err = val.ClientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &roles)
 	require.NoError(t, err)
 
 	return roles.Roles
@@ -102,7 +102,7 @@ func (s IntegrationTestSuite) VoteWithValidator0(proposalID uint64, voteOption t
 	})
 	s.Require().NoError(err)
 	var result sdk.TxResponse
-	s.Require().NoError(val.ClientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &result))
+	s.Require().NoError(val.ClientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &result))
 	s.Require().NotNil(result.Height)
 }
 
@@ -151,7 +151,7 @@ func (s IntegrationTestSuite) SetPoorNetworkMessages(messages string) sdk.TxResp
 	s.Require().NoError(err)
 
 	var result sdk.TxResponse
-	s.Require().NoError(val.ClientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &result))
+	s.Require().NoError(val.ClientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &result))
 	s.Require().NotNil(result.Height)
 	return result
 }
@@ -175,7 +175,7 @@ func (s IntegrationTestSuite) SetNetworkProperties(minTxFee, maxTxFee, minValida
 	s.Require().NoError(err)
 
 	var result sdk.TxResponse
-	s.Require().NoError(val.ClientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &result))
+	s.Require().NoError(val.ClientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &result))
 	s.Require().NotNil(result.Height)
 	s.Require().Contains(result.RawLog, "set-network-properties")
 }
@@ -200,7 +200,7 @@ func (s IntegrationTestSuite) SetNetworkPropertyProposal(property string, value 
 	s.Require().NoError(err)
 
 	var result sdk.TxResponse
-	s.Require().NoError(val.ClientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &result))
+	s.Require().NoError(val.ClientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &result))
 	s.Require().NotNil(result.Height)
 	s.Require().Contains(result.RawLog, "SetNetworkProperty")
 }
@@ -224,7 +224,7 @@ func (s IntegrationTestSuite) UpsertRate(denom string, rate string, flagFeePayme
 	s.Require().NoError(err)
 
 	var result sdk.TxResponse
-	s.Require().NoError(val.ClientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &result))
+	s.Require().NoError(val.ClientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &result))
 	s.Require().NotNil(result.Height)
 	return result
 }

@@ -16,7 +16,7 @@ func (k Keeper) GetValidatorSigningInfo(ctx sdk.Context, address sdk.ConsAddress
 		found = false
 		return
 	}
-	k.cdc.MustUnmarshalBinaryBare(bz, &info)
+	k.cdc.MustUnmarshal(bz, &info)
 	found = true
 	return
 }
@@ -31,7 +31,7 @@ func (k Keeper) HasValidatorSigningInfo(ctx sdk.Context, consAddr sdk.ConsAddres
 // SetValidatorSigningInfo sets the validator signing info to a consensus address key
 func (k Keeper) SetValidatorSigningInfo(ctx sdk.Context, address sdk.ConsAddress, info types.ValidatorSigningInfo) {
 	store := ctx.KVStore(k.storeKey)
-	bz := k.cdc.MustMarshalBinaryBare(&info)
+	bz := k.cdc.MustMarshal(&info)
 	store.Set(types.ValidatorSigningInfoKey(address), bz)
 }
 
@@ -45,7 +45,7 @@ func (k Keeper) IterateValidatorSigningInfos(ctx sdk.Context,
 	for ; iter.Valid(); iter.Next() {
 		address := types.ValidatorSigningInfoAddress(iter.Key())
 		var info types.ValidatorSigningInfo
-		k.cdc.MustUnmarshalBinaryBare(iter.Value(), &info)
+		k.cdc.MustUnmarshal(iter.Value(), &info)
 		if handler(address, info) {
 			break
 		}

@@ -18,7 +18,7 @@ func TestNewKeeper_SenderCoinsHistory(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10))
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
 	addr := addrs[0]
 
 	savedFees := app.FeeProcessingKeeper.GetSenderCoinsHistory(ctx, addr)
@@ -35,7 +35,7 @@ func TestNewKeeper_Executions(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10))
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
 	addr := addrs[0]
 
 	// initial executions listing is empty
@@ -81,7 +81,7 @@ func TestNewKeeper_SendCoinsFromAccountToModule(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10))
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
 	addr := addrs[0]
 	app.BankKeeper.SetBalance(ctx, addr, sdk.NewInt64Coin("ukex", 10000))
 
@@ -103,7 +103,7 @@ func TestNewKeeper_SendCoinsFromModuleToAccount(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10))
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
 	addr := addrs[0]
 	app.BankKeeper.SetBalance(ctx, addr, sdk.NewInt64Coin("ukex", 10000))
 
@@ -127,7 +127,7 @@ func TestNewKeeper_ProcessExecutionFeeReturn(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	addrs := simapp.AddTestAddrsIncremental(app, ctx, 3, sdk.TokensFromConsensusPower(10))
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 3, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
 	addr := addrs[0]
 	addr2 := addrs[1]
 	addr3 := addrs[2]

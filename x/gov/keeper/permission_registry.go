@@ -14,7 +14,7 @@ func (k Keeper) CreateRole(ctx sdk.Context, role types.Role) {
 // savePermissionsForRole adds permissions to role in the  permission Registry.
 func (k Keeper) savePermissionsForRole(ctx sdk.Context, role types.Role, permissions *types.Permissions) {
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), RolePermissionRegistry)
-	prefixStore.Set(roleToBytes(role), k.cdc.MustMarshalBinaryBare(permissions))
+	prefixStore.Set(roleToBytes(role), k.cdc.MustMarshal(permissions))
 }
 
 // GetPermissionsForRole returns the permissions assigned to the specific role.
@@ -26,7 +26,7 @@ func (k Keeper) GetPermissionsForRole(ctx sdk.Context, role types.Role) (types.P
 	}
 
 	var perm types.Permissions
-	k.cdc.MustUnmarshalBinaryBare(bz, &perm)
+	k.cdc.MustUnmarshal(bz, &perm)
 
 	return perm, true
 }
@@ -41,7 +41,7 @@ func (k Keeper) WhitelistRolePermission(ctx sdk.Context, role types.Role, perm t
 	}
 
 	var perms types.Permissions
-	k.cdc.MustUnmarshalBinaryBare(bz, &perms)
+	k.cdc.MustUnmarshal(bz, &perms)
 
 	err := perms.AddToWhitelist(perm)
 	if err != nil {
@@ -64,7 +64,7 @@ func (k Keeper) BlacklistRolePermission(ctx sdk.Context, role types.Role, perm t
 	}
 
 	var perms types.Permissions
-	k.cdc.MustUnmarshalBinaryBare(bz, &perms)
+	k.cdc.MustUnmarshal(bz, &perms)
 
 	err := perms.AddToBlacklist(perm)
 	if err != nil {
@@ -86,7 +86,7 @@ func (k Keeper) RemoveWhitelistRolePermission(ctx sdk.Context, role types.Role, 
 	}
 
 	var perms types.Permissions
-	k.cdc.MustUnmarshalBinaryBare(bz, &perms)
+	k.cdc.MustUnmarshal(bz, &perms)
 
 	err := perms.RemoveFromWhitelist(perm)
 	if err != nil {
@@ -109,7 +109,7 @@ func (k Keeper) RemoveBlacklistRolePermission(ctx sdk.Context, role types.Role, 
 	}
 
 	var perms types.Permissions
-	k.cdc.MustUnmarshalBinaryBare(bz, &perms)
+	k.cdc.MustUnmarshal(bz, &perms)
 
 	err := perms.RemoveFromBlacklist(perm)
 	if err != nil {
@@ -132,7 +132,7 @@ func (k Keeper) GetPermissionsFromIterator(iterator sdk.Iterator) types.Permissi
 	}
 
 	var perms types.Permissions
-	k.cdc.MustUnmarshalBinaryBare(bz, &perms)
+	k.cdc.MustUnmarshal(bz, &perms)
 	return perms
 }
 

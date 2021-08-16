@@ -39,7 +39,7 @@ func (k Keeper) RemoveTokensFromWhitelist(ctx sdk.Context, tokens []string) {
 
 func (k Keeper) SetTokenBlackWhites(ctx sdk.Context, tokensBlackWhite *types.TokensWhiteBlack) {
 	store := ctx.KVStore(k.storeKey)
-	store.Set(PrefixKeyTokenBlackWhite, k.cdc.MustMarshalBinaryBare(tokensBlackWhite))
+	store.Set(PrefixKeyTokenBlackWhite, k.cdc.MustMarshal(tokensBlackWhite))
 }
 
 func (k Keeper) GetTokenBlackWhites(ctx sdk.Context) *types.TokensWhiteBlack {
@@ -50,7 +50,7 @@ func (k Keeper) GetTokenBlackWhites(ctx sdk.Context) *types.TokensWhiteBlack {
 	}
 
 	tokensBlackWhite := new(types.TokensWhiteBlack)
-	k.cdc.MustUnmarshalBinaryBare(bz, tokensBlackWhite)
+	k.cdc.MustUnmarshal(bz, tokensBlackWhite)
 
 	return tokensBlackWhite
 }

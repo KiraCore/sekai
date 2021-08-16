@@ -53,7 +53,7 @@ func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions() {
 	s.Require().NoError(err)
 
 	var perms types.Permissions
-	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &perms)
+	clientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &perms)
 
 	// Validator 1 has permission to Add Permissions.
 	s.Require().True(perms.IsWhitelisted(types.PermSetPermissions))
@@ -99,7 +99,7 @@ func (s IntegrationTestSuite) TestGetTxSetBlacklistPermissions() {
 	s.Require().NoError(err)
 
 	var perms types.Permissions
-	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &perms)
+	clientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &perms)
 
 	// Validator 1 has permission to Add Permissions.
 	s.Require().True(perms.IsBlacklisted(types.PermSetPermissions))

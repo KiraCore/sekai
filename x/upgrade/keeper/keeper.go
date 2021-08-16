@@ -8,13 +8,13 @@ import (
 
 // Keeper is for managing upgrade module
 type Keeper struct {
-	cdc             codec.BinaryMarshaler
+	cdc             codec.BinaryCodec
 	storeKey        sdk.StoreKey
 	upgradeHandlers map[string]types.UpgradeHandler
 }
 
 // NewKeeper constructs an upgrade Keeper
-func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryMarshaler) Keeper {
+func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryCodec) Keeper {
 	return Keeper{
 		storeKey:        storeKey,
 		cdc:             cdc,

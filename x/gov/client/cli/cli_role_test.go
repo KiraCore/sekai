@@ -24,7 +24,7 @@ func (s IntegrationTestSuite) TestWhitelistRolePermission() {
 	s.Require().NoError(err)
 
 	var perms types.Permissions
-	val.ClientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &perms)
+	val.ClientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &perms)
 	s.Require().False(perms.IsWhitelisted(types.PermSetPermissions))
 
 	// Send Tx To Whitelist permission
@@ -47,7 +47,7 @@ func (s IntegrationTestSuite) TestWhitelistRolePermission() {
 	s.Require().NoError(err)
 
 	var newPerms types.Permissions
-	val.ClientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &newPerms)
+	val.ClientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &newPerms)
 	s.Require().True(newPerms.IsWhitelisted(types.PermSetPermissions))
 }
 
@@ -63,7 +63,7 @@ func (s IntegrationTestSuite) TestBlacklistRolePermission() {
 	s.Require().NoError(err)
 
 	var perms types.Permissions
-	val.ClientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &perms)
+	val.ClientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &perms)
 	s.Require().True(perms.IsWhitelisted(types.PermClaimValidator))
 	s.Require().False(perms.IsBlacklisted(types.PermClaimCouncilor))
 
@@ -90,7 +90,7 @@ func (s IntegrationTestSuite) TestBlacklistRolePermission() {
 	s.Require().NoError(err)
 
 	var newPerms types.Permissions
-	val.ClientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &newPerms)
+	val.ClientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &newPerms)
 	s.Require().True(newPerms.IsWhitelisted(types.PermClaimValidator))
 	s.Require().True(newPerms.IsBlacklisted(types.PermClaimCouncilor))
 }
@@ -107,7 +107,7 @@ func (s IntegrationTestSuite) TestRemoveWhitelistRolePermission() {
 	s.Require().NoError(err)
 
 	var perms types.Permissions
-	val.ClientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &perms)
+	val.ClientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &perms)
 	s.Require().True(perms.IsWhitelisted(types.PermClaimValidator))
 
 	// Send Tx To Blacklist permission
@@ -133,7 +133,7 @@ func (s IntegrationTestSuite) TestRemoveWhitelistRolePermission() {
 	s.Require().NoError(err)
 
 	var newPerms types.Permissions
-	val.ClientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &newPerms)
+	val.ClientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &newPerms)
 	s.Require().False(newPerms.IsWhitelisted(types.PermClaimValidator))
 }
 
@@ -149,7 +149,7 @@ func (s IntegrationTestSuite) TestRemoveBlacklistRolePermission() {
 	s.Require().NoError(err)
 
 	var perms types.Permissions
-	val.ClientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &perms)
+	val.ClientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &perms)
 	s.Require().True(perms.IsBlacklisted(types.PermClaimCouncilor))
 
 	// Send Tx To Remove Blacklist Permissions
@@ -175,7 +175,7 @@ func (s IntegrationTestSuite) TestRemoveBlacklistRolePermission() {
 	s.Require().NoError(err)
 
 	var newPerms types.Permissions
-	val.ClientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &newPerms)
+	val.ClientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &newPerms)
 	s.Require().False(newPerms.IsBlacklisted(types.PermClaimCouncilor))
 }
 

@@ -29,7 +29,7 @@ func TestHandleNewValidator(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 
-	addrDels := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(200))
+	addrDels := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(200, sdk.DefaultPowerReduction))
 	valAddrs := simapp.ConvertAddrsToValAddrs(addrDels)
 	pks := simapp.CreateTestPubKeys(1)
 	addr, val := valAddrs[0], pks[0]
@@ -65,7 +65,7 @@ func TestMissedBlockAndRankStreakCounter(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 
-	addrDels := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(200))
+	addrDels := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(200, sdk.DefaultPowerReduction))
 	valAddrs := simapp.ConvertAddrsToValAddrs(addrDels)
 	pks := simapp.CreateTestPubKeys(1)
 	addr, val := valAddrs[0], pks[0]
@@ -154,7 +154,7 @@ func TestHandleAlreadyInactive(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
 
-	addrDels := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(200))
+	addrDels := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(200, sdk.DefaultPowerReduction))
 	valAddrs := simapp.ConvertAddrsToValAddrs(addrDels)
 	pks := simapp.CreateTestPubKeys(1)
 	addr, val := valAddrs[0], pks[0]
@@ -219,7 +219,7 @@ func TestValidatorDippingInAndOut(t *testing.T) {
 	power := int64(100)
 
 	pks := simapp.CreateTestPubKeys(3)
-	simapp.AddTestAddrsFromPubKeys(app, ctx, pks, sdk.TokensFromConsensusPower(200))
+	simapp.AddTestAddrsFromPubKeys(app, ctx, pks, sdk.TokensFromConsensusPower(200, sdk.DefaultPowerReduction))
 
 	addr, val := pks[0].Address(), pks[0]
 	consAddr := sdk.ConsAddress(addr)
@@ -364,7 +364,7 @@ func TestValidatorLifecycle(t *testing.T) {
 	power := int64(100)
 
 	pks := simapp.CreateTestPubKeys(3)
-	simapp.AddTestAddrsFromPubKeys(app, ctx, pks, sdk.TokensFromConsensusPower(200))
+	simapp.AddTestAddrsFromPubKeys(app, ctx, pks, sdk.TokensFromConsensusPower(200, sdk.DefaultPowerReduction))
 
 	addr, val := pks[0].Address(), pks[0]
 	consAddr := sdk.ConsAddress(addr)

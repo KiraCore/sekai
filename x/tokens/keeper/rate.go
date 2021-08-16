@@ -20,7 +20,7 @@ func (k Keeper) GetTokenRate(ctx sdk.Context, denom string) *types.TokenRate {
 	}
 
 	rate := new(types.TokenRate)
-	k.cdc.MustUnmarshalBinaryBare(bz, rate)
+	k.cdc.MustUnmarshal(bz, rate)
 
 	return rate
 }
@@ -69,7 +69,7 @@ func (k Keeper) UpsertTokenRate(ctx sdk.Context, rate types.TokenRate) error {
 	if rate.Denom == k.BondDenom(ctx) && store.Has(tokenRateStoreID) {
 		return errors.New("bond denom rate is read-only")
 	}
-	store.Set(tokenRateStoreID, k.cdc.MustMarshalBinaryBare(&rate))
+	store.Set(tokenRateStoreID, k.cdc.MustMarshal(&rate))
 	return nil
 }
 

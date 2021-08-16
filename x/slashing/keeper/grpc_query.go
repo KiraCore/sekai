@@ -89,7 +89,7 @@ func (k Keeper) SigningInfos(c context.Context, request *types.QuerySigningInfos
 
 	onResult := func(key []byte, value []byte, accumulate bool) (bool, error) {
 		var info types.ValidatorSigningInfo
-		err := k.cdc.UnmarshalBinaryBare(value, &info)
+		err := k.cdc.Unmarshal(value, &info)
 		if err != nil {
 			return false, err
 		}

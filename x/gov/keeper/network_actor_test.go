@@ -14,7 +14,7 @@ func TestNewKeeper_SaveNetworkActor(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10))
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
 	addr := addrs[0]
 
 	networkActor := types.NetworkActor{
@@ -33,7 +33,7 @@ func TestKeeper_GetNetworkActorByAddress_FailsIfItDoesNotExist(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10))
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
 	addr := addrs[0]
 
 	_, found := app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addr)
@@ -44,7 +44,7 @@ func TestKeeper_AssignRoleToAddress(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10))
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
 	addr := addrs[0]
 
 	actor := types.NewDefaultActor(addr)
@@ -59,7 +59,7 @@ func TestKeeper_AddPermissionToNetworkActor(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10))
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
 	addr := addrs[0]
 
 	networkActor := types.NewNetworkActor(
@@ -92,7 +92,7 @@ func TestKeeper_RemoveWhitelistPermission(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, sdk.TokensFromConsensusPower(10))
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
 
 	err := whitelistPermToMultipleAddrs(app, ctx, addrs, types.PermSetPermissions)
 	require.NoError(t, err)
@@ -117,7 +117,7 @@ func TestKeeper_GetActorsByRole(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, sdk.TokensFromConsensusPower(10))
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
 
 	addRoleToMultipleAddrs(app, ctx, addrs, types.RoleSudo)
 
@@ -131,7 +131,7 @@ func TestKeeper_RemoveRole(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, sdk.TokensFromConsensusPower(10))
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
 
 	addRoleToMultipleAddrs(app, ctx, addrs, types.RoleSudo)
 
@@ -159,7 +159,7 @@ func TestKeeper_GetActorsByWhitelistedPerm(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, sdk.TokensFromConsensusPower(10))
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
 
 	err := whitelistPermToMultipleAddrs(app, ctx, addrs, types.PermSetPermissions)
 	require.NoError(t, err)
@@ -178,7 +178,7 @@ func TestKeeper_GetNetworkActorsByAbsoluteWhitelistPermission(t *testing.T) {
 		{
 			name: "some addresses whitelisted",
 			prepareApp: func(app *simapp.SekaiApp, ctx sdk.Context) []types.NetworkActor {
-				addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, sdk.TokensFromConsensusPower(10))
+				addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
 
 				err := whitelistPermToMultipleAddrs(app, ctx, addrs, types.PermSetPermissions)
 				require.NoError(t, err)
@@ -194,7 +194,7 @@ func TestKeeper_GetNetworkActorsByAbsoluteWhitelistPermission(t *testing.T) {
 		{
 			name: "some addresses whitelisted by role",
 			prepareApp: func(app *simapp.SekaiApp, ctx sdk.Context) []types.NetworkActor {
-				addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, sdk.TokensFromConsensusPower(10))
+				addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
 
 				// Create role
 				app.CustomGovKeeper.CreateRole(ctx, types.Role(12345))
@@ -217,7 +217,7 @@ func TestKeeper_GetNetworkActorsByAbsoluteWhitelistPermission(t *testing.T) {
 		{
 			name: "whitelisted address whitelisted by role and personal permission (case 1)",
 			prepareApp: func(app *simapp.SekaiApp, ctx sdk.Context) []types.NetworkActor {
-				addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, sdk.TokensFromConsensusPower(10))
+				addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
 
 				// Create role
 				app.CustomGovKeeper.CreateRole(ctx, types.Role(12345))
@@ -244,7 +244,7 @@ func TestKeeper_GetNetworkActorsByAbsoluteWhitelistPermission(t *testing.T) {
 		{
 			name: "whitelisted address whitelisted by role and personal permission (case 2)",
 			prepareApp: func(app *simapp.SekaiApp, ctx sdk.Context) []types.NetworkActor {
-				addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, sdk.TokensFromConsensusPower(10))
+				addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
 
 				// Create role
 				app.CustomGovKeeper.CreateRole(ctx, types.Role(12345))

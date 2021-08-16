@@ -40,7 +40,7 @@ func (k *Keeper) SetHooks(sh types.StakingHooks) *Keeper {
 
 func (k Keeper) AddValidator(ctx sdk.Context, validator types.Validator) {
 	store := ctx.KVStore(k.storeKey)
-	bz := k.cdc.MustMarshalBinaryBare(&validator)
+	bz := k.cdc.MustMarshal(&validator)
 	store.Set(GetValidatorKey(validator.ValKey), bz)
 
 	// Save by moniker
@@ -58,7 +58,7 @@ func (k Keeper) AddValidatorByConsAddr(ctx sdk.Context, validator types.Validato
 
 func (k Keeper) AddPendingValidator(ctx sdk.Context, validator types.Validator) {
 	store := ctx.KVStore(k.storeKey)
-	bz := k.cdc.MustMarshalBinaryBare(&validator)
+	bz := k.cdc.MustMarshal(&validator)
 	store.Set(GetPendingValidatorKey(validator.ValKey), bz)
 }
 
@@ -95,7 +95,7 @@ func (k Keeper) getValidatorByKey(ctx sdk.Context, key []byte) (types.Validator,
 	}
 
 	var validator types.Validator
-	k.cdc.MustUnmarshalBinaryBare(bz, &validator)
+	k.cdc.MustUnmarshal(bz, &validator)
 
 	return validator, nil
 }
@@ -109,7 +109,7 @@ func (k Keeper) GetValidatorSet(ctx sdk.Context) []types.Validator {
 	var validators []types.Validator
 	for ; iter.Valid(); iter.Next() {
 		var validator types.Validator
-		k.cdc.MustUnmarshalBinaryBare(iter.Value(), &validator)
+		k.cdc.MustUnmarshal(iter.Value(), &validator)
 		validators = append(validators, validator)
 	}
 
@@ -125,7 +125,7 @@ func (k Keeper) GetPendingValidatorSet(ctx sdk.Context) []types.Validator {
 	var validators []types.Validator
 	for ; iter.Valid(); iter.Next() {
 		var validator types.Validator
-		k.cdc.MustUnmarshalBinaryBare(iter.Value(), &validator)
+		k.cdc.MustUnmarshal(iter.Value(), &validator)
 		validators = append(validators, validator)
 	}
 

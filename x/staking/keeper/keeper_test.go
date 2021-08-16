@@ -110,7 +110,7 @@ func TestKeeper_GetPendingValidators(t *testing.T) {
 }
 
 func createValidators(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context, accNum int) (validators []types.Validator) {
-	addrs := simapp.AddTestAddrsIncremental(app, ctx, accNum, sdk.TokensFromConsensusPower(10))
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, accNum, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
 
 	for _, addr := range addrs {
 		valAddr := sdk.ValAddress(addr)

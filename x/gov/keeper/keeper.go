@@ -10,13 +10,13 @@ import (
 )
 
 type Keeper struct {
-	cdc            codec.BinaryMarshaler
+	cdc            codec.BinaryCodec
 	storeKey       sdk.StoreKey
 	bk             types.BankKeeper
 	proposalRouter types.ProposalRouter
 }
 
-func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryMarshaler, bk types.BankKeeper) Keeper {
+func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryCodec, bk types.BankKeeper) Keeper {
 	return Keeper{
 		cdc:      cdc,
 		storeKey: storeKey,
@@ -40,7 +40,7 @@ func (k Keeper) GetProposalRouter() types.ProposalRouter {
 // SetNetworkProperties set network properties on KVStore
 func (k Keeper) SetNetworkProperties(ctx sdk.Context, properties *types.NetworkProperties) {
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixNetworkProperties)
-	prefixStore.Set([]byte("property"), k.cdc.MustMarshalBinaryBare(properties))
+	prefixStore.Set([]byte("property"), k.cdc.MustMarshal(properties))
 }
 
 // GetNetworkProperties get network properties from KVStore
@@ -49,7 +49,7 @@ func (k Keeper) GetNetworkProperties(ctx sdk.Context) *types.NetworkProperties {
 	bz := prefixStore.Get([]byte("property"))
 
 	properties := new(types.NetworkProperties)
-	k.cdc.MustUnmarshalBinaryBare(bz, properties)
+	k.cdc.MustUnmarshal(bz, properties)
 	return properties
 }
 
@@ -148,7 +148,7 @@ func (k Keeper) SetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 func (k Keeper) SetExecutionFee(ctx sdk.Context, fee *types.ExecutionFee) {
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixExecutionFee)
 	key := []byte(fee.TransactionType)
-	prefixStore.Set(key, k.cdc.MustMarshalBinaryBare(fee))
+	prefixStore.Set(key, k.cdc.MustMarshal(fee))
 }
 
 // GetExecutionFee get fee from execution function name
@@ -161,7 +161,7 @@ func (k Keeper) GetExecutionFee(ctx sdk.Context, txType string) *types.Execution
 	bz := prefixStore.Get([]byte(txType))
 
 	fee := new(types.ExecutionFee)
-	k.cdc.MustUnmarshalBinaryBare(bz, fee)
+	k.cdc.MustUnmarshal(bz, fee)
 	return fee
 }
 
@@ -173,7 +173,7 @@ func (k Keeper) GetExecutionFees(ctx sdk.Context) []*types.ExecutionFee {
 	for ; iterator.Valid(); iterator.Next() {
 		bz := iterator.Value()
 		fee := new(types.ExecutionFee)
-		k.cdc.MustUnmarshalBinaryBare(bz, fee)
+		k.cdc.MustUnmarshal(bz, fee)
 	}
 	return fees
 }

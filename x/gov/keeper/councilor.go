@@ -23,7 +23,7 @@ func GetCouncilorByMonikerKey(moniker string) []byte {
 func (k Keeper) SaveCouncilor(ctx sdk.Context, councilor types.Councilor) {
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), CouncilorIdentityRegistryPrefix)
 
-	bz := k.cdc.MustMarshalBinaryBare(&councilor)
+	bz := k.cdc.MustMarshal(&councilor)
 
 	councilorKey := GetCouncilorKey(councilor.Address)
 
@@ -55,7 +55,7 @@ func (k Keeper) getCouncilorByKey(ctx sdk.Context, key []byte) (types.Councilor,
 	}
 
 	var councilor types.Councilor
-	k.cdc.MustUnmarshalBinaryBare(bz, &councilor)
+	k.cdc.MustUnmarshal(bz, &councilor)
 
 	return councilor, true
 }

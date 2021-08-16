@@ -12,7 +12,7 @@ import (
 func (k Keeper) UpsertDataRegistryEntry(ctx sdk.Context, key string, entry types.DataRegistryEntry) {
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), DataRegistryPrefix)
 
-	bz := k.cdc.MustMarshalBinaryBare(&entry)
+	bz := k.cdc.MustMarshal(&entry)
 	prefixStore.Set([]byte(key), bz)
 }
 
@@ -26,7 +26,7 @@ func (k Keeper) GetDataRegistryEntry(ctx sdk.Context, key string) (types.DataReg
 	}
 
 	var na types.DataRegistryEntry
-	k.cdc.MustUnmarshalBinaryBare(bz, &na)
+	k.cdc.MustUnmarshal(bz, &na)
 
 	return na, true
 }

@@ -70,7 +70,7 @@ func (q Querier) Validators(ctx context.Context, request *types.ValidatorsReques
 
 	onResult := func(key []byte, value []byte, accumulate bool) (bool, error) {
 		var val types.Validator
-		err := q.keeper.cdc.UnmarshalBinaryBare(value, &val)
+		err := q.keeper.cdc.Unmarshal(value, &val)
 		if err != nil {
 			return false, err
 		}

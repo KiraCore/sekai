@@ -13,7 +13,7 @@ import (
 
 // Keeper manages module's storage
 type Keeper struct {
-	cdc      codec.BinaryMarshaler
+	cdc      codec.BinaryCodec
 	storeKey sdk.StoreKey
 	bk       types.BankKeeper
 	tk       types.TokensKeeper
@@ -21,7 +21,7 @@ type Keeper struct {
 }
 
 // NewKeeper returns new instance of a keeper
-func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryMarshaler, bk types.BankKeeper, tk types.TokensKeeper, cgk types.CustomGovKeeper) Keeper {
+func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryCodec, bk types.BankKeeper, tk types.TokensKeeper, cgk types.CustomGovKeeper) Keeper {
 	return Keeper{
 		cdc,
 		storeKey,

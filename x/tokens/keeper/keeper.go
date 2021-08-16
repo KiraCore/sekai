@@ -15,12 +15,12 @@ var (
 
 // Keeper is for managing token module
 type Keeper struct {
-	cdc      codec.BinaryMarshaler
+	cdc      codec.BinaryCodec
 	storeKey sdk.StoreKey
 }
 
 // NewKeeper returns instance of a keeper
-func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryMarshaler) Keeper {
+func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryCodec) Keeper {
 	return Keeper{cdc: cdc, storeKey: storeKey}
 }
 

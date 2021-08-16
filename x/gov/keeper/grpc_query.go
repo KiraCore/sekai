@@ -132,7 +132,7 @@ func (k Keeper) Proposals(goCtx context.Context, request *types.QueryProposalsRe
 
 	onResult := func(key []byte, value []byte, accumulate bool) (bool, error) {
 		var proposal types.Proposal
-		err := k.cdc.UnmarshalBinaryBare(value, &proposal)
+		err := k.cdc.Unmarshal(value, &proposal)
 		if err != nil {
 			return false, err
 		}
@@ -282,7 +282,7 @@ func (k Keeper) AllIdentityRecords(goCtx context.Context, request *types.QueryAl
 	records := []types.IdentityRecord{}
 	onResult := func(key []byte, value []byte, accumulate bool) (bool, error) {
 		var record types.IdentityRecord
-		err := k.cdc.UnmarshalBinaryBare(value, &record)
+		err := k.cdc.Unmarshal(value, &record)
 		if err != nil {
 			return false, err
 		}
@@ -416,7 +416,7 @@ func (k Keeper) AllIdentityRecordVerifyRequests(goCtx context.Context, request *
 	requestStore := prefix.NewStore(store, types.KeyPrefixIdRecordVerifyRequest)
 	onResult := func(key []byte, value []byte, accumulate bool) (bool, error) {
 		request := types.IdentityRecordsVerify{}
-		k.cdc.MustUnmarshalBinaryBare(value, &request)
+		k.cdc.MustUnmarshal(value, &request)
 		requests = append(requests, request)
 		return true, nil
 	}
