@@ -110,7 +110,7 @@ func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions_WithUserThatDoesN
 	val := s.network.Validators[0]
 
 	// We create some random address where we will give perms.
-	newAccount, _, err := val.ClientCtx.Keyring.NewMnemonic("test", keyring.English, "", hd.Secp256k1)
+	newAccount, _, err := val.ClientCtx.Keyring.NewMnemonic("test", keyring.English, sdk.FullFundraiserPath, keyring.DefaultBIP39Passphrase, hd.Secp256k1)
 	s.Require().NoError(err)
 	s.SendValue(val.ClientCtx, val.Address, newAccount.GetAddress(), sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100)))
 

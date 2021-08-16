@@ -53,12 +53,11 @@ func (k Keeper) SigningInfo(c context.Context, req *types.QuerySigningInfoReques
 			return nil, err
 		}
 
-		consPubkey, _ := sdk.Bech32ifyPubKey(sdk.Bech32PubKeyTypeConsPub, val.GetConsPubKey())
 		identity := k.sk.GetIdRecordByAddress(ctx, sdk.AccAddress(val.ValKey))
 		validator = stakingtypes.QueryValidator{
 			Address:    sdk.AccAddress(val.ValKey).String(),
 			Valkey:     val.ValKey.String(),
-			Pubkey:     consPubkey,
+			Pubkey:     val.GetConsPubKey().String(),
 			Proposer:   val.GetConsPubKey().Address().String(),
 			Moniker:    val.Moniker,
 			Commission: val.Commission.String(),
@@ -105,11 +104,10 @@ func (k Keeper) SigningInfos(c context.Context, request *types.QuerySigningInfos
 				if err != nil {
 					return false, err
 				}
-				consPubkey, _ := sdk.Bech32ifyPubKey(sdk.Bech32PubKeyTypeConsPub, val.GetConsPubKey())
 				validators = append(validators, stakingtypes.QueryValidator{
 					Address:    sdk.AccAddress(val.ValKey).String(),
 					Valkey:     val.ValKey.String(),
-					Pubkey:     consPubkey,
+					Pubkey:     val.GetConsPubKey().String(),
 					Proposer:   val.GetConsPubKey().Address().String(),
 					Moniker:    val.Moniker,
 					Commission: val.Commission.String(),

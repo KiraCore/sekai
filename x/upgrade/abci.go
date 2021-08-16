@@ -23,7 +23,7 @@ func BeginBlocker(k keeper.Keeper, ctx sdk.Context, _ abci.RequestBeginBlock) {
 
 	// check if it's time to halt and halt the chain
 	if plan.ShouldExecute(ctx) {
-		ctx.Logger().Info(fmt.Sprintf("Halting the chain for \"%s\" at %s", plan.Name, time.Unix(plan.MinUpgradeTime, 0).String()))
+		ctx.Logger().Info(fmt.Sprintf("Halting the chain for \"%s\" at %s", plan.Name, time.Unix(plan.UpgradeTime, 0).String()))
 		ctx = ctx.WithBlockGasMeter(sdk.NewInfiniteGasMeter())
 		k.ApplyUpgradePlan(ctx, *plan)
 		return

@@ -100,14 +100,13 @@ func createValidators(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context, accNu
 
 	for _, addr := range addrs {
 		valAddr := sdk.ValAddress(addr)
-		pubKey, err := sdk.GetPubKeyFromBech32(sdk.Bech32PubKeyTypeConsPub, "kiravalconspub1zcjduepqylc5k8r40azmw0xt7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsq4xg7em")
-		require.NoError(t, err)
+		pubkeys := simapp.CreateTestPubKeys(1)
 
 		validator, err := stakingtypes.NewValidator(
 			"validator 1",
 			sdk.NewDec(1234),
 			valAddr,
-			pubKey,
+			pubkeys[0],
 		)
 		require.NoError(t, err)
 		validators = append(validators, validator)

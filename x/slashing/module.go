@@ -14,7 +14,6 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/KiraCore/sekai/x/slashing/client/cli"
-	"github.com/KiraCore/sekai/x/slashing/client/rest"
 	"github.com/KiraCore/sekai/x/slashing/keeper"
 	"github.com/KiraCore/sekai/x/slashing/types"
 	stakingkeeper "github.com/KiraCore/sekai/x/staking/keeper"
@@ -71,7 +70,6 @@ func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, config client.TxEncod
 
 // RegisterRESTRoutes registers the REST routes for the slashing module.
 func (AppModuleBasic) RegisterRESTRoutes(clientCtx client.Context, rtr *mux.Router) {
-	rest.RegisterHandlers(clientCtx, rtr)
 }
 
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the slashig module.

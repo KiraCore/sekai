@@ -46,38 +46,26 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 }
 
 // AddPubkey sets a address-pubkey relation
-func (k Keeper) AddPubkey(ctx sdk.Context, pubkey cryptotypes.PubKey) {
-	addr := pubkey.Address()
-
-	pkStr, err := sdk.Bech32ifyPubKey(sdk.Bech32PubKeyTypeConsPub, pubkey)
+func (k Keeper) AddPubkey(ctx sdk.Context, pubkey cryptotypes.PubKey) error {
+	bz, err := k.cdc.MarshalInterface(pubkey)
 	if err != nil {
-		panic(fmt.Errorf("error while setting address-pubkey relation: %s", addr))
+		return err
 	}
-
-	k.setAddrPubkeyRelation(ctx, addr, pkStr)
+	store := ctx.KVStore(k.storeKey)
+	key := types.AddrPubkeyRelationKey(pubkey.Address())
+	store.Set(key, bz)
+	return nil
 }
 
-// GetPubkey returns the pubkey from the address-pubkey relation
-func (k Keeper) GetPubkey(ctx sdk.Context, address crypto.Address) (cryptotypes.PubKey, error) {
+// GetPubkey returns the pubkey from the adddress-pubkey relation
+func (k Keeper) GetPubkey(ctx sdk.Context, a cryptotypes.Address) (cryptotypes.PubKey, error) {
 	store := ctx.KVStore(k.storeKey)
-
-	relationKey := types.AddrPubkeyRelationKey(address)
-	if !store.Has(relationKey) {
-		return nil, fmt.Errorf("relation key for address %s not found", sdk.ConsAddress(address))
+	bz := store.Get(types.AddrPubkeyRelationKey(a))
+	if bz == nil {
+		return nil, fmt.Errorf("address %s not found", sdk.ConsAddress(a))
 	}
-
-	var pubkey gogotypes.StringValue
-	err := k.cdc.Unmarshal(store.Get(relationKey), &pubkey)
-	if err != nil {
-		return nil, fmt.Errorf("address %s not found", sdk.ConsAddress(address))
-	}
-
-	pkStr, err := sdk.GetPubKeyFromBech32(sdk.Bech32PubKeyTypeConsPub, pubkey.Value)
-	if err != nil {
-		return pkStr, err
-	}
-
-	return pkStr, nil
+	var pk cryptotypes.PubKey
+	return pk, k.cdc.UnmarshalInterface(bz, &pk)
 }
 
 // Inactivate attempts to set validator's status to Inactive from Active.

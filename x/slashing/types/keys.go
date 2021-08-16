@@ -41,10 +41,9 @@ func ValidatorSigningInfoKey(v sdk.ConsAddress) []byte {
 
 // ValidatorSigningInfoAddress - extract the address from a validator signing info key
 func ValidatorSigningInfoAddress(key []byte) (v sdk.ConsAddress) {
-	addr := key[1:]
-	if len(addr) != sdk.AddrLen {
-		panic("unexpected key length")
-	}
+	// Remove prefix and address length.
+	addr := key[2:]
+
 	return sdk.ConsAddress(addr)
 }
 

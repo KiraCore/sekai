@@ -21,7 +21,7 @@ func TestKeeperPlanGetSet(t *testing.T) {
 	require.Nil(t, plan)
 
 	newPlan := types.Plan{
-		MinUpgradeTime:       1,
+		UpgradeTime:          1,
 		RollbackChecksum:     "checksum",
 		MaxEnrolmentDuration: 2,
 		Name:                 "plan",
@@ -53,8 +53,7 @@ func TestPlanExecutionWithHandler(t *testing.T) {
 	})
 	require.NotPanics(t, func() {
 		app.UpgradeKeeper.ApplyUpgradePlan(newCtx, types.Plan{
-			Height:               10,
-			MinUpgradeTime:       minUpgradeTime.Unix(),
+			UpgradeTime:          minUpgradeTime.Unix(),
 			RollbackChecksum:     "",
 			MaxEnrolmentDuration: 0,
 			Name:                 "test",
@@ -79,8 +78,7 @@ func TestPlanExecutionWithoutHandler(t *testing.T) {
 
 	require.Panics(t, func() {
 		app.UpgradeKeeper.ApplyUpgradePlan(newCtx, types.Plan{
-			Height:               10,
-			MinUpgradeTime:       minUpgradeTime.Unix(),
+			UpgradeTime:          minUpgradeTime.Unix(),
 			RollbackChecksum:     "",
 			MaxEnrolmentDuration: 0,
 			Name:                 "test",
@@ -98,8 +96,7 @@ func TestNoPlanExecutionBeforeTimeOrHeight(t *testing.T) {
 
 	require.NotPanics(t, func() {
 		app.UpgradeKeeper.ApplyUpgradePlan(newCtx, types.Plan{
-			Height:               10,
-			MinUpgradeTime:       minUpgradeTime.Unix(),
+			UpgradeTime:          minUpgradeTime.Unix(),
 			RollbackChecksum:     "",
 			MaxEnrolmentDuration: 0,
 			Name:                 "test",

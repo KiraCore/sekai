@@ -27,8 +27,8 @@ func TestNewHandler_MsgClaimValidator_HappyPath(t *testing.T) {
 	valAddr1, err := types.ValAddressFromBech32("kiravaloper15ky9du8a2wlstz6fpx3p4mqpjyrm5cgq38f2fp")
 	require.NoError(t, err)
 
-	pubKey, err := types.GetPubKeyFromBech32(types.Bech32PubKeyTypeConsPub, "kiravalconspub1zcjduepqylc5k8r40azmw0xt7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsq4xg7em")
-	require.NoError(t, err)
+	pubkeys := simapp.CreateTestPubKeys(1)
+	pubKey := pubkeys[0]
 
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
@@ -70,8 +70,8 @@ func TestNewHandler_MsgClaimValidator_Errors(t *testing.T) {
 	valAddr1, err := types.ValAddressFromBech32("kiravaloper15ky9du8a2wlstz6fpx3p4mqpjyrm5cgq38f2fp")
 	require.NoError(t, err)
 
-	pubKey, err := types.GetPubKeyFromBech32(types.Bech32PubKeyTypeConsPub, "kiravalconspub1zcjduepqylc5k8r40azmw0xt7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsq4xg7em")
-	require.NoError(t, err)
+	pubkeys := simapp.CreateTestPubKeys(1)
+	pubKey := pubkeys[0]
 
 	tests := []struct {
 		name          string
@@ -113,8 +113,8 @@ func TestNewHandler_MsgClaimValidator_Errors(t *testing.T) {
 		{
 			"validator moniker exists",
 			func(ctx types.Context, app *simapp.SekaiApp) {
-				pubKey, err := types.GetPubKeyFromBech32(types.Bech32PubKeyTypeConsPub, "kiravalconspub1zcjduepqylc5k8r40azmw0xa7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsqgrkp48")
-				require.NoError(t, err)
+				pubkeys := simapp.CreateTestPubKeys(1)
+				pubKey := pubkeys[0]
 
 				valAddr2, err := types.ValAddressFromBech32("kiravaloper15ky9du8a2wlstz6fpx3p4mqpryrm5cgqeyf3v0")
 				require.NoError(t, err)
@@ -172,8 +172,8 @@ func TestNewHandler_SetPermissions_ActorWithRole(t *testing.T) {
 	valAddr1, err := types.ValAddressFromBech32("kiravaloper15ky9du8a2wlstz6fpx3p4mqpjyrm5cgq38f2fp")
 	require.NoError(t, err)
 
-	pubKey, err := types.GetPubKeyFromBech32(types.Bech32PubKeyTypeConsPub, "kiravalconspub1zcjduepqylc5k8r40azmw0xt7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsq4xg7em")
-	require.NoError(t, err)
+	pubkeys := simapp.CreateTestPubKeys(1)
+	pubKey := pubkeys[0]
 
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
@@ -205,8 +205,8 @@ func TestHandler_ProposalUnjailValidator_Errors(t *testing.T) {
 	require.NoError(t, err)
 	valAddr := types.ValAddress(proposerAddr)
 
-	pubKey, err := types.GetPubKeyFromBech32(types.Bech32PubKeyTypeConsPub, "kiravalconspub1zcjduepqylc5k8r40azmw0xt7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsq4xg7em")
-	require.NoError(t, err)
+	pubkeys := simapp.CreateTestPubKeys(1)
+	pubKey := pubkeys[0]
 
 	tests := []struct {
 		name        string
@@ -301,8 +301,8 @@ func TestHandler_ProposalUnjailValidator(t *testing.T) {
 
 	valAddr := types.ValAddress(proposerAddr)
 
-	pubKey, err := types.GetPubKeyFromBech32(types.Bech32PubKeyTypeConsPub, "kiravalconspub1zcjduepqylc5k8r40azmw0xt7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsq4xg7em")
-	require.NoError(t, err)
+	pubkeys := simapp.CreateTestPubKeys(1)
+	pubKey := pubkeys[0]
 
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{

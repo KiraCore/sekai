@@ -21,8 +21,8 @@ func TestItUpdatesTheValidatorSetBasedOnPendingValidators(t *testing.T) {
 	addr1 := addrs[0]
 	valAddr1 := sdk.ValAddress(addr1)
 
-	pubKey, err := sdk.GetPubKeyFromBech32(sdk.Bech32PubKeyTypeConsPub, "kiravalconspub1zcjduepqylc5k8r40azmw0xt7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsq4xg7em")
-	require.NoError(t, err)
+	pubkeys := simapp.CreateTestPubKeys(1)
+	pubKey := pubkeys[0]
 
 	validator1, err := stakingtypes.NewValidator(
 		"validator 1",
@@ -105,8 +105,8 @@ func TestItRemovesFromTheValidatorSetWhenInRemovingQueue(t *testing.T) {
 			addr1 := addrs[0]
 			valAddr1 := sdk.ValAddress(addr1)
 
-			pubKey, err := sdk.GetPubKeyFromBech32(sdk.Bech32PubKeyTypeConsPub, "kiravalconspub1zcjduepqylc5k8r40azmw0xt7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsq4xg7em")
-			require.NoError(t, err)
+			pubkeys := simapp.CreateTestPubKeys(1)
+			pubKey := pubkeys[0]
 
 			validator1, err := stakingtypes.NewValidator(
 				"validator 1",
@@ -190,8 +190,8 @@ func TestItIncludesItBackToValidatorSetOnceReactivatingIt(t *testing.T) {
 			addr1 := addrs[0]
 			valAddr1 := sdk.ValAddress(addr1)
 
-			pubKey, err := sdk.GetPubKeyFromBech32(sdk.Bech32PubKeyTypeConsPub, "kiravalconspub1zcjduepqylc5k8r40azmw0xt7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsq4xg7em")
-			require.NoError(t, err)
+			pubkeys := simapp.CreateTestPubKeys(1)
+			pubKey := pubkeys[0]
 
 			validator1, err := stakingtypes.NewValidator(
 				"validator 1",

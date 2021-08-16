@@ -78,8 +78,7 @@ $ %s gentx my-key-name 1000000stake --home=/path/to/home/dir --keyring-backend=o
 
 			// read --pubkey, if empty take it from priv_validator.json
 			if valPubKeyString, _ := cmd.Flags().GetString(cli.FlagPubKey); valPubKeyString != "" {
-				valPubKey, err = sdk.GetPubKeyFromBech32(sdk.Bech32PubKeyTypeConsPub, valPubKeyString)
-				if err != nil {
+				if err := clientCtx.Codec.UnmarshalInterfaceJSON([]byte(valPubKeyString), &valPubKey); err != nil {
 					return errors.Wrap(err, "failed to get consensus node public key")
 				}
 			}
