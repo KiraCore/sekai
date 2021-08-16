@@ -72,75 +72,12 @@ At each time of upgrade, genesis upgrade command will be built and infra could r
 
 Note: state export command is not exporting the upgrade plan and if all validators run with exported genesis with the previous binary, consensus failure won't happen.
 
+# Identity registrar
+[scripts/commands/identity-registrar.sh](scripts/commands/identity-registrar.sh)
+
 # Unjail via governance process
 
 Modify genesis json to have jailed validator for Unjail testing
-
-```json
-{
-  "accounts": [
-    {
-      "@type": "/cosmos.auth.v1beta1.BaseAccount",
-      "address": "kira126f48ukar7ntqqvk0qxgd3juu7r42mjmsddjrq",
-      "pub_key": null,
-      "account_number": "0",
-      "sequence": "0"
-    }
-  ],
-  "balances": [
-    {
-      "address": "kira126f48ukar7ntqqvk0qxgd3juu7r42mjmsddjrq",
-      "coins": [
-        {
-          "denom": "stake",
-          "amount": "1000000000"
-        },
-        {
-          "denom": "ukex",
-          "amount": "1000000000"
-        },
-        {
-          "denom": "validatortoken",
-          "amount": "1000000000"
-        }
-      ]
-    }
-  ],
-  "validators": [
-    {
-      "moniker": "hello2",
-      "commission": "1.000000000000000000",
-      "val_key": "kiravaloper126f48ukar7ntqqvk0qxgd3juu7r42mjmrt33mv",
-      "pub_key": {
-        "@type": "/cosmos.crypto.ed25519.PubKey",
-        "key": "tC8mzxDI3bzfZtToxU6ZpZIOw6nqQx87OZ1fD6FpD7E="
-      },
-      "status": "JAILED",
-      "rank": "0",
-      "streak": "0"
-    }
-  ],
-  "network_actors": [
-    {
-      "address": "kira126f48ukar7ntqqvk0qxgd3juu7r42mjmsddjrq",
-      "roles": ["1"],
-      "status": "ACTIVE",
-      "votes": [
-        "VOTE_OPTION_YES",
-        "VOTE_OPTION_ABSTAIN",
-        "VOTE_OPTION_NO",
-        "VOTE_OPTION_NO_WITH_VETO"
-      ],
-      "permissions": {
-        "blacklist": [],
-        "whitelist": []
-      },
-      "skin": "1"
-    }
-  ],
-}
-```
-
 Add jailed validator key to kms.
 ```sh
   sekaid keys add jailed_validator --keyring-backend=test --home=$HOME/.sekaid --recover
