@@ -4,11 +4,11 @@ import (
 	"testing"
 	"time"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/stretchr/testify/require"
-
 	simapp "github.com/KiraCore/sekai/app"
 	"github.com/KiraCore/sekai/x/upgrade/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
 
@@ -46,7 +46,12 @@ func TestPlanExecutionWithHandler(t *testing.T) {
 
 	t.Log("Verify that the upgrade can be successfully applied with a handler")
 	app.UpgradeKeeper.SetUpgradeHandler("test", func(ctx sdk.Context, plan types.Plan) {
-		err := app.BankKeeper.SetBalance(ctx, acc1, sdk.NewInt64Coin("ukex", 10000))
+		coins := sdk.Coins{sdk.NewInt64Coin("ukex", 10000)}
+		err := app.BankKeeper.MintCoins(ctx, authtypes.FeeCollectorName, coins)
+		if err != nil {
+			panic(err)
+		}
+		err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, authtypes.FeeCollectorName, acc1, coins)
 		if err != nil {
 			panic(err)
 		}

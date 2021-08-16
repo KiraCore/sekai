@@ -83,7 +83,9 @@ func TestNewKeeper_SendCoinsFromAccountToModule(t *testing.T) {
 
 	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
 	addr := addrs[0]
-	app.BankKeeper.SetBalance(ctx, addr, sdk.NewInt64Coin("ukex", 10000))
+	coins := sdk.Coins{sdk.NewInt64Coin("ukex", 10000)}
+	app.BankKeeper.MintCoins(ctx, authtypes.FeeCollectorName, coins)
+	app.BankKeeper.SendCoinsFromModuleToAccount(ctx, authtypes.FeeCollectorName, addr, coins)
 
 	fees := sdk.Coins{sdk.NewInt64Coin("ukex", 100)}
 	app.FeeProcessingKeeper.SendCoinsFromAccountToModule(ctx, addr, authtypes.FeeCollectorName, fees)
@@ -105,7 +107,9 @@ func TestNewKeeper_SendCoinsFromModuleToAccount(t *testing.T) {
 
 	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
 	addr := addrs[0]
-	app.BankKeeper.SetBalance(ctx, addr, sdk.NewInt64Coin("ukex", 10000))
+	coins := sdk.Coins{sdk.NewInt64Coin("ukex", 10000)}
+	app.BankKeeper.MintCoins(ctx, authtypes.FeeCollectorName, coins)
+	app.BankKeeper.SendCoinsFromModuleToAccount(ctx, authtypes.FeeCollectorName, addr, coins)
 
 	fees := sdk.Coins{sdk.NewInt64Coin("ukex", 100)}
 	returnFees := sdk.Coins{sdk.NewInt64Coin("ukex", 10)}
@@ -131,9 +135,13 @@ func TestNewKeeper_ProcessExecutionFeeReturn(t *testing.T) {
 	addr := addrs[0]
 	addr2 := addrs[1]
 	addr3 := addrs[2]
-	app.BankKeeper.SetBalance(ctx, addr, sdk.NewInt64Coin("ukex", 10000))
-	app.BankKeeper.SetBalance(ctx, addr2, sdk.NewInt64Coin("ukex", 10000))
-	app.BankKeeper.SetBalance(ctx, addr3, sdk.NewInt64Coin("ukex", 10000))
+	coins := sdk.Coins{sdk.NewInt64Coin("ukex", 10000)}
+	app.BankKeeper.MintCoins(ctx, authtypes.FeeCollectorName, coins)
+	app.BankKeeper.SendCoinsFromModuleToAccount(ctx, authtypes.FeeCollectorName, addr, coins)
+	app.BankKeeper.MintCoins(ctx, authtypes.FeeCollectorName, coins)
+	app.BankKeeper.SendCoinsFromModuleToAccount(ctx, authtypes.FeeCollectorName, addr2, coins)
+	app.BankKeeper.MintCoins(ctx, authtypes.FeeCollectorName, coins)
+	app.BankKeeper.SendCoinsFromModuleToAccount(ctx, authtypes.FeeCollectorName, addr3, coins)
 
 	app.CustomGovKeeper.SetExecutionFee(ctx, &govtypes.ExecutionFee{
 		Name:              kiratypes.MsgTypeUpsertTokenRate,

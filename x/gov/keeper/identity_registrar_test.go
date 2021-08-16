@@ -8,6 +8,7 @@ import (
 	"github.com/KiraCore/sekai/x/gov/keeper"
 	"github.com/KiraCore/sekai/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
@@ -184,9 +185,14 @@ func TestKeeper_IdentityRecordApproveFlow(t *testing.T) {
 	addr1 := sdk.AccAddress("foo1________________")
 	addr2 := sdk.AccAddress("foo2________________")
 	addr3 := sdk.AccAddress("foo3________________")
-	app.BankKeeper.SetBalance(ctx, addr1, sdk.NewInt64Coin(sdk.DefaultBondDenom, 10000))
-	app.BankKeeper.SetBalance(ctx, addr2, sdk.NewInt64Coin(sdk.DefaultBondDenom, 10000))
-	app.BankKeeper.SetBalance(ctx, addr3, sdk.NewInt64Coin(sdk.DefaultBondDenom, 10000))
+
+	coins := sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 10000)}
+	app.BankKeeper.MintCoins(ctx, authtypes.FeeCollectorName, coins)
+	app.BankKeeper.SendCoinsFromModuleToAccount(ctx, authtypes.FeeCollectorName, addr1, coins)
+	app.BankKeeper.MintCoins(ctx, authtypes.FeeCollectorName, coins)
+	app.BankKeeper.SendCoinsFromModuleToAccount(ctx, authtypes.FeeCollectorName, addr2, coins)
+	app.BankKeeper.MintCoins(ctx, authtypes.FeeCollectorName, coins)
+	app.BankKeeper.SendCoinsFromModuleToAccount(ctx, authtypes.FeeCollectorName, addr3, coins)
 
 	infos := make(map[string]string)
 	infos["key"] = "value"
@@ -233,7 +239,7 @@ func TestKeeper_IdentityRecordApproveFlow(t *testing.T) {
 		RecordIds: []uint64{1},
 		Tip:       sdk.NewInt64Coin(sdk.DefaultBondDenom, 10),
 	})
-	coins := app.BankKeeper.GetAllBalances(ctx, addr1)
+	coins = app.BankKeeper.GetAllBalances(ctx, addr1)
 	require.Equal(t, coins, sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 9990)})
 	coins = app.BankKeeper.GetAllBalances(ctx, app.AccountKeeper.GetModuleAddress(types.ModuleName))
 	require.Equal(t, coins, sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 10)})
