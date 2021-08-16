@@ -39,10 +39,10 @@ func TestPlanExecutionWithHandler(t *testing.T) {
 	ctx := app.NewContext(false, tmproto.Header{})
 	acc1 := sdk.AccAddress("test________________")
 
-	minUpgradeTime := time.Now()
+	upgradeTime := time.Now()
 
 	t.Log("Verify that a panic happens at the upgrade time/height")
-	newCtx := ctx.WithBlockHeight(10).WithBlockTime(minUpgradeTime.Add(time.Second))
+	newCtx := ctx.WithBlockHeight(10).WithBlockTime(upgradeTime.Add(time.Second))
 
 	t.Log("Verify that the upgrade can be successfully applied with a handler")
 	app.UpgradeKeeper.SetUpgradeHandler("test", func(ctx sdk.Context, plan types.Plan) {
@@ -53,7 +53,7 @@ func TestPlanExecutionWithHandler(t *testing.T) {
 	})
 	require.NotPanics(t, func() {
 		app.UpgradeKeeper.ApplyUpgradePlan(newCtx, types.Plan{
-			UpgradeTime:          minUpgradeTime.Unix(),
+			UpgradeTime:          upgradeTime.Unix(),
 			RollbackChecksum:     "",
 			MaxEnrolmentDuration: 0,
 			Name:                 "test",
@@ -72,13 +72,13 @@ func TestPlanExecutionWithoutHandler(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	minUpgradeTime := time.Now()
+	upgradeTime := time.Now()
 
-	newCtx := ctx.WithBlockHeight(10).WithBlockTime(minUpgradeTime.Add(time.Second))
+	newCtx := ctx.WithBlockHeight(10).WithBlockTime(upgradeTime.Add(time.Second))
 
 	require.Panics(t, func() {
 		app.UpgradeKeeper.ApplyUpgradePlan(newCtx, types.Plan{
-			UpgradeTime:          minUpgradeTime.Unix(),
+			UpgradeTime:          upgradeTime.Unix(),
 			RollbackChecksum:     "",
 			MaxEnrolmentDuration: 0,
 			Name:                 "test",
@@ -90,13 +90,13 @@ func TestNoPlanExecutionBeforeTimeOrHeight(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	minUpgradeTime := time.Now()
+	upgradeTime := time.Now()
 
-	newCtx := ctx.WithBlockHeight(9).WithBlockTime(minUpgradeTime)
+	newCtx := ctx.WithBlockHeight(9).WithBlockTime(upgradeTime)
 
 	require.NotPanics(t, func() {
 		app.UpgradeKeeper.ApplyUpgradePlan(newCtx, types.Plan{
-			UpgradeTime:          minUpgradeTime.Unix(),
+			UpgradeTime:          upgradeTime.Unix(),
 			RollbackChecksum:     "",
 			MaxEnrolmentDuration: 0,
 			Name:                 "test",

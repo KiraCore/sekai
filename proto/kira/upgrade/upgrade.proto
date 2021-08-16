@@ -15,7 +15,7 @@ message ProposalSoftwareUpgrade {
   string name = 1;
   repeated Resource resources = 2 [ (gogoproto.nullable) = false ];
   int64 height = 3;
-  int64 min_upgrade_time = 4;
+  int64 upgrade_time = 4;
   string old_chain_id = 5;
   string new_chain_id = 6;
   string rollback_checksum = 7;

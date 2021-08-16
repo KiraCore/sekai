@@ -16,7 +16,7 @@ const (
 	FlagName                  = "name"
 	FlagResources             = "resources"
 	FlagHeight                = "height"
-	FlagMinUpgradeTime        = "min-upgrade-time"
+	FlagUpgradeTime           = "upgrade-time"
 	FlagOldChainId            = "old-chain-id"
 	FlagNewChainId            = "new-chain-id"
 	FlagRollbackMemo          = "rollback-memo"
@@ -73,7 +73,7 @@ func GetTxProposeUpgradePlan() *cobra.Command {
 				return fmt.Errorf("invalid height")
 			}
 
-			minUpgradeTime, err := cmd.Flags().GetInt64(FlagMinUpgradeTime)
+			upgradeTime, err := cmd.Flags().GetInt64(FlagUpgradeTime)
 			if err != nil {
 				return fmt.Errorf("invalid min halt time")
 			}
@@ -126,7 +126,7 @@ func GetTxProposeUpgradePlan() *cobra.Command {
 					name,
 					resources,
 					height,
-					minUpgradeTime,
+					upgradeTime,
 					oldChainId,
 					newChainId,
 					rollBackMemo,
@@ -146,7 +146,7 @@ func GetTxProposeUpgradePlan() *cobra.Command {
 	cmd.Flags().String(FlagName, "upgrade1", "upgrade name")
 	cmd.Flags().String(FlagResources, "[]", "resource info")
 	cmd.Flags().Int64(FlagHeight, 0, "upgrade height")
-	cmd.Flags().Int64(FlagMinUpgradeTime, 0, "min halt time")
+	cmd.Flags().Int64(FlagUpgradeTime, 0, "min halt time")
 	cmd.Flags().String(FlagOldChainId, "", "old chain id")
 	cmd.Flags().String(FlagNewChainId, "", "new chain id")
 	cmd.Flags().String(FlagRollbackMemo, "", "rollback memo")

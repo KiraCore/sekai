@@ -764,10 +764,7 @@ func (m *MsgSetNetworkProperties) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthNetworkProperties
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthNetworkProperties
 			}
 			if (iNdEx + skippy) > l {
@@ -1143,10 +1140,7 @@ func (m *NetworkProperties) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthNetworkProperties
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthNetworkProperties
 			}
 			if (iNdEx + skippy) > l {
