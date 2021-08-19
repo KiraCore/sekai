@@ -2,10 +2,13 @@ package interx
 
 import (
 	"net/http"
+	"sort"
 
 	"github.com/KiraCore/sekai/INTERX/common"
 	"github.com/KiraCore/sekai/INTERX/config"
+	"github.com/KiraCore/sekai/INTERX/global"
 	"github.com/KiraCore/sekai/INTERX/tasks"
+	"github.com/KiraCore/sekai/INTERX/types"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 )
@@ -24,6 +27,9 @@ func RegisterNodeListQueryRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, r
 }
 
 func queryPubP2PNodeList(gwCosmosmux *runtime.ServeMux, rpcAddr string) (interface{}, interface{}, int) {
+	global.Mutex.Lock()
+	sort.Sort(types.P2PNodes(tasks.PubP2PNodeListResponse.NodeList))
+	global.Mutex.Unlock()
 	return tasks.PubP2PNodeListResponse, nil, http.StatusOK
 }
 
@@ -58,6 +64,9 @@ func QueryPubP2PNodeList(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.Han
 }
 
 func queryPrivP2PNodeList(gwCosmosmux *runtime.ServeMux, rpcAddr string) (interface{}, interface{}, int) {
+	global.Mutex.Lock()
+	sort.Sort(types.P2PNodes(tasks.PrivP2PNodeListResponse.NodeList))
+	global.Mutex.Unlock()
 	return tasks.PrivP2PNodeListResponse, nil, http.StatusOK
 }
 
@@ -92,6 +101,9 @@ func QueryPrivP2PNodeList(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.Ha
 }
 
 func queryInterxList(gwCosmosmux *runtime.ServeMux, rpcAddr string) (interface{}, interface{}, int) {
+	global.Mutex.Lock()
+	sort.Sort(types.InterxNodes(tasks.InterxP2PNodeListResponse.NodeList))
+	global.Mutex.Unlock()
 	return tasks.InterxP2PNodeListResponse, nil, http.StatusOK
 }
 
@@ -126,6 +138,9 @@ func QueryInterxList(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.Handler
 }
 
 func querySnapList(gwCosmosmux *runtime.ServeMux, rpcAddr string) (interface{}, interface{}, int) {
+	global.Mutex.Lock()
+	sort.Sort(types.SnapNodes(tasks.SnapNodeListResponse.NodeList))
+	global.Mutex.Unlock()
 	return tasks.SnapNodeListResponse, nil, http.StatusOK
 }
 
