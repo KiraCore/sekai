@@ -3,6 +3,7 @@ package interx
 import (
 	"net/http"
 	"sort"
+	"strings"
 
 	"github.com/KiraCore/sekai/INTERX/common"
 	"github.com/KiraCore/sekai/INTERX/config"
@@ -26,10 +27,26 @@ func RegisterNodeListQueryRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, r
 	common.AddRPCMethod("GET", config.QuerySnapList, "This is an API to query snap node list.", true)
 }
 
-func queryPubP2PNodeList(gwCosmosmux *runtime.ServeMux, rpcAddr string) (interface{}, interface{}, int) {
+func queryPubP2PNodeList(r *http.Request, rpcAddr string) (interface{}, interface{}, int) {
 	global.Mutex.Lock()
 	sort.Sort(types.P2PNodes(tasks.PubP2PNodeListResponse.NodeList))
 	global.Mutex.Unlock()
+
+	_ = r.ParseForm()
+	connected := r.FormValue("connected") == "true"
+	ip_only := r.FormValue("ip_only") == "true"
+
+	if ip_only {
+		ips := []string{}
+		for _, node := range tasks.PubP2PNodeListResponse.NodeList {
+			if connected == node.Connected {
+				ips = append(ips, node.IP)
+			}
+		}
+
+		return strings.Join(ips, ", "), nil, http.StatusOK
+	}
+
 	return tasks.PubP2PNodeListResponse, nil, http.StatusOK
 }
 
@@ -56,17 +73,33 @@ func QueryPubP2PNodeList(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.Han
 				}
 			}
 
-			response.Response, response.Error, statusCode = queryPubP2PNodeList(gwCosmosmux, rpcAddr)
+			response.Response, response.Error, statusCode = queryPubP2PNodeList(r, rpcAddr)
 		}
 
 		common.WrapResponse(w, request, *response, statusCode, common.RPCMethods["GET"][config.QueryStatus].CachingEnabled)
 	}
 }
 
-func queryPrivP2PNodeList(gwCosmosmux *runtime.ServeMux, rpcAddr string) (interface{}, interface{}, int) {
+func queryPrivP2PNodeList(r *http.Request, rpcAddr string) (interface{}, interface{}, int) {
 	global.Mutex.Lock()
 	sort.Sort(types.P2PNodes(tasks.PrivP2PNodeListResponse.NodeList))
 	global.Mutex.Unlock()
+
+	_ = r.ParseForm()
+	connected := r.FormValue("connected") == "true"
+	ip_only := r.FormValue("ip_only") == "true"
+
+	if ip_only {
+		ips := []string{}
+		for _, node := range tasks.PrivP2PNodeListResponse.NodeList {
+			if connected == node.Connected {
+				ips = append(ips, node.IP)
+			}
+		}
+
+		return strings.Join(ips, ", "), nil, http.StatusOK
+	}
+
 	return tasks.PrivP2PNodeListResponse, nil, http.StatusOK
 }
 
@@ -93,17 +126,30 @@ func QueryPrivP2PNodeList(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.Ha
 				}
 			}
 
-			response.Response, response.Error, statusCode = queryPrivP2PNodeList(gwCosmosmux, rpcAddr)
+			response.Response, response.Error, statusCode = queryPrivP2PNodeList(r, rpcAddr)
 		}
 
 		common.WrapResponse(w, request, *response, statusCode, common.RPCMethods["GET"][config.QueryStatus].CachingEnabled)
 	}
 }
 
-func queryInterxList(gwCosmosmux *runtime.ServeMux, rpcAddr string) (interface{}, interface{}, int) {
+func queryInterxList(r *http.Request, rpcAddr string) (interface{}, interface{}, int) {
 	global.Mutex.Lock()
 	sort.Sort(types.InterxNodes(tasks.InterxP2PNodeListResponse.NodeList))
 	global.Mutex.Unlock()
+
+	_ = r.ParseForm()
+	ip_only := r.FormValue("ip_only") == "true"
+
+	if ip_only {
+		ips := []string{}
+		for _, node := range tasks.InterxP2PNodeListResponse.NodeList {
+			ips = append(ips, node.IP)
+		}
+
+		return strings.Join(ips, ", "), nil, http.StatusOK
+	}
+
 	return tasks.InterxP2PNodeListResponse, nil, http.StatusOK
 }
 
@@ -130,17 +176,30 @@ func QueryInterxList(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.Handler
 				}
 			}
 
-			response.Response, response.Error, statusCode = queryInterxList(gwCosmosmux, rpcAddr)
+			response.Response, response.Error, statusCode = queryInterxList(r, rpcAddr)
 		}
 
 		common.WrapResponse(w, request, *response, statusCode, common.RPCMethods["GET"][config.QueryStatus].CachingEnabled)
 	}
 }
 
-func querySnapList(gwCosmosmux *runtime.ServeMux, rpcAddr string) (interface{}, interface{}, int) {
+func querySnapList(r *http.Request, rpcAddr string) (interface{}, interface{}, int) {
 	global.Mutex.Lock()
 	sort.Sort(types.SnapNodes(tasks.SnapNodeListResponse.NodeList))
 	global.Mutex.Unlock()
+
+	_ = r.ParseForm()
+	ip_only := r.FormValue("ip_only") == "true"
+
+	if ip_only {
+		ips := []string{}
+		for _, node := range tasks.SnapNodeListResponse.NodeList {
+			ips = append(ips, node.IP)
+		}
+
+		return strings.Join(ips, ", "), nil, http.StatusOK
+	}
+
 	return tasks.SnapNodeListResponse, nil, http.StatusOK
 }
 
@@ -167,7 +226,7 @@ func QuerySnapList(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.HandlerFu
 				}
 			}
 
-			response.Response, response.Error, statusCode = querySnapList(gwCosmosmux, rpcAddr)
+			response.Response, response.Error, statusCode = querySnapList(r, rpcAddr)
 		}
 
 		common.WrapResponse(w, request, *response, statusCode, common.RPCMethods["GET"][config.QueryStatus].CachingEnabled)
