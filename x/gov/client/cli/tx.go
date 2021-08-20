@@ -37,6 +37,7 @@ const (
 	FlagWhitelistPerms    = "whitelist"
 	FlagBlacklistPerms    = "blacklist"
 	FlagInfosFile         = "infos-file"
+	FlagInfosJson         = "infos-json"
 	FlagRecordId          = "record-id"
 	FlagVerifier          = "verifier"
 	FlagRecordIds         = "record-ids"
@@ -1027,7 +1028,7 @@ func GetTxCreateIdentityRecord() *cobra.Command {
 	flags.AddTxFlagsToCmd(cmd)
 
 	cmd.Flags().String(FlagInfosFile, "", "The infos file for identity request.")
-	cmd.MarkFlagRequired(FlagInfosFile)
+	cmd.Flags().String(FlagInfosJson, "", "The infos json for identity request.")
 	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
@@ -1067,8 +1068,8 @@ func GetTxEditIdentityRecord() *cobra.Command {
 	flags.AddTxFlagsToCmd(cmd)
 
 	cmd.Flags().String(FlagInfosFile, "", "The infos file for identity request.")
+	cmd.Flags().String(FlagInfosJson, "", "The infos json for identity request.")
 	cmd.Flags().Uint64(FlagRecordId, 0, "Identity record to edit.")
-	cmd.MarkFlagRequired(FlagInfosFile)
 	cmd.MarkFlagRequired(FlagRecordId)
 	cmd.MarkFlagRequired(flags.FlagFrom)
 
@@ -1202,16 +1203,26 @@ func GetTxCancelIdentityRecordsVerifyRequest() *cobra.Command {
 }
 
 func parseIdInfoJSON(fs *pflag.FlagSet) ([]types.IdentityInfoEntry, error) {
+	var err error
 	infos := make(map[string]string)
 	infosFile, _ := fs.GetString(FlagInfosFile)
+	infosJson, _ := fs.GetString(FlagInfosJson)
 
-	if infosFile == "" {
-		return nil, fmt.Errorf("should input infos file json using the --%s flag", FlagInfosFile)
+	if infosFile == "" && infosJson == "" {
+		return nil, fmt.Errorf("should input infos file json using the --%s flag or infos json using the --%s flag", FlagInfosFile, FlagInfosJson)
 	}
 
-	contents, err := ioutil.ReadFile(infosFile)
-	if err != nil {
-		return nil, err
+	if infosFile != "" && infosJson != "" {
+		return nil, fmt.Errorf("should only set one of --%s flag or --%s flag", FlagInfosFile, FlagInfosJson)
+	}
+
+	contents := []byte(infosJson)
+
+	if infosFile != "" {
+		contents, err = ioutil.ReadFile(infosFile)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	// make exception if unknown field exists
