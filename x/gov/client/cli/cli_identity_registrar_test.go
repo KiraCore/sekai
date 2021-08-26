@@ -42,23 +42,14 @@ func (s IntegrationTestSuite) TestTxCreateIdentityRecord() {
 
 func (s IntegrationTestSuite) TestTxEditIdentityRecord() {
 	val := s.network.Validators[0]
-	cmd := cli.GetTxEditIdentityRecord()
-
-	infosFile := testutil.WriteToNewTempFile(s.T(), `
-		{
-			"key1": "value1",
-			"key2": "value2",
-			"key3": "value3"
-		}
-	`)
+	cmd := cli.GetTxDeleteIdentityRecords()
 
 	clientCtx := val.ClientCtx.WithOutputFormat("json")
 	out, err := clitestutil.ExecTestCLICmd(
 		clientCtx,
 		cmd,
 		[]string{
-			fmt.Sprintf("--%s=%d", cli.FlagRecordId, 1),
-			fmt.Sprintf("--%s=%s", cli.FlagInfosFile, infosFile.Name()),
+			fmt.Sprintf("--%s=%s", cli.FlagKeys, "key1,key2"),
 			fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),

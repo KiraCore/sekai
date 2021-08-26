@@ -12,7 +12,8 @@ func TestMarshalUnmarshalIdentityRecord(t *testing.T) {
 	record := IdentityRecord{
 		Id:        1,
 		Address:   sdk.AccAddress{},
-		Infos:     make(map[string]string),
+		Key:       "",
+		Value:     "",
 		Date:      time.Now(),
 		Verifiers: []sdk.AccAddress{},
 	}
@@ -26,7 +27,7 @@ func TestMarshalUnmarshalIdentityRecord(t *testing.T) {
 }
 
 func TestMarshalUnmarshalMsgCreateIdentityRecord(t *testing.T) {
-	record := MsgCreateIdentityRecord{
+	record := MsgRegisterIdentityRecords{
 		Address: sdk.AccAddress{},
 		Infos:   WrapInfos(make(map[string]string)),
 	}
@@ -34,7 +35,7 @@ func TestMarshalUnmarshalMsgCreateIdentityRecord(t *testing.T) {
 	bz, err := record.Marshal()
 	require.NoError(t, err)
 
-	parsed := MsgCreateIdentityRecord{}
+	parsed := MsgRegisterIdentityRecords{}
 	err = parsed.Unmarshal(bz)
 	require.NoError(t, err)
 }

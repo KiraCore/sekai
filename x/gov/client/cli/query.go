@@ -568,9 +568,9 @@ $ %[1]s query gov identity-record-by-addr [addr]
 				return err
 			}
 
-			res, err := queryClient.IdentityRecordByAddress(
+			res, err := queryClient.IdentityRecordsByAddress(
 				context.Background(),
-				&types.QueryIdentityRecordByAddressRequest{
+				&types.QueryIdentityRecordsByAddressRequest{
 					Creator: addr,
 				},
 			)

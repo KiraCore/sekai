@@ -431,22 +431,22 @@ func (m *MsgVoteProposal) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgCreateIdentityRecord(address sdk.AccAddress, infos []IdentityInfoEntry) *MsgCreateIdentityRecord {
-	return &MsgCreateIdentityRecord{
+func NewMsgCreateIdentityRecord(address sdk.AccAddress, infos []IdentityInfoEntry) *MsgRegisterIdentityRecords {
+	return &MsgRegisterIdentityRecords{
 		Address: address,
 		Infos:   infos,
 	}
 }
 
-func (m *MsgCreateIdentityRecord) Route() string {
+func (m *MsgRegisterIdentityRecords) Route() string {
 	return ModuleName
 }
 
-func (m *MsgCreateIdentityRecord) Type() string {
+func (m *MsgRegisterIdentityRecords) Type() string {
 	return types.MsgTypeCreateIdentityRecord
 }
 
-func (m *MsgCreateIdentityRecord) ValidateBasic() error {
+func (m *MsgRegisterIdentityRecords) ValidateBasic() error {
 	if m.Address.Empty() {
 		return ErrEmptyProposerAccAddress
 	}
@@ -456,52 +456,45 @@ func (m *MsgCreateIdentityRecord) ValidateBasic() error {
 	return nil
 }
 
-func (m *MsgCreateIdentityRecord) GetSignBytes() []byte {
+func (m *MsgRegisterIdentityRecords) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(m)
 	return sdk.MustSortJSON(bz)
 }
 
-func (m *MsgCreateIdentityRecord) GetSigners() []sdk.AccAddress {
+func (m *MsgRegisterIdentityRecords) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{
 		m.Address,
 	}
 }
 
-func NewMsgEditIdentityRecord(recordId uint64, address sdk.AccAddress, infos []IdentityInfoEntry) *MsgEditIdentityRecord {
-	return &MsgEditIdentityRecord{
-		RecordId: recordId,
-		Address:  address,
-		Infos:    infos,
+func NewMsgEditIdentityRecord(recordId uint64, address sdk.AccAddress, keys []string) *MsgDeleteIdentityRecords {
+	return &MsgDeleteIdentityRecords{
+		Address: address,
+		Keys:    keys,
 	}
 }
 
-func (m *MsgEditIdentityRecord) Route() string {
+func (m *MsgDeleteIdentityRecords) Route() string {
 	return ModuleName
 }
 
-func (m *MsgEditIdentityRecord) Type() string {
+func (m *MsgDeleteIdentityRecords) Type() string {
 	return types.MsgTypeEditIdentityRecord
 }
 
-func (m *MsgEditIdentityRecord) ValidateBasic() error {
+func (m *MsgDeleteIdentityRecords) ValidateBasic() error {
 	if m.Address.Empty() {
 		return ErrEmptyProposerAccAddress
-	}
-	if m.RecordId == 0 {
-		return ErrInvalidRecordId
-	}
-	if len(m.Infos) == 0 {
-		return ErrEmptyInfos
 	}
 	return nil
 }
 
-func (m *MsgEditIdentityRecord) GetSignBytes() []byte {
+func (m *MsgDeleteIdentityRecords) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(m)
 	return sdk.MustSortJSON(bz)
 }
 
-func (m *MsgEditIdentityRecord) GetSigners() []sdk.AccAddress {
+func (m *MsgDeleteIdentityRecords) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{
 		m.Address,
 	}

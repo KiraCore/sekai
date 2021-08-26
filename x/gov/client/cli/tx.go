@@ -38,6 +38,7 @@ const (
 	FlagBlacklistPerms    = "blacklist"
 	FlagInfosFile         = "infos-file"
 	FlagInfosJson         = "infos-json"
+	FlagKeys              = "keys"
 	FlagRecordId          = "record-id"
 	FlagVerifier          = "verifier"
 	FlagRecordIds         = "record-ids"
@@ -62,7 +63,7 @@ func NewTxCmd() *cobra.Command {
 		NewTxSetNetworkProperties(),
 		NewTxSetExecutionFee(),
 		GetTxCreateIdentityRecord(),
-		GetTxEditIdentityRecord(),
+		GetTxDeleteIdentityRecords(),
 		GetTxRequestIdentityRecordsVerify(),
 		GetTxApproveIdentityRecords(),
 		GetTxCancelIdentityRecordsVerifyRequest(),
@@ -1034,10 +1035,10 @@ func GetTxCreateIdentityRecord() *cobra.Command {
 	return cmd
 }
 
-func GetTxEditIdentityRecord() *cobra.Command {
+func GetTxDeleteIdentityRecords() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "edit-identity-record",
-		Short: "Submit a transaction to edit an identity record.",
+		Use:   "delete-identity-record",
+		Short: "Submit a transaction to delete an identity records.",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -1045,10 +1046,12 @@ func GetTxEditIdentityRecord() *cobra.Command {
 				return err
 			}
 
-			infos, err := parseIdInfoJSON(cmd.Flags())
+			keysStr, err := cmd.Flags().GetString(FlagKeys)
 			if err != nil {
 				return err
 			}
+
+			keys := strings.Split(keysStr, ",")
 
 			recordId, err := cmd.Flags().GetUint64(FlagRecordId)
 			if err != nil {
@@ -1058,7 +1061,7 @@ func GetTxEditIdentityRecord() *cobra.Command {
 			msg := types.NewMsgEditIdentityRecord(
 				recordId,
 				clientCtx.FromAddress,
-				infos,
+				keys,
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
@@ -1067,10 +1070,7 @@ func GetTxEditIdentityRecord() *cobra.Command {
 
 	flags.AddTxFlagsToCmd(cmd)
 
-	cmd.Flags().String(FlagInfosFile, "", "The infos file for identity request.")
-	cmd.Flags().String(FlagInfosJson, "", "The infos json for identity request.")
-	cmd.Flags().Uint64(FlagRecordId, 0, "Identity record to edit.")
-	cmd.MarkFlagRequired(FlagRecordId)
+	cmd.Flags().String(FlagKeys, "", "The keys to remove.")
 	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd

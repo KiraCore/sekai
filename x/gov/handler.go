@@ -67,11 +67,11 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 			return sdk.WrapServiceResult(ctx, res, err)
 
 		// identity registrar related
-		case *types.MsgCreateIdentityRecord:
-			res, err := msgServer.CreateIdentityRecord(sdk.WrapSDKContext(ctx), msg)
+		case *types.MsgRegisterIdentityRecords:
+			res, err := msgServer.RegisterIdentityRecords(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgEditIdentityRecord:
-			res, err := msgServer.EditIdentityRecord(sdk.WrapSDKContext(ctx), msg)
+		case *types.MsgDeleteIdentityRecords:
+			res, err := msgServer.DeleteIdentityRecords(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 		case *types.MsgRequestIdentityRecordsVerify:
 			res, err := msgServer.RequestIdentityRecordsVerify(sdk.WrapSDKContext(ctx), msg)

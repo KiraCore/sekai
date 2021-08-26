@@ -139,8 +139,8 @@ func registerProposalCodec(cdc *codec.LegacyAmino) {
 }
 
 func registerIdRecordsCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgCreateIdentityRecord{}, "kiraHub/MsgCreateIdentityRecord", nil)
-	functionmeta.AddNewFunction((&MsgCreateIdentityRecord{}).Type(), `{
+	cdc.RegisterConcrete(&MsgRegisterIdentityRecords{}, "kiraHub/MsgCreateIdentityRecord", nil)
+	functionmeta.AddNewFunction((&MsgRegisterIdentityRecords{}).Type(), `{
 		"description": "MsgCreateIdentityRecord defines a proposal message to create a identity record.",
 		"parameters": {
 			"address": {
@@ -154,8 +154,8 @@ func registerIdRecordsCodec(cdc *codec.LegacyAmino) {
 		}
 	}`)
 
-	cdc.RegisterConcrete(&MsgEditIdentityRecord{}, "kiraHub/MsgEditIdentityRecord", nil)
-	functionmeta.AddNewFunction((&MsgEditIdentityRecord{}).Type(), `{
+	cdc.RegisterConcrete(&MsgDeleteIdentityRecords{}, "kiraHub/MsgEditIdentityRecord", nil)
+	functionmeta.AddNewFunction((&MsgDeleteIdentityRecords{}).Type(), `{
 		"description": "MsgEditIdentityRecord defines a proposal message to edit an identity record.",
 		"parameters": {
 			"record_id": {
@@ -431,8 +431,8 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgSubmitProposal{},
 		&MsgVoteProposal{},
 
-		&MsgCreateIdentityRecord{},
-		&MsgEditIdentityRecord{},
+		&MsgRegisterIdentityRecords{},
+		&MsgDeleteIdentityRecords{},
 		&MsgRequestIdentityRecordsVerify{},
 		&MsgApproveIdentityRecords{},
 		&MsgCancelIdentityRecordsVerifyRequest{},

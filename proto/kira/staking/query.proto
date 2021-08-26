@@ -62,7 +62,7 @@ message QueryValidator {
   int64 rank = 8;
   int64 streak = 9;
   int64 mischance = 10;
-  kira.gov.IdentityRecord identity = 11;
+  repeated kira.gov.IdentityRecord identity = 11 [(gogoproto.nullable) = false];
 }
 
 // ValidatorsResponse is the response type for validators query.
