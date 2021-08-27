@@ -88,7 +88,7 @@ func (s IntegrationTestSuite) TestTxRequestIdentityRecordsVerify() {
 	fmt.Println("out", out)
 }
 
-func (s IntegrationTestSuite) TestTxApproveIdentityRecords() {
+func (s IntegrationTestSuite) TestTxHandleIdentityRecordsVerifyRequest() {
 	val := s.network.Validators[0]
 	cmd := cli.GetTxHandleIdentityRecordsVerifyRequest()
 
@@ -99,6 +99,7 @@ func (s IntegrationTestSuite) TestTxApproveIdentityRecords() {
 		[]string{
 			"1",
 			fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+			fmt.Sprintf("--%s=true", cli.FlagApprove),
 			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 			fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
