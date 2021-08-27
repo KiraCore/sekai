@@ -54,7 +54,7 @@ func (k Keeper) SigningInfo(c context.Context, req *types.QuerySigningInfoReques
 		}
 
 		consPubkey, _ := sdk.Bech32ifyPubKey(sdk.Bech32PubKeyTypeConsPub, val.GetConsPubKey())
-		identity := k.sk.GetIdRecordByAddress(ctx, sdk.AccAddress(val.ValKey))
+		records := k.sk.GetIdRecordsByAddress(ctx, sdk.AccAddress(val.ValKey))
 		validator = stakingtypes.QueryValidator{
 			Address:    sdk.AccAddress(val.ValKey).String(),
 			Valkey:     val.ValKey.String(),
@@ -65,7 +65,7 @@ func (k Keeper) SigningInfo(c context.Context, req *types.QuerySigningInfoReques
 			Status:     val.Status.String(),
 			Rank:       val.Rank,
 			Streak:     val.Streak,
-			Identity:   identity,
+			Identity:   records,
 		}
 	}
 
@@ -116,7 +116,7 @@ func (k Keeper) SigningInfos(c context.Context, request *types.QuerySigningInfos
 					Status:     val.Status.String(),
 					Rank:       val.Rank,
 					Streak:     val.Streak,
-					Identity:   k.sk.GetIdRecordByAddress(ctx, sdk.AccAddress(val.ValKey)),
+					Identity:   k.sk.GetIdRecordsByAddress(ctx, sdk.AccAddress(val.ValKey)),
 				})
 			}
 		}

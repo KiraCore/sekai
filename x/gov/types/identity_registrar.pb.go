@@ -31,9 +31,10 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 type IdentityRecord struct {
 	Id        uint64                                          `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	Address   github_com_cosmos_cosmos_sdk_types.AccAddress   `protobuf:"bytes,2,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
-	Infos     map[string]string                               `protobuf:"bytes,3,rep,name=infos,proto3" json:"infos,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-	Date      time.Time                                       `protobuf:"bytes,4,opt,name=date,proto3,stdtime" json:"date"`
-	Verifiers []github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,5,rep,name=verifiers,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"verifiers,omitempty"`
+	Key       string                                          `protobuf:"bytes,3,opt,name=key,proto3" json:"key,omitempty"`
+	Value     string                                          `protobuf:"bytes,4,opt,name=value,proto3" json:"value,omitempty"`
+	Date      time.Time                                       `protobuf:"bytes,5,opt,name=date,proto3,stdtime" json:"date"`
+	Verifiers []github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,6,rep,name=verifiers,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"verifiers,omitempty"`
 }
 
 func (m *IdentityRecord) Reset()         { *m = IdentityRecord{} }
@@ -83,11 +84,18 @@ func (m *IdentityRecord) GetAddress() github_com_cosmos_cosmos_sdk_types.AccAddr
 	return nil
 }
 
-func (m *IdentityRecord) GetInfos() map[string]string {
+func (m *IdentityRecord) GetKey() string {
 	if m != nil {
-		return m.Infos
+		return m.Key
 	}
-	return nil
+	return ""
+}
+
+func (m *IdentityRecord) GetValue() string {
+	if m != nil {
+		return m.Value
+	}
+	return ""
 }
 
 func (m *IdentityRecord) GetDate() time.Time {
@@ -156,23 +164,23 @@ func (m *IdentityInfoEntry) GetInfo() string {
 	return ""
 }
 
-type MsgCreateIdentityRecord struct {
+type MsgRegisterIdentityRecords struct {
 	Address github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
 	Infos   []IdentityInfoEntry                           `protobuf:"bytes,2,rep,name=infos,proto3" json:"infos"`
 }
 
-func (m *MsgCreateIdentityRecord) Reset()         { *m = MsgCreateIdentityRecord{} }
-func (m *MsgCreateIdentityRecord) String() string { return proto.CompactTextString(m) }
-func (*MsgCreateIdentityRecord) ProtoMessage()    {}
-func (*MsgCreateIdentityRecord) Descriptor() ([]byte, []int) {
+func (m *MsgRegisterIdentityRecords) Reset()         { *m = MsgRegisterIdentityRecords{} }
+func (m *MsgRegisterIdentityRecords) String() string { return proto.CompactTextString(m) }
+func (*MsgRegisterIdentityRecords) ProtoMessage()    {}
+func (*MsgRegisterIdentityRecords) Descriptor() ([]byte, []int) {
 	return fileDescriptor_cf2821c6a2456955, []int{2}
 }
-func (m *MsgCreateIdentityRecord) XXX_Unmarshal(b []byte) error {
+func (m *MsgRegisterIdentityRecords) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgCreateIdentityRecord) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgRegisterIdentityRecords) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgCreateIdentityRecord.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgRegisterIdentityRecords.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -182,50 +190,49 @@ func (m *MsgCreateIdentityRecord) XXX_Marshal(b []byte, deterministic bool) ([]b
 		return b[:n], nil
 	}
 }
-func (m *MsgCreateIdentityRecord) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgCreateIdentityRecord.Merge(m, src)
+func (m *MsgRegisterIdentityRecords) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRegisterIdentityRecords.Merge(m, src)
 }
-func (m *MsgCreateIdentityRecord) XXX_Size() int {
+func (m *MsgRegisterIdentityRecords) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgCreateIdentityRecord) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgCreateIdentityRecord.DiscardUnknown(m)
+func (m *MsgRegisterIdentityRecords) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRegisterIdentityRecords.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgCreateIdentityRecord proto.InternalMessageInfo
+var xxx_messageInfo_MsgRegisterIdentityRecords proto.InternalMessageInfo
 
-func (m *MsgCreateIdentityRecord) GetAddress() github_com_cosmos_cosmos_sdk_types.AccAddress {
+func (m *MsgRegisterIdentityRecords) GetAddress() github_com_cosmos_cosmos_sdk_types.AccAddress {
 	if m != nil {
 		return m.Address
 	}
 	return nil
 }
 
-func (m *MsgCreateIdentityRecord) GetInfos() []IdentityInfoEntry {
+func (m *MsgRegisterIdentityRecords) GetInfos() []IdentityInfoEntry {
 	if m != nil {
 		return m.Infos
 	}
 	return nil
 }
 
-type MsgEditIdentityRecord struct {
-	RecordId uint64                                        `protobuf:"varint,1,opt,name=record_id,json=recordId,proto3" json:"record_id,omitempty"`
-	Address  github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,2,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
-	Infos    []IdentityInfoEntry                           `protobuf:"bytes,3,rep,name=infos,proto3" json:"infos"`
+type MsgDeleteIdentityRecords struct {
+	Address github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
+	Keys    []string                                      `protobuf:"bytes,2,rep,name=keys,proto3" json:"keys,omitempty"`
 }
 
-func (m *MsgEditIdentityRecord) Reset()         { *m = MsgEditIdentityRecord{} }
-func (m *MsgEditIdentityRecord) String() string { return proto.CompactTextString(m) }
-func (*MsgEditIdentityRecord) ProtoMessage()    {}
-func (*MsgEditIdentityRecord) Descriptor() ([]byte, []int) {
+func (m *MsgDeleteIdentityRecords) Reset()         { *m = MsgDeleteIdentityRecords{} }
+func (m *MsgDeleteIdentityRecords) String() string { return proto.CompactTextString(m) }
+func (*MsgDeleteIdentityRecords) ProtoMessage()    {}
+func (*MsgDeleteIdentityRecords) Descriptor() ([]byte, []int) {
 	return fileDescriptor_cf2821c6a2456955, []int{3}
 }
-func (m *MsgEditIdentityRecord) XXX_Unmarshal(b []byte) error {
+func (m *MsgDeleteIdentityRecords) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgEditIdentityRecord) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgDeleteIdentityRecords) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgEditIdentityRecord.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgDeleteIdentityRecords.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -235,45 +242,39 @@ func (m *MsgEditIdentityRecord) XXX_Marshal(b []byte, deterministic bool) ([]byt
 		return b[:n], nil
 	}
 }
-func (m *MsgEditIdentityRecord) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgEditIdentityRecord.Merge(m, src)
+func (m *MsgDeleteIdentityRecords) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgDeleteIdentityRecords.Merge(m, src)
 }
-func (m *MsgEditIdentityRecord) XXX_Size() int {
+func (m *MsgDeleteIdentityRecords) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgEditIdentityRecord) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgEditIdentityRecord.DiscardUnknown(m)
+func (m *MsgDeleteIdentityRecords) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgDeleteIdentityRecords.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgEditIdentityRecord proto.InternalMessageInfo
+var xxx_messageInfo_MsgDeleteIdentityRecords proto.InternalMessageInfo
 
-func (m *MsgEditIdentityRecord) GetRecordId() uint64 {
-	if m != nil {
-		return m.RecordId
-	}
-	return 0
-}
-
-func (m *MsgEditIdentityRecord) GetAddress() github_com_cosmos_cosmos_sdk_types.AccAddress {
+func (m *MsgDeleteIdentityRecords) GetAddress() github_com_cosmos_cosmos_sdk_types.AccAddress {
 	if m != nil {
 		return m.Address
 	}
 	return nil
 }
 
-func (m *MsgEditIdentityRecord) GetInfos() []IdentityInfoEntry {
+func (m *MsgDeleteIdentityRecords) GetKeys() []string {
 	if m != nil {
-		return m.Infos
+		return m.Keys
 	}
 	return nil
 }
 
 type IdentityRecordsVerify struct {
-	Id        uint64                                        `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	Address   github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,2,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
-	Verifier  github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,3,opt,name=verifier,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"verifier,omitempty" yaml:"verifier"`
-	RecordIds []uint64                                      `protobuf:"varint,4,rep,packed,name=recordIds,proto3" json:"recordIds,omitempty"`
-	Tip       github_com_cosmos_cosmos_sdk_types.Coin       `protobuf:"bytes,5,opt,name=tip,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Coin" json:"tip"`
+	Id                 uint64                                        `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Address            github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,2,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
+	Verifier           github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,3,opt,name=verifier,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"verifier,omitempty" yaml:"verifier"`
+	RecordIds          []uint64                                      `protobuf:"varint,4,rep,packed,name=recordIds,proto3" json:"recordIds,omitempty"`
+	Tip                github_com_cosmos_cosmos_sdk_types.Coin       `protobuf:"bytes,5,opt,name=tip,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Coin" json:"tip"`
+	LastRecordEditDate time.Time                                     `protobuf:"bytes,6,opt,name=lastRecordEditDate,proto3,stdtime" json:"lastRecordEditDate"`
 }
 
 func (m *IdentityRecordsVerify) Reset()         { *m = IdentityRecordsVerify{} }
@@ -337,6 +338,13 @@ func (m *IdentityRecordsVerify) GetRecordIds() []uint64 {
 	return nil
 }
 
+func (m *IdentityRecordsVerify) GetLastRecordEditDate() time.Time {
+	if m != nil {
+		return m.LastRecordEditDate
+	}
+	return time.Time{}
+}
+
 type MsgRequestIdentityRecordsVerify struct {
 	Address   github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
 	Verifier  github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,2,opt,name=verifier,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"verifier,omitempty" yaml:"verifier"`
@@ -398,23 +406,24 @@ func (m *MsgRequestIdentityRecordsVerify) GetRecordIds() []uint64 {
 	return nil
 }
 
-type MsgApproveIdentityRecords struct {
+type MsgHandleIdentityRecordsVerifyRequest struct {
 	Verifier        github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=verifier,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"verifier,omitempty" yaml:"verifier"`
 	VerifyRequestId uint64                                        `protobuf:"varint,2,opt,name=verifyRequestId,proto3" json:"verifyRequestId,omitempty"`
+	Yes             bool                                          `protobuf:"varint,3,opt,name=yes,proto3" json:"yes,omitempty"`
 }
 
-func (m *MsgApproveIdentityRecords) Reset()         { *m = MsgApproveIdentityRecords{} }
-func (m *MsgApproveIdentityRecords) String() string { return proto.CompactTextString(m) }
-func (*MsgApproveIdentityRecords) ProtoMessage()    {}
-func (*MsgApproveIdentityRecords) Descriptor() ([]byte, []int) {
+func (m *MsgHandleIdentityRecordsVerifyRequest) Reset()         { *m = MsgHandleIdentityRecordsVerifyRequest{} }
+func (m *MsgHandleIdentityRecordsVerifyRequest) String() string { return proto.CompactTextString(m) }
+func (*MsgHandleIdentityRecordsVerifyRequest) ProtoMessage()    {}
+func (*MsgHandleIdentityRecordsVerifyRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_cf2821c6a2456955, []int{6}
 }
-func (m *MsgApproveIdentityRecords) XXX_Unmarshal(b []byte) error {
+func (m *MsgHandleIdentityRecordsVerifyRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgApproveIdentityRecords) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgHandleIdentityRecordsVerifyRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgApproveIdentityRecords.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgHandleIdentityRecordsVerifyRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -424,30 +433,37 @@ func (m *MsgApproveIdentityRecords) XXX_Marshal(b []byte, deterministic bool) ([
 		return b[:n], nil
 	}
 }
-func (m *MsgApproveIdentityRecords) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgApproveIdentityRecords.Merge(m, src)
+func (m *MsgHandleIdentityRecordsVerifyRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgHandleIdentityRecordsVerifyRequest.Merge(m, src)
 }
-func (m *MsgApproveIdentityRecords) XXX_Size() int {
+func (m *MsgHandleIdentityRecordsVerifyRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgApproveIdentityRecords) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgApproveIdentityRecords.DiscardUnknown(m)
+func (m *MsgHandleIdentityRecordsVerifyRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgHandleIdentityRecordsVerifyRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgApproveIdentityRecords proto.InternalMessageInfo
+var xxx_messageInfo_MsgHandleIdentityRecordsVerifyRequest proto.InternalMessageInfo
 
-func (m *MsgApproveIdentityRecords) GetVerifier() github_com_cosmos_cosmos_sdk_types.AccAddress {
+func (m *MsgHandleIdentityRecordsVerifyRequest) GetVerifier() github_com_cosmos_cosmos_sdk_types.AccAddress {
 	if m != nil {
 		return m.Verifier
 	}
 	return nil
 }
 
-func (m *MsgApproveIdentityRecords) GetVerifyRequestId() uint64 {
+func (m *MsgHandleIdentityRecordsVerifyRequest) GetVerifyRequestId() uint64 {
 	if m != nil {
 		return m.VerifyRequestId
 	}
 	return 0
+}
+
+func (m *MsgHandleIdentityRecordsVerifyRequest) GetYes() bool {
+	if m != nil {
+		return m.Yes
+	}
+	return false
 }
 
 type MsgCancelIdentityRecordsVerifyRequest struct {
@@ -504,62 +520,61 @@ func (m *MsgCancelIdentityRecordsVerifyRequest) GetVerifyRequestId() uint64 {
 
 func init() {
 	proto.RegisterType((*IdentityRecord)(nil), "kira.gov.IdentityRecord")
-	proto.RegisterMapType((map[string]string)(nil), "kira.gov.IdentityRecord.InfosEntry")
 	proto.RegisterType((*IdentityInfoEntry)(nil), "kira.gov.IdentityInfoEntry")
-	proto.RegisterType((*MsgCreateIdentityRecord)(nil), "kira.gov.MsgCreateIdentityRecord")
-	proto.RegisterType((*MsgEditIdentityRecord)(nil), "kira.gov.MsgEditIdentityRecord")
+	proto.RegisterType((*MsgRegisterIdentityRecords)(nil), "kira.gov.MsgRegisterIdentityRecords")
+	proto.RegisterType((*MsgDeleteIdentityRecords)(nil), "kira.gov.MsgDeleteIdentityRecords")
 	proto.RegisterType((*IdentityRecordsVerify)(nil), "kira.gov.IdentityRecordsVerify")
 	proto.RegisterType((*MsgRequestIdentityRecordsVerify)(nil), "kira.gov.MsgRequestIdentityRecordsVerify")
-	proto.RegisterType((*MsgApproveIdentityRecords)(nil), "kira.gov.MsgApproveIdentityRecords")
+	proto.RegisterType((*MsgHandleIdentityRecordsVerifyRequest)(nil), "kira.gov.MsgHandleIdentityRecordsVerifyRequest")
 	proto.RegisterType((*MsgCancelIdentityRecordsVerifyRequest)(nil), "kira.gov.MsgCancelIdentityRecordsVerifyRequest")
 }
 
 func init() { proto.RegisterFile("kira/gov/identity_registrar.proto", fileDescriptor_cf2821c6a2456955) }
 
 var fileDescriptor_cf2821c6a2456955 = []byte{
-	// 668 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x55, 0xcd, 0x6e, 0xd3, 0x40,
-	0x10, 0xce, 0xda, 0x0e, 0x24, 0xdb, 0xaa, 0x05, 0xab, 0x15, 0x26, 0x45, 0x71, 0x30, 0xaa, 0xf0,
-	0xa5, 0xb6, 0x28, 0x87, 0xfe, 0x5c, 0x50, 0x12, 0x7a, 0x88, 0x50, 0x84, 0x64, 0x21, 0x0e, 0x48,
-	0xa8, 0xb8, 0xf6, 0xd6, 0xac, 0xf2, 0xb3, 0x61, 0x77, 0x13, 0xd5, 0x6f, 0xd1, 0xb7, 0xe0, 0x8c,
-	0x78, 0x04, 0x2e, 0x45, 0xe2, 0xd0, 0x23, 0xe2, 0x10, 0x50, 0xfb, 0x06, 0x3d, 0x72, 0x01, 0xed,
-	0xda, 0x4e, 0x9b, 0xd0, 0x4a, 0xa1, 0x28, 0x9c, 0x32, 0xde, 0x9d, 0xf9, 0x66, 0xbe, 0xef, 0x9b,
-	0xd8, 0xf0, 0x7e, 0x0b, 0x53, 0xdf, 0x8d, 0xc8, 0xc0, 0xc5, 0x21, 0xea, 0x72, 0xcc, 0xe3, 0x5d,
-	0x8a, 0x22, 0xcc, 0x38, 0xf5, 0xa9, 0xd3, 0xa3, 0x84, 0x13, 0xbd, 0x20, 0x52, 0x9c, 0x88, 0x0c,
-	0x4a, 0x4b, 0x11, 0x89, 0x88, 0x3c, 0x74, 0x45, 0x94, 0xdc, 0x97, 0xcc, 0x88, 0x90, 0xa8, 0x8d,
-	0x5c, 0xf9, 0xb4, 0xd7, 0xdf, 0x77, 0x39, 0xee, 0x20, 0xc6, 0xfd, 0x4e, 0x2f, 0x49, 0xb0, 0x7e,
-	0x29, 0x70, 0xa1, 0x91, 0xa2, 0x7b, 0x28, 0x20, 0x34, 0xd4, 0x17, 0xa0, 0x82, 0x43, 0x03, 0x54,
-	0x80, 0xad, 0x79, 0x0a, 0x0e, 0xf5, 0xd7, 0xf0, 0xa6, 0x1f, 0x86, 0x14, 0x31, 0x66, 0x28, 0x15,
-	0x60, 0xcf, 0xd7, 0xea, 0x67, 0x43, 0x73, 0x21, 0xf6, 0x3b, 0xed, 0x6d, 0x2b, 0xbd, 0xb0, 0x7e,
-	0x0e, 0xcd, 0xb5, 0x08, 0xf3, 0xb7, 0xfd, 0x3d, 0x27, 0x20, 0x1d, 0x37, 0x20, 0xac, 0x43, 0x58,
-	0xfa, 0xb3, 0xc6, 0xc2, 0x96, 0xcb, 0xe3, 0x1e, 0x62, 0x4e, 0x35, 0x08, 0xaa, 0x49, 0x85, 0x97,
-	0x61, 0xea, 0x5b, 0x30, 0x8f, 0xbb, 0xfb, 0x84, 0x19, 0x6a, 0x45, 0xb5, 0xe7, 0xd6, 0x1f, 0x38,
-	0x19, 0x25, 0x67, 0x7c, 0x2e, 0xa7, 0x21, 0xb2, 0x76, 0xba, 0x9c, 0xc6, 0x5e, 0x52, 0xa1, 0x6f,
-	0x42, 0x2d, 0xf4, 0x39, 0x32, 0xb4, 0x0a, 0xb0, 0xe7, 0xd6, 0x4b, 0x4e, 0x42, 0xd6, 0xc9, 0xc8,
-	0x3a, 0x2f, 0x32, 0xb2, 0xb5, 0xc2, 0xd1, 0xd0, 0xcc, 0x1d, 0x7e, 0x37, 0x81, 0x27, 0x2b, 0xf4,
-	0xe7, 0xb0, 0x38, 0x40, 0x14, 0xef, 0x63, 0x44, 0x99, 0x91, 0xaf, 0xa8, 0xf6, 0x7c, 0xed, 0xd1,
-	0xdf, 0x73, 0x38, 0xc7, 0x28, 0x6d, 0x42, 0x78, 0x3e, 0x9f, 0x7e, 0x0b, 0xaa, 0x2d, 0x14, 0x4b,
-	0x0d, 0x8b, 0x9e, 0x08, 0xf5, 0x25, 0x98, 0x1f, 0xf8, 0xed, 0x3e, 0x92, 0x12, 0x16, 0xbd, 0xe4,
-	0x61, 0x5b, 0xd9, 0x04, 0xd6, 0x16, 0xbc, 0x9d, 0x11, 0x15, 0x08, 0x57, 0x01, 0xe8, 0x50, 0x13,
-	0xa4, 0xd3, 0x7a, 0x19, 0x5b, 0x1f, 0x00, 0xbc, 0xd3, 0x64, 0x51, 0x9d, 0x22, 0x9f, 0xa3, 0x09,
-	0x17, 0x2f, 0xb8, 0x06, 0x66, 0xe0, 0xda, 0x46, 0xe6, 0x9a, 0x22, 0x5d, 0x5b, 0xf9, 0xd3, 0xb5,
-	0x11, 0x99, 0x9a, 0x26, 0xc4, 0x4f, 0x3d, 0xb3, 0xbe, 0x00, 0xb8, 0xdc, 0x64, 0xd1, 0x4e, 0x88,
-	0xf9, 0xc4, 0xc4, 0x2b, 0xb0, 0x48, 0x65, 0xb4, 0x3b, 0x5a, 0xbf, 0x42, 0x72, 0xd0, 0x98, 0xf9,
-	0x12, 0x6e, 0x8c, 0x2f, 0xe1, 0xf4, 0x74, 0x3e, 0x2b, 0x70, 0x79, 0x9c, 0x07, 0x7b, 0x29, 0x96,
-	0x22, 0xfe, 0xdf, 0x7f, 0xa3, 0x37, 0xb0, 0x90, 0x6d, 0xa3, 0xa1, 0x4a, 0xfc, 0xa7, 0x67, 0x43,
-	0x73, 0x31, 0xc1, 0xcf, 0x6e, 0xae, 0xd1, 0x60, 0x84, 0xaa, 0xdf, 0xcb, 0xfc, 0x69, 0x84, 0xcc,
-	0xd0, 0x2a, 0xaa, 0xad, 0x79, 0xe7, 0x07, 0x7a, 0x15, 0xaa, 0x1c, 0xf7, 0x8c, 0xbc, 0x58, 0xcf,
-	0x9a, 0x2b, 0x24, 0xfa, 0x36, 0x34, 0x1f, 0x4e, 0xd1, 0xab, 0x4e, 0x70, 0xd7, 0x13, 0xb5, 0xd6,
-	0x27, 0x05, 0x9a, 0x4d, 0x16, 0x79, 0xe8, 0x5d, 0x1f, 0x31, 0x7e, 0xb9, 0xaa, 0x33, 0x5e, 0xeb,
-	0x8b, 0x2a, 0x2a, 0xb3, 0x57, 0x51, 0xbd, 0x42, 0x45, 0xed, 0x1f, 0x54, 0x7c, 0x0f, 0xe0, 0xdd,
-	0x26, 0x8b, 0xaa, 0xbd, 0x1e, 0x25, 0x83, 0x89, 0xb7, 0xc2, 0x38, 0x41, 0x30, 0x13, 0x82, 0x36,
-	0x5c, 0x94, 0x71, 0x3c, 0xf2, 0x51, 0x2a, 0xa9, 0x79, 0x93, 0xc7, 0xd6, 0x47, 0x00, 0x57, 0xc5,
-	0xeb, 0xcb, 0xef, 0x06, 0xa8, 0x7d, 0xa9, 0xdd, 0x69, 0xae, 0x98, 0x1a, 0x1d, 0xa0, 0xa0, 0xcf,
-	0xc9, 0x25, 0x53, 0x67, 0x37, 0xd7, 0x99, 0x3a, 0xab, 0x9d, 0x7e, 0xea, 0xda, 0x93, 0xa3, 0x93,
-	0x32, 0x38, 0x3e, 0x29, 0x83, 0x1f, 0x27, 0x65, 0x70, 0x78, 0x5a, 0xce, 0x1d, 0x9f, 0x96, 0x73,
-	0x5f, 0x4f, 0xcb, 0xb9, 0x57, 0xab, 0x17, 0x9a, 0x3f, 0xc3, 0xd4, 0xaf, 0x13, 0x8a, 0x5c, 0x86,
-	0x5a, 0x3e, 0x76, 0x0f, 0xe4, 0x67, 0x5c, 0xf6, 0xdf, 0xbb, 0x21, 0xbf, 0x4f, 0x8f, 0x7f, 0x07,
-	0x00, 0x00, 0xff, 0xff, 0xac, 0x68, 0x55, 0xef, 0xdf, 0x07, 0x00, 0x00,
+	// 665 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x55, 0xcf, 0x6a, 0x13, 0x41,
+	0x18, 0xcf, 0x64, 0xb7, 0x35, 0x99, 0x96, 0x56, 0x87, 0x0a, 0x4b, 0x94, 0x6c, 0x5c, 0x28, 0xee,
+	0xa5, 0xbb, 0x58, 0x0f, 0xfe, 0xb9, 0x48, 0x37, 0x2d, 0x18, 0xa4, 0x08, 0x43, 0xf1, 0x20, 0x88,
+	0x6e, 0x77, 0x27, 0xeb, 0x90, 0xcd, 0x4e, 0x9c, 0x99, 0x84, 0xee, 0x43, 0x08, 0x7d, 0x03, 0xdf,
+	0x41, 0x7d, 0x03, 0x11, 0x7a, 0xec, 0x51, 0x3c, 0x44, 0x69, 0xdf, 0xa0, 0x47, 0x4f, 0xb2, 0xb3,
+	0x59, 0x9b, 0xd6, 0x88, 0x6d, 0x20, 0x3d, 0xe5, 0x9b, 0xf9, 0xe6, 0xfb, 0xf3, 0xfb, 0xfd, 0xbe,
+	0x2f, 0x0b, 0xef, 0x74, 0x28, 0xf7, 0xdd, 0x88, 0x0d, 0x5c, 0x1a, 0x92, 0x44, 0x52, 0x99, 0xbe,
+	0xe6, 0x24, 0xa2, 0x42, 0x72, 0x9f, 0x3b, 0x3d, 0xce, 0x24, 0x43, 0x95, 0xec, 0x89, 0x13, 0xb1,
+	0x41, 0x6d, 0x25, 0x62, 0x11, 0x53, 0x97, 0x6e, 0x66, 0xe5, 0xfe, 0x9a, 0x19, 0x31, 0x16, 0xc5,
+	0xc4, 0x55, 0xa7, 0xdd, 0x7e, 0xdb, 0x95, 0xb4, 0x4b, 0x84, 0xf4, 0xbb, 0xbd, 0xfc, 0x81, 0xf5,
+	0xb1, 0x0c, 0x97, 0x5a, 0xa3, 0xec, 0x98, 0x04, 0x8c, 0x87, 0x68, 0x09, 0x96, 0x69, 0x68, 0x80,
+	0x06, 0xb0, 0x75, 0x5c, 0xa6, 0x21, 0x7a, 0x05, 0xaf, 0xf9, 0x61, 0xc8, 0x89, 0x10, 0x46, 0xb9,
+	0x01, 0xec, 0x45, 0xaf, 0x79, 0x32, 0x34, 0x97, 0x52, 0xbf, 0x1b, 0x3f, 0xb6, 0x46, 0x0e, 0xeb,
+	0xd7, 0xd0, 0x5c, 0x8b, 0xa8, 0x7c, 0xdb, 0xdf, 0x75, 0x02, 0xd6, 0x75, 0x03, 0x26, 0xba, 0x4c,
+	0x8c, 0x7e, 0xd6, 0x44, 0xd8, 0x71, 0x65, 0xda, 0x23, 0xc2, 0xd9, 0x08, 0x82, 0x8d, 0x3c, 0x02,
+	0x17, 0x39, 0xd1, 0x75, 0xa8, 0x75, 0x48, 0x6a, 0x68, 0x0d, 0x60, 0x57, 0x71, 0x66, 0xa2, 0x15,
+	0x38, 0x37, 0xf0, 0xe3, 0x3e, 0x31, 0x74, 0x75, 0x97, 0x1f, 0xd0, 0x43, 0xa8, 0x87, 0xbe, 0x24,
+	0xc6, 0x5c, 0x03, 0xd8, 0x0b, 0xeb, 0x35, 0x27, 0x47, 0xe6, 0x14, 0xc8, 0x9c, 0x9d, 0x02, 0x99,
+	0x57, 0x39, 0x18, 0x9a, 0xa5, 0xfd, 0x1f, 0x26, 0xc0, 0x2a, 0x02, 0x3d, 0x87, 0xd5, 0x01, 0xe1,
+	0xb4, 0x4d, 0x09, 0x17, 0xc6, 0x7c, 0x43, 0xb3, 0x17, 0xbd, 0x7b, 0x97, 0x6f, 0xf8, 0x34, 0x87,
+	0xf5, 0x08, 0xde, 0x28, 0x38, 0x6b, 0x25, 0x6d, 0xb6, 0x95, 0x48, 0x9e, 0x16, 0x38, 0xc0, 0x29,
+	0x0e, 0x04, 0x75, 0x9a, 0xb4, 0x99, 0x62, 0xad, 0x8a, 0x95, 0x6d, 0x7d, 0x06, 0xb0, 0xb6, 0x2d,
+	0x22, 0xac, 0x74, 0x24, 0xfc, 0x2c, 0xf5, 0x62, 0x9c, 0x6b, 0x30, 0x03, 0xae, 0x1f, 0xc0, 0xb9,
+	0xac, 0x8b, 0x4c, 0x48, 0xcd, 0x5e, 0x58, 0xbf, 0xe5, 0x14, 0xe3, 0xe3, 0xfc, 0x85, 0xc7, 0xd3,
+	0x33, 0x16, 0x71, 0xfe, 0xde, 0x7a, 0x0f, 0xa0, 0xb1, 0x2d, 0xa2, 0x4d, 0x12, 0x13, 0x49, 0xae,
+	0xb8, 0x69, 0x04, 0xf5, 0x0e, 0x49, 0xf3, 0x9e, 0xab, 0x58, 0xd9, 0xd6, 0x07, 0x0d, 0xde, 0x3c,
+	0xd7, 0xc6, 0x8b, 0x4c, 0x9e, 0xf4, 0xaa, 0xa7, 0xf7, 0x0d, 0xac, 0x14, 0x73, 0xa1, 0x46, 0x78,
+	0xd1, 0xdb, 0x3c, 0x19, 0x9a, 0xcb, 0x79, 0xfe, 0xc2, 0x33, 0x45, 0x81, 0x3f, 0x59, 0xd1, 0x6d,
+	0x58, 0xe5, 0x0a, 0x61, 0x2b, 0x14, 0x86, 0xde, 0xd0, 0x6c, 0x1d, 0x9f, 0x5e, 0xa0, 0x0d, 0xa8,
+	0x49, 0xda, 0x53, 0x4b, 0x51, 0xf5, 0xdc, 0x4c, 0xb2, 0xef, 0x43, 0xf3, 0xee, 0x05, 0x6a, 0x35,
+	0x19, 0x4d, 0x70, 0x16, 0x8b, 0x76, 0x20, 0x8a, 0x7d, 0x21, 0x73, 0x1a, 0xb7, 0x42, 0x2a, 0x37,
+	0xb3, 0x35, 0x9b, 0xbf, 0xc4, 0x9a, 0x4d, 0x88, 0xb7, 0xbe, 0x94, 0xa1, 0xa9, 0x06, 0xfd, 0x5d,
+	0x9f, 0x08, 0x39, 0x59, 0xab, 0x19, 0x0f, 0xce, 0xb8, 0x36, 0xe5, 0xd9, 0x6b, 0xa3, 0xfd, 0x43,
+	0x1b, 0x7d, 0x7a, 0x6d, 0xac, 0xaf, 0x00, 0xae, 0x6e, 0x8b, 0xe8, 0xa9, 0x9f, 0x84, 0x31, 0x99,
+	0x48, 0xe2, 0x88, 0xe0, 0x33, 0x60, 0xc1, 0x4c, 0xc0, 0xda, 0x70, 0x79, 0x30, 0x5e, 0xb2, 0x15,
+	0x2a, 0x56, 0x75, 0x7c, 0xfe, 0x3a, 0xfb, 0x2b, 0x4c, 0x89, 0x50, 0xfb, 0x50, 0xc1, 0x99, 0x69,
+	0x7d, 0xca, 0x71, 0x34, 0xfd, 0x24, 0x20, 0xf1, 0xff, 0x70, 0x90, 0x3d, 0x12, 0xf4, 0x25, 0x9b,
+	0x80, 0xa3, 0xf0, 0x4c, 0x83, 0xa3, 0x88, 0xbd, 0x38, 0x0e, 0xef, 0xc9, 0xc1, 0x51, 0x1d, 0x1c,
+	0x1e, 0xd5, 0xc1, 0xcf, 0xa3, 0x3a, 0xd8, 0x3f, 0xae, 0x97, 0x0e, 0x8f, 0xeb, 0xa5, 0x6f, 0xc7,
+	0xf5, 0xd2, 0xcb, 0xd5, 0xb1, 0xe2, 0xcf, 0x28, 0xf7, 0x9b, 0x8c, 0x13, 0x57, 0x90, 0x8e, 0x4f,
+	0xdd, 0x3d, 0xf5, 0xc5, 0x56, 0xf5, 0x77, 0xe7, 0xd5, 0xda, 0xdc, 0xff, 0x1d, 0x00, 0x00, 0xff,
+	0xff, 0xb8, 0xd3, 0xe5, 0x6b, 0xca, 0x07, 0x00, 0x00,
 }
 
 func (m *IdentityRecord) Marshal() (dAtA []byte, err error) {
@@ -588,7 +603,7 @@ func (m *IdentityRecord) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			copy(dAtA[i:], m.Verifiers[iNdEx])
 			i = encodeVarintIdentityRegistrar(dAtA, i, uint64(len(m.Verifiers[iNdEx])))
 			i--
-			dAtA[i] = 0x2a
+			dAtA[i] = 0x32
 		}
 	}
 	n1, err1 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.Date, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.Date):])
@@ -598,25 +613,20 @@ func (m *IdentityRecord) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i -= n1
 	i = encodeVarintIdentityRegistrar(dAtA, i, uint64(n1))
 	i--
-	dAtA[i] = 0x22
-	if len(m.Infos) > 0 {
-		for k := range m.Infos {
-			v := m.Infos[k]
-			baseI := i
-			i -= len(v)
-			copy(dAtA[i:], v)
-			i = encodeVarintIdentityRegistrar(dAtA, i, uint64(len(v)))
-			i--
-			dAtA[i] = 0x12
-			i -= len(k)
-			copy(dAtA[i:], k)
-			i = encodeVarintIdentityRegistrar(dAtA, i, uint64(len(k)))
-			i--
-			dAtA[i] = 0xa
-			i = encodeVarintIdentityRegistrar(dAtA, i, uint64(baseI-i))
-			i--
-			dAtA[i] = 0x1a
-		}
+	dAtA[i] = 0x2a
+	if len(m.Value) > 0 {
+		i -= len(m.Value)
+		copy(dAtA[i:], m.Value)
+		i = encodeVarintIdentityRegistrar(dAtA, i, uint64(len(m.Value)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Key) > 0 {
+		i -= len(m.Key)
+		copy(dAtA[i:], m.Key)
+		i = encodeVarintIdentityRegistrar(dAtA, i, uint64(len(m.Key)))
+		i--
+		dAtA[i] = 0x1a
 	}
 	if len(m.Address) > 0 {
 		i -= len(m.Address)
@@ -670,7 +680,7 @@ func (m *IdentityInfoEntry) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgCreateIdentityRecord) Marshal() (dAtA []byte, err error) {
+func (m *MsgRegisterIdentityRecords) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -680,12 +690,12 @@ func (m *MsgCreateIdentityRecord) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgCreateIdentityRecord) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgRegisterIdentityRecords) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgCreateIdentityRecord) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgRegisterIdentityRecords) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -714,7 +724,7 @@ func (m *MsgCreateIdentityRecord) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgEditIdentityRecord) Marshal() (dAtA []byte, err error) {
+func (m *MsgDeleteIdentityRecords) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -724,28 +734,23 @@ func (m *MsgEditIdentityRecord) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgEditIdentityRecord) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgDeleteIdentityRecords) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgEditIdentityRecord) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgDeleteIdentityRecords) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Infos) > 0 {
-		for iNdEx := len(m.Infos) - 1; iNdEx >= 0; iNdEx-- {
-			{
-				size, err := m.Infos[iNdEx].MarshalToSizedBuffer(dAtA[:i])
-				if err != nil {
-					return 0, err
-				}
-				i -= size
-				i = encodeVarintIdentityRegistrar(dAtA, i, uint64(size))
-			}
+	if len(m.Keys) > 0 {
+		for iNdEx := len(m.Keys) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Keys[iNdEx])
+			copy(dAtA[i:], m.Keys[iNdEx])
+			i = encodeVarintIdentityRegistrar(dAtA, i, uint64(len(m.Keys[iNdEx])))
 			i--
-			dAtA[i] = 0x1a
+			dAtA[i] = 0x12
 		}
 	}
 	if len(m.Address) > 0 {
@@ -753,12 +758,7 @@ func (m *MsgEditIdentityRecord) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.Address)
 		i = encodeVarintIdentityRegistrar(dAtA, i, uint64(len(m.Address)))
 		i--
-		dAtA[i] = 0x12
-	}
-	if m.RecordId != 0 {
-		i = encodeVarintIdentityRegistrar(dAtA, i, uint64(m.RecordId))
-		i--
-		dAtA[i] = 0x8
+		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
@@ -783,6 +783,14 @@ func (m *IdentityRecordsVerify) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	n2, err2 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.LastRecordEditDate, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.LastRecordEditDate):])
+	if err2 != nil {
+		return 0, err2
+	}
+	i -= n2
+	i = encodeVarintIdentityRegistrar(dAtA, i, uint64(n2))
+	i--
+	dAtA[i] = 0x32
 	{
 		size := m.Tip.Size()
 		i -= size
@@ -794,20 +802,20 @@ func (m *IdentityRecordsVerify) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i--
 	dAtA[i] = 0x2a
 	if len(m.RecordIds) > 0 {
-		dAtA3 := make([]byte, len(m.RecordIds)*10)
-		var j2 int
+		dAtA4 := make([]byte, len(m.RecordIds)*10)
+		var j3 int
 		for _, num := range m.RecordIds {
 			for num >= 1<<7 {
-				dAtA3[j2] = uint8(uint64(num)&0x7f | 0x80)
+				dAtA4[j3] = uint8(uint64(num)&0x7f | 0x80)
 				num >>= 7
-				j2++
+				j3++
 			}
-			dAtA3[j2] = uint8(num)
-			j2++
+			dAtA4[j3] = uint8(num)
+			j3++
 		}
-		i -= j2
-		copy(dAtA[i:], dAtA3[:j2])
-		i = encodeVarintIdentityRegistrar(dAtA, i, uint64(j2))
+		i -= j3
+		copy(dAtA[i:], dAtA4[:j3])
+		i = encodeVarintIdentityRegistrar(dAtA, i, uint64(j3))
 		i--
 		dAtA[i] = 0x22
 	}
@@ -864,20 +872,20 @@ func (m *MsgRequestIdentityRecordsVerify) MarshalToSizedBuffer(dAtA []byte) (int
 	i--
 	dAtA[i] = 0x22
 	if len(m.RecordIds) > 0 {
-		dAtA5 := make([]byte, len(m.RecordIds)*10)
-		var j4 int
+		dAtA6 := make([]byte, len(m.RecordIds)*10)
+		var j5 int
 		for _, num := range m.RecordIds {
 			for num >= 1<<7 {
-				dAtA5[j4] = uint8(uint64(num)&0x7f | 0x80)
+				dAtA6[j5] = uint8(uint64(num)&0x7f | 0x80)
 				num >>= 7
-				j4++
+				j5++
 			}
-			dAtA5[j4] = uint8(num)
-			j4++
+			dAtA6[j5] = uint8(num)
+			j5++
 		}
-		i -= j4
-		copy(dAtA[i:], dAtA5[:j4])
-		i = encodeVarintIdentityRegistrar(dAtA, i, uint64(j4))
+		i -= j5
+		copy(dAtA[i:], dAtA6[:j5])
+		i = encodeVarintIdentityRegistrar(dAtA, i, uint64(j5))
 		i--
 		dAtA[i] = 0x1a
 	}
@@ -898,7 +906,7 @@ func (m *MsgRequestIdentityRecordsVerify) MarshalToSizedBuffer(dAtA []byte) (int
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgApproveIdentityRecords) Marshal() (dAtA []byte, err error) {
+func (m *MsgHandleIdentityRecordsVerifyRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -908,16 +916,26 @@ func (m *MsgApproveIdentityRecords) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgApproveIdentityRecords) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgHandleIdentityRecordsVerifyRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgApproveIdentityRecords) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgHandleIdentityRecordsVerifyRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
+	if m.Yes {
+		i--
+		if m.Yes {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x18
+	}
 	if m.VerifyRequestId != 0 {
 		i = encodeVarintIdentityRegistrar(dAtA, i, uint64(m.VerifyRequestId))
 		i--
@@ -992,13 +1010,13 @@ func (m *IdentityRecord) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovIdentityRegistrar(uint64(l))
 	}
-	if len(m.Infos) > 0 {
-		for k, v := range m.Infos {
-			_ = k
-			_ = v
-			mapEntrySize := 1 + len(k) + sovIdentityRegistrar(uint64(len(k))) + 1 + len(v) + sovIdentityRegistrar(uint64(len(v)))
-			n += mapEntrySize + 1 + sovIdentityRegistrar(uint64(mapEntrySize))
-		}
+	l = len(m.Key)
+	if l > 0 {
+		n += 1 + l + sovIdentityRegistrar(uint64(l))
+	}
+	l = len(m.Value)
+	if l > 0 {
+		n += 1 + l + sovIdentityRegistrar(uint64(l))
 	}
 	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.Date)
 	n += 1 + l + sovIdentityRegistrar(uint64(l))
@@ -1028,7 +1046,7 @@ func (m *IdentityInfoEntry) Size() (n int) {
 	return n
 }
 
-func (m *MsgCreateIdentityRecord) Size() (n int) {
+func (m *MsgRegisterIdentityRecords) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1047,22 +1065,19 @@ func (m *MsgCreateIdentityRecord) Size() (n int) {
 	return n
 }
 
-func (m *MsgEditIdentityRecord) Size() (n int) {
+func (m *MsgDeleteIdentityRecords) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if m.RecordId != 0 {
-		n += 1 + sovIdentityRegistrar(uint64(m.RecordId))
-	}
 	l = len(m.Address)
 	if l > 0 {
 		n += 1 + l + sovIdentityRegistrar(uint64(l))
 	}
-	if len(m.Infos) > 0 {
-		for _, e := range m.Infos {
-			l = e.Size()
+	if len(m.Keys) > 0 {
+		for _, s := range m.Keys {
+			l = len(s)
 			n += 1 + l + sovIdentityRegistrar(uint64(l))
 		}
 	}
@@ -1095,6 +1110,8 @@ func (m *IdentityRecordsVerify) Size() (n int) {
 	}
 	l = m.Tip.Size()
 	n += 1 + l + sovIdentityRegistrar(uint64(l))
+	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.LastRecordEditDate)
+	n += 1 + l + sovIdentityRegistrar(uint64(l))
 	return n
 }
 
@@ -1124,7 +1141,7 @@ func (m *MsgRequestIdentityRecordsVerify) Size() (n int) {
 	return n
 }
 
-func (m *MsgApproveIdentityRecords) Size() (n int) {
+func (m *MsgHandleIdentityRecordsVerifyRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1136,6 +1153,9 @@ func (m *MsgApproveIdentityRecords) Size() (n int) {
 	}
 	if m.VerifyRequestId != 0 {
 		n += 1 + sovIdentityRegistrar(uint64(m.VerifyRequestId))
+	}
+	if m.Yes {
+		n += 2
 	}
 	return n
 }
@@ -1246,9 +1266,9 @@ func (m *IdentityRecord) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Infos", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Key", wireType)
 			}
-			var msglen int
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowIdentityRegistrar
@@ -1258,120 +1278,57 @@ func (m *IdentityRecord) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= int(b&0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			if msglen < 0 {
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
 				return ErrInvalidLengthIdentityRegistrar
 			}
-			postIndex := iNdEx + msglen
+			postIndex := iNdEx + intStringLen
 			if postIndex < 0 {
 				return ErrInvalidLengthIdentityRegistrar
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.Infos == nil {
-				m.Infos = make(map[string]string)
-			}
-			var mapkey string
-			var mapvalue string
-			for iNdEx < postIndex {
-				entryPreIndex := iNdEx
-				var wire uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return ErrIntOverflowIdentityRegistrar
-					}
-					if iNdEx >= l {
-						return io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					wire |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				fieldNum := int32(wire >> 3)
-				if fieldNum == 1 {
-					var stringLenmapkey uint64
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowIdentityRegistrar
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						stringLenmapkey |= uint64(b&0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					intStringLenmapkey := int(stringLenmapkey)
-					if intStringLenmapkey < 0 {
-						return ErrInvalidLengthIdentityRegistrar
-					}
-					postStringIndexmapkey := iNdEx + intStringLenmapkey
-					if postStringIndexmapkey < 0 {
-						return ErrInvalidLengthIdentityRegistrar
-					}
-					if postStringIndexmapkey > l {
-						return io.ErrUnexpectedEOF
-					}
-					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
-					iNdEx = postStringIndexmapkey
-				} else if fieldNum == 2 {
-					var stringLenmapvalue uint64
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowIdentityRegistrar
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						stringLenmapvalue |= uint64(b&0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					intStringLenmapvalue := int(stringLenmapvalue)
-					if intStringLenmapvalue < 0 {
-						return ErrInvalidLengthIdentityRegistrar
-					}
-					postStringIndexmapvalue := iNdEx + intStringLenmapvalue
-					if postStringIndexmapvalue < 0 {
-						return ErrInvalidLengthIdentityRegistrar
-					}
-					if postStringIndexmapvalue > l {
-						return io.ErrUnexpectedEOF
-					}
-					mapvalue = string(dAtA[iNdEx:postStringIndexmapvalue])
-					iNdEx = postStringIndexmapvalue
-				} else {
-					iNdEx = entryPreIndex
-					skippy, err := skipIdentityRegistrar(dAtA[iNdEx:])
-					if err != nil {
-						return err
-					}
-					if skippy < 0 {
-						return ErrInvalidLengthIdentityRegistrar
-					}
-					if (iNdEx + skippy) > postIndex {
-						return io.ErrUnexpectedEOF
-					}
-					iNdEx += skippy
-				}
-			}
-			m.Infos[mapkey] = mapvalue
+			m.Key = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Value", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowIdentityRegistrar
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthIdentityRegistrar
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthIdentityRegistrar
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Value = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Date", wireType)
 			}
@@ -1404,7 +1361,7 @@ func (m *IdentityRecord) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 5:
+		case 6:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Verifiers", wireType)
 			}
@@ -1577,7 +1534,7 @@ func (m *IdentityInfoEntry) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgCreateIdentityRecord) Unmarshal(dAtA []byte) error {
+func (m *MsgRegisterIdentityRecords) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1600,10 +1557,10 @@ func (m *MsgCreateIdentityRecord) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgCreateIdentityRecord: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgRegisterIdentityRecords: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgCreateIdentityRecord: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgRegisterIdentityRecords: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1698,7 +1655,7 @@ func (m *MsgCreateIdentityRecord) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgEditIdentityRecord) Unmarshal(dAtA []byte) error {
+func (m *MsgDeleteIdentityRecords) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1721,32 +1678,13 @@ func (m *MsgEditIdentityRecord) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgEditIdentityRecord: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgDeleteIdentityRecords: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgEditIdentityRecord: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgDeleteIdentityRecords: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field RecordId", wireType)
-			}
-			m.RecordId = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowIdentityRegistrar
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.RecordId |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 2:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
 			}
@@ -1780,11 +1718,11 @@ func (m *MsgEditIdentityRecord) Unmarshal(dAtA []byte) error {
 				m.Address = []byte{}
 			}
 			iNdEx = postIndex
-		case 3:
+		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Infos", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Keys", wireType)
 			}
-			var msglen int
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowIdentityRegistrar
@@ -1794,25 +1732,23 @@ func (m *MsgEditIdentityRecord) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= int(b&0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			if msglen < 0 {
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
 				return ErrInvalidLengthIdentityRegistrar
 			}
-			postIndex := iNdEx + msglen
+			postIndex := iNdEx + intStringLen
 			if postIndex < 0 {
 				return ErrInvalidLengthIdentityRegistrar
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Infos = append(m.Infos, IdentityInfoEntry{})
-			if err := m.Infos[len(m.Infos)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
+			m.Keys = append(m.Keys, string(dAtA[iNdEx:postIndex]))
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -2061,6 +1997,39 @@ func (m *IdentityRecordsVerify) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if err := m.Tip.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field LastRecordEditDate", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowIdentityRegistrar
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthIdentityRegistrar
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthIdentityRegistrar
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.LastRecordEditDate, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -2319,7 +2288,7 @@ func (m *MsgRequestIdentityRecordsVerify) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgApproveIdentityRecords) Unmarshal(dAtA []byte) error {
+func (m *MsgHandleIdentityRecordsVerifyRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2342,10 +2311,10 @@ func (m *MsgApproveIdentityRecords) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgApproveIdentityRecords: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgHandleIdentityRecordsVerifyRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgApproveIdentityRecords: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgHandleIdentityRecordsVerifyRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -2401,6 +2370,26 @@ func (m *MsgApproveIdentityRecords) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Yes", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowIdentityRegistrar
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Yes = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipIdentityRegistrar(dAtA[iNdEx:])
