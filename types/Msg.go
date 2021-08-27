@@ -29,10 +29,10 @@ const (
 	MsgTypeRemoveWhitelistRolePermission = "remove-whitelist-role-permission"
 	MsgTypeRemoveBlacklistRolePermission = "remove-blacklist-role-permission"
 
-	MsgTypeCreateIdentityRecord               = "create-identity-record"
+	MsgTypeRegisterIdentityRecords            = "register-identity-records"
 	MsgTypeEditIdentityRecord                 = "edit-identity-record"
 	MsgTypeRequestIdentityRecordsVerify       = "request-identity-records-verify"
-	MsgTypeApproveIdentityRecords             = "approve-identity-records"
+	MsgTypeHandleIdentityRecordsVerifyRequest = "handle-identity-records-verify-request"
 	MsgTypeCancelIdentityRecordsVerifyRequest = "cancel-identity-records-verify-request"
 
 	// staking module
@@ -59,10 +59,10 @@ var MsgFuncIDMapping = map[string]int64{
 
 	MsgTypeSubmitProposal:                     10,
 	MsgTypeVoteProposal:                       11,
-	MsgTypeCreateIdentityRecord:               12,
+	MsgTypeRegisterIdentityRecords:            12,
 	MsgTypeEditIdentityRecord:                 13,
 	MsgTypeRequestIdentityRecordsVerify:       14,
-	MsgTypeApproveIdentityRecords:             15,
+	MsgTypeHandleIdentityRecordsVerifyRequest: 15,
 	MsgTypeCancelIdentityRecordsVerifyRequest: 16,
 
 	MsgTypeSetNetworkProperties:          20,

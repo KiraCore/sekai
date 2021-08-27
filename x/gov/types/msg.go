@@ -431,7 +431,7 @@ func (m *MsgVoteProposal) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgCreateIdentityRecord(address sdk.AccAddress, infos []IdentityInfoEntry) *MsgRegisterIdentityRecords {
+func NewMsgRegisterIdentityRecords(address sdk.AccAddress, infos []IdentityInfoEntry) *MsgRegisterIdentityRecords {
 	return &MsgRegisterIdentityRecords{
 		Address: address,
 		Infos:   infos,
@@ -443,7 +443,7 @@ func (m *MsgRegisterIdentityRecords) Route() string {
 }
 
 func (m *MsgRegisterIdentityRecords) Type() string {
-	return types.MsgTypeCreateIdentityRecord
+	return types.MsgTypeRegisterIdentityRecords
 }
 
 func (m *MsgRegisterIdentityRecords) ValidateBasic() error {
@@ -467,7 +467,7 @@ func (m *MsgRegisterIdentityRecords) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgEditIdentityRecord(recordId uint64, address sdk.AccAddress, keys []string) *MsgDeleteIdentityRecords {
+func NewMsgDeleteIdentityRecords(address sdk.AccAddress, keys []string) *MsgDeleteIdentityRecords {
 	return &MsgDeleteIdentityRecords{
 		Address: address,
 		Keys:    keys,
@@ -544,22 +544,23 @@ func (m *MsgRequestIdentityRecordsVerify) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgApproveIdentityRecords(verifier sdk.AccAddress, requestId uint64) *MsgApproveIdentityRecords {
-	return &MsgApproveIdentityRecords{
+func NewMsgHandleIdentityRecordsVerifyRequest(verifier sdk.AccAddress, requestId uint64, isApprove bool) *MsgHandleIdentityRecordsVerifyRequest {
+	return &MsgHandleIdentityRecordsVerifyRequest{
 		Verifier:        verifier,
 		VerifyRequestId: requestId,
+		Yes:             isApprove,
 	}
 }
 
-func (m *MsgApproveIdentityRecords) Route() string {
+func (m *MsgHandleIdentityRecordsVerifyRequest) Route() string {
 	return ModuleName
 }
 
-func (m *MsgApproveIdentityRecords) Type() string {
-	return types.MsgTypeApproveIdentityRecords
+func (m *MsgHandleIdentityRecordsVerifyRequest) Type() string {
+	return types.MsgTypeHandleIdentityRecordsVerifyRequest
 }
 
-func (m *MsgApproveIdentityRecords) ValidateBasic() error {
+func (m *MsgHandleIdentityRecordsVerifyRequest) ValidateBasic() error {
 	if m.Verifier.Empty() {
 		return ErrEmptyVerifierAccAddress
 	}
@@ -569,12 +570,12 @@ func (m *MsgApproveIdentityRecords) ValidateBasic() error {
 	return nil
 }
 
-func (m *MsgApproveIdentityRecords) GetSignBytes() []byte {
+func (m *MsgHandleIdentityRecordsVerifyRequest) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(m)
 	return sdk.MustSortJSON(bz)
 }
 
-func (m *MsgApproveIdentityRecords) GetSigners() []sdk.AccAddress {
+func (m *MsgHandleIdentityRecordsVerifyRequest) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{
 		m.Verifier,
 	}

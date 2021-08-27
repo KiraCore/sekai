@@ -75,7 +75,7 @@ message MsgRequestIdentityRecordsVerify {
     ];
 }
 
-message MsgApproveIdentityRecords {
+message MsgHandleIdentityRecordsVerifyRequest {
     bytes verifier = 1 [
         (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
         (gogoproto.moretags) = "yaml:\"verifier\""

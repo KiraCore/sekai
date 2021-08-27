@@ -76,7 +76,7 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 		case *types.MsgRequestIdentityRecordsVerify:
 			res, err := msgServer.RequestIdentityRecordsVerify(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgApproveIdentityRecords:
+		case *types.MsgHandleIdentityRecordsVerifyRequest:
 			res, err := msgServer.ApproveIdentityRecords(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 		case *types.MsgCancelIdentityRecordsVerifyRequest:

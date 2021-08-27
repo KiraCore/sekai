@@ -118,10 +118,10 @@ FuncIDMultiSend=2
 
 FuncIDMsgSubmitProposal=10
 FuncIDMsgVoteProposal=11
-FuncIDMsgCreateIdentityRecord=12
+FuncIDMsgRegisterIdentityRecords=12
 FuncIDMsgEditIdentityRecord=13
 FuncIDMsgRequestIdentityRecordsVerify=14
-FuncIDMsgApproveIdentityRecords=15
+FuncIDMsgHandleIdentityRecordsVerifyRequest=15
 FuncIDMsgCancelIdentityRecordsVerifyRequest=16
 
 FuncIDMsgSetNetworkProperties=20

@@ -10,9 +10,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (s IntegrationTestSuite) TestTxCreateIdentityRecord() {
+func (s IntegrationTestSuite) TestTxRegisterIdentityRecords() {
 	val := s.network.Validators[0]
-	cmd := cli.GetTxCreateIdentityRecord()
+	cmd := cli.GetTxRegisterIdentityRecords()
 
 	infosFile := testutil.WriteToNewTempFile(s.T(), `
 		{
@@ -90,7 +90,7 @@ func (s IntegrationTestSuite) TestTxRequestIdentityRecordsVerify() {
 
 func (s IntegrationTestSuite) TestTxApproveIdentityRecords() {
 	val := s.network.Validators[0]
-	cmd := cli.GetTxApproveIdentityRecords()
+	cmd := cli.GetTxHandleIdentityRecordsVerifyRequest()
 
 	clientCtx := val.ClientCtx.WithOutputFormat("json")
 	out, err := clitestutil.ExecTestCLICmd(

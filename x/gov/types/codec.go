@@ -139,9 +139,9 @@ func registerProposalCodec(cdc *codec.LegacyAmino) {
 }
 
 func registerIdRecordsCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgRegisterIdentityRecords{}, "kiraHub/MsgCreateIdentityRecord", nil)
+	cdc.RegisterConcrete(&MsgRegisterIdentityRecords{}, "kiraHub/MsgRegisterIdentityRecords", nil)
 	functionmeta.AddNewFunction((&MsgRegisterIdentityRecords{}).Type(), `{
-		"description": "MsgCreateIdentityRecord defines a proposal message to create a identity record.",
+		"description": "MsgRegisterIdentityRecords defines a proposal message to create a identity record.",
 		"parameters": {
 			"address": {
 				"type":        "string",
@@ -196,9 +196,9 @@ func registerIdRecordsCodec(cdc *codec.LegacyAmino) {
 		}
 	}`)
 
-	cdc.RegisterConcrete(&MsgApproveIdentityRecords{}, "kiraHub/MsgApproveIdentityRecords", nil)
-	functionmeta.AddNewFunction((&MsgApproveIdentityRecords{}).Type(), `{
-		"description": "MsgApproveIdentityRecords defines a proposal message to approve an identity record request.",
+	cdc.RegisterConcrete(&MsgHandleIdentityRecordsVerifyRequest{}, "kiraHub/MsgHandleIdentityRecordsVerifyRequest", nil)
+	functionmeta.AddNewFunction((&MsgHandleIdentityRecordsVerifyRequest{}).Type(), `{
+		"description": "MsgHandleIdentityRecordsVerifyRequest defines a proposal message to approve or reject an identity record request.",
 		"parameters": {
 			"verifier": {
 				"type":        "string",
@@ -434,7 +434,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgRegisterIdentityRecords{},
 		&MsgDeleteIdentityRecords{},
 		&MsgRequestIdentityRecordsVerify{},
-		&MsgApproveIdentityRecords{},
+		&MsgHandleIdentityRecordsVerifyRequest{},
 		&MsgCancelIdentityRecordsVerifyRequest{},
 	)
 

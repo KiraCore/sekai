@@ -107,7 +107,7 @@ func (k msgServer) VoteProposal(
 	return &types.MsgVoteProposalResponse{}, nil
 }
 
-// CreateIdentityRecord defines a method to create identity record
+// RegisterIdentityRecords defines a method to create identity record
 func (k msgServer) RegisterIdentityRecords(goCtx context.Context, msg *types.MsgRegisterIdentityRecords) (*types.MsgRegisterIdentityRecordsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	err := k.keeper.RegisterIdentityRecords(ctx, msg.Address, msg.Infos)
@@ -130,10 +130,10 @@ func (k msgServer) RequestIdentityRecordsVerify(goCtx context.Context, msg *type
 }
 
 // ApproveIdentityRecords defines a method to accept verification request
-func (k msgServer) ApproveIdentityRecords(goCtx context.Context, msg *types.MsgApproveIdentityRecords) (*types.MsgApproveIdentityRecordsResponse, error) {
+func (k msgServer) ApproveIdentityRecords(goCtx context.Context, msg *types.MsgHandleIdentityRecordsVerifyRequest) (*types.MsgHandleIdentityRecordsVerifyResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	err := k.keeper.HandleIdentityRecordsVerifyRequest(ctx, msg.Verifier, msg.VerifyRequestId, msg.Yes)
-	return &types.MsgApproveIdentityRecordsResponse{}, err
+	return &types.MsgHandleIdentityRecordsVerifyResponse{}, err
 }
 
 func (k msgServer) CancelIdentityRecordsVerifyRequest(goCtx context.Context, msg *types.MsgCancelIdentityRecordsVerifyRequest) (*types.MsgCancelIdentityRecordsVerifyRequestResponse, error) {

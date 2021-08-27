@@ -39,10 +39,10 @@ const (
 	FlagInfosFile         = "infos-file"
 	FlagInfosJson         = "infos-json"
 	FlagKeys              = "keys"
-	FlagRecordId          = "record-id"
 	FlagVerifier          = "verifier"
 	FlagRecordIds         = "record-ids"
 	FlagTip               = "tip"
+	FlagApprove           = "approve"
 )
 
 // NewTxCmd returns a root CLI command handler for all x/bank transaction commands.
@@ -62,10 +62,10 @@ func NewTxCmd() *cobra.Command {
 		NewTxPermissionCmds(),
 		NewTxSetNetworkProperties(),
 		NewTxSetExecutionFee(),
-		GetTxCreateIdentityRecord(),
+		GetTxRegisterIdentityRecords(),
 		GetTxDeleteIdentityRecords(),
 		GetTxRequestIdentityRecordsVerify(),
-		GetTxApproveIdentityRecords(),
+		GetTxHandleIdentityRecordsVerifyRequest(),
 		GetTxCancelIdentityRecordsVerifyRequest(),
 	)
 
@@ -1001,9 +1001,9 @@ func GetTxProposalCreateRole() *cobra.Command {
 	return cmd
 }
 
-func GetTxCreateIdentityRecord() *cobra.Command {
+func GetTxRegisterIdentityRecords() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-identity-record",
+		Use:   "register-identity-records",
 		Short: "Submit a transaction to create an identity record.",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -1017,7 +1017,7 @@ func GetTxCreateIdentityRecord() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgCreateIdentityRecord(
+			msg := types.NewMsgRegisterIdentityRecords(
 				clientCtx.FromAddress,
 				infos,
 			)
@@ -1037,7 +1037,7 @@ func GetTxCreateIdentityRecord() *cobra.Command {
 
 func GetTxDeleteIdentityRecords() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "delete-identity-record",
+		Use:   "delete-identity-records",
 		Short: "Submit a transaction to delete an identity records.",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -1053,13 +1053,7 @@ func GetTxDeleteIdentityRecords() *cobra.Command {
 
 			keys := strings.Split(keysStr, ",")
 
-			recordId, err := cmd.Flags().GetUint64(FlagRecordId)
-			if err != nil {
-				return err
-			}
-
-			msg := types.NewMsgEditIdentityRecord(
-				recordId,
+			msg := types.NewMsgDeleteIdentityRecords(
 				clientCtx.FromAddress,
 				keys,
 			)
@@ -1140,10 +1134,10 @@ func GetTxRequestIdentityRecordsVerify() *cobra.Command {
 	return cmd
 }
 
-func GetTxApproveIdentityRecords() *cobra.Command {
+func GetTxHandleIdentityRecordsVerifyRequest() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "approve-identity-records [id]",
-		Short: "Submit a transaction to approve identity records.",
+		Use:   "handle-identity-records-verify-request [id]",
+		Short: "Submit a transaction to approve or reject identity records verify request.",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -1156,15 +1150,23 @@ func GetTxApproveIdentityRecords() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgApproveIdentityRecords(
+			isApprove, err := cmd.Flags().GetBool(FlagApprove)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgHandleIdentityRecordsVerifyRequest(
 				clientCtx.FromAddress,
 				requestId,
+				isApprove,
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
 
+	cmd.Flags().Bool(FlagApprove, true, "The flag to approve or reject")
+	cmd.MarkFlagRequired(FlagApprove)
 	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
 

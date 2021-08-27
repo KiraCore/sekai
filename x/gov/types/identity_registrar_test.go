@@ -26,7 +26,7 @@ func TestMarshalUnmarshalIdentityRecord(t *testing.T) {
 	require.NoError(t, err)
 }
 
-func TestMarshalUnmarshalMsgCreateIdentityRecord(t *testing.T) {
+func TestMarshalUnmarshalMsgRegisterIdentityRecords(t *testing.T) {
 	record := MsgRegisterIdentityRecords{
 		Address: sdk.AccAddress{},
 		Infos:   WrapInfos(make(map[string]string)),
