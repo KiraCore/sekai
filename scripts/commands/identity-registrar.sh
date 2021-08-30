@@ -13,6 +13,9 @@ sekaid query customgov all-identity-records
 sekaid query customgov identity-record 1
 sekaid query customgov identity-records-by-addr $(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid)
 
+# query by specific keys
+sekaid query customgov identity-records-by-addr $(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --keys="moniker"
+
 sekaid tx customgov delete-identity-records --keys="moniker" --from=validator --keyring-backend=test --home=$HOME/.sekaid --fees=100ukex --chain-id=testing --yes
 
 sekaid tx customgov request-identity-record-verify --record-ids=1 --verifier=$(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --tip=10ukex --from=validator --keyring-backend=test --home=$HOME/.sekaid --fees=100ukex --chain-id=testing --yes

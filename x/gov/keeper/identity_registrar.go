@@ -89,7 +89,7 @@ func (k Keeper) DeleteIdentityRecordById(ctx sdk.Context, recordId uint64) {
 	}
 	recordKey := sdk.Uint64ToBigEndian(recordId)
 	prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixIdentityRecord).Delete(recordKey)
-	prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixIdentityRecordByAddress).Delete(record.Address)
+	prefix.NewStore(ctx.KVStore(k.storeKey), append(types.KeyPrefixIdentityRecordByAddress, record.Address...)).Delete(sdk.Uint64ToBigEndian(recordId))
 }
 
 // RegisterIdentityRecord defines a method to register identity records for an address
@@ -170,6 +170,28 @@ func (k Keeper) GetAllIdentityRecords(ctx sdk.Context) []types.IdentityRecord {
 	return records
 }
 
+// GetIdRecordsByAddressAndKeys query identity record by address and keys
+func (k Keeper) GetIdRecordsByAddressAndKeys(ctx sdk.Context, address sdk.AccAddress, keys []string) ([]types.IdentityRecord, error) {
+	if len(keys) == 0 {
+		return k.GetIdRecordsByAddress(ctx, address), nil
+	}
+
+	store := ctx.KVStore(k.storeKey)
+	prefixStore := prefix.NewStore(store, append(types.KeyPrefixIdentityRecordByAddress, address.Bytes()...))
+
+	records := []types.IdentityRecord{}
+	for _, key := range keys {
+		bz := prefixStore.Get([]byte(key))
+		recordId := sdk.BigEndianToUint64(bz)
+		record := k.GetIdentityRecordById(ctx, recordId)
+		if record == nil {
+			return records, fmt.Errorf("invalid recordId exists: recordId=%d, key=%s, keys=%+v, %d", recordId, key, keys, len(keys))
+		}
+		records = append(records, *record)
+	}
+	return records, nil
+}
+
 // GetIdRecordsByAddress query identity record by address
 func (k Keeper) GetIdRecordsByAddress(ctx sdk.Context, address sdk.AccAddress) []types.IdentityRecord {
 	store := ctx.KVStore(k.storeKey)
@@ -182,7 +204,7 @@ func (k Keeper) GetIdRecordsByAddress(ctx sdk.Context, address sdk.AccAddress) [
 		recordId := sdk.BigEndianToUint64(iterator.Value())
 		record := k.GetIdentityRecordById(ctx, recordId)
 		if record == nil {
-			panic(fmt.Sprintf("invalid recordId exists: recordId = %d", recordId))
+			panic(fmt.Sprintf("invalid recordId exists: recordId = %d, key=%s, value=%s", recordId, string(iterator.Key()), string(iterator.Value())))
 		}
 		records = append(records, *record)
 	}

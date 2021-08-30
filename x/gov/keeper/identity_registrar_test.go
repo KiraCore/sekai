@@ -159,6 +159,22 @@ func TestKeeper_IdentityRecordAddEditRemove(t *testing.T) {
 	require.NotNil(t, record)
 	records = app.CustomGovKeeper.GetIdRecordsByAddress(ctx, addr2)
 	require.Len(t, records, 0)
+
+	// check identity records by address
+	records = app.CustomGovKeeper.GetIdRecordsByAddress(ctx, addr1)
+	require.Len(t, records, 2)
+
+	// check identity records by address and keys
+	records, err = app.CustomGovKeeper.GetIdRecordsByAddressAndKeys(ctx, addr1, []string{})
+	require.NoError(t, err)
+	require.Len(t, records, 2)
+
+	records, err = app.CustomGovKeeper.GetIdRecordsByAddressAndKeys(ctx, addr1, []string{"key"})
+	require.NoError(t, err)
+	require.Len(t, records, 1)
+
+	records, err = app.CustomGovKeeper.GetIdRecordsByAddressAndKeys(ctx, addr1, []string{"invalidkey"})
+	require.Error(t, err)
 }
 
 func TestKeeper_IdentityRecordApproveFlow(t *testing.T) {

@@ -255,18 +255,18 @@ func (k Keeper) IdentityRecord(goCtx context.Context, request *types.QueryIdenti
 	return &res, nil
 }
 
-// IdentityRecordsByAddress query identity records by creator
+// IdentityRecordsByAddress query identity records by creator and keys
 func (k Keeper) IdentityRecordsByAddress(goCtx context.Context, request *types.QueryIdentityRecordsByAddressRequest) (*types.QueryIdentityRecordsByAddressResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	if request == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
-	res := types.QueryIdentityRecordsByAddressResponse{
-		Records: k.GetIdRecordsByAddress(ctx, request.Creator),
-	}
+	records, err := k.GetIdRecordsByAddressAndKeys(ctx, request.Creator, request.Keys)
 
-	return &res, nil
+	return &types.QueryIdentityRecordsByAddressResponse{
+		Records: records,
+	}, err
 }
 
 // AllIdentityRecords query all identity records
