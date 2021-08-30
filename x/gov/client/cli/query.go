@@ -546,14 +546,14 @@ $ %[1]s query gov identity-record 1
 // GetCmdQueryIdentityRecordByAddress implements the command to query identity records by records creator
 func GetCmdQueryIdentityRecordByAddress() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "identity-record-by-addr [addr]",
+		Use:   "identity-records-by-addr [addr]",
 		Args:  cobra.ExactArgs(1),
 		Short: "Query identity records by owner",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Query identity records by owner.
 
 Example:
-$ %[1]s query gov identity-record-by-addr [addr]
+$ %[1]s query gov identity-records-by-addr [addr]
 `,
 				version.AppName,
 			),
@@ -568,9 +568,9 @@ $ %[1]s query gov identity-record-by-addr [addr]
 				return err
 			}
 
-			res, err := queryClient.IdentityRecordByAddress(
+			res, err := queryClient.IdentityRecordsByAddress(
 				context.Background(),
-				&types.QueryIdentityRecordByAddressRequest{
+				&types.QueryIdentityRecordsByAddressRequest{
 					Creator: addr,
 				},
 			)

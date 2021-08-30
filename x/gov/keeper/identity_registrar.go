@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/KiraCore/sekai/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
@@ -58,7 +59,7 @@ func (k Keeper) SetIdentityRecord(ctx sdk.Context, record types.IdentityRecord) 
 	prefixStore.Set(sdk.Uint64ToBigEndian(record.Id), bz)
 }
 
-func (k Keeper) GetIdentityRecord(ctx sdk.Context, recordId uint64) *types.IdentityRecord {
+func (k Keeper) GetIdentityRecordById(ctx sdk.Context, recordId uint64) *types.IdentityRecord {
 	record := types.IdentityRecord{}
 
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixIdentityRecord)
@@ -70,9 +71,19 @@ func (k Keeper) GetIdentityRecord(ctx sdk.Context, recordId uint64) *types.Ident
 	return &record
 }
 
+func (k Keeper) GetIdentityRecordIdByAddressKey(ctx sdk.Context, address sdk.AccAddress, key string) uint64 {
+	store := ctx.KVStore(k.storeKey)
+	prefixStore := prefix.NewStore(store, append(types.KeyPrefixIdentityRecordByAddress, address.Bytes()...))
+	recordIdBytes := prefixStore.Get([]byte(key))
+	if recordIdBytes == nil {
+		return 0
+	}
+	return sdk.BigEndianToUint64(recordIdBytes)
+}
+
 // DeleteIdentityRecord defines a method to delete identity record by id
-func (k Keeper) DeleteIdentityRecord(ctx sdk.Context, recordId uint64) {
-	record := k.GetIdentityRecord(ctx, recordId)
+func (k Keeper) DeleteIdentityRecordById(ctx sdk.Context, recordId uint64) {
+	record := k.GetIdentityRecordById(ctx, recordId)
 	if record == nil {
 		return
 	}
@@ -81,46 +92,64 @@ func (k Keeper) DeleteIdentityRecord(ctx sdk.Context, recordId uint64) {
 	prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixIdentityRecordByAddress).Delete(record.Address)
 }
 
-// CreateIdentityRecord defines a method to create identity record
-func (k Keeper) CreateIdentityRecord(ctx sdk.Context, address sdk.AccAddress, infos []types.IdentityInfoEntry) (uint64, error) {
-	if k.GetIdRecordByAddress(ctx, address) != nil {
-		return 0, fmt.Errorf("identity record already registered for the address: %s", address.String())
+// RegisterIdentityRecord defines a method to register identity records for an address
+func (k Keeper) RegisterIdentityRecords(ctx sdk.Context, address sdk.AccAddress, infos []types.IdentityInfoEntry) error {
+	for _, info := range infos {
+		// use existing record id if it already exists
+		recordId := k.GetIdentityRecordIdByAddressKey(ctx, address, info.Key)
+		if recordId == 0 {
+			recordId = k.GetLastIdentityRecordId(ctx) + 1
+			k.SetLastIdentityRecordId(ctx, recordId)
+
+			// connect address + key to id
+			store := ctx.KVStore(k.storeKey)
+			prefixStore := prefix.NewStore(store, append(types.KeyPrefixIdentityRecordByAddress, address.Bytes()...))
+			prefixStore.Set([]byte(info.Key), sdk.Uint64ToBigEndian(recordId))
+		}
+		// create or update identity record
+		k.SetIdentityRecord(ctx, types.IdentityRecord{
+			Id:        recordId,
+			Address:   address,
+			Key:       info.Key,
+			Value:     info.Info,
+			Date:      ctx.BlockTime(),
+			Verifiers: []sdk.AccAddress{},
+		})
 	}
-	recordId := k.GetLastIdentityRecordId(ctx) + 1
-	k.SetIdentityRecord(ctx, types.IdentityRecord{
-		Id:        recordId,
-		Address:   address,
-		Infos:     types.UnwrapInfos(infos),
-		Date:      ctx.BlockTime(),
-		Verifiers: []sdk.AccAddress{},
-	})
-
-	store := ctx.KVStore(k.storeKey)
-	prefixStore := prefix.NewStore(store, types.KeyPrefixIdentityRecordByAddress)
-	prefixStore.Set(address, sdk.Uint64ToBigEndian(recordId))
-
-	k.SetLastIdentityRecordId(ctx, recordId)
-	return recordId, nil
+	return nil
 }
 
-// EditIdentityRecord defines a method to edit identity record, it removes all verifiers for the record
-func (k Keeper) EditIdentityRecord(ctx sdk.Context, recordId uint64, address sdk.AccAddress, infos []types.IdentityInfoEntry) error {
-	prevRecord := k.GetIdentityRecord(ctx, recordId)
-	if prevRecord == nil {
-		return fmt.Errorf("identity record with specified id does NOT exist: id=%d", recordId)
+// DeleteIdentityRecords defines a method to delete identity records owned by an address
+func (k Keeper) DeleteIdentityRecords(ctx sdk.Context, address sdk.AccAddress, keys []string) error {
+
+	store := ctx.KVStore(k.storeKey)
+	prefix := append(types.KeyPrefixIdentityRecordByAddress, address...)
+	iterator := sdk.KVStorePrefixIterator(store, prefix)
+	defer iterator.Close()
+
+	keyMap := make(map[string]bool)
+	for _, key := range keys {
+		keyMap[key] = true
+	}
+	recordIds := []uint64{}
+	for ; iterator.Valid(); iterator.Next() {
+		key := bytes.TrimPrefix(iterator.Key(), prefix)
+		if len(keys) == 0 || keyMap[string(key)] {
+			// if no specific keys are provided remove all
+			// invalid keys are ignored
+			recordIds = append(recordIds, sdk.BigEndianToUint64(iterator.Value()))
+			store.Delete(iterator.Key())
+		}
 	}
 
-	if !bytes.Equal(address, prevRecord.Address) {
-		return fmt.Errorf("identity record is owned by someone else: %s", prevRecord.Address.String())
-	}
+	for _, recordId := range recordIds {
+		prevRecord := k.GetIdentityRecordById(ctx, recordId)
+		if prevRecord == nil {
+			return fmt.Errorf("identity record with specified id does NOT exist: id=%d", recordId)
+		}
 
-	k.SetIdentityRecord(ctx, types.IdentityRecord{
-		Id:        recordId,
-		Address:   address,
-		Infos:     types.UnwrapInfos(infos),
-		Date:      ctx.BlockTime(),
-		Verifiers: []sdk.AccAddress{},
-	})
+		k.DeleteIdentityRecordById(ctx, recordId)
+	}
 
 	return nil
 }
@@ -141,15 +170,23 @@ func (k Keeper) GetAllIdentityRecords(ctx sdk.Context) []types.IdentityRecord {
 	return records
 }
 
-// GetIdRecordByAddress query identity record by address
-func (k Keeper) GetIdRecordByAddress(ctx sdk.Context, creator sdk.AccAddress) *types.IdentityRecord {
+// GetIdRecordsByAddress query identity record by address
+func (k Keeper) GetIdRecordsByAddress(ctx sdk.Context, address sdk.AccAddress) []types.IdentityRecord {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(append(types.KeyPrefixIdentityRecordByAddress, []byte(creator)...))
-	if bz == nil {
-		return nil
+	prefix := append(types.KeyPrefixIdentityRecordByAddress, address...)
+	iterator := sdk.KVStorePrefixIterator(store, prefix)
+	defer iterator.Close()
+
+	records := []types.IdentityRecord{}
+	for ; iterator.Valid(); iterator.Next() {
+		recordId := sdk.BigEndianToUint64(iterator.Value())
+		record := k.GetIdentityRecordById(ctx, recordId)
+		if record == nil {
+			panic(fmt.Sprintf("invalid recordId exists: recordId = %d", recordId))
+		}
+		records = append(records, *record)
 	}
-	recordId := sdk.BigEndianToUint64(bz)
-	return k.GetIdentityRecord(ctx, recordId)
+	return records
 }
 
 // SetIdentityRecordsVerifyRequest saves identity verify request into the store
@@ -171,19 +208,24 @@ func (k Keeper) SetIdentityRecordsVerifyRequest(ctx sdk.Context, request types.I
 func (k Keeper) RequestIdentityRecordsVerify(ctx sdk.Context, address, verifier sdk.AccAddress, recordIds []uint64, tip sdk.Coin) (uint64, error) {
 	requestId := k.GetLastIdRecordVerifyRequestId(ctx) + 1
 
+	lastRecordEditDate := time.Time{}
 	for _, recordId := range recordIds {
-		record := k.GetIdentityRecord(ctx, recordId)
+		record := k.GetIdentityRecordById(ctx, recordId)
 		if record == nil {
 			return requestId, fmt.Errorf("identity record with specified id does NOT exist: id=%d", recordId)
+		}
+		if lastRecordEditDate.Before(record.Date) {
+			lastRecordEditDate = record.Date
 		}
 	}
 
 	request := types.IdentityRecordsVerify{
-		Id:        requestId,
-		Address:   address,
-		Verifier:  verifier,
-		RecordIds: recordIds,
-		Tip:       tip,
+		Id:                 requestId,
+		Address:            address,
+		Verifier:           verifier,
+		RecordIds:          recordIds,
+		Tip:                tip,
+		LastRecordEditDate: lastRecordEditDate,
 	}
 
 	k.SetIdentityRecordsVerifyRequest(ctx, request)
@@ -227,8 +269,8 @@ func (k Keeper) DeleteIdRecordsVerifyRequest(ctx sdk.Context, requestId uint64) 
 	).Delete(sdk.Uint64ToBigEndian(requestId))
 }
 
-// ApproveIdentityRecords defines a method to accept verification request
-func (k Keeper) ApproveIdentityRecords(ctx sdk.Context, verifier sdk.AccAddress, requestId uint64) error {
+// ApproveIdentityRecords defines a method to accept or reject verification request
+func (k Keeper) HandleIdentityRecordsVerifyRequest(ctx sdk.Context, verifier sdk.AccAddress, requestId uint64, approve bool) error {
 	request := k.GetIdRecordsVerifyRequest(ctx, requestId)
 	if request == nil {
 		return fmt.Errorf("specified identity record verify request does NOT exist: id=%d", requestId)
@@ -237,11 +279,21 @@ func (k Keeper) ApproveIdentityRecords(ctx sdk.Context, verifier sdk.AccAddress,
 		return errors.New("verifier does not match with requested")
 	}
 
+	if approve == false {
+		k.DeleteIdRecordsVerifyRequest(ctx, requestId)
+		return nil
+	}
+
 	for _, recordId := range request.RecordIds {
-		record := k.GetIdentityRecord(ctx, recordId)
+		record := k.GetIdentityRecordById(ctx, recordId)
 		if record == nil {
 			return fmt.Errorf("identity record with specified id does NOT exist: id=%d", recordId)
 		}
+
+		if record.Date.After(request.LastRecordEditDate) {
+			return fmt.Errorf("A record was edited after making this verification request: record_id=%d", recordId)
+		}
+
 		// if already exist, skip
 		if CheckIfWithinAddressArray(verifier, record.Verifiers) {
 			continue

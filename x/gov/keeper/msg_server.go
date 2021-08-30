@@ -107,19 +107,17 @@ func (k msgServer) VoteProposal(
 	return &types.MsgVoteProposalResponse{}, nil
 }
 
-// CreateIdentityRecord defines a method to create identity record
-func (k msgServer) CreateIdentityRecord(goCtx context.Context, msg *types.MsgCreateIdentityRecord) (*types.MsgCreateIdentityRecordResponse, error) {
+// RegisterIdentityRecords defines a method to create identity record
+func (k msgServer) RegisterIdentityRecords(goCtx context.Context, msg *types.MsgRegisterIdentityRecords) (*types.MsgRegisterIdentityRecordsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	recordId, err := k.keeper.CreateIdentityRecord(ctx, msg.Address, msg.Infos)
-	return &types.MsgCreateIdentityRecordResponse{
-		RecordId: recordId,
-	}, err
+	err := k.keeper.RegisterIdentityRecords(ctx, msg.Address, msg.Infos)
+	return &types.MsgRegisterIdentityRecordsResponse{}, err
 }
 
-func (k msgServer) EditIdentityRecord(goCtx context.Context, msg *types.MsgEditIdentityRecord) (*types.MsgEditIdentityRecordResponse, error) {
+func (k msgServer) DeleteIdentityRecords(goCtx context.Context, msg *types.MsgDeleteIdentityRecords) (*types.MsgDeleteIdentityRecordsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	err := k.keeper.EditIdentityRecord(ctx, msg.RecordId, msg.Address, msg.Infos)
-	return &types.MsgEditIdentityRecordResponse{}, err
+	err := k.keeper.DeleteIdentityRecords(ctx, msg.Address, msg.Keys)
+	return &types.MsgDeleteIdentityRecordsResponse{}, err
 }
 
 // RequestIdentityRecordsVerify defines a method to request verify request from specific verifier
@@ -132,10 +130,10 @@ func (k msgServer) RequestIdentityRecordsVerify(goCtx context.Context, msg *type
 }
 
 // ApproveIdentityRecords defines a method to accept verification request
-func (k msgServer) ApproveIdentityRecords(goCtx context.Context, msg *types.MsgApproveIdentityRecords) (*types.MsgApproveIdentityRecordsResponse, error) {
+func (k msgServer) ApproveIdentityRecords(goCtx context.Context, msg *types.MsgHandleIdentityRecordsVerifyRequest) (*types.MsgHandleIdentityRecordsVerifyResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	err := k.keeper.ApproveIdentityRecords(ctx, msg.Verifier, msg.VerifyRequestId)
-	return &types.MsgApproveIdentityRecordsResponse{}, err
+	err := k.keeper.HandleIdentityRecordsVerifyRequest(ctx, msg.Verifier, msg.VerifyRequestId, msg.Yes)
+	return &types.MsgHandleIdentityRecordsVerifyResponse{}, err
 }
 
 func (k msgServer) CancelIdentityRecordsVerifyRequest(goCtx context.Context, msg *types.MsgCancelIdentityRecordsVerifyRequest) (*types.MsgCancelIdentityRecordsVerifyRequestResponse, error) {

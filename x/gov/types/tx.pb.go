@@ -588,22 +588,21 @@ func (m *MsgRemoveBlacklistRolePermissionResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgRemoveBlacklistRolePermissionResponse proto.InternalMessageInfo
 
-type MsgCreateIdentityRecordResponse struct {
-	RecordId uint64 `protobuf:"varint,1,opt,name=recordId,proto3" json:"recordId,omitempty"`
+type MsgRegisterIdentityRecordsResponse struct {
 }
 
-func (m *MsgCreateIdentityRecordResponse) Reset()         { *m = MsgCreateIdentityRecordResponse{} }
-func (m *MsgCreateIdentityRecordResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgCreateIdentityRecordResponse) ProtoMessage()    {}
-func (*MsgCreateIdentityRecordResponse) Descriptor() ([]byte, []int) {
+func (m *MsgRegisterIdentityRecordsResponse) Reset()         { *m = MsgRegisterIdentityRecordsResponse{} }
+func (m *MsgRegisterIdentityRecordsResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgRegisterIdentityRecordsResponse) ProtoMessage()    {}
+func (*MsgRegisterIdentityRecordsResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4b262b5902d6e313, []int{15}
 }
-func (m *MsgCreateIdentityRecordResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgRegisterIdentityRecordsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgCreateIdentityRecordResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgRegisterIdentityRecordsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgCreateIdentityRecordResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgRegisterIdentityRecordsResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -613,40 +612,33 @@ func (m *MsgCreateIdentityRecordResponse) XXX_Marshal(b []byte, deterministic bo
 		return b[:n], nil
 	}
 }
-func (m *MsgCreateIdentityRecordResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgCreateIdentityRecordResponse.Merge(m, src)
+func (m *MsgRegisterIdentityRecordsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRegisterIdentityRecordsResponse.Merge(m, src)
 }
-func (m *MsgCreateIdentityRecordResponse) XXX_Size() int {
+func (m *MsgRegisterIdentityRecordsResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgCreateIdentityRecordResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgCreateIdentityRecordResponse.DiscardUnknown(m)
+func (m *MsgRegisterIdentityRecordsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRegisterIdentityRecordsResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgCreateIdentityRecordResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgRegisterIdentityRecordsResponse proto.InternalMessageInfo
 
-func (m *MsgCreateIdentityRecordResponse) GetRecordId() uint64 {
-	if m != nil {
-		return m.RecordId
-	}
-	return 0
+type MsgDeleteIdentityRecordsResponse struct {
 }
 
-type MsgEditIdentityRecordResponse struct {
-}
-
-func (m *MsgEditIdentityRecordResponse) Reset()         { *m = MsgEditIdentityRecordResponse{} }
-func (m *MsgEditIdentityRecordResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgEditIdentityRecordResponse) ProtoMessage()    {}
-func (*MsgEditIdentityRecordResponse) Descriptor() ([]byte, []int) {
+func (m *MsgDeleteIdentityRecordsResponse) Reset()         { *m = MsgDeleteIdentityRecordsResponse{} }
+func (m *MsgDeleteIdentityRecordsResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgDeleteIdentityRecordsResponse) ProtoMessage()    {}
+func (*MsgDeleteIdentityRecordsResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4b262b5902d6e313, []int{16}
 }
-func (m *MsgEditIdentityRecordResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgDeleteIdentityRecordsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgEditIdentityRecordResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgDeleteIdentityRecordsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgEditIdentityRecordResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgDeleteIdentityRecordsResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -656,17 +648,17 @@ func (m *MsgEditIdentityRecordResponse) XXX_Marshal(b []byte, deterministic bool
 		return b[:n], nil
 	}
 }
-func (m *MsgEditIdentityRecordResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgEditIdentityRecordResponse.Merge(m, src)
+func (m *MsgDeleteIdentityRecordsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgDeleteIdentityRecordsResponse.Merge(m, src)
 }
-func (m *MsgEditIdentityRecordResponse) XXX_Size() int {
+func (m *MsgDeleteIdentityRecordsResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgEditIdentityRecordResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgEditIdentityRecordResponse.DiscardUnknown(m)
+func (m *MsgDeleteIdentityRecordsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgDeleteIdentityRecordsResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgEditIdentityRecordResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgDeleteIdentityRecordsResponse proto.InternalMessageInfo
 
 type MsgRequestIdentityRecordsVerifyResponse struct {
 	RequestId uint64 `protobuf:"varint,1,opt,name=requestId,proto3" json:"requestId,omitempty"`
@@ -714,21 +706,23 @@ func (m *MsgRequestIdentityRecordsVerifyResponse) GetRequestId() uint64 {
 	return 0
 }
 
-type MsgApproveIdentityRecordsResponse struct {
+type MsgHandleIdentityRecordsVerifyResponse struct {
 }
 
-func (m *MsgApproveIdentityRecordsResponse) Reset()         { *m = MsgApproveIdentityRecordsResponse{} }
-func (m *MsgApproveIdentityRecordsResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgApproveIdentityRecordsResponse) ProtoMessage()    {}
-func (*MsgApproveIdentityRecordsResponse) Descriptor() ([]byte, []int) {
+func (m *MsgHandleIdentityRecordsVerifyResponse) Reset() {
+	*m = MsgHandleIdentityRecordsVerifyResponse{}
+}
+func (m *MsgHandleIdentityRecordsVerifyResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgHandleIdentityRecordsVerifyResponse) ProtoMessage()    {}
+func (*MsgHandleIdentityRecordsVerifyResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_4b262b5902d6e313, []int{18}
 }
-func (m *MsgApproveIdentityRecordsResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgHandleIdentityRecordsVerifyResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgApproveIdentityRecordsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgHandleIdentityRecordsVerifyResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgApproveIdentityRecordsResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgHandleIdentityRecordsVerifyResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -738,17 +732,17 @@ func (m *MsgApproveIdentityRecordsResponse) XXX_Marshal(b []byte, deterministic 
 		return b[:n], nil
 	}
 }
-func (m *MsgApproveIdentityRecordsResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgApproveIdentityRecordsResponse.Merge(m, src)
+func (m *MsgHandleIdentityRecordsVerifyResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgHandleIdentityRecordsVerifyResponse.Merge(m, src)
 }
-func (m *MsgApproveIdentityRecordsResponse) XXX_Size() int {
+func (m *MsgHandleIdentityRecordsVerifyResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgApproveIdentityRecordsResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgApproveIdentityRecordsResponse.DiscardUnknown(m)
+func (m *MsgHandleIdentityRecordsVerifyResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgHandleIdentityRecordsVerifyResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgApproveIdentityRecordsResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgHandleIdentityRecordsVerifyResponse proto.InternalMessageInfo
 
 type MsgCancelIdentityRecordsVerifyRequestResponse struct {
 }
@@ -806,78 +800,78 @@ func init() {
 	proto.RegisterType((*MsgBlacklistRolePermissionResponse)(nil), "kira.gov.MsgBlacklistRolePermissionResponse")
 	proto.RegisterType((*MsgRemoveWhitelistRolePermissionResponse)(nil), "kira.gov.MsgRemoveWhitelistRolePermissionResponse")
 	proto.RegisterType((*MsgRemoveBlacklistRolePermissionResponse)(nil), "kira.gov.MsgRemoveBlacklistRolePermissionResponse")
-	proto.RegisterType((*MsgCreateIdentityRecordResponse)(nil), "kira.gov.MsgCreateIdentityRecordResponse")
-	proto.RegisterType((*MsgEditIdentityRecordResponse)(nil), "kira.gov.MsgEditIdentityRecordResponse")
+	proto.RegisterType((*MsgRegisterIdentityRecordsResponse)(nil), "kira.gov.MsgRegisterIdentityRecordsResponse")
+	proto.RegisterType((*MsgDeleteIdentityRecordsResponse)(nil), "kira.gov.MsgDeleteIdentityRecordsResponse")
 	proto.RegisterType((*MsgRequestIdentityRecordsVerifyResponse)(nil), "kira.gov.MsgRequestIdentityRecordsVerifyResponse")
-	proto.RegisterType((*MsgApproveIdentityRecordsResponse)(nil), "kira.gov.MsgApproveIdentityRecordsResponse")
+	proto.RegisterType((*MsgHandleIdentityRecordsVerifyResponse)(nil), "kira.gov.MsgHandleIdentityRecordsVerifyResponse")
 	proto.RegisterType((*MsgCancelIdentityRecordsVerifyRequestResponse)(nil), "kira.gov.MsgCancelIdentityRecordsVerifyRequestResponse")
 }
 
 func init() { proto.RegisterFile("kira/gov/tx.proto", fileDescriptor_4b262b5902d6e313) }
 
 var fileDescriptor_4b262b5902d6e313 = []byte{
-	// 970 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x57, 0xcd, 0x6f, 0xdc, 0x44,
-	0x14, 0x5f, 0xd3, 0x02, 0xe9, 0xb4, 0x2a, 0x74, 0x58, 0xd8, 0x8d, 0xbb, 0xdd, 0x0f, 0x37, 0xa8,
-	0x69, 0x21, 0xb6, 0x1a, 0x0e, 0x48, 0x20, 0x84, 0x92, 0xd0, 0xa2, 0x08, 0x16, 0x45, 0xae, 0x28,
-	0x12, 0x07, 0x22, 0xc7, 0x7e, 0x71, 0x87, 0xf5, 0x7a, 0x96, 0x99, 0xd9, 0x34, 0x2b, 0x21, 0xc1,
-	0x91, 0x13, 0xe2, 0xc8, 0x31, 0x7f, 0x0e, 0xc7, 0x1e, 0x39, 0x44, 0x08, 0x25, 0x17, 0xfe, 0x06,
-	0x24, 0x24, 0xe4, 0xaf, 0xb1, 0x3d, 0x6b, 0xef, 0x6e, 0x4f, 0xed, 0xbe, 0xdf, 0x6f, 0x7e, 0xef,
-	0xbd, 0x79, 0x1f, 0xe3, 0xa0, 0x5b, 0x23, 0xc2, 0x1c, 0xcb, 0xa7, 0x27, 0x96, 0x38, 0x35, 0x27,
-	0x8c, 0x0a, 0x8a, 0xd7, 0x22, 0x93, 0xe9, 0xd3, 0x13, 0xbd, 0xe9, 0x53, 0x9f, 0xc6, 0x46, 0x2b,
-	0xfa, 0x5f, 0x82, 0xeb, 0xeb, 0x3e, 0xa5, 0x7e, 0x00, 0x56, 0xfc, 0xeb, 0x68, 0x7a, 0x6c, 0x39,
-	0xe1, 0x2c, 0x85, 0x9a, 0x52, 0xcd, 0x71, 0x05, 0x65, 0xa9, 0xb5, 0x2d, 0xad, 0x2e, 0x9d, 0x86,
-	0x2e, 0x09, 0x24, 0xd2, 0x92, 0xc8, 0x84, 0xd1, 0x09, 0xe5, 0x4e, 0x90, 0x02, 0x6f, 0x49, 0x80,
-	0xd1, 0x00, 0x52, 0x63, 0x47, 0x1a, 0xe1, 0x14, 0xdc, 0xa9, 0x20, 0x34, 0x3c, 0x3c, 0x86, 0x0c,
-	0x1d, 0x48, 0x34, 0x04, 0xf1, 0x9c, 0xb2, 0xd1, 0x61, 0xa4, 0x09, 0x4c, 0x10, 0xe0, 0x29, 0xa5,
-	0x97, 0x87, 0x17, 0x04, 0xf4, 0x39, 0x78, 0x87, 0x63, 0xe0, 0xdc, 0xf1, 0x25, 0x21, 0xd7, 0x20,
-	0x1e, 0x84, 0x82, 0x88, 0xd9, 0x21, 0x03, 0x9f, 0x70, 0xc1, 0x9c, 0x34, 0x64, 0xe3, 0x5c, 0x43,
-	0xb7, 0x86, 0xdc, 0x7f, 0x32, 0x3d, 0x1a, 0x13, 0x71, 0x90, 0x46, 0x8d, 0x87, 0x68, 0x2d, 0xc9,
-	0x00, 0x58, 0x5b, 0xeb, 0x6b, 0x9b, 0x37, 0x76, 0x1f, 0xfe, 0xfb, 0x57, 0x6f, 0xcb, 0x27, 0xe2,
-	0xd9, 0xf4, 0xc8, 0x74, 0xe9, 0xd8, 0x72, 0x29, 0x1f, 0x53, 0x9e, 0xfe, 0xb3, 0xc5, 0xbd, 0x91,
-	0x25, 0x66, 0x13, 0xe0, 0xe6, 0x8e, 0xeb, 0xee, 0x78, 0x1e, 0x03, 0xce, 0x6d, 0x29, 0x81, 0x9b,
-	0xe8, 0x55, 0x41, 0x44, 0x00, 0xed, 0x57, 0xfa, 0xda, 0xe6, 0x35, 0x3b, 0xf9, 0x81, 0xfb, 0xe8,
-	0xba, 0x07, 0xdc, 0x65, 0x64, 0x12, 0xa5, 0xde, 0xbe, 0x12, 0x63, 0x45, 0x13, 0x36, 0xd1, 0xeb,
-	0x2e, 0x0d, 0x05, 0x84, 0xa2, 0x7d, 0xb5, 0xaf, 0x6d, 0x5e, 0xdf, 0x6e, 0x9a, 0x49, 0xb1, 0xcc,
-	0xac, 0x58, 0xe6, 0x4e, 0x38, 0xb3, 0x33, 0xd2, 0x47, 0x6f, 0xfe, 0x72, 0xd6, 0x6b, 0xfc, 0x7e,
-	0xd6, 0x6b, 0xfc, 0x73, 0xd6, 0x6b, 0xfc, 0x7c, 0xde, 0x6f, 0x18, 0x1f, 0xa3, 0xf5, 0xb9, 0xec,
-	0x6c, 0xe0, 0x13, 0x1a, 0x72, 0xc0, 0x5d, 0x84, 0xb2, 0x3a, 0xed, 0x7f, 0x16, 0xe7, 0x79, 0xd5,
-	0x2e, 0x58, 0x8c, 0x01, 0xea, 0x0d, 0xb9, 0xff, 0xcd, 0x33, 0x22, 0x20, 0x20, 0x5c, 0x1c, 0x00,
-	0x1b, 0x13, 0xce, 0x09, 0x0d, 0x79, 0x26, 0x91, 0x52, 0x76, 0x03, 0xc7, 0x1d, 0xd5, 0x51, 0x6e,
-	0xc7, 0x21, 0xec, 0x05, 0x0e, 0x19, 0xef, 0x65, 0xfd, 0x22, 0xc1, 0x75, 0xd4, 0x1a, 0x72, 0xff,
-	0x29, 0x15, 0xa0, 0x46, 0x67, 0xb4, 0xd0, 0xdb, 0xd1, 0x39, 0x06, 0x8e, 0x00, 0x9b, 0x06, 0xa0,
-	0x00, 0x3b, 0x9c, 0x13, 0x3f, 0xac, 0x00, 0x6c, 0x18, 0xd3, 0x93, 0xf2, 0x89, 0x24, 0xca, 0x27,
-	0x20, 0xbe, 0x4a, 0x5a, 0xe9, 0x40, 0x76, 0x92, 0xa4, 0x74, 0x90, 0x9e, 0x50, 0x1e, 0x65, 0xbd,
-	0xf8, 0x18, 0x72, 0x81, 0x0d, 0x64, 0x14, 0x6f, 0x22, 0x12, 0xcf, 0x53, 0x55, 0x58, 0xf2, 0x32,
-	0x6a, 0x58, 0x0f, 0xd0, 0xa6, 0x8c, 0x72, 0x99, 0x62, 0x91, 0xbb, 0x4c, 0xf7, 0x93, 0x38, 0xc9,
-	0xe4, 0xbe, 0xf6, 0xd3, 0x76, 0xb7, 0xc1, 0xa5, 0xcc, 0x93, 0x05, 0xd7, 0xd1, 0x1a, 0x8b, 0x2d,
-	0xfb, 0x5e, 0x5a, 0x6e, 0xf9, 0xdb, 0xe8, 0xa1, 0x3b, 0x43, 0xee, 0x3f, 0xf2, 0x88, 0xa8, 0x3e,
-	0x6c, 0x7c, 0x8e, 0xee, 0xc5, 0xb1, 0xfc, 0x30, 0x05, 0xae, 0x70, 0xf8, 0x53, 0x60, 0xe4, 0x78,
-	0x26, 0xfd, 0x74, 0xd0, 0x35, 0x96, 0xf1, 0x52, 0x47, 0xb9, 0xc1, 0xb8, 0x8b, 0x06, 0x51, 0xfd,
-	0x26, 0x13, 0x46, 0x4f, 0x94, 0x48, 0xf3, 0x7a, 0x58, 0x68, 0x2b, 0xca, 0xc6, 0x09, 0x5d, 0x08,
-	0x6a, 0x9c, 0xc5, 0x7a, 0xd9, 0x81, 0xed, 0xff, 0x6e, 0xa2, 0x2b, 0x43, 0xee, 0x63, 0x1b, 0xdd,
-	0x54, 0x86, 0xf9, 0xb6, 0x99, 0x6d, 0x40, 0x73, 0x6e, 0x16, 0xf4, 0xbb, 0x0b, 0x40, 0x99, 0x8f,
-	0x87, 0x9a, 0x55, 0x53, 0x80, 0x07, 0xa5, 0xc3, 0x55, 0x14, 0xfd, 0xfe, 0x52, 0x4a, 0xd1, 0x4b,
-	0xd5, 0x20, 0x29, 0x5e, 0xaa, 0x28, 0x8a, 0x97, 0x45, 0xe3, 0x18, 0xdd, 0x4f, 0x79, 0x16, 0x95,
-	0xfb, 0x29, 0x83, 0xca, 0xfd, 0x54, 0x4f, 0x31, 0xfe, 0x12, 0xdd, 0x28, 0x8e, 0x30, 0x5e, 0x2f,
-	0x1d, 0x2a, 0x42, 0xfa, 0xa0, 0x16, 0x92, 0x6a, 0x8f, 0x11, 0xca, 0xa7, 0x1e, 0xb7, 0xca, 0x01,
-	0x48, 0x40, 0xef, 0xd5, 0x00, 0x45, 0x9d, 0x7c, 0x49, 0x28, 0x3a, 0x39, 0xa0, 0xe8, 0xcc, 0xaf,
-	0x95, 0x48, 0x27, 0xdf, 0x29, 0x8a, 0x4e, 0x0e, 0x28, 0x3a, 0xf3, 0x5b, 0x28, 0xaa, 0x6f, 0xd5,
-	0x0a, 0x52, 0xea, 0x5b, 0x45, 0x51, 0xea, 0xbb, 0x68, 0x91, 0xe1, 0xaf, 0xd1, 0x1b, 0xca, 0x16,
-	0xc3, 0x1d, 0xf5, 0x74, 0x11, 0xd5, 0x37, 0x16, 0xa1, 0x52, 0x76, 0x8c, 0x5a, 0x35, 0xcb, 0x0a,
-	0x6f, 0x54, 0xb7, 0x78, 0x99, 0xa5, 0xbf, 0xbf, 0x0a, 0xab, 0xe8, 0xae, 0x66, 0xdf, 0x29, 0xee,
-	0x6a, 0x58, 0x8a, 0xbb, 0x25, 0xbb, 0x13, 0xff, 0x84, 0xee, 0x2c, 0x5c, 0xc8, 0xf8, 0x41, 0x45,
-	0x71, 0xeb, 0x32, 0xdd, 0x5e, 0x9d, 0x3b, 0x1f, 0x40, 0x5d, 0xd6, 0x55, 0x01, 0xd4, 0xe5, 0xbe,
-	0xbd, 0x3a, 0xb7, 0xd8, 0x9c, 0x55, 0x4f, 0x87, 0xd2, 0x9c, 0x55, 0x14, 0xa5, 0x39, 0x17, 0x3e,
-	0x40, 0xdf, 0x21, 0x3c, 0xff, 0xc2, 0xe0, 0xf2, 0xe4, 0xcc, 0x13, 0xf4, 0x7b, 0x4b, 0x08, 0x52,
-	0xff, 0x47, 0xd4, 0x59, 0xf4, 0x40, 0xe1, 0xfb, 0xca, 0xcd, 0xd4, 0x53, 0xf5, 0x87, 0x2b, 0x53,
-	0xa5, 0xf7, 0xef, 0xd1, 0x3b, 0xd5, 0xaf, 0x1a, 0x2e, 0x6f, 0xd1, 0x6a, 0x92, 0xfe, 0xde, 0x0a,
-	0x24, 0xe9, 0xeb, 0x57, 0x0d, 0x19, 0xcb, 0x5f, 0x47, 0x6c, 0x95, 0x6b, 0xb3, 0xf4, 0x80, 0xfe,
-	0xe1, 0x4b, 0x1e, 0xc8, 0x02, 0xda, 0xfd, 0xf4, 0x8f, 0x8b, 0xae, 0xf6, 0xe2, 0xa2, 0xab, 0xfd,
-	0x7d, 0xd1, 0xd5, 0x7e, 0xbb, 0xec, 0x36, 0x5e, 0x5c, 0x76, 0x1b, 0x7f, 0x5e, 0x76, 0x1b, 0xdf,
-	0xbe, 0x5b, 0xf8, 0x6c, 0xfe, 0x82, 0x30, 0x67, 0x8f, 0x32, 0xb0, 0x38, 0x8c, 0x1c, 0x62, 0x9d,
-	0x26, 0x7f, 0xaa, 0x44, 0x5f, 0xce, 0x47, 0xaf, 0xc5, 0xdf, 0xb4, 0x1f, 0xfc, 0x1f, 0x00, 0x00,
-	0xff, 0xff, 0x25, 0x7b, 0xe6, 0xde, 0xc3, 0x0c, 0x00, 0x00,
+	// 964 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x57, 0xcf, 0x8f, 0xdb, 0x44,
+	0x14, 0x8e, 0x69, 0x81, 0x76, 0x5a, 0x51, 0x3a, 0xa4, 0x24, 0xeb, 0x86, 0x24, 0x6b, 0x16, 0x48,
+	0x57, 0xac, 0x4d, 0x97, 0x03, 0x12, 0x1c, 0x50, 0x76, 0x4b, 0xa1, 0x82, 0xa0, 0x95, 0x2b, 0x8a,
+	0xc4, 0x65, 0xe5, 0xb5, 0xdf, 0xba, 0xa3, 0x38, 0x9e, 0x30, 0x33, 0xd9, 0x6e, 0x04, 0x12, 0x1c,
+	0x39, 0x21, 0x8e, 0x1c, 0xf3, 0xe7, 0x70, 0xec, 0x91, 0x43, 0x85, 0xd0, 0xee, 0x85, 0xbf, 0x81,
+	0x13, 0xf2, 0xaf, 0xb1, 0x3d, 0xb1, 0x93, 0x70, 0x6a, 0xf3, 0xbe, 0xef, 0x7d, 0xef, 0xbd, 0x79,
+	0x6f, 0xde, 0x78, 0xd1, 0xed, 0x31, 0x61, 0x8e, 0xe5, 0xd3, 0x33, 0x4b, 0x9c, 0x9b, 0x53, 0x46,
+	0x05, 0xc5, 0xd7, 0x22, 0x93, 0xe9, 0xd3, 0x33, 0xbd, 0xe9, 0x53, 0x9f, 0xc6, 0x46, 0x2b, 0xfa,
+	0x5f, 0x82, 0xeb, 0x5b, 0x3e, 0xa5, 0x7e, 0x00, 0x56, 0xfc, 0xeb, 0x64, 0x76, 0x6a, 0x39, 0xe1,
+	0x3c, 0x85, 0x9a, 0x52, 0xcd, 0x71, 0x05, 0x65, 0xa9, 0xb5, 0x2d, 0xad, 0x2e, 0x9d, 0x85, 0x2e,
+	0x09, 0x24, 0xd2, 0x92, 0xc8, 0x94, 0xd1, 0x29, 0xe5, 0x4e, 0x90, 0x02, 0x6f, 0x48, 0x80, 0xd1,
+	0x00, 0x52, 0x63, 0x47, 0x1a, 0xe1, 0x1c, 0xdc, 0x99, 0x20, 0x34, 0x3c, 0x3e, 0x85, 0x0c, 0xdd,
+	0x96, 0x68, 0x08, 0xe2, 0x19, 0x65, 0xe3, 0xe3, 0x48, 0x13, 0x98, 0x20, 0xc0, 0x53, 0x4a, 0x2f,
+	0x4f, 0x2f, 0x08, 0xe8, 0x33, 0xf0, 0x8e, 0x27, 0xc0, 0xb9, 0xe3, 0x4b, 0x42, 0xae, 0x41, 0x3c,
+	0x08, 0x05, 0x11, 0xf3, 0x63, 0x06, 0x3e, 0xe1, 0x82, 0x39, 0x69, 0xca, 0xc6, 0x0b, 0x0d, 0xdd,
+	0x1e, 0x71, 0xff, 0xf1, 0xec, 0x64, 0x42, 0xc4, 0x51, 0x9a, 0x35, 0x1e, 0xa1, 0x6b, 0x49, 0x05,
+	0xc0, 0xda, 0x5a, 0x5f, 0x1b, 0xdc, 0x3c, 0xb8, 0xff, 0xef, 0x5f, 0xbd, 0x3d, 0x9f, 0x88, 0xa7,
+	0xb3, 0x13, 0xd3, 0xa5, 0x13, 0xcb, 0xa5, 0x7c, 0x42, 0x79, 0xfa, 0xcf, 0x1e, 0xf7, 0xc6, 0x96,
+	0x98, 0x4f, 0x81, 0x9b, 0x43, 0xd7, 0x1d, 0x7a, 0x1e, 0x03, 0xce, 0x6d, 0x29, 0x81, 0x9b, 0xe8,
+	0x65, 0x41, 0x44, 0x00, 0xed, 0x97, 0xfa, 0xda, 0xe0, 0xba, 0x9d, 0xfc, 0xc0, 0x7d, 0x74, 0xc3,
+	0x03, 0xee, 0x32, 0x32, 0x8d, 0x4a, 0x6f, 0x5f, 0x89, 0xb1, 0xa2, 0x09, 0x9b, 0xe8, 0x55, 0x97,
+	0x86, 0x02, 0x42, 0xd1, 0xbe, 0xda, 0xd7, 0x06, 0x37, 0xf6, 0x9b, 0x66, 0xd2, 0x2c, 0x33, 0x6b,
+	0x96, 0x39, 0x0c, 0xe7, 0x76, 0x46, 0xfa, 0xf8, 0xf5, 0x5f, 0x16, 0xbd, 0xc6, 0xef, 0x8b, 0x5e,
+	0xe3, 0x9f, 0x45, 0xaf, 0xf1, 0xf3, 0x8b, 0x7e, 0xc3, 0xf8, 0x04, 0x6d, 0x2d, 0x55, 0x67, 0x03,
+	0x9f, 0xd2, 0x90, 0x03, 0xee, 0x22, 0x94, 0xf5, 0xe9, 0xd1, 0x83, 0xb8, 0xce, 0xab, 0x76, 0xc1,
+	0x62, 0x6c, 0xa3, 0xde, 0x88, 0xfb, 0xdf, 0x3e, 0x25, 0x02, 0x02, 0xc2, 0xc5, 0x11, 0xb0, 0x09,
+	0xe1, 0x9c, 0xd0, 0x90, 0x67, 0x12, 0x29, 0xe5, 0x20, 0x70, 0xdc, 0x71, 0x1d, 0xe5, 0x6e, 0x9c,
+	0xc2, 0x61, 0xe0, 0x90, 0xc9, 0x61, 0x36, 0x2f, 0x12, 0xdc, 0x42, 0xad, 0x11, 0xf7, 0x9f, 0x50,
+	0x01, 0x6a, 0x76, 0x46, 0x0b, 0xdd, 0x89, 0xfc, 0x18, 0x38, 0x02, 0x6c, 0x1a, 0x80, 0x02, 0x0c,
+	0x39, 0x27, 0x7e, 0x58, 0x01, 0xd8, 0x30, 0xa1, 0x67, 0x65, 0x8f, 0x24, 0xcb, 0xc7, 0x20, 0xbe,
+	0x4e, 0x46, 0xe9, 0x48, 0x4e, 0x92, 0xa4, 0x74, 0x90, 0x9e, 0x50, 0x3e, 0xcb, 0x66, 0xf1, 0x21,
+	0xe4, 0x02, 0x3b, 0xc8, 0x28, 0x9e, 0x44, 0x24, 0x9e, 0x97, 0xaa, 0xb0, 0xe4, 0x61, 0xd4, 0xb0,
+	0x76, 0xd1, 0x40, 0x66, 0xb9, 0x4e, 0xb1, 0xc8, 0x5d, 0xa7, 0x9b, 0x44, 0xb7, 0xe3, 0xf9, 0x06,
+	0xf6, 0x28, 0x1d, 0x78, 0x1b, 0x5c, 0xca, 0xbc, 0xbc, 0x4e, 0x03, 0xf5, 0x47, 0xdc, 0x7f, 0x00,
+	0x01, 0x08, 0xa8, 0xe3, 0x7c, 0x8e, 0xde, 0x8b, 0x95, 0xbe, 0x9f, 0x01, 0x17, 0x0a, 0xe9, 0x09,
+	0x30, 0x72, 0x3a, 0x97, 0x23, 0xd4, 0x41, 0xd7, 0x59, 0xc6, 0x4b, 0x27, 0x28, 0x37, 0x18, 0x03,
+	0xf4, 0xee, 0x88, 0xfb, 0x5f, 0x38, 0xa1, 0x17, 0xc0, 0x4a, 0x1d, 0xc3, 0x42, 0x7b, 0x51, 0xb3,
+	0x9d, 0xd0, 0x85, 0xa0, 0x86, 0x19, 0x8b, 0x66, 0x0e, 0xfb, 0x8b, 0x5b, 0xe8, 0xca, 0x88, 0xfb,
+	0xd8, 0x46, 0xaf, 0x29, 0x77, 0xf7, 0xae, 0x99, 0x2d, 0x3c, 0x73, 0x69, 0xf4, 0xf5, 0xb7, 0x57,
+	0x80, 0xb2, 0x28, 0x0f, 0x35, 0xab, 0x86, 0x1e, 0x6f, 0x97, 0x9c, 0xab, 0x28, 0xfa, 0xbd, 0xb5,
+	0x94, 0x62, 0x94, 0xaa, 0x7b, 0xa3, 0x44, 0xa9, 0xa2, 0x28, 0x51, 0x56, 0xdd, 0xbe, 0xe8, 0x7c,
+	0xca, 0x57, 0x4f, 0x39, 0x9f, 0x32, 0xa8, 0x9c, 0x4f, 0xf5, 0xa5, 0xc5, 0x5f, 0xa1, 0x9b, 0xc5,
+	0x1b, 0x8b, 0xb7, 0x4a, 0x4e, 0x45, 0x48, 0xdf, 0xae, 0x85, 0xa4, 0xda, 0x43, 0x84, 0xf2, 0x4b,
+	0x8e, 0x5b, 0xe5, 0x04, 0x24, 0xa0, 0xf7, 0x6a, 0x80, 0xa2, 0x4e, 0xbe, 0x13, 0x14, 0x9d, 0x1c,
+	0x50, 0x74, 0x96, 0xb7, 0x48, 0xa4, 0x93, 0xaf, 0x10, 0x45, 0x27, 0x07, 0x14, 0x9d, 0xe5, 0xa5,
+	0x13, 0xf5, 0xb7, 0x6a, 0xe3, 0x28, 0xfd, 0xad, 0xa2, 0x28, 0xfd, 0x5d, 0xb5, 0xb7, 0xf0, 0x37,
+	0xe8, 0x96, 0xb2, 0xb4, 0x70, 0x47, 0xf5, 0x2e, 0xa2, 0xfa, 0xce, 0x2a, 0x54, 0xca, 0x4e, 0x50,
+	0xab, 0x66, 0x37, 0xe1, 0x9d, 0xea, 0x11, 0x2f, 0xb3, 0xf4, 0xf7, 0x37, 0x61, 0x15, 0xc3, 0xd5,
+	0xac, 0x37, 0x25, 0x5c, 0x0d, 0x4b, 0x09, 0xb7, 0x66, 0x55, 0xe2, 0x9f, 0xd0, 0x5b, 0x2b, 0xf7,
+	0x2f, 0xde, 0xad, 0x68, 0x6e, 0x5d, 0xa5, 0xfb, 0x9b, 0x73, 0x97, 0x13, 0xa8, 0xab, 0xba, 0x2a,
+	0x81, 0xba, 0xda, 0xf7, 0x37, 0xe7, 0x16, 0x0f, 0xbc, 0xe6, 0xa5, 0x50, 0x0e, 0xbc, 0x86, 0xa5,
+	0x1c, 0xf8, 0x9a, 0x57, 0x07, 0xfb, 0xe8, 0x4e, 0xe5, 0x93, 0x83, 0x8d, 0x92, 0x4c, 0x25, 0x47,
+	0xdf, 0x5d, 0xcf, 0x91, 0x81, 0x7e, 0x44, 0x9d, 0x55, 0xef, 0x16, 0xbe, 0xa7, 0xa4, 0x5d, 0x4f,
+	0xd5, 0xef, 0x6f, 0x4c, 0x95, 0xd1, 0x7f, 0x40, 0x6f, 0x0e, 0xa7, 0x53, 0x46, 0xcf, 0x96, 0xea,
+	0xb4, 0x4a, 0x62, 0x2b, 0x5f, 0xc4, 0x38, 0x8e, 0xfe, 0xc1, 0xe6, 0x0e, 0x69, 0xf0, 0x5f, 0x35,
+	0x64, 0xac, 0x7f, 0x40, 0x95, 0x4c, 0xd6, 0x3b, 0xe8, 0x1f, 0xfd, 0x4f, 0x87, 0x2c, 0xa1, 0x83,
+	0x4f, 0xff, 0xb8, 0xe8, 0x6a, 0xcf, 0x2f, 0xba, 0xda, 0xdf, 0x17, 0x5d, 0xed, 0xb7, 0xcb, 0x6e,
+	0xe3, 0xf9, 0x65, 0xb7, 0xf1, 0xe7, 0x65, 0xb7, 0xf1, 0xdd, 0x3b, 0x85, 0x0f, 0xe9, 0x2f, 0x09,
+	0x73, 0x0e, 0x29, 0x03, 0x8b, 0xc3, 0xd8, 0x21, 0xd6, 0x79, 0xf2, 0xc7, 0x4b, 0xf4, 0x2d, 0x7d,
+	0xf2, 0x4a, 0xfc, 0x95, 0xfb, 0xe1, 0x7f, 0x01, 0x00, 0x00, 0xff, 0xff, 0xeb, 0x60, 0x6c, 0x7a,
+	0xd5, 0x0c, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -920,14 +914,14 @@ type MsgClient interface {
 	RemoveWhitelistRolePermission(ctx context.Context, in *MsgRemoveWhitelistRolePermission, opts ...grpc.CallOption) (*MsgRemoveWhitelistRolePermissionResponse, error)
 	// RemoveBlacklistRolePermission defines a method for removing blacklisted permission from a role
 	RemoveBlacklistRolePermission(ctx context.Context, in *MsgRemoveBlacklistRolePermission, opts ...grpc.CallOption) (*MsgRemoveBlacklistRolePermissionResponse, error)
-	// CreateIdentityRecord defines a method to create identity record
-	CreateIdentityRecord(ctx context.Context, in *MsgCreateIdentityRecord, opts ...grpc.CallOption) (*MsgCreateIdentityRecordResponse, error)
-	// EditIdentityRecord defines a method to edit identity record, it removes all verifiers for the record
-	EditIdentityRecord(ctx context.Context, in *MsgEditIdentityRecord, opts ...grpc.CallOption) (*MsgEditIdentityRecordResponse, error)
+	// RegisterIdentityRecord defines a method to create identity records for an address
+	RegisterIdentityRecords(ctx context.Context, in *MsgRegisterIdentityRecords, opts ...grpc.CallOption) (*MsgRegisterIdentityRecordsResponse, error)
+	// DeleteIdentityRecords defines a method to delete identity records
+	DeleteIdentityRecords(ctx context.Context, in *MsgDeleteIdentityRecords, opts ...grpc.CallOption) (*MsgDeleteIdentityRecordsResponse, error)
 	// RequestIdentityRecordsVerify defines a method to request verify request from specific verifier
 	RequestIdentityRecordsVerify(ctx context.Context, in *MsgRequestIdentityRecordsVerify, opts ...grpc.CallOption) (*MsgRequestIdentityRecordsVerifyResponse, error)
 	// ApproveIdentityRecords defines a method to accept verification request
-	ApproveIdentityRecords(ctx context.Context, in *MsgApproveIdentityRecords, opts ...grpc.CallOption) (*MsgApproveIdentityRecordsResponse, error)
+	ApproveIdentityRecords(ctx context.Context, in *MsgHandleIdentityRecordsVerifyRequest, opts ...grpc.CallOption) (*MsgHandleIdentityRecordsVerifyResponse, error)
 	// CancelIdentityRecordsVerifyRequest defines a method to cancel verification request
 	CancelIdentityRecordsVerifyRequest(ctx context.Context, in *MsgCancelIdentityRecordsVerifyRequest, opts ...grpc.CallOption) (*MsgCancelIdentityRecordsVerifyRequestResponse, error)
 }
@@ -1066,18 +1060,18 @@ func (c *msgClient) RemoveBlacklistRolePermission(ctx context.Context, in *MsgRe
 	return out, nil
 }
 
-func (c *msgClient) CreateIdentityRecord(ctx context.Context, in *MsgCreateIdentityRecord, opts ...grpc.CallOption) (*MsgCreateIdentityRecordResponse, error) {
-	out := new(MsgCreateIdentityRecordResponse)
-	err := c.cc.Invoke(ctx, "/kira.gov.Msg/CreateIdentityRecord", in, out, opts...)
+func (c *msgClient) RegisterIdentityRecords(ctx context.Context, in *MsgRegisterIdentityRecords, opts ...grpc.CallOption) (*MsgRegisterIdentityRecordsResponse, error) {
+	out := new(MsgRegisterIdentityRecordsResponse)
+	err := c.cc.Invoke(ctx, "/kira.gov.Msg/RegisterIdentityRecords", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) EditIdentityRecord(ctx context.Context, in *MsgEditIdentityRecord, opts ...grpc.CallOption) (*MsgEditIdentityRecordResponse, error) {
-	out := new(MsgEditIdentityRecordResponse)
-	err := c.cc.Invoke(ctx, "/kira.gov.Msg/EditIdentityRecord", in, out, opts...)
+func (c *msgClient) DeleteIdentityRecords(ctx context.Context, in *MsgDeleteIdentityRecords, opts ...grpc.CallOption) (*MsgDeleteIdentityRecordsResponse, error) {
+	out := new(MsgDeleteIdentityRecordsResponse)
+	err := c.cc.Invoke(ctx, "/kira.gov.Msg/DeleteIdentityRecords", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1093,8 +1087,8 @@ func (c *msgClient) RequestIdentityRecordsVerify(ctx context.Context, in *MsgReq
 	return out, nil
 }
 
-func (c *msgClient) ApproveIdentityRecords(ctx context.Context, in *MsgApproveIdentityRecords, opts ...grpc.CallOption) (*MsgApproveIdentityRecordsResponse, error) {
-	out := new(MsgApproveIdentityRecordsResponse)
+func (c *msgClient) ApproveIdentityRecords(ctx context.Context, in *MsgHandleIdentityRecordsVerifyRequest, opts ...grpc.CallOption) (*MsgHandleIdentityRecordsVerifyResponse, error) {
+	out := new(MsgHandleIdentityRecordsVerifyResponse)
 	err := c.cc.Invoke(ctx, "/kira.gov.Msg/ApproveIdentityRecords", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -1141,14 +1135,14 @@ type MsgServer interface {
 	RemoveWhitelistRolePermission(context.Context, *MsgRemoveWhitelistRolePermission) (*MsgRemoveWhitelistRolePermissionResponse, error)
 	// RemoveBlacklistRolePermission defines a method for removing blacklisted permission from a role
 	RemoveBlacklistRolePermission(context.Context, *MsgRemoveBlacklistRolePermission) (*MsgRemoveBlacklistRolePermissionResponse, error)
-	// CreateIdentityRecord defines a method to create identity record
-	CreateIdentityRecord(context.Context, *MsgCreateIdentityRecord) (*MsgCreateIdentityRecordResponse, error)
-	// EditIdentityRecord defines a method to edit identity record, it removes all verifiers for the record
-	EditIdentityRecord(context.Context, *MsgEditIdentityRecord) (*MsgEditIdentityRecordResponse, error)
+	// RegisterIdentityRecord defines a method to create identity records for an address
+	RegisterIdentityRecords(context.Context, *MsgRegisterIdentityRecords) (*MsgRegisterIdentityRecordsResponse, error)
+	// DeleteIdentityRecords defines a method to delete identity records
+	DeleteIdentityRecords(context.Context, *MsgDeleteIdentityRecords) (*MsgDeleteIdentityRecordsResponse, error)
 	// RequestIdentityRecordsVerify defines a method to request verify request from specific verifier
 	RequestIdentityRecordsVerify(context.Context, *MsgRequestIdentityRecordsVerify) (*MsgRequestIdentityRecordsVerifyResponse, error)
 	// ApproveIdentityRecords defines a method to accept verification request
-	ApproveIdentityRecords(context.Context, *MsgApproveIdentityRecords) (*MsgApproveIdentityRecordsResponse, error)
+	ApproveIdentityRecords(context.Context, *MsgHandleIdentityRecordsVerifyRequest) (*MsgHandleIdentityRecordsVerifyResponse, error)
 	// CancelIdentityRecordsVerifyRequest defines a method to cancel verification request
 	CancelIdentityRecordsVerifyRequest(context.Context, *MsgCancelIdentityRecordsVerifyRequest) (*MsgCancelIdentityRecordsVerifyRequestResponse, error)
 }
@@ -1199,16 +1193,16 @@ func (*UnimplementedMsgServer) RemoveWhitelistRolePermission(ctx context.Context
 func (*UnimplementedMsgServer) RemoveBlacklistRolePermission(ctx context.Context, req *MsgRemoveBlacklistRolePermission) (*MsgRemoveBlacklistRolePermissionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoveBlacklistRolePermission not implemented")
 }
-func (*UnimplementedMsgServer) CreateIdentityRecord(ctx context.Context, req *MsgCreateIdentityRecord) (*MsgCreateIdentityRecordResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateIdentityRecord not implemented")
+func (*UnimplementedMsgServer) RegisterIdentityRecords(ctx context.Context, req *MsgRegisterIdentityRecords) (*MsgRegisterIdentityRecordsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterIdentityRecords not implemented")
 }
-func (*UnimplementedMsgServer) EditIdentityRecord(ctx context.Context, req *MsgEditIdentityRecord) (*MsgEditIdentityRecordResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method EditIdentityRecord not implemented")
+func (*UnimplementedMsgServer) DeleteIdentityRecords(ctx context.Context, req *MsgDeleteIdentityRecords) (*MsgDeleteIdentityRecordsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteIdentityRecords not implemented")
 }
 func (*UnimplementedMsgServer) RequestIdentityRecordsVerify(ctx context.Context, req *MsgRequestIdentityRecordsVerify) (*MsgRequestIdentityRecordsVerifyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RequestIdentityRecordsVerify not implemented")
 }
-func (*UnimplementedMsgServer) ApproveIdentityRecords(ctx context.Context, req *MsgApproveIdentityRecords) (*MsgApproveIdentityRecordsResponse, error) {
+func (*UnimplementedMsgServer) ApproveIdentityRecords(ctx context.Context, req *MsgHandleIdentityRecordsVerifyRequest) (*MsgHandleIdentityRecordsVerifyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ApproveIdentityRecords not implemented")
 }
 func (*UnimplementedMsgServer) CancelIdentityRecordsVerifyRequest(ctx context.Context, req *MsgCancelIdentityRecordsVerifyRequest) (*MsgCancelIdentityRecordsVerifyRequestResponse, error) {
@@ -1471,38 +1465,38 @@ func _Msg_RemoveBlacklistRolePermission_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_CreateIdentityRecord_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgCreateIdentityRecord)
+func _Msg_RegisterIdentityRecords_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgRegisterIdentityRecords)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).CreateIdentityRecord(ctx, in)
+		return srv.(MsgServer).RegisterIdentityRecords(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/kira.gov.Msg/CreateIdentityRecord",
+		FullMethod: "/kira.gov.Msg/RegisterIdentityRecords",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).CreateIdentityRecord(ctx, req.(*MsgCreateIdentityRecord))
+		return srv.(MsgServer).RegisterIdentityRecords(ctx, req.(*MsgRegisterIdentityRecords))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_EditIdentityRecord_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgEditIdentityRecord)
+func _Msg_DeleteIdentityRecords_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgDeleteIdentityRecords)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).EditIdentityRecord(ctx, in)
+		return srv.(MsgServer).DeleteIdentityRecords(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/kira.gov.Msg/EditIdentityRecord",
+		FullMethod: "/kira.gov.Msg/DeleteIdentityRecords",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).EditIdentityRecord(ctx, req.(*MsgEditIdentityRecord))
+		return srv.(MsgServer).DeleteIdentityRecords(ctx, req.(*MsgDeleteIdentityRecords))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1526,7 +1520,7 @@ func _Msg_RequestIdentityRecordsVerify_Handler(srv interface{}, ctx context.Cont
 }
 
 func _Msg_ApproveIdentityRecords_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgApproveIdentityRecords)
+	in := new(MsgHandleIdentityRecordsVerifyRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1538,7 +1532,7 @@ func _Msg_ApproveIdentityRecords_Handler(srv interface{}, ctx context.Context, d
 		FullMethod: "/kira.gov.Msg/ApproveIdentityRecords",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).ApproveIdentityRecords(ctx, req.(*MsgApproveIdentityRecords))
+		return srv.(MsgServer).ApproveIdentityRecords(ctx, req.(*MsgHandleIdentityRecordsVerifyRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1622,12 +1616,12 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_RemoveBlacklistRolePermission_Handler,
 		},
 		{
-			MethodName: "CreateIdentityRecord",
-			Handler:    _Msg_CreateIdentityRecord_Handler,
+			MethodName: "RegisterIdentityRecords",
+			Handler:    _Msg_RegisterIdentityRecords_Handler,
 		},
 		{
-			MethodName: "EditIdentityRecord",
-			Handler:    _Msg_EditIdentityRecord_Handler,
+			MethodName: "DeleteIdentityRecords",
+			Handler:    _Msg_DeleteIdentityRecords_Handler,
 		},
 		{
 			MethodName: "RequestIdentityRecordsVerify",
@@ -2029,7 +2023,7 @@ func (m *MsgRemoveBlacklistRolePermissionResponse) MarshalToSizedBuffer(dAtA []b
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgCreateIdentityRecordResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgRegisterIdentityRecordsResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -2039,25 +2033,20 @@ func (m *MsgCreateIdentityRecordResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgCreateIdentityRecordResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgRegisterIdentityRecordsResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgCreateIdentityRecordResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgRegisterIdentityRecordsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.RecordId != 0 {
-		i = encodeVarintTx(dAtA, i, uint64(m.RecordId))
-		i--
-		dAtA[i] = 0x8
-	}
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgEditIdentityRecordResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgDeleteIdentityRecordsResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -2067,12 +2056,12 @@ func (m *MsgEditIdentityRecordResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgEditIdentityRecordResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgDeleteIdentityRecordsResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgEditIdentityRecordResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgDeleteIdentityRecordsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -2108,7 +2097,7 @@ func (m *MsgRequestIdentityRecordsVerifyResponse) MarshalToSizedBuffer(dAtA []by
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgApproveIdentityRecordsResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgHandleIdentityRecordsVerifyResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -2118,12 +2107,12 @@ func (m *MsgApproveIdentityRecordsResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgApproveIdentityRecordsResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgHandleIdentityRecordsVerifyResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgApproveIdentityRecordsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgHandleIdentityRecordsVerifyResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -2319,19 +2308,16 @@ func (m *MsgRemoveBlacklistRolePermissionResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgCreateIdentityRecordResponse) Size() (n int) {
+func (m *MsgRegisterIdentityRecordsResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if m.RecordId != 0 {
-		n += 1 + sovTx(uint64(m.RecordId))
-	}
 	return n
 }
 
-func (m *MsgEditIdentityRecordResponse) Size() (n int) {
+func (m *MsgDeleteIdentityRecordsResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2352,7 +2338,7 @@ func (m *MsgRequestIdentityRecordsVerifyResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgApproveIdentityRecordsResponse) Size() (n int) {
+func (m *MsgHandleIdentityRecordsVerifyResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -3324,7 +3310,7 @@ func (m *MsgRemoveBlacklistRolePermissionResponse) Unmarshal(dAtA []byte) error 
 	}
 	return nil
 }
-func (m *MsgCreateIdentityRecordResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgRegisterIdentityRecordsResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3347,31 +3333,12 @@ func (m *MsgCreateIdentityRecordResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgCreateIdentityRecordResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgRegisterIdentityRecordsResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgCreateIdentityRecordResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgRegisterIdentityRecordsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field RecordId", wireType)
-			}
-			m.RecordId = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.RecordId |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -3396,7 +3363,7 @@ func (m *MsgCreateIdentityRecordResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgEditIdentityRecordResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgDeleteIdentityRecordsResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3419,10 +3386,10 @@ func (m *MsgEditIdentityRecordResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgEditIdentityRecordResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgDeleteIdentityRecordsResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgEditIdentityRecordResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgDeleteIdentityRecordsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
@@ -3521,7 +3488,7 @@ func (m *MsgRequestIdentityRecordsVerifyResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgApproveIdentityRecordsResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgHandleIdentityRecordsVerifyResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3544,10 +3511,10 @@ func (m *MsgApproveIdentityRecordsResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgApproveIdentityRecordsResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgHandleIdentityRecordsVerifyResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgApproveIdentityRecordsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgHandleIdentityRecordsVerifyResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:

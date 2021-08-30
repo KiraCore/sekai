@@ -200,7 +200,7 @@ func AddressFromLastValidatorPowerKey(key []byte) []byte {
 	return key[2:] // remove prefix bytes and address length
 }
 
-// GetIdRecordByAddress query identity records by address
-func (k Keeper) GetIdRecordByAddress(ctx sdk.Context, creator sdk.AccAddress) *govtypes.IdentityRecord {
-	return k.govkeeper.GetIdRecordByAddress(ctx, creator)
+// GetIdRecordsByAddress query identity records by address
+func (k Keeper) GetIdRecordsByAddress(ctx sdk.Context, creator sdk.AccAddress) []govtypes.IdentityRecord {
+	return k.govkeeper.GetIdRecordsByAddress(ctx, creator)
 }

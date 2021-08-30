@@ -20,6 +20,6 @@ type GovKeeper interface {
 	// GetNetworkActorsByAbsoluteWhitelistPermission returns all actors that have a specific whitelist permission,
 	// it does not matter if it is by role or by individual permission.
 	GetNetworkActorsByAbsoluteWhitelistPermission(ctx sdk.Context, perm govtypes.PermValue) []govtypes.NetworkActor
-	// GetIdRecordByAddress query identity record by address
-	GetIdRecordByAddress(ctx sdk.Context, creator sdk.AccAddress) *govtypes.IdentityRecord
+	// GetIdRecordsByAddress query identity records by address
+	GetIdRecordsByAddress(ctx sdk.Context, creator sdk.AccAddress) []govtypes.IdentityRecord
 }

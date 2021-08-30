@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.1.21.13] - 27.08.2021
+
+- Identity registrar records structure change
+- Identity registrar cli UX changes
+- Add scripts example for cli commands
+- Resolve tests for identity registrar changes
+- Commands description fix
+
 ## [v0.1.21.12] - 16.08.2021
 
 - Add description on the script to see the version
