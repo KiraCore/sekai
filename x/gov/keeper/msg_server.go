@@ -130,7 +130,7 @@ func (k msgServer) RequestIdentityRecordsVerify(goCtx context.Context, msg *type
 }
 
 // ApproveIdentityRecords defines a method to accept verification request
-func (k msgServer) ApproveIdentityRecords(goCtx context.Context, msg *types.MsgHandleIdentityRecordsVerifyRequest) (*types.MsgHandleIdentityRecordsVerifyResponse, error) {
+func (k msgServer) HandleIdentityRecordsVerifyRequest(goCtx context.Context, msg *types.MsgHandleIdentityRecordsVerifyRequest) (*types.MsgHandleIdentityRecordsVerifyResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	err := k.keeper.HandleIdentityRecordsVerifyRequest(ctx, msg.Verifier, msg.VerifyRequestId, msg.Yes)
 	return &types.MsgHandleIdentityRecordsVerifyResponse{}, err

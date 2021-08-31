@@ -306,6 +306,26 @@ func (k Keeper) HandleIdentityRecordsVerifyRequest(ctx sdk.Context, verifier sdk
 		return errors.New("verifier does not match with requested")
 	}
 
+	// send the balance regardless approve or reject
+	if !request.Tip.Amount.IsZero() {
+		if err := k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, verifier, sdk.Coins{request.Tip}); err != nil {
+			return err
+		}
+	}
+
+	// automatically reject if last record edit date is incorrect
+	for _, recordId := range request.RecordIds {
+		record := k.GetIdentityRecordById(ctx, recordId)
+		if record == nil {
+			return fmt.Errorf("identity record with specified id does NOT exist: id=%d", recordId)
+		}
+
+		if record.Date.After(request.LastRecordEditDate) {
+			approve = false
+			break
+		}
+	}
+
 	if approve == false {
 		k.DeleteIdRecordsVerifyRequest(ctx, requestId)
 		return nil
@@ -317,22 +337,12 @@ func (k Keeper) HandleIdentityRecordsVerifyRequest(ctx sdk.Context, verifier sdk
 			return fmt.Errorf("identity record with specified id does NOT exist: id=%d", recordId)
 		}
 
-		if record.Date.After(request.LastRecordEditDate) {
-			return fmt.Errorf("A record was edited after making this verification request: record_id=%d", recordId)
-		}
-
 		// if already exist, skip
 		if CheckIfWithinAddressArray(verifier, record.Verifiers) {
 			continue
 		}
 		record.Verifiers = append(record.Verifiers, verifier)
 		k.SetIdentityRecord(ctx, *record)
-	}
-
-	if !request.Tip.Amount.IsZero() {
-		if err := k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, verifier, sdk.Coins{request.Tip}); err != nil {
-			return err
-		}
 	}
 
 	k.DeleteIdRecordsVerifyRequest(ctx, requestId)
