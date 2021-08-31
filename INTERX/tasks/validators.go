@@ -13,6 +13,8 @@ import (
 	"github.com/KiraCore/sekai/INTERX/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+
+	sekaitypes "github.com/KiraCore/sekai/types"
 )
 
 var (
@@ -50,7 +52,7 @@ func QueryValidators(gwCosmosmux *runtime.ServeMux, gatewayAddr string) error {
 
 	result := ValidatorsResponse{}
 
-	limit := 100
+	limit := sekaitypes.PageIterationLimit - 1
 	offset := 0
 	for {
 		validatorsQueryRequest, _ := http.NewRequest("GET", "http://"+gatewayAddr+config.QueryValidators+"?pagination.offset="+strconv.Itoa(offset)+"&pagination.limit="+strconv.Itoa(limit), nil)
