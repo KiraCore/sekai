@@ -216,8 +216,14 @@ func TestKeeper_IdentityRecordApproveFlow(t *testing.T) {
 	require.Equal(t, reqId, uint64(0))
 	require.Error(t, err)
 
+	// test smaller tip than minimum tip
+	ctxCache, _ = ctx.CacheContext()
+	reqId, err = app.CustomGovKeeper.RequestIdentityRecordsVerify(ctxCache, addr1, addr3, []uint64{1}, sdk.NewInt64Coin(sdk.DefaultBondDenom, 199))
+	require.Error(t, err)
+	require.Equal(t, reqId, uint64(1))
+
 	// request id record 1 to addr3 by addr1
-	reqId, err = app.CustomGovKeeper.RequestIdentityRecordsVerify(ctx, addr1, addr3, []uint64{1}, sdk.NewInt64Coin(sdk.DefaultBondDenom, 10))
+	reqId, err = app.CustomGovKeeper.RequestIdentityRecordsVerify(ctx, addr1, addr3, []uint64{1}, sdk.NewInt64Coin(sdk.DefaultBondDenom, 200))
 	require.Equal(t, reqId, uint64(1))
 	require.NoError(t, err)
 	request := app.CustomGovKeeper.GetIdRecordsVerifyRequest(ctx, 1)
@@ -227,17 +233,17 @@ func TestKeeper_IdentityRecordApproveFlow(t *testing.T) {
 		Address:            addr1,
 		Verifier:           addr3,
 		RecordIds:          []uint64{1},
-		Tip:                sdk.NewInt64Coin(sdk.DefaultBondDenom, 10),
+		Tip:                sdk.NewInt64Coin(sdk.DefaultBondDenom, 200),
 		LastRecordEditDate: now,
 	})
 	coins := app.BankKeeper.GetAllBalances(ctx, addr1)
-	require.Equal(t, coins, sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 9990)})
+	require.Equal(t, coins, sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 9800)})
 	coins = app.BankKeeper.GetAllBalances(ctx, app.AccountKeeper.GetModuleAddress(types.ModuleName))
-	require.Equal(t, coins, sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 10)})
+	require.Equal(t, coins, sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 200)})
 	err = app.CustomGovKeeper.HandleIdentityRecordsVerifyRequest(ctx, addr3, 1, true)
 	require.NoError(t, err)
 	coins = app.BankKeeper.GetAllBalances(ctx, addr3)
-	require.Equal(t, coins, sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 10010)})
+	require.Equal(t, coins, sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 10200)})
 	coins = app.BankKeeper.GetAllBalances(ctx, app.AccountKeeper.GetModuleAddress(types.ModuleName))
 	require.Equal(t, coins, sdk.Coins(nil))
 	record = app.CustomGovKeeper.GetIdentityRecordById(ctx, 1)
@@ -254,15 +260,15 @@ func TestKeeper_IdentityRecordApproveFlow(t *testing.T) {
 	require.Nil(t, request)
 
 	// request id record 1 to addr3 by addr1 again
-	reqId, err = app.CustomGovKeeper.RequestIdentityRecordsVerify(ctx, addr1, addr3, []uint64{1}, sdk.NewInt64Coin(sdk.DefaultBondDenom, 10))
+	reqId, err = app.CustomGovKeeper.RequestIdentityRecordsVerify(ctx, addr1, addr3, []uint64{1}, sdk.NewInt64Coin(sdk.DefaultBondDenom, 200))
 	require.Equal(t, reqId, uint64(2))
 	require.NoError(t, err)
 	coins = app.BankKeeper.GetAllBalances(ctx, addr1)
-	require.Equal(t, coins, sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 9980)})
+	require.Equal(t, coins, sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 9600)})
 	err = app.CustomGovKeeper.HandleIdentityRecordsVerifyRequest(ctx, addr3, 2, true)
 	require.NoError(t, err)
 	coins = app.BankKeeper.GetAllBalances(ctx, addr3)
-	require.Equal(t, coins, sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 10020)})
+	require.Equal(t, coins, sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 10400)})
 	record = app.CustomGovKeeper.GetIdentityRecordById(ctx, 1)
 	require.NotNil(t, record)
 	require.Equal(t, *record, types.IdentityRecord{
@@ -275,15 +281,15 @@ func TestKeeper_IdentityRecordApproveFlow(t *testing.T) {
 	})
 
 	// request id record 1 and 2 to addr3 by addr1 again
-	reqId, err = app.CustomGovKeeper.RequestIdentityRecordsVerify(ctx, addr1, addr3, []uint64{1, 2}, sdk.NewInt64Coin(sdk.DefaultBondDenom, 10))
+	reqId, err = app.CustomGovKeeper.RequestIdentityRecordsVerify(ctx, addr1, addr3, []uint64{1, 2}, sdk.NewInt64Coin(sdk.DefaultBondDenom, 200))
 	require.Equal(t, reqId, uint64(3))
 	require.NoError(t, err)
 	coins = app.BankKeeper.GetAllBalances(ctx, addr1)
-	require.Equal(t, coins, sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 9970)})
+	require.Equal(t, coins, sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 9400)})
 	err = app.CustomGovKeeper.HandleIdentityRecordsVerifyRequest(ctx, addr3, 3, true)
 	require.NoError(t, err)
 	coins = app.BankKeeper.GetAllBalances(ctx, addr3)
-	require.Equal(t, coins, sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 10030)})
+	require.Equal(t, coins, sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 10600)})
 	record = app.CustomGovKeeper.GetIdentityRecordById(ctx, 1)
 	require.NotNil(t, record)
 	require.Equal(t, *record, types.IdentityRecord{
@@ -306,7 +312,7 @@ func TestKeeper_IdentityRecordApproveFlow(t *testing.T) {
 	})
 
 	// request id record 2 to addr3 by addr2
-	reqId, err = app.CustomGovKeeper.RequestIdentityRecordsVerify(ctx, addr2, addr3, []uint64{2}, sdk.NewInt64Coin(sdk.DefaultBondDenom, 0))
+	reqId, err = app.CustomGovKeeper.RequestIdentityRecordsVerify(ctx, addr2, addr3, []uint64{2}, sdk.NewInt64Coin(sdk.DefaultBondDenom, 200))
 	require.Equal(t, reqId, uint64(4))
 	require.NoError(t, err)
 	err = app.CustomGovKeeper.HandleIdentityRecordsVerifyRequest(ctx, addr3, 4, true)
@@ -324,12 +330,12 @@ func TestKeeper_IdentityRecordApproveFlow(t *testing.T) {
 
 	// request non-exist identity record
 	ctxCache, _ = ctx.CacheContext()
-	reqId, err = app.CustomGovKeeper.RequestIdentityRecordsVerify(ctxCache, addr2, addr3, []uint64{5}, sdk.NewInt64Coin(sdk.DefaultBondDenom, 10))
+	reqId, err = app.CustomGovKeeper.RequestIdentityRecordsVerify(ctxCache, addr2, addr3, []uint64{5}, sdk.NewInt64Coin(sdk.DefaultBondDenom, 200))
 	require.Equal(t, reqId, uint64(5))
 	require.Error(t, err)
 
 	// approve with non-approver
-	reqId, err = app.CustomGovKeeper.RequestIdentityRecordsVerify(ctx, addr1, addr3, []uint64{1}, sdk.NewInt64Coin(sdk.DefaultBondDenom, 10))
+	reqId, err = app.CustomGovKeeper.RequestIdentityRecordsVerify(ctx, addr1, addr3, []uint64{1}, sdk.NewInt64Coin(sdk.DefaultBondDenom, 200))
 	require.Equal(t, reqId, uint64(5))
 	require.NoError(t, err)
 	ctxCache, _ = ctx.CacheContext()
@@ -362,11 +368,11 @@ func TestKeeper_IdentityRecordApproveFlow(t *testing.T) {
 	require.Len(t, requests, 0)
 
 	// try to cancel request and check coin moves correctly
-	reqId, err = app.CustomGovKeeper.RequestIdentityRecordsVerify(ctx, addr2, addr3, []uint64{2}, sdk.NewInt64Coin(sdk.DefaultBondDenom, 10))
+	reqId, err = app.CustomGovKeeper.RequestIdentityRecordsVerify(ctx, addr2, addr3, []uint64{2}, sdk.NewInt64Coin(sdk.DefaultBondDenom, 200))
 	require.Equal(t, reqId, uint64(6))
 	require.NoError(t, err)
 	coins = app.BankKeeper.GetAllBalances(ctx, addr2)
-	require.Equal(t, coins, sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 9990)})
+	require.Equal(t, coins, sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 9600)})
 	cacheCtx, _ := ctx.CacheContext()
 	err = app.CustomGovKeeper.CancelIdentityRecordsVerifyRequest(cacheCtx, addr3, 6)
 	require.Error(t, err)
@@ -375,10 +381,10 @@ func TestKeeper_IdentityRecordApproveFlow(t *testing.T) {
 	request = app.CustomGovKeeper.GetIdRecordsVerifyRequest(ctx, 6)
 	require.Nil(t, request)
 	coins = app.BankKeeper.GetAllBalances(ctx, addr2)
-	require.Equal(t, coins, sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 10000)})
+	require.Equal(t, coins, sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 9800)})
 
 	// try deleting request after request creation
-	reqId, err = app.CustomGovKeeper.RequestIdentityRecordsVerify(ctx, addr2, addr3, []uint64{2}, sdk.NewInt64Coin(sdk.DefaultBondDenom, 10))
+	reqId, err = app.CustomGovKeeper.RequestIdentityRecordsVerify(ctx, addr2, addr3, []uint64{2}, sdk.NewInt64Coin(sdk.DefaultBondDenom, 200))
 	require.Equal(t, reqId, uint64(7))
 	app.CustomGovKeeper.DeleteIdRecordsVerifyRequest(ctx, 7)
 	request = app.CustomGovKeeper.GetIdRecordsVerifyRequest(ctx, 7)
@@ -389,7 +395,7 @@ func TestKeeper_IdentityRecordApproveFlow(t *testing.T) {
 	require.Len(t, requests, 0)
 
 	// try deleting id record after request creation
-	reqId, err = app.CustomGovKeeper.RequestIdentityRecordsVerify(ctx, addr2, addr3, []uint64{2}, sdk.NewInt64Coin(sdk.DefaultBondDenom, 10))
+	reqId, err = app.CustomGovKeeper.RequestIdentityRecordsVerify(ctx, addr2, addr3, []uint64{2}, sdk.NewInt64Coin(sdk.DefaultBondDenom, 200))
 	require.Equal(t, reqId, uint64(8))
 	app.CustomGovKeeper.DeleteIdentityRecords(ctx, addr2, []string{})
 	cacheCtx, _ = ctx.CacheContext()

@@ -250,6 +250,11 @@ func (k Keeper) RequestIdentityRecordsVerify(ctx sdk.Context, address, verifier 
 		LastRecordEditDate: lastRecordEditDate,
 	}
 
+	minApprovalTip := k.GetNetworkProperties(ctx).MinIdentityApprovalTip
+	if sdk.NewInt(int64(minApprovalTip)).GT(tip.Amount) {
+		return requestId, fmt.Errorf("approval tip is lower than minimum tip configured by the network")
+	}
+
 	k.SetIdentityRecordsVerifyRequest(ctx, request)
 	k.SetLastIdRecordVerifyRequestId(ctx, requestId)
 
