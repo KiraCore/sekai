@@ -4,12 +4,23 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"regexp"
+	"strings"
 	"time"
 
 	"github.com/KiraCore/sekai/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
+
+func ValidateIdentityRecordKey(key string) bool {
+	regex := regexp.MustCompile(`^[a-zA-Z][_0-9a-zA-Z]*$`)
+	return regex.MatchString(key)
+}
+
+func FormalizeIdentityRecordKey(key string) string {
+	return strings.ToLower(key)
+}
 
 func CheckIfWithinAddressArray(addr sdk.AccAddress, array []sdk.AccAddress) bool {
 	for _, itemAddr := range array {
@@ -54,9 +65,21 @@ func (k Keeper) SetLastIdRecordVerifyRequestId(ctx sdk.Context, id uint64) {
 
 // SetIdentityRecord defines a method to set identity record
 func (k Keeper) SetIdentityRecord(ctx sdk.Context, record types.IdentityRecord) {
+	// validate key
+	if !ValidateIdentityRecordKey(record.Key) {
+		panic("identity record key is invalid")
+	}
+	// set the key to non case-sensitive
+	record.Key = FormalizeIdentityRecordKey(record.Key)
+
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixIdentityRecord)
 	bz := k.cdc.MustMarshalBinaryBare(&record)
 	prefixStore.Set(sdk.Uint64ToBigEndian(record.Id), bz)
+
+	// connect address + key to id
+	store := ctx.KVStore(k.storeKey)
+	addrPrefixStore := prefix.NewStore(store, append(types.KeyPrefixIdentityRecordByAddress, record.Address...))
+	addrPrefixStore.Set([]byte(record.Key), sdk.Uint64ToBigEndian(record.Id))
 }
 
 func (k Keeper) GetIdentityRecordById(ctx sdk.Context, recordId uint64) *types.IdentityRecord {
@@ -71,7 +94,15 @@ func (k Keeper) GetIdentityRecordById(ctx sdk.Context, recordId uint64) *types.I
 	return &record
 }
 
+// Get identity record id by address and key
 func (k Keeper) GetIdentityRecordIdByAddressKey(ctx sdk.Context, address sdk.AccAddress, key string) uint64 {
+	// validate key
+	if !ValidateIdentityRecordKey(key) {
+		return 0
+	}
+	// set the key to non case-sensitive
+	key = FormalizeIdentityRecordKey(key)
+
 	store := ctx.KVStore(k.storeKey)
 	prefixStore := prefix.NewStore(store, append(types.KeyPrefixIdentityRecordByAddress, address.Bytes()...))
 	recordIdBytes := prefixStore.Get([]byte(key))
@@ -94,17 +125,21 @@ func (k Keeper) DeleteIdentityRecordById(ctx sdk.Context, recordId uint64) {
 
 // RegisterIdentityRecord defines a method to register identity records for an address
 func (k Keeper) RegisterIdentityRecords(ctx sdk.Context, address sdk.AccAddress, infos []types.IdentityInfoEntry) error {
+	// validate key and set the key to non case-sensitive
+	for i, info := range infos {
+		if !ValidateIdentityRecordKey(info.Key) {
+			return fmt.Errorf("invalid key exists: key=%s", info.Key)
+		}
+		infos[i].Key = FormalizeIdentityRecordKey(info.Key)
+	}
+
+	// TODO: add test for unformal identity keys
 	for _, info := range infos {
 		// use existing record id if it already exists
 		recordId := k.GetIdentityRecordIdByAddressKey(ctx, address, info.Key)
 		if recordId == 0 {
 			recordId = k.GetLastIdentityRecordId(ctx) + 1
 			k.SetLastIdentityRecordId(ctx, recordId)
-
-			// connect address + key to id
-			store := ctx.KVStore(k.storeKey)
-			prefixStore := prefix.NewStore(store, append(types.KeyPrefixIdentityRecordByAddress, address.Bytes()...))
-			prefixStore.Set([]byte(info.Key), sdk.Uint64ToBigEndian(recordId))
 		}
 		// create or update identity record
 		k.SetIdentityRecord(ctx, types.IdentityRecord{
@@ -121,6 +156,15 @@ func (k Keeper) RegisterIdentityRecords(ctx sdk.Context, address sdk.AccAddress,
 
 // DeleteIdentityRecords defines a method to delete identity records owned by an address
 func (k Keeper) DeleteIdentityRecords(ctx sdk.Context, address sdk.AccAddress, keys []string) error {
+	// validate key and set the key to non case-sensitive
+	for i, key := range keys {
+		if !ValidateIdentityRecordKey(key) {
+			return fmt.Errorf("invalid key exists: key=%s", key)
+		}
+		keys[i] = FormalizeIdentityRecordKey(key)
+	}
+
+	// TODO: add test for unformal identity keys
 
 	store := ctx.KVStore(k.storeKey)
 	prefix := append(types.KeyPrefixIdentityRecordByAddress, address...)
@@ -172,6 +216,15 @@ func (k Keeper) GetAllIdentityRecords(ctx sdk.Context) []types.IdentityRecord {
 
 // GetIdRecordsByAddressAndKeys query identity record by address and keys
 func (k Keeper) GetIdRecordsByAddressAndKeys(ctx sdk.Context, address sdk.AccAddress, keys []string) ([]types.IdentityRecord, error) {
+	// validate key and set the key to non case-sensitive
+	for i, key := range keys {
+		if !ValidateIdentityRecordKey(key) {
+			return []types.IdentityRecord{}, fmt.Errorf("invalid key exists: key=%s", key)
+		}
+		keys[i] = FormalizeIdentityRecordKey(key)
+	}
+
+	// TODO: add test for unformal identity keys
 	if len(keys) == 0 {
 		return k.GetIdRecordsByAddress(ctx, address), nil
 	}

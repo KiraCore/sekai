@@ -12,6 +12,14 @@ import (
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
 
+func TestKeeper_ValidateIdentityRecordKey(t *testing.T) {
+	require.False(t, keeper.ValidateIdentityRecordKey("_abc"))
+	require.False(t, keeper.ValidateIdentityRecordKey("1abc"))
+	require.True(t, keeper.ValidateIdentityRecordKey("ab_a"))
+	require.True(t, keeper.ValidateIdentityRecordKey("ab_1a"))
+	require.True(t, keeper.ValidateIdentityRecordKey("aa_Aa"))
+}
+
 func TestKeeper_CheckIfWithinAddressArray(t *testing.T) {
 	addr1 := sdk.AccAddress("foo1________________")
 	addr2 := sdk.AccAddress("foo2________________")
@@ -84,6 +92,41 @@ func TestKeeper_IdentityRecordBasicFlow(t *testing.T) {
 	app.CustomGovKeeper.DeleteIdentityRecordById(ctx, 1)
 	record = app.CustomGovKeeper.GetIdentityRecordById(ctx, 1)
 	require.Nil(t, record)
+
+	// check automatic conversion to lowercase
+	uppercaseRecord := types.IdentityRecord{
+		Id:        2,
+		Address:   addr1,
+		Key:       "MyKey",
+		Value:     "value",
+		Date:      time.Now().UTC(),
+		Verifiers: []sdk.AccAddress{addr2, addr3},
+	}
+	app.CustomGovKeeper.SetIdentityRecord(ctx, uppercaseRecord)
+	record = app.CustomGovKeeper.GetIdentityRecordById(ctx, 2)
+	require.NotNil(t, record)
+	require.Equal(t, record.Key, "mykey")
+
+	// try to get via uppercase key
+	recordId := app.CustomGovKeeper.GetIdentityRecordIdByAddressKey(ctx, addr1, "MYKEY")
+	require.Equal(t, recordId, uint64(2))
+
+	// try to get by key
+	recordId = app.CustomGovKeeper.GetIdentityRecordIdByAddressKey(ctx, addr1, "_key")
+	require.Equal(t, recordId, uint64(0))
+
+	// check invalid key set
+	invalidRecord := types.IdentityRecord{
+		Id:        1,
+		Address:   addr1,
+		Key:       "_key",
+		Value:     "value",
+		Date:      time.Now().UTC(),
+		Verifiers: []sdk.AccAddress{addr2, addr3},
+	}
+	require.Panics(t, func() {
+		app.CustomGovKeeper.SetIdentityRecord(ctx, invalidRecord)
+	})
 }
 
 func TestKeeper_IdentityRecordAddEditRemove(t *testing.T) {
