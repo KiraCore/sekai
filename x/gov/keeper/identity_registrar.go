@@ -133,7 +133,6 @@ func (k Keeper) RegisterIdentityRecords(ctx sdk.Context, address sdk.AccAddress,
 		infos[i].Key = FormalizeIdentityRecordKey(info.Key)
 	}
 
-	// TODO: add test for unformal identity keys
 	for _, info := range infos {
 		// use existing record id if it already exists
 		recordId := k.GetIdentityRecordIdByAddressKey(ctx, address, info.Key)
@@ -163,8 +162,6 @@ func (k Keeper) DeleteIdentityRecords(ctx sdk.Context, address sdk.AccAddress, k
 		}
 		keys[i] = FormalizeIdentityRecordKey(key)
 	}
-
-	// TODO: add test for unformal identity keys
 
 	store := ctx.KVStore(k.storeKey)
 	prefix := append(types.KeyPrefixIdentityRecordByAddress, address...)
@@ -224,7 +221,6 @@ func (k Keeper) GetIdRecordsByAddressAndKeys(ctx sdk.Context, address sdk.AccAdd
 		keys[i] = FormalizeIdentityRecordKey(key)
 	}
 
-	// TODO: add test for unformal identity keys
 	if len(keys) == 0 {
 		return k.GetIdRecordsByAddress(ctx, address), nil
 	}

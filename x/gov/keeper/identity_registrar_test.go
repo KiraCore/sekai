@@ -220,6 +220,65 @@ func TestKeeper_IdentityRecordAddEditRemove(t *testing.T) {
 	require.Error(t, err)
 }
 
+func TestKeeper_IdentityKeysManagement(t *testing.T) {
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	// create a new record and check if set correctly
+	addr1 := sdk.AccAddress("foo1________________")
+	infos := make(map[string]string)
+	infos["MyKey"] = "MyValue"
+	infos["Nike"] = "MyNike"
+	now := time.Now().UTC()
+	ctx = ctx.WithBlockTime(now)
+	err := app.CustomGovKeeper.RegisterIdentityRecords(ctx, addr1, types.WrapInfos(infos))
+	require.NoError(t, err)
+
+	record := app.CustomGovKeeper.GetIdentityRecordById(ctx, 1)
+	require.NotNil(t, record)
+	expectedRecord := types.IdentityRecord{
+		Id:      1,
+		Address: addr1,
+		Key:     "mykey",
+		Value:   "MyValue",
+		Date:    now,
+	}
+	require.Equal(t, *record, expectedRecord)
+
+	record = app.CustomGovKeeper.GetIdentityRecordById(ctx, 2)
+	require.NotNil(t, record)
+	expectedRecord = types.IdentityRecord{
+		Id:      2,
+		Address: addr1,
+		Key:     "nike",
+		Value:   "MyNike",
+		Date:    now,
+	}
+	require.Equal(t, *record, expectedRecord)
+
+	// check invalid key involved registration
+	infos["1Nike"] = "MyNike"
+	err = app.CustomGovKeeper.RegisterIdentityRecords(ctx, addr1, types.WrapInfos(infos))
+	require.Error(t, err)
+
+	records, err := app.CustomGovKeeper.GetIdRecordsByAddressAndKeys(ctx, addr1, []string{"MyKey", "nike"})
+	require.NoError(t, err)
+	require.Len(t, records, 2)
+
+	records, err = app.CustomGovKeeper.GetIdRecordsByAddressAndKeys(ctx, addr1, []string{"MyKey", "nike", "A"})
+	require.Error(t, err)
+
+	records, err = app.CustomGovKeeper.GetIdRecordsByAddressAndKeys(ctx, addr1, []string{"MyKey", "nike", "_"})
+	require.Error(t, err)
+
+	// delete by uppercase key and check if deleted correctly
+	err = app.CustomGovKeeper.DeleteIdentityRecords(ctx, addr1, []string{"myKey"})
+	require.NoError(t, err)
+
+	records, err = app.CustomGovKeeper.GetIdRecordsByAddressAndKeys(ctx, addr1, []string{"MyKey"})
+	require.Error(t, err)
+}
+
 func TestKeeper_IdentityRecordApproveFlow(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
