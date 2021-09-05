@@ -161,6 +161,11 @@ func (k Keeper) DeleteIdentityRecords(ctx sdk.Context, address sdk.AccAddress, k
 			return fmt.Errorf("invalid key exists: key=%s", key)
 		}
 		keys[i] = FormalizeIdentityRecordKey(key)
+
+		// we prevent deleting moniker field of a validator
+		if key == "moniker" {
+			return fmt.Errorf("moniker field is not allowed to delete")
+		}
 	}
 
 	store := ctx.KVStore(k.storeKey)

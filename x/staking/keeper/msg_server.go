@@ -60,6 +60,14 @@ func (k msgServer) ClaimValidator(goCtx context.Context, msg *types.MsgClaimVali
 
 	k.keeper.AddPendingValidator(ctx, validator)
 
+	// register identity record moniker field when claiming a validator
+	k.govKeeper.RegisterIdentityRecords(ctx, sdk.AccAddress(validator.ValKey), []govtypes.IdentityInfoEntry{
+		{
+			Key:  "moniker",
+			Info: validator.Moniker,
+		},
+	})
+
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
 			types.EventTypeClaimValidator,
