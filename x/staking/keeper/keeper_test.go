@@ -44,11 +44,6 @@ func TestKeeper_AddValidator(t *testing.T) {
 	_, err = app.CustomStakingKeeper.GetValidatorByAccAddress(ctx, sdk.AccAddress("non existing"))
 	require.EqualError(t, err, "validator not found")
 
-	// Get by Moniker.
-	getValidator, err = app.CustomStakingKeeper.GetValidatorByMoniker(ctx, validator.Moniker)
-	require.NoError(t, err)
-	require.True(t, validator.Equal(getValidator))
-
 	// Get by ConsAddress
 	getByConsAddrValidator, err := app.CustomStakingKeeper.GetValidatorByConsAddr(ctx, validator.GetConsAddr())
 	require.NoError(t, err)
@@ -118,7 +113,6 @@ func createValidators(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context, accNu
 		require.NoError(t, err)
 
 		validator, err := types.NewValidator(
-			"validator 1",
 			sdk.NewDec(1234),
 			valAddr,
 			pubKey,

@@ -49,6 +49,7 @@ func (q Querier) ValidatorByMoniker(ctx context.Context, request *types.Validato
 	}, nil
 }
 
+// TODO: test validators query manually to check if it works
 // Validators implements the Query all validators gRPC method
 func (q Querier) Validators(ctx context.Context, request *types.ValidatorsRequest) (*types.ValidatorsResponse, error) {
 	c := sdk.UnwrapSDKContext(ctx)
@@ -75,13 +76,18 @@ func (q Querier) Validators(ctx context.Context, request *types.ValidatorsReques
 			return false, err
 		}
 
+		moniker, err := q.keeper.GetMonikerByAddress(c, sdk.AccAddress(val.ValKey))
+		if err != nil {
+			return false, err
+		}
+
 		consPubkey, _ := sdk.Bech32ifyPubKey(sdk.Bech32PubKeyTypeConsPub, val.GetConsPubKey())
 		validator := types.QueryValidator{
 			Address:    sdk.AccAddress(val.ValKey).String(),
 			Valkey:     val.ValKey.String(),
 			Pubkey:     consPubkey,
 			Proposer:   val.GetConsPubKey().Address().String(),
-			Moniker:    val.Moniker,
+			Moniker:    moniker,
 			Commission: val.Commission.String(),
 			Status:     val.Status.String(),
 			Rank:       val.Rank,

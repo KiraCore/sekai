@@ -25,7 +25,6 @@ func TestItUpdatesTheValidatorSetBasedOnPendingValidators(t *testing.T) {
 	require.NoError(t, err)
 
 	validator1, err := stakingtypes.NewValidator(
-		"validator 1",
 		types.NewDec(1234),
 		valAddr1,
 		pubKey,
@@ -109,7 +108,6 @@ func TestItRemovesFromTheValidatorSetWhenInRemovingQueue(t *testing.T) {
 			require.NoError(t, err)
 
 			validator1, err := stakingtypes.NewValidator(
-				"validator 1",
 				types.NewDec(1234),
 				valAddr1,
 				pubKey,
@@ -194,7 +192,6 @@ func TestItIncludesItBackToValidatorSetOnceReactivatingIt(t *testing.T) {
 			require.NoError(t, err)
 
 			validator1, err := stakingtypes.NewValidator(
-				"validator 1",
 				types.NewDec(1234),
 				valAddr1,
 				pubKey,

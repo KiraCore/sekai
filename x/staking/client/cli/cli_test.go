@@ -79,7 +79,6 @@ func (s *IntegrationTestSuite) TestQueryValidator() {
 	var respValidator customtypes.Validator
 	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &respValidator)
 
-	s.Require().Equal(val.Moniker, respValidator.Moniker)
 	s.Require().Equal(sdk.NewDec(1), respValidator.Commission)
 	s.Require().Equal(val.ValAddress, respValidator.ValKey)
 
@@ -97,7 +96,6 @@ func (s *IntegrationTestSuite) TestQueryValidator() {
 
 	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &respValidator)
 
-	s.Require().Equal(val.Moniker, respValidator.Moniker)
 	s.Require().Equal(sdk.NewDec(1), respValidator.Commission)
 	s.Require().Equal(val.ValAddress, respValidator.ValKey)
 
@@ -114,7 +112,6 @@ func (s *IntegrationTestSuite) TestQueryValidator() {
 
 	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &respValidator)
 
-	s.Require().Equal(val.Moniker, respValidator.Moniker)
 	s.Require().Equal(sdk.NewDec(1), respValidator.Commission)
 	s.Require().Equal(val.ValAddress, respValidator.ValKey)
 

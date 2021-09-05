@@ -1,7 +1,6 @@
 package keeper_test
 
 import (
-	"fmt"
 	"testing"
 	"time"
 
@@ -28,8 +27,7 @@ func TestQuerier_SigningInfo(t *testing.T) {
 		consAddress := sdk.ConsAddress(consPubKey.Address())
 		consAddresses = append(consAddresses, consAddress)
 
-		moniker := fmt.Sprintf("Moniker_%d", i+1)
-		val, err := stakingtypes.NewValidator(moniker, sdk.NewDec(123), valAddr, consPubKey)
+		val, err := stakingtypes.NewValidator(sdk.NewDec(123), valAddr, consPubKey)
 		require.NoError(t, err)
 		actor := govtypes.NewDefaultActor(sdk.AccAddress(valAddr))
 		app.CustomGovKeeper.AddWhitelistPermission(ctx, actor, govtypes.PermClaimValidator)
@@ -81,8 +79,7 @@ func TestQuerier_SigningInfos(t *testing.T) {
 		consAddress := sdk.ConsAddress(consPubKey.Address())
 		consAddresses = append(consAddresses, consAddress)
 
-		moniker := fmt.Sprintf("Moniker_%d", i+1)
-		val, err := stakingtypes.NewValidator(moniker, sdk.NewDec(123), valAddr, consPubKey)
+		val, err := stakingtypes.NewValidator(sdk.NewDec(123), valAddr, consPubKey)
 		require.NoError(t, err)
 		actor := govtypes.NewDefaultActor(sdk.AccAddress(valAddr))
 		app.CustomGovKeeper.AddWhitelistPermission(ctx, actor, govtypes.PermClaimValidator)

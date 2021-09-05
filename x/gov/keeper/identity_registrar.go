@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/KiraCore/sekai/x/gov/types"
+	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -131,6 +132,10 @@ func (k Keeper) RegisterIdentityRecords(ctx sdk.Context, address sdk.AccAddress,
 			return fmt.Errorf("invalid key exists: key=%s", info.Key)
 		}
 		infos[i].Key = FormalizeIdentityRecordKey(info.Key)
+
+		if infos[i].Key == "moniker" && len(infos[i].Info) > 64 {
+			return stakingtypes.ErrInvalidMonikerLength
+		}
 	}
 
 	for _, info := range infos {
@@ -244,6 +249,16 @@ func (k Keeper) GetIdRecordsByAddressAndKeys(ctx sdk.Context, address sdk.AccAdd
 		records = append(records, *record)
 	}
 	return records, nil
+}
+
+func (k Keeper) GetAddressesByIdRecordKey(ctx sdk.Context, key, value string) []sdk.AccAddress {
+	addrs := []sdk.AccAddress{}
+	for _, record := range k.GetAllIdentityRecords(ctx) {
+		if record.Key == key && record.Value == value {
+			addrs = append(addrs, record.Address)
+		}
+	}
+	return addrs
 }
 
 // GetIdRecordsByAddress query identity record by address

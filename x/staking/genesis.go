@@ -15,8 +15,8 @@ func ExportGenesis(ctx sdk.Context, keeper keeper.Keeper) *types.GenesisState {
 }
 
 // WriteValidators returns a slice of bonded genesis validators.
-func WriteValidators(ctx sdk.Context, keeper keeper.Keeper) (vals []tmtypes.GenesisValidator, err error) {
-	keeper.IterateLastValidators(ctx, func(_ int64, validator types.Validator) (stop bool) {
+func WriteValidators(ctx sdk.Context, k keeper.Keeper) (vals []tmtypes.GenesisValidator, err error) {
+	k.IterateLastValidators(ctx, func(_ int64, validator types.Validator) (stop bool) {
 		pk, err := validator.ConsPubKey()
 		if err != nil {
 			return true
@@ -26,10 +26,14 @@ func WriteValidators(ctx sdk.Context, keeper keeper.Keeper) (vals []tmtypes.Gene
 			return true
 		}
 
+		moniker, err := k.GetMonikerByAddress(ctx, sdk.AccAddress(validator.ValKey))
+		if err != nil {
+			return false
+		}
 		vals = append(vals, tmtypes.GenesisValidator{
 			Address: sdk.ConsAddress(tmPk.Address()).Bytes(),
 			PubKey:  tmPk,
-			Name:    validator.GetMoniker(),
+			Name:    moniker,
 		})
 
 		return false

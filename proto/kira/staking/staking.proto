@@ -59,26 +59,25 @@ enum ValidatorStatus {
 message Validator {
   option (gogoproto.equal)            = true;
 
-  string moniker = 1;
-  string commission = 2 [
+  string commission = 1 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable)   = false,
     (gogoproto.moretags)   = "yaml:\"commission\""
   ];
-  bytes val_key = 3 [
+  bytes val_key = 2 [
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.ValAddress",
     (gogoproto.moretags) = "yaml:\"val_key\""
   ];
-  google.protobuf.Any pub_key = 4
+  google.protobuf.Any pub_key = 3
   [(cosmos_proto.accepts_interface) = "cosmos.crypto.PubKey", (gogoproto.moretags) = "yaml:\"pub_key\""];
-  ValidatorStatus status = 5;
+  ValidatorStatus status = 4;
 
   // To judge validator performance a streak and rank properties should be created (as part of each validator status data).
   // The streak would imply consecutive number of times that given validator managed to successfully propose a block (since the last time he failed) that was accepted into the blockchain state. The streak property should be zeroed every time validator misses to propose a block and the mischance property is incremented. You can treat streak in similar way to kill-streaks in video games - which imply your short term performance.
   // The rank property is a long term statistics implying the "longest" streak that validator ever achieved, it can be expressed as rank = MAX(rank, streak). Under certain circumstances we should however decrease the rank of the validator. If the mischance property is incremented, the rank should be decremented by X (default 10), that is rank = MAX(rank - X, 0). Every time node status changes to inactive the rank should be divided by 2, that is rank = FLOOR(rank / 2)
   // The streak and rank will enable governance to judge real life performance of validators on the mainnet or testnet, and potentially propose eviction of the weakest and least reliable operators.
-  int64 rank = 6;
-  int64 streak = 7;
+  int64 rank = 5;
+  int64 streak = 6;
 }
 
 message ValidatorJailInfo {

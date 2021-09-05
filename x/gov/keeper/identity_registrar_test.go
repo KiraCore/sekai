@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"strings"
 	"testing"
 	"time"
 
@@ -220,6 +221,20 @@ func TestKeeper_IdentityRecordAddEditRemove(t *testing.T) {
 	require.Error(t, err)
 }
 
+func TestKeeper_TryLongMonikerField(t *testing.T) {
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	// create a new record and check if set correctly
+	addr1 := sdk.AccAddress("foo1________________")
+	infos := make(map[string]string)
+	infos["moniker"] = strings.Repeat("A", 65)
+	now := time.Now().UTC()
+	ctx = ctx.WithBlockTime(now)
+	err := app.CustomGovKeeper.RegisterIdentityRecords(ctx, addr1, types.WrapInfos(infos))
+	require.Error(t, err)
+}
+
 func TestKeeper_IdentityKeysManagement(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
@@ -277,6 +292,12 @@ func TestKeeper_IdentityKeysManagement(t *testing.T) {
 
 	records, err = app.CustomGovKeeper.GetIdRecordsByAddressAndKeys(ctx, addr1, []string{"MyKey"})
 	require.Error(t, err)
+
+	addrs := app.CustomGovKeeper.GetAddressesByIdRecordKey(ctx, "mykey", "MyValue")
+	require.Len(t, addrs, 1)
+
+	addrs = app.CustomGovKeeper.GetAddressesByIdRecordKey(ctx, "mykey", "MyValue2")
+	require.Len(t, addrs, 0)
 }
 
 func TestKeeper_IdentityRecordApproveFlow(t *testing.T) {

@@ -25,7 +25,7 @@ func TestQuerier_ValidatorByAddress(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	val, err := stakingtypes.NewValidator("Moniker", types.NewDec(123), valAddr1, pubKey)
+	val, err := stakingtypes.NewValidator(types.NewDec(123), valAddr1, pubKey)
 	require.NoError(t, err)
 
 	app.CustomStakingKeeper.AddValidator(ctx, val)
@@ -48,11 +48,15 @@ func TestQuerier_Validators(t *testing.T) {
 		valAddr := sdk.ValAddress(secp256k1.GenPrivKey().PubKey().Address())
 		consPubKey := ed25519.GenPrivKey().PubKey()
 
-		moniker := fmt.Sprintf("Moniker_%d", i+1)
-		val, err := stakingtypes.NewValidator(moniker, types.NewDec(123), valAddr, consPubKey)
+		val, err := stakingtypes.NewValidator(types.NewDec(123), valAddr, consPubKey)
 		require.NoError(t, err)
 		actor := govtypes.NewDefaultActor(sdk.AccAddress(valAddr))
 		app.CustomGovKeeper.AddWhitelistPermission(ctx, actor, govtypes.PermClaimValidator)
+		moniker := fmt.Sprintf("Moniker_%d", i+1)
+		app.CustomGovKeeper.RegisterIdentityRecords(ctx, sdk.AccAddress(val.ValKey), []govtypes.IdentityInfoEntry{{
+			Key:  "moniker",
+			Info: moniker,
+		}})
 		app.CustomStakingKeeper.AddValidator(ctx, val)
 	}
 
