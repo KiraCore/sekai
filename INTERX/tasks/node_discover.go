@@ -13,6 +13,7 @@ import (
 
 	"github.com/KiraCore/sekai/INTERX/common"
 	"github.com/KiraCore/sekai/INTERX/config"
+	"github.com/KiraCore/sekai/INTERX/global"
 	"github.com/KiraCore/sekai/INTERX/types"
 	"github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/crypto/ed25519"
@@ -128,6 +129,7 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 	initPrivateIps()
 
 	for {
+		global.Mutex.Lock()
 		PubP2PNodeListResponse.Scanning = true
 		PrivP2PNodeListResponse.Scanning = true
 		InterxP2PNodeListResponse.Scanning = true
@@ -137,6 +139,7 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 		PrivP2PNodeListResponse.NodeList = []types.P2PNode{}
 		InterxP2PNodeListResponse.NodeList = []types.InterxNode{}
 		SnapNodeListResponse.NodeList = []types.SnapNode{}
+		global.Mutex.Unlock()
 
 		isIpInList := make(map[string]bool)   // check if ip is already queried
 		isPrivNodeID := make(map[string]bool) // check if ip is already queried
@@ -208,7 +211,9 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 					}
 
 					if _, ok := isPrivNodeID[privNodeInfo.ID]; !ok {
+						global.Mutex.Lock()
 						PrivP2PNodeListResponse.NodeList = append(PrivP2PNodeListResponse.NodeList, privNodeInfo)
+						global.Mutex.Unlock()
 						isPrivNodeID[privNodeInfo.ID] = true
 					}
 				} else {
@@ -219,7 +224,9 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 				}
 			}
 
+			global.Mutex.Lock()
 			PubP2PNodeListResponse.NodeList = append(PubP2PNodeListResponse.NodeList, nodeInfo)
+			global.Mutex.Unlock()
 
 			interxStartTime := makeTimestamp()
 			interxAddress := getInterxAddress(ipAddr)
@@ -237,7 +244,9 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 				interxInfo.Type = interxStatus.InterxInfo.Node.NodeType
 				interxInfo.Version = interxStatus.InterxInfo.Version
 
+				global.Mutex.Lock()
 				InterxP2PNodeListResponse.NodeList = append(InterxP2PNodeListResponse.NodeList, interxInfo)
+				global.Mutex.Unlock()
 
 				// snapshotInfo := common.GetSnapshotInfo(getInterxAddress(ipAddr))
 				snapshotInfo := common.GetSnapshotInfo(interxAddress)
@@ -248,13 +257,16 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 					snapNode.Checksum = snapshotInfo.Checksum
 					snapNode.Size = snapshotInfo.Size
 
+					global.Mutex.Lock()
 					SnapNodeListResponse.NodeList = append(SnapNodeListResponse.NodeList, snapNode)
+					global.Mutex.Unlock()
 				}
 			}
 		}
 
 		lastUpdate := time.Now().Unix()
 
+		global.Mutex.Lock()
 		PubP2PNodeListResponse.LastUpdate = lastUpdate
 		PrivP2PNodeListResponse.LastUpdate = lastUpdate
 		InterxP2PNodeListResponse.LastUpdate = lastUpdate
@@ -264,6 +276,7 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 		PrivP2PNodeListResponse.Scanning = false
 		InterxP2PNodeListResponse.Scanning = false
 		SnapNodeListResponse.Scanning = false
+		global.Mutex.Unlock()
 
 		if isLog {
 			common.GetLogger().Info("[node-discovery] finished!")

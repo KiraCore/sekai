@@ -25,9 +25,10 @@ const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 type IdentityRecord struct {
 	Id                   uint64               `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	Address              []byte               `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
-	Infos                map[string]string    `protobuf:"bytes,3,rep,name=infos,proto3" json:"infos,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-	Date                 *timestamp.Timestamp `protobuf:"bytes,4,opt,name=date,proto3" json:"date,omitempty"`
-	Verifiers            [][]byte             `protobuf:"bytes,5,rep,name=verifiers,proto3" json:"verifiers,omitempty"`
+	Key                  string               `protobuf:"bytes,3,opt,name=key,proto3" json:"key,omitempty"`
+	Value                string               `protobuf:"bytes,4,opt,name=value,proto3" json:"value,omitempty"`
+	Date                 *timestamp.Timestamp `protobuf:"bytes,5,opt,name=date,proto3" json:"date,omitempty"`
+	Verifiers            [][]byte             `protobuf:"bytes,6,rep,name=verifiers,proto3" json:"verifiers,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}             `json:"-"`
 	XXX_unrecognized     []byte               `json:"-"`
 	XXX_sizecache        int32                `json:"-"`
@@ -72,11 +73,18 @@ func (m *IdentityRecord) GetAddress() []byte {
 	return nil
 }
 
-func (m *IdentityRecord) GetInfos() map[string]string {
+func (m *IdentityRecord) GetKey() string {
 	if m != nil {
-		return m.Infos
+		return m.Key
 	}
-	return nil
+	return ""
+}
+
+func (m *IdentityRecord) GetValue() string {
+	if m != nil {
+		return m.Value
+	}
+	return ""
 }
 
 func (m *IdentityRecord) GetDate() *timestamp.Timestamp {
@@ -93,53 +101,6 @@ func (m *IdentityRecord) GetVerifiers() [][]byte {
 	return nil
 }
 
-type VerifiedIdRecordsByAddress struct {
-	Address              []byte   `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
-	RecordIds            []uint64 `protobuf:"varint,2,rep,packed,name=recordIds,proto3" json:"recordIds,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *VerifiedIdRecordsByAddress) Reset()         { *m = VerifiedIdRecordsByAddress{} }
-func (m *VerifiedIdRecordsByAddress) String() string { return proto.CompactTextString(m) }
-func (*VerifiedIdRecordsByAddress) ProtoMessage()    {}
-func (*VerifiedIdRecordsByAddress) Descriptor() ([]byte, []int) {
-	return fileDescriptor_cf2821c6a2456955, []int{1}
-}
-
-func (m *VerifiedIdRecordsByAddress) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_VerifiedIdRecordsByAddress.Unmarshal(m, b)
-}
-func (m *VerifiedIdRecordsByAddress) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_VerifiedIdRecordsByAddress.Marshal(b, m, deterministic)
-}
-func (m *VerifiedIdRecordsByAddress) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_VerifiedIdRecordsByAddress.Merge(m, src)
-}
-func (m *VerifiedIdRecordsByAddress) XXX_Size() int {
-	return xxx_messageInfo_VerifiedIdRecordsByAddress.Size(m)
-}
-func (m *VerifiedIdRecordsByAddress) XXX_DiscardUnknown() {
-	xxx_messageInfo_VerifiedIdRecordsByAddress.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_VerifiedIdRecordsByAddress proto.InternalMessageInfo
-
-func (m *VerifiedIdRecordsByAddress) GetAddress() []byte {
-	if m != nil {
-		return m.Address
-	}
-	return nil
-}
-
-func (m *VerifiedIdRecordsByAddress) GetRecordIds() []uint64 {
-	if m != nil {
-		return m.RecordIds
-	}
-	return nil
-}
-
 type IdentityInfoEntry struct {
 	Key                  string   `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
 	Info                 string   `protobuf:"bytes,2,opt,name=info,proto3" json:"info,omitempty"`
@@ -152,7 +113,7 @@ func (m *IdentityInfoEntry) Reset()         { *m = IdentityInfoEntry{} }
 func (m *IdentityInfoEntry) String() string { return proto.CompactTextString(m) }
 func (*IdentityInfoEntry) ProtoMessage()    {}
 func (*IdentityInfoEntry) Descriptor() ([]byte, []int) {
-	return fileDescriptor_cf2821c6a2456955, []int{2}
+	return fileDescriptor_cf2821c6a2456955, []int{1}
 }
 
 func (m *IdentityInfoEntry) XXX_Unmarshal(b []byte) error {
@@ -187,140 +148,117 @@ func (m *IdentityInfoEntry) GetInfo() string {
 	return ""
 }
 
-type MsgCreateIdentityRecord struct {
+type MsgRegisterIdentityRecords struct {
 	Address              []byte               `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
 	Infos                []*IdentityInfoEntry `protobuf:"bytes,2,rep,name=infos,proto3" json:"infos,omitempty"`
-	Date                 *timestamp.Timestamp `protobuf:"bytes,3,opt,name=date,proto3" json:"date,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}             `json:"-"`
 	XXX_unrecognized     []byte               `json:"-"`
 	XXX_sizecache        int32                `json:"-"`
 }
 
-func (m *MsgCreateIdentityRecord) Reset()         { *m = MsgCreateIdentityRecord{} }
-func (m *MsgCreateIdentityRecord) String() string { return proto.CompactTextString(m) }
-func (*MsgCreateIdentityRecord) ProtoMessage()    {}
-func (*MsgCreateIdentityRecord) Descriptor() ([]byte, []int) {
+func (m *MsgRegisterIdentityRecords) Reset()         { *m = MsgRegisterIdentityRecords{} }
+func (m *MsgRegisterIdentityRecords) String() string { return proto.CompactTextString(m) }
+func (*MsgRegisterIdentityRecords) ProtoMessage()    {}
+func (*MsgRegisterIdentityRecords) Descriptor() ([]byte, []int) {
+	return fileDescriptor_cf2821c6a2456955, []int{2}
+}
+
+func (m *MsgRegisterIdentityRecords) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_MsgRegisterIdentityRecords.Unmarshal(m, b)
+}
+func (m *MsgRegisterIdentityRecords) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MsgRegisterIdentityRecords.Marshal(b, m, deterministic)
+}
+func (m *MsgRegisterIdentityRecords) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRegisterIdentityRecords.Merge(m, src)
+}
+func (m *MsgRegisterIdentityRecords) XXX_Size() int {
+	return xxx_messageInfo_MsgRegisterIdentityRecords.Size(m)
+}
+func (m *MsgRegisterIdentityRecords) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRegisterIdentityRecords.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgRegisterIdentityRecords proto.InternalMessageInfo
+
+func (m *MsgRegisterIdentityRecords) GetAddress() []byte {
+	if m != nil {
+		return m.Address
+	}
+	return nil
+}
+
+func (m *MsgRegisterIdentityRecords) GetInfos() []*IdentityInfoEntry {
+	if m != nil {
+		return m.Infos
+	}
+	return nil
+}
+
+type MsgDeleteIdentityRecords struct {
+	Address              []byte   `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+	Keys                 []string `protobuf:"bytes,2,rep,name=keys,proto3" json:"keys,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MsgDeleteIdentityRecords) Reset()         { *m = MsgDeleteIdentityRecords{} }
+func (m *MsgDeleteIdentityRecords) String() string { return proto.CompactTextString(m) }
+func (*MsgDeleteIdentityRecords) ProtoMessage()    {}
+func (*MsgDeleteIdentityRecords) Descriptor() ([]byte, []int) {
 	return fileDescriptor_cf2821c6a2456955, []int{3}
 }
 
-func (m *MsgCreateIdentityRecord) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_MsgCreateIdentityRecord.Unmarshal(m, b)
+func (m *MsgDeleteIdentityRecords) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_MsgDeleteIdentityRecords.Unmarshal(m, b)
 }
-func (m *MsgCreateIdentityRecord) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_MsgCreateIdentityRecord.Marshal(b, m, deterministic)
+func (m *MsgDeleteIdentityRecords) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MsgDeleteIdentityRecords.Marshal(b, m, deterministic)
 }
-func (m *MsgCreateIdentityRecord) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgCreateIdentityRecord.Merge(m, src)
+func (m *MsgDeleteIdentityRecords) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgDeleteIdentityRecords.Merge(m, src)
 }
-func (m *MsgCreateIdentityRecord) XXX_Size() int {
-	return xxx_messageInfo_MsgCreateIdentityRecord.Size(m)
+func (m *MsgDeleteIdentityRecords) XXX_Size() int {
+	return xxx_messageInfo_MsgDeleteIdentityRecords.Size(m)
 }
-func (m *MsgCreateIdentityRecord) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgCreateIdentityRecord.DiscardUnknown(m)
+func (m *MsgDeleteIdentityRecords) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgDeleteIdentityRecords.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgCreateIdentityRecord proto.InternalMessageInfo
+var xxx_messageInfo_MsgDeleteIdentityRecords proto.InternalMessageInfo
 
-func (m *MsgCreateIdentityRecord) GetAddress() []byte {
+func (m *MsgDeleteIdentityRecords) GetAddress() []byte {
 	if m != nil {
 		return m.Address
 	}
 	return nil
 }
 
-func (m *MsgCreateIdentityRecord) GetInfos() []*IdentityInfoEntry {
+func (m *MsgDeleteIdentityRecords) GetKeys() []string {
 	if m != nil {
-		return m.Infos
-	}
-	return nil
-}
-
-func (m *MsgCreateIdentityRecord) GetDate() *timestamp.Timestamp {
-	if m != nil {
-		return m.Date
-	}
-	return nil
-}
-
-type MsgEditIdentityRecord struct {
-	RecordId             uint64               `protobuf:"varint,1,opt,name=record_id,json=recordId,proto3" json:"record_id,omitempty"`
-	Address              []byte               `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
-	Infos                []*IdentityInfoEntry `protobuf:"bytes,3,rep,name=infos,proto3" json:"infos,omitempty"`
-	Date                 *timestamp.Timestamp `protobuf:"bytes,4,opt,name=date,proto3" json:"date,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}             `json:"-"`
-	XXX_unrecognized     []byte               `json:"-"`
-	XXX_sizecache        int32                `json:"-"`
-}
-
-func (m *MsgEditIdentityRecord) Reset()         { *m = MsgEditIdentityRecord{} }
-func (m *MsgEditIdentityRecord) String() string { return proto.CompactTextString(m) }
-func (*MsgEditIdentityRecord) ProtoMessage()    {}
-func (*MsgEditIdentityRecord) Descriptor() ([]byte, []int) {
-	return fileDescriptor_cf2821c6a2456955, []int{4}
-}
-
-func (m *MsgEditIdentityRecord) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_MsgEditIdentityRecord.Unmarshal(m, b)
-}
-func (m *MsgEditIdentityRecord) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_MsgEditIdentityRecord.Marshal(b, m, deterministic)
-}
-func (m *MsgEditIdentityRecord) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgEditIdentityRecord.Merge(m, src)
-}
-func (m *MsgEditIdentityRecord) XXX_Size() int {
-	return xxx_messageInfo_MsgEditIdentityRecord.Size(m)
-}
-func (m *MsgEditIdentityRecord) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgEditIdentityRecord.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgEditIdentityRecord proto.InternalMessageInfo
-
-func (m *MsgEditIdentityRecord) GetRecordId() uint64 {
-	if m != nil {
-		return m.RecordId
-	}
-	return 0
-}
-
-func (m *MsgEditIdentityRecord) GetAddress() []byte {
-	if m != nil {
-		return m.Address
-	}
-	return nil
-}
-
-func (m *MsgEditIdentityRecord) GetInfos() []*IdentityInfoEntry {
-	if m != nil {
-		return m.Infos
-	}
-	return nil
-}
-
-func (m *MsgEditIdentityRecord) GetDate() *timestamp.Timestamp {
-	if m != nil {
-		return m.Date
+		return m.Keys
 	}
 	return nil
 }
 
 type IdentityRecordsVerify struct {
-	Id                   uint64   `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	Address              []byte   `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
-	Verifier             []byte   `protobuf:"bytes,3,opt,name=verifier,proto3" json:"verifier,omitempty"`
-	RecordIds            []uint64 `protobuf:"varint,4,rep,packed,name=recordIds,proto3" json:"recordIds,omitempty"`
-	Tip                  string   `protobuf:"bytes,5,opt,name=tip,proto3" json:"tip,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
+	Id                   uint64               `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Address              []byte               `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
+	Verifier             []byte               `protobuf:"bytes,3,opt,name=verifier,proto3" json:"verifier,omitempty"`
+	RecordIds            []uint64             `protobuf:"varint,4,rep,packed,name=recordIds,proto3" json:"recordIds,omitempty"`
+	Tip                  string               `protobuf:"bytes,5,opt,name=tip,proto3" json:"tip,omitempty"`
+	LastRecordEditDate   *timestamp.Timestamp `protobuf:"bytes,6,opt,name=lastRecordEditDate,proto3" json:"lastRecordEditDate,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}             `json:"-"`
+	XXX_unrecognized     []byte               `json:"-"`
+	XXX_sizecache        int32                `json:"-"`
 }
 
 func (m *IdentityRecordsVerify) Reset()         { *m = IdentityRecordsVerify{} }
 func (m *IdentityRecordsVerify) String() string { return proto.CompactTextString(m) }
 func (*IdentityRecordsVerify) ProtoMessage()    {}
 func (*IdentityRecordsVerify) Descriptor() ([]byte, []int) {
-	return fileDescriptor_cf2821c6a2456955, []int{5}
+	return fileDescriptor_cf2821c6a2456955, []int{4}
 }
 
 func (m *IdentityRecordsVerify) XXX_Unmarshal(b []byte) error {
@@ -376,6 +314,13 @@ func (m *IdentityRecordsVerify) GetTip() string {
 	return ""
 }
 
+func (m *IdentityRecordsVerify) GetLastRecordEditDate() *timestamp.Timestamp {
+	if m != nil {
+		return m.LastRecordEditDate
+	}
+	return nil
+}
+
 type MsgRequestIdentityRecordsVerify struct {
 	Address              []byte   `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
 	Verifier             []byte   `protobuf:"bytes,2,opt,name=verifier,proto3" json:"verifier,omitempty"`
@@ -390,7 +335,7 @@ func (m *MsgRequestIdentityRecordsVerify) Reset()         { *m = MsgRequestIdent
 func (m *MsgRequestIdentityRecordsVerify) String() string { return proto.CompactTextString(m) }
 func (*MsgRequestIdentityRecordsVerify) ProtoMessage()    {}
 func (*MsgRequestIdentityRecordsVerify) Descriptor() ([]byte, []int) {
-	return fileDescriptor_cf2821c6a2456955, []int{6}
+	return fileDescriptor_cf2821c6a2456955, []int{5}
 }
 
 func (m *MsgRequestIdentityRecordsVerify) XXX_Unmarshal(b []byte) error {
@@ -439,55 +384,102 @@ func (m *MsgRequestIdentityRecordsVerify) GetTip() string {
 	return ""
 }
 
-type MsgApproveIdentityRecords struct {
-	Proposer             []byte   `protobuf:"bytes,1,opt,name=proposer,proto3" json:"proposer,omitempty"`
-	Verifier             []byte   `protobuf:"bytes,2,opt,name=verifier,proto3" json:"verifier,omitempty"`
-	VerifyRequestId      uint64   `protobuf:"varint,3,opt,name=verifyRequestId,proto3" json:"verifyRequestId,omitempty"`
+type MsgHandleIdentityRecordsVerifyRequest struct {
+	Verifier             []byte   `protobuf:"bytes,1,opt,name=verifier,proto3" json:"verifier,omitempty"`
+	VerifyRequestId      uint64   `protobuf:"varint,2,opt,name=verifyRequestId,proto3" json:"verifyRequestId,omitempty"`
+	Yes                  bool     `protobuf:"varint,3,opt,name=yes,proto3" json:"yes,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *MsgApproveIdentityRecords) Reset()         { *m = MsgApproveIdentityRecords{} }
-func (m *MsgApproveIdentityRecords) String() string { return proto.CompactTextString(m) }
-func (*MsgApproveIdentityRecords) ProtoMessage()    {}
-func (*MsgApproveIdentityRecords) Descriptor() ([]byte, []int) {
-	return fileDescriptor_cf2821c6a2456955, []int{7}
+func (m *MsgHandleIdentityRecordsVerifyRequest) Reset()         { *m = MsgHandleIdentityRecordsVerifyRequest{} }
+func (m *MsgHandleIdentityRecordsVerifyRequest) String() string { return proto.CompactTextString(m) }
+func (*MsgHandleIdentityRecordsVerifyRequest) ProtoMessage()    {}
+func (*MsgHandleIdentityRecordsVerifyRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_cf2821c6a2456955, []int{6}
 }
 
-func (m *MsgApproveIdentityRecords) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_MsgApproveIdentityRecords.Unmarshal(m, b)
+func (m *MsgHandleIdentityRecordsVerifyRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_MsgHandleIdentityRecordsVerifyRequest.Unmarshal(m, b)
 }
-func (m *MsgApproveIdentityRecords) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_MsgApproveIdentityRecords.Marshal(b, m, deterministic)
+func (m *MsgHandleIdentityRecordsVerifyRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MsgHandleIdentityRecordsVerifyRequest.Marshal(b, m, deterministic)
 }
-func (m *MsgApproveIdentityRecords) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgApproveIdentityRecords.Merge(m, src)
+func (m *MsgHandleIdentityRecordsVerifyRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgHandleIdentityRecordsVerifyRequest.Merge(m, src)
 }
-func (m *MsgApproveIdentityRecords) XXX_Size() int {
-	return xxx_messageInfo_MsgApproveIdentityRecords.Size(m)
+func (m *MsgHandleIdentityRecordsVerifyRequest) XXX_Size() int {
+	return xxx_messageInfo_MsgHandleIdentityRecordsVerifyRequest.Size(m)
 }
-func (m *MsgApproveIdentityRecords) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgApproveIdentityRecords.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgApproveIdentityRecords proto.InternalMessageInfo
-
-func (m *MsgApproveIdentityRecords) GetProposer() []byte {
-	if m != nil {
-		return m.Proposer
-	}
-	return nil
+func (m *MsgHandleIdentityRecordsVerifyRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgHandleIdentityRecordsVerifyRequest.DiscardUnknown(m)
 }
 
-func (m *MsgApproveIdentityRecords) GetVerifier() []byte {
+var xxx_messageInfo_MsgHandleIdentityRecordsVerifyRequest proto.InternalMessageInfo
+
+func (m *MsgHandleIdentityRecordsVerifyRequest) GetVerifier() []byte {
 	if m != nil {
 		return m.Verifier
 	}
 	return nil
 }
 
-func (m *MsgApproveIdentityRecords) GetVerifyRequestId() uint64 {
+func (m *MsgHandleIdentityRecordsVerifyRequest) GetVerifyRequestId() uint64 {
+	if m != nil {
+		return m.VerifyRequestId
+	}
+	return 0
+}
+
+func (m *MsgHandleIdentityRecordsVerifyRequest) GetYes() bool {
+	if m != nil {
+		return m.Yes
+	}
+	return false
+}
+
+type MsgCancelIdentityRecordsVerifyRequest struct {
+	Executor             []byte   `protobuf:"bytes,1,opt,name=executor,proto3" json:"executor,omitempty"`
+	VerifyRequestId      uint64   `protobuf:"varint,2,opt,name=verifyRequestId,proto3" json:"verifyRequestId,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *MsgCancelIdentityRecordsVerifyRequest) Reset()         { *m = MsgCancelIdentityRecordsVerifyRequest{} }
+func (m *MsgCancelIdentityRecordsVerifyRequest) String() string { return proto.CompactTextString(m) }
+func (*MsgCancelIdentityRecordsVerifyRequest) ProtoMessage()    {}
+func (*MsgCancelIdentityRecordsVerifyRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_cf2821c6a2456955, []int{7}
+}
+
+func (m *MsgCancelIdentityRecordsVerifyRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_MsgCancelIdentityRecordsVerifyRequest.Unmarshal(m, b)
+}
+func (m *MsgCancelIdentityRecordsVerifyRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_MsgCancelIdentityRecordsVerifyRequest.Marshal(b, m, deterministic)
+}
+func (m *MsgCancelIdentityRecordsVerifyRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCancelIdentityRecordsVerifyRequest.Merge(m, src)
+}
+func (m *MsgCancelIdentityRecordsVerifyRequest) XXX_Size() int {
+	return xxx_messageInfo_MsgCancelIdentityRecordsVerifyRequest.Size(m)
+}
+func (m *MsgCancelIdentityRecordsVerifyRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCancelIdentityRecordsVerifyRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgCancelIdentityRecordsVerifyRequest proto.InternalMessageInfo
+
+func (m *MsgCancelIdentityRecordsVerifyRequest) GetExecutor() []byte {
+	if m != nil {
+		return m.Executor
+	}
+	return nil
+}
+
+func (m *MsgCancelIdentityRecordsVerifyRequest) GetVerifyRequestId() uint64 {
 	if m != nil {
 		return m.VerifyRequestId
 	}
@@ -496,14 +488,13 @@ func (m *MsgApproveIdentityRecords) GetVerifyRequestId() uint64 {
 
 func init() {
 	proto.RegisterType((*IdentityRecord)(nil), "kira.gov.IdentityRecord")
-	proto.RegisterMapType((map[string]string)(nil), "kira.gov.IdentityRecord.InfosEntry")
-	proto.RegisterType((*VerifiedIdRecordsByAddress)(nil), "kira.gov.VerifiedIdRecordsByAddress")
 	proto.RegisterType((*IdentityInfoEntry)(nil), "kira.gov.IdentityInfoEntry")
-	proto.RegisterType((*MsgCreateIdentityRecord)(nil), "kira.gov.MsgCreateIdentityRecord")
-	proto.RegisterType((*MsgEditIdentityRecord)(nil), "kira.gov.MsgEditIdentityRecord")
+	proto.RegisterType((*MsgRegisterIdentityRecords)(nil), "kira.gov.MsgRegisterIdentityRecords")
+	proto.RegisterType((*MsgDeleteIdentityRecords)(nil), "kira.gov.MsgDeleteIdentityRecords")
 	proto.RegisterType((*IdentityRecordsVerify)(nil), "kira.gov.IdentityRecordsVerify")
 	proto.RegisterType((*MsgRequestIdentityRecordsVerify)(nil), "kira.gov.MsgRequestIdentityRecordsVerify")
-	proto.RegisterType((*MsgApproveIdentityRecords)(nil), "kira.gov.MsgApproveIdentityRecords")
+	proto.RegisterType((*MsgHandleIdentityRecordsVerifyRequest)(nil), "kira.gov.MsgHandleIdentityRecordsVerifyRequest")
+	proto.RegisterType((*MsgCancelIdentityRecordsVerifyRequest)(nil), "kira.gov.MsgCancelIdentityRecordsVerifyRequest")
 }
 
 func init() {
@@ -511,47 +502,46 @@ func init() {
 }
 
 var fileDescriptor_cf2821c6a2456955 = []byte{
-	// 662 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x56, 0xcd, 0x6e, 0xd3, 0x4c,
-	0x14, 0xfd, 0xfc, 0x93, 0x8f, 0x64, 0x5a, 0xb5, 0x60, 0xb5, 0x22, 0xa4, 0x48, 0x0e, 0x66, 0x81,
-	0x37, 0xb5, 0x45, 0x2b, 0xd4, 0x9f, 0x5d, 0x1c, 0xba, 0x88, 0x50, 0x40, 0x1a, 0x55, 0x08, 0x21,
-	0xa1, 0xe2, 0x66, 0xa6, 0xc3, 0x28, 0x4d, 0xc6, 0xcc, 0x4c, 0x22, 0xf9, 0x05, 0x90, 0xd8, 0xb1,
-	0xe5, 0x79, 0xd8, 0xc0, 0x2b, 0xb0, 0x08, 0x0f, 0xc0, 0xae, 0x4b, 0x36, 0x20, 0x8f, 0x33, 0xf9,
-	0x31, 0x54, 0x22, 0x45, 0xe9, 0xca, 0xe3, 0xb9, 0x73, 0xef, 0xf5, 0x39, 0xf7, 0x1c, 0x6b, 0xc0,
-	0xbd, 0x2e, 0xe5, 0x71, 0x48, 0xd8, 0x30, 0xa4, 0x08, 0xf7, 0x25, 0x95, 0xe9, 0x09, 0xc7, 0x84,
-	0x0a, 0xc9, 0x63, 0x1e, 0x24, 0x9c, 0x49, 0xe6, 0x94, 0xb3, 0x23, 0x01, 0x61, 0xc3, 0xda, 0x06,
-	0x61, 0x84, 0xa9, 0xcd, 0x30, 0x5b, 0xe5, 0xf1, 0x9a, 0x4b, 0x18, 0x23, 0xe7, 0x38, 0x54, 0x6f,
-	0xa7, 0x83, 0xb3, 0x50, 0xd2, 0x1e, 0x16, 0x32, 0xee, 0x25, 0xf9, 0x01, 0xef, 0xa7, 0x09, 0xd6,
-	0x5a, 0xe3, 0xea, 0x10, 0x77, 0x18, 0x47, 0xce, 0x1a, 0x30, 0x29, 0xaa, 0x1a, 0x75, 0xc3, 0xb7,
-	0xa1, 0x49, 0x91, 0xf3, 0x0a, 0xdc, 0x88, 0x11, 0xe2, 0x58, 0x88, 0xaa, 0x59, 0x37, 0xfc, 0xd5,
-	0xa8, 0x79, 0x31, 0x72, 0xd7, 0xd2, 0xb8, 0x77, 0x7e, 0xe8, 0x8d, 0x03, 0xde, 0x8f, 0x91, 0xbb,
-	0x4d, 0xa8, 0x7c, 0x33, 0x38, 0x0d, 0x3a, 0xac, 0x17, 0x76, 0x98, 0xe8, 0x31, 0x31, 0x7e, 0x6c,
-	0x0b, 0xd4, 0x0d, 0x65, 0x9a, 0x60, 0x11, 0x34, 0x3a, 0x9d, 0x46, 0x9e, 0x01, 0x75, 0x4d, 0xe7,
-	0x00, 0x94, 0x68, 0xff, 0x8c, 0x89, 0xaa, 0x55, 0xb7, 0xfc, 0x95, 0x9d, 0xfb, 0x81, 0x86, 0x14,
-	0xcc, 0x7f, 0x57, 0xd0, 0xca, 0x4e, 0x1d, 0xf5, 0x25, 0x4f, 0x61, 0x9e, 0xe1, 0xec, 0x03, 0x1b,
-	0xc5, 0x12, 0x57, 0xed, 0xba, 0xe1, 0xaf, 0xec, 0xd4, 0x82, 0x1c, 0x6c, 0xa0, 0xc1, 0x06, 0xc7,
-	0x1a, 0x6c, 0x54, 0xfe, 0x3c, 0x72, 0xff, 0xfb, 0xf0, 0xcd, 0x35, 0xa0, 0xca, 0x70, 0x9e, 0x81,
-	0xca, 0x10, 0x73, 0x7a, 0x46, 0x31, 0x17, 0xd5, 0x52, 0xdd, 0xf2, 0x57, 0xa3, 0x87, 0x8b, 0x63,
-	0x98, 0xd6, 0xa8, 0xed, 0x03, 0x30, 0xfd, 0x3e, 0xe7, 0x26, 0xb0, 0xba, 0x38, 0x55, 0x1c, 0x56,
-	0x60, 0xb6, 0x74, 0x36, 0x40, 0x69, 0x18, 0x9f, 0x0f, 0xb0, 0xa2, 0xb0, 0x02, 0xf3, 0x97, 0x43,
-	0x73, 0xdf, 0xf0, 0x3e, 0x1a, 0xa0, 0xf6, 0x3c, 0xaf, 0x83, 0x5a, 0x28, 0xc7, 0x2a, 0xa2, 0x74,
-	0xdc, 0x63, 0x96, 0x7d, 0x63, 0x09, 0xec, 0xdf, 0x05, 0x15, 0xae, 0x5a, 0xb6, 0x50, 0x36, 0x5e,
-	0xcb, 0xb7, 0xe1, 0x74, 0xc3, 0x3b, 0x00, 0xb7, 0xf4, 0x10, 0x32, 0x74, 0x97, 0x81, 0x73, 0x80,
-	0x9d, 0x0d, 0x64, 0x8c, 0x4d, 0xad, 0xbd, 0xef, 0x06, 0xb8, 0xdd, 0x16, 0xa4, 0xc9, 0x71, 0x2c,
-	0x71, 0x41, 0x61, 0x4b, 0xc6, 0xb4, 0xa7, 0x15, 0x65, 0x2a, 0x45, 0x6d, 0xfd, 0xae, 0xa8, 0x09,
-	0x98, 0xc8, 0xce, 0x84, 0x51, 0xd4, 0x93, 0xb5, 0xa8, 0x9e, 0xbc, 0x77, 0x26, 0xd8, 0x6c, 0x0b,
-	0x72, 0x84, 0xa8, 0x2c, 0x60, 0xdd, 0xd2, 0x04, 0x9f, 0x4c, 0x4c, 0x55, 0xd6, 0x04, 0x2f, 0xdb,
-	0x5a, 0x7b, 0xf3, 0xd6, 0x5a, 0x9c, 0x88, 0x85, 0x8d, 0xe5, 0x7d, 0x31, 0xc1, 0xe6, 0x3c, 0x03,
-	0x42, 0x89, 0x3b, 0xbd, 0xee, 0xdf, 0xca, 0x6b, 0x50, 0xd6, 0xee, 0x54, 0xf3, 0x5c, 0x8d, 0x1e,
-	0x5f, 0x8c, 0xdc, 0xf5, 0xbc, 0xbe, 0x8e, 0x5c, 0xa1, 0xc1, 0xa4, 0xea, 0xbc, 0x75, 0xec, 0x82,
-	0x75, 0x9c, 0x06, 0xb0, 0x24, 0x4d, 0xaa, 0xa5, 0xcc, 0x12, 0x51, 0x98, 0xb1, 0xf4, 0x75, 0xe4,
-	0x3e, 0xf8, 0x8b, 0x5e, 0x4d, 0x46, 0xfb, 0x30, 0xcb, 0xf5, 0x3e, 0x99, 0xc0, 0x6d, 0x0b, 0x02,
-	0xf1, 0xdb, 0x01, 0x16, 0xf2, 0xcf, 0xac, 0x2e, 0xd9, 0x4a, 0xb3, 0x2c, 0x9a, 0xcb, 0x67, 0xd1,
-	0xba, 0x84, 0x45, 0xfb, 0x1f, 0x58, 0x7c, 0x6f, 0x82, 0x3b, 0x6d, 0x41, 0x1a, 0x49, 0xc2, 0xd9,
-	0xb0, 0xf0, 0x27, 0x52, 0x00, 0x13, 0xce, 0x12, 0x26, 0x30, 0x1f, 0x13, 0x38, 0x03, 0x50, 0x47,
-	0xae, 0x02, 0x50, 0xe7, 0x5e, 0x03, 0x85, 0x3e, 0x58, 0x57, 0xeb, 0x74, 0xa2, 0x14, 0xa5, 0x78,
-	0x1b, 0x16, 0xb7, 0xa3, 0x47, 0x2f, 0x77, 0x67, 0x9a, 0x3c, 0xa1, 0x3c, 0x6e, 0x32, 0x8e, 0x43,
-	0x81, 0xbb, 0x31, 0x0d, 0x5b, 0x4f, 0x8f, 0x8f, 0xe0, 0x8b, 0xfc, 0xaa, 0xb0, 0x4d, 0x70, 0x3f,
-	0xd4, 0xd7, 0x8f, 0xd3, 0xff, 0xd5, 0xde, 0xee, 0xaf, 0x00, 0x00, 0x00, 0xff, 0xff, 0xec, 0x65,
-	0xf5, 0xa5, 0x91, 0x08, 0x00, 0x00,
+	// 646 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x55, 0xdd, 0x6a, 0x13, 0x41,
+	0x14, 0x76, 0xb3, 0xdb, 0x9a, 0x4c, 0x4b, 0xab, 0x43, 0x85, 0x25, 0x0a, 0x1b, 0x17, 0xc4, 0xbd,
+	0xe9, 0x2e, 0xb6, 0x88, 0x3f, 0x77, 0xdd, 0xb4, 0x60, 0x90, 0x2a, 0x0c, 0x45, 0x44, 0x10, 0xdd,
+	0xee, 0x9e, 0xac, 0x43, 0x36, 0x3b, 0x71, 0x66, 0x12, 0xdc, 0x87, 0x10, 0x7c, 0x03, 0xdf, 0x41,
+	0x7d, 0x03, 0x11, 0x7c, 0x06, 0x2f, 0xe2, 0x3b, 0xf4, 0xd2, 0x2b, 0x99, 0xd9, 0xac, 0x4d, 0x6b,
+	0xc4, 0x36, 0x90, 0x5e, 0xe5, 0xec, 0x99, 0x39, 0x3f, 0xdf, 0xf7, 0x9d, 0x93, 0x41, 0x37, 0x7b,
+	0x94, 0x47, 0x41, 0xca, 0x46, 0x01, 0x4d, 0x20, 0x97, 0x54, 0x16, 0xaf, 0x38, 0xa4, 0x54, 0x48,
+	0x1e, 0x71, 0x7f, 0xc0, 0x99, 0x64, 0xb8, 0xae, 0xae, 0xf8, 0x29, 0x1b, 0x35, 0x37, 0x52, 0x96,
+	0x32, 0xed, 0x0c, 0x94, 0x55, 0x9e, 0x37, 0x9d, 0x94, 0xb1, 0x34, 0x83, 0x40, 0x7f, 0x1d, 0x0e,
+	0xbb, 0x81, 0xa4, 0x7d, 0x10, 0x32, 0xea, 0x0f, 0xca, 0x0b, 0xee, 0xa7, 0x1a, 0x5a, 0xeb, 0x4c,
+	0xb2, 0x13, 0x88, 0x19, 0x4f, 0xf0, 0x1a, 0xaa, 0xd1, 0xc4, 0x36, 0x5a, 0x86, 0x67, 0x91, 0x1a,
+	0x4d, 0xf0, 0x4b, 0x74, 0x39, 0x4a, 0x12, 0x0e, 0x42, 0xd8, 0xb5, 0x96, 0xe1, 0xad, 0x86, 0xed,
+	0xa3, 0xb1, 0xb3, 0x56, 0x44, 0xfd, 0xec, 0xa1, 0x3b, 0x39, 0x70, 0x7f, 0x8d, 0x9d, 0xcd, 0x94,
+	0xca, 0x37, 0xc3, 0x43, 0x3f, 0x66, 0xfd, 0x20, 0x66, 0xa2, 0xcf, 0xc4, 0xe4, 0x67, 0x53, 0x24,
+	0xbd, 0x40, 0x16, 0x03, 0x10, 0xfe, 0x4e, 0x1c, 0xef, 0x94, 0x11, 0xa4, 0xca, 0x89, 0xaf, 0x20,
+	0xb3, 0x07, 0x85, 0x6d, 0xb6, 0x0c, 0xaf, 0x41, 0x94, 0x89, 0x37, 0xd0, 0xd2, 0x28, 0xca, 0x86,
+	0x60, 0x5b, 0xda, 0x57, 0x7e, 0xe0, 0xfb, 0xc8, 0x4a, 0x22, 0x09, 0xf6, 0x52, 0xcb, 0xf0, 0x56,
+	0xb6, 0x9a, 0x7e, 0x89, 0xcc, 0xaf, 0x90, 0xf9, 0x07, 0x15, 0xb2, 0xb0, 0xfe, 0x7d, 0xec, 0x5c,
+	0xfa, 0xf0, 0xd3, 0x31, 0x88, 0x8e, 0xc0, 0x4f, 0x51, 0x63, 0x04, 0x9c, 0x76, 0x29, 0x70, 0x61,
+	0x2f, 0xb7, 0x4c, 0x6f, 0x35, 0xbc, 0x73, 0xfe, 0x86, 0x8f, 0x73, 0xb8, 0x0f, 0xd0, 0xd5, 0x8a,
+	0xb3, 0x4e, 0xde, 0x65, 0x7b, 0xb9, 0xe4, 0x45, 0x85, 0xc3, 0x38, 0xc6, 0x81, 0x91, 0x45, 0xf3,
+	0x2e, 0xd3, 0xac, 0x35, 0x88, 0xb6, 0xdd, 0x2f, 0x06, 0x6a, 0xee, 0x8b, 0x94, 0x68, 0x1d, 0x81,
+	0x9f, 0xa4, 0x5e, 0x4c, 0x73, 0x6d, 0x2c, 0x80, 0xeb, 0x7b, 0x68, 0x49, 0x75, 0xa1, 0x84, 0x34,
+	0xbd, 0x95, 0xad, 0xeb, 0x7e, 0x35, 0x3e, 0xfe, 0x5f, 0x78, 0x42, 0x4b, 0xb1, 0x48, 0xca, 0xfb,
+	0xee, 0x7b, 0x03, 0xd9, 0xfb, 0x22, 0xdd, 0x85, 0x0c, 0x24, 0x5c, 0x70, 0xd3, 0x18, 0x59, 0x3d,
+	0x28, 0xca, 0x9e, 0x1b, 0x44, 0xdb, 0xee, 0x47, 0x13, 0x5d, 0x3b, 0xd5, 0xc6, 0x33, 0x25, 0x4f,
+	0x71, 0xd1, 0xd3, 0xfb, 0x1a, 0xd5, 0xab, 0xb9, 0xd0, 0x23, 0xbc, 0x1a, 0xee, 0x1e, 0x8d, 0x9d,
+	0xf5, 0x32, 0x7f, 0x75, 0x32, 0x47, 0x81, 0x3f, 0x59, 0xf1, 0x0d, 0xd4, 0xe0, 0x1a, 0x61, 0x27,
+	0x11, 0xb6, 0xd5, 0x32, 0x3d, 0x8b, 0x1c, 0x3b, 0xf0, 0x0e, 0x32, 0x25, 0x1d, 0xe8, 0xa5, 0x68,
+	0x84, 0x81, 0x92, 0xec, 0xc7, 0xd8, 0xb9, 0x7d, 0x86, 0x5a, 0x6d, 0x46, 0x73, 0xa2, 0x62, 0xf1,
+	0x01, 0xc2, 0x59, 0x24, 0x64, 0x49, 0xe3, 0x5e, 0x42, 0xe5, 0xae, 0x5a, 0xb3, 0xe5, 0x73, 0xac,
+	0xd9, 0x8c, 0x78, 0xf7, 0x6b, 0x0d, 0x39, 0x7a, 0xd0, 0xdf, 0x0e, 0x41, 0xc8, 0xd9, 0x5a, 0x2d,
+	0x78, 0x70, 0xa6, 0xb5, 0xa9, 0x2d, 0x5e, 0x1b, 0xf3, 0x1f, 0xda, 0x58, 0xf3, 0x6b, 0xe3, 0x7e,
+	0x33, 0xd0, 0xad, 0x7d, 0x91, 0x3e, 0x8a, 0xf2, 0x24, 0x83, 0x99, 0x24, 0x4e, 0x08, 0x3e, 0x01,
+	0xd6, 0x58, 0x08, 0x58, 0x0f, 0xad, 0x8f, 0xa6, 0x4b, 0x76, 0x12, 0xcd, 0xaa, 0x45, 0x4e, 0xbb,
+	0xd5, 0x5f, 0x61, 0x01, 0x42, 0xef, 0x43, 0x9d, 0x28, 0xd3, 0xfd, 0x5c, 0xe2, 0x68, 0x47, 0x79,
+	0x0c, 0xd9, 0xff, 0x70, 0xc0, 0x3b, 0x88, 0x87, 0x92, 0xcd, 0xc0, 0x51, 0x9d, 0xcc, 0x83, 0xa3,
+	0x8a, 0x3d, 0x3b, 0x8e, 0xf0, 0xee, 0x8b, 0xed, 0xa9, 0x22, 0x8f, 0x29, 0x8f, 0xda, 0x8c, 0x43,
+	0x20, 0xa0, 0x17, 0xd1, 0xa0, 0xf3, 0xe4, 0x60, 0x8f, 0x3c, 0x2f, 0x5f, 0xd6, 0xcd, 0x14, 0xf2,
+	0xa0, 0x7a, 0xad, 0x0f, 0x97, 0xb5, 0x6f, 0xfb, 0x77, 0x00, 0x00, 0x00, 0xff, 0xff, 0xed, 0x31,
+	0x33, 0x68, 0xc0, 0x07, 0x00, 0x00,
 }

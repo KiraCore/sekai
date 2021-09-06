@@ -5,6 +5,7 @@ import (
 	"errors"
 	"net/http"
 	"sort"
+	"strconv"
 	"time"
 
 	"github.com/KiraCore/sekai/INTERX/common"
@@ -12,6 +13,8 @@ import (
 	"github.com/KiraCore/sekai/INTERX/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+
+	sekaitypes "github.com/KiraCore/sekai/types"
 )
 
 var (
@@ -41,49 +44,79 @@ func ToString(data interface{}) string {
 }
 
 func QueryValidators(gwCosmosmux *runtime.ServeMux, gatewayAddr string) error {
-	validatorsQueryRequest, _ := http.NewRequest("GET", "http://"+gatewayAddr+config.QueryValidators+"?all=true", nil)
-
-	validatorsQueryResponse, failure, _ := common.ServeGRPC(validatorsQueryRequest, gwCosmosmux)
-
-	if validatorsQueryResponse == nil {
-		return errors.New(ToString(failure))
-	}
-
-	validatorInfosQueryRequest, _ := http.NewRequest("GET", "http://"+gatewayAddr+config.QueryValidatorInfos+"?all=true", nil)
-	validatorInfosQueryResponse, failure, _ := common.ServeGRPC(validatorInfosQueryRequest, gwCosmosmux)
-
-	if validatorInfosQueryResponse == nil {
-		return errors.New(ToString(failure))
-	}
-
-	result := struct {
+	type ValidatorsResponse = struct {
 		Validators []types.QueryValidator `json:"validators,omitempty"`
 		Actors     []string               `json:"actors,omitempty"`
 		Pagination interface{}            `json:"pagination,omitempty"`
-	}{}
-
-	byteData, err := json.Marshal(validatorsQueryResponse)
-	if err != nil {
-		return err
 	}
 
-	err = json.Unmarshal(byteData, &result)
-	if err != nil {
-		return err
+	result := ValidatorsResponse{}
+
+	limit := sekaitypes.PageIterationLimit - 1
+	offset := 0
+	for {
+		validatorsQueryRequest, _ := http.NewRequest("GET", "http://"+gatewayAddr+config.QueryValidators+"?pagination.offset="+strconv.Itoa(offset)+"&pagination.limit="+strconv.Itoa(limit), nil)
+
+		validatorsQueryResponse, failure, _ := common.ServeGRPC(validatorsQueryRequest, gwCosmosmux)
+
+		if validatorsQueryResponse == nil {
+			return errors.New(ToString(failure))
+		}
+
+		byteData, err := json.Marshal(validatorsQueryResponse)
+		if err != nil {
+			return err
+		}
+
+		subResult := ValidatorsResponse{}
+		err = json.Unmarshal(byteData, &subResult)
+		if err != nil {
+			return err
+		}
+
+		if len(subResult.Validators) == 0 {
+			break
+		}
+
+		result.Actors = subResult.Actors
+		result.Validators = append(result.Validators, subResult.Validators...)
+
+		offset += limit
 	}
 
-	validatorInfosResponse := struct {
+	type ValidatorInfoResponse = struct {
 		ValValidatorInfos []types.ValidatorSigningInfo `json:"info,omitempty"`
-	}{}
-
-	byteData, err = json.Marshal(validatorInfosQueryResponse)
-	if err != nil {
-		return err
 	}
+	validatorInfosResponse := ValidatorInfoResponse{}
 
-	err = json.Unmarshal(byteData, &validatorInfosResponse)
-	if err != nil {
-		return err
+	offset = 0
+	for {
+		validatorInfosQueryRequest, _ := http.NewRequest("GET", "http://"+gatewayAddr+config.QueryValidatorInfos+"?pagination.offset="+strconv.Itoa(offset)+"&pagination.limit="+strconv.Itoa(limit), nil)
+
+		validatorInfosQueryResponse, failure, _ := common.ServeGRPC(validatorInfosQueryRequest, gwCosmosmux)
+
+		if validatorInfosQueryResponse == nil {
+			return errors.New(ToString(failure))
+		}
+
+		byteData, err := json.Marshal(validatorInfosQueryResponse)
+		if err != nil {
+			return err
+		}
+
+		subResult := ValidatorInfoResponse{}
+		err = json.Unmarshal(byteData, &subResult)
+		if err != nil {
+			return err
+		}
+
+		if len(subResult.ValValidatorInfos) == 0 {
+			break
+		}
+
+		validatorInfosResponse.ValValidatorInfos = append(validatorInfosResponse.ValValidatorInfos, subResult.ValValidatorInfos...)
+
+		offset += limit
 	}
 
 	for index, validator := range result.Validators {

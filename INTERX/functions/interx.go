@@ -831,6 +831,18 @@ func RegisterInterxFunctions() {
 		config.QueryPrivP2PList,
 		`{
 			"description": "QueryPrivP2PList is a function to query all private nodes list.",
+			"parameters": {
+				"ip_only": {
+					"type":        "bool",
+					"description": "This is an option to query only ip addresses separated by comma.",
+					"optional": true
+				},
+				"connected": {
+					"type":        "bool",
+					"description": "This is an option to query only connected ips.",
+					"optional": true
+				}
+			},
 			"response": {
 				"last_update": {
 					"type": "number",
@@ -878,6 +890,18 @@ func RegisterInterxFunctions() {
 		config.QueryPubP2PList,
 		`{
 			"description": "QueryPubP2PList is a function to query all public nodes list.",
+			"parameters": {
+				"ip_only": {
+					"type":        "bool",
+					"description": "This is an option to query only ip addresses separated by comma.",
+					"optional": true
+				},
+				"connected": {
+					"type":        "bool",
+					"description": "This is an option to query only connected ips.",
+					"optional": true
+				}
+			},
 			"response": {
 				"last_update": {
 					"type": "number",
@@ -925,6 +949,13 @@ func RegisterInterxFunctions() {
 		config.QueryInterxList,
 		`{
 			"description": "QueryInterxList is a function to query all interx list.",
+			"parameters": {
+				"ip_only": {
+					"type":        "bool",
+					"description": "This is an option to query only ip addresses separated by comma.",
+					"optional": true
+				}
+			},
 			"response": {
 				"last_update": {
 					"type": "number",
@@ -976,6 +1007,13 @@ func RegisterInterxFunctions() {
 		config.QuerySnapList,
 		`{
 			"description": "QuerySnapList is a function to query all snapshot node list.",
+			"parameters": {
+				"ip_only": {
+					"type":        "bool",
+					"description": "This is an option to query only ip addresses separated by comma.",
+					"optional": true
+				}
+			},
 			"response": {
 				"last_update": {
 					"type": "number",
