@@ -286,6 +286,13 @@ func TestKeeper_IdentityKeysManagement(t *testing.T) {
 	records, err = app.CustomGovKeeper.GetIdRecordsByAddressAndKeys(ctx, addr1, []string{"MyKey", "nike", "_"})
 	require.Error(t, err)
 
+	// get address from identity record key value
+	addrs := app.CustomGovKeeper.GetAddressesByIdRecordKey(ctx, "mykey", "MyValue")
+	require.Len(t, addrs, 1)
+
+	addrs = app.CustomGovKeeper.GetAddressesByIdRecordKey(ctx, "mykey", "MyValue2")
+	require.Len(t, addrs, 0)
+
 	// delete by uppercase key and check if deleted correctly
 	err = app.CustomGovKeeper.DeleteIdentityRecords(ctx, addr1, []string{"myKey"})
 	require.NoError(t, err)
@@ -293,11 +300,16 @@ func TestKeeper_IdentityKeysManagement(t *testing.T) {
 	records, err = app.CustomGovKeeper.GetIdRecordsByAddressAndKeys(ctx, addr1, []string{"MyKey"})
 	require.Error(t, err)
 
-	addrs := app.CustomGovKeeper.GetAddressesByIdRecordKey(ctx, "mykey", "MyValue")
-	require.Len(t, addrs, 1)
-
-	addrs = app.CustomGovKeeper.GetAddressesByIdRecordKey(ctx, "mykey", "MyValue2")
-	require.Len(t, addrs, 0)
+	// test for moniker field deletion is not enabled
+	err = app.CustomGovKeeper.RegisterIdentityRecords(ctx, addr1, []types.IdentityInfoEntry{
+		{
+			Key:  "moniker",
+			Info: "node0",
+		},
+	})
+	require.NoError(t, err)
+	err = app.CustomGovKeeper.DeleteIdentityRecords(ctx, addr1, []string{"moniker"})
+	require.Error(t, err)
 }
 
 func TestKeeper_IdentityRecordApproveFlow(t *testing.T) {

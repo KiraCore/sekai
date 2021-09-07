@@ -6,6 +6,7 @@ import (
 
 	"github.com/KiraCore/sekai/app"
 	simapp "github.com/KiraCore/sekai/app"
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/staking/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
@@ -52,6 +53,30 @@ func TestKeeper_AddValidator(t *testing.T) {
 	// Non existing moniker
 	_, err = app.CustomStakingKeeper.GetValidatorByMoniker(ctx, "UnexistingMoniker")
 	require.EqualError(t, err, "validator with moniker UnexistingMoniker not found")
+}
+
+func TestKeeper_GetMonikerByAddress(t *testing.T) {
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	validators := createValidators(t, app, ctx, 2)
+	validator := validators[0]
+
+	app.CustomStakingKeeper.AddValidator(ctx, validator)
+	app.CustomGovKeeper.RegisterIdentityRecords(ctx, sdk.AccAddress(validator.ValKey), []govtypes.IdentityInfoEntry{
+		{
+			Key:  "moniker",
+			Info: "node0",
+		},
+	})
+
+	// get moniker by address
+	moniker, err := app.CustomStakingKeeper.GetMonikerByAddress(ctx, sdk.AccAddress(validator.ValKey))
+	require.NoError(t, err)
+	require.Equal(t, moniker, "node0")
+
+	moniker, err = app.CustomStakingKeeper.GetMonikerByAddress(ctx, sdk.AccAddress("non existing"))
+	require.Error(t, err)
 }
 
 func TestKeeper_GetValidatorSet(t *testing.T) {

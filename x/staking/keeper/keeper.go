@@ -201,7 +201,6 @@ func (k Keeper) GetIdRecordsByAddress(ctx sdk.Context, creator sdk.AccAddress) [
 	return k.govkeeper.GetIdRecordsByAddress(ctx, creator)
 }
 
-// TODO: add test for GetMonikerByAddress
 func (k Keeper) GetMonikerByAddress(ctx sdk.Context, addr sdk.AccAddress) (string, error) {
 	records, err := k.govkeeper.GetIdRecordsByAddressAndKeys(ctx, addr, []string{"moniker"})
 	if err != nil {

@@ -49,7 +49,6 @@ func (q Querier) ValidatorByMoniker(ctx context.Context, request *types.Validato
 	}, nil
 }
 
-// TODO: test validators query manually to check if it works
 // Validators implements the Query all validators gRPC method
 func (q Querier) Validators(ctx context.Context, request *types.ValidatorsRequest) (*types.ValidatorsResponse, error) {
 	c := sdk.UnwrapSDKContext(ctx)

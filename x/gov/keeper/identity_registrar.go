@@ -167,7 +167,6 @@ func (k Keeper) DeleteIdentityRecords(ctx sdk.Context, address sdk.AccAddress, k
 		}
 		keys[i] = FormalizeIdentityRecordKey(key)
 
-		// TODO: add test for moniker field deletion is not enabled
 		// we prevent deleting moniker field of a validator
 		if key == "moniker" {
 			return fmt.Errorf("moniker field is not allowed to delete")
