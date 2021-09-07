@@ -136,7 +136,6 @@ func (q Querier) Validators(ctx context.Context, request *types.ValidatorsReques
 
 	validatorStore := prefix.NewStore(store, ValidatorsKey)
 	pageRes, err = query.FilteredPaginate(validatorStore, request.Pagination, onResult)
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}

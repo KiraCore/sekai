@@ -6,7 +6,14 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/staking/client/cli"
 )
 
-const FlagMoniker = "moniker"
+const (
+	FlagMoniker  = "moniker"
+	FlagValAddr  = "val-addr"
+	FlagAddr     = "addr"
+	FlagPubKey   = "pubkey"
+	FlagProposer = "proposer"
+	FlagStatus   = "status"
+)
 
 // AddValidatorFlags adds the flags needed to create a validator.
 func AddValidatorFlags(cmd *cobra.Command) {
