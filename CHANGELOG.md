@@ -1,5 +1,14 @@
 # Changelog
 
+## [v0.1.21.14] - 06.09.2021
+
+- Update pagination limit on sekaid
+- Update identity registrar for validators query
+- Update snapshot extension
+- Add ip_only, connected paramere for node list queries
+- Update sort feature of node list queries
+- Query all validators using pagination
+
 ## [v0.1.21.13] - 27.08.2021
 
 - Identity registrar records structure change
