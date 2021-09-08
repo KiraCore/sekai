@@ -56,6 +56,7 @@ func DefaultGenesis() *GenesisState {
 			JailMaxTime:                 600, // 600  seconds / 10 mins
 			EnableTokenWhitelist:        false,
 			EnableTokenBlacklist:        true,
+			MinIdentityApprovalTip:      200,
 		},
 		ExecutionFees: []*ExecutionFee{
 			{

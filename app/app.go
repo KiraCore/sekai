@@ -285,9 +285,9 @@ func NewInitApp(
 	app.mm.SetOrderInitGenesis(
 		authtypes.ModuleName,
 		banktypes.ModuleName,
+		govtypes.ModuleName, // staking module is using the moniker identity registrar and gov module should be initialized before
 		stakingtypes.ModuleName,
 		slashingtypes.ModuleName,
-		govtypes.ModuleName,
 		tokenstypes.ModuleName,
 		feeprocessingtypes.ModuleName,
 		genutiltypes.ModuleName,

@@ -1052,6 +1052,9 @@ func GetTxDeleteIdentityRecords() *cobra.Command {
 			}
 
 			keys := strings.Split(keysStr, ",")
+			if keysStr == "" {
+				keys = []string{}
+			}
 
 			msg := types.NewMsgDeleteIdentityRecords(
 				clientCtx.FromAddress,

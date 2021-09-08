@@ -22,4 +22,6 @@ type GovKeeper interface {
 	GetNetworkActorsByAbsoluteWhitelistPermission(ctx sdk.Context, perm govtypes.PermValue) []govtypes.NetworkActor
 	// GetIdRecordsByAddress query identity records by address
 	GetIdRecordsByAddress(ctx sdk.Context, creator sdk.AccAddress) []govtypes.IdentityRecord
+	GetIdRecordsByAddressAndKeys(ctx sdk.Context, address sdk.AccAddress, keys []string) ([]govtypes.IdentityRecord, error)
+	GetAddressesByIdRecordKey(ctx sdk.Context, key, value string) []sdk.AccAddress
 }

@@ -568,10 +568,21 @@ $ %[1]s query gov identity-records-by-addr [addr]
 				return err
 			}
 
+			keysStr, err := cmd.Flags().GetString(FlagKeys)
+			if err != nil {
+				return err
+			}
+
+			keys := strings.Split(keysStr, ",")
+			if keysStr == "" {
+				keys = []string{}
+			}
+
 			res, err := queryClient.IdentityRecordsByAddress(
 				context.Background(),
 				&types.QueryIdentityRecordsByAddressRequest{
 					Creator: addr,
+					Keys:    keys,
 				},
 			)
 
@@ -584,6 +595,7 @@ $ %[1]s query gov identity-records-by-addr [addr]
 	}
 
 	flags.AddQueryFlagsToCmd(cmd)
+	cmd.Flags().String(FlagKeys, "", "keys required when needs to be filtered")
 
 	return cmd
 }

@@ -48,17 +48,30 @@ func (k msgServer) ClaimValidator(goCtx context.Context, msg *types.MsgClaimVali
 		return nil, types.ErrValidatorAlreadyClaimed
 	}
 
-	_, err = k.keeper.GetValidatorByMoniker(ctx, msg.Moniker)
+	moniker := strings.Trim(msg.Moniker, " ")
+	if len(moniker) > 64 {
+		return nil, types.ErrInvalidMonikerLength
+	}
+
+	_, err = k.keeper.GetValidatorByMoniker(ctx, moniker)
 	if err == nil {
 		return nil, types.ErrValidatorMonikerExists
 	}
 
-	validator, err := types.NewValidator(strings.Trim(msg.Moniker, " "), msg.Commission, msg.ValKey, pk)
+	validator, err := types.NewValidator(msg.Commission, msg.ValKey, pk)
 	if err != nil {
 		return nil, err
 	}
 
 	k.keeper.AddPendingValidator(ctx, validator)
+
+	// register identity record moniker field when claiming a validator
+	k.govKeeper.RegisterIdentityRecords(ctx, sdk.AccAddress(validator.ValKey), []govtypes.IdentityInfoEntry{
+		{
+			Key:  "moniker",
+			Info: moniker,
+		},
+	})
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
