@@ -41,4 +41,8 @@ var (
 	ErrInvalidVote                = errors.Register(ModuleName, 38, "invalid vote option")
 	ErrInvalidGenesis             = errors.Register(ModuleName, 39, "invalid genesis state")
 	ErrNoProposalHandlerExists    = errors.Register(ModuleName, 40, "no handler exists for proposal type")
+	ErrInvalidIdentityRecordKey   = errors.Register(ModuleName, 41, "invalid identity record key")
+	ErrMonikerDeletionNotAllowed  = errors.Register(ModuleName, 42, "moniker field is not allowed to delete")
+	ErrInvalidIdentityRecordId    = errors.Register(ModuleName, 43, "invalid identity record id")
+	ErrInvalidApprovalTip         = errors.Register(ModuleName, 44, "invalid approval tip")
 )
