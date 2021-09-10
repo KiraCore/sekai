@@ -164,8 +164,8 @@ func TestNewHandler_MsgClaimValidator_Errors(t *testing.T) {
 			stakingtypes.ErrValidatorMonikerExists,
 		},
 		{
-			"validator with more than length 64 moniker",
-			strings.Repeat("A", 65),
+			"validator with more than length 32 moniker",
+			strings.Repeat("A", 33),
 			func(ctx types.Context, app *simapp.SekaiApp) {
 				networkActor := govtypes.NewNetworkActor(
 					types.AccAddress(valAddr1),

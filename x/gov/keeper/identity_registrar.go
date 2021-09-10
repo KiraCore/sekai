@@ -134,7 +134,7 @@ func (k Keeper) RegisterIdentityRecords(ctx sdk.Context, address sdk.AccAddress,
 		}
 		infos[i].Key = FormalizeIdentityRecordKey(info.Key)
 
-		if infos[i].Key == "moniker" && len(infos[i].Info) > 64 {
+		if infos[i].Key == "moniker" && len(infos[i].Info) > 32 {
 			return stakingtypes.ErrInvalidMonikerLength
 		}
 	}

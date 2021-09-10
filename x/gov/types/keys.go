@@ -21,7 +21,7 @@ var (
 	KeyPrefixIdentityRecordByAddress          = []byte("identity_record_by_address_prefix")
 	KeyPrefixIdRecordVerifyRequest            = []byte("identity_record_verify_request_prefix")
 	KeyPrefixIdRecordVerifyRequestByRequester = []byte("identity_record_verify_request_by_requester_prefix")
-	KeyPrefixIdRecordVerifyRequestByApprover  = []byte("identity_record_verify_request_by_requester_prefix")
+	KeyPrefixIdRecordVerifyRequestByApprover  = []byte("identity_record_verify_request_by_approver_prefix")
 
 	// Roles
 	RoleUndefined Role = 0x0
