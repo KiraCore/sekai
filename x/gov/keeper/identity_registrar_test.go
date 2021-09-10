@@ -494,7 +494,7 @@ func TestKeeper_IdentityRecordApproveFlow(t *testing.T) {
 	requests := app.CustomGovKeeper.GetIdRecordsVerifyRequestsByRequester(ctx, addr1)
 	require.Len(t, requests, 1)
 	requests = app.CustomGovKeeper.GetIdRecordsVerifyRequestsByApprover(ctx, addr1)
-	require.Len(t, requests, 1)
+	require.Len(t, requests, 0)
 	requests = app.CustomGovKeeper.GetAllIdRecordsVerifyRequests(ctx)
 	require.Len(t, requests, 1)
 

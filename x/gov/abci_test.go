@@ -548,7 +548,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				actor := types.NewDefaultActor(addrs[0])
 				app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
 
-				val, err := stakingtypes.NewValidator(sdk.NewDec(123), valAddr, pubKey)
+				val, err := stakingtypes.NewValidator(valAddr, pubKey)
 				require.NoError(t, err)
 				app.CustomStakingKeeper.AddValidator(ctx, val)
 				err = app.CustomStakingKeeper.Jail(ctx, val.ValKey)

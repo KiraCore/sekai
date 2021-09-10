@@ -54,7 +54,7 @@ func (k msgServer) ClaimValidator(goCtx context.Context, msg *types.MsgClaimVali
 		return nil, types.ErrValidatorMonikerExists
 	}
 
-	validator, err := types.NewValidator(msg.Commission, msg.ValKey, pk)
+	validator, err := types.NewValidator(msg.ValKey, pk)
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +76,6 @@ func (k msgServer) ClaimValidator(goCtx context.Context, msg *types.MsgClaimVali
 		sdk.NewEvent(
 			types.EventTypeClaimValidator,
 			sdk.NewAttribute(types.AttributeKeyMoniker, msg.Moniker),
-			sdk.NewAttribute(types.AttributeKeyCommission, msg.Commission.String()),
 			sdk.NewAttribute(types.AttributeKeyValKey, msg.ValKey.String()),
 			sdk.NewAttribute(types.AttributeKeyPubKey, msg.PubKey.String()),
 		),

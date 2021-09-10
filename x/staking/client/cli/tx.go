@@ -18,7 +18,6 @@ import (
 )
 
 const (
-	FlagComission   = "commission"
 	FlagValKey      = "validator-key"
 	FlagTitle       = "title"
 	FlagDescription = "description"
@@ -37,7 +36,6 @@ func GetTxClaimValidatorCmd() *cobra.Command {
 			serverCtx := server.GetServerContextFromCmd(cmd)
 
 			moniker, _ := cmd.Flags().GetString(FlagMoniker)
-			comission, _ := cmd.Flags().GetString(FlagComission)
 
 			var (
 				valPubKey cryptotypes.PubKey
@@ -54,10 +52,9 @@ func GetTxClaimValidatorCmd() *cobra.Command {
 				}
 			}
 
-			comm, err := types.NewDecFromStr(comission)
 			val := types.ValAddress(clientCtx.GetFromAddress())
 
-			msg, err := stakingtypes.NewMsgClaimValidator(moniker, comm, val, valPubKey)
+			msg, err := stakingtypes.NewMsgClaimValidator(moniker, val, valPubKey)
 			if err != nil {
 				return fmt.Errorf("error creating tx: %w", err)
 			}

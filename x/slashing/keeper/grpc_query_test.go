@@ -27,7 +27,7 @@ func TestQuerier_SigningInfo(t *testing.T) {
 		consAddress := sdk.ConsAddress(consPubKey.Address())
 		consAddresses = append(consAddresses, consAddress)
 
-		val, err := stakingtypes.NewValidator(sdk.NewDec(123), valAddr, consPubKey)
+		val, err := stakingtypes.NewValidator(valAddr, consPubKey)
 		require.NoError(t, err)
 		actor := govtypes.NewDefaultActor(sdk.AccAddress(valAddr))
 		app.CustomGovKeeper.AddWhitelistPermission(ctx, actor, govtypes.PermClaimValidator)
@@ -79,7 +79,7 @@ func TestQuerier_SigningInfos(t *testing.T) {
 		consAddress := sdk.ConsAddress(consPubKey.Address())
 		consAddresses = append(consAddresses, consAddress)
 
-		val, err := stakingtypes.NewValidator(sdk.NewDec(123), valAddr, consPubKey)
+		val, err := stakingtypes.NewValidator(valAddr, consPubKey)
 		require.NoError(t, err)
 		actor := govtypes.NewDefaultActor(sdk.AccAddress(valAddr))
 		app.CustomGovKeeper.AddWhitelistPermission(ctx, actor, govtypes.PermClaimValidator)

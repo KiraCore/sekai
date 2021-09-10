@@ -20,10 +20,6 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 				"type":        "string",
 				"description": "validator's name or nickname."
 			},
-			"commission": {
-				"type":        "float",
-				"description": "commision rate for this validator"
-			},
 			"val_key": {
 				"type":        "val_address",
 				"description": "validator operator address"

@@ -54,7 +54,6 @@ func GenTxClaimCmd(genBalIterator banktypes.GenesisBalancesIterator, defaultNode
 			}
 
 			validator, err := stakingtypes.NewValidator(
-				types.NewDec(1),
 				types.ValAddress(key.GetAddress()),
 				valPubKey,
 			)

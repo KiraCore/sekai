@@ -82,16 +82,15 @@ func (q Querier) Validators(ctx context.Context, request *types.ValidatorsReques
 
 		consPubkey, _ := sdk.Bech32ifyPubKey(sdk.Bech32PubKeyTypeConsPub, val.GetConsPubKey())
 		validator := types.QueryValidator{
-			Address:    sdk.AccAddress(val.ValKey).String(),
-			Valkey:     val.ValKey.String(),
-			Pubkey:     consPubkey,
-			Proposer:   val.GetConsPubKey().Address().String(),
-			Moniker:    moniker,
-			Commission: val.Commission.String(),
-			Status:     val.Status.String(),
-			Rank:       val.Rank,
-			Streak:     val.Streak,
-			Identity:   q.keeper.GetIdRecordsByAddress(c, sdk.AccAddress(val.ValKey)),
+			Address:  sdk.AccAddress(val.ValKey).String(),
+			Valkey:   val.ValKey.String(),
+			Pubkey:   consPubkey,
+			Proposer: val.GetConsPubKey().Address().String(),
+			Moniker:  moniker,
+			Status:   val.Status.String(),
+			Rank:     val.Rank,
+			Streak:   val.Streak,
+			Identity: q.keeper.GetIdRecordsByAddress(c, sdk.AccAddress(val.ValKey)),
 		}
 
 		if request.Status != "" && !strings.EqualFold(validator.Status, request.Status) {

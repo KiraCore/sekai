@@ -18,7 +18,6 @@ func TestNewValidator_IsActiveByDefault(t *testing.T) {
 	require.NoError(t, err)
 
 	validator, err := stakingtypes.NewValidator(
-		types.NewDec(1234),
 		valAddr,
 		pubKey,
 	)
