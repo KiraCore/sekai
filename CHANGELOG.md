@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.1.21.16] - 10.09.2021
+
+- Restrict moniker length to be less than 32
+- Resolve Identity registrar requests querying by approver and requester
+- Test on CLI command for requesters and approver and add examples on scripts
+- Remove commission from validator
 ## [v0.1.21.15] - 08.09.2021
 
 - Add querying records by filtering keys

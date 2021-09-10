@@ -772,10 +772,10 @@ $ %[1]s query gov identity-record-verify-requests-by-approver [addr]
 				return err
 			}
 
-			res, err := queryClient.IdentityRecordVerifyRequestsByRequester(
+			res, err := queryClient.IdentityRecordVerifyRequestsByApprover(
 				context.Background(),
-				&types.QueryIdentityRecordVerifyRequestsByRequester{
-					Requester:  addr,
+				&types.QueryIdentityRecordVerifyRequestsByApprover{
+					Approver:   addr,
 					Pagination: pageReq,
 				},
 			)

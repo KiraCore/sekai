@@ -138,7 +138,6 @@ func createValidators(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context, accNu
 		require.NoError(t, err)
 
 		validator, err := types.NewValidator(
-			sdk.NewDec(1234),
 			valAddr,
 			pubKey,
 		)

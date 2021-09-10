@@ -228,7 +228,7 @@ func TestKeeper_TryLongMonikerField(t *testing.T) {
 	// create a new record and check if set correctly
 	addr1 := sdk.AccAddress("foo1________________")
 	infos := make(map[string]string)
-	infos["moniker"] = strings.Repeat("A", 65)
+	infos["moniker"] = strings.Repeat("A", 33)
 	now := time.Now().UTC()
 	ctx = ctx.WithBlockTime(now)
 	err := app.CustomGovKeeper.RegisterIdentityRecords(ctx, addr1, types.WrapInfos(infos))
@@ -494,7 +494,7 @@ func TestKeeper_IdentityRecordApproveFlow(t *testing.T) {
 	requests := app.CustomGovKeeper.GetIdRecordsVerifyRequestsByRequester(ctx, addr1)
 	require.Len(t, requests, 1)
 	requests = app.CustomGovKeeper.GetIdRecordsVerifyRequestsByApprover(ctx, addr1)
-	require.Len(t, requests, 1)
+	require.Len(t, requests, 0)
 	requests = app.CustomGovKeeper.GetAllIdRecordsVerifyRequests(ctx)
 	require.Len(t, requests, 1)
 
