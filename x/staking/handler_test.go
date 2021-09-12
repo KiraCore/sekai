@@ -3,6 +3,7 @@ package staking_test
 import (
 	"fmt"
 	"os"
+	"strings"
 	"testing"
 	"time"
 
@@ -13,6 +14,7 @@ import (
 	"github.com/KiraCore/sekai/x/staking"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
@@ -33,6 +35,9 @@ func TestNewHandler_MsgClaimValidator_HappyPath(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
+	_, err = app.CustomStakingKeeper.GetMonikerByAddress(ctx, sdk.AccAddress(valAddr1))
+	require.Error(t, err)
+
 	// First we give user permissions
 	networkActor := govtypes.NewNetworkActor(
 		types.AccAddress(valAddr1),
@@ -50,7 +55,6 @@ func TestNewHandler_MsgClaimValidator_HappyPath(t *testing.T) {
 
 	theMsg, err := stakingtypes.NewMsgClaimValidator(
 		"aMoniker",
-		types.NewDec(1234),
 		valAddr1,
 		pubKey,
 	)
@@ -64,6 +68,16 @@ func TestNewHandler_MsgClaimValidator_HappyPath(t *testing.T) {
 
 	validatorSet = app.CustomStakingKeeper.GetPendingValidatorSet(ctx)
 	require.Len(t, validatorSet, 1)
+
+	records := app.CustomGovKeeper.GetIdRecordsByAddress(ctx, sdk.AccAddress(valAddr1))
+	require.Len(t, records, 1)
+
+	require.Equal(t, records[0].Key, "moniker")
+	require.Equal(t, records[0].Value, "aMoniker")
+
+	moniker, err := app.CustomStakingKeeper.GetMonikerByAddress(ctx, sdk.AccAddress(valAddr1))
+	require.NoError(t, err)
+	require.Equal(t, moniker, "aMoniker")
 }
 
 func TestNewHandler_MsgClaimValidator_Errors(t *testing.T) {
@@ -75,16 +89,19 @@ func TestNewHandler_MsgClaimValidator_Errors(t *testing.T) {
 
 	tests := []struct {
 		name          string
+		moniker       string
 		prepareFunc   func(ctx types.Context, app *simapp.SekaiApp)
 		expectedError error
 	}{
 		{
 			"user does not have permissions",
+			"aMoniker",
 			func(ctx types.Context, app *simapp.SekaiApp) {},
 			errors.Wrap(govtypes.ErrNotEnoughPermissions, "PermClaimValidator"),
 		},
 		{
 			"validator already exist",
+			"aMoniker",
 			func(ctx types.Context, app *simapp.SekaiApp) {
 				// First we give user permissions
 				networkActor := govtypes.NewNetworkActor(
@@ -100,8 +117,6 @@ func TestNewHandler_MsgClaimValidator_Errors(t *testing.T) {
 				app.CustomGovKeeper.SaveNetworkActor(ctx, networkActor)
 
 				validator, err := stakingtypes.NewValidator(
-					"aMoniker",
-					types.NewDec(1234),
 					valAddr1,
 					pubKey,
 				)
@@ -112,6 +127,7 @@ func TestNewHandler_MsgClaimValidator_Errors(t *testing.T) {
 		},
 		{
 			"validator moniker exists",
+			"aMoniker",
 			func(ctx types.Context, app *simapp.SekaiApp) {
 				pubKey, err := types.GetPubKeyFromBech32(types.Bech32PubKeyTypeConsPub, "kiravalconspub1zcjduepqylc5k8r40azmw0xa7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsqgrkp48")
 				require.NoError(t, err)
@@ -132,15 +148,35 @@ func TestNewHandler_MsgClaimValidator_Errors(t *testing.T) {
 				app.CustomGovKeeper.SaveNetworkActor(ctx, networkActor)
 
 				validator, err := stakingtypes.NewValidator(
-					"aMoniker", // Other validator with repeated moniker.
-					types.NewDec(1234),
 					valAddr2,
 					pubKey,
 				)
 				require.NoError(t, err)
 				app.CustomStakingKeeper.AddValidator(ctx, validator)
+				app.CustomGovKeeper.RegisterIdentityRecords(ctx, sdk.AccAddress(valAddr2), []govtypes.IdentityInfoEntry{{
+					Key:  "moniker",
+					Info: "aMoniker", // Other validator with repeated moniker.
+				}})
 			},
 			stakingtypes.ErrValidatorMonikerExists,
+		},
+		{
+			"validator with more than length 32 moniker",
+			strings.Repeat("A", 33),
+			func(ctx types.Context, app *simapp.SekaiApp) {
+				networkActor := govtypes.NewNetworkActor(
+					types.AccAddress(valAddr1),
+					nil,
+					1,
+					nil,
+					govtypes.NewPermissions([]govtypes.PermValue{
+						govtypes.PermClaimValidator,
+					}, nil),
+					1,
+				)
+				app.CustomGovKeeper.SaveNetworkActor(ctx, networkActor)
+			},
+			stakingtypes.ErrInvalidMonikerLength,
 		},
 	}
 
@@ -155,8 +191,7 @@ func TestNewHandler_MsgClaimValidator_Errors(t *testing.T) {
 			handler := staking.NewHandler(app.CustomStakingKeeper, app.CustomGovKeeper)
 
 			theMsg, err := stakingtypes.NewMsgClaimValidator(
-				"aMoniker",
-				types.NewDec(1234),
+				tt.moniker,
 				valAddr1,
 				pubKey,
 			)
@@ -187,7 +222,6 @@ func TestNewHandler_SetPermissions_ActorWithRole(t *testing.T) {
 
 	theMsg, err := stakingtypes.NewMsgClaimValidator(
 		"aMoniker",
-		types.NewDec(1234),
 		valAddr1,
 		pubKey,
 	)
@@ -235,7 +269,7 @@ func TestHandler_ProposalUnjailValidator_Errors(t *testing.T) {
 				err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerActor, govtypes.PermCreateUnjailValidatorProposal)
 				require.NoError(t, err2)
 
-				val, err := stakingtypes.NewValidator("Moniker", types.NewDec(123), valAddr, pubKey)
+				val, err := stakingtypes.NewValidator(valAddr, pubKey)
 				require.NoError(t, err)
 
 				app.CustomStakingKeeper.AddValidator(ctx, val)
@@ -253,7 +287,7 @@ func TestHandler_ProposalUnjailValidator_Errors(t *testing.T) {
 				err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerActor, govtypes.PermCreateUnjailValidatorProposal)
 				require.NoError(t, err2)
 
-				val, err := stakingtypes.NewValidator("Moniker", types.NewDec(123), valAddr, pubKey)
+				val, err := stakingtypes.NewValidator(valAddr, pubKey)
 				require.NoError(t, err)
 
 				app.CustomStakingKeeper.AddValidator(ctx, val)
@@ -318,7 +352,7 @@ func TestHandler_ProposalUnjailValidator(t *testing.T) {
 	properties.ProposalEndTime = 10
 	app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
 
-	val, err := stakingtypes.NewValidator("Moniker", types.NewDec(123), valAddr, pubKey)
+	val, err := stakingtypes.NewValidator(valAddr, pubKey)
 	require.NoError(t, err)
 	app.CustomStakingKeeper.AddValidator(ctx, val)
 

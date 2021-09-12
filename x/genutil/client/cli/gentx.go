@@ -15,6 +15,8 @@ import (
 	tmos "github.com/tendermint/tendermint/libs/os"
 	tmtypes "github.com/tendermint/tendermint/types"
 
+	"github.com/KiraCore/sekai/x/genutil"
+	"github.com/KiraCore/sekai/x/genutil/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
@@ -24,8 +26,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
 	authclient "github.com/cosmos/cosmos-sdk/x/auth/client"
-	"github.com/KiraCore/sekai/x/genutil"
-	"github.com/KiraCore/sekai/x/genutil/types"
 	"github.com/cosmos/cosmos-sdk/x/staking/client/cli"
 )
 
@@ -47,9 +47,6 @@ file. The following default parameters are included:
 Example:
 $ %s gentx my-key-name 1000000stake --home=/path/to/home/dir --keyring-backend=os --chain-id=test-chain-1 \
     --moniker="myvalidator" \
-    --commission-max-change-rate=0.01 \
-    --commission-max-rate=1.0 \
-    --commission-rate=0.07 \
     --details="..." \
     --security-contact="..." \
     --website="..."

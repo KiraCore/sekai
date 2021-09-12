@@ -79,8 +79,6 @@ func (s *IntegrationTestSuite) TestQueryValidator() {
 	var respValidator customtypes.Validator
 	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &respValidator)
 
-	s.Require().Equal(val.Moniker, respValidator.Moniker)
-	s.Require().Equal(sdk.NewDec(1), respValidator.Commission)
 	s.Require().Equal(val.ValAddress, respValidator.ValKey)
 
 	var pubkey cryptotypes.PubKey
@@ -97,8 +95,6 @@ func (s *IntegrationTestSuite) TestQueryValidator() {
 
 	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &respValidator)
 
-	s.Require().Equal(val.Moniker, respValidator.Moniker)
-	s.Require().Equal(sdk.NewDec(1), respValidator.Commission)
 	s.Require().Equal(val.ValAddress, respValidator.ValKey)
 
 	err = s.cfg.Codec.UnpackAny(respValidator.PubKey, &pubkey)
@@ -114,8 +110,6 @@ func (s *IntegrationTestSuite) TestQueryValidator() {
 
 	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &respValidator)
 
-	s.Require().Equal(val.Moniker, respValidator.Moniker)
-	s.Require().Equal(sdk.NewDec(1), respValidator.Commission)
 	s.Require().Equal(val.ValAddress, respValidator.ValKey)
 
 	err = s.cfg.Codec.UnpackAny(respValidator.PubKey, &pubkey)

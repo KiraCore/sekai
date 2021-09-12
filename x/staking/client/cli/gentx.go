@@ -3,16 +3,17 @@ package cli
 import (
 	"encoding/json"
 	"fmt"
-
-	genutiltypes "github.com/KiraCore/sekai/x/genutil/types"
-	govtypes "github.com/KiraCore/sekai/x/gov/types"
+	"time"
 
 	"github.com/KiraCore/sekai/x/genutil"
+	genutiltypes "github.com/KiraCore/sekai/x/genutil/types"
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/server"
 	"github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/staking/client/cli"
 	"github.com/pkg/errors"
@@ -52,14 +53,7 @@ func GenTxClaimCmd(genBalIterator banktypes.GenesisBalancesIterator, defaultNode
 				return errors.Wrapf(err, "failed to fetch '%s' from the keyring", name)
 			}
 
-			moniker := config.Moniker
-			if m, _ := cmd.Flags().GetString(cli.FlagMoniker); m != "" {
-				moniker = m
-			}
-
 			validator, err := stakingtypes.NewValidator(
-				moniker,
-				types.NewDec(1),
 				types.ValAddress(key.GetAddress()),
 				valPubKey,
 			)
@@ -92,6 +86,24 @@ func GenTxClaimCmd(genBalIterator banktypes.GenesisBalancesIterator, defaultNode
 				1,
 			)
 			customGovGenState.NetworkActors = append(customGovGenState.NetworkActors, &networkActor)
+			moniker := config.Moniker
+			if m, _ := cmd.Flags().GetString(cli.FlagMoniker); m != "" {
+				moniker = m
+			}
+			for _, record := range customGovGenState.IdentityRecords {
+				if record.Key == "moniker" && record.Value == moniker {
+					panic(fmt.Sprintf("same moniker exists, moniker = %s", moniker))
+				}
+			}
+			customGovGenState.IdentityRecords = append(customGovGenState.IdentityRecords, govtypes.IdentityRecord{
+				Id:        customGovGenState.LastIdentityRecordId + 1,
+				Address:   types.AccAddress(validator.ValKey),
+				Key:       "moniker",
+				Value:     moniker,
+				Date:      time.Now().UTC(),
+				Verifiers: []sdk.AccAddress{},
+			})
+			customGovGenState.LastIdentityRecordId++
 			appState[govtypes.ModuleName] = cdc.MustMarshalJSON(&customGovGenState)
 
 			appGenStateJSON, err := json.Marshal(appState)

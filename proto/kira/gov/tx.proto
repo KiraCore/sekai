@@ -51,8 +51,8 @@ service Msg {
     rpc DeleteIdentityRecords(MsgDeleteIdentityRecords) returns (MsgDeleteIdentityRecordsResponse);
     // RequestIdentityRecordsVerify defines a method to request verify request from specific verifier
     rpc RequestIdentityRecordsVerify(MsgRequestIdentityRecordsVerify) returns (MsgRequestIdentityRecordsVerifyResponse);
-    // ApproveIdentityRecords defines a method to accept verification request
-    rpc ApproveIdentityRecords(MsgHandleIdentityRecordsVerifyRequest) returns (MsgHandleIdentityRecordsVerifyResponse);
+    // HandleIdentityRecordsVerifyRequest defines a method to accept or reject verification request
+    rpc HandleIdentityRecordsVerifyRequest(MsgHandleIdentityRecordsVerifyRequest) returns (MsgHandleIdentityRecordsVerifyResponse);
     // CancelIdentityRecordsVerifyRequest defines a method to cancel verification request
     rpc CancelIdentityRecordsVerifyRequest(MsgCancelIdentityRecordsVerifyRequest) returns (MsgCancelIdentityRecordsVerifyRequestResponse);
 }

@@ -1,5 +1,27 @@
 # Changelog
 
+## [v0.1.21.16] - 10.09.2021
+
+- Restrict moniker length to be less than 32
+- Resolve Identity registrar requests querying by approver and requester
+- Test on CLI command for requesters and approver and add examples on scripts
+- Remove commission from validator
+## [v0.1.21.15] - 08.09.2021
+
+- Add querying records by filtering keys
+- add MIN_IDENTITY_APPROVAL_TIP into network properties
+- Implement tip checker
+- implement auto reject if edited after creating verification request
+- add balance check for automatic reject
+- Add identity registrar key validation and automatic lowercase converter
+- Resolve invalid implementation of SetIdentityRegistrar for genesis initialization process of address key matching to recordId
+- Update for moniker field management to use identity registrar
+- Add address catcher from identity key record pair
+- Resolve error handling of identity registrar to log the errors properly on CLI
+- Resolve sample script for identity registrar
+- Add CLI command for querying validators and add example cli command for querying
+- Add range of tests for the changes
+
 ## [v0.1.21.14] - 06.09.2021
 
 - Update pagination limit on sekaid

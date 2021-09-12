@@ -91,6 +91,8 @@ func (k Keeper) GetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 		return BoolToInt(properties.EnableTokenWhitelist), nil
 	case types.EnableTokenBlacklist:
 		return BoolToInt(properties.EnableTokenBlacklist), nil
+	case types.MinIdentityApprovalTip:
+		return properties.MinIdentityApprovalTip, nil
 	default:
 		return 0, errors.New("trying to fetch network property that does not exist")
 	}
@@ -137,6 +139,8 @@ func (k Keeper) SetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 		properties.EnableTokenBlacklist = IntToBool(value)
 	case types.EnableTokenWhitelist:
 		properties.EnableTokenWhitelist = IntToBool(value)
+	case types.MinIdentityApprovalTip:
+		properties.MinIdentityApprovalTip = value
 	default:
 		return errors.New("trying to set network property that does not exist")
 	}
