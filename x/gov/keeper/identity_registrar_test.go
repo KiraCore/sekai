@@ -252,6 +252,9 @@ func TestKeeper_TrySameMonikerField(t *testing.T) {
 	require.NoError(t, err)
 	err = app.CustomGovKeeper.RegisterIdentityRecords(ctx, addr2, types.WrapInfos(infos))
 	require.Error(t, err)
+	infos["moniker"] = "AAA2"
+	err = app.CustomGovKeeper.RegisterIdentityRecords(ctx, addr2, types.WrapInfos(infos))
+	require.NoError(t, err)
 }
 
 func TestKeeper_IdentityKeysManagement(t *testing.T) {
