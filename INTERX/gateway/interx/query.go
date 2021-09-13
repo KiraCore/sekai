@@ -8,6 +8,7 @@ import (
 	"github.com/KiraCore/sekai/INTERX/common"
 	"github.com/KiraCore/sekai/INTERX/config"
 	functions "github.com/KiraCore/sekai/INTERX/functions"
+	"github.com/KiraCore/sekai/INTERX/tasks"
 	"github.com/KiraCore/sekai/INTERX/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/gorilla/mux"
@@ -20,10 +21,12 @@ func RegisterInterxQueryRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpc
 	r.HandleFunc(config.QueryInterxFunctions, QueryInterxFunctions(rpcAddr)).Methods("GET")
 	r.HandleFunc(config.QueryStatus, QueryStatusRequest(rpcAddr)).Methods("GET")
 	r.HandleFunc(config.QueryAddrBook, QueryAddrBook(rpcAddr)).Methods("GET")
+	r.HandleFunc(config.QueryNetInfo, QueryNetInfo(rpcAddr)).Methods("GET")
 
 	common.AddRPCMethod("GET", config.QueryInterxFunctions, "This is an API to query interx functions.", true)
 	common.AddRPCMethod("GET", config.QueryStatus, "This is an API to query interx status.", true)
 	common.AddRPCMethod("GET", config.QueryAddrBook, "This is an API to query address book.", true)
+	common.AddRPCMethod("GET", config.QueryNetInfo, "This is an API to query net info.", true)
 }
 
 // QueryRPCMethods is a function to query RPC methods.
@@ -153,6 +156,28 @@ func QueryAddrBook(rpcAddr string) http.HandlerFunc {
 		statusCode := http.StatusOK
 
 		response.Response, response.Error, statusCode = queryAddrBookHandler(rpcAddr)
+
+		common.WrapResponse(w, request, *response, statusCode, false)
+	}
+}
+
+func queryNetInfoHandler(rpcAddr string) (interface{}, interface{}, int) {
+	netInfo, err := tasks.QueryNetInfo(rpcAddr)
+	if err != nil {
+		return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
+	}
+
+	return netInfo, nil, http.StatusOK
+}
+
+// QueryNetInfo is a function to query net info.
+func QueryNetInfo(rpcAddr string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		request := common.GetInterxRequest(r)
+		response := common.GetResponseFormat(request, rpcAddr)
+		statusCode := http.StatusOK
+
+		response.Response, response.Error, statusCode = queryNetInfoHandler(rpcAddr)
 
 		common.WrapResponse(w, request, *response, statusCode, false)
 	}

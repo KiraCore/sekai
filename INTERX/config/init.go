@@ -50,6 +50,7 @@ func getGetMethods() []string {
 		QueryUpgradePlan,
 
 		QueryAddrBook,
+		QueryNetInfo,
 	}
 }
 
