@@ -43,6 +43,7 @@ const (
 	QueryPrivP2PList         = "/api/priv_p2p_list"
 	QueryInterxList          = "/api/interx_list"
 	QuerySnapList            = "/api/snap_list"
+	QueryAddrBook            = "/api/addrbook"
 
 	QueryUpgradePlan = "/api/kira/upgrade/current_plan"
 

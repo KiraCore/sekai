@@ -48,6 +48,8 @@ func getGetMethods() []string {
 		QuerySnapList,
 
 		QueryUpgradePlan,
+
+		QueryAddrBook,
 	}
 }
 
