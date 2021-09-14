@@ -180,7 +180,6 @@ type QueryValidator struct {
 	Pubkey              string           `json:"pubkey"`
 	Proposer            string           `json:"proposer"`
 	Moniker             string           `json:"moniker"`
-	Commission          string           `json:"commission"`
 	Status              string           `json:"status"`
 	Rank                int64            `json:"rank,string"`
 	Streak              int64            `json:"streak,string"`

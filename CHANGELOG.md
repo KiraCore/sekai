@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.1.21.17] - 14.09.2021
+- add addrbook query api on interxd
+- add net_info query api on interxd
+- fix validators query
+
 ## [v0.1.21.16] - 10.09.2021
 
 - Restrict moniker length to be less than 32
