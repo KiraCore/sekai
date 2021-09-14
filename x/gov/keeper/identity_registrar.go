@@ -24,10 +24,6 @@ func FormalizeIdentityRecordKey(key string) string {
 	return strings.ToLower(key)
 }
 
-func UniqueRequiredKeys() []string {
-	return []string{"moniker"}
-}
-
 func CheckIfWithinStringArray(key string, keys []string) bool {
 	for _, k := range keys {
 		if k == key {
@@ -84,7 +80,8 @@ func (k Keeper) SetIdentityRecord(ctx sdk.Context, record types.IdentityRecord) 
 	if !ValidateIdentityRecordKey(record.Key) {
 		panic("identity record key is invalid")
 	}
-	uniqueKeys := UniqueRequiredKeys()
+	properties := k.GetNetworkProperties(ctx)
+	uniqueKeys := strings.Split(properties.UniqueIdentityKeys, ",")
 	if CheckIfWithinStringArray(record.Key, uniqueKeys) {
 		addrs := k.GetAddressesByIdRecordKey(ctx, record.Key, record.Value)
 		if len(addrs) == 1 && bytes.Equal(addrs[0], record.Address) {
@@ -150,7 +147,8 @@ func (k Keeper) DeleteIdentityRecordById(ctx sdk.Context, recordId uint64) {
 // RegisterIdentityRecord defines a method to register identity records for an address
 func (k Keeper) RegisterIdentityRecords(ctx sdk.Context, address sdk.AccAddress, infos []types.IdentityInfoEntry) error {
 	// validate key and set the key to non case-sensitive
-	uniqueKeys := UniqueRequiredKeys()
+	properties := k.GetNetworkProperties(ctx)
+	uniqueKeys := strings.Split(properties.UniqueIdentityKeys, ",")
 	for i, info := range infos {
 		if !ValidateIdentityRecordKey(info.Key) {
 			return sdkerrors.Wrap(types.ErrInvalidIdentityRecordKey, fmt.Sprintf("invalid key exists: key=%s", info.Key))

@@ -53,7 +53,8 @@ func TestSimappExportGenesis(t *testing.T) {
 			"jail_max_time":"600",
 			"enable_token_whitelist":false,
 			"enable_token_blacklist":true,
-			"min_identity_approval_tip":"200"
+			"min_identity_approval_tip":"200",
+			"unique_identity_keys":"moniker,username"
 		},
 		"execution_fees":[],
 		"poor_network_messages":{
@@ -110,6 +111,7 @@ func TestExportInitGenesis(t *testing.T) {
 			MinProposalEnactmentBlocks: 1,
 			EnableForeignFeePayments:   true,
 			MinIdentityApprovalTip:     200,
+			UniqueIdentityKeys:         "moniker,username",
 		},
 		ExecutionFees: []*types.ExecutionFee{
 			{
@@ -158,7 +160,8 @@ func TestExportInitGenesis(t *testing.T) {
 			"jail_max_time":"0",
 			"enable_token_whitelist":false,
 			"enable_token_blacklist":false,
-			"min_identity_approval_tip":"200"
+			"min_identity_approval_tip":"200",
+			"unique_identity_keys":"moniker,username"
 		},
 		"execution_fees":[],
 		"poor_network_messages":{

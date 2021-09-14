@@ -107,7 +107,7 @@ func (m *AssignPermissionProposal) VotePermission() PermValue {
 // NewSetNetworkPropertyProposal creates a new set network property proposal
 func NewSetNetworkPropertyProposal(
 	property NetworkProperty,
-	value uint64,
+	value NetworkPropertyValue,
 ) Content {
 	return &SetNetworkPropertyProposal{
 		NetworkProperty: property,

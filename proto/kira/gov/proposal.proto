@@ -101,8 +101,7 @@ message SetNetworkPropertyProposal {
   option (gogoproto.equal) = true;
 
   NetworkProperty network_property = 1;
-
-  uint64 value = 2;
+  NetworkPropertyValue value = 2 [(gogoproto.nullable) = false];
 }
 
 message UpsertDataRegistryProposal {

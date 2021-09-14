@@ -396,7 +396,7 @@ func (suite *AnteTestSuite) TestValidateFeeRangeDecorator() {
 		{
 			"foreign fee payment disable check",
 			func() ([]sdk.Msg, []cryptotypes.PrivKey, []uint64, []uint64, sdk.Coins) {
-				err := suite.app.CustomGovKeeper.SetNetworkProperty(suite.ctx, govtypes.EnableForeignFeePayments, 0)
+				err := suite.app.CustomGovKeeper.SetNetworkProperty(suite.ctx, govtypes.EnableForeignFeePayments, govtypes.NetworkPropertyValue{Value: 0})
 				suite.Require().NoError(err)
 				msgs := []sdk.Msg{
 					govtypes.NewMsgSetNetworkProperties(accounts[4].acc.GetAddress(), &govtypes.NetworkProperties{
@@ -414,7 +414,7 @@ func (suite *AnteTestSuite) TestValidateFeeRangeDecorator() {
 		{
 			"fee out of range for low amount",
 			func() ([]sdk.Msg, []cryptotypes.PrivKey, []uint64, []uint64, sdk.Coins) {
-				err := suite.app.CustomGovKeeper.SetNetworkProperty(suite.ctx, govtypes.EnableForeignFeePayments, 0)
+				err := suite.app.CustomGovKeeper.SetNetworkProperty(suite.ctx, govtypes.EnableForeignFeePayments, govtypes.NetworkPropertyValue{Value: 0})
 				suite.Require().NoError(err)
 				msgs := []sdk.Msg{
 					govtypes.NewMsgSetNetworkProperties(accounts[4].acc.GetAddress(), &govtypes.NetworkProperties{
@@ -432,7 +432,7 @@ func (suite *AnteTestSuite) TestValidateFeeRangeDecorator() {
 		{
 			"fee out of range for big amount",
 			func() ([]sdk.Msg, []cryptotypes.PrivKey, []uint64, []uint64, sdk.Coins) {
-				err := suite.app.CustomGovKeeper.SetNetworkProperty(suite.ctx, govtypes.EnableForeignFeePayments, 0)
+				err := suite.app.CustomGovKeeper.SetNetworkProperty(suite.ctx, govtypes.EnableForeignFeePayments, govtypes.NetworkPropertyValue{Value: 0})
 				suite.Require().NoError(err)
 				msgs := []sdk.Msg{
 					govtypes.NewMsgSetNetworkProperties(accounts[4].acc.GetAddress(), &govtypes.NetworkProperties{
@@ -450,7 +450,7 @@ func (suite *AnteTestSuite) TestValidateFeeRangeDecorator() {
 		{
 			"fee should be bigger than max of execution and failure fee",
 			func() ([]sdk.Msg, []cryptotypes.PrivKey, []uint64, []uint64, sdk.Coins) {
-				err := suite.app.CustomGovKeeper.SetNetworkProperty(suite.ctx, govtypes.EnableForeignFeePayments, 0)
+				err := suite.app.CustomGovKeeper.SetNetworkProperty(suite.ctx, govtypes.EnableForeignFeePayments, govtypes.NetworkPropertyValue{Value: 0})
 				suite.Require().NoError(err)
 				msgs := []sdk.Msg{
 					govtypes.NewMsgSetNetworkProperties(accounts[4].acc.GetAddress(), &govtypes.NetworkProperties{
