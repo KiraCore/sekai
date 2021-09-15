@@ -20,3 +20,13 @@ sekaid tx customgov proposal set-network-property MIN_TX_FEE 101  --title="title
 # JAIL_MAX_TIME: maximum jailed status duration in seconds to get back to the validator set again
 # ENABLE_TOKEN_WHITELIST: TokenWhitelist is valid when enable_token_whitelist is set
 # ENABLE_TOKEN_BLACKLIST: TokenBlacklist is valid when enable_token_blacklist is set
+# MIN_IDENTITY_APPROVAL_TIP: minimum amount of tip to be paid to the approver per request
+# UNIQUE_IDENTITY_KEYS: manages unique identity keys to be used as an address identifier
+
+# set network property for unique identity keys
+sekaid tx customgov proposal set-network-property UNIQUE_IDENTITY_KEYS moniker,email  --title="title" --description="description" --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes
+sekaid tx customgov proposal vote 1 1 --from validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes 
+# check all proposals
+sekaid query customgov proposals
+# check changed network properties
+sekaid query customgov network-properties

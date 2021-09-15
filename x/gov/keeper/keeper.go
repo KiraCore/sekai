@@ -3,7 +3,6 @@ package keeper
 import (
 	"errors"
 	"fmt"
-	"strings"
 
 	"github.com/KiraCore/sekai/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -71,77 +70,78 @@ func (k Keeper) ValidateNetworkProperties(ctx sdk.Context, properties *types.Net
 	if properties.MaxTxFee < properties.MinTxFee {
 		return fmt.Errorf("max_tx_fee should not be lower than min_tx_fee")
 	}
-	if properties.VoteQuorum == 0 {
-		return fmt.Errorf("vote_quorum should not be zero")
-	}
-	if properties.ProposalEndTime == 0 {
-		return fmt.Errorf("proposal_end_time should not be zero")
-	}
-	if properties.ProposalEnactmentTime == 0 {
-		return fmt.Errorf("proposal_enactment_time should not be zero")
-	}
-	if properties.MinProposalEndBlocks == 0 {
-		return fmt.Errorf("min_proposal_end_blocks should not be zero")
-	}
-	if properties.MinProposalEnactmentBlocks == 0 {
-		return fmt.Errorf("min_proposal_enactment_blocks should not be zero")
-	}
-	if properties.MischanceRankDecreaseAmount == 0 {
-		return fmt.Errorf("mischance_rank_decrease_amount should not be zero")
-	}
-	if properties.MaxMischance == 0 {
-		return fmt.Errorf("max_mischance should not be zero")
-	}
-	if properties.MischanceConfidence == 0 {
-		return fmt.Errorf("mischance_confidence should not be zero")
-	}
-	if properties.InactiveRankDecreasePercent == 0 {
-		return fmt.Errorf("inactive_rank_decrease_percent should not be zero")
-	}
+	// TODO: for now skipping few of validations
+	// if properties.VoteQuorum == 0 {
+	// 	return fmt.Errorf("vote_quorum should not be zero")
+	// }
+	// if properties.ProposalEndTime == 0 {
+	// 	return fmt.Errorf("proposal_end_time should not be zero")
+	// }
+	// if properties.ProposalEnactmentTime == 0 {
+	// 	return fmt.Errorf("proposal_enactment_time should not be zero")
+	// }
+	// if properties.MinProposalEndBlocks == 0 {
+	// 	return fmt.Errorf("min_proposal_end_blocks should not be zero")
+	// }
+	// if properties.MinProposalEnactmentBlocks == 0 {
+	// 	return fmt.Errorf("min_proposal_enactment_blocks should not be zero")
+	// }
+	// if properties.MischanceRankDecreaseAmount == 0 {
+	// 	return fmt.Errorf("mischance_rank_decrease_amount should not be zero")
+	// }
+	// if properties.MaxMischance == 0 {
+	// 	return fmt.Errorf("max_mischance should not be zero")
+	// }
+	// if properties.InactiveRankDecreasePercent == 0 {
+	// 	return fmt.Errorf("inactive_rank_decrease_percent should not be zero")
+	// }
+	// if properties.InactiveRankDecreasePercent == 0 {
+	// 	return fmt.Errorf("inactive_rank_decrease_percent should not be zero")
+	// }
 	if properties.InactiveRankDecreasePercent > 100 {
 		return fmt.Errorf("inactive_rank_decrease_percent should not be lower than 100%%")
 	}
-	if properties.MinValidators == 0 {
-		return fmt.Errorf("min_validators should not be zero")
-	}
-	if properties.PoorNetworkMaxBankSend == 0 {
-		return fmt.Errorf("min_validators should not be zero")
-	}
-	if properties.JailMaxTime == 0 {
-		return fmt.Errorf("jail_max_time should not be zero")
-	}
-	fee := k.GetExecutionFee(ctx, (&types.MsgHandleIdentityRecordsVerifyRequest{}).Type())
-	maxFee := properties.MinTxFee
-	if fee != nil {
-		if maxFee < fee.ExecutionFee {
-			maxFee = fee.ExecutionFee
-		}
-		if maxFee < fee.FailureFee {
-			maxFee = fee.FailureFee
-		}
-	}
-	if properties.MinIdentityApprovalTip < maxFee*2 {
-		return fmt.Errorf("min_identity_approval_tip should not be bigger or equal than 2x approval fee")
-	}
-	if properties.UniqueIdentityKeys == "" {
-		return fmt.Errorf("unique_identity_keys should not be empty")
-	}
-	monikerExists := false
-	if properties.UniqueIdentityKeys != FormalizeIdentityRecordKey(properties.UniqueIdentityKeys) {
-		return fmt.Errorf("unique identity keys on network property should be formailzed with lowercase keys")
-	}
-	uniqueKeys := strings.Split(properties.UniqueIdentityKeys, ",")
-	for _, key := range uniqueKeys {
-		if !ValidateIdentityRecordKey(key) {
-			return fmt.Errorf("invalid identity record key exists, key=%s", key)
-		}
-		if key == "moniker" {
-			monikerExists = true
-		}
-	}
-	if !monikerExists {
-		return fmt.Errorf("moniker should be exist in unique keys list")
-	}
+	// if properties.MinValidators == 0 {
+	// 	return fmt.Errorf("min_validators should not be zero")
+	// }
+	// if properties.PoorNetworkMaxBankSend == 0 {
+	// 	return fmt.Errorf("min_validators should not be zero")
+	// }
+	// if properties.JailMaxTime == 0 {
+	// 	return fmt.Errorf("jail_max_time should not be zero")
+	// }
+	// fee := k.GetExecutionFee(ctx, (&types.MsgHandleIdentityRecordsVerifyRequest{}).Type())
+	// maxFee := properties.MinTxFee
+	// if fee != nil {
+	// 	if maxFee < fee.ExecutionFee {
+	// 		maxFee = fee.ExecutionFee
+	// 	}
+	// 	if maxFee < fee.FailureFee {
+	// 		maxFee = fee.FailureFee
+	// 	}
+	// }
+	// if properties.MinIdentityApprovalTip < maxFee*2 {
+	// 	return fmt.Errorf("min_identity_approval_tip should not be bigger or equal than 2x approval fee")
+	// }
+	// if properties.UniqueIdentityKeys == "" {
+	// 	return fmt.Errorf("unique_identity_keys should not be empty")
+	// }
+	// monikerExists := false
+	// if properties.UniqueIdentityKeys != FormalizeIdentityRecordKey(properties.UniqueIdentityKeys) {
+	// 	return fmt.Errorf("unique identity keys on network property should be formailzed with lowercase keys")
+	// }
+	// uniqueKeys := strings.Split(properties.UniqueIdentityKeys, ",")
+	// for _, key := range uniqueKeys {
+	// 	if !ValidateIdentityRecordKey(key) {
+	// 		return fmt.Errorf("invalid identity record key exists, key=%s", key)
+	// 	}
+	// 	if key == "moniker" {
+	// 		monikerExists = true
+	// 	}
+	// }
+	// if !monikerExists {
+	// 	return fmt.Errorf("moniker should be exist in unique keys list")
+	// }
 	return nil
 }
 

@@ -143,7 +143,12 @@ func (m *SetNetworkPropertyProposal) ValidateBasic() error {
 		MaxMischance,
 		InactiveRankDecreasePercent,
 		PoorNetworkMaxBankSend,
-		MinValidators:
+		MinValidators,
+		JailMaxTime,
+		EnableTokenWhitelist,
+		EnableTokenBlacklist,
+		MinIdentityApprovalTip,
+		UniqueIdentityKeys:
 		return nil
 	default:
 		return ErrInvalidNetworkProperty

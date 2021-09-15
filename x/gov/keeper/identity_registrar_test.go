@@ -257,6 +257,21 @@ func TestKeeper_TrySameMonikerField(t *testing.T) {
 	require.NoError(t, err)
 }
 
+func TestKeeper_TryUniqueIdentityKeysSet(t *testing.T) {
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	// create a new record and check if set correctly
+	now := time.Now().UTC()
+	ctx = ctx.WithBlockTime(now)
+	err := app.CustomGovKeeper.SetNetworkProperty(ctx, types.UniqueIdentityKeys, types.NetworkPropertyValue{StrValue: "moniker,email"})
+	require.NoError(t, err)
+	networkProperties := app.CustomGovKeeper.GetNetworkProperties(ctx)
+	require.NotNil(t, networkProperties)
+
+	require.Equal(t, networkProperties.UniqueIdentityKeys, "moniker,email")
+}
+
 func TestKeeper_IdentityKeysManagement(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
