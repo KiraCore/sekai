@@ -422,7 +422,10 @@ func (k msgServer) SetNetworkProperties(
 	if !isAllowed {
 		return nil, errors.Wrap(types.ErrNotEnoughPermissions, "PermChangeTxFee")
 	}
-	k.keeper.SetNetworkProperties(ctx, msg.NetworkProperties)
+	err := k.keeper.SetNetworkProperties(ctx, msg.NetworkProperties)
+	if err != nil {
+		return nil, err
+	}
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
 			types.EventTypeSetNetworkProperties,

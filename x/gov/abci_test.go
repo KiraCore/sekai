@@ -409,7 +409,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					"some desc",
 					types.NewSetNetworkPropertyProposal(
 						types.MinTxFee,
-						300,
+						types.NetworkPropertyValue{Value: 300},
 					),
 					time.Now(),
 					time.Now().Add(10*time.Second),
@@ -436,7 +436,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				minTxFee, err := app.CustomGovKeeper.GetNetworkProperty(ctx, types.MinTxFee)
 				require.NoError(t, err)
 
-				require.Equal(t, uint64(300), minTxFee)
+				require.Equal(t, uint64(300), minTxFee.Value)
 			},
 			blockHeightChange: 3,
 		},

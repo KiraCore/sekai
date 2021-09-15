@@ -45,4 +45,5 @@ var (
 	ErrMonikerDeletionNotAllowed  = errors.Register(ModuleName, 42, "moniker field is not allowed to delete")
 	ErrInvalidIdentityRecordId    = errors.Register(ModuleName, 43, "invalid identity record id")
 	ErrInvalidApprovalTip         = errors.Register(ModuleName, 44, "invalid approval tip")
+	ErrKeyShouldBeUnique          = errors.Register(ModuleName, 45, "key should be unique")
 )

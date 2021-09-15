@@ -676,9 +676,15 @@ func GetTxProposalSetNetworkProperty() *cobra.Command {
 				return fmt.Errorf("invalid network property name: %s", args[0])
 			}
 
-			value, err := strconv.Atoi(args[1])
-			if err != nil {
-				return fmt.Errorf("invalid network property value: %w", err)
+			value := types.NetworkPropertyValue{}
+			if property == int32(types.UniqueIdentityKeys) {
+				value.StrValue = args[1]
+			} else {
+				numVal, err := strconv.Atoi(args[1])
+				if err != nil {
+					return fmt.Errorf("invalid network property value: %w", err)
+				}
+				value.Value = uint64(numVal)
 			}
 
 			title, err := cmd.Flags().GetString(FlagTitle)
@@ -695,7 +701,7 @@ func GetTxProposalSetNetworkProperty() *cobra.Command {
 				clientCtx.FromAddress,
 				title,
 				description,
-				types.NewSetNetworkPropertyProposal(types.NetworkProperty(property), uint64(value)),
+				types.NewSetNetworkPropertyProposal(types.NetworkProperty(property), value),
 			)
 			if err != nil {
 				return err

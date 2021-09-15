@@ -48,7 +48,10 @@ func InitGenesis(
 	}
 
 	k.SetNextProposalID(ctx, genesisState.StartingProposalId)
-	k.SetNetworkProperties(ctx, genesisState.NetworkProperties)
+	err := k.SetNetworkProperties(ctx, genesisState.NetworkProperties)
+	if err != nil {
+		panic(err)
+	}
 
 	for _, fee := range genesisState.ExecutionFees {
 		k.SetExecutionFee(ctx, fee)
