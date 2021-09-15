@@ -50,15 +50,14 @@ func getTendermintRPCAddress(ipAddr string) string {
 func getInterxAddress(ipAddr string) string {
 	return "http://" + ipAddr + ":" + config.Config.NodeDiscovery.DefaultInterxPort
 }
-
-func QueryPeers(rpcAddr string) ([]tmTypes.Peer, error) {
-	peers := []tmTypes.Peer{}
+func QueryNetInfo(rpcAddr string) (*tmTypes.ResultNetInfo, error) {
+	result := new(tmTypes.ResultNetInfo)
 
 	u, err := url.Parse(rpcAddr)
 	_, err = net.DialTimeout("tcp", u.Host, timeout())
 	if err != nil {
 		common.GetLogger().Info(err)
-		return peers, err
+		return result, err
 	}
 
 	endpoint := fmt.Sprintf("%s/net_info", rpcAddr)
@@ -69,7 +68,7 @@ func QueryPeers(rpcAddr string) ([]tmTypes.Peer, error) {
 
 	resp, err := client.Get(endpoint)
 	if err != nil {
-		return peers, err
+		return result, err
 	}
 	defer resp.Body.Close()
 
@@ -78,21 +77,24 @@ func QueryPeers(rpcAddr string) ([]tmTypes.Peer, error) {
 	response := new(tmJsonRPCTypes.RPCResponse)
 
 	if err := json.Unmarshal(respBody, response); err != nil {
-		return peers, err
+		return result, err
 	}
 
 	if response.Error != nil {
-		return peers, errors.New(fmt.Sprint(response.Error))
+		return result, errors.New(fmt.Sprint(response.Error))
 	}
 
-	result := new(tmTypes.ResultNetInfo)
 	if err := tmjson.Unmarshal(response.Result, result); err != nil {
-		return peers, err
+		return result, err
 	}
 
-	peers = result.Peers
+	return result, err
+}
 
-	return peers, nil
+func QueryPeers(rpcAddr string) ([]tmTypes.Peer, error) {
+	netInfo, err := QueryNetInfo(rpcAddr)
+
+	return netInfo.Peers, err
 }
 
 func QueryKiraStatus(rpcAddr string) (tmTypes.ResultStatus, error) {
