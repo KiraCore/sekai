@@ -24,6 +24,15 @@ func FormalizeIdentityRecordKey(key string) string {
 	return strings.ToLower(key)
 }
 
+func CheckIfWithinStringArray(key string, keys []string) bool {
+	for _, k := range keys {
+		if k == key {
+			return true
+		}
+	}
+	return false
+}
+
 func CheckIfWithinAddressArray(addr sdk.AccAddress, array []sdk.AccAddress) bool {
 	for _, itemAddr := range array {
 		if bytes.Equal(addr, itemAddr) {
@@ -70,6 +79,16 @@ func (k Keeper) SetIdentityRecord(ctx sdk.Context, record types.IdentityRecord) 
 	// validate key
 	if !ValidateIdentityRecordKey(record.Key) {
 		panic("identity record key is invalid")
+	}
+	properties := k.GetNetworkProperties(ctx)
+	uniqueKeys := strings.Split(properties.UniqueIdentityKeys, ",")
+	if CheckIfWithinStringArray(record.Key, uniqueKeys) {
+		addrs := k.GetAddressesByIdRecordKey(ctx, record.Key, record.Value)
+		if len(addrs) == 1 && bytes.Equal(addrs[0], record.Address) {
+
+		} else if len(addrs) > 0 {
+			panic(fmt.Sprintf("the key %s, value %s is already registered by %s", record.Key, record.Value, addrs[0].String()))
+		}
 	}
 	// set the key to non case-sensitive
 	record.Key = FormalizeIdentityRecordKey(record.Key)
@@ -128,6 +147,8 @@ func (k Keeper) DeleteIdentityRecordById(ctx sdk.Context, recordId uint64) {
 // RegisterIdentityRecord defines a method to register identity records for an address
 func (k Keeper) RegisterIdentityRecords(ctx sdk.Context, address sdk.AccAddress, infos []types.IdentityInfoEntry) error {
 	// validate key and set the key to non case-sensitive
+	properties := k.GetNetworkProperties(ctx)
+	uniqueKeys := strings.Split(properties.UniqueIdentityKeys, ",")
 	for i, info := range infos {
 		if !ValidateIdentityRecordKey(info.Key) {
 			return sdkerrors.Wrap(types.ErrInvalidIdentityRecordKey, fmt.Sprintf("invalid key exists: key=%s", info.Key))
@@ -136,6 +157,15 @@ func (k Keeper) RegisterIdentityRecords(ctx sdk.Context, address sdk.AccAddress,
 
 		if infos[i].Key == "moniker" && len(infos[i].Info) > 32 {
 			return stakingtypes.ErrInvalidMonikerLength
+		}
+
+		if CheckIfWithinStringArray(infos[i].Key, uniqueKeys) {
+			addrs := k.GetAddressesByIdRecordKey(ctx, infos[i].Key, infos[i].Info)
+			if len(addrs) == 1 && bytes.Equal(addrs[0], address) {
+
+			} else if len(addrs) > 0 {
+				return sdkerrors.Wrap(types.ErrKeyShouldBeUnique, fmt.Sprintf("the key %s, value %s is already registered by %s", infos[i].Key, infos[i].Info, addrs[0].String()))
+			}
 		}
 	}
 

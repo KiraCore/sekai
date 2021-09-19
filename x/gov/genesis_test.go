@@ -53,7 +53,8 @@ func TestSimappExportGenesis(t *testing.T) {
 			"jail_max_time":"600",
 			"enable_token_whitelist":false,
 			"enable_token_blacklist":true,
-			"min_identity_approval_tip":"200"
+			"min_identity_approval_tip":"200",
+			"unique_identity_keys":"moniker,username"
 		},
 		"execution_fees":[],
 		"poor_network_messages":{
@@ -101,15 +102,21 @@ func TestExportInitGenesis(t *testing.T) {
 		},
 		StartingProposalId: 1,
 		NetworkProperties: &types.NetworkProperties{
-			MinTxFee:                   100,
-			MaxTxFee:                   1000000,
-			VoteQuorum:                 33,
-			ProposalEndTime:            600, // 600 seconds / 10 mins
-			ProposalEnactmentTime:      300, // 300 seconds / 5 mins
-			MinProposalEndBlocks:       2,
-			MinProposalEnactmentBlocks: 1,
-			EnableForeignFeePayments:   true,
-			MinIdentityApprovalTip:     200,
+			MinTxFee:                    100,
+			MaxTxFee:                    1000000,
+			VoteQuorum:                  33,
+			ProposalEndTime:             600, // 600 seconds / 10 mins
+			ProposalEnactmentTime:       300, // 300 seconds / 5 mins
+			MinProposalEndBlocks:        2,
+			MinProposalEnactmentBlocks:  1,
+			MischanceRankDecreaseAmount: 1,
+			MaxMischance:                1,
+			InactiveRankDecreasePercent: 2,
+			MinValidators:               1,
+			PoorNetworkMaxBankSend:      1,
+			EnableForeignFeePayments:    true,
+			MinIdentityApprovalTip:      200,
+			UniqueIdentityKeys:          "moniker,username",
 		},
 		ExecutionFees: []*types.ExecutionFee{
 			{
@@ -149,16 +156,17 @@ func TestExportInitGenesis(t *testing.T) {
 			"min_proposal_end_blocks":"2",
 			"min_proposal_enactment_blocks":"1",
 			"enable_foreign_fee_payments":true,
-			"mischance_rank_decrease_amount":"0",
-			"max_mischance":"0",
+			"mischance_rank_decrease_amount":"1",
+			"max_mischance":"1",
 			"mischance_confidence":"0",
-			"inactive_rank_decrease_percent":"0",
-			"min_validators":"0",
-			"poor_network_max_bank_send":"0",
+			"inactive_rank_decrease_percent":"2",
+			"min_validators":"1",
+			"poor_network_max_bank_send":"1",
 			"jail_max_time":"0",
 			"enable_token_whitelist":false,
 			"enable_token_blacklist":false,
-			"min_identity_approval_tip":"200"
+			"min_identity_approval_tip":"200",
+			"unique_identity_keys":"moniker,username"
 		},
 		"execution_fees":[],
 		"poor_network_messages":{

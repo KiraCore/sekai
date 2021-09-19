@@ -16,20 +16,20 @@ func TestKeeperPlanGetSet(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	plan, err := app.UpgradeKeeper.GetUpgradePlan(ctx)
+	plan, err := app.UpgradeKeeper.GetNextPlan(ctx)
 	require.NoError(t, err)
 	require.Nil(t, plan)
 
 	newPlan := types.Plan{
-		MinUpgradeTime:       1,
+		UpgradeTime:          1,
 		RollbackChecksum:     "checksum",
 		MaxEnrolmentDuration: 2,
 		Name:                 "plan",
 	}
 
-	app.UpgradeKeeper.SaveUpgradePlan(ctx, newPlan)
+	app.UpgradeKeeper.SaveNextPlan(ctx, newPlan)
 
-	plan, err = app.UpgradeKeeper.GetUpgradePlan(ctx)
+	plan, err = app.UpgradeKeeper.GetNextPlan(ctx)
 	require.NoError(t, err)
 	require.Equal(t, plan, &newPlan)
 }
@@ -39,10 +39,10 @@ func TestPlanExecutionWithHandler(t *testing.T) {
 	ctx := app.NewContext(false, tmproto.Header{})
 	acc1 := sdk.AccAddress("test________________")
 
-	minUpgradeTime := time.Now()
+	upgradeTime := time.Now()
 
 	t.Log("Verify that a panic happens at the upgrade time/height")
-	newCtx := ctx.WithBlockHeight(10).WithBlockTime(minUpgradeTime.Add(time.Second))
+	newCtx := ctx.WithBlockHeight(10).WithBlockTime(upgradeTime.Add(time.Second))
 
 	t.Log("Verify that the upgrade can be successfully applied with a handler")
 	app.UpgradeKeeper.SetUpgradeHandler("test", func(ctx sdk.Context, plan types.Plan) {
@@ -53,15 +53,14 @@ func TestPlanExecutionWithHandler(t *testing.T) {
 	})
 	require.NotPanics(t, func() {
 		app.UpgradeKeeper.ApplyUpgradePlan(newCtx, types.Plan{
-			Height:               10,
-			MinUpgradeTime:       minUpgradeTime.Unix(),
+			UpgradeTime:          upgradeTime.Unix(),
 			RollbackChecksum:     "",
 			MaxEnrolmentDuration: 0,
 			Name:                 "test",
 		})
 	})
 
-	plan, err := app.UpgradeKeeper.GetUpgradePlan(ctx)
+	plan, err := app.UpgradeKeeper.GetNextPlan(ctx)
 	require.Nil(t, plan)
 	require.NoError(t, err)
 
@@ -73,14 +72,12 @@ func TestPlanExecutionWithoutHandler(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	minUpgradeTime := time.Now()
-
-	newCtx := ctx.WithBlockHeight(10).WithBlockTime(minUpgradeTime.Add(time.Second))
+	upgradeTime := time.Now()
+	newCtx := ctx.WithBlockHeight(10).WithBlockTime(upgradeTime.Add(time.Second))
 
 	require.Panics(t, func() {
 		app.UpgradeKeeper.ApplyUpgradePlan(newCtx, types.Plan{
-			Height:               10,
-			MinUpgradeTime:       minUpgradeTime.Unix(),
+			UpgradeTime:          upgradeTime.Unix(),
 			RollbackChecksum:     "",
 			MaxEnrolmentDuration: 0,
 			Name:                 "test",
@@ -88,21 +85,28 @@ func TestPlanExecutionWithoutHandler(t *testing.T) {
 	})
 }
 
-func TestNoPlanExecutionBeforeTimeOrHeight(t *testing.T) {
+func TestNoPlanExecutionBeforeTime(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	minUpgradeTime := time.Now()
+	upgradeTime := time.Now()
+	newCtx := ctx.WithBlockHeight(9).WithBlockTime(upgradeTime)
 
-	newCtx := ctx.WithBlockHeight(9).WithBlockTime(minUpgradeTime)
-
-	require.NotPanics(t, func() {
-		app.UpgradeKeeper.ApplyUpgradePlan(newCtx, types.Plan{
-			Height:               10,
-			MinUpgradeTime:       minUpgradeTime.Unix(),
-			RollbackChecksum:     "",
-			MaxEnrolmentDuration: 0,
-			Name:                 "test",
-		})
+	app.UpgradeKeeper.SetUpgradeHandler("test", func(ctx sdk.Context, plan types.Plan) {
 	})
+
+	plan := types.Plan{
+		UpgradeTime:          upgradeTime.Unix(),
+		RollbackChecksum:     "",
+		MaxEnrolmentDuration: 0,
+		Name:                 "test",
+	}
+	require.NotPanics(t, func() {
+		app.UpgradeKeeper.ApplyUpgradePlan(newCtx, plan)
+	})
+
+	newCurrentPlan, err := app.UpgradeKeeper.GetCurrentPlan(ctx)
+	require.NoError(t, err)
+	require.NotNil(t, newCurrentPlan)
+	require.Equal(t, *newCurrentPlan, plan)
 }

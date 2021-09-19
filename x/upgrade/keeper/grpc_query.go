@@ -13,8 +13,16 @@ type Querier struct {
 
 func (q Querier) CurrentPlan(goCtx context.Context, request *types.QueryCurrentPlanRequest) (*types.QueryCurrentPlanResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	plan, err := q.keeper.GetUpgradePlan(ctx)
+	plan, err := q.keeper.GetCurrentPlan(ctx)
 	return &types.QueryCurrentPlanResponse{
+		Plan: plan,
+	}, err
+}
+
+func (q Querier) NextPlan(goCtx context.Context, request *types.QueryNextPlanRequest) (*types.QueryNextPlanResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	plan, err := q.keeper.GetNextPlan(ctx)
+	return &types.QueryNextPlanResponse{
 		Plan: plan,
 	}, err
 }

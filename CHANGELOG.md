@@ -1,5 +1,20 @@
 # Changelog
 
+## [v0.1.21.19] - 19.09.2021
+
+- Remove height from upgrade plan
+- Add current plan and next plan query and add genesis for the plans
+- Resolve export genesis for tokens module
+- Add scripts examples for plan modifications
+
+## [v0.1.21.18] - 15.09.2021
+- Introduce unique identity required keys into identity registrar
+- Changes to allow string network property
+- Add unique identity keys property into network properties
+- Add basic validation of network properties
+- Add example script for testing setting network property for unique identity keys
+- Modification into SetNetworkPropertyProposal for new properties added
+
 ## [v0.1.21.17] - 14.09.2021
 - add addrbook query api on interxd
 - add net_info query api on interxd

@@ -235,6 +235,43 @@ func TestKeeper_TryLongMonikerField(t *testing.T) {
 	require.Error(t, err)
 }
 
+func TestKeeper_TrySameMonikerField(t *testing.T) {
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	// create a new record and check if set correctly
+	addr1 := sdk.AccAddress("foo1________________")
+	addr2 := sdk.AccAddress("foo2________________")
+	infos := make(map[string]string)
+	infos["moniker"] = "AAA"
+	now := time.Now().UTC()
+	ctx = ctx.WithBlockTime(now)
+	err := app.CustomGovKeeper.RegisterIdentityRecords(ctx, addr1, types.WrapInfos(infos))
+	require.NoError(t, err)
+	err = app.CustomGovKeeper.RegisterIdentityRecords(ctx, addr1, types.WrapInfos(infos))
+	require.NoError(t, err)
+	err = app.CustomGovKeeper.RegisterIdentityRecords(ctx, addr2, types.WrapInfos(infos))
+	require.Error(t, err)
+	infos["moniker"] = "AAA2"
+	err = app.CustomGovKeeper.RegisterIdentityRecords(ctx, addr2, types.WrapInfos(infos))
+	require.NoError(t, err)
+}
+
+func TestKeeper_TryUniqueIdentityKeysSet(t *testing.T) {
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	// create a new record and check if set correctly
+	now := time.Now().UTC()
+	ctx = ctx.WithBlockTime(now)
+	err := app.CustomGovKeeper.SetNetworkProperty(ctx, types.UniqueIdentityKeys, types.NetworkPropertyValue{StrValue: "moniker,email"})
+	require.NoError(t, err)
+	networkProperties := app.CustomGovKeeper.GetNetworkProperties(ctx)
+	require.NotNil(t, networkProperties)
+
+	require.Equal(t, networkProperties.UniqueIdentityKeys, "moniker,email")
+}
+
 func TestKeeper_IdentityKeysManagement(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
