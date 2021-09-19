@@ -42,13 +42,17 @@ func (k Keeper) GetNextPlan(ctx sdk.Context) (*types.Plan, error) {
 	return &plan, err
 }
 
-func (k Keeper) SaveNextPlan(ctx sdk.Context, plan types.Plan) {
+func (k Keeper) SaveNextPlan(ctx sdk.Context, plan types.Plan) error {
+	if plan.UpgradeTime <= ctx.BlockTime().Unix() {
+		return types.ErrInvalidUpgradeTime
+	}
 	store := ctx.KVStore(k.storeKey)
 	bz, err := proto.Marshal(&plan)
 	if err != nil {
 		panic(err)
 	}
 	store.Set(types.KeyNextPlan, bz)
+	return nil
 }
 
 func (k Keeper) ClearNextPlan(ctx sdk.Context) {
@@ -61,9 +65,13 @@ func (k Keeper) ApplyUpgradePlan(ctx sdk.Context, plan types.Plan) {
 		k.SaveCurrentPlan(ctx, plan)
 		k.ClearNextPlan(ctx)
 
+		if plan.InstateUpgrade == false {
+			panic(fmt.Sprintf("UPGRADE \"%s\" NEEDED at upgrade_time=%s", plan.Name, time.Unix(plan.UpgradeTime, 0).String()))
+		}
+
 		handler := k.upgradeHandlers[plan.Name]
 		if handler == nil {
-			panic(fmt.Sprintf("UPGRADE \"%s\" NEEDED at upgrade_time=%s", plan.Name, time.Unix(plan.UpgradeTime, 0).String()))
+			panic(fmt.Sprintf("Handler for \"%s\" instate upgrade is not set", plan.Name))
 		}
 
 		handler(ctx, plan)
