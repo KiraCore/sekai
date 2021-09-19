@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.1.21.21] - 19.09.2021
+
+- Remove flag height from upgrade module
+
 ## [v0.1.21.20] - 19.09.2021
 
 - Add reboot required field for plan 
