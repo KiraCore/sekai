@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.1.21.20] - 19.09.2021
+
+- Add reboot required field for plan 
+- Restrict the upgrade time to be not less than current block time
+- Always halt if InstateUpgrade is set to false
+
 ## [v0.1.21.19] - 19.09.2021
 
 - Remove height from upgrade plan
