@@ -15,7 +15,6 @@ import (
 const (
 	FlagName                  = "name"
 	FlagResources             = "resources"
-	FlagHeight                = "height"
 	FlagMinUpgradeTime        = "min-upgrade-time"
 	FlagOldChainId            = "old-chain-id"
 	FlagNewChainId            = "new-chain-id"
@@ -67,11 +66,6 @@ func GetTxProposeUpgradePlan() *cobra.Command {
 			err = json.Unmarshal([]byte(resourcesJson), &resources)
 			if err != nil {
 				return err
-			}
-
-			height, err := cmd.Flags().GetInt64(FlagHeight)
-			if err != nil {
-				return fmt.Errorf("invalid height")
 			}
 
 			minUpgradeTime, err := cmd.Flags().GetInt64(FlagMinUpgradeTime)
@@ -131,7 +125,6 @@ func GetTxProposeUpgradePlan() *cobra.Command {
 				types.NewSoftwareUpgradeProposal(
 					name,
 					resources,
-					height,
 					minUpgradeTime,
 					oldChainId,
 					newChainId,
@@ -152,7 +145,6 @@ func GetTxProposeUpgradePlan() *cobra.Command {
 
 	cmd.Flags().String(FlagName, "upgrade1", "upgrade name")
 	cmd.Flags().String(FlagResources, "[]", "resource info")
-	cmd.Flags().Int64(FlagHeight, 0, "upgrade height")
 	cmd.Flags().Int64(FlagMinUpgradeTime, 0, "min halt time")
 	cmd.Flags().String(FlagOldChainId, "", "old chain id")
 	cmd.Flags().String(FlagNewChainId, "", "new chain id")
