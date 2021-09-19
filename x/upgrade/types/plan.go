@@ -16,5 +16,5 @@ func NewUpgradePlan(name string, resources []Resource, upgradeTime, maxEnrollmen
 }
 
 func (plan Plan) ShouldExecute(ctx sdk.Context) bool {
-	return ctx.BlockTime().Unix() > plan.UpgradeTime
+	return ctx.BlockTime().Unix() >= plan.UpgradeTime
 }

@@ -17,17 +17,18 @@ func GetQueryCmd() *cobra.Command {
 	}
 
 	cmd.AddCommand(
-		GetCmdQueryShowPlan(),
+		GetCmdQueryCurrentPlan(),
+		GetCmdQueryNextPlan(),
 	)
 
 	return cmd
 }
 
-// GetCmdQueryShowPlan the query current plan.
-func GetCmdQueryShowPlan() *cobra.Command {
+// GetCmdQueryCurrentPlan the query current plan.
+func GetCmdQueryCurrentPlan() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "show-plan",
-		Short: "Get the upgrade plan",
+		Use:   "current-plan",
+		Short: "Get the current plan",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
@@ -35,6 +36,31 @@ func GetCmdQueryShowPlan() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 			res, err := queryClient.CurrentPlan(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// GetCmdQueryNextPlan the query next plan.
+func GetCmdQueryNextPlan() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "next-plan",
+		Short: "Get the next plan",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			params := &types.QueryNextPlanRequest{}
+
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.NextPlan(context.Background(), params)
 			if err != nil {
 				return err
 			}

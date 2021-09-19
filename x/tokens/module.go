@@ -109,8 +109,18 @@ func (am AppModule) InitGenesis(
 	return nil
 }
 
-func (am AppModule) ExportGenesis(clientCtx sdk.Context, marshaler codec.JSONMarshaler) json.RawMessage {
-	return nil
+func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONMarshaler) json.RawMessage {
+	var genesisState tokenstypes.GenesisState
+	aliases := am.tokensKeeper.ListTokenAlias(ctx)
+	for _, alias := range aliases {
+		genesisState.Aliases[alias.Symbol] = alias
+	}
+	rates := am.tokensKeeper.ListTokenRate(ctx)
+	for _, rate := range rates {
+		genesisState.Rates[rate.Denom] = rate
+	}
+	genesisState.TokenBlackWhites = am.tokensKeeper.GetTokenBlackWhites(ctx)
+	return cdc.MustMarshalJSON(&genesisState)
 }
 
 func (am AppModule) RegisterInvariants(registry sdk.InvariantRegistry) {}

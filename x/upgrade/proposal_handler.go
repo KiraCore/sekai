@@ -25,7 +25,7 @@ func (a ApplySoftwareUpgradeProposalHandler) Apply(ctx sdk.Context, proposal typ
 	p := proposal.(*upgradetypes.ProposalSoftwareUpgrade)
 
 	plan := upgradetypes.NewUpgradePlan(p.Name, p.Resources, p.UpgradeTime, p.MaxEnrolmentDuration, p.RollbackChecksum, p.InstateUpgrade)
-	a.keeper.SaveUpgradePlan(ctx, plan)
+	a.keeper.SaveNextPlan(ctx, plan)
 	return nil
 }
 
@@ -44,6 +44,6 @@ func (a ApplyCancelSoftwareUpgradeProposalHandler) ProposalType() string {
 }
 
 func (a ApplyCancelSoftwareUpgradeProposalHandler) Apply(ctx sdk.Context, proposal types.Content) error {
-	a.keeper.ClearUpgradePlan(ctx)
+	a.keeper.ClearNextPlan(ctx)
 	return nil
 }
