@@ -11,7 +11,9 @@ var _ types.Content = &ProposalSoftwareUpgrade{}
 
 func NewSoftwareUpgradeProposal(name string, resources []Resource, height int64,
 	upgradeTime int64, oldChainId, newChainId, rollBackMemo string,
-	maxEnrollmentDuration int64, upgradeMemo string, instateUpgrade bool) *ProposalSoftwareUpgrade {
+	maxEnrollmentDuration int64, upgradeMemo string,
+	instateUpgrade bool, rebootRequired bool,
+) *ProposalSoftwareUpgrade {
 	return &ProposalSoftwareUpgrade{
 		Name:                 name,
 		Resources:            resources,
@@ -22,6 +24,7 @@ func NewSoftwareUpgradeProposal(name string, resources []Resource, height int64,
 		MaxEnrolmentDuration: maxEnrollmentDuration,
 		Memo:                 upgradeMemo,
 		InstateUpgrade:       instateUpgrade,
+		RebootRequired:       rebootRequired,
 	}
 }
 

@@ -23,6 +23,7 @@ const (
 	FlagMaxEnrollmentDuration = "max-enrollment-duration"
 	FlagUpgradeMemo           = "upgrade-memo"
 	FlagInstateUpgrade        = "instate-upgrade"
+	FlagRebootRequired        = "reboot-required"
 	FlagTitle                 = "title"
 	FlagDescription           = "description"
 )
@@ -108,6 +109,11 @@ func GetTxProposeUpgradePlan() *cobra.Command {
 				return fmt.Errorf("invalid instate upgrade flag")
 			}
 
+			rebootRequired, err := cmd.Flags().GetBool(FlagRebootRequired)
+			if err != nil {
+				return fmt.Errorf("invalid reboot required flag")
+			}
+
 			title, err := cmd.Flags().GetString(FlagTitle)
 			if err != nil {
 				return fmt.Errorf("invalid title")
@@ -133,6 +139,7 @@ func GetTxProposeUpgradePlan() *cobra.Command {
 					maxEnrollmentDuration,
 					upgradeMemo,
 					instateUpgrade,
+					rebootRequired,
 				),
 			)
 			if err != nil {
@@ -153,6 +160,7 @@ func GetTxProposeUpgradePlan() *cobra.Command {
 	cmd.Flags().Int64(FlagMaxEnrollmentDuration, 0, "max enrollment duration")
 	cmd.Flags().String(FlagUpgradeMemo, "", "upgrade memo")
 	cmd.Flags().Bool(FlagInstateUpgrade, true, "instate upgrade flag")
+	cmd.Flags().Bool(FlagRebootRequired, true, "reboot required flag")
 	cmd.Flags().String(FlagTitle, "", "title")
 	cmd.Flags().String(FlagDescription, "", "description")
 
