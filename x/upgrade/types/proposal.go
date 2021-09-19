@@ -10,13 +10,12 @@ const ProposalTypeCancelSoftwareUpgrade = "CancelSoftwareUpgrade"
 var _ types.Content = &ProposalSoftwareUpgrade{}
 
 func NewSoftwareUpgradeProposal(name string, resources []Resource, height int64,
-	minUpgradeTime int64, oldChainId, newChainId, rollBackMemo string,
+	upgradeTime int64, oldChainId, newChainId, rollBackMemo string,
 	maxEnrollmentDuration int64, upgradeMemo string, instateUpgrade bool) *ProposalSoftwareUpgrade {
 	return &ProposalSoftwareUpgrade{
 		Name:                 name,
 		Resources:            resources,
-		Height:               height,
-		MinUpgradeTime:       minUpgradeTime,
+		UpgradeTime:          upgradeTime,
 		OldChainId:           oldChainId,
 		NewChainId:           newChainId,
 		RollbackChecksum:     rollBackMemo,

@@ -39,7 +39,7 @@ func (k Keeper) ApplyUpgradePlan(ctx sdk.Context, plan types.Plan) {
 	if plan.ShouldExecute(ctx) {
 		handler := k.upgradeHandlers[plan.Name]
 		if handler == nil {
-			panic(fmt.Sprintf("UPGRADE \"%s\" NEEDED at height=%d or min_upgrade_time=%s", plan.Name, plan.Height, time.Unix(plan.MinUpgradeTime, 0).String()))
+			panic(fmt.Sprintf("UPGRADE \"%s\" NEEDED at upgrade_time=%s", plan.Name, time.Unix(plan.UpgradeTime, 0).String()))
 		}
 
 		handler(ctx, plan)
