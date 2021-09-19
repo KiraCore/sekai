@@ -1,3 +1,4 @@
 #!/bin/bash
 
-sekaid query upgrade show-plan
+sekaid query upgrade current-plan
+sekaid query upgrade next-plan

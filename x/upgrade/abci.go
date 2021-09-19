@@ -16,14 +16,14 @@ import (
 // The purpose is to ensure the binary is switched EXACTLY at the desired block, and to allow
 // a migration to be executed if needed upon this switch (migration defined in the new binary)
 func BeginBlocker(k keeper.Keeper, ctx sdk.Context, _ abci.RequestBeginBlock) {
-	plan, err := k.GetUpgradePlan(ctx)
+	plan, err := k.GetNextPlan(ctx)
 	if err != nil || plan == nil {
 		return
 	}
 
 	// check if it's time to halt and halt the chain
 	if plan.ShouldExecute(ctx) {
-		ctx.Logger().Info(fmt.Sprintf("Halting the chain for \"%s\" at %s", plan.Name, time.Unix(plan.MinUpgradeTime, 0).String()))
+		ctx.Logger().Info(fmt.Sprintf("Applying the upgrade for \"%s\" at %s", plan.Name, time.Unix(plan.UpgradeTime, 0).String()))
 		ctx = ctx.WithBlockGasMeter(sdk.NewInfiniteGasMeter())
 		k.ApplyUpgradePlan(ctx, *plan)
 		return
