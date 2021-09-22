@@ -15,7 +15,6 @@ import (
 const (
 	FlagName                  = "name"
 	FlagResources             = "resources"
-	FlagHeight                = "height"
 	FlagMinUpgradeTime        = "min-upgrade-time"
 	FlagOldChainId            = "old-chain-id"
 	FlagNewChainId            = "new-chain-id"
@@ -23,6 +22,7 @@ const (
 	FlagMaxEnrollmentDuration = "max-enrollment-duration"
 	FlagUpgradeMemo           = "upgrade-memo"
 	FlagInstateUpgrade        = "instate-upgrade"
+	FlagRebootRequired        = "reboot-required"
 	FlagTitle                 = "title"
 	FlagDescription           = "description"
 )
@@ -68,11 +68,6 @@ func GetTxProposeUpgradePlan() *cobra.Command {
 				return err
 			}
 
-			height, err := cmd.Flags().GetInt64(FlagHeight)
-			if err != nil {
-				return fmt.Errorf("invalid height")
-			}
-
 			minUpgradeTime, err := cmd.Flags().GetInt64(FlagMinUpgradeTime)
 			if err != nil {
 				return fmt.Errorf("invalid min halt time")
@@ -108,6 +103,11 @@ func GetTxProposeUpgradePlan() *cobra.Command {
 				return fmt.Errorf("invalid instate upgrade flag")
 			}
 
+			rebootRequired, err := cmd.Flags().GetBool(FlagRebootRequired)
+			if err != nil {
+				return fmt.Errorf("invalid reboot required flag")
+			}
+
 			title, err := cmd.Flags().GetString(FlagTitle)
 			if err != nil {
 				return fmt.Errorf("invalid title")
@@ -125,7 +125,6 @@ func GetTxProposeUpgradePlan() *cobra.Command {
 				types.NewSoftwareUpgradeProposal(
 					name,
 					resources,
-					height,
 					minUpgradeTime,
 					oldChainId,
 					newChainId,
@@ -133,6 +132,7 @@ func GetTxProposeUpgradePlan() *cobra.Command {
 					maxEnrollmentDuration,
 					upgradeMemo,
 					instateUpgrade,
+					rebootRequired,
 				),
 			)
 			if err != nil {
@@ -145,7 +145,6 @@ func GetTxProposeUpgradePlan() *cobra.Command {
 
 	cmd.Flags().String(FlagName, "upgrade1", "upgrade name")
 	cmd.Flags().String(FlagResources, "[]", "resource info")
-	cmd.Flags().Int64(FlagHeight, 0, "upgrade height")
 	cmd.Flags().Int64(FlagMinUpgradeTime, 0, "min halt time")
 	cmd.Flags().String(FlagOldChainId, "", "old chain id")
 	cmd.Flags().String(FlagNewChainId, "", "new chain id")
@@ -153,6 +152,7 @@ func GetTxProposeUpgradePlan() *cobra.Command {
 	cmd.Flags().Int64(FlagMaxEnrollmentDuration, 0, "max enrollment duration")
 	cmd.Flags().String(FlagUpgradeMemo, "", "upgrade memo")
 	cmd.Flags().Bool(FlagInstateUpgrade, true, "instate upgrade flag")
+	cmd.Flags().Bool(FlagRebootRequired, true, "reboot required flag")
 	cmd.Flags().String(FlagTitle, "", "title")
 	cmd.Flags().String(FlagDescription, "", "description")
 

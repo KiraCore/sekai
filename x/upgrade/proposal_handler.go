@@ -24,9 +24,17 @@ func (a ApplySoftwareUpgradeProposalHandler) ProposalType() string {
 func (a ApplySoftwareUpgradeProposalHandler) Apply(ctx sdk.Context, proposal types.Content) error {
 	p := proposal.(*upgradetypes.ProposalSoftwareUpgrade)
 
-	plan := upgradetypes.NewUpgradePlan(p.Name, p.Resources, p.UpgradeTime, p.MaxEnrolmentDuration, p.RollbackChecksum, p.InstateUpgrade)
-	a.keeper.SaveNextPlan(ctx, plan)
-	return nil
+	plan := upgradetypes.NewUpgradePlan(
+		p.Name,
+		p.Resources,
+		p.UpgradeTime,
+		p.MaxEnrolmentDuration,
+		p.RollbackChecksum,
+		p.InstateUpgrade,
+		p.RebootRequired,
+	)
+	err := a.keeper.SaveNextPlan(ctx, plan)
+	return err
 }
 
 type ApplyCancelSoftwareUpgradeProposalHandler struct {

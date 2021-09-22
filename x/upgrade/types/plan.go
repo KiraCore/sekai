@@ -4,7 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func NewUpgradePlan(name string, resources []Resource, upgradeTime, maxEnrollmentTime int64, rollbackChecksum string, instateUpgrade bool) Plan {
+func NewUpgradePlan(name string, resources []Resource, upgradeTime, maxEnrollmentTime int64, rollbackChecksum string, instateUpgrade bool, rebootRequired bool) Plan {
 	return Plan{
 		Name:                 name,
 		Resources:            resources,
@@ -12,6 +12,7 @@ func NewUpgradePlan(name string, resources []Resource, upgradeTime, maxEnrollmen
 		RollbackChecksum:     rollbackChecksum,
 		MaxEnrolmentDuration: maxEnrollmentTime,
 		InstateUpgrade:       instateUpgrade,
+		RebootRequired:       rebootRequired,
 	}
 }
 
