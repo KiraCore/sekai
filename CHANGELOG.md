@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.1.21.22] - 22.09.2021
+
+- Update proto files
+- Update node discovery module to search only connected peers
+
 ## [v0.1.21.21] - 19.09.2021
 
 - Remove flag height from upgrade module
