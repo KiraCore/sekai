@@ -143,19 +143,25 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 		SnapNodeListResponse.NodeList = []types.SnapNode{}
 		global.Mutex.Unlock()
 
-		isIpInList := make(map[string]bool)   // check if ip is already queried
-		isPrivNodeID := make(map[string]bool) // check if ip is already queried
+		isIpInListPrep := make(map[string]bool) // check if ip is already queried
+		isPrivNodeID := make(map[string]bool)   // check if ip is already queried
 
-		uniqueIPAddresses := config.LoadUniqueIPAddresses()
-
-		for i := 0; i < len(uniqueIPAddresses); i++ {
-			isIpInList[uniqueIPAddresses[i]] = true
+		uniqueIPAddressesPrep := config.LoadUniqueIPAddresses()
+		for i := 0; i < len(uniqueIPAddressesPrep); i++ {
+			isIpInListPrep[uniqueIPAddressesPrep[i]] = true
 		}
 
+		isIpInList := make(map[string]bool) // check if ip is already queried
+		var uniqueIPAddresses []string
 		isLocalPeer := make(map[string]bool)
 		localPeers, _ := QueryPeers(rpcAddr)
 		for _, peer := range localPeers {
 			isLocalPeer[string(peer.NodeInfo.ID())] = true
+			ip := peer.RemoteIP
+			if _, ok := isIpInListPrep[ip]; ok {
+				uniqueIPAddresses = append(uniqueIPAddresses, ip)
+				isIpInList[ip] = true
+			}
 		}
 
 		peersFromIP := make(map[string]([]tmTypes.Peer))
