@@ -21,6 +21,7 @@ message ProposalSoftwareUpgrade {
   int64 max_enrolment_duration = 7;
   string memo = 8;
   bool instate_upgrade = 9;
+  bool reboot_required = 10;
 }
 
 message ProposalCancelSoftwareUpgrade {
