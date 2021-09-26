@@ -14,4 +14,5 @@ message Plan {
   int64 max_enrolment_duration = 5;
   bool instate_upgrade = 6; // if it's set to false, chain is always halted
   bool reboot_required = 7; // only used by Kira Manager to check
+  bool skip_handler = 8;
 }

@@ -22,6 +22,7 @@ message ProposalSoftwareUpgrade {
   string memo = 8;
   bool instate_upgrade = 9;
   bool reboot_required = 10;
+  bool skip_handler = 11;
 }
 
 message ProposalCancelSoftwareUpgrade {

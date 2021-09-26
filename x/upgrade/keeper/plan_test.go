@@ -95,6 +95,19 @@ func TestPlanExecutionWithoutHandler(t *testing.T) {
 			Name:                 "test",
 			InstateUpgrade:       true,
 			RebootRequired:       true,
+			SkipHandler:          false,
+		})
+	})
+
+	require.NotPanics(t, func() {
+		app.UpgradeKeeper.ApplyUpgradePlan(newCtx, types.Plan{
+			UpgradeTime:          upgradeTime.Unix(),
+			RollbackChecksum:     "",
+			MaxEnrolmentDuration: 0,
+			Name:                 "test",
+			InstateUpgrade:       true,
+			RebootRequired:       true,
+			SkipHandler:          true,
 		})
 	})
 }

@@ -23,6 +23,7 @@ const (
 	FlagUpgradeMemo           = "upgrade-memo"
 	FlagInstateUpgrade        = "instate-upgrade"
 	FlagRebootRequired        = "reboot-required"
+	FlagSkipHandler           = "skip-handler"
 	FlagTitle                 = "title"
 	FlagDescription           = "description"
 )
@@ -108,6 +109,11 @@ func GetTxProposeUpgradePlan() *cobra.Command {
 				return fmt.Errorf("invalid reboot required flag")
 			}
 
+			skipHandler, err := cmd.Flags().GetBool(FlagSkipHandler)
+			if err != nil {
+				return fmt.Errorf("invalid skip handler required flag")
+			}
+
 			title, err := cmd.Flags().GetString(FlagTitle)
 			if err != nil {
 				return fmt.Errorf("invalid title")
@@ -133,6 +139,7 @@ func GetTxProposeUpgradePlan() *cobra.Command {
 					upgradeMemo,
 					instateUpgrade,
 					rebootRequired,
+					skipHandler,
 				),
 			)
 			if err != nil {
@@ -153,6 +160,7 @@ func GetTxProposeUpgradePlan() *cobra.Command {
 	cmd.Flags().String(FlagUpgradeMemo, "", "upgrade memo")
 	cmd.Flags().Bool(FlagInstateUpgrade, true, "instate upgrade flag")
 	cmd.Flags().Bool(FlagRebootRequired, true, "reboot required flag")
+	cmd.Flags().Bool(FlagSkipHandler, false, "skip handler required flag")
 	cmd.Flags().String(FlagTitle, "", "title")
 	cmd.Flags().String(FlagDescription, "", "description")
 
