@@ -70,10 +70,12 @@ func (k Keeper) ApplyUpgradePlan(ctx sdk.Context, plan types.Plan) {
 		}
 
 		handler := k.upgradeHandlers[plan.Name]
-		if handler == nil {
+		if plan.SkipHandler == true {
+			fmt.Printf("Skipping handler for \"%s\" upgrade", plan.Name)
+		} else if handler == nil {
 			panic(fmt.Sprintf("Handler for \"%s\" instate upgrade is not set", plan.Name))
+		} else {
+			handler(ctx, plan)
 		}
-
-		handler(ctx, plan)
 	}
 }

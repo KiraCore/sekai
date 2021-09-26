@@ -32,6 +32,7 @@ func (a ApplySoftwareUpgradeProposalHandler) Apply(ctx sdk.Context, proposal typ
 		p.RollbackChecksum,
 		p.InstateUpgrade,
 		p.RebootRequired,
+		p.SkipHandler,
 	)
 	err := a.keeper.SaveNextPlan(ctx, plan)
 	return err

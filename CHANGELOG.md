@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.1.21.23] - 26.09.2021
+
+- Add skip handler field for upgrade plan
+- Add example script for proposing upgrade with skip handler
+
 ## [v0.1.21.22] - 22.09.2021
 
 - Update proto files
