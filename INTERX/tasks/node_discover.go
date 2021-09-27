@@ -130,6 +130,11 @@ func QueryKiraStatus(rpcAddr string) (tmTypes.ResultStatus, error) {
 func NodeDiscover(rpcAddr string, isLog bool) {
 	initPrivateIps()
 
+	idOfPubList := make(map[string]int)
+	idOfPrivList := make(map[string]int)
+	idOfInterxList := make(map[string]int)
+	idOfSnapshotList := make(map[string]int)
+
 	for {
 		global.Mutex.Lock()
 		PubP2PNodeListResponse.Scanning = true
@@ -137,14 +142,13 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 		InterxP2PNodeListResponse.Scanning = true
 		SnapNodeListResponse.Scanning = true
 
-		PubP2PNodeListResponse.NodeList = []types.P2PNode{}
-		PrivP2PNodeListResponse.NodeList = []types.P2PNode{}
-		InterxP2PNodeListResponse.NodeList = []types.InterxNode{}
-		SnapNodeListResponse.NodeList = []types.SnapNode{}
 		global.Mutex.Unlock()
 
 		isIpInListPrep := make(map[string]bool) // check if ip is already queried
-		isPrivNodeID := make(map[string]bool)   // check if ip is already queried
+		isPrivNodeID := make(map[string]bool)
+		isPubNodeId := make(map[string]bool)
+		isInterxNodeId := make(map[string]bool)
+		isSnapshotIP := make(map[string]bool)
 
 		uniqueIPAddressesPrep := config.LoadUniqueIPAddresses()
 		for i := 0; i < len(uniqueIPAddressesPrep); i++ {
@@ -168,6 +172,9 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 
 		index := 0
 		for index < len(uniqueIPAddresses) {
+			// sleep for 1 seconds
+			time.Sleep(1 * time.Second)
+
 			ipAddr := uniqueIPAddresses[index]
 			index++
 
@@ -220,7 +227,12 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 
 					if _, ok := isPrivNodeID[privNodeInfo.ID]; !ok {
 						global.Mutex.Lock()
-						PrivP2PNodeListResponse.NodeList = append(PrivP2PNodeListResponse.NodeList, privNodeInfo)
+						if pid, isIn := idOfPrivList[privNodeInfo.ID]; isIn {
+							PrivP2PNodeListResponse.NodeList[pid] = privNodeInfo
+						} else {
+							PrivP2PNodeListResponse.NodeList = append(PrivP2PNodeListResponse.NodeList, privNodeInfo)
+							idOfPrivList[privNodeInfo.ID] = len(PrivP2PNodeListResponse.NodeList)
+						}
 						global.Mutex.Unlock()
 						isPrivNodeID[privNodeInfo.ID] = true
 					}
@@ -233,8 +245,14 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 			}
 
 			global.Mutex.Lock()
-			PubP2PNodeListResponse.NodeList = append(PubP2PNodeListResponse.NodeList, nodeInfo)
+			if pid, isIn := idOfPubList[nodeInfo.ID]; isIn {
+				PubP2PNodeListResponse.NodeList[pid] = nodeInfo
+			} else {
+				PubP2PNodeListResponse.NodeList = append(PubP2PNodeListResponse.NodeList, nodeInfo)
+				idOfPubList[nodeInfo.ID] = len(PubP2PNodeListResponse.NodeList)
+			}
 			global.Mutex.Unlock()
+			isPubNodeId[nodeInfo.ID] = true
 
 			interxStartTime := makeTimestamp()
 			interxAddress := getInterxAddress(ipAddr)
@@ -253,8 +271,14 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 				interxInfo.Version = interxStatus.InterxInfo.Version
 
 				global.Mutex.Lock()
-				InterxP2PNodeListResponse.NodeList = append(InterxP2PNodeListResponse.NodeList, interxInfo)
+				if pid, isIn := idOfInterxList[interxInfo.ID]; isIn {
+					InterxP2PNodeListResponse.NodeList[pid] = interxInfo
+				} else {
+					InterxP2PNodeListResponse.NodeList = append(InterxP2PNodeListResponse.NodeList, interxInfo)
+					idOfInterxList[interxInfo.ID] = len(InterxP2PNodeListResponse.NodeList)
+				}
 				global.Mutex.Unlock()
+				isInterxNodeId[interxInfo.ID] = true
 
 				// snapshotInfo := common.GetSnapshotInfo(getInterxAddress(ipAddr))
 				snapshotInfo := common.GetSnapshotInfo(interxAddress)
@@ -266,13 +290,41 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 					snapNode.Size = snapshotInfo.Size
 
 					global.Mutex.Lock()
-					SnapNodeListResponse.NodeList = append(SnapNodeListResponse.NodeList, snapNode)
+					if pid, isIn := idOfSnapshotList[snapNode.IP]; isIn {
+						SnapNodeListResponse.NodeList[pid] = snapNode
+					} else {
+						SnapNodeListResponse.NodeList = append(SnapNodeListResponse.NodeList, snapNode)
+						idOfSnapshotList[snapNode.IP] = len(SnapNodeListResponse.NodeList)
+					}
 					global.Mutex.Unlock()
+					isSnapshotIP[snapNode.IP] = true
 				}
 			}
 		}
 
 		lastUpdate := time.Now().Unix()
+
+		// Remove disconnected nodes
+		for index, value := range PrivP2PNodeListResponse.NodeList {
+			if !isPrivNodeID[value.ID] {
+				PrivP2PNodeListResponse.NodeList = append(PrivP2PNodeListResponse.NodeList[:index], PrivP2PNodeListResponse.NodeList[index+1:]...)
+			}
+		}
+		for index, value := range PubP2PNodeListResponse.NodeList {
+			if !isPubNodeId[value.ID] {
+				PubP2PNodeListResponse.NodeList = append(PubP2PNodeListResponse.NodeList[:index], PubP2PNodeListResponse.NodeList[index+1:]...)
+			}
+		}
+		for index, value := range InterxP2PNodeListResponse.NodeList {
+			if !isInterxNodeId[value.ID] {
+				InterxP2PNodeListResponse.NodeList = append(InterxP2PNodeListResponse.NodeList[:index], InterxP2PNodeListResponse.NodeList[index+1:]...)
+			}
+		}
+		for index, value := range SnapNodeListResponse.NodeList {
+			if !isSnapshotIP[value.IP] {
+				SnapNodeListResponse.NodeList = append(SnapNodeListResponse.NodeList[:index], SnapNodeListResponse.NodeList[index+1:]...)
+			}
+		}
 
 		global.Mutex.Lock()
 		PubP2PNodeListResponse.LastUpdate = lastUpdate
@@ -290,7 +342,7 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 			common.GetLogger().Info("[node-discovery] finished!")
 		}
 
-		time.Sleep(24 * time.Hour)
+		time.Sleep(5 * time.Minute)
 	}
 }
 
