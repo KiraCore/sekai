@@ -185,7 +185,7 @@ type QueryValidator struct {
 	Streak              int64            `json:"streak,string"`
 	Mischance           int64            `json:"mischance,string"`
 	MischanceConfidence int64            `json:"mischance_confidence,string"`
-	Identity            []IdentityRecord `json:"identity"`
+	Identity            []IdentityRecord `json:"identity,omitempty"`
 
 	// Additional
 	StartHeight           int64  `json:"start_height,string"`
@@ -193,6 +193,15 @@ type QueryValidator struct {
 	LastPresentBlock      int64  `json:"last_present_block,string"`
 	MissedBlocksCounter   int64  `json:"missed_blocks_counter,string"`
 	ProducedBlocksCounter int64  `json:"produced_blocks_counter,string"`
+
+	// From Identity Records
+	Description       string `json:"description"`
+	Website           string `json:"website"`
+	Logo              string `json:"logo"`
+	Social            string `json:"social"`
+	Contact           string `json:"contact"`
+	Validator_node_id string `json:"validator_node_id"`
+	Sentry_node_id    string `json:"sentry_node_id"`
 }
 
 type QueryValidators []QueryValidator

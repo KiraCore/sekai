@@ -131,6 +131,25 @@ func QueryValidators(gwCosmosmux *runtime.ServeMux, gatewayAddr string) error {
 			}
 		}
 
+		for _, record := range result.Validators[index].Identity {
+			if record.Key == "logo" || record.Key == "avatar" {
+				result.Validators[index].Logo = record.Value
+			} else if record.Key == "description" {
+				result.Validators[index].Description = record.Value
+			} else if record.Key == "website" {
+				result.Validators[index].Website = record.Value
+			} else if record.Key == "social" {
+				result.Validators[index].Social = record.Value
+			} else if record.Key == "contact" {
+				result.Validators[index].Contact = record.Value
+			} else if record.Key == "validator_node_id" {
+				result.Validators[index].Validator_node_id = record.Value
+			} else if record.Key == "sentry_node_id" {
+				result.Validators[index].Sentry_node_id = record.Value
+			}
+		}
+
+		result.Validators[index].Identity = nil
 		result.Validators[index].StartHeight = valSigningInfo.StartHeight
 		result.Validators[index].InactiveUntil = valSigningInfo.InactiveUntil
 		result.Validators[index].Mischance = valSigningInfo.Mischance
