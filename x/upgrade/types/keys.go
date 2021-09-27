@@ -10,5 +10,6 @@ const (
 )
 
 var (
-	KeyUpgradePlan = []byte{0x01}
+	KeyCurrentPlan = []byte{0x01}
+	KeyNextPlan    = []byte{0x02}
 )

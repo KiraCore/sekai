@@ -1,5 +1,90 @@
 # Changelog
 
+## [v0.1.21.23] - 26.09.2021
+
+- Add skip handler field for upgrade plan
+- Add example script for proposing upgrade with skip handler
+
+## [v0.1.21.22] - 22.09.2021
+
+- Update proto files
+- Update node discovery module to search only connected peers
+
+## [v0.1.21.21] - 19.09.2021
+
+- Remove flag height from upgrade module
+
+## [v0.1.21.20] - 19.09.2021
+
+- Add reboot required field for plan 
+- Restrict the upgrade time to be not less than current block time
+- Always halt if InstateUpgrade is set to false
+
+## [v0.1.21.19] - 19.09.2021
+
+- Remove height from upgrade plan
+- Add current plan and next plan query and add genesis for the plans
+- Resolve export genesis for tokens module
+- Add scripts examples for plan modifications
+
+## [v0.1.21.18] - 15.09.2021
+- Introduce unique identity required keys into identity registrar
+- Changes to allow string network property
+- Add unique identity keys property into network properties
+- Add basic validation of network properties
+- Add example script for testing setting network property for unique identity keys
+- Modification into SetNetworkPropertyProposal for new properties added
+
+## [v0.1.21.17] - 14.09.2021
+- add addrbook query api on interxd
+- add net_info query api on interxd
+- fix validators query
+
+## [v0.1.21.16] - 10.09.2021
+
+- Restrict moniker length to be less than 32
+- Resolve Identity registrar requests querying by approver and requester
+- Test on CLI command for requesters and approver and add examples on scripts
+- Remove commission from validator
+## [v0.1.21.15] - 08.09.2021
+
+- Add querying records by filtering keys
+- add MIN_IDENTITY_APPROVAL_TIP into network properties
+- Implement tip checker
+- implement auto reject if edited after creating verification request
+- add balance check for automatic reject
+- Add identity registrar key validation and automatic lowercase converter
+- Resolve invalid implementation of SetIdentityRegistrar for genesis initialization process of address key matching to recordId
+- Update for moniker field management to use identity registrar
+- Add address catcher from identity key record pair
+- Resolve error handling of identity registrar to log the errors properly on CLI
+- Resolve sample script for identity registrar
+- Add CLI command for querying validators and add example cli command for querying
+- Add range of tests for the changes
+
+## [v0.1.21.14] - 06.09.2021
+
+- Update pagination limit on sekaid
+- Update identity registrar for validators query
+- Update snapshot extension
+- Add ip_only, connected paramere for node list queries
+- Update sort feature of node list queries
+- Query all validators using pagination
+
+## [v0.1.21.13] - 27.08.2021
+
+- Identity registrar records structure change
+- Identity registrar cli UX changes
+- Add scripts example for cli commands
+- Resolve tests for identity registrar changes
+- Commands description fix
+
+## [v0.1.21.12] - 16.08.2021
+
+- Add description on the script to see the version
+- Add reference for identity registrar
+- Remove long json script for unjail testing
+
 ## [v0.1.21.11] - 11.08.2021
 
 - Upgrade cosmos sdk version to be latest

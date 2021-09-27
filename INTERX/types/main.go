@@ -165,10 +165,11 @@ type InterxRequest struct {
 }
 
 type IdentityRecord struct {
-	ID        uint64            `json:"id,string"`
-	Infos     map[string]string `json:"infos"`
-	Date      string            `json:"date"`
-	Verifiers []string          `json:"verifiers"`
+	ID        uint64   `json:"id,string"`
+	Key       string   `json:"key"`
+	Value     string   `json:"value"`
+	Date      string   `json:"date"`
+	Verifiers []string `json:"verifiers"`
 }
 
 type QueryValidator struct {
@@ -179,7 +180,6 @@ type QueryValidator struct {
 	Pubkey              string           `json:"pubkey"`
 	Proposer            string           `json:"proposer"`
 	Moniker             string           `json:"moniker"`
-	Commission          string           `json:"commission"`
 	Status              string           `json:"status"`
 	Rank                int64            `json:"rank,string"`
 	Streak              int64            `json:"streak,string"`

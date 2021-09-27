@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/KiraCore/sekai/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -38,9 +39,14 @@ func (k Keeper) GetProposalRouter() types.ProposalRouter {
 }
 
 // SetNetworkProperties set network properties on KVStore
-func (k Keeper) SetNetworkProperties(ctx sdk.Context, properties *types.NetworkProperties) {
+func (k Keeper) SetNetworkProperties(ctx sdk.Context, properties *types.NetworkProperties) error {
+	err := k.ValidateNetworkProperties(ctx, properties)
+	if err != nil {
+		return err
+	}
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixNetworkProperties)
-	prefixStore.Set([]byte("property"), k.cdc.MustMarshal(properties))
+	prefixStore.Set([]byte("property"), k.cdc.MustMarshalBinaryBare(properties))
+	return nil
 }
 
 // GetNetworkProperties get network properties from KVStore
@@ -53,95 +59,188 @@ func (k Keeper) GetNetworkProperties(ctx sdk.Context) *types.NetworkProperties {
 	return properties
 }
 
+func (k Keeper) ValidateNetworkProperties(ctx sdk.Context, properties *types.NetworkProperties) error {
+
+	if properties.MinTxFee == 0 {
+		return fmt.Errorf("min_tx_fee should not be ZERO")
+	}
+	if properties.MaxTxFee == 0 {
+		return fmt.Errorf("max_tx_fee should not be ZERO")
+	}
+	if properties.MaxTxFee < properties.MinTxFee {
+		return fmt.Errorf("max_tx_fee should not be lower than min_tx_fee")
+	}
+	// TODO: for now skipping few of validations
+	// if properties.VoteQuorum == 0 {
+	// 	return fmt.Errorf("vote_quorum should not be zero")
+	// }
+	// if properties.ProposalEndTime == 0 {
+	// 	return fmt.Errorf("proposal_end_time should not be zero")
+	// }
+	// if properties.ProposalEnactmentTime == 0 {
+	// 	return fmt.Errorf("proposal_enactment_time should not be zero")
+	// }
+	// if properties.MinProposalEndBlocks == 0 {
+	// 	return fmt.Errorf("min_proposal_end_blocks should not be zero")
+	// }
+	// if properties.MinProposalEnactmentBlocks == 0 {
+	// 	return fmt.Errorf("min_proposal_enactment_blocks should not be zero")
+	// }
+	// if properties.MischanceRankDecreaseAmount == 0 {
+	// 	return fmt.Errorf("mischance_rank_decrease_amount should not be zero")
+	// }
+	// if properties.MaxMischance == 0 {
+	// 	return fmt.Errorf("max_mischance should not be zero")
+	// }
+	// if properties.InactiveRankDecreasePercent == 0 {
+	// 	return fmt.Errorf("inactive_rank_decrease_percent should not be zero")
+	// }
+	// if properties.InactiveRankDecreasePercent == 0 {
+	// 	return fmt.Errorf("inactive_rank_decrease_percent should not be zero")
+	// }
+	if properties.InactiveRankDecreasePercent > 100 {
+		return fmt.Errorf("inactive_rank_decrease_percent should not be lower than 100%%")
+	}
+	// if properties.MinValidators == 0 {
+	// 	return fmt.Errorf("min_validators should not be zero")
+	// }
+	// if properties.PoorNetworkMaxBankSend == 0 {
+	// 	return fmt.Errorf("min_validators should not be zero")
+	// }
+	// if properties.JailMaxTime == 0 {
+	// 	return fmt.Errorf("jail_max_time should not be zero")
+	// }
+	// fee := k.GetExecutionFee(ctx, (&types.MsgHandleIdentityRecordsVerifyRequest{}).Type())
+	// maxFee := properties.MinTxFee
+	// if fee != nil {
+	// 	if maxFee < fee.ExecutionFee {
+	// 		maxFee = fee.ExecutionFee
+	// 	}
+	// 	if maxFee < fee.FailureFee {
+	// 		maxFee = fee.FailureFee
+	// 	}
+	// }
+	// if properties.MinIdentityApprovalTip < maxFee*2 {
+	// 	return fmt.Errorf("min_identity_approval_tip should not be bigger or equal than 2x approval fee")
+	// }
+	// if properties.UniqueIdentityKeys == "" {
+	// 	return fmt.Errorf("unique_identity_keys should not be empty")
+	// }
+	// monikerExists := false
+	// if properties.UniqueIdentityKeys != FormalizeIdentityRecordKey(properties.UniqueIdentityKeys) {
+	// 	return fmt.Errorf("unique identity keys on network property should be formailzed with lowercase keys")
+	// }
+	// uniqueKeys := strings.Split(properties.UniqueIdentityKeys, ",")
+	// for _, key := range uniqueKeys {
+	// 	if !ValidateIdentityRecordKey(key) {
+	// 		return fmt.Errorf("invalid identity record key exists, key=%s", key)
+	// 	}
+	// 	if key == "moniker" {
+	// 		monikerExists = true
+	// 	}
+	// }
+	// if !monikerExists {
+	// 	return fmt.Errorf("moniker should be exist in unique keys list")
+	// }
+	return nil
+}
+
 // GetNetworkProperty get single network property by key
-func (k Keeper) GetNetworkProperty(ctx sdk.Context, property types.NetworkProperty) (uint64, error) {
+func (k Keeper) GetNetworkProperty(ctx sdk.Context, property types.NetworkProperty) (types.NetworkPropertyValue, error) {
 	properties := k.GetNetworkProperties(ctx)
 	switch property {
 	case types.MinTxFee:
-		return properties.MinTxFee, nil
+		return types.NetworkPropertyValue{Value: properties.MinTxFee}, nil
 	case types.MaxTxFee:
-		return properties.MaxTxFee, nil
+		return types.NetworkPropertyValue{Value: properties.MaxTxFee}, nil
 	case types.VoteQuorum:
-		return properties.VoteQuorum, nil
+		return types.NetworkPropertyValue{Value: properties.VoteQuorum}, nil
 	case types.ProposalEndTime:
-		return properties.ProposalEndTime, nil
+		return types.NetworkPropertyValue{Value: properties.ProposalEndTime}, nil
 	case types.ProposalEnactmentTime:
-		return properties.ProposalEnactmentTime, nil
+		return types.NetworkPropertyValue{Value: properties.ProposalEnactmentTime}, nil
 	case types.MinProposalEndBlocks:
-		return properties.MinProposalEndBlocks, nil
+		return types.NetworkPropertyValue{Value: properties.MinProposalEndBlocks}, nil
 	case types.MinProposalEnactmentBlocks:
-		return properties.MinProposalEnactmentBlocks, nil
+		return types.NetworkPropertyValue{Value: properties.MinProposalEnactmentBlocks}, nil
 	case types.EnableForeignFeePayments:
-		return BoolToInt(properties.EnableForeignFeePayments), nil
+		return types.NetworkPropertyValue{Value: BoolToInt(properties.EnableForeignFeePayments)}, nil
 	case types.MischanceRankDecreaseAmount:
-		return properties.MischanceRankDecreaseAmount, nil
+		return types.NetworkPropertyValue{Value: properties.MischanceRankDecreaseAmount}, nil
 	case types.MaxMischance:
-		return properties.MaxMischance, nil
+		return types.NetworkPropertyValue{Value: properties.MaxMischance}, nil
 	case types.MischanceConfidence:
-		return properties.MischanceConfidence, nil
+		return types.NetworkPropertyValue{Value: properties.MischanceConfidence}, nil
 	case types.InactiveRankDecreasePercent:
-		return properties.InactiveRankDecreasePercent, nil
+		return types.NetworkPropertyValue{Value: properties.InactiveRankDecreasePercent}, nil
 	case types.PoorNetworkMaxBankSend:
-		return properties.PoorNetworkMaxBankSend, nil
+		return types.NetworkPropertyValue{Value: properties.PoorNetworkMaxBankSend}, nil
 	case types.MinValidators:
-		return properties.MinValidators, nil
+		return types.NetworkPropertyValue{Value: properties.MinValidators}, nil
 	case types.JailMaxTime:
-		return properties.JailMaxTime, nil
+		return types.NetworkPropertyValue{Value: properties.JailMaxTime}, nil
 	case types.EnableTokenWhitelist:
-		return BoolToInt(properties.EnableTokenWhitelist), nil
+		return types.NetworkPropertyValue{Value: BoolToInt(properties.EnableTokenWhitelist)}, nil
 	case types.EnableTokenBlacklist:
-		return BoolToInt(properties.EnableTokenBlacklist), nil
+		return types.NetworkPropertyValue{Value: BoolToInt(properties.EnableTokenBlacklist)}, nil
+	case types.MinIdentityApprovalTip:
+		return types.NetworkPropertyValue{Value: properties.MinIdentityApprovalTip}, nil
+	case types.UniqueIdentityKeys:
+		return types.NetworkPropertyValue{StrValue: properties.UniqueIdentityKeys}, nil
 	default:
-		return 0, errors.New("trying to fetch network property that does not exist")
+		return types.NetworkPropertyValue{}, errors.New("trying to fetch network property that does not exist")
 	}
 }
 
 // SetNetworkProperty set single network property by key
-func (k Keeper) SetNetworkProperty(ctx sdk.Context, property types.NetworkProperty, value uint64) error {
+func (k Keeper) SetNetworkProperty(ctx sdk.Context, property types.NetworkProperty, value types.NetworkPropertyValue) error {
 	properties := k.GetNetworkProperties(ctx)
 	switch property {
 	case types.MinTxFee:
-		properties.MinTxFee = value
+		properties.MinTxFee = value.Value
 	case types.MaxTxFee:
-		properties.MaxTxFee = value
+		properties.MaxTxFee = value.Value
 	case types.VoteQuorum:
-		properties.VoteQuorum = value
+		properties.VoteQuorum = value.Value
 	case types.ProposalEndTime:
-		properties.ProposalEndTime = value
+		properties.ProposalEndTime = value.Value
 	case types.ProposalEnactmentTime:
-		properties.ProposalEnactmentTime = value
+		properties.ProposalEnactmentTime = value.Value
 	case types.MinProposalEndBlocks:
-		properties.MinProposalEndBlocks = value
+		properties.MinProposalEndBlocks = value.Value
 	case types.MinProposalEnactmentBlocks:
-		properties.MinProposalEnactmentBlocks = value
+		properties.MinProposalEnactmentBlocks = value.Value
 	case types.EnableForeignFeePayments:
-		if value > 0 {
+		if value.Value > 0 {
 			properties.EnableForeignFeePayments = true
 		}
 		properties.EnableForeignFeePayments = false
 	case types.MischanceRankDecreaseAmount:
-		properties.MischanceRankDecreaseAmount = value
+		properties.MischanceRankDecreaseAmount = value.Value
 	case types.MaxMischance:
-		properties.MaxMischance = value
+		properties.MaxMischance = value.Value
 	case types.MischanceConfidence:
-		properties.MischanceConfidence = value
+		properties.MischanceConfidence = value.Value
 	case types.InactiveRankDecreasePercent:
-		properties.InactiveRankDecreasePercent = value
+		properties.InactiveRankDecreasePercent = value.Value
 	case types.PoorNetworkMaxBankSend:
-		properties.PoorNetworkMaxBankSend = value
+		properties.PoorNetworkMaxBankSend = value.Value
 	case types.MinValidators:
-		properties.MinValidators = value
+		properties.MinValidators = value.Value
 	case types.JailMaxTime:
-		properties.JailMaxTime = value
+		properties.JailMaxTime = value.Value
 	case types.EnableTokenBlacklist:
-		properties.EnableTokenBlacklist = IntToBool(value)
+		properties.EnableTokenBlacklist = IntToBool(value.Value)
 	case types.EnableTokenWhitelist:
-		properties.EnableTokenWhitelist = IntToBool(value)
+		properties.EnableTokenWhitelist = IntToBool(value.Value)
+	case types.MinIdentityApprovalTip:
+		properties.MinIdentityApprovalTip = value.Value
+	case types.UniqueIdentityKeys:
+		properties.UniqueIdentityKeys = value.StrValue
 	default:
 		return errors.New("trying to set network property that does not exist")
 	}
-	k.SetNetworkProperties(ctx, properties)
-	return nil
+	return k.SetNetworkProperties(ctx, properties)
 }
 
 // SetExecutionFee set fee by execution function name

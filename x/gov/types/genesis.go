@@ -56,6 +56,8 @@ func DefaultGenesis() *GenesisState {
 			JailMaxTime:                 600, // 600  seconds / 10 mins
 			EnableTokenWhitelist:        false,
 			EnableTokenBlacklist:        true,
+			MinIdentityApprovalTip:      200,
+			UniqueIdentityKeys:          "moniker,username",
 		},
 		ExecutionFees: []*ExecutionFee{
 			{
@@ -158,10 +160,10 @@ func DefaultGenesis() *GenesisState {
 				kiratypes.MsgTypeActivate,
 				kiratypes.MsgTypePause,
 				kiratypes.MsgTypeUnpause,
-				kiratypes.MsgTypeCreateIdentityRecord,
+				kiratypes.MsgTypeRegisterIdentityRecords,
 				kiratypes.MsgTypeEditIdentityRecord,
 				kiratypes.MsgTypeRequestIdentityRecordsVerify,
-				kiratypes.MsgTypeApproveIdentityRecords,
+				kiratypes.MsgTypeHandleIdentityRecordsVerifyRequest,
 				kiratypes.MsgTypeCancelIdentityRecordsVerifyRequest,
 			},
 		},

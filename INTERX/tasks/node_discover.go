@@ -13,6 +13,7 @@ import (
 
 	"github.com/KiraCore/sekai/INTERX/common"
 	"github.com/KiraCore/sekai/INTERX/config"
+	"github.com/KiraCore/sekai/INTERX/global"
 	"github.com/KiraCore/sekai/INTERX/types"
 	"github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/crypto/ed25519"
@@ -49,15 +50,14 @@ func getTendermintRPCAddress(ipAddr string) string {
 func getInterxAddress(ipAddr string) string {
 	return "http://" + ipAddr + ":" + config.Config.NodeDiscovery.DefaultInterxPort
 }
-
-func QueryPeers(rpcAddr string) ([]tmTypes.Peer, error) {
-	peers := []tmTypes.Peer{}
+func QueryNetInfo(rpcAddr string) (*tmTypes.ResultNetInfo, error) {
+	result := new(tmTypes.ResultNetInfo)
 
 	u, err := url.Parse(rpcAddr)
 	_, err = net.DialTimeout("tcp", u.Host, timeout())
 	if err != nil {
 		common.GetLogger().Info(err)
-		return peers, err
+		return result, err
 	}
 
 	endpoint := fmt.Sprintf("%s/net_info", rpcAddr)
@@ -68,7 +68,7 @@ func QueryPeers(rpcAddr string) ([]tmTypes.Peer, error) {
 
 	resp, err := client.Get(endpoint)
 	if err != nil {
-		return peers, err
+		return result, err
 	}
 	defer resp.Body.Close()
 
@@ -77,21 +77,24 @@ func QueryPeers(rpcAddr string) ([]tmTypes.Peer, error) {
 	response := new(tmJsonRPCTypes.RPCResponse)
 
 	if err := json.Unmarshal(respBody, response); err != nil {
-		return peers, err
+		return result, err
 	}
 
 	if response.Error != nil {
-		return peers, errors.New(fmt.Sprint(response.Error))
+		return result, errors.New(fmt.Sprint(response.Error))
 	}
 
-	result := new(tmTypes.ResultNetInfo)
 	if err := tmjson.Unmarshal(response.Result, result); err != nil {
-		return peers, err
+		return result, err
 	}
 
-	peers = result.Peers
+	return result, err
+}
 
-	return peers, nil
+func QueryPeers(rpcAddr string) ([]tmTypes.Peer, error) {
+	netInfo, err := QueryNetInfo(rpcAddr)
+
+	return netInfo.Peers, err
 }
 
 func QueryKiraStatus(rpcAddr string) (tmTypes.ResultStatus, error) {
@@ -128,6 +131,7 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 	initPrivateIps()
 
 	for {
+		global.Mutex.Lock()
 		PubP2PNodeListResponse.Scanning = true
 		PrivP2PNodeListResponse.Scanning = true
 		InterxP2PNodeListResponse.Scanning = true
@@ -137,20 +141,27 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 		PrivP2PNodeListResponse.NodeList = []types.P2PNode{}
 		InterxP2PNodeListResponse.NodeList = []types.InterxNode{}
 		SnapNodeListResponse.NodeList = []types.SnapNode{}
+		global.Mutex.Unlock()
 
-		isIpInList := make(map[string]bool)   // check if ip is already queried
-		isPrivNodeID := make(map[string]bool) // check if ip is already queried
+		isIpInListPrep := make(map[string]bool) // check if ip is already queried
+		isPrivNodeID := make(map[string]bool)   // check if ip is already queried
 
-		uniqueIPAddresses := config.LoadUniqueIPAddresses()
-
-		for i := 0; i < len(uniqueIPAddresses); i++ {
-			isIpInList[uniqueIPAddresses[i]] = true
+		uniqueIPAddressesPrep := config.LoadUniqueIPAddresses()
+		for i := 0; i < len(uniqueIPAddressesPrep); i++ {
+			isIpInListPrep[uniqueIPAddressesPrep[i]] = true
 		}
 
+		isIpInList := make(map[string]bool) // check if ip is already queried
+		var uniqueIPAddresses []string
 		isLocalPeer := make(map[string]bool)
 		localPeers, _ := QueryPeers(rpcAddr)
 		for _, peer := range localPeers {
 			isLocalPeer[string(peer.NodeInfo.ID())] = true
+			ip := peer.RemoteIP
+			if _, ok := isIpInListPrep[ip]; ok {
+				uniqueIPAddresses = append(uniqueIPAddresses, ip)
+				isIpInList[ip] = true
+			}
 		}
 
 		peersFromIP := make(map[string]([]tmTypes.Peer))
@@ -208,7 +219,9 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 					}
 
 					if _, ok := isPrivNodeID[privNodeInfo.ID]; !ok {
+						global.Mutex.Lock()
 						PrivP2PNodeListResponse.NodeList = append(PrivP2PNodeListResponse.NodeList, privNodeInfo)
+						global.Mutex.Unlock()
 						isPrivNodeID[privNodeInfo.ID] = true
 					}
 				} else {
@@ -219,7 +232,9 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 				}
 			}
 
+			global.Mutex.Lock()
 			PubP2PNodeListResponse.NodeList = append(PubP2PNodeListResponse.NodeList, nodeInfo)
+			global.Mutex.Unlock()
 
 			interxStartTime := makeTimestamp()
 			interxAddress := getInterxAddress(ipAddr)
@@ -237,7 +252,9 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 				interxInfo.Type = interxStatus.InterxInfo.Node.NodeType
 				interxInfo.Version = interxStatus.InterxInfo.Version
 
+				global.Mutex.Lock()
 				InterxP2PNodeListResponse.NodeList = append(InterxP2PNodeListResponse.NodeList, interxInfo)
+				global.Mutex.Unlock()
 
 				// snapshotInfo := common.GetSnapshotInfo(getInterxAddress(ipAddr))
 				snapshotInfo := common.GetSnapshotInfo(interxAddress)
@@ -248,13 +265,16 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 					snapNode.Checksum = snapshotInfo.Checksum
 					snapNode.Size = snapshotInfo.Size
 
+					global.Mutex.Lock()
 					SnapNodeListResponse.NodeList = append(SnapNodeListResponse.NodeList, snapNode)
+					global.Mutex.Unlock()
 				}
 			}
 		}
 
 		lastUpdate := time.Now().Unix()
 
+		global.Mutex.Lock()
 		PubP2PNodeListResponse.LastUpdate = lastUpdate
 		PrivP2PNodeListResponse.LastUpdate = lastUpdate
 		InterxP2PNodeListResponse.LastUpdate = lastUpdate
@@ -264,6 +284,7 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 		PrivP2PNodeListResponse.Scanning = false
 		InterxP2PNodeListResponse.Scanning = false
 		SnapNodeListResponse.Scanning = false
+		global.Mutex.Unlock()
 
 		if isLog {
 			common.GetLogger().Info("[node-discovery] finished!")

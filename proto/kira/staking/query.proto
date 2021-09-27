@@ -57,12 +57,11 @@ message QueryValidator {
   string pubkey = 3;
   string proposer = 4;
   string moniker = 5;
-  string commission = 6;
-  string status = 7;
-  int64 rank = 8;
-  int64 streak = 9;
-  int64 mischance = 10;
-  kira.gov.IdentityRecord identity = 11;
+  string status = 6;
+  int64 rank = 7;
+  int64 streak = 8;
+  int64 mischance = 9;
+  repeated kira.gov.IdentityRecord identity = 10 [(gogoproto.nullable) = false];
 }
 
 // ValidatorsResponse is the response type for validators query.

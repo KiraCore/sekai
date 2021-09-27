@@ -43,8 +43,6 @@ func (k Keeper) AddValidator(ctx sdk.Context, validator types.Validator) {
 	bz := k.cdc.MustMarshal(&validator)
 	store.Set(GetValidatorKey(validator.ValKey), bz)
 
-	// Save by moniker
-	store.Set(GetValidatorByMonikerKey(validator.Moniker), GetValidatorKey(validator.ValKey))
 	k.AddValidatorByConsAddr(ctx, validator)
 }
 
@@ -76,14 +74,12 @@ func (k Keeper) GetValidatorByAccAddress(ctx sdk.Context, address sdk.AccAddress
 }
 
 func (k Keeper) GetValidatorByMoniker(ctx sdk.Context, moniker string) (types.Validator, error) {
-	store := ctx.KVStore(k.storeKey)
-
-	valKey := store.Get(GetValidatorByMonikerKey(moniker))
-	if valKey == nil {
+	addrs := k.govkeeper.GetAddressesByIdRecordKey(ctx, "moniker", moniker)
+	if len(addrs) != 1 {
 		return types.Validator{}, fmt.Errorf("validator with moniker %s not found", moniker)
 	}
 
-	return k.getValidatorByKey(ctx, valKey)
+	return k.GetValidator(ctx, sdk.ValAddress(addrs[0]))
 }
 
 func (k Keeper) getValidatorByKey(ctx sdk.Context, key []byte) (types.Validator, error) {
@@ -200,7 +196,18 @@ func AddressFromLastValidatorPowerKey(key []byte) []byte {
 	return key[2:] // remove prefix bytes and address length
 }
 
-// GetIdRecordByAddress query identity records by address
-func (k Keeper) GetIdRecordByAddress(ctx sdk.Context, creator sdk.AccAddress) *govtypes.IdentityRecord {
-	return k.govkeeper.GetIdRecordByAddress(ctx, creator)
+// GetIdRecordsByAddress query identity records by address
+func (k Keeper) GetIdRecordsByAddress(ctx sdk.Context, creator sdk.AccAddress) []govtypes.IdentityRecord {
+	return k.govkeeper.GetIdRecordsByAddress(ctx, creator)
+}
+
+func (k Keeper) GetMonikerByAddress(ctx sdk.Context, addr sdk.AccAddress) (string, error) {
+	records, err := k.govkeeper.GetIdRecordsByAddressAndKeys(ctx, addr, []string{"moniker"})
+	if err != nil {
+		return "", err
+	}
+	if len(records) != 1 {
+		return "", fmt.Errorf("failed fetching the field moniker from identity registrar for address=%s", addr.String())
+	}
+	return records[0].Value, nil
 }

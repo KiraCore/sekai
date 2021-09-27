@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# To get sekaid version, should install binary with `make install`
+make install
+
 sekaid version
 # 1.0.0
 

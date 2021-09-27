@@ -2,6 +2,7 @@ package network
 
 import (
 	"encoding/json"
+	"fmt"
 	"path/filepath"
 	"time"
 
@@ -163,18 +164,33 @@ func initGenFiles(cfg Config, vals []*Validator, genAccounts []authtypes.Genesis
 	bankGenState.Balances = genBalances
 	cfg.GenesisState[banktypes.ModuleName] = cfg.Codec.MustMarshalJSON(&bankGenState)
 
+	var customGovGenState govtypes.GenesisState
+	cfg.Codec.MustUnmarshalJSON(cfg.GenesisState[govtypes.ModuleName], &customGovGenState)
+
 	var customStakingGenState customtypes.GenesisState
 	for _, val := range vals {
-		validator, err := customtypes.NewValidator(val.Moniker, sdk.NewDec(1), val.ValAddress, val.PubKey)
+		validator, err := customtypes.NewValidator(val.ValAddress, val.PubKey)
 		if err != nil {
 			return errors.Wrap(err, "error creating validator")
 		}
 		customStakingGenState.Validators = append(customStakingGenState.Validators, validator)
+
+		for _, record := range customGovGenState.IdentityRecords {
+			if record.Key == "moniker" && record.Value == val.Moniker {
+				panic(fmt.Sprintf("same moniker exists, moniker = %s", val.Moniker))
+			}
+		}
+		customGovGenState.IdentityRecords = append(customGovGenState.IdentityRecords, govtypes.IdentityRecord{
+			Id:        customGovGenState.LastIdentityRecordId + 1,
+			Address:   sdk.AccAddress(val.ValAddress),
+			Key:       "moniker",
+			Value:     val.Moniker,
+			Date:      time.Now().UTC(),
+			Verifiers: []sdk.AccAddress{},
+		})
+		customGovGenState.LastIdentityRecordId++
 	}
 	cfg.GenesisState[customtypes.ModuleName] = cfg.Codec.MustMarshalJSON(&customStakingGenState)
-
-	var customGovGenState govtypes.GenesisState
-	cfg.Codec.MustUnmarshalJSON(cfg.GenesisState[govtypes.ModuleName], &customGovGenState)
 
 	// Add permissions to RoleInTest, num 0. This included:
 	// - Whitelisted PermClaimValidator.

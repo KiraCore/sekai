@@ -1525,7 +1525,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 					"some desc",
 					types.NewSetNetworkPropertyProposal(
 						types.MinTxFee,
-						1234,
+						types.NetworkPropertyValue{Value: 1234},
 					),
 					ctx.BlockTime(),
 					ctx.BlockTime().Add(time.Second*20),
@@ -1667,7 +1667,7 @@ func TestHandler_CreateProposalSetNetworkProperty_Errors(t *testing.T) {
 			"Proposer does not have Perm",
 			types.NewSetNetworkPropertyProposal(
 				types.MaxTxFee,
-				100000,
+				types.NetworkPropertyValue{Value: 100000},
 			),
 			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {},
 			errors.Wrap(types.ErrNotEnoughPermissions, types.PermCreateSetNetworkPropertyProposal.String()),
@@ -1712,7 +1712,7 @@ func TestHandler_ProposalSetNetworkProperty(t *testing.T) {
 	handler := gov.NewHandler(app.CustomGovKeeper)
 	proposal := types.NewSetNetworkPropertyProposal(
 		types.MinTxFee,
-		1234,
+		types.NetworkPropertyValue{Value: 1234},
 	)
 	msg, err := types.NewMsgSubmitProposal(proposerAddr, "title", "some desc", proposal)
 	require.NoError(t, err)
@@ -1734,7 +1734,7 @@ func TestHandler_ProposalSetNetworkProperty(t *testing.T) {
 		"some desc",
 		types.NewSetNetworkPropertyProposal(
 			types.MinTxFee,
-			1234,
+			types.NetworkPropertyValue{Value: 1234},
 		),
 		ctx.BlockTime(),
 		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEndTime)),

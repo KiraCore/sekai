@@ -53,18 +53,17 @@ func (k Keeper) SigningInfo(c context.Context, req *types.QuerySigningInfoReques
 			return nil, err
 		}
 
-		identity := k.sk.GetIdRecordByAddress(ctx, sdk.AccAddress(val.ValKey))
+		consPubkey, _ := sdk.Bech32ifyPubKey(sdk.Bech32PubKeyTypeConsPub, val.GetConsPubKey())
+		records := k.sk.GetIdRecordsByAddress(ctx, sdk.AccAddress(val.ValKey))
 		validator = stakingtypes.QueryValidator{
-			Address:    sdk.AccAddress(val.ValKey).String(),
-			Valkey:     val.ValKey.String(),
-			Pubkey:     val.GetConsPubKey().String(),
-			Proposer:   val.GetConsPubKey().Address().String(),
-			Moniker:    val.Moniker,
-			Commission: val.Commission.String(),
-			Status:     val.Status.String(),
-			Rank:       val.Rank,
-			Streak:     val.Streak,
-			Identity:   identity,
+			Address:  sdk.AccAddress(val.ValKey).String(),
+			Valkey:   val.ValKey.String(),
+			Pubkey:   consPubkey,
+			Proposer: val.GetConsPubKey().Address().String(),
+			Status:   val.Status.String(),
+			Rank:     val.Rank,
+			Streak:   val.Streak,
+			Identity: records,
 		}
 	}
 
@@ -105,16 +104,14 @@ func (k Keeper) SigningInfos(c context.Context, request *types.QuerySigningInfos
 					return false, err
 				}
 				validators = append(validators, stakingtypes.QueryValidator{
-					Address:    sdk.AccAddress(val.ValKey).String(),
-					Valkey:     val.ValKey.String(),
-					Pubkey:     val.GetConsPubKey().String(),
-					Proposer:   val.GetConsPubKey().Address().String(),
-					Moniker:    val.Moniker,
-					Commission: val.Commission.String(),
-					Status:     val.Status.String(),
-					Rank:       val.Rank,
-					Streak:     val.Streak,
-					Identity:   k.sk.GetIdRecordByAddress(ctx, sdk.AccAddress(val.ValKey)),
+					Address:  sdk.AccAddress(val.ValKey).String(),
+					Valkey:   val.ValKey.String(),
+					Pubkey:   consPubkey,
+					Proposer: val.GetConsPubKey().Address().String(),
+					Status:   val.Status.String(),
+					Rank:     val.Rank,
+					Streak:   val.Streak,
+					Identity: k.sk.GetIdRecordsByAddress(ctx, sdk.AccAddress(val.ValKey)),
 				})
 			}
 		}

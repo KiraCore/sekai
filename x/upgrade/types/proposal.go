@@ -9,13 +9,14 @@ const ProposalTypeCancelSoftwareUpgrade = "CancelSoftwareUpgrade"
 
 var _ types.Content = &ProposalSoftwareUpgrade{}
 
-func NewSoftwareUpgradeProposal(name string, resources []Resource, height int64,
+func NewSoftwareUpgradeProposal(name string, resources []Resource,
 	upgradeTime int64, oldChainId, newChainId, rollBackMemo string,
-	maxEnrollmentDuration int64, upgradeMemo string, instateUpgrade bool) *ProposalSoftwareUpgrade {
+	maxEnrollmentDuration int64, upgradeMemo string,
+	instateUpgrade, rebootRequired, skipHandler bool,
+) *ProposalSoftwareUpgrade {
 	return &ProposalSoftwareUpgrade{
 		Name:                 name,
 		Resources:            resources,
-		Height:               height,
 		UpgradeTime:          upgradeTime,
 		OldChainId:           oldChainId,
 		NewChainId:           newChainId,
@@ -23,6 +24,8 @@ func NewSoftwareUpgradeProposal(name string, resources []Resource, height int64,
 		MaxEnrolmentDuration: maxEnrollmentDuration,
 		Memo:                 upgradeMemo,
 		InstateUpgrade:       instateUpgrade,
+		RebootRequired:       rebootRequired,
+		SkipHandler:          skipHandler,
 	}
 }
 

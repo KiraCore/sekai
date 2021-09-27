@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	ErrInvalidMonikerLength = fmt.Errorf("invalid moniker length (max 64 bytes)")
+	ErrInvalidMonikerLength = fmt.Errorf("invalid moniker length (max 32 bytes)")
 	ErrValidatorInactive    = fmt.Errorf("validator is inactive")
 	ErrValidatorPaused      = fmt.Errorf("validator is paused")
 	ErrValidatorJailed      = fmt.Errorf("validator is jailed")

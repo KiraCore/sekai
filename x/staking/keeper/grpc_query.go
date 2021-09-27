@@ -75,17 +75,22 @@ func (q Querier) Validators(ctx context.Context, request *types.ValidatorsReques
 			return false, err
 		}
 
+		moniker, err := q.keeper.GetMonikerByAddress(c, sdk.AccAddress(val.ValKey))
+		if err != nil {
+			return false, err
+		}
+
+		consPubkey, _ := sdk.Bech32ifyPubKey(sdk.Bech32PubKeyTypeConsPub, val.GetConsPubKey())
 		validator := types.QueryValidator{
-			Address:    sdk.AccAddress(val.ValKey).String(),
-			Valkey:     val.ValKey.String(),
-			Pubkey:     val.GetConsPubKey().String(),
-			Proposer:   val.GetConsPubKey().Address().String(),
-			Moniker:    val.Moniker,
-			Commission: val.Commission.String(),
-			Status:     val.Status.String(),
-			Rank:       val.Rank,
-			Streak:     val.Streak,
-			Identity:   q.keeper.GetIdRecordByAddress(c, sdk.AccAddress(val.ValKey)),
+			Address:  sdk.AccAddress(val.ValKey).String(),
+			Valkey:   val.ValKey.String(),
+			Pubkey:   consPubkey,
+			Proposer: val.GetConsPubKey().Address().String(),
+			Moniker:  moniker,
+			Status:   val.Status.String(),
+			Rank:     val.Rank,
+			Streak:   val.Streak,
+			Identity: q.keeper.GetIdRecordsByAddress(c, sdk.AccAddress(val.ValKey)),
 		}
 
 		if request.Status != "" && !strings.EqualFold(validator.Status, request.Status) {
@@ -130,7 +135,6 @@ func (q Querier) Validators(ctx context.Context, request *types.ValidatorsReques
 
 	validatorStore := prefix.NewStore(store, ValidatorsKey)
 	pageRes, err = query.FilteredPaginate(validatorStore, request.Pagination, onResult)
-
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}

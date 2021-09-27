@@ -38,8 +38,7 @@ func (b AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry
 }
 
 func (b AppModuleBasic) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage { // InitGenesis is ignored, no sense in serializing future upgrades
-	// DefaultGenesis is an empty object
-	return []byte("{}")
+	return cdc.MustMarshalJSON(types.DefaultGenesis())
 }
 
 func (b AppModuleBasic) ValidateGenesis(marshaler codec.JSONCodec, config client.TxEncodingConfig, message json.RawMessage) error {
@@ -90,13 +89,35 @@ func (am AppModule) InitGenesis(
 	cdc codec.JSONCodec,
 	data json.RawMessage,
 ) []abci.ValidatorUpdate {
-	//var genesisState types.GenesisState
-	//cdc.MustUnmarshalJSON(data, &genesisState)
+	var genesisState types.GenesisState
+	cdc.MustUnmarshalJSON(data, &genesisState)
+
+	if genesisState.CurrentPlan != nil {
+		am.upgradeKeeper.SaveCurrentPlan(ctx, *genesisState.CurrentPlan)
+	}
+
+	if genesisState.NextPlan != nil {
+		am.upgradeKeeper.SaveNextPlan(ctx, *genesisState.NextPlan)
+	}
+
 	return nil
 }
 
-func (am AppModule) ExportGenesis(clientCtx sdk.Context, marshaler codec.JSONCodec) json.RawMessage {
-	return nil
+func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.RawMessage {
+	currentPlan, err := am.upgradeKeeper.GetCurrentPlan(ctx)
+	if err != nil {
+		panic(err)
+	}
+	nextPlan, err := am.upgradeKeeper.GetNextPlan(ctx)
+	if err != nil {
+		panic(err)
+	}
+	genesisState := types.GenesisState{
+		CurrentPlan: currentPlan,
+		NextPlan:    nextPlan,
+	}
+
+	return cdc.MustMarshalJSON(&genesisState)
 }
 
 // ConsensusVersion implements AppModule/ConsensusVersion.

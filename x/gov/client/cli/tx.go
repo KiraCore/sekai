@@ -37,10 +37,12 @@ const (
 	FlagWhitelistPerms    = "whitelist"
 	FlagBlacklistPerms    = "blacklist"
 	FlagInfosFile         = "infos-file"
-	FlagRecordId          = "record-id"
+	FlagInfosJson         = "infos-json"
+	FlagKeys              = "keys"
 	FlagVerifier          = "verifier"
 	FlagRecordIds         = "record-ids"
 	FlagTip               = "tip"
+	FlagApprove           = "approve"
 )
 
 // NewTxCmd returns a root CLI command handler for all x/bank transaction commands.
@@ -60,10 +62,10 @@ func NewTxCmd() *cobra.Command {
 		NewTxPermissionCmds(),
 		NewTxSetNetworkProperties(),
 		NewTxSetExecutionFee(),
-		GetTxCreateIdentityRecord(),
-		GetTxEditIdentityRecord(),
+		GetTxRegisterIdentityRecords(),
+		GetTxDeleteIdentityRecords(),
 		GetTxRequestIdentityRecordsVerify(),
-		GetTxApproveIdentityRecords(),
+		GetTxHandleIdentityRecordsVerifyRequest(),
 		GetTxCancelIdentityRecordsVerifyRequest(),
 	)
 
@@ -674,9 +676,15 @@ func GetTxProposalSetNetworkProperty() *cobra.Command {
 				return fmt.Errorf("invalid network property name: %s", args[0])
 			}
 
-			value, err := strconv.Atoi(args[1])
-			if err != nil {
-				return fmt.Errorf("invalid network property value: %w", err)
+			value := types.NetworkPropertyValue{}
+			if property == int32(types.UniqueIdentityKeys) {
+				value.StrValue = args[1]
+			} else {
+				numVal, err := strconv.Atoi(args[1])
+				if err != nil {
+					return fmt.Errorf("invalid network property value: %w", err)
+				}
+				value.Value = uint64(numVal)
 			}
 
 			title, err := cmd.Flags().GetString(FlagTitle)
@@ -693,7 +701,7 @@ func GetTxProposalSetNetworkProperty() *cobra.Command {
 				clientCtx.FromAddress,
 				title,
 				description,
-				types.NewSetNetworkPropertyProposal(types.NetworkProperty(property), uint64(value)),
+				types.NewSetNetworkPropertyProposal(types.NetworkProperty(property), value),
 			)
 			if err != nil {
 				return err
@@ -999,9 +1007,9 @@ func GetTxProposalCreateRole() *cobra.Command {
 	return cmd
 }
 
-func GetTxCreateIdentityRecord() *cobra.Command {
+func GetTxRegisterIdentityRecords() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-identity-record",
+		Use:   "register-identity-records",
 		Short: "Submit a transaction to create an identity record.",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -1015,7 +1023,7 @@ func GetTxCreateIdentityRecord() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgCreateIdentityRecord(
+			msg := types.NewMsgRegisterIdentityRecords(
 				clientCtx.FromAddress,
 				infos,
 			)
@@ -1027,16 +1035,16 @@ func GetTxCreateIdentityRecord() *cobra.Command {
 	flags.AddTxFlagsToCmd(cmd)
 
 	cmd.Flags().String(FlagInfosFile, "", "The infos file for identity request.")
-	cmd.MarkFlagRequired(FlagInfosFile)
+	cmd.Flags().String(FlagInfosJson, "", "The infos json for identity request.")
 	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
 }
 
-func GetTxEditIdentityRecord() *cobra.Command {
+func GetTxDeleteIdentityRecords() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "edit-identity-record",
-		Short: "Submit a transaction to edit an identity record.",
+		Use:   "delete-identity-records",
+		Short: "Submit a transaction to delete an identity records.",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -1044,20 +1052,19 @@ func GetTxEditIdentityRecord() *cobra.Command {
 				return err
 			}
 
-			infos, err := parseIdInfoJSON(cmd.Flags())
+			keysStr, err := cmd.Flags().GetString(FlagKeys)
 			if err != nil {
 				return err
 			}
 
-			recordId, err := cmd.Flags().GetUint64(FlagRecordId)
-			if err != nil {
-				return err
+			keys := strings.Split(keysStr, ",")
+			if keysStr == "" {
+				keys = []string{}
 			}
 
-			msg := types.NewMsgEditIdentityRecord(
-				recordId,
+			msg := types.NewMsgDeleteIdentityRecords(
 				clientCtx.FromAddress,
-				infos,
+				keys,
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
@@ -1066,10 +1073,7 @@ func GetTxEditIdentityRecord() *cobra.Command {
 
 	flags.AddTxFlagsToCmd(cmd)
 
-	cmd.Flags().String(FlagInfosFile, "", "The infos file for identity request.")
-	cmd.Flags().Uint64(FlagRecordId, 0, "Identity record to edit.")
-	cmd.MarkFlagRequired(FlagInfosFile)
-	cmd.MarkFlagRequired(FlagRecordId)
+	cmd.Flags().String(FlagKeys, "", "The keys to remove.")
 	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
@@ -1139,10 +1143,10 @@ func GetTxRequestIdentityRecordsVerify() *cobra.Command {
 	return cmd
 }
 
-func GetTxApproveIdentityRecords() *cobra.Command {
+func GetTxHandleIdentityRecordsVerifyRequest() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "approve-identity-records [id]",
-		Short: "Submit a transaction to approve identity records.",
+		Use:   "handle-identity-records-verify-request [id]",
+		Short: "Submit a transaction to approve or reject identity records verify request.",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -1155,15 +1159,23 @@ func GetTxApproveIdentityRecords() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgApproveIdentityRecords(
+			isApprove, err := cmd.Flags().GetBool(FlagApprove)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgHandleIdentityRecordsVerifyRequest(
 				clientCtx.FromAddress,
 				requestId,
+				isApprove,
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
 
+	cmd.Flags().Bool(FlagApprove, true, "The flag to approve or reject")
+	cmd.MarkFlagRequired(FlagApprove)
 	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
 
@@ -1202,16 +1214,26 @@ func GetTxCancelIdentityRecordsVerifyRequest() *cobra.Command {
 }
 
 func parseIdInfoJSON(fs *pflag.FlagSet) ([]types.IdentityInfoEntry, error) {
+	var err error
 	infos := make(map[string]string)
 	infosFile, _ := fs.GetString(FlagInfosFile)
+	infosJson, _ := fs.GetString(FlagInfosJson)
 
-	if infosFile == "" {
-		return nil, fmt.Errorf("should input infos file json using the --%s flag", FlagInfosFile)
+	if infosFile == "" && infosJson == "" {
+		return nil, fmt.Errorf("should input infos file json using the --%s flag or infos json using the --%s flag", FlagInfosFile, FlagInfosJson)
 	}
 
-	contents, err := ioutil.ReadFile(infosFile)
-	if err != nil {
-		return nil, err
+	if infosFile != "" && infosJson != "" {
+		return nil, fmt.Errorf("should only set one of --%s flag or --%s flag", FlagInfosFile, FlagInfosJson)
+	}
+
+	contents := []byte(infosJson)
+
+	if infosFile != "" {
+		contents, err = ioutil.ReadFile(infosFile)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	// make exception if unknown field exists

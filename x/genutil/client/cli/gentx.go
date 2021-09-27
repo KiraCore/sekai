@@ -47,9 +47,6 @@ file. The following default parameters are included:
 Example:
 $ %s gentx my-key-name 1000000stake --home=/path/to/home/dir --keyring-backend=os --chain-id=test-chain-1 \
     --moniker="myvalidator" \
-    --commission-max-change-rate=0.01 \
-    --commission-max-rate=1.0 \
-    --commission-rate=0.07 \
     --details="..." \
     --security-contact="..." \
     --website="..."

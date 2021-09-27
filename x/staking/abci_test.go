@@ -25,8 +25,6 @@ func TestItUpdatesTheValidatorSetBasedOnPendingValidators(t *testing.T) {
 	pubKey := pubkeys[0]
 
 	validator1, err := stakingtypes.NewValidator(
-		"validator 1",
-		sdk.NewDec(1234),
 		valAddr1,
 		pubKey,
 	)
@@ -109,8 +107,6 @@ func TestItRemovesFromTheValidatorSetWhenInRemovingQueue(t *testing.T) {
 			pubKey := pubkeys[0]
 
 			validator1, err := stakingtypes.NewValidator(
-				"validator 1",
-				sdk.NewDec(1234),
 				valAddr1,
 				pubKey,
 			)
@@ -194,8 +190,6 @@ func TestItIncludesItBackToValidatorSetOnceReactivatingIt(t *testing.T) {
 			pubKey := pubkeys[0]
 
 			validator1, err := stakingtypes.NewValidator(
-				"validator 1",
-				sdk.NewDec(1234),
 				valAddr1,
 				pubKey,
 			)

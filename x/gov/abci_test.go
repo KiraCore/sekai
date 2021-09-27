@@ -409,7 +409,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					"some desc",
 					types.NewSetNetworkPropertyProposal(
 						types.MinTxFee,
-						300,
+						types.NetworkPropertyValue{Value: 300},
 					),
 					time.Now(),
 					time.Now().Add(10*time.Second),
@@ -436,7 +436,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				minTxFee, err := app.CustomGovKeeper.GetNetworkProperty(ctx, types.MinTxFee)
 				require.NoError(t, err)
 
-				require.Equal(t, uint64(300), minTxFee)
+				require.Equal(t, uint64(300), minTxFee.Value)
 			},
 			blockHeightChange: 3,
 		},
@@ -548,7 +548,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				actor := types.NewDefaultActor(addrs[0])
 				app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
 
-				val, err := stakingtypes.NewValidator("Moniker", sdk.NewDec(123), valAddr, pubKey)
+				val, err := stakingtypes.NewValidator(valAddr, pubKey)
 				require.NoError(t, err)
 				app.CustomStakingKeeper.AddValidator(ctx, val)
 				err = app.CustomStakingKeeper.Jail(ctx, val.ValKey)
