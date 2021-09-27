@@ -45,7 +45,7 @@ func (k Keeper) SetNetworkProperties(ctx sdk.Context, properties *types.NetworkP
 		return err
 	}
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixNetworkProperties)
-	prefixStore.Set([]byte("property"), k.cdc.MustMarshalBinaryBare(properties))
+	prefixStore.Set([]byte("property"), k.cdc.MustMarshal(properties))
 	return nil
 }
 

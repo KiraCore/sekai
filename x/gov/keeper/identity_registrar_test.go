@@ -9,6 +9,7 @@ import (
 	"github.com/KiraCore/sekai/x/gov/keeper"
 	"github.com/KiraCore/sekai/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
@@ -358,9 +359,13 @@ func TestKeeper_IdentityRecordApproveFlow(t *testing.T) {
 	addr2 := sdk.AccAddress("foo2________________")
 	addr3 := sdk.AccAddress("foo3________________")
 	addr4 := sdk.AccAddress("foo4________________")
-	app.BankKeeper.SetBalance(ctx, addr1, sdk.NewInt64Coin(sdk.DefaultBondDenom, 10000))
-	app.BankKeeper.SetBalance(ctx, addr2, sdk.NewInt64Coin(sdk.DefaultBondDenom, 10000))
-	app.BankKeeper.SetBalance(ctx, addr3, sdk.NewInt64Coin(sdk.DefaultBondDenom, 10000))
+	initCoins := sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 10000)}
+	app.BankKeeper.MintCoins(ctx, minttypes.ModuleName, initCoins)
+	app.BankKeeper.MintCoins(ctx, minttypes.ModuleName, initCoins)
+	app.BankKeeper.MintCoins(ctx, minttypes.ModuleName, initCoins)
+	app.BankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, addr1, initCoins)
+	app.BankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, addr2, initCoins)
+	app.BankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, addr3, initCoins)
 
 	infos := make(map[string]string)
 	infos["key"] = "value"
