@@ -93,3 +93,11 @@ var MsgFuncIDMapping = map[string]int64{
 	MsgTypePause:                         36,
 	MsgTypeUnpause:                       37,
 }
+
+func MsgType(msg sdk.Msg) string {
+	kiraMsg, ok := msg.(Msg)
+	if !ok {
+		return ""
+	}
+	return kiraMsg.Type()
+}

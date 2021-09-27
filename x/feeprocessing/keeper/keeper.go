@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 
+	kiratypes "github.com/KiraCore/sekai/types"
 	"github.com/KiraCore/sekai/x/feeprocessing/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
@@ -115,7 +116,7 @@ func (k Keeper) GetExecutionsStatus(ctx sdk.Context) []types.ExecutionStatus {
 func (k Keeper) AddExecutionStart(ctx sdk.Context, msg sdk.Msg) {
 	executions := k.GetExecutionsStatus(ctx)
 	executions = append(executions, types.ExecutionStatus{
-		MsgType:  msg.Type(),
+		MsgType:  kiratypes.MsgType(msg),
 		FeePayer: msg.GetSigners()[0],
 		Success:  false,
 	})
@@ -129,7 +130,7 @@ func (k Keeper) SetExecutionStatusSuccess(ctx sdk.Context, msg sdk.Msg) {
 	executions := k.GetExecutionsStatus(ctx)
 	for i, exec := range executions {
 		// when execution message is same as param and success is false, just set success flag to be true and break
-		if exec.MsgType == msg.Type() && bytes.Equal(exec.FeePayer, msg.GetSigners()[0]) && exec.Success == false {
+		if exec.MsgType == kiratypes.MsgType(msg) && bytes.Equal(exec.FeePayer, msg.GetSigners()[0]) && exec.Success == false {
 			executions[i].Success = true
 			break
 		}

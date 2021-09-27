@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	kiratypes "github.com/KiraCore/sekai/types"
 	feeprocessingkeeper "github.com/KiraCore/sekai/x/feeprocessing/keeper"
 	customgovkeeper "github.com/KiraCore/sekai/x/gov/keeper"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -26,7 +27,7 @@ func NewRoute(p string, h sdk.Handler) sdk.Route {
 		}
 		// handle extra fee based on handler result
 
-		fee := customGovKeeper.GetExecutionFee(ctx, msg.Type())
+		fee := customGovKeeper.GetExecutionFee(ctx, kiratypes.MsgType(msg))
 		if fee == nil {
 			return hResult, hErr
 		}

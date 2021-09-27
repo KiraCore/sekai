@@ -9,6 +9,7 @@ import (
 	simapp "github.com/KiraCore/sekai/app"
 	"github.com/KiraCore/sekai/middleware"
 	"github.com/KiraCore/sekai/types"
+	kiratypes "github.com/KiraCore/sekai/types"
 	"github.com/KiraCore/sekai/x/gov"
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -111,7 +112,7 @@ func Test_Middleware_SetNetworkProperties(t *testing.T) {
 				executions := app.FeeProcessingKeeper.GetExecutionsStatus(ctx)
 				successExist := false
 				for _, exec := range executions {
-					if exec.Success == true && exec.MsgType == tt.msg.Type() && bytes.Equal(exec.FeePayer, tt.msg.GetSigners()[0]) {
+					if exec.Success == true && exec.MsgType == kiratypes.MsgType(tt.msg) && bytes.Equal(exec.FeePayer, tt.msg.GetSigners()[0]) {
 						successExist = true
 						break
 					}
