@@ -55,6 +55,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/bank"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/cosmos/cosmos-sdk/x/params"
 	paramskeeper "github.com/cosmos/cosmos-sdk/x/params/keeper"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
@@ -97,6 +98,7 @@ var (
 	maccPerms = map[string][]string{
 		authtypes.FeeCollectorName: nil,
 		govtypes.ModuleName:        nil,
+		minttypes.ModuleName:       {authtypes.Minter},
 	}
 
 	// module accounts that are allowed to receive tokens

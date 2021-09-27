@@ -5,9 +5,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/stretchr/testify/suite"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-
 	simapp "github.com/KiraCore/sekai/app"
 	"github.com/KiraCore/sekai/x/evidence/exported"
 	"github.com/KiraCore/sekai/x/evidence/keeper"
@@ -18,7 +15,9 @@ import (
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
+	"github.com/stretchr/testify/suite"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
 
 var (
@@ -127,13 +126,11 @@ func (suite *KeeperTestSuite) populateEvidence(ctx sdk.Context, numEvidence int)
 }
 
 func (suite *KeeperTestSuite) populateValidators(ctx sdk.Context) {
-	// add accounts and set total supply
-	totalSupplyAmt := initAmt.MulRaw(int64(len(valAddresses)))
-	totalSupply := sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, totalSupplyAmt))
-	suite.app.BankKeeper.SetSupply(ctx, banktypes.NewSupply(totalSupply))
-
+	// add accounts
 	for _, addr := range valAddresses {
-		err := suite.app.BankKeeper.AddCoins(ctx, sdk.AccAddress(addr), initCoins)
+		err := suite.app.BankKeeper.MintCoins(ctx, minttypes.ModuleName, initCoins)
+		suite.NoError(err)
+		err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, sdk.AccAddress(addr), initCoins)
 		suite.NoError(err)
 	}
 }

@@ -164,3 +164,9 @@ func (k Keeper) ProcessExecutionFeeReturn(ctx sdk.Context) {
 	store := ctx.KVStore(k.storeKey)
 	store.Delete(types.KeyExecutionStatus)
 }
+
+// UseGrantedFees will try to pay the given fee from the granter's account as requested by the grantee
+func (k Keeper) UseGrantedFees(ctx sdk.Context, granter, grantee sdk.AccAddress, fee sdk.Coins, msgs []sdk.Msg) error {
+	// TODO: this implementation is OK?
+	return nil
+}
