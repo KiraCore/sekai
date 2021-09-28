@@ -161,11 +161,20 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 		localPeers, _ := QueryPeers(rpcAddr)
 		for _, peer := range localPeers {
 			isLocalPeer[string(peer.NodeInfo.ID())] = true
-			ip := peer.RemoteIP
-			// if _, ok := isIpInListPrep[ip]; ok {
-			uniqueIPAddresses = append(uniqueIPAddresses, ip)
-			isIpInList[ip] = true
-			// }
+			ip := getHostname(peer.NodeInfo.ListenAddr)
+			if !isPrivateIP(ip) && isIp(ip) {
+				if _, ok := isIpInList[ip]; ok {
+					uniqueIPAddresses = append(uniqueIPAddresses, ip)
+					isIpInList[ip] = true
+				}
+			}
+			ip = peer.RemoteIP
+			if !isPrivateIP(ip) && isIp(ip) {
+				if _, ok := isIpInList[ip]; ok {
+					uniqueIPAddresses = append(uniqueIPAddresses, ip)
+					isIpInList[ip] = true
+				}
+			}
 		}
 
 		peersFromIP := make(map[string]([]tmTypes.Peer))
@@ -387,6 +396,16 @@ func getPort(listenAddr string) uint16 {
 	portNumber, _ := strconv.ParseUint(u.Port(), 10, 16)
 
 	return uint16(portNumber)
+}
+
+func getHostname(listenAddr string) string {
+	u, _ := url.Parse(listenAddr)
+	return u.Hostname()
+}
+
+func isIp(ipAddr string) bool {
+	addr := net.ParseIP(ipAddr)
+	return addr != nil
 }
 
 func connect(

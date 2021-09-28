@@ -195,13 +195,13 @@ type QueryValidator struct {
 	ProducedBlocksCounter int64  `json:"produced_blocks_counter,string"`
 
 	// From Identity Records
-	Description       string `json:"description"`
-	Website           string `json:"website"`
-	Logo              string `json:"logo"`
-	Social            string `json:"social"`
-	Contact           string `json:"contact"`
-	Validator_node_id string `json:"validator_node_id"`
-	Sentry_node_id    string `json:"sentry_node_id"`
+	Description       string `json:"description,omitempty"`
+	Website           string `json:"website,omitempty"`
+	Logo              string `json:"logo,omitempty"`
+	Social            string `json:"social,omitempty"`
+	Contact           string `json:"contact,omitempty"`
+	Validator_node_id string `json:"validator_node_id,omitempty"`
+	Sentry_node_id    string `json:"sentry_node_id,omitempty"`
 }
 
 type QueryValidators []QueryValidator
