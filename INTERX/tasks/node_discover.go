@@ -144,16 +144,16 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 
 		global.Mutex.Unlock()
 
-		isIpInListPrep := make(map[string]bool) // check if ip is already queried
+		// isIpInListPrep := make(map[string]bool) // check if ip is already queried
 		isPrivNodeID := make(map[string]bool)
 		isPubNodeId := make(map[string]bool)
 		isInterxNodeId := make(map[string]bool)
 		isSnapshotIP := make(map[string]bool)
 
-		uniqueIPAddressesPrep := config.LoadUniqueIPAddresses()
-		for i := 0; i < len(uniqueIPAddressesPrep); i++ {
-			isIpInListPrep[uniqueIPAddressesPrep[i]] = true
-		}
+		// uniqueIPAddressesPrep := config.LoadUniqueIPAddresses()
+		// for i := 0; i < len(uniqueIPAddressesPrep); i++ {
+		// 	isIpInListPrep[uniqueIPAddressesPrep[i]] = true
+		// }
 
 		isIpInList := make(map[string]bool) // check if ip is already queried
 		var uniqueIPAddresses []string
@@ -161,10 +161,19 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 		localPeers, _ := QueryPeers(rpcAddr)
 		for _, peer := range localPeers {
 			isLocalPeer[string(peer.NodeInfo.ID())] = true
-			ip := peer.RemoteIP
-			if _, ok := isIpInListPrep[ip]; ok {
-				uniqueIPAddresses = append(uniqueIPAddresses, ip)
-				isIpInList[ip] = true
+			ip := getHostname(peer.NodeInfo.ListenAddr)
+			if !isPrivateIP(ip) && isIp(ip) {
+				if _, ok := isIpInList[ip]; ok {
+					uniqueIPAddresses = append(uniqueIPAddresses, ip)
+					isIpInList[ip] = true
+				}
+			}
+			ip = peer.RemoteIP
+			if !isPrivateIP(ip) && isIp(ip) {
+				if _, ok := isIpInList[ip]; ok {
+					uniqueIPAddresses = append(uniqueIPAddresses, ip)
+					isIpInList[ip] = true
+				}
 			}
 		}
 
@@ -387,6 +396,16 @@ func getPort(listenAddr string) uint16 {
 	portNumber, _ := strconv.ParseUint(u.Port(), 10, 16)
 
 	return uint16(portNumber)
+}
+
+func getHostname(listenAddr string) string {
+	u, _ := url.Parse(listenAddr)
+	return u.Hostname()
+}
+
+func isIp(ipAddr string) bool {
+	addr := net.ParseIP(ipAddr)
+	return addr != nil
 }
 
 func connect(
