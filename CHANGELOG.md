@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.1.21.24] - 26.09.2021
+
+- Resolve tokens module genesis export issue
+
 ## [v0.1.21.23] - 26.09.2021
 
 - Add skip handler field for upgrade plan
