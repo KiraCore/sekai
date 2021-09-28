@@ -111,14 +111,8 @@ func (am AppModule) InitGenesis(
 
 func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONMarshaler) json.RawMessage {
 	var genesisState tokenstypes.GenesisState
-	aliases := am.tokensKeeper.ListTokenAlias(ctx)
-	for _, alias := range aliases {
-		genesisState.Aliases[alias.Symbol] = alias
-	}
-	rates := am.tokensKeeper.ListTokenRate(ctx)
-	for _, rate := range rates {
-		genesisState.Rates[rate.Denom] = rate
-	}
+	genesisState.Aliases = am.tokensKeeper.ListTokenAlias(ctx)
+	genesisState.Rates = am.tokensKeeper.ListTokenRate(ctx)
 	genesisState.TokenBlackWhites = am.tokensKeeper.GetTokenBlackWhites(ctx)
 	return cdc.MustMarshalJSON(&genesisState)
 }
