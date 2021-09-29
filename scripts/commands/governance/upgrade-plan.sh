@@ -12,7 +12,7 @@ sekaid tx upgrade proposal-set-plan --name="upgrade1" --instate-upgrade=true --s
 
 sekaid tx customgov proposal vote 1 1 --from validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes 
 
-sekaid query upgrade show-plan
+sekaid query upgrade next-plan
 
 sekaid query customgov proposals
 
