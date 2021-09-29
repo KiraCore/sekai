@@ -166,6 +166,8 @@ func GetTxProposeUpgradePlan() *cobra.Command {
 
 	flags.AddTxFlagsToCmd(cmd)
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+	_ = cmd.MarkFlagRequired(FlagOldChainId)
+	_ = cmd.MarkFlagRequired(FlagNewChainId)
 
 	return cmd
 }

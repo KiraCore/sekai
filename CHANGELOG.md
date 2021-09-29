@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.1.21.25] - 26.09.2021
+
+- Add chain ids for upgrade plan
+
 ## [v0.1.21.24] - 26.09.2021
 
 - Resolve tokens module genesis export issue
