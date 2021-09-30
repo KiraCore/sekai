@@ -47,7 +47,8 @@ func getGetMethods() []string {
 		QueryInterxList,
 		QuerySnapList,
 
-		QueryUpgradePlan,
+		QueryCurrentPlan,
+		QueryNextPlan,
 
 		QueryAddrBook,
 		QueryNetInfo,

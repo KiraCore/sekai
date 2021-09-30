@@ -46,7 +46,8 @@ const (
 	QueryAddrBook            = "/api/addrbook"
 	QueryNetInfo             = "/api/net_info"
 
-	QueryUpgradePlan = "/api/kira/upgrade/current_plan"
+	QueryCurrentPlan = "/api/kira/upgrade/current_plan"
+	QueryNextPlan    = "/api/kira/upgrade/next_plan"
 
 	Download              = "/download"
 	DataReferenceRegistry = "DRR"

@@ -1753,6 +1753,31 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Next Upgrade Plan",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://0.0.0.0:11000/api/kira/upgrade/next_plan",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "11000",
+							"path": [
+								"api",
+								"kira",
+								"upgrade",
+								"next_plan"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
