@@ -93,3 +93,7 @@ In order to manually generate new genesis file when the hard fork is activated, 
 1. Export current genesis, e.g: sekaid export --home=<path>
 2. Change chain-id to new_chain_id as indicated by the upgrade plan
 3. Replace current upgrade plan in the app_state.upgrade with next plan and set next plan to null
+
+Using a command it can be done in this way.
+1. sekaid export > exported-genesis.json
+2. sekaid new-genesis-from-exported exported-genesis.json new-genesis.json
