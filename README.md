@@ -85,3 +85,11 @@ Add jailed validator key to kms.
 ```
 
 [scripts/commands/governance/unjail-validator.sh](scripts/commands/governance/unjail-validator.sh)
+
+# New genesis file generation process from exported version
+
+In order to manually generate new genesis file when the hard fork is activated, following steps should be taken:
+
+1. Export current genesis, e.g: sekaid export --home=<path>
+2. Change chain-id to new_chain_id as indicated by the upgrade plan
+3. Replace current upgrade plan in the app_state.upgrade with next plan and set next plan to null
