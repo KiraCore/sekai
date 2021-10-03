@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.1.21.27] - 03.10.2021
+
+- Added command for exporting new genesis from old genesis
+
 ## [v0.1.21.26] - 03.10.2021
 
 - add README for new genesis file manual generation
