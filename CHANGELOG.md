@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.1.21.26] - 03.10.2021
+
+- add README for new genesis file manual generation
+
 ## [v0.1.21.25] - 26.09.2021
 
 - Add chain ids for upgrade plan
