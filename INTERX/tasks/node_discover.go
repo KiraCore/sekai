@@ -163,14 +163,14 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 			isLocalPeer[string(peer.NodeInfo.ID())] = true
 			ip := getHostname(peer.NodeInfo.ListenAddr)
 			if !isPrivateIP(ip) && isIp(ip) {
-				if _, ok := isIpInList[ip]; ok {
+				if _, ok := isIpInList[ip]; !ok {
 					uniqueIPAddresses = append(uniqueIPAddresses, ip)
 					isIpInList[ip] = true
 				}
 			}
 			ip = peer.RemoteIP
 			if !isPrivateIP(ip) && isIp(ip) {
-				if _, ok := isIpInList[ip]; ok {
+				if _, ok := isIpInList[ip]; !ok {
 					uniqueIPAddresses = append(uniqueIPAddresses, ip)
 					isIpInList[ip] = true
 				}
