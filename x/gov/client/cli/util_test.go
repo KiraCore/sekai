@@ -177,7 +177,7 @@ func (s IntegrationTestSuite) SetNetworkProperties(minTxFee, maxTxFee, minValida
 	var result sdk.TxResponse
 	s.Require().NoError(val.ClientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &result))
 	s.Require().NotNil(result.Height)
-	s.Require().Contains(result.RawLog, "set-network-properties")
+	s.Require().Contains(result.RawLog, "MsgSetNetworkProperties")
 }
 
 func (s IntegrationTestSuite) SetNetworkPropertyProposal(property string, value uint64) {

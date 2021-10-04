@@ -19,8 +19,7 @@ import (
 
 // Proposal flags
 const (
-	flagVoter   = "voter"
-	flagReverse = "reverse"
+	flagVoter = "voter"
 )
 
 // GetCmdQueryPermissions the query delegation command.
@@ -263,7 +262,6 @@ $ %s query gov proposals --voter cosmos1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			bechVoterAddr, _ := cmd.Flags().GetString(flagVoter)
-			reverse, _ := cmd.Flags().GetBool(flagReverse)
 
 			if len(bechVoterAddr) != 0 {
 				_, err := sdk.AccAddressFromBech32(bechVoterAddr)
@@ -285,7 +283,6 @@ $ %s query gov proposals --voter cosmos1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
 				&types.QueryProposalsRequest{
 					Voter:      bechVoterAddr,
 					Pagination: pageReq,
-					Reverse:    reverse,
 				},
 			)
 			if err != nil {
@@ -301,7 +298,6 @@ $ %s query gov proposals --voter cosmos1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
 	}
 
 	cmd.Flags().String(flagVoter, "", "(optional) filter by proposals voted on by voted")
-	cmd.Flags().Bool(flagReverse, true, "proposal ordering flag")
 	flags.AddQueryFlagsToCmd(cmd)
 	flags.AddPaginationFlagsToCmd(cmd, "customgov")
 

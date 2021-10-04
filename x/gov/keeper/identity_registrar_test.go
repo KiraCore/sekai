@@ -423,7 +423,7 @@ func TestKeeper_IdentityRecordApproveFlow(t *testing.T) {
 	coins = app.BankKeeper.GetAllBalances(ctx, addr3)
 	require.Equal(t, coins, sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 10200)})
 	coins = app.BankKeeper.GetAllBalances(ctx, app.AccountKeeper.GetModuleAddress(types.ModuleName))
-	require.Equal(t, coins, sdk.Coins(nil))
+	require.Equal(t, coins, sdk.Coins{})
 	record = app.CustomGovKeeper.GetIdentityRecordById(ctx, 1)
 	require.NotNil(t, record)
 	require.Equal(t, *record, types.IdentityRecord{
