@@ -32,6 +32,15 @@ service Query {
       tags: "query"
     };
   }
+  // NextPlan queries the next upgrade plan.
+  rpc NextPlan(QueryNextPlanRequest) returns (QueryNextPlanResponse) {
+    option (google.api.http).get = "/api/kira/upgrade/next_plan";
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Query Next Upgrade Plan"
+      description: "Query Next Upgrade Plan"
+      tags: "query"
+    };
+  }
 }
 
 // QueryCurrentPlanRequest is the request type for the Query/CurrentPlan RPC
@@ -42,5 +51,16 @@ message QueryCurrentPlanRequest {}
 // method.
 message QueryCurrentPlanResponse {
   // plan is the current upgrade plan.
+  Plan plan = 1;
+}
+
+// QueryNextPlanRequest is the request type for the Query/CurrentPlan RPC
+// method.
+message QueryNextPlanRequest {}
+
+// QueryNextPlanResponse is the response type for the Query/CurrentPlan RPC
+// method.
+message QueryNextPlanResponse {
+  // plan is the next upgrade plan.
   Plan plan = 1;
 }

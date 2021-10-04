@@ -28,6 +28,8 @@ func (a ApplySoftwareUpgradeProposalHandler) Apply(ctx sdk.Context, proposal typ
 		p.Name,
 		p.Resources,
 		p.UpgradeTime,
+		p.OldChainId,
+		p.NewChainId,
 		p.MaxEnrolmentDuration,
 		p.RollbackChecksum,
 		p.InstateUpgrade,

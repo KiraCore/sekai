@@ -12,7 +12,7 @@ sekaid tx upgrade proposal-set-plan --name="upgrade1" --instate-upgrade=true --s
 
 sekaid tx customgov proposal vote 1 1 --from validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes 
 
-sekaid query upgrade show-plan
+sekaid query upgrade next-plan
 
 sekaid query customgov proposals
 
@@ -37,3 +37,7 @@ sekaid tx upgrade proposal-set-plan --name="upgrade5" --instate-upgrade=false --
 sekaid tx upgrade proposal-cancel-plan --name="cancel-upgrade4" --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes
 sekaid tx customgov proposal vote 2 1 --from validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes 
 sekaid query customgov proposals
+
+# upgrade to new json for hard-fork case
+sekaid export > exported-genesis.json
+sekaid new-genesis-from-exported exported-genesis.json new-genesis.json

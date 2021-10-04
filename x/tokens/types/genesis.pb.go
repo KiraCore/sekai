@@ -23,9 +23,9 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type GenesisState struct {
-	Aliases          map[string]*TokenAlias `protobuf:"bytes,1,rep,name=aliases,proto3" json:"aliases,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-	Rates            map[string]*TokenRate  `protobuf:"bytes,2,rep,name=rates,proto3" json:"rates,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-	TokenBlackWhites *TokensWhiteBlack      `protobuf:"bytes,3,opt,name=tokenBlackWhites,proto3" json:"tokenBlackWhites,omitempty"`
+	Aliases          []*TokenAlias     `protobuf:"bytes,1,rep,name=aliases,proto3" json:"aliases,omitempty"`
+	Rates            []*TokenRate      `protobuf:"bytes,2,rep,name=rates,proto3" json:"rates,omitempty"`
+	TokenBlackWhites *TokensWhiteBlack `protobuf:"bytes,3,opt,name=tokenBlackWhites,proto3" json:"tokenBlackWhites,omitempty"`
 }
 
 func (m *GenesisState) Reset()         { *m = GenesisState{} }
@@ -61,14 +61,14 @@ func (m *GenesisState) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_GenesisState proto.InternalMessageInfo
 
-func (m *GenesisState) GetAliases() map[string]*TokenAlias {
+func (m *GenesisState) GetAliases() []*TokenAlias {
 	if m != nil {
 		return m.Aliases
 	}
 	return nil
 }
 
-func (m *GenesisState) GetRates() map[string]*TokenRate {
+func (m *GenesisState) GetRates() []*TokenRate {
 	if m != nil {
 		return m.Rates
 	}
@@ -84,35 +84,28 @@ func (m *GenesisState) GetTokenBlackWhites() *TokensWhiteBlack {
 
 func init() {
 	proto.RegisterType((*GenesisState)(nil), "kira.tokens.GenesisState")
-	proto.RegisterMapType((map[string]*TokenAlias)(nil), "kira.tokens.GenesisState.AliasesEntry")
-	proto.RegisterMapType((map[string]*TokenRate)(nil), "kira.tokens.GenesisState.RatesEntry")
 }
 
 func init() { proto.RegisterFile("kira/tokens/genesis.proto", fileDescriptor_d3cbd9121e22d5d1) }
 
 var fileDescriptor_d3cbd9121e22d5d1 = []byte{
-	// 326 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x74, 0x91, 0x41, 0x4b, 0x32, 0x41,
-	0x1c, 0xc6, 0x9d, 0x15, 0xdf, 0x97, 0x46, 0x0f, 0x32, 0x07, 0xdd, 0x16, 0x1a, 0x24, 0x22, 0xf6,
-	0x50, 0xb3, 0x60, 0x97, 0xf0, 0x54, 0x46, 0x44, 0x74, 0x89, 0x35, 0x08, 0xba, 0x8d, 0xf2, 0x4f,
-	0x87, 0x35, 0x57, 0x66, 0xc6, 0xc8, 0x3e, 0x45, 0x1f, 0xab, 0xa3, 0xc7, 0x8e, 0xa1, 0xdf, 0x23,
-	0x62, 0x66, 0x94, 0x46, 0xb6, 0x4e, 0xbb, 0xcc, 0xf3, 0x7b, 0x7e, 0xcf, 0xc0, 0xe0, 0xdd, 0x4c,
-	0x48, 0x9e, 0xe8, 0x3c, 0x83, 0x89, 0x4a, 0x86, 0x30, 0x01, 0x25, 0x14, 0x9b, 0xca, 0x5c, 0xe7,
-	0xa4, 0x6a, 0x22, 0xe6, 0xa2, 0xa8, 0xe9, 0x73, 0x7c, 0x2c, 0xf8, 0x9a, 0x8a, 0x1a, 0x7e, 0x20,
-	0xb9, 0x86, 0xf5, 0x79, 0xe8, 0x9f, 0x3f, 0x4a, 0x80, 0xd7, 0x75, 0xb2, 0xff, 0x15, 0xe0, 0xda,
-	0x95, 0x5b, 0xea, 0x69, 0xae, 0x81, 0x9c, 0xe1, 0xff, 0xd6, 0x08, 0x2a, 0x44, 0xad, 0x72, 0x5c,
-	0x6d, 0x1f, 0x32, 0x6f, 0x9a, 0xf9, 0x2c, 0x3b, 0x77, 0xe0, 0xe5, 0x44, 0xcb, 0x79, 0xba, 0xa9,
-	0x91, 0x0e, 0xae, 0x98, 0x69, 0x15, 0x06, 0xb6, 0x7f, 0xf0, 0x77, 0x3f, 0x35, 0x98, 0x6b, 0xbb,
-	0x0a, 0xb9, 0xc6, 0x75, 0x0b, 0x76, 0xc7, 0x7c, 0x90, 0xdd, 0x8f, 0x84, 0xd1, 0x94, 0x5b, 0x28,
-	0xae, 0xb6, 0xf7, 0xb6, 0x34, 0x77, 0xf6, 0x63, 0x01, 0x8b, 0xa6, 0x85, 0x5a, 0xd4, 0xc3, 0x35,
-	0xff, 0x7e, 0xa4, 0x8e, 0xcb, 0x19, 0xcc, 0x43, 0xd4, 0x42, 0xf1, 0x4e, 0x6a, 0x7e, 0xc9, 0x31,
-	0xae, 0x3c, 0xf3, 0xf1, 0x0c, 0xc2, 0xc0, 0x2e, 0x34, 0x8b, 0x0b, 0x56, 0x90, 0x3a, 0xaa, 0x13,
-	0x9c, 0xa2, 0xe8, 0x16, 0xe3, 0x9f, 0x4b, 0xff, 0xa2, 0x3c, 0xda, 0x56, 0x36, 0x8a, 0x4a, 0x53,
-	0xf7, 0x8c, 0xdd, 0xee, 0xfb, 0x92, 0xa2, 0xc5, 0x92, 0xa2, 0xcf, 0x25, 0x45, 0x6f, 0x2b, 0x5a,
-	0x5a, 0xac, 0x68, 0xe9, 0x63, 0x45, 0x4b, 0x0f, 0xf1, 0x50, 0xe8, 0xd1, 0xac, 0xcf, 0x06, 0xf9,
-	0x53, 0x72, 0x23, 0x24, 0xbf, 0xc8, 0x25, 0x24, 0x0a, 0x32, 0x2e, 0x92, 0x97, 0xcd, 0x5b, 0xea,
-	0xf9, 0x14, 0x54, 0xff, 0x9f, 0x7d, 0xcb, 0x93, 0xef, 0x00, 0x00, 0x00, 0xff, 0xff, 0x70, 0x0d,
-	0x8f, 0xbd, 0x40, 0x02, 0x00, 0x00,
+	// 254 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0xcc, 0xce, 0x2c, 0x4a,
+	0xd4, 0x2f, 0xc9, 0xcf, 0x4e, 0xcd, 0x2b, 0xd6, 0x4f, 0x4f, 0xcd, 0x4b, 0x2d, 0xce, 0x2c, 0xd6,
+	0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0x06, 0x49, 0xe9, 0x41, 0xa4, 0xa4, 0xc4, 0x91, 0xd5,
+	0x25, 0xe6, 0x64, 0x26, 0x42, 0x55, 0x49, 0x89, 0x21, 0x4b, 0x14, 0x25, 0x96, 0xa4, 0x42, 0xc5,
+	0x25, 0x90, 0xc5, 0xd3, 0x8a, 0x52, 0x53, 0xab, 0xa0, 0x32, 0x4a, 0xbb, 0x18, 0xb9, 0x78, 0xdc,
+	0x21, 0x36, 0x05, 0x97, 0x24, 0x96, 0xa4, 0x0a, 0x19, 0x72, 0xb1, 0x83, 0x4d, 0x4c, 0x2d, 0x96,
+	0x60, 0x54, 0x60, 0xd6, 0xe0, 0x36, 0x12, 0xd7, 0x43, 0xb2, 0x5a, 0x2f, 0x04, 0x44, 0x39, 0x82,
+	0x14, 0x04, 0xc1, 0xd4, 0x09, 0xe9, 0x70, 0xb1, 0x82, 0xec, 0x2a, 0x96, 0x60, 0x02, 0x6b, 0x10,
+	0xc3, 0xd4, 0x10, 0x94, 0x58, 0x92, 0x1a, 0x04, 0x51, 0x24, 0xe4, 0xc9, 0x25, 0x00, 0x96, 0x72,
+	0xca, 0x49, 0x4c, 0xce, 0x0e, 0xcf, 0xc8, 0x04, 0x69, 0x64, 0x56, 0x60, 0xd4, 0xe0, 0x36, 0x92,
+	0xc5, 0xd4, 0x58, 0x0c, 0x56, 0x00, 0x56, 0x1a, 0x84, 0xa1, 0xcd, 0xc9, 0xe9, 0xc4, 0x23, 0x39,
+	0xc6, 0x0b, 0x8f, 0xe4, 0x18, 0x1f, 0x3c, 0x92, 0x63, 0x9c, 0xf0, 0x58, 0x8e, 0xe1, 0xc2, 0x63,
+	0x39, 0x86, 0x1b, 0x8f, 0xe5, 0x18, 0xa2, 0x34, 0xd2, 0x33, 0x4b, 0x32, 0x4a, 0x93, 0xf4, 0x92,
+	0xf3, 0x73, 0xf5, 0xbd, 0x33, 0x8b, 0x12, 0x9d, 0xf3, 0x8b, 0x52, 0xf5, 0x8b, 0x53, 0xb3, 0x13,
+	0x33, 0xf5, 0x2b, 0x60, 0xe1, 0x50, 0x52, 0x59, 0x90, 0x5a, 0x9c, 0xc4, 0x06, 0x0e, 0x07, 0x63,
+	0x40, 0x00, 0x00, 0x00, 0xff, 0xff, 0xad, 0xea, 0x38, 0x58, 0x7c, 0x01, 0x00, 0x00,
 }
 
 func (m *GenesisState) Marshal() (dAtA []byte, err error) {
@@ -148,53 +141,29 @@ func (m *GenesisState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		dAtA[i] = 0x1a
 	}
 	if len(m.Rates) > 0 {
-		for k := range m.Rates {
-			v := m.Rates[k]
-			baseI := i
-			if v != nil {
-				{
-					size, err := v.MarshalToSizedBuffer(dAtA[:i])
-					if err != nil {
-						return 0, err
-					}
-					i -= size
-					i = encodeVarintGenesis(dAtA, i, uint64(size))
+		for iNdEx := len(m.Rates) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Rates[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
 				}
-				i--
-				dAtA[i] = 0x12
+				i -= size
+				i = encodeVarintGenesis(dAtA, i, uint64(size))
 			}
-			i -= len(k)
-			copy(dAtA[i:], k)
-			i = encodeVarintGenesis(dAtA, i, uint64(len(k)))
-			i--
-			dAtA[i] = 0xa
-			i = encodeVarintGenesis(dAtA, i, uint64(baseI-i))
 			i--
 			dAtA[i] = 0x12
 		}
 	}
 	if len(m.Aliases) > 0 {
-		for k := range m.Aliases {
-			v := m.Aliases[k]
-			baseI := i
-			if v != nil {
-				{
-					size, err := v.MarshalToSizedBuffer(dAtA[:i])
-					if err != nil {
-						return 0, err
-					}
-					i -= size
-					i = encodeVarintGenesis(dAtA, i, uint64(size))
+		for iNdEx := len(m.Aliases) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Aliases[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
 				}
-				i--
-				dAtA[i] = 0x12
+				i -= size
+				i = encodeVarintGenesis(dAtA, i, uint64(size))
 			}
-			i -= len(k)
-			copy(dAtA[i:], k)
-			i = encodeVarintGenesis(dAtA, i, uint64(len(k)))
-			i--
-			dAtA[i] = 0xa
-			i = encodeVarintGenesis(dAtA, i, uint64(baseI-i))
 			i--
 			dAtA[i] = 0xa
 		}
@@ -220,29 +189,15 @@ func (m *GenesisState) Size() (n int) {
 	var l int
 	_ = l
 	if len(m.Aliases) > 0 {
-		for k, v := range m.Aliases {
-			_ = k
-			_ = v
-			l = 0
-			if v != nil {
-				l = v.Size()
-				l += 1 + sovGenesis(uint64(l))
-			}
-			mapEntrySize := 1 + len(k) + sovGenesis(uint64(len(k))) + l
-			n += mapEntrySize + 1 + sovGenesis(uint64(mapEntrySize))
+		for _, e := range m.Aliases {
+			l = e.Size()
+			n += 1 + l + sovGenesis(uint64(l))
 		}
 	}
 	if len(m.Rates) > 0 {
-		for k, v := range m.Rates {
-			_ = k
-			_ = v
-			l = 0
-			if v != nil {
-				l = v.Size()
-				l += 1 + sovGenesis(uint64(l))
-			}
-			mapEntrySize := 1 + len(k) + sovGenesis(uint64(len(k))) + l
-			n += mapEntrySize + 1 + sovGenesis(uint64(mapEntrySize))
+		for _, e := range m.Rates {
+			l = e.Size()
+			n += 1 + l + sovGenesis(uint64(l))
 		}
 	}
 	if m.TokenBlackWhites != nil {
@@ -316,105 +271,10 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.Aliases == nil {
-				m.Aliases = make(map[string]*TokenAlias)
+			m.Aliases = append(m.Aliases, &TokenAlias{})
+			if err := m.Aliases[len(m.Aliases)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
 			}
-			var mapkey string
-			var mapvalue *TokenAlias
-			for iNdEx < postIndex {
-				entryPreIndex := iNdEx
-				var wire uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return ErrIntOverflowGenesis
-					}
-					if iNdEx >= l {
-						return io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					wire |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				fieldNum := int32(wire >> 3)
-				if fieldNum == 1 {
-					var stringLenmapkey uint64
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowGenesis
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						stringLenmapkey |= uint64(b&0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					intStringLenmapkey := int(stringLenmapkey)
-					if intStringLenmapkey < 0 {
-						return ErrInvalidLengthGenesis
-					}
-					postStringIndexmapkey := iNdEx + intStringLenmapkey
-					if postStringIndexmapkey < 0 {
-						return ErrInvalidLengthGenesis
-					}
-					if postStringIndexmapkey > l {
-						return io.ErrUnexpectedEOF
-					}
-					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
-					iNdEx = postStringIndexmapkey
-				} else if fieldNum == 2 {
-					var mapmsglen int
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowGenesis
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						mapmsglen |= int(b&0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					if mapmsglen < 0 {
-						return ErrInvalidLengthGenesis
-					}
-					postmsgIndex := iNdEx + mapmsglen
-					if postmsgIndex < 0 {
-						return ErrInvalidLengthGenesis
-					}
-					if postmsgIndex > l {
-						return io.ErrUnexpectedEOF
-					}
-					mapvalue = &TokenAlias{}
-					if err := mapvalue.Unmarshal(dAtA[iNdEx:postmsgIndex]); err != nil {
-						return err
-					}
-					iNdEx = postmsgIndex
-				} else {
-					iNdEx = entryPreIndex
-					skippy, err := skipGenesis(dAtA[iNdEx:])
-					if err != nil {
-						return err
-					}
-					if (skippy < 0) || (iNdEx+skippy) < 0 {
-						return ErrInvalidLengthGenesis
-					}
-					if (iNdEx + skippy) > postIndex {
-						return io.ErrUnexpectedEOF
-					}
-					iNdEx += skippy
-				}
-			}
-			m.Aliases[mapkey] = mapvalue
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
@@ -445,105 +305,10 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.Rates == nil {
-				m.Rates = make(map[string]*TokenRate)
+			m.Rates = append(m.Rates, &TokenRate{})
+			if err := m.Rates[len(m.Rates)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
 			}
-			var mapkey string
-			var mapvalue *TokenRate
-			for iNdEx < postIndex {
-				entryPreIndex := iNdEx
-				var wire uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return ErrIntOverflowGenesis
-					}
-					if iNdEx >= l {
-						return io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					wire |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				fieldNum := int32(wire >> 3)
-				if fieldNum == 1 {
-					var stringLenmapkey uint64
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowGenesis
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						stringLenmapkey |= uint64(b&0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					intStringLenmapkey := int(stringLenmapkey)
-					if intStringLenmapkey < 0 {
-						return ErrInvalidLengthGenesis
-					}
-					postStringIndexmapkey := iNdEx + intStringLenmapkey
-					if postStringIndexmapkey < 0 {
-						return ErrInvalidLengthGenesis
-					}
-					if postStringIndexmapkey > l {
-						return io.ErrUnexpectedEOF
-					}
-					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
-					iNdEx = postStringIndexmapkey
-				} else if fieldNum == 2 {
-					var mapmsglen int
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowGenesis
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						mapmsglen |= int(b&0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					if mapmsglen < 0 {
-						return ErrInvalidLengthGenesis
-					}
-					postmsgIndex := iNdEx + mapmsglen
-					if postmsgIndex < 0 {
-						return ErrInvalidLengthGenesis
-					}
-					if postmsgIndex > l {
-						return io.ErrUnexpectedEOF
-					}
-					mapvalue = &TokenRate{}
-					if err := mapvalue.Unmarshal(dAtA[iNdEx:postmsgIndex]); err != nil {
-						return err
-					}
-					iNdEx = postmsgIndex
-				} else {
-					iNdEx = entryPreIndex
-					skippy, err := skipGenesis(dAtA[iNdEx:])
-					if err != nil {
-						return err
-					}
-					if (skippy < 0) || (iNdEx+skippy) < 0 {
-						return ErrInvalidLengthGenesis
-					}
-					if (iNdEx + skippy) > postIndex {
-						return io.ErrUnexpectedEOF
-					}
-					iNdEx += skippy
-				}
-			}
-			m.Rates[mapkey] = mapvalue
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
