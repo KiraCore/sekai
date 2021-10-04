@@ -11,14 +11,14 @@ import (
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	bank "github.com/cosmos/cosmos-sdk/x/bank/types"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 )
 
 func (suite *AnteTestSuite) SetBalance(addr sdk.AccAddress, coin sdk.Coin) {
 	coins := sdk.Coins{coin}
-	suite.app.BankKeeper.MintCoins(suite.ctx, authtypes.FeeCollectorName, coins)
-	suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, authtypes.FeeCollectorName, addr, coins)
+	suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
+	suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, addr, coins)
 }
 
 // Test that simulate transaction process execution fee correctly on ante handler step

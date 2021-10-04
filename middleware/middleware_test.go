@@ -13,7 +13,7 @@ import (
 	"github.com/KiraCore/sekai/x/gov"
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
@@ -66,10 +66,10 @@ func Test_Middleware_SetNetworkProperties(t *testing.T) {
 			ctx := app.NewContext(false, tmproto.Header{})
 
 			coins := sdk.Coins{sdk.NewInt64Coin("ukex", 100000)}
-			app.BankKeeper.MintCoins(ctx, authtypes.FeeCollectorName, coins)
-			app.BankKeeper.SendCoinsFromModuleToAccount(ctx, authtypes.FeeCollectorName, sudoAddr, coins)
-			app.BankKeeper.MintCoins(ctx, authtypes.FeeCollectorName, coins)
-			app.BankKeeper.SendCoinsFromModuleToAccount(ctx, authtypes.FeeCollectorName, changeFeeAddr, coins)
+			app.BankKeeper.MintCoins(ctx, minttypes.ModuleName, coins)
+			app.BankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, sudoAddr, coins)
+			app.BankKeeper.MintCoins(ctx, minttypes.ModuleName, coins)
+			app.BankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, changeFeeAddr, coins)
 
 			// First we set Role Sudo to proposer Actor
 			proposerActor := govtypes.NewDefaultActor(sudoAddr)
