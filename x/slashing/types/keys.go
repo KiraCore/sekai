@@ -39,14 +39,6 @@ func ValidatorSigningInfoKey(v sdk.ConsAddress) []byte {
 	return append(ValidatorSigningInfoKeyPrefix, v.Bytes()...)
 }
 
-// ValidatorSigningInfoAddress - extract the address from a validator signing info key
-func ValidatorSigningInfoAddress(key []byte) (v sdk.ConsAddress) {
-	// Remove prefix and address length.
-	addr := key[2:]
-
-	return sdk.ConsAddress(addr)
-}
-
 // ValidatorMissedBlockBitArrayPrefixKey - stored by *Consensus* address (not operator address)
 func ValidatorMissedBlockBitArrayPrefixKey(v sdk.ConsAddress) []byte {
 	return append(ValidatorMissedBlockBitArrayKeyPrefix, v.Bytes()...)

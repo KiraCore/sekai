@@ -8,6 +8,7 @@ import (
 	"github.com/KiraCore/sekai/x/slashing/types"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
@@ -64,7 +65,21 @@ func TestResetWholeValidatorRank(t *testing.T) {
 			app.CustomStakingKeeper.AddValidator(ctx, validators[0])
 			app.CustomStakingKeeper.AfterValidatorJoined(ctx, validators[0].GetConsAddr(), validators[0].ValKey)
 
+			infos := []types.ValidatorSigningInfo{}
+			app.CustomSlashingKeeper.IterateValidatorSigningInfos(ctx, func(address sdk.ConsAddress, info types.ValidatorSigningInfo) (stop bool) {
+				infos = append(infos, info)
+				return false
+			})
+			require.Len(t, infos, 1)
+
 			tt.prepareScenario(app, ctx, validators[0])
+
+			infos = []types.ValidatorSigningInfo{}
+			app.CustomSlashingKeeper.IterateValidatorSigningInfos(ctx, func(address sdk.ConsAddress, info types.ValidatorSigningInfo) (stop bool) {
+				infos = append(infos, info)
+				return false
+			})
+			require.Len(t, infos, 1)
 
 			err := app.CustomSlashingKeeper.ResetWholeValidatorRank(ctx)
 			require.NoError(t, err)
@@ -79,7 +94,7 @@ func TestResetWholeValidatorRank(t *testing.T) {
 			require.Equal(t, int64(0), validators[0].Rank)
 			require.Equal(t, int64(0), validators[0].Streak)
 
-			infos := []types.ValidatorSigningInfo{}
+			infos = []types.ValidatorSigningInfo{}
 			app.CustomSlashingKeeper.IterateValidatorSigningInfos(ctx, func(address sdk.ConsAddress, info types.ValidatorSigningInfo) (stop bool) {
 				infos = append(infos, info)
 				return false
@@ -96,15 +111,21 @@ func TestResetWholeValidatorRank(t *testing.T) {
 }
 
 func createValidators(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context, accNum int) (validators []stakingtypes.Validator) {
-	addrs := simapp.AddTestAddrsIncremental(app, ctx, accNum, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
-
-	for _, addr := range addrs {
+	pubkeys := simapp.CreateTestPubKeys(accNum)
+	accAmt := sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction)
+	initCoins := sdk.NewCoins(sdk.NewCoin(app.CustomStakingKeeper.BondDenom(ctx), accAmt))
+	for _, pubkey := range pubkeys {
+		addr := sdk.AccAddress(pubkey.Address())
+		acc := app.AccountKeeper.NewAccountWithAddress(ctx, addr)
+		app.AccountKeeper.SetAccount(ctx, acc)
+		err := app.BankKeeper.MintCoins(ctx, minttypes.ModuleName, initCoins)
+		require.NoError(t, err)
+		err = app.BankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, addr, initCoins)
+		require.NoError(t, err)
 		valAddr := sdk.ValAddress(addr)
-		pubkeys := simapp.CreateTestPubKeys(1)
-
 		validator, err := stakingtypes.NewValidator(
 			valAddr,
-			pubkeys[0],
+			pubkey,
 		)
 		require.NoError(t, err)
 		validators = append(validators, validator)

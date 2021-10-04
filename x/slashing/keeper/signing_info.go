@@ -43,10 +43,13 @@ func (k Keeper) IterateValidatorSigningInfos(ctx sdk.Context,
 	iter := sdk.KVStorePrefixIterator(store, types.ValidatorSigningInfoKeyPrefix)
 	defer iter.Close()
 	for ; iter.Valid(); iter.Next() {
-		address := types.ValidatorSigningInfoAddress(iter.Key())
 		var info types.ValidatorSigningInfo
 		k.cdc.MustUnmarshal(iter.Value(), &info)
-		if handler(address, info) {
+		consAddr, err := sdk.ConsAddressFromBech32(info.Address)
+		if err != nil {
+			panic(err)
+		}
+		if handler(consAddr, info) {
 			break
 		}
 	}
