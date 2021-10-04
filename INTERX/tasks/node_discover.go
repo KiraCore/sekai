@@ -91,8 +91,70 @@ func QueryNetInfo(rpcAddr string) (*tmTypes.ResultNetInfo, error) {
 	return result, err
 }
 
-func QueryPeers(rpcAddr string) ([]tmTypes.Peer, error) {
-	netInfo, err := QueryNetInfo(rpcAddr)
+func QueryNetInfoFromInterx(interxAddr string) (*tmTypes.ResultNetInfo, error) {
+	result := new(tmTypes.ResultNetInfo)
+
+	u, err := url.Parse(interxAddr)
+	_, err = net.DialTimeout("tcp", u.Host, timeout())
+	if err != nil {
+		common.GetLogger().Info(err)
+		return result, err
+	}
+
+	endpoint := fmt.Sprintf("%s/api/net_info", interxAddr)
+
+	client := http.Client{
+		Timeout: timeout(),
+	}
+
+	resp, err := client.Get(endpoint)
+	if err != nil {
+		return result, err
+	}
+	defer resp.Body.Close()
+
+	respBody, _ := ioutil.ReadAll(resp.Body)
+
+	if err := json.Unmarshal(respBody, result); err != nil {
+		return result, err
+	}
+
+	return result, err
+}
+
+func QueryPeers(ipAddr string) ([]tmTypes.Peer, error) {
+	interxRPC := getInterxAddress(ipAddr)
+
+	netInfo, err := QueryNetInfoFromInterx(interxRPC)
+	if err == nil {
+		common.GetLogger().Info("interx ", netInfo)
+		return netInfo.Peers, err
+	}
+
+	netInfo, err = QueryNetInfo("http://" + ipAddr + ":16657")
+	if err == nil {
+		return netInfo.Peers, err
+	}
+
+	netInfo, err = QueryNetInfo("http://" + ipAddr + ":26657")
+	if err == nil {
+		return netInfo.Peers, err
+	}
+
+	netInfo, err = QueryNetInfo("http://" + ipAddr + ":36657")
+	if err == nil {
+		return netInfo.Peers, err
+	}
+
+	netInfo, err = QueryNetInfo("http://" + ipAddr + ":46657")
+	if err == nil {
+		return netInfo.Peers, err
+	}
+
+	netInfo, err = QueryNetInfo("http://" + ipAddr + ":56657")
+	if err == nil {
+		return netInfo.Peers, err
+	}
 
 	return netInfo.Peers, err
 }
@@ -158,7 +220,9 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 		isIpInList := make(map[string]bool) // check if ip is already queried
 		var uniqueIPAddresses []string
 		isLocalPeer := make(map[string]bool)
-		localPeers, _ := QueryPeers(rpcAddr)
+
+		localPeers, _ := QueryPeers(getHostname(rpcAddr))
+
 		for _, peer := range localPeers {
 			isLocalPeer[string(peer.NodeInfo.ID())] = true
 			ip := getHostname(peer.NodeInfo.ListenAddr)
@@ -191,7 +255,7 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 				common.GetLogger().Info("[node-discovery] ", ipAddr)
 			}
 
-			kiraStatus, err := QueryKiraStatus(getTendermintRPCAddress(ipAddr))
+			kiraStatus, err := QueryKiraStatus(ipAddr)
 			if err != nil {
 				continue
 			}
@@ -215,7 +279,7 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 			}
 
 			if _, ok := peersFromIP[ipAddr]; !ok {
-				peersFromIP[ipAddr], _ = QueryPeers(getTendermintRPCAddress(ipAddr))
+				peersFromIP[ipAddr], _ = QueryPeers(ipAddr)
 			}
 
 			peers := peersFromIP[ipAddr]
