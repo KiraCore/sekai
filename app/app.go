@@ -18,16 +18,19 @@ import (
 	genutiltypes "github.com/KiraCore/sekai/x/genutil/types"
 	customgov "github.com/KiraCore/sekai/x/gov"
 	customgovkeeper "github.com/KiraCore/sekai/x/gov/keeper"
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	customslashing "github.com/KiraCore/sekai/x/slashing"
 	customslashingkeeper "github.com/KiraCore/sekai/x/slashing/keeper"
-	customslashingtypes "github.com/KiraCore/sekai/x/slashing/types"
+	slashingtypes "github.com/KiraCore/sekai/x/slashing/types"
 	customstaking "github.com/KiraCore/sekai/x/staking"
 	customstakingkeeper "github.com/KiraCore/sekai/x/staking/keeper"
-	customstakingtypes "github.com/KiraCore/sekai/x/staking/types"
+	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	"github.com/KiraCore/sekai/x/tokens"
 	tokenskeeper "github.com/KiraCore/sekai/x/tokens/keeper"
 	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
+	"github.com/KiraCore/sekai/x/upgrade"
+	upgradekeeper "github.com/KiraCore/sekai/x/upgrade/keeper"
+	upgradetypes "github.com/KiraCore/sekai/x/upgrade/types"
 	bam "github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
@@ -55,9 +58,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/params"
 	paramskeeper "github.com/cosmos/cosmos-sdk/x/params/keeper"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	"github.com/cosmos/cosmos-sdk/x/upgrade"
-	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
-	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 	"github.com/gorilla/mux"
 	"github.com/rakyll/statik/fs"
 	abci "github.com/tendermint/tendermint/abci/types"
@@ -65,6 +65,10 @@ import (
 	tmos "github.com/tendermint/tendermint/libs/os"
 	dbm "github.com/tendermint/tm-db"
 )
+
+// TODO: upgrade cosmos-sdk to be latest
+// TODO: After upgrade of cosmos SDK, there's a reverse flag defined already,
+// remove relevant codebase from sekai repo: FilteredReversePaginate, Reverse flag
 
 const appName = "Sekai"
 
@@ -92,6 +96,7 @@ var (
 	// module account permissions
 	maccPerms = map[string][]string{
 		authtypes.FeeCollectorName: nil,
+		govtypes.ModuleName:        nil,
 	}
 
 	// module accounts that are allowed to receive tokens
@@ -113,17 +118,17 @@ type SekaiApp struct {
 	memKeys map[string]*sdk.MemoryStoreKey
 
 	// keepers
-	accountKeeper authkeeper.AccountKeeper
-	bankKeeper    bankkeeper.Keeper
-	upgradeKeeper upgradekeeper.Keeper
-	paramsKeeper  paramskeeper.Keeper
+	AccountKeeper authkeeper.AccountKeeper
+	BankKeeper    bankkeeper.Keeper
+	UpgradeKeeper upgradekeeper.Keeper
+	ParamsKeeper  paramskeeper.Keeper
 
-	customSlashingKeeper customslashingkeeper.Keeper
-	customStakingKeeper  customstakingkeeper.Keeper
-	customGovKeeper      customgovkeeper.Keeper
-	tokensKeeper         tokenskeeper.Keeper
-	feeprocessingKeeper  feeprocessingkeeper.Keeper
-	evidenceKeeper       evidencekeeper.Keeper
+	CustomGovKeeper      customgovkeeper.Keeper
+	CustomStakingKeeper  customstakingkeeper.Keeper
+	CustomSlashingKeeper customslashingkeeper.Keeper
+	TokensKeeper         tokenskeeper.Keeper
+	FeeProcessingKeeper  feeprocessingkeeper.Keeper
+	EvidenceKeeper       evidencekeeper.Keeper
 
 	// Module Manager
 	mm *module.Manager
@@ -138,10 +143,10 @@ func init() {
 		panic(err)
 	}
 
-	DefaultNodeHome = filepath.Join(userHomeDir, ".simapp")
+	DefaultNodeHome = filepath.Join(userHomeDir, ".sekaid")
 }
 
-// NewSimApp returns a reference to an initialized SimApp.
+// NewInitApp returns a reference to an initialized App.
 func NewInitApp(
 	logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest bool, skipUpgradeHeights map[int64]bool,
 	homePath string, invCheckPeriod uint, encodingConfig simappparams.EncodingConfig, appOpts servertypes.AppOptions, baseAppOptions ...func(*bam.BaseApp),
@@ -162,9 +167,9 @@ func NewInitApp(
 		banktypes.StoreKey,
 		paramstypes.StoreKey,
 		upgradetypes.StoreKey,
-		customslashingtypes.ModuleName,
-		customstakingtypes.ModuleName,
-		customgovtypes.ModuleName,
+		slashingtypes.ModuleName,
+		stakingtypes.ModuleName,
+		govtypes.ModuleName,
 		tokenstypes.ModuleName,
 		feeprocessingtypes.ModuleName,
 		evidencetypes.StoreKey,
@@ -182,84 +187,93 @@ func NewInitApp(
 		tKeys:             tKeys,
 	}
 
-	app.paramsKeeper = initParamsKeeper(appCodec, cdc, keys[paramstypes.StoreKey], tKeys[paramstypes.TStoreKey])
+	app.ParamsKeeper = initParamsKeeper(appCodec, cdc, keys[paramstypes.StoreKey], tKeys[paramstypes.TStoreKey])
 
 	// set the BaseApp's parameter store
-	app.SetParamStore(app.paramsKeeper.Subspace(bam.Paramspace).WithKeyTable(paramskeeper.ConsensusParamsKeyTable()))
+	app.SetParamStore(app.ParamsKeeper.Subspace(bam.Paramspace).WithKeyTable(paramskeeper.ConsensusParamsKeyTable()))
 
 	// The AccountKeeper handles address -> account lookups
-	app.accountKeeper = authkeeper.NewAccountKeeper(
+	app.AccountKeeper = authkeeper.NewAccountKeeper(
 		appCodec, keys[authtypes.StoreKey], app.GetSubspace(authtypes.ModuleName), authtypes.ProtoBaseAccount, maccPerms,
 	)
-	app.bankKeeper = bankkeeper.NewBaseKeeper(
-		appCodec, keys[banktypes.StoreKey], app.accountKeeper, app.GetSubspace(banktypes.ModuleName), app.BlockedAddrs(),
+	app.BankKeeper = bankkeeper.NewBaseKeeper(
+		appCodec, keys[banktypes.StoreKey], app.AccountKeeper, app.GetSubspace(banktypes.ModuleName), app.BlockedAddrs(),
 	)
-	app.upgradeKeeper = upgradekeeper.NewKeeper(skipUpgradeHeights, keys[upgradetypes.StoreKey], appCodec, homePath)
+	app.UpgradeKeeper = upgradekeeper.NewKeeper(keys[upgradetypes.StoreKey], appCodec)
 
-	app.customGovKeeper = customgovkeeper.NewKeeper(keys[customgovtypes.ModuleName], appCodec)
-	customStakingKeeper := customstakingkeeper.NewKeeper(keys[customstakingtypes.ModuleName], cdc, app.customGovKeeper)
-	app.customSlashingKeeper = customslashingkeeper.NewKeeper(
-		appCodec, keys[customslashingtypes.StoreKey], &customStakingKeeper, app.customGovKeeper, app.GetSubspace(customslashingtypes.ModuleName),
+	// app.upgradeKeeper.SetUpgradeHandler(
+	// 	"upgrade1", func(ctx sdk.Context, plan upgradetypes.Plan) {
+	// 	})
+
+	app.CustomGovKeeper = customgovkeeper.NewKeeper(keys[govtypes.ModuleName], appCodec, app.BankKeeper)
+	customStakingKeeper := customstakingkeeper.NewKeeper(keys[stakingtypes.ModuleName], cdc, app.CustomGovKeeper)
+	app.CustomSlashingKeeper = customslashingkeeper.NewKeeper(
+		appCodec, keys[slashingtypes.StoreKey], &customStakingKeeper, app.CustomGovKeeper, app.GetSubspace(slashingtypes.ModuleName),
 	)
-	app.tokensKeeper = tokenskeeper.NewKeeper(keys[tokenstypes.ModuleName], appCodec)
+	app.TokensKeeper = tokenskeeper.NewKeeper(keys[tokenstypes.ModuleName], appCodec)
 	// NOTE: customStakingKeeper above is passed by reference, so that it will contain these hooks
-	app.customStakingKeeper = *customStakingKeeper.SetHooks(
-		customstakingtypes.NewMultiStakingHooks(app.customSlashingKeeper.Hooks()),
+	app.CustomStakingKeeper = *customStakingKeeper.SetHooks(
+		stakingtypes.NewMultiStakingHooks(app.CustomSlashingKeeper.Hooks()),
 	)
 
-	app.feeprocessingKeeper = feeprocessingkeeper.NewKeeper(keys[feeprocessingtypes.ModuleName], appCodec, app.bankKeeper, app.tokensKeeper, app.customGovKeeper)
+	app.FeeProcessingKeeper = feeprocessingkeeper.NewKeeper(keys[feeprocessingtypes.ModuleName], appCodec, app.BankKeeper, app.TokensKeeper, app.CustomGovKeeper)
 
 	// create evidence keeper with router
 	evidenceKeeper := evidencekeeper.NewKeeper(
-		appCodec, keys[evidencetypes.StoreKey], &app.customStakingKeeper, app.customSlashingKeeper,
+		appCodec, keys[evidencetypes.StoreKey], &app.CustomStakingKeeper, app.CustomSlashingKeeper,
 	)
 	// If evidence needs to be handled for the app, set routes in router here and seal
-	app.evidenceKeeper = *evidenceKeeper
+	app.EvidenceKeeper = *evidenceKeeper
+
+	proposalRouter := govtypes.NewProposalRouter(
+		[]govtypes.ProposalHandler{
+			customgov.NewApplyAssignPermissionProposalHandler(app.CustomGovKeeper),
+			customgov.NewApplySetNetworkPropertyProposalHandler(app.CustomGovKeeper),
+			customgov.NewApplyUpsertDataRegistryProposalHandler(app.CustomGovKeeper),
+			customgov.NewApplySetPoorNetworkMessagesProposalHandler(app.CustomGovKeeper),
+			tokens.NewApplyUpsertTokenAliasProposalHandler(app.TokensKeeper),
+			tokens.NewApplyUpsertTokenRatesProposalHandler(app.TokensKeeper),
+			tokens.NewApplyWhiteBlackChangeProposalHandler(app.TokensKeeper),
+			customstaking.NewApplyUnjailValidatorProposalHandler(app.CustomStakingKeeper, app.CustomGovKeeper),
+			customslashing.NewApplyResetWholeValidatorRankProposalHandler(app.CustomSlashingKeeper),
+			customgov.NewApplyCreateRoleProposalHandler(app.CustomGovKeeper),
+			upgrade.NewApplySoftwareUpgradeProposalHandler(app.UpgradeKeeper),
+			upgrade.NewApplyCancelSoftwareUpgradeProposalHandler(app.UpgradeKeeper),
+		})
+
+	app.CustomGovKeeper.SetProposalRouter(proposalRouter)
 
 	/****  Module Options ****/
 
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
 	app.mm = module.NewManager(
-		auth.NewAppModule(appCodec, app.accountKeeper, simulation.RandomGenesisAccounts),
+		auth.NewAppModule(appCodec, app.AccountKeeper, simulation.RandomGenesisAccounts),
 		genutil.NewAppModule(
-			app.accountKeeper, app.customStakingKeeper, app.BaseApp.DeliverTx,
+			app.AccountKeeper, app.CustomStakingKeeper, app.BaseApp.DeliverTx,
 			encodingConfig.TxConfig,
 		),
-		bank.NewAppModule(appCodec, app.bankKeeper, app.accountKeeper),
-		upgrade.NewAppModule(app.upgradeKeeper),
-		params.NewAppModule(app.paramsKeeper),
-		customslashing.NewAppModule(appCodec, app.customSlashingKeeper, app.accountKeeper, app.bankKeeper, app.customStakingKeeper),
-		customstaking.NewAppModule(app.customStakingKeeper, app.customGovKeeper),
-		customgov.NewAppModule(app.customGovKeeper, customgov.NewProposalRouter(
-			[]customgov.ProposalHandler{
-				customgov.NewApplyAssignPermissionProposalHandler(app.customGovKeeper),
-				customgov.NewApplySetNetworkPropertyProposalHandler(app.customGovKeeper),
-				customgov.NewApplyUpsertDataRegistryProposalHandler(app.customGovKeeper),
-				customgov.NewApplySetPoorNetworkMessagesProposalHandler(app.customGovKeeper),
-				tokens.NewApplyUpsertTokenAliasProposalHandler(app.tokensKeeper),
-				tokens.NewApplyUpsertTokenRatesProposalHandler(app.tokensKeeper),
-				tokens.NewApplyWhiteBlackChangeProposalHandler(app.tokensKeeper),
-				customstaking.NewApplyUnjailValidatorProposalHandler(app.customStakingKeeper),
-				customslashing.NewApplyResetWholeValidatorRankProposalHandler(app.customSlashingKeeper),
-				customgov.NewApplyCreateRoleProposalHandler(app.customGovKeeper),
-			},
-		)),
-		tokens.NewAppModule(app.tokensKeeper, app.customGovKeeper),
-		feeprocessing.NewAppModule(app.feeprocessingKeeper),
-		evidence.NewAppModule(app.evidenceKeeper),
+		bank.NewAppModule(appCodec, app.BankKeeper, app.AccountKeeper),
+		upgrade.NewAppModule(app.UpgradeKeeper, app.CustomGovKeeper),
+		params.NewAppModule(app.ParamsKeeper),
+		customslashing.NewAppModule(appCodec, app.CustomSlashingKeeper, app.AccountKeeper, app.BankKeeper, app.CustomStakingKeeper),
+		customstaking.NewAppModule(app.CustomStakingKeeper, app.CustomGovKeeper),
+		customgov.NewAppModule(app.CustomGovKeeper),
+		tokens.NewAppModule(app.TokensKeeper, app.CustomGovKeeper),
+		feeprocessing.NewAppModule(app.FeeProcessingKeeper),
+		evidence.NewAppModule(app.EvidenceKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
 	// there is nothing left over in the validator fee pool, so as to keep the
 	// CanWithdrawInvariant invariant.
 	app.mm.SetOrderBeginBlockers(
-		upgradetypes.ModuleName, customslashingtypes.ModuleName,
-		evidencetypes.ModuleName, customstakingtypes.ModuleName,
+		upgradetypes.ModuleName, slashingtypes.ModuleName,
+		evidencetypes.ModuleName, stakingtypes.ModuleName,
 	)
 	app.mm.SetOrderEndBlockers(
-		customgovtypes.ModuleName,
-		customstakingtypes.ModuleName,
+		govtypes.ModuleName,
+		stakingtypes.ModuleName,
 		feeprocessingtypes.ModuleName,
 	)
 
@@ -271,13 +285,14 @@ func NewInitApp(
 	app.mm.SetOrderInitGenesis(
 		authtypes.ModuleName,
 		banktypes.ModuleName,
-		customstakingtypes.ModuleName,
-		customslashingtypes.ModuleName,
-		customgovtypes.ModuleName,
+		govtypes.ModuleName, // staking module is using the moniker identity registrar and gov module should be initialized before
+		stakingtypes.ModuleName,
+		slashingtypes.ModuleName,
 		tokenstypes.ModuleName,
 		feeprocessingtypes.ModuleName,
 		genutiltypes.ModuleName,
 		evidencetypes.ModuleName,
+		upgradetypes.ModuleName,
 	)
 
 	app.mm.RegisterRoutes(app.Router(), app.QueryRouter(), encodingConfig.Amino)
@@ -291,11 +306,11 @@ func NewInitApp(
 	// NOTE: this is not required apps that don't use the simulator for fuzz testing
 	// transactions
 	app.sm = module.NewSimulationManager(
-		auth.NewAppModule(appCodec, app.accountKeeper, simulation.RandomGenesisAccounts),
-		bank.NewAppModule(appCodec, app.bankKeeper, app.accountKeeper),
-		customslashing.NewAppModule(appCodec, app.customSlashingKeeper, app.accountKeeper, app.bankKeeper, app.customStakingKeeper),
-		params.NewAppModule(app.paramsKeeper),
-		evidence.NewAppModule(app.evidenceKeeper),
+		auth.NewAppModule(appCodec, app.AccountKeeper, simulation.RandomGenesisAccounts),
+		bank.NewAppModule(appCodec, app.BankKeeper, app.AccountKeeper),
+		customslashing.NewAppModule(appCodec, app.CustomSlashingKeeper, app.AccountKeeper, app.BankKeeper, app.CustomStakingKeeper),
+		params.NewAppModule(app.ParamsKeeper),
+		evidence.NewAppModule(app.EvidenceKeeper),
 	)
 
 	app.sm.RegisterStoreDecoders()
@@ -309,12 +324,12 @@ func NewInitApp(
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetAnteHandler(
 		customante.NewAnteHandler(
-			app.customStakingKeeper,
-			app.customGovKeeper,
-			app.tokensKeeper,
-			app.feeprocessingKeeper,
-			app.accountKeeper,
-			app.bankKeeper,
+			app.CustomStakingKeeper,
+			app.CustomGovKeeper,
+			app.TokensKeeper,
+			app.FeeProcessingKeeper,
+			app.AccountKeeper,
+			app.BankKeeper,
 			ante.DefaultSigVerificationGasConsumer,
 			encodingConfig.TxConfig.SignModeHandler(),
 		),
@@ -327,7 +342,7 @@ func NewInitApp(
 		}
 	}
 
-	middleware.SetKeepers(app.customGovKeeper, app.feeprocessingKeeper)
+	middleware.SetKeepers(app.CustomGovKeeper, app.FeeProcessingKeeper)
 
 	return app
 }
@@ -424,7 +439,7 @@ func (app *SekaiApp) GetMemKey(storeKey string) *sdk.MemoryStoreKey {
 //
 // NOTE: This is solely to be used for testing purposes.
 func (app *SekaiApp) GetSubspace(moduleName string) paramstypes.Subspace {
-	subspace, _ := app.paramsKeeper.GetSubspace(moduleName)
+	subspace, _ := app.ParamsKeeper.GetSubspace(moduleName)
 	return subspace
 }
 
@@ -488,7 +503,8 @@ func initParamsKeeper(appCodec codec.BinaryMarshaler, legacyAmino *codec.LegacyA
 
 	paramsKeeper.Subspace(authtypes.ModuleName)
 	paramsKeeper.Subspace(banktypes.ModuleName)
-	paramsKeeper.Subspace(customslashingtypes.ModuleName)
+	paramsKeeper.Subspace(stakingtypes.ModuleName)
+	paramsKeeper.Subspace(slashingtypes.ModuleName)
 
 	return paramsKeeper
 }

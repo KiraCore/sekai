@@ -14,27 +14,11 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgClaimValidator{}, "kiraHub/MsgClaimValidator", nil)
 
 	functionmeta.AddNewFunction((&MsgClaimValidator{}).Type(), `{
-		"description": "MsgClaimValidator defines a message for claiming a new validator..",
+		"description": "MsgClaimValidator defines a message for claiming a new validator.",
 		"parameters": {
 			"moniker": {
 				"type":        "string",
 				"description": "validator's name or nickname."
-			},
-			"website": {
-				"type":        "string",
-				"description": "validator's website."
-			},
-			"social": {
-				"type":        "string",
-				"description": "validator's social link."
-			},
-			"identity": {
-				"type":        "string",
-				"description": "validator's identity information."
-			},
-			"commission": {
-				"type":        "float",
-				"description": "commision rate for this validator"
 			},
 			"val_key": {
 				"type":        "val_address",
@@ -52,7 +36,6 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgClaimValidator{},
-		&MsgProposalUnjailValidator{},
 	)
 
 	registry.RegisterInterface(

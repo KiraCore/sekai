@@ -53,7 +53,7 @@ type InterxNode struct {
 type SnapNode struct {
 	IP       string `json:"ip"`
 	Port     uint16 `json:"port"`
-	Size     string `json:"size"`
+	Size     int    `json:"size"`
 	Checksum string `json:"checksum"`
 }
 
@@ -73,4 +73,61 @@ type SnapNodeListResponse struct {
 	LastUpdate int64      `json:"last_update"`
 	Scanning   bool       `json:"scanning"`
 	NodeList   []SnapNode `json:"node_list"`
+}
+
+type P2PNodes []P2PNode
+
+func (s P2PNodes) Len() int {
+	return len(s)
+}
+func (s P2PNodes) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
+}
+func (s P2PNodes) Less(i, j int) bool {
+	if s[i].Connected != s[j].Connected {
+		if s[j].Connected {
+			return false
+		}
+		if s[i].Connected {
+			return true
+		}
+	}
+
+	if s[i].Ping != s[j].Ping {
+		return s[i].Ping < s[j].Ping
+	}
+
+	return false
+}
+
+type InterxNodes []InterxNode
+
+func (s InterxNodes) Len() int {
+	return len(s)
+}
+func (s InterxNodes) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
+}
+func (s InterxNodes) Less(i, j int) bool {
+	if s[i].Ping != s[j].Ping {
+		return s[i].Ping < s[j].Ping
+	}
+
+	return false
+}
+
+type SnapNodes []SnapNode
+
+func (s SnapNodes) Len() int {
+	return len(s)
+}
+func (s SnapNodes) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
+}
+func (s SnapNodes) Less(i, j int) bool {
+	if s[i].Size != s[j].Size {
+		return s[i].Size > s[j].Size
+	}
+
+	return false
 }

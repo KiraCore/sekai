@@ -16,6 +16,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	registerRolesCodec(cdc)
 	registerCouncilorCodec(cdc)
 	registerProposalCodec(cdc)
+	registerIdRecordsCodec(cdc)
 
 	cdc.RegisterConcrete(&MsgSetNetworkProperties{}, "kiraHub/MsgSetNetworkProperties", nil)
 	functionmeta.AddNewFunction((&MsgSetNetworkProperties{}).Type(), `{
@@ -94,72 +95,29 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 }
 
 func registerProposalCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgProposalAssignPermission{}, "kiraHub/MsgProposalAssignPermission", nil)
-	functionmeta.AddNewFunction((&MsgProposalAssignPermission{}).Type(), `{
-		"description": "MsgProposalAssignPermission defines a proposal message to whitelist permission of an address.",
+	cdc.RegisterConcrete(&MsgSubmitProposal{}, "kiraHub/MsgSubmitProposal", nil)
+	functionmeta.AddNewFunction((&MsgSubmitProposal{}).Type(), `{
+		"description": "MsgSubmitProposal defines a proposal message to submit a proposal.",
 		"parameters": {
 			"proposer": {
-				"type":        "string",
-				"description": "proposer who propose this message."
+				"type":        "address",
+				"description": "the proposer of the proposal."
 			},
-			"address": {
+			"title": {
 				"type":        "string",
-				"description": "Address to whitelist permission to."
+				"description": "the title of the proposal."
 			},
-			"permission": {
-				"type":        "uint32",
-				"description": "Permission to be whitelisted."
+			"description": {
+				"type":        "string",
+				"description": "the description of the proposal."
+			},
+			"content": {
+				"type":        "object",
+				"description": "the content of the proposal - different by type of proposal"
 			}
 		}
 	}`)
-	cdc.RegisterConcrete(&MsgProposalSetNetworkProperty{}, "kiraHub/MsgProposalSetNetworkProperty", nil)
-	functionmeta.AddNewFunction((&MsgProposalSetNetworkProperty{}).Type(), `{
-		"description": "MsgProposalSetNetworkProperty defines a proposal message to modify a single network property.",
-		"parameters": {
-			"proposer": {
-				"type":        "string",
-				"description": "proposer who propose this message."
-			},
-			"network_property": {
-				"type":        "enum<NetworkProperty>",
-				"description": "network property to be modified."
-			},
-			"value": {
-				"type":        "uint64",
-				"description": "network property value to be set."
-			}
-		}
-	}`)
-	cdc.RegisterConcrete(&MsgProposalUpsertDataRegistry{}, "kiraHub/MsgProposalUpsertDataRegistry", nil)
-	functionmeta.AddNewFunction((&MsgProposalUpsertDataRegistry{}).Type(), `{
-		"description": "MsgProposalUpsertDataRegistry defines a proposal message to upsert data registry.",
-		"parameters": {
-			"proposer": {
-				"type":        "string",
-				"description": "proposer who propose this message."
-			},
-			"key": {
-				"type":        "string",
-				"description": "key of data registry."
-			},
-			"hash": {
-				"type":        "string",
-				"description": "hash value of data."
-			},
-			"reference": {
-				"type":        "string",
-				"description": "reference of data."
-			},
-			"encoding": {
-				"type":        "string",
-				"description": "encoding type of data."
-			},
-			"size": {
-				"type":        "uint64",
-				"description": "size of data."
-			}
-		}
-	}`)
+
 	cdc.RegisterConcrete(&MsgVoteProposal{}, "kiraHub/MsgVoteProposal", nil)
 	functionmeta.AddNewFunction((&MsgVoteProposal{}).Type(), `{
 		"description": "MsgVoteProposal defines a proposal message to vote on a submitted proposal.",
@@ -180,6 +138,95 @@ func registerProposalCodec(cdc *codec.LegacyAmino) {
 	}`)
 }
 
+func registerIdRecordsCodec(cdc *codec.LegacyAmino) {
+	cdc.RegisterConcrete(&MsgRegisterIdentityRecords{}, "kiraHub/MsgRegisterIdentityRecords", nil)
+	functionmeta.AddNewFunction((&MsgRegisterIdentityRecords{}).Type(), `{
+		"description": "MsgRegisterIdentityRecords defines a proposal message to create a identity record.",
+		"parameters": {
+			"address": {
+				"type":        "string",
+				"description": "the address for the identity record."
+			},
+			"infos": {
+				"type":        "array",
+				"description": "key/value array for the mappings of the identity record."
+			}
+		}
+	}`)
+
+	cdc.RegisterConcrete(&MsgDeleteIdentityRecords{}, "kiraHub/MsgEditIdentityRecord", nil)
+	functionmeta.AddNewFunction((&MsgDeleteIdentityRecords{}).Type(), `{
+		"description": "MsgEditIdentityRecord defines a proposal message to edit an identity record.",
+		"parameters": {
+			"record_id": {
+				"type":        "uint64",
+				"description": "the id of identity record to edit."
+			},
+			"address": {
+				"type":        "string",
+				"description": "the address for the identity record."
+			},
+			"infos": {
+				"type":        "array",
+				"description": "key/value array for the mappings of the identity record."
+			}
+		}
+	}`)
+
+	cdc.RegisterConcrete(&MsgRequestIdentityRecordsVerify{}, "kiraHub/MsgRequestIdentityRecordsVerify", nil)
+	functionmeta.AddNewFunction((&MsgRequestIdentityRecordsVerify{}).Type(), `{
+		"description": "MsgRequestIdentityRecordsVerify defines a proposal message to request an identity record verification from a specific verifier.",
+		"parameters": {
+			"address": {
+				"type":        "string",
+				"description": "the address of requester."
+			},
+			"verifier": {
+				"type":        "string",
+				"description": "the address of verifier."
+			},
+			"record_ids": {
+				"type":        "arraw<uint64>",
+				"description": "the id of records to be verified."
+			},
+			"tip": {
+				"type":        "coins",
+				"description": "the amount of coins to be given up-on accepting the request."
+			}
+		}
+	}`)
+
+	cdc.RegisterConcrete(&MsgHandleIdentityRecordsVerifyRequest{}, "kiraHub/MsgHandleIdentityRecordsVerifyRequest", nil)
+	functionmeta.AddNewFunction((&MsgHandleIdentityRecordsVerifyRequest{}).Type(), `{
+		"description": "MsgHandleIdentityRecordsVerifyRequest defines a proposal message to approve or reject an identity record request.",
+		"parameters": {
+			"verifier": {
+				"type":        "string",
+				"description": "the address of verifier."
+			},
+			"verify_request_id": {
+				"type":        "uint64",
+				"description": "the id of verification request."
+			}
+		}
+	}`)
+
+	cdc.RegisterConcrete(&MsgCancelIdentityRecordsVerifyRequest{}, "kiraHub/MsgCancelIdentityRecordsVerifyRequest", nil)
+	functionmeta.AddNewFunction((&MsgCancelIdentityRecordsVerifyRequest{}).Type(), `{
+		"description": "MsgCancelIdentityRecordsVerifyRequest defines a proposal message to cancel an identity record request.",
+		"parameters": {
+			"executor": {
+				"type":        "string",
+				"description": "the address of requester."
+			},
+			"verify_request_id": {
+				"type":        "uint64",
+				"description": "the id of verification request."
+			}
+		}
+	}`)
+}
+
 func registerCouncilorCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgClaimCouncilor{}, "kiraHub/MsgClaimCouncilor", nil)
 	functionmeta.AddNewFunction((&MsgClaimCouncilor{}).Type(), `{
@@ -188,18 +235,6 @@ func registerCouncilorCodec(cdc *codec.LegacyAmino) {
 			"moniker": {
 				"type":        "string",
 				"description": "validator's name or nickname."
-			},
-			"website": {
-				"type":        "string",
-				"description": "validator's website."
-			},
-			"social": {
-				"type":        "string",
-				"description": "validator's social link."
-			},
-			"identity": {
-				"type":        "string",
-				"description": "validator's identity information."
 			},
 			"address": {
 				"type":        "string",
@@ -393,12 +428,14 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgRemoveWhitelistRolePermission{},
 		&MsgRemoveBlacklistRolePermission{},
 
-		&MsgProposalAssignPermission{},
-		&MsgProposalSetNetworkProperty{},
-		&MsgProposalUpsertDataRegistry{},
-		&MsgProposalSetPoorNetworkMessages{},
-		&MsgProposalCreateRole{},
+		&MsgSubmitProposal{},
 		&MsgVoteProposal{},
+
+		&MsgRegisterIdentityRecords{},
+		&MsgDeleteIdentityRecords{},
+		&MsgRequestIdentityRecordsVerify{},
+		&MsgHandleIdentityRecordsVerifyRequest{},
+		&MsgCancelIdentityRecordsVerifyRequest{},
 	)
 
 	registry.RegisterInterface(

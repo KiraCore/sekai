@@ -86,7 +86,7 @@ func queryAllEvidence(clientCtx client.Context, pageReq *query.PageRequest) erro
 	queryClient := types.NewQueryClient(clientCtx)
 
 	params := &types.QueryAllEvidenceRequest{
-		Pagination: &types.PageRequest{
+		Pagination: &query.PageRequest{
 			Key:        pageReq.Key,
 			Offset:     pageReq.Offset,
 			Limit:      pageReq.Limit,

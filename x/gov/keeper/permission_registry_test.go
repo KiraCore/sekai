@@ -3,7 +3,7 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/KiraCore/sekai/simapp"
+	simapp "github.com/KiraCore/sekai/app"
 	"github.com/KiraCore/sekai/x/gov/types"
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"

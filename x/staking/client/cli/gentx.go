@@ -3,17 +3,18 @@ package cli
 import (
 	"encoding/json"
 	"fmt"
+	"time"
 
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
+	"github.com/KiraCore/sekai/x/genutil"
 	genutiltypes "github.com/KiraCore/sekai/x/genutil/types"
-
-	customstakingtypes "github.com/KiraCore/sekai/x/staking/types"
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
+	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/server"
 	"github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"github.com/KiraCore/sekai/x/genutil"
 	"github.com/cosmos/cosmos-sdk/x/staking/client/cli"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
@@ -52,19 +53,7 @@ func GenTxClaimCmd(genBalIterator banktypes.GenesisBalancesIterator, defaultNode
 				return errors.Wrapf(err, "failed to fetch '%s' from the keyring", name)
 			}
 
-			moniker := config.Moniker
-			if m, _ := cmd.Flags().GetString(cli.FlagMoniker); m != "" {
-				moniker = m
-			}
-
-			website, _ := cmd.Flags().GetString(FlagWebsite)
-			identity, _ := cmd.Flags().GetString(FlagIdentity)
-			validator, err := customstakingtypes.NewValidator(
-				moniker,
-				website,
-				"social",
-				identity,
-				types.NewDec(1),
+			validator, err := stakingtypes.NewValidator(
 				types.ValAddress(key.GetAddress()),
 				valPubKey,
 			)
@@ -72,32 +61,50 @@ func GenTxClaimCmd(genBalIterator banktypes.GenesisBalancesIterator, defaultNode
 				return errors.Wrap(err, "failed to create new validator")
 			}
 
-			var stakingGenesisState customstakingtypes.GenesisState
+			var stakingGenesisState stakingtypes.GenesisState
 			stakingGenesisState.Validators = append(stakingGenesisState.Validators, validator)
 			bzStakingGen := cdc.MustMarshalJSON(&stakingGenesisState)
-			appState[customstakingtypes.ModuleName] = bzStakingGen
+			appState[stakingtypes.ModuleName] = bzStakingGen
 
-			var customGovGenState customgovtypes.GenesisState
-			cdc.MustUnmarshalJSON(appState[customgovtypes.ModuleName], &customGovGenState)
+			var customGovGenState govtypes.GenesisState
+			cdc.MustUnmarshalJSON(appState[govtypes.ModuleName], &customGovGenState)
 
 			// Only first validator is network actor
-			networkActor := customgovtypes.NewNetworkActor(
+			networkActor := govtypes.NewNetworkActor(
 				types.AccAddress(validator.ValKey),
-				customgovtypes.Roles{
-					uint64(customgovtypes.RoleSudo),
+				govtypes.Roles{
+					uint64(govtypes.RoleSudo),
 				},
-				customgovtypes.Active,
-				[]customgovtypes.VoteOption{
-					customgovtypes.OptionYes,
-					customgovtypes.OptionAbstain,
-					customgovtypes.OptionNo,
-					customgovtypes.OptionNoWithVeto,
+				govtypes.Active,
+				[]govtypes.VoteOption{
+					govtypes.OptionYes,
+					govtypes.OptionAbstain,
+					govtypes.OptionNo,
+					govtypes.OptionNoWithVeto,
 				},
-				customgovtypes.NewPermissions(nil, nil),
+				govtypes.NewPermissions(nil, nil),
 				1,
 			)
 			customGovGenState.NetworkActors = append(customGovGenState.NetworkActors, &networkActor)
-			appState[customgovtypes.ModuleName] = cdc.MustMarshalJSON(&customGovGenState)
+			moniker := config.Moniker
+			if m, _ := cmd.Flags().GetString(cli.FlagMoniker); m != "" {
+				moniker = m
+			}
+			for _, record := range customGovGenState.IdentityRecords {
+				if record.Key == "moniker" && record.Value == moniker {
+					panic(fmt.Sprintf("same moniker exists, moniker = %s", moniker))
+				}
+			}
+			customGovGenState.IdentityRecords = append(customGovGenState.IdentityRecords, govtypes.IdentityRecord{
+				Id:        customGovGenState.LastIdentityRecordId + 1,
+				Address:   types.AccAddress(validator.ValKey),
+				Key:       "moniker",
+				Value:     moniker,
+				Date:      time.Now().UTC(),
+				Verifiers: []sdk.AccAddress{},
+			})
+			customGovGenState.LastIdentityRecordId++
+			appState[govtypes.ModuleName] = cdc.MustMarshalJSON(&customGovGenState)
 
 			appGenStateJSON, err := json.Marshal(appState)
 			if err != nil {

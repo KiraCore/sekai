@@ -3,6 +3,7 @@ package keeper
 import (
 	"fmt"
 
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -42,8 +43,6 @@ func (k Keeper) AddValidator(ctx sdk.Context, validator types.Validator) {
 	bz := k.cdc.MustMarshalBinaryBare(&validator)
 	store.Set(GetValidatorKey(validator.ValKey), bz)
 
-	// Save by moniker
-	store.Set(GetValidatorByMonikerKey(validator.Moniker), GetValidatorKey(validator.ValKey))
 	k.AddValidatorByConsAddr(ctx, validator)
 }
 
@@ -75,14 +74,12 @@ func (k Keeper) GetValidatorByAccAddress(ctx sdk.Context, address sdk.AccAddress
 }
 
 func (k Keeper) GetValidatorByMoniker(ctx sdk.Context, moniker string) (types.Validator, error) {
-	store := ctx.KVStore(k.storeKey)
-
-	valKey := store.Get(GetValidatorByMonikerKey(moniker))
-	if valKey == nil {
+	addrs := k.govkeeper.GetAddressesByIdRecordKey(ctx, "moniker", moniker)
+	if len(addrs) != 1 {
 		return types.Validator{}, fmt.Errorf("validator with moniker %s not found", moniker)
 	}
 
-	return k.getValidatorByKey(ctx, valKey)
+	return k.GetValidator(ctx, sdk.ValAddress(addrs[0]))
 }
 
 func (k Keeper) getValidatorByKey(ctx sdk.Context, key []byte) (types.Validator, error) {
@@ -142,6 +139,30 @@ func (k Keeper) IterateValidators(ctx sdk.Context,
 	}
 }
 
+// iterate through the active validator set and perform the provided function
+func (k Keeper) IterateLastValidators(ctx sdk.Context, fn func(index int64, validator types.Validator) (stop bool)) {
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, LastValidatorPowerKey)
+	defer iterator.Close()
+
+	i := int64(0)
+
+	for ; iterator.Valid(); iterator.Next() {
+		address := AddressFromLastValidatorPowerKey(iterator.Key())
+
+		validator, err := k.GetValidator(ctx, address)
+		if err != nil {
+			panic(fmt.Sprintf("validator record not found for address: %v\n", address))
+		}
+
+		stop := fn(i, validator) // XXX is this safe will the validator unexposed fields be able to get written to?
+		if stop {
+			break
+		}
+		i++
+	}
+}
+
 // GetValidatorByConsAddr get validator by sdk.ConsAddress
 func (k Keeper) GetValidatorByConsAddr(ctx sdk.Context, consAddr sdk.ConsAddress) (types.Validator, error) {
 	store := ctx.KVStore(k.storeKey)
@@ -169,4 +190,24 @@ func (k Keeper) MaxValidators(sdk.Context) uint32 {
 func (k Keeper) IsNetworkActive(ctx sdk.Context) bool {
 	vals := k.GetValidatorSet(ctx)
 	return len(vals) >= int(k.govkeeper.GetNetworkProperties(ctx).MinValidators)
+}
+
+func AddressFromLastValidatorPowerKey(key []byte) []byte {
+	return key[2:] // remove prefix bytes and address length
+}
+
+// GetIdRecordsByAddress query identity records by address
+func (k Keeper) GetIdRecordsByAddress(ctx sdk.Context, creator sdk.AccAddress) []govtypes.IdentityRecord {
+	return k.govkeeper.GetIdRecordsByAddress(ctx, creator)
+}
+
+func (k Keeper) GetMonikerByAddress(ctx sdk.Context, addr sdk.AccAddress) (string, error) {
+	records, err := k.govkeeper.GetIdRecordsByAddressAndKeys(ctx, addr, []string{"moniker"})
+	if err != nil {
+		return "", err
+	}
+	if len(records) != 1 {
+		return "", fmt.Errorf("failed fetching the field moniker from identity registrar for address=%s", addr.String())
+	}
+	return records[0].Value, nil
 }

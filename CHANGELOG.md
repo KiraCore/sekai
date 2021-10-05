@@ -1,5 +1,209 @@
 # Changelog
 
+## [v0.1.21.28] - 04.10.2021
+
+- Resolve signing info iterator
+
+## [v0.1.21.27] - 03.10.2021
+
+- Added command for exporting new genesis from old genesis
+
+## [v0.1.21.26] - 03.10.2021
+
+- add README for new genesis file manual generation
+
+## [v0.1.21.25] - 26.09.2021
+
+- Add chain ids for upgrade plan
+
+## [v0.1.21.24] - 26.09.2021
+
+- Resolve tokens module genesis export issue
+
+## [v0.1.21.23] - 26.09.2021
+
+- Add skip handler field for upgrade plan
+- Add example script for proposing upgrade with skip handler
+
+## [v0.1.21.22] - 22.09.2021
+
+- Update proto files
+- Update node discovery module to search only connected peers
+
+## [v0.1.21.21] - 19.09.2021
+
+- Remove flag height from upgrade module
+
+## [v0.1.21.20] - 19.09.2021
+
+- Add reboot required field for plan 
+- Restrict the upgrade time to be not less than current block time
+- Always halt if InstateUpgrade is set to false
+
+## [v0.1.21.19] - 19.09.2021
+
+- Remove height from upgrade plan
+- Add current plan and next plan query and add genesis for the plans
+- Resolve export genesis for tokens module
+- Add scripts examples for plan modifications
+
+## [v0.1.21.18] - 15.09.2021
+- Introduce unique identity required keys into identity registrar
+- Changes to allow string network property
+- Add unique identity keys property into network properties
+- Add basic validation of network properties
+- Add example script for testing setting network property for unique identity keys
+- Modification into SetNetworkPropertyProposal for new properties added
+
+## [v0.1.21.17] - 14.09.2021
+- add addrbook query api on interxd
+- add net_info query api on interxd
+- fix validators query
+
+## [v0.1.21.16] - 10.09.2021
+
+- Restrict moniker length to be less than 32
+- Resolve Identity registrar requests querying by approver and requester
+- Test on CLI command for requesters and approver and add examples on scripts
+- Remove commission from validator
+## [v0.1.21.15] - 08.09.2021
+
+- Add querying records by filtering keys
+- add MIN_IDENTITY_APPROVAL_TIP into network properties
+- Implement tip checker
+- implement auto reject if edited after creating verification request
+- add balance check for automatic reject
+- Add identity registrar key validation and automatic lowercase converter
+- Resolve invalid implementation of SetIdentityRegistrar for genesis initialization process of address key matching to recordId
+- Update for moniker field management to use identity registrar
+- Add address catcher from identity key record pair
+- Resolve error handling of identity registrar to log the errors properly on CLI
+- Resolve sample script for identity registrar
+- Add CLI command for querying validators and add example cli command for querying
+- Add range of tests for the changes
+
+## [v0.1.21.14] - 06.09.2021
+
+- Update pagination limit on sekaid
+- Update identity registrar for validators query
+- Update snapshot extension
+- Add ip_only, connected paramere for node list queries
+- Update sort feature of node list queries
+- Query all validators using pagination
+
+## [v0.1.21.13] - 27.08.2021
+
+- Identity registrar records structure change
+- Identity registrar cli UX changes
+- Add scripts example for cli commands
+- Resolve tests for identity registrar changes
+- Commands description fix
+
+## [v0.1.21.12] - 16.08.2021
+
+- Add description on the script to see the version
+- Add reference for identity registrar
+- Remove long json script for unjail testing
+
+## [v0.1.21.11] - 11.08.2021
+
+- Upgrade cosmos sdk version to be latest
+- Remove all flag in proposals query
+- Resolve invalid default home flag
+- CLI modifications for missing endpoints
+- Remove deprecated use of FlagNode on gov and tokens query
+- Resolve CLI test caused by removing unused flag
+
+## [v0.1.21.10] - 11.08.2021
+
+- INTERX: Update node discovery module.
+- INTERX: Update proto-gen script.
+- INTERX: Update interx metadata query.
+- INTERX: Fix voters, DRR, network properties query.
+- INTERX: Update configurations/proposal proto types.
+- INTERX: Add upgrade plan query. (/api/kira/upgrade/current_plan)
+
+## [v0.1.21.9] - 05.08.2021
+
+- Add pagination for identity registrar grpc_queries
+- Modify protogen script to use fixed cosmos sdk branch to prevent autoupgrade
+- Ante test for Ante decorators
+- Add version info on CLI
+- Modify CLI command to be more organized and descriptions to be well-formed along with scripts examples"
+- Combine SekaiApp with simap for easier maintenance
+- Remove unused codes
+
+## [v0.1.21.8] - 28.07.2021
+
+- Remove resolved TODO in readme for upgrade module
+- Add token rates keeper functions test
+- Add token alias keeper functions test
+- Add test for tokens grpc query functions
+- Add test for ProposalTokensWhiteBlackChange
+- Add missing CLI test for tokens module
+- Remove 'all' flag for staking.ValidatorsRequest and slashing.SigningInfosRequest to prevent performance issue
+- Refactor proto-gen script
+- Remove duplications in protobuf definition
+- Utilize existing sdk protobuf
+- Resolve codebase to work with latest protobuf
+- Set IdentityRecord to be only one by address
+
+## [v0.1.21.7] - 22.07.2021
+
+- update governance apis
+- add interx list query api
+- update deposit/withdraw transactions query
+- update interx functions query
+
+## [v0.1.21.6] - 19.07.2021
+
+- Update env to be latest
+- Remove unused message type and commented codebase
+- Check changes to make for codec registration
+- Modification for codec meta registration
+- Remove unused Proposer field from MsgApproveIdentityRecords
+- Add title into the proposal
+- For identity record creation/edit, update date to use blockTime
+- Shell script modifications
+
+## [v0.1.21.5] - 18.07.2021
+
+- Zero gas implementation
+
+## [v0.1.21.4] - 16.07.2021
+
+- Refactor governance module for easier maintenance
+
+## [v0.1.21.3] - 15.07.2021
+
+## Added
+
+- public p2p node list API
+- private p2p node list API
+- p2p node_id verification
+
+## Updated
+
+- validators query to use identity registrar
+- interx configurations/cli configurations
+
+## [v0.1.21.2] - 14.07.2021
+
+- Remove identity part from claim validator
+
+## [v0.1.21.1] - 13.07.2021
+
+- Add instate upgrade feature
+
+## [v0.1.21] - 08.07.2021
+
+- Implement identity registrar
+- Code cleanup for package names
+
+## [v0.1.20] - 10.06.2021
+
+- Add own upgrade module
+
 ## [v0.1.19.6] - 12.05.2021
 
 - Add reverse order querying for proposals querying

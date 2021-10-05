@@ -12,12 +12,12 @@ import sdk "github.com/cosmos/cosmos-sdk/types"
 // 0x06<ValAddress> : Validator Jail Info
 var (
 	ValidatorsKey              = []byte{0x00} // Validators key prefix.
-	ValidatorsByMonikerKey     = []byte{0x01} // Validators by moniker prefix.
 	ValidatorsByConsAddressKey = []byte{0x02} // Validators by consensus addres (PubKey).
 	PendingValidatorQueue      = []byte{0x03} // Validators that are pending to join into the end blocker.
 	RemovingValidatorQueue     = []byte{0x04} // Validators that are pending to be removed from the validator set.
 	ReactivatingValidatorQueue = []byte{0x05} // Validators that are pending to be reactivated in the set.
 	ValidatorJailInfo          = []byte{0x06} // Validator Jail Info (JailTime, etc)
+	LastValidatorPowerKey      = []byte{0x07}
 )
 
 // GetValidatorKey gets the key for the validator with address
@@ -27,10 +27,6 @@ func GetValidatorKey(operatorAddr sdk.ValAddress) []byte {
 
 func GetValidatorKeyAcc(address sdk.AccAddress) []byte {
 	return append(ValidatorsKey, address.Bytes()...)
-}
-
-func GetValidatorByMonikerKey(moniker string) []byte {
-	return append(ValidatorsByMonikerKey, []byte(moniker)...)
 }
 
 func GetValidatorByConsAddrKey(addr sdk.ConsAddress) []byte {

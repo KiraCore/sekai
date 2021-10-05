@@ -1,6 +1,7 @@
 package config
 
 import (
+	"github.com/KiraCore/sekai/INTERX/types"
 	crypto "github.com/cosmos/cosmos-sdk/crypto/types"
 	"github.com/tendermint/tendermint/p2p"
 )
@@ -45,51 +46,49 @@ type CacheConfig struct {
 }
 
 type NodeDiscoveryConfig struct {
-	UseHttps          bool   `json:"use_https"`
-	DefaultInterxPort string `json:"default_interx_port"`
+	UseHttps              bool   `json:"use_https"`
+	DefaultInterxPort     string `json:"default_interx_port"`
+	DefaultTendermintPort string `json:"default_tendermint_port"`
+	ConnectionTimeout     string `json:"connection_timeout"`
 }
 
 // InterxConfig is a struct to be used for interx configuration
 type InterxConfig struct {
-	ServeHTTPS       bool                `json:"serve_https"`
-	GRPC             string              `json:"grpc"`
-	RPC              string              `json:"rpc"`
-	PORT             string              `json:"port"`
-	SentryNodeID     string              `json:"sentry_node_id"`
-	PrivSentryNodeID string              `json:"priv_sentry_node_id"`
-	ValidatorNodeID  string              `json:"validator_node_id"`
-	SeedNodeID       string              `json:"seed_node_id"`
-	Mnemonic         string              `json:"mnemonic"`
-	AddrBooks        []string            `json:"addrbooks"`
-	NodeKey          *p2p.NodeKey        `json:"node_key"`
-	TxModes          []string            `json:"tx_modes"`
-	PrivKey          crypto.PrivKey      `json:"privkey"`
-	PubKey           crypto.PubKey       `json:"pubkey"`
-	Address          string              `json:"address"`
-	NodeDiscovery    NodeDiscoveryConfig `json:"node_discovery"`
-	Block            BlockConfig         `json:"block"`
-	Cache            CacheConfig         `json:"cache"`
-	Faucet           FaucetConfig        `json:"faucet"`
-	RPCMethods       RPCConfig           `json:"rpc_methods"`
+	Version       string              `json:"version"`
+	ServeHTTPS    bool                `json:"serve_https"`
+	GRPC          string              `json:"grpc"`
+	RPC           string              `json:"rpc"`
+	PORT          string              `json:"port"`
+	Node          types.NodeConfig    `json:"node"`
+	Mnemonic      string              `json:"mnemonic"`
+	AddrBooks     []string            `json:"addrbooks"`
+	NodeKey       *p2p.NodeKey        `json:"node_key"`
+	TxModes       []string            `json:"tx_modes"`
+	PrivKey       crypto.PrivKey      `json:"privkey"`
+	PubKey        crypto.PubKey       `json:"pubkey"`
+	Address       string              `json:"address"`
+	NodeDiscovery NodeDiscoveryConfig `json:"node_discovery"`
+	Block         BlockConfig         `json:"block"`
+	Cache         CacheConfig         `json:"cache"`
+	Faucet        FaucetConfig        `json:"faucet"`
+	RPCMethods    RPCConfig           `json:"rpc_methods"`
 }
 
 // InterxConfigFromFile is a struct to be used for interx configuration file
 type InterxConfigFromFile struct {
-	ServeHTTPS       bool                `json:"serve_https"`
-	GRPC             string              `json:"grpc"`
-	RPC              string              `json:"rpc"`
-	PORT             string              `json:"port"`
-	SentryNodeID     string              `json:"sentry_node_id"`
-	PrivSentryNodeID string              `json:"priv_sentry_node_id"`
-	ValidatorNodeID  string              `json:"validator_node_id"`
-	SeedNodeID       string              `json:"seed_node_id"`
-	MnemonicFile     string              `json:"mnemonic"`
-	AddrBooks        string              `json:"addrbooks"`
-	NodeKey          string              `json:"node_key"`
-	TxModes          string              `json:"tx_modes"`
-	Block            BlockConfig         `json:"block"`
-	NodeDiscovery    NodeDiscoveryConfig `json:"node_discovery"`
-	Cache            struct {
+	Version       string              `json:"version"`
+	ServeHTTPS    bool                `json:"serve_https"`
+	GRPC          string              `json:"grpc"`
+	RPC           string              `json:"rpc"`
+	PORT          string              `json:"port"`
+	Node          types.NodeConfig    `json:"node"`
+	MnemonicFile  string              `json:"mnemonic"`
+	AddrBooks     string              `json:"addrbooks"`
+	NodeKey       string              `json:"node_key"`
+	TxModes       string              `json:"tx_modes"`
+	Block         BlockConfig         `json:"block"`
+	NodeDiscovery NodeDiscoveryConfig `json:"node_discovery"`
+	Cache         struct {
 		CacheDir                   string `json:"cache_dir"`
 		MaxCacheSize               string `json:"max_cache_size"`
 		CachingDuration            int64  `json:"caching_duration"`

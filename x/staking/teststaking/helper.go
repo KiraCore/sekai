@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	customgovkeeper "github.com/KiraCore/sekai/x/gov/keeper"
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/staking"
 	"github.com/KiraCore/sekai/x/staking/keeper"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
@@ -25,25 +25,24 @@ type Helper struct {
 	k         keeper.Keeper
 	govKeeper customgovkeeper.Keeper
 
-	Ctx        sdk.Context
-	Commission sdk.Dec
+	Ctx sdk.Context
 }
 
 // NewHelper creates staking Handler wrapper for tests
 func NewHelper(t *testing.T, ctx sdk.Context, k keeper.Keeper, govKeeper customgovkeeper.Keeper) *Helper {
-	return &Helper{t, staking.NewHandler(k, govKeeper), k, govKeeper, ctx, sdk.ZeroDec()}
+	return &Helper{t, staking.NewHandler(k, govKeeper), k, govKeeper, ctx}
 }
 
 // CreateValidator calls handler to create a new staking validator
 func (sh *Helper) CreateValidator(addr sdk.ValAddress, pk cryptotypes.PubKey, ok bool) {
 	// create permission whitelisted actor
-	actor := customgovtypes.NewNetworkActor(
+	actor := govtypes.NewNetworkActor(
 		sdk.AccAddress(addr),
 		nil,
 		1,
 		nil,
-		customgovtypes.NewPermissions([]customgovtypes.PermValue{
-			customgovtypes.PermClaimValidator,
+		govtypes.NewPermissions([]govtypes.PermValue{
+			govtypes.PermClaimValidator,
 		}, nil),
 		1,
 	)
@@ -55,7 +54,7 @@ func (sh *Helper) CreateValidator(addr sdk.ValAddress, pk cryptotypes.PubKey, ok
 
 // ClaimValidatorMsg returns a message used to create validator in this service.
 func (sh *Helper) ClaimValidatorMsg(addr sdk.ValAddress, pk cryptotypes.PubKey) *stakingtypes.MsgClaimValidator {
-	msg, err := stakingtypes.NewMsgClaimValidator("moniker", "website", "social", "identity", sh.Commission, addr, pk)
+	msg, err := stakingtypes.NewMsgClaimValidator("moniker", addr, pk)
 	require.NoError(sh.t, err)
 	return msg
 }
@@ -63,10 +62,6 @@ func (sh *Helper) ClaimValidatorMsg(addr sdk.ValAddress, pk cryptotypes.PubKey) 
 func (sh *Helper) createValidator(addr sdk.ValAddress, pk cryptotypes.PubKey, ok bool) {
 	msg, err := stakingtypes.NewMsgClaimValidator(
 		fmt.Sprintf("%s-%d", "moniker", rand.Intn(100)),
-		"website",
-		"social",
-		"identity",
-		sh.Commission,
 		addr,
 		pk,
 	)

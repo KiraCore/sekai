@@ -33,7 +33,7 @@ func saveGenesis(rpcAddr string) error {
 		return nil
 	}
 
-	data, _, _ := common.MakeGetRequest(rpcAddr, "/genesis", "")
+	data, _, _ := common.MakeTendermintRPCRequest(rpcAddr, "/genesis", "")
 
 	type GenesisResponse struct {
 		Genesis tmtypes.GenesisDoc `json:"genesis"`

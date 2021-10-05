@@ -6,13 +6,12 @@ import (
 
 // custom msg types
 const (
+	//evidence
+	TypeMsgSubmitEvidence = "submit_evidence"
+
 	// governance
-	MsgTypeProposalSetNetworkProperty     = "proposal-set-network-property"
-	MsgTypeProposalAssignPermission       = "proposal-assign-permission"
-	MsgTypeProposalUpsertDataRegistry     = "proposal-upsert-data-registry"
-	MsgTypeProposalSetPoorNetworkMessages = "proposal-set-poor-network-messages"
-	MsgTypeProposalCreateRole             = "proposal-create-role"
-	MsgTypeVoteProposal                   = "vote-proposal"
+	MsgTypeSubmitProposal = "submit-proposal"
+	MsgTypeVoteProposal   = "vote-proposal"
 
 	MsgTypeWhitelistPermissions = "whitelist-permissions"
 	MsgTypeBlacklistPermissions = "blacklist-permissions"
@@ -30,22 +29,25 @@ const (
 	MsgTypeRemoveWhitelistRolePermission = "remove-whitelist-role-permission"
 	MsgTypeRemoveBlacklistRolePermission = "remove-blacklist-role-permission"
 
+	MsgTypeRegisterIdentityRecords            = "register-identity-records"
+	MsgTypeEditIdentityRecord                 = "edit-identity-record"
+	MsgTypeRequestIdentityRecordsVerify       = "request-identity-records-verify"
+	MsgTypeHandleIdentityRecordsVerifyRequest = "handle-identity-records-verify-request"
+	MsgTypeCancelIdentityRecordsVerifyRequest = "cancel-identity-records-verify-request"
+
 	// staking module
-	MsgTypeClaimValidator          = "claim-validator"
-	MsgTypeProposalUnjailValidator = "proposal-unjail-validator"
+	MsgTypeClaimValidator = "claim-validator"
 
 	// tokens module
-	MsgTypeUpsertTokenAlias               = "upsert-token-alias"
-	MsgTypeUpsertTokenRate                = "upsert-token-rate"
-	MsgTypeProposalUpsertTokenAlias       = "propose-upsert-token-alias"
-	MsgTypeProposalUpsertTokenRates       = "propose-upsert-token-rates"
-	MsgTypeProposalTokensWhiteBlackChange = "propose-tokens-white-black-change"
+	MsgTypeUpsertTokenAlias = "upsert-token-alias"
+	MsgTypeUpsertTokenRate  = "upsert-token-rate"
 
 	// slashing module
-	MsgTypeActivate                        = "activate"
-	MsgTypePause                           = "pause"
-	MsgTypeUnpause                         = "unpause"
-	MsgTypeProposalResetWholeValidatorRank = "proposal-reset-whole-validator-rank"
+	MsgTypeActivate = "activate"
+	MsgTypePause    = "pause"
+	MsgTypeUnpause  = "unpause"
+
+	//upgrade module
 )
 
 // MsgFuncIDMapping defines function_id mapping
@@ -53,15 +55,15 @@ var MsgFuncIDMapping = map[string]int64{
 	bank.TypeMsgSend:      1,
 	bank.TypeMsgMultiSend: 2,
 
-	MsgTypeProposalAssignPermission:       3,
-	MsgTypeProposalSetNetworkProperty:     4,
-	MsgTypeProposalUpsertDataRegistry:     5,
-	MsgTypeProposalSetPoorNetworkMessages: 6,
-	MsgTypeProposalUpsertTokenAlias:       7,
-	MsgTypeProposalUpsertTokenRates:       8,
-	MsgTypeProposalTokensWhiteBlackChange: 9,
-	MsgTypeProposalUnjailValidator:        10,
-	MsgTypeVoteProposal:                   11,
+	TypeMsgSubmitEvidence: 3,
+
+	MsgTypeSubmitProposal:                     10,
+	MsgTypeVoteProposal:                       11,
+	MsgTypeRegisterIdentityRecords:            12,
+	MsgTypeEditIdentityRecord:                 13,
+	MsgTypeRequestIdentityRecordsVerify:       14,
+	MsgTypeHandleIdentityRecordsVerifyRequest: 15,
+	MsgTypeCancelIdentityRecordsVerifyRequest: 16,
 
 	MsgTypeSetNetworkProperties:          20,
 	MsgTypeSetExecutionFee:               21,

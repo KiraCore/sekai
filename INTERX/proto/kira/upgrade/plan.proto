@@ -1,0 +1,23 @@
+syntax = "proto3";
+package kira.upgrade;
+
+import "gogoproto/gogo.proto";
+import "kira/upgrade/upgrade.proto";
+
+option go_package = "github.com/KiraCore/sekai/INTERX/proto-gen/kira/upgrade";
+
+message Plan {
+  string name = 1;
+  repeated Resource resources = 2 [ (gogoproto.nullable) = false ];
+  int64 upgrade_time = 3;
+  string old_chain_id = 4;
+  string new_chain_id = 5;
+  string rollback_checksum = 6;
+  int64 max_enrolment_duration = 7;
+  bool instate_upgrade = 8; // if it's set to false, chain is always halted
+  bool reboot_required = 9; // only used by Kira Manager to check
+  bool skip_handler = 10;
+}
+
+
+

@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	customgovcli "github.com/KiraCore/sekai/x/gov/client/cli"
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/stretchr/testify/suite"
@@ -16,7 +16,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/store/types"
 
 	"github.com/KiraCore/sekai/app"
-	"github.com/KiraCore/sekai/simapp"
+	simapp "github.com/KiraCore/sekai/app"
 	"github.com/KiraCore/sekai/testutil/network"
 	"github.com/KiraCore/sekai/x/tokens/client/cli"
 	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
@@ -68,7 +68,7 @@ func (s *IntegrationTestSuite) TestUpsertTokenAliasAndQuery() {
 	val := s.network.Validators[0]
 	clientCtx := val.ClientCtx
 
-	s.WhitelistPermissions(val.Address, customgovtypes.PermUpsertTokenAlias)
+	s.WhitelistPermissions(val.Address, govtypes.PermUpsertTokenAlias)
 
 	cmd := cli.GetTxUpsertTokenAliasCmd()
 	_, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
@@ -162,6 +162,7 @@ func (s IntegrationTestSuite) TestCreateProposalUpsertTokenRates() {
 	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("--%s=%s", cli.FlagDenom, "ubtc"),
 		fmt.Sprintf("--%s=%f", cli.FlagRate, 0.00001),
+		fmt.Sprintf("--%s=%s", cli.FlagTitle, "title"),
 		fmt.Sprintf("--%s=%s", cli.FlagDescription, "some desc"),
 		fmt.Sprintf("--%s=%s", cli.FlagFeePayments, "true"),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
@@ -176,7 +177,7 @@ func (s IntegrationTestSuite) TestCreateProposalUpsertTokenRates() {
 	cmd = customgovcli.GetTxVoteProposal()
 	out, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("%d", 1), // Proposal ID
-		fmt.Sprintf("%d", customgovtypes.OptionYes),
+		fmt.Sprintf("%d", govtypes.OptionYes),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
@@ -195,6 +196,7 @@ func (s IntegrationTestSuite) TestCreateProposalUpsertTokenAlias() {
 	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("--%s=%s", cli.FlagSymbol, "ETH"),
 		fmt.Sprintf("--%s=%s", cli.FlagName, "Ethereum"),
+		fmt.Sprintf("--%s=%s", cli.FlagTitle, "title"),
 		fmt.Sprintf("--%s=%s", cli.FlagDescription, "some desc"),
 		fmt.Sprintf("--%s=%s", cli.FlagIcon, "myiconurl"),
 		fmt.Sprintf("--%s=%d", cli.FlagDecimals, 6),
@@ -212,7 +214,7 @@ func (s IntegrationTestSuite) TestCreateProposalUpsertTokenAlias() {
 	cmd = customgovcli.GetTxVoteProposal()
 	out, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("%d", 1), // Proposal ID
-		fmt.Sprintf("%d", customgovtypes.OptionYes),
+		fmt.Sprintf("%d", govtypes.OptionYes),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
@@ -231,6 +233,7 @@ func (s IntegrationTestSuite) TestTxProposalTokensBlackWhiteChangeCmd() {
 	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("--%s=true", cli.FlagIsBlacklist),
 		fmt.Sprintf("--%s=true", cli.FlagIsAdd),
+		fmt.Sprintf("--%s=%s", cli.FlagTitle, "title"),
 		fmt.Sprintf("--%s=%s", cli.FlagDescription, "some desc"),
 		fmt.Sprintf("--%s=frozen1", cli.FlagTokens),
 		fmt.Sprintf("--%s=frozen2", cli.FlagTokens),
@@ -248,7 +251,7 @@ func (s IntegrationTestSuite) TestTxProposalTokensBlackWhiteChangeCmd() {
 	cmd = customgovcli.GetTxVoteProposal()
 	out, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("%d", 1), // Proposal ID
-		fmt.Sprintf("%d", customgovtypes.OptionYes),
+		fmt.Sprintf("%d", govtypes.OptionYes),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
@@ -258,10 +261,61 @@ func (s IntegrationTestSuite) TestTxProposalTokensBlackWhiteChangeCmd() {
 	fmt.Printf("%s", out.String())
 }
 
-// TODO: should add test for GetCmdQueryAllTokenAliases
-// TODO: should add test for GetCmdQueryTokenAliasesByDenom
-// TODO: should add test for GetCmdQueryAllTokenRates
-// TODO: should add test for GetCmdQueryTokenRatesByDenom
+func (s *IntegrationTestSuite) TestGetCmdQueryAllTokenAliases() {
+	val := s.network.Validators[0]
+	clientCtx := val.ClientCtx
+
+	cmd := cli.GetCmdQueryAllTokenAliases()
+	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{})
+	s.Require().NoError(err)
+
+	var resp tokenstypes.AllTokenAliasesResponse
+	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &resp)
+
+	s.Require().Greater(len(resp.Data), 0)
+}
+
+func (s *IntegrationTestSuite) TestGetCmdQueryTokenAliasesByDenom() {
+	val := s.network.Validators[0]
+	clientCtx := val.ClientCtx
+
+	cmd := cli.GetCmdQueryTokenAliasesByDenom()
+	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{"ukex", "mkex"})
+	s.Require().NoError(err)
+
+	var resp tokenstypes.TokenAliasesByDenomResponse
+	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &resp)
+
+	s.Require().Greater(len(resp.Data), 0)
+}
+
+func (s *IntegrationTestSuite) TestGetCmdQueryAllTokenRates() {
+	val := s.network.Validators[0]
+	clientCtx := val.ClientCtx
+
+	cmd := cli.GetCmdQueryAllTokenRates()
+	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{})
+	s.Require().NoError(err)
+
+	var resp tokenstypes.AllTokenRatesResponse
+	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &resp)
+
+	s.Require().Greater(len(resp.Data), 0)
+}
+
+func (s *IntegrationTestSuite) TestGetCmdQueryTokenRatesByDenom() {
+	val := s.network.Validators[0]
+	clientCtx := val.ClientCtx
+
+	cmd := cli.GetCmdQueryTokenRatesByDenom()
+	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{"ukex"})
+	s.Require().NoError(err)
+
+	var resp tokenstypes.TokenRatesByDenomResponse
+	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &resp)
+
+	s.Require().Greater(len(resp.Data), 0)
+}
 
 func TestIntegrationTestSuite(t *testing.T) {
 	suite.Run(t, new(IntegrationTestSuite))

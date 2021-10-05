@@ -4,7 +4,8 @@ import (
 	"fmt"
 
 	"github.com/KiraCore/sekai/x/genutil"
-	customstakingtypes "github.com/KiraCore/sekai/x/staking/types"
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
+	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
@@ -17,11 +18,8 @@ import (
 )
 
 const (
-	FlagWebsite     = "website"
-	FlagSocial      = "social"
-	FlagIdentity    = "identity"
-	FlagComission   = "commission"
 	FlagValKey      = "validator-key"
+	FlagTitle       = "title"
 	FlagDescription = "description"
 )
 
@@ -38,10 +36,6 @@ func GetTxClaimValidatorCmd() *cobra.Command {
 			serverCtx := server.GetServerContextFromCmd(cmd)
 
 			moniker, _ := cmd.Flags().GetString(FlagMoniker)
-			website, _ := cmd.Flags().GetString(FlagWebsite)
-			social, _ := cmd.Flags().GetString(FlagSocial)
-			identity, _ := cmd.Flags().GetString(FlagIdentity)
-			comission, _ := cmd.Flags().GetString(FlagComission)
 
 			var (
 				valPubKey cryptotypes.PubKey
@@ -58,10 +52,9 @@ func GetTxClaimValidatorCmd() *cobra.Command {
 				}
 			}
 
-			comm, err := types.NewDecFromStr(comission)
 			val := types.ValAddress(clientCtx.GetFromAddress())
 
-			msg, err := customstakingtypes.NewMsgClaimValidator(moniker, website, social, identity, comm, val, valPubKey)
+			msg, err := stakingtypes.NewMsgClaimValidator(moniker, val, valPubKey)
 			if err != nil {
 				return fmt.Errorf("error creating tx: %w", err)
 			}
@@ -82,7 +75,7 @@ func GetTxClaimValidatorCmd() *cobra.Command {
 func GetTxProposalUnjailValidatorCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "proposal-unjail-validator hash reference",
-		Short: "Creates an proposal to unjail validator (the from address is the validator)",
+		Short: "Create a proposal to unjail validator (the from address is the validator)",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -93,22 +86,32 @@ func GetTxProposalUnjailValidatorCmd() *cobra.Command {
 			hash := args[0]
 			reference := args[1]
 
+			title, err := cmd.Flags().GetString(FlagTitle)
+			if err != nil {
+				return fmt.Errorf("invalid title: %w", err)
+			}
+
 			description, err := cmd.Flags().GetString(FlagDescription)
 			if err != nil {
 				return fmt.Errorf("invalid description: %w", err)
 			}
 
-			msg := customstakingtypes.NewMsgProposalUnjailValidator(
+			msg, err := govtypes.NewMsgSubmitProposal(
 				clientCtx.FromAddress,
+				title,
 				description,
-				hash,
-				reference,
+				stakingtypes.NewUnjailValidatorProposal(clientCtx.FromAddress, hash, reference),
 			)
+			if err != nil {
+				return err
+			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
 
+	cmd.Flags().String(FlagTitle, "", "The title of the proposal.")
+	cmd.MarkFlagRequired(FlagTitle)
 	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
 	cmd.MarkFlagRequired(FlagDescription)
 

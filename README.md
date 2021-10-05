@@ -6,6 +6,8 @@ Kira Hub
 ```sh
 sh env.sh
 ```
+# Get version info
+[scripts/commands/version.sh](scripts/commands/version.sh)
 # Adding more validators
 [scripts/commands/adding-validators.sh](scripts/commands/adding-validators.sh)
 ## Set ChangeTxFee permission
@@ -55,78 +57,27 @@ sh env.sh
 [scripts/commands/governance/token-freeze.sh](scripts/commands/governance/token-freeze.sh)
 # Set network property proposal via governance process
 [scripts/commands/governance/set-network-property.sh](scripts/commands/governance/set-network-property.sh)
+
+# Set application upgrade proposal via governance process
+[scripts/commands/governance/upgrade-plan.sh](scripts/commands/governance/upgrade-plan.sh)
+
+Export the status of chain before halt (should kill the daemon process at the time of genesis export)
+[scripts/commands/export-state.sh](scripts/commands/export-state.sh)
+
+The script for creating new chain from exported state should be written or manual edition process is required.
+`ChainId` should be modified in this process.
+
+For now, upgrade process requires manual conversion from old genesis to new genesis.
+At each time of upgrade, genesis upgrade command will be built and infra could run the command like `sekaid genesis-migrate`
+
+Note: state export command is not exporting the upgrade plan and if all validators run with exported genesis with the previous binary, consensus failure won't happen.
+
+# Identity registrar
+[scripts/commands/identity-registrar.sh](scripts/commands/identity-registrar.sh)
+
 # Unjail via governance process
 
 Modify genesis json to have jailed validator for Unjail testing
-
-```json
-{
-  "accounts": [
-    {
-      "@type": "/cosmos.auth.v1beta1.BaseAccount",
-      "address": "kira126f48ukar7ntqqvk0qxgd3juu7r42mjmsddjrq",
-      "pub_key": null,
-      "account_number": "0",
-      "sequence": "0"
-    }
-  ],
-  "balances": [
-    {
-      "address": "kira126f48ukar7ntqqvk0qxgd3juu7r42mjmsddjrq",
-      "coins": [
-        {
-          "denom": "stake",
-          "amount": "1000000000"
-        },
-        {
-          "denom": "ukex",
-          "amount": "1000000000"
-        },
-        {
-          "denom": "validatortoken",
-          "amount": "1000000000"
-        }
-      ]
-    }
-  ],
-  "validators": [
-    {
-      "moniker": "hello2",
-      "website": "",
-      "social": "social2",
-      "identity": "",
-      "commission": "1.000000000000000000",
-      "val_key": "kiravaloper126f48ukar7ntqqvk0qxgd3juu7r42mjmrt33mv",
-      "pub_key": {
-        "@type": "/cosmos.crypto.ed25519.PubKey",
-        "key": "tC8mzxDI3bzfZtToxU6ZpZIOw6nqQx87OZ1fD6FpD7E="
-      },
-      "status": "JAILED",
-      "rank": "0",
-      "streak": "0"
-    }
-  ],
-  "network_actors": [
-    {
-      "address": "kira126f48ukar7ntqqvk0qxgd3juu7r42mjmsddjrq",
-      "roles": ["1"],
-      "status": "ACTIVE",
-      "votes": [
-        "VOTE_OPTION_YES",
-        "VOTE_OPTION_ABSTAIN",
-        "VOTE_OPTION_NO",
-        "VOTE_OPTION_NO_WITH_VETO"
-      ],
-      "permissions": {
-        "blacklist": [],
-        "whitelist": []
-      },
-      "skin": "1"
-    }
-  ],
-}
-```
-
 Add jailed validator key to kms.
 ```sh
   sekaid keys add jailed_validator --keyring-backend=test --home=$HOME/.sekaid --recover
@@ -134,3 +85,15 @@ Add jailed validator key to kms.
 ```
 
 [scripts/commands/governance/unjail-validator.sh](scripts/commands/governance/unjail-validator.sh)
+
+# New genesis file generation process from exported version
+
+In order to manually generate new genesis file when the hard fork is activated, following steps should be taken:
+
+1. Export current genesis, e.g: sekaid export --home=<path>
+2. Change chain-id to new_chain_id as indicated by the upgrade plan
+3. Replace current upgrade plan in the app_state.upgrade with next plan and set next plan to null
+
+Using a command it can be done in this way.
+1. sekaid export > exported-genesis.json
+2. sekaid new-genesis-from-exported exported-genesis.json new-genesis.json

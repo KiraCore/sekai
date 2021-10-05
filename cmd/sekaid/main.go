@@ -5,9 +5,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/KiraCore/sekai/simapp"
-	"github.com/cosmos/cosmos-sdk/simapp/params"
-
 	"github.com/cosmos/cosmos-sdk/snapshots"
 
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -72,6 +69,7 @@ func init() {
 	rootCmd.AddCommand(
 		genutilcli.InitCmd(app.ModuleBasics, app.DefaultNodeHome),
 		genutilcli.GenTxCmd(app.ModuleBasics, encodingConfig.TxConfig, banktypes.GenesisBalancesIterator{}, app.DefaultNodeHome),
+		genutilcli.GetNewGenesisFromExportedCmd(app.ModuleBasics, encodingConfig.TxConfig),
 		customstaking.GenTxClaimCmd(banktypes.GenesisBalancesIterator{}, app.DefaultNodeHome),
 		genutilcli.ValidateGenesisCmd(app.ModuleBasics),
 		AddGenesisAccountCmd(app.DefaultNodeHome),
@@ -80,7 +78,7 @@ func init() {
 		debug.Cmd(),
 	)
 
-	server.AddCommands(rootCmd, app.DefaultNodeHome, newApp, createSimappAndExport, addModuleInitFlags)
+	server.AddCommands(rootCmd, app.DefaultNodeHome, newApp, createAppAndExport, addModuleInitFlags)
 
 	// add keybase, auxiliary RPC, query, and tx child commands
 	rootCmd.AddCommand(
@@ -115,7 +113,7 @@ func addModuleInitFlags(startCmd *cobra.Command) {
 func GetValAddressFromAddressCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "val-address [address]",
-		Short: "Get ValAddress from AccAddress",
+		Short: "Get validator address from account address",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -141,7 +139,7 @@ func GetValAddressFromAddressCmd() *cobra.Command {
 func GetValConsAddressFromAddressCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "valcons-address [address]",
-		Short: "Get ValAddress from AccAddress",
+		Short: "Get validator consensus address from account address",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -261,24 +259,24 @@ func newApp(logger log.Logger, db dbm.DB, traceStore io.Writer, appOpts serverty
 	)
 }
 
-// createSimappAndExport creates a new simapp (optionally at a given height)
+// createAppAndExport creates a new app (optionally at a given height)
 // and exports state.
-func createSimappAndExport(
+func createAppAndExport(
 	logger log.Logger, db dbm.DB, traceStore io.Writer, height int64, forZeroHeight bool, jailAllowedAddrs []string,
 	appOpts servertypes.AppOptions) (servertypes.ExportedApp, error) {
 
-	encCfg := params.MakeTestEncodingConfig() // Ideally, we would reuse the one created by NewRootCmd.
+	encCfg := app.MakeEncodingConfig() // Ideally, we would reuse the one created by NewRootCmd.
 	encCfg.Marshaler = codec.NewProtoCodec(encCfg.InterfaceRegistry)
-	var simApp *simapp.SimApp
+	var sekaiApp *app.SekaiApp
 	if height != -1 {
-		simApp = simapp.NewSimApp(logger, db, traceStore, false, map[int64]bool{}, "", uint(1), encCfg, appOpts)
+		sekaiApp = app.NewInitApp(logger, db, traceStore, false, map[int64]bool{}, "", uint(1), encCfg, appOpts)
 
-		if err := simApp.LoadHeight(height); err != nil {
+		if err := sekaiApp.LoadHeight(height); err != nil {
 			return servertypes.ExportedApp{}, err
 		}
 	} else {
-		simApp = simapp.NewSimApp(logger, db, traceStore, true, map[int64]bool{}, "", uint(1), encCfg, appOpts)
+		sekaiApp = app.NewInitApp(logger, db, traceStore, true, map[int64]bool{}, "", uint(1), encCfg, appOpts)
 	}
 
-	return simApp.ExportAppStateAndValidators(forZeroHeight, jailAllowedAddrs)
+	return sekaiApp.ExportAppStateAndValidators(forZeroHeight, jailAllowedAddrs)
 }

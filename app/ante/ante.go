@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	feeprocessingkeeper "github.com/KiraCore/sekai/x/feeprocessing/keeper"
+	feeprocessingtypes "github.com/KiraCore/sekai/x/feeprocessing/types"
 	customgovkeeper "github.com/KiraCore/sekai/x/gov/keeper"
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
 	customstakingkeeper "github.com/KiraCore/sekai/x/staking/keeper"
 	tokenskeeper "github.com/KiraCore/sekai/x/tokens/keeper"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -32,6 +32,7 @@ func NewAnteHandler(
 ) sdk.AnteHandler {
 	return sdk.ChainAnteDecorators(
 		ante.NewSetUpContextDecorator(), // outermost AnteDecorator. SetUpContext must be called first
+		NewZeroGasMeterDecorator(),
 		ante.NewRejectExtensionOptionsDecorator(),
 		ante.NewMempoolFeeDecorator(),
 		ante.NewValidateBasicDecorator(),
@@ -51,7 +52,6 @@ func NewAnteHandler(
 		ante.NewSigGasConsumeDecorator(ak, sigGasConsumer),
 		ante.NewSigVerificationDecorator(ak, signModeHandler),
 		ante.NewIncrementSequenceDecorator(ak),
-		NewInfiniteGasMeterDecorator(),
 	)
 }
 
@@ -200,10 +200,7 @@ func (pnmd PoorNetworkManagementDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx
 		return next(ctx, tx, simulate)
 	}
 	// handle messages on poor network
-	pnmsgs, found := pnmd.cgk.GetPoorNetworkMessages(ctx)
-	if !found {
-		pnmsgs = &customgovtypes.AllowedMessages{}
-	}
+	pnmsgs := pnmd.cgk.GetPoorNetworkMessages(ctx)
 	for _, msg := range sigTx.GetMsgs() {
 		if msg.Type() == bank.TypeMsgSend {
 			// on poor network, we introduce POOR_NETWORK_MAX_BANK_TX_SEND network property to limit transaction send amount
@@ -266,15 +263,15 @@ func (pnmd BlackWhiteTokensCheckDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx
 	return next(ctx, tx, simulate)
 }
 
-// InfiniteGasMeterDecorator uses infinite gas decorator to avoid gas usage in the network
-type InfiniteGasMeterDecorator struct{}
+// ZeroGasMeterDecorator uses infinite gas decorator to avoid gas usage in the network
+type ZeroGasMeterDecorator struct{}
 
-// NewInfiniteGasMeterDecorator returns instance of InfiniteGasMeterDecorator
-func NewInfiniteGasMeterDecorator() InfiniteGasMeterDecorator {
-	return InfiniteGasMeterDecorator{}
+// NewZeroGasMeterDecorator returns instance of ZeroGasMeterDecorator
+func NewZeroGasMeterDecorator() ZeroGasMeterDecorator {
+	return ZeroGasMeterDecorator{}
 }
 
-func (igm InfiniteGasMeterDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
-	newCtx = ctx.WithGasMeter(sdk.NewInfiniteGasMeter())
+func (igm ZeroGasMeterDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
+	newCtx = ctx.WithGasMeter(feeprocessingtypes.NewZeroGasMeter())
 	return next(newCtx, tx, simulate)
 }

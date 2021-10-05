@@ -7,7 +7,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/KiraCore/sekai/simapp"
+	simapp "github.com/KiraCore/sekai/app"
 	"github.com/KiraCore/sekai/x/evidence/simulation"
 	"github.com/KiraCore/sekai/x/evidence/types"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"

@@ -4,34 +4,33 @@ import (
 	"testing"
 	"time"
 
-	types3 "github.com/KiraCore/sekai/x/staking/types"
-
+	simapp "github.com/KiraCore/sekai/app"
+	"github.com/KiraCore/sekai/x/gov"
+	"github.com/KiraCore/sekai/x/gov/types"
+	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-
-	"github.com/KiraCore/sekai/simapp"
-	"github.com/KiraCore/sekai/x/gov"
-	"github.com/KiraCore/sekai/x/gov/types"
 )
 
 func TestEndBlocker_ActiveProposal(t *testing.T) {
 	tests := []struct {
 		name              string
-		prepareScenario   func(app *simapp.SimApp, ctx sdk.Context) []sdk.AccAddress
-		validateScenario  func(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addrs []sdk.AccAddress)
+		prepareScenario   func(app *simapp.SekaiApp, ctx sdk.Context) []sdk.AccAddress
+		validateScenario  func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context, addrs []sdk.AccAddress)
 		blockHeightChange int64
 	}{
 		{
 			name: "proposal passes: min block height for proposal voting time not reached",
-			prepareScenario: func(app *simapp.SimApp, ctx sdk.Context) []sdk.AccAddress {
+			prepareScenario: func(app *simapp.SekaiApp, ctx sdk.Context) []sdk.AccAddress {
 				addrs := simapp.AddTestAddrsIncremental(app, ctx, 10, sdk.NewInt(100))
 
 				proposalID := uint64(1234)
 				proposal, err := types.NewProposal(
 					proposalID,
+					"title",
+					"some desc",
 					types.NewAssignPermissionProposal(
 						addrs[0],
 						types.PermSetPermissions,
@@ -41,7 +40,6 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now().Add(20*time.Second),
 					ctx.BlockHeight()+2,
 					ctx.BlockHeight()+3,
-					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -70,7 +68,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 
 				return addrs
 			},
-			validateScenario: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addrs []sdk.AccAddress) {
+			validateScenario: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context, addrs []sdk.AccAddress) {
 				actor, found := app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addrs[0])
 				require.True(t, found)
 				require.False(t, actor.Permissions.IsWhitelisted(types.PermSetPermissions))
@@ -91,12 +89,14 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 		},
 		{
 			name: "proposal passes: quorum not reached",
-			prepareScenario: func(app *simapp.SimApp, ctx sdk.Context) []sdk.AccAddress {
+			prepareScenario: func(app *simapp.SekaiApp, ctx sdk.Context) []sdk.AccAddress {
 				addrs := simapp.AddTestAddrsIncremental(app, ctx, 10, sdk.NewInt(100))
 
 				proposalID := uint64(1234)
 				proposal, err := types.NewProposal(
 					proposalID,
+					"title",
+					"some desc",
 					types.NewAssignPermissionProposal(
 						addrs[0],
 						types.PermSetPermissions,
@@ -106,7 +106,6 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now(),
 					ctx.BlockHeight()+2,
 					ctx.BlockHeight()+3,
-					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -128,7 +127,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 
 				return addrs
 			},
-			validateScenario: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addrs []sdk.AccAddress) {
+			validateScenario: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context, addrs []sdk.AccAddress) {
 				actor, found := app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addrs[0])
 				require.True(t, found)
 				require.False(t, actor.Permissions.IsWhitelisted(types.PermSetPermissions))
@@ -149,12 +148,14 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 		},
 		{
 			name: "proposal passes and joins Enactment place",
-			prepareScenario: func(app *simapp.SimApp, ctx sdk.Context) []sdk.AccAddress {
+			prepareScenario: func(app *simapp.SekaiApp, ctx sdk.Context) []sdk.AccAddress {
 				addrs := simapp.AddTestAddrsIncremental(app, ctx, 10, sdk.NewInt(100))
 
 				proposalID := uint64(1234)
 				proposal, err := types.NewProposal(
 					proposalID,
+					"title",
+					"some desc",
 					types.NewAssignPermissionProposal(
 						addrs[0],
 						types.PermSetPermissions,
@@ -164,7 +165,6 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now().Add(20*time.Second),
 					ctx.BlockHeight()+2,
 					ctx.BlockHeight()+3,
-					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -193,7 +193,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 
 				return addrs
 			},
-			validateScenario: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addrs []sdk.AccAddress) {
+			validateScenario: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context, addrs []sdk.AccAddress) {
 				actor, found := app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addrs[0])
 				require.True(t, found)
 				require.False(t, actor.Permissions.IsWhitelisted(types.PermSetPermissions))
@@ -214,7 +214,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 		},
 		{
 			name: "Passed proposal in enactment is applied and min block height for enactment not reached",
-			prepareScenario: func(app *simapp.SimApp, ctx sdk.Context) []sdk.AccAddress {
+			prepareScenario: func(app *simapp.SekaiApp, ctx sdk.Context) []sdk.AccAddress {
 				addrs := simapp.AddTestAddrsIncremental(app, ctx, 10, sdk.NewInt(100))
 
 				actor := types.NewDefaultActor(addrs[0])
@@ -223,6 +223,8 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				proposalID := uint64(1234)
 				proposal, err := types.NewProposal(
 					proposalID,
+					"title",
+					"some desc",
 					types.NewAssignPermissionProposal(
 						addrs[0],
 						types.PermSetPermissions,
@@ -232,7 +234,6 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now().Add(20*time.Second),
 					ctx.BlockHeight()+2,
 					ctx.BlockHeight()+3,
-					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -246,7 +247,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 
 				return addrs
 			},
-			validateScenario: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addrs []sdk.AccAddress) {
+			validateScenario: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context, addrs []sdk.AccAddress) {
 				iterator := app.CustomGovKeeper.GetEnactmentProposalsWithFinishedEnactmentEndTimeIterator(ctx, time.Now().Add(25*time.Second))
 				requireIteratorCount(t, iterator, 1)
 			},
@@ -254,7 +255,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 		},
 		{
 			name: "Passed proposal in enactment is applied and removed from enactment list: Assign permission",
-			prepareScenario: func(app *simapp.SimApp, ctx sdk.Context) []sdk.AccAddress {
+			prepareScenario: func(app *simapp.SekaiApp, ctx sdk.Context) []sdk.AccAddress {
 				addrs := simapp.AddTestAddrsIncremental(app, ctx, 10, sdk.NewInt(100))
 
 				actor := types.NewDefaultActor(addrs[0])
@@ -263,6 +264,8 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				proposalID := uint64(1234)
 				proposal, err := types.NewProposal(
 					proposalID,
+					"title",
+					"some desc",
 					types.NewAssignPermissionProposal(
 						addrs[0],
 						types.PermSetPermissions,
@@ -272,7 +275,6 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now().Add(20*time.Second),
 					ctx.BlockHeight()+2,
 					ctx.BlockHeight()+3,
-					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -286,7 +288,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 
 				return addrs
 			},
-			validateScenario: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addrs []sdk.AccAddress) {
+			validateScenario: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context, addrs []sdk.AccAddress) {
 				iterator := app.CustomGovKeeper.GetEnactmentProposalsWithFinishedEnactmentEndTimeIterator(ctx, time.Now().Add(25*time.Second))
 				requireIteratorCount(t, iterator, 0)
 
@@ -299,12 +301,14 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 		},
 		{
 			name: "Passed proposal in enactment is applied and removed from enactment list, actor does not exist",
-			prepareScenario: func(app *simapp.SimApp, ctx sdk.Context) []sdk.AccAddress {
+			prepareScenario: func(app *simapp.SekaiApp, ctx sdk.Context) []sdk.AccAddress {
 				addrs := simapp.AddTestAddrsIncremental(app, ctx, 10, sdk.NewInt(100))
 
 				proposalID := uint64(1234)
 				proposal, err := types.NewProposal(
 					proposalID,
+					"title",
+					"some desc",
 					types.NewAssignPermissionProposal(
 						addrs[0],
 						types.PermSetPermissions,
@@ -314,7 +318,6 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now().Add(20*time.Second),
 					ctx.BlockHeight()+2,
 					ctx.BlockHeight()+3,
-					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -328,7 +331,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 
 				return addrs
 			},
-			validateScenario: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addrs []sdk.AccAddress) {
+			validateScenario: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context, addrs []sdk.AccAddress) {
 				iterator := app.CustomGovKeeper.GetEnactmentProposalsWithFinishedEnactmentEndTimeIterator(ctx, time.Now().Add(25*time.Second))
 				requireIteratorCount(t, iterator, 0)
 
@@ -341,7 +344,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 		},
 		{
 			name: "Passed proposal in enactment is applied and removed from enactment list: Upsert Data Registry",
-			prepareScenario: func(app *simapp.SimApp, ctx sdk.Context) []sdk.AccAddress {
+			prepareScenario: func(app *simapp.SekaiApp, ctx sdk.Context) []sdk.AccAddress {
 				addrs := simapp.AddTestAddrsIncremental(app, ctx, 10, sdk.NewInt(100))
 
 				actor := types.NewDefaultActor(addrs[0])
@@ -350,6 +353,8 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				proposalID := uint64(1234)
 				proposal, err := types.NewProposal(
 					proposalID,
+					"title",
+					"some desc",
 					types.NewUpsertDataRegistryProposal(
 						"theKey",
 						"theHash",
@@ -362,7 +367,6 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now().Add(20*time.Second),
 					ctx.BlockHeight()+2,
 					ctx.BlockHeight()+3,
-					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -376,7 +380,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 
 				return addrs
 			},
-			validateScenario: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addrs []sdk.AccAddress) {
+			validateScenario: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context, addrs []sdk.AccAddress) {
 				iterator := app.CustomGovKeeper.GetEnactmentProposalsWithFinishedEnactmentEndTimeIterator(ctx, time.Now().Add(25*time.Second))
 				requireIteratorCount(t, iterator, 0)
 
@@ -392,7 +396,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 		},
 		{
 			name: "Passed proposal in enactment is applied and removed from enactment list: Set Network Property",
-			prepareScenario: func(app *simapp.SimApp, ctx sdk.Context) []sdk.AccAddress {
+			prepareScenario: func(app *simapp.SekaiApp, ctx sdk.Context) []sdk.AccAddress {
 				addrs := simapp.AddTestAddrsIncremental(app, ctx, 10, sdk.NewInt(100))
 
 				actor := types.NewDefaultActor(addrs[0])
@@ -401,16 +405,17 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				proposalID := uint64(1234)
 				proposal, err := types.NewProposal(
 					proposalID,
+					"title",
+					"some desc",
 					types.NewSetNetworkPropertyProposal(
 						types.MinTxFee,
-						300,
+						types.NetworkPropertyValue{Value: 300},
 					),
 					time.Now(),
 					time.Now().Add(10*time.Second),
 					time.Now().Add(20*time.Second),
 					ctx.BlockHeight()+2,
 					ctx.BlockHeight()+3,
-					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -424,20 +429,20 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 
 				return addrs
 			},
-			validateScenario: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addrs []sdk.AccAddress) {
+			validateScenario: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context, addrs []sdk.AccAddress) {
 				iterator := app.CustomGovKeeper.GetEnactmentProposalsWithFinishedEnactmentEndTimeIterator(ctx, time.Now().Add(25*time.Second))
 				requireIteratorCount(t, iterator, 0)
 
 				minTxFee, err := app.CustomGovKeeper.GetNetworkProperty(ctx, types.MinTxFee)
 				require.NoError(t, err)
 
-				require.Equal(t, uint64(300), minTxFee)
+				require.Equal(t, uint64(300), minTxFee.Value)
 			},
 			blockHeightChange: 3,
 		},
 		{
 			name: "Passed proposal in enactment is applied and removed from enactment list: Set Token Alias",
-			prepareScenario: func(app *simapp.SimApp, ctx sdk.Context) []sdk.AccAddress {
+			prepareScenario: func(app *simapp.SekaiApp, ctx sdk.Context) []sdk.AccAddress {
 				addrs := simapp.AddTestAddrsIncremental(app, ctx, 10, sdk.NewInt(100))
 
 				actor := types.NewDefaultActor(addrs[0])
@@ -446,7 +451,9 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				proposalID := uint64(1234)
 				proposal, err := types.NewProposal(
 					proposalID,
-					tokenstypes.NewProposalUpsertTokenAlias(
+					"title",
+					"some desc",
+					tokenstypes.NewUpsertTokenAliasProposal(
 						"EUR",
 						"Euro",
 						"http://www.google.es",
@@ -461,7 +468,6 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now().Add(20*time.Second),
 					ctx.BlockHeight()+2,
 					ctx.BlockHeight()+3,
-					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -475,7 +481,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 
 				return addrs
 			},
-			validateScenario: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addrs []sdk.AccAddress) {
+			validateScenario: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context, addrs []sdk.AccAddress) {
 				iterator := app.CustomGovKeeper.GetEnactmentProposalsWithFinishedEnactmentEndTimeIterator(ctx, time.Now().Add(25*time.Second))
 				requireIteratorCount(t, iterator, 0)
 
@@ -486,7 +492,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 		},
 		{
 			name: "Passed proposal in enactment is applied and removed from enactment list: Set Token Rates",
-			prepareScenario: func(app *simapp.SimApp, ctx sdk.Context) []sdk.AccAddress {
+			prepareScenario: func(app *simapp.SekaiApp, ctx sdk.Context) []sdk.AccAddress {
 				addrs := simapp.AddTestAddrsIncremental(app, ctx, 10, sdk.NewInt(100))
 
 				actor := types.NewDefaultActor(addrs[0])
@@ -495,7 +501,9 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				proposalID := uint64(1234)
 				proposal, err := types.NewProposal(
 					proposalID,
-					tokenstypes.NewProposalUpsertTokenRates(
+					"title",
+					"some desc",
+					tokenstypes.NewUpsertTokenRatesProposal(
 						"btc",
 						sdk.NewDec(1234),
 						false,
@@ -505,7 +513,6 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now().Add(20*time.Second),
 					ctx.BlockHeight()+2,
 					ctx.BlockHeight()+3,
-					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -519,7 +526,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 
 				return addrs
 			},
-			validateScenario: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addrs []sdk.AccAddress) {
+			validateScenario: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context, addrs []sdk.AccAddress) {
 				iterator := app.CustomGovKeeper.GetEnactmentProposalsWithFinishedEnactmentEndTimeIterator(ctx, time.Now().Add(25*time.Second))
 				requireIteratorCount(t, iterator, 0)
 
@@ -532,7 +539,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 		},
 		{
 			name: "Passed proposal in enactment is applied and removed from enactment list: Unjail Validator",
-			prepareScenario: func(app *simapp.SimApp, ctx sdk.Context) []sdk.AccAddress {
+			prepareScenario: func(app *simapp.SekaiApp, ctx sdk.Context) []sdk.AccAddress {
 				addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.NewInt(100))
 				valAddr := sdk.ValAddress(addrs[0])
 				pubKey, err := sdk.GetPubKeyFromBech32(sdk.Bech32PubKeyTypeConsPub, "kiravalconspub1zcjduepqylc5k8r40azmw0xt7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsq4xg7em")
@@ -541,7 +548,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				actor := types.NewDefaultActor(addrs[0])
 				app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
 
-				val, err := types3.NewValidator("Moniker", "Website", "Social", "identity", sdk.NewDec(123), valAddr, pubKey)
+				val, err := stakingtypes.NewValidator(valAddr, pubKey)
 				require.NoError(t, err)
 				app.CustomStakingKeeper.AddValidator(ctx, val)
 				err = app.CustomStakingKeeper.Jail(ctx, val.ValKey)
@@ -550,7 +557,9 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				proposalID := uint64(1234)
 				proposal, err := types.NewProposal(
 					proposalID,
-					types3.NewProposalUnjailValidator(
+					"title",
+					"some desc",
+					stakingtypes.NewUnjailValidatorProposal(
 						addrs[0],
 						"theHash",
 						"theProposal",
@@ -560,7 +569,6 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now().Add(20*time.Second),
 					ctx.BlockHeight()+2,
 					ctx.BlockHeight()+3,
-					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -574,7 +582,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 
 				return addrs
 			},
-			validateScenario: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addrs []sdk.AccAddress) {
+			validateScenario: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context, addrs []sdk.AccAddress) {
 				iterator := app.CustomGovKeeper.GetEnactmentProposalsWithFinishedEnactmentEndTimeIterator(ctx, time.Now().Add(25*time.Second))
 				requireIteratorCount(t, iterator, 0)
 
@@ -587,7 +595,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 		},
 		{
 			name: "Passed proposal in enactment is applied and removed from enactment list: Create Role",
-			prepareScenario: func(app *simapp.SimApp, ctx sdk.Context) []sdk.AccAddress {
+			prepareScenario: func(app *simapp.SekaiApp, ctx sdk.Context) []sdk.AccAddress {
 				addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.NewInt(100))
 
 				actor := types.NewDefaultActor(addrs[0])
@@ -596,6 +604,8 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				proposalID := uint64(1234)
 				proposal, err := types.NewProposal(
 					proposalID,
+					"title",
+					"some desc",
 					types.NewCreateRoleProposal(
 						types.Role(1000),
 						[]types.PermValue{
@@ -610,7 +620,6 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					time.Now().Add(20*time.Second),
 					ctx.BlockHeight()+2,
 					ctx.BlockHeight()+3,
-					"some desc",
 				)
 				require.NoError(t, err)
 
@@ -627,7 +636,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 
 				return addrs
 			},
-			validateScenario: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addrs []sdk.AccAddress) {
+			validateScenario: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context, addrs []sdk.AccAddress) {
 				iterator := app.CustomGovKeeper.GetEnactmentProposalsWithFinishedEnactmentEndTimeIterator(ctx, time.Now().Add(25*time.Second))
 				requireIteratorCount(t, iterator, 0)
 
@@ -645,13 +654,14 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			app := simapp.Setup(false)
 			ctx := app.NewContext(false, tmproto.Header{})
+			ctx = ctx.WithBlockTime(time.Now())
 
 			addrs := tt.prepareScenario(app, ctx)
 
 			ctx = ctx.WithBlockTime(time.Now().Add(time.Second * 25))
 			ctx = ctx.WithBlockHeight(ctx.BlockHeight() + tt.blockHeightChange)
 
-			gov.EndBlocker(ctx, app.CustomGovKeeper, app.ProposalRouter)
+			gov.EndBlocker(ctx, app.CustomGovKeeper)
 
 			tt.validateScenario(t, app, ctx, addrs)
 		})

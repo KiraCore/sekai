@@ -37,11 +37,20 @@ const (
 	QueryValidatorInfos      = "/api/valoperinfos"
 	QueryGenesis             = "/api/genesis"
 	QueryGenesisSum          = "/api/gensum"
-	QueryNodeList            = "/api/node_list"
+	QuerySnapShot            = "/api/snapshot"
+	QuerySnapShotInfo        = "/api/snapshot_info"
+	QueryPubP2PList          = "/api/pub_p2p_list"
+	QueryPrivP2PList         = "/api/priv_p2p_list"
+	QueryInterxList          = "/api/interx_list"
+	QuerySnapList            = "/api/snap_list"
+	QueryAddrBook            = "/api/addrbook"
+	QueryNetInfo             = "/api/net_info"
+
+	QueryCurrentPlan = "/api/kira/upgrade/current_plan"
+	QueryNextPlan    = "/api/kira/upgrade/next_plan"
 
 	Download              = "/download"
 	DataReferenceRegistry = "DRR"
-	InterxVersion         = "0.1.2"
 	DefaultInterxPort     = "11000"
 
 	QueryRosettaNetworkList    = "/rosetta/network/list"

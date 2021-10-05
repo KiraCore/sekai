@@ -5,7 +5,7 @@ option go_package            = "github.com/KiraCore/sekai/x/slashing/types";
 option (gogoproto.equal_all) = true;
 
 import "gogoproto/gogo.proto";
-import "proposal.proto";
+import "kira/slashing/v1beta1/proposal.proto";
 
 // Msg defines the slashing Msg service.
 service Msg {
@@ -17,9 +17,6 @@ service Msg {
   rpc Pause(MsgPause) returns (MsgPauseResponse);
   // Unpause defines a method for a paused validator
   rpc Unpause(MsgUnpause) returns (MsgUnpauseResponse);
-
-  // ProposalResetWholeValidatorRank defines to reset whole validator rank
-  rpc ProposalResetWholeValidatorRank(MsgProposalResetWholeValidatorRank) returns (MsgProposalResetWholeValidatorRankResponse);
 }
 
 // MsgActivate defines the Msg/Activate request type

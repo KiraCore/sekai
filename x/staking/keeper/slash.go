@@ -2,7 +2,7 @@ package keeper
 
 import (
 	"github.com/KiraCore/sekai/x/staking/types"
-	customstakingtypes "github.com/KiraCore/sekai/x/staking/types"
+	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -15,18 +15,18 @@ func (k Keeper) Activate(ctx sdk.Context, valAddress sdk.ValAddress) error {
 	}
 
 	if validator.IsPaused() {
-		return sdkerrors.Wrap(customstakingtypes.ErrValidatorPaused, "Can NOT activate paused validator, you must unpause")
+		return sdkerrors.Wrap(stakingtypes.ErrValidatorPaused, "Can NOT activate paused validator, you must unpause")
 	}
 
 	if validator.IsJailed() {
-		return sdkerrors.Wrap(customstakingtypes.ErrValidatorJailed, "Can NOT activate jailed validator, you must unjail via proposal")
+		return sdkerrors.Wrap(stakingtypes.ErrValidatorJailed, "Can NOT activate jailed validator, you must unjail via proposal")
 	}
 
 	if validator.IsActive() {
-		return sdkerrors.Wrap(customstakingtypes.ErrValidatorActive, "Can NOT activate already active validator")
+		return sdkerrors.Wrap(stakingtypes.ErrValidatorActive, "Can NOT activate already active validator")
 	}
 
-	k.setStatusToValidator(ctx, validator, customstakingtypes.Active)
+	k.setStatusToValidator(ctx, validator, stakingtypes.Active)
 	k.addReactivatingValidator(ctx, validator)
 	k.RemoveRemovingValidator(ctx, validator)
 
@@ -37,7 +37,7 @@ func (k Keeper) Activate(ctx sdk.Context, valAddress sdk.ValAddress) error {
 func (k Keeper) ResetWholeValidatorRank(ctx sdk.Context) {
 	// TODO: is it correct to use this iterator @Jonathan?
 	k.IterateValidators(ctx, func(index int64, validator *types.Validator) (stop bool) {
-		validator.Status = customstakingtypes.Active
+		validator.Status = stakingtypes.Active
 		validator.Rank = 0
 		validator.Streak = 0
 		k.AddValidator(ctx, *validator)
@@ -53,11 +53,11 @@ func (k Keeper) Inactivate(ctx sdk.Context, valAddress sdk.ValAddress) error { /
 	}
 
 	if validator.IsPaused() {
-		return customstakingtypes.ErrValidatorPaused
+		return stakingtypes.ErrValidatorPaused
 	}
 
 	networkProperties := k.govkeeper.GetNetworkProperties(ctx)
-	validator.Status = customstakingtypes.Inactive
+	validator.Status = stakingtypes.Inactive
 	validator.Rank = validator.Rank * int64(100-networkProperties.InactiveRankDecreasePercent) / 100
 	validator.Streak = 0
 
@@ -103,10 +103,10 @@ func (k Keeper) Pause(ctx sdk.Context, valAddress sdk.ValAddress) error {
 	}
 
 	if validator.IsInactivated() {
-		return customstakingtypes.ErrValidatorInactive
+		return stakingtypes.ErrValidatorInactive
 	}
 
-	k.setStatusToValidator(ctx, validator, customstakingtypes.Paused)
+	k.setStatusToValidator(ctx, validator, stakingtypes.Paused)
 	k.addRemovingValidator(ctx, validator)
 	k.RemoveReactivatingValidator(ctx, validator)
 
@@ -121,10 +121,10 @@ func (k Keeper) Unpause(ctx sdk.Context, valAddress sdk.ValAddress) error { // i
 	}
 
 	if validator.IsInactivated() {
-		return customstakingtypes.ErrValidatorInactive
+		return stakingtypes.ErrValidatorInactive
 	}
 
-	k.setStatusToValidator(ctx, validator, customstakingtypes.Active)
+	k.setStatusToValidator(ctx, validator, stakingtypes.Active)
 	k.addReactivatingValidator(ctx, validator)
 	k.RemoveRemovingValidator(ctx, validator)
 
@@ -138,7 +138,7 @@ func (k Keeper) Jail(ctx sdk.Context, valAddress sdk.ValAddress) error {
 		return err
 	}
 
-	k.setStatusToValidator(ctx, validator, customstakingtypes.Jailed)
+	k.setStatusToValidator(ctx, validator, stakingtypes.Jailed)
 	k.addRemovingValidator(ctx, validator)
 	k.setJailValidatorInfo(ctx, validator)
 	k.RemoveReactivatingValidator(ctx, validator)
@@ -148,15 +148,15 @@ func (k Keeper) Jail(ctx sdk.Context, valAddress sdk.ValAddress) error {
 
 // GetValidatorJailInfo returns information about a jailed validor, found is false
 // if there is no validator, so a validator that is not jailed should return false.
-func (k Keeper) GetValidatorJailInfo(ctx sdk.Context, valAddress sdk.ValAddress) (customstakingtypes.ValidatorJailInfo, bool) {
+func (k Keeper) GetValidatorJailInfo(ctx sdk.Context, valAddress sdk.ValAddress) (stakingtypes.ValidatorJailInfo, bool) {
 	store := ctx.KVStore(k.storeKey)
 
 	bz := store.Get(GetValidatorJailInfoKey(valAddress))
 	if bz == nil {
-		return customstakingtypes.ValidatorJailInfo{}, false
+		return stakingtypes.ValidatorJailInfo{}, false
 	}
 
-	var info customstakingtypes.ValidatorJailInfo
+	var info stakingtypes.ValidatorJailInfo
 	k.cdc.MustUnmarshalBinaryBare(bz, &info)
 
 	return info, true
@@ -176,19 +176,19 @@ func (k Keeper) Unjail(ctx sdk.Context, valAddress sdk.ValAddress) error {
 
 	// Unjail move validator status to Inactive from Jailed
 	// User can activate it after counting activation time - uptime counter is reset at that time
-	k.setStatusToValidator(ctx, validator, customstakingtypes.Inactive)
+	k.setStatusToValidator(ctx, validator, stakingtypes.Inactive)
 	k.removeJailValidatorInfo(ctx, validator)
 
 	return nil
 }
 
-func (k Keeper) setStatusToValidator(ctx sdk.Context, validator customstakingtypes.Validator, status customstakingtypes.ValidatorStatus) {
+func (k Keeper) setStatusToValidator(ctx sdk.Context, validator stakingtypes.Validator, status stakingtypes.ValidatorStatus) {
 	validator.Status = status
 	k.AddValidator(ctx, validator)
 }
 
-func (k Keeper) setJailValidatorInfo(ctx sdk.Context, validator customstakingtypes.Validator) {
-	jailInfo := customstakingtypes.ValidatorJailInfo{
+func (k Keeper) setJailValidatorInfo(ctx sdk.Context, validator stakingtypes.Validator) {
+	jailInfo := stakingtypes.ValidatorJailInfo{
 		Time: ctx.BlockTime(),
 	}
 
@@ -198,7 +198,7 @@ func (k Keeper) setJailValidatorInfo(ctx sdk.Context, validator customstakingtyp
 	store.Set(GetValidatorJailInfoKey(validator.ValKey), bz)
 }
 
-func (k Keeper) removeJailValidatorInfo(ctx sdk.Context, validator customstakingtypes.Validator) {
+func (k Keeper) removeJailValidatorInfo(ctx sdk.Context, validator stakingtypes.Validator) {
 	store := ctx.KVStore(k.storeKey)
 	store.Delete(GetValidatorJailInfoKey(validator.ValKey))
 }

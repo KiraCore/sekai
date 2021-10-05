@@ -56,6 +56,8 @@ func DefaultGenesis() *GenesisState {
 			JailMaxTime:                 600, // 600  seconds / 10 mins
 			EnableTokenWhitelist:        false,
 			EnableTokenBlacklist:        true,
+			MinIdentityApprovalTip:      200,
+			UniqueIdentityKeys:          "moniker,username",
 		},
 		ExecutionFees: []*ExecutionFee{
 			{
@@ -141,8 +143,7 @@ func DefaultGenesis() *GenesisState {
 		},
 		PoorNetworkMessages: &AllowedMessages{
 			Messages: []string{
-				kiratypes.MsgTypeProposalAssignPermission,
-				kiratypes.MsgTypeProposalSetNetworkProperty,
+				kiratypes.MsgTypeSubmitProposal,
 				kiratypes.MsgTypeSetNetworkProperties,
 				kiratypes.MsgTypeVoteProposal,
 				kiratypes.MsgTypeClaimCouncilor,
@@ -159,7 +160,14 @@ func DefaultGenesis() *GenesisState {
 				kiratypes.MsgTypeActivate,
 				kiratypes.MsgTypePause,
 				kiratypes.MsgTypeUnpause,
+				kiratypes.MsgTypeRegisterIdentityRecords,
+				kiratypes.MsgTypeEditIdentityRecord,
+				kiratypes.MsgTypeRequestIdentityRecordsVerify,
+				kiratypes.MsgTypeHandleIdentityRecordsVerifyRequest,
+				kiratypes.MsgTypeCancelIdentityRecordsVerifyRequest,
 			},
 		},
+		LastIdentityRecordId:        0,
+		LastIdRecordVerifyRequestId: 0,
 	}
 }

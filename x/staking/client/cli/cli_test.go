@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	customgovcli "github.com/KiraCore/sekai/x/gov/client/cli"
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
@@ -19,7 +19,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/KiraCore/sekai/app"
-	"github.com/KiraCore/sekai/simapp"
+	simapp "github.com/KiraCore/sekai/app"
 	"github.com/KiraCore/sekai/testutil/network"
 	"github.com/KiraCore/sekai/x/staking/client/cli"
 	customtypes "github.com/KiraCore/sekai/x/staking/types"
@@ -79,11 +79,6 @@ func (s *IntegrationTestSuite) TestQueryValidator() {
 	var respValidator customtypes.Validator
 	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &respValidator)
 
-	s.Require().Equal(val.Moniker, respValidator.Moniker)
-	s.Require().Equal("the Website", respValidator.Website)
-	s.Require().Equal("The social", respValidator.Social)
-	s.Require().Equal("The Identity", respValidator.Identity)
-	s.Require().Equal(sdk.NewDec(1), respValidator.Commission)
 	s.Require().Equal(val.ValAddress, respValidator.ValKey)
 
 	var pubkey cryptotypes.PubKey
@@ -100,11 +95,6 @@ func (s *IntegrationTestSuite) TestQueryValidator() {
 
 	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &respValidator)
 
-	s.Require().Equal(val.Moniker, respValidator.Moniker)
-	s.Require().Equal("the Website", respValidator.Website)
-	s.Require().Equal("The social", respValidator.Social)
-	s.Require().Equal("The Identity", respValidator.Identity)
-	s.Require().Equal(sdk.NewDec(1), respValidator.Commission)
 	s.Require().Equal(val.ValAddress, respValidator.ValKey)
 
 	err = s.cfg.Codec.UnpackAny(respValidator.PubKey, &pubkey)
@@ -120,11 +110,6 @@ func (s *IntegrationTestSuite) TestQueryValidator() {
 
 	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &respValidator)
 
-	s.Require().Equal(val.Moniker, respValidator.Moniker)
-	s.Require().Equal("the Website", respValidator.Website)
-	s.Require().Equal("The social", respValidator.Social)
-	s.Require().Equal("The Identity", respValidator.Identity)
-	s.Require().Equal(sdk.NewDec(1), respValidator.Commission)
 	s.Require().Equal(val.ValAddress, respValidator.ValKey)
 
 	err = s.cfg.Codec.UnpackAny(respValidator.PubKey, &pubkey)
@@ -170,6 +155,7 @@ func (s IntegrationTestSuite) TestCreateProposalUnjailValidator() {
 		cli.GetTxProposalUnjailValidatorCmd(),
 		[]string{
 			fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+			fmt.Sprintf("--%s=%s", cli.FlagTitle, "title"),
 			fmt.Sprintf("--%s=%s", cli.FlagDescription, "some desc"),
 			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
@@ -187,7 +173,7 @@ func (s IntegrationTestSuite) TestCreateProposalUnjailValidator() {
 		customgovcli.GetTxVoteProposal(),
 		[]string{
 			fmt.Sprintf("%d", 1), // Proposal ID
-			fmt.Sprintf("%d", customgovtypes.OptionYes),
+			fmt.Sprintf("%d", govtypes.OptionYes),
 			fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),

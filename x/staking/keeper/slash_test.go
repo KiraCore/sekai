@@ -10,7 +10,7 @@ import (
 	"github.com/KiraCore/sekai/x/staking/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/KiraCore/sekai/simapp"
+	simapp "github.com/KiraCore/sekai/app"
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
@@ -19,18 +19,18 @@ func TestPauseValidator_Errors(t *testing.T) {
 	tests := []struct {
 		name            string
 		expectedError   error
-		prepareScenario func(app *simapp.SimApp, ctx sdk.Context, validator types.Validator)
+		prepareScenario func(app *simapp.SekaiApp, ctx sdk.Context, validator types.Validator)
 	}{
 		{
 			name:          "validator does not exist",
 			expectedError: fmt.Errorf("validator not found"),
-			prepareScenario: func(app *simapp.SimApp, ctx sdk.Context, validator types.Validator) {
+			prepareScenario: func(app *simapp.SekaiApp, ctx sdk.Context, validator types.Validator) {
 			},
 		},
 		{
 			name:          "validator is inactivated",
 			expectedError: types.ErrValidatorInactive,
-			prepareScenario: func(app *simapp.SimApp, ctx sdk.Context, validator types.Validator) {
+			prepareScenario: func(app *simapp.SekaiApp, ctx sdk.Context, validator types.Validator) {
 				validator.Status = types.Inactive
 				app.CustomStakingKeeper.AddValidator(ctx, validator)
 			},
@@ -80,11 +80,11 @@ func TestPauseValidator(t *testing.T) {
 func TestPauseValidator_EdgeCases(t *testing.T) {
 	tests := []struct {
 		name            string
-		prepareScenario func(app *simapp.SimApp, ctx sdk.Context, validator types.Validator)
+		prepareScenario func(app *simapp.SekaiApp, ctx sdk.Context, validator types.Validator)
 	}{
 		{
 			name: "pause coming from unpause",
-			prepareScenario: func(app *simapp.SimApp, ctx sdk.Context, validator types.Validator) {
+			prepareScenario: func(app *simapp.SekaiApp, ctx sdk.Context, validator types.Validator) {
 				err := app.CustomStakingKeeper.Pause(ctx, validator.ValKey)
 				require.NoError(t, err)
 				require.Len(t, app.CustomStakingKeeper.GetRemovingValidatorSet(ctx), 1)
@@ -131,18 +131,18 @@ func TestUnpauseValidator_Errors(t *testing.T) {
 	tests := []struct {
 		name            string
 		expectedError   error
-		prepareScenario func(app *simapp.SimApp, ctx sdk.Context, validator types.Validator)
+		prepareScenario func(app *simapp.SekaiApp, ctx sdk.Context, validator types.Validator)
 	}{
 		{
 			name:          "validator does not exist",
 			expectedError: fmt.Errorf("validator not found"),
-			prepareScenario: func(app *simapp.SimApp, ctx sdk.Context, validator types.Validator) {
+			prepareScenario: func(app *simapp.SekaiApp, ctx sdk.Context, validator types.Validator) {
 			},
 		},
 		{
 			name:          "validator is inactivated",
 			expectedError: types.ErrValidatorInactive,
-			prepareScenario: func(app *simapp.SimApp, ctx sdk.Context, validator types.Validator) {
+			prepareScenario: func(app *simapp.SekaiApp, ctx sdk.Context, validator types.Validator) {
 				validator.Status = types.Inactive
 				app.CustomStakingKeeper.AddValidator(ctx, validator)
 			},
@@ -188,18 +188,18 @@ func TestValidatorInactivate_Errors(t *testing.T) {
 	tests := []struct {
 		name            string
 		expectedError   error
-		prepareScenario func(app *simapp.SimApp, ctx sdk.Context, validator types.Validator)
+		prepareScenario func(app *simapp.SekaiApp, ctx sdk.Context, validator types.Validator)
 	}{
 		{
 			name:          "validator does not exist",
 			expectedError: fmt.Errorf("validator not found"),
-			prepareScenario: func(app *simapp.SimApp, ctx sdk.Context, validator types.Validator) {
+			prepareScenario: func(app *simapp.SekaiApp, ctx sdk.Context, validator types.Validator) {
 			},
 		},
 		{
 			name:          "validator is paused",
 			expectedError: types.ErrValidatorPaused,
-			prepareScenario: func(app *simapp.SimApp, ctx sdk.Context, validator types.Validator) {
+			prepareScenario: func(app *simapp.SekaiApp, ctx sdk.Context, validator types.Validator) {
 				validator.Status = types.Paused
 				app.CustomStakingKeeper.AddValidator(ctx, validator)
 			},
@@ -245,11 +245,11 @@ func TestInactiveValidator(t *testing.T) {
 func TestInactiveValidator_EdgeCases(t *testing.T) {
 	tests := []struct {
 		name            string
-		prepareScenario func(app *simapp.SimApp, ctx sdk.Context, validator types.Validator)
+		prepareScenario func(app *simapp.SekaiApp, ctx sdk.Context, validator types.Validator)
 	}{
 		{
 			name: "inactivate coming from activate",
-			prepareScenario: func(app *simapp.SimApp, ctx sdk.Context, validator types.Validator) {
+			prepareScenario: func(app *simapp.SekaiApp, ctx sdk.Context, validator types.Validator) {
 				err := app.CustomStakingKeeper.Inactivate(ctx, validator.ValKey)
 				require.NoError(t, err)
 				require.Len(t, app.CustomStakingKeeper.GetRemovingValidatorSet(ctx), 1)
@@ -293,18 +293,18 @@ func TestValidatorActivate_Errors(t *testing.T) {
 	tests := []struct {
 		name            string
 		expectedError   error
-		prepareScenario func(app *simapp.SimApp, ctx sdk.Context, validator types.Validator)
+		prepareScenario func(app *simapp.SekaiApp, ctx sdk.Context, validator types.Validator)
 	}{
 		{
 			name:          "validator does not exist",
 			expectedError: fmt.Errorf("validator not found"),
-			prepareScenario: func(app *simapp.SimApp, ctx sdk.Context, validator types.Validator) {
+			prepareScenario: func(app *simapp.SekaiApp, ctx sdk.Context, validator types.Validator) {
 			},
 		},
 		{
 			name:          "validator is paused",
 			expectedError: sdkerrors.Wrap(types.ErrValidatorPaused, "Can NOT activate paused validator, you must unpause"),
-			prepareScenario: func(app *simapp.SimApp, ctx sdk.Context, validator types.Validator) {
+			prepareScenario: func(app *simapp.SekaiApp, ctx sdk.Context, validator types.Validator) {
 				validator.Status = types.Paused
 				app.CustomStakingKeeper.AddValidator(ctx, validator)
 			},
@@ -384,27 +384,27 @@ func TestRemoveFromRemovingValidatorQueue(t *testing.T) {
 func TestReactivatingValidator(t *testing.T) {
 	tests := []struct {
 		name                string
-		prepareDeactivation func(app *simapp.SimApp, ctx sdk.Context, validator types.Validator)
-		prepare             func(app *simapp.SimApp, ctx sdk.Context, validator types.Validator)
+		prepareDeactivation func(app *simapp.SekaiApp, ctx sdk.Context, validator types.Validator)
+		prepare             func(app *simapp.SekaiApp, ctx sdk.Context, validator types.Validator)
 	}{
 		{
 			name: "reactivating from pause",
-			prepareDeactivation: func(app *simapp.SimApp, ctx sdk.Context, validator types.Validator) {
+			prepareDeactivation: func(app *simapp.SekaiApp, ctx sdk.Context, validator types.Validator) {
 				err := app.CustomStakingKeeper.Pause(ctx, validator.ValKey)
 				require.NoError(t, err)
 			},
-			prepare: func(app *simapp.SimApp, ctx sdk.Context, validator types.Validator) {
+			prepare: func(app *simapp.SekaiApp, ctx sdk.Context, validator types.Validator) {
 				err := app.CustomStakingKeeper.Unpause(ctx, validator.ValKey)
 				require.NoError(t, err)
 			},
 		},
 		{
 			name: "reactivating from inactivate",
-			prepareDeactivation: func(app *simapp.SimApp, ctx sdk.Context, validator types.Validator) {
+			prepareDeactivation: func(app *simapp.SekaiApp, ctx sdk.Context, validator types.Validator) {
 				err := app.CustomStakingKeeper.Inactivate(ctx, validator.ValKey)
 				require.NoError(t, err)
 			},
-			prepare: func(app *simapp.SimApp, ctx sdk.Context, validator types.Validator) {
+			prepare: func(app *simapp.SekaiApp, ctx sdk.Context, validator types.Validator) {
 				err := app.CustomStakingKeeper.Activate(ctx, validator.ValKey)
 				require.NoError(t, err)
 			},
@@ -447,12 +447,12 @@ func TestValidatorJail_Errors(t *testing.T) {
 	tests := []struct {
 		name            string
 		expectedError   error
-		prepareScenario func(app *simapp.SimApp, ctx sdk.Context, validator types.Validator)
+		prepareScenario func(app *simapp.SekaiApp, ctx sdk.Context, validator types.Validator)
 	}{
 		{
 			name:          "validator does not exist",
 			expectedError: fmt.Errorf("validator not found"),
-			prepareScenario: func(app *simapp.SimApp, ctx sdk.Context, validator types.Validator) {
+			prepareScenario: func(app *simapp.SekaiApp, ctx sdk.Context, validator types.Validator) {
 			},
 		},
 	}
@@ -505,11 +505,11 @@ func TestJailValidator(t *testing.T) {
 func TestJailValidator_EdgeCases(t *testing.T) {
 	tests := []struct {
 		name            string
-		prepareScenario func(app *simapp.SimApp, ctx sdk.Context, validator types.Validator)
+		prepareScenario func(app *simapp.SekaiApp, ctx sdk.Context, validator types.Validator)
 	}{
 		{
 			name: "jailing from unjailing",
-			prepareScenario: func(app *simapp.SimApp, ctx sdk.Context, validator types.Validator) {
+			prepareScenario: func(app *simapp.SekaiApp, ctx sdk.Context, validator types.Validator) {
 				err := app.CustomStakingKeeper.Jail(ctx, validator.ValKey)
 				require.NoError(t, err)
 				require.Len(t, app.CustomStakingKeeper.GetRemovingValidatorSet(ctx), 1)
@@ -565,12 +565,12 @@ func TestValidatorUnjail_Errors(t *testing.T) {
 	tests := []struct {
 		name            string
 		expectedError   error
-		prepareScenario func(app *simapp.SimApp, ctx sdk.Context, validator types.Validator)
+		prepareScenario func(app *simapp.SekaiApp, ctx sdk.Context, validator types.Validator)
 	}{
 		{
 			name:          "validator does not exist",
 			expectedError: fmt.Errorf("validator not found"),
-			prepareScenario: func(app *simapp.SimApp, ctx sdk.Context, validator types.Validator) {
+			prepareScenario: func(app *simapp.SekaiApp, ctx sdk.Context, validator types.Validator) {
 			},
 		},
 	}

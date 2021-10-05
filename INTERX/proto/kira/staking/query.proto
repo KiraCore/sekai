@@ -1,14 +1,16 @@
 syntax="proto3";
 package kira.staking;
 
-import "kira/staking/pagination.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "kira/gov/identity_registrar.proto";
 
 // Defines the import path that should be used to import the generated package,
 // and the package name.
-option go_package = "github.com/KiraCore/sekai/INTERX/proto";
+option go_package = "github.com/KiraCore/sekai/INTERX/proto-gen/kira/staking";
 
 // These annotations are used when generating the OpenAPI file.
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
@@ -44,7 +46,7 @@ message ValidatorsRequest {
   string proposer = 6;
   
   // pagination defines an optional pagination for the request.
-  kira.staking.PageRequest pagination = 7 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
+  cosmos.base.query.v1beta1.PageRequest pagination = 7 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
 
   bool all = 8;
 }
@@ -57,14 +59,11 @@ message QueryValidator {
   string pubkey = 3;
   string proposer = 4;
   string moniker = 5;
-  string website = 6;
-  string social = 7;
-  string identity = 8;
-  string commission = 9;
-  string status = 10;
-  int64 rank = 11;
-  int64 streak = 12;
-  int64 mischance = 13;
+  string status = 6;
+  int64 rank = 7;
+  int64 streak = 8;
+  int64 mischance = 9;
+  repeated kira.gov.IdentityRecord identity = 10 [(gogoproto.nullable) = false];
 }
 
 // ValidatorsResponse is response type for the Query/Validators RPC method
@@ -75,5 +74,5 @@ message ValidatorsResponse {
   repeated string actors = 2;
 
   // pagination defines the pagination in the response.
-  kira.staking.PageResponse pagination = 3 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
+  cosmos.base.query.v1beta1.PageResponse pagination = 3 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
 }

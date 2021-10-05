@@ -42,12 +42,14 @@ func main() {
 	faucetMnemonic, _ := bip39.NewMnemonic(entropy)
 
 	initConfigFilePtr := initCommand.String("config", "./config.json", "The interx configuration path.")
+	initVersion := initCommand.String("version", "0.1.0", "The interxd version")
 	initServeHTTPS := initCommand.Bool("serve_https", false, "http or https.")
 	initGrpcPtr := initCommand.String("grpc", "dns:///0.0.0.0:9090", "The grpc endpoint of the sekaid.")
 	initRPCPtr := initCommand.String("rpc", "http://0.0.0.0:26657", "The rpc endpoint of the sekaid.")
 
+	initNodeType := initCommand.String("node_type", "seed", "The node type.")
 	initSentryNodeId := initCommand.String("sentry_node_id", "", "The sentry node id.")
-	initPrivSentryNodeId := initCommand.String("priv_sentry_node_id", "", "The private sentry node id.")
+	initSnapshotNodeId := initCommand.String("snapshot_node_id", "", "The snapshot node id.")
 	initValidatorNodeId := initCommand.String("validator_node_id", "", "The validator node id.")
 	initSeedNodeId := initCommand.String("seed_node_id", "", "The seed node id.")
 
@@ -74,7 +76,9 @@ func main() {
 	initTxModes := initCommand.String("tx_modes", "sync,async,block", "The allowed transaction modes")
 
 	initNodeDiscoveryUseHttps := initCommand.Bool("node_discovery_use_https", false, "The option to use https in node discovery")
-	initNodeDiscoveryPort := initCommand.String("node_discovery_port", "11000", "The default interx port to be used in ndoe discovery")
+	initNodeDiscoveryInterxPort := initCommand.String("node_discovery_interx_port", "11000", "The default interx port to be used in node discovery")
+	initNodeDiscoveryTendermintPort := initCommand.String("node_discovery_tendermint_port", "26657", "The default tendermint port to be used in node discovery")
+	initNodeDiscoveryTimeout := initCommand.String("node_discovery_timeout", "3s", "The connection timeout to be used in node discovery")
 
 	startConfigPtr := startCommand.String("config", "./config.json", "The interx configurtion path. (Required)")
 
@@ -98,12 +102,14 @@ func main() {
 				// Check which subcommand was Parsed using the FlagSet.Parsed() function. Handle each case accordingly.
 				// FlagSet.Parse() will evaluate to false if no flags were parsed (i.e. the user did not provide any flags)
 				config.InitConfig(
+					*initVersion,
 					*initConfigFilePtr,
 					*initServeHTTPS,
 					*initGrpcPtr,
 					*initRPCPtr,
+					*initNodeType,
 					*initSentryNodeId,
-					*initPrivSentryNodeId,
+					*initSnapshotNodeId,
 					*initValidatorNodeId,
 					*initSeedNodeId,
 					*initPortPtr,
@@ -122,7 +128,9 @@ func main() {
 					*initAddrBook,
 					*initTxModes,
 					*initNodeDiscoveryUseHttps,
-					*initNodeDiscoveryPort,
+					*initNodeDiscoveryInterxPort,
+					*initNodeDiscoveryTendermintPort,
+					*initNodeDiscoveryTimeout,
 					*initNodeKey,
 				)
 

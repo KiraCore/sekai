@@ -39,7 +39,7 @@ type DataReferenceEntry struct {
 	Hash      string `json:"hash"`
 	Reference string `json:"reference"`
 	Encoding  string `json:"encoding"`
-	Size      uint64 `json:"size"`
+	Size      uint64 `json:"size,string"`
 }
 
 // RPCMethod is a struct to be used for rpc_methods API
@@ -164,23 +164,28 @@ type InterxRequest struct {
 	Params   []byte `json:"params"`
 }
 
+type IdentityRecord struct {
+	ID        uint64   `json:"id,string"`
+	Key       string   `json:"key"`
+	Value     string   `json:"value"`
+	Date      string   `json:"date"`
+	Verifiers []string `json:"verifiers"`
+}
+
 type QueryValidator struct {
 	Top int `json:"top,string"`
 
-	Address             string `json:"address"`
-	Valkey              string `json:"valkey"`
-	Pubkey              string `json:"pubkey"`
-	Proposer            string `json:"proposer"`
-	Moniker             string `json:"moniker"`
-	Website             string `json:"website"`
-	Social              string `json:"social"`
-	Identity            string `json:"identity"`
-	Commission          string `json:"commission"`
-	Status              string `json:"status"`
-	Rank                int64  `json:"rank,string"`
-	Streak              int64  `json:"streak,string"`
-	Mischance           int64  `json:"mischance,string"`
-	MischanceConfidence int64  `json:"mischance_confidence,string"`
+	Address             string           `json:"address"`
+	Valkey              string           `json:"valkey"`
+	Pubkey              string           `json:"pubkey"`
+	Proposer            string           `json:"proposer"`
+	Moniker             string           `json:"moniker"`
+	Status              string           `json:"status"`
+	Rank                int64            `json:"rank,string"`
+	Streak              int64            `json:"streak,string"`
+	Mischance           int64            `json:"mischance,string"`
+	MischanceConfidence int64            `json:"mischance_confidence,string"`
+	Identity            []IdentityRecord `json:"identity,omitempty"`
 
 	// Additional
 	StartHeight           int64  `json:"start_height,string"`
@@ -188,6 +193,15 @@ type QueryValidator struct {
 	LastPresentBlock      int64  `json:"last_present_block,string"`
 	MissedBlocksCounter   int64  `json:"missed_blocks_counter,string"`
 	ProducedBlocksCounter int64  `json:"produced_blocks_counter,string"`
+
+	// From Identity Records
+	Description       string `json:"description,omitempty"`
+	Website           string `json:"website,omitempty"`
+	Logo              string `json:"logo,omitempty"`
+	Social            string `json:"social,omitempty"`
+	Contact           string `json:"contact,omitempty"`
+	Validator_node_id string `json:"validator_node_id,omitempty"`
+	Sentry_node_id    string `json:"sentry_node_id,omitempty"`
 }
 
 type QueryValidators []QueryValidator

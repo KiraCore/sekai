@@ -79,16 +79,14 @@ func LoadConfig(configFilePath string) {
 	}
 
 	// Interx Main Configuration
+	Config.Version = configFromFile.Version
 	Config.ServeHTTPS = configFromFile.ServeHTTPS
 	Config.GRPC = configFromFile.GRPC
 	Config.RPC = configFromFile.RPC
 	Config.PORT = configFromFile.PORT
 	Config.Mnemonic = LoadMnemonic(configFromFile.MnemonicFile)
 
-	Config.SentryNodeID = configFromFile.SentryNodeID
-	Config.PrivSentryNodeID = configFromFile.PrivSentryNodeID
-	Config.ValidatorNodeID = configFromFile.ValidatorNodeID
-	Config.SeedNodeID = configFromFile.SeedNodeID
+	Config.Node = configFromFile.Node
 
 	fmt.Println("Interx GRPC: ", Config.GRPC)
 	fmt.Println("Interx RPC : ", Config.RPC)

@@ -471,3 +471,18 @@ POST http://0.0.0.0:11000/api/cosmos/txs
 	"mode": "block"
 }
 ```
+
+## Additional Infomation
+
+### Validator properties
+
+| property          | type     | description                                                                                                       |
+| ----------------- | -------- | ----------------------------------------------------------------------------------------------------------------- |
+| moniker           | `string` | Identifies your name as seen on the leaderboard table                                                             |
+| description       | `string` | Longer description of your node                                                                                   |
+| website           | `string` | URL to the validator website                                                                                      |
+| avatar            | `string` | URL to image or gif                                                                                               |
+| social            | `string` | URL to any social profile such as tweeter or telegram                                                             |
+| contact           | `string` | Email address or URL to a submission form                                                                         |
+| validator-node-id | `string` | node id of your validator node (required if you want your node to be present in the network visualizer)           |
+| sentry-node-id    | `string` | comma separated list of sentry node ids (required if you want your nodes to be present in the network visualizer) |

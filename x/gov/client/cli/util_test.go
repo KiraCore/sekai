@@ -7,7 +7,7 @@ import (
 
 	"github.com/KiraCore/sekai/testutil/network"
 	"github.com/KiraCore/sekai/x/gov/client/cli"
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
+	"github.com/KiraCore/sekai/x/gov/types"
 	customstakingcli "github.com/KiraCore/sekai/x/staking/client/cli"
 	tokenscli "github.com/KiraCore/sekai/x/tokens/client/cli"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -28,7 +28,7 @@ func GetRolesByAddress(t *testing.T, network *network.Network, address sdk.AccAd
 	})
 	require.NoError(t, err)
 
-	var roles customgovtypes.RolesByAddressResponse
+	var roles types.RolesByAddressResponse
 	err = val.ClientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &roles)
 	require.NoError(t, err)
 
@@ -88,7 +88,7 @@ func (s IntegrationTestSuite) WhitelistPermission(address sdk.AccAddress, perm s
 	fmt.Println("IntegrationTestSuite::WhitelistPermission", out.String())
 }
 
-func (s IntegrationTestSuite) VoteWithValidator0(proposalID uint64, voteOption customgovtypes.VoteOption) {
+func (s IntegrationTestSuite) VoteWithValidator0(proposalID uint64, voteOption types.VoteOption) {
 	val := s.network.Validators[0]
 	clientCtx := val.ClientCtx
 	cmd := cli.GetTxVoteProposal()
@@ -140,6 +140,7 @@ func (s IntegrationTestSuite) SetPoorNetworkMessages(messages string) sdk.TxResp
 		messages,
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+		fmt.Sprintf("--%s=%s", cli.FlagTitle, "title"),
 		fmt.Sprintf("--%s=%s", cli.FlagDescription, "some desc"),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
@@ -187,6 +188,7 @@ func (s IntegrationTestSuite) SetNetworkPropertyProposal(property string, value 
 		property,
 		fmt.Sprintf("%d", value),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+		fmt.Sprintf("--%s=%s", cli.FlagTitle, "title"),
 		fmt.Sprintf("--%s=%s", cli.FlagDescription, "some desc"),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
@@ -200,7 +202,7 @@ func (s IntegrationTestSuite) SetNetworkPropertyProposal(property string, value 
 	var result sdk.TxResponse
 	s.Require().NoError(val.ClientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &result))
 	s.Require().NotNil(result.Height)
-	s.Require().Contains(result.RawLog, "set-network-property")
+	s.Require().Contains(result.RawLog, "SetNetworkProperty")
 }
 
 func (s IntegrationTestSuite) UpsertRate(denom string, rate string, flagFeePayments bool) sdk.TxResponse {

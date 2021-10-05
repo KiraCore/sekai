@@ -25,13 +25,13 @@ var _ Content = &AssignPermissionProposal{}
 // NewProposal creates a new proposal
 func NewProposal(
 	proposalID uint64,
+	title, description string,
 	content Content,
 	submitTime time.Time,
 	votingEndTime time.Time,
 	enactmentEndTime time.Time,
 	minVotingEndBlockHeight int64,
 	minEnactmentEndBlockHeight int64,
-	description string,
 ) (Proposal, error) {
 	msg, ok := content.(proto.Message)
 	if !ok {
@@ -45,6 +45,8 @@ func NewProposal(
 
 	return Proposal{
 		ProposalId:                 proposalID,
+		Title:                      title,
+		Description:                description,
 		SubmitTime:                 submitTime,
 		VotingEndTime:              votingEndTime,
 		EnactmentEndTime:           enactmentEndTime,
@@ -52,7 +54,6 @@ func NewProposal(
 		MinEnactmentEndBlockHeight: minEnactmentEndBlockHeight,
 		Content:                    any,
 		Result:                     Pending,
-		Description:                description,
 	}, nil
 }
 
@@ -87,10 +88,26 @@ func (m *AssignPermissionProposal) ProposalType() string {
 	return AssignPermissionProposalType
 }
 
+// ValidateBasic returns basic validation
+func (m *AssignPermissionProposal) ValidateBasic() error {
+	if m.Address.Empty() {
+		return ErrEmptyPermissionsAccAddress
+	}
+	return nil
+}
+
+func (m *AssignPermissionProposal) ProposalPermission() PermValue {
+	return PermCreateSetPermissionsProposal
+}
+
+func (m *AssignPermissionProposal) VotePermission() PermValue {
+	return PermVoteSetPermissionProposal
+}
+
 // NewSetNetworkPropertyProposal creates a new set network property proposal
 func NewSetNetworkPropertyProposal(
 	property NetworkProperty,
-	value uint64,
+	value NetworkPropertyValue,
 ) Content {
 	return &SetNetworkPropertyProposal{
 		NetworkProperty: property,
@@ -103,13 +120,39 @@ func (m *SetNetworkPropertyProposal) ProposalType() string {
 	return SetNetworkPropertyProposalType
 }
 
+func (m *SetNetworkPropertyProposal) ProposalPermission() PermValue {
+	return PermCreateSetNetworkPropertyProposal
+}
+
 // VotePermission returns permission to vote on this proposal
 func (m *SetNetworkPropertyProposal) VotePermission() PermValue {
 	return PermVoteSetNetworkPropertyProposal
 }
 
-func (m *AssignPermissionProposal) VotePermission() PermValue {
-	return PermVoteSetPermissionProposal
+// ValidateBasic returns basic validation
+func (m *SetNetworkPropertyProposal) ValidateBasic() error {
+	switch m.NetworkProperty {
+	case MinTxFee,
+		MaxTxFee,
+		VoteQuorum,
+		ProposalEndTime,
+		ProposalEnactmentTime,
+		EnableForeignFeePayments,
+		MischanceRankDecreaseAmount,
+		MischanceConfidence,
+		MaxMischance,
+		InactiveRankDecreasePercent,
+		PoorNetworkMaxBankSend,
+		MinValidators,
+		JailMaxTime,
+		EnableTokenWhitelist,
+		EnableTokenBlacklist,
+		MinIdentityApprovalTip,
+		UniqueIdentityKeys:
+		return nil
+	default:
+		return ErrInvalidNetworkProperty
+	}
 }
 
 func NewUpsertDataRegistryProposal(key, hash, reference, encoding string, size uint64) Content {
@@ -126,8 +169,17 @@ func (m *UpsertDataRegistryProposal) ProposalType() string {
 	return UpsertDataRegistryProposalType
 }
 
+func (m *UpsertDataRegistryProposal) ProposalPermission() PermValue {
+	return PermCreateUpsertDataRegistryProposal
+}
+
 func (m *UpsertDataRegistryProposal) VotePermission() PermValue {
 	return PermVoteUpsertDataRegistryProposal
+}
+
+// ValidateBasic returns basic validation
+func (m *UpsertDataRegistryProposal) ValidateBasic() error {
+	return nil
 }
 
 func NewSetPoorNetworkMessagesProposal(msgs []string) Content {
@@ -140,8 +192,17 @@ func (m *SetPoorNetworkMessagesProposal) ProposalType() string {
 	return SetPoorNetworkMessagesProposalType
 }
 
+func (m *SetPoorNetworkMessagesProposal) ProposalPermission() PermValue {
+	return PermCreateSetPoorNetworkMessagesProposal
+}
+
 func (m *SetPoorNetworkMessagesProposal) VotePermission() PermValue {
 	return PermVoteSetPoorNetworkMessagesProposal
+}
+
+// ValidateBasic returns basic validation
+func (m *SetPoorNetworkMessagesProposal) ValidateBasic() error {
+	return nil
 }
 
 func NewCreateRoleProposal(role Role, whitelist []PermValue, blacklist []PermValue) Content {
@@ -156,6 +217,19 @@ func (m *CreateRoleProposal) ProposalType() string {
 	return CreateRoleProposalType
 }
 
+func (m *CreateRoleProposal) ProposalPermission() PermValue {
+	return PermCreateRoleProposal
+}
+
 func (m *CreateRoleProposal) VotePermission() PermValue {
 	return PermVoteCreateRoleProposal
+}
+
+// ValidateBasic returns basic validation
+func (m *CreateRoleProposal) ValidateBasic() error {
+	if len(m.WhitelistedPermissions) == 0 && len(m.BlacklistedPermissions) == 0 {
+		return ErrEmptyPermissions
+	}
+
+	return nil
 }

@@ -51,7 +51,7 @@ func parseTxType(txType string) string {
 }
 
 // SearchTxHashHandle is a function to query transactions
-func SearchTxHashHandle(rpcAddr string, sender string, recipient string, txType string, limit int, txMinHeight int64, txMaxHeight int64, txHash string) (*tmTypes.ResultTxSearch, error) {
+func SearchTxHashHandle(rpcAddr string, sender string, recipient string, txType string, page int, limit int, txMinHeight int64, txMaxHeight int64, txHash string) (*tmTypes.ResultTxSearch, error) {
 	var events = make([]string, 0, 5)
 
 	if sender != "" {
@@ -79,7 +79,10 @@ func SearchTxHashHandle(rpcAddr string, sender string, recipient string, txType 
 	}
 
 	// search transactions
-	endpoint := fmt.Sprintf("%s/tx_search?query=\"%s\"&per_page=%d&order_by=\"desc\"", rpcAddr, strings.Join(events, "%20AND%20"), limit)
+	endpoint := fmt.Sprintf("%s/tx_search?query=\"%s\"&page=%d&&per_page=%d&order_by=\"desc\"", rpcAddr, strings.Join(events, "%20AND%20"), page, limit)
+	if page == 0 {
+		endpoint = fmt.Sprintf("%s/tx_search?query=\"%s\"&per_page=%d&order_by=\"desc\"", rpcAddr, strings.Join(events, "%20AND%20"), limit)
+	}
 	common.GetLogger().Info("[query-transaction] Entering transaction search: ", endpoint)
 
 	resp, err := http.Get(endpoint)
@@ -157,7 +160,8 @@ func QueryBlockTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw b
 		last      string = ""
 		sender    string = ""
 		recipient string = ""
-		limit     int    = 10
+		pageSize  int    = 10
+		page      int    = 1
 	)
 
 	account = r.FormValue("account")
@@ -172,14 +176,21 @@ func QueryBlockTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw b
 		recipient = account
 	}
 
-	if maxStr := r.FormValue("max"); maxStr != "" {
-		if limit, err = strconv.Atoi(maxStr); err != nil {
-			common.GetLogger().Error("[query-transactions] Failed to parse parameter 'max': ", err)
-			return common.ServeError(0, "failed to parse parameter 'max'", err.Error(), http.StatusBadRequest)
+	if pageSizeStr := r.FormValue("page_size"); pageSizeStr != "" {
+		if pageSize, err = strconv.Atoi(pageSizeStr); err != nil {
+			common.GetLogger().Error("[query-transactions] Failed to parse parameter 'page_size': ", err)
+			return common.ServeError(0, "failed to parse parameter 'page_size'", err.Error(), http.StatusBadRequest)
 		}
-		if limit < 1 || limit > 1000 {
-			common.GetLogger().Error("[query-transactions] Invalid 'max' range: ", limit)
-			return common.ServeError(0, "'max' should be 1 ~ 1000", "", http.StatusBadRequest)
+		if pageSize < 1 || pageSize > 1000 {
+			common.GetLogger().Error("[query-transactions] Invalid 'page_size' range: ", pageSize)
+			return common.ServeError(0, "'page_size' should be 1 ~ 1000", "", http.StatusBadRequest)
+		}
+	}
+
+	if pageStr := r.FormValue("page"); pageStr != "" {
+		if page, err = strconv.Atoi(pageStr); err != nil {
+			common.GetLogger().Error("[query-transactions] Failed to parse parameter 'page': ", err)
+			return common.ServeError(0, "failed to parse parameter 'page'", err.Error(), http.StatusBadRequest)
 		}
 	}
 
@@ -194,7 +205,7 @@ func QueryBlockTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw b
 	var transactions []*tmTypes.ResultTx
 
 	if last == "" {
-		searchResult, err := SearchTxHashHandle(rpcAddr, sender, recipient, txType, limit, -1, -1, "")
+		searchResult, err := SearchTxHashHandle(rpcAddr, sender, recipient, txType, page, pageSize, -1, -1, "")
 		if err != nil {
 			common.GetLogger().Error("[query-transactions] Failed to search transaction hash: ", err)
 			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
@@ -209,7 +220,7 @@ func QueryBlockTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw b
 		}
 
 		// get current block
-		searchResult, err := SearchTxHashHandle(rpcAddr, sender, recipient, txType, limit, blockHeight, blockHeight, "")
+		searchResult, err := SearchTxHashHandle(rpcAddr, sender, recipient, txType, 0, pageSize, blockHeight, blockHeight, "")
 		if err != nil {
 			common.GetLogger().Error("[query-transactions] Failed to search transaction hash: ", err)
 			return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
@@ -224,13 +235,13 @@ func QueryBlockTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw b
 				beforeLast = false
 			}
 
-			if len(transactions) == limit {
+			if len(transactions) == pageSize {
 				break
 			}
 		}
 
-		if len(transactions) < limit && blockHeight > 0 {
-			searchResult, err := SearchTxHashHandle(rpcAddr, sender, recipient, txType, limit-len(transactions), -1, blockHeight-1, "")
+		if len(transactions) < pageSize && blockHeight > 0 {
+			searchResult, err := SearchTxHashHandle(rpcAddr, sender, recipient, txType, 0, pageSize-len(transactions), -1, blockHeight-1, "")
 			if err != nil {
 				common.GetLogger().Error("[query-transactions] Failed to search transaction hash: ", err)
 				return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
@@ -240,7 +251,7 @@ func QueryBlockTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw b
 		}
 	}
 
-	var response = make(map[string]types.DepositWithdrawResult)
+	var txResults = make(map[string]types.DepositWithdrawResult)
 
 	for _, transaction := range transactions {
 		tx, err := config.EncodingCg.TxConfig.TxDecoder()(transaction.Tx)
@@ -453,13 +464,22 @@ func QueryBlockTransactionsHandler(rpcAddr string, r *http.Request, isWithdraw b
 			}
 		}
 
-		response[fmt.Sprintf("0x%X", transaction.Hash)] = types.DepositWithdrawResult{
+		txResults[fmt.Sprintf("0x%X", transaction.Hash)] = types.DepositWithdrawResult{
 			Time: blockTime,
 			Txs:  txResponses,
 		}
 	}
 
-	return response, nil, http.StatusOK
+	res := struct {
+		Transactions map[string]types.DepositWithdrawResult `json:"transactions"`
+		TotalCount   int                                    `json:"total_count"`
+	}{}
+
+	searchResult, err := SearchTxHashHandle(rpcAddr, sender, recipient, txType, 0, pageSize, -1, -1, "")
+	res.TotalCount = searchResult.TotalCount
+	res.Transactions = txResults
+
+	return res, nil, http.StatusOK
 }
 
 // QueryWithdraws is a function to query withdraw transactions.

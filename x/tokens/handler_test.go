@@ -9,9 +9,10 @@ import (
 	"time"
 
 	"github.com/KiraCore/sekai/app"
-	"github.com/KiraCore/sekai/simapp"
+	simapp "github.com/KiraCore/sekai/app"
+	"github.com/KiraCore/sekai/x/gov"
 	"github.com/KiraCore/sekai/x/gov/types"
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	tokens "github.com/KiraCore/sekai/x/tokens"
 	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -40,8 +41,8 @@ func NewAccountByIndex(accNum int) sdk.AccAddress {
 	return addr
 }
 
-func setPermissionToAddr(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addr sdk.AccAddress, perm types.PermValue) error {
-	proposerActor := customgovtypes.NewDefaultActor(addr)
+func setPermissionToAddr(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context, addr sdk.AccAddress, perm types.PermValue) error {
+	proposerActor := govtypes.NewDefaultActor(addr)
 	err := proposerActor.Permissions.AddToWhitelist(perm)
 	require.NoError(t, err)
 
@@ -207,22 +208,20 @@ func TestHandler_CreateProposalUpsertTokenAliases_Errors(t *testing.T) {
 
 	tests := []struct {
 		name         string
-		msg          *tokenstypes.MsgProposalUpsertTokenAlias
-		preparePerms func(t *testing.T, app *simapp.SimApp, ctx sdk.Context)
+		content      govtypes.Content
+		preparePerms func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context)
 		expectedErr  error
 	}{
 		{
 			"Proposer does not have Perm",
-			tokenstypes.NewMsgProposalUpsertTokenAlias(
-				proposerAddr,
-				"some desc",
+			tokenstypes.NewUpsertTokenAliasProposal(
 				"BTC",
 				"Bitcoin",
 				"http://theicon.com",
 				18,
 				[]string{},
 			),
-			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
+			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {},
 			errors.Wrap(types.ErrNotEnoughPermissions, types.PermCreateUpsertTokenAliasProposal.String()),
 		},
 	}
@@ -235,8 +234,10 @@ func TestHandler_CreateProposalUpsertTokenAliases_Errors(t *testing.T) {
 
 			tt.preparePerms(t, app, ctx)
 
-			handler := tokens.NewHandler(app.TokensKeeper, app.CustomGovKeeper)
-			_, err := handler(ctx, tt.msg)
+			handler := gov.NewHandler(app.CustomGovKeeper)
+			msg, err := govtypes.NewMsgSubmitProposal(proposerAddr, "title", "some desc", tt.content)
+			require.NoError(t, err)
+			_, err = handler(ctx, msg)
 			require.EqualError(t, err, tt.expectedErr.Error())
 		})
 	}
@@ -260,23 +261,24 @@ func TestHandler_CreateProposalUpsertTokenAliases(t *testing.T) {
 	properties.ProposalEndTime = 10
 	app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
 
-	handler := tokens.NewHandler(app.TokensKeeper, app.CustomGovKeeper)
+	handler := gov.NewHandler(app.CustomGovKeeper)
+	proposal := tokenstypes.NewUpsertTokenAliasProposal(
+		"BTC",
+		"Bitcoin",
+		"http://sdlkfjalsdk.es",
+		18,
+		[]string{
+			"atom",
+		},
+	)
+	msg, err := govtypes.NewMsgSubmitProposal(proposerAddr, "title", "some desc", proposal)
+	require.NoError(t, err)
 	res, err := handler(
 		ctx,
-		tokenstypes.NewMsgProposalUpsertTokenAlias(
-			proposerAddr,
-			"some desc",
-			"BTC",
-			"Bitcoin",
-			"http://sdlkfjalsdk.es",
-			18,
-			[]string{
-				"atom",
-			},
-		),
+		msg,
 	)
 	require.NoError(t, err)
-	expData, _ := proto.Marshal(&tokenstypes.MsgProposalUpsertTokenAliasResponse{ProposalID: 1})
+	expData, _ := proto.Marshal(&govtypes.MsgSubmitProposalResponse{ProposalID: 1})
 	require.Equal(t, expData, res.Data)
 
 	savedProposal, found := app.CustomGovKeeper.GetProposal(ctx, 1)
@@ -284,7 +286,9 @@ func TestHandler_CreateProposalUpsertTokenAliases(t *testing.T) {
 
 	expectedSavedProposal, err := types.NewProposal(
 		1,
-		tokenstypes.NewProposalUpsertTokenAlias(
+		"title",
+		"some desc",
+		tokenstypes.NewUpsertTokenAliasProposal(
 			"BTC",
 			"Bitcoin",
 			"http://sdlkfjalsdk.es",
@@ -300,7 +304,6 @@ func TestHandler_CreateProposalUpsertTokenAliases(t *testing.T) {
 		),
 		ctx.BlockHeight()+2,
 		ctx.BlockHeight()+3,
-		"some desc",
 	)
 	require.NoError(t, err)
 	require.Equal(t, expectedSavedProposal, savedProposal)
@@ -324,20 +327,18 @@ func TestHandler_CreateProposalUpsertTokenRates_Errors(t *testing.T) {
 
 	tests := []struct {
 		name         string
-		msg          *tokenstypes.MsgProposalUpsertTokenRates
-		preparePerms func(t *testing.T, app *simapp.SimApp, ctx sdk.Context)
+		content      govtypes.Content
+		preparePerms func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context)
 		expectedErr  error
 	}{
 		{
 			"Proposer does not have Perm",
-			tokenstypes.NewMsgProposalUpsertTokenRates(
-				proposerAddr,
-				"some desc",
+			tokenstypes.NewUpsertTokenRatesProposal(
 				"btc",
 				sdk.NewDec(1234),
 				false,
 			),
-			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
+			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {},
 			errors.Wrap(types.ErrNotEnoughPermissions, types.PermCreateUpsertTokenRateProposal.String()),
 		},
 	}
@@ -350,8 +351,10 @@ func TestHandler_CreateProposalUpsertTokenRates_Errors(t *testing.T) {
 
 			tt.preparePerms(t, app, ctx)
 
-			handler := tokens.NewHandler(app.TokensKeeper, app.CustomGovKeeper)
-			_, err := handler(ctx, tt.msg)
+			handler := gov.NewHandler(app.CustomGovKeeper)
+			msg, err := govtypes.NewMsgSubmitProposal(proposerAddr, "title", "some desc", tt.content)
+			require.NoError(t, err)
+			_, err = handler(ctx, msg)
 			require.EqualError(t, err, tt.expectedErr.Error())
 		})
 	}
@@ -375,19 +378,20 @@ func TestHandler_CreateProposalUpsertTokenRates(t *testing.T) {
 	properties.ProposalEndTime = 10
 	app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
 
-	handler := tokens.NewHandler(app.TokensKeeper, app.CustomGovKeeper)
+	handler := gov.NewHandler(app.CustomGovKeeper)
+	proposal := tokenstypes.NewUpsertTokenRatesProposal(
+		"btc",
+		sdk.NewDec(1234),
+		false,
+	)
+	msg, err := govtypes.NewMsgSubmitProposal(proposerAddr, "title", "some desc", proposal)
+	require.NoError(t, err)
 	res, err := handler(
 		ctx,
-		tokenstypes.NewMsgProposalUpsertTokenRates(
-			proposerAddr,
-			"some desc",
-			"btc",
-			sdk.NewDec(1234),
-			false,
-		),
+		msg,
 	)
 	require.NoError(t, err)
-	expData, _ := proto.Marshal(&tokenstypes.MsgProposalUpsertTokenRatesResponse{ProposalID: 1})
+	expData, _ := proto.Marshal(&govtypes.MsgSubmitProposalResponse{ProposalID: 1})
 	require.Equal(t, expData, res.Data)
 
 	savedProposal, found := app.CustomGovKeeper.GetProposal(ctx, 1)
@@ -395,7 +399,9 @@ func TestHandler_CreateProposalUpsertTokenRates(t *testing.T) {
 
 	expectedSavedProposal, err := types.NewProposal(
 		1,
-		tokenstypes.NewProposalUpsertTokenRates(
+		"title",
+		"some desc",
+		tokenstypes.NewUpsertTokenRatesProposal(
 			"btc",
 			sdk.NewDec(1234),
 			false,
@@ -407,7 +413,6 @@ func TestHandler_CreateProposalUpsertTokenRates(t *testing.T) {
 		),
 		ctx.BlockHeight()+2,
 		ctx.BlockHeight()+3,
-		"some desc",
 	)
 	require.NoError(t, err)
 	require.Equal(t, expectedSavedProposal, savedProposal)
@@ -425,4 +430,68 @@ func TestHandler_CreateProposalUpsertTokenRates(t *testing.T) {
 	require.True(t, iterator.Valid())
 }
 
-// TODO: should write test for MsgProposalTokensWhiteBlackChange
+func TestHandler_CreateProposalTokensWhiteBlackChange(t *testing.T) {
+	proposerAddr, err := sdk.AccAddressFromBech32("kira1alzyfq40zjsveat87jlg8jxetwqmr0a29sgd0f")
+	require.NoError(t, err)
+
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{
+		Time: time.Now(),
+	})
+
+	// Set proposer Permissions
+	proposerActor := types.NewDefaultActor(proposerAddr)
+	err = app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerActor, types.PermCreateTokensWhiteBlackChangeProposal)
+	require.NoError(t, err)
+
+	properties := app.CustomGovKeeper.GetNetworkProperties(ctx)
+	properties.ProposalEndTime = 10
+	app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
+
+	handler := gov.NewHandler(app.CustomGovKeeper)
+	proposal := tokenstypes.NewTokensWhiteBlackChangeProposal(
+		false,
+		true,
+		[]string{"atom"},
+	)
+	msg, err := govtypes.NewMsgSubmitProposal(proposerAddr, "title", "some desc", proposal)
+	require.NoError(t, err)
+	res, err := handler(
+		ctx,
+		msg,
+	)
+	require.NoError(t, err)
+	expData, _ := proto.Marshal(&govtypes.MsgSubmitProposalResponse{ProposalID: 1})
+	require.Equal(t, expData, res.Data)
+
+	savedProposal, found := app.CustomGovKeeper.GetProposal(ctx, 1)
+	require.True(t, found)
+
+	expectedSavedProposal, err := types.NewProposal(
+		1,
+		"title",
+		"some desc",
+		proposal,
+		ctx.BlockTime(),
+		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEndTime)),
+		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEndTime)+
+			time.Second*time.Duration(properties.ProposalEnactmentTime),
+		),
+		ctx.BlockHeight()+2,
+		ctx.BlockHeight()+3,
+	)
+	require.NoError(t, err)
+	require.Equal(t, expectedSavedProposal, savedProposal)
+
+	// Next proposal ID is increased.
+	id := app.CustomGovKeeper.GetNextProposalID(ctx)
+	require.Equal(t, uint64(2), id)
+
+	// Is not on finished active proposals.
+	iterator := app.CustomGovKeeper.GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx, ctx.BlockTime())
+	require.False(t, iterator.Valid())
+
+	ctx = ctx.WithBlockTime(ctx.BlockTime().Add(time.Minute * 10))
+	iterator = app.CustomGovKeeper.GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx, ctx.BlockTime())
+	require.True(t, iterator.Valid())
+}

@@ -3,7 +3,10 @@ package kira.slashing;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
-import "slashing.proto";
+import "google/protobuf/timestamp.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "kira/slashing/v1beta1/slashing.proto";
+import "kira/staking/query.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/slashing/types";
 
@@ -33,11 +36,22 @@ message QueryParamsResponse {
   Params params = 1 [(gogoproto.nullable) = false];
 }
 
+message IdentityRecord {
+  option (gogoproto.equal)            = true;
+  
+  uint64 id = 1;
+  map<string, string> infos = 3;
+  google.protobuf.Timestamp date = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  repeated string verifiers = 5;
+}
+
 // QuerySigningInfoRequest is the request type for the Query/SigningInfo RPC
 // method
 message QuerySigningInfoRequest {
   // cons_address is the address to query signing info of
   string cons_address = 1;
+  // include_validators is the flag to include validators info while querying signing info
+  bool include_validator = 2;
 }
 
 // QuerySigningInfoResponse is the response type for the Query/SigningInfo RPC
@@ -45,14 +59,16 @@ message QuerySigningInfoRequest {
 message QuerySigningInfoResponse {
   // val_signing_info is the signing info of requested val cons address
   ValidatorSigningInfo val_signing_info = 1 [(gogoproto.nullable) = false];
+  // validator is the main info saved on native validator object
+  kira.staking.QueryValidator validator = 2 [(gogoproto.nullable) = false];
 }
 
 // QuerySigningInfosRequest is the request type for the Query/SigningInfos RPC
 // method
 message QuerySigningInfosRequest {
-  PageRequest pagination = 1 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
-  // TODO: should remove 'all' flag when refactoring is done
-  bool all = 2;
+  cosmos.base.query.v1beta1.PageRequest pagination = 1 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
+  // include_validators is the flag to include validators info while querying signing info
+  bool include_validator = 2;
 }
 
 // QuerySigningInfosResponse is the response type for the Query/SigningInfos RPC
@@ -60,18 +76,7 @@ message QuerySigningInfosRequest {
 message QuerySigningInfosResponse {
   // info is the signing info of all validators
   repeated ValidatorSigningInfo info       = 1 [(gogoproto.nullable) = false];
-  PageResponse pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
-}
-
-
-message PageRequest {
-  bytes key = 1;
-  uint64 offset = 2;
-  uint64 limit = 3;
-  bool count_total = 4;
-}
-
-message PageResponse {
-  bytes next_key = 1;
-  uint64 total = 2;
+  // validator is the main info saved on native validator object
+  repeated kira.staking.QueryValidator validators = 2 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 3 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
 }

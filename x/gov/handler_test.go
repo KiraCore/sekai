@@ -6,18 +6,16 @@ import (
 	"testing"
 	"time"
 
-	types3 "github.com/KiraCore/sekai/x/tokens/types"
-	"github.com/gogo/protobuf/proto"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/stretchr/testify/require"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-
 	"github.com/KiraCore/sekai/app"
-	"github.com/KiraCore/sekai/simapp"
+	simapp "github.com/KiraCore/sekai/app"
 	"github.com/KiraCore/sekai/x/gov"
 	"github.com/KiraCore/sekai/x/gov/types"
+	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/gogo/protobuf/proto"
+	"github.com/stretchr/testify/require"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
 
 func TestMain(m *testing.M) {
@@ -417,11 +415,8 @@ func TestHandler_ClaimCouncilor_Fails(t *testing.T) {
 		{
 			name: "not enough permissions",
 			msg: &types.MsgClaimCouncilor{
-				Moniker:  "",
-				Website:  "",
-				Social:   "",
-				Identity: "",
-				Address:  addr,
+				Moniker: "",
+				Address: addr,
 			},
 			expectedErr: fmt.Errorf("PermClaimCouncilor: not enough permissions"),
 		},
@@ -451,11 +446,8 @@ func TestHandler_ClaimCouncilor_HappyPath(t *testing.T) {
 		{
 			name: "all correct",
 			msg: &types.MsgClaimCouncilor{
-				Moniker:  "TheMoniker",
-				Website:  "TheWebsite",
-				Social:   "The Social",
-				Identity: "The Identity",
-				Address:  addr,
+				Moniker: "TheMoniker",
+				Address: addr,
 			},
 		},
 	}
@@ -475,9 +467,6 @@ func TestHandler_ClaimCouncilor_HappyPath(t *testing.T) {
 
 			expectedCouncilor := types.NewCouncilor(
 				tt.msg.Moniker,
-				tt.msg.Website,
-				tt.msg.Social,
-				tt.msg.Identity,
 				tt.msg.Address,
 			)
 
@@ -496,7 +485,7 @@ func TestHandler_WhitelistRolePermissions_Errors(t *testing.T) {
 	tests := []struct {
 		name         string
 		msg          *types.MsgWhitelistRolePermission
-		preparePerms func(t *testing.T, app *simapp.SimApp, ctx sdk.Context)
+		preparePerms func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context)
 		expectedErr  error
 	}{
 		{
@@ -506,7 +495,7 @@ func TestHandler_WhitelistRolePermissions_Errors(t *testing.T) {
 				uint32(types.RoleValidator),
 				uint32(types.PermSetPermissions),
 			),
-			preparePerms: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+			preparePerms: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				return
 			},
 			expectedErr: fmt.Errorf("%s: not enough permissions", types.PermUpsertRole.String()),
@@ -518,7 +507,7 @@ func TestHandler_WhitelistRolePermissions_Errors(t *testing.T) {
 				10000,
 				1,
 			),
-			preparePerms: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+			preparePerms: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				err2 := setPermissionToAddr(t, app, ctx, addr, types.PermUpsertRole)
 				require.NoError(t, err2)
 			},
@@ -531,7 +520,7 @@ func TestHandler_WhitelistRolePermissions_Errors(t *testing.T) {
 				uint32(types.RoleValidator),
 				uint32(types.PermSetPermissions),
 			),
-			preparePerms: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+			preparePerms: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				err2 := setPermissionToAddr(t, app, ctx, addr, types.PermUpsertRole)
 				require.NoError(t, err2)
 
@@ -596,7 +585,7 @@ func TestHandler_BlacklistRolePermissions_Errors(t *testing.T) {
 	tests := []struct {
 		name         string
 		msg          *types.MsgBlacklistRolePermission
-		preparePerms func(t *testing.T, app *simapp.SimApp, ctx sdk.Context)
+		preparePerms func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context)
 		expectedErr  error
 	}{
 		{
@@ -606,7 +595,7 @@ func TestHandler_BlacklistRolePermissions_Errors(t *testing.T) {
 				uint32(types.RoleValidator),
 				uint32(types.PermSetPermissions),
 			),
-			preparePerms: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
+			preparePerms: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {},
 			expectedErr:  fmt.Errorf("%s: not enough permissions", types.PermUpsertRole.String()),
 		},
 		{
@@ -616,7 +605,7 @@ func TestHandler_BlacklistRolePermissions_Errors(t *testing.T) {
 				10000,
 				1,
 			),
-			preparePerms: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+			preparePerms: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				err2 := setPermissionToAddr(t, app, ctx, addr, types.PermUpsertRole)
 				require.NoError(t, err2)
 			},
@@ -629,7 +618,7 @@ func TestHandler_BlacklistRolePermissions_Errors(t *testing.T) {
 				uint32(types.RoleValidator),
 				uint32(types.PermSetPermissions),
 			),
-			preparePerms: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+			preparePerms: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				err2 := setPermissionToAddr(t, app, ctx, addr, types.PermUpsertRole)
 				require.NoError(t, err2)
 
@@ -694,7 +683,7 @@ func TestHandler_RemoveWhitelistRolePermissions_Errors(t *testing.T) {
 	tests := []struct {
 		name         string
 		msg          *types.MsgRemoveWhitelistRolePermission
-		preparePerms func(t *testing.T, app *simapp.SimApp, ctx sdk.Context)
+		preparePerms func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context)
 		expectedErr  error
 	}{
 		{
@@ -704,7 +693,7 @@ func TestHandler_RemoveWhitelistRolePermissions_Errors(t *testing.T) {
 				uint32(types.RoleValidator),
 				uint32(types.PermSetPermissions),
 			),
-			preparePerms: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
+			preparePerms: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {},
 			expectedErr:  fmt.Errorf("%s: not enough permissions", types.PermUpsertRole.String()),
 		},
 		{
@@ -714,7 +703,7 @@ func TestHandler_RemoveWhitelistRolePermissions_Errors(t *testing.T) {
 				10000,
 				1,
 			),
-			preparePerms: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+			preparePerms: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				err2 := setPermissionToAddr(t, app, ctx, addr, types.PermUpsertRole)
 				require.NoError(t, err2)
 			},
@@ -773,7 +762,7 @@ func TestHandler_RemoveBlacklistRolePermissions_Errors(t *testing.T) {
 	tests := []struct {
 		name         string
 		msg          *types.MsgRemoveBlacklistRolePermission
-		preparePerms func(t *testing.T, app *simapp.SimApp, ctx sdk.Context)
+		preparePerms func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context)
 		expectedErr  error
 	}{
 		{
@@ -783,7 +772,7 @@ func TestHandler_RemoveBlacklistRolePermissions_Errors(t *testing.T) {
 				uint32(types.RoleValidator),
 				uint32(types.PermSetPermissions),
 			),
-			preparePerms: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
+			preparePerms: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {},
 			expectedErr:  fmt.Errorf("%s: not enough permissions", types.PermUpsertRole.String()),
 		},
 		{
@@ -793,7 +782,7 @@ func TestHandler_RemoveBlacklistRolePermissions_Errors(t *testing.T) {
 				10000,
 				1,
 			),
-			preparePerms: func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+			preparePerms: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				err2 := setPermissionToAddr(t, app, ctx, addr, types.PermUpsertRole)
 				require.NoError(t, err2)
 			},
@@ -860,7 +849,7 @@ func TestHandler_CreateRole_Errors(t *testing.T) {
 	tests := []struct {
 		name         string
 		msg          *types.MsgCreateRole
-		preparePerms func(t *testing.T, app *simapp.SimApp, ctx sdk.Context)
+		preparePerms func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context)
 		expectedErr  error
 	}{
 		{
@@ -869,7 +858,7 @@ func TestHandler_CreateRole_Errors(t *testing.T) {
 				addr,
 				10,
 			),
-			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
+			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {},
 			fmt.Errorf("PermUpsertRole: not enough permissions"),
 		},
 		{
@@ -878,7 +867,7 @@ func TestHandler_CreateRole_Errors(t *testing.T) {
 				addr,
 				1234,
 			),
-			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				err2 := setPermissionToAddr(t, app, ctx, addr, types.PermUpsertRole)
 				require.NoError(t, err2)
 				app.CustomGovKeeper.CreateRole(ctx, types.Role(1234))
@@ -933,7 +922,7 @@ func TestHandler_AssignRole_Errors(t *testing.T) {
 	tests := []struct {
 		name         string
 		msg          *types.MsgAssignRole
-		preparePerms func(t *testing.T, app *simapp.SimApp, ctx sdk.Context)
+		preparePerms func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context)
 		expectedErr  error
 	}{
 		{
@@ -941,7 +930,7 @@ func TestHandler_AssignRole_Errors(t *testing.T) {
 			types.NewMsgAssignRole(
 				proposerAddr, addr, 3,
 			),
-			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
+			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {},
 			fmt.Errorf("%s: not enough permissions", types.PermUpsertRole.String()),
 		},
 		{
@@ -949,7 +938,7 @@ func TestHandler_AssignRole_Errors(t *testing.T) {
 			types.NewMsgAssignRole(
 				proposerAddr, addr, 3,
 			),
-			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				err2 := setPermissionToAddr(t, app, ctx, proposerAddr, types.PermUpsertRole)
 				require.NoError(t, err2)
 			},
@@ -960,7 +949,7 @@ func TestHandler_AssignRole_Errors(t *testing.T) {
 			types.NewMsgAssignRole(
 				proposerAddr, addr, 3,
 			),
-			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				err2 := setPermissionToAddr(t, app, ctx, proposerAddr, types.PermUpsertRole)
 				require.NoError(t, err2)
 
@@ -1028,7 +1017,7 @@ func TestHandler_RemoveRole_Errors(t *testing.T) {
 	tests := []struct {
 		name         string
 		msg          *types.MsgRemoveRole
-		preparePerms func(t *testing.T, app *simapp.SimApp, ctx sdk.Context)
+		preparePerms func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context)
 		expectedErr  error
 	}{
 		{
@@ -1036,7 +1025,7 @@ func TestHandler_RemoveRole_Errors(t *testing.T) {
 			types.NewMsgRemoveRole(
 				proposerAddr, addr, 3,
 			),
-			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
+			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {},
 			fmt.Errorf("%s: not enough permissions", types.PermUpsertRole.String()),
 		},
 		{
@@ -1044,7 +1033,7 @@ func TestHandler_RemoveRole_Errors(t *testing.T) {
 			types.NewMsgRemoveRole(
 				proposerAddr, addr, 3,
 			),
-			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				err2 := setPermissionToAddr(t, app, ctx, proposerAddr, types.PermUpsertRole)
 				require.NoError(t, err2)
 			},
@@ -1055,7 +1044,7 @@ func TestHandler_RemoveRole_Errors(t *testing.T) {
 			types.NewMsgRemoveRole(
 				proposerAddr, addr, 3,
 			),
-			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				err2 := setPermissionToAddr(t, app, ctx, proposerAddr, types.PermUpsertRole)
 				require.NoError(t, err2)
 
@@ -1127,24 +1116,24 @@ func TestHandler_CreateProposalAssignPermission_Errors(t *testing.T) {
 
 	tests := []struct {
 		name         string
-		msg          *types.MsgProposalAssignPermission
-		preparePerms func(t *testing.T, app *simapp.SimApp, ctx sdk.Context)
+		content      types.Content
+		preparePerms func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context)
 		expectedErr  error
 	}{
 		{
 			"Proposer does not have Perm",
-			types.NewMsgProposalAssignPermission(
-				proposerAddr, "some desc", addr, types.PermClaimValidator,
+			types.NewAssignPermissionProposal(
+				addr, types.PermClaimValidator,
 			),
-			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
+			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {},
 			errors.Wrap(types.ErrNotEnoughPermissions, "PERMISSION_CREATE_SET_PERMISSIONS_PROPOSAL"),
 		},
 		{
 			"address already has that permission",
-			types.NewMsgProposalAssignPermission(
-				proposerAddr, "some desc", addr, types.PermClaimValidator,
+			types.NewAssignPermissionProposal(
+				addr, types.PermClaimValidator,
 			),
-			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				proposerActor := types.NewDefaultActor(proposerAddr)
 				err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerActor, types.PermCreateSetPermissionsProposal)
 				require.NoError(t, err2)
@@ -1166,7 +1155,9 @@ func TestHandler_CreateProposalAssignPermission_Errors(t *testing.T) {
 			tt.preparePerms(t, app, ctx)
 
 			handler := gov.NewHandler(app.CustomGovKeeper)
-			_, err := handler(ctx, tt.msg)
+			msg, err := types.NewMsgSubmitProposal(proposerAddr, "title", "some desc", tt.content)
+			require.NoError(t, err)
+			_, err = handler(ctx, msg)
 			require.EqualError(t, err, tt.expectedErr.Error())
 		})
 	}
@@ -1194,13 +1185,16 @@ func TestHandler_ProposalAssignPermission(t *testing.T) {
 	app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
 
 	handler := gov.NewHandler(app.CustomGovKeeper)
+	proposal := types.NewAssignPermissionProposal(addr, types.PermValue(1))
+	msg, err := types.NewMsgSubmitProposal(proposerAddr, "title", "some desc", proposal)
+	require.NoError(t, err)
 	res, err := handler(
 		ctx,
-		types.NewMsgProposalAssignPermission(proposerAddr, "some desc", addr, types.PermValue(1)),
+		msg,
 	)
 	require.NoError(t, err)
 
-	expData, _ := proto.Marshal(&types.MsgProposalAssignPermissionResponse{ProposalID: 1})
+	expData, _ := proto.Marshal(&types.MsgSubmitProposalResponse{ProposalID: 1})
 	require.Equal(t, expData, res.Data)
 
 	savedProposal, found := app.CustomGovKeeper.GetProposal(ctx, 1)
@@ -1208,6 +1202,8 @@ func TestHandler_ProposalAssignPermission(t *testing.T) {
 
 	expectedSavedProposal, err := types.NewProposal(
 		1,
+		"title",
+		"some desc",
 		types.NewAssignPermissionProposal(
 			addr,
 			types.PermValue(1),
@@ -1217,7 +1213,6 @@ func TestHandler_ProposalAssignPermission(t *testing.T) {
 		ctx.BlockTime().Add((time.Second*time.Duration(properties.ProposalEndTime))+(time.Second*time.Duration(properties.ProposalEnactmentTime))),
 		ctx.BlockHeight()+2,
 		ctx.BlockHeight()+3,
-		"some desc",
 	)
 	require.NoError(t, err)
 	require.Equal(t, expectedSavedProposal, savedProposal)
@@ -1241,22 +1236,20 @@ func TestHandler_CreateProposalUpsertDataRegistry_Errors(t *testing.T) {
 
 	tests := []struct {
 		name         string
-		msg          *types.MsgProposalUpsertDataRegistry
-		preparePerms func(t *testing.T, app *simapp.SimApp, ctx sdk.Context)
+		content      types.Content
+		preparePerms func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context)
 		expectedErr  error
 	}{
 		{
 			"Proposer does not have Perm",
-			types.NewMsgProposalUpsertDataRegistry(
-				proposerAddr,
-				"some desc",
+			types.NewUpsertDataRegistryProposal(
 				"theKey",
 				"theHash",
 				"theReference",
 				"theEncoding",
 				1234,
 			),
-			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
+			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {},
 			errors.Wrap(types.ErrNotEnoughPermissions, types.PermCreateUpsertDataRegistryProposal.String()),
 		},
 	}
@@ -1270,7 +1263,9 @@ func TestHandler_CreateProposalUpsertDataRegistry_Errors(t *testing.T) {
 			tt.preparePerms(t, app, ctx)
 
 			handler := gov.NewHandler(app.CustomGovKeeper)
-			_, err := handler(ctx, tt.msg)
+			msg, err := types.NewMsgSubmitProposal(proposerAddr, "title", "some desc", tt.content)
+			require.NoError(t, err)
+			_, err = handler(ctx, msg)
 			require.EqualError(t, err, tt.expectedErr.Error())
 		})
 	}
@@ -1295,21 +1290,21 @@ func TestHandler_ProposalUpsertDataRegistry(t *testing.T) {
 	app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
 
 	handler := gov.NewHandler(app.CustomGovKeeper)
+	proposal := types.NewUpsertDataRegistryProposal(
+		"theKey",
+		"theHash",
+		"theReference",
+		"theEncoding",
+		1234,
+	)
+	msg, err := types.NewMsgSubmitProposal(proposerAddr, "title", "some desc", proposal)
+	require.NoError(t, err)
 	res, err := handler(
-		ctx,
-		types.NewMsgProposalUpsertDataRegistry(
-			proposerAddr,
-			"some desc",
-			"theKey",
-			"theHash",
-			"theReference",
-			"theEncoding",
-			1234,
-		),
+		ctx, msg,
 	)
 	require.NoError(t, err)
 
-	expData, _ := proto.Marshal(&types.MsgProposalUpsertDataRegistryResponse{ProposalID: 1})
+	expData, _ := proto.Marshal(&types.MsgSubmitProposalResponse{ProposalID: 1})
 	require.Equal(t, expData, res.Data)
 
 	savedProposal, found := app.CustomGovKeeper.GetProposal(ctx, 1)
@@ -1317,6 +1312,8 @@ func TestHandler_ProposalUpsertDataRegistry(t *testing.T) {
 
 	expectedSavedProposal, err := types.NewProposal(
 		1,
+		"title",
+		"some desc",
 		types.NewUpsertDataRegistryProposal(
 			"theKey",
 			"theHash",
@@ -1329,7 +1326,6 @@ func TestHandler_ProposalUpsertDataRegistry(t *testing.T) {
 		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEnactmentTime)+time.Second*time.Duration(properties.ProposalEndTime)),
 		ctx.BlockHeight()+2,
 		ctx.BlockHeight()+3,
-		"some desc",
 	)
 	require.NoError(t, err)
 	require.Equal(t, expectedSavedProposal, savedProposal)
@@ -1354,7 +1350,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 	tests := []struct {
 		name         string
 		msg          *types.MsgVoteProposal
-		preparePerms func(t *testing.T, app *simapp.SimApp, ctx sdk.Context)
+		preparePerms func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context)
 		expectedErr  error
 	}{
 		{
@@ -1362,7 +1358,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 			types.NewMsgVoteProposal(
 				1, voterAddr, types.OptionAbstain,
 			),
-			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				actor := types.NewNetworkActor(
 					voterAddr,
 					types.Roles{},
@@ -1379,6 +1375,8 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 				// Create proposal
 				proposal, err := types.NewProposal(
 					1,
+					"title",
+					"some desc",
 					types.NewAssignPermissionProposal(
 						voterAddr,
 						types.PermClaimCouncilor,
@@ -1388,7 +1386,6 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 					ctx.BlockTime().Add(time.Second*20),
 					ctx.BlockHeight()+2,
 					ctx.BlockHeight()+3,
-					"some desc",
 				)
 
 				require.NoError(t, err)
@@ -1401,7 +1398,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 			types.NewMsgVoteProposal(
 				1, voterAddr, types.OptionAbstain,
 			),
-			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				actor := types.NewNetworkActor(
 					voterAddr,
 					types.Roles{},
@@ -1415,6 +1412,8 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 				// Create proposal
 				proposal, err := types.NewProposal(
 					1,
+					"title",
+					"some desc",
 					types.NewAssignPermissionProposal(
 						voterAddr,
 						types.PermClaimCouncilor,
@@ -1424,7 +1423,6 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 					ctx.BlockTime().Add(time.Second*30),
 					ctx.BlockHeight()+2,
 					ctx.BlockHeight()+3,
-					"some desc",
 				)
 				require.NoError(t, err)
 				app.CustomGovKeeper.SaveProposal(ctx, proposal)
@@ -1436,7 +1434,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 			types.NewMsgVoteProposal(
 				1, voterAddr, types.OptionAbstain,
 			),
-			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				actor := types.NewNetworkActor(
 					voterAddr,
 					types.Roles{},
@@ -1450,6 +1448,8 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 				// Create proposal
 				proposal, err := types.NewProposal(
 					1,
+					"title",
+					"some desc",
 					types.NewUpsertDataRegistryProposal(
 						"theKey",
 						"theHash",
@@ -1462,7 +1462,6 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 					ctx.BlockTime().Add(time.Second*30),
 					ctx.BlockHeight()+2,
 					ctx.BlockHeight()+3,
-					"some desc",
 				)
 				require.NoError(t, err)
 				app.CustomGovKeeper.SaveProposal(ctx, proposal)
@@ -1474,7 +1473,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 			types.NewMsgVoteProposal(
 				1, voterAddr, types.OptionAbstain,
 			),
-			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				actor := types.NewNetworkActor(
 					voterAddr,
 					types.Roles{},
@@ -1494,7 +1493,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 			types.NewMsgVoteProposal(
 				1, voterAddr, types.OptionAbstain,
 			),
-			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				actor := types.NewDefaultActor(voterAddr)
 				actor.Deactivate()
 				app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
@@ -1508,7 +1507,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 			types.NewMsgVoteProposal(
 				1, voterAddr, types.OptionAbstain,
 			),
-			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				actor := types.NewNetworkActor(
 					voterAddr,
 					types.Roles{},
@@ -1522,16 +1521,17 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 				// Create proposal
 				proposal, err := types.NewProposal(
 					1,
+					"title",
+					"some desc",
 					types.NewSetNetworkPropertyProposal(
 						types.MinTxFee,
-						1234,
+						types.NetworkPropertyValue{Value: 1234},
 					),
 					ctx.BlockTime(),
 					ctx.BlockTime().Add(time.Second*20),
 					ctx.BlockTime().Add(time.Second*30),
 					ctx.BlockHeight()+2,
 					ctx.BlockHeight()+3,
-					"some desc",
 				)
 				require.NoError(t, err)
 				app.CustomGovKeeper.SaveProposal(ctx, proposal)
@@ -1543,7 +1543,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 			types.NewMsgVoteProposal(
 				1, voterAddr, types.OptionAbstain,
 			),
-			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				actor := types.NewNetworkActor(
 					voterAddr,
 					types.Roles{},
@@ -1557,7 +1557,9 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 				// Create proposal
 				proposal, err := types.NewProposal(
 					1,
-					types3.NewProposalUpsertTokenAlias(
+					"title",
+					"some desc",
+					tokenstypes.NewUpsertTokenAliasProposal(
 						"eur",
 						"Euro",
 						"theIcon",
@@ -1569,7 +1571,6 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 					ctx.BlockTime().Add(time.Second*30),
 					ctx.BlockHeight()+2,
 					ctx.BlockHeight()+3,
-					"some desc",
 				)
 				require.NoError(t, err)
 				app.CustomGovKeeper.SaveProposal(ctx, proposal)
@@ -1619,6 +1620,8 @@ func TestHandler_VoteProposal(t *testing.T) {
 	// Create proposal
 	proposal, err := types.NewProposal(
 		1,
+		"title",
+		"some desc",
 		types.NewAssignPermissionProposal(
 			voterAddr,
 			types.PermClaimCouncilor,
@@ -1628,7 +1631,6 @@ func TestHandler_VoteProposal(t *testing.T) {
 		ctx.BlockTime().Add(time.Second*10),
 		ctx.BlockHeight()+2,
 		ctx.BlockHeight()+3,
-		"some desc",
 	)
 	require.NoError(t, err)
 	app.CustomGovKeeper.SaveProposal(ctx, proposal)
@@ -1643,7 +1645,7 @@ func TestHandler_VoteProposal(t *testing.T) {
 	require.Equal(t, types.NewVote(proposal.ProposalId, voterAddr, types.OptionAbstain), vote)
 }
 
-func setPermissionToAddr(t *testing.T, app *simapp.SimApp, ctx sdk.Context, addr sdk.AccAddress, perm types.PermValue) error {
+func setPermissionToAddr(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context, addr sdk.AccAddress, perm types.PermValue) error {
 	proposerActor := types.NewDefaultActor(addr)
 	err := app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerActor, perm)
 	require.NoError(t, err)
@@ -1657,19 +1659,17 @@ func TestHandler_CreateProposalSetNetworkProperty_Errors(t *testing.T) {
 
 	tests := []struct {
 		name         string
-		msg          *types.MsgProposalSetNetworkProperty
-		preparePerms func(t *testing.T, app *simapp.SimApp, ctx sdk.Context)
+		content      types.Content
+		preparePerms func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context)
 		expectedErr  error
 	}{
 		{
 			"Proposer does not have Perm",
-			types.NewMsgProposalSetNetworkProperty(
-				proposerAddr,
-				"some desc",
+			types.NewSetNetworkPropertyProposal(
 				types.MaxTxFee,
-				100000,
+				types.NetworkPropertyValue{Value: 100000},
 			),
-			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
+			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {},
 			errors.Wrap(types.ErrNotEnoughPermissions, types.PermCreateSetNetworkPropertyProposal.String()),
 		},
 	}
@@ -1683,7 +1683,9 @@ func TestHandler_CreateProposalSetNetworkProperty_Errors(t *testing.T) {
 			tt.preparePerms(t, app, ctx)
 
 			handler := gov.NewHandler(app.CustomGovKeeper)
-			_, err := handler(ctx, tt.msg)
+			msg, err := types.NewMsgSubmitProposal(proposerAddr, "title", "some desc", tt.content)
+			require.NoError(t, err)
+			_, err = handler(ctx, msg)
 			require.EqualError(t, err, tt.expectedErr.Error())
 		})
 	}
@@ -1708,18 +1710,19 @@ func TestHandler_ProposalSetNetworkProperty(t *testing.T) {
 	app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
 
 	handler := gov.NewHandler(app.CustomGovKeeper)
+	proposal := types.NewSetNetworkPropertyProposal(
+		types.MinTxFee,
+		types.NetworkPropertyValue{Value: 1234},
+	)
+	msg, err := types.NewMsgSubmitProposal(proposerAddr, "title", "some desc", proposal)
+	require.NoError(t, err)
 	res, err := handler(
 		ctx,
-		types.NewMsgProposalSetNetworkProperty(
-			proposerAddr,
-			"some desc",
-			types.MinTxFee,
-			1234,
-		),
+		msg,
 	)
 	require.NoError(t, err)
 
-	expData, _ := proto.Marshal(&types.MsgProposalSetNetworkPropertyResponse{ProposalID: 1})
+	expData, _ := proto.Marshal(&types.MsgSubmitProposalResponse{ProposalID: 1})
 	require.Equal(t, expData, res.Data)
 
 	savedProposal, found := app.CustomGovKeeper.GetProposal(ctx, 1)
@@ -1727,16 +1730,17 @@ func TestHandler_ProposalSetNetworkProperty(t *testing.T) {
 
 	expectedSavedProposal, err := types.NewProposal(
 		1,
+		"title",
+		"some desc",
 		types.NewSetNetworkPropertyProposal(
 			types.MinTxFee,
-			1234,
+			types.NetworkPropertyValue{Value: 1234},
 		),
 		ctx.BlockTime(),
 		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEndTime)),
 		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEnactmentTime)+time.Second*time.Duration(properties.ProposalEndTime)),
 		ctx.BlockHeight()+2,
 		ctx.BlockHeight()+3,
-		"some desc",
 	)
 	require.NoError(t, err)
 	require.Equal(t, expectedSavedProposal, savedProposal)
@@ -1760,32 +1764,28 @@ func TestHandler_CreateProposalCreateRole_Errors(t *testing.T) {
 
 	tests := []struct {
 		name         string
-		msg          *types.MsgProposalCreateRole
-		preparePerms func(t *testing.T, app *simapp.SimApp, ctx sdk.Context)
+		content      types.Content
+		preparePerms func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context)
 		expectedErr  error
 	}{
 		{
 			"Proposer does not have Perm",
-			types.NewMsgProposalCreateRole(
-				proposerAddr,
-				"some desc",
+			types.NewCreateRoleProposal(
 				types.Role(1),
 				[]types.PermValue{},
 				[]types.PermValue{types.PermClaimValidator},
 			),
-			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {},
+			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {},
 			errors.Wrap(types.ErrNotEnoughPermissions, types.PermCreateRoleProposal.String()),
 		},
 		{
 			"role already exist",
-			types.NewMsgProposalCreateRole(
-				proposerAddr,
-				"some desc",
+			types.NewCreateRoleProposal(
 				types.Role(1),
 				[]types.PermValue{types.PermClaimCouncilor},
 				[]types.PermValue{},
 			),
-			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				proposerActor := types.NewDefaultActor(proposerAddr)
 				err := app.CustomGovKeeper.AddWhitelistPermission(
 					ctx,
@@ -1800,14 +1800,12 @@ func TestHandler_CreateProposalCreateRole_Errors(t *testing.T) {
 		},
 		{
 			"permissions are empty",
-			types.NewMsgProposalCreateRole(
-				proposerAddr,
-				"some desc",
+			types.NewCreateRoleProposal(
 				types.Role(1000),
 				[]types.PermValue{},
 				[]types.PermValue{},
 			),
-			func(t *testing.T, app *simapp.SimApp, ctx sdk.Context) {
+			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				proposerActor := types.NewDefaultActor(proposerAddr)
 				err := app.CustomGovKeeper.AddWhitelistPermission(
 					ctx,
@@ -1829,7 +1827,9 @@ func TestHandler_CreateProposalCreateRole_Errors(t *testing.T) {
 			tt.preparePerms(t, app, ctx)
 
 			handler := gov.NewHandler(app.CustomGovKeeper)
-			_, err := handler(ctx, tt.msg)
+			msg, err := types.NewMsgSubmitProposal(proposerAddr, "title", "some desc", tt.content)
+			require.NoError(t, err)
+			_, err = handler(ctx, msg)
 			require.EqualError(t, err, tt.expectedErr.Error())
 		})
 	}
@@ -1854,23 +1854,24 @@ func TestHandler_ProposalCreateRole(t *testing.T) {
 	app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
 
 	handler := gov.NewHandler(app.CustomGovKeeper)
+	proposal := types.NewCreateRoleProposal(
+		types.Role(1000),
+		[]types.PermValue{
+			types.PermClaimValidator,
+		},
+		[]types.PermValue{
+			types.PermChangeTxFee,
+		},
+	)
+	msg, err := types.NewMsgSubmitProposal(proposerAddr, "title", "some desc", proposal)
+	require.NoError(t, err)
 	res, err := handler(
 		ctx,
-		types.NewMsgProposalCreateRole(
-			proposerAddr,
-			"some desc",
-			types.Role(1000),
-			[]types.PermValue{
-				types.PermClaimValidator,
-			},
-			[]types.PermValue{
-				types.PermChangeTxFee,
-			},
-		),
+		msg,
 	)
 	require.NoError(t, err)
 
-	expData, _ := proto.Marshal(&types.MsgProposalCreateRoleResponse{ProposalID: 1})
+	expData, _ := proto.Marshal(&types.MsgSubmitProposalResponse{ProposalID: 1})
 	require.Equal(t, expData, res.Data)
 
 	savedProposal, found := app.CustomGovKeeper.GetProposal(ctx, 1)
@@ -1878,6 +1879,8 @@ func TestHandler_ProposalCreateRole(t *testing.T) {
 
 	expectedSavedProposal, err := types.NewProposal(
 		1,
+		"title",
+		"some desc",
 		types.NewCreateRoleProposal(
 			types.Role(1000),
 			[]types.PermValue{
@@ -1892,7 +1895,6 @@ func TestHandler_ProposalCreateRole(t *testing.T) {
 		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEnactmentTime)+time.Second*time.Duration(properties.ProposalEndTime)),
 		ctx.BlockHeight()+2,
 		ctx.BlockHeight()+3,
-		"some desc",
 	)
 	require.NoError(t, err)
 	require.Equal(t, expectedSavedProposal, savedProposal)

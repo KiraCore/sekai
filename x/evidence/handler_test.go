@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/suite"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/KiraCore/sekai/simapp"
+	simapp "github.com/KiraCore/sekai/app"
 	"github.com/KiraCore/sekai/x/evidence"
 	"github.com/KiraCore/sekai/x/evidence/exported"
 	"github.com/KiraCore/sekai/x/evidence/keeper"
@@ -22,7 +22,7 @@ type HandlerTestSuite struct {
 	suite.Suite
 
 	handler sdk.Handler
-	app     *simapp.SimApp
+	app     *simapp.SekaiApp
 }
 
 func testMsgSubmitEvidence(r *require.Assertions, e exported.Evidence, s sdk.AccAddress) exported.MsgSubmitEvidenceI {

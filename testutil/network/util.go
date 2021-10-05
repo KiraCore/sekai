@@ -2,10 +2,11 @@ package network
 
 import (
 	"encoding/json"
+	"fmt"
 	"path/filepath"
 	"time"
 
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
 
 	"github.com/pkg/errors"
 
@@ -163,40 +164,55 @@ func initGenFiles(cfg Config, vals []*Validator, genAccounts []authtypes.Genesis
 	bankGenState.Balances = genBalances
 	cfg.GenesisState[banktypes.ModuleName] = cfg.Codec.MustMarshalJSON(&bankGenState)
 
+	var customGovGenState govtypes.GenesisState
+	cfg.Codec.MustUnmarshalJSON(cfg.GenesisState[govtypes.ModuleName], &customGovGenState)
+
 	var customStakingGenState customtypes.GenesisState
 	for _, val := range vals {
-		validator, err := customtypes.NewValidator(val.Moniker, "the Website", "The social", "The Identity", sdk.NewDec(1), val.ValAddress, val.PubKey)
+		validator, err := customtypes.NewValidator(val.ValAddress, val.PubKey)
 		if err != nil {
 			return errors.Wrap(err, "error creating validator")
 		}
 		customStakingGenState.Validators = append(customStakingGenState.Validators, validator)
+
+		for _, record := range customGovGenState.IdentityRecords {
+			if record.Key == "moniker" && record.Value == val.Moniker {
+				panic(fmt.Sprintf("same moniker exists, moniker = %s", val.Moniker))
+			}
+		}
+		customGovGenState.IdentityRecords = append(customGovGenState.IdentityRecords, govtypes.IdentityRecord{
+			Id:        customGovGenState.LastIdentityRecordId + 1,
+			Address:   sdk.AccAddress(val.ValAddress),
+			Key:       "moniker",
+			Value:     val.Moniker,
+			Date:      time.Now().UTC(),
+			Verifiers: []sdk.AccAddress{},
+		})
+		customGovGenState.LastIdentityRecordId++
 	}
 	cfg.GenesisState[customtypes.ModuleName] = cfg.Codec.MustMarshalJSON(&customStakingGenState)
-
-	var customGovGenState customgovtypes.GenesisState
-	cfg.Codec.MustUnmarshalJSON(cfg.GenesisState[customgovtypes.ModuleName], &customGovGenState)
 
 	// Add permissions to RoleInTest, num 0. This included:
 	// - Whitelisted PermClaimValidator.
 	// - Blacklisted PermClaimCouncilor.
-	customGovGenState.Permissions[uint64(customgovtypes.RoleUndefined)] = customgovtypes.NewPermissions(
-		[]customgovtypes.PermValue{
-			customgovtypes.PermClaimValidator,
-		}, []customgovtypes.PermValue{
-			customgovtypes.PermClaimCouncilor,
+	customGovGenState.Permissions[uint64(govtypes.RoleUndefined)] = govtypes.NewPermissions(
+		[]govtypes.PermValue{
+			govtypes.PermClaimValidator,
+		}, []govtypes.PermValue{
+			govtypes.PermClaimCouncilor,
 		})
 
 	// Only first validator is network actor
-	networkActor := customgovtypes.NewNetworkActor(
+	networkActor := govtypes.NewNetworkActor(
 		vals[0].Address,
-		customgovtypes.Roles{uint64(customgovtypes.RoleSudo)},
-		customgovtypes.Active,
+		govtypes.Roles{uint64(govtypes.RoleSudo)},
+		govtypes.Active,
 		nil,
-		customgovtypes.NewPermissions(nil, nil),
+		govtypes.NewPermissions(nil, nil),
 		1,
 	)
 	customGovGenState.NetworkActors = append(customGovGenState.NetworkActors, &networkActor)
-	cfg.GenesisState[customgovtypes.ModuleName] = cfg.Codec.MustMarshalJSON(&customGovGenState)
+	cfg.GenesisState[govtypes.ModuleName] = cfg.Codec.MustMarshalJSON(&customGovGenState)
 
 	appGenStateJSON, err := json.MarshalIndent(cfg.GenesisState, "", "  ")
 	if err != nil {

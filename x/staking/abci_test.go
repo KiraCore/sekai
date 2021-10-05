@@ -9,8 +9,8 @@ import (
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/KiraCore/sekai/simapp"
-	customstakingtypes "github.com/KiraCore/sekai/x/staking/types"
+	simapp "github.com/KiraCore/sekai/app"
+	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 )
 
 func TestItUpdatesTheValidatorSetBasedOnPendingValidators(t *testing.T) {
@@ -24,12 +24,7 @@ func TestItUpdatesTheValidatorSetBasedOnPendingValidators(t *testing.T) {
 	pubKey, err := types.GetPubKeyFromBech32(types.Bech32PubKeyTypeConsPub, "kiravalconspub1zcjduepqylc5k8r40azmw0xt7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsq4xg7em")
 	require.NoError(t, err)
 
-	validator1, err := customstakingtypes.NewValidator(
-		"validator 1",
-		"some-web.com",
-		"A Social",
-		"My Identity",
-		types.NewDec(1234),
+	validator1, err := stakingtypes.NewValidator(
 		valAddr1,
 		pubKey,
 	)
@@ -73,25 +68,25 @@ func TestItDoesNotReturnUpdatesIfThereIsNoPending(t *testing.T) {
 func TestItRemovesFromTheValidatorSetWhenInRemovingQueue(t *testing.T) {
 	tests := []struct {
 		name        string
-		prepareFunc func(app *simapp.SimApp, ctx types.Context, validator customstakingtypes.Validator)
+		prepareFunc func(app *simapp.SekaiApp, ctx types.Context, validator stakingtypes.Validator)
 	}{
 		{
 			name: "remove because it is paused",
-			prepareFunc: func(app *simapp.SimApp, ctx types.Context, validator customstakingtypes.Validator) {
+			prepareFunc: func(app *simapp.SekaiApp, ctx types.Context, validator stakingtypes.Validator) {
 				err := app.CustomStakingKeeper.Pause(ctx, validator.ValKey)
 				require.NoError(t, err)
 			},
 		},
 		{
 			name: "remove because it is inactive",
-			prepareFunc: func(app *simapp.SimApp, ctx types.Context, validator customstakingtypes.Validator) {
+			prepareFunc: func(app *simapp.SekaiApp, ctx types.Context, validator stakingtypes.Validator) {
 				err := app.CustomStakingKeeper.Inactivate(ctx, validator.ValKey)
 				require.NoError(t, err)
 			},
 		},
 		{
 			name: "remove because it is jailed",
-			prepareFunc: func(app *simapp.SimApp, ctx types.Context, validator customstakingtypes.Validator) {
+			prepareFunc: func(app *simapp.SekaiApp, ctx types.Context, validator stakingtypes.Validator) {
 				err := app.CustomStakingKeeper.Jail(ctx, validator.ValKey)
 				require.NoError(t, err)
 			},
@@ -111,12 +106,7 @@ func TestItRemovesFromTheValidatorSetWhenInRemovingQueue(t *testing.T) {
 			pubKey, err := types.GetPubKeyFromBech32(types.Bech32PubKeyTypeConsPub, "kiravalconspub1zcjduepqylc5k8r40azmw0xt7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsq4xg7em")
 			require.NoError(t, err)
 
-			validator1, err := customstakingtypes.NewValidator(
-				"validator 1",
-				"some-web.com",
-				"A Social",
-				"My Identity",
-				types.NewDec(1234),
+			validator1, err := stakingtypes.NewValidator(
 				valAddr1,
 				pubKey,
 			)
@@ -137,47 +127,47 @@ func TestItRemovesFromTheValidatorSetWhenInRemovingQueue(t *testing.T) {
 func TestItIncludesItBackToValidatorSetOnceReactivatingIt(t *testing.T) {
 	tests := []struct {
 		name                string
-		prepareDeactivation func(app *simapp.SimApp, ctx types.Context, validator customstakingtypes.Validator)
-		prepareFunc         func(app *simapp.SimApp, ctx types.Context, validator customstakingtypes.Validator)
+		prepareDeactivation func(app *simapp.SekaiApp, ctx types.Context, validator stakingtypes.Validator)
+		prepareFunc         func(app *simapp.SekaiApp, ctx types.Context, validator stakingtypes.Validator)
 	}{
 		{
 			name: "reactivating from paused",
-			prepareDeactivation: func(app *simapp.SimApp, ctx types.Context, validator customstakingtypes.Validator) {
+			prepareDeactivation: func(app *simapp.SekaiApp, ctx types.Context, validator stakingtypes.Validator) {
 				err := app.CustomStakingKeeper.Pause(ctx, validator.ValKey)
 				require.NoError(t, err)
 
 				// We end the block so the validator is paused
 				staking.EndBlocker(ctx, app.CustomStakingKeeper)
 			},
-			prepareFunc: func(app *simapp.SimApp, ctx types.Context, validator customstakingtypes.Validator) {
+			prepareFunc: func(app *simapp.SekaiApp, ctx types.Context, validator stakingtypes.Validator) {
 				err := app.CustomStakingKeeper.Unpause(ctx, validator.ValKey)
 				require.NoError(t, err)
 			},
 		},
 		{
 			name: "reactivating from inactive",
-			prepareDeactivation: func(app *simapp.SimApp, ctx types.Context, validator customstakingtypes.Validator) {
+			prepareDeactivation: func(app *simapp.SekaiApp, ctx types.Context, validator stakingtypes.Validator) {
 				err := app.CustomStakingKeeper.Inactivate(ctx, validator.ValKey)
 				require.NoError(t, err)
 
 				// We end the block so the validator is paused
 				staking.EndBlocker(ctx, app.CustomStakingKeeper)
 			},
-			prepareFunc: func(app *simapp.SimApp, ctx types.Context, validator customstakingtypes.Validator) {
+			prepareFunc: func(app *simapp.SekaiApp, ctx types.Context, validator stakingtypes.Validator) {
 				err := app.CustomStakingKeeper.Activate(ctx, validator.ValKey)
 				require.NoError(t, err)
 			},
 		},
 		{
 			name: "reactivating from jailed",
-			prepareDeactivation: func(app *simapp.SimApp, ctx types.Context, validator customstakingtypes.Validator) {
+			prepareDeactivation: func(app *simapp.SekaiApp, ctx types.Context, validator stakingtypes.Validator) {
 				err := app.CustomStakingKeeper.Jail(ctx, validator.ValKey)
 				require.NoError(t, err)
 
 				// We end the block so the validator is paused
 				staking.EndBlocker(ctx, app.CustomStakingKeeper)
 			},
-			prepareFunc: func(app *simapp.SimApp, ctx types.Context, validator customstakingtypes.Validator) {
+			prepareFunc: func(app *simapp.SekaiApp, ctx types.Context, validator stakingtypes.Validator) {
 				err := app.CustomStakingKeeper.Unjail(ctx, validator.ValKey)
 				require.NoError(t, err)
 				err = app.CustomStakingKeeper.Activate(ctx, validator.ValKey)
@@ -199,12 +189,7 @@ func TestItIncludesItBackToValidatorSetOnceReactivatingIt(t *testing.T) {
 			pubKey, err := types.GetPubKeyFromBech32(types.Bech32PubKeyTypeConsPub, "kiravalconspub1zcjduepqylc5k8r40azmw0xt7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsq4xg7em")
 			require.NoError(t, err)
 
-			validator1, err := customstakingtypes.NewValidator(
-				"validator 1",
-				"some-web.com",
-				"A Social",
-				"My Identity",
-				types.NewDec(1234),
+			validator1, err := stakingtypes.NewValidator(
 				valAddr1,
 				pubKey,
 			)

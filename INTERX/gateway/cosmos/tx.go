@@ -82,7 +82,7 @@ func postTxHandle(r *http.Request, request types.InterxRequest, rpcAddr string) 
 		return common.ServeError(0, "failed to get TX bytes", err.Error(), http.StatusBadRequest)
 	}
 
-	return common.MakeGetRequest(rpcAddr, url, fmt.Sprintf("tx=0x%X", txBytes))
+	return common.MakeTendermintRPCRequest(rpcAddr, url, fmt.Sprintf("tx=0x%X", txBytes))
 }
 
 // PostTxRequest is a function to post transaction.
@@ -105,7 +105,7 @@ func PostTxRequest(rpcAddr string) http.HandlerFunc {
 }
 
 func queryTxHashHandle(hash string, rpcAddr string) (interface{}, interface{}, int) {
-	return common.MakeGetRequest(rpcAddr, "/tx", fmt.Sprintf("hash=%s", hash))
+	return common.MakeTendermintRPCRequest(rpcAddr, "/tx", fmt.Sprintf("hash=%s", hash))
 }
 
 // QueryTxHashRequest is a function to query transaction hash.

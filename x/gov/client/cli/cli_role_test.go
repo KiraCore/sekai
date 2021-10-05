@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/KiraCore/sekai/x/gov/client/cli"
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
+	"github.com/KiraCore/sekai/x/gov/types"
 	stakingcli "github.com/KiraCore/sekai/x/staking/client/cli"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
@@ -23,9 +23,9 @@ func (s IntegrationTestSuite) TestWhitelistRolePermission() {
 	})
 	s.Require().NoError(err)
 
-	var perms customgovtypes.Permissions
+	var perms types.Permissions
 	val.ClientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &perms)
-	s.Require().False(perms.IsWhitelisted(customgovtypes.PermSetPermissions))
+	s.Require().False(perms.IsWhitelisted(types.PermSetPermissions))
 
 	// Send Tx To Whitelist permission
 	cmd = cli.GetTxWhitelistRolePermission()
@@ -46,9 +46,9 @@ func (s IntegrationTestSuite) TestWhitelistRolePermission() {
 	})
 	s.Require().NoError(err)
 
-	var newPerms customgovtypes.Permissions
+	var newPerms types.Permissions
 	val.ClientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &newPerms)
-	s.Require().True(newPerms.IsWhitelisted(customgovtypes.PermSetPermissions))
+	s.Require().True(newPerms.IsWhitelisted(types.PermSetPermissions))
 }
 
 func (s IntegrationTestSuite) TestBlacklistRolePermission() {
@@ -62,10 +62,10 @@ func (s IntegrationTestSuite) TestBlacklistRolePermission() {
 	})
 	s.Require().NoError(err)
 
-	var perms customgovtypes.Permissions
+	var perms types.Permissions
 	val.ClientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &perms)
-	s.Require().True(perms.IsWhitelisted(customgovtypes.PermClaimValidator))
-	s.Require().False(perms.IsBlacklisted(customgovtypes.PermClaimCouncilor))
+	s.Require().True(perms.IsWhitelisted(types.PermClaimValidator))
+	s.Require().False(perms.IsBlacklisted(types.PermClaimCouncilor))
 
 	// Send Tx To Blacklist permission
 	cmd = cli.GetTxBlacklistRolePermission()
@@ -89,10 +89,10 @@ func (s IntegrationTestSuite) TestBlacklistRolePermission() {
 	})
 	s.Require().NoError(err)
 
-	var newPerms customgovtypes.Permissions
+	var newPerms types.Permissions
 	val.ClientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &newPerms)
-	s.Require().True(newPerms.IsWhitelisted(customgovtypes.PermClaimValidator))
-	s.Require().True(newPerms.IsBlacklisted(customgovtypes.PermClaimCouncilor))
+	s.Require().True(newPerms.IsWhitelisted(types.PermClaimValidator))
+	s.Require().True(newPerms.IsBlacklisted(types.PermClaimCouncilor))
 }
 
 func (s IntegrationTestSuite) TestRemoveWhitelistRolePermission() {
@@ -106,9 +106,9 @@ func (s IntegrationTestSuite) TestRemoveWhitelistRolePermission() {
 	})
 	s.Require().NoError(err)
 
-	var perms customgovtypes.Permissions
+	var perms types.Permissions
 	val.ClientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &perms)
-	s.Require().True(perms.IsWhitelisted(customgovtypes.PermClaimValidator))
+	s.Require().True(perms.IsWhitelisted(types.PermClaimValidator))
 
 	// Send Tx To Blacklist permission
 	cmd = cli.GetTxRemoveWhitelistRolePermission()
@@ -132,9 +132,9 @@ func (s IntegrationTestSuite) TestRemoveWhitelistRolePermission() {
 	})
 	s.Require().NoError(err)
 
-	var newPerms customgovtypes.Permissions
+	var newPerms types.Permissions
 	val.ClientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &newPerms)
-	s.Require().False(newPerms.IsWhitelisted(customgovtypes.PermClaimValidator))
+	s.Require().False(newPerms.IsWhitelisted(types.PermClaimValidator))
 }
 
 func (s IntegrationTestSuite) TestRemoveBlacklistRolePermission() {
@@ -148,9 +148,9 @@ func (s IntegrationTestSuite) TestRemoveBlacklistRolePermission() {
 	})
 	s.Require().NoError(err)
 
-	var perms customgovtypes.Permissions
+	var perms types.Permissions
 	val.ClientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &perms)
-	s.Require().True(perms.IsBlacklisted(customgovtypes.PermClaimCouncilor))
+	s.Require().True(perms.IsBlacklisted(types.PermClaimCouncilor))
 
 	// Send Tx To Remove Blacklist Permissions
 	cmd = cli.GetTxRemoveBlacklistRolePermission()
@@ -174,9 +174,9 @@ func (s IntegrationTestSuite) TestRemoveBlacklistRolePermission() {
 	})
 	s.Require().NoError(err)
 
-	var newPerms customgovtypes.Permissions
+	var newPerms types.Permissions
 	val.ClientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &newPerms)
-	s.Require().False(newPerms.IsBlacklisted(customgovtypes.PermClaimCouncilor))
+	s.Require().False(newPerms.IsBlacklisted(types.PermClaimCouncilor))
 }
 
 func (s IntegrationTestSuite) TestCreateRole() {
@@ -190,7 +190,7 @@ func (s IntegrationTestSuite) TestCreateRole() {
 		"1234", // RoleInTest
 	})
 	s.Require().Error(err)
-	strings.Contains(err.Error(), customgovtypes.ErrRoleDoesNotExist.Error())
+	strings.Contains(err.Error(), types.ErrRoleDoesNotExist.Error())
 
 	// Add role
 	cmd = cli.GetTxCreateRole()
@@ -233,7 +233,7 @@ func (s IntegrationTestSuite) TestAssignRoles_AndRemoveRoles() {
 	s.Require().NoError(err)
 
 	roles := GetRolesByAddress(s.T(), s.network, addr)
-	s.Require().Equal([]uint64{uint64(customgovtypes.RoleUndefined)}, roles)
+	s.Require().Equal([]uint64{uint64(types.RoleUndefined)}, roles)
 
 	err = s.network.WaitForNextBlock()
 	s.Require().NoError(err)
@@ -261,5 +261,5 @@ func (s IntegrationTestSuite) TestGetRolesByAddress() {
 
 	roles := GetRolesByAddress(s.T(), s.network, val.Address)
 
-	s.Require().Equal([]uint64{uint64(customgovtypes.RoleSudo)}, roles)
+	s.Require().Equal([]uint64{uint64(types.RoleSudo)}, roles)
 }

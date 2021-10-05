@@ -5,8 +5,7 @@ import (
 	"strings"
 
 	kiratypes "github.com/KiraCore/sekai/types"
-	kiraquery "github.com/KiraCore/sekai/types/query"
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -76,20 +75,22 @@ func (q Querier) Validators(ctx context.Context, request *types.ValidatorsReques
 			return false, err
 		}
 
+		moniker, err := q.keeper.GetMonikerByAddress(c, sdk.AccAddress(val.ValKey))
+		if err != nil {
+			return false, err
+		}
+
 		consPubkey, _ := sdk.Bech32ifyPubKey(sdk.Bech32PubKeyTypeConsPub, val.GetConsPubKey())
 		validator := types.QueryValidator{
-			Address:    sdk.AccAddress(val.ValKey).String(),
-			Valkey:     val.ValKey.String(),
-			Pubkey:     consPubkey,
-			Proposer:   val.GetConsPubKey().Address().String(),
-			Moniker:    val.Moniker,
-			Website:    val.Website,
-			Social:     val.Social,
-			Identity:   val.Identity,
-			Commission: val.Commission.String(),
-			Status:     val.Status.String(),
-			Rank:       val.Rank,
-			Streak:     val.Streak,
+			Address:  sdk.AccAddress(val.ValKey).String(),
+			Valkey:   val.ValKey.String(),
+			Pubkey:   consPubkey,
+			Proposer: val.GetConsPubKey().Address().String(),
+			Moniker:  moniker,
+			Status:   val.Status.String(),
+			Rank:     val.Rank,
+			Streak:   val.Streak,
+			Identity: q.keeper.GetIdRecordsByAddress(c, sdk.AccAddress(val.ValKey)),
 		}
 
 		if request.Status != "" && !strings.EqualFold(validator.Status, request.Status) {
@@ -128,21 +129,20 @@ func (q Querier) Validators(ctx context.Context, request *types.ValidatorsReques
 	}
 
 	var actors []string
-	if request.All {
-		for _, actor := range q.keeper.govkeeper.GetNetworkActorsByAbsoluteWhitelistPermission(c, customgovtypes.PermClaimValidator) {
-			actors = append(actors, actor.Address.String())
-		}
-		validatorStore := prefix.NewStore(store, ValidatorsKey)
-		pageRes, err = kiraquery.IterateAll(validatorStore, request.Pagination, onResult)
-	} else {
-		validatorStore := prefix.NewStore(store, ValidatorsKey)
-		pageRes, err = query.FilteredPaginate(validatorStore, request.Pagination, onResult)
+	for _, actor := range q.keeper.govkeeper.GetNetworkActorsByAbsoluteWhitelistPermission(c, govtypes.PermClaimValidator) {
+		actors = append(actors, actor.Address.String())
 	}
 
+	validatorStore := prefix.NewStore(store, ValidatorsKey)
+	pageRes, err = query.FilteredPaginate(validatorStore, request.Pagination, onResult)
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	response := types.ValidatorsResponse{Validators: validators, Pagination: pageRes, Actors: actors}
+	response := types.ValidatorsResponse{
+		Validators: validators,
+		Actors:     actors,
+		Pagination: pageRes,
+	}
 	return &response, nil
 }

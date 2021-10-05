@@ -3,7 +3,7 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/KiraCore/sekai/simapp"
+	simapp "github.com/KiraCore/sekai/app"
 	"github.com/KiraCore/sekai/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
@@ -19,9 +19,6 @@ func TestKeeper_SaveCouncilor(t *testing.T) {
 
 	councilor := types.NewCouncilor(
 		"moniker",
-		"website",
-		"social",
-		"identity",
 		addr,
 	)
 

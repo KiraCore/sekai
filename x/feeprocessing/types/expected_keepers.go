@@ -1,7 +1,7 @@
 package types
 
 import (
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/tokens/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -19,5 +19,5 @@ type TokensKeeper interface {
 
 // CustomGovKeeper defines the expected interface contract the tokens module requires
 type CustomGovKeeper interface {
-	GetExecutionFee(ctx sdk.Context, txType string) *customgovtypes.ExecutionFee
+	GetExecutionFee(ctx sdk.Context, txType string) *govtypes.ExecutionFee
 }

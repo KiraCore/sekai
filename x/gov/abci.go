@@ -8,15 +8,17 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func EndBlocker(ctx sdk.Context, k keeper.Keeper, router ProposalRouter) {
-	iterator := k.GetEnactmentProposalsWithFinishedEnactmentEndTimeIterator(ctx, ctx.BlockTime())
-	for ; iterator.Valid(); iterator.Next() {
-		processEnactmentProposal(ctx, k, router, keeper.BytesToProposalID(iterator.Value()))
+func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
+	enactmentIterator := k.GetEnactmentProposalsWithFinishedEnactmentEndTimeIterator(ctx, ctx.BlockTime())
+	defer enactmentIterator.Close()
+	for ; enactmentIterator.Valid(); enactmentIterator.Next() {
+		processEnactmentProposal(ctx, k, keeper.BytesToProposalID(enactmentIterator.Value()))
 	}
 
-	iterator = k.GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx, ctx.BlockTime())
-	for ; iterator.Valid(); iterator.Next() {
-		processProposal(ctx, k, keeper.BytesToProposalID(iterator.Value()))
+	activeIterator := k.GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx, ctx.BlockTime())
+	defer activeIterator.Close()
+	for ; activeIterator.Valid(); activeIterator.Next() {
+		processProposal(ctx, k, keeper.BytesToProposalID(activeIterator.Value()))
 	}
 }
 
@@ -72,7 +74,8 @@ func processProposal(ctx sdk.Context, k keeper.Keeper, proposalID uint64) {
 	)
 }
 
-func processEnactmentProposal(ctx sdk.Context, k keeper.Keeper, router ProposalRouter, proposalID uint64) {
+func processEnactmentProposal(ctx sdk.Context, k keeper.Keeper, proposalID uint64) {
+	router := k.GetProposalRouter()
 	proposal, found := k.GetProposal(ctx, proposalID)
 	if !found {
 		panic("proposal was expected to exist")
@@ -84,7 +87,12 @@ func processEnactmentProposal(ctx sdk.Context, k keeper.Keeper, router ProposalR
 	}
 
 	if proposal.Result == types.Enactment {
-		router.ApplyProposal(ctx, proposal.GetContent())
+		err := router.ApplyProposal(ctx, proposal.GetContent())
+		if err != nil {
+			proposal.ExecResult = "execution failed"
+		} else {
+			proposal.ExecResult = "executed successfully"
+		}
 		proposal.Result = types.Passed
 		k.SaveProposal(ctx, proposal)
 	}

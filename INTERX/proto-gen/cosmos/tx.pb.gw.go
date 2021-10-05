@@ -2,11 +2,11 @@
 // source: cosmos/tx.proto
 
 /*
-Package proto is a reverse proxy.
+Package cosmos is a reverse proxy.
 
 It translates gRPC into RESTful JSON APIs.
 */
-package proto
+package cosmos
 
 import (
 	"context"

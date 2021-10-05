@@ -8,7 +8,7 @@ import (
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	"github.com/tendermint/tendermint/types/time"
 
-	"github.com/KiraCore/sekai/simapp"
+	simapp "github.com/KiraCore/sekai/app"
 	"github.com/KiraCore/sekai/x/evidence"
 	"github.com/KiraCore/sekai/x/evidence/exported"
 	"github.com/KiraCore/sekai/x/evidence/keeper"

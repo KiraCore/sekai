@@ -8,7 +8,9 @@ import (
 	"github.com/KiraCore/sekai/INTERX/common"
 	"github.com/KiraCore/sekai/INTERX/config"
 	functions "github.com/KiraCore/sekai/INTERX/functions"
+	"github.com/KiraCore/sekai/INTERX/tasks"
 	"github.com/KiraCore/sekai/INTERX/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 )
@@ -18,9 +20,13 @@ func RegisterInterxQueryRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpc
 	r.HandleFunc(config.QueryRPCMethods, QueryRPCMethods(rpcAddr)).Methods("GET")
 	r.HandleFunc(config.QueryInterxFunctions, QueryInterxFunctions(rpcAddr)).Methods("GET")
 	r.HandleFunc(config.QueryStatus, QueryStatusRequest(rpcAddr)).Methods("GET")
+	r.HandleFunc(config.QueryAddrBook, QueryAddrBook(rpcAddr)).Methods("GET")
+	r.HandleFunc(config.QueryNetInfo, QueryNetInfo(rpcAddr)).Methods("GET")
 
 	common.AddRPCMethod("GET", config.QueryInterxFunctions, "This is an API to query interx functions.", true)
 	common.AddRPCMethod("GET", config.QueryStatus, "This is an API to query interx status.", true)
+	common.AddRPCMethod("GET", config.QueryAddrBook, "This is an API to query address book.", true)
+	common.AddRPCMethod("GET", config.QueryNetInfo, "This is an API to query net info.", true)
 }
 
 // QueryRPCMethods is a function to query RPC methods.
@@ -37,9 +43,9 @@ func QueryRPCMethods(rpcAddr string) http.HandlerFunc {
 }
 
 func queryInterxFunctionsHandle(rpcAddr string) (interface{}, interface{}, int) {
-	functions := functions.GetInterxFunctions()
+	metadata := functions.GetInterxMetadata()
 
-	return functions, nil, http.StatusOK
+	return metadata, nil, http.StatusOK
 }
 
 // QueryInterxFunctions is a function to list functions and metadata.
@@ -59,7 +65,8 @@ func queryStatusHandle(rpcAddr string) (interface{}, interface{}, int) {
 	result := types.InterxStatus{}
 
 	// Handle Interx Pubkey
-	pubkeyBytes, err := config.EncodingCg.Amino.MarshalJSON(config.Config.PubKey)
+	pubkeyBytes, err := config.EncodingCg.Amino.MarshalJSON(&config.Config.PubKey)
+
 	if err != nil {
 		common.GetLogger().Error("[query-status] Failed to marshal interx pubkey", err)
 		return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
@@ -84,23 +91,25 @@ func queryStatusHandle(rpcAddr string) (interface{}, interface{}, int) {
 	sentryStatus := common.GetKiraStatus((rpcAddr))
 
 	if sentryStatus != nil {
-		result.Moniker = sentryStatus.NodeInfo.Moniker
-		result.Version = sentryStatus.NodeInfo.Version
+		result.NodeInfo = sentryStatus.NodeInfo
+		result.SyncInfo = sentryStatus.SyncInfo
+		result.ValidatorInfo = sentryStatus.ValidatorInfo
+
+		result.InterxInfo.Moniker = sentryStatus.NodeInfo.Moniker
+
+		result.InterxInfo.LatestBlockHeight = sentryStatus.SyncInfo.LatestBlockHeight
+		result.InterxInfo.CatchingUp = sentryStatus.SyncInfo.CatchingUp
 	}
 
-	result.SentryNodeID = config.Config.SentryNodeID
-	result.PrivSentryNodeID = config.Config.PrivSentryNodeID
-	result.ValidatorNodeID = config.Config.ValidatorNodeID
-	result.SeedNodeID = config.Config.SeedNodeID
+	result.InterxInfo.Node = config.Config.Node
 
-	result.KiraAddr = config.Config.Address
-	result.GenesisChecksum = checksum
-	result.ChainID = genesis.ChainID
+	result.InterxInfo.KiraAddr = config.Config.Address
+	result.InterxInfo.KiraPubKey = sdk.MustBech32ifyPubKey(sdk.Bech32PubKeyTypeAccPub, config.Config.PubKey)
+	result.InterxInfo.FaucetAddr = config.Config.Faucet.Address
+	result.InterxInfo.GenesisChecksum = checksum
+	result.InterxInfo.ChainID = genesis.ChainID
 
-	result.LatestBlockHeight = sentryStatus.SyncInfo.LatestBlockHeight
-	result.CatchingUp = sentryStatus.SyncInfo.CatchingUp
-
-	result.InterxVersion = config.InterxVersion
+	result.InterxInfo.Version = config.Config.Version
 
 	return result, nil, http.StatusOK
 }
@@ -132,5 +141,44 @@ func QueryStatusRequest(rpcAddr string) http.HandlerFunc {
 		}
 
 		common.WrapResponse(w, request, *response, statusCode, common.RPCMethods["GET"][config.QueryStatus].CachingEnabled)
+	}
+}
+
+func queryAddrBookHandler(rpcAddr string) (interface{}, interface{}, int) {
+	return config.LoadAddressBooks(), nil, http.StatusOK
+}
+
+// QueryAddrBook is a function to query address book.
+func QueryAddrBook(rpcAddr string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		request := common.GetInterxRequest(r)
+		response := common.GetResponseFormat(request, rpcAddr)
+		statusCode := http.StatusOK
+
+		response.Response, response.Error, statusCode = queryAddrBookHandler(rpcAddr)
+
+		common.WrapResponse(w, request, *response, statusCode, false)
+	}
+}
+
+func queryNetInfoHandler(rpcAddr string) (interface{}, interface{}, int) {
+	netInfo, err := tasks.QueryNetInfo(rpcAddr)
+	if err != nil {
+		return common.ServeError(0, "", err.Error(), http.StatusInternalServerError)
+	}
+
+	return netInfo, nil, http.StatusOK
+}
+
+// QueryNetInfo is a function to query net info.
+func QueryNetInfo(rpcAddr string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		request := common.GetInterxRequest(r)
+		response := common.GetResponseFormat(request, rpcAddr)
+		statusCode := http.StatusOK
+
+		response.Response, response.Error, statusCode = queryNetInfoHandler(rpcAddr)
+
+		common.WrapResponse(w, request, *response, statusCode, false)
 	}
 }

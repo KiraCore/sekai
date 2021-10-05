@@ -10,7 +10,7 @@ import (
 
 func (k Keeper) GetNextProposalIDAndIncrement(ctx sdk.Context) uint64 {
 	proposalID := k.GetNextProposalID(ctx)
-	k.SetProposalID(ctx, proposalID+1)
+	k.SetNextProposalID(ctx, proposalID+1)
 	return proposalID
 }
 
@@ -26,9 +26,39 @@ func (k Keeper) GetNextProposalID(ctx sdk.Context) uint64 {
 	return proposalID
 }
 
-func (k Keeper) SetProposalID(ctx sdk.Context, proposalID uint64) {
+func (k Keeper) SetNextProposalID(ctx sdk.Context, proposalID uint64) {
 	store := ctx.KVStore(k.storeKey)
 	store.Set(NextProposalIDPrefix, ProposalIDToBytes(proposalID))
+}
+
+func (k Keeper) CreateAndSaveProposalWithContent(ctx sdk.Context, title, description string, content types.Content) (uint64, error) {
+	blockTime := ctx.BlockTime()
+	proposalID := k.GetNextProposalIDAndIncrement(ctx)
+
+	properties := k.GetNetworkProperties(ctx)
+
+	proposal, err := types.NewProposal(
+		proposalID,
+		title,
+		description,
+		content,
+		blockTime,
+		blockTime.Add(time.Second*time.Duration(properties.ProposalEndTime)),
+		blockTime.Add(time.Second*time.Duration(properties.ProposalEndTime)+
+			time.Second*time.Duration(properties.ProposalEnactmentTime),
+		),
+		ctx.BlockHeight()+int64(properties.MinProposalEndBlocks),
+		ctx.BlockHeight()+int64(properties.MinProposalEndBlocks+properties.MinProposalEnactmentBlocks),
+	)
+
+	if err != nil {
+		return proposalID, err
+	}
+
+	k.SaveProposal(ctx, proposal)
+	k.AddToActiveProposals(ctx, proposal)
+
+	return proposalID, nil
 }
 
 func (k Keeper) SaveProposal(ctx sdk.Context, proposal types.Proposal) {
@@ -55,6 +85,7 @@ func (k Keeper) GetProposal(ctx sdk.Context, proposalID uint64) (types.Proposal,
 func (k Keeper) GetProposals(ctx sdk.Context) ([]types.Proposal, error) {
 	proposals := []types.Proposal{}
 	iterator := sdk.KVStorePrefixIterator(ctx.KVStore(k.storeKey), ProposalsPrefix)
+	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
 		var proposal types.Proposal
@@ -86,6 +117,21 @@ func (k Keeper) GetVote(ctx sdk.Context, proposalID uint64, address sdk.AccAddre
 	return vote, true
 }
 
+func (k Keeper) GetVotes(ctx sdk.Context) []types.Vote {
+	votes := []types.Vote{}
+	iterator := sdk.KVStorePrefixIterator(ctx.KVStore(k.storeKey), VotesPrefix)
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var vote types.Vote
+		bz := iterator.Value()
+		k.cdc.MustUnmarshalBinaryBare(bz, &vote)
+		votes = append(votes, vote)
+	}
+
+	return votes
+}
+
 func (k Keeper) GetProposalVotesIterator(ctx sdk.Context, proposalID uint64) sdk.Iterator {
 	store := ctx.KVStore(k.storeKey)
 	return sdk.KVStorePrefixIterator(store, VotesKey(proposalID))
@@ -95,6 +141,7 @@ func (k Keeper) GetProposalVotes(ctx sdk.Context, proposalID uint64) types.Votes
 	var votes types.Votes
 
 	iterator := k.GetProposalVotesIterator(ctx, proposalID)
+	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
 		var vote types.Vote
 		k.cdc.MustUnmarshalBinaryBare(iterator.Value(), &vote)
