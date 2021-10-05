@@ -127,7 +127,6 @@ func QueryPeers(ipAddr string) ([]tmTypes.Peer, error) {
 
 	netInfo, err := QueryNetInfoFromInterx(interxRPC)
 	if err == nil {
-		common.GetLogger().Info("interx ", netInfo)
 		return netInfo.Peers, err
 	}
 
@@ -187,6 +186,35 @@ func QueryKiraStatus(rpcAddr string) (tmTypes.ResultStatus, error) {
 	}
 
 	return result, nil
+}
+
+func QueryStatus(ipAddr string) (tmTypes.ResultStatus, error) {
+	result, err := QueryKiraStatus("http://" + ipAddr + ":16657")
+	if err == nil {
+		return result, err
+	}
+
+	result, err = QueryKiraStatus("http://" + ipAddr + ":26657")
+	if err == nil {
+		return result, err
+	}
+
+	result, err = QueryKiraStatus("http://" + ipAddr + ":36657")
+	if err == nil {
+		return result, err
+	}
+
+	result, err = QueryKiraStatus("http://" + ipAddr + ":46657")
+	if err == nil {
+		return result, err
+	}
+
+	result, err = QueryKiraStatus("http://" + ipAddr + ":56657")
+	if err == nil {
+		return result, err
+	}
+
+	return result, err
 }
 
 func NodeDiscover(rpcAddr string, isLog bool) {
@@ -255,7 +283,7 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 				common.GetLogger().Info("[node-discovery] ", ipAddr)
 			}
 
-			kiraStatus, err := QueryKiraStatus(ipAddr)
+			kiraStatus, err := QueryStatus(ipAddr)
 			if err != nil {
 				continue
 			}
@@ -286,10 +314,11 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 			for _, peer := range peers {
 				nodeInfo.Peers = append(nodeInfo.Peers, string(peer.NodeInfo.ID()))
 
-				if isPrivateIP(peer.RemoteIP) {
+				ip := getHostname(peer.NodeInfo.ListenAddr)
+				if isPrivateIP(ip) {
 					privNodeInfo := types.P2PNode{}
 					privNodeInfo.ID = string(peer.NodeInfo.ID())
-					privNodeInfo.IP = peer.RemoteIP
+					privNodeInfo.IP = ip
 					privNodeInfo.Port = getPort(peer.NodeInfo.ListenAddr)
 					privNodeInfo.Peers = []string{}
 					privNodeInfo.Peers = append(privNodeInfo.Peers, nodeInfo.ID)
@@ -310,9 +339,9 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 						isPrivNodeID[privNodeInfo.ID] = true
 					}
 				} else {
-					if _, ok := isIpInList[peer.RemoteIP]; !ok {
-						uniqueIPAddresses = append(uniqueIPAddresses, peer.RemoteIP)
-						isIpInList[peer.RemoteIP] = true
+					if _, ok := isIpInList[ip]; !ok {
+						uniqueIPAddresses = append(uniqueIPAddresses, ip)
+						isIpInList[ip] = true
 					}
 				}
 			}
