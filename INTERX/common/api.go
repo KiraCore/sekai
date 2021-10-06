@@ -26,7 +26,7 @@ import (
 // MakeTendermintRPCRequest is a function to make GET request
 func MakeTendermintRPCRequest(rpcAddr string, url string, query string) (interface{}, interface{}, int) {
 	endpoint := fmt.Sprintf("%s%s?%s", rpcAddr, url, query)
-	GetLogger().Info("[rpc-call] Entering tendermint rpc call: ", endpoint)
+	// GetLogger().Info("[rpc-call] Entering tendermint rpc call: ", endpoint)
 
 	resp, err := http.Get(endpoint)
 	if err != nil {
@@ -48,7 +48,7 @@ func MakeTendermintRPCRequest(rpcAddr string, url string, query string) (interfa
 // MakeGetRequest is a function to make GET request
 func MakeGetRequest(rpcAddr string, url string, query string) (Result interface{}, Error interface{}, StatusCode int) {
 	endpoint := fmt.Sprintf("%s%s?%s", rpcAddr, url, query)
-	GetLogger().Info("[rpc-call] Entering rpc call: ", endpoint)
+	// GetLogger().Info("[rpc-call] Entering rpc call: ", endpoint)
 
 	resp, err := http.Get(endpoint)
 	if err != nil {
@@ -71,7 +71,7 @@ func MakeGetRequest(rpcAddr string, url string, query string) (Result interface{
 // DownloadResponseToFile is a function to save GET response as a file
 func DownloadResponseToFile(rpcAddr string, url string, query string, filepath string) error {
 	endpoint := fmt.Sprintf("%s%s?%s", rpcAddr, url, query)
-	GetLogger().Info("[rpc-call] Entering rpc call: ", endpoint)
+	// GetLogger().Info("[rpc-call] Entering rpc call: ", endpoint)
 
 	resp, err := http.Get(endpoint)
 	if err != nil {
@@ -92,7 +92,7 @@ func DownloadResponseToFile(rpcAddr string, url string, query string, filepath s
 
 func makePostRequest(r *http.Request) (*types.RPCResponse, error) {
 	endpoint := fmt.Sprintf("%s%s", r.Host, r.URL)
-	GetLogger().Info("[rpc-call] Entering rpc call: ", endpoint)
+	// GetLogger().Info("[rpc-call] Entering rpc call: ", endpoint)
 
 	resp, err := http.PostForm(endpoint, r.Form)
 	if err != nil {
@@ -123,7 +123,7 @@ func GetAccountBalances(gwCosmosmux *runtime.ServeMux, r *http.Request, bech32ad
 	r.URL.RawQuery = ""
 	r.Method = "GET"
 
-	GetLogger().Info("[grpc-call] Entering grpc call: ", r.URL.Path)
+	// GetLogger().Info("[grpc-call] Entering grpc call: ", r.URL.Path)
 
 	recorder := httptest.NewRecorder()
 	gwCosmosmux.ServeHTTP(recorder, r)
@@ -154,7 +154,7 @@ func GetAccountNumberSequence(gwCosmosmux *runtime.ServeMux, r *http.Request, be
 	r.URL.RawQuery = ""
 	r.Method = "GET"
 
-	GetLogger().Info("[grpc-call] Entering grpc call: ", r.URL.Path)
+	// GetLogger().Info("[grpc-call] Entering grpc call: ", r.URL.Path)
 
 	recorder := httptest.NewRecorder()
 	gwCosmosmux.ServeHTTP(recorder, r)
@@ -183,7 +183,7 @@ func GetAccountNumberSequence(gwCosmosmux *runtime.ServeMux, r *http.Request, be
 // BroadcastTransaction is a function to post transaction, returns txHash
 func BroadcastTransaction(rpcAddr string, txBytes []byte) (string, error) {
 	endpoint := fmt.Sprintf("%s/broadcast_tx_async?tx=0x%X", rpcAddr, txBytes)
-	GetLogger().Info("[rpc-call] Entering rpc call: ", endpoint)
+	// GetLogger().Info("[rpc-call] Entering rpc call: ", endpoint)
 
 	resp, err := http.Get(endpoint)
 	if err != nil {
@@ -234,7 +234,7 @@ func GetBlockTime(rpcAddr string, height int64) (int64, error) {
 	}
 
 	endpoint := fmt.Sprintf("%s/block?height=%d", rpcAddr, height)
-	GetLogger().Info("[rpc-call] Entering rpc call: ", endpoint)
+	// GetLogger().Info("[rpc-call] Entering rpc call: ", endpoint)
 
 	resp, err := http.Get(endpoint)
 	if err != nil {
@@ -282,7 +282,7 @@ func GetBlockNanoTime(rpcAddr string, height int64) (int64, error) {
 	}
 
 	endpoint := fmt.Sprintf("%s/block?height=%d", rpcAddr, height)
-	GetLogger().Info("[rpc-call] Entering rpc call: ", endpoint)
+	// GetLogger().Info("[rpc-call] Entering rpc call: ", endpoint)
 
 	resp, err := http.Get(endpoint)
 	if err != nil {
@@ -333,7 +333,7 @@ func GetTokenAliases(gwCosmosmux *runtime.ServeMux, r *http.Request) []types.Tok
 	r.URL.RawQuery = ""
 	r.Method = "GET"
 
-	GetLogger().Info("[grpc-call] Entering grpc call: ", r.URL.Path)
+	// GetLogger().Info("[grpc-call] Entering grpc call: ", r.URL.Path)
 
 	recorder := httptest.NewRecorder()
 	gwCosmosmux.ServeHTTP(recorder, r)
@@ -361,7 +361,7 @@ func GetTokenSupply(gwCosmosmux *runtime.ServeMux, r *http.Request) []types.Toke
 	r.URL.RawQuery = ""
 	r.Method = "GET"
 
-	GetLogger().Info("[grpc-call] Entering grpc call: ", r.URL.Path)
+	// GetLogger().Info("[grpc-call] Entering grpc call: ", r.URL.Path)
 
 	recorder := httptest.NewRecorder()
 	gwCosmosmux.ServeHTTP(recorder, r)
@@ -408,7 +408,6 @@ func GetInterxStatus(interxAddr string) *types.InterxStatus {
 	if success != nil {
 		result := types.InterxStatus{}
 
-		GetLogger().Info(success)
 		byteData, err := json.Marshal(success)
 		if err != nil {
 			GetLogger().Error("[interx-status] Invalid response format", err)
@@ -433,7 +432,6 @@ func GetSnapshotInfo(interxAddr string) *types.SnapShotChecksumResponse {
 	if success != nil {
 		result := types.SnapShotChecksumResponse{}
 
-		GetLogger().Info(success)
 		byteData, err := json.Marshal(success)
 		if err != nil {
 			GetLogger().Error("[interx-snapshot_info] Invalid response format", err)

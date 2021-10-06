@@ -56,7 +56,7 @@ func QueryNetInfo(rpcAddr string) (*tmTypes.ResultNetInfo, error) {
 	u, err := url.Parse(rpcAddr)
 	_, err = net.DialTimeout("tcp", u.Host, timeout())
 	if err != nil {
-		common.GetLogger().Info(err)
+		// common.GetLogger().Info(err)
 		return result, err
 	}
 
@@ -97,7 +97,7 @@ func QueryNetInfoFromInterx(interxAddr string) (*tmTypes.ResultNetInfo, error) {
 	u, err := url.Parse(interxAddr)
 	_, err = net.DialTimeout("tcp", u.Host, timeout())
 	if err != nil {
-		common.GetLogger().Info(err)
+		// common.GetLogger().Info(err)
 		return result, err
 	}
 
@@ -274,7 +274,7 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 		index := 0
 		for index < len(uniqueIPAddresses) {
 			// sleep for 1 seconds
-			time.Sleep(1 * time.Second)
+			// time.Sleep(1 * time.Second)
 
 			ipAddr := uniqueIPAddresses[index]
 			index++
@@ -333,7 +333,7 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 							PrivP2PNodeListResponse.NodeList[pid] = privNodeInfo
 						} else {
 							PrivP2PNodeListResponse.NodeList = append(PrivP2PNodeListResponse.NodeList, privNodeInfo)
-							idOfPrivList[privNodeInfo.ID] = len(PrivP2PNodeListResponse.NodeList)
+							idOfPrivList[privNodeInfo.ID] = len(PrivP2PNodeListResponse.NodeList) - 1
 						}
 						global.Mutex.Unlock()
 						isPrivNodeID[privNodeInfo.ID] = true
@@ -351,7 +351,7 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 				PubP2PNodeListResponse.NodeList[pid] = nodeInfo
 			} else {
 				PubP2PNodeListResponse.NodeList = append(PubP2PNodeListResponse.NodeList, nodeInfo)
-				idOfPubList[nodeInfo.ID] = len(PubP2PNodeListResponse.NodeList)
+				idOfPubList[nodeInfo.ID] = len(PubP2PNodeListResponse.NodeList) - 1
 			}
 			global.Mutex.Unlock()
 			isPubNodeId[nodeInfo.ID] = true
@@ -377,7 +377,7 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 					InterxP2PNodeListResponse.NodeList[pid] = interxInfo
 				} else {
 					InterxP2PNodeListResponse.NodeList = append(InterxP2PNodeListResponse.NodeList, interxInfo)
-					idOfInterxList[interxInfo.ID] = len(InterxP2PNodeListResponse.NodeList)
+					idOfInterxList[interxInfo.ID] = len(InterxP2PNodeListResponse.NodeList) - 1
 				}
 				global.Mutex.Unlock()
 				isInterxNodeId[interxInfo.ID] = true
@@ -396,7 +396,7 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 						SnapNodeListResponse.NodeList[pid] = snapNode
 					} else {
 						SnapNodeListResponse.NodeList = append(SnapNodeListResponse.NodeList, snapNode)
-						idOfSnapshotList[snapNode.IP] = len(SnapNodeListResponse.NodeList)
+						idOfSnapshotList[snapNode.IP] = len(SnapNodeListResponse.NodeList) - 1
 					}
 					global.Mutex.Unlock()
 					isSnapshotIP[snapNode.IP] = true
@@ -444,7 +444,7 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 			common.GetLogger().Info("[node-discovery] finished!")
 		}
 
-		time.Sleep(5 * time.Minute)
+		// time.Sleep(5 * time.Minute)
 	}
 }
 

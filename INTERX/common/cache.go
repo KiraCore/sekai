@@ -13,7 +13,7 @@ import (
 
 // PutCache is a function to save value to cache
 func PutCache(chainIDHash string, endpointHash string, requestHash string, value types.InterxResponse) error {
-	GetLogger().Info("[cache] Saving interx response")
+	// GetLogger().Info("[cache] Saving interx response")
 
 	data, err := json.Marshal(value)
 	if err != nil {
