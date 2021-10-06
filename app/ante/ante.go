@@ -44,7 +44,7 @@ func NewAnteHandler(
 		NewValidateFeeRangeDecorator(sk, cgk, tk, ak),
 		ante.NewSetPubKeyDecorator(ak), // SetPubKeyDecorator must be called before all signature verification decorators
 		ante.NewValidateSigCountDecorator(ak),
-		ante.NewDeductFeeDecorator(ak, bk, fk),
+		ante.NewDeductFeeDecorator(ak, bk, nil),
 		// poor network management decorator
 		NewPoorNetworkManagementDecorator(ak, cgk, sk),
 		NewBlackWhiteTokensCheckDecorator(cgk, sk, tk),
