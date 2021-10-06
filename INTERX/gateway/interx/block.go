@@ -114,7 +114,6 @@ func QueryBlockByHeightOrHashRequest(gwCosmosmux *runtime.ServeMux, rpcAddr stri
 			response.Response, response.Error, statusCode = common.ServeError(0, "", "API disabled", http.StatusForbidden)
 		} else {
 			if common.RPCMethods["GET"][config.QueryBlockByHeightOrHash].CachingEnabled {
-				common.GetLogger().Info("[query-blocks-by-height] Seach from the cache: ", height)
 				found, cacheResponse, cacheError, cacheStatus := common.SearchCache(request, response)
 				if found {
 					response.Response, response.Error, statusCode = cacheResponse, cacheError, cacheStatus
