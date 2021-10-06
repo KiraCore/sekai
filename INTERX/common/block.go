@@ -22,7 +22,7 @@ func GetAverageBlockTime() float64 {
 		total += block.BlockTime
 	}
 
-	GetLogger().Infof("[GetAverageBlockTime] %v", LatestNBlockTimes)
+	// GetLogger().Infof("[GetAverageBlockTime] %v", LatestNBlockTimes)
 
 	return total / float64(len(LatestNBlockTimes))
 }

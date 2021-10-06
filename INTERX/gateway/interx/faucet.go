@@ -119,10 +119,10 @@ func serveFaucet(r *http.Request, gwCosmosmux *runtime.ServeMux, request types.I
 		return common.ServeError(102, "", "invalid token", http.StatusBadRequest)
 	}
 
-	common.GetLogger().Info("[faucet] Available amount: ", availableAmount)
-	common.GetLogger().Info("[faucet] Claim amount: ", claimAmount)
-	common.GetLogger().Info("[faucet] Faucet amount: ", faucetAmount)
-	common.GetLogger().Info("[faucet] Faucet minimum amount: ", faucetMininumAmount)
+	// common.GetLogger().Info("[faucet] Available amount: ", availableAmount)
+	// common.GetLogger().Info("[faucet] Claim amount: ", claimAmount)
+	// common.GetLogger().Info("[faucet] Faucet amount: ", faucetAmount)
+	// common.GetLogger().Info("[faucet] Faucet minimum amount: ", faucetMininumAmount)
 
 	if faucetAmount.Cmp(claimAmount) <= 0 {
 		common.GetLogger().Error("[faucet] No need to send tokens: faucetAmount <= claimAmount")
@@ -147,8 +147,8 @@ func serveFaucet(r *http.Request, gwCosmosmux *runtime.ServeMux, request types.I
 
 	// GET AccountNumber and Sequence
 	accountNumber, sequence := common.GetAccountNumberSequence(gwCosmosmux, r.Clone(r.Context()), config.Config.Faucet.Address)
-	common.GetLogger().Info("[faucet] accountNumber: ", accountNumber)
-	common.GetLogger().Info("[faucet] sequence: ", sequence)
+	// common.GetLogger().Info("[faucet] accountNumber: ", accountNumber)
+	// common.GetLogger().Info("[faucet] sequence: ", sequence)
 
 	msgSend := &bank.MsgSend{
 		FromAddress: faucetAccAddr.String(),
@@ -232,10 +232,10 @@ func FaucetRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.HandlerFu
 		tokens := queries["token"]
 
 		if len(claims) == 0 && len(tokens) == 0 {
-			common.GetLogger().Info("[faucet] Entering faucet info")
+			// common.GetLogger().Info("[faucet] Entering faucet info")
 			response.Response, response.Error, statusCode = serveFaucetInfo(r, gwCosmosmux)
 		} else if len(claims) == 1 && len(tokens) == 1 {
-			common.GetLogger().Info("[faucet] Entering faucet: claim = ", claims[0], ", token = ", tokens[0])
+			// common.GetLogger().Info("[faucet] Entering faucet: claim = ", claims[0], ", token = ", tokens[0])
 			response.Response, response.Error, statusCode = serveFaucet(r, gwCosmosmux, request, rpcAddr, claims[0], tokens[0])
 		} else {
 			common.GetLogger().Error("[faucet] Invalid parameters")
