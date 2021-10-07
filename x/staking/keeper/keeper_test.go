@@ -63,12 +63,13 @@ func TestKeeper_GetMonikerByAddress(t *testing.T) {
 	validator := validators[0]
 
 	app.CustomStakingKeeper.AddValidator(ctx, validator)
-	app.CustomGovKeeper.RegisterIdentityRecords(ctx, sdk.AccAddress(validator.ValKey), []govtypes.IdentityInfoEntry{
+	err := app.CustomGovKeeper.RegisterIdentityRecords(ctx, sdk.AccAddress(validator.ValKey), []govtypes.IdentityInfoEntry{
 		{
 			Key:  "moniker",
 			Info: "node0",
 		},
 	})
+	require.NoError(t, err)
 
 	// get moniker by address
 	moniker, err := app.CustomStakingKeeper.GetMonikerByAddress(ctx, sdk.AccAddress(validator.ValKey))

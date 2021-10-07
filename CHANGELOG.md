@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.1.21.29] - 07.10.2021
+
+- Convert identity registrar address proto fields to string
+- Resolve pagination issue for all identity record verify requests query
+
 ## [v0.1.21.28] - 04.10.2021
 
 - Resolve signing info iterator

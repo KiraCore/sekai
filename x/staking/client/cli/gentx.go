@@ -13,7 +13,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/server"
 	"github.com/cosmos/cosmos-sdk/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/staking/client/cli"
 	"github.com/pkg/errors"
@@ -97,11 +96,11 @@ func GenTxClaimCmd(genBalIterator banktypes.GenesisBalancesIterator, defaultNode
 			}
 			customGovGenState.IdentityRecords = append(customGovGenState.IdentityRecords, govtypes.IdentityRecord{
 				Id:        customGovGenState.LastIdentityRecordId + 1,
-				Address:   types.AccAddress(validator.ValKey),
+				Address:   types.AccAddress(validator.ValKey).String(),
 				Key:       "moniker",
 				Value:     moniker,
 				Date:      time.Now().UTC(),
-				Verifiers: []sdk.AccAddress{},
+				Verifiers: []string{},
 			})
 			customGovGenState.LastIdentityRecordId++
 			appState[govtypes.ModuleName] = cdc.MustMarshalJSON(&customGovGenState)

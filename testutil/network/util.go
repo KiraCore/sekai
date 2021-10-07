@@ -182,11 +182,11 @@ func initGenFiles(cfg Config, vals []*Validator, genAccounts []authtypes.Genesis
 		}
 		customGovGenState.IdentityRecords = append(customGovGenState.IdentityRecords, govtypes.IdentityRecord{
 			Id:        customGovGenState.LastIdentityRecordId + 1,
-			Address:   sdk.AccAddress(val.ValAddress),
+			Address:   sdk.AccAddress(val.ValAddress).String(),
 			Key:       "moniker",
 			Value:     val.Moniker,
 			Date:      time.Now().UTC(),
-			Verifiers: []sdk.AccAddress{},
+			Verifiers: []string{},
 		})
 		customGovGenState.LastIdentityRecordId++
 	}

@@ -84,7 +84,7 @@ func (k Keeper) SetIdentityRecord(ctx sdk.Context, record types.IdentityRecord) 
 	uniqueKeys := strings.Split(properties.UniqueIdentityKeys, ",")
 	if CheckIfWithinStringArray(record.Key, uniqueKeys) {
 		addrs := k.GetAddressesByIdRecordKey(ctx, record.Key, record.Value)
-		if len(addrs) == 1 && bytes.Equal(addrs[0], record.Address) {
+		if len(addrs) == 1 && addrs[0].String() == record.Address {
 
 		} else if len(addrs) > 0 {
 			panic(fmt.Sprintf("the key %s, value %s is already registered by %s", record.Key, record.Value, addrs[0].String()))
@@ -99,7 +99,7 @@ func (k Keeper) SetIdentityRecord(ctx sdk.Context, record types.IdentityRecord) 
 
 	// connect address + key to id
 	store := ctx.KVStore(k.storeKey)
-	addrPrefixStore := prefix.NewStore(store, append(types.KeyPrefixIdentityRecordByAddress, record.Address...))
+	addrPrefixStore := prefix.NewStore(store, types.IdentityRecordByAddressPrefix(record.Address))
 	addrPrefixStore.Set([]byte(record.Key), sdk.Uint64ToBigEndian(record.Id))
 }
 
@@ -125,7 +125,7 @@ func (k Keeper) GetIdentityRecordIdByAddressKey(ctx sdk.Context, address sdk.Acc
 	key = FormalizeIdentityRecordKey(key)
 
 	store := ctx.KVStore(k.storeKey)
-	prefixStore := prefix.NewStore(store, append(types.KeyPrefixIdentityRecordByAddress, address.Bytes()...))
+	prefixStore := prefix.NewStore(store, types.IdentityRecordByAddressPrefix(address.String()))
 	recordIdBytes := prefixStore.Get([]byte(key))
 	if recordIdBytes == nil {
 		return 0
@@ -141,7 +141,7 @@ func (k Keeper) DeleteIdentityRecordById(ctx sdk.Context, recordId uint64) {
 	}
 	recordKey := sdk.Uint64ToBigEndian(recordId)
 	prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixIdentityRecord).Delete(recordKey)
-	prefix.NewStore(ctx.KVStore(k.storeKey), append(types.KeyPrefixIdentityRecordByAddress, record.Address...)).Delete(sdk.Uint64ToBigEndian(recordId))
+	prefix.NewStore(ctx.KVStore(k.storeKey), types.IdentityRecordByAddressPrefix(record.Address)).Delete(sdk.Uint64ToBigEndian(recordId))
 }
 
 // RegisterIdentityRecord defines a method to register identity records for an address
@@ -179,11 +179,11 @@ func (k Keeper) RegisterIdentityRecords(ctx sdk.Context, address sdk.AccAddress,
 		// create or update identity record
 		k.SetIdentityRecord(ctx, types.IdentityRecord{
 			Id:        recordId,
-			Address:   address,
+			Address:   address.String(),
 			Key:       info.Key,
 			Value:     info.Info,
 			Date:      ctx.BlockTime(),
-			Verifiers: []sdk.AccAddress{},
+			Verifiers: []string{},
 		})
 	}
 	return nil
@@ -205,7 +205,7 @@ func (k Keeper) DeleteIdentityRecords(ctx sdk.Context, address sdk.AccAddress, k
 	}
 
 	store := ctx.KVStore(k.storeKey)
-	prefix := append(types.KeyPrefixIdentityRecordByAddress, address...)
+	prefix := types.IdentityRecordByAddressPrefix(address.String())
 	iterator := sdk.KVStorePrefixIterator(store, prefix)
 	defer iterator.Close()
 
@@ -267,7 +267,7 @@ func (k Keeper) GetIdRecordsByAddressAndKeys(ctx sdk.Context, address sdk.AccAdd
 	}
 
 	store := ctx.KVStore(k.storeKey)
-	prefixStore := prefix.NewStore(store, append(types.KeyPrefixIdentityRecordByAddress, address.Bytes()...))
+	prefixStore := prefix.NewStore(store, types.IdentityRecordByAddressPrefix(address.String()))
 
 	records := []types.IdentityRecord{}
 	for _, key := range keys {
@@ -286,7 +286,11 @@ func (k Keeper) GetAddressesByIdRecordKey(ctx sdk.Context, key, value string) []
 	addrs := []sdk.AccAddress{}
 	for _, record := range k.GetAllIdentityRecords(ctx) {
 		if record.Key == key && record.Value == value {
-			addrs = append(addrs, record.Address)
+			addr, err := sdk.AccAddressFromBech32(record.Address)
+			if err != nil {
+				panic(err)
+			}
+			addrs = append(addrs, addr)
 		}
 	}
 	return addrs
@@ -295,7 +299,7 @@ func (k Keeper) GetAddressesByIdRecordKey(ctx sdk.Context, key, value string) []
 // GetIdRecordsByAddress query identity record by address
 func (k Keeper) GetIdRecordsByAddress(ctx sdk.Context, address sdk.AccAddress) []types.IdentityRecord {
 	store := ctx.KVStore(k.storeKey)
-	prefix := append(types.KeyPrefixIdentityRecordByAddress, address...)
+	prefix := types.IdentityRecordByAddressPrefix(address.String())
 	iterator := sdk.KVStorePrefixIterator(store, prefix)
 	defer iterator.Close()
 
@@ -318,11 +322,11 @@ func (k Keeper) SetIdentityRecordsVerifyRequest(ctx sdk.Context, request types.I
 	prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixIdRecordVerifyRequest).Set(sdk.Uint64ToBigEndian(requestId), bz)
 	prefix.NewStore(
 		ctx.KVStore(k.storeKey),
-		append(types.KeyPrefixIdRecordVerifyRequestByRequester, request.Address...),
+		types.IdRecordVerifyRequestByRequesterPrefix(request.Address),
 	).Set(sdk.Uint64ToBigEndian(requestId), sdk.Uint64ToBigEndian(requestId))
 	prefix.NewStore(
 		ctx.KVStore(k.storeKey),
-		append(types.KeyPrefixIdRecordVerifyRequestByApprover, request.Verifier...),
+		types.IdRecordVerifyRequestByApproverPrefix(request.Verifier),
 	).Set(sdk.Uint64ToBigEndian(requestId), sdk.Uint64ToBigEndian(requestId))
 }
 
@@ -343,8 +347,8 @@ func (k Keeper) RequestIdentityRecordsVerify(ctx sdk.Context, address, verifier 
 
 	request := types.IdentityRecordsVerify{
 		Id:                 requestId,
-		Address:            address,
-		Verifier:           verifier,
+		Address:            address.String(),
+		Verifier:           verifier.String(),
 		RecordIds:          recordIds,
 		Tip:                tip,
 		LastRecordEditDate: lastRecordEditDate,
@@ -388,11 +392,11 @@ func (k Keeper) DeleteIdRecordsVerifyRequest(ctx sdk.Context, requestId uint64) 
 	prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixIdRecordVerifyRequest).Delete(sdk.Uint64ToBigEndian(requestId))
 	prefix.NewStore(
 		ctx.KVStore(k.storeKey),
-		append(types.KeyPrefixIdRecordVerifyRequestByRequester, request.Address...),
+		types.IdRecordVerifyRequestByRequesterPrefix(request.Address),
 	).Delete(sdk.Uint64ToBigEndian(requestId))
 	prefix.NewStore(
 		ctx.KVStore(k.storeKey),
-		append(types.KeyPrefixIdRecordVerifyRequestByApprover, request.Verifier...),
+		types.IdRecordVerifyRequestByApproverPrefix(request.Verifier),
 	).Delete(sdk.Uint64ToBigEndian(requestId))
 }
 
@@ -402,7 +406,7 @@ func (k Keeper) HandleIdentityRecordsVerifyRequest(ctx sdk.Context, verifier sdk
 	if request == nil {
 		return sdkerrors.Wrap(types.ErrInvalidVerifyRequestId, fmt.Sprintf("specified identity record verify request does NOT exist: id=%d", requestId))
 	}
-	if !bytes.Equal(verifier, request.Verifier) {
+	if verifier.String() != request.Verifier {
 		return errors.New("verifier does not match with requested")
 	}
 
@@ -438,10 +442,10 @@ func (k Keeper) HandleIdentityRecordsVerifyRequest(ctx sdk.Context, verifier sdk
 		}
 
 		// if already exist, skip
-		if CheckIfWithinAddressArray(verifier, record.Verifiers) {
+		if CheckIfWithinStringArray(verifier.String(), record.Verifiers) {
 			continue
 		}
-		record.Verifiers = append(record.Verifiers, verifier)
+		record.Verifiers = append(record.Verifiers, verifier.String())
 		k.SetIdentityRecord(ctx, *record)
 	}
 
@@ -455,12 +459,16 @@ func (k Keeper) CancelIdentityRecordsVerifyRequest(ctx sdk.Context, executor sdk
 	if request == nil {
 		return sdkerrors.Wrap(types.ErrInvalidVerifyRequestId, fmt.Sprintf("specified identity record verify request does NOT exist: id=%d", requestId))
 	}
-	if !bytes.Equal(executor, request.Address) {
+	if executor.String() != request.Address {
 		return errors.New("executor is not identity record creator")
 	}
 
 	if !request.Tip.Amount.IsZero() {
-		if err := k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, request.Address, sdk.Coins{request.Tip}); err != nil {
+		requester, err := sdk.AccAddressFromBech32(request.Address)
+		if err != nil {
+			return err
+		}
+		if err := k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, requester, sdk.Coins{request.Tip}); err != nil {
 			return err
 		}
 	}
@@ -473,7 +481,7 @@ func (k Keeper) CancelIdentityRecordsVerifyRequest(ctx sdk.Context, executor sdk
 func (k Keeper) GetIdRecordsVerifyRequestsByRequester(ctx sdk.Context, requester sdk.AccAddress) []types.IdentityRecordsVerify {
 	requests := []types.IdentityRecordsVerify{}
 	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, append(types.KeyPrefixIdRecordVerifyRequestByRequester, []byte(requester)...))
+	iterator := sdk.KVStorePrefixIterator(store, types.IdRecordVerifyRequestByRequesterPrefix(requester.String()))
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
@@ -492,7 +500,7 @@ func (k Keeper) GetIdRecordsVerifyRequestsByRequester(ctx sdk.Context, requester
 func (k Keeper) GetIdRecordsVerifyRequestsByApprover(ctx sdk.Context, requester sdk.AccAddress) []types.IdentityRecordsVerify {
 	requests := []types.IdentityRecordsVerify{}
 	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, append(types.KeyPrefixIdRecordVerifyRequestByApprover, []byte(requester)...))
+	iterator := sdk.KVStorePrefixIterator(store, types.IdRecordVerifyRequestByApproverPrefix(requester.String()))
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {

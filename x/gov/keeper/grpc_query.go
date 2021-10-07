@@ -333,7 +333,7 @@ func (k Keeper) IdentityRecordVerifyRequestsByRequester(goCtx context.Context, r
 
 	requests := []types.IdentityRecordsVerify{}
 	store := ctx.KVStore(k.storeKey)
-	requestByRequesterStore := prefix.NewStore(store, append(types.KeyPrefixIdRecordVerifyRequestByRequester, []byte(request.Requester)...))
+	requestByRequesterStore := prefix.NewStore(store, types.IdRecordVerifyRequestByRequesterPrefix(request.Requester.String()))
 	onResult := func(key []byte, value []byte, accumulate bool) (bool, error) {
 		requestId := sdk.BigEndianToUint64(value)
 		request := k.GetIdRecordsVerifyRequest(ctx, requestId)
@@ -373,7 +373,7 @@ func (k Keeper) IdentityRecordVerifyRequestsByApprover(goCtx context.Context, re
 
 	requests := []types.IdentityRecordsVerify{}
 	store := ctx.KVStore(k.storeKey)
-	requestByApproverStore := prefix.NewStore(store, append(types.KeyPrefixIdRecordVerifyRequestByApprover, []byte(request.Approver)...))
+	requestByApproverStore := prefix.NewStore(store, types.IdRecordVerifyRequestByApproverPrefix(request.Approver.String()))
 	onResult := func(key []byte, value []byte, accumulate bool) (bool, error) {
 		requestId := sdk.BigEndianToUint64(value)
 		request := k.GetIdRecordsVerifyRequest(ctx, requestId)
@@ -417,7 +417,9 @@ func (k Keeper) AllIdentityRecordVerifyRequests(goCtx context.Context, request *
 	onResult := func(key []byte, value []byte, accumulate bool) (bool, error) {
 		request := types.IdentityRecordsVerify{}
 		k.cdc.MustUnmarshalBinaryBare(value, &request)
-		requests = append(requests, request)
+		if accumulate {
+			requests = append(requests, request)
+		}
 		return true, nil
 	}
 
