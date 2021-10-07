@@ -53,6 +53,13 @@
   "rpc_methods": {
     "API": {
       "GET": {
+        "/api/addrbook": {
+          "disable": false,
+          "rate_limit": 0,
+          "auth_rate_limit": 0,
+          "caching_disable": false,
+          "caching_duration": 30
+        },
         "/api/blocks": {
           "disable": false,
           "rate_limit": 0,
@@ -123,6 +130,20 @@
           "caching_disable": false,
           "caching_duration": 30
         },
+        "/api/kira/gov/all_identity_records": {
+          "disable": false,
+          "rate_limit": 0,
+          "auth_rate_limit": 0,
+          "caching_disable": false,
+          "caching_duration": 30
+        },
+        "/api/kira/gov/all_identity_verify_requests": {
+          "disable": false,
+          "rate_limit": 0,
+          "auth_rate_limit": 0,
+          "caching_disable": false,
+          "caching_duration": 30
+        },
         "/api/kira/gov/data/{key}": {
           "disable": false,
           "rate_limit": 0,
@@ -131,6 +152,41 @@
           "caching_duration": 30
         },
         "/api/kira/gov/data_keys": {
+          "disable": false,
+          "rate_limit": 0,
+          "auth_rate_limit": 0,
+          "caching_disable": false,
+          "caching_duration": 30
+        },
+        "/api/kira/gov/identity_record/{id}": {
+          "disable": false,
+          "rate_limit": 0,
+          "auth_rate_limit": 0,
+          "caching_disable": false,
+          "caching_duration": 30
+        },
+        "/api/kira/gov/identity_records/{creator}": {
+          "disable": false,
+          "rate_limit": 0,
+          "auth_rate_limit": 0,
+          "caching_disable": false,
+          "caching_duration": 30
+        },
+        "/api/kira/gov/identity_verify_record/{request_id}": {
+          "disable": false,
+          "rate_limit": 0,
+          "auth_rate_limit": 0,
+          "caching_disable": false,
+          "caching_duration": 30
+        },
+        "/api/kira/gov/identity_verify_requests_by_approver/{approver}": {
+          "disable": false,
+          "rate_limit": 0,
+          "auth_rate_limit": 0,
+          "caching_disable": false,
+          "caching_duration": 30
+        },
+        "/api/kira/gov/identity_verify_requests_by_requester/{requester}": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
@@ -194,6 +250,20 @@
           "caching_duration": 30
         },
         "/api/kira/upgrade/current_plan": {
+          "disable": false,
+          "rate_limit": 0,
+          "auth_rate_limit": 0,
+          "caching_disable": false,
+          "caching_duration": 30
+        },
+        "/api/kira/upgrade/next_plan": {
+          "disable": false,
+          "rate_limit": 0,
+          "auth_rate_limit": 0,
+          "caching_disable": false,
+          "caching_duration": 30
+        },
+        "/api/net_info": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
