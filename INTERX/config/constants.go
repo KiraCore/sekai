@@ -49,6 +49,14 @@ const (
 	QueryCurrentPlan = "/api/kira/upgrade/current_plan"
 	QueryNextPlan    = "/api/kira/upgrade/next_plan"
 
+	QueryIdentityRecord                          = "/api/kira/gov/identity_record/{id}"
+	QueryIdentityRecordsByAddress                = "/api/kira/gov/identity_records/{creator}"
+	QueryAllIdentityRecords                      = "/api/kira/gov/all_identity_records"
+	QueryIdentityRecordVerifyRequest             = "/api/kira/gov/identity_verify_record/{request_id}"
+	QueryIdentityRecordVerifyRequestsByRequester = "/api/kira/gov/identity_verify_requests_by_requester/{requester}"
+	QueryIdentityRecordVerifyRequestsByApprover  = "/api/kira/gov/identity_verify_requests_by_approver/{approver}"
+	QueryAllIdentityRecordVerifyRequests         = "/api/kira/gov/all_identity_verify_requests"
+
 	Download              = "/download"
 	DataReferenceRegistry = "DRR"
 	DefaultInterxPort     = "11000"

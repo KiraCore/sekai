@@ -52,6 +52,14 @@ func getGetMethods() []string {
 
 		QueryAddrBook,
 		QueryNetInfo,
+
+		QueryIdentityRecord,
+		QueryIdentityRecordsByAddress,
+		QueryAllIdentityRecords,
+		QueryIdentityRecordVerifyRequest,
+		QueryIdentityRecordVerifyRequestsByRequester,
+		QueryIdentityRecordVerifyRequestsByApprover,
+		QueryAllIdentityRecordVerifyRequests,
 	}
 }
 

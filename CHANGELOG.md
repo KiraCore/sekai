@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.1.22.1] - 07.10.2021
+
+- Convert identity registrar address proto fields to string
+- Resolve pagination issue for all identity record verify requests query
+
 ## [v0.1.22] - 04.10.2021
 
 - Upgrade Cosmos SDK to v0.44.1 from v0.42.9

@@ -628,6 +628,628 @@ func (m *NetworkPropertiesResponse) GetProperties() *NetworkProperties {
 	return nil
 }
 
+type QueryIdentityRecordRequest struct {
+	Id                   uint64   `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *QueryIdentityRecordRequest) Reset()         { *m = QueryIdentityRecordRequest{} }
+func (m *QueryIdentityRecordRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryIdentityRecordRequest) ProtoMessage()    {}
+func (*QueryIdentityRecordRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bcca1063f62efc95, []int{14}
+}
+
+func (m *QueryIdentityRecordRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_QueryIdentityRecordRequest.Unmarshal(m, b)
+}
+func (m *QueryIdentityRecordRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_QueryIdentityRecordRequest.Marshal(b, m, deterministic)
+}
+func (m *QueryIdentityRecordRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryIdentityRecordRequest.Merge(m, src)
+}
+func (m *QueryIdentityRecordRequest) XXX_Size() int {
+	return xxx_messageInfo_QueryIdentityRecordRequest.Size(m)
+}
+func (m *QueryIdentityRecordRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryIdentityRecordRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryIdentityRecordRequest proto.InternalMessageInfo
+
+func (m *QueryIdentityRecordRequest) GetId() uint64 {
+	if m != nil {
+		return m.Id
+	}
+	return 0
+}
+
+type QueryIdentityRecordResponse struct {
+	Record               *IdentityRecord `protobuf:"bytes,1,opt,name=record,proto3" json:"record,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}        `json:"-"`
+	XXX_unrecognized     []byte          `json:"-"`
+	XXX_sizecache        int32           `json:"-"`
+}
+
+func (m *QueryIdentityRecordResponse) Reset()         { *m = QueryIdentityRecordResponse{} }
+func (m *QueryIdentityRecordResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryIdentityRecordResponse) ProtoMessage()    {}
+func (*QueryIdentityRecordResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bcca1063f62efc95, []int{15}
+}
+
+func (m *QueryIdentityRecordResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_QueryIdentityRecordResponse.Unmarshal(m, b)
+}
+func (m *QueryIdentityRecordResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_QueryIdentityRecordResponse.Marshal(b, m, deterministic)
+}
+func (m *QueryIdentityRecordResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryIdentityRecordResponse.Merge(m, src)
+}
+func (m *QueryIdentityRecordResponse) XXX_Size() int {
+	return xxx_messageInfo_QueryIdentityRecordResponse.Size(m)
+}
+func (m *QueryIdentityRecordResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryIdentityRecordResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryIdentityRecordResponse proto.InternalMessageInfo
+
+func (m *QueryIdentityRecordResponse) GetRecord() *IdentityRecord {
+	if m != nil {
+		return m.Record
+	}
+	return nil
+}
+
+type QueryIdentityRecordsByAddressRequest struct {
+	Creator              []byte   `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Keys                 []string `protobuf:"bytes,2,rep,name=keys,proto3" json:"keys,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *QueryIdentityRecordsByAddressRequest) Reset()         { *m = QueryIdentityRecordsByAddressRequest{} }
+func (m *QueryIdentityRecordsByAddressRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryIdentityRecordsByAddressRequest) ProtoMessage()    {}
+func (*QueryIdentityRecordsByAddressRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bcca1063f62efc95, []int{16}
+}
+
+func (m *QueryIdentityRecordsByAddressRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_QueryIdentityRecordsByAddressRequest.Unmarshal(m, b)
+}
+func (m *QueryIdentityRecordsByAddressRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_QueryIdentityRecordsByAddressRequest.Marshal(b, m, deterministic)
+}
+func (m *QueryIdentityRecordsByAddressRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryIdentityRecordsByAddressRequest.Merge(m, src)
+}
+func (m *QueryIdentityRecordsByAddressRequest) XXX_Size() int {
+	return xxx_messageInfo_QueryIdentityRecordsByAddressRequest.Size(m)
+}
+func (m *QueryIdentityRecordsByAddressRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryIdentityRecordsByAddressRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryIdentityRecordsByAddressRequest proto.InternalMessageInfo
+
+func (m *QueryIdentityRecordsByAddressRequest) GetCreator() []byte {
+	if m != nil {
+		return m.Creator
+	}
+	return nil
+}
+
+func (m *QueryIdentityRecordsByAddressRequest) GetKeys() []string {
+	if m != nil {
+		return m.Keys
+	}
+	return nil
+}
+
+type QueryIdentityRecordsByAddressResponse struct {
+	Records              []*IdentityRecord `protobuf:"bytes,1,rep,name=records,proto3" json:"records,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}          `json:"-"`
+	XXX_unrecognized     []byte            `json:"-"`
+	XXX_sizecache        int32             `json:"-"`
+}
+
+func (m *QueryIdentityRecordsByAddressResponse) Reset()         { *m = QueryIdentityRecordsByAddressResponse{} }
+func (m *QueryIdentityRecordsByAddressResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryIdentityRecordsByAddressResponse) ProtoMessage()    {}
+func (*QueryIdentityRecordsByAddressResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bcca1063f62efc95, []int{17}
+}
+
+func (m *QueryIdentityRecordsByAddressResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_QueryIdentityRecordsByAddressResponse.Unmarshal(m, b)
+}
+func (m *QueryIdentityRecordsByAddressResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_QueryIdentityRecordsByAddressResponse.Marshal(b, m, deterministic)
+}
+func (m *QueryIdentityRecordsByAddressResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryIdentityRecordsByAddressResponse.Merge(m, src)
+}
+func (m *QueryIdentityRecordsByAddressResponse) XXX_Size() int {
+	return xxx_messageInfo_QueryIdentityRecordsByAddressResponse.Size(m)
+}
+func (m *QueryIdentityRecordsByAddressResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryIdentityRecordsByAddressResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryIdentityRecordsByAddressResponse proto.InternalMessageInfo
+
+func (m *QueryIdentityRecordsByAddressResponse) GetRecords() []*IdentityRecord {
+	if m != nil {
+		return m.Records
+	}
+	return nil
+}
+
+type QueryAllIdentityRecordsRequest struct {
+	Pagination           *base.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}          `json:"-"`
+	XXX_unrecognized     []byte            `json:"-"`
+	XXX_sizecache        int32             `json:"-"`
+}
+
+func (m *QueryAllIdentityRecordsRequest) Reset()         { *m = QueryAllIdentityRecordsRequest{} }
+func (m *QueryAllIdentityRecordsRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryAllIdentityRecordsRequest) ProtoMessage()    {}
+func (*QueryAllIdentityRecordsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bcca1063f62efc95, []int{18}
+}
+
+func (m *QueryAllIdentityRecordsRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_QueryAllIdentityRecordsRequest.Unmarshal(m, b)
+}
+func (m *QueryAllIdentityRecordsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_QueryAllIdentityRecordsRequest.Marshal(b, m, deterministic)
+}
+func (m *QueryAllIdentityRecordsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryAllIdentityRecordsRequest.Merge(m, src)
+}
+func (m *QueryAllIdentityRecordsRequest) XXX_Size() int {
+	return xxx_messageInfo_QueryAllIdentityRecordsRequest.Size(m)
+}
+func (m *QueryAllIdentityRecordsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryAllIdentityRecordsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryAllIdentityRecordsRequest proto.InternalMessageInfo
+
+func (m *QueryAllIdentityRecordsRequest) GetPagination() *base.PageRequest {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+type QueryAllIdentityRecordsResponse struct {
+	Records              []*IdentityRecord  `protobuf:"bytes,1,rep,name=records,proto3" json:"records,omitempty"`
+	Pagination           *base.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}           `json:"-"`
+	XXX_unrecognized     []byte             `json:"-"`
+	XXX_sizecache        int32              `json:"-"`
+}
+
+func (m *QueryAllIdentityRecordsResponse) Reset()         { *m = QueryAllIdentityRecordsResponse{} }
+func (m *QueryAllIdentityRecordsResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryAllIdentityRecordsResponse) ProtoMessage()    {}
+func (*QueryAllIdentityRecordsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bcca1063f62efc95, []int{19}
+}
+
+func (m *QueryAllIdentityRecordsResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_QueryAllIdentityRecordsResponse.Unmarshal(m, b)
+}
+func (m *QueryAllIdentityRecordsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_QueryAllIdentityRecordsResponse.Marshal(b, m, deterministic)
+}
+func (m *QueryAllIdentityRecordsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryAllIdentityRecordsResponse.Merge(m, src)
+}
+func (m *QueryAllIdentityRecordsResponse) XXX_Size() int {
+	return xxx_messageInfo_QueryAllIdentityRecordsResponse.Size(m)
+}
+func (m *QueryAllIdentityRecordsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryAllIdentityRecordsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryAllIdentityRecordsResponse proto.InternalMessageInfo
+
+func (m *QueryAllIdentityRecordsResponse) GetRecords() []*IdentityRecord {
+	if m != nil {
+		return m.Records
+	}
+	return nil
+}
+
+func (m *QueryAllIdentityRecordsResponse) GetPagination() *base.PageResponse {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+type QueryIdentityVerifyRecordRequest struct {
+	RequestId            uint64   `protobuf:"varint,1,opt,name=request_id,json=requestId,proto3" json:"request_id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *QueryIdentityVerifyRecordRequest) Reset()         { *m = QueryIdentityVerifyRecordRequest{} }
+func (m *QueryIdentityVerifyRecordRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryIdentityVerifyRecordRequest) ProtoMessage()    {}
+func (*QueryIdentityVerifyRecordRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bcca1063f62efc95, []int{20}
+}
+
+func (m *QueryIdentityVerifyRecordRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_QueryIdentityVerifyRecordRequest.Unmarshal(m, b)
+}
+func (m *QueryIdentityVerifyRecordRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_QueryIdentityVerifyRecordRequest.Marshal(b, m, deterministic)
+}
+func (m *QueryIdentityVerifyRecordRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryIdentityVerifyRecordRequest.Merge(m, src)
+}
+func (m *QueryIdentityVerifyRecordRequest) XXX_Size() int {
+	return xxx_messageInfo_QueryIdentityVerifyRecordRequest.Size(m)
+}
+func (m *QueryIdentityVerifyRecordRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryIdentityVerifyRecordRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryIdentityVerifyRecordRequest proto.InternalMessageInfo
+
+func (m *QueryIdentityVerifyRecordRequest) GetRequestId() uint64 {
+	if m != nil {
+		return m.RequestId
+	}
+	return 0
+}
+
+type QueryIdentityVerifyRecordResponse struct {
+	VerifyRecord         *IdentityRecordsVerify `protobuf:"bytes,1,opt,name=verify_record,json=verifyRecord,proto3" json:"verify_record,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}               `json:"-"`
+	XXX_unrecognized     []byte                 `json:"-"`
+	XXX_sizecache        int32                  `json:"-"`
+}
+
+func (m *QueryIdentityVerifyRecordResponse) Reset()         { *m = QueryIdentityVerifyRecordResponse{} }
+func (m *QueryIdentityVerifyRecordResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryIdentityVerifyRecordResponse) ProtoMessage()    {}
+func (*QueryIdentityVerifyRecordResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bcca1063f62efc95, []int{21}
+}
+
+func (m *QueryIdentityVerifyRecordResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_QueryIdentityVerifyRecordResponse.Unmarshal(m, b)
+}
+func (m *QueryIdentityVerifyRecordResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_QueryIdentityVerifyRecordResponse.Marshal(b, m, deterministic)
+}
+func (m *QueryIdentityVerifyRecordResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryIdentityVerifyRecordResponse.Merge(m, src)
+}
+func (m *QueryIdentityVerifyRecordResponse) XXX_Size() int {
+	return xxx_messageInfo_QueryIdentityVerifyRecordResponse.Size(m)
+}
+func (m *QueryIdentityVerifyRecordResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryIdentityVerifyRecordResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryIdentityVerifyRecordResponse proto.InternalMessageInfo
+
+func (m *QueryIdentityVerifyRecordResponse) GetVerifyRecord() *IdentityRecordsVerify {
+	if m != nil {
+		return m.VerifyRecord
+	}
+	return nil
+}
+
+type QueryIdentityRecordVerifyRequestsByApprover struct {
+	Approver             []byte            `protobuf:"bytes,1,opt,name=approver,proto3" json:"approver,omitempty"`
+	Pagination           *base.PageRequest `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}          `json:"-"`
+	XXX_unrecognized     []byte            `json:"-"`
+	XXX_sizecache        int32             `json:"-"`
+}
+
+func (m *QueryIdentityRecordVerifyRequestsByApprover) Reset() {
+	*m = QueryIdentityRecordVerifyRequestsByApprover{}
+}
+func (m *QueryIdentityRecordVerifyRequestsByApprover) String() string {
+	return proto.CompactTextString(m)
+}
+func (*QueryIdentityRecordVerifyRequestsByApprover) ProtoMessage() {}
+func (*QueryIdentityRecordVerifyRequestsByApprover) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bcca1063f62efc95, []int{22}
+}
+
+func (m *QueryIdentityRecordVerifyRequestsByApprover) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_QueryIdentityRecordVerifyRequestsByApprover.Unmarshal(m, b)
+}
+func (m *QueryIdentityRecordVerifyRequestsByApprover) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_QueryIdentityRecordVerifyRequestsByApprover.Marshal(b, m, deterministic)
+}
+func (m *QueryIdentityRecordVerifyRequestsByApprover) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryIdentityRecordVerifyRequestsByApprover.Merge(m, src)
+}
+func (m *QueryIdentityRecordVerifyRequestsByApprover) XXX_Size() int {
+	return xxx_messageInfo_QueryIdentityRecordVerifyRequestsByApprover.Size(m)
+}
+func (m *QueryIdentityRecordVerifyRequestsByApprover) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryIdentityRecordVerifyRequestsByApprover.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryIdentityRecordVerifyRequestsByApprover proto.InternalMessageInfo
+
+func (m *QueryIdentityRecordVerifyRequestsByApprover) GetApprover() []byte {
+	if m != nil {
+		return m.Approver
+	}
+	return nil
+}
+
+func (m *QueryIdentityRecordVerifyRequestsByApprover) GetPagination() *base.PageRequest {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+type QueryIdentityRecordVerifyRequestsByApproverResponse struct {
+	VerifyRecords        []*IdentityRecordsVerify `protobuf:"bytes,1,rep,name=verify_records,json=verifyRecords,proto3" json:"verify_records,omitempty"`
+	Pagination           *base.PageResponse       `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                 `json:"-"`
+	XXX_unrecognized     []byte                   `json:"-"`
+	XXX_sizecache        int32                    `json:"-"`
+}
+
+func (m *QueryIdentityRecordVerifyRequestsByApproverResponse) Reset() {
+	*m = QueryIdentityRecordVerifyRequestsByApproverResponse{}
+}
+func (m *QueryIdentityRecordVerifyRequestsByApproverResponse) String() string {
+	return proto.CompactTextString(m)
+}
+func (*QueryIdentityRecordVerifyRequestsByApproverResponse) ProtoMessage() {}
+func (*QueryIdentityRecordVerifyRequestsByApproverResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bcca1063f62efc95, []int{23}
+}
+
+func (m *QueryIdentityRecordVerifyRequestsByApproverResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_QueryIdentityRecordVerifyRequestsByApproverResponse.Unmarshal(m, b)
+}
+func (m *QueryIdentityRecordVerifyRequestsByApproverResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_QueryIdentityRecordVerifyRequestsByApproverResponse.Marshal(b, m, deterministic)
+}
+func (m *QueryIdentityRecordVerifyRequestsByApproverResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryIdentityRecordVerifyRequestsByApproverResponse.Merge(m, src)
+}
+func (m *QueryIdentityRecordVerifyRequestsByApproverResponse) XXX_Size() int {
+	return xxx_messageInfo_QueryIdentityRecordVerifyRequestsByApproverResponse.Size(m)
+}
+func (m *QueryIdentityRecordVerifyRequestsByApproverResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryIdentityRecordVerifyRequestsByApproverResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryIdentityRecordVerifyRequestsByApproverResponse proto.InternalMessageInfo
+
+func (m *QueryIdentityRecordVerifyRequestsByApproverResponse) GetVerifyRecords() []*IdentityRecordsVerify {
+	if m != nil {
+		return m.VerifyRecords
+	}
+	return nil
+}
+
+func (m *QueryIdentityRecordVerifyRequestsByApproverResponse) GetPagination() *base.PageResponse {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+type QueryIdentityRecordVerifyRequestsByRequester struct {
+	Requester            []byte            `protobuf:"bytes,1,opt,name=requester,proto3" json:"requester,omitempty"`
+	Pagination           *base.PageRequest `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}          `json:"-"`
+	XXX_unrecognized     []byte            `json:"-"`
+	XXX_sizecache        int32             `json:"-"`
+}
+
+func (m *QueryIdentityRecordVerifyRequestsByRequester) Reset() {
+	*m = QueryIdentityRecordVerifyRequestsByRequester{}
+}
+func (m *QueryIdentityRecordVerifyRequestsByRequester) String() string {
+	return proto.CompactTextString(m)
+}
+func (*QueryIdentityRecordVerifyRequestsByRequester) ProtoMessage() {}
+func (*QueryIdentityRecordVerifyRequestsByRequester) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bcca1063f62efc95, []int{24}
+}
+
+func (m *QueryIdentityRecordVerifyRequestsByRequester) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_QueryIdentityRecordVerifyRequestsByRequester.Unmarshal(m, b)
+}
+func (m *QueryIdentityRecordVerifyRequestsByRequester) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_QueryIdentityRecordVerifyRequestsByRequester.Marshal(b, m, deterministic)
+}
+func (m *QueryIdentityRecordVerifyRequestsByRequester) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryIdentityRecordVerifyRequestsByRequester.Merge(m, src)
+}
+func (m *QueryIdentityRecordVerifyRequestsByRequester) XXX_Size() int {
+	return xxx_messageInfo_QueryIdentityRecordVerifyRequestsByRequester.Size(m)
+}
+func (m *QueryIdentityRecordVerifyRequestsByRequester) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryIdentityRecordVerifyRequestsByRequester.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryIdentityRecordVerifyRequestsByRequester proto.InternalMessageInfo
+
+func (m *QueryIdentityRecordVerifyRequestsByRequester) GetRequester() []byte {
+	if m != nil {
+		return m.Requester
+	}
+	return nil
+}
+
+func (m *QueryIdentityRecordVerifyRequestsByRequester) GetPagination() *base.PageRequest {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+type QueryIdentityRecordVerifyRequestsByRequesterResponse struct {
+	VerifyRecords        []*IdentityRecordsVerify `protobuf:"bytes,1,rep,name=verify_records,json=verifyRecords,proto3" json:"verify_records,omitempty"`
+	Pagination           *base.PageResponse       `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                 `json:"-"`
+	XXX_unrecognized     []byte                   `json:"-"`
+	XXX_sizecache        int32                    `json:"-"`
+}
+
+func (m *QueryIdentityRecordVerifyRequestsByRequesterResponse) Reset() {
+	*m = QueryIdentityRecordVerifyRequestsByRequesterResponse{}
+}
+func (m *QueryIdentityRecordVerifyRequestsByRequesterResponse) String() string {
+	return proto.CompactTextString(m)
+}
+func (*QueryIdentityRecordVerifyRequestsByRequesterResponse) ProtoMessage() {}
+func (*QueryIdentityRecordVerifyRequestsByRequesterResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bcca1063f62efc95, []int{25}
+}
+
+func (m *QueryIdentityRecordVerifyRequestsByRequesterResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_QueryIdentityRecordVerifyRequestsByRequesterResponse.Unmarshal(m, b)
+}
+func (m *QueryIdentityRecordVerifyRequestsByRequesterResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_QueryIdentityRecordVerifyRequestsByRequesterResponse.Marshal(b, m, deterministic)
+}
+func (m *QueryIdentityRecordVerifyRequestsByRequesterResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryIdentityRecordVerifyRequestsByRequesterResponse.Merge(m, src)
+}
+func (m *QueryIdentityRecordVerifyRequestsByRequesterResponse) XXX_Size() int {
+	return xxx_messageInfo_QueryIdentityRecordVerifyRequestsByRequesterResponse.Size(m)
+}
+func (m *QueryIdentityRecordVerifyRequestsByRequesterResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryIdentityRecordVerifyRequestsByRequesterResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryIdentityRecordVerifyRequestsByRequesterResponse proto.InternalMessageInfo
+
+func (m *QueryIdentityRecordVerifyRequestsByRequesterResponse) GetVerifyRecords() []*IdentityRecordsVerify {
+	if m != nil {
+		return m.VerifyRecords
+	}
+	return nil
+}
+
+func (m *QueryIdentityRecordVerifyRequestsByRequesterResponse) GetPagination() *base.PageResponse {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+type QueryAllIdentityRecordVerifyRequests struct {
+	Pagination           *base.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}          `json:"-"`
+	XXX_unrecognized     []byte            `json:"-"`
+	XXX_sizecache        int32             `json:"-"`
+}
+
+func (m *QueryAllIdentityRecordVerifyRequests) Reset()         { *m = QueryAllIdentityRecordVerifyRequests{} }
+func (m *QueryAllIdentityRecordVerifyRequests) String() string { return proto.CompactTextString(m) }
+func (*QueryAllIdentityRecordVerifyRequests) ProtoMessage()    {}
+func (*QueryAllIdentityRecordVerifyRequests) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bcca1063f62efc95, []int{26}
+}
+
+func (m *QueryAllIdentityRecordVerifyRequests) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_QueryAllIdentityRecordVerifyRequests.Unmarshal(m, b)
+}
+func (m *QueryAllIdentityRecordVerifyRequests) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_QueryAllIdentityRecordVerifyRequests.Marshal(b, m, deterministic)
+}
+func (m *QueryAllIdentityRecordVerifyRequests) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryAllIdentityRecordVerifyRequests.Merge(m, src)
+}
+func (m *QueryAllIdentityRecordVerifyRequests) XXX_Size() int {
+	return xxx_messageInfo_QueryAllIdentityRecordVerifyRequests.Size(m)
+}
+func (m *QueryAllIdentityRecordVerifyRequests) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryAllIdentityRecordVerifyRequests.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryAllIdentityRecordVerifyRequests proto.InternalMessageInfo
+
+func (m *QueryAllIdentityRecordVerifyRequests) GetPagination() *base.PageRequest {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+type QueryAllIdentityRecordVerifyRequestsResponse struct {
+	VerifyRecords        []*IdentityRecordsVerify `protobuf:"bytes,1,rep,name=verify_records,json=verifyRecords,proto3" json:"verify_records,omitempty"`
+	Pagination           *base.PageResponse       `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                 `json:"-"`
+	XXX_unrecognized     []byte                   `json:"-"`
+	XXX_sizecache        int32                    `json:"-"`
+}
+
+func (m *QueryAllIdentityRecordVerifyRequestsResponse) Reset() {
+	*m = QueryAllIdentityRecordVerifyRequestsResponse{}
+}
+func (m *QueryAllIdentityRecordVerifyRequestsResponse) String() string {
+	return proto.CompactTextString(m)
+}
+func (*QueryAllIdentityRecordVerifyRequestsResponse) ProtoMessage() {}
+func (*QueryAllIdentityRecordVerifyRequestsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_bcca1063f62efc95, []int{27}
+}
+
+func (m *QueryAllIdentityRecordVerifyRequestsResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_QueryAllIdentityRecordVerifyRequestsResponse.Unmarshal(m, b)
+}
+func (m *QueryAllIdentityRecordVerifyRequestsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_QueryAllIdentityRecordVerifyRequestsResponse.Marshal(b, m, deterministic)
+}
+func (m *QueryAllIdentityRecordVerifyRequestsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryAllIdentityRecordVerifyRequestsResponse.Merge(m, src)
+}
+func (m *QueryAllIdentityRecordVerifyRequestsResponse) XXX_Size() int {
+	return xxx_messageInfo_QueryAllIdentityRecordVerifyRequestsResponse.Size(m)
+}
+func (m *QueryAllIdentityRecordVerifyRequestsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryAllIdentityRecordVerifyRequestsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryAllIdentityRecordVerifyRequestsResponse proto.InternalMessageInfo
+
+func (m *QueryAllIdentityRecordVerifyRequestsResponse) GetVerifyRecords() []*IdentityRecordsVerify {
+	if m != nil {
+		return m.VerifyRecords
+	}
+	return nil
+}
+
+func (m *QueryAllIdentityRecordVerifyRequestsResponse) GetPagination() *base.PageResponse {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*QueryProposalRequest)(nil), "kira.gov.QueryProposalRequest")
 	proto.RegisterType((*QueryProposalResponse)(nil), "kira.gov.QueryProposalResponse")
@@ -643,6 +1265,20 @@ func init() {
 	proto.RegisterType((*QueryVotesResponse)(nil), "kira.gov.QueryVotesResponse")
 	proto.RegisterType((*NetworkPropertiesRequest)(nil), "kira.gov.NetworkPropertiesRequest")
 	proto.RegisterType((*NetworkPropertiesResponse)(nil), "kira.gov.NetworkPropertiesResponse")
+	proto.RegisterType((*QueryIdentityRecordRequest)(nil), "kira.gov.QueryIdentityRecordRequest")
+	proto.RegisterType((*QueryIdentityRecordResponse)(nil), "kira.gov.QueryIdentityRecordResponse")
+	proto.RegisterType((*QueryIdentityRecordsByAddressRequest)(nil), "kira.gov.QueryIdentityRecordsByAddressRequest")
+	proto.RegisterType((*QueryIdentityRecordsByAddressResponse)(nil), "kira.gov.QueryIdentityRecordsByAddressResponse")
+	proto.RegisterType((*QueryAllIdentityRecordsRequest)(nil), "kira.gov.QueryAllIdentityRecordsRequest")
+	proto.RegisterType((*QueryAllIdentityRecordsResponse)(nil), "kira.gov.QueryAllIdentityRecordsResponse")
+	proto.RegisterType((*QueryIdentityVerifyRecordRequest)(nil), "kira.gov.QueryIdentityVerifyRecordRequest")
+	proto.RegisterType((*QueryIdentityVerifyRecordResponse)(nil), "kira.gov.QueryIdentityVerifyRecordResponse")
+	proto.RegisterType((*QueryIdentityRecordVerifyRequestsByApprover)(nil), "kira.gov.QueryIdentityRecordVerifyRequestsByApprover")
+	proto.RegisterType((*QueryIdentityRecordVerifyRequestsByApproverResponse)(nil), "kira.gov.QueryIdentityRecordVerifyRequestsByApproverResponse")
+	proto.RegisterType((*QueryIdentityRecordVerifyRequestsByRequester)(nil), "kira.gov.QueryIdentityRecordVerifyRequestsByRequester")
+	proto.RegisterType((*QueryIdentityRecordVerifyRequestsByRequesterResponse)(nil), "kira.gov.QueryIdentityRecordVerifyRequestsByRequesterResponse")
+	proto.RegisterType((*QueryAllIdentityRecordVerifyRequests)(nil), "kira.gov.QueryAllIdentityRecordVerifyRequests")
+	proto.RegisterType((*QueryAllIdentityRecordVerifyRequestsResponse)(nil), "kira.gov.QueryAllIdentityRecordVerifyRequestsResponse")
 }
 
 func init() {
@@ -650,74 +1286,113 @@ func init() {
 }
 
 var fileDescriptor_bcca1063f62efc95 = []byte{
-	// 1070 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x96, 0x4f, 0x73, 0xdb, 0x44,
-	0x18, 0xc6, 0xa3, 0xc4, 0x2e, 0xce, 0x86, 0x29, 0xe9, 0xe2, 0xb6, 0xb6, 0x1a, 0x6a, 0x55, 0x69,
-	0x1b, 0x4f, 0x20, 0xda, 0x26, 0xe9, 0x40, 0x29, 0x1c, 0x50, 0xda, 0x02, 0x9d, 0xd0, 0x4e, 0xd0,
-	0x30, 0x25, 0xc3, 0x81, 0xcc, 0xda, 0x5e, 0x14, 0x8d, 0x5d, 0xad, 0x2a, 0x6d, 0x9c, 0xd1, 0xb4,
-	0xb9, 0x70, 0xe2, 0xc4, 0xc1, 0x9c, 0x98, 0xe1, 0xd0, 0x4b, 0x0f, 0xc0, 0x07, 0xe0, 0x13, 0x30,
-	0xc3, 0x8d, 0x43, 0xef, 0x9c, 0x38, 0xf0, 0x31, 0x18, 0xed, 0x1f, 0xd9, 0x96, 0x2c, 0x3b, 0x74,
-	0x38, 0x59, 0xda, 0x7d, 0xde, 0xdd, 0xdf, 0xf3, 0xee, 0xbe, 0xaf, 0x05, 0xaa, 0x5d, 0x2f, 0xc4,
-	0xc8, 0xa5, 0x7d, 0xf4, 0xe4, 0x88, 0x84, 0xb1, 0x15, 0x84, 0x94, 0x51, 0x58, 0x49, 0x46, 0x2d,
-	0x97, 0xf6, 0xf5, 0x15, 0x97, 0x52, 0xb7, 0x47, 0x10, 0x0e, 0x3c, 0x84, 0x7d, 0x9f, 0x32, 0xcc,
-	0x3c, 0xea, 0x47, 0x42, 0xa7, 0x57, 0x5d, 0xea, 0x52, 0xfe, 0x88, 0x92, 0x27, 0x39, 0x2a, 0x7e,
-	0xda, 0x1b, 0x2e, 0xf1, 0x37, 0x68, 0x40, 0x7c, 0x1c, 0x78, 0xfd, 0x2d, 0x44, 0x03, 0x1e, 0x39,
-	0x61, 0x95, 0xf5, 0x36, 0x8d, 0x1e, 0xd3, 0x08, 0xb5, 0x70, 0x44, 0x04, 0x06, 0xea, 0x6f, 0xb6,
-	0x08, 0xc3, 0x9b, 0x28, 0xc0, 0xae, 0xe7, 0x73, 0xb1, 0xd4, 0xae, 0xa4, 0xbc, 0x1d, 0xcc, 0xf0,
-	0x41, 0x48, 0x5c, 0x2f, 0x62, 0x8a, 0x5b, 0xbf, 0x98, 0xce, 0x06, 0x21, 0x0d, 0x68, 0x84, 0x7b,
-	0x72, 0xe2, 0x4a, 0x3a, 0xe1, 0x75, 0x88, 0xcf, 0x3c, 0x16, 0xab, 0x50, 0x1c, 0x2a, 0x2f, 0xa9,
-	0x04, 0xb7, 0x19, 0x0d, 0x73, 0x81, 0x3e, 0x61, 0xc7, 0x34, 0xec, 0x1e, 0x24, 0x2b, 0x93, 0x90,
-	0x79, 0x44, 0xe2, 0x9b, 0xef, 0x81, 0xea, 0xe7, 0x09, 0xf4, 0x9e, 0xdc, 0xd2, 0x21, 0x4f, 0x8e,
-	0x48, 0xc4, 0x60, 0x03, 0x2c, 0x29, 0x8a, 0x03, 0xaf, 0x53, 0xd3, 0x0c, 0xad, 0x59, 0x72, 0x80,
-	0x1a, 0xba, 0xdf, 0x31, 0x1f, 0x80, 0xf3, 0x99, 0xc0, 0x28, 0xa0, 0x7e, 0x44, 0xe0, 0x4d, 0x50,
-	0x51, 0x32, 0x1e, 0xb6, 0xb4, 0x05, 0x2d, 0x75, 0x22, 0x96, 0x52, 0xef, 0x94, 0xfe, 0xf8, 0xab,
-	0x31, 0xe7, 0xa4, 0x4a, 0xf3, 0x57, 0x2d, 0xb3, 0x5e, 0xa4, 0x48, 0xaa, 0xa0, 0xdc, 0xa7, 0x8c,
-	0x84, 0x7c, 0xb1, 0x45, 0x47, 0xbc, 0xc0, 0x8f, 0x01, 0x18, 0xa6, 0xb7, 0x36, 0xcf, 0xf7, 0xb9,
-	0x6e, 0x89, 0xb3, 0xb0, 0x92, 0xb3, 0xb0, 0xc4, 0x95, 0x90, 0x67, 0x61, 0xed, 0x61, 0x97, 0xc8,
-	0x15, 0x9d, 0x91, 0x48, 0xb8, 0x0c, 0x16, 0x70, 0xaf, 0x57, 0x5b, 0x30, 0xb4, 0x66, 0xc5, 0x49,
-	0x1e, 0x61, 0x0d, 0xbc, 0x16, 0x92, 0x3e, 0x09, 0x23, 0x52, 0x2b, 0xf1, 0x51, 0xf5, 0x7a, 0xbb,
-	0xf2, 0xdd, 0xf3, 0xc6, 0xdc, 0x3f, 0xcf, 0x1b, 0x73, 0xe6, 0x8f, 0x1a, 0xb8, 0x90, 0xa5, 0x95,
-	0xf6, 0xdf, 0x05, 0x8b, 0xca, 0x54, 0x54, 0xd3, 0x8c, 0x85, 0xa9, 0xfe, 0x87, 0x52, 0xf8, 0xc9,
-	0x04, 0x43, 0x6b, 0x33, 0x0d, 0x89, 0x4d, 0x47, 0x1d, 0x99, 0x2e, 0x78, 0x8b, 0xa3, 0xdd, 0xc5,
-	0x0c, 0x3b, 0xe4, 0x1b, 0x12, 0x12, 0xbf, 0x4d, 0x76, 0x49, 0x9c, 0x26, 0x74, 0x3c, 0x75, 0xda,
-	0xab, 0xa6, 0xce, 0x3c, 0x01, 0x97, 0x8b, 0x36, 0x92, 0xb9, 0x80, 0xa0, 0xd4, 0x25, 0xb1, 0x48,
-	0xc3, 0xa2, 0xc3, 0x9f, 0xff, 0x3f, 0x9f, 0x1b, 0xa0, 0x9e, 0xdf, 0x5e, 0x79, 0x5c, 0x06, 0x0b,
-	0x5d, 0x12, 0xcb, 0x2b, 0x93, 0x3c, 0x9a, 0x0f, 0x80, 0x3e, 0x49, 0x2e, 0x49, 0x11, 0x28, 0x25,
-	0x25, 0x29, 0xb3, 0x71, 0x69, 0x78, 0x60, 0x42, 0x2e, 0xea, 0xf4, 0x9e, 0xcf, 0xc2, 0xd8, 0xe1,
-	0x42, 0xf3, 0x53, 0x70, 0x8d, 0x2f, 0xf7, 0xe5, 0xa1, 0xc7, 0x48, 0xcf, 0x8b, 0x18, 0xe9, 0xa8,
-	0xb3, 0x7d, 0x94, 0x5c, 0xd0, 0xe8, 0xd4, 0x85, 0xf4, 0x35, 0xb8, 0x3e, 0x6b, 0xa5, 0xb4, 0xb2,
-	0xce, 0xf0, 0xcb, 0xaf, 0xee, 0xd5, 0x85, 0x21, 0xe6, 0x43, 0x51, 0xdf, 0x76, 0x52, 0xfc, 0xf2,
-	0x6e, 0x49, 0xad, 0x79, 0x13, 0x9c, 0xe3, 0xeb, 0x27, 0x8b, 0x9d, 0x9e, 0xea, 0x23, 0x00, 0x47,
-	0xa3, 0x24, 0xc1, 0xba, 0xa8, 0x45, 0x05, 0x70, 0x76, 0x08, 0x90, 0xe8, 0xe4, 0xc6, 0x42, 0x62,
-	0xea, 0xa0, 0x26, 0xa9, 0xf6, 0xd2, 0xa6, 0x23, 0xb7, 0x37, 0xf7, 0x41, 0x7d, 0xc2, 0x9c, 0xdc,
-	0xe4, 0x03, 0x00, 0x86, 0x6d, 0x2a, 0x7f, 0x22, 0xf9, 0xc0, 0x11, 0xf9, 0xd6, 0x8b, 0x25, 0x50,
-	0xe6, 0xe0, 0xf0, 0x85, 0x06, 0x2a, 0x2a, 0x91, 0xf0, 0xf2, 0x30, 0x7e, 0x52, 0xbb, 0xd3, 0x1b,
-	0x85, 0xf3, 0x02, 0xca, 0xdc, 0x1f, 0xd8, 0x4d, 0x50, 0xe6, 0x57, 0x13, 0x9e, 0xe5, 0x12, 0x43,
-	0x69, 0xf4, 0x37, 0xc6, 0xdf, 0xad, 0x6f, 0x5f, 0xfe, 0xfd, 0xc3, 0xfc, 0x1a, 0xbc, 0xc6, 0xff,
-	0x77, 0x72, 0x4d, 0x3d, 0x42, 0x4f, 0x47, 0x52, 0x7f, 0x02, 0x7f, 0xd2, 0xc0, 0x62, 0xda, 0x46,
-	0x60, 0x11, 0x88, 0x4a, 0x9d, 0x6e, 0x14, 0x0b, 0x24, 0xea, 0x67, 0x03, 0x7b, 0x5d, 0xa1, 0x66,
-	0xd0, 0x22, 0x7d, 0x39, 0x33, 0x20, 0x60, 0xeb, 0xf0, 0x62, 0x01, 0x2c, 0xfc, 0x53, 0x03, 0x55,
-	0xbb, 0xd7, 0xcb, 0x15, 0x39, 0x5c, 0xcb, 0x80, 0x14, 0xf5, 0x1b, 0xbd, 0x39, 0x5b, 0x28, 0xc9,
-	0x3b, 0x03, 0x7b, 0x47, 0x91, 0x8b, 0x26, 0x66, 0xd8, 0xbd, 0x9e, 0x91, 0x04, 0x18, 0x69, 0x84,
-	0x91, 0x84, 0xe8, 0xa2, 0x98, 0x27, 0x4d, 0x15, 0x38, 0xe2, 0xff, 0xb8, 0xbc, 0x03, 0xfd, 0xa6,
-	0x01, 0x38, 0xc6, 0xb0, 0x13, 0xef, 0x92, 0x18, 0xae, 0x4e, 0xc3, 0x54, 0x5e, 0xae, 0x4e, 0x17,
-	0x49, 0x1f, 0x8f, 0x06, 0xf6, 0xb6, 0xf2, 0xf1, 0x66, 0x16, 0xd4, 0x6f, 0x13, 0xfd, 0xfc, 0x24,
-	0x7a, 0x01, 0xae, 0xc3, 0x5a, 0x1e, 0x1c, 0x3d, 0xed, 0x92, 0xf8, 0x04, 0xfe, 0x32, 0x0f, 0xea,
-	0x85, 0x6d, 0x02, 0xa2, 0x0c, 0xdb, 0xac, 0xd6, 0xa4, 0xdf, 0x38, 0x7d, 0x80, 0x34, 0xf6, 0xb3,
-	0x36, 0xb0, 0x9f, 0x29, 0x67, 0xb7, 0x84, 0x89, 0xe3, 0x61, 0x94, 0xa1, 0xae, 0x8d, 0x21, 0x7a,
-	0x8f, 0xd1, 0x8a, 0x0d, 0x6c, 0xb8, 0x5e, 0x9f, 0xf8, 0xc6, 0xc8, 0x9d, 0xd7, 0xdf, 0x7f, 0xd5,
-	0x48, 0x91, 0xa2, 0xab, 0xd0, 0x1c, 0x4f, 0x91, 0x88, 0xc9, 0xd4, 0xd5, 0x4b, 0x0d, 0x94, 0x79,
-	0xf7, 0x82, 0x97, 0x32, 0x3e, 0x47, 0x3b, 0xa1, 0xbe, 0x32, 0x79, 0x52, 0x1a, 0xfe, 0x5e, 0x1b,
-	0xd8, 0x2d, 0x65, 0xf8, 0x6d, 0x81, 0x3d, 0x86, 0x5a, 0xe8, 0xf1, 0x9d, 0xff, 0x20, 0x16, 0xb6,
-	0x56, 0xe1, 0x95, 0xbc, 0xad, 0xac, 0xab, 0xdf, 0x35, 0x70, 0x2e, 0xd7, 0x01, 0xa1, 0x39, 0xad,
-	0x3d, 0x4a, 0xa3, 0xab, 0x53, 0x35, 0xd2, 0xaf, 0x3b, 0xb0, 0x3f, 0x54, 0x76, 0x6b, 0xc2, 0x81,
-	0xfc, 0x74, 0x34, 0x86, 0x4d, 0x56, 0xaf, 0x17, 0xcd, 0x08, 0x23, 0x26, 0x34, 0xc6, 0x8d, 0xe4,
-	0xbf, 0x3e, 0x77, 0x9e, 0x0d, 0xec, 0xbb, 0xb0, 0xbc, 0xb5, 0xb0, 0x69, 0xdd, 0x58, 0xd7, 0xb4,
-	0xf0, 0x16, 0x78, 0xdd, 0x75, 0xf6, 0xee, 0x6c, 0xb8, 0x98, 0x91, 0x63, 0x1c, 0xc3, 0xe6, 0x21,
-	0x63, 0x41, 0x74, 0x1b, 0x21, 0xd7, 0x63, 0x87, 0x47, 0x2d, 0xab, 0x4d, 0x1f, 0xa3, 0x5d, 0x2f,
-	0xc4, 0x77, 0x68, 0x48, 0x50, 0x44, 0xba, 0xd8, 0x43, 0xf7, 0x1f, 0x7e, 0x71, 0xcf, 0xd9, 0xff,
-	0x6a, 0x7b, 0x96, 0x02, 0xf1, 0x0f, 0xdd, 0xe4, 0x7b, 0x3e, 0x05, 0x6a, 0x9d, 0xe1, 0x63, 0xdb,
-	0xff, 0x06, 0x00, 0x00, 0xff, 0xff, 0xe8, 0x9f, 0x5a, 0x6e, 0x41, 0x0c, 0x00, 0x00,
+	// 1695 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xdc, 0x59, 0x4b, 0x6c, 0x13, 0xc7,
+	0x1b, 0x67, 0x9d, 0x04, 0x92, 0x0f, 0x08, 0x61, 0xfe, 0x01, 0x9c, 0x0d, 0xe0, 0x65, 0x79, 0x24,
+	0x7f, 0x93, 0x78, 0xf3, 0x82, 0x06, 0x5a, 0x4a, 0xd7, 0x24, 0xa5, 0x11, 0x8f, 0xa6, 0x56, 0x45,
+	0x51, 0xa5, 0x36, 0xdd, 0xd8, 0xc3, 0xb2, 0x8a, 0xf1, 0x9a, 0xd9, 0xc5, 0xc8, 0x0a, 0x91, 0x5a,
+	0x4e, 0x70, 0xe9, 0xc1, 0x55, 0x2b, 0x55, 0xea, 0x01, 0xa9, 0xea, 0x81, 0x56, 0x3d, 0xf4, 0xd4,
+	0x53, 0x2f, 0x95, 0x2a, 0xf5, 0xd6, 0x03, 0xf7, 0xa8, 0x87, 0x56, 0xaa, 0x7a, 0xe4, 0xc8, 0xa9,
+	0xda, 0x79, 0xac, 0xbd, 0xeb, 0x5d, 0xdb, 0x31, 0x95, 0x8a, 0x38, 0x65, 0x3c, 0xf3, 0xfb, 0x66,
+	0x7e, 0xbf, 0xef, 0x31, 0x9e, 0xcf, 0x81, 0xe1, 0x35, 0x8b, 0x18, 0x9a, 0x69, 0x57, 0xb4, 0xdb,
+	0x77, 0x30, 0xa9, 0x66, 0xca, 0xc4, 0x76, 0x6d, 0xd4, 0xef, 0xcd, 0x66, 0x4c, 0xbb, 0x22, 0x1f,
+	0x34, 0x6d, 0xdb, 0x2c, 0x62, 0xcd, 0x28, 0x5b, 0x9a, 0x51, 0x2a, 0xd9, 0xae, 0xe1, 0x5a, 0x76,
+	0xc9, 0x61, 0x38, 0x79, 0xd8, 0xb4, 0x4d, 0x9b, 0x0e, 0x35, 0x6f, 0xc4, 0x67, 0xd9, 0x9f, 0xfc,
+	0xa4, 0x89, 0x4b, 0x93, 0x76, 0x19, 0x97, 0x8c, 0xb2, 0x55, 0x99, 0xd1, 0xec, 0x32, 0xb5, 0x8c,
+	0xd8, 0x25, 0x9d, 0xb7, 0x9d, 0x5b, 0xb6, 0xa3, 0xad, 0x1a, 0x0e, 0x66, 0x34, 0xb4, 0xca, 0xf4,
+	0x2a, 0x76, 0x8d, 0x69, 0xad, 0x6c, 0x98, 0x56, 0x89, 0x82, 0x39, 0xf6, 0xa0, 0xcf, 0xb7, 0x60,
+	0xb8, 0xc6, 0x0a, 0xc1, 0xa6, 0xe5, 0xb8, 0x82, 0xb7, 0x7c, 0xc0, 0x5f, 0x2d, 0x13, 0xbb, 0x6c,
+	0x3b, 0x46, 0x91, 0x2f, 0x1c, 0xf1, 0x17, 0xac, 0x02, 0x2e, 0xb9, 0x96, 0x5b, 0x15, 0xa6, 0x06,
+	0x11, 0x5a, 0x7c, 0x88, 0x91, 0x77, 0x6d, 0xd2, 0x64, 0x58, 0xc2, 0xee, 0x5d, 0x9b, 0xac, 0xad,
+	0x78, 0x3b, 0x63, 0xe2, 0x5a, 0x98, 0xd3, 0x57, 0x5f, 0x81, 0xe1, 0x77, 0x3c, 0xd2, 0xcb, 0xfc,
+	0xc8, 0x1c, 0xbe, 0x7d, 0x07, 0x3b, 0x2e, 0x4a, 0xc1, 0x4e, 0xc1, 0x62, 0xc5, 0x2a, 0x24, 0x25,
+	0x45, 0x1a, 0xef, 0xcd, 0x81, 0x98, 0x5a, 0x2a, 0xa8, 0x57, 0x60, 0x5f, 0xc8, 0xd0, 0x29, 0xdb,
+	0x25, 0x07, 0xa3, 0x39, 0xe8, 0x17, 0x30, 0x6a, 0xb6, 0x73, 0x06, 0x65, 0x44, 0x44, 0x32, 0x02,
+	0x9d, 0xed, 0xfd, 0x75, 0x33, 0xb5, 0x2d, 0xe7, 0x23, 0xd5, 0xef, 0xa4, 0xd0, 0x7e, 0x8e, 0x60,
+	0x32, 0x0c, 0x7d, 0x15, 0xdb, 0xc5, 0x84, 0x6e, 0x36, 0x90, 0x63, 0x1f, 0xd0, 0x9b, 0x00, 0x75,
+	0xf7, 0x26, 0x13, 0xf4, 0x9c, 0x13, 0x19, 0x16, 0x8b, 0x8c, 0x17, 0x8b, 0x0c, 0x4b, 0x09, 0x1e,
+	0x8b, 0xcc, 0xb2, 0x61, 0x62, 0xbe, 0x63, 0xae, 0xc1, 0x12, 0x0d, 0x41, 0x8f, 0x51, 0x2c, 0x26,
+	0x7b, 0x14, 0x69, 0xbc, 0x3f, 0xe7, 0x0d, 0x51, 0x12, 0x76, 0x10, 0x5c, 0xc1, 0xc4, 0xc1, 0xc9,
+	0x5e, 0x3a, 0x2b, 0x3e, 0x9e, 0xed, 0x7f, 0xf0, 0x28, 0xb5, 0xed, 0xaf, 0x47, 0xa9, 0x6d, 0xea,
+	0x97, 0x12, 0xec, 0x0f, 0xb3, 0xe5, 0xf2, 0x4f, 0xc3, 0x80, 0x10, 0xe5, 0x24, 0x25, 0xa5, 0xa7,
+	0xa5, 0xfe, 0x3a, 0x14, 0x5d, 0x8c, 0x10, 0x34, 0xd6, 0x56, 0x10, 0x3b, 0xb4, 0x51, 0x91, 0x6a,
+	0xc2, 0x21, 0x4a, 0x6d, 0xc1, 0x70, 0x8d, 0x1c, 0xbe, 0x81, 0x09, 0x2e, 0xe5, 0xf1, 0x25, 0x5c,
+	0xf5, 0x1d, 0x1a, 0x74, 0x9d, 0xd4, 0xad, 0xeb, 0xd4, 0x0d, 0x38, 0x1c, 0x77, 0x10, 0xf7, 0x05,
+	0x82, 0xde, 0x35, 0x5c, 0x65, 0x6e, 0x18, 0xc8, 0xd1, 0xf1, 0xbf, 0xa7, 0x73, 0x12, 0x46, 0x9a,
+	0x8f, 0x17, 0x1a, 0x87, 0xa0, 0x67, 0x0d, 0x57, 0x79, 0xca, 0x78, 0x43, 0xf5, 0x0a, 0xc8, 0x51,
+	0x70, 0xce, 0x54, 0x83, 0x5e, 0xaf, 0x24, 0xb9, 0x37, 0x46, 0xeb, 0x01, 0x63, 0x70, 0x56, 0xa7,
+	0x8b, 0x25, 0x97, 0x54, 0x73, 0x14, 0xa8, 0xbe, 0x05, 0xc7, 0xe9, 0x76, 0xef, 0xdd, 0xb4, 0x5c,
+	0x5c, 0xb4, 0x1c, 0x17, 0x17, 0x44, 0x6c, 0xaf, 0x79, 0x09, 0xea, 0x74, 0x5c, 0x48, 0x1f, 0xc2,
+	0x89, 0x76, 0x3b, 0xf9, 0x95, 0xb5, 0x9d, 0x26, 0xbf, 0xc8, 0xab, 0xfd, 0x75, 0x9a, 0x57, 0x59,
+	0x7d, 0xeb, 0x5e, 0xf1, 0xf3, 0xdc, 0xe2, 0x58, 0x75, 0x0e, 0xf6, 0xd2, 0xfd, 0xbd, 0xcd, 0x3a,
+	0x67, 0xf5, 0x06, 0xa0, 0x46, 0x2b, 0xce, 0x20, 0xcd, 0x6a, 0x51, 0x10, 0x18, 0xac, 0x13, 0xf0,
+	0x70, 0xfc, 0x60, 0x06, 0x51, 0x65, 0x48, 0x72, 0x56, 0xcb, 0xfe, 0xa5, 0xc3, 0x8f, 0x57, 0xaf,
+	0xc3, 0x48, 0xc4, 0x1a, 0x3f, 0xe4, 0x55, 0x80, 0xfa, 0x35, 0xd5, 0x1c, 0x91, 0x66, 0xc3, 0x06,
+	0xb8, 0x3a, 0xc1, 0xc3, 0xbc, 0xc4, 0x6f, 0xca, 0x1c, 0xce, 0xdb, 0xa4, 0x20, 0x64, 0x0f, 0x42,
+	0xc2, 0x57, 0x9b, 0xb0, 0x0a, 0xea, 0xdb, 0x30, 0x1a, 0x89, 0xe6, 0x4c, 0xa6, 0x60, 0x3b, 0xa1,
+	0x33, 0x9c, 0x45, 0xb2, 0xce, 0x22, 0x64, 0xc1, 0x71, 0xde, 0xc5, 0x70, 0x2c, 0x62, 0x47, 0x27,
+	0x5b, 0xd5, 0x0b, 0x05, 0x82, 0x1d, 0x3f, 0x00, 0x1f, 0xc0, 0x8e, 0x3c, 0xc1, 0x86, 0x6b, 0xb3,
+	0x7b, 0x6d, 0x57, 0xf6, 0xc2, 0xd3, 0xcd, 0xd4, 0x60, 0xd5, 0xb8, 0x55, 0x3c, 0xab, 0xf2, 0x05,
+	0xf5, 0xd9, 0x66, 0x6a, 0xd2, 0xb4, 0xdc, 0x9b, 0x77, 0x56, 0x33, 0x79, 0xfb, 0x96, 0xc6, 0xbf,
+	0x68, 0xd8, 0x9f, 0x49, 0xa7, 0xb0, 0xa6, 0xb9, 0xd5, 0x32, 0x76, 0x32, 0x7a, 0x3e, 0x2f, 0x36,
+	0x17, 0x7b, 0xfa, 0x95, 0x97, 0xa8, 0x57, 0x9e, 0x6a, 0xf0, 0x94, 0x8d, 0xa7, 0xc6, 0x65, 0xcf,
+	0x7b, 0x37, 0x20, 0x5d, 0xe3, 0x71, 0x8e, 0xd5, 0xcd, 0x23, 0x2e, 0xe0, 0xea, 0xd7, 0x12, 0xbf,
+	0x13, 0xf4, 0x62, 0x31, 0x74, 0x8c, 0x10, 0xfe, 0xb1, 0xd4, 0xfd, 0xf5, 0x93, 0x9d, 0x7f, 0xb6,
+	0x99, 0x9a, 0x6b, 0xef, 0x12, 0xfe, 0x1c, 0x88, 0xbb, 0xb8, 0x7e, 0x97, 0x20, 0x15, 0xcb, 0xf2,
+	0x79, 0x7d, 0x80, 0xee, 0x4b, 0xcf, 0x71, 0xc3, 0x65, 0xcf, 0x3c, 0xdb, 0x4c, 0x9d, 0xda, 0xa2,
+	0xc2, 0x88, 0xcb, 0x51, 0x07, 0x25, 0x10, 0xeb, 0x6b, 0x98, 0x58, 0x37, 0x42, 0xc5, 0x70, 0x08,
+	0x80, 0xb0, 0x61, 0xfd, 0x0a, 0x18, 0xe0, 0x33, 0x4b, 0x05, 0xd5, 0x82, 0x23, 0x2d, 0xb6, 0xe0,
+	0x6e, 0x5a, 0x80, 0xdd, 0x15, 0x3a, 0xbf, 0x12, 0x28, 0x94, 0x54, 0x9c, 0xb3, 0x1c, 0xbe, 0xcb,
+	0xae, 0x4a, 0xc3, 0x6e, 0x6a, 0x2d, 0x01, 0x27, 0x23, 0x52, 0x53, 0x9c, 0x48, 0x19, 0x79, 0x79,
+	0x5a, 0x2e, 0x13, 0xbb, 0x82, 0x09, 0xfa, 0x08, 0xfa, 0x0d, 0x3e, 0xe6, 0xd5, 0xb3, 0xf0, 0x74,
+	0x33, 0xb5, 0x87, 0x55, 0x8f, 0x58, 0xe9, 0xa2, 0x7c, 0xfc, 0x5d, 0xc3, 0x59, 0x9a, 0xf8, 0x0f,
+	0xb2, 0xf4, 0x41, 0x02, 0x66, 0xb7, 0xe0, 0x14, 0x3f, 0x24, 0x97, 0x61, 0x30, 0x10, 0x12, 0x91,
+	0xc0, 0xed, 0x62, 0xc2, 0xf3, 0x78, 0x77, 0x63, 0x64, 0x5e, 0x90, 0x6c, 0xfe, 0x22, 0x01, 0x13,
+	0x1d, 0xb8, 0x82, 0x8f, 0x30, 0x41, 0x79, 0x10, 0x89, 0xec, 0x67, 0xc8, 0xe2, 0xd3, 0xcd, 0xd4,
+	0x10, 0xcb, 0x10, 0x7f, 0xa9, 0x8b, 0x14, 0xa9, 0xef, 0xfb, 0x22, 0xe4, 0xc8, 0xc3, 0x04, 0xcc,
+	0x6d, 0xc5, 0x31, 0x2f, 0x73, 0x92, 0x3c, 0x16, 0x5f, 0xbd, 0x4d, 0xb7, 0x7a, 0xd0, 0x1d, 0x2f,
+	0xc2, 0x37, 0xd0, 0x27, 0x22, 0xa1, 0xdb, 0x70, 0x7d, 0x89, 0xe3, 0x35, 0xf3, 0xf3, 0x3e, 0xe8,
+	0xa3, 0x3e, 0x40, 0xdf, 0x48, 0xd0, 0x2f, 0x9e, 0xbc, 0xe8, 0x70, 0x5d, 0x51, 0x54, 0x63, 0x2a,
+	0xa7, 0x62, 0xd7, 0xd9, 0x19, 0xea, 0xf5, 0x9a, 0x3e, 0x0e, 0x7d, 0xf4, 0x70, 0x34, 0x48, 0x21,
+	0x8a, 0xc0, 0xc8, 0x7b, 0x82, 0x9f, 0x33, 0xf7, 0x9f, 0xfc, 0xf1, 0x59, 0x62, 0x0c, 0x1d, 0xa7,
+	0xbf, 0x10, 0x34, 0xb5, 0xdf, 0x8e, 0xb6, 0xde, 0xf0, 0x48, 0xde, 0x40, 0x5f, 0x49, 0x30, 0xe0,
+	0x37, 0x7c, 0x28, 0x8e, 0x88, 0x78, 0xe9, 0xc8, 0x4a, 0x3c, 0x80, 0x53, 0xbd, 0x5c, 0xd3, 0xd3,
+	0x82, 0x6a, 0x88, 0x9a, 0x23, 0x0f, 0x85, 0x26, 0x18, 0xd9, 0x11, 0x74, 0x20, 0x86, 0x2c, 0xfa,
+	0x4d, 0x82, 0x61, 0xbd, 0x58, 0x6c, 0x6a, 0xc7, 0xd0, 0x58, 0x88, 0x48, 0x5c, 0x67, 0x28, 0x8f,
+	0xb7, 0x07, 0x72, 0xe6, 0x85, 0x9a, 0x9e, 0x15, 0xcc, 0x59, 0xbb, 0xa9, 0xe8, 0xc5, 0xa2, 0xe2,
+	0x19, 0x28, 0xbe, 0x85, 0xe2, 0x99, 0xc8, 0xec, 0x3d, 0x1e, 0xb5, 0x14, 0xa3, 0x88, 0xfe, 0x36,
+	0x42, 0x7b, 0xc5, 0x1f, 0x25, 0x40, 0x01, 0x0e, 0xd9, 0xea, 0x25, 0x5c, 0x45, 0x47, 0x5b, 0xd1,
+	0x14, 0x5a, 0x8e, 0xb5, 0x06, 0x71, 0x1d, 0xd7, 0x6a, 0xfa, 0xac, 0xd0, 0xf1, 0xbf, 0x30, 0xd1,
+	0x52, 0x1e, 0xcb, 0xfb, 0xa2, 0xd8, 0x33, 0xe2, 0x32, 0x4a, 0x36, 0x13, 0xd7, 0xd6, 0xd7, 0x70,
+	0x75, 0x03, 0x7d, 0x9b, 0x80, 0x91, 0xd8, 0x86, 0x0e, 0x69, 0x21, 0x6e, 0xed, 0x9a, 0x48, 0x79,
+	0xaa, 0x73, 0x03, 0x2e, 0xec, 0xb1, 0x54, 0xd3, 0xef, 0x09, 0x65, 0xf3, 0x4c, 0xc4, 0xdd, 0xba,
+	0x95, 0x22, 0xd2, 0x46, 0x61, 0x5d, 0xa2, 0xb2, 0x5a, 0x55, 0x0c, 0xc5, 0xb4, 0x2a, 0xb8, 0xa4,
+	0x34, 0xe4, 0xbc, 0x7c, 0xa6, 0x5b, 0x4b, 0xe6, 0xa2, 0x63, 0x48, 0x0d, 0xba, 0x88, 0xd9, 0x84,
+	0xea, 0xea, 0x89, 0x04, 0x7d, 0xb4, 0xcf, 0x44, 0xa3, 0x21, 0x9d, 0x8d, 0x3d, 0xab, 0x7c, 0x30,
+	0x7a, 0x91, 0x0b, 0xfe, 0x54, 0xaa, 0xe9, 0xab, 0x42, 0x30, 0x7b, 0x4d, 0x06, 0xa9, 0xc6, 0x6a,
+	0x9c, 0xd8, 0x02, 0x98, 0xc9, 0x3a, 0x8a, 0x8e, 0x34, 0xcb, 0x0a, 0xab, 0xfa, 0x45, 0x82, 0xbd,
+	0x4d, 0xbd, 0x2a, 0x52, 0x5b, 0x35, 0xb2, 0x5c, 0xe8, 0xd1, 0x96, 0x18, 0xae, 0xd7, 0xac, 0xe9,
+	0xaf, 0x09, 0xb9, 0x49, 0xa6, 0x80, 0xff, 0xc8, 0xa7, 0xd4, 0xdb, 0x61, 0x79, 0x24, 0x6e, 0x85,
+	0x09, 0x51, 0x91, 0x12, 0x14, 0xd2, 0xfc, 0x3b, 0x21, 0x7a, 0x28, 0xc1, 0x60, 0xf0, 0xbb, 0x05,
+	0x85, 0x6b, 0x2b, 0xb2, 0xd9, 0x96, 0x8f, 0xb7, 0x41, 0x71, 0x21, 0xe9, 0xe8, 0x4c, 0x69, 0xf8,
+	0xa9, 0xd3, 0x83, 0x6b, 0xeb, 0x9e, 0x4f, 0xbf, 0x97, 0x20, 0x19, 0xd7, 0xbe, 0xa2, 0x4c, 0xcb,
+	0xf3, 0x9a, 0x5a, 0x70, 0x59, 0xeb, 0x18, 0xcf, 0x99, 0x4e, 0x51, 0xa6, 0x69, 0x34, 0xde, 0x92,
+	0xa9, 0xa3, 0xad, 0xf3, 0x2e, 0x7c, 0x03, 0x7d, 0x2e, 0x01, 0x6a, 0x6e, 0x32, 0x51, 0xf8, 0x9e,
+	0x8d, 0xed, 0x96, 0xe5, 0xff, 0x77, 0x80, 0x6c, 0xed, 0x47, 0xa3, 0xe8, 0xa5, 0x63, 0x90, 0x21,
+	0xfa, 0x41, 0x82, 0xd1, 0x16, 0xef, 0x0e, 0x94, 0x8e, 0x71, 0x4d, 0x44, 0x1b, 0x29, 0x9f, 0xec,
+	0x08, 0xcb, 0x49, 0x9e, 0xa1, 0x24, 0x67, 0xd1, 0x74, 0x8c, 0x0b, 0x03, 0x8f, 0x1c, 0x6d, 0xbd,
+	0xde, 0x9f, 0x6e, 0xa0, 0xbf, 0x25, 0x18, 0xeb, 0xf4, 0xfd, 0x7f, 0xba, 0x65, 0x68, 0x63, 0xed,
+	0xe4, 0xd7, 0xbb, 0xb3, 0xf3, 0xe5, 0x5d, 0xa4, 0xf2, 0x74, 0x74, 0xbe, 0x9d, 0x3c, 0xb6, 0xc5,
+	0xca, 0xaa, 0x3f, 0xc6, 0xc4, 0x57, 0x8b, 0xc9, 0x06, 0xfa, 0x53, 0x82, 0x13, 0x1d, 0x36, 0xc3,
+	0xa7, 0xb6, 0xc4, 0x59, 0x98, 0xc9, 0xe7, 0xba, 0x32, 0xf3, 0x95, 0x2e, 0x52, 0xa5, 0xe7, 0xd1,
+	0xb9, 0xce, 0x95, 0x8a, 0xe6, 0x5a, 0x5b, 0x17, 0xa3, 0x0d, 0xf4, 0x93, 0x04, 0xa9, 0x76, 0xef,
+	0xf5, 0x4c, 0xbb, 0x1a, 0x08, 0xe2, 0xe5, 0xd3, 0x5b, 0xc3, 0xfb, 0x92, 0x66, 0xa8, 0xa4, 0x09,
+	0x94, 0x6e, 0x51, 0x40, 0x21, 0x59, 0xd9, 0x7b, 0x35, 0x7d, 0x01, 0xf5, 0xcd, 0xf4, 0x4c, 0x67,
+	0xa6, 0xd2, 0x92, 0x44, 0xe6, 0x61, 0x97, 0x99, 0x5b, 0xbe, 0x30, 0x69, 0x1a, 0x2e, 0xbe, 0x6b,
+	0x54, 0xd1, 0xf8, 0x4d, 0xd7, 0x2d, 0x3b, 0x67, 0x35, 0xad, 0xe1, 0xb9, 0x7c, 0xc9, 0x22, 0xc6,
+	0x05, 0x9b, 0x60, 0xcd, 0xc1, 0x6b, 0x86, 0xa5, 0x2d, 0x5d, 0x7d, 0x77, 0x31, 0x77, 0xfd, 0xfd,
+	0xd9, 0x76, 0x08, 0x8d, 0xfe, 0xbf, 0x66, 0xd2, 0xc4, 0x25, 0x9f, 0xda, 0xea, 0x76, 0x3a, 0x37,
+	0xfb, 0x4f, 0x00, 0x00, 0x00, 0xff, 0xff, 0x74, 0xfc, 0x29, 0xfe, 0x08, 0x1b, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -746,6 +1421,20 @@ type QueryClient interface {
 	Votes(ctx context.Context, in *QueryVotesRequest, opts ...grpc.CallOption) (*QueryVotesResponse, error)
 	// NetworkProperties returns network properties
 	NetworkProperties(ctx context.Context, in *NetworkPropertiesRequest, opts ...grpc.CallOption) (*NetworkPropertiesResponse, error)
+	// Query identity record by id
+	IdentityRecord(ctx context.Context, in *QueryIdentityRecordRequest, opts ...grpc.CallOption) (*QueryIdentityRecordResponse, error)
+	// Query identity records by records creator
+	IdentityRecordsByAddress(ctx context.Context, in *QueryIdentityRecordsByAddressRequest, opts ...grpc.CallOption) (*QueryIdentityRecordsByAddressResponse, error)
+	// Query all identity records
+	AllIdentityRecords(ctx context.Context, in *QueryAllIdentityRecordsRequest, opts ...grpc.CallOption) (*QueryAllIdentityRecordsResponse, error)
+	// Query identity record verify request by id
+	IdentityRecordVerifyRequest(ctx context.Context, in *QueryIdentityVerifyRecordRequest, opts ...grpc.CallOption) (*QueryIdentityVerifyRecordResponse, error)
+	// Query identity records verify requests by requester
+	IdentityRecordVerifyRequestsByRequester(ctx context.Context, in *QueryIdentityRecordVerifyRequestsByRequester, opts ...grpc.CallOption) (*QueryIdentityRecordVerifyRequestsByRequesterResponse, error)
+	// Query identity records verify requests by approver
+	IdentityRecordVerifyRequestsByApprover(ctx context.Context, in *QueryIdentityRecordVerifyRequestsByApprover, opts ...grpc.CallOption) (*QueryIdentityRecordVerifyRequestsByApproverResponse, error)
+	// Query all identity records verify requests
+	AllIdentityRecordVerifyRequests(ctx context.Context, in *QueryAllIdentityRecordVerifyRequests, opts ...grpc.CallOption) (*QueryAllIdentityRecordVerifyRequestsResponse, error)
 }
 
 type queryClient struct {
@@ -819,6 +1508,69 @@ func (c *queryClient) NetworkProperties(ctx context.Context, in *NetworkProperti
 	return out, nil
 }
 
+func (c *queryClient) IdentityRecord(ctx context.Context, in *QueryIdentityRecordRequest, opts ...grpc.CallOption) (*QueryIdentityRecordResponse, error) {
+	out := new(QueryIdentityRecordResponse)
+	err := c.cc.Invoke(ctx, "/kira.gov.Query/IdentityRecord", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) IdentityRecordsByAddress(ctx context.Context, in *QueryIdentityRecordsByAddressRequest, opts ...grpc.CallOption) (*QueryIdentityRecordsByAddressResponse, error) {
+	out := new(QueryIdentityRecordsByAddressResponse)
+	err := c.cc.Invoke(ctx, "/kira.gov.Query/IdentityRecordsByAddress", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) AllIdentityRecords(ctx context.Context, in *QueryAllIdentityRecordsRequest, opts ...grpc.CallOption) (*QueryAllIdentityRecordsResponse, error) {
+	out := new(QueryAllIdentityRecordsResponse)
+	err := c.cc.Invoke(ctx, "/kira.gov.Query/AllIdentityRecords", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) IdentityRecordVerifyRequest(ctx context.Context, in *QueryIdentityVerifyRecordRequest, opts ...grpc.CallOption) (*QueryIdentityVerifyRecordResponse, error) {
+	out := new(QueryIdentityVerifyRecordResponse)
+	err := c.cc.Invoke(ctx, "/kira.gov.Query/IdentityRecordVerifyRequest", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) IdentityRecordVerifyRequestsByRequester(ctx context.Context, in *QueryIdentityRecordVerifyRequestsByRequester, opts ...grpc.CallOption) (*QueryIdentityRecordVerifyRequestsByRequesterResponse, error) {
+	out := new(QueryIdentityRecordVerifyRequestsByRequesterResponse)
+	err := c.cc.Invoke(ctx, "/kira.gov.Query/IdentityRecordVerifyRequestsByRequester", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) IdentityRecordVerifyRequestsByApprover(ctx context.Context, in *QueryIdentityRecordVerifyRequestsByApprover, opts ...grpc.CallOption) (*QueryIdentityRecordVerifyRequestsByApproverResponse, error) {
+	out := new(QueryIdentityRecordVerifyRequestsByApproverResponse)
+	err := c.cc.Invoke(ctx, "/kira.gov.Query/IdentityRecordVerifyRequestsByApprover", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) AllIdentityRecordVerifyRequests(ctx context.Context, in *QueryAllIdentityRecordVerifyRequests, opts ...grpc.CallOption) (*QueryAllIdentityRecordVerifyRequestsResponse, error) {
+	out := new(QueryAllIdentityRecordVerifyRequestsResponse)
+	err := c.cc.Invoke(ctx, "/kira.gov.Query/AllIdentityRecordVerifyRequests", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 type QueryServer interface {
 	// Proposal queries proposal details based on ProposalID.
@@ -835,6 +1587,20 @@ type QueryServer interface {
 	Votes(context.Context, *QueryVotesRequest) (*QueryVotesResponse, error)
 	// NetworkProperties returns network properties
 	NetworkProperties(context.Context, *NetworkPropertiesRequest) (*NetworkPropertiesResponse, error)
+	// Query identity record by id
+	IdentityRecord(context.Context, *QueryIdentityRecordRequest) (*QueryIdentityRecordResponse, error)
+	// Query identity records by records creator
+	IdentityRecordsByAddress(context.Context, *QueryIdentityRecordsByAddressRequest) (*QueryIdentityRecordsByAddressResponse, error)
+	// Query all identity records
+	AllIdentityRecords(context.Context, *QueryAllIdentityRecordsRequest) (*QueryAllIdentityRecordsResponse, error)
+	// Query identity record verify request by id
+	IdentityRecordVerifyRequest(context.Context, *QueryIdentityVerifyRecordRequest) (*QueryIdentityVerifyRecordResponse, error)
+	// Query identity records verify requests by requester
+	IdentityRecordVerifyRequestsByRequester(context.Context, *QueryIdentityRecordVerifyRequestsByRequester) (*QueryIdentityRecordVerifyRequestsByRequesterResponse, error)
+	// Query identity records verify requests by approver
+	IdentityRecordVerifyRequestsByApprover(context.Context, *QueryIdentityRecordVerifyRequestsByApprover) (*QueryIdentityRecordVerifyRequestsByApproverResponse, error)
+	// Query all identity records verify requests
+	AllIdentityRecordVerifyRequests(context.Context, *QueryAllIdentityRecordVerifyRequests) (*QueryAllIdentityRecordVerifyRequestsResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -861,6 +1627,27 @@ func (*UnimplementedQueryServer) Votes(ctx context.Context, req *QueryVotesReque
 }
 func (*UnimplementedQueryServer) NetworkProperties(ctx context.Context, req *NetworkPropertiesRequest) (*NetworkPropertiesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method NetworkProperties not implemented")
+}
+func (*UnimplementedQueryServer) IdentityRecord(ctx context.Context, req *QueryIdentityRecordRequest) (*QueryIdentityRecordResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IdentityRecord not implemented")
+}
+func (*UnimplementedQueryServer) IdentityRecordsByAddress(ctx context.Context, req *QueryIdentityRecordsByAddressRequest) (*QueryIdentityRecordsByAddressResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IdentityRecordsByAddress not implemented")
+}
+func (*UnimplementedQueryServer) AllIdentityRecords(ctx context.Context, req *QueryAllIdentityRecordsRequest) (*QueryAllIdentityRecordsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AllIdentityRecords not implemented")
+}
+func (*UnimplementedQueryServer) IdentityRecordVerifyRequest(ctx context.Context, req *QueryIdentityVerifyRecordRequest) (*QueryIdentityVerifyRecordResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IdentityRecordVerifyRequest not implemented")
+}
+func (*UnimplementedQueryServer) IdentityRecordVerifyRequestsByRequester(ctx context.Context, req *QueryIdentityRecordVerifyRequestsByRequester) (*QueryIdentityRecordVerifyRequestsByRequesterResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IdentityRecordVerifyRequestsByRequester not implemented")
+}
+func (*UnimplementedQueryServer) IdentityRecordVerifyRequestsByApprover(ctx context.Context, req *QueryIdentityRecordVerifyRequestsByApprover) (*QueryIdentityRecordVerifyRequestsByApproverResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IdentityRecordVerifyRequestsByApprover not implemented")
+}
+func (*UnimplementedQueryServer) AllIdentityRecordVerifyRequests(ctx context.Context, req *QueryAllIdentityRecordVerifyRequests) (*QueryAllIdentityRecordVerifyRequestsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AllIdentityRecordVerifyRequests not implemented")
 }
 
 func RegisterQueryServer(s *grpc.Server, srv QueryServer) {
@@ -993,6 +1780,132 @@ func _Query_NetworkProperties_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_IdentityRecord_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryIdentityRecordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).IdentityRecord(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.gov.Query/IdentityRecord",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).IdentityRecord(ctx, req.(*QueryIdentityRecordRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_IdentityRecordsByAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryIdentityRecordsByAddressRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).IdentityRecordsByAddress(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.gov.Query/IdentityRecordsByAddress",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).IdentityRecordsByAddress(ctx, req.(*QueryIdentityRecordsByAddressRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_AllIdentityRecords_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryAllIdentityRecordsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).AllIdentityRecords(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.gov.Query/AllIdentityRecords",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).AllIdentityRecords(ctx, req.(*QueryAllIdentityRecordsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_IdentityRecordVerifyRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryIdentityVerifyRecordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).IdentityRecordVerifyRequest(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.gov.Query/IdentityRecordVerifyRequest",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).IdentityRecordVerifyRequest(ctx, req.(*QueryIdentityVerifyRecordRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_IdentityRecordVerifyRequestsByRequester_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryIdentityRecordVerifyRequestsByRequester)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).IdentityRecordVerifyRequestsByRequester(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.gov.Query/IdentityRecordVerifyRequestsByRequester",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).IdentityRecordVerifyRequestsByRequester(ctx, req.(*QueryIdentityRecordVerifyRequestsByRequester))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_IdentityRecordVerifyRequestsByApprover_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryIdentityRecordVerifyRequestsByApprover)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).IdentityRecordVerifyRequestsByApprover(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.gov.Query/IdentityRecordVerifyRequestsByApprover",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).IdentityRecordVerifyRequestsByApprover(ctx, req.(*QueryIdentityRecordVerifyRequestsByApprover))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_AllIdentityRecordVerifyRequests_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryAllIdentityRecordVerifyRequests)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).AllIdentityRecordVerifyRequests(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.gov.Query/AllIdentityRecordVerifyRequests",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).AllIdentityRecordVerifyRequests(ctx, req.(*QueryAllIdentityRecordVerifyRequests))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "kira.gov.Query",
 	HandlerType: (*QueryServer)(nil),
@@ -1024,6 +1937,34 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "NetworkProperties",
 			Handler:    _Query_NetworkProperties_Handler,
+		},
+		{
+			MethodName: "IdentityRecord",
+			Handler:    _Query_IdentityRecord_Handler,
+		},
+		{
+			MethodName: "IdentityRecordsByAddress",
+			Handler:    _Query_IdentityRecordsByAddress_Handler,
+		},
+		{
+			MethodName: "AllIdentityRecords",
+			Handler:    _Query_AllIdentityRecords_Handler,
+		},
+		{
+			MethodName: "IdentityRecordVerifyRequest",
+			Handler:    _Query_IdentityRecordVerifyRequest_Handler,
+		},
+		{
+			MethodName: "IdentityRecordVerifyRequestsByRequester",
+			Handler:    _Query_IdentityRecordVerifyRequestsByRequester_Handler,
+		},
+		{
+			MethodName: "IdentityRecordVerifyRequestsByApprover",
+			Handler:    _Query_IdentityRecordVerifyRequestsByApprover_Handler,
+		},
+		{
+			MethodName: "AllIdentityRecordVerifyRequests",
+			Handler:    _Query_AllIdentityRecordVerifyRequests_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
