@@ -12,7 +12,14 @@ import (
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	bank "github.com/cosmos/cosmos-sdk/x/bank/types"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 )
+
+func (suite *AnteTestSuite) SetBalance(addr sdk.AccAddress, coin sdk.Coin) {
+	coins := sdk.Coins{coin}
+	suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
+	suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, addr, coins)
+}
 
 // Test that simulate transaction process execution fee correctly on ante handler step
 func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
@@ -36,12 +43,13 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 	// Same data for every test cases
 	accounts := suite.CreateTestAccounts(5)
 
-	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[0].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
-	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[1].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
-	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[2].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
-	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[3].acc.GetAddress(), sdk.NewInt64Coin("ukex", 1))
-	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[4].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
-	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[4].acc.GetAddress(), sdk.NewInt64Coin("ubtc", 10000))
+	suite.SetBalance(accounts[0].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
+	suite.SetBalance(accounts[1].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
+	suite.SetBalance(accounts[2].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
+	suite.SetBalance(accounts[3].acc.GetAddress(), sdk.NewInt64Coin("ukex", 1))
+	suite.SetBalance(accounts[4].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
+	suite.SetBalance(accounts[4].acc.GetAddress(), sdk.NewInt64Coin("ubtc", 10000))
+
 	defaultFee := sdk.NewCoins(sdk.NewInt64Coin("ukex", 100))
 	gasLimit := testdata.NewTestGasLimit()
 	privs := []cryptotypes.PrivKey{accounts[0].priv, accounts[1].priv, accounts[2].priv, accounts[3].priv, accounts[4].priv}
@@ -348,14 +356,14 @@ func (suite *AnteTestSuite) TestValidateFeeRangeDecorator() {
 	// Same data for every test cases
 	accounts := suite.CreateTestAccounts(5)
 
-	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[0].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
-	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[0].acc.GetAddress(), sdk.NewInt64Coin("frozen", 10000))
-	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[0].acc.GetAddress(), sdk.NewInt64Coin("nofeetoken", 10000))
-	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[1].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
-	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[2].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
-	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[3].acc.GetAddress(), sdk.NewInt64Coin("ukex", 1))
-	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[4].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
-	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[4].acc.GetAddress(), sdk.NewInt64Coin("ubtc", 10000))
+	suite.SetBalance(accounts[0].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
+	suite.SetBalance(accounts[0].acc.GetAddress(), sdk.NewInt64Coin("frozen", 10000))
+	suite.SetBalance(accounts[0].acc.GetAddress(), sdk.NewInt64Coin("nofeetoken", 10000))
+	suite.SetBalance(accounts[1].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
+	suite.SetBalance(accounts[2].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
+	suite.SetBalance(accounts[3].acc.GetAddress(), sdk.NewInt64Coin("ukex", 1))
+	suite.SetBalance(accounts[4].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
+	suite.SetBalance(accounts[4].acc.GetAddress(), sdk.NewInt64Coin("ubtc", 10000))
 	gasLimit := testdata.NewTestGasLimit()
 	privs := []cryptotypes.PrivKey{accounts[0].priv, accounts[1].priv, accounts[2].priv, accounts[3].priv, accounts[4].priv}
 	accNums := []uint64{0, 1, 2, 3, 4}
@@ -505,14 +513,14 @@ func (suite *AnteTestSuite) TestPoorNetworkManagementDecorator() {
 	// Same data for every test cases
 	accounts := suite.CreateTestAccounts(5)
 
-	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[0].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
-	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[0].acc.GetAddress(), sdk.NewInt64Coin("frozen", 10000))
-	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[0].acc.GetAddress(), sdk.NewInt64Coin("nofeetoken", 10000))
-	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[1].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
-	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[2].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
-	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[3].acc.GetAddress(), sdk.NewInt64Coin("ukex", 1))
-	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[4].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
-	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[4].acc.GetAddress(), sdk.NewInt64Coin("ubtc", 10000))
+	suite.SetBalance(accounts[0].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
+	suite.SetBalance(accounts[0].acc.GetAddress(), sdk.NewInt64Coin("frozen", 10000))
+	suite.SetBalance(accounts[0].acc.GetAddress(), sdk.NewInt64Coin("nofeetoken", 10000))
+	suite.SetBalance(accounts[1].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
+	suite.SetBalance(accounts[2].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
+	suite.SetBalance(accounts[3].acc.GetAddress(), sdk.NewInt64Coin("ukex", 1))
+	suite.SetBalance(accounts[4].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
+	suite.SetBalance(accounts[4].acc.GetAddress(), sdk.NewInt64Coin("ubtc", 10000))
 	gasLimit := testdata.NewTestGasLimit()
 	privs := []cryptotypes.PrivKey{accounts[0].priv, accounts[1].priv, accounts[2].priv, accounts[3].priv, accounts[4].priv}
 	accNums := []uint64{0, 1, 2, 3, 4}
@@ -594,15 +602,15 @@ func (suite *AnteTestSuite) TestBlackWhiteTokensCheckDecorator() {
 	// Same data for every test cases
 	accounts := suite.CreateTestAccounts(5)
 
-	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[0].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
-	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[0].acc.GetAddress(), sdk.NewInt64Coin("frozen", 10000))
-	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[0].acc.GetAddress(), sdk.NewInt64Coin("nofeetoken", 10000))
-	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[1].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
-	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[2].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
-	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[3].acc.GetAddress(), sdk.NewInt64Coin("ukex", 1))
-	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[4].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
-	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[4].acc.GetAddress(), sdk.NewInt64Coin("ubtc", 10000))
-	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[4].acc.GetAddress(), sdk.NewInt64Coin("frozen", 10000))
+	suite.SetBalance(accounts[0].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
+	suite.SetBalance(accounts[0].acc.GetAddress(), sdk.NewInt64Coin("frozen", 10000))
+	suite.SetBalance(accounts[0].acc.GetAddress(), sdk.NewInt64Coin("nofeetoken", 10000))
+	suite.SetBalance(accounts[1].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
+	suite.SetBalance(accounts[2].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
+	suite.SetBalance(accounts[3].acc.GetAddress(), sdk.NewInt64Coin("ukex", 1))
+	suite.SetBalance(accounts[4].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
+	suite.SetBalance(accounts[4].acc.GetAddress(), sdk.NewInt64Coin("ubtc", 10000))
+	suite.SetBalance(accounts[4].acc.GetAddress(), sdk.NewInt64Coin("frozen", 10000))
 	gasLimit := testdata.NewTestGasLimit()
 	privs := []cryptotypes.PrivKey{accounts[0].priv, accounts[1].priv, accounts[2].priv, accounts[3].priv, accounts[4].priv}
 	accNums := []uint64{0, 1, 2, 3, 4}
@@ -672,15 +680,15 @@ func (suite *AnteTestSuite) TestExecutionFeeRegistrationDecorator() {
 	// Same data for every test cases
 	accounts := suite.CreateTestAccounts(5)
 
-	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[0].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
-	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[0].acc.GetAddress(), sdk.NewInt64Coin("frozen", 10000))
-	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[0].acc.GetAddress(), sdk.NewInt64Coin("nofeetoken", 10000))
-	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[1].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
-	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[2].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
-	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[3].acc.GetAddress(), sdk.NewInt64Coin("ukex", 1))
-	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[4].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
-	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[4].acc.GetAddress(), sdk.NewInt64Coin("ubtc", 10000))
-	suite.app.BankKeeper.SetBalance(suite.ctx, accounts[4].acc.GetAddress(), sdk.NewInt64Coin("frozen", 10000))
+	suite.SetBalance(accounts[0].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
+	suite.SetBalance(accounts[0].acc.GetAddress(), sdk.NewInt64Coin("frozen", 10000))
+	suite.SetBalance(accounts[0].acc.GetAddress(), sdk.NewInt64Coin("nofeetoken", 10000))
+	suite.SetBalance(accounts[1].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
+	suite.SetBalance(accounts[2].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
+	suite.SetBalance(accounts[3].acc.GetAddress(), sdk.NewInt64Coin("ukex", 1))
+	suite.SetBalance(accounts[4].acc.GetAddress(), sdk.NewInt64Coin("ukex", 10000))
+	suite.SetBalance(accounts[4].acc.GetAddress(), sdk.NewInt64Coin("ubtc", 10000))
+	suite.SetBalance(accounts[4].acc.GetAddress(), sdk.NewInt64Coin("frozen", 10000))
 	gasLimit := testdata.NewTestGasLimit()
 	privs := []cryptotypes.PrivKey{accounts[0].priv, accounts[1].priv, accounts[2].priv, accounts[3].priv, accounts[4].priv}
 	accNums := []uint64{0, 1, 2, 3, 4}

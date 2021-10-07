@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.1.22] - 04.10.2021
+
+- Upgrade Cosmos SDK to v0.44.1 from v0.42.9
+
 ## [v0.1.21.28] - 04.10.2021
 
 - Resolve signing info iterator

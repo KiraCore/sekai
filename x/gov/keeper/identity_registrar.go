@@ -94,7 +94,7 @@ func (k Keeper) SetIdentityRecord(ctx sdk.Context, record types.IdentityRecord) 
 	record.Key = FormalizeIdentityRecordKey(record.Key)
 
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixIdentityRecord)
-	bz := k.cdc.MustMarshalBinaryBare(&record)
+	bz := k.cdc.MustMarshal(&record)
 	prefixStore.Set(sdk.Uint64ToBigEndian(record.Id), bz)
 
 	// connect address + key to id
@@ -111,7 +111,7 @@ func (k Keeper) GetIdentityRecordById(ctx sdk.Context, recordId uint64) *types.I
 	if bz == nil {
 		return nil
 	}
-	k.cdc.MustUnmarshalBinaryBare(bz, &record)
+	k.cdc.MustUnmarshal(bz, &record)
 	return &record
 }
 
@@ -245,7 +245,7 @@ func (k Keeper) GetAllIdentityRecords(ctx sdk.Context) []types.IdentityRecord {
 
 	for ; iterator.Valid(); iterator.Next() {
 		record := types.IdentityRecord{}
-		k.cdc.MustUnmarshalBinaryBare(iterator.Value(), &record)
+		k.cdc.MustUnmarshal(iterator.Value(), &record)
 		records = append(records, record)
 	}
 
@@ -314,7 +314,7 @@ func (k Keeper) GetIdRecordsByAddress(ctx sdk.Context, address sdk.AccAddress) [
 // SetIdentityRecordsVerifyRequest saves identity verify request into the store
 func (k Keeper) SetIdentityRecordsVerifyRequest(ctx sdk.Context, request types.IdentityRecordsVerify) {
 	requestId := request.Id
-	bz := k.cdc.MustMarshalBinaryBare(&request)
+	bz := k.cdc.MustMarshal(&request)
 	prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixIdRecordVerifyRequest).Set(sdk.Uint64ToBigEndian(requestId), bz)
 	prefix.NewStore(
 		ctx.KVStore(k.storeKey),
@@ -375,7 +375,7 @@ func (k Keeper) GetIdRecordsVerifyRequest(ctx sdk.Context, requestId uint64) *ty
 	if bz == nil {
 		return nil
 	}
-	k.cdc.MustUnmarshalBinaryBare(bz, &request)
+	k.cdc.MustUnmarshal(bz, &request)
 	return &request
 }
 
@@ -516,7 +516,7 @@ func (k Keeper) GetAllIdRecordsVerifyRequests(ctx sdk.Context) []types.IdentityR
 
 	for ; iterator.Valid(); iterator.Next() {
 		request := types.IdentityRecordsVerify{}
-		k.cdc.MustUnmarshalBinaryBare(iterator.Value(), &request)
+		k.cdc.MustUnmarshal(iterator.Value(), &request)
 		requests = append(requests, request)
 	}
 

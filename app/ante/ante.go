@@ -3,6 +3,7 @@ package ante
 import (
 	"fmt"
 
+	kiratypes "github.com/KiraCore/sekai/types"
 	feeprocessingkeeper "github.com/KiraCore/sekai/x/feeprocessing/keeper"
 	feeprocessingtypes "github.com/KiraCore/sekai/x/feeprocessing/types"
 	customgovkeeper "github.com/KiraCore/sekai/x/gov/keeper"
@@ -26,7 +27,7 @@ func NewAnteHandler(
 	tk tokenskeeper.Keeper,
 	fk feeprocessingkeeper.Keeper,
 	ak keeper.AccountKeeper,
-	bankKeeper types.BankKeeper,
+	bk types.BankKeeper,
 	sigGasConsumer ante.SignatureVerificationGasConsumer,
 	signModeHandler signing.SignModeHandler,
 ) sdk.AnteHandler {
@@ -43,7 +44,7 @@ func NewAnteHandler(
 		NewValidateFeeRangeDecorator(sk, cgk, tk, ak),
 		ante.NewSetPubKeyDecorator(ak), // SetPubKeyDecorator must be called before all signature verification decorators
 		ante.NewValidateSigCountDecorator(ak),
-		ante.NewDeductFeeDecorator(ak, fk),
+		ante.NewDeductFeeDecorator(ak, bk, nil),
 		// poor network management decorator
 		NewPoorNetworkManagementDecorator(ak, cgk, sk),
 		NewBlackWhiteTokensCheckDecorator(cgk, sk, tk),
@@ -108,7 +109,7 @@ func (svd ValidateFeeRangeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 	// execution fee should be prepaid
 	executionMaxFee := uint64(0)
 	for _, msg := range feeTx.GetMsgs() {
-		fee := svd.cgk.GetExecutionFee(ctx, msg.Type())
+		fee := svd.cgk.GetExecutionFee(ctx, kiratypes.MsgType(msg))
 		if fee != nil { // execution fee exist
 			maxFee := fee.FailureFee
 			if fee.ExecutionFee > maxFee {
@@ -154,7 +155,7 @@ func (sgcd ExecutionFeeRegistrationDecorator) AnteHandle(ctx sdk.Context, tx sdk
 
 	// execution fee consume gas
 	for _, msg := range sigTx.GetMsgs() {
-		fee := sgcd.cgk.GetExecutionFee(ctx, msg.Type())
+		fee := sgcd.cgk.GetExecutionFee(ctx, kiratypes.MsgType(msg))
 		if fee != nil { // execution fee exist
 			sgcd.fk.AddExecutionStart(ctx, msg)
 		}
@@ -202,7 +203,7 @@ func (pnmd PoorNetworkManagementDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx
 	// handle messages on poor network
 	pnmsgs := pnmd.cgk.GetPoorNetworkMessages(ctx)
 	for _, msg := range sigTx.GetMsgs() {
-		if msg.Type() == bank.TypeMsgSend {
+		if kiratypes.MsgType(msg) == bank.TypeMsgSend {
 			// on poor network, we introduce POOR_NETWORK_MAX_BANK_TX_SEND network property to limit transaction send amount
 			msg := msg.(*bank.MsgSend)
 			if len(msg.Amount) > 1 || msg.Amount[0].Denom != pnmd.csk.BondDenom(ctx) {
@@ -214,7 +215,7 @@ func (pnmd PoorNetworkManagementDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx
 			// TODO: we could do restriction to send only when target account does not exist on chain yet for more restriction
 			return next(ctx, tx, simulate)
 		}
-		if findString(pnmsgs.Messages, msg.Type()) >= 0 {
+		if findString(pnmsgs.Messages, kiratypes.MsgType(msg)) >= 0 {
 			return next(ctx, tx, simulate)
 		}
 		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "invalid transaction type on poor network")
@@ -250,7 +251,7 @@ func (pnmd BlackWhiteTokensCheckDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx
 	tokensBlackWhite := pnmd.tk.GetTokenBlackWhites(ctx)
 	properties := pnmd.cgk.GetNetworkProperties(ctx)
 	for _, msg := range sigTx.GetMsgs() {
-		if msg.Type() == bank.TypeMsgSend {
+		if kiratypes.MsgType(msg) == bank.TypeMsgSend {
 			msg := msg.(*bank.MsgSend)
 			for _, amt := range msg.Amount {
 				if tokensBlackWhite.IsFrozen(amt.Denom, bondDenom, properties.EnableTokenBlacklist, properties.EnableTokenWhitelist) {

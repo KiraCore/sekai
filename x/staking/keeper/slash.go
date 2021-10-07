@@ -157,7 +157,7 @@ func (k Keeper) GetValidatorJailInfo(ctx sdk.Context, valAddress sdk.ValAddress)
 	}
 
 	var info stakingtypes.ValidatorJailInfo
-	k.cdc.MustUnmarshalBinaryBare(bz, &info)
+	k.cdc.MustUnmarshal(bz, &info)
 
 	return info, true
 }
@@ -192,7 +192,7 @@ func (k Keeper) setJailValidatorInfo(ctx sdk.Context, validator stakingtypes.Val
 		Time: ctx.BlockTime(),
 	}
 
-	bz := k.cdc.MustMarshalBinaryBare(jailInfo)
+	bz := k.cdc.MustMarshal(jailInfo)
 
 	store := ctx.KVStore(k.storeKey)
 	store.Set(GetValidatorJailInfoKey(validator.ValKey), bz)

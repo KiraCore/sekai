@@ -64,7 +64,7 @@ func (k Keeper) CreateAndSaveProposalWithContent(ctx sdk.Context, title, descrip
 func (k Keeper) SaveProposal(ctx sdk.Context, proposal types.Proposal) {
 	store := ctx.KVStore(k.storeKey)
 
-	bz := k.cdc.MustMarshalBinaryBare(&proposal)
+	bz := k.cdc.MustMarshal(&proposal)
 	store.Set(GetProposalKey(proposal.ProposalId), bz)
 }
 
@@ -77,7 +77,7 @@ func (k Keeper) GetProposal(ctx sdk.Context, proposalID uint64) (types.Proposal,
 	}
 
 	var prop types.Proposal
-	k.cdc.MustUnmarshalBinaryBare(bz, &prop)
+	k.cdc.MustUnmarshal(bz, &prop)
 
 	return prop, true
 }
@@ -90,7 +90,7 @@ func (k Keeper) GetProposals(ctx sdk.Context) ([]types.Proposal, error) {
 	for ; iterator.Valid(); iterator.Next() {
 		var proposal types.Proposal
 		bz := iterator.Value()
-		k.cdc.MustUnmarshalBinaryBare(bz, &proposal)
+		k.cdc.MustUnmarshal(bz, &proposal)
 		proposals = append(proposals, proposal)
 	}
 
@@ -99,7 +99,7 @@ func (k Keeper) GetProposals(ctx sdk.Context) ([]types.Proposal, error) {
 
 func (k Keeper) SaveVote(ctx sdk.Context, vote types.Vote) {
 	store := ctx.KVStore(k.storeKey)
-	bz := k.cdc.MustMarshalBinaryBare(&vote)
+	bz := k.cdc.MustMarshal(&vote)
 	store.Set(VoteKey(vote.ProposalId, vote.Voter), bz)
 }
 
@@ -112,7 +112,7 @@ func (k Keeper) GetVote(ctx sdk.Context, proposalID uint64, address sdk.AccAddre
 	}
 
 	var vote types.Vote
-	k.cdc.MustUnmarshalBinaryBare(bz, &vote)
+	k.cdc.MustUnmarshal(bz, &vote)
 
 	return vote, true
 }
@@ -125,7 +125,7 @@ func (k Keeper) GetVotes(ctx sdk.Context) []types.Vote {
 	for ; iterator.Valid(); iterator.Next() {
 		var vote types.Vote
 		bz := iterator.Value()
-		k.cdc.MustUnmarshalBinaryBare(bz, &vote)
+		k.cdc.MustUnmarshal(bz, &vote)
 		votes = append(votes, vote)
 	}
 
@@ -144,7 +144,7 @@ func (k Keeper) GetProposalVotes(ctx sdk.Context, proposalID uint64) types.Votes
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
 		var vote types.Vote
-		k.cdc.MustUnmarshalBinaryBare(iterator.Value(), &vote)
+		k.cdc.MustUnmarshal(iterator.Value(), &vote)
 		votes = append(votes, vote)
 	}
 

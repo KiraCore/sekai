@@ -10,6 +10,7 @@ import (
 	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
@@ -18,7 +19,7 @@ func TestNewKeeper_SenderCoinsHistory(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10))
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
 	addr := addrs[0]
 
 	savedFees := app.FeeProcessingKeeper.GetSenderCoinsHistory(ctx, addr)
@@ -35,7 +36,7 @@ func TestNewKeeper_Executions(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10))
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
 	addr := addrs[0]
 
 	// initial executions listing is empty
@@ -81,15 +82,19 @@ func TestNewKeeper_SendCoinsFromAccountToModule(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10))
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
 	addr := addrs[0]
-	app.BankKeeper.SetBalance(ctx, addr, sdk.NewInt64Coin("ukex", 10000))
+
+	initialBalance := app.BankKeeper.GetBalance(ctx, addr, "ukex")
+	coins := sdk.Coins{sdk.NewInt64Coin("ukex", 10000)}
+	app.BankKeeper.MintCoins(ctx, minttypes.ModuleName, coins)
+	app.BankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, addr, coins)
 
 	fees := sdk.Coins{sdk.NewInt64Coin("ukex", 100)}
 	app.FeeProcessingKeeper.SendCoinsFromAccountToModule(ctx, addr, authtypes.FeeCollectorName, fees)
 
 	balance := app.BankKeeper.GetBalance(ctx, addr, "ukex")
-	require.True(t, balance.Amount.Int64() == 10000-100)
+	require.Equal(t, balance.Amount.Int64(), initialBalance.Amount.Int64()+int64(10000-100))
 
 	feeCollectorAcc := app.AccountKeeper.GetModuleAccount(ctx, authtypes.FeeCollectorName)
 	balance = app.BankKeeper.GetBalance(ctx, feeCollectorAcc.GetAddress(), "ukex")
@@ -103,9 +108,13 @@ func TestNewKeeper_SendCoinsFromModuleToAccount(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10))
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
 	addr := addrs[0]
-	app.BankKeeper.SetBalance(ctx, addr, sdk.NewInt64Coin("ukex", 10000))
+	initialBalance := app.BankKeeper.GetBalance(ctx, addr, "ukex")
+
+	coins := sdk.Coins{sdk.NewInt64Coin("ukex", 10000)}
+	app.BankKeeper.MintCoins(ctx, minttypes.ModuleName, coins)
+	app.BankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, addr, coins)
 
 	fees := sdk.Coins{sdk.NewInt64Coin("ukex", 100)}
 	returnFees := sdk.Coins{sdk.NewInt64Coin("ukex", 10)}
@@ -113,7 +122,7 @@ func TestNewKeeper_SendCoinsFromModuleToAccount(t *testing.T) {
 	app.FeeProcessingKeeper.SendCoinsFromModuleToAccount(ctx, authtypes.FeeCollectorName, addr, returnFees)
 
 	balance := app.BankKeeper.GetBalance(ctx, addr, "ukex")
-	require.True(t, balance.Amount.Int64() == 10000-100+10)
+	require.True(t, balance.Amount.Int64() == initialBalance.Amount.Int64()+(10000-100+10))
 
 	feeCollectorAcc := app.AccountKeeper.GetModuleAccount(ctx, authtypes.FeeCollectorName)
 	balance = app.BankKeeper.GetBalance(ctx, feeCollectorAcc.GetAddress(), "ukex")
@@ -127,13 +136,20 @@ func TestNewKeeper_ProcessExecutionFeeReturn(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	addrs := simapp.AddTestAddrsIncremental(app, ctx, 3, sdk.TokensFromConsensusPower(10))
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 3, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
 	addr := addrs[0]
 	addr2 := addrs[1]
 	addr3 := addrs[2]
-	app.BankKeeper.SetBalance(ctx, addr, sdk.NewInt64Coin("ukex", 10000))
-	app.BankKeeper.SetBalance(ctx, addr2, sdk.NewInt64Coin("ukex", 10000))
-	app.BankKeeper.SetBalance(ctx, addr3, sdk.NewInt64Coin("ukex", 10000))
+
+	initialBalance := app.BankKeeper.GetBalance(ctx, addr2, "ukex")
+
+	coins := sdk.Coins{sdk.NewInt64Coin("ukex", 10000)}
+	app.BankKeeper.MintCoins(ctx, minttypes.ModuleName, coins)
+	app.BankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, addr, coins)
+	app.BankKeeper.MintCoins(ctx, minttypes.ModuleName, coins)
+	app.BankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, addr2, coins)
+	app.BankKeeper.MintCoins(ctx, minttypes.ModuleName, coins)
+	app.BankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, addr3, coins)
 
 	app.CustomGovKeeper.SetExecutionFee(ctx, &govtypes.ExecutionFee{
 		Name:              kiratypes.MsgTypeUpsertTokenRate,
@@ -181,9 +197,7 @@ func TestNewKeeper_ProcessExecutionFeeReturn(t *testing.T) {
 	app.FeeProcessingKeeper.ProcessExecutionFeeReturn(ctx)
 
 	balance = app.BankKeeper.GetBalance(ctx, addr2, "ukex")
-	t.Log("AAA", balance)
-	require.True(t, balance.Amount.Int64() == 10000-1000) // success fee
+	require.Equal(t, balance.Amount.Int64(), initialBalance.Amount.Int64()+(10000-1000)) // success fee
 	balance = app.BankKeeper.GetBalance(ctx, addr3, "ukex")
-	t.Log("BBB", balance)
-	require.True(t, balance.Amount.Int64() == 10000-100) // failure fee
+	require.Equal(t, balance.Amount.Int64(), initialBalance.Amount.Int64()+(10000-100)) // failure fee
 }

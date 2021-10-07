@@ -172,7 +172,6 @@ message QueryProposalsRequest {
   // voter defines the voter address for the proposals.
   string voter = 1;
   cosmos.base.query.v1beta1.PageRequest pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
-  bool reverse = 4;
 }
 
 // QueryProposalsResponse is the response type for the Query/Proposals RPC

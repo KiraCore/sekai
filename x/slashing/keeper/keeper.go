@@ -18,14 +18,14 @@ import (
 // Keeper of the slashing store
 type Keeper struct {
 	storeKey   sdk.StoreKey
-	cdc        codec.BinaryMarshaler
+	cdc        codec.BinaryCodec
 	sk         types.StakingKeeper
 	gk         types.GovKeeper
 	paramspace types.ParamSubspace
 }
 
 // NewKeeper creates a slashing keeper
-func NewKeeper(cdc codec.BinaryMarshaler, key sdk.StoreKey, sk types.StakingKeeper, gk types.GovKeeper, paramspace types.ParamSubspace) Keeper {
+func NewKeeper(cdc codec.BinaryCodec, key sdk.StoreKey, sk types.StakingKeeper, gk types.GovKeeper, paramspace types.ParamSubspace) Keeper {
 	// set KeyTable if it has not already been set
 	if !paramspace.HasKeyTable() {
 		paramspace = paramspace.WithKeyTable(types.ParamKeyTable())
@@ -46,38 +46,26 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 }
 
 // AddPubkey sets a address-pubkey relation
-func (k Keeper) AddPubkey(ctx sdk.Context, pubkey cryptotypes.PubKey) {
-	addr := pubkey.Address()
-
-	pkStr, err := sdk.Bech32ifyPubKey(sdk.Bech32PubKeyTypeConsPub, pubkey)
+func (k Keeper) AddPubkey(ctx sdk.Context, pubkey cryptotypes.PubKey) error {
+	bz, err := k.cdc.MarshalInterface(pubkey)
 	if err != nil {
-		panic(fmt.Errorf("error while setting address-pubkey relation: %s", addr))
+		return err
 	}
-
-	k.setAddrPubkeyRelation(ctx, addr, pkStr)
+	store := ctx.KVStore(k.storeKey)
+	key := types.AddrPubkeyRelationKey(pubkey.Address())
+	store.Set(key, bz)
+	return nil
 }
 
-// GetPubkey returns the pubkey from the address-pubkey relation
-func (k Keeper) GetPubkey(ctx sdk.Context, address crypto.Address) (cryptotypes.PubKey, error) {
+// GetPubkey returns the pubkey from the adddress-pubkey relation
+func (k Keeper) GetPubkey(ctx sdk.Context, a cryptotypes.Address) (cryptotypes.PubKey, error) {
 	store := ctx.KVStore(k.storeKey)
-
-	relationKey := types.AddrPubkeyRelationKey(address)
-	if !store.Has(relationKey) {
-		return nil, fmt.Errorf("relation key for address %s not found", sdk.ConsAddress(address))
+	bz := store.Get(types.AddrPubkeyRelationKey(a))
+	if bz == nil {
+		return nil, fmt.Errorf("address %s not found", sdk.ConsAddress(a))
 	}
-
-	var pubkey gogotypes.StringValue
-	err := k.cdc.UnmarshalBinaryBare(store.Get(relationKey), &pubkey)
-	if err != nil {
-		return nil, fmt.Errorf("address %s not found", sdk.ConsAddress(address))
-	}
-
-	pkStr, err := sdk.GetPubKeyFromBech32(sdk.Bech32PubKeyTypeConsPub, pubkey.Value)
-	if err != nil {
-		return pkStr, err
-	}
-
-	return pkStr, nil
+	var pk cryptotypes.PubKey
+	return pk, k.cdc.UnmarshalInterface(bz, &pk)
 }
 
 // Inactivate attempts to set validator's status to Inactive from Active.
@@ -99,7 +87,7 @@ func (k Keeper) Inactivate(ctx sdk.Context, consAddr sdk.ConsAddress) {
 func (k Keeper) setAddrPubkeyRelation(ctx sdk.Context, addr crypto.Address, pubkey string) {
 	store := ctx.KVStore(k.storeKey)
 
-	bz := k.cdc.MustMarshalBinaryBare(&gogotypes.StringValue{Value: pubkey})
+	bz := k.cdc.MustMarshal(&gogotypes.StringValue{Value: pubkey})
 	store.Set(types.AddrPubkeyRelationKey(addr), bz)
 }
 

@@ -130,12 +130,12 @@ func TestKeeper_GetPendingValidators(t *testing.T) {
 }
 
 func createValidators(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context, accNum int) (validators []types.Validator) {
-	addrs := simapp.AddTestAddrsIncremental(app, ctx, accNum, sdk.TokensFromConsensusPower(10))
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, accNum, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
 
 	for _, addr := range addrs {
 		valAddr := sdk.ValAddress(addr)
-		pubKey, err := sdk.GetPubKeyFromBech32(sdk.Bech32PubKeyTypeConsPub, "kiravalconspub1zcjduepqylc5k8r40azmw0xt7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsq4xg7em")
-		require.NoError(t, err)
+		pubkeys := simapp.CreateTestPubKeys(1)
+		pubKey := pubkeys[0]
 
 		validator, err := types.NewValidator(
 			valAddr,
