@@ -41,8 +41,7 @@ func GetTxClaimValidatorCmd() *cobra.Command {
 				valPubKey cryptotypes.PubKey
 			)
 			if valPubKeyString, _ := cmd.Flags().GetString(cli.FlagPubKey); valPubKeyString != "" {
-				valPubKey, err = types.GetPubKeyFromBech32(types.Bech32PubKeyTypeConsPub, valPubKeyString)
-				if err != nil {
+				if err := clientCtx.Codec.UnmarshalInterfaceJSON([]byte(valPubKeyString), &valPubKey); err != nil {
 					return errors.Wrap(err, "failed to get consensus node public key")
 				}
 			} else {

@@ -1397,10 +1397,7 @@ func (m *IdentityRecord) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthIdentityRegistrar
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthIdentityRegistrar
 			}
 			if (iNdEx + skippy) > l {
@@ -1514,10 +1511,7 @@ func (m *IdentityInfoEntry) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthIdentityRegistrar
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthIdentityRegistrar
 			}
 			if (iNdEx + skippy) > l {
@@ -1635,10 +1629,7 @@ func (m *MsgRegisterIdentityRecords) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthIdentityRegistrar
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthIdentityRegistrar
 			}
 			if (iNdEx + skippy) > l {
@@ -1754,10 +1745,7 @@ func (m *MsgDeleteIdentityRecords) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthIdentityRegistrar
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthIdentityRegistrar
 			}
 			if (iNdEx + skippy) > l {
@@ -2033,10 +2021,7 @@ func (m *IdentityRecordsVerify) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthIdentityRegistrar
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthIdentityRegistrar
 			}
 			if (iNdEx + skippy) > l {
@@ -2264,10 +2249,7 @@ func (m *MsgRequestIdentityRecordsVerify) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthIdentityRegistrar
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthIdentityRegistrar
 			}
 			if (iNdEx + skippy) > l {
@@ -2390,10 +2372,7 @@ func (m *MsgHandleIdentityRecordsVerifyRequest) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthIdentityRegistrar
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthIdentityRegistrar
 			}
 			if (iNdEx + skippy) > l {
@@ -2496,10 +2475,7 @@ func (m *MsgCancelIdentityRecordsVerifyRequest) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthIdentityRegistrar
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthIdentityRegistrar
 			}
 			if (iNdEx + skippy) > l {

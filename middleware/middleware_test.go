@@ -5,16 +5,17 @@ import (
 	"os"
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/stretchr/testify/require"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-
 	"github.com/KiraCore/sekai/app"
 	simapp "github.com/KiraCore/sekai/app"
 	"github.com/KiraCore/sekai/middleware"
 	"github.com/KiraCore/sekai/types"
+	kiratypes "github.com/KiraCore/sekai/types"
 	"github.com/KiraCore/sekai/x/gov"
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
+	"github.com/stretchr/testify/require"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
 
 func TestMain(m *testing.M) {
@@ -64,8 +65,11 @@ func Test_Middleware_SetNetworkProperties(t *testing.T) {
 			app := simapp.Setup(false)
 			ctx := app.NewContext(false, tmproto.Header{})
 
-			app.BankKeeper.SetBalance(ctx, sudoAddr, sdk.NewInt64Coin("ukex", 100000))
-			app.BankKeeper.SetBalance(ctx, changeFeeAddr, sdk.NewInt64Coin("ukex", 100000))
+			coins := sdk.Coins{sdk.NewInt64Coin("ukex", 100000)}
+			app.BankKeeper.MintCoins(ctx, minttypes.ModuleName, coins)
+			app.BankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, sudoAddr, coins)
+			app.BankKeeper.MintCoins(ctx, minttypes.ModuleName, coins)
+			app.BankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, changeFeeAddr, coins)
 
 			// First we set Role Sudo to proposer Actor
 			proposerActor := govtypes.NewDefaultActor(sudoAddr)
@@ -108,7 +112,7 @@ func Test_Middleware_SetNetworkProperties(t *testing.T) {
 				executions := app.FeeProcessingKeeper.GetExecutionsStatus(ctx)
 				successExist := false
 				for _, exec := range executions {
-					if exec.Success == true && exec.MsgType == tt.msg.Type() && bytes.Equal(exec.FeePayer, tt.msg.GetSigners()[0]) {
+					if exec.Success == true && exec.MsgType == kiratypes.MsgType(tt.msg) && bytes.Equal(exec.FeePayer, tt.msg.GetSigners()[0]) {
 						successExist = true
 						break
 					}

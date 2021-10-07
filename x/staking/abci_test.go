@@ -5,7 +5,7 @@ import (
 
 	"github.com/KiraCore/sekai/x/staking"
 
-	"github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
@@ -17,12 +17,12 @@ func TestItUpdatesTheValidatorSetBasedOnPendingValidators(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, types.TokensFromConsensusPower(10))
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
 	addr1 := addrs[0]
-	valAddr1 := types.ValAddress(addr1)
+	valAddr1 := sdk.ValAddress(addr1)
 
-	pubKey, err := types.GetPubKeyFromBech32(types.Bech32PubKeyTypeConsPub, "kiravalconspub1zcjduepqylc5k8r40azmw0xt7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsq4xg7em")
-	require.NoError(t, err)
+	pubkeys := simapp.CreateTestPubKeys(1)
+	pubKey := pubkeys[0]
 
 	validator1, err := stakingtypes.NewValidator(
 		valAddr1,
@@ -68,25 +68,25 @@ func TestItDoesNotReturnUpdatesIfThereIsNoPending(t *testing.T) {
 func TestItRemovesFromTheValidatorSetWhenInRemovingQueue(t *testing.T) {
 	tests := []struct {
 		name        string
-		prepareFunc func(app *simapp.SekaiApp, ctx types.Context, validator stakingtypes.Validator)
+		prepareFunc func(app *simapp.SekaiApp, ctx sdk.Context, validator stakingtypes.Validator)
 	}{
 		{
 			name: "remove because it is paused",
-			prepareFunc: func(app *simapp.SekaiApp, ctx types.Context, validator stakingtypes.Validator) {
+			prepareFunc: func(app *simapp.SekaiApp, ctx sdk.Context, validator stakingtypes.Validator) {
 				err := app.CustomStakingKeeper.Pause(ctx, validator.ValKey)
 				require.NoError(t, err)
 			},
 		},
 		{
 			name: "remove because it is inactive",
-			prepareFunc: func(app *simapp.SekaiApp, ctx types.Context, validator stakingtypes.Validator) {
+			prepareFunc: func(app *simapp.SekaiApp, ctx sdk.Context, validator stakingtypes.Validator) {
 				err := app.CustomStakingKeeper.Inactivate(ctx, validator.ValKey)
 				require.NoError(t, err)
 			},
 		},
 		{
 			name: "remove because it is jailed",
-			prepareFunc: func(app *simapp.SekaiApp, ctx types.Context, validator stakingtypes.Validator) {
+			prepareFunc: func(app *simapp.SekaiApp, ctx sdk.Context, validator stakingtypes.Validator) {
 				err := app.CustomStakingKeeper.Jail(ctx, validator.ValKey)
 				require.NoError(t, err)
 			},
@@ -99,12 +99,12 @@ func TestItRemovesFromTheValidatorSetWhenInRemovingQueue(t *testing.T) {
 			app := simapp.Setup(false)
 			ctx := app.NewContext(false, tmproto.Header{})
 
-			addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, types.TokensFromConsensusPower(10))
+			addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
 			addr1 := addrs[0]
-			valAddr1 := types.ValAddress(addr1)
+			valAddr1 := sdk.ValAddress(addr1)
 
-			pubKey, err := types.GetPubKeyFromBech32(types.Bech32PubKeyTypeConsPub, "kiravalconspub1zcjduepqylc5k8r40azmw0xt7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsq4xg7em")
-			require.NoError(t, err)
+			pubkeys := simapp.CreateTestPubKeys(1)
+			pubKey := pubkeys[0]
 
 			validator1, err := stakingtypes.NewValidator(
 				valAddr1,
@@ -127,47 +127,47 @@ func TestItRemovesFromTheValidatorSetWhenInRemovingQueue(t *testing.T) {
 func TestItIncludesItBackToValidatorSetOnceReactivatingIt(t *testing.T) {
 	tests := []struct {
 		name                string
-		prepareDeactivation func(app *simapp.SekaiApp, ctx types.Context, validator stakingtypes.Validator)
-		prepareFunc         func(app *simapp.SekaiApp, ctx types.Context, validator stakingtypes.Validator)
+		prepareDeactivation func(app *simapp.SekaiApp, ctx sdk.Context, validator stakingtypes.Validator)
+		prepareFunc         func(app *simapp.SekaiApp, ctx sdk.Context, validator stakingtypes.Validator)
 	}{
 		{
 			name: "reactivating from paused",
-			prepareDeactivation: func(app *simapp.SekaiApp, ctx types.Context, validator stakingtypes.Validator) {
+			prepareDeactivation: func(app *simapp.SekaiApp, ctx sdk.Context, validator stakingtypes.Validator) {
 				err := app.CustomStakingKeeper.Pause(ctx, validator.ValKey)
 				require.NoError(t, err)
 
 				// We end the block so the validator is paused
 				staking.EndBlocker(ctx, app.CustomStakingKeeper)
 			},
-			prepareFunc: func(app *simapp.SekaiApp, ctx types.Context, validator stakingtypes.Validator) {
+			prepareFunc: func(app *simapp.SekaiApp, ctx sdk.Context, validator stakingtypes.Validator) {
 				err := app.CustomStakingKeeper.Unpause(ctx, validator.ValKey)
 				require.NoError(t, err)
 			},
 		},
 		{
 			name: "reactivating from inactive",
-			prepareDeactivation: func(app *simapp.SekaiApp, ctx types.Context, validator stakingtypes.Validator) {
+			prepareDeactivation: func(app *simapp.SekaiApp, ctx sdk.Context, validator stakingtypes.Validator) {
 				err := app.CustomStakingKeeper.Inactivate(ctx, validator.ValKey)
 				require.NoError(t, err)
 
 				// We end the block so the validator is paused
 				staking.EndBlocker(ctx, app.CustomStakingKeeper)
 			},
-			prepareFunc: func(app *simapp.SekaiApp, ctx types.Context, validator stakingtypes.Validator) {
+			prepareFunc: func(app *simapp.SekaiApp, ctx sdk.Context, validator stakingtypes.Validator) {
 				err := app.CustomStakingKeeper.Activate(ctx, validator.ValKey)
 				require.NoError(t, err)
 			},
 		},
 		{
 			name: "reactivating from jailed",
-			prepareDeactivation: func(app *simapp.SekaiApp, ctx types.Context, validator stakingtypes.Validator) {
+			prepareDeactivation: func(app *simapp.SekaiApp, ctx sdk.Context, validator stakingtypes.Validator) {
 				err := app.CustomStakingKeeper.Jail(ctx, validator.ValKey)
 				require.NoError(t, err)
 
 				// We end the block so the validator is paused
 				staking.EndBlocker(ctx, app.CustomStakingKeeper)
 			},
-			prepareFunc: func(app *simapp.SekaiApp, ctx types.Context, validator stakingtypes.Validator) {
+			prepareFunc: func(app *simapp.SekaiApp, ctx sdk.Context, validator stakingtypes.Validator) {
 				err := app.CustomStakingKeeper.Unjail(ctx, validator.ValKey)
 				require.NoError(t, err)
 				err = app.CustomStakingKeeper.Activate(ctx, validator.ValKey)
@@ -182,12 +182,12 @@ func TestItIncludesItBackToValidatorSetOnceReactivatingIt(t *testing.T) {
 			app := simapp.Setup(false)
 			ctx := app.NewContext(false, tmproto.Header{})
 
-			addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, types.TokensFromConsensusPower(10))
+			addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
 			addr1 := addrs[0]
-			valAddr1 := types.ValAddress(addr1)
+			valAddr1 := sdk.ValAddress(addr1)
 
-			pubKey, err := types.GetPubKeyFromBech32(types.Bech32PubKeyTypeConsPub, "kiravalconspub1zcjduepqylc5k8r40azmw0xt7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsq4xg7em")
-			require.NoError(t, err)
+			pubkeys := simapp.CreateTestPubKeys(1)
+			pubKey := pubkeys[0]
 
 			validator1, err := stakingtypes.NewValidator(
 				valAddr1,

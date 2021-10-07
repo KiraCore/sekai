@@ -1504,10 +1504,7 @@ func (m *Vote) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthProposal
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthProposal
 			}
 			if (iNdEx + skippy) > l {
@@ -1629,10 +1626,7 @@ func (m *MsgVoteProposal) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthProposal
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthProposal
 			}
 			if (iNdEx + skippy) > l {
@@ -1989,10 +1983,7 @@ func (m *Proposal) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthProposal
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthProposal
 			}
 			if (iNdEx + skippy) > l {
@@ -2095,10 +2086,7 @@ func (m *AssignPermissionProposal) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthProposal
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthProposal
 			}
 			if (iNdEx + skippy) > l {
@@ -2200,10 +2188,7 @@ func (m *SetNetworkPropertyProposal) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthProposal
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthProposal
 			}
 			if (iNdEx + skippy) > l {
@@ -2400,10 +2385,7 @@ func (m *UpsertDataRegistryProposal) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthProposal
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthProposal
 			}
 			if (iNdEx + skippy) > l {
@@ -2485,10 +2467,7 @@ func (m *SetPoorNetworkMessagesProposal) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthProposal
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthProposal
 			}
 			if (iNdEx + skippy) > l {
@@ -2695,10 +2674,7 @@ func (m *CreateRoleProposal) Unmarshal(dAtA []byte) error {
 			if err != nil {
 				return err
 			}
-			if skippy < 0 {
-				return ErrInvalidLengthProposal
-			}
-			if (iNdEx + skippy) < 0 {
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
 				return ErrInvalidLengthProposal
 			}
 			if (iNdEx + skippy) > l {

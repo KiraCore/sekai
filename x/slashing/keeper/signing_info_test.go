@@ -15,7 +15,7 @@ import (
 func TestGetSetValidatorSigningInfo(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
-	addrDels := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(200))
+	addrDels := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(200, sdk.DefaultPowerReduction))
 
 	info, found := app.CustomSlashingKeeper.GetValidatorSigningInfo(ctx, sdk.ConsAddress(addrDels[0]))
 	require.False(t, found)
@@ -40,7 +40,7 @@ func TestGetSetValidatorSigningInfo(t *testing.T) {
 func TestJailUntil(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
-	addrDels := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(200))
+	addrDels := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(200, sdk.DefaultPowerReduction))
 
 	require.Panics(t, func() { app.CustomSlashingKeeper.JailUntil(ctx, sdk.ConsAddress(addrDels[0]), time.Now()) })
 

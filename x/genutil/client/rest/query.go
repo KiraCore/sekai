@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/KiraCore/sekai/x/genutil/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/rest"
-	"github.com/KiraCore/sekai/x/genutil/types"
 )
 
 // QueryGenesisTxs writes the genesis transactions to the response if no error
@@ -32,7 +32,7 @@ func QueryGenesisTxs(clientCtx client.Context, w http.ResponseWriter) {
 		return
 	}
 
-	genState := types.GetGenesisStateFromAppState(clientCtx.JSONMarshaler, appState)
+	genState := types.GetGenesisStateFromAppState(clientCtx.JSONCodec, appState)
 	genTxs := make([]sdk.Tx, len(genState.GenTxs))
 	for i, tx := range genState.GenTxs {
 		err := clientCtx.LegacyAmino.UnmarshalJSON(tx, &genTxs[i])

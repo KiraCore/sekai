@@ -74,7 +74,7 @@ func (s IntegrationTestSuite) TestRolePermissions_QueryCommand_DefaultRolePerms(
 	s.Require().NoError(err)
 
 	var perms types.Permissions
-	val.ClientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &perms)
+	val.ClientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &perms)
 	s.Require().True(perms.IsWhitelisted(types.PermClaimValidator))
 }
 
@@ -105,7 +105,7 @@ func (s IntegrationTestSuite) TestClaimCouncilor_HappyPath() {
 	s.Require().NoError(err)
 
 	var councilorByAddress types.Councilor
-	err = val.ClientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &councilorByAddress)
+	err = val.ClientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &councilorByAddress)
 	s.Require().NoError(err)
 	s.Require().Equal(val.Moniker, councilorByAddress.Moniker)
 	s.Require().Equal(val.Address, councilorByAddress.Address)
@@ -118,7 +118,7 @@ func (s IntegrationTestSuite) TestClaimCouncilor_HappyPath() {
 	s.Require().NoError(err)
 
 	var councilorByMoniker types.Councilor
-	err = val.ClientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &councilorByMoniker)
+	err = val.ClientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &councilorByMoniker)
 	s.Require().NoError(err)
 	s.Require().Equal(val.Moniker, councilorByMoniker.Moniker)
 	s.Require().Equal(val.Address, councilorByMoniker.Address)

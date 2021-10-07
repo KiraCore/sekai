@@ -8,7 +8,7 @@ import (
 // SavePoorNetworkMessages store poor network messages by gov or by genesis
 func (k Keeper) SavePoorNetworkMessages(ctx sdk.Context, allows *types.AllowedMessages) {
 	store := ctx.KVStore(k.storeKey)
-	bz := k.cdc.MustMarshalBinaryBare(allows)
+	bz := k.cdc.MustMarshal(allows)
 	store.Set(PoorNetworkMessagesPrefix, bz)
 }
 
@@ -22,7 +22,7 @@ func (k Keeper) GetPoorNetworkMessages(ctx sdk.Context) *types.AllowedMessages {
 		return &am
 	}
 
-	k.cdc.MustUnmarshalBinaryBare(bz, &am)
+	k.cdc.MustUnmarshal(bz, &am)
 
 	return &am
 }

@@ -5,9 +5,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/stretchr/testify/suite"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-
 	simapp "github.com/KiraCore/sekai/app"
 	customante "github.com/KiraCore/sekai/app/ante"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -20,6 +17,9 @@ import (
 	xauthsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
+	"github.com/stretchr/testify/suite"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
 
 // TestAccount represents an account used in the tests in x/auth/ante.
@@ -83,9 +83,11 @@ func (suite *AnteTestSuite) CreateTestAccounts(numAccs int) []TestAccount {
 		err := acc.SetAccountNumber(uint64(i))
 		suite.Require().NoError(err)
 		suite.app.AccountKeeper.SetAccount(suite.ctx, acc)
-		suite.app.BankKeeper.SetBalances(suite.ctx, addr, sdk.Coins{
+		coins := sdk.Coins{
 			sdk.NewInt64Coin("atom", 10000000),
-		})
+		}
+		suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
+		suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, addr, coins)
 
 		accounts = append(accounts, TestAccount{acc, priv})
 	}

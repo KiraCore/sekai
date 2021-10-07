@@ -37,11 +37,11 @@ func (b AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry
 	types.RegisterInterfaces(registry)
 }
 
-func (b AppModuleBasic) DefaultGenesis(cdc codec.JSONMarshaler) json.RawMessage { // InitGenesis is ignored, no sense in serializing future upgrades
+func (b AppModuleBasic) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage { // InitGenesis is ignored, no sense in serializing future upgrades
 	return cdc.MustMarshalJSON(types.DefaultGenesis())
 }
 
-func (b AppModuleBasic) ValidateGenesis(marshaler codec.JSONMarshaler, config client.TxEncodingConfig, message json.RawMessage) error {
+func (b AppModuleBasic) ValidateGenesis(marshaler codec.JSONCodec, config client.TxEncodingConfig, message json.RawMessage) error {
 	return nil
 }
 
@@ -86,7 +86,7 @@ func (am AppModule) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 
 func (am AppModule) InitGenesis(
 	ctx sdk.Context,
-	cdc codec.JSONMarshaler,
+	cdc codec.JSONCodec,
 	data json.RawMessage,
 ) []abci.ValidatorUpdate {
 	var genesisState types.GenesisState
@@ -103,7 +103,7 @@ func (am AppModule) InitGenesis(
 	return nil
 }
 
-func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONMarshaler) json.RawMessage {
+func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.RawMessage {
 	currentPlan, err := am.upgradeKeeper.GetCurrentPlan(ctx)
 	if err != nil {
 		panic(err)
@@ -119,6 +119,9 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONMarshaler) json
 
 	return cdc.MustMarshalJSON(&genesisState)
 }
+
+// ConsensusVersion implements AppModule/ConsensusVersion.
+func (AppModule) ConsensusVersion() uint64 { return 1 }
 
 func (am AppModule) RegisterInvariants(registry sdk.InvariantRegistry) {}
 

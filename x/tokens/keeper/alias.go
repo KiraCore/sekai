@@ -19,7 +19,7 @@ func (k Keeper) GetTokenAlias(ctx sdk.Context, symbol string) *types.TokenAlias 
 	}
 
 	alias := new(types.TokenAlias)
-	k.cdc.MustUnmarshalBinaryBare(bz, alias)
+	k.cdc.MustUnmarshal(bz, alias)
 
 	return alias
 }
@@ -78,7 +78,7 @@ func (k Keeper) UpsertTokenAlias(ctx sdk.Context, alias types.TokenAlias) error 
 		}
 		store.Set(denomTokenStoreID, []byte(alias.Symbol))
 	}
-	store.Set(tokenAliasStoreID, k.cdc.MustMarshalBinaryBare(&alias))
+	store.Set(tokenAliasStoreID, k.cdc.MustMarshal(&alias))
 	return nil
 }
 
@@ -94,7 +94,7 @@ func (k Keeper) DeleteTokenAlias(ctx sdk.Context, symbol string) error {
 
 	var alias types.TokenAlias
 	bz := store.Get(tokenAliasStoreID)
-	k.cdc.MustUnmarshalBinaryBare(bz, &alias)
+	k.cdc.MustUnmarshal(bz, &alias)
 
 	for _, denom := range alias.Denoms {
 		denomTokenStoreID := append([]byte(PrefixKeyDenomToken), []byte(denom)...)

@@ -9,7 +9,7 @@ import (
 func (k Keeper) SaveNetworkActor(ctx sdk.Context, actor types.NetworkActor) {
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), NetworkActorsPrefix)
 
-	bz := k.cdc.MustMarshalBinaryBare(&actor)
+	bz := k.cdc.MustMarshal(&actor)
 	prefixStore.Set(actor.Address.Bytes(), bz)
 }
 
@@ -22,7 +22,7 @@ func (k Keeper) GetNetworkActorByAddress(ctx sdk.Context, address sdk.AccAddress
 	}
 
 	var na types.NetworkActor
-	k.cdc.MustUnmarshalBinaryBare(bz, &na)
+	k.cdc.MustUnmarshal(bz, &na)
 
 	return na, true
 }
@@ -34,7 +34,7 @@ func (k Keeper) GetNetworkActorFromIterator(iterator sdk.Iterator) *types.Networ
 	}
 
 	var na types.NetworkActor
-	k.cdc.MustUnmarshalBinaryBare(bz, &na)
+	k.cdc.MustUnmarshal(bz, &na)
 
 	return &na
 }
