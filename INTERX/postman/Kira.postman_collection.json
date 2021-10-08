@@ -128,7 +128,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://0.0.0.0:11000/api/withdraws?account=kira1jyd4xpxvquwhgl58zsc7yahjfyyeyvpe43mmy8&type=send&page_size=3&page=2",
+							"raw": "http://0.0.0.0:11000/api/withdraws?account=kira1nr6j3an2nvczg5ypfsra4jw20d8xty73dd2kr4&type=/cosmos.bank.v1beta1.MsgSend",
 							"protocol": "http",
 							"host": [
 								"0",
@@ -144,19 +144,11 @@
 							"query": [
 								{
 									"key": "account",
-									"value": "kira1jyd4xpxvquwhgl58zsc7yahjfyyeyvpe43mmy8"
+									"value": "kira1nr6j3an2nvczg5ypfsra4jw20d8xty73dd2kr4"
 								},
 								{
 									"key": "type",
-									"value": "send"
-								},
-								{
-									"key": "page_size",
-									"value": "3"
-								},
-								{
-									"key": "page",
-									"value": "2"
+									"value": "/cosmos.bank.v1beta1.MsgSend"
 								}
 							]
 						}
@@ -313,7 +305,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://0.0.0.0:11000/api/deposits?account=kira19l9lx50c2py0gzgk8huk8avhx9hcymgv3eyycr&type=Send&page_size=3&page=2",
+							"raw": "http://0.0.0.0:11000/api/deposits?account=kira1nr6j3an2nvczg5ypfsra4jw20d8xty73dd2kr4&type=/cosmos.bank.v1beta1.MsgSend&page_size=1&page=1",
 							"protocol": "http",
 							"host": [
 								"0",
@@ -329,19 +321,19 @@
 							"query": [
 								{
 									"key": "account",
-									"value": "kira19l9lx50c2py0gzgk8huk8avhx9hcymgv3eyycr"
+									"value": "kira1nr6j3an2nvczg5ypfsra4jw20d8xty73dd2kr4"
 								},
 								{
 									"key": "type",
-									"value": "Send"
+									"value": "/cosmos.bank.v1beta1.MsgSend"
 								},
 								{
 									"key": "page_size",
-									"value": "3"
+									"value": "1"
 								},
 								{
 									"key": "page",
-									"value": "2"
+									"value": "1"
 								}
 							]
 						}
@@ -1774,6 +1766,390 @@
 								"kira",
 								"upgrade",
 								"next_plan"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Identity Registrar",
+			"item": [
+				{
+					"name": "Identity Record By ID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://0.0.0.0:11000/api/kira/gov/identity_record/3",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "11000",
+							"path": [
+								"api",
+								"kira",
+								"gov",
+								"identity_record",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Identity records by address",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://0.0.0.0:11000/api/kira/gov/identity_records/kira15vkajsx64qp3qmakj2emr6kqgc22d087rgjaen?keys=website&keys=moniker",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "11000",
+							"path": [
+								"api",
+								"kira",
+								"gov",
+								"identity_records",
+								"kira15vkajsx64qp3qmakj2emr6kqgc22d087rgjaen"
+							],
+							"query": [
+								{
+									"key": "keys",
+									"value": "website"
+								},
+								{
+									"key": "keys",
+									"value": "moniker"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All identity records",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://0.0.0.0:11000/api/kira/gov/all_identity_records?limit=1&offset=1&count_total=true",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "11000",
+							"path": [
+								"api",
+								"kira",
+								"gov",
+								"all_identity_records"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "1"
+								},
+								{
+									"key": "offset",
+									"value": "1"
+								},
+								{
+									"key": "count_total",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Identity record verify request",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://0.0.0.0:11000/api/kira/gov/identity_verify_record/1",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "11000",
+							"path": [
+								"api",
+								"kira",
+								"gov",
+								"identity_verify_record",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Identity record verify request by requester",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://0.0.0.0:11000/api/kira/gov/identity_verify_requests_by_requester/kira15vkajsx64qp3qmakj2emr6kqgc22d087rgjaen?limit=1&offset=0&count_total=true",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "11000",
+							"path": [
+								"api",
+								"kira",
+								"gov",
+								"identity_verify_requests_by_requester",
+								"kira15vkajsx64qp3qmakj2emr6kqgc22d087rgjaen"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "1"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								},
+								{
+									"key": "count_total",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Identity record verify request by approver",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://0.0.0.0:11000/api/kira/gov/identity_verify_requests_by_approver/kira1fcf3v68se3xvqe3v8mc8gxthvhe5xfgu83s5qx?limit=1&offset=0&count_total=true",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "11000",
+							"path": [
+								"api",
+								"kira",
+								"gov",
+								"identity_verify_requests_by_approver",
+								"kira1fcf3v68se3xvqe3v8mc8gxthvhe5xfgu83s5qx"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "1"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								},
+								{
+									"key": "count_total",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All identity record verify requests",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://0.0.0.0:11000/api/kira/gov/all_identity_verify_requests?limit=1&offset=0&count_total=true",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "11000",
+							"path": [
+								"api",
+								"kira",
+								"gov",
+								"all_identity_verify_requests"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "1"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								},
+								{
+									"key": "count_total",
+									"value": "true"
+								}
 							]
 						}
 					},
