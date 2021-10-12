@@ -1,6 +1,6 @@
 # Changelog
 
-## [v0.1.22.2] - 12.10.2021
+## [v0.1.22.3] - 12.10.2021
 
 - Upgrade Cosmos SDK to v0.44.2 for chain halt issue fix
 
