@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.1.22.3] - 12.10.2021
+
+- Upgrade Cosmos SDK to v0.44.2 for chain halt issue fix
+
 ## [v0.1.22.1] - 07.10.2021
 
 - Convert identity registrar address proto fields to string
