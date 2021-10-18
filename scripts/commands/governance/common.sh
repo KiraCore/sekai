@@ -21,3 +21,9 @@ sekaid query customgov voters 1
 sekaid query customgov votes 1
 # querying for a vote of a specific propsal/voter pair
 sekaid query customgov vote 1 $(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid)
+
+# whitelist permission for claim validator
+sekaid keys add lladmin --keyring-backend=test
+sekaid tx bank send validator $(sekaid keys show -a lladmin --keyring-backend=test) 1000000ukex --keyring-backend=test --chain-id=testing --fees=200ukex --yes
+sekaid tx customgov permission whitelist-permission --from=validator --keyring-backend=test --addr=$(sekaid keys show -a lladmin --keyring-backend=test) --permission=30 --chain-id=testing --fees=200ukex --yes
+sekaid tx customgov permission whitelist-permission --from=lladmin --keyring-backend=test --addr=$(sekaid keys show -a lladmin --keyring-backend=test) --permission=2 --chain-id=testing --fees=200ukex --yes
