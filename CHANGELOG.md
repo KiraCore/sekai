@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.1.22.4] - 12.10.2021
+
+- Add assign claim validator permission and allow claim validator action for the new permission
+
 ## [v0.1.22.3] - 12.10.2021
 
 - Upgrade Cosmos SDK to v0.44.2 for chain halt issue fix
@@ -49,7 +53,7 @@
 
 ## [v0.1.21.20] - 19.09.2021
 
-- Add reboot required field for plan 
+- Add reboot required field for plan
 - Restrict the upgrade time to be not less than current block time
 - Always halt if InstateUpgrade is set to false
 
@@ -61,6 +65,7 @@
 - Add scripts examples for plan modifications
 
 ## [v0.1.21.18] - 15.09.2021
+
 - Introduce unique identity required keys into identity registrar
 - Changes to allow string network property
 - Add unique identity keys property into network properties
@@ -69,6 +74,7 @@
 - Modification into SetNetworkPropertyProposal for new properties added
 
 ## [v0.1.21.17] - 14.09.2021
+
 - add addrbook query api on interxd
 - add net_info query api on interxd
 - fix validators query
@@ -79,6 +85,7 @@
 - Resolve Identity registrar requests querying by approver and requester
 - Test on CLI command for requesters and approver and add examples on scripts
 - Remove commission from validator
+
 ## [v0.1.21.15] - 08.09.2021
 
 - Add querying records by filtering keys
@@ -229,7 +236,9 @@
 - add icon to tokens aliases query.
 
 ## [v0.1.19.4] - 06.05.2021
+
 ### Modified
+
 - Refactor jail / unjail logic
 - Modify mischance, MischanceConfidence counter logic
 - Implement additional logic for mischance_confidence to count only when active
@@ -237,105 +246,145 @@
 - Add more status checks for validator transition
 - Accurate error logging
 - Fix tests for uptime counter and validator status transition modification
-- Add more tests to handle modified logic 
+- Add more tests to handle modified logic
+
 ## [v0.1.19.3] - 03.05.2021
+
 ### Added
+
 - [Interx] Network Properties query endpoint
 - [Interx] Pagination in Proposal query
 - [Interx] Network Properties proto description
 
 ### Changed
+
 - [Interx] Refactor validator query to use less call for the performance
 
 ### Fixed
+
 - [Interx] Multiple lint issues
 
 ## [v0.1.19.3] - 03.05.2021
+
 ### Added
+
 - [Interx] Network Properties query endpoint
 - [Interx] Pagination in Proposal query
 - [Interx] Network Properties proto description
 
 ### Changed
+
 - [Interx] Refactor validator query to use less call for the performance
 
 ### Fixed
+
 - [Interx] Multiple lint issues
 
 ## [v0.1.19.2] - 28.04.2021
+
 ### Added
+
 - [Interx] MischanceConfidence in ValidatorQuery
 
 ### Fixed
+
 - [Interx] MissedBlocksCounter in ValidatorQuery
 
 ## [v0.1.19.1] - 26.04.2021
+
 ### Added
+
 - Update validator signing info query based on the latest release
 - Add configurations for node discovery
 
 ## [v0.1.19] - 21.04.2021
+
 ### Added
+
 - New uptime counter
 - Move properties from slashing to gov for uptime properties
 - Proposal to reset whole validators rank
 
 ## [v0.1.18.19] - 22.04.2021
+
 ### Changed
+
 - Upgrade SDK to version 0.42.4
 - Validators cannot use same moniker and is space trimmed.
 
 ## [v0.1.18.17] - 17.04.2021
+
 ### Added
+
 - Implement infinite gas meter decorator
 
 ## [v0.1.18.16] - 09.04.2021
+
 ### Fixed
+
 - Add minimum blocks for voting and enactment time on-chain param and implement logic
 - Modify error messages for slashing module
 
 ## [v0.1.18.14] - 01.04.2021
+
 ### Fixed
+
 - Fixed problem with network stopping on pause.
 - Validator cannot be claimed if already did.
 
 ## [v0.1.18.13] - 02.04.2021
+
 ## Added
+
 - Add event manager to all msg handlers
 - Fix few permission issues
 - Fix tests
 
 ## [v0.1.18.11] - 01.04.2021
+
 ## Added
+
 - Add missing permissions to sudo role
 - Fix vote result unknown state for set poor network messages proposal
 - Split huge README into several shell scripts
 
 ## [v0.1.18.7] - 26.03.2021
+
 ### Added
+
 - Shell script to setup environment variables especially for permissions
 - README for upsert token alias, upsert token rates by governance
 
 ## [v0.1.18.5] - 25.03.2021
+
 ### Fixed
+
 - Some proposals were created in minutes instead of seconds pattern.
 
 ## [v0.1.18.4] - 25.03.2021
+
 ### Added
+
 - Add a field in all proposals to be able to set some description.
+
 ### Fixed
+
 - The actor when it receives a permission becomes active.
 - Fixed problem when voting unjail validator proposal.
 
 ## [v0.1.18.2] - 25.03.2021
+
 ### Changed
+
 - Permission numbers to an organized way
 - Cleanup gov codebase function names and vars
 - Fix SetPoorNetworkMessagesProposal codec registration
 - Add logic for Mischance and ProducedBlocksCounter, MissedBlocksCounter
 
 ## [v0.1.18] - 19.03.2021
+
 ### Added
+
 - Ante handler to check frozen tokens movement
 - Add network properties for ENABLE_TOKEN_WHITELIST / ENABLE_TOKEN_BLACKLIST
 - Add permissions for creation and vote on blacklist and whitelist change of tokens
@@ -344,36 +393,51 @@
 - Network Properties management code modification for boolean properties
 
 ## [v0.1.17.6] - 18.03.2021
+
 ### Added
+
 - Now when the proposal passes it enter ins status Enactment.
 - Add proposal to create a Role.
 - Fix GetTxProposalUpsertDataRegistry and make it appear on client.
+
 ### Fixed
+
 - Fix and clean some CLI commands (proposal upsert token rates, proposal upsert token alias, proposal upsert data registry).
 
 ## [v0.1.17.3] - 03.08.2021
+
 ### Fixed
+
 - Validators query to include mischance.
 
 ### Added
+
 - Tokens alias/rate query.
 - Voters/votes query.
 
 ## [v0.1.17.2] - 03.02.2021
+
 ### Fixed
+
 - Mischance querying CLI command
+
 ### Added
+
 - genutil module to handle validator status
 - CLI utility command to get valcons address from account address
 - ValidatorJoined hook that's derivated from Cosmos SDK's `ValidatorBonded` hook
 
 ## [v0.1.17.1] - 02.25.2021
+
 ### Added
+
 - GRPC query for proposals
 - GRPC query for validators + validator_signing_infos
 
 ## [v0.1.17] - 02.16.2021
+
 ### Fixed
+
 - Problem with ClaimValidator and PubKey encoding due to protocol buff Any type.
 - Fix bug that made that you can vote when the proposal ended.
 - When a proposal does not reach quorum it ends being Quorum not reached.
@@ -381,13 +445,17 @@
 - It shows the votes that a proposal has on client query.
 
 ## [v0.1.16.2a] - 02.08.2021
+
 ### Added
-- Custom evidence module to jail a double signed validator 
+
+- Custom evidence module to jail a double signed validator
 - CLI command for writing proposal to unjail a validator
 - CLI command for setting max jail time network property proposal
 
 ## [v0.1.16.1] - 02.04.2021
+
 ### Added
+
 - CLI command to set poor network messages
 - CLI command to query poor network messages
 - Add POOR_NETWORK_MAX_BANK_TX_SEND feature for poor network for restriction (only bond denom is allowed)
@@ -396,38 +464,51 @@
 ## [v0.1.15.2] - 01.21.2021
 
 ### Added
+
 - CLI command GetTxProposalUpsertTokenAliasCmd and GetTxProposalUpsertTokenRatesCmd are now exposed.
 
 ## [v0.1.15.1] - 01.21.2021
 
 ### Added
+
 - CLI command to get ValAddress from AccAddress
 
 ## [0.1.15] - 01.15.2021
+
 ### Added
+
 - Added custom slashing module for validator's block signing info management, inactivate, activate, pause, unpause
 - Added validator performance calculator using `rank` and `streak`
 - Upgraded Cosmos SDK to v0.40.0 (stargate)
 
 ### Removed
+
 - Old staking, slashing, evidence, distribution module
 
 ## [0.1.14.3] - 12.30.2020
+
 ### Added
+
 - Added GRPC query for Data Reference Registry.
 - Update response caching for data references. (KIP_47.1)
 - Added file hosting feature. (KIP_47.1)
 
 ## [0.1.14.2] - 11.30.2020
+
 ### Added
+
 - Update Cosmos SDK to v0.40.0-rc4.
 
 ## [0.1.14.1] - 11.30.2020
+
 ### Added
+
 - Proposal to upsert the Token Rates. (CLI too)
 
 ## [0.1.14] - 11.26.2020
+
 ### Added
+
 - Added a wrapper to register messages with function metadata.
 - Added function_id for message types.
 - Registered function meta for existing messages.
@@ -435,15 +516,20 @@
 - Added INTERX api for INTERX functions list.
 
 ## [0.1.13] - 11.20.2020
+
 ### Added
+
 - Proposal to upsert the Token Aliases KIP_24. (CLI too)
 
 ## [0.1.12.1] - 11.15.2020
+
 ### Added
+
 - Proposal to upsert the Data Registry. (CLI too)
 - Proposal to change Network Properties. (CLI too)
 
 ### Changed
+
 - Now it is more generic to be able to add new proposals in the complete flow.
 
 ## [0.1.12] - 11.13.2020
@@ -451,30 +537,38 @@
 ### Added
 
 KIP_8
+
 - Added grpc gateway
 - Added status, balances, transaction hash queries
 - Added transaction encode/broadcast
 - Added response format
 
 KIP_9
+
 - Added endpoint whitelist
 
 KIP_48
+
 - Added INTERX faucet
 
 KIP_47
+
 - Added response caching
 
 KIP_32
+
 - Added withdraws, deposits
 
 ## [0.1.7.3] - 11.12.2020
+
 ### Added
+
 - Added CLI for querying proposals / individual proposal
 - Added CLI for querying votes / individual vote
 - Added CLI for querying whitelisted proposal voters
 
 ### Changed
+
 - Updated genesis actor initialization process
 - Updated proposal end time and enactment time
 - Fixed end blocker concert not registered issue for MsgClaimValidator
@@ -482,14 +576,17 @@ KIP_32
 ## [0.1.7.2] - 11.11.2020
 
 ### Changed
+
 - There is a new permission for all role related changes. PermUpsertRole.
 
 ## [0.1.7.1] - 11.09.2020
 
 ### Changed
+
 - Proposal is now a generic type, the Content part is what changes between different proposal types.
 
 ## [0.1.7] - 11.09.2020
+
 - Added CLI command to upsert token rates per denom
 - Added CLI commands to query token rates
 - Implemented feeprocessing module for new fee processing logic
@@ -498,23 +595,27 @@ KIP_32
 ## [0.1.6.3] - 11.07.2020
 
 ### Added
+
 - We can propose to SetPermissions to an actor.
 - We can vote a proposal to SetPermissions to an actor.
-- Added proposal endtime and proposal enactment time into 
-the network properties.
+- Added proposal endtime and proposal enactment time into
+  the network properties.
 
 ## [0.1.6.2] - 10.23.2020
 
 ### Added
+
 - The keeper has method to get all Actors by witelisted permission.
 - The keeper has method to get All actors that have specific role.
 - The keeper has method to get all roles that have a whitelist permission.
 
 ### Changed
+
 - Big refactor on the way Role and Permissions are stored.
 - In keeper we don't expose SetPermissionsForRole anymore.
 
 ## [0.1.6.1] - 10.19.2020
+
 ### Added
 
 - Added CLI command to send a SetPermission proposal.
@@ -523,9 +624,10 @@ the network properties.
 ### Changed
 
 - Now Role and Permissions are persisted differently in order to be able to get
-actors by permission and actors by role.
+  actors by permission and actors by role.
 
 - Now the commands for all Governance module is simplified in a better hierarchical style.
+
 ```
 Available Commands:
   councilor   Councilor subcommands
@@ -535,6 +637,7 @@ Available Commands:
 ```
 
 ## [0.1.6] - 10.16.2020
+
 ### Added
 
 - Added CLI command to upsert token alias per symbol
@@ -547,6 +650,7 @@ Available Commands:
 - Modified min/max fee range to [100 - 1'000'000] in ukex
 
 ## [0.1.4] - 10.05.2020
+
 ### Added
 
 - Added CLI command to change execution fee per message type
@@ -555,6 +659,7 @@ Available Commands:
 - Added CLI command to query transaction fee range
 
 ## [0.1.2.4] - 09.24.2020
+
 ### Added
 
 - Added CLI command to remove blacklist permissions into a specific role.
@@ -563,11 +668,13 @@ Available Commands:
 - Added CLI command to remove assignation for a role.
 
 ## [0.1.2.3] - 09.17.2020
+
 ### Changed
 
 - Updated cosmos SDK to last version of 17th september .
 
 ## [0.1.2.2] - 09.14.2020
+
 ### Added
 
 - Added CLI command to claim governance seat.
@@ -576,23 +683,26 @@ Available Commands:
 - Added CLI command to remove whitelist permissions into a specific role.
 
 ## [0.1.2.1] - 09.06.2020
+
 ### Added
 
 - Added CLI command to Set Blacklist Permissions too.
 - Module CustomGov defines in genesis by default Permissions by roles Validator (0x2) and Sudo (0x1).
 
 ### Changed
+
 - Now the roles are validated when taking some action. It checks if the user has permissions either in the role or individually.
 
 ## [0.1.2] - 09.01.2020
+
 ### Added
 
 - Add command to add whitelist permissions to an address, that address is included
-in theNetworkActor registry with the specified permission added.
+  in theNetworkActor registry with the specified permission added.
 - Now the user that generates the network has AddPermissions by default, so he is the only one
-that can add permissions into the registry.
+  that can add permissions into the registry.
 
 ### Changed
 
 - Now the ClaimValidator message takes care that the user has ClaimValidator permissions,
-if he the user does not have, it fails.
+  if he the user does not have, it fails.

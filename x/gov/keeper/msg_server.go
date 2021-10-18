@@ -353,9 +353,11 @@ func (k msgServer) WhitelistPermissions(
 ) (*types.MsgWhitelistPermissionsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, types.PermSetPermissions)
-	if !isAllowed {
-		return nil, errors.Wrap(types.ErrNotEnoughPermissions, "PermSetPermissions")
+	isSetClaimValidatorMsg := msg.Permission == uint32(types.PermClaimValidator)
+	hasSetClaimValidatorPermission := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, types.PermSetClaimValidatorPermission)
+	hasSetPermissionsPermission := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, types.PermSetPermissions)
+	if !hasSetPermissionsPermission && !(isSetClaimValidatorMsg && hasSetClaimValidatorPermission) {
+		return nil, errors.Wrap(types.ErrNotEnoughPermissions, "PermSetPermissions || (ClaimValidatorPermission && ClaimValidatorPermMsg)")
 	}
 
 	actor, found := k.keeper.GetNetworkActorByAddress(ctx, msg.Address)
@@ -385,9 +387,11 @@ func (k msgServer) BlacklistPermissions(
 ) (*types.MsgBlacklistPermissionsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, types.PermSetPermissions)
-	if !isAllowed {
-		return nil, errors.Wrap(types.ErrNotEnoughPermissions, "PermSetPermissions")
+	isSetClaimValidatorMsg := msg.Permission == uint32(types.PermClaimValidator)
+	hasSetClaimValidatorPermission := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, types.PermSetClaimValidatorPermission)
+	hasSetPermissionsPermission := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, types.PermSetPermissions)
+	if !hasSetPermissionsPermission && !(isSetClaimValidatorMsg && hasSetClaimValidatorPermission) {
+		return nil, errors.Wrap(types.ErrNotEnoughPermissions, "PermSetPermissions || (ClaimValidatorPermission && ClaimValidatorPermMsg)")
 	}
 
 	actor, found := k.keeper.GetNetworkActorByAddress(ctx, msg.Address)
