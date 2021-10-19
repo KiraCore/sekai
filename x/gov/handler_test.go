@@ -191,7 +191,7 @@ func TestNewHandler_SetPermissionsWithoutSetPermissions(t *testing.T) {
 
 			handler := gov.NewHandler(app.CustomGovKeeper)
 			_, err = handler(ctx, tt.msg)
-			require.EqualError(t, err, "PermSetPermissions: not enough permissions")
+			require.EqualError(t, err, "PermSetPermissions || (ClaimValidatorPermission && ClaimValidatorPermMsg): not enough permissions")
 		})
 	}
 }
