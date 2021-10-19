@@ -1049,6 +1049,447 @@ func RegisterInterxFunctions() {
 	)
 
 	AddInterxFunction(
+		"QueryIdentityRecord",
+		config.QueryIdentityRecord,
+		`{
+			"description": "QueryIdentityRecord is a function to query identity record by id.",
+			"parameters": {
+				"id": {
+					"type":        "number",
+					"description": "This is the identity record id.",
+					"optional": false
+				}
+			},
+			"response": {
+				"record": {
+					"description": "The identity record info",
+					"fields": {
+						"id": {
+							"type":        "number",
+							"description": "The identity record id"
+						},
+						"address": {
+							"type":        "string",
+							"description": "The address of identity record"
+						},
+						"key": {
+							"type":        "string",
+							"description": "The identity record key"
+						},
+						"value": {
+							"type":        "string",
+							"description": "The identity record value"
+						},
+						"date": {
+							"type":        "string",
+							"description": "The identity record timestamp"
+						},
+						"verifiers": {
+							"type":        "array<string>",
+							"description": "The address list of verifiers"
+						}
+					}
+				}
+			}
+		}`,
+	)
+
+	AddInterxFunction(
+		"QueryIdentityRecordsByAddress",
+		config.QueryIdentityRecordsByAddress,
+		`{
+			"description": "QueryIdentityRecordsByAddress is a function to query identity records by address.",
+			"parameters": {
+				"creator": {
+					"type":        "string",
+					"description": "This is the identity record creator address.",
+					"optional": false
+				}
+			},
+			"response": {
+				"records": {
+					"type": "array",
+					"description": "The identity records info",
+					"fields": {
+						"id": {
+							"type":        "number",
+							"description": "The identity record id"
+						},
+						"address": {
+							"type":        "string",
+							"description": "The address of identity record"
+						},
+						"key": {
+							"type":        "string",
+							"description": "The identity record key"
+						},
+						"value": {
+							"type":        "string",
+							"description": "The identity record value"
+						},
+						"date": {
+							"type":        "string",
+							"description": "The identity record timestamp"
+						},
+						"verifiers": {
+							"type":        "array<string>",
+							"description": "The address list of verifiers"
+						}
+					}
+				}
+			}
+		}`,
+	)
+
+	AddInterxFunction(
+		"QueryAllIdentityRecords",
+		config.QueryAllIdentityRecords,
+		`{
+			"description": "QueryAllIdentityRecords is a function to query all identity records.",
+			"parameters": {
+				"key": {
+					"type":        "string",
+					"description": "This is an option for pagination. key is a value returned in PageResponse.next_key to begin querying the next page most efficiently. Only one of offset or key should be set.",
+					"optional": true
+				},
+				"offset": {
+					"type":        "string",
+					"description": "This is an option for pagination. offset is a numeric offset that can be used when key is unavailable. It is less efficient than using key. Only one of offset or key should be set.",
+					"optional": true
+				},
+				"limit": {
+					"type":        "string",
+					"description": "This is an option for pagination. limit is the total number of results to be returned in the result page. If left empty it will default to a value to be set by each app.",
+					"optional": true
+				},
+				"countTotal": {
+					"type":        "string",
+					"description": "This is an option for pagination. count_total is set to true  to indicate that the result set should include a count of the total number of items available for pagination in UIs. count_total is only respected when offset is used. It is ignored when key is set.",
+					"optional": true
+				}
+			},
+			"response": {
+				"records": {
+					"type": "array",
+					"description": "The identity records info",
+					"fields": {
+						"id": {
+							"type":        "number",
+							"description": "The identity record id"
+						},
+						"address": {
+							"type":        "string",
+							"description": "The address of identity record"
+						},
+						"key": {
+							"type":        "string",
+							"description": "The identity record key"
+						},
+						"value": {
+							"type":        "string",
+							"description": "The identity record value"
+						},
+						"date": {
+							"type":        "string",
+							"description": "The identity record timestamp"
+						},
+						"verifiers": {
+							"type":        "array<string>",
+							"description": "The address list of verifiers"
+						}
+					}
+				},
+				"pagination": {
+					"description": "The pagination response information like total and next_key"
+				}
+			}
+		}`,
+	)
+
+	AddInterxFunction(
+		"QueryIdentityRecordVerifyRequest",
+		config.QueryIdentityRecordVerifyRequest,
+		`{
+			"description": "QueryIdentityRecordVerifyRequest is a function to query identity record verify request.",
+			"parameters": {
+				"request_id": {
+					"type":        "number",
+					"description": "This is the identity record verify request id.",
+					"optional": false
+				}
+			},
+			"response": {
+				"verify_record": {
+					"description": "The identity record verify request info",
+					"fields": {
+						"id": {
+							"type":        "number",
+							"description": "The verify request id"
+						},
+						"address": {
+							"type":        "string",
+							"description": "The request address of identity record"
+						},
+						"verifier": {
+							"type":        "string",
+							"description": "The verifier address of identity record"
+						},
+						"recordIds": {
+							"type":        "array<number>",
+							"description": "The array of identity record id"
+						},
+						"tip": {
+							"type":        "Coin",
+							"description": "The tip amount for verification",
+							"fields": {
+								"denom": {
+									"type": "string"
+								},
+								"amount": {
+									"type": "string"
+								}
+							}
+						},
+						"lastRecordEditDate": {
+							"type":        "string",
+							"description": "The latest edit timestamp"
+						}
+					}
+				}
+			}
+		}`,
+	)
+
+	AddInterxFunction(
+		"QueryIdentityRecordVerifyRequestsByRequester",
+		config.QueryIdentityRecordVerifyRequestsByRequester,
+		`{
+			"description": "QueryIdentityRecordVerifyRequestsByRequester is a function to query identity record verify request by requester.",
+			"parameters": {
+				"requester": {
+					"type":        "string",
+					"description": "This is the identity record verify requester address.",
+					"optional": false
+				},
+				"key": {
+					"type":        "string",
+					"description": "This is an option for pagination. key is a value returned in PageResponse.next_key to begin querying the next page most efficiently. Only one of offset or key should be set.",
+					"optional": true
+				},
+				"offset": {
+					"type":        "string",
+					"description": "This is an option for pagination. offset is a numeric offset that can be used when key is unavailable. It is less efficient than using key. Only one of offset or key should be set.",
+					"optional": true
+				},
+				"limit": {
+					"type":        "string",
+					"description": "This is an option for pagination. limit is the total number of results to be returned in the result page. If left empty it will default to a value to be set by each app.",
+					"optional": true
+				},
+				"countTotal": {
+					"type":        "string",
+					"description": "This is an option for pagination. count_total is set to true  to indicate that the result set should include a count of the total number of items available for pagination in UIs. count_total is only respected when offset is used. It is ignored when key is set.",
+					"optional": true
+				}
+			},
+			"response": {
+				"verify_records": {
+					"type": "array",
+					"description": "The identity record verify request info",
+					"fields": {
+						"id": {
+							"type":        "number",
+							"description": "The verify request id"
+						},
+						"address": {
+							"type":        "string",
+							"description": "The request address of identity record"
+						},
+						"verifier": {
+							"type":        "string",
+							"description": "The verifier address of identity record"
+						},
+						"recordIds": {
+							"type":        "array<number>",
+							"description": "The array of identity record id"
+						},
+						"tip": {
+							"type":        "Coin",
+							"description": "The tip amount for verification",
+							"fields": {
+								"denom": {
+									"type": "string"
+								},
+								"amount": {
+									"type": "string"
+								}
+							}
+						},
+						"lastRecordEditDate": {
+							"type":        "string",
+							"description": "The latest edit timestamp"
+						}
+					}
+				},
+				"pagination": {
+					"description": "The pagination response information like total and next_key"
+				}
+			}
+		}`,
+	)
+
+	AddInterxFunction(
+		"QueryIdentityRecordVerifyRequestsByApprover",
+		config.QueryIdentityRecordVerifyRequestsByApprover,
+		`{
+			"description": "QueryIdentityRecordVerifyRequestsByApprover is a function to query identity record verify request by approver.",
+			"parameters": {
+				"requester": {
+					"type":        "string",
+					"description": "This is the identity record verify request approver address.",
+					"optional": false
+				},
+				"key": {
+					"type":        "string",
+					"description": "This is an option for pagination. key is a value returned in PageResponse.next_key to begin querying the next page most efficiently. Only one of offset or key should be set.",
+					"optional": true
+				},
+				"offset": {
+					"type":        "string",
+					"description": "This is an option for pagination. offset is a numeric offset that can be used when key is unavailable. It is less efficient than using key. Only one of offset or key should be set.",
+					"optional": true
+				},
+				"limit": {
+					"type":        "string",
+					"description": "This is an option for pagination. limit is the total number of results to be returned in the result page. If left empty it will default to a value to be set by each app.",
+					"optional": true
+				},
+				"countTotal": {
+					"type":        "string",
+					"description": "This is an option for pagination. count_total is set to true  to indicate that the result set should include a count of the total number of items available for pagination in UIs. count_total is only respected when offset is used. It is ignored when key is set.",
+					"optional": true
+				}
+			},
+			"response": {
+				"verify_records": {
+					"type": "array",
+					"description": "The identity record verify request info",
+					"fields": {
+						"id": {
+							"type":        "number",
+							"description": "The verify request id"
+						},
+						"address": {
+							"type":        "string",
+							"description": "The request address of identity record"
+						},
+						"verifier": {
+							"type":        "string",
+							"description": "The verifier address of identity record"
+						},
+						"recordIds": {
+							"type":        "array<number>",
+							"description": "The array of identity record id"
+						},
+						"tip": {
+							"type":        "Coin",
+							"description": "The tip amount for verification",
+							"fields": {
+								"denom": {
+									"type": "string"
+								},
+								"amount": {
+									"type": "string"
+								}
+							}
+						},
+						"lastRecordEditDate": {
+							"type":        "string",
+							"description": "The latest edit timestamp"
+						}
+					}
+				},
+				"pagination": {
+					"description": "The pagination response information like total and next_key"
+				}
+			}
+		}`,
+	)
+
+	AddInterxFunction(
+		"QueryAllIdentityRecordVerifyRequests",
+		config.QueryAllIdentityRecordVerifyRequests,
+		`{
+			"description": "QueryAllIdentityRecordVerifyRequests is a function to query all identity record verify requests.",
+			"parameters": {
+				"key": {
+					"type":        "string",
+					"description": "This is an option for pagination. key is a value returned in PageResponse.next_key to begin querying the next page most efficiently. Only one of offset or key should be set.",
+					"optional": true
+				},
+				"offset": {
+					"type":        "string",
+					"description": "This is an option for pagination. offset is a numeric offset that can be used when key is unavailable. It is less efficient than using key. Only one of offset or key should be set.",
+					"optional": true
+				},
+				"limit": {
+					"type":        "string",
+					"description": "This is an option for pagination. limit is the total number of results to be returned in the result page. If left empty it will default to a value to be set by each app.",
+					"optional": true
+				},
+				"countTotal": {
+					"type":        "string",
+					"description": "This is an option for pagination. count_total is set to true  to indicate that the result set should include a count of the total number of items available for pagination in UIs. count_total is only respected when offset is used. It is ignored when key is set.",
+					"optional": true
+				}
+			},
+			"response": {
+				"verify_records": {
+					"type": "array",
+					"description": "The identity record verify request info",
+					"fields": {
+						"id": {
+							"type":        "number",
+							"description": "The verify request id"
+						},
+						"address": {
+							"type":        "string",
+							"description": "The request address of identity record"
+						},
+						"verifier": {
+							"type":        "string",
+							"description": "The verifier address of identity record"
+						},
+						"recordIds": {
+							"type":        "array<number>",
+							"description": "The array of identity record id"
+						},
+						"tip": {
+							"type":        "Coin",
+							"description": "The tip amount for verification",
+							"fields": {
+								"denom": {
+									"type": "string"
+								},
+								"amount": {
+									"type": "string"
+								}
+							}
+						},
+						"lastRecordEditDate": {
+							"type":        "string",
+							"description": "The latest edit timestamp"
+						}
+					}
+				},
+				"pagination": {
+					"description": "The pagination response information like total and next_key"
+				}
+			}
+		}`,
+	)
+
+	AddInterxFunction(
 		"QueryGenesis",
 		config.QueryGenesis,
 		`{
