@@ -333,3 +333,6 @@ func TestKeeper_GetProposalVotesIterator(t *testing.T) {
 	}
 	require.Equal(t, 1, totalVotes)
 }
+
+// TODO: add test for different duration proposals
+// TODO: add test for different vote quorum per durations

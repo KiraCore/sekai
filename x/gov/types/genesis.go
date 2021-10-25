@@ -41,12 +41,12 @@ func DefaultGenesis() *GenesisState {
 		NetworkProperties: &NetworkProperties{
 			MinTxFee:                    100,
 			MaxTxFee:                    1000000,
-			VoteQuorum:                  33,
-			VoteQuorumShort:             33,
-			VoteQuorumLong:              33,
-			ProposalEndTime:             600, // 600 seconds / 10 mins
-			ProposalEndTimeShort:        600,
-			ProposalEndTimeLong:         600,
+			VoteQuorum:                  33,  // To be discussed
+			VoteQuorumShort:             33,  // To be discussed
+			VoteQuorumLong:              33,  // To be discussed
+			ProposalEndTime:             600, // 600 seconds // Med - 1 day as per discussion - 86400
+			ProposalEndTimeShort:        600, // Short - 1 hour as per discussion 3600
+			ProposalEndTimeLong:         600, // Long - 7 days as per discussion - 604800
 			ProposalEnactmentTime:       300, // 300 seconds / 5 mins
 			MinProposalEndBlocks:        2,
 			MinProposalEnactmentBlocks:  1,
