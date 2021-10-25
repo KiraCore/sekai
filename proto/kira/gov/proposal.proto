@@ -27,6 +27,14 @@ enum VoteOption {
   VOTE_OPTION_NO_WITH_VETO = 4 [(gogoproto.enumvalue_customname) = "OptionNoWithVeto"];
 }
 
+enum ProposalDurationType {
+  option (gogoproto.goproto_enum_prefix) = false;
+
+  DURATION_NORMAL = 0 [ (gogoproto.enumvalue_customname) = "DurationNormal" ];
+  DURATION_SHORT = 1 [ (gogoproto.enumvalue_customname) = "DurationShort" ];
+  DURATION_LONG = 2 [ (gogoproto.enumvalue_customname) = "DurationLong" ];
+}
+
 enum VoteResult {
   option (gogoproto.goproto_enum_prefix) = false;
 

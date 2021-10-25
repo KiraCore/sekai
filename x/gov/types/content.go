@@ -5,6 +5,8 @@ type Content interface {
 	// to parse and apply once it passes.
 	ProposalType() string
 
+	ProposalDuration() ProposalDurationType
+
 	// VotePermission returns the PermValue a user needs to have in order to be able to vote the proposal.
 	VotePermission() PermValue
 

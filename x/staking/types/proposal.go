@@ -31,3 +31,7 @@ func (m *ProposalUnjailValidator) VotePermission() types.PermValue {
 func (m *ProposalUnjailValidator) ValidateBasic() error {
 	return nil
 }
+
+func (m *ProposalUnjailValidator) ProposalDuration() types.ProposalDurationType {
+	return types.DurationNormal
+}

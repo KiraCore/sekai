@@ -104,6 +104,10 @@ func (m *AssignPermissionProposal) VotePermission() PermValue {
 	return PermVoteSetPermissionProposal
 }
 
+func (m *AssignPermissionProposal) ProposalDuration() ProposalDurationType {
+	return DurationNormal
+}
+
 // NewSetNetworkPropertyProposal creates a new set network property proposal
 func NewSetNetworkPropertyProposal(
 	property NetworkProperty,
@@ -155,6 +159,10 @@ func (m *SetNetworkPropertyProposal) ValidateBasic() error {
 	}
 }
 
+func (m *SetNetworkPropertyProposal) ProposalDuration() ProposalDurationType {
+	return DurationNormal
+}
+
 func NewUpsertDataRegistryProposal(key, hash, reference, encoding string, size uint64) Content {
 	return &UpsertDataRegistryProposal{
 		Key:       key,
@@ -182,6 +190,10 @@ func (m *UpsertDataRegistryProposal) ValidateBasic() error {
 	return nil
 }
 
+func (m *UpsertDataRegistryProposal) ProposalDuration() ProposalDurationType {
+	return DurationNormal
+}
+
 func NewSetPoorNetworkMessagesProposal(msgs []string) Content {
 	return &SetPoorNetworkMessagesProposal{
 		Messages: msgs,
@@ -203,6 +215,10 @@ func (m *SetPoorNetworkMessagesProposal) VotePermission() PermValue {
 // ValidateBasic returns basic validation
 func (m *SetPoorNetworkMessagesProposal) ValidateBasic() error {
 	return nil
+}
+
+func (m *SetPoorNetworkMessagesProposal) ProposalDuration() ProposalDurationType {
+	return DurationNormal
 }
 
 func NewCreateRoleProposal(role Role, whitelist []PermValue, blacklist []PermValue) Content {
@@ -232,4 +248,8 @@ func (m *CreateRoleProposal) ValidateBasic() error {
 	}
 
 	return nil
+}
+
+func (m *CreateRoleProposal) ProposalDuration() ProposalDurationType {
+	return DurationNormal
 }

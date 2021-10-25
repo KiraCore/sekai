@@ -29,3 +29,7 @@ func (m *ProposalResetWholeValidatorRank) VotePermission() types.PermValue {
 func (m *ProposalResetWholeValidatorRank) ValidateBasic() error {
 	return nil
 }
+
+func (m *ProposalResetWholeValidatorRank) ProposalDuration() types.ProposalDurationType {
+	return types.DurationNormal
+}

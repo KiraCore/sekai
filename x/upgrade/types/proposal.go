@@ -46,6 +46,10 @@ func (m *ProposalSoftwareUpgrade) ValidateBasic() error {
 	return nil
 }
 
+func (m *ProposalSoftwareUpgrade) ProposalDuration() types.ProposalDurationType {
+	return types.DurationNormal
+}
+
 var _ types.Content = &ProposalCancelSoftwareUpgrade{}
 
 func NewCancelSoftwareUpgradeProposal(name string) *ProposalCancelSoftwareUpgrade {
@@ -68,4 +72,8 @@ func (m *ProposalCancelSoftwareUpgrade) VotePermission() types.PermValue {
 // ValidateBasic returns basic validation
 func (m *ProposalCancelSoftwareUpgrade) ValidateBasic() error {
 	return nil
+}
+
+func (m *ProposalCancelSoftwareUpgrade) ProposalDuration() types.ProposalDurationType {
+	return types.DurationNormal
 }

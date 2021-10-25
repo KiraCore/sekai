@@ -50,6 +50,10 @@ func (m *ProposalUpsertTokenAlias) ValidateBasic() error {
 	return nil
 }
 
+func (m *ProposalUpsertTokenAlias) ProposalDuration() types.ProposalDurationType {
+	return types.DurationNormal
+}
+
 func NewUpsertTokenRatesProposal(denom string, rate sdk.Dec, feePayments bool) *ProposalUpsertTokenRates {
 	return &ProposalUpsertTokenRates{Denom: denom, Rate: rate, FeePayments: feePayments}
 }
@@ -71,6 +75,10 @@ func (m *ProposalUpsertTokenRates) ValidateBasic() error {
 	return nil
 }
 
+func (m *ProposalUpsertTokenRates) ProposalDuration() types.ProposalDurationType {
+	return types.DurationNormal
+}
+
 func NewTokensWhiteBlackChangeProposal(isBlacklist, isAdd bool, tokens []string) *ProposalTokensWhiteBlackChange {
 	return &ProposalTokensWhiteBlackChange{isBlacklist, isAdd, tokens}
 }
@@ -90,4 +98,8 @@ func (m *ProposalTokensWhiteBlackChange) VotePermission() types.PermValue {
 // ValidateBasic returns basic validation
 func (m *ProposalTokensWhiteBlackChange) ValidateBasic() error {
 	return nil
+}
+
+func (m *ProposalTokensWhiteBlackChange) ProposalDuration() types.ProposalDurationType {
+	return types.DurationNormal
 }
