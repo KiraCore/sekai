@@ -88,8 +88,11 @@ func SearchCache(request types.InterxRequest, response *types.ProxyResponse) (bo
 }
 
 // WrapResponse is a function to wrap response
-func WrapResponse(w http.ResponseWriter, request types.InterxRequest, response types.ProxyResponse, statusCode int, saveToCashe bool) {
-	if saveToCashe {
+func WrapResponse(w http.ResponseWriter, request types.InterxRequest, response types.ProxyResponse, statusCode int, saveToCache bool) {
+	if statusCode == 0 {
+		statusCode = 503 // Service Unavailable Error
+	}
+	if saveToCache {
 		// GetLogger().Info("[gateway] Saving in the cache")
 
 		chainIDHash := GetBlake2bHash(response.Chainid)
@@ -131,6 +134,10 @@ func WrapResponse(w http.ResponseWriter, request types.InterxRequest, response t
 		json.NewEncoder(w).Encode(response.Response)
 	} else {
 		w.WriteHeader(statusCode)
+
+		if response.Error == nil {
+			response.Error = "service not available"
+		}
 		json.NewEncoder(w).Encode(response.Error)
 	}
 }
