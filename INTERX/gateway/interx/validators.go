@@ -126,7 +126,7 @@ func QueryValidators(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.Handler
 					response.Response, response.Error, statusCode = cacheResponse, cacheError, cacheStatus
 					common.WrapResponse(w, request, *response, statusCode, false)
 
-					common.GetLogger().Info("[encode-transaction] Returning from the cache")
+					common.GetLogger().Info("[query-validators] Returning from the cache")
 					return
 				}
 			}
@@ -184,7 +184,7 @@ func QueryValidatorInfos(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.Han
 					response.Response, response.Error, statusCode = cacheResponse, cacheError, cacheStatus
 					common.WrapResponse(w, request, *response, statusCode, false)
 
-					common.GetLogger().Info("[encode-transaction] Returning from the cache")
+					common.GetLogger().Info("[query-validator-info] Returning from the cache")
 					return
 				}
 			}
@@ -345,7 +345,7 @@ func QueryConsensus(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.HandlerF
 					response.Response, response.Error, statusCode = cacheResponse, cacheError, cacheStatus
 					common.WrapResponse(w, request, *response, statusCode, false)
 
-					common.GetLogger().Info("[encode-transaction] Returning from the cache")
+					common.GetLogger().Info("[query-consensus] Returning from the cache")
 					return
 				}
 			}
