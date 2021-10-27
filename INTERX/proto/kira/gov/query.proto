@@ -92,6 +92,35 @@ service Query {
       tags: "query"
     };
   }
+
+  // Query identity record by id
+  rpc IdentityRecord(QueryIdentityRecordRequest) returns (QueryIdentityRecordResponse) {
+    option (google.api.http).get = "/api/kira/gov/identity_record/{id}";
+  }
+  // Query identity records by records creator
+  rpc IdentityRecordsByAddress(QueryIdentityRecordsByAddressRequest) returns (QueryIdentityRecordsByAddressResponse) {
+    option (google.api.http).get = "/api/kira/gov/identity_records/{creator}";
+  }
+  // Query all identity records
+  rpc AllIdentityRecords(QueryAllIdentityRecordsRequest) returns (QueryAllIdentityRecordsResponse) {
+    option (google.api.http).get = "/api/kira/gov/all_identity_records";
+  }
+  // Query identity record verify request by id
+  rpc IdentityRecordVerifyRequest(QueryIdentityVerifyRecordRequest) returns (QueryIdentityVerifyRecordResponse) {
+    option (google.api.http).get = "/api/kira/gov/identity_verify_record/{request_id}";
+  }
+  // Query identity records verify requests by requester
+  rpc IdentityRecordVerifyRequestsByRequester(QueryIdentityRecordVerifyRequestsByRequester) returns (QueryIdentityRecordVerifyRequestsByRequesterResponse) {
+    option (google.api.http).get = "/api/kira/gov/identity_verify_requests_by_requester/{requester}";
+  }
+  // Query identity records verify requests by approver
+  rpc IdentityRecordVerifyRequestsByApprover(QueryIdentityRecordVerifyRequestsByApprover) returns (QueryIdentityRecordVerifyRequestsByApproverResponse) {
+    option (google.api.http).get = "/api/kira/gov/identity_verify_requests_by_approver/{approver}";
+  }
+  // Query all identity records verify requests
+  rpc AllIdentityRecordVerifyRequests(QueryAllIdentityRecordVerifyRequests) returns (QueryAllIdentityRecordVerifyRequestsResponse) {
+    option (google.api.http).get = "/api/kira/gov/all_identity_verify_requests";
+  }
 }
 
 // QueryProposalRequest is the request type for the Query/Proposal RPC method.
@@ -174,4 +203,70 @@ message NetworkPropertiesRequest {}
 // NetworkPropertiesResponse is the response type for the NetworkProperties Query
 message NetworkPropertiesResponse {
   NetworkProperties properties = 1;
+}
+
+
+message QueryIdentityRecordRequest {
+  uint64 id = 1;
+}
+message QueryIdentityRecordResponse {
+  IdentityRecord record = 1;
+}
+
+message QueryIdentityRecordsByAddressRequest {
+  bytes creator = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"creator\""
+  ];
+  repeated string keys = 2;
+}
+message QueryIdentityRecordsByAddressResponse {
+  repeated IdentityRecord records = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllIdentityRecordsRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
+}
+message QueryAllIdentityRecordsResponse {
+  repeated IdentityRecord records = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
+}
+
+message QueryIdentityVerifyRecordRequest {
+  uint64 request_id = 1;
+}
+message QueryIdentityVerifyRecordResponse {
+  IdentityRecordsVerify verify_record = 1;
+}
+
+message QueryIdentityRecordVerifyRequestsByApprover {
+  bytes approver = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"approver\""
+  ];
+  cosmos.base.query.v1beta1.PageRequest pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
+}
+message QueryIdentityRecordVerifyRequestsByApproverResponse {
+  repeated IdentityRecordsVerify verify_records = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
+}
+
+message QueryIdentityRecordVerifyRequestsByRequester {
+  bytes requester = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"requester\""
+  ];
+  cosmos.base.query.v1beta1.PageRequest pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
+}
+message QueryIdentityRecordVerifyRequestsByRequesterResponse {
+  repeated IdentityRecordsVerify verify_records = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
+}
+
+message QueryAllIdentityRecordVerifyRequests {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
+}
+message QueryAllIdentityRecordVerifyRequestsResponse {
+  repeated IdentityRecordsVerify verify_records = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
 }

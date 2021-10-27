@@ -4,9 +4,8 @@ import (
 	"testing"
 
 	"github.com/KiraCore/sekai/app"
-
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
-
+	"github.com/cosmos/cosmos-sdk/simapp"
 	"github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 )
@@ -16,8 +15,8 @@ func TestMsgClaimValidator_ValidateBasic(t *testing.T) {
 	valAddr1, err := types.ValAddressFromBech32("kiravaloper15ky9du8a2wlstz6fpx3p4mqpjyrm5cgq38f2fp")
 	require.NoError(t, err)
 
-	pubKey, err := types.GetPubKeyFromBech32(types.Bech32PubKeyTypeConsPub, "kiravalconspub1zcjduepqylc5k8r40azmw0xt7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsq4xg7em")
-	require.NoError(t, err)
+	pubkeys := simapp.CreateTestPubKeys(1)
+	pubKey := pubkeys[0]
 
 	tests := []struct {
 		name        string

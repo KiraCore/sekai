@@ -11,11 +11,11 @@ import (
 func TestMarshalUnmarshalIdentityRecord(t *testing.T) {
 	record := IdentityRecord{
 		Id:        1,
-		Address:   sdk.AccAddress{},
+		Address:   "",
 		Key:       "",
 		Value:     "",
 		Date:      time.Now(),
-		Verifiers: []sdk.AccAddress{},
+		Verifiers: []string{""},
 	}
 
 	bz, err := record.Marshal()

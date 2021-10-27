@@ -34,7 +34,7 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 			if err != nil {
 				return err
 			}
-			cdc := clientCtx.JSONMarshaler
+			cdc := clientCtx.JSONCodec
 
 			genDoc, err := tmtypes.GenesisDocFromFile(args[0])
 			if err != nil {

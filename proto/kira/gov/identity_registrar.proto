@@ -8,16 +8,11 @@ option go_package = "github.com/KiraCore/sekai/x/gov/types";
 
 message IdentityRecord {
     uint64 id = 1;
-    bytes address = 2 [
-        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
-        (gogoproto.moretags) = "yaml:\"address\""
-    ];
+    string address = 2;
     string key = 3;
     string value = 4;
     google.protobuf.Timestamp date = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-    repeated bytes verifiers = 6 [
-        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
-    ];
+    repeated string verifiers = 6 ;
 }
 
 message IdentityInfoEntry {
@@ -43,14 +38,8 @@ message MsgDeleteIdentityRecords {
 
 message IdentityRecordsVerify {
     uint64 id = 1;
-    bytes address = 2 [
-        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
-        (gogoproto.moretags) = "yaml:\"address\""
-    ];
-    bytes verifier = 3 [
-        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
-        (gogoproto.moretags) = "yaml:\"verifier\""
-    ];
+    string address = 2;
+    string verifier = 3;
     repeated uint64 recordIds = 4;
     string tip = 5 [
         (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",

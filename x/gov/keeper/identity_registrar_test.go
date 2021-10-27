@@ -9,6 +9,7 @@ import (
 	"github.com/KiraCore/sekai/x/gov/keeper"
 	"github.com/KiraCore/sekai/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
@@ -75,11 +76,11 @@ func TestKeeper_IdentityRecordBasicFlow(t *testing.T) {
 	addr3 := sdk.AccAddress("foo3________________")
 	newRecord := types.IdentityRecord{
 		Id:        1,
-		Address:   addr1,
+		Address:   addr1.String(),
 		Key:       "key",
 		Value:     "value",
 		Date:      time.Now().UTC(),
-		Verifiers: []sdk.AccAddress{addr2, addr3},
+		Verifiers: []string{addr2.String(), addr3.String()},
 	}
 	app.CustomGovKeeper.SetIdentityRecord(ctx, newRecord)
 	record = app.CustomGovKeeper.GetIdentityRecordById(ctx, 1)
@@ -97,11 +98,11 @@ func TestKeeper_IdentityRecordBasicFlow(t *testing.T) {
 	// check automatic conversion to lowercase
 	uppercaseRecord := types.IdentityRecord{
 		Id:        2,
-		Address:   addr1,
+		Address:   addr1.String(),
 		Key:       "MyKey",
 		Value:     "value",
 		Date:      time.Now().UTC(),
-		Verifiers: []sdk.AccAddress{addr2, addr3},
+		Verifiers: []string{addr2.String(), addr3.String()},
 	}
 	app.CustomGovKeeper.SetIdentityRecord(ctx, uppercaseRecord)
 	record = app.CustomGovKeeper.GetIdentityRecordById(ctx, 2)
@@ -119,11 +120,11 @@ func TestKeeper_IdentityRecordBasicFlow(t *testing.T) {
 	// check invalid key set
 	invalidRecord := types.IdentityRecord{
 		Id:        1,
-		Address:   addr1,
+		Address:   addr1.String(),
 		Key:       "_key",
 		Value:     "value",
 		Date:      time.Now().UTC(),
-		Verifiers: []sdk.AccAddress{addr2, addr3},
+		Verifiers: []string{addr2.String(), addr3.String()},
 	}
 	require.Panics(t, func() {
 		app.CustomGovKeeper.SetIdentityRecord(ctx, invalidRecord)
@@ -149,7 +150,7 @@ func TestKeeper_IdentityRecordAddEditRemove(t *testing.T) {
 	require.NotNil(t, record)
 	expectedRecord := types.IdentityRecord{
 		Id:      1,
-		Address: addr1,
+		Address: addr1.String(),
 		Key:     "key",
 		Value:   "value",
 		Date:    now,
@@ -192,7 +193,7 @@ func TestKeeper_IdentityRecordAddEditRemove(t *testing.T) {
 	require.NotNil(t, record)
 	require.Equal(t, *record, types.IdentityRecord{
 		Id:      1,
-		Address: addr1,
+		Address: addr1.String(),
 		Key:     "key",
 		Value:   "value",
 		Date:    now,
@@ -290,7 +291,7 @@ func TestKeeper_IdentityKeysManagement(t *testing.T) {
 	require.NotNil(t, record)
 	expectedRecord := types.IdentityRecord{
 		Id:      1,
-		Address: addr1,
+		Address: addr1.String(),
 		Key:     "mykey",
 		Value:   "MyValue",
 		Date:    now,
@@ -301,7 +302,7 @@ func TestKeeper_IdentityKeysManagement(t *testing.T) {
 	require.NotNil(t, record)
 	expectedRecord = types.IdentityRecord{
 		Id:      2,
-		Address: addr1,
+		Address: addr1.String(),
 		Key:     "nike",
 		Value:   "MyNike",
 		Date:    now,
@@ -358,9 +359,13 @@ func TestKeeper_IdentityRecordApproveFlow(t *testing.T) {
 	addr2 := sdk.AccAddress("foo2________________")
 	addr3 := sdk.AccAddress("foo3________________")
 	addr4 := sdk.AccAddress("foo4________________")
-	app.BankKeeper.SetBalance(ctx, addr1, sdk.NewInt64Coin(sdk.DefaultBondDenom, 10000))
-	app.BankKeeper.SetBalance(ctx, addr2, sdk.NewInt64Coin(sdk.DefaultBondDenom, 10000))
-	app.BankKeeper.SetBalance(ctx, addr3, sdk.NewInt64Coin(sdk.DefaultBondDenom, 10000))
+	initCoins := sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 10000)}
+	app.BankKeeper.MintCoins(ctx, minttypes.ModuleName, initCoins)
+	app.BankKeeper.MintCoins(ctx, minttypes.ModuleName, initCoins)
+	app.BankKeeper.MintCoins(ctx, minttypes.ModuleName, initCoins)
+	app.BankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, addr1, initCoins)
+	app.BankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, addr2, initCoins)
+	app.BankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, addr3, initCoins)
 
 	infos := make(map[string]string)
 	infos["key"] = "value"
@@ -373,7 +378,7 @@ func TestKeeper_IdentityRecordApproveFlow(t *testing.T) {
 	require.NotNil(t, record)
 	expectedRecord := types.IdentityRecord{
 		Id:      1,
-		Address: addr1,
+		Address: addr1.String(),
 		Key:     "key",
 		Value:   "value",
 		Date:    now,
@@ -403,8 +408,8 @@ func TestKeeper_IdentityRecordApproveFlow(t *testing.T) {
 	require.NotNil(t, request)
 	require.Equal(t, *request, types.IdentityRecordsVerify{
 		Id:                 1,
-		Address:            addr1,
-		Verifier:           addr3,
+		Address:            addr1.String(),
+		Verifier:           addr3.String(),
 		RecordIds:          []uint64{1},
 		Tip:                sdk.NewInt64Coin(sdk.DefaultBondDenom, 200),
 		LastRecordEditDate: now,
@@ -418,16 +423,16 @@ func TestKeeper_IdentityRecordApproveFlow(t *testing.T) {
 	coins = app.BankKeeper.GetAllBalances(ctx, addr3)
 	require.Equal(t, coins, sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 10200)})
 	coins = app.BankKeeper.GetAllBalances(ctx, app.AccountKeeper.GetModuleAddress(types.ModuleName))
-	require.Equal(t, coins, sdk.Coins(nil))
+	require.Equal(t, coins, sdk.Coins{})
 	record = app.CustomGovKeeper.GetIdentityRecordById(ctx, 1)
 	require.NotNil(t, record)
 	require.Equal(t, *record, types.IdentityRecord{
 		Id:        1,
-		Address:   addr1,
+		Address:   addr1.String(),
 		Key:       "key",
 		Value:     "value",
 		Date:      now,
-		Verifiers: []sdk.AccAddress{addr3},
+		Verifiers: []string{addr3.String()},
 	})
 	request = app.CustomGovKeeper.GetIdRecordsVerifyRequest(ctx, 1)
 	require.Nil(t, request)
@@ -446,11 +451,11 @@ func TestKeeper_IdentityRecordApproveFlow(t *testing.T) {
 	require.NotNil(t, record)
 	require.Equal(t, *record, types.IdentityRecord{
 		Id:        1,
-		Address:   addr1,
+		Address:   addr1.String(),
 		Key:       "key",
 		Value:     "value",
 		Date:      now,
-		Verifiers: []sdk.AccAddress{addr3},
+		Verifiers: []string{addr3.String()},
 	})
 
 	// request id record 1 and 2 to addr3 by addr1 again
@@ -467,21 +472,21 @@ func TestKeeper_IdentityRecordApproveFlow(t *testing.T) {
 	require.NotNil(t, record)
 	require.Equal(t, *record, types.IdentityRecord{
 		Id:        1,
-		Address:   addr1,
+		Address:   addr1.String(),
 		Key:       "key",
 		Value:     "value",
 		Date:      now,
-		Verifiers: []sdk.AccAddress{addr3},
+		Verifiers: []string{addr3.String()},
 	})
 	record = app.CustomGovKeeper.GetIdentityRecordById(ctx, 2)
 	require.NotNil(t, record)
 	require.Equal(t, *record, types.IdentityRecord{
 		Id:        2,
-		Address:   addr2,
+		Address:   addr2.String(),
 		Key:       "key",
 		Value:     "value",
 		Date:      now,
-		Verifiers: []sdk.AccAddress{addr3},
+		Verifiers: []string{addr3.String()},
 	})
 
 	// request id record 2 to addr3 by addr2
@@ -494,11 +499,11 @@ func TestKeeper_IdentityRecordApproveFlow(t *testing.T) {
 	require.NotNil(t, record)
 	require.Equal(t, *record, types.IdentityRecord{
 		Id:        2,
-		Address:   addr2,
+		Address:   addr2.String(),
 		Key:       "key",
 		Value:     "value",
 		Date:      now,
-		Verifiers: []sdk.AccAddress{addr3},
+		Verifiers: []string{addr3.String()},
 	})
 
 	// request non-exist identity record
@@ -577,7 +582,7 @@ func TestKeeper_IdentityRecordApproveFlow(t *testing.T) {
 	require.NoError(t, err)
 	record = app.CustomGovKeeper.GetIdentityRecordById(ctx, 2)
 	require.NotNil(t, record)
-	require.False(t, keeper.CheckIfWithinAddressArray(addr4, record.Verifiers))
+	require.False(t, keeper.CheckIfWithinStringArray(addr4.String(), record.Verifiers))
 	coins = app.BankKeeper.GetAllBalances(ctx, addr4)
 	require.Equal(t, coins, sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 200)})
 

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/KiraCore/sekai/types"
+	kiratypes "github.com/KiraCore/sekai/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	bank "github.com/cosmos/cosmos-sdk/x/bank/types"
@@ -19,7 +20,7 @@ var (
 func RegisterMsg(cdc *codec.LegacyAmino, msg sdk.Msg, name string, copts *amino.ConcreteOptions, meta string) {
 	cdc.RegisterConcrete(msg, name, copts)
 
-	AddNewFunction(msg.Type(), meta)
+	AddNewFunction(kiratypes.MsgType(msg), meta)
 }
 
 // AddNewFunction is a function to add a function

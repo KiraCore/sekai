@@ -32,3 +32,15 @@ var (
 // Role represents a Role in the registry.
 type Role uint64
 type Roles []uint64
+
+func IdentityRecordByAddressPrefix(address string) []byte {
+	return append(KeyPrefixIdentityRecordByAddress, address...)
+}
+
+func IdRecordVerifyRequestByRequesterPrefix(address string) []byte {
+	return append(KeyPrefixIdRecordVerifyRequestByRequester, address...)
+}
+
+func IdRecordVerifyRequestByApproverPrefix(address string) []byte {
+	return append(KeyPrefixIdRecordVerifyRequestByApprover, address...)
+}

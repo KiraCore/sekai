@@ -542,8 +542,8 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 			prepareScenario: func(app *simapp.SekaiApp, ctx sdk.Context) []sdk.AccAddress {
 				addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.NewInt(100))
 				valAddr := sdk.ValAddress(addrs[0])
-				pubKey, err := sdk.GetPubKeyFromBech32(sdk.Bech32PubKeyTypeConsPub, "kiravalconspub1zcjduepqylc5k8r40azmw0xt7hjugr4mr5w2am7jw77ux5w6s8hpjxyrjjsq4xg7em")
-				require.NoError(t, err)
+				pubkeys := simapp.CreateTestPubKeys(1)
+				pubKey := pubkeys[0]
 
 				actor := types.NewDefaultActor(addrs[0])
 				app.CustomGovKeeper.SaveNetworkActor(ctx, actor)

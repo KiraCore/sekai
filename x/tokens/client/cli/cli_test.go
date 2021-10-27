@@ -95,7 +95,7 @@ func (s *IntegrationTestSuite) TestUpsertTokenAliasAndQuery() {
 	s.Require().NoError(err)
 
 	var tokenAlias tokenstypes.TokenAlias
-	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &tokenAlias)
+	clientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &tokenAlias)
 
 	s.Require().Equal(tokenAlias.Symbol, "ETH")
 	s.Require().Equal(tokenAlias.Name, "Ethereum")
@@ -131,7 +131,7 @@ func (s *IntegrationTestSuite) TestUpsertTokenRateAndQuery() {
 	s.Require().NoError(err)
 
 	var tokenRate tokenstypes.TokenRate
-	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &tokenRate)
+	clientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &tokenRate)
 
 	s.Require().Equal(tokenRate.Denom, "ubtc")
 	s.Require().Equal(tokenRate.Rate, sdk.NewDecWithPrec(1, 5))
@@ -147,7 +147,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryTokenBlackWhites() {
 	s.Require().NoError(err)
 
 	var blackWhites tokenstypes.TokenBlackWhitesResponse
-	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &blackWhites)
+	clientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &blackWhites)
 
 	s.Require().Equal(blackWhites.Data.Blacklisted, []string{"frozen"})
 	s.Require().Equal(blackWhites.Data.Whitelisted, []string{"ukex"})
@@ -270,7 +270,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryAllTokenAliases() {
 	s.Require().NoError(err)
 
 	var resp tokenstypes.AllTokenAliasesResponse
-	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &resp)
+	clientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &resp)
 
 	s.Require().Greater(len(resp.Data), 0)
 }
@@ -284,7 +284,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryTokenAliasesByDenom() {
 	s.Require().NoError(err)
 
 	var resp tokenstypes.TokenAliasesByDenomResponse
-	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &resp)
+	clientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &resp)
 
 	s.Require().Greater(len(resp.Data), 0)
 }
@@ -298,7 +298,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryAllTokenRates() {
 	s.Require().NoError(err)
 
 	var resp tokenstypes.AllTokenRatesResponse
-	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &resp)
+	clientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &resp)
 
 	s.Require().Greater(len(resp.Data), 0)
 }
@@ -312,7 +312,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryTokenRatesByDenom() {
 	s.Require().NoError(err)
 
 	var resp tokenstypes.TokenRatesByDenomResponse
-	clientCtx.JSONMarshaler.MustUnmarshalJSON(out.Bytes(), &resp)
+	clientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &resp)
 
 	s.Require().Greater(len(resp.Data), 0)
 }

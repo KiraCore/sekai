@@ -125,7 +125,7 @@ func LoadConfig(configFilePath string) {
 	// Display mnemonic and keys
 	fmt.Println("Interx Mnemonic  : ", Config.Mnemonic)
 	fmt.Println("Interx Address   : ", Config.Address)
-	fmt.Println("Interx Public Key: ", sdk.MustBech32ifyPubKey(sdk.Bech32PubKeyTypeAccPub, Config.PubKey))
+	fmt.Println("Interx Public Key: ", Config.PubKey.String())
 
 	Config.NodeDiscovery = configFromFile.NodeDiscovery
 
@@ -177,7 +177,7 @@ func LoadConfig(configFilePath string) {
 	// Display mnemonic and keys
 	fmt.Println("Faucet Mnemonic  : ", Config.Faucet.Mnemonic)
 	fmt.Println("Faucet Address   : ", Config.Faucet.Address)
-	fmt.Println("Faucet Public Key: ", sdk.MustBech32ifyPubKey(sdk.Bech32PubKeyTypeAccPub, Config.Faucet.PubKey))
+	fmt.Println("Faucet Public Key: ", Config.Faucet.PubKey.String())
 
 	// Faucet configurations
 	fmt.Println("Interx Faucet FaucetAmounts       : ", Config.Faucet.FaucetAmounts)

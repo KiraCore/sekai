@@ -99,5 +99,9 @@ enum PermValue {
 
   // PERMISSION_SOFTWARE_UPGRADE_PROPOSAL defines the permission needed to vote on software upgrade proposal
   PERMISSION_SOFTWARE_UPGRADE_PROPOSAL = 29 [(gogoproto.enumvalue_customname) = "PermVoteSoftwareUpgradeProposal"];
+
+  // PERMISSION_SET_PERMISSIONS defines the permission that allows to Set ClaimValidatorPermission to other actors.
+  PERMISSION_SET_CLAIM_VALIDATOR_PERMISSION = 30
+      [ (gogoproto.enumvalue_customname) = "PermSetClaimValidatorPermission" ];
 }
 

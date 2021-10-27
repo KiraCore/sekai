@@ -1,6 +1,7 @@
 package tasks
 
 import (
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"net/http"
@@ -11,6 +12,7 @@ import (
 	"github.com/KiraCore/sekai/INTERX/common"
 	"github.com/KiraCore/sekai/INTERX/config"
 	"github.com/KiraCore/sekai/INTERX/types"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
@@ -120,8 +122,13 @@ func QueryValidators(gwCosmosmux *runtime.ServeMux, gatewayAddr string) error {
 	}
 
 	for index, validator := range result.Validators {
-		pubkey, _ := sdk.GetPubKeyFromBech32(sdk.Bech32PubKeyTypeConsPub, validator.Pubkey)
-		address := sdk.GetConsAddress(pubkey).String()
+
+		pubkeyHexString := validator.Pubkey[14 : len(validator.Pubkey)-1]
+		bytes, _ := hex.DecodeString(pubkeyHexString)
+		pubkey := ed25519.PubKey{
+			Key: bytes,
+		}
+		address := sdk.ConsAddress(pubkey.Address()).String()
 
 		var valSigningInfo types.ValidatorSigningInfo
 		for _, signingInfo := range validatorInfosResponse.ValValidatorInfos {

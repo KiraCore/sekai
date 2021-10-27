@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # create a proposal to blacklist validatortoken
-sekaid tx tokens proposal-update-tokens-blackwhite --is_blacklist=true --is_add=true --tokens=validatortoken --tokens=kava --from validator --chain-id=testing --keyring-backend=test --fees=100ukex --home=$HOME/.sekaid --yes
+sekaid tx tokens proposal-update-tokens-blackwhite --is_blacklist=true --is_add=true --tokens=validatortoken --tokens=kava --from=validator --title="title" --description="description" --chain-id=testing --keyring-backend=test --fees=100ukex --home=$HOME/.sekaid --yes
 # check proposal ID
 sekaid query customgov proposals
 # whitelist permission to vote on proposal
