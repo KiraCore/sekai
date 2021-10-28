@@ -43,11 +43,6 @@ func processProposal(ctx sdk.Context, k keeper.Keeper, proposalID uint64) {
 
 	// dynamic quorum per proposal type
 	quorum := properties.VoteQuorum
-	if proposal.GetContent().ProposalDuration() == types.DurationShort {
-		quorum = properties.VoteQuorumShort
-	} else if proposal.GetContent().ProposalDuration() == types.DurationLong {
-		quorum = properties.VoteQuorumLong
-	}
 
 	isQuorum, err := types.IsQuorum(quorum, uint64(numVotes), uint64(totalVoters))
 	if err != nil {

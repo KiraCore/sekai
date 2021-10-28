@@ -155,10 +155,6 @@ func (k Keeper) GetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 		return types.NetworkPropertyValue{Value: properties.MaxTxFee}, nil
 	case types.VoteQuorum:
 		return types.NetworkPropertyValue{Value: properties.VoteQuorum}, nil
-	case types.VoteQuorumShort:
-		return types.NetworkPropertyValue{Value: properties.VoteQuorumShort}, nil
-	case types.VoteQuorumLong:
-		return types.NetworkPropertyValue{Value: properties.VoteQuorumLong}, nil
 	case types.ProposalEndTime:
 		return types.NetworkPropertyValue{Value: properties.ProposalEndTime}, nil
 	case types.ProposalEndTimeShort:
@@ -210,10 +206,6 @@ func (k Keeper) SetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 		properties.MaxTxFee = value.Value
 	case types.VoteQuorum:
 		properties.VoteQuorum = value.Value
-	case types.VoteQuorumShort:
-		properties.VoteQuorumShort = value.Value
-	case types.VoteQuorumLong:
-		properties.VoteQuorumLong = value.Value
 	case types.ProposalEndTime:
 		properties.ProposalEndTime = value.Value
 	case types.ProposalEndTimeLong:

@@ -39,8 +39,6 @@ func TestSimappExportGenesis(t *testing.T) {
 			"min_tx_fee":"100",
 			"max_tx_fee":"1000000",
 			"vote_quorum":"33",
-			"vote_quorum_short":"33",
-			"vote_quorum_long":"33",
 			"proposal_end_time":"600",
 			"proposal_end_time_short":"600",
 			"proposal_end_time_long":"600",
@@ -109,8 +107,6 @@ func TestExportInitGenesis(t *testing.T) {
 			MinTxFee:                    100,
 			MaxTxFee:                    1000000,
 			VoteQuorum:                  33,
-			VoteQuorumShort:             33,
-			VoteQuorumLong:              33,
 			ProposalEndTime:             600, // 600 seconds / 10 mins
 			ProposalEndTimeShort:        600, // 600 seconds / 10 mins
 			ProposalEndTimeLong:         600, // 600 seconds / 10 mins
@@ -159,8 +155,6 @@ func TestExportInitGenesis(t *testing.T) {
 			"min_tx_fee":"100",
 			"max_tx_fee":"1000000",
 			"vote_quorum":"33",
-			"vote_quorum_short":"33",
-			"vote_quorum_long":"33",
 			"proposal_end_time":"600",
 			"proposal_end_time_short":"600",
 			"proposal_end_time_long":"600",
