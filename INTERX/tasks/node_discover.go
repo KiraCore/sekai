@@ -269,6 +269,10 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 			}
 		}
 
+		uniqueIPAddresses = append(uniqueIPAddresses, "18.159.247.32")
+		uniqueIPAddresses = append(uniqueIPAddresses, "52.58.50.144")
+		uniqueIPAddresses = append(uniqueIPAddresses, "18.198.32.150")
+
 		peersFromIP := make(map[string]([]tmTypes.Peer))
 
 		index := 0
@@ -293,6 +297,7 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 			nodeInfo.IP = ipAddr
 			nodeInfo.Port = getPort(kiraStatus.NodeInfo.ListenAddr)
 			nodeInfo.Peers = []string{}
+			nodeInfo.Alive = true
 
 			// verify p2p node_id via p2p connect
 			peerNodeInfo, ping := connect(p2p.NewNetAddressIPPort(parseIP(nodeInfo.IP), uint16(nodeInfo.Port)), timeout())
@@ -322,6 +327,7 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 					privNodeInfo.Port = getPort(peer.NodeInfo.ListenAddr)
 					privNodeInfo.Peers = []string{}
 					privNodeInfo.Peers = append(privNodeInfo.Peers, nodeInfo.ID)
+					privNodeInfo.Alive = true
 
 					if _, ok := isLocalPeer[privNodeInfo.ID]; ok {
 						privNodeInfo.Connected = true
@@ -371,6 +377,7 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 				interxInfo.Faucet = interxStatus.InterxInfo.FaucetAddr
 				interxInfo.Type = interxStatus.InterxInfo.Node.NodeType
 				interxInfo.Version = interxStatus.InterxInfo.Version
+				interxInfo.Alive = true
 
 				global.Mutex.Lock()
 				if pid, isIn := idOfInterxList[interxInfo.ID]; isIn {
@@ -390,6 +397,7 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 					snapNode.Port = getPort(interxAddress)
 					snapNode.Checksum = snapshotInfo.Checksum
 					snapNode.Size = snapshotInfo.Size
+					snapNode.Alive = true
 
 					global.Mutex.Lock()
 					if pid, isIn := idOfSnapshotList[snapNode.IP]; isIn {
@@ -409,22 +417,22 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 		// Remove disconnected nodes
 		for index, value := range PrivP2PNodeListResponse.NodeList {
 			if !isPrivNodeID[value.ID] {
-				PrivP2PNodeListResponse.NodeList = append(PrivP2PNodeListResponse.NodeList[:index], PrivP2PNodeListResponse.NodeList[index+1:]...)
+				PrivP2PNodeListResponse.NodeList[index].Alive = false
 			}
 		}
 		for index, value := range PubP2PNodeListResponse.NodeList {
 			if !isPubNodeId[value.ID] {
-				PubP2PNodeListResponse.NodeList = append(PubP2PNodeListResponse.NodeList[:index], PubP2PNodeListResponse.NodeList[index+1:]...)
+				PubP2PNodeListResponse.NodeList[index].Alive = false
 			}
 		}
 		for index, value := range InterxP2PNodeListResponse.NodeList {
 			if !isInterxNodeId[value.ID] {
-				InterxP2PNodeListResponse.NodeList = append(InterxP2PNodeListResponse.NodeList[:index], InterxP2PNodeListResponse.NodeList[index+1:]...)
+				InterxP2PNodeListResponse.NodeList[index].Alive = false
 			}
 		}
 		for index, value := range SnapNodeListResponse.NodeList {
 			if !isSnapshotIP[value.IP] {
-				SnapNodeListResponse.NodeList = append(SnapNodeListResponse.NodeList[:index], SnapNodeListResponse.NodeList[index+1:]...)
+				SnapNodeListResponse.NodeList[index].Alive = false
 			}
 		}
 
