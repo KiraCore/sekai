@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.1.22.6] - 01.11.2021
+
+- sekaid init home config resolve
+
 ## [v0.1.22.4] - 12.10.2021
 
 - Add assign claim validator permission and allow claim validator action for the new permission
