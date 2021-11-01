@@ -38,6 +38,7 @@ type P2PNode struct {
 	Ping      int64    `json:"ping"`
 	Connected bool     `json:"connected"`
 	Peers     []string `json:"peers"`
+	Alive     bool     `json:"alive"`
 }
 
 type InterxNode struct {
@@ -48,6 +49,7 @@ type InterxNode struct {
 	Faucet  string `json:"faucet"`
 	Type    string `json:"type"`
 	Version string `json:"version"`
+	Alive   bool   `json:"alive"`
 }
 
 type SnapNode struct {
@@ -55,6 +57,7 @@ type SnapNode struct {
 	Port     uint16 `json:"port"`
 	Size     int    `json:"size"`
 	Checksum string `json:"checksum"`
+	Alive    bool   `json:"alive"`
 }
 
 type P2PNodeListResponse struct {
