@@ -14,3 +14,7 @@ type CustomGovKeeper interface {
 	AddToActiveProposals(ctx sdk.Context, proposal govtypes.Proposal)
 	CreateAndSaveProposalWithContent(ctx sdk.Context, title, description string, content govtypes.Content) (uint64, error)
 }
+
+type CustomStakingKeeper interface {
+	PauseProposalNotApprovedValidators(ctx sdk.Context, proposalID uint64) error
+}

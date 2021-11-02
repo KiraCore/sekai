@@ -21,7 +21,7 @@ func (a ApplyUpsertTokenAliasProposalHandler) ProposalType() string {
 	return tokenstypes.ProposalTypeUpsertTokenAlias
 }
 
-func (a ApplyUpsertTokenAliasProposalHandler) Apply(ctx sdk.Context, proposal types.Content) error {
+func (a ApplyUpsertTokenAliasProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
 	p := proposal.(*tokenstypes.ProposalUpsertTokenAlias)
 
 	tokenAlians := tokenstypes.NewTokenAlias(p.Symbol, p.Name, p.Icon, p.Decimals, p.Denoms)
@@ -40,7 +40,7 @@ func (a ApplyUpsertTokenRatesProposalHandler) ProposalType() string {
 	return tokenstypes.ProposalTypeUpsertTokenRates
 }
 
-func (a ApplyUpsertTokenRatesProposalHandler) Apply(ctx sdk.Context, proposal types.Content) error {
+func (a ApplyUpsertTokenRatesProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
 	p := proposal.(*tokenstypes.ProposalUpsertTokenRates)
 
 	tokenAlians := tokenstypes.NewTokenRate(p.Denom, p.Rate, p.FeePayments)
@@ -59,7 +59,7 @@ func (a ApplyWhiteBlackChangeProposalHandler) ProposalType() string {
 	return tokenstypes.ProposalTypeTokensWhiteBlackChange
 }
 
-func (a ApplyWhiteBlackChangeProposalHandler) Apply(ctx sdk.Context, proposal types.Content) error {
+func (a ApplyWhiteBlackChangeProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
 	p := proposal.(*tokenstypes.ProposalTokensWhiteBlackChange)
 
 	if p.IsBlacklist {

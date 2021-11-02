@@ -46,13 +46,17 @@ func (k Keeper) SaveNextPlan(ctx sdk.Context, plan types.Plan) error {
 	if plan.UpgradeTime <= ctx.BlockTime().Unix() {
 		return types.ErrInvalidUpgradeTime
 	}
+	k.setNextPlan(ctx, plan)
+	return nil
+}
+
+func (k Keeper) setNextPlan(ctx sdk.Context, plan types.Plan) {
 	store := ctx.KVStore(k.storeKey)
 	bz, err := proto.Marshal(&plan)
 	if err != nil {
 		panic(err)
 	}
 	store.Set(types.KeyNextPlan, bz)
-	return nil
 }
 
 func (k Keeper) ClearNextPlan(ctx sdk.Context) {
@@ -62,6 +66,15 @@ func (k Keeper) ClearNextPlan(ctx sdk.Context) {
 
 func (k Keeper) ApplyUpgradePlan(ctx sdk.Context, plan types.Plan) {
 	if plan.ShouldExecute(ctx) {
+		if !plan.ProcessedNoVoteValidators {
+			err := k.sk.PauseProposalNotApprovedValidators(ctx, plan.ProposalID)
+			if err != nil {
+				panic(err)
+			}
+			plan.ProcessedNoVoteValidators = true
+			k.setNextPlan(ctx, plan)
+			return
+		}
 		k.SaveCurrentPlan(ctx, plan)
 		k.ClearNextPlan(ctx)
 

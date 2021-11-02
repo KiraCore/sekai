@@ -21,7 +21,7 @@ func (a ApplySoftwareUpgradeProposalHandler) ProposalType() string {
 	return upgradetypes.ProposalTypeSoftwareUpgrade
 }
 
-func (a ApplySoftwareUpgradeProposalHandler) Apply(ctx sdk.Context, proposal types.Content) error {
+func (a ApplySoftwareUpgradeProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
 	p := proposal.(*upgradetypes.ProposalSoftwareUpgrade)
 
 	plan := upgradetypes.NewUpgradePlan(
@@ -35,6 +35,7 @@ func (a ApplySoftwareUpgradeProposalHandler) Apply(ctx sdk.Context, proposal typ
 		p.InstateUpgrade,
 		p.RebootRequired,
 		p.SkipHandler,
+		proposalID,
 	)
 	err := a.keeper.SaveNextPlan(ctx, plan)
 	return err
@@ -54,7 +55,7 @@ func (a ApplyCancelSoftwareUpgradeProposalHandler) ProposalType() string {
 	return upgradetypes.ProposalTypeCancelSoftwareUpgrade
 }
 
-func (a ApplyCancelSoftwareUpgradeProposalHandler) Apply(ctx sdk.Context, proposal types.Content) error {
+func (a ApplyCancelSoftwareUpgradeProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
 	a.keeper.ClearNextPlan(ctx)
 	return nil
 }

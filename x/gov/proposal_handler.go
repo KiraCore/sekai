@@ -19,7 +19,7 @@ func (a ApplyAssignPermissionProposalHandler) ProposalType() string {
 	return types.AssignPermissionProposalType
 }
 
-func (a ApplyAssignPermissionProposalHandler) Apply(ctx sdk.Context, proposal types.Content) error {
+func (a ApplyAssignPermissionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
 	p := proposal.(*types.AssignPermissionProposal)
 
 	actor, found := a.keeper.GetNetworkActorByAddress(ctx, p.Address)
@@ -46,7 +46,7 @@ func (a ApplySetNetworkPropertyProposalHandler) ProposalType() string {
 	return types.SetNetworkPropertyProposalType
 }
 
-func (a ApplySetNetworkPropertyProposalHandler) Apply(ctx sdk.Context, proposal types.Content) error {
+func (a ApplySetNetworkPropertyProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
 	p := proposal.(*types.SetNetworkPropertyProposal)
 
 	property, err := a.keeper.GetNetworkProperty(ctx, p.NetworkProperty)
@@ -72,7 +72,7 @@ func (a ApplyUpsertDataRegistryProposalHandler) ProposalType() string {
 	return types.UpsertDataRegistryProposalType
 }
 
-func (a ApplyUpsertDataRegistryProposalHandler) Apply(ctx sdk.Context, proposal types.Content) error {
+func (a ApplyUpsertDataRegistryProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
 	p := proposal.(*types.UpsertDataRegistryProposal)
 	entry := types.NewDataRegistryEntry(p.Hash, p.Reference, p.Encoding, p.Size_)
 	a.keeper.UpsertDataRegistryEntry(ctx, p.Key, entry)
@@ -91,7 +91,7 @@ func (a ApplySetPoorNetworkMessagesProposalHandler) ProposalType() string {
 	return types.SetPoorNetworkMessagesProposalType
 }
 
-func (a ApplySetPoorNetworkMessagesProposalHandler) Apply(ctx sdk.Context, proposal types.Content) error {
+func (a ApplySetPoorNetworkMessagesProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
 	p := proposal.(*types.SetPoorNetworkMessagesProposal)
 	msgs := types.AllowedMessages{Messages: p.Messages}
 	a.keeper.SavePoorNetworkMessages(ctx, &msgs)
@@ -106,7 +106,7 @@ func (c CreateRoleProposalHandler) ProposalType() string {
 	return types.CreateRoleProposalType
 }
 
-func (c CreateRoleProposalHandler) Apply(ctx sdk.Context, proposal types.Content) error {
+func (c CreateRoleProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
 	p := proposal.(*types.CreateRoleProposal)
 
 	_, exists := c.keeper.GetPermissionsForRole(ctx, types.Role(p.Role))

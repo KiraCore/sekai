@@ -17,4 +17,6 @@ message Plan {
   bool instate_upgrade = 8; // if it's set to false, chain is always halted
   bool reboot_required = 9; // only used by Kira Manager to check
   bool skip_handler = 10;
+  uint64 proposalID = 11; // save proposalID to reference vote info at the time of plan execution
+  bool processed_no_vote_validators = 12;
 }
