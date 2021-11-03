@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.1.22.7] - 03.11.2021
+
+- Pause validators that did not do yes vote on upgrade proposal
+
 ## [v0.1.22.6] - 01.11.2021
 
 - sekaid init home config resolve

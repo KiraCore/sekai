@@ -49,7 +49,7 @@ func (k msgServer) SubmitProposal(goCtx context.Context, msg *types.MsgSubmitPro
 		return nil, types.ErrProposalDoesNotExist
 	}
 
-	err = router.ApplyProposal(cacheCtx, proposal.GetContent())
+	err = router.ApplyProposal(cacheCtx, proposalID, proposal.GetContent())
 	if err != nil {
 		return nil, err
 	}
