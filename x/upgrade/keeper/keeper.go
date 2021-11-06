@@ -11,14 +11,16 @@ type Keeper struct {
 	cdc             codec.BinaryCodec
 	storeKey        sdk.StoreKey
 	upgradeHandlers map[string]types.UpgradeHandler
+	sk              types.CustomStakingKeeper
 }
 
 // NewKeeper constructs an upgrade Keeper
-func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryCodec) Keeper {
+func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryCodec, sk types.CustomStakingKeeper) Keeper {
 	return Keeper{
 		storeKey:        storeKey,
 		cdc:             cdc,
 		upgradeHandlers: map[string]types.UpgradeHandler{},
+		sk:              sk,
 	}
 }
 

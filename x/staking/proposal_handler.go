@@ -26,7 +26,7 @@ func (a ApplyUnjailValidatorProposalHandler) ProposalType() string {
 	return types.ProposalTypeUnjailValidator
 }
 
-func (a ApplyUnjailValidatorProposalHandler) Apply(ctx sdk.Context, proposal govtypes.Content) error {
+func (a ApplyUnjailValidatorProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal govtypes.Content) error {
 	p := proposal.(*types.ProposalUnjailValidator)
 
 	validator, err := a.keeper.GetValidatorByAccAddress(ctx, p.Proposer)

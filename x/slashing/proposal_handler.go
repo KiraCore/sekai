@@ -21,7 +21,7 @@ func (a ApplyResetWholeValidatorRankProposalHandler) ProposalType() string {
 	return types.ProposalTypeResetWholeValidatorRank
 }
 
-func (a ApplyResetWholeValidatorRankProposalHandler) Apply(ctx sdk.Context, proposal govtypes.Content) error {
+func (a ApplyResetWholeValidatorRankProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal govtypes.Content) error {
 	_ = proposal.(*types.ProposalResetWholeValidatorRank)
 
 	return a.keeper.ResetWholeValidatorRank(ctx)
