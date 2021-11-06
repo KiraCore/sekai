@@ -24,4 +24,8 @@ type GovKeeper interface {
 	GetIdRecordsByAddress(ctx sdk.Context, creator sdk.AccAddress) []govtypes.IdentityRecord
 	GetIdRecordsByAddressAndKeys(ctx sdk.Context, address sdk.AccAddress, keys []string) ([]govtypes.IdentityRecord, error)
 	GetAddressesByIdRecordKey(ctx sdk.Context, key, value string) []sdk.AccAddress
+
+	// proposal related functions
+	GetProposal(ctx sdk.Context, proposalID uint64) (govtypes.Proposal, bool)
+	GetProposalVotes(ctx sdk.Context, proposalID uint64) govtypes.Votes
 }

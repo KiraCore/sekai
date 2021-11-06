@@ -87,7 +87,7 @@ func processEnactmentProposal(ctx sdk.Context, k keeper.Keeper, proposalID uint6
 	}
 
 	if proposal.Result == types.Enactment {
-		err := router.ApplyProposal(ctx, proposal.GetContent())
+		err := router.ApplyProposal(ctx, proposalID, proposal.GetContent())
 		if err != nil {
 			proposal.ExecResult = "execution failed"
 		} else {

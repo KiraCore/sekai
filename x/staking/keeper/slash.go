@@ -1,6 +1,9 @@
 package keeper
 
 import (
+	"fmt"
+
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/staking/types"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -92,6 +95,32 @@ func (k Keeper) HandleValidatorSignature(ctx sdk.Context, valAddress sdk.ValAddr
 		}
 	}
 	k.AddValidator(ctx, validator)
+	return nil
+}
+
+func (k Keeper) PauseProposalNotApprovedValidators(ctx sdk.Context, proposalID uint64) error {
+	proposal, found := k.govkeeper.GetProposal(ctx, proposalID)
+	if !found {
+		return fmt.Errorf("proposal does not exist")
+	}
+
+	votes := k.govkeeper.GetProposalVotes(ctx, proposalID)
+	availableVoters := k.govkeeper.GetNetworkActorsByAbsoluteWhitelistPermission(ctx, proposal.GetContent().VotePermission())
+
+	processedValidators := make(map[string]bool)
+	for _, vote := range votes {
+		processedValidators[vote.Voter.String()] = true
+		if vote.Option != govtypes.OptionYes {
+			k.Pause(ctx, sdk.ValAddress(vote.Voter))
+		}
+	}
+
+	for _, voter := range availableVoters {
+		if !processedValidators[voter.Address.String()] {
+			k.Pause(ctx, sdk.ValAddress(voter.Address))
+		}
+		processedValidators[voter.Address.String()] = true
+	}
 	return nil
 }
 
