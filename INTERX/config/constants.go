@@ -33,6 +33,7 @@ const (
 	QueryTransactionResult   = "/api/transactions/{txHash}"
 	QueryStatus              = "/api/status"
 	QueryConsensus           = "/api/consensus"
+	QueryDumpConsensusState  = "/api/dump_consensus_state"
 	QueryValidators          = "/api/valopers"
 	QueryValidatorInfos      = "/api/valoperinfos"
 	QueryGenesis             = "/api/genesis"
