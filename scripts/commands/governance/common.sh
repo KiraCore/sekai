@@ -3,7 +3,15 @@
 sekaid tx customgov councilor claim-seat --from validator --keyring-backend=test --home=$HOME/.sekaid
 
 sekaid tx customgov permission blacklist-permission
+sekaid tx customgov permission remove-blacklisted-permission
 sekaid tx customgov permission whitelist-permission
+sekaid tx customgov permission remove-whitelisted-permission
+
+# add / remove / query whitelisted permissions
+sekaid tx customgov permission whitelist-permission --from validator --keyring-backend=test --permission=7 --addr=$(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --chain-id=testing --fees=100ukex --home=$HOME/.sekaid --yes
+sekaid query customgov permissions $(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid)
+sekaid tx customgov permission remove-whitelisted-permission --from validator --keyring-backend=test --permission=7 --addr=$(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --chain-id=testing --fees=100ukex --home=$HOME/.sekaid --yes
+sekaid query customgov permissions $(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid)
 
 sekaid tx customgov proposal assign-permission
 sekaid tx customgov proposal vote
