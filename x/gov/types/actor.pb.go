@@ -268,6 +268,66 @@ func (m *MsgWhitelistPermissions) GetPermission() uint32 {
 	return 0
 }
 
+type MsgRemoveWhitelistedPermissions struct {
+	Proposer   github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=proposer,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"proposer,omitempty"`
+	Address    github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,2,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
+	Permission uint32                                        `protobuf:"varint,3,opt,name=permission,proto3" json:"permission,omitempty"`
+}
+
+func (m *MsgRemoveWhitelistedPermissions) Reset()         { *m = MsgRemoveWhitelistedPermissions{} }
+func (m *MsgRemoveWhitelistedPermissions) String() string { return proto.CompactTextString(m) }
+func (*MsgRemoveWhitelistedPermissions) ProtoMessage()    {}
+func (*MsgRemoveWhitelistedPermissions) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c4584595efc3386e, []int{3}
+}
+func (m *MsgRemoveWhitelistedPermissions) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgRemoveWhitelistedPermissions) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgRemoveWhitelistedPermissions.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgRemoveWhitelistedPermissions) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRemoveWhitelistedPermissions.Merge(m, src)
+}
+func (m *MsgRemoveWhitelistedPermissions) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgRemoveWhitelistedPermissions) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRemoveWhitelistedPermissions.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgRemoveWhitelistedPermissions proto.InternalMessageInfo
+
+func (m *MsgRemoveWhitelistedPermissions) GetProposer() github_com_cosmos_cosmos_sdk_types.AccAddress {
+	if m != nil {
+		return m.Proposer
+	}
+	return nil
+}
+
+func (m *MsgRemoveWhitelistedPermissions) GetAddress() github_com_cosmos_cosmos_sdk_types.AccAddress {
+	if m != nil {
+		return m.Address
+	}
+	return nil
+}
+
+func (m *MsgRemoveWhitelistedPermissions) GetPermission() uint32 {
+	if m != nil {
+		return m.Permission
+	}
+	return 0
+}
+
 type MsgBlacklistPermissions struct {
 	Proposer   github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=proposer,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"proposer,omitempty"`
 	Address    github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,2,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
@@ -278,7 +338,7 @@ func (m *MsgBlacklistPermissions) Reset()         { *m = MsgBlacklistPermissions
 func (m *MsgBlacklistPermissions) String() string { return proto.CompactTextString(m) }
 func (*MsgBlacklistPermissions) ProtoMessage()    {}
 func (*MsgBlacklistPermissions) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c4584595efc3386e, []int{3}
+	return fileDescriptor_c4584595efc3386e, []int{4}
 }
 func (m *MsgBlacklistPermissions) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -328,56 +388,120 @@ func (m *MsgBlacklistPermissions) GetPermission() uint32 {
 	return 0
 }
 
+type MsgRemoveBlacklistedPermissions struct {
+	Proposer   github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=proposer,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"proposer,omitempty"`
+	Address    github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,2,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
+	Permission uint32                                        `protobuf:"varint,3,opt,name=permission,proto3" json:"permission,omitempty"`
+}
+
+func (m *MsgRemoveBlacklistedPermissions) Reset()         { *m = MsgRemoveBlacklistedPermissions{} }
+func (m *MsgRemoveBlacklistedPermissions) String() string { return proto.CompactTextString(m) }
+func (*MsgRemoveBlacklistedPermissions) ProtoMessage()    {}
+func (*MsgRemoveBlacklistedPermissions) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c4584595efc3386e, []int{5}
+}
+func (m *MsgRemoveBlacklistedPermissions) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgRemoveBlacklistedPermissions) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgRemoveBlacklistedPermissions.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgRemoveBlacklistedPermissions) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRemoveBlacklistedPermissions.Merge(m, src)
+}
+func (m *MsgRemoveBlacklistedPermissions) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgRemoveBlacklistedPermissions) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRemoveBlacklistedPermissions.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgRemoveBlacklistedPermissions proto.InternalMessageInfo
+
+func (m *MsgRemoveBlacklistedPermissions) GetProposer() github_com_cosmos_cosmos_sdk_types.AccAddress {
+	if m != nil {
+		return m.Proposer
+	}
+	return nil
+}
+
+func (m *MsgRemoveBlacklistedPermissions) GetAddress() github_com_cosmos_cosmos_sdk_types.AccAddress {
+	if m != nil {
+		return m.Address
+	}
+	return nil
+}
+
+func (m *MsgRemoveBlacklistedPermissions) GetPermission() uint32 {
+	if m != nil {
+		return m.Permission
+	}
+	return 0
+}
+
 func init() {
 	proto.RegisterEnum("kira.gov.ActorStatus", ActorStatus_name, ActorStatus_value)
 	proto.RegisterType((*Permissions)(nil), "kira.gov.Permissions")
 	proto.RegisterType((*NetworkActor)(nil), "kira.gov.NetworkActor")
 	proto.RegisterType((*MsgWhitelistPermissions)(nil), "kira.gov.MsgWhitelistPermissions")
+	proto.RegisterType((*MsgRemoveWhitelistedPermissions)(nil), "kira.gov.MsgRemoveWhitelistedPermissions")
 	proto.RegisterType((*MsgBlacklistPermissions)(nil), "kira.gov.MsgBlacklistPermissions")
+	proto.RegisterType((*MsgRemoveBlacklistedPermissions)(nil), "kira.gov.MsgRemoveBlacklistedPermissions")
 }
 
 func init() { proto.RegisterFile("kira/gov/actor.proto", fileDescriptor_c4584595efc3386e) }
 
 var fileDescriptor_c4584595efc3386e = []byte{
-	// 601 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xdc, 0x54, 0xbf, 0x6b, 0xdb, 0x40,
-	0x14, 0xf6, 0xd9, 0xb2, 0xe3, 0x9c, 0x93, 0x60, 0x0e, 0xb7, 0x11, 0xa2, 0x28, 0xc2, 0x50, 0x30,
-	0x81, 0x58, 0x34, 0x1d, 0x0a, 0x59, 0x8a, 0x62, 0xab, 0xa0, 0x34, 0x76, 0x82, 0xd2, 0xa4, 0x50,
-	0xe8, 0x70, 0x91, 0xae, 0xca, 0xa1, 0x1f, 0x27, 0x74, 0x17, 0xa7, 0xf9, 0x0f, 0x8a, 0xa7, 0xfe,
-	0x03, 0x86, 0x42, 0xc7, 0xfe, 0x23, 0x5d, 0x0a, 0x19, 0x3b, 0x85, 0x12, 0x0f, 0xed, 0xd2, 0xa5,
-	0x63, 0xa7, 0x22, 0xc9, 0x3f, 0xb4, 0x76, 0xe8, 0xd2, 0x49, 0xa7, 0xef, 0x7b, 0xdf, 0xe3, 0xbd,
-	0xef, 0xdd, 0x3d, 0xd8, 0xf2, 0x69, 0x82, 0x75, 0x8f, 0x8d, 0x74, 0xec, 0x08, 0x96, 0x74, 0xe3,
-	0x84, 0x09, 0x86, 0xea, 0x29, 0xda, 0xf5, 0xd8, 0x48, 0x69, 0x79, 0xcc, 0x63, 0x19, 0xa8, 0xa7,
-	0xa7, 0x9c, 0x57, 0x36, 0x17, 0xaa, 0x38, 0x61, 0x31, 0xe3, 0x38, 0xc8, 0x89, 0xb6, 0x05, 0x1b,
-	0xc7, 0x24, 0x09, 0x29, 0xe7, 0x94, 0x45, 0x1c, 0x3d, 0x80, 0xab, 0xe7, 0x01, 0x76, 0xfc, 0x80,
-	0x72, 0x21, 0x03, 0xad, 0xd2, 0x59, 0xb7, 0x97, 0x40, 0xca, 0x5e, 0x5d, 0x50, 0x41, 0x32, 0xb6,
-	0x9c, 0xb3, 0x0b, 0xa0, 0xfd, 0xa9, 0x0c, 0xd7, 0x86, 0x44, 0x5c, 0xb1, 0xc4, 0x37, 0xd2, 0xd2,
-	0xd0, 0x6b, 0xb8, 0x82, 0x5d, 0x37, 0x21, 0x9c, 0xcb, 0x40, 0x03, 0x9d, 0xb5, 0xfd, 0xde, 0xaf,
-	0xdb, 0xad, 0x8d, 0x6b, 0x1c, 0x06, 0x7b, 0xed, 0x19, 0xd1, 0xfe, 0x7d, 0xbb, 0xb5, 0xe3, 0x51,
-	0x71, 0x71, 0x79, 0xde, 0x75, 0x58, 0xa8, 0x3b, 0x8c, 0x87, 0x8c, 0xcf, 0x3e, 0x3b, 0xdc, 0xf5,
-	0x75, 0x71, 0x1d, 0x13, 0xde, 0x35, 0x1c, 0xc7, 0xc8, 0x15, 0xf6, 0x3c, 0x27, 0x6a, 0xc1, 0x6a,
-	0xc2, 0x02, 0xc2, 0xb3, 0x4a, 0x24, 0x3b, 0xff, 0x41, 0x3b, 0xb0, 0xc6, 0x05, 0x16, 0x97, 0x5c,
-	0xae, 0x68, 0xa0, 0xb3, 0xb1, 0x7b, 0xaf, 0x3b, 0xb7, 0xa6, 0x9b, 0x55, 0x75, 0x92, 0x91, 0xf6,
-	0x2c, 0x08, 0x6d, 0xc3, 0xea, 0x88, 0x09, 0xc2, 0x65, 0x49, 0xab, 0x74, 0x36, 0x76, 0x5b, 0xcb,
-	0xe8, 0x33, 0x26, 0xc8, 0x51, 0x2c, 0x28, 0x8b, 0xec, 0x3c, 0x04, 0x3d, 0x81, 0x8d, 0x78, 0xe9,
-	0x95, 0x5c, 0xd5, 0x40, 0xa7, 0x51, 0xcc, 0x5f, 0x30, 0xd2, 0x2e, 0x46, 0x22, 0x04, 0x25, 0xee,
-	0xd3, 0x48, 0xae, 0x69, 0xa0, 0x23, 0xd9, 0xd9, 0xb9, 0xfd, 0x13, 0xc0, 0xcd, 0x01, 0xf7, 0x5e,
-	0xce, 0xed, 0x2b, 0x4e, 0x61, 0x00, 0xeb, 0xf9, 0x98, 0x48, 0x32, 0x73, 0xee, 0xd1, 0xdf, 0xfb,
-	0xb4, 0x48, 0x51, 0x9c, 0x43, 0xf9, 0x1f, 0xcc, 0x41, 0x85, 0x70, 0xd9, 0x6c, 0xe6, 0xfa, 0xba,
-	0x5d, 0x40, 0xf6, 0xa4, 0x1f, 0x1f, 0xb6, 0x40, 0xfb, 0x7b, 0xde, 0xef, 0xfe, 0xfc, 0x32, 0xfd,
-	0xb7, 0xfd, 0x6e, 0x7f, 0x01, 0xb0, 0x51, 0xb8, 0x6a, 0xe9, 0xab, 0x39, 0x1d, 0xf6, 0xcd, 0x67,
-	0xd6, 0xd0, 0xec, 0x37, 0x4b, 0xca, 0xfa, 0x78, 0xa2, 0xad, 0x9e, 0x46, 0x2e, 0x79, 0x43, 0x23,
-	0xe2, 0xe6, 0x6c, 0xef, 0xd0, 0xb0, 0x06, 0x66, 0xbf, 0x09, 0xe6, 0xac, 0x13, 0x60, 0x1a, 0x12,
-	0x17, 0xdd, 0x87, 0x35, 0xa3, 0xf7, 0xc2, 0x3a, 0x33, 0x9b, 0x65, 0x05, 0x8e, 0x27, 0x5a, 0xcd,
-	0x70, 0x04, 0x1d, 0x91, 0x14, 0x3f, 0x36, 0x4e, 0x4f, 0xcc, 0x7e, 0xb3, 0x92, 0xe3, 0xc7, 0xf8,
-	0x92, 0x13, 0x17, 0x29, 0xb0, 0x6e, 0x0d, 0x67, 0x0a, 0x49, 0x59, 0x1b, 0x4f, 0xb4, 0xba, 0x15,
-	0xe1, 0x85, 0xe6, 0xc0, 0xb0, 0x0e, 0xcd, 0x7e, 0xb3, 0x9a, 0x6b, 0x0e, 0x30, 0x0d, 0x88, 0x8b,
-	0x64, 0xb8, 0x62, 0x9b, 0x83, 0xa3, 0x33, 0xb3, 0xdf, 0xac, 0x29, 0x8d, 0xf1, 0x44, 0x5b, 0xb1,
-	0x49, 0xc8, 0x46, 0xc4, 0x55, 0xa4, 0x77, 0x1f, 0xd5, 0xd2, 0xfe, 0xd3, 0xcf, 0x77, 0x2a, 0xb8,
-	0xb9, 0x53, 0xc1, 0xb7, 0x3b, 0x15, 0xbc, 0x9f, 0xaa, 0xa5, 0x9b, 0xa9, 0x5a, 0xfa, 0x3a, 0x55,
-	0x4b, 0xaf, 0x1e, 0x16, 0x1c, 0x7c, 0x4e, 0x13, 0xdc, 0x63, 0x09, 0xd1, 0x39, 0xf1, 0x31, 0xd5,
-	0xdf, 0x66, 0xcb, 0x26, 0x33, 0xf1, 0xbc, 0x96, 0xad, 0x9a, 0xc7, 0x7f, 0x02, 0x00, 0x00, 0xff,
-	0xff, 0x4d, 0x60, 0xb7, 0x26, 0xbb, 0x04, 0x00, 0x00,
+	// 627 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xdc, 0x55, 0xb1, 0x6b, 0xdb, 0x4e,
+	0x18, 0xf5, 0xd9, 0xb2, 0xe3, 0x9c, 0x93, 0x60, 0x0e, 0xff, 0x7e, 0x11, 0xa2, 0xc8, 0x42, 0x50,
+	0x30, 0x81, 0x58, 0x34, 0x1d, 0x0a, 0x59, 0x8a, 0x62, 0xab, 0xa0, 0x34, 0x76, 0x82, 0xd2, 0xa4,
+	0x50, 0xe8, 0x70, 0x91, 0xae, 0xca, 0x61, 0xd9, 0x67, 0x74, 0x17, 0xa7, 0xf9, 0x0f, 0x8a, 0xa7,
+	0xfe, 0x03, 0x86, 0x42, 0xc7, 0xfe, 0x23, 0x5d, 0x0a, 0x19, 0x3b, 0x85, 0x92, 0x0c, 0xed, 0x52,
+	0x0a, 0x85, 0x2e, 0x9d, 0x8a, 0x75, 0xb6, 0xac, 0xb5, 0x43, 0x17, 0x4f, 0x3e, 0xbf, 0xf7, 0x7d,
+	0x1f, 0xdf, 0x7b, 0x0f, 0xdd, 0xc1, 0x5a, 0x8f, 0xc6, 0xd8, 0x0a, 0xd9, 0xc8, 0xc2, 0xbe, 0x60,
+	0x71, 0x73, 0x18, 0x33, 0xc1, 0x50, 0x79, 0x8a, 0x36, 0x43, 0x36, 0xd2, 0x6a, 0x21, 0x0b, 0x59,
+	0x02, 0x5a, 0xd3, 0x93, 0xe4, 0xb5, 0xcd, 0xb4, 0x6b, 0x18, 0xb3, 0x21, 0xe3, 0x38, 0x92, 0x84,
+	0xe9, 0xc2, 0xca, 0x11, 0x89, 0xfb, 0x94, 0x73, 0xca, 0x06, 0x1c, 0xdd, 0x83, 0xab, 0x67, 0x11,
+	0xf6, 0x7b, 0x11, 0xe5, 0x42, 0x05, 0x46, 0xa1, 0xb1, 0xee, 0x2d, 0x80, 0x29, 0x7b, 0x79, 0x4e,
+	0x05, 0x49, 0xd8, 0xbc, 0x64, 0x53, 0xc0, 0xfc, 0x90, 0x87, 0x6b, 0x5d, 0x22, 0x2e, 0x59, 0xdc,
+	0xb3, 0xa7, 0xab, 0xa1, 0x97, 0x70, 0x05, 0x07, 0x41, 0x4c, 0x38, 0x57, 0x81, 0x01, 0x1a, 0x6b,
+	0x7b, 0xad, 0x9f, 0x37, 0xf5, 0x8d, 0x2b, 0xdc, 0x8f, 0x76, 0xcd, 0x19, 0x61, 0xfe, 0xbe, 0xa9,
+	0x6f, 0x87, 0x54, 0x9c, 0x5f, 0x9c, 0x35, 0x7d, 0xd6, 0xb7, 0x7c, 0xc6, 0xfb, 0x8c, 0xcf, 0x7e,
+	0xb6, 0x79, 0xd0, 0xb3, 0xc4, 0xd5, 0x90, 0xf0, 0xa6, 0xed, 0xfb, 0xb6, 0xec, 0xf0, 0xe6, 0x33,
+	0x51, 0x0d, 0x16, 0x63, 0x16, 0x11, 0x9e, 0x6c, 0xa2, 0x78, 0xf2, 0x0f, 0xda, 0x86, 0x25, 0x2e,
+	0xb0, 0xb8, 0xe0, 0x6a, 0xc1, 0x00, 0x8d, 0x8d, 0x9d, 0xff, 0x9a, 0x73, 0x6b, 0x9a, 0xc9, 0x56,
+	0xc7, 0x09, 0xe9, 0xcd, 0x8a, 0xd0, 0x16, 0x2c, 0x8e, 0x98, 0x20, 0x5c, 0x55, 0x8c, 0x42, 0x63,
+	0x63, 0xa7, 0xb6, 0xa8, 0x3e, 0x65, 0x82, 0x1c, 0x0e, 0x05, 0x65, 0x03, 0x4f, 0x96, 0xa0, 0x47,
+	0xb0, 0x32, 0x5c, 0x78, 0xa5, 0x16, 0x0d, 0xd0, 0xa8, 0x64, 0xe7, 0x67, 0x8c, 0xf4, 0xb2, 0x95,
+	0x08, 0x41, 0x85, 0xf7, 0xe8, 0x40, 0x2d, 0x19, 0xa0, 0xa1, 0x78, 0xc9, 0xd9, 0xfc, 0x0e, 0xe0,
+	0x66, 0x87, 0x87, 0xcf, 0xe7, 0xf6, 0x65, 0x53, 0xe8, 0xc0, 0xb2, 0x8c, 0x89, 0xc4, 0x33, 0xe7,
+	0x1e, 0xfc, 0xbd, 0x4f, 0xe9, 0x88, 0x6c, 0x0e, 0xf9, 0x7f, 0x90, 0x83, 0x0e, 0xe1, 0x42, 0x6c,
+	0xe2, 0xfa, 0xba, 0x97, 0x41, 0x76, 0x95, 0x6f, 0xef, 0xea, 0xc0, 0xfc, 0x05, 0x60, 0xbd, 0xc3,
+	0x43, 0x8f, 0xf4, 0xd9, 0x88, 0xa4, 0xaa, 0x49, 0xb0, 0xec, 0xba, 0xbf, 0xca, 0x9c, 0xf7, 0xe6,
+	0x1f, 0xd1, 0xd2, 0xea, 0x35, 0x7f, 0x64, 0x13, 0x4e, 0xf5, 0x2e, 0x71, 0xc2, 0x5b, 0x9f, 0x00,
+	0xac, 0x64, 0x2e, 0x95, 0xe9, 0xfd, 0x78, 0xd2, 0x6d, 0x3b, 0x4f, 0xdc, 0xae, 0xd3, 0xae, 0xe6,
+	0xb4, 0xf5, 0xf1, 0xc4, 0x58, 0x3d, 0x19, 0x04, 0xe4, 0x15, 0x1d, 0x90, 0x40, 0xb2, 0xad, 0x03,
+	0xdb, 0xed, 0x38, 0xed, 0x2a, 0x98, 0xb3, 0x7e, 0x84, 0x69, 0x9f, 0x04, 0xe8, 0x7f, 0x58, 0xb2,
+	0x5b, 0xcf, 0xdc, 0x53, 0xa7, 0x9a, 0xd7, 0xe0, 0x78, 0x62, 0x94, 0x6c, 0x5f, 0xd0, 0x11, 0x99,
+	0xe2, 0x47, 0xf6, 0xc9, 0xb1, 0xd3, 0xae, 0x16, 0x24, 0x7e, 0x84, 0x2f, 0x38, 0x09, 0x90, 0x06,
+	0xcb, 0x6e, 0x77, 0xd6, 0xa1, 0x68, 0x6b, 0xe3, 0x89, 0x51, 0x76, 0x07, 0x38, 0xed, 0xd9, 0xb7,
+	0xdd, 0x03, 0xa7, 0x5d, 0x2d, 0xca, 0x9e, 0x7d, 0x4c, 0x23, 0x12, 0x20, 0x15, 0xae, 0x78, 0x4e,
+	0xe7, 0xf0, 0xd4, 0x69, 0x57, 0x4b, 0x5a, 0x65, 0x3c, 0x31, 0x56, 0x64, 0x58, 0x81, 0xa6, 0xbc,
+	0x79, 0xaf, 0xe7, 0xf6, 0x1e, 0x7f, 0xbc, 0xd5, 0xc1, 0xf5, 0xad, 0x0e, 0xbe, 0xdc, 0xea, 0xe0,
+	0xed, 0x9d, 0x9e, 0xbb, 0xbe, 0xd3, 0x73, 0x9f, 0xef, 0xf4, 0xdc, 0x8b, 0xfb, 0x19, 0x07, 0x9f,
+	0xd2, 0x18, 0xb7, 0x58, 0x4c, 0x2c, 0x4e, 0x7a, 0x98, 0x5a, 0xaf, 0x93, 0x67, 0x25, 0x31, 0xf1,
+	0xac, 0x94, 0x3c, 0x2a, 0x0f, 0xff, 0x04, 0x00, 0x00, 0xff, 0xff, 0x14, 0xdb, 0xef, 0xaa, 0xa5,
+	0x06, 0x00, 0x00,
 }
 
 func (this *MsgWhitelistPermissions) Equal(that interface{}) bool {
@@ -388,6 +512,36 @@ func (this *MsgWhitelistPermissions) Equal(that interface{}) bool {
 	that1, ok := that.(*MsgWhitelistPermissions)
 	if !ok {
 		that2, ok := that.(MsgWhitelistPermissions)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if !bytes.Equal(this.Proposer, that1.Proposer) {
+		return false
+	}
+	if !bytes.Equal(this.Address, that1.Address) {
+		return false
+	}
+	if this.Permission != that1.Permission {
+		return false
+	}
+	return true
+}
+func (this *MsgRemoveWhitelistedPermissions) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*MsgRemoveWhitelistedPermissions)
+	if !ok {
+		that2, ok := that.(MsgRemoveWhitelistedPermissions)
 		if ok {
 			that1 = &that2
 		} else {
@@ -599,6 +753,48 @@ func (m *MsgWhitelistPermissions) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgRemoveWhitelistedPermissions) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgRemoveWhitelistedPermissions) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgRemoveWhitelistedPermissions) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Permission != 0 {
+		i = encodeVarintActor(dAtA, i, uint64(m.Permission))
+		i--
+		dAtA[i] = 0x18
+	}
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintActor(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Proposer) > 0 {
+		i -= len(m.Proposer)
+		copy(dAtA[i:], m.Proposer)
+		i = encodeVarintActor(dAtA, i, uint64(len(m.Proposer)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func (m *MsgBlacklistPermissions) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -615,6 +811,48 @@ func (m *MsgBlacklistPermissions) MarshalTo(dAtA []byte) (int, error) {
 }
 
 func (m *MsgBlacklistPermissions) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Permission != 0 {
+		i = encodeVarintActor(dAtA, i, uint64(m.Permission))
+		i--
+		dAtA[i] = 0x18
+	}
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintActor(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Proposer) > 0 {
+		i -= len(m.Proposer)
+		copy(dAtA[i:], m.Proposer)
+		i = encodeVarintActor(dAtA, i, uint64(len(m.Proposer)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgRemoveBlacklistedPermissions) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgRemoveBlacklistedPermissions) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgRemoveBlacklistedPermissions) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -732,7 +970,47 @@ func (m *MsgWhitelistPermissions) Size() (n int) {
 	return n
 }
 
+func (m *MsgRemoveWhitelistedPermissions) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Proposer)
+	if l > 0 {
+		n += 1 + l + sovActor(uint64(l))
+	}
+	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovActor(uint64(l))
+	}
+	if m.Permission != 0 {
+		n += 1 + sovActor(uint64(m.Permission))
+	}
+	return n
+}
+
 func (m *MsgBlacklistPermissions) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Proposer)
+	if l > 0 {
+		n += 1 + l + sovActor(uint64(l))
+	}
+	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovActor(uint64(l))
+	}
+	if m.Permission != 0 {
+		n += 1 + sovActor(uint64(m.Permission))
+	}
+	return n
+}
+
+func (m *MsgRemoveBlacklistedPermissions) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1400,6 +1678,143 @@ func (m *MsgWhitelistPermissions) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+func (m *MsgRemoveWhitelistedPermissions) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowActor
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgRemoveWhitelistedPermissions: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgRemoveWhitelistedPermissions: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Proposer", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowActor
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthActor
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthActor
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Proposer = append(m.Proposer[:0], dAtA[iNdEx:postIndex]...)
+			if m.Proposer == nil {
+				m.Proposer = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowActor
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthActor
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthActor
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Address = append(m.Address[:0], dAtA[iNdEx:postIndex]...)
+			if m.Address == nil {
+				m.Address = []byte{}
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Permission", wireType)
+			}
+			m.Permission = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowActor
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Permission |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipActor(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthActor
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
 func (m *MsgBlacklistPermissions) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1427,6 +1842,143 @@ func (m *MsgBlacklistPermissions) Unmarshal(dAtA []byte) error {
 		}
 		if fieldNum <= 0 {
 			return fmt.Errorf("proto: MsgBlacklistPermissions: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Proposer", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowActor
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthActor
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthActor
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Proposer = append(m.Proposer[:0], dAtA[iNdEx:postIndex]...)
+			if m.Proposer == nil {
+				m.Proposer = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowActor
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthActor
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthActor
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Address = append(m.Address[:0], dAtA[iNdEx:postIndex]...)
+			if m.Address == nil {
+				m.Address = []byte{}
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Permission", wireType)
+			}
+			m.Permission = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowActor
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Permission |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipActor(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthActor
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgRemoveBlacklistedPermissions) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowActor
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgRemoveBlacklistedPermissions: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgRemoveBlacklistedPermissions: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:

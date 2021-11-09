@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.1.22.8] - 09.11.2021
+
+- Add new messages for removing whitelisted and blacklisted permission
+
 ## [v0.1.22.7] - 03.11.2021
 
 - Pause validators that did not do yes vote on upgrade proposal

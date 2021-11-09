@@ -64,6 +64,20 @@ message MsgWhitelistPermissions {
   uint32 permission = 3;
 }
 
+message MsgRemoveWhitelistedPermissions {
+  option (gogoproto.equal) = true;
+
+  bytes proposer = 1 [ (gogoproto.casttype) =
+                           "github.com/cosmos/cosmos-sdk/types.AccAddress" ];
+
+  bytes address = 2 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  uint32 permission = 3;
+}
+
 message MsgBlacklistPermissions {
   bytes proposer = 1 [
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
@@ -77,3 +91,15 @@ message MsgBlacklistPermissions {
   uint32 permission = 3;
 }
 
+message MsgRemoveBlacklistedPermissions {
+  bytes proposer = 1 [ 
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
+  ];
+
+  bytes address = 2 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  uint32 permission = 3;
+}
