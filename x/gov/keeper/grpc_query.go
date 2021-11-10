@@ -18,6 +18,14 @@ import (
 
 var _ types.QueryServer = Keeper{}
 
+// AllRoles return all roles registered
+func (k Keeper) AllRoles(goCtx context.Context, request *types.AllRolesRequest) (*types.AllRolesResponse, error) {
+	roles := k.GetAllRoles(sdk.UnwrapSDKContext(goCtx))
+	return &types.AllRolesResponse{
+		Roles: roles,
+	}, nil
+}
+
 // RolesByAddress return roles associated to an address
 func (k Keeper) RolesByAddress(goCtx context.Context, request *types.RolesByAddressRequest) (*types.RolesByAddressResponse, error) {
 	actor, found := k.GetNetworkActorByAddress(sdk.UnwrapSDKContext(goCtx), request.ValAddr)
