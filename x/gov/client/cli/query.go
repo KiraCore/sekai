@@ -52,10 +52,35 @@ func GetCmdQueryPermissions() *cobra.Command {
 	return cmd
 }
 
-// GetCmdQueryRolesByAddress the query delegation command.
+// GetCmdQueryAllRoles is the querier for all registered roles
+func GetCmdQueryAllRoles() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "all-roles",
+		Short: "Query all registered roles",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			request := &types.AllRolesRequest{}
+
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.AllRoles(context.Background(), request)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// GetCmdQueryRolesByAddress is the querier for roles by address.
 func GetCmdQueryRolesByAddress() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "roles addr",
+		Use:   "roles [addr]",
 		Short: "Query roles assigned to an address",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)

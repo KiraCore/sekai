@@ -23,6 +23,11 @@ sekaid tx customgov role remove-blacklist-permission
 sekaid tx customgov role remove-whitelist-permission
 sekaid tx customgov role whitelist-permission
 
+# query all roles
+sekaid query customgov all-roles
+# query roles for an address
+sekaid query customgov roles $(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid)
+
 # querying for voters of a specific proposal
 sekaid query customgov voters 1
 # querying for votes of a specific proposal
