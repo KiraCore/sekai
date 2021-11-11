@@ -22,10 +22,12 @@ import (
 // RegisterValidatorsQueryRoutes registers validators query routers.
 func RegisterValidatorsQueryRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr string) {
 	r.HandleFunc(config.QueryConsensus, QueryConsensus(gwCosmosmux, rpcAddr)).Methods("GET")
+	r.HandleFunc(config.QueryDumpConsensusState, QueryDumpConsensusState(gwCosmosmux, rpcAddr)).Methods("GET")
 	r.HandleFunc(config.QueryValidators, QueryValidators(gwCosmosmux, rpcAddr)).Methods("GET")
 	r.HandleFunc(config.QueryValidatorInfos, QueryValidatorInfos(gwCosmosmux, rpcAddr)).Methods("GET")
 
 	common.AddRPCMethod("GET", config.QueryConsensus, "This is an API to query consensus.", true)
+	common.AddRPCMethod("GET", config.QueryDumpConsensusState, "This is an API to query consensus state.", true)
 	common.AddRPCMethod("GET", config.QueryValidators, "This is an API to query validators.", true)
 	common.AddRPCMethod("GET", config.QueryValidatorInfos, "This is an API to query validator infos.", true)
 }
@@ -351,6 +353,38 @@ func QueryConsensus(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.HandlerF
 			}
 
 			response.Response, response.Error, statusCode = queryConsensusHandle(r, gwCosmosmux, rpcAddr)
+		}
+
+		common.WrapResponse(w, request, *response, statusCode, true)
+	}
+}
+
+func queryDumpConsensusStateHandler(r *http.Request, gwCosmosmux *runtime.ServeMux, rpcAddr string) (interface{}, interface{}, int) {
+	return common.MakeTendermintRPCRequest(rpcAddr, "/dump_consensus_state", "")
+}
+
+// QueryDumpConsensusState is a function to query consensus.
+func QueryDumpConsensusState(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		request := common.GetInterxRequest(r)
+		response := common.GetResponseFormat(request, rpcAddr)
+		statusCode := http.StatusOK
+
+		if !common.RPCMethods["GET"][config.QueryDumpConsensusState].Enabled {
+			response.Response, response.Error, statusCode = common.ServeError(0, "", "API disabled", http.StatusForbidden)
+		} else {
+			if common.RPCMethods["GET"][config.QueryDumpConsensusState].CachingEnabled {
+				found, cacheResponse, cacheError, cacheStatus := common.SearchCache(request, response)
+				if found {
+					response.Response, response.Error, statusCode = cacheResponse, cacheError, cacheStatus
+					common.WrapResponse(w, request, *response, statusCode, false)
+
+					common.GetLogger().Info("[query-dump-consensus-state] Returning from the cache")
+					return
+				}
+			}
+
+			response.Response, response.Error, statusCode = queryDumpConsensusStateHandler(r, gwCosmosmux, rpcAddr)
 		}
 
 		common.WrapResponse(w, request, *response, statusCode, true)

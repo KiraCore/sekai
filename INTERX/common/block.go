@@ -37,18 +37,23 @@ func AddNewBlock(height int64, timestamp int64) {
 		GetLogger().Errorf("[AddNewBlock] not a new block: %d", height)
 		return
 	}
-	prevBlockTimestamp, err := GetBlockNanoTime(config.Config.RPC, height-1)
-	if err != nil {
-		GetLogger().Errorf("[AddNewBlock] Can't get block: %d", height-1)
-		return
-	}
 
-	var timespan float64 = (float64(timestamp) - float64(prevBlockTimestamp)) / 1e9
+	var timespan float64 = 0
+	if height != 0 {
 
-	if len(LatestNBlockTimes) > 0 && timespan >= GetAverageBlockTime()*float64(config.Config.Block.HaltedAvgBlockTimes) {
-		// a block just after a halt
-		GetLogger().Errorf("[AddNewBlock] block just after a halt: %d, timestamp: %f, average: %f", height, timespan, GetAverageBlockTime())
-		return
+		prevBlockTimestamp, err := GetBlockNanoTime(config.Config.RPC, height-1)
+		if err != nil {
+			GetLogger().Errorf("[AddNewBlock] Can't get block: %d", height-1)
+			return
+		}
+
+		timespan = (float64(timestamp) - float64(prevBlockTimestamp)) / 1e9
+
+		if len(LatestNBlockTimes) > 0 && timespan >= GetAverageBlockTime()*float64(config.Config.Block.HaltedAvgBlockTimes) {
+			// a block just after a halt
+			GetLogger().Errorf("[AddNewBlock] block just after a halt: %d, timestamp: %f, average: %f", height, timespan, GetAverageBlockTime())
+			return
+		}
 	}
 
 	// insert new block
