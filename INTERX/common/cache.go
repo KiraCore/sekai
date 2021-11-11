@@ -51,7 +51,7 @@ func GetCache(chainIDHash string, endpointHash string, requestHash string) (type
 	data, err := ioutil.ReadFile(filePath)
 
 	if err != nil {
-		return response, nil
+		return response, err
 	}
 
 	err = json.Unmarshal([]byte(data), &response)
