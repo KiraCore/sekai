@@ -19,6 +19,8 @@ option go_package = "github.com/KiraCore/sekai/x/gov/types";
 service Query {
   // Returns the permissions an actor has by address.
   rpc PermissionsByAddress (PermissionsByAddressRequest) returns (PermissionsResponse) {}
+  // Returns all registered roles
+  rpc AllRoles (AllRolesRequest) returns (AllRolesResponse) {}
   // Returns the roles that are assigned to an address.
   rpc RolesByAddress (RolesByAddressRequest) returns (RolesByAddressResponse) {}
   // RolePermissions returns the permissions of the roles available in the registry.
@@ -104,6 +106,11 @@ message PermissionsByAddressRequest {
 
 message PermissionsResponse {
   kira.gov.Permissions permissions = 1;
+}
+
+message AllRolesRequest {}
+message AllRolesResponse {
+  repeated uint64 roles = 1;
 }
 
 message RolesByAddressRequest {

@@ -123,8 +123,12 @@ func NewTxPermissionCmds() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	permCmd.AddCommand(GetTxSetWhitelistPermissions())
-	permCmd.AddCommand(GetTxSetBlacklistPermissions())
+	permCmd.AddCommand(
+		GetTxSetWhitelistPermissions(),
+		GetTxRemoveWhitelistedPermissions(),
+		GetTxSetBlacklistPermissions(),
+		GetTxRemoveBlacklistedPermissions(),
+	)
 
 	return permCmd
 }
@@ -178,6 +182,41 @@ func GetTxSetWhitelistPermissions() *cobra.Command {
 	return cmd
 }
 
+func GetTxRemoveWhitelistedPermissions() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "remove-whitelisted-permission",
+		Short: "Remove whitelisted permission from an address",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+
+			perm, err := cmd.Flags().GetUint32(FlagPermission)
+			if err != nil {
+				return fmt.Errorf("invalid permissions")
+			}
+
+			addr, err := getAddressFromFlag(cmd)
+			if err != nil {
+				return fmt.Errorf("error getting address: %w", err)
+			}
+
+			msg := types.NewMsgRemoveWhitelistedPermissions(
+				clientCtx.FromAddress,
+				addr,
+				perm,
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	setPermissionFlags(cmd)
+
+	flags.AddTxFlagsToCmd(cmd)
+	cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
 func GetTxSetBlacklistPermissions() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "blacklist-permission",
@@ -199,6 +238,44 @@ func GetTxSetBlacklistPermissions() *cobra.Command {
 			}
 
 			msg := types.NewMsgBlacklistPermissions(
+				clientCtx.FromAddress,
+				addr,
+				perm,
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	setPermissionFlags(cmd)
+
+	flags.AddTxFlagsToCmd(cmd)
+	cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+func GetTxRemoveBlacklistedPermissions() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "remove-blacklisted-permission",
+		Short: "Remove blacklisted permission from an address",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			perm, err := cmd.Flags().GetUint32(FlagPermission)
+			if err != nil {
+				return fmt.Errorf("invalid permissions")
+			}
+
+			addr, err := getAddressFromFlag(cmd)
+			if err != nil {
+				return fmt.Errorf("error getting address: %w", err)
+			}
+
+			msg := types.NewMsgRemoveBlacklistedPermissions(
 				clientCtx.FromAddress,
 				addr,
 				perm,

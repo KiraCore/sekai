@@ -76,6 +76,48 @@ func (m *MsgWhitelistPermissions) GetSigners() []sdk.AccAddress {
 	}
 }
 
+func NewMsgRemoveWhitelistedPermissions(
+	proposer, address sdk.AccAddress,
+	permission uint32,
+) *MsgRemoveWhitelistedPermissions {
+	return &MsgRemoveWhitelistedPermissions{
+		Proposer:   proposer,
+		Address:    address,
+		Permission: permission,
+	}
+}
+
+func (m *MsgRemoveWhitelistedPermissions) Route() string {
+	return ModuleName
+}
+
+func (m *MsgRemoveWhitelistedPermissions) Type() string {
+	return types.MsgTypeBlacklistPermissions
+}
+
+func (m *MsgRemoveWhitelistedPermissions) ValidateBasic() error {
+	if m.Proposer.Empty() {
+		return ErrEmptyProposerAccAddress
+	}
+
+	if m.Address.Empty() {
+		return ErrEmptyPermissionsAccAddress
+	}
+
+	return nil
+}
+
+func (m *MsgRemoveWhitelistedPermissions) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *MsgRemoveWhitelistedPermissions) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{
+		m.Proposer,
+	}
+}
+
 func NewMsgBlacklistPermissions(
 	proposer, address sdk.AccAddress,
 	permission uint32,
@@ -113,6 +155,48 @@ func (m *MsgBlacklistPermissions) GetSignBytes() []byte {
 }
 
 func (m *MsgBlacklistPermissions) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{
+		m.Proposer,
+	}
+}
+
+func NewMsgRemoveBlacklistedPermissions(
+	proposer, address sdk.AccAddress,
+	permission uint32,
+) *MsgRemoveBlacklistedPermissions {
+	return &MsgRemoveBlacklistedPermissions{
+		Proposer:   proposer,
+		Address:    address,
+		Permission: permission,
+	}
+}
+
+func (m *MsgRemoveBlacklistedPermissions) Route() string {
+	return ModuleName
+}
+
+func (m *MsgRemoveBlacklistedPermissions) Type() string {
+	return types.MsgTypeBlacklistPermissions
+}
+
+func (m *MsgRemoveBlacklistedPermissions) ValidateBasic() error {
+	if m.Proposer.Empty() {
+		return ErrEmptyProposerAccAddress
+	}
+
+	if m.Address.Empty() {
+		return ErrEmptyPermissionsAccAddress
+	}
+
+	return nil
+}
+
+func (m *MsgRemoveBlacklistedPermissions) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *MsgRemoveBlacklistedPermissions) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{
 		m.Proposer,
 	}

@@ -381,6 +381,40 @@ func (k msgServer) WhitelistPermissions(
 	return &types.MsgWhitelistPermissionsResponse{}, nil
 }
 
+func (k msgServer) RemoveWhitelistedPermissions(
+	goCtx context.Context,
+	msg *types.MsgRemoveWhitelistedPermissions,
+) (*types.MsgRemoveWhitelistedPermissionsResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	isSetClaimValidatorMsg := msg.Permission == uint32(types.PermClaimValidator)
+	hasSetClaimValidatorPermission := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, types.PermSetClaimValidatorPermission)
+	hasSetPermissionsPermission := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, types.PermSetPermissions)
+	if !hasSetPermissionsPermission && !(isSetClaimValidatorMsg && hasSetClaimValidatorPermission) {
+		return nil, errors.Wrap(types.ErrNotEnoughPermissions, "PermSetPermissions || (ClaimValidatorPermission && ClaimValidatorPermMsg)")
+	}
+
+	actor, found := k.keeper.GetNetworkActorByAddress(ctx, msg.Address)
+	if !found {
+		actor = types.NewDefaultActor(msg.Address)
+	}
+
+	err := k.keeper.RemoveWhitelistPermission(ctx, actor, types.PermValue(msg.Permission))
+	if err != nil {
+		return nil, errors.Wrapf(types.ErrSetPermissions, "error setting %d to whitelist: %s", msg.Permission, err)
+	}
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeRemoveWhitelistedPermisison,
+			sdk.NewAttribute(types.AttributeKeyProposer, msg.Proposer.String()),
+			sdk.NewAttribute(types.AttributeKeyRoleId, msg.Address.String()),
+			sdk.NewAttribute(types.AttributeKeyPermission, fmt.Sprintf("%d", msg.Permission)),
+		),
+	)
+	return &types.MsgRemoveWhitelistedPermissionsResponse{}, nil
+}
+
 func (k msgServer) BlacklistPermissions(
 	goCtx context.Context,
 	msg *types.MsgBlacklistPermissions,
@@ -401,7 +435,7 @@ func (k msgServer) BlacklistPermissions(
 
 	err := actor.Permissions.AddToBlacklist(types.PermValue(msg.Permission))
 	if err != nil {
-		return nil, errors.Wrapf(types.ErrSetPermissions, "error setting %d to whitelist", msg.Permission)
+		return nil, errors.Wrapf(types.ErrSetPermissions, "error setting %d to whitelist: %s", msg.Permission, err)
 	}
 
 	k.keeper.SaveNetworkActor(ctx, actor)
@@ -414,6 +448,41 @@ func (k msgServer) BlacklistPermissions(
 		),
 	)
 	return &types.MsgBlacklistPermissionsResponse{}, nil
+}
+
+func (k msgServer) RemoveBlacklistedPermissions(
+	goCtx context.Context,
+	msg *types.MsgRemoveBlacklistedPermissions,
+) (*types.MsgRemoveBlacklistedPermissionsResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	isSetClaimValidatorMsg := msg.Permission == uint32(types.PermClaimValidator)
+	hasSetClaimValidatorPermission := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, types.PermSetClaimValidatorPermission)
+	hasSetPermissionsPermission := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, types.PermSetPermissions)
+	if !hasSetPermissionsPermission && !(isSetClaimValidatorMsg && hasSetClaimValidatorPermission) {
+		return nil, errors.Wrap(types.ErrNotEnoughPermissions, "PermSetPermissions || (ClaimValidatorPermission && ClaimValidatorPermMsg)")
+	}
+
+	actor, found := k.keeper.GetNetworkActorByAddress(ctx, msg.Address)
+	if !found {
+		actor = types.NewDefaultActor(msg.Address)
+	}
+
+	err := actor.Permissions.RemoveFromBlacklist(types.PermValue(msg.Permission))
+	if err != nil {
+		return nil, errors.Wrapf(types.ErrSetPermissions, "error setting %d to whitelist: %s", msg.Permission, err)
+	}
+
+	k.keeper.SaveNetworkActor(ctx, actor)
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeRemoveBlacklistedPermisison,
+			sdk.NewAttribute(types.AttributeKeyProposer, msg.Proposer.String()),
+			sdk.NewAttribute(types.AttributeKeyRoleId, msg.Address.String()),
+			sdk.NewAttribute(types.AttributeKeyPermission, fmt.Sprintf("%d", msg.Permission)),
+		),
+	)
+	return &types.MsgRemoveBlacklistedPermissionsResponse{}, nil
 }
 
 func (k msgServer) SetNetworkProperties(

@@ -49,7 +49,11 @@ func (p *Permissions) IsWhitelisted(perm PermValue) bool {
 // AddToWhitelist adds permission to whitelist.
 func (p *Permissions) AddToWhitelist(perm PermValue) error {
 	if p.IsBlacklisted(perm) {
-		return fmt.Errorf("permission is already blacklisted")
+		return fmt.Errorf("permission is blacklisted")
+	}
+
+	if p.IsWhitelisted(perm) {
+		return fmt.Errorf("permission is already whitelisted")
 	}
 
 	p.Whitelist = append(p.Whitelist, uint32(perm))
@@ -59,7 +63,11 @@ func (p *Permissions) AddToWhitelist(perm PermValue) error {
 // AddToBlacklist adds permission to blacklist. It fails if the permission is whitelisted.
 func (p *Permissions) AddToBlacklist(perm PermValue) error {
 	if p.IsWhitelisted(perm) {
-		return fmt.Errorf("permission is already whitelisted")
+		return fmt.Errorf("permission is whitelisted")
+	}
+
+	if p.IsBlacklisted(perm) {
+		return fmt.Errorf("permission is already blacklisted")
 	}
 
 	p.Blacklist = append(p.Blacklist, uint32(perm))
