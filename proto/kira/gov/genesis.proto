@@ -16,22 +16,24 @@ option go_package = "github.com/KiraCore/sekai/x/gov/types";
 message GenesisState {
   // starting_proposal_id is the ID of the starting proposal.
   uint64 starting_proposal_id = 1;
-  // permissions is the roles that are active from genesis.
-  map<uint64, Permissions> permissions = 2;
+  uint64 next_role_id = 2;
+  repeated Role roles = 3;
+  // role_permissions is the roles that are active from genesis.
+  map<uint64, Permissions> role_permissions = 4;
   // NetworkActors are the actors that are saved from genesis.
-  repeated NetworkActor network_actors = 3;
+  repeated NetworkActor network_actors = 5;
 
-  NetworkProperties network_properties = 4;
-  repeated ExecutionFee execution_fees = 5;
-  AllowedMessages poor_network_messages = 6; 
+  NetworkProperties network_properties = 6;
+  repeated ExecutionFee execution_fees = 7;
+  AllowedMessages poor_network_messages = 8; 
 
-  repeated Proposal proposals = 7 [ (gogoproto.nullable) = false ];
-  repeated Vote votes = 8 [ (gogoproto.nullable) = false ];
-  map<string, kira.gov.DataRegistryEntry> data_registry = 9;
+  repeated Proposal proposals = 9 [ (gogoproto.nullable) = false ];
+  repeated Vote votes = 10 [ (gogoproto.nullable) = false ];
+  map<string, kira.gov.DataRegistryEntry> data_registry = 11;
 
-  repeated kira.gov.IdentityRecord identity_records = 10 [ (gogoproto.nullable) = false ];
-  uint64 last_identity_record_id = 11;
+  repeated kira.gov.IdentityRecord identity_records = 12 [ (gogoproto.nullable) = false ];
+  uint64 last_identity_record_id = 13;
 
-  repeated kira.gov.IdentityRecordsVerify id_records_verify_requests = 12 [ (gogoproto.nullable) = false ];
-  uint64 last_id_record_verify_request_id = 13;
+  repeated kira.gov.IdentityRecordsVerify id_records_verify_requests = 14 [ (gogoproto.nullable) = false ];
+  uint64 last_id_record_verify_request_id = 15;
 }

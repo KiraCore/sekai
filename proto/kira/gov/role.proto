@@ -66,3 +66,10 @@ message MsgRemoveBlacklistRolePermission {
   uint32 role = 2;
   uint32 permission = 3;
 }
+
+message Role {
+  uint32 id = 1;  // (integer) - auto assigned
+  string sid = 2; // string identifier unique variable name
+  string description = 3;
+  // Role permissions are managed in different store for storage efficiency
+}
