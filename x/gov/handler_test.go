@@ -530,7 +530,7 @@ func TestHandler_WhitelistRolePermissions_Errors(t *testing.T) {
 				err2 = app.CustomGovKeeper.BlacklistRolePermission(ctx, types.RoleValidator, types.PermSetPermissions)
 				require.NoError(t, err2)
 			},
-			expectedErr: fmt.Errorf("permission is already blacklisted"),
+			expectedErr: fmt.Errorf("permission is blacklisted"),
 		},
 	}
 
@@ -628,7 +628,7 @@ func TestHandler_BlacklistRolePermissions_Errors(t *testing.T) {
 				err2 = app.CustomGovKeeper.WhitelistRolePermission(ctx, types.RoleValidator, types.PermSetPermissions)
 				require.NoError(t, err2)
 			},
-			expectedErr: fmt.Errorf("permission is already whitelisted"),
+			expectedErr: fmt.Errorf("permission is whitelisted"),
 		},
 	}
 
