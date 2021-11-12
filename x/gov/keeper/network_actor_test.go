@@ -198,12 +198,12 @@ func TestKeeper_GetNetworkActorsByAbsoluteWhitelistPermission(t *testing.T) {
 
 				// Create role
 				app.CustomGovKeeper.CreateRole(ctx, types.Role(12345))
-				err := app.CustomGovKeeper.WhitelistRolePermission(ctx, types.Role(12345), types.PermSetPermissions)
+				err := app.CustomGovKeeper.WhitelistRolePermission(ctx, 12345, types.PermSetPermissions)
 				require.NoError(t, err)
 
 				for _, addr := range addrs {
 					actor := types.NewDefaultActor(addr)
-					app.CustomGovKeeper.AssignRoleToActor(ctx, actor, types.Role(12345))
+					app.CustomGovKeeper.AssignRoleToActor(ctx, actor, 12345)
 				}
 
 				expectedActors := []types.NetworkActor{
@@ -221,13 +221,13 @@ func TestKeeper_GetNetworkActorsByAbsoluteWhitelistPermission(t *testing.T) {
 
 				// Create role
 				app.CustomGovKeeper.CreateRole(ctx, types.Role(12345))
-				err := app.CustomGovKeeper.WhitelistRolePermission(ctx, types.Role(12345), types.PermSetPermissions)
+				err := app.CustomGovKeeper.WhitelistRolePermission(ctx, 12345, types.PermSetPermissions)
 				require.NoError(t, err)
 
 				// We whitelist all by the role.
 				for _, addr := range addrs {
 					actor := types.NewDefaultActor(addr)
-					app.CustomGovKeeper.AssignRoleToActor(ctx, actor, types.Role(12345))
+					app.CustomGovKeeper.AssignRoleToActor(ctx, actor, 12345)
 				}
 
 				err = app.CustomGovKeeper.AddWhitelistPermission(ctx, types.NewDefaultActor(addrs[0]), types.PermSetPermissions)
@@ -248,12 +248,12 @@ func TestKeeper_GetNetworkActorsByAbsoluteWhitelistPermission(t *testing.T) {
 
 				// Create role
 				app.CustomGovKeeper.CreateRole(ctx, types.Role(12345))
-				err := app.CustomGovKeeper.WhitelistRolePermission(ctx, types.Role(12345), types.PermSetPermissions)
+				err := app.CustomGovKeeper.WhitelistRolePermission(ctx, 12345, types.PermSetPermissions)
 				require.NoError(t, err)
 
 				// We assign role to first actor.
 				actor := types.NewDefaultActor(addrs[0])
-				app.CustomGovKeeper.AssignRoleToActor(ctx, actor, types.Role(12345))
+				app.CustomGovKeeper.AssignRoleToActor(ctx, actor, 12345)
 
 				err = whitelistPermToMultipleAddrs(app, ctx, addrs, types.PermSetPermissions)
 				require.NoError(t, err)
@@ -285,7 +285,7 @@ func TestKeeper_GetNetworkActorsByAbsoluteWhitelistPermission(t *testing.T) {
 	}
 }
 
-func addRoleToMultipleAddrs(app *simapp.SekaiApp, ctx sdk.Context, addrs []sdk.AccAddress, role types.Role) {
+func addRoleToMultipleAddrs(app *simapp.SekaiApp, ctx sdk.Context, addrs []sdk.AccAddress, role uint64) {
 	for _, addr := range addrs {
 		app.CustomGovKeeper.AssignRoleToActor(ctx, types.NewDefaultActor(addr), role)
 	}
@@ -330,7 +330,7 @@ func assertAddrsHaveRole(
 	app *simapp.SekaiApp,
 	ctx sdk.Context,
 	addrs []sdk.AccAddress,
-	role types.Role,
+	role uint64,
 ) {
 	for _, addr := range addrs {
 		actor, found := app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addr)

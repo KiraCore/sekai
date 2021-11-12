@@ -32,7 +32,7 @@ func TestQuerier_PermissionsByAddress(t *testing.T) {
 
 	networkActor := types.NewNetworkActor(
 		addr1,
-		types.Roles{},
+		[]uint64{},
 		1,
 		nil,
 		permissions,
@@ -62,7 +62,7 @@ func TestQuerier_RolesByAddress(t *testing.T) {
 
 	networkActor := types.NewNetworkActor(
 		addr1,
-		types.Roles{
+		[]uint64{
 			1, 2, 3,
 		},
 		1,

@@ -17,7 +17,7 @@ message GenesisState {
   // starting_proposal_id is the ID of the starting proposal.
   uint64 starting_proposal_id = 1;
   uint64 next_role_id = 2;
-  repeated Role roles = 3;
+  repeated Role roles = 3 [ (gogoproto.nullable) = false ];
   // role_permissions is the roles that are active from genesis.
   map<uint64, Permissions> role_permissions = 4;
   // NetworkActors are the actors that are saved from genesis.

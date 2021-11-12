@@ -205,7 +205,8 @@ func (m *SetPoorNetworkMessagesProposal) ValidateBasic() error {
 	return nil
 }
 
-func NewCreateRoleProposal(role Role, whitelist []PermValue, blacklist []PermValue) Content {
+// TODO: Role creation proposal should have more params
+func NewCreateRoleProposal(role uint64, whitelist []PermValue, blacklist []PermValue) Content {
 	return &CreateRoleProposal{
 		Role:                   uint32(role),
 		WhitelistedPermissions: whitelist,

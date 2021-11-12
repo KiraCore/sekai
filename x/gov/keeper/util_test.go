@@ -47,7 +47,7 @@ func TestCheckIfAllowedPermission(t *testing.T) {
 		{
 			name: "actor has permission blacklisted in role",
 			prepareScenario: func(ctx sdk.Context, keeper keeper.Keeper) {
-				roleWithBlacklistedValue := types.Role(123)
+				roleWithBlacklistedValue := uint64(123)
 				keeper.CreateRole(ctx, roleWithBlacklistedValue)
 				err2 := keeper.BlacklistRolePermission(ctx, roleWithBlacklistedValue, types.PermClaimValidator)
 				require.NoError(t, err2)
@@ -60,7 +60,7 @@ func TestCheckIfAllowedPermission(t *testing.T) {
 		{
 			name: "actor has permission whitelisted in role",
 			prepareScenario: func(ctx sdk.Context, keeper keeper.Keeper) {
-				roleWithWhitelistedValue := types.Role(123)
+				roleWithWhitelistedValue := uint64(123)
 				keeper.CreateRole(ctx, roleWithWhitelistedValue)
 
 				err2 := keeper.WhitelistRolePermission(ctx, roleWithWhitelistedValue, types.PermClaimValidator)

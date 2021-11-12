@@ -4,7 +4,7 @@ import "github.com/cosmos/cosmos-sdk/types"
 
 func NewNetworkActor(
 	addr types.AccAddress,
-	roles Roles,
+	roleIds []uint64,
 	status ActorStatus,
 	votes []VoteOption,
 	perm *Permissions,
@@ -12,7 +12,7 @@ func NewNetworkActor(
 ) NetworkActor {
 	return NetworkActor{
 		Address:     addr,
-		Roles:       roles,
+		Roles:       roleIds,
 		Status:      status,
 		Votes:       votes,
 		Permissions: perm,
@@ -20,7 +20,7 @@ func NewNetworkActor(
 	}
 }
 
-func (m *NetworkActor) HasRole(role Role) bool {
+func (m *NetworkActor) HasRole(role uint64) bool {
 	for _, r := range m.Roles {
 		if r == uint64(role) {
 			return true
@@ -29,15 +29,15 @@ func (m *NetworkActor) HasRole(role Role) bool {
 	return false
 }
 
-func (m *NetworkActor) SetRole(role Role) {
+func (m *NetworkActor) SetRole(role uint64) {
 	if !m.HasRole(role) {
 		m.Roles = append(m.Roles, uint64(role))
 	}
 }
 
-func (m *NetworkActor) RemoveRole(role Role) {
+func (m *NetworkActor) RemoveRole(role uint64) {
 	for i, r := range m.Roles {
-		if r == uint64(role) {
+		if r == role {
 			m.Roles = append(m.Roles[:i], m.Roles[i+1:]...)
 			return
 		}

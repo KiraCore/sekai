@@ -110,7 +110,7 @@ message PermissionsResponse {
 
 message AllRolesRequest {}
 message AllRolesResponse {
-  repeated uint64 roles = 1;
+  repeated Role roles = 1 [ (gogoproto.nullable) = false ];
 }
 
 message RolesByAddressRequest {

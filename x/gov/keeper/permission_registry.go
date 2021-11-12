@@ -6,32 +6,57 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (k Keeper) CreateRole(ctx sdk.Context, role types.Role) {
+// TODO: implement
+func (k Keeper) GetNextRoleId(ctx sdk.Context) uint64 {
+	return 1
+}
+
+// TODO: implement
+func (k Keeper) SetRole(ctx sdk.Context, role types.Role) {
 	perms := types.NewPermissions(nil, nil)
-	k.savePermissionsForRole(ctx, role, perms)
+	k.savePermissionsForRole(ctx, uint64(role.Id), perms)
+}
+
+// TODO: implement
+func (k Keeper) GetRole(ctx sdk.Context, roleId uint64) types.Role {
+	return types.Role{}
+}
+
+// TODO: implement
+func (k Keeper) GetRoleBySid(ctx sdk.Context, sId string) (types.Role, bool) {
+	return types.Role{}, true
+}
+
+// TODO: implement
+func (k Keeper) CreateRole(ctx sdk.Context, sid, description string) uint64 {
+	perms := types.NewPermissions(nil, nil)
+	k.savePermissionsForRole(ctx, uint64(role.Id), perms)
+	return 0
 }
 
 // savePermissionsForRole adds permissions to role in the  permission Registry.
-func (k Keeper) savePermissionsForRole(ctx sdk.Context, role types.Role, permissions *types.Permissions) {
+func (k Keeper) savePermissionsForRole(ctx sdk.Context, role uint64, permissions *types.Permissions) {
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), RolePermissionRegistry)
 	prefixStore.Set(roleToBytes(role), k.cdc.MustMarshal(permissions))
 }
 
-func (k Keeper) GetAllRoles(ctx sdk.Context) []uint64 {
+func (k Keeper) GetAllRoles(ctx sdk.Context) []types.Role {
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), RolePermissionRegistry)
 	iterator := sdk.KVStorePrefixIterator(prefixStore, nil)
 	defer iterator.Close()
 
-	roles := []uint64{}
+	roles := []types.Role{}
 	for ; iterator.Valid(); iterator.Next() {
-		role := bytesToRole(iterator.Key())
-		roles = append(roles, uint64(role))
+		// role := bytesToRole(iterator.Key())
+		role := types.Role{}
+		// TODO: unmarshal from iterator.Value()
+		roles = append(roles, role)
 	}
 	return roles
 }
 
 // GetPermissionsForRole returns the permissions assigned to the specific role.
-func (k Keeper) GetPermissionsForRole(ctx sdk.Context, role types.Role) (types.Permissions, bool) {
+func (k Keeper) GetPermissionsForRole(ctx sdk.Context, role uint64) (types.Permissions, bool) {
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), RolePermissionRegistry)
 	bz := prefixStore.Get(roleToBytes(role))
 	if bz == nil {
@@ -44,7 +69,7 @@ func (k Keeper) GetPermissionsForRole(ctx sdk.Context, role types.Role) (types.P
 	return perm, true
 }
 
-func (k Keeper) WhitelistRolePermission(ctx sdk.Context, role types.Role, perm types.PermValue) error {
+func (k Keeper) WhitelistRolePermission(ctx sdk.Context, role uint64, perm types.PermValue) error {
 	store := ctx.KVStore(k.storeKey)
 
 	prefixStore := prefix.NewStore(store, RolePermissionRegistry)
@@ -67,7 +92,7 @@ func (k Keeper) WhitelistRolePermission(ctx sdk.Context, role types.Role, perm t
 	return nil
 }
 
-func (k Keeper) BlacklistRolePermission(ctx sdk.Context, role types.Role, perm types.PermValue) error {
+func (k Keeper) BlacklistRolePermission(ctx sdk.Context, role uint64, perm types.PermValue) error {
 	store := ctx.KVStore(k.storeKey)
 
 	prefixStore := prefix.NewStore(store, RolePermissionRegistry)
@@ -89,7 +114,7 @@ func (k Keeper) BlacklistRolePermission(ctx sdk.Context, role types.Role, perm t
 	return nil
 }
 
-func (k Keeper) RemoveWhitelistRolePermission(ctx sdk.Context, role types.Role, perm types.PermValue) error {
+func (k Keeper) RemoveWhitelistRolePermission(ctx sdk.Context, role uint64, perm types.PermValue) error {
 	store := ctx.KVStore(k.storeKey)
 
 	prefixStore := prefix.NewStore(store, RolePermissionRegistry)
@@ -112,7 +137,7 @@ func (k Keeper) RemoveWhitelistRolePermission(ctx sdk.Context, role types.Role, 
 	return nil
 }
 
-func (k Keeper) RemoveBlacklistRolePermission(ctx sdk.Context, role types.Role, perm types.PermValue) error {
+func (k Keeper) RemoveBlacklistRolePermission(ctx sdk.Context, role uint64, perm types.PermValue) error {
 	store := ctx.KVStore(k.storeKey)
 	prefixStore := prefix.NewStore(store, RolePermissionRegistry)
 
@@ -162,6 +187,6 @@ func prefixWhitelist(perm types.PermValue) []byte {
 	return append(WhitelistRolePrefix, permToBytes(perm)...)
 }
 
-func prefixWhitelistRole(perm types.PermValue, role types.Role) []byte {
+func prefixWhitelistRole(perm types.PermValue, role uint64) []byte {
 	return append(prefixWhitelist(perm), roleToBytes(role)...)
 }

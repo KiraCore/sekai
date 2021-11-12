@@ -9,7 +9,8 @@ message MsgCreateRole {
   bytes proposer = 1 [
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
   ];
-  uint32 role = 2;
+  string role_sid = 2;
+  string role_description = 3;
 }
 
 message MsgAssignRole {
@@ -20,7 +21,7 @@ message MsgAssignRole {
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
     (gogoproto.moretags) = "yaml:\"address\""
   ];
-  uint32 role = 3;
+  uint32 roleId = 3;
 }
 
 message MsgRemoveRole {
@@ -31,7 +32,7 @@ message MsgRemoveRole {
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
     (gogoproto.moretags) = "yaml:\"address\""
   ];
-  uint32 role = 3;
+  uint32 roleId = 3;
 }
 
 message MsgWhitelistRolePermission {
@@ -39,7 +40,7 @@ message MsgWhitelistRolePermission {
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
   ];
 
-  uint32 role = 2;
+  uint32 roleId = 2;
   uint32 permission = 3;
 }
 
@@ -47,7 +48,7 @@ message MsgBlacklistRolePermission {
   bytes proposer = 1 [
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
   ];
-  uint32 role = 2;
+  uint32 roleId = 2;
   uint32 permission = 3;
 }
 
@@ -55,7 +56,7 @@ message MsgRemoveWhitelistRolePermission {
   bytes proposer = 1 [
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
   ];
-  uint32 role = 2;
+  uint32 roleId = 2;
   uint32 permission = 3;
 }
 
@@ -63,7 +64,7 @@ message MsgRemoveBlacklistRolePermission {
   bytes proposer = 1 [
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
   ];
-  uint32 role = 2;
+  uint32 roleId = 2;
   uint32 permission = 3;
 }
 

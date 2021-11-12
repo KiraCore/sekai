@@ -82,7 +82,7 @@ func (k Keeper) NetworkProperties(goCtx context.Context, request *types.NetworkP
 func (k Keeper) RolePermissions(goCtx context.Context, request *types.RolePermissionsRequest) (*types.RolePermissionsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	perms, found := k.GetPermissionsForRole(ctx, types.Role(request.Role))
+	perms, found := k.GetPermissionsForRole(ctx, request.Role)
 	if !found {
 		return nil, types.ErrRoleDoesNotExist
 	}

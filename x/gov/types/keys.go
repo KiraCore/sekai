@@ -24,14 +24,10 @@ var (
 	KeyPrefixIdRecordVerifyRequestByApprover  = []byte("identity_record_verify_request_by_approver_prefix")
 
 	// Roles
-	RoleUndefined Role = 0x0
-	RoleSudo      Role = 0x1
-	RoleValidator Role = 0x2
+	RoleUndefined uint64 = 0x0
+	RoleSudo      uint64 = 0x1
+	RoleValidator uint64 = 0x2
 )
-
-// Role represents a Role in the registry.
-type Role uint64
-type Roles []uint64
 
 func IdentityRecordByAddressPrefix(address string) []byte {
 	return append(KeyPrefixIdentityRecordByAddress, address...)
