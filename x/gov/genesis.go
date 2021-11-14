@@ -14,6 +14,7 @@ func InitGenesis(
 	k keeper.Keeper,
 	genesisState types.GenesisState,
 ) error {
+	k.SetNextRoleId(ctx, genesisState.NextRoleId)
 	for _, actor := range genesisState.NetworkActors {
 		k.SaveNetworkActor(ctx, *actor)
 		for _, role := range actor.Roles {

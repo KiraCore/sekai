@@ -4,33 +4,67 @@ import (
 	"github.com/KiraCore/sekai/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/gogo/protobuf/proto"
 )
 
-// TODO: implement
 func (k Keeper) GetNextRoleId(ctx sdk.Context) uint64 {
-	return 1
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(NextRolePrefix)
+	if bz == nil {
+		return 1
+	}
+	return sdk.BigEndianToUint64(bz)
 }
 
-// TODO: implement
+func (k Keeper) SetNextRoleId(ctx sdk.Context, nextRoleId uint64) {
+	store := ctx.KVStore(k.storeKey)
+	store.Set(NextRolePrefix, sdk.Uint64ToBigEndian(nextRoleId))
+}
+
 func (k Keeper) SetRole(ctx sdk.Context, role types.Role) {
+	bz, err := proto.Marshal(&role)
+	if err != nil {
+		panic(err)
+	}
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), RoleIdToInfo)
+	prefixStore.Set(roleToBytes(uint64(role.Id)), bz)
+
+	prefixStore = prefix.NewStore(ctx.KVStore(k.storeKey), RoleSidToIdRegistry)
+	prefixStore.Set([]byte(role.Sid), sdk.Uint64ToBigEndian(uint64(role.Id)))
+
+	// set empty permissions
 	perms := types.NewPermissions(nil, nil)
 	k.savePermissionsForRole(ctx, uint64(role.Id), perms)
 }
 
-// TODO: implement
-func (k Keeper) GetRole(ctx sdk.Context, roleId uint64) types.Role {
-	return types.Role{}
+func (k Keeper) GetRole(ctx sdk.Context, roleId uint64) (types.Role, error) {
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), RoleIdToInfo)
+	bz := prefixStore.Get(roleToBytes(uint64(roleId)))
+	if bz == nil {
+		return types.Role{}, types.ErrRoleDoesNotExist
+	}
+	role := types.Role{}
+	err := proto.Unmarshal(bz, &role)
+	return role, err
 }
 
-// TODO: implement
-func (k Keeper) GetRoleBySid(ctx sdk.Context, sId string) (types.Role, bool) {
-	return types.Role{}, true
+func (k Keeper) GetRoleBySid(ctx sdk.Context, sId string) (types.Role, error) {
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), RoleSidToIdRegistry)
+	bz := prefixStore.Get([]byte(sId))
+	if bz == nil {
+		return types.Role{}, types.ErrRoleDoesNotExist
+	}
+	return k.GetRole(ctx, sdk.BigEndianToUint64(bz))
 }
 
-// TODO: implement
 func (k Keeper) CreateRole(ctx sdk.Context, sid, description string) uint64 {
-	perms := types.NewPermissions(nil, nil)
-	k.savePermissionsForRole(ctx, uint64(role.Id), perms)
+	newRoleId := k.GetNextRoleId(ctx)
+	k.SetRole(ctx, types.Role{
+		Id:          uint32(newRoleId),
+		Sid:         sid,
+		Description: description,
+	})
+	k.SetNextRoleId(ctx, newRoleId+1)
 	return 0
 }
 

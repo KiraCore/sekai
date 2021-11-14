@@ -227,10 +227,14 @@ func (k msgServer) CreateRole(
 		return nil, errors.Wrap(types.ErrNotEnoughPermissions, "PermUpsertRole")
 	}
 
-	// TODO: check if exist by Sid
-	_, found := k.keeper.GetPermissionsForRole(ctx, msg.RoleSid)
-	if found {
-		return nil, types.ErrRoleExist
+	// check sid is good variable naming form
+	if !ValidateRoleSidKey(msg.RoleSid) {
+		return nil, errors.Wrap(types.ErrInvalidRoleSid, fmt.Sprintf("invalid role sid configuration: sid=%s", msg.RoleSid))
+	}
+
+	_, err := k.keeper.GetRoleBySid(ctx, msg.RoleSid)
+	if err != nil {
+		return nil, errors.Wrap(types.ErrRoleExist, err.Error())
 	}
 
 	roleId := k.keeper.CreateRole(ctx, msg.RoleSid, msg.RoleDescription)

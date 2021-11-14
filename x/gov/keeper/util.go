@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"regexp"
+
 	"github.com/KiraCore/sekai/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -85,4 +87,9 @@ func IntToBool(v uint64) bool {
 		return true
 	}
 	return false
+}
+
+func ValidateRoleSidKey(key string) bool {
+	regex := regexp.MustCompile(`^[a-zA-Z][_0-9a-zA-Z]*$`)
+	return regex.MatchString(key)
 }
