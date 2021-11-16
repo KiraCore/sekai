@@ -92,6 +92,19 @@ func TestExportInitGenesis(t *testing.T) {
 	k := keeper.NewKeeper(keyGovernance, simapp.MakeEncodingConfig().Marshaler, nil)
 
 	genState := types.GenesisState{
+		NextRoleId: 3,
+		Roles: []types.Role{
+			{
+				Id:          uint32(types.RoleSudo),
+				Sid:         "sudo",
+				Description: "Sudo role",
+			},
+			{
+				Id:          uint32(types.RoleValidator),
+				Sid:         "validator",
+				Description: "Validator role",
+			},
+		},
 		RolePermissions: map[uint64]*types.Permissions{
 			uint64(types.RoleSudo): types.NewPermissions([]types.PermValue{
 				types.PermSetPermissions,

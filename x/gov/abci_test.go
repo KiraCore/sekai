@@ -607,7 +607,8 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					"title",
 					"some desc",
 					types.NewCreateRoleProposal(
-						1000,
+						"role1000",
+						"role1000 description",
 						[]types.PermValue{
 							types.PermClaimValidator,
 						},

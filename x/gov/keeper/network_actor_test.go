@@ -197,7 +197,11 @@ func TestKeeper_GetNetworkActorsByAbsoluteWhitelistPermission(t *testing.T) {
 				addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
 
 				// Create role
-				app.CustomGovKeeper.CreateRole(ctx, types.Role(12345))
+				app.CustomGovKeeper.SetRole(ctx, types.Role{
+					Id:          12345,
+					Sid:         "12345",
+					Description: "12345",
+				})
 				err := app.CustomGovKeeper.WhitelistRolePermission(ctx, 12345, types.PermSetPermissions)
 				require.NoError(t, err)
 
@@ -220,7 +224,11 @@ func TestKeeper_GetNetworkActorsByAbsoluteWhitelistPermission(t *testing.T) {
 				addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
 
 				// Create role
-				app.CustomGovKeeper.CreateRole(ctx, types.Role(12345))
+				app.CustomGovKeeper.SetRole(ctx, types.Role{
+					Id:          12345,
+					Sid:         "12345",
+					Description: "12345",
+				})
 				err := app.CustomGovKeeper.WhitelistRolePermission(ctx, 12345, types.PermSetPermissions)
 				require.NoError(t, err)
 
@@ -247,7 +255,11 @@ func TestKeeper_GetNetworkActorsByAbsoluteWhitelistPermission(t *testing.T) {
 				addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
 
 				// Create role
-				app.CustomGovKeeper.CreateRole(ctx, types.Role(12345))
+				app.CustomGovKeeper.SetRole(ctx, types.Role{
+					Id:          12345,
+					Sid:         "12345",
+					Description: "12345",
+				})
 				err := app.CustomGovKeeper.WhitelistRolePermission(ctx, 12345, types.PermSetPermissions)
 				require.NoError(t, err)
 

@@ -558,23 +558,19 @@ func GetTxRemoveBlacklistRolePermission() *cobra.Command {
 
 func GetTxCreateRole() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create role",
+		Use:   "create [role_sid] [role_description]",
 		Short: "Create new role",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			role, err := strconv.Atoi(args[0])
-			if err != nil {
-				return fmt.Errorf("invalid role: %w", err)
-			}
-
 			msg := types.NewMsgCreateRole(
 				clientCtx.FromAddress,
-				uint32(role),
+				args[0],
+				args[1],
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
@@ -1017,18 +1013,13 @@ func GetTxClaimCouncilorSeatCmd() *cobra.Command {
 
 func GetTxProposalCreateRole() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-role role",
+		Use:   "create-role [role_sid] [role_description]",
 		Short: "Create a proposal to add a new role.",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
-			}
-
-			role, err := strconv.Atoi(args[0])
-			if err != nil {
-				return fmt.Errorf("invalid perm: %w", err)
 			}
 
 			wAsInts, err := cmd.Flags().GetInt32Slice(FlagWhitelistPerms)
@@ -1058,7 +1049,8 @@ func GetTxProposalCreateRole() *cobra.Command {
 				title,
 				description,
 				types.NewCreateRoleProposal(
-					types.Role(role),
+					args[0],
+					args[1],
 					whitelistPerms,
 					blacklistPerms,
 				),

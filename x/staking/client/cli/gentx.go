@@ -70,9 +70,7 @@ func GenTxClaimCmd(genBalIterator banktypes.GenesisBalancesIterator, defaultNode
 			// Only first validator is network actor
 			networkActor := govtypes.NewNetworkActor(
 				types.AccAddress(validator.ValKey),
-				govtypes.Roles{
-					uint64(govtypes.RoleSudo),
-				},
+				[]uint64{govtypes.RoleSudo},
 				govtypes.Active,
 				[]govtypes.VoteOption{
 					govtypes.OptionYes,
