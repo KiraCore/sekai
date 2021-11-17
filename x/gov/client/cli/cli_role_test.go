@@ -184,10 +184,9 @@ func (s IntegrationTestSuite) TestCreateRole() {
 	val := s.network.Validators[0]
 	clientCtx := val.ClientCtx
 
-	cmd := cli.GetCmdQueryRolePermissions()
-
+	cmd := cli.GetCmdQueryRole()
 	_, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
-		"1234", // RoleInTest
+		"myRole", // RoleInTest
 	})
 	s.Require().Error(err)
 	strings.Contains(err.Error(), types.ErrRoleDoesNotExist.Error())
@@ -195,7 +194,7 @@ func (s IntegrationTestSuite) TestCreateRole() {
 	// Add role
 	cmd = cli.GetTxCreateRole()
 	_, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
-		"1234", // RoleValidator
+		"myRole", "myRole", // RoleValidator
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
@@ -209,7 +208,7 @@ func (s IntegrationTestSuite) TestCreateRole() {
 	// Query again the role
 	cmd = cli.GetCmdQueryRolePermissions()
 	_, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
-		"1234", // RoleInTest
+		"myRole", // RoleInTest
 	})
 	s.Require().NoError(err)
 }
@@ -223,7 +222,7 @@ func (s IntegrationTestSuite) TestAssignRoles_AndRemoveRoles() {
 
 	cmd := cli.GetTxAssignRole()
 	_, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
-		"0", // Role created in test
+		"2", // Role created in test
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=%s", stakingcli.FlagAddr, addr),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
@@ -240,7 +239,7 @@ func (s IntegrationTestSuite) TestAssignRoles_AndRemoveRoles() {
 
 	cmd = cli.GetTxRemoveRole()
 	_, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
-		"0", // Role created in test
+		"2", // Role created in test
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=%s", stakingcli.FlagAddr, addr),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),

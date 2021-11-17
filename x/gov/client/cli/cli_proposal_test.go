@@ -121,7 +121,8 @@ func (s IntegrationTestSuite) TestCreateProposalCreateRole() {
 	cmd := cli.GetTxProposalCreateRole()
 	clientCtx := val.ClientCtx
 	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
-		fmt.Sprintf("%d", 12345),
+		fmt.Sprintf("newRole"),
+		fmt.Sprintf("newRole"),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=%s", cli.FlagTitle, "title"),
 		fmt.Sprintf("--%s=%s", cli.FlagDescription, "some desc"),

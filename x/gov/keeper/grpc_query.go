@@ -78,6 +78,17 @@ func (k Keeper) NetworkProperties(goCtx context.Context, request *types.NetworkP
 	return &types.NetworkPropertiesResponse{Properties: networkProperties}, nil
 }
 
+func (k Keeper) Role(goCtx context.Context, request *types.RoleRequest) (*types.RoleResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	role, err := k.GetRoleBySid(ctx, request.Sid)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.RoleResponse{Role: &role}, nil
+}
+
 // RolePermissions returns permissions associated to a role
 func (k Keeper) RolePermissions(goCtx context.Context, request *types.RolePermissionsRequest) (*types.RolePermissionsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)

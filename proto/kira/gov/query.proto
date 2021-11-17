@@ -23,6 +23,8 @@ service Query {
   rpc AllRoles (AllRolesRequest) returns (AllRolesResponse) {}
   // Returns the roles that are assigned to an address.
   rpc RolesByAddress (RolesByAddressRequest) returns (RolesByAddressResponse) {}
+  // Role returns the role details from role sid
+  rpc Role (RoleRequest) returns (RoleResponse) {}
   // RolePermissions returns the permissions of the roles available in the registry.
   rpc RolePermissions (RolePermissionsRequest) returns (RolePermissionsResponse) {}
   // CouncilorByAddress returns the councilor object from its address
@@ -122,6 +124,14 @@ message RolesByAddressRequest {
 
 message RolesByAddressResponse {
   repeated uint64 roles = 1;
+}
+
+message RoleRequest {
+  string sid = 1;
+}
+
+message RoleResponse {
+  Role role = 1; 
 }
 
 message RolePermissionsRequest {

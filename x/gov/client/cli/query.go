@@ -107,6 +107,33 @@ func GetCmdQueryRolesByAddress() *cobra.Command {
 	return cmd
 }
 
+func GetCmdQueryRole() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "role [role_sid]",
+		Short: "Query role by sid",
+		Args:  cobra.MinimumNArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			params := &types.RoleRequest{
+				Sid: args[0],
+			}
+
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.Role(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res.Role)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
 func GetCmdQueryRolePermissions() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "role-permissions arg-num",
