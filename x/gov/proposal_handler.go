@@ -118,8 +118,8 @@ func (c CreateRoleProposalHandler) Apply(ctx sdk.Context, proposalID uint64, pro
 	}
 
 	_, err := c.keeper.GetRoleBySid(ctx, p.RoleSid)
-	if err != nil {
-		return errors.Wrap(types.ErrRoleExist, err.Error())
+	if err == nil {
+		return types.ErrRoleExist
 	}
 
 	roleId := c.keeper.CreateRole(ctx, p.RoleSid, p.RoleDescription)

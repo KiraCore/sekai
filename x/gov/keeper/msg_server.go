@@ -233,8 +233,8 @@ func (k msgServer) CreateRole(
 	}
 
 	_, err := k.keeper.GetRoleBySid(ctx, msg.RoleSid)
-	if err != nil {
-		return nil, errors.Wrap(types.ErrRoleExist, err.Error())
+	if err == nil {
+		return nil, types.ErrRoleExist
 	}
 
 	roleId := k.keeper.CreateRole(ctx, msg.RoleSid, msg.RoleDescription)

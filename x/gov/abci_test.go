@@ -632,8 +632,8 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				iterator := app.CustomGovKeeper.GetEnactmentProposalsWithFinishedEnactmentEndTimeIterator(ctx, time.Now().Add(25*time.Second))
 				requireIteratorCount(t, iterator, 1)
 
-				_, found := app.CustomGovKeeper.GetPermissionsForRole(ctx, 1000)
-				require.False(t, found)
+				_, err = app.CustomGovKeeper.GetRoleBySid(ctx, "role1000")
+				require.Error(t, err)
 
 				return addrs
 			},
@@ -641,7 +641,9 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				iterator := app.CustomGovKeeper.GetEnactmentProposalsWithFinishedEnactmentEndTimeIterator(ctx, time.Now().Add(25*time.Second))
 				requireIteratorCount(t, iterator, 0)
 
-				perms, found := app.CustomGovKeeper.GetPermissionsForRole(ctx, 1000)
+				role, err := app.CustomGovKeeper.GetRoleBySid(ctx, "role1000")
+				require.NoError(t, err)
+				perms, found := app.CustomGovKeeper.GetPermissionsForRole(ctx, uint64(role.Id))
 				require.True(t, found)
 				require.True(t, perms.IsWhitelisted(types.PermClaimValidator))
 				require.True(t, perms.IsBlacklisted(types.PermChangeTxFee))

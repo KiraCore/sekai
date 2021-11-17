@@ -911,8 +911,8 @@ func TestHandler_CreateRole(t *testing.T) {
 	))
 	require.NoError(t, err)
 
-	_, found = app.CustomGovKeeper.GetPermissionsForRole(ctx, 1234)
-	require.True(t, found)
+	_, err = app.CustomGovKeeper.GetRoleBySid(ctx, "role1234")
+	require.NoError(t, err)
 }
 
 func TestHandler_AssignRole_Errors(t *testing.T) {
@@ -1817,8 +1817,8 @@ func TestHandler_CreateProposalCreateRole_Errors(t *testing.T) {
 
 				app.CustomGovKeeper.SetRole(ctx, types.Role{
 					Id:          1,
-					Sid:         "1",
-					Description: "1",
+					Sid:         "role1",
+					Description: "role1 description",
 				})
 			},
 			types.ErrRoleExist,

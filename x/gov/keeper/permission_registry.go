@@ -65,7 +65,7 @@ func (k Keeper) CreateRole(ctx sdk.Context, sid, description string) uint64 {
 		Description: description,
 	})
 	k.SetNextRoleId(ctx, newRoleId+1)
-	return 0
+	return newRoleId
 }
 
 // savePermissionsForRole adds permissions to role in the  permission Registry.
