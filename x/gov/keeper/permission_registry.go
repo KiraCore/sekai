@@ -75,15 +75,17 @@ func (k Keeper) savePermissionsForRole(ctx sdk.Context, role uint64, permissions
 }
 
 func (k Keeper) GetAllRoles(ctx sdk.Context) []types.Role {
-	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), RolePermissionRegistry)
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), RoleIdToInfo)
 	iterator := sdk.KVStorePrefixIterator(prefixStore, nil)
 	defer iterator.Close()
 
 	roles := []types.Role{}
 	for ; iterator.Valid(); iterator.Next() {
-		// role := bytesToRole(iterator.Key())
 		role := types.Role{}
-		// TODO: unmarshal from iterator.Value()
+		err := proto.Unmarshal(iterator.Value(), &role)
+		if err != nil {
+			panic(err)
+		}
 		roles = append(roles, role)
 	}
 	return roles
