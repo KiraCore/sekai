@@ -14,10 +14,11 @@ func InitGenesis(
 	k keeper.Keeper,
 	genesisState types.GenesisState,
 ) error {
+	k.SetNextRoleId(ctx, genesisState.NextRoleId)
 	for _, actor := range genesisState.NetworkActors {
 		k.SaveNetworkActor(ctx, *actor)
 		for _, role := range actor.Roles {
-			k.AssignRoleToActor(ctx, *actor, types.Role(role))
+			k.AssignRoleToActor(ctx, *actor, role)
 		}
 		for _, perm := range actor.Permissions.Whitelist {
 			err := k.AddWhitelistPermission(ctx, *actor, types.PermValue(perm))
@@ -33,11 +34,14 @@ func InitGenesis(
 		// }
 	}
 
-	for index, perm := range genesisState.Permissions {
-		role := types.Role(index)
-		k.CreateRole(ctx, role)
+	for _, role := range genesisState.Roles {
+		k.SetRole(ctx, role)
+	}
+
+	for roleId, perm := range genesisState.RolePermissions {
+		// k.CreateRole(ctx, role)
 		for _, white := range perm.Whitelist {
-			err := k.WhitelistRolePermission(ctx, role, types.PermValue(white))
+			err := k.WhitelistRolePermission(ctx, roleId, types.PermValue(white))
 			if err != nil {
 				// TODO: this is fine with current upgrade but from next time, it should panic
 				fmt.Println("There was an error whitelisting role permission", err)
@@ -45,7 +49,7 @@ func InitGenesis(
 			}
 		}
 		for _, black := range perm.Blacklist {
-			err := k.BlacklistRolePermission(ctx, role, types.PermValue(black))
+			err := k.BlacklistRolePermission(ctx, roleId, types.PermValue(black))
 			if err != nil {
 				// TODO: this is fine with current upgrade but from next time, it should panic
 				fmt.Println("There was an error blacklisting role permission", err)
@@ -118,7 +122,9 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) (data *types.GenesisState) 
 
 	return &types.GenesisState{
 		StartingProposalId:          k.GetNextProposalID(ctx),
-		Permissions:                 rolePermissions,
+		NextRoleId:                  k.GetNextRoleId(ctx),
+		Roles:                       k.GetAllRoles(ctx),
+		RolePermissions:             rolePermissions,
 		NetworkActors:               networkActors,
 		NetworkProperties:           k.GetNetworkProperties(ctx),
 		ExecutionFees:               k.GetExecutionFees(ctx),

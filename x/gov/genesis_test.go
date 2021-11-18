@@ -30,7 +30,9 @@ func TestSimappExportGenesis(t *testing.T) {
 	buffer := new(bytes.Buffer)
 	err = json.Compact(buffer, []byte(`{
 		"starting_proposal_id":"1",
-		"permissions":{
+		"next_role_id":"3",
+		"roles":[{"id":1,"sid":"sudo","description":"Sudo role"},{"id":2,"sid":"validator","description":"Validator role"}],
+		"role_permissions":{
 			"1":{"blacklist":[],"whitelist":[1,2,3,6,8,9,4,5,12,13,10,11,14,15,18,19,20,21,22,23,24,25,16,17]},
 			"2":{"blacklist":[],"whitelist":[2]}
 		},
@@ -92,7 +94,20 @@ func TestExportInitGenesis(t *testing.T) {
 	k := keeper.NewKeeper(keyGovernance, simapp.MakeEncodingConfig().Marshaler, nil)
 
 	genState := types.GenesisState{
-		Permissions: map[uint64]*types.Permissions{
+		NextRoleId: 3,
+		Roles: []types.Role{
+			{
+				Id:          uint32(types.RoleSudo),
+				Sid:         "sudo",
+				Description: "Sudo role",
+			},
+			{
+				Id:          uint32(types.RoleValidator),
+				Sid:         "validator",
+				Description: "Validator role",
+			},
+		},
+		RolePermissions: map[uint64]*types.Permissions{
 			uint64(types.RoleSudo): types.NewPermissions([]types.PermValue{
 				types.PermSetPermissions,
 				types.PermClaimValidator,
@@ -143,8 +158,11 @@ func TestExportInitGenesis(t *testing.T) {
 	buffer := new(bytes.Buffer)
 	err = json.Compact(buffer, []byte(`{
 		"starting_proposal_id":"1",
-		"permissions":{
-			"1":{"blacklist":[],"whitelist":[1,2,3,6]}
+		"next_role_id":"3",
+		"roles":[{"id":1,"sid":"sudo","description":"Sudo role"},{"id":2,"sid":"validator","description":"Validator role"}],
+		"role_permissions":{
+			"1":{"blacklist":[],"whitelist":[1,2,3,6]},
+			"2":{"blacklist":[],"whitelist":[]}
 		},
 		"network_actors":[],
 		"network_properties":{

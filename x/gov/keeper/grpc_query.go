@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"fmt"
+	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -34,7 +35,7 @@ func (k Keeper) RolesByAddress(goCtx context.Context, request *types.RolesByAddr
 	}
 
 	return &types.RolesByAddressResponse{
-		Roles: actor.Roles,
+		RoleIds: actor.Roles,
 	}, nil
 }
 
@@ -78,11 +79,35 @@ func (k Keeper) NetworkProperties(goCtx context.Context, request *types.NetworkP
 	return &types.NetworkPropertiesResponse{Properties: networkProperties}, nil
 }
 
+func (k Keeper) Role(goCtx context.Context, request *types.RoleRequest) (*types.RoleResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if roleId, err := strconv.Atoi(request.Identifier); err == nil {
+		role, err := k.GetRole(ctx, uint64(roleId))
+		if err != nil {
+			return nil, err
+		}
+
+		return &types.RoleResponse{Role: &role}, nil
+	}
+
+	role, err := k.GetRoleBySid(ctx, request.Identifier) // sid
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.RoleResponse{Role: &role}, nil
+}
+
 // RolePermissions returns permissions associated to a role
 func (k Keeper) RolePermissions(goCtx context.Context, request *types.RolePermissionsRequest) (*types.RolePermissionsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+	roleId, err := k.GetRoleIdFromIdentifierString(ctx, request.Identifier)
+	if err != nil {
+		return nil, err
+	}
 
-	perms, found := k.GetPermissionsForRole(ctx, types.Role(request.Role))
+	perms, found := k.GetPermissionsForRole(ctx, roleId)
 	if !found {
 		return nil, types.ErrRoleDoesNotExist
 	}

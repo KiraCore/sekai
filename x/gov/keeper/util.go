@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"regexp"
+
 	"github.com/KiraCore/sekai/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -53,7 +55,7 @@ func CheckIfAllowedPermission(ctx sdk.Context, keeper Keeper, addr sdk.AccAddres
 func getRolePermissions(ctx sdk.Context, keeper Keeper, actor types.NetworkActor) map[uint64]*types.Permissions {
 	roles := map[uint64]*types.Permissions{}
 	for _, role := range actor.Roles {
-		rolePerms, found := keeper.GetPermissionsForRole(ctx, types.Role(role))
+		rolePerms, found := keeper.GetPermissionsForRole(ctx, role)
 		if found {
 			roles[role] = &rolePerms
 		}
@@ -85,4 +87,9 @@ func IntToBool(v uint64) bool {
 		return true
 	}
 	return false
+}
+
+func ValidateRoleSidKey(key string) bool {
+	regex := regexp.MustCompile(`^[a-zA-Z][_0-9a-zA-Z]*$`)
+	return regex.MatchString(key)
 }

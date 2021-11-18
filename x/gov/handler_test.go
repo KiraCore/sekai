@@ -492,7 +492,7 @@ func TestHandler_WhitelistRolePermissions_Errors(t *testing.T) {
 			name: "address without SetPermissions perm",
 			msg: types.NewMsgWhitelistRolePermission(
 				addr,
-				uint32(types.RoleValidator),
+				fmt.Sprintf("%d", types.RoleValidator),
 				uint32(types.PermSetPermissions),
 			),
 			preparePerms: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
@@ -504,7 +504,7 @@ func TestHandler_WhitelistRolePermissions_Errors(t *testing.T) {
 			name: "role does not exist",
 			msg: types.NewMsgWhitelistRolePermission(
 				addr,
-				10000,
+				"10000",
 				1,
 			),
 			preparePerms: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
@@ -517,7 +517,7 @@ func TestHandler_WhitelistRolePermissions_Errors(t *testing.T) {
 			name: "permission is blacklisted",
 			msg: types.NewMsgWhitelistRolePermission(
 				addr,
-				uint32(types.RoleValidator),
+				fmt.Sprintf("%d", types.RoleValidator),
 				uint32(types.PermSetPermissions),
 			),
 			preparePerms: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
@@ -565,7 +565,7 @@ func TestHandler_WhitelistRolePermissions(t *testing.T) {
 
 	msg := types.NewMsgWhitelistRolePermission(
 		addr,
-		uint32(types.RoleValidator),
+		fmt.Sprintf("%d", types.RoleValidator),
 		uint32(types.PermSetPermissions),
 	)
 
@@ -592,7 +592,7 @@ func TestHandler_BlacklistRolePermissions_Errors(t *testing.T) {
 			name: "address without SetPermissions perm",
 			msg: types.NewMsgBlacklistRolePermission(
 				addr,
-				uint32(types.RoleValidator),
+				fmt.Sprintf("%d", types.RoleValidator),
 				uint32(types.PermSetPermissions),
 			),
 			preparePerms: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {},
@@ -602,7 +602,7 @@ func TestHandler_BlacklistRolePermissions_Errors(t *testing.T) {
 			name: "role does not exist",
 			msg: types.NewMsgBlacklistRolePermission(
 				addr,
-				10000,
+				"10000",
 				1,
 			),
 			preparePerms: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
@@ -615,7 +615,7 @@ func TestHandler_BlacklistRolePermissions_Errors(t *testing.T) {
 			name: "permission is whitelisted",
 			msg: types.NewMsgBlacklistRolePermission(
 				addr,
-				uint32(types.RoleValidator),
+				fmt.Sprintf("%d", types.RoleValidator),
 				uint32(types.PermSetPermissions),
 			),
 			preparePerms: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
@@ -663,7 +663,7 @@ func TestHandler_BlacklistRolePermissions(t *testing.T) {
 
 	msg := types.NewMsgBlacklistRolePermission(
 		addr,
-		uint32(types.RoleValidator),
+		fmt.Sprintf("%d", types.RoleValidator),
 		uint32(types.PermSetPermissions),
 	)
 
@@ -690,7 +690,7 @@ func TestHandler_RemoveWhitelistRolePermissions_Errors(t *testing.T) {
 			name: "address without SetPermissions perm",
 			msg: types.NewMsgRemoveWhitelistRolePermission(
 				addr,
-				uint32(types.RoleValidator),
+				fmt.Sprintf("%d", types.RoleValidator),
 				uint32(types.PermSetPermissions),
 			),
 			preparePerms: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {},
@@ -700,7 +700,7 @@ func TestHandler_RemoveWhitelistRolePermissions_Errors(t *testing.T) {
 			name: "role does not exist",
 			msg: types.NewMsgRemoveWhitelistRolePermission(
 				addr,
-				10000,
+				"10000",
 				1,
 			),
 			preparePerms: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
@@ -742,7 +742,7 @@ func TestHandler_RemoveWhitelistRolePermissions(t *testing.T) {
 
 	msg := types.NewMsgRemoveWhitelistRolePermission(
 		addr,
-		uint32(types.RoleValidator),
+		fmt.Sprintf("%d", types.RoleValidator),
 		uint32(types.PermClaimValidator),
 	)
 
@@ -769,7 +769,7 @@ func TestHandler_RemoveBlacklistRolePermissions_Errors(t *testing.T) {
 			name: "address without SetPermissions perm",
 			msg: types.NewMsgRemoveBlacklistRolePermission(
 				addr,
-				uint32(types.RoleValidator),
+				fmt.Sprintf("%d", types.RoleValidator),
 				uint32(types.PermSetPermissions),
 			),
 			preparePerms: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {},
@@ -779,7 +779,7 @@ func TestHandler_RemoveBlacklistRolePermissions_Errors(t *testing.T) {
 			name: "role does not exist",
 			msg: types.NewMsgRemoveBlacklistRolePermission(
 				addr,
-				10000,
+				"10000",
 				1,
 			),
 			preparePerms: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
@@ -829,7 +829,7 @@ func TestHandler_RemoveBlacklistRolePermissions(t *testing.T) {
 
 	msg := types.NewMsgRemoveBlacklistRolePermission(
 		addr,
-		uint32(types.RoleValidator),
+		fmt.Sprintf("%d", types.RoleValidator),
 		uint32(types.PermClaimCouncilor),
 	)
 
@@ -856,7 +856,8 @@ func TestHandler_CreateRole_Errors(t *testing.T) {
 			"fails when no perms",
 			types.NewMsgCreateRole(
 				addr,
-				10,
+				"role10",
+				"role10desc",
 			),
 			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {},
 			fmt.Errorf("PermUpsertRole: not enough permissions"),
@@ -865,12 +866,13 @@ func TestHandler_CreateRole_Errors(t *testing.T) {
 			"fails when role already exists",
 			types.NewMsgCreateRole(
 				addr,
-				1234,
+				"role1234",
+				"role1234desc",
 			),
 			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				err2 := setPermissionToAddr(t, app, ctx, addr, types.PermUpsertRole)
 				require.NoError(t, err2)
-				app.CustomGovKeeper.CreateRole(ctx, types.Role(1234))
+				app.CustomGovKeeper.CreateRole(ctx, "role1234", "role1234desc")
 			},
 			fmt.Errorf("role already exist"),
 		},
@@ -904,12 +906,13 @@ func TestHandler_CreateRole(t *testing.T) {
 	handler := gov.NewHandler(app.CustomGovKeeper)
 	_, err = handler(ctx, types.NewMsgCreateRole(
 		addr,
-		1234,
+		"role1234",
+		"role1234desc",
 	))
 	require.NoError(t, err)
 
-	_, found = app.CustomGovKeeper.GetPermissionsForRole(ctx, 1234)
-	require.True(t, found)
+	_, err = app.CustomGovKeeper.GetRoleBySid(ctx, "role1234")
+	require.NoError(t, err)
 }
 
 func TestHandler_AssignRole_Errors(t *testing.T) {
@@ -953,12 +956,16 @@ func TestHandler_AssignRole_Errors(t *testing.T) {
 				err2 := setPermissionToAddr(t, app, ctx, proposerAddr, types.PermUpsertRole)
 				require.NoError(t, err2)
 
-				app.CustomGovKeeper.CreateRole(ctx, types.Role(3))
-				err2 = app.CustomGovKeeper.WhitelistRolePermission(ctx, types.Role(3), types.PermClaimValidator)
+				app.CustomGovKeeper.SetRole(ctx, types.Role{
+					Id:          3,
+					Sid:         "3",
+					Description: "3",
+				})
+				err2 = app.CustomGovKeeper.WhitelistRolePermission(ctx, 3, types.PermClaimValidator)
 				require.NoError(t, err2)
 
 				networkActor := types.NewDefaultActor(addr)
-				app.CustomGovKeeper.AssignRoleToActor(ctx, networkActor, types.Role(3))
+				app.CustomGovKeeper.AssignRoleToActor(ctx, networkActor, 3)
 			},
 			types.ErrRoleAlreadyAssigned,
 		},
@@ -991,8 +998,12 @@ func TestHandler_AssignRole(t *testing.T) {
 	require.NoError(t, err)
 
 	// Create role
-	app.CustomGovKeeper.CreateRole(ctx, types.Role(3))
-	err = app.CustomGovKeeper.WhitelistRolePermission(ctx, types.Role(3), types.PermSetPermissions)
+	app.CustomGovKeeper.SetRole(ctx, types.Role{
+		Id:          3,
+		Sid:         "3",
+		Description: "3",
+	})
+	err = app.CustomGovKeeper.WhitelistRolePermission(ctx, 3, types.PermSetPermissions)
 	require.NoError(t, err)
 
 	msg := types.NewMsgAssignRole(proposerAddr, addr, 3)
@@ -1004,7 +1015,7 @@ func TestHandler_AssignRole(t *testing.T) {
 	actor, found := app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addr)
 	require.True(t, found)
 
-	require.True(t, actor.HasRole(types.Role(3)))
+	require.True(t, actor.HasRole(3))
 }
 
 func TestHandler_RemoveRole_Errors(t *testing.T) {
@@ -1048,8 +1059,12 @@ func TestHandler_RemoveRole_Errors(t *testing.T) {
 				err2 := setPermissionToAddr(t, app, ctx, proposerAddr, types.PermUpsertRole)
 				require.NoError(t, err2)
 
-				app.CustomGovKeeper.CreateRole(ctx, types.Role(3))
-				err2 = app.CustomGovKeeper.WhitelistRolePermission(ctx, types.Role(3), types.PermClaimValidator)
+				app.CustomGovKeeper.SetRole(ctx, types.Role{
+					Id:          3,
+					Sid:         "3",
+					Description: "3",
+				})
+				err2 = app.CustomGovKeeper.WhitelistRolePermission(ctx, 3, types.PermClaimValidator)
 				require.NoError(t, err2)
 				networkActor := types.NewDefaultActor(addr)
 				app.CustomGovKeeper.SaveNetworkActor(ctx, networkActor)
@@ -1085,12 +1100,16 @@ func TestHandler_RemoveRoles(t *testing.T) {
 	require.NoError(t, err)
 
 	// Set new role and set permission to actor.
-	app.CustomGovKeeper.CreateRole(ctx, types.Role(3))
-	err = app.CustomGovKeeper.WhitelistRolePermission(ctx, types.Role(3), types.PermSetPermissions)
+	app.CustomGovKeeper.SetRole(ctx, types.Role{
+		Id:          3,
+		Sid:         "3",
+		Description: "3",
+	})
+	err = app.CustomGovKeeper.WhitelistRolePermission(ctx, 3, types.PermSetPermissions)
 	require.NoError(t, err)
 
 	actor := types.NewDefaultActor(addr)
-	app.CustomGovKeeper.AssignRoleToActor(ctx, actor, types.Role(3))
+	app.CustomGovKeeper.AssignRoleToActor(ctx, actor, 3)
 
 	actor, found := app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addr)
 	require.True(t, found)
@@ -1361,7 +1380,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				actor := types.NewNetworkActor(
 					voterAddr,
-					types.Roles{},
+					[]uint64{},
 					types.Active,
 					[]types.VoteOption{},
 					types.NewPermissions(nil, nil),
@@ -1401,7 +1420,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				actor := types.NewNetworkActor(
 					voterAddr,
-					types.Roles{},
+					[]uint64{},
 					types.Active,
 					[]types.VoteOption{},
 					types.NewPermissions(nil, nil),
@@ -1437,7 +1456,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				actor := types.NewNetworkActor(
 					voterAddr,
-					types.Roles{},
+					[]uint64{},
 					types.Active,
 					[]types.VoteOption{},
 					types.NewPermissions(nil, nil),
@@ -1476,7 +1495,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				actor := types.NewNetworkActor(
 					voterAddr,
-					types.Roles{},
+					[]uint64{},
 					types.Active,
 					[]types.VoteOption{},
 					types.NewPermissions(nil, nil),
@@ -1510,7 +1529,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				actor := types.NewNetworkActor(
 					voterAddr,
-					types.Roles{},
+					[]uint64{},
 					types.Active,
 					[]types.VoteOption{},
 					types.NewPermissions(nil, nil),
@@ -1546,7 +1565,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				actor := types.NewNetworkActor(
 					voterAddr,
-					types.Roles{},
+					[]uint64{},
 					types.Active,
 					[]types.VoteOption{},
 					types.NewPermissions(nil, nil),
@@ -1607,7 +1626,7 @@ func TestHandler_VoteProposal(t *testing.T) {
 	// Create Voter as active actor.
 	actor := types.NewNetworkActor(
 		voterAddr,
-		types.Roles{},
+		[]uint64{},
 		types.Active,
 		[]types.VoteOption{},
 		types.NewPermissions(nil, nil),
@@ -1771,7 +1790,8 @@ func TestHandler_CreateProposalCreateRole_Errors(t *testing.T) {
 		{
 			"Proposer does not have Perm",
 			types.NewCreateRoleProposal(
-				types.Role(1),
+				"role1",
+				"role1 description",
 				[]types.PermValue{},
 				[]types.PermValue{types.PermClaimValidator},
 			),
@@ -1781,7 +1801,8 @@ func TestHandler_CreateProposalCreateRole_Errors(t *testing.T) {
 		{
 			"role already exist",
 			types.NewCreateRoleProposal(
-				types.Role(1),
+				"role1",
+				"role1 description",
 				[]types.PermValue{types.PermClaimCouncilor},
 				[]types.PermValue{},
 			),
@@ -1794,14 +1815,19 @@ func TestHandler_CreateProposalCreateRole_Errors(t *testing.T) {
 				)
 				require.NoError(t, err)
 
-				app.CustomGovKeeper.CreateRole(ctx, types.Role(1))
+				app.CustomGovKeeper.SetRole(ctx, types.Role{
+					Id:          1,
+					Sid:         "role1",
+					Description: "role1 description",
+				})
 			},
 			types.ErrRoleExist,
 		},
 		{
 			"permissions are empty",
 			types.NewCreateRoleProposal(
-				types.Role(1000),
+				"role1000",
+				"role1000 description",
 				[]types.PermValue{},
 				[]types.PermValue{},
 			),
@@ -1855,7 +1881,8 @@ func TestHandler_ProposalCreateRole(t *testing.T) {
 
 	handler := gov.NewHandler(app.CustomGovKeeper)
 	proposal := types.NewCreateRoleProposal(
-		types.Role(1000),
+		"role1000",
+		"role1000 description",
 		[]types.PermValue{
 			types.PermClaimValidator,
 		},
@@ -1882,7 +1909,8 @@ func TestHandler_ProposalCreateRole(t *testing.T) {
 		"title",
 		"some desc",
 		types.NewCreateRoleProposal(
-			types.Role(1000),
+			"role1000",
+			"role1000 description",
 			[]types.PermValue{
 				types.PermClaimValidator,
 			},

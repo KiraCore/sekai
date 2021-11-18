@@ -107,21 +107,43 @@ func GetCmdQueryRolesByAddress() *cobra.Command {
 	return cmd
 }
 
+func GetCmdQueryRole() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "role [role_sid | role_id]",
+		Short: "Query role by sid or id",
+		Args:  cobra.MinimumNArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			params := &types.RoleRequest{
+				Identifier: args[0],
+			}
+
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.Role(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res.Role)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
 func GetCmdQueryRolePermissions() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "role-permissions arg-num",
+		Use:   "role-permissions [role_sid | role_id]",
 		Short: "Query permissions of all the roles",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
-			roleNum, err := strconv.ParseUint(args[0], 10, 64)
-			if err != nil {
-				return fmt.Errorf("invalid role number")
-			}
-
 			params := &types.RolePermissionsRequest{
-				Role: roleNum,
+				Identifier: args[0],
 			}
 
 			queryClient := types.NewQueryClient(clientCtx)

@@ -195,7 +195,7 @@ func initGenFiles(cfg Config, vals []*Validator, genAccounts []authtypes.Genesis
 	// Add permissions to RoleInTest, num 0. This included:
 	// - Whitelisted PermClaimValidator.
 	// - Blacklisted PermClaimCouncilor.
-	customGovGenState.Permissions[uint64(govtypes.RoleUndefined)] = govtypes.NewPermissions(
+	customGovGenState.RolePermissions[uint64(govtypes.RoleUndefined)] = govtypes.NewPermissions(
 		[]govtypes.PermValue{
 			govtypes.PermClaimValidator,
 		}, []govtypes.PermValue{
@@ -205,7 +205,7 @@ func initGenFiles(cfg Config, vals []*Validator, genAccounts []authtypes.Genesis
 	// Only first validator is network actor
 	networkActor := govtypes.NewNetworkActor(
 		vals[0].Address,
-		govtypes.Roles{uint64(govtypes.RoleSudo)},
+		[]uint64{govtypes.RoleSudo},
 		govtypes.Active,
 		nil,
 		govtypes.NewPermissions(nil, nil),

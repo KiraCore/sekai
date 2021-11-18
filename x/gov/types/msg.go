@@ -241,10 +241,10 @@ func (m *MsgClaimCouncilor) GetSigners() []sdk.AccAddress {
 
 func NewMsgWhitelistRolePermission(
 	proposer sdk.AccAddress,
-	role uint32,
+	roleIdentifier string,
 	permission uint32,
 ) *MsgWhitelistRolePermission {
-	return &MsgWhitelistRolePermission{Proposer: proposer, Role: role, Permission: permission}
+	return &MsgWhitelistRolePermission{Proposer: proposer, RoleIdentifier: roleIdentifier, Permission: permission}
 }
 
 func (m *MsgWhitelistRolePermission) Route() string {
@@ -276,10 +276,10 @@ func (m *MsgWhitelistRolePermission) GetSigners() []sdk.AccAddress {
 
 func NewMsgBlacklistRolePermission(
 	proposer sdk.AccAddress,
-	role uint32,
+	roleIdentifier string,
 	permission uint32,
 ) *MsgBlacklistRolePermission {
-	return &MsgBlacklistRolePermission{Proposer: proposer, Role: role, Permission: permission}
+	return &MsgBlacklistRolePermission{Proposer: proposer, RoleIdentifier: roleIdentifier, Permission: permission}
 }
 
 func (m *MsgBlacklistRolePermission) Route() string {
@@ -311,10 +311,10 @@ func (m *MsgBlacklistRolePermission) GetSigners() []sdk.AccAddress {
 
 func NewMsgRemoveWhitelistRolePermission(
 	proposer sdk.AccAddress,
-	role uint32,
+	roleIdentifier string,
 	permission uint32,
 ) *MsgRemoveWhitelistRolePermission {
-	return &MsgRemoveWhitelistRolePermission{Proposer: proposer, Role: role, Permission: permission}
+	return &MsgRemoveWhitelistRolePermission{Proposer: proposer, RoleIdentifier: roleIdentifier, Permission: permission}
 }
 
 func (m *MsgRemoveWhitelistRolePermission) Route() string {
@@ -346,10 +346,10 @@ func (m *MsgRemoveWhitelistRolePermission) GetSigners() []sdk.AccAddress {
 
 func NewMsgRemoveBlacklistRolePermission(
 	proposer sdk.AccAddress,
-	role uint32,
+	roleIdentifier string,
 	permission uint32,
 ) *MsgRemoveBlacklistRolePermission {
-	return &MsgRemoveBlacklistRolePermission{Proposer: proposer, Role: role, Permission: permission}
+	return &MsgRemoveBlacklistRolePermission{Proposer: proposer, RoleIdentifier: roleIdentifier, Permission: permission}
 }
 
 func (m *MsgRemoveBlacklistRolePermission) Route() string {
@@ -379,8 +379,8 @@ func (m *MsgRemoveBlacklistRolePermission) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgCreateRole(proposer sdk.AccAddress, role uint32) *MsgCreateRole {
-	return &MsgCreateRole{Proposer: proposer, Role: role}
+func NewMsgCreateRole(proposer sdk.AccAddress, sid, description string) *MsgCreateRole {
+	return &MsgCreateRole{Proposer: proposer, RoleSid: sid, RoleDescription: description}
 }
 
 func (m *MsgCreateRole) Route() string {
@@ -410,8 +410,8 @@ func (m *MsgCreateRole) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgAssignRole(proposer, address sdk.AccAddress, role uint32) *MsgAssignRole {
-	return &MsgAssignRole{Proposer: proposer, Address: address, Role: role}
+func NewMsgAssignRole(proposer, address sdk.AccAddress, roleId uint32) *MsgAssignRole {
+	return &MsgAssignRole{Proposer: proposer, Address: address, RoleId: roleId}
 }
 
 func (m *MsgAssignRole) Route() string {
@@ -445,8 +445,8 @@ func (m *MsgAssignRole) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgRemoveRole(proposer, address sdk.AccAddress, role uint32) *MsgRemoveRole {
-	return &MsgRemoveRole{Proposer: proposer, Address: address, Role: role}
+func NewMsgRemoveRole(proposer, address sdk.AccAddress, roleId uint32) *MsgRemoveRole {
+	return &MsgRemoveRole{Proposer: proposer, Address: address, RoleId: roleId}
 }
 
 func (m *MsgRemoveRole) Route() string {

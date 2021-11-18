@@ -48,7 +48,7 @@ func TestNewNetworkActor_Status(t *testing.T) {
 	// Active Actor
 	actor = types.NewNetworkActor(
 		addr,
-		types.Roles{},
+		[]uint64{},
 		types.Active,
 		[]types.VoteOption{},
 		types.NewPermissions(nil, nil),
@@ -64,7 +64,7 @@ func TestNewNetworkActor_Status(t *testing.T) {
 func TestNewDefaultActor_CanVote(t *testing.T) {
 	actor := types.NewNetworkActor(
 		sdk.AccAddress{0x0},
-		types.Roles{},
+		[]uint64{},
 		types.Active,
 		[]types.VoteOption{types.OptionYes, types.OptionAbstain},
 		nil,
@@ -79,16 +79,16 @@ func TestNewDefaultActor_CanVote(t *testing.T) {
 
 func TestGetVetoActorsFromList(t *testing.T) {
 	actors := []types.NetworkActor{
-		types.NewNetworkActor(sdk.AccAddress{0x0}, types.Roles{}, types.Active, []types.VoteOption{types.OptionAbstain}, nil, 123),
-		types.NewNetworkActor(sdk.AccAddress{0x1}, types.Roles{}, types.Active, []types.VoteOption{types.OptionAbstain, types.OptionNoWithVeto}, nil, 123),
-		types.NewNetworkActor(sdk.AccAddress{0x2}, types.Roles{}, types.Active, []types.VoteOption{types.OptionAbstain}, nil, 123),
-		types.NewNetworkActor(sdk.AccAddress{0x3}, types.Roles{}, types.Active, []types.VoteOption{types.OptionAbstain}, nil, 123),
-		types.NewNetworkActor(sdk.AccAddress{0x4}, types.Roles{}, types.Active, []types.VoteOption{types.OptionAbstain}, nil, 123),
-		types.NewNetworkActor(sdk.AccAddress{0x5}, types.Roles{}, types.Active, []types.VoteOption{types.OptionAbstain}, nil, 123),
-		types.NewNetworkActor(sdk.AccAddress{0x6}, types.Roles{}, types.Active, []types.VoteOption{types.OptionAbstain}, nil, 123),
-		types.NewNetworkActor(sdk.AccAddress{0x7}, types.Roles{}, types.Active, []types.VoteOption{types.OptionAbstain, types.OptionNoWithVeto}, nil, 123),
-		types.NewNetworkActor(sdk.AccAddress{0x8}, types.Roles{}, types.Active, []types.VoteOption{types.OptionAbstain}, nil, 123),
-		types.NewNetworkActor(sdk.AccAddress{0x9}, types.Roles{}, types.Active, []types.VoteOption{types.OptionAbstain}, nil, 123),
+		types.NewNetworkActor(sdk.AccAddress{0x0}, []uint64{}, types.Active, []types.VoteOption{types.OptionAbstain}, nil, 123),
+		types.NewNetworkActor(sdk.AccAddress{0x1}, []uint64{}, types.Active, []types.VoteOption{types.OptionAbstain, types.OptionNoWithVeto}, nil, 123),
+		types.NewNetworkActor(sdk.AccAddress{0x2}, []uint64{}, types.Active, []types.VoteOption{types.OptionAbstain}, nil, 123),
+		types.NewNetworkActor(sdk.AccAddress{0x3}, []uint64{}, types.Active, []types.VoteOption{types.OptionAbstain}, nil, 123),
+		types.NewNetworkActor(sdk.AccAddress{0x4}, []uint64{}, types.Active, []types.VoteOption{types.OptionAbstain}, nil, 123),
+		types.NewNetworkActor(sdk.AccAddress{0x5}, []uint64{}, types.Active, []types.VoteOption{types.OptionAbstain}, nil, 123),
+		types.NewNetworkActor(sdk.AccAddress{0x6}, []uint64{}, types.Active, []types.VoteOption{types.OptionAbstain}, nil, 123),
+		types.NewNetworkActor(sdk.AccAddress{0x7}, []uint64{}, types.Active, []types.VoteOption{types.OptionAbstain, types.OptionNoWithVeto}, nil, 123),
+		types.NewNetworkActor(sdk.AccAddress{0x8}, []uint64{}, types.Active, []types.VoteOption{types.OptionAbstain}, nil, 123),
+		types.NewNetworkActor(sdk.AccAddress{0x9}, []uint64{}, types.Active, []types.VoteOption{types.OptionAbstain}, nil, 123),
 	}
 
 	actorsWithVeto := types.GetActorsWithVoteWithVeto(actors)

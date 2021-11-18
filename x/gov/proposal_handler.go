@@ -1,10 +1,13 @@
 package gov
 
 import (
+	"fmt"
+
 	"github.com/KiraCore/sekai/x/gov/keeper"
 	"github.com/KiraCore/sekai/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/pkg/errors"
 )
 
 type ApplyAssignPermissionProposalHandler struct {
@@ -109,22 +112,27 @@ func (c CreateRoleProposalHandler) ProposalType() string {
 func (c CreateRoleProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
 	p := proposal.(*types.CreateRoleProposal)
 
-	_, exists := c.keeper.GetPermissionsForRole(ctx, types.Role(p.Role))
-	if exists {
+	// check sid is good variable naming form
+	if !keeper.ValidateRoleSidKey(p.RoleSid) {
+		return errors.Wrap(types.ErrInvalidRoleSid, fmt.Sprintf("invalid role sid configuration: sid=%s", p.RoleSid))
+	}
+
+	_, err := c.keeper.GetRoleBySid(ctx, p.RoleSid)
+	if err == nil {
 		return types.ErrRoleExist
 	}
 
-	c.keeper.CreateRole(ctx, types.Role(p.Role))
+	roleId := c.keeper.CreateRole(ctx, p.RoleSid, p.RoleDescription)
 
 	for _, w := range p.WhitelistedPermissions {
-		err := c.keeper.WhitelistRolePermission(ctx, types.Role(p.Role), w)
+		err := c.keeper.WhitelistRolePermission(ctx, roleId, w)
 		if err != nil {
 			return err
 		}
 	}
 
 	for _, b := range p.BlacklistedPermissions {
-		err := c.keeper.BlacklistRolePermission(ctx, types.Role(p.Role), b)
+		err := c.keeper.BlacklistRolePermission(ctx, roleId, b)
 		if err != nil {
 			return err
 		}

@@ -46,4 +46,5 @@ var (
 	ErrInvalidIdentityRecordId    = errors.Register(ModuleName, 43, "invalid identity record id")
 	ErrInvalidApprovalTip         = errors.Register(ModuleName, 44, "invalid approval tip")
 	ErrKeyShouldBeUnique          = errors.Register(ModuleName, 45, "key should be unique")
+	ErrInvalidRoleSid             = errors.Register(ModuleName, 46, "invalid role sid")
 )
