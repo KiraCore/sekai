@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"strconv"
+
 	"github.com/KiraCore/sekai/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -103,6 +105,17 @@ func (k Keeper) GetPermissionsForRole(ctx sdk.Context, role uint64) (types.Permi
 	k.cdc.MustUnmarshal(bz, &perm)
 
 	return perm, true
+}
+
+func (k Keeper) GetRoleIdFromIdentifierString(ctx sdk.Context, identifier string) (uint64, error) {
+	if roleId, err := strconv.Atoi(identifier); err == nil {
+		return uint64(roleId), nil
+	}
+	role, err := k.GetRoleBySid(ctx, identifier) // sid
+	if err != nil {
+		return 0, err
+	}
+	return uint64(role.Id), nil
 }
 
 func (k Keeper) WhitelistRolePermission(ctx sdk.Context, role uint64, perm types.PermValue) error {

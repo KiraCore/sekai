@@ -32,7 +32,7 @@ func GetRolesByAddress(t *testing.T, network *network.Network, address sdk.AccAd
 	err = val.ClientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &roles)
 	require.NoError(t, err)
 
-	return roles.Roles
+	return roles.RoleIds
 }
 
 // SetCouncilor calls CLI to set address in the Councilor Registry. The Validator 1 is the caller.

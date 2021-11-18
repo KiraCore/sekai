@@ -357,11 +357,6 @@ func GetTxWhitelistRolePermission() *cobra.Command {
 				return err
 			}
 
-			role, err := strconv.Atoi(args[0])
-			if err != nil {
-				return fmt.Errorf("invalid role: %w", err)
-			}
-
 			permission, err := strconv.Atoi(args[1])
 			if err != nil {
 				return fmt.Errorf("invalid permission: %w", err)
@@ -369,7 +364,7 @@ func GetTxWhitelistRolePermission() *cobra.Command {
 
 			msg := types.NewMsgWhitelistRolePermission(
 				clientCtx.FromAddress,
-				uint32(role),
+				args[0],
 				uint32(permission),
 			)
 
@@ -456,11 +451,6 @@ func GetTxBlacklistRolePermission() *cobra.Command {
 				return err
 			}
 
-			role, err := strconv.Atoi(args[0])
-			if err != nil {
-				return fmt.Errorf("invalid role: %w", err)
-			}
-
 			permission, err := strconv.Atoi(args[1])
 			if err != nil {
 				return fmt.Errorf("invalid permission: %w", err)
@@ -468,7 +458,7 @@ func GetTxBlacklistRolePermission() *cobra.Command {
 
 			msg := types.NewMsgBlacklistRolePermission(
 				clientCtx.FromAddress,
-				uint32(role),
+				args[0],
 				uint32(permission),
 			)
 
@@ -493,11 +483,6 @@ func GetTxRemoveWhitelistRolePermission() *cobra.Command {
 				return err
 			}
 
-			role, err := strconv.Atoi(args[0])
-			if err != nil {
-				return fmt.Errorf("invalid role: %w", err)
-			}
-
 			permission, err := strconv.Atoi(args[1])
 			if err != nil {
 				return fmt.Errorf("invalid permission: %w", err)
@@ -505,7 +490,7 @@ func GetTxRemoveWhitelistRolePermission() *cobra.Command {
 
 			msg := types.NewMsgRemoveWhitelistRolePermission(
 				clientCtx.FromAddress,
-				uint32(role),
+				args[0],
 				uint32(permission),
 			)
 
@@ -530,11 +515,6 @@ func GetTxRemoveBlacklistRolePermission() *cobra.Command {
 				return err
 			}
 
-			role, err := strconv.Atoi(args[0])
-			if err != nil {
-				return fmt.Errorf("invalid role: %w", err)
-			}
-
 			permission, err := strconv.Atoi(args[1])
 			if err != nil {
 				return fmt.Errorf("invalid permission: %w", err)
@@ -542,7 +522,7 @@ func GetTxRemoveBlacklistRolePermission() *cobra.Command {
 
 			msg := types.NewMsgRemoveBlacklistRolePermission(
 				clientCtx.FromAddress,
-				uint32(role),
+				args[0],
 				uint32(permission),
 			)
 

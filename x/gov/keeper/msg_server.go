@@ -259,7 +259,12 @@ func (k msgServer) RemoveBlacklistRolePermission(
 		return nil, errors.Wrap(types.ErrNotEnoughPermissions, types.PermUpsertRole.String())
 	}
 
-	err := k.keeper.RemoveBlacklistRolePermission(ctx, uint64(msg.RoleId), types.PermValue(msg.Permission))
+	roleId, err := k.keeper.GetRoleIdFromIdentifierString(ctx, msg.RoleIdentifier)
+	if err != nil {
+		return nil, err
+	}
+
+	err = k.keeper.RemoveBlacklistRolePermission(ctx, roleId, types.PermValue(msg.Permission))
 	if err != nil {
 		return nil, err
 	}
@@ -267,7 +272,7 @@ func (k msgServer) RemoveBlacklistRolePermission(
 		sdk.NewEvent(
 			types.EventTypeRemoveBlacklistRolePermisison,
 			sdk.NewAttribute(types.AttributeKeyProposer, msg.Proposer.String()),
-			sdk.NewAttribute(types.AttributeKeyRoleId, fmt.Sprintf("%d", uint64(msg.RoleId))),
+			sdk.NewAttribute(types.AttributeKeyRoleId, msg.RoleIdentifier),
 			sdk.NewAttribute(types.AttributeKeyPermission, fmt.Sprintf("%d", msg.Permission)),
 		),
 	)
@@ -285,7 +290,12 @@ func (k msgServer) RemoveWhitelistRolePermission(
 		return nil, errors.Wrap(types.ErrNotEnoughPermissions, types.PermUpsertRole.String())
 	}
 
-	err := k.keeper.RemoveWhitelistRolePermission(ctx, uint64(msg.RoleId), types.PermValue(msg.Permission))
+	roleId, err := k.keeper.GetRoleIdFromIdentifierString(ctx, msg.RoleIdentifier)
+	if err != nil {
+		return nil, err
+	}
+
+	err = k.keeper.RemoveWhitelistRolePermission(ctx, roleId, types.PermValue(msg.Permission))
 	if err != nil {
 		return nil, err
 	}
@@ -293,7 +303,7 @@ func (k msgServer) RemoveWhitelistRolePermission(
 		sdk.NewEvent(
 			types.EventTypeRemoveWhitelistRolePermisison,
 			sdk.NewAttribute(types.AttributeKeyProposer, msg.Proposer.String()),
-			sdk.NewAttribute(types.AttributeKeyRoleId, fmt.Sprintf("%d", uint64(msg.RoleId))),
+			sdk.NewAttribute(types.AttributeKeyRoleId, msg.RoleIdentifier),
 			sdk.NewAttribute(types.AttributeKeyPermission, fmt.Sprintf("%d", msg.Permission)),
 		),
 	)
@@ -311,7 +321,12 @@ func (k msgServer) BlacklistRolePermission(
 		return nil, errors.Wrap(types.ErrNotEnoughPermissions, types.PermUpsertRole.String())
 	}
 
-	err := k.keeper.BlacklistRolePermission(ctx, uint64(msg.RoleId), types.PermValue(msg.Permission))
+	roleId, err := k.keeper.GetRoleIdFromIdentifierString(ctx, msg.RoleIdentifier)
+	if err != nil {
+		return nil, err
+	}
+
+	err = k.keeper.BlacklistRolePermission(ctx, roleId, types.PermValue(msg.Permission))
 	if err != nil {
 		return nil, err
 	}
@@ -319,7 +334,7 @@ func (k msgServer) BlacklistRolePermission(
 		sdk.NewEvent(
 			types.EventTypeBlacklistRolePermisison,
 			sdk.NewAttribute(types.AttributeKeyProposer, msg.Proposer.String()),
-			sdk.NewAttribute(types.AttributeKeyRoleId, fmt.Sprintf("%d", uint64(msg.RoleId))),
+			sdk.NewAttribute(types.AttributeKeyRoleId, msg.RoleIdentifier),
 			sdk.NewAttribute(types.AttributeKeyPermission, fmt.Sprintf("%d", msg.Permission)),
 		),
 	)
@@ -337,7 +352,12 @@ func (k msgServer) WhitelistRolePermission(
 		return nil, errors.Wrap(types.ErrNotEnoughPermissions, types.PermUpsertRole.String())
 	}
 
-	err := k.keeper.WhitelistRolePermission(ctx, uint64(msg.RoleId), types.PermValue(msg.Permission))
+	roleId, err := k.keeper.GetRoleIdFromIdentifierString(ctx, msg.RoleIdentifier)
+	if err != nil {
+		return nil, err
+	}
+
+	err = k.keeper.WhitelistRolePermission(ctx, roleId, types.PermValue(msg.Permission))
 	if err != nil {
 		return nil, err
 	}
@@ -345,7 +365,7 @@ func (k msgServer) WhitelistRolePermission(
 		sdk.NewEvent(
 			types.EventTypeWhitelistRolePermisison,
 			sdk.NewAttribute(types.AttributeKeyProposer, msg.Proposer.String()),
-			sdk.NewAttribute(types.AttributeKeyRoleId, fmt.Sprintf("%d", msg.RoleId)),
+			sdk.NewAttribute(types.AttributeKeyRoleId, msg.RoleIdentifier),
 			sdk.NewAttribute(types.AttributeKeyPermission, fmt.Sprintf("%d", msg.Permission)),
 		),
 	)

@@ -492,7 +492,7 @@ func TestHandler_WhitelistRolePermissions_Errors(t *testing.T) {
 			name: "address without SetPermissions perm",
 			msg: types.NewMsgWhitelistRolePermission(
 				addr,
-				uint32(types.RoleValidator),
+				fmt.Sprintf("%d", types.RoleValidator),
 				uint32(types.PermSetPermissions),
 			),
 			preparePerms: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
@@ -504,7 +504,7 @@ func TestHandler_WhitelistRolePermissions_Errors(t *testing.T) {
 			name: "role does not exist",
 			msg: types.NewMsgWhitelistRolePermission(
 				addr,
-				10000,
+				"10000",
 				1,
 			),
 			preparePerms: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
@@ -517,7 +517,7 @@ func TestHandler_WhitelistRolePermissions_Errors(t *testing.T) {
 			name: "permission is blacklisted",
 			msg: types.NewMsgWhitelistRolePermission(
 				addr,
-				uint32(types.RoleValidator),
+				fmt.Sprintf("%d", types.RoleValidator),
 				uint32(types.PermSetPermissions),
 			),
 			preparePerms: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
@@ -565,7 +565,7 @@ func TestHandler_WhitelistRolePermissions(t *testing.T) {
 
 	msg := types.NewMsgWhitelistRolePermission(
 		addr,
-		uint32(types.RoleValidator),
+		fmt.Sprintf("%d", types.RoleValidator),
 		uint32(types.PermSetPermissions),
 	)
 
@@ -592,7 +592,7 @@ func TestHandler_BlacklistRolePermissions_Errors(t *testing.T) {
 			name: "address without SetPermissions perm",
 			msg: types.NewMsgBlacklistRolePermission(
 				addr,
-				uint32(types.RoleValidator),
+				fmt.Sprintf("%d", types.RoleValidator),
 				uint32(types.PermSetPermissions),
 			),
 			preparePerms: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {},
@@ -602,7 +602,7 @@ func TestHandler_BlacklistRolePermissions_Errors(t *testing.T) {
 			name: "role does not exist",
 			msg: types.NewMsgBlacklistRolePermission(
 				addr,
-				10000,
+				"10000",
 				1,
 			),
 			preparePerms: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
@@ -615,7 +615,7 @@ func TestHandler_BlacklistRolePermissions_Errors(t *testing.T) {
 			name: "permission is whitelisted",
 			msg: types.NewMsgBlacklistRolePermission(
 				addr,
-				uint32(types.RoleValidator),
+				fmt.Sprintf("%d", types.RoleValidator),
 				uint32(types.PermSetPermissions),
 			),
 			preparePerms: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
@@ -663,7 +663,7 @@ func TestHandler_BlacklistRolePermissions(t *testing.T) {
 
 	msg := types.NewMsgBlacklistRolePermission(
 		addr,
-		uint32(types.RoleValidator),
+		fmt.Sprintf("%d", types.RoleValidator),
 		uint32(types.PermSetPermissions),
 	)
 
@@ -690,7 +690,7 @@ func TestHandler_RemoveWhitelistRolePermissions_Errors(t *testing.T) {
 			name: "address without SetPermissions perm",
 			msg: types.NewMsgRemoveWhitelistRolePermission(
 				addr,
-				uint32(types.RoleValidator),
+				fmt.Sprintf("%d", types.RoleValidator),
 				uint32(types.PermSetPermissions),
 			),
 			preparePerms: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {},
@@ -700,7 +700,7 @@ func TestHandler_RemoveWhitelistRolePermissions_Errors(t *testing.T) {
 			name: "role does not exist",
 			msg: types.NewMsgRemoveWhitelistRolePermission(
 				addr,
-				10000,
+				"10000",
 				1,
 			),
 			preparePerms: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
@@ -742,7 +742,7 @@ func TestHandler_RemoveWhitelistRolePermissions(t *testing.T) {
 
 	msg := types.NewMsgRemoveWhitelistRolePermission(
 		addr,
-		uint32(types.RoleValidator),
+		fmt.Sprintf("%d", types.RoleValidator),
 		uint32(types.PermClaimValidator),
 	)
 
@@ -769,7 +769,7 @@ func TestHandler_RemoveBlacklistRolePermissions_Errors(t *testing.T) {
 			name: "address without SetPermissions perm",
 			msg: types.NewMsgRemoveBlacklistRolePermission(
 				addr,
-				uint32(types.RoleValidator),
+				fmt.Sprintf("%d", types.RoleValidator),
 				uint32(types.PermSetPermissions),
 			),
 			preparePerms: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {},
@@ -779,7 +779,7 @@ func TestHandler_RemoveBlacklistRolePermissions_Errors(t *testing.T) {
 			name: "role does not exist",
 			msg: types.NewMsgRemoveBlacklistRolePermission(
 				addr,
-				10000,
+				"10000",
 				1,
 			),
 			preparePerms: func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
@@ -829,7 +829,7 @@ func TestHandler_RemoveBlacklistRolePermissions(t *testing.T) {
 
 	msg := types.NewMsgRemoveBlacklistRolePermission(
 		addr,
-		uint32(types.RoleValidator),
+		fmt.Sprintf("%d", types.RoleValidator),
 		uint32(types.PermClaimCouncilor),
 	)
 

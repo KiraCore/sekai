@@ -144,15 +144,15 @@ func (s IntegrationTestSuite) TestRemoveBlacklistRolePermission() {
 
 	cmd := cli.GetCmdQueryRolePermissions()
 	_, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
-		"1", // RoleInTest
+		"sudo",
 	})
 	s.Require().NoError(err)
 
 	// Send Tx To Remove Blacklist Permissions
 	cmd = cli.GetTxRemoveBlacklistRolePermission()
 	_, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
-		"1", // RoleValidator
-		"3", // PermClaimCouncilor
+		"sudo", // RoleValidator
+		"3",    // PermClaimCouncilor
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),

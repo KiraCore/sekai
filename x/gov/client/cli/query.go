@@ -116,7 +116,7 @@ func GetCmdQueryRole() *cobra.Command {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			params := &types.RoleRequest{
-				Sid: args[0],
+				Identifier: args[0],
 			}
 
 			queryClient := types.NewQueryClient(clientCtx)
@@ -142,13 +142,8 @@ func GetCmdQueryRolePermissions() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
-			roleNum, err := strconv.ParseUint(args[0], 10, 64)
-			if err != nil {
-				return fmt.Errorf("invalid role number")
-			}
-
 			params := &types.RolePermissionsRequest{
-				Role: roleNum,
+				Identifier: args[0],
 			}
 
 			queryClient := types.NewQueryClient(clientCtx)

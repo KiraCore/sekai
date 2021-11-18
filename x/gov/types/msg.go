@@ -241,10 +241,10 @@ func (m *MsgClaimCouncilor) GetSigners() []sdk.AccAddress {
 
 func NewMsgWhitelistRolePermission(
 	proposer sdk.AccAddress,
-	roleId uint32,
+	roleIdentifier string,
 	permission uint32,
 ) *MsgWhitelistRolePermission {
-	return &MsgWhitelistRolePermission{Proposer: proposer, RoleId: roleId, Permission: permission}
+	return &MsgWhitelistRolePermission{Proposer: proposer, RoleIdentifier: roleIdentifier, Permission: permission}
 }
 
 func (m *MsgWhitelistRolePermission) Route() string {
@@ -276,10 +276,10 @@ func (m *MsgWhitelistRolePermission) GetSigners() []sdk.AccAddress {
 
 func NewMsgBlacklistRolePermission(
 	proposer sdk.AccAddress,
-	roleId uint32,
+	roleIdentifier string,
 	permission uint32,
 ) *MsgBlacklistRolePermission {
-	return &MsgBlacklistRolePermission{Proposer: proposer, RoleId: roleId, Permission: permission}
+	return &MsgBlacklistRolePermission{Proposer: proposer, RoleIdentifier: roleIdentifier, Permission: permission}
 }
 
 func (m *MsgBlacklistRolePermission) Route() string {
@@ -311,10 +311,10 @@ func (m *MsgBlacklistRolePermission) GetSigners() []sdk.AccAddress {
 
 func NewMsgRemoveWhitelistRolePermission(
 	proposer sdk.AccAddress,
-	roleId uint32,
+	roleIdentifier string,
 	permission uint32,
 ) *MsgRemoveWhitelistRolePermission {
-	return &MsgRemoveWhitelistRolePermission{Proposer: proposer, RoleId: roleId, Permission: permission}
+	return &MsgRemoveWhitelistRolePermission{Proposer: proposer, RoleIdentifier: roleIdentifier, Permission: permission}
 }
 
 func (m *MsgRemoveWhitelistRolePermission) Route() string {
@@ -346,10 +346,10 @@ func (m *MsgRemoveWhitelistRolePermission) GetSigners() []sdk.AccAddress {
 
 func NewMsgRemoveBlacklistRolePermission(
 	proposer sdk.AccAddress,
-	roleId uint32,
+	roleIdentifier string,
 	permission uint32,
 ) *MsgRemoveBlacklistRolePermission {
-	return &MsgRemoveBlacklistRolePermission{Proposer: proposer, RoleId: roleId, Permission: permission}
+	return &MsgRemoveBlacklistRolePermission{Proposer: proposer, RoleIdentifier: roleIdentifier, Permission: permission}
 }
 
 func (m *MsgRemoveBlacklistRolePermission) Route() string {

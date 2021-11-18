@@ -123,11 +123,11 @@ message RolesByAddressRequest {
 }
 
 message RolesByAddressResponse {
-  repeated uint64 roles = 1;
+  repeated uint64 roleIds = 1;
 }
 
 message RoleRequest {
-  string sid = 1;
+  string identifier = 1; // sid or id
 }
 
 message RoleResponse {
@@ -135,7 +135,7 @@ message RoleResponse {
 }
 
 message RolePermissionsRequest {
-  uint64 role = 1;
+  string identifier = 1; // sid or id
 }
 
 message RolePermissionsResponse {
