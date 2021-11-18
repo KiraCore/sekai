@@ -109,8 +109,8 @@ func GetCmdQueryRolesByAddress() *cobra.Command {
 
 func GetCmdQueryRole() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "role [role_sid]",
-		Short: "Query role by sid",
+		Use:   "role [role_sid | role_id]",
+		Short: "Query role by sid or id",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
@@ -136,7 +136,7 @@ func GetCmdQueryRole() *cobra.Command {
 
 func GetCmdQueryRolePermissions() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "role-permissions arg-num",
+		Use:   "role-permissions [role_sid | role_id]",
 		Short: "Query permissions of all the roles",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
