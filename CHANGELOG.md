@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.1.22.9] - 18.11.2021
+
+- Role refactor for sid, id based management
+
 ## [v0.1.22.8] - 09.11.2021
 
 - Add new messages for removing whitelisted and blacklisted permission
