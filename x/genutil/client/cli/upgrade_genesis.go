@@ -71,9 +71,29 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 				return errors.Wrap(err, "failed to validate genesis state")
 			}
 
+			upgradeGenesis := upgradetypes.GenesisState{}
+			cdc.MustUnmarshalJSON(genesisState[upgradetypes.ModuleName], &upgradeGenesis)
+
+			if upgradeGenesis.NextPlan == nil {
+				return fmt.Errorf("next plan is not available")
+			}
+
+			if genDoc.ChainID != upgradeGenesis.NextPlan.OldChainId {
+				return fmt.Errorf("next plan has different oldchain id, current chain_id=%s, next_plan.old_chain_id=%s", genDoc.ChainID, upgradeGenesis.NextPlan.OldChainId)
+			}
+
+			genDoc.ChainID = upgradeGenesis.NextPlan.NewChainId
+			oldPlan := upgradeGenesis.CurrentPlan
+			upgradeGenesis.CurrentPlan = upgradeGenesis.NextPlan
+			upgradeGenesis.NextPlan = nil
+
+			genesisState[upgradetypes.ModuleName] = cdc.MustMarshalJSON(&upgradeGenesis)
+
 			govGenesisV01228 := GenesisStateV01228{}
 			err = cdc.UnmarshalJSON(genesisState[govtypes.ModuleName], &govGenesisV01228)
-			if err == nil { // it means v0.1.22.8 genesis
+
+			// we are referencing oldPlan.name to determine upgrade genesis or not
+			if err == nil && oldPlan.Name == "upgrade-98" { // it means v0.1.22.8 genesis
 				govGenesis := govtypes.GenesisState{
 					StartingProposalId:          govGenesisV01228.StartingProposalId,
 					NextRoleId:                  govtypes.DefaultGenesis().NextRoleId,
@@ -92,24 +112,10 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 					LastIdRecordVerifyRequestId: govGenesisV01228.LastIdRecordVerifyRequestId,
 				}
 				genesisState[govtypes.ModuleName] = cdc.MustMarshalJSON(&govGenesis)
+			} else {
+				fmt.Println("parse result for genesis v0.1.22.8", err)
+				fmt.Println("Skipping governance module upgrade since it is not v0.1.22.8 genesis")
 			}
-
-			upgradeGenesis := upgradetypes.GenesisState{}
-			cdc.MustUnmarshalJSON(genesisState[upgradetypes.ModuleName], &upgradeGenesis)
-
-			if upgradeGenesis.NextPlan == nil {
-				return fmt.Errorf("next plan is not available")
-			}
-
-			if genDoc.ChainID != upgradeGenesis.NextPlan.OldChainId {
-				return fmt.Errorf("next plan has different oldchain id, current chain_id=%s, next_plan.old_chain_id=%s", genDoc.ChainID, upgradeGenesis.NextPlan.OldChainId)
-			}
-
-			genDoc.ChainID = upgradeGenesis.NextPlan.NewChainId
-			upgradeGenesis.CurrentPlan = upgradeGenesis.NextPlan
-			upgradeGenesis.NextPlan = nil
-
-			genesisState[upgradetypes.ModuleName] = cdc.MustMarshalJSON(&upgradeGenesis)
 
 			appState, err := json.MarshalIndent(genesisState, "", " ")
 			if err != nil {
