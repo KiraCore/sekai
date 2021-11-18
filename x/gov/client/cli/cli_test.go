@@ -69,7 +69,7 @@ func (s IntegrationTestSuite) TestRolePermissions_QueryCommand_DefaultRolePerms(
 
 	cmd := cli.GetCmdQueryRolePermissions()
 	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
-		"2", // RoleValidator
+		"1", // RoleSudo
 	})
 	s.Require().NoError(err)
 

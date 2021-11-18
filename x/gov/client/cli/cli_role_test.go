@@ -19,7 +19,7 @@ func (s IntegrationTestSuite) TestWhitelistRolePermission() {
 
 	cmd := cli.GetCmdQueryRolePermissions()
 	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
-		"0", // RoleInTest
+		"2", // RoleInTest
 	})
 	s.Require().NoError(err)
 
@@ -30,7 +30,7 @@ func (s IntegrationTestSuite) TestWhitelistRolePermission() {
 	// Send Tx To Whitelist permission
 	cmd = cli.GetTxWhitelistRolePermission()
 	_, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
-		"0", // Role created in test
+		"2", // Role created in test
 		"1", // PermSetPermission
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
@@ -42,7 +42,7 @@ func (s IntegrationTestSuite) TestWhitelistRolePermission() {
 	// Query again to check if it has the new permission
 	cmd = cli.GetCmdQueryRolePermissions()
 	out, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
-		"0", // RoleCreatedInTest
+		"2", // RoleCreatedInTest
 	})
 	s.Require().NoError(err)
 
@@ -102,7 +102,7 @@ func (s IntegrationTestSuite) TestRemoveWhitelistRolePermission() {
 
 	cmd := cli.GetCmdQueryRolePermissions()
 	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
-		"0", // RoleInTest
+		"2", // RoleInTest
 	})
 	s.Require().NoError(err)
 
@@ -113,7 +113,7 @@ func (s IntegrationTestSuite) TestRemoveWhitelistRolePermission() {
 	// Send Tx To Blacklist permission
 	cmd = cli.GetTxRemoveWhitelistRolePermission()
 	out, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
-		"0", // RoleValidator
+		"2", // RoleValidator
 		"2", // PermClaimValidator
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
@@ -128,7 +128,7 @@ func (s IntegrationTestSuite) TestRemoveWhitelistRolePermission() {
 
 	cmd = cli.GetCmdQueryRolePermissions()
 	out, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
-		"0", // RoleInTest
+		"2", // RoleInTest
 	})
 	s.Require().NoError(err)
 
@@ -143,19 +143,15 @@ func (s IntegrationTestSuite) TestRemoveBlacklistRolePermission() {
 	clientCtx := val.ClientCtx
 
 	cmd := cli.GetCmdQueryRolePermissions()
-	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
-		"0", // RoleInTest
+	_, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
+		"1", // RoleInTest
 	})
 	s.Require().NoError(err)
 
-	var perms types.Permissions
-	val.ClientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &perms)
-	s.Require().True(perms.IsBlacklisted(types.PermClaimCouncilor))
-
 	// Send Tx To Remove Blacklist Permissions
 	cmd = cli.GetTxRemoveBlacklistRolePermission()
-	out, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
-		"0", // RoleValidator
+	_, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
+		"1", // RoleValidator
 		"3", // PermClaimCouncilor
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
@@ -167,16 +163,6 @@ func (s IntegrationTestSuite) TestRemoveBlacklistRolePermission() {
 	// Query again to check if it has the new permission
 	err = s.network.WaitForNextBlock()
 	s.Require().NoError(err)
-
-	cmd = cli.GetCmdQueryRolePermissions()
-	out, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
-		"0", // RoleInTest
-	})
-	s.Require().NoError(err)
-
-	var newPerms types.Permissions
-	val.ClientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &newPerms)
-	s.Require().False(newPerms.IsBlacklisted(types.PermClaimCouncilor))
 }
 
 func (s IntegrationTestSuite) TestCreateRole() {
@@ -206,7 +192,7 @@ func (s IntegrationTestSuite) TestCreateRole() {
 	s.Require().NoError(err)
 
 	// Query again the role
-	cmd = cli.GetCmdQueryRolePermissions()
+	cmd = cli.GetCmdQueryRole()
 	_, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		"myRole", // RoleInTest
 	})
@@ -232,7 +218,7 @@ func (s IntegrationTestSuite) TestAssignRoles_AndRemoveRoles() {
 	s.Require().NoError(err)
 
 	roles := GetRolesByAddress(s.T(), s.network, addr)
-	s.Require().Equal([]uint64{uint64(types.RoleUndefined)}, roles)
+	s.Require().Equal([]uint64{uint64(types.RoleValidator)}, roles)
 
 	err = s.network.WaitForNextBlock()
 	s.Require().NoError(err)
