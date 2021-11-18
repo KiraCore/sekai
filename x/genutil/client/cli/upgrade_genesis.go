@@ -72,26 +72,27 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 			}
 
 			govGenesisV01228 := GenesisStateV01228{}
-			cdc.MustUnmarshalJSON(genesisState[govtypes.ModuleName], &govGenesisV01228)
-
-			govGenesis := govtypes.GenesisState{
-				StartingProposalId:          govGenesisV01228.StartingProposalId,
-				NextRoleId:                  govtypes.DefaultGenesis().NextRoleId,
-				Roles:                       govtypes.DefaultGenesis().Roles,
-				RolePermissions:             govGenesisV01228.Permissions,
-				NetworkActors:               govGenesisV01228.NetworkActors,
-				NetworkProperties:           govGenesisV01228.NetworkProperties,
-				ExecutionFees:               govGenesisV01228.ExecutionFees,
-				PoorNetworkMessages:         govGenesisV01228.PoorNetworkMessages,
-				Proposals:                   govGenesisV01228.Proposals,
-				Votes:                       govGenesisV01228.Votes,
-				DataRegistry:                govGenesisV01228.DataRegistry,
-				IdentityRecords:             govGenesisV01228.IdentityRecords,
-				LastIdentityRecordId:        govGenesisV01228.LastIdentityRecordId,
-				IdRecordsVerifyRequests:     govGenesisV01228.IdRecordsVerifyRequests,
-				LastIdRecordVerifyRequestId: govGenesisV01228.LastIdRecordVerifyRequestId,
+			err = cdc.UnmarshalJSON(genesisState[govtypes.ModuleName], &govGenesisV01228)
+			if err == nil { // it means v0.1.22.8 genesis
+				govGenesis := govtypes.GenesisState{
+					StartingProposalId:          govGenesisV01228.StartingProposalId,
+					NextRoleId:                  govtypes.DefaultGenesis().NextRoleId,
+					Roles:                       govtypes.DefaultGenesis().Roles,
+					RolePermissions:             govGenesisV01228.Permissions,
+					NetworkActors:               govGenesisV01228.NetworkActors,
+					NetworkProperties:           govGenesisV01228.NetworkProperties,
+					ExecutionFees:               govGenesisV01228.ExecutionFees,
+					PoorNetworkMessages:         govGenesisV01228.PoorNetworkMessages,
+					Proposals:                   govGenesisV01228.Proposals,
+					Votes:                       govGenesisV01228.Votes,
+					DataRegistry:                govGenesisV01228.DataRegistry,
+					IdentityRecords:             govGenesisV01228.IdentityRecords,
+					LastIdentityRecordId:        govGenesisV01228.LastIdentityRecordId,
+					IdRecordsVerifyRequests:     govGenesisV01228.IdRecordsVerifyRequests,
+					LastIdRecordVerifyRequestId: govGenesisV01228.LastIdRecordVerifyRequestId,
+				}
+				genesisState[govtypes.ModuleName] = cdc.MustMarshalJSON(&govGenesis)
 			}
-			genesisState[govtypes.ModuleName] = cdc.MustMarshalJSON(&govGenesis)
 
 			upgradeGenesis := upgradetypes.GenesisState{}
 			cdc.MustUnmarshalJSON(genesisState[upgradetypes.ModuleName], &upgradeGenesis)
