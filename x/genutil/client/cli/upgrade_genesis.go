@@ -9,11 +9,32 @@ import (
 	tmtypes "github.com/tendermint/tendermint/types"
 
 	"github.com/KiraCore/sekai/x/genutil"
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	upgradetypes "github.com/KiraCore/sekai/x/upgrade/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
 )
+
+type GenesisStateV01228 struct {
+	StartingProposalId          uint64
+	Permissions                 map[uint64]*govtypes.Permissions
+	NetworkActors               []*govtypes.NetworkActor
+	NetworkProperties           *govtypes.NetworkProperties
+	ExecutionFees               []*govtypes.ExecutionFee
+	PoorNetworkMessages         *govtypes.AllowedMessages
+	Proposals                   []govtypes.Proposal
+	Votes                       []govtypes.Vote
+	DataRegistry                map[string]*govtypes.DataRegistryEntry
+	IdentityRecords             []govtypes.IdentityRecord
+	LastIdentityRecordId        uint64
+	IdRecordsVerifyRequests     []govtypes.IdentityRecordsVerify
+	LastIdRecordVerifyRequestId uint64
+}
+
+func (m *GenesisStateV01228) String() string { return "" }
+func (m *GenesisStateV01228) Reset()         { *m = GenesisStateV01228{} }
+func (*GenesisStateV01228) ProtoMessage()    {}
 
 // GetNewGenesisFromExportedCmd returns new genesis from exported genesis
 func GetNewGenesisFromExportedCmd(mbm module.BasicManager, txEncCfg client.TxEncodingConfig) *cobra.Command {
@@ -50,6 +71,28 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 				return errors.Wrap(err, "failed to validate genesis state")
 			}
 
+			govGenesisV01228 := GenesisStateV01228{}
+			cdc.MustUnmarshalJSON(genesisState[govtypes.ModuleName], &govGenesisV01228)
+
+			govGenesis := govtypes.GenesisState{
+				StartingProposalId:          govGenesisV01228.StartingProposalId,
+				NextRoleId:                  govtypes.DefaultGenesis().NextRoleId,
+				Roles:                       govtypes.DefaultGenesis().Roles,
+				RolePermissions:             govGenesisV01228.Permissions,
+				NetworkActors:               govGenesisV01228.NetworkActors,
+				NetworkProperties:           govGenesisV01228.NetworkProperties,
+				ExecutionFees:               govGenesisV01228.ExecutionFees,
+				PoorNetworkMessages:         govGenesisV01228.PoorNetworkMessages,
+				Proposals:                   govGenesisV01228.Proposals,
+				Votes:                       govGenesisV01228.Votes,
+				DataRegistry:                govGenesisV01228.DataRegistry,
+				IdentityRecords:             govGenesisV01228.IdentityRecords,
+				LastIdentityRecordId:        govGenesisV01228.LastIdentityRecordId,
+				IdRecordsVerifyRequests:     govGenesisV01228.IdRecordsVerifyRequests,
+				LastIdRecordVerifyRequestId: govGenesisV01228.LastIdRecordVerifyRequestId,
+			}
+			genesisState[govtypes.ModuleName] = cdc.MustMarshalJSON(&govGenesis)
+
 			upgradeGenesis := upgradetypes.GenesisState{}
 			cdc.MustUnmarshalJSON(genesisState[upgradetypes.ModuleName], &upgradeGenesis)
 
@@ -74,7 +117,7 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 
 			genDoc.AppState = appState
 			if err = genutil.ExportGenesisFile(genDoc, args[1]); err != nil {
-				return errors.Wrap(err, "Failed to export gensis file")
+				return errors.Wrap(err, "Failed to export genesis file")
 			}
 			return nil
 		},
