@@ -11,7 +11,6 @@ import (
 	"github.com/KiraCore/sekai/x/genutil"
 	v01228govtypes "github.com/KiraCore/sekai/x/gov/legacy/v01228"
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
-	v01228upgradetypes "github.com/KiraCore/sekai/x/upgrade/legacy/v01228"
 	upgradetypes "github.com/KiraCore/sekai/x/upgrade/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/types/module"
@@ -54,18 +53,10 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 			}
 
 			upgradeGenesis := upgradetypes.GenesisState{}
-			upgradeGenesisV01228 := v01228upgradetypes.GenesisState{}
-			err = cdc.UnmarshalJSON(genesisState[upgradetypes.ModuleName], &upgradeGenesisV01228)
-			if err == nil { // it means v0.1.22.8 upgrade genesis
-				upgradeGenesis = upgradetypes.GenesisState{
-					Version:     "v0.1.22.9",
-					CurrentPlan: upgradeGenesisV01228.CurrentPlan,
-					NextPlan:    upgradeGenesisV01228.NextPlan,
-				}
-			} else {
-				fmt.Println("parse result for genesis v0.1.22.8", err)
-				fmt.Println("Skipping upgrade module upgrade since it is not v0.1.22.8 genesis and parsing with latest genesis")
-				cdc.MustUnmarshalJSON(genesisState[upgradetypes.ModuleName], &upgradeGenesis)
+			cdc.MustUnmarshalJSON(genesisState[upgradetypes.ModuleName], &upgradeGenesis)
+			if upgradeGenesis.Version == "" {
+				upgradeGenesis.Version = "v0.1.22.9"
+				fmt.Println("upgraded the upgrade module genesis to v0.1.22.9")
 			}
 
 			if upgradeGenesis.NextPlan == nil {
@@ -83,7 +74,7 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 
 			genesisState[upgradetypes.ModuleName] = cdc.MustMarshalJSON(&upgradeGenesis)
 
-			govGenesisV01228 := v01228govtypes.GenesisState{}
+			govGenesisV01228 := v01228govtypes.GenesisStateV01228{}
 			err = cdc.UnmarshalJSON(genesisState[govtypes.ModuleName], &govGenesisV01228)
 
 			// we are referencing oldPlan.name to determine upgrade genesis or not
@@ -107,7 +98,7 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 				}
 				genesisState[govtypes.ModuleName] = cdc.MustMarshalJSON(&govGenesis)
 			} else {
-				fmt.Println("parse result for genesis v0.1.22.8", err)
+				fmt.Println("GovGenesis01228 unmarshal test: ", err)
 				fmt.Println("Skipping governance module upgrade since it is not v0.1.22.8 genesis")
 			}
 

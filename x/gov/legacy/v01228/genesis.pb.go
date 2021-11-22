@@ -25,7 +25,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type GenesisState struct {
+type GenesisStateV01228 struct {
 	// starting_proposal_id is the ID of the starting proposal.
 	StartingProposalId uint64 `protobuf:"varint,1,opt,name=starting_proposal_id,json=startingProposalId,proto3" json:"starting_proposal_id,omitempty"`
 	// permissions is the roles that are active from genesis.
@@ -44,16 +44,16 @@ type GenesisState struct {
 	LastIdRecordVerifyRequestId uint64                                 `protobuf:"varint,13,opt,name=last_id_record_verify_request_id,json=lastIdRecordVerifyRequestId,proto3" json:"last_id_record_verify_request_id,omitempty"`
 }
 
-func (m *GenesisState) Reset()         { *m = GenesisState{} }
-func (m *GenesisState) String() string { return proto.CompactTextString(m) }
-func (*GenesisState) ProtoMessage()    {}
-func (*GenesisState) Descriptor() ([]byte, []int) {
+func (m *GenesisStateV01228) Reset()         { *m = GenesisStateV01228{} }
+func (m *GenesisStateV01228) String() string { return proto.CompactTextString(m) }
+func (*GenesisStateV01228) ProtoMessage()    {}
+func (*GenesisStateV01228) Descriptor() ([]byte, []int) {
 	return fileDescriptor_042721fb65a4ea2d, []int{0}
 }
-func (m *GenesisState) XXX_Unmarshal(b []byte) error {
+func (m *GenesisStateV01228) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *GenesisState) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *GenesisStateV01228) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_GenesisState.Marshal(b, m, deterministic)
 	} else {
@@ -65,103 +65,103 @@ func (m *GenesisState) XXX_Marshal(b []byte, deterministic bool) ([]byte, error)
 		return b[:n], nil
 	}
 }
-func (m *GenesisState) XXX_Merge(src proto.Message) {
+func (m *GenesisStateV01228) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GenesisState.Merge(m, src)
 }
-func (m *GenesisState) XXX_Size() int {
+func (m *GenesisStateV01228) XXX_Size() int {
 	return m.Size()
 }
-func (m *GenesisState) XXX_DiscardUnknown() {
+func (m *GenesisStateV01228) XXX_DiscardUnknown() {
 	xxx_messageInfo_GenesisState.DiscardUnknown(m)
 }
 
 var xxx_messageInfo_GenesisState proto.InternalMessageInfo
 
-func (m *GenesisState) GetStartingProposalId() uint64 {
+func (m *GenesisStateV01228) GetStartingProposalId() uint64 {
 	if m != nil {
 		return m.StartingProposalId
 	}
 	return 0
 }
 
-func (m *GenesisState) GetPermissions() map[uint64]*govtypes.Permissions {
+func (m *GenesisStateV01228) GetPermissions() map[uint64]*govtypes.Permissions {
 	if m != nil {
 		return m.Permissions
 	}
 	return nil
 }
 
-func (m *GenesisState) GetNetworkActors() []*govtypes.NetworkActor {
+func (m *GenesisStateV01228) GetNetworkActors() []*govtypes.NetworkActor {
 	if m != nil {
 		return m.NetworkActors
 	}
 	return nil
 }
 
-func (m *GenesisState) GetNetworkProperties() *govtypes.NetworkProperties {
+func (m *GenesisStateV01228) GetNetworkProperties() *govtypes.NetworkProperties {
 	if m != nil {
 		return m.NetworkProperties
 	}
 	return nil
 }
 
-func (m *GenesisState) GetExecutionFees() []*govtypes.ExecutionFee {
+func (m *GenesisStateV01228) GetExecutionFees() []*govtypes.ExecutionFee {
 	if m != nil {
 		return m.ExecutionFees
 	}
 	return nil
 }
 
-func (m *GenesisState) GetPoorNetworkMessages() *govtypes.AllowedMessages {
+func (m *GenesisStateV01228) GetPoorNetworkMessages() *govtypes.AllowedMessages {
 	if m != nil {
 		return m.PoorNetworkMessages
 	}
 	return nil
 }
 
-func (m *GenesisState) GetProposals() []govtypes.Proposal {
+func (m *GenesisStateV01228) GetProposals() []govtypes.Proposal {
 	if m != nil {
 		return m.Proposals
 	}
 	return nil
 }
 
-func (m *GenesisState) GetVotes() []govtypes.Vote {
+func (m *GenesisStateV01228) GetVotes() []govtypes.Vote {
 	if m != nil {
 		return m.Votes
 	}
 	return nil
 }
 
-func (m *GenesisState) GetDataRegistry() map[string]*govtypes.DataRegistryEntry {
+func (m *GenesisStateV01228) GetDataRegistry() map[string]*govtypes.DataRegistryEntry {
 	if m != nil {
 		return m.DataRegistry
 	}
 	return nil
 }
 
-func (m *GenesisState) GetIdentityRecords() []govtypes.IdentityRecord {
+func (m *GenesisStateV01228) GetIdentityRecords() []govtypes.IdentityRecord {
 	if m != nil {
 		return m.IdentityRecords
 	}
 	return nil
 }
 
-func (m *GenesisState) GetLastIdentityRecordId() uint64 {
+func (m *GenesisStateV01228) GetLastIdentityRecordId() uint64 {
 	if m != nil {
 		return m.LastIdentityRecordId
 	}
 	return 0
 }
 
-func (m *GenesisState) GetIdRecordsVerifyRequests() []govtypes.IdentityRecordsVerify {
+func (m *GenesisStateV01228) GetIdRecordsVerifyRequests() []govtypes.IdentityRecordsVerify {
 	if m != nil {
 		return m.IdRecordsVerifyRequests
 	}
 	return nil
 }
 
-func (m *GenesisState) GetLastIdRecordVerifyRequestId() uint64 {
+func (m *GenesisStateV01228) GetLastIdRecordVerifyRequestId() uint64 {
 	if m != nil {
 		return m.LastIdRecordVerifyRequestId
 	}
@@ -169,7 +169,7 @@ func (m *GenesisState) GetLastIdRecordVerifyRequestId() uint64 {
 }
 
 func init() {
-	proto.RegisterType((*GenesisState)(nil), "kira.gov.GenesisState")
+	proto.RegisterType((*GenesisStateV01228)(nil), "kira.gov.GenesisStateV01228")
 }
 
 func init() { proto.RegisterFile("kira/gov/genesis.proto", fileDescriptor_042721fb65a4ea2d) }
@@ -220,7 +220,7 @@ var fileDescriptor_042721fb65a4ea2d = []byte{
 	0xff, 0xff, 0x03, 0x6d, 0xd7, 0x16, 0xa4, 0x05, 0x00, 0x00,
 }
 
-func (m *GenesisState) Marshal() (dAtA []byte, err error) {
+func (m *GenesisStateV01228) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -230,12 +230,12 @@ func (m *GenesisState) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *GenesisState) MarshalTo(dAtA []byte) (int, error) {
+func (m *GenesisStateV01228) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *GenesisState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *GenesisStateV01228) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -427,7 +427,7 @@ func encodeVarintGenesis(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *GenesisState) Size() (n int) {
+func (m *GenesisStateV01228) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -521,7 +521,7 @@ func sovGenesis(x uint64) (n int) {
 func sozGenesis(x uint64) (n int) {
 	return sovGenesis(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *GenesisState) Unmarshal(dAtA []byte) error {
+func (m *GenesisStateV01228) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
