@@ -7,6 +7,7 @@ import "kira/upgrade/plan.proto";
 option go_package = "github.com/KiraCore/sekai/x/upgrade/types";
 
 message GenesisState {
-  Plan current_plan = 1;
-  Plan next_plan = 2;
+  string version = 1; 
+  Plan current_plan = 2;
+  Plan next_plan = 3;
 }

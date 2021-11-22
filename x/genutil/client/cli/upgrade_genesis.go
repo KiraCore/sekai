@@ -9,32 +9,13 @@ import (
 	tmtypes "github.com/tendermint/tendermint/types"
 
 	"github.com/KiraCore/sekai/x/genutil"
+	v01228govtypes "github.com/KiraCore/sekai/x/gov/legacy/v01228"
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	upgradetypes "github.com/KiraCore/sekai/x/upgrade/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
 )
-
-type GenesisStateV01228 struct {
-	StartingProposalId          uint64
-	Permissions                 map[uint64]*govtypes.Permissions
-	NetworkActors               []*govtypes.NetworkActor
-	NetworkProperties           *govtypes.NetworkProperties
-	ExecutionFees               []*govtypes.ExecutionFee
-	PoorNetworkMessages         *govtypes.AllowedMessages
-	Proposals                   []govtypes.Proposal
-	Votes                       []govtypes.Vote
-	DataRegistry                map[string]*govtypes.DataRegistryEntry
-	IdentityRecords             []govtypes.IdentityRecord
-	LastIdentityRecordId        uint64
-	IdRecordsVerifyRequests     []govtypes.IdentityRecordsVerify
-	LastIdRecordVerifyRequestId uint64
-}
-
-func (m *GenesisStateV01228) String() string { return "" }
-func (m *GenesisStateV01228) Reset()         { *m = GenesisStateV01228{} }
-func (*GenesisStateV01228) ProtoMessage()    {}
 
 // GetNewGenesisFromExportedCmd returns new genesis from exported genesis
 func GetNewGenesisFromExportedCmd(mbm module.BasicManager, txEncCfg client.TxEncodingConfig) *cobra.Command {
@@ -73,6 +54,10 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 
 			upgradeGenesis := upgradetypes.GenesisState{}
 			cdc.MustUnmarshalJSON(genesisState[upgradetypes.ModuleName], &upgradeGenesis)
+			if upgradeGenesis.Version == "" {
+				upgradeGenesis.Version = "v0.1.22.9"
+				fmt.Println("upgraded the upgrade module genesis to v0.1.22.9")
+			}
 
 			if upgradeGenesis.NextPlan == nil {
 				return fmt.Errorf("next plan is not available")
@@ -83,17 +68,17 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 			}
 
 			genDoc.ChainID = upgradeGenesis.NextPlan.NewChainId
-			oldPlan := upgradeGenesis.CurrentPlan
+			// oldPlan := upgradeGenesis.CurrentPlan
 			upgradeGenesis.CurrentPlan = upgradeGenesis.NextPlan
 			upgradeGenesis.NextPlan = nil
 
 			genesisState[upgradetypes.ModuleName] = cdc.MustMarshalJSON(&upgradeGenesis)
 
-			govGenesisV01228 := GenesisStateV01228{}
+			govGenesisV01228 := v01228govtypes.GenesisStateV01228{}
 			err = cdc.UnmarshalJSON(genesisState[govtypes.ModuleName], &govGenesisV01228)
 
 			// we are referencing oldPlan.name to determine upgrade genesis or not
-			if err == nil && oldPlan.Name == "upgrade-98" { // it means v0.1.22.8 genesis
+			if err == nil { // it means v0.1.22.8 gov genesis
 				govGenesis := govtypes.GenesisState{
 					StartingProposalId:          govGenesisV01228.StartingProposalId,
 					NextRoleId:                  govtypes.DefaultGenesis().NextRoleId,
@@ -113,7 +98,7 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 				}
 				genesisState[govtypes.ModuleName] = cdc.MustMarshalJSON(&govGenesis)
 			} else {
-				fmt.Println("parse result for genesis v0.1.22.8", err)
+				fmt.Println("GovGenesis01228 unmarshal test: ", err)
 				fmt.Println("Skipping governance module upgrade since it is not v0.1.22.8 genesis")
 			}
 
