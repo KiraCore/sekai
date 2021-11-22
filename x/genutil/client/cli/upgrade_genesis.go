@@ -9,7 +9,9 @@ import (
 	tmtypes "github.com/tendermint/tendermint/types"
 
 	"github.com/KiraCore/sekai/x/genutil"
+	v01228govtypes "github.com/KiraCore/sekai/x/gov/legacy/v01228"
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
+	v01228upgradetypes "github.com/KiraCore/sekai/x/upgrade/legacy/v01228"
 	upgradetypes "github.com/KiraCore/sekai/x/upgrade/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/types/module"
@@ -52,7 +54,19 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 			}
 
 			upgradeGenesis := upgradetypes.GenesisState{}
-			cdc.MustUnmarshalJSON(genesisState[upgradetypes.ModuleName], &upgradeGenesis)
+			upgradeGenesisV01228 := v01228upgradetypes.GenesisState{}
+			err = cdc.UnmarshalJSON(genesisState[upgradetypes.ModuleName], &upgradeGenesisV01228)
+			if err == nil { // it means v0.1.22.8 upgrade genesis
+				upgradeGenesis = upgradetypes.GenesisState{
+					Version:     "v0.1.22.9",
+					CurrentPlan: upgradeGenesisV01228.CurrentPlan,
+					NextPlan:    upgradeGenesisV01228.NextPlan,
+				}
+			} else {
+				fmt.Println("parse result for genesis v0.1.22.8", err)
+				fmt.Println("Skipping upgrade module upgrade since it is not v0.1.22.8 genesis and parsing with latest genesis")
+				cdc.MustUnmarshalJSON(genesisState[upgradetypes.ModuleName], &upgradeGenesis)
+			}
 
 			if upgradeGenesis.NextPlan == nil {
 				return fmt.Errorf("next plan is not available")
@@ -69,11 +83,11 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 
 			genesisState[upgradetypes.ModuleName] = cdc.MustMarshalJSON(&upgradeGenesis)
 
-			govGenesisV01228 := GenesisStateV01228{}
+			govGenesisV01228 := v01228govtypes.GenesisState{}
 			err = cdc.UnmarshalJSON(genesisState[govtypes.ModuleName], &govGenesisV01228)
 
 			// we are referencing oldPlan.name to determine upgrade genesis or not
-			if err == nil { // it means v0.1.22.8 genesis
+			if err == nil { // it means v0.1.22.8 gov genesis
 				govGenesis := govtypes.GenesisState{
 					StartingProposalId:          govGenesisV01228.StartingProposalId,
 					NextRoleId:                  govtypes.DefaultGenesis().NextRoleId,
