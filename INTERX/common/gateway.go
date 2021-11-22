@@ -131,6 +131,11 @@ func WrapResponse(w http.ResponseWriter, request types.InterxRequest, response t
 		w.Header().Add("Interx_hash", response.Hash)
 		w.WriteHeader(statusCode)
 
+		switch v := response.Response.(type) {
+		case string:
+			w.Write([]byte(v))
+			return
+		}
 		json.NewEncoder(w).Encode(response.Response)
 	} else {
 		w.WriteHeader(statusCode)

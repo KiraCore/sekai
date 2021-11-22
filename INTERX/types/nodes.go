@@ -39,6 +39,7 @@ type P2PNode struct {
 	Connected bool     `json:"connected"`
 	Peers     []string `json:"peers"`
 	Alive     bool     `json:"alive"`
+	Synced    bool     `json:"synced"`
 }
 
 type InterxNode struct {
@@ -50,6 +51,7 @@ type InterxNode struct {
 	Type    string `json:"type"`
 	Version string `json:"version"`
 	Alive   bool   `json:"alive"`
+	Synced  bool   `json:"synced"`
 }
 
 type SnapNode struct {
@@ -58,6 +60,7 @@ type SnapNode struct {
 	Size     int    `json:"size"`
 	Checksum string `json:"checksum"`
 	Alive    bool   `json:"alive"`
+	Synced   bool   `json:"synced"`
 }
 
 type P2PNodeListResponse struct {
