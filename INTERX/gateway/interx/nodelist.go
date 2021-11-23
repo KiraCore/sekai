@@ -1,8 +1,10 @@
 package interx
 
 import (
+	"math/rand"
 	"net/http"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/KiraCore/sekai/INTERX/common"
@@ -29,25 +31,65 @@ func RegisterNodeListQueryRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, r
 
 func queryPubP2PNodeList(r *http.Request, rpcAddr string) (interface{}, interface{}, int) {
 	global.Mutex.Lock()
-	sort.Sort(types.P2PNodes(tasks.PubP2PNodeListResponse.NodeList))
-	global.Mutex.Unlock()
+	response := tasks.PubP2PNodeListResponse
 
 	_ = r.ParseForm()
 	connected := r.FormValue("connected") == "true"
 	ip_only := r.FormValue("ip_only") == "true"
+	is_random := r.FormValue("order") == "random"
+	is_format_simple := r.FormValue("format") == "simple"
+	is_synced := r.FormValue("synced") == "true"
+
+	if is_random {
+		dest := make([]types.P2PNode, len(response.NodeList))
+		perm := rand.Perm(len(response.NodeList))
+		for i, v := range perm {
+			dest[v] = response.NodeList[i]
+		}
+		response.NodeList = dest
+	} else {
+		sort.Sort(types.P2PNodes(response.NodeList))
+	}
+
+	if is_format_simple {
+		indexOfPeer := make(map[string]string)
+		for index, node := range response.NodeList {
+			indexOfPeer[node.ID] = strconv.Itoa(index)
+		}
+
+		for nID, _ := range response.NodeList {
+			for pIndex, _ := range response.NodeList[nID].Peers {
+				if pid, isIn := indexOfPeer[response.NodeList[nID].Peers[pIndex]]; isIn {
+					response.NodeList[nID].Peers[pIndex] = pid
+				}
+			}
+		}
+	}
+
+	if is_synced {
+		dest := make([]types.P2PNode, 0)
+		for _, node := range response.NodeList {
+			if node.Synced {
+				dest = append(dest, node)
+			}
+		}
+		response.NodeList = dest
+	}
+
+	global.Mutex.Unlock()
 
 	if ip_only {
 		ips := []string{}
-		for _, node := range tasks.PubP2PNodeListResponse.NodeList {
+		for _, node := range response.NodeList {
 			if connected == node.Connected {
 				ips = append(ips, node.IP)
 			}
 		}
 
-		return strings.Join(ips, ", "), nil, http.StatusOK
+		return strings.Join(ips, "\n"), nil, http.StatusOK
 	}
 
-	return tasks.PubP2PNodeListResponse, nil, http.StatusOK
+	return response, nil, http.StatusOK
 }
 
 // QueryNodeList is a function to query node list.
@@ -82,25 +124,65 @@ func QueryPubP2PNodeList(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.Han
 
 func queryPrivP2PNodeList(r *http.Request, rpcAddr string) (interface{}, interface{}, int) {
 	global.Mutex.Lock()
-	sort.Sort(types.P2PNodes(tasks.PrivP2PNodeListResponse.NodeList))
-	global.Mutex.Unlock()
+	response := tasks.PrivP2PNodeListResponse
 
 	_ = r.ParseForm()
 	connected := r.FormValue("connected") == "true"
 	ip_only := r.FormValue("ip_only") == "true"
+	is_random := r.FormValue("order") == "random"
+	is_format_simple := r.FormValue("format") == "simple"
+	is_synced := r.FormValue("synced") == "true"
+
+	if is_random {
+		dest := make([]types.P2PNode, len(response.NodeList))
+		perm := rand.Perm(len(response.NodeList))
+		for i, v := range perm {
+			dest[v] = response.NodeList[i]
+		}
+		response.NodeList = dest
+	} else {
+		sort.Sort(types.P2PNodes(response.NodeList))
+	}
+
+	if is_format_simple {
+		indexOfPeer := make(map[string]string)
+		for index, node := range response.NodeList {
+			indexOfPeer[node.ID] = strconv.Itoa(index)
+		}
+
+		for nID, _ := range response.NodeList {
+			for pIndex, _ := range response.NodeList[nID].Peers {
+				if pid, isIn := indexOfPeer[response.NodeList[nID].Peers[pIndex]]; isIn {
+					response.NodeList[nID].Peers[pIndex] = pid
+				}
+			}
+		}
+	}
+
+	if is_synced {
+		dest := make([]types.P2PNode, 0)
+		for _, node := range response.NodeList {
+			if node.Synced {
+				dest = append(dest, node)
+			}
+		}
+		response.NodeList = dest
+	}
+
+	global.Mutex.Unlock()
 
 	if ip_only {
 		ips := []string{}
-		for _, node := range tasks.PrivP2PNodeListResponse.NodeList {
+		for _, node := range response.NodeList {
 			if connected == node.Connected {
 				ips = append(ips, node.IP)
 			}
 		}
 
-		return strings.Join(ips, ", "), nil, http.StatusOK
+		return strings.Join(ips, "\n"), nil, http.StatusOK
 	}
 
-	return tasks.PrivP2PNodeListResponse, nil, http.StatusOK
+	return response, nil, http.StatusOK
 }
 
 // QueryNodeList is a function to query node list.
@@ -135,22 +217,45 @@ func QueryPrivP2PNodeList(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.Ha
 
 func queryInterxList(r *http.Request, rpcAddr string) (interface{}, interface{}, int) {
 	global.Mutex.Lock()
-	sort.Sort(types.InterxNodes(tasks.InterxP2PNodeListResponse.NodeList))
-	global.Mutex.Unlock()
+	response := tasks.InterxP2PNodeListResponse
 
 	_ = r.ParseForm()
 	ip_only := r.FormValue("ip_only") == "true"
+	is_random := r.FormValue("order") == "random"
+	is_synced := r.FormValue("synced") == "true"
+
+	if is_random {
+		dest := make([]types.InterxNode, len(response.NodeList))
+		perm := rand.Perm(len(response.NodeList))
+		for i, v := range perm {
+			dest[v] = response.NodeList[i]
+		}
+		response.NodeList = dest
+	} else {
+		sort.Sort(types.InterxNodes(response.NodeList))
+	}
+
+	if is_synced {
+		dest := make([]types.InterxNode, 0)
+		for _, node := range response.NodeList {
+			if node.Synced {
+				dest = append(dest, node)
+			}
+		}
+		response.NodeList = dest
+	}
+	global.Mutex.Unlock()
 
 	if ip_only {
 		ips := []string{}
-		for _, node := range tasks.InterxP2PNodeListResponse.NodeList {
+		for _, node := range response.NodeList {
 			ips = append(ips, node.IP)
 		}
 
-		return strings.Join(ips, ", "), nil, http.StatusOK
+		return strings.Join(ips, "\n"), nil, http.StatusOK
 	}
 
-	return tasks.InterxP2PNodeListResponse, nil, http.StatusOK
+	return response, nil, http.StatusOK
 }
 
 // QueryNodeList is a function to query node list.
@@ -185,22 +290,45 @@ func QueryInterxList(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.Handler
 
 func querySnapList(r *http.Request, rpcAddr string) (interface{}, interface{}, int) {
 	global.Mutex.Lock()
-	sort.Sort(types.SnapNodes(tasks.SnapNodeListResponse.NodeList))
-	global.Mutex.Unlock()
+	response := tasks.SnapNodeListResponse
 
 	_ = r.ParseForm()
 	ip_only := r.FormValue("ip_only") == "true"
+	is_random := r.FormValue("order") == "random"
+	is_synced := r.FormValue("synced") == "true"
+
+	if is_random {
+		dest := make([]types.SnapNode, len(response.NodeList))
+		perm := rand.Perm(len(response.NodeList))
+		for i, v := range perm {
+			dest[v] = response.NodeList[i]
+		}
+		response.NodeList = dest
+	} else {
+		sort.Sort(types.SnapNodes(response.NodeList))
+	}
+
+	if is_synced {
+		dest := make([]types.SnapNode, 0)
+		for _, node := range response.NodeList {
+			if node.Synced {
+				dest = append(dest, node)
+			}
+		}
+		response.NodeList = dest
+	}
+	global.Mutex.Unlock()
 
 	if ip_only {
 		ips := []string{}
-		for _, node := range tasks.SnapNodeListResponse.NodeList {
+		for _, node := range response.NodeList {
 			ips = append(ips, node.IP)
 		}
 
-		return strings.Join(ips, ", "), nil, http.StatusOK
+		return strings.Join(ips, "\n"), nil, http.StatusOK
 	}
 
-	return tasks.SnapNodeListResponse, nil, http.StatusOK
+	return response, nil, http.StatusOK
 }
 
 // QueryNodeList is a function to query node list.

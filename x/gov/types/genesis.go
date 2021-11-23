@@ -7,8 +7,21 @@ import (
 // DefaultGenesis returns the default CustomGo genesis state
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
-		Permissions: map[uint64]*Permissions{
-			uint64(RoleSudo): NewPermissions([]PermValue{
+		NextRoleId: 3,
+		Roles: []Role{
+			{
+				Id:          uint32(RoleSudo),
+				Sid:         "sudo",
+				Description: "Sudo role",
+			},
+			{
+				Id:          uint32(RoleValidator),
+				Sid:         "validator",
+				Description: "Validator role",
+			},
+		},
+		RolePermissions: map[uint64]*Permissions{
+			RoleSudo: NewPermissions([]PermValue{
 				PermSetPermissions,
 				PermClaimValidator,
 				PermClaimCouncilor,

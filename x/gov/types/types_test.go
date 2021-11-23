@@ -45,7 +45,7 @@ func TestPermissions_AddWhitelist(t *testing.T) {
 	require.NoError(t, err)
 
 	err = perms.AddToWhitelist(types.PermClaimValidator)
-	require.EqualError(t, err, "permission is already blacklisted")
+	require.EqualError(t, err, "permission is blacklisted")
 }
 
 func TestPermissions_AddBlacklist(t *testing.T) {
@@ -61,7 +61,7 @@ func TestPermissions_AddBlacklist(t *testing.T) {
 	require.NoError(t, err)
 
 	err = perms.AddToBlacklist(types.PermClaimValidator)
-	require.EqualError(t, err, "permission is already whitelisted")
+	require.EqualError(t, err, "permission is whitelisted")
 }
 
 func TestPermissions_RemoveFromWhitelist(t *testing.T) {

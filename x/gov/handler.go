@@ -26,8 +26,14 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 		case *types.MsgWhitelistPermissions:
 			res, err := msgServer.WhitelistPermissions(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgRemoveWhitelistedPermissions:
+			res, err := msgServer.RemoveWhitelistedPermissions(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
 		case *types.MsgBlacklistPermissions:
 			res, err := msgServer.BlacklistPermissions(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgRemoveBlacklistedPermissions:
+			res, err := msgServer.RemoveBlacklistedPermissions(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 
 		// Councilor Related

@@ -9,6 +9,8 @@ import (
 	tmtypes "github.com/tendermint/tendermint/types"
 
 	"github.com/KiraCore/sekai/x/genutil"
+	v01228govtypes "github.com/KiraCore/sekai/x/gov/legacy/v01228"
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	upgradetypes "github.com/KiraCore/sekai/x/upgrade/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/types/module"
@@ -52,6 +54,10 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 
 			upgradeGenesis := upgradetypes.GenesisState{}
 			cdc.MustUnmarshalJSON(genesisState[upgradetypes.ModuleName], &upgradeGenesis)
+			if upgradeGenesis.Version == "" {
+				upgradeGenesis.Version = "v0.1.22.9"
+				fmt.Println("upgraded the upgrade module genesis to v0.1.22.9")
+			}
 
 			if upgradeGenesis.NextPlan == nil {
 				return fmt.Errorf("next plan is not available")
@@ -62,10 +68,39 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 			}
 
 			genDoc.ChainID = upgradeGenesis.NextPlan.NewChainId
+			// oldPlan := upgradeGenesis.CurrentPlan
 			upgradeGenesis.CurrentPlan = upgradeGenesis.NextPlan
 			upgradeGenesis.NextPlan = nil
 
 			genesisState[upgradetypes.ModuleName] = cdc.MustMarshalJSON(&upgradeGenesis)
+
+			govGenesisV01228 := v01228govtypes.GenesisStateV01228{}
+			err = cdc.UnmarshalJSON(genesisState[govtypes.ModuleName], &govGenesisV01228)
+
+			// we are referencing oldPlan.name to determine upgrade genesis or not
+			if err == nil { // it means v0.1.22.8 gov genesis
+				govGenesis := govtypes.GenesisState{
+					StartingProposalId:          govGenesisV01228.StartingProposalId,
+					NextRoleId:                  govtypes.DefaultGenesis().NextRoleId,
+					Roles:                       govtypes.DefaultGenesis().Roles,
+					RolePermissions:             govGenesisV01228.Permissions,
+					NetworkActors:               govGenesisV01228.NetworkActors,
+					NetworkProperties:           govGenesisV01228.NetworkProperties,
+					ExecutionFees:               govGenesisV01228.ExecutionFees,
+					PoorNetworkMessages:         govGenesisV01228.PoorNetworkMessages,
+					Proposals:                   govGenesisV01228.Proposals,
+					Votes:                       govGenesisV01228.Votes,
+					DataRegistry:                govGenesisV01228.DataRegistry,
+					IdentityRecords:             govGenesisV01228.IdentityRecords,
+					LastIdentityRecordId:        govGenesisV01228.LastIdentityRecordId,
+					IdRecordsVerifyRequests:     govGenesisV01228.IdRecordsVerifyRequests,
+					LastIdRecordVerifyRequestId: govGenesisV01228.LastIdRecordVerifyRequestId,
+				}
+				genesisState[govtypes.ModuleName] = cdc.MustMarshalJSON(&govGenesis)
+			} else {
+				fmt.Println("GovGenesis01228 unmarshal test: ", err)
+				fmt.Println("Skipping governance module upgrade since it is not v0.1.22.8 genesis")
+			}
 
 			appState, err := json.MarshalIndent(genesisState, "", " ")
 			if err != nil {
@@ -74,7 +109,7 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 
 			genDoc.AppState = appState
 			if err = genutil.ExportGenesisFile(genDoc, args[1]); err != nil {
-				return errors.Wrap(err, "Failed to export gensis file")
+				return errors.Wrap(err, "Failed to export genesis file")
 			}
 			return nil
 		},

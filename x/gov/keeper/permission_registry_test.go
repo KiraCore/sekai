@@ -13,7 +13,11 @@ func TestKeeper_CreateRoleAndWhitelistPerm(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	app.CustomGovKeeper.CreateRole(ctx, types.RoleSudo)
+	app.CustomGovKeeper.SetRole(ctx, types.Role{
+		Id:          uint32(types.RoleSudo),
+		Sid:         "RoleSudo",
+		Description: "RoleSudo",
+	})
 
 	err := app.CustomGovKeeper.WhitelistRolePermission(ctx, types.RoleSudo, types.PermClaimValidator)
 	require.NoError(t, err)

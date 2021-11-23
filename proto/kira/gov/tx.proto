@@ -21,8 +21,12 @@ service Msg {
     rpc SubmitProposal(MsgSubmitProposal) returns (MsgSubmitProposalResponse);
     // WhitelistPermissions defines a method for whitelisting a permission for an address.
     rpc WhitelistPermissions(MsgWhitelistPermissions) returns (MsgWhitelistPermissionsResponse);
+    // WhitelistPermissions defines a method for removing whitelisted permission for an address.
+    rpc RemoveWhitelistedPermissions(MsgRemoveWhitelistedPermissions) returns (MsgRemoveWhitelistedPermissionsResponse);
     // BlacklistPermissions defines a method for blacklisting a permission for an address.
     rpc BlacklistPermissions(MsgBlacklistPermissions) returns (MsgBlacklistPermissionsResponse);
+    // RemoveBlacklistedPermissions defines a method for removing a blacklisted permission for an address.
+    rpc RemoveBlacklistedPermissions(MsgRemoveBlacklistedPermissions) returns (MsgRemoveBlacklistedPermissionsResponse);
     // ClaimCouncilor defines a method for claiming a councilor
     rpc ClaimCouncilor(MsgClaimCouncilor) returns (MsgClaimCouncilorResponse);
     // VoteProposal defines a method for voting a proposal
@@ -80,7 +84,9 @@ message MsgSubmitProposalResponse {
 }
 
 message MsgWhitelistPermissionsResponse {}
+message MsgRemoveWhitelistedPermissionsResponse {}
 message MsgBlacklistPermissionsResponse {}
+message MsgRemoveBlacklistedPermissionsResponse {}
 message MsgClaimCouncilorResponse {}
 message MsgVoteProposalResponse {}
 message MsgCreateRoleResponse {}

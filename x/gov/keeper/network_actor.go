@@ -69,7 +69,7 @@ func (k Keeper) RemoveWhitelistPermission(ctx sdk.Context, actor types.NetworkAc
 	return nil
 }
 
-func (k Keeper) AssignRoleToActor(ctx sdk.Context, actor types.NetworkActor, role types.Role) {
+func (k Keeper) AssignRoleToActor(ctx sdk.Context, actor types.NetworkActor, role uint64) {
 	actor.SetRole(role)
 	k.SaveNetworkActor(ctx, actor)
 
@@ -77,7 +77,7 @@ func (k Keeper) AssignRoleToActor(ctx sdk.Context, actor types.NetworkActor, rol
 	store.Set(roleAddressKey(role, actor.Address), actor.Address.Bytes())
 }
 
-func (k Keeper) RemoveRoleFromActor(ctx sdk.Context, actor types.NetworkActor, role types.Role) {
+func (k Keeper) RemoveRoleFromActor(ctx sdk.Context, actor types.NetworkActor, role uint64) {
 	actor.RemoveRole(role)
 	k.SaveNetworkActor(ctx, actor)
 
@@ -98,7 +98,7 @@ func (k Keeper) GetNetworkActorsByWhitelistedPermission(ctx sdk.Context, perm ty
 }
 
 // GetNetworkActorsByRole returns all network actors that have role assigned.
-func (k Keeper) GetNetworkActorsByRole(ctx sdk.Context, role types.Role) sdk.Iterator {
+func (k Keeper) GetNetworkActorsByRole(ctx sdk.Context, role uint64) sdk.Iterator {
 	store := ctx.KVStore(k.storeKey)
 	return sdk.KVStorePrefixIterator(store, roleKey(role))
 }
@@ -156,12 +156,12 @@ func WhitelistPermKey(perm types.PermValue) []byte {
 }
 
 // roleAddressKey returns the prefix key in format <0x33 + Role_Bytes + address_bytes>
-func roleAddressKey(role types.Role, address sdk.AccAddress) []byte {
+func roleAddressKey(role uint64, address sdk.AccAddress) []byte {
 	return append(roleKey(role), address.Bytes()...)
 }
 
 // roleKey returns a prefix key in format <0x32 + Role_Bytes>
-func roleKey(role types.Role) []byte {
+func roleKey(role uint64) []byte {
 	return append(RoleActorPrefix, roleToBytes(role)...)
 }
 
@@ -171,11 +171,11 @@ func permToBytes(perm types.PermValue) []byte {
 }
 
 // roleToBytes returns a Role in bytes representation.
-func roleToBytes(role types.Role) []byte {
+func roleToBytes(role uint64) []byte {
 	return sdk.Uint64ToBigEndian(uint64(role))
 }
 
 // bytesToRole converts byte representation of a role to Role type.
-func bytesToRole(bz []byte) types.Role {
-	return types.Role(sdk.BigEndianToUint64(bz))
+func bytesToRole(bz []byte) uint64 {
+	return sdk.BigEndianToUint64(bz)
 }

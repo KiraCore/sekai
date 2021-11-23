@@ -123,6 +123,13 @@
           "caching_disable": false,
           "caching_duration": 30
         },
+        "/api/dump_consensus_state": {
+          "disable": false,
+          "rate_limit": 0,
+          "auth_rate_limit": 0,
+          "caching_disable": false,
+          "caching_duration": 30
+        },
         "/api/interx_list": {
           "disable": false,
           "rate_limit": 0,

@@ -391,7 +391,7 @@ func RegisterInterxFunctions() {
 					"description": "This represents the page number of results.",
 					"optional": true
 				},
-				"pageSize": {
+				"page_size": {
 					"type":        "int",
 					"description": "This represents the pageSize number of results. (1 ~ 1000)",
 					"optional": true
@@ -433,7 +433,7 @@ func RegisterInterxFunctions() {
 					"description": "This represents the page number of results.",
 					"optional": true
 				},
-				"pageSize": {
+				"page_size": {
 					"type":        "int",
 					"description": "This represents the pageSize number of results. (1 ~ 1000)",
 					"optional": true

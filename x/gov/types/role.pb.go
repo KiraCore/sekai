@@ -25,8 +25,9 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type MsgCreateRole struct {
-	Proposer github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=proposer,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"proposer,omitempty"`
-	Role     uint32                                        `protobuf:"varint,2,opt,name=role,proto3" json:"role,omitempty"`
+	Proposer        github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=proposer,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"proposer,omitempty"`
+	RoleSid         string                                        `protobuf:"bytes,2,opt,name=role_sid,json=roleSid,proto3" json:"role_sid,omitempty"`
+	RoleDescription string                                        `protobuf:"bytes,3,opt,name=role_description,json=roleDescription,proto3" json:"role_description,omitempty"`
 }
 
 func (m *MsgCreateRole) Reset()         { *m = MsgCreateRole{} }
@@ -69,17 +70,24 @@ func (m *MsgCreateRole) GetProposer() github_com_cosmos_cosmos_sdk_types.AccAddr
 	return nil
 }
 
-func (m *MsgCreateRole) GetRole() uint32 {
+func (m *MsgCreateRole) GetRoleSid() string {
 	if m != nil {
-		return m.Role
+		return m.RoleSid
 	}
-	return 0
+	return ""
+}
+
+func (m *MsgCreateRole) GetRoleDescription() string {
+	if m != nil {
+		return m.RoleDescription
+	}
+	return ""
 }
 
 type MsgAssignRole struct {
 	Proposer github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=proposer,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"proposer,omitempty"`
 	Address  github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,2,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
-	Role     uint32                                        `protobuf:"varint,3,opt,name=role,proto3" json:"role,omitempty"`
+	RoleId   uint32                                        `protobuf:"varint,3,opt,name=roleId,proto3" json:"roleId,omitempty"`
 }
 
 func (m *MsgAssignRole) Reset()         { *m = MsgAssignRole{} }
@@ -129,9 +137,9 @@ func (m *MsgAssignRole) GetAddress() github_com_cosmos_cosmos_sdk_types.AccAddre
 	return nil
 }
 
-func (m *MsgAssignRole) GetRole() uint32 {
+func (m *MsgAssignRole) GetRoleId() uint32 {
 	if m != nil {
-		return m.Role
+		return m.RoleId
 	}
 	return 0
 }
@@ -139,7 +147,7 @@ func (m *MsgAssignRole) GetRole() uint32 {
 type MsgRemoveRole struct {
 	Proposer github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=proposer,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"proposer,omitempty"`
 	Address  github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,2,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
-	Role     uint32                                        `protobuf:"varint,3,opt,name=role,proto3" json:"role,omitempty"`
+	RoleId   uint32                                        `protobuf:"varint,3,opt,name=roleId,proto3" json:"roleId,omitempty"`
 }
 
 func (m *MsgRemoveRole) Reset()         { *m = MsgRemoveRole{} }
@@ -189,17 +197,17 @@ func (m *MsgRemoveRole) GetAddress() github_com_cosmos_cosmos_sdk_types.AccAddre
 	return nil
 }
 
-func (m *MsgRemoveRole) GetRole() uint32 {
+func (m *MsgRemoveRole) GetRoleId() uint32 {
 	if m != nil {
-		return m.Role
+		return m.RoleId
 	}
 	return 0
 }
 
 type MsgWhitelistRolePermission struct {
-	Proposer   github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=proposer,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"proposer,omitempty"`
-	Role       uint32                                        `protobuf:"varint,2,opt,name=role,proto3" json:"role,omitempty"`
-	Permission uint32                                        `protobuf:"varint,3,opt,name=permission,proto3" json:"permission,omitempty"`
+	Proposer       github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=proposer,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"proposer,omitempty"`
+	RoleIdentifier string                                        `protobuf:"bytes,2,opt,name=roleIdentifier,proto3" json:"roleIdentifier,omitempty"`
+	Permission     uint32                                        `protobuf:"varint,3,opt,name=permission,proto3" json:"permission,omitempty"`
 }
 
 func (m *MsgWhitelistRolePermission) Reset()         { *m = MsgWhitelistRolePermission{} }
@@ -242,11 +250,11 @@ func (m *MsgWhitelistRolePermission) GetProposer() github_com_cosmos_cosmos_sdk_
 	return nil
 }
 
-func (m *MsgWhitelistRolePermission) GetRole() uint32 {
+func (m *MsgWhitelistRolePermission) GetRoleIdentifier() string {
 	if m != nil {
-		return m.Role
+		return m.RoleIdentifier
 	}
-	return 0
+	return ""
 }
 
 func (m *MsgWhitelistRolePermission) GetPermission() uint32 {
@@ -257,9 +265,9 @@ func (m *MsgWhitelistRolePermission) GetPermission() uint32 {
 }
 
 type MsgBlacklistRolePermission struct {
-	Proposer   github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=proposer,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"proposer,omitempty"`
-	Role       uint32                                        `protobuf:"varint,2,opt,name=role,proto3" json:"role,omitempty"`
-	Permission uint32                                        `protobuf:"varint,3,opt,name=permission,proto3" json:"permission,omitempty"`
+	Proposer       github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=proposer,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"proposer,omitempty"`
+	RoleIdentifier string                                        `protobuf:"bytes,2,opt,name=roleIdentifier,proto3" json:"roleIdentifier,omitempty"`
+	Permission     uint32                                        `protobuf:"varint,3,opt,name=permission,proto3" json:"permission,omitempty"`
 }
 
 func (m *MsgBlacklistRolePermission) Reset()         { *m = MsgBlacklistRolePermission{} }
@@ -302,11 +310,11 @@ func (m *MsgBlacklistRolePermission) GetProposer() github_com_cosmos_cosmos_sdk_
 	return nil
 }
 
-func (m *MsgBlacklistRolePermission) GetRole() uint32 {
+func (m *MsgBlacklistRolePermission) GetRoleIdentifier() string {
 	if m != nil {
-		return m.Role
+		return m.RoleIdentifier
 	}
-	return 0
+	return ""
 }
 
 func (m *MsgBlacklistRolePermission) GetPermission() uint32 {
@@ -317,9 +325,9 @@ func (m *MsgBlacklistRolePermission) GetPermission() uint32 {
 }
 
 type MsgRemoveWhitelistRolePermission struct {
-	Proposer   github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=proposer,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"proposer,omitempty"`
-	Role       uint32                                        `protobuf:"varint,2,opt,name=role,proto3" json:"role,omitempty"`
-	Permission uint32                                        `protobuf:"varint,3,opt,name=permission,proto3" json:"permission,omitempty"`
+	Proposer       github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=proposer,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"proposer,omitempty"`
+	RoleIdentifier string                                        `protobuf:"bytes,2,opt,name=roleIdentifier,proto3" json:"roleIdentifier,omitempty"`
+	Permission     uint32                                        `protobuf:"varint,3,opt,name=permission,proto3" json:"permission,omitempty"`
 }
 
 func (m *MsgRemoveWhitelistRolePermission) Reset()         { *m = MsgRemoveWhitelistRolePermission{} }
@@ -362,11 +370,11 @@ func (m *MsgRemoveWhitelistRolePermission) GetProposer() github_com_cosmos_cosmo
 	return nil
 }
 
-func (m *MsgRemoveWhitelistRolePermission) GetRole() uint32 {
+func (m *MsgRemoveWhitelistRolePermission) GetRoleIdentifier() string {
 	if m != nil {
-		return m.Role
+		return m.RoleIdentifier
 	}
-	return 0
+	return ""
 }
 
 func (m *MsgRemoveWhitelistRolePermission) GetPermission() uint32 {
@@ -377,9 +385,9 @@ func (m *MsgRemoveWhitelistRolePermission) GetPermission() uint32 {
 }
 
 type MsgRemoveBlacklistRolePermission struct {
-	Proposer   github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=proposer,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"proposer,omitempty"`
-	Role       uint32                                        `protobuf:"varint,2,opt,name=role,proto3" json:"role,omitempty"`
-	Permission uint32                                        `protobuf:"varint,3,opt,name=permission,proto3" json:"permission,omitempty"`
+	Proposer       github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=proposer,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"proposer,omitempty"`
+	RoleIdentifier string                                        `protobuf:"bytes,2,opt,name=roleIdentifier,proto3" json:"roleIdentifier,omitempty"`
+	Permission     uint32                                        `protobuf:"varint,3,opt,name=permission,proto3" json:"permission,omitempty"`
 }
 
 func (m *MsgRemoveBlacklistRolePermission) Reset()         { *m = MsgRemoveBlacklistRolePermission{} }
@@ -422,11 +430,11 @@ func (m *MsgRemoveBlacklistRolePermission) GetProposer() github_com_cosmos_cosmo
 	return nil
 }
 
-func (m *MsgRemoveBlacklistRolePermission) GetRole() uint32 {
+func (m *MsgRemoveBlacklistRolePermission) GetRoleIdentifier() string {
 	if m != nil {
-		return m.Role
+		return m.RoleIdentifier
 	}
-	return 0
+	return ""
 }
 
 func (m *MsgRemoveBlacklistRolePermission) GetPermission() uint32 {
@@ -434,6 +442,66 @@ func (m *MsgRemoveBlacklistRolePermission) GetPermission() uint32 {
 		return m.Permission
 	}
 	return 0
+}
+
+type Role struct {
+	Id          uint32 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Sid         string `protobuf:"bytes,2,opt,name=sid,proto3" json:"sid,omitempty"`
+	Description string `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+}
+
+func (m *Role) Reset()         { *m = Role{} }
+func (m *Role) String() string { return proto.CompactTextString(m) }
+func (*Role) ProtoMessage()    {}
+func (*Role) Descriptor() ([]byte, []int) {
+	return fileDescriptor_32fea9d294a1c414, []int{7}
+}
+func (m *Role) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *Role) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_Role.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *Role) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Role.Merge(m, src)
+}
+func (m *Role) XXX_Size() int {
+	return m.Size()
+}
+func (m *Role) XXX_DiscardUnknown() {
+	xxx_messageInfo_Role.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Role proto.InternalMessageInfo
+
+func (m *Role) GetId() uint32 {
+	if m != nil {
+		return m.Id
+	}
+	return 0
+}
+
+func (m *Role) GetSid() string {
+	if m != nil {
+		return m.Sid
+	}
+	return ""
+}
+
+func (m *Role) GetDescription() string {
+	if m != nil {
+		return m.Description
+	}
+	return ""
 }
 
 func init() {
@@ -444,34 +512,41 @@ func init() {
 	proto.RegisterType((*MsgBlacklistRolePermission)(nil), "kira.gov.MsgBlacklistRolePermission")
 	proto.RegisterType((*MsgRemoveWhitelistRolePermission)(nil), "kira.gov.MsgRemoveWhitelistRolePermission")
 	proto.RegisterType((*MsgRemoveBlacklistRolePermission)(nil), "kira.gov.MsgRemoveBlacklistRolePermission")
+	proto.RegisterType((*Role)(nil), "kira.gov.Role")
 }
 
 func init() { proto.RegisterFile("kira/gov/role.proto", fileDescriptor_32fea9d294a1c414) }
 
 var fileDescriptor_32fea9d294a1c414 = []byte{
-	// 346 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xdc, 0x94, 0xb1, 0x4a, 0x03, 0x41,
-	0x10, 0x86, 0xb3, 0x2a, 0x1a, 0x96, 0xc4, 0xe2, 0xb4, 0x08, 0x29, 0x36, 0xe1, 0x40, 0x48, 0x93,
-	0x5b, 0xc4, 0xce, 0x46, 0x72, 0x29, 0x25, 0x20, 0xd7, 0x08, 0x82, 0xc5, 0xe6, 0xb2, 0x6c, 0x96,
-	0xbb, 0xcb, 0x1c, 0x3b, 0x67, 0x30, 0x6f, 0xe1, 0x1b, 0x58, 0xf9, 0x2e, 0x96, 0xb1, 0xb3, 0x0a,
-	0x92, 0xbc, 0x81, 0xa5, 0x95, 0xdc, 0x26, 0x39, 0x22, 0x56, 0x16, 0x4a, 0xb0, 0xda, 0xe5, 0x1f,
-	0x98, 0xff, 0xfb, 0x87, 0x61, 0xe8, 0x51, 0xa4, 0x8d, 0xe0, 0x0a, 0xc6, 0xdc, 0x40, 0x2c, 0xbd,
-	0xd4, 0x40, 0x06, 0x4e, 0x39, 0x17, 0x3d, 0x05, 0xe3, 0xfa, 0xb1, 0x02, 0x05, 0x56, 0xe4, 0xf9,
-	0x6f, 0x59, 0x77, 0x0d, 0xad, 0xf6, 0x50, 0x75, 0x8d, 0x14, 0x99, 0x0c, 0x20, 0x96, 0x4e, 0x8f,
-	0x96, 0x53, 0x03, 0x29, 0xa0, 0x34, 0x35, 0xd2, 0x24, 0xad, 0x8a, 0x7f, 0xfa, 0x31, 0x6b, 0xb4,
-	0x95, 0xce, 0x86, 0x77, 0x7d, 0x2f, 0x84, 0x84, 0x87, 0x80, 0x09, 0xe0, 0xea, 0x69, 0xe3, 0x20,
-	0xe2, 0xd9, 0x24, 0x95, 0xe8, 0x75, 0xc2, 0xb0, 0x33, 0x18, 0x18, 0x89, 0x18, 0x14, 0x2d, 0x1c,
-	0x87, 0xee, 0xe5, 0x34, 0xb5, 0x9d, 0x26, 0x69, 0x55, 0x03, 0xfb, 0x77, 0x5f, 0x88, 0x35, 0xed,
-	0x20, 0x6a, 0x35, 0xfa, 0x0d, 0xd3, 0x5b, 0x7a, 0x20, 0x96, 0xa2, 0xf5, 0xad, 0xf8, 0xdd, 0xf7,
-	0x59, 0xe3, 0x70, 0x22, 0x92, 0xf8, 0xdc, 0x5d, 0x15, 0xdc, 0x9f, 0xf7, 0x5f, 0xf7, 0x2c, 0x32,
-	0xed, 0x7e, 0xcf, 0x14, 0xc8, 0x04, 0xc6, 0xf2, 0x9f, 0x64, 0x7a, 0x24, 0xb4, 0xde, 0x43, 0x75,
-	0x3d, 0xd4, 0x99, 0x8c, 0x35, 0x66, 0x79, 0xac, 0x2b, 0x69, 0x12, 0x8d, 0xa8, 0x61, 0xf4, 0x07,
-	0x9b, 0xe2, 0x30, 0x4a, 0xd3, 0xc2, 0x70, 0xc5, 0xb6, 0xa1, 0xac, 0x09, 0xfd, 0x58, 0x84, 0xd1,
-	0x76, 0x12, 0x3e, 0x11, 0xda, 0x2c, 0xf6, 0x62, 0x8b, 0x27, 0xf9, 0x85, 0x73, 0x7b, 0xe7, 0xe9,
-	0x5f, 0x3c, 0xcf, 0x19, 0x99, 0xce, 0x19, 0x79, 0x9b, 0x33, 0xf2, 0xb0, 0x60, 0xa5, 0xe9, 0x82,
-	0x95, 0x5e, 0x17, 0xac, 0x74, 0x73, 0xb2, 0x81, 0x71, 0xa9, 0x8d, 0xe8, 0x82, 0x91, 0x1c, 0x65,
-	0x24, 0x34, 0xbf, 0xb7, 0x57, 0xd1, 0x92, 0xf4, 0xf7, 0xed, 0xdd, 0x3b, 0xfb, 0x0c, 0x00, 0x00,
-	0xff, 0xff, 0x34, 0x80, 0xce, 0xec, 0x2e, 0x05, 0x00, 0x00,
+	// 440 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xdc, 0x94, 0xc1, 0x8a, 0x13, 0x41,
+	0x10, 0x86, 0xd3, 0x59, 0xd9, 0x8d, 0xe5, 0x26, 0x2e, 0xa3, 0x48, 0xdc, 0xc3, 0x6c, 0x08, 0x28,
+	0xeb, 0x61, 0x33, 0x88, 0x37, 0x2f, 0x92, 0xc4, 0x8b, 0x4a, 0x40, 0xc6, 0x83, 0x20, 0x88, 0xcc,
+	0x4e, 0x97, 0xb3, 0x45, 0x66, 0x52, 0x43, 0x57, 0x1b, 0xdc, 0xb7, 0xf0, 0x21, 0x7c, 0x03, 0x4f,
+	0xbe, 0x81, 0xc7, 0xbd, 0x08, 0x9e, 0x16, 0x49, 0xde, 0xc0, 0xa3, 0x27, 0xe9, 0xce, 0x24, 0x1b,
+	0xf5, 0x24, 0xe8, 0x21, 0x9e, 0xa6, 0xfb, 0xaf, 0xa1, 0xe6, 0xfb, 0x9a, 0x9e, 0x82, 0x6b, 0x63,
+	0x32, 0x49, 0x94, 0xf1, 0x34, 0x32, 0x9c, 0x63, 0xaf, 0x34, 0x6c, 0x39, 0x68, 0xb8, 0xb0, 0x97,
+	0xf1, 0x74, 0xff, 0x7a, 0xc6, 0x19, 0xfb, 0x30, 0x72, 0xab, 0x45, 0xbd, 0xfb, 0x5e, 0x41, 0x73,
+	0x24, 0xd9, 0xd0, 0x60, 0x62, 0x31, 0xe6, 0x1c, 0x83, 0x11, 0x34, 0x4a, 0xc3, 0x25, 0x0b, 0x9a,
+	0xb6, 0xea, 0xa8, 0xc3, 0xdd, 0xc1, 0xdd, 0xef, 0xe7, 0x07, 0x47, 0x19, 0xd9, 0x93, 0x37, 0xc7,
+	0xbd, 0x94, 0x8b, 0x28, 0x65, 0x29, 0x58, 0xaa, 0xc7, 0x91, 0xe8, 0x71, 0x64, 0x4f, 0x4b, 0x94,
+	0x5e, 0x3f, 0x4d, 0xfb, 0x5a, 0x1b, 0x14, 0x89, 0x57, 0x2d, 0x82, 0x9b, 0xd0, 0x70, 0x38, 0xaf,
+	0x84, 0x74, 0xbb, 0xde, 0x51, 0x87, 0x97, 0xe3, 0x1d, 0xb7, 0x7f, 0x46, 0x3a, 0xb8, 0x03, 0x7b,
+	0xbe, 0xa4, 0x51, 0x52, 0x43, 0xa5, 0x25, 0x9e, 0xb4, 0xb7, 0xfc, 0x2b, 0x57, 0x5d, 0xfe, 0xf0,
+	0x22, 0xee, 0x7e, 0x5e, 0x60, 0xf6, 0x45, 0x28, 0x9b, 0xfc, 0x0b, 0xcc, 0x97, 0xb0, 0x93, 0x2c,
+	0x42, 0x4f, 0xb9, 0x3b, 0x18, 0x7e, 0x3b, 0x3f, 0x68, 0x9d, 0x26, 0x45, 0x7e, 0xbf, 0x5b, 0x15,
+	0xba, 0x7f, 0xde, 0x7f, 0xd9, 0x33, 0xb8, 0x01, 0xdb, 0x4e, 0xe9, 0x91, 0xf6, 0x82, 0xcd, 0xb8,
+	0xda, 0x2d, 0xbd, 0x62, 0x2c, 0x78, 0x8a, 0xff, 0x91, 0xd7, 0x07, 0x05, 0xfb, 0x23, 0xc9, 0x9e,
+	0x9f, 0x90, 0xc5, 0x9c, 0xc4, 0x3a, 0xb5, 0xa7, 0x68, 0x0a, 0x12, 0x21, 0x9e, 0xfc, 0x6d, 0xc9,
+	0xdb, 0xd0, 0x5a, 0x7c, 0x17, 0x27, 0x96, 0x5e, 0x13, 0x9a, 0xea, 0xa6, 0xfd, 0x92, 0x06, 0x21,
+	0x40, 0xb9, 0x82, 0xa8, 0x88, 0xd7, 0x92, 0x25, 0xf5, 0x20, 0x4f, 0xd2, 0xf1, 0xe6, 0x50, 0x7f,
+	0x54, 0xd0, 0x59, 0xdd, 0xa1, 0x0d, 0x3b, 0xf1, 0x9f, 0xd8, 0x37, 0xec, 0xdc, 0x1f, 0xc3, 0x25,
+	0xff, 0xc7, 0xb6, 0xa0, 0x4e, 0xda, 0x83, 0x35, 0xe3, 0x3a, 0xe9, 0x60, 0x0f, 0xb6, 0x2e, 0x86,
+	0x9d, 0x5b, 0x06, 0x1d, 0xb8, 0xf2, 0xfb, 0x8c, 0x5b, 0x8f, 0x06, 0x0f, 0x3e, 0xcd, 0x42, 0x75,
+	0x36, 0x0b, 0xd5, 0xd7, 0x59, 0xa8, 0xde, 0xcd, 0xc3, 0xda, 0xd9, 0x3c, 0xac, 0x7d, 0x99, 0x87,
+	0xb5, 0x17, 0xb7, 0xd6, 0x34, 0x9f, 0x90, 0x49, 0x86, 0x6c, 0x30, 0x12, 0x1c, 0x27, 0x14, 0xbd,
+	0xf5, 0xc3, 0xde, 0x9b, 0x1e, 0x6f, 0xfb, 0x71, 0x7e, 0xef, 0x47, 0x00, 0x00, 0x00, 0xff, 0xff,
+	0x90, 0x70, 0xa8, 0x77, 0x05, 0x06, 0x00, 0x00,
 }
 
 func (m *MsgCreateRole) Marshal() (dAtA []byte, err error) {
@@ -494,10 +569,19 @@ func (m *MsgCreateRole) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.Role != 0 {
-		i = encodeVarintRole(dAtA, i, uint64(m.Role))
+	if len(m.RoleDescription) > 0 {
+		i -= len(m.RoleDescription)
+		copy(dAtA[i:], m.RoleDescription)
+		i = encodeVarintRole(dAtA, i, uint64(len(m.RoleDescription)))
 		i--
-		dAtA[i] = 0x10
+		dAtA[i] = 0x1a
+	}
+	if len(m.RoleSid) > 0 {
+		i -= len(m.RoleSid)
+		copy(dAtA[i:], m.RoleSid)
+		i = encodeVarintRole(dAtA, i, uint64(len(m.RoleSid)))
+		i--
+		dAtA[i] = 0x12
 	}
 	if len(m.Proposer) > 0 {
 		i -= len(m.Proposer)
@@ -529,8 +613,8 @@ func (m *MsgAssignRole) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.Role != 0 {
-		i = encodeVarintRole(dAtA, i, uint64(m.Role))
+	if m.RoleId != 0 {
+		i = encodeVarintRole(dAtA, i, uint64(m.RoleId))
 		i--
 		dAtA[i] = 0x18
 	}
@@ -571,8 +655,8 @@ func (m *MsgRemoveRole) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.Role != 0 {
-		i = encodeVarintRole(dAtA, i, uint64(m.Role))
+	if m.RoleId != 0 {
+		i = encodeVarintRole(dAtA, i, uint64(m.RoleId))
 		i--
 		dAtA[i] = 0x18
 	}
@@ -618,10 +702,12 @@ func (m *MsgWhitelistRolePermission) MarshalToSizedBuffer(dAtA []byte) (int, err
 		i--
 		dAtA[i] = 0x18
 	}
-	if m.Role != 0 {
-		i = encodeVarintRole(dAtA, i, uint64(m.Role))
+	if len(m.RoleIdentifier) > 0 {
+		i -= len(m.RoleIdentifier)
+		copy(dAtA[i:], m.RoleIdentifier)
+		i = encodeVarintRole(dAtA, i, uint64(len(m.RoleIdentifier)))
 		i--
-		dAtA[i] = 0x10
+		dAtA[i] = 0x12
 	}
 	if len(m.Proposer) > 0 {
 		i -= len(m.Proposer)
@@ -658,10 +744,12 @@ func (m *MsgBlacklistRolePermission) MarshalToSizedBuffer(dAtA []byte) (int, err
 		i--
 		dAtA[i] = 0x18
 	}
-	if m.Role != 0 {
-		i = encodeVarintRole(dAtA, i, uint64(m.Role))
+	if len(m.RoleIdentifier) > 0 {
+		i -= len(m.RoleIdentifier)
+		copy(dAtA[i:], m.RoleIdentifier)
+		i = encodeVarintRole(dAtA, i, uint64(len(m.RoleIdentifier)))
 		i--
-		dAtA[i] = 0x10
+		dAtA[i] = 0x12
 	}
 	if len(m.Proposer) > 0 {
 		i -= len(m.Proposer)
@@ -698,10 +786,12 @@ func (m *MsgRemoveWhitelistRolePermission) MarshalToSizedBuffer(dAtA []byte) (in
 		i--
 		dAtA[i] = 0x18
 	}
-	if m.Role != 0 {
-		i = encodeVarintRole(dAtA, i, uint64(m.Role))
+	if len(m.RoleIdentifier) > 0 {
+		i -= len(m.RoleIdentifier)
+		copy(dAtA[i:], m.RoleIdentifier)
+		i = encodeVarintRole(dAtA, i, uint64(len(m.RoleIdentifier)))
 		i--
-		dAtA[i] = 0x10
+		dAtA[i] = 0x12
 	}
 	if len(m.Proposer) > 0 {
 		i -= len(m.Proposer)
@@ -738,10 +828,12 @@ func (m *MsgRemoveBlacklistRolePermission) MarshalToSizedBuffer(dAtA []byte) (in
 		i--
 		dAtA[i] = 0x18
 	}
-	if m.Role != 0 {
-		i = encodeVarintRole(dAtA, i, uint64(m.Role))
+	if len(m.RoleIdentifier) > 0 {
+		i -= len(m.RoleIdentifier)
+		copy(dAtA[i:], m.RoleIdentifier)
+		i = encodeVarintRole(dAtA, i, uint64(len(m.RoleIdentifier)))
 		i--
-		dAtA[i] = 0x10
+		dAtA[i] = 0x12
 	}
 	if len(m.Proposer) > 0 {
 		i -= len(m.Proposer)
@@ -749,6 +841,48 @@ func (m *MsgRemoveBlacklistRolePermission) MarshalToSizedBuffer(dAtA []byte) (in
 		i = encodeVarintRole(dAtA, i, uint64(len(m.Proposer)))
 		i--
 		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *Role) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Role) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Role) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Description) > 0 {
+		i -= len(m.Description)
+		copy(dAtA[i:], m.Description)
+		i = encodeVarintRole(dAtA, i, uint64(len(m.Description)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Sid) > 0 {
+		i -= len(m.Sid)
+		copy(dAtA[i:], m.Sid)
+		i = encodeVarintRole(dAtA, i, uint64(len(m.Sid)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Id != 0 {
+		i = encodeVarintRole(dAtA, i, uint64(m.Id))
+		i--
+		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
@@ -774,8 +908,13 @@ func (m *MsgCreateRole) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovRole(uint64(l))
 	}
-	if m.Role != 0 {
-		n += 1 + sovRole(uint64(m.Role))
+	l = len(m.RoleSid)
+	if l > 0 {
+		n += 1 + l + sovRole(uint64(l))
+	}
+	l = len(m.RoleDescription)
+	if l > 0 {
+		n += 1 + l + sovRole(uint64(l))
 	}
 	return n
 }
@@ -794,8 +933,8 @@ func (m *MsgAssignRole) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovRole(uint64(l))
 	}
-	if m.Role != 0 {
-		n += 1 + sovRole(uint64(m.Role))
+	if m.RoleId != 0 {
+		n += 1 + sovRole(uint64(m.RoleId))
 	}
 	return n
 }
@@ -814,8 +953,8 @@ func (m *MsgRemoveRole) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovRole(uint64(l))
 	}
-	if m.Role != 0 {
-		n += 1 + sovRole(uint64(m.Role))
+	if m.RoleId != 0 {
+		n += 1 + sovRole(uint64(m.RoleId))
 	}
 	return n
 }
@@ -830,8 +969,9 @@ func (m *MsgWhitelistRolePermission) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovRole(uint64(l))
 	}
-	if m.Role != 0 {
-		n += 1 + sovRole(uint64(m.Role))
+	l = len(m.RoleIdentifier)
+	if l > 0 {
+		n += 1 + l + sovRole(uint64(l))
 	}
 	if m.Permission != 0 {
 		n += 1 + sovRole(uint64(m.Permission))
@@ -849,8 +989,9 @@ func (m *MsgBlacklistRolePermission) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovRole(uint64(l))
 	}
-	if m.Role != 0 {
-		n += 1 + sovRole(uint64(m.Role))
+	l = len(m.RoleIdentifier)
+	if l > 0 {
+		n += 1 + l + sovRole(uint64(l))
 	}
 	if m.Permission != 0 {
 		n += 1 + sovRole(uint64(m.Permission))
@@ -868,8 +1009,9 @@ func (m *MsgRemoveWhitelistRolePermission) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovRole(uint64(l))
 	}
-	if m.Role != 0 {
-		n += 1 + sovRole(uint64(m.Role))
+	l = len(m.RoleIdentifier)
+	if l > 0 {
+		n += 1 + l + sovRole(uint64(l))
 	}
 	if m.Permission != 0 {
 		n += 1 + sovRole(uint64(m.Permission))
@@ -887,11 +1029,32 @@ func (m *MsgRemoveBlacklistRolePermission) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovRole(uint64(l))
 	}
-	if m.Role != 0 {
-		n += 1 + sovRole(uint64(m.Role))
+	l = len(m.RoleIdentifier)
+	if l > 0 {
+		n += 1 + l + sovRole(uint64(l))
 	}
 	if m.Permission != 0 {
 		n += 1 + sovRole(uint64(m.Permission))
+	}
+	return n
+}
+
+func (m *Role) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Id != 0 {
+		n += 1 + sovRole(uint64(m.Id))
+	}
+	l = len(m.Sid)
+	if l > 0 {
+		n += 1 + l + sovRole(uint64(l))
+	}
+	l = len(m.Description)
+	if l > 0 {
+		n += 1 + l + sovRole(uint64(l))
 	}
 	return n
 }
@@ -966,10 +1129,10 @@ func (m *MsgCreateRole) Unmarshal(dAtA []byte) error {
 			}
 			iNdEx = postIndex
 		case 2:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Role", wireType)
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RoleSid", wireType)
 			}
-			m.Role = 0
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowRole
@@ -979,11 +1142,56 @@ func (m *MsgCreateRole) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Role |= uint32(b&0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthRole
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthRole
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RoleSid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RoleDescription", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRole
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthRole
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthRole
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RoleDescription = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipRole(dAtA[iNdEx:])
@@ -1104,9 +1312,9 @@ func (m *MsgAssignRole) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Role", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field RoleId", wireType)
 			}
-			m.Role = 0
+			m.RoleId = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowRole
@@ -1116,7 +1324,7 @@ func (m *MsgAssignRole) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Role |= uint32(b&0x7F) << shift
+				m.RoleId |= uint32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1241,9 +1449,9 @@ func (m *MsgRemoveRole) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Role", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field RoleId", wireType)
 			}
-			m.Role = 0
+			m.RoleId = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowRole
@@ -1253,7 +1461,7 @@ func (m *MsgRemoveRole) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Role |= uint32(b&0x7F) << shift
+				m.RoleId |= uint32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1343,10 +1551,10 @@ func (m *MsgWhitelistRolePermission) Unmarshal(dAtA []byte) error {
 			}
 			iNdEx = postIndex
 		case 2:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Role", wireType)
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RoleIdentifier", wireType)
 			}
-			m.Role = 0
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowRole
@@ -1356,11 +1564,24 @@ func (m *MsgWhitelistRolePermission) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Role |= uint32(b&0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthRole
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthRole
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RoleIdentifier = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		case 3:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Permission", wireType)
@@ -1465,10 +1686,10 @@ func (m *MsgBlacklistRolePermission) Unmarshal(dAtA []byte) error {
 			}
 			iNdEx = postIndex
 		case 2:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Role", wireType)
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RoleIdentifier", wireType)
 			}
-			m.Role = 0
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowRole
@@ -1478,11 +1699,24 @@ func (m *MsgBlacklistRolePermission) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Role |= uint32(b&0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthRole
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthRole
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RoleIdentifier = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		case 3:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Permission", wireType)
@@ -1587,10 +1821,10 @@ func (m *MsgRemoveWhitelistRolePermission) Unmarshal(dAtA []byte) error {
 			}
 			iNdEx = postIndex
 		case 2:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Role", wireType)
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RoleIdentifier", wireType)
 			}
-			m.Role = 0
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowRole
@@ -1600,11 +1834,24 @@ func (m *MsgRemoveWhitelistRolePermission) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Role |= uint32(b&0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthRole
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthRole
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RoleIdentifier = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		case 3:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Permission", wireType)
@@ -1709,10 +1956,10 @@ func (m *MsgRemoveBlacklistRolePermission) Unmarshal(dAtA []byte) error {
 			}
 			iNdEx = postIndex
 		case 2:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Role", wireType)
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RoleIdentifier", wireType)
 			}
-			m.Role = 0
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowRole
@@ -1722,11 +1969,24 @@ func (m *MsgRemoveBlacklistRolePermission) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Role |= uint32(b&0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthRole
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthRole
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RoleIdentifier = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		case 3:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Permission", wireType)
@@ -1746,6 +2006,139 @@ func (m *MsgRemoveBlacklistRolePermission) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipRole(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthRole
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *Role) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowRole
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Role: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Role: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			m.Id = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRole
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Id |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Sid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRole
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthRole
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthRole
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Sid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Description", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRole
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthRole
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthRole
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Description = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipRole(dAtA[iNdEx:])

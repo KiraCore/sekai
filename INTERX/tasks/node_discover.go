@@ -26,6 +26,9 @@ import (
 	tmJsonRPCTypes "github.com/tendermint/tendermint/rpc/jsonrpc/types"
 )
 
+// check if block is within 20
+var BLOCK_DIFF_LIMIT int64 = 20
+
 var (
 	PubP2PNodeListResponse    types.P2PNodeListResponse
 	PrivP2PNodeListResponse   types.P2PNodeListResponse
@@ -269,9 +272,9 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 			}
 		}
 
-		uniqueIPAddresses = append(uniqueIPAddresses, "18.159.247.32")
-		uniqueIPAddresses = append(uniqueIPAddresses, "52.58.50.144")
-		uniqueIPAddresses = append(uniqueIPAddresses, "18.198.32.150")
+		// uniqueIPAddresses = append(uniqueIPAddresses, "51.89.7.103")
+		// uniqueIPAddresses = append(uniqueIPAddresses, "75.119.149.170")
+		// uniqueIPAddresses = append(uniqueIPAddresses, "46.166.132.197")
 
 		peersFromIP := make(map[string]([]tmTypes.Peer))
 
@@ -292,12 +295,19 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 				continue
 			}
 
+			synced := false
+			blockDiff := common.NodeStatus.Block - kiraStatus.SyncInfo.LatestBlockHeight
+			if blockDiff >= -BLOCK_DIFF_LIMIT && blockDiff <= BLOCK_DIFF_LIMIT {
+				synced = true
+			}
+
 			nodeInfo := types.P2PNode{}
 			nodeInfo.ID = string(kiraStatus.NodeInfo.ID())
 			nodeInfo.IP = ipAddr
 			nodeInfo.Port = getPort(kiraStatus.NodeInfo.ListenAddr)
 			nodeInfo.Peers = []string{}
 			nodeInfo.Alive = true
+			nodeInfo.Synced = synced
 
 			// verify p2p node_id via p2p connect
 			peerNodeInfo, ping := connect(p2p.NewNetAddressIPPort(parseIP(nodeInfo.IP), uint16(nodeInfo.Port)), timeout())
@@ -328,6 +338,7 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 					privNodeInfo.Peers = []string{}
 					privNodeInfo.Peers = append(privNodeInfo.Peers, nodeInfo.ID)
 					privNodeInfo.Alive = true
+					privNodeInfo.Synced = synced
 
 					if _, ok := isLocalPeer[privNodeInfo.ID]; ok {
 						privNodeInfo.Connected = true
@@ -378,6 +389,7 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 				interxInfo.Type = interxStatus.InterxInfo.Node.NodeType
 				interxInfo.Version = interxStatus.InterxInfo.Version
 				interxInfo.Alive = true
+				interxInfo.Synced = synced
 
 				global.Mutex.Lock()
 				if pid, isIn := idOfInterxList[interxInfo.ID]; isIn {
@@ -398,6 +410,7 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 					snapNode.Checksum = snapshotInfo.Checksum
 					snapNode.Size = snapshotInfo.Size
 					snapNode.Alive = true
+					snapNode.Synced = synced
 
 					global.Mutex.Lock()
 					if pid, isIn := idOfSnapshotList[snapNode.IP]; isIn {
@@ -452,7 +465,7 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 			common.GetLogger().Info("[node-discovery] finished!")
 		}
 
-		// time.Sleep(5 * time.Minute)
+		time.Sleep(10 * time.Second)
 	}
 }
 

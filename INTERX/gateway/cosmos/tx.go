@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/KiraCore/sekai/INTERX/common"
 	"github.com/KiraCore/sekai/INTERX/config"
@@ -105,6 +106,9 @@ func PostTxRequest(rpcAddr string) http.HandlerFunc {
 }
 
 func queryTxHashHandle(hash string, rpcAddr string) (interface{}, interface{}, int) {
+	if !strings.HasPrefix(hash, "0x") {
+		hash = "0x" + hash
+	}
 	return common.MakeTendermintRPCRequest(rpcAddr, "/tx", fmt.Sprintf("hash=%s", hash))
 }
 
