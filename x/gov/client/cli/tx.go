@@ -1056,6 +1056,9 @@ func GetTxProposalCreateRole() *cobra.Command {
 	return cmd
 }
 
+// TODO: add tx for SetProposalDurationProposal
+// TODO: add tx for SetBatchProposalDurationsProposal
+
 func GetTxRegisterIdentityRecords() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "register-identity-records",

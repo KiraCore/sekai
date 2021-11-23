@@ -1939,3 +1939,6 @@ func TestHandler_ProposalCreateRole(t *testing.T) {
 	iterator = app.CustomGovKeeper.GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx, ctx.BlockTime())
 	require.True(t, iterator.Valid())
 }
+
+// TODO: add test for SetProposalDurationProposal
+// TODO: add test for SetBatchProposalDurationsProposal

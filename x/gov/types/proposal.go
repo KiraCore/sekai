@@ -13,11 +13,13 @@ import (
 
 // constants
 const (
-	AssignPermissionProposalType       = "AssignPermission"
-	SetNetworkPropertyProposalType     = "SetNetworkProperty"
-	UpsertDataRegistryProposalType     = "UpsertDataRegistry"
-	SetPoorNetworkMessagesProposalType = "SetPoorNetworkMessages"
-	CreateRoleProposalType             = "CreateRoleProposal"
+	AssignPermissionProposalType          = "AssignPermission"
+	SetNetworkPropertyProposalType        = "SetNetworkProperty"
+	UpsertDataRegistryProposalType        = "UpsertDataRegistry"
+	SetPoorNetworkMessagesProposalType    = "SetPoorNetworkMessages"
+	CreateRoleProposalType                = "CreateRoleProposal"
+	SetProposalDurationProposalType       = "SetProposalDurationProposal"
+	SetBatchProposalDurationsProposalType = "SetBatchProposalDurationsProposal"
 )
 
 var _ Content = &AssignPermissionProposal{}
@@ -232,5 +234,29 @@ func (m *CreateRoleProposal) ValidateBasic() error {
 		return ErrEmptyPermissions
 	}
 
+	return nil
+}
+
+func NewSetProposalDurationProposal() Content {
+	//  TODO: implement
+	return &SetProposalDurationProposal{}
+}
+
+func (m *SetProposalDurationProposal) ProposalType() string {
+	return SetProposalDurationProposalType
+}
+
+func (m *SetProposalDurationProposal) ProposalPermission() PermValue {
+	return PermCreateSetProposalDurationProposal
+}
+
+func (m *SetProposalDurationProposal) VotePermission() PermValue {
+	return PermVoteSetProposalDurationProposal
+}
+
+// ValidateBasic returns basic validation
+func (m *SetProposalDurationProposal) ValidateBasic() error {
+
+	//  TODO: implement
 	return nil
 }

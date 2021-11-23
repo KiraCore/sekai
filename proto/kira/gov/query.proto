@@ -91,6 +91,14 @@ service Query {
   rpc AllIdentityRecordVerifyRequests(QueryAllIdentityRecordVerifyRequests) returns (QueryAllIdentityRecordVerifyRequestsResponse) {
     option (google.api.http).get = "/kira/gov/all_identity_verify_requests";
   }
+  // Query all proposal durations
+  rpc AllProposalDurations(QueryAllProposalDurations) returns (QueryAllProposalDurationsResponse) {
+    option (google.api.http).get = "/kira/gov/all_proposal_durations";
+  }
+  // Query single proposal duration
+  rpc ProposalDuration(QueryProposalDuration) returns (QueryProposalDurationResponse) {
+    option (google.api.http).get = "/kira/gov/proposal_duration/{proposal_type}";
+  }
 }
 
 message NetworkPropertiesRequest {}
@@ -325,4 +333,18 @@ message QueryAllIdentityRecordVerifyRequests {
 message QueryAllIdentityRecordVerifyRequestsResponse {
   repeated kira.gov.IdentityRecordsVerify verify_records = 1 [(gogoproto.nullable) = false];
   cosmos.base.query.v1beta1.PageResponse pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
+}
+
+message QueryAllProposalDurations {}
+
+message QueryAllProposalDurationsResponse {
+  map<string, uint64> proposal_durations = 1;
+}
+
+message QueryProposalDuration {
+  string proposal_type = 1;
+}
+
+message QueryProposalDurationResponse {
+  uint64 duration = 1;
 }

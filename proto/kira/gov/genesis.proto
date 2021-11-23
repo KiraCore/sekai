@@ -36,4 +36,6 @@ message GenesisState {
 
   repeated kira.gov.IdentityRecordsVerify id_records_verify_requests = 14 [ (gogoproto.nullable) = false ];
   uint64 last_id_record_verify_request_id = 15;
+
+  map<string, uint64> proposal_durations = 16;
 }

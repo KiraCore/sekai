@@ -43,6 +43,8 @@ func DefaultGenesis() *GenesisState {
 				PermVoteUnjailValidatorProposal,
 				PermCreateRoleProposal,
 				PermVoteCreateRoleProposal,
+				PermCreateSetProposalDurationProposal,
+				PermVoteSetProposalDurationProposal,
 				PermCreateTokensWhiteBlackChangeProposal,
 				PermVoteTokensWhiteBlackChangeProposal,
 				PermCreateSetPoorNetworkMessagesProposal,
