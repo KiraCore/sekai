@@ -37,14 +37,22 @@ func (k Keeper) CreateAndSaveProposalWithContent(ctx sdk.Context, title, descrip
 
 	properties := k.GetNetworkProperties(ctx)
 
+	// dynamic proposal end time based on proposal type
+	proposalEndTime := k.GetProposalDuration(ctx, content.ProposalType())
+	if proposalEndTime == 0 {
+		proposalEndTime = properties.ProposalEndTime
+	}
+
+	// TODO: should we have both defaultProposalEndTime and minProposalEndTime?
+
 	proposal, err := types.NewProposal(
 		proposalID,
 		title,
 		description,
 		content,
 		blockTime,
-		blockTime.Add(time.Second*time.Duration(properties.ProposalEndTime)),
-		blockTime.Add(time.Second*time.Duration(properties.ProposalEndTime)+
+		blockTime.Add(time.Second*time.Duration(proposalEndTime)),
+		blockTime.Add(time.Second*time.Duration(proposalEndTime)+
 			time.Second*time.Duration(properties.ProposalEnactmentTime),
 		),
 		ctx.BlockHeight()+int64(properties.MinProposalEndBlocks),

@@ -7,6 +7,7 @@ import (
 )
 
 func (k Keeper) SetProposalDuration(ctx sdk.Context, proposalType string, duration uint64) {
+	// TODO: implement minimum proposal duration time after discussion
 	store := ctx.KVStore(k.storeKey)
 	prefixStore := prefix.NewStore(store, types.KeyPrefixProposalDuration)
 	prefixStore.Set([]byte(proposalType), sdk.Uint64ToBigEndian(duration))
