@@ -95,7 +95,9 @@ func InitGenesis(
 	k.SetLastIdentityRecordId(ctx, genesisState.LastIdentityRecordId)
 	k.SetLastIdRecordVerifyRequestId(ctx, genesisState.LastIdRecordVerifyRequestId)
 
-	// TODO: handle genesisState.ProposalDurations
+	for typeofProposal, duration := range genesisState.ProposalDurations {
+		k.SetProposalDuration(ctx, typeofProposal, duration)
+	}
 
 	return nil
 }
@@ -138,6 +140,6 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) (data *types.GenesisState) 
 		LastIdentityRecordId:        k.GetLastIdentityRecordId(ctx),
 		IdRecordsVerifyRequests:     k.GetAllIdRecordsVerifyRequests(ctx),
 		LastIdRecordVerifyRequestId: k.GetLastIdRecordVerifyRequestId(ctx),
-		ProposalDurations:           k.GetProposalDurations(ctx),
+		ProposalDurations:           k.GetAllProposalDurations(ctx),
 	}
 }

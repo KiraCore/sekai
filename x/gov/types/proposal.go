@@ -237,9 +237,11 @@ func (m *CreateRoleProposal) ValidateBasic() error {
 	return nil
 }
 
-func NewSetProposalDurationProposal() Content {
-	//  TODO: implement
-	return &SetProposalDurationProposal{}
+func NewSetProposalDurationProposal(typeofProposal string, duration uint64) Content {
+	return &SetProposalDurationProposal{
+		TypeofProposal:   typeofProposal,
+		ProposalDuration: duration,
+	}
 }
 
 func (m *SetProposalDurationProposal) ProposalType() string {
@@ -256,7 +258,52 @@ func (m *SetProposalDurationProposal) VotePermission() PermValue {
 
 // ValidateBasic returns basic validation
 func (m *SetProposalDurationProposal) ValidateBasic() error {
+	if m.TypeofProposal == "" {
+		return fmt.Errorf("empty proposal type is not allowed")
+	}
 
-	//  TODO: implement
+	if m.ProposalDuration == 0 {
+		return fmt.Errorf("zero proposal duration is not allowed")
+	}
+	return nil
+}
+
+func NewSetBatchProposalDurationsProposal(typeofProposals []string, durations []uint64) Content {
+	return &SetBatchProposalDurationsProposal{
+		TypeofProposals:   typeofProposals,
+		ProposalDurations: durations,
+	}
+}
+
+func (m *SetBatchProposalDurationsProposal) ProposalType() string {
+	return SetProposalDurationProposalType
+}
+
+func (m *SetBatchProposalDurationsProposal) ProposalPermission() PermValue {
+	return PermCreateSetProposalDurationProposal
+}
+
+func (m *SetBatchProposalDurationsProposal) VotePermission() PermValue {
+	return PermVoteSetProposalDurationProposal
+}
+
+// ValidateBasic returns basic validation
+func (m *SetBatchProposalDurationsProposal) ValidateBasic() error {
+	if len(m.TypeofProposals) == 0 {
+		return fmt.Errorf("at least one proposal type should be set")
+	}
+	if len(m.TypeofProposals) != len(m.ProposalDurations) {
+		return fmt.Errorf("the length of proposal types and durations should be equal")
+	}
+	for _, pt := range m.TypeofProposals {
+		if pt == "" {
+			return fmt.Errorf("empty proposal type is not allowed")
+		}
+	}
+	for _, pd := range m.ProposalDurations {
+		if pd == 0 {
+			return fmt.Errorf("zero proposal duration is not allowed")
+		}
+	}
 	return nil
 }
