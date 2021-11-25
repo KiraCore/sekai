@@ -334,7 +334,6 @@ func TestKeeper_GetProposalVotesIterator(t *testing.T) {
 	require.Equal(t, 1, totalVotes)
 }
 
-// TODO: should modify test for proposal's dynamic duration set based on proposal type
 func TestKeeper_ProposalDuration(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
@@ -354,9 +353,15 @@ func TestKeeper_ProposalDuration(t *testing.T) {
 	// test SetNetworkPropertyProposal
 	proposalID, err = app.CustomGovKeeper.CreateAndSaveProposalWithContent(ctx, "title", "description", &types.SetNetworkPropertyProposal{})
 	require.NoError(t, err)
-
 	proposal, found = app.CustomGovKeeper.GetProposal(ctx, proposalID)
 	require.True(t, found)
-
 	require.Equal(t, proposal.VotingEndTime.Unix(), ctx.BlockTime().Unix()+int64(properties.DefaultProposalEndTime))
+
+	// check longer duration proposal
+	app.CustomGovKeeper.SetProposalDuration(ctx, types.SetProposalDurationProposalType, 2400)
+	proposalID, err = app.CustomGovKeeper.CreateAndSaveProposalWithContent(ctx, "title", "description", &types.SetProposalDurationProposal{})
+	require.NoError(t, err)
+	proposal, found = app.CustomGovKeeper.GetProposal(ctx, proposalID)
+	require.True(t, found)
+	require.Equal(t, proposal.VotingEndTime.Unix(), ctx.BlockTime().Unix()+2400)
 }

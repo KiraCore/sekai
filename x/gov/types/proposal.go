@@ -277,7 +277,7 @@ func NewSetBatchProposalDurationsProposal(typeofProposals []string, durations []
 }
 
 func (m *SetBatchProposalDurationsProposal) ProposalType() string {
-	return SetProposalDurationProposalType
+	return SetBatchProposalDurationsProposalType
 }
 
 func (m *SetBatchProposalDurationsProposal) ProposalPermission() PermValue {
