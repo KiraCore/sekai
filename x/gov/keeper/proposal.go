@@ -40,10 +40,10 @@ func (k Keeper) CreateAndSaveProposalWithContent(ctx sdk.Context, title, descrip
 	// dynamic proposal end time based on proposal type
 	proposalEndTime := k.GetProposalDuration(ctx, content.ProposalType())
 	if proposalEndTime == 0 {
-		proposalEndTime = properties.ProposalEndTime
+		proposalEndTime = properties.DefaultProposalEndTime
+	} else if proposalEndTime < properties.MinimumProposalEndTime {
+		proposalEndTime = properties.MinimumProposalEndTime
 	}
-
-	// TODO: should we have both defaultProposalEndTime and minProposalEndTime?
 
 	proposal, err := types.NewProposal(
 		proposalID,

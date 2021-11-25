@@ -158,8 +158,7 @@ func (c SetProposalDurationProposalHandler) ProposalType() string {
 
 func (c SetProposalDurationProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
 	p := proposal.(*types.SetProposalDurationProposal)
-	c.keeper.SetProposalDuration(ctx, p.TypeofProposal, p.ProposalDuration)
-	return nil
+	return c.keeper.SetProposalDuration(ctx, p.TypeofProposal, p.ProposalDuration)
 }
 
 type SetBatchProposalDurationsProposalHandler struct {
@@ -177,7 +176,10 @@ func (c SetBatchProposalDurationsProposalHandler) ProposalType() string {
 func (c SetBatchProposalDurationsProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
 	p := proposal.(*types.SetBatchProposalDurationsProposal)
 	for i, pt := range p.TypeofProposals {
-		c.keeper.SetProposalDuration(ctx, pt, p.ProposalDurations[i])
+		err := c.keeper.SetProposalDuration(ctx, pt, p.ProposalDurations[i])
+		if err != nil {
+			return nil
+		}
 	}
 	return nil
 }

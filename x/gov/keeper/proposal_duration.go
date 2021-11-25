@@ -1,16 +1,24 @@
 package keeper
 
 import (
+	"fmt"
+
 	"github.com/KiraCore/sekai/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (k Keeper) SetProposalDuration(ctx sdk.Context, proposalType string, duration uint64) {
-	// TODO: implement minimum proposal duration time after discussion
+func (k Keeper) SetProposalDuration(ctx sdk.Context, proposalType string, duration uint64) error {
+	// duration should be longer than minimum proposal duration
+	properties := k.GetNetworkProperties(ctx)
+	if duration < properties.MinimumProposalEndTime {
+		return fmt.Errorf("duration should be longer than minimum proposal duration")
+	}
+
 	store := ctx.KVStore(k.storeKey)
 	prefixStore := prefix.NewStore(store, types.KeyPrefixProposalDuration)
 	prefixStore.Set([]byte(proposalType), sdk.Uint64ToBigEndian(duration))
+	return nil
 }
 
 func (k Keeper) GetProposalDuration(ctx sdk.Context, proposalType string) uint64 {

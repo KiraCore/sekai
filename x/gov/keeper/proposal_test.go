@@ -349,7 +349,7 @@ func TestKeeper_ProposalDuration(t *testing.T) {
 	proposal, found := app.CustomGovKeeper.GetProposal(ctx, proposalID)
 	require.True(t, found)
 
-	require.Equal(t, proposal.VotingEndTime.Unix(), ctx.BlockTime().Unix()+int64(properties.ProposalEndTime))
+	require.Equal(t, proposal.VotingEndTime.Unix(), ctx.BlockTime().Unix()+int64(properties.DefaultProposalEndTime))
 
 	// test SetNetworkPropertyProposal
 	proposalID, err = app.CustomGovKeeper.CreateAndSaveProposalWithContent(ctx, "title", "description", &types.SetNetworkPropertyProposal{})
@@ -358,5 +358,5 @@ func TestKeeper_ProposalDuration(t *testing.T) {
 	proposal, found = app.CustomGovKeeper.GetProposal(ctx, proposalID)
 	require.True(t, found)
 
-	require.Equal(t, proposal.VotingEndTime.Unix(), ctx.BlockTime().Unix()+int64(properties.ProposalEndTime))
+	require.Equal(t, proposal.VotingEndTime.Unix(), ctx.BlockTime().Unix()+int64(properties.DefaultProposalEndTime))
 }

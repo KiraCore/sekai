@@ -96,7 +96,10 @@ func InitGenesis(
 	k.SetLastIdRecordVerifyRequestId(ctx, genesisState.LastIdRecordVerifyRequestId)
 
 	for typeofProposal, duration := range genesisState.ProposalDurations {
-		k.SetProposalDuration(ctx, typeofProposal, duration)
+		err := k.SetProposalDuration(ctx, typeofProposal, duration)
+		if err != nil {
+			return nil
+		}
 	}
 
 	return nil

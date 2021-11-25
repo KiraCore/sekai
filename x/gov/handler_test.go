@@ -1200,7 +1200,7 @@ func TestHandler_ProposalAssignPermission(t *testing.T) {
 	require.NoError(t, err2)
 
 	properties := app.CustomGovKeeper.GetNetworkProperties(ctx)
-	properties.ProposalEndTime = 600 // Seconds, 10 mints
+	properties.DefaultProposalEndTime = 600 // Seconds, 10 mins
 	app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
 
 	handler := gov.NewHandler(app.CustomGovKeeper)
@@ -1228,8 +1228,8 @@ func TestHandler_ProposalAssignPermission(t *testing.T) {
 			types.PermValue(1),
 		),
 		ctx.BlockTime(),
-		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEndTime)),
-		ctx.BlockTime().Add((time.Second*time.Duration(properties.ProposalEndTime))+(time.Second*time.Duration(properties.ProposalEnactmentTime))),
+		ctx.BlockTime().Add(time.Second*time.Duration(properties.DefaultProposalEndTime)),
+		ctx.BlockTime().Add((time.Second*time.Duration(properties.DefaultProposalEndTime))+(time.Second*time.Duration(properties.ProposalEnactmentTime))),
 		ctx.BlockHeight()+2,
 		ctx.BlockHeight()+3,
 	)
@@ -1305,7 +1305,7 @@ func TestHandler_ProposalUpsertDataRegistry(t *testing.T) {
 	require.NoError(t, err2)
 
 	properties := app.CustomGovKeeper.GetNetworkProperties(ctx)
-	properties.ProposalEndTime = 10
+	properties.DefaultProposalEndTime = 10
 	app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
 
 	handler := gov.NewHandler(app.CustomGovKeeper)
@@ -1341,8 +1341,8 @@ func TestHandler_ProposalUpsertDataRegistry(t *testing.T) {
 			1234,
 		),
 		ctx.BlockTime(),
-		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEndTime)),
-		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEnactmentTime)+time.Second*time.Duration(properties.ProposalEndTime)),
+		ctx.BlockTime().Add(time.Second*time.Duration(properties.DefaultProposalEndTime)),
+		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEnactmentTime)+time.Second*time.Duration(properties.DefaultProposalEndTime)),
 		ctx.BlockHeight()+2,
 		ctx.BlockHeight()+3,
 	)
@@ -1725,7 +1725,7 @@ func TestHandler_ProposalSetNetworkProperty(t *testing.T) {
 	require.NoError(t, err2)
 
 	properties := app.CustomGovKeeper.GetNetworkProperties(ctx)
-	properties.ProposalEndTime = 10
+	properties.DefaultProposalEndTime = 10
 	app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
 
 	handler := gov.NewHandler(app.CustomGovKeeper)
@@ -1756,8 +1756,8 @@ func TestHandler_ProposalSetNetworkProperty(t *testing.T) {
 			types.NetworkPropertyValue{Value: 1234},
 		),
 		ctx.BlockTime(),
-		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEndTime)),
-		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEnactmentTime)+time.Second*time.Duration(properties.ProposalEndTime)),
+		ctx.BlockTime().Add(time.Second*time.Duration(properties.DefaultProposalEndTime)),
+		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEnactmentTime)+time.Second*time.Duration(properties.DefaultProposalEndTime)),
 		ctx.BlockHeight()+2,
 		ctx.BlockHeight()+3,
 	)
@@ -1876,7 +1876,7 @@ func TestHandler_ProposalCreateRole(t *testing.T) {
 	require.NoError(t, err2)
 
 	properties := app.CustomGovKeeper.GetNetworkProperties(ctx)
-	properties.ProposalEndTime = 10
+	properties.DefaultProposalEndTime = 10
 	app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
 
 	handler := gov.NewHandler(app.CustomGovKeeper)
@@ -1919,8 +1919,8 @@ func TestHandler_ProposalCreateRole(t *testing.T) {
 			},
 		),
 		ctx.BlockTime(),
-		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEndTime)),
-		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEnactmentTime)+time.Second*time.Duration(properties.ProposalEndTime)),
+		ctx.BlockTime().Add(time.Second*time.Duration(properties.DefaultProposalEndTime)),
+		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEnactmentTime)+time.Second*time.Duration(properties.DefaultProposalEndTime)),
 		ctx.BlockHeight()+2,
 		ctx.BlockHeight()+3,
 	)
