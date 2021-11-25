@@ -33,7 +33,7 @@ func TestSimappExportGenesis(t *testing.T) {
 		"next_role_id":"3",
 		"roles":[{"id":1,"sid":"sudo","description":"Sudo role"},{"id":2,"sid":"validator","description":"Validator role"}],
 		"role_permissions":{
-			"1":{"blacklist":[],"whitelist":[1,2,3,6,8,9,4,5,12,13,10,11,14,15,18,19,20,21,22,23,24,25,16,17]},
+			"1":{"blacklist":[],"whitelist":[1,2,3,6,8,9,4,5,12,13,10,11,14,15,18,19,20,21,22,23,31,32,24,25,16,17]},
 			"2":{"blacklist":[],"whitelist":[2]}
 		},
 		"network_actors":[],
@@ -71,7 +71,8 @@ func TestSimappExportGenesis(t *testing.T) {
 		"identity_records":[],
 		"last_identity_record_id":"0",
 		"id_records_verify_requests":[],
-		"last_id_record_verify_request_id":"0"
+		"last_id_record_verify_request_id":"0",
+		"proposal_durations":{}
 	}`))
 	require.NoError(t, err)
 	require.Equal(t, string(bz), buffer.String())
@@ -199,7 +200,8 @@ func TestExportInitGenesis(t *testing.T) {
 		"identity_records":[],
 		"last_identity_record_id":"0",
 		"id_records_verify_requests":[],
-		"last_id_record_verify_request_id":"0"
+		"last_id_record_verify_request_id":"0",
+		"proposal_durations":{}
 	}`))
 	require.NoError(t, err)
 	require.Equal(t, string(bz), buffer.String())
