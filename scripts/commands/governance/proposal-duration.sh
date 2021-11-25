@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# TODO: add dynamic duration proposal set examples here
-
-
 # create proposal for setting poor network msgs
 sekaid tx customgov proposal set-proposal-duration-proposal UpsertDataRegistryProposal 300 --title="title" --description="description" --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=1000ukex --yes
 
