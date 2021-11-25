@@ -514,3 +514,19 @@ func (k Keeper) GetDataReferenceByKey(sdkCtx sdk.Context, req *types.QueryDataRe
 
 	return &res, nil
 }
+
+// Query all proposal durations
+func (k Keeper) AllProposalDurations(goCtx context.Context, req *types.QueryAllProposalDurations) (*types.QueryAllProposalDurationsResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	return &types.QueryAllProposalDurationsResponse{
+		ProposalDurations: k.GetAllProposalDurations(ctx),
+	}, nil
+}
+
+// Query single proposal duration
+func (k Keeper) ProposalDuration(goCtx context.Context, req *types.QueryProposalDuration) (*types.QueryProposalDurationResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	return &types.QueryProposalDurationResponse{
+		Duration: k.GetProposalDuration(ctx, req.ProposalType),
+	}, nil
+}

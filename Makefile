@@ -1,6 +1,6 @@
 PACKAGES=$(shell go list ./... | grep -v '/simulation')
 
-VERSION = 0.1.22.9
+VERSION = 0.1.22.10
 COMMIT := $(shell git log -1 --format='%H')
 
 # TODO: Update the ldflags with the app, client & server names

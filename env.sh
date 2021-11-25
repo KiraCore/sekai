@@ -92,6 +92,15 @@ PermCreateSoftwareUpgradeProposal=28
 # permission needed to vote on software upgrade proposal
 PermVoteSoftwareUpgradeProposal=29
 
+# permission that allows to Set ClaimValidatorPermission to other actors
+PermSetClaimValidatorPermission=30
+
+# permission needed to create a proposal to set proposal duration
+PermCreateSetProposalDurationProposal=31
+
+# permission needed to vote a proposal to set proposal duration
+PermVoteSetProposalDurationProposal=32
+
 ###################################### transaction_types ######################################
 TypeMsgSend="send"
 TypeMsgMultiSend="multisend"

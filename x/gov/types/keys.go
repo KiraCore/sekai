@@ -22,6 +22,7 @@ var (
 	KeyPrefixIdRecordVerifyRequest            = []byte("identity_record_verify_request_prefix")
 	KeyPrefixIdRecordVerifyRequestByRequester = []byte("identity_record_verify_request_by_requester_prefix")
 	KeyPrefixIdRecordVerifyRequestByApprover  = []byte("identity_record_verify_request_by_approver_prefix")
+	KeyPrefixProposalDuration                 = []byte("proposal_duration")
 
 	// Roles
 	RoleUndefined uint64 = 0x0

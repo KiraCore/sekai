@@ -926,3 +926,79 @@ $ %[1]s query gov all-data-reference-keys
 
 	return cmd
 }
+
+// GetCmdQueryAllProposalDurations implements the command to query all proposal durations
+func GetCmdQueryAllProposalDurations() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "all-proposal-durations",
+		Args:  cobra.ExactArgs(0),
+		Short: "Query all proposal durations",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query all proposal durations.
+
+Example:
+$ %[1]s query gov all-proposal-durations
+`,
+				version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			queryClient := types.NewQueryClient(clientCtx)
+
+			res, err := queryClient.AllProposalDurations(
+				context.Background(),
+				&types.QueryAllProposalDurations{},
+			)
+
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// GetCmdQueryProposalDuration implements the command to query a proposal duration
+func GetCmdQueryProposalDuration() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "proposal-duration [proposal_type]",
+		Args:  cobra.ExactArgs(1),
+		Short: "Query a proposal duration",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query all all proposal durations.
+
+Example:
+$ %[1]s query gov proposal-duration SetNetworkProperty
+`,
+				version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			queryClient := types.NewQueryClient(clientCtx)
+
+			res, err := queryClient.ProposalDuration(
+				context.Background(),
+				&types.QueryProposalDuration{
+					ProposalType: args[0],
+				},
+			)
+
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}

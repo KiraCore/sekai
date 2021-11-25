@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.1.22.10] - 25.11.2021
+
+- Duration basis proposal
+
 ## [v0.1.22.9] - 18.11.2021
 
 - Role refactor for sid, id based management

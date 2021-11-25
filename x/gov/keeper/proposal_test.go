@@ -333,3 +333,35 @@ func TestKeeper_GetProposalVotesIterator(t *testing.T) {
 	}
 	require.Equal(t, 1, totalVotes)
 }
+
+func TestKeeper_ProposalDuration(t *testing.T) {
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+	ctx = ctx.WithBlockTime(time.Now())
+
+	properties := app.CustomGovKeeper.GetNetworkProperties(ctx)
+
+	// test AssignPermissionProposal
+	proposalID, err := app.CustomGovKeeper.CreateAndSaveProposalWithContent(ctx, "title", "description", &types.AssignPermissionProposal{})
+	require.NoError(t, err)
+
+	proposal, found := app.CustomGovKeeper.GetProposal(ctx, proposalID)
+	require.True(t, found)
+
+	require.Equal(t, proposal.VotingEndTime.Unix(), ctx.BlockTime().Unix()+int64(properties.DefaultProposalEndTime))
+
+	// test SetNetworkPropertyProposal
+	proposalID, err = app.CustomGovKeeper.CreateAndSaveProposalWithContent(ctx, "title", "description", &types.SetNetworkPropertyProposal{})
+	require.NoError(t, err)
+	proposal, found = app.CustomGovKeeper.GetProposal(ctx, proposalID)
+	require.True(t, found)
+	require.Equal(t, proposal.VotingEndTime.Unix(), ctx.BlockTime().Unix()+int64(properties.DefaultProposalEndTime))
+
+	// check longer duration proposal
+	app.CustomGovKeeper.SetProposalDuration(ctx, types.SetProposalDurationProposalType, 2400)
+	proposalID, err = app.CustomGovKeeper.CreateAndSaveProposalWithContent(ctx, "title", "description", &types.SetProposalDurationProposal{})
+	require.NoError(t, err)
+	proposal, found = app.CustomGovKeeper.GetProposal(ctx, proposalID)
+	require.True(t, found)
+	require.Equal(t, proposal.VotingEndTime.Unix(), ctx.BlockTime().Unix()+2400)
+}

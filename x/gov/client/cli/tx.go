@@ -88,6 +88,8 @@ func NewTxProposalCmds() *cobra.Command {
 	proposalCmd.AddCommand(GetTxProposalSetPoorNetworkMessages())
 	proposalCmd.AddCommand(GetTxProposalCreateRole())
 	proposalCmd.AddCommand(GetTxProposalUpsertDataRegistry())
+	proposalCmd.AddCommand(GetTxProposalSetProposalDuration())
+	proposalCmd.AddCommand(GetTxProposalSetBatchProposalDurations())
 
 	return proposalCmd
 }
@@ -324,8 +326,9 @@ func NewTxSetNetworkProperties() *cobra.Command {
 					MinTxFee:                    minTxFee,
 					MaxTxFee:                    maxTxFee,
 					VoteQuorum:                  33,
-					ProposalEndTime:             1, // 1min
-					ProposalEnactmentTime:       2, // 2min
+					DefaultProposalEndTime:      600, // 10min
+					MinimumProposalEndTime:      300, // 5min
+					ProposalEnactmentTime:       300, // 5min
 					EnableForeignFeePayments:    true,
 					MischanceRankDecreaseAmount: 10,
 					InactiveRankDecreasePercent: 50,      // 50%
@@ -1051,6 +1054,120 @@ func GetTxProposalCreateRole() *cobra.Command {
 	cmd.MarkFlagRequired(FlagDescription)
 	cmd.Flags().Int32Slice(FlagWhitelistPerms, []int32{}, "the whitelist value in format 1,2,3")
 	cmd.Flags().Int32Slice(FlagBlacklistPerms, []int32{}, "the blacklist values in format 1,2,3")
+	cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+func GetTxProposalSetProposalDuration() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "set-proposal-duration-proposal [proposal_type] [duration]",
+		Short: "Create a proposal to set proposal duration.",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			duration, err := strconv.Atoi(args[1])
+			if err != nil {
+				return err
+			}
+
+			title, err := cmd.Flags().GetString(FlagTitle)
+			if err != nil {
+				return fmt.Errorf("invalid title: %w", err)
+			}
+
+			description, err := cmd.Flags().GetString(FlagDescription)
+			if err != nil {
+				return fmt.Errorf("invalid description: %w", err)
+			}
+
+			msg, err := types.NewMsgSubmitProposal(
+				clientCtx.FromAddress,
+				title,
+				description,
+				types.NewSetProposalDurationProposal(
+					args[0],
+					uint64(duration),
+				),
+			)
+			if err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	cmd.Flags().String(FlagTitle, "", "The title of the proposal.")
+	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
+	cmd.MarkFlagRequired(FlagTitle)
+	cmd.MarkFlagRequired(FlagDescription)
+	cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+func GetTxProposalSetBatchProposalDurations() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "set-batch-proposal-durations-proposal [proposal_types] [durations]",
+		Short: "Create a proposal to set batch proposal durations.",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			proposalTypes := strings.Split(args[0], ",")
+			proposalDurationStrs := strings.Split(args[1], ",")
+			proposalDurations := []uint64{}
+			for _, durationStr := range proposalDurationStrs {
+				duration, err := strconv.Atoi(durationStr)
+				if err != nil {
+					return err
+				}
+				proposalDurations = append(proposalDurations, uint64(duration))
+			}
+
+			title, err := cmd.Flags().GetString(FlagTitle)
+			if err != nil {
+				return fmt.Errorf("invalid title: %w", err)
+			}
+
+			description, err := cmd.Flags().GetString(FlagDescription)
+			if err != nil {
+				return fmt.Errorf("invalid description: %w", err)
+			}
+
+			msg, err := types.NewMsgSubmitProposal(
+				clientCtx.FromAddress,
+				title,
+				description,
+				types.NewSetBatchProposalDurationsProposal(
+					proposalTypes,
+					proposalDurations,
+				),
+			)
+			if err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	cmd.Flags().String(FlagTitle, "", "The title of the proposal.")
+	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
+	cmd.MarkFlagRequired(FlagTitle)
+	cmd.MarkFlagRequired(FlagDescription)
 	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
