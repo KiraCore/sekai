@@ -88,6 +88,7 @@ func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
 		cli.GetCmdQueryIdentityRecordVerifyRequestsByApprover(),
 		cli.GetCmdQueryAllIdentityRecordVerifyRequests(),
 		cli.GetCmdQueryAllDataReferenceKeys(),
+		cli.GetCmdQueryDataReference(),
 		cli.GetCmdQueryAllProposalDurations(),
 		cli.GetCmdQueryProposalDuration(),
 	)
