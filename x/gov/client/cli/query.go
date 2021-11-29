@@ -882,17 +882,17 @@ $ %[1]s query gov all-identity-record-verify-requests
 	return cmd
 }
 
-// GetCmdQueryAllDataReferenceKeys implements the command to query data reference keys
+// GetCmdQueryAllDataReferenceKeys implements the command to query all data registry keys
 func GetCmdQueryAllDataReferenceKeys() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "all-data-reference-keys",
+		Use:   "data-registry-keys",
 		Args:  cobra.ExactArgs(0),
-		Short: "Query all data reference keys",
+		Short: "Query all data registry keys",
 		Long: strings.TrimSpace(
-			fmt.Sprintf(`Query all data reference keys.
+			fmt.Sprintf(`Query all data registry keys.
 
 Example:
-$ %[1]s query gov all-data-reference-keys
+$ %[1]s query gov data-registry-keys
 `,
 				version.AppName,
 			),
@@ -910,6 +910,46 @@ $ %[1]s query gov all-data-reference-keys
 				context.Background(),
 				&types.QueryDataReferenceKeysRequest{
 					Pagination: pageReq,
+				},
+			)
+
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	flags.AddPaginationFlagsToCmd(cmd, "customgov")
+
+	return cmd
+}
+
+// GetCmdQueryDataReference implements the command to query data registry by specific key
+func GetCmdQueryDataReference() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "data-registry",
+		Args:  cobra.ExactArgs(1),
+		Short: "Query data registry by specific key",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query data registry by key.
+
+Example:
+$ %[1]s query gov data-registry [key]
+`,
+				version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			queryClient := types.NewQueryClient(clientCtx)
+
+			res, err := queryClient.DataReferenceByKey(
+				context.Background(),
+				&types.QueryDataReferenceRequest{
+					Key: args[0],
 				},
 			)
 
