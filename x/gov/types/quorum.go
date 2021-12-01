@@ -7,11 +7,11 @@ import (
 
 func IsQuorum(percentage, votes, totalVoters uint64) (bool, error) {
 	if votes > totalVoters {
-		return false, fmt.Errorf("there is more votes than voters")
+		return false, fmt.Errorf("there is more votes than voters: %d > %d", votes, totalVoters)
 	}
 
 	if percentage > 100 {
-		return false, fmt.Errorf("quorum cannot be bigger than 100")
+		return false, fmt.Errorf("quorum cannot be bigger than 100: %d", percentage)
 	}
 
 	necessaryApproval := uint64(math.Ceil(float64(totalVoters*percentage) / 100.0))

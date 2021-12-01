@@ -44,7 +44,7 @@ func processProposal(ctx sdk.Context, k keeper.Keeper, proposalID uint64) {
 
 	isQuorum, err := types.IsQuorum(quorum, uint64(numVotes), uint64(totalVoters))
 	if err != nil {
-		panic(err)
+		panic(fmt.Sprintf("Invalid quorum on proposal: proposalID=%d, err=%+v", proposalID, err))
 	}
 
 	if isQuorum {
