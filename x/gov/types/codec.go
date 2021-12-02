@@ -446,8 +446,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&UpsertDataRegistryProposal{},
 		&SetPoorNetworkMessagesProposal{},
 		&CreateRoleProposal{},
-		&SetProposalDurationProposal{},
-		&SetBatchProposalDurationsProposal{},
+		&SetProposalDurationsProposal{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
