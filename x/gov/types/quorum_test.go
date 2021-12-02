@@ -18,14 +18,14 @@ func TestIsQuorum_Errors(t *testing.T) {
 			percentage:  66,
 			votes:       11,
 			voters:      10,
-			expectedErr: fmt.Errorf("there is more votes than voters"),
+			expectedErr: fmt.Errorf("there is more votes than voters: 11 > 10"),
 		},
 		{
 			name:        "invalid quorum",
 			percentage:  101,
 			votes:       7,
 			voters:      10,
-			expectedErr: fmt.Errorf("quorum cannot be bigger than 100"),
+			expectedErr: fmt.Errorf("quorum cannot be bigger than 100: 101"),
 		},
 	}
 

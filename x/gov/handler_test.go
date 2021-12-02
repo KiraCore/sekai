@@ -1940,32 +1940,13 @@ func TestHandler_ProposalCreateRole(t *testing.T) {
 	require.True(t, iterator.Valid())
 }
 
-func TestHandler_SetProposalDurationProposal(t *testing.T) {
+func TestHandler_SetProposalDurationsProposal(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{
 		Time: time.Now(),
 	})
 
-	proposal := types.NewSetProposalDurationProposal(
-		types.CreateRoleProposalType,
-		1200, // 20 min
-	)
-
-	router := app.CustomGovKeeper.GetProposalRouter()
-	err := router.ApplyProposal(ctx, 1, proposal)
-	require.NoError(t, err)
-
-	duration := app.CustomGovKeeper.GetProposalDuration(ctx, types.CreateRoleProposalType)
-	require.Equal(t, duration, uint64(1200))
-}
-
-func TestHandler_SetBatchProposalDurationsProposal(t *testing.T) {
-	app := simapp.Setup(false)
-	ctx := app.NewContext(false, tmproto.Header{
-		Time: time.Now(),
-	})
-
-	proposal := types.NewSetBatchProposalDurationsProposal(
+	proposal := types.NewSetProposalDurationsProposal(
 		[]string{types.CreateRoleProposalType, types.SetNetworkPropertyProposalType},
 		[]uint64{1200, 2400}, // 20 min, 40min
 	)

@@ -236,8 +236,7 @@ func NewInitApp(
 			customstaking.NewApplyUnjailValidatorProposalHandler(app.CustomStakingKeeper, app.CustomGovKeeper),
 			customslashing.NewApplyResetWholeValidatorRankProposalHandler(app.CustomSlashingKeeper),
 			customgov.NewApplyCreateRoleProposalHandler(app.CustomGovKeeper),
-			customgov.NewApplySetProposalDurationProposalHandler(app.CustomGovKeeper),
-			customgov.NewApplySetBatchProposalDurationsProposalHandler(app.CustomGovKeeper),
+			customgov.NewApplySetProposalDurationsProposalHandler(app.CustomGovKeeper),
 			upgrade.NewApplySoftwareUpgradeProposalHandler(app.UpgradeKeeper),
 			upgrade.NewApplyCancelSoftwareUpgradeProposalHandler(app.UpgradeKeeper),
 		})

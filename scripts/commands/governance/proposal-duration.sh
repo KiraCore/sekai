@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # create proposal for setting poor network msgs
-sekaid tx customgov proposal set-proposal-duration-proposal UpsertDataRegistryProposal 300 --title="title" --description="description" --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=1000ukex --yes
+sekaid tx customgov proposal set-proposal-durations-proposal UpsertDataRegistryProposal 300 --title="title" --description="description" --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=1000ukex --yes
 
 # query for proposals
 sekaid query customgov proposals
@@ -20,4 +20,4 @@ sekaid query customgov proposal-duration UpsertDataRegistryProposal
 sekaid query customgov all-proposal-durations
 
 # batch operation
-sekaid tx customgov proposal set-batch-proposal-durations-proposal UpsertDataRegistry,SetNetworkProperty 300,300 --title="title" --description="description" --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=1000ukex --yes
+sekaid tx customgov proposal set-proposal-durations-proposal UpsertDataRegistry,SetNetworkProperty 300,300 --title="title" --description="description" --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=1000ukex --yes

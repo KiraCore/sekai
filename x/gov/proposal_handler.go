@@ -144,37 +144,20 @@ func (c CreateRoleProposalHandler) Apply(ctx sdk.Context, proposalID uint64, pro
 	return nil
 }
 
-type SetProposalDurationProposalHandler struct {
+type SetProposalDurationsProposalHandler struct {
 	keeper keeper.Keeper
 }
 
-func NewApplySetProposalDurationProposalHandler(keeper keeper.Keeper) *SetProposalDurationProposalHandler {
-	return &SetProposalDurationProposalHandler{keeper: keeper}
+func NewApplySetProposalDurationsProposalHandler(keeper keeper.Keeper) *SetProposalDurationsProposalHandler {
+	return &SetProposalDurationsProposalHandler{keeper: keeper}
 }
 
-func (c SetProposalDurationProposalHandler) ProposalType() string {
-	return types.SetProposalDurationProposalType
+func (c SetProposalDurationsProposalHandler) ProposalType() string {
+	return types.SetProposalDurationsProposalType
 }
 
-func (c SetProposalDurationProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
-	p := proposal.(*types.SetProposalDurationProposal)
-	return c.keeper.SetProposalDuration(ctx, p.TypeofProposal, p.ProposalDuration)
-}
-
-type SetBatchProposalDurationsProposalHandler struct {
-	keeper keeper.Keeper
-}
-
-func NewApplySetBatchProposalDurationsProposalHandler(keeper keeper.Keeper) *SetBatchProposalDurationsProposalHandler {
-	return &SetBatchProposalDurationsProposalHandler{keeper: keeper}
-}
-
-func (c SetBatchProposalDurationsProposalHandler) ProposalType() string {
-	return types.SetBatchProposalDurationsProposalType
-}
-
-func (c SetBatchProposalDurationsProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
-	p := proposal.(*types.SetBatchProposalDurationsProposal)
+func (c SetProposalDurationsProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
+	p := proposal.(*types.SetProposalDurationsProposal)
 	for i, pt := range p.TypeofProposals {
 		err := c.keeper.SetProposalDuration(ctx, pt, p.ProposalDurations[i])
 		if err != nil {

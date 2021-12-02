@@ -13,13 +13,12 @@ import (
 
 // constants
 const (
-	AssignPermissionProposalType          = "AssignPermission"
-	SetNetworkPropertyProposalType        = "SetNetworkProperty"
-	UpsertDataRegistryProposalType        = "UpsertDataRegistry"
-	SetPoorNetworkMessagesProposalType    = "SetPoorNetworkMessages"
-	CreateRoleProposalType                = "CreateRoleProposal"
-	SetProposalDurationProposalType       = "SetProposalDurationProposal"
-	SetBatchProposalDurationsProposalType = "SetBatchProposalDurationsProposal"
+	AssignPermissionProposalType       = "AssignPermission"
+	SetNetworkPropertyProposalType     = "SetNetworkProperty"
+	UpsertDataRegistryProposalType     = "UpsertDataRegistry"
+	SetPoorNetworkMessagesProposalType = "SetPoorNetworkMessages"
+	CreateRoleProposalType             = "CreateRoleProposal"
+	SetProposalDurationsProposalType   = "SetProposalDurationsProposal"
 )
 
 var _ Content = &AssignPermissionProposal{}
@@ -238,58 +237,27 @@ func (m *CreateRoleProposal) ValidateBasic() error {
 	return nil
 }
 
-func NewSetProposalDurationProposal(typeofProposal string, duration uint64) Content {
-	return &SetProposalDurationProposal{
-		TypeofProposal:   typeofProposal,
-		ProposalDuration: duration,
-	}
-}
-
-func (m *SetProposalDurationProposal) ProposalType() string {
-	return SetProposalDurationProposalType
-}
-
-func (m *SetProposalDurationProposal) ProposalPermission() PermValue {
-	return PermCreateSetProposalDurationProposal
-}
-
-func (m *SetProposalDurationProposal) VotePermission() PermValue {
-	return PermVoteSetProposalDurationProposal
-}
-
-// ValidateBasic returns basic validation
-func (m *SetProposalDurationProposal) ValidateBasic() error {
-	if m.TypeofProposal == "" {
-		return fmt.Errorf("empty proposal type is not allowed")
-	}
-
-	if m.ProposalDuration == 0 {
-		return fmt.Errorf("zero proposal duration is not allowed")
-	}
-	return nil
-}
-
-func NewSetBatchProposalDurationsProposal(typeofProposals []string, durations []uint64) Content {
-	return &SetBatchProposalDurationsProposal{
+func NewSetProposalDurationsProposal(typeofProposals []string, durations []uint64) Content {
+	return &SetProposalDurationsProposal{
 		TypeofProposals:   typeofProposals,
 		ProposalDurations: durations,
 	}
 }
 
-func (m *SetBatchProposalDurationsProposal) ProposalType() string {
-	return SetBatchProposalDurationsProposalType
+func (m *SetProposalDurationsProposal) ProposalType() string {
+	return SetProposalDurationsProposalType
 }
 
-func (m *SetBatchProposalDurationsProposal) ProposalPermission() PermValue {
+func (m *SetProposalDurationsProposal) ProposalPermission() PermValue {
 	return PermCreateSetProposalDurationProposal
 }
 
-func (m *SetBatchProposalDurationsProposal) VotePermission() PermValue {
+func (m *SetProposalDurationsProposal) VotePermission() PermValue {
 	return PermVoteSetProposalDurationProposal
 }
 
 // ValidateBasic returns basic validation
-func (m *SetBatchProposalDurationsProposal) ValidateBasic() error {
+func (m *SetProposalDurationsProposal) ValidateBasic() error {
 	if len(m.TypeofProposals) == 0 {
 		return fmt.Errorf("at least one proposal type should be set")
 	}
