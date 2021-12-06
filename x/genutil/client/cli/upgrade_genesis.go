@@ -54,9 +54,10 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 
 			upgradeGenesis := upgradetypes.GenesisState{}
 			cdc.MustUnmarshalJSON(genesisState[upgradetypes.ModuleName], &upgradeGenesis)
+			oldVersion := upgradeGenesis.Version
 			if upgradeGenesis.Version == "" {
-				upgradeGenesis.Version = "v0.1.22.9"
-				fmt.Println("upgraded the upgrade module genesis to v0.1.22.9")
+				upgradeGenesis.Version = "v0.1.22.10"
+				fmt.Println("upgraded the upgrade module genesis to v0.1.22.10")
 			}
 
 			if upgradeGenesis.NextPlan == nil {
@@ -68,7 +69,6 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 			}
 
 			genDoc.ChainID = upgradeGenesis.NextPlan.NewChainId
-			// oldPlan := upgradeGenesis.CurrentPlan
 			upgradeGenesis.CurrentPlan = upgradeGenesis.NextPlan
 			upgradeGenesis.NextPlan = nil
 
@@ -78,7 +78,7 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 			err = cdc.UnmarshalJSON(genesisState[govtypes.ModuleName], &govGenesisV01228)
 
 			// we are referencing oldPlan.name to determine upgrade genesis or not
-			if err == nil { // it means v0.1.22.8 gov genesis
+			if err == nil && oldVersion == "" { // it means v0.1.22.8 gov genesis
 				govGenesis := govtypes.GenesisState{
 					StartingProposalId:          govGenesisV01228.StartingProposalId,
 					NextRoleId:                  govtypes.DefaultGenesis().NextRoleId,
@@ -95,6 +95,7 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 					LastIdentityRecordId:        govGenesisV01228.LastIdentityRecordId,
 					IdRecordsVerifyRequests:     govGenesisV01228.IdRecordsVerifyRequests,
 					LastIdRecordVerifyRequestId: govGenesisV01228.LastIdRecordVerifyRequestId,
+					ProposalDurations:           make(map[string]uint64),
 				}
 				genesisState[govtypes.ModuleName] = cdc.MustMarshalJSON(&govGenesis)
 			} else {
