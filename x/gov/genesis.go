@@ -34,7 +34,7 @@ func InitGenesis(
 
 	for roleId, perm := range genesisState.RolePermissions {
 		for _, white := range perm.Whitelist {
-			k.SetWhiltelistPermRoleKey(ctx, roleId, types.PermValue(white))
+			k.WhitelistRolePermission(ctx, roleId, types.PermValue(white))
 		}
 		// TODO when we add keeper function for managing blacklist mapping, we can just enable this
 		// for _, black := range perm.Blacklist {

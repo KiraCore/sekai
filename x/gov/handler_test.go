@@ -300,7 +300,6 @@ func TestNewHandler_SetNetworkProperties(t *testing.T) {
 			// First we set Role Sudo to proposer Actor
 			proposerActor := types.NewDefaultActor(sudoAddr)
 			proposerActor.SetRole(types.RoleSudo)
-			require.NoError(t, err)
 			app.CustomGovKeeper.SaveNetworkActor(ctx, proposerActor)
 
 			handler := gov.NewHandler(app.CustomGovKeeper)
