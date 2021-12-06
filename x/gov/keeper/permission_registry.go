@@ -118,6 +118,11 @@ func (k Keeper) GetRoleIdFromIdentifierString(ctx sdk.Context, identifier string
 	return uint64(role.Id), nil
 }
 
+func (k Keeper) SetWhiltelistPermRoleKey(ctx sdk.Context, role uint64, perm types.PermValue) {
+	store := ctx.KVStore(k.storeKey)
+	store.Set(prefixWhitelistRole(perm, role), roleToBytes(role))
+}
+
 func (k Keeper) WhitelistRolePermission(ctx sdk.Context, role uint64, perm types.PermValue) error {
 	store := ctx.KVStore(k.storeKey)
 
@@ -136,7 +141,7 @@ func (k Keeper) WhitelistRolePermission(ctx sdk.Context, role uint64, perm types
 	}
 
 	k.savePermissionsForRole(ctx, role, &perms)
-	store.Set(prefixWhitelistRole(perm, role), roleToBytes(role))
+	k.SetWhiltelistPermRoleKey(ctx, role, perm)
 
 	return nil
 }

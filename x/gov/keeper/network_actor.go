@@ -39,6 +39,11 @@ func (k Keeper) GetNetworkActorFromIterator(iterator sdk.Iterator) *types.Networ
 	return &na
 }
 
+func (k Keeper) SetWhitelistAddressPermKey(ctx sdk.Context, actor types.NetworkActor, perm types.PermValue) {
+	store := ctx.KVStore(k.storeKey)
+	store.Set(WhitelistAddressPermKey(actor.Address, perm), actor.Address.Bytes())
+}
+
 // AddWhitelistPermission whitelist a permission to an address. It saves the actor after it.
 func (k Keeper) AddWhitelistPermission(ctx sdk.Context, actor types.NetworkActor, perm types.PermValue) error {
 	err := actor.Permissions.AddToWhitelist(perm)
@@ -47,9 +52,7 @@ func (k Keeper) AddWhitelistPermission(ctx sdk.Context, actor types.NetworkActor
 	}
 
 	k.SaveNetworkActor(ctx, actor)
-
-	store := ctx.KVStore(k.storeKey)
-	store.Set(WhitelistAddressPermKey(actor.Address, perm), actor.Address.Bytes())
+	k.SetWhitelistAddressPermKey(ctx, actor, perm)
 
 	return nil
 }

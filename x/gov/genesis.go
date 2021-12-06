@@ -2,7 +2,6 @@ package gov
 
 import (
 	"bytes"
-	"fmt"
 
 	"github.com/KiraCore/sekai/x/gov/keeper"
 	"github.com/KiraCore/sekai/x/gov/types"
@@ -21,12 +20,7 @@ func InitGenesis(
 			k.AssignRoleToActor(ctx, *actor, role)
 		}
 		for _, perm := range actor.Permissions.Whitelist {
-			err := k.AddWhitelistPermission(ctx, *actor, types.PermValue(perm))
-			if err != nil {
-				// TODO: this is fine with current upgrade but from next time, it should panic
-				fmt.Println("There was an error adding whitelisted permission", err)
-				// panic(err)
-			}
+			k.SetWhitelistAddressPermKey(ctx, *actor, types.PermValue(perm))
 		}
 		// TODO when we add keeper function for managing blacklist mapping, we can just enable this
 		// for _, perm := range actor.Permissions.Blacklist {
@@ -39,23 +33,18 @@ func InitGenesis(
 	}
 
 	for roleId, perm := range genesisState.RolePermissions {
-		// k.CreateRole(ctx, role)
 		for _, white := range perm.Whitelist {
-			err := k.WhitelistRolePermission(ctx, roleId, types.PermValue(white))
-			if err != nil {
-				// TODO: this is fine with current upgrade but from next time, it should panic
-				fmt.Println("There was an error whitelisting role permission", err)
-				// panic(err)
-			}
+			k.WhitelistRolePermission(ctx, roleId, types.PermValue(white))
 		}
-		for _, black := range perm.Blacklist {
-			err := k.BlacklistRolePermission(ctx, roleId, types.PermValue(black))
-			if err != nil {
-				// TODO: this is fine with current upgrade but from next time, it should panic
-				fmt.Println("There was an error blacklisting role permission", err)
-				// panic(err)
-			}
-		}
+		// TODO when we add keeper function for managing blacklist mapping, we can just enable this
+		// for _, black := range perm.Blacklist {
+		// 	err := k.BlacklistRolePermission(ctx, roleId, types.PermValue(black))
+		// 	if err != nil {
+		// 		// TODO: this is fine with current upgrade but from next time, it should panic
+		// 		fmt.Println("There was an error blacklisting role permission", err)
+		// 		// panic(err)
+		// 	}
+		// }
 	}
 
 	k.SetNextProposalID(ctx, genesisState.StartingProposalId)
