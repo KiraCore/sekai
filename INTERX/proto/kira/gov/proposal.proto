@@ -130,3 +130,8 @@ message CreateRoleProposal {
   repeated PermValue whitelisted_permissions = 3;
   repeated PermValue blacklisted_permissions = 4;
 }
+
+message SetProposalDurationsProposal {
+  repeated string typeof_proposals = 1;
+  repeated uint64 proposal_durations = 2;
+} 
