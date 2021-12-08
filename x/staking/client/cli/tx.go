@@ -12,6 +12,7 @@ import (
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	"github.com/cosmos/cosmos-sdk/server"
 	"github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/staking/client/cli"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
@@ -73,7 +74,7 @@ func GetTxClaimValidatorCmd() *cobra.Command {
 // GetTxProposalUnjailValidatorCmd implement cli command for MsgUpsertTokenAlias
 func GetTxProposalUnjailValidatorCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "proposal-unjail-validator hash reference",
+		Use:   "proposal-unjail-validator val_addr reference",
 		Short: "Create a proposal to unjail validator (the from address is the validator)",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -82,7 +83,10 @@ func GetTxProposalUnjailValidatorCmd() *cobra.Command {
 				return err
 			}
 
-			hash := args[0]
+			valAddr, err := sdk.ValAddressFromBech32(args[0])
+			if err != nil {
+				return err
+			}
 			reference := args[1]
 
 			title, err := cmd.Flags().GetString(FlagTitle)
@@ -99,7 +103,7 @@ func GetTxProposalUnjailValidatorCmd() *cobra.Command {
 				clientCtx.FromAddress,
 				title,
 				description,
-				stakingtypes.NewUnjailValidatorProposal(clientCtx.FromAddress, hash, reference),
+				stakingtypes.NewUnjailValidatorProposal(clientCtx.FromAddress, valAddr, reference),
 			)
 			if err != nil {
 				return err
