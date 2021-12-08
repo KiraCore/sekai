@@ -160,8 +160,8 @@ func (s IntegrationTestSuite) TestCreateProposalUnjailValidator() {
 			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 			fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
+			val.ValAddress.String(),
 			"theReference",
-			"theHash",
 		},
 	)
 	s.Require().NoError(err)

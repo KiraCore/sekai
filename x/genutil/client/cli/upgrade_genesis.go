@@ -56,8 +56,8 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 			cdc.MustUnmarshalJSON(genesisState[upgradetypes.ModuleName], &upgradeGenesis)
 			oldVersion := upgradeGenesis.Version
 			if upgradeGenesis.Version == "" {
-				upgradeGenesis.Version = "v0.1.22.10"
-				fmt.Println("upgraded the upgrade module genesis to v0.1.22.10")
+				upgradeGenesis.Version = "v0.1.22.11"
+				fmt.Println("upgraded the upgrade module genesis to v0.1.22.11")
 			}
 
 			if upgradeGenesis.NextPlan == nil {

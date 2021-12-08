@@ -315,7 +315,7 @@ func TestHandler_ProposalUnjailValidator_Errors(t *testing.T) {
 			handler := gov.NewHandler(app.CustomGovKeeper)
 			proposal := stakingtypes.NewUnjailValidatorProposal(
 				proposerAddr,
-				"thehash",
+				valAddr,
 				"theReference",
 			)
 			msg, err := govtypes.NewMsgSubmitProposal(proposerAddr, "title", "some desc", proposal)
@@ -362,7 +362,7 @@ func TestHandler_ProposalUnjailValidator(t *testing.T) {
 	handler := gov.NewHandler(app.CustomGovKeeper)
 	proposal := stakingtypes.NewUnjailValidatorProposal(
 		proposerAddr,
-		"thehash",
+		valAddr,
 		"theReference",
 	)
 	msg, err := govtypes.NewMsgSubmitProposal(proposerAddr, "title", "some desc", proposal)
@@ -382,7 +382,7 @@ func TestHandler_ProposalUnjailValidator(t *testing.T) {
 		"some desc",
 		stakingtypes.NewUnjailValidatorProposal(
 			proposerAddr,
-			"thehash",
+			valAddr,
 			"theReference",
 		),
 		ctx.BlockTime(),

@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.1.22.11] - 09.12.2021
+
+- Unjail validator updates for fields
+
 ## [v0.1.22.10] - 25.11.2021
 
 - Duration basis proposal

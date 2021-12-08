@@ -29,7 +29,12 @@ func (a ApplyUnjailValidatorProposalHandler) ProposalType() string {
 func (a ApplyUnjailValidatorProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal govtypes.Content) error {
 	p := proposal.(*types.ProposalUnjailValidator)
 
-	validator, err := a.keeper.GetValidatorByAccAddress(ctx, p.Proposer)
+	valAddr, err := sdk.ValAddressFromBech32(p.ValAddr)
+	if err != nil {
+		return err
+	}
+
+	validator, err := a.keeper.GetValidator(ctx, valAddr)
 	if err != nil {
 		return err
 	}
@@ -50,5 +55,5 @@ func (a ApplyUnjailValidatorProposalHandler) Apply(ctx sdk.Context, proposalID u
 		return fmt.Errorf("time to unjail passed")
 	}
 
-	return a.keeper.Unjail(ctx, sdk.ValAddress(p.Proposer))
+	return a.keeper.Unjail(ctx, valAddr)
 }

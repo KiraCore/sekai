@@ -561,7 +561,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 					"some desc",
 					stakingtypes.NewUnjailValidatorProposal(
 						addrs[0],
-						"theHash",
+						valAddr,
 						"theProposal",
 					),
 					time.Now(),
