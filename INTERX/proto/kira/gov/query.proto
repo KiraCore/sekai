@@ -11,6 +11,7 @@ import "kira/gov/proposal.proto";
 import "kira/gov/identity_registrar.proto";
 import "kira/gov/actor.proto";
 import "kira/gov/network_properties.proto";
+import "kira/gov/role.proto";
 
 // Defines the import path that should be used to import the generated package,
 // and the package name.
@@ -120,6 +121,14 @@ service Query {
   // Query all identity records verify requests
   rpc AllIdentityRecordVerifyRequests(QueryAllIdentityRecordVerifyRequests) returns (QueryAllIdentityRecordVerifyRequestsResponse) {
     option (google.api.http).get = "/api/kira/gov/all_identity_verify_requests";
+  }
+  // Returns all registered roles
+  rpc AllRoles (AllRolesRequest) returns (AllRolesResponse) {
+    option (google.api.http).get = "/api/kira/gov/all_roles";
+  }
+  // Returns the roles that are assigned to an address.
+  rpc RolesByAddress (RolesByAddressRequest) returns (RolesByAddressResponse) {
+    option (google.api.http).get = "/api/kira/gov/roles_by_address/{val_addr}";
   }
 }
 
@@ -269,4 +278,17 @@ message QueryAllIdentityRecordVerifyRequests {
 message QueryAllIdentityRecordVerifyRequestsResponse {
   repeated IdentityRecordsVerify verify_records = 1 [(gogoproto.nullable) = false];
   cosmos.base.query.v1beta1.PageResponse pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
+}
+
+message AllRolesRequest {}
+message AllRolesResponse {
+  repeated Role roles = 1 [ (gogoproto.nullable) = false ];
+}
+
+message RolesByAddressRequest {
+  bytes val_addr = 1;
+}
+
+message RolesByAddressResponse {
+  repeated uint64 roleIds = 1;
 }
