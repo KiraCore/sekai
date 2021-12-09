@@ -31,9 +31,6 @@ sekaid query customgov roles $(sekaid keys show -a validator --keyring-backend=t
 # query a single role
 sekaid query customgov role sudo
 sekaid query customgov role 1
-# query role permissions
-sekaid query customgov role-permissions sudo
-sekaid query customgov role-permissions 1
 
 # querying for voters of a specific proposal
 sekaid query customgov voters 1

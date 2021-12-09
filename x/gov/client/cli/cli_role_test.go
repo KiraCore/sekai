@@ -17,15 +17,15 @@ func (s IntegrationTestSuite) TestWhitelistRolePermission() {
 	val := s.network.Validators[0]
 	clientCtx := val.ClientCtx
 
-	cmd := cli.GetCmdQueryRolePermissions()
+	cmd := cli.GetCmdQueryRole()
 	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		"2", // RoleInTest
 	})
 	s.Require().NoError(err)
 
-	var perms types.Permissions
-	val.ClientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &perms)
-	s.Require().False(perms.IsWhitelisted(types.PermSetPermissions))
+	var roleQuery types.RoleQuery
+	val.ClientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &roleQuery)
+	s.Require().False(roleQuery.Permissions.IsWhitelisted(types.PermSetPermissions))
 
 	// Send Tx To Whitelist permission
 	cmd = cli.GetTxWhitelistRolePermission()
@@ -40,15 +40,15 @@ func (s IntegrationTestSuite) TestWhitelistRolePermission() {
 	s.Require().NoError(err)
 
 	// Query again to check if it has the new permission
-	cmd = cli.GetCmdQueryRolePermissions()
+	cmd = cli.GetCmdQueryRole()
 	out, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		"2", // RoleCreatedInTest
 	})
 	s.Require().NoError(err)
 
-	var newPerms types.Permissions
-	val.ClientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &newPerms)
-	s.Require().True(newPerms.IsWhitelisted(types.PermSetPermissions))
+	var newRoleQuery types.RoleQuery
+	val.ClientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &newRoleQuery)
+	s.Require().True(newRoleQuery.Permissions.IsWhitelisted(types.PermSetPermissions))
 }
 
 func (s IntegrationTestSuite) TestBlacklistRolePermission() {
@@ -56,16 +56,16 @@ func (s IntegrationTestSuite) TestBlacklistRolePermission() {
 	val := s.network.Validators[0]
 	clientCtx := val.ClientCtx
 
-	cmd := cli.GetCmdQueryRolePermissions()
+	cmd := cli.GetCmdQueryRole()
 	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		"2", // RoleValidator
 	})
 	s.Require().NoError(err)
 
-	var perms types.Permissions
-	val.ClientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &perms)
-	s.Require().True(perms.IsWhitelisted(types.PermClaimValidator))
-	s.Require().False(perms.IsBlacklisted(types.PermClaimCouncilor))
+	var roleQuery types.RoleQuery
+	val.ClientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &roleQuery)
+	s.Require().True(roleQuery.Permissions.IsWhitelisted(types.PermClaimValidator))
+	s.Require().False(roleQuery.Permissions.IsBlacklisted(types.PermClaimCouncilor))
 
 	// Send Tx To Blacklist permission
 	cmd = cli.GetTxBlacklistRolePermission()
@@ -83,16 +83,16 @@ func (s IntegrationTestSuite) TestBlacklistRolePermission() {
 	err = s.network.WaitForNextBlock()
 	s.Require().NoError(err)
 
-	cmd = cli.GetCmdQueryRolePermissions()
+	cmd = cli.GetCmdQueryRole()
 	out, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		"2", // RoleValidator
 	})
 	s.Require().NoError(err)
 
-	var newPerms types.Permissions
-	val.ClientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &newPerms)
-	s.Require().True(newPerms.IsWhitelisted(types.PermClaimValidator))
-	s.Require().True(newPerms.IsBlacklisted(types.PermClaimCouncilor))
+	var newRoleQuery types.RoleQuery
+	val.ClientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &newRoleQuery)
+	s.Require().True(newRoleQuery.Permissions.IsWhitelisted(types.PermClaimValidator))
+	s.Require().True(newRoleQuery.Permissions.IsBlacklisted(types.PermClaimCouncilor))
 }
 
 func (s IntegrationTestSuite) TestRemoveWhitelistRolePermission() {
@@ -100,15 +100,15 @@ func (s IntegrationTestSuite) TestRemoveWhitelistRolePermission() {
 	val := s.network.Validators[0]
 	clientCtx := val.ClientCtx
 
-	cmd := cli.GetCmdQueryRolePermissions()
+	cmd := cli.GetCmdQueryRole()
 	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		"2", // RoleInTest
 	})
 	s.Require().NoError(err)
 
-	var perms types.Permissions
-	val.ClientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &perms)
-	s.Require().True(perms.IsWhitelisted(types.PermClaimValidator))
+	var roleQuery types.RoleQuery
+	val.ClientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &roleQuery)
+	s.Require().True(roleQuery.Permissions.IsWhitelisted(types.PermClaimValidator))
 
 	// Send Tx To Blacklist permission
 	cmd = cli.GetTxRemoveWhitelistRolePermission()
@@ -126,15 +126,15 @@ func (s IntegrationTestSuite) TestRemoveWhitelistRolePermission() {
 	err = s.network.WaitForNextBlock()
 	s.Require().NoError(err)
 
-	cmd = cli.GetCmdQueryRolePermissions()
+	cmd = cli.GetCmdQueryRole()
 	out, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		"2", // RoleInTest
 	})
 	s.Require().NoError(err)
 
-	var newPerms types.Permissions
-	val.ClientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &newPerms)
-	s.Require().False(newPerms.IsWhitelisted(types.PermClaimValidator))
+	var newRoleQuery types.RoleQuery
+	val.ClientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &newRoleQuery)
+	s.Require().False(newRoleQuery.Permissions.IsWhitelisted(types.PermClaimValidator))
 }
 
 func (s IntegrationTestSuite) TestRemoveBlacklistRolePermission() {
@@ -142,7 +142,7 @@ func (s IntegrationTestSuite) TestRemoveBlacklistRolePermission() {
 	val := s.network.Validators[0]
 	clientCtx := val.ClientCtx
 
-	cmd := cli.GetCmdQueryRolePermissions()
+	cmd := cli.GetCmdQueryRole()
 	_, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		"sudo",
 	})

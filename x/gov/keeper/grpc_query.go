@@ -3,7 +3,6 @@ package keeper
 import (
 	"context"
 	"fmt"
-	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -21,9 +20,21 @@ var _ types.QueryServer = Keeper{}
 
 // AllRoles return all roles registered
 func (k Keeper) AllRoles(goCtx context.Context, request *types.AllRolesRequest) (*types.AllRolesResponse, error) {
-	roles := k.GetAllRoles(sdk.UnwrapSDKContext(goCtx))
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	roles := k.GetAllRoles(ctx)
+	roleQueries := []types.RoleQuery{}
+	for _, role := range roles {
+		permissions, _ := k.GetPermissionsForRole(ctx, uint64(role.Id))
+		roleQueries = append(roleQueries, types.RoleQuery{
+			Id:          role.Id,
+			Sid:         role.Sid,
+			Description: role.Description,
+			Permissions: &permissions,
+		})
+	}
+
 	return &types.AllRolesResponse{
-		Roles: roles,
+		Roles: roleQueries,
 	}, nil
 }
 
@@ -81,38 +92,26 @@ func (k Keeper) NetworkProperties(goCtx context.Context, request *types.NetworkP
 
 func (k Keeper) Role(goCtx context.Context, request *types.RoleRequest) (*types.RoleResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	if roleId, err := strconv.Atoi(request.Identifier); err == nil {
-		role, err := k.GetRole(ctx, uint64(roleId))
-		if err != nil {
-			return nil, err
-		}
-
-		return &types.RoleResponse{Role: &role}, nil
-	}
-
-	role, err := k.GetRoleBySid(ctx, request.Identifier) // sid
-	if err != nil {
-		return nil, err
-	}
-
-	return &types.RoleResponse{Role: &role}, nil
-}
-
-// RolePermissions returns permissions associated to a role
-func (k Keeper) RolePermissions(goCtx context.Context, request *types.RolePermissionsRequest) (*types.RolePermissionsResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
 	roleId, err := k.GetRoleIdFromIdentifierString(ctx, request.Identifier)
 	if err != nil {
 		return nil, err
 	}
+	role, err := k.GetRole(ctx, uint64(roleId))
+	if err != nil {
+		return nil, err
+	}
 
-	perms, found := k.GetPermissionsForRole(ctx, roleId)
+	permissions, found := k.GetPermissionsForRole(ctx, uint64(role.Id))
 	if !found {
 		return nil, types.ErrRoleDoesNotExist
 	}
 
-	return &types.RolePermissionsResponse{Permissions: &perms}, nil
+	return &types.RoleResponse{Role: &types.RoleQuery{
+		Id:          role.Id,
+		Sid:         role.Sid,
+		Description: role.Description,
+		Permissions: &permissions,
+	}}, nil
 }
 
 // ExecutionFee returns execution fee associated to a specific message type
