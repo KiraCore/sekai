@@ -13,4 +13,5 @@ func RegisterRequest(router *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr 
 	RegisterKiraTokensRoutes(router, gwCosmosmux, rpcAddr)
 	RegisterKiraUpgradeRoutes(router, gwCosmosmux, rpcAddr)
 	RegisterIdentityRegistrarRoutes(router, gwCosmosmux, rpcAddr)
+	RegisterKiraGovRoleRoutes(router, gwCosmosmux, rpcAddr)
 }

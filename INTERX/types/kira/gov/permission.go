@@ -65,6 +65,12 @@ const (
 	PermCreateSoftwareUpgradeProposal PermValue = 28
 	// PERMISSION_SOFTWARE_UPGRADE_PROPOSAL defines the permission needed to vote on software upgrade proposal
 	PermVoteSoftwareUpgradeProposal PermValue = 29
+	// PERMISSION_SET_PERMISSIONS defines the permission that allows to Set ClaimValidatorPermission to other actors.
+	PERMISSION_SET_CLAIM_VALIDATOR_PERMISSION PermValue = 30
+	// PERMISSION_CREATE_SET_PROPOSAL_DURATION_PROPOSAL defines the permission needed to create a proposal to set proposal duration.
+	PERMISSION_CREATE_SET_PROPOSAL_DURATION_PROPOSAL PermValue = 31
+	// PERMISSION_VOTE_SET_PROPOSAL_DURATION_PROPOSAL defines the permission needed to vote a proposal to set proposal duration.
+	PERMISSION_VOTE_SET_PROPOSAL_DURATION_PROPOSAL PermValue = 32
 )
 
 var PermValue_name = map[int32]string{
@@ -98,6 +104,9 @@ var PermValue_name = map[int32]string{
 	27: "PERMISSION_VOTE_RESET_WHOLE_VALIDATOR_RANK_PROPOSAL",
 	28: "PERMISSION_CREATE_SOFTWARE_UPGRADE_PROPOSAL",
 	29: "PERMISSION_SOFTWARE_UPGRADE_PROPOSAL",
+	30: "PERMISSION_SET_CLAIM_VALIDATOR_PERMISSION",
+	31: "PERMISSION_CREATE_SET_PROPOSAL_DURATION_PROPOSAL",
+	32: "PERMISSION_VOTE_SET_PROPOSAL_DURATION_PROPOSAL",
 }
 
 var PermValue_value = map[string]int32{
@@ -131,4 +140,7 @@ var PermValue_value = map[string]int32{
 	"PERMISSION_VOTE_RESET_WHOLE_VALIDATOR_RANK_PROPOSAL":   27,
 	"PERMISSION_CREATE_SOFTWARE_UPGRADE_PROPOSAL":           28,
 	"PERMISSION_SOFTWARE_UPGRADE_PROPOSAL":                  29,
+	"PERMISSION_SET_CLAIM_VALIDATOR_PERMISSION":             30,
+	"PERMISSION_CREATE_SET_PROPOSAL_DURATION_PROPOSAL":      31,
+	"PERMISSION_VOTE_SET_PROPOSAL_DURATION_PROPOSAL":        32,
 }
