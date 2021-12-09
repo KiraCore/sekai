@@ -134,33 +134,6 @@ func GetCmdQueryRole() *cobra.Command {
 	return cmd
 }
 
-func GetCmdQueryRolePermissions() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "role-permissions [role_sid | role_id]",
-		Short: "Query permissions of all the roles",
-		Args:  cobra.MinimumNArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-
-			params := &types.RolePermissionsRequest{
-				Identifier: args[0],
-			}
-
-			queryClient := types.NewQueryClient(clientCtx)
-			res, err := queryClient.RolePermissions(context.Background(), params)
-			if err != nil {
-				return err
-			}
-
-			return clientCtx.PrintProto(res.Permissions)
-		},
-	}
-
-	flags.AddQueryFlagsToCmd(cmd)
-
-	return cmd
-}
-
 // GetCmdQueryNetworkProperties implement query network properties
 func GetCmdQueryNetworkProperties() *cobra.Command {
 	cmd := &cobra.Command{

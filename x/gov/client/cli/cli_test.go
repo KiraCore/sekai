@@ -63,21 +63,6 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.Require().NoError(err)
 }
 
-func (s IntegrationTestSuite) TestRolePermissions_QueryCommand_DefaultRolePerms() {
-	val := s.network.Validators[0]
-	clientCtx := val.ClientCtx
-
-	cmd := cli.GetCmdQueryRolePermissions()
-	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
-		"1", // RoleSudo
-	})
-	s.Require().NoError(err)
-
-	var perms types.Permissions
-	val.ClientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &perms)
-	s.Require().True(perms.IsWhitelisted(types.PermClaimValidator))
-}
-
 func (s IntegrationTestSuite) TestClaimCouncilor_HappyPath() {
 	val := s.network.Validators[0]
 	clientCtx := val.ClientCtx
