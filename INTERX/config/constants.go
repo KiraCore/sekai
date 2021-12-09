@@ -8,6 +8,8 @@ const (
 	QueryTransactionHash = "/api/cosmos/txs/{hash}"
 	EncodeTransaction    = "/api/cosmos/txs/encode"
 
+	QueryRoles             = "/api/kira/gov/all_roles"
+	QueryRolesByAddress    = "/api/kira/gov/roles_by_address/{val_addr}"
 	QueryProposals         = "/api/kira/gov/proposals"
 	QueryProposal          = "/api/kira/gov/proposals/{proposal_id}"
 	QueryVoters            = "/api/kira/gov/voters/{proposal_id}"

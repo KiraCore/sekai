@@ -28,6 +28,9 @@ func getGetMethods() []string {
 		QueryBlockByHeightOrHash,
 		QueryBlockTransactions,
 		QueryTransactionResult,
+
+		QueryRoles,
+		QueryRolesByAddress,
 		QueryProposals,
 		QueryProposal,
 		QueryKiraTokensAliases,
