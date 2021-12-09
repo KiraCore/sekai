@@ -2200,6 +2200,100 @@
 			]
 		},
 		{
+			"name": "Role",
+			"item": [
+				{
+					"name": "Query All Roles",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://0.0.0.0:11000/api/kira/gov/all_roles",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "11000",
+							"path": [
+								"api",
+								"kira",
+								"gov",
+								"all_roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Query Roles by address",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://0.0.0.0:11000/api/kira/gov/roles_by_address/kira1s7g4hmm6zjr5pk6zjvmxc654nntdahecr9cqej",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "11000",
+							"path": [
+								"api",
+								"kira",
+								"gov",
+								"roles_by_address",
+								"kira1s7g4hmm6zjr5pk6zjvmxc654nntdahecr9cqej"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Kira Status",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
