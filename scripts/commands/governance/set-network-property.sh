@@ -17,7 +17,7 @@ sekaid tx customgov proposal set-network-property MIN_TX_FEE 101  --title="title
 # INACTIVE_RANK_DECREASE_PERCENT: percentage of decrease per status movement from active to inactive (default 50%)
 # POOR_NETWORK_MAX_BANK_SEND: maximum amount of transfer on poor network, default 10000ukex
 # MIN_VALIDATORS: minimum number of validators to perform full network actions - otherwise, it's called poor network
-# JAIL_MAX_TIME: maximum jailed status duration in seconds to get back to the validator set again
+# UNJAIL_MAX_TIME: maximum jailed status duration in seconds to get back to the validator set again
 # ENABLE_TOKEN_WHITELIST: TokenWhitelist is valid when enable_token_whitelist is set
 # ENABLE_TOKEN_BLACKLIST: TokenBlacklist is valid when enable_token_blacklist is set
 # MIN_IDENTITY_APPROVAL_TIP: minimum amount of tip to be paid to the approver per request

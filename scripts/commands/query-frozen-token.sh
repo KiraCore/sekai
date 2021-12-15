@@ -17,7 +17,7 @@ sekaid query customgov network-properties
 #   enable_token_blacklist: false # useful for blacklist use or not
 #   enable_token_whitelist: false # useful for whitelist use or not
 #   inactive_rank_decrease_percent: "50"
-#   jail_max_time: "10"
+#   unjail_max_time: "10"
 #   max_tx_fee: "1000000"
 #   min_tx_fee: "100"
 #   min_validators: "1"

@@ -29,7 +29,7 @@ enum NetworkProperty {
     INACTIVE_RANK_DECREASE_PERCENT = 11 [(gogoproto.enumvalue_customname) = "InactiveRankDecreasePercent"]; // percentage of decrease per status movement from active to inactive (default 50%)
     POOR_NETWORK_MAX_BANK_SEND = 12 [(gogoproto.enumvalue_customname) = "PoorNetworkMaxBankSend"]; // maximum amount of transfer on poor network, default 10000ukex
     MIN_VALIDATORS = 13 [(gogoproto.enumvalue_customname) = "MinValidators"]; // minimum number of validators to perform full network actions - otherwise, it's called poor network
-    JAIL_MAX_TIME = 14 [(gogoproto.enumvalue_customname) = "JailMaxTime"]; // maximum jailed status duration in seconds to get back to the validator set again
+    UNJAIL_MAX_TIME = 14 [(gogoproto.enumvalue_customname) = "UnjailMaxTime"]; // maximum jailed status duration in seconds to get back to the validator set again
     ENABLE_TOKEN_WHITELIST = 15 [(gogoproto.enumvalue_customname) = "EnableTokenWhitelist"]; // TokenWhitelist is valid when enable_token_whitelist is set
     ENABLE_TOKEN_BLACKLIST = 16 [(gogoproto.enumvalue_customname) = "EnableTokenBlacklist"]; // TokenBlacklist is valid when enable_token_blacklist is set
     MIN_IDENTITY_APPROVAL_TIP = 17 [(gogoproto.enumvalue_customname) = "MinIdentityApprovalTip"]; // minimum amount of tip to be paid to the approver per request
@@ -58,7 +58,7 @@ message NetworkProperties {
     uint64 inactive_rank_decrease_percent = 12; // percentage of decrease per status movement from active to inactive (default 50%)
     uint64 min_validators = 13; // minimum number of validators to perform full network actions - otherwise, it's called poor network
     uint64 poor_network_max_bank_send = 14; // maximum amount of transfer on poor network, default 10000ukex
-    uint64 jail_max_time = 15; // maximum jailed status duration in seconds to get back to the validator set again
+    uint64 unjail_max_time = 15; // maximum jailed status duration in seconds to get back to the validator set again
     bool enable_token_whitelist = 16; // TokenWhitelist is valid when enable_token_whitelist is set
     bool enable_token_blacklist = 17; // TokenBlacklist is valid when enable_token_blacklist is set
     uint64 min_identity_approval_tip = 18; // minimum amount of tip to be paid to the approver per request

@@ -45,7 +45,7 @@ func (a ApplyUnjailValidatorProposalHandler) Apply(ctx sdk.Context, proposalID u
 	}
 
 	networkProperties := a.govkeeper.GetNetworkProperties(ctx)
-	maxUnjailingTime := networkProperties.JailMaxTime
+	maxUnjailingTime := networkProperties.UnjailMaxTime
 
 	info, found := a.keeper.GetValidatorJailInfo(ctx, validator.ValKey)
 	if !found {
