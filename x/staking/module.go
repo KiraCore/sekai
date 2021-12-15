@@ -127,8 +127,13 @@ func (am AppModule) InitGenesis(
 			panic(err)
 		}
 
+		power := int64(0)
+		if val.Status == stakingtypes.Active {
+			power = 1
+		}
+
 		valUpdate[i] = abci.ValidatorUpdate{
-			Power:  1,
+			Power:  power,
 			PubKey: consPk,
 		}
 	}
