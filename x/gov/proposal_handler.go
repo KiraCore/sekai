@@ -3,6 +3,7 @@ package gov
 import (
 	"fmt"
 
+	kiratypes "github.com/KiraCore/sekai/types"
 	"github.com/KiraCore/sekai/x/gov/keeper"
 	"github.com/KiraCore/sekai/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -19,7 +20,7 @@ func NewApplyAssignPermissionProposalHandler(keeper keeper.Keeper) *ApplyAssignP
 }
 
 func (a ApplyAssignPermissionProposalHandler) ProposalType() string {
-	return types.AssignPermissionProposalType
+	return kiratypes.AssignPermissionProposalType
 }
 
 func (a ApplyAssignPermissionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
@@ -46,7 +47,7 @@ func NewApplySetNetworkPropertyProposalHandler(keeper keeper.Keeper) *ApplySetNe
 }
 
 func (a ApplySetNetworkPropertyProposalHandler) ProposalType() string {
-	return types.SetNetworkPropertyProposalType
+	return kiratypes.SetNetworkPropertyProposalType
 }
 
 func (a ApplySetNetworkPropertyProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
@@ -72,7 +73,7 @@ func NewApplyUpsertDataRegistryProposalHandler(keeper keeper.Keeper) *ApplyUpser
 }
 
 func (a ApplyUpsertDataRegistryProposalHandler) ProposalType() string {
-	return types.UpsertDataRegistryProposalType
+	return kiratypes.UpsertDataRegistryProposalType
 }
 
 func (a ApplyUpsertDataRegistryProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
@@ -91,7 +92,7 @@ func NewApplySetPoorNetworkMessagesProposalHandler(keeper keeper.Keeper) *ApplyS
 }
 
 func (a ApplySetPoorNetworkMessagesProposalHandler) ProposalType() string {
-	return types.SetPoorNetworkMessagesProposalType
+	return kiratypes.SetPoorNetworkMessagesProposalType
 }
 
 func (a ApplySetPoorNetworkMessagesProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
@@ -110,7 +111,7 @@ func NewApplyCreateRoleProposalHandler(keeper keeper.Keeper) *CreateRoleProposal
 }
 
 func (c CreateRoleProposalHandler) ProposalType() string {
-	return types.CreateRoleProposalType
+	return kiratypes.CreateRoleProposalType
 }
 
 func (c CreateRoleProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
@@ -153,7 +154,7 @@ func NewApplySetProposalDurationsProposalHandler(keeper keeper.Keeper) *SetPropo
 }
 
 func (c SetProposalDurationsProposalHandler) ProposalType() string {
-	return types.SetProposalDurationsProposalType
+	return kiratypes.SetProposalDurationsProposalType
 }
 
 func (c SetProposalDurationsProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {

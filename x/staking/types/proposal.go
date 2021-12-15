@@ -1,11 +1,10 @@
 package types
 
 import (
+	kiratypes "github.com/KiraCore/sekai/types"
 	"github.com/KiraCore/sekai/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
-
-const ProposalTypeUnjailValidator = "UnjailValidator"
 
 func NewUnjailValidatorProposal(proposer sdk.AccAddress, valAddr sdk.ValAddress, reference string) *ProposalUnjailValidator {
 	return &ProposalUnjailValidator{
@@ -16,7 +15,7 @@ func NewUnjailValidatorProposal(proposer sdk.AccAddress, valAddr sdk.ValAddress,
 }
 
 func (m *ProposalUnjailValidator) ProposalType() string {
-	return ProposalTypeUnjailValidator
+	return kiratypes.ProposalTypeUnjailValidator
 }
 
 func (m *ProposalUnjailValidator) ProposalPermission() types.PermValue {

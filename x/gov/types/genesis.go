@@ -57,7 +57,6 @@ func DefaultGenesis() *GenesisState {
 			MinTxFee:                    100,
 			MaxTxFee:                    1000000,
 			VoteQuorum:                  33,
-			DefaultProposalEndTime:      600, // 600 seconds / 10 mins
 			MinimumProposalEndTime:      300, // 300 seconds / 5 mins
 			ProposalEnactmentTime:       300, // 300 seconds / 5 mins
 			MinProposalEndBlocks:        2,

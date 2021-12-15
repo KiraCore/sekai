@@ -325,7 +325,6 @@ func NewTxSetNetworkProperties() *cobra.Command {
 					MinTxFee:                    minTxFee,
 					MaxTxFee:                    maxTxFee,
 					VoteQuorum:                  33,
-					DefaultProposalEndTime:      600, // 10min
 					MinimumProposalEndTime:      300, // 5min
 					ProposalEnactmentTime:       300, // 5min
 					EnableForeignFeePayments:    true,

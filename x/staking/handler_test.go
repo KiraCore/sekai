@@ -349,7 +349,7 @@ func TestHandler_ProposalUnjailValidator(t *testing.T) {
 	require.NoError(t, err2)
 
 	properties := app.CustomGovKeeper.GetNetworkProperties(ctx)
-	properties.DefaultProposalEndTime = 10
+	properties.MinimumProposalEndTime = 10
 	app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
 
 	val, err := stakingtypes.NewValidator(valAddr, pubKey)
@@ -386,8 +386,8 @@ func TestHandler_ProposalUnjailValidator(t *testing.T) {
 			"theReference",
 		),
 		ctx.BlockTime(),
-		ctx.BlockTime().Add(time.Second*time.Duration(properties.DefaultProposalEndTime)),
-		ctx.BlockTime().Add(time.Second*time.Duration(properties.DefaultProposalEndTime)+
+		ctx.BlockTime().Add(time.Second*time.Duration(properties.MinimumProposalEndTime)),
+		ctx.BlockTime().Add(time.Second*time.Duration(properties.MinimumProposalEndTime)+
 			time.Second*time.Duration(properties.ProposalEnactmentTime),
 		),
 		ctx.BlockHeight()+2,

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	kiratypes "github.com/KiraCore/sekai/types"
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/staking/keeper"
 	"github.com/KiraCore/sekai/x/staking/types"
@@ -23,7 +24,7 @@ func NewApplyUnjailValidatorProposalHandler(keeper keeper.Keeper, govkeeper type
 }
 
 func (a ApplyUnjailValidatorProposalHandler) ProposalType() string {
-	return types.ProposalTypeUnjailValidator
+	return kiratypes.ProposalTypeUnjailValidator
 }
 
 func (a ApplyUnjailValidatorProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal govtypes.Content) error {

@@ -4,21 +4,11 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/gogo/protobuf/proto"
-
+	kiratypes "github.com/KiraCore/sekai/types"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-)
-
-// constants
-const (
-	AssignPermissionProposalType       = "AssignPermission"
-	SetNetworkPropertyProposalType     = "SetNetworkProperty"
-	UpsertDataRegistryProposalType     = "UpsertDataRegistry"
-	SetPoorNetworkMessagesProposalType = "SetPoorNetworkMessages"
-	CreateRoleProposalType             = "CreateRoleProposal"
-	SetProposalDurationsProposalType   = "SetProposalDurationsProposal"
+	"github.com/gogo/protobuf/proto"
 )
 
 var _ Content = &AssignPermissionProposal{}
@@ -86,7 +76,7 @@ func NewAssignPermissionProposal(
 
 // ProposalType returns proposal's type
 func (m *AssignPermissionProposal) ProposalType() string {
-	return AssignPermissionProposalType
+	return kiratypes.AssignPermissionProposalType
 }
 
 // ValidateBasic returns basic validation
@@ -118,7 +108,7 @@ func NewSetNetworkPropertyProposal(
 
 // ProposalType returns proposal's type
 func (m *SetNetworkPropertyProposal) ProposalType() string {
-	return SetNetworkPropertyProposalType
+	return kiratypes.SetNetworkPropertyProposalType
 }
 
 func (m *SetNetworkPropertyProposal) ProposalPermission() PermValue {
@@ -136,7 +126,6 @@ func (m *SetNetworkPropertyProposal) ValidateBasic() error {
 	case MinTxFee,
 		MaxTxFee,
 		VoteQuorum,
-		DefaultProposalEndTime,
 		MinimumProposalEndTime,
 		ProposalEnactmentTime,
 		EnableForeignFeePayments,
@@ -168,7 +157,7 @@ func NewUpsertDataRegistryProposal(key, hash, reference, encoding string, size u
 }
 
 func (m *UpsertDataRegistryProposal) ProposalType() string {
-	return UpsertDataRegistryProposalType
+	return kiratypes.UpsertDataRegistryProposalType
 }
 
 func (m *UpsertDataRegistryProposal) ProposalPermission() PermValue {
@@ -191,7 +180,7 @@ func NewSetPoorNetworkMessagesProposal(msgs []string) Content {
 }
 
 func (m *SetPoorNetworkMessagesProposal) ProposalType() string {
-	return SetPoorNetworkMessagesProposalType
+	return kiratypes.SetPoorNetworkMessagesProposalType
 }
 
 func (m *SetPoorNetworkMessagesProposal) ProposalPermission() PermValue {
@@ -217,7 +206,7 @@ func NewCreateRoleProposal(sid, description string, whitelist []PermValue, black
 }
 
 func (m *CreateRoleProposal) ProposalType() string {
-	return CreateRoleProposalType
+	return kiratypes.CreateRoleProposalType
 }
 
 func (m *CreateRoleProposal) ProposalPermission() PermValue {
@@ -245,7 +234,7 @@ func NewSetProposalDurationsProposal(typeofProposals []string, durations []uint6
 }
 
 func (m *SetProposalDurationsProposal) ProposalType() string {
-	return SetProposalDurationsProposalType
+	return kiratypes.SetProposalDurationsProposalType
 }
 
 func (m *SetProposalDurationsProposal) ProposalPermission() PermValue {
