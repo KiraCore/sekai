@@ -235,6 +235,59 @@ func RegisterInterxFunctions() {
 	)
 
 	AddInterxFunction(
+		"QueryRoles",
+		config.QueryRoles,
+		`{
+			"description": "QueryRoles is a function to query all roles."
+		}`,
+	)
+
+	AddInterxFunction(
+		"QueryRolesByAddress",
+		config.QueryRolesByAddress,
+		`{
+			"description": "QueryRolesByAddress is a function to query all roles by an address.",
+			"parameters": {
+				"val_addr": {
+					"type":        "string",
+					"description": "This represents the kira account address.",
+					"optional": true
+				}
+			}
+		}`,
+	)
+
+	AddInterxFunction(
+		"QueryPermissionsByAddress",
+		config.QueryPermissionsByAddress,
+		`{
+			"description": "QueryPermissionsByAddress is a function to query all permissions by an address.",
+			"parameters": {
+				"val_addr": {
+					"type":        "string",
+					"description": "This represents the kira account address.",
+					"optional": true
+				}
+			}
+		}`,
+	)
+
+	AddInterxFunction(
+		"QueryPermissionsByRole",
+		config.QueryPermissionsByRole,
+		`{
+			"description": "QueryPermissionsByAddress is a function to query all permissions by a role.",
+			"parameters": {
+				"identifier": {
+					"type":        "string",
+					"description": "This represents the role identifier. sid or id",
+					"optional": true
+				}
+			}
+		}`,
+	)
+
+	AddInterxFunction(
 		"QueryProposals",
 		config.QueryProposals,
 		`{

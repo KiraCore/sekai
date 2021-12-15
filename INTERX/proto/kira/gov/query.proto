@@ -130,6 +130,14 @@ service Query {
   rpc RolesByAddress (RolesByAddressRequest) returns (RolesByAddressResponse) {
     option (google.api.http).get = "/api/kira/gov/roles_by_address/{val_addr}";
   }
+  // Returns the permissions an actor has by address.
+  rpc PermissionsByAddress (PermissionsByAddressRequest) returns (PermissionsResponse) {
+    option (google.api.http).get = "/api/kira/gov/permissions_by_address/{val_addr}";
+  }
+  // RolePermissions returns the permissions of the roles available in the registry.
+  rpc RolePermissions (RolePermissionsRequest) returns (RolePermissionsResponse) {
+    option (google.api.http).get = "/api/kira/gov/permissions_by_role/{identifier}";
+  }
 }
 
 // QueryProposalRequest is the request type for the Query/Proposal RPC method.
@@ -291,4 +299,20 @@ message RolesByAddressRequest {
 
 message RolesByAddressResponse {
   repeated uint64 roleIds = 1;
+}
+
+message PermissionsByAddressRequest {
+  bytes val_addr = 1;
+}
+
+message PermissionsResponse {
+  Permissions permissions = 1;
+}
+
+message RolePermissionsRequest {
+  string identifier = 1; // sid or id
+}
+
+message RolePermissionsResponse {
+  Permissions permissions = 1;
 }
