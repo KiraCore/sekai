@@ -135,7 +135,7 @@ func (m *SetNetworkPropertyProposal) ValidateBasic() error {
 		InactiveRankDecreasePercent,
 		PoorNetworkMaxBankSend,
 		MinValidators,
-		JailMaxTime,
+		UnjailMaxTime,
 		EnableTokenWhitelist,
 		EnableTokenBlacklist,
 		MinIdentityApprovalTip,

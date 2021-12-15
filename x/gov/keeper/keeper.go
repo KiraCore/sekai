@@ -107,8 +107,8 @@ func (k Keeper) ValidateNetworkProperties(ctx sdk.Context, properties *types.Net
 	// if properties.PoorNetworkMaxBankSend == 0 {
 	// 	return fmt.Errorf("min_validators should not be zero")
 	// }
-	// if properties.JailMaxTime == 0 {
-	// 	return fmt.Errorf("jail_max_time should not be zero")
+	// if properties.UnjailMaxTime == 0 {
+	// 	return fmt.Errorf("unjail_max_time should not be zero")
 	// }
 	// fee := k.GetExecutionFee(ctx, (&types.MsgHandleIdentityRecordsVerifyRequest{}).Type())
 	// maxFee := properties.MinTxFee
@@ -177,8 +177,8 @@ func (k Keeper) GetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 		return types.NetworkPropertyValue{Value: properties.PoorNetworkMaxBankSend}, nil
 	case types.MinValidators:
 		return types.NetworkPropertyValue{Value: properties.MinValidators}, nil
-	case types.JailMaxTime:
-		return types.NetworkPropertyValue{Value: properties.JailMaxTime}, nil
+	case types.UnjailMaxTime:
+		return types.NetworkPropertyValue{Value: properties.UnjailMaxTime}, nil
 	case types.EnableTokenWhitelist:
 		return types.NetworkPropertyValue{Value: BoolToInt(properties.EnableTokenWhitelist)}, nil
 	case types.EnableTokenBlacklist:
@@ -227,8 +227,8 @@ func (k Keeper) SetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 		properties.PoorNetworkMaxBankSend = value.Value
 	case types.MinValidators:
 		properties.MinValidators = value.Value
-	case types.JailMaxTime:
-		properties.JailMaxTime = value.Value
+	case types.UnjailMaxTime:
+		properties.UnjailMaxTime = value.Value
 	case types.EnableTokenBlacklist:
 		properties.EnableTokenBlacklist = IntToBool(value.Value)
 	case types.EnableTokenWhitelist:

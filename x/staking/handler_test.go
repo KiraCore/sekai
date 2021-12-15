@@ -280,7 +280,7 @@ func TestHandler_ProposalUnjailValidator_Errors(t *testing.T) {
 			expectedErr: fmt.Errorf("time to unjail passed"),
 			prepareFunc: func(ctx types.Context, app *simapp.SekaiApp) {
 				networkProperties := app.CustomGovKeeper.GetNetworkProperties(ctx)
-				networkProperties.JailMaxTime = 300 // 300 seconds = 5 min
+				networkProperties.UnjailMaxTime = 300 // 300 seconds = 5 min
 				app.CustomGovKeeper.SetNetworkProperties(ctx, networkProperties)
 
 				proposerActor := govtypes.NewDefaultActor(proposerAddr)
