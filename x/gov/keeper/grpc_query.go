@@ -517,15 +517,27 @@ func (k Keeper) GetDataReferenceByKey(sdkCtx sdk.Context, req *types.QueryDataRe
 // Query all proposal durations
 func (k Keeper) AllProposalDurations(goCtx context.Context, req *types.QueryAllProposalDurations) (*types.QueryAllProposalDurationsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+	properties := k.GetNetworkProperties(ctx)
+	allDurations := k.GetAllProposalDurations(ctx)
+	for _, pt := range kiratypes.AllProposalTypes {
+		if allDurations[pt] < properties.MinimumProposalEndTime {
+			allDurations[pt] = properties.MinimumProposalEndTime
+		}
+	}
 	return &types.QueryAllProposalDurationsResponse{
-		ProposalDurations: k.GetAllProposalDurations(ctx),
+		ProposalDurations: allDurations,
 	}, nil
 }
 
 // Query single proposal duration
 func (k Keeper) ProposalDuration(goCtx context.Context, req *types.QueryProposalDuration) (*types.QueryProposalDurationResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+	properties := k.GetNetworkProperties(ctx)
+	duration := k.GetProposalDuration(ctx, req.ProposalType)
+	if duration < properties.MinimumProposalEndTime {
+		duration = properties.MinimumProposalEndTime
+	}
 	return &types.QueryProposalDurationResponse{
-		Duration: k.GetProposalDuration(ctx, req.ProposalType),
+		Duration: duration,
 	}, nil
 }

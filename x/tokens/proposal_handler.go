@@ -1,6 +1,7 @@
 package tokens
 
 import (
+	kiratypes "github.com/KiraCore/sekai/types"
 	"github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/tokens/keeper"
 	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
@@ -18,7 +19,7 @@ func NewApplyUpsertTokenAliasProposalHandler(keeper keeper.Keeper) *ApplyUpsertT
 }
 
 func (a ApplyUpsertTokenAliasProposalHandler) ProposalType() string {
-	return tokenstypes.ProposalTypeUpsertTokenAlias
+	return kiratypes.ProposalTypeUpsertTokenAlias
 }
 
 func (a ApplyUpsertTokenAliasProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
@@ -37,7 +38,7 @@ func NewApplyUpsertTokenRatesProposalHandler(keeper keeper.Keeper) *ApplyUpsertT
 }
 
 func (a ApplyUpsertTokenRatesProposalHandler) ProposalType() string {
-	return tokenstypes.ProposalTypeUpsertTokenRates
+	return kiratypes.ProposalTypeUpsertTokenRates
 }
 
 func (a ApplyUpsertTokenRatesProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
@@ -56,7 +57,7 @@ func NewApplyWhiteBlackChangeProposalHandler(keeper keeper.Keeper) *ApplyWhiteBl
 }
 
 func (a ApplyWhiteBlackChangeProposalHandler) ProposalType() string {
-	return tokenstypes.ProposalTypeTokensWhiteBlackChange
+	return kiratypes.ProposalTypeTokensWhiteBlackChange
 }
 
 func (a ApplyWhiteBlackChangeProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {

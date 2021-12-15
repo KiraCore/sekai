@@ -8,6 +8,7 @@ import (
 
 	"github.com/KiraCore/sekai/app"
 	simapp "github.com/KiraCore/sekai/app"
+	kiratypes "github.com/KiraCore/sekai/types"
 	"github.com/KiraCore/sekai/x/gov"
 	"github.com/KiraCore/sekai/x/gov/types"
 	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
@@ -1199,7 +1200,7 @@ func TestHandler_ProposalAssignPermission(t *testing.T) {
 	require.NoError(t, err2)
 
 	properties := app.CustomGovKeeper.GetNetworkProperties(ctx)
-	properties.DefaultProposalEndTime = 600 // Seconds, 10 mins
+	properties.MinimumProposalEndTime = 600 // Seconds, 10 mins
 	app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
 
 	handler := gov.NewHandler(app.CustomGovKeeper)
@@ -1227,8 +1228,8 @@ func TestHandler_ProposalAssignPermission(t *testing.T) {
 			types.PermValue(1),
 		),
 		ctx.BlockTime(),
-		ctx.BlockTime().Add(time.Second*time.Duration(properties.DefaultProposalEndTime)),
-		ctx.BlockTime().Add((time.Second*time.Duration(properties.DefaultProposalEndTime))+(time.Second*time.Duration(properties.ProposalEnactmentTime))),
+		ctx.BlockTime().Add(time.Second*time.Duration(properties.MinimumProposalEndTime)),
+		ctx.BlockTime().Add((time.Second*time.Duration(properties.MinimumProposalEndTime))+(time.Second*time.Duration(properties.ProposalEnactmentTime))),
 		ctx.BlockHeight()+2,
 		ctx.BlockHeight()+3,
 	)
@@ -1304,7 +1305,7 @@ func TestHandler_ProposalUpsertDataRegistry(t *testing.T) {
 	require.NoError(t, err2)
 
 	properties := app.CustomGovKeeper.GetNetworkProperties(ctx)
-	properties.DefaultProposalEndTime = 10
+	properties.MinimumProposalEndTime = 10
 	app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
 
 	handler := gov.NewHandler(app.CustomGovKeeper)
@@ -1340,8 +1341,8 @@ func TestHandler_ProposalUpsertDataRegistry(t *testing.T) {
 			1234,
 		),
 		ctx.BlockTime(),
-		ctx.BlockTime().Add(time.Second*time.Duration(properties.DefaultProposalEndTime)),
-		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEnactmentTime)+time.Second*time.Duration(properties.DefaultProposalEndTime)),
+		ctx.BlockTime().Add(time.Second*time.Duration(properties.MinimumProposalEndTime)),
+		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEnactmentTime)+time.Second*time.Duration(properties.MinimumProposalEndTime)),
 		ctx.BlockHeight()+2,
 		ctx.BlockHeight()+3,
 	)
@@ -1724,7 +1725,7 @@ func TestHandler_ProposalSetNetworkProperty(t *testing.T) {
 	require.NoError(t, err2)
 
 	properties := app.CustomGovKeeper.GetNetworkProperties(ctx)
-	properties.DefaultProposalEndTime = 10
+	properties.MinimumProposalEndTime = 10
 	app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
 
 	handler := gov.NewHandler(app.CustomGovKeeper)
@@ -1755,8 +1756,8 @@ func TestHandler_ProposalSetNetworkProperty(t *testing.T) {
 			types.NetworkPropertyValue{Value: 1234},
 		),
 		ctx.BlockTime(),
-		ctx.BlockTime().Add(time.Second*time.Duration(properties.DefaultProposalEndTime)),
-		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEnactmentTime)+time.Second*time.Duration(properties.DefaultProposalEndTime)),
+		ctx.BlockTime().Add(time.Second*time.Duration(properties.MinimumProposalEndTime)),
+		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEnactmentTime)+time.Second*time.Duration(properties.MinimumProposalEndTime)),
 		ctx.BlockHeight()+2,
 		ctx.BlockHeight()+3,
 	)
@@ -1875,7 +1876,7 @@ func TestHandler_ProposalCreateRole(t *testing.T) {
 	require.NoError(t, err2)
 
 	properties := app.CustomGovKeeper.GetNetworkProperties(ctx)
-	properties.DefaultProposalEndTime = 10
+	properties.MinimumProposalEndTime = 10
 	app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
 
 	handler := gov.NewHandler(app.CustomGovKeeper)
@@ -1918,8 +1919,8 @@ func TestHandler_ProposalCreateRole(t *testing.T) {
 			},
 		),
 		ctx.BlockTime(),
-		ctx.BlockTime().Add(time.Second*time.Duration(properties.DefaultProposalEndTime)),
-		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEnactmentTime)+time.Second*time.Duration(properties.DefaultProposalEndTime)),
+		ctx.BlockTime().Add(time.Second*time.Duration(properties.MinimumProposalEndTime)),
+		ctx.BlockTime().Add(time.Second*time.Duration(properties.ProposalEnactmentTime)+time.Second*time.Duration(properties.MinimumProposalEndTime)),
 		ctx.BlockHeight()+2,
 		ctx.BlockHeight()+3,
 	)
@@ -1946,7 +1947,7 @@ func TestHandler_SetProposalDurationsProposal(t *testing.T) {
 	})
 
 	proposal := types.NewSetProposalDurationsProposal(
-		[]string{types.CreateRoleProposalType, types.SetNetworkPropertyProposalType},
+		[]string{kiratypes.CreateRoleProposalType, kiratypes.SetNetworkPropertyProposalType},
 		[]uint64{1200, 2400}, // 20 min, 40min
 	)
 
@@ -1954,9 +1955,9 @@ func TestHandler_SetProposalDurationsProposal(t *testing.T) {
 	err := router.ApplyProposal(ctx, 1, proposal)
 	require.NoError(t, err)
 
-	duration := app.CustomGovKeeper.GetProposalDuration(ctx, types.CreateRoleProposalType)
+	duration := app.CustomGovKeeper.GetProposalDuration(ctx, kiratypes.CreateRoleProposalType)
 	require.Equal(t, duration, uint64(1200))
 
-	duration = app.CustomGovKeeper.GetProposalDuration(ctx, types.SetNetworkPropertyProposalType)
+	duration = app.CustomGovKeeper.GetProposalDuration(ctx, kiratypes.SetNetworkPropertyProposalType)
 	require.Equal(t, duration, uint64(2400))
 }

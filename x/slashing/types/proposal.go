@@ -1,11 +1,10 @@
 package types
 
 import (
+	kiratypes "github.com/KiraCore/sekai/types"
 	"github.com/KiraCore/sekai/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
-
-const ProposalTypeResetWholeValidatorRank = "ResetWholeValidatorRank"
 
 func NewResetWholeValidatorRankProposal(proposer sdk.AccAddress) *ProposalResetWholeValidatorRank {
 	return &ProposalResetWholeValidatorRank{
@@ -14,7 +13,7 @@ func NewResetWholeValidatorRankProposal(proposer sdk.AccAddress) *ProposalResetW
 }
 
 func (m *ProposalResetWholeValidatorRank) ProposalType() string {
-	return ProposalTypeResetWholeValidatorRank
+	return kiratypes.ProposalTypeResetWholeValidatorRank
 }
 
 func (m *ProposalResetWholeValidatorRank) ProposalPermission() types.PermValue {

@@ -1,11 +1,9 @@
 package types
 
 import (
+	kiratypes "github.com/KiraCore/sekai/types"
 	"github.com/KiraCore/sekai/x/gov/types"
 )
-
-const ProposalTypeSoftwareUpgrade = "SoftwareUpgrade"
-const ProposalTypeCancelSoftwareUpgrade = "CancelSoftwareUpgrade"
 
 var _ types.Content = &ProposalSoftwareUpgrade{}
 
@@ -30,7 +28,7 @@ func NewSoftwareUpgradeProposal(name string, resources []Resource,
 }
 
 func (m *ProposalSoftwareUpgrade) ProposalType() string {
-	return ProposalTypeSoftwareUpgrade
+	return kiratypes.ProposalTypeSoftwareUpgrade
 }
 
 func (m *ProposalSoftwareUpgrade) ProposalPermission() types.PermValue {
@@ -55,7 +53,7 @@ func NewCancelSoftwareUpgradeProposal(name string) *ProposalCancelSoftwareUpgrad
 }
 
 func (m *ProposalCancelSoftwareUpgrade) ProposalType() string {
-	return ProposalTypeCancelSoftwareUpgrade
+	return kiratypes.ProposalTypeCancelSoftwareUpgrade
 }
 
 func (m *ProposalCancelSoftwareUpgrade) ProposalPermission() types.PermValue {

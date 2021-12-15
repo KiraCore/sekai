@@ -4,12 +4,11 @@ import (
 	"testing"
 	"time"
 
+	simapp "github.com/KiraCore/sekai/app"
+	kiratypes "github.com/KiraCore/sekai/types"
 	"github.com/KiraCore/sekai/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/stretchr/testify/require"
-
-	simapp "github.com/KiraCore/sekai/app"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
 
@@ -348,17 +347,17 @@ func TestKeeper_ProposalDuration(t *testing.T) {
 	proposal, found := app.CustomGovKeeper.GetProposal(ctx, proposalID)
 	require.True(t, found)
 
-	require.Equal(t, proposal.VotingEndTime.Unix(), ctx.BlockTime().Unix()+int64(properties.DefaultProposalEndTime))
+	require.Equal(t, proposal.VotingEndTime.Unix(), ctx.BlockTime().Unix()+int64(properties.MinimumProposalEndTime))
 
 	// test SetNetworkPropertyProposal
 	proposalID, err = app.CustomGovKeeper.CreateAndSaveProposalWithContent(ctx, "title", "description", &types.SetNetworkPropertyProposal{})
 	require.NoError(t, err)
 	proposal, found = app.CustomGovKeeper.GetProposal(ctx, proposalID)
 	require.True(t, found)
-	require.Equal(t, proposal.VotingEndTime.Unix(), ctx.BlockTime().Unix()+int64(properties.DefaultProposalEndTime))
+	require.Equal(t, proposal.VotingEndTime.Unix(), ctx.BlockTime().Unix()+int64(properties.MinimumProposalEndTime))
 
 	// check longer duration proposal
-	app.CustomGovKeeper.SetProposalDuration(ctx, types.SetProposalDurationsProposalType, 2400)
+	app.CustomGovKeeper.SetProposalDuration(ctx, kiratypes.SetProposalDurationsProposalType, 2400)
 	proposalID, err = app.CustomGovKeeper.CreateAndSaveProposalWithContent(ctx, "title", "description", &types.SetProposalDurationsProposal{})
 	require.NoError(t, err)
 	proposal, found = app.CustomGovKeeper.GetProposal(ctx, proposalID)

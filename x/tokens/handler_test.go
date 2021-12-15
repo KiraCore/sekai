@@ -258,7 +258,7 @@ func TestHandler_CreateProposalUpsertTokenAliases(t *testing.T) {
 	require.NoError(t, err2)
 
 	properties := app.CustomGovKeeper.GetNetworkProperties(ctx)
-	properties.DefaultProposalEndTime = 10
+	properties.MinimumProposalEndTime = 10
 	app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
 
 	handler := gov.NewHandler(app.CustomGovKeeper)
@@ -298,8 +298,8 @@ func TestHandler_CreateProposalUpsertTokenAliases(t *testing.T) {
 			},
 		),
 		ctx.BlockTime(),
-		ctx.BlockTime().Add(time.Second*time.Duration(properties.DefaultProposalEndTime)),
-		ctx.BlockTime().Add(time.Second*time.Duration(properties.DefaultProposalEndTime)+
+		ctx.BlockTime().Add(time.Second*time.Duration(properties.MinimumProposalEndTime)),
+		ctx.BlockTime().Add(time.Second*time.Duration(properties.MinimumProposalEndTime)+
 			time.Second*time.Duration(properties.ProposalEnactmentTime),
 		),
 		ctx.BlockHeight()+2,
@@ -375,7 +375,7 @@ func TestHandler_CreateProposalUpsertTokenRates(t *testing.T) {
 	require.NoError(t, err2)
 
 	properties := app.CustomGovKeeper.GetNetworkProperties(ctx)
-	properties.DefaultProposalEndTime = 10
+	properties.MinimumProposalEndTime = 10
 	app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
 
 	handler := gov.NewHandler(app.CustomGovKeeper)
@@ -407,8 +407,8 @@ func TestHandler_CreateProposalUpsertTokenRates(t *testing.T) {
 			false,
 		),
 		ctx.BlockTime(),
-		ctx.BlockTime().Add(time.Second*time.Duration(properties.DefaultProposalEndTime)),
-		ctx.BlockTime().Add(time.Second*time.Duration(properties.DefaultProposalEndTime)+
+		ctx.BlockTime().Add(time.Second*time.Duration(properties.MinimumProposalEndTime)),
+		ctx.BlockTime().Add(time.Second*time.Duration(properties.MinimumProposalEndTime)+
 			time.Second*time.Duration(properties.ProposalEnactmentTime),
 		),
 		ctx.BlockHeight()+2,
@@ -445,7 +445,7 @@ func TestHandler_CreateProposalTokensWhiteBlackChange(t *testing.T) {
 	require.NoError(t, err)
 
 	properties := app.CustomGovKeeper.GetNetworkProperties(ctx)
-	properties.DefaultProposalEndTime = 10
+	properties.MinimumProposalEndTime = 10
 	app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
 
 	handler := gov.NewHandler(app.CustomGovKeeper)
@@ -473,8 +473,8 @@ func TestHandler_CreateProposalTokensWhiteBlackChange(t *testing.T) {
 		"some desc",
 		proposal,
 		ctx.BlockTime(),
-		ctx.BlockTime().Add(time.Second*time.Duration(properties.DefaultProposalEndTime)),
-		ctx.BlockTime().Add(time.Second*time.Duration(properties.DefaultProposalEndTime)+
+		ctx.BlockTime().Add(time.Second*time.Duration(properties.MinimumProposalEndTime)),
+		ctx.BlockTime().Add(time.Second*time.Duration(properties.MinimumProposalEndTime)+
 			time.Second*time.Duration(properties.ProposalEnactmentTime),
 		),
 		ctx.BlockHeight()+2,
