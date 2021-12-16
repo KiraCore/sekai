@@ -32,7 +32,7 @@ type GenesisStateV01228 struct {
 	Permissions map[uint64]*govtypes.Permissions `protobuf:"bytes,2,rep,name=permissions,proto3" json:"permissions,omitempty" protobuf_key:"varint,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 	// NetworkActors are the actors that are saved from genesis.
 	NetworkActors               []*govtypes.NetworkActor               `protobuf:"bytes,3,rep,name=network_actors,json=networkActors,proto3" json:"network_actors,omitempty"`
-	NetworkProperties           *NetworkProperties                     `protobuf:"bytes,4,opt,name=network_properties,json=networkProperties,proto3" json:"network_properties,omitempty"`
+	NetworkProperties           *NetworkPropertiesV0228                `protobuf:"bytes,4,opt,name=network_properties,json=networkProperties,proto3" json:"network_properties,omitempty"`
 	ExecutionFees               []*govtypes.ExecutionFee               `protobuf:"bytes,5,rep,name=execution_fees,json=executionFees,proto3" json:"execution_fees,omitempty"`
 	PoorNetworkMessages         *govtypes.AllowedMessages              `protobuf:"bytes,6,opt,name=poor_network_messages,json=poorNetworkMessages,proto3" json:"poor_network_messages,omitempty"`
 	Proposals                   []govtypes.Proposal                    `protobuf:"bytes,7,rep,name=proposals,proto3" json:"proposals"`
@@ -98,7 +98,7 @@ func (m *GenesisStateV01228) GetNetworkActors() []*govtypes.NetworkActor {
 	return nil
 }
 
-func (m *GenesisStateV01228) GetNetworkProperties() *NetworkProperties {
+func (m *GenesisStateV01228) GetNetworkProperties() *NetworkPropertiesV0228 {
 	if m != nil {
 		return m.NetworkProperties
 	}
@@ -748,7 +748,7 @@ func (m *GenesisStateV01228) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.NetworkProperties == nil {
-				m.NetworkProperties = &NetworkProperties{}
+				m.NetworkProperties = &NetworkPropertiesV0228{}
 			}
 			if err := m.NetworkProperties.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
