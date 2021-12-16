@@ -134,10 +134,6 @@ service Query {
   rpc PermissionsByAddress (PermissionsByAddressRequest) returns (PermissionsResponse) {
     option (google.api.http).get = "/api/kira/gov/permissions_by_address/{val_addr}";
   }
-  // RolePermissions returns the permissions of the roles available in the registry.
-  rpc RolePermissions (RolePermissionsRequest) returns (RolePermissionsResponse) {
-    option (google.api.http).get = "/api/kira/gov/permissions_by_role/{identifier}";
-  }
 }
 
 // QueryProposalRequest is the request type for the Query/Proposal RPC method.
@@ -288,9 +284,16 @@ message QueryAllIdentityRecordVerifyRequestsResponse {
   cosmos.base.query.v1beta1.PageResponse pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
 }
 
+message RoleQuery {
+  uint32 id = 1;  // (integer) - auto assigned
+  string sid = 2; // string identifier unique variable name
+  string description = 3;
+  Permissions permissions = 4;
+}
+
 message AllRolesRequest {}
 message AllRolesResponse {
-  repeated Role roles = 1 [ (gogoproto.nullable) = false ];
+  repeated RoleQuery roles = 1 [ (gogoproto.nullable) = false ];
 }
 
 message RolesByAddressRequest {
@@ -306,13 +309,5 @@ message PermissionsByAddressRequest {
 }
 
 message PermissionsResponse {
-  Permissions permissions = 1;
-}
-
-message RolePermissionsRequest {
-  string identifier = 1; // sid or id
-}
-
-message RolePermissionsResponse {
   Permissions permissions = 1;
 }

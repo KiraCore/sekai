@@ -10,12 +10,8 @@ message ProposalUnjailValidator {
   option (cosmos_proto.implements_interface) = "Content";
   option (gogoproto.equal) = true;
 
-  bytes proposer = 1 [
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
-    (gogoproto.moretags) = "yaml:\"proposer\""
-  ];
-
-  string hash = 2;
+  string proposer = 1;
+  string valAddr = 2;
 
   string reference = 3;
 }

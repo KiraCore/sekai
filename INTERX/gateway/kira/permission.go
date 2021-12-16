@@ -15,10 +15,8 @@ import (
 // RegisterKiraGovPermissionRoutes registers kira gov permissions query routers.
 func RegisterKiraGovPermissionRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr string) {
 	r.HandleFunc(config.QueryPermissionsByAddress, QueryPermissionsByAddressRequest(gwCosmosmux, rpcAddr)).Methods("GET")
-	r.HandleFunc(config.QueryPermissionsByRole, QueryPermissionsByRoleRequest(gwCosmosmux, rpcAddr)).Methods("GET")
 
 	common.AddRPCMethod("GET", config.QueryPermissionsByAddress, "This is an API to query all permissions by address.", true)
-	common.AddRPCMethod("GET", config.QueryPermissionsByRole, "This is an API to query all permissions by role.", true)
 }
 
 func queryPermissionsByAddressHandler(r *http.Request, gwCosmosmux *runtime.ServeMux) (interface{}, interface{}, int) {
@@ -59,40 +57,6 @@ func QueryPermissionsByAddressRequest(gwCosmosmux *runtime.ServeMux, rpcAddr str
 			}
 
 			response.Response, response.Error, statusCode = queryPermissionsByAddressHandler(r, gwCosmosmux)
-		}
-
-		common.WrapResponse(w, request, *response, statusCode, common.RPCMethods["GET"][config.QueryRoles].CachingEnabled)
-	}
-}
-
-func queryPermissionsByRoleHandler(r *http.Request, gwCosmosmux *runtime.ServeMux) (interface{}, interface{}, int) {
-	return common.ServeGRPC(r, gwCosmosmux)
-}
-
-// QueryPermissionsByRoleRequest is a function to query all permissions by rike.
-func QueryPermissionsByRoleRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		request := common.GetInterxRequest(r)
-		response := common.GetResponseFormat(request, rpcAddr)
-		statusCode := http.StatusOK
-
-		common.GetLogger().Info("[query-permissions-by-role] Entering permissions by role query")
-
-		if !common.RPCMethods["GET"][config.QueryPermissionsByRole].Enabled {
-			response.Response, response.Error, statusCode = common.ServeError(0, "", "API disabled", http.StatusForbidden)
-		} else {
-			if common.RPCMethods["GET"][config.QueryPermissionsByRole].CachingEnabled {
-				found, cacheResponse, cacheError, cacheStatus := common.SearchCache(request, response)
-				if found {
-					response.Response, response.Error, statusCode = cacheResponse, cacheError, cacheStatus
-					common.WrapResponse(w, request, *response, statusCode, false)
-
-					common.GetLogger().Info("[query-permissions-by-role] Returning from the cache")
-					return
-				}
-			}
-
-			response.Response, response.Error, statusCode = queryPermissionsByRoleHandler(r, gwCosmosmux)
 		}
 
 		common.WrapResponse(w, request, *response, statusCode, common.RPCMethods["GET"][config.QueryRoles].CachingEnabled)

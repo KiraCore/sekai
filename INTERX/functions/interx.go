@@ -273,21 +273,6 @@ func RegisterInterxFunctions() {
 	)
 
 	AddInterxFunction(
-		"QueryPermissionsByRole",
-		config.QueryPermissionsByRole,
-		`{
-			"description": "QueryPermissionsByAddress is a function to query all permissions by a role.",
-			"parameters": {
-				"identifier": {
-					"type":        "string",
-					"description": "This represents the role identifier. sid or id",
-					"optional": true
-				}
-			}
-		}`,
-	)
-
-	AddInterxFunction(
 		"QueryProposals",
 		config.QueryProposals,
 		`{
