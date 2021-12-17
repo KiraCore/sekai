@@ -6,7 +6,6 @@ import (
 	math "math"
 	math_bits "math/bits"
 
-	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
 )
@@ -22,190 +21,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type NetworkProperty int32
-
-const (
-	MinTxFee                    NetworkProperty = 0
-	MaxTxFee                    NetworkProperty = 1
-	VoteQuorum                  NetworkProperty = 2
-	DefaultProposalEndTime      NetworkProperty = 3
-	MinimumProposalEndTime      NetworkProperty = 4
-	ProposalEnactmentTime       NetworkProperty = 5
-	MinProposalEndBlocks        NetworkProperty = 6
-	MinProposalEnactmentBlocks  NetworkProperty = 7
-	EnableForeignFeePayments    NetworkProperty = 8
-	MischanceRankDecreaseAmount NetworkProperty = 9
-	MaxMischance                NetworkProperty = 10
-	MischanceConfidence         NetworkProperty = 11
-	InactiveRankDecreasePercent NetworkProperty = 12
-	PoorNetworkMaxBankSend      NetworkProperty = 13
-	MinValidators               NetworkProperty = 14
-	JailMaxTime                 NetworkProperty = 15
-	EnableTokenWhitelist        NetworkProperty = 16
-	EnableTokenBlacklist        NetworkProperty = 17
-	MinIdentityApprovalTip      NetworkProperty = 18
-	UniqueIdentityKeys          NetworkProperty = 19
-)
-
-var NetworkProperty_name = map[int32]string{
-	0:  "MIN_TX_FEE",
-	1:  "MAX_TX_FEE",
-	2:  "VOTE_QUORUM",
-	3:  "DEFAULT_PROPOSAL_END_TIME",
-	4:  "MINIMUM_PROPOSAL_END_TIME",
-	5:  "PROPOSAL_ENACTMENT_TIME",
-	6:  "MIN_PROPOSAL_END_BLOCKS",
-	7:  "MIN_PROPOSAL_ENACTMENT_BLOCKS",
-	8:  "ENABLE_FOREIGN_FEE_PAYMENTS",
-	9:  "MISCHANCE_RANK_DECREASE_AMOUNT",
-	10: "MAX_MISCHANCE",
-	11: "MISCHANCE_CONFIDENCE",
-	12: "INACTIVE_RANK_DECREASE_PERCENT",
-	13: "POOR_NETWORK_MAX_BANK_SEND",
-	14: "MIN_VALIDATORS",
-	15: "JAIL_MAX_TIME",
-	16: "ENABLE_TOKEN_WHITELIST",
-	17: "ENABLE_TOKEN_BLACKLIST",
-	18: "MIN_IDENTITY_APPROVAL_TIP",
-	19: "UNIQUE_IDENTITY_KEYS",
-}
-
-var NetworkProperty_value = map[string]int32{
-	"MIN_TX_FEE":                     0,
-	"MAX_TX_FEE":                     1,
-	"VOTE_QUORUM":                    2,
-	"DEFAULT_PROPOSAL_END_TIME":      3,
-	"MINIMUM_PROPOSAL_END_TIME":      4,
-	"PROPOSAL_ENACTMENT_TIME":        5,
-	"MIN_PROPOSAL_END_BLOCKS":        6,
-	"MIN_PROPOSAL_ENACTMENT_BLOCKS":  7,
-	"ENABLE_FOREIGN_FEE_PAYMENTS":    8,
-	"MISCHANCE_RANK_DECREASE_AMOUNT": 9,
-	"MAX_MISCHANCE":                  10,
-	"MISCHANCE_CONFIDENCE":           11,
-	"INACTIVE_RANK_DECREASE_PERCENT": 12,
-	"POOR_NETWORK_MAX_BANK_SEND":     13,
-	"MIN_VALIDATORS":                 14,
-	"JAIL_MAX_TIME":                  15,
-	"ENABLE_TOKEN_WHITELIST":         16,
-	"ENABLE_TOKEN_BLACKLIST":         17,
-	"MIN_IDENTITY_APPROVAL_TIP":      18,
-	"UNIQUE_IDENTITY_KEYS":           19,
-}
-
-func (x NetworkProperty) String() string {
-	return proto.EnumName(NetworkProperty_name, int32(x))
-}
-
-func (NetworkProperty) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_98011a6048e5dde3, []int{0}
-}
-
-type MsgSetNetworkProperties struct {
-	NetworkProperties *NetworkProperties                            `protobuf:"bytes,1,opt,name=network_properties,json=networkProperties,proto3" json:"network_properties,omitempty"`
-	Proposer          github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,2,opt,name=proposer,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"proposer,omitempty"`
-}
-
-func (m *MsgSetNetworkProperties) Reset()         { *m = MsgSetNetworkProperties{} }
-func (m *MsgSetNetworkProperties) String() string { return proto.CompactTextString(m) }
-func (*MsgSetNetworkProperties) ProtoMessage()    {}
-func (*MsgSetNetworkProperties) Descriptor() ([]byte, []int) {
-	return fileDescriptor_98011a6048e5dde3, []int{0}
-}
-func (m *MsgSetNetworkProperties) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgSetNetworkProperties) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgSetNetworkProperties.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgSetNetworkProperties) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgSetNetworkProperties.Merge(m, src)
-}
-func (m *MsgSetNetworkProperties) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgSetNetworkProperties) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgSetNetworkProperties.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgSetNetworkProperties proto.InternalMessageInfo
-
-func (m *MsgSetNetworkProperties) GetNetworkProperties() *NetworkProperties {
-	if m != nil {
-		return m.NetworkProperties
-	}
-	return nil
-}
-
-func (m *MsgSetNetworkProperties) GetProposer() github_com_cosmos_cosmos_sdk_types.AccAddress {
-	if m != nil {
-		return m.Proposer
-	}
-	return nil
-}
-
-type NetworkPropertyValue struct {
-	Value    uint64 `protobuf:"varint,1,opt,name=value,proto3" json:"value,omitempty"`
-	StrValue string `protobuf:"bytes,2,opt,name=str_value,json=strValue,proto3" json:"str_value,omitempty"`
-}
-
-func (m *NetworkPropertyValue) Reset()         { *m = NetworkPropertyValue{} }
-func (m *NetworkPropertyValue) String() string { return proto.CompactTextString(m) }
-func (*NetworkPropertyValue) ProtoMessage()    {}
-func (*NetworkPropertyValue) Descriptor() ([]byte, []int) {
-	return fileDescriptor_98011a6048e5dde3, []int{1}
-}
-func (m *NetworkPropertyValue) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *NetworkPropertyValue) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_NetworkPropertyValue.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *NetworkPropertyValue) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_NetworkPropertyValue.Merge(m, src)
-}
-func (m *NetworkPropertyValue) XXX_Size() int {
-	return m.Size()
-}
-func (m *NetworkPropertyValue) XXX_DiscardUnknown() {
-	xxx_messageInfo_NetworkPropertyValue.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_NetworkPropertyValue proto.InternalMessageInfo
-
-func (m *NetworkPropertyValue) GetValue() uint64 {
-	if m != nil {
-		return m.Value
-	}
-	return 0
-}
-
-func (m *NetworkPropertyValue) GetStrValue() string {
-	if m != nil {
-		return m.StrValue
-	}
-	return ""
-}
-
-type NetworkProperties struct {
+type NetworkPropertiesV0228 struct {
 	MinTxFee                    uint64 `protobuf:"varint,1,opt,name=min_tx_fee,json=minTxFee,proto3" json:"min_tx_fee,omitempty"`
 	MaxTxFee                    uint64 `protobuf:"varint,2,opt,name=max_tx_fee,json=maxTxFee,proto3" json:"max_tx_fee,omitempty"`
 	VoteQuorum                  uint64 `protobuf:"varint,3,opt,name=vote_quorum,json=voteQuorum,proto3" json:"vote_quorum,omitempty"`
@@ -228,16 +44,16 @@ type NetworkProperties struct {
 	UniqueIdentityKeys          string `protobuf:"bytes,20,opt,name=unique_identity_keys,json=uniqueIdentityKeys,proto3" json:"unique_identity_keys,omitempty"`
 }
 
-func (m *NetworkProperties) Reset()         { *m = NetworkProperties{} }
-func (m *NetworkProperties) String() string { return proto.CompactTextString(m) }
-func (*NetworkProperties) ProtoMessage()    {}
-func (*NetworkProperties) Descriptor() ([]byte, []int) {
+func (m *NetworkPropertiesV0228) Reset()         { *m = NetworkPropertiesV0228{} }
+func (m *NetworkPropertiesV0228) String() string { return proto.CompactTextString(m) }
+func (*NetworkPropertiesV0228) ProtoMessage()    {}
+func (*NetworkPropertiesV0228) Descriptor() ([]byte, []int) {
 	return fileDescriptor_98011a6048e5dde3, []int{2}
 }
-func (m *NetworkProperties) XXX_Unmarshal(b []byte) error {
+func (m *NetworkPropertiesV0228) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *NetworkProperties) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *NetworkPropertiesV0228) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_NetworkProperties.Marshal(b, m, deterministic)
 	} else {
@@ -249,152 +65,152 @@ func (m *NetworkProperties) XXX_Marshal(b []byte, deterministic bool) ([]byte, e
 		return b[:n], nil
 	}
 }
-func (m *NetworkProperties) XXX_Merge(src proto.Message) {
+func (m *NetworkPropertiesV0228) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_NetworkProperties.Merge(m, src)
 }
-func (m *NetworkProperties) XXX_Size() int {
+func (m *NetworkPropertiesV0228) XXX_Size() int {
 	return m.Size()
 }
-func (m *NetworkProperties) XXX_DiscardUnknown() {
+func (m *NetworkPropertiesV0228) XXX_DiscardUnknown() {
 	xxx_messageInfo_NetworkProperties.DiscardUnknown(m)
 }
 
 var xxx_messageInfo_NetworkProperties proto.InternalMessageInfo
 
-func (m *NetworkProperties) GetMinTxFee() uint64 {
+func (m *NetworkPropertiesV0228) GetMinTxFee() uint64 {
 	if m != nil {
 		return m.MinTxFee
 	}
 	return 0
 }
 
-func (m *NetworkProperties) GetMaxTxFee() uint64 {
+func (m *NetworkPropertiesV0228) GetMaxTxFee() uint64 {
 	if m != nil {
 		return m.MaxTxFee
 	}
 	return 0
 }
 
-func (m *NetworkProperties) GetVoteQuorum() uint64 {
+func (m *NetworkPropertiesV0228) GetVoteQuorum() uint64 {
 	if m != nil {
 		return m.VoteQuorum
 	}
 	return 0
 }
 
-func (m *NetworkProperties) GetDefaultProposalEndTime() uint64 {
+func (m *NetworkPropertiesV0228) GetDefaultProposalEndTime() uint64 {
 	if m != nil {
 		return m.DefaultProposalEndTime
 	}
 	return 0
 }
 
-func (m *NetworkProperties) GetMinimumProposalEndTime() uint64 {
+func (m *NetworkPropertiesV0228) GetMinimumProposalEndTime() uint64 {
 	if m != nil {
 		return m.MinimumProposalEndTime
 	}
 	return 0
 }
 
-func (m *NetworkProperties) GetProposalEnactmentTime() uint64 {
+func (m *NetworkPropertiesV0228) GetProposalEnactmentTime() uint64 {
 	if m != nil {
 		return m.ProposalEnactmentTime
 	}
 	return 0
 }
 
-func (m *NetworkProperties) GetMinProposalEndBlocks() uint64 {
+func (m *NetworkPropertiesV0228) GetMinProposalEndBlocks() uint64 {
 	if m != nil {
 		return m.MinProposalEndBlocks
 	}
 	return 0
 }
 
-func (m *NetworkProperties) GetMinProposalEnactmentBlocks() uint64 {
+func (m *NetworkPropertiesV0228) GetMinProposalEnactmentBlocks() uint64 {
 	if m != nil {
 		return m.MinProposalEnactmentBlocks
 	}
 	return 0
 }
 
-func (m *NetworkProperties) GetEnableForeignFeePayments() bool {
+func (m *NetworkPropertiesV0228) GetEnableForeignFeePayments() bool {
 	if m != nil {
 		return m.EnableForeignFeePayments
 	}
 	return false
 }
 
-func (m *NetworkProperties) GetMischanceRankDecreaseAmount() uint64 {
+func (m *NetworkPropertiesV0228) GetMischanceRankDecreaseAmount() uint64 {
 	if m != nil {
 		return m.MischanceRankDecreaseAmount
 	}
 	return 0
 }
 
-func (m *NetworkProperties) GetMaxMischance() uint64 {
+func (m *NetworkPropertiesV0228) GetMaxMischance() uint64 {
 	if m != nil {
 		return m.MaxMischance
 	}
 	return 0
 }
 
-func (m *NetworkProperties) GetMischanceConfidence() uint64 {
+func (m *NetworkPropertiesV0228) GetMischanceConfidence() uint64 {
 	if m != nil {
 		return m.MischanceConfidence
 	}
 	return 0
 }
 
-func (m *NetworkProperties) GetInactiveRankDecreasePercent() uint64 {
+func (m *NetworkPropertiesV0228) GetInactiveRankDecreasePercent() uint64 {
 	if m != nil {
 		return m.InactiveRankDecreasePercent
 	}
 	return 0
 }
 
-func (m *NetworkProperties) GetMinValidators() uint64 {
+func (m *NetworkPropertiesV0228) GetMinValidators() uint64 {
 	if m != nil {
 		return m.MinValidators
 	}
 	return 0
 }
 
-func (m *NetworkProperties) GetPoorNetworkMaxBankSend() uint64 {
+func (m *NetworkPropertiesV0228) GetPoorNetworkMaxBankSend() uint64 {
 	if m != nil {
 		return m.PoorNetworkMaxBankSend
 	}
 	return 0
 }
 
-func (m *NetworkProperties) GetJailMaxTime() uint64 {
+func (m *NetworkPropertiesV0228) GetJailMaxTime() uint64 {
 	if m != nil {
 		return m.JailMaxTime
 	}
 	return 0
 }
 
-func (m *NetworkProperties) GetEnableTokenWhitelist() bool {
+func (m *NetworkPropertiesV0228) GetEnableTokenWhitelist() bool {
 	if m != nil {
 		return m.EnableTokenWhitelist
 	}
 	return false
 }
 
-func (m *NetworkProperties) GetEnableTokenBlacklist() bool {
+func (m *NetworkPropertiesV0228) GetEnableTokenBlacklist() bool {
 	if m != nil {
 		return m.EnableTokenBlacklist
 	}
 	return false
 }
 
-func (m *NetworkProperties) GetMinIdentityApprovalTip() uint64 {
+func (m *NetworkPropertiesV0228) GetMinIdentityApprovalTip() uint64 {
 	if m != nil {
 		return m.MinIdentityApprovalTip
 	}
 	return 0
 }
 
-func (m *NetworkProperties) GetUniqueIdentityKeys() string {
+func (m *NetworkPropertiesV0228) GetUniqueIdentityKeys() string {
 	if m != nil {
 		return m.UniqueIdentityKeys
 	}
@@ -402,10 +218,7 @@ func (m *NetworkProperties) GetUniqueIdentityKeys() string {
 }
 
 func init() {
-	proto.RegisterEnum("kira.gov.NetworkProperty", NetworkProperty_name, NetworkProperty_value)
-	proto.RegisterType((*MsgSetNetworkProperties)(nil), "kira.gov.MsgSetNetworkProperties")
-	proto.RegisterType((*NetworkPropertyValue)(nil), "kira.gov.NetworkPropertyValue")
-	proto.RegisterType((*NetworkProperties)(nil), "kira.gov.NetworkProperties")
+	proto.RegisterType((*NetworkPropertiesV0228)(nil), "kira.gov.NetworkPropertiesV0228")
 }
 
 func init() { proto.RegisterFile("kira/gov/network_properties.proto", fileDescriptor_98011a6048e5dde3) }
@@ -492,34 +305,7 @@ var fileDescriptor_98011a6048e5dde3 = []byte{
 	0x2f, 0xed, 0x0f, 0xd1, 0xd0, 0x09, 0x00, 0x00,
 }
 
-func (this *NetworkPropertyValue) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*NetworkPropertyValue)
-	if !ok {
-		that2, ok := that.(NetworkPropertyValue)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	if this.Value != that1.Value {
-		return false
-	}
-	if this.StrValue != that1.StrValue {
-		return false
-	}
-	return true
-}
-func (m *MsgSetNetworkProperties) Marshal() (dAtA []byte, err error) {
+func (m *NetworkPropertiesV0228) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -529,89 +315,12 @@ func (m *MsgSetNetworkProperties) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgSetNetworkProperties) MarshalTo(dAtA []byte) (int, error) {
+func (m *NetworkPropertiesV0228) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgSetNetworkProperties) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Proposer) > 0 {
-		i -= len(m.Proposer)
-		copy(dAtA[i:], m.Proposer)
-		i = encodeVarintNetworkProperties(dAtA, i, uint64(len(m.Proposer)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if m.NetworkProperties != nil {
-		{
-			size, err := m.NetworkProperties.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintNetworkProperties(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *NetworkPropertyValue) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *NetworkPropertyValue) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *NetworkPropertyValue) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.StrValue) > 0 {
-		i -= len(m.StrValue)
-		copy(dAtA[i:], m.StrValue)
-		i = encodeVarintNetworkProperties(dAtA, i, uint64(len(m.StrValue)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if m.Value != 0 {
-		i = encodeVarintNetworkProperties(dAtA, i, uint64(m.Value))
-		i--
-		dAtA[i] = 0x8
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *NetworkProperties) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *NetworkProperties) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *NetworkProperties) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *NetworkPropertiesV0228) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -757,40 +466,8 @@ func encodeVarintNetworkProperties(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *MsgSetNetworkProperties) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.NetworkProperties != nil {
-		l = m.NetworkProperties.Size()
-		n += 1 + l + sovNetworkProperties(uint64(l))
-	}
-	l = len(m.Proposer)
-	if l > 0 {
-		n += 1 + l + sovNetworkProperties(uint64(l))
-	}
-	return n
-}
 
-func (m *NetworkPropertyValue) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.Value != 0 {
-		n += 1 + sovNetworkProperties(uint64(m.Value))
-	}
-	l = len(m.StrValue)
-	if l > 0 {
-		n += 1 + l + sovNetworkProperties(uint64(l))
-	}
-	return n
-}
-
-func (m *NetworkProperties) Size() (n int) {
+func (m *NetworkPropertiesV0228) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -866,228 +543,8 @@ func sovNetworkProperties(x uint64) (n int) {
 func sozNetworkProperties(x uint64) (n int) {
 	return sovNetworkProperties(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *MsgSetNetworkProperties) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowNetworkProperties
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgSetNetworkProperties: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgSetNetworkProperties: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field NetworkProperties", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowNetworkProperties
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthNetworkProperties
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthNetworkProperties
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.NetworkProperties == nil {
-				m.NetworkProperties = &NetworkProperties{}
-			}
-			if err := m.NetworkProperties.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Proposer", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowNetworkProperties
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthNetworkProperties
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthNetworkProperties
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Proposer = append(m.Proposer[:0], dAtA[iNdEx:postIndex]...)
-			if m.Proposer == nil {
-				m.Proposer = []byte{}
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipNetworkProperties(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthNetworkProperties
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
 
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *NetworkPropertyValue) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowNetworkProperties
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: NetworkPropertyValue: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: NetworkPropertyValue: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Value", wireType)
-			}
-			m.Value = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowNetworkProperties
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Value |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field StrValue", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowNetworkProperties
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthNetworkProperties
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthNetworkProperties
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.StrValue = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipNetworkProperties(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthNetworkProperties
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *NetworkProperties) Unmarshal(dAtA []byte) error {
+func (m *NetworkPropertiesV0228) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
