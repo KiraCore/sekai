@@ -116,9 +116,9 @@ func (am AppModule) InitGenesis(
 	var genesisState types.GenesisState
 	cdc.MustUnmarshalJSON(data, &genesisState)
 
-	valUpdate := make([]abci.ValidatorUpdate, len(genesisState.Validators))
+	valUpdate := []abci.ValidatorUpdate{}
 
-	for i, val := range genesisState.Validators {
+	for _, val := range genesisState.Validators {
 		am.customStakingKeeper.AddValidator(ctx, val)
 		am.customStakingKeeper.AfterValidatorJoined(ctx, val.GetConsAddr(), val.ValKey)
 
@@ -127,14 +127,13 @@ func (am AppModule) InitGenesis(
 			panic(err)
 		}
 
-		power := int64(0)
 		if val.Status == stakingtypes.Active {
-			power = 1
-		}
-
-		valUpdate[i] = abci.ValidatorUpdate{
-			Power:  power,
-			PubKey: consPk,
+			valUpdate = append(
+				valUpdate,
+				abci.ValidatorUpdate{
+					Power:  1,
+					PubKey: consPk,
+				})
 		}
 	}
 
