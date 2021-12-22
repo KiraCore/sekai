@@ -11,7 +11,6 @@ const (
 	QueryRoles                = "/api/kira/gov/all_roles"
 	QueryRolesByAddress       = "/api/kira/gov/roles_by_address/{val_addr}"
 	QueryPermissionsByAddress = "/api/kira/gov/permissions_by_address/{val_addr}"
-	QueryPermissionsByRole    = "/api/kira/gov/permissions_by_role/{identifier}"
 	QueryProposals            = "/api/kira/gov/proposals"
 	QueryProposal             = "/api/kira/gov/proposals/{proposal_id}"
 	QueryVoters               = "/api/kira/gov/voters/{proposal_id}"

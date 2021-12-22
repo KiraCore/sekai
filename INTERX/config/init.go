@@ -32,7 +32,6 @@ func getGetMethods() []string {
 		QueryRoles,
 		QueryRolesByAddress,
 		QueryPermissionsByAddress,
-		QueryPermissionsByRole,
 		QueryProposals,
 		QueryProposal,
 		QueryKiraTokensAliases,
