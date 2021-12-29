@@ -89,7 +89,7 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 						MinTxFee:                    govGenesisV01228.NetworkProperties.MinTxFee,
 						MaxTxFee:                    govGenesisV01228.NetworkProperties.MaxTxFee,
 						VoteQuorum:                  govGenesisV01228.NetworkProperties.VoteQuorum,
-						MinimumProposalEndTime:      govGenesisV01228.NetworkProperties.MinimumProposalEndTime,
+						MinimumProposalEndTime:      govGenesisV01228.NetworkProperties.ProposalEndTime,
 						ProposalEnactmentTime:       govGenesisV01228.NetworkProperties.ProposalEnactmentTime,
 						MinProposalEndBlocks:        govGenesisV01228.NetworkProperties.MinProposalEndBlocks,
 						MinProposalEnactmentBlocks:  govGenesisV01228.NetworkProperties.MinProposalEnactmentBlocks,
