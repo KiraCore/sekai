@@ -106,7 +106,7 @@ func defaultConfig() InterxConfigFromFile {
 
 	configFromFile.Cache.CacheDir = "cache"
 	configFromFile.Cache.MaxCacheSize = "2GB"
-	configFromFile.Cache.CachingDuration = 50
+	configFromFile.Cache.CachingDuration = 5
 	configFromFile.Cache.DownloadFileSizeLimitation = "10MB"
 
 	configFromFile.Faucet.MnemonicFile = LoadMnemonic("equip exercise shoot mad inside floor wheel loan visual stereo build frozen potato always bulb naive subway foster marine erosion shuffle flee action there")
