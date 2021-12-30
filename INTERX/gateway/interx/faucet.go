@@ -212,7 +212,7 @@ func serveFaucet(r *http.Request, gwCosmosmux *runtime.ServeMux, request types.I
 	}
 
 	// add new claim
-	database.AddNewClaim(bech32addr, time.Now())
+	database.AddNewClaim(bech32addr, time.Now().UTC())
 
 	type FaucetResponse struct {
 		Hash string `json:"hash"`

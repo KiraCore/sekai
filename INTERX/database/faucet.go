@@ -74,7 +74,7 @@ func GetClaimTimeLeft(address string) int64 {
 		return 0
 	}
 
-	diff := time.Now().Unix() - getClaim(address).Unix()
+	diff := time.Now().UTC().Unix() - getClaim(address).Unix()
 
 	if diff > config.Config.Faucet.TimeLimit {
 		return 0

@@ -33,7 +33,7 @@ func CacheHeaderCheck(rpcAddr string, isLog bool) {
 					if err == nil && len(files) == 0 {
 						delete = true
 					}
-				} else if info.Size() == 0 || info.ModTime().Add(time.Duration(config.Config.Cache.CachingDuration)*time.Second).Before(time.Now()) {
+				} else if info.Size() == 0 || info.ModTime().Add(time.Duration(config.Config.Cache.CachingDuration)*time.Second).Before(time.Now().UTC()) {
 					delete = true
 				}
 

@@ -44,7 +44,7 @@ func CacheDataCheck(rpcAddr string, isLog bool) {
 					result := types.InterxResponse{}
 					err := json.Unmarshal([]byte(data), &result)
 
-					if err == nil && result.ExpireAt.Before(time.Now()) && result.Response.Block != common.NodeStatus.Block {
+					if err == nil && common.IsCacheExpired(result) {
 						delete = true
 					}
 				}

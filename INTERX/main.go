@@ -42,7 +42,7 @@ func main() {
 	faucetMnemonic, _ := bip39.NewMnemonic(entropy)
 
 	initConfigFilePtr := initCommand.String("config", "./config.json", "The interx configuration path.")
-	initVersion := initCommand.String("version", "0.1.0", "The interxd version")
+	initVersion := initCommand.String("version", "0.3.0", "The interxd version")
 	initServeHTTPS := initCommand.Bool("serve_https", false, "http or https.")
 	initGrpcPtr := initCommand.String("grpc", "dns:///0.0.0.0:9090", "The grpc endpoint of the sekaid.")
 	initRPCPtr := initCommand.String("rpc", "http://0.0.0.0:26657", "The rpc endpoint of the sekaid.")
@@ -61,7 +61,7 @@ func main() {
 
 	initCacheDirPtr := initCommand.String("cache_dir", "cache", "The interx cache directory path.")
 	initMaxCacheSize := initCommand.String("max_cache_size", "2GB", "The maximum cache size.")
-	initCachingDuration := initCommand.Int64("caching_duration", 5, "The caching clear duration in seconds.")
+	initCachingDuration := initCommand.Int64("caching_duration", 60, "The caching clear duration in seconds.")
 	initMaxDownloadSize := initCommand.String("download_file_size_limitation", "10MB", "The maximum download file size.")
 
 	initFaucetMnemonicPtr := initCommand.String("faucet_mnemonic", faucetMnemonic, "The interx faucet mnemonic file path or seeds.")

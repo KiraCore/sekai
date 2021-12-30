@@ -29,9 +29,11 @@ type ProxyResponseError struct {
 
 // InterxResponse is a struct to be used for response caching
 type InterxResponse struct {
-	Response ProxyResponse `json:"response"`
-	Status   int           `json:"status"`
-	ExpireAt time.Time     `json:"expire_at"`
+	Response             ProxyResponse `json:"response"`
+	Status               int           `json:"status"`
+	CacheTime            time.Time     `json:"cache_time"`
+	CachingDuration      int64         `json:"caching_duration"`
+	CachingBlockDuration int64         `json:"caching_block_duration"`
 }
 
 // DataReferenceEntry is a struct to be used for data reference
@@ -44,12 +46,13 @@ type DataReferenceEntry struct {
 
 // RPCMethod is a struct to be used for rpc_methods API
 type RPCMethod struct {
-	Description     string  `json:"description"`
-	Enabled         bool    `json:"enabled"`
-	RateLimit       float64 `json:"rate_limit,omitempty"`
-	AuthRateLimit   float64 `json:"auth_rate_limit,omitempty"`
-	CachingEnabled  bool    `json:"caching_enabled"`
-	CachingDuration int64   `json:"caching_duration,omitempty"`
+	Description          string  `json:"description"`
+	Enabled              bool    `json:"enabled"`
+	RateLimit            float64 `json:"rate_limit,omitempty"`
+	AuthRateLimit        float64 `json:"auth_rate_limit,omitempty"`
+	CachingEnabled       bool    `json:"caching_enabled"`
+	CachingDuration      int64   `json:"caching_duration"`
+	CachingBlockDuration int64   `json:"caching_block_duration"`
 }
 
 // RPCResponse is a struct of RPC response

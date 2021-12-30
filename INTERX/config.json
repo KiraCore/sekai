@@ -1,5 +1,5 @@
 {
-  "version": "0.2.0",
+  "version": "0.3.0",
   "serve_https": false,
   "grpc": "dns:///0.0.0.0:9090",
   "rpc": "http://0.0.0.0:26657",
@@ -11,7 +11,7 @@
     "validator_node_id": "",
     "seed_node_id": ""
   },
-  "mnemonic": "garment wisdom resist address lab barely sudden depend awake vessel protect differ annual island canyon festival broccoli script above tail hour tissue shine suggest",
+  "mnemonic": "green remain remain invite party bid error foil shove aim alley glass uniform rapid burst flush repeat stem purchase rescue very size horn day",
   "addrbooks": "addrbook.json",
   "node_key": "node_key.json",
   "tx_modes": "sync,async,block",
@@ -28,11 +28,11 @@
   "cache": {
     "cache_dir": "cache",
     "max_cache_size": "2GB",
-    "caching_duration": 5,
+    "caching_duration": 60,
     "download_file_size_limitation": "10MB"
   },
   "faucet": {
-    "mnemonic": "garment wisdom resist address lab barely sudden depend awake vessel protect differ annual island canyon festival broccoli script above tail hour tissue shine suggest",
+    "mnemonic": "green remain remain invite party bid error foil shove aim alley glass uniform rapid burst flush repeat stem purchase rescue very size horn day",
     "faucet_amounts": {
       "stake": "100000",
       "ukex": "100000",
@@ -58,308 +58,376 @@
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/api/blocks": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/api/blocks/{height}": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/api/blocks/{height}/transactions": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/api/consensus": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/api/cosmos/auth/accounts/{address}": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/api/cosmos/bank/balances/{address}": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/api/cosmos/bank/supply": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/api/cosmos/txs/{hash}": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/api/deposits": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/api/dump_consensus_state": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/api/interx_list": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/api/kira/gov/all_identity_records": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/api/kira/gov/all_identity_verify_requests": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
+        },
+        "/api/kira/gov/all_roles": {
+          "disable": false,
+          "rate_limit": 0,
+          "auth_rate_limit": 0,
+          "caching_disable": false,
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/api/kira/gov/data/{key}": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/api/kira/gov/data_keys": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/api/kira/gov/identity_record/{id}": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/api/kira/gov/identity_records/{creator}": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/api/kira/gov/identity_verify_record/{request_id}": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/api/kira/gov/identity_verify_requests_by_approver/{approver}": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/api/kira/gov/identity_verify_requests_by_requester/{requester}": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/api/kira/gov/network_properties": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
+        },
+        "/api/kira/gov/permissions_by_address/{val_addr}": {
+          "disable": false,
+          "rate_limit": 0,
+          "auth_rate_limit": 0,
+          "caching_disable": false,
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/api/kira/gov/proposals": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/api/kira/gov/proposals/{proposal_id}": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
+        },
+        "/api/kira/gov/roles_by_address/{val_addr}": {
+          "disable": false,
+          "rate_limit": 0,
+          "auth_rate_limit": 0,
+          "caching_disable": false,
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/api/kira/gov/voters/{proposal_id}": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/api/kira/gov/votes/{proposal_id}": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/api/kira/status": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/api/kira/tokens/aliases": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/api/kira/tokens/rates": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/api/kira/upgrade/current_plan": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/api/kira/upgrade/next_plan": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/api/net_info": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/api/priv_p2p_list": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/api/pub_p2p_list": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/api/snap_list": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/api/status": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/api/transactions/{txHash}": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/api/valoperinfos": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/api/valopers": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/api/withdraws": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/rosetta/account/balance": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/rosetta/network/list": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/rosetta/network/options": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/rosetta/network/status": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         }
       },
       "POST": {
@@ -368,14 +436,16 @@
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         },
         "/api/cosmos/txs/encode": {
           "disable": false,
           "rate_limit": 0,
           "auth_rate_limit": 0,
           "caching_disable": false,
-          "caching_duration": 30
+          "caching_duration": 30,
+          "caching_block_duration": 5
         }
       }
     }
