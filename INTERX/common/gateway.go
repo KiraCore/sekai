@@ -31,7 +31,7 @@ func GetInterxRequest(r *http.Request) types.InterxRequest {
 // GetResponseFormat is a function to get response format
 func GetResponseFormat(request types.InterxRequest, rpcAddr string) *types.ProxyResponse {
 	response := new(types.ProxyResponse)
-	response.Timestamp = time.Now().Unix()
+	response.Timestamp = time.Now().UTC().Unix()
 	response.RequestHash = GetBlake2bHash(request)
 	response.Chainid = NodeStatus.Chainid
 	response.Block = NodeStatus.Block
@@ -80,7 +80,7 @@ func SearchCache(request types.InterxRequest, response *types.ProxyResponse) (bo
 		return false, nil, nil, -1
 	}
 
-	if result.ExpireAt.Before(time.Now()) && result.Response.Block != response.Block {
+	if IsCacheExpired(result) {
 		return false, nil, nil, -1
 	}
 
@@ -100,9 +100,11 @@ func WrapResponse(w http.ResponseWriter, request types.InterxRequest, response t
 		requestHash := GetBlake2bHash(request)
 		if conf, ok := RPCMethods[request.Method][request.Endpoint]; ok {
 			err := PutCache(chainIDHash, endpointHash, requestHash, types.InterxResponse{
-				Response: response,
-				Status:   statusCode,
-				ExpireAt: time.Now().Add(time.Duration(conf.CachingDuration) * time.Second),
+				Response:             response,
+				Status:               statusCode,
+				CacheTime:            time.Now().UTC(),
+				CachingDuration:      conf.CachingDuration,
+				CachingBlockDuration: conf.CachingBlockDuration,
 			})
 			if err != nil {
 				// GetLogger().Error("[gateway] Failed to save in the cache: ", err.Error())

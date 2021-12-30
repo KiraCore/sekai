@@ -125,7 +125,7 @@ func IsConsensusStopped(validatorCount int) bool {
 
 	UpdateN(n)
 
-	if float64(time.Now().Unix()-blockTime.Unix()) < GetAverageBlockTime()*float64(config.Config.Block.HaltedAvgBlockTimes) {
+	if float64(time.Now().UTC().Unix()-blockTime.Unix()) < GetAverageBlockTime()*float64(config.Config.Block.HaltedAvgBlockTimes) {
 		return false
 	}
 

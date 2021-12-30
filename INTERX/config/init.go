@@ -106,7 +106,7 @@ func defaultConfig() InterxConfigFromFile {
 
 	configFromFile.Cache.CacheDir = "cache"
 	configFromFile.Cache.MaxCacheSize = "2GB"
-	configFromFile.Cache.CachingDuration = 5
+	configFromFile.Cache.CachingDuration = 50
 	configFromFile.Cache.DownloadFileSizeLimitation = "10MB"
 
 	configFromFile.Faucet.MnemonicFile = LoadMnemonic("equip exercise shoot mad inside floor wheel loan visual stereo build frozen potato always bulb naive subway foster marine erosion shuffle flee action there")
@@ -125,11 +125,12 @@ func defaultConfig() InterxConfigFromFile {
 	configFromFile.Faucet.TimeLimit = 20
 
 	defaultRPCSetting := RPCSetting{
-		Disable:         false,
-		RateLimit:       0,
-		AuthRateLimit:   0,
-		CachingDisable:  false,
-		CachingDuration: 30,
+		Disable:              false,
+		RateLimit:            0,
+		AuthRateLimit:        0,
+		CachingDisable:       false,
+		CachingDuration:      30,
+		CachingBlockDuration: 5,
 	}
 
 	configFromFile.RPCMethods.API = make(map[string]map[string]RPCSetting)

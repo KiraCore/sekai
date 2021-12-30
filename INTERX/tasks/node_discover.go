@@ -573,7 +573,7 @@ func connect(
 }
 
 func makeTimestamp() int64 {
-	return time.Now().UnixNano() / int64(time.Millisecond)
+	return time.Now().UTC().UnixNano() / int64(time.Millisecond)
 }
 
 func parseIP(host string) net.IP {
@@ -594,7 +594,7 @@ func upgradeSecretConn(
 	timeout time.Duration,
 	privKey crypto.PrivKey,
 ) (*conn.SecretConnection, error) {
-	if err := c.SetDeadline(time.Now().Add(timeout)); err != nil {
+	if err := c.SetDeadline(time.Now().UTC().Add(timeout)); err != nil {
 		return nil, err
 	}
 
@@ -611,7 +611,7 @@ func handshake(
 	timeout time.Duration,
 	nodeInfo p2p.NodeInfo,
 ) (*p2p.DefaultNodeInfo, error) {
-	if err := c.SetDeadline(time.Now().Add(timeout)); err != nil {
+	if err := c.SetDeadline(time.Now().UTC().Add(timeout)); err != nil {
 		return nil, err
 	}
 

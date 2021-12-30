@@ -108,7 +108,7 @@ func queryDataReferenceHandle(r *http.Request, gwCosmosmux *runtime.ServeMux, ke
 
 		filePath := key + filepath.Ext(result.Data.Reference)
 
-		database.AddReference(key, result.Data.Reference, 0, time.Now(), config.DataReferenceRegistry+"/"+common.GetMD5Hash(filePath))
+		database.AddReference(key, result.Data.Reference, 0, time.Now().UTC(), config.DataReferenceRegistry+"/"+common.GetMD5Hash(filePath))
 	}
 
 	return success, failure, status
