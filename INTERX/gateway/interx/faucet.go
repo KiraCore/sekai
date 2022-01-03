@@ -2,12 +2,12 @@ package interx
 
 import (
 	"fmt"
+	"math/big"
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/KiraCore/sekai/INTERX/common"
-	interx "github.com/KiraCore/sekai/INTERX/config"
+	"github.com/KiraCore/sekai/INTERX/config"
 	"github.com/KiraCore/sekai/INTERX/database"
 	"github.com/KiraCore/sekai/INTERX/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -19,15 +19,15 @@ import (
 
 // RegisterInterxFaucetRoutes registers faucet services.
 func RegisterInterxFaucetRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, rpcAddr string) {
-	r.HandleFunc(common.FaucetRequestURL, FaucetRequest(gwCosmosmux, rpcAddr)).Methods("GET")
+	r.HandleFunc(config.FaucetRequestURL, FaucetRequest(gwCosmosmux, rpcAddr)).Methods("GET")
 
-	common.AddRPCMethod("GET", common.FaucetRequestURL, "This is an API for faucet service.", false)
+	common.AddRPCMethod("GET", config.FaucetRequestURL, "This is an API for faucet service.", false)
 }
 
 func serveFaucetInfo(r *http.Request, gwCosmosmux *runtime.ServeMux) (interface{}, interface{}, int) {
 	faucetInfo := types.FaucetAccountInfo{}
-	faucetInfo.Address = interx.Config.Faucet.Address
-	faucetInfo.Balances = common.GetAccountBalances(gwCosmosmux, r.Clone(r.Context()), interx.Config.Faucet.Address)
+	faucetInfo.Address = config.Config.Faucet.Address
+	faucetInfo.Balances = common.GetAccountBalances(gwCosmosmux, r.Clone(r.Context()), config.Config.Faucet.Address)
 
 	return faucetInfo, nil, http.StatusOK
 }
@@ -45,9 +45,9 @@ func serveFaucetInfo(r *http.Request, gwCosmosmux *runtime.ServeMux) (interface{
  */
 func serveFaucet(r *http.Request, gwCosmosmux *runtime.ServeMux, request types.InterxRequest, rpcAddr string, bech32addr string, token string) (interface{}, interface{}, int) {
 	// check address
-	faucetAccAddr, err := sdk.AccAddressFromBech32(interx.Config.Faucet.Address)
+	faucetAccAddr, err := sdk.AccAddressFromBech32(config.Config.Faucet.Address)
 	if err != nil {
-		common.GetLogger().Error("[faucet] Invalid bech32addr: ", interx.Config.Faucet.Address)
+		common.GetLogger().Error("[faucet] Invalid bech32addr: ", config.Config.Faucet.Address)
 		return common.ServeError(0, "", fmt.Sprintf("internal server error: %s", err), http.StatusInternalServerError)
 	}
 
@@ -65,86 +65,95 @@ func serveFaucet(r *http.Request, gwCosmosmux *runtime.ServeMux, request types.I
 		return common.ServeError(101, "", fmt.Sprintf("claim limit: %d second(s) left", timeLeft), http.StatusBadRequest)
 	}
 
-	availableBalances := common.GetAccountBalances(gwCosmosmux, r.Clone(r.Context()), interx.Config.Faucet.Address)
+	availableBalances := common.GetAccountBalances(gwCosmosmux, r.Clone(r.Context()), config.Config.Faucet.Address)
 	claimBalances := common.GetAccountBalances(gwCosmosmux, r.Clone(r.Context()), bech32addr)
 
-	availableAmount := int64(0)
+	availableAmount := new(big.Int)
+	availableAmount.SetString("0", 10)
+	fmt.Println(availableBalances)
 	for _, balance := range availableBalances {
 		if balance.Denom == token {
-			amount, err := strconv.ParseInt(balance.Amount, 10, 64)
-			if err == nil {
-				availableAmount = amount
-			}
+			availableAmount.SetString(balance.Amount, 10)
 		}
 	}
 
-	claimAmount := int64(0) // Y
+	claimAmount := new(big.Int)
+	claimAmount.SetString("0", 10)
 	for _, balance := range claimBalances {
 		if balance.Denom == token {
-			amount, err := strconv.ParseInt(balance.Amount, 10, 64)
-			if err == nil {
-				claimAmount = amount
-			}
+			claimAmount.SetString(balance.Amount, 10)
 		}
 	}
 
-	faucetAmount, ok := interx.Config.Faucet.FaucetAmounts[token] // X
+	faucetAmount := new(big.Int)
+	faucetAmountString, ok := config.Config.Faucet.FaucetAmounts[token] // X
 
 	if !ok {
 		common.GetLogger().Error("[faucet] Failed to get faucet amount from the configuration")
 		return common.ServeError(102, "", "invalid token", http.StatusBadRequest)
 	}
 
-	faucetMininumAmount, ok := interx.Config.Faucet.FaucetMinimumAmounts[token] // M
+	faucetAmount.SetString(faucetAmountString, 10)
+
+	faucetMininumAmount := new(big.Int)
+	faucetMininumAmountString, ok := config.Config.Faucet.FaucetMinimumAmounts[token] // M
 
 	if !ok {
 		common.GetLogger().Error("[faucet] Failed to get faucet minimum amount from the configuration")
 		return common.ServeError(102, "", "invalid token", http.StatusBadRequest)
 	}
 
-	coinStr, ok := interx.Config.Faucet.FeeAmounts[token]
+	faucetMininumAmount.SetString(faucetMininumAmountString, 10)
+
+	coinStr, ok := config.Config.Faucet.FeeAmounts[token]
 
 	if !ok {
 		common.GetLogger().Error("[faucet] Failed to get fee amount from the configuration")
 		return common.ServeError(102, "", "invalid token", http.StatusBadRequest)
 	}
 
-	feeAmount, err := sdk.ParseCoin(coinStr)
+	feeAmount, err := sdk.ParseCoinNormalized(coinStr)
 
 	if err != nil {
 		common.GetLogger().Error("[faucet] Failed to parse fee amount from the configuration: ", coinStr)
 		return common.ServeError(102, "", "invalid token", http.StatusBadRequest)
 	}
 
-	common.GetLogger().Info("[faucet] Available amount: ", availableAmount)
-	common.GetLogger().Info("[faucet] Claim amount: ", claimAmount)
-	common.GetLogger().Info("[faucet] Faucet amount: ", faucetAmount)
-	common.GetLogger().Info("[faucet] Faucet minimum amount: ", faucetMininumAmount)
+	// common.GetLogger().Info("[faucet] Available amount: ", availableAmount)
+	// common.GetLogger().Info("[faucet] Claim amount: ", claimAmount)
+	// common.GetLogger().Info("[faucet] Faucet amount: ", faucetAmount)
+	// common.GetLogger().Info("[faucet] Faucet minimum amount: ", faucetMininumAmount)
 
-	if faucetAmount <= claimAmount {
+	if faucetAmount.Cmp(claimAmount) <= 0 {
 		common.GetLogger().Error("[faucet] No need to send tokens: faucetAmount <= claimAmount")
 		return common.ServeError(103, "", "no need to send tokens", http.StatusBadRequest)
 	}
 
-	if faucetAmount-claimAmount <= faucetMininumAmount {
+	claimingAmount := new(big.Int)
+	claimingAmount.SetString("0", 10)
+	claimingAmount = claimingAmount.Sub(faucetAmount, claimAmount)
+	if claimingAmount.Cmp(faucetMininumAmount) <= 0 {
 		common.GetLogger().Error("[faucet] Less than minimum amount: faucetAmount-claimAmount <= faucetMininumAmount")
 		return common.ServeError(104, "", "can't send tokens, less than minimum amount", http.StatusBadRequest)
 	}
 
-	if faucetAmount-claimAmount > availableAmount-faucetMininumAmount {
+	remainingAmount := new(big.Int)
+	remainingAmount.SetString("0", 10)
+	remainingAmount = remainingAmount.Sub(availableAmount, faucetMininumAmount)
+	if claimingAmount.Cmp(remainingAmount) > 0 {
 		common.GetLogger().Error("[faucet] Not enough tokens: faucetAmount-claimAmount > availableAmount-faucetMininumAmount")
 		return common.ServeError(105, "", "not enough tokens", http.StatusBadRequest)
 	}
 
 	// GET AccountNumber and Sequence
-	accountNumber, sequence := common.GetAccountNumberSequence(gwCosmosmux, r.Clone(r.Context()), interx.Config.Faucet.Address)
-	common.GetLogger().Info("[faucet] accountNumber: ", accountNumber)
-	common.GetLogger().Info("[faucet] sequence: ", sequence)
+	accountNumber, sequence := common.GetAccountNumberSequence(gwCosmosmux, r.Clone(r.Context()), config.Config.Faucet.Address)
+	// common.GetLogger().Info("[faucet] accountNumber: ", accountNumber)
+	// common.GetLogger().Info("[faucet] sequence: ", sequence)
 
 	msgSend := &bank.MsgSend{
 		FromAddress: faucetAccAddr.String(),
 		ToAddress:   claimAccAddr.String(),
-		Amount:      sdk.NewCoins(sdk.NewInt64Coin(token, faucetAmount-claimAmount)),
+		Amount:      sdk.NewCoins(sdk.NewCoin(token, sdk.NewIntFromBigInt(claimingAmount))),
 	}
 
 	msgs := []sdk.Msg{msgSend}
@@ -154,17 +163,17 @@ func serveFaucet(r *http.Request, gwCosmosmux *runtime.ServeMux, request types.I
 	sigs := make([]legacytx.StdSignature, 1)
 	signBytes := legacytx.StdSignBytes(common.NodeStatus.Chainid, accountNumber, sequence, 0, fee, msgs, memo)
 
-	sig, err := interx.Config.Faucet.PrivKey.Sign(signBytes)
+	sig, err := config.Config.Faucet.PrivKey.Sign(signBytes)
 	if err != nil {
 		common.GetLogger().Error("[faucet] Failed to sign transaction: ", err)
 		panic(err)
 	}
 
-	sigs[0] = legacytx.StdSignature{PubKey: interx.Config.Faucet.PubKey, Signature: sig}
+	sigs[0] = legacytx.StdSignature{PubKey: config.Config.Faucet.PubKey, Signature: sig}
 
 	stdTx := legacytx.NewStdTx(msgs, fee, sigs, memo)
 
-	txBuilder := interx.EncodingCg.TxConfig.NewTxBuilder()
+	txBuilder := config.EncodingCg.TxConfig.NewTxBuilder()
 	err = txBuilder.SetMsgs(stdTx.GetMsgs()...)
 	if err != nil {
 		common.GetLogger().Error("[faucet] Failed to set tx msgs: ", err)
@@ -189,7 +198,7 @@ func serveFaucet(r *http.Request, gwCosmosmux *runtime.ServeMux, request types.I
 	txBuilder.SetFeeAmount(stdTx.GetFee())
 	txBuilder.SetGasLimit(stdTx.GetGas())
 
-	txBytes, err := interx.EncodingCg.TxConfig.TxEncoder()(txBuilder.GetTx())
+	txBytes, err := config.EncodingCg.TxConfig.TxEncoder()(txBuilder.GetTx())
 	if err != nil {
 		common.GetLogger().Error("[faucet] Failed to get tx bytes: ", err)
 		return common.ServeError(1, "failed to get TX bytes", err.Error(), http.StatusBadRequest)
@@ -203,7 +212,7 @@ func serveFaucet(r *http.Request, gwCosmosmux *runtime.ServeMux, request types.I
 	}
 
 	// add new claim
-	database.AddNewClaim(bech32addr, time.Now())
+	database.AddNewClaim(bech32addr, time.Now().UTC())
 
 	type FaucetResponse struct {
 		Hash string `json:"hash"`
@@ -223,10 +232,10 @@ func FaucetRequest(gwCosmosmux *runtime.ServeMux, rpcAddr string) http.HandlerFu
 		tokens := queries["token"]
 
 		if len(claims) == 0 && len(tokens) == 0 {
-			common.GetLogger().Info("[faucet] Entering faucet info")
+			// common.GetLogger().Info("[faucet] Entering faucet info")
 			response.Response, response.Error, statusCode = serveFaucetInfo(r, gwCosmosmux)
 		} else if len(claims) == 1 && len(tokens) == 1 {
-			common.GetLogger().Info("[faucet] Entering faucet: claim = ", claims[0], ", token = ", tokens[0])
+			// common.GetLogger().Info("[faucet] Entering faucet: claim = ", claims[0], ", token = ", tokens[0])
 			response.Response, response.Error, statusCode = serveFaucet(r, gwCosmosmux, request, rpcAddr, claims[0], tokens[0])
 		} else {
 			common.GetLogger().Error("[faucet] Invalid parameters")

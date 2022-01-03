@@ -5,14 +5,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/stretchr/testify/suite"
-	"github.com/tendermint/tendermint/crypto"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-
+	simapp "github.com/KiraCore/sekai/app"
 	customante "github.com/KiraCore/sekai/app/ante"
-	"github.com/KiraCore/sekai/simapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/tx"
+	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/tx/signing"
@@ -20,19 +17,22 @@ import (
 	xauthsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
+	"github.com/stretchr/testify/suite"
+	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
 
 // TestAccount represents an account used in the tests in x/auth/ante.
 type TestAccount struct {
 	acc  types.AccountI
-	priv crypto.PrivKey
+	priv cryptotypes.PrivKey
 }
 
 // AnteTestSuite is a test suite to be used with ante handler tests.
 type AnteTestSuite struct {
 	suite.Suite
 
-	app         *simapp.SimApp
+	app         *simapp.SekaiApp
 	anteHandler sdk.AnteHandler
 	ctx         sdk.Context
 	clientCtx   client.Context
@@ -40,7 +40,7 @@ type AnteTestSuite struct {
 }
 
 // returns context and app with params set on account keeper
-func createTestApp(isCheckTx bool) (*simapp.SimApp, sdk.Context) {
+func createTestApp(isCheckTx bool) (*simapp.SekaiApp, sdk.Context) {
 	app := simapp.Setup(isCheckTx)
 	ctx := app.BaseApp.NewContext(isCheckTx, tmproto.Header{})
 	app.AccountKeeper.SetParams(ctx, authtypes.DefaultParams())
@@ -83,9 +83,11 @@ func (suite *AnteTestSuite) CreateTestAccounts(numAccs int) []TestAccount {
 		err := acc.SetAccountNumber(uint64(i))
 		suite.Require().NoError(err)
 		suite.app.AccountKeeper.SetAccount(suite.ctx, acc)
-		suite.app.BankKeeper.SetBalances(suite.ctx, addr, sdk.Coins{
+		coins := sdk.Coins{
 			sdk.NewInt64Coin("atom", 10000000),
-		})
+		}
+		suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
+		suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, addr, coins)
 
 		accounts = append(accounts, TestAccount{acc, priv})
 	}
@@ -94,7 +96,7 @@ func (suite *AnteTestSuite) CreateTestAccounts(numAccs int) []TestAccount {
 }
 
 // CreateTestTx is a helper function to create a tx given multiple inputs.
-func (suite *AnteTestSuite) CreateTestTx(privs []crypto.PrivKey, accNums []uint64, accSeqs []uint64, chainID string) (xauthsigning.Tx, error) {
+func (suite *AnteTestSuite) CreateTestTx(privs []cryptotypes.PrivKey, accNums []uint64, accSeqs []uint64, chainID string) (xauthsigning.Tx, error) {
 	// First round: we gather all the signer infos. We use the "set empty
 	// signature" hack to do that.
 	var sigsV2 []signing.SignatureV2
@@ -143,14 +145,14 @@ func (suite *AnteTestSuite) CreateTestTx(privs []crypto.PrivKey, accNums []uint6
 // TestCase represents a test case used in test tables.
 type TestCase struct {
 	desc      string
-	buildTest func() ([]sdk.Msg, []crypto.PrivKey, []uint64, []uint64, sdk.Coins)
+	buildTest func() ([]sdk.Msg, []cryptotypes.PrivKey, []uint64, []uint64, sdk.Coins)
 	simulate  bool
 	expPass   bool
 	expErr    error
 }
 
 // CreateTestTx is a helper function to create a tx given multiple inputs.
-func (suite *AnteTestSuite) RunTestCase(privs []crypto.PrivKey, msgs []sdk.Msg, feeAmount sdk.Coins, gasLimit uint64, accNums, accSeqs []uint64, chainID string, tc TestCase) {
+func (suite *AnteTestSuite) RunTestCase(privs []cryptotypes.PrivKey, msgs []sdk.Msg, feeAmount sdk.Coins, gasLimit uint64, accNums, accSeqs []uint64, chainID string, tc TestCase) {
 	suite.Run(fmt.Sprintf("Case %s", tc.desc), func() {
 		suite.Require().NoError(suite.txBuilder.SetMsgs(msgs...))
 		suite.txBuilder.SetFeeAmount(feeAmount)

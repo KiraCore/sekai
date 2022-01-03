@@ -1,0 +1,12 @@
+syntax = "proto3";
+package kira.gov;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/gov/types";
+
+// defines allowed messages by network status, we only use this for poor network where
+// number of validators is less than min_validators network property
+message AllowedMessages {
+    repeated string messages = 1;
+}

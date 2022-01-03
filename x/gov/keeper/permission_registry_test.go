@@ -3,7 +3,7 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/KiraCore/sekai/simapp"
+	simapp "github.com/KiraCore/sekai/app"
 	"github.com/KiraCore/sekai/x/gov/types"
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
@@ -13,7 +13,11 @@ func TestKeeper_CreateRoleAndWhitelistPerm(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	app.CustomGovKeeper.CreateRole(ctx, types.RoleSudo)
+	app.CustomGovKeeper.SetRole(ctx, types.Role{
+		Id:          uint32(types.RoleSudo),
+		Sid:         "RoleSudo",
+		Description: "RoleSudo",
+	})
 
 	err := app.CustomGovKeeper.WhitelistRolePermission(ctx, types.RoleSudo, types.PermClaimValidator)
 	require.NoError(t, err)

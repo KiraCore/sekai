@@ -1,0 +1,83 @@
+syntax = "proto3";
+package kira.gov;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/KiraCore/sekai/INTERX/proto-gen/kira/gov";
+
+message IdentityRecord {
+    uint64 id = 1;
+    string address = 2;
+    string key = 3;
+    string value = 4;
+    google.protobuf.Timestamp date = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+    repeated string verifiers = 6 ;
+}
+
+message IdentityInfoEntry {
+    string key = 1;
+    string info = 2;
+}
+
+message MsgRegisterIdentityRecords {
+    bytes address = 1 [
+        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+        (gogoproto.moretags) = "yaml:\"address\""
+    ];
+    repeated IdentityInfoEntry infos = 2 [ (gogoproto.nullable) = false ];
+}
+
+message MsgDeleteIdentityRecords {
+    bytes address = 1 [
+        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+        (gogoproto.moretags) = "yaml:\"address\""
+    ];
+    repeated string keys = 2;
+}
+
+message Coin {
+  string denom  = 1;
+  string amount = 2;
+}
+
+message IdentityRecordsVerify {
+    uint64 id = 1;
+    string address = 2;
+    string verifier = 3;
+    repeated uint64 recordIds = 4;
+    Coin tip = 5;
+    google.protobuf.Timestamp lastRecordEditDate = 6 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+message MsgRequestIdentityRecordsVerify {
+    bytes address = 1 [
+        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+        (gogoproto.moretags) = "yaml:\"address\""
+    ];
+    bytes verifier = 2 [
+        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+        (gogoproto.moretags) = "yaml:\"verifier\""
+    ];
+    repeated uint64 recordIds = 3;
+    string tip = 4 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+        (gogoproto.nullable) = false
+    ];
+}
+
+message MsgHandleIdentityRecordsVerifyRequest {
+    bytes verifier = 1 [
+        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+        (gogoproto.moretags) = "yaml:\"verifier\""
+    ];
+    uint64 verifyRequestId = 2;
+    bool yes = 3;
+}
+message MsgCancelIdentityRecordsVerifyRequest  {
+    bytes executor = 1 [
+        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+        (gogoproto.moretags) = "yaml:\"executor\""
+    ];
+    uint64 verifyRequestId = 2;
+}

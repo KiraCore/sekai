@@ -1,0 +1,13 @@
+syntax = "proto3";
+package kira.upgrade;
+
+import "gogoproto/gogo.proto";
+import "kira/upgrade/plan.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/upgrade/types";
+
+message GenesisState {
+  string version = 1; 
+  Plan current_plan = 2;
+  Plan next_plan = 3;
+}

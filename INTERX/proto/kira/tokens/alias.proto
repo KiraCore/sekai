@@ -1,0 +1,26 @@
+syntax = "proto3";
+package kira.tokens;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/KiraCore/sekai/INTERX/proto-gen/kira/tokens";
+
+message TokenAlias {
+    string symbol = 1;// Ticker (eg. ATOM, KEX, BTC)
+    string name = 2; // Token Name (e.g. Cosmos, Kira, Bitcoin)
+    string icon = 3; // Graphical Symbol (url link to graphics)
+    uint32 decimals = 4; // Integer number of max decimals
+    repeated string denoms = 5; // An array of token denoms to be aliased
+}
+
+message MsgUpsertTokenAlias {
+    string symbol = 1;// Ticker (eg. ATOM, KEX, BTC)
+    string name = 2; // Token Name (e.g. Cosmos, Kira, Bitcoin)
+    string icon = 3; // Graphical Symbol (url link to graphics)
+    uint32 decimals = 4; // Integer number of max decimals
+    repeated string denoms = 5; // An array of token denoms to be aliased
+    bytes proposer = 6 [
+        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+        (gogoproto.moretags) = "yaml:\"proposer\""
+    ];
+}

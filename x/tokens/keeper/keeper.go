@@ -7,19 +7,20 @@ import (
 
 // store prefixes
 var (
-	PrefixKeyTokenAlias = []byte("token_alias_registry")
-	PrefixKeyDenomToken = []byte("denom_token_registry")
-	PrefixKeyTokenRate  = []byte("token_rate_registry")
+	PrefixKeyTokenAlias      = []byte("token_alias_registry")
+	PrefixKeyDenomToken      = []byte("denom_token_registry")
+	PrefixKeyTokenRate       = []byte("token_rate_registry")
+	PrefixKeyTokenBlackWhite = []byte("token_black_white")
 )
 
 // Keeper is for managing token module
 type Keeper struct {
-	cdc      codec.BinaryMarshaler
+	cdc      codec.BinaryCodec
 	storeKey sdk.StoreKey
 }
 
 // NewKeeper returns instance of a keeper
-func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryMarshaler) Keeper {
+func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryCodec) Keeper {
 	return Keeper{cdc: cdc, storeKey: storeKey}
 }
 

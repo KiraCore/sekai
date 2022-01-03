@@ -3,7 +3,7 @@ package database
 import (
 	"time"
 
-	interx "github.com/KiraCore/sekai/INTERX/config"
+	"github.com/KiraCore/sekai/INTERX/config"
 	"github.com/sonyarouje/simdb/db"
 )
 
@@ -23,22 +23,24 @@ func (c ReferenceData) ID() (jsonField string, value interface{}) {
 	return
 }
 
-func getReferenceDbDriver() *db.Driver {
-	driver, err := db.New(interx.GetDbCacheDir() + "ref")
-	if err != nil {
-		panic(err)
-	}
+func LoadReferenceDbDriver() {
+	DisableStdout()
+	driver, _ := db.New(config.GetDbCacheDir() + "/ref")
+	EnableStdout()
 
-	return driver
+	refDb = driver
 }
 
 // GetAllReferences is a function to get all references
 func GetAllReferences() ([]ReferenceData, error) {
-	DisableStdout()
+	if refDb == nil {
+		panic("cache dir not set")
+	}
 
 	var references []ReferenceData
-	err := refDb.Open(ReferenceData{}).Get().AsEntity(&references)
 
+	DisableStdout()
+	err := refDb.Open(ReferenceData{}).Get().AsEntity(&references)
 	EnableStdout()
 
 	return references, err
@@ -46,11 +48,14 @@ func GetAllReferences() ([]ReferenceData, error) {
 
 // GetReference is a function to get reference by key
 func GetReference(key string) (ReferenceData, error) {
-	DisableStdout()
+	if refDb == nil {
+		panic("cache dir not set")
+	}
 
 	data := ReferenceData{}
-	err := refDb.Open(ReferenceData{}).Where("key", "=", key).First().AsEntity(&data)
 
+	DisableStdout()
+	err := refDb.Open(ReferenceData{}).Where("key", "=", key).First().AsEntity(&data)
 	EnableStdout()
 
 	return data, err
@@ -58,6 +63,10 @@ func GetReference(key string) (ReferenceData, error) {
 
 // AddReference is a function to add reference
 func AddReference(key string, url string, contentLength int64, lastModified time.Time, filepath string) {
+	if refDb == nil {
+		panic("cache dir not set")
+	}
+
 	data := ReferenceData{
 		Key:           key,
 		URL:           url,
@@ -68,23 +77,26 @@ func AddReference(key string, url string, contentLength int64, lastModified time
 
 	_, err := GetReference(key)
 
-	DisableStdout()
-
 	if err == nil {
+		DisableStdout()
 		err := refDb.Open(ReferenceData{}).Update(data)
+		EnableStdout()
+
 		if err != nil {
 			panic(err)
 		}
 	} else {
+		DisableStdout()
 		err := refDb.Open(ReferenceData{}).Insert(data)
+		EnableStdout()
+
 		if err != nil {
 			panic(err)
 		}
 	}
 
-	EnableStdout()
 }
 
 var (
-	refDb *db.Driver = getReferenceDbDriver()
+	refDb *db.Driver
 )

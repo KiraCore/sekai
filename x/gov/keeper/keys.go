@@ -25,6 +25,8 @@ var (
 	EnactmentProposalsPrefix = []byte{0x04}
 
 	RolePermissionRegistry          = []byte{0x10}
+	RoleIdToInfo                    = []byte{0x11}
+	RoleSidToIdRegistry             = []byte{0x12}
 	CouncilorIdentityRegistryPrefix = []byte{0x20}
 
 	NetworkActorsPrefix  = []byte{0x30}
@@ -32,5 +34,9 @@ var (
 	RoleActorPrefix      = []byte{0x32}
 	WhitelistRolePrefix  = []byte{0x33}
 
-	DataRegistryPrefix  = []byte{0x40}
+	DataRegistryPrefix = []byte{0x40}
+
+	PoorNetworkMessagesPrefix = []byte{0x41}
+
+	NextRolePrefix = []byte{0x50}
 )

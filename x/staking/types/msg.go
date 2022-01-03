@@ -6,21 +6,19 @@ import (
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 
 	"github.com/KiraCore/sekai/types"
-	"github.com/tendermint/tendermint/crypto"
+	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-var _ sdk.Msg = &MsgClaimValidator{}
+var (
+	_ sdk.Msg = &MsgClaimValidator{}
+)
 
 func NewMsgClaimValidator(
 	moniker string,
-	website string,
-	social string,
-	identity string,
-	comission sdk.Dec,
 	valKey sdk.ValAddress,
-	pubKey crypto.PubKey,
+	pubKey cryptotypes.PubKey,
 ) (*MsgClaimValidator, error) {
 	if valKey == nil {
 		return nil, fmt.Errorf("validator not set")
@@ -30,19 +28,16 @@ func NewMsgClaimValidator(
 		return nil, fmt.Errorf("public key not set")
 	}
 
-	pkAny, err := codectypes.PackAny(pubKey)
-	if err != nil {
+	var pkAny *codectypes.Any
+	var err error
+	if pkAny, err = codectypes.NewAnyWithValue(pubKey); err != nil {
 		return nil, err
 	}
 
 	return &MsgClaimValidator{
-		Moniker:    moniker,
-		Website:    website,
-		Social:     social,
-		Identity:   identity,
-		Commission: comission,
-		ValKey:     valKey,
-		PubKey:     pkAny,
+		Moniker: moniker,
+		ValKey:  valKey,
+		PubKey:  pkAny,
 	}, nil
 }
 
@@ -71,4 +66,10 @@ func (m *MsgClaimValidator) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{
 		sdk.AccAddress(m.ValKey),
 	}
+}
+
+// UnpackInterfaces implements UnpackInterfacesMessage.UnpackInterfaces
+func (m *MsgClaimValidator) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
+	var pubKey cryptotypes.PubKey
+	return unpacker.UnpackAny(m.PubKey, &pubKey)
 }

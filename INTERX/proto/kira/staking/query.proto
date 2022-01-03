@@ -1,0 +1,78 @@
+syntax="proto3";
+package kira.staking;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "kira/gov/identity_registrar.proto";
+
+// Defines the import path that should be used to import the generated package,
+// and the package name.
+option go_package = "github.com/KiraCore/sekai/INTERX/proto-gen/kira/staking";
+
+// These annotations are used when generating the OpenAPI file.
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    version: "1.0";
+  };
+  external_docs: {
+    url: "https://github.com/KiraCore/sekai/INTERX";
+    description: "gRPC-gateway";
+  }
+  schemes: HTTP;
+};
+
+service Query {
+  // Validators queries all validators that match the given status.
+  rpc Validators(ValidatorsRequest) returns (ValidatorsResponse) {
+    option (google.api.http).get = "/api/valopers";
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Query All Validators"
+      description: "Query Validators."
+      tags: "query"
+    };
+  }
+}
+
+// ValidatorsRequest is the request type for the Query/AllValidators RPC method.
+message ValidatorsRequest {
+  string address = 1;
+  string valkey = 2;
+  string pubkey = 3;
+  string moniker = 4;
+  string status = 5;
+  string proposer = 6;
+  
+  // pagination defines an optional pagination for the request.
+  cosmos.base.query.v1beta1.PageRequest pagination = 7 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
+
+  bool all = 8;
+}
+
+message QueryValidator {
+  option (gogoproto.equal)            = true;
+
+  string address = 1;
+  string valkey = 2;
+  string pubkey = 3;
+  string proposer = 4;
+  string moniker = 5;
+  string status = 6;
+  int64 rank = 7;
+  int64 streak = 8;
+  int64 mischance = 9;
+  repeated kira.gov.IdentityRecord identity = 10 [(gogoproto.nullable) = false];
+}
+
+// ValidatorsResponse is response type for the Query/Validators RPC method
+message ValidatorsResponse {
+  // validators contains all the queried validators.
+  repeated QueryValidator validators = 1;
+
+  repeated string actors = 2;
+
+  // pagination defines the pagination in the response.
+  cosmos.base.query.v1beta1.PageResponse pagination = 3 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
+}

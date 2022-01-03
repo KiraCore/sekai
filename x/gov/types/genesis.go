@@ -1,41 +1,78 @@
 package types
 
-// special messages managed by governance
-const (
-	UpsertTokenAlias = "upsert-token-alias"
-	UpsertTokenRate  = "upsert-token-rate"
+import (
+	kiratypes "github.com/KiraCore/sekai/types"
 )
 
 // DefaultGenesis returns the default CustomGo genesis state
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
-		Permissions: map[uint64]*Permissions{
-			uint64(RoleSudo): NewPermissions([]PermValue{
+		NextRoleId: 3,
+		Roles: []Role{
+			{
+				Id:          uint32(RoleSudo),
+				Sid:         "sudo",
+				Description: "Sudo role",
+			},
+			{
+				Id:          uint32(RoleValidator),
+				Sid:         "validator",
+				Description: "Validator role",
+			},
+		},
+		RolePermissions: map[uint64]*Permissions{
+			RoleSudo: NewPermissions([]PermValue{
 				PermSetPermissions,
-				PermClaimCouncilor,
 				PermClaimValidator,
+				PermClaimCouncilor,
+				PermUpsertTokenAlias,
+				// PermChangeTxFee, // do not give this permission to sudo account - test does not pass
+				PermUpsertTokenRate,
+				PermUpsertRole,
 				PermCreateSetPermissionsProposal,
 				PermVoteSetPermissionProposal,
 				PermCreateSetNetworkPropertyProposal,
 				PermVoteSetNetworkPropertyProposal,
-				PermUpsertDataRegistryProposal,
+				PermCreateUpsertDataRegistryProposal,
 				PermVoteUpsertDataRegistryProposal,
 				PermCreateUpsertTokenAliasProposal,
 				PermVoteUpsertTokenAliasProposal,
 				PermCreateUpsertTokenRateProposal,
 				PermVoteUpsertTokenRateProposal,
-				PermUpsertRole,
+				PermCreateUnjailValidatorProposal,
+				PermVoteUnjailValidatorProposal,
+				PermCreateRoleProposal,
+				PermVoteCreateRoleProposal,
+				PermCreateSetProposalDurationProposal,
+				PermVoteSetProposalDurationProposal,
+				PermCreateTokensWhiteBlackChangeProposal,
+				PermVoteTokensWhiteBlackChangeProposal,
+				PermCreateSetPoorNetworkMessagesProposal,
+				PermVoteSetPoorNetworkMessagesProposal,
 			}, nil),
 			uint64(RoleValidator): NewPermissions([]PermValue{PermClaimValidator}, nil),
 		},
 		StartingProposalId: 1,
 		NetworkProperties: &NetworkProperties{
-			MinTxFee:                 100,
-			MaxTxFee:                 1000000,
-			VoteQuorum:               33,
-			ProposalEndTime:          1, // 1min
-			ProposalEnactmentTime:    2, // 2min
-			EnableForeignFeePayments: true,
+			MinTxFee:                    100,
+			MaxTxFee:                    1000000,
+			VoteQuorum:                  33,
+			MinimumProposalEndTime:      300, // 300 seconds / 5 mins
+			ProposalEnactmentTime:       300, // 300 seconds / 5 mins
+			MinProposalEndBlocks:        2,
+			MinProposalEnactmentBlocks:  1,
+			EnableForeignFeePayments:    true,
+			MischanceRankDecreaseAmount: 10,
+			MischanceConfidence:         10,
+			MaxMischance:                110,
+			InactiveRankDecreasePercent: 50,      // 50%
+			PoorNetworkMaxBankSend:      1000000, // 1M ukex
+			MinValidators:               1,
+			UnjailMaxTime:               600, // 600  seconds / 10 mins
+			EnableTokenWhitelist:        false,
+			EnableTokenBlacklist:        true,
+			MinIdentityApprovalTip:      200,
+			UniqueIdentityKeys:          "moniker,username",
 		},
 		ExecutionFees: []*ExecutionFee{
 			{
@@ -88,12 +125,64 @@ func DefaultGenesis() *GenesisState {
 			},
 			{
 				Name:              "Upsert Token Alias Execution Fee",
-				TransactionType:   UpsertTokenAlias,
+				TransactionType:   kiratypes.MsgTypeUpsertTokenAlias,
 				ExecutionFee:      10,
 				FailureFee:        1,
 				Timeout:           10,
 				DefaultParameters: 0,
 			},
+			{
+				Name:              "Activate a validator",
+				TransactionType:   kiratypes.MsgTypeActivate,
+				ExecutionFee:      100,
+				FailureFee:        1000,
+				Timeout:           10,
+				DefaultParameters: 0,
+			},
+			{
+				Name:              "Pause a validator",
+				TransactionType:   kiratypes.MsgTypePause,
+				ExecutionFee:      10,
+				FailureFee:        100,
+				Timeout:           10,
+				DefaultParameters: 0,
+			},
+			{
+				Name:              "Unpause a validator",
+				TransactionType:   kiratypes.MsgTypeUnpause,
+				ExecutionFee:      10,
+				FailureFee:        100,
+				Timeout:           10,
+				DefaultParameters: 0,
+			},
 		},
+		PoorNetworkMessages: &AllowedMessages{
+			Messages: []string{
+				kiratypes.MsgTypeSubmitProposal,
+				kiratypes.MsgTypeSetNetworkProperties,
+				kiratypes.MsgTypeVoteProposal,
+				kiratypes.MsgTypeClaimCouncilor,
+				kiratypes.MsgTypeWhitelistPermissions,
+				kiratypes.MsgTypeBlacklistPermissions,
+				kiratypes.MsgTypeCreateRole,
+				kiratypes.MsgTypeAssignRole,
+				kiratypes.MsgTypeRemoveRole,
+				kiratypes.MsgTypeWhitelistRolePermission,
+				kiratypes.MsgTypeBlacklistRolePermission,
+				kiratypes.MsgTypeRemoveWhitelistRolePermission,
+				kiratypes.MsgTypeRemoveBlacklistRolePermission,
+				kiratypes.MsgTypeClaimValidator,
+				kiratypes.MsgTypeActivate,
+				kiratypes.MsgTypePause,
+				kiratypes.MsgTypeUnpause,
+				kiratypes.MsgTypeRegisterIdentityRecords,
+				kiratypes.MsgTypeEditIdentityRecord,
+				kiratypes.MsgTypeRequestIdentityRecordsVerify,
+				kiratypes.MsgTypeHandleIdentityRecordsVerifyRequest,
+				kiratypes.MsgTypeCancelIdentityRecordsVerifyRequest,
+			},
+		},
+		LastIdentityRecordId:        0,
+		LastIdRecordVerifyRequestId: 0,
 	}
 }

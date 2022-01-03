@@ -3,23 +3,23 @@ package cli
 import (
 	"encoding/json"
 	"fmt"
+	"time"
 
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
-	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
-
-	customstakingtypes "github.com/KiraCore/sekai/x/staking/types"
+	"github.com/KiraCore/sekai/x/genutil"
+	genutiltypes "github.com/KiraCore/sekai/x/genutil/types"
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
+	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/server"
 	"github.com/cosmos/cosmos-sdk/types"
-	types2 "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"github.com/cosmos/cosmos-sdk/x/genutil"
+	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/staking/client/cli"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
-func GenTxClaimCmd(genBalIterator types2.GenesisBalancesIterator, defaultNodeHome string) *cobra.Command {
+func GenTxClaimCmd(genBalIterator banktypes.GenesisBalancesIterator, defaultNodeHome string) *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:   "gentx-claim [key_name]",
 		Short: "Adds validator into the genesis set",
@@ -27,7 +27,7 @@ func GenTxClaimCmd(genBalIterator types2.GenesisBalancesIterator, defaultNodeHom
 		RunE: func(cmd *cobra.Command, args []string) error {
 			serverCtx := server.GetServerContextFromCmd(cmd)
 			clientCtx := client.GetClientContextFromCmd(cmd)
-			cdc := clientCtx.JSONMarshaler
+			cdc := clientCtx.JSONCodec
 
 			config := serverCtx.Config
 			config.SetRoot(clientCtx.HomeDir)
@@ -37,10 +37,8 @@ func GenTxClaimCmd(genBalIterator types2.GenesisBalancesIterator, defaultNodeHom
 				return errors.Wrap(err, "failed to initialize node validator files")
 			}
 
-			// read --pubkey, if empty take it from priv_validator.json
 			if valPubKeyString, _ := cmd.Flags().GetString(cli.FlagPubKey); valPubKeyString != "" {
-				valPubKey, err = types.GetPubKeyFromBech32(types.Bech32PubKeyTypeConsPub, valPubKeyString)
-				if err != nil {
+				if err := clientCtx.Codec.UnmarshalInterfaceJSON([]byte(valPubKeyString), &valPubKey); err != nil {
 					return errors.Wrap(err, "failed to get consensus node public key")
 				}
 			}
@@ -53,30 +51,7 @@ func GenTxClaimCmd(genBalIterator types2.GenesisBalancesIterator, defaultNodeHom
 				return errors.Wrapf(err, "failed to fetch '%s' from the keyring", name)
 			}
 
-			moniker := config.Moniker
-			if m, _ := cmd.Flags().GetString(cli.FlagMoniker); m != "" {
-				moniker = m
-			}
-
-			amount, _ := cmd.Flags().GetString(cli.FlagAmount)
-			coins, err := types.ParseCoins(amount)
-			if err != nil {
-				return errors.Wrap(err, "failed to parse coins")
-			}
-
-			err = genutil.ValidateAccountInGenesis(appState, genBalIterator, key.GetAddress(), coins, cdc)
-			if err != nil {
-				return errors.Wrap(err, "failed to validate account in genesis")
-			}
-
-			website, _ := cmd.Flags().GetString(FlagWebsite)
-			identity, _ := cmd.Flags().GetString(FlagIdentity)
-			validator, err := customstakingtypes.NewValidator(
-				moniker,
-				website,
-				"social",
-				identity,
-				types.NewDec(1),
+			validator, err := stakingtypes.NewValidator(
 				types.ValAddress(key.GetAddress()),
 				valPubKey,
 			)
@@ -84,32 +59,48 @@ func GenTxClaimCmd(genBalIterator types2.GenesisBalancesIterator, defaultNodeHom
 				return errors.Wrap(err, "failed to create new validator")
 			}
 
-			var stakingGenesisState customstakingtypes.GenesisState
+			var stakingGenesisState stakingtypes.GenesisState
 			stakingGenesisState.Validators = append(stakingGenesisState.Validators, validator)
 			bzStakingGen := cdc.MustMarshalJSON(&stakingGenesisState)
-			appState[customstakingtypes.ModuleName] = bzStakingGen
+			appState[stakingtypes.ModuleName] = bzStakingGen
 
-			var customGovGenState customgovtypes.GenesisState
-			cdc.MustUnmarshalJSON(appState[customgovtypes.ModuleName], &customGovGenState)
+			var customGovGenState govtypes.GenesisState
+			cdc.MustUnmarshalJSON(appState[govtypes.ModuleName], &customGovGenState)
 
 			// Only first validator is network actor
-			networkActor := customgovtypes.NewNetworkActor(
+			networkActor := govtypes.NewNetworkActor(
 				types.AccAddress(validator.ValKey),
-				customgovtypes.Roles{
-					uint64(customgovtypes.RoleSudo),
+				[]uint64{govtypes.RoleSudo},
+				govtypes.Active,
+				[]govtypes.VoteOption{
+					govtypes.OptionYes,
+					govtypes.OptionAbstain,
+					govtypes.OptionNo,
+					govtypes.OptionNoWithVeto,
 				},
-				customgovtypes.Active,
-				[]customgovtypes.VoteOption{
-					customgovtypes.OptionYes,
-					customgovtypes.OptionAbstain,
-					customgovtypes.OptionNo,
-					customgovtypes.OptionNoWithVeto,
-				},
-				customgovtypes.NewPermissions(nil, nil),
+				govtypes.NewPermissions(nil, nil),
 				1,
 			)
 			customGovGenState.NetworkActors = append(customGovGenState.NetworkActors, &networkActor)
-			appState[customgovtypes.ModuleName] = cdc.MustMarshalJSON(&customGovGenState)
+			moniker := config.Moniker
+			if m, _ := cmd.Flags().GetString(cli.FlagMoniker); m != "" {
+				moniker = m
+			}
+			for _, record := range customGovGenState.IdentityRecords {
+				if record.Key == "moniker" && record.Value == moniker {
+					panic(fmt.Sprintf("same moniker exists, moniker = %s", moniker))
+				}
+			}
+			customGovGenState.IdentityRecords = append(customGovGenState.IdentityRecords, govtypes.IdentityRecord{
+				Id:        customGovGenState.LastIdentityRecordId + 1,
+				Address:   types.AccAddress(validator.ValKey).String(),
+				Key:       "moniker",
+				Value:     moniker,
+				Date:      time.Now().UTC(),
+				Verifiers: []string{},
+			})
+			customGovGenState.LastIdentityRecordId++
+			appState[govtypes.ModuleName] = cdc.MustMarshalJSON(&customGovGenState)
 
 			appGenStateJSON, err := json.Marshal(appState)
 			if err != nil {

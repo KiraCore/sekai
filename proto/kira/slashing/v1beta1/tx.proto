@@ -1,0 +1,53 @@
+syntax = "proto3";
+package kira.slashing;
+
+option go_package            = "github.com/KiraCore/sekai/x/slashing/types";
+option (gogoproto.equal_all) = true;
+
+import "gogoproto/gogo.proto";
+import "kira/slashing/v1beta1/proposal.proto";
+
+// Msg defines the slashing Msg service.
+service Msg {
+  // Activate defines a method for activating an inactivated validator, thus returning
+  // them into the joined validator set, so they can begin receiving provisions
+  // and rewards again.
+  rpc Activate(MsgActivate) returns (MsgActivateResponse);
+  // Pause defines a method for pausing an active validator
+  rpc Pause(MsgPause) returns (MsgPauseResponse);
+  // Unpause defines a method for a paused validator
+  rpc Unpause(MsgUnpause) returns (MsgUnpauseResponse);
+}
+
+// MsgActivate defines the Msg/Activate request type
+message MsgActivate {
+  option (gogoproto.goproto_getters)  = false;
+  option (gogoproto.goproto_stringer) = true;
+
+  string validator_addr = 1 [(gogoproto.moretags) = "yaml:\"address\"", (gogoproto.jsontag) = "address"];
+}
+
+// MsgActivateResponse defines the Msg/Activate response type
+message MsgActivateResponse {}
+
+// MsgPause defines the Msg/Pause request type
+message MsgPause {
+  option (gogoproto.goproto_getters)  = false;
+  option (gogoproto.goproto_stringer) = true;
+
+  string validator_addr = 1 [(gogoproto.moretags) = "yaml:\"address\"", (gogoproto.jsontag) = "address"];
+}
+
+// MsgUnpauseResponse defines the Msg/Unpause response type
+message MsgPauseResponse {}
+
+// MsgUnpause defines the Msg/Unpause request type
+message MsgUnpause {
+  option (gogoproto.goproto_getters)  = false;
+  option (gogoproto.goproto_stringer) = true;
+
+  string validator_addr = 1 [(gogoproto.moretags) = "yaml:\"address\"", (gogoproto.jsontag) = "address"];
+}
+
+// MsgUnpauseResponse defines the Msg/Unpause response type
+message MsgUnpauseResponse {}

@@ -1,0 +1,55 @@
+syntax = "proto3";
+package kira.tokens;
+
+import "kira/tokens/alias.proto";
+import "kira/tokens/rate.proto";
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "github.com/KiraCore/sekai/INTERX/proto-gen/kira/tokens";
+
+// These annotations are used when generating the OpenAPI file.
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    version: "1.0";
+  };
+  external_docs: {
+    url: "https://github.com/KiraCore/sekai/INTERX";
+    description: "gRPC-gateway";
+  }
+  schemes: HTTP;
+};
+
+// Query defines the gRPC querier service
+service Query {
+  // Returns the token alias
+  rpc GetAllTokenAliases (AllTokenAliasesRequest) returns (AllTokenAliasesResponse) {
+    option (google.api.http).get = "/api/kira/tokens/aliases";
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Query All Token Aliases"
+      description: "Query All Token Aliases."
+      tags: "query"
+    };
+  }
+  // Returns the token rates
+  rpc GetAllTokenRates (AllTokenRatesRequest) returns (AllTokenRatesResponse) {
+    option (google.api.http).get = "/api/kira/tokens/rates";
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Query All Token Rates"
+      description: "Query All Token Rates."
+      tags: "query"
+    };
+  }
+}
+
+message AllTokenAliasesRequest {}
+
+message AllTokenAliasesResponse {
+  repeated kira.tokens.TokenAlias data = 1;
+}
+
+message AllTokenRatesRequest {}
+
+message AllTokenRatesResponse {
+  repeated kira.tokens.TokenRate data = 1;
+}

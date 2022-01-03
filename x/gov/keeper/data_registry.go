@@ -12,7 +12,7 @@ import (
 func (k Keeper) UpsertDataRegistryEntry(ctx sdk.Context, key string, entry types.DataRegistryEntry) {
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), DataRegistryPrefix)
 
-	bz := k.cdc.MustMarshalBinaryBare(&entry)
+	bz := k.cdc.MustMarshal(&entry)
 	prefixStore.Set([]byte(key), bz)
 }
 
@@ -26,18 +26,19 @@ func (k Keeper) GetDataRegistryEntry(ctx sdk.Context, key string) (types.DataReg
 	}
 
 	var na types.DataRegistryEntry
-	k.cdc.MustUnmarshalBinaryBare(bz, &na)
+	k.cdc.MustUnmarshal(bz, &na)
 
 	return na, true
 }
 
-// ListDataRegistryEntry returns all keys of data registry
-func (k Keeper) ListDataRegistryEntry(ctx sdk.Context) []string {
+// ListDataRegistryEntryKeys returns all keys of data registry
+func (k Keeper) ListDataRegistryEntryKeys(ctx sdk.Context) []string {
 	var keys []string
 
 	// get iterator for token aliases
 	store := ctx.KVStore(k.storeKey)
 	iterator := sdk.KVStorePrefixIterator(store, DataRegistryPrefix)
+	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
 		key := strings.TrimPrefix(string(iterator.Key()), string(DataRegistryPrefix))
@@ -45,4 +46,27 @@ func (k Keeper) ListDataRegistryEntry(ctx sdk.Context) []string {
 	}
 
 	return keys
+}
+
+// AllDataRegistry returns all of data registry
+func (k Keeper) AllDataRegistry(ctx sdk.Context) map[string]*types.DataRegistryEntry {
+	var dataRegistry map[string]*types.DataRegistryEntry
+
+	keys := k.ListDataRegistryEntryKeys(ctx)
+
+	// get iterator for token aliases
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, DataRegistryPrefix)
+	defer iterator.Close()
+
+	for _, key := range keys {
+		entry, ok := k.GetDataRegistryEntry(ctx, key)
+		if ok {
+			dataRegistry[key] = &entry
+		} else {
+			dataRegistry[key] = nil
+		}
+	}
+
+	return dataRegistry
 }

@@ -1,11 +1,10 @@
 package tokens
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/errors"
-
 	"github.com/KiraCore/sekai/x/tokens/keeper"
 	"github.com/KiraCore/sekai/x/tokens/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // NewHandler returns new instance of handler
@@ -22,15 +21,6 @@ func NewHandler(ck keeper.Keeper, cgk types.CustomGovKeeper) sdk.Handler {
 
 		case *types.MsgUpsertTokenRate:
 			res, err := msgServer.UpsertTokenRate(sdk.WrapSDKContext(ctx), msg)
-			return sdk.WrapServiceResult(ctx, res, err)
-
-		// Proposals
-		case *types.MsgProposalUpsertTokenAlias:
-			res, err := msgServer.ProposalUpsertTokenAlias(sdk.WrapSDKContext(ctx), msg)
-			return sdk.WrapServiceResult(ctx, res, err)
-
-		case *types.MsgProposalUpsertTokenRates:
-			res, err := msgServer.ProposalUpsertTokenRates(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 
 		default:

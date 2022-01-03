@@ -4,12 +4,11 @@ import (
 	"testing"
 	"time"
 
+	simapp "github.com/KiraCore/sekai/app"
+	kiratypes "github.com/KiraCore/sekai/types"
 	"github.com/KiraCore/sekai/x/gov/types"
-	types2 "github.com/cosmos/cosmos-sdk/types"
-
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
-
-	"github.com/KiraCore/sekai/simapp"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
 
@@ -17,8 +16,7 @@ func TestDefaultProposalIdAtDefaultGenesis(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	proposalID, err := app.CustomGovKeeper.GetNextProposalID(ctx)
-	require.NoError(t, err)
+	proposalID := app.CustomGovKeeper.GetNextProposalID(ctx)
 	require.Equal(t, uint64(1), proposalID)
 }
 
@@ -26,11 +24,13 @@ func TestKeeper_EncodingContentType(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, types2.TokensFromConsensusPower(10))
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
 	addr := addrs[0]
 
 	proposal1, err := types.NewProposal(
 		1,
+		"title",
+		"some desc",
 		types.NewAssignPermissionProposal(
 			addr,
 			types.PermSetPermissions,
@@ -38,6 +38,8 @@ func TestKeeper_EncodingContentType(t *testing.T) {
 		time.Now(),
 		time.Now().Add(1*time.Second),
 		time.Now().Add(10*time.Second),
+		ctx.BlockHeight()+2,
+		ctx.BlockHeight()+3,
 	)
 	require.NoError(t, err)
 
@@ -58,11 +60,13 @@ func TestKeeper_GetProposals(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, types2.TokensFromConsensusPower(10))
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
 	addr := addrs[0]
 
 	proposal1, err := types.NewProposal(
 		1,
+		"title",
+		"some desc",
 		types.NewAssignPermissionProposal(
 			addr,
 			types.PermSetPermissions,
@@ -70,6 +74,8 @@ func TestKeeper_GetProposals(t *testing.T) {
 		time.Now(),
 		time.Now().Add(1*time.Second),
 		time.Now().Add(10*time.Second),
+		ctx.BlockHeight()+2,
+		ctx.BlockHeight()+3,
 	)
 	require.NoError(t, err)
 
@@ -81,6 +87,8 @@ func TestKeeper_GetProposals(t *testing.T) {
 
 	proposal2, err := types.NewProposal(
 		2,
+		"title",
+		"some desc",
 		types.NewAssignPermissionProposal(
 			addr,
 			types.PermSetPermissions,
@@ -88,16 +96,17 @@ func TestKeeper_GetProposals(t *testing.T) {
 		time.Now(),
 		time.Now().Add(1*time.Second),
 		time.Now().Add(10*time.Second),
+		ctx.BlockHeight()+2,
+		ctx.BlockHeight()+3,
 	)
 	app.CustomGovKeeper.SaveProposal(ctx, proposal2)
 	proposals, err = app.CustomGovKeeper.GetProposals(ctx)
 	require.NoError(t, err)
 	require.Len(t, proposals, 2)
 	require.Equal(t, proposals[1].ProposalId, proposal2.ProposalId)
-	require.Equal(t, proposals[1].SubmitTime, proposal2.SubmitTime)
 	require.Equal(t, proposals[1].Content, proposal2.Content)
 	require.Equal(t, proposals[1].Result, proposal2.Result)
-	require.Equal(t, proposals[1].VotingStartTime.UTC().String(), proposal2.VotingStartTime.UTC().String())
+	require.Equal(t, proposals[1].SubmitTime.UTC().String(), proposal2.SubmitTime.UTC().String())
 	require.Equal(t, proposals[1].VotingEndTime.UTC().String(), proposal2.VotingEndTime.UTC().String())
 	require.Equal(t, proposals[1].EnactmentEndTime.UTC().String(), proposal2.EnactmentEndTime.UTC().String())
 }
@@ -106,15 +115,16 @@ func TestSaveProposalReturnsTheProposalID_AndIncreasesLast(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	proposalID, err := app.CustomGovKeeper.GetNextProposalID(ctx)
-	require.NoError(t, err)
+	proposalID := app.CustomGovKeeper.GetNextProposalIDAndIncrement(ctx)
 	require.Equal(t, uint64(1), proposalID)
 
-	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, types2.TokensFromConsensusPower(10))
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
 	addr := addrs[0]
 
 	proposal, err := types.NewProposal(
-		1,
+		proposalID,
+		"title",
+		"some desc",
 		types.NewAssignPermissionProposal(
 			addr,
 			types.PermClaimValidator,
@@ -122,13 +132,14 @@ func TestSaveProposalReturnsTheProposalID_AndIncreasesLast(t *testing.T) {
 		ctx.BlockTime(),
 		ctx.BlockTime().Add(10*time.Minute),
 		ctx.BlockTime().Add(20*time.Minute),
+		ctx.BlockHeight()+2,
+		ctx.BlockHeight()+3,
 	)
 	require.NoError(t, err)
 	app.CustomGovKeeper.SaveProposal(ctx, proposal)
 
 	// nextProposalID should be 2
-	proposalID, err = app.CustomGovKeeper.GetNextProposalID(ctx)
-	require.NoError(t, err)
+	proposalID = app.CustomGovKeeper.GetNextProposalID(ctx)
 	require.Equal(t, uint64(2), proposalID)
 
 	// Get proposal
@@ -141,7 +152,7 @@ func TestKeeper_SaveVote(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, types2.TokensFromConsensusPower(10))
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
 	addr := addrs[0]
 
 	// Vote not saved yet
@@ -161,7 +172,7 @@ func TestKeeper_AddProposalToActiveQueue(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, types2.TokensFromConsensusPower(10))
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
 	addr := addrs[0]
 
 	baseEndTime := time.Now()
@@ -170,6 +181,8 @@ func TestKeeper_AddProposalToActiveQueue(t *testing.T) {
 
 		proposal, err := types.NewProposal(
 			i,
+			"title",
+			"some desc",
 			types.NewAssignPermissionProposal(
 				addr,
 				types.PermSetPermissions,
@@ -177,6 +190,8 @@ func TestKeeper_AddProposalToActiveQueue(t *testing.T) {
 			baseEndTime,
 			endTime,
 			endTime,
+			ctx.BlockHeight()+2,
+			ctx.BlockHeight()+3,
 		)
 		require.NoError(t, err)
 
@@ -204,7 +219,7 @@ func TestKeeper_AddProposalToEnactmentQueue(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, types2.TokensFromConsensusPower(10))
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
 	addr := addrs[0]
 
 	baseEndTime := time.Now()
@@ -212,6 +227,8 @@ func TestKeeper_AddProposalToEnactmentQueue(t *testing.T) {
 		enactmentEndTime := baseEndTime.Add(time.Duration(i) * time.Second)
 		proposal, err := types.NewProposal(
 			i,
+			"title",
+			"some desc",
 			types.NewAssignPermissionProposal(
 				addr,
 				types.PermSetPermissions,
@@ -219,6 +236,8 @@ func TestKeeper_AddProposalToEnactmentQueue(t *testing.T) {
 			baseEndTime,
 			baseEndTime,
 			enactmentEndTime,
+			ctx.BlockHeight()+2,
+			ctx.BlockHeight()+3,
 		)
 		require.NoError(t, err)
 
@@ -246,12 +265,14 @@ func TestKeeper_GetProposalVotesIterator(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, types2.TokensFromConsensusPower(10))
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
 	addr1 := addrs[0]
 	addr2 := addrs[1]
 
 	proposal1, err := types.NewProposal(
 		1,
+		"title",
+		"some desc",
 		types.NewAssignPermissionProposal(
 			addr1,
 			types.PermSetPermissions,
@@ -259,11 +280,15 @@ func TestKeeper_GetProposalVotesIterator(t *testing.T) {
 		time.Now(),
 		time.Now().Add(1*time.Second),
 		time.Now().Add(10*time.Second),
+		ctx.BlockHeight()+2,
+		ctx.BlockHeight()+3,
 	)
 	require.NoError(t, err)
 
 	proposal2, err := types.NewProposal(
 		2,
+		"title",
+		"some desc",
 		types.NewAssignPermissionProposal(
 			addr2,
 			types.PermClaimCouncilor,
@@ -271,6 +296,8 @@ func TestKeeper_GetProposalVotesIterator(t *testing.T) {
 		time.Now(),
 		time.Now().Add(1*time.Second),
 		time.Now().Add(10*time.Second),
+		ctx.BlockHeight()+2,
+		ctx.BlockHeight()+3,
 	)
 	require.NoError(t, err)
 
@@ -304,4 +331,36 @@ func TestKeeper_GetProposalVotesIterator(t *testing.T) {
 		totalVotes++
 	}
 	require.Equal(t, 1, totalVotes)
+}
+
+func TestKeeper_ProposalDuration(t *testing.T) {
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+	ctx = ctx.WithBlockTime(time.Now())
+
+	properties := app.CustomGovKeeper.GetNetworkProperties(ctx)
+
+	// test AssignPermissionProposal
+	proposalID, err := app.CustomGovKeeper.CreateAndSaveProposalWithContent(ctx, "title", "description", &types.AssignPermissionProposal{})
+	require.NoError(t, err)
+
+	proposal, found := app.CustomGovKeeper.GetProposal(ctx, proposalID)
+	require.True(t, found)
+
+	require.Equal(t, proposal.VotingEndTime.Unix(), ctx.BlockTime().Unix()+int64(properties.MinimumProposalEndTime))
+
+	// test SetNetworkPropertyProposal
+	proposalID, err = app.CustomGovKeeper.CreateAndSaveProposalWithContent(ctx, "title", "description", &types.SetNetworkPropertyProposal{})
+	require.NoError(t, err)
+	proposal, found = app.CustomGovKeeper.GetProposal(ctx, proposalID)
+	require.True(t, found)
+	require.Equal(t, proposal.VotingEndTime.Unix(), ctx.BlockTime().Unix()+int64(properties.MinimumProposalEndTime))
+
+	// check longer duration proposal
+	app.CustomGovKeeper.SetProposalDuration(ctx, kiratypes.SetProposalDurationsProposalType, 2400)
+	proposalID, err = app.CustomGovKeeper.CreateAndSaveProposalWithContent(ctx, "title", "description", &types.SetProposalDurationsProposal{})
+	require.NoError(t, err)
+	proposal, found = app.CustomGovKeeper.GetProposal(ctx, proposalID)
+	require.True(t, found)
+	require.Equal(t, proposal.VotingEndTime.Unix(), ctx.BlockTime().Unix()+2400)
 }

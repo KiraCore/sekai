@@ -1,0 +1,40 @@
+syntax = "proto3";
+package kira.upgrade;
+
+import "google/protobuf/any.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/upgrade/types";
+
+
+option (gogoproto.goproto_getters_all)  = false;
+
+message ProposalSoftwareUpgrade {
+  option (gogoproto.equal) = true;
+
+  string name = 1;
+  repeated Resource resources = 2 [ (gogoproto.nullable) = false ];
+  int64 upgrade_time = 3;
+  string old_chain_id = 4;
+  string new_chain_id = 5;
+  string rollback_checksum = 6;
+  int64 max_enrolment_duration = 7;
+  string memo = 8;
+  bool instate_upgrade = 9;
+  bool reboot_required = 10;
+  bool skip_handler = 11;
+}
+
+message ProposalCancelSoftwareUpgrade {
+  option (gogoproto.equal) = true;
+  string name = 1;
+}
+
+message Resource {
+  option (gogoproto.equal) = true;
+
+  string id = 1;
+  string git = 2;
+  string checkout = 3;
+  string checksum = 4;
+}

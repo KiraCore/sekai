@@ -1,0 +1,31 @@
+syntax = "proto3";
+package kira.tokens;
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+
+option go_package = "github.com/KiraCore/sekai/INTERX/proto-gen/kira/tokens";
+
+message ProposalUpsertTokenAlias {
+  option (cosmos_proto.implements_interface) = "Content";
+  option (gogoproto.equal) = true;
+
+  string symbol = 1;
+  string name = 2;
+  string icon = 3;
+  uint32 decimals = 4;
+  repeated string denoms = 5;
+}
+
+message ProposalUpsertTokenRates {
+  option (cosmos_proto.implements_interface) = "Content";
+  option (gogoproto.equal) = true;
+
+  string denom = 1; // denomination target
+  string rate = 2 [
+    (gogoproto.moretags)   = "yaml:\"rate\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable)   = false
+  ]; // Exchange rate in terms of KEX token
+  bool fee_payments = 3; // Properties defining if it is enabled or disabled as fee payment methodß
+}

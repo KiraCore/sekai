@@ -1,7 +1,7 @@
 package database
 
 import (
-	interx "github.com/KiraCore/sekai/INTERX/config"
+	"github.com/KiraCore/sekai/INTERX/config"
 	"github.com/sonyarouje/simdb/db"
 )
 
@@ -18,32 +18,39 @@ func (c BlockData) ID() (jsonField string, value interface{}) {
 	return
 }
 
-func getBlockDbDriver() *db.Driver {
-	driver, err := db.New(interx.GetDbCacheDir() + "block")
-	if err != nil {
-		panic(err)
-	}
+func LoadBlockDbDriver() {
+	DisableStdout()
+	driver, _ := db.New(config.GetDbCacheDir() + "/block")
+	EnableStdout()
 
-	return driver
+	blockDb = driver
 }
 
 // GetBlockTime is a function to get blockTime
 func GetBlockTime(height int64) (int64, error) {
-	DisableStdout()
+	if blockDb == nil {
+		panic("cache dir not set")
+	}
 
 	data := BlockData{}
+
+	DisableStdout()
 	err := blockDb.Open(BlockData{}).Where("height", "=", height).First().AsEntity(&data)
+	EnableStdout()
+
 	if err != nil {
-		EnableStdout()
 		return 0, err
 	}
 
-	EnableStdout()
 	return data.Timestamp, nil
 }
 
 // AddBlockTime is a function to add blockTime
 func AddBlockTime(height int64, timestamp int64) {
+	if blockDb == nil {
+		panic("cache dir not set")
+	}
+
 	data := BlockData{
 		Height:    height,
 		Timestamp: timestamp,
@@ -53,16 +60,16 @@ func AddBlockTime(height int64, timestamp int64) {
 
 	if err != nil {
 		DisableStdout()
-
 		err = blockDb.Open(BlockData{}).Insert(data)
+		EnableStdout()
+
 		if err != nil {
 			panic(err)
 		}
 
-		EnableStdout()
 	}
 }
 
 var (
-	blockDb *db.Driver = getBlockDbDriver()
+	blockDb *db.Driver
 )

@@ -5,12 +5,16 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"strconv"
 
+	"github.com/KiraCore/sekai/INTERX/config"
 	"github.com/KiraCore/sekai/INTERX/database"
+	"github.com/KiraCore/sekai/INTERX/global"
 	"github.com/KiraCore/sekai/INTERX/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
@@ -19,10 +23,10 @@ import (
 	tmJsonRPCTypes "github.com/tendermint/tendermint/rpc/jsonrpc/types"
 )
 
-// MakeGetRequest is a function to make GET request
-func MakeGetRequest(rpcAddr string, url string, query string) (interface{}, interface{}, int) {
+// MakeTendermintRPCRequest is a function to make GET request
+func MakeTendermintRPCRequest(rpcAddr string, url string, query string) (interface{}, interface{}, int) {
 	endpoint := fmt.Sprintf("%s%s?%s", rpcAddr, url, query)
-	GetLogger().Info("[rpc-call] Entering rpc call: ", endpoint)
+	// GetLogger().Info("[rpc-call] Entering tendermint rpc call: ", endpoint)
 
 	resp, err := http.Get(endpoint)
 	if err != nil {
@@ -41,9 +45,54 @@ func MakeGetRequest(rpcAddr string, url string, query string) (interface{}, inte
 	return response.Result, response.Error, resp.StatusCode
 }
 
+// MakeGetRequest is a function to make GET request
+func MakeGetRequest(rpcAddr string, url string, query string) (Result interface{}, Error interface{}, StatusCode int) {
+	endpoint := fmt.Sprintf("%s%s?%s", rpcAddr, url, query)
+	// GetLogger().Info("[rpc-call] Entering rpc call: ", endpoint)
+
+	resp, err := http.Get(endpoint)
+	if err != nil {
+		GetLogger().Error("[rpc-call] Unable to connect to ", endpoint)
+		return ServeError(0, "", err.Error(), http.StatusInternalServerError)
+	}
+	defer resp.Body.Close()
+
+	StatusCode = resp.StatusCode
+
+	err = json.NewDecoder(resp.Body).Decode(&Result)
+	if err != nil {
+		GetLogger().Error("[rpc-call] Unable to decode response: : ", err)
+		Error = err.Error()
+	}
+
+	return Result, Error, StatusCode
+}
+
+// DownloadResponseToFile is a function to save GET response as a file
+func DownloadResponseToFile(rpcAddr string, url string, query string, filepath string) error {
+	endpoint := fmt.Sprintf("%s%s?%s", rpcAddr, url, query)
+	// GetLogger().Info("[rpc-call] Entering rpc call: ", endpoint)
+
+	resp, err := http.Get(endpoint)
+	if err != nil {
+		GetLogger().Error("[rpc-call] Unable to connect to ", endpoint)
+		return err
+	}
+	defer resp.Body.Close()
+
+	fileout, _ := os.Create(filepath)
+	defer fileout.Close()
+
+	global.Mutex.Lock()
+	io.Copy(fileout, resp.Body)
+	global.Mutex.Unlock()
+
+	return err
+}
+
 func makePostRequest(r *http.Request) (*types.RPCResponse, error) {
 	endpoint := fmt.Sprintf("%s%s", r.Host, r.URL)
-	GetLogger().Info("[rpc-call] Entering rpc call: ", endpoint)
+	// GetLogger().Info("[rpc-call] Entering rpc call: ", endpoint)
 
 	resp, err := http.PostForm(endpoint, r.Form)
 	if err != nil {
@@ -74,7 +123,7 @@ func GetAccountBalances(gwCosmosmux *runtime.ServeMux, r *http.Request, bech32ad
 	r.URL.RawQuery = ""
 	r.Method = "GET"
 
-	GetLogger().Info("[grpc-call] Entering grpc call: ", r.URL.Path)
+	// GetLogger().Info("[grpc-call] Entering grpc call: ", r.URL.Path)
 
 	recorder := httptest.NewRecorder()
 	gwCosmosmux.ServeHTTP(recorder, r)
@@ -105,7 +154,7 @@ func GetAccountNumberSequence(gwCosmosmux *runtime.ServeMux, r *http.Request, be
 	r.URL.RawQuery = ""
 	r.Method = "GET"
 
-	GetLogger().Info("[grpc-call] Entering grpc call: ", r.URL.Path)
+	// GetLogger().Info("[grpc-call] Entering grpc call: ", r.URL.Path)
 
 	recorder := httptest.NewRecorder()
 	gwCosmosmux.ServeHTTP(recorder, r)
@@ -133,8 +182,8 @@ func GetAccountNumberSequence(gwCosmosmux *runtime.ServeMux, r *http.Request, be
 
 // BroadcastTransaction is a function to post transaction, returns txHash
 func BroadcastTransaction(rpcAddr string, txBytes []byte) (string, error) {
-	endpoint := fmt.Sprintf("%s/broadcast_tx_commit?tx=0x%X", rpcAddr, txBytes)
-	GetLogger().Info("[rpc-call] Entering rpc call: ", endpoint)
+	endpoint := fmt.Sprintf("%s/broadcast_tx_async?tx=0x%X", rpcAddr, txBytes)
+	// GetLogger().Info("[rpc-call] Entering rpc call: ", endpoint)
 
 	resp, err := http.Get(endpoint)
 	if err != nil {
@@ -167,11 +216,6 @@ func BroadcastTransaction(rpcAddr string, txBytes []byte) (string, error) {
 		return "", errors.New(result.Error.Message)
 	}
 
-	if result.Result.Height == "0" {
-		GetLogger().Error("[rpc-call] Failed to broadcast transaction")
-		return "", fmt.Errorf("failed to send tokens")
-	}
-
 	return result.Result.Hash, nil
 }
 
@@ -190,7 +234,7 @@ func GetBlockTime(rpcAddr string, height int64) (int64, error) {
 	}
 
 	endpoint := fmt.Sprintf("%s/block?height=%d", rpcAddr, height)
-	GetLogger().Info("[rpc-call] Entering rpc call: ", endpoint)
+	// GetLogger().Info("[rpc-call] Entering rpc call: ", endpoint)
 
 	resp, err := http.Get(endpoint)
 	if err != nil {
@@ -224,5 +268,184 @@ func GetBlockTime(rpcAddr string, height int64) (int64, error) {
 	// save block time
 	database.AddBlockTime(height, blockTime)
 
+	// save block nano time
+	database.AddBlockNanoTime(height, result.Block.Header.Time.UnixNano())
+
 	return blockTime, nil
+}
+
+// GetBlockNanoTime is a function to get block nano time
+func GetBlockNanoTime(rpcAddr string, height int64) (int64, error) {
+	blockTime, err := database.GetBlockNanoTime(height)
+	if err == nil {
+		return blockTime, nil
+	}
+
+	endpoint := fmt.Sprintf("%s/block?height=%d", rpcAddr, height)
+	// GetLogger().Info("[rpc-call] Entering rpc call: ", endpoint)
+
+	resp, err := http.Get(endpoint)
+	if err != nil {
+		GetLogger().Error("[rpc-call] Unable to connect to ", endpoint)
+		return 0, fmt.Errorf("block not found: %d", height)
+	}
+	defer resp.Body.Close()
+
+	respBody, _ := ioutil.ReadAll(resp.Body)
+
+	response := new(tmJsonRPCTypes.RPCResponse)
+
+	if err := json.Unmarshal(respBody, response); err != nil {
+		GetLogger().Error("[rpc-call] Unable to decode response: ", err)
+		return 0, err
+	}
+
+	if response.Error != nil {
+		GetLogger().Error("[rpc-call] Block not found: ", height)
+		return 0, fmt.Errorf("block not found: %d", height)
+	}
+
+	result := new(tmTypes.ResultBlock)
+	if err := tmjson.Unmarshal(response.Result, result); err != nil {
+		GetLogger().Error("[rpc-call] Unable to decode response: ", err)
+		return 0, err
+	}
+
+	blockTime = result.Block.Header.Time.UnixNano()
+
+	// save block time
+	database.AddBlockTime(height, result.Block.Header.Time.Unix())
+
+	// save block nano time
+	database.AddBlockNanoTime(height, blockTime)
+
+	return blockTime, nil
+}
+
+// GetTokenAliases is a function to get token aliases
+func GetTokenAliases(gwCosmosmux *runtime.ServeMux, r *http.Request) []types.TokenAlias {
+	tokens, err := database.GetTokenAliases()
+	if err == nil {
+		return tokens
+	}
+
+	r.URL.Path = config.QueryKiraTokensAliases
+	r.URL.RawQuery = ""
+	r.Method = "GET"
+
+	// GetLogger().Info("[grpc-call] Entering grpc call: ", r.URL.Path)
+
+	recorder := httptest.NewRecorder()
+	gwCosmosmux.ServeHTTP(recorder, r)
+	resp := recorder.Result()
+
+	type TokenAliasesResponse struct {
+		Data []types.TokenAlias `json:"data"`
+	}
+
+	result := TokenAliasesResponse{}
+	err = json.NewDecoder(resp.Body).Decode(&result)
+	if err != nil {
+		GetLogger().Error("[grpc-call] Unable to decode response: ", err)
+	}
+
+	// save block time
+	database.AddTokenAliases(result.Data)
+
+	return result.Data
+}
+
+// GetTokenSupply is a function to get token supply
+func GetTokenSupply(gwCosmosmux *runtime.ServeMux, r *http.Request) []types.TokenSupply {
+	r.URL.Path = config.QueryTotalSupply
+	r.URL.RawQuery = ""
+	r.Method = "GET"
+
+	// GetLogger().Info("[grpc-call] Entering grpc call: ", r.URL.Path)
+
+	recorder := httptest.NewRecorder()
+	gwCosmosmux.ServeHTTP(recorder, r)
+	resp := recorder.Result()
+
+	type TokenAliasesResponse struct {
+		Supply []types.TokenSupply `json:"supply"`
+	}
+
+	result := TokenAliasesResponse{}
+	err := json.NewDecoder(resp.Body).Decode(&result)
+	if err != nil {
+		GetLogger().Error("[grpc-call] Unable to decode response: ", err)
+	}
+
+	return result.Supply
+}
+
+func GetKiraStatus(rpcAddr string) *types.KiraStatus {
+	success, _, _ := MakeTendermintRPCRequest(rpcAddr, "/status", "")
+
+	if success != nil {
+		result := types.KiraStatus{}
+
+		byteData, err := json.Marshal(success)
+		if err != nil {
+			GetLogger().Error("[kira-status] Invalid response format", err)
+		}
+
+		err = json.Unmarshal(byteData, &result)
+		if err != nil {
+			GetLogger().Error("[kira-status] Invalid response format", err)
+		}
+
+		return &result
+	}
+
+	return nil
+}
+
+func GetInterxStatus(interxAddr string) *types.InterxStatus {
+	success, _, _ := MakeGetRequest(interxAddr, "/api/status", "")
+
+	if success != nil {
+		result := types.InterxStatus{}
+
+		byteData, err := json.Marshal(success)
+		if err != nil {
+			GetLogger().Error("[interx-status] Invalid response format", err)
+			return nil
+		}
+
+		err = json.Unmarshal(byteData, &result)
+		if err != nil {
+			GetLogger().Error("[interx-status] Invalid response format", err)
+			return nil
+		}
+
+		return &result
+	}
+
+	return nil
+}
+
+func GetSnapshotInfo(interxAddr string) *types.SnapShotChecksumResponse {
+	success, _, _ := MakeGetRequest(interxAddr, "/api/snapshot_info", "")
+
+	if success != nil {
+		result := types.SnapShotChecksumResponse{}
+
+		byteData, err := json.Marshal(success)
+		if err != nil {
+			GetLogger().Error("[interx-snapshot_info] Invalid response format", err)
+			return nil
+		}
+
+		err = json.Unmarshal(byteData, &result)
+		if err != nil {
+			GetLogger().Error("[interx-snapshot_info] Invalid response format", err)
+			return nil
+		}
+
+		return &result
+	}
+
+	return nil
 }

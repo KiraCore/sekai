@@ -1,6 +1,7 @@
 package tokens
 
 import (
+	"context"
 	"encoding/json"
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
@@ -8,11 +9,12 @@ import (
 	"github.com/KiraCore/sekai/middleware"
 	tokenscli "github.com/KiraCore/sekai/x/tokens/client/cli"
 	tokenskeeper "github.com/KiraCore/sekai/x/tokens/keeper"
+	"github.com/KiraCore/sekai/x/tokens/types"
 	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
-	types2 "github.com/cosmos/cosmos-sdk/codec/types"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/gorilla/mux"
@@ -35,22 +37,23 @@ func (b AppModuleBasic) Name() string {
 	return tokenstypes.ModuleName
 }
 
-func (b AppModuleBasic) RegisterInterfaces(registry types2.InterfaceRegistry) {
+func (b AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 	tokenstypes.RegisterInterfaces(registry)
 }
 
-func (b AppModuleBasic) DefaultGenesis(cdc codec.JSONMarshaler) json.RawMessage {
+func (b AppModuleBasic) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage {
 	return cdc.MustMarshalJSON(tokenstypes.DefaultGenesis())
 }
 
-func (b AppModuleBasic) ValidateGenesis(marshaler codec.JSONMarshaler, config client.TxEncodingConfig, message json.RawMessage) error {
+func (b AppModuleBasic) ValidateGenesis(marshaler codec.JSONCodec, config client.TxEncodingConfig, message json.RawMessage) error {
 	return nil
 }
 
-func (b AppModuleBasic) RegisterRESTRoutes(context client.Context, router *mux.Router) {
+func (b AppModuleBasic) RegisterRESTRoutes(clientCtx client.Context, router *mux.Router) {
 }
 
-func (b AppModuleBasic) RegisterGRPCRoutes(context client.Context, serveMux *runtime.ServeMux) {
+func (b AppModuleBasic) RegisterGRPCRoutes(clientCtx client.Context, serveMux *runtime.ServeMux) {
+	tokenstypes.RegisterQueryHandlerClient(context.Background(), serveMux, types.NewQueryClient(clientCtx))
 }
 
 func (b AppModuleBasic) RegisterLegacyAminoCodec(amino *codec.LegacyAmino) {
@@ -63,21 +66,7 @@ func (b AppModuleBasic) GetTxCmd() *cobra.Command {
 
 // GetQueryCmd implement query commands for this module
 func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
-	queryCmd := &cobra.Command{
-		Use:   tokenstypes.RouterKey,
-		Short: "query commands for the customgov module",
-	}
-	queryCmd.AddCommand(
-		tokenscli.GetCmdQueryTokenAlias(),
-		tokenscli.GetCmdQueryAllTokenAliases(),
-		tokenscli.GetCmdQueryTokenAliasesByDenom(),
-		tokenscli.GetCmdQueryTokenRate(),
-		tokenscli.GetCmdQueryAllTokenRates(),
-		tokenscli.GetCmdQueryTokenRatesByDenom(),
-	)
-
-	queryCmd.PersistentFlags().String("node", "tcp://localhost:26657", "<host>:<port> to Tendermint RPC interface for this chain")
-	return queryCmd
+	return tokenscli.NewQueryCmd()
 }
 
 // AppModule for tokens management
@@ -95,13 +84,13 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 	tokenstypes.RegisterQueryServer(cfg.QueryServer(), querier)
 }
 
-func (am AppModule) RegisterInterfaces(registry types2.InterfaceRegistry) {
+func (am AppModule) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 	tokenstypes.RegisterInterfaces(registry)
 }
 
 func (am AppModule) InitGenesis(
 	ctx sdk.Context,
-	cdc codec.JSONMarshaler,
+	cdc codec.JSONCodec,
 	data json.RawMessage,
 ) []abci.ValidatorUpdate {
 	var genesisState tokenstypes.GenesisState
@@ -115,12 +104,21 @@ func (am AppModule) InitGenesis(
 		am.tokensKeeper.UpsertTokenRate(ctx, *rate)
 	}
 
+	am.tokensKeeper.SetTokenBlackWhites(ctx, genesisState.TokenBlackWhites)
+
 	return nil
 }
 
-func (am AppModule) ExportGenesis(context sdk.Context, marshaler codec.JSONMarshaler) json.RawMessage {
-	return nil
+func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.RawMessage {
+	var genesisState tokenstypes.GenesisState
+	genesisState.Aliases = am.tokensKeeper.ListTokenAlias(ctx)
+	genesisState.Rates = am.tokensKeeper.ListTokenRate(ctx)
+	genesisState.TokenBlackWhites = am.tokensKeeper.GetTokenBlackWhites(ctx)
+	return cdc.MustMarshalJSON(&genesisState)
 }
+
+// ConsensusVersion implements AppModule/ConsensusVersion.
+func (AppModule) ConsensusVersion() uint64 { return 1 }
 
 func (am AppModule) RegisterInvariants(registry sdk.InvariantRegistry) {}
 
@@ -133,7 +131,7 @@ func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sd
 	return nil
 }
 
-func (am AppModule) BeginBlock(context sdk.Context, block abci.RequestBeginBlock) {}
+func (am AppModule) BeginBlock(clientCtx sdk.Context, block abci.RequestBeginBlock) {}
 
 func (am AppModule) EndBlock(ctx sdk.Context, block abci.RequestEndBlock) []abci.ValidatorUpdate {
 	return nil

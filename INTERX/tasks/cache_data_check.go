@@ -9,15 +9,20 @@ import (
 	"time"
 
 	"github.com/KiraCore/sekai/INTERX/common"
-	interx "github.com/KiraCore/sekai/INTERX/config"
+	"github.com/KiraCore/sekai/INTERX/config"
+	"github.com/KiraCore/sekai/INTERX/global"
 	"github.com/KiraCore/sekai/INTERX/types"
 )
 
 // CacheDataCheck is a function to check cache data if it's expired.
 func CacheDataCheck(rpcAddr string, isLog bool) {
 	for {
-		err := filepath.Walk(interx.GetResponseCacheDir(),
+		err := filepath.Walk(config.GetResponseCacheDir(),
 			func(path string, info os.FileInfo, err error) error {
+				if _, err := os.Stat(path); os.IsNotExist(err) {
+					return nil
+				}
+
 				if err != nil {
 					return err
 				}
@@ -27,26 +32,36 @@ func CacheDataCheck(rpcAddr string, isLog bool) {
 				if !info.IsDir() && info.Size() != 0 {
 					// check cache json data
 
-					common.Mutex.Lock()
+					global.Mutex.Lock()
+					// check if file or path exists
+					if _, err := os.Stat(path); os.IsNotExist(err) {
+						global.Mutex.Unlock()
+						return nil
+					}
 					data, _ := ioutil.ReadFile(path)
-					common.Mutex.Unlock()
+					global.Mutex.Unlock()
 
 					result := types.InterxResponse{}
 					err := json.Unmarshal([]byte(data), &result)
 
-					if err == nil && result.ExpireAt.Before(time.Now()) && result.Response.Block != common.NodeStatus.Block {
+					if err == nil && common.IsCacheExpired(result) {
 						delete = true
 					}
 				}
 
-				if path != interx.GetResponseCacheDir() && delete {
+				if path != config.GetResponseCacheDir() && delete {
 					if isLog {
 						common.GetLogger().Info("[cache] Deleting file: ", path)
 					}
 
-					common.Mutex.Lock()
+					global.Mutex.Lock()
+					// check if file or path exists
+					if _, err := os.Stat(path); os.IsNotExist(err) {
+						global.Mutex.Unlock()
+						return nil
+					}
 					err := os.Remove(path)
-					common.Mutex.Unlock()
+					global.Mutex.Unlock()
 
 					if err != nil {
 						if isLog {
@@ -64,5 +79,7 @@ func CacheDataCheck(rpcAddr string, isLog bool) {
 		if err != nil {
 			log.Println(err)
 		}
+
+		time.Sleep(2 * time.Second)
 	}
 }

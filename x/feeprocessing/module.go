@@ -10,7 +10,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
-	types2 "github.com/cosmos/cosmos-sdk/codec/types"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/gogo/protobuf/grpc"
@@ -33,14 +33,14 @@ func (b AppModuleBasic) Name() string {
 	return feeprocessingtypes.ModuleName
 }
 
-func (b AppModuleBasic) RegisterInterfaces(registry types2.InterfaceRegistry) {
+func (b AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 }
 
-func (b AppModuleBasic) DefaultGenesis(cdc codec.JSONMarshaler) json.RawMessage {
+func (b AppModuleBasic) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage {
 	return json.RawMessage("{}")
 }
 
-func (b AppModuleBasic) ValidateGenesis(marshaler codec.JSONMarshaler, config client.TxEncodingConfig, message json.RawMessage) error {
+func (b AppModuleBasic) ValidateGenesis(marshaler codec.JSONCodec, config client.TxEncodingConfig, message json.RawMessage) error {
 	return nil
 }
 
@@ -71,20 +71,23 @@ type AppModule struct {
 func (am AppModule) RegisterServices(configurator module.Configurator) {
 }
 
-func (am AppModule) RegisterInterfaces(registry types2.InterfaceRegistry) {
+func (am AppModule) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
 }
 
 func (am AppModule) InitGenesis(
 	ctx sdk.Context,
-	cdc codec.JSONMarshaler,
+	cdc codec.JSONCodec,
 	data json.RawMessage,
 ) []abci.ValidatorUpdate {
 	return nil
 }
 
-func (am AppModule) ExportGenesis(context sdk.Context, marshaler codec.JSONMarshaler) json.RawMessage {
+func (am AppModule) ExportGenesis(context sdk.Context, marshaler codec.JSONCodec) json.RawMessage {
 	return nil
 }
+
+// ConsensusVersion implements AppModule/ConsensusVersion.
+func (AppModule) ConsensusVersion() uint64 { return 1 }
 
 func (am AppModule) RegisterInvariants(registry sdk.InvariantRegistry) {}
 

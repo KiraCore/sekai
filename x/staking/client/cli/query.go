@@ -4,37 +4,97 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pkg/errors"
-
-	"github.com/spf13/pflag"
-
-	"github.com/spf13/cobra"
-
+	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	customstakingtypes "github.com/KiraCore/sekai/x/staking/types"
+	"github.com/pkg/errors"
+	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 )
 
-const (
-	FlagValAddr = "val-addr"
-	FlagAddr    = "addr"
-)
+// GetQueryCmd returns the cli query commands for this module
+func GetQueryCmd() *cobra.Command {
+	queryCmd := &cobra.Command{
+		Use:                        stakingtypes.ModuleName,
+		Short:                      "Querying commands for the staking module",
+		DisableFlagParsing:         true,
+		SuggestionsMinimumDistance: 2,
+		RunE:                       client.ValidateCmd,
+	}
+
+	queryCmd.AddCommand(
+		GetCmdQueryValidator(),
+		GetCmdQueryValidators(),
+	)
+
+	return queryCmd
+}
 
 // GetCmdQueryValidator the query delegation command.
-func GetCmdQueryValidator() *cobra.Command {
+func GetCmdQueryValidators() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "validator [--addr || --val-addr || --flagMoniker] ",
-		Short: "Query a validator based on address",
+		Use:   "validators",
+		Short: "Query a validators by specific filter  [--addr || --val-addr || --moniker || --status || --pubkey || --proposer ]",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
+
+			pubKey, _ := cmd.Flags().GetString(FlagPubKey)
+			proposer, _ := cmd.Flags().GetString(FlagProposer)
+			status, _ := cmd.Flags().GetString(FlagStatus)
+			valAddr, _ := cmd.Flags().GetString(FlagValAddr)
+			addr, _ := cmd.Flags().GetString(FlagAddr)
+			moniker, _ := cmd.Flags().GetString(FlagMoniker)
+
+			pageReq, err := client.ReadPageRequest(cmd.Flags())
 			if err != nil {
 				return err
 			}
 
-			err = validateQueryValidatorFlags(cmd.Flags())
+			request := &stakingtypes.ValidatorsRequest{
+				Address:    addr,
+				Valkey:     valAddr,
+				Pubkey:     pubKey,
+				Moniker:    moniker,
+				Status:     status,
+				Proposer:   proposer,
+				Pagination: pageReq,
+			}
+
+			queryClient := stakingtypes.NewQueryClient(clientCtx)
+			res, err := queryClient.Validators(context.Background(), request)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	cmd.Flags().String(FlagAddr, "", "the addres in AccAddress format.")
+	cmd.Flags().String(FlagValAddr, "", "the addres in ValAddress format.")
+	cmd.Flags().String(FlagMoniker, "", "the moniker")
+	cmd.Flags().String(FlagPubKey, "", "the pubKey")
+	cmd.Flags().String(FlagProposer, "", "the proposer")
+	cmd.Flags().String(FlagStatus, "", "the status")
+
+	flags.AddPaginationFlagsToCmd(cmd, "customstaking")
+
+	return cmd
+}
+
+// GetCmdQueryValidator the query delegation command.
+func GetCmdQueryValidator() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "validator [--addr || --val-addr || --moniker] ",
+		Short: "Query a validator based on address",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			err := validateQueryValidatorFlags(cmd.Flags())
 			if err != nil {
 				return err
 			}
@@ -56,28 +116,28 @@ func GetCmdQueryValidator() *cobra.Command {
 					}
 				}
 
-				params := &customstakingtypes.ValidatorByAddressRequest{ValAddr: valAddr}
+				params := &stakingtypes.ValidatorByAddressRequest{ValAddr: valAddr}
 
-				queryClient := customstakingtypes.NewQueryClient(clientCtx)
+				queryClient := stakingtypes.NewQueryClient(clientCtx)
 				res, err := queryClient.ValidatorByAddress(context.Background(), params)
 				if err != nil {
 					return err
 				}
 
-				return clientCtx.PrintOutput(&res.Validator)
+				return clientCtx.PrintProto(&res.Validator)
 			}
 
 			moniker, _ := cmd.Flags().GetString(FlagMoniker)
 			if moniker != "" {
-				params := &customstakingtypes.ValidatorByMonikerRequest{Moniker: moniker}
+				params := &stakingtypes.ValidatorByMonikerRequest{Moniker: moniker}
 
-				queryClient := customstakingtypes.NewQueryClient(clientCtx)
+				queryClient := stakingtypes.NewQueryClient(clientCtx)
 				res, err := queryClient.ValidatorByMoniker(context.Background(), params)
 				if err != nil {
 					return err
 				}
 
-				return clientCtx.PrintOutput(&res.Validator)
+				return clientCtx.PrintProto(&res.Validator)
 			}
 
 			return nil

@@ -19,20 +19,16 @@ import (
 
 // Proposal flags
 const (
-	flagVoter        = "voter"
+	flagVoter = "voter"
 )
 
 // GetCmdQueryPermissions the query delegation command.
 func GetCmdQueryPermissions() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "permissions addr",
-		Short: "Get the permissions of an address",
+		Use:   "permissions [addr]",
+		Short: "Query permissions of an address",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
-			if err != nil {
-				return err
-			}
 
 			accAddr, err := sdk.AccAddressFromBech32(args[0])
 			if err != nil {
@@ -47,7 +43,7 @@ func GetCmdQueryPermissions() *cobra.Command {
 				return err
 			}
 
-			return clientCtx.PrintOutput(res.Permissions)
+			return clientCtx.PrintProto(res.Permissions)
 		},
 	}
 
@@ -56,17 +52,38 @@ func GetCmdQueryPermissions() *cobra.Command {
 	return cmd
 }
 
-// GetCmdQueryRolesByAddress the query delegation command.
-func GetCmdQueryRolesByAddress() *cobra.Command {
+// GetCmdQueryAllRoles is the querier for all registered roles
+func GetCmdQueryAllRoles() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "roles addr",
-		Short: "Get the roles assigned to an address",
+		Use:   "all-roles",
+		Short: "Query all registered roles",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
+
+			request := &types.AllRolesRequest{}
+
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.AllRoles(context.Background(), request)
 			if err != nil {
 				return err
 			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// GetCmdQueryRolesByAddress is the querier for roles by address.
+func GetCmdQueryRolesByAddress() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "roles [addr]",
+		Short: "Query roles assigned to an address",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			accAddr, err := sdk.AccAddressFromBech32(args[0])
 			if err != nil {
@@ -81,7 +98,7 @@ func GetCmdQueryRolesByAddress() *cobra.Command {
 				return err
 			}
 
-			return clientCtx.PrintOutput(res)
+			return clientCtx.PrintProto(res)
 		},
 	}
 
@@ -90,34 +107,25 @@ func GetCmdQueryRolesByAddress() *cobra.Command {
 	return cmd
 }
 
-func GetCmdQueryRolePermissions() *cobra.Command {
+func GetCmdQueryRole() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "role-permissions arg-num",
-		Short: "Get the permissions of all the roles",
+		Use:   "role [role_sid | role_id]",
+		Short: "Query role by sid or id",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
-			if err != nil {
-				return err
-			}
 
-			roleNum, err := strconv.ParseUint(args[0], 10, 64)
-			if err != nil {
-				return fmt.Errorf("invalid role number")
-			}
-
-			params := &types.RolePermissionsRequest{
-				Role: roleNum,
+			params := &types.RoleRequest{
+				Identifier: args[0],
 			}
 
 			queryClient := types.NewQueryClient(clientCtx)
-			res, err := queryClient.RolePermissions(context.Background(), params)
+			res, err := queryClient.Role(context.Background(), params)
 			if err != nil {
 				return err
 			}
 
-			return clientCtx.PrintOutput(res.Permissions)
+			return clientCtx.PrintProto(res.Role)
 		},
 	}
 
@@ -130,21 +138,18 @@ func GetCmdQueryRolePermissions() *cobra.Command {
 func GetCmdQueryNetworkProperties() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "network-properties",
-		Short: "Get the network properties",
+		Short: "Query network properties",
 		Args:  cobra.MinimumNArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
-			if err != nil {
-				return err
-			}
+
 			params := &types.NetworkPropertiesRequest{}
 			queryClient := types.NewQueryClient(clientCtx)
-			res, err := queryClient.GetNetworkProperties(context.Background(), params)
+			res, err := queryClient.NetworkProperties(context.Background(), params)
 			if err != nil {
 				return err
 			}
-			return clientCtx.PrintOutput(res)
+			return clientCtx.PrintProto(res)
 		},
 	}
 
@@ -153,28 +158,49 @@ func GetCmdQueryNetworkProperties() *cobra.Command {
 	return cmd
 }
 
-// GetCmdQueryExecutionFee query for execution fee by execution name
-func GetCmdQueryExecutionFee() *cobra.Command {
+// GetCmdQueryPoorNetworkMessages query for poor network messages
+func GetCmdQueryPoorNetworkMessages() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "execution-fee",
-		Short: "Get the execution fee by [transaction_type]",
-		Args:  cobra.MinimumNArgs(1),
+		Use:   "poor-network-messages",
+		Short: "Query poor network messages",
+		Args:  cobra.MinimumNArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
-			if err != nil {
-				return err
-			}
-			params := &types.ExecutionFeeRequest{
-				TransactionType: args[0],
-			}
+
+			params := &types.PoorNetworkMessagesRequest{}
 			queryClient := types.NewQueryClient(clientCtx)
-			res, err := queryClient.GetExecutionFee(context.Background(), params)
+			res, err := queryClient.PoorNetworkMessages(context.Background(), params)
 			if err != nil {
 				return err
 			}
 
-			return clientCtx.PrintOutput(res)
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	return cmd
+}
+
+// GetCmdQueryExecutionFee query for execution fee by execution name
+func GetCmdQueryExecutionFee() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "execution-fee [transaction_type]",
+		Short: "Query execution fee by the type of transaction",
+		Args:  cobra.MinimumNArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			params := &types.ExecutionFeeRequest{
+				TransactionType: args[0],
+			}
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.ExecutionFee(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
 		},
 	}
 
@@ -185,13 +211,9 @@ func GetCmdQueryExecutionFee() *cobra.Command {
 func GetCmdQueryCouncilRegistry() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "council-registry [--addr || --flagMoniker]",
-		Short: "Query the governance registry.",
+		Short: "Query governance registry.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
-			if err != nil {
-				return err
-			}
 
 			addr, err := cmd.Flags().GetString(FlagAddress)
 			if err != nil {
@@ -230,7 +252,7 @@ func GetCmdQueryCouncilRegistry() *cobra.Command {
 				}
 			}
 
-			return clientCtx.PrintOutput(&res.Councilor)
+			return clientCtx.PrintProto(&res.Councilor)
 		},
 	}
 
@@ -269,16 +291,18 @@ $ %s query gov proposals --voter cosmos1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
 			}
 
 			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
+			queryClient := types.NewQueryClient(clientCtx)
+
+			pageReq, err := client.ReadPageRequest(cmd.Flags())
 			if err != nil {
 				return err
 			}
-			queryClient := types.NewQueryClient(clientCtx)
 
 			res, err := queryClient.Proposals(
 				context.Background(),
 				&types.QueryProposalsRequest{
-					Voter: bechVoterAddr,
+					Voter:      bechVoterAddr,
+					Pagination: pageReq,
 				},
 			)
 			if err != nil {
@@ -289,12 +313,13 @@ $ %s query gov proposals --voter cosmos1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
 				return fmt.Errorf("no proposals found")
 			}
 
-			return clientCtx.PrintOutput(res)
+			return clientCtx.PrintProto(res)
 		},
 	}
 
 	cmd.Flags().String(flagVoter, "", "(optional) filter by proposals voted on by voted")
 	flags.AddQueryFlagsToCmd(cmd)
+	flags.AddPaginationFlagsToCmd(cmd, "customgov")
 
 	return cmd
 }
@@ -304,7 +329,7 @@ func GetCmdQueryProposal() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "proposal [proposal-id]",
 		Args:  cobra.ExactArgs(1),
-		Short: "Query details of a single proposal",
+		Short: "Query proposal details",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Query details for a proposal. You can find the
 proposal-id by running "%s query gov proposals".
@@ -317,10 +342,7 @@ $ %s query gov proposal 1
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
-			if err != nil {
-				return err
-			}
+
 			queryClient := types.NewQueryClient(clientCtx)
 
 			// validate that the proposal id is a uint
@@ -338,7 +360,7 @@ $ %s query gov proposal 1
 				return err
 			}
 
-			return clientCtx.PrintOutput(&res.Proposal)
+			return clientCtx.PrintProto(&res.Proposal)
 		},
 	}
 
@@ -365,10 +387,7 @@ $ %s query gov vote 1 kira1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
-			if err != nil {
-				return err
-			}
+
 			queryClient := types.NewQueryClient(clientCtx)
 
 			// validate that the proposal id is a uint
@@ -399,7 +418,7 @@ $ %s query gov vote 1 kira1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
 				return err
 			}
 
-			return clientCtx.PrintOutput(&res.Vote)
+			return clientCtx.PrintProto(&res.Vote)
 		},
 	}
 
@@ -425,10 +444,7 @@ $ %[1]s query gov votes 1
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
-			if err != nil {
-				return err
-			}
+
 			queryClient := types.NewQueryClient(clientCtx)
 
 			// validate that the proposal id is a uint
@@ -446,7 +462,7 @@ $ %[1]s query gov votes 1
 				return err
 			}
 
-			return clientCtx.PrintOutput(res)
+			return clientCtx.PrintProto(res)
 
 		},
 	}
@@ -473,10 +489,6 @@ $ %[1]s query gov voters 1
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
-			if err != nil {
-				return err
-			}
 			queryClient := types.NewQueryClient(clientCtx)
 
 			// validate that the proposal id is a uint
@@ -485,7 +497,7 @@ $ %[1]s query gov voters 1
 				return fmt.Errorf("proposal-id %s not a valid int, please input a valid proposal-id", args[0])
 			}
 
-			res, err := queryClient.GetWhitelistedProposalVoters(
+			res, err := queryClient.WhitelistedProposalVoters(
 				context.Background(),
 				&types.QueryWhitelistedProposalVotersRequest{ProposalId: proposalID},
 			)
@@ -494,8 +506,508 @@ $ %[1]s query gov voters 1
 				return err
 			}
 
-			return clientCtx.PrintOutput(res)
+			return clientCtx.PrintProto(res)
 
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// GetCmdQueryIdentityRecord implements the command to query identity record by id
+func GetCmdQueryIdentityRecord() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "identity-record [id]",
+		Args:  cobra.ExactArgs(1),
+		Short: "Query identity record by id",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query identity record by id.
+
+Example:
+$ %[1]s query gov identity-record 1
+`,
+				version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			queryClient := types.NewQueryClient(clientCtx)
+
+			// validate that the id is a uint
+			id, err := strconv.ParseUint(args[0], 10, 64)
+			if err != nil {
+				return fmt.Errorf("id %s not a valid int, please input a valid id", args[0])
+			}
+
+			res, err := queryClient.IdentityRecord(
+				context.Background(),
+				&types.QueryIdentityRecordRequest{Id: id},
+			)
+
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// GetCmdQueryIdentityRecordByAddress implements the command to query identity records by records creator
+func GetCmdQueryIdentityRecordByAddress() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "identity-records-by-addr [addr]",
+		Args:  cobra.ExactArgs(1),
+		Short: "Query identity records by owner",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query identity records by owner.
+
+Example:
+$ %[1]s query gov identity-records-by-addr [addr]
+`,
+				version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			queryClient := types.NewQueryClient(clientCtx)
+
+			// validate address
+			addr, err := sdk.AccAddressFromBech32(args[0])
+			if err != nil {
+				return err
+			}
+
+			keysStr, err := cmd.Flags().GetString(FlagKeys)
+			if err != nil {
+				return err
+			}
+
+			keys := strings.Split(keysStr, ",")
+			if keysStr == "" {
+				keys = []string{}
+			}
+
+			res, err := queryClient.IdentityRecordsByAddress(
+				context.Background(),
+				&types.QueryIdentityRecordsByAddressRequest{
+					Creator: addr,
+					Keys:    keys,
+				},
+			)
+
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	cmd.Flags().String(FlagKeys, "", "keys required when needs to be filtered")
+
+	return cmd
+}
+
+// GetCmdQueryAllIdentityRecords implements the command to query all identity records
+func GetCmdQueryAllIdentityRecords() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "all-identity-records",
+		Args:  cobra.ExactArgs(0),
+		Short: "Query all identity records",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query all identity records.
+
+Example:
+$ %[1]s query gov all-identity-records
+`,
+				version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			queryClient := types.NewQueryClient(clientCtx)
+
+			pageReq, err := client.ReadPageRequest(cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			res, err := queryClient.AllIdentityRecords(
+				context.Background(),
+				&types.QueryAllIdentityRecordsRequest{
+					Pagination: pageReq,
+				},
+			)
+
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	flags.AddPaginationFlagsToCmd(cmd, "customgov")
+
+	return cmd
+}
+
+// GetCmdQueryIdentityRecordVerifyRequest implements the command to query identity record verify request by id
+func GetCmdQueryIdentityRecordVerifyRequest() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "identity-record-verify-request [id]",
+		Args:  cobra.ExactArgs(1),
+		Short: "Query identity record verify request by id",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query identity record verify request by id.
+
+Example:
+$ %[1]s query gov identity-record-verify-request 1
+`,
+				version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			queryClient := types.NewQueryClient(clientCtx)
+
+			// validate that the id is a uint
+			id, err := strconv.ParseUint(args[0], 10, 64)
+			if err != nil {
+				return fmt.Errorf("id %s not a valid int, please input a valid id", args[0])
+			}
+
+			res, err := queryClient.IdentityRecordVerifyRequest(
+				context.Background(),
+				&types.QueryIdentityVerifyRecordRequest{
+					RequestId: id,
+				},
+			)
+
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// GetCmdQueryIdentityRecordVerifyRequestsByRequester implements the command to query identity records verify requests by requester
+func GetCmdQueryIdentityRecordVerifyRequestsByRequester() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "identity-record-verify-requests-by-requester [addr]",
+		Args:  cobra.ExactArgs(1),
+		Short: "Query identity records verify requests by requester",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query identity records verify requests by requester.
+
+Example:
+$ %[1]s query gov identity-record-verify-requests-by-requester [addr]
+`,
+				version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			queryClient := types.NewQueryClient(clientCtx)
+
+			// validate address
+			addr, err := sdk.AccAddressFromBech32(args[0])
+			if err != nil {
+				return err
+			}
+
+			pageReq, err := client.ReadPageRequest(cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			res, err := queryClient.IdentityRecordVerifyRequestsByRequester(
+				context.Background(),
+				&types.QueryIdentityRecordVerifyRequestsByRequester{
+					Requester:  addr,
+					Pagination: pageReq,
+				},
+			)
+
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	flags.AddPaginationFlagsToCmd(cmd, "customgov")
+
+	return cmd
+}
+
+// GetCmdQueryIdentityRecordVerifyRequestsByApprover implements the command to query identity records verify requests by approver
+func GetCmdQueryIdentityRecordVerifyRequestsByApprover() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "identity-record-verify-requests-by-approver [addr]",
+		Args:  cobra.ExactArgs(1),
+		Short: "Query identity record verify request by approver",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query identity record verify requests by approver.
+
+Example:
+$ %[1]s query gov identity-record-verify-requests-by-approver [addr]
+`,
+				version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			queryClient := types.NewQueryClient(clientCtx)
+
+			// validate address
+			addr, err := sdk.AccAddressFromBech32(args[0])
+			if err != nil {
+				return err
+			}
+
+			pageReq, err := client.ReadPageRequest(cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			res, err := queryClient.IdentityRecordVerifyRequestsByApprover(
+				context.Background(),
+				&types.QueryIdentityRecordVerifyRequestsByApprover{
+					Approver:   addr,
+					Pagination: pageReq,
+				},
+			)
+
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	flags.AddPaginationFlagsToCmd(cmd, "customgov")
+
+	return cmd
+}
+
+// GetCmdQueryAllIdentityRecordVerifyRequests implements the command to query all identity records verify requests
+func GetCmdQueryAllIdentityRecordVerifyRequests() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "all-identity-record-verify-requests",
+		Args:  cobra.ExactArgs(0),
+		Short: "Query all identity records verify requests",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query all identity records verify requests.
+
+Example:
+$ %[1]s query gov all-identity-record-verify-requests
+`,
+				version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			queryClient := types.NewQueryClient(clientCtx)
+
+			pageReq, err := client.ReadPageRequest(cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			res, err := queryClient.AllIdentityRecordVerifyRequests(
+				context.Background(),
+				&types.QueryAllIdentityRecordVerifyRequests{
+					Pagination: pageReq,
+				},
+			)
+
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	flags.AddPaginationFlagsToCmd(cmd, "customgov")
+
+	return cmd
+}
+
+// GetCmdQueryAllDataReferenceKeys implements the command to query all data registry keys
+func GetCmdQueryAllDataReferenceKeys() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "data-registry-keys",
+		Args:  cobra.ExactArgs(0),
+		Short: "Query all data registry keys",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query all data registry keys.
+
+Example:
+$ %[1]s query gov data-registry-keys
+`,
+				version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			queryClient := types.NewQueryClient(clientCtx)
+
+			pageReq, err := client.ReadPageRequest(cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			res, err := queryClient.AllDataReferenceKeys(
+				context.Background(),
+				&types.QueryDataReferenceKeysRequest{
+					Pagination: pageReq,
+				},
+			)
+
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	flags.AddPaginationFlagsToCmd(cmd, "customgov")
+
+	return cmd
+}
+
+// GetCmdQueryDataReference implements the command to query data registry by specific key
+func GetCmdQueryDataReference() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "data-registry",
+		Args:  cobra.ExactArgs(1),
+		Short: "Query data registry by specific key",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query data registry by key.
+
+Example:
+$ %[1]s query gov data-registry [key]
+`,
+				version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			queryClient := types.NewQueryClient(clientCtx)
+
+			res, err := queryClient.DataReferenceByKey(
+				context.Background(),
+				&types.QueryDataReferenceRequest{
+					Key: args[0],
+				},
+			)
+
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	flags.AddPaginationFlagsToCmd(cmd, "customgov")
+
+	return cmd
+}
+
+// GetCmdQueryAllProposalDurations implements the command to query all proposal durations
+func GetCmdQueryAllProposalDurations() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "all-proposal-durations",
+		Args:  cobra.ExactArgs(0),
+		Short: "Query all proposal durations",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query all proposal durations.
+
+Example:
+$ %[1]s query gov all-proposal-durations
+`,
+				version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			queryClient := types.NewQueryClient(clientCtx)
+
+			res, err := queryClient.AllProposalDurations(
+				context.Background(),
+				&types.QueryAllProposalDurations{},
+			)
+
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// GetCmdQueryProposalDuration implements the command to query a proposal duration
+func GetCmdQueryProposalDuration() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "proposal-duration [proposal_type]",
+		Args:  cobra.ExactArgs(1),
+		Short: "Query a proposal duration",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query all all proposal durations.
+
+Example:
+$ %[1]s query gov proposal-duration SetNetworkProperty
+`,
+				version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			queryClient := types.NewQueryClient(clientCtx)
+
+			res, err := queryClient.ProposalDuration(
+				context.Background(),
+				&types.QueryProposalDuration{
+					ProposalType: args[0],
+				},
+			)
+
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
 		},
 	}
 

@@ -1,24 +1,18 @@
 package types
 
 import (
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	bank "github.com/cosmos/cosmos-sdk/x/bank/types"
-	crisis "github.com/cosmos/cosmos-sdk/x/crisis/types"
-	distribution "github.com/cosmos/cosmos-sdk/x/distribution/types"
-	evidence "github.com/cosmos/cosmos-sdk/x/evidence/types"
-	gov "github.com/cosmos/cosmos-sdk/x/gov/types"
-	"github.com/cosmos/cosmos-sdk/x/ibc/applications/transfer/types"
-	slashing "github.com/cosmos/cosmos-sdk/x/slashing/types"
-	staking "github.com/cosmos/cosmos-sdk/x/staking/types"
 )
 
 // custom msg types
 const (
+	//evidence
+	TypeMsgSubmitEvidence = "submit_evidence"
+
 	// governance
-	MsgTypeProposalSetNetworkProperty = "proposal-set-network-property"
-	MsgTypeProposalAssignPermission   = "proposal-assign-permission"
-	MsgTypeProposalUpsertDataRegistry = "proposal-upsert-data-registry"
-	MsgTypeProposalUpsertTokenAlias   = "proposal-upsert-token-alias"
-	MsgTypeVoteProposal               = "vote-proposal"
+	MsgTypeSubmitProposal = "submit-proposal"
+	MsgTypeVoteProposal   = "vote-proposal"
 
 	MsgTypeWhitelistPermissions = "whitelist-permissions"
 	MsgTypeBlacklistPermissions = "blacklist-permissions"
@@ -36,56 +30,74 @@ const (
 	MsgTypeRemoveWhitelistRolePermission = "remove-whitelist-role-permission"
 	MsgTypeRemoveBlacklistRolePermission = "remove-blacklist-role-permission"
 
+	MsgTypeRegisterIdentityRecords            = "register-identity-records"
+	MsgTypeEditIdentityRecord                 = "edit-identity-record"
+	MsgTypeRequestIdentityRecordsVerify       = "request-identity-records-verify"
+	MsgTypeHandleIdentityRecordsVerifyRequest = "handle-identity-records-verify-request"
+	MsgTypeCancelIdentityRecordsVerifyRequest = "cancel-identity-records-verify-request"
+
 	// staking module
 	MsgTypeClaimValidator = "claim-validator"
 
 	// tokens module
-	MsgTypeUpsertTokenAlias         = "upsert-token-alias"
-	MsgTypeUpsertTokenRate          = "upsert-token-rate"
-	MsgProposalUpsertTokenAliasType = "propose-upsert-token-alias"
-	MsgProposalUpsertTokenRatesType = "propose-upsert-token-rates"
+	MsgTypeUpsertTokenAlias = "upsert-token-alias"
+	MsgTypeUpsertTokenRate  = "upsert-token-rate"
+
+	// slashing module
+	MsgTypeActivate = "activate"
+	MsgTypePause    = "pause"
+	MsgTypeUnpause  = "unpause"
+
+	//upgrade module
 )
+
+// Msg defines the interface a transaction message must fulfill.
+type Msg interface {
+	sdk.Msg
+
+	// Type returns type of message
+	Type() string
+}
 
 // MsgFuncIDMapping defines function_id mapping
 var MsgFuncIDMapping = map[string]int64{
-	bank.TypeMsgSend:                                1,
-	bank.TypeMsgMultiSend:                           2,
-	(crisis.MsgVerifyInvariant{}).Type():            3,
-	distribution.TypeMsgSetWithdrawAddress:          4,
-	distribution.TypeMsgWithdrawDelegatorReward:     5,
-	distribution.TypeMsgWithdrawValidatorCommission: 6,
-	distribution.TypeMsgFundCommunityPool:           7,
-	evidence.TypeMsgSubmitEvidence:                  8,
-	gov.TypeMsgSubmitProposal:                       9,
-	gov.TypeMsgDeposit:                              10,
-	gov.TypeMsgVote:                                 11,
-	types.TypeMsgTransfer:                           12,
-	slashing.TypeMsgUnjail:                          13,
-	staking.TypeMsgCreateValidator:                  14,
-	staking.TypeMsgEditValidator:                    15,
-	staking.TypeMsgDelegate:                         16,
-	staking.TypeMsgBeginRedelegate:                  17,
-	staking.TypeMsgUndelegate:                       18,
-	MsgTypeSetNetworkProperties:                     19,
-	MsgTypeSetExecutionFee:                          20,
-	MsgTypeProposalAssignPermission:                 21,
-	MsgTypeProposalSetNetworkProperty:               22,
-	MsgTypeProposalUpsertDataRegistry:               23,
-	MsgTypeVoteProposal:                             24,
-	MsgTypeClaimCouncilor:                           25,
-	MsgTypeWhitelistPermissions:                     26,
-	MsgTypeBlacklistPermissions:                     27,
-	MsgTypeCreateRole:                               28,
-	MsgTypeAssignRole:                               29,
-	MsgTypeRemoveRole:                               30,
-	MsgTypeWhitelistRolePermission:                  31,
-	MsgTypeBlacklistRolePermission:                  32,
-	MsgTypeRemoveWhitelistRolePermission:            33,
-	MsgTypeRemoveBlacklistRolePermission:            34,
-	MsgTypeClaimValidator:                           35,
-	MsgTypeUpsertTokenAlias:                         36,
-	MsgTypeUpsertTokenRate:                          37,
-	MsgTypeProposalUpsertTokenAlias:                 38,
-	MsgProposalUpsertTokenAliasType:                 39,
-	MsgProposalUpsertTokenRatesType:                 40,
+	bank.TypeMsgSend:      1,
+	bank.TypeMsgMultiSend: 2,
+
+	TypeMsgSubmitEvidence: 3,
+
+	MsgTypeSubmitProposal:                     10,
+	MsgTypeVoteProposal:                       11,
+	MsgTypeRegisterIdentityRecords:            12,
+	MsgTypeEditIdentityRecord:                 13,
+	MsgTypeRequestIdentityRecordsVerify:       14,
+	MsgTypeHandleIdentityRecordsVerifyRequest: 15,
+	MsgTypeCancelIdentityRecordsVerifyRequest: 16,
+
+	MsgTypeSetNetworkProperties:          20,
+	MsgTypeSetExecutionFee:               21,
+	MsgTypeClaimCouncilor:                22,
+	MsgTypeWhitelistPermissions:          23,
+	MsgTypeBlacklistPermissions:          24,
+	MsgTypeCreateRole:                    25,
+	MsgTypeAssignRole:                    26,
+	MsgTypeRemoveRole:                    27,
+	MsgTypeWhitelistRolePermission:       28,
+	MsgTypeBlacklistRolePermission:       29,
+	MsgTypeRemoveWhitelistRolePermission: 30,
+	MsgTypeRemoveBlacklistRolePermission: 31,
+	MsgTypeClaimValidator:                32,
+	MsgTypeUpsertTokenAlias:              33,
+	MsgTypeUpsertTokenRate:               34,
+	MsgTypeActivate:                      35,
+	MsgTypePause:                         36,
+	MsgTypeUnpause:                       37,
+}
+
+func MsgType(msg sdk.Msg) string {
+	kiraMsg, ok := msg.(Msg)
+	if !ok {
+		return ""
+	}
+	return kiraMsg.Type()
 }

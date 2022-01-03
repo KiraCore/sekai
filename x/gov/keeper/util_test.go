@@ -9,7 +9,7 @@ import (
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/KiraCore/sekai/app"
-	"github.com/KiraCore/sekai/simapp"
+	simapp "github.com/KiraCore/sekai/app"
 	"github.com/KiraCore/sekai/x/gov/keeper"
 	"github.com/KiraCore/sekai/x/gov/types"
 )
@@ -47,8 +47,12 @@ func TestCheckIfAllowedPermission(t *testing.T) {
 		{
 			name: "actor has permission blacklisted in role",
 			prepareScenario: func(ctx sdk.Context, keeper keeper.Keeper) {
-				roleWithBlacklistedValue := types.Role(123)
-				keeper.CreateRole(ctx, roleWithBlacklistedValue)
+				roleWithBlacklistedValue := uint64(123)
+				keeper.SetRole(ctx, types.Role{
+					Id:          uint32(roleWithBlacklistedValue),
+					Sid:         "123",
+					Description: "123",
+				})
 				err2 := keeper.BlacklistRolePermission(ctx, roleWithBlacklistedValue, types.PermClaimValidator)
 				require.NoError(t, err2)
 
@@ -60,8 +64,12 @@ func TestCheckIfAllowedPermission(t *testing.T) {
 		{
 			name: "actor has permission whitelisted in role",
 			prepareScenario: func(ctx sdk.Context, keeper keeper.Keeper) {
-				roleWithWhitelistedValue := types.Role(123)
-				keeper.CreateRole(ctx, roleWithWhitelistedValue)
+				roleWithWhitelistedValue := uint64(123)
+				keeper.SetRole(ctx, types.Role{
+					Id:          uint32(roleWithWhitelistedValue),
+					Sid:         "123",
+					Description: "123",
+				})
 
 				err2 := keeper.WhitelistRolePermission(ctx, roleWithWhitelistedValue, types.PermClaimValidator)
 				require.NoError(t, err2)

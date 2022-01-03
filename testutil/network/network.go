@@ -14,28 +14,15 @@ import (
 	"testing"
 	"time"
 
-	simapp2 "github.com/KiraCore/sekai/simapp"
-
 	"github.com/KiraCore/sekai/app"
-
-	"github.com/stretchr/testify/require"
-	tmcfg "github.com/tendermint/tendermint/config"
-	"github.com/tendermint/tendermint/crypto"
-	tmflags "github.com/tendermint/tendermint/libs/cli/flags"
-	"github.com/tendermint/tendermint/libs/log"
-	tmrand "github.com/tendermint/tendermint/libs/rand"
-	"github.com/tendermint/tendermint/node"
-	tmclient "github.com/tendermint/tendermint/rpc/client"
-	dbm "github.com/tendermint/tm-db"
-	"google.golang.org/grpc"
-
+	"github.com/KiraCore/sekai/x/genutil"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/crypto/hd"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
+	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	"github.com/cosmos/cosmos-sdk/server"
 	"github.com/cosmos/cosmos-sdk/server/api"
 	srvconfig "github.com/cosmos/cosmos-sdk/server/config"
@@ -46,8 +33,15 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"github.com/cosmos/cosmos-sdk/x/genutil"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	"github.com/stretchr/testify/require"
+	tmcfg "github.com/tendermint/tendermint/config"
+	tmflags "github.com/tendermint/tendermint/libs/cli/flags"
+	"github.com/tendermint/tendermint/libs/log"
+	tmrand "github.com/tendermint/tendermint/libs/rand"
+	"github.com/tendermint/tendermint/node"
+	tmclient "github.com/tendermint/tendermint/rpc/client"
+	dbm "github.com/tendermint/tm-db"
+	"google.golang.org/grpc"
 )
 
 // DefaultBondDenom defines default denom for fee
@@ -75,7 +69,7 @@ func NewSimApp(encodingCfg params.EncodingConfig) AppConstructor {
 // Config defines the necessary configuration used to bootstrap and start an
 // in-process local testing network.
 type Config struct {
-	Codec             codec.Marshaler
+	Codec             codec.Codec
 	LegacyAmino       *codec.LegacyAmino // TODO: Remove!
 	InterfaceRegistry codectypes.InterfaceRegistry
 
@@ -101,7 +95,7 @@ type Config struct {
 // DefaultConfig returns a sane default configuration suitable for nearly all
 // testing requirements.
 func DefaultConfig() Config {
-	encCfg := simapp2.MakeEncodingConfig()
+	encCfg := app.MakeEncodingConfig()
 
 	return Config{
 		Codec:             encCfg.Marshaler,
@@ -116,9 +110,9 @@ func DefaultConfig() Config {
 		NumValidators:     4,
 		BondDenom:         DefaultBondDenom,
 		MinGasPrices:      fmt.Sprintf("0.000006%s", DefaultBondDenom),
-		AccountTokens:     sdk.TokensFromConsensusPower(1000),
-		StakingTokens:     sdk.TokensFromConsensusPower(500),
-		BondedTokens:      sdk.TokensFromConsensusPower(100),
+		AccountTokens:     sdk.TokensFromConsensusPower(1000, sdk.DefaultPowerReduction),
+		StakingTokens:     sdk.TokensFromConsensusPower(500, sdk.DefaultPowerReduction),
+		BondedTokens:      sdk.TokensFromConsensusPower(100, sdk.DefaultPowerReduction),
 		PruningStrategy:   storetypes.PruningOptionNothing,
 		CleanupDir:        true,
 		SigningAlgo:       string(hd.Secp256k1Type),
@@ -154,7 +148,7 @@ type (
 		Ctx        *server.Context
 		Dir        string
 		NodeID     string
-		PubKey     crypto.PubKey
+		PubKey     cryptotypes.PubKey
 		Moniker    string
 		APIAddress string
 		RPCAddress string
@@ -189,7 +183,7 @@ func New(t *testing.T, cfg Config) *Network {
 
 	monikers := make([]string, cfg.NumValidators)
 	nodeIDs := make([]string, cfg.NumValidators)
-	valPubKeys := make([]crypto.PubKey, cfg.NumValidators)
+	valPubKeys := make([]cryptotypes.PubKey, cfg.NumValidators)
 
 	var (
 		genAccounts []authtypes.GenesisAccount
@@ -239,7 +233,7 @@ func New(t *testing.T, cfg Config) *Network {
 		logger := log.NewNopLogger()
 		if cfg.EnableLogging {
 			logger = log.NewTMLogger(log.NewSyncWriter(os.Stdout))
-			logger, _ = tmflags.ParseLogLevel("info", logger, tmcfg.DefaultLogLevel())
+			logger, _ = tmflags.ParseLogLevel("info", logger, tmcfg.DefaultLogLevel)
 		}
 
 		ctx.Logger = logger
@@ -247,7 +241,6 @@ func New(t *testing.T, cfg Config) *Network {
 		nodeDirName := fmt.Sprintf("node%d", i)
 		nodeDir := filepath.Join(network.BaseDir, nodeDirName, "simd")
 		clientDir := filepath.Join(network.BaseDir, nodeDirName, "simcli")
-		gentxsDir := filepath.Join(network.BaseDir, "gentxs")
 
 		require.NoError(t, os.MkdirAll(filepath.Join(nodeDir, "config"), 0755))
 		require.NoError(t, os.MkdirAll(clientDir, 0755))
@@ -297,41 +290,6 @@ func New(t *testing.T, cfg Config) *Network {
 		genBalances = append(genBalances, banktypes.Balance{Address: addr.String(), Coins: balances.Sort()})
 		genAccounts = append(genAccounts, authtypes.NewBaseAccount(addr, nil, 0, 0))
 
-		commission, err := sdk.NewDecFromStr("0.5")
-		require.NoError(t, err)
-
-		createValMsg, err := stakingtypes.NewMsgCreateValidator(
-			sdk.ValAddress(addr),
-			valPubKeys[i],
-			sdk.NewCoin(DefaultBondDenom, cfg.BondedTokens),
-			stakingtypes.NewDescription(nodeDirName, "", "", "", ""),
-			stakingtypes.NewCommissionRates(commission, sdk.OneDec(), sdk.OneDec()),
-			sdk.OneInt(),
-		)
-		require.NoError(t, err)
-
-		p2pURL, err := url.Parse(p2pAddr)
-		require.NoError(t, err)
-
-		memo := fmt.Sprintf("%s@%s:%s", nodeIDs[i], p2pURL.Hostname(), p2pURL.Port())
-		txBuilder := cfg.TxConfig.NewTxBuilder()
-		require.NoError(t, txBuilder.SetMsgs(createValMsg))
-		txBuilder.SetMemo(memo)
-
-		txFactory := tx.Factory{}
-		txFactory = txFactory.
-			WithChainID(cfg.ChainID).
-			WithMemo(memo).
-			WithKeybase(kb).
-			WithTxConfig(cfg.TxConfig)
-
-		err = tx.Sign(txFactory, nodeDirName, txBuilder)
-		require.NoError(t, err)
-
-		txBz, err := cfg.TxConfig.TxJSONEncoder()(txBuilder.GetTx())
-		require.NoError(t, err)
-		require.NoError(t, writeFile(fmt.Sprintf("%v.json", nodeDirName), gentxsDir, txBz))
-
 		srvconfig.WriteConfigFile(filepath.Join(nodeDir, "config/app.toml"), appCfg)
 
 		clientCtx := client.Context{}.
@@ -339,7 +297,7 @@ func New(t *testing.T, cfg Config) *Network {
 			WithHomeDir(tmCfg.RootDir).
 			WithChainID(cfg.ChainID).
 			WithInterfaceRegistry(cfg.InterfaceRegistry).
-			WithJSONMarshaler(cfg.Codec).
+			WithJSONCodec(cfg.Codec).
 			WithLegacyAmino(cfg.LegacyAmino).
 			WithTxConfig(cfg.TxConfig).
 			WithAccountRetriever(cfg.AccountRetriever)

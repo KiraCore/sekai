@@ -3,28 +3,25 @@ package cli
 import (
 	"fmt"
 
-	"github.com/tendermint/tendermint/crypto"
-
-	"github.com/cosmos/cosmos-sdk/server"
-
-	"github.com/cosmos/cosmos-sdk/x/genutil"
-	"github.com/cosmos/cosmos-sdk/x/staking/client/cli"
-	"github.com/pkg/errors"
-	"github.com/spf13/cobra"
-
-	customstakingtypes "github.com/KiraCore/sekai/x/staking/types"
+	"github.com/KiraCore/sekai/x/genutil"
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
+	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
+	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
+	"github.com/cosmos/cosmos-sdk/server"
 	"github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/x/staking/client/cli"
+	"github.com/pkg/errors"
+	"github.com/spf13/cobra"
 )
 
 const (
-	FlagWebsite   = "website"
-	FlagSocial    = "social"
-	FlagIdentity  = "identity"
-	FlagComission = "commission"
-	FlagValKey    = "validator-key"
+	FlagValKey      = "validator-key"
+	FlagTitle       = "title"
+	FlagDescription = "description"
 )
 
 func GetTxClaimValidatorCmd() *cobra.Command {
@@ -32,25 +29,20 @@ func GetTxClaimValidatorCmd() *cobra.Command {
 		Use:   "claim-validator-seat",
 		Short: "Claim validator seat to become a Validator",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-			serverCtx := server.GetServerContextFromCmd(cmd)
-			clientCtx, err := client.ReadTxCommandFlags(clientCtx, cmd.Flags())
+			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			moniker, _ := cmd.Flags().GetString(FlagMoniker)
-			website, _ := cmd.Flags().GetString(FlagWebsite)
-			social, _ := cmd.Flags().GetString(FlagSocial)
-			identity, _ := cmd.Flags().GetString(FlagIdentity)
-			comission, _ := cmd.Flags().GetString(FlagComission)
-			valKeyStr, _ := cmd.Flags().GetString(FlagValKey)
+			serverCtx := server.GetServerContextFromCmd(cmd)
 
-			// read --pubkey, if empty take it from priv_validator.json
-			var valPubKey crypto.PubKey
+			moniker, _ := cmd.Flags().GetString(FlagMoniker)
+
+			var (
+				valPubKey cryptotypes.PubKey
+			)
 			if valPubKeyString, _ := cmd.Flags().GetString(cli.FlagPubKey); valPubKeyString != "" {
-				valPubKey, err = types.GetPubKeyFromBech32(types.Bech32PubKeyTypeConsPub, valPubKeyString)
-				if err != nil {
+				if err := clientCtx.Codec.UnmarshalInterfaceJSON([]byte(valPubKeyString), &valPubKey); err != nil {
 					return errors.Wrap(err, "failed to get consensus node public key")
 				}
 			} else {
@@ -60,13 +52,9 @@ func GetTxClaimValidatorCmd() *cobra.Command {
 				}
 			}
 
-			comm, err := types.NewDecFromStr(comission)
-			val, err := types.ValAddressFromBech32(valKeyStr)
-			if err != nil {
-				return errors.Wrap(err, "--validator-key param error")
-			}
+			val := types.ValAddress(clientCtx.GetFromAddress())
 
-			msg, err := customstakingtypes.NewMsgClaimValidator(moniker, website, social, identity, comm, val, valPubKey)
+			msg, err := stakingtypes.NewMsgClaimValidator(moniker, val, valPubKey)
 			if err != nil {
 				return fmt.Errorf("error creating tx: %w", err)
 			}
@@ -78,6 +66,59 @@ func GetTxClaimValidatorCmd() *cobra.Command {
 	AddValidatorFlags(cmd)
 	flags.AddTxFlagsToCmd(cmd)
 
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+// GetTxProposalUnjailValidatorCmd implement cli command for MsgUpsertTokenAlias
+func GetTxProposalUnjailValidatorCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "proposal-unjail-validator val_addr reference",
+		Short: "Create a proposal to unjail validator (the from address is the validator)",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			valAddr, err := sdk.ValAddressFromBech32(args[0])
+			if err != nil {
+				return err
+			}
+			reference := args[1]
+
+			title, err := cmd.Flags().GetString(FlagTitle)
+			if err != nil {
+				return fmt.Errorf("invalid title: %w", err)
+			}
+
+			description, err := cmd.Flags().GetString(FlagDescription)
+			if err != nil {
+				return fmt.Errorf("invalid description: %w", err)
+			}
+
+			msg, err := govtypes.NewMsgSubmitProposal(
+				clientCtx.FromAddress,
+				title,
+				description,
+				stakingtypes.NewUnjailValidatorProposal(clientCtx.FromAddress, valAddr, reference),
+			)
+			if err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	cmd.Flags().String(FlagTitle, "", "The title of the proposal.")
+	cmd.MarkFlagRequired(FlagTitle)
+	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
+	cmd.MarkFlagRequired(FlagDescription)
+
+	flags.AddTxFlagsToCmd(cmd)
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd

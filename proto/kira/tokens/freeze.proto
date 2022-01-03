@@ -1,0 +1,17 @@
+syntax = "proto3";
+package kira.tokens;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/tokens/types";
+
+message TokensWhiteBlack {
+    repeated string whitelisted = 1;
+    repeated string blacklisted = 2;
+}
+
+message ProposalTokensWhiteBlackChange {
+    bool is_blacklist = 1; // "blacklist" | "whitelist"
+    bool is_add = 2; // "add" | "remove"
+    repeated string tokens = 3;
+}

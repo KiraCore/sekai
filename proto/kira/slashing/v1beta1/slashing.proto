@@ -1,0 +1,42 @@
+syntax = "proto3";
+package kira.slashing;
+
+option go_package            = "github.com/KiraCore/sekai/x/slashing/types";
+option (gogoproto.equal_all) = true;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+// ValidatorSigningInfo defines a validator's signing info for monitoring their
+// liveness activity.
+message ValidatorSigningInfo {
+  option (gogoproto.equal)            = true;
+  option (gogoproto.goproto_stringer) = false;
+
+  string address = 1;
+  // height at which validator was first a candidate OR was activated
+  int64 start_height = 2 [(gogoproto.moretags) = "yaml:\"start_height\""];
+  // timestamp validator cannot be activated until
+  google.protobuf.Timestamp inactive_until = 3
+      [(gogoproto.moretags) = "yaml:\"inactive_until\"", (gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  // mischance confidence counter - count when it's in active status
+  int64 mischance_confidence = 4;
+  // missed blocks counter after mischance confidence - count when it's in active status
+  int64 mischance = 5;
+  // last signed block height by the validator
+  int64 last_present_block = 6;
+  // missed blocks counter (to avoid scanning the array every time)
+  int64 missed_blocks_counter = 7;
+  // count produced blocks so far by a validator
+  int64 produced_blocks_counter = 8;
+}
+
+// Params represents the parameters used for by the slashing module.
+message Params {
+  google.protobuf.Duration downtime_inactive_duration = 1 [
+    (gogoproto.nullable)    = false,
+    (gogoproto.stdduration) = true,
+    (gogoproto.moretags)    = "yaml:\"downtime_inactive_duration\""
+  ];
+}

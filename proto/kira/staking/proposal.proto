@@ -1,0 +1,17 @@
+syntax = "proto3";
+package kira.staking;
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/staking/types";
+
+
+message ProposalUnjailValidator {
+  option (cosmos_proto.implements_interface) = "Content";
+  option (gogoproto.equal) = true;
+
+  string proposer = 1;
+  string valAddr = 2;
+  string reference = 3;
+}

@@ -2,12 +2,13 @@ package keeper
 
 import (
 	"context"
-	"time"
+	"fmt"
+	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
 
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/tokens/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -28,53 +29,15 @@ func NewMsgServerImpl(keeper Keeper, cgk types.CustomGovKeeper) types.MsgServer 
 
 var _ types.MsgServer = msgServer{}
 
-func (k msgServer) ProposalUpsertTokenRates(goCtx context.Context, msg *types.MsgProposalUpsertTokenRates) (*types.MsgProposalUpsertTokenRatesResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	isAllowed := k.cgk.CheckIfAllowedPermission(ctx, msg.Proposer, customgovtypes.PermCreateUpsertTokenRateProposal)
-	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermCreateUpsertTokenRateProposal.String())
-	}
-
-	proposalID, err := k.CreateAndSaveProposalWithContent(ctx, types.NewProposalUpsertTokenRates(
-		msg.Denom,
-		msg.Rate,
-		msg.FeePayments,
-	))
-	return &types.MsgProposalUpsertTokenRatesResponse{
-		ProposalID: proposalID,
-	}, err
-}
-
-func (k msgServer) ProposalUpsertTokenAlias(goCtx context.Context, msg *types.MsgProposalUpsertTokenAlias) (*types.MsgProposalUpsertTokenAliasResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	isAllowed := k.cgk.CheckIfAllowedPermission(ctx, msg.Proposer, customgovtypes.PermCreateUpsertTokenAliasProposal)
-	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermCreateUpsertTokenAliasProposal.String())
-	}
-
-	proposalID, err := k.CreateAndSaveProposalWithContent(ctx, types.NewProposalUpsertTokenAlias(
-		msg.Symbol,
-		msg.Name,
-		msg.Icon,
-		msg.Decimals,
-		msg.Denoms,
-	))
-	return &types.MsgProposalUpsertTokenAliasResponse{
-		ProposalID: proposalID,
-	}, err
-}
-
 func (k msgServer) UpsertTokenAlias(
 	goCtx context.Context,
 	msg *types.MsgUpsertTokenAlias,
 ) (*types.MsgUpsertTokenAliasResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	isAllowed := k.cgk.CheckIfAllowedPermission(ctx, msg.Proposer, customgovtypes.PermUpsertTokenAlias)
+	isAllowed := k.cgk.CheckIfAllowedPermission(ctx, msg.Proposer, govtypes.PermUpsertTokenAlias)
 	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermUpsertTokenAlias.String())
+		return nil, errors.Wrap(govtypes.ErrNotEnoughPermissions, govtypes.PermUpsertTokenAlias.String())
 	}
 
 	err := k.keeper.UpsertTokenAlias(ctx, *types.NewTokenAlias(
@@ -84,6 +47,17 @@ func (k msgServer) UpsertTokenAlias(
 		msg.Decimals,
 		msg.Denoms,
 	))
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeUpsertTokenAlias,
+			sdk.NewAttribute(types.AttributeKeyProposer, msg.Proposer.String()),
+			sdk.NewAttribute(types.AttributeKeySymbol, msg.Symbol),
+			sdk.NewAttribute(types.AttributeKeyName, msg.Name),
+			sdk.NewAttribute(types.AttributeKeyIcon, msg.Icon),
+			sdk.NewAttribute(types.AttributeKeyDecimals, fmt.Sprintf("%d", msg.Decimals)),
+			sdk.NewAttribute(types.AttributeKeyDenoms, strings.Join(msg.Denoms, ",")),
+		),
+	)
 	return &types.MsgUpsertTokenAliasResponse{}, err
 }
 
@@ -95,9 +69,9 @@ func (k msgServer) UpsertTokenRate(goCtx context.Context, msg *types.MsgUpsertTo
 		return nil, errors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
 	}
 
-	isAllowed := k.cgk.CheckIfAllowedPermission(ctx, msg.Proposer, customgovtypes.PermUpsertTokenRate)
+	isAllowed := k.cgk.CheckIfAllowedPermission(ctx, msg.Proposer, govtypes.PermUpsertTokenRate)
 	if !isAllowed {
-		return nil, errors.Wrap(customgovtypes.ErrNotEnoughPermissions, customgovtypes.PermUpsertTokenRate.String())
+		return nil, errors.Wrap(govtypes.ErrNotEnoughPermissions, govtypes.PermUpsertTokenRate.String())
 	}
 
 	err = k.keeper.UpsertTokenRate(ctx, *types.NewTokenRate(
@@ -109,28 +83,15 @@ func (k msgServer) UpsertTokenRate(goCtx context.Context, msg *types.MsgUpsertTo
 	if err != nil {
 		return nil, errors.Wrap(sdkerrors.ErrInvalidRequest, err.Error())
 	}
-	return &types.MsgUpsertTokenRateResponse{}, nil
-}
-
-func (k msgServer) CreateAndSaveProposalWithContent(ctx sdk.Context, content customgovtypes.Content) (uint64, error) {
-	blockTime := ctx.BlockTime()
-	proposalID, err := k.cgk.GetNextProposalID(ctx)
-	if err != nil {
-		return 0, err
-	}
-
-	properties := k.cgk.GetNetworkProperties(ctx)
-
-	proposal, err := customgovtypes.NewProposal(
-		proposalID,
-		content,
-		blockTime,
-		blockTime.Add(time.Minute*time.Duration(properties.ProposalEndTime)),
-		blockTime.Add(time.Minute*time.Duration(properties.ProposalEnactmentTime)),
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeUpsertTokenRate,
+			sdk.NewAttribute(types.AttributeKeyProposer, msg.Proposer.String()),
+			sdk.NewAttribute(types.AttributeKeyDenom, msg.Denom),
+			sdk.NewAttribute(types.AttributeKeyRate, msg.Rate.String()),
+			sdk.NewAttribute(types.AttributeKeyFeePayments, fmt.Sprintf("%t", msg.FeePayments)),
+		),
 	)
 
-	k.cgk.SaveProposal(ctx, proposal)
-	k.cgk.AddToActiveProposals(ctx, proposal)
-
-	return proposalID, nil
+	return &types.MsgUpsertTokenRateResponse{}, nil
 }

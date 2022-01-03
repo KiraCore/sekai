@@ -3,15 +3,12 @@ package common
 import (
 	"io/ioutil"
 	"os"
-	"sync"
+	"time"
 
-	interx "github.com/KiraCore/sekai/INTERX/config"
+	"github.com/KiraCore/sekai/INTERX/config"
 	"github.com/KiraCore/sekai/INTERX/types"
 	"google.golang.org/grpc/grpclog"
 )
-
-// Mutex will be used for Sync
-var Mutex = sync.Mutex{}
 
 // RPCMethods is a variable for rpc methods
 var RPCMethods = make(map[string]map[string]types.RPCMethod)
@@ -22,16 +19,14 @@ func AddRPCMethod(method string, url string, description string, canCache bool) 
 	newMethod.Description = description
 	newMethod.Enabled = true
 	newMethod.CachingEnabled = true
-	newMethod.CachingDuration = interx.Config.CachingDuration
 
-	if conf, ok := interx.Config.RPC.API[method][url]; ok {
+	if conf, ok := config.Config.RPCMethods.API[method][url]; ok {
 		newMethod.Enabled = !conf.Disable
 		newMethod.CachingEnabled = !conf.CachingDisable
 		newMethod.RateLimit = conf.RateLimit
 		newMethod.AuthRateLimit = conf.AuthRateLimit
-		if conf.CachingDuration != 0 {
-			newMethod.CachingDuration = conf.CachingDuration
-		}
+		newMethod.CachingDuration = conf.CachingDuration
+		newMethod.CachingBlockDuration = conf.CachingBlockDuration
 	}
 
 	if !canCache {
@@ -56,4 +51,17 @@ var NodeStatus struct {
 	Chainid   string `json:"chain_id"`
 	Block     int64  `json:"block"`
 	Blocktime string `json:"block_time"`
+}
+
+func IsCacheExpired(result types.InterxResponse) bool {
+	if result.CachingBlockDuration == 0 || result.CachingDuration == 0 {
+		return true
+	}
+	if result.CachingBlockDuration == -1 || result.CachingDuration == -1 {
+		return false
+	}
+	if result.CacheTime.Add(time.Duration(result.CachingDuration)*time.Second).After(time.Now().UTC()) && result.Response.Block+result.CachingBlockDuration > NodeStatus.Block {
+		return false
+	}
+	return true
 }

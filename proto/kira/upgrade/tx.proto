@@ -1,0 +1,11 @@
+syntax = "proto3";
+package kira.upgrade;
+
+import "gogoproto/gogo.proto";
+import "kira/upgrade/upgrade.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/upgrade/types";
+
+// Msg defines the tokens Msg service.
+service Msg {
+}

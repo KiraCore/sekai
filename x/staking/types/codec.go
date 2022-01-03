@@ -2,6 +2,7 @@ package types
 
 import (
 	functionmeta "github.com/KiraCore/sekai/function_meta"
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -13,27 +14,11 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgClaimValidator{}, "kiraHub/MsgClaimValidator", nil)
 
 	functionmeta.AddNewFunction((&MsgClaimValidator{}).Type(), `{
-		"description": "MsgClaimValidator defines a message for claiming a new validator..",
+		"description": "MsgClaimValidator defines a message for claiming a new validator.",
 		"parameters": {
 			"moniker": {
 				"type":        "string",
 				"description": "validator's name or nickname."
-			},
-			"website": {
-				"type":        "string",
-				"description": "validator's website."
-			},
-			"social": {
-				"type":        "string",
-				"description": "validator's social link."
-			},
-			"identity": {
-				"type":        "string",
-				"description": "validator's identity information."
-			},
-			"commission": {
-				"type":        "float",
-				"description": "commision rate for this validator"
 			},
 			"val_key": {
 				"type":        "val_address",
@@ -52,6 +37,13 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgClaimValidator{},
 	)
+
+	registry.RegisterInterface(
+		"kira.gov.Content",
+		(*govtypes.Content)(nil),
+		&ProposalUnjailValidator{},
+	)
+
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 }
 

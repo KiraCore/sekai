@@ -6,8 +6,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/spf13/cobra"
-
+	"github.com/KiraCore/sekai/x/genutil"
+	genutiltypes "github.com/KiraCore/sekai/x/genutil/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -17,8 +17,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	authvesting "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"github.com/cosmos/cosmos-sdk/x/genutil"
-	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
+	"github.com/spf13/cobra"
 )
 
 const (
@@ -40,8 +39,8 @@ contain valid denominations. Accounts may optionally be supplied with vesting pa
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
-			depCdc := clientCtx.JSONMarshaler
-			cdc := depCdc.(codec.Marshaler)
+			depCdc := clientCtx.JSONCodec
+			cdc := depCdc.(codec.Codec)
 
 			serverCtx := server.GetServerContextFromCmd(cmd)
 			config := serverCtx.Config
@@ -67,7 +66,7 @@ contain valid denominations. Accounts may optionally be supplied with vesting pa
 				addr = info.GetAddress()
 			}
 
-			coins, err := sdk.ParseCoins(args[1])
+			coins, err := sdk.ParseCoinsNormalized(args[1])
 			if err != nil {
 				return fmt.Errorf("failed to parse coins: %w", err)
 			}
@@ -76,7 +75,7 @@ contain valid denominations. Accounts may optionally be supplied with vesting pa
 			vestingEnd, _ := cmd.Flags().GetInt64(flagVestingEnd)
 			vestingAmtStr, _ := cmd.Flags().GetString(flagVestingAmt)
 
-			vestingAmt, err := sdk.ParseCoins(vestingAmtStr)
+			vestingAmt, err := sdk.ParseCoinsNormalized(vestingAmtStr)
 			if err != nil {
 				return fmt.Errorf("failed to parse vesting amount: %w", err)
 			}

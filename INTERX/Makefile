@@ -1,3 +1,5 @@
+GOBIN=${HOME}/go/bin
+
 generate:
 	# Generate go, gRPC-Gateway, OpenAPI output.
 	#
@@ -12,13 +14,13 @@ generate:
 	# --grpc-gateway_out generates gRPC-Gateway output.
 	# --openapiv2_out generates an OpenAPI 2.0 specification for our gRPC-Gateway endpoints.
 	#
-	./scripts/protocgen.sh
+	docker run --rm -v $(CURDIR):/workspace --workdir /workspace tendermintdev/sdk-proto-gen sh ./scripts/protocgen.sh
 
 	# Generate static assets for OpenAPI UI
-	statik -m -f -src third_party/OpenAPI/
+	# statik -m -f -src third_party/OpenAPI/
 
 install: go.sum
-		go install .
+		go build -o $(GOBIN)/interxd
 
 start:
 	go run main.go

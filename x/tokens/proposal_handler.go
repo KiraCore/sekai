@@ -1,9 +1,10 @@
 package tokens
 
 import (
+	kiratypes "github.com/KiraCore/sekai/types"
 	"github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/tokens/keeper"
-	types2 "github.com/KiraCore/sekai/x/tokens/types"
+	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -18,17 +19,14 @@ func NewApplyUpsertTokenAliasProposalHandler(keeper keeper.Keeper) *ApplyUpsertT
 }
 
 func (a ApplyUpsertTokenAliasProposalHandler) ProposalType() string {
-	return types2.ProposalTypeUpsertTokenAlias
+	return kiratypes.ProposalTypeUpsertTokenAlias
 }
 
-func (a ApplyUpsertTokenAliasProposalHandler) Apply(ctx sdk.Context, proposal types.Content) {
-	p := proposal.(*types2.ProposalUpsertTokenAlias)
+func (a ApplyUpsertTokenAliasProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
+	p := proposal.(*tokenstypes.ProposalUpsertTokenAlias)
 
-	tokenAlians := types2.NewTokenAlias(p.Symbol, p.Name, p.Icon, p.Decimals, p.Denoms)
-	err := a.keeper.UpsertTokenAlias(ctx, *tokenAlians)
-	if err != nil {
-		panic(err)
-	}
+	tokenAlians := tokenstypes.NewTokenAlias(p.Symbol, p.Name, p.Icon, p.Decimals, p.Denoms)
+	return a.keeper.UpsertTokenAlias(ctx, *tokenAlians)
 }
 
 type ApplyUpsertTokenRatesProposalHandler struct {
@@ -40,15 +38,43 @@ func NewApplyUpsertTokenRatesProposalHandler(keeper keeper.Keeper) *ApplyUpsertT
 }
 
 func (a ApplyUpsertTokenRatesProposalHandler) ProposalType() string {
-	return types2.ProposalTypeUpsertTokenRates
+	return kiratypes.ProposalTypeUpsertTokenRates
 }
 
-func (a ApplyUpsertTokenRatesProposalHandler) Apply(ctx sdk.Context, proposal types.Content) {
-	p := proposal.(*types2.ProposalUpsertTokenRates)
+func (a ApplyUpsertTokenRatesProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
+	p := proposal.(*tokenstypes.ProposalUpsertTokenRates)
 
-	tokenAlians := types2.NewTokenRate(p.Denom, p.Rate, p.FeePayments)
-	err := a.keeper.UpsertTokenRate(ctx, *tokenAlians)
-	if err != nil {
-		panic(err)
+	tokenAlians := tokenstypes.NewTokenRate(p.Denom, p.Rate, p.FeePayments)
+	return a.keeper.UpsertTokenRate(ctx, *tokenAlians)
+}
+
+type ApplyWhiteBlackChangeProposalHandler struct {
+	keeper keeper.Keeper
+}
+
+func NewApplyWhiteBlackChangeProposalHandler(keeper keeper.Keeper) *ApplyWhiteBlackChangeProposalHandler {
+	return &ApplyWhiteBlackChangeProposalHandler{keeper: keeper}
+}
+
+func (a ApplyWhiteBlackChangeProposalHandler) ProposalType() string {
+	return kiratypes.ProposalTypeTokensWhiteBlackChange
+}
+
+func (a ApplyWhiteBlackChangeProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
+	p := proposal.(*tokenstypes.ProposalTokensWhiteBlackChange)
+
+	if p.IsBlacklist {
+		if p.IsAdd {
+			a.keeper.AddTokensToBlacklist(ctx, p.Tokens)
+		} else {
+			a.keeper.RemoveTokensFromBlacklist(ctx, p.Tokens)
+		}
+	} else {
+		if p.IsAdd {
+			a.keeper.AddTokensToWhitelist(ctx, p.Tokens)
+		} else {
+			a.keeper.RemoveTokensFromWhitelist(ctx, p.Tokens)
+		}
 	}
+	return nil
 }

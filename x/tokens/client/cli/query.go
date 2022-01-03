@@ -13,6 +13,25 @@ import (
 	"github.com/KiraCore/sekai/x/tokens/types"
 )
 
+// NewQueryCmd returns a root CLI command handler for all x/tokens transaction commands.
+func NewQueryCmd() *cobra.Command {
+	queryCmd := &cobra.Command{
+		Use:   types.RouterKey,
+		Short: "query commands for the tokens module",
+	}
+	queryCmd.AddCommand(
+		GetCmdQueryTokenAlias(),
+		GetCmdQueryAllTokenAliases(),
+		GetCmdQueryTokenAliasesByDenom(),
+		GetCmdQueryTokenRate(),
+		GetCmdQueryAllTokenRates(),
+		GetCmdQueryTokenRatesByDenom(),
+		GetCmdQueryTokenBlackWhites(),
+	)
+
+	return queryCmd
+}
+
 // GetCmdQueryTokenAlias the query token alias command.
 func GetCmdQueryTokenAlias() *cobra.Command {
 	cmd := &cobra.Command{
@@ -21,10 +40,6 @@ func GetCmdQueryTokenAlias() *cobra.Command {
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
-			if err != nil {
-				return err
-			}
 
 			params := &types.TokenAliasRequest{Symbol: args[0]}
 
@@ -38,7 +53,7 @@ func GetCmdQueryTokenAlias() *cobra.Command {
 				return fmt.Errorf("%s symbol does not exist", params.Symbol)
 			}
 
-			return clientCtx.PrintOutput(res.Data)
+			return clientCtx.PrintProto(res.Data)
 		},
 	}
 
@@ -54,10 +69,6 @@ func GetCmdQueryAllTokenAliases() *cobra.Command {
 		Short: "Get all token aliases",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
-			if err != nil {
-				return err
-			}
 
 			params := &types.AllTokenAliasesRequest{}
 
@@ -67,7 +78,7 @@ func GetCmdQueryAllTokenAliases() *cobra.Command {
 				return err
 			}
 
-			return clientCtx.PrintOutput(res)
+			return clientCtx.PrintProto(res)
 		},
 	}
 
@@ -79,15 +90,11 @@ func GetCmdQueryAllTokenAliases() *cobra.Command {
 // GetCmdQueryTokenAliasesByDenom the query token aliases by denom command.
 func GetCmdQueryTokenAliasesByDenom() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "aliases-by-denom",
+		Use:   "aliases-by-denom [aliases]",
 		Short: "Get token aliases by denom",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
-			if err != nil {
-				return err
-			}
 
 			denoms := strings.Split(args[0], ",")
 			params := &types.TokenAliasesByDenomRequest{
@@ -100,7 +107,7 @@ func GetCmdQueryTokenAliasesByDenom() *cobra.Command {
 				return err
 			}
 
-			return clientCtx.PrintOutput(res)
+			return clientCtx.PrintProto(res)
 		},
 	}
 
@@ -117,10 +124,6 @@ func GetCmdQueryTokenRate() *cobra.Command {
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
-			if err != nil {
-				return err
-			}
 
 			params := &types.TokenRateRequest{Denom: args[0]}
 
@@ -134,7 +137,7 @@ func GetCmdQueryTokenRate() *cobra.Command {
 				return fmt.Errorf("%s denom does not exist", params.Denom)
 			}
 
-			return clientCtx.PrintOutput(res.Data)
+			return clientCtx.PrintProto(res.Data)
 		},
 	}
 
@@ -150,10 +153,6 @@ func GetCmdQueryAllTokenRates() *cobra.Command {
 		Short: "Get all token rates",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
-			if err != nil {
-				return err
-			}
 
 			params := &types.AllTokenRatesRequest{}
 
@@ -163,7 +162,7 @@ func GetCmdQueryAllTokenRates() *cobra.Command {
 				return err
 			}
 
-			return clientCtx.PrintOutput(res)
+			return clientCtx.PrintProto(res)
 		},
 	}
 
@@ -180,10 +179,6 @@ func GetCmdQueryTokenRatesByDenom() *cobra.Command {
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
-			clientCtx, err := client.ReadQueryCommandFlags(clientCtx, cmd.Flags())
-			if err != nil {
-				return err
-			}
 
 			denoms := strings.Split(args[0], ",")
 			params := &types.TokenRatesByDenomRequest{
@@ -196,7 +191,32 @@ func GetCmdQueryTokenRatesByDenom() *cobra.Command {
 				return err
 			}
 
-			return clientCtx.PrintOutput(res)
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// GetCmdQueryTokenBlackWhites the query token blacklists / whitelists
+func GetCmdQueryTokenBlackWhites() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "token-black-whites",
+		Short: "Get token black whites",
+		Args:  cobra.MinimumNArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			params := &types.TokenBlackWhitesRequest{}
+
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.GetTokenBlackWhites(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
 		},
 	}
 

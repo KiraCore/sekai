@@ -6,33 +6,34 @@ import (
 	"io/ioutil"
 	"os"
 
-	interx "github.com/KiraCore/sekai/INTERX/config"
+	"github.com/KiraCore/sekai/INTERX/config"
+	"github.com/KiraCore/sekai/INTERX/global"
 	"github.com/KiraCore/sekai/INTERX/types"
 )
 
 // PutCache is a function to save value to cache
 func PutCache(chainIDHash string, endpointHash string, requestHash string, value types.InterxResponse) error {
-	GetLogger().Info("[cache] Saving interx response")
+	// GetLogger().Info("[cache] Saving interx response")
 
 	data, err := json.Marshal(value)
 	if err != nil {
 		return err
 	}
 
-	folderPath := fmt.Sprintf("%s/%s/%s", interx.GetResponseCacheDir(), chainIDHash, endpointHash)
+	folderPath := fmt.Sprintf("%s/%s/%s", config.GetResponseCacheDir(), chainIDHash, endpointHash)
 	filePath := fmt.Sprintf("%s/%s", folderPath, requestHash)
 
-	Mutex.Lock()
+	global.Mutex.Lock()
 	err = os.MkdirAll(folderPath, os.ModePerm)
 	if err != nil {
-		Mutex.Unlock()
+		global.Mutex.Unlock()
 
 		GetLogger().Error("[cache] Unable to create a folder: ", folderPath)
 		return err
 	}
 
 	err = ioutil.WriteFile(filePath, data, 0644)
-	Mutex.Unlock()
+	global.Mutex.Unlock()
 
 	if err != nil {
 		GetLogger().Error("[cache] Unable to save response: ", filePath)
@@ -43,18 +44,17 @@ func PutCache(chainIDHash string, endpointHash string, requestHash string, value
 
 // GetCache is a function to get value from cache
 func GetCache(chainIDHash string, endpointHash string, requestHash string) (types.InterxResponse, error) {
-	filePath := fmt.Sprintf("%s/%s/%s/%s", interx.GetResponseCacheDir(), chainIDHash, endpointHash, requestHash)
-
-	Mutex.Lock()
-	data, _ := ioutil.ReadFile(filePath)
-	Mutex.Unlock()
+	filePath := fmt.Sprintf("%s/%s/%s/%s", config.GetResponseCacheDir(), chainIDHash, endpointHash, requestHash)
 
 	response := types.InterxResponse{}
-	err := json.Unmarshal([]byte(data), &response)
+
+	data, err := ioutil.ReadFile(filePath)
 
 	if err != nil {
-		GetLogger().Error("[cache] Unable to save response: ", filePath)
+		return response, err
 	}
+
+	err = json.Unmarshal([]byte(data), &response)
 
 	return response, err
 }

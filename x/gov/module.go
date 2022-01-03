@@ -6,15 +6,13 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
-	cli2 "github.com/KiraCore/sekai/x/gov/client/cli"
-	keeper2 "github.com/KiraCore/sekai/x/gov/keeper"
-	"github.com/KiraCore/sekai/x/gov/types"
-	customgovtypes "github.com/KiraCore/sekai/x/gov/types"
-
 	"github.com/KiraCore/sekai/middleware"
+	"github.com/KiraCore/sekai/x/gov/client/cli"
+	"github.com/KiraCore/sekai/x/gov/keeper"
+	"github.com/KiraCore/sekai/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
-	types2 "github.com/cosmos/cosmos-sdk/codec/types"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/gorilla/mux"
@@ -34,136 +32,110 @@ func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *r
 }
 
 func (b AppModuleBasic) Name() string {
-	return customgovtypes.ModuleName
+	return types.ModuleName
 }
 
-func (b AppModuleBasic) RegisterInterfaces(registry types2.InterfaceRegistry) {
-	customgovtypes.RegisterInterfaces(registry)
+func (b AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
+	types.RegisterInterfaces(registry)
 }
 
-func (b AppModuleBasic) DefaultGenesis(cdc codec.JSONMarshaler) json.RawMessage {
-	return cdc.MustMarshalJSON(customgovtypes.DefaultGenesis())
+func (b AppModuleBasic) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage {
+	return cdc.MustMarshalJSON(types.DefaultGenesis())
 }
 
-func (b AppModuleBasic) ValidateGenesis(marshaler codec.JSONMarshaler, config client.TxEncodingConfig, message json.RawMessage) error {
+func (b AppModuleBasic) ValidateGenesis(marshaler codec.JSONCodec, config client.TxEncodingConfig, message json.RawMessage) error {
 	return nil
 }
 
 func (b AppModuleBasic) RegisterRESTRoutes(context client.Context, router *mux.Router) {}
 
 func (b AppModuleBasic) RegisterGRPCRoutes(clientCtx client.Context, serveMux *runtime.ServeMux) {
-	customgovtypes.RegisterQueryHandlerClient(context.Background(), serveMux, types.NewQueryClient(clientCtx))
+	types.RegisterQueryHandlerClient(context.Background(), serveMux, types.NewQueryClient(clientCtx))
 }
 
 func (b AppModuleBasic) RegisterLegacyAminoCodec(amino *codec.LegacyAmino) {}
 
 func (b AppModuleBasic) GetTxCmd() *cobra.Command {
-	return cli2.NewTxCmd()
+	return cli.NewTxCmd()
 }
 
 // GetQueryCmd implement query commands for this module
 func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
 	queryCmd := &cobra.Command{
-		Use:   customgovtypes.RouterKey,
+		Use:   types.RouterKey,
 		Short: "query commands for the customgov module",
 	}
 	queryCmd.AddCommand(
-		cli2.GetCmdQueryPermissions(),
-		cli2.GetCmdQueryNetworkProperties(),
-		cli2.GetCmdQueryExecutionFee(),
-		cli2.GetCmdQueryRolePermissions(),
-		cli2.GetCmdQueryRolesByAddress(),
-		cli2.GetCmdQueryProposals(),
-		cli2.GetCmdQueryCouncilRegistry(),
-		cli2.GetCmdQueryProposal(),
-		cli2.GetCmdQueryVote(),
-		cli2.GetCmdQueryVotes(),
-		cli2.GetCmdQueryWhitelistedProposalVoters(),
+		cli.GetCmdQueryPermissions(),
+		cli.GetCmdQueryNetworkProperties(),
+		cli.GetCmdQueryExecutionFee(),
+		cli.GetCmdQueryPoorNetworkMessages(),
+		cli.GetCmdQueryRole(),
+		cli.GetCmdQueryAllRoles(),
+		cli.GetCmdQueryRolesByAddress(),
+		cli.GetCmdQueryProposals(),
+		cli.GetCmdQueryCouncilRegistry(),
+		cli.GetCmdQueryProposal(),
+		cli.GetCmdQueryVote(),
+		cli.GetCmdQueryVotes(),
+		cli.GetCmdQueryWhitelistedProposalVoters(),
+		cli.GetCmdQueryIdentityRecord(),
+		cli.GetCmdQueryIdentityRecordByAddress(),
+		cli.GetCmdQueryAllIdentityRecords(),
+		cli.GetCmdQueryIdentityRecordVerifyRequest(),
+		cli.GetCmdQueryIdentityRecordVerifyRequestsByRequester(),
+		cli.GetCmdQueryIdentityRecordVerifyRequestsByApprover(),
+		cli.GetCmdQueryAllIdentityRecordVerifyRequests(),
+		cli.GetCmdQueryAllDataReferenceKeys(),
+		cli.GetCmdQueryDataReference(),
+		cli.GetCmdQueryAllProposalDurations(),
+		cli.GetCmdQueryProposalDuration(),
 	)
 
-	queryCmd.PersistentFlags().String("node", "tcp://localhost:26657", "<host>:<port> to Tendermint RPC interface for this chain")
 	return queryCmd
 }
 
 // AppModule extends the cosmos SDK gov.
 type AppModule struct {
 	AppModuleBasic
-	customGovKeeper keeper2.Keeper
-	proposalRouter  ProposalRouter
+	customGovKeeper keeper.Keeper
 }
 
 // RegisterServices registers a GRPC query service to respond to the
 // module-specific GRPC queries.
 func (am AppModule) RegisterServices(cfg module.Configurator) {
-	customgovtypes.RegisterMsgServer(cfg.MsgServer(), keeper2.NewMsgServerImpl(am.customGovKeeper))
-	customgovtypes.RegisterQueryServer(cfg.QueryServer(), keeper2.NewQuerier(am.customGovKeeper))
+	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.customGovKeeper))
+	types.RegisterQueryServer(cfg.QueryServer(), am.customGovKeeper)
 }
 
-func (am AppModule) RegisterInterfaces(registry types2.InterfaceRegistry) {
-	customgovtypes.RegisterInterfaces(registry)
+func (am AppModule) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
+	types.RegisterInterfaces(registry)
 }
 
 func (am AppModule) InitGenesis(
 	ctx sdk.Context,
-	cdc codec.JSONMarshaler,
+	cdc codec.JSONCodec,
 	data json.RawMessage,
 ) []abci.ValidatorUpdate {
-	var genesisState customgovtypes.GenesisState
+	var genesisState types.GenesisState
 	cdc.MustUnmarshalJSON(data, &genesisState)
 
-	for _, actor := range genesisState.NetworkActors {
-		am.customGovKeeper.SaveNetworkActor(ctx, *actor)
-		for _, role := range actor.Roles {
-			am.customGovKeeper.AssignRoleToActor(ctx, *actor, customgovtypes.Role(role))
-		}
-		for _, perm := range actor.Permissions.Whitelist {
-			err := am.customGovKeeper.AddWhitelistPermission(ctx, *actor, customgovtypes.PermValue(perm))
-			if err != nil {
-				panic(err)
-			}
-		}
-		// TODO when we add keeper function for managing blacklist mapping, we can just enable this
-		// for _, perm := range actor.Permissions.Blacklist {
-		// 	am.customGovKeeper.RemoveWhitelistPermission(ctx, *actor, customgovtypes.PermValue(perm))
-		// }
-	}
-
-	for index, perm := range genesisState.Permissions {
-		role := customgovtypes.Role(index)
-		am.customGovKeeper.CreateRole(ctx, role)
-		for _, white := range perm.Whitelist {
-			err := am.customGovKeeper.WhitelistRolePermission(ctx, role, customgovtypes.PermValue(white))
-			if err != nil {
-				panic(err)
-			}
-		}
-		for _, black := range perm.Blacklist {
-			err := am.customGovKeeper.BlacklistRolePermission(ctx, role, customgovtypes.PermValue(black))
-			if err != nil {
-				panic(err)
-			}
-		}
-	}
-
-	am.customGovKeeper.SaveProposalID(ctx, genesisState.StartingProposalId)
-
-	am.customGovKeeper.SetNetworkProperties(ctx, genesisState.NetworkProperties)
-
-	for _, fee := range genesisState.ExecutionFees {
-		am.customGovKeeper.SetExecutionFee(ctx, fee)
-	}
-
+	InitGenesis(ctx, am.customGovKeeper, genesisState)
 	return nil
 }
 
-func (am AppModule) ExportGenesis(context sdk.Context, marshaler codec.JSONMarshaler) json.RawMessage {
-	return nil
+func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.RawMessage {
+	gs := ExportGenesis(ctx, am.customGovKeeper)
+	return cdc.MustMarshalJSON(gs)
 }
+
+// ConsensusVersion implements AppModule/ConsensusVersion.
+func (AppModule) ConsensusVersion() uint64 { return 1 }
 
 func (am AppModule) RegisterInvariants(registry sdk.InvariantRegistry) {}
 
 func (am AppModule) QuerierRoute() string {
-	return customgovtypes.QuerierRoute
+	return types.QuerierRoute
 }
 
 // LegacyQuerierHandler returns the staking module sdk.Querier.
@@ -174,27 +146,25 @@ func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sd
 func (am AppModule) BeginBlock(context sdk.Context, block abci.RequestBeginBlock) {}
 
 func (am AppModule) EndBlock(ctx sdk.Context, block abci.RequestEndBlock) []abci.ValidatorUpdate {
-	EndBlocker(ctx, am.customGovKeeper, am.proposalRouter)
+	EndBlocker(ctx, am.customGovKeeper)
 
 	return []abci.ValidatorUpdate{}
 }
 
 func (am AppModule) Name() string {
-	return customgovtypes.ModuleName
+	return types.ModuleName
 }
 
 // Route returns the message routing key for the staking module.
 func (am AppModule) Route() sdk.Route {
-	return middleware.NewRoute(customgovtypes.ModuleName, NewHandler(am.customGovKeeper))
+	return middleware.NewRoute(types.ModuleName, NewHandler(am.customGovKeeper))
 }
 
 // NewAppModule returns a new Custom Staking module.
 func NewAppModule(
-	keeper keeper2.Keeper,
-	proposalRouter ProposalRouter,
+	keeper keeper.Keeper,
 ) AppModule {
 	return AppModule{
 		customGovKeeper: keeper,
-		proposalRouter:  proposalRouter,
 	}
 }
