@@ -61,7 +61,7 @@ func main() {
 
 	initCacheDirPtr := initCommand.String("cache_dir", "cache", "The interx cache directory path.")
 	initMaxCacheSize := initCommand.String("max_cache_size", "2GB", "The maximum cache size.")
-	initCachingDuration := initCommand.Int64("caching_duration", 60*30, "The caching clear duration in seconds.")
+	initCachingDuration := initCommand.Int64("caching_duration", 5, "The caching clear duration in seconds.")
 	initMaxDownloadSize := initCommand.String("download_file_size_limitation", "10MB", "The maximum download file size.")
 
 	initFaucetMnemonicPtr := initCommand.String("faucet_mnemonic", faucetMnemonic, "The interx faucet mnemonic file path or seeds.")
