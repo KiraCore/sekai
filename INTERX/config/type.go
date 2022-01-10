@@ -102,5 +102,4 @@ type InterxConfigFromFile struct {
 		FeeAmounts           map[string]string `json:"fee_amounts"`
 		TimeLimit            int64             `json:"time_limit"`
 	} `json:"faucet"`
-	RPCMethods RPCConfig `json:"rpc_methods"`
 }

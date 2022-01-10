@@ -8,71 +8,94 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func getGetMethods() []string {
-	return []string{
-		QueryAccounts,
-		QueryTotalSupply,
-		QueryBalances,
-		QueryTransactionHash,
-		QueryDataReferenceKeys,
-		QueryDataReference,
-		QueryKiraStatus,
-		QueryWithdraws,
-		QueryDeposits,
-		QueryStatus,
-		QueryConsensus,
-		QueryDumpConsensusState,
-		QueryValidators,
-		QueryValidatorInfos,
-		QueryBlocks,
-		QueryBlockByHeightOrHash,
-		QueryBlockTransactions,
-		QueryTransactionResult,
-
-		QueryRoles,
-		QueryRolesByAddress,
-		QueryPermissionsByAddress,
-		QueryProposals,
-		QueryProposal,
-		QueryKiraTokensAliases,
-		QueryKiraTokensRates,
-		QueryVoters,
-		QueryVotes,
-		QueryKiraTokensAliases,
-		QueryKiraTokensRates,
-		QueryNetworkProperties,
-
-		QueryRosettaNetworkList,
-		QueryRosettaNetworkOptions,
-		QueryRosettaNetworkStatus,
-		QueryRosettaAccountBalance,
-
-		QueryPrivP2PList,
-		QueryPubP2PList,
-		QueryInterxList,
-		QuerySnapList,
-
-		QueryCurrentPlan,
-		QueryNextPlan,
-
-		QueryAddrBook,
-		QueryNetInfo,
-
-		QueryIdentityRecord,
-		QueryIdentityRecordsByAddress,
-		QueryAllIdentityRecords,
-		QueryIdentityRecordVerifyRequest,
-		QueryIdentityRecordVerifyRequestsByRequester,
-		QueryIdentityRecordVerifyRequestsByApprover,
-		QueryAllIdentityRecordVerifyRequests,
-	}
-}
-
 func getPostMethods() []string {
 	return []string{
 		PostTransaction,
 		EncodeTransaction,
 	}
+}
+
+func getRPCSettings() RPCConfig {
+	config := RPCConfig{}
+
+	defaultRPCSetting := RPCSetting{
+		Disable:              false,
+		RateLimit:            0,
+		AuthRateLimit:        0,
+		CachingDisable:       false,
+		CachingDuration:      30,
+		CachingBlockDuration: 5,
+	}
+
+	config.API = make(map[string]map[string]RPCSetting)
+	config.API["GET"] = make(map[string]RPCSetting)
+	config.API["POST"] = make(map[string]RPCSetting)
+
+	// endpoints that can change within 1 block time
+	defaultRPCSetting.CachingDuration = -1
+	defaultRPCSetting.CachingBlockDuration = 1
+	config.API["GET"][QueryAccounts] = defaultRPCSetting
+	config.API["GET"][QueryTotalSupply] = defaultRPCSetting
+	config.API["GET"][QueryBalances] = defaultRPCSetting
+	config.API["GET"][QueryAccounts] = defaultRPCSetting
+	config.API["GET"][QueryDataReferenceKeys] = defaultRPCSetting
+	config.API["GET"][QueryDataReference] = defaultRPCSetting
+	config.API["GET"][QueryKiraStatus] = defaultRPCSetting
+	config.API["GET"][QueryWithdraws] = defaultRPCSetting
+	config.API["GET"][QueryDeposits] = defaultRPCSetting
+	config.API["GET"][QueryStatus] = defaultRPCSetting
+	config.API["GET"][QueryValidators] = defaultRPCSetting
+	config.API["GET"][QueryValidatorInfos] = defaultRPCSetting
+	config.API["GET"][QueryRoles] = defaultRPCSetting
+	config.API["GET"][QueryRolesByAddress] = defaultRPCSetting
+	config.API["GET"][QueryPermissionsByAddress] = defaultRPCSetting
+	config.API["GET"][QueryProposals] = defaultRPCSetting
+	config.API["GET"][QueryProposal] = defaultRPCSetting
+	config.API["GET"][QueryKiraTokensAliases] = defaultRPCSetting
+	config.API["GET"][QueryKiraTokensRates] = defaultRPCSetting
+	config.API["GET"][QueryVoters] = defaultRPCSetting
+	config.API["GET"][QueryVotes] = defaultRPCSetting
+	config.API["GET"][QueryKiraTokensAliases] = defaultRPCSetting
+	config.API["GET"][QueryKiraTokensRates] = defaultRPCSetting
+	config.API["GET"][QueryNetworkProperties] = defaultRPCSetting
+	config.API["GET"][QueryRosettaNetworkList] = defaultRPCSetting
+	config.API["GET"][QueryRosettaNetworkOptions] = defaultRPCSetting
+	config.API["GET"][QueryRosettaNetworkStatus] = defaultRPCSetting
+	config.API["GET"][QueryRosettaAccountBalance] = defaultRPCSetting
+	config.API["GET"][QueryCurrentPlan] = defaultRPCSetting
+	config.API["GET"][QueryNextPlan] = defaultRPCSetting
+	config.API["GET"][QueryAddrBook] = defaultRPCSetting
+	config.API["GET"][QueryNetInfo] = defaultRPCSetting
+	config.API["GET"][QueryIdentityRecord] = defaultRPCSetting
+	config.API["GET"][QueryIdentityRecordsByAddress] = defaultRPCSetting
+	config.API["GET"][QueryAllIdentityRecords] = defaultRPCSetting
+	config.API["GET"][QueryIdentityRecordVerifyRequest] = defaultRPCSetting
+	config.API["GET"][QueryIdentityRecordVerifyRequestsByRequester] = defaultRPCSetting
+	config.API["GET"][QueryIdentityRecordVerifyRequestsByApprover] = defaultRPCSetting
+	config.API["GET"][QueryAllIdentityRecordVerifyRequests] = defaultRPCSetting
+
+	// endpoints that never change
+	defaultRPCSetting.CachingDuration = -1
+	defaultRPCSetting.CachingBlockDuration = -1
+	config.API["GET"][QueryTransactionHash] = defaultRPCSetting
+	config.API["GET"][QueryBlocks] = defaultRPCSetting
+	config.API["GET"][QueryBlockByHeightOrHash] = defaultRPCSetting
+	config.API["GET"][QueryTransactionResult] = defaultRPCSetting
+
+	// endpoints that change constantly
+	defaultRPCSetting.CachingDuration = 1
+	defaultRPCSetting.CachingBlockDuration = -1
+	config.API["GET"][QueryConsensus] = defaultRPCSetting
+	config.API["GET"][QueryPrivP2PList] = defaultRPCSetting
+	config.API["GET"][QueryPubP2PList] = defaultRPCSetting
+	config.API["GET"][QueryInterxList] = defaultRPCSetting
+	config.API["GET"][QuerySnapList] = defaultRPCSetting
+
+	for _, item := range getPostMethods() {
+		config.API["POST"][item] = defaultRPCSetting
+	}
+
+	return config
 }
 
 func defaultConfig() InterxConfigFromFile {
@@ -106,7 +129,7 @@ func defaultConfig() InterxConfigFromFile {
 
 	configFromFile.Cache.CacheDir = "cache"
 	configFromFile.Cache.MaxCacheSize = "2GB"
-	configFromFile.Cache.CachingDuration = 50
+	configFromFile.Cache.CachingDuration = 60 * 30 // 30 min
 	configFromFile.Cache.DownloadFileSizeLimitation = "10MB"
 
 	configFromFile.Faucet.MnemonicFile = LoadMnemonic("equip exercise shoot mad inside floor wheel loan visual stereo build frozen potato always bulb naive subway foster marine erosion shuffle flee action there")
@@ -123,25 +146,6 @@ func defaultConfig() InterxConfigFromFile {
 	configFromFile.Faucet.FeeAmounts["validatortoken"] = "1000ukex"
 	configFromFile.Faucet.FeeAmounts["ukex"] = "1000ukex"
 	configFromFile.Faucet.TimeLimit = 20
-
-	defaultRPCSetting := RPCSetting{
-		Disable:              false,
-		RateLimit:            0,
-		AuthRateLimit:        0,
-		CachingDisable:       false,
-		CachingDuration:      30,
-		CachingBlockDuration: 5,
-	}
-
-	configFromFile.RPCMethods.API = make(map[string]map[string]RPCSetting)
-	configFromFile.RPCMethods.API["GET"] = make(map[string]RPCSetting)
-	configFromFile.RPCMethods.API["POST"] = make(map[string]RPCSetting)
-	for _, item := range getGetMethods() {
-		configFromFile.RPCMethods.API["GET"][item] = defaultRPCSetting
-	}
-	for _, item := range getPostMethods() {
-		configFromFile.RPCMethods.API["POST"][item] = defaultRPCSetting
-	}
 
 	return configFromFile
 }
