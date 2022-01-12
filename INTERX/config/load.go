@@ -148,34 +148,17 @@ func LoadConfig(configFilePath string) {
 
 	// Faucet Configuration
 	Config.Faucet = FaucetConfig{
-		Mnemonic:             LoadMnemonic(configFromFile.Faucet.MnemonicFile),
 		FaucetAmounts:        configFromFile.Faucet.FaucetAmounts,
 		FaucetMinimumAmounts: configFromFile.Faucet.FaucetMinimumAmounts,
 		FeeAmounts:           configFromFile.Faucet.FeeAmounts,
 		TimeLimit:            configFromFile.Faucet.TimeLimit,
 	}
 
-	if !bip39.IsMnemonicValid(Config.Faucet.Mnemonic) {
-		fmt.Println("Invalid Faucet Mnemonic: ", Config.Faucet.Mnemonic)
-		panic("Invalid Faucet Mnemonic")
-	}
-
-	seed, err = bip39.NewSeedWithErrorChecking(Config.Faucet.Mnemonic, "")
-	if err != nil {
-		panic(err)
-	}
-	master, ch = hd.ComputeMastersFromSeed(seed)
-	priv, err = hd.DerivePrivateKeyForPath(master, ch, "44'/118'/0'/0/0")
-	if err != nil {
-		panic(err)
-	}
-
-	Config.Faucet.PrivKey = &secp256k1.PrivKey{Key: priv}
+	Config.Faucet.PrivKey = Config.PrivKey
 	Config.Faucet.PubKey = Config.Faucet.PrivKey.PubKey()
 	Config.Faucet.Address = sdk.MustBech32ifyAddressBytes(sdk.GetConfig().GetBech32AccountAddrPrefix(), Config.Faucet.PubKey.Address())
 
 	// Display mnemonic and keys
-	fmt.Println("Faucet Mnemonic  : ", Config.Faucet.Mnemonic)
 	fmt.Println("Faucet Address   : ", Config.Faucet.Address)
 	fmt.Println("Faucet Public Key: ", Config.Faucet.PubKey.String())
 

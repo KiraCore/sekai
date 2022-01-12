@@ -9,7 +9,6 @@ import (
 	"github.com/KiraCore/sekai/INTERX/config"
 	"github.com/KiraCore/sekai/INTERX/gateway"
 	_ "github.com/KiraCore/sekai/INTERX/statik"
-	"github.com/tyler-smith/go-bip39"
 	"google.golang.org/grpc/grpclog"
 )
 
@@ -37,10 +36,6 @@ func main() {
 	initCommand := flag.NewFlagSet("init", flag.ExitOnError)
 	startCommand := flag.NewFlagSet("start", flag.ExitOnError)
 
-	entropy, _ := bip39.NewEntropy(256)
-	signingMnemonic, _ := bip39.NewMnemonic(entropy)
-	faucetMnemonic, _ := bip39.NewMnemonic(entropy)
-
 	initConfigFilePtr := initCommand.String("config", "./config.json", "The interx configuration path.")
 	initVersion := initCommand.String("version", "0.3.0", "The interxd version")
 	initServeHTTPS := initCommand.Bool("serve_https", false, "http or https.")
@@ -54,7 +49,7 @@ func main() {
 	initSeedNodeId := initCommand.String("seed_node_id", "", "The seed node id.")
 
 	initPortPtr := initCommand.String("port", "11000", "The interx port.")
-	initSigningMnemonicPtr := initCommand.String("signing_mnemonic", signingMnemonic, "The interx signing mnemonic file path or seeds.")
+	initSigningMnemonicPtr := initCommand.String("signing_mnemonic", "interx.mnemonic", "The interx signing mnemonic file path or seeds.")
 
 	initSyncStatus := initCommand.Int64("status_sync", 5, "The time in seconds and INTERX syncs node status.")
 	initHaltedAvgBlockTimes := initCommand.Int64("halted_avg_block_times", 10, "This will be used for checking consensus halted.")
@@ -64,7 +59,6 @@ func main() {
 	initCachingDuration := initCommand.Int64("caching_duration", 5, "The caching clear duration in seconds.")
 	initMaxDownloadSize := initCommand.String("download_file_size_limitation", "10MB", "The maximum download file size.")
 
-	initFaucetMnemonicPtr := initCommand.String("faucet_mnemonic", faucetMnemonic, "The interx faucet mnemonic file path or seeds.")
 	initFaucetTimeLimit := initCommand.Int64("faucet_time_limit", 20, "The claim time limitation in seconds.")
 
 	initFaucetAmounts := initCommand.String("faucet_amounts", "100000stake,100000ukex,100000validatortoken", "The faucet amount for each asset.")
@@ -120,7 +114,6 @@ func main() {
 					*initMaxCacheSize,
 					*initCachingDuration,
 					*initMaxDownloadSize,
-					*initFaucetMnemonicPtr,
 					*initFaucetTimeLimit,
 					*initFaucetAmounts,
 					*initFaucetMinimumAmounts,
