@@ -54,14 +54,27 @@ var NodeStatus struct {
 }
 
 func IsCacheExpired(result types.InterxResponse) bool {
-	if result.CachingBlockDuration == 0 || result.CachingDuration == 0 {
-		return true
+	isBlockExpire := false
+	if result.CachingBlockDuration == 0 {
+		isBlockExpire = true
+	} else if result.CachingBlockDuration == -1 {
+		isBlockExpire = false
+	} else if result.Response.Block+result.CachingBlockDuration > NodeStatus.Block {
+		isBlockExpire = false
+	} else {
+		isBlockExpire = true
 	}
-	if result.CachingBlockDuration == -1 || result.CachingDuration == -1 {
-		return false
+
+	isTimestampExpire := false
+	if result.CachingDuration == 0 {
+		isTimestampExpire = true
+	} else if result.CachingDuration == -1 {
+		isTimestampExpire = false
+	} else if result.CacheTime.Add(time.Duration(result.CachingDuration) * time.Second).After(time.Now().UTC()) {
+		isTimestampExpire = false
+	} else {
+		isTimestampExpire = true
 	}
-	if result.CacheTime.Add(time.Duration(result.CachingDuration)*time.Second).After(time.Now().UTC()) && result.Response.Block+result.CachingBlockDuration > NodeStatus.Block {
-		return false
-	}
-	return true
+
+	return isBlockExpire || isTimestampExpire
 }
