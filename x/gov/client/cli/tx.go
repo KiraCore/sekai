@@ -105,6 +105,7 @@ func NewTxRoleCmds() *cobra.Command {
 
 	roleCmd.AddCommand(GetTxCreateRole())
 	roleCmd.AddCommand(GetTxRemoveRole())
+	roleCmd.AddCommand(GetTxAssignRole())
 
 	roleCmd.AddCommand(GetTxBlacklistRolePermission())
 	roleCmd.AddCommand(GetTxWhitelistRolePermission())
