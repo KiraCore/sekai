@@ -186,7 +186,7 @@ func LoadConfig(configFilePath string) {
 	fmt.Println("Interx Faucet TimeLimit           : ", Config.Faucet.TimeLimit)
 
 	// RPC Configuration
-	Config.RPCMethods = configFromFile.RPCMethods
+	Config.RPCMethods = getRPCSettings()
 
 	if _, err := os.Stat(Config.Cache.CacheDir); os.IsNotExist(err) {
 		os.Mkdir(Config.Cache.CacheDir, os.ModePerm)

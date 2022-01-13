@@ -108,8 +108,8 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 					},
 					ExecutionFees:               govGenesisV01228.ExecutionFees,
 					PoorNetworkMessages:         govGenesisV01228.PoorNetworkMessages,
-					Proposals:                   govGenesisV01228.Proposals,
-					Votes:                       govGenesisV01228.Votes,
+					Proposals:                   []govtypes.Proposal{}, // govGenesisV01228.Proposals,
+					Votes:                       []govtypes.Vote{},     // govGenesisV01228.Votes,
 					DataRegistry:                govGenesisV01228.DataRegistry,
 					IdentityRecords:             govGenesisV01228.IdentityRecords,
 					LastIdentityRecordId:        govGenesisV01228.LastIdentityRecordId,
@@ -117,6 +117,7 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 					LastIdRecordVerifyRequestId: govGenesisV01228.LastIdRecordVerifyRequestId,
 					ProposalDurations:           make(map[string]uint64),
 				}
+
 				genesisState[govtypes.ModuleName] = cdc.MustMarshalJSON(&govGenesis)
 			} else {
 				fmt.Println("GovGenesis01228 unmarshal test: ", err)
