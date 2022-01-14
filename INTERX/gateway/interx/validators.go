@@ -269,6 +269,7 @@ func queryConsensusHandle(r *http.Request, gwCosmosmux *runtime.ServeMux, rpcAdd
 		response.Step = roundState.Step.String()
 		response.StartTime = roundState.StartTime
 		response.CommitTime = roundState.CommitTime
+		response.LastCommit = roundState.LastCommit
 		response.TriggeredTimeoutPrecommit = roundState.TriggeredTimeoutPrecommit
 		response.ConsensusStopped = common.IsConsensusStopped(len(roundState.Validators.Validators))
 
@@ -300,30 +301,18 @@ func queryConsensusHandle(r *http.Request, gwCosmosmux *runtime.ServeMux, rpcAdd
 		response.Prevotes = make([]string, 0)
 		response.Noncommits = make([]string, 0)
 
-		flag := make([]bool, len(validators))
-		for i, vote := range roundState.Votes {
-			for j := range vote.Precommits {
-				if vote.Precommits[j] != "nil-Vote" {
-					flag[j] = true
-					if j == len(roundState.Votes)-1 {
-						response.Precommits = append(response.Precommits, validators[j])
-					}
-				}
-			}
-			if i == len(roundState.Votes)-1 {
-				for j := range vote.Prevotes {
-					if vote.Prevotes[j] != "nil-Vote" {
-						response.Prevotes = append(response.Prevotes, validators[j])
-					}
-				}
-			}
-		}
-
-		for i := range flag {
-			if !flag[i] {
+		for i, vote := range roundState.LastCommit.Votes {
+			if strings.Contains(vote, "PRECOMMIT") {
+				response.Precommits = append(response.Precommits, validators[i])
+			} else if strings.Contains(vote, "PREVOTE") {
+				response.Prevotes = append(response.Prevotes, validators[i])
+			} else {
 				response.Noncommits = append(response.Noncommits, validators[i])
 			}
 		}
+
+		splits := strings.Fields(roundState.LastCommit.VotesBitArray)
+		response.ConsensusHealth = splits[len(splits)-1]
 
 		return response, failure, statusCode
 	}
