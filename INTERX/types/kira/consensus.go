@@ -31,6 +31,11 @@ type HeightVoteSet struct {
 	PrecommitsBitArray string   `json:"precommits_bit_array"`
 }
 
+type LastCommit struct {
+	Votes         []string `json:"votes"`
+	VotesBitArray string   `json:"votes_bit_array"`
+}
+
 type RoundState struct {
 	Height    string                    `json:"height"`
 	Round     int64                     `json:"round"`
@@ -40,6 +45,7 @@ type RoundState struct {
 	CommitTime time.Time       `json:"commit_time"`
 	Validators ValidatorSet    `json:"validators"`
 	Votes      []HeightVoteSet `json:"votes"`
+	LastCommit LastCommit      `json:"last_commit"`
 
 	TriggeredTimeoutPrecommit bool `json:"triggered_timeout_precommit"`
 }
@@ -55,7 +61,9 @@ type ConsensusResponse struct {
 	Step      string    `json:"step"`
 	StartTime time.Time `json:"start_time"`
 
-	CommitTime time.Time `json:"commit_time"`
+	CommitTime      time.Time  `json:"commit_time"`
+	LastCommit      LastCommit `json:"last_commit"`
+	ConsensusHealth string     `json:"consensus_health"`
 
 	TriggeredTimeoutPrecommit bool `json:"triggered_timeout_precommit"`
 

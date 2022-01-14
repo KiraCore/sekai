@@ -113,7 +113,7 @@ func defaultConfig() InterxConfigFromFile {
 	configFromFile.Node.ValidatorNodeID = ""
 	configFromFile.Node.SeedNodeID = ""
 
-	configFromFile.MnemonicFile = LoadMnemonic("swap exercise equip shoot mad inside floor wheel loan visual stereo build frozen always bulb naive subway foster marine erosion shuffle flee action there")
+	configFromFile.MnemonicFile = "interx.mnemonic"
 
 	configFromFile.AddrBooks = "addrbook.json"
 	configFromFile.NodeKey = "node_key.json"
@@ -132,7 +132,6 @@ func defaultConfig() InterxConfigFromFile {
 	configFromFile.Cache.CachingDuration = 5
 	configFromFile.Cache.DownloadFileSizeLimitation = "10MB"
 
-	configFromFile.Faucet.MnemonicFile = LoadMnemonic("equip exercise shoot mad inside floor wheel loan visual stereo build frozen potato always bulb naive subway foster marine erosion shuffle flee action there")
 	configFromFile.Faucet.FaucetAmounts = make(map[string]string)
 	configFromFile.Faucet.FaucetAmounts["stake"] = "100000"
 	configFromFile.Faucet.FaucetAmounts["validatortoken"] = "100000"
@@ -170,7 +169,6 @@ func InitConfig(
 	maxCacheSize string,
 	cachingDuration int64,
 	maxDownloadSize string,
-	faucetMnemonic string,
 	faucetTimeLimit int64,
 	faucetAmounts string,
 	faucetMinimumAmounts string,
@@ -197,7 +195,7 @@ func InitConfig(
 	configFromFile.Node.ValidatorNodeID = validatorNodeId
 	configFromFile.Node.SeedNodeID = seedNodeId
 
-	configFromFile.MnemonicFile = LoadMnemonic(signingMnemonic)
+	configFromFile.MnemonicFile = signingMnemonic
 
 	configFromFile.AddrBooks = addrBooks
 	configFromFile.NodeKey = nodeKey
@@ -216,7 +214,6 @@ func InitConfig(
 	configFromFile.Cache.CachingDuration = cachingDuration
 	configFromFile.Cache.DownloadFileSizeLimitation = maxDownloadSize
 
-	configFromFile.Faucet.MnemonicFile = LoadMnemonic(faucetMnemonic)
 	configFromFile.Faucet.TimeLimit = faucetTimeLimit
 
 	configFromFile.Faucet.FaucetAmounts = make(map[string]string)

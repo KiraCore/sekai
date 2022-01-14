@@ -8,7 +8,6 @@ import (
 
 // FaucetConfig is a struct to be used for Faucet configuration
 type FaucetConfig struct {
-	Mnemonic             string            `json:"mnemonic"`
 	FaucetAmounts        map[string]string `json:"faucet_amounts"`
 	FaucetMinimumAmounts map[string]string `json:"faucet_minimum_amounts"`
 	FeeAmounts           map[string]string `json:"fee_amounts"`
@@ -96,7 +95,6 @@ type InterxConfigFromFile struct {
 		DownloadFileSizeLimitation string `json:"download_file_size_limitation"`
 	} `json:"cache"`
 	Faucet struct {
-		MnemonicFile         string            `json:"mnemonic"`
 		FaucetAmounts        map[string]string `json:"faucet_amounts"`
 		FaucetMinimumAmounts map[string]string `json:"faucet_minimum_amounts"`
 		FeeAmounts           map[string]string `json:"fee_amounts"`
