@@ -18,10 +18,10 @@ sekaid tx customgov proposal vote
 
 # role creation, role permission add / remove
 sekaid tx customgov role create testRole "testRole Description" --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=1000ukex --yes
-sekaid tx customgov role whitelist-role-permission testRole 1 --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=1000ukex --yes
-sekaid tx customgov role blacklist-role-permission testRole 1 --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=1000ukex --yes
-sekaid tx customgov role remove-whitelisted-role-permission testRole 1 --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=1000ukex --yes
-sekaid tx customgov role remove-blacklisted-role-permission testRole 1 --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=1000ukex --yes
+sekaid tx customgov role whitelist-permission testRole 1 --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=1000ukex --yes
+sekaid tx customgov role blacklist-permission testRole 1 --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=1000ukex --yes
+sekaid tx customgov role remove-whitelisted-permission testRole 1 --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=1000ukex --yes
+sekaid tx customgov role remove-blacklisted-permission testRole 1 --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=1000ukex --yes
 
 # query all roles
 sekaid query customgov all-roles

@@ -76,7 +76,7 @@ func NewTxCmd() *cobra.Command {
 func NewTxProposalCmds() *cobra.Command {
 	proposalCmd := &cobra.Command{
 		Use:                        "proposal",
-		Short:                      "Proposal subcommands",
+		Short:                      "Governance proposals management subcommands",
 		DisableFlagParsing:         true,
 		SuggestionsMinimumDistance: 2,
 		RunE:                       client.ValidateCmd,
@@ -97,7 +97,7 @@ func NewTxProposalCmds() *cobra.Command {
 func NewTxRoleCmds() *cobra.Command {
 	roleCmd := &cobra.Command{
 		Use:                        "role",
-		Short:                      "Role subcommands",
+		Short:                      "Role management subcommands",
 		DisableFlagParsing:         true,
 		SuggestionsMinimumDistance: 2,
 		RunE:                       client.ValidateCmd,
@@ -119,7 +119,7 @@ func NewTxRoleCmds() *cobra.Command {
 func NewTxPermissionCmds() *cobra.Command {
 	permCmd := &cobra.Command{
 		Use:                        "permission",
-		Short:                      "Permission subcommands",
+		Short:                      "Permission management subcommands",
 		DisableFlagParsing:         true,
 		SuggestionsMinimumDistance: 2,
 		RunE:                       client.ValidateCmd,
@@ -350,7 +350,7 @@ func NewTxSetNetworkProperties() *cobra.Command {
 
 func GetTxWhitelistRolePermission() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "whitelist-role-permission role permission",
+		Use:   "whitelist-permission [role_id] [permission_id]",
 		Short: "Whitelist a permission to a role",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -444,8 +444,8 @@ func NewTxSetExecutionFee() *cobra.Command {
 
 func GetTxBlacklistRolePermission() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "blacklist-role-permission role permission",
-		Short: "Blacklist a permission on a role",
+		Use:   "blacklist-permission [role_id] [permission_id]",
+		Short: "Blacklist a permission for the governance role",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -476,8 +476,8 @@ func GetTxBlacklistRolePermission() *cobra.Command {
 
 func GetTxRemoveWhitelistRolePermission() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "remove-whitelisted-role-permission role permission",
-		Short: "Remove a whitelisted permission from a role",
+		Use:   "remove-whitelisted-permission [role_id] [permission_id]",
+		Short: "Remove a whitelisted permission from a governance role",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -508,8 +508,8 @@ func GetTxRemoveWhitelistRolePermission() *cobra.Command {
 
 func GetTxRemoveBlacklistRolePermission() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "remove-blacklisted-role-permission role permission",
-		Short: "Remove a blacklisted permission from a role",
+		Use:   "remove-blacklisted-permission [role_id] [permission_id]",
+		Short: "Remove a blacklisted permission from a governance role",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -567,8 +567,8 @@ func GetTxCreateRole() *cobra.Command {
 
 func GetTxAssignRole() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "assign-role role",
-		Short: "Assign new role",
+		Use:   "assign [role_id]",
+		Short: "Assign role to account",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -608,7 +608,7 @@ func GetTxAssignRole() *cobra.Command {
 func GetTxRemoveRole() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "remove role",
-		Short: "Remove role",
+		Short: "Remove role from account",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -950,7 +950,7 @@ func getAddressFromFlag(cmd *cobra.Command) (sdk.AccAddress, error) {
 
 	bech, err := sdk.AccAddressFromBech32(addr)
 	if err != nil {
-		return nil, fmt.Errorf("invalid address")
+		return nil, fmt.Errorf("invalid Bech32 address")
 	}
 
 	return bech, nil
@@ -996,7 +996,7 @@ func GetTxClaimCouncilorSeatCmd() *cobra.Command {
 func GetTxProposalCreateRole() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "create-role [role_sid] [role_description]",
-		Short: "Create a proposal to add a new role.",
+		Short: "Raise governance proposal to create a new role.",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
