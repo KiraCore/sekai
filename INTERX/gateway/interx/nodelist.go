@@ -34,11 +34,9 @@ func queryPubP2PNodeList(r *http.Request, rpcAddr string) (interface{}, interfac
 	response := tasks.PubP2PNodeListResponse
 
 	_ = r.ParseForm()
-	connected := r.FormValue("connected") == "true"
 	ip_only := r.FormValue("ip_only") == "true"
 	is_random := r.FormValue("order") == "random"
 	is_format_simple := r.FormValue("format") == "simple"
-	is_synced := r.FormValue("synced") == "true"
 
 	if is_random {
 		dest := make([]types.P2PNode, len(response.NodeList))
@@ -66,22 +64,26 @@ func queryPubP2PNodeList(r *http.Request, rpcAddr string) (interface{}, interfac
 		}
 	}
 
-	if is_synced {
-		dest := make([]types.P2PNode, 0)
-		for _, node := range response.NodeList {
-			if node.Synced {
-				dest = append(dest, node)
-			}
+	dest := make([]types.P2PNode, 0)
+	for _, node := range response.NodeList {
+		if r.FormValue("synced") == "true" && true == node.Synced {
+			dest = append(dest, node)
 		}
-		response.NodeList = dest
+		if r.FormValue("synced") == "false" && false == node.Synced {
+			dest = append(dest, node)
+		}
 	}
+	response.NodeList = dest
 
 	global.Mutex.Unlock()
 
 	if ip_only {
 		ips := []string{}
 		for _, node := range response.NodeList {
-			if connected == node.Connected {
+			if r.FormValue("connected") == "true" && true == node.Connected {
+				ips = append(ips, node.IP)
+			}
+			if r.FormValue("connected") == "false" && false == node.Connected {
 				ips = append(ips, node.IP)
 			}
 		}
@@ -127,11 +129,9 @@ func queryPrivP2PNodeList(r *http.Request, rpcAddr string) (interface{}, interfa
 	response := tasks.PrivP2PNodeListResponse
 
 	_ = r.ParseForm()
-	connected := r.FormValue("connected") == "true"
 	ip_only := r.FormValue("ip_only") == "true"
 	is_random := r.FormValue("order") == "random"
 	is_format_simple := r.FormValue("format") == "simple"
-	is_synced := r.FormValue("synced") == "true"
 
 	if is_random {
 		dest := make([]types.P2PNode, len(response.NodeList))
@@ -159,22 +159,26 @@ func queryPrivP2PNodeList(r *http.Request, rpcAddr string) (interface{}, interfa
 		}
 	}
 
-	if is_synced {
-		dest := make([]types.P2PNode, 0)
-		for _, node := range response.NodeList {
-			if node.Synced {
-				dest = append(dest, node)
-			}
+	dest := make([]types.P2PNode, 0)
+	for _, node := range response.NodeList {
+		if r.FormValue("synced") == "true" && true == node.Synced {
+			dest = append(dest, node)
 		}
-		response.NodeList = dest
+		if r.FormValue("synced") == "false" && false == node.Synced {
+			dest = append(dest, node)
+		}
 	}
+	response.NodeList = dest
 
 	global.Mutex.Unlock()
 
 	if ip_only {
 		ips := []string{}
 		for _, node := range response.NodeList {
-			if connected == node.Connected {
+			if r.FormValue("connected") == "true" && true == node.Connected {
+				ips = append(ips, node.IP)
+			}
+			if r.FormValue("connected") == "false" && false == node.Connected {
 				ips = append(ips, node.IP)
 			}
 		}
@@ -222,7 +226,6 @@ func queryInterxList(r *http.Request, rpcAddr string) (interface{}, interface{},
 	_ = r.ParseForm()
 	ip_only := r.FormValue("ip_only") == "true"
 	is_random := r.FormValue("order") == "random"
-	is_synced := r.FormValue("synced") == "true"
 
 	if is_random {
 		dest := make([]types.InterxNode, len(response.NodeList))
@@ -235,15 +238,16 @@ func queryInterxList(r *http.Request, rpcAddr string) (interface{}, interface{},
 		sort.Sort(types.InterxNodes(response.NodeList))
 	}
 
-	if is_synced {
-		dest := make([]types.InterxNode, 0)
-		for _, node := range response.NodeList {
-			if node.Synced {
-				dest = append(dest, node)
-			}
+	dest := make([]types.InterxNode, 0)
+	for _, node := range response.NodeList {
+		if r.FormValue("synced") == "true" && true == node.Synced {
+			dest = append(dest, node)
 		}
-		response.NodeList = dest
+		if r.FormValue("synced") == "false" && false == node.Synced {
+			dest = append(dest, node)
+		}
 	}
+	response.NodeList = dest
 	global.Mutex.Unlock()
 
 	if ip_only {
@@ -295,7 +299,6 @@ func querySnapList(r *http.Request, rpcAddr string) (interface{}, interface{}, i
 	_ = r.ParseForm()
 	ip_only := r.FormValue("ip_only") == "true"
 	is_random := r.FormValue("order") == "random"
-	is_synced := r.FormValue("synced") == "true"
 
 	if is_random {
 		dest := make([]types.SnapNode, len(response.NodeList))
@@ -308,15 +311,16 @@ func querySnapList(r *http.Request, rpcAddr string) (interface{}, interface{}, i
 		sort.Sort(types.SnapNodes(response.NodeList))
 	}
 
-	if is_synced {
-		dest := make([]types.SnapNode, 0)
-		for _, node := range response.NodeList {
-			if node.Synced {
-				dest = append(dest, node)
-			}
+	dest := make([]types.SnapNode, 0)
+	for _, node := range response.NodeList {
+		if r.FormValue("synced") == "true" && true == node.Synced {
+			dest = append(dest, node)
 		}
-		response.NodeList = dest
+		if r.FormValue("synced") == "false" && false == node.Synced {
+			dest = append(dest, node)
+		}
 	}
+	response.NodeList = dest
 	global.Mutex.Unlock()
 
 	if ip_only {
