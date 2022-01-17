@@ -32,6 +32,7 @@
     "download_file_size_limitation": "10MB"
   },
   "faucet": {
+    "mnemonic": "interx.mnemonic",
     "faucet_amounts": {
       "stake": "100000",
       "ukex": "100000",

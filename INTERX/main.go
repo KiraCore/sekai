@@ -59,6 +59,7 @@ func main() {
 	initCachingDuration := initCommand.Int64("caching_duration", 5, "The caching clear duration in seconds.")
 	initMaxDownloadSize := initCommand.String("download_file_size_limitation", "10MB", "The maximum download file size.")
 
+	initFaucetMnemonicPtr := initCommand.String("faucet_mnemonic", "", "The interx faucet mnemonic file path or seeds.")
 	initFaucetTimeLimit := initCommand.Int64("faucet_time_limit", 20, "The claim time limitation in seconds.")
 
 	initFaucetAmounts := initCommand.String("faucet_amounts", "100000stake,100000ukex,100000validatortoken", "The faucet amount for each asset.")
@@ -95,6 +96,10 @@ func main() {
 			if initCommand.Parsed() {
 				// Check which subcommand was Parsed using the FlagSet.Parsed() function. Handle each case accordingly.
 				// FlagSet.Parse() will evaluate to false if no flags were parsed (i.e. the user did not provide any flags)
+				faucetMnemonic := *initFaucetMnemonicPtr
+				if faucetMnemonic == "" {
+					faucetMnemonic = *initSigningMnemonicPtr
+				}
 				config.InitConfig(
 					*initVersion,
 					*initConfigFilePtr,
@@ -114,6 +119,7 @@ func main() {
 					*initMaxCacheSize,
 					*initCachingDuration,
 					*initMaxDownloadSize,
+					faucetMnemonic,
 					*initFaucetTimeLimit,
 					*initFaucetAmounts,
 					*initFaucetMinimumAmounts,

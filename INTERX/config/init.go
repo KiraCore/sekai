@@ -132,6 +132,8 @@ func defaultConfig() InterxConfigFromFile {
 	configFromFile.Cache.CachingDuration = 5
 	configFromFile.Cache.DownloadFileSizeLimitation = "10MB"
 
+	configFromFile.Faucet.MnemonicFile = configFromFile.MnemonicFile
+
 	configFromFile.Faucet.FaucetAmounts = make(map[string]string)
 	configFromFile.Faucet.FaucetAmounts["stake"] = "100000"
 	configFromFile.Faucet.FaucetAmounts["validatortoken"] = "100000"
@@ -169,6 +171,7 @@ func InitConfig(
 	maxCacheSize string,
 	cachingDuration int64,
 	maxDownloadSize string,
+	faucetMnemonic string,
 	faucetTimeLimit int64,
 	faucetAmounts string,
 	faucetMinimumAmounts string,
@@ -214,6 +217,7 @@ func InitConfig(
 	configFromFile.Cache.CachingDuration = cachingDuration
 	configFromFile.Cache.DownloadFileSizeLimitation = maxDownloadSize
 
+	configFromFile.Faucet.MnemonicFile = faucetMnemonic
 	configFromFile.Faucet.TimeLimit = faucetTimeLimit
 
 	configFromFile.Faucet.FaucetAmounts = make(map[string]string)
