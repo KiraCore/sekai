@@ -275,7 +275,7 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 		// uniqueIPAddresses = append(uniqueIPAddresses, "51.89.7.103")
 		// uniqueIPAddresses = append(uniqueIPAddresses, "75.119.149.170")
 		// uniqueIPAddresses = append(uniqueIPAddresses, "46.166.132.197")
-		uniqueIPAddresses = append(uniqueIPAddresses, "194.163.133.97")
+		// uniqueIPAddresses = append(uniqueIPAddresses, "194.163.133.97")
 
 		peersFromIP := make(map[string]([]tmTypes.Peer))
 
