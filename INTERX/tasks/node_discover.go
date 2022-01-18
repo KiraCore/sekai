@@ -275,6 +275,7 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 		// uniqueIPAddresses = append(uniqueIPAddresses, "51.89.7.103")
 		// uniqueIPAddresses = append(uniqueIPAddresses, "75.119.149.170")
 		// uniqueIPAddresses = append(uniqueIPAddresses, "46.166.132.197")
+		uniqueIPAddresses = append(uniqueIPAddresses, "194.163.133.97")
 
 		peersFromIP := make(map[string]([]tmTypes.Peer))
 
@@ -284,6 +285,7 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 			// time.Sleep(1 * time.Second)
 
 			ipAddr := uniqueIPAddresses[index]
+			common.GetLogger().Info(ipAddr)
 			index++
 
 			if isLog {
@@ -304,7 +306,7 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 			nodeInfo := types.P2PNode{}
 			nodeInfo.ID = string(kiraStatus.NodeInfo.ID())
 			nodeInfo.IP = ipAddr
-			nodeInfo.Port = getPort(kiraStatus.NodeInfo.ListenAddr)
+			nodeInfo.Port, _ = getPort(kiraStatus.NodeInfo.ListenAddr)
 			nodeInfo.Peers = []string{}
 			nodeInfo.Alive = true
 			nodeInfo.Synced = synced
@@ -334,7 +336,7 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 					privNodeInfo := types.P2PNode{}
 					privNodeInfo.ID = string(peer.NodeInfo.ID())
 					privNodeInfo.IP = ip
-					privNodeInfo.Port = getPort(peer.NodeInfo.ListenAddr)
+					privNodeInfo.Port, _ = getPort(peer.NodeInfo.ListenAddr)
 					privNodeInfo.Peers = []string{}
 					privNodeInfo.Peers = append(privNodeInfo.Peers, nodeInfo.ID)
 					privNodeInfo.Alive = true
@@ -406,7 +408,7 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 				if snapshotInfo != nil {
 					snapNode := types.SnapNode{}
 					snapNode.IP = ipAddr
-					snapNode.Port = getPort(interxAddress)
+					snapNode.Port, _ = getPort(interxAddress)
 					snapNode.Checksum = snapshotInfo.Checksum
 					snapNode.Size = snapshotInfo.Size
 					snapNode.Alive = true
@@ -505,11 +507,16 @@ func isPrivateIP(ipAddr string) bool {
 	return false
 }
 
-func getPort(listenAddr string) uint16 {
-	u, _ := url.Parse(listenAddr)
-	portNumber, _ := strconv.ParseUint(u.Port(), 10, 16)
-
-	return uint16(portNumber)
+func getPort(listenAddr string) (uint16, error) {
+	u, err := url.Parse(listenAddr)
+	if err != nil {
+		return 0, err
+	}
+	portNumber, err := strconv.ParseUint(u.Port(), 10, 16)
+	if err != nil {
+		return 0, err
+	}
+	return uint16(portNumber), nil
 }
 
 func getHostname(listenAddr string) string {

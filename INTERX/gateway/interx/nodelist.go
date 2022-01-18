@@ -66,10 +66,15 @@ func queryPubP2PNodeList(r *http.Request, rpcAddr string) (interface{}, interfac
 
 	dest := make([]types.P2PNode, 0)
 	for _, node := range response.NodeList {
-		if r.FormValue("synced") == "true" && true == node.Synced {
-			dest = append(dest, node)
-		}
-		if r.FormValue("synced") == "false" && false == node.Synced {
+		if r.FormValue("synced") == "true" {
+			if true == node.Synced {
+				dest = append(dest, node)
+			}
+		} else if r.FormValue("synced") == "false" {
+			if false == node.Synced {
+				dest = append(dest, node)
+			}
+		} else {
 			dest = append(dest, node)
 		}
 	}
@@ -80,10 +85,15 @@ func queryPubP2PNodeList(r *http.Request, rpcAddr string) (interface{}, interfac
 	if ip_only {
 		ips := []string{}
 		for _, node := range response.NodeList {
-			if r.FormValue("connected") == "true" && true == node.Connected {
-				ips = append(ips, node.IP)
-			}
-			if r.FormValue("connected") == "false" && false == node.Connected {
+			if r.FormValue("connected") == "true" {
+				if true == node.Connected {
+					ips = append(ips, node.IP)
+				}
+			} else if r.FormValue("connected") == "false" {
+				if false == node.Connected {
+					ips = append(ips, node.IP)
+				}
+			} else {
 				ips = append(ips, node.IP)
 			}
 		}
@@ -161,10 +171,15 @@ func queryPrivP2PNodeList(r *http.Request, rpcAddr string) (interface{}, interfa
 
 	dest := make([]types.P2PNode, 0)
 	for _, node := range response.NodeList {
-		if r.FormValue("synced") == "true" && true == node.Synced {
-			dest = append(dest, node)
-		}
-		if r.FormValue("synced") == "false" && false == node.Synced {
+		if r.FormValue("synced") == "true" {
+			if true == node.Synced {
+				dest = append(dest, node)
+			}
+		} else if r.FormValue("synced") == "false" {
+			if false == node.Synced {
+				dest = append(dest, node)
+			}
+		} else {
 			dest = append(dest, node)
 		}
 	}
@@ -175,10 +190,15 @@ func queryPrivP2PNodeList(r *http.Request, rpcAddr string) (interface{}, interfa
 	if ip_only {
 		ips := []string{}
 		for _, node := range response.NodeList {
-			if r.FormValue("connected") == "true" && true == node.Connected {
-				ips = append(ips, node.IP)
-			}
-			if r.FormValue("connected") == "false" && false == node.Connected {
+			if r.FormValue("connected") == "true" {
+				if true == node.Connected {
+					ips = append(ips, node.IP)
+				}
+			} else if r.FormValue("connected") == "false" {
+				if false == node.Connected {
+					ips = append(ips, node.IP)
+				}
+			} else {
 				ips = append(ips, node.IP)
 			}
 		}
@@ -240,10 +260,15 @@ func queryInterxList(r *http.Request, rpcAddr string) (interface{}, interface{},
 
 	dest := make([]types.InterxNode, 0)
 	for _, node := range response.NodeList {
-		if r.FormValue("synced") == "true" && true == node.Synced {
-			dest = append(dest, node)
-		}
-		if r.FormValue("synced") == "false" && false == node.Synced {
+		if r.FormValue("synced") == "true" {
+			if true == node.Synced {
+				dest = append(dest, node)
+			}
+		} else if r.FormValue("synced") == "false" {
+			if false == node.Synced {
+				dest = append(dest, node)
+			}
+		} else {
 			dest = append(dest, node)
 		}
 	}
@@ -313,10 +338,15 @@ func querySnapList(r *http.Request, rpcAddr string) (interface{}, interface{}, i
 
 	dest := make([]types.SnapNode, 0)
 	for _, node := range response.NodeList {
-		if r.FormValue("synced") == "true" && true == node.Synced {
-			dest = append(dest, node)
-		}
-		if r.FormValue("synced") == "false" && false == node.Synced {
+		if r.FormValue("synced") == "true" {
+			if true == node.Synced {
+				dest = append(dest, node)
+			}
+		} else if r.FormValue("synced") == "false" {
+			if false == node.Synced {
+				dest = append(dest, node)
+			}
+		} else {
 			dest = append(dest, node)
 		}
 	}
