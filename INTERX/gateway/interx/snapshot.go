@@ -22,7 +22,7 @@ func RegisterSnapShotQueryRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, r
 }
 
 func snapshotPath() string {
-	return config.GetReferenceCacheDir() + "/snapshot.zip"
+	return config.GetReferenceCacheDir() + "/snapshot.tar"
 }
 
 func getSnapShotInfo() (*types.SnapShotChecksumResponse, error) {
