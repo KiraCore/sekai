@@ -83,6 +83,33 @@ func NewTxProposalCmds() *cobra.Command {
 	}
 
 	proposalCmd.AddCommand(GetTxProposalAssignPermission())
+	// TODO: add commands here for
+	// message WhitelistAccountPermissionProposal {
+	// message BlacklistAccountPermissionProposal {
+	// message RemoveWhitelistedAccountPermissionProposal {
+	// message RemoveBlacklistedAccountPermissionProposal {
+	// message AssignRoleToAccountProposal {
+	// message UnassignRoleFromAccountProposal {
+	// message WhitelistRolePermissionProposal {
+	// message BlacklistRolePermissionProposal {
+
+	// sekaid tx customgov account proposals
+
+	// -> assign-role
+	// -> whitelist-permission
+	// -> blacklist-permission
+	// -> remove-whitelisted-permission
+	// -> remove-blacklisted-permission
+
+	// sekaid tx customgov role proposals
+
+	// -> create
+	// -> remove
+	// -> whitelist-permission
+	// -> blacklist-permission
+	// -> remove-whitelisted-permission
+	// -> remove-blacklisted-permission
+
 	proposalCmd.AddCommand(GetTxVoteProposal())
 	proposalCmd.AddCommand(GetTxProposalSetNetworkProperty())
 	proposalCmd.AddCommand(GetTxProposalSetPoorNetworkMessages())
