@@ -441,11 +441,21 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterInterface(
 		"kira.gov.Content",
 		(*Content)(nil),
-		&AssignPermissionProposal{},
+		&WhitelistAccountPermissionProposal{},
+		&BlacklistAccountPermissionProposal{},
+		&RemoveWhitelistedAccountPermissionProposal{},
+		&RemoveBlacklistedAccountPermissionProposal{},
+		&AssignRoleToAccountProposal{},
+		&UnassignRoleFromAccountProposal{},
 		&SetNetworkPropertyProposal{},
 		&UpsertDataRegistryProposal{},
 		&SetPoorNetworkMessagesProposal{},
 		&CreateRoleProposal{},
+		&RemoveRoleProposal{},
+		&WhitelistRolePermissionProposal{},
+		&BlacklistRolePermissionProposal{},
+		&RemoveWhitelistedRolePermissionProposal{},
+		&RemoveBlacklistedRolePermissionProposal{},
 		&SetProposalDurationsProposal{},
 	)
 

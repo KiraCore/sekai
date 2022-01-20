@@ -843,7 +843,7 @@ func GetTxProposalAssignRoleToAccount() *cobra.Command {
 				clientCtx.FromAddress,
 				title,
 				description,
-				types.NewAssignPermissionProposal(addr, types.PermValue(perm)),
+				types.NewAssignRoleToAccountProposal(addr, types.PermValue(perm)),
 			)
 			if err != nil {
 				return err
@@ -902,7 +902,7 @@ func GetTxProposalUnassignRoleFromAccount() *cobra.Command {
 				clientCtx.FromAddress,
 				title,
 				description,
-				types.NewAssignPermissionProposal(addr, types.PermValue(perm)),
+				types.NewUnassignRoleFromAccountProposal(addr, types.PermValue(perm)),
 			)
 			if err != nil {
 				return err
@@ -961,7 +961,7 @@ func GetTxProposalWhitelistAccountPermission() *cobra.Command {
 				clientCtx.FromAddress,
 				title,
 				description,
-				types.NewAssignPermissionProposal(addr, types.PermValue(perm)),
+				types.NewWhitelistAccountPermissionProposal(addr, types.PermValue(perm)),
 			)
 			if err != nil {
 				return err
@@ -1020,7 +1020,7 @@ func GetTxProposalBlacklistAccountPermission() *cobra.Command {
 				clientCtx.FromAddress,
 				title,
 				description,
-				types.NewAssignPermissionProposal(addr, types.PermValue(perm)),
+				types.NewBlacklistAccountPermissionProposal(addr, types.PermValue(perm)),
 			)
 			if err != nil {
 				return err
@@ -1079,7 +1079,7 @@ func GetTxProposalRemoveWhitelistedAccountPermission() *cobra.Command {
 				clientCtx.FromAddress,
 				title,
 				description,
-				types.NewAssignPermissionProposal(addr, types.PermValue(perm)),
+				types.NewRemoveWhitelistedAccountPermissionProposal(addr, types.PermValue(perm)),
 			)
 			if err != nil {
 				return err
@@ -1138,7 +1138,7 @@ func GetTxProposalRemoveBlacklistedAccountPermission() *cobra.Command {
 				clientCtx.FromAddress,
 				title,
 				description,
-				types.NewAssignPermissionProposal(addr, types.PermValue(perm)),
+				types.NewRemoveBlacklistedAccountPermissionProposal(addr, types.PermValue(perm)),
 			)
 			if err != nil {
 				return err
@@ -1421,7 +1421,7 @@ func GetTxProposalRemoveRole() *cobra.Command {
 				clientCtx.FromAddress,
 				title,
 				description,
-				types.NewCreateRoleProposal(
+				types.NewRemoveRoleProposal(
 					args[0],
 					args[1],
 					whitelistPerms,
@@ -1486,7 +1486,7 @@ func GetTxProposalWhitelistRolePermission() *cobra.Command {
 				clientCtx.FromAddress,
 				title,
 				description,
-				types.NewCreateRoleProposal(
+				types.NewWhitelistRolePermissionProposal(
 					args[0],
 					args[1],
 					whitelistPerms,
@@ -1551,7 +1551,7 @@ func GetTxProposalBlacklistRolePermission() *cobra.Command {
 				clientCtx.FromAddress,
 				title,
 				description,
-				types.NewCreateRoleProposal(
+				types.NewBlacklistRolePermissionProposal(
 					args[0],
 					args[1],
 					whitelistPerms,
@@ -1616,7 +1616,7 @@ func GetTxProposalRemoveWhitelistedRolePermission() *cobra.Command {
 				clientCtx.FromAddress,
 				title,
 				description,
-				types.NewCreateRoleProposal(
+				types.NewRemoveWhitelistedRolePermissionProposal(
 					args[0],
 					args[1],
 					whitelistPerms,
@@ -1681,7 +1681,7 @@ func GetTxProposalRemoveBlacklistedRolePermission() *cobra.Command {
 				clientCtx.FromAddress,
 				title,
 				description,
-				types.NewCreateRoleProposal(
+				types.NewRemoveBlacklistedRolePermissionProposal(
 					args[0],
 					args[1],
 					whitelistPerms,

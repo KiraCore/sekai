@@ -1141,7 +1141,7 @@ func TestHandler_CreateProposalAssignPermission_Errors(t *testing.T) {
 	}{
 		{
 			"Proposer does not have Perm",
-			types.NewAssignPermissionProposal(
+			types.NewWhitelistAccountPermissionProposal(
 				addr, types.PermClaimValidator,
 			),
 			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {},
@@ -1149,7 +1149,7 @@ func TestHandler_CreateProposalAssignPermission_Errors(t *testing.T) {
 		},
 		{
 			"address already has that permission",
-			types.NewAssignPermissionProposal(
+			types.NewWhitelistAccountPermissionProposal(
 				addr, types.PermClaimValidator,
 			),
 			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
@@ -1204,7 +1204,7 @@ func TestHandler_ProposalAssignPermission(t *testing.T) {
 	app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
 
 	handler := gov.NewHandler(app.CustomGovKeeper)
-	proposal := types.NewAssignPermissionProposal(addr, types.PermValue(1))
+	proposal := types.NewWhitelistAccountPermissionProposal(addr, types.PermValue(1))
 	msg, err := types.NewMsgSubmitProposal(proposerAddr, "title", "some desc", proposal)
 	require.NoError(t, err)
 	res, err := handler(
@@ -1223,7 +1223,7 @@ func TestHandler_ProposalAssignPermission(t *testing.T) {
 		1,
 		"title",
 		"some desc",
-		types.NewAssignPermissionProposal(
+		types.NewWhitelistAccountPermissionProposal(
 			addr,
 			types.PermValue(1),
 		),
@@ -1396,7 +1396,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 					1,
 					"title",
 					"some desc",
-					types.NewAssignPermissionProposal(
+					types.NewWhitelistAccountPermissionProposal(
 						voterAddr,
 						types.PermClaimCouncilor,
 					),
@@ -1433,7 +1433,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 					1,
 					"title",
 					"some desc",
-					types.NewAssignPermissionProposal(
+					types.NewWhitelistAccountPermissionProposal(
 						voterAddr,
 						types.PermClaimCouncilor,
 					),
@@ -1641,7 +1641,7 @@ func TestHandler_VoteProposal(t *testing.T) {
 		1,
 		"title",
 		"some desc",
-		types.NewAssignPermissionProposal(
+		types.NewWhitelistAccountPermissionProposal(
 			voterAddr,
 			types.PermClaimCouncilor,
 		),
