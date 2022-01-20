@@ -166,6 +166,22 @@ message BlacklistRolePermissionProposal {
   PermValue permission = 2;
 }
 
+message RemoveWhitelistedRolePermissionProposal {
+  option (cosmos_proto.implements_interface) = "Content";
+  option (gogoproto.equal) = true;
+
+  string role_sid = 1;
+  PermValue permission = 2;
+}
+
+message RemoveBlacklistedRolePermissionProposal {
+  option (cosmos_proto.implements_interface) = "Content";
+  option (gogoproto.equal) = true;
+
+  string role_sid = 1;
+  PermValue permission = 2;
+}
+
 message SetNetworkPropertyProposal {
   option (cosmos_proto.implements_interface) = "Content";
   option (gogoproto.equal) = true;
@@ -201,6 +217,13 @@ message CreateRoleProposal {
   string role_description = 2;
   repeated PermValue whitelisted_permissions = 3;
   repeated PermValue blacklisted_permissions = 4;
+}
+
+message RemoveRoleProposal {
+  option (cosmos_proto.implements_interface) = "Content";
+  option (gogoproto.equal) = true;
+
+  string role_sid = 1;
 }
 
 message SetProposalDurationsProposal {
