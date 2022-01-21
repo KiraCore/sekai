@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/KiraCore/sekai/INTERX/common"
@@ -272,11 +273,6 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 			}
 		}
 
-		// uniqueIPAddresses = append(uniqueIPAddresses, "51.89.7.103")
-		// uniqueIPAddresses = append(uniqueIPAddresses, "75.119.149.170")
-		// uniqueIPAddresses = append(uniqueIPAddresses, "46.166.132.197")
-		// uniqueIPAddresses = append(uniqueIPAddresses, "194.163.133.97")
-
 		peersFromIP := make(map[string]([]tmTypes.Peer))
 
 		index := 0
@@ -508,15 +504,14 @@ func isPrivateIP(ipAddr string) bool {
 }
 
 func getPort(listenAddr string) (uint16, error) {
-	u, err := url.Parse(listenAddr)
-	if err != nil {
-		return 0, err
+	strs := strings.Split(listenAddr, ":")
+	if len(strs) > 1 {
+		portNumber, err := strconv.ParseUint(strs[len(strs)-1], 10, 16)
+		if err == nil {
+			return uint16(portNumber), nil
+		}
 	}
-	portNumber, err := strconv.ParseUint(u.Port(), 10, 16)
-	if err != nil {
-		return 0, err
-	}
-	return uint16(portNumber), nil
+	return 0, nil
 }
 
 func getHostname(listenAddr string) string {
