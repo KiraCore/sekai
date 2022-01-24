@@ -810,18 +810,13 @@ func GetTxProposalSetNetworkProperty() *cobra.Command {
 
 func GetTxProposalAssignRoleToAccount() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "assign-role role",
+		Use:   "assign-role role [role_identifier]",
 		Short: "Create a proposal to assign a role to an address.",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
-			}
-
-			perm, err := strconv.Atoi(args[0])
-			if err != nil {
-				return fmt.Errorf("invalid perm: %w", err)
 			}
 
 			addr, err := getAddressFromFlag(cmd)
@@ -843,7 +838,7 @@ func GetTxProposalAssignRoleToAccount() *cobra.Command {
 				clientCtx.FromAddress,
 				title,
 				description,
-				types.NewAssignRoleToAccountProposal(addr, types.PermValue(perm)),
+				types.NewAssignRoleToAccountProposal(addr, args[0]),
 			)
 			if err != nil {
 				return err
@@ -878,11 +873,6 @@ func GetTxProposalUnassignRoleFromAccount() *cobra.Command {
 				return err
 			}
 
-			perm, err := strconv.Atoi(args[0])
-			if err != nil {
-				return fmt.Errorf("invalid perm: %w", err)
-			}
-
 			addr, err := getAddressFromFlag(cmd)
 			if err != nil {
 				return fmt.Errorf("error getting address: %w", err)
@@ -902,7 +892,7 @@ func GetTxProposalUnassignRoleFromAccount() *cobra.Command {
 				clientCtx.FromAddress,
 				title,
 				description,
-				types.NewUnassignRoleFromAccountProposal(addr, types.PermValue(perm)),
+				types.NewUnassignRoleFromAccountProposal(addr, args[0]),
 			)
 			if err != nil {
 				return err
@@ -1427,8 +1417,6 @@ func GetTxProposalRemoveRole() *cobra.Command {
 	cmd.MarkFlagRequired(FlagTitle)
 	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
 	cmd.MarkFlagRequired(FlagDescription)
-	cmd.Flags().Int32Slice(FlagWhitelistPerms, []int32{}, "the whitelist value in format 1,2,3")
-	cmd.Flags().Int32Slice(FlagBlacklistPerms, []int32{}, "the blacklist values in format 1,2,3")
 	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd

@@ -55,7 +55,7 @@ func (a ApplyBlacklistAccountPermissionProposalHandler) Apply(ctx sdk.Context, p
 
 	actor, found := a.keeper.GetNetworkActorByAddress(ctx, p.Address)
 	if found {
-		if actor.Permissions.IsWhitelisted(types.PermValue(p.Permission)) {
+		if actor.Permissions.IsBlacklisted(types.PermValue(p.Permission)) {
 			return sdkerrors.Wrap(types.ErrWhitelisting, "permission already blacklisted")
 		}
 	} else {
@@ -82,8 +82,8 @@ func (a ApplyRemoveWhitelistedAccountPermissionProposalHandler) Apply(ctx sdk.Co
 
 	actor, found := a.keeper.GetNetworkActorByAddress(ctx, p.Address)
 	if found {
-		if actor.Permissions.IsWhitelisted(types.PermValue(p.Permission)) {
-			return sdkerrors.Wrap(types.ErrWhitelisting, "permission already blacklisted")
+		if !actor.Permissions.IsWhitelisted(types.PermValue(p.Permission)) {
+			return sdkerrors.Wrap(types.ErrWhitelisting, "whitelisted permission does not exist")
 		}
 	} else {
 		actor = types.NewDefaultActor(p.Address)
@@ -108,14 +108,16 @@ func (a ApplyRemoveBlacklistedAccountPermissionProposalHandler) Apply(ctx sdk.Co
 	p := proposal.(*types.RemoveBlacklistedAccountPermissionProposal)
 
 	actor, found := a.keeper.GetNetworkActorByAddress(ctx, p.Address)
+	fmt.Println("actor", actor)
 	if found {
-		if actor.Permissions.IsWhitelisted(types.PermValue(p.Permission)) {
-			return sdkerrors.Wrap(types.ErrWhitelisting, "permission already blacklisted")
+		if !actor.Permissions.IsBlacklisted(types.PermValue(p.Permission)) {
+			return sdkerrors.Wrap(types.ErrWhitelisting, "blacklisted permission does not exist")
 		}
 	} else {
 		actor = types.NewDefaultActor(p.Address)
 	}
 
+	fmt.Println("RemoveBlacklistedPermission", p.Permission)
 	return a.keeper.RemoveBlacklistedPermission(ctx, actor, types.PermValue(p.Permission))
 }
 
@@ -151,7 +153,7 @@ func NewApplyUnassignRoleFromAccountProposalHandler(keeper keeper.Keeper) *Apply
 }
 
 func (a ApplyUnassignRoleFromAccountProposalHandler) ProposalType() string {
-	return kiratypes.RemoveBlacklistedAccountPermissionProposalType
+	return kiratypes.UnassignRoleFromAccountProposalType
 }
 
 func (a ApplyUnassignRoleFromAccountProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {

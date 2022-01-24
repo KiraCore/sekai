@@ -170,7 +170,7 @@ func NewRemoveBlacklistedAccountPermissionProposal(
 	address types.AccAddress,
 	permission PermValue,
 ) Content {
-	return &BlacklistAccountPermissionProposal{
+	return &RemoveBlacklistedAccountPermissionProposal{
 		Address:    address,
 		Permission: permission,
 	}
@@ -202,10 +202,11 @@ var _ Content = &RemoveBlacklistedAccountPermissionProposal{}
 // NewAssignRoleToAccountProposal creates a new assign permission proposal
 func NewAssignRoleToAccountProposal(
 	address types.AccAddress,
-	permission PermValue,
+	roleIdentifier string,
 ) Content {
 	return &AssignRoleToAccountProposal{
-		Address: address,
+		Address:        address,
+		RoleIdentifier: roleIdentifier,
 	}
 }
 
@@ -233,10 +234,11 @@ func (m *AssignRoleToAccountProposal) VotePermission() PermValue {
 // NewUnassignRoleFromAccountProposal creates a new assign permission proposal
 func NewUnassignRoleFromAccountProposal(
 	address types.AccAddress,
-	permission PermValue,
+	roleIdentifier string,
 ) Content {
 	return &UnassignRoleFromAccountProposal{
-		Address: address,
+		Address:        address,
+		RoleIdentifier: roleIdentifier,
 	}
 }
 
