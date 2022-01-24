@@ -88,11 +88,11 @@ func (m *WhitelistAccountPermissionProposal) ValidateBasic() error {
 }
 
 func (m *WhitelistAccountPermissionProposal) ProposalPermission() PermValue {
-	return PermCreateSetPermissionsProposal
+	return PermWhitelistAccountPermissionProposal
 }
 
 func (m *WhitelistAccountPermissionProposal) VotePermission() PermValue {
-	return PermVoteSetPermissionProposal
+	return PermVoteWhitelistAccountPermissionProposal
 }
 
 var _ Content = &BlacklistAccountPermissionProposal{}
@@ -122,11 +122,11 @@ func (m *BlacklistAccountPermissionProposal) ValidateBasic() error {
 }
 
 func (m *BlacklistAccountPermissionProposal) ProposalPermission() PermValue {
-	return PermCreateSetPermissionsProposal
+	return PermBlacklistAccountPermissionProposal
 }
 
 func (m *BlacklistAccountPermissionProposal) VotePermission() PermValue {
-	return PermVoteSetPermissionProposal
+	return PermVoteBlacklistAccountPermissionProposal
 }
 
 var _ Content = &RemoveWhitelistedAccountPermissionProposal{}
@@ -156,11 +156,11 @@ func (m *RemoveWhitelistedAccountPermissionProposal) ValidateBasic() error {
 }
 
 func (m *RemoveWhitelistedAccountPermissionProposal) ProposalPermission() PermValue {
-	return PermCreateSetPermissionsProposal
+	return PermRemoveWhitelistedAccountPermissionProposal
 }
 
 func (m *RemoveWhitelistedAccountPermissionProposal) VotePermission() PermValue {
-	return PermVoteSetPermissionProposal
+	return PermVoteRemoveWhitelistedAccountPermissionProposal
 }
 
 var _ Content = &RemoveBlacklistedAccountPermissionProposal{}
@@ -190,11 +190,11 @@ func (m *RemoveBlacklistedAccountPermissionProposal) ValidateBasic() error {
 }
 
 func (m *RemoveBlacklistedAccountPermissionProposal) ProposalPermission() PermValue {
-	return PermCreateSetPermissionsProposal
+	return PermRemoveBlacklistedAccountPermissionProposal
 }
 
 func (m *RemoveBlacklistedAccountPermissionProposal) VotePermission() PermValue {
-	return PermVoteSetPermissionProposal
+	return PermVoteRemoveBlacklistedAccountPermissionProposal
 }
 
 var _ Content = &RemoveBlacklistedAccountPermissionProposal{}
@@ -223,11 +223,11 @@ func (m *AssignRoleToAccountProposal) ValidateBasic() error {
 }
 
 func (m *AssignRoleToAccountProposal) ProposalPermission() PermValue {
-	return PermCreateSetPermissionsProposal
+	return PermAssignRoleToAccountProposal
 }
 
 func (m *AssignRoleToAccountProposal) VotePermission() PermValue {
-	return PermVoteSetPermissionProposal
+	return PermVoteAssignRoleToAccountProposal
 }
 
 // NewUnassignRoleFromAccountProposal creates a new assign permission proposal
@@ -254,11 +254,11 @@ func (m *UnassignRoleFromAccountProposal) ValidateBasic() error {
 }
 
 func (m *UnassignRoleFromAccountProposal) ProposalPermission() PermValue {
-	return PermCreateSetPermissionsProposal
+	return PermUnassignRoleFromAccountProposal
 }
 
 func (m *UnassignRoleFromAccountProposal) VotePermission() PermValue {
-	return PermVoteSetPermissionProposal
+	return PermVoteUnassignRoleFromAccountProposal
 }
 
 // NewSetNetworkPropertyProposal creates a new set network property proposal
@@ -392,12 +392,9 @@ func (m *CreateRoleProposal) ValidateBasic() error {
 	return nil
 }
 
-func NewRemoveRoleProposal(sid, description string, whitelist []PermValue, blacklist []PermValue) Content {
+func NewRemoveRoleProposal(roleIdentifier string) Content {
 	return &RemoveRoleProposal{
-		RoleSid:                sid,
-		RoleDescription:        description,
-		WhitelistedPermissions: whitelist,
-		BlacklistedPermissions: blacklist,
+		RoleSid: roleIdentifier,
 	}
 }
 
@@ -419,12 +416,10 @@ func (m *RemoveRoleProposal) ValidateBasic() error {
 	return nil
 }
 
-func NewWhitelistRolePermissionProposal(sid, description string, whitelist []PermValue, blacklist []PermValue) Content {
+func NewWhitelistRolePermissionProposal(roleIdentifier string, permission PermValue) Content {
 	return &WhitelistRolePermissionProposal{
-		RoleSid:                sid,
-		RoleDescription:        description,
-		WhitelistedPermissions: whitelist,
-		BlacklistedPermissions: blacklist,
+		RoleIdentifier: roleIdentifier,
+		Permission:     permission,
 	}
 }
 
@@ -446,12 +441,10 @@ func (m *WhitelistRolePermissionProposal) ValidateBasic() error {
 	return nil
 }
 
-func NewBlacklistRolePermissionProposal(sid, description string, whitelist []PermValue, blacklist []PermValue) Content {
+func NewBlacklistRolePermissionProposal(roleIdentifier string, permission PermValue) Content {
 	return &BlacklistRolePermissionProposal{
-		RoleSid:                sid,
-		RoleDescription:        description,
-		WhitelistedPermissions: whitelist,
-		BlacklistedPermissions: blacklist,
+		RoleIdentifier: roleIdentifier,
+		Permission:     permission,
 	}
 }
 
@@ -473,12 +466,10 @@ func (m *BlacklistRolePermissionProposal) ValidateBasic() error {
 	return nil
 }
 
-func NewRemoveWhitelistedRolePermissionProposal(sid, description string, whitelist []PermValue, blacklist []PermValue) Content {
-	return &WhitelistRolePermissionProposal{
-		RoleSid:                sid,
-		RoleDescription:        description,
-		WhitelistedPermissions: whitelist,
-		BlacklistedPermissions: blacklist,
+func NewRemoveWhitelistedRolePermissionProposal(roleSid string, permission PermValue) Content {
+	return &RemoveWhitelistedRolePermissionProposal{
+		RoleSid:    roleSid,
+		Permission: permission,
 	}
 }
 
@@ -500,12 +491,10 @@ func (m *RemoveWhitelistedRolePermissionProposal) ValidateBasic() error {
 	return nil
 }
 
-func NewRemoveBlacklistedRolePermissionProposal(sid, description string, whitelist []PermValue, blacklist []PermValue) Content {
-	return &BlacklistRolePermissionProposal{
-		RoleSid:                sid,
-		RoleDescription:        description,
-		WhitelistedPermissions: whitelist,
-		BlacklistedPermissions: blacklist,
+func NewRemoveBlacklistedRolePermissionProposal(roleSid string, permission PermValue) Content {
+	return &RemoveBlacklistedRolePermissionProposal{
+		RoleSid:    roleSid,
+		Permission: permission,
 	}
 }
 

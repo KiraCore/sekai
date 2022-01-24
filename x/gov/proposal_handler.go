@@ -89,7 +89,7 @@ func (a ApplyRemoveWhitelistedAccountPermissionProposalHandler) Apply(ctx sdk.Co
 		actor = types.NewDefaultActor(p.Address)
 	}
 
-	return a.keeper.RemoveWhitelistedAccountPermission(ctx, actor, types.PermValue(p.Permission))
+	return a.keeper.RemoveWhitelistedPermission(ctx, actor, types.PermValue(p.Permission))
 }
 
 type ApplyRemoveBlacklistedAccountPermissionProposalHandler struct {
@@ -116,7 +116,7 @@ func (a ApplyRemoveBlacklistedAccountPermissionProposalHandler) Apply(ctx sdk.Co
 		actor = types.NewDefaultActor(p.Address)
 	}
 
-	return a.keeper.RemoveBlacklistedAccountPermission(ctx, actor, types.PermValue(p.Permission))
+	return a.keeper.RemoveBlacklistedPermission(ctx, actor, types.PermValue(p.Permission))
 }
 
 type ApplyAssignRoleToAccountProposalHandler struct {
@@ -128,49 +128,41 @@ func NewApplyAssignRoleToAccountProposalHandler(keeper keeper.Keeper) *ApplyAssi
 }
 
 func (a ApplyAssignRoleToAccountProposalHandler) ProposalType() string {
-	return kiratypes.RemoveBlacklistedAccountPermissionProposalType
+	return kiratypes.AssignRoleToAccountProposalType
 }
 
 func (a ApplyAssignRoleToAccountProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
-	p := proposal.(*types.RemoveBlacklistedAccountPermissionProposal)
+	p := proposal.(*types.AssignRoleToAccountProposal)
 
-	actor, found := a.keeper.GetNetworkActorByAddress(ctx, p.Address)
-	if found {
-		if actor.Permissions.IsWhitelisted(types.PermValue(p.Permission)) {
-			return sdkerrors.Wrap(types.ErrWhitelisting, "permission already blacklisted")
-		}
-	} else {
-		actor = types.NewDefaultActor(p.Address)
+	roleId, err := a.keeper.GetRoleIdFromIdentifierString(ctx, p.RoleIdentifier)
+	if err != nil {
+		return err
 	}
 
-	return a.keeper.AssignRoleToAccount(ctx, actor, types.PermValue(p.Permission))
+	return a.keeper.AssignRoleToAccount(ctx, p.Address, roleId)
 }
 
 type ApplyUnassignRoleFromAccountProposalHandler struct {
 	keeper keeper.Keeper
 }
 
-func NewApplyUnassignRoleFromAccountProposalHandler(keeper keeper.Keeper) *ApplyAssignRoleToAccountProposalHandler {
-	return &ApplyAssignRoleFromAccountProposalHandler{keeper: keeper}
+func NewApplyUnassignRoleFromAccountProposalHandler(keeper keeper.Keeper) *ApplyUnassignRoleFromAccountProposalHandler {
+	return &ApplyUnassignRoleFromAccountProposalHandler{keeper: keeper}
 }
 
-func (a ApplyAssignRoleFromAccountProposalHandler) ProposalType() string {
+func (a ApplyUnassignRoleFromAccountProposalHandler) ProposalType() string {
 	return kiratypes.RemoveBlacklistedAccountPermissionProposalType
 }
 
-func (a ApplyAssignRoleFromAccountProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
-	p := proposal.(*types.ApplyUnassignRoleFromAccountProposal)
+func (a ApplyUnassignRoleFromAccountProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
+	p := proposal.(*types.UnassignRoleFromAccountProposal)
 
-	actor, found := a.keeper.GetNetworkActorByAddress(ctx, p.Address)
-	if found {
-		if actor.Permissions.IsWhitelisted(types.PermValue(p.Permission)) {
-			return sdkerrors.Wrap(types.ErrWhitelisting, "permission already blacklisted")
-		}
-	} else {
-		actor = types.NewDefaultActor(p.Address)
+	roleId, err := a.keeper.GetRoleIdFromIdentifierString(ctx, p.RoleIdentifier)
+	if err != nil {
+		return err
 	}
 
-	return a.keeper.UnassignRoleFromAccount(ctx, actor, types.PermValue(p.Permission))
+	return a.keeper.UnassignRoleFromAccount(ctx, p.Address, roleId)
 }
 
 type ApplySetNetworkPropertyProposalHandler struct {
@@ -294,7 +286,8 @@ func (c ApplyRemoveRoleProposalHandler) ProposalType() string {
 
 func (c ApplyRemoveRoleProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
 	p := proposal.(*types.RemoveRoleProposal)
-	return nil
+	_ = p
+	return fmt.Errorf("remove role proposal is not implemented!")
 }
 
 type ApplyWhitelistRolePermissionProposalHandler struct {
@@ -311,7 +304,13 @@ func (c ApplyWhitelistRolePermissionProposalHandler) ProposalType() string {
 
 func (c ApplyWhitelistRolePermissionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
 	p := proposal.(*types.WhitelistRolePermissionProposal)
-	return nil
+
+	roleId, err := c.keeper.GetRoleIdFromIdentifierString(ctx, p.RoleIdentifier)
+	if err != nil {
+		return err
+	}
+
+	return c.keeper.WhitelistRolePermission(ctx, roleId, p.Permission)
 }
 
 type ApplyBlacklistRolePermissionProposalHandler struct {
@@ -328,7 +327,13 @@ func (c ApplyBlacklistRolePermissionProposalHandler) ProposalType() string {
 
 func (c ApplyBlacklistRolePermissionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
 	p := proposal.(*types.BlacklistRolePermissionProposal)
-	return nil
+
+	roleId, err := c.keeper.GetRoleIdFromIdentifierString(ctx, p.RoleIdentifier)
+	if err != nil {
+		return err
+	}
+
+	return c.keeper.BlacklistRolePermission(ctx, roleId, p.Permission)
 }
 
 type ApplyRemoveWhitelistedRolePermissionProposalHandler struct {
@@ -345,7 +350,13 @@ func (c ApplyRemoveWhitelistedRolePermissionProposalHandler) ProposalType() stri
 
 func (c ApplyRemoveWhitelistedRolePermissionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
 	p := proposal.(*types.RemoveWhitelistedRolePermissionProposal)
-	return nil
+
+	roleId, err := c.keeper.GetRoleIdFromIdentifierString(ctx, p.RoleSid)
+	if err != nil {
+		return err
+	}
+
+	return c.keeper.RemoveWhitelistRolePermission(ctx, roleId, p.Permission)
 }
 
 type ApplyRemoveBlacklistedRolePermissionProposalHandler struct {
@@ -362,7 +373,13 @@ func (c ApplyRemoveBlacklistedRolePermissionProposalHandler) ProposalType() stri
 
 func (c ApplyRemoveBlacklistedRolePermissionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
 	p := proposal.(*types.RemoveBlacklistedRolePermissionProposal)
-	return nil
+
+	roleId, err := c.keeper.GetRoleIdFromIdentifierString(ctx, p.RoleSid)
+	if err != nil {
+		return err
+	}
+
+	return c.keeper.RemoveBlacklistRolePermission(ctx, roleId, p.Permission)
 }
 
 type SetProposalDurationsProposalHandler struct {

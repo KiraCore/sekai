@@ -50,7 +50,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				// We set permissions to Vote The proposal to all the actors. 10 in total.
 				for i, addr := range addrs {
 					actor := types.NewDefaultActor(addr)
-					err := app.CustomGovKeeper.AddWhitelistPermission(ctx, actor, types.PermVoteSetPermissionProposal)
+					err := app.CustomGovKeeper.AddWhitelistPermission(ctx, actor, types.PermVoteWhitelistAccountPermissionProposal)
 					require.NoError(t, err)
 
 					// Only 4 first users vote yes. We reach quorum but not half of the votes are yes.
@@ -115,7 +115,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				// We set permissions to Vote The proposal to all the actors. 10 in total.
 				for i, addr := range addrs {
 					actor := types.NewDefaultActor(addr)
-					err := app.CustomGovKeeper.AddWhitelistPermission(ctx, actor, types.PermVoteSetPermissionProposal)
+					err := app.CustomGovKeeper.AddWhitelistPermission(ctx, actor, types.PermVoteWhitelistAccountPermissionProposal)
 					require.NoError(t, err)
 
 					// Only 3 first users vote yes. We dont reach Quorum.
@@ -175,7 +175,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				// We set permissions to Vote The proposal to all the actors. 10 in total.
 				for i, addr := range addrs {
 					actor := types.NewDefaultActor(addr)
-					err := app.CustomGovKeeper.AddWhitelistPermission(ctx, actor, types.PermVoteSetPermissionProposal)
+					err := app.CustomGovKeeper.AddWhitelistPermission(ctx, actor, types.PermVoteWhitelistAccountPermissionProposal)
 					require.NoError(t, err)
 
 					// Only 4 first users vote yes. We reach quorum but not half of the votes are yes.

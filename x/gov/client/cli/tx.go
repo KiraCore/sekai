@@ -1386,26 +1386,14 @@ func GetTxProposalCreateRole() *cobra.Command {
 
 func GetTxProposalRemoveRole() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "remove-role [role_sid] [role_description]",
+		Use:   "remove-role [role_sid]",
 		Short: "Raise governance proposal to remove a role.",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
-
-			wAsInts, err := cmd.Flags().GetInt32Slice(FlagWhitelistPerms)
-			if err != nil {
-				return fmt.Errorf("invalid whitelist perms: %w", err)
-			}
-			whitelistPerms := convertAsPermValues(wAsInts)
-
-			bAsInts, err := cmd.Flags().GetInt32Slice(FlagBlacklistPerms)
-			if err != nil {
-				return fmt.Errorf("invalid blacklist perms: %w", err)
-			}
-			blacklistPerms := convertAsPermValues(bAsInts)
 
 			title, err := cmd.Flags().GetString(FlagTitle)
 			if err != nil {
@@ -1423,9 +1411,6 @@ func GetTxProposalRemoveRole() *cobra.Command {
 				description,
 				types.NewRemoveRoleProposal(
 					args[0],
-					args[1],
-					whitelistPerms,
-					blacklistPerms,
 				),
 			)
 			if err != nil {
@@ -1460,17 +1445,10 @@ func GetTxProposalWhitelistRolePermission() *cobra.Command {
 				return err
 			}
 
-			wAsInts, err := cmd.Flags().GetInt32Slice(FlagWhitelistPerms)
+			perm, err := strconv.Atoi(args[1])
 			if err != nil {
-				return fmt.Errorf("invalid whitelist perms: %w", err)
+				return err
 			}
-			whitelistPerms := convertAsPermValues(wAsInts)
-
-			bAsInts, err := cmd.Flags().GetInt32Slice(FlagBlacklistPerms)
-			if err != nil {
-				return fmt.Errorf("invalid blacklist perms: %w", err)
-			}
-			blacklistPerms := convertAsPermValues(bAsInts)
 
 			title, err := cmd.Flags().GetString(FlagTitle)
 			if err != nil {
@@ -1488,9 +1466,7 @@ func GetTxProposalWhitelistRolePermission() *cobra.Command {
 				description,
 				types.NewWhitelistRolePermissionProposal(
 					args[0],
-					args[1],
-					whitelistPerms,
-					blacklistPerms,
+					types.PermValue(perm),
 				),
 			)
 			if err != nil {
@@ -1525,17 +1501,10 @@ func GetTxProposalBlacklistRolePermission() *cobra.Command {
 				return err
 			}
 
-			wAsInts, err := cmd.Flags().GetInt32Slice(FlagWhitelistPerms)
+			perm, err := strconv.Atoi(args[1])
 			if err != nil {
-				return fmt.Errorf("invalid whitelist perms: %w", err)
+				return err
 			}
-			whitelistPerms := convertAsPermValues(wAsInts)
-
-			bAsInts, err := cmd.Flags().GetInt32Slice(FlagBlacklistPerms)
-			if err != nil {
-				return fmt.Errorf("invalid blacklist perms: %w", err)
-			}
-			blacklistPerms := convertAsPermValues(bAsInts)
 
 			title, err := cmd.Flags().GetString(FlagTitle)
 			if err != nil {
@@ -1553,9 +1522,7 @@ func GetTxProposalBlacklistRolePermission() *cobra.Command {
 				description,
 				types.NewBlacklistRolePermissionProposal(
 					args[0],
-					args[1],
-					whitelistPerms,
-					blacklistPerms,
+					types.PermValue(perm),
 				),
 			)
 			if err != nil {
@@ -1590,17 +1557,10 @@ func GetTxProposalRemoveWhitelistedRolePermission() *cobra.Command {
 				return err
 			}
 
-			wAsInts, err := cmd.Flags().GetInt32Slice(FlagWhitelistPerms)
+			perm, err := strconv.Atoi(args[1])
 			if err != nil {
-				return fmt.Errorf("invalid whitelist perms: %w", err)
+				return err
 			}
-			whitelistPerms := convertAsPermValues(wAsInts)
-
-			bAsInts, err := cmd.Flags().GetInt32Slice(FlagBlacklistPerms)
-			if err != nil {
-				return fmt.Errorf("invalid blacklist perms: %w", err)
-			}
-			blacklistPerms := convertAsPermValues(bAsInts)
 
 			title, err := cmd.Flags().GetString(FlagTitle)
 			if err != nil {
@@ -1618,9 +1578,7 @@ func GetTxProposalRemoveWhitelistedRolePermission() *cobra.Command {
 				description,
 				types.NewRemoveWhitelistedRolePermissionProposal(
 					args[0],
-					args[1],
-					whitelistPerms,
-					blacklistPerms,
+					types.PermValue(perm),
 				),
 			)
 			if err != nil {
@@ -1655,17 +1613,10 @@ func GetTxProposalRemoveBlacklistedRolePermission() *cobra.Command {
 				return err
 			}
 
-			wAsInts, err := cmd.Flags().GetInt32Slice(FlagWhitelistPerms)
+			perm, err := strconv.Atoi(args[1])
 			if err != nil {
-				return fmt.Errorf("invalid whitelist perms: %w", err)
+				return err
 			}
-			whitelistPerms := convertAsPermValues(wAsInts)
-
-			bAsInts, err := cmd.Flags().GetInt32Slice(FlagBlacklistPerms)
-			if err != nil {
-				return fmt.Errorf("invalid blacklist perms: %w", err)
-			}
-			blacklistPerms := convertAsPermValues(bAsInts)
 
 			title, err := cmd.Flags().GetString(FlagTitle)
 			if err != nil {
@@ -1683,9 +1634,7 @@ func GetTxProposalRemoveBlacklistedRolePermission() *cobra.Command {
 				description,
 				types.NewRemoveBlacklistedRolePermissionProposal(
 					args[0],
-					args[1],
-					whitelistPerms,
-					blacklistPerms,
+					types.PermValue(perm),
 				),
 			)
 			if err != nil {

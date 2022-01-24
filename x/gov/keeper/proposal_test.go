@@ -53,7 +53,7 @@ func TestKeeper_EncodingContentType(t *testing.T) {
 	content, ok := saveProposal.GetContent().(*types.WhitelistAccountPermissionProposal)
 	require.True(t, ok)
 	require.Equal(t, addr, content.Address)
-	require.Equal(t, uint32(types.PermSetPermissions), content.Permission)
+	require.Equal(t, types.PermSetPermissions, content.Permission)
 }
 
 func TestKeeper_GetProposals(t *testing.T) {
