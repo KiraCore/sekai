@@ -272,3 +272,7 @@ func LoadUniqueIPAddresses() []string {
 
 	return ipAddresses
 }
+
+func SnapshotPath() string {
+	return GetReferenceCacheDir() + "/snapshot.tar"
+}

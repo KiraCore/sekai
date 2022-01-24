@@ -1,12 +1,12 @@
 package interx
 
 import (
-	"io/ioutil"
+	"errors"
 	"net/http"
 
 	"github.com/KiraCore/sekai/INTERX/common"
 	"github.com/KiraCore/sekai/INTERX/config"
-	"github.com/KiraCore/sekai/INTERX/global"
+	"github.com/KiraCore/sekai/INTERX/tasks"
 	"github.com/KiraCore/sekai/INTERX/types"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
@@ -21,29 +21,21 @@ func RegisterSnapShotQueryRoutes(r *mux.Router, gwCosmosmux *runtime.ServeMux, r
 	common.AddRPCMethod("GET", config.QuerySnapShotInfo, "This is an API to get snapshot checksum.", true)
 }
 
-func snapshotPath() string {
-	return config.GetReferenceCacheDir() + "/snapshot.tar"
-}
-
 func getSnapShotInfo() (*types.SnapShotChecksumResponse, error) {
-	global.Mutex.Lock()
-	data, err := ioutil.ReadFile(snapshotPath())
-	global.Mutex.Unlock()
-
-	if err != nil {
-		return nil, err
+	if !tasks.SnapshotChecksumAvailable {
+		return nil, errors.New("snapshot checksum not available")
 	}
 
 	return &types.SnapShotChecksumResponse{
-		Checksum: "0x" + common.GetSha256SumFromBytes(data),
-		Size:     len(data),
+		Checksum: tasks.SnapshotChecksum,
+		Size:     tasks.SnapshotLength,
 	}, nil
 }
 
 // QuerySnapShot is a function to query snapshot.
 func QuerySnapShot(rpcAddr string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, snapshotPath())
+		http.ServeFile(w, r, config.SnapshotPath())
 	}
 }
 
