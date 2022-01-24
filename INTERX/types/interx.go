@@ -32,6 +32,6 @@ type InterxStatus struct {
 }
 
 type SnapShotChecksumResponse struct {
-	Size     int    `json:"size,omitempty"`
+	Size     int64  `json:"size,omitempty"`
 	Checksum string `json:"checksum,omitempty"`
 }
