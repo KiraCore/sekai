@@ -385,6 +385,9 @@ func (m *CreateRoleProposal) VotePermission() PermValue {
 
 // ValidateBasic returns basic validation
 func (m *CreateRoleProposal) ValidateBasic() error {
+	if m.RoleSid == "" {
+		return ErrInvalidRoleIdentifier
+	}
 	if len(m.WhitelistedPermissions) == 0 && len(m.BlacklistedPermissions) == 0 {
 		return ErrEmptyPermissions
 	}
@@ -412,7 +415,9 @@ func (m *RemoveRoleProposal) VotePermission() PermValue {
 
 // ValidateBasic returns basic validation
 func (m *RemoveRoleProposal) ValidateBasic() error {
-
+	if m.RoleSid == "" {
+		return ErrInvalidRoleIdentifier
+	}
 	return nil
 }
 
@@ -437,7 +442,9 @@ func (m *WhitelistRolePermissionProposal) VotePermission() PermValue {
 
 // ValidateBasic returns basic validation
 func (m *WhitelistRolePermissionProposal) ValidateBasic() error {
-
+	if m.RoleIdentifier == "" {
+		return ErrInvalidRoleIdentifier
+	}
 	return nil
 }
 
@@ -462,7 +469,9 @@ func (m *BlacklistRolePermissionProposal) VotePermission() PermValue {
 
 // ValidateBasic returns basic validation
 func (m *BlacklistRolePermissionProposal) ValidateBasic() error {
-
+	if m.RoleIdentifier == "" {
+		return ErrInvalidRoleIdentifier
+	}
 	return nil
 }
 
@@ -487,7 +496,9 @@ func (m *RemoveWhitelistedRolePermissionProposal) VotePermission() PermValue {
 
 // ValidateBasic returns basic validation
 func (m *RemoveWhitelistedRolePermissionProposal) ValidateBasic() error {
-
+	if m.RoleSid == "" {
+		return ErrInvalidRoleIdentifier
+	}
 	return nil
 }
 
@@ -512,6 +523,9 @@ func (m *RemoveBlacklistedRolePermissionProposal) VotePermission() PermValue {
 
 // ValidateBasic returns basic validation
 func (m *RemoveBlacklistedRolePermissionProposal) ValidateBasic() error {
+	if m.RoleSid == "" {
+		return ErrInvalidRoleIdentifier
+	}
 
 	return nil
 }
