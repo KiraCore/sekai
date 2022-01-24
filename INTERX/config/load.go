@@ -123,7 +123,7 @@ func LoadConfig(configFilePath string) {
 	}
 
 	// Display mnemonic and keys
-	fmt.Println("Interx Mnemonic  : ", Config.Mnemonic)
+	// fmt.Println("Interx Mnemonic  : ", Config.Mnemonic)
 	fmt.Println("Interx Address   : ", Config.Address)
 	fmt.Println("Interx Public Key: ", Config.PubKey.String())
 

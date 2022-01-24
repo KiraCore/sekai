@@ -444,6 +444,10 @@ func GetSnapshotInfo(interxAddr string) *types.SnapShotChecksumResponse {
 			return nil
 		}
 
+		if result.Size == 0 {
+			return nil
+		}
+
 		return &result
 	}
 
