@@ -124,6 +124,14 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 				fmt.Println("Skipping governance module upgrade since it is not v0.1.22.8 genesis")
 			}
 
+			// upgrade gov genesis for more role permissions
+			govGenesis := govtypes.GenesisState{}
+			err = cdc.UnmarshalJSON(genesisState[govtypes.ModuleName], &govGenesis)
+			if err == nil {
+				govGenesis.RolePermissions[govtypes.RoleSudo] = govtypes.DefaultGenesis().RolePermissions[govtypes.RoleSudo]
+				genesisState[govtypes.ModuleName] = cdc.MustMarshalJSON(&govGenesis)
+			}
+
 			appState, err := json.MarshalIndent(genesisState, "", " ")
 			if err != nil {
 				return errors.Wrap(err, "Failed to marshall default genesis state")
