@@ -1,0 +1,45 @@
+syntax = "proto3";
+package kira.spending;
+
+option go_package = "github.com/KiraCore/sekai/x/spending/types";
+
+import "google/protobuf/timestamp.proto";
+import "gogoproto/gogo.proto";
+
+message ClaimInfo { 
+    string account = 1;
+    google.protobuf.Timestamp last_claim = 2 [ (gogoproto.nullable) = false, (gogoproto.stdtime) = true ];
+}
+
+message PermInfo {
+  repeated uint64 owner_roles = 1;
+  repeated string owner_accounts = 2;
+}
+
+message SpendingPool {
+  string name = 1;
+  // claim-start & claim-end - defines the exact time period (Unix timestamps) between which tokens can be claimed from the pool, allowing for a precise funds distribution.
+  google.protobuf.Timestamp claim_start = 2 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  google.protobuf.Timestamp claim_end = 3 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  // claim-expire - time period after which ability of beneficiary to claim tokens expires. If the date of the last claim is longer than claim-expire than account is removed from claims list.
+  uint64 expire = 4; // seconds
+  string token = 5; // name of the token that can be distributed.
+  // rate of distribution in the smallest token denomination per 1 second (this value can be a float number, smaller than actual denomination)
+  string rate = 6 [
+    (gogoproto.moretags)   = "yaml:\"rate\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable)   = false
+  ];
+  // pool specific % of owner accounts that must vote YES or NO for any of the pool proposals to be valid.
+  uint64 vote_quorum = 7; // percentage, # default: 51%
+  // period of time in seconds that any of the pool proposals must last before passing or being rejected
+  uint64 vote_period = 8; // seconds, # default: 600s
+  // period of time that must pass before any of the pool proposal is enacted
+  uint64 vote_enactment = 9; // seconds, # default: 300s
+  // defines a list of accounts/roles controlling the spending pool via “governance-like” proposals
+  PermInfo owners = 10;
+  // defines set of accounts/roles to which funds can be distributed
+  PermInfo beneficiaries = 11;
+  // list of beneficiary accounts that claimed or registered to claim tokens from the pool as well as index of when the last time tokens were claimed.   
+  repeated ClaimInfo claims = 12;
+}

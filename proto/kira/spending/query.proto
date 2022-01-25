@@ -1,0 +1,35 @@
+syntax = "proto3";
+package kira.spending;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/spending/types";
+
+// Query defines the gRPC querier service
+service Query {
+  // query-pools - query list of pool names
+  rpc QueryPoolNames(QueryPoolNamesRequest) returns (QueryPoolNamesResponse) {}
+  // query-pool - query pool by name
+  rpc QueryPoolByName(QueryPoolByNameRequest) returns (QueryPoolByNameResponse) {}
+  // query-pool-proposals - query pool proposals by name
+  rpc QueryPoolProposals(QueryPoolProposalsRequest) returns (QueryPoolProposalsResponse) {}
+  // query-pools-by-account - query list of pool names where specific kira account can register its claim or otherwise claim tokens from
+  rpc QueryPoolsByAccount(QueryPoolsByAccountRequest) returns (QueryPoolsByAccountResponse) {}
+}
+
+message QueryPoolNamesRequest { }
+
+message QueryPoolNamesResponse { }
+
+message QueryPoolByNameRequest {}
+
+message QueryPoolByNameResponse {}
+
+message QueryPoolProposalsRequest {}
+
+message QueryPoolProposalsResponse {}
+
+message QueryPoolsByAccountRequest {}
+
+message QueryPoolsByAccountResponse {}

@@ -1,0 +1,16 @@
+syntax = "proto3";
+package kira.spending;
+
+option go_package = "github.com/KiraCore/sekai/x/spending/types";
+
+import "kira/spending/pool.proto";
+
+message GenesisState {
+  repeated SpendingPool pools = 1;
+}
+
+// TODO: We should also have a default pool created in the genesis, owned by
+// validator role and with beneficiaries as validator role as well
+
+// TODO: Rules of the name creation same as variables
+// We did that before* in some other parts of the Code, might be good to create some "safety" package and have the function checking if the name is valid with it everywhere

@@ -1,0 +1,34 @@
+syntax = "proto3";
+package kira.gov;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/any.proto";
+import "cosmos_proto/cosmos.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/spending/types";
+
+// proposal-spending-pool-update - a function to create a proposal allowing
+// modification of the existing spending pool, adding owners, beneficiaries,
+// or otherwise editing any of the existing properties.
+message UpdateSpendingPoolProposal {
+  option (cosmos_proto.implements_interface) = "Content";
+  option (gogoproto.equal) = true;
+}
+
+// proposal-spending-pool-distribute - force distribution of tokens to all
+// beneficiaries registered in the claims array (this function should be
+// automatically triggered before upgrades are executed)
+message SpendingPoolDistributionProposal {
+  option (cosmos_proto.implements_interface) = "Content";
+  option (gogoproto.equal) = true;
+}
+
+// proposal-spending-pool-withdraw - proposal allowing withdrawal of funds
+// from the pool to one or many specified accounts. Withdrawal should only
+// be possible if the receiving account/s are on the list of registered
+// beneficiaries.
+message SpendingPoolWithdrawProposal {
+  option (cosmos_proto.implements_interface) = "Content";
+  option (gogoproto.equal) = true;
+}
