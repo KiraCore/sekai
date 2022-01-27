@@ -1311,7 +1311,7 @@ func GetTxClaimCouncilorSeatCmd() *cobra.Command {
 
 func GetTxProposalCreateRole() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-role [role_sid] [role_description]",
+		Use:   "create [role_sid] [role_description]",
 		Short: "Raise governance proposal to create a new role.",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -1376,7 +1376,7 @@ func GetTxProposalCreateRole() *cobra.Command {
 
 func GetTxProposalRemoveRole() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "remove-role [role_sid]",
+		Use:   "remove [role_sid]",
 		Short: "Raise governance proposal to remove a role.",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sekaid tx customgov proposal role create-role newrole "NewRole Description" --title="title" --description="description" --whitelist="1,2" --blacklist="3,4" --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes
+sekaid tx customgov proposal role create newrole "NewRole Description" --title="title" --description="description" --whitelist="1,2" --blacklist="3,4" --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes
 
 sekaid query customgov proposals
 sekaid query customgov proposal 1
