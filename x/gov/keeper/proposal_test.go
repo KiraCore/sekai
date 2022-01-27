@@ -31,7 +31,7 @@ func TestKeeper_EncodingContentType(t *testing.T) {
 		1,
 		"title",
 		"some desc",
-		types.NewAssignPermissionProposal(
+		types.NewWhitelistAccountPermissionProposal(
 			addr,
 			types.PermSetPermissions,
 		),
@@ -50,10 +50,10 @@ func TestKeeper_EncodingContentType(t *testing.T) {
 
 	require.Equal(t, proposal1.GetContent(), saveProposal.GetContent())
 
-	content, ok := saveProposal.GetContent().(*types.AssignPermissionProposal)
+	content, ok := saveProposal.GetContent().(*types.WhitelistAccountPermissionProposal)
 	require.True(t, ok)
 	require.Equal(t, addr, content.Address)
-	require.Equal(t, uint32(types.PermSetPermissions), content.Permission)
+	require.Equal(t, types.PermSetPermissions, content.Permission)
 }
 
 func TestKeeper_GetProposals(t *testing.T) {
@@ -67,7 +67,7 @@ func TestKeeper_GetProposals(t *testing.T) {
 		1,
 		"title",
 		"some desc",
-		types.NewAssignPermissionProposal(
+		types.NewWhitelistAccountPermissionProposal(
 			addr,
 			types.PermSetPermissions,
 		),
@@ -89,7 +89,7 @@ func TestKeeper_GetProposals(t *testing.T) {
 		2,
 		"title",
 		"some desc",
-		types.NewAssignPermissionProposal(
+		types.NewWhitelistAccountPermissionProposal(
 			addr,
 			types.PermSetPermissions,
 		),
@@ -125,7 +125,7 @@ func TestSaveProposalReturnsTheProposalID_AndIncreasesLast(t *testing.T) {
 		proposalID,
 		"title",
 		"some desc",
-		types.NewAssignPermissionProposal(
+		types.NewWhitelistAccountPermissionProposal(
 			addr,
 			types.PermClaimValidator,
 		),
@@ -183,7 +183,7 @@ func TestKeeper_AddProposalToActiveQueue(t *testing.T) {
 			i,
 			"title",
 			"some desc",
-			types.NewAssignPermissionProposal(
+			types.NewWhitelistAccountPermissionProposal(
 				addr,
 				types.PermSetPermissions,
 			),
@@ -229,7 +229,7 @@ func TestKeeper_AddProposalToEnactmentQueue(t *testing.T) {
 			i,
 			"title",
 			"some desc",
-			types.NewAssignPermissionProposal(
+			types.NewWhitelistAccountPermissionProposal(
 				addr,
 				types.PermSetPermissions,
 			),
@@ -273,7 +273,7 @@ func TestKeeper_GetProposalVotesIterator(t *testing.T) {
 		1,
 		"title",
 		"some desc",
-		types.NewAssignPermissionProposal(
+		types.NewWhitelistAccountPermissionProposal(
 			addr1,
 			types.PermSetPermissions,
 		),
@@ -289,7 +289,7 @@ func TestKeeper_GetProposalVotesIterator(t *testing.T) {
 		2,
 		"title",
 		"some desc",
-		types.NewAssignPermissionProposal(
+		types.NewWhitelistAccountPermissionProposal(
 			addr2,
 			types.PermClaimCouncilor,
 		),
@@ -340,8 +340,8 @@ func TestKeeper_ProposalDuration(t *testing.T) {
 
 	properties := app.CustomGovKeeper.GetNetworkProperties(ctx)
 
-	// test AssignPermissionProposal
-	proposalID, err := app.CustomGovKeeper.CreateAndSaveProposalWithContent(ctx, "title", "description", &types.AssignPermissionProposal{})
+	// test WhitelistAccountPermissionProposal
+	proposalID, err := app.CustomGovKeeper.CreateAndSaveProposalWithContent(ctx, "title", "description", &types.WhitelistAccountPermissionProposal{})
 	require.NoError(t, err)
 
 	proposal, found := app.CustomGovKeeper.GetProposal(ctx, proposalID)

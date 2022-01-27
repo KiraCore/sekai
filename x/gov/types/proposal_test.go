@@ -13,7 +13,7 @@ func TestNewProposal_ProposalIsPendingByDefault(t *testing.T) {
 		1234,
 		"title",
 		"some desc",
-		NewAssignPermissionProposal(
+		NewWhitelistAccountPermissionProposal(
 			types.AccAddress{0x12},
 			PermSetPermissions,
 		),

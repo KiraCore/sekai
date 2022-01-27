@@ -57,8 +57,19 @@ func (k Keeper) AddWhitelistPermission(ctx sdk.Context, actor types.NetworkActor
 	return nil
 }
 
-// RemoveWhitelistPermission removes the whitelisted permission that an address has
-func (k Keeper) RemoveWhitelistPermission(ctx sdk.Context, actor types.NetworkActor, perm types.PermValue) error {
+// AddBlacklistPermission blacklist a permission to an address. It saves the actor after it.
+func (k Keeper) AddBlacklistPermission(ctx sdk.Context, actor types.NetworkActor, perm types.PermValue) error {
+	err := actor.Permissions.AddToBlacklist(perm)
+	if err != nil {
+		return err
+	}
+
+	k.SaveNetworkActor(ctx, actor)
+	return nil
+}
+
+// RemoveWhitelistedPermission removes the whitelisted permission that an address has
+func (k Keeper) RemoveWhitelistedPermission(ctx sdk.Context, actor types.NetworkActor, perm types.PermValue) error {
 	err := actor.Permissions.RemoveFromWhitelist(perm)
 	if err != nil {
 		return err
@@ -69,6 +80,55 @@ func (k Keeper) RemoveWhitelistPermission(ctx sdk.Context, actor types.NetworkAc
 	store := ctx.KVStore(k.storeKey)
 	store.Delete(WhitelistAddressPermKey(actor.Address, perm))
 
+	return nil
+}
+
+// RemoveBlacklistedPermission removes the blacklisted permission that an address has
+func (k Keeper) RemoveBlacklistedPermission(ctx sdk.Context, actor types.NetworkActor, perm types.PermValue) error {
+	err := actor.Permissions.RemoveFromBlacklist(perm)
+	if err != nil {
+		return err
+	}
+
+	k.SaveNetworkActor(ctx, actor)
+	return nil
+}
+
+func (k Keeper) AssignRoleToAccount(ctx sdk.Context, addr sdk.AccAddress, roleId uint64) error {
+	_, found := k.GetPermissionsForRole(ctx, roleId)
+	if !found {
+		return types.ErrRoleDoesNotExist
+	}
+
+	actor, found := k.GetNetworkActorByAddress(ctx, addr)
+	if !found {
+		actor = types.NewDefaultActor(addr)
+	}
+
+	if actor.HasRole(roleId) {
+		return types.ErrRoleAlreadyAssigned
+	}
+
+	k.AssignRoleToActor(ctx, actor, roleId)
+	return nil
+}
+
+func (k Keeper) UnassignRoleFromAccount(ctx sdk.Context, addr sdk.AccAddress, roleId uint64) error {
+	_, found := k.GetPermissionsForRole(ctx, roleId)
+	if !found {
+		return types.ErrRoleDoesNotExist
+	}
+
+	actor, found := k.GetNetworkActorByAddress(ctx, addr)
+	if !found {
+		actor = types.NewDefaultActor(addr)
+	}
+
+	if !actor.HasRole(roleId) {
+		return types.ErrRoleNotAssigned
+	}
+
+	k.RemoveRoleFromActor(ctx, actor, roleId)
 	return nil
 }
 

@@ -19,7 +19,7 @@ func (s IntegrationTestSuite) TestCreateProposalAssignPermission() {
 	addr, err := sdk.AccAddressFromBech32("kira1alzyfq40zjsveet87jlg8jxetwqmr0a2x50lqq")
 	s.Require().NoError(err)
 
-	cmd := cli.GetTxProposalAssignPermission()
+	cmd := cli.GetTxProposalAssignRoleToAccount()
 	clientCtx := val.ClientCtx
 	_, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("%d", types.PermClaimValidator),

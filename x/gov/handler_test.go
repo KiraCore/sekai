@@ -1141,20 +1141,20 @@ func TestHandler_CreateProposalAssignPermission_Errors(t *testing.T) {
 	}{
 		{
 			"Proposer does not have Perm",
-			types.NewAssignPermissionProposal(
+			types.NewWhitelistAccountPermissionProposal(
 				addr, types.PermClaimValidator,
 			),
 			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {},
-			errors.Wrap(types.ErrNotEnoughPermissions, "PERMISSION_CREATE_SET_PERMISSIONS_PROPOSAL"),
+			errors.Wrap(types.ErrNotEnoughPermissions, types.PermWhitelistAccountPermissionProposal.String()),
 		},
 		{
 			"address already has that permission",
-			types.NewAssignPermissionProposal(
+			types.NewWhitelistAccountPermissionProposal(
 				addr, types.PermClaimValidator,
 			),
 			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				proposerActor := types.NewDefaultActor(proposerAddr)
-				err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerActor, types.PermCreateSetPermissionsProposal)
+				err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerActor, types.PermWhitelistAccountPermissionProposal)
 				require.NoError(t, err2)
 
 				actor := types.NewDefaultActor(addr)
@@ -1196,7 +1196,7 @@ func TestHandler_ProposalAssignPermission(t *testing.T) {
 
 	// Set proposer Permissions
 	proposerActor := types.NewDefaultActor(proposerAddr)
-	err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerActor, types.PermCreateSetPermissionsProposal)
+	err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerActor, types.PermWhitelistAccountPermissionProposal)
 	require.NoError(t, err2)
 
 	properties := app.CustomGovKeeper.GetNetworkProperties(ctx)
@@ -1204,7 +1204,7 @@ func TestHandler_ProposalAssignPermission(t *testing.T) {
 	app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
 
 	handler := gov.NewHandler(app.CustomGovKeeper)
-	proposal := types.NewAssignPermissionProposal(addr, types.PermValue(1))
+	proposal := types.NewWhitelistAccountPermissionProposal(addr, types.PermValue(1))
 	msg, err := types.NewMsgSubmitProposal(proposerAddr, "title", "some desc", proposal)
 	require.NoError(t, err)
 	res, err := handler(
@@ -1223,7 +1223,7 @@ func TestHandler_ProposalAssignPermission(t *testing.T) {
 		1,
 		"title",
 		"some desc",
-		types.NewAssignPermissionProposal(
+		types.NewWhitelistAccountPermissionProposal(
 			addr,
 			types.PermValue(1),
 		),
@@ -1388,7 +1388,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 				)
 				app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
 
-				err = app.CustomGovKeeper.AddWhitelistPermission(ctx, actor, types.PermVoteSetPermissionProposal)
+				err = app.CustomGovKeeper.AddWhitelistPermission(ctx, actor, types.PermVoteWhitelistAccountPermissionProposal)
 				require.NoError(t, err)
 
 				// Create proposal
@@ -1396,7 +1396,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 					1,
 					"title",
 					"some desc",
-					types.NewAssignPermissionProposal(
+					types.NewWhitelistAccountPermissionProposal(
 						voterAddr,
 						types.PermClaimCouncilor,
 					),
@@ -1433,7 +1433,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 					1,
 					"title",
 					"some desc",
-					types.NewAssignPermissionProposal(
+					types.NewWhitelistAccountPermissionProposal(
 						voterAddr,
 						types.PermClaimCouncilor,
 					),
@@ -1446,7 +1446,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 				require.NoError(t, err)
 				app.CustomGovKeeper.SaveProposal(ctx, proposal)
 			},
-			fmt.Errorf("%s: not enough permissions", types.PermVoteSetPermissionProposal.String()),
+			fmt.Errorf("%s: not enough permissions", types.PermVoteWhitelistAccountPermissionProposal.String()),
 		},
 		{
 			"Voter does not have permission to vote this proposal: Change Data Registry",
@@ -1502,7 +1502,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 					1,
 				)
 				app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
-				err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, actor, types.PermVoteSetPermissionProposal)
+				err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, actor, types.PermVoteWhitelistAccountPermissionProposal)
 				require.NoError(t, err2)
 			},
 			types.ErrProposalDoesNotExist,
@@ -1516,7 +1516,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 				actor := types.NewDefaultActor(voterAddr)
 				actor.Deactivate()
 				app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
-				err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, actor, types.PermVoteSetPermissionProposal)
+				err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, actor, types.PermVoteWhitelistAccountPermissionProposal)
 				require.NoError(t, err2)
 			},
 			types.ErrActorIsNotActive,
@@ -1633,7 +1633,7 @@ func TestHandler_VoteProposal(t *testing.T) {
 		1,
 	)
 	app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
-	err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, actor, types.PermVoteSetPermissionProposal)
+	err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, actor, types.PermVoteWhitelistAccountPermissionProposal)
 	require.NoError(t, err2)
 
 	// Create proposal
@@ -1641,7 +1641,7 @@ func TestHandler_VoteProposal(t *testing.T) {
 		1,
 		"title",
 		"some desc",
-		types.NewAssignPermissionProposal(
+		types.NewWhitelistAccountPermissionProposal(
 			voterAddr,
 			types.PermClaimCouncilor,
 		),

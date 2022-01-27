@@ -226,7 +226,12 @@ func NewInitApp(
 
 	proposalRouter := govtypes.NewProposalRouter(
 		[]govtypes.ProposalHandler{
-			customgov.NewApplyAssignPermissionProposalHandler(app.CustomGovKeeper),
+			customgov.NewApplyWhitelistAccountPermissionProposalHandler(app.CustomGovKeeper),
+			customgov.NewApplyBlacklistAccountPermissionProposalHandler(app.CustomGovKeeper),
+			customgov.NewApplyRemoveWhitelistedAccountPermissionProposalHandler(app.CustomGovKeeper),
+			customgov.NewApplyRemoveBlacklistedAccountPermissionProposalHandler(app.CustomGovKeeper),
+			customgov.NewApplyAssignRoleToAccountProposalHandler(app.CustomGovKeeper),
+			customgov.NewApplyUnassignRoleFromAccountProposalHandler(app.CustomGovKeeper),
 			customgov.NewApplySetNetworkPropertyProposalHandler(app.CustomGovKeeper),
 			customgov.NewApplyUpsertDataRegistryProposalHandler(app.CustomGovKeeper),
 			customgov.NewApplySetPoorNetworkMessagesProposalHandler(app.CustomGovKeeper),
@@ -236,6 +241,11 @@ func NewInitApp(
 			customstaking.NewApplyUnjailValidatorProposalHandler(app.CustomStakingKeeper, app.CustomGovKeeper),
 			customslashing.NewApplyResetWholeValidatorRankProposalHandler(app.CustomSlashingKeeper),
 			customgov.NewApplyCreateRoleProposalHandler(app.CustomGovKeeper),
+			customgov.NewApplyRemoveRoleProposalHandler(app.CustomGovKeeper),
+			customgov.NewApplyWhitelistRolePermissionProposalHandler(app.CustomGovKeeper),
+			customgov.NewApplyBlacklistRolePermissionProposalHandler(app.CustomGovKeeper),
+			customgov.NewApplyRemoveWhitelistedRolePermissionProposalHandler(app.CustomGovKeeper),
+			customgov.NewApplyRemoveBlacklistedRolePermissionProposalHandler(app.CustomGovKeeper),
 			customgov.NewApplySetProposalDurationsProposalHandler(app.CustomGovKeeper),
 			upgrade.NewApplySoftwareUpgradeProposalHandler(app.UpgradeKeeper),
 			upgrade.NewApplyCancelSoftwareUpgradeProposalHandler(app.UpgradeKeeper),
@@ -268,10 +278,15 @@ func NewInitApp(
 	// there is nothing left over in the validator fee pool, so as to keep the
 	// CanWithdrawInvariant invariant.
 	app.mm.SetOrderBeginBlockers(
+		genutiltypes.ModuleName, paramstypes.ModuleName, govtypes.ModuleName, tokenstypes.ModuleName,
+		authtypes.ModuleName, feeprocessingtypes.ModuleName, banktypes.ModuleName,
 		upgradetypes.ModuleName, slashingtypes.ModuleName,
 		evidencetypes.ModuleName, stakingtypes.ModuleName,
 	)
 	app.mm.SetOrderEndBlockers(
+		banktypes.ModuleName, upgradetypes.ModuleName, tokenstypes.ModuleName,
+		evidencetypes.ModuleName, genutiltypes.ModuleName, paramstypes.ModuleName,
+		slashingtypes.ModuleName, authtypes.ModuleName,
 		govtypes.ModuleName,
 		stakingtypes.ModuleName,
 		feeprocessingtypes.ModuleName,
@@ -293,6 +308,7 @@ func NewInitApp(
 		genutiltypes.ModuleName,
 		evidencetypes.ModuleName,
 		upgradetypes.ModuleName,
+		paramstypes.ModuleName,
 	)
 
 	app.mm.RegisterRoutes(app.Router(), app.QueryRouter(), encodingConfig.Amino)
