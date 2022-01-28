@@ -2,8 +2,8 @@
 
 # PermCreateSoftwareUpgradeProposal PermValue = 28
 # PermVoteSoftwareUpgradeProposal PermValue = 29
-sekaid tx customgov permission whitelist-permission --permission=28 --addr=$(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes
-sekaid tx customgov permission whitelist-permission --permission=29 --addr=$(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes
+sekaid tx customgov permission whitelist --permission=28 --addr=$(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes
+sekaid tx customgov permission whitelist --permission=29 --addr=$(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes
 
 # The upgrade time should be set to future time if not it cause internal error
 sekaid tx upgrade proposal-set-plan --name="upgrade1" --instate-upgrade=true --skip-handler=false --resources="[{\"id\":\"infra\",\"git\":\"https://aaa/bbb.com\"}]" --min-upgrade-time=$(($(date -u +%s) + 200))  --old-chain-id=testing --new-chain-id=1 --rollback-memo=1 --max-enrollment-duration=1 --upgrade-memo="upgrade1 test" --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes
