@@ -875,6 +875,21 @@ func RegisterInterxFunctions() {
 					"description": "This is an option to query only ip addresses separated by comma.",
 					"optional": true
 				},
+				"order": {
+					"type":        "string",
+					"description": "This is an option to query nodes in a specific order. usecase: order=random",
+					"optional": true
+				},
+				"format": {
+					"type":        "string",
+					"description": "This is an option to query nodes in a specific format. usecase: order=simple",
+					"optional": true
+				},
+				"peers_only": {
+					"type":        "bool",
+					"description": "This is an option to query only peers separated by comma. <node_id>@<ip>:<port>",
+					"optional": true
+				},
 				"connected": {
 					"type":        "bool",
 					"description": "This is an option to query only connected ips.",
@@ -932,6 +947,21 @@ func RegisterInterxFunctions() {
 				"ip_only": {
 					"type":        "bool",
 					"description": "This is an option to query only ip addresses separated by comma.",
+					"optional": true
+				},
+				"order": {
+					"type":        "string",
+					"description": "This is an option to query nodes in a specific order. usecase: order=random",
+					"optional": true
+				},
+				"format": {
+					"type":        "string",
+					"description": "This is an option to query nodes in a specific format. usecase: order=simple",
+					"optional": true
+				},
+				"peers_only": {
+					"type":        "bool",
+					"description": "This is an option to query only peers separated by comma. <node_id>@<ip>:<port>",
 					"optional": true
 				},
 				"connected": {

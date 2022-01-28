@@ -35,6 +35,7 @@ func queryPubP2PNodeList(r *http.Request, rpcAddr string) (interface{}, interfac
 
 	_ = r.ParseForm()
 	ip_only := r.FormValue("ip_only") == "true"
+	peers_only := r.FormValue("peers_only") == "true"
 	is_random := r.FormValue("order") == "random"
 	is_format_simple := r.FormValue("format") == "simple"
 
@@ -55,8 +56,8 @@ func queryPubP2PNodeList(r *http.Request, rpcAddr string) (interface{}, interfac
 			indexOfPeer[node.ID] = strconv.Itoa(index)
 		}
 
-		for nID, _ := range response.NodeList {
-			for pIndex, _ := range response.NodeList[nID].Peers {
+		for nID := range response.NodeList {
+			for pIndex := range response.NodeList[nID].Peers {
 				if pid, isIn := indexOfPeer[response.NodeList[nID].Peers[pIndex]]; isIn {
 					response.NodeList[nID].Peers[pIndex] = pid
 				}
@@ -99,6 +100,26 @@ func queryPubP2PNodeList(r *http.Request, rpcAddr string) (interface{}, interfac
 		}
 
 		return strings.Join(ips, "\n"), nil, http.StatusOK
+	}
+
+	if peers_only {
+		peers := []string{}
+		for _, node := range response.NodeList {
+			peer := node.ID + "@" + node.IP + ":" + strconv.Itoa(int(node.Port))
+			if r.FormValue("connected") == "true" {
+				if true == node.Connected {
+					peers = append(peers, peer)
+				}
+			} else if r.FormValue("connected") == "false" {
+				if false == node.Connected {
+					peers = append(peers, peer)
+				}
+			} else {
+				peers = append(peers, peer)
+			}
+		}
+
+		return strings.Join(peers, "\n"), nil, http.StatusOK
 	}
 
 	return response, nil, http.StatusOK
@@ -140,6 +161,7 @@ func queryPrivP2PNodeList(r *http.Request, rpcAddr string) (interface{}, interfa
 
 	_ = r.ParseForm()
 	ip_only := r.FormValue("ip_only") == "true"
+	peers_only := r.FormValue("peers_only") == "true"
 	is_random := r.FormValue("order") == "random"
 	is_format_simple := r.FormValue("format") == "simple"
 
@@ -160,8 +182,8 @@ func queryPrivP2PNodeList(r *http.Request, rpcAddr string) (interface{}, interfa
 			indexOfPeer[node.ID] = strconv.Itoa(index)
 		}
 
-		for nID, _ := range response.NodeList {
-			for pIndex, _ := range response.NodeList[nID].Peers {
+		for nID := range response.NodeList {
+			for pIndex := range response.NodeList[nID].Peers {
 				if pid, isIn := indexOfPeer[response.NodeList[nID].Peers[pIndex]]; isIn {
 					response.NodeList[nID].Peers[pIndex] = pid
 				}
@@ -204,6 +226,26 @@ func queryPrivP2PNodeList(r *http.Request, rpcAddr string) (interface{}, interfa
 		}
 
 		return strings.Join(ips, "\n"), nil, http.StatusOK
+	}
+
+	if peers_only {
+		peers := []string{}
+		for _, node := range response.NodeList {
+			peer := node.ID + "@" + node.IP + ":" + strconv.Itoa(int(node.Port))
+			if r.FormValue("connected") == "true" {
+				if true == node.Connected {
+					peers = append(peers, peer)
+				}
+			} else if r.FormValue("connected") == "false" {
+				if false == node.Connected {
+					peers = append(peers, peer)
+				}
+			} else {
+				peers = append(peers, peer)
+			}
+		}
+
+		return strings.Join(peers, "\n"), nil, http.StatusOK
 	}
 
 	return response, nil, http.StatusOK
