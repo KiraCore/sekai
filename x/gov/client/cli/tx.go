@@ -182,8 +182,8 @@ func NewTxCouncilorCmds() *cobra.Command {
 
 func GetTxSetWhitelistPermissions() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "whitelist-permission",
-		Short: "Whitelists permission into an address",
+		Use:   "whitelist",
+		Short: "Assign permission to a kira address whitelist",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 
@@ -217,7 +217,7 @@ func GetTxSetWhitelistPermissions() *cobra.Command {
 
 func GetTxRemoveWhitelistedPermissions() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "remove-whitelisted-permission",
+		Use:   "remove-whitelisted",
 		Short: "Remove whitelisted permission from an address",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -252,8 +252,8 @@ func GetTxRemoveWhitelistedPermissions() *cobra.Command {
 
 func GetTxSetBlacklistPermissions() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "blacklist-permission",
-		Short: "Blacklist permission into an address",
+		Use:   "blacklist",
+		Short: "Assign permission to a kira account blacklist",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -290,7 +290,7 @@ func GetTxSetBlacklistPermissions() *cobra.Command {
 
 func GetTxRemoveBlacklistedPermissions() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "remove-blacklisted-permission",
+		Use:   "remove-blacklisted",
 		Short: "Remove blacklisted permission from an address",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -918,7 +918,7 @@ func GetTxProposalUnassignRoleFromAccount() *cobra.Command {
 
 func GetTxProposalWhitelistAccountPermission() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "whitelist-permission permission",
+		Use:   "whitelist-permission [permission_id]",
 		Short: "Create a proposal to whitelist a permission to an address.",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -977,7 +977,7 @@ func GetTxProposalWhitelistAccountPermission() *cobra.Command {
 
 func GetTxProposalBlacklistAccountPermission() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "blacklist-permission permission",
+		Use:   "blacklist-permission [permission_id]",
 		Short: "Create a proposal to blacklist a permission to an address.",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -1036,7 +1036,7 @@ func GetTxProposalBlacklistAccountPermission() *cobra.Command {
 
 func GetTxProposalRemoveWhitelistedAccountPermission() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "remove-whitelisted-permission permission",
+		Use:   "remove-whitelisted-permission [permission_id]",
 		Short: "Create a proposal to remove a whitelisted permission from an address.",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -1095,7 +1095,7 @@ func GetTxProposalRemoveWhitelistedAccountPermission() *cobra.Command {
 
 func GetTxProposalRemoveBlacklistedAccountPermission() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "remove-blacklisted-permission permission",
+		Use:   "remove-blacklisted-permission [permission_id]",
 		Short: "Create a proposal to remove a blacklisted permission from an address.",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -1424,7 +1424,7 @@ func GetTxProposalRemoveRole() *cobra.Command {
 
 func GetTxProposalWhitelistRolePermission() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "whitelist-permission [role_sid] [permission]",
+		Use:   "whitelist-permission [role_sid] [permission_id]",
 		Short: "Raise governance proposal to whitelist a permission for a role.",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
