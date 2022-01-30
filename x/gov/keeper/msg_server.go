@@ -525,7 +525,6 @@ func (k msgServer) SetExecutionFee(
 	}
 
 	k.keeper.SetExecutionFee(ctx, &types.ExecutionFee{
-		Name:              msg.Name,
 		TransactionType:   msg.TransactionType,
 		ExecutionFee:      msg.ExecutionFee,
 		FailureFee:        msg.FailureFee,
