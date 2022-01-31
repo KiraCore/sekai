@@ -20,12 +20,12 @@ enum PermValue {
   // PERMISSION_CLAIM_COUNCILOR defines the permission that allows to Claim a Councilor Seat.
   PERMISSION_CLAIM_COUNCILOR = 3 [(gogoproto.enumvalue_customname) = "PermClaimCouncilor"];
 
-  // PERMISSION_CREATE_SET_PERMISSIONS_PROPOSAL defines the permission needed to create proposals for setting permissions.
-  PERMISSION_CREATE_SET_PERMISSIONS_PROPOSAL = 4 [(gogoproto.enumvalue_customname) = "PermCreateSetPermissionsProposal"];
+  // PERMISSION_WHITELIST_ACCOUNT_PERMISSION_PROPOSAL defines the permission needed to create proposals for whitelisting an account permission.
+  PERMISSION_WHITELIST_ACCOUNT_PERMISSION_PROPOSAL = 4 [(gogoproto.enumvalue_customname) = "PermWhitelistAccountPermissionProposal"];
 
-  // PERMISSION_VOTE_SET_PERMISSIONS_PROPOSAL defines the permission that an actor must have in order to vote a
-  // Proposal to set permissions.
-  PERMISSION_VOTE_SET_PERMISSIONS_PROPOSAL = 5 [(gogoproto.enumvalue_customname) = "PermVoteSetPermissionProposal"];
+  // PERMISSION_VOTE_WHITELIST_ACCOUNT_PERMISSION_PROPOSAL defines the permission that an actor must have in order to vote a
+  // Proposal to whitelist account permission.
+  PERMISSION_VOTE_WHITELIST_ACCOUNT_PERMISSION_PROPOSAL = 5 [(gogoproto.enumvalue_customname) = "PermVoteWhitelistAccountPermissionProposal"];
 
   //  PERMISSION_UPSERT_TOKEN_ALIAS
   PERMISSION_UPSERT_TOKEN_ALIAS = 6 [(gogoproto.enumvalue_customname) = "PermUpsertTokenAlias"];
@@ -108,5 +108,75 @@ enum PermValue {
 
   // PERMISSION_VOTE_SET_PROPOSAL_DURATION_PROPOSAL defines the permission needed to vote a proposal to set proposal duration.
   PERMISSION_VOTE_SET_PROPOSAL_DURATION_PROPOSAL = 32 [(gogoproto.enumvalue_customname) = "PermVoteSetProposalDurationProposal"];
+
+  // PERMISSION_BLACKLIST_ACCOUNT_PERMISSION_PROPOSAL defines the permission needed to create proposals for blacklisting an account permission.
+  PERMISSION_BLACKLIST_ACCOUNT_PERMISSION_PROPOSAL = 33 [(gogoproto.enumvalue_customname) = "PermBlacklistAccountPermissionProposal"];
+
+  // PERMISSION_VOTE_BLACKLIST_ACCOUNT_PERMISSION_PROPOSAL defines the permission that an actor must have in order to vote a
+  // Proposal to blacklist account permission.
+  PERMISSION_VOTE_BLACKLIST_ACCOUNT_PERMISSION_PROPOSAL = 34 [(gogoproto.enumvalue_customname) = "PermVoteBlacklistAccountPermissionProposal"];
+
+  // PERMISSION_REMOVE_WHITELISTED_ACCOUNT_PERMISSION_PROPOSAL defines the permission needed to create proposals for removing whitelisted permission from an account.
+  PERMISSION_REMOVE_WHITELISTED_ACCOUNT_PERMISSION_PROPOSAL = 35 [(gogoproto.enumvalue_customname) = "PermRemoveWhitelistedAccountPermissionProposal"];
+
+  // PERMISSION_VOTE_REMOVE_WHITELISTED_ACCOUNT_PERMISSION_PROPOSAL defines the permission that an actor must have in order to vote a
+  // Proposal to remove a whitelisted account permission.
+  PERMISSION_VOTE_REMOVE_WHITELISTED_ACCOUNT_PERMISSION_PROPOSAL = 36 [(gogoproto.enumvalue_customname) = "PermVoteRemoveWhitelistedAccountPermissionProposal"];
+
+  // PERMISSION_REMOVE_BLACKLISTED_ACCOUNT_PERMISSION_PROPOSAL defines the permission needed to create proposals for removing blacklisted permission from an account.
+  PERMISSION_REMOVE_BLACKLISTED_ACCOUNT_PERMISSION_PROPOSAL = 37 [(gogoproto.enumvalue_customname) = "PermRemoveBlacklistedAccountPermissionProposal"];
+
+  // PERMISSION_VOTE_REMOVE_BLACKLISTED_ACCOUNT_PERMISSION_PROPOSAL defines the permission that an actor must have in order to vote a
+  // Proposal to remove a blacklisted account permission.
+  PERMISSION_VOTE_REMOVE_BLACKLISTED_ACCOUNT_PERMISSION_PROPOSAL = 38 [(gogoproto.enumvalue_customname) = "PermVoteRemoveBlacklistedAccountPermissionProposal"];
+
+  // PERMISSION_WHITELIST_ROLE_PERMISSION_PROPOSAL defines the permission needed to create proposals for whitelisting an role permission.
+  PERMISSION_WHITELIST_ROLE_PERMISSION_PROPOSAL = 39 [(gogoproto.enumvalue_customname) = "PermWhitelistRolePermissionProposal"];
+
+  // PERMISSION_VOTE_WHITELIST_ROLE_PERMISSION_PROPOSAL defines the permission that an actor must have in order to vote a
+  // Proposal to whitelist role permission.
+  PERMISSION_VOTE_WHITELIST_ROLE_PERMISSION_PROPOSAL = 40 [(gogoproto.enumvalue_customname) = "PermVoteWhitelistRolePermissionProposal"];
+
+  // PERMISSION_BLACKLIST_ROLE_PERMISSION_PROPOSAL defines the permission needed to create proposals for blacklisting an role permission.
+  PERMISSION_BLACKLIST_ROLE_PERMISSION_PROPOSAL = 41 [(gogoproto.enumvalue_customname) = "PermBlacklistRolePermissionProposal"];
+
+  // PERMISSION_VOTE_BLACKLIST_ROLE_PERMISSION_PROPOSAL defines the permission that an actor must have in order to vote a
+  // Proposal to blacklist role permission.
+  PERMISSION_VOTE_BLACKLIST_ROLE_PERMISSION_PROPOSAL = 42 [(gogoproto.enumvalue_customname) = "PermVoteBlacklistRolePermissionProposal"];
+
+  // PERMISSION_REMOVE_WHITELISTED_ROLE_PERMISSION_PROPOSAL defines the permission needed to create proposals for removing whitelisted permission from a role.
+  PERMISSION_REMOVE_WHITELISTED_ROLE_PERMISSION_PROPOSAL = 43 [(gogoproto.enumvalue_customname) = "PermRemoveWhitelistedRolePermissionProposal"];
+
+  // PERMISSION_VOTE_REMOVE_WHITELISTED_ROLE_PERMISSION_PROPOSAL defines the permission that an actor must have in order to vote a
+  // Proposal to remove a whitelisted role permission.
+  PERMISSION_VOTE_REMOVE_WHITELISTED_ROLE_PERMISSION_PROPOSAL = 44 [(gogoproto.enumvalue_customname) = "PermVoteRemoveWhitelistedRolePermissionProposal"];
+
+  // PERMISSION_REMOVE_BLACKLISTED_ROLE_PERMISSION_PROPOSAL defines the permission needed to create proposals for removing blacklisted permission from a role.
+  PERMISSION_REMOVE_BLACKLISTED_ROLE_PERMISSION_PROPOSAL = 45 [(gogoproto.enumvalue_customname) = "PermRemoveBlacklistedRolePermissionProposal"];
+
+  // PERMISSION_VOTE_REMOVE_BLACKLISTED_ROLE_PERMISSION_PROPOSAL defines the permission that an actor must have in order to vote a
+  // Proposal to remove a blacklisted role permission.
+  PERMISSION_VOTE_REMOVE_BLACKLISTED_ROLE_PERMISSION_PROPOSAL = 46 [(gogoproto.enumvalue_customname) = "PermVoteRemoveBlacklistedRolePermissionProposal"];
+
+  // PERMISSION_ASSIGN_ROLE_TO_ACCOUNT_PROPOSAL defines the permission needed to create proposals to assign role to an account
+  PERMISSION_ASSIGN_ROLE_TO_ACCOUNT_PROPOSAL = 47 [(gogoproto.enumvalue_customname) = "PermAssignRoleToAccountProposal"];
+
+  // PERMISSION_VOTE_ASSIGN_ROLE_TO_ACCOUNT_PROPOSAL defines the permission that an actor must have in order to vote a
+  // Proposal to assign role to an account
+  PERMISSION_VOTE_ASSIGN_ROLE_TO_ACCOUNT_PROPOSAL = 48 [(gogoproto.enumvalue_customname) = "PermVoteAssignRoleToAccountProposal"];
+
+
+  // PERMISSION_UNASSIGN_ROLE_FROM_ACCOUNT_PROPOSAL defines the permission needed to create proposals to unassign role from an account
+  PERMISSION_UNASSIGN_ROLE_FROM_ACCOUNT_PROPOSAL = 49 [(gogoproto.enumvalue_customname) = "PermUnassignRoleFromAccountProposal"];
+
+  // PERMISSION_VOTE_UNASSIGN_ROLE_FROM_ACCOUNT_PROPOSAL defines the permission that an actor must have in order to vote a
+  // Proposal to unassign role from an account
+  PERMISSION_VOTE_UNASSIGN_ROLE_FROM_ACCOUNT_PROPOSAL = 50 [(gogoproto.enumvalue_customname) = "PermVoteUnassignRoleFromAccountProposal"];
+
+  // PERMISSION_CREATE_REMOVE_ROLE_PROPOSAL defines the permission needed to create a proposal to remove a role.
+  PERMISSION_CREATE_REMOVE_ROLE_PROPOSAL = 51 [(gogoproto.enumvalue_customname) = "PermRemoveRoleProposal"];
+
+  // PERMISSION_VOTE_REMOVE_ROLE_PROPOSAL defines the permission needed to vote a proposal to remove a role.
+  PERMISSION_VOTE_REMOVE_ROLE_PROPOSAL = 52 [(gogoproto.enumvalue_customname) = "PermVoteRemoveRoleProposal"];
 }
 
