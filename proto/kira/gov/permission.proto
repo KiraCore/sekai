@@ -108,4 +108,22 @@ enum PermValue {
 
   // PERMISSION_VOTE_SET_PROPOSAL_DURATION_PROPOSAL defines the permission needed to vote a proposal to set proposal duration.
   PERMISSION_VOTE_SET_PROPOSAL_DURATION_PROPOSAL = 32 [(gogoproto.enumvalue_customname) = "PermVoteSetProposalDurationProposal"];
+
+  // PERMISSION_CREATE_UPDATE_SPENDING_POOL_PROPOSAL defines the permission needed to create a proposal to update spending pool
+  PERMISSION_CREATE_UPDATE_SPENDING_POOL_PROPOSAL = 33 [(gogoproto.enumvalue_customname) = "PermCreateUpdateSpendingPoolProposal"];
+  
+  // PERMISSION_VOTE_UPDATE_SPENDING_POOL_PROPOSAL defines the permission needed to vote a proposal to update spending pool
+  PERMISSION_VOTE_UPDATE_SPENDING_POOL_PROPOSAL = 34 [(gogoproto.enumvalue_customname) = "PermVoteUpdateSpendingPoolProposal"];
+
+  // PERMISSION_CREATE_SPENDING_POOL_DISTRIBUTION_PROPOSAL defines the permission needed to create a proposal to distribute spending pool
+  PERMISSION_CREATE_SPENDING_POOL_DISTRIBUTION_PROPOSAL = 35 [(gogoproto.enumvalue_customname) = "PermCreateSpendingPoolDistributionProposal"];
+  
+  // PERMISSION_VOTE_SPENDING_POOL_DISTRIBUTION_PROPOSAL defines the permission needed to vote a proposal to distribute spending pool
+  PERMISSION_VOTE_SPENDING_POOL_DISTRIBUTION_PROPOSAL = 36 [(gogoproto.enumvalue_customname) = "PermVoteSpendingPoolDistributionProposal"];
+
+  // PERMISSION_CREATE_SPENDING_POOL_WITHDRAW_PROPOSAL defines the permission needed to create a proposal to withdraw spending pool
+  PERMISSION_CREATE_SPENDING_POOL_WITHDRAW_PROPOSAL = 37 [(gogoproto.enumvalue_customname) = "PermCreateSpendingPoolWithdrawProposal"];
+  
+  // PERMISSION_VOTE_SPENDING_POOL_WITHDRAW_PROPOSAL defines the permission needed to vote a proposal to withdraw spending pool
+  PERMISSION_VOTE_SPENDING_POOL_WITHDRAW_PROPOSAL = 38 [(gogoproto.enumvalue_customname) = "PermVoteSpendingPoolWithdrawProposal"];
 }

@@ -1,8 +1,11 @@
 syntax = "proto3";
 package kira.spending;
 
+import "cosmos/base/query/v1beta1/pagination.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
+import "kira/spending/pool.proto";
+import "kira/gov/proposal.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/spending/types";
 
@@ -18,18 +21,36 @@ service Query {
   rpc QueryPoolsByAccount(QueryPoolsByAccountRequest) returns (QueryPoolsByAccountResponse) {}
 }
 
-message QueryPoolNamesRequest { }
+message QueryPoolNamesRequest {}
 
-message QueryPoolNamesResponse { }
+message QueryPoolNamesResponse {
+  repeated string names = 1;
+}
 
-message QueryPoolByNameRequest {}
+message QueryPoolByNameRequest {
+  string name = 1;
+}
 
-message QueryPoolByNameResponse {}
+message QueryPoolByNameResponse {
+  SpendingPool pool = 1;
+}
 
-message QueryPoolProposalsRequest {}
+message QueryPoolProposalsRequest {
+  string pool_name = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
+}
 
-message QueryPoolProposalsResponse {}
+message QueryPoolProposalsResponse {
+  repeated kira.gov.Proposal proposals = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
+}
 
-message QueryPoolsByAccountRequest {}
+message QueryPoolsByAccountRequest {
+  string account = 1;
+}
 
-message QueryPoolsByAccountResponse {}
+message QueryPoolsByAccountResponse {
+  repeated SpendingPool pool = 1 [
+    (gogoproto.nullable) = false
+  ];
+}
