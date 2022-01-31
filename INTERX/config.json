@@ -1,5 +1,5 @@
 {
-  "version": "0.3.0",
+  "version": "v0.4.0",
   "serve_https": false,
   "grpc": "dns:///0.0.0.0:9090",
   "rpc": "http://0.0.0.0:26657",

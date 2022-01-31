@@ -101,7 +101,7 @@ func getRPCSettings() RPCConfig {
 func defaultConfig() InterxConfigFromFile {
 	configFromFile := InterxConfigFromFile{}
 
-	configFromFile.Version = "0.1.0"
+	configFromFile.Version = InterxVersion
 	configFromFile.ServeHTTPS = false
 	configFromFile.GRPC = "dns:///0.0.0.0:9090"
 	configFromFile.RPC = "http://0.0.0.0:26657"

@@ -253,11 +253,12 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 		var uniqueIPAddresses []string
 		isLocalPeer := make(map[string]bool)
 
-		localPeers, _ := QueryPeers(getHostname(rpcAddr))
+		host, _ := getHostname(rpcAddr)
+		localPeers, _ := QueryPeers(host)
 
 		for _, peer := range localPeers {
 			isLocalPeer[string(peer.NodeInfo.ID())] = true
-			ip := getHostname(peer.NodeInfo.ListenAddr)
+			ip, _ := getHostname(peer.NodeInfo.ListenAddr)
 			if !isPrivateIP(ip) && isIp(ip) {
 				if _, ok := isIpInList[ip]; !ok {
 					uniqueIPAddresses = append(uniqueIPAddresses, ip)
@@ -281,7 +282,6 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 			// time.Sleep(1 * time.Second)
 
 			ipAddr := uniqueIPAddresses[index]
-			common.GetLogger().Info(ipAddr)
 			index++
 
 			if isLog {
@@ -327,7 +327,7 @@ func NodeDiscover(rpcAddr string, isLog bool) {
 			for _, peer := range peers {
 				nodeInfo.Peers = append(nodeInfo.Peers, string(peer.NodeInfo.ID()))
 
-				ip := getHostname(peer.NodeInfo.ListenAddr)
+				ip, _ := getHostname(peer.NodeInfo.ListenAddr)
 				if isPrivateIP(ip) {
 					privNodeInfo := types.P2PNode{}
 					privNodeInfo.ID = string(peer.NodeInfo.ID())
@@ -514,9 +514,13 @@ func getPort(listenAddr string) (uint16, error) {
 	return 0, nil
 }
 
-func getHostname(listenAddr string) string {
-	u, _ := url.Parse(listenAddr)
-	return u.Hostname()
+func getHostname(listenAddr string) (string, error) {
+	u, err := url.Parse(listenAddr)
+	if err == nil {
+		return u.Hostname(), nil
+	}
+	common.GetLogger().Error("[node-discovery] unexpected listen addr: ", listenAddr)
+	return "", err
 }
 
 func isIp(ipAddr string) bool {
