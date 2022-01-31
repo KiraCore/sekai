@@ -88,6 +88,7 @@ func LoadConfig(configFilePath string) {
 
 	Config.Node = configFromFile.Node
 
+	fmt.Println("Interx Version: ", Config.Version)
 	fmt.Println("Interx GRPC: ", Config.GRPC)
 	fmt.Println("Interx RPC : ", Config.RPC)
 	fmt.Println("Interx PORT: ", Config.PORT)
