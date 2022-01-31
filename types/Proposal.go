@@ -1,19 +1,22 @@
 package types
 
 const (
-	ProposalTypeSoftwareUpgrade         = "SoftwareUpgrade"
-	ProposalTypeCancelSoftwareUpgrade   = "CancelSoftwareUpgrade"
-	ProposalTypeUpsertTokenAlias        = "UpsertTokenAlias"
-	ProposalTypeUpsertTokenRates        = "UpsertTokenRates"
-	ProposalTypeTokensWhiteBlackChange  = "TokensWhiteBlackChange"
-	ProposalTypeUnjailValidator         = "UnjailValidator"
-	ProposalTypeResetWholeValidatorRank = "ResetWholeValidatorRank"
-	AssignPermissionProposalType        = "AssignPermission"
-	SetNetworkPropertyProposalType      = "SetNetworkProperty"
-	UpsertDataRegistryProposalType      = "UpsertDataRegistry"
-	SetPoorNetworkMessagesProposalType  = "SetPoorNetworkMessages"
-	CreateRoleProposalType              = "CreateRoleProposal"
-	SetProposalDurationsProposalType    = "SetProposalDurationsProposal"
+	ProposalTypeSoftwareUpgrade          = "SoftwareUpgrade"
+	ProposalTypeCancelSoftwareUpgrade    = "CancelSoftwareUpgrade"
+	ProposalTypeUpsertTokenAlias         = "UpsertTokenAlias"
+	ProposalTypeUpsertTokenRates         = "UpsertTokenRates"
+	ProposalTypeTokensWhiteBlackChange   = "TokensWhiteBlackChange"
+	ProposalTypeUnjailValidator          = "UnjailValidator"
+	ProposalTypeResetWholeValidatorRank  = "ResetWholeValidatorRank"
+	ProposalTypeUpdateSpendingPool       = "UpdateSpendingPoolProposal"
+	ProposalTypeSpendingPoolDistribution = "SpendingPoolDistributionProposal"
+	ProposalTypeSpendingPoolWithdraw     = "SpendingPoolWithdrawProposal"
+	AssignPermissionProposalType         = "AssignPermission"
+	SetNetworkPropertyProposalType       = "SetNetworkProperty"
+	UpsertDataRegistryProposalType       = "UpsertDataRegistry"
+	SetPoorNetworkMessagesProposalType   = "SetPoorNetworkMessages"
+	CreateRoleProposalType               = "CreateRoleProposal"
+	SetProposalDurationsProposalType     = "SetProposalDurationsProposal"
 )
 
 var AllProposalTypes []string = []string{

@@ -49,6 +49,12 @@ const (
 	MsgTypeUnpause  = "unpause"
 
 	//upgrade module
+
+	// spending module
+	MsgTypeCreateSpendingPool              = "create-spending-pool"
+	MsgTypeDepositSpendingPool             = "deposit-spending-pool"
+	MsgTypeRegisterSpendingPoolBeneficiary = "register-spending-pool-beneficiary"
+	MsgTypeClaimSpendingPool               = "claim-spending-pool"
 )
 
 // Msg defines the interface a transaction message must fulfill.

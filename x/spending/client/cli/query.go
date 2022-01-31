@@ -2,8 +2,6 @@ package cli
 
 import (
 	"context"
-	"fmt"
-	"strings"
 
 	"github.com/spf13/cobra"
 
@@ -20,60 +18,28 @@ func NewQueryCmd() *cobra.Command {
 		Short: "query commands for the tokens module",
 	}
 	queryCmd.AddCommand(
-		GetCmdQueryTokenAlias(),
-		GetCmdQueryAllTokenAliases(),
-		GetCmdQueryTokenAliasesByDenom(),
-		GetCmdQueryTokenRate(),
-		GetCmdQueryAllTokenRates(),
-		GetCmdQueryTokenRatesByDenom(),
-		GetCmdQueryTokenBlackWhites(),
+		GetCmdQueryPoolNames(),
+		GetCmdQueryPoolByName(),
+		GetCmdQueryPoolProposals(),
+		GetCmdQueryPoolsByAccount(),
 	)
 
 	return queryCmd
 }
 
-// GetCmdQueryTokenAlias the query token alias command.
-func GetCmdQueryTokenAlias() *cobra.Command {
+// GetCmdQueryPoolNames the query list of pool names
+func GetCmdQueryPoolNames() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "alias <symbol>",
-		Short: "Get the token alias by symbol",
-		Args:  cobra.MinimumNArgs(1),
+		Use:   "pool-names",
+		Short: "Get the query pool names",
+		Args:  cobra.MinimumNArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
-			params := &types.TokenAliasRequest{Symbol: args[0]}
+			req := &types.QueryPoolNamesRequest{}
 
 			queryClient := types.NewQueryClient(clientCtx)
-			res, err := queryClient.GetTokenAlias(context.Background(), params)
-			if err != nil {
-				return err
-			}
-
-			if res.Data == nil {
-				return fmt.Errorf("%s symbol does not exist", params.Symbol)
-			}
-
-			return clientCtx.PrintProto(res.Data)
-		},
-	}
-
-	flags.AddQueryFlagsToCmd(cmd)
-
-	return cmd
-}
-
-// GetCmdQueryAllTokenAliases the query all token aliases command.
-func GetCmdQueryAllTokenAliases() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "all-aliases",
-		Short: "Get all token aliases",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-
-			params := &types.AllTokenAliasesRequest{}
-
-			queryClient := types.NewQueryClient(clientCtx)
-			res, err := queryClient.GetAllTokenAliases(context.Background(), params)
+			res, err := queryClient.QueryPoolNames(context.Background(), req)
 			if err != nil {
 				return err
 			}
@@ -87,8 +53,34 @@ func GetCmdQueryAllTokenAliases() *cobra.Command {
 	return cmd
 }
 
-// GetCmdQueryTokenAliasesByDenom the query token aliases by denom command.
-func GetCmdQueryTokenAliasesByDenom() *cobra.Command {
+// GetCmdQueryPoolByName the query pool by name.
+func GetCmdQueryPoolByName() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "pool-by-name [name]",
+		Short: "Query pool by name",
+		Args:  cobra.MinimumNArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			req := &types.QueryPoolByNameRequest{Name: args[0]}
+
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.QueryPoolByName(context.Background(), req)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// GetCmdQueryPoolProposals the query pool proposals by name.
+func GetCmdQueryPoolProposals() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "aliases-by-denom [aliases]",
 		Short: "Get token aliases by denom",
@@ -96,13 +88,18 @@ func GetCmdQueryTokenAliasesByDenom() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
-			denoms := strings.Split(args[0], ",")
-			params := &types.TokenAliasesByDenomRequest{
-				Denoms: denoms,
+			pageReq, err := client.ReadPageRequest(cmd.Flags())
+			if err != nil {
+				return err
+			}
+
+			req := &types.QueryPoolProposalsRequest{
+				PoolName:   args[0],
+				Pagination: pageReq,
 			}
 
 			queryClient := types.NewQueryClient(clientCtx)
-			res, err := queryClient.GetTokenAliasesByDenom(context.Background(), params)
+			res, err := queryClient.QueryPoolProposals(context.Background(), req)
 			if err != nil {
 				return err
 			}
@@ -112,106 +109,24 @@ func GetCmdQueryTokenAliasesByDenom() *cobra.Command {
 	}
 
 	flags.AddQueryFlagsToCmd(cmd)
+	flags.AddPaginationFlagsToCmd(cmd, "spending")
 
 	return cmd
 }
 
-// GetCmdQueryTokenRate the query token rate command.
-func GetCmdQueryTokenRate() *cobra.Command {
+// GetCmdQueryPoolsByAccount the query pool proposals by name.
+func GetCmdQueryPoolsByAccount() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "rate <denom>",
+		Use:   "pools-by-account [addr]",
 		Short: "Get the token rate by denom",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
-			params := &types.TokenRateRequest{Denom: args[0]}
+			req := &types.QueryPoolsByAccountRequest{Account: args[0]}
 
 			queryClient := types.NewQueryClient(clientCtx)
-			res, err := queryClient.GetTokenRate(context.Background(), params)
-			if err != nil {
-				return err
-			}
-
-			if res.Data == nil {
-				return fmt.Errorf("%s denom does not exist", params.Denom)
-			}
-
-			return clientCtx.PrintProto(res.Data)
-		},
-	}
-
-	flags.AddQueryFlagsToCmd(cmd)
-
-	return cmd
-}
-
-// GetCmdQueryAllTokenRates the query all token rates command.
-func GetCmdQueryAllTokenRates() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "all-rates",
-		Short: "Get all token rates",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-
-			params := &types.AllTokenRatesRequest{}
-
-			queryClient := types.NewQueryClient(clientCtx)
-			res, err := queryClient.GetAllTokenRates(context.Background(), params)
-			if err != nil {
-				return err
-			}
-
-			return clientCtx.PrintProto(res)
-		},
-	}
-
-	flags.AddQueryFlagsToCmd(cmd)
-
-	return cmd
-}
-
-// GetCmdQueryTokenRatesByDenom the query token aliases by denom command.
-func GetCmdQueryTokenRatesByDenom() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "rates-by-denom",
-		Short: "Get token rates by denom",
-		Args:  cobra.MinimumNArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-
-			denoms := strings.Split(args[0], ",")
-			params := &types.TokenRatesByDenomRequest{
-				Denoms: denoms,
-			}
-
-			queryClient := types.NewQueryClient(clientCtx)
-			res, err := queryClient.GetTokenRatesByDenom(context.Background(), params)
-			if err != nil {
-				return err
-			}
-
-			return clientCtx.PrintProto(res)
-		},
-	}
-
-	flags.AddQueryFlagsToCmd(cmd)
-
-	return cmd
-}
-
-// GetCmdQueryTokenBlackWhites the query token blacklists / whitelists
-func GetCmdQueryTokenBlackWhites() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "token-black-whites",
-		Short: "Get token black whites",
-		Args:  cobra.MinimumNArgs(0),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-			params := &types.TokenBlackWhitesRequest{}
-
-			queryClient := types.NewQueryClient(clientCtx)
-			res, err := queryClient.GetTokenBlackWhites(context.Background(), params)
+			res, err := queryClient.QueryPoolsByAccount(context.Background(), req)
 			if err != nil {
 				return err
 			}

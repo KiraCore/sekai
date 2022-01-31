@@ -48,9 +48,9 @@ message MsgCreateSpendingPool {
   // period of time that must pass before any of the pool proposal is enacted
   uint64 vote_enactment = 9; // seconds, # default: 300s
   // defines a list of accounts/roles controlling the spending pool via “governance-like” proposals
-  PermInfo owners = 10;
+  PermInfo owners = 10 [ (gogoproto.nullable) = false ];
   // defines set of accounts/roles to which funds can be distributed
-  PermInfo beneficiaries = 11;
+  PermInfo beneficiaries = 11 [ (gogoproto.nullable) = false ];
   string sender = 12;
 }
 message MsgCreateSpendingPoolResponse {}
@@ -68,7 +68,9 @@ message MsgDepositSpendingPoolResponse {}
 message MsgRegisterSpendingPoolBeneficiary {
   string sender = 1;
   string pool_name = 2;
-  string beneficiary = 3;
+  PermInfo beneficiary = 3 [
+    (gogoproto.nullable) = false
+  ];
 }
 message MsgRegisterSpendingPoolBeneficiaryResponse {}
 

@@ -4,5 +4,5 @@ import "github.com/cosmos/cosmos-sdk/types/errors"
 
 // tokens module errors
 var (
-	ErrTokenAliasNotFound = errors.Register(ModuleName, 2, "token alias not found")
+	ErrEmptyProposerAccAddress = errors.Register(ModuleName, 1, "empty proposer address")
 )

@@ -31,8 +31,8 @@ message UpdateSpendingPoolProposal {
   uint64 vote_quorum = 7; // percentage, # default: 51%
   uint64 vote_period = 8; // seconds, # default: 600s
   uint64 vote_enactment = 9; // seconds, # default: 300s
-  kira.spending.PermInfo owners = 10;
-  kira.spending.PermInfo beneficiaries = 11;
+  kira.spending.PermInfo owners = 10 [ (gogoproto.nullable) = false ];
+  kira.spending.PermInfo beneficiaries = 11 [ (gogoproto.nullable) = false ];
 }
 
 // proposal-spending-pool-distribute - force distribution of tokens to all

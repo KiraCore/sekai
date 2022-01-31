@@ -12,6 +12,8 @@ message ClaimInfo {
 }
 
 message PermInfo {
+  option (gogoproto.equal) = true;
+
   repeated uint64 owner_roles = 1;
   repeated string owner_accounts = 2;
 }

@@ -11,52 +11,80 @@ import (
 
 // RegisterCodec register codec and metadata
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgUpsertTokenAlias{}, "kiraHub/MsgUpsertTokenAlias", nil)
-	functionmeta.AddNewFunction((&MsgUpsertTokenAlias{}).Type(), `{
-		"description": "MsgUpsertTokenAlias represents a message to register token alias.",
+	cdc.RegisterConcrete(&MsgCreateSpendingPool{}, "kiraHub/MsgCreateSpendingPool", nil)
+	functionmeta.AddNewFunction((&MsgCreateSpendingPool{}).Type(), `{
+		"description": "MsgCreateSpendingPool represents a message to create a spending pool.",
 		"parameters": {
-			"symbol": {
-				"type":        "string",
-				"description": "Ticker (eg. ATOM, KEX, BTC)."
-			},
 			"name": {
 				"type":        "string",
-				"description": "Token Name (e.g. Cosmos, Kira, Bitcoin)."
+				"description": ""
 			},
-			"icon": {
+			"claim_start": {
+				"type":        "time",
+				"description": ""
+			},
+			"claim_end": {
+				"type":        "time",
+				"description": ""
+			},
+			"expire": {
+				"type":        "uint64",
+				"description": ""
+			},
+			"token": {
 				"type":        "string",
-				"description": "Graphical Symbol (url link to graphics)."
+				"description": ""
 			},
-			"decimals": {
-				"type":        "uint32",
-				"description": "Integer number of max decimals."
+			"rate": {
+				"type":        "decimal",
+				"description": ""
 			},
-			"denoms": {
-				"type":        "array<string>",
-				"description": "An array of token denoms to be aliased."
+			"vote_quorum": {
+				"type":        "uint64",
+				"description": ""
 			},
-			"proposer": {
+			"vote_period": {
+				"type":        "uint64",
+				"description": ""
+			},
+			"vote_enactment": {
+				"type":        "uint64",
+				"description": ""
+			},
+			"owners": {
+				"type":        "PermInfo",
+				"description": ""
+			},
+			"beneficiaries": {
+				"type":        "PermInfo",
+				"description": ""
+			},
+			"sender": {
 				"type":        "string",
-				"description": "proposer who propose this message."
+				"description": ""
 			}
 		}
 	}`)
-
+	cdc.RegisterConcrete(&MsgDepositSpendingPool{}, "kiraHub/MsgDepositSpendingPool", nil)
+	cdc.RegisterConcrete(&MsgRegisterSpendingPoolBeneficiary{}, "kiraHub/MsgRegisterSpendingPoolBeneficiary", nil)
+	cdc.RegisterConcrete(&MsgClaimSpendingPool{}, "kiraHub/MsgClaimSpendingPool", nil)
 }
 
 // RegisterInterfaces register Msg and structs
 func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgUpsertTokenRate{},
-		&MsgUpsertTokenAlias{},
+		&MsgCreateSpendingPool{},
+		&MsgDepositSpendingPool{},
+		&MsgRegisterSpendingPoolBeneficiary{},
+		&MsgClaimSpendingPool{},
 	)
 
 	registry.RegisterInterface(
 		"kira.gov.Content",
 		(*govtypes.Content)(nil),
-		&ProposalUpsertTokenAlias{},
-		&ProposalUpsertTokenRates{},
-		&ProposalTokensWhiteBlackChange{},
+		&UpdateSpendingPoolProposal{},
+		&SpendingPoolDistributionProposal{},
+		&SpendingPoolWithdrawProposal{},
 	)
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 }
