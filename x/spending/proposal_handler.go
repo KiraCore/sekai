@@ -4,27 +4,69 @@ import (
 	kiratypes "github.com/KiraCore/sekai/types"
 	"github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/spending/keeper"
-	tokenstypes "github.com/KiraCore/sekai/x/spending/types"
+	spendingtypes "github.com/KiraCore/sekai/x/spending/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-type ApplyUpsertTokenAliasProposalHandler struct {
+type ApplyUpdateSpendingPoolProposalHandler struct {
 	keeper keeper.Keeper
 }
 
-func NewApplyUpsertTokenAliasProposalHandler(keeper keeper.Keeper) *ApplyUpsertTokenAliasProposalHandler {
-	return &ApplyUpsertTokenAliasProposalHandler{
+func NewApplyUpdateSpendingPoolProposalHandler(keeper keeper.Keeper) *ApplyUpdateSpendingPoolProposalHandler {
+	return &ApplyUpdateSpendingPoolProposalHandler{
 		keeper: keeper,
 	}
 }
 
-func (a ApplyUpsertTokenAliasProposalHandler) ProposalType() string {
-	return kiratypes.ProposalTypeUpsertTokenAlias
+func (a ApplyUpdateSpendingPoolProposalHandler) ProposalType() string {
+	return kiratypes.ProposalTypeUpdateSpendingPool
 }
 
-func (a ApplyUpsertTokenAliasProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
-	p := proposal.(*tokenstypes.ProposalUpsertTokenAlias)
+func (a ApplyUpdateSpendingPoolProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
+	p := proposal.(*spendingtypes.ProposalUpsertTokenAlias)
 
-	tokenAlians := tokenstypes.NewTokenAlias(p.Symbol, p.Name, p.Icon, p.Decimals, p.Denoms)
+	tokenAlians := spendingtypes.NewTokenAlias(p.Symbol, p.Name, p.Icon, p.Decimals, p.Denoms)
+	return a.keeper.UpsertTokenAlias(ctx, *tokenAlians)
+}
+
+type ApplySpendingPoolDistributionProposalHandler struct {
+	keeper keeper.Keeper
+}
+
+func NewApplyUpdateSpendingPoolProposalHandler(keeper keeper.Keeper) *ApplySpendingPoolDistributionProposalHandler {
+	return &ApplySpendingPoolDistributionProposalHandler{
+		keeper: keeper,
+	}
+}
+
+func (a ApplySpendingPoolDistributionProposalHandler) ProposalType() string {
+	return kiratypes.ProposalTypeSpendingPoolDistribution
+}
+
+func (a ApplySpendingPoolDistributionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
+	p := proposal.(*spendingtypes.ProposalUpsertTokenAlias)
+
+	tokenAlians := spendingtypes.NewTokenAlias(p.Symbol, p.Name, p.Icon, p.Decimals, p.Denoms)
+	return a.keeper.UpsertTokenAlias(ctx, *tokenAlians)
+}
+
+type ApplySpendingPoolWithdrawProposalHandler struct {
+	keeper keeper.Keeper
+}
+
+func NewApplyUpdateSpendingPoolProposalHandler(keeper keeper.Keeper) *ApplySpendingPoolWithdrawProposalHandler {
+	return &ApplySpendingPoolWithdrawProposalHandler{
+		keeper: keeper,
+	}
+}
+
+func (a ApplySpendingPoolWithdrawProposalHandler) ProposalType() string {
+	return kiratypes.ProposalTypeSpendingPoolWithdraw
+}
+
+func (a ApplySpendingPoolWithdrawProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
+	p := proposal.(*spendingtypes.ProposalUpsertTokenAlias)
+
+	tokenAlians := spendingtypes.NewTokenAlias(p.Symbol, p.Name, p.Icon, p.Decimals, p.Denoms)
 	return a.keeper.UpsertTokenAlias(ctx, *tokenAlians)
 }

@@ -8,7 +8,8 @@ import "gogoproto/gogo.proto";
 
 message ClaimInfo { 
     string account = 1;
-    google.protobuf.Timestamp last_claim = 2 [ (gogoproto.nullable) = false, (gogoproto.stdtime) = true ];
+    string pool_name = 2;
+    google.protobuf.Timestamp last_claim = 3 [ (gogoproto.nullable) = false, (gogoproto.stdtime) = true ];
 }
 
 message PermInfo {
@@ -42,6 +43,8 @@ message SpendingPool {
   PermInfo owners = 10;
   // defines set of accounts/roles to which funds can be distributed
   PermInfo beneficiaries = 11;
-  // list of beneficiary accounts that claimed or registered to claim tokens from the pool as well as index of when the last time tokens were claimed.   
-  repeated ClaimInfo claims = 12;
+  string balance = 12 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
 }

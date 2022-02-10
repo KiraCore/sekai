@@ -16,7 +16,27 @@ func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryCodec) Keeper {
 	return Keeper{cdc: cdc, storeKey: storeKey}
 }
 
-// BondDenom returns the denom that is basically used for fee payment
-func (k Keeper) BondDenom(ctx sdk.Context) string {
-	return "ukex"
+func (k Keeper) IsAllowedAddress(ctx sdk.Context, address sdk.AccAddress, permInfo types.PermInfo) bool {
+	for _, owner := range permInfo.OwnerAccounts {
+		if owner == address.String() {
+			return true
+		}
+	}
+
+	actor, found := k.gk.GetNetworkActorByAddress(ctx, address)(govtypes.NetworkActor, bool)
+	if !found {
+		return false
+	}
+
+	flags := make(map[string]bool)
+	for _, role := range permInfo.OwnerRoles {
+		flags[role] = true
+	}
+
+	for _, role := range actor.Roles {
+		if flags[role] {
+			return true
+		}
+	}
+	return false
 }
