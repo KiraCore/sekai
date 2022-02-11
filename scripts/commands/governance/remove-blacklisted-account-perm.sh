@@ -1,8 +1,8 @@
 #!/bin/bash
 
-PermClaimValidator=2
+PermClaimCouncilor=3
 
-sekaid tx customgov proposal assign-permission $PermClaimValidator  --title="title" --description="description" --addr=$(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes
+sekaid tx customgov proposal account remove-blacklisted-permission $PermClaimCouncilor  --title="title" --description="description" --addr=$(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes
 
 sekaid query customgov proposals
 sekaid query customgov proposal 1

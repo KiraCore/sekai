@@ -11,20 +11,20 @@ import (
 	"github.com/pkg/errors"
 )
 
-type ApplyAssignPermissionProposalHandler struct {
+type ApplyWhitelistAccountPermissionProposalHandler struct {
 	keeper keeper.Keeper
 }
 
-func NewApplyAssignPermissionProposalHandler(keeper keeper.Keeper) *ApplyAssignPermissionProposalHandler {
-	return &ApplyAssignPermissionProposalHandler{keeper: keeper}
+func NewApplyWhitelistAccountPermissionProposalHandler(keeper keeper.Keeper) *ApplyWhitelistAccountPermissionProposalHandler {
+	return &ApplyWhitelistAccountPermissionProposalHandler{keeper: keeper}
 }
 
-func (a ApplyAssignPermissionProposalHandler) ProposalType() string {
-	return kiratypes.AssignPermissionProposalType
+func (a ApplyWhitelistAccountPermissionProposalHandler) ProposalType() string {
+	return kiratypes.WhitelistAccountPermissionProposalType
 }
 
-func (a ApplyAssignPermissionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
-	p := proposal.(*types.AssignPermissionProposal)
+func (a ApplyWhitelistAccountPermissionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
+	p := proposal.(*types.WhitelistAccountPermissionProposal)
 
 	actor, found := a.keeper.GetNetworkActorByAddress(ctx, p.Address)
 	if found {
@@ -36,6 +36,135 @@ func (a ApplyAssignPermissionProposalHandler) Apply(ctx sdk.Context, proposalID 
 	}
 
 	return a.keeper.AddWhitelistPermission(ctx, actor, types.PermValue(p.Permission))
+}
+
+type ApplyBlacklistAccountPermissionProposalHandler struct {
+	keeper keeper.Keeper
+}
+
+func NewApplyBlacklistAccountPermissionProposalHandler(keeper keeper.Keeper) *ApplyBlacklistAccountPermissionProposalHandler {
+	return &ApplyBlacklistAccountPermissionProposalHandler{keeper: keeper}
+}
+
+func (a ApplyBlacklistAccountPermissionProposalHandler) ProposalType() string {
+	return kiratypes.BlacklistAccountPermissionProposalType
+}
+
+func (a ApplyBlacklistAccountPermissionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
+	p := proposal.(*types.BlacklistAccountPermissionProposal)
+
+	actor, found := a.keeper.GetNetworkActorByAddress(ctx, p.Address)
+	if found {
+		if actor.Permissions.IsBlacklisted(types.PermValue(p.Permission)) {
+			return sdkerrors.Wrap(types.ErrWhitelisting, "permission already blacklisted")
+		}
+	} else {
+		actor = types.NewDefaultActor(p.Address)
+	}
+
+	return a.keeper.AddBlacklistPermission(ctx, actor, types.PermValue(p.Permission))
+}
+
+type ApplyRemoveWhitelistedAccountPermissionProposalHandler struct {
+	keeper keeper.Keeper
+}
+
+func NewApplyRemoveWhitelistedAccountPermissionProposalHandler(keeper keeper.Keeper) *ApplyRemoveWhitelistedAccountPermissionProposalHandler {
+	return &ApplyRemoveWhitelistedAccountPermissionProposalHandler{keeper: keeper}
+}
+
+func (a ApplyRemoveWhitelistedAccountPermissionProposalHandler) ProposalType() string {
+	return kiratypes.RemoveWhitelistedAccountPermissionProposalType
+}
+
+func (a ApplyRemoveWhitelistedAccountPermissionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
+	p := proposal.(*types.RemoveWhitelistedAccountPermissionProposal)
+
+	actor, found := a.keeper.GetNetworkActorByAddress(ctx, p.Address)
+	if found {
+		if !actor.Permissions.IsWhitelisted(types.PermValue(p.Permission)) {
+			return sdkerrors.Wrap(types.ErrWhitelisting, "whitelisted permission does not exist")
+		}
+	} else {
+		actor = types.NewDefaultActor(p.Address)
+	}
+
+	return a.keeper.RemoveWhitelistedPermission(ctx, actor, types.PermValue(p.Permission))
+}
+
+type ApplyRemoveBlacklistedAccountPermissionProposalHandler struct {
+	keeper keeper.Keeper
+}
+
+func NewApplyRemoveBlacklistedAccountPermissionProposalHandler(keeper keeper.Keeper) *ApplyRemoveBlacklistedAccountPermissionProposalHandler {
+	return &ApplyRemoveBlacklistedAccountPermissionProposalHandler{keeper: keeper}
+}
+
+func (a ApplyRemoveBlacklistedAccountPermissionProposalHandler) ProposalType() string {
+	return kiratypes.RemoveBlacklistedAccountPermissionProposalType
+}
+
+func (a ApplyRemoveBlacklistedAccountPermissionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
+	p := proposal.(*types.RemoveBlacklistedAccountPermissionProposal)
+
+	actor, found := a.keeper.GetNetworkActorByAddress(ctx, p.Address)
+	fmt.Println("actor", actor)
+	if found {
+		if !actor.Permissions.IsBlacklisted(types.PermValue(p.Permission)) {
+			return sdkerrors.Wrap(types.ErrWhitelisting, "blacklisted permission does not exist")
+		}
+	} else {
+		actor = types.NewDefaultActor(p.Address)
+	}
+
+	fmt.Println("RemoveBlacklistedPermission", p.Permission)
+	return a.keeper.RemoveBlacklistedPermission(ctx, actor, types.PermValue(p.Permission))
+}
+
+type ApplyAssignRoleToAccountProposalHandler struct {
+	keeper keeper.Keeper
+}
+
+func NewApplyAssignRoleToAccountProposalHandler(keeper keeper.Keeper) *ApplyAssignRoleToAccountProposalHandler {
+	return &ApplyAssignRoleToAccountProposalHandler{keeper: keeper}
+}
+
+func (a ApplyAssignRoleToAccountProposalHandler) ProposalType() string {
+	return kiratypes.AssignRoleToAccountProposalType
+}
+
+func (a ApplyAssignRoleToAccountProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
+	p := proposal.(*types.AssignRoleToAccountProposal)
+
+	roleId, err := a.keeper.GetRoleIdFromIdentifierString(ctx, p.RoleIdentifier)
+	if err != nil {
+		return err
+	}
+
+	return a.keeper.AssignRoleToAccount(ctx, p.Address, roleId)
+}
+
+type ApplyUnassignRoleFromAccountProposalHandler struct {
+	keeper keeper.Keeper
+}
+
+func NewApplyUnassignRoleFromAccountProposalHandler(keeper keeper.Keeper) *ApplyUnassignRoleFromAccountProposalHandler {
+	return &ApplyUnassignRoleFromAccountProposalHandler{keeper: keeper}
+}
+
+func (a ApplyUnassignRoleFromAccountProposalHandler) ProposalType() string {
+	return kiratypes.UnassignRoleFromAccountProposalType
+}
+
+func (a ApplyUnassignRoleFromAccountProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
+	p := proposal.(*types.UnassignRoleFromAccountProposal)
+
+	roleId, err := a.keeper.GetRoleIdFromIdentifierString(ctx, p.RoleIdentifier)
+	if err != nil {
+		return err
+	}
+
+	return a.keeper.UnassignRoleFromAccount(ctx, p.Address, roleId)
 }
 
 type ApplySetNetworkPropertyProposalHandler struct {
@@ -143,6 +272,116 @@ func (c CreateRoleProposalHandler) Apply(ctx sdk.Context, proposalID uint64, pro
 		}
 	}
 	return nil
+}
+
+type ApplyRemoveRoleProposalHandler struct {
+	keeper keeper.Keeper
+}
+
+func NewApplyRemoveRoleProposalHandler(keeper keeper.Keeper) *ApplyRemoveRoleProposalHandler {
+	return &ApplyRemoveRoleProposalHandler{keeper: keeper}
+}
+
+func (c ApplyRemoveRoleProposalHandler) ProposalType() string {
+	return kiratypes.RemoveRoleProposalType
+}
+
+func (c ApplyRemoveRoleProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
+	p := proposal.(*types.RemoveRoleProposal)
+	_ = p
+	return fmt.Errorf("remove role proposal is not implemented!")
+}
+
+type ApplyWhitelistRolePermissionProposalHandler struct {
+	keeper keeper.Keeper
+}
+
+func NewApplyWhitelistRolePermissionProposalHandler(keeper keeper.Keeper) *ApplyWhitelistRolePermissionProposalHandler {
+	return &ApplyWhitelistRolePermissionProposalHandler{keeper: keeper}
+}
+
+func (c ApplyWhitelistRolePermissionProposalHandler) ProposalType() string {
+	return kiratypes.WhitelistRolePermissionProposalType
+}
+
+func (c ApplyWhitelistRolePermissionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
+	p := proposal.(*types.WhitelistRolePermissionProposal)
+
+	roleId, err := c.keeper.GetRoleIdFromIdentifierString(ctx, p.RoleIdentifier)
+	if err != nil {
+		return err
+	}
+
+	return c.keeper.WhitelistRolePermission(ctx, roleId, p.Permission)
+}
+
+type ApplyBlacklistRolePermissionProposalHandler struct {
+	keeper keeper.Keeper
+}
+
+func NewApplyBlacklistRolePermissionProposalHandler(keeper keeper.Keeper) *ApplyBlacklistRolePermissionProposalHandler {
+	return &ApplyBlacklistRolePermissionProposalHandler{keeper: keeper}
+}
+
+func (c ApplyBlacklistRolePermissionProposalHandler) ProposalType() string {
+	return kiratypes.BlacklistRolePermissionProposalType
+}
+
+func (c ApplyBlacklistRolePermissionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
+	p := proposal.(*types.BlacklistRolePermissionProposal)
+
+	roleId, err := c.keeper.GetRoleIdFromIdentifierString(ctx, p.RoleIdentifier)
+	if err != nil {
+		return err
+	}
+
+	return c.keeper.BlacklistRolePermission(ctx, roleId, p.Permission)
+}
+
+type ApplyRemoveWhitelistedRolePermissionProposalHandler struct {
+	keeper keeper.Keeper
+}
+
+func NewApplyRemoveWhitelistedRolePermissionProposalHandler(keeper keeper.Keeper) *ApplyRemoveWhitelistedRolePermissionProposalHandler {
+	return &ApplyRemoveWhitelistedRolePermissionProposalHandler{keeper: keeper}
+}
+
+func (c ApplyRemoveWhitelistedRolePermissionProposalHandler) ProposalType() string {
+	return kiratypes.RemoveWhitelistedRolePermissionProposalType
+}
+
+func (c ApplyRemoveWhitelistedRolePermissionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
+	p := proposal.(*types.RemoveWhitelistedRolePermissionProposal)
+
+	roleId, err := c.keeper.GetRoleIdFromIdentifierString(ctx, p.RoleSid)
+	if err != nil {
+		return err
+	}
+
+	return c.keeper.RemoveWhitelistRolePermission(ctx, roleId, p.Permission)
+}
+
+type ApplyRemoveBlacklistedRolePermissionProposalHandler struct {
+	keeper keeper.Keeper
+}
+
+func NewApplyRemoveBlacklistedRolePermissionProposalHandler(keeper keeper.Keeper) *ApplyRemoveBlacklistedRolePermissionProposalHandler {
+	return &ApplyRemoveBlacklistedRolePermissionProposalHandler{keeper: keeper}
+}
+
+func (c ApplyRemoveBlacklistedRolePermissionProposalHandler) ProposalType() string {
+	return kiratypes.RemoveBlacklistedRolePermissionProposalType
+}
+
+func (c ApplyRemoveBlacklistedRolePermissionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
+	p := proposal.(*types.RemoveBlacklistedRolePermissionProposal)
+
+	roleId, err := c.keeper.GetRoleIdFromIdentifierString(ctx, p.RoleSid)
+	if err != nil {
+		return err
+	}
+
+	return c.keeper.RemoveBlacklistRolePermission(ctx, roleId, p.Permission)
 }
 
 type SetProposalDurationsProposalHandler struct {

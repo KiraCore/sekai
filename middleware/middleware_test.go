@@ -90,7 +90,6 @@ func Test_Middleware_SetNetworkProperties(t *testing.T) {
 			// set execution fee
 			_, err = handler(ctx, &govtypes.MsgSetExecutionFee{
 				Proposer:          changeFeeAddr,
-				Name:              types.MsgTypeSetNetworkProperties,
 				TransactionType:   types.MsgTypeSetNetworkProperties,
 				ExecutionFee:      10000,
 				FailureFee:        1000,

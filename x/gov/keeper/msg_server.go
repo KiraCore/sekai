@@ -153,21 +153,10 @@ func (k msgServer) RemoveRole(
 		return nil, errors.Wrap(types.ErrNotEnoughPermissions, types.PermUpsertRole.String())
 	}
 
-	_, found := k.keeper.GetPermissionsForRole(ctx, uint64(msg.RoleId))
-	if !found {
-		return nil, types.ErrRoleDoesNotExist
+	err := k.keeper.UnassignRoleFromAccount(ctx, msg.Address, uint64(msg.RoleId))
+	if err != nil {
+		return nil, err
 	}
-
-	actor, found := k.keeper.GetNetworkActorByAddress(ctx, msg.Address)
-	if !found {
-		actor = types.NewDefaultActor(msg.Address)
-	}
-
-	if !actor.HasRole(uint64(msg.RoleId)) {
-		return nil, types.ErrRoleNotAssigned
-	}
-
-	k.keeper.RemoveRoleFromActor(ctx, actor, uint64(msg.RoleId))
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
 			types.EventTypeRemoveRole,
@@ -190,21 +179,11 @@ func (k msgServer) AssignRole(
 		return nil, errors.Wrap(types.ErrNotEnoughPermissions, types.PermUpsertRole.String())
 	}
 
-	_, found := k.keeper.GetPermissionsForRole(ctx, uint64(msg.RoleId))
-	if !found {
-		return nil, types.ErrRoleDoesNotExist
+	err := k.keeper.AssignRoleToAccount(ctx, msg.Address, uint64(msg.RoleId))
+	if err != nil {
+		return nil, err
 	}
 
-	actor, found := k.keeper.GetNetworkActorByAddress(ctx, msg.Address)
-	if !found {
-		actor = types.NewDefaultActor(msg.Address)
-	}
-
-	if actor.HasRole(uint64(msg.RoleId)) {
-		return nil, types.ErrRoleAlreadyAssigned
-	}
-
-	k.keeper.AssignRoleToActor(ctx, actor, uint64(msg.RoleId))
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
 			types.EventTypeAssignRole,
@@ -424,7 +403,7 @@ func (k msgServer) RemoveWhitelistedPermissions(
 		actor = types.NewDefaultActor(msg.Address)
 	}
 
-	err := k.keeper.RemoveWhitelistPermission(ctx, actor, types.PermValue(msg.Permission))
+	err := k.keeper.RemoveWhitelistedPermission(ctx, actor, types.PermValue(msg.Permission))
 	if err != nil {
 		return nil, errors.Wrapf(types.ErrSetPermissions, "error setting %d to whitelist: %s", msg.Permission, err)
 	}
@@ -546,7 +525,6 @@ func (k msgServer) SetExecutionFee(
 	}
 
 	k.keeper.SetExecutionFee(ctx, &types.ExecutionFee{
-		Name:              msg.Name,
 		TransactionType:   msg.TransactionType,
 		ExecutionFee:      msg.ExecutionFee,
 		FailureFee:        msg.FailureFee,

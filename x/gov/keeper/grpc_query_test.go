@@ -104,7 +104,7 @@ func TestQuerier_Proposal(t *testing.T) {
 		proposalID,
 		"title",
 		"some desc",
-		types.NewAssignPermissionProposal(
+		types.NewWhitelistAccountPermissionProposal(
 			addrs[0],
 			types.PermSetPermissions,
 		),

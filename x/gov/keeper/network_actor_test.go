@@ -103,7 +103,7 @@ func TestKeeper_RemoveWhitelistPermission(t *testing.T) {
 
 	actor, found := app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addrs[0])
 	require.True(t, found)
-	err = app.CustomGovKeeper.RemoveWhitelistPermission(ctx, actor, types.PermSetPermissions)
+	err = app.CustomGovKeeper.RemoveWhitelistedPermission(ctx, actor, types.PermSetPermissions)
 	require.NoError(t, err)
 
 	iterator = app.CustomGovKeeper.GetNetworkActorsByWhitelistedPermission(ctx, types.PermSetPermissions)

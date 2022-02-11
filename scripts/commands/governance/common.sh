@@ -2,15 +2,15 @@
 
 sekaid tx customgov councilor claim-seat --from validator --keyring-backend=test --home=$HOME/.sekaid
 
-sekaid tx customgov permission blacklist-permission
-sekaid tx customgov permission remove-blacklisted-permission
-sekaid tx customgov permission whitelist-permission
-sekaid tx customgov permission remove-whitelisted-permission
+sekaid tx customgov permission blacklist
+sekaid tx customgov permission remove-blacklisted
+sekaid tx customgov permission whitelist
+sekaid tx customgov permission remove-whitelisted
 
 # add / remove / query whitelisted permissions
-sekaid tx customgov permission whitelist-permission --from validator --keyring-backend=test --permission=7 --addr=$(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --chain-id=testing --fees=100ukex --home=$HOME/.sekaid --yes
+sekaid tx customgov permission whitelist --from validator --keyring-backend=test --permission=7 --addr=$(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --chain-id=testing --fees=100ukex --home=$HOME/.sekaid --yes
 sekaid query customgov permissions $(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid)
-sekaid tx customgov permission remove-whitelisted-permission --from validator --keyring-backend=test --permission=7 --addr=$(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --chain-id=testing --fees=100ukex --home=$HOME/.sekaid --yes
+sekaid tx customgov permission remove-whitelisted --from validator --keyring-backend=test --permission=7 --addr=$(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --chain-id=testing --fees=100ukex --home=$HOME/.sekaid --yes
 sekaid query customgov permissions $(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid)
 
 sekaid tx customgov proposal assign-permission
@@ -42,5 +42,5 @@ sekaid query customgov vote 1 $(sekaid keys show -a validator --keyring-backend=
 # whitelist permission for claim validator
 sekaid keys add lladmin --keyring-backend=test
 sekaid tx bank send validator $(sekaid keys show -a lladmin --keyring-backend=test) 1000000ukex --keyring-backend=test --chain-id=testing --fees=200ukex --yes
-sekaid tx customgov permission whitelist-permission --from=validator --keyring-backend=test --addr=$(sekaid keys show -a lladmin --keyring-backend=test) --permission=30 --chain-id=testing --fees=200ukex --yes
-sekaid tx customgov permission whitelist-permission --from=lladmin --keyring-backend=test --addr=$(sekaid keys show -a lladmin --keyring-backend=test) --permission=2 --chain-id=testing --fees=200ukex --yes
+sekaid tx customgov permission whitelist --from=validator --keyring-backend=test --addr=$(sekaid keys show -a lladmin --keyring-backend=test) --permission=30 --chain-id=testing --fees=200ukex --yes
+sekaid tx customgov permission whitelist --from=lladmin --keyring-backend=test --addr=$(sekaid keys show -a lladmin --keyring-backend=test) --permission=2 --chain-id=testing --fees=200ukex --yes
