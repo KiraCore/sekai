@@ -12,13 +12,21 @@ option go_package = "github.com/KiraCore/sekai/x/spending/types";
 // Query defines the gRPC querier service
 service Query {
   // query-pools - query list of pool names
-  rpc QueryPoolNames(QueryPoolNamesRequest) returns (QueryPoolNamesResponse) {}
+  rpc QueryPoolNames(QueryPoolNamesRequest) returns (QueryPoolNamesResponse) {
+    option (google.api.http).get = "/kira/spending/pool_names";
+  }
   // query-pool - query pool by name
-  rpc QueryPoolByName(QueryPoolByNameRequest) returns (QueryPoolByNameResponse) {}
+  rpc QueryPoolByName(QueryPoolByNameRequest) returns (QueryPoolByNameResponse) {
+    option (google.api.http).get = "/kira/spending/pool/{name}";
+  }
   // query-pool-proposals - query pool proposals by name
-  rpc QueryPoolProposals(QueryPoolProposalsRequest) returns (QueryPoolProposalsResponse) {}
+  rpc QueryPoolProposals(QueryPoolProposalsRequest) returns (QueryPoolProposalsResponse) {
+    option (google.api.http).get = "/kira/spending/pool_proposals/{pool_name}";
+  }
   // query-pools-by-account - query list of pool names where specific kira account can register its claim or otherwise claim tokens from
-  rpc QueryPoolsByAccount(QueryPoolsByAccountRequest) returns (QueryPoolsByAccountResponse) {}
+  rpc QueryPoolsByAccount(QueryPoolsByAccountRequest) returns (QueryPoolsByAccountResponse) {
+    option (google.api.http).get = "/kira/spending/pools/{account}";
+  }
 }
 
 message QueryPoolNamesRequest {}

@@ -1,4 +1,4 @@
-package tokens
+package spending
 
 import (
 	"github.com/KiraCore/sekai/x/spending/keeper"

@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"github.com/KiraCore/sekai/x/spending/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -9,6 +10,8 @@ import (
 type Keeper struct {
 	cdc      codec.BinaryCodec
 	storeKey sdk.StoreKey
+
+	gk types.CustomGovKeeper
 }
 
 // NewKeeper returns instance of a keeper
@@ -23,12 +26,12 @@ func (k Keeper) IsAllowedAddress(ctx sdk.Context, address sdk.AccAddress, permIn
 		}
 	}
 
-	actor, found := k.gk.GetNetworkActorByAddress(ctx, address)(govtypes.NetworkActor, bool)
+	actor, found := k.gk.GetNetworkActorByAddress(ctx, address)
 	if !found {
 		return false
 	}
 
-	flags := make(map[string]bool)
+	flags := make(map[uint64]bool)
 	for _, role := range permInfo.OwnerRoles {
 		flags[role] = true
 	}

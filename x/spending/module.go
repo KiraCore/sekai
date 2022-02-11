@@ -1,4 +1,4 @@
-package tokens
+package spending
 
 import (
 	"context"
@@ -72,15 +72,16 @@ func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
 // AppModule for tokens management
 type AppModule struct {
 	AppModuleBasic
-	tokensKeeper    spendingkeeper.Keeper
+	spendingKeeper  spendingkeeper.Keeper
 	customGovKeeper spendingtypes.CustomGovKeeper
+	bankKeeper      spendingtypes.BankKeeper
 }
 
 // RegisterQueryService registers a GRPC query service to respond to the
 // module-specific GRPC queries.
 func (am AppModule) RegisterServices(cfg module.Configurator) {
-	spendingtypes.RegisterMsgServer(cfg.MsgServer(), spendingkeeper.NewMsgServerImpl(am.tokensKeeper, am.customGovKeeper))
-	querier := spendingkeeper.NewQuerier(am.tokensKeeper)
+	spendingtypes.RegisterMsgServer(cfg.MsgServer(), spendingkeeper.NewMsgServerImpl(am.spendingKeeper, am.customGovKeeper, am.bankKeeper))
+	querier := spendingkeeper.NewQuerier(am.spendingKeeper)
 	spendingtypes.RegisterQueryServer(cfg.QueryServer(), querier)
 }
 
@@ -139,16 +140,18 @@ func (am AppModule) Name() string {
 
 // Route returns the message routing key for the staking module.
 func (am AppModule) Route() sdk.Route {
-	return middleware.NewRoute(spendingtypes.ModuleName, NewHandler(am.tokensKeeper, am.customGovKeeper))
+	return middleware.NewRoute(spendingtypes.ModuleName, NewHandler(am.spendingKeeper, am.customGovKeeper))
 }
 
 // NewAppModule returns a new Custom Staking module.
 func NewAppModule(
 	keeper spendingkeeper.Keeper,
 	customGovKeeper spendingtypes.CustomGovKeeper,
+	bankKeeper spendingtypes.BankKeeper,
 ) AppModule {
 	return AppModule{
-		tokensKeeper:    keeper,
+		spendingKeeper:  keeper,
 		customGovKeeper: customGovKeeper,
+		bankKeeper:      bankKeeper,
 	}
 }

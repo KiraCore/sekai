@@ -15,6 +15,6 @@ func SpendingPoolKey(name string) []byte {
 	return append([]byte(KeyPrefixSpendingPool), name...)
 }
 
-func ClaimInfoKey(name string, address sdk.AccAddress) []byte {
+func ClaimInfoKey(name string, address string) []byte {
 	return append(append([]byte(KeyPrefixClaimInfo), name...), address...)
 }

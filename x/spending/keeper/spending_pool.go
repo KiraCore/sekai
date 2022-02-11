@@ -6,9 +6,9 @@ import (
 )
 
 // SetSpendingPool stores spending pool record
-func (k Keeper) SetSpendingPool(ctx sdk.Context, pool *types.SpendingPool) {
+func (k Keeper) SetSpendingPool(ctx sdk.Context, pool types.SpendingPool) {
 	store := ctx.KVStore(k.storeKey)
-	bz := k.cdc.MustMarshal(pool)
+	bz := k.cdc.MustMarshal(&pool)
 	store.Set(types.SpendingPoolKey(pool.Name), bz)
 }
 
@@ -29,7 +29,7 @@ func (k Keeper) GetSpendingPool(ctx sdk.Context, name string) *types.SpendingPoo
 
 func (k Keeper) GetAllSpendingPools(ctx sdk.Context) []types.SpendingPool {
 	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.KeyPrefixSpendingPool)
+	iterator := sdk.KVStorePrefixIterator(store, []byte(types.KeyPrefixSpendingPool))
 	defer iterator.Close()
 
 	pools := []types.SpendingPool{}
@@ -42,7 +42,7 @@ func (k Keeper) GetAllSpendingPools(ctx sdk.Context) []types.SpendingPool {
 	return pools
 }
 
-func (k Keeper) CreateSpendingPool(ctx sdk.Context, pool *types.SpendingPool) error {
+func (k Keeper) CreateSpendingPool(ctx sdk.Context, pool types.SpendingPool) error {
 	oldPool := k.GetSpendingPool(ctx, pool.Name)
 	if oldPool != nil {
 		return types.ErrAlreadyRegisteredPoolName
@@ -52,19 +52,15 @@ func (k Keeper) CreateSpendingPool(ctx sdk.Context, pool *types.SpendingPool) er
 	return nil
 }
 
-func (k Keeper) SetClaimInfo(ctx sdk.Context, claimInfo *types.ClaimInfo) {
+func (k Keeper) SetClaimInfo(ctx sdk.Context, claimInfo types.ClaimInfo) {
 	store := ctx.KVStore(k.storeKey)
-	bz := k.cdc.MustMarshal(claimInfo)
-	store.Set(types.ClaimInfoKey(claimInfo.Name, claimInfo.Account), bz)
+	bz := k.cdc.MustMarshal(&claimInfo)
+	store.Set(types.ClaimInfoKey(claimInfo.PoolName, claimInfo.Account), bz)
 }
 
 func (k Keeper) GetClaimInfo(ctx sdk.Context, poolName string, address sdk.AccAddress) *types.ClaimInfo {
 	store := ctx.KVStore(k.storeKey)
-	bz := k.cdc.MustMarshal(&types.ClaimInfo{
-		Account:   address,
-		LastClaim: ctx.BlockTime(),
-	})
-	bz := store.Get(types.ClaimInfoKey(pool.Name, address))
+	bz := store.Get(types.ClaimInfoKey(poolName, address.String()))
 
 	if bz == nil {
 		return nil
@@ -77,14 +73,14 @@ func (k Keeper) GetClaimInfo(ctx sdk.Context, poolName string, address sdk.AccAd
 
 func (k Keeper) GetAllClaimInfos(ctx sdk.Context) []types.ClaimInfo {
 	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.KeyPrefixSpendingPool)
+	iterator := sdk.KVStorePrefixIterator(store, []byte(types.KeyPrefixClaimInfo))
 	defer iterator.Close()
 
 	claimInfos := []types.ClaimInfo{}
 	for ; iterator.Valid(); iterator.Next() {
 		claimInfo := types.ClaimInfo{}
 
-		k.cdc.MustUnmarshal(iterator.Value(), &pool)
+		k.cdc.MustUnmarshal(iterator.Value(), &claimInfo)
 		claimInfos = append(claimInfos, claimInfo)
 	}
 
