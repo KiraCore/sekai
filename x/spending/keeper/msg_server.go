@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -130,44 +129,15 @@ func (k msgServer) ClaimSpendingPool(
 ) (*types.MsgClaimSpendingPoolResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	pool := k.keeper.GetSpendingPool(ctx, msg.PoolName)
-	if pool == nil {
-		return nil, types.ErrPoolDoesNotExist
-	}
-
 	sender, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		return nil, err
 	}
 
-	if !k.keeper.IsAllowedAddress(ctx, sender, *pool.Beneficiaries) {
-		return nil, types.ErrNotPoolBeneficiary
-	}
-
-	claimInfo := k.keeper.GetClaimInfo(ctx, pool.Name, sender)
-
-	lastClaim := pool.ClaimStart
-	if lastClaim.Before(claimInfo.LastClaim) {
-		lastClaim = claimInfo.LastClaim
-	}
-
-	rewards := pool.Rate.Mul(sdk.NewDec(int64(ctx.BlockTime().Sub(lastClaim) / time.Second))).TruncateInt()
-
-	// update pool to reduce pool's balance
-	pool.Balance = pool.Balance.Sub(rewards)
-	k.keeper.SetSpendingPool(ctx, *pool)
-
-	coins := sdk.Coins{sdk.NewCoin(pool.Token, rewards)}
-	err = k.bk.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, coins)
+	err = k.keeper.ClaimSpendingPool(ctx, msg.PoolName, sender)
 	if err != nil {
 		return nil, err
 	}
-
-	k.keeper.SetClaimInfo(ctx, types.ClaimInfo{
-		PoolName:  pool.Name,
-		Account:   msg.Sender,
-		LastClaim: ctx.BlockTime(),
-	})
 
 	return &types.MsgClaimSpendingPoolResponse{}, nil
 }

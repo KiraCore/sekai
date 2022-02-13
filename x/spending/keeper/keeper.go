@@ -11,12 +11,18 @@ type Keeper struct {
 	cdc      codec.BinaryCodec
 	storeKey sdk.StoreKey
 
+	bk types.BankKeeper
 	gk types.CustomGovKeeper
 }
 
 // NewKeeper returns instance of a keeper
-func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryCodec) Keeper {
-	return Keeper{cdc: cdc, storeKey: storeKey}
+func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryCodec, bk types.BankKeeper, gk types.CustomGovKeeper) Keeper {
+	return Keeper{
+		cdc:      cdc,
+		storeKey: storeKey,
+		bk:       bk,
+		gk:       gk,
+	}
 }
 
 func (k Keeper) IsAllowedAddress(ctx sdk.Context, address sdk.AccAddress, permInfo types.PermInfo) bool {

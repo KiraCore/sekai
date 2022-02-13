@@ -35,7 +35,7 @@ message UpdateSpendingPoolProposal {
   kira.spending.PermInfo beneficiaries = 11 [ (gogoproto.nullable) = false ];
 }
 
-// proposal-spending-pool-distribute - force distribution of tokens to all
+// SpendingPoolDistributionProposal - force distribution of tokens to all
 // beneficiaries registered in the claims array (this function should be
 // automatically triggered before upgrades are executed)
 message SpendingPoolDistributionProposal {
@@ -45,7 +45,7 @@ message SpendingPoolDistributionProposal {
   string pool_name = 1;
 }
 
-// proposal-spending-pool-withdraw - proposal allowing withdrawal of funds
+// SpendingPoolWithdrawProposal - proposal allowing withdrawal of funds
 // from the pool to one or many specified accounts. Withdrawal should only
 // be possible if the receiving account/s are on the list of registered
 // beneficiaries.

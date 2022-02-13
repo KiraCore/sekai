@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"time"
+
 	"github.com/KiraCore/sekai/x/spending/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -85,4 +87,47 @@ func (k Keeper) GetAllClaimInfos(ctx sdk.Context) []types.ClaimInfo {
 	}
 
 	return claimInfos
+}
+
+func (k Keeper) ClaimSpendingPool(ctx sdk.Context, poolName string, sender sdk.AccAddress) error {
+
+	pool := k.GetSpendingPool(ctx, poolName)
+	if pool == nil {
+		return types.ErrPoolDoesNotExist
+	}
+
+	if !k.IsAllowedAddress(ctx, sender, *pool.Beneficiaries) {
+		return types.ErrNotPoolBeneficiary
+	}
+
+	claimInfo := k.GetClaimInfo(ctx, pool.Name, sender)
+
+	lastClaim := pool.ClaimStart
+	if lastClaim.Before(claimInfo.LastClaim) {
+		lastClaim = claimInfo.LastClaim
+	}
+
+	// TODO: is this the rate for second?
+	// TODO: for newly claim user, when lastClaim should be set?
+	// - there could be the case a new account join a new role
+	// - there could be the case a new account is added via a command
+	// - one possible solution could be restricting users to claim the amount for their first claim
+	rewards := pool.Rate.Mul(sdk.NewDec(int64(ctx.BlockTime().Sub(lastClaim) / time.Second))).TruncateInt()
+
+	// update pool to reduce pool's balance
+	pool.Balance = pool.Balance.Sub(rewards)
+	k.SetSpendingPool(ctx, *pool)
+
+	coins := sdk.Coins{sdk.NewCoin(pool.Token, rewards)}
+	err := k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, coins)
+	if err != nil {
+		return err
+	}
+
+	k.SetClaimInfo(ctx, types.ClaimInfo{
+		PoolName:  pool.Name,
+		Account:   sender.String(),
+		LastClaim: ctx.BlockTime(),
+	})
+	return nil
 }

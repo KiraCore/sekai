@@ -7,6 +7,7 @@ import (
 
 // CustomGovKeeper defines the expected interface contract the tokens module requires
 type CustomGovKeeper interface {
+	GetNetworkActorsByRole(ctx sdk.Context, role uint64) sdk.Iterator
 	GetNetworkActorByAddress(ctx sdk.Context, address sdk.AccAddress) (govtypes.NetworkActor, bool)
 	CheckIfAllowedPermission(ctx sdk.Context, addr sdk.AccAddress, permValue govtypes.PermValue) bool
 	GetNextProposalIDAndIncrement(ctx sdk.Context) uint64
