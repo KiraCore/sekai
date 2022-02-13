@@ -1,16 +1,14 @@
 package types
 
 import (
-	time "time"
-
 	"github.com/KiraCore/sekai/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func NewMsgCreateSpendingPool(
 	name string,
-	claimStart time.Time,
-	claimEnd time.Time,
+	claimStart uint64,
+	claimEnd uint64,
 	expire uint64,
 	token string,
 	rate sdk.Dec,

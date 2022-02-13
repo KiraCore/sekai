@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	"time"
-
 	"github.com/KiraCore/sekai/x/spending/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -103,7 +101,7 @@ func (k Keeper) ClaimSpendingPool(ctx sdk.Context, poolName string, sender sdk.A
 	claimInfo := k.GetClaimInfo(ctx, pool.Name, sender)
 
 	lastClaim := pool.ClaimStart
-	if lastClaim.Before(claimInfo.LastClaim) {
+	if lastClaim < claimInfo.LastClaim {
 		lastClaim = claimInfo.LastClaim
 	}
 
@@ -112,7 +110,8 @@ func (k Keeper) ClaimSpendingPool(ctx sdk.Context, poolName string, sender sdk.A
 	// - there could be the case a new account join a new role
 	// - there could be the case a new account is added via a command
 	// - one possible solution could be restricting users to claim the amount for their first claim
-	rewards := pool.Rate.Mul(sdk.NewDec(int64(ctx.BlockTime().Sub(lastClaim) / time.Second))).TruncateInt()
+	// TODO: how to handle pool.Expiry?
+	rewards := pool.Rate.Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(lastClaim))).TruncateInt()
 
 	// update pool to reduce pool's balance
 	pool.Balance = pool.Balance.Sub(rewards)

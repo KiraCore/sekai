@@ -17,10 +17,8 @@ message UpdateSpendingPoolProposal {
   option (gogoproto.equal) = true;
 
   string name = 1;
-  google.protobuf.Timestamp claim_start = 2
-      [ (gogoproto.nullable) = false, (gogoproto.stdtime) = true ];
-  google.protobuf.Timestamp claim_end = 3
-      [ (gogoproto.nullable) = false, (gogoproto.stdtime) = true ];
+  uint64 claim_start = 2;
+  uint64 claim_end = 3;
   uint64 expire = 4; // seconds
   string token = 5;  // name of the token that can be distributed.
   string rate = 6 [

@@ -22,8 +22,8 @@ message PermInfo {
 message SpendingPool {
   string name = 1;
   // claim-start & claim-end - defines the exact time period (Unix timestamps) between which tokens can be claimed from the pool, allowing for a precise funds distribution.
-  google.protobuf.Timestamp claim_start = 2 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
-  google.protobuf.Timestamp claim_end = 3 [(gogoproto.nullable) = false, (gogoproto.stdtime) = true];
+  uint64 claim_start = 2;
+  uint64 claim_end = 3;
   // claim-expire - time period after which ability of beneficiary to claim tokens expires. If the date of the last claim is longer than claim-expire than account is removed from claims list.
   uint64 expire = 4; // seconds
   string token = 5; // name of the token that can be distributed.

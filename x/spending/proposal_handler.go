@@ -130,6 +130,11 @@ func (a ApplySpendingPoolWithdrawProposalHandler) Apply(ctx sdk.Context, proposa
 		return types.ErrPoolDoesNotExist
 	}
 
+	// amounts should be single token coins object
+	if len(p.Amounts) != 1 || p.Amounts[0].Denom != pool.Token {
+		return types.ErrInvalidSpendingPoolWithdrawAmount
+	}
+
 	for _, beneficiary := range p.Beneficiaries {
 		beneficiaryAcc, err := sdk.AccAddressFromBech32(beneficiary)
 		if err != nil {

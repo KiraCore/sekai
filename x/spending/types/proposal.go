@@ -1,8 +1,6 @@
 package types
 
 import (
-	"time"
-
 	kiratypes "github.com/KiraCore/sekai/types"
 	"github.com/KiraCore/sekai/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -12,8 +10,8 @@ var _ types.Content = &UpdateSpendingPoolProposal{}
 
 func NewUpdateSpendingPoolProposal(
 	name string,
-	claimStart time.Time,
-	claimEnd time.Time,
+	claimStart uint64,
+	claimEnd uint64,
 	expire uint64,
 	token string,
 	rate sdk.Dec,
