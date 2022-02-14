@@ -98,6 +98,11 @@ var MsgFuncIDMapping = map[string]int64{
 	MsgTypeActivate:                      35,
 	MsgTypePause:                         36,
 	MsgTypeUnpause:                       37,
+
+	MsgTypeCreateSpendingPool:              41,
+	MsgTypeDepositSpendingPool:             42,
+	MsgTypeRegisterSpendingPoolBeneficiary: 43,
+	MsgTypeClaimSpendingPool:               44,
 }
 
 func MsgType(msg sdk.Msg) string {

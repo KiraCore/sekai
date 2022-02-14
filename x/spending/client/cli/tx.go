@@ -97,41 +97,52 @@ func GetTxCreateSpendingPoolCmd() *cobra.Command {
 			if err != nil {
 				return fmt.Errorf("invalid owner roles: %w", err)
 			}
-			ownerRoleStrArr := strings.Split(ownerRolesStr, ",")
 			ownerRoles := []uint64{}
-			for _, roleStr := range ownerRoleStrArr {
-				role, err := strconv.Atoi(roleStr)
-				if err != nil {
-					return err
+			if len(ownerRolesStr) > 0 {
+				ownerRoleStrArr := strings.Split(ownerRolesStr, ",")
+				for _, roleStr := range ownerRoleStrArr {
+					role, err := strconv.Atoi(roleStr)
+					if err != nil {
+						return err
+					}
+					ownerRoles = append(ownerRoles, uint64(role))
 				}
-				ownerRoles = append(ownerRoles, uint64(role))
 			}
 
 			ownerAccountsStr, err := cmd.Flags().GetString(FlagOwnerAccounts)
 			if err != nil {
 				return fmt.Errorf("invalid owner accounts: %w", err)
 			}
-			ownerAccounts := strings.Split(ownerAccountsStr, ",")
+
+			ownerAccounts := []string{}
+			if len(ownerAccountsStr) > 0 {
+				ownerAccounts = strings.Split(ownerAccountsStr, ",")
+			}
 
 			beneficiaryRolesStr, err := cmd.Flags().GetString(FlagBeneficiaryRoles)
 			if err != nil {
 				return fmt.Errorf("invalid beneficiary roles: %w", err)
 			}
-			beneficiaryRoleStrArr := strings.Split(beneficiaryRolesStr, ",")
 			beneficiaryRoles := []uint64{}
-			for _, roleStr := range beneficiaryRoleStrArr {
-				role, err := strconv.Atoi(roleStr)
-				if err != nil {
-					return err
+			if len(beneficiaryRolesStr) > 0 {
+				beneficiaryRoleStrArr := strings.Split(beneficiaryRolesStr, ",")
+				for _, roleStr := range beneficiaryRoleStrArr {
+					role, err := strconv.Atoi(roleStr)
+					if err != nil {
+						return err
+					}
+					beneficiaryRoles = append(beneficiaryRoles, uint64(role))
 				}
-				beneficiaryRoles = append(beneficiaryRoles, uint64(role))
 			}
 
 			beneficiaryAccountsStr, err := cmd.Flags().GetString(FlagBeneficiaryAccounts)
 			if err != nil {
 				return fmt.Errorf("invalid beneficiary accounts: %w", err)
 			}
-			beneficiaryAccounts := strings.Split(beneficiaryAccountsStr, ",")
+			beneficiaryAccounts := []string{}
+			if len(beneficiaryAccountsStr) > 0 {
+				beneficiaryAccounts = strings.Split(beneficiaryAccountsStr, ",")
+			}
 
 			// NewMsgCreateSpendingPool
 			msg := types.NewMsgCreateSpendingPool(
@@ -147,6 +158,8 @@ func GetTxCreateSpendingPoolCmd() *cobra.Command {
 				},
 				clientCtx.GetFromAddress(),
 			)
+
+			fmt.Println("clientCtx.GetFromAddress()", clientCtx.GetFromAddress().String())
 
 			err = msg.ValidateBasic()
 			if err != nil {
@@ -238,21 +251,25 @@ func GetTxRegisterSpendingPoolBeneficiaryCmd() *cobra.Command {
 			if err != nil {
 				return fmt.Errorf("invalid beneficiary roles: %w", err)
 			}
-			beneficiaryRoleStrArr := strings.Split(beneficiaryRolesStr, ",")
 			beneficiaryRoles := []uint64{}
-			for _, roleStr := range beneficiaryRoleStrArr {
-				role, err := strconv.Atoi(roleStr)
-				if err != nil {
-					return err
+			if len(beneficiaryRolesStr) > 0 {
+				beneficiaryRoleStrArr := strings.Split(beneficiaryRolesStr, ",")
+				for _, roleStr := range beneficiaryRoleStrArr {
+					role, err := strconv.Atoi(roleStr)
+					if err != nil {
+						return err
+					}
+					beneficiaryRoles = append(beneficiaryRoles, uint64(role))
 				}
-				beneficiaryRoles = append(beneficiaryRoles, uint64(role))
 			}
-
 			beneficiaryAccountsStr, err := cmd.Flags().GetString(FlagBeneficiaryAccounts)
 			if err != nil {
 				return fmt.Errorf("invalid beneficiary accounts: %w", err)
 			}
-			beneficiaryAccounts := strings.Split(beneficiaryAccountsStr, ",")
+			beneficiaryAccounts := []string{}
+			if len(beneficiaryAccountsStr) > 0 {
+				beneficiaryAccounts = strings.Split(beneficiaryAccountsStr, ",")
+			}
 
 			msg := types.NewMsgRegisterSpendingPoolBeneficiary(name, types.PermInfo{
 				OwnerRoles:    beneficiaryRoles,
@@ -381,41 +398,51 @@ func GetTxUpdateSpendingPoolProposalCmd() *cobra.Command {
 			if err != nil {
 				return fmt.Errorf("invalid owner roles: %w", err)
 			}
-			ownerRoleStrArr := strings.Split(ownerRolesStr, ",")
 			ownerRoles := []uint64{}
-			for _, roleStr := range ownerRoleStrArr {
-				role, err := strconv.Atoi(roleStr)
-				if err != nil {
-					return err
+			if len(ownerRolesStr) > 0 {
+				ownerRoleStrArr := strings.Split(ownerRolesStr, ",")
+				for _, roleStr := range ownerRoleStrArr {
+					role, err := strconv.Atoi(roleStr)
+					if err != nil {
+						return err
+					}
+					ownerRoles = append(ownerRoles, uint64(role))
 				}
-				ownerRoles = append(ownerRoles, uint64(role))
 			}
 
 			ownerAccountsStr, err := cmd.Flags().GetString(FlagOwnerAccounts)
 			if err != nil {
 				return fmt.Errorf("invalid owner accounts: %w", err)
 			}
-			ownerAccounts := strings.Split(ownerAccountsStr, ",")
+			ownerAccounts := []string{}
+			if len(ownerAccountsStr) > 0 {
+				ownerAccounts = strings.Split(ownerAccountsStr, ",")
+			}
 
 			beneficiaryRolesStr, err := cmd.Flags().GetString(FlagBeneficiaryRoles)
 			if err != nil {
 				return fmt.Errorf("invalid beneficiary roles: %w", err)
 			}
-			beneficiaryRoleStrArr := strings.Split(beneficiaryRolesStr, ",")
 			beneficiaryRoles := []uint64{}
-			for _, roleStr := range beneficiaryRoleStrArr {
-				role, err := strconv.Atoi(roleStr)
-				if err != nil {
-					return err
+			if len(beneficiaryRolesStr) > 0 {
+				beneficiaryRoleStrArr := strings.Split(beneficiaryRolesStr, ",")
+				for _, roleStr := range beneficiaryRoleStrArr {
+					role, err := strconv.Atoi(roleStr)
+					if err != nil {
+						return err
+					}
+					beneficiaryRoles = append(beneficiaryRoles, uint64(role))
 				}
-				beneficiaryRoles = append(beneficiaryRoles, uint64(role))
 			}
 
 			beneficiaryAccountsStr, err := cmd.Flags().GetString(FlagBeneficiaryAccounts)
 			if err != nil {
 				return fmt.Errorf("invalid beneficiary accounts: %w", err)
 			}
-			beneficiaryAccounts := strings.Split(beneficiaryAccountsStr, ",")
+			beneficiaryAccounts := []string{}
+			if len(beneficiaryAccountsStr) > 0 {
+				beneficiaryAccounts = strings.Split(beneficiaryAccountsStr, ",")
+			}
 
 			msg, err := govtypes.NewMsgSubmitProposal(
 				clientCtx.FromAddress,
@@ -544,7 +571,10 @@ func GetTxSpendingPoolWithdrawProposalCmd() *cobra.Command {
 			if err != nil {
 				return fmt.Errorf("invalid beneficiary accounts: %w", err)
 			}
-			beneficiaryAccounts := strings.Split(beneficiaryAccountsStr, ",")
+			beneficiaryAccounts := []string{}
+			if len(beneficiaryAccountsStr) > 0 {
+				beneficiaryAccounts = strings.Split(beneficiaryAccountsStr, ",")
+			}
 
 			amountStr, err := cmd.Flags().GetString(FlagAmount)
 			if err != nil {
@@ -557,7 +587,7 @@ func GetTxSpendingPoolWithdrawProposalCmd() *cobra.Command {
 			}
 
 			msg, err := govtypes.NewMsgSubmitProposal(
-				clientCtx.FromAddress,
+				clientCtx.GetFromAddress(),
 				title,
 				description,
 				types.NewSpendingPoolWithdrawProposal(

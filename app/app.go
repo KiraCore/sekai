@@ -209,7 +209,7 @@ func NewInitApp(
 	app.CustomSlashingKeeper = customslashingkeeper.NewKeeper(
 		appCodec, keys[slashingtypes.StoreKey], &customStakingKeeper, app.CustomGovKeeper, app.GetSubspace(slashingtypes.ModuleName),
 	)
-	app.SpendingKeeper = spendingkeeper.NewKeeper(keys[spendingtypes.ModuleName], appCodec)
+	app.SpendingKeeper = spendingkeeper.NewKeeper(keys[spendingtypes.ModuleName], appCodec, app.BankKeeper, app.CustomGovKeeper)
 	app.TokensKeeper = tokenskeeper.NewKeeper(keys[tokenstypes.ModuleName], appCodec)
 	// NOTE: customStakingKeeper above is passed by reference, so that it will contain these hooks
 	app.CustomStakingKeeper = *customStakingKeeper.SetHooks(
@@ -257,8 +257,8 @@ func NewInitApp(
 			upgrade.NewApplySoftwareUpgradeProposalHandler(app.UpgradeKeeper),
 			upgrade.NewApplyCancelSoftwareUpgradeProposalHandler(app.UpgradeKeeper),
 			spending.NewApplyUpdateSpendingPoolProposalHandler(app.SpendingKeeper),
-			spending.NewApplySpendingPoolDistributionProposalHandler(app.SpendingKeeper),
-			spending.NewApplySpendingPoolWithdrawProposalHandler(app.SpendingKeeper),
+			spending.NewApplySpendingPoolDistributionProposalHandler(app.SpendingKeeper, app.CustomGovKeeper),
+			spending.NewApplySpendingPoolWithdrawProposalHandler(app.SpendingKeeper, app.BankKeeper),
 		})
 
 	app.CustomGovKeeper.SetProposalRouter(proposalRouter)
@@ -293,6 +293,7 @@ func NewInitApp(
 		authtypes.ModuleName, feeprocessingtypes.ModuleName, banktypes.ModuleName,
 		upgradetypes.ModuleName, slashingtypes.ModuleName,
 		evidencetypes.ModuleName, stakingtypes.ModuleName,
+		spendingtypes.ModuleName,
 	)
 	app.mm.SetOrderEndBlockers(
 		banktypes.ModuleName, upgradetypes.ModuleName, tokenstypes.ModuleName,
@@ -301,6 +302,7 @@ func NewInitApp(
 		govtypes.ModuleName,
 		stakingtypes.ModuleName,
 		feeprocessingtypes.ModuleName,
+		spendingtypes.ModuleName,
 	)
 
 	// NOTE: The genutils moodule must occur after staking so that pools are

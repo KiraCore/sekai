@@ -9,7 +9,7 @@ import "gogoproto/gogo.proto";
 message ClaimInfo { 
     string account = 1;
     string pool_name = 2;
-    google.protobuf.Timestamp last_claim = 3 [ (gogoproto.nullable) = false, (gogoproto.stdtime) = true ];
+    uint64 last_claim = 3;
 }
 
 message PermInfo {

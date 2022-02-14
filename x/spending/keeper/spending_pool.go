@@ -126,7 +126,7 @@ func (k Keeper) ClaimSpendingPool(ctx sdk.Context, poolName string, sender sdk.A
 	k.SetClaimInfo(ctx, types.ClaimInfo{
 		PoolName:  pool.Name,
 		Account:   sender.String(),
-		LastClaim: ctx.BlockTime(),
+		LastClaim: uint64(ctx.BlockTime().Unix()),
 	})
 	return nil
 }

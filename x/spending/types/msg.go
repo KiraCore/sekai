@@ -56,8 +56,12 @@ func (m *MsgCreateSpendingPool) GetSignBytes() []byte {
 }
 
 func (m *MsgCreateSpendingPool) GetSigners() []sdk.AccAddress {
+	addr, err := sdk.AccAddressFromBech32(m.Sender)
+	if err != nil {
+		panic(err)
+	}
 	return []sdk.AccAddress{
-		sdk.AccAddress(m.Sender),
+		addr,
 	}
 }
 
@@ -94,8 +98,12 @@ func (m *MsgDepositSpendingPool) GetSignBytes() []byte {
 }
 
 func (m *MsgDepositSpendingPool) GetSigners() []sdk.AccAddress {
+	addr, err := sdk.AccAddressFromBech32(m.Sender)
+	if err != nil {
+		panic(err)
+	}
 	return []sdk.AccAddress{
-		sdk.AccAddress(m.Sender),
+		addr,
 	}
 }
 
@@ -132,8 +140,12 @@ func (m *MsgRegisterSpendingPoolBeneficiary) GetSignBytes() []byte {
 }
 
 func (m *MsgRegisterSpendingPoolBeneficiary) GetSigners() []sdk.AccAddress {
+	addr, err := sdk.AccAddressFromBech32(m.Sender)
+	if err != nil {
+		panic(err)
+	}
 	return []sdk.AccAddress{
-		sdk.AccAddress(m.Sender),
+		addr,
 	}
 }
 
@@ -168,7 +180,11 @@ func (m *MsgClaimSpendingPool) GetSignBytes() []byte {
 }
 
 func (m *MsgClaimSpendingPool) GetSigners() []sdk.AccAddress {
+	addr, err := sdk.AccAddressFromBech32(m.Sender)
+	if err != nil {
+		panic(err)
+	}
 	return []sdk.AccAddress{
-		sdk.AccAddress(m.Sender),
+		addr,
 	}
 }
