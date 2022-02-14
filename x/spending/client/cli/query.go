@@ -82,8 +82,8 @@ func GetCmdQueryPoolByName() *cobra.Command {
 // GetCmdQueryPoolProposals the query pool proposals by name.
 func GetCmdQueryPoolProposals() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "aliases-by-denom [aliases]",
-		Short: "Get token aliases by denom",
+		Use:   "pool-proposals [pool-name]",
+		Short: "Get proposals for the pool by name",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)

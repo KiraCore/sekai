@@ -144,7 +144,6 @@ func GetTxCreateSpendingPoolCmd() *cobra.Command {
 				beneficiaryAccounts = strings.Split(beneficiaryAccountsStr, ",")
 			}
 
-			// NewMsgCreateSpendingPool
 			msg := types.NewMsgCreateSpendingPool(
 				name, uint64(claimStart), uint64(claimEnd), uint64(claimExpiry), token, rate,
 				uint64(voteQuorum), uint64(votePeriod), uint64(voteEnactment),
@@ -158,8 +157,6 @@ func GetTxCreateSpendingPoolCmd() *cobra.Command {
 				},
 				clientCtx.GetFromAddress(),
 			)
-
-			fmt.Println("clientCtx.GetFromAddress()", clientCtx.GetFromAddress().String())
 
 			err = msg.ValidateBasic()
 			if err != nil {

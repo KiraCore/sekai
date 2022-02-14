@@ -22,15 +22,23 @@ func (q Querier) QueryPoolNames(c context.Context, request *types.QueryPoolNames
 	ctx := sdk.UnwrapSDKContext(c)
 
 	_ = ctx
-	return &types.QueryPoolNamesResponse{}, nil
+	pools := q.keeper.GetAllSpendingPools(ctx)
+	poolNames := []string{}
+	for _, pool := range pools {
+		poolNames = append(poolNames, pool.Name)
+	}
+	return &types.QueryPoolNamesResponse{
+		Names: poolNames,
+	}, nil
 }
 
 // query-pool - query pool by name
 func (q Querier) QueryPoolByName(c context.Context, request *types.QueryPoolByNameRequest) (*types.QueryPoolByNameResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	_ = ctx
-	return &types.QueryPoolByNameResponse{}, nil
+	return &types.QueryPoolByNameResponse{
+		Pool: q.keeper.GetSpendingPool(ctx, request.Name),
+	}, nil
 }
 
 // query-pool-proposals - query pool proposals by name

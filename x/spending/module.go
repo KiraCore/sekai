@@ -140,7 +140,7 @@ func (am AppModule) Name() string {
 
 // Route returns the message routing key for the staking module.
 func (am AppModule) Route() sdk.Route {
-	return middleware.NewRoute(spendingtypes.ModuleName, NewHandler(am.spendingKeeper, am.customGovKeeper))
+	return middleware.NewRoute(spendingtypes.ModuleName, NewHandler(am.spendingKeeper, am.customGovKeeper, am.bankKeeper))
 }
 
 // NewAppModule returns a new Custom Staking module.

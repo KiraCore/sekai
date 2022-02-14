@@ -99,6 +99,7 @@ var (
 		authtypes.FeeCollectorName: nil,
 		govtypes.ModuleName:        nil,
 		minttypes.ModuleName:       {authtypes.Minter},
+		spendingtypes.ModuleName:   nil,
 	}
 
 	// module accounts that are allowed to receive tokens
