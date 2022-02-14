@@ -101,7 +101,7 @@ func (k Keeper) ClaimSpendingPool(ctx sdk.Context, poolName string, sender sdk.A
 	claimInfo := k.GetClaimInfo(ctx, pool.Name, sender)
 
 	lastClaim := pool.ClaimStart
-	if lastClaim < claimInfo.LastClaim {
+	if claimInfo != nil && lastClaim < claimInfo.LastClaim {
 		lastClaim = claimInfo.LastClaim
 	}
 
