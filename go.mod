@@ -4,7 +4,7 @@ go 1.14
 
 require (
 	github.com/containerd/continuity v0.1.0 // indirect
-	github.com/cosmos/cosmos-sdk v0.45.0
+	github.com/cosmos/cosmos-sdk v0.45.1
 	github.com/cosmos/go-bip39 v1.0.0
 	github.com/gogo/protobuf v1.3.3
 	github.com/golang/protobuf v1.5.2
