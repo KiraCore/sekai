@@ -37,6 +37,8 @@ func (k Keeper) CreateAndSaveProposalWithContent(ctx sdk.Context, title, descrip
 
 	properties := k.GetNetworkProperties(ctx)
 
+	// TODO: update vote period and enactment period by spending pool for dynamic proposals
+
 	// dynamic proposal end time based on proposal type
 	proposalEndTime := k.GetProposalDuration(ctx, content.ProposalType())
 	if proposalEndTime < properties.MinimumProposalEndTime {
