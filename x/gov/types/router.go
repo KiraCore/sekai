@@ -19,6 +19,32 @@ func NewProposalRouter(handlers []ProposalHandler) ProposalRouter {
 	return ProposalRouter{routes: routes}
 }
 
+func (r ProposalRouter) IsAllowedAddressDynamicProposal(ctx sdk.Context, addr sdk.AccAddress, proposal Content) bool {
+	h, ok := r.routes[proposal.ProposalType()]
+	if !ok {
+		panic("invalid proposal type")
+	}
+
+	dh, ok := h.(DynamicVoterProposalHandler)
+	if !ok {
+		return false
+	}
+	return dh.IsAllowedAddress(ctx, addr, proposal)
+}
+
+func (r ProposalRouter) AllowedAddressesDynamicProposal(ctx sdk.Context, proposal Content) []string {
+	h, ok := r.routes[proposal.ProposalType()]
+	if !ok {
+		panic("invalid proposal type")
+	}
+
+	dh, ok := h.(DynamicVoterProposalHandler)
+	if !ok {
+		return []string{}
+	}
+	return dh.AllowedAddresses(ctx, proposal)
+}
+
 func (r ProposalRouter) ApplyProposal(ctx sdk.Context, proposalID uint64, proposal Content) error {
 	h, ok := r.routes[proposal.ProposalType()]
 	if !ok {
@@ -37,5 +63,12 @@ func (r ProposalRouter) ApplyProposal(ctx sdk.Context, proposalID uint64, propos
 
 type ProposalHandler interface {
 	ProposalType() string
+	Apply(ctx sdk.Context, proposalID uint64, proposal Content) error
+}
+
+type DynamicVoterProposalHandler interface {
+	ProposalType() string
+	IsAllowedAddress(ctx sdk.Context, addr sdk.AccAddress, proposal Content) bool
+	AllowedAddresses(ctx sdk.Context, proposal Content) []string
 	Apply(ctx sdk.Context, proposalID uint64, proposal Content) error
 }

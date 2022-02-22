@@ -23,6 +23,28 @@ func (a ApplyUpdateSpendingPoolProposalHandler) ProposalType() string {
 	return kiratypes.ProposalTypeUpdateSpendingPool
 }
 
+func (a ApplyUpdateSpendingPoolProposalHandler) IsAllowedAddress(ctx sdk.Context, addr sdk.AccAddress, proposal govtypes.Content) bool {
+	p := proposal.(*types.UpdateSpendingPoolProposal)
+
+	pool := a.keeper.GetSpendingPool(ctx, p.Name)
+	if pool == nil {
+		return false
+	}
+
+	return a.keeper.IsAllowedAddress(ctx, addr, *pool.Owners)
+}
+
+func (a ApplyUpdateSpendingPoolProposalHandler) AllowedAddresses(ctx sdk.Context, proposal govtypes.Content) []string {
+	p := proposal.(*types.UpdateSpendingPoolProposal)
+
+	pool := a.keeper.GetSpendingPool(ctx, p.Name)
+	if pool == nil {
+		return []string{}
+	}
+
+	return a.keeper.AllowedAddresses(ctx, *pool.Owners)
+}
+
 func (a ApplyUpdateSpendingPoolProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal govtypes.Content) error {
 	p := proposal.(*spendingtypes.UpdateSpendingPoolProposal)
 
@@ -63,6 +85,28 @@ func NewApplySpendingPoolDistributionProposalHandler(keeper keeper.Keeper, gk ty
 
 func (a ApplySpendingPoolDistributionProposalHandler) ProposalType() string {
 	return kiratypes.ProposalTypeSpendingPoolDistribution
+}
+
+func (a ApplySpendingPoolDistributionProposalHandler) IsAllowedAddress(ctx sdk.Context, addr sdk.AccAddress, proposal govtypes.Content) bool {
+	p := proposal.(*types.SpendingPoolDistributionProposal)
+
+	pool := a.keeper.GetSpendingPool(ctx, p.PoolName)
+	if pool == nil {
+		return false
+	}
+
+	return a.keeper.IsAllowedAddress(ctx, addr, *pool.Owners)
+}
+
+func (a ApplySpendingPoolDistributionProposalHandler) AllowedAddresses(ctx sdk.Context, proposal govtypes.Content) []string {
+	p := proposal.(*types.SpendingPoolDistributionProposal)
+
+	pool := a.keeper.GetSpendingPool(ctx, p.PoolName)
+	if pool == nil {
+		return []string{}
+	}
+
+	return a.keeper.AllowedAddresses(ctx, *pool.Owners)
 }
 
 func (a ApplySpendingPoolDistributionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal govtypes.Content) error {
@@ -119,6 +163,28 @@ func NewApplySpendingPoolWithdrawProposalHandler(keeper keeper.Keeper, bk types.
 
 func (a ApplySpendingPoolWithdrawProposalHandler) ProposalType() string {
 	return kiratypes.ProposalTypeSpendingPoolWithdraw
+}
+
+func (a ApplySpendingPoolWithdrawProposalHandler) IsAllowedAddress(ctx sdk.Context, addr sdk.AccAddress, proposal govtypes.Content) bool {
+	p := proposal.(*types.SpendingPoolWithdrawProposal)
+
+	pool := a.keeper.GetSpendingPool(ctx, p.PoolName)
+	if pool == nil {
+		return false
+	}
+
+	return a.keeper.IsAllowedAddress(ctx, addr, *pool.Owners)
+}
+
+func (a ApplySpendingPoolWithdrawProposalHandler) AllowedAddresses(ctx sdk.Context, proposal govtypes.Content) []string {
+	p := proposal.(*types.SpendingPoolWithdrawProposal)
+
+	pool := a.keeper.GetSpendingPool(ctx, p.PoolName)
+	if pool == nil {
+		return []string{}
+	}
+
+	return a.keeper.AllowedAddresses(ctx, *pool.Owners)
 }
 
 func (a ApplySpendingPoolWithdrawProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal govtypes.Content) error {

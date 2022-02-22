@@ -32,9 +32,18 @@ func (k msgServer) SubmitProposal(goCtx context.Context, msg *types.MsgSubmitPro
 		return nil, err
 	}
 
-	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, content.ProposalPermission())
-	if !isAllowed {
-		return nil, errors.Wrap(types.ErrNotEnoughPermissions, content.ProposalPermission().String())
+	// check special proposal with dynamic voter proposal handler
+	if content.ProposalPermission() == types.PermZero {
+		router := k.keeper.GetProposalRouter()
+		isAllowed := router.IsAllowedAddressDynamicProposal(ctx, msg.Proposer, content)
+		if !isAllowed {
+			return nil, errors.Wrap(types.ErrNotEnoughPermissions, "spending pool permission")
+		}
+	} else {
+		isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, content.ProposalPermission())
+		if !isAllowed {
+			return nil, errors.Wrap(types.ErrNotEnoughPermissions, content.ProposalPermission().String())
+		}
 	}
 
 	proposalID, err := k.keeper.CreateAndSaveProposalWithContent(ctx, msg.Title, msg.Description, content)
@@ -88,9 +97,19 @@ func (k msgServer) VoteProposal(
 		return nil, types.ErrVotingTimeEnded
 	}
 
-	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Voter, proposal.GetContent().VotePermission())
-	if !isAllowed {
-		return nil, errors.Wrap(types.ErrNotEnoughPermissions, proposal.GetContent().VotePermission().String())
+	// check special proposal with dynamic voter proposal handler
+	content := proposal.GetContent()
+	if content.VotePermission() == types.PermZero {
+		router := k.keeper.GetProposalRouter()
+		isAllowed := router.IsAllowedAddressDynamicProposal(ctx, msg.Voter, content)
+		if !isAllowed {
+			return nil, errors.Wrap(types.ErrNotEnoughPermissions, "spending pool permission")
+		}
+	} else {
+		isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Voter, content.VotePermission())
+		if !isAllowed {
+			return nil, errors.Wrap(types.ErrNotEnoughPermissions, content.VotePermission().String())
+		}
 	}
 
 	vote := types.NewVote(msg.ProposalId, msg.Voter, msg.Option)

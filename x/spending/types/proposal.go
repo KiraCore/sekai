@@ -41,11 +41,11 @@ func (m *UpdateSpendingPoolProposal) ProposalType() string {
 }
 
 func (m *UpdateSpendingPoolProposal) ProposalPermission() types.PermValue {
-	return types.PermCreateUpdateSpendingPoolProposal
+	return types.PermZero
 }
 
 func (m *UpdateSpendingPoolProposal) VotePermission() types.PermValue {
-	return types.PermVoteUpdateSpendingPoolProposal
+	return types.PermZero
 }
 
 // ValidateBasic returns basic validation
@@ -68,11 +68,11 @@ func (m *SpendingPoolDistributionProposal) ProposalType() string {
 }
 
 func (m *SpendingPoolDistributionProposal) ProposalPermission() types.PermValue {
-	return types.PermCreateSpendingPoolDistributionProposal
+	return types.PermZero
 }
 
 func (m *SpendingPoolDistributionProposal) VotePermission() types.PermValue {
-	return types.PermVoteSpendingPoolDistributionProposal
+	return types.PermZero
 }
 
 // ValidateBasic returns basic validation
@@ -99,11 +99,11 @@ func (m *SpendingPoolWithdrawProposal) ProposalType() string {
 }
 
 func (m *SpendingPoolWithdrawProposal) ProposalPermission() types.PermValue {
-	return types.PermCreateSpendingPoolWithdrawProposal
+	return types.PermZero
 }
 
 func (m *SpendingPoolWithdrawProposal) VotePermission() types.PermValue {
-	return types.PermVoteSpendingPoolWithdrawProposal
+	return types.PermZero
 }
 
 // ValidateBasic returns basic validation

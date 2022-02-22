@@ -49,3 +49,29 @@ func (k Keeper) IsAllowedAddress(ctx sdk.Context, address sdk.AccAddress, permIn
 	}
 	return false
 }
+
+func (k Keeper) AllowedAddresses(ctx sdk.Context, permInfo types.PermInfo) []string {
+	addrs := []string{}
+	flags := make(map[string]bool)
+
+	for _, owner := range permInfo.OwnerAccounts {
+		if flags[owner] == false {
+			flags[owner] = true
+			addrs = append(addrs, owner)
+		}
+	}
+
+	for _, role := range permInfo.OwnerRoles {
+		actorIter := k.gk.GetNetworkActorsByRole(ctx, role)
+
+		for ; actorIter.Valid(); actorIter.Next() {
+			addr := sdk.AccAddress(actorIter.Value()).String()
+			if flags[addr] == false {
+				flags[addr] = true
+				addrs = append(addrs, addr)
+			}
+		}
+	}
+
+	return addrs
+}
