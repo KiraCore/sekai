@@ -32,3 +32,5 @@ lint:
 proto-gen:
 	docker run --rm -v $(CURDIR):/workspace --workdir /workspace tendermintdev/sdk-proto-gen sh ./scripts/protocgen.sh
 
+proto-gen-local:
+		./scripts/protocgen-local.sh
