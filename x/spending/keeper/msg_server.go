@@ -48,15 +48,9 @@ func (k msgServer) CreateSpendingPool(
 		VoteQuorum:    msg.VoteQuorum,
 		VotePeriod:    msg.VotePeriod,
 		VoteEnactment: msg.VoteEnactment,
-		Owners: &types.PermInfo{
-			OwnerRoles:    []uint64{},
-			OwnerAccounts: []string{msg.Sender},
-		},
-		Beneficiaries: &types.PermInfo{
-			OwnerRoles:    []uint64{},
-			OwnerAccounts: []string{},
-		},
-		Balance: sdk.ZeroInt(),
+		Owners:        &msg.Owners,
+		Beneficiaries: &msg.Beneficiaries,
+		Balance:       sdk.ZeroInt(),
 	})
 
 	if err != nil {

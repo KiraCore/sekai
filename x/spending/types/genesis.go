@@ -10,7 +10,7 @@ func DefaultGenesis() *GenesisState {
 	return &GenesisState{
 		Pools: []SpendingPool{
 			{
-				Name:          "ValidatorRewardPool",
+				Name:          "ValidatorBasicRewardsPool",
 				ClaimStart:    0,
 				ClaimEnd:      0,
 				Token:         "ukex",
