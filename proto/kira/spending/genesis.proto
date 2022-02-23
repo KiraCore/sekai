@@ -11,9 +11,3 @@ message GenesisState {
   // list of beneficiary accounts that claimed or registered to claim tokens from the pool as well as index of when the last time tokens were claimed.
   repeated ClaimInfo claims = 2 [ (gogoproto.nullable) = false ];
 }
-
-// TODO: We should also have a default pool created in the genesis, owned by
-// validator role and with beneficiaries as validator role as well
-
-// TODO: Rules of the name creation same as variables
-// We did that before* in some other parts of the Code, might be good to create some "safety" package and have the function checking if the name is valid with it everywhere

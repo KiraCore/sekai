@@ -45,6 +45,39 @@ func (a ApplyUpdateSpendingPoolProposalHandler) AllowedAddresses(ctx sdk.Context
 	return a.keeper.AllowedAddresses(ctx, *pool.Owners)
 }
 
+func (a ApplyUpdateSpendingPoolProposalHandler) Quorum(ctx sdk.Context, proposal govtypes.Content) uint64 {
+	p := proposal.(*types.UpdateSpendingPoolProposal)
+
+	pool := a.keeper.GetSpendingPool(ctx, p.Name)
+	if pool == nil {
+		return 0
+	}
+
+	return pool.VoteQuorum
+}
+
+func (a ApplyUpdateSpendingPoolProposalHandler) VotePeriod(ctx sdk.Context, proposal govtypes.Content) uint64 {
+	p := proposal.(*types.UpdateSpendingPoolProposal)
+
+	pool := a.keeper.GetSpendingPool(ctx, p.Name)
+	if pool == nil {
+		return 0
+	}
+
+	return pool.VotePeriod
+}
+
+func (a ApplyUpdateSpendingPoolProposalHandler) VoteEnactment(ctx sdk.Context, proposal govtypes.Content) uint64 {
+	p := proposal.(*types.UpdateSpendingPoolProposal)
+
+	pool := a.keeper.GetSpendingPool(ctx, p.Name)
+	if pool == nil {
+		return 0
+	}
+
+	return pool.VoteEnactment
+}
+
 func (a ApplyUpdateSpendingPoolProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal govtypes.Content) error {
 	p := proposal.(*spendingtypes.UpdateSpendingPoolProposal)
 
@@ -57,7 +90,6 @@ func (a ApplyUpdateSpendingPoolProposalHandler) Apply(ctx sdk.Context, proposalI
 		Name:          p.Name,
 		ClaimStart:    p.ClaimStart,
 		ClaimEnd:      p.ClaimEnd,
-		Expire:        p.Expire,
 		Token:         p.Token,
 		Rate:          p.Rate,
 		VoteQuorum:    p.VoteQuorum,
@@ -107,6 +139,39 @@ func (a ApplySpendingPoolDistributionProposalHandler) AllowedAddresses(ctx sdk.C
 	}
 
 	return a.keeper.AllowedAddresses(ctx, *pool.Owners)
+}
+
+func (a ApplySpendingPoolDistributionProposalHandler) Quorum(ctx sdk.Context, proposal govtypes.Content) uint64 {
+	p := proposal.(*types.SpendingPoolDistributionProposal)
+
+	pool := a.keeper.GetSpendingPool(ctx, p.PoolName)
+	if pool == nil {
+		return 0
+	}
+
+	return pool.VoteQuorum
+}
+
+func (a ApplySpendingPoolDistributionProposalHandler) VotePeriod(ctx sdk.Context, proposal govtypes.Content) uint64 {
+	p := proposal.(*types.SpendingPoolDistributionProposal)
+
+	pool := a.keeper.GetSpendingPool(ctx, p.PoolName)
+	if pool == nil {
+		return 0
+	}
+
+	return pool.VotePeriod
+}
+
+func (a ApplySpendingPoolDistributionProposalHandler) VoteEnactment(ctx sdk.Context, proposal govtypes.Content) uint64 {
+	p := proposal.(*types.SpendingPoolDistributionProposal)
+
+	pool := a.keeper.GetSpendingPool(ctx, p.PoolName)
+	if pool == nil {
+		return 0
+	}
+
+	return pool.VoteEnactment
 }
 
 func (a ApplySpendingPoolDistributionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal govtypes.Content) error {
@@ -185,6 +250,39 @@ func (a ApplySpendingPoolWithdrawProposalHandler) AllowedAddresses(ctx sdk.Conte
 	}
 
 	return a.keeper.AllowedAddresses(ctx, *pool.Owners)
+}
+
+func (a ApplySpendingPoolWithdrawProposalHandler) Quorum(ctx sdk.Context, proposal govtypes.Content) uint64 {
+	p := proposal.(*types.SpendingPoolWithdrawProposal)
+
+	pool := a.keeper.GetSpendingPool(ctx, p.PoolName)
+	if pool == nil {
+		return 0
+	}
+
+	return pool.VoteQuorum
+}
+
+func (a ApplySpendingPoolWithdrawProposalHandler) VotePeriod(ctx sdk.Context, proposal govtypes.Content) uint64 {
+	p := proposal.(*types.SpendingPoolWithdrawProposal)
+
+	pool := a.keeper.GetSpendingPool(ctx, p.PoolName)
+	if pool == nil {
+		return 0
+	}
+
+	return pool.VotePeriod
+}
+
+func (a ApplySpendingPoolWithdrawProposalHandler) VoteEnactment(ctx sdk.Context, proposal govtypes.Content) uint64 {
+	p := proposal.(*types.SpendingPoolWithdrawProposal)
+
+	pool := a.keeper.GetSpendingPool(ctx, p.PoolName)
+	if pool == nil {
+		return 0
+	}
+
+	return pool.VoteEnactment
 }
 
 func (a ApplySpendingPoolWithdrawProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal govtypes.Content) error {

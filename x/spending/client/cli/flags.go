@@ -4,7 +4,6 @@ const (
 	FlagName                = "name"
 	FlagClaimStart          = "claim-start"
 	FlagClaimEnd            = "claim-end"
-	FlagExpire              = "expire"
 	FlagToken               = "token"
 	FlagRate                = "rate"
 	FlagVoteQuorum          = "vote-quorum"

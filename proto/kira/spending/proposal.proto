@@ -19,18 +19,17 @@ message UpdateSpendingPoolProposal {
   string name = 1;
   uint64 claim_start = 2;
   uint64 claim_end = 3;
-  uint64 expire = 4; // seconds
-  string token = 5;  // name of the token that can be distributed.
-  string rate = 6 [
+  string token = 4;  // name of the token that can be distributed.
+  string rate = 5 [
     (gogoproto.moretags) = "yaml:\"rate\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
     (gogoproto.nullable) = false
   ];
-  uint64 vote_quorum = 7; // percentage, # default: 51%
-  uint64 vote_period = 8; // seconds, # default: 600s
-  uint64 vote_enactment = 9; // seconds, # default: 300s
-  kira.spending.PermInfo owners = 10 [ (gogoproto.nullable) = false ];
-  kira.spending.PermInfo beneficiaries = 11 [ (gogoproto.nullable) = false ];
+  uint64 vote_quorum = 6; // percentage, # default: 51%
+  uint64 vote_period = 7; // seconds, # default: 600s
+  uint64 vote_enactment = 8; // seconds, # default: 300s
+  kira.spending.PermInfo owners = 9 [ (gogoproto.nullable) = false ];
+  kira.spending.PermInfo beneficiaries = 10 [ (gogoproto.nullable) = false ];
 }
 
 // SpendingPoolDistributionProposal - force distribution of tokens to all

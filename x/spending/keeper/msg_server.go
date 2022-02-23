@@ -35,11 +35,14 @@ func (k msgServer) CreateSpendingPool(
 ) (*types.MsgCreateSpendingPoolResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	if !types.ValidateSpendingPoolName(msg.Name) {
+		return nil, types.ErrInvalidSpendingPoolName
+	}
+
 	err := k.keeper.CreateSpendingPool(ctx, types.SpendingPool{
 		Name:          msg.Name,
 		ClaimStart:    msg.ClaimStart,
 		ClaimEnd:      msg.ClaimEnd,
-		Expire:        msg.Expire,
 		Token:         msg.Token,
 		Rate:          msg.Rate,
 		VoteQuorum:    msg.VoteQuorum,
@@ -110,12 +113,15 @@ func (k msgServer) RegisterSpendingPoolBeneficiary(
 		return nil, err
 	}
 
-	if !k.keeper.IsAllowedAddress(ctx, sender, *pool.Owners) {
+	if !k.keeper.IsAllowedAddress(ctx, sender, *pool.Beneficiaries) {
 		return nil, types.ErrNotPoolOwner
 	}
 
-	pool.Beneficiaries = &msg.Beneficiary
-	k.keeper.SetSpendingPool(ctx, *pool)
+	k.keeper.SetClaimInfo(ctx, types.ClaimInfo{
+		PoolName:  pool.Name,
+		Account:   sender.String(),
+		LastClaim: uint64(ctx.BlockTime().Unix()),
+	})
 
 	return &types.MsgRegisterSpendingPoolBeneficiaryResponse{}, nil
 }

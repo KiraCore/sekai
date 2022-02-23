@@ -59,11 +59,6 @@ func GetTxCreateSpendingPoolCmd() *cobra.Command {
 				return fmt.Errorf("invalid claim end: %w", err)
 			}
 
-			claimExpiry, err := cmd.Flags().GetInt32(FlagExpire)
-			if err != nil {
-				return fmt.Errorf("invalid claim expiry: %w", err)
-			}
-
 			token, err := cmd.Flags().GetString(FlagToken)
 			if err != nil {
 				return fmt.Errorf("invalid token: %w", err)
@@ -145,7 +140,7 @@ func GetTxCreateSpendingPoolCmd() *cobra.Command {
 			}
 
 			msg := types.NewMsgCreateSpendingPool(
-				name, uint64(claimStart), uint64(claimEnd), uint64(claimExpiry), token, rate,
+				name, uint64(claimStart), uint64(claimEnd), token, rate,
 				uint64(voteQuorum), uint64(votePeriod), uint64(voteEnactment),
 				types.PermInfo{
 					OwnerRoles:    ownerRoles,
@@ -173,7 +168,6 @@ func GetTxCreateSpendingPoolCmd() *cobra.Command {
 	cmd.Flags().String(FlagName, "", "The name of the spending pool.")
 	cmd.Flags().Int32(FlagClaimStart, 0, "The claim start timestamp of the spending pool.")
 	cmd.Flags().Int32(FlagClaimEnd, 0, "The claim end timestamp of the spending pool.")
-	cmd.Flags().Int32(FlagExpire, 0, "The claim expire timestamp of the spending pool.")
 	cmd.Flags().String(FlagToken, "", "The reward token of the spending pool.")
 	cmd.Flags().String(FlagRate, "", "reward rate of the spending pool.")
 	cmd.Flags().Int32(FlagVoteQuorum, 0, "vote quorum of the spending pool.")
@@ -357,11 +351,6 @@ func GetTxUpdateSpendingPoolProposalCmd() *cobra.Command {
 				return fmt.Errorf("invalid claim end: %w", err)
 			}
 
-			claimExpiry, err := cmd.Flags().GetInt32(FlagExpire)
-			if err != nil {
-				return fmt.Errorf("invalid claim expiry: %w", err)
-			}
-
 			token, err := cmd.Flags().GetString(FlagToken)
 			if err != nil {
 				return fmt.Errorf("invalid token: %w", err)
@@ -446,7 +435,7 @@ func GetTxUpdateSpendingPoolProposalCmd() *cobra.Command {
 				title,
 				description,
 				types.NewUpdateSpendingPoolProposal(
-					name, uint64(claimStart), uint64(claimEnd), uint64(claimExpiry), token, rate,
+					name, uint64(claimStart), uint64(claimEnd), token, rate,
 					uint64(voteQuorum), uint64(votePeriod), uint64(voteEnactment),
 					types.PermInfo{
 						OwnerRoles:    ownerRoles,
@@ -474,7 +463,6 @@ func GetTxUpdateSpendingPoolProposalCmd() *cobra.Command {
 	cmd.Flags().String(FlagName, "", "The name of the spending pool.")
 	cmd.Flags().Int32(FlagClaimStart, 0, "The claim start timestamp of the spending pool.")
 	cmd.Flags().Int32(FlagClaimEnd, 0, "The claim end timestamp of the spending pool.")
-	cmd.Flags().Int32(FlagExpire, 0, "The claim expire timestamp of the spending pool.")
 	cmd.Flags().String(FlagToken, "", "The reward token of the spending pool.")
 	cmd.Flags().String(FlagRate, "", "reward rate of the spending pool.")
 	cmd.Flags().Int32(FlagVoteQuorum, 0, "vote quorum of the spending pool.")

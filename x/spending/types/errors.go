@@ -10,4 +10,7 @@ var (
 	ErrNotPoolOwner                      = errors.Register(ModuleName, 4, "not a pool owner")
 	ErrNotPoolBeneficiary                = errors.Register(ModuleName, 5, "not a pool beneiciary")
 	ErrInvalidSpendingPoolWithdrawAmount = errors.Register(ModuleName, 6, "invalid spending pool withdraw amount")
+	ErrInvalidSpendingPoolName           = errors.Register(ModuleName, 7, "invalid spending pool name")
+	ErrNotRegisteredForRewards           = errors.Register(ModuleName, 8, "not registered for rewards")
+	ErrNoMoreRewardsToClaim              = errors.Register(ModuleName, 9, "no more rewards to claim")
 )

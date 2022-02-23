@@ -99,19 +99,25 @@ func (k Keeper) ClaimSpendingPool(ctx sdk.Context, poolName string, sender sdk.A
 	}
 
 	claimInfo := k.GetClaimInfo(ctx, pool.Name, sender)
-
-	lastClaim := pool.ClaimStart
-	if claimInfo != nil && lastClaim < claimInfo.LastClaim {
-		lastClaim = claimInfo.LastClaim
+	if claimInfo == nil {
+		return types.ErrNotRegisteredForRewards
 	}
 
-	// TODO: is this the rate for second?
-	// TODO: for newly claim user, when lastClaim should be set?
-	// - there could be the case a new account join a new role
-	// - there could be the case a new account is added via a command
-	// - one possible solution could be restricting users to claim the amount for their first claim
-	// TODO: how to handle pool.Expiry?
-	rewards := pool.Rate.Mul(sdk.NewDec(ctx.BlockTime().Unix() - int64(lastClaim))).TruncateInt()
+	claimStart := int64(pool.ClaimStart)
+	if claimStart < int64(claimInfo.LastClaim) {
+		claimStart = int64(claimInfo.LastClaim)
+	}
+
+	claimEnd := ctx.BlockTime().Unix()
+	if pool.ClaimEnd != 0 && claimEnd > int64(pool.ClaimEnd) {
+		claimEnd = int64(pool.ClaimEnd)
+	}
+
+	if claimStart > claimEnd {
+		return types.ErrNoMoreRewardsToClaim
+	}
+
+	rewards := pool.Rate.Mul(sdk.NewDec(claimEnd - int64(claimStart))).TruncateInt()
 
 	// update pool to reduce pool's balance
 	pool.Balance = pool.Balance.Sub(rewards)

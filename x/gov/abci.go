@@ -51,8 +51,11 @@ func processProposal(ctx sdk.Context, k keeper.Keeper, proposalID uint64) {
 
 	properties := k.GetNetworkProperties(ctx)
 
-	// TODO: add update vote quorum for spending pool proposals to use the quorum
 	quorum := properties.VoteQuorum
+	if content.VotePermission() == types.PermZero {
+		router := k.GetProposalRouter()
+		quorum = router.QuorumDynamicProposal(ctx, content)
+	}
 
 	isQuorum, err := types.IsQuorum(quorum, uint64(numVotes), uint64(totalVoters))
 	if err != nil {
