@@ -26,7 +26,6 @@ const (
 	FlagMinTxFee          = "min_tx_fee"
 	FlagMaxTxFee          = "max_tx_fee"
 	FlagMinValidators     = "min_validators"
-	FlagExecName          = "execution_name"
 	FlagTxType            = "transaction_type"
 	FlagExecutionFee      = "execution_fee"
 	FlagFailureFee        = "failure_fee"
@@ -422,10 +421,6 @@ func NewTxSetExecutionFee() *cobra.Command {
 				return err
 			}
 
-			execName, err := cmd.Flags().GetString(FlagExecName)
-			if err != nil {
-				return fmt.Errorf("invalid execution name")
-			}
 			txType, err := cmd.Flags().GetString(FlagTxType)
 			if err != nil {
 				return fmt.Errorf("invalid transaction type")
@@ -449,7 +444,6 @@ func NewTxSetExecutionFee() *cobra.Command {
 			}
 
 			msg := types.NewMsgSetExecutionFee(
-				execName,
 				txType,
 				execFee,
 				failureFee,
@@ -461,7 +455,6 @@ func NewTxSetExecutionFee() *cobra.Command {
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
-	cmd.Flags().String(FlagExecName, "", "execution name")
 	cmd.Flags().String(FlagTxType, "", "execution type")
 	cmd.Flags().Uint64(FlagExecutionFee, 10, "execution fee")
 	cmd.Flags().Uint64(FlagFailureFee, 1, "failure fee")

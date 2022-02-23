@@ -136,7 +136,6 @@ func TestExportInitGenesis(t *testing.T) {
 		},
 		ExecutionFees: []*types.ExecutionFee{
 			{
-				Name:              "Claim Validator Seat",
 				TransactionType:   "claim-validator-seat",
 				ExecutionFee:      10,
 				FailureFee:        1,

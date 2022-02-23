@@ -8,7 +8,6 @@ import (
 var _ sdk.Msg = &MsgSetExecutionFee{}
 
 func NewMsgSetExecutionFee(
-	name string,
 	transactionType string,
 	executionFee uint64,
 	failureFee uint64,
@@ -17,7 +16,6 @@ func NewMsgSetExecutionFee(
 	proposer sdk.AccAddress,
 ) *MsgSetExecutionFee {
 	return &MsgSetExecutionFee{
-		Name:              name,
 		TransactionType:   transactionType,
 		ExecutionFee:      executionFee,
 		FailureFee:        failureFee,
