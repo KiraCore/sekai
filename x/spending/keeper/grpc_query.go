@@ -93,8 +93,9 @@ func (q Querier) QueryPoolProposals(c context.Context, request *types.QueryPoolP
 			}
 		}
 	}
-	_ = ctx
-	return &types.QueryPoolProposalsResponse{}, nil
+	return &types.QueryPoolProposalsResponse{
+		Proposals: poolProposals,
+	}, nil
 }
 
 // QueryPoolsByAccount - query pools where an account can claim rewards

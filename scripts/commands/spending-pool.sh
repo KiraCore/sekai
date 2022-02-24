@@ -10,6 +10,8 @@ sekaid tx spending claim-spending-pool --name="ValidatorRewardsPool" --from=vali
 
 sekaid query spending pool-by-name ValidatorRewardsPool --home=$HOME/.sekaid
 sekaid query spending pool-names
+sekaid query spending pool-proposals ValidatorRewardsPool
+sekaid query spending pools-by-account $(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid)
 
 sekaid query customgov roles $(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid)
 
