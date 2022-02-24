@@ -81,7 +81,7 @@ type AppModule struct {
 // module-specific GRPC queries.
 func (am AppModule) RegisterServices(cfg module.Configurator) {
 	spendingtypes.RegisterMsgServer(cfg.MsgServer(), spendingkeeper.NewMsgServerImpl(am.spendingKeeper, am.customGovKeeper, am.bankKeeper))
-	querier := spendingkeeper.NewQuerier(am.spendingKeeper)
+	querier := spendingkeeper.NewQuerier(am.spendingKeeper, am.customGovKeeper)
 	spendingtypes.RegisterQueryServer(cfg.QueryServer(), querier)
 }
 

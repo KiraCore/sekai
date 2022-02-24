@@ -13,4 +13,5 @@ var (
 	ErrInvalidSpendingPoolName           = errors.Register(ModuleName, 7, "invalid spending pool name")
 	ErrNotRegisteredForRewards           = errors.Register(ModuleName, 8, "not registered for rewards")
 	ErrNoMoreRewardsToClaim              = errors.Register(ModuleName, 9, "no more rewards to claim")
+	ErrInvalidProposalExists             = errors.Register(ModuleName, 10, "invalid proposal exists")
 )

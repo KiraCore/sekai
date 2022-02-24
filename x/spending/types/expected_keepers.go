@@ -15,6 +15,7 @@ type CustomGovKeeper interface {
 	SaveProposal(ctx sdk.Context, proposal govtypes.Proposal)
 	AddToActiveProposals(ctx sdk.Context, proposal govtypes.Proposal)
 	CreateAndSaveProposalWithContent(ctx sdk.Context, title, description string, content govtypes.Content) (uint64, error)
+	GetProposals(ctx sdk.Context) ([]govtypes.Proposal, error)
 }
 
 // BankKeeper defines the expected interface needed to retrieve account balances.

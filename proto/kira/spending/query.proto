@@ -58,7 +58,7 @@ message QueryPoolsByAccountRequest {
 }
 
 message QueryPoolsByAccountResponse {
-  repeated SpendingPool pool = 1 [
+  repeated SpendingPool pools = 1 [
     (gogoproto.nullable) = false
   ];
 }
