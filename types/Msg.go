@@ -49,6 +49,12 @@ const (
 	MsgTypeUnpause  = "unpause"
 
 	//upgrade module
+
+	// spending module
+	MsgTypeCreateSpendingPool              = "create-spending-pool"
+	MsgTypeDepositSpendingPool             = "deposit-spending-pool"
+	MsgTypeRegisterSpendingPoolBeneficiary = "register-spending-pool-beneficiary"
+	MsgTypeClaimSpendingPool               = "claim-spending-pool"
 )
 
 // Msg defines the interface a transaction message must fulfill.
@@ -92,6 +98,11 @@ var MsgFuncIDMapping = map[string]int64{
 	MsgTypeActivate:                      35,
 	MsgTypePause:                         36,
 	MsgTypeUnpause:                       37,
+
+	MsgTypeCreateSpendingPool:              41,
+	MsgTypeDepositSpendingPool:             42,
+	MsgTypeRegisterSpendingPoolBeneficiary: 43,
+	MsgTypeClaimSpendingPool:               44,
 }
 
 func MsgType(msg sdk.Msg) string {

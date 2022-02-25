@@ -1,0 +1,79 @@
+syntax = "proto3";
+package kira.spending;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "kira/spending/pool.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/spending/types";
+
+// Msg defines the spending Msg service.
+service Msg {
+    // spending-pool-create- a function to allow creating a new spending pool. 
+    // This function can be sent by any account. The person sending the transaction automatically becomes the pool owner.
+    // The original owner should provide a unique pool name when sending create tx.
+    rpc CreateSpendingPool(MsgCreateSpendingPool) returns (MsgCreateSpendingPoolResponse);
+    // spending-pool-deposit - a function to allow depositing tokens to the pool address (name). 
+    // Any KIRA address should be able to call this function and deposit tokens.
+    rpc DepositSpendingPool(MsgDepositSpendingPool) returns (MsgDepositSpendingPoolResponse);
+
+    // spending-pool-register - a function to register beneficiary account to be
+    // eligible for claims
+    rpc RegisterSpendingPoolBeneficiary(MsgRegisterSpendingPoolBeneficiary) returns (MsgRegisterSpendingPoolBeneficiaryResponse);
+
+    // spending-pool-claim - a function to allow claiming tokens from the pool.
+    // Only beneficiaries should be able to send this transaction.
+    // Funds can be claimed only for the period between current bloct time and value set in the claims property in accordance to the current distribution rate. If the pool doesn't have a sufficient balance of a specific token as defined by tokens property then that specific token should NOT be sent in any amount. If the pool has sufficient funds as defined by the amount in the tokens property then exact amount owed should be sent to the beneficiary. All tokens that can be sent should be sent all at once to the account that is claiming them. If the claim expiration period elapsed and funds were NOT claimed by the beneficiary then the funds will NOT be sent. Beneficiary will only receive tokens if he already registered and his account is present in the claims array. Claiming of specific token should be only possible if and only if the spending pool has sufficient funds to distribute funds to ALL accounts eligible for claiming them (either all eligible accounts can claim a specific token or no one).
+    rpc ClaimSpendingPool(MsgClaimSpendingPool) returns (MsgClaimSpendingPoolResponse);
+}
+
+message MsgCreateSpendingPool {
+  string name = 1;
+  // claim-start & claim-end - defines the exact time period (Unix timestamps) between which tokens can be claimed from the pool, allowing for a precise funds distribution.
+  uint64 claim_start = 2;
+  uint64 claim_end = 3;
+  string token = 4; // name of the token that can be distributed.
+  // rate of distribution in the smallest token denomination per 1 second (this value can be a float number, smaller than actual denomination)
+  string rate = 5 [
+    (gogoproto.moretags)   = "yaml:\"rate\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable)   = false
+  ];
+  // pool specific % of owner accounts that must vote YES or NO for any of the pool proposals to be valid.
+  uint64 vote_quorum = 6; // percentage, # default: 51%
+  // period of time in seconds that any of the pool proposals must last before passing or being rejected
+  uint64 vote_period = 7; // seconds, # default: 600s
+  // period of time that must pass before any of the pool proposal is enacted
+  uint64 vote_enactment = 8; // seconds, # default: 300s
+  // defines a list of accounts/roles controlling the spending pool via “governance-like” proposals
+  PermInfo owners = 9 [ (gogoproto.nullable) = false ];
+  // defines set of accounts/roles to which funds can be distributed
+  PermInfo beneficiaries = 10 [ (gogoproto.nullable) = false ];
+  string sender = 11;
+}
+message MsgCreateSpendingPoolResponse {}
+
+message MsgDepositSpendingPool {
+  string sender = 1;
+  string pool_name = 2;
+  repeated string amount = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
+}
+message MsgDepositSpendingPoolResponse {}
+
+message MsgRegisterSpendingPoolBeneficiary {
+  string sender = 1;
+  string pool_name = 2;
+  PermInfo beneficiary = 3 [
+    (gogoproto.nullable) = false
+  ];
+}
+message MsgRegisterSpendingPoolBeneficiaryResponse {}
+
+message MsgClaimSpendingPool {
+    string sender = 1;
+    string pool_name = 2;
+}
+message MsgClaimSpendingPoolResponse {}
