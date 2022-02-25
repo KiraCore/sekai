@@ -41,6 +41,7 @@ fi
 echo "mount -t drvfs C: /mnt/c" >> ~/.bash_aliases
 
 # set env variable to your repo
+
 setGlobEnv SEKAI_REPO "/mnt/c/Users/asmodat/Desktop/KIRA/KIRA-CORE/GITHUB/sekai"
 
 # set home directory of your blockchain app

@@ -199,8 +199,31 @@ func (k Keeper) WhitelistedProposalVoters(goCtx context.Context, request *types.
 	if !found {
 		return nil, sdkerrors.Wrap(types.ErrGettingProposals, fmt.Sprintf("proposal does not exist for %d", request.ProposalId))
 	}
-	actors := k.GetNetworkActorsByAbsoluteWhitelistPermission(ctx, proposal.GetContent().VotePermission())
-	return &types.QueryWhitelistedProposalVotersResponse{Voters: actors}, nil
+
+	// dynamic proposal users for spending pool proposals
+	content := proposal.GetContent()
+	if content.VotePermission() == types.PermZero {
+		router := k.GetProposalRouter()
+		addrs := router.AllowedAddressesDynamicProposal(ctx, content)
+		actors := []types.NetworkActor{}
+		for _, addr := range addrs {
+			sdkAddr, err := sdk.AccAddressFromBech32(addr)
+			if err != nil {
+				return nil, err
+			}
+			actor, ok := k.GetNetworkActorByAddress(ctx, sdkAddr)
+			if !ok {
+				actor = types.NetworkActor{
+					Address: sdkAddr,
+				}
+			}
+			actors = append(actors, actor)
+		}
+		return &types.QueryWhitelistedProposalVotersResponse{Voters: actors}, nil
+	} else {
+		actors := k.GetNetworkActorsByAbsoluteWhitelistPermission(ctx, proposal.GetContent().VotePermission())
+		return &types.QueryWhitelistedProposalVotersResponse{Voters: actors}, nil
+	}
 }
 
 // Vote queries voted information based on proposalID, voterAddr.

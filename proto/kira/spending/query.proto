@@ -1,0 +1,64 @@
+syntax = "proto3";
+package kira.spending;
+
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "kira/spending/pool.proto";
+import "kira/gov/proposal.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/spending/types";
+
+// Query defines the gRPC querier service
+service Query {
+  // query-pools - query list of pool names
+  rpc QueryPoolNames(QueryPoolNamesRequest) returns (QueryPoolNamesResponse) {
+    option (google.api.http).get = "/kira/spending/pool_names";
+  }
+  // query-pool - query pool by name
+  rpc QueryPoolByName(QueryPoolByNameRequest) returns (QueryPoolByNameResponse) {
+    option (google.api.http).get = "/kira/spending/pool/{name}";
+  }
+  // query-pool-proposals - query pool proposals by name
+  rpc QueryPoolProposals(QueryPoolProposalsRequest) returns (QueryPoolProposalsResponse) {
+    option (google.api.http).get = "/kira/spending/pool_proposals/{pool_name}";
+  }
+  // query-pools-by-account - query list of pool names where specific kira account can register its claim or otherwise claim tokens from
+  rpc QueryPoolsByAccount(QueryPoolsByAccountRequest) returns (QueryPoolsByAccountResponse) {
+    option (google.api.http).get = "/kira/spending/pools/{account}";
+  }
+}
+
+message QueryPoolNamesRequest {}
+
+message QueryPoolNamesResponse {
+  repeated string names = 1;
+}
+
+message QueryPoolByNameRequest {
+  string name = 1;
+}
+
+message QueryPoolByNameResponse {
+  SpendingPool pool = 1;
+}
+
+message QueryPoolProposalsRequest {
+  string pool_name = 1;
+  cosmos.base.query.v1beta1.PageRequest pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageRequest"];
+}
+
+message QueryPoolProposalsResponse {
+  repeated kira.gov.Proposal proposals = 1 [(gogoproto.nullable) = false];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
+}
+
+message QueryPoolsByAccountRequest {
+  string account = 1;
+}
+
+message QueryPoolsByAccountResponse {
+  repeated SpendingPool pools = 1 [
+    (gogoproto.nullable) = false
+  ];
+}

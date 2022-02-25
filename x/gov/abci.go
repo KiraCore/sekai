@@ -37,10 +37,25 @@ func processProposal(ctx sdk.Context, k keeper.Keeper, proposalID uint64) {
 
 	availableVoters := k.GetNetworkActorsByAbsoluteWhitelistPermission(ctx, proposal.GetContent().VotePermission())
 	totalVoters := len(availableVoters)
+
+	// update to spending pool users if it's spending pool proposal
+	content := proposal.GetContent()
+	if content.VotePermission() == types.PermZero {
+		router := k.GetProposalRouter()
+		totalVoters = len(router.AllowedAddressesDynamicProposal(ctx, content))
+		if totalVoters == 0 {
+			totalVoters = 1
+		}
+	}
 	numVotes := len(votes)
 
 	properties := k.GetNetworkProperties(ctx)
+
 	quorum := properties.VoteQuorum
+	if content.VotePermission() == types.PermZero {
+		router := k.GetProposalRouter()
+		quorum = router.QuorumDynamicProposal(ctx, content)
+	}
 
 	isQuorum, err := types.IsQuorum(quorum, uint64(numVotes), uint64(totalVoters))
 	if err != nil {

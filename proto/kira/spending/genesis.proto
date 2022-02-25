@@ -1,0 +1,13 @@
+syntax = "proto3";
+package kira.spending;
+
+option go_package = "github.com/KiraCore/sekai/x/spending/types";
+
+import "gogoproto/gogo.proto";
+import "kira/spending/pool.proto";
+
+message GenesisState {
+  repeated SpendingPool pools = 1 [(gogoproto.nullable) = false];
+  // list of beneficiary accounts that claimed or registered to claim tokens from the pool as well as index of when the last time tokens were claimed.
+  repeated ClaimInfo claims = 2 [ (gogoproto.nullable) = false ];
+}

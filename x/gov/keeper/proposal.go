@@ -43,6 +43,14 @@ func (k Keeper) CreateAndSaveProposalWithContent(ctx sdk.Context, title, descrip
 		proposalEndTime = properties.MinimumProposalEndTime
 	}
 
+	proposalEnactmentTime := properties.ProposalEnactmentTime
+
+	if content.VotePermission() == types.PermZero {
+		router := k.GetProposalRouter()
+		proposalEndTime = router.VotePeriodDynamicProposal(ctx, content)
+		proposalEnactmentTime = router.EnactmentPeriodDynamicProposal(ctx, content)
+	}
+
 	proposal, err := types.NewProposal(
 		proposalID,
 		title,
@@ -51,7 +59,7 @@ func (k Keeper) CreateAndSaveProposalWithContent(ctx sdk.Context, title, descrip
 		blockTime,
 		blockTime.Add(time.Second*time.Duration(proposalEndTime)),
 		blockTime.Add(time.Second*time.Duration(proposalEndTime)+
-			time.Second*time.Duration(properties.ProposalEnactmentTime),
+			time.Second*time.Duration(proposalEnactmentTime),
 		),
 		ctx.BlockHeight()+int64(properties.MinProposalEndBlocks),
 		ctx.BlockHeight()+int64(properties.MinProposalEndBlocks+properties.MinProposalEnactmentBlocks),
