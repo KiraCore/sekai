@@ -12,7 +12,7 @@ type ApplyUpsertUBIProposalHandler struct {
 	keeper keeper.Keeper
 }
 
-func NewUpsertUBIProposalHandler(keeper keeper.Keeper) *ApplyUpsertUBIProposalHandler {
+func NewApplyUpsertUBIProposalHandler(keeper keeper.Keeper) *ApplyUpsertUBIProposalHandler {
 	return &ApplyUpsertUBIProposalHandler{
 		keeper: keeper,
 	}
