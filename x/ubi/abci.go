@@ -10,7 +10,7 @@ func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 	allRecords := k.GetUBIRecords(ctx)
 	for _, record := range allRecords {
 		currUnixTimestamp := uint64(ctx.BlockTime().Unix())
-		if currUnixTimestamp > record.DistributionLast+record.Period {
+		if currUnixTimestamp > record.DistributionLast+record.Period && (record.DistributionEnd == 0 || record.DistributionLast < record.DistributionEnd) {
 			cacheCtx, write := ctx.CacheContext()
 			err := k.ProcessUBIRecord(cacheCtx, record)
 			if err == nil {

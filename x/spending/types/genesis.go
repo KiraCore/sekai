@@ -14,7 +14,7 @@ func DefaultGenesis() *GenesisState {
 				ClaimStart:    0,
 				ClaimEnd:      0,
 				Token:         "ukex",
-				Rate:          sdk.NewDec(100),
+				Rate:          sdk.NewDec(192_901), // 500k KEX per month
 				VoteQuorum:    33,
 				VotePeriod:    300, // 300s
 				VoteEnactment: 300, // 300s
