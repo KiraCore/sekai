@@ -11,7 +11,7 @@ import (
 )
 
 func (k Keeper) GetUBIRecordByName(ctx sdk.Context, name string) *types.UBIRecord {
-	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.PrefixKeyUBIRecord)
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), []byte(types.PrefixKeyUBIRecord))
 	bz := prefixStore.Get([]byte(name))
 	if bz == nil {
 		return nil
@@ -28,7 +28,7 @@ func (k Keeper) GetUBIRecords(ctx sdk.Context) []types.UBIRecord {
 
 	// get iterator for token rates
 	store := ctx.KVStore(k.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, types.PrefixKeyUBIRecord)
+	iterator := sdk.KVStorePrefixIterator(store, []byte(types.PrefixKeyUBIRecord))
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {

@@ -9,6 +9,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/spf13/cobra"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // flags for ubi module txs
@@ -63,12 +65,12 @@ func GetTxProposalUpsertUBICmd() *cobra.Command {
 				return fmt.Errorf("invalid ubi name: %w", err)
 			}
 
-			distrStart, err := cmd.Flags().GetInt64(FlagDistributionStart)
+			distrStart, err := cmd.Flags().GetUint64(FlagDistributionStart)
 			if err != nil {
 				return fmt.Errorf("invalid ubi distribution start: %w", err)
 			}
 
-			distrEnd, err := cmd.Flags().GetInt64(FlagDistributionEnd)
+			distrEnd, err := cmd.Flags().GetUint64(FlagDistributionEnd)
 			if err != nil {
 				return fmt.Errorf("invalid ubi distribution end: %w", err)
 			}
@@ -78,7 +80,7 @@ func GetTxProposalUpsertUBICmd() *cobra.Command {
 				return fmt.Errorf("invalid ubi amount: %w", err)
 			}
 
-			period, err := cmd.Flags().GetInt64(FlagPeriod)
+			period, err := cmd.Flags().GetUint64(FlagPeriod)
 			if err != nil {
 				return fmt.Errorf("invalid ubi period: %w", err)
 			}
@@ -92,14 +94,7 @@ func GetTxProposalUpsertUBICmd() *cobra.Command {
 				clientCtx.FromAddress,
 				title,
 				description,
-				&types.UpsertUBIProposal{
-					Name:              name,
-					DistributionStart: distrStart,
-					DistributionEnd:   distrEnd,
-					Amount:            amount,
-					Period:            period,
-					Pool:              poolName,
-				},
+				types.NewUpsertUBIProposal(name, distrStart, distrEnd, sdk.NewInt(amount), period, poolName),
 			)
 			if err != nil {
 				return err
@@ -112,7 +107,7 @@ func GetTxProposalUpsertUBICmd() *cobra.Command {
 	cmd.Flags().String(FlagName, "", "The name of ubi.")
 	cmd.Flags().Uint64(FlagDistributionStart, 0, "The distribution start time of ubi.")
 	cmd.Flags().Uint64(FlagDistributionEnd, 0, "The distribution end time of ubi.")
-	cmd.Flags().Uint64(FlagAmount, 0, "The amount of tokens to be minted per period.")
+	cmd.Flags().Int64(FlagAmount, 0, "The amount of tokens to be minted per period.")
 	cmd.Flags().Uint64(FlagPeriod, 0, "The duration to to mint tokens.")
 	cmd.Flags().String(FlagPoolName, "", "The target pool name to receive minted tokens.")
 	cmd.Flags().String(FlagTitle, "", "The title of a proposal.")

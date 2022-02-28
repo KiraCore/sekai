@@ -26,5 +26,5 @@ message UBIRecord {
   // for the funds to be distributed automatically into pool
   uint64 period = 6; // <seconds>
   // pool - spending pool name where exact amount of KEX should be deposited
-  uint64 pool = 7; // <string>
+  string pool = 7;
 }

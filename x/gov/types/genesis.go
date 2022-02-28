@@ -98,6 +98,7 @@ func DefaultGenesis() *GenesisState {
 			EnableTokenBlacklist:        true,
 			MinIdentityApprovalTip:      200,
 			UniqueIdentityKeys:          "moniker,username",
+			UbiHardcap:                  0,
 		},
 		ExecutionFees: []*ExecutionFee{
 			{

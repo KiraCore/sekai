@@ -2,7 +2,6 @@ package cli
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/spf13/cobra"
 
@@ -11,10 +10,6 @@ import (
 
 	"github.com/KiraCore/sekai/x/ubi/types"
 )
-
-func (q Querier) QueryUBIRecords(c context.Context, request *types.QueryUBIRecordsRequest) (*types.QueryUBIRecordsResponse, error) {
-
-func (q Querier) QueryUBIRecordByName(c
 
 // NewQueryCmd returns a root CLI command handler for all x/ubi transaction commands.
 func NewQueryCmd() *cobra.Command {
@@ -39,8 +34,8 @@ func GetCmdQueryUBIRecordByName() *cobra.Command {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			queryClient := types.NewQueryClient(clientCtx)
-			res, err := queryClient.UBIRecordByName(context.Background(), &types.QueryUBIRecordByNameRequest{
-				Name: args[0]
+			res, err := queryClient.QueryUBIRecordByName(context.Background(), &types.QueryUBIRecordByNameRequest{
+				Name: args[0],
 			})
 			if err != nil {
 				return err

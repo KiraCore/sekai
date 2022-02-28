@@ -133,6 +133,7 @@ func TestExportInitGenesis(t *testing.T) {
 			EnableForeignFeePayments:    true,
 			MinIdentityApprovalTip:      200,
 			UniqueIdentityKeys:          "moniker,username",
+			UbiHardcap:                  0,
 		},
 		ExecutionFees: []*types.ExecutionFee{
 			{

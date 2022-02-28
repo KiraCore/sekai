@@ -33,7 +33,7 @@ message UpsertUBIProposal {
   // for the funds to be distributed automatically into pool
   uint64 period = 5; // <seconds>
   // pool - spending pool name where exact amount of KEX should be deposited
-  uint64 pool = 6; // <string>
+  string pool = 6;
 }
 
 // RemoveUBIProposal - a proposal to delete UBI record
