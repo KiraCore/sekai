@@ -1,0 +1,45 @@
+syntax = "proto3";
+package kira.gov;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/any.proto";
+import "cosmos_proto/cosmos.proto";
+import "kira/ubi/ubi.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/ubi/types";
+
+// UpsertUBIProposal a proposal to create a new or modify existing UBI registry
+// record. The proposal should fail if sum of all ((float)amount / period) *
+// 31556952 for all UBI records is greater than ubi-hard-cap.
+message UpsertUBIProposal {
+  option (cosmos_proto.implements_interface) = "Content";
+  option (gogoproto.equal) = true;
+
+  string name = 1;
+  // distribution-start & distribution-end - defines the exact time period (Unix
+  // timestamps) between which tokens will be distributed to the pool, allowing
+  // for a precise funds spending.
+  uint64 distribution_start = 2; // <unix-timestamp>
+  uint64 distribution_end = 3;   // <unix-timestamp>
+  // amount - the amount of KEX tokens to be minted and distributed every period
+  // number of seconds into pool
+  string amount = 4 [
+    (gogoproto.moretags) = "yaml:\"amount\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  // period - time in seconds that must elapse sincedistribution-last
+  // for the funds to be distributed automatically into pool
+  uint64 period = 5; // <seconds>
+  // pool - spending pool name where exact amount of KEX should be deposited
+  uint64 pool = 6; // <string>
+}
+
+// RemoveUBIProposal - a proposal to delete UBI record
+message RemoveUBIProposal {
+  option (cosmos_proto.implements_interface) = "Content";
+  option (gogoproto.equal) = true;
+
+  string ubi_name = 1;
+}
