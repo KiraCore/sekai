@@ -10,11 +10,13 @@ import (
 
 type ApplyUpsertUBIProposalHandler struct {
 	keeper keeper.Keeper
+	gk     ubitypes.CustomGovKeeper
 }
 
-func NewApplyUpsertUBIProposalHandler(keeper keeper.Keeper) *ApplyUpsertUBIProposalHandler {
+func NewApplyUpsertUBIProposalHandler(keeper keeper.Keeper, gk ubitypes.CustomGovKeeper) *ApplyUpsertUBIProposalHandler {
 	return &ApplyUpsertUBIProposalHandler{
 		keeper: keeper,
+		gk:     gk,
 	}
 }
 
@@ -25,9 +27,28 @@ func (a ApplyUpsertUBIProposalHandler) ProposalType() string {
 func (a ApplyUpsertUBIProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
 	p := proposal.(*ubitypes.UpsertUBIProposal)
 
-	// TODO: The proposal should fail if sum of all ((float)amount / period) * 31556952 for all UBI records is greater than ubi-hard-cap.
+	yearSeconds := uint64(31556952)
+	hardcap := a.gk.GetNetworkProperties(ctx).UbiHardcap
+	allRecords := a.keeper.GetUBIRecords(ctx)
+	ubiSum := uint64(0)
+	for _, record := range allRecords {
+		ubiSum += record.Amount * yearSeconds / record.Period
+	}
 
-	_ = p
+	// fail if sum of all ((float)amount / period) * 31556952 for all UBI records is greater than ubi-hard-cap.
+	if ubiSum+p.Amount*yearSeconds/p.Period > hardcap {
+		return ubitypes.ErrUbiSumOverflowsHardcap
+	}
+
+	a.keeper.SetUBIRecord(ctx, ubitypes.UBIRecord{
+		Name:              p.Name,
+		DistributionStart: p.DistributionStart,
+		DistributionEnd:   p.DistributionEnd,
+		DistributionLast:  p.DistributionStart,
+		Amount:            p.Amount,
+		Period:            p.Period,
+		Pool:              p.Pool,
+	})
 	return nil
 }
 
@@ -45,6 +66,5 @@ func (a ApplyRemoveUBIProposalHandler) ProposalType() string {
 
 func (a ApplyRemoveUBIProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
 	p := proposal.(*ubitypes.RemoveUBIProposal)
-	_ = p
-	return nil
+	return a.keeper.DeleteUBIRecord(ctx, p.UbiName)
 }

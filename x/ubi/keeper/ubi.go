@@ -41,11 +41,10 @@ func (k Keeper) GetUBIRecords(ctx sdk.Context) []types.UBIRecord {
 	return records
 }
 
-func (k Keeper) SetUBIRecord(ctx sdk.Context, record types.UBIRecord) error {
+func (k Keeper) SetUBIRecord(ctx sdk.Context, record types.UBIRecord) {
 	store := ctx.KVStore(k.storeKey)
 	key := append([]byte(types.PrefixKeyUBIRecord), []byte(record.Name)...)
 	store.Set(key, k.cdc.MustMarshal(&record))
-	return nil
 }
 
 func (k Keeper) DeleteUBIRecord(ctx sdk.Context, name string) error {

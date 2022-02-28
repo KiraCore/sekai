@@ -24,11 +24,7 @@ message UpsertUBIProposal {
   uint64 distribution_end = 3;   // <unix-timestamp>
   // amount - the amount of KEX tokens to be minted and distributed every period
   // number of seconds into pool
-  string amount = 4 [
-    (gogoproto.moretags) = "yaml:\"amount\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-    (gogoproto.nullable) = false
-  ];
+  uint64 amount = 4;
   // period - time in seconds that must elapse sincedistribution-last
   // for the funds to be distributed automatically into pool
   uint64 period = 5; // <seconds>

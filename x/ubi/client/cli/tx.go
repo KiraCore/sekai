@@ -9,8 +9,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/spf13/cobra"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // flags for ubi module txs
@@ -75,7 +73,7 @@ func GetTxProposalUpsertUBICmd() *cobra.Command {
 				return fmt.Errorf("invalid ubi distribution end: %w", err)
 			}
 
-			amount, err := cmd.Flags().GetInt64(FlagAmount)
+			amount, err := cmd.Flags().GetUint64(FlagAmount)
 			if err != nil {
 				return fmt.Errorf("invalid ubi amount: %w", err)
 			}
@@ -94,7 +92,7 @@ func GetTxProposalUpsertUBICmd() *cobra.Command {
 				clientCtx.FromAddress,
 				title,
 				description,
-				types.NewUpsertUBIProposal(name, distrStart, distrEnd, sdk.NewInt(amount), period, poolName),
+				types.NewUpsertUBIProposal(name, distrStart, distrEnd, amount, period, poolName),
 			)
 			if err != nil {
 				return err
@@ -107,7 +105,7 @@ func GetTxProposalUpsertUBICmd() *cobra.Command {
 	cmd.Flags().String(FlagName, "", "The name of ubi.")
 	cmd.Flags().Uint64(FlagDistributionStart, 0, "The distribution start time of ubi.")
 	cmd.Flags().Uint64(FlagDistributionEnd, 0, "The distribution end time of ubi.")
-	cmd.Flags().Int64(FlagAmount, 0, "The amount of tokens to be minted per period.")
+	cmd.Flags().Uint64(FlagAmount, 0, "The amount of tokens to be minted per period.")
 	cmd.Flags().Uint64(FlagPeriod, 0, "The duration to to mint tokens.")
 	cmd.Flags().String(FlagPoolName, "", "The target pool name to receive minted tokens.")
 	cmd.Flags().String(FlagTitle, "", "The title of a proposal.")
