@@ -15,7 +15,7 @@ service Query {
   rpc QueryUBIRecords(QueryUBIRecordsRequest) returns (QueryUBIRecordsResponse) {
     option (google.api.http).get = "/kira/ubi/ubi_records";
   }
-  // QueryUBIRecordByName - query specific UBIrecord by name
+  // QueryUBIRecordByName - query specific UBIRecord by name
   rpc QueryUBIRecordByName(QueryUBIRecordByNameRequest) returns (QueryUBIRecordByNameResponse) {
     option (google.api.http).get = "/kira/ubi/ubi_record/{name}";
   }

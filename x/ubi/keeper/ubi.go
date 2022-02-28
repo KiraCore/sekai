@@ -8,6 +8,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/KiraCore/sekai/x/ubi/types"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 )
 
 func (k Keeper) GetUBIRecordByName(ctx sdk.Context, name string) *types.UBIRecord {
@@ -56,4 +57,19 @@ func (k Keeper) DeleteUBIRecord(ctx sdk.Context, name string) error {
 
 	store.Delete(key)
 	return nil
+}
+
+func (k Keeper) ProcessUBIRecord(ctx sdk.Context, record types.UBIRecord) error {
+	currUnixTimestamp := uint64(ctx.BlockTime().Unix())
+	record.DistributionLast = currUnixTimestamp
+	k.SetUBIRecord(ctx, record)
+
+	amount := sdk.NewInt(int64(record.Amount)).Mul(sdk.NewInt(1000_000))
+	coin := sdk.NewCoin(k.BondDenom(ctx), amount)
+	err := k.bk.MintCoins(ctx, minttypes.ModuleName, sdk.NewCoins(coin))
+	if err != nil {
+		return err
+	}
+
+	return k.sk.DepositSpendingPoolFromModule(ctx, minttypes.ModuleName, record.Pool, coin)
 }

@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"github.com/KiraCore/sekai/x/ubi/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -9,11 +10,18 @@ import (
 type Keeper struct {
 	cdc      codec.BinaryCodec
 	storeKey sdk.StoreKey
+	bk       types.BankKeeper
+	sk       types.SpendingKeeper
 }
 
 // NewKeeper returns instance of a keeper
-func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryCodec) Keeper {
-	return Keeper{cdc: cdc, storeKey: storeKey}
+func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryCodec, bk types.BankKeeper, sk types.SpendingKeeper) Keeper {
+	return Keeper{
+		cdc:      cdc,
+		storeKey: storeKey,
+		bk:       bk,
+		sk:       sk,
+	}
 }
 
 // BondDenom returns the denom that is basically used for fee payment

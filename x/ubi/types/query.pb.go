@@ -252,7 +252,7 @@ const _ = grpc.SupportPackageIsVersion4
 type QueryClient interface {
 	// QueryUBIRecords - query names of all UBIRecords
 	QueryUBIRecords(ctx context.Context, in *QueryUBIRecordsRequest, opts ...grpc.CallOption) (*QueryUBIRecordsResponse, error)
-	// QueryUBIRecordByName - query specific UBIrecord by name
+	// QueryUBIRecordByName - query specific UBIRecord by name
 	QueryUBIRecordByName(ctx context.Context, in *QueryUBIRecordByNameRequest, opts ...grpc.CallOption) (*QueryUBIRecordByNameResponse, error)
 }
 
@@ -286,7 +286,7 @@ func (c *queryClient) QueryUBIRecordByName(ctx context.Context, in *QueryUBIReco
 type QueryServer interface {
 	// QueryUBIRecords - query names of all UBIRecords
 	QueryUBIRecords(context.Context, *QueryUBIRecordsRequest) (*QueryUBIRecordsResponse, error)
-	// QueryUBIRecordByName - query specific UBIrecord by name
+	// QueryUBIRecordByName - query specific UBIRecord by name
 	QueryUBIRecordByName(context.Context, *QueryUBIRecordByNameRequest) (*QueryUBIRecordByNameResponse, error)
 }
 

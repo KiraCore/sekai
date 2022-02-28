@@ -20,15 +20,17 @@ var _ types.QueryServer = Querier{}
 // QueryUBIRecords - query names of all UBIRecords
 func (q Querier) QueryUBIRecords(c context.Context, request *types.QueryUBIRecordsRequest) (*types.QueryUBIRecordsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	_ = ctx
 
-	return &types.QueryUBIRecordsResponse{}, nil
+	return &types.QueryUBIRecordsResponse{
+		Records: q.keeper.GetUBIRecords(ctx),
+	}, nil
 }
 
-// QueryUBIRecordByName - query specific UBIrecord by name
+// QueryUBIRecordByName - query specific UBIRecord by name
 func (q Querier) QueryUBIRecordByName(c context.Context, request *types.QueryUBIRecordByNameRequest) (*types.QueryUBIRecordByNameResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	_ = ctx
 
-	return &types.QueryUBIRecordByNameResponse{}, nil
+	return &types.QueryUBIRecordByNameResponse{
+		Record: q.keeper.GetUBIRecordByName(ctx, request.Name),
+	}, nil
 }
