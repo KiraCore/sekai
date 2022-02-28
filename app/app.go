@@ -217,7 +217,7 @@ func NewInitApp(
 		appCodec, keys[slashingtypes.StoreKey], &customStakingKeeper, app.CustomGovKeeper, app.GetSubspace(slashingtypes.ModuleName),
 	)
 	app.SpendingKeeper = spendingkeeper.NewKeeper(keys[spendingtypes.ModuleName], appCodec, app.BankKeeper, app.CustomGovKeeper)
-	app.UbiKeeper = ubikeeper.NewKeeper(keys[ubitypes.ModuleName], appCodec)
+	app.UbiKeeper = ubikeeper.NewKeeper(keys[ubitypes.ModuleName], appCodec, app.BankKeeper, app.SpendingKeeper)
 	app.TokensKeeper = tokenskeeper.NewKeeper(keys[tokenstypes.ModuleName], appCodec)
 	// NOTE: customStakingKeeper above is passed by reference, so that it will contain these hooks
 	app.CustomStakingKeeper = *customStakingKeeper.SetHooks(
@@ -267,7 +267,7 @@ func NewInitApp(
 			spending.NewApplyUpdateSpendingPoolProposalHandler(app.SpendingKeeper),
 			spending.NewApplySpendingPoolDistributionProposalHandler(app.SpendingKeeper, app.CustomGovKeeper),
 			spending.NewApplySpendingPoolWithdrawProposalHandler(app.SpendingKeeper, app.BankKeeper),
-			ubi.NewApplyUpsertUBIProposalHandler(app.UbiKeeper),
+			ubi.NewApplyUpsertUBIProposalHandler(app.UbiKeeper, app.CustomGovKeeper),
 			ubi.NewApplyRemoveUBIProposalHandler(app.UbiKeeper),
 		})
 

@@ -56,7 +56,8 @@ func TestSimappExportGenesis(t *testing.T) {
 			"enable_token_whitelist":false,
 			"enable_token_blacklist":true,
 			"min_identity_approval_tip":"200",
-			"unique_identity_keys":"moniker,username"
+			"unique_identity_keys":"moniker,username",
+			"ubi_hardcap":"6000000"
 		},
 		"execution_fees":[],
 		"poor_network_messages":{
@@ -185,7 +186,8 @@ func TestExportInitGenesis(t *testing.T) {
 			"enable_token_whitelist":false,
 			"enable_token_blacklist":false,
 			"min_identity_approval_tip":"200",
-			"unique_identity_keys":"moniker,username"
+			"unique_identity_keys":"moniker,username",
+			"ubi_hardcap":"6000000"
 		},
 		"execution_fees":[],
 		"poor_network_messages":{
