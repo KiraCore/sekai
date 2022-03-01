@@ -1,6 +1,8 @@
 package ubi
 
 import (
+	"fmt"
+
 	kiratypes "github.com/KiraCore/sekai/types"
 	"github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/ubi/keeper"
@@ -11,12 +13,14 @@ import (
 type ApplyUpsertUBIProposalHandler struct {
 	keeper keeper.Keeper
 	gk     ubitypes.CustomGovKeeper
+	sk     ubitypes.SpendingKeeper
 }
 
-func NewApplyUpsertUBIProposalHandler(keeper keeper.Keeper, gk ubitypes.CustomGovKeeper) *ApplyUpsertUBIProposalHandler {
+func NewApplyUpsertUBIProposalHandler(keeper keeper.Keeper, gk ubitypes.CustomGovKeeper, sk ubitypes.SpendingKeeper) *ApplyUpsertUBIProposalHandler {
 	return &ApplyUpsertUBIProposalHandler{
 		keeper: keeper,
 		gk:     gk,
+		sk:     sk,
 	}
 }
 
@@ -27,6 +31,15 @@ func (a ApplyUpsertUBIProposalHandler) ProposalType() string {
 func (a ApplyUpsertUBIProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
 	p := proposal.(*ubitypes.UpsertUBIProposal)
 
+	spendingPool := a.sk.GetSpendingPool(ctx, p.Pool)
+	if spendingPool == nil {
+		return ubitypes.ErrSpendingPoolDoesNotExist
+	}
+
+	if spendingPool.Token != a.keeper.BondDenom(ctx) {
+		return ubitypes.ErrUBIOnlyAllowedOnBondDenomPools
+	}
+
 	yearSeconds := uint64(31556952)
 	hardcap := a.gk.GetNetworkProperties(ctx).UbiHardcap
 	allRecords := a.keeper.GetUBIRecords(ctx)
@@ -35,6 +48,9 @@ func (a ApplyUpsertUBIProposalHandler) Apply(ctx sdk.Context, proposalID uint64,
 		ubiSum += record.Amount * yearSeconds / record.Period
 	}
 
+	fmt.Println("ubiSum", ubiSum)
+	fmt.Println("ubiSum+p.Amount*yearSeconds/p.Period", ubiSum+p.Amount*yearSeconds/p.Period)
+	fmt.Println("hardcap", hardcap)
 	// fail if sum of all ((float)amount / period) * 31556952 for all UBI records is greater than ubi-hard-cap.
 	if ubiSum+p.Amount*yearSeconds/p.Period > hardcap {
 		return ubitypes.ErrUbiSumOverflowsHardcap

@@ -8,6 +8,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/KiraCore/sekai/x/ubi/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 )
 
@@ -52,7 +53,7 @@ func (k Keeper) DeleteUBIRecord(ctx sdk.Context, name string) error {
 	store := ctx.KVStore(k.storeKey)
 	key := append([]byte(types.PrefixKeyUBIRecord), []byte(name)...)
 	if !store.Has(key) {
-		return fmt.Errorf("ubi record does not exist: %s", name)
+		return sdkerrors.Wrap(types.ErrUBIRecordDoesNotExists, fmt.Sprintf("ubi record does not exist: %s", name))
 	}
 
 	store.Delete(key)

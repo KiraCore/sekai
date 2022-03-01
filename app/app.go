@@ -267,7 +267,7 @@ func NewInitApp(
 			spending.NewApplyUpdateSpendingPoolProposalHandler(app.SpendingKeeper),
 			spending.NewApplySpendingPoolDistributionProposalHandler(app.SpendingKeeper, app.CustomGovKeeper),
 			spending.NewApplySpendingPoolWithdrawProposalHandler(app.SpendingKeeper, app.BankKeeper),
-			ubi.NewApplyUpsertUBIProposalHandler(app.UbiKeeper, app.CustomGovKeeper),
+			ubi.NewApplyUpsertUBIProposalHandler(app.UbiKeeper, app.CustomGovKeeper, app.SpendingKeeper),
 			ubi.NewApplyRemoveUBIProposalHandler(app.UbiKeeper),
 		})
 
