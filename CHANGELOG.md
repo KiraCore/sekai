@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.1.23] - 02.03.2022
+
+- UBI module
+- spending module
+
 ## [v0.1.22.11] - 09.12.2021
 
 - Unjail validator updates for fields
