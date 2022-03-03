@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.1.23.1] - 03.03.2022
+
+- distribute rewards if reward rate is updated
+
 ## [v0.1.23] - 02.03.2022
 
 - UBI module
