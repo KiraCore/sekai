@@ -86,6 +86,10 @@ func (a ApplyUpdateSpendingPoolProposalHandler) Apply(ctx sdk.Context, proposalI
 		return types.ErrPoolDoesNotExist
 	}
 
+	if pool.Rate != p.Rate {
+		a.keeper.DistributePoolRewards(ctx, *pool)
+	}
+
 	a.keeper.SetSpendingPool(ctx, types.SpendingPool{
 		Name:          p.Name,
 		ClaimStart:    p.ClaimStart,
@@ -176,42 +180,13 @@ func (a ApplySpendingPoolDistributionProposalHandler) VoteEnactment(ctx sdk.Cont
 
 func (a ApplySpendingPoolDistributionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal govtypes.Content) error {
 	p := proposal.(*spendingtypes.SpendingPoolDistributionProposal)
-	_ = p
 
 	pool := a.keeper.GetSpendingPool(ctx, p.PoolName)
-	duplicateMap := map[string]bool{}
-	var beneficiaries []string
-
-	for _, acc := range pool.Beneficiaries.OwnerAccounts {
-		if _, ok := duplicateMap[acc]; !ok {
-			duplicateMap[acc] = true
-			beneficiaries = append(beneficiaries, acc)
-		}
-	}
-	for _, role := range pool.Beneficiaries.OwnerRoles {
-		actorIter := a.gk.GetNetworkActorsByRole(ctx, role)
-
-		for ; actorIter.Valid(); actorIter.Next() {
-			if _, ok := duplicateMap[sdk.AccAddress(actorIter.Value()).String()]; !ok {
-				duplicateMap[sdk.AccAddress(actorIter.Value()).String()] = true
-				beneficiaries = append(beneficiaries, sdk.AccAddress(actorIter.Value()).String())
-			}
-		}
+	if pool == nil {
+		return types.ErrPoolDoesNotExist
 	}
 
-	for _, beneficiary := range beneficiaries {
-		beneficiaryAcc, err := sdk.AccAddressFromBech32(beneficiary)
-		if err != nil {
-			return err
-		}
-
-		err = a.keeper.ClaimSpendingPool(ctx, p.PoolName, beneficiaryAcc)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
+	return a.keeper.DistributePoolRewards(ctx, *pool)
 }
 
 type ApplySpendingPoolWithdrawProposalHandler struct {

@@ -75,3 +75,38 @@ func (k Keeper) AllowedAddresses(ctx sdk.Context, permInfo types.PermInfo) []str
 
 	return addrs
 }
+
+func (k Keeper) DistributePoolRewards(ctx sdk.Context, pool types.SpendingPool) error {
+	duplicateMap := map[string]bool{}
+	var beneficiaries []string
+
+	for _, acc := range pool.Beneficiaries.OwnerAccounts {
+		if _, ok := duplicateMap[acc]; !ok {
+			duplicateMap[acc] = true
+			beneficiaries = append(beneficiaries, acc)
+		}
+	}
+	for _, role := range pool.Beneficiaries.OwnerRoles {
+		actorIter := k.gk.GetNetworkActorsByRole(ctx, role)
+
+		for ; actorIter.Valid(); actorIter.Next() {
+			if _, ok := duplicateMap[sdk.AccAddress(actorIter.Value()).String()]; !ok {
+				duplicateMap[sdk.AccAddress(actorIter.Value()).String()] = true
+				beneficiaries = append(beneficiaries, sdk.AccAddress(actorIter.Value()).String())
+			}
+		}
+	}
+
+	for _, beneficiary := range beneficiaries {
+		beneficiaryAcc, err := sdk.AccAddressFromBech32(beneficiary)
+		if err != nil {
+			return err
+		}
+
+		err = k.ClaimSpendingPool(ctx, pool.Name, beneficiaryAcc)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
