@@ -31,6 +31,9 @@ import (
 	"github.com/KiraCore/sekai/x/tokens"
 	tokenskeeper "github.com/KiraCore/sekai/x/tokens/keeper"
 	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
+	"github.com/KiraCore/sekai/x/ubi"
+	ubikeeper "github.com/KiraCore/sekai/x/ubi/keeper"
+	ubitypes "github.com/KiraCore/sekai/x/ubi/types"
 	"github.com/KiraCore/sekai/x/upgrade"
 	upgradekeeper "github.com/KiraCore/sekai/x/upgrade/keeper"
 	upgradetypes "github.com/KiraCore/sekai/x/upgrade/types"
@@ -89,6 +92,7 @@ var (
 		customstaking.AppModuleBasic{},
 		customgov.AppModuleBasic{},
 		spending.AppModuleBasic{},
+		ubi.AppModuleBasic{},
 		evidence.AppModuleBasic{},
 		tokens.AppModuleBasic{},
 		feeprocessing.AppModuleBasic{},
@@ -133,6 +137,7 @@ type SekaiApp struct {
 	FeeProcessingKeeper  feeprocessingkeeper.Keeper
 	EvidenceKeeper       evidencekeeper.Keeper
 	SpendingKeeper       spendingkeeper.Keeper
+	UbiKeeper            ubikeeper.Keeper
 
 	// Module Manager
 	mm *module.Manager
@@ -175,6 +180,7 @@ func NewInitApp(
 		stakingtypes.ModuleName,
 		govtypes.ModuleName,
 		spendingtypes.ModuleName,
+		ubitypes.ModuleName,
 		tokenstypes.ModuleName,
 		feeprocessingtypes.ModuleName,
 		evidencetypes.StoreKey,
@@ -211,6 +217,7 @@ func NewInitApp(
 		appCodec, keys[slashingtypes.StoreKey], &customStakingKeeper, app.CustomGovKeeper, app.GetSubspace(slashingtypes.ModuleName),
 	)
 	app.SpendingKeeper = spendingkeeper.NewKeeper(keys[spendingtypes.ModuleName], appCodec, app.BankKeeper, app.CustomGovKeeper)
+	app.UbiKeeper = ubikeeper.NewKeeper(keys[ubitypes.ModuleName], appCodec, app.BankKeeper, app.SpendingKeeper)
 	app.TokensKeeper = tokenskeeper.NewKeeper(keys[tokenstypes.ModuleName], appCodec)
 	// NOTE: customStakingKeeper above is passed by reference, so that it will contain these hooks
 	app.CustomStakingKeeper = *customStakingKeeper.SetHooks(
@@ -260,6 +267,8 @@ func NewInitApp(
 			spending.NewApplyUpdateSpendingPoolProposalHandler(app.SpendingKeeper),
 			spending.NewApplySpendingPoolDistributionProposalHandler(app.SpendingKeeper, app.CustomGovKeeper),
 			spending.NewApplySpendingPoolWithdrawProposalHandler(app.SpendingKeeper, app.BankKeeper),
+			ubi.NewApplyUpsertUBIProposalHandler(app.UbiKeeper, app.CustomGovKeeper, app.SpendingKeeper),
+			ubi.NewApplyRemoveUBIProposalHandler(app.UbiKeeper),
 		})
 
 	app.CustomGovKeeper.SetProposalRouter(proposalRouter)
@@ -282,6 +291,7 @@ func NewInitApp(
 		customgov.NewAppModule(app.CustomGovKeeper),
 		tokens.NewAppModule(app.TokensKeeper, app.CustomGovKeeper),
 		spending.NewAppModule(app.SpendingKeeper, app.CustomGovKeeper, app.BankKeeper),
+		ubi.NewAppModule(app.UbiKeeper, app.CustomGovKeeper),
 		feeprocessing.NewAppModule(app.FeeProcessingKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
 	)
@@ -294,7 +304,7 @@ func NewInitApp(
 		authtypes.ModuleName, feeprocessingtypes.ModuleName, banktypes.ModuleName,
 		upgradetypes.ModuleName, slashingtypes.ModuleName,
 		evidencetypes.ModuleName, stakingtypes.ModuleName,
-		spendingtypes.ModuleName,
+		spendingtypes.ModuleName, ubitypes.ModuleName,
 	)
 	app.mm.SetOrderEndBlockers(
 		banktypes.ModuleName, upgradetypes.ModuleName, tokenstypes.ModuleName,
@@ -303,7 +313,7 @@ func NewInitApp(
 		govtypes.ModuleName,
 		stakingtypes.ModuleName,
 		feeprocessingtypes.ModuleName,
-		spendingtypes.ModuleName,
+		spendingtypes.ModuleName, ubitypes.ModuleName,
 	)
 
 	// NOTE: The genutils moodule must occur after staking so that pools are
@@ -323,6 +333,7 @@ func NewInitApp(
 		evidencetypes.ModuleName,
 		upgradetypes.ModuleName,
 		spendingtypes.ModuleName,
+		ubitypes.ModuleName,
 		paramstypes.ModuleName,
 	)
 

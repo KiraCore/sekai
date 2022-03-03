@@ -105,6 +105,7 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 						EnableTokenBlacklist:        govGenesisV01228.NetworkProperties.EnableTokenBlacklist,
 						MinIdentityApprovalTip:      govGenesisV01228.NetworkProperties.MinIdentityApprovalTip,
 						UniqueIdentityKeys:          govGenesisV01228.NetworkProperties.UniqueIdentityKeys,
+						UbiHardcap:                  6000_000,
 					},
 					ExecutionFees:               govGenesisV01228.ExecutionFees,
 					PoorNetworkMessages:         govGenesisV01228.PoorNetworkMessages,

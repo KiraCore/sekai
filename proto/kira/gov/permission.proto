@@ -180,5 +180,18 @@ enum PermValue {
 
   // PERMISSION_VOTE_REMOVE_ROLE_PROPOSAL defines the permission needed to vote a proposal to remove a role.
   PERMISSION_VOTE_REMOVE_ROLE_PROPOSAL = 52 [(gogoproto.enumvalue_customname) = "PermVoteRemoveRoleProposal"];
+
+  // PERMISSION_CREATE_UPSERT_UBI_PROPOSAL defines the permission needed to create proposals to upsert ubi
+  PERMISSION_CREATE_UPSERT_UBI_PROPOSAL = 53 [(gogoproto.enumvalue_customname) = "PermCreateUpsertUBIProposal"];
+
+  // PERMISSION_VOTE_UPSERT_UBI_PROPOSAL defines the permission that an actor must have in order to vote a
+  // Proposal to upsert ubi
+  PERMISSION_VOTE_UPSERT_UBI_PROPOSAL = 54 [(gogoproto.enumvalue_customname) = "PermVoteUpsertUBIProposal"];
+
+  // PERMISSION_CREATE_REMOVE_UBI_PROPOSAL defines the permission needed to create a proposal to remove ubi.
+  PERMISSION_CREATE_REMOVE_UBI_PROPOSAL = 55 [(gogoproto.enumvalue_customname) = "PermCreateRemoveUBIProposal"];
+
+  // PERMISSION_VOTE_REMOVE_UBI_PROPOSAL defines the permission needed to vote a proposal to remove ubi.
+  PERMISSION_VOTE_REMOVE_UBI_PROPOSAL = 56 [(gogoproto.enumvalue_customname) = "PermVoteRemoveUBIProposal"];
 }
 
