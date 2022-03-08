@@ -69,6 +69,7 @@ func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
 		cli.GetCmdQueryPermissions(),
 		cli.GetCmdQueryNetworkProperties(),
 		cli.GetCmdQueryExecutionFee(),
+		cli.GetCmdQueryExecutionFees(),
 		cli.GetCmdQueryPoorNetworkMessages(),
 		cli.GetCmdQueryRole(),
 		cli.GetCmdQueryAllRoles(),

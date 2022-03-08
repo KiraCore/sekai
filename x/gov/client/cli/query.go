@@ -208,6 +208,29 @@ func GetCmdQueryExecutionFee() *cobra.Command {
 	return cmd
 }
 
+// GetCmdQueryExecutionFees query for all execution fees
+func GetCmdQueryExecutionFees() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "execution-fees",
+		Short: "Query all execution fees",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			params := &types.AllExecutionFeesRequest{}
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.AllExecutionFees(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	return cmd
+}
+
 func GetCmdQueryCouncilRegistry() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "council-registry [--addr || --flagMoniker]",

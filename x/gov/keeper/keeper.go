@@ -277,6 +277,7 @@ func (k Keeper) GetExecutionFees(ctx sdk.Context) []*types.ExecutionFee {
 		bz := iterator.Value()
 		fee := new(types.ExecutionFee)
 		k.cdc.MustUnmarshal(bz, fee)
+		fees = append(fees, fee)
 	}
 	return fees
 }

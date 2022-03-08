@@ -18,11 +18,17 @@ option go_package = "github.com/KiraCore/sekai/x/gov/types";
 // Query defines the gRPC querier service
 service Query {
   // Returns the permissions an actor has by address.
-  rpc PermissionsByAddress (PermissionsByAddressRequest) returns (PermissionsResponse) {}
+  rpc PermissionsByAddress (PermissionsByAddressRequest) returns (PermissionsResponse) {
+    option (google.api.http).get = "/kira/gov/permissions_by_address/{val_addr}";
+  }
   // Returns all registered roles
-  rpc AllRoles (AllRolesRequest) returns (AllRolesResponse) {}
+  rpc AllRoles (AllRolesRequest) returns (AllRolesResponse) {
+    option (google.api.http).get = "/kira/gov/all_roles";
+  }
   // Returns the roles that are assigned to an address.
-  rpc RolesByAddress (RolesByAddressRequest) returns (RolesByAddressResponse) {}
+  rpc RolesByAddress (RolesByAddressRequest) returns (RolesByAddressResponse) {
+    option (google.api.http).get = "/kira/gov/roles_by_address/{val_addr}";
+  }
   // Role returns the role details from role sid
   rpc Role (RoleRequest) returns (RoleResponse) {}
   // CouncilorByAddress returns the councilor object from its address
@@ -30,9 +36,17 @@ service Query {
   // CouncilorByMoniker returns the councilor object from its moniker
   rpc CouncilorByMoniker (CouncilorByMonikerRequest) returns (CouncilorResponse) {}
   // NetworkProperties returns network properties
-  rpc NetworkProperties (NetworkPropertiesRequest) returns (NetworkPropertiesResponse) {}
+  rpc NetworkProperties (NetworkPropertiesRequest) returns (NetworkPropertiesResponse) {
+    option (google.api.http).get = "/kira/gov/network_properties";
+  }
   // ExecutionFee returns execution fee from msg type
-  rpc ExecutionFee (ExecutionFeeRequest) returns (ExecutionFeeResponse) {}
+  rpc ExecutionFee (ExecutionFeeRequest) returns (ExecutionFeeResponse) {
+    option (google.api.http).get = "/kira/gov/execution_fee";
+  }
+  // AllExecutionFees returns all execution fees
+  rpc AllExecutionFees (AllExecutionFeesRequest) returns (AllExecutionFeesResponse) {
+    option (google.api.http).get = "/kira/gov/execution_fees";
+  }
   // PoorNetworkMessages returns poor network messages
   rpc PoorNetworkMessages (PoorNetworkMessagesRequest) returns (PoorNetworkMessagesResponse) {}
   // Proposal queries proposal details based on ProposalID.
@@ -152,6 +166,12 @@ message ExecutionFeeRequest {
 }
 message ExecutionFeeResponse {
   kira.gov.ExecutionFee fee = 1;
+}
+
+message AllExecutionFeesRequest {
+}
+message AllExecutionFeesResponse {
+  repeated kira.gov.ExecutionFee fees = 1;
 }
 
 message PoorNetworkMessagesRequest {}
