@@ -124,6 +124,13 @@ func (k Keeper) ExecutionFee(goCtx context.Context, request *types.ExecutionFeeR
 	return &types.ExecutionFeeResponse{Fee: fee}, nil
 }
 
+// AllExecutionFees returns all execution fees
+func (k Keeper) AllExecutionFees(goCtx context.Context, request *types.AllExecutionFeesRequest) (*types.AllExecutionFeesResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	fees := k.GetExecutionFees(ctx)
+	return &types.AllExecutionFeesResponse{Fees: fees}, nil
+}
+
 // PoorNetworkMessages queries poor network messages
 func (k Keeper) PoorNetworkMessages(goCtx context.Context, request *types.PoorNetworkMessagesRequest) (*types.PoorNetworkMessagesResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
