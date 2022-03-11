@@ -1,0 +1,34 @@
+syntax = "proto3";
+package kira.ubi;
+
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "kira/ubi/ubi.proto";
+import "kira/gov/proposal.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/ubi/types";
+
+// Query defines the gRPC querier service
+service Query {
+  // QueryUBIRecords - query names of all UBIRecords
+  rpc QueryUBIRecords(QueryUBIRecordsRequest) returns (QueryUBIRecordsResponse) {
+    option (google.api.http).get = "/kira/ubi/ubi_records";
+  }
+  // QueryUBIRecordByName - query specific UBIRecord by name
+  rpc QueryUBIRecordByName(QueryUBIRecordByNameRequest) returns (QueryUBIRecordByNameResponse) {
+    option (google.api.http).get = "/kira/ubi/ubi_record/{name}";
+  }
+}
+
+message QueryUBIRecordsRequest {}
+message QueryUBIRecordsResponse {
+  repeated UBIRecord records = 1 [ (gogoproto.nullable) = false ];
+}
+
+message QueryUBIRecordByNameRequest {
+  string name = 1;
+}
+message QueryUBIRecordByNameResponse {
+  UBIRecord record = 1;
+}

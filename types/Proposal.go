@@ -11,6 +11,8 @@ const (
 	ProposalTypeUpdateSpendingPool                 = "UpdateSpendingPoolProposal"
 	ProposalTypeSpendingPoolDistribution           = "SpendingPoolDistributionProposal"
 	ProposalTypeSpendingPoolWithdraw               = "SpendingPoolWithdrawProposal"
+	ProposalTypeUpsertUBI                          = "UpsertUBIProposal"
+	ProposalTypeRemoveUBI                          = "RemoveUBIProposal"
 	AssignPermissionProposalType                   = "AssignPermission"
 	WhitelistAccountPermissionProposalType         = "WhitelistAccountPermission"
 	BlacklistAccountPermissionProposalType         = "BlacklistAccountPermission"

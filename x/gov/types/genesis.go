@@ -74,6 +74,10 @@ func DefaultGenesis() *GenesisState {
 				PermVoteUnassignRoleFromAccountProposal,
 				PermRemoveRoleProposal,
 				PermVoteRemoveRoleProposal,
+				PermCreateUpsertUBIProposal,
+				PermVoteUpsertUBIProposal,
+				PermCreateRemoveUBIProposal,
+				PermVoteRemoveUBIProposal,
 			}, nil),
 			uint64(RoleValidator): NewPermissions([]PermValue{PermClaimValidator}, nil),
 		},
@@ -98,6 +102,7 @@ func DefaultGenesis() *GenesisState {
 			EnableTokenBlacklist:        true,
 			MinIdentityApprovalTip:      200,
 			UniqueIdentityKeys:          "moniker,username",
+			UbiHardcap:                  6000_000,
 		},
 		ExecutionFees: []*ExecutionFee{
 			{
