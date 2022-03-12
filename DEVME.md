@@ -3,51 +3,66 @@
 ```
 # Open Ubuntu 20.04 WSL 2.0 console
 
-# Install Essential Dependecies
-apt-get update -y
-apt-get install -y --allow-unauthenticated --allow-downgrades --allow-remove-essential --allow-change-held-packages \
-    software-properties-common curl wget git nginx apt-transport-https file build-essential net-tools hashdeep \
-    protobuf-compiler golang-goprotobuf-dev golang-grpc-gateway golang-github-grpc-ecosystem-grpc-gateway-dev lsb-release \
-    clang cmake gcc g++ pkg-config libudev-dev libusb-1.0-0-dev iputils-ping nano jq python python3 python3-pip gnupg \
-    bash libglu1-mesa lsof bc dnsutils psmisc netcat  make nodejs tar unzip xz-utils yarn zip p7zip-full ca-certificates
+sudo -s
 
-pip3 install ECPy
+# Install Essential Dependencies
+
+apt-get install -y curl && curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && apt-get update -y && \
+ apt-get install -y --allow-unauthenticated --allow-downgrades --allow-remove-essential --allow-change-held-packages \
+ software-properties-common wget git nginx apt-transport-https file build-essential net-tools hashdeep \
+ protobuf-compiler golang-goprotobuf-dev golang-grpc-gateway golang-github-grpc-ecosystem-grpc-gateway-dev lsb-release \
+ clang cmake gcc g++ pkg-config libudev-dev libusb-1.0-0-dev iputils-ping nano jq python python3 python3-pip gnupg \
+ bash libglu1-mesa lsof bc dnsutils psmisc netcat  make nodejs tar unzip xz-utils yarn zip p7zip-full ca-certificates \
+ containerd docker.io dos2unix
 
 # install systemd alternative
 wget https://raw.githubusercontent.com/gdraheim/docker-systemctl-replacement/master/files/docker/systemctl.py -O /usr/local/bin/systemctl2 && \
  chmod +x /usr/local/bin/systemctl2 && \
  systemctl2 --version
 
-# install golang
-GO_VERSION="1.17.2" && ARCH=$(([[ "$(uname -m)" == *"arm"* ]] || [[ "$(uname -m)" == *"aarch"* ]]) && echo "arm64" || echo "amd64") && \
-GO_TAR=go${GO_VERSION}.linux-${ARCH}.tar.gz && rm -rfv /usr/local/go && cd /tmp && rm -fv ./$GO_TAR && \
- wget https://dl.google.com/go/${GO_TAR} && \
- tar -C /usr/local -xvf $GO_TAR && touch ~/.bash_aliases && \
- if ! grep -q GOPATH ~/.bash_aliases ; then
-  echo "export GOROOT=/usr/local/go" >> ~/.bash_aliases
-  echo "export GOBIN=/usr/local/go/bin" >> ~/.bash_aliases
-  echo "export GOPATH=/home/go" >> ~/.bash_aliases
-  echo "export GOCACHE=/home/go/cache" >> ~/.bash_aliases
-  echo "export PATH=\$PATH:\$GOROOT:\$GOBIN:\$GOPATH" >> ~/.bash_aliases
-  . ~/.bashrc
-  go version
-else
-  go version
-fi
+# install kira bash helper utils
+BRANCH="v0.0.2" && cd /tmp && rm -fv ./i.sh && \
+wget https://raw.githubusercontent.com/KiraCore/tools/$BRANCH/bash-utils/install.sh -O ./i.sh && \
+ chmod 555 -v ./i.sh && ./i.sh "$BRANCH" "/var/kiraglob" && . /etc/profile && rm -fv ./i.sh
 
-# Ensure you have Docker Desktop installed: https://code.visualstudio.com/blogs/2020/03/02/docker-in-wsl2
+# uninstall golang if needed
+( go clean -modcache -cache -n || echo "Failed to cleanup go cache" ) && \
+( rm -rfv "$GOROOT" || echo "Failed to cleanup go root" ) && \
+( rm -rfv "$GOBIN" || echo "Failed to cleanup go bin" ) && \
+( rm -rfv "$GOPATH" || echo "Failed to cleanup go path" ) && \
+( rm -rfv "$GOCACHE" || echo "Failed to cleanup go cache" )
 
 # mount C drive or other disk where repo is stored
-echo "mount -t drvfs C: /mnt/c" >> ~/.bash_aliases
+setGlobLine "mount -t drvfs C:" "mount -t drvfs C: /mnt/c || echo 'Failed to mount C drive'"
 
-# set env variable to your repo
-echo "SEKAI_REPO=\"/mnt/c/Users/asmodat/Desktop/KIRA/KIRA-CORE/GITHUB/sekai\"" >> ~/.bash_aliases
+# set env variable to your local repos (will vary depending on the user)
+setGlobEnv SEKAI_REPO "/mnt/c/Users/asmodat/Desktop/KIRA/KIRA-CORE/GITHUB/sekai" && \
+ setGlobEnv INTERX_REPO "/mnt/c/Users/asmodat/Desktop/KIRA/KIRA-CORE/GITHUB/interx" && \
+ loadGlobEnvs
 
-# set home directory of your blockchain app
-echo "SEKAID_HOME=/root/.sekaid" >> ~/.bash_aliases
+# set home directory of your repos
+setGlobEnv SEKAID_HOME "/root/.sekaid" && \
+ setGlobEnv INTERXD_HOME "/root/.interxd" && \
+ loadGlobEnvs
 
-. ~/.bashrc
-cd $SEKAI_REPO
+# Ensure you have Docker Desktop installed: https://code.visualstudio.com/blogs/2020/03/02/docker-in-wsl2 & reboot your entire host machine
+```
+
+# Clean Clone
+```
+cd $HOME && rm -fvr ./sekai && SEKAI_BRANCH="master" && \
+ git clone https://github.com/KiraCore/sekai.git -b $SEKAI_BRANCH && \
+ cd ./sekai
+```
+
+## Installation
+```
+cd $INTERX_REPO
+
+chmod -Rv 777 ./scripts && \
+ dos2unix ./scripts/protocgen-local.sh
+
+make install
 ```
 
 # If any changes are made to modules update protobuf files
