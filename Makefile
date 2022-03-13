@@ -1,5 +1,3 @@
-PACKAGES=$(shell go list ./... | grep -v '/simulation')
-
 all: install
 install:
 	./scripts/build.sh
@@ -32,4 +30,3 @@ start:
 # ./scripts/proto-gen.sh
 publish:
 	./scripts/publish.sh
-
