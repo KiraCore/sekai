@@ -42,7 +42,7 @@ cd $CURRENT_DIR
 loadGlobEnvs
 
 go clean -modcache
-EXPECTED_PROTO_DEP_VER="v0.0.1"
+EXPECTED_PROTO_DEP_VER="v0.0.2"
 BUF_VER=$(buf --version 2> /dev/null || echo "")
 
 if ($(isNullOrEmpty "$BUF_VER")) || [ "$INTERX_PROTO_DEP_VER" != "$EXPECTED_PROTO_DEP_VER" ] ; then
@@ -68,10 +68,10 @@ if ($(isNullOrEmpty "$BUF_VER")) || [ "$INTERX_PROTO_DEP_VER" != "$EXPECTED_PROT
     # https://github.com/regen-network/cosmos-proto
     # Original setup originates from Docker Image tendermintdev/sdk-proto-gen:v0.2
     # reference: 
-    go install github.com/regen-network/cosmos-proto/protoc-gen-gocosmos@v0.3.1 2> /dev/null || : 
+    go install github.com/regen-network/cosmos-proto/protoc-gen-gocosmos
     go install github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc@latest
-
     go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2.0
+
     setGlobEnv INTERX_PROTO_DEP_VER "$EXPECTED_PROTO_DEP_VER"
 fi
 
@@ -82,26 +82,20 @@ COSMOS_BRANCH=$(grep -Fn -m 1 'CosmosVersion ' $CONSTANS_FILE | rev | cut -d "="
 go get github.com/cosmos/cosmos-sdk@$COSMOS_BRANCH
 
 echoInfo "Cleaning up proto gen files..."
-#rm -rfv ./proto-gen
-mkdir -p ./proto-gen ./proto
+rm -rfv ./github.com
 cosmos_sdk_dir=$(go list -f '{{ .Dir }}' -m github.com/cosmos/cosmos-sdk@$COSMOS_BRANCH)
 kira_dir=$(find ./proto -path -prune -o -name '*.proto' -print0 | xargs -0 -n1 dirname | sort | uniq)
 
-rm -rfv ./proto-gen
-mkdir -p ./proto-gen 
 echoInfo "Generating protobuf files..."
-
 for dir in $kira_dir; do
   # generate protobuf bind
   buf protoc \
   -I "proto" \
   -I "$cosmos_sdk_dir/third_party/proto" \
   -I "$cosmos_sdk_dir/proto" \
-  --go_out=paths=source_relative:./proto-gen \
+  --gocosmos_out=plugins=interfacetype+grpc,\
+Mgoogle/protobuf/any.proto=github.com/cosmos/cosmos-sdk/codec/types:. \
   $(find "${dir}" -maxdepth 1 -name '*.proto')
-
-#--gocosmos_out=plugins=interfacetype+grpc,\
-#Mgoogle/protobuf/any.proto=github.com/cosmos/cosmos-sdk/codec/types:. \
 
   # generate grpc gateway
   buf protoc \
@@ -112,67 +106,7 @@ for dir in $kira_dir; do
   $(find "${dir}" -maxdepth 1 -name '*.proto')
 done
 
-
-
-#for dir in $proto_dirs; do
-#    proto_fils=$(find "${dir}" -maxdepth 1 -name '*.proto') 
-#    for fil in $proto_fils; do
-#        buf protoc \
-#          -I "./proto" \
-#          -I third_party/grpc-gateway/ \
-#		  -I third_party/googleapis/ \
-#		  -I third_party/proto/ \
-#          --go_out=paths=source_relative:./proto-gen \
-#          --go-grpc_out=paths=source_relative:./proto-gen \
-#          --grpc-gateway_out=logtostderr=true,paths=source_relative:./proto-gen \
-#          $fil || ( echoErr "ERROR: Failed proto build for: ${fil}" && sleep 2 && exit 1 )
-#    done
-#done
-
-
-#### This part is required by gocosmos_out
-#rm -rfv ./codec && mkdir -p codec/types
-#buf protoc -I "third_party/proto" --gogotypes_out=./codec/types third_party/proto/google/protobuf/any.proto
-#mv codec/types/google/protobuf/any.pb.go codec/types
-#rm -rfv codec/types/third_party
-#rm -rfv ./third_party/proto/gogoproto
-#rm -rfv ./third_party/proto/google
-####
-#
-#sed '/proto\.RegisterType/d' codec/types/any.pb.go > tmp && mv tmp codec/types/any.pb.go
-#
-#proto_dirs=$(find ./proto -path -prune -o -name '*.proto' -print0 | xargs -0 -n1 dirname | sort | uniq)
-#
-#echoInfo "Updating proto files to include relative paths..."
-#fil=$(realpath ./proto/cosmos/base/v1beta1/coin.proto) && \
-# sed -i="" 's/ = \"github.com\/cosmos\/cosmos-sdk\/types/ = \"github.com\/KiraCore\/interx\/proto-gen\/cosmos\/base\/v1beta1/g' "$fil" || ( echoErr "ERROR: Failed to sed file: '$fil'" && exit 1 )
-#for dir in $proto_dirs; do
-#    proto_fils=$(find "${dir}" -maxdepth 1 -name '*.proto') 
-#    for fil in $proto_fils; do
-#        sed -i="" 's/, (gogoproto.castrepeated) = \"github.com\/cosmos\/cosmos-sdk\/types.Coins\"//g' "$fil" || ( echoErr "ERROR: Failed to sed file: '$fil'" && exit 1 )
-#        sed -i="" 's/github.com\/cosmos\/cosmos-sdk\/x/github.com\/KiraCore\/interx\/proto-gen\/cosmos/g' "$fil" || ( echoErr "ERROR: Failed to sed file: '$fil'" && exit 1 )
-#        sed -i="" 's/github.com\/KiraCore\/interx\/proto-gen\/cosmos\/auth\/types/github.com\/KiraCore\/interx\/proto-gen\/cosmos\/auth\/v1beta1/g' "$fil" || ( echoErr "ERROR: Failed to sed file: '$fil'" && exit 1 )
-#    done
-#done
-#
-#echoInfo "Generating protobuf files..."
-#for dir in $proto_dirs; do
-#    proto_fils=$(find "${dir}" -maxdepth 1 -name '*.proto') 
-#    for fil in $proto_fils; do
-#        buf protoc \
-#          -I "./proto" \
-#          -I third_party/grpc-gateway/ \
-#		  -I third_party/googleapis/ \
-#		  -I third_party/proto/ \
-#          --go_out=paths=source_relative:./proto-gen \
-#          --go-grpc_out=paths=source_relative:./proto-gen \
-#          --grpc-gateway_out=logtostderr=true,paths=source_relative:./proto-gen \
-#          $fil || ( echoErr "ERROR: Failed proto build for: ${fil}" && sleep 2 && exit 1 )
-#    done
-#done
-#
-##TODO: Currently it is not possible for go to dicover the gocosmos_out plugin (might require to resolve some issues with path)
-##--gocosmos_out=plugins=interfacetype+grpc,\
-##Mgoogle/protobuf/any.proto=github.com/cosmos/cosmos-sdk/codec/types:./proto-gen \
+cp -r github.com/KiraCore/sekai/* ./
+rm -rf github.com
 
 echoInfo "INFO: Success, all proto files were compiled!"
