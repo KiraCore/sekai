@@ -1,5 +1,18 @@
 # sekai
-Kira Hub
+KIRA Relay Chain
+
+## Quick Setup
+
+```
+# From remote branch
+cd $HOME && rm -fvr ./sekai && SEKAI_BRANCH="feature/ci-cd-v1" && \
+ git clone https://github.com/KiraCore/sekai.git -b $SEKAI_BRANCH && \
+ cd ./sekai && chmod -R 777 ./scripts && make proto-gen && \
+ make install && echo "SUCCESS installed sekaid $(sekaid version)" || echo "FAILED"
+
+# From deb package
+TBD
+```
 
 ## Set environment variables
 
