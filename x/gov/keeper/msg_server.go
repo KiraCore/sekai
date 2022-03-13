@@ -32,9 +32,18 @@ func (k msgServer) SubmitProposal(goCtx context.Context, msg *types.MsgSubmitPro
 		return nil, err
 	}
 
-	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, content.ProposalPermission())
-	if !isAllowed {
-		return nil, errors.Wrap(types.ErrNotEnoughPermissions, content.ProposalPermission().String())
+	// check special proposal with dynamic voter proposal handler
+	if content.ProposalPermission() == types.PermZero {
+		router := k.keeper.GetProposalRouter()
+		isAllowed := router.IsAllowedAddressDynamicProposal(ctx, msg.Proposer, content)
+		if !isAllowed {
+			return nil, errors.Wrap(types.ErrNotEnoughPermissions, "spending pool permission")
+		}
+	} else {
+		isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, content.ProposalPermission())
+		if !isAllowed {
+			return nil, errors.Wrap(types.ErrNotEnoughPermissions, content.ProposalPermission().String())
+		}
 	}
 
 	proposalID, err := k.keeper.CreateAndSaveProposalWithContent(ctx, msg.Title, msg.Description, content)
@@ -88,9 +97,19 @@ func (k msgServer) VoteProposal(
 		return nil, types.ErrVotingTimeEnded
 	}
 
-	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Voter, proposal.GetContent().VotePermission())
-	if !isAllowed {
-		return nil, errors.Wrap(types.ErrNotEnoughPermissions, proposal.GetContent().VotePermission().String())
+	// check special proposal with dynamic voter proposal handler
+	content := proposal.GetContent()
+	if content.VotePermission() == types.PermZero {
+		router := k.keeper.GetProposalRouter()
+		isAllowed := router.IsAllowedAddressDynamicProposal(ctx, msg.Voter, content)
+		if !isAllowed {
+			return nil, errors.Wrap(types.ErrNotEnoughPermissions, "spending pool permission")
+		}
+	} else {
+		isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Voter, content.VotePermission())
+		if !isAllowed {
+			return nil, errors.Wrap(types.ErrNotEnoughPermissions, content.VotePermission().String())
+		}
 	}
 
 	vote := types.NewVote(msg.ProposalId, msg.Voter, msg.Option)
@@ -153,21 +172,10 @@ func (k msgServer) RemoveRole(
 		return nil, errors.Wrap(types.ErrNotEnoughPermissions, types.PermUpsertRole.String())
 	}
 
-	_, found := k.keeper.GetPermissionsForRole(ctx, uint64(msg.RoleId))
-	if !found {
-		return nil, types.ErrRoleDoesNotExist
+	err := k.keeper.UnassignRoleFromAccount(ctx, msg.Address, uint64(msg.RoleId))
+	if err != nil {
+		return nil, err
 	}
-
-	actor, found := k.keeper.GetNetworkActorByAddress(ctx, msg.Address)
-	if !found {
-		actor = types.NewDefaultActor(msg.Address)
-	}
-
-	if !actor.HasRole(uint64(msg.RoleId)) {
-		return nil, types.ErrRoleNotAssigned
-	}
-
-	k.keeper.RemoveRoleFromActor(ctx, actor, uint64(msg.RoleId))
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
 			types.EventTypeRemoveRole,
@@ -190,21 +198,11 @@ func (k msgServer) AssignRole(
 		return nil, errors.Wrap(types.ErrNotEnoughPermissions, types.PermUpsertRole.String())
 	}
 
-	_, found := k.keeper.GetPermissionsForRole(ctx, uint64(msg.RoleId))
-	if !found {
-		return nil, types.ErrRoleDoesNotExist
+	err := k.keeper.AssignRoleToAccount(ctx, msg.Address, uint64(msg.RoleId))
+	if err != nil {
+		return nil, err
 	}
 
-	actor, found := k.keeper.GetNetworkActorByAddress(ctx, msg.Address)
-	if !found {
-		actor = types.NewDefaultActor(msg.Address)
-	}
-
-	if actor.HasRole(uint64(msg.RoleId)) {
-		return nil, types.ErrRoleAlreadyAssigned
-	}
-
-	k.keeper.AssignRoleToActor(ctx, actor, uint64(msg.RoleId))
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
 			types.EventTypeAssignRole,
@@ -424,7 +422,7 @@ func (k msgServer) RemoveWhitelistedPermissions(
 		actor = types.NewDefaultActor(msg.Address)
 	}
 
-	err := k.keeper.RemoveWhitelistPermission(ctx, actor, types.PermValue(msg.Permission))
+	err := k.keeper.RemoveWhitelistedPermission(ctx, actor, types.PermValue(msg.Permission))
 	if err != nil {
 		return nil, errors.Wrapf(types.ErrSetPermissions, "error setting %d to whitelist: %s", msg.Permission, err)
 	}
@@ -546,7 +544,6 @@ func (k msgServer) SetExecutionFee(
 	}
 
 	k.keeper.SetExecutionFee(ctx, &types.ExecutionFee{
-		Name:              msg.Name,
 		TransactionType:   msg.TransactionType,
 		ExecutionFee:      msg.ExecutionFee,
 		FailureFee:        msg.FailureFee,

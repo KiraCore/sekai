@@ -1,0 +1,11 @@
+syntax = "proto3";
+package kira.ubi;
+
+option go_package = "github.com/KiraCore/sekai/x/ubi/types";
+
+import "gogoproto/gogo.proto";
+import "kira/ubi/ubi.proto";
+
+message GenesisState {
+  repeated UBIRecord ubi_records = 1 [(gogoproto.nullable) = false];
+}

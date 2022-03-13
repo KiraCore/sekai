@@ -14,11 +14,11 @@ PermClaimValidator=2
 # permission that allows to Claim a Councilor Seat
 PermClaimCouncilor=3
 
-# permission to create proposals for setting permissions
-PermCreateSetPermissionsProposal=4
+# permission to create proposals to whitelist account permission
+PermWhitelistAccountPermissionProposal=4
 
-# permission to vote on a proposal to set permissions
-PermVoteSetPermissionProposal=5
+# permission to vote on a proposal to whitelist account permission
+PermVoteWhitelistAccountPermissionProposal=5
 
 # permission to upsert token alias
 PermUpsertTokenAlias=6
@@ -100,6 +100,66 @@ PermCreateSetProposalDurationProposal=31
 
 # permission needed to vote a proposal to set proposal duration
 PermVoteSetProposalDurationProposal=32
+
+# permission needed to create proposals for blacklisting an account permission.
+PermBlacklistAccountPermissionProposal=33
+
+# permission that an actor must have in order to vote a Proposal to blacklist account permission.
+PermVoteBlacklistAccountPermissionProposal=34
+
+# permission needed to create proposals for removing whitelisted permission from an account.
+PermRemoveWhitelistedAccountPermissionProposal=35
+
+# permission that an actor must have in order to vote a proposal to remove a whitelisted account permission
+PermVoteRemoveWhitelistedAccountPermissionProposal=36
+
+# permission needed to create proposals for removing blacklisted permission from an account.
+PermRemoveBlacklistedAccountPermissionProposal=37
+
+# permission that an actor must have in order to vote a proposal to remove a blacklisted account permission.
+PermVoteRemoveBlacklistedAccountPermissionProposal=38
+
+# permission needed to create proposals for whitelisting an role permission.
+PermWhitelistRolePermissionProposal=39
+
+#permission that an actor must have in order to vote a proposal to whitelist role permission.
+PermVoteWhitelistRolePermissionProposal=40
+
+#permission needed to create proposals for blacklisting an role permission.
+PermBlacklistRolePermissionProposal=41
+
+# permission that an actor must have in order to vote a proposal to blacklist role permission.
+PermVoteBlacklistRolePermissionProposal=42
+
+# permission needed to create proposals for removing whitelisted permission from a role.
+PermRemoveWhitelistedRolePermissionProposal=43
+
+# permission that an actor must have in order to vote a proposal to remove a whitelisted role permission.
+PermVoteRemoveWhitelistedRolePermissionProposal=44;
+
+# permission needed to create proposals for removing blacklisted permission from a role.
+PermRemoveBlacklistedRolePermissionProposal=45
+
+# permission that an actor must have in order to vote a proposal to remove a blacklisted role permission.
+PermVoteRemoveBlacklistedRolePermissionProposal=46;
+
+# permission needed to create proposals to assign role to an account
+PermAssignRoleToAccountProposal=47
+
+# permission that an actor must have in order to vote a proposal to assign role to an account
+PermVoteAssignRoleToAccountProposal=48
+
+# permission needed to create proposals to unassign role from an account
+PermUnassignRoleFromAccountProposal=49
+
+# permission that an actor must have in order to vote a proposal to unassign role from an account
+PermVoteUnassignRoleFromAccountProposal=50
+
+# permission needed to create a proposal to remove a role.
+PermRemoveRoleProposal=51
+
+# permission needed to vote a proposal to remove a role.
+PermVoteRemoveRoleProposal= 52
 
 ###################################### transaction_types ######################################
 TypeMsgSend="send"

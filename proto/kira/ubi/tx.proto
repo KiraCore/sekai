@@ -1,0 +1,13 @@
+syntax = "proto3";
+package kira.ubi;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "kira/ubi/ubi.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/ubi/types";
+
+// Msg defines the ubi Msg service.
+service Msg {
+}
+

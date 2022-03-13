@@ -22,12 +22,18 @@ import (
 	customslashing "github.com/KiraCore/sekai/x/slashing"
 	customslashingkeeper "github.com/KiraCore/sekai/x/slashing/keeper"
 	slashingtypes "github.com/KiraCore/sekai/x/slashing/types"
+	"github.com/KiraCore/sekai/x/spending"
+	spendingkeeper "github.com/KiraCore/sekai/x/spending/keeper"
+	spendingtypes "github.com/KiraCore/sekai/x/spending/types"
 	customstaking "github.com/KiraCore/sekai/x/staking"
 	customstakingkeeper "github.com/KiraCore/sekai/x/staking/keeper"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	"github.com/KiraCore/sekai/x/tokens"
 	tokenskeeper "github.com/KiraCore/sekai/x/tokens/keeper"
 	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
+	"github.com/KiraCore/sekai/x/ubi"
+	ubikeeper "github.com/KiraCore/sekai/x/ubi/keeper"
+	ubitypes "github.com/KiraCore/sekai/x/ubi/types"
 	"github.com/KiraCore/sekai/x/upgrade"
 	upgradekeeper "github.com/KiraCore/sekai/x/upgrade/keeper"
 	upgradetypes "github.com/KiraCore/sekai/x/upgrade/types"
@@ -85,6 +91,8 @@ var (
 		customslashing.AppModuleBasic{},
 		customstaking.AppModuleBasic{},
 		customgov.AppModuleBasic{},
+		spending.AppModuleBasic{},
+		ubi.AppModuleBasic{},
 		evidence.AppModuleBasic{},
 		tokens.AppModuleBasic{},
 		feeprocessing.AppModuleBasic{},
@@ -95,6 +103,7 @@ var (
 		authtypes.FeeCollectorName: nil,
 		govtypes.ModuleName:        nil,
 		minttypes.ModuleName:       {authtypes.Minter},
+		spendingtypes.ModuleName:   nil,
 	}
 
 	// module accounts that are allowed to receive tokens
@@ -127,6 +136,8 @@ type SekaiApp struct {
 	TokensKeeper         tokenskeeper.Keeper
 	FeeProcessingKeeper  feeprocessingkeeper.Keeper
 	EvidenceKeeper       evidencekeeper.Keeper
+	SpendingKeeper       spendingkeeper.Keeper
+	UbiKeeper            ubikeeper.Keeper
 
 	// Module Manager
 	mm *module.Manager
@@ -168,6 +179,8 @@ func NewInitApp(
 		slashingtypes.ModuleName,
 		stakingtypes.ModuleName,
 		govtypes.ModuleName,
+		spendingtypes.ModuleName,
+		ubitypes.ModuleName,
 		tokenstypes.ModuleName,
 		feeprocessingtypes.ModuleName,
 		evidencetypes.StoreKey,
@@ -203,6 +216,8 @@ func NewInitApp(
 	app.CustomSlashingKeeper = customslashingkeeper.NewKeeper(
 		appCodec, keys[slashingtypes.StoreKey], &customStakingKeeper, app.CustomGovKeeper, app.GetSubspace(slashingtypes.ModuleName),
 	)
+	app.SpendingKeeper = spendingkeeper.NewKeeper(keys[spendingtypes.ModuleName], appCodec, app.BankKeeper, app.CustomGovKeeper)
+	app.UbiKeeper = ubikeeper.NewKeeper(keys[ubitypes.ModuleName], appCodec, app.BankKeeper, app.SpendingKeeper)
 	app.TokensKeeper = tokenskeeper.NewKeeper(keys[tokenstypes.ModuleName], appCodec)
 	// NOTE: customStakingKeeper above is passed by reference, so that it will contain these hooks
 	app.CustomStakingKeeper = *customStakingKeeper.SetHooks(
@@ -226,7 +241,12 @@ func NewInitApp(
 
 	proposalRouter := govtypes.NewProposalRouter(
 		[]govtypes.ProposalHandler{
-			customgov.NewApplyAssignPermissionProposalHandler(app.CustomGovKeeper),
+			customgov.NewApplyWhitelistAccountPermissionProposalHandler(app.CustomGovKeeper),
+			customgov.NewApplyBlacklistAccountPermissionProposalHandler(app.CustomGovKeeper),
+			customgov.NewApplyRemoveWhitelistedAccountPermissionProposalHandler(app.CustomGovKeeper),
+			customgov.NewApplyRemoveBlacklistedAccountPermissionProposalHandler(app.CustomGovKeeper),
+			customgov.NewApplyAssignRoleToAccountProposalHandler(app.CustomGovKeeper),
+			customgov.NewApplyUnassignRoleFromAccountProposalHandler(app.CustomGovKeeper),
 			customgov.NewApplySetNetworkPropertyProposalHandler(app.CustomGovKeeper),
 			customgov.NewApplyUpsertDataRegistryProposalHandler(app.CustomGovKeeper),
 			customgov.NewApplySetPoorNetworkMessagesProposalHandler(app.CustomGovKeeper),
@@ -236,9 +256,19 @@ func NewInitApp(
 			customstaking.NewApplyUnjailValidatorProposalHandler(app.CustomStakingKeeper, app.CustomGovKeeper),
 			customslashing.NewApplyResetWholeValidatorRankProposalHandler(app.CustomSlashingKeeper),
 			customgov.NewApplyCreateRoleProposalHandler(app.CustomGovKeeper),
+			customgov.NewApplyRemoveRoleProposalHandler(app.CustomGovKeeper),
+			customgov.NewApplyWhitelistRolePermissionProposalHandler(app.CustomGovKeeper),
+			customgov.NewApplyBlacklistRolePermissionProposalHandler(app.CustomGovKeeper),
+			customgov.NewApplyRemoveWhitelistedRolePermissionProposalHandler(app.CustomGovKeeper),
+			customgov.NewApplyRemoveBlacklistedRolePermissionProposalHandler(app.CustomGovKeeper),
 			customgov.NewApplySetProposalDurationsProposalHandler(app.CustomGovKeeper),
 			upgrade.NewApplySoftwareUpgradeProposalHandler(app.UpgradeKeeper),
 			upgrade.NewApplyCancelSoftwareUpgradeProposalHandler(app.UpgradeKeeper),
+			spending.NewApplyUpdateSpendingPoolProposalHandler(app.SpendingKeeper),
+			spending.NewApplySpendingPoolDistributionProposalHandler(app.SpendingKeeper, app.CustomGovKeeper),
+			spending.NewApplySpendingPoolWithdrawProposalHandler(app.SpendingKeeper, app.BankKeeper),
+			ubi.NewApplyUpsertUBIProposalHandler(app.UbiKeeper, app.CustomGovKeeper, app.SpendingKeeper),
+			ubi.NewApplyRemoveUBIProposalHandler(app.UbiKeeper),
 		})
 
 	app.CustomGovKeeper.SetProposalRouter(proposalRouter)
@@ -260,6 +290,8 @@ func NewInitApp(
 		customstaking.NewAppModule(app.CustomStakingKeeper, app.CustomGovKeeper),
 		customgov.NewAppModule(app.CustomGovKeeper),
 		tokens.NewAppModule(app.TokensKeeper, app.CustomGovKeeper),
+		spending.NewAppModule(app.SpendingKeeper, app.CustomGovKeeper, app.BankKeeper),
+		ubi.NewAppModule(app.UbiKeeper, app.CustomGovKeeper),
 		feeprocessing.NewAppModule(app.FeeProcessingKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
 	)
@@ -268,13 +300,20 @@ func NewInitApp(
 	// there is nothing left over in the validator fee pool, so as to keep the
 	// CanWithdrawInvariant invariant.
 	app.mm.SetOrderBeginBlockers(
+		genutiltypes.ModuleName, paramstypes.ModuleName, govtypes.ModuleName, tokenstypes.ModuleName,
+		authtypes.ModuleName, feeprocessingtypes.ModuleName, banktypes.ModuleName,
 		upgradetypes.ModuleName, slashingtypes.ModuleName,
 		evidencetypes.ModuleName, stakingtypes.ModuleName,
+		spendingtypes.ModuleName, ubitypes.ModuleName,
 	)
 	app.mm.SetOrderEndBlockers(
+		banktypes.ModuleName, upgradetypes.ModuleName, tokenstypes.ModuleName,
+		evidencetypes.ModuleName, genutiltypes.ModuleName, paramstypes.ModuleName,
+		slashingtypes.ModuleName, authtypes.ModuleName,
 		govtypes.ModuleName,
 		stakingtypes.ModuleName,
 		feeprocessingtypes.ModuleName,
+		spendingtypes.ModuleName, ubitypes.ModuleName,
 	)
 
 	// NOTE: The genutils moodule must occur after staking so that pools are
@@ -293,6 +332,9 @@ func NewInitApp(
 		genutiltypes.ModuleName,
 		evidencetypes.ModuleName,
 		upgradetypes.ModuleName,
+		spendingtypes.ModuleName,
+		ubitypes.ModuleName,
+		paramstypes.ModuleName,
 	)
 
 	app.mm.RegisterRoutes(app.Router(), app.QueryRouter(), encodingConfig.Amino)

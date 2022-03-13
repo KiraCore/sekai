@@ -1,0 +1,26 @@
+syntax = "proto3";
+package kira.ubi;
+
+option go_package = "github.com/KiraCore/sekai/x/ubi/types";
+
+import "google/protobuf/timestamp.proto";
+import "gogoproto/gogo.proto";
+
+message UBIRecord {
+  string name = 1;
+  // distribution-start & distribution-end - defines the exact time period (Unix
+  // timestamps) between which tokens will be distributed to the pool, allowing
+  // for a precise funds spending.
+  uint64 distribution_start = 2; // <unix-timestamp>
+  uint64 distribution_end = 3;   // <unix-timestamp>
+  // distribution-last- timestamp of the last distribution
+  uint64 distribution_last = 4; // <unix-timestamp>
+  // amount - the amount of KEX tokens to be minted and distributed every period
+  // number of seconds into pool
+  uint64 amount = 5;
+  // period - time in seconds that must elapse sincedistribution-last
+  // for the funds to be distributed automatically into pool
+  uint64 period = 6; // <seconds>
+  // pool - spending pool name where exact amount of KEX should be deposited
+  string pool = 7;
+}

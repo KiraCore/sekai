@@ -83,7 +83,7 @@ message Proposal {
   string exec_result = 11; // describes execution result
 }
 
-message AssignPermissionProposal {
+message WhitelistAccountPermissionProposal {
   option (cosmos_proto.implements_interface) = "Content";
   option (gogoproto.equal) = true;
 
@@ -92,9 +92,95 @@ message AssignPermissionProposal {
     (gogoproto.moretags) = "yaml:\"address\""
   ];
 
-  uint32 permission = 2;
+  PermValue permission = 2;
 }
 
+message BlacklistAccountPermissionProposal {
+  option (cosmos_proto.implements_interface) = "Content";
+  option (gogoproto.equal) = true;
+
+  bytes address = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+  PermValue permission = 2;
+}
+
+message RemoveWhitelistedAccountPermissionProposal {
+  option (cosmos_proto.implements_interface) = "Content";
+  option (gogoproto.equal) = true;
+
+  bytes address = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+  PermValue permission = 2;
+}
+
+message RemoveBlacklistedAccountPermissionProposal {
+  option (cosmos_proto.implements_interface) = "Content";
+  option (gogoproto.equal) = true;
+
+  bytes address = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+  PermValue permission = 2;
+}
+
+message AssignRoleToAccountProposal {
+  option (cosmos_proto.implements_interface) = "Content";
+  option (gogoproto.equal) = true;
+
+  bytes address = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+  string role_identifier = 2;
+}
+
+message UnassignRoleFromAccountProposal {
+  option (cosmos_proto.implements_interface) = "Content";
+  option (gogoproto.equal) = true;
+
+  bytes address = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+  string role_identifier = 2;
+}
+
+message WhitelistRolePermissionProposal {
+  option (cosmos_proto.implements_interface) = "Content";
+  option (gogoproto.equal) = true;
+
+  string role_identifier = 1;
+  PermValue permission = 2;
+}
+
+message BlacklistRolePermissionProposal {
+  option (cosmos_proto.implements_interface) = "Content";
+  option (gogoproto.equal) = true;
+
+  string role_identifier = 1;
+  PermValue permission = 2;
+}
+
+message RemoveWhitelistedRolePermissionProposal {
+  option (cosmos_proto.implements_interface) = "Content";
+  option (gogoproto.equal) = true;
+
+  string role_sid = 1;
+  PermValue permission = 2;
+}
+
+message RemoveBlacklistedRolePermissionProposal {
+  option (cosmos_proto.implements_interface) = "Content";
+  option (gogoproto.equal) = true;
+
+  string role_sid = 1;
+  PermValue permission = 2;
+}
 
 message SetNetworkPropertyProposal {
   option (cosmos_proto.implements_interface) = "Content";
@@ -131,6 +217,13 @@ message CreateRoleProposal {
   string role_description = 2;
   repeated PermValue whitelisted_permissions = 3;
   repeated PermValue blacklisted_permissions = 4;
+}
+
+message RemoveRoleProposal {
+  option (cosmos_proto.implements_interface) = "Content";
+  option (gogoproto.equal) = true;
+
+  string role_sid = 1;
 }
 
 message SetProposalDurationsProposal {

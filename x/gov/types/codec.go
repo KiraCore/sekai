@@ -62,10 +62,6 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	functionmeta.AddNewFunction((&MsgSetExecutionFee{}).Type(), `{
 		"description": "MsgSetExecutionFee defines a message to set execution fee with specific permission.",
 		"parameters": {
-			"name": {
-				"type":        "string",
-				"description": "Friendly Name of the Function (max 128 characters)"
-			},
 			"transaction_type": {
 				"type":        "string",
 				"description": "Type of the transaction that given permission allows to execute"
@@ -441,11 +437,21 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterInterface(
 		"kira.gov.Content",
 		(*Content)(nil),
-		&AssignPermissionProposal{},
+		&WhitelistAccountPermissionProposal{},
+		&BlacklistAccountPermissionProposal{},
+		&RemoveWhitelistedAccountPermissionProposal{},
+		&RemoveBlacklistedAccountPermissionProposal{},
+		&AssignRoleToAccountProposal{},
+		&UnassignRoleFromAccountProposal{},
 		&SetNetworkPropertyProposal{},
 		&UpsertDataRegistryProposal{},
 		&SetPoorNetworkMessagesProposal{},
 		&CreateRoleProposal{},
+		&RemoveRoleProposal{},
+		&WhitelistRolePermissionProposal{},
+		&BlacklistRolePermissionProposal{},
+		&RemoveWhitelistedRolePermissionProposal{},
+		&RemoveBlacklistedRolePermissionProposal{},
 		&SetProposalDurationsProposal{},
 	)
 

@@ -34,6 +34,7 @@ enum NetworkProperty {
     ENABLE_TOKEN_BLACKLIST = 16 [(gogoproto.enumvalue_customname) = "EnableTokenBlacklist"]; // TokenBlacklist is valid when enable_token_blacklist is set
     MIN_IDENTITY_APPROVAL_TIP = 17 [(gogoproto.enumvalue_customname) = "MinIdentityApprovalTip"]; // minimum amount of tip to be paid to the approver per request
     UNIQUE_IDENTITY_KEYS = 18 [(gogoproto.enumvalue_customname) = "UniqueIdentityKeys"]; // manages unique identity keys to be used as an address identifier
+    UBI_HARDCAP = 19 [(gogoproto.enumvalue_customname) = "UbiHardcap"]; // a maximum amount of additional KEX that can be created per year
 }
 
 message NetworkPropertyValue {
@@ -63,4 +64,5 @@ message NetworkProperties {
     bool enable_token_blacklist = 17; // TokenBlacklist is valid when enable_token_blacklist is set
     uint64 min_identity_approval_tip = 18; // minimum amount of tip to be paid to the approver per request
     string unique_identity_keys = 19; // manages unique identity keys to be used as an address identifier
+    uint64 ubi_hardcap = 20; // a maximum amount of additional KEX that can be created per year
 }

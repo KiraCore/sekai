@@ -27,7 +27,6 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 
 	// set execution fee for set network properties
 	suite.app.CustomGovKeeper.SetExecutionFee(suite.ctx, &govtypes.ExecutionFee{
-		Name:              types.MsgTypeSetNetworkProperties,
 		TransactionType:   types.MsgTypeSetNetworkProperties,
 		ExecutionFee:      10000,
 		FailureFee:        1000,
@@ -94,7 +93,6 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 				msgs := []sdk.Msg{
 					govtypes.NewMsgSetExecutionFee(
 						types.MsgTypeSetNetworkProperties,
-						types.MsgTypeSetNetworkProperties,
 						10000,
 						1000,
 						0,
@@ -114,7 +112,6 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 				msgs := []sdk.Msg{
 					govtypes.NewMsgSetExecutionFee(
 						types.MsgTypeSetNetworkProperties,
-						types.MsgTypeSetNetworkProperties,
 						10000,
 						1000,
 						0,
@@ -133,7 +130,6 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 			func() ([]sdk.Msg, []cryptotypes.PrivKey, []uint64, []uint64, sdk.Coins) {
 				msgs := []sdk.Msg{
 					govtypes.NewMsgSetExecutionFee(
-						types.MsgTypeSetNetworkProperties,
 						types.MsgTypeSetNetworkProperties,
 						10000,
 						1000,
@@ -159,7 +155,6 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 				msgs := []sdk.Msg{
 					govtypes.NewMsgSetExecutionFee(
 						types.MsgTypeSetNetworkProperties,
-						types.MsgTypeSetNetworkProperties,
 						10000,
 						1000,
 						0,
@@ -183,7 +178,6 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 				})
 				msgs := []sdk.Msg{
 					govtypes.NewMsgSetExecutionFee(
-						types.MsgTypeSetNetworkProperties,
 						types.MsgTypeSetNetworkProperties,
 						10000,
 						1000,
@@ -304,7 +298,6 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 				msgs := []sdk.Msg{
 					govtypes.NewMsgSetExecutionFee(
 						types.MsgTypeSetNetworkProperties,
-						types.MsgTypeSetNetworkProperties,
 						10000,
 						1000,
 						0,
@@ -345,7 +338,6 @@ func (suite *AnteTestSuite) TestValidateFeeRangeDecorator() {
 	})
 
 	suite.app.CustomGovKeeper.SetExecutionFee(suite.ctx, &govtypes.ExecutionFee{
-		Name:              types.MsgTypeSetNetworkProperties,
 		TransactionType:   types.MsgTypeSetNetworkProperties,
 		ExecutionFee:      10000,
 		FailureFee:        1000,
@@ -502,7 +494,6 @@ func (suite *AnteTestSuite) TestPoorNetworkManagementDecorator() {
 	})
 
 	suite.app.CustomGovKeeper.SetExecutionFee(suite.ctx, &govtypes.ExecutionFee{
-		Name:              types.MsgTypeSetNetworkProperties,
 		TransactionType:   types.MsgTypeSetNetworkProperties,
 		ExecutionFee:      10000,
 		FailureFee:        1000,
@@ -591,7 +582,6 @@ func (suite *AnteTestSuite) TestBlackWhiteTokensCheckDecorator() {
 	})
 
 	suite.app.CustomGovKeeper.SetExecutionFee(suite.ctx, &govtypes.ExecutionFee{
-		Name:              types.MsgTypeSetNetworkProperties,
 		TransactionType:   types.MsgTypeSetNetworkProperties,
 		ExecutionFee:      10000,
 		FailureFee:        1000,
@@ -669,7 +659,6 @@ func (suite *AnteTestSuite) TestExecutionFeeRegistrationDecorator() {
 	})
 
 	suite.app.CustomGovKeeper.SetExecutionFee(suite.ctx, &govtypes.ExecutionFee{
-		Name:              types.MsgTypeSetNetworkProperties,
 		TransactionType:   types.MsgTypeSetNetworkProperties,
 		ExecutionFee:      10000,
 		FailureFee:        1000,

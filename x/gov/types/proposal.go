@@ -11,8 +11,6 @@ import (
 	"github.com/gogo/protobuf/proto"
 )
 
-var _ Content = &AssignPermissionProposal{}
-
 // NewProposal creates a new proposal
 func NewProposal(
 	proposalID uint64,
@@ -63,36 +61,206 @@ func (p Proposal) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
 	return unpacker.UnpackAny(p.Content, &content)
 }
 
-// NewAssignPermissionProposal creates a new assign permission proposal
-func NewAssignPermissionProposal(
+var _ Content = &WhitelistAccountPermissionProposal{}
+
+// NewWhitelistAccountPermissionProposal creates a new assign permission proposal
+func NewWhitelistAccountPermissionProposal(
 	address types.AccAddress,
 	permission PermValue,
 ) Content {
-	return &AssignPermissionProposal{
+	return &WhitelistAccountPermissionProposal{
 		Address:    address,
-		Permission: uint32(permission),
+		Permission: permission,
 	}
 }
 
 // ProposalType returns proposal's type
-func (m *AssignPermissionProposal) ProposalType() string {
-	return kiratypes.AssignPermissionProposalType
+func (m *WhitelistAccountPermissionProposal) ProposalType() string {
+	return kiratypes.WhitelistAccountPermissionProposalType
 }
 
 // ValidateBasic returns basic validation
-func (m *AssignPermissionProposal) ValidateBasic() error {
+func (m *WhitelistAccountPermissionProposal) ValidateBasic() error {
 	if m.Address.Empty() {
 		return ErrEmptyPermissionsAccAddress
 	}
 	return nil
 }
 
-func (m *AssignPermissionProposal) ProposalPermission() PermValue {
-	return PermCreateSetPermissionsProposal
+func (m *WhitelistAccountPermissionProposal) ProposalPermission() PermValue {
+	return PermWhitelistAccountPermissionProposal
 }
 
-func (m *AssignPermissionProposal) VotePermission() PermValue {
-	return PermVoteSetPermissionProposal
+func (m *WhitelistAccountPermissionProposal) VotePermission() PermValue {
+	return PermVoteWhitelistAccountPermissionProposal
+}
+
+var _ Content = &BlacklistAccountPermissionProposal{}
+
+// NewBlacklistAccountPermissionProposal creates a new assign permission proposal
+func NewBlacklistAccountPermissionProposal(
+	address types.AccAddress,
+	permission PermValue,
+) Content {
+	return &BlacklistAccountPermissionProposal{
+		Address:    address,
+		Permission: permission,
+	}
+}
+
+// ProposalType returns proposal's type
+func (m *BlacklistAccountPermissionProposal) ProposalType() string {
+	return kiratypes.BlacklistAccountPermissionProposalType
+}
+
+// ValidateBasic returns basic validation
+func (m *BlacklistAccountPermissionProposal) ValidateBasic() error {
+	if m.Address.Empty() {
+		return ErrEmptyPermissionsAccAddress
+	}
+	return nil
+}
+
+func (m *BlacklistAccountPermissionProposal) ProposalPermission() PermValue {
+	return PermBlacklistAccountPermissionProposal
+}
+
+func (m *BlacklistAccountPermissionProposal) VotePermission() PermValue {
+	return PermVoteBlacklistAccountPermissionProposal
+}
+
+var _ Content = &RemoveWhitelistedAccountPermissionProposal{}
+
+// NewRemoveWhitelistedAccountPermissionProposal creates a new assign permission proposal
+func NewRemoveWhitelistedAccountPermissionProposal(
+	address types.AccAddress,
+	permission PermValue,
+) Content {
+	return &RemoveWhitelistedAccountPermissionProposal{
+		Address:    address,
+		Permission: permission,
+	}
+}
+
+// ProposalType returns proposal's type
+func (m *RemoveWhitelistedAccountPermissionProposal) ProposalType() string {
+	return kiratypes.RemoveWhitelistedAccountPermissionProposalType
+}
+
+// ValidateBasic returns basic validation
+func (m *RemoveWhitelistedAccountPermissionProposal) ValidateBasic() error {
+	if m.Address.Empty() {
+		return ErrEmptyPermissionsAccAddress
+	}
+	return nil
+}
+
+func (m *RemoveWhitelistedAccountPermissionProposal) ProposalPermission() PermValue {
+	return PermRemoveWhitelistedAccountPermissionProposal
+}
+
+func (m *RemoveWhitelistedAccountPermissionProposal) VotePermission() PermValue {
+	return PermVoteRemoveWhitelistedAccountPermissionProposal
+}
+
+var _ Content = &RemoveBlacklistedAccountPermissionProposal{}
+
+// NewRemoveBlacklistedAccountPermissionProposal creates a new assign permission proposal
+func NewRemoveBlacklistedAccountPermissionProposal(
+	address types.AccAddress,
+	permission PermValue,
+) Content {
+	return &RemoveBlacklistedAccountPermissionProposal{
+		Address:    address,
+		Permission: permission,
+	}
+}
+
+// ProposalType returns proposal's type
+func (m *RemoveBlacklistedAccountPermissionProposal) ProposalType() string {
+	return kiratypes.RemoveBlacklistedAccountPermissionProposalType
+}
+
+// ValidateBasic returns basic validation
+func (m *RemoveBlacklistedAccountPermissionProposal) ValidateBasic() error {
+	if m.Address.Empty() {
+		return ErrEmptyPermissionsAccAddress
+	}
+	return nil
+}
+
+func (m *RemoveBlacklistedAccountPermissionProposal) ProposalPermission() PermValue {
+	return PermRemoveBlacklistedAccountPermissionProposal
+}
+
+func (m *RemoveBlacklistedAccountPermissionProposal) VotePermission() PermValue {
+	return PermVoteRemoveBlacklistedAccountPermissionProposal
+}
+
+var _ Content = &RemoveBlacklistedAccountPermissionProposal{}
+
+// NewAssignRoleToAccountProposal creates a new assign permission proposal
+func NewAssignRoleToAccountProposal(
+	address types.AccAddress,
+	roleIdentifier string,
+) Content {
+	return &AssignRoleToAccountProposal{
+		Address:        address,
+		RoleIdentifier: roleIdentifier,
+	}
+}
+
+// ProposalType returns proposal's type
+func (m *AssignRoleToAccountProposal) ProposalType() string {
+	return kiratypes.AssignRoleToAccountProposalType
+}
+
+// ValidateBasic returns basic validation
+func (m *AssignRoleToAccountProposal) ValidateBasic() error {
+	if m.Address.Empty() {
+		return ErrEmptyPermissionsAccAddress
+	}
+	return nil
+}
+
+func (m *AssignRoleToAccountProposal) ProposalPermission() PermValue {
+	return PermAssignRoleToAccountProposal
+}
+
+func (m *AssignRoleToAccountProposal) VotePermission() PermValue {
+	return PermVoteAssignRoleToAccountProposal
+}
+
+// NewUnassignRoleFromAccountProposal creates a new assign permission proposal
+func NewUnassignRoleFromAccountProposal(
+	address types.AccAddress,
+	roleIdentifier string,
+) Content {
+	return &UnassignRoleFromAccountProposal{
+		Address:        address,
+		RoleIdentifier: roleIdentifier,
+	}
+}
+
+// ProposalType returns proposal's type
+func (m *UnassignRoleFromAccountProposal) ProposalType() string {
+	return kiratypes.UnassignRoleFromAccountProposalType
+}
+
+// ValidateBasic returns basic validation
+func (m *UnassignRoleFromAccountProposal) ValidateBasic() error {
+	if m.Address.Empty() {
+		return ErrEmptyPermissionsAccAddress
+	}
+	return nil
+}
+
+func (m *UnassignRoleFromAccountProposal) ProposalPermission() PermValue {
+	return PermUnassignRoleFromAccountProposal
+}
+
+func (m *UnassignRoleFromAccountProposal) VotePermission() PermValue {
+	return PermVoteUnassignRoleFromAccountProposal
 }
 
 // NewSetNetworkPropertyProposal creates a new set network property proposal
@@ -139,7 +307,8 @@ func (m *SetNetworkPropertyProposal) ValidateBasic() error {
 		EnableTokenWhitelist,
 		EnableTokenBlacklist,
 		MinIdentityApprovalTip,
-		UniqueIdentityKeys:
+		UniqueIdentityKeys,
+		UbiHardcap:
 		return nil
 	default:
 		return ErrInvalidNetworkProperty
@@ -219,8 +388,146 @@ func (m *CreateRoleProposal) VotePermission() PermValue {
 
 // ValidateBasic returns basic validation
 func (m *CreateRoleProposal) ValidateBasic() error {
+	if m.RoleSid == "" {
+		return ErrInvalidRoleIdentifier
+	}
 	if len(m.WhitelistedPermissions) == 0 && len(m.BlacklistedPermissions) == 0 {
 		return ErrEmptyPermissions
+	}
+
+	return nil
+}
+
+func NewRemoveRoleProposal(roleIdentifier string) Content {
+	return &RemoveRoleProposal{
+		RoleSid: roleIdentifier,
+	}
+}
+
+func (m *RemoveRoleProposal) ProposalType() string {
+	return kiratypes.RemoveRoleProposalType
+}
+
+func (m *RemoveRoleProposal) ProposalPermission() PermValue {
+	return PermRemoveRoleProposal
+}
+
+func (m *RemoveRoleProposal) VotePermission() PermValue {
+	return PermVoteRemoveRoleProposal
+}
+
+// ValidateBasic returns basic validation
+func (m *RemoveRoleProposal) ValidateBasic() error {
+	if m.RoleSid == "" {
+		return ErrInvalidRoleIdentifier
+	}
+	return nil
+}
+
+func NewWhitelistRolePermissionProposal(roleIdentifier string, permission PermValue) Content {
+	return &WhitelistRolePermissionProposal{
+		RoleIdentifier: roleIdentifier,
+		Permission:     permission,
+	}
+}
+
+func (m *WhitelistRolePermissionProposal) ProposalType() string {
+	return kiratypes.WhitelistRolePermissionProposalType
+}
+
+func (m *WhitelistRolePermissionProposal) ProposalPermission() PermValue {
+	return PermWhitelistRolePermissionProposal
+}
+
+func (m *WhitelistRolePermissionProposal) VotePermission() PermValue {
+	return PermVoteWhitelistRolePermissionProposal
+}
+
+// ValidateBasic returns basic validation
+func (m *WhitelistRolePermissionProposal) ValidateBasic() error {
+	if m.RoleIdentifier == "" {
+		return ErrInvalidRoleIdentifier
+	}
+	return nil
+}
+
+func NewBlacklistRolePermissionProposal(roleIdentifier string, permission PermValue) Content {
+	return &BlacklistRolePermissionProposal{
+		RoleIdentifier: roleIdentifier,
+		Permission:     permission,
+	}
+}
+
+func (m *BlacklistRolePermissionProposal) ProposalType() string {
+	return kiratypes.BlacklistRolePermissionProposalType
+}
+
+func (m *BlacklistRolePermissionProposal) ProposalPermission() PermValue {
+	return PermBlacklistRolePermissionProposal
+}
+
+func (m *BlacklistRolePermissionProposal) VotePermission() PermValue {
+	return PermVoteBlacklistRolePermissionProposal
+}
+
+// ValidateBasic returns basic validation
+func (m *BlacklistRolePermissionProposal) ValidateBasic() error {
+	if m.RoleIdentifier == "" {
+		return ErrInvalidRoleIdentifier
+	}
+	return nil
+}
+
+func NewRemoveWhitelistedRolePermissionProposal(roleSid string, permission PermValue) Content {
+	return &RemoveWhitelistedRolePermissionProposal{
+		RoleSid:    roleSid,
+		Permission: permission,
+	}
+}
+
+func (m *RemoveWhitelistedRolePermissionProposal) ProposalType() string {
+	return kiratypes.RemoveWhitelistedRolePermissionProposalType
+}
+
+func (m *RemoveWhitelistedRolePermissionProposal) ProposalPermission() PermValue {
+	return PermRemoveWhitelistedRolePermissionProposal
+}
+
+func (m *RemoveWhitelistedRolePermissionProposal) VotePermission() PermValue {
+	return PermVoteRemoveWhitelistedRolePermissionProposal
+}
+
+// ValidateBasic returns basic validation
+func (m *RemoveWhitelistedRolePermissionProposal) ValidateBasic() error {
+	if m.RoleSid == "" {
+		return ErrInvalidRoleIdentifier
+	}
+	return nil
+}
+
+func NewRemoveBlacklistedRolePermissionProposal(roleSid string, permission PermValue) Content {
+	return &RemoveBlacklistedRolePermissionProposal{
+		RoleSid:    roleSid,
+		Permission: permission,
+	}
+}
+
+func (m *RemoveBlacklistedRolePermissionProposal) ProposalType() string {
+	return kiratypes.RemoveBlacklistedRolePermissionProposalType
+}
+
+func (m *RemoveBlacklistedRolePermissionProposal) ProposalPermission() PermValue {
+	return PermRemoveBlacklistedRolePermissionProposal
+}
+
+func (m *RemoveBlacklistedRolePermissionProposal) VotePermission() PermValue {
+	return PermVoteRemoveBlacklistedRolePermissionProposal
+}
+
+// ValidateBasic returns basic validation
+func (m *RemoveBlacklistedRolePermissionProposal) ValidateBasic() error {
+	if m.RoleSid == "" {
+		return ErrInvalidRoleIdentifier
 	}
 
 	return nil

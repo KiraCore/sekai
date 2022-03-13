@@ -26,7 +26,6 @@ const (
 	FlagMinTxFee          = "min_tx_fee"
 	FlagMaxTxFee          = "max_tx_fee"
 	FlagMinValidators     = "min_validators"
-	FlagExecName          = "execution_name"
 	FlagTxType            = "transaction_type"
 	FlagExecutionFee      = "execution_fee"
 	FlagFailureFee        = "failure_fee"
@@ -76,19 +75,50 @@ func NewTxCmd() *cobra.Command {
 func NewTxProposalCmds() *cobra.Command {
 	proposalCmd := &cobra.Command{
 		Use:                        "proposal",
-		Short:                      "Proposal subcommands",
+		Short:                      "Governance proposals management subcommands",
 		DisableFlagParsing:         true,
 		SuggestionsMinimumDistance: 2,
 		RunE:                       client.ValidateCmd,
 	}
 
-	proposalCmd.AddCommand(GetTxProposalAssignPermission())
+	accountProposalCmd := &cobra.Command{
+		Use:                        "account",
+		Short:                      "Account proposals management subcommands",
+		DisableFlagParsing:         true,
+		SuggestionsMinimumDistance: 2,
+		RunE:                       client.ValidateCmd,
+	}
+
+	accountProposalCmd.AddCommand(GetTxProposalWhitelistAccountPermission())
+	accountProposalCmd.AddCommand(GetTxProposalBlacklistAccountPermission())
+	accountProposalCmd.AddCommand(GetTxProposalRemoveWhitelistedAccountPermission())
+	accountProposalCmd.AddCommand(GetTxProposalRemoveBlacklistedAccountPermission())
+	accountProposalCmd.AddCommand(GetTxProposalAssignRoleToAccount())
+	accountProposalCmd.AddCommand(GetTxProposalUnassignRoleFromAccount())
+
+	roleProposalCmd := &cobra.Command{
+		Use:                        "role",
+		Short:                      "Role proposals management subcommands",
+		DisableFlagParsing:         true,
+		SuggestionsMinimumDistance: 2,
+		RunE:                       client.ValidateCmd,
+	}
+
+	roleProposalCmd.AddCommand(GetTxProposalCreateRole())
+	roleProposalCmd.AddCommand(GetTxProposalRemoveRole())
+	roleProposalCmd.AddCommand(GetTxProposalWhitelistRolePermission())
+	roleProposalCmd.AddCommand(GetTxProposalBlacklistRolePermission())
+	roleProposalCmd.AddCommand(GetTxProposalRemoveWhitelistedRolePermission())
+	roleProposalCmd.AddCommand(GetTxProposalRemoveBlacklistedRolePermission())
+
 	proposalCmd.AddCommand(GetTxVoteProposal())
 	proposalCmd.AddCommand(GetTxProposalSetNetworkProperty())
 	proposalCmd.AddCommand(GetTxProposalSetPoorNetworkMessages())
-	proposalCmd.AddCommand(GetTxProposalCreateRole())
 	proposalCmd.AddCommand(GetTxProposalUpsertDataRegistry())
 	proposalCmd.AddCommand(GetTxProposalSetProposalDurations())
+
+	proposalCmd.AddCommand(accountProposalCmd)
+	proposalCmd.AddCommand(roleProposalCmd)
 
 	return proposalCmd
 }
@@ -97,7 +127,7 @@ func NewTxProposalCmds() *cobra.Command {
 func NewTxRoleCmds() *cobra.Command {
 	roleCmd := &cobra.Command{
 		Use:                        "role",
-		Short:                      "Role subcommands",
+		Short:                      "Role management subcommands",
 		DisableFlagParsing:         true,
 		SuggestionsMinimumDistance: 2,
 		RunE:                       client.ValidateCmd,
@@ -105,6 +135,7 @@ func NewTxRoleCmds() *cobra.Command {
 
 	roleCmd.AddCommand(GetTxCreateRole())
 	roleCmd.AddCommand(GetTxRemoveRole())
+	roleCmd.AddCommand(GetTxAssignRole())
 
 	roleCmd.AddCommand(GetTxBlacklistRolePermission())
 	roleCmd.AddCommand(GetTxWhitelistRolePermission())
@@ -118,7 +149,7 @@ func NewTxRoleCmds() *cobra.Command {
 func NewTxPermissionCmds() *cobra.Command {
 	permCmd := &cobra.Command{
 		Use:                        "permission",
-		Short:                      "Permission subcommands",
+		Short:                      "Permission management subcommands",
 		DisableFlagParsing:         true,
 		SuggestionsMinimumDistance: 2,
 		RunE:                       client.ValidateCmd,
@@ -150,8 +181,8 @@ func NewTxCouncilorCmds() *cobra.Command {
 
 func GetTxSetWhitelistPermissions() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "whitelist-permission",
-		Short: "Whitelists permission into an address",
+		Use:   "whitelist",
+		Short: "Assign permission to a kira address whitelist",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 
@@ -185,7 +216,7 @@ func GetTxSetWhitelistPermissions() *cobra.Command {
 
 func GetTxRemoveWhitelistedPermissions() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "remove-whitelisted-permission",
+		Use:   "remove-whitelisted",
 		Short: "Remove whitelisted permission from an address",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -220,8 +251,8 @@ func GetTxRemoveWhitelistedPermissions() *cobra.Command {
 
 func GetTxSetBlacklistPermissions() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "blacklist-permission",
-		Short: "Blacklist permission into an address",
+		Use:   "blacklist",
+		Short: "Assign permission to a kira account blacklist",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -258,7 +289,7 @@ func GetTxSetBlacklistPermissions() *cobra.Command {
 
 func GetTxRemoveBlacklistedPermissions() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "remove-blacklisted-permission",
+		Use:   "remove-blacklisted",
 		Short: "Remove blacklisted permission from an address",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -349,7 +380,7 @@ func NewTxSetNetworkProperties() *cobra.Command {
 
 func GetTxWhitelistRolePermission() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "whitelist-role-permission role permission",
+		Use:   "whitelist-permission [role_id] [permission_id]",
 		Short: "Whitelist a permission to a role",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -390,10 +421,6 @@ func NewTxSetExecutionFee() *cobra.Command {
 				return err
 			}
 
-			execName, err := cmd.Flags().GetString(FlagExecName)
-			if err != nil {
-				return fmt.Errorf("invalid execution name")
-			}
 			txType, err := cmd.Flags().GetString(FlagTxType)
 			if err != nil {
 				return fmt.Errorf("invalid transaction type")
@@ -417,7 +444,6 @@ func NewTxSetExecutionFee() *cobra.Command {
 			}
 
 			msg := types.NewMsgSetExecutionFee(
-				execName,
 				txType,
 				execFee,
 				failureFee,
@@ -429,7 +455,6 @@ func NewTxSetExecutionFee() *cobra.Command {
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
-	cmd.Flags().String(FlagExecName, "", "execution name")
 	cmd.Flags().String(FlagTxType, "", "execution type")
 	cmd.Flags().Uint64(FlagExecutionFee, 10, "execution fee")
 	cmd.Flags().Uint64(FlagFailureFee, 1, "failure fee")
@@ -443,8 +468,8 @@ func NewTxSetExecutionFee() *cobra.Command {
 
 func GetTxBlacklistRolePermission() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "blacklist-role-permission role permission",
-		Short: "Blacklist a permission on a role",
+		Use:   "blacklist-permission [role_id] [permission_id]",
+		Short: "Blacklist a permission for the governance role",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -475,8 +500,8 @@ func GetTxBlacklistRolePermission() *cobra.Command {
 
 func GetTxRemoveWhitelistRolePermission() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "remove-whitelisted-role-permission role permission",
-		Short: "Remove a whitelisted permission from a role",
+		Use:   "remove-whitelisted-permission [role_id] [permission_id]",
+		Short: "Remove a whitelisted permission from a governance role",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -507,8 +532,8 @@ func GetTxRemoveWhitelistRolePermission() *cobra.Command {
 
 func GetTxRemoveBlacklistRolePermission() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "remove-blacklisted-role-permission role permission",
-		Short: "Remove a blacklisted permission from a role",
+		Use:   "remove-blacklisted-permission [role_id] [permission_id]",
+		Short: "Remove a blacklisted permission from a governance role",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -566,8 +591,8 @@ func GetTxCreateRole() *cobra.Command {
 
 func GetTxAssignRole() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "assign-role role",
-		Short: "Assign new role",
+		Use:   "assign [role_id]",
+		Short: "Assign role to account",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -607,7 +632,7 @@ func GetTxAssignRole() *cobra.Command {
 func GetTxRemoveRole() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "remove role",
-		Short: "Remove role",
+		Short: "Remove role from account",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -776,10 +801,118 @@ func GetTxProposalSetNetworkProperty() *cobra.Command {
 	return cmd
 }
 
-func GetTxProposalAssignPermission() *cobra.Command {
+func GetTxProposalAssignRoleToAccount() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "assign-permission permission",
-		Short: "Create a proposal to assign a permission to an address.",
+		Use:   "assign-role role [role_identifier]",
+		Short: "Create a proposal to assign a role to an address.",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			addr, err := getAddressFromFlag(cmd)
+			if err != nil {
+				return fmt.Errorf("error getting address: %w", err)
+			}
+
+			title, err := cmd.Flags().GetString(FlagTitle)
+			if err != nil {
+				return fmt.Errorf("invalid title: %w", err)
+			}
+
+			description, err := cmd.Flags().GetString(FlagDescription)
+			if err != nil {
+				return fmt.Errorf("invalid description: %w", err)
+			}
+
+			msg, err := types.NewMsgSubmitProposal(
+				clientCtx.FromAddress,
+				title,
+				description,
+				types.NewAssignRoleToAccountProposal(addr, args[0]),
+			)
+			if err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	cmd.Flags().String(FlagTitle, "", "The title of the proposal.")
+	cmd.MarkFlagRequired(FlagTitle)
+	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
+	cmd.MarkFlagRequired(FlagDescription)
+
+	flags.AddTxFlagsToCmd(cmd)
+	cmd.Flags().String(cli.FlagAddr, "", "the address to set permissions")
+
+	cmd.MarkFlagRequired(flags.FlagFrom)
+	cmd.MarkFlagRequired(cli.FlagAddr)
+
+	return cmd
+}
+
+func GetTxProposalUnassignRoleFromAccount() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "unassign-role role",
+		Short: "Create a proposal to unassign a role from an address.",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			addr, err := getAddressFromFlag(cmd)
+			if err != nil {
+				return fmt.Errorf("error getting address: %w", err)
+			}
+
+			title, err := cmd.Flags().GetString(FlagTitle)
+			if err != nil {
+				return fmt.Errorf("invalid title: %w", err)
+			}
+
+			description, err := cmd.Flags().GetString(FlagDescription)
+			if err != nil {
+				return fmt.Errorf("invalid description: %w", err)
+			}
+
+			msg, err := types.NewMsgSubmitProposal(
+				clientCtx.FromAddress,
+				title,
+				description,
+				types.NewUnassignRoleFromAccountProposal(addr, args[0]),
+			)
+			if err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	cmd.Flags().String(FlagTitle, "", "The title of the proposal.")
+	cmd.MarkFlagRequired(FlagTitle)
+	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
+	cmd.MarkFlagRequired(FlagDescription)
+
+	flags.AddTxFlagsToCmd(cmd)
+	cmd.Flags().String(cli.FlagAddr, "", "the address to set permissions")
+
+	cmd.MarkFlagRequired(flags.FlagFrom)
+	cmd.MarkFlagRequired(cli.FlagAddr)
+
+	return cmd
+}
+
+func GetTxProposalWhitelistAccountPermission() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "whitelist-permission [permission_id]",
+		Short: "Create a proposal to whitelist a permission to an address.",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -811,7 +944,184 @@ func GetTxProposalAssignPermission() *cobra.Command {
 				clientCtx.FromAddress,
 				title,
 				description,
-				types.NewAssignPermissionProposal(addr, types.PermValue(perm)),
+				types.NewWhitelistAccountPermissionProposal(addr, types.PermValue(perm)),
+			)
+			if err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	cmd.Flags().String(FlagTitle, "", "The title of the proposal.")
+	cmd.MarkFlagRequired(FlagTitle)
+	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
+	cmd.MarkFlagRequired(FlagDescription)
+
+	flags.AddTxFlagsToCmd(cmd)
+	cmd.Flags().String(cli.FlagAddr, "", "the address to set permissions")
+
+	cmd.MarkFlagRequired(flags.FlagFrom)
+	cmd.MarkFlagRequired(cli.FlagAddr)
+
+	return cmd
+}
+
+func GetTxProposalBlacklistAccountPermission() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "blacklist-permission [permission_id]",
+		Short: "Create a proposal to blacklist a permission to an address.",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			perm, err := strconv.Atoi(args[0])
+			if err != nil {
+				return fmt.Errorf("invalid perm: %w", err)
+			}
+
+			addr, err := getAddressFromFlag(cmd)
+			if err != nil {
+				return fmt.Errorf("error getting address: %w", err)
+			}
+
+			title, err := cmd.Flags().GetString(FlagTitle)
+			if err != nil {
+				return fmt.Errorf("invalid title: %w", err)
+			}
+
+			description, err := cmd.Flags().GetString(FlagDescription)
+			if err != nil {
+				return fmt.Errorf("invalid description: %w", err)
+			}
+
+			msg, err := types.NewMsgSubmitProposal(
+				clientCtx.FromAddress,
+				title,
+				description,
+				types.NewBlacklistAccountPermissionProposal(addr, types.PermValue(perm)),
+			)
+			if err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	cmd.Flags().String(FlagTitle, "", "The title of the proposal.")
+	cmd.MarkFlagRequired(FlagTitle)
+	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
+	cmd.MarkFlagRequired(FlagDescription)
+
+	flags.AddTxFlagsToCmd(cmd)
+	cmd.Flags().String(cli.FlagAddr, "", "the address to set permissions")
+
+	cmd.MarkFlagRequired(flags.FlagFrom)
+	cmd.MarkFlagRequired(cli.FlagAddr)
+
+	return cmd
+}
+
+func GetTxProposalRemoveWhitelistedAccountPermission() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "remove-whitelisted-permission [permission_id]",
+		Short: "Create a proposal to remove a whitelisted permission from an address.",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			perm, err := strconv.Atoi(args[0])
+			if err != nil {
+				return fmt.Errorf("invalid perm: %w", err)
+			}
+
+			addr, err := getAddressFromFlag(cmd)
+			if err != nil {
+				return fmt.Errorf("error getting address: %w", err)
+			}
+
+			title, err := cmd.Flags().GetString(FlagTitle)
+			if err != nil {
+				return fmt.Errorf("invalid title: %w", err)
+			}
+
+			description, err := cmd.Flags().GetString(FlagDescription)
+			if err != nil {
+				return fmt.Errorf("invalid description: %w", err)
+			}
+
+			msg, err := types.NewMsgSubmitProposal(
+				clientCtx.FromAddress,
+				title,
+				description,
+				types.NewRemoveWhitelistedAccountPermissionProposal(addr, types.PermValue(perm)),
+			)
+			if err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	cmd.Flags().String(FlagTitle, "", "The title of the proposal.")
+	cmd.MarkFlagRequired(FlagTitle)
+	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
+	cmd.MarkFlagRequired(FlagDescription)
+
+	flags.AddTxFlagsToCmd(cmd)
+	cmd.Flags().String(cli.FlagAddr, "", "the address to set permissions")
+
+	cmd.MarkFlagRequired(flags.FlagFrom)
+	cmd.MarkFlagRequired(cli.FlagAddr)
+
+	return cmd
+}
+
+func GetTxProposalRemoveBlacklistedAccountPermission() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "remove-blacklisted-permission [permission_id]",
+		Short: "Create a proposal to remove a blacklisted permission from an address.",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			perm, err := strconv.Atoi(args[0])
+			if err != nil {
+				return fmt.Errorf("invalid perm: %w", err)
+			}
+
+			addr, err := getAddressFromFlag(cmd)
+			if err != nil {
+				return fmt.Errorf("error getting address: %w", err)
+			}
+
+			title, err := cmd.Flags().GetString(FlagTitle)
+			if err != nil {
+				return fmt.Errorf("invalid title: %w", err)
+			}
+
+			description, err := cmd.Flags().GetString(FlagDescription)
+			if err != nil {
+				return fmt.Errorf("invalid description: %w", err)
+			}
+
+			msg, err := types.NewMsgSubmitProposal(
+				clientCtx.FromAddress,
+				title,
+				description,
+				types.NewRemoveBlacklistedAccountPermissionProposal(addr, types.PermValue(perm)),
 			)
 			if err != nil {
 				return err
@@ -949,7 +1259,7 @@ func getAddressFromFlag(cmd *cobra.Command) (sdk.AccAddress, error) {
 
 	bech, err := sdk.AccAddressFromBech32(addr)
 	if err != nil {
-		return nil, fmt.Errorf("invalid address")
+		return nil, fmt.Errorf("invalid Bech32 address")
 	}
 
 	return bech, nil
@@ -994,8 +1304,8 @@ func GetTxClaimCouncilorSeatCmd() *cobra.Command {
 
 func GetTxProposalCreateRole() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-role [role_sid] [role_description]",
-		Short: "Create a proposal to add a new role.",
+		Use:   "create [role_sid] [role_description]",
+		Short: "Raise governance proposal to create a new role.",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -1034,6 +1344,278 @@ func GetTxProposalCreateRole() *cobra.Command {
 					args[1],
 					whitelistPerms,
 					blacklistPerms,
+				),
+			)
+			if err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	cmd.Flags().String(FlagTitle, "", "The title of the proposal.")
+	cmd.MarkFlagRequired(FlagTitle)
+	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
+	cmd.MarkFlagRequired(FlagDescription)
+	cmd.Flags().Int32Slice(FlagWhitelistPerms, []int32{}, "the whitelist value in format 1,2,3")
+	cmd.Flags().Int32Slice(FlagBlacklistPerms, []int32{}, "the blacklist values in format 1,2,3")
+	cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+func GetTxProposalRemoveRole() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "remove [role_sid]",
+		Short: "Raise governance proposal to remove a role.",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			title, err := cmd.Flags().GetString(FlagTitle)
+			if err != nil {
+				return fmt.Errorf("invalid title: %w", err)
+			}
+
+			description, err := cmd.Flags().GetString(FlagDescription)
+			if err != nil {
+				return fmt.Errorf("invalid description: %w", err)
+			}
+
+			msg, err := types.NewMsgSubmitProposal(
+				clientCtx.FromAddress,
+				title,
+				description,
+				types.NewRemoveRoleProposal(
+					args[0],
+				),
+			)
+			if err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	cmd.Flags().String(FlagTitle, "", "The title of the proposal.")
+	cmd.MarkFlagRequired(FlagTitle)
+	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
+	cmd.MarkFlagRequired(FlagDescription)
+	cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+func GetTxProposalWhitelistRolePermission() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "whitelist-permission [role_sid] [permission_id]",
+		Short: "Raise governance proposal to whitelist a permission for a role.",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			perm, err := strconv.Atoi(args[1])
+			if err != nil {
+				return err
+			}
+
+			title, err := cmd.Flags().GetString(FlagTitle)
+			if err != nil {
+				return fmt.Errorf("invalid title: %w", err)
+			}
+
+			description, err := cmd.Flags().GetString(FlagDescription)
+			if err != nil {
+				return fmt.Errorf("invalid description: %w", err)
+			}
+
+			msg, err := types.NewMsgSubmitProposal(
+				clientCtx.FromAddress,
+				title,
+				description,
+				types.NewWhitelistRolePermissionProposal(
+					args[0],
+					types.PermValue(perm),
+				),
+			)
+			if err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	cmd.Flags().String(FlagTitle, "", "The title of the proposal.")
+	cmd.MarkFlagRequired(FlagTitle)
+	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
+	cmd.MarkFlagRequired(FlagDescription)
+	cmd.Flags().Int32Slice(FlagWhitelistPerms, []int32{}, "the whitelist value in format 1,2,3")
+	cmd.Flags().Int32Slice(FlagBlacklistPerms, []int32{}, "the blacklist values in format 1,2,3")
+	cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+func GetTxProposalBlacklistRolePermission() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "blacklist-permission [role_sid] [role_description]",
+		Short: "Raise governance proposal to blacklist a permission for a role.",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			perm, err := strconv.Atoi(args[1])
+			if err != nil {
+				return err
+			}
+
+			title, err := cmd.Flags().GetString(FlagTitle)
+			if err != nil {
+				return fmt.Errorf("invalid title: %w", err)
+			}
+
+			description, err := cmd.Flags().GetString(FlagDescription)
+			if err != nil {
+				return fmt.Errorf("invalid description: %w", err)
+			}
+
+			msg, err := types.NewMsgSubmitProposal(
+				clientCtx.FromAddress,
+				title,
+				description,
+				types.NewBlacklistRolePermissionProposal(
+					args[0],
+					types.PermValue(perm),
+				),
+			)
+			if err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	cmd.Flags().String(FlagTitle, "", "The title of the proposal.")
+	cmd.MarkFlagRequired(FlagTitle)
+	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
+	cmd.MarkFlagRequired(FlagDescription)
+	cmd.Flags().Int32Slice(FlagWhitelistPerms, []int32{}, "the whitelist value in format 1,2,3")
+	cmd.Flags().Int32Slice(FlagBlacklistPerms, []int32{}, "the blacklist values in format 1,2,3")
+	cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+func GetTxProposalRemoveWhitelistedRolePermission() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "remove-whitelisted-permission [role_sid] [permission]",
+		Short: "Raise governance proposal to remove whitelisted permission from a role.",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			perm, err := strconv.Atoi(args[1])
+			if err != nil {
+				return err
+			}
+
+			title, err := cmd.Flags().GetString(FlagTitle)
+			if err != nil {
+				return fmt.Errorf("invalid title: %w", err)
+			}
+
+			description, err := cmd.Flags().GetString(FlagDescription)
+			if err != nil {
+				return fmt.Errorf("invalid description: %w", err)
+			}
+
+			msg, err := types.NewMsgSubmitProposal(
+				clientCtx.FromAddress,
+				title,
+				description,
+				types.NewRemoveWhitelistedRolePermissionProposal(
+					args[0],
+					types.PermValue(perm),
+				),
+			)
+			if err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	cmd.Flags().String(FlagTitle, "", "The title of the proposal.")
+	cmd.MarkFlagRequired(FlagTitle)
+	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
+	cmd.MarkFlagRequired(FlagDescription)
+	cmd.Flags().Int32Slice(FlagWhitelistPerms, []int32{}, "the whitelist value in format 1,2,3")
+	cmd.Flags().Int32Slice(FlagBlacklistPerms, []int32{}, "the blacklist values in format 1,2,3")
+	cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+func GetTxProposalRemoveBlacklistedRolePermission() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "remove-blacklisted-permission [role_sid] [role_description]",
+		Short: "Raise governance proposal to remove a blacklisted permission from a role.",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			perm, err := strconv.Atoi(args[1])
+			if err != nil {
+				return err
+			}
+
+			title, err := cmd.Flags().GetString(FlagTitle)
+			if err != nil {
+				return fmt.Errorf("invalid title: %w", err)
+			}
+
+			description, err := cmd.Flags().GetString(FlagDescription)
+			if err != nil {
+				return fmt.Errorf("invalid description: %w", err)
+			}
+
+			msg, err := types.NewMsgSubmitProposal(
+				clientCtx.FromAddress,
+				title,
+				description,
+				types.NewRemoveBlacklistedRolePermissionProposal(
+					args[0],
+					types.PermValue(perm),
 				),
 			)
 			if err != nil {
