@@ -87,8 +87,8 @@ mkdir -p ./proto-gen ./proto
 cosmos_sdk_dir=$(go list -f '{{ .Dir }}' -m github.com/cosmos/cosmos-sdk@$COSMOS_BRANCH)
 kira_dir=$(find ./proto -path -prune -o -name '*.proto' -print0 | xargs -0 -n1 dirname | sort | uniq)
 
-rm -rfv ./proto/cosmos
-cp -rfv $cosmos_sdk_dir/proto/cosmos ./proto
+#rm -rfv ./proto/cosmos
+#cp -rfv $cosmos_sdk_dir/proto/cosmos ./proto
 
 #### This part is required by gocosmos_out
 #rm -rfv ./codec && mkdir -p codec/types
