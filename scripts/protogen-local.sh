@@ -87,8 +87,48 @@ mkdir -p ./proto-gen ./proto
 cosmos_sdk_dir=$(go list -f '{{ .Dir }}' -m github.com/cosmos/cosmos-sdk@$COSMOS_BRANCH)
 kira_dir=$(find ./proto -path -prune -o -name '*.proto' -print0 | xargs -0 -n1 dirname | sort | uniq)
 
-#rm -rfv ./proto/cosmos
-#cp -rfv $cosmos_sdk_dir/proto/cosmos ./proto
+rm -rfv ./proto-gen
+mkdir -p ./proto-gen 
+echoInfo "Generating protobuf files..."
+
+for dir in $kira_dir; do
+  # generate protobuf bind
+  buf protoc \
+  -I "proto" \
+  -I "$cosmos_sdk_dir/third_party/proto" \
+  -I "$cosmos_sdk_dir/proto" \
+  --go_out=paths=source_relative:./proto-gen \
+  $(find "${dir}" -maxdepth 1 -name '*.proto')
+
+#--gocosmos_out=plugins=interfacetype+grpc,\
+#Mgoogle/protobuf/any.proto=github.com/cosmos/cosmos-sdk/codec/types:. \
+
+  # generate grpc gateway
+  buf protoc \
+  -I "proto" \
+  -I "$cosmos_sdk_dir/third_party/proto" \
+  -I "$cosmos_sdk_dir/proto" \
+  --grpc-gateway_out=logtostderr=true:. \
+  $(find "${dir}" -maxdepth 1 -name '*.proto')
+done
+
+
+
+#for dir in $proto_dirs; do
+#    proto_fils=$(find "${dir}" -maxdepth 1 -name '*.proto') 
+#    for fil in $proto_fils; do
+#        buf protoc \
+#          -I "./proto" \
+#          -I third_party/grpc-gateway/ \
+#		  -I third_party/googleapis/ \
+#		  -I third_party/proto/ \
+#          --go_out=paths=source_relative:./proto-gen \
+#          --go-grpc_out=paths=source_relative:./proto-gen \
+#          --grpc-gateway_out=logtostderr=true,paths=source_relative:./proto-gen \
+#          $fil || ( echoErr "ERROR: Failed proto build for: ${fil}" && sleep 2 && exit 1 )
+#    done
+#done
+
 
 #### This part is required by gocosmos_out
 #rm -rfv ./codec && mkdir -p codec/types
