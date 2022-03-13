@@ -2,3 +2,4 @@
 .DS_Store
 id.json
 bin/
+nfpm_*

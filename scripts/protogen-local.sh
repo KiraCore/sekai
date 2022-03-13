@@ -6,6 +6,7 @@ set -x
 CURRENT_DIR=$(pwd)
 UTILS_VER=$(utilsVersion 2> /dev/null || echo "")
 GO_VER=$(go version 2> /dev/null || echo "")
+PLATFORM=$(uname) && PLATFORM=$(echo "$PLATFORM" |  tr '[:upper:]' '[:lower:]' )
 
 UTILS_OLD_VER="false" && [[ $(versionToNumber "$UTILS_VER" || echo "0") -ge $(versionToNumber "v0.0.11" || echo "1") ]] || UTILS_OLD_VER="true" 
 
@@ -22,7 +23,7 @@ fi
 # install golang if needed
 if  ($(isNullOrEmpty "$GO_VER")) || ($(isNullOrEmpty "$GOBIN")) ; then
     GO_VERSION="1.17.7" && ARCH=$(([[ "$(uname -m)" == *"arm"* ]] || [[ "$(uname -m)" == *"aarch"* ]]) && echo "arm64" || echo "amd64") && \
-     OS_VERSION=$(uname) && GO_TAR=go${GO_VERSION}.${OS_VERSION,,}-${ARCH}.tar.gz && rm -rfv /usr/local/go && cd /tmp && rm -fv ./$GO_TAR && \
+     GO_TAR=go${GO_VERSION}.${PLATFORM}-${ARCH}.tar.gz && rm -rfv /usr/local/go && cd /tmp && rm -fv ./$GO_TAR && \
      wget https://dl.google.com/go/${GO_TAR} && \
      tar -C /usr/local -xvf $GO_TAR && rm -fv ./$GO_TAR && \
      setGlobEnv GOROOT "/usr/local/go" && setGlobPath "\$GOROOT" && \
@@ -88,12 +89,9 @@ mkdir -p ./proto-gen ./proto
 cosmos_sdk_dir=$(go list -f '{{ .Dir }}' -m github.com/cosmos/cosmos-sdk@$COSMOS_BRANCH)
 kira_dir=$(find ./proto -path -prune -o -name '*.proto' -print0 | xargs -0 -n1 dirname | sort | uniq)
 
-#rm -rfv ./proto/cosmos ./proto/kira ./third_party/proto
-#mkdir -p ./third_party/proto
-#cp -rfv $cosmos_sdk_dir/proto/cosmos ./proto
-#cp -rfv $cosmos_sdk_dir/third_party/proto/* ./third_party/proto
-#cp -rfv $kira_dir/proto/kira ./proto
-#
+rm -rfv ./proto/cosmos
+cp -rfv $cosmos_sdk_dir/proto/cosmos ./proto
+
 #### This part is required by gocosmos_out
 #rm -rfv ./codec && mkdir -p codec/types
 #buf protoc -I "third_party/proto" --gogotypes_out=./codec/types third_party/proto/google/protobuf/any.proto
