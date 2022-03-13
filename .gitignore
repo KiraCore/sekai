@@ -3,3 +3,4 @@
 id.json
 bin/
 nfpm_*
+*-tmp
