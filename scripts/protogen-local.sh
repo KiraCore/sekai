@@ -8,12 +8,12 @@ UTILS_VER=$(utilsVersion 2> /dev/null || echo "")
 GO_VER=$(go version 2> /dev/null || echo "")
 PLATFORM=$(uname) && PLATFORM=$(echo "$PLATFORM" |  tr '[:upper:]' '[:lower:]' )
 
-UTILS_OLD_VER="false" && [[ $(versionToNumber "$UTILS_VER" || echo "0") -ge $(versionToNumber "v0.0.11" || echo "1") ]] || UTILS_OLD_VER="true" 
+UTILS_OLD_VER="false" && [[ $(versionToNumber "$UTILS_VER" || echo "0") -ge $(versionToNumber "v0.0.12" || echo "1") ]] || UTILS_OLD_VER="true" 
 
 # Installing utils is essential to simplify the setup steps
 if [ "$UTILS_OLD_VER" == "true" ] ; then
     echo "INFO: KIRA utils were NOT installed on the system, setting up..." && sleep 2
-    KIRA_UTILS_BRANCH="v0.0.2" && cd /tmp && rm -fv ./i.sh && \
+    KIRA_UTILS_BRANCH="v0.0.3" && cd /tmp && rm -fv ./i.sh && \
     wget https://raw.githubusercontent.com/KiraCore/tools/$KIRA_UTILS_BRANCH/bash-utils/install.sh -O ./i.sh && \
     chmod 777 ./i.sh && ./i.sh "$KIRA_UTILS_BRANCH" "/var/kiraglob" && . /etc/profile && loadGlobEnvs
 else
@@ -77,14 +77,12 @@ fi
 
 CONSTANS_FILE=./types/constants.go
 COSMOS_BRANCH=$(grep -Fn -m 1 'CosmosVersion ' $CONSTANS_FILE | rev | cut -d "=" -f1 | rev | xargs | tr -dc '[:alnum:]\-\.' || echo '')
-SEKAI_BRANCH=$(grep -Fn -m 1 'SekaiVersion ' $CONSTANS_FILE | rev | cut -d "=" -f1 | rev | xargs | tr -dc '[:alnum:]\-\.' || echo '')
 ($(isNullOrEmpty "$COSMOS_BRANCH")) && ( echoErr "ERROR: CosmosVersion was NOT found in contants '$CONSTANS_FILE' !" && sleep 5 && exit 1 )
-($(isNullOrEmpty "$SEKAI_BRANCH")) && ( echoErr "ERROR: SekaiVersion was NOT found in contants '$CONSTANS_FILE' !" && sleep 5 && exit 1 )
 
 go get github.com/cosmos/cosmos-sdk@$COSMOS_BRANCH
 
 echoInfo "Cleaning up proto gen files..."
-rm -rfv ./proto-gen
+#rm -rfv ./proto-gen
 mkdir -p ./proto-gen ./proto
 cosmos_sdk_dir=$(go list -f '{{ .Dir }}' -m github.com/cosmos/cosmos-sdk@$COSMOS_BRANCH)
 kira_dir=$(find ./proto -path -prune -o -name '*.proto' -print0 | xargs -0 -n1 dirname | sort | uniq)
