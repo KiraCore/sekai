@@ -45,7 +45,7 @@ go clean -modcache
 EXPECTED_PROTO_DEP_VER="v0.0.2"
 BUF_VER=$(buf --version 2> /dev/null || echo "")
 
-if ($(isNullOrEmpty "$BUF_VER")) || [ "$INTERX_PROTO_DEP_VER" != "$EXPECTED_PROTO_DEP_VER" ] ; then
+if ($(isNullOrEmpty "$BUF_VER")) || [ "$SEKAI_PROTO_DEP_VER" != "$EXPECTED_PROTO_DEP_VER" ] ; then
     GO111MODULE=on 
     go install github.com/bufbuild/buf/cmd/buf@v1.0.0-rc10
     echoInfo "INFO: Sucessfully intalled buf $(buf --version)"
@@ -72,7 +72,7 @@ if ($(isNullOrEmpty "$BUF_VER")) || [ "$INTERX_PROTO_DEP_VER" != "$EXPECTED_PROT
     go install github.com/pseudomuto/protoc-gen-doc/cmd/protoc-gen-doc@latest
     go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2.0
 
-    setGlobEnv INTERX_PROTO_DEP_VER "$EXPECTED_PROTO_DEP_VER"
+    setGlobEnv SEKAI_PROTO_DEP_VER "$EXPECTED_PROTO_DEP_VER"
 fi
 
 CONSTANS_FILE=./types/constants.go
