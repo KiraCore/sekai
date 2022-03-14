@@ -16,4 +16,6 @@ jobs:
       - name: Display go version
         run: go version
       - name: Run all tests
-        run: make test
+        run: |
+          chmod -R 777 ./scripts
+          make test

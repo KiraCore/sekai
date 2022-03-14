@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-
-set -eo pipefail
+set -x
+set -e
+set -o pipefail
 
 # get protoc executions
 go get github.com/regen-network/cosmos-proto/protoc-gen-gocosmos 2>/dev/null
