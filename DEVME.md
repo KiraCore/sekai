@@ -20,8 +20,12 @@ wget https://raw.githubusercontent.com/gdraheim/docker-systemctl-replacement/mas
  chmod +x /usr/local/bin/systemctl2 && \
  systemctl2 --version
 
+# install deb package manager
+echo 'deb [trusted=yes] https://repo.goreleaser.com/apt/ /' | tee /etc/apt/sources.list.d/goreleaser.list && apt-get update -y && \
+	apt install nfpm
+
 # install kira bash helper utils
-BRANCH="v0.0.2" && cd /tmp && rm -fv ./i.sh && \
+BRANCH="v0.0.3" && cd /tmp && rm -fv ./i.sh && \
 wget https://raw.githubusercontent.com/KiraCore/tools/$BRANCH/bash-utils/install.sh -O ./i.sh && \
  chmod 555 -v ./i.sh && ./i.sh "$BRANCH" "/var/kiraglob" && . /etc/profile && rm -fv ./i.sh
 
@@ -114,12 +118,6 @@ LimitNOFILE=4096
 [Install]
 WantedBy=default.target
 EOL
-
-# Load / Update CLI Helper Scripts
-SCRIPTS_BRANCH="testnet" && mkdir -p "/common/kiraglob" && mkdir -p "/common/scripts" &&  \
- wget "https://raw.githubusercontent.com/KiraCore/kira/$SCRIPTS_BRANCH/docker/base-image/scripts/utils.sh" -O "/common/scripts/utils.sh" && \
- wget "https://raw.githubusercontent.com/KiraCore/kira/$SCRIPTS_BRANCH/docker/kira/container/sekaid-helper.sh" -O "/common/scripts/sekaid-helper.sh" && \
- . ~/.bash_aliases
 
 # Auto Execute Helper Scripts (run only once)
 echo "source '/common/scripts/utils.sh' || echo 'ERROR: Failed to load utils script'" >> ~/.bash_aliases && \
