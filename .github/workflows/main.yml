@@ -43,7 +43,7 @@ jobs:
       pull-requests: write
     needs: [setup]
     container: 
-      image: ghcr.io/kiracore/docker/base-image:v0.0.2.0
+      image: ghcr.io/kiracore/docker/base-image:v0.0.3.0
     steps:
           - name: Checking dependency versions
             run: |
