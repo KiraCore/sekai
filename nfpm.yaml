@@ -1,0 +1,17 @@
+name: "sekai"
+arch: "${ARCH}"
+platform: "${PLATFORM}"
+version: "${VERSION}"
+section: "default"
+priority: "extra"
+replaces:
+- sekaid
+provides:
+- sekaid
+maintainer: "KIRA <partners@kira.global>"
+description: "SEKAI is KIRA blockchain application allowing for establishing consensus upon state of the decentralized ledger"
+homepage: "https://github.com/KiraCore/sekai"
+license: "AGPL-3.0 license"
+contents:
+- src: ${SOURCE}
+  dst: ./bin/
