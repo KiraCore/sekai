@@ -9,6 +9,9 @@ go.sum: go.mod
 test:
 	./scripts/test.sh
 
+test-local:
+	./scripts/test-local.sh
+
 # look into .golangci.yml for enabling / disabling linters
 lint:
 	@echo "--> Running linter"
