@@ -1,7 +1,6 @@
-This is a simple test release
+## KIRA Blockchain Application - SEKAI
 
-Release: `v0.1.23-rc.3`
+Release: `v0.1.23-rc.4`
 
-Features:
-* NONE, JUST A CI/CD TEST v2
-* DO NOT USE IN PRODUCTION
+**Features:**
+* Added Integration Tests: `network-setup`
