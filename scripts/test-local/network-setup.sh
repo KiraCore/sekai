@@ -3,8 +3,9 @@ set -e
 set -x
 . /etc/profile
 
-timerStart NETWORK_SETUP
-echoInfo "INFO: NETWORK-SETUP - Integration Test - START"
+TEST_NAME="NETWORK-SETUP"
+timerStart $TEST_NAME
+echoInfo "INFO: $TEST_NAME - Integration Test - START"
 
 echoInfo "INFO: Ensuring essential dependencies are installed & up to date"
 SYSCTRL_DESTINATION=/usr/local/bin/systemctl2
@@ -54,6 +55,8 @@ systemctl2 start sekai
 
 echoInfo "INFO: Waiting for network to start..." && sleep 3
 
+systemctl2 status sekai
+
 echoInfo "INFO: Checking network status..."
 NETWORK_STATUS_CHAIN_ID=$(showStatus | jq .NodeInfo.network | xargs)
 
@@ -69,7 +72,4 @@ if [ $BLOCK_HEIGHT -ge $NEXT_BLOCK_HEIGHT ] ; then
     echoErr "ERROR: Failed to produce next block height, stuck at $BLOCK_HEIGHT"
 fi
 
-sekaid version
-sleep 10
-
-echoInfo "INFO: NETWORK-SETUP - Integration Test - END, elapsed: $(prettyTime $(timerSpan NETWORK_SETUP))"
+echoInfo "INFO: NETWORK-SETUP - Integration Test - END, elapsed: $(prettyTime $(timerSpan $TEST_NAME))"

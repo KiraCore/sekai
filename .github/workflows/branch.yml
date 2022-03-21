@@ -4,9 +4,7 @@ on:
   push:
     branches: [ feature/*, bugfix/* ]
 
-# git ls-remote <URL> | head -1 | sed "s/HEAD//"
 jobs:
-  # isolate signing & repo cloning from docker image
   auto-pr:
     name: Automated Master Branch PR
     runs-on: ubuntu-20.04
@@ -22,22 +20,41 @@ jobs:
           - name: Extract branch name on pull request
             shell: bash
             run: |
-              echo "RELEASE_VER=$(grep -Fn -m 1 'Release: ' ./RELEASE.md | rev | cut -d ":" -f1 | rev | xargs | tr -dc '[:alnum:]\-\.' || echo '')" >> $GITHUB_ENV
-              echo "SOURCE_BRANCH=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
-              echo "MASTER_REF=$(git ls-remote https://github.com/kiracore/${{ github.event.repository.name }} | head -1 | sed 's/HEAD//')" >> $GITHUB_ENV
+              RELEASE_VER="$(grep -Fn -m 1 'Release: ' ./RELEASE.md | rev | cut -d ":" -f1 | rev | xargs | tr -dc '[:alnum:]\-\.' || echo '' | xargs)"
+              SOURCE_BRANCH="$(echo ${GITHUB_REF#refs/heads/} | xargs)"
+              MASTER_REF="$(git ls-remote https://github.com/kiracore/${{ github.event.repository.name }} | head -1 | sed 's/HEAD//')"
+              echo "RELEASE_VER=$RELEASE_VER" >> $GITHUB_ENV
+              echo "SOURCE_BRANCH=$SOURCE_BRANCH" >> $GITHUB_ENV
+              echo "MASTER_REF=$MASTER_REF" >> $GITHUB_ENV
+              git show-branch "remotes/origin/$RELEASE_VER" && echo "TARGET_BRANCH_EXISTS=true" >> $GITHUB_ENV || echo "TARGET_BRANCH_EXISTS=false" >> $GITHUB_ENV
           - name: Print debug data before publishing
             run: |
               echo "Source branch: ${{ env.SOURCE_BRANCH }}"
               echo "  Master ref.: ${{ env.MASTER_REF }}"
               echo " Release ver.: ${{ env.RELEASE_VER }}"
               echo "   Event name: ${{ github.event_name }}"
-              echo "  Repo. name: ${{ github.event.repository.name }}"
+              echo "   Repo. name: ${{ github.event.repository.name }}"
+              echo "Target Exists: ${{ env.TARGET_BRANCH_EXISTS }}"
           # ref.: https://github.com/peterjgrainger/action-create-branch, v2.0.1
           - name: Create version branch from master
             uses: peterjgrainger/action-create-branch@40d33f921267ca130cbacc770f41fc7c501a420f
-            if: startsWith(env.RELEASE_VER, 'v') && contains(env.RELEASE_VER, '.')
+            if: |
+               ( env.TARGET_BRANCH_EXISTS == false || env.TARGET_BRANCH_EXISTS == 'false' ) && 
+               ( startsWith(env.RELEASE_VER, 'v') && contains(env.RELEASE_VER, '.') )
             env:
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             with:
               branch: ${{ env.RELEASE_VER }}
               sha: ${{ env.MASTER_REF }}
+          - name: Create PR from feature to version branch
+            if: |
+               ( env.TARGET_BRANCH_EXISTS == false || env.TARGET_BRANCH_EXISTS == 'false' ) && 
+               ( startsWith(env.RELEASE_VER, 'v') && contains(env.RELEASE_VER, '.') )
+            uses: repo-sync/pull-request@5ba2c80b97c87b9174c1548141b7acd80f6376e1
+            with:
+              github_token: ${{ secrets.REPO_ACCESS }}
+              source_branch: ${{ env.SOURCE_BRANCH }}
+              destination_branch: ${{ env.RELEASE_VER}}
+              pr_title: "${{ env.SOURCE_BRANCH }} -> ${{ env.RELEASE_VER }}" 
+              pr_label: "kira-automation"
+              pr_allow_empty: true

@@ -136,6 +136,10 @@ function showAddress() {
     ($(isKiraAddress "$1")) && echo "$1" || echo $(sekaid keys show "$1" --keyring-backend=test --output=json --home=$SEKAID_HOME 2> /dev/null | jsonParse "address" 2> /dev/null || echo -n "")
 }
 
+function showKeys() {
+    sekaid keys list --keyring-backend=test --output=json --home=$SEKAID_HOME | jq
+}
+
 # showPermissions validator
 function showPermissions() {
     local ADDRESS=$(showAddress $1)
@@ -1035,20 +1039,40 @@ function clearPermissions() {
         echoErr "ERROR: List of validators was NOT found ($ADDRESSES)"
     fi
 }
-
+#showAddress tester3
 function isAccount() {
-    local ACCOUNT=$1
-    ACCOUNT=$(echo "${ACCOUNT,,}" | xargs || echo -n "")
-    local ACCOUNT_NAME=$(sekaid keys show "$ACCOUNT" --keyring-backend=test --output=json 2> /dev/null | jsonParse "name" 2> /dev/null || echo "")
-    ( [ "${ACCOUNT,,}" == "${ACCOUNT_NAME,,}" ] && (! $(isNullOrEmpty "$ACCOUNT_NAME")) ) && echo "true" || echo "false"
-}
+    local ACCOUNT=$(toLower "$1" | xargs || echo -n "")
+    local KEYS=$(showKeys 2> /dev/null | jsonParse "" 2> /dev/null || echo "[]")
+    readarray -t KEYS_ARR < <(jq -c '.[]' <<< $KEYS)
+    for key in "${KEYS_ARR[@]}"; do
+      local key_name=$(jq '.name' <<< "$key" | xargs)
+      [ "$(toLower "$key_name")" == $ACCOUNT ] && echo "true" && return 0
+    done
+    echo "false"
+}   
 
 function addAccount() {
-    local ACCOUNT=$1
-    ACCOUNT=$(echo "${ACCOUNT,,}" | xargs || echo -n "")
+    local ACCOUNT=$(toLower "$1" | xargs || echo -n "")
     ($(isAccount "$ACCOUNT")) && echoErr "ERROR: Account '$ACCOUNT' already exists" && return 1
     (! $(isAlphanumeric "$ACCOUNT")) && echoErr "ERROR: Account name must be alphanumeric, but got '$ACCOUNT'" && return 1
     sekaid keys add "$ACCOUNT" --keyring-backend=test --home=$SEKAID_HOME --output=json | jq
+}
+
+function recoverAccount() {
+    local ACCOUNT=$(toLower "$1" | xargs || echo -n "")
+    local MNEMONIC=$(toLower "$2" | xargs || echo -n "")
+    ($(isAccount "$ACCOUNT")) && echoErr "ERROR: Account '$ACCOUNT' already exists" && return 1
+    (! $(isAlphanumeric "$ACCOUNT")) && echoErr "ERROR: Account name must be alphanumeric, but got '$ACCOUNT'" && return 1
+    yes "$MNEMONIC" | sekaid keys add $ACCOUNT --keyring-backend=test --home=$SEKAID_HOME --recover --output=json | jq
+}
+
+function deleteAccount() {
+    local ACCOUNT=$(toLower "$1" | xargs || echo -n "")
+    if (! $(isAccount "$ACCOUNT")) ; then 
+        echoWarn "WARNING: Account '$ACCOUNT' was already deleted or never existed"
+    else
+        sekaid keys delete "$ACCOUNT" --force --yes --keyring-backend=test --home=$SEKAID_HOME --output=json | jq
+    fi
 }
 
 # allow to execute finctions directly from file

@@ -23,6 +23,9 @@ RELEASE_EXPECTED_VERSION=$(grep -Fn -m 1 'Release: ' ./RELEASE.md | rev | cut -d
 echoInfo "INFO: Launching local network..."
 ./scripts/test-local/network-setup.sh || ( systemctl2 stop sekai && exit 1 )
 
+echoInfo "INFO: Testing wallets & transfers..."
+./scripts/test-local/token-transfers.sh || ( systemctl2 stop sekai && exit 1 )
+
 echoInfo "INFO: Stopping local network..."
 systemctl2 stop sekai
 
