@@ -23,7 +23,7 @@ jobs:
             shell: bash
             run: |
               echo "RELEASE_VER=$(grep -Fn -m 1 'Release: ' ./RELEASE.md | rev | cut -d ":" -f1 | rev | xargs | tr -dc '[:alnum:]\-\.' || echo '')" >> $GITHUB_ENV
-              echo "SOURCE_BRANCH=$(echo ${GITHUB_REF#refs/heads/} | tr / -)" >> $GITHUB_ENV
+              echo "SOURCE_BRANCH=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
               echo "MASTER_REF=$(git ls-remote https://github.com/kiracore/${{ github.event.repository.name }} | head -1 | sed 's/HEAD//')" >> $GITHUB_ENV
           - name: Print debug data before publishing
             run: |

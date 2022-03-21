@@ -43,7 +43,7 @@ jobs:
       pull-requests: write
     needs: [setup]
     container: 
-      image: ghcr.io/kiracore/docker/base-image:v0.0.3.0
+      image: ghcr.io/kiracore/docker/base-image:v0.5.0.0
     steps:
           - name: Checking dependency versions
             run: |
@@ -67,6 +67,7 @@ jobs:
               make test
               make install
               sekaid version
+              make test-local
           - name: Publishing SEKAID binaries
             shell: bash
             run: |
@@ -81,6 +82,7 @@ jobs:
               echo "  sekai-linux-arm64.deb: sha256:$(sha256sum ./bin/sekai-linux-arm64.deb   | awk '{ print $1 }')" >> ./bin/RELEASE.md
               echo "sekai-windows-amd64.exe: sha256:$(sha256sum ./bin/sekai-windows-amd64.exe | awk '{ print $1 }')" >> ./bin/RELEASE.md
               echo "sekai-windows-arm64.exe: sha256:$(sha256sum ./bin/sekai-windows-arm64.exe | awk '{ print $1 }')" >> ./bin/RELEASE.md
+              echo "         sekai-utils.sh: sha256:$(sha256sum ./bin/sekai-utils.sh | awk '{ print $1 }')" >> ./bin/RELEASE.md
               echo -e "\`\`\`"   >> ./bin/RELEASE.md
               tar -czvf deb.tar.gz -C ./bin .
           - name: Uploading artifacts
@@ -160,6 +162,7 @@ jobs:
                 ./sekai-darwin-arm64.deb
                 ./sekai-windows-amd64.exe
                 ./sekai-windows-arm64.exe
+                ./sekai-utils.sh
           # ref: https://github.com/softprops/action-gh-release, v0.1.14
           # Release on merge only (push action) - this should run only once
           - name: Publish pre-release
@@ -181,6 +184,7 @@ jobs:
                 ./sekai-darwin-arm64.deb
                 ./sekai-windows-amd64.exe
                 ./sekai-windows-arm64.exe
+                ./sekai-utils.sh
           # ref.: https://github.com/hmarr/auto-approve-action, v2.1.0
           - name: Approve pull request on success
             uses: hmarr/auto-approve-action@5d04a5ca6da9aeb8ca9f31a5239b96fc3e003029
