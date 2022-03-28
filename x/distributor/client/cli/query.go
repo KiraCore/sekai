@@ -18,25 +18,24 @@ func NewQueryCmd() *cobra.Command {
 		Short: "query commands for the distributor module",
 	}
 	queryCmd.AddCommand(
-		GetCmdQuerydistributorRecordByName(),
-		GetCmdQuerydistributorRecords(),
+		GetCmdQueryFeesTreasury(),
+		GetCmdQueryFeesCollected(),
+		GetCmdSnapshotPeriod(),
 	)
 
 	return queryCmd
 }
 
-func GetCmdQuerydistributorRecordByName() *cobra.Command {
+func GetCmdQueryFeesTreasury() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "distributor-record-by-name",
-		Short: "Get distributor record by name",
-		Args:  cobra.MinimumNArgs(1),
+		Use:   "fees-treasury",
+		Short: "Get fees treasury",
+		Args:  cobra.MinimumNArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			queryClient := types.NewQueryClient(clientCtx)
-			res, err := queryClient.QuerydistributorRecordByName(context.Background(), &types.QuerydistributorRecordByNameRequest{
-				Name: args[0],
-			})
+			res, err := queryClient.FeesTreasury(context.Background(), &types.QueryFeesTreasuryRequest{})
 			if err != nil {
 				return err
 			}
@@ -50,15 +49,39 @@ func GetCmdQuerydistributorRecordByName() *cobra.Command {
 	return cmd
 }
 
-func GetCmdQuerydistributorRecords() *cobra.Command {
+func GetCmdQueryFeesCollected() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "distributor-records",
-		Short: "Get all distributor records",
+		Use:   "fees-collected",
+		Short: "Get fees collected",
+		Args:  cobra.MinimumNArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			queryClient := types.NewQueryClient(clientCtx)
-			res, err := queryClient.QuerydistributorRecords(context.Background(), &types.QuerydistributorRecordsRequest{})
+			res, err := queryClient.FeesCollected(context.Background(), &types.QueryFeesCollectedRequest{})
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func GetCmdSnapshotPeriod() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "snapshot-period",
+		Short: "Get snapshot period",
+		Args:  cobra.MinimumNArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.SnapshotPeriod(context.Background(), &types.QuerySnapshotPeriodRequest{})
 			if err != nil {
 				return err
 			}

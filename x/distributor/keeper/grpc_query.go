@@ -17,20 +17,23 @@ func NewQuerier(keeper Keeper) types.QueryServer {
 
 var _ types.QueryServer = Querier{}
 
-// QuerydistributorRecords - query names of all distributorRecords
-func (q Querier) QuerydistributorRecords(c context.Context, request *types.QuerydistributorRecordsRequest) (*types.QuerydistributorRecordsResponse, error) {
+func (q Querier) FeesTreasury(c context.Context, request *types.QueryFeesTreasuryRequest) (*types.QueryFeesTreasuryResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
+	_ = ctx
 
-	return &types.QuerydistributorRecordsResponse{
-		Records: q.keeper.GetdistributorRecords(ctx),
-	}, nil
+	return &types.QueryFeesTreasuryResponse{}, nil
 }
 
-// QuerydistributorRecordByName - query specific distributorRecord by name
-func (q Querier) QuerydistributorRecordByName(c context.Context, request *types.QuerydistributorRecordByNameRequest) (*types.QuerydistributorRecordByNameResponse, error) {
+func (q Querier) FeesCollected(c context.Context, request *types.QueryFeesCollectedRequest) (*types.QueryFeesCollectedResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
+	_ = ctx
 
-	return &types.QuerydistributorRecordByNameResponse{
-		Record: q.keeper.GetdistributorRecordByName(ctx, request.Name),
-	}, nil
+	return &types.QueryFeesCollectedResponse{}, nil
+}
+
+func (q Querier) SnapshotPeriod(c context.Context, request *types.QuerySnapshotPeriodRequest) (*types.QuerySnapshotPeriodResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+	_ = ctx
+
+	return &types.QuerySnapshotPeriodResponse{}, nil
 }

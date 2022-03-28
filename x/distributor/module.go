@@ -96,16 +96,18 @@ func (am AppModule) InitGenesis(
 	var genesisState distributortypes.GenesisState
 	cdc.MustUnmarshalJSON(data, &genesisState)
 
-	for _, record := range genesisState.distributorRecords {
-		am.distributorKeeper.SetdistributorRecord(ctx, record)
-	}
+	am.distributorKeeper.SetFeesCollected(ctx, genesisState.FeesCollected)
+	am.distributorKeeper.SetFeesTreasury(ctx, genesisState.FeesTreasury)
+	am.distributorKeeper.SetSnapPeriod(ctx, genesisState.SnapPeriod)
 
 	return nil
 }
 
 func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.RawMessage {
 	var genesisState distributortypes.GenesisState
-	genesisState.distributorRecords = am.distributorKeeper.GetdistributorRecords(ctx)
+	genesisState.FeesCollected = am.distributorKeeper.GetFeesCollected(ctx)
+	genesisState.FeesTreasury = am.distributorKeeper.GetFeesTreasury(ctx)
+	genesisState.SnapPeriod = am.distributorKeeper.GetSnapPeriod(ctx)
 	return cdc.MustMarshalJSON(&genesisState)
 }
 
@@ -123,11 +125,11 @@ func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sd
 	return nil
 }
 
-func (am AppModule) BeginBlock(clientCtx sdk.Context, block abci.RequestBeginBlock) {}
+func (am AppModule) BeginBlock(clientCtx sdk.Context, req abci.RequestBeginBlock) {
+	BeginBlocker(clientCtx, req, am.distributorKeeper)
+}
 
 func (am AppModule) EndBlock(ctx sdk.Context, block abci.RequestEndBlock) []abci.ValidatorUpdate {
-	EndBlocker(ctx, am.distributorKeeper)
-
 	return nil
 }
 
