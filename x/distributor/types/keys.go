@@ -7,7 +7,9 @@ var (
 	RouterKey    = ModuleName
 	QuerierRoute = ModuleName
 
-	PrefixKeyFeesCollected = []byte("fees_collected")
-	PrefixKeyFeesTreasury  = []byte("fees_treasury")
-	PrefixKeySnapPeriod    = []byte("snap_period")
+	FeesCollectedKey       = []byte("fees_collected")
+	FeesTreasuryKey        = []byte("fees_treasury")
+	SnapPeriodKey          = []byte("snap_period")
+	ProposerKey            = []byte("proposer_key")
+	PrefixKeyValidatorVote = []byte("validator_vote_prefix")
 )

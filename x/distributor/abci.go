@@ -32,6 +32,12 @@ func BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock, k keeper.Keeper) 
 		k.AllocateTokens(ctx, sumPreviousPrecommitPower, previousTotalPower, previousProposer, req.LastCommitInfo.GetVotes())
 	}
 
+	for _, bondedVote := range req.LastCommitInfo.GetVotes() {
+		k.SetValidatorVote(ctx, bondedVote.Validator.Address, ctx.BlockHeight())
+	}
+
+	// TODO: remove votes that are older than snap period
+
 	// record the proposer for when we payout on the next block
 	consAddr := sdk.ConsAddress(req.Header.ProposerAddress)
 	k.SetPreviousProposerConsAddr(ctx, consAddr)

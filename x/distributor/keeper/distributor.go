@@ -34,6 +34,7 @@ func (k Keeper) AllocateTokens(
 	proposerValidator, err := k.sk.GetValidatorByConsAddr(ctx, previousProposer)
 
 	if err == nil {
+		// TODO: check historical bonded votes of this validator to see the performance and do cut
 		k.AllocateTokensToValidator(ctx, proposerValidator, feesCollected)
 	} else {
 		// previous proposer can be unknown if say, the unbonding period is 1 block, so
