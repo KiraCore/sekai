@@ -1,0 +1,39 @@
+syntax = "proto3";
+package kira.distributor;
+
+option go_package = "github.com/KiraCore/sekai/x/distributor/types";
+
+import "gogoproto/gogo.proto";
+
+// GenesisState defines the distributor module's genesis state.
+message GenesisState {
+  // fees that are kept in treasury that is not distributed yet
+  repeated string fees_treasury = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
+  // fees collected from genesis
+  repeated string fees_collected = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
+  // number of blocks considered for reward calculation
+  int64 snap_period = 3;
+}
+
+// https://www.notion.so/kira-network/KIP-73-Fee-Reward-Distributor-v1-32b3d1dc90024befa7bb9680c6a425cd
+
+// {
+//  snap_period: <integer>,
+//  snap_block: <integer>,
+// 	snap_balances: [ { 
+// 		denom: <string>, 
+// 		amount: <integer> }, 
+// 	{ ... }, ... ]
+// }
+
+// How to distribute multiple currency fees?
+// How to manage distributed and not distributed rewards, current fee balance?
+// Distribute the rewards every block - keep remainings
+// Check how SDK distribution module detect who produce the block
+// How to get accumulated history of participation of previous blocks? (Slashing module still keeps the history or it should be added again?)
