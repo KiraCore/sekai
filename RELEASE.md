@@ -3,4 +3,11 @@
 Release: `v0.1.23-rc.4`
 
 **Features:**
-* Added Integration Tests: `network-setup`
+
+- Added Integration Tests: `network-setup`
+
+Release: `v0.1.23-rc.5`
+
+**BugFix:**
+
+- Remove randomly failing test
