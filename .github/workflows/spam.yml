@@ -26,8 +26,8 @@ jobs:
           - name: Extract branch name & release version
             shell: bash
             run: |
-              chmod -Rv 666 ./scripts
-              RELEASE_VER="$(./scripts/version.sh)" && echo "RELEASE_VER=$RELEASE_VER" >> $GITHUB_ENV
+              chmod -Rv 555 ./scripts
+              RELEASE_VER=$(./scripts/version.sh) && echo "RELEASE_VER=$RELEASE_VER" >> $GITHUB_ENV
               echo "SOURCE_BRANCH=$(echo ${{ env.REF_BRANCH }} | tr / -)" >> $GITHUB_ENV
               echo "DESTINATION_BRANCH=$(echo ${{ env.BASE_REF_BRANCH }} | tr / -)" >> $GITHUB_ENV
               git ls-remote git ls-remote https://github.com/kiracore/${{ github.event.repository.name }} | egrep -q "refs/tags/${RELEASE_VER}$" && echo "RELEASE_EXISTS=true" >> $GITHUB_ENV || echo "RELEASE_EXISTS=false" >> $GITHUB_ENV

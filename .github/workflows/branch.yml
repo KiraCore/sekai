@@ -20,9 +20,9 @@ jobs:
           - name: Extract branch name on pull request
             shell: bash
             run: |
-              chmod -v 777 ./RELEASE.md
-              chmod -Rv 666 ./scripts
-              RELEASE_VER="$(./scripts/version.sh)" && echo "RELEASE_VER=$RELEASE_VER" >> $GITHUB_ENV
+              chmod -v 666 ./RELEASE.md
+              chmod -Rv 555 ./scripts
+              RELEASE_VER=$(./scripts/version.sh) && echo "RELEASE_VER=$RELEASE_VER" >> $GITHUB_ENV
               echo "SOURCE_BRANCH=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
               echo "MASTER_REF=$(git ls-remote https://github.com/kiracore/${{ github.event.repository.name }} | head -1 | sed 's/HEAD//')" >> $GITHUB_ENV
               git ls-remote git ls-remote https://github.com/kiracore/${{ github.event.repository.name }} | egrep -q "refs/tags/${RELEASE_VER}$" && echo "RELEASE_EXISTS=true" >> $GITHUB_ENV || echo "RELEASE_EXISTS=false" >> $GITHUB_ENV
