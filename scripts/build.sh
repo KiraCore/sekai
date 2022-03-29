@@ -11,9 +11,7 @@ PLATFORM="$1" && [ -z "$PLATFORM" ] && PLATFORM="$LOCAL_PLATFORM"
 ARCH="$2" && [ -z "$ARCH" ] && ARCH="$LOCAL_ARCH"
 OUTPUT="$3" && [ -z "$OUTPUT" ] && OUTPUT="$LOCAL_OUT"
 
-CONSTANS_FILE=./types/constants.go
-VERSION=$(grep -Fn -m 1 'SekaiVersion ' $CONSTANS_FILE | rev | cut -d "=" -f1 | rev | xargs | tr -dc '[:alnum:]\-\.' || echo '')
-($(isNullOrEmpty "$VERSION")) && ( echoErr "ERROR: SekaiVersion was NOT found in contants '$CONSTANS_FILE' !" && sleep 5 && exit 1 )
+VERSION=$(./scripts/version.sh)
 
 RELEASE_FILE=./RELEASE.md
 RELEASE_VERSION=$(grep -Fn -m 1 'Release: ' $RELEASE_FILE | rev | cut -d ":" -f1 | rev | xargs | tr -dc '[:alnum:]\-\.' || echo '')
@@ -28,6 +26,9 @@ else
     RELEASE_LINE_NR=$(getFirstLineByPrefix "Release:" $RELEASE_FILE)
     setLineByNumber $RELEASE_LINE_NR "Release: \`$VERSION\`" $RELEASE_FILE
 fi
+
+RELEASE_VERSION=$(grep -Fn -m 1 'Release: ' $RELEASE_FILE | rev | cut -d ":" -f1 | rev | xargs | tr -dc '[:alnum:]\-\.' || echo '')
+[ "${VERSION}" != "${RELEASE_VERSION}" ] && echoErr "ERROR: Inconsistency between RELEASE.md version and SekaiVersion, expected '${VERSION}', but got '${RELEASE_VERSION}'" && exit 1
 
 COMMIT=$(git log -1 --format='%H') && \
 ldfName="-X github.com/cosmos/cosmos-sdk/version.Name=sekai" && \

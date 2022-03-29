@@ -21,12 +21,7 @@ function pcgConfigure() {
     sed -i"" "s/\${SOURCE}/$SOURCE/" $CONFIG
 }
 
-BRANCH=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD || echo "???")
-echoInfo "INFO: Reading SekaiVersion from constans file, branch $BRANCH"
-
-CONSTANS_FILE=./types/constants.go
-VERSION=$(grep -Fn -m 1 'SekaiVersion ' $CONSTANS_FILE | rev | cut -d "=" -f1 | rev | xargs | tr -dc '[:alnum:]\-\.' || echo '')
-($(isNullOrEmpty "$VERSION")) && ( echoErr "ERROR: SekaiVersion was NOT found in contants '$CONSTANS_FILE' !" && sleep 5 && exit 1 )
+VERSION=$(./scripts/version.sh)
 
 function pcgRelease() {
     local ARCH="$1" && ARCH=$(echo "$ARCH" |  tr '[:upper:]' '[:lower:]' )
