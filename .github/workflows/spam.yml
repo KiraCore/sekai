@@ -49,6 +49,8 @@ jobs:
 
                 --- Please CLOSE this PR after acknowledging the issue ---
               close-pr: false
+              lock-pr: true
+              pr-lock-reason: 'spam'
           - name: Reject invalid PRs to version branches that do NOT originate from feature/* or debug/*
             # ref.: https://github.com/dessant/repo-lockdown
             uses: dessant/repo-lockdown@0b093279a77b44bbc38e85089b5463dd06b4aea4
@@ -62,6 +64,8 @@ jobs:
 
                 --- Please CLOSE this PR after acknowledging the issue ---
               close-pr: false
+              lock-pr: true
+              pr-lock-reason: 'spam'
           - name: Reject PRs to version branches with invalid RELEASE files
             # ref.: https://github.com/dessant/repo-lockdown
             uses: dessant/repo-lockdown@0b093279a77b44bbc38e85089b5463dd06b4aea4
@@ -75,6 +79,8 @@ jobs:
 
                 --- Please CLOSE this PR after acknowledging the issue ---
               close-pr: false
+              lock-pr: true
+              pr-lock-reason: 'spam'
           - name: Reject PRs to version branches, with were already released
             # ref.: https://github.com/dessant/repo-lockdown
             uses: dessant/repo-lockdown@0b093279a77b44bbc38e85089b5463dd06b4aea4
@@ -89,3 +95,5 @@ jobs:
 
                 --- Please CLOSE this PR after acknowledging the issue ---
               close-pr: false
+              lock-pr: true
+              pr-lock-reason: 'spam'
