@@ -1,6 +1,7 @@
 ## KIRA Blockchain Application - SEKAI
 
-Release: `v0.1.23-rc.4`
-
 **Features:**
-* Added Integration Tests: `network-setup`
+
+- Improved workflows to ensure consistency of releases
+- Added `version.sh` script to get SekiVersion variable consistently
+- Removed need to update release version in the `RELEASE.md` file
