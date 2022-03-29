@@ -3,10 +3,8 @@ set -e
 set -x
 . /etc/profile
 
-go mod tidy
-GO111MODULE=on go mod verify
-
-PKG_CONFIG_FILE=./nfpm.yaml 
+PKG_CONFIG_FILE=./nfpm.yaml
+VERSION=$(./scripts/version.sh)
 
 function pcgConfigure() {
     local ARCH="$1"
@@ -20,8 +18,6 @@ function pcgConfigure() {
     sed -i"" "s/\${PLATFORM}/$PLATFORM/" $CONFIG
     sed -i"" "s/\${SOURCE}/$SOURCE/" $CONFIG
 }
-
-VERSION=$(./scripts/version.sh)
 
 function pcgRelease() {
     local ARCH="$1" && ARCH=$(echo "$ARCH" |  tr '[:upper:]' '[:lower:]' )
@@ -53,6 +49,9 @@ function pcgRelease() {
 }
 
 rm -rfv ./bin
+
+go mod tidy
+GO111MODULE=on go mod verify
 
 # NOTE: To see available build architectures, run: go tool dist list
 pcgRelease "amd64" "$VERSION" "linux"
