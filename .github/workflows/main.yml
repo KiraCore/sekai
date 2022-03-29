@@ -17,8 +17,9 @@ jobs:
       id-token: write
       pull-requests: write
     steps:
+          # ref.: https://github.com/sigstore/cosign-installer, v2.1.0
           - name: Install cosign
-            uses: sigstore/cosign-installer@v2.1.0
+            uses: sigstore/cosign-installer@581838fbedd492d2350a9ecd427a95d6de1e5d01
             with:
               cosign-release: 'v1.6.0'
           # ref.: https://github.com/actions/checkout, v3.0.0
@@ -109,7 +110,9 @@ jobs:
               echo "(current dir): $PWD" && ls -l ./
               tar xvf ./deb.tar.gz
               chmod -Rv 777 ./
-              echo "RELEASE_VER=$(grep -Fn -m 1 'Release: ' ./RELEASE.md | rev | cut -d ":" -f1 | rev | xargs | tr -dc '[:alnum:]\-\.' || echo '')" >> $GITHUB_ENV
+              RELEASE_VER="$(grep -Fn -m 1 'Release: ' ./RELEASE.md | rev | cut -d ":" -f1 | rev | xargs | tr -dc '[:alnum:]\-\.' || echo '')"
+              echo "RELEASE_VER=$RELEASE_VER" >> $GITHUB_ENV
+              git ls-remote git ls-remote https://github.com/kiracore/${{ github.event.repository.name }} | egrep -q "refs/tags/${RELEASE_VER}$" && echo "RELEASE_EXISTS=true" >> $GITHUB_ENV || echo "RELEASE_EXISTS=false" >> $GITHUB_ENV
           # Branch name is also a version of the release
           # ref: https://stackoverflow.com/questions/58033366/how-to-get-the-current-branch-within-github-actions
           - name: Extract branch name on push
@@ -129,10 +132,11 @@ jobs:
               echo "DESTINATION_BRANCH=$(echo ${{ env.BASE_REF_BRANCH }} | tr / -)" >> $GITHUB_ENV
           - name: Print debug data before publishing
             run: |
-              echo "Source branch: ${{ env.SOURCE_BRANCH }}"
-              echo " Dest. branch: ${{ env.DESTINATION_BRANCH }}"
-              echo "   Event name: ${{ github.event_name }}"
-              echo " Release ver.: ${{ env.RELEASE_VER }}"
+              echo "     Source branch: ${{ env.SOURCE_BRANCH }}"
+              echo "Destination branch: ${{ env.DESTINATION_BRANCH }}"
+              echo "       Event name: ${{ github.event_name }}"
+              echo "  Release version: ${{ env.RELEASE_VER }}"
+              echo "   Release exists: ${{ env.RELEASE_EXISTS }}"
           - name: Reject on error
             # ref.: https://github.com/andrewslotin/rummelsnuff, v1.1.0
             uses: andrewslotin/rummelsnuff@a0c9c1929f44eefff922aced1ee4dd64eddf12d6
@@ -146,6 +150,7 @@ jobs:
           - name: Publish release
             if: |
               github.event_name == 'push' &&
+              ( env.RELEASE_EXISTS == false || env.RELEASE_EXISTS == 'false' ) &&
               ( startsWith(env.SOURCE_BRANCH, 'v') && contains(env.SOURCE_BRANCH, '.') && !contains(env.SOURCE_BRANCH, 'rc') && !contains(env.SOURCE_BRANCH, '-') )
             uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5
             with:
@@ -168,6 +173,7 @@ jobs:
           - name: Publish pre-release
             if: |
               github.event_name == 'push' &&
+              ( env.RELEASE_EXISTS == false || env.RELEASE_EXISTS == 'false' ) &&
               ( startsWith(env.SOURCE_BRANCH, 'v') && contains(env.SOURCE_BRANCH, '.') && contains(env.SOURCE_BRANCH, '-') )
             uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5
             with:
