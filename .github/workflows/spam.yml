@@ -80,7 +80,7 @@ jobs:
             uses: dessant/repo-lockdown@0b093279a77b44bbc38e85089b5463dd06b4aea4
             if: |
               ( startsWith(env.DESTINATION_BRANCH, 'v') && contains(env.DESTINATION_BRANCH, '.') ) &&
-              ( env.RELEASE_EXISTS == true || env.RELEASE_EXISTS == 'true' ) &&
+              ( env.RELEASE_EXISTS == true || env.RELEASE_EXISTS == 'true' )
             with:
               pr-labels: 'invalid'
               pr-comment: >
