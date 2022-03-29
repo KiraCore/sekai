@@ -196,6 +196,7 @@ jobs:
             uses: hmarr/auto-approve-action@5d04a5ca6da9aeb8ca9f31a5239b96fc3e003029
             if: |
               ( github.event_name == 'pull_request' ) &&
+              ( env.RELEASE_EXISTS == false || env.RELEASE_EXISTS == 'false' ) &&
               ( env.SOURCE_BRANCH == env.RELEASE_VER || env.DESTINATION_BRANCH == env.RELEASE_VER )
             with:
               github-token: "${{ secrets.GITHUB_TOKEN }}"

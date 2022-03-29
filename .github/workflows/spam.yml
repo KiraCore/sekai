@@ -46,7 +46,7 @@ jobs:
               pr-labels: 'invalid'
               pr-comment: >
                 This repository does not accept pull requests from non version branches.
-
+                
                 --- Please CLOSE this PR after acknowledging the issue ---
               close-pr: false
               lock-pr: true
@@ -61,7 +61,7 @@ jobs:
               pr-labels: 'invalid'
               pr-comment: >
                 This repository does not accept pull requests from feature/* & bugfix/* branches.
-
+                
                 --- Please CLOSE this PR after acknowledging the issue ---
               close-pr: false
               lock-pr: true
@@ -76,7 +76,7 @@ jobs:
               pr-labels: 'invalid'
               pr-comment: >
                 The release version (${{ env.RELEASE_VER }}) does NOT match the branch name (${{ env.DESTINATION_BRANCH }}).
-
+                
                 --- Please CLOSE this PR after acknowledging the issue ---
               close-pr: false
               lock-pr: true
@@ -92,7 +92,7 @@ jobs:
               pr-comment: >
                 Version (${{ env.RELEASE_VER }}) was already released! 
                 It is NOT allowed to create PRs to version branches which were already released.
-
+                
                 --- Please CLOSE this PR after acknowledging the issue ---
               close-pr: false
               lock-pr: true
