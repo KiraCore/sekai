@@ -29,16 +29,9 @@ jobs:
             run: |
               . /etc/profile && echo "Utils Version: $(utilsVersion)"
               go version
-              CDHelper version
-              flutter --version
-              dart --version
               echo "ENVS: $(env)"
               echo "HOME: $HOME"
               echo " PWD: $PWD"
-          - name: Download artifacts
-            uses: actions/download-artifact@v3.0.0
-            with:
-              name: sekai-src
           - name: Extract branch name on push
             if: github.event_name == 'push'
             shell: bash
