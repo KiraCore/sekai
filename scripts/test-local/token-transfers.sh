@@ -22,6 +22,9 @@ recoverAccount tester3 "$ACCOUNT3_MNEMONIC"
 ACCOUNT3_RECOVERED_ADDRESS=$(showAddress tester3)
 [ "$ACCOUNT3_ADDRESS" != "$ACCOUNT3_RECOVERED_ADDRESS" ] && echoErr "ERROR: Expected account 'tester3' to be '$ACCOUNT3_ADDRESS' after recovery but got '$ACCOUNT3_RECOVERED_ADDRESS'" && exit 1
 
-# TODO: Add token transfer tests
+echoInfo "INFO: Sending 1000 KEX from faucet to tester1"
+sendTokens faucet $(showAddress tester1) 1000000000 ukex 100 ukex
+
+# TODO: add balance checks
 
 echoInfo "INFO: $TEST_NAME - Integration Test - END, elapsed: $(prettyTime $(timerSpan $TEST_NAME))"
