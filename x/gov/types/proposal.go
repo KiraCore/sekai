@@ -308,7 +308,8 @@ func (m *SetNetworkPropertyProposal) ValidateBasic() error {
 		EnableTokenBlacklist,
 		MinIdentityApprovalTip,
 		UniqueIdentityKeys,
-		UbiHardcap:
+		UbiHardcap,
+		ValidatorsFeeShare:
 		return nil
 	default:
 		return ErrInvalidNetworkProperty

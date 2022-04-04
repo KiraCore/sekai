@@ -8,6 +8,9 @@ import (
 
 	customante "github.com/KiraCore/sekai/app/ante"
 	"github.com/KiraCore/sekai/middleware"
+	"github.com/KiraCore/sekai/x/distributor"
+	distributorkeeper "github.com/KiraCore/sekai/x/distributor/keeper"
+	distributortypes "github.com/KiraCore/sekai/x/distributor/types"
 	"github.com/KiraCore/sekai/x/evidence"
 	evidencekeeper "github.com/KiraCore/sekai/x/evidence/keeper"
 	evidencetypes "github.com/KiraCore/sekai/x/evidence/types"
@@ -92,6 +95,7 @@ var (
 		customstaking.AppModuleBasic{},
 		customgov.AppModuleBasic{},
 		spending.AppModuleBasic{},
+		distributor.AppModuleBasic{},
 		ubi.AppModuleBasic{},
 		evidence.AppModuleBasic{},
 		tokens.AppModuleBasic{},
@@ -100,10 +104,11 @@ var (
 
 	// module account permissions
 	maccPerms = map[string][]string{
-		authtypes.FeeCollectorName: nil,
-		govtypes.ModuleName:        nil,
-		minttypes.ModuleName:       {authtypes.Minter},
-		spendingtypes.ModuleName:   nil,
+		authtypes.FeeCollectorName:  nil,
+		govtypes.ModuleName:         nil,
+		minttypes.ModuleName:        {authtypes.Minter},
+		spendingtypes.ModuleName:    nil,
+		distributortypes.ModuleName: nil,
 	}
 
 	// module accounts that are allowed to receive tokens
@@ -138,6 +143,7 @@ type SekaiApp struct {
 	EvidenceKeeper       evidencekeeper.Keeper
 	SpendingKeeper       spendingkeeper.Keeper
 	UbiKeeper            ubikeeper.Keeper
+	DistrKeeper          distributorkeeper.Keeper
 
 	// Module Manager
 	mm *module.Manager
@@ -180,6 +186,7 @@ func NewInitApp(
 		stakingtypes.ModuleName,
 		govtypes.ModuleName,
 		spendingtypes.ModuleName,
+		distributortypes.ModuleName,
 		ubitypes.ModuleName,
 		tokenstypes.ModuleName,
 		feeprocessingtypes.ModuleName,
@@ -223,6 +230,7 @@ func NewInitApp(
 	app.CustomStakingKeeper = *customStakingKeeper.SetHooks(
 		stakingtypes.NewMultiStakingHooks(app.CustomSlashingKeeper.Hooks()),
 	)
+	app.DistrKeeper = distributorkeeper.NewKeeper(keys[distributortypes.ModuleName], appCodec, app.AccountKeeper, app.BankKeeper, app.CustomStakingKeeper, app.CustomGovKeeper)
 
 	app.UpgradeKeeper = upgradekeeper.NewKeeper(keys[upgradetypes.StoreKey], appCodec, app.CustomStakingKeeper)
 
@@ -291,6 +299,7 @@ func NewInitApp(
 		customgov.NewAppModule(app.CustomGovKeeper),
 		tokens.NewAppModule(app.TokensKeeper, app.CustomGovKeeper),
 		spending.NewAppModule(app.SpendingKeeper, app.CustomGovKeeper, app.BankKeeper),
+		distributor.NewAppModule(app.DistrKeeper, app.CustomGovKeeper),
 		ubi.NewAppModule(app.UbiKeeper, app.CustomGovKeeper),
 		feeprocessing.NewAppModule(app.FeeProcessingKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
@@ -305,6 +314,7 @@ func NewInitApp(
 		upgradetypes.ModuleName, slashingtypes.ModuleName,
 		evidencetypes.ModuleName, stakingtypes.ModuleName,
 		spendingtypes.ModuleName, ubitypes.ModuleName,
+		distributortypes.ModuleName,
 	)
 	app.mm.SetOrderEndBlockers(
 		banktypes.ModuleName, upgradetypes.ModuleName, tokenstypes.ModuleName,
@@ -314,6 +324,7 @@ func NewInitApp(
 		stakingtypes.ModuleName,
 		feeprocessingtypes.ModuleName,
 		spendingtypes.ModuleName, ubitypes.ModuleName,
+		distributortypes.ModuleName,
 	)
 
 	// NOTE: The genutils moodule must occur after staking so that pools are
@@ -335,6 +346,7 @@ func NewInitApp(
 		spendingtypes.ModuleName,
 		ubitypes.ModuleName,
 		paramstypes.ModuleName,
+		distributortypes.ModuleName,
 	)
 
 	app.mm.RegisterRoutes(app.Router(), app.QueryRouter(), encodingConfig.Amino)
