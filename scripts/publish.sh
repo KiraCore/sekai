@@ -3,10 +3,8 @@ set -e
 set -x
 . /etc/profile
 
-go mod tidy
-GO111MODULE=on go mod verify
-
-PKG_CONFIG_FILE=./nfpm.yaml 
+PKG_CONFIG_FILE=./nfpm.yaml
+VERSION=$(./scripts/version.sh)
 
 function pcgConfigure() {
     local ARCH="$1"
@@ -20,13 +18,6 @@ function pcgConfigure() {
     sed -i"" "s/\${PLATFORM}/$PLATFORM/" $CONFIG
     sed -i"" "s/\${SOURCE}/$SOURCE/" $CONFIG
 }
-
-BRANCH=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD || echo "???")
-echoInfo "INFO: Reading SekaiVersion from constans file, branch $BRANCH"
-
-CONSTANS_FILE=./types/constants.go
-VERSION=$(grep -Fn -m 1 'SekaiVersion ' $CONSTANS_FILE | rev | cut -d "=" -f1 | rev | xargs | tr -dc '[:alnum:]\-\.' || echo '')
-($(isNullOrEmpty "$VERSION")) && ( echoErr "ERROR: SekaiVersion was NOT found in contants '$CONSTANS_FILE' !" && sleep 5 && exit 1 )
 
 function pcgRelease() {
     local ARCH="$1" && ARCH=$(echo "$ARCH" |  tr '[:upper:]' '[:lower:]' )
@@ -58,6 +49,9 @@ function pcgRelease() {
 }
 
 rm -rfv ./bin
+
+go mod tidy
+GO111MODULE=on go mod verify
 
 # NOTE: To see available build architectures, run: go tool dist list
 pcgRelease "amd64" "$VERSION" "linux"

@@ -11,29 +11,12 @@ PLATFORM="$1" && [ -z "$PLATFORM" ] && PLATFORM="$LOCAL_PLATFORM"
 ARCH="$2" && [ -z "$ARCH" ] && ARCH="$LOCAL_ARCH"
 OUTPUT="$3" && [ -z "$OUTPUT" ] && OUTPUT="$LOCAL_OUT"
 
-CONSTANS_FILE=./types/constants.go
-VERSION=$(grep -Fn -m 1 'SekaiVersion ' $CONSTANS_FILE | rev | cut -d "=" -f1 | rev | xargs | tr -dc '[:alnum:]\-\.' || echo '')
-($(isNullOrEmpty "$VERSION")) && ( echoErr "ERROR: SekaiVersion was NOT found in contants '$CONSTANS_FILE' !" && sleep 5 && exit 1 )
-
-RELEASE_FILE=./RELEASE.md
-RELEASE_VERSION=$(grep -Fn -m 1 'Release: ' $RELEASE_FILE | rev | cut -d ":" -f1 | rev | xargs | tr -dc '[:alnum:]\-\.' || echo '')
-RELEASE_LINE_NR=$(getFirstLineByPrefix "Release:" $RELEASE_FILE)
-
-# If release file is not present or release version is NOT defined then create RELEASE.md or append the Release version
-if ($(isNullOrEmpty "$RELEASE_VERSION")) || [ ! -f $RELEASE_FILE ] || [ $RELEASE_LINE_NR -le 0 ] ; then
-    touch $RELEASE_FILE
-    echo -e "\n\rRelease: \`$VERSION\`" >> $RELEASE_FILE
-# Otherwsie replace release with the number defined by the constants file
-else
-    RELEASE_LINE_NR=$(getFirstLineByPrefix "Release:" $RELEASE_FILE)
-    setLineByNumber $RELEASE_LINE_NR "Release: \`$VERSION\`" $RELEASE_FILE
-fi
-
-COMMIT=$(git log -1 --format='%H') && \
-ldfName="-X github.com/cosmos/cosmos-sdk/version.Name=sekai" && \
-ldfAppName="-X github.com/cosmos/cosmos-sdk/version.AppName=sekaid" && \
-ldfVersion="-X github.com/cosmos/cosmos-sdk/version.Version=$VERSION" && \
-ldfCommit="-X github.com/cosmos/cosmos-sdk/version.Commit=$COMMIT" && \
+VERSION=$(./scripts/version.sh)
+COMMIT=$(git log -1 --format='%H')
+ldfName="-X github.com/cosmos/cosmos-sdk/version.Name=sekai"
+ldfAppName="-X github.com/cosmos/cosmos-sdk/version.AppName=sekaid"
+ldfVersion="-X github.com/cosmos/cosmos-sdk/version.Version=$VERSION"
+ldfCommit="-X github.com/cosmos/cosmos-sdk/version.Commit=$COMMIT"
 ldfBuildTags="-X github.com/cosmos/cosmos-sdk/version.BuildTags=${PLATFORM},${ARCH}"
 
 rm -fv "$OUTPUT" || echo "ERROR: Failed to wipe old sekaid binary"

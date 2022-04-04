@@ -7,32 +7,6 @@ on:
     branches: [ v*.*.*, bugfix/*, master, dev, latest, testnet-*, mainnet-*, kira-* ]
 
 jobs:
-  # isolate signing & repo cloning from docker image
-  setup:
-    name: Repo Setup
-    runs-on: ubuntu-20.04
-    permissions:
-      contents: read
-      packages: write
-      id-token: write
-      pull-requests: write
-    steps:
-          - name: Install cosign
-            uses: sigstore/cosign-installer@v2.1.0
-            with:
-              cosign-release: 'v1.6.0'
-          # ref.: https://github.com/actions/checkout, v3.0.0
-          - name: Checkout repository
-            uses: actions/checkout@a12a3943b4bdde767164f792f33f40b04645d846
-          - name: Verify repo content
-            run: |
-              echo "(current dir): $PWD" && ls -l ./
-              cd ../ && tar -czvf src.tar.gz -C ./sekai . && cp ./src.tar.gz ./sekai/src.tar.gz
-          - name: Uploading artifacts
-            uses: actions/upload-artifact@v3.0.0
-            with:
-              name: sekai-src
-              path: ./src.tar.gz
   build:
     name: Repo Build
     runs-on: ubuntu-20.04
@@ -41,29 +15,57 @@ jobs:
       packages: write
       id-token: write
       pull-requests: write
-    needs: [setup]
     container: 
-      image: ghcr.io/kiracore/docker/base-image:v0.5.0.0
+      image: ghcr.io/kiracore/docker/base-image:v0.8.0.0
     steps:
+          - name: Checkout repository
+            uses: actions/checkout@a12a3943b4bdde767164f792f33f40b04645d846
+          - name: Verify repo content
+            run: |
+              echo "(current dir): $PWD" && ls -l ./
+              cd ../ && tar -czvf src.tar.gz -C ./sekai . && cp ./src.tar.gz ./sekai/src.tar.gz
+              cd ./sekai
           - name: Checking dependency versions
             run: |
               . /etc/profile && echo "Utils Version: $(utilsVersion)"
               go version
-              CDHelper version
-              flutter --version
-              dart --version
               echo "ENVS: $(env)"
               echo "HOME: $HOME"
               echo " PWD: $PWD"
-          - name: Download artifacts
-            uses: actions/download-artifact@v3.0.0
-            with:
-              name: sekai-src
-          - name: Testing SEKAI
+          - name: Extract branch name on push
+            if: github.event_name == 'push'
+            shell: bash
+            run: |
+              echo "SOURCE_BRANCH=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
+              echo "DESTINATION_BRANCH=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
+          - name: Extract branch name on pull request
+            if: github.event_name == 'pull_request'
+            env:
+              REF_BRANCH: ${{ github.event.pull_request.head.ref }}
+              BASE_REF_BRANCH: ${{ github.base_ref }}
+            shell: bash
+            run: |
+              echo "SOURCE_BRANCH=$(echo ${{ env.REF_BRANCH }})" >> $GITHUB_ENV
+              echo "DESTINATION_BRANCH=$(echo ${{ env.BASE_REF_BRANCH }})" >> $GITHUB_ENV
+          - name: Inspecting & organizing artifacts
             run: |
               echo "(current dir): $PWD" && ls -l ./
               tar xvf ./src.tar.gz
               chmod -Rv 555 ./scripts
+              REPOSITORY_NAME="${{ github.event.repository.name }}" && echo "REPOSITORY_NAME=$REPOSITORY_NAME" >> $GITHUB_ENV
+              RELEASE_VER=$(./scripts/version.sh) && echo "RELEASE_VER=$RELEASE_VER" >> $GITHUB_ENV
+              echo "RELEASE_VER=$RELEASE_VER" >> $GITHUB_ENV
+              git ls-remote https://github.com/kiracore/$REPOSITORY_NAME | egrep -q "refs/tags/${RELEASE_VER}$" && echo "RELEASE_EXISTS=true" >> $GITHUB_ENV || echo "RELEASE_EXISTS=false" >> $GITHUB_ENV
+          - name: Print debug data before testing
+            run: |
+              echo "     Source branch: ${{ env.SOURCE_BRANCH }}"
+              echo "Destination branch: ${{ env.DESTINATION_BRANCH }}"
+              echo "       Event name: ${{ github.event_name }}"
+              echo "  Repository name: ${{ env.REPOSITORY_NAME }}"
+              echo "  Release version: ${{ env.RELEASE_VER }}"
+              echo "   Release exists: ${{ env.RELEASE_EXISTS }}"
+          - name: Testing SEKAI
+            run: |
               make test
               make install
               sekaid version
@@ -74,8 +76,11 @@ jobs:
               make publish
               touch ./RELEASE.md
               cp -fv ./RELEASE.md ./bin/RELEASE.md
+              cp -fv ./src.tar.gz ./bin/source-code.tar.gz
               chmod -Rv 777 ./bin
               echo -e "\n\r\n\r\`\`\`" >> ./bin/RELEASE.md
+              echo -e "       Release Versions: $RELEASE_VER\n\r" >> ./bin/RELEASE.md
+              echo -e "      Release Date Time: $(date --rfc-2822)" >> ./bin/RELEASE.md
               echo " sekai-darwin-amd64.deb: sha256:$(sha256sum ./bin/sekai-darwin-amd64.deb  | awk '{ print $1 }')" >> ./bin/RELEASE.md
               echo " sekai-darwin-arm64.deb: sha256:$(sha256sum ./bin/sekai-darwin-arm64.deb  | awk '{ print $1 }')" >> ./bin/RELEASE.md
               echo "  sekai-linux-amd64.deb: sha256:$(sha256sum ./bin/sekai-linux-amd64.deb   | awk '{ print $1 }')" >> ./bin/RELEASE.md
@@ -83,6 +88,7 @@ jobs:
               echo "sekai-windows-amd64.exe: sha256:$(sha256sum ./bin/sekai-windows-amd64.exe | awk '{ print $1 }')" >> ./bin/RELEASE.md
               echo "sekai-windows-arm64.exe: sha256:$(sha256sum ./bin/sekai-windows-arm64.exe | awk '{ print $1 }')" >> ./bin/RELEASE.md
               echo "         sekai-utils.sh: sha256:$(sha256sum ./bin/sekai-utils.sh | awk '{ print $1 }')" >> ./bin/RELEASE.md
+              echo "     source-code.tar.gz: sha256:$(sha256sum ./bin/source-code.tar.gz | awk '{ print $1 }')" >> ./bin/RELEASE.md
               echo -e "\`\`\`"   >> ./bin/RELEASE.md
               tar -czvf deb.tar.gz -C ./bin .
           - name: Uploading artifacts
@@ -109,7 +115,9 @@ jobs:
               echo "(current dir): $PWD" && ls -l ./
               tar xvf ./deb.tar.gz
               chmod -Rv 777 ./
-              echo "RELEASE_VER=$(grep -Fn -m 1 'Release: ' ./RELEASE.md | rev | cut -d ":" -f1 | rev | xargs | tr -dc '[:alnum:]\-\.' || echo '')" >> $GITHUB_ENV
+              RELEASE_VER=$(cat ./RELEASE.md | tac | grep -Fn -m 1 'Release Versions: ' | rev | cut -d ":" -f1 | rev | xargs | tr -dc '[:alnum:]\-\.' || echo '')
+              echo "RELEASE_VER=$RELEASE_VER" >> $GITHUB_ENV
+              git ls-remote https://github.com/kiracore/${{ github.event.repository.name }} | egrep -q "refs/tags/${RELEASE_VER}$" && echo "RELEASE_EXISTS=true" >> $GITHUB_ENV || echo "RELEASE_EXISTS=false" >> $GITHUB_ENV
           # Branch name is also a version of the release
           # ref: https://stackoverflow.com/questions/58033366/how-to-get-the-current-branch-within-github-actions
           - name: Extract branch name on push
@@ -129,10 +137,11 @@ jobs:
               echo "DESTINATION_BRANCH=$(echo ${{ env.BASE_REF_BRANCH }} | tr / -)" >> $GITHUB_ENV
           - name: Print debug data before publishing
             run: |
-              echo "Source branch: ${{ env.SOURCE_BRANCH }}"
-              echo " Dest. branch: ${{ env.DESTINATION_BRANCH }}"
-              echo "   Event name: ${{ github.event_name }}"
-              echo " Release ver.: ${{ env.RELEASE_VER }}"
+              echo "     Source branch: ${{ env.SOURCE_BRANCH }}"
+              echo "Destination branch: ${{ env.DESTINATION_BRANCH }}"
+              echo "       Event name: ${{ github.event_name }}"
+              echo "  Release version: ${{ env.RELEASE_VER }}"
+              echo "   Release exists: ${{ env.RELEASE_EXISTS }}"
           - name: Reject on error
             # ref.: https://github.com/andrewslotin/rummelsnuff, v1.1.0
             uses: andrewslotin/rummelsnuff@a0c9c1929f44eefff922aced1ee4dd64eddf12d6
@@ -146,6 +155,7 @@ jobs:
           - name: Publish release
             if: |
               github.event_name == 'push' &&
+              ( env.RELEASE_EXISTS == false || env.RELEASE_EXISTS == 'false' ) &&
               ( startsWith(env.SOURCE_BRANCH, 'v') && contains(env.SOURCE_BRANCH, '.') && !contains(env.SOURCE_BRANCH, 'rc') && !contains(env.SOURCE_BRANCH, '-') )
             uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5
             with:
@@ -163,11 +173,13 @@ jobs:
                 ./sekai-windows-amd64.exe
                 ./sekai-windows-arm64.exe
                 ./sekai-utils.sh
+                ./source-code.tar.gz
           # ref: https://github.com/softprops/action-gh-release, v0.1.14
           # Release on merge only (push action) - this should run only once
           - name: Publish pre-release
             if: |
               github.event_name == 'push' &&
+              ( env.RELEASE_EXISTS == false || env.RELEASE_EXISTS == 'false' ) &&
               ( startsWith(env.SOURCE_BRANCH, 'v') && contains(env.SOURCE_BRANCH, '.') && contains(env.SOURCE_BRANCH, '-') )
             uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5
             with:
@@ -185,11 +197,14 @@ jobs:
                 ./sekai-windows-amd64.exe
                 ./sekai-windows-arm64.exe
                 ./sekai-utils.sh
+                ./source-code.tar.gz
           # ref.: https://github.com/hmarr/auto-approve-action, v2.1.0
+          # Do NOT approve IF release exists and the source branch is NOT a version branch
           - name: Approve pull request on success
             uses: hmarr/auto-approve-action@5d04a5ca6da9aeb8ca9f31a5239b96fc3e003029
             if: |
               ( github.event_name == 'pull_request' ) &&
+              (( env.RELEASE_EXISTS == false || env.RELEASE_EXISTS == 'false' ) || env.SOURCE_BRANCH == env.RELEASE_VER) &&
               ( env.SOURCE_BRANCH == env.RELEASE_VER || env.DESTINATION_BRANCH == env.RELEASE_VER )
             with:
               github-token: "${{ secrets.GITHUB_TOKEN }}"

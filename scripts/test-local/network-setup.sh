@@ -20,17 +20,27 @@ fi
 echoInfo "INFO: Environment cleanup...."
 systemctl2 stop sekai || echoWarn "WARNING: sekai service was NOT running or could NOT be stopped"
 
+kill -9 $(sudo lsof -t -i:9090) || echoWarn "WARNING: Nothing running on port 9090, or failed to kill processes"
+kill -9 $(sudo lsof -t -i:6060) || echoWarn "WARNING: Nothing running on port 6060, or failed to kill processes"
+kill -9 $(sudo lsof -t -i:26656) || echoWarn "WARNING: Nothing running on port 26656, or failed to kill processes"
+kill -9 $(sudo lsof -t -i:26657) || echoWarn "WARNING: Nothing running on port 26657, or failed to kill processes"
+kill -9 $(sudo lsof -t -i:26658) || echoWarn "WARNING: Nothing running on port 26658, or failed to kill processes"
+
+NETWORK_NAME="localnet-0"
 setGlobEnv SEKAID_HOME ~/.sekaid-local
+setGlobEnv NETWORK_NAME $NETWORK_NAME
 loadGlobEnvs
 
 rm -rfv $SEKAID_HOME 
 mkdir -p $SEKAID_HOME
 
 echoInfo "INFO: Starting new network..."
-CHAIN_ID="localnet-0"
-sekaid init --overwrite --chain-id=$CHAIN_ID "KIRA TEST LOCAL VALIDATOR NODE" --home=$SEKAID_HOME
+
+sekaid init --overwrite --chain-id=$NETWORK_NAME "KIRA TEST LOCAL VALIDATOR NODE" --home=$SEKAID_HOME
 sekaid keys add validator --keyring-backend=test --home=$SEKAID_HOME
-sekaid add-genesis-account $(showAddress validator) 300000000000000ukex,300000000000000test,2000000000000000000000000000samolean,1000000lol --home=$SEKAID_HOME
+sekaid keys add faucet --keyring-backend=test --home=$SEKAID_HOME
+sekaid add-genesis-account $(showAddress validator) 150000000000000ukex,300000000000000test,2000000000000000000000000000samolean,1000000lol --keyring-backend=test --home=$SEKAID_HOME
+sekaid add-genesis-account $(showAddress faucet) 150000000000000ukex,300000000000000test,2000000000000000000000000000samolean,1000000lol --keyring-backend=test --home=$SEKAID_HOME
 sekaid gentx-claim validator --keyring-backend=test --moniker="GENESIS VALIDATOR" --home=$SEKAID_HOME
 
 cat > /etc/systemd/system/sekai.service << EOL
@@ -60,8 +70,8 @@ systemctl2 status sekai
 echoInfo "INFO: Checking network status..."
 NETWORK_STATUS_CHAIN_ID=$(showStatus | jq .NodeInfo.network | xargs)
 
-if [ "$CHAIN_ID" != "$NETWORK_STATUS_CHAIN_ID" ] ; then
-    echoErr "ERROR: Incorrect chain ID from the status query, expected '$CHAIN_ID', but got $NETWORK_STATUS_CHAIN_ID"
+if [ "$NETWORK_NAME" != "$NETWORK_STATUS_CHAIN_ID" ] ; then
+    echoErr "ERROR: Incorrect chain ID from the status query, expected '$NETWORK_NAME', but got $NETWORK_STATUS_CHAIN_ID"
 fi
 
 BLOCK_HEIGHT=$(showBlockHeight)

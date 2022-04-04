@@ -1,4 +1,4 @@
-name: Clean spam PRs
+name: Clean Spam PRs
 
 on:
   pull_request:
@@ -26,13 +26,16 @@ jobs:
           - name: Extract branch name & release version
             shell: bash
             run: |
-              echo "RELEASE_VER=$(grep -Fn -m 1 'Release: ' ./RELEASE.md | rev | cut -d ":" -f1 | rev | xargs | tr -dc '[:alnum:]\-\.' || echo '')" >> $GITHUB_ENV
+              chmod -Rv 555 ./scripts
+              RELEASE_VER=$(./scripts/version.sh) && echo "RELEASE_VER=$RELEASE_VER" >> $GITHUB_ENV
               echo "SOURCE_BRANCH=$(echo ${{ env.REF_BRANCH }} | tr / -)" >> $GITHUB_ENV
               echo "DESTINATION_BRANCH=$(echo ${{ env.BASE_REF_BRANCH }} | tr / -)" >> $GITHUB_ENV
+              git ls-remote https://github.com/kiracore/${{ github.event.repository.name }} | egrep -q "refs/tags/${RELEASE_VER}$" && echo "RELEASE_EXISTS=true" >> $GITHUB_ENV || echo "RELEASE_EXISTS=false" >> $GITHUB_ENV
           - name: Print debug data before publishing
             run: |
-              echo "Source branch name: ${{ env.SOURCE_BRANCH }}"
-              echo "Destination branch name: ${{ env.DESTINATION_BRANCH }}"
+              echo "     Source branch: ${{ env.SOURCE_BRANCH }}"
+              echo "Destination branch: ${{ env.DESTINATION_BRANCH }}"
+              echo "    Release exists: ${{ env.RELEASE_EXISTS }}"
           - name: Reject invalid PRs to master, dev or latest
             # ref.: https://github.com/dessant/repo-lockdown
             uses: dessant/repo-lockdown@0b093279a77b44bbc38e85089b5463dd06b4aea4
@@ -42,8 +45,12 @@ jobs:
             with:
               pr-labels: 'invalid'
               pr-comment: >
-                This repository does not accept pull requests from non version branches
-              close-pr: true
+                This repository does not accept pull requests from non version branches.
+                
+                --- Please CLOSE this PR after acknowledging the issue ---
+              close-pr: false
+              lock-pr: true
+              pr-lock-reason: 'spam'
           - name: Reject invalid PRs to version branches that do NOT originate from feature/* or debug/*
             # ref.: https://github.com/dessant/repo-lockdown
             uses: dessant/repo-lockdown@0b093279a77b44bbc38e85089b5463dd06b4aea4
@@ -53,9 +60,13 @@ jobs:
             with:
               pr-labels: 'invalid'
               pr-comment: >
-                This repository does not accept pull requests from feature/* & bugfix/* branches
-              close-pr: true
-          - name: Reject invalid PRs to version branches with invalid RELEASE files
+                This repository does not accept pull requests from feature/* & bugfix/* branches.
+                
+                --- Please CLOSE this PR after acknowledging the issue ---
+              close-pr: false
+              lock-pr: true
+              pr-lock-reason: 'spam'
+          - name: Reject PRs to version branches with invalid RELEASE files
             # ref.: https://github.com/dessant/repo-lockdown
             uses: dessant/repo-lockdown@0b093279a77b44bbc38e85089b5463dd06b4aea4
             if: |
@@ -64,5 +75,25 @@ jobs:
             with:
               pr-labels: 'invalid'
               pr-comment: >
-                The release version (${{ env.RELEASE_VER }}) in the ./RELEASE.md file does NOT match the branch name (${{ env.DESTINATION_BRANCH }})
+                The release version (${{ env.RELEASE_VER }}) does NOT match the branch name (${{ env.DESTINATION_BRANCH }}).
+                
+                --- Please CLOSE this PR after acknowledging the issue ---
               close-pr: false
+              lock-pr: true
+              pr-lock-reason: 'spam'
+          - name: Reject PRs to version branches, with were already released
+            # ref.: https://github.com/dessant/repo-lockdown
+            uses: dessant/repo-lockdown@0b093279a77b44bbc38e85089b5463dd06b4aea4
+            if: |
+              ( startsWith(env.DESTINATION_BRANCH, 'v') && contains(env.DESTINATION_BRANCH, '.') ) &&
+              ( env.RELEASE_EXISTS == true || env.RELEASE_EXISTS == 'true' )
+            with:
+              pr-labels: 'invalid'
+              pr-comment: >
+                Version (${{ env.RELEASE_VER }}) was already released! 
+                It is NOT allowed to create PRs to version branches which were already released.
+                
+                --- Please CLOSE this PR after acknowledging the issue ---
+              close-pr: false
+              lock-pr: true
+              pr-lock-reason: 'spam'
