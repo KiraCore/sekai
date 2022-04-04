@@ -40,7 +40,7 @@ func BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock, k keeper.Keeper) 
 	snapPeriod := k.GetSnapPeriod(ctx)
 	allVotes := k.GetAllValidatorVotes(ctx)
 	for _, vote := range allVotes {
-		if vote.Height+snapPeriod < ctx.BlockHeight() {
+		if vote.Height+snapPeriod <= ctx.BlockHeight() {
 			consAddr, err := sdk.ConsAddressFromBech32(vote.ConsAddr)
 			if err != nil {
 				panic(err)

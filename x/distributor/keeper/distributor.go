@@ -26,10 +26,9 @@ func (k Keeper) AllocateTokens(
 	feesTreasury := k.GetFeesTreasury(ctx)
 	feesCollected := feesAccBalance.Sub(feesTreasury)
 
-	// transfer collected fees to the distribution module account
-	err := k.bk.SendCoinsFromModuleToModule(ctx, authtypes.FeeCollectorName, types.ModuleName, feesCollected)
-	if err != nil {
-		panic(err)
+	validatorsFeeShare := k.gk.GetNetworkProperties(ctx).ValidatorsFeeShare
+	if validatorsFeeShare > 100 {
+		validatorsFeeShare = 100
 	}
 
 	// pay previous proposer
@@ -38,15 +37,16 @@ func (k Keeper) AllocateTokens(
 	if err == nil {
 		// calculate reward based on historical bonded votes of the validator
 		votes := k.GetValidatorVotes(ctx, previousProposer)
-		power := int64(len(votes) + 1)
+		power := int64(len(votes))
 		snapPeriod := k.GetSnapPeriod(ctx)
 		rewards := sdk.Coins{}
 		for _, fee := range feesCollected {
-			reward := fee.Amount.Mul(sdk.NewInt(power)).Quo(sdk.NewInt(snapPeriod))
+			reward := fee.Amount.Mul(sdk.NewInt(power * int64(validatorsFeeShare))).Quo(sdk.NewInt(snapPeriod * 100))
 			if reward.IsPositive() {
 				rewards = rewards.Add(sdk.NewCoin(fee.Denom, reward))
 			}
 		}
+
 		if !rewards.Empty() {
 			k.AllocateTokensToValidator(ctx, proposerValidator, rewards)
 		}

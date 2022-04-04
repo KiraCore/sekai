@@ -106,6 +106,7 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 						MinIdentityApprovalTip:      govGenesisV01228.NetworkProperties.MinIdentityApprovalTip,
 						UniqueIdentityKeys:          govGenesisV01228.NetworkProperties.UniqueIdentityKeys,
 						UbiHardcap:                  6000_000,
+						ValidatorsFeeShare:          100,
 					},
 					ExecutionFees:               govGenesisV01228.ExecutionFees,
 					PoorNetworkMessages:         govGenesisV01228.PoorNetworkMessages,

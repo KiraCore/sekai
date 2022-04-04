@@ -116,6 +116,7 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.Raw
 	genesisState.FeesCollected = am.distributorKeeper.GetFeesCollected(ctx)
 	genesisState.FeesTreasury = am.distributorKeeper.GetFeesTreasury(ctx)
 	genesisState.SnapPeriod = am.distributorKeeper.GetSnapPeriod(ctx)
+	genesisState.ValidatorVotes = am.distributorKeeper.GetAllValidatorVotes(ctx)
 	return cdc.MustMarshalJSON(&genesisState)
 }
 
