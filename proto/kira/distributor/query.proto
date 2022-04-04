@@ -1,0 +1,51 @@
+syntax = "proto3";
+package kira.distributor;
+
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "gogoproto/gogo.proto";
+import "google/protobuf/any.proto";
+import "google/api/annotations.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/distributor/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  // FeesTreasury queries fee treasury
+  rpc FeesTreasury(QueryFeesTreasuryRequest) returns (QueryFeesTreasuryResponse) {
+    option (google.api.http).get =
+        "/kira/distributor/v1beta1/fees_treasury";
+  }
+  // FeesCollected queries fees collected from genesis
+  rpc FeesCollected(QueryFeesCollectedRequest) returns (QueryFeesCollectedResponse) {
+    option (google.api.http).get = "/kira/distributor/v1beta1/fees_collected";
+  }
+  // SnapshotPeriod queries number of blocks considered for reward calculation
+  rpc SnapshotPeriod(QuerySnapshotPeriodRequest) returns (QuerySnapshotPeriodResponse) {
+    option (google.api.http).get = "/kira/distributor/v1beta1/snapshot_period";
+  }
+}
+
+message QueryFeesTreasuryRequest {
+}
+
+message QueryFeesTreasuryResponse {
+  repeated string coins = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryFeesCollectedRequest {}
+
+message QueryFeesCollectedResponse {
+  repeated string coins = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QuerySnapshotPeriodRequest {}
+
+message QuerySnapshotPeriodResponse {
+  int64 snapshot_period = 1;
+}
