@@ -2,7 +2,6 @@
 
 **Features:**
 
-- Removed setup step from main workflow
-- Added new transfer test to local tests
-- Fixed utils script missing home flags for some of the transaction queries
-- Added faucet account to local network setup
+- Added validator_fee_share config into network properties
+- Implemented fee distributor module functionalities to distribute rewards
+- Undistributed rewards are put on fees treasury - community pool - noone is able to spend it now
