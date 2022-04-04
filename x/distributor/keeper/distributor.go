@@ -22,7 +22,9 @@ func (k Keeper) AllocateTokens(
 	// called in BeginBlock, collected fees will be from the previous block
 	// (and distributed to the previous proposer)
 	feeCollector := k.ak.GetModuleAccount(ctx, authtypes.FeeCollectorName)
-	feesCollected := k.bk.GetAllBalances(ctx, feeCollector.GetAddress())
+	feesAccBalance := k.bk.GetAllBalances(ctx, feeCollector.GetAddress())
+	feesTreasury := k.GetFeesTreasury(ctx)
+	feesCollected := feesAccBalance.Sub(feesTreasury)
 
 	// transfer collected fees to the distribution module account
 	err := k.bk.SendCoinsFromModuleToModule(ctx, authtypes.FeeCollectorName, types.ModuleName, feesCollected)
@@ -34,8 +36,20 @@ func (k Keeper) AllocateTokens(
 	proposerValidator, err := k.sk.GetValidatorByConsAddr(ctx, previousProposer)
 
 	if err == nil {
-		// TODO: check historical bonded votes of this validator to see the performance and do cut
-		k.AllocateTokensToValidator(ctx, proposerValidator, feesCollected)
+		// calculate reward based on historical bonded votes of the validator
+		votes := k.GetValidatorVotes(ctx, previousProposer)
+		power := int64(len(votes) + 1)
+		snapPeriod := k.GetSnapPeriod(ctx)
+		rewards := sdk.Coins{}
+		for _, fee := range feesCollected {
+			reward := fee.Amount.Mul(sdk.NewInt(power)).Quo(sdk.NewInt(snapPeriod))
+			if reward.IsPositive() {
+				rewards = rewards.Add(sdk.NewCoin(fee.Denom, reward))
+			}
+		}
+		if !rewards.Empty() {
+			k.AllocateTokensToValidator(ctx, proposerValidator, rewards)
+		}
 	} else {
 		// previous proposer can be unknown if say, the unbonding period is 1 block, so
 		// e.g. a validator undelegates at block X, it's removed entirely by
@@ -49,11 +63,9 @@ func (k Keeper) AllocateTokens(
 			previousProposer.String()))
 	}
 
-	// TODO: give rest of the tokens not distributed to community pool
-	// allocate community funding
-	// feePool := k.GetFeePool(ctx)
-	// feePool.CommunityPool = feePool.CommunityPool.Add(remaining...)
-	// k.SetFeePool(ctx, feePool)
+	// give rest of the tokens to community pool
+	remainings := k.bk.GetAllBalances(ctx, feeCollector.GetAddress())
+	k.SetFeesTreasury(ctx, remainings)
 }
 
 // AllocateTokensToValidator allocate tokens to a particular validator, splitting according to commission

@@ -5,6 +5,11 @@ option go_package = "github.com/KiraCore/sekai/x/distributor/types";
 
 import "gogoproto/gogo.proto";
 
+message ValidatorVote {
+  string cons_addr = 1;
+  int64 height = 2;
+}
+
 // GenesisState defines the distributor module's genesis state.
 message GenesisState {
   // fees that are kept in treasury that is not distributed yet - community pool
@@ -19,6 +24,8 @@ message GenesisState {
   ];
   // number of blocks considered for reward calculation
   int64 snap_period = 3;
+  // validator historical votes
+  repeated ValidatorVote validator_votes = 4 [(gogoproto.nullable) = false];
 }
 
 // https://www.notion.so/kira-network/KIP-73-Fee-Reward-Distributor-v1-32b3d1dc90024befa7bb9680c6a425cd

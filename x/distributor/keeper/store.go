@@ -83,23 +83,18 @@ func (k Keeper) GetValidatorVotes(ctx sdk.Context, consAddr sdk.ConsAddress) []i
 	return voteHeights
 }
 
-type validatorVote struct {
-	consAddr sdk.ConsAddress
-	height   int64
-}
-
-func (k Keeper) GetAllValidatorVotes(ctx sdk.Context) []validatorVote {
+func (k Keeper) GetAllValidatorVotes(ctx sdk.Context) []types.ValidatorVote {
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.PrefixKeyValidatorVote)
 
 	iterator := prefixStore.Iterator(nil, nil)
 	defer iterator.Close()
 
-	valVotes := []validatorVote{}
+	valVotes := []types.ValidatorVote{}
 	for ; iterator.Valid(); iterator.Next() {
 		consAddr := bytes.TrimSuffix(iterator.Key(), iterator.Value())
-		valVotes = append(valVotes, validatorVote{
-			consAddr: consAddr,
-			height:   int64(sdk.BigEndianToUint64(iterator.Value())),
+		valVotes = append(valVotes, types.ValidatorVote{
+			ConsAddr: sdk.ConsAddress(consAddr).String(),
+			Height:   int64(sdk.BigEndianToUint64(iterator.Value())),
 		})
 	}
 	return valVotes

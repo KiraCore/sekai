@@ -36,7 +36,18 @@ func BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock, k keeper.Keeper) 
 		k.SetValidatorVote(ctx, bondedVote.Validator.Address, ctx.BlockHeight())
 	}
 
-	// TODO: remove votes that are older than snap period
+	// remove votes older than snap period
+	snapPeriod := k.GetSnapPeriod(ctx)
+	allVotes := k.GetAllValidatorVotes(ctx)
+	for _, vote := range allVotes {
+		if vote.Height+snapPeriod < ctx.BlockHeight() {
+			consAddr, err := sdk.ConsAddressFromBech32(vote.ConsAddr)
+			if err != nil {
+				panic(err)
+			}
+			k.DeleteValidatorVote(ctx, consAddr, vote.Height)
+		}
+	}
 
 	// record the proposer for when we payout on the next block
 	consAddr := sdk.ConsAddress(req.Header.ProposerAddress)

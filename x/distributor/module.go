@@ -100,6 +100,14 @@ func (am AppModule) InitGenesis(
 	am.distributorKeeper.SetFeesTreasury(ctx, genesisState.FeesTreasury)
 	am.distributorKeeper.SetSnapPeriod(ctx, genesisState.SnapPeriod)
 
+	for _, vote := range genesisState.ValidatorVotes {
+		consAddr, err := sdk.ConsAddressFromBech32(vote.ConsAddr)
+		if err != nil {
+			panic(err)
+		}
+		am.distributorKeeper.SetValidatorVote(ctx, consAddr, vote.Height)
+	}
+
 	return nil
 }
 
