@@ -40,3 +40,18 @@ func (q Querier) SnapshotPeriod(c context.Context, request *types.QuerySnapshotP
 		SnapshotPeriod: q.keeper.GetSnapPeriod(ctx),
 	}, nil
 }
+
+func (q Querier) SnapshotPeriodPerformance(c context.Context, request *types.QuerySnapshotPeriodPerformanceRequest) (*types.QuerySnapshotPeriodPerformanceResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+
+	valAddr, err := sdk.ValAddressFromBech32(request.ValidatorAddress)
+	if err != nil {
+		return nil, err
+	}
+
+	performance, err := q.keeper.GetValidatorPerformance(ctx, valAddr)
+	return &types.QuerySnapshotPeriodPerformanceResponse{
+		SnapshotPeriod: q.keeper.GetSnapPeriod(ctx),
+		Performance:    performance,
+	}, nil
+}

@@ -32,4 +32,5 @@ type SpendingKeeper interface {
 
 type StakingKeeper interface {
 	GetValidatorByConsAddr(ctx sdk.Context, consAddr sdk.ConsAddress) (stakingtypes.Validator, error)
+	GetValidator(sdk.Context, sdk.ValAddress) (stakingtypes.Validator, error)
 }

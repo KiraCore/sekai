@@ -21,6 +21,7 @@ func NewQueryCmd() *cobra.Command {
 		GetCmdQueryFeesTreasury(),
 		GetCmdQueryFeesCollected(),
 		GetCmdSnapshotPeriod(),
+		GetCmdValidatorSnapshotPerformance(),
 	)
 
 	return queryCmd
@@ -82,6 +83,31 @@ func GetCmdSnapshotPeriod() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 			res, err := queryClient.SnapshotPeriod(context.Background(), &types.QuerySnapshotPeriodRequest{})
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func GetCmdValidatorSnapshotPerformance() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "snapshot-period-performance [val_addr]",
+		Short: "Get snapshot period performance for a validator",
+		Args:  cobra.MinimumNArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.SnapshotPeriodPerformance(context.Background(), &types.QuerySnapshotPeriodPerformanceRequest{
+				ValidatorAddress: args[0],
+			})
 			if err != nil {
 				return err
 			}

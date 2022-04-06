@@ -3,6 +3,6 @@ package types
 // DefaultGenesis returns the default CustomGo genesis state
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
-		SnapPeriod: 10,
+		SnapPeriod: 1000,
 	}
 }
