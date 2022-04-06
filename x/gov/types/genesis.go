@@ -103,6 +103,7 @@ func DefaultGenesis() *GenesisState {
 			MinIdentityApprovalTip:      200,
 			UniqueIdentityKeys:          "moniker,username",
 			UbiHardcap:                  6000_000,
+			ValidatorsFeeShare:          100,
 		},
 		ExecutionFees: []*ExecutionFee{
 			{
