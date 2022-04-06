@@ -94,3 +94,11 @@ func (k Keeper) SetPreviousProposerConsAddr(ctx sdk.Context, consAddr sdk.ConsAd
 	store := ctx.KVStore(k.storeKey)
 	store.Set(types.ProposerKey, consAddr)
 }
+
+func (k Keeper) GetValidatorPerformance(ctx sdk.Context, valAddr sdk.ValAddress) (int64, error) {
+	validator, err := k.sk.GetValidator(ctx, valAddr)
+	if err != nil {
+		return 0, err
+	}
+	return int64(len(k.GetValidatorVotes(ctx, validator.GetConsAddr()))), nil
+}
