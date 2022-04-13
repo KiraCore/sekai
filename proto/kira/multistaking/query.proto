@@ -1,0 +1,34 @@
+syntax = "proto3";
+package kira.multistaking;
+
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "gogoproto/gogo.proto";
+import "google/protobuf/any.proto";
+import "google/api/annotations.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/multistaking/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  rpc StakingPools(QueryStakingPoolsRequest) returns (QueryStakingPoolsResponse) {
+    option (google.api.http).get = "/kira/multistaking/v1beta1/staking_pools";
+  }
+  rpc Delegations(QueryDelegationsRequest) returns (QueryDelegationsResponse) {
+    option (google.api.http).get = "/kira/multistaking/v1beta1/delegations";
+  }
+  rpc Undelegations(QueryUndelegationsRequest) returns (QueryUndelegationsResponse) {
+    option (google.api.http).get = "/kira/multistaking/v1beta1/undelegations";
+  }
+}
+
+message QueryStakingPoolsRequest {}
+
+message QueryStakingPoolsResponse {}
+
+message QueryDelegationsRequest {}
+
+message QueryDelegationsResponse {}
+
+message QueryUndelegationsRequest {}
+
+message QueryUndelegationsResponse {}

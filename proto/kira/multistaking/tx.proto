@@ -1,0 +1,64 @@
+syntax = "proto3";
+package kira.multistaking;
+
+option go_package = "github.com/KiraCore/sekai/x/multistaking/types";
+option (gogoproto.equal_all) = true;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/any.proto";
+import "cosmos_proto/cosmos.proto";
+
+// Msg defines the evidence Msg service.
+service Msg {
+  rpc UpsertStakingPool(MsgUpsertStakingPool) returns (MsgUpsertStakingPoolResponse);
+  rpc Delegate(MsgDelegate) returns (MsgDelegateResponse);
+  rpc Undelegate(MsgUndelegate) returns (MsgUndelegateResponse);
+  rpc ClaimRewards(MsgClaimRewards) returns (MsgClaimRewardsResponse);
+  rpc ClaimUndelegation(MsgClaimUndelegation) returns (MsgClaimUndelegationResponse);
+}
+
+message MsgUpsertStakingPool {
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string              sender = 1;
+}
+
+message MsgUpsertStakingPoolResponse {
+}
+
+message MsgDelegate {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string sender = 1;
+}
+
+message MsgDelegateResponse {}
+
+message MsgUndelegate {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string sender = 1;
+}
+
+message MsgUndelegateResponse {}
+
+message MsgClaimRewards {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string sender = 1;
+}
+
+message MsgClaimRewardsResponse {}
+
+message MsgClaimUndelegation {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string sender = 1;
+}
+
+message MsgClaimUndelegationResponse {}
