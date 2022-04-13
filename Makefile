@@ -1,3 +1,5 @@
+.PHONY: all install go.sum test test-local lint proto-gen proto-gen-local build start publish
+
 all: install
 install:
 	./scripts/build.sh

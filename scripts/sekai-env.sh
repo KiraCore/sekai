@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 ###################################### permissions #################################################
 
@@ -159,7 +159,7 @@ PermVoteUnassignRoleFromAccountProposal=50
 PermRemoveRoleProposal=51
 
 # permission needed to vote a proposal to remove a role.
-PermVoteRemoveRoleProposal= 52
+PermVoteRemoveRoleProposal=52
 
 ###################################### transaction_types ######################################
 TypeMsgSend="send"
