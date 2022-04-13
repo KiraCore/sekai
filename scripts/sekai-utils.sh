@@ -555,7 +555,7 @@ function rejectIdentityVerificationRequest() {
 }
 
 # upsertDataRegistry <account> <key> <value> <file-type>
-# e.g: upsertDataRegistry validator "code_of_conduct" "https://raw.githubusercontent.com/KiraCore/sekai/master/env.sh" "text"
+# e.g: upsertDataRegistry validator "code_of_conduct" "https://raw.githubusercontent.com/KiraCore/sekai/master/sekai-env.sh" "text"
 function upsertDataRegistry() {
     local ACCOUNT=$1
     local KEY=$2
