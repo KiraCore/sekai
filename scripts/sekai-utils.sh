@@ -17,16 +17,16 @@ function sekaiUtilsSetup() {
         local UTILS_DESTINATION="/usr/local/bin/sekai-utils.sh"
 
         if [ "$VERSION" != "$SEKAI_UTILS_VERSION" ] ; then
-            utils echoErr "ERROR: Self check version mismatch, expected '$SEKAI_UTILS_VERSION', but got '$VERSION'"
+            bash-utils echoErr "ERROR: Self check version mismatch, expected '$SEKAI_UTILS_VERSION', but got '$VERSION'"
             return 1
         elif [ "$UTILS_SOURCE" == "$UTILS_DESTINATION" ] ; then
-            utils echoErr "ERROR: Installation source script and destination can't be the same"
+            bash-utils echoErr "ERROR: Installation source script and destination can't be the same"
             return 1
         elif [ ! -f $UTILS_SOURCE ] ; then
-            utils echoErr "ERROR: utils source was NOT found"
+            bash-utils echoErr "ERROR: utils source was NOT found"
             return 1
         else
-            utils echoInfo "INFO: Utils source found"
+            bash-utils echoInfo "INFO: Utils source found"
             mkdir -p "/usr/local/bin"
             cp -fv "$UTILS_SOURCE" "$UTILS_DESTINATION"
             cp -fv "$UTILS_SOURCE" "/usr/local/bin/sekai-utils"
@@ -36,24 +36,24 @@ function sekaiUtilsSetup() {
             local USERNAME="${USER}" && [ "$USERNAME" == "root" ] && USERNAME=""
             local LOGNAME=$(logname 2> /dev/null echo "") && [ "$LOGNAME" == "root" ] && LOGNAME=""
 
-            local TARGET="/$LOGNAME/.bashrc" && [ -f $TARGET ] && chmod 777 $TARGET && utils echoInfo "INFO: /etc/profile executable target set to $TARGET"
-            TARGET="/$USERNAME/.bashrc" && [ -f $TARGET ] && chmod 777 $TARGET && utils echoInfo "INFO: /etc/profile executable target set to $TARGET"
-            TARGET="/$SUDOUSER/.bashrc" && [ -f $TARGET ] && chmod 777 $TARGET && utils echoInfo "INFO: /etc/profile executable target set to $TARGET"
-            TARGET="/root/.bashrc" && [ -f $TARGET ] && chmod 777 $TARGET && utils echoInfo "INFO: /etc/profile executable target set to $TARGET"
-            TARGET=~/.bashrc && [ -f $TARGET ] && chmod 777 $TARGET && utils echoInfo "INFO: /etc/profile executable target set to $TARGET"
-            TARGET=~/.zshrc && [ -f $TARGET ] && chmod 777 $TARGET && utils echoInfo "INFO: /etc/profile executable target set to $TARGET"
-            TARGET=~/.profile && [ -f $TARGET ] && chmod 777 $TARGET && utils echoInfo "INFO: /etc/profile executable target set to $TARGET"
+            local TARGET="/$LOGNAME/.bashrc" && [ -f $TARGET ] && chmod 777 $TARGET && bash-utils echoInfo "INFO: /etc/profile executable target set to $TARGET"
+            TARGET="/$USERNAME/.bashrc" && [ -f $TARGET ] && chmod 777 $TARGET && bash-utils echoInfo "INFO: /etc/profile executable target set to $TARGET"
+            TARGET="/$SUDOUSER/.bashrc" && [ -f $TARGET ] && chmod 777 $TARGET && bash-utils echoInfo "INFO: /etc/profile executable target set to $TARGET"
+            TARGET="/root/.bashrc" && [ -f $TARGET ] && chmod 777 $TARGET && bash-utils echoInfo "INFO: /etc/profile executable target set to $TARGET"
+            TARGET=~/.bashrc && [ -f $TARGET ] && chmod 777 $TARGET && bash-utils echoInfo "INFO: /etc/profile executable target set to $TARGET"
+            TARGET=~/.zshrc && [ -f $TARGET ] && chmod 777 $TARGET && bash-utils echoInfo "INFO: /etc/profile executable target set to $TARGET"
+            TARGET=~/.profile && [ -f $TARGET ] && chmod 777 $TARGET && bash-utils echoInfo "INFO: /etc/profile executable target set to $TARGET"
 
-            utils setGlobEnv SEKAI_TOOLS_SRC "$UTILS_DESTINATION"
+            bash-utils setGlobEnv SEKAI_TOOLS_SRC "$UTILS_DESTINATION"
 
-            local AUTOLOAD_SET=$(utils getLastLineByPrefix "source $UTILS_DESTINATION" /etc/profile 2> /dev/null || echo "-1")
+            local AUTOLOAD_SET=$(bash-utils getLastLineByPrefix "source $UTILS_DESTINATION" /etc/profile 2> /dev/null || echo "-1")
 
             if [[ $AUTOLOAD_SET -lt 0 ]] ; then
                 echo "source $UTILS_DESTINATION || echo \"ERROR: Failed to load sekaid utils from '$UTILS_DESTINATION'\"" >> /etc/profile
             fi
 
-            utils loadGlobEnvs
-            utils echoInfo "INFO: SUCCESS, Installed sekai-utils $(sekai-utils sekaiUtilsVersion)"
+            bash-utils loadGlobEnvs
+            bash-utils echoInfo "INFO: SUCCESS, Installed sekai-utils $(sekai-utils sekaiUtilsVersion)"
         fi
     fi
 }
