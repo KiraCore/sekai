@@ -62,6 +62,7 @@ pcgRelease "arm64" "$VERSION" "darwin"
 pcgRelease "arm64" "$VERSION" "windows"
 
 cp -fv ./scripts/sekai-utils.sh ./bin/sekai-utils.sh
+cp -fv ./scripts/sekai-env.sh ./bin/sekai-env.sh
 
 rm -rfv ./bin/amd64 ./bin/arm64 ./bin/deb
 echoInfo "INFO: Sucessfully published SEKAI deb packages into ./bin"
