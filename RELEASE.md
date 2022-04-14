@@ -2,6 +2,5 @@
 
 **Features:**
 
-- Snapshot period to 1000
-- Add example scripts
-- Add query for validator performance during snapshot period
+- Added signature files generation to releases
+- Include `env.sh` in releases & rename to `sekai-env.sh`
