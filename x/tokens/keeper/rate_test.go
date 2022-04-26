@@ -21,7 +21,7 @@ func (suite *KeeperTestSuite) TestTokenRates() {
 	// upsert token rate and check
 	newRate := types.TokenRate{
 		Denom:       "stake",
-		Rate:        sdk.NewDec(2),
+		FeeRate:     sdk.NewDec(2),
 		FeePayments: true,
 	}
 	suite.app.TokensKeeper.UpsertTokenRate(ctx, newRate)

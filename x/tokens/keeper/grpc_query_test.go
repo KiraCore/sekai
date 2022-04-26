@@ -79,7 +79,7 @@ func TestQuerier_GetTokenRate(t *testing.T) {
 	)
 	require.NoError(t, err)
 	require.Equal(t, "ukex", resp.Data.Denom)
-	require.Equal(t, sdk.NewDec(1), resp.Data.Rate)
+	require.Equal(t, sdk.NewDec(1), resp.Data.FeeRate)
 	require.Equal(t, true, resp.Data.FeePayments)
 }
 
@@ -96,7 +96,7 @@ func TestQuerier_GetTokenRatesByDenom(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, len(resp.Data), 1)
 	require.Equal(t, "ukex", resp.Data["ukex"].Denom)
-	require.Equal(t, sdk.NewDec(1), resp.Data["ukex"].Rate)
+	require.Equal(t, sdk.NewDec(1), resp.Data["ukex"].FeeRate)
 	require.Equal(t, true, resp.Data["ukex"].FeePayments)
 }
 
@@ -113,7 +113,7 @@ func TestQuerier_GetAllTokenRates(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, len(resp.Data), 4)
 	require.Equal(t, "frozen", resp.Data[0].Denom)
-	require.Equal(t, sdk.NewDecWithPrec(1, 1), resp.Data[0].Rate)
+	require.Equal(t, sdk.NewDecWithPrec(1, 1), resp.Data[0].FeeRate)
 	require.Equal(t, true, resp.Data[0].FeePayments)
 }
 
