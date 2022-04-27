@@ -7,3 +7,7 @@ const (
 	// QuerierRoute is the querier route for the multistaking module
 	QuerierRoute = ModuleName
 )
+
+var (
+	KeyPrefixStakingPool = []byte{0x1}
+)
