@@ -36,6 +36,9 @@ enum NetworkProperty {
     UNIQUE_IDENTITY_KEYS = 18 [(gogoproto.enumvalue_customname) = "UniqueIdentityKeys"]; // manages unique identity keys to be used as an address identifier
     UBI_HARDCAP = 19 [(gogoproto.enumvalue_customname) = "UbiHardcap"]; // a maximum amount of additional KEX that can be created per year
     VALIDATORS_FEE_SHARE = 20 [(gogoproto.enumvalue_customname) = "ValidatorsFeeShare"]; // the percentage that validators get from collected fees
+    INFLATION_RATE = 21 [(gogoproto.enumvalue_customname) = "InflationRate"]; // KEX inflation percentage X defined as decimal value.
+    INFLATION_PERIOD = 22 [(gogoproto.enumvalue_customname) = "InflationPeriod"]; // period of time (in seconds) over which current KEX supply is inflated by a percentage corresponding to the inflation_rate
+    UNSTAKING_PERIOD = 23 [(gogoproto.enumvalue_customname) = "UnstakingPeriod"]; // period of time (in seconds) it takes to unstake any of the staked tokens
 }
 
 message NetworkPropertyValue {
@@ -67,4 +70,7 @@ message NetworkProperties {
     string unique_identity_keys = 19; // manages unique identity keys to be used as an address identifier
     uint64 ubi_hardcap = 20; // a maximum amount of additional KEX that can be created per year
     uint64 validators_fee_share = 21; // the percentage that validators get from collected fees
+    uint64 inflation_rate = 22; // KEX inflation percentage X defined as decimal value.
+    uint64 inflation_period = 23; // period of time (in seconds) over which current KEX supply is inflated by a percentage corresponding to the inflation_rate
+    uint64 unstaking_period = 24; // period of time (in seconds) it takes to unstake any of the staked tokens 
 }

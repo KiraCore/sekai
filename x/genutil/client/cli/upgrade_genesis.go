@@ -107,6 +107,9 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 						UniqueIdentityKeys:          govGenesisV01228.NetworkProperties.UniqueIdentityKeys,
 						UbiHardcap:                  6000_000,
 						ValidatorsFeeShare:          100,
+						InflationRate:               18,       // 18%
+						InflationPeriod:             31557600, // 1 year
+						UnstakingPeriod:             2629800,  // 1 month
 					},
 					ExecutionFees:               govGenesisV01228.ExecutionFees,
 					PoorNetworkMessages:         govGenesisV01228.PoorNetworkMessages,

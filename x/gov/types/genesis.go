@@ -104,6 +104,9 @@ func DefaultGenesis() *GenesisState {
 			UniqueIdentityKeys:          "moniker,username",
 			UbiHardcap:                  6000_000,
 			ValidatorsFeeShare:          100,
+			InflationRate:               18,       // 18%
+			InflationPeriod:             31557600, // 1 year
+			UnstakingPeriod:             2629800,  // 1 month
 		},
 		ExecutionFees: []*ExecutionFee{
 			{
