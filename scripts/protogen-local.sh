@@ -4,20 +4,23 @@ set -x
 . /etc/profile
 
 CURRENT_DIR=$(pwd)
-UTILS_VER=$(utilsVersion 2> /dev/null || echo "")
 GO_VER=$(go version 2> /dev/null || echo "")
 PLATFORM=$(uname) && PLATFORM=$(echo "$PLATFORM" |  tr '[:upper:]' '[:lower:]' )
 
-UTILS_OLD_VER="false" && [[ $(versionToNumber "$UTILS_VER" || echo "0") -ge $(versionToNumber "v0.0.1.2" || echo "1") ]] || UTILS_OLD_VER="true" 
+UTILS_VER=$(bashUtilsVersion 2> /dev/null || echo "")
+UTILS_OLD_VER="false" && [[ $(versionToNumber "$UTILS_VER" || echo "0") -ge $(versionToNumber "v0.1.2.3" || echo "1") ]] || UTILS_OLD_VER="true" 
 
 # Installing utils is essential to simplify the setup steps
 if [ "$UTILS_OLD_VER" == "true" ] ; then
     echo "INFO: KIRA utils were NOT installed on the system, setting up..." && sleep 2
-    TOOLS_VERSION="v0.0.8.0" && cd /tmp && rm -fv ./utils.sh && \
-      wget "https://github.com/KiraCore/tools/releases/download/$TOOLS_VERSION/kira-utils.sh" -O ./utils.sh && \
-      FILE_HASH=$(sha256sum ./utils.sh | awk '{ print $1 }' | xargs || echo -n "") && \
-      [ "$FILE_HASH" == "1cfb806eec03956319668b0a4f02f2fcc956ed9800070cda1870decfe2e6206e" ] && \
-      chmod -v 555 ./utils.sh && ./utils.sh utilsSetup ./utils.sh "/var/kiraglob" && . /etc/profile
+    TOOLS_VERSION="v0.0.12.4" && mkdir -p /usr/keys && FILE_NAME="bash-utils.sh" && \
+     if [ -z "$KIRA_COSIGN_PUB" ] ; then KIRA_COSIGN_PUB=/usr/keys/kira-cosign.pub ; fi && \
+     echo -e "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE/IrzBQYeMwvKa44/DF/HB7XDpnE+\nf+mU9F/Qbfq25bBWV2+NlYMJv3KvKHNtu3Jknt6yizZjUV4b8WGfKBzFYw==\n-----END PUBLIC KEY-----" > $KIRA_COSIGN_PUB && \
+     wget "https://github.com/KiraCore/tools/releases/download/$TOOLS_VERSION/${FILE_NAME}" -O ./$FILE_NAME && \
+     wget "https://github.com/KiraCore/tools/releases/download/$TOOLS_VERSION/${FILE_NAME}.sig" -O ./${FILE_NAME}.sig && \
+     cosign verify-blob --key="$KIRA_COSIGN_PUB" --signature=./${FILE_NAME}.sig ./$FILE_NAME && \
+     chmod -v 555 ./$FILE_NAME && ./$FILE_NAME bashUtilsSetup "/var/kiraglob" && . /etc/profile && \
+     echoInfo "Installed bash-utils $(bashUtilsVersion)"
 else
     echoInfo "INFO: KIRA utils are up to date, latest version $UTILS_VER" && sleep 2
 fi

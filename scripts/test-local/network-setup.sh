@@ -2,6 +2,7 @@
 set -e
 set -x
 . /etc/profile
+. ./scripts/sekai-env.sh
 
 TEST_NAME="NETWORK-SETUP"
 timerStart $TEST_NAME
@@ -15,6 +16,24 @@ if [ ! -f $SYSCTRL_DESTINATION ] ; then
      "e02e90c6de6cd68062dadcc6a20078c34b19582be0baf93ffa7d41f5ef0a1fdd" && \
     chmod +x $SYSCTRL_DESTINATION && \
     systemctl2 --version
+fi
+
+UTILS_VER=$(bashUtilsVersion 2> /dev/null || echo "")
+UTILS_OLD_VER="false" && [[ $(versionToNumber "$UTILS_VER" || echo "0") -ge $(versionToNumber "v0.1.2.3" || echo "1") ]] || UTILS_OLD_VER="true" 
+
+# Installing utils is essential to simplify the setup steps
+if [ "$UTILS_OLD_VER" == "true" ] ; then
+    echo "INFO: KIRA utils were NOT installed on the system, setting up..." && sleep 2
+    TOOLS_VERSION="v0.0.12.4" && mkdir -p /usr/keys && FILE_NAME="bash-utils.sh" && \
+     if [ -z "$KIRA_COSIGN_PUB" ] ; then KIRA_COSIGN_PUB=/usr/keys/kira-cosign.pub ; fi && \
+     echo -e "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE/IrzBQYeMwvKa44/DF/HB7XDpnE+\nf+mU9F/Qbfq25bBWV2+NlYMJv3KvKHNtu3Jknt6yizZjUV4b8WGfKBzFYw==\n-----END PUBLIC KEY-----" > $KIRA_COSIGN_PUB && \
+     wget "https://github.com/KiraCore/tools/releases/download/$TOOLS_VERSION/${FILE_NAME}" -O ./$FILE_NAME && \
+     wget "https://github.com/KiraCore/tools/releases/download/$TOOLS_VERSION/${FILE_NAME}.sig" -O ./${FILE_NAME}.sig && \
+     cosign verify-blob --key="$KIRA_COSIGN_PUB" --signature=./${FILE_NAME}.sig ./$FILE_NAME && \
+     chmod -v 555 ./$FILE_NAME && ./$FILE_NAME bashUtilsSetup "/var/kiraglob" && . /etc/profile && \
+     echoInfo "Installed bash-utils $(bashUtilsVersion)"
+else
+    echoInfo "INFO: KIRA utils are up to date, latest version $UTILS_VER" && sleep 2
 fi
 
 echoInfo "INFO: Environment cleanup...."
