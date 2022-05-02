@@ -64,7 +64,29 @@ func (k msgServer) UpsertStakingPool(goCtx context.Context, msg *types.MsgUpsert
 
 func (k msgServer) Delegate(goCtx context.Context, msg *types.MsgDelegate) (*types.MsgDelegateResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
+	pool, found := k.keeper.GetStakingPoolByValidator(ctx, msg.ValidatorAddress)
+	if !found {
+		return nil, types.ErrStakingPoolNotFound
+	}
+
+	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, msg.DelegatorAddress, types.ModuleName, msg.Amounts)
+	if err != nil {
+		return nil, err
+	}
+
+	pool.TotalStakingTokens = sdk.Coins(pool.TotalStakingTokens).Add(msg.Amounts)
+	k.keeper.SetStakingPool(ctx, pool)
+
+	poolCoins := getPoolCoins(pool.Id, msg.Amounts)
+	err = k.bankKeeper.MintCoins(ctx, minttypes.ModuleName, poolCoins)
+	if err != nil {
+		return nil, err
+	}
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, msg.DelegatorAddress, poolCoins)
+	if err != nil {
+		return nil, err
+	}
+
 	return &types.MsgDelegateResponse{}, nil
 }
 
