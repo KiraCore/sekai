@@ -48,7 +48,12 @@ message MsgUndelegate {
   option (gogoproto.equal) = false;
   option (gogoproto.goproto_getters) = false;
 
-  string sender = 1;
+  string delegator_address = 1;
+  string validator_address = 2;
+  repeated string amounts = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message MsgUndelegateResponse {}
@@ -67,6 +72,7 @@ message MsgClaimUndelegation {
   option (gogoproto.goproto_getters) = false;
 
   string sender = 1;
+  uint64 undelegation_id = 2;
 }
 
 message MsgClaimUndelegationResponse {}
