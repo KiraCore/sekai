@@ -203,7 +203,7 @@ func registerIdRecordsCodec(cdc *codec.LegacyAmino) {
 			"yes": {
 				"type": "bool",
 				"optional": true,
-				"description": "defines approval or rejecting an identity request (default false)
+				"description": "defines approval or rejecting an identity request (default false)"
 			}
 		}
 	}`)
