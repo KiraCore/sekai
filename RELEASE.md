@@ -2,5 +2,6 @@
 
 **Features:**
 
-- Added signature files generation to releases
-- Include `env.sh` in releases & rename to `sekai-env.sh`
+- updated identity registrar messages for record_ids, verify_request_id
+- added metadata endpoint for MsgDeleteIdentityRegistrar
+- removed metadata endpoint for MsgEditIdentityRegistrar
