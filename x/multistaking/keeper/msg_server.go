@@ -5,14 +5,15 @@ import (
 
 	govkeeper "github.com/KiraCore/sekai/x/gov/keeper"
 	"github.com/KiraCore/sekai/x/multistaking/types"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 )
 
 type msgServer struct {
-	keeper    Keeper
-	govKeeper govkeeper.Keeper
-	sk        types.StakingKeeper
+	keeper     Keeper
+	bankKeeper types.BankKeeper
+	govKeeper  govkeeper.Keeper
+	sk         types.StakingKeeper
 }
 
 // NewMsgServerImpl returns an implementation of the bank MsgServer interface
@@ -50,11 +51,16 @@ func (k msgServer) UpsertStakingPool(goCtx context.Context, msg *types.MsgUpsert
 		pool.Enabled = msg.Enabled
 		k.keeper.SetStakingPool(ctx, pool)
 	} else {
+		// increase id when creating a new pool
+		lastPoolId := k.keeper.GetLastPoolId(ctx) + 1
+		k.keeper.SetLastPoolId(ctx, lastPoolId)
+
 		k.keeper.SetStakingPool(ctx, types.StakingPool{
+			Id:                 lastPoolId,
 			Enabled:            msg.Enabled,
 			Validator:          msg.Validator,
 			TotalStakingTokens: []sdk.Coin{},
-			TotalShare:         []sdk.Coin{},
+			TotalShareTokens:   []sdk.Coin{},
 			TotalRewards:       []sdk.Coin{},
 		})
 	}
@@ -69,12 +75,17 @@ func (k msgServer) Delegate(goCtx context.Context, msg *types.MsgDelegate) (*typ
 		return nil, types.ErrStakingPoolNotFound
 	}
 
-	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, msg.DelegatorAddress, types.ModuleName, msg.Amounts)
+	delegator, err := sdk.AccAddressFromBech32(msg.DelegatorAddress)
 	if err != nil {
 		return nil, err
 	}
 
-	pool.TotalStakingTokens = sdk.Coins(pool.TotalStakingTokens).Add(msg.Amounts)
+	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, delegator, types.ModuleName, msg.Amounts)
+	if err != nil {
+		return nil, err
+	}
+
+	pool.TotalStakingTokens = sdk.Coins(pool.TotalStakingTokens).Add(msg.Amounts...)
 	k.keeper.SetStakingPool(ctx, pool)
 
 	// TODO: should check the ratio between poolCoins and coins
@@ -83,7 +94,7 @@ func (k msgServer) Delegate(goCtx context.Context, msg *types.MsgDelegate) (*typ
 	if err != nil {
 		return nil, err
 	}
-	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, msg.DelegatorAddress, poolCoins)
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, delegator, poolCoins)
 	if err != nil {
 		return nil, err
 	}
@@ -100,10 +111,15 @@ func (k msgServer) Undelegate(goCtx context.Context, msg *types.MsgUndelegate) (
 		return nil, types.ErrStakingPoolNotFound
 	}
 
+	delegator, err := sdk.AccAddressFromBech32(msg.DelegatorAddress)
+	if err != nil {
+		return nil, err
+	}
+
 	// TODO: should check the ratio between poolCoins and coins
 	poolCoins := getPoolCoins(pool.Id, msg.Amounts)
 
-	err := k.bankKeeper.SendCoinsFromAccountToModule(ctx, msg.DelegatorAddress, types.ModuleName, poolCoins)
+	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, delegator, types.ModuleName, poolCoins)
 	if err != nil {
 		return nil, err
 	}
@@ -112,14 +128,16 @@ func (k msgServer) Undelegate(goCtx context.Context, msg *types.MsgUndelegate) (
 		return nil, err
 	}
 
-	pool.TotalStakingTokens = sdk.Coins(pool.TotalStakingTokens).Add(msg.Amounts)
+	pool.TotalStakingTokens = sdk.Coins(pool.TotalStakingTokens).Add(msg.Amounts...)
 	k.keeper.SetStakingPool(ctx, pool)
 
+	lastUndelegationId := k.keeper.GetLastUndelegationId(ctx) + 1
+	k.keeper.SetLastUndelegationId(ctx, lastUndelegationId)
 	properties := k.govKeeper.GetNetworkProperties(ctx)
-	k.SetUndelegation(ctx, types.Undelegation{
-		Id:      1, // TODO: get last ID
+	k.keeper.SetUndelegation(ctx, types.Undelegation{
+		Id:      lastUndelegationId,
 		Address: msg.DelegatorAddress,
-		Expiry:  ctx.BlockTime().Unix() + properties.UnstakingPeriod,
+		Expiry:  uint64(ctx.BlockTime().Unix()) + properties.UnstakingPeriod,
 		Amount:  msg.Amounts,
 	})
 	return &types.MsgUndelegateResponse{}, nil
@@ -129,10 +147,15 @@ func (k msgServer) ClaimRewards(goCtx context.Context, msg *types.MsgClaimReward
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	_ = ctx
 
-	// err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, msg.DelegatorAddress, rewards)
-	// if err != nil {
-	// 	return nil, err
-	// }
+	delegator, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return nil, err
+	}
+
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, delegator, rewards)
+	if err != nil {
+		return nil, err
+	}
 
 	return &types.MsgClaimRewardsResponse{}, nil
 }
@@ -141,11 +164,21 @@ func (k msgServer) ClaimUndelegation(goCtx context.Context, msg *types.MsgClaimU
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	_ = ctx
 
-	undelegation := k.GetUndelegationById(ctx, msg.UndelegationId)
-	if ctx.BlockTime().Unix() < undelegation.Expiry {
+	undelegation, found := k.keeper.GetUndelegationById(ctx, msg.UndelegationId)
+	if !found {
+		return nil, types.ErrUndelegationNotFound
+	}
+
+	if uint64(ctx.BlockTime().Unix()) < undelegation.Expiry {
 		return nil, types.ErrNotEnoughTimePassed
 	}
-	err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, msg.DelegatorAddress, undelegation.Amounts)
+
+	delegator, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return nil, err
+	}
+
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, delegator, undelegation.Amount)
 	if err != nil {
 		return nil, err
 	}

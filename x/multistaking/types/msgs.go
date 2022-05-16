@@ -76,7 +76,7 @@ func (m *MsgDelegate) GetSignBytes() []byte {
 }
 
 func (m *MsgDelegate) GetSigners() []sdk.AccAddress {
-	sender, err := sdk.AccAddressFromBech32(m.Sender)
+	sender, err := sdk.AccAddressFromBech32(m.DelegatorAddress)
 	if err != nil {
 		panic(err)
 	}
@@ -115,7 +115,7 @@ func (m *MsgUndelegate) GetSignBytes() []byte {
 }
 
 func (m *MsgUndelegate) GetSigners() []sdk.AccAddress {
-	sender, err := sdk.AccAddressFromBech32(m.Sender)
+	sender, err := sdk.AccAddressFromBech32(m.DelegatorAddress)
 	if err != nil {
 		panic(err)
 	}

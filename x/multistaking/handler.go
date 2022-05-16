@@ -5,12 +5,12 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/errors"
 
 	govkeeper "github.com/KiraCore/sekai/x/gov/keeper"
-	customkeeper "github.com/KiraCore/sekai/x/multistaking/keeper"
+	"github.com/KiraCore/sekai/x/multistaking/keeper"
 	"github.com/KiraCore/sekai/x/multistaking/types"
 )
 
-func NewHandler(ck customkeeper.Keeper, govkeeper govkeeper.Keeper) sdk.Handler {
-	msgServer := customkeeper.NewMsgServerImpl(ck, govkeeper)
+func NewHandler(ck keeper.Keeper, govkeeper govkeeper.Keeper, sk types.StakingKeeper) sdk.Handler {
+	msgServer := keeper.NewMsgServerImpl(ck, govkeeper, sk)
 
 	return func(ctx sdk.Context, msg sdk.Msg) (*sdk.Result, error) {
 		ctx = ctx.WithEventManager(sdk.NewEventManager())

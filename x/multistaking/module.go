@@ -74,15 +74,16 @@ func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
 // AppModule extends the cosmos SDK staking.
 type AppModule struct {
 	AppModuleBasic
-	customStakingKeeper keeper.Keeper
+	keeper              keeper.Keeper
+	customStakingKeeper types.StakingKeeper
 	customGovKeeper     govkeeper.Keeper
 }
 
 // RegisterQueryService registers a GRPC query service to respond to the
 // module-specific GRPC queries.
 func (am AppModule) RegisterServices(cfg module.Configurator) {
-	stakingtypes.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.customStakingKeeper, am.customGovKeeper))
-	stakingtypes.RegisterQueryServer(cfg.QueryServer(), keeper.NewQuerier(am.customStakingKeeper))
+	stakingtypes.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.keeper, am.customGovKeeper, am.customStakingKeeper))
+	stakingtypes.RegisterQueryServer(cfg.QueryServer(), keeper.NewQuerier(am.keeper))
 }
 
 func (am AppModule) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
@@ -106,7 +107,7 @@ func (am AppModule) InitGenesis(
 }
 
 func (am AppModule) ExportGenesis(context sdk.Context, marshaler codec.JSONCodec) json.RawMessage {
-	gs := ExportGenesis(context, am.customStakingKeeper)
+	gs := ExportGenesis(context, am.keeper)
 	return marshaler.MustMarshalJSON(gs)
 }
 
@@ -127,7 +128,7 @@ func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sd
 func (am AppModule) BeginBlock(context sdk.Context, block abci.RequestBeginBlock) {}
 
 func (am AppModule) EndBlock(ctx sdk.Context, block abci.RequestEndBlock) []abci.ValidatorUpdate {
-	return EndBlocker(ctx, am.customStakingKeeper)
+	return EndBlocker(ctx, am.keeper)
 }
 
 func (am AppModule) Name() string {
@@ -136,16 +137,18 @@ func (am AppModule) Name() string {
 
 // Route returns the message routing key for the staking module.
 func (am AppModule) Route() sdk.Route {
-	return middleware.NewRoute(stakingtypes.ModuleName, NewHandler(am.customStakingKeeper, am.customGovKeeper))
+	return middleware.NewRoute(stakingtypes.ModuleName, NewHandler(am.keeper, am.customGovKeeper, am.customStakingKeeper))
 }
 
 // NewAppModule returns a new Custom Staking module.
 func NewAppModule(
 	keeper keeper.Keeper,
 	govKeeper govkeeper.Keeper,
+	sk types.StakingKeeper,
 ) AppModule {
 	return AppModule{
-		customStakingKeeper: keeper,
+		keeper:              keeper,
 		customGovKeeper:     govKeeper,
+		customStakingKeeper: sk,
 	}
 }
