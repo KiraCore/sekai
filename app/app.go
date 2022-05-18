@@ -230,6 +230,7 @@ func NewInitApp(
 	app.CustomStakingKeeper = *customStakingKeeper.SetHooks(
 		stakingtypes.NewMultiStakingHooks(app.CustomSlashingKeeper.Hooks()),
 	)
+	app.MultiStakingKeeper = multistakingkeeper.NewKeeper()
 	app.DistrKeeper = distributorkeeper.NewKeeper(keys[distributortypes.ModuleName], appCodec, app.AccountKeeper, app.BankKeeper, app.CustomStakingKeeper, app.CustomGovKeeper)
 
 	app.UpgradeKeeper = upgradekeeper.NewKeeper(keys[upgradetypes.StoreKey], appCodec, app.CustomStakingKeeper)
