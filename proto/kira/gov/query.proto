@@ -47,6 +47,10 @@ service Query {
   rpc WhitelistedProposalVoters(QueryWhitelistedProposalVotersRequest) returns (QueryWhitelistedProposalVotersResponse) {
     option (google.api.http).get = "/kira/gov/voters/{proposal_id}";
   }
+  // ProposerVotersCount returns proposers an voters count who can at least create or vote one type of proposal
+  rpc ProposerVotersCount(QueryProposerVotersCountRequest) returns (QueryProposerVotersCountResponse) {
+    option (google.api.http).get = "/kira/gov/proposers_voters_count";
+  }
   // Vote queries voted information based on proposalID, voterAddr.
   rpc Vote(QueryVoteRequest) returns (QueryVoteResponse) {}
   // Votes queries votes of a given proposal.
@@ -212,6 +216,15 @@ message QueryWhitelistedProposalVotersRequest {
 // QueryWhitelistedProposalVotersResponse is the response type for Query/WhitelistedProposalVoters RPC method.
 message QueryWhitelistedProposalVotersResponse {
   repeated kira.gov.NetworkActor voters = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryProposerVotersCountRequest is the request type for Query/ProposerVotersCount RPC method.
+message QueryProposerVotersCountRequest {}
+
+// QueryProposerVotersCountResponse is the response type for Query/ProposerVotersCount RPC method.
+message QueryProposerVotersCountResponse {
+  uint64 proposers = 1;
+  uint64 voters = 2;
 }
 
 // QueryVoteRequest is the request type for the Query/Vote RPC method.
