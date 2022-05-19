@@ -2,6 +2,4 @@
 
 **Features:**
 
-- updated identity registrar messages for record_ids, verify_request_id
-- added metadata endpoint for MsgDeleteIdentityRegistrar
-- removed metadata endpoint for MsgEditIdentityRegistrar
+- Added a query to query voters and proposal creators count for dashboard

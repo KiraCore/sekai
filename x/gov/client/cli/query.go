@@ -516,6 +516,43 @@ $ %[1]s query gov voters 1
 	return cmd
 }
 
+func GetCmdQueryProposerVotersCount() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "proposer_voters_count",
+		Args:  cobra.ExactArgs(0),
+		Short: "Query proposer and voters count that can create at least a type of proposal",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query proposer and voters count that can create at least a type of proposal.
+
+Example:
+$ %[1]s query gov proposer_voters_count
+`,
+				version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			queryClient := types.NewQueryClient(clientCtx)
+
+			res, err := queryClient.ProposerVotersCount(
+				context.Background(),
+				&types.QueryProposerVotersCountRequest{},
+			)
+
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
 // GetCmdQueryIdentityRecord implements the command to query identity record by id
 func GetCmdQueryIdentityRecord() *cobra.Command {
 	cmd := &cobra.Command{
