@@ -226,6 +226,86 @@ func (k Keeper) WhitelistedProposalVoters(goCtx context.Context, request *types.
 	}
 }
 
+func (k Keeper) actorsCountByPermissions(ctx sdk.Context, perms []types.PermValue) uint64 {
+	count := uint64(0)
+	counted := make(map[string]bool)
+	for _, perm := range perms {
+		actors := k.GetNetworkActorsByAbsoluteWhitelistPermission(ctx, perm)
+		for _, actor := range actors {
+			if !counted[actor.Address.String()] {
+				counted[actor.Address.String()] = true
+				count++
+			}
+		}
+	}
+	return count
+}
+
+// ProposerVotersCount returns proposer and voters count that can create at least a type of proposal
+func (k Keeper) ProposerVotersCount(goCtx context.Context, request *types.QueryProposerVotersCountRequest) (*types.QueryProposerVotersCountResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	// TODO: should consider dynamic proposals later where permission is set to PermZero
+
+	proposalPerms := []types.PermValue{
+		types.PermWhitelistAccountPermissionProposal,
+		types.PermCreateUpsertDataRegistryProposal,
+		types.PermCreateSetNetworkPropertyProposal,
+		types.PermCreateUpsertTokenAliasProposal,
+		types.PermCreateSetPoorNetworkMessagesProposal,
+		types.PermCreateUpsertTokenRateProposal,
+		types.PermCreateUnjailValidatorProposal,
+		types.PermCreateRoleProposal,
+		types.PermCreateTokensWhiteBlackChangeProposal,
+		types.PermCreateResetWholeValidatorRankProposal,
+		types.PermCreateSoftwareUpgradeProposal,
+		types.PermCreateSetProposalDurationProposal,
+		types.PermBlacklistAccountPermissionProposal,
+		types.PermRemoveWhitelistedAccountPermissionProposal,
+		types.PermRemoveBlacklistedAccountPermissionProposal,
+		types.PermWhitelistRolePermissionProposal,
+		types.PermBlacklistRolePermissionProposal,
+		types.PermRemoveWhitelistedRolePermissionProposal,
+		types.PermRemoveBlacklistedRolePermissionProposal,
+		types.PermAssignRoleToAccountProposal,
+		types.PermUnassignRoleFromAccountProposal,
+		types.PermRemoveRoleProposal,
+		types.PermCreateUpsertUBIProposal,
+		types.PermCreateRemoveUBIProposal,
+	}
+	votePerms := []types.PermValue{
+		types.PermVoteWhitelistAccountPermissionProposal,
+		types.PermVoteUpsertDataRegistryProposal,
+		types.PermVoteSetNetworkPropertyProposal,
+		types.PermVoteUpsertTokenAliasProposal,
+		types.PermVoteSetPoorNetworkMessagesProposal,
+		types.PermVoteUpsertTokenRateProposal,
+		types.PermVoteUnjailValidatorProposal,
+		types.PermVoteCreateRoleProposal,
+		types.PermVoteTokensWhiteBlackChangeProposal,
+		types.PermVoteResetWholeValidatorRankProposal,
+		types.PermVoteSoftwareUpgradeProposal,
+		types.PermVoteSetProposalDurationProposal,
+		types.PermVoteBlacklistAccountPermissionProposal,
+		types.PermVoteRemoveWhitelistedAccountPermissionProposal,
+		types.PermVoteRemoveBlacklistedAccountPermissionProposal,
+		types.PermVoteWhitelistRolePermissionProposal,
+		types.PermVoteBlacklistRolePermissionProposal,
+		types.PermVoteRemoveWhitelistedRolePermissionProposal,
+		types.PermVoteRemoveBlacklistedRolePermissionProposal,
+		types.PermVoteAssignRoleToAccountProposal,
+		types.PermVoteUnassignRoleFromAccountProposal,
+		types.PermVoteRemoveRoleProposal,
+		types.PermVoteUpsertUBIProposal,
+		types.PermVoteRemoveUBIProposal,
+	}
+
+	return &types.QueryProposerVotersCountResponse{
+		Proposers: k.actorsCountByPermissions(ctx, proposalPerms),
+		Voters:    k.actorsCountByPermissions(ctx, votePerms),
+	}, nil
+}
+
 // Vote queries voted information based on proposalID, voterAddr.
 func (k Keeper) Vote(goCtx context.Context, request *types.QueryVoteRequest) (*types.QueryVoteResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
