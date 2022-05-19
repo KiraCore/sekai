@@ -2,6 +2,8 @@ package keeper
 
 import (
 	"context"
+	"fmt"
+	"strings"
 
 	govkeeper "github.com/KiraCore/sekai/x/gov/keeper"
 	"github.com/KiraCore/sekai/x/multistaking/types"
@@ -99,6 +101,8 @@ func (k msgServer) Delegate(goCtx context.Context, msg *types.MsgDelegate) (*typ
 		return nil, err
 	}
 
+	k.keeper.SetPoolDelegator(ctx, pool.Id, delegator)
+
 	return &types.MsgDelegateResponse{}, nil
 }
 
@@ -140,6 +144,13 @@ func (k msgServer) Undelegate(goCtx context.Context, msg *types.MsgUndelegate) (
 		Expiry:  uint64(ctx.BlockTime().Unix()) + properties.UnstakingPeriod,
 		Amount:  msg.Amounts,
 	})
+
+	balances := k.bankKeeper.GetAllBalances(ctx, delegator)
+	prefix := fmt.Sprintf("v%d_", pool.Id)
+	if !strings.Contains(balances.String(), prefix) {
+		k.keeper.RemovePoolDelegator(ctx, pool.Id, delegator)
+	}
+
 	return &types.MsgUndelegateResponse{}, nil
 }
 
@@ -152,6 +163,7 @@ func (k msgServer) ClaimRewards(goCtx context.Context, msg *types.MsgClaimReward
 		return nil, err
 	}
 
+	rewards := k.keeper.GetDelegatorRewards(ctx, delegator)
 	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, delegator, rewards)
 	if err != nil {
 		return nil, err

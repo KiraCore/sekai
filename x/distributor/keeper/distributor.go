@@ -68,8 +68,15 @@ func (k Keeper) AllocateTokens(
 
 		pool, found := k.mk.GetStakingPoolByValidator(ctx, proposerValidator.String())
 		if found {
-			// TODO: allocate remaining share of fees to the pool
-			// TODO: loop all stakers and allocate rewards probably
+			rewards := sdk.Coins{}
+			for _, fee := range feesCollected {
+				reward := fee.Amount.Mul(sdk.NewInt(int64(stakingFeeShare))).Quo(sdk.NewInt(100))
+				if reward.IsPositive() {
+					rewards = rewards.Add(sdk.NewCoin(fee.Denom, reward))
+				}
+			}
+
+			k.mk.IncreasePoolRewards(ctx, pool.Id, rewards)
 		}
 	}
 

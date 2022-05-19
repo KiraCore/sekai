@@ -38,4 +38,5 @@ type StakingKeeper interface {
 
 type MultiStakingKeeper interface {
 	GetStakingPoolByValidator(ctx sdk.Context, validator string) (pool multistakingtypes.StakingPool, found bool)
+	IncreasePoolRewards(ctx sdk.Context, poolId uint64, rewards sdk.Coins)
 }
