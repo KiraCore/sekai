@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"github.com/KiraCore/sekai/x/multistaking/types"
+	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -33,21 +34,33 @@ func (k Keeper) GetUndelegationById(ctx sdk.Context, id uint64) (undelegation ty
 
 func (k Keeper) SetUndelegation(ctx sdk.Context, undelegation types.Undelegation) {
 	store := ctx.KVStore(k.storeKey)
-	key := append([]byte(types.KeyPrefixUndelegation), sdk.Uint64ToBigEndian(undelegation.Id)...)
+	key := append(types.KeyPrefixUndelegation, sdk.Uint64ToBigEndian(undelegation.Id)...)
 	store.Set(key, k.cdc.MustMarshal(&undelegation))
 }
 
 func (k Keeper) SetPoolDelegator(ctx sdk.Context, poolId uint64, delegator sdk.AccAddress) {
-	// TODO: implement
+	store := ctx.KVStore(k.storeKey)
+	key := append(append(types.KeyPrefixPoolDelegator, sdk.Uint64ToBigEndian(poolId)...), delegator...)
+	store.Set(key, delegator)
 }
 
 func (k Keeper) RemovePoolDelegator(ctx sdk.Context, poolId uint64, delegator sdk.AccAddress) {
-	// TODO: implement
+	store := ctx.KVStore(k.storeKey)
+	key := append(append(types.KeyPrefixPoolDelegator, sdk.Uint64ToBigEndian(poolId)...), delegator...)
+	store.Delete(key)
 }
 
 func (k Keeper) GetPoolDelegators(ctx sdk.Context, poolId uint64) []sdk.AccAddress {
-	// TODO: implement
-	return []sdk.AccAddress{}
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), append(types.KeyPrefixPoolDelegator, sdk.Uint64ToBigEndian(poolId)...))
+
+	iterator := prefixStore.Iterator(nil, nil)
+	defer iterator.Close()
+
+	delegators := []sdk.AccAddress{}
+	for ; iterator.Valid(); iterator.Next() {
+		delegators = append(delegators, sdk.AccAddress(iterator.Value()))
+	}
+	return delegators
 }
 
 func (k Keeper) IncreaseDelegatorRewards(ctx sdk.Context, delegator sdk.AccAddress, rewards sdk.Coins) {
