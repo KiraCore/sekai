@@ -76,7 +76,7 @@ func (k Keeper) AllocateTokens(
 				}
 			}
 
-			k.mk.IncreasePoolRewards(ctx, pool.Id, rewards)
+			k.mk.IncreasePoolRewards(ctx, pool, rewards)
 		}
 	}
 
