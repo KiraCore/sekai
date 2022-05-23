@@ -63,13 +63,30 @@ func (k Keeper) GetPoolDelegators(ctx sdk.Context, poolId uint64) []sdk.AccAddre
 	return delegators
 }
 
-func (k Keeper) IncreaseDelegatorRewards(ctx sdk.Context, delegator sdk.AccAddress, rewards sdk.Coins) {
-	// TODO: implement
+func (k Keeper) IncreaseDelegatorRewards(ctx sdk.Context, delegator sdk.AccAddress, amounts sdk.Coins) {
+	rewards := k.GetDelegatorRewards(ctx, delegator)
+	rewards = rewards.Add(amounts...)
+
+	store := ctx.KVStore(k.storeKey)
+	key := append(types.KeyPrefixRewards, delegator...)
+	store.Set(key, []byte(rewards.String()))
 }
 
 func (k Keeper) GetDelegatorRewards(ctx sdk.Context, delegator sdk.AccAddress) sdk.Coins {
-	// TODO: implement
-	return sdk.Coins{}
+	store := ctx.KVStore(k.storeKey)
+	key := append(types.KeyPrefixRewards, delegator...)
+	bz := store.Get(key)
+	if bz == nil {
+		return sdk.Coins{}
+	}
+
+	coinStr := string(bz)
+	coins, err := sdk.ParseCoinsNormalized(coinStr)
+	if err != nil {
+		panic(err)
+	}
+
+	return coins
 }
 
 func (k Keeper) IncreasePoolRewards(ctx sdk.Context, poolId uint64, rewards sdk.Coins) {
