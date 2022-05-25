@@ -22,6 +22,8 @@ import (
 	customgov "github.com/KiraCore/sekai/x/gov"
 	customgovkeeper "github.com/KiraCore/sekai/x/gov/keeper"
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
+	multistakingkeeper "github.com/KiraCore/sekai/x/multistaking/keeper"
+	multistakingtypes "github.com/KiraCore/sekai/x/multistaking/types"
 	customslashing "github.com/KiraCore/sekai/x/slashing"
 	customslashingkeeper "github.com/KiraCore/sekai/x/slashing/keeper"
 	slashingtypes "github.com/KiraCore/sekai/x/slashing/types"
@@ -144,6 +146,7 @@ type SekaiApp struct {
 	SpendingKeeper       spendingkeeper.Keeper
 	UbiKeeper            ubikeeper.Keeper
 	DistrKeeper          distributorkeeper.Keeper
+	MultiStakingKeeper   multistakingkeeper.Keeper
 
 	// Module Manager
 	mm *module.Manager
@@ -187,6 +190,7 @@ func NewInitApp(
 		govtypes.ModuleName,
 		spendingtypes.ModuleName,
 		distributortypes.ModuleName,
+		multistakingtypes.ModuleName,
 		ubitypes.ModuleName,
 		tokenstypes.ModuleName,
 		feeprocessingtypes.ModuleName,
@@ -230,8 +234,12 @@ func NewInitApp(
 	app.CustomStakingKeeper = *customStakingKeeper.SetHooks(
 		stakingtypes.NewMultiStakingHooks(app.CustomSlashingKeeper.Hooks()),
 	)
-	app.MultiStakingKeeper = multistakingkeeper.NewKeeper()
-	app.DistrKeeper = distributorkeeper.NewKeeper(keys[distributortypes.ModuleName], appCodec, app.AccountKeeper, app.BankKeeper, app.CustomStakingKeeper, app.CustomGovKeeper)
+	app.MultiStakingKeeper = multistakingkeeper.NewKeeper(keys[multistakingtypes.ModuleName], appCodec)
+	app.DistrKeeper = distributorkeeper.NewKeeper(
+		keys[distributortypes.ModuleName], appCodec,
+		app.AccountKeeper, app.BankKeeper,
+		app.CustomStakingKeeper, app.CustomGovKeeper,
+		app.MultiStakingKeeper)
 
 	app.UpgradeKeeper = upgradekeeper.NewKeeper(keys[upgradetypes.StoreKey], appCodec, app.CustomStakingKeeper)
 

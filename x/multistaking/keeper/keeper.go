@@ -9,13 +9,13 @@ import (
 // Keeper represents the keeper that maintains the Validator Registry.
 type Keeper struct {
 	storeKey    sdk.StoreKey
-	cdc         *codec.LegacyAmino
+	cdc         codec.BinaryCodec
 	bankKeeper  types.BankKeeper
 	tokenKeeper types.TokensKeeper
 }
 
 // NewKeeper returns new keeper.
-func NewKeeper(storeKey sdk.StoreKey, cdc *codec.LegacyAmino) Keeper {
+func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryCodec) Keeper {
 	return Keeper{
 		storeKey: storeKey,
 		cdc:      cdc,

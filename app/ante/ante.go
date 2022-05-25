@@ -103,7 +103,7 @@ func (svd ValidateFeeRangeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 		if tokensBlackWhite.IsFrozen(feeCoin.Denom, bondDenom, properties.EnableTokenBlacklist, properties.EnableTokenWhitelist) {
 			return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("currency you are trying to use as fee is frozen"))
 		}
-		feeAmount = feeAmount.Add(feeCoin.Amount.ToDec().Mul(rate.Rate))
+		feeAmount = feeAmount.Add(feeCoin.Amount.ToDec().Mul(rate.FeeRate))
 	}
 
 	// execution fee should be prepaid
