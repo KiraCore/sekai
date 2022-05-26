@@ -58,7 +58,10 @@ func TestSimappExportGenesis(t *testing.T) {
 			"min_identity_approval_tip":"200",
 			"unique_identity_keys":"moniker,username",
 			"ubi_hardcap":"6000000",
-			"validators_fee_share":"100"
+            "validators_fee_share": "100",
+            "inflation_rate": "18",	
+            "inflation_period": "31557600",	
+            "unstaking_period": "2629800"
 		},
 		"execution_fees":[],
 		"poor_network_messages":{
@@ -193,7 +196,10 @@ func TestExportInitGenesis(t *testing.T) {
 			"min_identity_approval_tip":"200",
 			"unique_identity_keys":"moniker,username",
 			"ubi_hardcap":"6000000",
-			"validators_fee_share":"100"
+            "validators_fee_share": "100",
+            "inflation_rate": "18",	
+            "inflation_period": "31557600",	
+            "unstaking_period": "2629800"
 		},
 		"execution_fees":[],
 		"poor_network_messages":{
