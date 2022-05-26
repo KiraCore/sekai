@@ -23,13 +23,27 @@ func (k Keeper) SetLastUndelegationId(ctx sdk.Context, id uint64) {
 
 func (k Keeper) GetUndelegationById(ctx sdk.Context, id uint64) (undelegation types.Undelegation, found bool) {
 	store := ctx.KVStore(k.storeKey)
-	key := append([]byte(types.KeyPrefixStakingPool), sdk.Uint64ToBigEndian(id)...)
+	key := append([]byte(types.KeyPrefixUndelegation), sdk.Uint64ToBigEndian(id)...)
 	bz := store.Get(key)
 	if bz == nil {
 		return undelegation, false
 	}
 	k.cdc.MustUnmarshal(bz, &undelegation)
 	return undelegation, true
+}
+
+func (k Keeper) GetAllUndelegations(ctx sdk.Context) []types.Undelegation {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixUndelegation)
+	iterator := sdk.KVStorePrefixIterator(store, nil)
+	defer iterator.Close()
+
+	undelegations := []types.Undelegation{}
+	for ; iterator.Valid(); iterator.Next() {
+		undelegation := types.Undelegation{}
+		k.cdc.MustUnmarshal(iterator.Value(), &undelegation)
+		undelegations = append(undelegations, undelegation)
+	}
+	return undelegations
 }
 
 func (k Keeper) SetUndelegation(ctx sdk.Context, undelegation types.Undelegation) {

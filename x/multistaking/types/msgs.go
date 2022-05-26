@@ -2,7 +2,6 @@ package types
 
 import (
 	"github.com/KiraCore/sekai/types"
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -11,12 +10,12 @@ var (
 	_ sdk.Msg = &MsgUpsertStakingPool{}
 )
 
-func NewMsgUpsertStakingPool(
-	moniker string,
-	valKey sdk.ValAddress,
-	pubKey cryptotypes.PubKey,
-) (*MsgUpsertStakingPool, error) {
-	return &MsgUpsertStakingPool{}, nil
+func NewMsgUpsertStakingPool(sender, validator string, enabled bool) *MsgUpsertStakingPool {
+	return &MsgUpsertStakingPool{
+		Sender:    sender,
+		Validator: validator,
+		Enabled:   enabled,
+	}
 }
 
 func (m *MsgUpsertStakingPool) Route() string {
@@ -50,12 +49,12 @@ var (
 	_ sdk.Msg = &MsgDelegate{}
 )
 
-func NewMsgDelegate(
-	moniker string,
-	valKey sdk.ValAddress,
-	pubKey cryptotypes.PubKey,
-) (*MsgDelegate, error) {
-	return &MsgDelegate{}, nil
+func NewMsgDelegate(delegator string, validator string, coins sdk.Coins) *MsgDelegate {
+	return &MsgDelegate{
+		DelegatorAddress: delegator,
+		ValidatorAddress: validator,
+		Amounts:          coins,
+	}
 }
 
 func (m *MsgDelegate) Route() string {
@@ -89,12 +88,12 @@ var (
 	_ sdk.Msg = &MsgUndelegate{}
 )
 
-func NewMsgUndelegate(
-	moniker string,
-	valKey sdk.ValAddress,
-	pubKey cryptotypes.PubKey,
-) (*MsgUndelegate, error) {
-	return &MsgUndelegate{}, nil
+func NewMsgUndelegate(delegator string, validator string, coins sdk.Coins) *MsgUndelegate {
+	return &MsgUndelegate{
+		DelegatorAddress: delegator,
+		ValidatorAddress: validator,
+		Amounts:          coins,
+	}
 }
 
 func (m *MsgUndelegate) Route() string {
@@ -128,12 +127,10 @@ var (
 	_ sdk.Msg = &MsgClaimRewards{}
 )
 
-func NewMsgClaimRewards(
-	moniker string,
-	valKey sdk.ValAddress,
-	pubKey cryptotypes.PubKey,
-) (*MsgClaimRewards, error) {
-	return &MsgClaimRewards{}, nil
+func NewMsgClaimRewards(sender string) *MsgClaimRewards {
+	return &MsgClaimRewards{
+		Sender: sender,
+	}
 }
 
 func (m *MsgClaimRewards) Route() string {
@@ -167,12 +164,11 @@ var (
 	_ sdk.Msg = &MsgClaimRewards{}
 )
 
-func NewMsgClaimUndelegation(
-	moniker string,
-	valKey sdk.ValAddress,
-	pubKey cryptotypes.PubKey,
-) (*MsgClaimUndelegation, error) {
-	return &MsgClaimUndelegation{}, nil
+func NewMsgClaimUndelegation(sender string, undelegationId uint64) *MsgClaimUndelegation {
+	return &MsgClaimUndelegation{
+		Sender:         sender,
+		UndelegationId: undelegationId,
+	}
 }
 
 func (m *MsgClaimUndelegation) Route() string {

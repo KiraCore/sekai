@@ -14,8 +14,8 @@ service Query {
   rpc StakingPools(QueryStakingPoolsRequest) returns (QueryStakingPoolsResponse) {
     option (google.api.http).get = "/kira/multistaking/v1beta1/staking_pools";
   }
-  rpc Delegations(QueryDelegationsRequest) returns (QueryDelegationsResponse) {
-    option (google.api.http).get = "/kira/multistaking/v1beta1/delegations";
+  rpc OutstandingRewards(QueryOutstandingRewardsRequest) returns (QueryOutstandingRewardsResponse) {
+    option (google.api.http).get = "/kira/multistaking/v1beta1/outstanding_rewards";
   }
   rpc Undelegations(QueryUndelegationsRequest) returns (QueryUndelegationsResponse) {
     option (google.api.http).get = "/kira/multistaking/v1beta1/undelegations";
@@ -24,12 +24,23 @@ service Query {
 
 message QueryStakingPoolsRequest {}
 
-message QueryStakingPoolsResponse {}
+message QueryStakingPoolsResponse {
+  repeated kira.multistaking.StakingPool pools = 1 [(gogoproto.nullable) = false];
+}
 
-message QueryDelegationsRequest {}
+message QueryOutstandingRewardsRequest {
+  string delegator = 1;
+}
 
-message QueryDelegationsResponse {}
+message QueryOutstandingRewardsResponse {
+  repeated string rewards = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
+}
 
 message QueryUndelegationsRequest {}
 
-message QueryUndelegationsResponse {}
+message QueryUndelegationsResponse {
+  repeated kira.multistaking.Undelegation undelegations = 1 [(gogoproto.nullable) = false];
+}

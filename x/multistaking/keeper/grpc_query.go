@@ -20,20 +20,28 @@ var _ types.QueryServer = Querier{}
 func (q Querier) StakingPools(c context.Context, request *types.QueryStakingPoolsRequest) (*types.QueryStakingPoolsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	_ = ctx
-	return &types.QueryStakingPoolsResponse{}, nil
+	return &types.QueryStakingPoolsResponse{
+		Pools: q.keeper.GetAllStakingPools(ctx),
+	}, nil
 }
 
-func (q Querier) Delegations(c context.Context, request *types.QueryDelegationsRequest) (*types.QueryDelegationsResponse, error) {
+func (q Querier) OutstandingRewards(c context.Context, request *types.QueryOutstandingRewardsRequest) (*types.QueryOutstandingRewardsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	_ = ctx
-	return &types.QueryDelegationsResponse{}, nil
+	delegator, err := sdk.AccAddressFromBech32(request.Delegator)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryOutstandingRewardsResponse{
+		Rewards: q.keeper.GetDelegatorRewards(ctx, delegator),
+	}, nil
 }
 
 func (q Querier) Undelegations(c context.Context, request *types.QueryUndelegationsRequest) (*types.QueryUndelegationsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	_ = ctx
-	return &types.QueryUndelegationsResponse{}, nil
+	return &types.QueryUndelegationsResponse{
+		Undelegations: q.keeper.GetAllUndelegations(ctx),
+	}, nil
 }

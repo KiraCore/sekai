@@ -156,7 +156,6 @@ func (k msgServer) Undelegate(goCtx context.Context, msg *types.MsgUndelegate) (
 
 func (k msgServer) ClaimRewards(goCtx context.Context, msg *types.MsgClaimRewards) (*types.MsgClaimRewardsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
 
 	delegator, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
