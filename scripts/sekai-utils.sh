@@ -316,27 +316,27 @@ function sendTokens() {
 
 # e.g. showStatus -> { ... }
 function showStatus() {
-    echo $(sekaid status 2>&1 | jsonParse "" 2>/dev/null || echo -n "")
+    echo $(sekaid status 2>&1 | bash-utils jsonParse "" 2>/dev/null || echo -n "")
 }
 
 # e.g. showBlockHeight -> 123
 function showBlockHeight() {
-    SH_LATEST_BLOCK_HEIGHT=$(showStatus | jsonParse "SyncInfo.latest_block_height" 2>/dev/null || echo -n "")
-    ($(isNaturalNumber "$SH_LATEST_BLOCK_HEIGHT")) && echo $SH_LATEST_BLOCK_HEIGHT || echo ""
+    SH_LATEST_BLOCK_HEIGHT=$(showStatus | bash-utils jsonParse "SyncInfo.latest_block_height" 2>/dev/null || echo -n "")
+    ($(bash-utils isNaturalNumber "$SH_LATEST_BLOCK_HEIGHT")) && echo $SH_LATEST_BLOCK_HEIGHT || echo ""
 }
 
-# awaitBlocks <number-of-blocks> <timeout-seconds>
+# awaitBlocks <number-of-blocks>
 # e.g. awaitBlocks 5
 function awaitBlocks() {
     local BLOCKS=$1
-    (! $(isNaturalNumber $BLOCKS)) && echoErr "ERROR: Number of blocks to await was NOT defined" && return 1
+    (! $(bash-utils isNaturalNumber $BLOCKS)) && bash-utils echoErr "ERROR: Number of blocks to await was NOT defined" && return 1
     local SH_START_BLOCK=""
     while : ; do
         local SH_NEW_BLOCK=$(showBlockHeight)
-        (! $(isNaturalNumber $SH_NEW_BLOCK)) && sleep 1 && continue
-        (! $(isNaturalNumber "$SH_START_BLOCK")) && SH_START_BLOCK=$SH_NEW_BLOCK
+        (! $(bash-utils isNaturalNumber $SH_NEW_BLOCK)) && sleep 1 && continue
+        (! $(bash-utils isNaturalNumber "$SH_START_BLOCK")) && SH_START_BLOCK=$SH_NEW_BLOCK
         local SH_DELTA=$(($SH_NEW_BLOCK - $SH_START_BLOCK))
-        [ $SH_DELTA -gt $BLOCKS ] && break
+        [ $SH_DELTA -ge $BLOCKS ] && break
         sleep 1
     done
 }
@@ -390,10 +390,10 @@ function clearPermission() {
     (! $(isNaturalNumber $TIMEOUT)) && TIMEOUT=180
     if ($(isPermBlacklisted $ADDR $PERM)) ; then
         echoInfo "INFO: Permission '$PERM' is blacklisted and will be removed from the blacklist, please wait..."
-        sekaid tx customgov permission remove-blacklisted-permission --from "$ACCOUNT" --keyring-backend=test --permission="$PERM" --addr="$ADDR" --chain-id=$NETWORK_NAME --home=$SEKAID_HOME --fees=100ukex --yes --broadcast-mode=async --log_format=json --output=json | txAwait $TIMEOUT
+        sekaid tx customgov permission remove-blacklisted --from "$ACCOUNT" --keyring-backend=test --permission="$PERM" --addr="$ADDR" --chain-id=$NETWORK_NAME --home=$SEKAID_HOME --fees=100ukex --yes --broadcast-mode=async --log_format=json --output=json | txAwait $TIMEOUT
     elif ($(isPermWhitelisted $ADDR $PERM)) ; then
         echoInfo "INFO: Permission '$PERM' is whitelisted and will be removed from the whitelist, please wait..."
-        sekaid tx customgov permission remove-whitelisted-permission --from "$ACCOUNT" --keyring-backend=test --permission="$PERM" --addr="$ADDR" --chain-id=$NETWORK_NAME --home=$SEKAID_HOME --fees=100ukex --yes --broadcast-mode=async --log_format=json --output=json | txAwait $TIMEOUT
+        sekaid tx customgov permission remove-whitelisted --from "$ACCOUNT" --keyring-backend=test --permission="$PERM" --addr="$ADDR" --chain-id=$NETWORK_NAME --home=$SEKAID_HOME --fees=100ukex --yes --broadcast-mode=async --log_format=json --output=json | txAwait $TIMEOUT
     else
         echoInfo "INFO: Permission '$PERM' was never present or already cleared."
     fi
@@ -418,7 +418,7 @@ function whitelistPermission() {
             clearPermission $KM_ACC $PERM $ADDR $TIMEOUT
         fi
 
-        sekaid tx customgov permission whitelist-permission --from "$KM_ACC" --keyring-backend=test --permission="$PERM" --addr="$ADDR" --chain-id=$NETWORK_NAME --home=$SEKAID_HOME --fees=100ukex --yes --broadcast-mode=async --log_format=json --output=json | txAwait $TIMEOUT
+        sekaid tx customgov permission whitelist --from "$KM_ACC" --keyring-backend=test --permission="$PERM" --addr="$ADDR" --chain-id=$NETWORK_NAME --home=$SEKAID_HOME --fees=100ukex --yes --broadcast-mode=async --log_format=json --output=json | txAwait $TIMEOUT
     fi
 }
 
@@ -441,7 +441,7 @@ function blacklistPermission() {
             clearPermission $KM_ACC $PERM $ADDR $TIMEOUT
         fi
 
-        sekaid tx customgov permission blacklist-permission --from "$KM_ACC" --keyring-backend=test --permission="$PERM" --addr="$ADDR" --chain-id=$NETWORK_NAME --home=$SEKAID_HOME --fees=100ukex --yes --broadcast-mode=async --log_format=json --output=json | txAwait $TIMEOUT
+        sekaid tx customgov permission blacklist --from "$KM_ACC" --keyring-backend=test --permission="$PERM" --addr="$ADDR" --chain-id=$NETWORK_NAME --home=$SEKAID_HOME --fees=100ukex --yes --broadcast-mode=async --log_format=json --output=json | txAwait $TIMEOUT
     fi
 }
 
