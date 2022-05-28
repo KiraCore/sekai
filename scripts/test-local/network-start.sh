@@ -3,9 +3,9 @@ set -e
 set -x
 . /etc/profile
 . ./scripts/sekai-env.sh
+. ./scripts/sekai-utils.sh
 
-TEST_NAME="NETWORK-SETUP"
-timerStart $TEST_NAME
+TEST_NAME="NETWORK-START" && timerStart $TEST_NAME
 echoInfo "INFO: $TEST_NAME - Integration Test - START"
 
 echoInfo "INFO: Ensuring essential dependencies are installed & up to date"
@@ -19,12 +19,12 @@ if [ ! -f $SYSCTRL_DESTINATION ] ; then
 fi
 
 UTILS_VER=$(bashUtilsVersion 2> /dev/null || echo "")
-UTILS_OLD_VER="false" && [[ $(versionToNumber "$UTILS_VER" || echo "0") -ge $(versionToNumber "v0.1.2.3" || echo "1") ]] || UTILS_OLD_VER="true" 
+UTILS_OLD_VER="false" && [[ $(versionToNumber "$UTILS_VER" || echo "0") -ge $(versionToNumber "v0.1.5" || echo "1") ]] || UTILS_OLD_VER="true" 
 
 # Installing utils is essential to simplify the setup steps
 if [ "$UTILS_OLD_VER" == "true" ] ; then
     echo "INFO: KIRA utils were NOT installed on the system, setting up..." && sleep 2
-    TOOLS_VERSION="v0.0.12.4" && mkdir -p /usr/keys && FILE_NAME="bash-utils.sh" && \
+    TOOLS_VERSION="v0.1.5" && mkdir -p /usr/keys && FILE_NAME="bash-utils.sh" && \
      if [ -z "$KIRA_COSIGN_PUB" ] ; then KIRA_COSIGN_PUB=/usr/keys/kira-cosign.pub ; fi && \
      echo -e "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE/IrzBQYeMwvKa44/DF/HB7XDpnE+\nf+mU9F/Qbfq25bBWV2+NlYMJv3KvKHNtu3Jknt6yizZjUV4b8WGfKBzFYw==\n-----END PUBLIC KEY-----" > $KIRA_COSIGN_PUB && \
      wget "https://github.com/KiraCore/tools/releases/download/$TOOLS_VERSION/${FILE_NAME}" -O ./$FILE_NAME && \
@@ -36,17 +36,12 @@ else
     echoInfo "INFO: KIRA utils are up to date, latest version $UTILS_VER" && sleep 2
 fi
 
+./scripts/sekai-utils.sh sekaiUtilsSetup
+loadGlobEnvs
+
 echoInfo "INFO: Environment cleanup...."
-systemctl2 stop sekai || echoWarn "WARNING: sekai service was NOT running or could NOT be stopped"
-
-kill -9 $(sudo lsof -t -i:9090) || echoWarn "WARNING: Nothing running on port 9090, or failed to kill processes"
-kill -9 $(sudo lsof -t -i:6060) || echoWarn "WARNING: Nothing running on port 6060, or failed to kill processes"
-kill -9 $(sudo lsof -t -i:26656) || echoWarn "WARNING: Nothing running on port 26656, or failed to kill processes"
-kill -9 $(sudo lsof -t -i:26657) || echoWarn "WARNING: Nothing running on port 26657, or failed to kill processes"
-kill -9 $(sudo lsof -t -i:26658) || echoWarn "WARNING: Nothing running on port 26658, or failed to kill processes"
-
-NETWORK_NAME="localnet-0"
-setGlobEnv SEKAID_HOME ~/.sekaid-local
+NETWORK_NAME="localnet-1"
+setGlobEnv SEKAID_HOME ~/.sekaid-$NETWORK_NAME
 setGlobEnv NETWORK_NAME $NETWORK_NAME
 loadGlobEnvs
 
@@ -93,12 +88,19 @@ if [ "$NETWORK_NAME" != "$NETWORK_STATUS_CHAIN_ID" ] ; then
     echoErr "ERROR: Incorrect chain ID from the status query, expected '$NETWORK_NAME', but got $NETWORK_STATUS_CHAIN_ID"
 fi
 
+echoInfo "INFO: Waiting for next block to be produced..."
+timeout 60 sekai-utils awaitBlocks 2
 BLOCK_HEIGHT=$(showBlockHeight)
-echoInfo "INFO: Waiting for next block to be produced..." && sleep 10
+timeout 60 sekai-utils awaitBlocks 2
 NEXT_BLOCK_HEIGHT=$(showBlockHeight)
 
 if [ $BLOCK_HEIGHT -ge $NEXT_BLOCK_HEIGHT ] ; then
     echoErr "ERROR: Failed to produce next block height, stuck at $BLOCK_HEIGHT"
 fi
 
-echoInfo "INFO: NETWORK-SETUP - Integration Test - END, elapsed: $(prettyTime $(timerSpan $TEST_NAME))"
+echoInfo "INFO: Printing sekai status..."
+showStatus | jq
+
+set +x
+echoInfo "INFO: SEKAI $(sekaid version) is running"
+echoInfo "INFO: NETWORK-START - Integration Test - END, elapsed: $(prettyTime $(timerSpan $TEST_NAME))"
