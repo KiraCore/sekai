@@ -39,3 +39,10 @@ start:
 # ./scripts/proto-gen.sh
 publish:
 	./scripts/publish.sh
+
+network-start:
+	./scripts/test-local/network-stop.sh
+	./scripts/test-local/network-start.sh
+
+network-stop:
+	./scripts/test-local/network-stop.sh
