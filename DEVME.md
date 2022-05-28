@@ -24,29 +24,23 @@ wget https://raw.githubusercontent.com/gdraheim/docker-systemctl-replacement/mas
 echo 'deb [trusted=yes] https://repo.goreleaser.com/apt/ /' | tee /etc/apt/sources.list.d/goreleaser.list && apt-get update -y && \
 	apt install nfpm
 
-# install kira bash helper utils
-BRANCH="v0.0.3" && cd /tmp && rm -fv ./i.sh && \
-wget https://raw.githubusercontent.com/KiraCore/tools/$BRANCH/bash-utils/install.sh -O ./i.sh && \
- chmod 555 -v ./i.sh && ./i.sh "$BRANCH" "/var/kiraglob" && . /etc/profile && rm -fv ./i.sh
+FILE_NAME="bash-utils.sh" && TOOLS_VERSION="v0.1.5" && \
+ wget "https://github.com/KiraCore/tools/releases/download/$TOOLS_VERSION/${FILE_NAME}" -O ./$FILE_NAME && \
+ chmod -v 755 ./$FILE_NAME && ./$FILE_NAME bashUtilsSetup "$GLOBAL_COMMON" && source $FILE_NAME
 
-# uninstall golang if needed
-( go clean -modcache -cache -n || echo "Failed to cleanup go cache" ) && \
-( rm -rfv "$GOROOT" || echo "Failed to cleanup go root" ) && \
-( rm -rfv "$GOBIN" || echo "Failed to cleanup go bin" ) && \
-( rm -rfv "$GOPATH" || echo "Failed to cleanup go path" ) && \
-( rm -rfv "$GOCACHE" || echo "Failed to cleanup go cache" )
+# install go
+setGlobEnv GOROOT /usr/local/go && setGlobEnv GOPATH /home/go && setGlobEnv GOBIN /usr/local/go/bin && \
+ loadGlobEnvs && setGlobPath $GOROOT && setGlobPath $GOPATH && setGlobPath $GOBIN && loadGlobEnvs && \
+ ( go clean -modcache -cache -n || : ) && rm -rfv "$GOROOT" "$GOBIN" "$GOPATH" && GO_VERSION="1.18.2" && \
+ GO_TAR="go$GO_VERSION.$(getPlatform)-$(getArch).tar.gz" && cd /tmp && safeWget ./$GO_TAR https://dl.google.com/go/$GO_TAR \
+ "fc4ad28d0501eaa9c9d6190de3888c9d44d8b5fb02183ce4ae93713f67b8a35b,e54bec97a1a5d230fc2f9ad0880fcbabb5888f30ed9666eca4a91c5a32e86cbc" && \
+ tar -C /usr/local -xf $GO_TAR &>/dev/null && go version
 
 # mount C drive or other disk where repo is stored
 setGlobLine "mount -t drvfs C:" "mount -t drvfs C: /mnt/c || echo 'Failed to mount C drive'"
 
 # set env variable to your local repos (will vary depending on the user)
 setGlobEnv SEKAI_REPO "/mnt/c/Users/asmodat/Desktop/KIRA/KIRA-CORE/GITHUB/sekai" && \
- setGlobEnv INTERX_REPO "/mnt/c/Users/asmodat/Desktop/KIRA/KIRA-CORE/GITHUB/interx" && \
- loadGlobEnvs
-
-# set home directory of your repos
-setGlobEnv SEKAID_HOME "/root/.sekaid" && \
- setGlobEnv INTERXD_HOME "/root/.interxd" && \
  loadGlobEnvs
 
 # Ensure you have Docker Desktop installed: https://code.visualstudio.com/blogs/2020/03/02/docker-in-wsl2 & reboot your entire host machine
@@ -61,12 +55,8 @@ cd $HOME && rm -fvr ./sekai && SEKAI_BRANCH="master" && \
 
 ## Installation
 ```
-cd $INTERX_REPO
-
-chmod -Rv 777 ./scripts && \
- dos2unix ./scripts/protocgen-local.sh
-
-make install
+cd $SEKAI_REPO && \
+ make install
 ```
 
 # If any changes are made to modules update protobuf files
@@ -80,60 +70,17 @@ cd "$SEKAI_REPO" && \
  make install && echo "SEKAI update success" || echo "SEKAI update failed" 
 ```
 
-# Updating INTERX GO Modules
-
-Pull dependencies & ensures that the go.mod file matches the source code in the module. This must be done every time Cosmos-SDK version is updated in the `go.mod` file of the root repository. Always ensure that `go.mod` in the root & INTERX folder match `github.com/cosmos/cosmos-sdk` version!
+# Start local test network
 
 ```
-cd $SEKAI_REPO/INTERX && \
- go get -u && \
- go mod tidy && echo "INTERX update success" || echo "INTERX update failed" 
+make network-start
+loadGlobEnvs
 ```
 
-# Build repo & create service 
+# Stop local test network
 
 ```
-make install
-sekaid version
-systemctl2 stop sekai || echo "sekai service was NOT running or could NOT be stopped"
-
-rm -rfv $SEKAID_HOME && mkdir -p $SEKAID_HOME && \
- sekaid init --overwrite --chain-id="localnet-1" "LOCAL KIRA VALIDATOR NODE" --home=$SEKAID_HOME && \
- sekaid keys add validator --keyring-backend=test --home=$SEKAID_HOME && \
- sekaid add-genesis-account $(sekaid keys show validator -a --keyring-backend=test --home=$SEKAID_HOME) 300000000000000ukex,300000000000000test,2000000000000000000000000000samolean,1000000lol --home=$SEKAID_HOME && \
- sekaid gentx-claim validator --keyring-backend=test --moniker="GENESIS VALIDATOR" --home=$SEKAID_HOME && \
- cat > /etc/systemd/system/sekai.service << EOL
-[Unit]
-Description=Local KIRA Test Network
-After=network.target
-[Service]
-MemorySwapMax=0
-Type=simple
-User=root
-WorkingDirectory=/root
-ExecStart=$GOBIN/sekaid start --home=$SEKAID_HOME --trace
-Restart=always
-RestartSec=5
-LimitNOFILE=4096
-[Install]
-WantedBy=default.target
-EOL
-
-# Auto Execute Helper Scripts (run only once)
-echo "source '/common/scripts/utils.sh' || echo 'ERROR: Failed to load utils script'" >> ~/.bash_aliases && \
- echo "source '/common/scripts/sekaid-helper.sh'  || echo 'ERROR: Failed to load sekaid-helper script'" >> ~/.bash_aliases && \
- echo "NETWORK_NAME='localnet-1'" >> ~/.bash_aliases
-
-# Start sekai service
-systemctl2 daemon-reload && \
- systemctl2 enable sekai && \
- systemctl2 restart sekai && \
- systemctl2 status sekai
-
-
-# Stop sekai service
-systemctl2 stop sekai || echoWarn "WARNING: Failed to stop KIRA Plan!"
-
+make network-stop
 ```
 
 # Running Tests

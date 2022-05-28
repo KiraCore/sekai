@@ -2,6 +2,6 @@
 
 **Features:**
 
-- updated identity registrar messages for record_ids, verify_request_id
-- added metadata endpoint for MsgDeleteIdentityRegistrar
-- removed metadata endpoint for MsgEditIdentityRegistrar
+- integration tests now include permissions whitelist checks
+- fixed bash-utils awaitBlocks not working with timeout command
+- fixed bash-utils permissions whitelist / blacklist
