@@ -66,7 +66,7 @@ func (k Keeper) AllocateTokens(
 	if validatorsFeeShare < 100 {
 		stakingFeeShare := 100 - validatorsFeeShare
 
-		pool, found := k.mk.GetStakingPoolByValidator(ctx, proposerValidator.String())
+		pool, found := k.mk.GetStakingPoolByValidator(ctx, proposerValidator.ValKey.String())
 		if found {
 			rewards := sdk.Coins{}
 			for _, fee := range feesCollected {

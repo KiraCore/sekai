@@ -9,8 +9,8 @@ import (
 	"github.com/KiraCore/sekai/x/multistaking/types"
 )
 
-func NewHandler(ck keeper.Keeper, govkeeper govkeeper.Keeper, sk types.StakingKeeper) sdk.Handler {
-	msgServer := keeper.NewMsgServerImpl(ck, govkeeper, sk)
+func NewHandler(ck keeper.Keeper, bankKeeper types.BankKeeper, govkeeper govkeeper.Keeper, sk types.StakingKeeper) sdk.Handler {
+	msgServer := keeper.NewMsgServerImpl(ck, bankKeeper, govkeeper, sk)
 
 	return func(ctx sdk.Context, msg sdk.Msg) (*sdk.Result, error) {
 		ctx = ctx.WithEventManager(sdk.NewEventManager())

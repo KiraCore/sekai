@@ -59,10 +59,13 @@ func GetCmdQueryOutstandingRewards() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "outstanding-rewards [delegator]",
 		Short: "Query outstanding rewards for a delegator",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
-			params := &types.QueryOutstandingRewardsRequest{}
+			params := &types.QueryOutstandingRewardsRequest{
+				Delegator: args[0],
+			}
 
 			queryClient := types.NewQueryClient(clientCtx)
 			res, err := queryClient.OutstandingRewards(context.Background(), params)

@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/KiraCore/sekai/x/multistaking/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
@@ -56,11 +57,18 @@ func (k Keeper) SetStakingPool(ctx sdk.Context, pool types.StakingPool) {
 	store.Set(key, k.cdc.MustMarshal(&pool))
 }
 
+func getPoolPrefix(poolID uint64) string {
+	return fmt.Sprintf("v%d/", poolID)
+}
 func getPoolCoins(poolID uint64, coins sdk.Coins) sdk.Coins {
-	prefix := fmt.Sprintf("v%d_", poolID)
+	prefix := getPoolPrefix(poolID)
 	poolCoins := sdk.Coins{}
 	for _, coin := range coins {
 		poolCoins = poolCoins.Add(sdk.NewCoin(prefix+coin.Denom, coin.Amount))
 	}
 	return poolCoins
+}
+
+func getNativeDenom(poolID uint64, denom string) string {
+	return strings.TrimPrefix(denom, getPoolPrefix(poolID))
 }

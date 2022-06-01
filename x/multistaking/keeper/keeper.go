@@ -15,9 +15,11 @@ type Keeper struct {
 }
 
 // NewKeeper returns new keeper.
-func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryCodec) Keeper {
+func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryCodec, bankKeeper types.BankKeeper, tokenKeeper types.TokensKeeper) Keeper {
 	return Keeper{
-		storeKey: storeKey,
-		cdc:      cdc,
+		storeKey:    storeKey,
+		cdc:         cdc,
+		bankKeeper:  bankKeeper,
+		tokenKeeper: tokenKeeper,
 	}
 }

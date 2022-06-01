@@ -106,8 +106,17 @@ func (k Keeper) GetDelegatorRewards(ctx sdk.Context, delegator sdk.AccAddress) s
 func (k Keeper) IncreasePoolRewards(ctx sdk.Context, pool types.StakingPool, rewards sdk.Coins) {
 	totalWeight := sdk.ZeroDec()
 	for _, shareToken := range pool.TotalShareTokens {
-		rate := k.tokenKeeper.GetTokenRate(ctx, shareToken.Denom)
+		nativeDenom := getNativeDenom(pool.Id, shareToken.Denom)
+		rate := k.tokenKeeper.GetTokenRate(ctx, nativeDenom)
+		if rate == nil {
+			continue
+		}
+
 		totalWeight = totalWeight.Add(shareToken.Amount.ToDec().Mul(rate.FeeRate))
+	}
+
+	if totalWeight.IsZero() {
+		return
 	}
 
 	delegators := k.GetPoolDelegators(ctx, pool.Id)
@@ -115,8 +124,12 @@ func (k Keeper) IncreasePoolRewards(ctx sdk.Context, pool types.StakingPool, rew
 		weight := sdk.ZeroDec()
 		balances := k.bankKeeper.GetAllBalances(ctx, delegator)
 		for _, shareToken := range pool.TotalShareTokens {
-			rate := k.tokenKeeper.GetTokenRate(ctx, shareToken.Denom)
+			nativeDenom := getNativeDenom(pool.Id, shareToken.Denom)
+			rate := k.tokenKeeper.GetTokenRate(ctx, nativeDenom)
 			balance := balances.AmountOf(shareToken.Denom)
+			if rate == nil {
+				continue
+			}
 			weight = weight.Add(balance.ToDec().Mul(rate.FeeRate))
 		}
 

@@ -55,7 +55,7 @@ func GetTxUpsertStakingPool() *cobra.Command {
 				return fmt.Errorf("invalid flag: %w", err)
 			}
 
-			msg := types.NewMsgUpsertStakingPool(clientCtx.FromAddress.String(), args[1], enabled)
+			msg := types.NewMsgUpsertStakingPool(clientCtx.FromAddress.String(), args[0], enabled)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
@@ -80,12 +80,12 @@ func GetTxDelegate() *cobra.Command {
 				return err
 			}
 
-			coins, err := sdk.ParseCoinsNormalized(args[2])
+			coins, err := sdk.ParseCoinsNormalized(args[1])
 			if err != nil {
 				return err
 			}
 
-			msg := types.NewMsgDelegate(clientCtx.FromAddress.String(), args[1], coins)
+			msg := types.NewMsgDelegate(clientCtx.FromAddress.String(), args[0], coins)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
@@ -108,12 +108,12 @@ func GetTxUndelegate() *cobra.Command {
 				return err
 			}
 
-			coins, err := sdk.ParseCoinsNormalized(args[2])
+			coins, err := sdk.ParseCoinsNormalized(args[1])
 			if err != nil {
 				return err
 			}
 
-			msg := types.NewMsgDelegate(clientCtx.FromAddress.String(), args[1], coins)
+			msg := types.NewMsgUndelegate(clientCtx.FromAddress.String(), args[0], coins)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},

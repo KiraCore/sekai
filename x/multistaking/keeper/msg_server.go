@@ -8,6 +8,7 @@ import (
 	govkeeper "github.com/KiraCore/sekai/x/gov/keeper"
 	"github.com/KiraCore/sekai/x/multistaking/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 )
 
@@ -20,11 +21,12 @@ type msgServer struct {
 
 // NewMsgServerImpl returns an implementation of the bank MsgServer interface
 // for the provided Keeper.
-func NewMsgServerImpl(keeper Keeper, govKeeper govkeeper.Keeper, sk types.StakingKeeper) types.MsgServer {
+func NewMsgServerImpl(keeper Keeper, bankKeeper types.BankKeeper, govKeeper govkeeper.Keeper, sk types.StakingKeeper) types.MsgServer {
 	return &msgServer{
-		keeper:    keeper,
-		govKeeper: govKeeper,
-		sk:        sk,
+		keeper:     keeper,
+		bankKeeper: bankKeeper,
+		govKeeper:  govKeeper,
+		sk:         sk,
 	}
 }
 
@@ -88,10 +90,11 @@ func (k msgServer) Delegate(goCtx context.Context, msg *types.MsgDelegate) (*typ
 	}
 
 	pool.TotalStakingTokens = sdk.Coins(pool.TotalStakingTokens).Add(msg.Amounts...)
+	poolCoins := getPoolCoins(pool.Id, msg.Amounts)
+	pool.TotalShareTokens = sdk.Coins(pool.TotalShareTokens).Add(poolCoins...)
 	k.keeper.SetStakingPool(ctx, pool)
 
 	// TODO: should check the ratio between poolCoins and coins
-	poolCoins := getPoolCoins(pool.Id, msg.Amounts)
 	err = k.bankKeeper.MintCoins(ctx, minttypes.ModuleName, poolCoins)
 	if err != nil {
 		return nil, err
@@ -108,7 +111,6 @@ func (k msgServer) Delegate(goCtx context.Context, msg *types.MsgDelegate) (*typ
 
 func (k msgServer) Undelegate(goCtx context.Context, msg *types.MsgUndelegate) (*types.MsgUndelegateResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
 
 	pool, found := k.keeper.GetStakingPoolByValidator(ctx, msg.ValidatorAddress)
 	if !found {
@@ -132,7 +134,8 @@ func (k msgServer) Undelegate(goCtx context.Context, msg *types.MsgUndelegate) (
 		return nil, err
 	}
 
-	pool.TotalStakingTokens = sdk.Coins(pool.TotalStakingTokens).Add(msg.Amounts...)
+	pool.TotalStakingTokens = sdk.Coins(pool.TotalStakingTokens).Sub(msg.Amounts)
+	pool.TotalShareTokens = sdk.Coins(pool.TotalShareTokens).Sub(poolCoins)
 	k.keeper.SetStakingPool(ctx, pool)
 
 	lastUndelegationId := k.keeper.GetLastUndelegationId(ctx) + 1
@@ -163,7 +166,7 @@ func (k msgServer) ClaimRewards(goCtx context.Context, msg *types.MsgClaimReward
 	}
 
 	rewards := k.keeper.GetDelegatorRewards(ctx, delegator)
-	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, delegator, rewards)
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, authtypes.FeeCollectorName, delegator, rewards)
 	if err != nil {
 		return nil, err
 	}

@@ -75,6 +75,7 @@ func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
 type AppModule struct {
 	AppModuleBasic
 	keeper              keeper.Keeper
+	bankKeeper          types.BankKeeper
 	customStakingKeeper types.StakingKeeper
 	customGovKeeper     govkeeper.Keeper
 }
@@ -82,7 +83,7 @@ type AppModule struct {
 // RegisterQueryService registers a GRPC query service to respond to the
 // module-specific GRPC queries.
 func (am AppModule) RegisterServices(cfg module.Configurator) {
-	stakingtypes.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.keeper, am.customGovKeeper, am.customStakingKeeper))
+	stakingtypes.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.keeper, am.bankKeeper, am.customGovKeeper, am.customStakingKeeper))
 	stakingtypes.RegisterQueryServer(cfg.QueryServer(), keeper.NewQuerier(am.keeper))
 }
 
@@ -137,17 +138,19 @@ func (am AppModule) Name() string {
 
 // Route returns the message routing key for the staking module.
 func (am AppModule) Route() sdk.Route {
-	return middleware.NewRoute(stakingtypes.ModuleName, NewHandler(am.keeper, am.customGovKeeper, am.customStakingKeeper))
+	return middleware.NewRoute(stakingtypes.ModuleName, NewHandler(am.keeper, am.bankKeeper, am.customGovKeeper, am.customStakingKeeper))
 }
 
-// NewAppModule returns a new Custom Staking module.
+// NewAppModule returns a new multistaking module.
 func NewAppModule(
 	keeper keeper.Keeper,
+	bankKeeper types.BankKeeper,
 	govKeeper govkeeper.Keeper,
 	sk types.StakingKeeper,
 ) AppModule {
 	return AppModule{
 		keeper:              keeper,
+		bankKeeper:          bankKeeper,
 		customGovKeeper:     govKeeper,
 		customStakingKeeper: sk,
 	}
