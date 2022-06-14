@@ -171,6 +171,8 @@ func (k msgServer) ClaimRewards(goCtx context.Context, msg *types.MsgClaimReward
 		return nil, err
 	}
 
+	k.keeper.RemoveDelegatorRewards(ctx, delegator)
+
 	return &types.MsgClaimRewardsResponse{}, nil
 }
 

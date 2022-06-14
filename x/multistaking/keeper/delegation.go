@@ -77,13 +77,23 @@ func (k Keeper) GetPoolDelegators(ctx sdk.Context, poolId uint64) []sdk.AccAddre
 	return delegators
 }
 
+func (k Keeper) SetDelegatorRewards(ctx sdk.Context, delegator sdk.AccAddress, rewards sdk.Coins) {
+	store := ctx.KVStore(k.storeKey)
+	key := append(types.KeyPrefixRewards, delegator...)
+	store.Set(key, []byte(rewards.String()))
+}
+
 func (k Keeper) IncreaseDelegatorRewards(ctx sdk.Context, delegator sdk.AccAddress, amounts sdk.Coins) {
 	rewards := k.GetDelegatorRewards(ctx, delegator)
 	rewards = rewards.Add(amounts...)
 
+	k.SetDelegatorRewards(ctx, delegator, rewards)
+}
+
+func (k Keeper) RemoveDelegatorRewards(ctx sdk.Context, delegator sdk.AccAddress) {
 	store := ctx.KVStore(k.storeKey)
 	key := append(types.KeyPrefixRewards, delegator...)
-	store.Set(key, []byte(rewards.String()))
+	store.Delete(key)
 }
 
 func (k Keeper) GetDelegatorRewards(ctx sdk.Context, delegator sdk.AccAddress) sdk.Coins {
@@ -101,6 +111,26 @@ func (k Keeper) GetDelegatorRewards(ctx sdk.Context, delegator sdk.AccAddress) s
 	}
 
 	return coins
+}
+
+func (k Keeper) GetAllDelegatorRewards(ctx sdk.Context) []types.Rewards {
+	rewards := []types.Rewards{}
+
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixRewards)
+	iterator := sdk.KVStorePrefixIterator(store, nil)
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		rewardsCoins, err := sdk.ParseCoinsNormalized(string(iterator.Value()))
+		if err != nil {
+			panic(err)
+		}
+		rewards = append(rewards, types.Rewards{
+			Delegator: sdk.AccAddress(iterator.Key()).String(),
+			Rewards:   rewardsCoins,
+		})
+	}
+	return rewards
 }
 
 func (k Keeper) IncreasePoolRewards(ctx sdk.Context, pool types.StakingPool, rewards sdk.Coins) {
@@ -135,7 +165,7 @@ func (k Keeper) IncreasePoolRewards(ctx sdk.Context, pool types.StakingPool, rew
 
 		delegatorRewards := sdk.Coins{}
 		for _, reward := range rewards {
-			delegatorRewards = delegatorRewards.Add(sdk.NewCoin(reward.Denom, reward.Amount.Mul(weight.Quo(totalWeight).RoundInt())))
+			delegatorRewards = delegatorRewards.Add(sdk.NewCoin(reward.Denom, reward.Amount.ToDec().Mul(weight).Quo(totalWeight).RoundInt()))
 		}
 
 		k.IncreaseDelegatorRewards(ctx, delegator, delegatorRewards)

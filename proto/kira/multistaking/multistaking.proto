@@ -34,3 +34,11 @@ message Undelegation {
     (gogoproto.nullable) = false
   ];
 }
+
+message Rewards {
+  string delegator = 1;
+  repeated string rewards = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
+}
