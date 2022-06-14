@@ -150,21 +150,17 @@ func registerIdRecordsCodec(cdc *codec.LegacyAmino) {
 		}
 	}`)
 
-	cdc.RegisterConcrete(&MsgDeleteIdentityRecords{}, "kiraHub/MsgEditIdentityRecord", nil)
+	cdc.RegisterConcrete(&MsgDeleteIdentityRecords{}, "kiraHub/MsgDeleteIdentityRecords", nil)
 	functionmeta.AddNewFunction((&MsgDeleteIdentityRecords{}).Type(), `{
-		"description": "MsgEditIdentityRecord defines a proposal message to edit an identity record.",
+		"description": "MsgDeleteIdentityRecords defines a method to delete identity records owned by an address.",
 		"parameters": {
-			"record_id": {
-				"type":        "uint64",
-				"description": "the id of identity record to edit."
-			},
 			"address": {
 				"type":        "string",
-				"description": "the address for the identity record."
+				"description": "the address of requester."
 			},
-			"infos": {
+			"keys": {
 				"type":        "array",
-				"description": "key/value array for the mappings of the identity record."
+				"description": "the array string that defines identity record key values to be deleted."
 			}
 		}
 	}`)
@@ -203,6 +199,11 @@ func registerIdRecordsCodec(cdc *codec.LegacyAmino) {
 			"verify_request_id": {
 				"type":        "uint64",
 				"description": "the id of verification request."
+			},
+			"yes": {
+				"type": "bool",
+				"optional": true,
+				"description": "defines approval or rejecting an identity request (default false)"
 			}
 		}
 	}`)

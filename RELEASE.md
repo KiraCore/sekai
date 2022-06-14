@@ -2,5 +2,6 @@
 
 **Features:**
 
-- Added signature files generation to releases
-- Include `env.sh` in releases & rename to `sekai-env.sh`
+- integration tests now include permissions whitelist checks
+- fixed bash-utils awaitBlocks not working with timeout command
+- fixed bash-utils permissions whitelist / blacklist
