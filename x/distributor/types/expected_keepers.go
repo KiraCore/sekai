@@ -2,6 +2,7 @@ package types
 
 import (
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
+	multistakingtypes "github.com/KiraCore/sekai/x/multistaking/types"
 	spendingtypes "github.com/KiraCore/sekai/x/spending/types"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -33,4 +34,9 @@ type SpendingKeeper interface {
 type StakingKeeper interface {
 	GetValidatorByConsAddr(ctx sdk.Context, consAddr sdk.ConsAddress) (stakingtypes.Validator, error)
 	GetValidator(sdk.Context, sdk.ValAddress) (stakingtypes.Validator, error)
+}
+
+type MultiStakingKeeper interface {
+	GetStakingPoolByValidator(ctx sdk.Context, validator string) (pool multistakingtypes.StakingPool, found bool)
+	IncreasePoolRewards(ctx sdk.Context, pool multistakingtypes.StakingPool, rewards sdk.Coins)
 }

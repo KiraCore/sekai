@@ -1,0 +1,18 @@
+syntax = "proto3";
+package kira.multistaking;
+
+option go_package = "github.com/KiraCore/sekai/x/multistaking/types";
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/any.proto";
+import "kira/multistaking/multistaking.proto";
+
+// GenesisState defines the multistaking module's genesis state.
+message GenesisState {
+  repeated kira.multistaking.StakingPool pools = 1
+      [ (gogoproto.nullable) = false ];
+  repeated kira.multistaking.Undelegation undelegations = 2
+      [ (gogoproto.nullable) = false ];
+  repeated kira.multistaking.Rewards rewards = 3
+      [ (gogoproto.nullable) = false ];
+}

@@ -39,6 +39,13 @@ const (
 	// staking module
 	MsgTypeClaimValidator = "claim-validator"
 
+	// multistaking module
+	MsgTypeUpsertStakingPool = "upsert_staking_pool"
+	MsgTypeDelegate          = "delegate"
+	MsgTypeUndelegate        = "undelegate"
+	MsgTypeClaimRewards      = "claim_rewards"
+	MsgTypeClaimUndelegation = "claim_undelegation"
+
 	// tokens module
 	MsgTypeUpsertTokenAlias = "upsert-token-alias"
 	MsgTypeUpsertTokenRate  = "upsert-token-rate"
