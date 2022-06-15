@@ -63,6 +63,23 @@ func (k Keeper) AllocateTokens(
 			previousProposer.String()))
 	}
 
+	if validatorsFeeShare < 100 {
+		stakingFeeShare := 100 - validatorsFeeShare
+
+		pool, found := k.mk.GetStakingPoolByValidator(ctx, proposerValidator.ValKey.String())
+		if found {
+			rewards := sdk.Coins{}
+			for _, fee := range feesCollected {
+				reward := fee.Amount.Mul(sdk.NewInt(int64(stakingFeeShare))).Quo(sdk.NewInt(100))
+				if reward.IsPositive() {
+					rewards = rewards.Add(sdk.NewCoin(fee.Denom, reward))
+				}
+			}
+
+			k.mk.IncreasePoolRewards(ctx, pool, rewards)
+		}
+	}
+
 	// give rest of the tokens to community pool
 	remainings := k.bk.GetAllBalances(ctx, feeCollector.GetAddress())
 	k.SetFeesTreasury(ctx, remainings)

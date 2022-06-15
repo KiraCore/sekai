@@ -1,0 +1,44 @@
+syntax = "proto3";
+package kira.multistaking;
+
+option go_package = "github.com/KiraCore/sekai/x/multistaking/types";
+option (gogoproto.equal_all) = true;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+
+message StakingPool {
+  uint64 id = 1;
+  string validator = 2;
+  bool enabled = 3;
+  repeated string total_staking_tokens = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
+  repeated string total_share_tokens = 5 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
+  repeated string total_rewards = 6 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message Undelegation {
+  uint64 id = 1;
+  string address = 2;
+  uint64 expiry = 3;
+  repeated string amount = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message Rewards {
+  string delegator = 1;
+  repeated string rewards = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
+}

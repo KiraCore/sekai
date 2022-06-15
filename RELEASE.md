@@ -2,6 +2,7 @@
 
 **Features:**
 
-- integration tests now include permissions whitelist checks
-- fixed bash-utils awaitBlocks not working with timeout command
-- fixed bash-utils permissions whitelist / blacklist
+- implement multistaking module minimum viable version
+- pool creation
+- delegation
+- fee distribution
