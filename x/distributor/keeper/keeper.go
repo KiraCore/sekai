@@ -14,10 +14,11 @@ type Keeper struct {
 	bk       types.BankKeeper
 	sk       types.StakingKeeper
 	gk       types.CustomGovKeeper
+	mk       types.MultiStakingKeeper
 }
 
 // NewKeeper returns instance of a keeper
-func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryCodec, ak types.AccountKeeper, bk types.BankKeeper, sk types.StakingKeeper, gk types.CustomGovKeeper) Keeper {
+func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryCodec, ak types.AccountKeeper, bk types.BankKeeper, sk types.StakingKeeper, gk types.CustomGovKeeper, mk types.MultiStakingKeeper) Keeper {
 	return Keeper{
 		cdc:      cdc,
 		storeKey: storeKey,
@@ -25,6 +26,7 @@ func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryCodec, ak types.AccountKee
 		bk:       bk,
 		sk:       sk,
 		gk:       gk,
+		mk:       mk,
 	}
 }
 

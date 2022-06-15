@@ -22,6 +22,9 @@ import (
 	customgov "github.com/KiraCore/sekai/x/gov"
 	customgovkeeper "github.com/KiraCore/sekai/x/gov/keeper"
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
+	"github.com/KiraCore/sekai/x/multistaking"
+	multistakingkeeper "github.com/KiraCore/sekai/x/multistaking/keeper"
+	multistakingtypes "github.com/KiraCore/sekai/x/multistaking/types"
 	customslashing "github.com/KiraCore/sekai/x/slashing"
 	customslashingkeeper "github.com/KiraCore/sekai/x/slashing/keeper"
 	slashingtypes "github.com/KiraCore/sekai/x/slashing/types"
@@ -100,15 +103,17 @@ var (
 		evidence.AppModuleBasic{},
 		tokens.AppModuleBasic{},
 		feeprocessing.AppModuleBasic{},
+		multistaking.AppModuleBasic{},
 	)
 
 	// module account permissions
 	maccPerms = map[string][]string{
-		authtypes.FeeCollectorName:  nil,
-		govtypes.ModuleName:         nil,
-		minttypes.ModuleName:        {authtypes.Minter},
-		spendingtypes.ModuleName:    nil,
-		distributortypes.ModuleName: nil,
+		authtypes.FeeCollectorName:   nil,
+		govtypes.ModuleName:          nil,
+		minttypes.ModuleName:         {authtypes.Minter},
+		spendingtypes.ModuleName:     nil,
+		distributortypes.ModuleName:  nil,
+		multistakingtypes.ModuleName: {authtypes.Burner},
 	}
 
 	// module accounts that are allowed to receive tokens
@@ -144,6 +149,7 @@ type SekaiApp struct {
 	SpendingKeeper       spendingkeeper.Keeper
 	UbiKeeper            ubikeeper.Keeper
 	DistrKeeper          distributorkeeper.Keeper
+	MultiStakingKeeper   multistakingkeeper.Keeper
 
 	// Module Manager
 	mm *module.Manager
@@ -187,6 +193,7 @@ func NewInitApp(
 		govtypes.ModuleName,
 		spendingtypes.ModuleName,
 		distributortypes.ModuleName,
+		multistakingtypes.ModuleName,
 		ubitypes.ModuleName,
 		tokenstypes.ModuleName,
 		feeprocessingtypes.ModuleName,
@@ -230,7 +237,12 @@ func NewInitApp(
 	app.CustomStakingKeeper = *customStakingKeeper.SetHooks(
 		stakingtypes.NewMultiStakingHooks(app.CustomSlashingKeeper.Hooks()),
 	)
-	app.DistrKeeper = distributorkeeper.NewKeeper(keys[distributortypes.ModuleName], appCodec, app.AccountKeeper, app.BankKeeper, app.CustomStakingKeeper, app.CustomGovKeeper)
+	app.MultiStakingKeeper = multistakingkeeper.NewKeeper(keys[multistakingtypes.ModuleName], appCodec, app.BankKeeper, app.TokensKeeper)
+	app.DistrKeeper = distributorkeeper.NewKeeper(
+		keys[distributortypes.ModuleName], appCodec,
+		app.AccountKeeper, app.BankKeeper,
+		app.CustomStakingKeeper, app.CustomGovKeeper,
+		app.MultiStakingKeeper)
 
 	app.UpgradeKeeper = upgradekeeper.NewKeeper(keys[upgradetypes.StoreKey], appCodec, app.CustomStakingKeeper)
 
@@ -296,6 +308,7 @@ func NewInitApp(
 		params.NewAppModule(app.ParamsKeeper),
 		customslashing.NewAppModule(appCodec, app.CustomSlashingKeeper, app.AccountKeeper, app.BankKeeper, app.CustomStakingKeeper),
 		customstaking.NewAppModule(app.CustomStakingKeeper, app.CustomGovKeeper),
+		multistaking.NewAppModule(app.MultiStakingKeeper, app.BankKeeper, app.CustomGovKeeper, app.CustomStakingKeeper),
 		customgov.NewAppModule(app.CustomGovKeeper),
 		tokens.NewAppModule(app.TokensKeeper, app.CustomGovKeeper),
 		spending.NewAppModule(app.SpendingKeeper, app.CustomGovKeeper, app.BankKeeper),
@@ -314,7 +327,7 @@ func NewInitApp(
 		upgradetypes.ModuleName, slashingtypes.ModuleName,
 		evidencetypes.ModuleName, stakingtypes.ModuleName,
 		spendingtypes.ModuleName, ubitypes.ModuleName,
-		distributortypes.ModuleName,
+		distributortypes.ModuleName, multistakingtypes.ModuleName,
 	)
 	app.mm.SetOrderEndBlockers(
 		banktypes.ModuleName, upgradetypes.ModuleName, tokenstypes.ModuleName,
@@ -324,7 +337,7 @@ func NewInitApp(
 		stakingtypes.ModuleName,
 		feeprocessingtypes.ModuleName,
 		spendingtypes.ModuleName, ubitypes.ModuleName,
-		distributortypes.ModuleName,
+		distributortypes.ModuleName, multistakingtypes.ModuleName,
 	)
 
 	// NOTE: The genutils moodule must occur after staking so that pools are
@@ -347,6 +360,7 @@ func NewInitApp(
 		ubitypes.ModuleName,
 		paramstypes.ModuleName,
 		distributortypes.ModuleName,
+		multistakingtypes.ModuleName,
 	)
 
 	app.mm.RegisterRoutes(app.Router(), app.QueryRouter(), encodingConfig.Amino)
@@ -559,6 +573,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(banktypes.ModuleName)
 	paramsKeeper.Subspace(stakingtypes.ModuleName)
 	paramsKeeper.Subspace(slashingtypes.ModuleName)
+	paramsKeeper.Subspace(multistakingtypes.ModuleName)
 
 	return paramsKeeper
 }

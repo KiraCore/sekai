@@ -134,7 +134,7 @@ func (s *IntegrationTestSuite) TestUpsertTokenRateAndQuery() {
 	clientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &tokenRate)
 
 	s.Require().Equal(tokenRate.Denom, "ubtc")
-	s.Require().Equal(tokenRate.Rate, sdk.NewDecWithPrec(1, 5))
+	s.Require().Equal(tokenRate.FeeRate, sdk.NewDecWithPrec(1, 5))
 	s.Require().Equal(tokenRate.FeePayments, true)
 }
 

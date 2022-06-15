@@ -1,0 +1,46 @@
+syntax = "proto3";
+package kira.multistaking;
+
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "gogoproto/gogo.proto";
+import "google/protobuf/any.proto";
+import "google/api/annotations.proto";
+import "kira/multistaking/multistaking.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/multistaking/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  rpc StakingPools(QueryStakingPoolsRequest) returns (QueryStakingPoolsResponse) {
+    option (google.api.http).get = "/kira/multistaking/v1beta1/staking_pools";
+  }
+  rpc OutstandingRewards(QueryOutstandingRewardsRequest) returns (QueryOutstandingRewardsResponse) {
+    option (google.api.http).get = "/kira/multistaking/v1beta1/outstanding_rewards";
+  }
+  rpc Undelegations(QueryUndelegationsRequest) returns (QueryUndelegationsResponse) {
+    option (google.api.http).get = "/kira/multistaking/v1beta1/undelegations";
+  }
+}
+
+message QueryStakingPoolsRequest {}
+
+message QueryStakingPoolsResponse {
+  repeated kira.multistaking.StakingPool pools = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryOutstandingRewardsRequest {
+  string delegator = 1;
+}
+
+message QueryOutstandingRewardsResponse {
+  repeated string rewards = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryUndelegationsRequest {}
+
+message QueryUndelegationsResponse {
+  repeated kira.multistaking.Undelegation undelegations = 1 [(gogoproto.nullable) = false];
+}
