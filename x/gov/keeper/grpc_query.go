@@ -40,7 +40,11 @@ func (k Keeper) AllRoles(goCtx context.Context, request *types.AllRolesRequest) 
 
 // RolesByAddress return roles associated to an address
 func (k Keeper) RolesByAddress(goCtx context.Context, request *types.RolesByAddressRequest) (*types.RolesByAddressResponse, error) {
-	actor, found := k.GetNetworkActorByAddress(sdk.UnwrapSDKContext(goCtx), request.ValAddr)
+	addr, err := sdk.AccAddressFromBech32(request.Addr)
+	if err != nil {
+		return nil, err
+	}
+	actor, found := k.GetNetworkActorByAddress(sdk.UnwrapSDKContext(goCtx), addr)
 	if !found {
 		return nil, stakingtypes.ErrNetworkActorNotFound
 	}
@@ -52,7 +56,11 @@ func (k Keeper) RolesByAddress(goCtx context.Context, request *types.RolesByAddr
 
 // CouncilorByAddress return councilor object associated to an address
 func (k Keeper) CouncilorByAddress(goCtx context.Context, request *types.CouncilorByAddressRequest) (*types.CouncilorResponse, error) {
-	councilor, found := k.GetCouncilor(sdk.UnwrapSDKContext(goCtx), request.ValAddr)
+	addr, err := sdk.AccAddressFromBech32(request.Addr)
+	if err != nil {
+		return nil, err
+	}
+	councilor, found := k.GetCouncilor(sdk.UnwrapSDKContext(goCtx), addr)
 	if !found {
 		return nil, types.ErrCouncilorNotFound
 	}
@@ -73,8 +81,11 @@ func (k Keeper) CouncilorByMoniker(goCtx context.Context, request *types.Council
 // PermissionsByAddress returns permissions associated to an address
 func (k Keeper) PermissionsByAddress(goCtx context.Context, request *types.PermissionsByAddressRequest) (*types.PermissionsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	networkActor, found := k.GetNetworkActorByAddress(ctx, request.ValAddr)
+	addr, err := sdk.AccAddressFromBech32(request.Addr)
+	if err != nil {
+		return nil, err
+	}
+	networkActor, found := k.GetNetworkActorByAddress(ctx, addr)
 	if !found {
 		return nil, stakingtypes.ErrNetworkActorNotFound
 	}
@@ -309,9 +320,13 @@ func (k Keeper) ProposerVotersCount(goCtx context.Context, request *types.QueryP
 // Vote queries voted information based on proposalID, voterAddr.
 func (k Keeper) Vote(goCtx context.Context, request *types.QueryVoteRequest) (*types.QueryVoteResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	vote, found := k.GetVote(ctx, request.ProposalId, request.Voter)
+	voter, err := sdk.AccAddressFromBech32(request.Voter)
+	if err != nil {
+		return nil, err
+	}
+	vote, found := k.GetVote(ctx, request.ProposalId, voter)
 	if !found {
-		return &types.QueryVoteResponse{Vote: vote}, sdkerrors.Wrap(types.ErrGettingProposalVotes, fmt.Sprintf("error getting votes for proposal %d, voter %s", request.ProposalId, request.Voter.String()))
+		return &types.QueryVoteResponse{Vote: vote}, sdkerrors.Wrap(types.ErrGettingProposalVotes, fmt.Sprintf("error getting votes for proposal %d, voter %s", request.ProposalId, request.Voter))
 	}
 	return &types.QueryVoteResponse{Vote: vote}, nil
 }
