@@ -35,7 +35,7 @@ func GetCmdQueryPermissions() *cobra.Command {
 				return errors.Wrap(err, "invalid account address")
 			}
 
-			params := &types.PermissionsByAddressRequest{ValAddr: accAddr}
+			params := &types.PermissionsByAddressRequest{Addr: accAddr.String()}
 
 			queryClient := types.NewQueryClient(clientCtx)
 			res, err := queryClient.PermissionsByAddress(context.Background(), params)
@@ -90,7 +90,7 @@ func GetCmdQueryRolesByAddress() *cobra.Command {
 				return errors.Wrap(err, "invalid account address")
 			}
 
-			params := &types.RolesByAddressRequest{ValAddr: accAddr}
+			params := &types.RolesByAddressRequest{Addr: accAddr.String()}
 
 			queryClient := types.NewQueryClient(clientCtx)
 			res, err := queryClient.RolesByAddress(context.Background(), params)
@@ -243,7 +243,7 @@ func GetCmdQueryCouncilRegistry() *cobra.Command {
 					return fmt.Errorf("invalid address: %w", err)
 				}
 
-				params := &types.CouncilorByAddressRequest{ValAddr: bech32}
+				params := &types.CouncilorByAddressRequest{Addr: bech32.String()}
 
 				queryClient := types.NewQueryClient(clientCtx)
 				res, err = queryClient.CouncilorByAddress(context.Background(), params)
@@ -412,7 +412,7 @@ $ %s query gov vote 1 kira1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
 
 			res, err := queryClient.Vote(
 				context.Background(),
-				&types.QueryVoteRequest{ProposalId: proposalID, Voter: voterAddr},
+				&types.QueryVoteRequest{ProposalId: proposalID, Voter: voterAddr.String()},
 			)
 			if err != nil {
 				return err

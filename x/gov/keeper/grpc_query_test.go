@@ -42,13 +42,13 @@ func TestQuerier_PermissionsByAddress(t *testing.T) {
 	app.CustomGovKeeper.SaveNetworkActor(ctx, networkActor)
 
 	querier := app.CustomGovKeeper
-	resp, err := querier.PermissionsByAddress(sdk.WrapSDKContext(ctx), &types.PermissionsByAddressRequest{ValAddr: addr1})
+	resp, err := querier.PermissionsByAddress(sdk.WrapSDKContext(ctx), &types.PermissionsByAddressRequest{Addr: addr1.String()})
 	require.NoError(t, err)
 
 	require.Equal(t, permissions, resp.Permissions)
 
 	// Get permissions by address that is not saved.
-	_, err = querier.PermissionsByAddress(sdk.WrapSDKContext(ctx), &types.PermissionsByAddressRequest{ValAddr: addr2})
+	_, err = querier.PermissionsByAddress(sdk.WrapSDKContext(ctx), &types.PermissionsByAddressRequest{Addr: addr2.String()})
 	require.EqualError(t, err, stakingtypes.ErrNetworkActorNotFound.Error())
 }
 
@@ -80,7 +80,7 @@ func TestQuerier_RolesByAddress(t *testing.T) {
 
 	querier := app.CustomGovKeeper
 
-	resp, err := querier.RolesByAddress(sdk.WrapSDKContext(ctx), &types.RolesByAddressRequest{ValAddr: addr1})
+	resp, err := querier.RolesByAddress(sdk.WrapSDKContext(ctx), &types.RolesByAddressRequest{Addr: addr1.String()})
 	require.NoError(t, err)
 
 	require.Equal(t,
@@ -89,7 +89,7 @@ func TestQuerier_RolesByAddress(t *testing.T) {
 	)
 
 	// Get roles for actor that does not exist
-	_, err = querier.RolesByAddress(sdk.WrapSDKContext(ctx), &types.RolesByAddressRequest{ValAddr: addr2})
+	_, err = querier.RolesByAddress(sdk.WrapSDKContext(ctx), &types.RolesByAddressRequest{Addr: addr2.String()})
 	require.EqualError(t, err, "network actor not found")
 }
 
@@ -155,7 +155,7 @@ func TestQuerier_CouncilorByAddress(t *testing.T) {
 
 	resp, err := querier.CouncilorByAddress(
 		sdk.WrapSDKContext(ctx),
-		&types.CouncilorByAddressRequest{ValAddr: addr1},
+		&types.CouncilorByAddressRequest{Addr: addr1.String()},
 	)
 	require.NoError(t, err)
 	require.Equal(t, councilor, resp.Councilor)
@@ -173,7 +173,7 @@ func TestQuerier_CouncilorByAddress(t *testing.T) {
 	// Non existing Councilor
 	resp, err = querier.CouncilorByAddress(
 		sdk.WrapSDKContext(ctx),
-		&types.CouncilorByAddressRequest{ValAddr: addr2},
+		&types.CouncilorByAddressRequest{Addr: addr2.String()},
 	)
 	require.Error(t, types.ErrCouncilorNotFound)
 }
