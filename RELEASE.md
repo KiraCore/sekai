@@ -2,7 +2,4 @@
 
 **Features:**
 
-- implement multistaking module minimum viable version
-- pool creation
-- delegation
-- fee distribution
+- gov module grpc endpoint fixes

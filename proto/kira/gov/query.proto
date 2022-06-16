@@ -18,23 +18,41 @@ option go_package = "github.com/KiraCore/sekai/x/gov/types";
 // Query defines the gRPC querier service
 service Query {
   // Returns the permissions an actor has by address.
-  rpc PermissionsByAddress (PermissionsByAddressRequest) returns (PermissionsResponse) {}
+  rpc PermissionsByAddress (PermissionsByAddressRequest) returns (PermissionsResponse) {
+    option (google.api.http).get = "/kira/gov/permissions_by_address/{addr}";
+  }
   // Returns all registered roles
-  rpc AllRoles (AllRolesRequest) returns (AllRolesResponse) {}
+  rpc AllRoles (AllRolesRequest) returns (AllRolesResponse) {
+    option (google.api.http).get = "/kira/gov/all_roles";
+  }
   // Returns the roles that are assigned to an address.
-  rpc RolesByAddress (RolesByAddressRequest) returns (RolesByAddressResponse) {}
+  rpc RolesByAddress (RolesByAddressRequest) returns (RolesByAddressResponse) {
+    option (google.api.http).get = "/kira/gov/roles_by_address/{addr}";
+  }
   // Role returns the role details from role sid
-  rpc Role (RoleRequest) returns (RoleResponse) {}
+  rpc Role (RoleRequest) returns (RoleResponse) {
+    option (google.api.http).get = "/kira/gov/role/{identifier}";
+  }
   // CouncilorByAddress returns the councilor object from its address
-  rpc CouncilorByAddress (CouncilorByAddressRequest) returns (CouncilorResponse) {}
+  rpc CouncilorByAddress (CouncilorByAddressRequest) returns (CouncilorResponse) {
+    option (google.api.http).get = "/kira/gov/councilor_by_address/{addr}";
+  }
   // CouncilorByMoniker returns the councilor object from its moniker
-  rpc CouncilorByMoniker (CouncilorByMonikerRequest) returns (CouncilorResponse) {}
+  rpc CouncilorByMoniker (CouncilorByMonikerRequest) returns (CouncilorResponse) {
+    option (google.api.http).get = "/kira/gov/councilor_by_moniker/{moniker}";
+  }
   // NetworkProperties returns network properties
-  rpc NetworkProperties (NetworkPropertiesRequest) returns (NetworkPropertiesResponse) {}
+  rpc NetworkProperties (NetworkPropertiesRequest) returns (NetworkPropertiesResponse) {
+    option (google.api.http).get = "/kira/gov/network_properties";
+  }
   // ExecutionFee returns execution fee from msg type
-  rpc ExecutionFee (ExecutionFeeRequest) returns (ExecutionFeeResponse) {}
+  rpc ExecutionFee (ExecutionFeeRequest) returns (ExecutionFeeResponse) {
+    option (google.api.http).get = "/kira/gov/execution_fee/{transaction_type}";
+  }
   // PoorNetworkMessages returns poor network messages
-  rpc PoorNetworkMessages (PoorNetworkMessagesRequest) returns (PoorNetworkMessagesResponse) {}
+  rpc PoorNetworkMessages (PoorNetworkMessagesRequest) returns (PoorNetworkMessagesResponse) {
+    option (google.api.http).get = "/kira/gov/poor_network_messages";
+  }
   // Proposal queries proposal details based on ProposalID.
   rpc Proposal(QueryProposalRequest) returns (QueryProposalResponse) {
     option (google.api.http).get = "/kira/gov/proposals/{proposal_id}";
@@ -52,7 +70,9 @@ service Query {
     option (google.api.http).get = "/kira/gov/proposers_voters_count";
   }
   // Vote queries voted information based on proposalID, voterAddr.
-  rpc Vote(QueryVoteRequest) returns (QueryVoteResponse) {}
+  rpc Vote(QueryVoteRequest) returns (QueryVoteResponse) {
+    option (google.api.http).get = "/kira/gov/vote/{proposal_id}/{voter}";
+  }
   // Votes queries votes of a given proposal.
   rpc Votes(QueryVotesRequest) returns (QueryVotesResponse) {
     option (google.api.http).get = "/kira/gov/votes/{proposal_id}";
@@ -109,12 +129,7 @@ message NetworkPropertiesResponse {
   kira.gov.NetworkProperties properties = 1;
 }
 
-message PermissionsByAddressRequest {
-  bytes val_addr = 1 [
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
-    (gogoproto.moretags) = "yaml:\"val_addr\""
-  ];
-}
+message PermissionsByAddressRequest { string addr = 1; }
 
 message PermissionsResponse {
   kira.gov.Permissions permissions = 1;
@@ -133,10 +148,7 @@ message AllRolesResponse {
 }
 
 message RolesByAddressRequest {
-  bytes val_addr = 1 [
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
-    (gogoproto.moretags) = "yaml:\"val_addr\""
-  ];
+  string addr = 1;
 }
 
 message RolesByAddressResponse {
@@ -164,10 +176,7 @@ message PoorNetworkMessagesResponse {
 }
 
 message CouncilorByAddressRequest {
-  bytes val_addr = 1 [
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
-    (gogoproto.moretags) = "yaml:\"val_addr\""
-  ];
+  string addr = 1;
 }
 
 message CouncilorByMonikerRequest {
@@ -236,9 +245,7 @@ message QueryVoteRequest {
   uint64 proposal_id = 1;
 
   // voter defines the oter address for the proposals.
-  bytes voter = 2[
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
-  ];
+  string voter = 2;
 }
 
 // QueryVoteResponse is the response type for the Query/Vote RPC method.
