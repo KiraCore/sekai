@@ -20,6 +20,9 @@ service Query {
   rpc Undelegations(QueryUndelegationsRequest) returns (QueryUndelegationsResponse) {
     option (google.api.http).get = "/kira/multistaking/v1beta1/undelegations";
   }
+  rpc CompoundInfo(QueryCompoundInfoRequest) returns (QueryCompoundInfoResponse) {
+    option (google.api.http).get = "/kira/multistaking/v1beta1/compound_info/{delegator}";
+  }
 }
 
 message QueryStakingPoolsRequest {}
@@ -43,4 +46,12 @@ message QueryUndelegationsRequest {}
 
 message QueryUndelegationsResponse {
   repeated kira.multistaking.Undelegation undelegations = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryCompoundInfoRequest {
+  string delegator = 1;
+}
+
+message QueryCompoundInfoResponse {
+  kira.multistaking.CompoundInfo info = 1 [(gogoproto.nullable) = false];
 }

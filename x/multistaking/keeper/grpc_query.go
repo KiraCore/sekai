@@ -45,3 +45,11 @@ func (q Querier) Undelegations(c context.Context, request *types.QueryUndelegati
 		Undelegations: q.keeper.GetAllUndelegations(ctx),
 	}, nil
 }
+
+func (q Querier) CompoundInfo(c context.Context, request *types.QueryCompoundInfoRequest) (*types.QueryCompoundInfoResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+
+	return &types.QueryCompoundInfoResponse{
+		Info: q.keeper.GetCompoundInfoByAddress(ctx, request.Delegator),
+	}, nil
+}

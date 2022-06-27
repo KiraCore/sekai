@@ -201,3 +201,15 @@ func (k msgServer) ClaimUndelegation(goCtx context.Context, msg *types.MsgClaimU
 
 	return &types.MsgClaimUndelegationResponse{}, nil
 }
+
+func (k msgServer) SetCompoundInfo(goCtx context.Context, msg *types.MsgSetCompoundInfo) (*types.MsgSetCompoundInfoResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	k.keeper.SetCompoundInfo(ctx, types.CompoundInfo{
+		Delegator:      msg.Sender,
+		AllDenom:       msg.AllDenom,
+		CompoundDenoms: msg.CompoundDenoms,
+	})
+
+	return &types.MsgSetCompoundInfoResponse{}, nil
+}

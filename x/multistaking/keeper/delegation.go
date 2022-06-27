@@ -4,6 +4,7 @@ import (
 	"github.com/KiraCore/sekai/x/multistaking/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 )
 
 func (k Keeper) GetLastUndelegationId(ctx sdk.Context) uint64 {
@@ -133,6 +134,15 @@ func (k Keeper) GetAllDelegatorRewards(ctx sdk.Context) []types.Rewards {
 	return rewards
 }
 
+func isWithinArray(s string, arr []string) bool {
+	for _, a := range arr {
+		if a == s {
+			return true
+		}
+	}
+	return false
+}
+
 func (k Keeper) IncreasePoolRewards(ctx sdk.Context, pool types.StakingPool, rewards sdk.Coins) {
 	totalWeight := sdk.ZeroDec()
 	for _, shareToken := range pool.TotalShareTokens {
@@ -169,5 +179,37 @@ func (k Keeper) IncreasePoolRewards(ctx sdk.Context, pool types.StakingPool, rew
 		}
 
 		k.IncreaseDelegatorRewards(ctx, delegator, delegatorRewards)
+
+		// autocompound rewards
+		rewards := k.GetDelegatorRewards(ctx, delegator)
+		compoundInfo := k.GetCompoundInfoByAddress(ctx, delegator.String())
+		autoCompoundRewards := sdk.Coins{}
+		if compoundInfo.AllDenom {
+			autoCompoundRewards = rewards
+			k.RemoveDelegatorRewards(ctx, delegator)
+		} else {
+			for _, reward := range rewards {
+				if isWithinArray(reward.Denom, compoundInfo.CompoundDenoms) {
+					autoCompoundRewards = autoCompoundRewards.Add(reward)
+				}
+			}
+			if !autoCompoundRewards.IsZero() {
+				err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, authtypes.FeeCollectorName, delegator, autoCompoundRewards)
+				if err != nil {
+					panic(err)
+				}
+				k.SetDelegatorRewards(ctx, delegator, rewards.Sub(autoCompoundRewards))
+
+				msgServer := NewMsgServerImpl(k, k.bankKeeper, k.govKeeper, k.sk)
+				_, err = msgServer.Delegate(sdk.WrapSDKContext(ctx), &types.MsgDelegate{
+					DelegatorAddress: delegator.String(),
+					ValidatorAddress: pool.Validator,
+					Amounts:          autoCompoundRewards,
+				})
+				if err != nil {
+					panic(err)
+				}
+			}
+		}
 	}
 }
