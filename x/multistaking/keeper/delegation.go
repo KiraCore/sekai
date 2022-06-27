@@ -199,16 +199,17 @@ func (k Keeper) IncreasePoolRewards(ctx sdk.Context, pool types.StakingPool, rew
 					panic(err)
 				}
 				k.SetDelegatorRewards(ctx, delegator, rewards.Sub(autoCompoundRewards))
-
-				msgServer := NewMsgServerImpl(k, k.bankKeeper, k.govKeeper, k.sk)
-				_, err = msgServer.Delegate(sdk.WrapSDKContext(ctx), &types.MsgDelegate{
-					DelegatorAddress: delegator.String(),
-					ValidatorAddress: pool.Validator,
-					Amounts:          autoCompoundRewards,
-				})
-				if err != nil {
-					panic(err)
-				}
+			}
+		}
+		if !autoCompoundRewards.IsZero() {
+			msgServer := NewMsgServerImpl(k, k.bankKeeper, k.govKeeper, k.sk)
+			_, err := msgServer.Delegate(sdk.WrapSDKContext(ctx), &types.MsgDelegate{
+				DelegatorAddress: delegator.String(),
+				ValidatorAddress: pool.Validator,
+				Amounts:          autoCompoundRewards,
+			})
+			if err != nil {
+				panic(err)
 			}
 		}
 	}
