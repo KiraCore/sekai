@@ -7,6 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/distribution/types"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 )
 
@@ -24,7 +25,27 @@ func (k Keeper) AllocateTokens(
 	feeCollector := k.ak.GetModuleAccount(ctx, authtypes.FeeCollectorName)
 	feesAccBalance := k.bk.GetAllBalances(ctx, feeCollector.GetAddress())
 	feesTreasury := k.GetFeesTreasury(ctx)
+
+	// mint inflated tokens
+	totalSupply := k.bk.GetSupply(ctx, k.BondDenom(ctx))
+	properties := k.gk.GetNetworkProperties(ctx)
+	inflationRewards := totalSupply.Amount.Mul(sdk.NewInt(int64(properties.InflationRate))).Quo(sdk.NewInt(int64(properties.InflationPeriod)))
+	inflationCoin := sdk.NewCoin(totalSupply.Denom, inflationRewards)
+
+	if inflationRewards.IsPositive() {
+		err := k.bk.MintCoins(ctx, minttypes.ModuleName, sdk.Coins{inflationCoin})
+		if err != nil {
+			panic(err)
+		}
+		err = k.bk.SendCoinsFromModuleToModule(ctx, minttypes.ModuleName, authtypes.FeeCollectorName, sdk.Coins{inflationCoin})
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	// combine fees and inflated tokens for rewards allocation
 	feesCollected := feesAccBalance.Sub(feesTreasury)
+	totalRewards := feesCollected.Add(inflationCoin)
 
 	validatorsFeeShare := k.gk.GetNetworkProperties(ctx).ValidatorsFeeShare
 	if validatorsFeeShare > 100 {
@@ -40,10 +61,10 @@ func (k Keeper) AllocateTokens(
 		power := int64(len(votes))
 		snapPeriod := k.GetSnapPeriod(ctx)
 		rewards := sdk.Coins{}
-		for _, fee := range feesCollected {
-			reward := fee.Amount.Mul(sdk.NewInt(power * int64(validatorsFeeShare))).Quo(sdk.NewInt(snapPeriod * 100))
+		for _, r := range totalRewards {
+			reward := r.Amount.Mul(sdk.NewInt(power * int64(validatorsFeeShare))).Quo(sdk.NewInt(snapPeriod * 100))
 			if reward.IsPositive() {
-				rewards = rewards.Add(sdk.NewCoin(fee.Denom, reward))
+				rewards = rewards.Add(sdk.NewCoin(r.Denom, reward))
 			}
 		}
 
@@ -69,10 +90,10 @@ func (k Keeper) AllocateTokens(
 		pool, found := k.mk.GetStakingPoolByValidator(ctx, proposerValidator.ValKey.String())
 		if found {
 			rewards := sdk.Coins{}
-			for _, fee := range feesCollected {
-				reward := fee.Amount.Mul(sdk.NewInt(int64(stakingFeeShare))).Quo(sdk.NewInt(100))
+			for _, r := range totalRewards {
+				reward := r.Amount.Mul(sdk.NewInt(int64(stakingFeeShare))).Quo(sdk.NewInt(100))
 				if reward.IsPositive() {
-					rewards = rewards.Add(sdk.NewCoin(fee.Denom, reward))
+					rewards = rewards.Add(sdk.NewCoin(r.Denom, reward))
 				}
 			}
 
