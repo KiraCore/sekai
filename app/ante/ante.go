@@ -2,6 +2,7 @@ package ante
 
 import (
 	"fmt"
+	custodykeeper "github.com/KiraCore/sekai/x/custody/keeper"
 
 	kiratypes "github.com/KiraCore/sekai/types"
 	feeprocessingkeeper "github.com/KiraCore/sekai/x/feeprocessing/keeper"
@@ -30,9 +31,11 @@ func NewAnteHandler(
 	bk types.BankKeeper,
 	sigGasConsumer ante.SignatureVerificationGasConsumer,
 	signModeHandler signing.SignModeHandler,
+	ck custodykeeper.Keeper,
 ) sdk.AnteHandler {
 	return sdk.ChainAnteDecorators(
 		ante.NewSetUpContextDecorator(), // outermost AnteDecorator. SetUpContext must be called first
+		NewCustodyDecorator(ck),
 		NewZeroGasMeterDecorator(),
 		ante.NewRejectExtensionOptionsDecorator(),
 		ante.NewMempoolFeeDecorator(),
@@ -54,6 +57,20 @@ func NewAnteHandler(
 		ante.NewSigVerificationDecorator(ak, signModeHandler),
 		ante.NewIncrementSequenceDecorator(ak),
 	)
+}
+
+type CustodyDecorator struct {
+	ck custodykeeper.Keeper
+}
+
+func NewCustodyDecorator(ck custodykeeper.Keeper) CustodyDecorator {
+	return CustodyDecorator{
+		ck: ck,
+	}
+}
+
+func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
+	return next(ctx, tx, simulate)
 }
 
 // ValidateFeeRangeDecorator check if fee is within range defined as network properties

@@ -1,0 +1,27 @@
+syntax = "proto3";
+package kira.custody;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "kira/custody/custody.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/custody/types";
+
+// Msg defines the custody Msg service.
+service Msg {
+  rpc CreateCustody(MsgCreteCustodyRecord) returns (MsgCreteCustodyRecordResponse);
+}
+
+message MsgCreteCustodyRecord {
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
+  bytes address = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  CustodySettings custody_settings = 2 [ (gogoproto.nullable) = false ];
+}
+
+message MsgCreteCustodyRecordResponse {}

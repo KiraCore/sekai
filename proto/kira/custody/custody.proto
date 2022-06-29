@@ -1,0 +1,22 @@
+syntax = "proto3";
+package kira.custody;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/custody/types";
+
+message CustodySettings {
+  bool propagating = 1;
+  bool password = 2;
+  bool use_whitelist = 3;
+  bool use_limit = 4;
+}
+
+message CustodyRecord {
+  bytes address = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  CustodySettings custody_settings = 2 [ (gogoproto.nullable) = false ];
+}

@@ -62,6 +62,9 @@ const (
 	MsgTypeDepositSpendingPool             = "deposit-spending-pool"
 	MsgTypeRegisterSpendingPoolBeneficiary = "register-spending-pool-beneficiary"
 	MsgTypeClaimSpendingPool               = "claim-spending-pool"
+
+	// custody module
+	MsgTypeCreateCustody = "create-custody"
 )
 
 // Msg defines the interface a transaction message must fulfill.
