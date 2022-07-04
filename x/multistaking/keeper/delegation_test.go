@@ -157,7 +157,7 @@ func (suite *KeeperTestSuite) TestIncreasePoolRewards() {
 	suite.app.MultiStakingKeeper.IncreasePoolRewards(suite.ctx, pool, allocation)
 
 	rewards := suite.app.MultiStakingKeeper.GetDelegatorRewards(suite.ctx, addr1)
-	suite.Require().Equal(rewards, sdk.Coins{sdk.NewInt64Coin("ukex", 500000)})
+	suite.Require().Equal(rewards, sdk.Coins{sdk.NewInt64Coin("ukex", 250000)})
 	rewards = suite.app.MultiStakingKeeper.GetDelegatorRewards(suite.ctx, addr2)
-	suite.Require().Equal(rewards, sdk.Coins{sdk.NewInt64Coin("ukex", 500000)})
+	suite.Require().Equal(rewards, sdk.Coins{sdk.NewInt64Coin("ukex", 250000)})
 }

@@ -52,7 +52,7 @@ func (m *MsgUpsertTokenRate) ValidateBasic() error {
 		return errors.New("rate should be positive")
 	}
 
-	if m.StakeCap.LTE(sdk.NewDec(0)) { // not positive
+	if m.StakeCap.LT(sdk.NewDec(0)) { // not positive
 		return errors.New("reward cap should be positive")
 	}
 

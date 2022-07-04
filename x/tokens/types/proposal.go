@@ -79,7 +79,7 @@ func (m *ProposalUpsertTokenRates) VotePermission() types.PermValue {
 
 // ValidateBasic returns basic validation
 func (m *ProposalUpsertTokenRates) ValidateBasic() error {
-	if m.StakeCap.LTE(sdk.NewDec(0)) { // not positive
+	if m.StakeCap.LT(sdk.NewDec(0)) { // not positive
 		return errors.New("reward cap should be positive")
 	}
 
