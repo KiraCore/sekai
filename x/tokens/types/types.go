@@ -26,10 +26,16 @@ func NewTokenRate(
 	denom string,
 	feeRate sdk.Dec,
 	feePayments bool,
+	stakeCap sdk.Dec,
+	stakeMin sdk.Int,
+	stakeToken bool,
 ) *TokenRate {
 	return &TokenRate{
 		Denom:       denom,
 		FeeRate:     feeRate,
 		FeePayments: feePayments,
+		StakeCap:    stakeCap,
+		StakeMin:    stakeMin,
+		StakeToken:  stakeToken,
 	}
 }

@@ -5,6 +5,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 )
 
 func (k Keeper) GetLastUndelegationId(ctx sdk.Context) uint64 {
@@ -144,7 +145,7 @@ func isWithinArray(s string, arr []string) bool {
 }
 
 func (k Keeper) IncreasePoolRewards(ctx sdk.Context, pool types.StakingPool, rewards sdk.Coins) {
-	totalWeight := sdk.ZeroDec()
+	delegators := k.GetPoolDelegators(ctx, pool.Id)
 	for _, shareToken := range pool.TotalShareTokens {
 		nativeDenom := getNativeDenom(pool.Id, shareToken.Denom)
 		rate := k.tokenKeeper.GetTokenRate(ctx, nativeDenom)
@@ -152,34 +153,38 @@ func (k Keeper) IncreasePoolRewards(ctx sdk.Context, pool types.StakingPool, rew
 			continue
 		}
 
-		totalWeight = totalWeight.Add(shareToken.Amount.ToDec().Mul(rate.FeeRate))
-	}
-
-	if totalWeight.IsZero() {
-		return
-	}
-
-	delegators := k.GetPoolDelegators(ctx, pool.Id)
-	for _, delegator := range delegators {
-		weight := sdk.ZeroDec()
-		balances := k.bankKeeper.GetAllBalances(ctx, delegator)
-		for _, shareToken := range pool.TotalShareTokens {
-			nativeDenom := getNativeDenom(pool.Id, shareToken.Denom)
-			rate := k.tokenKeeper.GetTokenRate(ctx, nativeDenom)
-			balance := balances.AmountOf(shareToken.Denom)
-			if rate == nil {
-				continue
-			}
-			weight = weight.Add(balance.ToDec().Mul(rate.FeeRate))
+		if rate.StakeCap.IsZero() {
+			continue
 		}
 
-		delegatorRewards := sdk.Coins{}
+		// total share token amount validation
+		if shareToken.Amount.IsZero() {
+			continue
+		}
+
+		// rewards allocated for the denom
+		denomAllocation := sdk.Coins{}
 		for _, reward := range rewards {
-			delegatorRewards = delegatorRewards.Add(sdk.NewCoin(reward.Denom, reward.Amount.ToDec().Mul(weight).Quo(totalWeight).RoundInt()))
+			denomAllocation = denomAllocation.Add(
+				sdk.NewCoin(reward.Denom, reward.Amount.ToDec().Mul(rate.StakeCap).RoundInt()),
+			)
 		}
 
-		k.IncreaseDelegatorRewards(ctx, delegator, delegatorRewards)
+		// distribute rewards allocated for the staked denom to delegators
+		for _, delegator := range delegators {
+			balances := k.bankKeeper.GetAllBalances(ctx, delegator)
+			balance := balances.AmountOf(shareToken.Denom)
 
+			delegatorRewards := sdk.Coins{}
+			for _, reward := range denomAllocation {
+				delegatorRewards = delegatorRewards.Add(sdk.NewCoin(reward.Denom, reward.Amount.Mul(balance).Quo(shareToken.Amount)))
+			}
+
+			k.IncreaseDelegatorRewards(ctx, delegator, delegatorRewards)
+		}
+	}
+
+	for _, delegator := range delegators {
 		// autocompound rewards
 		rewards := k.GetDelegatorRewards(ctx, delegator)
 		compoundInfo := k.GetCompoundInfoByAddress(ctx, delegator.String())
@@ -189,7 +194,8 @@ func (k Keeper) IncreasePoolRewards(ctx sdk.Context, pool types.StakingPool, rew
 			k.RemoveDelegatorRewards(ctx, delegator)
 		} else {
 			for _, reward := range rewards {
-				if isWithinArray(reward.Denom, compoundInfo.CompoundDenoms) {
+				rate := k.tokenKeeper.GetTokenRate(ctx, reward.Denom)
+				if rate.StakeToken && reward.Amount.GTE(rate.StakeMin) && isWithinArray(reward.Denom, compoundInfo.CompoundDenoms) {
 					autoCompoundRewards = autoCompoundRewards.Add(reward)
 				}
 			}
@@ -213,4 +219,49 @@ func (k Keeper) IncreasePoolRewards(ctx sdk.Context, pool types.StakingPool, rew
 			}
 		}
 	}
+}
+
+func (k Keeper) Delegate(ctx sdk.Context, msg *types.MsgDelegate) error {
+	pool, found := k.GetStakingPoolByValidator(ctx, msg.ValidatorAddress)
+	if !found {
+		return types.ErrStakingPoolNotFound
+	}
+
+	delegator, err := sdk.AccAddressFromBech32(msg.DelegatorAddress)
+	if err != nil {
+		return err
+	}
+
+	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, delegator, types.ModuleName, msg.Amounts)
+	if err != nil {
+		return err
+	}
+
+	for _, amount := range msg.Amounts {
+		rate := k.tokenKeeper.GetTokenRate(ctx, amount.Denom)
+		if !rate.StakeToken {
+			return types.ErrNotAllowedStakingToken
+		}
+		if amount.Amount.LT(rate.StakeMin) {
+			return types.ErrDenomStakingMinTokensNotReached
+		}
+	}
+
+	pool.TotalStakingTokens = sdk.Coins(pool.TotalStakingTokens).Add(msg.Amounts...)
+	poolCoins := getPoolCoins(pool.Id, msg.Amounts)
+	pool.TotalShareTokens = sdk.Coins(pool.TotalShareTokens).Add(poolCoins...)
+	k.SetStakingPool(ctx, pool)
+
+	// TODO: should check the ratio between poolCoins and coins
+	err = k.bankKeeper.MintCoins(ctx, minttypes.ModuleName, poolCoins)
+	if err != nil {
+		return err
+	}
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, delegator, poolCoins)
+	if err != nil {
+		return err
+	}
+
+	k.SetPoolDelegator(ctx, pool.Id, delegator)
+	return nil
 }

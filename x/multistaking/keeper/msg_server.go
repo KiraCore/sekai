@@ -9,7 +9,6 @@ import (
 	"github.com/KiraCore/sekai/x/multistaking/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 )
 
 type msgServer struct {
@@ -74,38 +73,11 @@ func (k msgServer) UpsertStakingPool(goCtx context.Context, msg *types.MsgUpsert
 
 func (k msgServer) Delegate(goCtx context.Context, msg *types.MsgDelegate) (*types.MsgDelegateResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	pool, found := k.keeper.GetStakingPoolByValidator(ctx, msg.ValidatorAddress)
-	if !found {
-		return nil, types.ErrStakingPoolNotFound
-	}
 
-	delegator, err := sdk.AccAddressFromBech32(msg.DelegatorAddress)
+	err := k.keeper.Delegate(ctx, msg)
 	if err != nil {
 		return nil, err
 	}
-
-	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, delegator, types.ModuleName, msg.Amounts)
-	if err != nil {
-		return nil, err
-	}
-
-	pool.TotalStakingTokens = sdk.Coins(pool.TotalStakingTokens).Add(msg.Amounts...)
-	poolCoins := getPoolCoins(pool.Id, msg.Amounts)
-	pool.TotalShareTokens = sdk.Coins(pool.TotalShareTokens).Add(poolCoins...)
-	k.keeper.SetStakingPool(ctx, pool)
-
-	// TODO: should check the ratio between poolCoins and coins
-	err = k.bankKeeper.MintCoins(ctx, minttypes.ModuleName, poolCoins)
-	if err != nil {
-		return nil, err
-	}
-	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, delegator, poolCoins)
-	if err != nil {
-		return nil, err
-	}
-
-	k.keeper.SetPoolDelegator(ctx, pool.Id, delegator)
-
 	return &types.MsgDelegateResponse{}, nil
 }
 
