@@ -68,6 +68,119 @@ func (m *MsgCreteCustodyRecord) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgCreteCustodyRecord proto.InternalMessageInfo
 
+type MsgAddToCustodyWhiteList struct {
+	Address    github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
+	AddAddress github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,2,opt,name=add_address,json=addAddress,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"add_address,omitempty" yaml:"address"`
+}
+
+func (m *MsgAddToCustodyWhiteList) Reset()         { *m = MsgAddToCustodyWhiteList{} }
+func (m *MsgAddToCustodyWhiteList) String() string { return proto.CompactTextString(m) }
+func (*MsgAddToCustodyWhiteList) ProtoMessage()    {}
+func (*MsgAddToCustodyWhiteList) Descriptor() ([]byte, []int) {
+	return fileDescriptor_85c0ad3d36de53cc, []int{1}
+}
+func (m *MsgAddToCustodyWhiteList) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgAddToCustodyWhiteList) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgAddToCustodyWhiteList.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgAddToCustodyWhiteList) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgAddToCustodyWhiteList.Merge(m, src)
+}
+func (m *MsgAddToCustodyWhiteList) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgAddToCustodyWhiteList) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgAddToCustodyWhiteList.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgAddToCustodyWhiteList proto.InternalMessageInfo
+
+type MsgRemoveFromCustodyWhiteList struct {
+	Address       github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
+	RemoveAddress github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,2,opt,name=remove_address,json=removeAddress,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"remove_address,omitempty" yaml:"address"`
+}
+
+func (m *MsgRemoveFromCustodyWhiteList) Reset()         { *m = MsgRemoveFromCustodyWhiteList{} }
+func (m *MsgRemoveFromCustodyWhiteList) String() string { return proto.CompactTextString(m) }
+func (*MsgRemoveFromCustodyWhiteList) ProtoMessage()    {}
+func (*MsgRemoveFromCustodyWhiteList) Descriptor() ([]byte, []int) {
+	return fileDescriptor_85c0ad3d36de53cc, []int{2}
+}
+func (m *MsgRemoveFromCustodyWhiteList) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgRemoveFromCustodyWhiteList) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgRemoveFromCustodyWhiteList.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgRemoveFromCustodyWhiteList) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRemoveFromCustodyWhiteList.Merge(m, src)
+}
+func (m *MsgRemoveFromCustodyWhiteList) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgRemoveFromCustodyWhiteList) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRemoveFromCustodyWhiteList.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgRemoveFromCustodyWhiteList proto.InternalMessageInfo
+
+type MsgDropCustodyWhiteList struct {
+	Address github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
+}
+
+func (m *MsgDropCustodyWhiteList) Reset()         { *m = MsgDropCustodyWhiteList{} }
+func (m *MsgDropCustodyWhiteList) String() string { return proto.CompactTextString(m) }
+func (*MsgDropCustodyWhiteList) ProtoMessage()    {}
+func (*MsgDropCustodyWhiteList) Descriptor() ([]byte, []int) {
+	return fileDescriptor_85c0ad3d36de53cc, []int{3}
+}
+func (m *MsgDropCustodyWhiteList) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgDropCustodyWhiteList) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgDropCustodyWhiteList.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgDropCustodyWhiteList) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgDropCustodyWhiteList.Merge(m, src)
+}
+func (m *MsgDropCustodyWhiteList) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgDropCustodyWhiteList) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgDropCustodyWhiteList.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgDropCustodyWhiteList proto.InternalMessageInfo
+
 type MsgCreteCustodyRecordResponse struct {
 }
 
@@ -75,7 +188,7 @@ func (m *MsgCreteCustodyRecordResponse) Reset()         { *m = MsgCreteCustodyRe
 func (m *MsgCreteCustodyRecordResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgCreteCustodyRecordResponse) ProtoMessage()    {}
 func (*MsgCreteCustodyRecordResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_85c0ad3d36de53cc, []int{1}
+	return fileDescriptor_85c0ad3d36de53cc, []int{4}
 }
 func (m *MsgCreteCustodyRecordResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -104,37 +217,162 @@ func (m *MsgCreteCustodyRecordResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgCreteCustodyRecordResponse proto.InternalMessageInfo
 
+type MsgAddToCustodyWhiteListResponse struct {
+}
+
+func (m *MsgAddToCustodyWhiteListResponse) Reset()         { *m = MsgAddToCustodyWhiteListResponse{} }
+func (m *MsgAddToCustodyWhiteListResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgAddToCustodyWhiteListResponse) ProtoMessage()    {}
+func (*MsgAddToCustodyWhiteListResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_85c0ad3d36de53cc, []int{5}
+}
+func (m *MsgAddToCustodyWhiteListResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgAddToCustodyWhiteListResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgAddToCustodyWhiteListResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgAddToCustodyWhiteListResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgAddToCustodyWhiteListResponse.Merge(m, src)
+}
+func (m *MsgAddToCustodyWhiteListResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgAddToCustodyWhiteListResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgAddToCustodyWhiteListResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgAddToCustodyWhiteListResponse proto.InternalMessageInfo
+
+type MsgRemoveFromCustodyWhiteListResponse struct {
+}
+
+func (m *MsgRemoveFromCustodyWhiteListResponse) Reset()         { *m = MsgRemoveFromCustodyWhiteListResponse{} }
+func (m *MsgRemoveFromCustodyWhiteListResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgRemoveFromCustodyWhiteListResponse) ProtoMessage()    {}
+func (*MsgRemoveFromCustodyWhiteListResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_85c0ad3d36de53cc, []int{6}
+}
+func (m *MsgRemoveFromCustodyWhiteListResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgRemoveFromCustodyWhiteListResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgRemoveFromCustodyWhiteListResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgRemoveFromCustodyWhiteListResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRemoveFromCustodyWhiteListResponse.Merge(m, src)
+}
+func (m *MsgRemoveFromCustodyWhiteListResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgRemoveFromCustodyWhiteListResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRemoveFromCustodyWhiteListResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgRemoveFromCustodyWhiteListResponse proto.InternalMessageInfo
+
+type MsgDropCustodyWhiteListResponse struct {
+}
+
+func (m *MsgDropCustodyWhiteListResponse) Reset()         { *m = MsgDropCustodyWhiteListResponse{} }
+func (m *MsgDropCustodyWhiteListResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgDropCustodyWhiteListResponse) ProtoMessage()    {}
+func (*MsgDropCustodyWhiteListResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_85c0ad3d36de53cc, []int{7}
+}
+func (m *MsgDropCustodyWhiteListResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgDropCustodyWhiteListResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgDropCustodyWhiteListResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgDropCustodyWhiteListResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgDropCustodyWhiteListResponse.Merge(m, src)
+}
+func (m *MsgDropCustodyWhiteListResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgDropCustodyWhiteListResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgDropCustodyWhiteListResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgDropCustodyWhiteListResponse proto.InternalMessageInfo
+
 func init() {
 	proto.RegisterType((*MsgCreteCustodyRecord)(nil), "kira.custody.MsgCreteCustodyRecord")
+	proto.RegisterType((*MsgAddToCustodyWhiteList)(nil), "kira.custody.MsgAddToCustodyWhiteList")
+	proto.RegisterType((*MsgRemoveFromCustodyWhiteList)(nil), "kira.custody.MsgRemoveFromCustodyWhiteList")
+	proto.RegisterType((*MsgDropCustodyWhiteList)(nil), "kira.custody.MsgDropCustodyWhiteList")
 	proto.RegisterType((*MsgCreteCustodyRecordResponse)(nil), "kira.custody.MsgCreteCustodyRecordResponse")
+	proto.RegisterType((*MsgAddToCustodyWhiteListResponse)(nil), "kira.custody.MsgAddToCustodyWhiteListResponse")
+	proto.RegisterType((*MsgRemoveFromCustodyWhiteListResponse)(nil), "kira.custody.MsgRemoveFromCustodyWhiteListResponse")
+	proto.RegisterType((*MsgDropCustodyWhiteListResponse)(nil), "kira.custody.MsgDropCustodyWhiteListResponse")
 }
 
 func init() { proto.RegisterFile("kira/custody/tx.proto", fileDescriptor_85c0ad3d36de53cc) }
 
 var fileDescriptor_85c0ad3d36de53cc = []byte{
-	// 351 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x52, 0x3d, 0x6f, 0xea, 0x30,
-	0x14, 0x4d, 0xde, 0x7b, 0x7a, 0xad, 0x5c, 0xfa, 0xa1, 0xa8, 0x48, 0x28, 0x12, 0x31, 0x4a, 0x17,
-	0xaa, 0x8a, 0x58, 0xa2, 0x1b, 0x1b, 0x64, 0xac, 0xe8, 0x90, 0x6e, 0x95, 0xaa, 0xca, 0x38, 0xae,
-	0x89, 0x20, 0x38, 0xf2, 0x35, 0x12, 0xfc, 0x83, 0x8e, 0xfd, 0x09, 0xfc, 0x1c, 0x46, 0xc6, 0x4e,
-	0xa8, 0x82, 0xa5, 0x73, 0xc7, 0x4e, 0x15, 0xc4, 0xb4, 0x20, 0x31, 0x74, 0xba, 0xf6, 0x39, 0xc7,
-	0xe7, 0x7e, 0xf8, 0xa2, 0x62, 0x2f, 0x51, 0x94, 0xb0, 0x21, 0x68, 0x19, 0x8f, 0x89, 0x1e, 0x05,
-	0x99, 0x92, 0x5a, 0x3a, 0x85, 0x15, 0x1c, 0x18, 0xd8, 0x3d, 0x17, 0x52, 0xc8, 0x35, 0x41, 0x56,
-	0xa7, 0x5c, 0xe3, 0x62, 0x21, 0xa5, 0xe8, 0x73, 0xb2, 0xbe, 0x75, 0x86, 0x4f, 0x44, 0x27, 0x29,
-	0x07, 0x4d, 0xd3, 0xcc, 0x08, 0xdc, 0x1d, 0x6f, 0x13, 0x73, 0xce, 0x9f, 0xd9, 0xa8, 0xd8, 0x06,
-	0x11, 0x2a, 0xae, 0x79, 0x98, 0x33, 0x11, 0x67, 0x52, 0xc5, 0xce, 0x03, 0x3a, 0xa0, 0x71, 0xac,
-	0x38, 0x40, 0xc9, 0xae, 0xd8, 0xd5, 0x42, 0x2b, 0xfc, 0x98, 0xe3, 0x93, 0x31, 0x4d, 0xfb, 0x0d,
-	0xdf, 0x10, 0xfe, 0xe7, 0x1c, 0xd7, 0x44, 0xa2, 0xbb, 0xc3, 0x4e, 0xc0, 0x64, 0x4a, 0x98, 0x84,
-	0x54, 0x82, 0x09, 0x35, 0x88, 0x7b, 0x44, 0x8f, 0x33, 0x0e, 0x41, 0x93, 0xb1, 0x66, 0xfe, 0x22,
-	0xda, 0x78, 0x3a, 0xb7, 0xe8, 0xcc, 0x54, 0xf2, 0x08, 0x5c, 0xeb, 0x64, 0x20, 0xa0, 0xf4, 0xa7,
-	0x62, 0x57, 0x8f, 0xea, 0xe5, 0x60, 0xbb, 0xe9, 0xc0, 0x54, 0x75, 0x67, 0x44, 0xad, 0x7f, 0xd3,
-	0x39, 0xb6, 0xa2, 0x53, 0xb6, 0x0b, 0x37, 0x0e, 0x9f, 0x27, 0xd8, 0x7a, 0x9f, 0x60, 0xcb, 0xc7,
-	0xa8, 0xbc, 0xb7, 0xa3, 0x88, 0x43, 0x26, 0x07, 0xc0, 0xeb, 0x5d, 0xf4, 0xb7, 0x0d, 0xc2, 0xa1,
-	0xe8, 0x38, 0x54, 0x9c, 0x7e, 0xab, 0x9c, 0x8b, 0xdd, 0xc4, 0x7b, 0x4d, 0xdc, 0xab, 0x5f, 0x88,
-	0x36, 0x99, 0x5a, 0xe1, 0x74, 0xe1, 0xd9, 0xb3, 0x85, 0x67, 0xbf, 0x2d, 0x3c, 0xfb, 0x65, 0xe9,
-	0x59, 0xb3, 0xa5, 0x67, 0xbd, 0x2e, 0x3d, 0xeb, 0xfe, 0x72, 0x6b, 0x6c, 0x37, 0x89, 0xa2, 0xa1,
-	0x54, 0x9c, 0x00, 0xef, 0xd1, 0x84, 0x8c, 0x7e, 0xd6, 0x60, 0x35, 0xbd, 0xce, 0xff, 0xf5, 0x4f,
-	0x5d, 0x7f, 0x05, 0x00, 0x00, 0xff, 0xff, 0xfa, 0x5d, 0x23, 0x50, 0x23, 0x02, 0x00, 0x00,
+	// 526 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x55, 0x41, 0x6f, 0xd3, 0x30,
+	0x14, 0x8e, 0x37, 0x04, 0xc8, 0xdb, 0x0a, 0x0a, 0x4c, 0x54, 0x91, 0x96, 0x94, 0xa0, 0xc1, 0x10,
+	0x6a, 0x22, 0x6d, 0xb7, 0xdd, 0xda, 0x20, 0x2e, 0x10, 0x0e, 0x01, 0x09, 0x09, 0x09, 0x4d, 0x6e,
+	0x6c, 0xdc, 0xd0, 0x65, 0x8e, 0x6c, 0x17, 0xd6, 0x2b, 0x27, 0x8e, 0xfc, 0x84, 0xfd, 0x06, 0x7e,
+	0xc5, 0x8e, 0x3d, 0x72, 0xaa, 0x50, 0x7b, 0x81, 0x2b, 0xe2, 0xc4, 0x09, 0x35, 0x71, 0x92, 0x56,
+	0x69, 0x51, 0x91, 0xd8, 0x4e, 0x76, 0xfd, 0xbe, 0xf7, 0xbe, 0xef, 0x7b, 0x7e, 0x6e, 0xe0, 0x76,
+	0x2f, 0xe2, 0xc8, 0x0d, 0xfb, 0x42, 0x32, 0x3c, 0x70, 0xe5, 0xa9, 0x93, 0x70, 0x26, 0x99, 0xbe,
+	0x39, 0x3d, 0x76, 0xd4, 0xb1, 0x71, 0x9b, 0x32, 0xca, 0xd2, 0x80, 0x3b, 0xdd, 0x65, 0x18, 0xc3,
+	0xa2, 0x8c, 0xd1, 0x63, 0xe2, 0xa6, 0xbf, 0x3a, 0xfd, 0xb7, 0xae, 0x8c, 0x62, 0x22, 0x24, 0x8a,
+	0x13, 0x05, 0x30, 0xe6, 0x6a, 0xab, 0x35, 0x8b, 0xd9, 0x43, 0x00, 0xb7, 0x7d, 0x41, 0x3d, 0x4e,
+	0x24, 0xf1, 0xb2, 0x48, 0x40, 0x42, 0xc6, 0xb1, 0xfe, 0x06, 0x5e, 0x43, 0x18, 0x73, 0x22, 0x44,
+	0x1d, 0x34, 0xc0, 0xde, 0x66, 0xdb, 0xfb, 0x39, 0xb2, 0x6a, 0x03, 0x14, 0x1f, 0x1f, 0xda, 0x2a,
+	0x60, 0xff, 0x1e, 0x59, 0x4d, 0x1a, 0xc9, 0x6e, 0xbf, 0xe3, 0x84, 0x2c, 0x76, 0x43, 0x26, 0x62,
+	0x26, 0xd4, 0xd2, 0x14, 0xb8, 0xe7, 0xca, 0x41, 0x42, 0x84, 0xd3, 0x0a, 0xc3, 0x56, 0x96, 0x11,
+	0xe4, 0x35, 0xf5, 0xe7, 0xf0, 0xa6, 0x52, 0x72, 0x24, 0x88, 0x94, 0xd1, 0x09, 0x15, 0xf5, 0xb5,
+	0x06, 0xd8, 0xdb, 0xd8, 0xdf, 0x71, 0x66, 0x4d, 0x3b, 0x4a, 0xd5, 0x0b, 0x05, 0x6a, 0x5f, 0x39,
+	0x1f, 0x59, 0x5a, 0x70, 0x23, 0x9c, 0x3f, 0x3e, 0xbc, 0xfe, 0xe9, 0xcc, 0xd2, 0xbe, 0x9f, 0x59,
+	0x9a, 0xfd, 0x03, 0xc0, 0xba, 0x2f, 0x68, 0x0b, 0xe3, 0x97, 0x4c, 0x25, 0xbf, 0xea, 0x46, 0x92,
+	0x3c, 0x8b, 0x84, 0xbc, 0x68, 0x57, 0x18, 0x6e, 0x20, 0x8c, 0x8f, 0x72, 0x8a, 0xb5, 0xff, 0x47,
+	0x01, 0x11, 0xc6, 0x6a, 0x3f, 0xe3, 0xf5, 0x17, 0x80, 0x3b, 0xbe, 0xa0, 0x01, 0x89, 0xd9, 0x7b,
+	0xf2, 0x84, 0xb3, 0xf8, 0xb2, 0x0d, 0xbf, 0x83, 0x35, 0x9e, 0x92, 0x5f, 0x84, 0xe7, 0xad, 0xac,
+	0x74, 0xd5, 0xf6, 0x47, 0x00, 0xef, 0xf8, 0x82, 0x3e, 0xe6, 0x2c, 0xb9, 0x64, 0xc3, 0x33, 0x22,
+	0xac, 0xb4, 0xf5, 0xd5, 0x97, 0x13, 0x10, 0x91, 0xb0, 0x13, 0x41, 0x6c, 0x1b, 0x36, 0x96, 0xcd,
+	0x61, 0x81, 0x79, 0x00, 0x77, 0xff, 0x7a, 0x7f, 0x05, 0xf0, 0x2e, 0xb4, 0x96, 0x38, 0xce, 0x21,
+	0xfb, 0x5f, 0xd6, 0xe1, 0xba, 0x2f, 0xa8, 0x8e, 0xe0, 0x96, 0xc7, 0x09, 0x2a, 0x64, 0xe9, 0xf7,
+	0xe6, 0x5f, 0xd4, 0x42, 0xd5, 0xc6, 0xa3, 0x15, 0x40, 0x39, 0x95, 0xde, 0x85, 0xb5, 0xd4, 0x57,
+	0xd9, 0xf6, 0xfb, 0x95, 0xf4, 0x85, 0xc6, 0x0d, 0x67, 0x35, 0x5c, 0xc1, 0xf4, 0x01, 0xde, 0x2a,
+	0xbb, 0x53, 0xd2, 0x55, 0xd5, 0x2e, 0xef, 0xa1, 0x71, 0xf0, 0x0f, 0xe0, 0x82, 0x98, 0xc0, 0xad,
+	0x69, 0xb7, 0x4b, 0xca, 0xdd, 0x4a, 0x95, 0x45, 0xb7, 0x61, 0x34, 0x57, 0x82, 0xe5, 0x34, 0x6d,
+	0xef, 0x7c, 0x6c, 0x82, 0xe1, 0xd8, 0x04, 0xdf, 0xc6, 0x26, 0xf8, 0x3c, 0x31, 0xb5, 0xe1, 0xc4,
+	0xd4, 0xbe, 0x4e, 0x4c, 0xed, 0xf5, 0xc3, 0x99, 0x09, 0x7d, 0x1a, 0x71, 0xe4, 0x31, 0x4e, 0x5c,
+	0x41, 0x7a, 0x28, 0x72, 0x4f, 0xcb, 0x2f, 0xc5, 0x74, 0x50, 0x3b, 0x57, 0xd3, 0x3f, 0xf3, 0x83,
+	0x3f, 0x01, 0x00, 0x00, 0xff, 0xff, 0x34, 0x6e, 0x4f, 0xec, 0x46, 0x06, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -150,6 +388,9 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
 	CreateCustody(ctx context.Context, in *MsgCreteCustodyRecord, opts ...grpc.CallOption) (*MsgCreteCustodyRecordResponse, error)
+	AddToWhiteList(ctx context.Context, in *MsgAddToCustodyWhiteList, opts ...grpc.CallOption) (*MsgAddToCustodyWhiteListResponse, error)
+	RemoveFromWhiteList(ctx context.Context, in *MsgRemoveFromCustodyWhiteList, opts ...grpc.CallOption) (*MsgRemoveFromCustodyWhiteListResponse, error)
+	DropWhiteList(ctx context.Context, in *MsgDropCustodyWhiteList, opts ...grpc.CallOption) (*MsgDropCustodyWhiteListResponse, error)
 }
 
 type msgClient struct {
@@ -169,9 +410,39 @@ func (c *msgClient) CreateCustody(ctx context.Context, in *MsgCreteCustodyRecord
 	return out, nil
 }
 
+func (c *msgClient) AddToWhiteList(ctx context.Context, in *MsgAddToCustodyWhiteList, opts ...grpc.CallOption) (*MsgAddToCustodyWhiteListResponse, error) {
+	out := new(MsgAddToCustodyWhiteListResponse)
+	err := c.cc.Invoke(ctx, "/kira.custody.Msg/AddToWhiteList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) RemoveFromWhiteList(ctx context.Context, in *MsgRemoveFromCustodyWhiteList, opts ...grpc.CallOption) (*MsgRemoveFromCustodyWhiteListResponse, error) {
+	out := new(MsgRemoveFromCustodyWhiteListResponse)
+	err := c.cc.Invoke(ctx, "/kira.custody.Msg/RemoveFromWhiteList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) DropWhiteList(ctx context.Context, in *MsgDropCustodyWhiteList, opts ...grpc.CallOption) (*MsgDropCustodyWhiteListResponse, error) {
+	out := new(MsgDropCustodyWhiteListResponse)
+	err := c.cc.Invoke(ctx, "/kira.custody.Msg/DropWhiteList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
 	CreateCustody(context.Context, *MsgCreteCustodyRecord) (*MsgCreteCustodyRecordResponse, error)
+	AddToWhiteList(context.Context, *MsgAddToCustodyWhiteList) (*MsgAddToCustodyWhiteListResponse, error)
+	RemoveFromWhiteList(context.Context, *MsgRemoveFromCustodyWhiteList) (*MsgRemoveFromCustodyWhiteListResponse, error)
+	DropWhiteList(context.Context, *MsgDropCustodyWhiteList) (*MsgDropCustodyWhiteListResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
@@ -180,6 +451,15 @@ type UnimplementedMsgServer struct {
 
 func (*UnimplementedMsgServer) CreateCustody(ctx context.Context, req *MsgCreteCustodyRecord) (*MsgCreteCustodyRecordResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateCustody not implemented")
+}
+func (*UnimplementedMsgServer) AddToWhiteList(ctx context.Context, req *MsgAddToCustodyWhiteList) (*MsgAddToCustodyWhiteListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddToWhiteList not implemented")
+}
+func (*UnimplementedMsgServer) RemoveFromWhiteList(ctx context.Context, req *MsgRemoveFromCustodyWhiteList) (*MsgRemoveFromCustodyWhiteListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RemoveFromWhiteList not implemented")
+}
+func (*UnimplementedMsgServer) DropWhiteList(ctx context.Context, req *MsgDropCustodyWhiteList) (*MsgDropCustodyWhiteListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DropWhiteList not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
@@ -204,6 +484,60 @@ func _Msg_CreateCustody_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_AddToWhiteList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgAddToCustodyWhiteList)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).AddToWhiteList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.custody.Msg/AddToWhiteList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).AddToWhiteList(ctx, req.(*MsgAddToCustodyWhiteList))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_RemoveFromWhiteList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgRemoveFromCustodyWhiteList)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).RemoveFromWhiteList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.custody.Msg/RemoveFromWhiteList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).RemoveFromWhiteList(ctx, req.(*MsgRemoveFromCustodyWhiteList))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_DropWhiteList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgDropCustodyWhiteList)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).DropWhiteList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.custody.Msg/DropWhiteList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).DropWhiteList(ctx, req.(*MsgDropCustodyWhiteList))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "kira.custody.Msg",
 	HandlerType: (*MsgServer)(nil),
@@ -211,6 +545,18 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateCustody",
 			Handler:    _Msg_CreateCustody_Handler,
+		},
+		{
+			MethodName: "AddToWhiteList",
+			Handler:    _Msg_AddToWhiteList_Handler,
+		},
+		{
+			MethodName: "RemoveFromWhiteList",
+			Handler:    _Msg_RemoveFromWhiteList_Handler,
+		},
+		{
+			MethodName: "DropWhiteList",
+			Handler:    _Msg_DropWhiteList_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -257,6 +603,110 @@ func (m *MsgCreteCustodyRecord) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgAddToCustodyWhiteList) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgAddToCustodyWhiteList) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgAddToCustodyWhiteList) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.AddAddress) > 0 {
+		i -= len(m.AddAddress)
+		copy(dAtA[i:], m.AddAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.AddAddress)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgRemoveFromCustodyWhiteList) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgRemoveFromCustodyWhiteList) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgRemoveFromCustodyWhiteList) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.RemoveAddress) > 0 {
+		i -= len(m.RemoveAddress)
+		copy(dAtA[i:], m.RemoveAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.RemoveAddress)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgDropCustodyWhiteList) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgDropCustodyWhiteList) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgDropCustodyWhiteList) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func (m *MsgCreteCustodyRecordResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -273,6 +723,75 @@ func (m *MsgCreteCustodyRecordResponse) MarshalTo(dAtA []byte) (int, error) {
 }
 
 func (m *MsgCreteCustodyRecordResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgAddToCustodyWhiteListResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgAddToCustodyWhiteListResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgAddToCustodyWhiteListResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgRemoveFromCustodyWhiteListResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgRemoveFromCustodyWhiteListResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgRemoveFromCustodyWhiteListResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgDropCustodyWhiteListResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgDropCustodyWhiteListResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgDropCustodyWhiteListResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -306,7 +825,81 @@ func (m *MsgCreteCustodyRecord) Size() (n int) {
 	return n
 }
 
+func (m *MsgAddToCustodyWhiteList) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.AddAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgRemoveFromCustodyWhiteList) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.RemoveAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgDropCustodyWhiteList) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
 func (m *MsgCreteCustodyRecordResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgAddToCustodyWhiteListResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgRemoveFromCustodyWhiteListResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgDropCustodyWhiteListResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -438,6 +1031,326 @@ func (m *MsgCreteCustodyRecord) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+func (m *MsgAddToCustodyWhiteList) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgAddToCustodyWhiteList: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgAddToCustodyWhiteList: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Address = append(m.Address[:0], dAtA[iNdEx:postIndex]...)
+			if m.Address == nil {
+				m.Address = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AddAddress", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AddAddress = append(m.AddAddress[:0], dAtA[iNdEx:postIndex]...)
+			if m.AddAddress == nil {
+				m.AddAddress = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgRemoveFromCustodyWhiteList) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgRemoveFromCustodyWhiteList: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgRemoveFromCustodyWhiteList: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Address = append(m.Address[:0], dAtA[iNdEx:postIndex]...)
+			if m.Address == nil {
+				m.Address = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RemoveAddress", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RemoveAddress = append(m.RemoveAddress[:0], dAtA[iNdEx:postIndex]...)
+			if m.RemoveAddress == nil {
+				m.RemoveAddress = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgDropCustodyWhiteList) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgDropCustodyWhiteList: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgDropCustodyWhiteList: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Address = append(m.Address[:0], dAtA[iNdEx:postIndex]...)
+			if m.Address == nil {
+				m.Address = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
 func (m *MsgCreteCustodyRecordResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -465,6 +1378,156 @@ func (m *MsgCreteCustodyRecordResponse) Unmarshal(dAtA []byte) error {
 		}
 		if fieldNum <= 0 {
 			return fmt.Errorf("proto: MsgCreteCustodyRecordResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgAddToCustodyWhiteListResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgAddToCustodyWhiteListResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgAddToCustodyWhiteListResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgRemoveFromCustodyWhiteListResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgRemoveFromCustodyWhiteListResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgRemoveFromCustodyWhiteListResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgDropCustodyWhiteListResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgDropCustodyWhiteListResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgDropCustodyWhiteListResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:

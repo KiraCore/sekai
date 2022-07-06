@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/KiraCore/sekai/x/custody/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 type msgServer struct {
@@ -30,4 +31,50 @@ func (s msgServer) CreateCustody(goCtx context.Context, msg *types.MsgCreteCusto
 	s.keeper.SetCustodyRecord(ctx, record)
 
 	return &types.MsgCreteCustodyRecordResponse{}, nil
+}
+
+func (s msgServer) AddToWhiteList(goCtx context.Context, msg *types.MsgAddToCustodyWhiteList) (*types.MsgAddToCustodyWhiteListResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	record := types.CustodyWhiteListRecord{
+		Address:          msg.Address,
+		CustodyWhiteList: s.keeper.GetCustodyWhiteListByAddress(ctx, msg.Address),
+	}
+
+	if record.CustodyWhiteList == nil {
+		record.CustodyWhiteList = new(types.CustodyWhiteList)
+		record.CustodyWhiteList.Addresses = map[string]bool{}
+	}
+
+	record.CustodyWhiteList.Addresses[msg.AddAddress.String()] = true
+	s.keeper.AddToCustodyWhiteList(ctx, record)
+
+	return &types.MsgAddToCustodyWhiteListResponse{}, nil
+}
+
+func (s msgServer) RemoveFromWhiteList(goCtx context.Context, msg *types.MsgRemoveFromCustodyWhiteList) (*types.MsgRemoveFromCustodyWhiteListResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	record := types.CustodyWhiteListRecord{
+		Address:          msg.Address,
+		CustodyWhiteList: s.keeper.GetCustodyWhiteListByAddress(ctx, msg.Address),
+	}
+
+	if record.CustodyWhiteList == nil {
+		return nil, errors.Wrap(types.ErrNoWhiteLists, "Can not remove from the empty whitelist")
+	}
+
+	if !record.CustodyWhiteList.Addresses[msg.RemoveAddress.String()] {
+		return nil, errors.Wrap(types.ErrNoWhiteListsElement, "Can not remove missing element from the whitelist")
+	}
+
+	record.CustodyWhiteList.Addresses[msg.RemoveAddress.String()] = false
+	s.keeper.AddToCustodyWhiteList(ctx, record)
+
+	return &types.MsgRemoveFromCustodyWhiteListResponse{}, nil
+}
+
+func (s msgServer) DropWhiteList(goCtx context.Context, msg *types.MsgDropCustodyWhiteList) (*types.MsgDropCustodyWhiteListResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	s.keeper.DropCustodyWhiteListByAddress(ctx, msg.Address)
+
+	return &types.MsgDropCustodyWhiteListResponse{}, nil
 }

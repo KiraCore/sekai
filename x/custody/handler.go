@@ -18,6 +18,15 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 		case *types.MsgCreteCustodyRecord:
 			res, err := msgServer.CreateCustody(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgAddToCustodyWhiteList:
+			res, err := msgServer.AddToWhiteList(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgRemoveFromCustodyWhiteList:
+			res, err := msgServer.RemoveFromWhiteList(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgDropCustodyWhiteList:
+			res, err := msgServer.DropWhiteList(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
 		default:
 			return nil, errors.Wrapf(errors.ErrUnknownRequest, "unrecognized %s message type: %T", types.ModuleName, msg)
 		}

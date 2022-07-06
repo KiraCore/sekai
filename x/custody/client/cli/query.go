@@ -2,6 +2,7 @@ package cli
 
 import (
 	"context"
+
 	"github.com/KiraCore/sekai/x/custody/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -18,8 +19,49 @@ func NewQueryCmd() *cobra.Command {
 	}
 
 	queryCmd.AddCommand(GetCmdQueryCustodyByAddress())
+	queryCmd.AddCommand(NewWhiteListCmd())
 
 	return queryCmd
+}
+
+func NewWhiteListCmd() *cobra.Command {
+	queryCmd := &cobra.Command{
+		Use:   "whitelist",
+		Short: "query commands for the custody whitelist",
+	}
+
+	queryCmd.AddCommand(GetCmdQueryWhiteListByAddress())
+
+	return queryCmd
+}
+
+func GetCmdQueryWhiteListByAddress() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "get [addr]",
+		Short: "Query custody whitelist assigned to an address",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			accAddr, err := sdk.AccAddressFromBech32(args[0])
+
+			if err != nil {
+				return errors.Wrap(err, "invalid account address")
+			}
+
+			params := &types.CustodyWhiteListByAddressRequest{Addr: accAddr}
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.CustodyWhiteListByAddress(context.Background(), params)
+
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
 }
 
 // GetCmdQueryCustodyByAddress is the querier for custody by address.

@@ -10,7 +10,10 @@ option go_package = "github.com/KiraCore/sekai/x/custody/types";
 // Query defines the gRPC querier service
 service Query {
     rpc CustodyByAddress (CustodyByAddressRequest) returns (CustodyByAddressResponse) {
-        option (google.api.http).get = "/kira/custody/custody_info/{addr}";
+        option (google.api.http).get = "/kira/custody/custody_settings/{addr}";
+    }
+    rpc CustodyWhiteListByAddress (CustodyWhiteListByAddressRequest) returns (CustodyWhiteListByAddressResponse) {
+        option (google.api.http).get = "/kira/custody/custody_white_list/{addr}";
     }
 }
 
@@ -23,4 +26,15 @@ message CustodyByAddressRequest {
 
 message CustodyByAddressResponse {
   CustodySettings custody_settings = 1;
+}
+
+message CustodyWhiteListByAddressRequest {
+  bytes addr = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"addr\""
+  ];
+}
+
+message CustodyWhiteListByAddressResponse {
+    CustodyWhiteList custody_white_list = 1;
 }

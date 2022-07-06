@@ -2,9 +2,9 @@ package keeper
 
 import (
 	"context"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/KiraCore/sekai/x/custody/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 type Querier struct {
@@ -22,5 +22,13 @@ func (q Querier) CustodyByAddress(c context.Context, request *types.CustodyByAdd
 
 	return &types.CustodyByAddressResponse{
 		CustodySettings: q.keeper.GetCustodyInfoByAddress(ctx, request.Addr),
+	}, nil
+}
+
+func (q Querier) CustodyWhiteListByAddress(c context.Context, request *types.CustodyWhiteListByAddressRequest) (*types.CustodyWhiteListByAddressResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+
+	return &types.CustodyWhiteListByAddressResponse{
+		CustodyWhiteList: q.keeper.GetCustodyWhiteListByAddress(ctx, request.Addr),
 	}, nil
 }

@@ -10,6 +10,9 @@ option go_package = "github.com/KiraCore/sekai/x/custody/types";
 // Msg defines the custody Msg service.
 service Msg {
   rpc CreateCustody(MsgCreteCustodyRecord) returns (MsgCreteCustodyRecordResponse);
+  rpc AddToWhiteList(MsgAddToCustodyWhiteList) returns (MsgAddToCustodyWhiteListResponse);
+  rpc RemoveFromWhiteList(MsgRemoveFromCustodyWhiteList) returns (MsgRemoveFromCustodyWhiteListResponse);
+  rpc DropWhiteList(MsgDropCustodyWhiteList) returns (MsgDropCustodyWhiteListResponse);
 }
 
 message MsgCreteCustodyRecord {
@@ -24,4 +27,47 @@ message MsgCreteCustodyRecord {
   CustodySettings custody_settings = 2 [ (gogoproto.nullable) = false ];
 }
 
+message MsgAddToCustodyWhiteList {
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
+  bytes address = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  bytes add_address = 2 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+}
+
+message MsgRemoveFromCustodyWhiteList {
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
+  bytes address = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  bytes remove_address = 2 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+}
+
+message MsgDropCustodyWhiteList {
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
+  bytes address = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+}
+
 message MsgCreteCustodyRecordResponse {}
+message MsgAddToCustodyWhiteListResponse {}
+message MsgRemoveFromCustodyWhiteListResponse {}
+message MsgDropCustodyWhiteListResponse {}

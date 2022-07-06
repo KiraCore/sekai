@@ -8,5 +8,6 @@ const (
 	QuerierRoute = ModuleName
 	StoreKey     = ModuleName
 
-	PrefixKeyCustodyRecord = "custody_record_prefix_"
+	PrefixKeyCustodyRecord    = "custody_record_prefix_"
+	PrefixKeyCustodyWhiteList = "custody_white_list_prefix_"
 )

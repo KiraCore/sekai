@@ -5,6 +5,7 @@ import (
 	custodykeeper "github.com/KiraCore/sekai/x/custody/keeper"
 
 	kiratypes "github.com/KiraCore/sekai/types"
+	custodytypes "github.com/KiraCore/sekai/x/custody/types"
 	feeprocessingkeeper "github.com/KiraCore/sekai/x/feeprocessing/keeper"
 	feeprocessingtypes "github.com/KiraCore/sekai/x/feeprocessing/types"
 	customgovkeeper "github.com/KiraCore/sekai/x/gov/keeper"
@@ -70,6 +71,28 @@ func NewCustodyDecorator(ck custodykeeper.Keeper) CustodyDecorator {
 }
 
 func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
+	feeTx, ok := tx.(sdk.FeeTx)
+	if !ok {
+		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "invalid transaction type")
+	}
+
+	for _, msg := range feeTx.GetMsgs() {
+		whiteList := cd.ck.GetCustodyWhiteListByAddress(ctx, msg.GetSigners()[0])
+		settings := cd.ck.GetCustodyInfoByAddress(ctx, msg.GetSigners()[0])
+
+		if !settings.UseWhiteList {
+			continue
+		}
+
+		if kiratypes.MsgType(msg) == bank.TypeMsgSend {
+			msg := msg.(*bank.MsgSend)
+
+			if !whiteList.Addresses[msg.ToAddress] {
+				return ctx, sdkerrors.Wrap(custodytypes.ErrNotInWhiteList, fmt.Sprintf("recipient not in the whitelist"))
+			}
+		}
+	}
+
 	return next(ctx, tx, simulate)
 }
 

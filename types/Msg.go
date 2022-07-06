@@ -64,7 +64,10 @@ const (
 	MsgTypeClaimSpendingPool               = "claim-spending-pool"
 
 	// custody module
-	MsgTypeCreateCustody = "create-custody"
+	MsgTypeCreateCustody              = "create-custody"
+	MsgTypeAddToCustodyWhiteList      = "add-to-custody-whitelist"
+	MsgTypeRemoveFromCustodyWhiteList = "remove-from-custody-whitelist"
+	MsgTypeDropCustodyWhiteList       = "drop-custody-whitelist"
 )
 
 // Msg defines the interface a transaction message must fulfill.

@@ -8,7 +8,7 @@ option go_package = "github.com/KiraCore/sekai/x/custody/types";
 message CustodySettings {
   bool propagating = 1;
   bool password = 2;
-  bool use_whitelist = 3;
+  bool use_white_list = 3;
   bool use_limit = 4;
 }
 
@@ -19,4 +19,17 @@ message CustodyRecord {
   ];
 
   CustodySettings custody_settings = 2 [ (gogoproto.nullable) = false ];
+}
+
+message CustodyWhiteList {
+  map<string, bool> addresses = 1;
+}
+
+message CustodyWhiteListRecord {
+  bytes address = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  CustodyWhiteList custody_white_list = 2;
 }
