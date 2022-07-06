@@ -80,14 +80,14 @@ func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool,
 		whiteList := cd.ck.GetCustodyWhiteListByAddress(ctx, msg.GetSigners()[0])
 		settings := cd.ck.GetCustodyInfoByAddress(ctx, msg.GetSigners()[0])
 
-		if !settings.UseWhiteList {
+		if settings == nil || !settings.UseWhiteList {
 			continue
 		}
 
 		if kiratypes.MsgType(msg) == bank.TypeMsgSend {
 			msg := msg.(*bank.MsgSend)
 
-			if !whiteList.Addresses[msg.ToAddress] {
+			if whiteList != nil && !whiteList.Addresses[msg.ToAddress] {
 				return ctx, sdkerrors.Wrap(custodytypes.ErrNotInWhiteList, fmt.Sprintf("recipient not in the whitelist"))
 			}
 		}
