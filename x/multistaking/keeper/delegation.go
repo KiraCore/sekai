@@ -4,6 +4,8 @@ import (
 	"github.com/KiraCore/sekai/x/multistaking/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 )
 
 func (k Keeper) GetLastUndelegationId(ctx sdk.Context) uint64 {
@@ -62,6 +64,13 @@ func (k Keeper) RemovePoolDelegator(ctx sdk.Context, poolId uint64, delegator sd
 	store := ctx.KVStore(k.storeKey)
 	key := append(append(types.KeyPrefixPoolDelegator, sdk.Uint64ToBigEndian(poolId)...), delegator...)
 	store.Delete(key)
+}
+
+func (k Keeper) IsPoolDelegator(ctx sdk.Context, poolId uint64, delegator sdk.AccAddress) bool {
+	store := ctx.KVStore(k.storeKey)
+	key := append(append(types.KeyPrefixPoolDelegator, sdk.Uint64ToBigEndian(poolId)...), delegator...)
+	bz := store.Get(key)
+	return bz != nil
 }
 
 func (k Keeper) GetPoolDelegators(ctx sdk.Context, poolId uint64) []sdk.AccAddress {
@@ -133,8 +142,19 @@ func (k Keeper) GetAllDelegatorRewards(ctx sdk.Context) []types.Rewards {
 	return rewards
 }
 
+func isWithinArray(s string, arr []string) bool {
+	for _, a := range arr {
+		if a == s {
+			return true
+		}
+	}
+	return false
+}
+
 func (k Keeper) IncreasePoolRewards(ctx sdk.Context, pool types.StakingPool, rewards sdk.Coins) {
-	totalWeight := sdk.ZeroDec()
+	k.UnregisterNotEnoughStakeDelegator(ctx, pool)
+
+	delegators := k.GetPoolDelegators(ctx, pool.Id)
 	for _, shareToken := range pool.TotalShareTokens {
 		nativeDenom := getNativeDenom(pool.Id, shareToken.Denom)
 		rate := k.tokenKeeper.GetTokenRate(ctx, nativeDenom)
@@ -142,32 +162,257 @@ func (k Keeper) IncreasePoolRewards(ctx sdk.Context, pool types.StakingPool, rew
 			continue
 		}
 
-		totalWeight = totalWeight.Add(shareToken.Amount.ToDec().Mul(rate.FeeRate))
+		if rate.StakeCap.IsZero() {
+			continue
+		}
+
+		// total share token amount validation
+		if shareToken.Amount.IsZero() {
+			continue
+		}
+
+		// rewards allocated for the denom
+		denomAllocation := sdk.Coins{}
+		for _, reward := range rewards {
+			denomAllocation = denomAllocation.Add(
+				sdk.NewCoin(reward.Denom, reward.Amount.ToDec().Mul(rate.StakeCap).RoundInt()),
+			)
+		}
+
+		// distribute rewards allocated for the staked denom to delegators
+		for _, delegator := range delegators {
+			balances := k.bankKeeper.GetAllBalances(ctx, delegator)
+			balance := balances.AmountOf(shareToken.Denom)
+
+			delegatorRewards := sdk.Coins{}
+			for _, reward := range denomAllocation {
+				delegatorRewards = delegatorRewards.Add(sdk.NewCoin(reward.Denom, reward.Amount.Mul(balance).Quo(shareToken.Amount)))
+			}
+
+			k.IncreaseDelegatorRewards(ctx, delegator, delegatorRewards)
+		}
 	}
 
-	if totalWeight.IsZero() {
-		return
-	}
-
-	delegators := k.GetPoolDelegators(ctx, pool.Id)
 	for _, delegator := range delegators {
-		weight := sdk.ZeroDec()
+		// autocompound rewards
+		rewards := k.GetDelegatorRewards(ctx, delegator)
+		compoundInfo := k.GetCompoundInfoByAddress(ctx, delegator.String())
+		autoCompoundRewards := sdk.Coins{}
+		if compoundInfo.AllDenom {
+			autoCompoundRewards = rewards
+			k.RemoveDelegatorRewards(ctx, delegator)
+		} else {
+			for _, reward := range rewards {
+				rate := k.tokenKeeper.GetTokenRate(ctx, reward.Denom)
+				if rate.StakeToken && reward.Amount.GTE(rate.StakeMin) && isWithinArray(reward.Denom, compoundInfo.CompoundDenoms) {
+					autoCompoundRewards = autoCompoundRewards.Add(reward)
+				}
+			}
+			if !autoCompoundRewards.IsZero() {
+				k.SetDelegatorRewards(ctx, delegator, rewards.Sub(autoCompoundRewards))
+			}
+		}
+		if !autoCompoundRewards.IsZero() {
+			err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, authtypes.FeeCollectorName, delegator, autoCompoundRewards)
+			if err != nil {
+				panic(err)
+			}
+			msgServer := NewMsgServerImpl(k, k.bankKeeper, k.govKeeper, k.sk)
+			_, err = msgServer.Delegate(sdk.WrapSDKContext(ctx), &types.MsgDelegate{
+				DelegatorAddress: delegator.String(),
+				ValidatorAddress: pool.Validator,
+				Amounts:          autoCompoundRewards,
+			})
+			if err != nil {
+				panic(err)
+			}
+		}
+	}
+}
+
+func (k Keeper) Delegate(ctx sdk.Context, msg *types.MsgDelegate) error {
+	// check if validator is active
+	valAddr, err := sdk.ValAddressFromBech32(msg.ValidatorAddress)
+	if err != nil {
+		return err
+	}
+
+	validator, err := k.sk.GetValidator(ctx, valAddr)
+	if err != nil {
+		return err
+	}
+
+	if !validator.IsActive() {
+		return types.ErrNotActiveValidator
+	}
+
+	pool, found := k.GetStakingPoolByValidator(ctx, msg.ValidatorAddress)
+	if !found {
+		return types.ErrStakingPoolNotFound
+	}
+
+	delegator, err := sdk.AccAddressFromBech32(msg.DelegatorAddress)
+	if err != nil {
+		return err
+	}
+
+	// if it is going to create a new delegator
+	if !k.IsPoolDelegator(ctx, pool.Id, delegator) {
+		properties := k.govKeeper.GetNetworkProperties(ctx)
+		poolDelegators := k.GetPoolDelegators(ctx, pool.Id)
+		if len(poolDelegators) >= int(properties.MaxDelegators) {
+			minDelegationValue := sdk.ZeroInt()
+			minDelegator := sdk.AccAddress{}
+			for _, delegator := range poolDelegators {
+				delegationValue := k.GetPoolDelegationValue(ctx, pool, delegator)
+				if minDelegationValue.IsZero() || minDelegationValue.GT(delegationValue) {
+					minDelegationValue = delegationValue
+					minDelegator = delegator
+				}
+			}
+
+			// if it exceeds 10x of min delegation remove previous pool delegator
+			delegatorValue := k.GetPoolDelegationValue(ctx, pool, delegator)
+			newDelegatorValue := delegatorValue.Add(k.GetCoinsValue(ctx, msg.Amounts))
+			if newDelegatorValue.GTE(minDelegationValue.Mul(sdk.NewInt(int64(properties.MinDelegationPushout)))) {
+				k.RemovePoolDelegator(ctx, pool.Id, minDelegator)
+			} else {
+				return types.ErrMaxDelegatorsReached
+			}
+		}
+	}
+
+	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, delegator, types.ModuleName, msg.Amounts)
+	if err != nil {
+		return err
+	}
+
+	for _, amount := range msg.Amounts {
+		rate := k.tokenKeeper.GetTokenRate(ctx, amount.Denom)
+		if !rate.StakeToken {
+			return types.ErrNotAllowedStakingToken
+		}
+		if amount.Amount.LT(rate.StakeMin) {
+			return types.ErrDenomStakingMinTokensNotReached
+		}
+	}
+
+	pool.TotalStakingTokens = sdk.Coins(pool.TotalStakingTokens).Add(msg.Amounts...)
+	poolCoins := getPoolCoins(pool.Id, msg.Amounts)
+	pool.TotalShareTokens = sdk.Coins(pool.TotalShareTokens).Add(poolCoins...)
+	k.SetStakingPool(ctx, pool)
+
+	// TODO: should check the ratio between poolCoins and coins
+	err = k.bankKeeper.MintCoins(ctx, minttypes.ModuleName, poolCoins)
+	if err != nil {
+		return err
+	}
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, delegator, poolCoins)
+	if err != nil {
+		return err
+	}
+
+	k.SetPoolDelegator(ctx, pool.Id, delegator)
+	return nil
+}
+
+func (k Keeper) GetPoolDelegationValue(ctx sdk.Context, pool types.StakingPool, delegator sdk.AccAddress) sdk.Int {
+	delegationValue := sdk.ZeroInt()
+	balances := k.bankKeeper.GetAllBalances(ctx, delegator)
+	for _, stakingToken := range pool.TotalStakingTokens {
+		rate := k.tokenKeeper.GetTokenRate(ctx, stakingToken.Denom)
+		if rate == nil {
+			continue
+		}
+		shareToken := getShareDenom(pool.Id, stakingToken.Denom)
+		balance := balances.AmountOf(shareToken)
+		delegationValue = delegationValue.Add(balance.ToDec().Mul(rate.FeeRate).RoundInt())
+	}
+	return delegationValue
+}
+
+func (k Keeper) GetCoinsValue(ctx sdk.Context, coins sdk.Coins) sdk.Int {
+	delegationValue := sdk.ZeroInt()
+	for _, coin := range coins {
+		rate := k.tokenKeeper.GetTokenRate(ctx, coin.Denom)
+		if rate == nil {
+			continue
+		}
+		delegationValue = delegationValue.Add(coin.Amount.ToDec().Mul(rate.FeeRate).RoundInt())
+	}
+	return delegationValue
+}
+
+func (k Keeper) RegisterDelegator(ctx sdk.Context, delegator sdk.AccAddress) {
+	balances := k.bankKeeper.GetAllBalances(ctx, delegator)
+
+	pools := k.GetAllStakingPools(ctx)
+	for _, pool := range pools {
+		if k.IsPoolDelegator(ctx, pool.Id, delegator) {
+			continue
+		}
+
+		properties := k.govKeeper.GetNetworkProperties(ctx)
+		poolDelegators := k.GetPoolDelegators(ctx, pool.Id)
+		if len(poolDelegators) >= int(properties.MaxDelegators) {
+			minDelegationValue := sdk.ZeroInt()
+			minDelegator := sdk.AccAddress{}
+			for _, delegator := range poolDelegators {
+				delegationValue := k.GetPoolDelegationValue(ctx, pool, delegator)
+				if minDelegationValue.IsZero() || minDelegationValue.GT(delegationValue) {
+					minDelegationValue = delegationValue
+					minDelegator = delegator
+				}
+			}
+
+			// if it exceeds 10x of min delegation remove previous pool delegator
+			delegatorValue := k.GetPoolDelegationValue(ctx, pool, delegator)
+			if delegatorValue.GTE(minDelegationValue.Mul(sdk.NewInt(int64(properties.MinDelegationPushout)))) {
+				k.RemovePoolDelegator(ctx, pool.Id, minDelegator)
+			} else {
+				continue
+			}
+		}
+
+		for _, stakingToken := range pool.TotalStakingTokens {
+			rate := k.tokenKeeper.GetTokenRate(ctx, stakingToken.Denom)
+			shareToken := getShareDenom(pool.Id, stakingToken.Denom)
+			balance := balances.AmountOf(shareToken)
+			if balance.GTE(rate.StakeMin) {
+				k.SetPoolDelegator(ctx, pool.Id, delegator)
+				break
+			}
+		}
+	}
+}
+
+func (k Keeper) UnregisterNotEnoughStakeDelegator(ctx sdk.Context, pool types.StakingPool) {
+	delegators := k.GetPoolDelegators(ctx, pool.Id)
+
+	// distribute rewards allocated for the staked denom to delegators
+	for _, delegator := range delegators {
+		toBeRemoved := true
 		balances := k.bankKeeper.GetAllBalances(ctx, delegator)
 		for _, shareToken := range pool.TotalShareTokens {
 			nativeDenom := getNativeDenom(pool.Id, shareToken.Denom)
 			rate := k.tokenKeeper.GetTokenRate(ctx, nativeDenom)
-			balance := balances.AmountOf(shareToken.Denom)
 			if rate == nil {
 				continue
 			}
-			weight = weight.Add(balance.ToDec().Mul(rate.FeeRate))
-		}
 
-		delegatorRewards := sdk.Coins{}
-		for _, reward := range rewards {
-			delegatorRewards = delegatorRewards.Add(sdk.NewCoin(reward.Denom, reward.Amount.ToDec().Mul(weight).Quo(totalWeight).RoundInt()))
-		}
+			// total share token amount validation
+			if shareToken.Amount.IsZero() {
+				continue
+			}
 
-		k.IncreaseDelegatorRewards(ctx, delegator, delegatorRewards)
+			balance := balances.AmountOf(shareToken.Denom)
+			if balance.GTE(rate.StakeMin) {
+				toBeRemoved = false
+				break
+			}
+		}
+		if toBeRemoved {
+			k.RemovePoolDelegator(ctx, pool.Id, delegator)
+		}
 	}
 }

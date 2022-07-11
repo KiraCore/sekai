@@ -1,6 +1,8 @@
 package types
 
 import (
+	"errors"
+
 	kiratypes "github.com/KiraCore/sekai/types"
 	"github.com/KiraCore/sekai/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -45,8 +47,22 @@ func (m *ProposalUpsertTokenAlias) ValidateBasic() error {
 	return nil
 }
 
-func NewUpsertTokenRatesProposal(denom string, rate sdk.Dec, feePayments bool) *ProposalUpsertTokenRates {
-	return &ProposalUpsertTokenRates{Denom: denom, Rate: rate, FeePayments: feePayments}
+func NewUpsertTokenRatesProposal(
+	denom string,
+	rate sdk.Dec,
+	feePayments bool,
+	stakeCap sdk.Dec,
+	stakeMin sdk.Int,
+	stakeToken bool,
+) *ProposalUpsertTokenRates {
+	return &ProposalUpsertTokenRates{
+		Denom:       denom,
+		Rate:        rate,
+		FeePayments: feePayments,
+		StakeCap:    stakeCap,
+		StakeMin:    stakeMin,
+		StakeToken:  stakeToken,
+	}
 }
 
 func (m *ProposalUpsertTokenRates) ProposalType() string {
@@ -63,6 +79,13 @@ func (m *ProposalUpsertTokenRates) VotePermission() types.PermValue {
 
 // ValidateBasic returns basic validation
 func (m *ProposalUpsertTokenRates) ValidateBasic() error {
+	if m.StakeCap.LT(sdk.NewDec(0)) { // not positive
+		return errors.New("reward cap should be positive")
+	}
+
+	if m.StakeCap.GT(sdk.OneDec()) { // more than 1
+		return errors.New("reward cap not be more than 100%")
+	}
 	return nil
 }
 

@@ -14,9 +14,18 @@ service Msg {
   rpc UpsertStakingPool(MsgUpsertStakingPool) returns (MsgUpsertStakingPoolResponse);
   rpc Delegate(MsgDelegate) returns (MsgDelegateResponse);
   rpc Undelegate(MsgUndelegate) returns (MsgUndelegateResponse);
+  rpc SetCompoundInfo(MsgSetCompoundInfo) returns (MsgSetCompoundInfoResponse);
   rpc ClaimRewards(MsgClaimRewards) returns (MsgClaimRewardsResponse);
   rpc ClaimUndelegation(MsgClaimUndelegation) returns (MsgClaimUndelegationResponse);
+  rpc RegisterDelegator(MsgRegisterDelegator) returns (MsgRegisterDelegatorResponse);
 }
+
+message MsgSetCompoundInfo {
+  string sender = 1;
+  bool all_denom = 2;
+  repeated string compound_denoms = 3;
+}
+message MsgSetCompoundInfoResponse {}
 
 message MsgUpsertStakingPool {
   option (gogoproto.equal)           = false;
@@ -76,3 +85,9 @@ message MsgClaimUndelegation {
 }
 
 message MsgClaimUndelegationResponse {}
+
+message MsgRegisterDelegator {
+  string delegator = 1;
+}
+
+message MsgRegisterDelegatorResponse {}

@@ -17,12 +17,18 @@ func NewMsgUpsertTokenRate(
 	denom string,
 	rate sdk.Dec,
 	feePayments bool,
+	stakeCap sdk.Dec,
+	stakeMin sdk.Int,
+	stakeToken bool,
 ) *MsgUpsertTokenRate {
 	return &MsgUpsertTokenRate{
 		Proposer:    proposer,
 		Denom:       denom,
 		Rate:        rate,
 		FeePayments: feePayments,
+		StakeCap:    stakeCap,
+		StakeMin:    stakeMin,
+		StakeToken:  stakeToken,
 	}
 }
 
@@ -44,6 +50,14 @@ func (m *MsgUpsertTokenRate) ValidateBasic() error {
 
 	if m.Rate.LTE(sdk.NewDec(0)) { // not positive
 		return errors.New("rate should be positive")
+	}
+
+	if m.StakeCap.LT(sdk.NewDec(0)) { // not positive
+		return errors.New("reward cap should be positive")
+	}
+
+	if m.StakeCap.GT(sdk.OneDec()) { // more than 1
+		return errors.New("reward cap not be more than 100%")
 	}
 
 	return nil

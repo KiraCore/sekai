@@ -140,6 +140,9 @@ func TestNewHandler_MsgUpsertTokenRate(t *testing.T) {
 					addr,
 					"finney", sdk.NewDecWithPrec(1, 3), // 0.001
 					true,
+					sdk.ZeroDec(),
+					sdk.ZeroInt(),
+					false,
 				), nil
 			},
 		},
@@ -150,6 +153,9 @@ func TestNewHandler_MsgUpsertTokenRate(t *testing.T) {
 					addr,
 					"finney", sdk.NewDecWithPrec(1, 3), // 0.001
 					true,
+					sdk.ZeroDec(),
+					sdk.ZeroInt(),
+					false,
 				), nil
 			},
 			handlerErr: "PERMISSION_UPSERT_TOKEN_RATE: not enough permissions",
@@ -161,6 +167,9 @@ func TestNewHandler_MsgUpsertTokenRate(t *testing.T) {
 					addr,
 					"finney", sdk.NewDec(-1), // -1
 					true,
+					sdk.ZeroDec(),
+					sdk.ZeroInt(),
+					false,
 				), nil
 			},
 			handlerErr: "rate should be positive",
@@ -174,6 +183,9 @@ func TestNewHandler_MsgUpsertTokenRate(t *testing.T) {
 					addr,
 					"ukex", sdk.NewDec(10),
 					true,
+					sdk.ZeroDec(),
+					sdk.ZeroInt(),
+					false,
 				), nil
 			},
 			handlerErr: "bond denom rate is read-only",
@@ -337,6 +349,9 @@ func TestHandler_CreateProposalUpsertTokenRates_Errors(t *testing.T) {
 				"btc",
 				sdk.NewDec(1234),
 				false,
+				sdk.ZeroDec(),
+				sdk.ZeroInt(),
+				false,
 			),
 			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {},
 			errors.Wrap(types.ErrNotEnoughPermissions, types.PermCreateUpsertTokenRateProposal.String()),
@@ -383,6 +398,9 @@ func TestHandler_CreateProposalUpsertTokenRates(t *testing.T) {
 		"btc",
 		sdk.NewDec(1234),
 		false,
+		sdk.ZeroDec(),
+		sdk.ZeroInt(),
+		false,
 	)
 	msg, err := govtypes.NewMsgSubmitProposal(proposerAddr, "title", "some desc", proposal)
 	require.NoError(t, err)
@@ -404,6 +422,9 @@ func TestHandler_CreateProposalUpsertTokenRates(t *testing.T) {
 		tokenstypes.NewUpsertTokenRatesProposal(
 			"btc",
 			sdk.NewDec(1234),
+			false,
+			sdk.ZeroDec(),
+			sdk.ZeroInt(),
 			false,
 		),
 		ctx.BlockTime(),

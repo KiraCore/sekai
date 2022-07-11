@@ -126,7 +126,7 @@ function txAwait() {
             echoErr "ERROR: Timeout, failed to confirm tx hash '$TXHASH' within ${TIMEOUT} s limit"
             return 1
         else
-            sleep 5
+            sleep 0.5
         fi
     done
 }
@@ -253,7 +253,7 @@ function propAwait() {
                 echoErr "ERROR: Timeout, failed to finalize proposal '$ID' within ${TIMEOUT} s limit"
                 return 1
             else
-                sleep 1
+                sleep 0.5
             fi
         done
         echoInfo "INFO: Proposal was finalized ($RESULT)"
@@ -333,11 +333,11 @@ function awaitBlocks() {
     local SH_START_BLOCK=""
     while : ; do
         local SH_NEW_BLOCK=$(showBlockHeight)
-        (! $(bash-utils isNaturalNumber $SH_NEW_BLOCK)) && sleep 1 && continue
+        (! $(bash-utils isNaturalNumber $SH_NEW_BLOCK)) && sleep 0.5 && continue
         (! $(bash-utils isNaturalNumber "$SH_START_BLOCK")) && SH_START_BLOCK=$SH_NEW_BLOCK
         local SH_DELTA=$(($SH_NEW_BLOCK - $SH_START_BLOCK))
         [ $SH_DELTA -ge $BLOCKS ] && break
-        sleep 1
+        sleep 0.5
     done
 }
 

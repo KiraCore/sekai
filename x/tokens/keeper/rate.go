@@ -69,7 +69,17 @@ func (k Keeper) UpsertTokenRate(ctx sdk.Context, rate types.TokenRate) error {
 	if rate.Denom == k.BondDenom(ctx) && store.Has(tokenRateStoreID) {
 		return errors.New("bond denom rate is read-only")
 	}
+
 	store.Set(tokenRateStoreID, k.cdc.MustMarshal(&rate))
+
+	totalRewardsCap := sdk.ZeroDec()
+	rates := k.ListTokenRate(ctx)
+	for _, rate := range rates {
+		totalRewardsCap = totalRewardsCap.Add(rate.StakeCap)
+	}
+	if totalRewardsCap.GT(sdk.OneDec()) {
+		return types.ErrTotalRewardsCapExceeds100Percent
+	}
 	return nil
 }
 
