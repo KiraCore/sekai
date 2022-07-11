@@ -348,6 +348,32 @@ func (k Keeper) RegisterDelegator(ctx sdk.Context, delegator sdk.AccAddress) {
 
 	pools := k.GetAllStakingPools(ctx)
 	for _, pool := range pools {
+		if k.IsPoolDelegator(ctx, pool.Id, delegator) {
+			continue
+		}
+
+		properties := k.govKeeper.GetNetworkProperties(ctx)
+		poolDelegators := k.GetPoolDelegators(ctx, pool.Id)
+		if len(poolDelegators) >= int(properties.MaxDelegators) {
+			minDelegationValue := sdk.ZeroInt()
+			minDelegator := sdk.AccAddress{}
+			for _, delegator := range poolDelegators {
+				delegationValue := k.GetPoolDelegationValue(ctx, pool, delegator)
+				if minDelegationValue.IsZero() || minDelegationValue.GT(delegationValue) {
+					minDelegationValue = delegationValue
+					minDelegator = delegator
+				}
+			}
+
+			// if it exceeds 10x of min delegation remove previous pool delegator
+			delegatorValue := k.GetPoolDelegationValue(ctx, pool, delegator)
+			if delegatorValue.GTE(minDelegationValue.Mul(sdk.NewInt(int64(properties.MinDelegationPushout)))) {
+				k.RemovePoolDelegator(ctx, pool.Id, minDelegator)
+			} else {
+				continue
+			}
+		}
+
 		for _, stakingToken := range pool.TotalStakingTokens {
 			rate := k.tokenKeeper.GetTokenRate(ctx, stakingToken.Denom)
 			shareToken := getShareDenom(pool.Id, stakingToken.Denom)
