@@ -21,21 +21,22 @@ if [ "$UTILS_OLD_VER" != "false" ] ; then
      wget "https://github.com/KiraCore/tools/releases/download/$TOOLS_VERSION/${FILE_NAME}" -O ./$FILE_NAME && \
      wget "https://github.com/KiraCore/tools/releases/download/$TOOLS_VERSION/${FILE_NAME}.sig" -O ./${FILE_NAME}.sig && \
      cosign verify-blob --key="$KIRA_COSIGN_PUB" --signature=./${FILE_NAME}.sig ./$FILE_NAME && \
-     chmod -v 555 ./$FILE_NAME && ./$FILE_NAME bashUtilsSetup "/var/kiraglob" && bash-utils loadGlobEnvs
-     echoInfo "Installed bash-utils $(bashUtilsVersion)"
-else
-    echoInfo "INFO: KIRA utils are up to date, latest version $UTILS_VER" && sleep 2
-    bash-utils loadGlobEnvs
+     chmod -v 555 ./$FILE_NAME && ./$FILE_NAME bashUtilsSetup "/var/kiraglob"
 fi
+
+bash-utils loadGlobEnvs
+. /etc/profile
+echoInfo "INFO: Bash-utils version: $(bashUtilsVersion)"
 
 SYSCTRL_DESTINATION=/usr/local/bin/systemctl2
 if [ ! -f $SYSCTRL_DESTINATION ] ; then
     safeWget $SYSCTRL_DESTINATION \
      https://raw.githubusercontent.com/gdraheim/docker-systemctl-replacement/9cbe1a00eb4bdac6ff05b96ca34ec9ed3d8fc06c/files/docker/systemctl.py \
      "e02e90c6de6cd68062dadcc6a20078c34b19582be0baf93ffa7d41f5ef0a1fdd" && \
-    chmod +x $SYSCTRL_DESTINATION && \
-    systemctl2 --version
+    chmod +x $SYSCTRL_DESTINATION
 fi
+
+echoInfo "INFO: Systemctrl2 version: $(systemctl2 --version)"
 
 timerStart $TEST_NAME
 ./scripts/sekai-utils.sh sekaiUtilsSetup
@@ -45,6 +46,7 @@ NETWORK_NAME="localnet-1"
 setGlobEnv SEKAID_HOME ~/.sekaid-$NETWORK_NAME
 setGlobEnv NETWORK_NAME $NETWORK_NAME
 loadGlobEnvs
+. /etc/profile
 
 rm -rfv $SEKAID_HOME 
 mkdir -p $SEKAID_HOME
