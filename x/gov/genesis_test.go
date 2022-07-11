@@ -61,7 +61,9 @@ func TestSimappExportGenesis(t *testing.T) {
             "validators_fee_share": "50",
             "inflation_rate": "18",	
             "inflation_period": "31557600",	
-            "unstaking_period": "2629800"
+            "unstaking_period": "2629800",
+            "max_delegators": "100",
+            "min_delegation_pushout": "10"
 		},
 		"execution_fees":[],
 		"poor_network_messages":{
@@ -143,7 +145,8 @@ func TestExportInitGenesis(t *testing.T) {
 			InflationRate:               18,       // 18%
 			InflationPeriod:             31557600, // 1 year
 			UnstakingPeriod:             2629800,  // 1 month
-			StakingDelegatorsCap:        500,
+			MaxDelegators:               100,
+			MinDelegationPushout:        10,
 		},
 		ExecutionFees: []*types.ExecutionFee{
 			{
@@ -200,8 +203,9 @@ func TestExportInitGenesis(t *testing.T) {
             "validators_fee_share": "50",
             "inflation_rate": "18",	
             "inflation_period": "31557600",	
-            "unstaking_period": "2629800"
-            "staking_delegator_cap": "100"
+            "unstaking_period": "2629800",
+            "max_delegators": "100",
+            "min_delegation_pushout": "10"
 		},
 		"execution_fees":[],
 		"poor_network_messages":{

@@ -110,7 +110,8 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 						InflationRate:               18,       // 18%
 						InflationPeriod:             31557600, // 1 year
 						UnstakingPeriod:             2629800,  // 1 month
-						StakingDelegatorsCap:        100,
+						MaxDelegators:               100,
+						MinDelegationPushout:        10,
 					},
 					ExecutionFees:               govGenesisV01228.ExecutionFees,
 					PoorNetworkMessages:         govGenesisV01228.PoorNetworkMessages,

@@ -3,6 +3,8 @@ package keeper_test
 import (
 	"github.com/KiraCore/sekai/x/multistaking/keeper"
 	"github.com/KiraCore/sekai/x/multistaking/types"
+	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
+	"github.com/cosmos/cosmos-sdk/simapp"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/tendermint/tendermint/crypto/ed25519"
@@ -131,6 +133,15 @@ func (suite *KeeperTestSuite) TestIncreasePoolRewards() {
 	suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
 	suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, addr2, coins)
 
+	pubkeys := simapp.CreateTestPubKeys(1)
+	pubKey := pubkeys[0]
+
+	val, err := stakingtypes.NewValidator(valAddr, pubKey)
+	suite.Require().NoError(err)
+
+	val.Status = stakingtypes.Active
+	suite.app.CustomStakingKeeper.AddValidator(suite.ctx, val)
+
 	pool := types.StakingPool{
 		Id:        1,
 		Validator: valAddr.String(),
@@ -138,7 +149,7 @@ func (suite *KeeperTestSuite) TestIncreasePoolRewards() {
 	}
 	suite.app.MultiStakingKeeper.SetStakingPool(suite.ctx, pool)
 	msgServer := keeper.NewMsgServerImpl(suite.app.MultiStakingKeeper, suite.app.BankKeeper, suite.app.CustomGovKeeper, suite.app.CustomStakingKeeper)
-	_, err := msgServer.Delegate(sdk.WrapSDKContext(suite.ctx), &types.MsgDelegate{
+	_, err = msgServer.Delegate(sdk.WrapSDKContext(suite.ctx), &types.MsgDelegate{
 		DelegatorAddress: addr1.String(),
 		ValidatorAddress: valAddr.String(),
 		Amounts:          sdk.Coins{sdk.NewInt64Coin("ukex", 1000000)},
