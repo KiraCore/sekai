@@ -1,14 +1,13 @@
 #!/usr/bin/env bash
 set -e
 set -x
-. /etc/profile
 . ./scripts/sekai-env.sh
 . ./scripts/sekai-utils.sh
 
 TEST_NAME="NETWORK-START" && timerStart $TEST_NAME
-echoInfo "INFO: $TEST_NAME - Integration Test - START"
+echo "INFO: $TEST_NAME - Integration Test - START"
 
-echoInfo "INFO: Ensuring essential dependencies are installed & up to date"
+echo "INFO: Ensuring essential dependencies are installed & up to date"
 SYSCTRL_DESTINATION=/usr/local/bin/systemctl2
 if [ ! -f $SYSCTRL_DESTINATION ] ; then
     safeWget /usr/local/bin/systemctl2 \
@@ -18,26 +17,27 @@ if [ ! -f $SYSCTRL_DESTINATION ] ; then
     systemctl2 --version
 fi
 
-UTILS_VER=$(bashUtilsVersion 2> /dev/null || echo "")
-UTILS_OLD_VER="false" && [[ $(versionToNumber "$UTILS_VER" || echo "0") -ge $(versionToNumber "v0.1.5" || echo "1") ]] || UTILS_OLD_VER="true" 
+UTILS_VER=$(bash-utils bashUtilsVersion 2> /dev/null || echo "")
+[[ $(bash-utils versionToNumber "$UTILS_VER" 2> /dev/null || echo "0") -ge $(bash-utils versionToNumber "v0.2.13" 2> /dev/null || echo "1") ]] && \
+ UTILS_OLD_VER="false" || UTILS_OLD_VER="true" 
 
 # Installing utils is essential to simplify the setup steps
-if [ "$UTILS_OLD_VER" == "true" ] ; then
+if [ "$UTILS_OLD_VER" != "false" ] ; then
     echo "INFO: KIRA utils were NOT installed on the system, setting up..." && sleep 2
-    TOOLS_VERSION="v0.1.5" && mkdir -p /usr/keys && FILE_NAME="bash-utils.sh" && \
+    TOOLS_VERSION="v0.2.13" && mkdir -p /usr/keys && FILE_NAME="bash-utils.sh" && \
      if [ -z "$KIRA_COSIGN_PUB" ] ; then KIRA_COSIGN_PUB=/usr/keys/kira-cosign.pub ; fi && \
      echo -e "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE/IrzBQYeMwvKa44/DF/HB7XDpnE+\nf+mU9F/Qbfq25bBWV2+NlYMJv3KvKHNtu3Jknt6yizZjUV4b8WGfKBzFYw==\n-----END PUBLIC KEY-----" > $KIRA_COSIGN_PUB && \
      wget "https://github.com/KiraCore/tools/releases/download/$TOOLS_VERSION/${FILE_NAME}" -O ./$FILE_NAME && \
      wget "https://github.com/KiraCore/tools/releases/download/$TOOLS_VERSION/${FILE_NAME}.sig" -O ./${FILE_NAME}.sig && \
      cosign verify-blob --key="$KIRA_COSIGN_PUB" --signature=./${FILE_NAME}.sig ./$FILE_NAME && \
-     chmod -v 555 ./$FILE_NAME && ./$FILE_NAME bashUtilsSetup "/var/kiraglob" && . /etc/profile && \
+     chmod -v 555 ./$FILE_NAME && ./$FILE_NAME bashUtilsSetup "/var/kiraglob" && bash-utils loadGlobEnvs
      echoInfo "Installed bash-utils $(bashUtilsVersion)"
 else
     echoInfo "INFO: KIRA utils are up to date, latest version $UTILS_VER" && sleep 2
+    bash-utils loadGlobEnvs
 fi
 
 ./scripts/sekai-utils.sh sekaiUtilsSetup
-loadGlobEnvs
 
 echoInfo "INFO: Environment cleanup...."
 NETWORK_NAME="localnet-1"
@@ -49,13 +49,18 @@ rm -rfv $SEKAID_HOME
 mkdir -p $SEKAID_HOME
 
 echoInfo "INFO: Starting new network..."
-
 sekaid init --overwrite --chain-id=$NETWORK_NAME "KIRA TEST LOCAL VALIDATOR NODE" --home=$SEKAID_HOME
 sekaid keys add validator --keyring-backend=test --home=$SEKAID_HOME
 sekaid keys add faucet --keyring-backend=test --home=$SEKAID_HOME
 sekaid add-genesis-account $(showAddress validator) 150000000000000ukex,300000000000000test,2000000000000000000000000000samolean,1000000lol --keyring-backend=test --home=$SEKAID_HOME
 sekaid add-genesis-account $(showAddress faucet) 150000000000000ukex,300000000000000test,2000000000000000000000000000samolean,1000000lol --keyring-backend=test --home=$SEKAID_HOME
 sekaid gentx-claim validator --keyring-backend=test --moniker="GENESIS VALIDATOR" --home=$SEKAID_HOME
+
+CFG="$SEKAID_HOME/config/config.toml"
+# set block time to 0.5 second
+setTomlVar "[consensus]" timeout_commit "500ms" $CFG
+# progress ASAP we have all precommits needed
+setTomlVar "[consensus]" skip_timeout_commit "true" $CFG
 
 cat > /etc/systemd/system/sekai.service << EOL
 [Unit]
