@@ -4,18 +4,9 @@ set -x
 . ./scripts/sekai-env.sh
 . ./scripts/sekai-utils.sh
 
-TEST_NAME="NETWORK-START" && timerStart $TEST_NAME
+TEST_NAME="NETWORK-START"
 echo "INFO: $TEST_NAME - Integration Test - START"
-
 echo "INFO: Ensuring essential dependencies are installed & up to date"
-SYSCTRL_DESTINATION=/usr/local/bin/systemctl2
-if [ ! -f $SYSCTRL_DESTINATION ] ; then
-    safeWget /usr/local/bin/systemctl2 \
-     https://raw.githubusercontent.com/gdraheim/docker-systemctl-replacement/9cbe1a00eb4bdac6ff05b96ca34ec9ed3d8fc06c/files/docker/systemctl.py \
-     "e02e90c6de6cd68062dadcc6a20078c34b19582be0baf93ffa7d41f5ef0a1fdd" && \
-    chmod +x $SYSCTRL_DESTINATION && \
-    systemctl2 --version
-fi
 
 UTILS_VER=$(bash-utils bashUtilsVersion 2> /dev/null || echo "")
 [[ $(bash-utils versionToNumber "$UTILS_VER" 2> /dev/null || echo "0") -ge $(bash-utils versionToNumber "v0.2.13" 2> /dev/null || echo "1") ]] && \
@@ -37,6 +28,16 @@ else
     bash-utils loadGlobEnvs
 fi
 
+SYSCTRL_DESTINATION=/usr/local/bin/systemctl2
+if [ ! -f $SYSCTRL_DESTINATION ] ; then
+    safeWget $SYSCTRL_DESTINATION \
+     https://raw.githubusercontent.com/gdraheim/docker-systemctl-replacement/9cbe1a00eb4bdac6ff05b96ca34ec9ed3d8fc06c/files/docker/systemctl.py \
+     "e02e90c6de6cd68062dadcc6a20078c34b19582be0baf93ffa7d41f5ef0a1fdd" && \
+    chmod +x $SYSCTRL_DESTINATION && \
+    systemctl2 --version
+fi
+
+timerStart $TEST_NAME
 ./scripts/sekai-utils.sh sekaiUtilsSetup
 
 echoInfo "INFO: Environment cleanup...."
