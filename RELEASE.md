@@ -1,6 +1,4 @@
-## KIRA Blockchain Application - SEKAI
-
-**Features:**
+Features:
 
 - [TYPO] arraw => array
 - implement token inflation distribution
@@ -15,3 +13,5 @@
 - automatic unregister of delegator on a pool if not enough stake available
 - prevent delegation to not an active validator
 - add tests on changes
+- fixed github workflows, now all release branches have diffrent names then version tags
+- speedup of integraiton tests
