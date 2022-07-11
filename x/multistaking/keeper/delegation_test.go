@@ -175,59 +175,83 @@ func (suite *KeeperTestSuite) TestIncreasePoolRewards() {
 
 func (suite *KeeperTestSuite) TestDelegate() {
 	testCases := map[string]struct {
-		valStatus      stakingtypes.ValidatorStatus
-		poolCreate     bool
-		maxDelegators  uint64
-		preDelegations int
-		mintCoins      sdk.Int
-		expectErr      bool
+		delegateToken   string
+		valStatus       stakingtypes.ValidatorStatus
+		poolCreate      bool
+		maxDelegators   uint64
+		preDelegations  int
+		mintCoins       sdk.Int
+		delegationCoins sdk.Int
+		expectErr       bool
 	}{
 		"inactive validator delegate": {
+			"ukex",
 			stakingtypes.Paused,
 			true,
 			3,
 			0,
-			sdk.NewInt(1),
+			sdk.NewInt(1000000),
+			sdk.NewInt(1000000),
 			true,
 		},
 		"not existing pool delegate": {
+			"ukex",
 			stakingtypes.Active,
 			false,
 			3,
 			0,
-			sdk.NewInt(1),
+			sdk.NewInt(1000000),
+			sdk.NewInt(1000000),
 			true,
 		},
 		"max delegators exceed": {
+			"ukex",
 			stakingtypes.Active,
 			true,
 			3,
 			3,
-			sdk.NewInt(1),
+			sdk.NewInt(1000000),
+			sdk.NewInt(1000000),
 			true,
 		},
 		"not enough amounts on delegator": {
+			"ukex",
 			stakingtypes.Active,
 			true,
 			3,
 			0,
 			sdk.NewInt(1),
+			sdk.NewInt(1000000),
 			true,
 		},
 		"not registered token delegate": {
+			"ukexxx",
 			stakingtypes.Active,
 			true,
 			3,
 			0,
-			sdk.NewInt(1),
+			sdk.NewInt(1000000),
+			sdk.NewInt(1000000),
 			true,
 		},
 		"successful delegate": {
+			"ukex",
 			stakingtypes.Active,
 			true,
 			3,
 			0,
-			sdk.NewInt(1000000000),
+			sdk.NewInt(1000000),
+			sdk.NewInt(1000000),
+			false,
+		},
+		"successful delegate with pushout": {
+			"ukex",
+			stakingtypes.Active,
+			true,
+			3,
+			3,
+			sdk.NewInt(100000000),
+			sdk.NewInt(100000000),
 			false,
 		},
 	}
@@ -281,7 +305,7 @@ func (suite *KeeperTestSuite) TestDelegate() {
 			err = suite.app.MultiStakingKeeper.Delegate(suite.ctx, &types.MsgDelegate{
 				DelegatorAddress: addr1.String(),
 				ValidatorAddress: valAddr.String(),
-				Amounts:          sdk.Coins{sdk.NewInt64Coin("ukex", 1000000)},
+				Amounts:          sdk.Coins{sdk.NewCoin(tc.delegateToken, tc.delegationCoins)},
 			})
 			if tc.expectErr {
 				suite.Require().Error(err)
