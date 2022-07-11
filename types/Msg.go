@@ -45,6 +45,8 @@ const (
 	MsgTypeUndelegate        = "undelegate"
 	MsgTypeClaimRewards      = "claim_rewards"
 	MsgTypeClaimUndelegation = "claim_undelegation"
+	MsgTypeSetCompoundInfo   = "set_compound_info"
+	MsgTypeRegisterDelegator = "register_delegator"
 
 	// tokens module
 	MsgTypeUpsertTokenAlias = "upsert-token-alias"

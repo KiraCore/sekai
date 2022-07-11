@@ -29,4 +29,15 @@ message ProposalUpsertTokenRates {
     (gogoproto.nullable)   = false
   ]; // Exchange rate in terms of KEX token
   bool fee_payments = 3; // Properties defining if it is enabled or disabled as fee payment methodß
+  string stake_cap = 4 [
+    (gogoproto.moretags) = "yaml:\"stake_cap\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ]; // rewards cap, sum should be lower than 100%
+  string stake_min = 5 [
+    (gogoproto.moretags) = "yaml:\"stake_min\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  bool stake_token = 6;
 }

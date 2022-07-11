@@ -68,7 +68,10 @@ func getPoolCoins(poolID uint64, coins sdk.Coins) sdk.Coins {
 	}
 	return poolCoins
 }
-
+func getShareDenom(poolID uint64, denom string) string {
+	prefix := getPoolPrefix(poolID)
+	return prefix + denom
+}
 func getNativeDenom(poolID uint64, denom string) string {
 	return strings.TrimPrefix(denom, getPoolPrefix(poolID))
 }
