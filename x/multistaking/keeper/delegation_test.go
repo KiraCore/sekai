@@ -172,3 +172,179 @@ func (suite *KeeperTestSuite) TestIncreasePoolRewards() {
 	rewards = suite.app.MultiStakingKeeper.GetDelegatorRewards(suite.ctx, addr2)
 	suite.Require().Equal(rewards, sdk.Coins{sdk.NewInt64Coin("ukex", 250000)})
 }
+
+func (suite *KeeperTestSuite) TestDelegate() {
+	testCases := map[string]struct {
+		valStatus      stakingtypes.ValidatorStatus
+		poolCreate     bool
+		maxDelegators  uint64
+		preDelegations int
+		mintCoins      sdk.Int
+		expectErr      bool
+	}{
+		"inactive validator delegate": {
+			stakingtypes.Paused,
+			true,
+			3,
+			0,
+			sdk.NewInt(1),
+			true,
+		},
+		"not existing pool delegate": {
+			stakingtypes.Active,
+			false,
+			3,
+			0,
+			sdk.NewInt(1),
+			true,
+		},
+		"max delegators exceed": {
+			stakingtypes.Active,
+			true,
+			3,
+			3,
+			sdk.NewInt(1),
+			true,
+		},
+		"not enough amounts on delegator": {
+			stakingtypes.Active,
+			true,
+			3,
+			0,
+			sdk.NewInt(1),
+			true,
+		},
+		"not registered token delegate": {
+			stakingtypes.Active,
+			true,
+			3,
+			0,
+			sdk.NewInt(1),
+			true,
+		},
+		"successful delegate": {
+			stakingtypes.Active,
+			true,
+			3,
+			0,
+			sdk.NewInt(1000000000),
+			false,
+		},
+	}
+
+	for name, tc := range testCases {
+		tc := tc
+
+		suite.Run(name, func() {
+			suite.SetupTest()
+			addr1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+			valAddr := sdk.ValAddress(addr1)
+			pubkeys := simapp.CreateTestPubKeys(1)
+			pubKey := pubkeys[0]
+
+			val, err := stakingtypes.NewValidator(valAddr, pubKey)
+			suite.Require().NoError(err)
+
+			val.Status = tc.valStatus
+			suite.app.CustomStakingKeeper.AddValidator(suite.ctx, val)
+
+			if tc.poolCreate {
+				pool := types.StakingPool{
+					Id:        1,
+					Validator: valAddr.String(),
+					Enabled:   true,
+				}
+				suite.app.MultiStakingKeeper.SetStakingPool(suite.ctx, pool)
+			}
+
+			params := suite.app.CustomGovKeeper.GetNetworkProperties(suite.ctx)
+			params.MaxDelegators = tc.maxDelegators
+			suite.app.CustomGovKeeper.SetNetworkProperties(suite.ctx, params)
+
+			coins := sdk.Coins{sdk.NewCoin("ukex", tc.mintCoins)}
+			suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
+			suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, addr1, coins)
+
+			for i := 0; i < tc.preDelegations; i++ {
+				coins := sdk.Coins{sdk.NewInt64Coin("ukex", 1000000)}
+				raddr := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+				suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
+				suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, raddr, coins)
+				err = suite.app.MultiStakingKeeper.Delegate(suite.ctx, &types.MsgDelegate{
+					DelegatorAddress: raddr.String(),
+					ValidatorAddress: valAddr.String(),
+					Amounts:          sdk.Coins{sdk.NewInt64Coin("ukex", 1000000)},
+				})
+				suite.Require().NoError(err)
+			}
+
+			err = suite.app.MultiStakingKeeper.Delegate(suite.ctx, &types.MsgDelegate{
+				DelegatorAddress: addr1.String(),
+				ValidatorAddress: valAddr.String(),
+				Amounts:          sdk.Coins{sdk.NewInt64Coin("ukex", 1000000)},
+			})
+			if tc.expectErr {
+				suite.Require().Error(err)
+			} else {
+				suite.Require().NoError(err)
+
+				// check share denoms are correctly minted
+				balance := suite.app.BankKeeper.GetBalance(suite.ctx, addr1, "v1/ukex")
+				suite.Require().True(balance.Amount.IsPositive())
+
+				// check delegator is set as delegator
+				isDelegator := suite.app.MultiStakingKeeper.IsPoolDelegator(suite.ctx, 1, addr1)
+				suite.Require().True(isDelegator)
+			}
+		})
+	}
+}
+
+func (suite *KeeperTestSuite) TestRegisterDelegator() {
+	// delegate
+	suite.SetupTest()
+	addr1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	addr2 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	valAddr := sdk.ValAddress(addr1)
+	pubkeys := simapp.CreateTestPubKeys(1)
+	pubKey := pubkeys[0]
+
+	val, err := stakingtypes.NewValidator(valAddr, pubKey)
+	suite.Require().NoError(err)
+
+	val.Status = stakingtypes.Active
+	suite.app.CustomStakingKeeper.AddValidator(suite.ctx, val)
+
+	pool := types.StakingPool{
+		Id:        1,
+		Validator: valAddr.String(),
+		Enabled:   true,
+	}
+	suite.app.MultiStakingKeeper.SetStakingPool(suite.ctx, pool)
+
+	coins := sdk.Coins{sdk.NewInt64Coin("ukex", 1000000)}
+	suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
+	suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, addr1, coins)
+
+	err = suite.app.MultiStakingKeeper.Delegate(suite.ctx, &types.MsgDelegate{
+		DelegatorAddress: addr1.String(),
+		ValidatorAddress: valAddr.String(),
+		Amounts:          sdk.Coins{sdk.NewInt64Coin("ukex", 1000000)},
+	})
+	suite.Require().NoError(err)
+
+	// check share denoms are correctly minted
+	balance := suite.app.BankKeeper.GetBalance(suite.ctx, addr1, "v1/ukex")
+	suite.Require().True(balance.Amount.IsPositive())
+
+	// send minted token to new address
+	err = suite.app.BankKeeper.SendCoins(suite.ctx, addr1, addr2, sdk.Coins{balance})
+	suite.Require().NoError(err)
+
+	// register delegator
+	suite.app.MultiStakingKeeper.RegisterDelegator(suite.ctx, addr2)
+
+	// check if registered as delegator
+	isDelegator := suite.app.MultiStakingKeeper.IsPoolDelegator(suite.ctx, 1, addr2)
+	suite.Require().True(isDelegator)
+}
