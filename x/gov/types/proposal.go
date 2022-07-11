@@ -312,7 +312,8 @@ func (m *SetNetworkPropertyProposal) ValidateBasic() error {
 		ValidatorsFeeShare,
 		InflationRate,
 		InflationPeriod,
-		UnstakingPeriod:
+		UnstakingPeriod,
+		StakingDelegatorsCap:
 		return nil
 	default:
 		return ErrInvalidNetworkProperty

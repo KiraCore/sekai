@@ -11,4 +11,6 @@ var (
 	ErrNotEnoughTimePassed             = errors.Register(ModuleName, 4, "not enough time passed")
 	ErrNotAllowedStakingToken          = errors.Register(ModuleName, 5, "not allowed staking token")
 	ErrDenomStakingMinTokensNotReached = errors.Register(ModuleName, 6, "denom staking minimum amount not reached")
+	ErrNotActiveValidator              = errors.Register(ModuleName, 7, "not an active validator")
+	ErrMaxDelegatorsReached            = errors.Register(ModuleName, 8, "max delegators reached for the pool")
 )

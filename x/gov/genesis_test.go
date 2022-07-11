@@ -143,6 +143,7 @@ func TestExportInitGenesis(t *testing.T) {
 			InflationRate:               18,       // 18%
 			InflationPeriod:             31557600, // 1 year
 			UnstakingPeriod:             2629800,  // 1 month
+			StakingDelegatorsCap:        500,
 		},
 		ExecutionFees: []*types.ExecutionFee{
 			{
@@ -200,6 +201,7 @@ func TestExportInitGenesis(t *testing.T) {
             "inflation_rate": "18",	
             "inflation_period": "31557600",	
             "unstaking_period": "2629800"
+            "staking_delegator_cap": "100"
 		},
 		"execution_fees":[],
 		"poor_network_messages":{

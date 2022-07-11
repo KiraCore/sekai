@@ -66,6 +66,13 @@ func (k Keeper) RemovePoolDelegator(ctx sdk.Context, poolId uint64, delegator sd
 	store.Delete(key)
 }
 
+func (k Keeper) IsPoolDelegator(ctx sdk.Context, poolId uint64, delegator sdk.AccAddress) bool {
+	store := ctx.KVStore(k.storeKey)
+	key := append(append(types.KeyPrefixPoolDelegator, sdk.Uint64ToBigEndian(poolId)...), delegator...)
+	bz := store.Get(key)
+	return bz != nil
+}
+
 func (k Keeper) GetPoolDelegators(ctx sdk.Context, poolId uint64) []sdk.AccAddress {
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), append(types.KeyPrefixPoolDelegator, sdk.Uint64ToBigEndian(poolId)...))
 
@@ -224,6 +231,21 @@ func (k Keeper) IncreasePoolRewards(ctx sdk.Context, pool types.StakingPool, rew
 }
 
 func (k Keeper) Delegate(ctx sdk.Context, msg *types.MsgDelegate) error {
+	// check if validator is active
+	valAddr, err := sdk.ValAddressFromBech32(msg.ValidatorAddress)
+	if err != nil {
+		return err
+	}
+
+	validator, err := k.sk.GetValidator(ctx, valAddr)
+	if err != nil {
+		return err
+	}
+
+	if !validator.IsActive() {
+		return types.ErrNotActiveValidator
+	}
+
 	pool, found := k.GetStakingPoolByValidator(ctx, msg.ValidatorAddress)
 	if !found {
 		return types.ErrStakingPoolNotFound
@@ -232,6 +254,32 @@ func (k Keeper) Delegate(ctx sdk.Context, msg *types.MsgDelegate) error {
 	delegator, err := sdk.AccAddressFromBech32(msg.DelegatorAddress)
 	if err != nil {
 		return err
+	}
+
+	// if it is going to create a new delegator
+	if !k.IsPoolDelegator(ctx, pool.Id, delegator) {
+		properties := k.govKeeper.GetNetworkProperties(ctx)
+		poolDelegators := k.GetPoolDelegators(ctx, pool.Id)
+		if len(poolDelegators) >= int(properties.MaxDelegators) {
+			minDelegationValue := sdk.ZeroInt()
+			minDelegator := sdk.AccAddress{}
+			for _, delegator := range poolDelegators {
+				delegationValue := k.GetPoolDelegationValue(ctx, pool, delegator)
+				if minDelegationValue.IsZero() || minDelegationValue.GT(delegationValue) {
+					minDelegationValue = delegationValue
+					minDelegator = delegator
+				}
+			}
+
+			// if it exceeds 10x of min delegation remove previous pool delegator
+			delegatorValue := k.GetPoolDelegationValue(ctx, pool, delegator)
+			newDelegatorValue := delegatorValue.Add(k.GetCoinsValue(ctx, msg.Amounts))
+			if newDelegatorValue.GTE(minDelegationValue.Mul(sdk.NewInt(int64(properties.MinDelegationPushout)))) {
+				k.RemovePoolDelegator(ctx, pool.Id, minDelegator)
+			} else {
+				return types.ErrMaxDelegatorsReached
+			}
+		}
 	}
 
 	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, delegator, types.ModuleName, msg.Amounts)
@@ -266,6 +314,33 @@ func (k Keeper) Delegate(ctx sdk.Context, msg *types.MsgDelegate) error {
 
 	k.SetPoolDelegator(ctx, pool.Id, delegator)
 	return nil
+}
+
+func (k Keeper) GetPoolDelegationValue(ctx sdk.Context, pool types.StakingPool, delegator sdk.AccAddress) sdk.Int {
+	delegationValue := sdk.ZeroInt()
+	balances := k.bankKeeper.GetAllBalances(ctx, delegator)
+	for _, stakingToken := range pool.TotalStakingTokens {
+		rate := k.tokenKeeper.GetTokenRate(ctx, stakingToken.Denom)
+		if rate == nil {
+			continue
+		}
+		shareToken := getShareDenom(pool.Id, stakingToken.Denom)
+		balance := balances.AmountOf(shareToken)
+		delegationValue = delegationValue.Add(balance.ToDec().Mul(rate.FeeRate).RoundInt())
+	}
+	return delegationValue
+}
+
+func (k Keeper) GetCoinsValue(ctx sdk.Context, coins sdk.Coins) sdk.Int {
+	delegationValue := sdk.ZeroInt()
+	for _, coin := range coins {
+		rate := k.tokenKeeper.GetTokenRate(ctx, coin.Denom)
+		if rate == nil {
+			continue
+		}
+		delegationValue = delegationValue.Add(coin.Amount.ToDec().Mul(rate.FeeRate).RoundInt())
+	}
+	return delegationValue
 }
 
 func (k Keeper) RegisterDelegator(ctx sdk.Context, delegator sdk.AccAddress) {
