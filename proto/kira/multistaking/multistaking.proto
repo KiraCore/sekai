@@ -42,3 +42,9 @@ message Rewards {
     (gogoproto.nullable) = false
   ];
 }
+
+message CompoundInfo {
+  string delegator = 1;
+  bool all_denom = 2;
+  repeated string compound_denoms = 3;
+}

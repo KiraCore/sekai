@@ -44,7 +44,7 @@ func (a ApplyUpsertTokenRatesProposalHandler) ProposalType() string {
 func (a ApplyUpsertTokenRatesProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content) error {
 	p := proposal.(*tokenstypes.ProposalUpsertTokenRates)
 
-	tokenAlians := tokenstypes.NewTokenRate(p.Denom, p.Rate, p.FeePayments)
+	tokenAlians := tokenstypes.NewTokenRate(p.Denom, p.Rate, p.FeePayments, p.StakeCap, p.StakeMin, p.StakeToken)
 	return a.keeper.UpsertTokenRate(ctx, *tokenAlians)
 }
 

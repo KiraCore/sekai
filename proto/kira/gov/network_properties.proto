@@ -39,6 +39,8 @@ enum NetworkProperty {
     INFLATION_RATE = 21 [(gogoproto.enumvalue_customname) = "InflationRate"]; // KEX inflation percentage X defined as decimal value.
     INFLATION_PERIOD = 22 [(gogoproto.enumvalue_customname) = "InflationPeriod"]; // period of time (in seconds) over which current KEX supply is inflated by a percentage corresponding to the inflation_rate
     UNSTAKING_PERIOD = 23 [(gogoproto.enumvalue_customname) = "UnstakingPeriod"]; // period of time (in seconds) it takes to unstake any of the staked tokens
+    MAX_DELEGATORS = 25 [(gogoproto.enumvalue_customname) = "MaxDelegators"]; // number of delegators limitation on a single pool
+    MIN_DELEGATION_PUSHOUT = 26 [(gogoproto.enumvalue_customname) = "MinDelegationPushout"]; // The multiplier (10x) to push out minimum delegation when it exceeds max delegators
 }
 
 message NetworkPropertyValue {
@@ -73,4 +75,6 @@ message NetworkProperties {
     uint64 inflation_rate = 22; // KEX inflation percentage X defined as decimal value.
     uint64 inflation_period = 23; // period of time (in seconds) over which current KEX supply is inflated by a percentage corresponding to the inflation_rate
     uint64 unstaking_period = 24; // period of time (in seconds) it takes to unstake any of the staked tokens 
+    uint64 max_delegators = 25; // number of delegators limitation on a single pool
+    uint64 min_delegation_pushout = 26; // The multiplier (10x) to push out minimum delegation when it exceeds max delegators
 }

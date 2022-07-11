@@ -197,6 +197,10 @@ func (k Keeper) GetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 		return types.NetworkPropertyValue{Value: properties.InflationPeriod}, nil
 	case types.UnstakingPeriod:
 		return types.NetworkPropertyValue{Value: properties.UnstakingPeriod}, nil
+	case types.MaxDelegators:
+		return types.NetworkPropertyValue{Value: properties.MaxDelegators}, nil
+	case types.MinDelegationPushout:
+		return types.NetworkPropertyValue{Value: properties.MinDelegationPushout}, nil
 	default:
 		return types.NetworkPropertyValue{}, errors.New("trying to fetch network property that does not exist")
 	}
@@ -257,6 +261,10 @@ func (k Keeper) SetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 		properties.InflationPeriod = value.Value
 	case types.UnstakingPeriod:
 		properties.UnstakingPeriod = value.Value
+	case types.MaxDelegators:
+		properties.MaxDelegators = value.Value
+	case types.MinDelegationPushout:
+		properties.MinDelegationPushout = value.Value
 	default:
 		return errors.New("trying to set network property that does not exist")
 	}

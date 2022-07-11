@@ -178,7 +178,7 @@ func registerIdRecordsCodec(cdc *codec.LegacyAmino) {
 				"description": "the address of verifier."
 			},
 			"record_ids": {
-				"type":        "arraw<uint64>",
+				"type":        "array<uint64>",
 				"description": "the id of records to be verified."
 			},
 			"tip": {
