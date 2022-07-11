@@ -236,3 +236,40 @@ func (m *MsgSetCompoundInfo) GetSigners() []sdk.AccAddress {
 		sender,
 	}
 }
+
+var (
+	_ sdk.Msg = &MsgSetCompoundInfo{}
+)
+
+func NewMsgRegisterDelegator(sender string) *MsgRegisterDelegator {
+	return &MsgRegisterDelegator{
+		Delegator: sender,
+	}
+}
+
+func (m *MsgRegisterDelegator) Route() string {
+	return ModuleName
+}
+
+func (m *MsgRegisterDelegator) Type() string {
+	return types.MsgTypeRegisterDelegator
+}
+
+func (m *MsgRegisterDelegator) ValidateBasic() error {
+	return nil
+}
+
+func (m *MsgRegisterDelegator) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *MsgRegisterDelegator) GetSigners() []sdk.AccAddress {
+	sender, err := sdk.AccAddressFromBech32(m.Delegator)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{
+		sender,
+	}
+}

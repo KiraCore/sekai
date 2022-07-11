@@ -17,6 +17,7 @@ service Msg {
   rpc SetCompoundInfo(MsgSetCompoundInfo) returns (MsgSetCompoundInfoResponse);
   rpc ClaimRewards(MsgClaimRewards) returns (MsgClaimRewardsResponse);
   rpc ClaimUndelegation(MsgClaimUndelegation) returns (MsgClaimUndelegationResponse);
+  rpc RegisterDelegator(MsgRegisterDelegator) returns (MsgRegisterDelegatorResponse);
 }
 
 message MsgSetCompoundInfo {
@@ -84,3 +85,9 @@ message MsgClaimUndelegation {
 }
 
 message MsgClaimUndelegationResponse {}
+
+message MsgRegisterDelegator {
+  string delegator = 1;
+}
+
+message MsgRegisterDelegatorResponse {}

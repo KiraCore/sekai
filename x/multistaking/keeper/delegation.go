@@ -145,6 +145,8 @@ func isWithinArray(s string, arr []string) bool {
 }
 
 func (k Keeper) IncreasePoolRewards(ctx sdk.Context, pool types.StakingPool, rewards sdk.Coins) {
+	k.UnregisterNotEnoughStakeDelegator(ctx, pool)
+
 	delegators := k.GetPoolDelegators(ctx, pool.Id)
 	for _, shareToken := range pool.TotalShareTokens {
 		nativeDenom := getNativeDenom(pool.Id, shareToken.Denom)
@@ -264,4 +266,52 @@ func (k Keeper) Delegate(ctx sdk.Context, msg *types.MsgDelegate) error {
 
 	k.SetPoolDelegator(ctx, pool.Id, delegator)
 	return nil
+}
+
+func (k Keeper) RegisterDelegator(ctx sdk.Context, delegator sdk.AccAddress) {
+	balances := k.bankKeeper.GetAllBalances(ctx, delegator)
+
+	pools := k.GetAllStakingPools(ctx)
+	for _, pool := range pools {
+		for _, stakingToken := range pool.TotalStakingTokens {
+			rate := k.tokenKeeper.GetTokenRate(ctx, stakingToken.Denom)
+			shareToken := getShareDenom(pool.Id, stakingToken.Denom)
+			balance := balances.AmountOf(shareToken)
+			if balance.GTE(rate.StakeMin) {
+				k.SetPoolDelegator(ctx, pool.Id, delegator)
+				break
+			}
+		}
+	}
+}
+
+func (k Keeper) UnregisterNotEnoughStakeDelegator(ctx sdk.Context, pool types.StakingPool) {
+	delegators := k.GetPoolDelegators(ctx, pool.Id)
+
+	// distribute rewards allocated for the staked denom to delegators
+	for _, delegator := range delegators {
+		toBeRemoved := true
+		balances := k.bankKeeper.GetAllBalances(ctx, delegator)
+		for _, shareToken := range pool.TotalShareTokens {
+			nativeDenom := getNativeDenom(pool.Id, shareToken.Denom)
+			rate := k.tokenKeeper.GetTokenRate(ctx, nativeDenom)
+			if rate == nil {
+				continue
+			}
+
+			// total share token amount validation
+			if shareToken.Amount.IsZero() {
+				continue
+			}
+
+			balance := balances.AmountOf(shareToken.Denom)
+			if balance.GTE(rate.StakeMin) {
+				toBeRemoved = false
+				break
+			}
+		}
+		if toBeRemoved {
+			k.RemovePoolDelegator(ctx, pool.Id, delegator)
+		}
+	}
 }

@@ -185,3 +185,16 @@ func (k msgServer) SetCompoundInfo(goCtx context.Context, msg *types.MsgSetCompo
 
 	return &types.MsgSetCompoundInfoResponse{}, nil
 }
+
+func (k msgServer) RegisterDelegator(goCtx context.Context, msg *types.MsgRegisterDelegator) (*types.MsgRegisterDelegatorResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	delegator, err := sdk.AccAddressFromBech32(msg.Delegator)
+	if err != nil {
+		return nil, err
+	}
+
+	k.keeper.RegisterDelegator(ctx, delegator)
+
+	return &types.MsgRegisterDelegatorResponse{}, nil
+}

@@ -205,3 +205,26 @@ func GetTxSetCompoundInfo() *cobra.Command {
 
 	return cmd
 }
+
+func GetTxRegisterDelegator() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "register-delegator",
+		Short: "Submit a transaction to register a delegator.",
+		Args:  cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgRegisterDelegator(clientCtx.FromAddress.String())
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
