@@ -161,7 +161,7 @@ func (m *MsgClaimRewards) GetSigners() []sdk.AccAddress {
 }
 
 var (
-	_ sdk.Msg = &MsgClaimRewards{}
+	_ sdk.Msg = &MsgClaimUndelegation{}
 )
 
 func NewMsgClaimUndelegation(sender string, undelegationId uint64) *MsgClaimUndelegation {
@@ -190,6 +190,82 @@ func (m *MsgClaimUndelegation) GetSignBytes() []byte {
 
 func (m *MsgClaimUndelegation) GetSigners() []sdk.AccAddress {
 	sender, err := sdk.AccAddressFromBech32(m.Sender)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{
+		sender,
+	}
+}
+
+var (
+	_ sdk.Msg = &MsgSetCompoundInfo{}
+)
+
+func NewMsgSetCompoundInfo(sender string, allDenom bool, denoms []string) *MsgSetCompoundInfo {
+	return &MsgSetCompoundInfo{
+		Sender:         sender,
+		AllDenom:       allDenom,
+		CompoundDenoms: denoms,
+	}
+}
+
+func (m *MsgSetCompoundInfo) Route() string {
+	return ModuleName
+}
+
+func (m *MsgSetCompoundInfo) Type() string {
+	return types.MsgTypeSetCompoundInfo
+}
+
+func (m *MsgSetCompoundInfo) ValidateBasic() error {
+	return nil
+}
+
+func (m *MsgSetCompoundInfo) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *MsgSetCompoundInfo) GetSigners() []sdk.AccAddress {
+	sender, err := sdk.AccAddressFromBech32(m.Sender)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{
+		sender,
+	}
+}
+
+var (
+	_ sdk.Msg = &MsgSetCompoundInfo{}
+)
+
+func NewMsgRegisterDelegator(sender string) *MsgRegisterDelegator {
+	return &MsgRegisterDelegator{
+		Delegator: sender,
+	}
+}
+
+func (m *MsgRegisterDelegator) Route() string {
+	return ModuleName
+}
+
+func (m *MsgRegisterDelegator) Type() string {
+	return types.MsgTypeRegisterDelegator
+}
+
+func (m *MsgRegisterDelegator) ValidateBasic() error {
+	return nil
+}
+
+func (m *MsgRegisterDelegator) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *MsgRegisterDelegator) GetSigners() []sdk.AccAddress {
+	sender, err := sdk.AccAddressFromBech32(m.Delegator)
 	if err != nil {
 		panic(err)
 	}

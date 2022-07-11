@@ -15,4 +15,5 @@ var (
 	KeyLastUndelegationId  = []byte{0x4}
 	KeyPrefixPoolDelegator = []byte{0x5}
 	KeyPrefixRewards       = []byte{0x6}
+	KeyPrefixCompoundInfo  = []byte{0x7}
 )

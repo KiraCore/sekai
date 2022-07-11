@@ -14,6 +14,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgUndelegate{}, "kiraHub/MsgUndelegate", nil)
 	cdc.RegisterConcrete(&MsgClaimRewards{}, "kiraHub/MsgClaimRewards", nil)
 	cdc.RegisterConcrete(&MsgClaimUndelegation{}, "kiraHub/MsgClaimUndelegation", nil)
+	cdc.RegisterConcrete(&MsgRegisterDelegator{}, "kiraHub/MsgRegisterDelegator", nil)
 }
 
 // RegisterInterfaces register Msg and structs
@@ -23,7 +24,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgDelegate{},
 		&MsgUndelegate{},
 		&MsgClaimRewards{},
-		&MsgClaimUndelegation{},
+		&MsgRegisterDelegator{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)

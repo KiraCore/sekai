@@ -545,7 +545,15 @@ func (suite *AnteTestSuite) TestPoorNetworkManagementDecorator() {
 			"invalid transaction type on poor network",
 			func() ([]sdk.Msg, []cryptotypes.PrivKey, []uint64, []uint64, sdk.Coins) {
 				msgs := []sdk.Msg{
-					tokenstypes.NewMsgUpsertTokenRate(accounts[4].acc.GetAddress(), "foo", sdk.NewDec(1), true),
+					tokenstypes.NewMsgUpsertTokenRate(
+						accounts[4].acc.GetAddress(),
+						"foo",
+						sdk.NewDec(1),
+						true,
+						sdk.ZeroDec(),
+						sdk.ZeroInt(),
+						false,
+					),
 				}
 				return msgs, privs[0:1], accNums[0:1], []uint64{0}, sdk.NewCoins(sdk.NewInt64Coin("ukex", 100))
 			},

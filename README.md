@@ -53,7 +53,7 @@ TOOLS_VERSION="v0.0.12.4" && mkdir -p /usr/keys && FILE_NAME="bash-utils.sh" && 
  wget "https://github.com/KiraCore/tools/releases/download/$TOOLS_VERSION/${FILE_NAME}.sig" -O ./${FILE_NAME}.sig && \
  cosign verify-blob --key="$KIRA_COSIGN_PUB" --signature=./${FILE_NAME}.sig ./$FILE_NAME && \
  chmod -v 555 ./$FILE_NAME && ./$FILE_NAME bashUtilsSetup "/var/kiraglob" && . /etc/profile && \
- echoInfo "Installed bash-utils $(bashUtilsVersion)"
+ echoInfo "Installed bash-utils $(bash-utils bashUtilsVersion)"
 ```
 
 ## Quick setup from Releases

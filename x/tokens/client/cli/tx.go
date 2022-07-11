@@ -22,6 +22,9 @@ const (
 	FlagDenoms      = "denoms"
 	FlagDenom       = "denom"
 	FlagRate        = "rate"
+	FlagStakeCap    = "stake_cap"
+	FlagStakeToken  = "stake_token"
+	FlagStakeMin    = "stake_min"
 	FlagFeePayments = "fee_payments"
 	FlagIsBlacklist = "is_blacklist"
 	FlagIsAdd       = "is_add"
@@ -247,6 +250,31 @@ func GetTxProposalUpsertTokenRatesCmd() *cobra.Command {
 				return fmt.Errorf("invalid description: %w", err)
 			}
 
+			stakeToken, err := cmd.Flags().GetBool(FlagStakeToken)
+			if err != nil {
+				return fmt.Errorf("invalid stake token flag")
+			}
+
+			stakeCapStr, err := cmd.Flags().GetString(FlagStakeCap)
+			if err != nil {
+				return fmt.Errorf("invalid stake cap: %w", err)
+			}
+
+			stakeCap, err := sdk.NewDecFromStr(stakeCapStr)
+			if err != nil {
+				return fmt.Errorf("invalid stake cap: %w", err)
+			}
+
+			stakeMinStr, err := cmd.Flags().GetString(FlagStakeMin)
+			if err != nil {
+				return fmt.Errorf("invalid stake min: %w", err)
+			}
+
+			stakeMin, ok := sdk.NewIntFromString(stakeMinStr)
+			if !ok {
+				return fmt.Errorf("invalid stake min: %s", stakeMinStr)
+			}
+
 			msg, err := govtypes.NewMsgSubmitProposal(
 				clientCtx.FromAddress,
 				title,
@@ -255,6 +283,9 @@ func GetTxProposalUpsertTokenRatesCmd() *cobra.Command {
 					denom,
 					rate,
 					feePayments,
+					stakeCap,
+					stakeMin,
+					stakeToken,
 				),
 			)
 			if err != nil {
@@ -280,6 +311,9 @@ func GetTxProposalUpsertTokenRatesCmd() *cobra.Command {
 	cmd.MarkFlagRequired(FlagTitle)
 	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
 	cmd.MarkFlagRequired(FlagDescription)
+	cmd.Flags().String(FlagStakeCap, "0.1", "rewards to be allocated for the token.")
+	cmd.Flags().String(FlagStakeMin, "1", "min amount to stake at a time.")
+	cmd.Flags().Bool(FlagStakeToken, false, "flag of if staking token or not.")
 
 	flags.AddTxFlagsToCmd(cmd)
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)
@@ -318,11 +352,39 @@ func GetTxUpsertTokenRateCmd() *cobra.Command {
 				return fmt.Errorf("invalid fee payments")
 			}
 
+			stakeToken, err := cmd.Flags().GetBool(FlagStakeToken)
+			if err != nil {
+				return fmt.Errorf("invalid stake token flag")
+			}
+
+			stakeCapStr, err := cmd.Flags().GetString(FlagStakeCap)
+			if err != nil {
+				return fmt.Errorf("invalid stake cap: %w", err)
+			}
+
+			stakeCap, err := sdk.NewDecFromStr(stakeCapStr)
+			if err != nil {
+				return fmt.Errorf("invalid stake cap: %w", err)
+			}
+
+			stakeMinStr, err := cmd.Flags().GetString(FlagStakeMin)
+			if err != nil {
+				return fmt.Errorf("invalid stake min: %w", err)
+			}
+
+			stakeMin, ok := sdk.NewIntFromString(stakeMinStr)
+			if !ok {
+				return fmt.Errorf("invalid stake min: %s", stakeMinStr)
+			}
+
 			msg := types.NewMsgUpsertTokenRate(
 				clientCtx.FromAddress,
 				denom,
 				rate,
 				feePayments,
+				stakeCap,
+				stakeMin,
+				stakeToken,
 			)
 
 			err = msg.ValidateBasic()
@@ -340,6 +402,9 @@ func GetTxUpsertTokenRateCmd() *cobra.Command {
 	cmd.MarkFlagRequired(FlagRate)
 	cmd.Flags().Bool(FlagFeePayments, true, "use registry as fee payment")
 	cmd.MarkFlagRequired(FlagFeePayments)
+	cmd.Flags().String(FlagStakeCap, "0.1", "rewards to be allocated for the token.")
+	cmd.Flags().String(FlagStakeMin, "1", "min amount to stake at a time.")
+	cmd.Flags().Bool(FlagStakeToken, false, "flag of if staking token or not.")
 
 	flags.AddTxFlagsToCmd(cmd)
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)
