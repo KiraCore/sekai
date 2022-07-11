@@ -36,6 +36,7 @@ func NewTxCmd() *cobra.Command {
 		GetTxClaimRewards(),
 		GetTxClaimUndelegation(),
 		GetTxSetCompoundInfo(),
+		GetTxRegisterDelegator(),
 	)
 
 	return txCmd
