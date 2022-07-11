@@ -25,6 +25,7 @@ func GetQueryCmd() *cobra.Command {
 		GetCmdQueryOutstandingRewards(),
 		GetCmdQueryUndelegations(),
 		GetCmdQueryCompoundInfo(),
+		GetCmdQueryStakingPoolDelegators(),
 	)
 
 	return queryCmd
@@ -110,7 +111,7 @@ func GetCmdQueryUndelegations() *cobra.Command {
 
 func GetCmdQueryCompoundInfo() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "compound-info",
+		Use:   "compound-info [delegator]",
 		Short: "Query compound information of a delegator",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -122,6 +123,33 @@ func GetCmdQueryCompoundInfo() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 			res, err := queryClient.CompoundInfo(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func GetCmdQueryStakingPoolDelegators() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "staking-pool-delegators [validator]",
+		Short: "Query staking pool delegators",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			params := &types.QueryStakingPoolDelegatorsRequest{
+				Validator: args[0],
+			}
+
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.StakingPoolDelegators(context.Background(), params)
 			if err != nil {
 				return err
 			}

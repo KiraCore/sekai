@@ -23,6 +23,9 @@ service Query {
   rpc CompoundInfo(QueryCompoundInfoRequest) returns (QueryCompoundInfoResponse) {
     option (google.api.http).get = "/kira/multistaking/v1beta1/compound_info/{delegator}";
   }
+  rpc StakingPoolDelegators(QueryStakingPoolDelegatorsRequest) returns (QueryStakingPoolDelegatorsResponse) {
+    option (google.api.http).get = "/kira/multistaking/v1beta1/staking_pool_delegators/{validator}";
+  }
 }
 
 message QueryStakingPoolsRequest {}
@@ -54,4 +57,13 @@ message QueryCompoundInfoRequest {
 
 message QueryCompoundInfoResponse {
   kira.multistaking.CompoundInfo info = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryStakingPoolDelegatorsRequest { 
+  string validator = 1;
+}
+
+message QueryStakingPoolDelegatorsResponse {
+  kira.multistaking.StakingPool pool = 1 [(gogoproto.nullable) = false];
+  repeated string delegators = 2;
 }

@@ -53,3 +53,21 @@ func (q Querier) CompoundInfo(c context.Context, request *types.QueryCompoundInf
 		Info: q.keeper.GetCompoundInfoByAddress(ctx, request.Delegator),
 	}, nil
 }
+
+func (q Querier) StakingPoolDelegators(c context.Context, request *types.QueryStakingPoolDelegatorsRequest) (*types.QueryStakingPoolDelegatorsResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+
+	pool, found := q.keeper.GetStakingPoolByValidator(ctx, request.Validator)
+	if !found {
+		return nil, types.ErrStakingPoolNotFound
+	}
+	delegators := q.keeper.GetPoolDelegators(ctx, pool.Id)
+	delegatorAddrs := []string{}
+	for _, delegator := range delegators {
+		delegatorAddrs = append(delegatorAddrs, delegator.String())
+	}
+	return &types.QueryStakingPoolDelegatorsResponse{
+		Pool:       pool,
+		Delegators: delegatorAddrs,
+	}, nil
+}
