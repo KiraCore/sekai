@@ -6,24 +6,24 @@ import "gogoproto/gogo.proto";
 option go_package = "github.com/KiraCore/sekai/x/tokens/types";
 
 message TokenRate {
-    string denom = 1; // denomination target
-    string fee_rate = 2 [
-      (gogoproto.moretags) = "yaml:\"fee_rate\"",
-      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-      (gogoproto.nullable) = false
-    ];                     // Exchange rate in terms of KEX token
-    bool fee_payments = 3; // Properties defining if it is enabled or disabled as fee payment method
-    string stake_cap = 4 [
-      (gogoproto.moretags) = "yaml:\"stake_cap\"",
-      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-      (gogoproto.nullable) = false
-    ];
-    string stake_min = 5 [
-      (gogoproto.moretags) = "yaml:\"stake_min\"",
-      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-      (gogoproto.nullable) = false
-    ];
-    bool stake_token = 6;
+  string denom = 1; // denomination target
+  string fee_rate = 2 [
+    (gogoproto.moretags) = "yaml:\"fee_rate\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];                     // Exchange rate in terms of KEX token
+  bool fee_payments = 3; // Properties defining if it is enabled or disabled as fee payment method
+  string stake_cap = 4 [
+    (gogoproto.moretags) = "yaml:\"stake_cap\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ]; // rewards cap, sum should be lower than 100%
+  string stake_min = 5 [
+    (gogoproto.moretags) = "yaml:\"stake_min\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  bool stake_token = 6;
 }
 
 message MsgUpsertTokenRate {
@@ -34,7 +34,18 @@ message MsgUpsertTokenRate {
         (gogoproto.nullable)   = false
     ]; // Exchange rate in terms of KEX token
     bool fee_payments = 3; // Properties defining if it is enabled or disabled as fee payment method
-    bytes proposer = 4 [
+    string stake_cap = 4 [
+      (gogoproto.moretags) = "yaml:\"stake_cap\"",
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+      (gogoproto.nullable) = false
+    ]; // rewards cap, sum should be lower than 100%
+    string stake_min = 5 [
+      (gogoproto.moretags) = "yaml:\"stake_min\"",
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+      (gogoproto.nullable) = false
+    ];
+    bool stake_token = 6;
+    bytes proposer = 7 [
         (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
         (gogoproto.moretags) = "yaml:\"proposer\""
     ];

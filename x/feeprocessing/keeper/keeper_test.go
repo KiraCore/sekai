@@ -43,7 +43,12 @@ func TestNewKeeper_Executions(t *testing.T) {
 	executions := app.FeeProcessingKeeper.GetExecutionsStatus(ctx)
 	require.True(t, len(executions) == 0)
 
-	msg1 := tokenstypes.NewMsgUpsertTokenRate(addr, "ukex", sdk.NewDec(1), true)
+	msg1 := tokenstypes.NewMsgUpsertTokenRate(
+		addr, "ukex", sdk.NewDec(1), true,
+		sdk.ZeroDec(),
+		sdk.ZeroInt(),
+		false,
+	)
 	app.FeeProcessingKeeper.AddExecutionStart(ctx, msg1)
 	executions = app.FeeProcessingKeeper.GetExecutionsStatus(ctx)
 	require.True(t, len(executions) == 1)
@@ -53,7 +58,12 @@ func TestNewKeeper_Executions(t *testing.T) {
 	executions = app.FeeProcessingKeeper.GetExecutionsStatus(ctx)
 	require.True(t, len(executions) == 2)
 
-	msg3 := tokenstypes.NewMsgUpsertTokenRate(addr, "ukex", sdk.NewDec(1), true)
+	msg3 := tokenstypes.NewMsgUpsertTokenRate(
+		addr, "ukex", sdk.NewDec(1), true,
+		sdk.ZeroDec(),
+		sdk.ZeroInt(),
+		false,
+	)
 	app.FeeProcessingKeeper.AddExecutionStart(ctx, msg3)
 	executions = app.FeeProcessingKeeper.GetExecutionsStatus(ctx)
 	require.True(t, len(executions) == 3)
@@ -162,7 +172,12 @@ func TestNewKeeper_ProcessExecutionFeeReturn(t *testing.T) {
 	// check failure fee
 	fees := sdk.Coins{sdk.NewInt64Coin("ukex", 1000)}
 	app.FeeProcessingKeeper.SendCoinsFromAccountToModule(ctx, addr, authtypes.FeeCollectorName, fees)
-	msg := tokenstypes.NewMsgUpsertTokenRate(addr, "ukex", sdk.NewDec(1), true)
+	msg := tokenstypes.NewMsgUpsertTokenRate(
+		addr, "ukex", sdk.NewDec(1), true,
+		sdk.ZeroDec(),
+		sdk.ZeroInt(),
+		false,
+	)
 	app.FeeProcessingKeeper.AddExecutionStart(ctx, msg)
 	app.FeeProcessingKeeper.ProcessExecutionFeeReturn(ctx)
 
@@ -188,8 +203,18 @@ func TestNewKeeper_ProcessExecutionFeeReturn(t *testing.T) {
 	// check success return when two message types are same but addresses are different
 	app.FeeProcessingKeeper.SendCoinsFromAccountToModule(ctx, addr2, authtypes.FeeCollectorName, fees)
 	app.FeeProcessingKeeper.SendCoinsFromAccountToModule(ctx, addr3, authtypes.FeeCollectorName, fees)
-	msg2 := tokenstypes.NewMsgUpsertTokenRate(addr2, "ukex", sdk.NewDec(1), true)
-	msg3 := tokenstypes.NewMsgUpsertTokenRate(addr3, "ukex", sdk.NewDec(1), true)
+	msg2 := tokenstypes.NewMsgUpsertTokenRate(
+		addr2, "ukex", sdk.NewDec(1), true,
+		sdk.ZeroDec(),
+		sdk.ZeroInt(),
+		false,
+	)
+	msg3 := tokenstypes.NewMsgUpsertTokenRate(
+		addr3, "ukex", sdk.NewDec(1), true,
+		sdk.ZeroDec(),
+		sdk.ZeroInt(),
+		false,
+	)
 	app.FeeProcessingKeeper.AddExecutionStart(ctx, msg3)
 	app.FeeProcessingKeeper.AddExecutionStart(ctx, msg2)
 	app.FeeProcessingKeeper.SetExecutionStatusSuccess(ctx, msg2)

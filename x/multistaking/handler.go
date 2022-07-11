@@ -31,6 +31,9 @@ func NewHandler(ck keeper.Keeper, bankKeeper types.BankKeeper, govkeeper govkeep
 		case *types.MsgClaimUndelegation:
 			res, err := msgServer.ClaimUndelegation(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgRegisterDelegator:
+			res, err := msgServer.RegisterDelegator(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
 		default:
 			return nil, errors.Wrapf(errors.ErrUnknownRequest, "unrecognized %s message type: %T", types.ModuleName, msg)
 		}

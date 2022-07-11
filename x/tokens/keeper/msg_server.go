@@ -78,6 +78,9 @@ func (k msgServer) UpsertTokenRate(goCtx context.Context, msg *types.MsgUpsertTo
 		msg.Denom,
 		msg.Rate,
 		msg.FeePayments,
+		msg.StakeCap,
+		msg.StakeMin,
+		msg.StakeToken,
 	))
 
 	if err != nil {

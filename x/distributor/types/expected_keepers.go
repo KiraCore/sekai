@@ -14,6 +14,7 @@ type CustomGovKeeper interface {
 }
 
 type BankKeeper interface {
+	GetSupply(ctx sdk.Context, denom string) sdk.Coin
 	GetAllBalances(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
 	MintCoins(ctx sdk.Context, moduleName string, amt sdk.Coins) error
 	BurnCoins(ctx sdk.Context, moduleName string, amt sdk.Coins) error

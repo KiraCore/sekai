@@ -1,4 +1,4 @@
-name: Create Branches & PRs
+name: Create version branch & PR <working>/* -> version
 
 on:
   push:
@@ -30,43 +30,47 @@ jobs:
               echo "(current dir): $PWD" && ls -l ./
               chmod -Rv 555 ./scripts
               RELEASE_VER=$(./scripts/version.sh) && echo "RELEASE_VER=$RELEASE_VER" >> $GITHUB_ENV
+              RELEASE_BRANCH="release/$RELEASE_VER" && echo "RELEASE_BRANCH=$RELEASE_BRANCH" >> $GITHUB_ENV
               REPOSITORY_NAME="${{ github.event.repository.name }}" && echo "REPOSITORY_NAME=$REPOSITORY_NAME" >> $GITHUB_ENV
               echo "SOURCE_BRANCH=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
+              echo "DEFAULT_BRANCH=${{ github.event.repository.default_branch }}" >> $GITHUB_ENV
               echo "MASTER_REF=$(git ls-remote https://github.com/kiracore/$REPOSITORY_NAME | head -1 | sed 's/HEAD//')" >> $GITHUB_ENV
               git ls-remote https://github.com/kiracore/$REPOSITORY_NAME | egrep -q "refs/tags/${RELEASE_VER}$" && echo "RELEASE_EXISTS=true" >> $GITHUB_ENV || echo "RELEASE_EXISTS=false" >> $GITHUB_ENV
-              git show-branch "remotes/origin/$RELEASE_VER" && echo "TARGET_BRANCH_EXISTS=true" >> $GITHUB_ENV || echo "TARGET_BRANCH_EXISTS=false" >> $GITHUB_ENV
+              ( git show-branch "origin/$RELEASE_BRANCH" || git show-branch "remotes/origin/$RELEASE_BRANCH" ) && echo "TARGET_BRANCH_EXISTS=true" >> $GITHUB_ENV || echo "TARGET_BRANCH_EXISTS=false" >> $GITHUB_ENV
           - name: Print debug data before publishing
             run: |
               echo "Repository name: ${{ env.REPOSITORY_NAME }}"
               echo "  Source branch: ${{ env.SOURCE_BRANCH }}"
+              echo " Default branch: ${{ env.DEFAULT_BRANCH }}"
               echo "  Master refer.: ${{ env.MASTER_REF }}"
               echo "Release version: ${{ env.RELEASE_VER }}"
+              echo " Release branch: ${{ env.RELEASE_BRANCH }}"
               echo " Release exists: ${{ env.RELEASE_EXISTS }}"
               echo "     Event name: ${{ github.event_name }}"
               echo "  Target Exists: ${{ env.TARGET_BRANCH_EXISTS }}"
-          # ref.: https://github.com/peterjgrainger/action-create-branch, v2.0.1
+          # ref.: https://github.com/peterjgrainger/action-create-branch, v2.2.0
           - name: Create version branch from master
-            uses: peterjgrainger/action-create-branch@40d33f921267ca130cbacc770f41fc7c501a420f
+            uses: peterjgrainger/action-create-branch@c2800a3a9edbba2218da6861fa46496cf8f3195a
             if: |
-               ( env.TARGET_BRANCH_EXISTS == false || env.TARGET_BRANCH_EXISTS == 'false' ) && 
+               ( env.TARGET_BRANCH_EXISTS == false || env.TARGET_BRANCH_EXISTS == 'false' ) &&
                ( env.RELEASE_EXISTS == false || env.RELEASE_EXISTS == 'false' ) && 
-               ( startsWith(env.RELEASE_VER, 'v') && contains(env.RELEASE_VER, '.') )
+               ( startsWith(env.RELEASE_BRANCH, 'release/v') && contains(env.RELEASE_BRANCH, '.') )
             env:
               GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             with:
-              branch: ${{ env.RELEASE_VER }}
+              branch: ${{ env.RELEASE_BRANCH }}
               sha: ${{ env.MASTER_REF }}
           - name: Create PR from feature to version branch
             # ref. repo-sync/pull-request is broken, using cea2aj/pull-request instead
             uses: cea2aj/pull-request@84eb0c3478f13651e5649367941b867ca02d7926
             if: |
-               ( env.TARGET_BRANCH_EXISTS == false || env.TARGET_BRANCH_EXISTS == 'false' ) && 
-               ( env.RELEASE_EXISTS == false || env.RELEASE_EXISTS == 'false' ) &&
-               ( startsWith(env.RELEASE_VER, 'v') && contains(env.RELEASE_VER, '.') )
+               ( env.TARGET_BRANCH_EXISTS == false || env.TARGET_BRANCH_EXISTS == 'false' ) &&
+               ( env.RELEASE_EXISTS == false || env.RELEASE_EXISTS == 'false' ) && 
+               ( startsWith(env.RELEASE_BRANCH, 'release/v') && contains(env.RELEASE_BRANCH, '.') )
             with:
               github_token: ${{ secrets.REPO_ACCESS }}
               source_branch: ${{ env.SOURCE_BRANCH }}
-              destination_branch: ${{ env.RELEASE_VER}}
-              pr_title: "${{ env.SOURCE_BRANCH }} -> ${{ env.RELEASE_VER }}" 
+              destination_branch: ${{ env.RELEASE_BRANCH}}
+              pr_title: "${{ env.SOURCE_BRANCH }} -> ${{ env.RELEASE_BRANCH }}" 
               pr_label: "kira-automation"
               pr_allow_empty: true
