@@ -199,7 +199,7 @@ jobs:
             uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5
             with:
               body_path: RELEASE.md
-              tag_name: ${{ env.SOURCE_BRANCH }}
+              tag_name: ${{ env.RELEASE_VER }}
               name: ${{ env.SOURCE_BRANCH }}
               prerelease: ${{ env.PRE_RELEASE }}
               draft: false
