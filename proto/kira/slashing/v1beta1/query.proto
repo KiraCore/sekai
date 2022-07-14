@@ -26,6 +26,22 @@ service Query {
   rpc SigningInfos(QuerySigningInfosRequest) returns (QuerySigningInfosResponse) {
     option (google.api.http).get = "/kira/slashing/v1beta1/signing_infos";
   }
+  // list all active slashing proposals
+  rpc SlashProposals(QuerySlashProposalsRequest) returns (QuerySlashProposalsResponse) {
+    option (google.api.http).get = "/kira/slashing/v1beta1/slash_proposals";
+  }
+  // list all staking pools that were slashed
+  rpc SlashedStakingPools(QuerySlashedStakingPoolsRequest) returns (QuerySlashedStakingPoolsResponse) {
+    option (google.api.http).get = "/kira/slashing/v1beta1/slashed_pools";
+  }
+  // list all staking pools to which tokens can be delegated
+  rpc ActiveStakingPools(QueryActiveStakingPoolsRequest) returns (QueryActiveStakingPoolsResponse) {
+    option (google.api.http).get = "/kira/slashing/v1beta1/active_pools";
+  }
+  // list all staking pools to which tokens can NOT be delegated because validator is not active
+  rpc InactiveStakingPools(QueryInactiveStakingPoolsRequest) returns (QueryInactiveStakingPoolsResponse) {
+    option (google.api.http).get = "/kira/slashing/v1beta1/inactive_pools";
+  }
 }
 
 // QueryParamsRequest is the request type for the Query/Params RPC method
@@ -80,3 +96,21 @@ message QuerySigningInfosResponse {
   repeated kira.staking.QueryValidator validators = 2 [(gogoproto.nullable) = false];
   cosmos.base.query.v1beta1.PageResponse pagination = 3 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
 }
+
+// list all active slashing proposals
+message QuerySlashProposalsRequest {}
+message QuerySlashProposalsResponse {}
+
+// list all staking pools that were slashed
+message QuerySlashedStakingPoolsRequest {}
+message QuerySlashedStakingPoolsResponse {}
+
+// list all staking pools to which tokens can be delegated
+message QueryActiveStakingPoolsRequest{}
+message QueryActiveStakingPoolsResponse {
+}
+
+// list all staking pools to which tokens can NOT be delegated because validator
+// is not active
+message QueryInactiveStakingPoolsRequest{}
+message QueryInactiveStakingPoolsResponse {}
