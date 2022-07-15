@@ -230,6 +230,27 @@ func (k Keeper) IncreasePoolRewards(ctx sdk.Context, pool types.StakingPool, rew
 	}
 }
 
+func (k Keeper) GetMinDelegatorWithValue(ctx sdk.Context, pool types.StakingPool) (sdk.AccAddress, sdk.Int) {
+	poolDelegators := k.GetPoolDelegators(ctx, pool.Id)
+	minDelegationValue := sdk.ZeroInt()
+	minDelegator := sdk.AccAddress{}
+	valAddr, err := sdk.ValAddressFromBech32(pool.Validator)
+	if err != nil {
+		return minDelegator, minDelegationValue
+	}
+	for _, delegator := range poolDelegators {
+		if delegator.String() == sdk.AccAddress(valAddr).String() {
+			continue
+		}
+		delegationValue := k.GetPoolDelegationValue(ctx, pool, delegator)
+		if minDelegationValue.IsZero() || minDelegationValue.GT(delegationValue) {
+			minDelegationValue = delegationValue
+			minDelegator = delegator
+		}
+	}
+	return minDelegator, minDelegationValue
+}
+
 func (k Keeper) Delegate(ctx sdk.Context, msg *types.MsgDelegate) error {
 	// check if validator is active
 	valAddr, err := sdk.ValAddressFromBech32(msg.ValidatorAddress)
@@ -261,20 +282,13 @@ func (k Keeper) Delegate(ctx sdk.Context, msg *types.MsgDelegate) error {
 		properties := k.govKeeper.GetNetworkProperties(ctx)
 		poolDelegators := k.GetPoolDelegators(ctx, pool.Id)
 		if len(poolDelegators) >= int(properties.MaxDelegators) {
-			minDelegationValue := sdk.ZeroInt()
-			minDelegator := sdk.AccAddress{}
-			for _, delegator := range poolDelegators {
-				delegationValue := k.GetPoolDelegationValue(ctx, pool, delegator)
-				if minDelegationValue.IsZero() || minDelegationValue.GT(delegationValue) {
-					minDelegationValue = delegationValue
-					minDelegator = delegator
-				}
-			}
+			minDelegator, minDelegationValue := k.GetMinDelegatorWithValue(ctx, pool)
 
 			// if it exceeds 10x of min delegation remove previous pool delegator
 			delegatorValue := k.GetPoolDelegationValue(ctx, pool, delegator)
 			newDelegatorValue := delegatorValue.Add(k.GetCoinsValue(ctx, msg.Amounts))
-			if newDelegatorValue.GTE(minDelegationValue.Mul(sdk.NewInt(int64(properties.MinDelegationPushout)))) {
+			if minDelegationValue.IsPositive() &&
+				newDelegatorValue.GTE(minDelegationValue.Mul(sdk.NewInt(int64(properties.MinDelegationPushout)))) {
 				k.RemovePoolDelegator(ctx, pool.Id, minDelegator)
 			} else {
 				return types.ErrMaxDelegatorsReached
@@ -355,19 +369,12 @@ func (k Keeper) RegisterDelegator(ctx sdk.Context, delegator sdk.AccAddress) {
 		properties := k.govKeeper.GetNetworkProperties(ctx)
 		poolDelegators := k.GetPoolDelegators(ctx, pool.Id)
 		if len(poolDelegators) >= int(properties.MaxDelegators) {
-			minDelegationValue := sdk.ZeroInt()
-			minDelegator := sdk.AccAddress{}
-			for _, delegator := range poolDelegators {
-				delegationValue := k.GetPoolDelegationValue(ctx, pool, delegator)
-				if minDelegationValue.IsZero() || minDelegationValue.GT(delegationValue) {
-					minDelegationValue = delegationValue
-					minDelegator = delegator
-				}
-			}
+			minDelegator, minDelegationValue := k.GetMinDelegatorWithValue(ctx, pool)
 
 			// if it exceeds 10x of min delegation remove previous pool delegator
 			delegatorValue := k.GetPoolDelegationValue(ctx, pool, delegator)
-			if delegatorValue.GTE(minDelegationValue.Mul(sdk.NewInt(int64(properties.MinDelegationPushout)))) {
+			if minDelegationValue.IsPositive() &&
+				delegatorValue.GTE(minDelegationValue.Mul(sdk.NewInt(int64(properties.MinDelegationPushout)))) {
 				k.RemovePoolDelegator(ctx, pool.Id, minDelegator)
 			} else {
 				continue
