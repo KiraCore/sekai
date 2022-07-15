@@ -417,6 +417,299 @@ func (m *QuerySigningInfosResponse) GetPagination() *github_com_cosmos_cosmos_sd
 	return nil
 }
 
+// list all active slashing proposals
+type QuerySlashProposalsRequest struct {
+}
+
+func (m *QuerySlashProposalsRequest) Reset()         { *m = QuerySlashProposalsRequest{} }
+func (m *QuerySlashProposalsRequest) String() string { return proto.CompactTextString(m) }
+func (*QuerySlashProposalsRequest) ProtoMessage()    {}
+func (*QuerySlashProposalsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_7e241c76ab2d5716, []int{7}
+}
+func (m *QuerySlashProposalsRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QuerySlashProposalsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QuerySlashProposalsRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QuerySlashProposalsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QuerySlashProposalsRequest.Merge(m, src)
+}
+func (m *QuerySlashProposalsRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QuerySlashProposalsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QuerySlashProposalsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QuerySlashProposalsRequest proto.InternalMessageInfo
+
+type QuerySlashProposalsResponse struct {
+}
+
+func (m *QuerySlashProposalsResponse) Reset()         { *m = QuerySlashProposalsResponse{} }
+func (m *QuerySlashProposalsResponse) String() string { return proto.CompactTextString(m) }
+func (*QuerySlashProposalsResponse) ProtoMessage()    {}
+func (*QuerySlashProposalsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_7e241c76ab2d5716, []int{8}
+}
+func (m *QuerySlashProposalsResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QuerySlashProposalsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QuerySlashProposalsResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QuerySlashProposalsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QuerySlashProposalsResponse.Merge(m, src)
+}
+func (m *QuerySlashProposalsResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QuerySlashProposalsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QuerySlashProposalsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QuerySlashProposalsResponse proto.InternalMessageInfo
+
+// list all staking pools that were slashed
+type QuerySlashedStakingPoolsRequest struct {
+}
+
+func (m *QuerySlashedStakingPoolsRequest) Reset()         { *m = QuerySlashedStakingPoolsRequest{} }
+func (m *QuerySlashedStakingPoolsRequest) String() string { return proto.CompactTextString(m) }
+func (*QuerySlashedStakingPoolsRequest) ProtoMessage()    {}
+func (*QuerySlashedStakingPoolsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_7e241c76ab2d5716, []int{9}
+}
+func (m *QuerySlashedStakingPoolsRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QuerySlashedStakingPoolsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QuerySlashedStakingPoolsRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QuerySlashedStakingPoolsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QuerySlashedStakingPoolsRequest.Merge(m, src)
+}
+func (m *QuerySlashedStakingPoolsRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QuerySlashedStakingPoolsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QuerySlashedStakingPoolsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QuerySlashedStakingPoolsRequest proto.InternalMessageInfo
+
+type QuerySlashedStakingPoolsResponse struct {
+}
+
+func (m *QuerySlashedStakingPoolsResponse) Reset()         { *m = QuerySlashedStakingPoolsResponse{} }
+func (m *QuerySlashedStakingPoolsResponse) String() string { return proto.CompactTextString(m) }
+func (*QuerySlashedStakingPoolsResponse) ProtoMessage()    {}
+func (*QuerySlashedStakingPoolsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_7e241c76ab2d5716, []int{10}
+}
+func (m *QuerySlashedStakingPoolsResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QuerySlashedStakingPoolsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QuerySlashedStakingPoolsResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QuerySlashedStakingPoolsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QuerySlashedStakingPoolsResponse.Merge(m, src)
+}
+func (m *QuerySlashedStakingPoolsResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QuerySlashedStakingPoolsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QuerySlashedStakingPoolsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QuerySlashedStakingPoolsResponse proto.InternalMessageInfo
+
+// list all staking pools to which tokens can be delegated
+type QueryActiveStakingPoolsRequest struct {
+}
+
+func (m *QueryActiveStakingPoolsRequest) Reset()         { *m = QueryActiveStakingPoolsRequest{} }
+func (m *QueryActiveStakingPoolsRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryActiveStakingPoolsRequest) ProtoMessage()    {}
+func (*QueryActiveStakingPoolsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_7e241c76ab2d5716, []int{11}
+}
+func (m *QueryActiveStakingPoolsRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryActiveStakingPoolsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryActiveStakingPoolsRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryActiveStakingPoolsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryActiveStakingPoolsRequest.Merge(m, src)
+}
+func (m *QueryActiveStakingPoolsRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryActiveStakingPoolsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryActiveStakingPoolsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryActiveStakingPoolsRequest proto.InternalMessageInfo
+
+type QueryActiveStakingPoolsResponse struct {
+}
+
+func (m *QueryActiveStakingPoolsResponse) Reset()         { *m = QueryActiveStakingPoolsResponse{} }
+func (m *QueryActiveStakingPoolsResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryActiveStakingPoolsResponse) ProtoMessage()    {}
+func (*QueryActiveStakingPoolsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_7e241c76ab2d5716, []int{12}
+}
+func (m *QueryActiveStakingPoolsResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryActiveStakingPoolsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryActiveStakingPoolsResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryActiveStakingPoolsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryActiveStakingPoolsResponse.Merge(m, src)
+}
+func (m *QueryActiveStakingPoolsResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryActiveStakingPoolsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryActiveStakingPoolsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryActiveStakingPoolsResponse proto.InternalMessageInfo
+
+// list all staking pools to which tokens can NOT be delegated because validator
+// is not active
+type QueryInactiveStakingPoolsRequest struct {
+}
+
+func (m *QueryInactiveStakingPoolsRequest) Reset()         { *m = QueryInactiveStakingPoolsRequest{} }
+func (m *QueryInactiveStakingPoolsRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryInactiveStakingPoolsRequest) ProtoMessage()    {}
+func (*QueryInactiveStakingPoolsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_7e241c76ab2d5716, []int{13}
+}
+func (m *QueryInactiveStakingPoolsRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryInactiveStakingPoolsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryInactiveStakingPoolsRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryInactiveStakingPoolsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryInactiveStakingPoolsRequest.Merge(m, src)
+}
+func (m *QueryInactiveStakingPoolsRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryInactiveStakingPoolsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryInactiveStakingPoolsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryInactiveStakingPoolsRequest proto.InternalMessageInfo
+
+type QueryInactiveStakingPoolsResponse struct {
+}
+
+func (m *QueryInactiveStakingPoolsResponse) Reset()         { *m = QueryInactiveStakingPoolsResponse{} }
+func (m *QueryInactiveStakingPoolsResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryInactiveStakingPoolsResponse) ProtoMessage()    {}
+func (*QueryInactiveStakingPoolsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_7e241c76ab2d5716, []int{14}
+}
+func (m *QueryInactiveStakingPoolsResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryInactiveStakingPoolsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryInactiveStakingPoolsResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryInactiveStakingPoolsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryInactiveStakingPoolsResponse.Merge(m, src)
+}
+func (m *QueryInactiveStakingPoolsResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryInactiveStakingPoolsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryInactiveStakingPoolsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryInactiveStakingPoolsResponse proto.InternalMessageInfo
+
 func init() {
 	proto.RegisterType((*QueryParamsRequest)(nil), "kira.slashing.QueryParamsRequest")
 	proto.RegisterType((*QueryParamsResponse)(nil), "kira.slashing.QueryParamsResponse")
@@ -426,62 +719,82 @@ func init() {
 	proto.RegisterType((*QuerySigningInfoResponse)(nil), "kira.slashing.QuerySigningInfoResponse")
 	proto.RegisterType((*QuerySigningInfosRequest)(nil), "kira.slashing.QuerySigningInfosRequest")
 	proto.RegisterType((*QuerySigningInfosResponse)(nil), "kira.slashing.QuerySigningInfosResponse")
+	proto.RegisterType((*QuerySlashProposalsRequest)(nil), "kira.slashing.QuerySlashProposalsRequest")
+	proto.RegisterType((*QuerySlashProposalsResponse)(nil), "kira.slashing.QuerySlashProposalsResponse")
+	proto.RegisterType((*QuerySlashedStakingPoolsRequest)(nil), "kira.slashing.QuerySlashedStakingPoolsRequest")
+	proto.RegisterType((*QuerySlashedStakingPoolsResponse)(nil), "kira.slashing.QuerySlashedStakingPoolsResponse")
+	proto.RegisterType((*QueryActiveStakingPoolsRequest)(nil), "kira.slashing.QueryActiveStakingPoolsRequest")
+	proto.RegisterType((*QueryActiveStakingPoolsResponse)(nil), "kira.slashing.QueryActiveStakingPoolsResponse")
+	proto.RegisterType((*QueryInactiveStakingPoolsRequest)(nil), "kira.slashing.QueryInactiveStakingPoolsRequest")
+	proto.RegisterType((*QueryInactiveStakingPoolsResponse)(nil), "kira.slashing.QueryInactiveStakingPoolsResponse")
 }
 
 func init() { proto.RegisterFile("kira/slashing/v1beta1/query.proto", fileDescriptor_7e241c76ab2d5716) }
 
 var fileDescriptor_7e241c76ab2d5716 = []byte{
-	// 795 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x54, 0x4f, 0x4f, 0x13, 0x41,
-	0x14, 0xef, 0xf6, 0x0f, 0xa1, 0x53, 0x24, 0x38, 0x62, 0x5c, 0x1b, 0x6c, 0x61, 0x45, 0x68, 0x50,
-	0x77, 0x43, 0x91, 0xa4, 0x62, 0x34, 0x5a, 0xf5, 0x80, 0x5e, 0x70, 0x31, 0x1e, 0xbc, 0x34, 0xd3,
-	0xee, 0xb0, 0x4c, 0xda, 0xee, 0x94, 0x9d, 0x69, 0x63, 0x63, 0x4c, 0x0c, 0x5f, 0x40, 0x12, 0x8f,
-	0x5e, 0x4c, 0xfc, 0x00, 0xc6, 0x6f, 0x41, 0x3c, 0x91, 0x78, 0xf1, 0x84, 0x06, 0x3c, 0xf8, 0x11,
-	0x0c, 0x27, 0xb3, 0x33, 0xd3, 0x76, 0x0b, 0xd5, 0xc2, 0xa9, 0xdd, 0x37, 0xbf, 0xf7, 0x7b, 0xbf,
-	0xf9, 0xcd, 0x7b, 0x0f, 0xcc, 0x54, 0x89, 0x8f, 0x2c, 0x56, 0x43, 0x6c, 0x93, 0x78, 0xae, 0xd5,
-	0x5a, 0x2c, 0x63, 0x8e, 0x16, 0xad, 0xad, 0x26, 0xf6, 0xdb, 0x66, 0xc3, 0xa7, 0x9c, 0xc2, 0x73,
-	0x01, 0xc4, 0xec, 0x40, 0xd2, 0x93, 0x2e, 0x75, 0xa9, 0x38, 0xb1, 0x82, 0x7f, 0x12, 0x94, 0x9e,
-	0x72, 0x29, 0x75, 0x6b, 0xd8, 0x42, 0x0d, 0x62, 0x21, 0xcf, 0xa3, 0x1c, 0x71, 0x42, 0x3d, 0xa6,
-	0x4e, 0xb3, 0xea, 0x54, 0x7c, 0x95, 0x9b, 0x1b, 0x16, 0x27, 0x75, 0xcc, 0x38, 0xaa, 0x37, 0x14,
-	0x60, 0xa1, 0x42, 0x59, 0x9d, 0x32, 0xab, 0x8c, 0x18, 0x96, 0xc5, 0xbb, 0x52, 0x1a, 0xc8, 0x25,
-	0x9e, 0x60, 0x53, 0xd8, 0xd9, 0xc1, 0x92, 0x3b, 0x01, 0x85, 0xd2, 0x25, 0x8a, 0xa3, 0x6a, 0x00,
-	0x0a, 0xdd, 0xc7, 0x98, 0x04, 0xf0, 0x59, 0xf0, 0xb9, 0x86, 0x7c, 0x54, 0x67, 0x36, 0xde, 0x6a,
-	0x62, 0xc6, 0x8d, 0x27, 0xe0, 0x42, 0x5f, 0x94, 0x35, 0xa8, 0xc7, 0x30, 0x5c, 0x02, 0x23, 0x0d,
-	0x11, 0xd1, 0xb5, 0x69, 0x2d, 0x97, 0xca, 0x5f, 0x34, 0xfb, 0xdc, 0x30, 0x25, 0xbc, 0x18, 0xdf,
-	0xdd, 0xcf, 0x46, 0x6c, 0x05, 0x35, 0xfe, 0x68, 0x60, 0x7c, 0xd5, 0xc1, 0x1e, 0x27, 0xbc, 0x6d,
-	0xe3, 0x0a, 0xf5, 0x1d, 0x38, 0x0e, 0xa2, 0xc4, 0x11, 0x1c, 0x71, 0x3b, 0x4a, 0x1c, 0x78, 0x0f,
-	0x24, 0x88, 0xb7, 0x41, 0x99, 0x1e, 0x9b, 0x8e, 0xe5, 0x52, 0xf9, 0xdc, 0x31, 0xda, 0xfe, 0x6c,
-	0x73, 0x35, 0x80, 0x3e, 0xf6, 0xb8, 0xdf, 0xb6, 0x65, 0x1a, 0x2c, 0x80, 0xb8, 0x83, 0x38, 0xd6,
-	0xe3, 0x42, 0x55, 0xda, 0x94, 0x06, 0x9b, 0x1d, 0x83, 0xcd, 0xe7, 0x1d, 0x83, 0x8b, 0xa3, 0x81,
-	0xb4, 0x9d, 0x1f, 0x59, 0xcd, 0x16, 0x19, 0x70, 0x0a, 0x24, 0x5b, 0xd8, 0x27, 0x1b, 0x04, 0xfb,
-	0x4c, 0x4f, 0x4c, 0xc7, 0x72, 0x49, 0xbb, 0x17, 0x48, 0x17, 0x00, 0xe8, 0x15, 0x83, 0x13, 0x20,
-	0x56, 0xc5, 0x6d, 0x21, 0x3b, 0x69, 0x07, 0x7f, 0xe1, 0x24, 0x48, 0xb4, 0x50, 0xad, 0x89, 0xf5,
-	0xa8, 0x88, 0xc9, 0x8f, 0x95, 0x68, 0x41, 0x5b, 0x89, 0xff, 0xfe, 0x98, 0xd5, 0x0c, 0x02, 0x2e,
-	0x09, 0x1b, 0xd7, 0x89, 0xeb, 0x11, 0xcf, 0x0d, 0xb8, 0x94, 0xc3, 0x70, 0x06, 0x8c, 0x55, 0xa8,
-	0xc7, 0x4a, 0xc8, 0x71, 0x7c, 0xcc, 0x98, 0x62, 0x4d, 0x05, 0xb1, 0x07, 0x32, 0x04, 0xaf, 0x83,
-	0xf3, 0xc4, 0xab, 0xd4, 0x9a, 0x0e, 0x2e, 0xb5, 0x50, 0x8d, 0x38, 0x88, 0x53, 0x5f, 0x54, 0x1a,
-	0xb5, 0x27, 0xd4, 0xc1, 0x8b, 0x4e, 0xdc, 0xf8, 0xa2, 0x01, 0xfd, 0x64, 0x2d, 0xf5, 0x6e, 0xeb,
-	0x60, 0xa2, 0x85, 0x6a, 0x25, 0x26, 0x8f, 0x4a, 0x81, 0x69, 0xea, 0x05, 0xaf, 0x1e, 0xb3, 0xba,
-	0x4b, 0x18, 0xa2, 0x51, 0xef, 0x39, 0xde, 0x42, 0xb5, 0x50, 0x14, 0xde, 0x07, 0xc9, 0x7e, 0x59,
-	0xa9, 0xfc, 0x94, 0x62, 0x93, 0x7d, 0x66, 0x0a, 0x3d, 0x5d, 0x46, 0x45, 0xd3, 0x4b, 0x32, 0xbe,
-	0x0e, 0xd0, 0xdc, 0x69, 0x41, 0xf8, 0x56, 0x03, 0xa0, 0xd7, 0xed, 0x4a, 0xee, 0x9c, 0x29, 0x47,
-	0xc3, 0x0c, 0x46, 0xc3, 0x94, 0x7d, 0xac, 0x5a, 0xde, 0x5c, 0x43, 0x2e, 0x56, 0xc9, 0xc5, 0xc2,
-	0xd1, 0x7e, 0xf6, 0x96, 0x4b, 0xf8, 0x66, 0xb3, 0x6c, 0x56, 0x68, 0xdd, 0x52, 0x03, 0x25, 0x7f,
-	0x6e, 0x32, 0xa7, 0x6a, 0xf1, 0x76, 0x03, 0x33, 0x35, 0x09, 0xa1, 0x4c, 0x3b, 0x54, 0xf3, 0x6c,
-	0x0f, 0xf0, 0x29, 0x0a, 0x2e, 0x0f, 0xb8, 0x8c, 0x7a, 0x81, 0xbb, 0x20, 0xae, 0x5c, 0x8f, 0x9d,
-	0xcd, 0x75, 0x91, 0x06, 0x8b, 0x00, 0x74, 0x15, 0x30, 0x3d, 0x2a, 0x48, 0x4e, 0x63, 0x76, 0x28,
-	0x0b, 0x6e, 0xf7, 0x1b, 0x1a, 0x13, 0x86, 0xce, 0x0f, 0x35, 0x54, 0x5e, 0xa0, 0x78, 0xfb, 0x68,
-	0x3f, 0xbb, 0x7c, 0x46, 0x47, 0x65, 0x6a, 0xd8, 0xd2, 0xfc, 0xe7, 0x18, 0x48, 0x08, 0xa5, 0xb0,
-	0x05, 0x46, 0xe4, 0xba, 0x80, 0x33, 0xc7, 0xdc, 0x38, 0xb9, 0x8f, 0xd2, 0xc6, 0xff, 0x20, 0xb2,
-	0x8c, 0x71, 0x6d, 0xfb, 0xdb, 0xaf, 0xf7, 0xd1, 0x2c, 0xbc, 0x62, 0x0d, 0x5e, 0x89, 0x72, 0x1d,
-	0xc1, 0x0f, 0x1a, 0x48, 0x85, 0xdb, 0x78, 0x6e, 0x10, 0xf5, 0xc9, 0x81, 0x4d, 0xcf, 0x0f, 0xc5,
-	0x29, 0x1d, 0x77, 0x84, 0x8e, 0x65, 0xb8, 0xf4, 0x0f, 0x1d, 0xe1, 0x29, 0x64, 0xd6, 0xeb, 0xf0,
-	0x16, 0x78, 0x03, 0xdf, 0x69, 0x60, 0x2c, 0xdc, 0x40, 0x70, 0x58, 0xd9, 0xae, 0x45, 0xb9, 0xe1,
-	0x40, 0x25, 0xf0, 0x86, 0x10, 0x38, 0x07, 0x67, 0x4f, 0x23, 0xb0, 0xf8, 0x68, 0xf7, 0x20, 0xa3,
-	0xed, 0x1d, 0x64, 0xb4, 0x9f, 0x07, 0x19, 0x6d, 0xe7, 0x30, 0x13, 0xd9, 0x3b, 0xcc, 0x44, 0xbe,
-	0x1f, 0x66, 0x22, 0x2f, 0x17, 0x42, 0xed, 0xf0, 0x94, 0xf8, 0xe8, 0x21, 0xf5, 0xb1, 0xc5, 0x70,
-	0x15, 0x11, 0xeb, 0x55, 0x8f, 0x55, 0xb4, 0x45, 0x79, 0x44, 0xec, 0xe2, 0xa5, 0xbf, 0x01, 0x00,
-	0x00, 0xff, 0xff, 0xa2, 0x84, 0xe8, 0x4d, 0x62, 0x07, 0x00, 0x00,
+	// 990 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x56, 0xcf, 0x6f, 0x1b, 0x45,
+	0x14, 0xce, 0xda, 0x4e, 0x94, 0x3c, 0x97, 0x28, 0x4c, 0x83, 0x30, 0x4b, 0xea, 0x1f, 0x9b, 0x26,
+	0x31, 0x29, 0x99, 0xa5, 0x09, 0x95, 0x42, 0x11, 0x88, 0x1a, 0x38, 0x04, 0x2e, 0x61, 0x83, 0x38,
+	0x70, 0xb1, 0xc6, 0xde, 0xc9, 0x76, 0x64, 0x7b, 0x67, 0xbb, 0xb3, 0xb6, 0xb0, 0x10, 0x12, 0xea,
+	0x3f, 0x40, 0x25, 0x0e, 0x1c, 0xb8, 0x54, 0x82, 0x03, 0x57, 0xfe, 0x01, 0xce, 0x15, 0xa7, 0x4a,
+	0x5c, 0x38, 0x05, 0x94, 0x70, 0xe0, 0x4f, 0x40, 0x3d, 0xa1, 0x9d, 0x99, 0xb5, 0xd7, 0xc9, 0x3a,
+	0x71, 0x4e, 0xb1, 0xdf, 0x7c, 0xef, 0x7b, 0xdf, 0x7c, 0xf3, 0xde, 0x73, 0xa0, 0xd6, 0x61, 0x21,
+	0xb1, 0x45, 0x97, 0x88, 0x87, 0xcc, 0xf7, 0xec, 0xc1, 0xdd, 0x16, 0x8d, 0xc8, 0x5d, 0xfb, 0x51,
+	0x9f, 0x86, 0x43, 0x1c, 0x84, 0x3c, 0xe2, 0xe8, 0xa5, 0x18, 0x82, 0x13, 0x88, 0xb9, 0xea, 0x71,
+	0x8f, 0xcb, 0x13, 0x3b, 0xfe, 0xa4, 0x40, 0xe6, 0x9a, 0xc7, 0xb9, 0xd7, 0xa5, 0x36, 0x09, 0x98,
+	0x4d, 0x7c, 0x9f, 0x47, 0x24, 0x62, 0xdc, 0x17, 0xfa, 0xb4, 0xa2, 0x4f, 0xe5, 0xb7, 0x56, 0xff,
+	0xd8, 0x8e, 0x58, 0x8f, 0x8a, 0x88, 0xf4, 0x02, 0x0d, 0xd8, 0x6e, 0x73, 0xd1, 0xe3, 0xc2, 0x6e,
+	0x11, 0x41, 0x55, 0xf1, 0x91, 0x94, 0x80, 0x78, 0xcc, 0x97, 0x6c, 0x1a, 0x7b, 0x3b, 0x5b, 0x72,
+	0x12, 0xd0, 0xa8, 0x92, 0x42, 0x45, 0xa4, 0x13, 0x83, 0x52, 0xf7, 0xb1, 0x56, 0x01, 0x7d, 0x16,
+	0x7f, 0x3d, 0x24, 0x21, 0xe9, 0x09, 0x87, 0x3e, 0xea, 0x53, 0x11, 0x59, 0x9f, 0xc0, 0xcd, 0x89,
+	0xa8, 0x08, 0xb8, 0x2f, 0x28, 0xda, 0x83, 0x85, 0x40, 0x46, 0x4a, 0x46, 0xd5, 0xa8, 0x17, 0x77,
+	0x5f, 0xc1, 0x13, 0x6e, 0x60, 0x05, 0x6f, 0x14, 0x9e, 0x9d, 0x54, 0xe6, 0x1c, 0x0d, 0xb5, 0xfe,
+	0x33, 0x60, 0xf9, 0xc0, 0xa5, 0x7e, 0xc4, 0xa2, 0xa1, 0x43, 0xdb, 0x3c, 0x74, 0xd1, 0x32, 0xe4,
+	0x98, 0x2b, 0x39, 0x0a, 0x4e, 0x8e, 0xb9, 0xe8, 0x7d, 0x98, 0x67, 0xfe, 0x31, 0x17, 0xa5, 0x7c,
+	0x35, 0x5f, 0x2f, 0xee, 0xd6, 0xcf, 0xd1, 0x4e, 0x66, 0xe3, 0x83, 0x18, 0xfa, 0xb1, 0x1f, 0x85,
+	0x43, 0x47, 0xa5, 0xa1, 0x7d, 0x28, 0xb8, 0x24, 0xa2, 0xa5, 0x82, 0x54, 0x65, 0x62, 0x65, 0x30,
+	0x4e, 0x0c, 0xc6, 0x9f, 0x27, 0x06, 0x37, 0x16, 0x63, 0x69, 0x4f, 0xfe, 0xaa, 0x18, 0x8e, 0xcc,
+	0x40, 0x6b, 0xb0, 0x34, 0xa0, 0x21, 0x3b, 0x66, 0x34, 0x14, 0xa5, 0xf9, 0x6a, 0xbe, 0xbe, 0xe4,
+	0x8c, 0x03, 0xe6, 0x3e, 0xc0, 0xb8, 0x18, 0x5a, 0x81, 0x7c, 0x87, 0x0e, 0xa5, 0xec, 0x25, 0x27,
+	0xfe, 0x88, 0x56, 0x61, 0x7e, 0x40, 0xba, 0x7d, 0x5a, 0xca, 0xc9, 0x98, 0xfa, 0x72, 0x3f, 0xb7,
+	0x6f, 0xdc, 0x2f, 0xfc, 0xfb, 0xb4, 0x62, 0x58, 0x0c, 0x5e, 0x95, 0x36, 0x1e, 0x31, 0xcf, 0x67,
+	0xbe, 0x17, 0x73, 0x69, 0x87, 0x51, 0x0d, 0x6e, 0xb4, 0xb9, 0x2f, 0x9a, 0xc4, 0x75, 0x43, 0x2a,
+	0x84, 0x66, 0x2d, 0xc6, 0xb1, 0x07, 0x2a, 0x84, 0xee, 0xc0, 0xcb, 0xcc, 0x6f, 0x77, 0xfb, 0x2e,
+	0x6d, 0x0e, 0x48, 0x97, 0xb9, 0x24, 0xe2, 0xa1, 0xac, 0xb4, 0xe8, 0xac, 0xe8, 0x83, 0x2f, 0x92,
+	0xb8, 0xf5, 0xab, 0x01, 0xa5, 0x8b, 0xb5, 0xf4, 0xbb, 0x1d, 0xc1, 0xca, 0x80, 0x74, 0x9b, 0x42,
+	0x1d, 0x35, 0x63, 0xd3, 0xf4, 0x0b, 0xae, 0x9f, 0xb3, 0x7a, 0x44, 0x98, 0xa2, 0xd1, 0xef, 0xb9,
+	0x3c, 0x20, 0xdd, 0x54, 0x14, 0x7d, 0x00, 0x4b, 0x93, 0xb2, 0x8a, 0xbb, 0x6b, 0x9a, 0x4d, 0xf5,
+	0x19, 0x96, 0x7a, 0x46, 0x8c, 0x9a, 0x66, 0x9c, 0x64, 0xfd, 0x9e, 0xa1, 0x39, 0x69, 0x41, 0xf4,
+	0xad, 0x01, 0x30, 0xee, 0x76, 0x2d, 0x77, 0x13, 0xab, 0xd1, 0xc0, 0xf1, 0x68, 0x60, 0xd5, 0xc7,
+	0xba, 0xe5, 0xf1, 0x21, 0xf1, 0xa8, 0x4e, 0x6e, 0xec, 0xbf, 0x38, 0xa9, 0xbc, 0xed, 0xb1, 0xe8,
+	0x61, 0xbf, 0x85, 0xdb, 0xbc, 0x67, 0xeb, 0x81, 0x52, 0x7f, 0x76, 0x84, 0xdb, 0xb1, 0xa3, 0x61,
+	0x40, 0x85, 0x9e, 0x84, 0x54, 0xa6, 0x93, 0xaa, 0x79, 0xbd, 0x07, 0xf8, 0x29, 0x07, 0xaf, 0x65,
+	0x5c, 0x46, 0xbf, 0xc0, 0x7b, 0x50, 0xd0, 0xae, 0xe7, 0xaf, 0xe7, 0xba, 0x4c, 0x43, 0x0d, 0x80,
+	0x91, 0x02, 0x51, 0xca, 0x49, 0x92, 0x59, 0xcc, 0x4e, 0x65, 0xa1, 0xc7, 0x93, 0x86, 0xe6, 0xa5,
+	0xa1, 0x5b, 0x57, 0x1a, 0xaa, 0x2e, 0xd0, 0x78, 0xe7, 0xc5, 0x49, 0xe5, 0xde, 0x35, 0x1d, 0x55,
+	0xa9, 0x69, 0x4b, 0xad, 0x35, 0x30, 0x95, 0x49, 0xf1, 0xd5, 0x0f, 0x43, 0x1e, 0x70, 0x41, 0xba,
+	0xa3, 0xb5, 0x73, 0x0b, 0x5e, 0xcf, 0x3c, 0x55, 0x44, 0x56, 0x0d, 0x2a, 0xe3, 0x63, 0xea, 0x1e,
+	0xa9, 0x9b, 0x1f, 0x72, 0x3e, 0x66, 0xb0, 0xa0, 0x3a, 0x1d, 0xa2, 0x69, 0xaa, 0x50, 0x96, 0x98,
+	0x07, 0xed, 0x88, 0x0d, 0x68, 0x16, 0x4b, 0x52, 0x28, 0x0b, 0xa1, 0x49, 0x92, 0x42, 0x07, 0x3e,
+	0x99, 0x4a, 0xb3, 0x0e, 0xb5, 0x4b, 0x30, 0x8a, 0x68, 0xf7, 0xb7, 0x45, 0x98, 0x97, 0x28, 0x34,
+	0x80, 0x05, 0xb5, 0x40, 0x51, 0xed, 0x5c, 0x7f, 0x5c, 0xdc, 0xd0, 0xa6, 0x75, 0x19, 0x44, 0x6b,
+	0xdc, 0x78, 0xfc, 0xc7, 0x3f, 0xdf, 0xe7, 0x2a, 0xe8, 0x96, 0x9d, 0xfd, 0x23, 0xa1, 0x16, 0x34,
+	0xfa, 0xd1, 0x80, 0x62, 0x7a, 0xb0, 0x37, 0xb3, 0xa8, 0x2f, 0xae, 0x30, 0x73, 0xeb, 0x4a, 0x9c,
+	0xd6, 0xf1, 0xae, 0xd4, 0x71, 0x0f, 0xed, 0x4d, 0xd1, 0x91, 0xde, 0x4b, 0xc2, 0xfe, 0x3a, 0xbd,
+	0x17, 0xbf, 0x41, 0xdf, 0x19, 0x70, 0x23, 0x3d, 0x52, 0xe8, 0xaa, 0xb2, 0x23, 0x8b, 0xea, 0x57,
+	0x03, 0xb5, 0xc0, 0x37, 0xa5, 0xc0, 0x4d, 0x74, 0x7b, 0x16, 0x81, 0xe8, 0x07, 0x03, 0x96, 0x27,
+	0x3b, 0x14, 0xbd, 0x91, 0x59, 0x2a, 0xab, 0xc7, 0xcd, 0xed, 0x59, 0xa0, 0x5a, 0x17, 0x96, 0xba,
+	0xea, 0x68, 0xd3, 0xbe, 0xe4, 0x57, 0xbe, 0x19, 0x8c, 0x64, 0xfc, 0x6c, 0xc0, 0xcd, 0x8c, 0xce,
+	0x47, 0x78, 0x6a, 0xcd, 0xcc, 0x29, 0x32, 0xed, 0x99, 0xf1, 0xb3, 0x1a, 0xa8, 0x72, 0x9b, 0x81,
+	0x94, 0xf3, 0xd4, 0x00, 0x74, 0x71, 0xb4, 0xd0, 0x4e, 0x56, 0xd5, 0xa9, 0x43, 0x6a, 0xe2, 0x59,
+	0xe1, 0x5a, 0xe3, 0x1d, 0xa9, 0x71, 0x03, 0xad, 0x4f, 0xd1, 0xa8, 0x66, 0x54, 0x4b, 0xfc, 0xc5,
+	0x80, 0xd5, 0xac, 0xb1, 0x45, 0x99, 0xd6, 0x5c, 0xb2, 0x04, 0xcc, 0xb7, 0x66, 0x4f, 0xd0, 0x42,
+	0x77, 0xa4, 0xd0, 0x2d, 0xb4, 0x31, 0x45, 0x28, 0xf3, 0xd3, 0x52, 0x1b, 0x1f, 0x3d, 0x3b, 0x2d,
+	0x1b, 0xcf, 0x4f, 0xcb, 0xc6, 0xdf, 0xa7, 0x65, 0xe3, 0xc9, 0x59, 0x79, 0xee, 0xf9, 0x59, 0x79,
+	0xee, 0xcf, 0xb3, 0xf2, 0xdc, 0x97, 0xdb, 0xa9, 0x7d, 0xfd, 0x29, 0x0b, 0xc9, 0x87, 0x3c, 0xa4,
+	0xb6, 0xa0, 0x1d, 0xc2, 0xec, 0xaf, 0xc6, 0xb4, 0x72, 0x6f, 0xb7, 0x16, 0xe4, 0x3f, 0x4b, 0x7b,
+	0xff, 0x07, 0x00, 0x00, 0xff, 0xff, 0x12, 0x7c, 0x30, 0x04, 0x03, 0x0b, 0x00, 0x00,
 }
 
 func (this *IdentityRecord) Equal(that interface{}) bool {
@@ -546,6 +859,14 @@ type QueryClient interface {
 	SigningInfo(ctx context.Context, in *QuerySigningInfoRequest, opts ...grpc.CallOption) (*QuerySigningInfoResponse, error)
 	// SigningInfos queries signing info of all validators
 	SigningInfos(ctx context.Context, in *QuerySigningInfosRequest, opts ...grpc.CallOption) (*QuerySigningInfosResponse, error)
+	// list all active slashing proposals
+	SlashProposals(ctx context.Context, in *QuerySlashProposalsRequest, opts ...grpc.CallOption) (*QuerySlashProposalsResponse, error)
+	// list all staking pools that were slashed
+	SlashedStakingPools(ctx context.Context, in *QuerySlashedStakingPoolsRequest, opts ...grpc.CallOption) (*QuerySlashedStakingPoolsResponse, error)
+	// list all staking pools to which tokens can be delegated
+	ActiveStakingPools(ctx context.Context, in *QueryActiveStakingPoolsRequest, opts ...grpc.CallOption) (*QueryActiveStakingPoolsResponse, error)
+	// list all staking pools to which tokens can NOT be delegated because validator is not active
+	InactiveStakingPools(ctx context.Context, in *QueryInactiveStakingPoolsRequest, opts ...grpc.CallOption) (*QueryInactiveStakingPoolsResponse, error)
 }
 
 type queryClient struct {
@@ -583,6 +904,42 @@ func (c *queryClient) SigningInfos(ctx context.Context, in *QuerySigningInfosReq
 	return out, nil
 }
 
+func (c *queryClient) SlashProposals(ctx context.Context, in *QuerySlashProposalsRequest, opts ...grpc.CallOption) (*QuerySlashProposalsResponse, error) {
+	out := new(QuerySlashProposalsResponse)
+	err := c.cc.Invoke(ctx, "/kira.slashing.Query/SlashProposals", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) SlashedStakingPools(ctx context.Context, in *QuerySlashedStakingPoolsRequest, opts ...grpc.CallOption) (*QuerySlashedStakingPoolsResponse, error) {
+	out := new(QuerySlashedStakingPoolsResponse)
+	err := c.cc.Invoke(ctx, "/kira.slashing.Query/SlashedStakingPools", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) ActiveStakingPools(ctx context.Context, in *QueryActiveStakingPoolsRequest, opts ...grpc.CallOption) (*QueryActiveStakingPoolsResponse, error) {
+	out := new(QueryActiveStakingPoolsResponse)
+	err := c.cc.Invoke(ctx, "/kira.slashing.Query/ActiveStakingPools", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) InactiveStakingPools(ctx context.Context, in *QueryInactiveStakingPoolsRequest, opts ...grpc.CallOption) (*QueryInactiveStakingPoolsResponse, error) {
+	out := new(QueryInactiveStakingPoolsResponse)
+	err := c.cc.Invoke(ctx, "/kira.slashing.Query/InactiveStakingPools", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 type QueryServer interface {
 	// Params queries the parameters of slashing module
@@ -591,6 +948,14 @@ type QueryServer interface {
 	SigningInfo(context.Context, *QuerySigningInfoRequest) (*QuerySigningInfoResponse, error)
 	// SigningInfos queries signing info of all validators
 	SigningInfos(context.Context, *QuerySigningInfosRequest) (*QuerySigningInfosResponse, error)
+	// list all active slashing proposals
+	SlashProposals(context.Context, *QuerySlashProposalsRequest) (*QuerySlashProposalsResponse, error)
+	// list all staking pools that were slashed
+	SlashedStakingPools(context.Context, *QuerySlashedStakingPoolsRequest) (*QuerySlashedStakingPoolsResponse, error)
+	// list all staking pools to which tokens can be delegated
+	ActiveStakingPools(context.Context, *QueryActiveStakingPoolsRequest) (*QueryActiveStakingPoolsResponse, error)
+	// list all staking pools to which tokens can NOT be delegated because validator is not active
+	InactiveStakingPools(context.Context, *QueryInactiveStakingPoolsRequest) (*QueryInactiveStakingPoolsResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -605,6 +970,18 @@ func (*UnimplementedQueryServer) SigningInfo(ctx context.Context, req *QuerySign
 }
 func (*UnimplementedQueryServer) SigningInfos(ctx context.Context, req *QuerySigningInfosRequest) (*QuerySigningInfosResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SigningInfos not implemented")
+}
+func (*UnimplementedQueryServer) SlashProposals(ctx context.Context, req *QuerySlashProposalsRequest) (*QuerySlashProposalsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SlashProposals not implemented")
+}
+func (*UnimplementedQueryServer) SlashedStakingPools(ctx context.Context, req *QuerySlashedStakingPoolsRequest) (*QuerySlashedStakingPoolsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SlashedStakingPools not implemented")
+}
+func (*UnimplementedQueryServer) ActiveStakingPools(ctx context.Context, req *QueryActiveStakingPoolsRequest) (*QueryActiveStakingPoolsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ActiveStakingPools not implemented")
+}
+func (*UnimplementedQueryServer) InactiveStakingPools(ctx context.Context, req *QueryInactiveStakingPoolsRequest) (*QueryInactiveStakingPoolsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method InactiveStakingPools not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -665,6 +1042,78 @@ func _Query_SigningInfos_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_SlashProposals_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QuerySlashProposalsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).SlashProposals(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.slashing.Query/SlashProposals",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).SlashProposals(ctx, req.(*QuerySlashProposalsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_SlashedStakingPools_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QuerySlashedStakingPoolsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).SlashedStakingPools(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.slashing.Query/SlashedStakingPools",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).SlashedStakingPools(ctx, req.(*QuerySlashedStakingPoolsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_ActiveStakingPools_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryActiveStakingPoolsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).ActiveStakingPools(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.slashing.Query/ActiveStakingPools",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).ActiveStakingPools(ctx, req.(*QueryActiveStakingPoolsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_InactiveStakingPools_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryInactiveStakingPoolsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).InactiveStakingPools(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.slashing.Query/InactiveStakingPools",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).InactiveStakingPools(ctx, req.(*QueryInactiveStakingPoolsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "kira.slashing.Query",
 	HandlerType: (*QueryServer)(nil),
@@ -680,6 +1129,22 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SigningInfos",
 			Handler:    _Query_SigningInfos_Handler,
+		},
+		{
+			MethodName: "SlashProposals",
+			Handler:    _Query_SlashProposals_Handler,
+		},
+		{
+			MethodName: "SlashedStakingPools",
+			Handler:    _Query_SlashedStakingPools_Handler,
+		},
+		{
+			MethodName: "ActiveStakingPools",
+			Handler:    _Query_ActiveStakingPools_Handler,
+		},
+		{
+			MethodName: "InactiveStakingPools",
+			Handler:    _Query_InactiveStakingPools_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -997,6 +1462,190 @@ func (m *QuerySigningInfosResponse) MarshalToSizedBuffer(dAtA []byte) (int, erro
 	return len(dAtA) - i, nil
 }
 
+func (m *QuerySlashProposalsRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QuerySlashProposalsRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QuerySlashProposalsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *QuerySlashProposalsResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QuerySlashProposalsResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QuerySlashProposalsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *QuerySlashedStakingPoolsRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QuerySlashedStakingPoolsRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QuerySlashedStakingPoolsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *QuerySlashedStakingPoolsResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QuerySlashedStakingPoolsResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QuerySlashedStakingPoolsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryActiveStakingPoolsRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryActiveStakingPoolsRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryActiveStakingPoolsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryActiveStakingPoolsResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryActiveStakingPoolsResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryActiveStakingPoolsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryInactiveStakingPoolsRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryInactiveStakingPoolsRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryInactiveStakingPoolsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryInactiveStakingPoolsResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryInactiveStakingPoolsResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryInactiveStakingPoolsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	offset -= sovQuery(v)
 	base := offset
@@ -1123,6 +1772,78 @@ func (m *QuerySigningInfosResponse) Size() (n int) {
 		l = m.Pagination.Size()
 		n += 1 + l + sovQuery(uint64(l))
 	}
+	return n
+}
+
+func (m *QuerySlashProposalsRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *QuerySlashProposalsResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *QuerySlashedStakingPoolsRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *QuerySlashedStakingPoolsResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *QueryActiveStakingPoolsRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *QueryActiveStakingPoolsResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *QueryInactiveStakingPoolsRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *QueryInactiveStakingPoolsResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
 	return n
 }
 
@@ -1983,6 +2704,406 @@ func (m *QuerySigningInfosResponse) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QuerySlashProposalsRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QuerySlashProposalsRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QuerySlashProposalsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QuerySlashProposalsResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QuerySlashProposalsResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QuerySlashProposalsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QuerySlashedStakingPoolsRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QuerySlashedStakingPoolsRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QuerySlashedStakingPoolsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QuerySlashedStakingPoolsResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QuerySlashedStakingPoolsResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QuerySlashedStakingPoolsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryActiveStakingPoolsRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryActiveStakingPoolsRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryActiveStakingPoolsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryActiveStakingPoolsResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryActiveStakingPoolsResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryActiveStakingPoolsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryInactiveStakingPoolsRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryInactiveStakingPoolsRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryInactiveStakingPoolsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryInactiveStakingPoolsResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryInactiveStakingPoolsResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryInactiveStakingPoolsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuery(dAtA[iNdEx:])

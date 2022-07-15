@@ -96,3 +96,17 @@ func (k msgServer) Unpause(goCtx context.Context, msg *types.MsgUnpause) (*types
 
 	return &types.MsgUnpauseResponse{}, nil
 }
+
+func (k msgServer) RefuteSlashingProposal(goCtx context.Context, msg *types.MsgRefuteSlashingProposal) (*types.MsgRefuteSlashingProposalResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	_ = ctx
+	return &types.MsgRefuteSlashingProposalResponse{}, nil
+}
+
+func (k msgServer) SlashProposalVote(goCtx context.Context, msg *types.MsgSlashProposalVote) (*types.MsgSlashProposalVoteResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	_ = ctx
+	return &types.MsgSlashProposalVoteResponse{}, nil
+}

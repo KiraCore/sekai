@@ -112,6 +112,9 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 						UnstakingPeriod:             2629800,  // 1 month
 						MaxDelegators:               100,
 						MinDelegationPushout:        10,
+						SlashingPeriod:              3600,
+						MaxJailedPercentage:         25,
+						MaxSlashingPercentage:       1,
 					},
 					ExecutionFees:               govGenesisV01228.ExecutionFees,
 					PoorNetworkMessages:         govGenesisV01228.PoorNetworkMessages,

@@ -41,6 +41,9 @@ enum NetworkProperty {
     UNSTAKING_PERIOD = 23 [(gogoproto.enumvalue_customname) = "UnstakingPeriod"]; // period of time (in seconds) it takes to unstake any of the staked tokens
     MAX_DELEGATORS = 25 [(gogoproto.enumvalue_customname) = "MaxDelegators"]; // number of delegators limitation on a single pool
     MIN_DELEGATION_PUSHOUT = 26 [(gogoproto.enumvalue_customname) = "MinDelegationPushout"]; // The multiplier (10x) to push out minimum delegation when it exceeds max delegators
+    SLASHING_PERIOD = 27 [(gogoproto.enumvalue_customname) = "SlashingPeriod"]; // (default 3600s) - slashing_period should be smaller than `unstaking_period`
+    MAX_JAILED_PERCENTAGE = 28 [(gogoproto.enumvalue_customname) = "MaxJailedPercentage"]; // (default 25%)
+    MAX_SLASHING_PERCENTAGE = 29 [(gogoproto.enumvalue_customname) = "MaxSlashingPercentage"]; // (default 0.5%) 0% - 100%
 }
 
 message NetworkPropertyValue {

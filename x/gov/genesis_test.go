@@ -63,7 +63,10 @@ func TestSimappExportGenesis(t *testing.T) {
             "inflation_period": "31557600",	
             "unstaking_period": "2629800",
             "max_delegators": "100",
-            "min_delegation_pushout": "10"
+            "min_delegation_pushout": "10",
+			"slashing_period": "3600",
+			"max_jailed_percentage": "25",
+			"max_slashing_percentage": "1"
 		},
 		"execution_fees":[],
 		"poor_network_messages":{
@@ -147,6 +150,9 @@ func TestExportInitGenesis(t *testing.T) {
 			UnstakingPeriod:             2629800,  // 1 month
 			MaxDelegators:               100,
 			MinDelegationPushout:        10,
+			SlashingPeriod:              3600,
+			MaxJailedPercentage:         25,
+			MaxSlashingPercentage:       1,
 		},
 		ExecutionFees: []*types.ExecutionFee{
 			{
@@ -205,7 +211,10 @@ func TestExportInitGenesis(t *testing.T) {
             "inflation_period": "31557600",	
             "unstaking_period": "2629800",
             "max_delegators": "100",
-            "min_delegation_pushout": "10"
+            "min_delegation_pushout": "10",
+			"slashing_period": "3600",
+			"max_jailed_percentage": "25",
+			"max_slashing_percentage": "1"
 		},
 		"execution_fees":[],
 		"poor_network_messages":{

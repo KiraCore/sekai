@@ -253,6 +253,200 @@ func (m *MsgUnpauseResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgUnpauseResponse proto.InternalMessageInfo
 
+// only validator whose staking pool is being
+// slashed should be able to submit refute transaction containing a string
+// (max 2048 characters) with URL or CID explaining the circumstances under
+// which the fault occured. The refutation string should be then attached to
+// the Slashing Proposal for all voters too see.
+type MsgRefuteSlashingProposal struct {
+	Sender     string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	Validator  uint64 `protobuf:"varint,2,opt,name=validator,proto3" json:"validator,omitempty"`
+	Refutation string `protobuf:"bytes,3,opt,name=refutation,proto3" json:"refutation,omitempty"`
+}
+
+func (m *MsgRefuteSlashingProposal) Reset()         { *m = MsgRefuteSlashingProposal{} }
+func (m *MsgRefuteSlashingProposal) String() string { return proto.CompactTextString(m) }
+func (*MsgRefuteSlashingProposal) ProtoMessage()    {}
+func (*MsgRefuteSlashingProposal) Descriptor() ([]byte, []int) {
+	return fileDescriptor_195ed35d11349041, []int{6}
+}
+func (m *MsgRefuteSlashingProposal) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgRefuteSlashingProposal) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgRefuteSlashingProposal.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgRefuteSlashingProposal) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRefuteSlashingProposal.Merge(m, src)
+}
+func (m *MsgRefuteSlashingProposal) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgRefuteSlashingProposal) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRefuteSlashingProposal.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgRefuteSlashingProposal proto.InternalMessageInfo
+
+func (m *MsgRefuteSlashingProposal) GetSender() string {
+	if m != nil {
+		return m.Sender
+	}
+	return ""
+}
+
+func (m *MsgRefuteSlashingProposal) GetValidator() uint64 {
+	if m != nil {
+		return m.Validator
+	}
+	return 0
+}
+
+func (m *MsgRefuteSlashingProposal) GetRefutation() string {
+	if m != nil {
+		return m.Refutation
+	}
+	return ""
+}
+
+type MsgRefuteSlashingProposalResponse struct {
+}
+
+func (m *MsgRefuteSlashingProposalResponse) Reset()         { *m = MsgRefuteSlashingProposalResponse{} }
+func (m *MsgRefuteSlashingProposalResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgRefuteSlashingProposalResponse) ProtoMessage()    {}
+func (*MsgRefuteSlashingProposalResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_195ed35d11349041, []int{7}
+}
+func (m *MsgRefuteSlashingProposalResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgRefuteSlashingProposalResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgRefuteSlashingProposalResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgRefuteSlashingProposalResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRefuteSlashingProposalResponse.Merge(m, src)
+}
+func (m *MsgRefuteSlashingProposalResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgRefuteSlashingProposalResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRefuteSlashingProposalResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgRefuteSlashingProposalResponse proto.InternalMessageInfo
+
+// cast a vote on the slashing proposal - dedicated permission should be required to cast a vote and voter should
+// provide as an input a percentage (decimal value <0, 1>) by which staking
+// pool should be slashed. **It is important that validator being slashed as
+// well as any of the colluders listed in the proposal should NOT be allowed
+// to vote on any slashing proposals
+type MsgSlashProposalVote struct {
+	Voter string `protobuf:"bytes,1,opt,name=voter,proto3" json:"voter,omitempty"`
+	Slash uint64 `protobuf:"varint,2,opt,name=slash,proto3" json:"slash,omitempty"`
+}
+
+func (m *MsgSlashProposalVote) Reset()         { *m = MsgSlashProposalVote{} }
+func (m *MsgSlashProposalVote) String() string { return proto.CompactTextString(m) }
+func (*MsgSlashProposalVote) ProtoMessage()    {}
+func (*MsgSlashProposalVote) Descriptor() ([]byte, []int) {
+	return fileDescriptor_195ed35d11349041, []int{8}
+}
+func (m *MsgSlashProposalVote) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgSlashProposalVote) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgSlashProposalVote.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgSlashProposalVote) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSlashProposalVote.Merge(m, src)
+}
+func (m *MsgSlashProposalVote) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgSlashProposalVote) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSlashProposalVote.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgSlashProposalVote proto.InternalMessageInfo
+
+func (m *MsgSlashProposalVote) GetVoter() string {
+	if m != nil {
+		return m.Voter
+	}
+	return ""
+}
+
+func (m *MsgSlashProposalVote) GetSlash() uint64 {
+	if m != nil {
+		return m.Slash
+	}
+	return 0
+}
+
+type MsgSlashProposalVoteResponse struct {
+}
+
+func (m *MsgSlashProposalVoteResponse) Reset()         { *m = MsgSlashProposalVoteResponse{} }
+func (m *MsgSlashProposalVoteResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgSlashProposalVoteResponse) ProtoMessage()    {}
+func (*MsgSlashProposalVoteResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_195ed35d11349041, []int{9}
+}
+func (m *MsgSlashProposalVoteResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgSlashProposalVoteResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgSlashProposalVoteResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgSlashProposalVoteResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSlashProposalVoteResponse.Merge(m, src)
+}
+func (m *MsgSlashProposalVoteResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgSlashProposalVoteResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSlashProposalVoteResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgSlashProposalVoteResponse proto.InternalMessageInfo
+
 func init() {
 	proto.RegisterType((*MsgActivate)(nil), "kira.slashing.MsgActivate")
 	proto.RegisterType((*MsgActivateResponse)(nil), "kira.slashing.MsgActivateResponse")
@@ -260,35 +454,48 @@ func init() {
 	proto.RegisterType((*MsgPauseResponse)(nil), "kira.slashing.MsgPauseResponse")
 	proto.RegisterType((*MsgUnpause)(nil), "kira.slashing.MsgUnpause")
 	proto.RegisterType((*MsgUnpauseResponse)(nil), "kira.slashing.MsgUnpauseResponse")
+	proto.RegisterType((*MsgRefuteSlashingProposal)(nil), "kira.slashing.MsgRefuteSlashingProposal")
+	proto.RegisterType((*MsgRefuteSlashingProposalResponse)(nil), "kira.slashing.MsgRefuteSlashingProposalResponse")
+	proto.RegisterType((*MsgSlashProposalVote)(nil), "kira.slashing.MsgSlashProposalVote")
+	proto.RegisterType((*MsgSlashProposalVoteResponse)(nil), "kira.slashing.MsgSlashProposalVoteResponse")
 }
 
 func init() { proto.RegisterFile("kira/slashing/v1beta1/tx.proto", fileDescriptor_195ed35d11349041) }
 
 var fileDescriptor_195ed35d11349041 = []byte{
-	// 362 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0xcb, 0xce, 0x2c, 0x4a,
-	0xd4, 0x2f, 0xce, 0x49, 0x2c, 0xce, 0xc8, 0xcc, 0x4b, 0xd7, 0x2f, 0x33, 0x4c, 0x4a, 0x2d, 0x49,
-	0x34, 0xd4, 0x2f, 0xa9, 0xd0, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0x05, 0xc9, 0xeb, 0xc1,
-	0xe4, 0xa5, 0x44, 0xd2, 0xf3, 0xd3, 0xf3, 0xc1, 0x32, 0xfa, 0x20, 0x16, 0x44, 0x91, 0x94, 0x0a,
-	0x76, 0x43, 0x0a, 0x8a, 0xf2, 0x0b, 0xf2, 0x8b, 0x13, 0x73, 0x20, 0xaa, 0x94, 0x62, 0xb9, 0xb8,
-	0x7d, 0x8b, 0xd3, 0x1d, 0x93, 0x4b, 0x32, 0xcb, 0x12, 0x4b, 0x52, 0x85, 0x5c, 0xb8, 0xf8, 0xca,
-	0x12, 0x73, 0x32, 0x53, 0x12, 0x4b, 0xf2, 0x8b, 0xe2, 0x13, 0x53, 0x52, 0x8a, 0x24, 0x18, 0x15,
-	0x18, 0x35, 0x38, 0x9d, 0x64, 0x5f, 0xdd, 0x93, 0x67, 0x07, 0xf1, 0x53, 0x8b, 0x8b, 0x3f, 0xdd,
-	0x93, 0xe7, 0xab, 0x4c, 0xcc, 0xcd, 0xb1, 0x52, 0x82, 0x0a, 0x28, 0x05, 0xf1, 0xc2, 0x35, 0x39,
-	0xa6, 0xa4, 0x14, 0x59, 0x71, 0x74, 0x2c, 0x90, 0x67, 0x98, 0xb1, 0x40, 0x9e, 0x51, 0x49, 0x94,
-	0x4b, 0x18, 0xc9, 0xf8, 0xa0, 0xd4, 0xe2, 0x82, 0xfc, 0xbc, 0xe2, 0x54, 0xa5, 0x28, 0x2e, 0x0e,
-	0xdf, 0xe2, 0xf4, 0x80, 0xc4, 0xd2, 0x62, 0xea, 0x5b, 0x29, 0xc4, 0x25, 0x00, 0x33, 0x1b, 0x6e,
-	0x5f, 0x0c, 0x17, 0x97, 0x6f, 0x71, 0x7a, 0x68, 0x5e, 0x01, 0x4d, 0x6c, 0x14, 0xe1, 0x12, 0x42,
-	0x98, 0x0e, 0xb3, 0xd3, 0xe8, 0x2e, 0x23, 0x17, 0xb3, 0x6f, 0x71, 0xba, 0x90, 0x17, 0x17, 0x07,
-	0x3c, 0x78, 0xa5, 0xf4, 0x50, 0x62, 0x4e, 0x0f, 0x29, 0x6c, 0xa4, 0x94, 0x70, 0xcb, 0xc1, 0xcc,
-	0x14, 0x72, 0xe4, 0x62, 0x85, 0x04, 0x9a, 0x38, 0xa6, 0x62, 0xb0, 0x84, 0x94, 0x3c, 0x0e, 0x09,
-	0xb8, 0x11, 0xee, 0x5c, 0xec, 0xb0, 0x70, 0x90, 0xc4, 0x54, 0x0b, 0x95, 0x92, 0x52, 0xc4, 0x29,
-	0x05, 0x33, 0xc8, 0xc9, 0x63, 0xc5, 0x23, 0x39, 0xc6, 0x13, 0x8f, 0xe4, 0x18, 0x2f, 0x3c, 0x92,
-	0x63, 0x7c, 0xf0, 0x48, 0x8e, 0x71, 0xc2, 0x63, 0x39, 0x86, 0x0b, 0x8f, 0xe5, 0x18, 0x6e, 0x3c,
-	0x96, 0x63, 0x88, 0xd2, 0x4a, 0xcf, 0x2c, 0xc9, 0x28, 0x4d, 0xd2, 0x4b, 0xce, 0xcf, 0xd5, 0xf7,
-	0xce, 0x2c, 0x4a, 0x74, 0xce, 0x2f, 0x4a, 0xd5, 0x2f, 0x4e, 0xcd, 0x4e, 0xcc, 0xd4, 0xaf, 0x40,
-	0x24, 0xca, 0x92, 0xca, 0x82, 0xd4, 0xe2, 0x24, 0x36, 0x70, 0x52, 0x34, 0x06, 0x04, 0x00, 0x00,
-	0xff, 0xff, 0x2a, 0xba, 0xaa, 0xac, 0xf7, 0x02, 0x00, 0x00,
+	// 501 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x54, 0x4d, 0x6f, 0xd3, 0x40,
+	0x10, 0x8d, 0x09, 0x6d, 0xd3, 0x41, 0xad, 0x60, 0x09, 0x25, 0xb5, 0xca, 0xba, 0x75, 0x39, 0x44,
+	0x20, 0xd9, 0x14, 0x6e, 0xbd, 0x25, 0x20, 0x81, 0x40, 0x96, 0x2a, 0x23, 0x38, 0x54, 0x20, 0xb4,
+	0xa9, 0x97, 0xad, 0xd5, 0xd4, 0x6b, 0x76, 0x37, 0x51, 0xfb, 0x0f, 0x38, 0x72, 0xe4, 0xd8, 0x23,
+	0xbf, 0x81, 0x5f, 0xc0, 0xb1, 0x47, 0x4e, 0x15, 0x72, 0x6e, 0x1c, 0xf9, 0x05, 0xc8, 0x5f, 0x9b,
+	0x20, 0xc7, 0x52, 0x0f, 0xf4, 0xe6, 0x99, 0xf7, 0xe6, 0xbd, 0x91, 0xe7, 0x69, 0x01, 0x1f, 0x85,
+	0x82, 0xb8, 0x72, 0x48, 0xe4, 0x61, 0x18, 0x31, 0x77, 0xbc, 0x33, 0xa0, 0x8a, 0xec, 0xb8, 0xea,
+	0xc4, 0x89, 0x05, 0x57, 0x1c, 0xad, 0xa4, 0xb8, 0x53, 0xe2, 0x66, 0x9b, 0x71, 0xc6, 0x33, 0xc4,
+	0x4d, 0xbf, 0x72, 0x92, 0x79, 0x7f, 0xbe, 0x48, 0x2c, 0x78, 0xcc, 0x25, 0x19, 0xe6, 0x2c, 0xfb,
+	0x3d, 0xdc, 0xf0, 0x24, 0xeb, 0x1d, 0xa8, 0x70, 0x4c, 0x14, 0x45, 0xcf, 0x60, 0x75, 0x4c, 0x86,
+	0x61, 0x40, 0x14, 0x17, 0x1f, 0x48, 0x10, 0x88, 0x8e, 0xb1, 0x69, 0x74, 0x97, 0xfb, 0xf7, 0x7e,
+	0x5f, 0x58, 0x4b, 0x69, 0x4d, 0xa5, 0xfc, 0x73, 0x61, 0xad, 0x9e, 0x92, 0xe3, 0xe1, 0xae, 0x5d,
+	0x34, 0x6c, 0x7f, 0x45, 0x0f, 0xf5, 0x82, 0x40, 0xec, 0xb6, 0x3e, 0x9f, 0x59, 0x8d, 0xaf, 0x67,
+	0x96, 0x61, 0xdf, 0x81, 0xdb, 0x33, 0xf2, 0x3e, 0x95, 0x31, 0x8f, 0x24, 0xb5, 0xf7, 0xa1, 0xe5,
+	0x49, 0xb6, 0x47, 0x46, 0xf2, 0xff, 0x5b, 0x22, 0xb8, 0x59, 0x6a, 0x6b, 0xbf, 0x77, 0x00, 0x9e,
+	0x64, 0x6f, 0xa2, 0xf8, 0x4a, 0x1c, 0xdb, 0x80, 0xa6, 0xea, 0xda, 0xf3, 0x13, 0xac, 0x7b, 0x92,
+	0xf9, 0xf4, 0xe3, 0x48, 0xd1, 0xd7, 0xc5, 0x15, 0xf6, 0x8a, 0x9f, 0x8f, 0xd6, 0x60, 0x51, 0xd2,
+	0x28, 0xa0, 0x85, 0xb5, 0x5f, 0x54, 0x68, 0x03, 0x96, 0xb5, 0x4b, 0xe7, 0xda, 0xa6, 0xd1, 0xbd,
+	0xee, 0x4f, 0x1b, 0x08, 0x03, 0x88, 0x54, 0x8f, 0xa8, 0x90, 0x47, 0x9d, 0x66, 0x36, 0x39, 0xd3,
+	0xb1, 0xb7, 0x61, 0xab, 0xd6, 0x52, 0xef, 0xd5, 0x87, 0xb6, 0x27, 0x59, 0x06, 0x97, 0xd8, 0x5b,
+	0xae, 0x28, 0x6a, 0xc3, 0xc2, 0x98, 0x2b, 0xbd, 0x51, 0x5e, 0xa4, 0xdd, 0x2c, 0x42, 0xc5, 0x32,
+	0x79, 0x61, 0x63, 0xd8, 0x98, 0xa7, 0x51, 0x7a, 0x3c, 0xfe, 0xde, 0x84, 0xa6, 0x27, 0x19, 0x7a,
+	0x09, 0x2d, 0x1d, 0x2d, 0xd3, 0xf9, 0x27, 0xb5, 0xce, 0x4c, 0x2e, 0x4c, 0xbb, 0x1e, 0x2b, 0x35,
+	0x51, 0x0f, 0x16, 0xf2, 0xc0, 0xdc, 0xad, 0x92, 0x33, 0xc0, 0xb4, 0x6a, 0x00, 0x2d, 0xf1, 0x1c,
+	0x96, 0xca, 0x0c, 0xac, 0x57, 0xb9, 0x05, 0x64, 0x6e, 0xd5, 0x42, 0x5a, 0x48, 0xc1, 0x5a, 0xcd,
+	0x61, 0xbb, 0xd5, 0xe1, 0xf9, 0x4c, 0xf3, 0xd1, 0x65, 0x99, 0xda, 0x95, 0xc2, 0xad, 0xea, 0xd9,
+	0xb6, 0xab, 0x32, 0x15, 0x92, 0xf9, 0xf0, 0x12, 0xa4, 0xd2, 0xa6, 0xff, 0xe2, 0x5b, 0x82, 0x8d,
+	0x1f, 0x09, 0x36, 0xce, 0x13, 0x6c, 0xfc, 0x4a, 0xb0, 0xf1, 0x65, 0x82, 0x1b, 0xe7, 0x13, 0xdc,
+	0xf8, 0x39, 0xc1, 0x8d, 0xfd, 0x07, 0x2c, 0x54, 0x87, 0xa3, 0x81, 0x73, 0xc0, 0x8f, 0xdd, 0x57,
+	0xa1, 0x20, 0x4f, 0xb9, 0xa0, 0xae, 0xa4, 0x47, 0x24, 0x74, 0x4f, 0xa6, 0xaf, 0x8d, 0x3a, 0x8d,
+	0xa9, 0x1c, 0x2c, 0x66, 0x6f, 0xcc, 0x93, 0xbf, 0x01, 0x00, 0x00, 0xff, 0xff, 0x44, 0x99, 0xd6,
+	0x79, 0xd0, 0x04, 0x00, 0x00,
 }
 
 func (this *MsgActivate) Equal(that interface{}) bool {
@@ -426,6 +633,105 @@ func (this *MsgUnpauseResponse) Equal(that interface{}) bool {
 	}
 	return true
 }
+func (this *MsgRefuteSlashingProposal) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*MsgRefuteSlashingProposal)
+	if !ok {
+		that2, ok := that.(MsgRefuteSlashingProposal)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.Sender != that1.Sender {
+		return false
+	}
+	if this.Validator != that1.Validator {
+		return false
+	}
+	if this.Refutation != that1.Refutation {
+		return false
+	}
+	return true
+}
+func (this *MsgRefuteSlashingProposalResponse) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*MsgRefuteSlashingProposalResponse)
+	if !ok {
+		that2, ok := that.(MsgRefuteSlashingProposalResponse)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
+func (this *MsgSlashProposalVote) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*MsgSlashProposalVote)
+	if !ok {
+		that2, ok := that.(MsgSlashProposalVote)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.Voter != that1.Voter {
+		return false
+	}
+	if this.Slash != that1.Slash {
+		return false
+	}
+	return true
+}
+func (this *MsgSlashProposalVoteResponse) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*MsgSlashProposalVoteResponse)
+	if !ok {
+		that2, ok := that.(MsgSlashProposalVoteResponse)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ context.Context
@@ -447,6 +753,8 @@ type MsgClient interface {
 	Pause(ctx context.Context, in *MsgPause, opts ...grpc.CallOption) (*MsgPauseResponse, error)
 	// Unpause defines a method for a paused validator
 	Unpause(ctx context.Context, in *MsgUnpause, opts ...grpc.CallOption) (*MsgUnpauseResponse, error)
+	RefuteSlashingProposal(ctx context.Context, in *MsgRefuteSlashingProposal, opts ...grpc.CallOption) (*MsgRefuteSlashingProposalResponse, error)
+	SlashProposalVote(ctx context.Context, in *MsgSlashProposalVote, opts ...grpc.CallOption) (*MsgSlashProposalVoteResponse, error)
 }
 
 type msgClient struct {
@@ -484,6 +792,24 @@ func (c *msgClient) Unpause(ctx context.Context, in *MsgUnpause, opts ...grpc.Ca
 	return out, nil
 }
 
+func (c *msgClient) RefuteSlashingProposal(ctx context.Context, in *MsgRefuteSlashingProposal, opts ...grpc.CallOption) (*MsgRefuteSlashingProposalResponse, error) {
+	out := new(MsgRefuteSlashingProposalResponse)
+	err := c.cc.Invoke(ctx, "/kira.slashing.Msg/RefuteSlashingProposal", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) SlashProposalVote(ctx context.Context, in *MsgSlashProposalVote, opts ...grpc.CallOption) (*MsgSlashProposalVoteResponse, error) {
+	out := new(MsgSlashProposalVoteResponse)
+	err := c.cc.Invoke(ctx, "/kira.slashing.Msg/SlashProposalVote", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
 	// Activate defines a method for activating an inactivated validator, thus returning
@@ -494,6 +820,8 @@ type MsgServer interface {
 	Pause(context.Context, *MsgPause) (*MsgPauseResponse, error)
 	// Unpause defines a method for a paused validator
 	Unpause(context.Context, *MsgUnpause) (*MsgUnpauseResponse, error)
+	RefuteSlashingProposal(context.Context, *MsgRefuteSlashingProposal) (*MsgRefuteSlashingProposalResponse, error)
+	SlashProposalVote(context.Context, *MsgSlashProposalVote) (*MsgSlashProposalVoteResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
@@ -508,6 +836,12 @@ func (*UnimplementedMsgServer) Pause(ctx context.Context, req *MsgPause) (*MsgPa
 }
 func (*UnimplementedMsgServer) Unpause(ctx context.Context, req *MsgUnpause) (*MsgUnpauseResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Unpause not implemented")
+}
+func (*UnimplementedMsgServer) RefuteSlashingProposal(ctx context.Context, req *MsgRefuteSlashingProposal) (*MsgRefuteSlashingProposalResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RefuteSlashingProposal not implemented")
+}
+func (*UnimplementedMsgServer) SlashProposalVote(ctx context.Context, req *MsgSlashProposalVote) (*MsgSlashProposalVoteResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SlashProposalVote not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
@@ -568,6 +902,42 @@ func _Msg_Unpause_Handler(srv interface{}, ctx context.Context, dec func(interfa
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_RefuteSlashingProposal_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgRefuteSlashingProposal)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).RefuteSlashingProposal(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.slashing.Msg/RefuteSlashingProposal",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).RefuteSlashingProposal(ctx, req.(*MsgRefuteSlashingProposal))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_SlashProposalVote_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgSlashProposalVote)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).SlashProposalVote(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.slashing.Msg/SlashProposalVote",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).SlashProposalVote(ctx, req.(*MsgSlashProposalVote))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "kira.slashing.Msg",
 	HandlerType: (*MsgServer)(nil),
@@ -583,6 +953,14 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Unpause",
 			Handler:    _Msg_Unpause_Handler,
+		},
+		{
+			MethodName: "RefuteSlashingProposal",
+			Handler:    _Msg_RefuteSlashingProposal_Handler,
+		},
+		{
+			MethodName: "SlashProposalVote",
+			Handler:    _Msg_SlashProposalVote_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -748,6 +1126,129 @@ func (m *MsgUnpauseResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgRefuteSlashingProposal) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgRefuteSlashingProposal) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgRefuteSlashingProposal) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Refutation) > 0 {
+		i -= len(m.Refutation)
+		copy(dAtA[i:], m.Refutation)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Refutation)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.Validator != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.Validator))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Sender) > 0 {
+		i -= len(m.Sender)
+		copy(dAtA[i:], m.Sender)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Sender)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgRefuteSlashingProposalResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgRefuteSlashingProposalResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgRefuteSlashingProposalResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgSlashProposalVote) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgSlashProposalVote) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgSlashProposalVote) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Slash != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.Slash))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Voter) > 0 {
+		i -= len(m.Voter)
+		copy(dAtA[i:], m.Voter)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Voter)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgSlashProposalVoteResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgSlashProposalVoteResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgSlashProposalVoteResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	offset -= sovTx(v)
 	base := offset
@@ -817,6 +1318,60 @@ func (m *MsgUnpause) Size() (n int) {
 }
 
 func (m *MsgUnpauseResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgRefuteSlashingProposal) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Sender)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.Validator != 0 {
+		n += 1 + sovTx(uint64(m.Validator))
+	}
+	l = len(m.Refutation)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgRefuteSlashingProposalResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgSlashProposalVote) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Voter)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.Slash != 0 {
+		n += 1 + sovTx(uint64(m.Slash))
+	}
+	return n
+}
+
+func (m *MsgSlashProposalVoteResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1204,6 +1759,340 @@ func (m *MsgUnpauseResponse) Unmarshal(dAtA []byte) error {
 		}
 		if fieldNum <= 0 {
 			return fmt.Errorf("proto: MsgUnpauseResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgRefuteSlashingProposal) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgRefuteSlashingProposal: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgRefuteSlashingProposal: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Sender = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Validator", wireType)
+			}
+			m.Validator = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Validator |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Refutation", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Refutation = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgRefuteSlashingProposalResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgRefuteSlashingProposalResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgRefuteSlashingProposalResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgSlashProposalVote) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgSlashProposalVote: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgSlashProposalVote: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Voter", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Voter = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Slash", wireType)
+			}
+			m.Slash = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Slash |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgSlashProposalVoteResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgSlashProposalVoteResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgSlashProposalVoteResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:

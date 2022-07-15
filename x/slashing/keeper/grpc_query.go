@@ -135,3 +135,43 @@ func (k Keeper) SigningInfos(c context.Context, request *types.QuerySigningInfos
 		Pagination: pageRes,
 	}, nil
 }
+
+func (k Keeper) SlashProposals(c context.Context, request *types.QuerySlashProposalsRequest) (*types.QuerySlashProposalsResponse, error) {
+	if request == nil {
+		return nil, status.Errorf(codes.InvalidArgument, "empty request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	_ = ctx
+	return &types.QuerySlashProposalsResponse{}, nil
+}
+
+func (k Keeper) SlashedStakingPools(c context.Context, request *types.QuerySlashedStakingPoolsRequest) (*types.QuerySlashedStakingPoolsResponse, error) {
+	if request == nil {
+		return nil, status.Errorf(codes.InvalidArgument, "empty request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	_ = ctx
+	return &types.QuerySlashedStakingPoolsResponse{}, nil
+}
+
+func (k Keeper) ActiveStakingPools(c context.Context, request *types.QueryActiveStakingPoolsRequest) (*types.QueryActiveStakingPoolsResponse, error) {
+	if request == nil {
+		return nil, status.Errorf(codes.InvalidArgument, "empty request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	_ = ctx
+	return &types.QueryActiveStakingPoolsResponse{}, nil
+}
+
+func (k Keeper) InactiveStakingPools(c context.Context, request *types.QueryInactiveStakingPoolsRequest) (*types.QueryInactiveStakingPoolsResponse, error) {
+	if request == nil {
+		return nil, status.Errorf(codes.InvalidArgument, "empty request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	_ = ctx
+	return &types.QueryInactiveStakingPoolsResponse{}, nil
+}
