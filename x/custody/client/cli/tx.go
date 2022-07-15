@@ -23,6 +23,23 @@ func NewTxCmd() *cobra.Command {
 
 	txCmd.AddCommand(GetTxCreateCustody())
 	txCmd.AddCommand(NewWhiteListTxCmd())
+	txCmd.AddCommand(NewLimitsTxCmd())
+
+	return txCmd
+}
+
+func NewLimitsTxCmd() *cobra.Command {
+	txCmd := &cobra.Command{
+		Use:                        "limits",
+		Short:                      "custody limits sub commands",
+		DisableFlagParsing:         true,
+		SuggestionsMinimumDistance: 2,
+		RunE:                       client.ValidateCmd,
+	}
+
+	txCmd.AddCommand(GetTxAddToCustodyLimits())
+	txCmd.AddCommand(GetTxRemoveFromCustodyLimits())
+	txCmd.AddCommand(GetTxDropCustodyLimits())
 
 	return txCmd
 }
@@ -154,6 +171,90 @@ func GetTxCreateCustody() *cobra.Command {
 					UseLimit:     useLimit,
 					UseWhiteList: useWhiteList,
 				},
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+func GetTxAddToCustodyLimits() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "add [addr]",
+		Short: "Add new address to the custody limits",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			amount, err := strconv.Atoi(args[1])
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgAddToCustodyLimits(
+				clientCtx.FromAddress,
+				args[0],
+				uint64(amount),
+				args[2],
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+func GetTxRemoveFromCustodyLimits() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "remove [addr]",
+		Short: "Remove address from the custody limits",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgRemoveFromCustodyLimits(
+				clientCtx.FromAddress,
+				args[0],
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+func GetTxDropCustodyLimits() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "drop",
+		Short: "Drop the custody limits",
+		Args:  cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgDropCustodyLimits(
+				clientCtx.FromAddress,
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)

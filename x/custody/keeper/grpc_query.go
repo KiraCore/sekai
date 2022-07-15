@@ -32,3 +32,19 @@ func (q Querier) CustodyWhiteListByAddress(c context.Context, request *types.Cus
 		CustodyWhiteList: q.keeper.GetCustodyWhiteListByAddress(ctx, request.Addr),
 	}, nil
 }
+
+func (q Querier) CustodyLimitsByAddress(c context.Context, request *types.CustodyLimitsByAddressRequest) (*types.CustodyLimitsByAddressResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+
+	return &types.CustodyLimitsByAddressResponse{
+		CustodyLimits: q.keeper.GetCustodyLimitsByAddress(ctx, request.Addr),
+	}, nil
+}
+
+func (q Querier) CustodyLimitsStatusByAddress(c context.Context, request *types.CustodyLimitsStatusByAddressRequest) (*types.CustodyLimitsStatusByAddressResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+
+	return &types.CustodyLimitsStatusByAddressResponse{
+		CustodyStatuses: q.keeper.GetCustodyLimitsStatusByAddress(ctx, request.Addr),
+	}, nil
+}

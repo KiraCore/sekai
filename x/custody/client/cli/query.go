@@ -20,6 +20,7 @@ func NewQueryCmd() *cobra.Command {
 
 	queryCmd.AddCommand(GetCmdQueryCustodyByAddress())
 	queryCmd.AddCommand(NewWhiteListCmd())
+	queryCmd.AddCommand(NewLimitsCmd())
 
 	return queryCmd
 }
@@ -31,6 +32,17 @@ func NewWhiteListCmd() *cobra.Command {
 	}
 
 	queryCmd.AddCommand(GetCmdQueryWhiteListByAddress())
+
+	return queryCmd
+}
+
+func NewLimitsCmd() *cobra.Command {
+	queryCmd := &cobra.Command{
+		Use:   "limits",
+		Short: "query commands for the custody limits",
+	}
+
+	queryCmd.AddCommand(GetCmdQueryLimitsByAddress())
 
 	return queryCmd
 }
@@ -80,6 +92,35 @@ func GetCmdQueryCustodyByAddress() *cobra.Command {
 			params := &types.CustodyByAddressRequest{Addr: accAddr}
 			queryClient := types.NewQueryClient(clientCtx)
 			res, err := queryClient.CustodyByAddress(context.Background(), params)
+
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func GetCmdQueryLimitsByAddress() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "get [addr]",
+		Short: "Query custody limits assigned to an address",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			accAddr, err := sdk.AccAddressFromBech32(args[0])
+
+			if err != nil {
+				return errors.Wrap(err, "invalid account address")
+			}
+
+			params := &types.CustodyLimitsByAddressRequest{Addr: accAddr}
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.CustodyLimitsByAddress(context.Background(), params)
 
 			if err != nil {
 				return err

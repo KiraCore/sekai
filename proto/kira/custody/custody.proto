@@ -33,3 +33,39 @@ message CustodyWhiteListRecord {
 
   CustodyWhiteList custody_white_list = 2;
 }
+
+message CustodyLimit {
+  uint64 amount = 1;
+  string limit  = 2;
+}
+
+message CustodyLimits {
+  map<string, CustodyLimit> limits = 1;
+}
+
+message CustodyLimitRecord {
+  bytes address = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  CustodyLimits custody_limits = 2;
+}
+
+message CustodyStatus {
+  uint64 amount = 1;
+  int64  time = 2;
+}
+
+message CustodyStatuses {
+  map<string, CustodyStatus> statuses = 1;
+}
+
+message CustodyLimitStatusRecord {
+  bytes address = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  CustodyStatuses custody_statuses = 2;
+}

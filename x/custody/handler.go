@@ -27,6 +27,18 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 		case *types.MsgDropCustodyWhiteList:
 			res, err := msgServer.DropWhiteList(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgAddToCustodyLimits:
+			res, err := msgServer.AddToLimits(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgRemoveFromCustodyLimits:
+			res, err := msgServer.RemoveFromLimits(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgDropCustodyLimits:
+			res, err := msgServer.DropLimits(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgAddToCustodyLimitsStatus:
+			res, err := msgServer.AddToLimitsStatus(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
 		default:
 			return nil, errors.Wrapf(errors.ErrUnknownRequest, "unrecognized %s message type: %T", types.ModuleName, msg)
 		}

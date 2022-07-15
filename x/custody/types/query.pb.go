@@ -206,45 +206,233 @@ func (m *CustodyWhiteListByAddressResponse) GetCustodyWhiteList() *CustodyWhiteL
 	return nil
 }
 
+type CustodyLimitsByAddressRequest struct {
+	Addr github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=addr,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"addr,omitempty" yaml:"addr"`
+}
+
+func (m *CustodyLimitsByAddressRequest) Reset()         { *m = CustodyLimitsByAddressRequest{} }
+func (m *CustodyLimitsByAddressRequest) String() string { return proto.CompactTextString(m) }
+func (*CustodyLimitsByAddressRequest) ProtoMessage()    {}
+func (*CustodyLimitsByAddressRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_6c8d8c1227063c95, []int{4}
+}
+func (m *CustodyLimitsByAddressRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *CustodyLimitsByAddressRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_CustodyLimitsByAddressRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *CustodyLimitsByAddressRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CustodyLimitsByAddressRequest.Merge(m, src)
+}
+func (m *CustodyLimitsByAddressRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *CustodyLimitsByAddressRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_CustodyLimitsByAddressRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CustodyLimitsByAddressRequest proto.InternalMessageInfo
+
+func (m *CustodyLimitsByAddressRequest) GetAddr() github_com_cosmos_cosmos_sdk_types.AccAddress {
+	if m != nil {
+		return m.Addr
+	}
+	return nil
+}
+
+type CustodyLimitsByAddressResponse struct {
+	CustodyLimits *CustodyLimits `protobuf:"bytes,1,opt,name=custody_limits,json=custodyLimits,proto3" json:"custody_limits,omitempty"`
+}
+
+func (m *CustodyLimitsByAddressResponse) Reset()         { *m = CustodyLimitsByAddressResponse{} }
+func (m *CustodyLimitsByAddressResponse) String() string { return proto.CompactTextString(m) }
+func (*CustodyLimitsByAddressResponse) ProtoMessage()    {}
+func (*CustodyLimitsByAddressResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_6c8d8c1227063c95, []int{5}
+}
+func (m *CustodyLimitsByAddressResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *CustodyLimitsByAddressResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_CustodyLimitsByAddressResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *CustodyLimitsByAddressResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CustodyLimitsByAddressResponse.Merge(m, src)
+}
+func (m *CustodyLimitsByAddressResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *CustodyLimitsByAddressResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_CustodyLimitsByAddressResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CustodyLimitsByAddressResponse proto.InternalMessageInfo
+
+func (m *CustodyLimitsByAddressResponse) GetCustodyLimits() *CustodyLimits {
+	if m != nil {
+		return m.CustodyLimits
+	}
+	return nil
+}
+
+type CustodyLimitsStatusByAddressRequest struct {
+	Addr github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=addr,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"addr,omitempty" yaml:"addr"`
+}
+
+func (m *CustodyLimitsStatusByAddressRequest) Reset()         { *m = CustodyLimitsStatusByAddressRequest{} }
+func (m *CustodyLimitsStatusByAddressRequest) String() string { return proto.CompactTextString(m) }
+func (*CustodyLimitsStatusByAddressRequest) ProtoMessage()    {}
+func (*CustodyLimitsStatusByAddressRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_6c8d8c1227063c95, []int{6}
+}
+func (m *CustodyLimitsStatusByAddressRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *CustodyLimitsStatusByAddressRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_CustodyLimitsStatusByAddressRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *CustodyLimitsStatusByAddressRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CustodyLimitsStatusByAddressRequest.Merge(m, src)
+}
+func (m *CustodyLimitsStatusByAddressRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *CustodyLimitsStatusByAddressRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_CustodyLimitsStatusByAddressRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CustodyLimitsStatusByAddressRequest proto.InternalMessageInfo
+
+func (m *CustodyLimitsStatusByAddressRequest) GetAddr() github_com_cosmos_cosmos_sdk_types.AccAddress {
+	if m != nil {
+		return m.Addr
+	}
+	return nil
+}
+
+type CustodyLimitsStatusByAddressResponse struct {
+	CustodyStatuses *CustodyStatuses `protobuf:"bytes,1,opt,name=custody_statuses,json=custodyStatuses,proto3" json:"custody_statuses,omitempty"`
+}
+
+func (m *CustodyLimitsStatusByAddressResponse) Reset()         { *m = CustodyLimitsStatusByAddressResponse{} }
+func (m *CustodyLimitsStatusByAddressResponse) String() string { return proto.CompactTextString(m) }
+func (*CustodyLimitsStatusByAddressResponse) ProtoMessage()    {}
+func (*CustodyLimitsStatusByAddressResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_6c8d8c1227063c95, []int{7}
+}
+func (m *CustodyLimitsStatusByAddressResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *CustodyLimitsStatusByAddressResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_CustodyLimitsStatusByAddressResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *CustodyLimitsStatusByAddressResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CustodyLimitsStatusByAddressResponse.Merge(m, src)
+}
+func (m *CustodyLimitsStatusByAddressResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *CustodyLimitsStatusByAddressResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_CustodyLimitsStatusByAddressResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CustodyLimitsStatusByAddressResponse proto.InternalMessageInfo
+
+func (m *CustodyLimitsStatusByAddressResponse) GetCustodyStatuses() *CustodyStatuses {
+	if m != nil {
+		return m.CustodyStatuses
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*CustodyByAddressRequest)(nil), "kira.custody.CustodyByAddressRequest")
 	proto.RegisterType((*CustodyByAddressResponse)(nil), "kira.custody.CustodyByAddressResponse")
 	proto.RegisterType((*CustodyWhiteListByAddressRequest)(nil), "kira.custody.CustodyWhiteListByAddressRequest")
 	proto.RegisterType((*CustodyWhiteListByAddressResponse)(nil), "kira.custody.CustodyWhiteListByAddressResponse")
+	proto.RegisterType((*CustodyLimitsByAddressRequest)(nil), "kira.custody.CustodyLimitsByAddressRequest")
+	proto.RegisterType((*CustodyLimitsByAddressResponse)(nil), "kira.custody.CustodyLimitsByAddressResponse")
+	proto.RegisterType((*CustodyLimitsStatusByAddressRequest)(nil), "kira.custody.CustodyLimitsStatusByAddressRequest")
+	proto.RegisterType((*CustodyLimitsStatusByAddressResponse)(nil), "kira.custody.CustodyLimitsStatusByAddressResponse")
 }
 
 func init() { proto.RegisterFile("kira/custody/query.proto", fileDescriptor_6c8d8c1227063c95) }
 
 var fileDescriptor_6c8d8c1227063c95 = []byte{
-	// 433 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x53, 0xcd, 0xce, 0xd2, 0x40,
-	0x14, 0xa5, 0x44, 0x5d, 0x0c, 0x24, 0x92, 0x89, 0x89, 0xd8, 0x68, 0xc1, 0x26, 0x88, 0x2c, 0xe8,
-	0x24, 0xb8, 0x73, 0x25, 0xb0, 0x31, 0x91, 0x8d, 0x68, 0x62, 0xe2, 0x86, 0x0c, 0xed, 0xa4, 0x4c,
-	0x80, 0x4e, 0xe9, 0x9d, 0x46, 0x1a, 0xe3, 0xc6, 0x27, 0x20, 0xf1, 0x39, 0x7c, 0x0f, 0xe3, 0x8a,
-	0xc4, 0x8d, 0x2b, 0x62, 0xc0, 0x27, 0x70, 0xe9, 0xca, 0xb4, 0x1d, 0x2a, 0x3f, 0x15, 0xbf, 0xd5,
-	0xb7, 0x1a, 0x72, 0xcf, 0xc9, 0xb9, 0xe7, 0x1c, 0x6e, 0x51, 0x75, 0xca, 0x03, 0x4a, 0xec, 0x10,
-	0xa4, 0x70, 0x22, 0xb2, 0x08, 0x59, 0x10, 0x59, 0x7e, 0x20, 0xa4, 0xc0, 0xe5, 0x18, 0xb1, 0x14,
-	0xa2, 0xdf, 0x71, 0x85, 0x2b, 0x12, 0x80, 0xc4, 0xbf, 0x52, 0x8e, 0x7e, 0xdf, 0x15, 0xc2, 0x9d,
-	0x31, 0x42, 0x7d, 0x4e, 0xa8, 0xe7, 0x09, 0x49, 0x25, 0x17, 0x1e, 0x28, 0x54, 0x3f, 0xd2, 0x56,
-	0x6f, 0x8a, 0x99, 0x02, 0xdd, 0xed, 0xa7, 0x83, 0x5e, 0xd4, 0x75, 0x9c, 0x80, 0x01, 0x0c, 0xd9,
-	0x22, 0x64, 0x20, 0xf1, 0x6b, 0x74, 0x83, 0x3a, 0x4e, 0x50, 0xd5, 0xea, 0xda, 0xe3, 0x72, 0xef,
-	0xd9, 0xaf, 0x4d, 0xad, 0x14, 0xd1, 0xf9, 0xec, 0xa9, 0x19, 0x4f, 0xcd, 0xdf, 0x9b, 0x5a, 0xdb,
-	0xe5, 0x72, 0x12, 0x8e, 0x2d, 0x5b, 0xcc, 0x89, 0x2d, 0x60, 0x2e, 0x40, 0x3d, 0x6d, 0x70, 0xa6,
-	0x44, 0x46, 0x3e, 0x03, 0xab, 0x6b, 0xdb, 0x7b, 0xd9, 0x44, 0xcd, 0x74, 0x50, 0xf5, 0x7c, 0x21,
-	0xf8, 0xc2, 0x03, 0x86, 0x9f, 0xa3, 0x8a, 0x72, 0x37, 0x02, 0x26, 0x25, 0xf7, 0x5c, 0x48, 0xb6,
-	0x97, 0x3a, 0x0f, 0xac, 0xc3, 0x16, 0x2c, 0xa5, 0xf0, 0x4a, 0x91, 0x86, 0xb7, 0xed, 0xe3, 0x81,
-	0xb9, 0x44, 0x75, 0xc5, 0x79, 0x33, 0xe1, 0x92, 0x0d, 0x38, 0xc8, 0x6b, 0xca, 0xb7, 0x40, 0x0f,
-	0x2f, 0x6c, 0x56, 0x41, 0x07, 0x08, 0xef, 0x83, 0xbe, 0x8b, 0x59, 0xa3, 0x19, 0x07, 0xa9, 0xa2,
-	0x1a, 0xb9, 0x51, 0x33, 0xb1, 0xe1, 0xbe, 0xa2, 0x6c, 0xd2, 0xf9, 0x5a, 0x44, 0x37, 0x5f, 0xc6,
-	0x17, 0x83, 0x57, 0x1a, 0xaa, 0x9c, 0xb6, 0x8b, 0x1b, 0xb9, 0x82, 0xa7, 0x75, 0xe8, 0x8f, 0xfe,
-	0x47, 0x4b, 0xbd, 0x9b, 0xed, 0x8f, 0xdf, 0x7e, 0x7e, 0x2a, 0x36, 0x71, 0x83, 0xe4, 0x9d, 0x55,
-	0xf6, 0xc7, 0x91, 0xf7, 0x71, 0x1d, 0x1f, 0xf0, 0x67, 0x0d, 0xdd, 0xfb, 0x67, 0x21, 0xd8, 0xba,
-	0x1c, 0xf6, 0xcc, 0x24, 0xb9, 0x32, 0x5f, 0xb9, 0x25, 0x89, 0xdb, 0x16, 0x6e, 0xe6, 0xbb, 0xfd,
-	0xdb, 0xbe, 0xf2, 0xdb, 0xeb, 0x7f, 0xd9, 0x1a, 0xda, 0x7a, 0x6b, 0x68, 0x3f, 0xb6, 0x86, 0xb6,
-	0xda, 0x19, 0x85, 0xf5, 0xce, 0x28, 0x7c, 0xdf, 0x19, 0x85, 0xb7, 0xad, 0x83, 0x73, 0x78, 0xc1,
-	0x03, 0xda, 0x17, 0x01, 0x23, 0xc0, 0xa6, 0x94, 0x93, 0x65, 0x26, 0x9c, 0x5c, 0xc5, 0xf8, 0x56,
-	0xf2, 0x71, 0x3d, 0xf9, 0x13, 0x00, 0x00, 0xff, 0xff, 0x58, 0x66, 0x35, 0x35, 0xd6, 0x03, 0x00,
-	0x00,
+	// 569 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x55, 0x31, 0x6f, 0xd3, 0x40,
+	0x14, 0x8e, 0x11, 0x65, 0xb8, 0x16, 0xa8, 0x4e, 0x08, 0x42, 0x68, 0xdd, 0xe2, 0x12, 0x4a, 0x69,
+	0xe3, 0x13, 0x61, 0x63, 0xa2, 0xc9, 0x82, 0x44, 0x16, 0x52, 0x24, 0x24, 0x96, 0xca, 0xb5, 0x4f,
+	0xee, 0x29, 0x89, 0xcf, 0xf1, 0x9d, 0x45, 0xad, 0x8a, 0x85, 0x5f, 0x50, 0x89, 0x3f, 0xc0, 0xca,
+	0xc0, 0x0f, 0xe0, 0x1f, 0x30, 0x56, 0x62, 0x61, 0xaa, 0x50, 0xc2, 0x2f, 0x60, 0x64, 0x42, 0x3e,
+	0x3f, 0xa7, 0x49, 0x73, 0x75, 0xdb, 0x25, 0x93, 0x93, 0xf7, 0xbe, 0xbc, 0xf7, 0x7d, 0x2f, 0xdf,
+	0x97, 0xa0, 0x72, 0x87, 0x45, 0x0e, 0x71, 0x63, 0x21, 0xb9, 0x97, 0x90, 0x7e, 0x4c, 0xa3, 0xc4,
+	0x0e, 0x23, 0x2e, 0x39, 0x5e, 0x48, 0x3b, 0x36, 0x74, 0x2a, 0x77, 0x7c, 0xee, 0x73, 0xd5, 0x20,
+	0xe9, 0xab, 0x0c, 0x53, 0x59, 0xf2, 0x39, 0xf7, 0xbb, 0x94, 0x38, 0x21, 0x23, 0x4e, 0x10, 0x70,
+	0xe9, 0x48, 0xc6, 0x03, 0x01, 0xdd, 0xca, 0xc4, 0x6c, 0x78, 0x66, 0x3d, 0x8b, 0xa3, 0x7b, 0xcd,
+	0xac, 0xd0, 0x48, 0xb6, 0x3d, 0x2f, 0xa2, 0x42, 0xb4, 0x69, 0x3f, 0xa6, 0x42, 0xe2, 0xb7, 0xe8,
+	0xba, 0xe3, 0x79, 0x51, 0xd9, 0x58, 0x35, 0x9e, 0x2c, 0x34, 0x5e, 0xfe, 0x3d, 0x59, 0x99, 0x4f,
+	0x9c, 0x5e, 0xf7, 0x85, 0x95, 0x56, 0xad, 0x7f, 0x27, 0x2b, 0x35, 0x9f, 0xc9, 0xfd, 0x78, 0xcf,
+	0x76, 0x79, 0x8f, 0xb8, 0x5c, 0xf4, 0xb8, 0x80, 0x47, 0x4d, 0x78, 0x1d, 0x22, 0x93, 0x90, 0x0a,
+	0x7b, 0xdb, 0x75, 0xf3, 0xb1, 0x6a, 0x9a, 0xe5, 0xa1, 0xf2, 0xf4, 0x42, 0x11, 0xf2, 0x40, 0x50,
+	0xfc, 0x0a, 0x2d, 0x02, 0xbb, 0x5d, 0x41, 0xa5, 0x64, 0x81, 0x2f, 0xd4, 0xf6, 0xf9, 0xfa, 0xb2,
+	0x3d, 0x7e, 0x05, 0x1b, 0x26, 0xec, 0x00, 0xa8, 0x7d, 0xdb, 0x9d, 0x2c, 0x58, 0x07, 0x68, 0x15,
+	0x30, 0xef, 0xf6, 0x99, 0xa4, 0x2d, 0x26, 0xe4, 0x8c, 0xf4, 0xf5, 0xd1, 0xc3, 0x82, 0xcd, 0x20,
+	0xb4, 0x85, 0x70, 0x2e, 0xf4, 0x43, 0x8a, 0xda, 0xed, 0x32, 0x21, 0x41, 0xaa, 0xa9, 0x95, 0x3a,
+	0x1a, 0xd6, 0xce, 0x4f, 0x34, 0xaa, 0x58, 0x31, 0x5a, 0x06, 0x54, 0x8b, 0xf5, 0x98, 0x14, 0x33,
+	0xfb, 0x26, 0xcd, 0xf3, 0xd6, 0x82, 0xcc, 0x06, 0xba, 0x95, 0xcb, 0xec, 0x2a, 0x08, 0x48, 0x7c,
+	0xa0, 0x95, 0x98, 0x4d, 0x69, 0xdf, 0x74, 0xc7, 0xdf, 0x5a, 0x87, 0x68, 0x6d, 0xa2, 0xbf, 0x23,
+	0x1d, 0x19, 0xcf, 0x4a, 0x62, 0x88, 0x1e, 0x15, 0x2f, 0xd7, 0x18, 0x57, 0x41, 0xe8, 0x05, 0xc6,
+	0x05, 0xd0, 0xa9, 0x71, 0xa1, 0x50, 0xff, 0x3a, 0x87, 0xe6, 0xde, 0xa4, 0xe9, 0xc7, 0x47, 0x06,
+	0x5a, 0x3c, 0x9b, 0x14, 0x5c, 0xd5, 0x8e, 0x3b, 0x7b, 0x8d, 0xca, 0xe3, 0x8b, 0x60, 0x19, 0x6f,
+	0xab, 0xf6, 0xe9, 0xe7, 0x9f, 0xcf, 0xd7, 0xd6, 0x71, 0x95, 0xe8, 0x7e, 0x22, 0x46, 0x21, 0x24,
+	0x87, 0xe9, 0x35, 0x3e, 0xe2, 0x6f, 0x06, 0xba, 0x7f, 0xae, 0xb9, 0xb1, 0x5d, 0x6c, 0xdc, 0x29,
+	0x92, 0xe4, 0xd2, 0x78, 0x60, 0x4b, 0x14, 0xdb, 0x0d, 0xbc, 0xae, 0x67, 0x7b, 0x9a, 0xa4, 0x9c,
+	0xef, 0x17, 0x03, 0xdd, 0xd5, 0x5b, 0x14, 0x6f, 0x16, 0x58, 0x70, 0x8a, 0xe9, 0xd6, 0xe5, 0xc0,
+	0x40, 0x73, 0x53, 0xd1, 0xac, 0xe2, 0x35, 0x3d, 0xcd, 0x2c, 0x09, 0x39, 0xc5, 0xef, 0x06, 0x5a,
+	0x2a, 0xb2, 0x18, 0x7e, 0x56, 0xb0, 0x5b, 0x9f, 0x85, 0x4a, 0xfd, 0x2a, 0x1f, 0x01, 0xd2, 0x75,
+	0x45, 0x7a, 0x0b, 0x3f, 0x2d, 0x22, 0x0d, 0xe6, 0x06, 0xee, 0x8d, 0xe6, 0x8f, 0x81, 0x69, 0x1c,
+	0x0f, 0x4c, 0xe3, 0xf7, 0xc0, 0x34, 0x8e, 0x86, 0x66, 0xe9, 0x78, 0x68, 0x96, 0x7e, 0x0d, 0xcd,
+	0xd2, 0xfb, 0x8d, 0xb1, 0xb0, 0xbd, 0x66, 0x91, 0xd3, 0xe4, 0x11, 0x25, 0x82, 0x76, 0x1c, 0x46,
+	0x0e, 0x46, 0xb3, 0x55, 0xe6, 0xf6, 0x6e, 0xa8, 0xff, 0xa1, 0xe7, 0xff, 0x03, 0x00, 0x00, 0xff,
+	0xff, 0x60, 0x8c, 0x7d, 0xce, 0x01, 0x07, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -261,6 +449,8 @@ const _ = grpc.SupportPackageIsVersion4
 type QueryClient interface {
 	CustodyByAddress(ctx context.Context, in *CustodyByAddressRequest, opts ...grpc.CallOption) (*CustodyByAddressResponse, error)
 	CustodyWhiteListByAddress(ctx context.Context, in *CustodyWhiteListByAddressRequest, opts ...grpc.CallOption) (*CustodyWhiteListByAddressResponse, error)
+	CustodyLimitsByAddress(ctx context.Context, in *CustodyLimitsByAddressRequest, opts ...grpc.CallOption) (*CustodyLimitsByAddressResponse, error)
+	CustodyLimitsStatusByAddress(ctx context.Context, in *CustodyLimitsStatusByAddressRequest, opts ...grpc.CallOption) (*CustodyLimitsStatusByAddressResponse, error)
 }
 
 type queryClient struct {
@@ -289,10 +479,30 @@ func (c *queryClient) CustodyWhiteListByAddress(ctx context.Context, in *Custody
 	return out, nil
 }
 
+func (c *queryClient) CustodyLimitsByAddress(ctx context.Context, in *CustodyLimitsByAddressRequest, opts ...grpc.CallOption) (*CustodyLimitsByAddressResponse, error) {
+	out := new(CustodyLimitsByAddressResponse)
+	err := c.cc.Invoke(ctx, "/kira.custody.Query/CustodyLimitsByAddress", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) CustodyLimitsStatusByAddress(ctx context.Context, in *CustodyLimitsStatusByAddressRequest, opts ...grpc.CallOption) (*CustodyLimitsStatusByAddressResponse, error) {
+	out := new(CustodyLimitsStatusByAddressResponse)
+	err := c.cc.Invoke(ctx, "/kira.custody.Query/CustodyLimitsStatusByAddress", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 type QueryServer interface {
 	CustodyByAddress(context.Context, *CustodyByAddressRequest) (*CustodyByAddressResponse, error)
 	CustodyWhiteListByAddress(context.Context, *CustodyWhiteListByAddressRequest) (*CustodyWhiteListByAddressResponse, error)
+	CustodyLimitsByAddress(context.Context, *CustodyLimitsByAddressRequest) (*CustodyLimitsByAddressResponse, error)
+	CustodyLimitsStatusByAddress(context.Context, *CustodyLimitsStatusByAddressRequest) (*CustodyLimitsStatusByAddressResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -304,6 +514,12 @@ func (*UnimplementedQueryServer) CustodyByAddress(ctx context.Context, req *Cust
 }
 func (*UnimplementedQueryServer) CustodyWhiteListByAddress(ctx context.Context, req *CustodyWhiteListByAddressRequest) (*CustodyWhiteListByAddressResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CustodyWhiteListByAddress not implemented")
+}
+func (*UnimplementedQueryServer) CustodyLimitsByAddress(ctx context.Context, req *CustodyLimitsByAddressRequest) (*CustodyLimitsByAddressResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CustodyLimitsByAddress not implemented")
+}
+func (*UnimplementedQueryServer) CustodyLimitsStatusByAddress(ctx context.Context, req *CustodyLimitsStatusByAddressRequest) (*CustodyLimitsStatusByAddressResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CustodyLimitsStatusByAddress not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -346,6 +562,42 @@ func _Query_CustodyWhiteListByAddress_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_CustodyLimitsByAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CustodyLimitsByAddressRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).CustodyLimitsByAddress(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.custody.Query/CustodyLimitsByAddress",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).CustodyLimitsByAddress(ctx, req.(*CustodyLimitsByAddressRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_CustodyLimitsStatusByAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CustodyLimitsStatusByAddressRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).CustodyLimitsStatusByAddress(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.custody.Query/CustodyLimitsStatusByAddress",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).CustodyLimitsStatusByAddress(ctx, req.(*CustodyLimitsStatusByAddressRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "kira.custody.Query",
 	HandlerType: (*QueryServer)(nil),
@@ -357,6 +609,14 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CustodyWhiteListByAddress",
 			Handler:    _Query_CustodyWhiteListByAddress_Handler,
+		},
+		{
+			MethodName: "CustodyLimitsByAddress",
+			Handler:    _Query_CustodyLimitsByAddress_Handler,
+		},
+		{
+			MethodName: "CustodyLimitsStatusByAddress",
+			Handler:    _Query_CustodyLimitsStatusByAddress_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -493,6 +753,136 @@ func (m *CustodyWhiteListByAddressResponse) MarshalToSizedBuffer(dAtA []byte) (i
 	return len(dAtA) - i, nil
 }
 
+func (m *CustodyLimitsByAddressRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *CustodyLimitsByAddressRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *CustodyLimitsByAddressRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Addr) > 0 {
+		i -= len(m.Addr)
+		copy(dAtA[i:], m.Addr)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Addr)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *CustodyLimitsByAddressResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *CustodyLimitsByAddressResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *CustodyLimitsByAddressResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.CustodyLimits != nil {
+		{
+			size, err := m.CustodyLimits.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *CustodyLimitsStatusByAddressRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *CustodyLimitsStatusByAddressRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *CustodyLimitsStatusByAddressRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Addr) > 0 {
+		i -= len(m.Addr)
+		copy(dAtA[i:], m.Addr)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Addr)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *CustodyLimitsStatusByAddressResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *CustodyLimitsStatusByAddressResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *CustodyLimitsStatusByAddressResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.CustodyStatuses != nil {
+		{
+			size, err := m.CustodyStatuses.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	offset -= sovQuery(v)
 	base := offset
@@ -551,6 +941,58 @@ func (m *CustodyWhiteListByAddressResponse) Size() (n int) {
 	_ = l
 	if m.CustodyWhiteList != nil {
 		l = m.CustodyWhiteList.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *CustodyLimitsByAddressRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Addr)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *CustodyLimitsByAddressResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.CustodyLimits != nil {
+		l = m.CustodyLimits.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *CustodyLimitsStatusByAddressRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Addr)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *CustodyLimitsStatusByAddressResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.CustodyStatuses != nil {
+		l = m.CustodyStatuses.Size()
 		n += 1 + l + sovQuery(uint64(l))
 	}
 	return n
@@ -878,6 +1320,346 @@ func (m *CustodyWhiteListByAddressResponse) Unmarshal(dAtA []byte) error {
 				m.CustodyWhiteList = &CustodyWhiteList{}
 			}
 			if err := m.CustodyWhiteList.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *CustodyLimitsByAddressRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: CustodyLimitsByAddressRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: CustodyLimitsByAddressRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Addr", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Addr = append(m.Addr[:0], dAtA[iNdEx:postIndex]...)
+			if m.Addr == nil {
+				m.Addr = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *CustodyLimitsByAddressResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: CustodyLimitsByAddressResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: CustodyLimitsByAddressResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CustodyLimits", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.CustodyLimits == nil {
+				m.CustodyLimits = &CustodyLimits{}
+			}
+			if err := m.CustodyLimits.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *CustodyLimitsStatusByAddressRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: CustodyLimitsStatusByAddressRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: CustodyLimitsStatusByAddressRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Addr", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Addr = append(m.Addr[:0], dAtA[iNdEx:postIndex]...)
+			if m.Addr == nil {
+				m.Addr = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *CustodyLimitsStatusByAddressResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: CustodyLimitsStatusByAddressResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: CustodyLimitsStatusByAddressResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CustodyStatuses", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.CustodyStatuses == nil {
+				m.CustodyStatuses = &CustodyStatuses{}
+			}
+			if err := m.CustodyStatuses.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

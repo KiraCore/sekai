@@ -13,6 +13,10 @@ service Msg {
   rpc AddToWhiteList(MsgAddToCustodyWhiteList) returns (MsgAddToCustodyWhiteListResponse);
   rpc RemoveFromWhiteList(MsgRemoveFromCustodyWhiteList) returns (MsgRemoveFromCustodyWhiteListResponse);
   rpc DropWhiteList(MsgDropCustodyWhiteList) returns (MsgDropCustodyWhiteListResponse);
+  rpc AddToLimits(MsgAddToCustodyLimits) returns (MsgAddToCustodyLimitsResponse);
+  rpc RemoveFromLimits(MsgRemoveFromCustodyLimits) returns (MsgRemoveFromCustodyLimitsResponse);
+  rpc DropLimits(MsgDropCustodyLimits) returns (MsgDropCustodyLimitsResponse);
+  rpc AddToLimitsStatus(MsgAddToCustodyLimitsStatus) returns (MsgAddToCustodyLimitsStatusResponse);
 }
 
 message MsgCreteCustodyRecord {
@@ -67,7 +71,60 @@ message MsgDropCustodyWhiteList {
   ];
 }
 
+message MsgAddToCustodyLimits {
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
+  bytes address = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  string denom  = 2;
+  uint64 amount = 3;
+  string limit  = 4;
+}
+
+message MsgAddToCustodyLimitsStatus {
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
+  bytes address = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  string denom  = 2;
+  uint64 amount = 3;
+}
+
+message MsgRemoveFromCustodyLimits {
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
+  bytes address = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  string denom = 2;
+}
+
+message MsgDropCustodyLimits {
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
+  bytes address = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+}
+
 message MsgCreteCustodyRecordResponse {}
 message MsgAddToCustodyWhiteListResponse {}
 message MsgRemoveFromCustodyWhiteListResponse {}
 message MsgDropCustodyWhiteListResponse {}
+message MsgAddToCustodyLimitsResponse {}
+message MsgAddToCustodyLimitsStatusResponse {}
+message MsgRemoveFromCustodyLimitsResponse {}
+message MsgDropCustodyLimitsResponse {}

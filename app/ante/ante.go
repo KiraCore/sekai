@@ -2,9 +2,8 @@ package ante
 
 import (
 	"fmt"
-	custodykeeper "github.com/KiraCore/sekai/x/custody/keeper"
-
 	kiratypes "github.com/KiraCore/sekai/types"
+	custodykeeper "github.com/KiraCore/sekai/x/custody/keeper"
 	custodytypes "github.com/KiraCore/sekai/x/custody/types"
 	feeprocessingkeeper "github.com/KiraCore/sekai/x/feeprocessing/keeper"
 	feeprocessingtypes "github.com/KiraCore/sekai/x/feeprocessing/types"
@@ -18,6 +17,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/signing"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	bank "github.com/cosmos/cosmos-sdk/x/bank/types"
+	"time"
 )
 
 // NewAnteHandler returns an AnteHandler that checks and increments sequence
@@ -77,18 +77,49 @@ func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool,
 	}
 
 	for _, msg := range feeTx.GetMsgs() {
-		whiteList := cd.ck.GetCustodyWhiteListByAddress(ctx, msg.GetSigners()[0])
 		settings := cd.ck.GetCustodyInfoByAddress(ctx, msg.GetSigners()[0])
-
-		if settings == nil || !settings.UseWhiteList {
-			continue
-		}
 
 		if kiratypes.MsgType(msg) == bank.TypeMsgSend {
 			msg := msg.(*bank.MsgSend)
 
-			if whiteList != nil && !whiteList.Addresses[msg.ToAddress] {
-				return ctx, sdkerrors.Wrap(custodytypes.ErrNotInWhiteList, fmt.Sprintf("recipient not in the whitelist"))
+			if settings != nil && settings.UseWhiteList {
+				whiteList := cd.ck.GetCustodyWhiteListByAddress(ctx, msg.GetSigners()[0])
+
+				if whiteList != nil && !whiteList.Addresses[msg.ToAddress] {
+					return ctx, custodytypes.ErrNotInWhiteList
+				}
+			}
+
+			if settings != nil && settings.UseLimit {
+				limits := cd.ck.GetCustodyLimitsByAddress(ctx, msg.GetSigners()[0])
+
+				logger := cd.ck.Logger(ctx)
+				logger.Info("Limits", "msg", msg)
+				logger.Info("Limits", "limits", limits)
+
+				custodyLimitStatusRecord := custodytypes.CustodyLimitStatusRecord{
+					Address:         msg.GetSigners()[0],
+					CustodyStatuses: cd.ck.GetCustodyLimitsStatusByAddress(ctx, msg.GetSigners()[0]),
+				}
+
+				newAmount := msg.Amount.AmountOf(msg.Amount[0].Denom).Uint64()
+
+				if custodyLimitStatusRecord.CustodyStatuses != nil && custodyLimitStatusRecord.CustodyStatuses.Statuses[msg.Amount[0].Denom] != nil {
+					limit, _ := time.ParseDuration(limits.Limits[msg.Amount[0].Denom].Limit)
+					rate := limits.Limits[msg.Amount[0].Denom].Amount / (uint64(limit.Milliseconds()))
+					period := uint64(time.Now().Unix() - custodyLimitStatusRecord.CustodyStatuses.Statuses[msg.Amount[0].Denom].Time)
+					newAmount = custodyLimitStatusRecord.CustodyStatuses.Statuses[msg.Amount[0].Denom].Amount + msg.Amount.AmountOf(msg.Amount[0].Denom).Uint64() - (period * rate)
+
+					if newAmount <= 0 {
+						return ctx, custodytypes.ErrNotInLimits
+					}
+				}
+
+				custodyLimitStatusRecord.CustodyStatuses.Statuses[msg.Amount[0].Denom] = &custodytypes.CustodyStatus{
+					Amount: newAmount,
+				}
+
+				cd.ck.AddToCustodyLimitsStatus(ctx, custodyLimitStatusRecord)
 			}
 		}
 	}
