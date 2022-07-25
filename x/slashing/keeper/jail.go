@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"fmt"
+
 	"github.com/KiraCore/sekai/x/slashing/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -18,5 +20,28 @@ func (k Keeper) Jail(ctx sdk.Context, consAddr sdk.ConsAddress) {
 		)
 
 		k.sk.Jail(ctx, validator.ValKey)
+
+		pool, found := k.msk.GetStakingPoolByValidator(ctx, validator.ValKey.String())
+		if found {
+			// create a proposal automatically to jail the validator
+			content := types.NewSlashValidatorProposal(
+				validator.ValKey.String(),
+				pool.Id,
+				ctx.BlockTime(),
+				"double-sign",
+				1,
+				[]string{},
+				"",
+			)
+			cacheCtx, write := ctx.CacheContext()
+			proposalID, err := k.gk.CreateAndSaveProposalWithContent(cacheCtx, "Slash proposal", "Slash for double sign", content)
+			if err == nil {
+				write()
+				fmt.Println("proposal created", proposalID)
+			} else {
+				fmt.Println("proposal creation error", err)
+			}
+		}
+
 	}
 }

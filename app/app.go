@@ -227,8 +227,14 @@ func NewInitApp(
 
 	app.CustomGovKeeper = customgovkeeper.NewKeeper(keys[govtypes.ModuleName], appCodec, app.BankKeeper)
 	customStakingKeeper := customstakingkeeper.NewKeeper(keys[stakingtypes.ModuleName], cdc, app.CustomGovKeeper)
+	app.MultiStakingKeeper = multistakingkeeper.NewKeeper(keys[multistakingtypes.ModuleName], appCodec, app.BankKeeper, app.TokensKeeper, app.CustomGovKeeper, app.CustomStakingKeeper)
 	app.CustomSlashingKeeper = customslashingkeeper.NewKeeper(
-		appCodec, keys[slashingtypes.StoreKey], &customStakingKeeper, app.CustomGovKeeper, app.GetSubspace(slashingtypes.ModuleName),
+		appCodec,
+		keys[slashingtypes.StoreKey],
+		&customStakingKeeper,
+		app.MultiStakingKeeper,
+		app.CustomGovKeeper,
+		app.GetSubspace(slashingtypes.ModuleName),
 	)
 	app.SpendingKeeper = spendingkeeper.NewKeeper(keys[spendingtypes.ModuleName], appCodec, app.BankKeeper, app.CustomGovKeeper)
 	app.UbiKeeper = ubikeeper.NewKeeper(keys[ubitypes.ModuleName], appCodec, app.BankKeeper, app.SpendingKeeper)
@@ -237,7 +243,6 @@ func NewInitApp(
 	app.CustomStakingKeeper = *customStakingKeeper.SetHooks(
 		stakingtypes.NewMultiStakingHooks(app.CustomSlashingKeeper.Hooks()),
 	)
-	app.MultiStakingKeeper = multistakingkeeper.NewKeeper(keys[multistakingtypes.ModuleName], appCodec, app.BankKeeper, app.TokensKeeper, app.CustomGovKeeper, app.CustomStakingKeeper)
 	app.DistrKeeper = distributorkeeper.NewKeeper(
 		keys[distributortypes.ModuleName], appCodec,
 		app.AccountKeeper, app.BankKeeper,

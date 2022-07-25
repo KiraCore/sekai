@@ -112,3 +112,40 @@ func (msg MsgPause) ValidateBasic() error {
 
 	return nil
 }
+
+// verify interface at compile time
+var _ sdk.Msg = &MsgRefuteSlashingProposal{}
+
+// NewMsgRefuteSlashingProposal creates a new MsgRefuteSlashingProposal instance
+func NewMsgRefuteSlashingProposal(sender sdk.AccAddress, validatorAddr sdk.ValAddress, refutation string) *MsgRefuteSlashingProposal {
+	return &MsgRefuteSlashingProposal{
+		Sender:     sender.String(),
+		Validator:  validatorAddr.String(),
+		Refutation: refutation,
+	}
+}
+
+func (msg MsgRefuteSlashingProposal) Route() string { return RouterKey }
+func (msg MsgRefuteSlashingProposal) Type() string  { return types.MsgTypePause }
+func (msg MsgRefuteSlashingProposal) GetSigners() []sdk.AccAddress {
+	valAddr, err := sdk.ValAddressFromBech32(msg.Sender)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{valAddr.Bytes()}
+}
+
+// GetSignBytes gets the bytes for the message signer to sign on
+func (msg MsgRefuteSlashingProposal) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(&msg)
+	return sdk.MustSortJSON(bz)
+}
+
+// ValidateBasic validity check for the AnteHandler
+func (msg MsgRefuteSlashingProposal) ValidateBasic() error {
+	if msg.Validator == "" {
+		return ErrBadValidatorAddr
+	}
+
+	return nil
+}

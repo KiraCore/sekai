@@ -47,7 +47,8 @@ message Vote {
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
   ];
 
-  VoteOption option      = 3;
+  VoteOption option = 3;
+  uint64 slash = 4;  // Note: SlashProposal requires this field to determine average value
 }
 
 message MsgVoteProposal {

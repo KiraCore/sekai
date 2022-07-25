@@ -14,7 +14,7 @@ message ProposalResetWholeValidatorRank {
     string description = 2;
 }
 
-message ProposalSlash {
+message ProposalSlashValidator {
   string offender = 1; // validator address that commited a fault
   uint64 staking_pool_id = 2;
   google.protobuf.Timestamp misbehaviour_time = 3 [
