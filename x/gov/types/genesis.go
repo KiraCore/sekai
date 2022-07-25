@@ -110,7 +110,7 @@ func DefaultGenesis() *GenesisState {
 			MaxDelegators:               100,
 			MinDelegationPushout:        10,
 		},
-		ExecutionFees: []*ExecutionFee{
+		ExecutionFees: []ExecutionFee{
 			{
 				TransactionType:   kiratypes.MsgTypeClaimValidator,
 				ExecutionFee:      100,
