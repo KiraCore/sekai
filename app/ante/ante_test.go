@@ -26,7 +26,7 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 	suite.SetupTest(false) // reset
 
 	// set execution fee for set network properties
-	suite.app.CustomGovKeeper.SetExecutionFee(suite.ctx, &govtypes.ExecutionFee{
+	suite.app.CustomGovKeeper.SetExecutionFee(suite.ctx, govtypes.ExecutionFee{
 		TransactionType:   types.MsgTypeSetNetworkProperties,
 		ExecutionFee:      10000,
 		FailureFee:        1000,
@@ -337,7 +337,7 @@ func (suite *AnteTestSuite) TestValidateFeeRangeDecorator() {
 		EnableTokenWhitelist:     true,
 	})
 
-	suite.app.CustomGovKeeper.SetExecutionFee(suite.ctx, &govtypes.ExecutionFee{
+	suite.app.CustomGovKeeper.SetExecutionFee(suite.ctx, govtypes.ExecutionFee{
 		TransactionType:   types.MsgTypeSetNetworkProperties,
 		ExecutionFee:      10000,
 		FailureFee:        1000,
@@ -493,7 +493,7 @@ func (suite *AnteTestSuite) TestPoorNetworkManagementDecorator() {
 		PoorNetworkMaxBankSend:   1000,
 	})
 
-	suite.app.CustomGovKeeper.SetExecutionFee(suite.ctx, &govtypes.ExecutionFee{
+	suite.app.CustomGovKeeper.SetExecutionFee(suite.ctx, govtypes.ExecutionFee{
 		TransactionType:   types.MsgTypeSetNetworkProperties,
 		ExecutionFee:      10000,
 		FailureFee:        1000,
@@ -589,7 +589,7 @@ func (suite *AnteTestSuite) TestBlackWhiteTokensCheckDecorator() {
 		PoorNetworkMaxBankSend:   1000,
 	})
 
-	suite.app.CustomGovKeeper.SetExecutionFee(suite.ctx, &govtypes.ExecutionFee{
+	suite.app.CustomGovKeeper.SetExecutionFee(suite.ctx, govtypes.ExecutionFee{
 		TransactionType:   types.MsgTypeSetNetworkProperties,
 		ExecutionFee:      10000,
 		FailureFee:        1000,
@@ -666,7 +666,7 @@ func (suite *AnteTestSuite) TestExecutionFeeRegistrationDecorator() {
 		PoorNetworkMaxBankSend:   1000,
 	})
 
-	suite.app.CustomGovKeeper.SetExecutionFee(suite.ctx, &govtypes.ExecutionFee{
+	suite.app.CustomGovKeeper.SetExecutionFee(suite.ctx, govtypes.ExecutionFee{
 		TransactionType:   types.MsgTypeSetNetworkProperties,
 		ExecutionFee:      10000,
 		FailureFee:        1000,
