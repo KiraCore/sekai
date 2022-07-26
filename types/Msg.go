@@ -112,6 +112,14 @@ var MsgFuncIDMapping = map[string]int64{
 	MsgTypeDepositSpendingPool:             42,
 	MsgTypeRegisterSpendingPoolBeneficiary: 43,
 	MsgTypeClaimSpendingPool:               44,
+
+	MsgTypeUpsertStakingPool: 51,
+	MsgTypeDelegate:          52,
+	MsgTypeUndelegate:        53,
+	MsgTypeClaimRewards:      54,
+	MsgTypeClaimUndelegation: 55,
+	MsgTypeSetCompoundInfo:   56,
+	MsgTypeRegisterDelegator: 57,
 }
 
 func MsgType(msg sdk.Msg) string {

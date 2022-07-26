@@ -391,6 +391,24 @@ func local_request_Query_ExecutionFee_0(ctx context.Context, marshaler runtime.M
 
 }
 
+func request_Query_AllExecutionFees_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq AllExecutionFeesRequest
+	var metadata runtime.ServerMetadata
+
+	msg, err := client.AllExecutionFees(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_Query_AllExecutionFees_0(ctx context.Context, marshaler runtime.Marshaler, server QueryServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq AllExecutionFeesRequest
+	var metadata runtime.ServerMetadata
+
+	msg, err := server.AllExecutionFees(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
 func request_Query_PoorNetworkMessages_0(ctx context.Context, marshaler runtime.Marshaler, client QueryClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq PoorNetworkMessagesRequest
 	var metadata runtime.ServerMetadata
@@ -1425,6 +1443,26 @@ func RegisterQueryHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 
 	})
 
+	mux.Handle("GET", pattern_Query_AllExecutionFees_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_Query_AllExecutionFees_0(rctx, inboundMarshaler, server, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_Query_AllExecutionFees_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
 	mux.Handle("GET", pattern_Query_PoorNetworkMessages_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -1986,6 +2024,26 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 
 	})
 
+	mux.Handle("GET", pattern_Query_AllExecutionFees_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_Query_AllExecutionFees_0(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_Query_AllExecutionFees_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
 	mux.Handle("GET", pattern_Query_PoorNetworkMessages_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -2366,6 +2424,8 @@ var (
 
 	pattern_Query_ExecutionFee_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"kira", "gov", "execution_fee", "transaction_type"}, "", runtime.AssumeColonVerbOpt(true)))
 
+	pattern_Query_AllExecutionFees_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"kira", "gov", "all_execution_fees"}, "", runtime.AssumeColonVerbOpt(true)))
+
 	pattern_Query_PoorNetworkMessages_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"kira", "gov", "poor_network_messages"}, "", runtime.AssumeColonVerbOpt(true)))
 
 	pattern_Query_Proposal_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"kira", "gov", "proposals", "proposal_id"}, "", runtime.AssumeColonVerbOpt(true)))
@@ -2419,6 +2479,8 @@ var (
 	forward_Query_NetworkProperties_0 = runtime.ForwardResponseMessage
 
 	forward_Query_ExecutionFee_0 = runtime.ForwardResponseMessage
+
+	forward_Query_AllExecutionFees_0 = runtime.ForwardResponseMessage
 
 	forward_Query_PoorNetworkMessages_0 = runtime.ForwardResponseMessage
 

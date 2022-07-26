@@ -272,10 +272,10 @@ func (k Keeper) SetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 }
 
 // SetExecutionFee set fee by execution function name
-func (k Keeper) SetExecutionFee(ctx sdk.Context, fee *types.ExecutionFee) {
+func (k Keeper) SetExecutionFee(ctx sdk.Context, fee types.ExecutionFee) {
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixExecutionFee)
 	key := []byte(fee.TransactionType)
-	prefixStore.Set(key, k.cdc.MustMarshal(fee))
+	prefixStore.Set(key, k.cdc.MustMarshal(&fee))
 }
 
 // GetExecutionFee get fee from execution function name
@@ -292,15 +292,16 @@ func (k Keeper) GetExecutionFee(ctx sdk.Context, txType string) *types.Execution
 	return fee
 }
 
-// GetExecutionFees get fees from execution function name
-func (k Keeper) GetExecutionFees(ctx sdk.Context) []*types.ExecutionFee {
+// GetExecutionFees get all execution fees
+func (k Keeper) GetExecutionFees(ctx sdk.Context) []types.ExecutionFee {
 	iterator := sdk.KVStorePrefixIterator(ctx.KVStore(k.storeKey), types.KeyPrefixExecutionFee)
 	defer iterator.Close()
-	fees := []*types.ExecutionFee{}
+	fees := []types.ExecutionFee{}
 	for ; iterator.Valid(); iterator.Next() {
 		bz := iterator.Value()
-		fee := new(types.ExecutionFee)
-		k.cdc.MustUnmarshal(bz, fee)
+		fee := types.ExecutionFee{}
+		k.cdc.MustUnmarshal(bz, &fee)
+		fees = append(fees, fee)
 	}
 	return fees
 }
