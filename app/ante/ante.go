@@ -90,7 +90,7 @@ func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool,
 				}
 			}
 
-			if settings != nil && settings.UseLimit {
+			if settings != nil && settings.UseLimits {
 				limits := cd.ck.GetCustodyLimitsByAddress(ctx, msg.GetSigners()[0])
 
 				logger := cd.ck.Logger(ctx)

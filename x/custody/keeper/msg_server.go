@@ -34,6 +34,55 @@ func (s msgServer) CreateCustody(goCtx context.Context, msg *types.MsgCreteCusto
 	return &types.MsgCreteCustodyRecordResponse{}, nil
 }
 
+func (s msgServer) AddToCustodians(goCtx context.Context, msg *types.MsgAddToCustodyCustodians) (*types.MsgAddToCustodyCustodiansResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	record := types.CustodyCustodiansRecord{
+		Address:           msg.Address,
+		CustodyCustodians: s.keeper.GetCustodyCustodiansByAddress(ctx, msg.Address),
+	}
+
+	if record.CustodyCustodians == nil {
+		record.CustodyCustodians = new(types.CustodyCustodianList)
+		record.CustodyCustodians.Addresses = map[string]bool{}
+	}
+
+	for _, address := range msg.AddAddress {
+		record.CustodyCustodians.Addresses[address.String()] = true
+	}
+
+	s.keeper.AddToCustodyCustodians(ctx, record)
+
+	return &types.MsgAddToCustodyCustodiansResponse{}, nil
+}
+
+func (s msgServer) RemoveFromCustodians(goCtx context.Context, msg *types.MsgRemoveFromCustodyCustodians) (*types.MsgRemoveFromCustodyCustodiansResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	record := types.CustodyCustodiansRecord{
+		Address:           msg.Address,
+		CustodyCustodians: s.keeper.GetCustodyCustodiansByAddress(ctx, msg.Address),
+	}
+
+	if record.CustodyCustodians == nil {
+		return nil, errors.Wrap(types.ErrNoWhiteLists, "Can not remove from the empty whitelist")
+	}
+
+	if !record.CustodyCustodians.Addresses[msg.RemoveAddress.String()] {
+		return nil, errors.Wrap(types.ErrNoWhiteListsElement, "Can not remove missing element from the whitelist")
+	}
+
+	record.CustodyCustodians.Addresses[msg.RemoveAddress.String()] = false
+	s.keeper.AddToCustodyCustodians(ctx, record)
+
+	return &types.MsgRemoveFromCustodyCustodiansResponse{}, nil
+}
+
+func (s msgServer) DropCustodians(goCtx context.Context, msg *types.MsgDropCustodyCustodians) (*types.MsgDropCustodyCustodiansResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	s.keeper.DropCustodyCustodiansByAddress(ctx, msg.Address)
+
+	return &types.MsgDropCustodyCustodiansResponse{}, nil
+}
+
 func (s msgServer) AddToWhiteList(goCtx context.Context, msg *types.MsgAddToCustodyWhiteList) (*types.MsgAddToCustodyWhiteListResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	record := types.CustodyWhiteListRecord{
@@ -46,7 +95,10 @@ func (s msgServer) AddToWhiteList(goCtx context.Context, msg *types.MsgAddToCust
 		record.CustodyWhiteList.Addresses = map[string]bool{}
 	}
 
-	record.CustodyWhiteList.Addresses[msg.AddAddress.String()] = true
+	for _, address := range msg.AddAddress {
+		record.CustodyWhiteList.Addresses[address.String()] = true
+	}
+
 	s.keeper.AddToCustodyWhiteList(ctx, record)
 
 	return &types.MsgAddToCustodyWhiteListResponse{}, nil

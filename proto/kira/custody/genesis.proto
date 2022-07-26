@@ -6,4 +6,7 @@ import "kira/custody/custody.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/custody/types";
 
-message GenesisState {}
+message GenesisState {
+    uint64 max_custody_buffer_size = 1;
+    uint64 max_custody_tx_size = 2;
+}

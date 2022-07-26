@@ -10,6 +10,9 @@ option go_package = "github.com/KiraCore/sekai/x/custody/types";
 // Msg defines the custody Msg service.
 service Msg {
   rpc CreateCustody(MsgCreteCustodyRecord) returns (MsgCreteCustodyRecordResponse);
+  rpc AddToCustodians(MsgAddToCustodyCustodians) returns (MsgAddToCustodyCustodiansResponse);
+  rpc RemoveFromCustodians(MsgRemoveFromCustodyCustodians) returns (MsgRemoveFromCustodyCustodiansResponse);
+  rpc DropCustodians(MsgDropCustodyCustodians) returns (MsgDropCustodyCustodiansResponse);
   rpc AddToWhiteList(MsgAddToCustodyWhiteList) returns (MsgAddToCustodyWhiteListResponse);
   rpc RemoveFromWhiteList(MsgRemoveFromCustodyWhiteList) returns (MsgRemoveFromCustodyWhiteListResponse);
   rpc DropWhiteList(MsgDropCustodyWhiteList) returns (MsgDropCustodyWhiteListResponse);
@@ -31,6 +34,46 @@ message MsgCreteCustodyRecord {
   CustodySettings custody_settings = 2 [ (gogoproto.nullable) = false ];
 }
 
+message MsgAddToCustodyCustodians {
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
+  bytes address = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  repeated bytes add_address = 2 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+}
+
+message MsgRemoveFromCustodyCustodians {
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
+  bytes address = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  bytes remove_address = 2 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+}
+
+message MsgDropCustodyCustodians {
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
+  bytes address = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+}
+
 message MsgAddToCustodyWhiteList {
   option (gogoproto.equal)           = false;
   option (gogoproto.goproto_getters) = false;
@@ -40,7 +83,7 @@ message MsgAddToCustodyWhiteList {
     (gogoproto.moretags) = "yaml:\"address\""
   ];
 
-  bytes add_address = 2 [
+  repeated bytes add_address = 2 [
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
     (gogoproto.moretags) = "yaml:\"address\""
   ];
@@ -121,6 +164,9 @@ message MsgDropCustodyLimits {
 }
 
 message MsgCreteCustodyRecordResponse {}
+message MsgAddToCustodyCustodiansResponse {}
+message MsgRemoveFromCustodyCustodiansResponse {}
+message MsgDropCustodyCustodiansResponse {}
 message MsgAddToCustodyWhiteListResponse {}
 message MsgRemoveFromCustodyWhiteListResponse {}
 message MsgDropCustodyWhiteListResponse {}

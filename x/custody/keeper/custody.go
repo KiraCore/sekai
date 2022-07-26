@@ -27,6 +27,34 @@ func (k Keeper) SetCustodyRecord(ctx sdk.Context, record types.CustodyRecord) {
 	store.Set(key, k.cdc.MustMarshal(&record.CustodySettings))
 }
 
+func (k Keeper) GetCustodyCustodiansByAddress(ctx sdk.Context, address sdk.AccAddress) *types.CustodyCustodianList {
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), []byte(types.PrefixKeyCustodyCustodians))
+	bz := prefixStore.Get(address)
+
+	if bz == nil {
+		return nil
+	}
+
+	info := new(types.CustodyCustodianList)
+	k.cdc.MustUnmarshal(bz, info)
+
+	return info
+}
+
+func (k Keeper) AddToCustodyCustodians(ctx sdk.Context, record types.CustodyCustodiansRecord) {
+	store := ctx.KVStore(k.storeKey)
+	key := append([]byte(types.PrefixKeyCustodyCustodians), record.Address...)
+
+	store.Set(key, k.cdc.MustMarshal(record.CustodyCustodians))
+}
+
+func (k Keeper) DropCustodyCustodiansByAddress(ctx sdk.Context, address sdk.AccAddress) {
+	store := ctx.KVStore(k.storeKey)
+	key := append([]byte(types.PrefixKeyCustodyCustodians), address...)
+
+	store.Delete(key)
+}
+
 func (k Keeper) GetCustodyWhiteListByAddress(ctx sdk.Context, address sdk.AccAddress) *types.CustodyWhiteList {
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), []byte(types.PrefixKeyCustodyWhiteList))
 	bz := prefixStore.Get(address)

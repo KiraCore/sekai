@@ -32,8 +32,89 @@ func (m *MsgCreteCustodyRecord) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgAddToCustodyWhiteList(addr sdk.AccAddress, new_addr sdk.AccAddress) *MsgAddToCustodyWhiteList {
-	return &MsgAddToCustodyWhiteList{addr, new_addr}
+func NewMsgAddToCustodyCustodians(addr sdk.AccAddress, newAddr []sdk.AccAddress) *MsgAddToCustodyCustodians {
+	return &MsgAddToCustodyCustodians{addr, newAddr}
+}
+
+func (m *MsgAddToCustodyCustodians) Route() string {
+	return ModuleName
+}
+
+func (m *MsgAddToCustodyCustodians) Type() string {
+	return types.MsgTypeAddToCustodyWhiteList
+}
+
+func (m *MsgAddToCustodyCustodians) ValidateBasic() error {
+	return nil
+}
+
+func (m *MsgAddToCustodyCustodians) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *MsgAddToCustodyCustodians) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{
+		m.Address,
+	}
+}
+
+func NewMsgRemoveFromCustodyCustodians(addr sdk.AccAddress, newAddr sdk.AccAddress) *MsgRemoveFromCustodyCustodians {
+	return &MsgRemoveFromCustodyCustodians{addr, newAddr}
+}
+
+func (m *MsgRemoveFromCustodyCustodians) Route() string {
+	return ModuleName
+}
+
+func (m *MsgRemoveFromCustodyCustodians) Type() string {
+	return types.MsgTypeRemoveFromCustodyWhiteList
+}
+
+func (m *MsgRemoveFromCustodyCustodians) ValidateBasic() error {
+	return nil
+}
+
+func (m *MsgRemoveFromCustodyCustodians) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *MsgRemoveFromCustodyCustodians) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{
+		m.Address,
+	}
+}
+
+func NewMsgDropCustodyCustodians(addr sdk.AccAddress) *MsgDropCustodyCustodians {
+	return &MsgDropCustodyCustodians{addr}
+}
+
+func (m *MsgDropCustodyCustodians) Route() string {
+	return ModuleName
+}
+
+func (m *MsgDropCustodyCustodians) Type() string {
+	return types.MsgTypeDropCustodyWhiteList
+}
+
+func (m *MsgDropCustodyCustodians) ValidateBasic() error {
+	return nil
+}
+
+func (m *MsgDropCustodyCustodians) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *MsgDropCustodyCustodians) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{
+		m.Address,
+	}
+}
+
+func NewMsgAddToCustodyWhiteList(addr sdk.AccAddress, newAddr []sdk.AccAddress) *MsgAddToCustodyWhiteList {
+	return &MsgAddToCustodyWhiteList{addr, newAddr}
 }
 
 func (m *MsgAddToCustodyWhiteList) Route() string {
@@ -59,8 +140,8 @@ func (m *MsgAddToCustodyWhiteList) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgRemoveFromCustodyWhiteList(addr sdk.AccAddress, new_addr sdk.AccAddress) *MsgRemoveFromCustodyWhiteList {
-	return &MsgRemoveFromCustodyWhiteList{addr, new_addr}
+func NewMsgRemoveFromCustodyWhiteList(addr sdk.AccAddress, newAddr sdk.AccAddress) *MsgRemoveFromCustodyWhiteList {
+	return &MsgRemoveFromCustodyWhiteList{addr, newAddr}
 }
 
 func (m *MsgRemoveFromCustodyWhiteList) Route() string {

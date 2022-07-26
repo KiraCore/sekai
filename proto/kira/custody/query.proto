@@ -12,6 +12,9 @@ service Query {
     rpc CustodyByAddress (CustodyByAddressRequest) returns (CustodyByAddressResponse) {
         option (google.api.http).get = "/kira/custody/custody_settings/{addr}";
     }
+      rpc CustodyCustodiansByAddress (CustodyCustodiansByAddressRequest) returns (CustodyCustodiansByAddressResponse) {
+        option (google.api.http).get = "/kira/custody/custody_custodians/{addr}";
+      }
     rpc CustodyWhiteListByAddress (CustodyWhiteListByAddressRequest) returns (CustodyWhiteListByAddressResponse) {
         option (google.api.http).get = "/kira/custody/custody_white_list/{addr}";
     }
@@ -34,11 +37,22 @@ message CustodyByAddressResponse {
   CustodySettings custody_settings = 1;
 }
 
+message CustodyCustodiansByAddressRequest {
+  bytes addr = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"addr\""
+  ];
+}
+
 message CustodyWhiteListByAddressRequest {
   bytes addr = 1 [
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
     (gogoproto.moretags) = "yaml:\"addr\""
   ];
+}
+
+message CustodyCustodiansByAddressResponse {
+    CustodyCustodianList custody_custodians = 1;
 }
 
 message CustodyWhiteListByAddressResponse {

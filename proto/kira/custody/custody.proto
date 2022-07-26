@@ -6,10 +6,11 @@ import "gogoproto/gogo.proto";
 option go_package = "github.com/KiraCore/sekai/x/custody/types";
 
 message CustodySettings {
-  bool propagating = 1;
-  bool password = 2;
-  bool use_white_list = 3;
-  bool use_limit = 4;
+  bool custody_enabled = 1;
+  uint64 custody_mode = 2;
+  bool use_password = 3;
+  bool use_white_list = 4;
+  bool use_limits = 5;
 }
 
 message CustodyRecord {
@@ -32,6 +33,19 @@ message CustodyWhiteListRecord {
   ];
 
   CustodyWhiteList custody_white_list = 2;
+}
+
+message CustodyCustodianList {
+  map<string, bool> addresses = 1;
+}
+
+message CustodyCustodiansRecord {
+  bytes address = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  CustodyCustodianList custody_custodians = 2;
 }
 
 message CustodyLimit {

@@ -83,11 +83,20 @@ func (am AppModule) InitGenesis(
 	cdc codec.JSONCodec,
 	data json.RawMessage,
 ) []abci.ValidatorUpdate {
+	var genesisState custodytypes.GenesisState
+	cdc.MustUnmarshalJSON(data, &genesisState)
+
+	am.custodyKeeper.SetMaxCustodyBufferSize(ctx, genesisState.MaxCustodyBufferSize)
+	am.custodyKeeper.SetMaxCustodyTxSize(ctx, genesisState.MaxCustodyTxSize)
+
 	return nil
 }
 
 func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.RawMessage {
-	return nil
+	var genesisState custodytypes.GenesisState
+	genesisState.MaxCustodyBufferSize = am.custodyKeeper.GetMaxCustodyBufferSize(ctx)
+	genesisState.MaxCustodyTxSize = am.custodyKeeper.GetMaxCustodyTxSize(ctx)
+	return cdc.MustMarshalJSON(&genesisState)
 }
 
 func (AppModule) ConsensusVersion() uint64 { return 1 }
