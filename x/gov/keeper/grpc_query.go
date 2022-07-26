@@ -139,7 +139,16 @@ func (k Keeper) ExecutionFee(goCtx context.Context, request *types.ExecutionFeeR
 func (k Keeper) AllExecutionFees(goCtx context.Context, request *types.AllExecutionFeesRequest) (*types.AllExecutionFeesResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	fees := k.GetExecutionFees(ctx)
-	return &types.AllExecutionFeesResponse{Fees: fees}, nil
+
+	txTypes := []string{}
+	for txType := range kiratypes.MsgFuncIDMapping {
+		txTypes = append(txTypes, txType)
+	}
+
+	return &types.AllExecutionFeesResponse{
+		Fees:    fees,
+		TxTypes: txTypes,
+	}, nil
 }
 
 // PoorNetworkMessages queries poor network messages

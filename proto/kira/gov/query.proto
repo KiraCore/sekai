@@ -177,6 +177,7 @@ message ExecutionFeeResponse {
 message AllExecutionFeesRequest {}
 message AllExecutionFeesResponse {
   repeated kira.gov.ExecutionFee fees = 1 [ (gogoproto.nullable) = false ];
+  repeated string tx_types = 2;
 }
 
 message PoorNetworkMessagesRequest {}
