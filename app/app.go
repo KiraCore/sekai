@@ -280,6 +280,7 @@ func NewInitApp(
 			tokens.NewApplyWhiteBlackChangeProposalHandler(app.TokensKeeper),
 			customstaking.NewApplyUnjailValidatorProposalHandler(app.CustomStakingKeeper, app.CustomGovKeeper),
 			customslashing.NewApplyResetWholeValidatorRankProposalHandler(app.CustomSlashingKeeper),
+			customslashing.NewApplySlashValidatorProposalHandler(app.CustomSlashingKeeper),
 			customgov.NewApplyCreateRoleProposalHandler(app.CustomGovKeeper),
 			customgov.NewApplyRemoveRoleProposalHandler(app.CustomGovKeeper),
 			customgov.NewApplyWhitelistRolePermissionProposalHandler(app.CustomGovKeeper),

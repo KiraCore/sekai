@@ -193,5 +193,8 @@ enum PermValue {
 
   // PERMISSION_VOTE_REMOVE_UBI_PROPOSAL defines the permission needed to vote a proposal to remove ubi.
   PERMISSION_VOTE_REMOVE_UBI_PROPOSAL = 56 [(gogoproto.enumvalue_customname) = "PermVoteRemoveUBIProposal"];
+
+  // PERMISSION_VOTE_SLASH_VALIDATOR_PROPOSAL defines the permission needed to vote a proposal to slash validator.
+  PERMISSION_VOTE_SLASH_VALIDATOR_PROPOSAL = 57 [(gogoproto.enumvalue_customname) = "PermVoteSlashValidatorProposal"];
 }
 

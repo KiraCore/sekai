@@ -7,6 +7,8 @@ import "google/protobuf/timestamp.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "kira/slashing/v1beta1/slashing.proto";
 import "kira/staking/query.proto";
+import "kira/gov/proposal.proto";
+import "kira/multistaking/multistaking.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/slashing/types";
 
@@ -99,18 +101,25 @@ message QuerySigningInfosResponse {
 
 // list all active slashing proposals
 message QuerySlashProposalsRequest {}
-message QuerySlashProposalsResponse {}
+message QuerySlashProposalsResponse {
+  repeated kira.gov.Proposal proposals = 1 [ (gogoproto.nullable) = false ];
+}
 
 // list all staking pools that were slashed
 message QuerySlashedStakingPoolsRequest {}
-message QuerySlashedStakingPoolsResponse {}
+message QuerySlashedStakingPoolsResponse {
+  repeated kira.multistaking.StakingPool pools = 1 [ (gogoproto.nullable) = false ];
+}
 
 // list all staking pools to which tokens can be delegated
 message QueryActiveStakingPoolsRequest{}
 message QueryActiveStakingPoolsResponse {
+  repeated kira.multistaking.StakingPool pools = 1 [ (gogoproto.nullable) = false ];
 }
 
 // list all staking pools to which tokens can NOT be delegated because validator
 // is not active
 message QueryInactiveStakingPoolsRequest{}
-message QueryInactiveStakingPoolsResponse {}
+message QueryInactiveStakingPoolsResponse {
+  repeated kira.multistaking.StakingPool pools = 1 [ (gogoproto.nullable) = false ];
+}

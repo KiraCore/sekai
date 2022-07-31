@@ -71,6 +71,7 @@ type StakingHooks interface {
 type GovKeeper interface {
 	GetNetworkProperties(sdk.Context) *govtypes.NetworkProperties // returns network properties
 	CheckIfAllowedPermission(ctx sdk.Context, addr sdk.AccAddress, permValue govtypes.PermValue) bool
+	GetProposals(ctx sdk.Context) ([]govtypes.Proposal, error)
 	GetNextProposalID(ctx sdk.Context) uint64
 	SaveProposal(ctx sdk.Context, proposal govtypes.Proposal)
 	AddToActiveProposals(ctx sdk.Context, proposal govtypes.Proposal)
@@ -80,4 +81,6 @@ type GovKeeper interface {
 type MultiStakingKeeper interface {
 	GetStakingPoolByValidator(ctx sdk.Context, validator string) (pool multistakingtypes.StakingPool, found bool)
 	IncreasePoolRewards(ctx sdk.Context, pool multistakingtypes.StakingPool, rewards sdk.Coins)
+	GetAllStakingPools(ctx sdk.Context) []multistakingtypes.StakingPool
+	SlashStakingPool(ctx sdk.Context, validator string, slash uint64)
 }

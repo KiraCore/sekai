@@ -42,6 +42,9 @@ func (k Keeper) Jail(ctx sdk.Context, consAddr sdk.ConsAddress) {
 				fmt.Println("proposal creation error", err)
 			}
 		}
-
 	}
+}
+
+func (k Keeper) SlashStakingPool(ctx sdk.Context, proposal *types.ProposalSlashValidator, slash uint64) {
+	k.msk.SlashStakingPool(ctx, proposal.Offender, slash)
 }

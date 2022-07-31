@@ -84,14 +84,14 @@ func (r ProposalRouter) EnactmentPeriodDynamicProposal(ctx sdk.Context, proposal
 	return dh.VoteEnactment(ctx, proposal)
 }
 
-func (r ProposalRouter) ApplyProposal(ctx sdk.Context, proposalID uint64, proposal Content) error {
+func (r ProposalRouter) ApplyProposal(ctx sdk.Context, proposalID uint64, proposal Content, slash uint64) error {
 	h, ok := r.routes[proposal.ProposalType()]
 	if !ok {
 		panic("invalid proposal type")
 	}
 
 	cachedCtx, writeCache := ctx.CacheContext()
-	err := h.Apply(cachedCtx, proposalID, proposal)
+	err := h.Apply(cachedCtx, proposalID, proposal, slash)
 	if err == nil {
 		writeCache()
 	} else { // not halt the chain for proposal execution
@@ -102,7 +102,7 @@ func (r ProposalRouter) ApplyProposal(ctx sdk.Context, proposalID uint64, propos
 
 type ProposalHandler interface {
 	ProposalType() string
-	Apply(ctx sdk.Context, proposalID uint64, proposal Content) error
+	Apply(ctx sdk.Context, proposalID uint64, proposal Content, slash uint64) error
 }
 
 type DynamicVoterProposalHandler interface {

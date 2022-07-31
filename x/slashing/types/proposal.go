@@ -60,7 +60,7 @@ func (m *ProposalSlashValidator) ProposalPermission() types.PermValue {
 }
 
 func (m *ProposalSlashValidator) VotePermission() types.PermValue {
-	return types.PermZero
+	return types.PermVoteSlashValidatorProposal
 }
 
 // ValidateBasic returns basic validation
