@@ -6,6 +6,7 @@ package types
 import (
 	context "context"
 	fmt "fmt"
+	types "github.com/cosmos/cosmos-sdk/codec/types"
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/gogo/protobuf/gogoproto"
 	grpc1 "github.com/gogo/protobuf/grpc"
@@ -71,6 +72,8 @@ var xxx_messageInfo_MsgCreteCustodyRecord proto.InternalMessageInfo
 type MsgAddToCustodyCustodians struct {
 	Address    github_com_cosmos_cosmos_sdk_types.AccAddress   `protobuf:"bytes,1,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
 	AddAddress []github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,2,rep,name=add_address,json=addAddress,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"add_address,omitempty" yaml:"address"`
+	OldKey     string                                          `protobuf:"bytes,3,opt,name=old_key,json=oldKey,proto3" json:"old_key,omitempty"`
+	NewKey     string                                          `protobuf:"bytes,4,opt,name=new_key,json=newKey,proto3" json:"new_key,omitempty"`
 }
 
 func (m *MsgAddToCustodyCustodians) Reset()         { *m = MsgAddToCustodyCustodians{} }
@@ -448,6 +451,82 @@ func (m *MsgDropCustodyLimits) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgDropCustodyLimits proto.InternalMessageInfo
 
+type MsgAddToCustodyPool struct {
+	Address     github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
+	Transaction *types.Any                                    `protobuf:"bytes,2,opt,name=transaction,proto3" json:"transaction,omitempty"`
+}
+
+func (m *MsgAddToCustodyPool) Reset()         { *m = MsgAddToCustodyPool{} }
+func (m *MsgAddToCustodyPool) String() string { return proto.CompactTextString(m) }
+func (*MsgAddToCustodyPool) ProtoMessage()    {}
+func (*MsgAddToCustodyPool) Descriptor() ([]byte, []int) {
+	return fileDescriptor_85c0ad3d36de53cc, []int{11}
+}
+func (m *MsgAddToCustodyPool) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgAddToCustodyPool) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgAddToCustodyPool.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgAddToCustodyPool) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgAddToCustodyPool.Merge(m, src)
+}
+func (m *MsgAddToCustodyPool) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgAddToCustodyPool) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgAddToCustodyPool.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgAddToCustodyPool proto.InternalMessageInfo
+
+type MsgRemoveFromCustodyPool struct {
+	Address     github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
+	Transaction *types.Any                                    `protobuf:"bytes,2,opt,name=transaction,proto3" json:"transaction,omitempty"`
+}
+
+func (m *MsgRemoveFromCustodyPool) Reset()         { *m = MsgRemoveFromCustodyPool{} }
+func (m *MsgRemoveFromCustodyPool) String() string { return proto.CompactTextString(m) }
+func (*MsgRemoveFromCustodyPool) ProtoMessage()    {}
+func (*MsgRemoveFromCustodyPool) Descriptor() ([]byte, []int) {
+	return fileDescriptor_85c0ad3d36de53cc, []int{12}
+}
+func (m *MsgRemoveFromCustodyPool) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgRemoveFromCustodyPool) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgRemoveFromCustodyPool.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgRemoveFromCustodyPool) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRemoveFromCustodyPool.Merge(m, src)
+}
+func (m *MsgRemoveFromCustodyPool) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgRemoveFromCustodyPool) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRemoveFromCustodyPool.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgRemoveFromCustodyPool proto.InternalMessageInfo
+
 type MsgCreteCustodyRecordResponse struct {
 }
 
@@ -455,7 +534,7 @@ func (m *MsgCreteCustodyRecordResponse) Reset()         { *m = MsgCreteCustodyRe
 func (m *MsgCreteCustodyRecordResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgCreteCustodyRecordResponse) ProtoMessage()    {}
 func (*MsgCreteCustodyRecordResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_85c0ad3d36de53cc, []int{11}
+	return fileDescriptor_85c0ad3d36de53cc, []int{13}
 }
 func (m *MsgCreteCustodyRecordResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -484,6 +563,78 @@ func (m *MsgCreteCustodyRecordResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgCreteCustodyRecordResponse proto.InternalMessageInfo
 
+type MsgAddToCustodyPoolResponse struct {
+}
+
+func (m *MsgAddToCustodyPoolResponse) Reset()         { *m = MsgAddToCustodyPoolResponse{} }
+func (m *MsgAddToCustodyPoolResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgAddToCustodyPoolResponse) ProtoMessage()    {}
+func (*MsgAddToCustodyPoolResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_85c0ad3d36de53cc, []int{14}
+}
+func (m *MsgAddToCustodyPoolResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgAddToCustodyPoolResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgAddToCustodyPoolResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgAddToCustodyPoolResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgAddToCustodyPoolResponse.Merge(m, src)
+}
+func (m *MsgAddToCustodyPoolResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgAddToCustodyPoolResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgAddToCustodyPoolResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgAddToCustodyPoolResponse proto.InternalMessageInfo
+
+type MsgRemoveFromCustodyPoolResponse struct {
+}
+
+func (m *MsgRemoveFromCustodyPoolResponse) Reset()         { *m = MsgRemoveFromCustodyPoolResponse{} }
+func (m *MsgRemoveFromCustodyPoolResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgRemoveFromCustodyPoolResponse) ProtoMessage()    {}
+func (*MsgRemoveFromCustodyPoolResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_85c0ad3d36de53cc, []int{15}
+}
+func (m *MsgRemoveFromCustodyPoolResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgRemoveFromCustodyPoolResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgRemoveFromCustodyPoolResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgRemoveFromCustodyPoolResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRemoveFromCustodyPoolResponse.Merge(m, src)
+}
+func (m *MsgRemoveFromCustodyPoolResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgRemoveFromCustodyPoolResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRemoveFromCustodyPoolResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgRemoveFromCustodyPoolResponse proto.InternalMessageInfo
+
 type MsgAddToCustodyCustodiansResponse struct {
 }
 
@@ -491,7 +642,7 @@ func (m *MsgAddToCustodyCustodiansResponse) Reset()         { *m = MsgAddToCusto
 func (m *MsgAddToCustodyCustodiansResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgAddToCustodyCustodiansResponse) ProtoMessage()    {}
 func (*MsgAddToCustodyCustodiansResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_85c0ad3d36de53cc, []int{12}
+	return fileDescriptor_85c0ad3d36de53cc, []int{16}
 }
 func (m *MsgAddToCustodyCustodiansResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -529,7 +680,7 @@ func (m *MsgRemoveFromCustodyCustodiansResponse) Reset() {
 func (m *MsgRemoveFromCustodyCustodiansResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgRemoveFromCustodyCustodiansResponse) ProtoMessage()    {}
 func (*MsgRemoveFromCustodyCustodiansResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_85c0ad3d36de53cc, []int{13}
+	return fileDescriptor_85c0ad3d36de53cc, []int{17}
 }
 func (m *MsgRemoveFromCustodyCustodiansResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -565,7 +716,7 @@ func (m *MsgDropCustodyCustodiansResponse) Reset()         { *m = MsgDropCustody
 func (m *MsgDropCustodyCustodiansResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgDropCustodyCustodiansResponse) ProtoMessage()    {}
 func (*MsgDropCustodyCustodiansResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_85c0ad3d36de53cc, []int{14}
+	return fileDescriptor_85c0ad3d36de53cc, []int{18}
 }
 func (m *MsgDropCustodyCustodiansResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -601,7 +752,7 @@ func (m *MsgAddToCustodyWhiteListResponse) Reset()         { *m = MsgAddToCustod
 func (m *MsgAddToCustodyWhiteListResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgAddToCustodyWhiteListResponse) ProtoMessage()    {}
 func (*MsgAddToCustodyWhiteListResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_85c0ad3d36de53cc, []int{15}
+	return fileDescriptor_85c0ad3d36de53cc, []int{19}
 }
 func (m *MsgAddToCustodyWhiteListResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -637,7 +788,7 @@ func (m *MsgRemoveFromCustodyWhiteListResponse) Reset()         { *m = MsgRemove
 func (m *MsgRemoveFromCustodyWhiteListResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgRemoveFromCustodyWhiteListResponse) ProtoMessage()    {}
 func (*MsgRemoveFromCustodyWhiteListResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_85c0ad3d36de53cc, []int{16}
+	return fileDescriptor_85c0ad3d36de53cc, []int{20}
 }
 func (m *MsgRemoveFromCustodyWhiteListResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -673,7 +824,7 @@ func (m *MsgDropCustodyWhiteListResponse) Reset()         { *m = MsgDropCustodyW
 func (m *MsgDropCustodyWhiteListResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgDropCustodyWhiteListResponse) ProtoMessage()    {}
 func (*MsgDropCustodyWhiteListResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_85c0ad3d36de53cc, []int{17}
+	return fileDescriptor_85c0ad3d36de53cc, []int{21}
 }
 func (m *MsgDropCustodyWhiteListResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -709,7 +860,7 @@ func (m *MsgAddToCustodyLimitsResponse) Reset()         { *m = MsgAddToCustodyLi
 func (m *MsgAddToCustodyLimitsResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgAddToCustodyLimitsResponse) ProtoMessage()    {}
 func (*MsgAddToCustodyLimitsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_85c0ad3d36de53cc, []int{18}
+	return fileDescriptor_85c0ad3d36de53cc, []int{22}
 }
 func (m *MsgAddToCustodyLimitsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -745,7 +896,7 @@ func (m *MsgAddToCustodyLimitsStatusResponse) Reset()         { *m = MsgAddToCus
 func (m *MsgAddToCustodyLimitsStatusResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgAddToCustodyLimitsStatusResponse) ProtoMessage()    {}
 func (*MsgAddToCustodyLimitsStatusResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_85c0ad3d36de53cc, []int{19}
+	return fileDescriptor_85c0ad3d36de53cc, []int{23}
 }
 func (m *MsgAddToCustodyLimitsStatusResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -781,7 +932,7 @@ func (m *MsgRemoveFromCustodyLimitsResponse) Reset()         { *m = MsgRemoveFro
 func (m *MsgRemoveFromCustodyLimitsResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgRemoveFromCustodyLimitsResponse) ProtoMessage()    {}
 func (*MsgRemoveFromCustodyLimitsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_85c0ad3d36de53cc, []int{20}
+	return fileDescriptor_85c0ad3d36de53cc, []int{24}
 }
 func (m *MsgRemoveFromCustodyLimitsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -817,7 +968,7 @@ func (m *MsgDropCustodyLimitsResponse) Reset()         { *m = MsgDropCustodyLimi
 func (m *MsgDropCustodyLimitsResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgDropCustodyLimitsResponse) ProtoMessage()    {}
 func (*MsgDropCustodyLimitsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_85c0ad3d36de53cc, []int{21}
+	return fileDescriptor_85c0ad3d36de53cc, []int{25}
 }
 func (m *MsgDropCustodyLimitsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -858,7 +1009,11 @@ func init() {
 	proto.RegisterType((*MsgAddToCustodyLimitsStatus)(nil), "kira.custody.MsgAddToCustodyLimitsStatus")
 	proto.RegisterType((*MsgRemoveFromCustodyLimits)(nil), "kira.custody.MsgRemoveFromCustodyLimits")
 	proto.RegisterType((*MsgDropCustodyLimits)(nil), "kira.custody.MsgDropCustodyLimits")
+	proto.RegisterType((*MsgAddToCustodyPool)(nil), "kira.custody.MsgAddToCustodyPool")
+	proto.RegisterType((*MsgRemoveFromCustodyPool)(nil), "kira.custody.MsgRemoveFromCustodyPool")
 	proto.RegisterType((*MsgCreteCustodyRecordResponse)(nil), "kira.custody.MsgCreteCustodyRecordResponse")
+	proto.RegisterType((*MsgAddToCustodyPoolResponse)(nil), "kira.custody.MsgAddToCustodyPoolResponse")
+	proto.RegisterType((*MsgRemoveFromCustodyPoolResponse)(nil), "kira.custody.MsgRemoveFromCustodyPoolResponse")
 	proto.RegisterType((*MsgAddToCustodyCustodiansResponse)(nil), "kira.custody.MsgAddToCustodyCustodiansResponse")
 	proto.RegisterType((*MsgRemoveFromCustodyCustodiansResponse)(nil), "kira.custody.MsgRemoveFromCustodyCustodiansResponse")
 	proto.RegisterType((*MsgDropCustodyCustodiansResponse)(nil), "kira.custody.MsgDropCustodyCustodiansResponse")
@@ -874,60 +1029,68 @@ func init() {
 func init() { proto.RegisterFile("kira/custody/tx.proto", fileDescriptor_85c0ad3d36de53cc) }
 
 var fileDescriptor_85c0ad3d36de53cc = []byte{
-	// 837 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xdc, 0x57, 0xbf, 0x73, 0xd3, 0x48,
-	0x18, 0xb5, 0x92, 0x5c, 0xee, 0xf2, 0xe5, 0xe7, 0xe9, 0x9c, 0x3b, 0x9f, 0xee, 0x22, 0x39, 0xf2,
-	0x25, 0x71, 0x2e, 0xc4, 0x82, 0x84, 0x2a, 0x5d, 0x62, 0x86, 0x86, 0x98, 0xc2, 0x61, 0x86, 0x19,
-	0x06, 0x26, 0xa3, 0x58, 0x8b, 0x22, 0x1c, 0x79, 0x8d, 0x76, 0x0d, 0x09, 0x0d, 0x33, 0xd0, 0x50,
-	0xd2, 0xd3, 0xa4, 0xe3, 0x1f, 0xe0, 0x4f, 0xa0, 0x48, 0x99, 0x92, 0x2a, 0xc3, 0x24, 0x0d, 0x50,
-	0x32, 0xd0, 0x50, 0x31, 0x96, 0xd6, 0xab, 0x75, 0x2c, 0x2b, 0xce, 0x4c, 0xe2, 0x30, 0x54, 0xf2,
-	0x6a, 0x9f, 0xf6, 0x7d, 0xef, 0xed, 0xd3, 0x7e, 0x16, 0x8c, 0x97, 0x1d, 0xcf, 0x34, 0x4a, 0x35,
-	0x42, 0xb1, 0xb5, 0x63, 0xd0, 0xed, 0x5c, 0xd5, 0xc3, 0x14, 0xcb, 0x43, 0xf5, 0xdb, 0x39, 0x76,
-	0x5b, 0x49, 0xda, 0xd8, 0xc6, 0xfe, 0x84, 0x51, 0xff, 0x15, 0x60, 0x14, 0xcd, 0xc6, 0xd8, 0xde,
-	0x42, 0x86, 0x3f, 0xda, 0xa8, 0xdd, 0x37, 0xa8, 0xe3, 0x22, 0x42, 0x4d, 0xb7, 0xca, 0x00, 0x4a,
-	0xd3, 0xda, 0xec, 0x1a, 0xcc, 0xe9, 0xfb, 0x12, 0x8c, 0x17, 0x88, 0x9d, 0xf7, 0x10, 0x45, 0xf9,
-	0x60, 0xa6, 0x88, 0x4a, 0xd8, 0xb3, 0xe4, 0x7b, 0xf0, 0xab, 0x69, 0x59, 0x1e, 0x22, 0x24, 0x25,
-	0xa5, 0xa5, 0xec, 0xd0, 0x4a, 0xfe, 0xf3, 0x81, 0x36, 0xb2, 0x63, 0xba, 0x5b, 0x4b, 0x3a, 0x9b,
-	0xd0, 0xbf, 0x1d, 0x68, 0xf3, 0xb6, 0x43, 0x37, 0x6b, 0x1b, 0xb9, 0x12, 0x76, 0x8d, 0x12, 0x26,
-	0x2e, 0x26, 0xec, 0x32, 0x4f, 0xac, 0xb2, 0x41, 0x77, 0xaa, 0x88, 0xe4, 0x96, 0x4b, 0xa5, 0xe5,
-	0xe0, 0x89, 0x62, 0x63, 0x4d, 0xf9, 0x26, 0x8c, 0xb1, 0x4a, 0xd6, 0x09, 0xa2, 0xd4, 0xa9, 0xd8,
-	0x24, 0xd5, 0x93, 0x96, 0xb2, 0x83, 0x0b, 0x13, 0x39, 0x51, 0x74, 0x8e, 0x55, 0xb5, 0xc6, 0x40,
-	0x2b, 0x7d, 0x7b, 0x07, 0x5a, 0xa2, 0x38, 0x5a, 0x6a, 0xbe, 0xbd, 0xf4, 0xdb, 0x8b, 0x5d, 0x2d,
-	0xf1, 0x61, 0x57, 0x4b, 0xe8, 0x9f, 0x24, 0xf8, 0xbb, 0x40, 0xec, 0x65, 0xcb, 0xba, 0x85, 0xd9,
-	0xc3, 0xc1, 0xc5, 0x31, 0x2b, 0xe4, 0xbc, 0x65, 0x59, 0x30, 0x68, 0x5a, 0xd6, 0x7a, 0x83, 0xa2,
-	0x27, 0xdd, 0x7b, 0x56, 0x14, 0x60, 0x5a, 0x16, 0xfb, 0x2d, 0x88, 0xfd, 0x2a, 0x81, 0x5a, 0x20,
-	0x76, 0x11, 0xb9, 0xf8, 0x11, 0xba, 0xee, 0x61, 0xb7, 0xeb, 0x8a, 0x1f, 0xc0, 0x88, 0xe7, 0xb3,
-	0x0b, 0xa2, 0xcf, 0x8c, 0x65, 0x38, 0x58, 0xba, 0x55, 0xf7, 0x73, 0x09, 0x52, 0x05, 0x62, 0x5f,
-	0xf3, 0x70, 0xb5, 0xdb, 0x8a, 0x85, 0x2a, 0x3e, 0x06, 0x55, 0x88, 0x51, 0xbb, 0xbd, 0xe9, 0x50,
-	0xb4, 0xea, 0x10, 0xfa, 0xb3, 0x25, 0xed, 0x8b, 0x04, 0x13, 0x51, 0x49, 0xeb, 0x9a, 0xe0, 0x8b,
-	0x09, 0xda, 0x33, 0x09, 0xfe, 0x6a, 0x0e, 0x5a, 0xb7, 0x04, 0x0b, 0x45, 0xbc, 0x0d, 0x4e, 0x69,
-	0x31, 0x67, 0xab, 0x8e, 0xeb, 0xd0, 0x73, 0x7f, 0xb9, 0x93, 0xf0, 0x8b, 0x85, 0x2a, 0xd8, 0xf5,
-	0xad, 0x1e, 0x28, 0x06, 0x03, 0xf9, 0x4f, 0xe8, 0x37, 0x5d, 0x5c, 0xab, 0xd0, 0x54, 0x6f, 0x5a,
-	0xca, 0xf6, 0x15, 0xd9, 0xa8, 0x8e, 0xde, 0xaa, 0x97, 0x95, 0xea, 0x0b, 0xd0, 0xfe, 0x40, 0x90,
-	0xf1, 0x46, 0x82, 0x7f, 0x22, 0x65, 0xac, 0x51, 0x93, 0xd6, 0x7e, 0x2c, 0x31, 0x42, 0xd9, 0xaf,
-	0x24, 0x50, 0xa2, 0x92, 0x7f, 0x81, 0x5b, 0x20, 0x54, 0xf7, 0x14, 0x92, 0xcd, 0xf9, 0xec, 0x4a,
-	0x59, 0x42, 0x01, 0x9a, 0x7f, 0x2e, 0xb4, 0xfe, 0x83, 0x28, 0x22, 0x52, 0xc5, 0x15, 0x82, 0xf4,
-	0x0c, 0x4c, 0xb6, 0xed, 0xc7, 0x1c, 0x94, 0x85, 0xe9, 0xf8, 0x3e, 0xc6, 0x91, 0x3a, 0xa4, 0xdb,
-	0x9d, 0xfc, 0xc7, 0x30, 0x91, 0xe7, 0x32, 0xc7, 0xcc, 0xc0, 0x54, 0xec, 0x79, 0xc6, 0x81, 0x93,
-	0xa0, 0xb5, 0x39, 0x01, 0x38, 0x24, 0xf0, 0xa0, 0x35, 0xd8, 0x1c, 0x30, 0x05, 0x99, 0x98, 0xe4,
-	0x73, 0xd8, 0x7f, 0xa0, 0xb7, 0x4f, 0x1a, 0x47, 0xa9, 0xf0, 0x6f, 0xd4, 0x96, 0x37, 0xe6, 0x17,
-	0x5e, 0x0f, 0x40, 0x6f, 0x81, 0xd8, 0xb2, 0x09, 0xc3, 0x79, 0x0f, 0x99, 0x7c, 0x5f, 0xe4, 0x4c,
-	0xf3, 0x5f, 0xab, 0xc8, 0x6d, 0x53, 0xe6, 0x3a, 0x00, 0x35, 0xa8, 0xe4, 0x32, 0x8c, 0x0a, 0xa2,
-	0xfc, 0xee, 0x3b, 0xd3, 0xf2, 0x7c, 0xf4, 0xd6, 0x2b, 0x46, 0x87, 0x40, 0x4e, 0xf6, 0x04, 0x92,
-	0xc7, 0xad, 0xf1, 0x19, 0x2f, 0xb5, 0x2c, 0x14, 0x93, 0x23, 0xe5, 0xea, 0x69, 0xd0, 0x9c, 0x7b,
-	0x13, 0x46, 0x42, 0xc3, 0x7d, 0xd6, 0xe9, 0x96, 0x75, 0x22, 0x33, 0xa9, 0xe4, 0x3a, 0xc3, 0x89,
-	0x4c, 0xbe, 0x0f, 0x61, 0x9f, 0x99, 0x8e, 0x35, 0x8a, 0xe3, 0x22, 0x98, 0x62, 0xdf, 0x00, 0xf9,
-	0x31, 0xfc, 0x11, 0x4a, 0x0f, 0xe9, 0xe6, 0x4e, 0x36, 0x28, 0xe4, 0x5c, 0x3c, 0x05, 0x98, 0x13,
-	0x23, 0x18, 0xae, 0x7b, 0x10, 0x52, 0x4e, 0xc5, 0x79, 0x14, 0x92, 0xcd, 0x77, 0x04, 0xe3, 0x34,
-	0xeb, 0x30, 0xe8, 0x1b, 0xc0, 0x4e, 0xc4, 0x4c, 0xac, 0x3d, 0x01, 0x28, 0x22, 0xfd, 0xed, 0xdf,
-	0x6a, 0xb9, 0x02, 0x63, 0xa1, 0x5a, 0xc6, 0x92, 0x3d, 0xd9, 0x10, 0x46, 0x75, 0xb9, 0x53, 0x24,
-	0xe7, 0xbb, 0x0b, 0x50, 0x17, 0xcc, 0x98, 0xf4, 0x38, 0x37, 0x18, 0xc7, 0xff, 0x27, 0x63, 0xf8,
-	0xea, 0x0f, 0xe1, 0x77, 0xc1, 0x2e, 0xd6, 0x93, 0x67, 0x3b, 0xf0, 0x23, 0x80, 0x2a, 0x57, 0x3a,
-	0x86, 0x36, 0x28, 0x57, 0xf2, 0x7b, 0x87, 0xaa, 0xb4, 0x7f, 0xa8, 0x4a, 0xef, 0x0f, 0x55, 0xe9,
-	0xe5, 0x91, 0x9a, 0xd8, 0x3f, 0x52, 0x13, 0xef, 0x8e, 0xd4, 0xc4, 0x9d, 0x59, 0xa1, 0x2f, 0xdd,
-	0x70, 0x3c, 0x33, 0x8f, 0x3d, 0x64, 0x10, 0x54, 0x36, 0x1d, 0x63, 0x3b, 0xfc, 0x4e, 0xae, 0xb7,
-	0xa7, 0x8d, 0x7e, 0xff, 0x53, 0x76, 0xf1, 0x7b, 0x00, 0x00, 0x00, 0xff, 0xff, 0x9a, 0xc2, 0xbc,
-	0x36, 0x44, 0x0f, 0x00, 0x00,
+	// 974 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xdc, 0x58, 0x41, 0x73, 0xdb, 0x44,
+	0x14, 0xb6, 0x92, 0x90, 0xd2, 0x97, 0x26, 0x0d, 0xaa, 0x43, 0x53, 0x41, 0x6c, 0x47, 0x21, 0xa9,
+	0x43, 0x89, 0x04, 0x2d, 0xc3, 0xa1, 0xb7, 0xc4, 0x0c, 0x97, 0xd4, 0x0c, 0xa3, 0x32, 0xc3, 0x0c,
+	0x03, 0x13, 0x36, 0xd2, 0xa2, 0x08, 0x5b, 0x5a, 0xa3, 0x5d, 0x93, 0x9a, 0x0b, 0x33, 0x70, 0xe1,
+	0xc8, 0x1d, 0x0e, 0xfd, 0x11, 0x0c, 0x17, 0xae, 0x1c, 0x7a, 0xcc, 0x91, 0x53, 0x86, 0x49, 0x2e,
+	0x70, 0x65, 0xe0, 0xd2, 0x13, 0x23, 0x69, 0xbd, 0x5a, 0x5b, 0xb2, 0xec, 0xce, 0x34, 0x2e, 0x70,
+	0x92, 0x57, 0xef, 0xd3, 0x7e, 0xef, 0x7d, 0xfb, 0xde, 0xdb, 0x37, 0x86, 0x95, 0x96, 0x17, 0x22,
+	0xd3, 0xee, 0x52, 0x46, 0x9c, 0x9e, 0xc9, 0x1e, 0x18, 0x9d, 0x90, 0x30, 0xa2, 0x5e, 0x89, 0x5e,
+	0x1b, 0xfc, 0xb5, 0x56, 0x76, 0x89, 0x4b, 0x62, 0x83, 0x19, 0xfd, 0x4a, 0x30, 0x5a, 0xd5, 0x25,
+	0xc4, 0x6d, 0x63, 0x33, 0x5e, 0x1d, 0x76, 0x3f, 0x35, 0x99, 0xe7, 0x63, 0xca, 0x90, 0xdf, 0xe1,
+	0x00, 0x6d, 0x60, 0x6f, 0xfe, 0xe4, 0xb6, 0x1b, 0xc3, 0x1f, 0xa3, 0x80, 0x9b, 0xf4, 0x13, 0x05,
+	0x56, 0x9a, 0xd4, 0x6d, 0x84, 0x98, 0xe1, 0x46, 0xf2, 0x91, 0x85, 0x6d, 0x12, 0x3a, 0xea, 0xc7,
+	0x70, 0x09, 0x39, 0x4e, 0x88, 0x29, 0x5d, 0x55, 0x6a, 0x4a, 0xfd, 0xca, 0x5e, 0xe3, 0xcf, 0xd3,
+	0xea, 0x52, 0x0f, 0xf9, 0xed, 0xbb, 0x3a, 0x37, 0xe8, 0x8f, 0x4f, 0xab, 0x3b, 0xae, 0xc7, 0x8e,
+	0xba, 0x87, 0x86, 0x4d, 0x7c, 0xd3, 0x26, 0xd4, 0x27, 0x94, 0x3f, 0x76, 0xa8, 0xd3, 0x32, 0x59,
+	0xaf, 0x83, 0xa9, 0xb1, 0x6b, 0xdb, 0xbb, 0xc9, 0x17, 0x56, 0x7f, 0x4f, 0xf5, 0x5d, 0x58, 0xe6,
+	0x4e, 0x1e, 0x50, 0xcc, 0x98, 0x17, 0xb8, 0x74, 0x75, 0xa6, 0xa6, 0xd4, 0x17, 0x6e, 0xaf, 0x19,
+	0xb2, 0x1e, 0x06, 0xf7, 0xea, 0x3e, 0x07, 0xed, 0xcd, 0x3d, 0x3a, 0xad, 0x96, 0xac, 0xab, 0xf6,
+	0xe0, 0xeb, 0xbb, 0xcf, 0x7f, 0xfb, 0xb0, 0x5a, 0xfa, 0xfd, 0x61, 0xb5, 0xa4, 0xff, 0x30, 0x03,
+	0x37, 0x9a, 0xd4, 0xdd, 0x75, 0x9c, 0xf7, 0x09, 0xff, 0x38, 0x79, 0x78, 0x28, 0xa0, 0x17, 0x1d,
+	0x96, 0x03, 0x0b, 0xc8, 0x71, 0x0e, 0xfa, 0x14, 0x33, 0xb5, 0xd9, 0xa7, 0x45, 0x01, 0xc8, 0x71,
+	0xf8, 0x6f, 0xf5, 0x3a, 0x5c, 0x22, 0x6d, 0xe7, 0xa0, 0x85, 0x7b, 0xab, 0xb3, 0x35, 0xa5, 0x7e,
+	0xd9, 0x9a, 0x27, 0x6d, 0x67, 0x1f, 0xf7, 0x22, 0x43, 0x80, 0x8f, 0x63, 0xc3, 0x5c, 0x62, 0x08,
+	0xf0, 0xf1, 0x3e, 0xee, 0x49, 0xf2, 0xfc, 0xad, 0x40, 0xa5, 0x49, 0x5d, 0x0b, 0xfb, 0xe4, 0x0b,
+	0xfc, 0x4e, 0x48, 0xfc, 0xa9, 0x6b, 0xf4, 0x19, 0x2c, 0x85, 0x31, 0xbb, 0x24, 0xd3, 0x53, 0x63,
+	0x59, 0x4c, 0xb6, 0xe6, 0x4b, 0x29, 0xee, 0x6f, 0x14, 0x58, 0x6d, 0x52, 0xf7, 0xed, 0x90, 0x74,
+	0xa6, 0x1d, 0xb1, 0xe4, 0xc5, 0x1f, 0x89, 0x17, 0x72, 0x72, 0x7e, 0x70, 0xe4, 0x31, 0x7c, 0xcf,
+	0xa3, 0xec, 0x7f, 0x91, 0x9b, 0x52, 0xac, 0x7f, 0x29, 0xb0, 0x96, 0x97, 0x69, 0x53, 0x0b, 0xf8,
+	0xd9, 0x24, 0xda, 0xd7, 0x0a, 0x5c, 0x1f, 0x4c, 0xb4, 0x69, 0x05, 0x2c, 0x39, 0xf1, 0x4b, 0xd2,
+	0xd7, 0xe5, 0x3c, 0xbb, 0xe7, 0xf9, 0x1e, 0xbb, 0xf0, 0xe2, 0x2e, 0xc3, 0x73, 0x0e, 0x0e, 0x88,
+	0x1f, 0x4b, 0x7d, 0xd9, 0x4a, 0x16, 0xea, 0x8b, 0x30, 0x8f, 0x7c, 0xd2, 0x0d, 0x58, 0xdc, 0xaf,
+	0xe6, 0x2c, 0xbe, 0x8a, 0xd0, 0xed, 0xc8, 0x2d, 0xde, 0xad, 0x92, 0x85, 0x14, 0xc6, 0x8f, 0x0a,
+	0xbc, 0x94, 0x1b, 0xc6, 0x7d, 0x86, 0x58, 0xf7, 0xdf, 0x15, 0x8c, 0xe4, 0xf6, 0xf7, 0x0a, 0x68,
+	0x79, 0x99, 0xff, 0x0c, 0x8f, 0x40, 0xf2, 0xee, 0x2b, 0x28, 0x0f, 0xe6, 0xe7, 0x54, 0xdc, 0x92,
+	0x1c, 0xf8, 0x49, 0x81, 0x6b, 0x43, 0xa7, 0xfa, 0x1e, 0x21, 0xed, 0x8b, 0xd6, 0xe5, 0x2d, 0x58,
+	0x60, 0x21, 0x0a, 0x28, 0xb2, 0x99, 0x47, 0x02, 0x3e, 0x6d, 0x94, 0x8d, 0x64, 0x38, 0x32, 0xfa,
+	0xc3, 0x91, 0xb1, 0x1b, 0xf4, 0x2c, 0x19, 0x28, 0x39, 0xfe, 0x73, 0xd2, 0xbd, 0x33, 0xe7, 0xfa,
+	0xdf, 0xf0, 0xbe, 0x1a, 0xb7, 0xe3, 0xec, 0xa8, 0x67, 0x61, 0xda, 0x21, 0x01, 0xc5, 0xfa, 0x5a,
+	0xa6, 0xd8, 0xa2, 0xc0, 0x84, 0x59, 0x87, 0xda, 0xa8, 0xe0, 0x05, 0x66, 0x03, 0xd6, 0x47, 0xce,
+	0x5e, 0x02, 0x54, 0x87, 0xad, 0xe2, 0x09, 0x64, 0x88, 0x32, 0xf7, 0xce, 0x1e, 0xc2, 0xe4, 0xde,
+	0xa8, 0x02, 0x73, 0x13, 0x36, 0x0b, 0x6f, 0x22, 0x01, 0x5c, 0x87, 0xea, 0x88, 0xde, 0x2d, 0x20,
+	0x89, 0x8c, 0xd9, 0x96, 0x24, 0x00, 0x9b, 0xb0, 0x51, 0xd0, 0xb3, 0x04, 0xec, 0x15, 0xd0, 0x47,
+	0xf7, 0x08, 0x81, 0xaa, 0xc0, 0xcb, 0x79, 0xc5, 0xda, 0xb7, 0xdf, 0x7e, 0x0c, 0x30, 0xdb, 0xa4,
+	0xae, 0x8a, 0x60, 0xb1, 0x11, 0x62, 0x24, 0x8e, 0x56, 0xdd, 0x18, 0x1c, 0xa3, 0x73, 0x4f, 0x5e,
+	0xbb, 0x35, 0x01, 0xa8, 0x4f, 0xa5, 0x7e, 0x02, 0xcb, 0x99, 0x92, 0x5d, 0xcf, 0x6c, 0x30, 0x0c,
+	0xd1, 0xb6, 0xc7, 0x42, 0x04, 0x03, 0x81, 0x95, 0xfc, 0xda, 0xda, 0xca, 0xec, 0x91, 0x8b, 0xd3,
+	0x8c, 0xc9, 0x70, 0x82, 0xb0, 0x05, 0x57, 0x25, 0x67, 0xe2, 0x51, 0xf0, 0x66, 0xa1, 0xbb, 0x29,
+	0x50, 0x33, 0x27, 0x04, 0x0a, 0xb2, 0x2f, 0xa1, 0x3c, 0xec, 0x4d, 0xcc, 0xf8, 0xda, 0x78, 0xa7,
+	0x25, 0xda, 0x37, 0x9f, 0x04, 0x2d, 0xb8, 0x8f, 0x60, 0x29, 0xcd, 0xa1, 0x98, 0x35, 0x2b, 0x69,
+	0x6e, 0x99, 0xe5, 0x48, 0x5a, 0x58, 0x8e, 0x11, 0x53, 0xac, 0x43, 0x3a, 0xf4, 0x6c, 0x15, 0x0a,
+	0x25, 0x70, 0x39, 0x4c, 0x85, 0x45, 0xad, 0x1e, 0xc3, 0xb5, 0x34, 0xf4, 0x94, 0xee, 0xd6, 0x78,
+	0x81, 0x52, 0xce, 0x3b, 0x4f, 0x00, 0x16, 0xc4, 0x18, 0x16, 0x23, 0x0d, 0x52, 0xca, 0xcd, 0x22,
+	0x8d, 0x52, 0xb2, 0x9d, 0x89, 0x60, 0x82, 0xe6, 0x00, 0x16, 0x62, 0x01, 0xf8, 0xf5, 0xbc, 0x51,
+	0x28, 0x4f, 0x02, 0xca, 0x29, 0xe8, 0xd1, 0x8d, 0x4a, 0x0d, 0x60, 0x39, 0x8d, 0x96, 0xb3, 0xd4,
+	0xc7, 0x0b, 0xc2, 0xa9, 0x5e, 0x9f, 0x14, 0x29, 0xf8, 0x3e, 0x02, 0x88, 0x02, 0xe6, 0x4c, 0x7a,
+	0x91, 0x1a, 0x9c, 0xe3, 0xd5, 0xf1, 0x18, 0xb1, 0xfb, 0xe7, 0xf0, 0x82, 0x24, 0x17, 0x1f, 0x10,
+	0xb7, 0x27, 0xd0, 0x23, 0x81, 0x6a, 0x6f, 0x4c, 0x0c, 0xed, 0x53, 0xee, 0x35, 0x1e, 0x9d, 0x55,
+	0x94, 0x93, 0xb3, 0x8a, 0xf2, 0xdb, 0x59, 0x45, 0xf9, 0xee, 0xbc, 0x52, 0x3a, 0x39, 0xaf, 0x94,
+	0x7e, 0x3d, 0xaf, 0x94, 0x3e, 0xdc, 0x96, 0x6e, 0xf9, 0x7d, 0x2f, 0x44, 0x0d, 0x12, 0x62, 0x93,
+	0xe2, 0x16, 0xf2, 0xcc, 0x07, 0xe9, 0x3f, 0x40, 0xd1, 0x65, 0x7f, 0x38, 0x1f, 0xdf, 0xdd, 0x77,
+	0xfe, 0x09, 0x00, 0x00, 0xff, 0xff, 0x41, 0xd2, 0xa1, 0x6e, 0x1e, 0x12, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -943,6 +1106,8 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
 	CreateCustody(ctx context.Context, in *MsgCreteCustodyRecord, opts ...grpc.CallOption) (*MsgCreteCustodyRecordResponse, error)
+	AddToCustodyPool(ctx context.Context, in *MsgAddToCustodyPool, opts ...grpc.CallOption) (*MsgAddToCustodyPoolResponse, error)
+	RemoveFromCustodyPool(ctx context.Context, in *MsgRemoveFromCustodyPool, opts ...grpc.CallOption) (*MsgRemoveFromCustodyPoolResponse, error)
 	AddToCustodians(ctx context.Context, in *MsgAddToCustodyCustodians, opts ...grpc.CallOption) (*MsgAddToCustodyCustodiansResponse, error)
 	RemoveFromCustodians(ctx context.Context, in *MsgRemoveFromCustodyCustodians, opts ...grpc.CallOption) (*MsgRemoveFromCustodyCustodiansResponse, error)
 	DropCustodians(ctx context.Context, in *MsgDropCustodyCustodians, opts ...grpc.CallOption) (*MsgDropCustodyCustodiansResponse, error)
@@ -966,6 +1131,24 @@ func NewMsgClient(cc grpc1.ClientConn) MsgClient {
 func (c *msgClient) CreateCustody(ctx context.Context, in *MsgCreteCustodyRecord, opts ...grpc.CallOption) (*MsgCreteCustodyRecordResponse, error) {
 	out := new(MsgCreteCustodyRecordResponse)
 	err := c.cc.Invoke(ctx, "/kira.custody.Msg/CreateCustody", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) AddToCustodyPool(ctx context.Context, in *MsgAddToCustodyPool, opts ...grpc.CallOption) (*MsgAddToCustodyPoolResponse, error) {
+	out := new(MsgAddToCustodyPoolResponse)
+	err := c.cc.Invoke(ctx, "/kira.custody.Msg/AddToCustodyPool", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) RemoveFromCustodyPool(ctx context.Context, in *MsgRemoveFromCustodyPool, opts ...grpc.CallOption) (*MsgRemoveFromCustodyPoolResponse, error) {
+	out := new(MsgRemoveFromCustodyPoolResponse)
+	err := c.cc.Invoke(ctx, "/kira.custody.Msg/RemoveFromCustodyPool", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1065,6 +1248,8 @@ func (c *msgClient) AddToLimitsStatus(ctx context.Context, in *MsgAddToCustodyLi
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
 	CreateCustody(context.Context, *MsgCreteCustodyRecord) (*MsgCreteCustodyRecordResponse, error)
+	AddToCustodyPool(context.Context, *MsgAddToCustodyPool) (*MsgAddToCustodyPoolResponse, error)
+	RemoveFromCustodyPool(context.Context, *MsgRemoveFromCustodyPool) (*MsgRemoveFromCustodyPoolResponse, error)
 	AddToCustodians(context.Context, *MsgAddToCustodyCustodians) (*MsgAddToCustodyCustodiansResponse, error)
 	RemoveFromCustodians(context.Context, *MsgRemoveFromCustodyCustodians) (*MsgRemoveFromCustodyCustodiansResponse, error)
 	DropCustodians(context.Context, *MsgDropCustodyCustodians) (*MsgDropCustodyCustodiansResponse, error)
@@ -1083,6 +1268,12 @@ type UnimplementedMsgServer struct {
 
 func (*UnimplementedMsgServer) CreateCustody(ctx context.Context, req *MsgCreteCustodyRecord) (*MsgCreteCustodyRecordResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateCustody not implemented")
+}
+func (*UnimplementedMsgServer) AddToCustodyPool(ctx context.Context, req *MsgAddToCustodyPool) (*MsgAddToCustodyPoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddToCustodyPool not implemented")
+}
+func (*UnimplementedMsgServer) RemoveFromCustodyPool(ctx context.Context, req *MsgRemoveFromCustodyPool) (*MsgRemoveFromCustodyPoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RemoveFromCustodyPool not implemented")
 }
 func (*UnimplementedMsgServer) AddToCustodians(ctx context.Context, req *MsgAddToCustodyCustodians) (*MsgAddToCustodyCustodiansResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddToCustodians not implemented")
@@ -1133,6 +1324,42 @@ func _Msg_CreateCustody_Handler(srv interface{}, ctx context.Context, dec func(i
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).CreateCustody(ctx, req.(*MsgCreteCustodyRecord))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_AddToCustodyPool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgAddToCustodyPool)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).AddToCustodyPool(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.custody.Msg/AddToCustodyPool",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).AddToCustodyPool(ctx, req.(*MsgAddToCustodyPool))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_RemoveFromCustodyPool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgRemoveFromCustodyPool)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).RemoveFromCustodyPool(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.custody.Msg/RemoveFromCustodyPool",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).RemoveFromCustodyPool(ctx, req.(*MsgRemoveFromCustodyPool))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1326,6 +1553,14 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_CreateCustody_Handler,
 		},
 		{
+			MethodName: "AddToCustodyPool",
+			Handler:    _Msg_AddToCustodyPool_Handler,
+		},
+		{
+			MethodName: "RemoveFromCustodyPool",
+			Handler:    _Msg_RemoveFromCustodyPool_Handler,
+		},
+		{
 			MethodName: "AddToCustodians",
 			Handler:    _Msg_AddToCustodians_Handler,
 		},
@@ -1430,6 +1665,20 @@ func (m *MsgAddToCustodyCustodians) MarshalToSizedBuffer(dAtA []byte) (int, erro
 	_ = i
 	var l int
 	_ = l
+	if len(m.NewKey) > 0 {
+		i -= len(m.NewKey)
+		copy(dAtA[i:], m.NewKey)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.NewKey)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.OldKey) > 0 {
+		i -= len(m.OldKey)
+		copy(dAtA[i:], m.OldKey)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.OldKey)))
+		i--
+		dAtA[i] = 0x1a
+	}
 	if len(m.AddAddress) > 0 {
 		for iNdEx := len(m.AddAddress) - 1; iNdEx >= 0; iNdEx-- {
 			i -= len(m.AddAddress[iNdEx])
@@ -1780,6 +2029,90 @@ func (m *MsgDropCustodyLimits) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgAddToCustodyPool) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgAddToCustodyPool) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgAddToCustodyPool) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Transaction != nil {
+		{
+			size, err := m.Transaction.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTx(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgRemoveFromCustodyPool) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgRemoveFromCustodyPool) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgRemoveFromCustodyPool) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Transaction != nil {
+		{
+			size, err := m.Transaction.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintTx(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func (m *MsgCreteCustodyRecordResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -1796,6 +2129,52 @@ func (m *MsgCreteCustodyRecordResponse) MarshalTo(dAtA []byte) (int, error) {
 }
 
 func (m *MsgCreteCustodyRecordResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgAddToCustodyPoolResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgAddToCustodyPoolResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgAddToCustodyPoolResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgRemoveFromCustodyPoolResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgRemoveFromCustodyPoolResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgRemoveFromCustodyPoolResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -2075,6 +2454,14 @@ func (m *MsgAddToCustodyCustodians) Size() (n int) {
 			n += 1 + l + sovTx(uint64(l))
 		}
 	}
+	l = len(m.OldKey)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.NewKey)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
@@ -2231,7 +2618,59 @@ func (m *MsgDropCustodyLimits) Size() (n int) {
 	return n
 }
 
+func (m *MsgAddToCustodyPool) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.Transaction != nil {
+		l = m.Transaction.Size()
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgRemoveFromCustodyPool) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.Transaction != nil {
+		l = m.Transaction.Size()
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
 func (m *MsgCreteCustodyRecordResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgAddToCustodyPoolResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgRemoveFromCustodyPoolResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2547,6 +2986,70 @@ func (m *MsgAddToCustodyCustodians) Unmarshal(dAtA []byte) error {
 			}
 			m.AddAddress = append(m.AddAddress, make([]byte, postIndex-iNdEx))
 			copy(m.AddAddress[len(m.AddAddress)-1], dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field OldKey", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.OldKey = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NewKey", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.NewKey = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -3591,6 +4094,246 @@ func (m *MsgDropCustodyLimits) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+func (m *MsgAddToCustodyPool) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgAddToCustodyPool: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgAddToCustodyPool: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Address = append(m.Address[:0], dAtA[iNdEx:postIndex]...)
+			if m.Address == nil {
+				m.Address = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Transaction", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Transaction == nil {
+				m.Transaction = &types.Any{}
+			}
+			if err := m.Transaction.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgRemoveFromCustodyPool) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgRemoveFromCustodyPool: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgRemoveFromCustodyPool: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Address = append(m.Address[:0], dAtA[iNdEx:postIndex]...)
+			if m.Address == nil {
+				m.Address = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Transaction", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Transaction == nil {
+				m.Transaction = &types.Any{}
+			}
+			if err := m.Transaction.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
 func (m *MsgCreteCustodyRecordResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -3618,6 +4361,106 @@ func (m *MsgCreteCustodyRecordResponse) Unmarshal(dAtA []byte) error {
 		}
 		if fieldNum <= 0 {
 			return fmt.Errorf("proto: MsgCreteCustodyRecordResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgAddToCustodyPoolResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgAddToCustodyPoolResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgAddToCustodyPoolResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgRemoveFromCustodyPoolResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgRemoveFromCustodyPoolResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgRemoveFromCustodyPoolResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:

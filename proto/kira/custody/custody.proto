@@ -2,15 +2,26 @@ syntax = "proto3";
 package kira.custody;
 
 import "gogoproto/gogo.proto";
+import "google/protobuf/any.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/custody/types";
 
 message CustodySettings {
-  bool custody_enabled = 1;
-  uint64 custody_mode = 2;
-  bool use_password = 3;
-  bool use_white_list = 4;
-  bool use_limits = 5;
+  bool   custody_enabled = 1;
+  uint64 custody_mode    = 2;
+  bool   use_password    = 3;
+  bool   use_white_list  = 4;
+  bool   use_limits      = 5;
+  string key             = 6;
+}
+
+message CustodyKeyRecord {
+  bytes address = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  string key = 2;
 }
 
 message CustodyRecord {
@@ -19,7 +30,7 @@ message CustodyRecord {
     (gogoproto.moretags) = "yaml:\"address\""
   ];
 
-  CustodySettings custody_settings = 2 [ (gogoproto.nullable) = false ];
+  CustodySettings custody_settings = 2;
 }
 
 message CustodyWhiteList {
@@ -82,4 +93,22 @@ message CustodyLimitStatusRecord {
   ];
 
   CustodyStatuses custody_statuses = 2;
+}
+
+message TransactionRecord {
+  google.protobuf.Any transaction = 1;
+  uint64 votes = 2;
+}
+
+message TransactionPool {
+  map<string, TransactionRecord> record = 2;
+}
+
+message CustodyPool {
+  bytes address = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  TransactionPool transactions = 2;
 }

@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -10,6 +11,11 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
+)
+
+const (
+	OldKey = "okey"
+	NewKey = "nkey"
 )
 
 // NewTxCmd returns a root CLI command handler for all x/bank transaction commands.
@@ -86,14 +92,32 @@ func GetTxAddToCustodyCustodians() *cobra.Command {
 				newAddr = append(newAddr, accAddr)
 			}
 
+			oldKey, err := cmd.Flags().GetString(OldKey)
+			if err != nil {
+				return fmt.Errorf("invalid old key: %w", err)
+			}
+
+			newKey, err := cmd.Flags().GetString(NewKey)
+			if err != nil {
+				return fmt.Errorf("invalid new key: %w", err)
+			}
+
 			msg := types.NewMsgAddToCustodyCustodians(
 				clientCtx.FromAddress,
 				newAddr,
+				oldKey,
+				newKey,
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
+
+	cmd.Flags().String(OldKey, "", "Previous hash string.")
+	cmd.MarkFlagRequired(OldKey)
+
+	cmd.Flags().String(NewKey, "", "Next hash string.")
+	cmd.MarkFlagRequired(NewKey)
 
 	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
@@ -126,7 +150,6 @@ func GetTxRemoveFromCustodyCustodians() *cobra.Command {
 		},
 	}
 
-	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
@@ -151,7 +174,6 @@ func GetTxDropCustodyCustodians() *cobra.Command {
 		},
 	}
 
-	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
@@ -206,7 +228,6 @@ func GetTxAddToCustodyWhiteList() *cobra.Command {
 		},
 	}
 
-	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
@@ -237,7 +258,6 @@ func GetTxRemoveFromCustodyWhiteList() *cobra.Command {
 		},
 	}
 
-	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
@@ -262,7 +282,6 @@ func GetTxDropCustodyWhiteList() *cobra.Command {
 		},
 	}
 
-	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
@@ -300,7 +319,6 @@ func GetTxCreateCustody() *cobra.Command {
 		},
 	}
 
-	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
@@ -333,7 +351,6 @@ func GetTxAddToCustodyLimits() *cobra.Command {
 		},
 	}
 
-	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
@@ -359,7 +376,6 @@ func GetTxRemoveFromCustodyLimits() *cobra.Command {
 		},
 	}
 
-	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
@@ -384,7 +400,6 @@ func GetTxDropCustodyLimits() *cobra.Command {
 		},
 	}
 
-	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd

@@ -4,12 +4,15 @@ package kira.custody;
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 import "kira/custody/custody.proto";
+import "google/protobuf/any.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/custody/types";
 
 // Msg defines the custody Msg service.
 service Msg {
   rpc CreateCustody(MsgCreteCustodyRecord) returns (MsgCreteCustodyRecordResponse);
+  rpc AddToCustodyPool(MsgAddToCustodyPool) returns (MsgAddToCustodyPoolResponse);
+  rpc RemoveFromCustodyPool(MsgRemoveFromCustodyPool) returns (MsgRemoveFromCustodyPoolResponse);
   rpc AddToCustodians(MsgAddToCustodyCustodians) returns (MsgAddToCustodyCustodiansResponse);
   rpc RemoveFromCustodians(MsgRemoveFromCustodyCustodians) returns (MsgRemoveFromCustodyCustodiansResponse);
   rpc DropCustodians(MsgDropCustodyCustodians) returns (MsgDropCustodyCustodiansResponse);
@@ -21,6 +24,9 @@ service Msg {
   rpc DropLimits(MsgDropCustodyLimits) returns (MsgDropCustodyLimitsResponse);
   rpc AddToLimitsStatus(MsgAddToCustodyLimitsStatus) returns (MsgAddToCustodyLimitsStatusResponse);
 }
+
+//    Approve
+//    Decline
 
 message MsgCreteCustodyRecord {
   option (gogoproto.equal)           = false;
@@ -47,6 +53,9 @@ message MsgAddToCustodyCustodians {
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
     (gogoproto.moretags) = "yaml:\"address\""
   ];
+
+  string old_key = 3;
+  string new_key = 4;
 }
 
 message MsgRemoveFromCustodyCustodians {
@@ -163,7 +172,33 @@ message MsgDropCustodyLimits {
   ];
 }
 
+message MsgAddToCustodyPool {
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
+  bytes address = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  google.protobuf.Any transaction = 2;
+}
+
+message MsgRemoveFromCustodyPool {
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
+  bytes address = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  google.protobuf.Any transaction = 2;
+}
+
 message MsgCreteCustodyRecordResponse {}
+message MsgAddToCustodyPoolResponse {}
+message MsgRemoveFromCustodyPoolResponse {}
 message MsgAddToCustodyCustodiansResponse {}
 message MsgRemoveFromCustodyCustodiansResponse {}
 message MsgDropCustodyCustodiansResponse {}

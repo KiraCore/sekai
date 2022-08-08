@@ -24,7 +24,17 @@ func (k Keeper) SetCustodyRecord(ctx sdk.Context, record types.CustodyRecord) {
 	store := ctx.KVStore(k.storeKey)
 	key := append([]byte(types.PrefixKeyCustodyRecord), record.Address...)
 
-	store.Set(key, k.cdc.MustMarshal(&record.CustodySettings))
+	store.Set(key, k.cdc.MustMarshal(record.CustodySettings))
+}
+
+func (k Keeper) SetCustodyRecordKey(ctx sdk.Context, record types.CustodyKeyRecord) {
+	info := k.GetCustodyInfoByAddress(ctx, record.Address)
+	info.Key = record.Key
+
+	store := ctx.KVStore(k.storeKey)
+	key := append([]byte(types.PrefixKeyCustodyRecord), record.Address...)
+
+	store.Set(key, k.cdc.MustMarshal(info))
 }
 
 func (k Keeper) GetCustodyCustodiansByAddress(ctx sdk.Context, address sdk.AccAddress) *types.CustodyCustodianList {
@@ -36,6 +46,27 @@ func (k Keeper) GetCustodyCustodiansByAddress(ctx sdk.Context, address sdk.AccAd
 	}
 
 	info := new(types.CustodyCustodianList)
+	k.cdc.MustUnmarshal(bz, info)
+
+	return info
+}
+
+func (k Keeper) AddToCustodyPool(ctx sdk.Context, record types.CustodyPool) {
+	store := ctx.KVStore(k.storeKey)
+	key := append([]byte(types.PrefixKeyCustodyPool), record.Address...)
+
+	store.Set(key, k.cdc.MustMarshal(record.Transactions))
+}
+
+func (k Keeper) GetCustodyPoolByAddress(ctx sdk.Context, address sdk.AccAddress) *types.TransactionPool {
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), []byte(types.PrefixKeyCustodyPool))
+	bz := prefixStore.Get(address)
+
+	if bz == nil {
+		return nil
+	}
+
+	info := new(types.TransactionPool)
 	k.cdc.MustUnmarshal(bz, info)
 
 	return info

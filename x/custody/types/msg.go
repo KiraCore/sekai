@@ -2,6 +2,7 @@ package types
 
 import (
 	"github.com/KiraCore/sekai/types"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -32,8 +33,62 @@ func (m *MsgCreteCustodyRecord) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgAddToCustodyCustodians(addr sdk.AccAddress, newAddr []sdk.AccAddress) *MsgAddToCustodyCustodians {
-	return &MsgAddToCustodyCustodians{addr, newAddr}
+func NewMsgAddToCustodyPool(addr sdk.AccAddress, tx *codectypes.Any) *MsgAddToCustodyPool {
+	return &MsgAddToCustodyPool{addr, tx}
+}
+
+func (m *MsgAddToCustodyPool) Route() string {
+	return ModuleName
+}
+
+func (m *MsgAddToCustodyPool) Type() string {
+	return types.MsgTypeAddToCustodyPool
+}
+
+func (m *MsgAddToCustodyPool) ValidateBasic() error {
+	return nil
+}
+
+func (m *MsgAddToCustodyPool) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *MsgAddToCustodyPool) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{
+		m.Address,
+	}
+}
+
+func NewMsgRemoveFromCustodyPool(addr sdk.AccAddress, tx *codectypes.Any) *MsgRemoveFromCustodyPool {
+	return &MsgRemoveFromCustodyPool{addr, tx}
+}
+
+func (m *MsgRemoveFromCustodyPool) Route() string {
+	return ModuleName
+}
+
+func (m *MsgRemoveFromCustodyPool) Type() string {
+	return types.MsgTypeRemoveFromCustodyPool
+}
+
+func (m *MsgRemoveFromCustodyPool) ValidateBasic() error {
+	return nil
+}
+
+func (m *MsgRemoveFromCustodyPool) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *MsgRemoveFromCustodyPool) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{
+		m.Address,
+	}
+}
+
+func NewMsgAddToCustodyCustodians(addr sdk.AccAddress, newAddr []sdk.AccAddress, oldKey string, newKey string) *MsgAddToCustodyCustodians {
+	return &MsgAddToCustodyCustodians{addr, newAddr, oldKey, newKey}
 }
 
 func (m *MsgAddToCustodyCustodians) Route() string {
@@ -41,7 +96,7 @@ func (m *MsgAddToCustodyCustodians) Route() string {
 }
 
 func (m *MsgAddToCustodyCustodians) Type() string {
-	return types.MsgTypeAddToCustodyWhiteList
+	return types.MsgTypeAddToCustodyCustodians
 }
 
 func (m *MsgAddToCustodyCustodians) ValidateBasic() error {
@@ -68,7 +123,7 @@ func (m *MsgRemoveFromCustodyCustodians) Route() string {
 }
 
 func (m *MsgRemoveFromCustodyCustodians) Type() string {
-	return types.MsgTypeRemoveFromCustodyWhiteList
+	return types.MsgTypeRemoveFromCustodyCustodians
 }
 
 func (m *MsgRemoveFromCustodyCustodians) ValidateBasic() error {
@@ -95,7 +150,7 @@ func (m *MsgDropCustodyCustodians) Route() string {
 }
 
 func (m *MsgDropCustodyCustodians) Type() string {
-	return types.MsgTypeDropCustodyWhiteList
+	return types.MsgTypeDropCustodyCustodians
 }
 
 func (m *MsgDropCustodyCustodians) ValidateBasic() error {

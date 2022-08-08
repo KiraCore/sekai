@@ -33,6 +33,14 @@ func (q Querier) CustodyCustodiansByAddress(c context.Context, request *types.Cu
 	}, nil
 }
 
+func (q Querier) CustodyPoolByAddress(c context.Context, request *types.CustodyPoolByAddressRequest) (*types.CustodyPoolByAddressResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+
+	return &types.CustodyPoolByAddressResponse{
+		Transactions: q.keeper.GetCustodyPoolByAddress(ctx, request.Addr),
+	}, nil
+}
+
 func (q Querier) CustodyWhiteListByAddress(c context.Context, request *types.CustodyWhiteListByAddressRequest) (*types.CustodyWhiteListByAddressResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 

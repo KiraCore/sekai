@@ -45,6 +45,8 @@ const (
 	MsgTypeUndelegate        = "undelegate"
 	MsgTypeClaimRewards      = "claim_rewards"
 	MsgTypeClaimUndelegation = "claim_undelegation"
+	MsgTypeSetCompoundInfo   = "set_compound_info"
+	MsgTypeRegisterDelegator = "register_delegator"
 
 	// tokens module
 	MsgTypeUpsertTokenAlias = "upsert-token-alias"
@@ -64,10 +66,17 @@ const (
 	MsgTypeClaimSpendingPool               = "claim-spending-pool"
 
 	// custody module
-	MsgTypeCreateCustody              = "create-custody"
-	MsgTypeAddToCustodyWhiteList      = "add-to-custody-whitelist"
-	MsgTypeRemoveFromCustodyWhiteList = "remove-from-custody-whitelist"
-	MsgTypeDropCustodyWhiteList       = "drop-custody-whitelist"
+	MsgTypeCreateCustody               = "create-custody"
+	MsgTypeAddToCustodyPool            = "add-to-custody-pool"
+	MsgTypeRemoveFromCustodyPool       = "remove-from-custody-pool"
+	MsgTypeAddToCustodyWhiteList       = "add-to-custody-whitelist"
+	MsgTypeAddToCustodyCustodians      = "add-to-custody-custodians"
+	MsgTypeRemoveFromCustodyCustodians = "remove-from-custody-custodians"
+	MsgTypeDropCustodyCustodians       = "drop-custody-custodians"
+	MsgTypeRemoveFromCustodyWhiteList  = "remove-from-custody-whitelist"
+	MsgTypeDropCustodyWhiteList        = "drop-custody-whitelist"
+	MsgApproveCustodyTransaction       = "approve-custody-transaction"
+	MsgDeclineCustodyTransaction       = "decline-custody-transaction"
 )
 
 // Msg defines the interface a transaction message must fulfill.
@@ -116,6 +125,18 @@ var MsgFuncIDMapping = map[string]int64{
 	MsgTypeDepositSpendingPool:             42,
 	MsgTypeRegisterSpendingPoolBeneficiary: 43,
 	MsgTypeClaimSpendingPool:               44,
+
+	MsgTypeCreateCustody:               45,
+	MsgTypeAddToCustodyPool:            46,
+	MsgTypeRemoveFromCustodyPool:       47,
+	MsgTypeAddToCustodyWhiteList:       48,
+	MsgTypeAddToCustodyCustodians:      49,
+	MsgTypeRemoveFromCustodyCustodians: 50,
+	MsgTypeDropCustodyCustodians:       51,
+	MsgTypeRemoveFromCustodyWhiteList:  52,
+	MsgTypeDropCustodyWhiteList:        53,
+	MsgApproveCustodyTransaction:       54,
+	MsgDeclineCustodyTransaction:       55,
 }
 
 func MsgType(msg sdk.Msg) string {

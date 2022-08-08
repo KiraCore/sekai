@@ -12,9 +12,12 @@ service Query {
     rpc CustodyByAddress (CustodyByAddressRequest) returns (CustodyByAddressResponse) {
         option (google.api.http).get = "/kira/custody/custody_settings/{addr}";
     }
-      rpc CustodyCustodiansByAddress (CustodyCustodiansByAddressRequest) returns (CustodyCustodiansByAddressResponse) {
+    rpc CustodyPoolByAddress (CustodyPoolByAddressRequest) returns (CustodyPoolByAddressResponse) {
+        option (google.api.http).get = "/kira/custody/custody_pool/{addr}";
+    }
+    rpc CustodyCustodiansByAddress (CustodyCustodiansByAddressRequest) returns (CustodyCustodiansByAddressResponse) {
         option (google.api.http).get = "/kira/custody/custody_custodians/{addr}";
-      }
+    }
     rpc CustodyWhiteListByAddress (CustodyWhiteListByAddressRequest) returns (CustodyWhiteListByAddressResponse) {
         option (google.api.http).get = "/kira/custody/custody_white_list/{addr}";
     }
@@ -22,7 +25,7 @@ service Query {
         option (google.api.http).get = "/kira/custody/custody_limits/{addr}";
     }
     rpc CustodyLimitsStatusByAddress (CustodyLimitsStatusByAddressRequest) returns (CustodyLimitsStatusByAddressResponse) {
-      option (google.api.http).get = "/kira/custody/custody_limits_status/{addr}";
+        option (google.api.http).get = "/kira/custody/custody_limits_status/{addr}";
     }
 }
 
@@ -37,6 +40,13 @@ message CustodyByAddressResponse {
   CustodySettings custody_settings = 1;
 }
 
+message CustodyPoolByAddressRequest {
+  bytes addr = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"addr\""
+  ];
+}
+
 message CustodyCustodiansByAddressRequest {
   bytes addr = 1 [
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
@@ -49,6 +59,10 @@ message CustodyWhiteListByAddressRequest {
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
     (gogoproto.moretags) = "yaml:\"addr\""
   ];
+}
+
+message CustodyPoolByAddressResponse {
+    TransactionPool transactions = 1;
 }
 
 message CustodyCustodiansByAddressResponse {

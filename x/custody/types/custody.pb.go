@@ -5,6 +5,7 @@ package types
 
 import (
 	fmt "fmt"
+	types "github.com/cosmos/cosmos-sdk/codec/types"
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
@@ -30,6 +31,7 @@ type CustodySettings struct {
 	UsePassword    bool   `protobuf:"varint,3,opt,name=use_password,json=usePassword,proto3" json:"use_password,omitempty"`
 	UseWhiteList   bool   `protobuf:"varint,4,opt,name=use_white_list,json=useWhiteList,proto3" json:"use_white_list,omitempty"`
 	UseLimits      bool   `protobuf:"varint,5,opt,name=use_limits,json=useLimits,proto3" json:"use_limits,omitempty"`
+	Key            string `protobuf:"bytes,6,opt,name=key,proto3" json:"key,omitempty"`
 }
 
 func (m *CustodySettings) Reset()         { *m = CustodySettings{} }
@@ -100,16 +102,75 @@ func (m *CustodySettings) GetUseLimits() bool {
 	return false
 }
 
+func (m *CustodySettings) GetKey() string {
+	if m != nil {
+		return m.Key
+	}
+	return ""
+}
+
+type CustodyKeyRecord struct {
+	Address github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
+	Key     string                                        `protobuf:"bytes,2,opt,name=key,proto3" json:"key,omitempty"`
+}
+
+func (m *CustodyKeyRecord) Reset()         { *m = CustodyKeyRecord{} }
+func (m *CustodyKeyRecord) String() string { return proto.CompactTextString(m) }
+func (*CustodyKeyRecord) ProtoMessage()    {}
+func (*CustodyKeyRecord) Descriptor() ([]byte, []int) {
+	return fileDescriptor_70a21c0e297e5e4d, []int{1}
+}
+func (m *CustodyKeyRecord) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *CustodyKeyRecord) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_CustodyKeyRecord.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *CustodyKeyRecord) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CustodyKeyRecord.Merge(m, src)
+}
+func (m *CustodyKeyRecord) XXX_Size() int {
+	return m.Size()
+}
+func (m *CustodyKeyRecord) XXX_DiscardUnknown() {
+	xxx_messageInfo_CustodyKeyRecord.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CustodyKeyRecord proto.InternalMessageInfo
+
+func (m *CustodyKeyRecord) GetAddress() github_com_cosmos_cosmos_sdk_types.AccAddress {
+	if m != nil {
+		return m.Address
+	}
+	return nil
+}
+
+func (m *CustodyKeyRecord) GetKey() string {
+	if m != nil {
+		return m.Key
+	}
+	return ""
+}
+
 type CustodyRecord struct {
 	Address         github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
-	CustodySettings CustodySettings                               `protobuf:"bytes,2,opt,name=custody_settings,json=custodySettings,proto3" json:"custody_settings"`
+	CustodySettings *CustodySettings                              `protobuf:"bytes,2,opt,name=custody_settings,json=custodySettings,proto3" json:"custody_settings,omitempty"`
 }
 
 func (m *CustodyRecord) Reset()         { *m = CustodyRecord{} }
 func (m *CustodyRecord) String() string { return proto.CompactTextString(m) }
 func (*CustodyRecord) ProtoMessage()    {}
 func (*CustodyRecord) Descriptor() ([]byte, []int) {
-	return fileDescriptor_70a21c0e297e5e4d, []int{1}
+	return fileDescriptor_70a21c0e297e5e4d, []int{2}
 }
 func (m *CustodyRecord) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -145,11 +206,11 @@ func (m *CustodyRecord) GetAddress() github_com_cosmos_cosmos_sdk_types.AccAddre
 	return nil
 }
 
-func (m *CustodyRecord) GetCustodySettings() CustodySettings {
+func (m *CustodyRecord) GetCustodySettings() *CustodySettings {
 	if m != nil {
 		return m.CustodySettings
 	}
-	return CustodySettings{}
+	return nil
 }
 
 type CustodyWhiteList struct {
@@ -160,7 +221,7 @@ func (m *CustodyWhiteList) Reset()         { *m = CustodyWhiteList{} }
 func (m *CustodyWhiteList) String() string { return proto.CompactTextString(m) }
 func (*CustodyWhiteList) ProtoMessage()    {}
 func (*CustodyWhiteList) Descriptor() ([]byte, []int) {
-	return fileDescriptor_70a21c0e297e5e4d, []int{2}
+	return fileDescriptor_70a21c0e297e5e4d, []int{3}
 }
 func (m *CustodyWhiteList) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -205,7 +266,7 @@ func (m *CustodyWhiteListRecord) Reset()         { *m = CustodyWhiteListRecord{}
 func (m *CustodyWhiteListRecord) String() string { return proto.CompactTextString(m) }
 func (*CustodyWhiteListRecord) ProtoMessage()    {}
 func (*CustodyWhiteListRecord) Descriptor() ([]byte, []int) {
-	return fileDescriptor_70a21c0e297e5e4d, []int{3}
+	return fileDescriptor_70a21c0e297e5e4d, []int{4}
 }
 func (m *CustodyWhiteListRecord) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -256,7 +317,7 @@ func (m *CustodyCustodianList) Reset()         { *m = CustodyCustodianList{} }
 func (m *CustodyCustodianList) String() string { return proto.CompactTextString(m) }
 func (*CustodyCustodianList) ProtoMessage()    {}
 func (*CustodyCustodianList) Descriptor() ([]byte, []int) {
-	return fileDescriptor_70a21c0e297e5e4d, []int{4}
+	return fileDescriptor_70a21c0e297e5e4d, []int{5}
 }
 func (m *CustodyCustodianList) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -301,7 +362,7 @@ func (m *CustodyCustodiansRecord) Reset()         { *m = CustodyCustodiansRecord
 func (m *CustodyCustodiansRecord) String() string { return proto.CompactTextString(m) }
 func (*CustodyCustodiansRecord) ProtoMessage()    {}
 func (*CustodyCustodiansRecord) Descriptor() ([]byte, []int) {
-	return fileDescriptor_70a21c0e297e5e4d, []int{5}
+	return fileDescriptor_70a21c0e297e5e4d, []int{6}
 }
 func (m *CustodyCustodiansRecord) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -353,7 +414,7 @@ func (m *CustodyLimit) Reset()         { *m = CustodyLimit{} }
 func (m *CustodyLimit) String() string { return proto.CompactTextString(m) }
 func (*CustodyLimit) ProtoMessage()    {}
 func (*CustodyLimit) Descriptor() ([]byte, []int) {
-	return fileDescriptor_70a21c0e297e5e4d, []int{6}
+	return fileDescriptor_70a21c0e297e5e4d, []int{7}
 }
 func (m *CustodyLimit) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -404,7 +465,7 @@ func (m *CustodyLimits) Reset()         { *m = CustodyLimits{} }
 func (m *CustodyLimits) String() string { return proto.CompactTextString(m) }
 func (*CustodyLimits) ProtoMessage()    {}
 func (*CustodyLimits) Descriptor() ([]byte, []int) {
-	return fileDescriptor_70a21c0e297e5e4d, []int{7}
+	return fileDescriptor_70a21c0e297e5e4d, []int{8}
 }
 func (m *CustodyLimits) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -449,7 +510,7 @@ func (m *CustodyLimitRecord) Reset()         { *m = CustodyLimitRecord{} }
 func (m *CustodyLimitRecord) String() string { return proto.CompactTextString(m) }
 func (*CustodyLimitRecord) ProtoMessage()    {}
 func (*CustodyLimitRecord) Descriptor() ([]byte, []int) {
-	return fileDescriptor_70a21c0e297e5e4d, []int{8}
+	return fileDescriptor_70a21c0e297e5e4d, []int{9}
 }
 func (m *CustodyLimitRecord) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -501,7 +562,7 @@ func (m *CustodyStatus) Reset()         { *m = CustodyStatus{} }
 func (m *CustodyStatus) String() string { return proto.CompactTextString(m) }
 func (*CustodyStatus) ProtoMessage()    {}
 func (*CustodyStatus) Descriptor() ([]byte, []int) {
-	return fileDescriptor_70a21c0e297e5e4d, []int{9}
+	return fileDescriptor_70a21c0e297e5e4d, []int{10}
 }
 func (m *CustodyStatus) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -552,7 +613,7 @@ func (m *CustodyStatuses) Reset()         { *m = CustodyStatuses{} }
 func (m *CustodyStatuses) String() string { return proto.CompactTextString(m) }
 func (*CustodyStatuses) ProtoMessage()    {}
 func (*CustodyStatuses) Descriptor() ([]byte, []int) {
-	return fileDescriptor_70a21c0e297e5e4d, []int{10}
+	return fileDescriptor_70a21c0e297e5e4d, []int{11}
 }
 func (m *CustodyStatuses) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -597,7 +658,7 @@ func (m *CustodyLimitStatusRecord) Reset()         { *m = CustodyLimitStatusReco
 func (m *CustodyLimitStatusRecord) String() string { return proto.CompactTextString(m) }
 func (*CustodyLimitStatusRecord) ProtoMessage()    {}
 func (*CustodyLimitStatusRecord) Descriptor() ([]byte, []int) {
-	return fileDescriptor_70a21c0e297e5e4d, []int{11}
+	return fileDescriptor_70a21c0e297e5e4d, []int{12}
 }
 func (m *CustodyLimitStatusRecord) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -640,8 +701,157 @@ func (m *CustodyLimitStatusRecord) GetCustodyStatuses() *CustodyStatuses {
 	return nil
 }
 
+type TransactionRecord struct {
+	Transaction *types.Any `protobuf:"bytes,1,opt,name=transaction,proto3" json:"transaction,omitempty"`
+	Votes       uint64     `protobuf:"varint,2,opt,name=votes,proto3" json:"votes,omitempty"`
+}
+
+func (m *TransactionRecord) Reset()         { *m = TransactionRecord{} }
+func (m *TransactionRecord) String() string { return proto.CompactTextString(m) }
+func (*TransactionRecord) ProtoMessage()    {}
+func (*TransactionRecord) Descriptor() ([]byte, []int) {
+	return fileDescriptor_70a21c0e297e5e4d, []int{13}
+}
+func (m *TransactionRecord) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *TransactionRecord) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_TransactionRecord.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *TransactionRecord) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_TransactionRecord.Merge(m, src)
+}
+func (m *TransactionRecord) XXX_Size() int {
+	return m.Size()
+}
+func (m *TransactionRecord) XXX_DiscardUnknown() {
+	xxx_messageInfo_TransactionRecord.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_TransactionRecord proto.InternalMessageInfo
+
+func (m *TransactionRecord) GetTransaction() *types.Any {
+	if m != nil {
+		return m.Transaction
+	}
+	return nil
+}
+
+func (m *TransactionRecord) GetVotes() uint64 {
+	if m != nil {
+		return m.Votes
+	}
+	return 0
+}
+
+type TransactionPool struct {
+	Record map[string]*TransactionRecord `protobuf:"bytes,2,rep,name=record,proto3" json:"record,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+}
+
+func (m *TransactionPool) Reset()         { *m = TransactionPool{} }
+func (m *TransactionPool) String() string { return proto.CompactTextString(m) }
+func (*TransactionPool) ProtoMessage()    {}
+func (*TransactionPool) Descriptor() ([]byte, []int) {
+	return fileDescriptor_70a21c0e297e5e4d, []int{14}
+}
+func (m *TransactionPool) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *TransactionPool) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_TransactionPool.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *TransactionPool) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_TransactionPool.Merge(m, src)
+}
+func (m *TransactionPool) XXX_Size() int {
+	return m.Size()
+}
+func (m *TransactionPool) XXX_DiscardUnknown() {
+	xxx_messageInfo_TransactionPool.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_TransactionPool proto.InternalMessageInfo
+
+func (m *TransactionPool) GetRecord() map[string]*TransactionRecord {
+	if m != nil {
+		return m.Record
+	}
+	return nil
+}
+
+type CustodyPool struct {
+	Address      github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
+	Transactions *TransactionPool                              `protobuf:"bytes,2,opt,name=transactions,proto3" json:"transactions,omitempty"`
+}
+
+func (m *CustodyPool) Reset()         { *m = CustodyPool{} }
+func (m *CustodyPool) String() string { return proto.CompactTextString(m) }
+func (*CustodyPool) ProtoMessage()    {}
+func (*CustodyPool) Descriptor() ([]byte, []int) {
+	return fileDescriptor_70a21c0e297e5e4d, []int{15}
+}
+func (m *CustodyPool) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *CustodyPool) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_CustodyPool.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *CustodyPool) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CustodyPool.Merge(m, src)
+}
+func (m *CustodyPool) XXX_Size() int {
+	return m.Size()
+}
+func (m *CustodyPool) XXX_DiscardUnknown() {
+	xxx_messageInfo_CustodyPool.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_CustodyPool proto.InternalMessageInfo
+
+func (m *CustodyPool) GetAddress() github_com_cosmos_cosmos_sdk_types.AccAddress {
+	if m != nil {
+		return m.Address
+	}
+	return nil
+}
+
+func (m *CustodyPool) GetTransactions() *TransactionPool {
+	if m != nil {
+		return m.Transactions
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*CustodySettings)(nil), "kira.custody.CustodySettings")
+	proto.RegisterType((*CustodyKeyRecord)(nil), "kira.custody.CustodyKeyRecord")
 	proto.RegisterType((*CustodyRecord)(nil), "kira.custody.CustodyRecord")
 	proto.RegisterType((*CustodyWhiteList)(nil), "kira.custody.CustodyWhiteList")
 	proto.RegisterMapType((map[string]bool)(nil), "kira.custody.CustodyWhiteList.AddressesEntry")
@@ -657,58 +867,71 @@ func init() {
 	proto.RegisterType((*CustodyStatuses)(nil), "kira.custody.CustodyStatuses")
 	proto.RegisterMapType((map[string]*CustodyStatus)(nil), "kira.custody.CustodyStatuses.StatusesEntry")
 	proto.RegisterType((*CustodyLimitStatusRecord)(nil), "kira.custody.CustodyLimitStatusRecord")
+	proto.RegisterType((*TransactionRecord)(nil), "kira.custody.TransactionRecord")
+	proto.RegisterType((*TransactionPool)(nil), "kira.custody.TransactionPool")
+	proto.RegisterMapType((map[string]*TransactionRecord)(nil), "kira.custody.TransactionPool.RecordEntry")
+	proto.RegisterType((*CustodyPool)(nil), "kira.custody.CustodyPool")
 }
 
 func init() { proto.RegisterFile("kira/custody/custody.proto", fileDescriptor_70a21c0e297e5e4d) }
 
 var fileDescriptor_70a21c0e297e5e4d = []byte{
-	// 721 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x56, 0x4f, 0x6b, 0x13, 0x41,
-	0x14, 0xcf, 0x34, 0x69, 0x6d, 0x5e, 0xd2, 0xb4, 0x0e, 0xa5, 0x86, 0x94, 0xa6, 0x75, 0x11, 0x5a,
-	0x91, 0x6e, 0x6c, 0xbd, 0x48, 0x2d, 0x48, 0x13, 0x8a, 0x42, 0xeb, 0xbf, 0x29, 0xa2, 0x08, 0x52,
-	0xb6, 0xbb, 0x43, 0xba, 0x24, 0x9b, 0x29, 0x3b, 0xb3, 0xd6, 0x7c, 0x0b, 0xbf, 0x80, 0x47, 0xf1,
-	0x0b, 0x08, 0xde, 0xbc, 0x88, 0x50, 0xf0, 0xd2, 0xa3, 0xa7, 0x22, 0xed, 0x37, 0xf0, 0xe8, 0x49,
-	0x76, 0xfe, 0x24, 0x9b, 0x98, 0xc6, 0x93, 0x39, 0xcd, 0xcc, 0x7b, 0xbf, 0x37, 0xef, 0xbd, 0xdf,
-	0x6f, 0x67, 0x66, 0xa1, 0xd4, 0xf0, 0x43, 0xa7, 0xe2, 0x46, 0x5c, 0x30, 0xaf, 0x6d, 0x46, 0xfb,
-	0x28, 0x64, 0x82, 0xe1, 0x7c, 0xec, 0xb3, 0xb5, 0xad, 0x34, 0x5b, 0x67, 0x75, 0x26, 0x1d, 0x95,
-	0x78, 0xa6, 0x30, 0xd6, 0x37, 0x04, 0xd3, 0x35, 0x85, 0xd8, 0xa3, 0x42, 0xf8, 0xad, 0x3a, 0xc7,
-	0xcb, 0x30, 0xad, 0x83, 0xf6, 0x69, 0xcb, 0x39, 0x68, 0x52, 0xaf, 0x88, 0x96, 0xd0, 0xca, 0x24,
-	0x29, 0x68, 0xf3, 0xb6, 0xb2, 0xe2, 0xeb, 0x90, 0x37, 0xc0, 0x80, 0x79, 0xb4, 0x38, 0xb6, 0x84,
-	0x56, 0x32, 0x24, 0xa7, 0x6d, 0x8f, 0x98, 0x47, 0x63, 0x48, 0xc4, 0xe9, 0xfe, 0x91, 0xc3, 0xf9,
-	0x31, 0x0b, 0xbd, 0x62, 0x5a, 0x6e, 0x94, 0x8b, 0x38, 0x7d, 0xaa, 0x4d, 0xf8, 0x06, 0x14, 0x62,
-	0xc8, 0xf1, 0xa1, 0x2f, 0xe8, 0x7e, 0xd3, 0xe7, 0xa2, 0x98, 0x91, 0xa0, 0x38, 0xf0, 0x45, 0x6c,
-	0xdc, 0xf5, 0xb9, 0xc0, 0x0b, 0x00, 0x31, 0xaa, 0xe9, 0x07, 0xbe, 0xe0, 0xc5, 0x71, 0x89, 0xc8,
-	0x46, 0x9c, 0xee, 0x4a, 0x83, 0xf5, 0x05, 0xc1, 0x94, 0xee, 0x83, 0x50, 0x37, 0xde, 0xf6, 0x35,
-	0x5c, 0x71, 0x3c, 0x2f, 0xa4, 0x9c, 0xcb, 0xea, 0xf3, 0xd5, 0xda, 0xaf, 0xb3, 0xc5, 0x42, 0xdb,
-	0x09, 0x9a, 0x1b, 0x96, 0x76, 0x58, 0xbf, 0xcf, 0x16, 0x57, 0xeb, 0xbe, 0x38, 0x8c, 0x0e, 0x6c,
-	0x97, 0x05, 0x15, 0x97, 0xf1, 0x80, 0x71, 0x3d, 0xac, 0x72, 0xaf, 0x51, 0x11, 0xed, 0x23, 0xca,
-	0xed, 0x2d, 0xd7, 0xdd, 0x52, 0x11, 0xc4, 0xec, 0x89, 0x1f, 0xc3, 0x8c, 0xe9, 0x9d, 0x6b, 0xe2,
-	0x64, 0xff, 0xb9, 0xf5, 0x05, 0x3b, 0xc9, 0xbb, 0xdd, 0xc7, 0x6e, 0x35, 0x73, 0x72, 0xb6, 0x98,
-	0x22, 0x86, 0x61, 0x63, 0xb6, 0xde, 0x23, 0x98, 0xd1, 0xd0, 0x6e, 0xd3, 0x3b, 0x90, 0xd5, 0xf9,
-	0x68, 0xdc, 0x45, 0x7a, 0x25, 0xb7, 0xbe, 0x3a, 0x70, 0xf7, 0x4e, 0x88, 0xbd, 0x65, 0xf0, 0xdb,
-	0x2d, 0x11, 0xb6, 0x49, 0x37, 0xbe, 0xb4, 0x09, 0x85, 0x5e, 0x27, 0x9e, 0x81, 0x74, 0x83, 0xb6,
-	0x25, 0x3d, 0x59, 0x12, 0x4f, 0xf1, 0x2c, 0x8c, 0xbf, 0x71, 0x9a, 0x91, 0x92, 0x72, 0x92, 0xa8,
-	0xc5, 0xc6, 0xd8, 0x5d, 0x14, 0x7f, 0x28, 0x73, 0xfd, 0xc9, 0x46, 0xc3, 0xf4, 0x2e, 0x60, 0xc3,
-	0x74, 0xe2, 0x1b, 0x51, 0x5c, 0x97, 0x87, 0xb3, 0x41, 0x8c, 0x46, 0x1d, 0x8b, 0xf5, 0x01, 0xc1,
-	0xac, 0x86, 0xa9, 0xc1, 0x77, 0x5a, 0x92, 0xeb, 0x27, 0x7f, 0x73, 0xbd, 0x36, 0x70, 0xf7, 0x9e,
-	0xb0, 0xff, 0xc6, 0xf7, 0x77, 0x04, 0xd7, 0xfa, 0x13, 0xf2, 0xd1, 0x10, 0xfe, 0xac, 0x4b, 0xb8,
-	0xdb, 0x49, 0xad, 0x09, 0xb7, 0xfe, 0x4d, 0x09, 0xb9, 0xea, 0xf6, 0xd7, 0x6d, 0x6d, 0x42, 0x5e,
-	0x43, 0xe5, 0x79, 0xc5, 0x73, 0x30, 0xe1, 0x04, 0x2c, 0x6a, 0x09, 0xd9, 0x40, 0x86, 0xe8, 0x55,
-	0xcc, 0x87, 0x3c, 0xe1, 0x32, 0x5b, 0x96, 0xa8, 0x85, 0xf5, 0xb1, 0x7b, 0xb8, 0xd5, 0x71, 0xc7,
-	0xf7, 0x61, 0x42, 0xdf, 0x04, 0x4a, 0xa9, 0xe5, 0x81, 0x65, 0x29, 0xb0, 0xad, 0x06, 0xa5, 0x8f,
-	0x0e, 0x2b, 0x3d, 0x87, 0x5c, 0xc2, 0x3c, 0x40, 0x99, 0xdb, 0x49, 0x65, 0x72, 0xeb, 0xa5, 0xcb,
-	0x13, 0x24, 0x55, 0xfb, 0x8c, 0x00, 0xf7, 0xf8, 0x46, 0x22, 0x58, 0x15, 0xcc, 0xcd, 0x6c, 0xee,
-	0x47, 0x55, 0xf4, 0xfc, 0x10, 0x56, 0xc8, 0x94, 0x9b, 0x5c, 0x5a, 0xf7, 0x3a, 0x14, 0xef, 0x09,
-	0x47, 0x44, 0xfc, 0x52, 0x89, 0x30, 0x64, 0x84, 0x1f, 0x28, 0x5e, 0xd2, 0x44, 0xce, 0xad, 0x4f,
-	0x89, 0x57, 0x44, 0x46, 0x53, 0x8e, 0x1f, 0xc0, 0x24, 0xd7, 0x73, 0x2d, 0xd2, 0xad, 0xc1, 0x17,
-	0xa3, 0x06, 0xd9, 0x66, 0xa2, 0x84, 0xea, 0x04, 0x97, 0x5e, 0xc2, 0x54, 0x8f, 0x6b, 0x80, 0x58,
-	0x6b, 0xbd, 0x62, 0xcd, 0x0f, 0x49, 0x94, 0x54, 0xeb, 0x2b, 0x82, 0x62, 0x92, 0x14, 0x8d, 0x18,
-	0x89, 0x66, 0x0f, 0x13, 0xef, 0x87, 0xa1, 0x69, 0xe8, 0xfb, 0xa1, 0x41, 0xdd, 0x97, 0x43, 0x1b,
-	0xaa, 0xb5, 0x93, 0xf3, 0x32, 0x3a, 0x3d, 0x2f, 0xa3, 0x9f, 0xe7, 0x65, 0xf4, 0xee, 0xa2, 0x9c,
-	0x3a, 0xbd, 0x28, 0xa7, 0x7e, 0x5c, 0x94, 0x53, 0xaf, 0x6e, 0x26, 0x6a, 0xdb, 0xf1, 0x43, 0xa7,
-	0xc6, 0x42, 0x5a, 0xe1, 0xb4, 0xe1, 0xf8, 0x95, 0xb7, 0x9d, 0x7f, 0x06, 0x59, 0xe2, 0xc1, 0x84,
-	0xfc, 0x1d, 0xb8, 0xf3, 0x27, 0x00, 0x00, 0xff, 0xff, 0x7b, 0xa4, 0xc4, 0x59, 0x50, 0x08, 0x00,
-	0x00,
+	// 869 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x56, 0xcf, 0x6f, 0xe3, 0x44,
+	0x14, 0xee, 0x24, 0xd9, 0xd0, 0x3e, 0xa7, 0x69, 0xd7, 0x8a, 0x16, 0xe3, 0xd5, 0xa6, 0xc5, 0x42,
+	0xda, 0xac, 0x50, 0x6d, 0x36, 0x08, 0x84, 0x96, 0x95, 0x50, 0x1a, 0xad, 0x40, 0x6a, 0x11, 0xcb,
+	0x2c, 0x08, 0xb4, 0x12, 0xaa, 0x1c, 0x7b, 0x48, 0xad, 0x24, 0x9e, 0xca, 0x33, 0xa6, 0xe4, 0xcc,
+	0x3f, 0xc0, 0x3f, 0xc0, 0x11, 0x71, 0x84, 0x03, 0x12, 0xdc, 0x11, 0x12, 0x12, 0x97, 0xde, 0xe0,
+	0x54, 0xa1, 0xf6, 0x3f, 0xe0, 0xc8, 0x09, 0x79, 0x7e, 0xc4, 0x76, 0x48, 0xc2, 0xa9, 0x39, 0x79,
+	0xe6, 0xcd, 0xf7, 0xe6, 0x7d, 0xf3, 0x7d, 0xf6, 0x1b, 0x83, 0x3d, 0x8a, 0x12, 0xdf, 0x0b, 0x52,
+	0xc6, 0x69, 0x38, 0xd5, 0x4f, 0xf7, 0x2c, 0xa1, 0x9c, 0x9a, 0x8d, 0x6c, 0xcd, 0x55, 0x31, 0xbb,
+	0x35, 0xa4, 0x43, 0x2a, 0x16, 0xbc, 0x6c, 0x24, 0x31, 0xf6, 0x4b, 0x43, 0x4a, 0x87, 0x63, 0xe2,
+	0x89, 0xd9, 0x20, 0xfd, 0xdc, 0xf3, 0x63, 0x95, 0xee, 0xfc, 0x81, 0x60, 0xa7, 0x2f, 0x93, 0x9f,
+	0x11, 0xce, 0xa3, 0x78, 0xc8, 0xcc, 0xfb, 0xb0, 0xa3, 0xf6, 0x3b, 0x21, 0xb1, 0x3f, 0x18, 0x93,
+	0xd0, 0x42, 0xfb, 0xa8, 0xb3, 0x89, 0x9b, 0x2a, 0xfc, 0x44, 0x46, 0xcd, 0x97, 0xa1, 0xa1, 0x81,
+	0x13, 0x1a, 0x12, 0xab, 0xb2, 0x8f, 0x3a, 0x35, 0x6c, 0xa8, 0xd8, 0xfb, 0x34, 0x24, 0x19, 0x24,
+	0x65, 0xe4, 0xe4, 0xcc, 0x67, 0xec, 0x9c, 0x26, 0xa1, 0x55, 0x15, 0x1b, 0x19, 0x29, 0x23, 0x4f,
+	0x55, 0xc8, 0x7c, 0x05, 0x9a, 0x19, 0xe4, 0xfc, 0x34, 0xe2, 0xe4, 0x64, 0x1c, 0x31, 0x6e, 0xd5,
+	0x04, 0x28, 0x4b, 0xfc, 0x24, 0x0b, 0x1e, 0x47, 0x8c, 0x9b, 0xf7, 0x00, 0x32, 0xd4, 0x38, 0x9a,
+	0x44, 0x9c, 0x59, 0xb7, 0x04, 0x62, 0x2b, 0x65, 0xe4, 0x58, 0x04, 0xcc, 0x5d, 0xa8, 0x8e, 0xc8,
+	0xd4, 0xaa, 0xef, 0xa3, 0xce, 0x16, 0xce, 0x86, 0xce, 0x57, 0x08, 0x76, 0xd5, 0xc9, 0x8e, 0xc8,
+	0x14, 0x93, 0x20, 0xab, 0xf5, 0x19, 0xbc, 0xe0, 0x87, 0x61, 0x42, 0x18, 0x13, 0x47, 0x6a, 0x1c,
+	0xf6, 0xff, 0xbe, 0xdc, 0x6b, 0x4e, 0xfd, 0xc9, 0xf8, 0x91, 0xa3, 0x16, 0x9c, 0x7f, 0x2e, 0xf7,
+	0x0e, 0x86, 0x11, 0x3f, 0x4d, 0x07, 0x6e, 0x40, 0x27, 0x5e, 0x40, 0xd9, 0x84, 0x32, 0xf5, 0x38,
+	0x60, 0xe1, 0xc8, 0xe3, 0xd3, 0x33, 0xc2, 0xdc, 0x5e, 0x10, 0xf4, 0x64, 0x06, 0xd6, 0x7b, 0x6a,
+	0x16, 0x95, 0x9c, 0xc5, 0xcf, 0x08, 0xb6, 0x15, 0x8b, 0xf5, 0x50, 0x78, 0x0f, 0x76, 0xb5, 0x27,
+	0x4c, 0x19, 0x2a, 0xf8, 0x18, 0xdd, 0x7b, 0x6e, 0xf1, 0x55, 0x71, 0xe7, 0x5c, 0xc7, 0xda, 0x73,
+	0x1d, 0x70, 0xbe, 0xc9, 0x05, 0xcc, 0x6d, 0x38, 0x82, 0x2d, 0x55, 0x89, 0x64, 0xfc, 0xab, 0x1d,
+	0xa3, 0x7b, 0xb0, 0x70, 0xdf, 0x59, 0x8a, 0xdb, 0xd3, 0xf8, 0x27, 0x31, 0x4f, 0xa6, 0x38, 0xcf,
+	0xb7, 0x1f, 0x43, 0xb3, 0xbc, 0xa8, 0x05, 0x44, 0x33, 0x01, 0xcd, 0x16, 0xdc, 0xfa, 0xc2, 0x1f,
+	0xa7, 0xf2, 0xe5, 0xda, 0xc4, 0x72, 0xf2, 0xa8, 0xf2, 0x16, 0x72, 0x7e, 0x45, 0x70, 0x67, 0xbe,
+	0xd8, 0x7a, 0x34, 0x3e, 0x06, 0x53, 0x6b, 0x5c, 0x78, 0x6b, 0xa5, 0xca, 0xed, 0xd5, 0x6a, 0x60,
+	0xed, 0xce, 0x2c, 0xe2, 0x7c, 0x8b, 0xa0, 0xa5, 0x60, 0xf2, 0x11, 0xf9, 0xb1, 0xd0, 0xfa, 0x83,
+	0xff, 0x6a, 0xfd, 0x70, 0xe1, 0xee, 0xa5, 0xb4, 0x1b, 0xd3, 0xfb, 0x77, 0x04, 0x2f, 0xce, 0x17,
+	0x64, 0xeb, 0x11, 0xfc, 0xc3, 0x5c, 0xf0, 0x60, 0x56, 0x5a, 0x09, 0xee, 0xfc, 0xbf, 0x24, 0xf8,
+	0x76, 0x30, 0xcf, 0xdb, 0x79, 0x0c, 0x0d, 0x05, 0x15, 0x1d, 0xc4, 0xbc, 0x03, 0x75, 0x7f, 0x42,
+	0xd3, 0x98, 0x8b, 0x03, 0xd4, 0xb0, 0x9a, 0x65, 0x7a, 0x88, 0x9e, 0xa3, 0x3e, 0x6a, 0x39, 0x71,
+	0xbe, 0xcb, 0x3f, 0x6b, 0xd5, 0x80, 0xde, 0x81, 0xba, 0xea, 0x4d, 0xd2, 0xa9, 0xfb, 0x0b, 0x69,
+	0x49, 0xb0, 0x2b, 0x1f, 0xd2, 0x1f, 0x95, 0x66, 0x7f, 0x0c, 0x46, 0x21, 0xbc, 0xc0, 0x99, 0xd7,
+	0x8a, 0xce, 0x18, 0x5d, 0x7b, 0x79, 0x81, 0xa2, 0x6b, 0x3f, 0x21, 0x30, 0x4b, 0x6b, 0x6b, 0x31,
+	0xec, 0x10, 0xf4, 0x5d, 0xa1, 0x3b, 0xb6, 0x24, 0x7d, 0x77, 0x85, 0x2a, 0x78, 0x3b, 0x28, 0x4e,
+	0x9d, 0xb7, 0x67, 0x12, 0x3f, 0xe3, 0x3e, 0x4f, 0xd9, 0x52, 0x8b, 0x4c, 0xa8, 0xf1, 0x68, 0x22,
+	0x75, 0xa9, 0x62, 0x31, 0x76, 0x7e, 0x2c, 0xdc, 0x6b, 0x22, 0x9b, 0x30, 0xf3, 0x5d, 0xd8, 0x64,
+	0x6a, 0xac, 0x4c, 0x7a, 0x75, 0x71, 0x4b, 0x54, 0x20, 0x57, 0x0f, 0xa4, 0x51, 0xb3, 0x64, 0xfb,
+	0x53, 0xd8, 0x2e, 0x2d, 0x2d, 0x30, 0xeb, 0x61, 0xd9, 0xac, 0xbb, 0x2b, 0x0a, 0x15, 0xdd, 0xfa,
+	0x05, 0x81, 0x55, 0x14, 0x45, 0x21, 0xd6, 0x7e, 0x73, 0x68, 0x99, 0x56, 0xde, 0x1c, 0x0a, 0x94,
+	0xdf, 0x1c, 0x2a, 0xe0, 0xf8, 0x70, 0xfb, 0xa3, 0xc4, 0x8f, 0x99, 0x1f, 0xf0, 0x88, 0xc6, 0x8a,
+	0xfd, 0x9b, 0x60, 0xf0, 0x3c, 0x28, 0x4e, 0x60, 0x74, 0x5b, 0xae, 0xfc, 0x35, 0x71, 0xf5, 0xaf,
+	0x89, 0xdb, 0x8b, 0xa7, 0xb8, 0x08, 0x14, 0x0d, 0x89, 0x72, 0xc5, 0xa5, 0x86, 0xe5, 0xc4, 0xf9,
+	0x01, 0xc1, 0x4e, 0xa1, 0xc6, 0x53, 0x4a, 0xc7, 0x66, 0x0f, 0xea, 0x89, 0xa8, 0x65, 0x55, 0x84,
+	0xbb, 0x0f, 0xca, 0xb4, 0xe7, 0xe0, 0xae, 0xe4, 0xa5, 0x3e, 0x42, 0x99, 0x68, 0x3f, 0x07, 0xa3,
+	0x10, 0x5e, 0xe0, 0xeb, 0x1b, 0x65, 0x5f, 0xf7, 0x96, 0x96, 0x90, 0xdb, 0x14, 0xbd, 0xfd, 0x1e,
+	0x81, 0xa1, 0xa4, 0x13, 0x74, 0x6f, 0xd8, 0xce, 0x1e, 0x34, 0x0a, 0x32, 0x2e, 0xb1, 0x72, 0x4e,
+	0x13, 0x5c, 0x4a, 0x39, 0xec, 0xff, 0x76, 0xd5, 0x46, 0x17, 0x57, 0x6d, 0xf4, 0xd7, 0x55, 0x1b,
+	0x7d, 0x7d, 0xdd, 0xde, 0xb8, 0xb8, 0x6e, 0x6f, 0xfc, 0x79, 0xdd, 0xde, 0x78, 0xfe, 0xa0, 0x40,
+	0xea, 0x28, 0x4a, 0xfc, 0x3e, 0x4d, 0x88, 0xc7, 0xc8, 0xc8, 0x8f, 0xbc, 0x2f, 0x67, 0x3f, 0xaa,
+	0x82, 0xdb, 0xa0, 0x2e, 0xac, 0x7d, 0xfd, 0xdf, 0x00, 0x00, 0x00, 0xff, 0xff, 0xbe, 0x95, 0xc3,
+	0xef, 0xc5, 0x0a, 0x00, 0x00,
 }
 
 func (m *CustodySettings) Marshal() (dAtA []byte, err error) {
@@ -731,6 +954,13 @@ func (m *CustodySettings) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.Key) > 0 {
+		i -= len(m.Key)
+		copy(dAtA[i:], m.Key)
+		i = encodeVarintCustody(dAtA, i, uint64(len(m.Key)))
+		i--
+		dAtA[i] = 0x32
+	}
 	if m.UseLimits {
 		i--
 		if m.UseLimits {
@@ -779,6 +1009,43 @@ func (m *CustodySettings) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *CustodyKeyRecord) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *CustodyKeyRecord) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *CustodyKeyRecord) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Key) > 0 {
+		i -= len(m.Key)
+		copy(dAtA[i:], m.Key)
+		i = encodeVarintCustody(dAtA, i, uint64(len(m.Key)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintCustody(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func (m *CustodyRecord) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -799,16 +1066,18 @@ func (m *CustodyRecord) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	{
-		size, err := m.CustodySettings.MarshalToSizedBuffer(dAtA[:i])
-		if err != nil {
-			return 0, err
+	if m.CustodySettings != nil {
+		{
+			size, err := m.CustodySettings.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintCustody(dAtA, i, uint64(size))
 		}
-		i -= size
-		i = encodeVarintCustody(dAtA, i, uint64(size))
+		i--
+		dAtA[i] = 0x12
 	}
-	i--
-	dAtA[i] = 0x12
 	if len(m.Address) > 0 {
 		i -= len(m.Address)
 		copy(dAtA[i:], m.Address)
@@ -1243,6 +1512,137 @@ func (m *CustodyLimitStatusRecord) MarshalToSizedBuffer(dAtA []byte) (int, error
 	return len(dAtA) - i, nil
 }
 
+func (m *TransactionRecord) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *TransactionRecord) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *TransactionRecord) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Votes != 0 {
+		i = encodeVarintCustody(dAtA, i, uint64(m.Votes))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.Transaction != nil {
+		{
+			size, err := m.Transaction.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintCustody(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *TransactionPool) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *TransactionPool) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *TransactionPool) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Record) > 0 {
+		for k := range m.Record {
+			v := m.Record[k]
+			baseI := i
+			if v != nil {
+				{
+					size, err := v.MarshalToSizedBuffer(dAtA[:i])
+					if err != nil {
+						return 0, err
+					}
+					i -= size
+					i = encodeVarintCustody(dAtA, i, uint64(size))
+				}
+				i--
+				dAtA[i] = 0x12
+			}
+			i -= len(k)
+			copy(dAtA[i:], k)
+			i = encodeVarintCustody(dAtA, i, uint64(len(k)))
+			i--
+			dAtA[i] = 0xa
+			i = encodeVarintCustody(dAtA, i, uint64(baseI-i))
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *CustodyPool) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *CustodyPool) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *CustodyPool) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Transactions != nil {
+		{
+			size, err := m.Transactions.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintCustody(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintCustody(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintCustody(dAtA []byte, offset int, v uint64) int {
 	offset -= sovCustody(v)
 	base := offset
@@ -1275,6 +1675,27 @@ func (m *CustodySettings) Size() (n int) {
 	if m.UseLimits {
 		n += 2
 	}
+	l = len(m.Key)
+	if l > 0 {
+		n += 1 + l + sovCustody(uint64(l))
+	}
+	return n
+}
+
+func (m *CustodyKeyRecord) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovCustody(uint64(l))
+	}
+	l = len(m.Key)
+	if l > 0 {
+		n += 1 + l + sovCustody(uint64(l))
+	}
 	return n
 }
 
@@ -1288,8 +1709,10 @@ func (m *CustodyRecord) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovCustody(uint64(l))
 	}
-	l = m.CustodySettings.Size()
-	n += 1 + l + sovCustody(uint64(l))
+	if m.CustodySettings != nil {
+		l = m.CustodySettings.Size()
+		n += 1 + l + sovCustody(uint64(l))
+	}
 	return n
 }
 
@@ -1470,6 +1893,61 @@ func (m *CustodyLimitStatusRecord) Size() (n int) {
 	return n
 }
 
+func (m *TransactionRecord) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Transaction != nil {
+		l = m.Transaction.Size()
+		n += 1 + l + sovCustody(uint64(l))
+	}
+	if m.Votes != 0 {
+		n += 1 + sovCustody(uint64(m.Votes))
+	}
+	return n
+}
+
+func (m *TransactionPool) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Record) > 0 {
+		for k, v := range m.Record {
+			_ = k
+			_ = v
+			l = 0
+			if v != nil {
+				l = v.Size()
+				l += 1 + sovCustody(uint64(l))
+			}
+			mapEntrySize := 1 + len(k) + sovCustody(uint64(len(k))) + l
+			n += mapEntrySize + 1 + sovCustody(uint64(mapEntrySize))
+		}
+	}
+	return n
+}
+
+func (m *CustodyPool) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovCustody(uint64(l))
+	}
+	if m.Transactions != nil {
+		l = m.Transactions.Size()
+		n += 1 + l + sovCustody(uint64(l))
+	}
+	return n
+}
+
 func sovCustody(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
@@ -1604,6 +2082,154 @@ func (m *CustodySettings) Unmarshal(dAtA []byte) error {
 				}
 			}
 			m.UseLimits = bool(v != 0)
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Key", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCustody
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCustody
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCustody
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Key = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipCustody(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthCustody
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *CustodyKeyRecord) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowCustody
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: CustodyKeyRecord: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: CustodyKeyRecord: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCustody
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthCustody
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCustody
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Address = append(m.Address[:0], dAtA[iNdEx:postIndex]...)
+			if m.Address == nil {
+				m.Address = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Key", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCustody
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCustody
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCustody
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Key = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipCustody(dAtA[iNdEx:])
@@ -1716,6 +2342,9 @@ func (m *CustodyRecord) Unmarshal(dAtA []byte) error {
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
+			}
+			if m.CustodySettings == nil {
+				m.CustodySettings = &CustodySettings{}
 			}
 			if err := m.CustodySettings.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -3075,6 +3704,410 @@ func (m *CustodyLimitStatusRecord) Unmarshal(dAtA []byte) error {
 				m.CustodyStatuses = &CustodyStatuses{}
 			}
 			if err := m.CustodyStatuses.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipCustody(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthCustody
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *TransactionRecord) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowCustody
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: TransactionRecord: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: TransactionRecord: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Transaction", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCustody
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthCustody
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthCustody
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Transaction == nil {
+				m.Transaction = &types.Any{}
+			}
+			if err := m.Transaction.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Votes", wireType)
+			}
+			m.Votes = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCustody
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Votes |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipCustody(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthCustody
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *TransactionPool) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowCustody
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: TransactionPool: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: TransactionPool: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Record", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCustody
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthCustody
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthCustody
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Record == nil {
+				m.Record = make(map[string]*TransactionRecord)
+			}
+			var mapkey string
+			var mapvalue *TransactionRecord
+			for iNdEx < postIndex {
+				entryPreIndex := iNdEx
+				var wire uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowCustody
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					wire |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				fieldNum := int32(wire >> 3)
+				if fieldNum == 1 {
+					var stringLenmapkey uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowCustody
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						stringLenmapkey |= uint64(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					intStringLenmapkey := int(stringLenmapkey)
+					if intStringLenmapkey < 0 {
+						return ErrInvalidLengthCustody
+					}
+					postStringIndexmapkey := iNdEx + intStringLenmapkey
+					if postStringIndexmapkey < 0 {
+						return ErrInvalidLengthCustody
+					}
+					if postStringIndexmapkey > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
+					iNdEx = postStringIndexmapkey
+				} else if fieldNum == 2 {
+					var mapmsglen int
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowCustody
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						mapmsglen |= int(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					if mapmsglen < 0 {
+						return ErrInvalidLengthCustody
+					}
+					postmsgIndex := iNdEx + mapmsglen
+					if postmsgIndex < 0 {
+						return ErrInvalidLengthCustody
+					}
+					if postmsgIndex > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapvalue = &TransactionRecord{}
+					if err := mapvalue.Unmarshal(dAtA[iNdEx:postmsgIndex]); err != nil {
+						return err
+					}
+					iNdEx = postmsgIndex
+				} else {
+					iNdEx = entryPreIndex
+					skippy, err := skipCustody(dAtA[iNdEx:])
+					if err != nil {
+						return err
+					}
+					if (skippy < 0) || (iNdEx+skippy) < 0 {
+						return ErrInvalidLengthCustody
+					}
+					if (iNdEx + skippy) > postIndex {
+						return io.ErrUnexpectedEOF
+					}
+					iNdEx += skippy
+				}
+			}
+			m.Record[mapkey] = mapvalue
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipCustody(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthCustody
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *CustodyPool) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowCustody
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: CustodyPool: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: CustodyPool: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCustody
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthCustody
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCustody
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Address = append(m.Address[:0], dAtA[iNdEx:postIndex]...)
+			if m.Address == nil {
+				m.Address = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Transactions", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCustody
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthCustody
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthCustody
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Transactions == nil {
+				m.Transactions = &TransactionPool{}
+			}
+			if err := m.Transactions.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
