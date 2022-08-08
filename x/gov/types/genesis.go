@@ -78,6 +78,8 @@ func DefaultGenesis() *GenesisState {
 				PermVoteUpsertUBIProposal,
 				PermCreateRemoveUBIProposal,
 				PermVoteRemoveUBIProposal,
+				PermCreateSlashValidatorProposal,
+				PermVoteSlashValidatorProposal,
 			}, nil),
 			uint64(RoleValidator): NewPermissions([]PermValue{PermClaimValidator}, nil),
 		},

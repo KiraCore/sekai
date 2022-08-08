@@ -56,7 +56,7 @@ func (m *ProposalSlashValidator) ProposalType() string {
 }
 
 func (m *ProposalSlashValidator) ProposalPermission() types.PermValue {
-	return types.PermZero
+	return types.PermCreateSlashValidatorProposal
 }
 
 func (m *ProposalSlashValidator) VotePermission() types.PermValue {

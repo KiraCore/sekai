@@ -112,7 +112,7 @@ func (k msgServer) VoteProposal(
 		}
 	}
 
-	vote := types.NewVote(msg.ProposalId, msg.Voter, msg.Option)
+	vote := types.NewVote(msg.ProposalId, msg.Voter, msg.Option, msg.Slash)
 	k.keeper.SaveVote(ctx, vote)
 
 	ctx.EventManager().EmitEvent(

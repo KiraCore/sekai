@@ -128,11 +128,11 @@ func NewMsgRefuteSlashingProposal(sender sdk.AccAddress, validatorAddr sdk.ValAd
 func (msg MsgRefuteSlashingProposal) Route() string { return RouterKey }
 func (msg MsgRefuteSlashingProposal) Type() string  { return types.MsgTypePause }
 func (msg MsgRefuteSlashingProposal) GetSigners() []sdk.AccAddress {
-	valAddr, err := sdk.ValAddressFromBech32(msg.Sender)
+	addr, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		panic(err)
 	}
-	return []sdk.AccAddress{valAddr.Bytes()}
+	return []sdk.AccAddress{addr}
 }
 
 // GetSignBytes gets the bytes for the message signer to sign on
