@@ -272,6 +272,10 @@ func (k Keeper) Delegate(ctx sdk.Context, msg *types.MsgDelegate) error {
 		return types.ErrStakingPoolNotFound
 	}
 
+	if pool.Slashed > 0 {
+		return types.ErrActionNotSupportedForSlashedPool
+	}
+
 	delegator, err := sdk.AccAddressFromBech32(msg.DelegatorAddress)
 	if err != nil {
 		return err
@@ -312,11 +316,10 @@ func (k Keeper) Delegate(ctx sdk.Context, msg *types.MsgDelegate) error {
 	}
 
 	pool.TotalStakingTokens = sdk.Coins(pool.TotalStakingTokens).Add(msg.Amounts...)
-	poolCoins := getPoolCoins(pool.Id, msg.Amounts)
+	poolCoins := getPoolCoins(pool, msg.Amounts)
 	pool.TotalShareTokens = sdk.Coins(pool.TotalShareTokens).Add(poolCoins...)
 	k.SetStakingPool(ctx, pool)
 
-	// TODO: should check the ratio between poolCoins and coins
 	err = k.bankKeeper.MintCoins(ctx, minttypes.ModuleName, poolCoins)
 	if err != nil {
 		return err

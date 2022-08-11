@@ -52,6 +52,9 @@ func (k msgServer) UpsertStakingPool(goCtx context.Context, msg *types.MsgUpsert
 	pool, found := k.keeper.GetStakingPoolByValidator(ctx, msg.Validator)
 	if found {
 		pool.Enabled = msg.Enabled
+		if pool.Slashed > 0 {
+			return nil, types.ErrActionNotSupportedForSlashedPool
+		}
 		k.keeper.SetStakingPool(ctx, pool)
 	} else {
 		// increase id when creating a new pool
@@ -94,8 +97,7 @@ func (k msgServer) Undelegate(goCtx context.Context, msg *types.MsgUndelegate) (
 		return nil, err
 	}
 
-	// TODO: should check the ratio between poolCoins and coins
-	poolCoins := getPoolCoins(pool.Id, msg.Amounts)
+	poolCoins := getPoolCoins(pool, msg.Amounts)
 
 	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, delegator, types.ModuleName, poolCoins)
 	if err != nil {
