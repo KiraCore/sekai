@@ -2,8 +2,6 @@ package keeper
 
 import (
 	"context"
-	"fmt"
-	"strings"
 
 	govkeeper "github.com/KiraCore/sekai/x/gov/keeper"
 	"github.com/KiraCore/sekai/x/multistaking/types"
@@ -87,47 +85,10 @@ func (k msgServer) Delegate(goCtx context.Context, msg *types.MsgDelegate) (*typ
 func (k msgServer) Undelegate(goCtx context.Context, msg *types.MsgUndelegate) (*types.MsgUndelegateResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	pool, found := k.keeper.GetStakingPoolByValidator(ctx, msg.ValidatorAddress)
-	if !found {
-		return nil, types.ErrStakingPoolNotFound
-	}
-
-	delegator, err := sdk.AccAddressFromBech32(msg.DelegatorAddress)
+	err := k.keeper.Undelegate(ctx, msg)
 	if err != nil {
 		return nil, err
 	}
-
-	poolCoins := getPoolCoins(pool, msg.Amounts)
-
-	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, delegator, types.ModuleName, poolCoins)
-	if err != nil {
-		return nil, err
-	}
-	err = k.bankKeeper.BurnCoins(ctx, types.ModuleName, poolCoins)
-	if err != nil {
-		return nil, err
-	}
-
-	pool.TotalStakingTokens = sdk.Coins(pool.TotalStakingTokens).Sub(msg.Amounts)
-	pool.TotalShareTokens = sdk.Coins(pool.TotalShareTokens).Sub(poolCoins)
-	k.keeper.SetStakingPool(ctx, pool)
-
-	lastUndelegationId := k.keeper.GetLastUndelegationId(ctx) + 1
-	k.keeper.SetLastUndelegationId(ctx, lastUndelegationId)
-	properties := k.govKeeper.GetNetworkProperties(ctx)
-	k.keeper.SetUndelegation(ctx, types.Undelegation{
-		Id:      lastUndelegationId,
-		Address: msg.DelegatorAddress,
-		Expiry:  uint64(ctx.BlockTime().Unix()) + properties.UnstakingPeriod,
-		Amount:  msg.Amounts,
-	})
-
-	balances := k.bankKeeper.GetAllBalances(ctx, delegator)
-	prefix := fmt.Sprintf("v%d_", pool.Id)
-	if !strings.Contains(balances.String(), prefix) {
-		k.keeper.RemovePoolDelegator(ctx, pool.Id, delegator)
-	}
-
 	return &types.MsgUndelegateResponse{}, nil
 }
 
