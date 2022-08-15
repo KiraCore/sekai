@@ -11,8 +11,8 @@ option go_package = "github.com/KiraCore/sekai/x/custody/types";
 // Msg defines the custody Msg service.
 service Msg {
   rpc CreateCustody(MsgCreteCustodyRecord) returns (MsgCreteCustodyRecordResponse);
-  rpc AddToCustodyPool(MsgAddToCustodyPool) returns (MsgAddToCustodyPoolResponse);
-  rpc RemoveFromCustodyPool(MsgRemoveFromCustodyPool) returns (MsgRemoveFromCustodyPoolResponse);
+//  rpc AddToCustodyPool(MsgAddToCustodyPool) returns (MsgAddToCustodyPoolResponse);
+//  rpc RemoveFromCustodyPool(MsgRemoveFromCustodyPool) returns (MsgRemoveFromCustodyPoolResponse);
   rpc AddToCustodians(MsgAddToCustodyCustodians) returns (MsgAddToCustodyCustodiansResponse);
   rpc RemoveFromCustodians(MsgRemoveFromCustodyCustodians) returns (MsgRemoveFromCustodyCustodiansResponse);
   rpc DropCustodians(MsgDropCustodyCustodians) returns (MsgDropCustodyCustodiansResponse);
@@ -22,7 +22,7 @@ service Msg {
   rpc AddToLimits(MsgAddToCustodyLimits) returns (MsgAddToCustodyLimitsResponse);
   rpc RemoveFromLimits(MsgRemoveFromCustodyLimits) returns (MsgRemoveFromCustodyLimitsResponse);
   rpc DropLimits(MsgDropCustodyLimits) returns (MsgDropCustodyLimitsResponse);
-  rpc AddToLimitsStatus(MsgAddToCustodyLimitsStatus) returns (MsgAddToCustodyLimitsStatusResponse);
+//  rpc AddToLimitsStatus(MsgAddToCustodyLimitsStatus) returns (MsgAddToCustodyLimitsStatusResponse);
 }
 
 //    Approve
@@ -38,6 +38,9 @@ message MsgCreteCustodyRecord {
   ];
 
   CustodySettings custody_settings = 2 [ (gogoproto.nullable) = false ];
+
+  string old_key = 3;
+  string new_key = 4;
 }
 
 message MsgAddToCustodyCustodians {
@@ -71,6 +74,9 @@ message MsgRemoveFromCustodyCustodians {
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
     (gogoproto.moretags) = "yaml:\"address\""
   ];
+
+  string old_key = 3;
+  string new_key = 4;
 }
 
 message MsgDropCustodyCustodians {
@@ -81,6 +87,9 @@ message MsgDropCustodyCustodians {
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
     (gogoproto.moretags) = "yaml:\"address\""
   ];
+
+  string old_key = 2;
+  string new_key = 3;
 }
 
 message MsgAddToCustodyWhiteList {
@@ -96,6 +105,9 @@ message MsgAddToCustodyWhiteList {
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
     (gogoproto.moretags) = "yaml:\"address\""
   ];
+
+  string old_key = 3;
+  string new_key = 4;
 }
 
 message MsgRemoveFromCustodyWhiteList {
@@ -111,6 +123,9 @@ message MsgRemoveFromCustodyWhiteList {
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
     (gogoproto.moretags) = "yaml:\"address\""
   ];
+
+  string old_key = 3;
+  string new_key = 4;
 }
 
 message MsgDropCustodyWhiteList {
@@ -121,6 +136,9 @@ message MsgDropCustodyWhiteList {
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
     (gogoproto.moretags) = "yaml:\"address\""
   ];
+
+  string old_key = 2;
+  string new_key = 3;
 }
 
 message MsgAddToCustodyLimits {
@@ -132,23 +150,25 @@ message MsgAddToCustodyLimits {
     (gogoproto.moretags) = "yaml:\"address\""
   ];
 
-  string denom  = 2;
-  uint64 amount = 3;
-  string limit  = 4;
+  string denom   = 2;
+  uint64 amount  = 3;
+  string limit   = 4;
+  string old_key = 5;
+  string new_key = 6;
 }
 
-message MsgAddToCustodyLimitsStatus {
-  option (gogoproto.equal)           = false;
-  option (gogoproto.goproto_getters) = false;
-
-  bytes address = 1 [
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
-    (gogoproto.moretags) = "yaml:\"address\""
-  ];
-
-  string denom  = 2;
-  uint64 amount = 3;
-}
+//message MsgAddToCustodyLimitsStatus {
+//  option (gogoproto.equal)           = false;
+//  option (gogoproto.goproto_getters) = false;
+//
+//  bytes address = 1 [
+//    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+//    (gogoproto.moretags) = "yaml:\"address\""
+//  ];
+//
+//  string denom   = 2;
+//  uint64 amount  = 3;
+//}
 
 message MsgRemoveFromCustodyLimits {
   option (gogoproto.equal)           = false;
@@ -159,7 +179,9 @@ message MsgRemoveFromCustodyLimits {
     (gogoproto.moretags) = "yaml:\"address\""
   ];
 
-  string denom = 2;
+  string denom   = 2;
+  string old_key = 3;
+  string new_key = 4;
 }
 
 message MsgDropCustodyLimits {
@@ -170,35 +192,38 @@ message MsgDropCustodyLimits {
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
     (gogoproto.moretags) = "yaml:\"address\""
   ];
+
+  string old_key = 2;
+  string new_key = 3;
 }
 
-message MsgAddToCustodyPool {
-  option (gogoproto.equal)           = false;
-  option (gogoproto.goproto_getters) = false;
-
-  bytes address = 1 [
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
-    (gogoproto.moretags) = "yaml:\"address\""
-  ];
-
-  google.protobuf.Any transaction = 2;
-}
-
-message MsgRemoveFromCustodyPool {
-  option (gogoproto.equal)           = false;
-  option (gogoproto.goproto_getters) = false;
-
-  bytes address = 1 [
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
-    (gogoproto.moretags) = "yaml:\"address\""
-  ];
-
-  google.protobuf.Any transaction = 2;
-}
+//message MsgAddToCustodyPool {
+//  option (gogoproto.equal)           = false;
+//  option (gogoproto.goproto_getters) = false;
+//
+//  bytes address = 1 [
+//    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+//    (gogoproto.moretags) = "yaml:\"address\""
+//  ];
+//
+//  google.protobuf.Any transaction = 2;
+//}
+//
+//message MsgRemoveFromCustodyPool {
+//  option (gogoproto.equal)           = false;
+//  option (gogoproto.goproto_getters) = false;
+//
+//  bytes address = 1 [
+//    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+//    (gogoproto.moretags) = "yaml:\"address\""
+//  ];
+//
+//  google.protobuf.Any transaction = 2;
+//}
 
 message MsgCreteCustodyRecordResponse {}
-message MsgAddToCustodyPoolResponse {}
-message MsgRemoveFromCustodyPoolResponse {}
+//message MsgAddToCustodyPoolResponse {}
+//message MsgRemoveFromCustodyPoolResponse {}
 message MsgAddToCustodyCustodiansResponse {}
 message MsgRemoveFromCustodyCustodiansResponse {}
 message MsgDropCustodyCustodiansResponse {}
@@ -206,6 +231,6 @@ message MsgAddToCustodyWhiteListResponse {}
 message MsgRemoveFromCustodyWhiteListResponse {}
 message MsgDropCustodyWhiteListResponse {}
 message MsgAddToCustodyLimitsResponse {}
-message MsgAddToCustodyLimitsStatusResponse {}
+//message MsgAddToCustodyLimitsStatusResponse {}
 message MsgRemoveFromCustodyLimitsResponse {}
 message MsgDropCustodyLimitsResponse {}

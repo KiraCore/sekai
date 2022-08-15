@@ -14,6 +14,9 @@ test:
 test-local:
 	./scripts/test-local.sh
 
+test-custody:
+	./scripts/test-custody.sh
+
 # look into .golangci.yml for enabling / disabling linters
 lint:
 	@echo "--> Running linter"

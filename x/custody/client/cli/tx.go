@@ -81,7 +81,7 @@ func GetTxAddToCustodyCustodians() *cobra.Command {
 				return err
 			}
 
-			addresses := strings.Split(args[0], "_")
+			addresses := strings.Split(args[0], ",")
 
 			for _, addr := range addresses {
 				accAddr, err := sdk.AccAddressFromBech32(addr)
@@ -141,15 +141,34 @@ func GetTxRemoveFromCustodyCustodians() *cobra.Command {
 				return err
 			}
 
+			oldKey, err := cmd.Flags().GetString(OldKey)
+			if err != nil {
+				return fmt.Errorf("invalid old key: %w", err)
+			}
+
+			newKey, err := cmd.Flags().GetString(NewKey)
+			if err != nil {
+				return fmt.Errorf("invalid new key: %w", err)
+			}
+
 			msg := types.NewMsgRemoveFromCustodyCustodians(
 				clientCtx.FromAddress,
 				accAddr,
+				oldKey,
+				newKey,
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
 
+	cmd.Flags().String(OldKey, "", "Previous hash string.")
+	cmd.MarkFlagRequired(OldKey)
+
+	cmd.Flags().String(NewKey, "", "Next hash string.")
+	cmd.MarkFlagRequired(NewKey)
+
+	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
@@ -166,14 +185,33 @@ func GetTxDropCustodyCustodians() *cobra.Command {
 				return err
 			}
 
+			oldKey, err := cmd.Flags().GetString(OldKey)
+			if err != nil {
+				return fmt.Errorf("invalid old key: %w", err)
+			}
+
+			newKey, err := cmd.Flags().GetString(NewKey)
+			if err != nil {
+				return fmt.Errorf("invalid new key: %w", err)
+			}
+
 			msg := types.NewMsgDropCustodyCustodians(
 				clientCtx.FromAddress,
+				oldKey,
+				newKey,
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
 
+	cmd.Flags().String(OldKey, "", "Previous hash string.")
+	cmd.MarkFlagRequired(OldKey)
+
+	cmd.Flags().String(NewKey, "", "Next hash string.")
+	cmd.MarkFlagRequired(NewKey)
+
+	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
@@ -219,15 +257,34 @@ func GetTxAddToCustodyWhiteList() *cobra.Command {
 				newAddr = append(newAddr, accAddr)
 			}
 
+			oldKey, err := cmd.Flags().GetString(OldKey)
+			if err != nil {
+				return fmt.Errorf("invalid old key: %w", err)
+			}
+
+			newKey, err := cmd.Flags().GetString(NewKey)
+			if err != nil {
+				return fmt.Errorf("invalid new key: %w", err)
+			}
+
 			msg := types.NewMsgAddToCustodyWhiteList(
 				clientCtx.FromAddress,
 				newAddr,
+				oldKey,
+				newKey,
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
 
+	cmd.Flags().String(OldKey, "", "Previous hash string.")
+	cmd.MarkFlagRequired(OldKey)
+
+	cmd.Flags().String(NewKey, "", "Next hash string.")
+	cmd.MarkFlagRequired(NewKey)
+
+	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
@@ -249,15 +306,34 @@ func GetTxRemoveFromCustodyWhiteList() *cobra.Command {
 				return err
 			}
 
+			oldKey, err := cmd.Flags().GetString(OldKey)
+			if err != nil {
+				return fmt.Errorf("invalid old key: %w", err)
+			}
+
+			newKey, err := cmd.Flags().GetString(NewKey)
+			if err != nil {
+				return fmt.Errorf("invalid new key: %w", err)
+			}
+
 			msg := types.NewMsgRemoveFromCustodyWhiteList(
 				clientCtx.FromAddress,
 				accAddr,
+				oldKey,
+				newKey,
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
 
+	cmd.Flags().String(OldKey, "", "Previous hash string.")
+	cmd.MarkFlagRequired(OldKey)
+
+	cmd.Flags().String(NewKey, "", "Next hash string.")
+	cmd.MarkFlagRequired(NewKey)
+
+	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
@@ -274,14 +350,33 @@ func GetTxDropCustodyWhiteList() *cobra.Command {
 				return err
 			}
 
+			oldKey, err := cmd.Flags().GetString(OldKey)
+			if err != nil {
+				return fmt.Errorf("invalid old key: %w", err)
+			}
+
+			newKey, err := cmd.Flags().GetString(NewKey)
+			if err != nil {
+				return fmt.Errorf("invalid new key: %w", err)
+			}
+
 			msg := types.NewMsgDropCustodyWhiteList(
 				clientCtx.FromAddress,
+				oldKey,
+				newKey,
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
 
+	cmd.Flags().String(OldKey, "", "Previous hash string.")
+	cmd.MarkFlagRequired(OldKey)
+
+	cmd.Flags().String(NewKey, "", "Next hash string.")
+	cmd.MarkFlagRequired(NewKey)
+
+	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
@@ -289,36 +384,54 @@ func GetTxDropCustodyWhiteList() *cobra.Command {
 
 func GetTxCreateCustody() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create",
+		Use:   "create ",
 		Short: "Create new custody settings",
-		Args:  cobra.ExactArgs(5),
+		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			custodyEnabled, _ := strconv.ParseBool(args[0])
-			custodyMode, _ := strconv.Atoi(args[1])
-			usePassword, _ := strconv.ParseBool(args[2])
-			useLimits, _ := strconv.ParseBool(args[3])
-			useWhiteList, _ := strconv.ParseBool(args[4])
+			custodyMode, _ := strconv.Atoi(args[0])
+			usePassword, _ := strconv.ParseBool(args[1])
+			useLimits, _ := strconv.ParseBool(args[2])
+			useWhiteList, _ := strconv.ParseBool(args[3])
+
+			oldKey, err := cmd.Flags().GetString(OldKey)
+			if err != nil {
+				return fmt.Errorf("invalid old key: %w", err)
+			}
+
+			newKey, err := cmd.Flags().GetString(NewKey)
+			if err != nil {
+				return fmt.Errorf("invalid new key: %w", err)
+			}
 
 			msg := types.NewMsgCreateCustody(
 				clientCtx.FromAddress,
 				types.CustodySettings{
-					CustodyEnabled: custodyEnabled,
+					CustodyEnabled: true,
 					CustodyMode:    uint64(custodyMode),
 					UsePassword:    usePassword,
 					UseLimits:      useLimits,
 					UseWhiteList:   useWhiteList,
 				},
+				oldKey,
+				newKey,
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
 
+	cmd.Flags().String(OldKey, "", "Previous hash string.")
+	cmd.MarkFlagRequired(OldKey)
+
+	cmd.Flags().String(NewKey, "", "Next hash string.")
+	cmd.MarkFlagRequired(NewKey)
+
+	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
@@ -340,17 +453,36 @@ func GetTxAddToCustodyLimits() *cobra.Command {
 				return err
 			}
 
+			oldKey, err := cmd.Flags().GetString(OldKey)
+			if err != nil {
+				return fmt.Errorf("invalid old key: %w", err)
+			}
+
+			newKey, err := cmd.Flags().GetString(NewKey)
+			if err != nil {
+				return fmt.Errorf("invalid new key: %w", err)
+			}
+
 			msg := types.NewMsgAddToCustodyLimits(
 				clientCtx.FromAddress,
 				args[0],
 				uint64(amount),
 				args[2],
+				oldKey,
+				newKey,
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
 
+	cmd.Flags().String(OldKey, "", "Previous hash string.")
+	cmd.MarkFlagRequired(OldKey)
+
+	cmd.Flags().String(NewKey, "", "Next hash string.")
+	cmd.MarkFlagRequired(NewKey)
+
+	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
@@ -367,15 +499,34 @@ func GetTxRemoveFromCustodyLimits() *cobra.Command {
 				return err
 			}
 
+			oldKey, err := cmd.Flags().GetString(OldKey)
+			if err != nil {
+				return fmt.Errorf("invalid old key: %w", err)
+			}
+
+			newKey, err := cmd.Flags().GetString(NewKey)
+			if err != nil {
+				return fmt.Errorf("invalid new key: %w", err)
+			}
+
 			msg := types.NewMsgRemoveFromCustodyLimits(
 				clientCtx.FromAddress,
 				args[0],
+				oldKey,
+				newKey,
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
 
+	cmd.Flags().String(OldKey, "", "Previous hash string.")
+	cmd.MarkFlagRequired(OldKey)
+
+	cmd.Flags().String(NewKey, "", "Next hash string.")
+	cmd.MarkFlagRequired(NewKey)
+
+	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
@@ -392,14 +543,33 @@ func GetTxDropCustodyLimits() *cobra.Command {
 				return err
 			}
 
+			oldKey, err := cmd.Flags().GetString(OldKey)
+			if err != nil {
+				return fmt.Errorf("invalid old key: %w", err)
+			}
+
+			newKey, err := cmd.Flags().GetString(NewKey)
+			if err != nil {
+				return fmt.Errorf("invalid new key: %w", err)
+			}
+
 			msg := types.NewMsgDropCustodyLimits(
 				clientCtx.FromAddress,
+				oldKey,
+				newKey,
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
 
+	cmd.Flags().String(OldKey, "", "Previous hash string.")
+	cmd.MarkFlagRequired(OldKey)
+
+	cmd.Flags().String(NewKey, "", "Next hash string.")
+	cmd.MarkFlagRequired(NewKey)
+
+	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd

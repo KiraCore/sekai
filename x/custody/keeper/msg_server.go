@@ -2,12 +2,9 @@ package keeper
 
 import (
 	"context"
-	"crypto/sha256"
-	"encoding/hex"
 	"github.com/KiraCore/sekai/x/custody/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
-	"time"
 )
 
 type msgServer struct {
@@ -30,6 +27,8 @@ func (s msgServer) CreateCustody(goCtx context.Context, msg *types.MsgCreteCusto
 		Address:         msg.Address,
 		CustodySettings: &msg.CustodySettings,
 	}
+
+	record.CustodySettings.Key = msg.NewKey
 
 	s.keeper.SetCustodyRecord(ctx, record)
 
@@ -84,55 +83,55 @@ func (s msgServer) RemoveFromCustodians(goCtx context.Context, msg *types.MsgRem
 	return &types.MsgRemoveFromCustodyCustodiansResponse{}, nil
 }
 
-func (s msgServer) AddToCustodyPool(goCtx context.Context, msg *types.MsgAddToCustodyPool) (*types.MsgAddToCustodyPoolResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	record := types.CustodyPool{
-		Address:      msg.Address,
-		Transactions: s.keeper.GetCustodyPoolByAddress(ctx, msg.Address),
-	}
+//func (s msgServer) AddToCustodyPool(goCtx context.Context, msg *types.MsgAddToCustodyPool) (*types.MsgAddToCustodyPoolResponse, error) {
+//	ctx := sdk.UnwrapSDKContext(goCtx)
+//	record := types.CustodyPool{
+//		Address:      msg.Address,
+//		Transactions: s.keeper.GetCustodyPoolByAddress(ctx, msg.Address),
+//	}
+//
+//	TxBoby := msg.Transaction
+//	hash := sha256.Sum256(TxBoby.Value)
+//	hashString := hex.EncodeToString(hash[:])
+//
+//	transactionRecord := types.TransactionRecord{
+//		Transaction: msg.Transaction,
+//		Votes:       0,
+//	}
+//
+//	if record.Transactions == nil {
+//		record.Transactions = new(types.TransactionPool)
+//		record.Transactions.Record = map[string]*types.TransactionRecord{}
+//	}
+//
+//	if record.Transactions.Record[hashString].Transaction != nil {
+//		record.Transactions.Record[hashString].Votes += 1
+//	} else {
+//		record.Transactions.Record[hashString] = &transactionRecord
+//	}
+//
+//	s.keeper.AddToCustodyPool(ctx, record)
+//
+//	return &types.MsgAddToCustodyPoolResponse{}, nil
+//}
 
-	TxBoby := msg.Transaction
-	hash := sha256.Sum256(TxBoby.Value)
-	hashString := hex.EncodeToString(hash[:])
-
-	transactionRecord := types.TransactionRecord{
-		Transaction: msg.Transaction,
-		Votes:       0,
-	}
-
-	if record.Transactions == nil {
-		record.Transactions = new(types.TransactionPool)
-		record.Transactions.Record = map[string]*types.TransactionRecord{}
-	}
-
-	if record.Transactions.Record[hashString].Transaction != nil {
-		record.Transactions.Record[hashString].Votes += 1
-	} else {
-		record.Transactions.Record[hashString] = &transactionRecord
-	}
-
-	s.keeper.AddToCustodyPool(ctx, record)
-
-	return &types.MsgAddToCustodyPoolResponse{}, nil
-}
-
-func (s msgServer) RemoveFromCustodyPool(goCtx context.Context, msg *types.MsgRemoveFromCustodyPool) (*types.MsgRemoveFromCustodyPoolResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	record := types.CustodyPool{
-		Address:      msg.Address,
-		Transactions: s.keeper.GetCustodyPoolByAddress(ctx, msg.Address),
-	}
-
-	body := msg.Transaction
-	hash := sha256.Sum256(body.Value)
-	hashString := hex.EncodeToString(hash[:])
-
-	record.Transactions.Record[hashString] = nil
-
-	s.keeper.AddToCustodyPool(ctx, record)
-
-	return &types.MsgRemoveFromCustodyPoolResponse{}, nil
-}
+//func (s msgServer) RemoveFromCustodyPool(goCtx context.Context, msg *types.MsgRemoveFromCustodyPool) (*types.MsgRemoveFromCustodyPoolResponse, error) {
+//	ctx := sdk.UnwrapSDKContext(goCtx)
+//	record := types.CustodyPool{
+//		Address:      msg.Address,
+//		Transactions: s.keeper.GetCustodyPoolByAddress(ctx, msg.Address),
+//	}
+//
+//	body := msg.Transaction
+//	hash := sha256.Sum256(body.Value)
+//	hashString := hex.EncodeToString(hash[:])
+//
+//	record.Transactions.Record[hashString] = nil
+//
+//	s.keeper.AddToCustodyPool(ctx, record)
+//
+//	return &types.MsgRemoveFromCustodyPoolResponse{}, nil
+//}
 
 func (s msgServer) DropCustodians(goCtx context.Context, msg *types.MsgDropCustodyCustodians) (*types.MsgDropCustodyCustodiansResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
@@ -241,25 +240,25 @@ func (s msgServer) DropLimits(goCtx context.Context, msg *types.MsgDropCustodyLi
 	return &types.MsgDropCustodyLimitsResponse{}, nil
 }
 
-func (s msgServer) AddToLimitsStatus(goCtx context.Context, msg *types.MsgAddToCustodyLimitsStatus) (*types.MsgAddToCustodyLimitsStatusResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	record := types.CustodyLimitStatusRecord{
-		Address:         msg.Address,
-		CustodyStatuses: s.keeper.GetCustodyLimitsStatusByAddress(ctx, msg.Address),
-	}
-
-	if record.CustodyStatuses == nil {
-		record.CustodyStatuses = new(types.CustodyStatuses)
-		record.CustodyStatuses.Statuses = map[string]*types.CustodyStatus{}
-	}
-
-	custodyStatus := types.CustodyStatus{
-		Amount: msg.Amount,
-		Time:   time.Now().Unix(),
-	}
-
-	record.CustodyStatuses.Statuses[msg.Denom] = &custodyStatus
-	s.keeper.AddToCustodyLimitsStatus(ctx, record)
-
-	return &types.MsgAddToCustodyLimitsStatusResponse{}, nil
-}
+//func (s msgServer) AddToLimitsStatus(goCtx context.Context, msg *types.MsgAddToCustodyLimitsStatus) (*types.MsgAddToCustodyLimitsStatusResponse, error) {
+//	ctx := sdk.UnwrapSDKContext(goCtx)
+//	record := types.CustodyLimitStatusRecord{
+//		Address:         msg.Address,
+//		CustodyStatuses: s.keeper.GetCustodyLimitsStatusByAddress(ctx, msg.Address),
+//	}
+//
+//	if record.CustodyStatuses == nil {
+//		record.CustodyStatuses = new(types.CustodyStatuses)
+//		record.CustodyStatuses.Statuses = map[string]*types.CustodyStatus{}
+//	}
+//
+//	custodyStatus := types.CustodyStatus{
+//		Amount: msg.Amount,
+//		Time:   time.Now().Unix(),
+//	}
+//
+//	record.CustodyStatuses.Statuses[msg.Denom] = &custodyStatus
+//	s.keeper.AddToCustodyLimitsStatus(ctx, record)
+//
+//	return &types.MsgAddToCustodyLimitsStatusResponse{}, nil
+//}

@@ -83,15 +83,14 @@ func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool,
 	for _, msg := range feeTx.GetMsgs() {
 		settings := cd.ck.GetCustodyInfoByAddress(ctx, msg.GetSigners()[0])
 
-		if kiratypes.MsgType(msg) == kiratypes.MsgTypeAddToCustodyCustodians {
-			msg := msg.(*custodytypes.MsgAddToCustodyCustodians)
-			custodyInfo := cd.ck.GetCustodyInfoByAddress(ctx, msg.GetSigners()[0])
+		if settings != nil && kiratypes.MsgType(msg) == kiratypes.MsgTypeCreateCustody {
+			msg := msg.(*custodytypes.MsgCreteCustodyRecord)
 
 			hash := sha256.Sum256([]byte(msg.OldKey))
 			hashString := hex.EncodeToString(hash[:])
 
-			if hashString != custodyInfo.Key {
-				return ctx, custodytypes.ErrWrongKey
+			if hashString != settings.Key {
+				return ctx, sdkerrors.Wrap(custodytypes.ErrWrongKey, "Custody module")
 			}
 		}
 

@@ -126,7 +126,7 @@ function txAwait() {
             echoErr "ERROR: Timeout, failed to confirm tx hash '$TXHASH' within ${TIMEOUT} s limit"
             return 1
         else
-            sleep 5
+            sleep 0.5
         fi
     done
 }
@@ -253,7 +253,7 @@ function propAwait() {
                 echoErr "ERROR: Timeout, failed to finalize proposal '$ID' within ${TIMEOUT} s limit"
                 return 1
             else
-                sleep 1
+                sleep 0.5
             fi
         done
         echoInfo "INFO: Proposal was finalized ($RESULT)"
@@ -333,11 +333,11 @@ function awaitBlocks() {
     local SH_START_BLOCK=""
     while : ; do
         local SH_NEW_BLOCK=$(showBlockHeight)
-        (! $(bash-utils isNaturalNumber $SH_NEW_BLOCK)) && sleep 1 && continue
+        (! $(bash-utils isNaturalNumber $SH_NEW_BLOCK)) && sleep 0.5 && continue
         (! $(bash-utils isNaturalNumber "$SH_START_BLOCK")) && SH_START_BLOCK=$SH_NEW_BLOCK
         local SH_DELTA=$(($SH_NEW_BLOCK - $SH_START_BLOCK))
         [ $SH_DELTA -ge $BLOCKS ] && break
-        sleep 1
+        sleep 0.5
     done
 }
 
@@ -1080,3 +1080,54 @@ if declare -f "$1" > /dev/null ; then
   # call arguments verbatim
   "$@"
 fi
+
+# enableCustody
+function enableCustody() {
+  local FROM=$1
+  local MODE=$2
+  local PASSWORD=$3
+  local LIMITS=$4
+  local WHITELIST=$5
+  local FEE_AMOUNT=$6
+  local FEE_DENOM=$7
+  local OKEY=$8
+  local NKEY=$9
+
+  sekaid tx custody create $MODE $PASSWORD $LIMITS $WHITELIST --from=$FROM --keyring-backend=test --chain-id=$NETWORK_NAME --fees="${FEE_AMOUNT}${FEE_DENOM}" --output=json --yes --home=$SEKAID_HOME --okey=$OKEY --nkey=$NKEY | txAwait 180
+}
+
+# enableCustody
+function addCustodians() {
+  local FROM=$1
+  local ADDRESSES=$2
+  local FEE_AMOUNT=$3
+  local FEE_DENOM=$4
+  local OKEY=$5
+  local NKEY=$6
+
+  sekaid tx custody custodians add "$ADDRESSES" --from=$FROM --keyring-backend=test --chain-id=$NETWORK_NAME --fees="${FEE_AMOUNT}${FEE_DENOM}" --output=json --yes --home=$SEKAID_HOME --okey=$OKEY --nkey=$NKEY | txAwait 180
+}
+
+# e.g. getCustodyInfo
+function getCustodyKey() {
+  local FROM=$1
+  local RESULT=$(sekaid query custody get $FROM --output=json --home=$SEKAID_HOME 2> /dev/null | jsonParse "custody_settings.key" 2> /dev/null || echo -n "")
+
+  echo $RESULT
+}
+
+# e.g. getCustodyInfo
+function getCustodyInfo() {
+  local FROM=$1
+  local RESULT=$(sekaid query custody get $FROM --output=json --home=$SEKAID_HOME 2> /dev/null | jsonParse "" 2> /dev/null || echo -n "")
+
+  echo $RESULT
+}
+
+# e.g. getCustodyWhitelist
+function getCustodians() {
+  local FROM=$1
+  local RESULT=$(sekaid query custody custodians get $FROM --output=json --home=$SEKAID_HOME 2> /dev/null | jsonParse "custody_custodians" 2> /dev/null || echo -n "")
+
+  echo $RESULT
+}

@@ -2,12 +2,11 @@ package types
 
 import (
 	"github.com/KiraCore/sekai/types"
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func NewMsgCreateCustody(addr sdk.AccAddress, custodySettings CustodySettings) *MsgCreteCustodyRecord {
-	return &MsgCreteCustodyRecord{addr, custodySettings}
+func NewMsgCreateCustody(addr sdk.AccAddress, custodySettings CustodySettings, oldKey string, newKey string) *MsgCreteCustodyRecord {
+	return &MsgCreteCustodyRecord{addr, custodySettings, oldKey, newKey}
 }
 
 func (m *MsgCreteCustodyRecord) Route() string {
@@ -33,59 +32,59 @@ func (m *MsgCreteCustodyRecord) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgAddToCustodyPool(addr sdk.AccAddress, tx *codectypes.Any) *MsgAddToCustodyPool {
-	return &MsgAddToCustodyPool{addr, tx}
-}
-
-func (m *MsgAddToCustodyPool) Route() string {
-	return ModuleName
-}
-
-func (m *MsgAddToCustodyPool) Type() string {
-	return types.MsgTypeAddToCustodyPool
-}
-
-func (m *MsgAddToCustodyPool) ValidateBasic() error {
-	return nil
-}
-
-func (m *MsgAddToCustodyPool) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(m)
-	return sdk.MustSortJSON(bz)
-}
-
-func (m *MsgAddToCustodyPool) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{
-		m.Address,
-	}
-}
-
-func NewMsgRemoveFromCustodyPool(addr sdk.AccAddress, tx *codectypes.Any) *MsgRemoveFromCustodyPool {
-	return &MsgRemoveFromCustodyPool{addr, tx}
-}
-
-func (m *MsgRemoveFromCustodyPool) Route() string {
-	return ModuleName
-}
-
-func (m *MsgRemoveFromCustodyPool) Type() string {
-	return types.MsgTypeRemoveFromCustodyPool
-}
-
-func (m *MsgRemoveFromCustodyPool) ValidateBasic() error {
-	return nil
-}
-
-func (m *MsgRemoveFromCustodyPool) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(m)
-	return sdk.MustSortJSON(bz)
-}
-
-func (m *MsgRemoveFromCustodyPool) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{
-		m.Address,
-	}
-}
+//func NewMsgAddToCustodyPool(addr sdk.AccAddress, tx *codectypes.Any) *MsgAddToCustodyPool {
+//	return &MsgAddToCustodyPool{addr, tx}
+//}
+//
+//func (m *MsgAddToCustodyPool) Route() string {
+//	return ModuleName
+//}
+//
+//func (m *MsgAddToCustodyPool) Type() string {
+//	return types.MsgTypeAddToCustodyPool
+//}
+//
+//func (m *MsgAddToCustodyPool) ValidateBasic() error {
+//	return nil
+//}
+//
+//func (m *MsgAddToCustodyPool) GetSignBytes() []byte {
+//	bz := ModuleCdc.MustMarshalJSON(m)
+//	return sdk.MustSortJSON(bz)
+//}
+//
+//func (m *MsgAddToCustodyPool) GetSigners() []sdk.AccAddress {
+//	return []sdk.AccAddress{
+//		m.Address,
+//	}
+//}
+//
+//func NewMsgRemoveFromCustodyPool(addr sdk.AccAddress, tx *codectypes.Any) *MsgRemoveFromCustodyPool {
+//	return &MsgRemoveFromCustodyPool{addr, tx}
+//}
+//
+//func (m *MsgRemoveFromCustodyPool) Route() string {
+//	return ModuleName
+//}
+//
+//func (m *MsgRemoveFromCustodyPool) Type() string {
+//	return types.MsgTypeRemoveFromCustodyPool
+//}
+//
+//func (m *MsgRemoveFromCustodyPool) ValidateBasic() error {
+//	return nil
+//}
+//
+//func (m *MsgRemoveFromCustodyPool) GetSignBytes() []byte {
+//	bz := ModuleCdc.MustMarshalJSON(m)
+//	return sdk.MustSortJSON(bz)
+//}
+//
+//func (m *MsgRemoveFromCustodyPool) GetSigners() []sdk.AccAddress {
+//	return []sdk.AccAddress{
+//		m.Address,
+//	}
+//}
 
 func NewMsgAddToCustodyCustodians(addr sdk.AccAddress, newAddr []sdk.AccAddress, oldKey string, newKey string) *MsgAddToCustodyCustodians {
 	return &MsgAddToCustodyCustodians{addr, newAddr, oldKey, newKey}
@@ -114,8 +113,8 @@ func (m *MsgAddToCustodyCustodians) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgRemoveFromCustodyCustodians(addr sdk.AccAddress, newAddr sdk.AccAddress) *MsgRemoveFromCustodyCustodians {
-	return &MsgRemoveFromCustodyCustodians{addr, newAddr}
+func NewMsgRemoveFromCustodyCustodians(addr sdk.AccAddress, newAddr sdk.AccAddress, oldKey string, newKey string) *MsgRemoveFromCustodyCustodians {
+	return &MsgRemoveFromCustodyCustodians{addr, newAddr, oldKey, newKey}
 }
 
 func (m *MsgRemoveFromCustodyCustodians) Route() string {
@@ -141,8 +140,8 @@ func (m *MsgRemoveFromCustodyCustodians) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgDropCustodyCustodians(addr sdk.AccAddress) *MsgDropCustodyCustodians {
-	return &MsgDropCustodyCustodians{addr}
+func NewMsgDropCustodyCustodians(addr sdk.AccAddress, oldKey string, newKey string) *MsgDropCustodyCustodians {
+	return &MsgDropCustodyCustodians{addr, oldKey, newKey}
 }
 
 func (m *MsgDropCustodyCustodians) Route() string {
@@ -168,8 +167,8 @@ func (m *MsgDropCustodyCustodians) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgAddToCustodyWhiteList(addr sdk.AccAddress, newAddr []sdk.AccAddress) *MsgAddToCustodyWhiteList {
-	return &MsgAddToCustodyWhiteList{addr, newAddr}
+func NewMsgAddToCustodyWhiteList(addr sdk.AccAddress, newAddr []sdk.AccAddress, oldKey string, newKey string) *MsgAddToCustodyWhiteList {
+	return &MsgAddToCustodyWhiteList{addr, newAddr, oldKey, newKey}
 }
 
 func (m *MsgAddToCustodyWhiteList) Route() string {
@@ -195,8 +194,8 @@ func (m *MsgAddToCustodyWhiteList) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgRemoveFromCustodyWhiteList(addr sdk.AccAddress, newAddr sdk.AccAddress) *MsgRemoveFromCustodyWhiteList {
-	return &MsgRemoveFromCustodyWhiteList{addr, newAddr}
+func NewMsgRemoveFromCustodyWhiteList(addr sdk.AccAddress, newAddr sdk.AccAddress, oldKey string, newKey string) *MsgRemoveFromCustodyWhiteList {
+	return &MsgRemoveFromCustodyWhiteList{addr, newAddr, oldKey, newKey}
 }
 
 func (m *MsgRemoveFromCustodyWhiteList) Route() string {
@@ -222,8 +221,8 @@ func (m *MsgRemoveFromCustodyWhiteList) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgDropCustodyWhiteList(addr sdk.AccAddress) *MsgDropCustodyWhiteList {
-	return &MsgDropCustodyWhiteList{addr}
+func NewMsgDropCustodyWhiteList(addr sdk.AccAddress, oldKey string, newKey string) *MsgDropCustodyWhiteList {
+	return &MsgDropCustodyWhiteList{addr, oldKey, newKey}
 }
 
 func (m *MsgDropCustodyWhiteList) Route() string {
@@ -249,8 +248,8 @@ func (m *MsgDropCustodyWhiteList) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgAddToCustodyLimits(addr sdk.AccAddress, denom string, amount uint64, limit string) *MsgAddToCustodyLimits {
-	return &MsgAddToCustodyLimits{addr, denom, amount, limit}
+func NewMsgAddToCustodyLimits(addr sdk.AccAddress, denom string, amount uint64, limit string, oldKey string, newKey string) *MsgAddToCustodyLimits {
+	return &MsgAddToCustodyLimits{addr, denom, amount, limit, oldKey, newKey}
 }
 
 func (m *MsgAddToCustodyLimits) Route() string {
@@ -276,8 +275,8 @@ func (m *MsgAddToCustodyLimits) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgRemoveFromCustodyLimits(addr sdk.AccAddress, denom string) *MsgRemoveFromCustodyLimits {
-	return &MsgRemoveFromCustodyLimits{addr, denom}
+func NewMsgRemoveFromCustodyLimits(addr sdk.AccAddress, denom string, oldKey string, newKey string) *MsgRemoveFromCustodyLimits {
+	return &MsgRemoveFromCustodyLimits{addr, denom, oldKey, newKey}
 }
 
 func (m *MsgRemoveFromCustodyLimits) Route() string {
@@ -303,8 +302,8 @@ func (m *MsgRemoveFromCustodyLimits) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgDropCustodyLimits(addr sdk.AccAddress) *MsgDropCustodyLimits {
-	return &MsgDropCustodyLimits{addr}
+func NewMsgDropCustodyLimits(addr sdk.AccAddress, oldKey string, newKey string) *MsgDropCustodyLimits {
+	return &MsgDropCustodyLimits{addr, oldKey, newKey}
 }
 
 func (m *MsgDropCustodyLimits) Route() string {
@@ -330,29 +329,29 @@ func (m *MsgDropCustodyLimits) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgAddToCustodyLimitsStatus(addr sdk.AccAddress, denom string, amount uint64) *MsgAddToCustodyLimitsStatus {
-	return &MsgAddToCustodyLimitsStatus{addr, denom, amount}
-}
-
-func (m *MsgAddToCustodyLimitsStatus) Route() string {
-	return ModuleName
-}
-
-func (m *MsgAddToCustodyLimitsStatus) Type() string {
-	return types.MsgTypeDropCustodyWhiteList
-}
-
-func (m *MsgAddToCustodyLimitsStatus) ValidateBasic() error {
-	return nil
-}
-
-func (m *MsgAddToCustodyLimitsStatus) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(m)
-	return sdk.MustSortJSON(bz)
-}
-
-func (m *MsgAddToCustodyLimitsStatus) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{
-		m.Address,
-	}
-}
+//func NewMsgAddToCustodyLimitsStatus(addr sdk.AccAddress, denom string, amount uint64) *MsgAddToCustodyLimitsStatus {
+//	return &MsgAddToCustodyLimitsStatus{addr, denom, amount}
+//}
+//
+//func (m *MsgAddToCustodyLimitsStatus) Route() string {
+//	return ModuleName
+//}
+//
+//func (m *MsgAddToCustodyLimitsStatus) Type() string {
+//	return types.MsgTypeDropCustodyWhiteList
+//}
+//
+//func (m *MsgAddToCustodyLimitsStatus) ValidateBasic() error {
+//	return nil
+//}
+//
+//func (m *MsgAddToCustodyLimitsStatus) GetSignBytes() []byte {
+//	bz := ModuleCdc.MustMarshalJSON(m)
+//	return sdk.MustSortJSON(bz)
+//}
+//
+//func (m *MsgAddToCustodyLimitsStatus) GetSigners() []sdk.AccAddress {
+//	return []sdk.AccAddress{
+//		m.Address,
+//	}
+//}
