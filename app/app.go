@@ -248,6 +248,7 @@ func NewInitApp(
 		app.AccountKeeper, app.BankKeeper,
 		app.CustomStakingKeeper, app.CustomGovKeeper,
 		app.MultiStakingKeeper)
+	app.MultiStakingKeeper.SetDistrKeeper(app.DistrKeeper)
 
 	app.UpgradeKeeper = upgradekeeper.NewKeeper(keys[upgradetypes.StoreKey], appCodec, app.CustomStakingKeeper)
 

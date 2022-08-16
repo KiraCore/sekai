@@ -451,15 +451,21 @@ func (suite *KeeperTestSuite) TestUndelegate() {
 			suite.app.CustomStakingKeeper.AddValidator(suite.ctx, val)
 
 			if tc.poolCreate {
+				delCoins := sdk.Coins{sdk.NewCoin("ukex", tc.delegationCoins)}
 				pool := types.StakingPool{
 					Id:                 1,
 					Validator:          valAddr.String(),
 					Enabled:            true,
 					Slashed:            0,
-					TotalStakingTokens: sdk.Coins{sdk.NewCoin("ukex", tc.delegationCoins)},
+					TotalStakingTokens: delCoins,
 					TotalShareTokens:   sdk.Coins{sdk.NewCoin("v1/ukex", tc.delegationCoins)},
 				}
 				suite.app.MultiStakingKeeper.SetStakingPool(suite.ctx, pool)
+
+				err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, delCoins)
+				suite.Require().NoError(err)
+				err = suite.app.BankKeeper.SendCoinsFromModuleToModule(suite.ctx, minttypes.ModuleName, types.ModuleName, delCoins)
+				suite.Require().NoError(err)
 
 				if tc.slashedPool {
 					suite.app.MultiStakingKeeper.SlashStakingPool(suite.ctx, valAddr.String(), 10)

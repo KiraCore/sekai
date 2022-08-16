@@ -112,5 +112,5 @@ type DynamicVoterProposalHandler interface {
 	VotePeriod(ctx sdk.Context, proposal Content) uint64
 	VoteEnactment(ctx sdk.Context, proposal Content) uint64
 	AllowedAddresses(ctx sdk.Context, proposal Content) []string
-	Apply(ctx sdk.Context, proposalID uint64, proposal Content) error
+	Apply(ctx sdk.Context, proposalID uint64, proposal Content, slash uint64) error
 }
