@@ -4,6 +4,7 @@ import (
 	"context"
 
 	kiratypes "github.com/KiraCore/sekai/types"
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/slashing/types"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -104,7 +105,7 @@ func (k msgServer) RefuteSlashingProposal(goCtx context.Context, msg *types.MsgR
 
 	proposals, _ := k.gk.GetProposals(ctx)
 	for _, proposal := range proposals {
-		if proposal.GetContent().ProposalType() == kiratypes.ProposalTypeSlashValidator {
+		if proposal.Result == govtypes.Pending && proposal.GetContent().ProposalType() == kiratypes.ProposalTypeSlashValidator {
 			content := proposal.GetContent().(*types.ProposalSlashValidator)
 			if content.Offender == msg.Validator {
 				content.Refutation = msg.Refutation
