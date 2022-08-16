@@ -1,34 +1,33 @@
 #!/usr/bin/env bash
 set -e
 set -x
-. /etc/profile
-
 CURRENT_DIR=$(pwd)
-GO_VER=$(go version 2> /dev/null || echo "")
-PLATFORM=$(uname) && PLATFORM=$(echo "$PLATFORM" |  tr '[:upper:]' '[:lower:]' )
 
-UTILS_VER=$(bashUtilsVersion 2> /dev/null || echo "")
-UTILS_OLD_VER="false" && [[ $(versionToNumber "$UTILS_VER" || echo "0") -ge $(versionToNumber "v0.1.2.3" || echo "1") ]] || UTILS_OLD_VER="true" 
+UTILS_VER=$(bash-utils bashUtilsVersion 2> /dev/null || echo "")
+[[ $(bash-utils versionToNumber "$UTILS_VER" || echo "0") -ge $(bash-utils versionToNumber "v0.2.13" || echo "1") ]] && \
+ UTILS_OLD_VER="false" || UTILS_OLD_VER="true" 
 
 # Installing utils is essential to simplify the setup steps
 if [ "$UTILS_OLD_VER" == "true" ] ; then
     echo "INFO: KIRA utils were NOT installed on the system, setting up..." && sleep 2
-    TOOLS_VERSION="v0.0.12.4" && mkdir -p /usr/keys && FILE_NAME="bash-utils.sh" && \
+    TOOLS_VERSION="v0.2.13" && mkdir -p /usr/keys && FILE_NAME="bash-utils.sh" && \
      if [ -z "$KIRA_COSIGN_PUB" ] ; then KIRA_COSIGN_PUB=/usr/keys/kira-cosign.pub ; fi && \
      echo -e "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE/IrzBQYeMwvKa44/DF/HB7XDpnE+\nf+mU9F/Qbfq25bBWV2+NlYMJv3KvKHNtu3Jknt6yizZjUV4b8WGfKBzFYw==\n-----END PUBLIC KEY-----" > $KIRA_COSIGN_PUB && \
      wget "https://github.com/KiraCore/tools/releases/download/$TOOLS_VERSION/${FILE_NAME}" -O ./$FILE_NAME && \
      wget "https://github.com/KiraCore/tools/releases/download/$TOOLS_VERSION/${FILE_NAME}.sig" -O ./${FILE_NAME}.sig && \
      cosign verify-blob --key="$KIRA_COSIGN_PUB" --signature=./${FILE_NAME}.sig ./$FILE_NAME && \
-     chmod -v 555 ./$FILE_NAME && ./$FILE_NAME bashUtilsSetup "/var/kiraglob" && . /etc/profile && \
+     chmod -v 555 ./$FILE_NAME && ./$FILE_NAME bashUtilsSetup "/var/kiraglob" && . /etc/profile
      echoInfo "Installed bash-utils $(bashUtilsVersion)"
 else
+    . /etc/profile
     echoInfo "INFO: KIRA utils are up to date, latest version $UTILS_VER" && sleep 2
 fi
 
+GO_VER=$(go version 2> /dev/null || echo "")
+
 # install golang if needed
 if  ($(isNullOrEmpty "$GO_VER")) || ($(isNullOrEmpty "$GOBIN")) ; then
-    GO_VERSION="1.17.7" && ARCH=$(([[ "$(uname -m)" == *"arm"* ]] || [[ "$(uname -m)" == *"aarch"* ]]) && echo "arm64" || echo "amd64") && \
-     GO_TAR=go${GO_VERSION}.${PLATFORM}-${ARCH}.tar.gz && rm -rfv /usr/local/go && cd /tmp && rm -fv ./$GO_TAR && \
+     GO_TAR="go1.18.3.$(getPlatform)-$(getArch).tar.gz" && rm -rfv /usr/local/go && cd /tmp && rm -fv ./$GO_TAR && \
      wget https://dl.google.com/go/${GO_TAR} && \
      tar -C /usr/local -xvf $GO_TAR && rm -fv ./$GO_TAR && \
      setGlobEnv GOROOT "/usr/local/go" && setGlobPath "\$GOROOT" && \
@@ -38,13 +37,13 @@ if  ($(isNullOrEmpty "$GO_VER")) || ($(isNullOrEmpty "$GOBIN")) ; then
      loadGlobEnvs && \
      mkdir -p "$GOPATH/src" "$GOPATH/bin" "$GOCACHE" && \
      chmod -R 777 "$GOPATH" && chmod -R 777 "$GOROOT" && chmod -R 777 "$GOCACHE"
-
-    echoInfo "INFO: Sucessfully intalled $(go version)"
+    echoInfo "INFO: Sucessfully intalled go"
 fi
+
+go version
 
 # navigate to current direcotry and load global environment variables
 cd $CURRENT_DIR
-loadGlobEnvs
 
 go clean -modcache
 EXPECTED_PROTO_DEP_VER="v0.0.2"

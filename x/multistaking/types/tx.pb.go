@@ -31,6 +31,102 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+type MsgSetCompoundInfo struct {
+	Sender         string   `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	AllDenom       bool     `protobuf:"varint,2,opt,name=all_denom,json=allDenom,proto3" json:"all_denom,omitempty"`
+	CompoundDenoms []string `protobuf:"bytes,3,rep,name=compound_denoms,json=compoundDenoms,proto3" json:"compound_denoms,omitempty"`
+}
+
+func (m *MsgSetCompoundInfo) Reset()         { *m = MsgSetCompoundInfo{} }
+func (m *MsgSetCompoundInfo) String() string { return proto.CompactTextString(m) }
+func (*MsgSetCompoundInfo) ProtoMessage()    {}
+func (*MsgSetCompoundInfo) Descriptor() ([]byte, []int) {
+	return fileDescriptor_76e042e01e0ae8eb, []int{0}
+}
+func (m *MsgSetCompoundInfo) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgSetCompoundInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgSetCompoundInfo.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgSetCompoundInfo) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSetCompoundInfo.Merge(m, src)
+}
+func (m *MsgSetCompoundInfo) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgSetCompoundInfo) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSetCompoundInfo.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgSetCompoundInfo proto.InternalMessageInfo
+
+func (m *MsgSetCompoundInfo) GetSender() string {
+	if m != nil {
+		return m.Sender
+	}
+	return ""
+}
+
+func (m *MsgSetCompoundInfo) GetAllDenom() bool {
+	if m != nil {
+		return m.AllDenom
+	}
+	return false
+}
+
+func (m *MsgSetCompoundInfo) GetCompoundDenoms() []string {
+	if m != nil {
+		return m.CompoundDenoms
+	}
+	return nil
+}
+
+type MsgSetCompoundInfoResponse struct {
+}
+
+func (m *MsgSetCompoundInfoResponse) Reset()         { *m = MsgSetCompoundInfoResponse{} }
+func (m *MsgSetCompoundInfoResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgSetCompoundInfoResponse) ProtoMessage()    {}
+func (*MsgSetCompoundInfoResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_76e042e01e0ae8eb, []int{1}
+}
+func (m *MsgSetCompoundInfoResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgSetCompoundInfoResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgSetCompoundInfoResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgSetCompoundInfoResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgSetCompoundInfoResponse.Merge(m, src)
+}
+func (m *MsgSetCompoundInfoResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgSetCompoundInfoResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgSetCompoundInfoResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgSetCompoundInfoResponse proto.InternalMessageInfo
+
 type MsgUpsertStakingPool struct {
 	Sender    string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
 	Validator string `protobuf:"bytes,2,opt,name=validator,proto3" json:"validator,omitempty"`
@@ -41,7 +137,7 @@ func (m *MsgUpsertStakingPool) Reset()         { *m = MsgUpsertStakingPool{} }
 func (m *MsgUpsertStakingPool) String() string { return proto.CompactTextString(m) }
 func (*MsgUpsertStakingPool) ProtoMessage()    {}
 func (*MsgUpsertStakingPool) Descriptor() ([]byte, []int) {
-	return fileDescriptor_76e042e01e0ae8eb, []int{0}
+	return fileDescriptor_76e042e01e0ae8eb, []int{2}
 }
 func (m *MsgUpsertStakingPool) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -77,7 +173,7 @@ func (m *MsgUpsertStakingPoolResponse) Reset()         { *m = MsgUpsertStakingPo
 func (m *MsgUpsertStakingPoolResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgUpsertStakingPoolResponse) ProtoMessage()    {}
 func (*MsgUpsertStakingPoolResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_76e042e01e0ae8eb, []int{1}
+	return fileDescriptor_76e042e01e0ae8eb, []int{3}
 }
 func (m *MsgUpsertStakingPoolResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -116,7 +212,7 @@ func (m *MsgDelegate) Reset()         { *m = MsgDelegate{} }
 func (m *MsgDelegate) String() string { return proto.CompactTextString(m) }
 func (*MsgDelegate) ProtoMessage()    {}
 func (*MsgDelegate) Descriptor() ([]byte, []int) {
-	return fileDescriptor_76e042e01e0ae8eb, []int{2}
+	return fileDescriptor_76e042e01e0ae8eb, []int{4}
 }
 func (m *MsgDelegate) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -152,7 +248,7 @@ func (m *MsgDelegateResponse) Reset()         { *m = MsgDelegateResponse{} }
 func (m *MsgDelegateResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgDelegateResponse) ProtoMessage()    {}
 func (*MsgDelegateResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_76e042e01e0ae8eb, []int{3}
+	return fileDescriptor_76e042e01e0ae8eb, []int{5}
 }
 func (m *MsgDelegateResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -191,7 +287,7 @@ func (m *MsgUndelegate) Reset()         { *m = MsgUndelegate{} }
 func (m *MsgUndelegate) String() string { return proto.CompactTextString(m) }
 func (*MsgUndelegate) ProtoMessage()    {}
 func (*MsgUndelegate) Descriptor() ([]byte, []int) {
-	return fileDescriptor_76e042e01e0ae8eb, []int{4}
+	return fileDescriptor_76e042e01e0ae8eb, []int{6}
 }
 func (m *MsgUndelegate) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -227,7 +323,7 @@ func (m *MsgUndelegateResponse) Reset()         { *m = MsgUndelegateResponse{} }
 func (m *MsgUndelegateResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgUndelegateResponse) ProtoMessage()    {}
 func (*MsgUndelegateResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_76e042e01e0ae8eb, []int{5}
+	return fileDescriptor_76e042e01e0ae8eb, []int{7}
 }
 func (m *MsgUndelegateResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -264,7 +360,7 @@ func (m *MsgClaimRewards) Reset()         { *m = MsgClaimRewards{} }
 func (m *MsgClaimRewards) String() string { return proto.CompactTextString(m) }
 func (*MsgClaimRewards) ProtoMessage()    {}
 func (*MsgClaimRewards) Descriptor() ([]byte, []int) {
-	return fileDescriptor_76e042e01e0ae8eb, []int{6}
+	return fileDescriptor_76e042e01e0ae8eb, []int{8}
 }
 func (m *MsgClaimRewards) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -300,7 +396,7 @@ func (m *MsgClaimRewardsResponse) Reset()         { *m = MsgClaimRewardsResponse
 func (m *MsgClaimRewardsResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgClaimRewardsResponse) ProtoMessage()    {}
 func (*MsgClaimRewardsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_76e042e01e0ae8eb, []int{7}
+	return fileDescriptor_76e042e01e0ae8eb, []int{9}
 }
 func (m *MsgClaimRewardsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -338,7 +434,7 @@ func (m *MsgClaimUndelegation) Reset()         { *m = MsgClaimUndelegation{} }
 func (m *MsgClaimUndelegation) String() string { return proto.CompactTextString(m) }
 func (*MsgClaimUndelegation) ProtoMessage()    {}
 func (*MsgClaimUndelegation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_76e042e01e0ae8eb, []int{8}
+	return fileDescriptor_76e042e01e0ae8eb, []int{10}
 }
 func (m *MsgClaimUndelegation) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -374,7 +470,7 @@ func (m *MsgClaimUndelegationResponse) Reset()         { *m = MsgClaimUndelegati
 func (m *MsgClaimUndelegationResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgClaimUndelegationResponse) ProtoMessage()    {}
 func (*MsgClaimUndelegationResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_76e042e01e0ae8eb, []int{9}
+	return fileDescriptor_76e042e01e0ae8eb, []int{11}
 }
 func (m *MsgClaimUndelegationResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -403,7 +499,89 @@ func (m *MsgClaimUndelegationResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgClaimUndelegationResponse proto.InternalMessageInfo
 
+type MsgRegisterDelegator struct {
+	Delegator string `protobuf:"bytes,1,opt,name=delegator,proto3" json:"delegator,omitempty"`
+}
+
+func (m *MsgRegisterDelegator) Reset()         { *m = MsgRegisterDelegator{} }
+func (m *MsgRegisterDelegator) String() string { return proto.CompactTextString(m) }
+func (*MsgRegisterDelegator) ProtoMessage()    {}
+func (*MsgRegisterDelegator) Descriptor() ([]byte, []int) {
+	return fileDescriptor_76e042e01e0ae8eb, []int{12}
+}
+func (m *MsgRegisterDelegator) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgRegisterDelegator) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgRegisterDelegator.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgRegisterDelegator) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRegisterDelegator.Merge(m, src)
+}
+func (m *MsgRegisterDelegator) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgRegisterDelegator) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRegisterDelegator.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgRegisterDelegator proto.InternalMessageInfo
+
+func (m *MsgRegisterDelegator) GetDelegator() string {
+	if m != nil {
+		return m.Delegator
+	}
+	return ""
+}
+
+type MsgRegisterDelegatorResponse struct {
+}
+
+func (m *MsgRegisterDelegatorResponse) Reset()         { *m = MsgRegisterDelegatorResponse{} }
+func (m *MsgRegisterDelegatorResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgRegisterDelegatorResponse) ProtoMessage()    {}
+func (*MsgRegisterDelegatorResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_76e042e01e0ae8eb, []int{13}
+}
+func (m *MsgRegisterDelegatorResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgRegisterDelegatorResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgRegisterDelegatorResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgRegisterDelegatorResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRegisterDelegatorResponse.Merge(m, src)
+}
+func (m *MsgRegisterDelegatorResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgRegisterDelegatorResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRegisterDelegatorResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgRegisterDelegatorResponse proto.InternalMessageInfo
+
 func init() {
+	proto.RegisterType((*MsgSetCompoundInfo)(nil), "kira.multistaking.MsgSetCompoundInfo")
+	proto.RegisterType((*MsgSetCompoundInfoResponse)(nil), "kira.multistaking.MsgSetCompoundInfoResponse")
 	proto.RegisterType((*MsgUpsertStakingPool)(nil), "kira.multistaking.MsgUpsertStakingPool")
 	proto.RegisterType((*MsgUpsertStakingPoolResponse)(nil), "kira.multistaking.MsgUpsertStakingPoolResponse")
 	proto.RegisterType((*MsgDelegate)(nil), "kira.multistaking.MsgDelegate")
@@ -414,50 +592,115 @@ func init() {
 	proto.RegisterType((*MsgClaimRewardsResponse)(nil), "kira.multistaking.MsgClaimRewardsResponse")
 	proto.RegisterType((*MsgClaimUndelegation)(nil), "kira.multistaking.MsgClaimUndelegation")
 	proto.RegisterType((*MsgClaimUndelegationResponse)(nil), "kira.multistaking.MsgClaimUndelegationResponse")
+	proto.RegisterType((*MsgRegisterDelegator)(nil), "kira.multistaking.MsgRegisterDelegator")
+	proto.RegisterType((*MsgRegisterDelegatorResponse)(nil), "kira.multistaking.MsgRegisterDelegatorResponse")
 }
 
 func init() { proto.RegisterFile("kira/multistaking/tx.proto", fileDescriptor_76e042e01e0ae8eb) }
 
 var fileDescriptor_76e042e01e0ae8eb = []byte{
-	// 565 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xd4, 0x54, 0xcf, 0x6e, 0xd3, 0x4e,
-	0x10, 0xb6, 0x7f, 0xf9, 0xa9, 0x4d, 0x86, 0x3f, 0x6d, 0x4c, 0x4b, 0x53, 0xab, 0x72, 0xa2, 0x08,
-	0x91, 0x08, 0x84, 0x2d, 0xd1, 0x1b, 0x37, 0x1a, 0x2e, 0x15, 0x44, 0x42, 0x46, 0x48, 0x88, 0x03,
-	0xd1, 0xa6, 0xbb, 0x2c, 0xab, 0xd8, 0xde, 0x68, 0x77, 0x03, 0xed, 0x1b, 0x70, 0xe4, 0x11, 0x7a,
-	0xe4, 0x21, 0x10, 0xe7, 0x1e, 0x7b, 0x44, 0x1c, 0x2a, 0x94, 0x5c, 0xb8, 0xf2, 0x06, 0x28, 0x76,
-	0xbc, 0x6c, 0xeb, 0xb8, 0xe5, 0xca, 0xc9, 0x9e, 0xfd, 0xbe, 0x99, 0xf9, 0x66, 0xfd, 0x8d, 0xc1,
-	0x1d, 0x31, 0x81, 0x82, 0x78, 0x12, 0x29, 0x26, 0x15, 0x1a, 0xb1, 0x84, 0x06, 0xea, 0xd0, 0x1f,
-	0x0b, 0xae, 0xb8, 0x53, 0x9f, 0x63, 0xbe, 0x89, 0xb9, 0x1b, 0x94, 0x53, 0x9e, 0xa2, 0xc1, 0xfc,
-	0x2d, 0x23, 0xba, 0xdb, 0x94, 0x73, 0x1a, 0x91, 0x20, 0x8d, 0x86, 0x93, 0xb7, 0x01, 0x4a, 0x8e,
-	0x72, 0xe8, 0x80, 0xcb, 0x98, 0xcb, 0x41, 0x96, 0x93, 0x05, 0x0b, 0xe8, 0x4e, 0xb1, 0xb5, 0x19,
-	0x64, 0xac, 0xf6, 0x18, 0x36, 0xfa, 0x92, 0xbe, 0x1c, 0x4b, 0x22, 0xd4, 0x8b, 0x0c, 0x79, 0xce,
-	0x79, 0xe4, 0xdc, 0x86, 0x15, 0x49, 0x12, 0x4c, 0x44, 0xc3, 0x6e, 0xd9, 0xdd, 0x5a, 0xb8, 0x88,
-	0x9c, 0x1d, 0xa8, 0xbd, 0x47, 0x11, 0xc3, 0x48, 0x71, 0xd1, 0xf8, 0x2f, 0x85, 0xfe, 0x1c, 0x38,
-	0x0d, 0x58, 0x25, 0x09, 0x1a, 0x46, 0x04, 0x37, 0x2a, 0x2d, 0xbb, 0x5b, 0x0d, 0xf3, 0xf0, 0x51,
-	0xf5, 0xe3, 0x71, 0xd3, 0xfa, 0x79, 0xdc, 0xb4, 0xda, 0x1e, 0xec, 0x2c, 0xeb, 0x18, 0x12, 0x39,
-	0xe6, 0x89, 0x24, 0xed, 0x2f, 0x36, 0x5c, 0xeb, 0x4b, 0xfa, 0x84, 0x44, 0x84, 0x22, 0x45, 0x9c,
-	0xfb, 0x50, 0xc7, 0xd9, 0x3b, 0x17, 0x03, 0x84, 0xb1, 0x20, 0x52, 0x2e, 0x44, 0xad, 0x6b, 0xe0,
-	0x71, 0x76, 0x3e, 0x27, 0x6b, 0x35, 0x9a, 0x9c, 0xc9, 0x5c, 0xd7, 0x40, 0x4e, 0xde, 0x87, 0x55,
-	0x14, 0xf3, 0x49, 0xa2, 0x64, 0xa3, 0xd2, 0xaa, 0x74, 0x6b, 0x7b, 0xc1, 0xc9, 0x59, 0xd3, 0xfa,
-	0x7e, 0xd6, 0xec, 0x50, 0xa6, 0xde, 0x4d, 0x86, 0xfe, 0x01, 0x8f, 0x17, 0x77, 0xba, 0x78, 0x3c,
-	0x90, 0x78, 0x14, 0xa8, 0xa3, 0x31, 0x91, 0x7e, 0x8f, 0xb3, 0x24, 0xcc, 0xf3, 0x8d, 0xf1, 0x36,
-	0xe1, 0x96, 0xa1, 0x5e, 0x4f, 0xf5, 0xd5, 0x86, 0x1b, 0xf3, 0xb1, 0x13, 0xfc, 0x8f, 0xce, 0xb5,
-	0x05, 0x9b, 0xe7, 0xf4, 0xeb, 0xc9, 0x76, 0x61, 0xad, 0x2f, 0x69, 0x2f, 0x42, 0x2c, 0x0e, 0xc9,
-	0x07, 0x24, 0xb0, 0x2c, 0x33, 0x8f, 0x51, 0x6d, 0x1b, 0xb6, 0x2e, 0x24, 0xe9, 0x7a, 0x28, 0x75,
-	0x64, 0x0a, 0xe9, 0x6e, 0x8c, 0x27, 0xa5, 0x8e, 0xec, 0xc0, 0xda, 0xc4, 0xe0, 0x0d, 0x18, 0x4e,
-	0x2f, 0xe6, 0xff, 0xf0, 0xa6, 0x79, 0xbc, 0x5f, 0xb4, 0x60, 0xa1, 0x45, 0x2e, 0xe1, 0xe1, 0xaf,
-	0x0a, 0x54, 0xfa, 0x92, 0x3a, 0x31, 0xd4, 0x8b, 0x9b, 0xd1, 0xf1, 0x0b, 0x7b, 0xeb, 0x2f, 0x33,
-	0xb4, 0x1b, 0xfc, 0x25, 0x31, 0x6f, 0xeb, 0x84, 0x50, 0xd5, 0xae, 0xf7, 0x96, 0x27, 0xe7, 0xb8,
-	0x7b, 0xf7, 0x72, 0x5c, 0xd7, 0x7c, 0x05, 0x60, 0x78, 0xae, 0x55, 0x22, 0x49, 0x33, 0xdc, 0xee,
-	0x55, 0x0c, 0x5d, 0xf9, 0x0d, 0x5c, 0x3f, 0xf7, 0xd1, 0xdb, 0xcb, 0x33, 0x4d, 0x8e, 0x7b, 0xef,
-	0x6a, 0x8e, 0xae, 0x1f, 0x43, 0xbd, 0x68, 0x82, 0xce, 0x25, 0x05, 0x4c, 0x62, 0xd9, 0xe5, 0x97,
-	0x7e, 0xf3, 0xbd, 0x67, 0x9f, 0xa7, 0x9e, 0x7d, 0x32, 0xf5, 0xec, 0xd3, 0xa9, 0x67, 0xff, 0x98,
-	0x7a, 0xf6, 0xa7, 0x99, 0x67, 0x9d, 0xce, 0x3c, 0xeb, 0xdb, 0xcc, 0xb3, 0x5e, 0xfb, 0xc6, 0xe6,
-	0x3c, 0x65, 0x02, 0xf5, 0xb8, 0x20, 0x81, 0x24, 0x23, 0xc4, 0x82, 0xc3, 0x0b, 0xbf, 0xf7, 0xf9,
-	0x16, 0x0d, 0x57, 0xd2, 0xbf, 0xeb, 0xee, 0xef, 0x00, 0x00, 0x00, 0xff, 0xff, 0xca, 0xcf, 0x03,
-	0xbf, 0x00, 0x06, 0x00, 0x00,
+	// 677 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xd4, 0x55, 0xcd, 0x6e, 0xd3, 0x40,
+	0x10, 0x8e, 0x09, 0xb4, 0xc9, 0x00, 0x4d, 0x63, 0x5a, 0x9a, 0x9a, 0xca, 0x89, 0x22, 0x20, 0x11,
+	0xa8, 0xb6, 0x44, 0x39, 0x71, 0xa3, 0xe9, 0xa5, 0x82, 0x48, 0xc8, 0x15, 0x12, 0xe2, 0x40, 0xb4,
+	0xa9, 0xb7, 0x8b, 0x15, 0xdb, 0x1b, 0xed, 0xae, 0xa1, 0x7d, 0x03, 0x8e, 0x3c, 0x42, 0x8f, 0x3c,
+	0x04, 0xe2, 0x5c, 0x6e, 0x3d, 0x22, 0x0e, 0x15, 0x4a, 0x2e, 0x3c, 0x06, 0xf2, 0xdf, 0xd6, 0x8d,
+	0xe3, 0xb6, 0x57, 0x4e, 0xf6, 0xec, 0x7c, 0x33, 0xdf, 0x37, 0xde, 0x6f, 0xd7, 0xa0, 0x8d, 0x1c,
+	0x86, 0x4c, 0x2f, 0x70, 0x85, 0xc3, 0x05, 0x1a, 0x39, 0x3e, 0x31, 0xc5, 0xa1, 0x31, 0x66, 0x54,
+	0x50, 0xb5, 0x1e, 0xe6, 0x8c, 0x6c, 0x4e, 0x5b, 0x21, 0x94, 0xd0, 0x28, 0x6b, 0x86, 0x6f, 0x31,
+	0x50, 0x5b, 0x27, 0x94, 0x12, 0x17, 0x9b, 0x51, 0x34, 0x0c, 0x0e, 0x4c, 0xe4, 0x1f, 0xa5, 0xa9,
+	0x7d, 0xca, 0x3d, 0xca, 0x07, 0x71, 0x4d, 0x1c, 0x24, 0xa9, 0x87, 0x79, 0xea, 0x6c, 0x10, 0xa3,
+	0xda, 0x0c, 0xd4, 0x3e, 0x27, 0x7b, 0x58, 0xf4, 0xa8, 0x37, 0xa6, 0x81, 0x6f, 0xef, 0xfa, 0x07,
+	0x54, 0xbd, 0x0f, 0x0b, 0x1c, 0xfb, 0x36, 0x66, 0x0d, 0xa5, 0xa5, 0x74, 0xab, 0x56, 0x12, 0xa9,
+	0x0f, 0xa0, 0x8a, 0x5c, 0x77, 0x60, 0x63, 0x9f, 0x7a, 0x8d, 0x1b, 0x2d, 0xa5, 0x5b, 0xb1, 0x2a,
+	0xc8, 0x75, 0x77, 0xc2, 0x58, 0xed, 0x40, 0x6d, 0x3f, 0x69, 0x12, 0x23, 0x78, 0xa3, 0xdc, 0x2a,
+	0x77, 0xab, 0xd6, 0x52, 0xba, 0x1c, 0xe1, 0x78, 0x7b, 0x03, 0xb4, 0x3c, 0xa7, 0x85, 0xf9, 0x98,
+	0xfa, 0x1c, 0xb7, 0xc7, 0xb0, 0xd2, 0xe7, 0xe4, 0xed, 0x98, 0x63, 0x26, 0xf6, 0x62, 0xad, 0x6f,
+	0x28, 0x75, 0x0b, 0x35, 0x6d, 0x40, 0xf5, 0x13, 0x72, 0x1d, 0x1b, 0x09, 0xca, 0x22, 0x4d, 0x55,
+	0xeb, 0x7c, 0x41, 0x6d, 0xc0, 0x22, 0xf6, 0xd1, 0xd0, 0xc5, 0x76, 0xa3, 0x1c, 0xe9, 0x4d, 0xc3,
+	0x17, 0x95, 0x2f, 0xc7, 0xcd, 0xd2, 0xdf, 0xe3, 0x66, 0xa9, 0xad, 0xc3, 0xc6, 0x3c, 0x46, 0xa9,
+	0xe8, 0xbb, 0x02, 0xb7, 0xfb, 0x9c, 0xec, 0x60, 0x17, 0x13, 0x24, 0xb0, 0xfa, 0x14, 0xea, 0x76,
+	0xfc, 0x4e, 0xd9, 0x00, 0xd9, 0x36, 0xc3, 0x9c, 0x27, 0xa2, 0x96, 0x65, 0xe2, 0x65, 0xbc, 0x1e,
+	0x82, 0xa5, 0x1a, 0x09, 0x8e, 0x65, 0x2e, 0xcb, 0x44, 0x0a, 0xde, 0x85, 0x45, 0xe4, 0xd1, 0xc0,
+	0x17, 0xc9, 0xa7, 0xdb, 0x36, 0x4f, 0xce, 0x9a, 0xa5, 0xdf, 0x67, 0xcd, 0x0e, 0x71, 0xc4, 0xc7,
+	0x60, 0x68, 0xec, 0x53, 0x2f, 0xd9, 0xe5, 0xe4, 0xb1, 0xc9, 0xed, 0x91, 0x29, 0x8e, 0xc6, 0x98,
+	0x1b, 0x3d, 0xea, 0xf8, 0x56, 0x5a, 0x9f, 0x19, 0x6f, 0x15, 0xee, 0x65, 0xd4, 0xcb, 0xa9, 0x7e,
+	0x28, 0x70, 0x37, 0x1c, 0xdb, 0xb7, 0xff, 0xd3, 0xb9, 0xd6, 0x60, 0xf5, 0x82, 0x7e, 0x39, 0xd9,
+	0x16, 0xd4, 0xfa, 0x9c, 0xf4, 0x5c, 0xe4, 0x78, 0x16, 0xfe, 0x8c, 0x98, 0xcd, 0x8b, 0xcc, 0x93,
+	0xe9, 0xb6, 0x0e, 0x6b, 0x33, 0x45, 0xb2, 0x1f, 0x8a, 0x1c, 0x19, 0xa5, 0x24, 0x9b, 0x43, 0xfd,
+	0x42, 0x47, 0x76, 0xa0, 0x16, 0x64, 0x70, 0x03, 0xc7, 0x8e, 0x3e, 0xcc, 0x4d, 0x6b, 0x29, 0xbb,
+	0xbc, 0x9b, 0xb7, 0x60, 0x8e, 0x42, 0x4a, 0x78, 0x1e, 0x49, 0xb0, 0x30, 0x71, 0xb8, 0xc0, 0x6c,
+	0x27, 0xdd, 0x8c, 0xd0, 0xfc, 0x72, 0x67, 0x12, 0x15, 0xe7, 0x0b, 0x49, 0xd7, 0x5c, 0x55, 0xda,
+	0xf5, 0xd9, 0xcf, 0x5b, 0x50, 0xee, 0x73, 0xa2, 0x7a, 0x50, 0xcf, 0x9f, 0xb7, 0x8e, 0x91, 0xbb,
+	0x9f, 0x8c, 0x79, 0xc7, 0x44, 0x33, 0xaf, 0x09, 0x4c, 0x69, 0x55, 0x0b, 0x2a, 0xf2, 0x2c, 0xe9,
+	0xf3, 0x8b, 0xd3, 0xbc, 0xf6, 0xf8, 0xf2, 0xbc, 0xec, 0xf9, 0x0e, 0x20, 0xe3, 0xe4, 0x56, 0x81,
+	0x24, 0x89, 0xd0, 0xba, 0x57, 0x21, 0x64, 0x67, 0x02, 0xb5, 0xd9, 0xeb, 0xf1, 0xd1, 0xfc, 0xe2,
+	0x19, 0x98, 0xb6, 0x79, 0x2d, 0x98, 0x24, 0xfa, 0x00, 0x77, 0x2e, 0x78, 0xb6, 0x3d, 0xbf, 0x3c,
+	0x8b, 0xd1, 0x9e, 0x5c, 0x8d, 0x91, 0xfd, 0x3d, 0xa8, 0xe7, 0x3d, 0xdc, 0xb9, 0xa4, 0x41, 0x16,
+	0x58, 0xb4, 0xcb, 0x85, 0x96, 0x0d, 0xe9, 0xf2, 0x7e, 0x2d, 0xa0, 0xcb, 0x01, 0x8b, 0xe8, 0x0a,
+	0xbd, 0xbc, 0xfd, 0xfa, 0xdb, 0x44, 0x57, 0x4e, 0x26, 0xba, 0x72, 0x3a, 0xd1, 0x95, 0x3f, 0x13,
+	0x5d, 0xf9, 0x3a, 0xd5, 0x4b, 0xa7, 0x53, 0xbd, 0xf4, 0x6b, 0xaa, 0x97, 0xde, 0x1b, 0x99, 0x7b,
+	0xe6, 0x95, 0xc3, 0x50, 0x8f, 0x32, 0x6c, 0x72, 0x3c, 0x42, 0x8e, 0x79, 0x38, 0xf3, 0x7b, 0x0e,
+	0xef, 0x9c, 0xe1, 0x42, 0xf4, 0x77, 0xdc, 0xfa, 0x17, 0x00, 0x00, 0xff, 0xff, 0xc9, 0xd8, 0xde,
+	0xdc, 0xc0, 0x07, 0x00, 0x00,
 }
 
+func (this *MsgSetCompoundInfo) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*MsgSetCompoundInfo)
+	if !ok {
+		that2, ok := that.(MsgSetCompoundInfo)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.Sender != that1.Sender {
+		return false
+	}
+	if this.AllDenom != that1.AllDenom {
+		return false
+	}
+	if len(this.CompoundDenoms) != len(that1.CompoundDenoms) {
+		return false
+	}
+	for i := range this.CompoundDenoms {
+		if this.CompoundDenoms[i] != that1.CompoundDenoms[i] {
+			return false
+		}
+	}
+	return true
+}
+func (this *MsgSetCompoundInfoResponse) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*MsgSetCompoundInfoResponse)
+	if !ok {
+		that2, ok := that.(MsgSetCompoundInfoResponse)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
 func (this *MsgUpsertStakingPoolResponse) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
@@ -563,6 +806,51 @@ func (this *MsgClaimUndelegationResponse) Equal(that interface{}) bool {
 	}
 	return true
 }
+func (this *MsgRegisterDelegator) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*MsgRegisterDelegator)
+	if !ok {
+		that2, ok := that.(MsgRegisterDelegator)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.Delegator != that1.Delegator {
+		return false
+	}
+	return true
+}
+func (this *MsgRegisterDelegatorResponse) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*MsgRegisterDelegatorResponse)
+	if !ok {
+		that2, ok := that.(MsgRegisterDelegatorResponse)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ context.Context
@@ -579,8 +867,10 @@ type MsgClient interface {
 	UpsertStakingPool(ctx context.Context, in *MsgUpsertStakingPool, opts ...grpc.CallOption) (*MsgUpsertStakingPoolResponse, error)
 	Delegate(ctx context.Context, in *MsgDelegate, opts ...grpc.CallOption) (*MsgDelegateResponse, error)
 	Undelegate(ctx context.Context, in *MsgUndelegate, opts ...grpc.CallOption) (*MsgUndelegateResponse, error)
+	SetCompoundInfo(ctx context.Context, in *MsgSetCompoundInfo, opts ...grpc.CallOption) (*MsgSetCompoundInfoResponse, error)
 	ClaimRewards(ctx context.Context, in *MsgClaimRewards, opts ...grpc.CallOption) (*MsgClaimRewardsResponse, error)
 	ClaimUndelegation(ctx context.Context, in *MsgClaimUndelegation, opts ...grpc.CallOption) (*MsgClaimUndelegationResponse, error)
+	RegisterDelegator(ctx context.Context, in *MsgRegisterDelegator, opts ...grpc.CallOption) (*MsgRegisterDelegatorResponse, error)
 }
 
 type msgClient struct {
@@ -618,6 +908,15 @@ func (c *msgClient) Undelegate(ctx context.Context, in *MsgUndelegate, opts ...g
 	return out, nil
 }
 
+func (c *msgClient) SetCompoundInfo(ctx context.Context, in *MsgSetCompoundInfo, opts ...grpc.CallOption) (*MsgSetCompoundInfoResponse, error) {
+	out := new(MsgSetCompoundInfoResponse)
+	err := c.cc.Invoke(ctx, "/kira.multistaking.Msg/SetCompoundInfo", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *msgClient) ClaimRewards(ctx context.Context, in *MsgClaimRewards, opts ...grpc.CallOption) (*MsgClaimRewardsResponse, error) {
 	out := new(MsgClaimRewardsResponse)
 	err := c.cc.Invoke(ctx, "/kira.multistaking.Msg/ClaimRewards", in, out, opts...)
@@ -636,13 +935,24 @@ func (c *msgClient) ClaimUndelegation(ctx context.Context, in *MsgClaimUndelegat
 	return out, nil
 }
 
+func (c *msgClient) RegisterDelegator(ctx context.Context, in *MsgRegisterDelegator, opts ...grpc.CallOption) (*MsgRegisterDelegatorResponse, error) {
+	out := new(MsgRegisterDelegatorResponse)
+	err := c.cc.Invoke(ctx, "/kira.multistaking.Msg/RegisterDelegator", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
 	UpsertStakingPool(context.Context, *MsgUpsertStakingPool) (*MsgUpsertStakingPoolResponse, error)
 	Delegate(context.Context, *MsgDelegate) (*MsgDelegateResponse, error)
 	Undelegate(context.Context, *MsgUndelegate) (*MsgUndelegateResponse, error)
+	SetCompoundInfo(context.Context, *MsgSetCompoundInfo) (*MsgSetCompoundInfoResponse, error)
 	ClaimRewards(context.Context, *MsgClaimRewards) (*MsgClaimRewardsResponse, error)
 	ClaimUndelegation(context.Context, *MsgClaimUndelegation) (*MsgClaimUndelegationResponse, error)
+	RegisterDelegator(context.Context, *MsgRegisterDelegator) (*MsgRegisterDelegatorResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
@@ -658,11 +968,17 @@ func (*UnimplementedMsgServer) Delegate(ctx context.Context, req *MsgDelegate) (
 func (*UnimplementedMsgServer) Undelegate(ctx context.Context, req *MsgUndelegate) (*MsgUndelegateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Undelegate not implemented")
 }
+func (*UnimplementedMsgServer) SetCompoundInfo(ctx context.Context, req *MsgSetCompoundInfo) (*MsgSetCompoundInfoResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetCompoundInfo not implemented")
+}
 func (*UnimplementedMsgServer) ClaimRewards(ctx context.Context, req *MsgClaimRewards) (*MsgClaimRewardsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ClaimRewards not implemented")
 }
 func (*UnimplementedMsgServer) ClaimUndelegation(ctx context.Context, req *MsgClaimUndelegation) (*MsgClaimUndelegationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ClaimUndelegation not implemented")
+}
+func (*UnimplementedMsgServer) RegisterDelegator(ctx context.Context, req *MsgRegisterDelegator) (*MsgRegisterDelegatorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterDelegator not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
@@ -723,6 +1039,24 @@ func _Msg_Undelegate_Handler(srv interface{}, ctx context.Context, dec func(inte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_SetCompoundInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgSetCompoundInfo)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).SetCompoundInfo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.multistaking.Msg/SetCompoundInfo",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).SetCompoundInfo(ctx, req.(*MsgSetCompoundInfo))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Msg_ClaimRewards_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgClaimRewards)
 	if err := dec(in); err != nil {
@@ -759,6 +1093,24 @@ func _Msg_ClaimUndelegation_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_RegisterDelegator_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgRegisterDelegator)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).RegisterDelegator(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.multistaking.Msg/RegisterDelegator",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).RegisterDelegator(ctx, req.(*MsgRegisterDelegator))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "kira.multistaking.Msg",
 	HandlerType: (*MsgServer)(nil),
@@ -776,6 +1128,10 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_Undelegate_Handler,
 		},
 		{
+			MethodName: "SetCompoundInfo",
+			Handler:    _Msg_SetCompoundInfo_Handler,
+		},
+		{
 			MethodName: "ClaimRewards",
 			Handler:    _Msg_ClaimRewards_Handler,
 		},
@@ -783,9 +1139,85 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 			MethodName: "ClaimUndelegation",
 			Handler:    _Msg_ClaimUndelegation_Handler,
 		},
+		{
+			MethodName: "RegisterDelegator",
+			Handler:    _Msg_RegisterDelegator_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "kira/multistaking/tx.proto",
+}
+
+func (m *MsgSetCompoundInfo) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgSetCompoundInfo) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgSetCompoundInfo) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.CompoundDenoms) > 0 {
+		for iNdEx := len(m.CompoundDenoms) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.CompoundDenoms[iNdEx])
+			copy(dAtA[i:], m.CompoundDenoms[iNdEx])
+			i = encodeVarintTx(dAtA, i, uint64(len(m.CompoundDenoms[iNdEx])))
+			i--
+			dAtA[i] = 0x1a
+		}
+	}
+	if m.AllDenom {
+		i--
+		if m.AllDenom {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Sender) > 0 {
+		i -= len(m.Sender)
+		copy(dAtA[i:], m.Sender)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Sender)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgSetCompoundInfoResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgSetCompoundInfoResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgSetCompoundInfoResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
 }
 
 func (m *MsgUpsertStakingPool) Marshal() (dAtA []byte, err error) {
@@ -1117,6 +1549,59 @@ func (m *MsgClaimUndelegationResponse) MarshalToSizedBuffer(dAtA []byte) (int, e
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgRegisterDelegator) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgRegisterDelegator) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgRegisterDelegator) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Delegator) > 0 {
+		i -= len(m.Delegator)
+		copy(dAtA[i:], m.Delegator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Delegator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgRegisterDelegatorResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgRegisterDelegatorResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgRegisterDelegatorResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	offset -= sovTx(v)
 	base := offset
@@ -1128,6 +1613,37 @@ func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+func (m *MsgSetCompoundInfo) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Sender)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.AllDenom {
+		n += 2
+	}
+	if len(m.CompoundDenoms) > 0 {
+		for _, s := range m.CompoundDenoms {
+			l = len(s)
+			n += 1 + l + sovTx(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *MsgSetCompoundInfoResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
 func (m *MsgUpsertStakingPool) Size() (n int) {
 	if m == nil {
 		return 0
@@ -1268,11 +1784,217 @@ func (m *MsgClaimUndelegationResponse) Size() (n int) {
 	return n
 }
 
+func (m *MsgRegisterDelegator) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Delegator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgRegisterDelegatorResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
 func sovTx(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
 func sozTx(x uint64) (n int) {
 	return sovTx(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
+func (m *MsgSetCompoundInfo) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgSetCompoundInfo: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgSetCompoundInfo: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Sender = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AllDenom", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.AllDenom = bool(v != 0)
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CompoundDenoms", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.CompoundDenoms = append(m.CompoundDenoms, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgSetCompoundInfoResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgSetCompoundInfoResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgSetCompoundInfoResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
 }
 func (m *MsgUpsertStakingPool) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
@@ -2118,6 +2840,138 @@ func (m *MsgClaimUndelegationResponse) Unmarshal(dAtA []byte) error {
 		}
 		if fieldNum <= 0 {
 			return fmt.Errorf("proto: MsgClaimUndelegationResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgRegisterDelegator) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgRegisterDelegator: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgRegisterDelegator: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Delegator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Delegator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgRegisterDelegatorResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgRegisterDelegatorResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgRegisterDelegatorResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:

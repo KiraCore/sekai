@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -34,6 +35,8 @@ func NewTxCmd() *cobra.Command {
 		GetTxUndelegate(),
 		GetTxClaimRewards(),
 		GetTxClaimUndelegation(),
+		GetTxSetCompoundInfo(),
+		GetTxRegisterDelegator(),
 	)
 
 	return txCmd
@@ -164,6 +167,58 @@ func GetTxClaimUndelegation() *cobra.Command {
 				return err
 			}
 			msg := types.NewMsgClaimUndelegation(clientCtx.FromAddress.String(), uint64(undelegationId))
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+func GetTxSetCompoundInfo() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "set-compound-info [all_denom] [specific_denoms]",
+		Short: "Submit a transaction to set compound info.",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			allDenom, err := strconv.ParseBool(args[0])
+			if err != nil {
+				return err
+			}
+
+			denoms := strings.Split(args[1], ",")
+			msg := types.NewMsgSetCompoundInfo(clientCtx.FromAddress.String(), allDenom, denoms)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+func GetTxRegisterDelegator() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "register-delegator",
+		Short: "Submit a transaction to register a delegator.",
+		Args:  cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgRegisterDelegator(clientCtx.FromAddress.String())
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
