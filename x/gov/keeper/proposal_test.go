@@ -159,7 +159,7 @@ func TestKeeper_SaveVote(t *testing.T) {
 	_, found := app.CustomGovKeeper.GetVote(ctx, 1, addr)
 	require.False(t, found)
 
-	vote := types.NewVote(1, addr, types.OptionAbstain)
+	vote := types.NewVote(1, addr, types.OptionAbstain, 0)
 
 	app.CustomGovKeeper.SaveVote(ctx, vote)
 
@@ -305,13 +305,13 @@ func TestKeeper_GetProposalVotesIterator(t *testing.T) {
 	app.CustomGovKeeper.SaveProposal(ctx, proposal2)
 
 	// 1st proposal has 2 votes
-	vote1 := types.NewVote(proposal1.ProposalId, addr1, types.OptionYes)
-	vote2 := types.NewVote(proposal1.ProposalId, addr2, types.OptionYes)
+	vote1 := types.NewVote(proposal1.ProposalId, addr1, types.OptionYes, 0)
+	vote2 := types.NewVote(proposal1.ProposalId, addr2, types.OptionYes, 0)
 	app.CustomGovKeeper.SaveVote(ctx, vote1)
 	app.CustomGovKeeper.SaveVote(ctx, vote2)
 
 	// 2nd proposal has 1 vote
-	v1 := types.NewVote(proposal2.ProposalId, addr1, types.OptionYes)
+	v1 := types.NewVote(proposal2.ProposalId, addr1, types.OptionYes, 0)
 	app.CustomGovKeeper.SaveVote(ctx, v1)
 
 	// We iterate the 1st proposal

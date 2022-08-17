@@ -15,6 +15,7 @@ type Keeper struct {
 	tokenKeeper types.TokensKeeper
 	govKeeper   govkeeper.Keeper
 	sk          types.StakingKeeper
+	distrKeeper types.DistributorKeeper
 }
 
 // NewKeeper returns new keeper.
@@ -27,4 +28,8 @@ func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryCodec, bankKeeper types.Ba
 		govKeeper:   govKeeper,
 		sk:          sk,
 	}
+}
+
+func (k *Keeper) SetDistrKeeper(distrKeeper types.DistributorKeeper) {
+	k.distrKeeper = distrKeeper
 }

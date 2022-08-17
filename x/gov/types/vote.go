@@ -4,11 +4,12 @@ import "github.com/cosmos/cosmos-sdk/types"
 
 type Votes []Vote
 
-func NewVote(proposalID uint64, addr types.AccAddress, option VoteOption) Vote {
+func NewVote(proposalID uint64, addr types.AccAddress, option VoteOption, slash uint64) Vote {
 	return Vote{
 		ProposalId: proposalID,
 		Voter:      addr,
 		Option:     option,
+		Slash:      slash,
 	}
 }
 

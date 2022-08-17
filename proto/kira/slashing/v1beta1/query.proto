@@ -7,6 +7,8 @@ import "google/protobuf/timestamp.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "kira/slashing/v1beta1/slashing.proto";
 import "kira/staking/query.proto";
+import "kira/gov/proposal.proto";
+import "kira/multistaking/multistaking.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/slashing/types";
 
@@ -25,6 +27,22 @@ service Query {
   // SigningInfos queries signing info of all validators
   rpc SigningInfos(QuerySigningInfosRequest) returns (QuerySigningInfosResponse) {
     option (google.api.http).get = "/kira/slashing/v1beta1/signing_infos";
+  }
+  // list all active slashing proposals
+  rpc SlashProposals(QuerySlashProposalsRequest) returns (QuerySlashProposalsResponse) {
+    option (google.api.http).get = "/kira/slashing/v1beta1/slash_proposals";
+  }
+  // list all staking pools that were slashed
+  rpc SlashedStakingPools(QuerySlashedStakingPoolsRequest) returns (QuerySlashedStakingPoolsResponse) {
+    option (google.api.http).get = "/kira/slashing/v1beta1/slashed_pools";
+  }
+  // list all staking pools to which tokens can be delegated
+  rpc ActiveStakingPools(QueryActiveStakingPoolsRequest) returns (QueryActiveStakingPoolsResponse) {
+    option (google.api.http).get = "/kira/slashing/v1beta1/active_pools";
+  }
+  // list all staking pools to which tokens can NOT be delegated because validator is not active
+  rpc InactiveStakingPools(QueryInactiveStakingPoolsRequest) returns (QueryInactiveStakingPoolsResponse) {
+    option (google.api.http).get = "/kira/slashing/v1beta1/inactive_pools";
   }
 }
 
@@ -79,4 +97,29 @@ message QuerySigningInfosResponse {
   // validator is the main info saved on native validator object
   repeated kira.staking.QueryValidator validators = 2 [(gogoproto.nullable) = false];
   cosmos.base.query.v1beta1.PageResponse pagination = 3 [(gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types/query.PageResponse"];
+}
+
+// list all active slashing proposals
+message QuerySlashProposalsRequest {}
+message QuerySlashProposalsResponse {
+  repeated kira.gov.Proposal proposals = 1 [ (gogoproto.nullable) = false ];
+}
+
+// list all staking pools that were slashed
+message QuerySlashedStakingPoolsRequest {}
+message QuerySlashedStakingPoolsResponse {
+  repeated kira.multistaking.StakingPool pools = 1 [ (gogoproto.nullable) = false ];
+}
+
+// list all staking pools to which tokens can be delegated
+message QueryActiveStakingPoolsRequest{}
+message QueryActiveStakingPoolsResponse {
+  repeated kira.multistaking.StakingPool pools = 1 [ (gogoproto.nullable) = false ];
+}
+
+// list all staking pools to which tokens can NOT be delegated because validator
+// is not active
+message QueryInactiveStakingPoolsRequest{}
+message QueryInactiveStakingPoolsResponse {
+  repeated kira.multistaking.StakingPool pools = 1 [ (gogoproto.nullable) = false ];
 }

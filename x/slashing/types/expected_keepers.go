@@ -1,9 +1,8 @@
-// noalias
-// DONTCOVER
 package types
 
 import (
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
+	multistakingtypes "github.com/KiraCore/sekai/x/multistaking/types"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	auth "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -72,7 +71,16 @@ type StakingHooks interface {
 type GovKeeper interface {
 	GetNetworkProperties(sdk.Context) *govtypes.NetworkProperties // returns network properties
 	CheckIfAllowedPermission(ctx sdk.Context, addr sdk.AccAddress, permValue govtypes.PermValue) bool
+	GetProposals(ctx sdk.Context) ([]govtypes.Proposal, error)
 	GetNextProposalID(ctx sdk.Context) uint64
 	SaveProposal(ctx sdk.Context, proposal govtypes.Proposal)
 	AddToActiveProposals(ctx sdk.Context, proposal govtypes.Proposal)
+	CreateAndSaveProposalWithContent(ctx sdk.Context, title, description string, content govtypes.Content) (uint64, error)
+}
+
+type MultiStakingKeeper interface {
+	GetStakingPoolByValidator(ctx sdk.Context, validator string) (pool multistakingtypes.StakingPool, found bool)
+	IncreasePoolRewards(ctx sdk.Context, pool multistakingtypes.StakingPool, rewards sdk.Coins)
+	GetAllStakingPools(ctx sdk.Context) []multistakingtypes.StakingPool
+	SlashStakingPool(ctx sdk.Context, validator string, slash uint64)
 }
