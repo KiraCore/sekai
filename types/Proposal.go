@@ -8,6 +8,7 @@ const (
 	ProposalTypeTokensWhiteBlackChange             = "TokensWhiteBlackChange"
 	ProposalTypeUnjailValidator                    = "UnjailValidator"
 	ProposalTypeResetWholeValidatorRank            = "ResetWholeValidatorRank"
+	ProposalTypeSlashValidator                     = "SlashValidator"
 	ProposalTypeUpdateSpendingPool                 = "UpdateSpendingPoolProposal"
 	ProposalTypeSpendingPoolDistribution           = "SpendingPoolDistributionProposal"
 	ProposalTypeSpendingPoolWithdraw               = "SpendingPoolWithdrawProposal"
@@ -40,6 +41,7 @@ var AllProposalTypes []string = []string{
 	ProposalTypeTokensWhiteBlackChange,
 	ProposalTypeUnjailValidator,
 	ProposalTypeResetWholeValidatorRank,
+	ProposalTypeSlashValidator,
 	WhitelistAccountPermissionProposalType,
 	BlacklistAccountPermissionProposalType,
 	RemoveWhitelistedAccountPermissionProposalType,

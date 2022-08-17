@@ -1372,7 +1372,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 		{
 			"voting time has finished",
 			types.NewMsgVoteProposal(
-				1, voterAddr, types.OptionAbstain,
+				1, voterAddr, types.OptionAbstain, 0,
 			),
 			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				actor := types.NewNetworkActor(
@@ -1412,7 +1412,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 		{
 			"Voter does not have permission to vote this proposal: Assign Permission",
 			types.NewMsgVoteProposal(
-				1, voterAddr, types.OptionAbstain,
+				1, voterAddr, types.OptionAbstain, 0,
 			),
 			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				actor := types.NewNetworkActor(
@@ -1448,7 +1448,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 		{
 			"Voter does not have permission to vote this proposal: Change Data Registry",
 			types.NewMsgVoteProposal(
-				1, voterAddr, types.OptionAbstain,
+				1, voterAddr, types.OptionAbstain, 0,
 			),
 			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				actor := types.NewNetworkActor(
@@ -1487,7 +1487,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 		{
 			"Proposal does not exist",
 			types.NewMsgVoteProposal(
-				1, voterAddr, types.OptionAbstain,
+				1, voterAddr, types.OptionAbstain, 0,
 			),
 			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				actor := types.NewNetworkActor(
@@ -1507,7 +1507,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 		{
 			"Voter is not active",
 			types.NewMsgVoteProposal(
-				1, voterAddr, types.OptionAbstain,
+				1, voterAddr, types.OptionAbstain, 0,
 			),
 			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				actor := types.NewDefaultActor(voterAddr)
@@ -1521,7 +1521,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 		{
 			"Voter does not have permission to vote this proposal: Change Network Property",
 			types.NewMsgVoteProposal(
-				1, voterAddr, types.OptionAbstain,
+				1, voterAddr, types.OptionAbstain, 0,
 			),
 			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				actor := types.NewNetworkActor(
@@ -1557,7 +1557,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 		{
 			"Voter does not have permission to vote this proposal: UpsertTokenAlias",
 			types.NewMsgVoteProposal(
-				1, voterAddr, types.OptionAbstain,
+				1, voterAddr, types.OptionAbstain, 0,
 			),
 			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				actor := types.NewNetworkActor(
@@ -1651,14 +1651,14 @@ func TestHandler_VoteProposal(t *testing.T) {
 	require.NoError(t, err)
 	app.CustomGovKeeper.SaveProposal(ctx, proposal)
 
-	msg := types.NewMsgVoteProposal(proposal.ProposalId, voterAddr, types.OptionAbstain)
+	msg := types.NewMsgVoteProposal(proposal.ProposalId, voterAddr, types.OptionAbstain, 0)
 	handler := gov.NewHandler(app.CustomGovKeeper)
 	_, err = handler(ctx, msg)
 	require.NoError(t, err)
 
 	vote, found := app.CustomGovKeeper.GetVote(ctx, proposal.ProposalId, voterAddr)
 	require.True(t, found)
-	require.Equal(t, types.NewVote(proposal.ProposalId, voterAddr, types.OptionAbstain), vote)
+	require.Equal(t, types.NewVote(proposal.ProposalId, voterAddr, types.OptionAbstain, 0), vote)
 }
 
 func setPermissionToAddr(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context, addr sdk.AccAddress, perm types.PermValue) error {
@@ -1949,7 +1949,7 @@ func TestHandler_SetProposalDurationsProposal(t *testing.T) {
 	)
 
 	router := app.CustomGovKeeper.GetProposalRouter()
-	err := router.ApplyProposal(ctx, 1, proposal)
+	err := router.ApplyProposal(ctx, 1, proposal, 0)
 	require.NoError(t, err)
 
 	duration := app.CustomGovKeeper.GetProposalDuration(ctx, kiratypes.CreateRoleProposalType)

@@ -42,6 +42,24 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 			}
 		}
 	}`)
+	cdc.RegisterConcrete(&MsgRefuteSlashingProposal{}, "cosmos-sdk/MsgRefuteSlashingProposal", nil)
+	functionmeta.AddNewFunction((&MsgRefuteSlashingProposal{}).Type(), `{
+		"description": "MsgRefuteSlashingProposal defines a message to refute a validator slash proposal.",
+		"parameters": {
+			"sender": {
+				"type":        "string",
+				"description": "proposer of the message."
+			},
+			"validator": {
+				"type":        "string",
+				"description": "bech32 format of validator address. e.g. kiravaloper1ewgq8gtsefakhal687t8hnsw5zl4y8eksup39w"
+			},
+			"refutation": {
+				"type":        "string",
+				"description": "refutation link of on the proposal"
+			}
+		}
+	}`)
 }
 
 // RegisterInterfaces register interfaces on registry
@@ -50,12 +68,14 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgActivate{},
 		&MsgPause{},
 		&MsgUnpause{},
+		&MsgRefuteSlashingProposal{},
 	)
 
 	registry.RegisterInterface(
 		"kira.gov.Content",
 		(*govtypes.Content)(nil),
 		&ProposalResetWholeValidatorRank{},
+		&ProposalSlashValidator{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)

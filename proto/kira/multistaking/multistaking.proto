@@ -11,15 +11,16 @@ message StakingPool {
   uint64 id = 1;
   string validator = 2;
   bool enabled = 3;
-  repeated string total_staking_tokens = 4 [
+  uint64 slashed = 4;
+  repeated string total_staking_tokens = 5 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
     (gogoproto.nullable) = false
   ];
-  repeated string total_share_tokens = 5 [
+  repeated string total_share_tokens = 6 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
     (gogoproto.nullable) = false
   ];
-  repeated string total_rewards = 6 [
+  repeated string total_rewards = 7 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
     (gogoproto.nullable) = false
   ];

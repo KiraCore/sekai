@@ -165,6 +165,22 @@ func (k Keeper) GetProposalVotes(ctx sdk.Context, proposalID uint64) types.Votes
 	return votes
 }
 
+func (k Keeper) GetAverageVotesSlash(ctx sdk.Context, proposalID uint64) uint64 {
+	votes := k.GetProposalVotes(ctx, proposalID)
+	totalSlash := uint64(0)
+	totalCount := uint64(0)
+	for _, vote := range votes {
+		if vote.Option == types.OptionYes {
+			totalSlash += vote.Slash
+			totalCount++
+		}
+	}
+	if totalCount == 0 {
+		return 0
+	}
+	return totalSlash / totalCount
+}
+
 func (k Keeper) AddToActiveProposals(ctx sdk.Context, proposal types.Proposal) {
 	store := ctx.KVStore(k.storeKey)
 	store.Set(ActiveProposalKey(proposal), ProposalIDToBytes(proposal.ProposalId))

@@ -1,6 +1,9 @@
 package keeper
 
 import (
+	"fmt"
+	"strings"
+
 	"github.com/KiraCore/sekai/x/multistaking/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -217,8 +220,7 @@ func (k Keeper) IncreasePoolRewards(ctx sdk.Context, pool types.StakingPool, rew
 			if err != nil {
 				panic(err)
 			}
-			msgServer := NewMsgServerImpl(k, k.bankKeeper, k.govKeeper, k.sk)
-			_, err = msgServer.Delegate(sdk.WrapSDKContext(ctx), &types.MsgDelegate{
+			err = k.Delegate(ctx, &types.MsgDelegate{
 				DelegatorAddress: delegator.String(),
 				ValidatorAddress: pool.Validator,
 				Amounts:          autoCompoundRewards,
@@ -228,6 +230,27 @@ func (k Keeper) IncreasePoolRewards(ctx sdk.Context, pool types.StakingPool, rew
 			}
 		}
 	}
+}
+
+func (k Keeper) GetMinDelegatorWithValue(ctx sdk.Context, pool types.StakingPool) (sdk.AccAddress, sdk.Int) {
+	poolDelegators := k.GetPoolDelegators(ctx, pool.Id)
+	minDelegationValue := sdk.ZeroInt()
+	minDelegator := sdk.AccAddress{}
+	valAddr, err := sdk.ValAddressFromBech32(pool.Validator)
+	if err != nil {
+		return minDelegator, minDelegationValue
+	}
+	for _, delegator := range poolDelegators {
+		if delegator.String() == sdk.AccAddress(valAddr).String() {
+			continue
+		}
+		delegationValue := k.GetPoolDelegationValue(ctx, pool, delegator)
+		if minDelegationValue.IsZero() || minDelegationValue.GT(delegationValue) {
+			minDelegationValue = delegationValue
+			minDelegator = delegator
+		}
+	}
+	return minDelegator, minDelegationValue
 }
 
 func (k Keeper) Delegate(ctx sdk.Context, msg *types.MsgDelegate) error {
@@ -251,6 +274,10 @@ func (k Keeper) Delegate(ctx sdk.Context, msg *types.MsgDelegate) error {
 		return types.ErrStakingPoolNotFound
 	}
 
+	if pool.Slashed > 0 {
+		return types.ErrActionNotSupportedForSlashedPool
+	}
+
 	delegator, err := sdk.AccAddressFromBech32(msg.DelegatorAddress)
 	if err != nil {
 		return err
@@ -261,20 +288,13 @@ func (k Keeper) Delegate(ctx sdk.Context, msg *types.MsgDelegate) error {
 		properties := k.govKeeper.GetNetworkProperties(ctx)
 		poolDelegators := k.GetPoolDelegators(ctx, pool.Id)
 		if len(poolDelegators) >= int(properties.MaxDelegators) {
-			minDelegationValue := sdk.ZeroInt()
-			minDelegator := sdk.AccAddress{}
-			for _, delegator := range poolDelegators {
-				delegationValue := k.GetPoolDelegationValue(ctx, pool, delegator)
-				if minDelegationValue.IsZero() || minDelegationValue.GT(delegationValue) {
-					minDelegationValue = delegationValue
-					minDelegator = delegator
-				}
-			}
+			minDelegator, minDelegationValue := k.GetMinDelegatorWithValue(ctx, pool)
 
 			// if it exceeds 10x of min delegation remove previous pool delegator
 			delegatorValue := k.GetPoolDelegationValue(ctx, pool, delegator)
 			newDelegatorValue := delegatorValue.Add(k.GetCoinsValue(ctx, msg.Amounts))
-			if newDelegatorValue.GTE(minDelegationValue.Mul(sdk.NewInt(int64(properties.MinDelegationPushout)))) {
+			if minDelegationValue.IsPositive() &&
+				newDelegatorValue.GTE(minDelegationValue.Mul(sdk.NewInt(int64(properties.MinDelegationPushout)))) {
 				k.RemovePoolDelegator(ctx, pool.Id, minDelegator)
 			} else {
 				return types.ErrMaxDelegatorsReached
@@ -298,11 +318,10 @@ func (k Keeper) Delegate(ctx sdk.Context, msg *types.MsgDelegate) error {
 	}
 
 	pool.TotalStakingTokens = sdk.Coins(pool.TotalStakingTokens).Add(msg.Amounts...)
-	poolCoins := getPoolCoins(pool.Id, msg.Amounts)
+	poolCoins := getPoolCoins(pool, msg.Amounts)
 	pool.TotalShareTokens = sdk.Coins(pool.TotalShareTokens).Add(poolCoins...)
 	k.SetStakingPool(ctx, pool)
 
-	// TODO: should check the ratio between poolCoins and coins
 	err = k.bankKeeper.MintCoins(ctx, minttypes.ModuleName, poolCoins)
 	if err != nil {
 		return err
@@ -313,6 +332,50 @@ func (k Keeper) Delegate(ctx sdk.Context, msg *types.MsgDelegate) error {
 	}
 
 	k.SetPoolDelegator(ctx, pool.Id, delegator)
+	return nil
+}
+
+func (k Keeper) Undelegate(ctx sdk.Context, msg *types.MsgUndelegate) error {
+	pool, found := k.GetStakingPoolByValidator(ctx, msg.ValidatorAddress)
+	if !found {
+		return types.ErrStakingPoolNotFound
+	}
+
+	delegator, err := sdk.AccAddressFromBech32(msg.DelegatorAddress)
+	if err != nil {
+		return err
+	}
+
+	poolCoins := getPoolCoins(pool, msg.Amounts)
+
+	err = k.bankKeeper.SendCoinsFromAccountToModule(ctx, delegator, types.ModuleName, poolCoins)
+	if err != nil {
+		return err
+	}
+	err = k.bankKeeper.BurnCoins(ctx, types.ModuleName, poolCoins)
+	if err != nil {
+		return err
+	}
+
+	pool.TotalStakingTokens = sdk.Coins(pool.TotalStakingTokens).Sub(msg.Amounts)
+	pool.TotalShareTokens = sdk.Coins(pool.TotalShareTokens).Sub(poolCoins)
+	k.SetStakingPool(ctx, pool)
+
+	lastUndelegationId := k.GetLastUndelegationId(ctx) + 1
+	k.SetLastUndelegationId(ctx, lastUndelegationId)
+	properties := k.govKeeper.GetNetworkProperties(ctx)
+	k.SetUndelegation(ctx, types.Undelegation{
+		Id:      lastUndelegationId,
+		Address: msg.DelegatorAddress,
+		Expiry:  uint64(ctx.BlockTime().Unix()) + properties.UnstakingPeriod,
+		Amount:  msg.Amounts,
+	})
+
+	balances := k.bankKeeper.GetAllBalances(ctx, delegator)
+	prefix := fmt.Sprintf("v%d_", pool.Id)
+	if !strings.Contains(balances.String(), prefix) {
+		k.RemovePoolDelegator(ctx, pool.Id, delegator)
+	}
 	return nil
 }
 
@@ -355,19 +418,12 @@ func (k Keeper) RegisterDelegator(ctx sdk.Context, delegator sdk.AccAddress) {
 		properties := k.govKeeper.GetNetworkProperties(ctx)
 		poolDelegators := k.GetPoolDelegators(ctx, pool.Id)
 		if len(poolDelegators) >= int(properties.MaxDelegators) {
-			minDelegationValue := sdk.ZeroInt()
-			minDelegator := sdk.AccAddress{}
-			for _, delegator := range poolDelegators {
-				delegationValue := k.GetPoolDelegationValue(ctx, pool, delegator)
-				if minDelegationValue.IsZero() || minDelegationValue.GT(delegationValue) {
-					minDelegationValue = delegationValue
-					minDelegator = delegator
-				}
-			}
+			minDelegator, minDelegationValue := k.GetMinDelegatorWithValue(ctx, pool)
 
 			// if it exceeds 10x of min delegation remove previous pool delegator
 			delegatorValue := k.GetPoolDelegationValue(ctx, pool, delegator)
-			if delegatorValue.GTE(minDelegationValue.Mul(sdk.NewInt(int64(properties.MinDelegationPushout)))) {
+			if minDelegationValue.IsPositive() &&
+				delegatorValue.GTE(minDelegationValue.Mul(sdk.NewInt(int64(properties.MinDelegationPushout)))) {
 				k.RemovePoolDelegator(ctx, pool.Id, minDelegator)
 			} else {
 				continue

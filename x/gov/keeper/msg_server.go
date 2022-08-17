@@ -58,7 +58,7 @@ func (k msgServer) SubmitProposal(goCtx context.Context, msg *types.MsgSubmitPro
 		return nil, types.ErrProposalDoesNotExist
 	}
 
-	err = router.ApplyProposal(cacheCtx, proposalID, proposal.GetContent())
+	err = router.ApplyProposal(cacheCtx, proposalID, proposal.GetContent(), 0)
 	if err != nil {
 		return nil, err
 	}
@@ -112,7 +112,7 @@ func (k msgServer) VoteProposal(
 		}
 	}
 
-	vote := types.NewVote(msg.ProposalId, msg.Voter, msg.Option)
+	vote := types.NewVote(msg.ProposalId, msg.Voter, msg.Option, msg.Slash)
 	k.keeper.SaveVote(ctx, vote)
 
 	ctx.EventManager().EmitEvent(
