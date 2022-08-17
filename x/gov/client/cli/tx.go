@@ -42,6 +42,7 @@ const (
 	FlagRecordIds         = "record-ids"
 	FlagTip               = "tip"
 	FlagApprove           = "approve"
+	FlagSlash             = "slash"
 )
 
 // NewTxCmd returns a root CLI command handler for all x/bank transaction commands.
@@ -1227,10 +1228,16 @@ func GetTxVoteProposal() *cobra.Command {
 				return fmt.Errorf("invalid vote option: %w", err)
 			}
 
+			slash, err := cmd.Flags().GetUint64(FlagSlash)
+			if err != nil {
+				return err
+			}
+
 			msg := types.NewMsgVoteProposal(
 				uint64(proposalID),
 				clientCtx.FromAddress,
 				types.VoteOption(voteOption),
+				slash,
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
@@ -1239,6 +1246,7 @@ func GetTxVoteProposal() *cobra.Command {
 
 	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
+	cmd.Flags().Uint64(FlagSlash, 0, "slash value on the proposal")
 
 	return cmd
 }

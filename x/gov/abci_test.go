@@ -55,7 +55,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 
 					// Only 4 first users vote yes. We reach quorum but not half of the votes are yes.
 					if i < 4 {
-						vote := types.NewVote(proposalID, addr, types.OptionYes)
+						vote := types.NewVote(proposalID, addr, types.OptionYes, 0)
 						app.CustomGovKeeper.SaveVote(ctx, vote)
 					}
 				}
@@ -120,7 +120,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 
 					// Only 3 first users vote yes. We dont reach Quorum.
 					if i < 3 {
-						vote := types.NewVote(proposalID, addr, types.OptionYes)
+						vote := types.NewVote(proposalID, addr, types.OptionYes, 0)
 						app.CustomGovKeeper.SaveVote(ctx, vote)
 					}
 				}
@@ -180,7 +180,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 
 					// Only 4 first users vote yes. We reach quorum but not half of the votes are yes.
 					if i < 4 {
-						vote := types.NewVote(proposalID, addr, types.OptionYes)
+						vote := types.NewVote(proposalID, addr, types.OptionYes, 0)
 						app.CustomGovKeeper.SaveVote(ctx, vote)
 					}
 				}

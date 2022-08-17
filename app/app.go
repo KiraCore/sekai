@@ -225,24 +225,30 @@ func NewInitApp(
 		appCodec, keys[banktypes.StoreKey], app.AccountKeeper, app.GetSubspace(banktypes.ModuleName), app.BlockedAddrs(),
 	)
 
+	app.TokensKeeper = tokenskeeper.NewKeeper(keys[tokenstypes.ModuleName], appCodec)
 	app.CustomGovKeeper = customgovkeeper.NewKeeper(keys[govtypes.ModuleName], appCodec, app.BankKeeper)
 	customStakingKeeper := customstakingkeeper.NewKeeper(keys[stakingtypes.ModuleName], cdc, app.CustomGovKeeper)
+	app.MultiStakingKeeper = multistakingkeeper.NewKeeper(keys[multistakingtypes.ModuleName], appCodec, app.BankKeeper, app.TokensKeeper, app.CustomGovKeeper, customStakingKeeper)
 	app.CustomSlashingKeeper = customslashingkeeper.NewKeeper(
-		appCodec, keys[slashingtypes.StoreKey], &customStakingKeeper, app.CustomGovKeeper, app.GetSubspace(slashingtypes.ModuleName),
+		appCodec,
+		keys[slashingtypes.StoreKey],
+		&customStakingKeeper,
+		app.MultiStakingKeeper,
+		app.CustomGovKeeper,
+		app.GetSubspace(slashingtypes.ModuleName),
 	)
 	app.SpendingKeeper = spendingkeeper.NewKeeper(keys[spendingtypes.ModuleName], appCodec, app.BankKeeper, app.CustomGovKeeper)
 	app.UbiKeeper = ubikeeper.NewKeeper(keys[ubitypes.ModuleName], appCodec, app.BankKeeper, app.SpendingKeeper)
-	app.TokensKeeper = tokenskeeper.NewKeeper(keys[tokenstypes.ModuleName], appCodec)
 	// NOTE: customStakingKeeper above is passed by reference, so that it will contain these hooks
 	app.CustomStakingKeeper = *customStakingKeeper.SetHooks(
 		stakingtypes.NewMultiStakingHooks(app.CustomSlashingKeeper.Hooks()),
 	)
-	app.MultiStakingKeeper = multistakingkeeper.NewKeeper(keys[multistakingtypes.ModuleName], appCodec, app.BankKeeper, app.TokensKeeper, app.CustomGovKeeper, app.CustomStakingKeeper)
 	app.DistrKeeper = distributorkeeper.NewKeeper(
 		keys[distributortypes.ModuleName], appCodec,
 		app.AccountKeeper, app.BankKeeper,
 		app.CustomStakingKeeper, app.CustomGovKeeper,
 		app.MultiStakingKeeper)
+	app.MultiStakingKeeper.SetDistrKeeper(app.DistrKeeper)
 
 	app.UpgradeKeeper = upgradekeeper.NewKeeper(keys[upgradetypes.StoreKey], appCodec, app.CustomStakingKeeper)
 
@@ -275,6 +281,7 @@ func NewInitApp(
 			tokens.NewApplyWhiteBlackChangeProposalHandler(app.TokensKeeper),
 			customstaking.NewApplyUnjailValidatorProposalHandler(app.CustomStakingKeeper, app.CustomGovKeeper),
 			customslashing.NewApplyResetWholeValidatorRankProposalHandler(app.CustomSlashingKeeper),
+			customslashing.NewApplySlashValidatorProposalHandler(app.CustomSlashingKeeper),
 			customgov.NewApplyCreateRoleProposalHandler(app.CustomGovKeeper),
 			customgov.NewApplyRemoveRoleProposalHandler(app.CustomGovKeeper),
 			customgov.NewApplyWhitelistRolePermissionProposalHandler(app.CustomGovKeeper),
