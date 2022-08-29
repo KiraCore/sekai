@@ -30,15 +30,16 @@ sekaid query customgov proposals
 sekaid start --home=$HOME/.sekaid
 
 # propose second upgrade plan
-sekaid tx upgrade proposal-set-plan --name="upgrade2" --instate-upgrade=true --skip-handler=false --resources="[{\"id\":\"infra\",\"git\":\"https://aaa/bbb.com\"}]" --min-upgrade-time=$(($(date -u +%s) + 200))  --old-chain-id=1 --new-chain-id=1 --rollback-memo=1 --max-enrollment-duration=1 --upgrade-memo="upgrade2 test" --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes
+sekaid tx upgrade proposal-set-plan --name="upgrade6" --instate-upgrade=false --skip-handler=true --resources="[{\"id\":\"infra\",\"git\":\"https://aaa/bbb.com\"}]" --min-upgrade-time=$(($(date -u +%s) + 200))  --old-chain-id=testing --new-chain-id=testing --rollback-memo=1 --max-enrollment-duration=1 --upgrade-memo="upgrade2 test" --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes
 
-sekaid tx upgrade proposal-set-plan --name="upgrade3" --instate-upgrade=true --skip-handler=false --resources="[{\"id\":\"infra\",\"git\":\"https://aaa/bbb.com\"}]" --min-upgrade-time=$(($(date -u +%s) + 200))  --old-chain-id=1 --new-chain-id=1 --rollback-memo=1 --max-enrollment-duration=1 --upgrade-memo="upgrade3 test" --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes
+sekaid tx upgrade proposal-set-plan --name="upgrade3" --instate-upgrade=true --skip-handler=false --resources="[{\"id\":\"infra\",\"git\":\"https://aaa/bbb.com\"}]" --min-upgrade-time=$(($(date -u +%s) + 200))  --old-chain-id=testing --new-chain-id=testing --rollback-memo=1 --max-enrollment-duration=1 --upgrade-memo="upgrade3 test" --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes
 
-sekaid tx upgrade proposal-set-plan --name="upgrade4" --instate-upgrade=true --skip-handler=true --resources="[{\"id\":\"infra\",\"git\":\"https://aaa/bbb.com\"}]" --min-upgrade-time=$(($(date -u +%s) + 200))  --old-chain-id=1 --new-chain-id=1 --rollback-memo=1 --max-enrollment-duration=1 --upgrade-memo="upgrade4 test" --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes
+sekaid tx upgrade proposal-set-plan --name="upgrade4" --instate-upgrade=true --skip-handler=true --resources="[{\"id\":\"infra\",\"git\":\"https://aaa/bbb.com\"}]" --min-upgrade-time=$(($(date -u +%s) + 200))  --old-chain-id=testing --new-chain-id=testing --rollback-memo=1 --max-enrollment-duration=1 --upgrade-memo="upgrade4 test" --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes
 
-sekaid tx upgrade proposal-set-plan --name="upgrade5" --instate-upgrade=false --skip-handler=false --resources="[{\"id\":\"infra\",\"git\":\"https://aaa/bbb.com\"}]" --min-upgrade-time=$(($(date -u +%s) + 200))  --old-chain-id=1 --new-chain-id=1 --rollback-memo=1 --max-enrollment-duration=1 --upgrade-memo="upgrade5 test" --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes
+sekaid tx upgrade proposal-set-plan --name="upgrade5" --instate-upgrade=false --skip-handler=false --resources="[{\"id\":\"infra\",\"git\":\"https://aaa/bbb.com\"}]" --min-upgrade-time=$(($(date -u +%s) + 200))  --old-chain-id=testing --new-chain-id=testing --rollback-memo=1 --max-enrollment-duration=1 --upgrade-memo="upgrade5 test" --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes
 
 sekaid tx upgrade proposal-cancel-plan --name="cancel-upgrade4" --from=validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes
+sekaid tx customgov proposal vote 1 1 --from validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes 
 sekaid tx customgov proposal vote 2 1 --from validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes 
 sekaid query customgov proposals
 
