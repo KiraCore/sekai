@@ -26,6 +26,8 @@ message GenesisState {
   int64 snap_period = 3;
   // validator historical votes
   repeated ValidatorVote validator_votes = 4 [(gogoproto.nullable) = false];
+  // previous proposer
+  string previous_proposer = 5;
 }
 
 // https://www.notion.so/kira-network/KIP-73-Fee-Reward-Distributor-v1-32b3d1dc90024befa7bb9680c6a425cd
