@@ -12,7 +12,6 @@ import (
 	customgovkeeper "github.com/KiraCore/sekai/x/gov/keeper"
 	customstakingkeeper "github.com/KiraCore/sekai/x/staking/keeper"
 	tokenskeeper "github.com/KiraCore/sekai/x/tokens/keeper"
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
@@ -20,7 +19,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/signing"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	bank "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"github.com/gogo/protobuf/proto"
 	"time"
 )
 
@@ -40,7 +38,7 @@ func NewAnteHandler(
 ) sdk.AnteHandler {
 	return sdk.ChainAnteDecorators(
 		ante.NewSetUpContextDecorator(), // outermost AnteDecorator. SetUpContext must be called first
-		NewCustodyDecorator(ck),
+		NewCustodyDecorator(ck, cgk),
 		NewZeroGasMeterDecorator(),
 		ante.NewRejectExtensionOptionsDecorator(),
 		ante.NewMempoolFeeDecorator(),
@@ -66,11 +64,13 @@ func NewAnteHandler(
 
 type CustodyDecorator struct {
 	ck custodykeeper.Keeper
+	gk customgovkeeper.Keeper
 }
 
-func NewCustodyDecorator(ck custodykeeper.Keeper) CustodyDecorator {
+func NewCustodyDecorator(ck custodykeeper.Keeper, gk customgovkeeper.Keeper) CustodyDecorator {
 	return CustodyDecorator{
 		ck: ck,
+		gk: gk,
 	}
 }
 
@@ -83,14 +83,25 @@ func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool,
 	for _, msg := range feeTx.GetMsgs() {
 		settings := cd.ck.GetCustodyInfoByAddress(ctx, msg.GetSigners()[0])
 
-		if settings != nil && kiratypes.MsgType(msg) == kiratypes.MsgTypeCreateCustody {
-			msg := msg.(*custodytypes.MsgCreteCustodyRecord)
+		if settings != nil && settings.CustodyEnabled {
+			switch kiratypes.MsgType(msg) {
+			case kiratypes.MsgTypeCreateCustody:
+			case kiratypes.MsgTypeAddToCustodyWhiteList:
+			case kiratypes.MsgTypeAddToCustodyCustodians:
+			case kiratypes.MsgTypeRemoveFromCustodyCustodians:
+			case kiratypes.MsgTypeDropCustodyCustodians:
+			case kiratypes.MsgTypeRemoveFromCustodyWhiteList:
+			case kiratypes.MsgTypeDropCustodyWhiteList:
+				{
+					msg := msg.(*custodytypes.MsgCreteCustodyRecord)
 
-			hash := sha256.Sum256([]byte(msg.OldKey))
-			hashString := hex.EncodeToString(hash[:])
+					hash := sha256.Sum256([]byte(msg.OldKey))
+					hashString := hex.EncodeToString(hash[:])
 
-			if hashString != settings.Key {
-				return ctx, sdkerrors.Wrap(custodytypes.ErrWrongKey, "Custody module")
+					if hashString != settings.Key {
+						return ctx, sdkerrors.Wrap(custodytypes.ErrWrongKey, "Custody module")
+					}
+				}
 			}
 		}
 
@@ -103,40 +114,38 @@ func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool,
 		}
 
 		if kiratypes.MsgType(msg) == bank.TypeMsgSend {
-			protoTx := msg.(proto.Message)
+			//protoTx := msg.(proto.Message)
 			msg := msg.(*bank.MsgSend)
 
 			if settings != nil && settings.CustodyEnabled {
 				custodians := cd.ck.GetCustodyCustodiansByAddress(ctx, msg.GetSigners()[0])
 
-				//Todo: Check fee exists
+				if len(custodians.Addresses) > 0 {
 
-				if len(custodians.Addresses) == 0 {
-					continue
+					//record := custodytypes.CustodyPool{
+					//	Address: msg.GetSigners()[0],
+					//	Transactions: &custodytypes.TransactionPool{
+					//		Record: map[string]*custodytypes.TransactionRecord{},
+					//	},
+					//}
+					//
+					//hash := sha256.Sum256(ctx.TxBytes())
+					//hashString := hex.EncodeToString(hash[:])
+					//anyValue, anyErr := codectypes.NewAnyWithValue(protoTx)
+					//
+					//if anyErr != nil {
+					//	return ctx, sdkerrors.Wrap(sdkerrors.ErrPackAny, anyErr.Error())
+					//}
+					//
+					//record.Transactions.Record[hashString] = &custodytypes.TransactionRecord{
+					//	Transaction: anyValue,
+					//	Votes:       0,
+					//}
+					//
+					//cd.ck.AddToCustodyPool(ctx, record)
+
+					return ctx, sdkerrors.Wrap(sdkerrors.ErrConflict, "Custody module is enabled. Please use custody send instead.")
 				}
-
-				record := custodytypes.CustodyPool{
-					Address:      msg.GetSigners()[0],
-					Transactions: new(custodytypes.TransactionPool),
-				}
-
-				hash := sha256.Sum256(ctx.TxBytes())
-				hashString := hex.EncodeToString(hash[:])
-				anyValue, anyErr := codectypes.NewAnyWithValue(protoTx)
-
-				if anyErr != nil {
-					return ctx, sdkerrors.Wrap(sdkerrors.ErrPackAny, anyErr.Error())
-				}
-
-				record.Transactions.Record[hashString] = &custodytypes.TransactionRecord{
-					Transaction: anyValue,
-					Votes:       0,
-				}
-
-				//Todo: if Exists in pool and votes anought do not block and remove from the list
-				cd.ck.AddToCustodyPool(ctx, record)
-
-				return ctx, sdkerrors.Wrap(sdkerrors.ErrConflict, "Waiting for custodians check.")
 			}
 
 			if settings != nil && settings.UseWhiteList {
@@ -149,10 +158,6 @@ func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool,
 
 			if settings != nil && settings.UseLimits {
 				limits := cd.ck.GetCustodyLimitsByAddress(ctx, msg.GetSigners()[0])
-
-				logger := cd.ck.Logger(ctx)
-				logger.Info("Limits", "msg", msg)
-				logger.Info("Limits", "limits", limits)
 
 				custodyLimitStatusRecord := custodytypes.CustodyLimitStatusRecord{
 					Address:         msg.GetSigners()[0],

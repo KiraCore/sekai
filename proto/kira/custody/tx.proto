@@ -5,14 +5,13 @@ import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 import "kira/custody/custody.proto";
 import "google/protobuf/any.proto";
+import "cosmos/base/v1beta1/coin.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/custody/types";
 
 // Msg defines the custody Msg service.
 service Msg {
   rpc CreateCustody(MsgCreteCustodyRecord) returns (MsgCreteCustodyRecordResponse);
-//  rpc AddToCustodyPool(MsgAddToCustodyPool) returns (MsgAddToCustodyPoolResponse);
-//  rpc RemoveFromCustodyPool(MsgRemoveFromCustodyPool) returns (MsgRemoveFromCustodyPoolResponse);
   rpc AddToCustodians(MsgAddToCustodyCustodians) returns (MsgAddToCustodyCustodiansResponse);
   rpc RemoveFromCustodians(MsgRemoveFromCustodyCustodians) returns (MsgRemoveFromCustodyCustodiansResponse);
   rpc DropCustodians(MsgDropCustodyCustodians) returns (MsgDropCustodyCustodiansResponse);
@@ -22,11 +21,10 @@ service Msg {
   rpc AddToLimits(MsgAddToCustodyLimits) returns (MsgAddToCustodyLimitsResponse);
   rpc RemoveFromLimits(MsgRemoveFromCustodyLimits) returns (MsgRemoveFromCustodyLimitsResponse);
   rpc DropLimits(MsgDropCustodyLimits) returns (MsgDropCustodyLimitsResponse);
-//  rpc AddToLimitsStatus(MsgAddToCustodyLimitsStatus) returns (MsgAddToCustodyLimitsStatusResponse);
+  rpc ApproveTransaction(MsgApproveCustodyTransaction) returns (MsgApproveCustodyTransactionResponse);
+  rpc DeclineTransaction(MsgDeclineCustodyTransaction) returns (MsgDeclineCustodyTransactionResponse);
+  rpc Send(MsgSend) returns (MsgSendResponse);
 }
-
-//    Approve
-//    Decline
 
 message MsgCreteCustodyRecord {
   option (gogoproto.equal)           = false;
@@ -157,19 +155,6 @@ message MsgAddToCustodyLimits {
   string new_key = 6;
 }
 
-//message MsgAddToCustodyLimitsStatus {
-//  option (gogoproto.equal)           = false;
-//  option (gogoproto.goproto_getters) = false;
-//
-//  bytes address = 1 [
-//    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
-//    (gogoproto.moretags) = "yaml:\"address\""
-//  ];
-//
-//  string denom   = 2;
-//  uint64 amount  = 3;
-//}
-
 message MsgRemoveFromCustodyLimits {
   option (gogoproto.equal)           = false;
   option (gogoproto.goproto_getters) = false;
@@ -197,33 +182,42 @@ message MsgDropCustodyLimits {
   string new_key = 3;
 }
 
-//message MsgAddToCustodyPool {
-//  option (gogoproto.equal)           = false;
-//  option (gogoproto.goproto_getters) = false;
-//
-//  bytes address = 1 [
-//    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
-//    (gogoproto.moretags) = "yaml:\"address\""
-//  ];
-//
-//  google.protobuf.Any transaction = 2;
-//}
-//
-//message MsgRemoveFromCustodyPool {
-//  option (gogoproto.equal)           = false;
-//  option (gogoproto.goproto_getters) = false;
-//
-//  bytes address = 1 [
-//    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
-//    (gogoproto.moretags) = "yaml:\"address\""
-//  ];
-//
-//  google.protobuf.Any transaction = 2;
-//}
+message MsgApproveCustodyTransaction {
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
+  bytes address = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  string hash = 2;
+}
+
+message MsgDeclineCustodyTransaction {
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
+  bytes address = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  string hash = 2;
+}
+
+message MsgSend {
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string   from_address                    = 1 [(gogoproto.moretags) = "yaml:\"from_address\""];
+  string   to_address                      = 2 [(gogoproto.moretags) = "yaml:\"to_address\""];
+  repeated cosmos.base.v1beta1.Coin amount = 3
+  [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];
+  string   password                        = 4 [(gogoproto.moretags) = "yaml:\"password\""];
+}
 
 message MsgCreteCustodyRecordResponse {}
-//message MsgAddToCustodyPoolResponse {}
-//message MsgRemoveFromCustodyPoolResponse {}
 message MsgAddToCustodyCustodiansResponse {}
 message MsgRemoveFromCustodyCustodiansResponse {}
 message MsgDropCustodyCustodiansResponse {}
@@ -231,6 +225,8 @@ message MsgAddToCustodyWhiteListResponse {}
 message MsgRemoveFromCustodyWhiteListResponse {}
 message MsgDropCustodyWhiteListResponse {}
 message MsgAddToCustodyLimitsResponse {}
-//message MsgAddToCustodyLimitsStatusResponse {}
 message MsgRemoveFromCustodyLimitsResponse {}
 message MsgDropCustodyLimitsResponse {}
+message MsgApproveCustodyTransactionResponse {}
+message MsgDeclineCustodyTransactionResponse {}
+message MsgSendResponse {}

@@ -3,19 +3,19 @@ package custody
 import (
 	"context"
 	"encoding/json"
+
 	"github.com/KiraCore/sekai/middleware"
 	custodycli "github.com/KiraCore/sekai/x/custody/client/cli"
 	custodykeeper "github.com/KiraCore/sekai/x/custody/keeper"
 	"github.com/KiraCore/sekai/x/custody/types"
 	custodytypes "github.com/KiraCore/sekai/x/custody/types"
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/gorilla/mux"
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"
 	abci "github.com/tendermint/tendermint/abci/types"
 )
@@ -65,11 +65,13 @@ func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
 
 type AppModule struct {
 	AppModuleBasic
-	custodyKeeper custodykeeper.Keeper
+	custodyKeeper   custodykeeper.Keeper
+	customGovKeeper custodytypes.CustomGovKeeper
+	bankKeeper      custodytypes.BankKeeper
 }
 
 func (am AppModule) RegisterServices(cfg module.Configurator) {
-	custodytypes.RegisterMsgServer(cfg.MsgServer(), custodykeeper.NewMsgServerImpl(am.custodyKeeper))
+	custodytypes.RegisterMsgServer(cfg.MsgServer(), custodykeeper.NewMsgServerImpl(am.custodyKeeper, am.customGovKeeper, am.bankKeeper))
 	querier := custodykeeper.NewQuerier(am.custodyKeeper)
 	custodytypes.RegisterQueryServer(cfg.QueryServer(), querier)
 }
@@ -83,20 +85,20 @@ func (am AppModule) InitGenesis(
 	cdc codec.JSONCodec,
 	data json.RawMessage,
 ) []abci.ValidatorUpdate {
-	var genesisState custodytypes.GenesisState
-	cdc.MustUnmarshalJSON(data, &genesisState)
-
-	am.custodyKeeper.SetMaxCustodyBufferSize(ctx, genesisState.MaxCustodyBufferSize)
-	am.custodyKeeper.SetMaxCustodyTxSize(ctx, genesisState.MaxCustodyTxSize)
+	//var genesisState custodytypes.GenesisState
+	//cdc.MustUnmarshalJSON(data, &genesisState)
+	//
+	//am.custodyKeeper.SetMaxCustodyBufferSize(ctx, genesisState.MaxCustodyBufferSize)
+	//am.custodyKeeper.SetMaxCustodyTxSize(ctx, genesisState.MaxCustodyTxSize)
 
 	return nil
 }
 
 func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.RawMessage {
-	var genesisState custodytypes.GenesisState
-	genesisState.MaxCustodyBufferSize = am.custodyKeeper.GetMaxCustodyBufferSize(ctx)
-	genesisState.MaxCustodyTxSize = am.custodyKeeper.GetMaxCustodyTxSize(ctx)
-	return cdc.MustMarshalJSON(&genesisState)
+	//var genesisState custodytypes.GenesisState
+	//genesisState.MaxCustodyBufferSize = am.custodyKeeper.GetMaxCustodyBufferSize(ctx)
+	//genesisState.MaxCustodyTxSize = am.custodyKeeper.GetMaxCustodyTxSize(ctx)
+	return nil
 }
 
 func (AppModule) ConsensusVersion() uint64 { return 1 }
@@ -122,11 +124,17 @@ func (am AppModule) Name() string {
 }
 
 func (am AppModule) Route() sdk.Route {
-	return middleware.NewRoute(custodytypes.ModuleName, NewHandler(am.custodyKeeper))
+	return middleware.NewRoute(custodytypes.ModuleName, NewHandler(am.custodyKeeper, am.customGovKeeper, am.bankKeeper))
 }
 
-func NewAppModule(keeper custodykeeper.Keeper) AppModule {
+func (am AppModule) CheckTx() string {
+	return custodytypes.ModuleName
+}
+
+func NewAppModule(keeper custodykeeper.Keeper, customGovKeeper custodytypes.CustomGovKeeper, bankKeeper custodytypes.BankKeeper) AppModule {
 	return AppModule{
-		custodyKeeper: keeper,
+		custodyKeeper:   keeper,
+		customGovKeeper: customGovKeeper,
+		bankKeeper:      bankKeeper,
 	}
 }

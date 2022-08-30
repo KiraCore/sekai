@@ -32,6 +32,7 @@ func NewTxCmd() *cobra.Command {
 	txCmd.AddCommand(NewCustodiansTxCmd())
 	txCmd.AddCommand(NewWhiteListTxCmd())
 	txCmd.AddCommand(NewLimitsTxCmd())
+	txCmd.AddCommand(NewBankTxCmd())
 
 	return txCmd
 }
@@ -64,6 +65,8 @@ func NewCustodiansTxCmd() *cobra.Command {
 	txCmd.AddCommand(GetTxAddToCustodyCustodians())
 	txCmd.AddCommand(GetTxRemoveFromCustodyCustodians())
 	txCmd.AddCommand(GetTxDropCustodyCustodians())
+	txCmd.AddCommand(GetTxAproveCustodyTransaction())
+	txCmd.AddCommand(GetTxDeclineCustodyTransaction())
 
 	return txCmd
 }
@@ -211,6 +214,56 @@ func GetTxDropCustodyCustodians() *cobra.Command {
 	cmd.Flags().String(NewKey, "", "Next hash string.")
 	cmd.MarkFlagRequired(NewKey)
 
+	flags.AddTxFlagsToCmd(cmd)
+	cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+func GetTxAproveCustodyTransaction() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "approve [hash]",
+		Short: "Approve custody transaction by hash",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgApproveCustodyTransaction(
+				clientCtx.FromAddress,
+				args[0],
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+	flags.AddTxFlagsToCmd(cmd)
+	cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+func GetTxDeclineCustodyTransaction() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "decline [hash]",
+		Short: "Decline custody transaction by hash",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgDeclineCustodyTransaction(
+				clientCtx.FromAddress,
+				args[0],
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
 	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
 
@@ -571,6 +624,39 @@ func GetTxDropCustodyLimits() *cobra.Command {
 
 	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+func NewBankTxCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use: "send [from_key_or_address] [to_address] [amount]",
+		Short: `Send funds from one account to another. Note, the'--from' flag is
+ignored as it is implied from [from_key_or_address].`,
+		Args: cobra.ExactArgs(4),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			cmd.Flags().Set(flags.FlagFrom, args[0])
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+			toAddr, err := sdk.AccAddressFromBech32(args[1])
+			if err != nil {
+				return err
+			}
+
+			coins, err := sdk.ParseCoinsNormalized(args[2])
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgSend(clientCtx.GetFromAddress(), toAddr, coins, args[3])
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd
 }

@@ -33,6 +33,7 @@ func NewCustodiansCmd() *cobra.Command {
 	}
 
 	queryCmd.AddCommand(GetCmdQueryCustodiansByAddress())
+	queryCmd.AddCommand(GetCmdQueryCustodyPoolByAddress())
 
 	return queryCmd
 }
@@ -74,6 +75,35 @@ func GetCmdQueryCustodiansByAddress() *cobra.Command {
 			params := &types.CustodyCustodiansByAddressRequest{Addr: accAddr}
 			queryClient := types.NewQueryClient(clientCtx)
 			res, err := queryClient.CustodyCustodiansByAddress(context.Background(), params)
+
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func GetCmdQueryCustodyPoolByAddress() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "pool [addr]",
+		Short: "Query custody pool",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			accAddr, err := sdk.AccAddressFromBech32(args[0])
+
+			if err != nil {
+				return errors.Wrap(err, "invalid account address")
+			}
+
+			params := &types.CustodyPoolByAddressRequest{Addr: accAddr}
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.CustodyPoolByAddress(context.Background(), params)
 
 			if err != nil {
 				return err

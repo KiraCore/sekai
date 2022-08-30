@@ -8,8 +8,8 @@ import (
 )
 
 // NewHandler returns new instance of handler
-func NewHandler(ck keeper.Keeper) sdk.Handler {
-	msgServer := keeper.NewMsgServerImpl(ck)
+func NewHandler(ck keeper.Keeper, cgk types.CustomGovKeeper, bk types.BankKeeper) sdk.Handler {
+	msgServer := keeper.NewMsgServerImpl(ck, cgk, bk)
 
 	return func(ctx sdk.Context, msg sdk.Msg) (*sdk.Result, error) {
 		ctx = ctx.WithEventManager(sdk.NewEventManager())
@@ -44,6 +44,9 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 			return sdk.WrapServiceResult(ctx, res, err)
 		case *types.MsgDropCustodyLimits:
 			res, err := msgServer.DropLimits(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgSend:
+			res, err := msgServer.Send(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 		default:
 			return nil, errors.Wrapf(errors.ErrUnknownRequest, "unrecognized %s message type: %T", types.ModuleName, msg)

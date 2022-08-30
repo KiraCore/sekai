@@ -66,7 +66,7 @@ function txAwait() {
     local START_TIME="$(date -u +%s)"
     local RAW=""
     local TIMEOUT=""
-    
+
     if (! $(isTxHash "$1")) ; then
         RAW=$(cat)
         TIMEOUT=$1
@@ -1131,3 +1131,32 @@ function getCustodians() {
 
   echo $RESULT
 }
+
+# e.g. getCustodyWhitelist
+function getCustodyPool() {
+  local FROM=$1
+  local RESULT=$(sekaid query custody custodians pool $FROM --output=json --home=$SEKAID_HOME 2> /dev/null | jsonParse "transactions" 2> /dev/null || echo -n "")
+
+  echo $RESULT
+}
+
+# e.g. sendTokens faucet kiraXXX...XXX 1000 ukex 100 ukex
+function sendFailTokens() {
+    local SOURCE=$1
+    local DESTINATION=$(showAddress $2)
+    local AMOUNT="$3"
+    local DENOM="$4"
+    local FEE_AMOUNT="$5"
+    local FEE_DENOM="$6"
+
+    ($(isNullOrEmpty $FEE_AMOUNT)) && FEE_AMOUNT=100
+    ($(isNullOrEmpty $FEE_DENOM)) && FEE_DENOM="ukex"
+
+    echoInfo "INFO: Sending $AMOUNT $DENOM | $SOURCE -> $DESTINATION"
+    OLD_BALANCE_SRC=$(showBalance "$SOURCE" "$DENOM") && (! $(isNaturalNumber $OLD_BALANCE_SRC)) && OLD_BALANCE_SRC=0
+    OLD_BALANCE_SRC_FEE=$(showBalance "$SOURCE" "$FEE_DENOM") && (! $(isNaturalNumber $OLD_BALANCE_SRC_FEE)) && OLD_BALANCE_SRC_FEE=0
+    OLD_BALANCE_DEST=$(showBalance "$DESTINATION" "$DENOM") && (! $(isNaturalNumber $OLD_BALANCE_DEST)) && OLD_BALANCE_DEST=0
+
+    sekaid tx bank send $SOURCE $DESTINATION "${AMOUNT}${DENOM}" --keyring-backend=test --chain-id=$NETWORK_NAME --fees "${FEE_AMOUNT}${FEE_DENOM}" --output=json --yes --home=$SEKAID_HOME
+}
+

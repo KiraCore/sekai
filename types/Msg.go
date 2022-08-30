@@ -67,8 +67,6 @@ const (
 
 	// custody module
 	MsgTypeCreateCustody               = "create-custody"
-	MsgTypeAddToCustodyPool            = "add-to-custody-pool"
-	MsgTypeRemoveFromCustodyPool       = "remove-from-custody-pool"
 	MsgTypeAddToCustodyWhiteList       = "add-to-custody-whitelist"
 	MsgTypeAddToCustodyCustodians      = "add-to-custody-custodians"
 	MsgTypeRemoveFromCustodyCustodians = "remove-from-custody-custodians"
@@ -77,6 +75,7 @@ const (
 	MsgTypeDropCustodyWhiteList        = "drop-custody-whitelist"
 	MsgApproveCustodyTransaction       = "approve-custody-transaction"
 	MsgDeclineCustodyTransaction       = "decline-custody-transaction"
+	MsgTypeSend                        = "custody-send"
 )
 
 // Msg defines the interface a transaction message must fulfill.
@@ -127,16 +126,14 @@ var MsgFuncIDMapping = map[string]int64{
 	MsgTypeClaimSpendingPool:               44,
 
 	MsgTypeCreateCustody:               45,
-	MsgTypeAddToCustodyPool:            46,
-	MsgTypeRemoveFromCustodyPool:       47,
-	MsgTypeAddToCustodyWhiteList:       48,
-	MsgTypeAddToCustodyCustodians:      49,
-	MsgTypeRemoveFromCustodyCustodians: 50,
-	MsgTypeDropCustodyCustodians:       51,
-	MsgTypeRemoveFromCustodyWhiteList:  52,
-	MsgTypeDropCustodyWhiteList:        53,
-	MsgApproveCustodyTransaction:       54,
-	MsgDeclineCustodyTransaction:       55,
+	MsgTypeAddToCustodyWhiteList:       46,
+	MsgTypeAddToCustodyCustodians:      47,
+	MsgTypeRemoveFromCustodyCustodians: 48,
+	MsgTypeDropCustodyCustodians:       49,
+	MsgTypeRemoveFromCustodyWhiteList:  50,
+	MsgTypeDropCustodyWhiteList:        51,
+	MsgApproveCustodyTransaction:       52,
+	MsgDeclineCustodyTransaction:       53,
 }
 
 func MsgType(msg sdk.Msg) string {
