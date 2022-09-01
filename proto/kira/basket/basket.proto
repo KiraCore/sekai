@@ -1,0 +1,84 @@
+syntax = "proto3";
+package kira.basket;
+
+option go_package = "github.com/KiraCore/sekai/x/basket/types";
+option (gogoproto.equal_all) = true;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+
+message Basket {
+  uint64 id = 1; // basket identifier
+  string suffix = 2; // denom suffix, resulting token denom would be B1_usd when the value is "usd"
+  string description = 3; // basket description
+  string amount = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ]; // total supply of all minted basket tokens
+  string swap_fee = 5 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ]; // range of 0 to 1, default 0.0015 (0.15%) - percentage fee to be paid for swapping tokens
+  string slipppage_fee_min = 6 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ]; // range of 0 to 1, default 0.0015 (0.15%) - minimum percentage to be paid as penalty for disbalancing the basket
+  string tokens_cap = 7 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ]; // range of 0 to 1, E.g: fail mint/burn/swap tx if more than 90% supply would end up being represented by a single token
+    uint64 limits_period = 8; // // in seconds, period after which all mint/burns limits are reset (default 1 day)
+    string mints_min = 9 [
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+      (gogoproto.nullable) = false
+    ]; // minimum amount tokens that must be minted in a single tx
+    string mints_max = 10 [
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+      (gogoproto.nullable) = false
+    ]; // maximum daily issuance limit tokens
+    string burns_min = 11 [
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+      (gogoproto.nullable) = false
+    ]; // minimum amount tokens that must be burned in a single tx
+    string burns_max = 12 [
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+      (gogoproto.nullable) = false
+    ]; // maximum daily burn amount (resulting in aggregate tokens redemptions)
+    string swaps_min = 13 [
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+      (gogoproto.nullable) = false
+    ]; // minimum value of aggregate tokens expressed in B1_usd that must be swapped in a single tx
+    string swaps_max = 14 [
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+      (gogoproto.nullable) = false
+    ]; // maximum daily swap amount of aggregate tokens (resulting in aggregate tokens redemptions)
+    repeated BasketToken tokens = 15 [ (gogoproto.nullable) = false ];
+    repeated string surplus = 16 [
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+      (gogoproto.nullable) = false
+    ]; // list of excess tokens deposited as result of rewards and/or swaps (that did not resulted in minting)
+}
+
+message BasketToken {
+    string denom = 1; // denom of one of the aggregate tokens
+    string weight = 2[
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ]; // relative value of the token to its underlying derivative 100 deposit should result in 99 issuance
+    string amount = 3 [
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+      (gogoproto.nullable) = false
+    ]; // total deposited amount of usdt available for withdrawl
+    bool deposits = 4; // defines if deposits of usdt resulting in minting are allowed
+    bool withdraws = 5; // defines if withdraws of usdt as result of burns are allowed
+    bool swaps = 6;     // defines if swaps of usdt for other tokens are allowed
+}
+
+// used to record mint, burn, swap actions to prevent actions from exceeding daily limitation
+message AmountAtTime {
+    uint64 time = 1;
+    string amount = 3 [
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+      (gogoproto.nullable) = false
+    ];
+}

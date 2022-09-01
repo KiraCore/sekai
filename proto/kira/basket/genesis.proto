@@ -1,0 +1,15 @@
+syntax = "proto3";
+package kira.basket;
+
+option go_package = "github.com/KiraCore/sekai/x/basket/types";
+
+import "gogoproto/gogo.proto";
+import "kira/basket/basket.proto";
+
+// GenesisState defines the basket module's genesis state.
+message GenesisState {
+  // baskets registered on the module
+  repeated Basket baskets = 1 [ (gogoproto.nullable) = false ];
+}
+
+// https://www.notion.so/kira-network/KIP-78-Token-Basketing-Module-7e6da1f2667c4c13b2274d546031d5db
