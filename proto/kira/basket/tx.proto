@@ -14,7 +14,7 @@ service Msg {
   // DisableBasketDeposits - emergency function & permission to disable one or all deposits of one or all token in the basket
   rpc DisableBasketDeposits(MsgDisableBasketDeposits) returns (MsgDisableBasketDepositsResponse);
   // DisableBasketWithdraws - emergency function & permission to disable one or all withdrawals of one or all token in the basket
-  rpc DisableBasketWithdraws(MsgDisableBasketDeposits) returns (MsgDisableBasketDepositsResponse);
+  rpc DisableBasketWithdraws(MsgDisableBasketWithdraws) returns (MsgDisableBasketWithdrawsResponse);
   // DisableBasketSwaps - emergency function & permission to disable one or all withdrawals of one or all token in the basket
   rpc DisableBasketSwaps(MsgDisableBasketSwaps) returns (MsgDisableBasketSwapsResponse);
   // BasketTokenMint - to mint basket tokens
@@ -31,7 +31,7 @@ service Msg {
 //     - To disable all deposits at once the `mints_max` should be set to `0`
 //     - To disable single token set `deposits` boolean flag to false
 message MsgDisableBasketDeposits {
-
+  string sender = 1;
 }
 message MsgDisableBasketDepositsResponse {}
 
@@ -39,7 +39,7 @@ message MsgDisableBasketDepositsResponse {}
 //     - To disable all withdraws at once the `burns_max` should be set to `0`
 //     - To disable single token set `withdraws` boolean flag to false
 message MsgDisableBasketWithdraws {
-
+  string sender = 1;
 }
 message MsgDisableBasketWithdrawsResponse {}
 
@@ -47,26 +47,30 @@ message MsgDisableBasketWithdrawsResponse {}
 //     - To disable all swaps at once the `swaps_max` should be set to `0`
 //     - To disable single token set `swaps` boolean flag to false
 message MsgDisableBasketSwaps {
-
+  string sender = 1;
 }
 message MsgDisableBasketSwapsResponse {}
 
 // - `basket-token-mint` - transaction to mint basket tokens
-message MsgBasketTokenMint {}
+message MsgBasketTokenMint {
+  string sender = 1;
+}
 message MsgBasketTokenMintResponse {}
 
 // - `basket-token-burn` - transaction to burn basket tokens and redeem underlying aggregate tokens
-message MsgBasketTokenBurn {}
+message MsgBasketTokenBurn {
+  string sender = 1;
+}
 message MsgBasketTokenBurnResponse {}
 
 // - `basket-token-swap` - transaction to swap one or many of the basket tokens for one or many others
 message MsgBasketTokenSwap {
-
+  string sender = 1;
 }
 message MsgBasketTokenSwapResponse {}
 
 // - `basket-claim-rewards` - transaction to force staking derivative `SDB` basket to claim outstanding rewards of one all or many aggregate `V<ID>` tokens
 message MsgBasketClaimRewards {
-
+  string sender = 1;
 }
 message MsgBasketClaimRewardsResponse {}

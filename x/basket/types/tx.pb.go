@@ -34,6 +34,7 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 //     - To disable all deposits at once the `mints_max` should be set to `0`
 //     - To disable single token set `deposits` boolean flag to false
 type MsgDisableBasketDeposits struct {
+	Sender string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
 }
 
 func (m *MsgDisableBasketDeposits) Reset()         { *m = MsgDisableBasketDeposits{} }
@@ -68,6 +69,13 @@ func (m *MsgDisableBasketDeposits) XXX_DiscardUnknown() {
 }
 
 var xxx_messageInfo_MsgDisableBasketDeposits proto.InternalMessageInfo
+
+func (m *MsgDisableBasketDeposits) GetSender() string {
+	if m != nil {
+		return m.Sender
+	}
+	return ""
+}
 
 type MsgDisableBasketDepositsResponse struct {
 }
@@ -109,6 +117,7 @@ var xxx_messageInfo_MsgDisableBasketDepositsResponse proto.InternalMessageInfo
 //     - To disable all withdraws at once the `burns_max` should be set to `0`
 //     - To disable single token set `withdraws` boolean flag to false
 type MsgDisableBasketWithdraws struct {
+	Sender string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
 }
 
 func (m *MsgDisableBasketWithdraws) Reset()         { *m = MsgDisableBasketWithdraws{} }
@@ -143,6 +152,13 @@ func (m *MsgDisableBasketWithdraws) XXX_DiscardUnknown() {
 }
 
 var xxx_messageInfo_MsgDisableBasketWithdraws proto.InternalMessageInfo
+
+func (m *MsgDisableBasketWithdraws) GetSender() string {
+	if m != nil {
+		return m.Sender
+	}
+	return ""
+}
 
 type MsgDisableBasketWithdrawsResponse struct {
 }
@@ -184,6 +200,7 @@ var xxx_messageInfo_MsgDisableBasketWithdrawsResponse proto.InternalMessageInfo
 //     - To disable all swaps at once the `swaps_max` should be set to `0`
 //     - To disable single token set `swaps` boolean flag to false
 type MsgDisableBasketSwaps struct {
+	Sender string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
 }
 
 func (m *MsgDisableBasketSwaps) Reset()         { *m = MsgDisableBasketSwaps{} }
@@ -218,6 +235,13 @@ func (m *MsgDisableBasketSwaps) XXX_DiscardUnknown() {
 }
 
 var xxx_messageInfo_MsgDisableBasketSwaps proto.InternalMessageInfo
+
+func (m *MsgDisableBasketSwaps) GetSender() string {
+	if m != nil {
+		return m.Sender
+	}
+	return ""
+}
 
 type MsgDisableBasketSwapsResponse struct {
 }
@@ -257,6 +281,7 @@ var xxx_messageInfo_MsgDisableBasketSwapsResponse proto.InternalMessageInfo
 
 // - `basket-token-mint` - transaction to mint basket tokens
 type MsgBasketTokenMint struct {
+	Sender string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
 }
 
 func (m *MsgBasketTokenMint) Reset()         { *m = MsgBasketTokenMint{} }
@@ -291,6 +316,13 @@ func (m *MsgBasketTokenMint) XXX_DiscardUnknown() {
 }
 
 var xxx_messageInfo_MsgBasketTokenMint proto.InternalMessageInfo
+
+func (m *MsgBasketTokenMint) GetSender() string {
+	if m != nil {
+		return m.Sender
+	}
+	return ""
+}
 
 type MsgBasketTokenMintResponse struct {
 }
@@ -330,6 +362,7 @@ var xxx_messageInfo_MsgBasketTokenMintResponse proto.InternalMessageInfo
 
 // - `basket-token-burn` - transaction to burn basket tokens and redeem underlying aggregate tokens
 type MsgBasketTokenBurn struct {
+	Sender string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
 }
 
 func (m *MsgBasketTokenBurn) Reset()         { *m = MsgBasketTokenBurn{} }
@@ -364,6 +397,13 @@ func (m *MsgBasketTokenBurn) XXX_DiscardUnknown() {
 }
 
 var xxx_messageInfo_MsgBasketTokenBurn proto.InternalMessageInfo
+
+func (m *MsgBasketTokenBurn) GetSender() string {
+	if m != nil {
+		return m.Sender
+	}
+	return ""
+}
 
 type MsgBasketTokenBurnResponse struct {
 }
@@ -403,6 +443,7 @@ var xxx_messageInfo_MsgBasketTokenBurnResponse proto.InternalMessageInfo
 
 // - `basket-token-swap` - transaction to swap one or many of the basket tokens for one or many others
 type MsgBasketTokenSwap struct {
+	Sender string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
 }
 
 func (m *MsgBasketTokenSwap) Reset()         { *m = MsgBasketTokenSwap{} }
@@ -437,6 +478,13 @@ func (m *MsgBasketTokenSwap) XXX_DiscardUnknown() {
 }
 
 var xxx_messageInfo_MsgBasketTokenSwap proto.InternalMessageInfo
+
+func (m *MsgBasketTokenSwap) GetSender() string {
+	if m != nil {
+		return m.Sender
+	}
+	return ""
+}
 
 type MsgBasketTokenSwapResponse struct {
 }
@@ -476,6 +524,7 @@ var xxx_messageInfo_MsgBasketTokenSwapResponse proto.InternalMessageInfo
 
 // - `basket-claim-rewards` - transaction to force staking derivative `SDB` basket to claim outstanding rewards of one all or many aggregate `V<ID>` tokens
 type MsgBasketClaimRewards struct {
+	Sender string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
 }
 
 func (m *MsgBasketClaimRewards) Reset()         { *m = MsgBasketClaimRewards{} }
@@ -510,6 +559,13 @@ func (m *MsgBasketClaimRewards) XXX_DiscardUnknown() {
 }
 
 var xxx_messageInfo_MsgBasketClaimRewards proto.InternalMessageInfo
+
+func (m *MsgBasketClaimRewards) GetSender() string {
+	if m != nil {
+		return m.Sender
+	}
+	return ""
+}
 
 type MsgBasketClaimRewardsResponse struct {
 }
@@ -567,34 +623,36 @@ func init() {
 func init() { proto.RegisterFile("kira/basket/tx.proto", fileDescriptor_f49b6d7fee9897c9) }
 
 var fileDescriptor_f49b6d7fee9897c9 = []byte{
-	// 427 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x54, 0xcf, 0x6a, 0xdb, 0x30,
-	0x18, 0x8f, 0x19, 0xdb, 0x41, 0x3b, 0x0c, 0x44, 0xb2, 0x25, 0xde, 0xe6, 0x6c, 0x1a, 0x63, 0x63,
-	0x30, 0x0b, 0xb6, 0x37, 0x48, 0xc2, 0x2e, 0xc3, 0x97, 0xb4, 0x50, 0x68, 0x0f, 0x45, 0x4e, 0x54,
-	0x45, 0x38, 0xb6, 0x8c, 0xe5, 0x90, 0xe4, 0x2d, 0xfa, 0x18, 0x7d, 0x93, 0xf6, 0x98, 0x63, 0x8f,
-	0xc5, 0x79, 0x91, 0x22, 0xab, 0x36, 0xc6, 0x8a, 0x9d, 0x5e, 0x7a, 0x4a, 0xf4, 0xfd, 0xfe, 0x7c,
-	0xd6, 0xf7, 0xfd, 0x10, 0xe8, 0x06, 0x3c, 0x21, 0xd8, 0x27, 0x32, 0xa0, 0x29, 0x4e, 0x37, 0x6e,
-	0x9c, 0x88, 0x54, 0xc0, 0xb7, 0xaa, 0xea, 0xea, 0xaa, 0xdd, 0x65, 0x82, 0x89, 0xbc, 0x8e, 0xd5,
-	0x3f, 0x4d, 0xb1, 0x07, 0x4c, 0x08, 0xb6, 0xa4, 0x38, 0x3f, 0xf9, 0xab, 0x2b, 0x4c, 0xa2, 0x6d,
-	0x01, 0xcd, 0x84, 0x0c, 0x85, 0xbc, 0xd4, 0x1a, 0x7d, 0x78, 0x82, 0xfa, 0xd5, 0x76, 0xfa, 0x47,
-	0x23, 0xc8, 0x06, 0x7d, 0x4f, 0xb2, 0x09, 0x97, 0xc4, 0x5f, 0xd2, 0x51, 0x8e, 0x4c, 0x68, 0x2c,
-	0x24, 0x4f, 0x25, 0x42, 0xe0, 0x4b, 0x13, 0x36, 0xa5, 0x32, 0x16, 0x91, 0xa4, 0xe8, 0x23, 0x18,
-	0xd4, 0x39, 0x67, 0x3c, 0x5d, 0xcc, 0x13, 0xb2, 0x96, 0xe8, 0x1b, 0xf8, 0xda, 0x08, 0x96, 0x0e,
-	0x1f, 0x40, 0xaf, 0x4e, 0x3a, 0x59, 0x93, 0x58, 0xa2, 0x21, 0xf8, 0x7c, 0x10, 0x28, 0x95, 0x5d,
-	0x00, 0x3d, 0xc9, 0x34, 0x72, 0x2a, 0x02, 0x1a, 0x79, 0x3c, 0x4a, 0xd1, 0x27, 0x60, 0x9b, 0xd5,
-	0x66, 0xcd, 0x68, 0x95, 0x44, 0xa6, 0x46, 0x55, 0x9b, 0x35, 0xea, 0x33, 0x4c, 0x8d, 0xaa, 0xd6,
-	0x6e, 0xa5, 0xd1, 0xf1, 0x92, 0xf0, 0x70, 0x4a, 0xd7, 0x24, 0x99, 0x17, 0xb7, 0x32, 0x81, 0x42,
-	0xf9, 0xe7, 0xf6, 0x35, 0x78, 0xe5, 0x49, 0x06, 0x43, 0xd0, 0x3b, 0x38, 0x7a, 0xf8, 0xdd, 0xad,
-	0xc4, 0xc4, 0x6d, 0xda, 0x90, 0xfd, 0xfb, 0x59, 0xb4, 0xa2, 0x2d, 0x8c, 0xc0, 0xfb, 0xc3, 0x8b,
-	0x7a, 0xa1, 0x7e, 0x73, 0x00, 0xcd, 0xd5, 0x42, 0xd4, 0x6a, 0x92, 0x73, 0xec, 0x5f, 0xc7, 0x39,
-	0x65, 0x97, 0x0b, 0xf0, 0xae, 0x96, 0x04, 0x38, 0xac, 0xcb, 0x6b, 0x04, 0xfb, 0xc7, 0x11, 0x42,
-	0x83, 0xb9, 0x8a, 0x4c, 0xab, 0xb9, 0x22, 0xb4, 0x9a, 0x57, 0x43, 0x57, 0x33, 0x57, 0xb7, 0x6a,
-	0x35, 0x57, 0x84, 0x56, 0xf3, 0x6a, 0x3a, 0xd5, 0xf0, 0xcd, 0x04, 0x9a, 0xc3, 0x37, 0x39, 0xe6,
-	0xf0, 0x9b, 0x93, 0x3c, 0xfa, 0x77, 0x93, 0x39, 0xd6, 0x5d, 0xe6, 0x58, 0xbb, 0xcc, 0xb1, 0x1e,
-	0x32, 0xc7, 0xba, 0xde, 0x3b, 0x9d, 0xdd, 0xde, 0xe9, 0xdc, 0xef, 0x9d, 0xce, 0xf9, 0x4f, 0xc6,
-	0xd3, 0xc5, 0xca, 0x77, 0x67, 0x22, 0xc4, 0xff, 0x79, 0x42, 0xc6, 0x22, 0xa1, 0x58, 0xd2, 0x80,
-	0x70, 0xbc, 0x29, 0x5f, 0xc6, 0x6d, 0x4c, 0xa5, 0xff, 0x26, 0x7f, 0xaa, 0xfe, 0x3e, 0x06, 0x00,
-	0x00, 0xff, 0xff, 0x17, 0x2d, 0x69, 0xab, 0x35, 0x05, 0x00, 0x00,
+	// 449 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x94, 0xd1, 0xca, 0xd3, 0x30,
+	0x14, 0xc7, 0x57, 0xc4, 0x0f, 0x8c, 0x17, 0x42, 0xf9, 0x36, 0xb6, 0xa2, 0xdd, 0xac, 0xa8, 0x43,
+	0xb4, 0x81, 0xed, 0x0d, 0xb6, 0xe1, 0x8d, 0xf4, 0x66, 0x0a, 0x82, 0x5e, 0x48, 0xba, 0xc6, 0x2c,
+	0x74, 0x6d, 0x4a, 0xd2, 0xb1, 0xed, 0x2d, 0x7c, 0x0c, 0x1f, 0x45, 0xef, 0x76, 0xe9, 0xa5, 0x74,
+	0x2f, 0xf2, 0x91, 0x66, 0x2b, 0xa5, 0x6b, 0xba, 0x5e, 0x6d, 0xc9, 0xf9, 0x9d, 0xdf, 0x29, 0x87,
+	0x3f, 0x01, 0xf7, 0x21, 0xe5, 0x08, 0xfa, 0x48, 0x84, 0x38, 0x85, 0xe9, 0xde, 0x4d, 0x38, 0x4b,
+	0x99, 0xf9, 0x54, 0xde, 0xba, 0xea, 0xd6, 0xba, 0x27, 0x8c, 0xb0, 0xfc, 0x1e, 0xca, 0x7f, 0x0a,
+	0xb1, 0x06, 0x84, 0x31, 0xb2, 0xc1, 0x30, 0x3f, 0xf9, 0xdb, 0x9f, 0x10, 0xc5, 0x87, 0x4b, 0x69,
+	0xc5, 0x44, 0xc4, 0xc4, 0x0f, 0xd5, 0xa3, 0x0e, 0xe7, 0x52, 0xbf, 0x3c, 0x4e, 0xfd, 0xa8, 0x8a,
+	0x33, 0x01, 0x7d, 0x4f, 0x90, 0x05, 0x15, 0xc8, 0xdf, 0xe0, 0x59, 0x5e, 0x59, 0xe0, 0x84, 0x09,
+	0x9a, 0x0a, 0xb3, 0x07, 0xee, 0x04, 0x8e, 0x03, 0xcc, 0xfb, 0xc6, 0xc8, 0x18, 0x3f, 0x59, 0x9e,
+	0x4f, 0x8e, 0x03, 0x46, 0xba, 0x9e, 0x25, 0x16, 0x09, 0x8b, 0x05, 0x76, 0xa6, 0x60, 0x50, 0x65,
+	0xbe, 0xd2, 0x74, 0x1d, 0x70, 0xb4, 0xd3, 0x8b, 0x5f, 0x81, 0x97, 0xda, 0xa6, 0xc2, 0x0c, 0x41,
+	0xb7, 0x0a, 0x7d, 0xde, 0xa1, 0x44, 0x6f, 0x1d, 0x82, 0x17, 0xb5, 0x0d, 0x85, 0xf1, 0x3d, 0x30,
+	0x3d, 0x41, 0x54, 0xe5, 0x0b, 0x0b, 0x71, 0xec, 0xd1, 0x38, 0xd5, 0xea, 0x9e, 0x03, 0xeb, 0x9a,
+	0xd6, 0xbb, 0x66, 0x5b, 0x1e, 0xb7, 0x77, 0x49, 0x5a, 0xef, 0x92, 0x9f, 0xdd, 0xde, 0x25, 0xe9,
+	0xca, 0xd6, 0x54, 0x75, 0xbe, 0x41, 0x34, 0x5a, 0xe2, 0x1d, 0xe2, 0xc1, 0xad, 0xad, 0x5d, 0x37,
+	0x5c, 0x8c, 0x93, 0xbf, 0x8f, 0xc1, 0x23, 0x4f, 0x10, 0x33, 0x02, 0xdd, 0xfa, 0xf8, 0xbc, 0x76,
+	0x4b, 0x71, 0x76, 0x75, 0x89, 0xb1, 0x3e, 0xb4, 0xc2, 0x2e, 0x63, 0xcd, 0x04, 0xf4, 0x34, 0xa9,
+	0x7a, 0xd3, 0x28, 0x2a, 0x38, 0xcb, 0x6d, 0xc7, 0x15, 0x13, 0x03, 0x60, 0xd6, 0xa4, 0xcd, 0x69,
+	0xb4, 0xe4, 0x8c, 0xf5, 0xee, 0x36, 0x53, 0x4c, 0xf9, 0x0e, 0x9e, 0x55, 0x13, 0x38, 0xac, 0xb6,
+	0x57, 0x00, 0xeb, 0xed, 0x0d, 0x40, 0x23, 0xcf, 0x23, 0xd9, 0x24, 0x97, 0x40, 0xa3, 0xbc, 0x1c,
+	0xd3, 0x8a, 0x3c, 0xcf, 0x68, 0x93, 0x5c, 0x02, 0x8d, 0xf2, 0x72, 0x6e, 0xe5, 0xf2, 0x6b, 0x42,
+	0xeb, 0xd4, 0xb7, 0x97, 0x99, 0xeb, 0xe5, 0xeb, 0xb3, 0x3c, 0xfb, 0xf8, 0x3b, 0xb3, 0x8d, 0x3f,
+	0x99, 0x6d, 0x1c, 0x33, 0xdb, 0xf8, 0x9f, 0xd9, 0xc6, 0xaf, 0x93, 0xdd, 0x39, 0x9e, 0xec, 0xce,
+	0xbf, 0x93, 0xdd, 0xf9, 0x36, 0x26, 0x34, 0x5d, 0x6f, 0x7d, 0x77, 0xc5, 0x22, 0xf8, 0x89, 0x72,
+	0x34, 0x67, 0x1c, 0x43, 0x81, 0x43, 0x44, 0xe1, 0xbe, 0x78, 0xc3, 0x0f, 0x09, 0x16, 0xfe, 0x5d,
+	0xfe, 0xa8, 0x4e, 0x1f, 0x02, 0x00, 0x00, 0xff, 0xff, 0x10, 0x19, 0xa7, 0x2d, 0xdf, 0x05, 0x00,
+	0x00,
 }
 
 func (this *MsgDisableBasketDeposits) Equal(that interface{}) bool {
@@ -614,6 +672,9 @@ func (this *MsgDisableBasketDeposits) Equal(that interface{}) bool {
 	if that1 == nil {
 		return this == nil
 	} else if this == nil {
+		return false
+	}
+	if this.Sender != that1.Sender {
 		return false
 	}
 	return true
@@ -658,6 +719,9 @@ func (this *MsgDisableBasketWithdraws) Equal(that interface{}) bool {
 	} else if this == nil {
 		return false
 	}
+	if this.Sender != that1.Sender {
+		return false
+	}
 	return true
 }
 func (this *MsgDisableBasketWithdrawsResponse) Equal(that interface{}) bool {
@@ -698,6 +762,9 @@ func (this *MsgDisableBasketSwaps) Equal(that interface{}) bool {
 	if that1 == nil {
 		return this == nil
 	} else if this == nil {
+		return false
+	}
+	if this.Sender != that1.Sender {
 		return false
 	}
 	return true
@@ -742,6 +809,9 @@ func (this *MsgBasketTokenMint) Equal(that interface{}) bool {
 	} else if this == nil {
 		return false
 	}
+	if this.Sender != that1.Sender {
+		return false
+	}
 	return true
 }
 func (this *MsgBasketTokenMintResponse) Equal(that interface{}) bool {
@@ -782,6 +852,9 @@ func (this *MsgBasketTokenBurn) Equal(that interface{}) bool {
 	if that1 == nil {
 		return this == nil
 	} else if this == nil {
+		return false
+	}
+	if this.Sender != that1.Sender {
 		return false
 	}
 	return true
@@ -826,6 +899,9 @@ func (this *MsgBasketTokenSwap) Equal(that interface{}) bool {
 	} else if this == nil {
 		return false
 	}
+	if this.Sender != that1.Sender {
+		return false
+	}
 	return true
 }
 func (this *MsgBasketTokenSwapResponse) Equal(that interface{}) bool {
@@ -868,6 +944,9 @@ func (this *MsgBasketClaimRewards) Equal(that interface{}) bool {
 	} else if this == nil {
 		return false
 	}
+	if this.Sender != that1.Sender {
+		return false
+	}
 	return true
 }
 func (this *MsgBasketClaimRewardsResponse) Equal(that interface{}) bool {
@@ -907,7 +986,7 @@ type MsgClient interface {
 	// DisableBasketDeposits - emergency function & permission to disable one or all deposits of one or all token in the basket
 	DisableBasketDeposits(ctx context.Context, in *MsgDisableBasketDeposits, opts ...grpc.CallOption) (*MsgDisableBasketDepositsResponse, error)
 	// DisableBasketWithdraws - emergency function & permission to disable one or all withdrawals of one or all token in the basket
-	DisableBasketWithdraws(ctx context.Context, in *MsgDisableBasketDeposits, opts ...grpc.CallOption) (*MsgDisableBasketDepositsResponse, error)
+	DisableBasketWithdraws(ctx context.Context, in *MsgDisableBasketWithdraws, opts ...grpc.CallOption) (*MsgDisableBasketWithdrawsResponse, error)
 	// DisableBasketSwaps - emergency function & permission to disable one or all withdrawals of one or all token in the basket
 	DisableBasketSwaps(ctx context.Context, in *MsgDisableBasketSwaps, opts ...grpc.CallOption) (*MsgDisableBasketSwapsResponse, error)
 	// BasketTokenMint - to mint basket tokens
@@ -937,8 +1016,8 @@ func (c *msgClient) DisableBasketDeposits(ctx context.Context, in *MsgDisableBas
 	return out, nil
 }
 
-func (c *msgClient) DisableBasketWithdraws(ctx context.Context, in *MsgDisableBasketDeposits, opts ...grpc.CallOption) (*MsgDisableBasketDepositsResponse, error) {
-	out := new(MsgDisableBasketDepositsResponse)
+func (c *msgClient) DisableBasketWithdraws(ctx context.Context, in *MsgDisableBasketWithdraws, opts ...grpc.CallOption) (*MsgDisableBasketWithdrawsResponse, error) {
+	out := new(MsgDisableBasketWithdrawsResponse)
 	err := c.cc.Invoke(ctx, "/kira.basket.Msg/DisableBasketWithdraws", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -996,7 +1075,7 @@ type MsgServer interface {
 	// DisableBasketDeposits - emergency function & permission to disable one or all deposits of one or all token in the basket
 	DisableBasketDeposits(context.Context, *MsgDisableBasketDeposits) (*MsgDisableBasketDepositsResponse, error)
 	// DisableBasketWithdraws - emergency function & permission to disable one or all withdrawals of one or all token in the basket
-	DisableBasketWithdraws(context.Context, *MsgDisableBasketDeposits) (*MsgDisableBasketDepositsResponse, error)
+	DisableBasketWithdraws(context.Context, *MsgDisableBasketWithdraws) (*MsgDisableBasketWithdrawsResponse, error)
 	// DisableBasketSwaps - emergency function & permission to disable one or all withdrawals of one or all token in the basket
 	DisableBasketSwaps(context.Context, *MsgDisableBasketSwaps) (*MsgDisableBasketSwapsResponse, error)
 	// BasketTokenMint - to mint basket tokens
@@ -1016,7 +1095,7 @@ type UnimplementedMsgServer struct {
 func (*UnimplementedMsgServer) DisableBasketDeposits(ctx context.Context, req *MsgDisableBasketDeposits) (*MsgDisableBasketDepositsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DisableBasketDeposits not implemented")
 }
-func (*UnimplementedMsgServer) DisableBasketWithdraws(ctx context.Context, req *MsgDisableBasketDeposits) (*MsgDisableBasketDepositsResponse, error) {
+func (*UnimplementedMsgServer) DisableBasketWithdraws(ctx context.Context, req *MsgDisableBasketWithdraws) (*MsgDisableBasketWithdrawsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DisableBasketWithdraws not implemented")
 }
 func (*UnimplementedMsgServer) DisableBasketSwaps(ctx context.Context, req *MsgDisableBasketSwaps) (*MsgDisableBasketSwapsResponse, error) {
@@ -1058,7 +1137,7 @@ func _Msg_DisableBasketDeposits_Handler(srv interface{}, ctx context.Context, de
 }
 
 func _Msg_DisableBasketWithdraws_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgDisableBasketDeposits)
+	in := new(MsgDisableBasketWithdraws)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1070,7 +1149,7 @@ func _Msg_DisableBasketWithdraws_Handler(srv interface{}, ctx context.Context, d
 		FullMethod: "/kira.basket.Msg/DisableBasketWithdraws",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).DisableBasketWithdraws(ctx, req.(*MsgDisableBasketDeposits))
+		return srv.(MsgServer).DisableBasketWithdraws(ctx, req.(*MsgDisableBasketWithdraws))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1222,6 +1301,13 @@ func (m *MsgDisableBasketDeposits) MarshalToSizedBuffer(dAtA []byte) (int, error
 	_ = i
 	var l int
 	_ = l
+	if len(m.Sender) > 0 {
+		i -= len(m.Sender)
+		copy(dAtA[i:], m.Sender)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Sender)))
+		i--
+		dAtA[i] = 0xa
+	}
 	return len(dAtA) - i, nil
 }
 
@@ -1268,6 +1354,13 @@ func (m *MsgDisableBasketWithdraws) MarshalToSizedBuffer(dAtA []byte) (int, erro
 	_ = i
 	var l int
 	_ = l
+	if len(m.Sender) > 0 {
+		i -= len(m.Sender)
+		copy(dAtA[i:], m.Sender)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Sender)))
+		i--
+		dAtA[i] = 0xa
+	}
 	return len(dAtA) - i, nil
 }
 
@@ -1314,6 +1407,13 @@ func (m *MsgDisableBasketSwaps) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.Sender) > 0 {
+		i -= len(m.Sender)
+		copy(dAtA[i:], m.Sender)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Sender)))
+		i--
+		dAtA[i] = 0xa
+	}
 	return len(dAtA) - i, nil
 }
 
@@ -1360,6 +1460,13 @@ func (m *MsgBasketTokenMint) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.Sender) > 0 {
+		i -= len(m.Sender)
+		copy(dAtA[i:], m.Sender)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Sender)))
+		i--
+		dAtA[i] = 0xa
+	}
 	return len(dAtA) - i, nil
 }
 
@@ -1406,6 +1513,13 @@ func (m *MsgBasketTokenBurn) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.Sender) > 0 {
+		i -= len(m.Sender)
+		copy(dAtA[i:], m.Sender)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Sender)))
+		i--
+		dAtA[i] = 0xa
+	}
 	return len(dAtA) - i, nil
 }
 
@@ -1452,6 +1566,13 @@ func (m *MsgBasketTokenSwap) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.Sender) > 0 {
+		i -= len(m.Sender)
+		copy(dAtA[i:], m.Sender)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Sender)))
+		i--
+		dAtA[i] = 0xa
+	}
 	return len(dAtA) - i, nil
 }
 
@@ -1498,6 +1619,13 @@ func (m *MsgBasketClaimRewards) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.Sender) > 0 {
+		i -= len(m.Sender)
+		copy(dAtA[i:], m.Sender)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Sender)))
+		i--
+		dAtA[i] = 0xa
+	}
 	return len(dAtA) - i, nil
 }
 
@@ -1541,6 +1669,10 @@ func (m *MsgDisableBasketDeposits) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.Sender)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
@@ -1559,6 +1691,10 @@ func (m *MsgDisableBasketWithdraws) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.Sender)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
@@ -1577,6 +1713,10 @@ func (m *MsgDisableBasketSwaps) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.Sender)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
@@ -1595,6 +1735,10 @@ func (m *MsgBasketTokenMint) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.Sender)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
@@ -1613,6 +1757,10 @@ func (m *MsgBasketTokenBurn) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.Sender)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
@@ -1631,6 +1779,10 @@ func (m *MsgBasketTokenSwap) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.Sender)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
@@ -1649,6 +1801,10 @@ func (m *MsgBasketClaimRewards) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.Sender)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
@@ -1696,6 +1852,38 @@ func (m *MsgDisableBasketDeposits) Unmarshal(dAtA []byte) error {
 			return fmt.Errorf("proto: MsgDisableBasketDeposits: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Sender = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -1796,6 +1984,38 @@ func (m *MsgDisableBasketWithdraws) Unmarshal(dAtA []byte) error {
 			return fmt.Errorf("proto: MsgDisableBasketWithdraws: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Sender = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -1896,6 +2116,38 @@ func (m *MsgDisableBasketSwaps) Unmarshal(dAtA []byte) error {
 			return fmt.Errorf("proto: MsgDisableBasketSwaps: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Sender = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -1996,6 +2248,38 @@ func (m *MsgBasketTokenMint) Unmarshal(dAtA []byte) error {
 			return fmt.Errorf("proto: MsgBasketTokenMint: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Sender = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -2096,6 +2380,38 @@ func (m *MsgBasketTokenBurn) Unmarshal(dAtA []byte) error {
 			return fmt.Errorf("proto: MsgBasketTokenBurn: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Sender = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -2196,6 +2512,38 @@ func (m *MsgBasketTokenSwap) Unmarshal(dAtA []byte) error {
 			return fmt.Errorf("proto: MsgBasketTokenSwap: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Sender = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -2296,6 +2644,38 @@ func (m *MsgBasketClaimRewards) Unmarshal(dAtA []byte) error {
 			return fmt.Errorf("proto: MsgBasketClaimRewards: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Sender = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
