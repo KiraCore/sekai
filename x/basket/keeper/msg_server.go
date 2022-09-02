@@ -35,11 +35,11 @@ func (k msgServer) DisableBasketDeposits(
 
 func (k msgServer) DisableBasketWithdraws(
 	goCtx context.Context,
-	msg *types.MsgDisableBasketDeposits,
-) (*types.MsgDisableBasketDepositsResponse, error) {
+	msg *types.MsgDisableBasketWithdraws,
+) (*types.MsgDisableBasketWithdrawsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	_ = ctx
-	return &types.MsgDisableBasketDepositsResponse{}, nil
+	return &types.MsgDisableBasketWithdrawsResponse{}, nil
 }
 
 func (k msgServer) DisableBasketSwaps(
