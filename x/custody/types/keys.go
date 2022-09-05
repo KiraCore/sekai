@@ -5,7 +5,7 @@ var (
 	RouterKey    = ModuleName
 	QuerierRoute = ModuleName
 	StoreKey     = ModuleName
-
+	
 	PrefixKeyCustodyRecord       = "custody_record_prefix_"
 	PrefixKeyCustodyCustodians   = "custody_custodians_prefix_"
 	PrefixKeyCustodyWhiteList    = "custody_white_list_prefix_"

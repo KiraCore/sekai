@@ -4,6 +4,7 @@ package kira.custody;
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "kira/custody/custody.proto";
+import "kira/custody/tx.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/custody/types";
 

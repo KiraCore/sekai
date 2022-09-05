@@ -24,6 +24,7 @@ service Msg {
   rpc ApproveTransaction(MsgApproveCustodyTransaction) returns (MsgApproveCustodyTransactionResponse);
   rpc DeclineTransaction(MsgDeclineCustodyTransaction) returns (MsgDeclineCustodyTransactionResponse);
   rpc Send(MsgSend) returns (MsgSendResponse);
+  rpc PasswordConfirm(MsgPasswordConfirmTransaction) returns (MsgPasswordConfirmTransactionResponse);
 }
 
 message MsgCreteCustodyRecord {
@@ -186,24 +187,34 @@ message MsgApproveCustodyTransaction {
   option (gogoproto.equal)           = false;
   option (gogoproto.goproto_getters) = false;
 
-  bytes address = 1 [
+  bytes from_address = 1 [
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
     (gogoproto.moretags) = "yaml:\"address\""
   ];
 
-  string hash = 2;
+  bytes target_address = 2 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  string hash = 3;
 }
 
 message MsgDeclineCustodyTransaction {
   option (gogoproto.equal)           = false;
   option (gogoproto.goproto_getters) = false;
 
-  bytes address = 1 [
+  bytes from_address = 1 [
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
     (gogoproto.moretags) = "yaml:\"address\""
   ];
 
-  string hash = 2;
+  bytes target_address = 2 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  string hash = 3;
 }
 
 message MsgSend {
@@ -215,6 +226,40 @@ message MsgSend {
   repeated cosmos.base.v1beta1.Coin amount = 3
   [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];
   string   password                        = 4 [(gogoproto.moretags) = "yaml:\"password\""];
+}
+
+message TransactionRecord {
+  MsgSend transaction = 1;
+  uint64  votes       = 2;
+  bool    confirmed   = 3;
+}
+
+message TransactionPool {
+  map<string, TransactionRecord> record = 2;
+}
+
+message CustodyPool {
+  bytes address = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  TransactionPool transactions = 2;
+}
+
+message MsgPasswordConfirmTransaction {
+  bytes from_address = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  bytes sender_address = 2 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  string hash     = 3;
+  string password = 4;
 }
 
 message MsgCreteCustodyRecordResponse {}
@@ -230,3 +275,4 @@ message MsgDropCustodyLimitsResponse {}
 message MsgApproveCustodyTransactionResponse {}
 message MsgDeclineCustodyTransactionResponse {}
 message MsgSendResponse {}
+message MsgPasswordConfirmTransactionResponse {}

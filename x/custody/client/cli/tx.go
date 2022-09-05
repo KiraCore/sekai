@@ -33,6 +33,9 @@ func NewTxCmd() *cobra.Command {
 	txCmd.AddCommand(NewWhiteListTxCmd())
 	txCmd.AddCommand(NewLimitsTxCmd())
 	txCmd.AddCommand(NewBankTxCmd())
+	txCmd.AddCommand(GetTxAproveCustodyTransaction())
+	txCmd.AddCommand(GetTxDeclineCustodyTransaction())
+	txCmd.AddCommand(GetTxPasswordConfirmTransaction())
 
 	return txCmd
 }
@@ -65,8 +68,6 @@ func NewCustodiansTxCmd() *cobra.Command {
 	txCmd.AddCommand(GetTxAddToCustodyCustodians())
 	txCmd.AddCommand(GetTxRemoveFromCustodyCustodians())
 	txCmd.AddCommand(GetTxDropCustodyCustodians())
-	txCmd.AddCommand(GetTxAproveCustodyTransaction())
-	txCmd.AddCommand(GetTxDeclineCustodyTransaction())
 
 	return txCmd
 }
@@ -222,18 +223,56 @@ func GetTxDropCustodyCustodians() *cobra.Command {
 
 func GetTxAproveCustodyTransaction() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "approve [hash]",
-		Short: "Approve custody transaction by hash",
-		Args:  cobra.ExactArgs(1),
+		Use:   "approve [addr] [hash]",
+		Short: "Approve custody transaction by receiver address and transaction hash",
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
+			toAddr, err := sdk.AccAddressFromBech32(args[0])
+			if err != nil {
+				return err
+			}
+
 			msg := types.NewMsgApproveCustodyTransaction(
 				clientCtx.FromAddress,
-				args[0],
+				toAddr,
+				args[1],
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+	flags.AddTxFlagsToCmd(cmd)
+	cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+func GetTxPasswordConfirmTransaction() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "confirm [addr] [hash] [pass]",
+		Short: "Approve custody transaction by receiver address and transaction hash",
+		Args:  cobra.ExactArgs(3),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			senderAddr, err := sdk.AccAddressFromBech32(args[0])
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgPasswordConfirmTransaction(
+				clientCtx.FromAddress,
+				senderAddr,
+				args[1],
+				args[2],
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
@@ -247,18 +286,24 @@ func GetTxAproveCustodyTransaction() *cobra.Command {
 
 func GetTxDeclineCustodyTransaction() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "decline [hash]",
-		Short: "Decline custody transaction by hash",
-		Args:  cobra.ExactArgs(1),
+		Use:   "decline [addr] [hash]",
+		Short: "Decline custody transaction by receiver address and transaction hash",
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
 
+			toAddr, err := sdk.AccAddressFromBech32(args[0])
+			if err != nil {
+				return err
+			}
+
 			msg := types.NewMsgDeclineCustodyTransaction(
 				clientCtx.FromAddress,
-				args[0],
+				toAddr,
+				args[1],
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)

@@ -33,8 +33,8 @@ func (m *MsgCreteCustodyRecord) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgApproveCustodyTransaction(addr sdk.AccAddress, hash string) *MsgApproveCustodyTransaction {
-	return &MsgApproveCustodyTransaction{addr, hash}
+func NewMsgApproveCustodyTransaction(from sdk.AccAddress, to sdk.AccAddress, hash string) *MsgApproveCustodyTransaction {
+	return &MsgApproveCustodyTransaction{from, to, hash}
 }
 
 func (m *MsgApproveCustodyTransaction) Route() string {
@@ -56,12 +56,12 @@ func (m *MsgApproveCustodyTransaction) GetSignBytes() []byte {
 
 func (m *MsgApproveCustodyTransaction) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{
-		m.Address,
+		m.FromAddress,
 	}
 }
 
-func NewMsgDeclineCustodyTransaction(addr sdk.AccAddress, hash string) *MsgDeclineCustodyTransaction {
-	return &MsgDeclineCustodyTransaction{addr, hash}
+func NewMsgDeclineCustodyTransaction(from sdk.AccAddress, to sdk.AccAddress, hash string) *MsgDeclineCustodyTransaction {
+	return &MsgDeclineCustodyTransaction{from, to, hash}
 }
 
 func (m *MsgDeclineCustodyTransaction) Route() string {
@@ -83,7 +83,34 @@ func (m *MsgDeclineCustodyTransaction) GetSignBytes() []byte {
 
 func (m *MsgDeclineCustodyTransaction) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{
-		m.Address,
+		m.FromAddress,
+	}
+}
+
+func NewMsgPasswordConfirmTransaction(from sdk.AccAddress, sender sdk.AccAddress, hash string, password string) *MsgPasswordConfirmTransaction {
+	return &MsgPasswordConfirmTransaction{from, sender, hash, password}
+}
+
+func (m *MsgPasswordConfirmTransaction) Route() string {
+	return ModuleName
+}
+
+func (m *MsgPasswordConfirmTransaction) Type() string {
+	return types.MsgPasswordConfirmTransaction
+}
+
+func (m *MsgPasswordConfirmTransaction) ValidateBasic() error {
+	return nil
+}
+
+func (m *MsgPasswordConfirmTransaction) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *MsgPasswordConfirmTransaction) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{
+		m.FromAddress,
 	}
 }
 

@@ -75,6 +75,7 @@ const (
 	MsgTypeDropCustodyWhiteList        = "drop-custody-whitelist"
 	MsgApproveCustodyTransaction       = "approve-custody-transaction"
 	MsgDeclineCustodyTransaction       = "decline-custody-transaction"
+	MsgPasswordConfirmTransaction      = "password-confirm-transaction"
 	MsgTypeSend                        = "custody-send"
 )
 

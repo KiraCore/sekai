@@ -48,6 +48,15 @@ func NewHandler(ck keeper.Keeper, cgk types.CustomGovKeeper, bk types.BankKeeper
 		case *types.MsgSend:
 			res, err := msgServer.Send(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgApproveCustodyTransaction:
+			res, err := msgServer.ApproveTransaction(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgDeclineCustodyTransaction:
+			res, err := msgServer.DeclineTransaction(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgPasswordConfirmTransaction:
+			res, err := msgServer.PasswordConfirm(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
 		default:
 			return nil, errors.Wrapf(errors.ErrUnknownRequest, "unrecognized %s message type: %T", types.ModuleName, msg)
 		}

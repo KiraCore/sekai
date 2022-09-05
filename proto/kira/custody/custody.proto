@@ -79,7 +79,7 @@ message CustodyLimitRecord {
 
 message CustodyStatus {
   uint64 amount = 1;
-  int64  time = 2;
+  int64  time   = 2;
 }
 
 message CustodyStatuses {
@@ -93,22 +93,4 @@ message CustodyLimitStatusRecord {
   ];
 
   CustodyStatuses custody_statuses = 2;
-}
-
-message TransactionRecord {
-  google.protobuf.Any transaction = 1;
-  uint64 votes = 2;
-}
-
-message TransactionPool {
-  map<string, TransactionRecord> record = 2;
-}
-
-message CustodyPool {
-  bytes address = 1 [
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
-    (gogoproto.moretags) = "yaml:\"address\""
-  ];
-
-  TransactionPool transactions = 2;
 }

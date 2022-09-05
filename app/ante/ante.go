@@ -105,45 +105,13 @@ func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool,
 			}
 		}
 
-		if kiratypes.MsgType(msg) == kiratypes.MsgApproveCustodyTransaction { //Check approve
-			//Todo: Reward
-		}
-
-		if kiratypes.MsgType(msg) == kiratypes.MsgDeclineCustodyTransaction { //Check decline
-			//Todo: Reward
-		}
-
 		if kiratypes.MsgType(msg) == bank.TypeMsgSend {
-			//protoTx := msg.(proto.Message)
 			msg := msg.(*bank.MsgSend)
 
 			if settings != nil && settings.CustodyEnabled {
 				custodians := cd.ck.GetCustodyCustodiansByAddress(ctx, msg.GetSigners()[0])
 
 				if len(custodians.Addresses) > 0 {
-
-					//record := custodytypes.CustodyPool{
-					//	Address: msg.GetSigners()[0],
-					//	Transactions: &custodytypes.TransactionPool{
-					//		Record: map[string]*custodytypes.TransactionRecord{},
-					//	},
-					//}
-					//
-					//hash := sha256.Sum256(ctx.TxBytes())
-					//hashString := hex.EncodeToString(hash[:])
-					//anyValue, anyErr := codectypes.NewAnyWithValue(protoTx)
-					//
-					//if anyErr != nil {
-					//	return ctx, sdkerrors.Wrap(sdkerrors.ErrPackAny, anyErr.Error())
-					//}
-					//
-					//record.Transactions.Record[hashString] = &custodytypes.TransactionRecord{
-					//	Transaction: anyValue,
-					//	Votes:       0,
-					//}
-					//
-					//cd.ck.AddToCustodyPool(ctx, record)
-
 					return ctx, sdkerrors.Wrap(sdkerrors.ErrConflict, "Custody module is enabled. Please use custody send instead.")
 				}
 			}

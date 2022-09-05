@@ -2,11 +2,14 @@ package keeper
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"github.com/KiraCore/sekai/x/custody/types"
 	"github.com/armon/go-metrics"
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
+	"strings"
 )
 
 type msgServer struct {
@@ -91,13 +94,78 @@ func (s msgServer) RemoveFromCustodians(goCtx context.Context, msg *types.MsgRem
 
 func (s msgServer) ApproveTransaction(goCtx context.Context, msg *types.MsgApproveCustodyTransaction) (*types.MsgApproveCustodyTransactionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+	hash := strings.ToLower(msg.Hash)
+	allowCustodians := true
+	allowPassword := true
+	settings := s.keeper.GetCustodyInfoByAddress(ctx, msg.TargetAddress)
+	custodians := s.keeper.GetCustodyCustodiansByAddress(ctx, msg.TargetAddress)
+
+	//todo: add fee to msg.FromAddress
+	//todo: add ValidateBasic and make possibility to vote only 1 time
+
 	record := types.CustodyPool{
-		Address:      msg.Address,
-		Transactions: s.keeper.GetCustodyPoolByAddress(ctx, msg.Address),
+		Address:      msg.TargetAddress,
+		Transactions: s.keeper.GetCustodyPoolByAddress(ctx, msg.TargetAddress),
 	}
 
-	if record.Transactions != nil && record.Transactions.Record[msg.Hash] != nil {
-		record.Transactions.Record[msg.Hash].Votes += 1
+	if record.Transactions != nil && record.Transactions.Record[hash] != nil {
+		record.Transactions.Record[hash].Votes += 1
+	}
+
+	if settings != nil && settings.CustodyEnabled && len(custodians.Addresses) > 0 {
+		allowCustodians = (record.Transactions.Record[hash].Votes)*100/uint64(len(custodians.Addresses)) >= settings.CustodyMode
+	}
+
+	if settings != nil && settings.UsePassword {
+		allowPassword = record.Transactions.Record[hash].Confirmed
+	}
+
+	if allowCustodians && allowPassword {
+		tx := record.Transactions.Record[hash].Transaction
+
+		to, err := sdk.AccAddressFromBech32(tx.ToAddress)
+		if err != nil {
+			return nil, err
+		}
+
+		if err := s.bk.IsSendEnabledCoins(ctx, tx.Amount...); err != nil {
+			return nil, err
+		}
+
+		from, err := sdk.AccAddressFromBech32(tx.FromAddress)
+		if err != nil {
+			return nil, err
+		}
+
+		err = s.bk.SendCoins(ctx, from, to, tx.Amount)
+		if err != nil {
+			return nil, err
+		}
+
+		if s.bk.BlockedAddr(to) {
+			return nil, errors.Wrapf(errors.ErrUnauthorized, "%s is not allowed to receive funds", tx.ToAddress)
+		}
+
+		defer func() {
+			for _, a := range tx.Amount {
+				if a.Amount.IsInt64() {
+					telemetry.SetGaugeWithLabels(
+						[]string{"tx", "msg", "send"},
+						float32(a.Amount.Int64()),
+						[]metrics.Label{telemetry.NewLabel("denom", a.Denom)},
+					)
+				}
+			}
+		}()
+
+		ctx.EventManager().EmitEvent(
+			sdk.NewEvent(
+				sdk.EventTypeMessage,
+				sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
+			),
+		)
+
+		delete(record.Transactions.Record, hash)
 	}
 
 	s.keeper.AddToCustodyPool(ctx, record)
@@ -106,6 +174,9 @@ func (s msgServer) ApproveTransaction(goCtx context.Context, msg *types.MsgAppro
 }
 
 func (s msgServer) DeclineTransaction(goCtx context.Context, msg *types.MsgDeclineCustodyTransaction) (*types.MsgDeclineCustodyTransactionResponse, error) {
+	//todo: add fee to msg.FromAddress
+	//todo: add ValidateBasic and make possibility to vote only 1 time
+
 	return &types.MsgDeclineCustodyTransactionResponse{}, nil
 }
 
@@ -219,14 +290,6 @@ func (s msgServer) DropLimits(goCtx context.Context, msg *types.MsgDropCustodyLi
 func (s msgServer) Send(goCtx context.Context, msg *types.MsgSend) (*types.MsgSendResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	if err := s.bk.IsSendEnabledCoins(ctx, msg.Amount...); err != nil {
-		return nil, err
-	}
-
-	from, err := sdk.AccAddressFromBech32(msg.FromAddress)
-	if err != nil {
-		return nil, err
-	}
 	to, err := sdk.AccAddressFromBech32(msg.ToAddress)
 	if err != nil {
 		return nil, err
@@ -236,31 +299,139 @@ func (s msgServer) Send(goCtx context.Context, msg *types.MsgSend) (*types.MsgSe
 		return nil, errors.Wrapf(errors.ErrUnauthorized, "%s is not allowed to receive funds", msg.ToAddress)
 	}
 
-	//Todo: custody
-
-	err = s.bk.SendCoins(ctx, from, to, msg.Amount)
-	if err != nil {
+	if err := s.bk.IsSendEnabledCoins(ctx, msg.Amount...); err != nil {
 		return nil, err
 	}
 
-	defer func() {
-		for _, a := range msg.Amount {
-			if a.Amount.IsInt64() {
-				telemetry.SetGaugeWithLabels(
-					[]string{"tx", "msg", "send"},
-					float32(a.Amount.Int64()),
-					[]metrics.Label{telemetry.NewLabel("denom", a.Denom)},
-				)
-			}
-		}
-	}()
+	settings := s.keeper.GetCustodyInfoByAddress(ctx, msg.GetSigners()[0])
+	custodians := s.keeper.GetCustodyCustodiansByAddress(ctx, msg.GetSigners()[0])
 
-	ctx.EventManager().EmitEvent(
-		sdk.NewEvent(
-			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
-		),
-	)
+	record := types.CustodyPool{
+		Address: msg.GetSigners()[0],
+		Transactions: &types.TransactionPool{
+			Record: map[string]*types.TransactionRecord{},
+		},
+	}
+
+	hash := sha256.Sum256(ctx.TxBytes())
+	hashString := hex.EncodeToString(hash[:])
+
+	record.Transactions.Record[hashString] = &types.TransactionRecord{
+		Transaction: msg,
+		Votes:       0,
+		Confirmed:   false,
+	}
+
+	if settings != nil && (settings.CustodyEnabled && len(custodians.Addresses) > 0 || settings.UsePassword) {
+		s.keeper.AddToCustodyPool(ctx, record)
+	} else {
+		from, err := sdk.AccAddressFromBech32(msg.FromAddress)
+		if err != nil {
+			return nil, err
+		}
+
+		err = s.bk.SendCoins(ctx, from, to, msg.Amount)
+		if err != nil {
+			return nil, err
+		}
+
+		defer func() {
+			for _, a := range msg.Amount {
+				if a.Amount.IsInt64() {
+					telemetry.SetGaugeWithLabels(
+						[]string{"tx", "msg", "send"},
+						float32(a.Amount.Int64()),
+						[]metrics.Label{telemetry.NewLabel("denom", a.Denom)},
+					)
+				}
+			}
+		}()
+
+		ctx.EventManager().EmitEvent(
+			sdk.NewEvent(
+				sdk.EventTypeMessage,
+				sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
+			),
+		)
+	}
 
 	return &types.MsgSendResponse{}, nil
+}
+
+func (s msgServer) PasswordConfirm(goCtx context.Context, msg *types.MsgPasswordConfirmTransaction) (*types.MsgPasswordConfirmTransactionResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	hash := strings.ToLower(msg.Hash)
+	allowCustodians := true
+	allowPassword := true
+	settings := s.keeper.GetCustodyInfoByAddress(ctx, msg.SenderAddress)
+	custodians := s.keeper.GetCustodyCustodiansByAddress(ctx, msg.SenderAddress)
+
+	record := types.CustodyPool{
+		Address:      msg.SenderAddress,
+		Transactions: s.keeper.GetCustodyPoolByAddress(ctx, msg.SenderAddress),
+	}
+
+	if record.Transactions != nil && record.Transactions.Record[hash] != nil {
+		record.Transactions.Record[hash].Confirmed = true
+	}
+
+	if settings != nil && settings.CustodyEnabled && len(custodians.Addresses) > 0 {
+		allowCustodians = (record.Transactions.Record[hash].Votes)*100/uint64(len(custodians.Addresses)) >= settings.CustodyMode
+	}
+
+	if settings != nil && settings.UsePassword {
+		allowPassword = record.Transactions.Record[hash].Confirmed
+	}
+
+	if allowCustodians && allowPassword {
+		tx := record.Transactions.Record[hash].Transaction
+
+		to, err := sdk.AccAddressFromBech32(tx.ToAddress)
+		if err != nil {
+			return nil, err
+		}
+
+		if err := s.bk.IsSendEnabledCoins(ctx, tx.Amount...); err != nil {
+			return nil, err
+		}
+
+		from, err := sdk.AccAddressFromBech32(tx.FromAddress)
+		if err != nil {
+			return nil, err
+		}
+
+		err = s.bk.SendCoins(ctx, from, to, tx.Amount)
+		if err != nil {
+			return nil, err
+		}
+
+		if s.bk.BlockedAddr(to) {
+			return nil, errors.Wrapf(errors.ErrUnauthorized, "%s is not allowed to receive funds", tx.ToAddress)
+		}
+
+		defer func() {
+			for _, a := range tx.Amount {
+				if a.Amount.IsInt64() {
+					telemetry.SetGaugeWithLabels(
+						[]string{"tx", "msg", "send"},
+						float32(a.Amount.Int64()),
+						[]metrics.Label{telemetry.NewLabel("denom", a.Denom)},
+					)
+				}
+			}
+		}()
+
+		ctx.EventManager().EmitEvent(
+			sdk.NewEvent(
+				sdk.EventTypeMessage,
+				sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
+			),
+		)
+
+		delete(record.Transactions.Record, hash)
+	}
+
+	s.keeper.AddToCustodyPool(ctx, record)
+
+	return &types.MsgPasswordConfirmTransactionResponse{}, nil
 }
