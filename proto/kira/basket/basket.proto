@@ -36,24 +36,27 @@ message Basket {
       (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
       (gogoproto.nullable) = false
     ]; // maximum daily issuance limit tokens
-    string burns_min = 11 [
+    bool mints_disabled = 11;
+    string burns_min = 12 [
       (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
       (gogoproto.nullable) = false
     ]; // minimum amount tokens that must be burned in a single tx
-    string burns_max = 12 [
+    string burns_max = 13 [
       (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
       (gogoproto.nullable) = false
     ]; // maximum daily burn amount (resulting in aggregate tokens redemptions)
-    string swaps_min = 13 [
+    bool burns_disabled = 14;
+    string swaps_min = 15 [
       (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
       (gogoproto.nullable) = false
     ]; // minimum value of aggregate tokens expressed in B1_usd that must be swapped in a single tx
-    string swaps_max = 14 [
+    string swaps_max = 16 [
       (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
       (gogoproto.nullable) = false
     ]; // maximum daily swap amount of aggregate tokens (resulting in aggregate tokens redemptions)
-    repeated BasketToken tokens = 15 [ (gogoproto.nullable) = false ];
-    repeated string surplus = 16 [
+    bool swaps_disabled = 17;
+    repeated BasketToken tokens = 18 [ (gogoproto.nullable) = false ];
+    repeated string surplus = 19 [
       (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
       (gogoproto.nullable) = false
     ]; // list of excess tokens deposited as result of rewards and/or swaps (that did not resulted in minting)

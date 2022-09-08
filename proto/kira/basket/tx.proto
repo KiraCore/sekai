@@ -32,6 +32,7 @@ service Msg {
 //     - To disable single token set `deposits` boolean flag to false
 message MsgDisableBasketDeposits {
   string sender = 1;
+  uint64 basket_id = 2;
 }
 message MsgDisableBasketDepositsResponse {}
 
@@ -40,6 +41,7 @@ message MsgDisableBasketDepositsResponse {}
 //     - To disable single token set `withdraws` boolean flag to false
 message MsgDisableBasketWithdraws {
   string sender = 1;
+  uint64 basket_id = 2;
 }
 message MsgDisableBasketWithdrawsResponse {}
 
@@ -48,29 +50,50 @@ message MsgDisableBasketWithdrawsResponse {}
 //     - To disable single token set `swaps` boolean flag to false
 message MsgDisableBasketSwaps {
   string sender = 1;
+  uint64 basket_id = 2;
 }
 message MsgDisableBasketSwapsResponse {}
 
 // - `basket-token-mint` - transaction to mint basket tokens
 message MsgBasketTokenMint {
   string sender = 1;
+  uint64 basket_id = 2;
+  repeated string deposit = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
 }
 message MsgBasketTokenMintResponse {}
 
 // - `basket-token-burn` - transaction to burn basket tokens and redeem underlying aggregate tokens
 message MsgBasketTokenBurn {
   string sender = 1;
+  uint64 basket_id = 2;
+  string burn_amount = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
 }
 message MsgBasketTokenBurnResponse {}
 
 // - `basket-token-swap` - transaction to swap one or many of the basket tokens for one or many others
 message MsgBasketTokenSwap {
   string sender = 1;
+  uint64 basket_id = 2;
+  string in_amount = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
+  string out_token = 4;
 }
 message MsgBasketTokenSwapResponse {}
 
 // - `basket-claim-rewards` - transaction to force staking derivative `SDB` basket to claim outstanding rewards of one all or many aggregate `V<ID>` tokens
 message MsgBasketClaimRewards {
   string sender = 1;
+  repeated string basket_tokens = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
 }
 message MsgBasketClaimRewardsResponse {}
