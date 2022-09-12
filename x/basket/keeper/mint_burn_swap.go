@@ -27,6 +27,9 @@ func (k Keeper) MintBasketToken(ctx sdk.Context, msg *types.MsgBasketTokenMint) 
 		return err
 	}
 
+	// TODO: use FlagMintsMin
+	// TODO: use FlagMintsMax per day
+
 	rates, _ := basket.RatesAndIndexes()
 
 	basketTokenAmount := sdk.ZeroDec()
@@ -163,7 +166,12 @@ func (k Keeper) BasketSwap(ctx sdk.Context, msg *types.MsgBasketTokenSwap) error
 		return types.ErrSwapsDisabledForOutToken
 	}
 
-	outAmount := msg.InAmount.Amount.ToDec().Mul(inRate).Quo(outRate).Mul(sdk.OneDec().Sub(basket.SwapFee)).RoundInt()
+	// TODO: use FlagSwapsMin
+	// TODO: use FlagSwapsMax
+
+	// calculate out amount considering fees and rates
+	swapAmount := msg.InAmount.Amount.ToDec().Mul(sdk.OneDec().Sub(basket.SwapFee)).RoundInt()
+	outAmount := swapAmount.ToDec().Mul(inRate).Quo(outRate).RoundInt()
 	if outAmount.IsZero() {
 		return types.ErrNotAbleToWithdrawAnyTokens
 	}
@@ -174,16 +182,46 @@ func (k Keeper) BasketSwap(ctx sdk.Context, msg *types.MsgBasketTokenSwap) error
 		return err
 	}
 
+	// increase in tokens
 	basket, err = basket.IncreaseBasketTokens(sdk.Coins{msg.InAmount})
 	if err != nil {
 		return err
 	}
 
+	// decrease out tokens
 	basket, err = basket.DecreaseBasketTokens(outCoins)
 	if err != nil {
 		return err
 	}
 
+	// increase surplus amount
+	feeAmount := msg.InAmount.Amount.Sub(swapAmount)
+	basket.Surplus = sdk.Coins(basket.Surplus).Add(sdk.NewCoin(msg.InAmount.Denom, feeAmount))
+
 	k.SetBasket(ctx, basket)
+	return nil
+}
+
+func (k Keeper) BasketWithdrawSurplus(ctx sdk.Context, p types.ProposalBasketWithdrawSurplus) error {
+	withdrawTarget, err := sdk.AccAddressFromBech32(p.WithdrawTarget)
+	if err != nil {
+		return err
+	}
+
+	for _, basketId := range p.BasketIds {
+		// check if basket is available
+		basket, err := k.GetBasketById(ctx, basketId)
+		if err != nil {
+			return err
+		}
+
+		err = k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, withdrawTarget, sdk.Coins(basket.Surplus))
+		if err != nil {
+			return err
+		}
+
+		basket.Surplus = sdk.Coins{}
+		k.SetBasket(ctx, basket)
+	}
 	return nil
 }

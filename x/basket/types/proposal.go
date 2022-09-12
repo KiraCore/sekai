@@ -51,9 +51,10 @@ func (m *ProposalEditBasket) ValidateBasic() error {
 	return nil
 }
 
-func NewProposalBasketWithdrawSurplus(basketId uint64) *ProposalBasketWithdrawSurplus {
+func NewProposalBasketWithdrawSurplus(basketIds []uint64, withdrawTarget string) *ProposalBasketWithdrawSurplus {
 	return &ProposalBasketWithdrawSurplus{
-		BasketId: basketId,
+		BasketIds:      basketIds,
+		WithdrawTarget: withdrawTarget,
 	}
 }
 
