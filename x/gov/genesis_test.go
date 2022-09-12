@@ -63,7 +63,10 @@ func TestSimappExportGenesis(t *testing.T) {
             "inflation_period": "31557600",	
             "unstaking_period": "2629800",
             "max_delegators": "100",
-            "min_delegation_pushout": "10"
+            "min_delegation_pushout": "10",
+			"min_custody_reward": "200",
+			"max_custody_buffer_size": "8192",
+			"max_custody_tx_size": "10"
 		},
 		"execution_fees":[],
 		"poor_network_messages":{
@@ -205,7 +208,10 @@ func TestExportInitGenesis(t *testing.T) {
             "inflation_period": "31557600",	
             "unstaking_period": "2629800",
             "max_delegators": "100",
-            "min_delegation_pushout": "10"
+            "min_delegation_pushout": "10",
+			"min_custody_reward": "200",
+			"max_custody_buffer_size": "8192",
+			"max_custody_tx_size": "10"
 		},
 		"execution_fees":[],
 		"poor_network_messages":{
