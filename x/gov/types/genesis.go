@@ -109,6 +109,9 @@ func DefaultGenesis() *GenesisState {
 			UnstakingPeriod:             2629800,  // 1 month
 			MaxDelegators:               100,
 			MinDelegationPushout:        10,
+			MinCustodyReward:            200,
+			MaxCustodyTxSize:            8192,
+			MaxCustodyBufferSize:        10,
 		},
 		ExecutionFees: []*ExecutionFee{
 			{

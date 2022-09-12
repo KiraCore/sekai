@@ -175,7 +175,7 @@ func (s msgServer) ApproveTransaction(goCtx context.Context, msg *types.MsgAppro
 
 func (s msgServer) DeclineTransaction(goCtx context.Context, msg *types.MsgDeclineCustodyTransaction) (*types.MsgDeclineCustodyTransactionResponse, error) {
 	//todo: add fee to msg.FromAddress
-	//todo: add ValidateBasic and make possibility to vote only 1 time
+	//todo: make possibility to vote only 1 time
 
 	return &types.MsgDeclineCustodyTransactionResponse{}, nil
 }
