@@ -150,6 +150,9 @@ func TestExportInitGenesis(t *testing.T) {
 			UnstakingPeriod:             2629800,  // 1 month
 			MaxDelegators:               100,
 			MinDelegationPushout:        10,
+			MinCustodyReward:            200,
+			MaxCustodyBufferSize:        10,
+			MaxCustodyTxSize:            8192,
 		},
 		ExecutionFees: []*types.ExecutionFee{
 			{
