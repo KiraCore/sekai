@@ -65,8 +65,8 @@ func TestSimappExportGenesis(t *testing.T) {
             "max_delegators": "100",
             "min_delegation_pushout": "10",
 			"min_custody_reward": "200",
-			"max_custody_buffer_size": "8192",
-			"max_custody_tx_size": "10"
+			"max_custody_buffer_size": "10",
+			"max_custody_tx_size": "8192"
 		},
 		"execution_fees":[],
 		"poor_network_messages":{
@@ -210,8 +210,8 @@ func TestExportInitGenesis(t *testing.T) {
             "max_delegators": "100",
             "min_delegation_pushout": "10",
 			"min_custody_reward": "200",
-			"max_custody_buffer_size": "8192",
-			"max_custody_tx_size": "10"
+			"max_custody_buffer_size": "10",
+			"max_custody_tx_size": "8192"
 		},
 		"execution_fees":[],
 		"poor_network_messages":{
