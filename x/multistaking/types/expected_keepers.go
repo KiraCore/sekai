@@ -11,6 +11,11 @@ type StakingKeeper interface {
 	GetValidator(sdk.Context, sdk.ValAddress) (stakingtypes.Validator, error)
 }
 
+type DistributorKeeper interface {
+	SetFeesTreasury(ctx sdk.Context, coins sdk.Coins)
+	GetFeesTreasury(ctx sdk.Context) sdk.Coins
+}
+
 type BankKeeper interface {
 	GetAllBalances(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
 	MintCoins(ctx sdk.Context, moduleName string, amt sdk.Coins) error

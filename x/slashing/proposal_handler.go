@@ -22,8 +22,29 @@ func (a ApplyResetWholeValidatorRankProposalHandler) ProposalType() string {
 	return kiratypes.ProposalTypeResetWholeValidatorRank
 }
 
-func (a ApplyResetWholeValidatorRankProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal govtypes.Content) error {
+func (a ApplyResetWholeValidatorRankProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal govtypes.Content, slash uint64) error {
 	_ = proposal.(*types.ProposalResetWholeValidatorRank)
 
 	return a.keeper.ResetWholeValidatorRank(ctx)
+}
+
+type ApplySlashValidatorProposalHandler struct {
+	keeper keeper.Keeper
+}
+
+func NewApplySlashValidatorProposalHandler(keeper keeper.Keeper) *ApplySlashValidatorProposalHandler {
+	return &ApplySlashValidatorProposalHandler{
+		keeper: keeper,
+	}
+}
+
+func (a ApplySlashValidatorProposalHandler) ProposalType() string {
+	return kiratypes.ProposalTypeSlashValidator
+}
+
+func (a ApplySlashValidatorProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal govtypes.Content, slash uint64) error {
+	content := proposal.(*types.ProposalSlashValidator)
+
+	a.keeper.SlashStakingPool(ctx, content, slash)
+	return nil
 }

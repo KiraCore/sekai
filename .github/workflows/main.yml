@@ -200,7 +200,7 @@ jobs:
             with:
               body_path: RELEASE.md
               tag_name: ${{ env.RELEASE_VER }}
-              name: ${{ env.SOURCE_BRANCH }}
+              name: ${{ env.RELEASE_VER }}
               prerelease: ${{ env.PRE_RELEASE }}
               draft: false
               fail_on_unmatched_files: true

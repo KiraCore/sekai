@@ -2,6 +2,7 @@ package types
 
 import (
 	"encoding/binary"
+	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -32,6 +33,7 @@ var (
 	ValidatorSigningInfoKeyPrefix         = []byte{0x01} // Prefix for signing info
 	ValidatorMissedBlockBitArrayKeyPrefix = []byte{0x02} // Prefix for missed block bit array
 	AddrPubkeyRelationKeyPrefix           = []byte{0x03} // Prefix for address-pubkey relation
+	SlashedValidatorsByTimeKeyPrefix      = []byte{0x04} // Prefix for slashed validators
 )
 
 // ValidatorSigningInfoKey - stored by *Consensus* address (not operator address)
@@ -54,4 +56,12 @@ func ValidatorMissedBlockBitArrayKey(v sdk.ConsAddress, i int64) []byte {
 // AddrPubkeyRelationKey gets pubkey relation key used to get the pubkey from the address
 func AddrPubkeyRelationKey(address []byte) []byte {
 	return append(AddrPubkeyRelationKeyPrefix, address...)
+}
+
+func SlashedValidatorByTimeKey(timestamp time.Time, val sdk.ValAddress) []byte {
+	return append(SlashedValidatorByTimePrefixKey(timestamp), val...)
+}
+
+func SlashedValidatorByTimePrefixKey(timestamp time.Time) []byte {
+	return append(SlashedValidatorsByTimeKeyPrefix, sdk.FormatTimeBytes(timestamp)...)
 }
