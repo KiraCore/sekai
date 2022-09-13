@@ -78,7 +78,7 @@ func (a ApplyUpdateSpendingPoolProposalHandler) VoteEnactment(ctx sdk.Context, p
 	return pool.VoteEnactment
 }
 
-func (a ApplyUpdateSpendingPoolProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal govtypes.Content) error {
+func (a ApplyUpdateSpendingPoolProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal govtypes.Content, slash uint64) error {
 	p := proposal.(*spendingtypes.UpdateSpendingPoolProposal)
 
 	pool := a.keeper.GetSpendingPool(ctx, p.Name)
@@ -174,7 +174,7 @@ func (a ApplySpendingPoolDistributionProposalHandler) VoteEnactment(ctx sdk.Cont
 	return pool.VoteEnactment
 }
 
-func (a ApplySpendingPoolDistributionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal govtypes.Content) error {
+func (a ApplySpendingPoolDistributionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal govtypes.Content, slash uint64) error {
 	p := proposal.(*spendingtypes.SpendingPoolDistributionProposal)
 	_ = p
 
@@ -285,7 +285,7 @@ func (a ApplySpendingPoolWithdrawProposalHandler) VoteEnactment(ctx sdk.Context,
 	return pool.VoteEnactment
 }
 
-func (a ApplySpendingPoolWithdrawProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal govtypes.Content) error {
+func (a ApplySpendingPoolWithdrawProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal govtypes.Content, slash uint64) error {
 	p := proposal.(*spendingtypes.SpendingPoolWithdrawProposal)
 	_ = p
 

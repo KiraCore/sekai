@@ -480,11 +480,12 @@ func (m *MsgRemoveRole) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgVoteProposal(proposalID uint64, voter sdk.AccAddress, option VoteOption) *MsgVoteProposal {
+func NewMsgVoteProposal(proposalID uint64, voter sdk.AccAddress, option VoteOption, slash uint64) *MsgVoteProposal {
 	return &MsgVoteProposal{
 		ProposalId: proposalID,
 		Voter:      voter,
 		Option:     option,
+		Slash:      slash,
 	}
 }
 

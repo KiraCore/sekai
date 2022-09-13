@@ -3,6 +3,7 @@ package kira.slashing;
 
 import "gogoproto/gogo.proto";
 import "cosmos_proto/cosmos.proto";
+import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/slashing/types";
 
@@ -11,4 +12,17 @@ message ProposalResetWholeValidatorRank {
       (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
     ];
     string description = 2;
+}
+
+message ProposalSlashValidator {
+  string offender = 1; // validator address that commited a fault
+  uint64 staking_pool_id = 2;
+  google.protobuf.Timestamp misbehaviour_time = 3 [
+    (gogoproto.stdtime) = true,
+    (gogoproto.nullable) = false
+  ]; // time at which misbehaviour occured
+  string misbehaviour_type = 4; // default "double-signing", string type of evidence (in the future there can be different types)
+  uint64 jail_percentage = 5;  // percentage of validators that was jailed (colluded)
+  repeated string colluders = 6; // list of validator who colluded with a misbehaving validator "kiraXXX...XXX", "kiraXXX...XXX", ..., "kiraXXX...XXX"]
+  string refutation = 7;         // validator supplied counter-evidence proving that his behaviour was not intentionally malicious
 }

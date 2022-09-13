@@ -56,7 +56,7 @@ type AppConstructor = func(val Validator) servertypes.Application
 
 func NewSimApp(encodingCfg params.EncodingConfig) AppConstructor {
 	return func(val Validator) servertypes.Application {
-		return simapp.NewSimApp(
+		return app.NewInitApp(
 			val.Ctx.Logger, dbm.NewMemDB(), nil, true, make(map[int64]bool), val.Ctx.Config.RootDir, 0,
 			encodingCfg,
 			simapp.EmptyAppOptions{},

@@ -27,7 +27,7 @@ func (a ApplyUnjailValidatorProposalHandler) ProposalType() string {
 	return kiratypes.ProposalTypeUnjailValidator
 }
 
-func (a ApplyUnjailValidatorProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal govtypes.Content) error {
+func (a ApplyUnjailValidatorProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal govtypes.Content, slash uint64) error {
 	p := proposal.(*types.ProposalUnjailValidator)
 
 	valAddr, err := sdk.ValAddressFromBech32(p.ValAddr)

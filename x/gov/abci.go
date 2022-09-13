@@ -12,7 +12,9 @@ func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 	enactmentIterator := k.GetEnactmentProposalsWithFinishedEnactmentEndTimeIterator(ctx, ctx.BlockTime())
 	defer enactmentIterator.Close()
 	for ; enactmentIterator.Valid(); enactmentIterator.Next() {
-		processEnactmentProposal(ctx, k, keeper.BytesToProposalID(enactmentIterator.Value()))
+		proposalID := keeper.BytesToProposalID(enactmentIterator.Value())
+		slash := k.GetAverageVotesSlash(ctx, proposalID)
+		processEnactmentProposal(ctx, k, proposalID, slash)
 	}
 
 	activeIterator := k.GetActiveProposalsWithFinishedVotingEndTimeIterator(ctx, ctx.BlockTime())
@@ -89,7 +91,7 @@ func processProposal(ctx sdk.Context, k keeper.Keeper, proposalID uint64) {
 	)
 }
 
-func processEnactmentProposal(ctx sdk.Context, k keeper.Keeper, proposalID uint64) {
+func processEnactmentProposal(ctx sdk.Context, k keeper.Keeper, proposalID uint64, slash uint64) {
 	router := k.GetProposalRouter()
 	proposal, found := k.GetProposal(ctx, proposalID)
 	if !found {
@@ -102,7 +104,7 @@ func processEnactmentProposal(ctx sdk.Context, k keeper.Keeper, proposalID uint6
 	}
 
 	if proposal.Result == types.Enactment {
-		err := router.ApplyProposal(ctx, proposalID, proposal.GetContent())
+		err := router.ApplyProposal(ctx, proposalID, proposal.GetContent(), slash)
 		if err != nil {
 			proposal.ExecResult = "execution failed"
 		} else {

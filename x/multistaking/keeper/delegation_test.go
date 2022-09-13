@@ -3,6 +3,7 @@ package keeper_test
 import (
 	"github.com/KiraCore/sekai/x/multistaking/keeper"
 	"github.com/KiraCore/sekai/x/multistaking/types"
+	multistakingtypes "github.com/KiraCore/sekai/x/multistaking/types"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/simapp"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -182,6 +183,7 @@ func (suite *KeeperTestSuite) TestDelegate() {
 		preDelegations  int
 		mintCoins       sdk.Int
 		delegationCoins sdk.Int
+		slashedPool     bool
 		expectErr       bool
 	}{
 		"inactive validator delegate": {
@@ -192,6 +194,7 @@ func (suite *KeeperTestSuite) TestDelegate() {
 			0,
 			sdk.NewInt(1000000),
 			sdk.NewInt(1000000),
+			false,
 			true,
 		},
 		"not existing pool delegate": {
@@ -202,6 +205,7 @@ func (suite *KeeperTestSuite) TestDelegate() {
 			0,
 			sdk.NewInt(1000000),
 			sdk.NewInt(1000000),
+			false,
 			true,
 		},
 		"max delegators exceed": {
@@ -212,6 +216,7 @@ func (suite *KeeperTestSuite) TestDelegate() {
 			3,
 			sdk.NewInt(1000000),
 			sdk.NewInt(1000000),
+			false,
 			true,
 		},
 		"not enough amounts on delegator": {
@@ -222,6 +227,7 @@ func (suite *KeeperTestSuite) TestDelegate() {
 			0,
 			sdk.NewInt(1),
 			sdk.NewInt(1000000),
+			false,
 			true,
 		},
 		"not registered token delegate": {
@@ -232,6 +238,18 @@ func (suite *KeeperTestSuite) TestDelegate() {
 			0,
 			sdk.NewInt(1000000),
 			sdk.NewInt(1000000),
+			false,
+			true,
+		},
+		"slashed pool delegate": {
+			"ukex",
+			stakingtypes.Active,
+			true,
+			3,
+			0,
+			sdk.NewInt(1000000),
+			sdk.NewInt(1000000),
+			true,
 			true,
 		},
 		"successful delegate": {
@@ -243,6 +261,7 @@ func (suite *KeeperTestSuite) TestDelegate() {
 			sdk.NewInt(1000000),
 			sdk.NewInt(1000000),
 			false,
+			false,
 		},
 		"successful delegate with pushout": {
 			"ukex",
@@ -252,6 +271,7 @@ func (suite *KeeperTestSuite) TestDelegate() {
 			3,
 			sdk.NewInt(100000000),
 			sdk.NewInt(100000000),
+			false,
 			false,
 		},
 	}
@@ -273,10 +293,15 @@ func (suite *KeeperTestSuite) TestDelegate() {
 			suite.app.CustomStakingKeeper.AddValidator(suite.ctx, val)
 
 			if tc.poolCreate {
+				slashed := uint64(0)
+				if tc.slashedPool {
+					slashed = 10
+				}
 				pool := types.StakingPool{
 					Id:        1,
 					Validator: valAddr.String(),
 					Enabled:   true,
+					Slashed:   slashed,
 				}
 				suite.app.MultiStakingKeeper.SetStakingPool(suite.ctx, pool)
 			}
@@ -371,4 +396,104 @@ func (suite *KeeperTestSuite) TestRegisterDelegator() {
 	// check if registered as delegator
 	isDelegator := suite.app.MultiStakingKeeper.IsPoolDelegator(suite.ctx, 1, addr2)
 	suite.Require().True(isDelegator)
+}
+
+func (suite *KeeperTestSuite) TestUndelegate() {
+	testCases := map[string]struct {
+		delegateToken   string
+		valStatus       stakingtypes.ValidatorStatus
+		poolCreate      bool
+		maxDelegators   uint64
+		preDelegations  int
+		mintCoins       sdk.Int
+		delegationCoins sdk.Int
+		slashedPool     bool
+		expectErr       bool
+	}{
+		"undelegate on slashed pool": {
+			"ukex",
+			stakingtypes.Paused,
+			true,
+			3,
+			0,
+			sdk.NewInt(1000000),
+			sdk.NewInt(1000000),
+			true,
+			true,
+		},
+		"successful undelegate on not slashed pool": {
+			"ukex",
+			stakingtypes.Paused,
+			true,
+			3,
+			0,
+			sdk.NewInt(1000000),
+			sdk.NewInt(1000000),
+			false,
+			false,
+		},
+	}
+
+	for name, tc := range testCases {
+		tc := tc
+
+		suite.Run(name, func() {
+			suite.SetupTest()
+			addr1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+			valAddr := sdk.ValAddress(addr1)
+			pubkeys := simapp.CreateTestPubKeys(1)
+			pubKey := pubkeys[0]
+
+			val, err := stakingtypes.NewValidator(valAddr, pubKey)
+			suite.Require().NoError(err)
+
+			val.Status = tc.valStatus
+			suite.app.CustomStakingKeeper.AddValidator(suite.ctx, val)
+
+			if tc.poolCreate {
+				delCoins := sdk.Coins{sdk.NewCoin("ukex", tc.delegationCoins)}
+				pool := types.StakingPool{
+					Id:                 1,
+					Validator:          valAddr.String(),
+					Enabled:            true,
+					Slashed:            0,
+					TotalStakingTokens: delCoins,
+					TotalShareTokens:   sdk.Coins{sdk.NewCoin("v1/ukex", tc.delegationCoins)},
+				}
+				suite.app.MultiStakingKeeper.SetStakingPool(suite.ctx, pool)
+
+				err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, delCoins)
+				suite.Require().NoError(err)
+				err = suite.app.BankKeeper.SendCoinsFromModuleToModule(suite.ctx, minttypes.ModuleName, types.ModuleName, delCoins)
+				suite.Require().NoError(err)
+
+				if tc.slashedPool {
+					suite.app.MultiStakingKeeper.SlashStakingPool(suite.ctx, valAddr.String(), 10)
+				}
+
+				coins := pool.TotalShareTokens
+				err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
+				suite.Require().NoError(err)
+				err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, addr1, coins)
+				suite.Require().NoError(err)
+
+				coins = pool.TotalStakingTokens
+				err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
+				suite.Require().NoError(err)
+				err = suite.app.BankKeeper.SendCoinsFromModuleToModule(suite.ctx, minttypes.ModuleName, multistakingtypes.ModuleName, coins)
+				suite.Require().NoError(err)
+			}
+
+			err = suite.app.MultiStakingKeeper.Undelegate(suite.ctx, &types.MsgUndelegate{
+				DelegatorAddress: addr1.String(),
+				ValidatorAddress: valAddr.String(),
+				Amounts:          sdk.Coins{sdk.NewCoin(tc.delegateToken, tc.delegationCoins)},
+			})
+			if tc.expectErr {
+				suite.Require().Error(err)
+			} else {
+				suite.Require().NoError(err)
+			}
+		})
+	}
 }

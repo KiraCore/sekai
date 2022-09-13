@@ -108,6 +108,14 @@ func (am AppModule) InitGenesis(
 		am.distributorKeeper.SetValidatorVote(ctx, consAddr, vote.Height)
 	}
 
+	if genesisState.PreviousProposer != "" {
+		consAddr, err := sdk.ConsAddressFromBech32(genesisState.PreviousProposer)
+		if err != nil {
+			panic(err)
+		}
+		am.distributorKeeper.SetPreviousProposerConsAddr(ctx, consAddr)
+	}
+
 	return nil
 }
 
@@ -117,6 +125,7 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.Raw
 	genesisState.FeesTreasury = am.distributorKeeper.GetFeesTreasury(ctx)
 	genesisState.SnapPeriod = am.distributorKeeper.GetSnapPeriod(ctx)
 	genesisState.ValidatorVotes = am.distributorKeeper.GetAllValidatorVotes(ctx)
+	genesisState.PreviousProposer = am.distributorKeeper.GetPreviousProposerConsAddr(ctx).String()
 	return cdc.MustMarshalJSON(&genesisState)
 }
 

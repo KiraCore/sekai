@@ -11,10 +11,10 @@ import (
 	"github.com/stretchr/testify/suite"
 	tmcli "github.com/tendermint/tendermint/libs/cli"
 
+	"github.com/KiraCore/sekai/testutil/network"
 	"github.com/KiraCore/sekai/x/slashing/client/cli"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
-	"github.com/cosmos/cosmos-sdk/testutil/network"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -47,63 +47,6 @@ func (s *IntegrationTestSuite) TearDownSuite() {
 	s.network.Cleanup()
 }
 
-func (s *IntegrationTestSuite) TestGetCmdQuerySigningInfo() {
-	val := s.network.Validators[0]
-
-	valConsPubKey, err := sdk.Bech32ifyPubKey(sdk.Bech32PubKeyTypeConsPub, val.PubKey)
-	s.Require().NoError(err)
-
-	testCases := []struct {
-		name           string
-		args           []string
-		expectErr      bool
-		expectedOutput string
-	}{
-		{"invalid address", []string{"foo"}, true, ``},
-		{
-			"valid address (json output)",
-			[]string{
-				valConsPubKey,
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
-				fmt.Sprintf("--%s=1", flags.FlagHeight),
-			},
-			false,
-			fmt.Sprintf("{\"address\":\"%s\",\"start_height\":\"0\",\"index_offset\":\"0\",\"inactivated_until\":\"1970-01-01T00:00:00Z\",\"missed_blocks_counter\":\"0\"}", sdk.ConsAddress(val.PubKey.Address())),
-		},
-		{
-			"valid address (text output)",
-			[]string{
-				valConsPubKey,
-				fmt.Sprintf("--%s=text", tmcli.OutputFlag),
-				fmt.Sprintf("--%s=1", flags.FlagHeight),
-			},
-			false,
-			fmt.Sprintf(`address: %s
-index_offset: "0"
-inactivated_until: "1970-01-01T00:00:00Z"
-missed_blocks_counter: "0"
-start_height: "0"`, sdk.ConsAddress(val.PubKey.Address())),
-		},
-	}
-
-	for _, tc := range testCases {
-		tc := tc
-
-		s.Run(tc.name, func() {
-			cmd := cli.GetCmdQuerySigningInfo()
-			clientCtx := val.ClientCtx
-
-			out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, tc.args)
-			if tc.expectErr {
-				s.Require().Error(err)
-			} else {
-				s.Require().NoError(err)
-				s.Require().Equal(tc.expectedOutput, strings.TrimSpace(out.String()))
-			}
-		})
-	}
-}
-
 func (s *IntegrationTestSuite) TestGetCmdQueryParams() {
 	val := s.network.Validators[0]
 
@@ -115,16 +58,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryParams() {
 		{
 			"json output",
 			[]string{fmt.Sprintf("--%s=json", tmcli.OutputFlag)},
-			`{"signed_blocks_window":"100","min_signed_per_window":"0.500000000000000000","downtime_inactive_duration":"600s","slash_fraction_double_sign":"0.050000000000000000","slash_fraction_downtime":"0.010000000000000000"}`,
-		},
-		{
-			"text output",
-			[]string{fmt.Sprintf("--%s=text", tmcli.OutputFlag)},
-			`downtime_inactive_duration: 600s
-min_signed_per_window: "0.500000000000000000"
-signed_blocks_window: "100"
-slash_fraction_double_sign: "0.050000000000000000"
-slash_fraction_downtime: "0.010000000000000000"`,
+			`{"downtime_inactive_duration":"600s"}`,
 		},
 	}
 
@@ -158,7 +92,7 @@ func (s *IntegrationTestSuite) TestNewActivateTxCmd() {
 				fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync), // sync mode as there are no funds yet
-				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
+				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(1000))).String()),
 			},
 			false, &sdk.TxResponse{}, 0,
 		},
@@ -203,7 +137,7 @@ func (s *IntegrationTestSuite) TestTxProposalResetWholeValidatorRankCmd() {
 				fmt.Sprintf("--%s=%s", cli.FlagDescription, "resetvalidators"),
 				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync), // sync mode as there are no funds yet
-				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
+				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(1000))).String()),
 			},
 			false, &sdk.TxResponse{}, 0,
 		},
@@ -214,6 +148,58 @@ func (s *IntegrationTestSuite) TestTxProposalResetWholeValidatorRankCmd() {
 
 		s.Run(tc.name, func() {
 			cmd := cli.GetTxProposalResetWholeValidatorRankCmd()
+			clientCtx := val.ClientCtx
+
+			out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, tc.args)
+			if tc.expectErr {
+				s.Require().Error(err)
+			} else {
+				s.Require().NoError(err)
+				s.Require().NoError(clientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), tc.respType), out.String())
+
+				txResp := tc.respType.(*sdk.TxResponse)
+				s.Require().Equal(tc.expectedCode, txResp.Code, out.String())
+			}
+		})
+	}
+}
+
+func (s *IntegrationTestSuite) TestTxProposalSlashValidatorCmd() {
+	val := s.network.Validators[0]
+
+	testCases := []struct {
+		name         string
+		args         []string
+		expectErr    bool
+		respType     proto.Message
+		expectedCode uint32
+	}{
+		{
+			"valid slash validator proposal",
+			[]string{
+				fmt.Sprintf("--%s=%s", cli.FlagOffender, val.Address.String()),
+				fmt.Sprintf("--%s=%d", cli.FlagStakingPoolId, 1),
+				fmt.Sprintf("--%s=%d", cli.FlagMisbehaviourTime, 1659927223),
+				fmt.Sprintf("--%s=%s", cli.FlagMisBehaviourType, "manual-slash"),
+				fmt.Sprintf("--%s=%d", cli.FlagJailPercentage, 10),
+				fmt.Sprintf("--%s=%s", cli.FlagColluders, ""),
+				fmt.Sprintf("--%s=%s", cli.FlagRefutation, ""),
+				fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+				fmt.Sprintf("--%s=%s", cli.FlagTitle, "title"),
+				fmt.Sprintf("--%s=%s", cli.FlagDescription, "slash validators"),
+				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync), // sync mode as there are no funds yet
+				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(1000))).String()),
+			},
+			false, &sdk.TxResponse{}, 0,
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+
+		s.Run(tc.name, func() {
+			cmd := cli.GetTxProposalSlashValidatorCmd()
 			clientCtx := val.ClientCtx
 
 			out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, tc.args)

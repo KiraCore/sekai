@@ -17,6 +17,7 @@ service Msg {
   rpc Pause(MsgPause) returns (MsgPauseResponse);
   // Unpause defines a method for a paused validator
   rpc Unpause(MsgUnpause) returns (MsgUnpauseResponse);
+  rpc RefuteSlashingProposal(MsgRefuteSlashingProposal) returns (MsgRefuteSlashingProposalResponse);
 }
 
 // MsgActivate defines the Msg/Activate request type
@@ -51,3 +52,15 @@ message MsgUnpause {
 
 // MsgUnpauseResponse defines the Msg/Unpause response type
 message MsgUnpauseResponse {}
+
+// only validator whose staking pool is being
+// slashed should be able to submit refute transaction containing a string
+// (max 2048 characters) with URL or CID explaining the circumstances under
+// which the fault occured. The refutation string should be then attached to
+// the Slashing Proposal for all voters too see.
+message MsgRefuteSlashingProposal {
+  string sender = 1;
+  string validator = 2;
+  string refutation = 3;
+}
+message MsgRefuteSlashingProposalResponse {}
