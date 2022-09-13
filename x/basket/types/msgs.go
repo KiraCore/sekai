@@ -8,9 +8,10 @@ import (
 var _ sdk.Msg = &MsgDisableBasketDeposits{}
 
 // NewMsgDisableBasketDeposits returns an instance of MsgDisableBasketDeposits
-func NewMsgDisableBasketDeposits(proposer sdk.AccAddress) *MsgDisableBasketDeposits {
+func NewMsgDisableBasketDeposits(proposer sdk.AccAddress, basketId uint64) *MsgDisableBasketDeposits {
 	return &MsgDisableBasketDeposits{
-		Sender: proposer.String(),
+		Sender:   proposer.String(),
+		BasketId: basketId,
 	}
 }
 
@@ -47,9 +48,10 @@ func (m *MsgDisableBasketDeposits) GetSigners() []sdk.AccAddress {
 var _ sdk.Msg = &MsgDisableBasketWithdraws{}
 
 // NewMsgDisableBasketWithdraws returns an instance of MsgDisableBasketWithdraws
-func NewMsgDisableBasketWithdraws(proposer sdk.AccAddress) *MsgDisableBasketWithdraws {
+func NewMsgDisableBasketWithdraws(proposer sdk.AccAddress, basketId uint64) *MsgDisableBasketWithdraws {
 	return &MsgDisableBasketWithdraws{
-		Sender: proposer.String(),
+		Sender:   proposer.String(),
+		BasketId: basketId,
 	}
 }
 
@@ -86,9 +88,10 @@ func (m *MsgDisableBasketWithdraws) GetSigners() []sdk.AccAddress {
 var _ sdk.Msg = &MsgDisableBasketSwaps{}
 
 // NewMsgDisableBasketSwaps returns an instance of MsgDisableBasketSwaps
-func NewMsgDisableBasketSwaps(proposer sdk.AccAddress) *MsgDisableBasketSwaps {
+func NewMsgDisableBasketSwaps(proposer sdk.AccAddress, basketId uint64) *MsgDisableBasketSwaps {
 	return &MsgDisableBasketSwaps{
-		Sender: proposer.String(),
+		Sender:   proposer.String(),
+		BasketId: basketId,
 	}
 }
 
@@ -125,9 +128,11 @@ func (m *MsgDisableBasketSwaps) GetSigners() []sdk.AccAddress {
 var _ sdk.Msg = &MsgBasketTokenMint{}
 
 // NewMsgBasketTokenMint returns an instance of MsgBasketTokenMint
-func NewMsgBasketTokenMint(proposer sdk.AccAddress) *MsgBasketTokenMint {
+func NewMsgBasketTokenMint(proposer sdk.AccAddress, basketId uint64, deposit sdk.Coins) *MsgBasketTokenMint {
 	return &MsgBasketTokenMint{
-		Sender: proposer.String(),
+		Sender:   proposer.String(),
+		BasketId: basketId,
+		Deposit:  deposit,
 	}
 }
 
@@ -164,9 +169,11 @@ func (m *MsgBasketTokenMint) GetSigners() []sdk.AccAddress {
 var _ sdk.Msg = &MsgBasketTokenBurn{}
 
 // NewMsgBasketTokenBurn returns an instance of MsgBasketTokenBurn
-func NewMsgBasketTokenBurn(proposer sdk.AccAddress) *MsgBasketTokenBurn {
+func NewMsgBasketTokenBurn(proposer sdk.AccAddress, basketId uint64, burnAmount sdk.Coin) *MsgBasketTokenBurn {
 	return &MsgBasketTokenBurn{
-		Sender: proposer.String(),
+		Sender:     proposer.String(),
+		BasketId:   basketId,
+		BurnAmount: burnAmount,
 	}
 }
 
@@ -203,9 +210,12 @@ func (m *MsgBasketTokenBurn) GetSigners() []sdk.AccAddress {
 var _ sdk.Msg = &MsgBasketTokenSwap{}
 
 // NewMsgBasketTokenSwap returns an instance of MsgBasketTokenSwap
-func NewMsgBasketTokenSwap(proposer sdk.AccAddress) *MsgBasketTokenSwap {
+func NewMsgBasketTokenSwap(proposer sdk.AccAddress, basketId uint64, inAmount sdk.Coin, outToken string) *MsgBasketTokenSwap {
 	return &MsgBasketTokenSwap{
-		Sender: proposer.String(),
+		Sender:   proposer.String(),
+		BasketId: basketId,
+		InAmount: inAmount,
+		OutToken: outToken,
 	}
 }
 
@@ -242,9 +252,10 @@ func (m *MsgBasketTokenSwap) GetSigners() []sdk.AccAddress {
 var _ sdk.Msg = &MsgBasketClaimRewards{}
 
 // NewMsgBasketClaimRewards returns an instance of MsgBasketClaimRewards
-func NewMsgBasketClaimRewards(proposer sdk.AccAddress) *MsgBasketClaimRewards {
+func NewMsgBasketClaimRewards(proposer sdk.AccAddress, basketTokens sdk.Coins) *MsgBasketClaimRewards {
 	return &MsgBasketClaimRewards{
-		Sender: proposer.String(),
+		Sender:       proposer.String(),
+		BasketTokens: basketTokens,
 	}
 }
 

@@ -27,9 +27,6 @@ func (k Keeper) MintBasketToken(ctx sdk.Context, msg *types.MsgBasketTokenMint) 
 		return err
 	}
 
-	// TODO: use FlagMintsMin
-	// TODO: use FlagMintsMax per day
-
 	rates, _ := basket.RatesAndIndexes()
 
 	basketTokenAmount := sdk.ZeroDec()
@@ -42,6 +39,16 @@ func (k Keeper) MintBasketToken(ctx sdk.Context, msg *types.MsgBasketTokenMint) 
 	}
 
 	basketCoin := sdk.NewCoin(basket.GetBasketDenom(), basketTokenAmount.RoundInt())
+
+	if basketCoin.Amount.LT(basket.MintsMin) {
+		return types.ErrAmountBelowBaksetMintsMin
+	}
+
+	// TODO: use MintsMax per day
+	if basketCoin.Amount.GT(basket.MintsMax) {
+		return types.ErrAmountAboveBaksetMintsMax
+	}
+
 	basketCoins := sdk.Coins{basketCoin}
 	err = k.bk.MintCoins(ctx, types.ModuleName, basketCoins)
 	if err != nil {
@@ -69,6 +76,15 @@ func (k Keeper) BurnBasketToken(ctx sdk.Context, msg *types.MsgBasketTokenBurn) 
 
 	if !basket.BurnsDisabled {
 		return types.ErrBurnsDisabledBasket
+	}
+
+	if msg.BurnAmount.Amount.LT(basket.MintsMin) {
+		return types.ErrAmountBelowBaksetBurnsMin
+	}
+
+	// TODO: use BurnsMax per day
+	if msg.BurnAmount.Amount.GT(basket.MintsMax) {
+		return types.ErrAmountAboveBaksetBurnsMax
 	}
 
 	sender, err := sdk.AccAddressFromBech32(msg.Sender)
@@ -166,8 +182,15 @@ func (k Keeper) BasketSwap(ctx sdk.Context, msg *types.MsgBasketTokenSwap) error
 		return types.ErrSwapsDisabledForOutToken
 	}
 
-	// TODO: use FlagSwapsMin
-	// TODO: use FlagSwapsMax
+	swapValue := msg.InAmount.Amount.ToDec().Mul(inRate).RoundInt()
+	if swapValue.LT(basket.MintsMin) {
+		return types.ErrAmountBelowBaksetBurnsMin
+	}
+
+	// TODO: use SwapsMax per day
+	if swapValue.GT(basket.MintsMax) {
+		return types.ErrAmountAboveBaksetBurnsMax
+	}
 
 	// calculate out amount considering fees and rates
 	swapAmount := msg.InAmount.Amount.ToDec().Mul(sdk.OneDec().Sub(basket.SwapFee)).RoundInt()

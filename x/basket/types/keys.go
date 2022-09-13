@@ -7,6 +7,7 @@ var (
 	RouterKey    = ModuleName
 	QuerierRoute = ModuleName
 
-	KeyLastBasketId = []byte("last_basket_id")
-	PrefixBasketKey = []byte("basket")
+	KeyLastBasketId        = []byte("last_basket_id")
+	PrefixBasketKey        = []byte("basket_by_id")
+	PrefixBasketByDenomKey = []byte("basket_by_denom")
 )

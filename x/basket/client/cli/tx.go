@@ -65,13 +65,22 @@ func NewTxCmd() *cobra.Command {
 // GetTxDisableBasketDepositsCmd implement cli command for MsgDisableBasketDeposits
 func GetTxDisableBasketDepositsCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "disable-basket-deposits",
+		Use:   "disable-basket-deposits [basket_id]",
 		Short: "Emergency function & permission to disable one or all deposits of one or all token in the basket",
+		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
 
+			basketId, err := strconv.Atoi(args[0])
+			if err != nil {
+				return err
+			}
 			msg := types.NewMsgDisableBasketDeposits(
 				clientCtx.FromAddress,
+				uint64(basketId),
 			)
 
 			err = msg.ValidateBasic()
@@ -92,13 +101,22 @@ func GetTxDisableBasketDepositsCmd() *cobra.Command {
 // GetTxDisableBasketWithdrawsCmd implement cli command for MsgDisableBasketWithdraws
 func GetTxDisableBasketWithdrawsCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "disable-basket-withdraws",
+		Use:   "disable-basket-withdraws [basket_id]",
 		Short: "Emergency function & permission to disable one or all withdraws of one or all token in the basket",
+		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
 
+			basketId, err := strconv.Atoi(args[0])
+			if err != nil {
+				return err
+			}
 			msg := types.NewMsgDisableBasketWithdraws(
 				clientCtx.FromAddress,
+				uint64(basketId),
 			)
 
 			err = msg.ValidateBasic()
@@ -119,13 +137,22 @@ func GetTxDisableBasketWithdrawsCmd() *cobra.Command {
 // GetTxDisableBasketSwapsCmd implement cli command for MsgDisableBasketSwaps
 func GetTxDisableBasketSwapsCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "disable-basket-swaps",
+		Use:   "disable-basket-swaps [basket_id]",
 		Short: "Emergency function & permission to disable one or all swaps of one or all token in the basket",
+		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
 
+			basketId, err := strconv.Atoi(args[0])
+			if err != nil {
+				return err
+			}
 			msg := types.NewMsgDisableBasketSwaps(
 				clientCtx.FromAddress,
+				uint64(basketId),
 			)
 
 			err = msg.ValidateBasic()
@@ -146,13 +173,29 @@ func GetTxDisableBasketSwapsCmd() *cobra.Command {
 // GetTxBasketTokenMintCmd implement cli command for MsgBasketTokenMint
 func GetTxBasketTokenMintCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "mint-basket-tokens",
+		Use:   "mint-basket-tokens [basket_id] [deposit_coins]",
 		Short: "mint basket tokens",
+		Args:  cobra.MinimumNArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			basketId, err := strconv.Atoi(args[0])
+			if err != nil {
+				return err
+			}
+
+			coins, err := sdk.ParseCoinsNormalized(args[1])
+			if err != nil {
+				return err
+			}
 
 			msg := types.NewMsgBasketTokenMint(
 				clientCtx.FromAddress,
+				uint64(basketId),
+				coins,
 			)
 
 			err = msg.ValidateBasic()
@@ -173,13 +216,29 @@ func GetTxBasketTokenMintCmd() *cobra.Command {
 // GetTxBasketTokenBurnCmd implement cli command for MsgBasketTokenBurn
 func GetTxBasketTokenBurnCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "burn-basket-tokens",
+		Use:   "burn-basket-tokens [basket_id] [burn_coin]",
 		Short: "burn basket tokens",
+		Args:  cobra.MinimumNArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			basketId, err := strconv.Atoi(args[0])
+			if err != nil {
+				return err
+			}
+
+			coin, err := sdk.ParseCoinNormalized(args[1])
+			if err != nil {
+				return err
+			}
 
 			msg := types.NewMsgBasketTokenBurn(
 				clientCtx.FromAddress,
+				uint64(basketId),
+				coin,
 			)
 
 			err = msg.ValidateBasic()
@@ -200,13 +259,27 @@ func GetTxBasketTokenBurnCmd() *cobra.Command {
 // GetTxBasketTokenSwapCmd implement cli command for MsgBasketTokenSwap
 func GetTxBasketTokenSwapCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "swap-basket-tokens",
+		Use:   "swap-basket-tokens [basket_id] [in_amount] [out_token]",
 		Short: "swap one or many of the basket tokens for one or many others",
+		Args:  cobra.MinimumNArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 
+			basketId, err := strconv.Atoi(args[0])
+			if err != nil {
+				return err
+			}
+
+			coin, err := sdk.ParseCoinNormalized(args[1])
+			if err != nil {
+				return err
+			}
+
 			msg := types.NewMsgBasketTokenSwap(
 				clientCtx.FromAddress,
+				uint64(basketId),
+				coin,
+				args[2],
 			)
 
 			err = msg.ValidateBasic()
@@ -227,13 +300,22 @@ func GetTxBasketTokenSwapCmd() *cobra.Command {
 // GetTxBasketClaimRewardsCmd implement cli command for MsgBasketClaimRewards
 func GetTxBasketClaimRewardsCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "basket-claim-rewards",
+		Use:   "basket-claim-rewards [basket_tokens]",
 		Short: "force staking derivative `SDB` basket to claim outstanding rewards of one all or many aggregate `V<ID>` tokens",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			basketTokens, err := sdk.ParseCoinsNormalized(args[0])
+			if err != nil {
+				return err
+			}
 
 			msg := types.NewMsgBasketClaimRewards(
 				clientCtx.FromAddress,
+				basketTokens,
 			)
 
 			err = msg.ValidateBasic()

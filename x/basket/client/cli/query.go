@@ -30,7 +30,7 @@ func NewQueryCmd() *cobra.Command {
 
 func GetCmdQueryTokenBasketById() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "token-baset-by-id [id]",
+		Use:   "token-basket-by-id [id]",
 		Short: "Queries a single basket by id",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -59,7 +59,7 @@ func GetCmdQueryTokenBasketById() *cobra.Command {
 
 func GetCmdQueryTokenBasketByDenom() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "token-baset-by-denom [denom]",
+		Use:   "token-basket-by-denom [denom]",
 		Short: "Queries a single basket by denom",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -84,7 +84,7 @@ func GetCmdQueryTokenBasketByDenom() *cobra.Command {
 
 func GetCmdQueryTokenBaskets() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "token-baset-by-denom [tokens] [derivatives_only]",
+		Use:   "token-baskets [tokens] [derivatives_only]",
 		Short: "Queries token baskets by filter",
 		Args:  cobra.MinimumNArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {

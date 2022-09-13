@@ -48,3 +48,14 @@ func (b Basket) DecreaseBasketTokens(coins sdk.Coins) (Basket, error) {
 	}
 	return b, nil
 }
+
+func (b Basket) DenomExists(checkTokens []string) bool {
+	for _, token := range b.Tokens {
+		for _, checkToken := range checkTokens {
+			if token.Denom == checkToken {
+				return true
+			}
+		}
+	}
+	return false
+}
