@@ -64,6 +64,19 @@ const (
 	MsgTypeDepositSpendingPool             = "deposit-spending-pool"
 	MsgTypeRegisterSpendingPoolBeneficiary = "register-spending-pool-beneficiary"
 	MsgTypeClaimSpendingPool               = "claim-spending-pool"
+
+	// custody module
+	MsgTypeCreateCustody               = "create-custody"
+	MsgTypeAddToCustodyWhiteList       = "add-to-custody-whitelist"
+	MsgTypeAddToCustodyCustodians      = "add-to-custody-custodians"
+	MsgTypeRemoveFromCustodyCustodians = "remove-from-custody-custodians"
+	MsgTypeDropCustodyCustodians       = "drop-custody-custodians"
+	MsgTypeRemoveFromCustodyWhiteList  = "remove-from-custody-whitelist"
+	MsgTypeDropCustodyWhiteList        = "drop-custody-whitelist"
+	MsgApproveCustodyTransaction       = "approve-custody-transaction"
+	MsgDeclineCustodyTransaction       = "decline-custody-transaction"
+	MsgPasswordConfirmTransaction      = "password-confirm-transaction"
+	MsgTypeSend                        = "custody-send"
 )
 
 // Msg defines the interface a transaction message must fulfill.
@@ -112,6 +125,16 @@ var MsgFuncIDMapping = map[string]int64{
 	MsgTypeDepositSpendingPool:             42,
 	MsgTypeRegisterSpendingPoolBeneficiary: 43,
 	MsgTypeClaimSpendingPool:               44,
+
+	MsgTypeCreateCustody:               45,
+	MsgTypeAddToCustodyWhiteList:       46,
+	MsgTypeAddToCustodyCustodians:      47,
+	MsgTypeRemoveFromCustodyCustodians: 48,
+	MsgTypeDropCustodyCustodians:       49,
+	MsgTypeRemoveFromCustodyWhiteList:  50,
+	MsgTypeDropCustodyWhiteList:        51,
+	MsgApproveCustodyTransaction:       52,
+	MsgDeclineCustodyTransaction:       53,
 }
 
 func MsgType(msg sdk.Msg) string {
