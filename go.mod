@@ -3,6 +3,7 @@ module github.com/KiraCore/sekai
 go 1.14
 
 require (
+	github.com/armon/go-metrics v0.3.9
 	github.com/containerd/continuity v0.1.0 // indirect
 	github.com/cosmos/cosmos-sdk v0.45.1
 	github.com/cosmos/go-bip39 v1.0.0

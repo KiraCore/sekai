@@ -8,6 +8,9 @@ import (
 
 	customante "github.com/KiraCore/sekai/app/ante"
 	"github.com/KiraCore/sekai/middleware"
+	"github.com/KiraCore/sekai/x/custody"
+	custodykeeper "github.com/KiraCore/sekai/x/custody/keeper"
+	custodytypes "github.com/KiraCore/sekai/x/custody/types"
 	"github.com/KiraCore/sekai/x/distributor"
 	distributorkeeper "github.com/KiraCore/sekai/x/distributor/keeper"
 	distributortypes "github.com/KiraCore/sekai/x/distributor/types"
@@ -103,6 +106,7 @@ var (
 		evidence.AppModuleBasic{},
 		tokens.AppModuleBasic{},
 		feeprocessing.AppModuleBasic{},
+		custody.AppModuleBasic{},
 		multistaking.AppModuleBasic{},
 	)
 
@@ -140,6 +144,7 @@ type SekaiApp struct {
 	UpgradeKeeper upgradekeeper.Keeper
 	ParamsKeeper  paramskeeper.Keeper
 
+	CustodyKeeper        custodykeeper.Keeper
 	CustomGovKeeper      customgovkeeper.Keeper
 	CustomStakingKeeper  customstakingkeeper.Keeper
 	CustomSlashingKeeper customslashingkeeper.Keeper
@@ -198,6 +203,7 @@ func NewInitApp(
 		tokenstypes.ModuleName,
 		feeprocessingtypes.ModuleName,
 		evidencetypes.StoreKey,
+		custodytypes.StoreKey,
 	)
 	tKeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 
@@ -265,6 +271,8 @@ func NewInitApp(
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	app.EvidenceKeeper = *evidenceKeeper
 
+	app.CustodyKeeper = custodykeeper.NewKeeper(keys[custodytypes.StoreKey], appCodec, app.CustomGovKeeper, app.BankKeeper)
+
 	proposalRouter := govtypes.NewProposalRouter(
 		[]govtypes.ProposalHandler{
 			customgov.NewApplyWhitelistAccountPermissionProposalHandler(app.CustomGovKeeper),
@@ -323,6 +331,7 @@ func NewInitApp(
 		ubi.NewAppModule(app.UbiKeeper, app.CustomGovKeeper),
 		feeprocessing.NewAppModule(app.FeeProcessingKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
+		custody.NewAppModule(app.CustodyKeeper, app.CustomGovKeeper, app.BankKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -334,7 +343,7 @@ func NewInitApp(
 		upgradetypes.ModuleName, slashingtypes.ModuleName,
 		evidencetypes.ModuleName, stakingtypes.ModuleName,
 		spendingtypes.ModuleName, ubitypes.ModuleName,
-		distributortypes.ModuleName, multistakingtypes.ModuleName,
+		distributortypes.ModuleName, multistakingtypes.ModuleName, custodytypes.ModuleName,
 	)
 	app.mm.SetOrderEndBlockers(
 		banktypes.ModuleName, upgradetypes.ModuleName, tokenstypes.ModuleName,
@@ -344,7 +353,7 @@ func NewInitApp(
 		stakingtypes.ModuleName,
 		feeprocessingtypes.ModuleName,
 		spendingtypes.ModuleName, ubitypes.ModuleName,
-		distributortypes.ModuleName, multistakingtypes.ModuleName,
+		distributortypes.ModuleName, multistakingtypes.ModuleName, custodytypes.ModuleName,
 	)
 
 	// NOTE: The genutils moodule must occur after staking so that pools are
@@ -367,6 +376,7 @@ func NewInitApp(
 		ubitypes.ModuleName,
 		paramstypes.ModuleName,
 		distributortypes.ModuleName,
+		custodytypes.ModuleName,
 		multistakingtypes.ModuleName,
 	)
 
@@ -407,6 +417,7 @@ func NewInitApp(
 			app.BankKeeper,
 			ante.DefaultSigVerificationGasConsumer,
 			encodingConfig.TxConfig.SignModeHandler(),
+			app.CustodyKeeper,
 		),
 	)
 	app.SetEndBlocker(app.EndBlocker)

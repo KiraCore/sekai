@@ -1,0 +1,97 @@
+syntax = "proto3";
+package kira.custody;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "kira/custody/custody.proto";
+import "kira/custody/tx.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/custody/types";
+
+// Query defines the gRPC querier service
+service Query {
+    rpc CustodyByAddress (CustodyByAddressRequest) returns (CustodyByAddressResponse) {
+        option (google.api.http).get = "/kira/custody/custody_settings/{addr}";
+    }
+    rpc CustodyPoolByAddress (CustodyPoolByAddressRequest) returns (CustodyPoolByAddressResponse) {
+        option (google.api.http).get = "/kira/custody/custody_pool/{addr}";
+    }
+    rpc CustodyCustodiansByAddress (CustodyCustodiansByAddressRequest) returns (CustodyCustodiansByAddressResponse) {
+        option (google.api.http).get = "/kira/custody/custody_custodians/{addr}";
+    }
+    rpc CustodyWhiteListByAddress (CustodyWhiteListByAddressRequest) returns (CustodyWhiteListByAddressResponse) {
+        option (google.api.http).get = "/kira/custody/custody_white_list/{addr}";
+    }
+    rpc CustodyLimitsByAddress (CustodyLimitsByAddressRequest) returns (CustodyLimitsByAddressResponse) {
+        option (google.api.http).get = "/kira/custody/custody_limits/{addr}";
+    }
+    rpc CustodyLimitsStatusByAddress (CustodyLimitsStatusByAddressRequest) returns (CustodyLimitsStatusByAddressResponse) {
+        option (google.api.http).get = "/kira/custody/custody_limits_status/{addr}";
+    }
+}
+
+message CustodyByAddressRequest {
+  bytes addr = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"addr\""
+  ];
+}
+
+message CustodyByAddressResponse {
+  CustodySettings custody_settings = 1;
+}
+
+message CustodyCustodiansByAddressRequest {
+  bytes addr = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"addr\""
+  ];
+}
+
+message CustodyWhiteListByAddressRequest {
+  bytes addr = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"addr\""
+  ];
+}
+
+message CustodyPoolByAddressRequest {
+  bytes addr = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"addr\""
+  ];
+}
+
+message CustodyPoolByAddressResponse {
+    TransactionPool transactions = 1;
+}
+
+message CustodyCustodiansByAddressResponse {
+    CustodyCustodianList custody_custodians = 1;
+}
+
+message CustodyWhiteListByAddressResponse {
+    CustodyWhiteList custody_white_list = 1;
+}
+
+message CustodyLimitsByAddressRequest {
+  bytes addr = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"addr\""
+  ];
+}
+
+message CustodyLimitsByAddressResponse {
+  CustodyLimits custody_limits = 1;
+}
+
+message CustodyLimitsStatusByAddressRequest {
+  bytes addr = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"addr\""
+  ];
+}
+
+message CustodyLimitsStatusByAddressResponse {
+  CustodyStatuses custody_statuses = 1;
+}

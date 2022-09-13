@@ -1,0 +1,9 @@
+syntax = "proto3";
+package kira.custody;
+
+import "gogoproto/gogo.proto";
+import "kira/custody/custody.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/custody/types";
+
+message GenesisState { }
