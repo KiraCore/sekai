@@ -59,3 +59,17 @@ func (b Basket) DenomExists(checkTokens []string) bool {
 	}
 	return false
 }
+
+func (b Basket) ValidateTokensCap() error {
+	totalTokens := sdk.ZeroDec()
+	for _, token := range b.Tokens {
+		totalTokens = totalTokens.Add(token.Amount.ToDec().Mul(token.Weight))
+	}
+
+	for _, token := range b.Tokens {
+		if token.Amount.ToDec().Mul(token.Weight).GTE(totalTokens.Mul(b.TokensCap)) {
+			return ErrTokenExceedingCap
+		}
+	}
+	return nil
+}

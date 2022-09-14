@@ -140,5 +140,3 @@ func (k Keeper) EditBasket(ctx sdk.Context, basket types.Basket) error {
 }
 
 // TODO: use FlagSlippageFeeMin
-// TODO: use FlagTokensCap
-// TODO: use FlagLimitsPeriod

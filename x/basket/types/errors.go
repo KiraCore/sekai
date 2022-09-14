@@ -23,4 +23,5 @@ var (
 	ErrAmountAboveBaksetSwapsMax      = errors.Register(ModuleName, 17, "swaps amount is above basket maximum for the period")
 	ErrTokenWeightShouldNotBeZero     = errors.Register(ModuleName, 18, "token weight should not be zero")
 	ErrDuplicateDenomExistsOnTokens   = errors.Register(ModuleName, 19, "duplicated denom exists on tokens list")
+	ErrTokenExceedingCap              = errors.Register(ModuleName, 20, "token exceeding cap")
 )

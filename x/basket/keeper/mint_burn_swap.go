@@ -44,8 +44,9 @@ func (k Keeper) MintBasketToken(ctx sdk.Context, msg *types.MsgBasketTokenMint) 
 		return types.ErrAmountBelowBaksetMintsMin
 	}
 
-	// TODO: use MintsMax per day
-	if basketCoin.Amount.GT(basket.MintsMax) {
+	// register action and check mints max
+	k.RegisterMintAction(ctx, msg.BasketId, basketCoin.Amount)
+	if k.GetLimitsPeriodBurnAmount(ctx, msg.BasketId, basket.LimitsPeriod).GT(basket.MintsMax) {
 		return types.ErrAmountAboveBaksetMintsMax
 	}
 
@@ -60,6 +61,11 @@ func (k Keeper) MintBasketToken(ctx sdk.Context, msg *types.MsgBasketTokenMint) 
 	}
 
 	basket, err = basket.IncreaseBasketTokens(msg.Deposit)
+	if err != nil {
+		return err
+	}
+
+	err = basket.ValidateTokensCap()
 	if err != nil {
 		return err
 	}
@@ -82,8 +88,9 @@ func (k Keeper) BurnBasketToken(ctx sdk.Context, msg *types.MsgBasketTokenBurn) 
 		return types.ErrAmountBelowBaksetBurnsMin
 	}
 
-	// TODO: use BurnsMax per day
-	if msg.BurnAmount.Amount.GT(basket.MintsMax) {
+	// register action and check burns max
+	k.RegisterBurnAction(ctx, msg.BasketId, msg.BurnAmount.Amount)
+	if k.GetLimitsPeriodBurnAmount(ctx, msg.BasketId, basket.LimitsPeriod).GT(basket.BurnsMax) {
 		return types.ErrAmountAboveBaksetBurnsMax
 	}
 
@@ -134,6 +141,12 @@ func (k Keeper) BurnBasketToken(ctx sdk.Context, msg *types.MsgBasketTokenBurn) 
 	if err != nil {
 		return err
 	}
+
+	err = basket.ValidateTokensCap()
+	if err != nil {
+		return err
+	}
+
 	k.SetBasket(ctx, basket)
 	return nil
 }
@@ -184,12 +197,13 @@ func (k Keeper) BasketSwap(ctx sdk.Context, msg *types.MsgBasketTokenSwap) error
 
 	swapValue := msg.InAmount.Amount.ToDec().Mul(inRate).RoundInt()
 	if swapValue.LT(basket.MintsMin) {
-		return types.ErrAmountBelowBaksetBurnsMin
+		return types.ErrAmountBelowBaksetSwapsMin
 	}
 
-	// TODO: use SwapsMax per day
-	if swapValue.GT(basket.MintsMax) {
-		return types.ErrAmountAboveBaksetBurnsMax
+	// register action and check swaps max
+	k.RegisterSwapAction(ctx, msg.BasketId, swapValue)
+	if k.GetLimitsPeriodSwapAmount(ctx, msg.BasketId, basket.LimitsPeriod).GT(basket.SwapsMax) {
+		return types.ErrAmountAboveBaksetSwapsMax
 	}
 
 	// calculate out amount considering fees and rates
@@ -221,6 +235,10 @@ func (k Keeper) BasketSwap(ctx sdk.Context, msg *types.MsgBasketTokenSwap) error
 	feeAmount := msg.InAmount.Amount.Sub(swapAmount)
 	basket.Surplus = sdk.Coins(basket.Surplus).Add(sdk.NewCoin(msg.InAmount.Denom, feeAmount))
 
+	err = basket.ValidateTokensCap()
+	if err != nil {
+		return err
+	}
 	k.SetBasket(ctx, basket)
 	return nil
 }

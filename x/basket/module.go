@@ -123,6 +123,7 @@ func (am AppModule) BeginBlock(clientCtx sdk.Context, req abci.RequestBeginBlock
 }
 
 func (am AppModule) EndBlock(ctx sdk.Context, block abci.RequestEndBlock) []abci.ValidatorUpdate {
+	EndBlocker(ctx, am.basketKeeper)
 	return nil
 }
 
