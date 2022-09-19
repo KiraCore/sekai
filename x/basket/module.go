@@ -3,6 +3,7 @@ package basket
 import (
 	"context"
 	"encoding/json"
+	"time"
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
@@ -96,11 +97,32 @@ func (am AppModule) InitGenesis(
 	var genesisState baskettypes.GenesisState
 	cdc.MustUnmarshalJSON(data, &genesisState)
 
+	for _, basket := range genesisState.Baskets {
+		am.basketKeeper.SetBasket(ctx, basket)
+	}
+
+	for _, amount := range genesisState.HistoricalMints {
+		am.basketKeeper.SetMintAmount(ctx, time.Unix(int64(amount.Time), 0), amount.BasketId, amount.Amount)
+	}
+
+	for _, amount := range genesisState.HistoricalBurns {
+		am.basketKeeper.SetBurnAmount(ctx, time.Unix(int64(amount.Time), 0), amount.BasketId, amount.Amount)
+	}
+
+	for _, amount := range genesisState.HistoricalSwaps {
+		am.basketKeeper.SetSwapAmount(ctx, time.Unix(int64(amount.Time), 0), amount.BasketId, amount.Amount)
+	}
+
 	return nil
 }
 
 func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.RawMessage {
-	var genesisState baskettypes.GenesisState
+	genesisState := baskettypes.GenesisState{
+		Baskets:         am.basketKeeper.GetAllBaskets(ctx),
+		HistoricalMints: am.basketKeeper.GetAllMintAmounts(ctx),
+		HistoricalBurns: am.basketKeeper.GetAllBurnAmounts(ctx),
+		HistoricalSwaps: am.basketKeeper.GetAllSwapAmounts(ctx),
+	}
 	return cdc.MustMarshalJSON(&genesisState)
 }
 

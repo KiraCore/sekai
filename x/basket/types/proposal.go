@@ -12,7 +12,7 @@ func NewProposalCreateBasket(basket Basket) *ProposalCreateBasket {
 }
 
 func (m *ProposalCreateBasket) ProposalType() string {
-	return kiratypes.ProposalTypeResetWholeValidatorRank
+	return kiratypes.ProposalTypeCreateBasket
 }
 
 func (m *ProposalCreateBasket) ProposalPermission() types.PermValue {
@@ -35,7 +35,7 @@ func NewProposalEditBasket(basket Basket) *ProposalEditBasket {
 }
 
 func (m *ProposalEditBasket) ProposalType() string {
-	return kiratypes.ProposalTypeResetWholeValidatorRank
+	return kiratypes.ProposalTypeEditBasket
 }
 
 func (m *ProposalEditBasket) ProposalPermission() types.PermValue {
@@ -59,7 +59,7 @@ func NewProposalBasketWithdrawSurplus(basketIds []uint64, withdrawTarget string)
 }
 
 func (m *ProposalBasketWithdrawSurplus) ProposalType() string {
-	return kiratypes.ProposalTypeResetWholeValidatorRank
+	return kiratypes.ProposalTypeBasketWithdrawSurplus
 }
 
 func (m *ProposalBasketWithdrawSurplus) ProposalPermission() types.PermValue {

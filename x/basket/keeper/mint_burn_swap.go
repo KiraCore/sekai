@@ -1,9 +1,11 @@
 package keeper
 
 import (
-	"github.com/KiraCore/sekai/x/basket/types"
+	"fmt"
 
+	"github.com/KiraCore/sekai/x/basket/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 func (k Keeper) MintBasketToken(ctx sdk.Context, msg *types.MsgBasketTokenMint) error {
@@ -13,7 +15,7 @@ func (k Keeper) MintBasketToken(ctx sdk.Context, msg *types.MsgBasketTokenMint) 
 		return err
 	}
 
-	if !basket.MintsDisabled {
+	if basket.MintsDisabled {
 		return types.ErrMintsDisabledBasket
 	}
 
@@ -34,6 +36,12 @@ func (k Keeper) MintBasketToken(ctx sdk.Context, msg *types.MsgBasketTokenMint) 
 		rate, ok := rates[token.Denom]
 		if !ok {
 			return types.ErrInvalidBasketDepositDenom
+		}
+
+		_, indexes := basket.RatesAndIndexes()
+		tokenIndex := indexes[token.Denom]
+		if !basket.Tokens[tokenIndex].Deposits {
+			return sdkerrors.Wrap(types.ErrDepositsDisabledForToken, fmt.Sprintf("denom=%s", token.Denom))
 		}
 		basketTokenAmount = basketTokenAmount.Add(token.Amount.ToDec().Mul(rate))
 	}
@@ -80,7 +88,7 @@ func (k Keeper) BurnBasketToken(ctx sdk.Context, msg *types.MsgBasketTokenBurn) 
 		return err
 	}
 
-	if !basket.BurnsDisabled {
+	if basket.BurnsDisabled {
 		return types.ErrBurnsDisabledBasket
 	}
 
@@ -158,7 +166,7 @@ func (k Keeper) BasketSwap(ctx sdk.Context, msg *types.MsgBasketTokenSwap) error
 		return err
 	}
 
-	if !basket.SwapsDisabled {
+	if basket.SwapsDisabled {
 		return types.ErrSwapsDisabledBasket
 	}
 
@@ -186,12 +194,12 @@ func (k Keeper) BasketSwap(ctx sdk.Context, msg *types.MsgBasketTokenSwap) error
 	}
 
 	inTokenIndex := indexes[msg.InAmount.Denom]
-	if basket.Tokens[inTokenIndex].Swaps {
+	if !basket.Tokens[inTokenIndex].Swaps {
 		return types.ErrSwapsDisabledForInToken
 	}
 
 	outTokenIndex := indexes[msg.OutToken]
-	if basket.Tokens[outTokenIndex].Swaps {
+	if !basket.Tokens[outTokenIndex].Swaps {
 		return types.ErrSwapsDisabledForOutToken
 	}
 

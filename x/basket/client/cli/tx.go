@@ -700,7 +700,7 @@ func GetTxProposalEditBasketCmd() *cobra.Command {
 				clientCtx.FromAddress,
 				title,
 				description,
-				types.NewProposalCreateBasket(types.Basket{
+				types.NewProposalEditBasket(types.Basket{
 					Id:              basketId,
 					Suffix:          suffix,
 					Description:     basketDescription,

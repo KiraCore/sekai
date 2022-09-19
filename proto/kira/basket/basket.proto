@@ -79,9 +79,15 @@ message BasketToken {
 
 // used to record mint, burn, swap actions to prevent actions from exceeding daily limitation
 message AmountAtTime {
-    uint64 time = 1;
-    string amount = 3 [
-      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
-      (gogoproto.nullable) = false
-    ];
+  uint64 basket_id = 1;
+  uint64 time = 2;
+  string amount = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+// Params represents the parameters used for by the module.
+message Params {
+  string owner = 1;
 }

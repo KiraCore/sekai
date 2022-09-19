@@ -62,3 +62,39 @@ func (q Querier) TokenBaskets(c context.Context, request *types.QueryTokenBasket
 		Baskets: baskets,
 	}, nil
 }
+
+func (q Querier) BaksetHistoricalMints(c context.Context, request *types.QueryBasketHistoricalMintsRequest) (*types.QueryBasketHistoricalMintsResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+	basket, err := q.keeper.GetBasketById(ctx, request.BasketId)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryBasketHistoricalMintsResponse{
+		Amount: q.keeper.GetLimitsPeriodMintAmount(ctx, request.BasketId, basket.LimitsPeriod),
+	}, nil
+}
+
+func (q Querier) BaksetHistoricalBurns(c context.Context, request *types.QueryBasketHistoricalBurnsRequest) (*types.QueryBasketHistoricalBurnsResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+	basket, err := q.keeper.GetBasketById(ctx, request.BasketId)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryBasketHistoricalBurnsResponse{
+		Amount: q.keeper.GetLimitsPeriodBurnAmount(ctx, request.BasketId, basket.LimitsPeriod),
+	}, nil
+}
+
+func (q Querier) BaksetHistoricalSwaps(c context.Context, request *types.QueryBasketHistoricalSwapsRequest) (*types.QueryBasketHistoricalSwapsResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+	basket, err := q.keeper.GetBasketById(ctx, request.BasketId)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryBasketHistoricalSwapsResponse{
+		Amount: q.keeper.GetLimitsPeriodSwapAmount(ctx, request.BasketId, basket.LimitsPeriod),
+	}, nil
+}

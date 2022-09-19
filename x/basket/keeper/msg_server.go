@@ -3,9 +3,10 @@ package keeper
 import (
 	"context"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
 	"github.com/KiraCore/sekai/x/basket/types"
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 type msgServer struct {
@@ -34,6 +35,12 @@ func (k msgServer) DisableBasketDeposits(
 		return nil, err
 	}
 
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	isAllowed := k.keeper.CheckIfAllowedPermission(ctx, sender, govtypes.PermHandleBasketEmergency)
+	if !isAllowed {
+		return nil, sdkerrors.Wrap(govtypes.ErrNotEnoughPermissions, "PermHandleBasketEmergency")
+	}
+
 	basket.MintsDisabled = true
 	k.keeper.SetBasket(ctx, basket)
 	return &types.MsgDisableBasketDepositsResponse{}, nil
@@ -49,6 +56,12 @@ func (k msgServer) DisableBasketWithdraws(
 		return nil, err
 	}
 
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	isAllowed := k.keeper.CheckIfAllowedPermission(ctx, sender, govtypes.PermHandleBasketEmergency)
+	if !isAllowed {
+		return nil, sdkerrors.Wrap(govtypes.ErrNotEnoughPermissions, "PermHandleBasketEmergency")
+	}
+
 	basket.BurnsDisabled = true
 	k.keeper.SetBasket(ctx, basket)
 	return &types.MsgDisableBasketWithdrawsResponse{}, nil
@@ -62,6 +75,12 @@ func (k msgServer) DisableBasketSwaps(
 	basket, err := k.keeper.GetBasketById(ctx, msg.BasketId)
 	if err != nil {
 		return nil, err
+	}
+
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	isAllowed := k.keeper.CheckIfAllowedPermission(ctx, sender, govtypes.PermHandleBasketEmergency)
+	if !isAllowed {
+		return nil, sdkerrors.Wrap(govtypes.ErrNotEnoughPermissions, "PermHandleBasketEmergency")
 	}
 
 	basket.SwapsDisabled = true

@@ -310,6 +310,9 @@ func NewInitApp(
 			spending.NewApplySpendingPoolWithdrawProposalHandler(app.SpendingKeeper, app.BankKeeper),
 			ubi.NewApplyUpsertUBIProposalHandler(app.UbiKeeper, app.CustomGovKeeper, app.SpendingKeeper),
 			ubi.NewApplyRemoveUBIProposalHandler(app.UbiKeeper),
+			basket.NewApplyCreateBasketProposalHandler(app.BasketKeeper),
+			basket.NewApplyEditBasketProposalHandler(app.BasketKeeper),
+			basket.NewApplyBasketWithdrawSurplusProposalHandler(app.BasketKeeper),
 		})
 
 	app.CustomGovKeeper.SetProposalRouter(proposalRouter)

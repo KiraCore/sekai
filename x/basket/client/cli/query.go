@@ -23,6 +23,9 @@ func NewQueryCmd() *cobra.Command {
 		GetCmdQueryTokenBasketById(),
 		GetCmdQueryTokenBasketByDenom(),
 		GetCmdQueryTokenBaskets(),
+		GetCmdQueryBaksetHistoricalMints(),
+		GetCmdQueryBaksetHistoricalBurns(),
+		GetCmdQueryBaksetHistoricalSwaps(),
 	)
 
 	return queryCmd
@@ -90,7 +93,10 @@ func GetCmdQueryTokenBaskets() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
-			tokens := strings.Split(args[0], ",")
+			tokens := []string{}
+			if args[0] != "" {
+				tokens = strings.Split(args[0], ",")
+			}
 			derivativesOnly, err := strconv.ParseBool(args[1])
 			if err != nil {
 				return err
@@ -100,6 +106,96 @@ func GetCmdQueryTokenBaskets() *cobra.Command {
 			res, err := queryClient.TokenBaskets(context.Background(), &types.QueryTokenBasketsRequest{
 				Tokens:          tokens,
 				DerivativesOnly: derivativesOnly,
+			})
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func GetCmdQueryBaksetHistoricalMints() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "historical-mints [basket_id]",
+		Short: "Queries basket historical mints on limited period",
+		Args:  cobra.MinimumNArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			basketId, err := strconv.Atoi(args[0])
+			if err != nil {
+				return err
+			}
+
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.BaksetHistoricalMints(context.Background(), &types.QueryBasketHistoricalMintsRequest{
+				BasketId: uint64(basketId),
+			})
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func GetCmdQueryBaksetHistoricalBurns() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "historical-burns [basket_id]",
+		Short: "Queries basket historical burns on limited period",
+		Args:  cobra.MinimumNArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			basketId, err := strconv.Atoi(args[0])
+			if err != nil {
+				return err
+			}
+
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.BaksetHistoricalBurns(context.Background(), &types.QueryBasketHistoricalBurnsRequest{
+				BasketId: uint64(basketId),
+			})
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func GetCmdQueryBaksetHistoricalSwaps() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "historical-swaps [basket_id]",
+		Short: "Queries basket historical swaps on limited period",
+		Args:  cobra.MinimumNArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			basketId, err := strconv.Atoi(args[0])
+			if err != nil {
+				return err
+			}
+
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.BaksetHistoricalSwaps(context.Background(), &types.QueryBasketHistoricalSwapsRequest{
+				BasketId: uint64(basketId),
 			})
 			if err != nil {
 				return err

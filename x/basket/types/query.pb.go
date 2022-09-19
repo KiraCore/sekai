@@ -7,6 +7,7 @@ import (
 	context "context"
 	fmt "fmt"
 	_ "github.com/cosmos/cosmos-sdk/codec/types"
+	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/cosmos/cosmos-sdk/types/query"
 	_ "github.com/gogo/protobuf/gogoproto"
 	grpc1 "github.com/gogo/protobuf/grpc"
@@ -303,6 +304,249 @@ func (m *QueryTokenBasketsResponse) GetBaskets() []Basket {
 	return nil
 }
 
+type QueryBasketHistoricalMintsRequest struct {
+	BasketId uint64 `protobuf:"varint,1,opt,name=basket_id,json=basketId,proto3" json:"basket_id,omitempty"`
+}
+
+func (m *QueryBasketHistoricalMintsRequest) Reset()         { *m = QueryBasketHistoricalMintsRequest{} }
+func (m *QueryBasketHistoricalMintsRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryBasketHistoricalMintsRequest) ProtoMessage()    {}
+func (*QueryBasketHistoricalMintsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_42506911a94aa353, []int{6}
+}
+func (m *QueryBasketHistoricalMintsRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryBasketHistoricalMintsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryBasketHistoricalMintsRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryBasketHistoricalMintsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryBasketHistoricalMintsRequest.Merge(m, src)
+}
+func (m *QueryBasketHistoricalMintsRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryBasketHistoricalMintsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryBasketHistoricalMintsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryBasketHistoricalMintsRequest proto.InternalMessageInfo
+
+func (m *QueryBasketHistoricalMintsRequest) GetBasketId() uint64 {
+	if m != nil {
+		return m.BasketId
+	}
+	return 0
+}
+
+type QueryBasketHistoricalMintsResponse struct {
+	Amount github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,1,opt,name=amount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"amount"`
+}
+
+func (m *QueryBasketHistoricalMintsResponse) Reset()         { *m = QueryBasketHistoricalMintsResponse{} }
+func (m *QueryBasketHistoricalMintsResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryBasketHistoricalMintsResponse) ProtoMessage()    {}
+func (*QueryBasketHistoricalMintsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_42506911a94aa353, []int{7}
+}
+func (m *QueryBasketHistoricalMintsResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryBasketHistoricalMintsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryBasketHistoricalMintsResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryBasketHistoricalMintsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryBasketHistoricalMintsResponse.Merge(m, src)
+}
+func (m *QueryBasketHistoricalMintsResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryBasketHistoricalMintsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryBasketHistoricalMintsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryBasketHistoricalMintsResponse proto.InternalMessageInfo
+
+type QueryBasketHistoricalBurnsRequest struct {
+	BasketId uint64 `protobuf:"varint,1,opt,name=basket_id,json=basketId,proto3" json:"basket_id,omitempty"`
+}
+
+func (m *QueryBasketHistoricalBurnsRequest) Reset()         { *m = QueryBasketHistoricalBurnsRequest{} }
+func (m *QueryBasketHistoricalBurnsRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryBasketHistoricalBurnsRequest) ProtoMessage()    {}
+func (*QueryBasketHistoricalBurnsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_42506911a94aa353, []int{8}
+}
+func (m *QueryBasketHistoricalBurnsRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryBasketHistoricalBurnsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryBasketHistoricalBurnsRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryBasketHistoricalBurnsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryBasketHistoricalBurnsRequest.Merge(m, src)
+}
+func (m *QueryBasketHistoricalBurnsRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryBasketHistoricalBurnsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryBasketHistoricalBurnsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryBasketHistoricalBurnsRequest proto.InternalMessageInfo
+
+func (m *QueryBasketHistoricalBurnsRequest) GetBasketId() uint64 {
+	if m != nil {
+		return m.BasketId
+	}
+	return 0
+}
+
+type QueryBasketHistoricalBurnsResponse struct {
+	Amount github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,1,opt,name=amount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"amount"`
+}
+
+func (m *QueryBasketHistoricalBurnsResponse) Reset()         { *m = QueryBasketHistoricalBurnsResponse{} }
+func (m *QueryBasketHistoricalBurnsResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryBasketHistoricalBurnsResponse) ProtoMessage()    {}
+func (*QueryBasketHistoricalBurnsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_42506911a94aa353, []int{9}
+}
+func (m *QueryBasketHistoricalBurnsResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryBasketHistoricalBurnsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryBasketHistoricalBurnsResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryBasketHistoricalBurnsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryBasketHistoricalBurnsResponse.Merge(m, src)
+}
+func (m *QueryBasketHistoricalBurnsResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryBasketHistoricalBurnsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryBasketHistoricalBurnsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryBasketHistoricalBurnsResponse proto.InternalMessageInfo
+
+type QueryBasketHistoricalSwapsRequest struct {
+	BasketId uint64 `protobuf:"varint,1,opt,name=basket_id,json=basketId,proto3" json:"basket_id,omitempty"`
+}
+
+func (m *QueryBasketHistoricalSwapsRequest) Reset()         { *m = QueryBasketHistoricalSwapsRequest{} }
+func (m *QueryBasketHistoricalSwapsRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryBasketHistoricalSwapsRequest) ProtoMessage()    {}
+func (*QueryBasketHistoricalSwapsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_42506911a94aa353, []int{10}
+}
+func (m *QueryBasketHistoricalSwapsRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryBasketHistoricalSwapsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryBasketHistoricalSwapsRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryBasketHistoricalSwapsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryBasketHistoricalSwapsRequest.Merge(m, src)
+}
+func (m *QueryBasketHistoricalSwapsRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryBasketHistoricalSwapsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryBasketHistoricalSwapsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryBasketHistoricalSwapsRequest proto.InternalMessageInfo
+
+func (m *QueryBasketHistoricalSwapsRequest) GetBasketId() uint64 {
+	if m != nil {
+		return m.BasketId
+	}
+	return 0
+}
+
+type QueryBasketHistoricalSwapsResponse struct {
+	Amount github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,1,opt,name=amount,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"amount"`
+}
+
+func (m *QueryBasketHistoricalSwapsResponse) Reset()         { *m = QueryBasketHistoricalSwapsResponse{} }
+func (m *QueryBasketHistoricalSwapsResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryBasketHistoricalSwapsResponse) ProtoMessage()    {}
+func (*QueryBasketHistoricalSwapsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_42506911a94aa353, []int{11}
+}
+func (m *QueryBasketHistoricalSwapsResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryBasketHistoricalSwapsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryBasketHistoricalSwapsResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryBasketHistoricalSwapsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryBasketHistoricalSwapsResponse.Merge(m, src)
+}
+func (m *QueryBasketHistoricalSwapsResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryBasketHistoricalSwapsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryBasketHistoricalSwapsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryBasketHistoricalSwapsResponse proto.InternalMessageInfo
+
 func init() {
 	proto.RegisterType((*QueryTokenBasketByIdRequest)(nil), "kira.basket.QueryTokenBasketByIdRequest")
 	proto.RegisterType((*QueryTokenBasketByIdResponse)(nil), "kira.basket.QueryTokenBasketByIdResponse")
@@ -310,46 +554,63 @@ func init() {
 	proto.RegisterType((*QueryTokenBasketByDenomResponse)(nil), "kira.basket.QueryTokenBasketByDenomResponse")
 	proto.RegisterType((*QueryTokenBasketsRequest)(nil), "kira.basket.QueryTokenBasketsRequest")
 	proto.RegisterType((*QueryTokenBasketsResponse)(nil), "kira.basket.QueryTokenBasketsResponse")
+	proto.RegisterType((*QueryBasketHistoricalMintsRequest)(nil), "kira.basket.QueryBasketHistoricalMintsRequest")
+	proto.RegisterType((*QueryBasketHistoricalMintsResponse)(nil), "kira.basket.QueryBasketHistoricalMintsResponse")
+	proto.RegisterType((*QueryBasketHistoricalBurnsRequest)(nil), "kira.basket.QueryBasketHistoricalBurnsRequest")
+	proto.RegisterType((*QueryBasketHistoricalBurnsResponse)(nil), "kira.basket.QueryBasketHistoricalBurnsResponse")
+	proto.RegisterType((*QueryBasketHistoricalSwapsRequest)(nil), "kira.basket.QueryBasketHistoricalSwapsRequest")
+	proto.RegisterType((*QueryBasketHistoricalSwapsResponse)(nil), "kira.basket.QueryBasketHistoricalSwapsResponse")
 }
 
 func init() { proto.RegisterFile("kira/basket/query.proto", fileDescriptor_42506911a94aa353) }
 
 var fileDescriptor_42506911a94aa353 = []byte{
-	// 530 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x93, 0xcf, 0x6f, 0xd3, 0x30,
-	0x14, 0xc7, 0xeb, 0x6e, 0x2b, 0xcc, 0x43, 0x0c, 0x99, 0x09, 0xb2, 0x30, 0x65, 0x55, 0x04, 0x53,
-	0xb6, 0x95, 0x58, 0xeb, 0xa4, 0x89, 0x13, 0x87, 0xc0, 0x05, 0x4d, 0xe2, 0x47, 0xc4, 0x09, 0x09,
-	0x55, 0xce, 0x62, 0x82, 0xd5, 0xd6, 0xce, 0xe2, 0xb4, 0x22, 0xaa, 0x7a, 0xe1, 0x2f, 0x40, 0x82,
-	0x2b, 0x27, 0xfe, 0x99, 0x1d, 0x27, 0x71, 0xe1, 0x84, 0x50, 0xbb, 0x3f, 0x04, 0xc5, 0x4e, 0x51,
-	0xb6, 0x75, 0x5d, 0xc5, 0x29, 0x7e, 0x7e, 0xdf, 0xf7, 0x7d, 0x1f, 0xf9, 0xbd, 0xc0, 0xfb, 0x6d,
-	0x96, 0x10, 0x1c, 0x10, 0xd9, 0xa6, 0x29, 0x3e, 0xee, 0xd1, 0x24, 0x73, 0xe3, 0x44, 0xa4, 0x02,
-	0xad, 0xe4, 0x09, 0x57, 0x27, 0xcc, 0x9d, 0x23, 0x21, 0xbb, 0x42, 0xe6, 0x3a, 0xaa, 0x55, 0xb8,
-	0xbf, 0x17, 0xd0, 0x94, 0xec, 0xe1, 0x98, 0x44, 0x8c, 0x93, 0x94, 0x09, 0xae, 0x0b, 0xcd, 0xb5,
-	0x48, 0x44, 0x42, 0x1d, 0x71, 0x7e, 0x2a, 0x6e, 0xd7, 0x23, 0x21, 0xa2, 0x0e, 0xc5, 0x2a, 0x0a,
-	0x7a, 0x1f, 0x30, 0xe1, 0x45, 0x27, 0x73, 0xa3, 0x48, 0x91, 0x98, 0x61, 0xc2, 0xb9, 0x48, 0x95,
-	0x9b, 0x2c, 0xb2, 0x46, 0x19, 0x50, 0x7f, 0x74, 0xc6, 0x7e, 0x0c, 0x1f, 0xbc, 0xc9, 0x51, 0xde,
-	0x8a, 0x36, 0xe5, 0x9e, 0xca, 0x78, 0xd9, 0x8b, 0xd0, 0xa7, 0xc7, 0x3d, 0x2a, 0x53, 0x74, 0x1b,
-	0x56, 0x59, 0x68, 0x80, 0x3a, 0x70, 0x16, 0xfd, 0x2a, 0x0b, 0xed, 0x43, 0xb8, 0x31, 0x5d, 0x2e,
-	0x63, 0xc1, 0x25, 0x45, 0xbb, 0xb0, 0xa6, 0xed, 0x55, 0xcd, 0x4a, 0xf3, 0xae, 0x5b, 0x7a, 0x01,
-	0x57, 0x17, 0xf8, 0x85, 0xc4, 0x3e, 0x80, 0xd6, 0x65, 0xb3, 0xe7, 0x94, 0x8b, 0xee, 0xa4, 0xfd,
-	0x1a, 0x5c, 0x0a, 0xf3, 0x58, 0xb9, 0x2d, 0xfb, 0x3a, 0xb0, 0x5f, 0xc2, 0xcd, 0x2b, 0xeb, 0xfe,
-	0x87, 0xe3, 0x3d, 0x34, 0x2e, 0xfa, 0xc9, 0x09, 0xc1, 0x3d, 0x58, 0x4b, 0xf3, 0x6b, 0x69, 0x80,
-	0xfa, 0x82, 0xb3, 0xec, 0x17, 0x11, 0xda, 0x86, 0x77, 0x42, 0x9a, 0xb0, 0x3e, 0x49, 0x59, 0x9f,
-	0xca, 0x96, 0xe0, 0x9d, 0xcc, 0xa8, 0xd6, 0x81, 0x73, 0xd3, 0x5f, 0x2d, 0xdd, 0xbf, 0xe2, 0x9d,
-	0xcc, 0x7e, 0x0d, 0xd7, 0xa7, 0xd8, 0x17, 0xa0, 0xfb, 0xf0, 0x86, 0xa6, 0xd0, 0x0d, 0xa6, 0x93,
-	0x7a, 0x8b, 0x27, 0xbf, 0x37, 0x2b, 0xfe, 0x44, 0xd9, 0x3c, 0x5b, 0x80, 0x4b, 0xca, 0x12, 0x7d,
-	0x03, 0x70, 0xf5, 0xc2, 0x2c, 0x90, 0x73, 0xce, 0x61, 0xc6, 0x74, 0xcd, 0xed, 0x39, 0x94, 0x9a,
-	0xd3, 0x6e, 0x7c, 0xfe, 0x79, 0xf6, 0xb5, 0xba, 0x85, 0x1e, 0xe2, 0xf2, 0x2a, 0xa9, 0xc7, 0x68,
-	0xe9, 0xa0, 0x15, 0x64, 0x2d, 0x16, 0xe2, 0x01, 0x0b, 0x87, 0xe8, 0x07, 0x80, 0xe8, 0xf2, 0x74,
-	0xd0, 0xee, 0x35, 0xfd, 0xca, 0xb3, 0x37, 0x1b, 0xf3, 0x89, 0x0b, 0xbe, 0xa6, 0xe2, 0x6b, 0xa0,
-	0x9d, 0x99, 0x7c, 0x6a, 0x7f, 0xf0, 0x40, 0x7d, 0x86, 0xe8, 0x3b, 0x80, 0xb7, 0xca, 0x43, 0x41,
-	0x8f, 0x66, 0xb6, 0x9c, 0xec, 0x84, 0xb9, 0x75, 0x9d, 0xac, 0x60, 0x7a, 0xaa, 0x98, 0x9e, 0xa0,
-	0x83, 0x2b, 0x99, 0x24, 0x1e, 0xe8, 0x7d, 0x1a, 0xe6, 0x50, 0xe7, 0xd7, 0x69, 0xe8, 0x79, 0x27,
-	0x23, 0x0b, 0x9c, 0x8e, 0x2c, 0xf0, 0x67, 0x64, 0x81, 0x2f, 0x63, 0xab, 0x72, 0x3a, 0xb6, 0x2a,
-	0xbf, 0xc6, 0x56, 0xe5, 0x9d, 0x13, 0xb1, 0xf4, 0x63, 0x2f, 0x70, 0x8f, 0x44, 0x17, 0x1f, 0xb2,
-	0x84, 0x3c, 0x13, 0x09, 0xc5, 0x92, 0xb6, 0x09, 0xc3, 0x9f, 0xfe, 0xf5, 0xc9, 0x62, 0x2a, 0x83,
-	0x9a, 0xfa, 0xcd, 0xf7, 0xff, 0x06, 0x00, 0x00, 0xff, 0xff, 0x93, 0x12, 0x09, 0x47, 0xa3, 0x04,
-	0x00, 0x00,
+	// 713 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x96, 0xcf, 0x6b, 0x13, 0x41,
+	0x14, 0xc7, 0xb3, 0xb1, 0x4d, 0x9b, 0xa9, 0x58, 0x19, 0xab, 0xa6, 0x69, 0xd9, 0xd6, 0x45, 0x4b,
+	0xfa, 0x6b, 0x87, 0xb6, 0x50, 0x3c, 0x89, 0xac, 0x22, 0x96, 0xe2, 0xaf, 0xd5, 0x93, 0x20, 0x61,
+	0xb6, 0x3b, 0xa6, 0x43, 0x92, 0x99, 0x74, 0x67, 0x53, 0x0d, 0x21, 0x17, 0xff, 0x02, 0x41, 0xaf,
+	0x9e, 0x3c, 0xfa, 0x8f, 0xf4, 0x58, 0xf0, 0x22, 0x1e, 0x8a, 0xb4, 0x9e, 0xfd, 0x1b, 0x64, 0x67,
+	0x26, 0x71, 0xd3, 0xa4, 0xc9, 0x62, 0xc5, 0xd3, 0xec, 0xcc, 0xfb, 0xbe, 0xf7, 0x3e, 0x4c, 0xe6,
+	0x7d, 0x09, 0xb8, 0x5e, 0xa6, 0x01, 0x46, 0x1e, 0x16, 0x65, 0x12, 0xa2, 0xbd, 0x3a, 0x09, 0x1a,
+	0x76, 0x2d, 0xe0, 0x21, 0x87, 0x13, 0x51, 0xc0, 0x56, 0x81, 0xfc, 0xd2, 0x0e, 0x17, 0x55, 0x2e,
+	0x22, 0x1d, 0x51, 0x2a, 0xb4, 0xbf, 0xe6, 0x91, 0x10, 0xaf, 0xa1, 0x1a, 0x2e, 0x51, 0x86, 0x43,
+	0xca, 0x99, 0x4a, 0xcc, 0x4f, 0x95, 0x78, 0x89, 0xcb, 0x4f, 0x14, 0x7d, 0xe9, 0xd3, 0xe9, 0x12,
+	0xe7, 0xa5, 0x0a, 0x41, 0x72, 0xe7, 0xd5, 0x5f, 0x23, 0xcc, 0x74, 0xa7, 0xfc, 0xac, 0x0e, 0xe1,
+	0x1a, 0x45, 0x98, 0x31, 0x1e, 0xca, 0x6a, 0x42, 0x47, 0x73, 0x71, 0x40, 0xb5, 0xa8, 0x88, 0xb5,
+	0x0a, 0x66, 0x9e, 0x45, 0x28, 0x2f, 0x78, 0x99, 0x30, 0x47, 0x46, 0x9c, 0xc6, 0x96, 0xef, 0x92,
+	0xbd, 0x3a, 0x11, 0x21, 0xbc, 0x04, 0xd2, 0xd4, 0xcf, 0x19, 0xf3, 0x46, 0x61, 0xc4, 0x4d, 0x53,
+	0xdf, 0xda, 0x06, 0xb3, 0xfd, 0xe5, 0xa2, 0xc6, 0x99, 0x20, 0x70, 0x19, 0x64, 0x54, 0x79, 0x99,
+	0x33, 0xb1, 0x7e, 0xc5, 0x8e, 0xdd, 0x80, 0xad, 0x12, 0x5c, 0x2d, 0xb1, 0x36, 0x81, 0xd9, 0x5b,
+	0xec, 0x3e, 0x61, 0xbc, 0xda, 0x6e, 0x3f, 0x05, 0x46, 0xfd, 0x68, 0x2f, 0xab, 0x65, 0x5d, 0xb5,
+	0xb1, 0x1e, 0x83, 0xb9, 0x33, 0xf3, 0xfe, 0x86, 0xe3, 0x15, 0xc8, 0x9d, 0xae, 0x27, 0xda, 0x04,
+	0xd7, 0x40, 0x26, 0x8c, 0x8e, 0x45, 0xce, 0x98, 0xbf, 0x50, 0xc8, 0xba, 0x7a, 0x07, 0x17, 0xc1,
+	0x65, 0x9f, 0x04, 0x74, 0x1f, 0x87, 0x74, 0x9f, 0x88, 0x22, 0x67, 0x95, 0x46, 0x2e, 0x3d, 0x6f,
+	0x14, 0xc6, 0xdd, 0xc9, 0xd8, 0xf9, 0x13, 0x56, 0x69, 0x58, 0x4f, 0xc1, 0x74, 0x9f, 0xf2, 0x1a,
+	0x74, 0x03, 0x8c, 0x29, 0x0a, 0xd5, 0xa0, 0x3f, 0xa9, 0x33, 0x72, 0x70, 0x34, 0x97, 0x72, 0xdb,
+	0x4a, 0xeb, 0x2e, 0xb8, 0x21, 0x2b, 0xaa, 0xe8, 0x43, 0x2a, 0x42, 0x1e, 0xd0, 0x1d, 0x5c, 0x79,
+	0x44, 0xd9, 0x1f, 0xf2, 0x19, 0x90, 0x55, 0xfa, 0x62, 0xe7, 0x17, 0x1c, 0x57, 0x07, 0x5b, 0xbe,
+	0x55, 0x01, 0xd6, 0xa0, 0x0a, 0x1a, 0xee, 0x01, 0xc8, 0xe0, 0x2a, 0xaf, 0x33, 0x75, 0x8b, 0x59,
+	0xc7, 0x8e, 0x30, 0xbe, 0x1f, 0xcd, 0x2d, 0x94, 0x68, 0xb8, 0x5b, 0xf7, 0xec, 0x1d, 0x5e, 0x45,
+	0xfa, 0x51, 0xab, 0x65, 0x55, 0xf8, 0x65, 0x14, 0x36, 0x6a, 0x44, 0xd8, 0x5b, 0x2c, 0x74, 0x75,
+	0xf6, 0x99, 0xbc, 0x4e, 0x3d, 0x60, 0xe7, 0xe3, 0xd5, 0x15, 0xfe, 0x13, 0xef, 0xf3, 0x37, 0xb8,
+	0x76, 0x3e, 0x5e, 0x5d, 0xe1, 0xdf, 0xf2, 0xae, 0xff, 0x1a, 0x03, 0xa3, 0xb2, 0x1d, 0xfc, 0x68,
+	0x80, 0xc9, 0x53, 0xb3, 0x09, 0x0b, 0x5d, 0x2f, 0x6a, 0xc0, 0xb4, 0xe7, 0x17, 0x13, 0x28, 0x15,
+	0xba, 0xb5, 0xf2, 0xee, 0xeb, 0xcf, 0x0f, 0xe9, 0x05, 0x78, 0x13, 0xc5, 0xad, 0x45, 0x0e, 0x47,
+	0x51, 0x5f, 0x8b, 0xd7, 0x28, 0x52, 0x1f, 0x35, 0xa9, 0xdf, 0x82, 0x9f, 0x0d, 0x00, 0x7b, 0xa7,
+	0x15, 0x2e, 0x0f, 0xe9, 0x17, 0xf7, 0x82, 0xfc, 0x4a, 0x32, 0xb1, 0xe6, 0x5b, 0x97, 0x7c, 0x2b,
+	0x70, 0x69, 0x20, 0x9f, 0xf4, 0x13, 0xd4, 0x94, 0x4b, 0x0b, 0x7e, 0x32, 0xc0, 0xc5, 0xf8, 0x90,
+	0xc2, 0x5b, 0x03, 0x5b, 0xb6, 0x5f, 0x42, 0x7e, 0x61, 0x98, 0x4c, 0x33, 0xdd, 0x91, 0x4c, 0xb7,
+	0xe1, 0xe6, 0x99, 0x4c, 0x02, 0x35, 0x95, 0xbf, 0xb4, 0x22, 0xa8, 0x6e, 0x7b, 0x69, 0xc1, 0x2f,
+	0x06, 0xb8, 0xea, 0xe0, 0xb2, 0xe8, 0x19, 0x58, 0x68, 0xf7, 0x12, 0x0c, 0xf2, 0x86, 0x3c, 0x4a,
+	0xac, 0xd7, 0xe8, 0x6b, 0x12, 0x7d, 0x19, 0x2e, 0x76, 0xa1, 0xef, 0x76, 0xd4, 0xc5, 0x6a, 0x24,
+	0x47, 0xcd, 0xce, 0x44, 0xf4, 0xa7, 0x95, 0xe3, 0x9a, 0x84, 0x36, 0xee, 0x0c, 0x49, 0x68, 0xbb,
+	0x7c, 0x60, 0x38, 0xad, 0x17, 0xc9, 0x87, 0xd2, 0xca, 0x61, 0x4d, 0x42, 0x1b, 0xf7, 0x85, 0x24,
+	0xb4, 0x5d, 0x2e, 0x30, 0x9c, 0x56, 0x44, 0xf2, 0x38, 0xad, 0xe3, 0x1c, 0x1c, 0x9b, 0xc6, 0xe1,
+	0xb1, 0x69, 0xfc, 0x38, 0x36, 0x8d, 0xf7, 0x27, 0x66, 0xea, 0xf0, 0xc4, 0x4c, 0x7d, 0x3b, 0x31,
+	0x53, 0x2f, 0x0b, 0x31, 0xeb, 0xd8, 0xa6, 0x01, 0xbe, 0xc7, 0x03, 0x82, 0x04, 0x29, 0x63, 0x8a,
+	0xde, 0x76, 0x5e, 0x5c, 0x64, 0x20, 0x5e, 0x46, 0xfe, 0x01, 0xd8, 0xf8, 0x1d, 0x00, 0x00, 0xff,
+	0xff, 0x34, 0x40, 0x8c, 0x00, 0xbd, 0x08, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -370,6 +631,12 @@ type QueryClient interface {
 	TokenBasketByDenom(ctx context.Context, in *QueryTokenBasketByDenomRequest, opts ...grpc.CallOption) (*QueryTokenBasketByDenomResponse, error)
 	// TokenBaskets queries token baskets by filter
 	TokenBaskets(ctx context.Context, in *QueryTokenBasketsRequest, opts ...grpc.CallOption) (*QueryTokenBasketsResponse, error)
+	// BaksetHistoricalMints queries historical mints on a specific basket
+	BaksetHistoricalMints(ctx context.Context, in *QueryBasketHistoricalMintsRequest, opts ...grpc.CallOption) (*QueryBasketHistoricalMintsResponse, error)
+	// BaksetHistoricalBurns queries historical burns on a specific basket
+	BaksetHistoricalBurns(ctx context.Context, in *QueryBasketHistoricalBurnsRequest, opts ...grpc.CallOption) (*QueryBasketHistoricalBurnsResponse, error)
+	// BaksetHistoricalSwaps queries historical swaps on a specific basket
+	BaksetHistoricalSwaps(ctx context.Context, in *QueryBasketHistoricalSwapsRequest, opts ...grpc.CallOption) (*QueryBasketHistoricalSwapsResponse, error)
 }
 
 type queryClient struct {
@@ -407,6 +674,33 @@ func (c *queryClient) TokenBaskets(ctx context.Context, in *QueryTokenBasketsReq
 	return out, nil
 }
 
+func (c *queryClient) BaksetHistoricalMints(ctx context.Context, in *QueryBasketHistoricalMintsRequest, opts ...grpc.CallOption) (*QueryBasketHistoricalMintsResponse, error) {
+	out := new(QueryBasketHistoricalMintsResponse)
+	err := c.cc.Invoke(ctx, "/kira.basket.Query/BaksetHistoricalMints", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) BaksetHistoricalBurns(ctx context.Context, in *QueryBasketHistoricalBurnsRequest, opts ...grpc.CallOption) (*QueryBasketHistoricalBurnsResponse, error) {
+	out := new(QueryBasketHistoricalBurnsResponse)
+	err := c.cc.Invoke(ctx, "/kira.basket.Query/BaksetHistoricalBurns", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) BaksetHistoricalSwaps(ctx context.Context, in *QueryBasketHistoricalSwapsRequest, opts ...grpc.CallOption) (*QueryBasketHistoricalSwapsResponse, error) {
+	out := new(QueryBasketHistoricalSwapsResponse)
+	err := c.cc.Invoke(ctx, "/kira.basket.Query/BaksetHistoricalSwaps", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 type QueryServer interface {
 	// TokenBasketById queries a single basket by id
@@ -415,6 +709,12 @@ type QueryServer interface {
 	TokenBasketByDenom(context.Context, *QueryTokenBasketByDenomRequest) (*QueryTokenBasketByDenomResponse, error)
 	// TokenBaskets queries token baskets by filter
 	TokenBaskets(context.Context, *QueryTokenBasketsRequest) (*QueryTokenBasketsResponse, error)
+	// BaksetHistoricalMints queries historical mints on a specific basket
+	BaksetHistoricalMints(context.Context, *QueryBasketHistoricalMintsRequest) (*QueryBasketHistoricalMintsResponse, error)
+	// BaksetHistoricalBurns queries historical burns on a specific basket
+	BaksetHistoricalBurns(context.Context, *QueryBasketHistoricalBurnsRequest) (*QueryBasketHistoricalBurnsResponse, error)
+	// BaksetHistoricalSwaps queries historical swaps on a specific basket
+	BaksetHistoricalSwaps(context.Context, *QueryBasketHistoricalSwapsRequest) (*QueryBasketHistoricalSwapsResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -429,6 +729,15 @@ func (*UnimplementedQueryServer) TokenBasketByDenom(ctx context.Context, req *Qu
 }
 func (*UnimplementedQueryServer) TokenBaskets(ctx context.Context, req *QueryTokenBasketsRequest) (*QueryTokenBasketsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TokenBaskets not implemented")
+}
+func (*UnimplementedQueryServer) BaksetHistoricalMints(ctx context.Context, req *QueryBasketHistoricalMintsRequest) (*QueryBasketHistoricalMintsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BaksetHistoricalMints not implemented")
+}
+func (*UnimplementedQueryServer) BaksetHistoricalBurns(ctx context.Context, req *QueryBasketHistoricalBurnsRequest) (*QueryBasketHistoricalBurnsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BaksetHistoricalBurns not implemented")
+}
+func (*UnimplementedQueryServer) BaksetHistoricalSwaps(ctx context.Context, req *QueryBasketHistoricalSwapsRequest) (*QueryBasketHistoricalSwapsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BaksetHistoricalSwaps not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -489,6 +798,60 @@ func _Query_TokenBaskets_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_BaksetHistoricalMints_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryBasketHistoricalMintsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).BaksetHistoricalMints(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.basket.Query/BaksetHistoricalMints",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).BaksetHistoricalMints(ctx, req.(*QueryBasketHistoricalMintsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_BaksetHistoricalBurns_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryBasketHistoricalBurnsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).BaksetHistoricalBurns(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.basket.Query/BaksetHistoricalBurns",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).BaksetHistoricalBurns(ctx, req.(*QueryBasketHistoricalBurnsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_BaksetHistoricalSwaps_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryBasketHistoricalSwapsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).BaksetHistoricalSwaps(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.basket.Query/BaksetHistoricalSwaps",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).BaksetHistoricalSwaps(ctx, req.(*QueryBasketHistoricalSwapsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "kira.basket.Query",
 	HandlerType: (*QueryServer)(nil),
@@ -504,6 +867,18 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "TokenBaskets",
 			Handler:    _Query_TokenBaskets_Handler,
+		},
+		{
+			MethodName: "BaksetHistoricalMints",
+			Handler:    _Query_BaksetHistoricalMints_Handler,
+		},
+		{
+			MethodName: "BaksetHistoricalBurns",
+			Handler:    _Query_BaksetHistoricalBurns_Handler,
+		},
+		{
+			MethodName: "BaksetHistoricalSwaps",
+			Handler:    _Query_BaksetHistoricalSwaps_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -717,6 +1092,189 @@ func (m *QueryTokenBasketsResponse) MarshalToSizedBuffer(dAtA []byte) (int, erro
 	return len(dAtA) - i, nil
 }
 
+func (m *QueryBasketHistoricalMintsRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryBasketHistoricalMintsRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryBasketHistoricalMintsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.BasketId != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.BasketId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryBasketHistoricalMintsResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryBasketHistoricalMintsResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryBasketHistoricalMintsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size := m.Amount.Size()
+		i -= size
+		if _, err := m.Amount.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintQuery(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryBasketHistoricalBurnsRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryBasketHistoricalBurnsRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryBasketHistoricalBurnsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.BasketId != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.BasketId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryBasketHistoricalBurnsResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryBasketHistoricalBurnsResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryBasketHistoricalBurnsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size := m.Amount.Size()
+		i -= size
+		if _, err := m.Amount.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintQuery(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryBasketHistoricalSwapsRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryBasketHistoricalSwapsRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryBasketHistoricalSwapsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.BasketId != 0 {
+		i = encodeVarintQuery(dAtA, i, uint64(m.BasketId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryBasketHistoricalSwapsResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryBasketHistoricalSwapsResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryBasketHistoricalSwapsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size := m.Amount.Size()
+		i -= size
+		if _, err := m.Amount.MarshalTo(dAtA[i:]); err != nil {
+			return 0, err
+		}
+		i = encodeVarintQuery(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	offset -= sovQuery(v)
 	base := offset
@@ -809,6 +1367,75 @@ func (m *QueryTokenBasketsResponse) Size() (n int) {
 			n += 1 + l + sovQuery(uint64(l))
 		}
 	}
+	return n
+}
+
+func (m *QueryBasketHistoricalMintsRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.BasketId != 0 {
+		n += 1 + sovQuery(uint64(m.BasketId))
+	}
+	return n
+}
+
+func (m *QueryBasketHistoricalMintsResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = m.Amount.Size()
+	n += 1 + l + sovQuery(uint64(l))
+	return n
+}
+
+func (m *QueryBasketHistoricalBurnsRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.BasketId != 0 {
+		n += 1 + sovQuery(uint64(m.BasketId))
+	}
+	return n
+}
+
+func (m *QueryBasketHistoricalBurnsResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = m.Amount.Size()
+	n += 1 + l + sovQuery(uint64(l))
+	return n
+}
+
+func (m *QueryBasketHistoricalSwapsRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.BasketId != 0 {
+		n += 1 + sovQuery(uint64(m.BasketId))
+	}
+	return n
+}
+
+func (m *QueryBasketHistoricalSwapsResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = m.Amount.Size()
+	n += 1 + l + sovQuery(uint64(l))
 	return n
 }
 
@@ -1303,6 +1930,465 @@ func (m *QueryTokenBasketsResponse) Unmarshal(dAtA []byte) error {
 			}
 			m.Baskets = append(m.Baskets, Basket{})
 			if err := m.Baskets[len(m.Baskets)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryBasketHistoricalMintsRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryBasketHistoricalMintsRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryBasketHistoricalMintsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BasketId", wireType)
+			}
+			m.BasketId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.BasketId |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryBasketHistoricalMintsResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryBasketHistoricalMintsResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryBasketHistoricalMintsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Amount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryBasketHistoricalBurnsRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryBasketHistoricalBurnsRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryBasketHistoricalBurnsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BasketId", wireType)
+			}
+			m.BasketId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.BasketId |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryBasketHistoricalBurnsResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryBasketHistoricalBurnsResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryBasketHistoricalBurnsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Amount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryBasketHistoricalSwapsRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryBasketHistoricalSwapsRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryBasketHistoricalSwapsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field BasketId", wireType)
+			}
+			m.BasketId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.BasketId |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryBasketHistoricalSwapsResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryBasketHistoricalSwapsResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryBasketHistoricalSwapsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.Amount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
