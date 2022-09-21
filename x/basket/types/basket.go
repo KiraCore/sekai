@@ -74,3 +74,31 @@ func (b Basket) ValidateTokensCap() error {
 	}
 	return nil
 }
+
+func (b Basket) AverageDisbalance() sdk.Dec {
+	if len(b.Tokens) == 0 {
+		return sdk.ZeroDec()
+	}
+
+	totalVal := sdk.ZeroDec()
+	for _, token := range b.Tokens {
+		totalVal = totalVal.Add(token.Weight.Mul(token.Amount.ToDec()))
+	}
+	averageVal := totalVal.Quo(sdk.NewDec(int64(len(b.Tokens))))
+	totalDisbalance := sdk.ZeroDec()
+	for _, token := range b.Tokens {
+		disbalance := averageVal.Sub(token.Weight.Mul(token.Amount.ToDec())).Quo(averageVal)
+		totalDisbalance = totalDisbalance.Add(disbalance.Abs())
+	}
+	averageDisbalance := totalDisbalance.Quo(sdk.NewDec(int64(len(b.Tokens))))
+	return averageDisbalance
+}
+
+func (b Basket) SlippageFee(oldDisbalance sdk.Dec) sdk.Dec {
+	disbalance := b.AverageDisbalance()
+	disbalanceDiff := disbalance.Sub(oldDisbalance)
+	if b.SlipppageFeeMin.GT(disbalanceDiff) {
+		return b.SlipppageFeeMin
+	}
+	return disbalanceDiff
+}

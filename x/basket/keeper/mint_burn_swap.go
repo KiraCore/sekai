@@ -6,6 +6,7 @@ import (
 	"github.com/KiraCore/sekai/x/basket/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 )
 
 func (k Keeper) MintBasketToken(ctx sdk.Context, msg *types.MsgBasketTokenMint) error {
@@ -170,6 +171,8 @@ func (k Keeper) BasketSwap(ctx sdk.Context, msg *types.MsgBasketTokenSwap) error
 		return types.ErrSwapsDisabledBasket
 	}
 
+	oldDisbalance := basket.AverageDisbalance()
+
 	sender, err := sdk.AccAddressFromBech32(msg.Sender)
 	if err != nil {
 		return err
@@ -216,32 +219,46 @@ func (k Keeper) BasketSwap(ctx sdk.Context, msg *types.MsgBasketTokenSwap) error
 
 	// calculate out amount considering fees and rates
 	swapAmount := msg.InAmount.Amount.ToDec().Mul(sdk.OneDec().Sub(basket.SwapFee)).RoundInt()
+
+	// pay network for fee
+	feeAmount := msg.InAmount.Amount.Sub(swapAmount)
+	if feeAmount.IsPositive() {
+		err := k.bk.SendCoinsFromModuleToModule(ctx, types.ModuleName, authtypes.FeeCollectorName, sdk.Coins{sdk.NewCoin(msg.InAmount.Denom, feeAmount)})
+		if err != nil {
+			return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFunds, err.Error())
+		}
+	}
+
 	outAmount := swapAmount.ToDec().Mul(inRate).Quo(outRate).RoundInt()
 	if outAmount.IsZero() {
 		return types.ErrNotAbleToWithdrawAnyTokens
 	}
 
-	outCoins := sdk.Coins{sdk.NewCoin(msg.OutToken, outAmount)}
-	err = k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, outCoins)
-	if err != nil {
-		return err
-	}
-
 	// increase in tokens
-	basket, err = basket.IncreaseBasketTokens(sdk.Coins{msg.InAmount})
+	basket, err = basket.IncreaseBasketTokens(sdk.Coins{sdk.NewCoin(msg.InAmount.Denom, swapAmount)})
 	if err != nil {
 		return err
 	}
 
+	outCoins := sdk.Coins{sdk.NewCoin(msg.OutToken, outAmount)}
 	// decrease out tokens
 	basket, err = basket.DecreaseBasketTokens(outCoins)
 	if err != nil {
 		return err
 	}
 
-	// increase surplus amount
-	feeAmount := msg.InAmount.Amount.Sub(swapAmount)
-	basket.Surplus = sdk.Coins(basket.Surplus).Add(sdk.NewCoin(msg.InAmount.Denom, feeAmount))
+	// calculate slippage fee
+	slippageFee := basket.SlippageFee(oldDisbalance)
+	finalOutAmount := outAmount.ToDec().Mul(sdk.OneDec().Sub(slippageFee)).RoundInt()
+	finalOutCoins := sdk.Coins{sdk.NewCoin(msg.OutToken, finalOutAmount)}
+	err = k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, finalOutCoins)
+	if err != nil {
+		return err
+	}
+
+	// increase surplus by slippage fee
+	slippageFeeAmount := outAmount.Sub(finalOutAmount)
+	basket.Surplus = sdk.Coins(basket.Surplus).Add(sdk.NewCoin(msg.OutToken, slippageFeeAmount))
 
 	err = basket.ValidateTokensCap()
 	if err != nil {
@@ -272,5 +289,23 @@ func (k Keeper) BasketWithdrawSurplus(ctx sdk.Context, p types.ProposalBasketWit
 		basket.Surplus = sdk.Coins{}
 		k.SetBasket(ctx, basket)
 	}
+
+	// withdraw delegation rewards
+	delegator := k.ak.GetModuleAccount(ctx, types.ModuleName).GetAddress()
+	k.mk.RegisterDelegator(ctx, delegator)
+	rewards := k.mk.ClaimRewards(ctx, delegator)
+	err = k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, withdrawTarget, rewards)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (k Keeper) RegisterBasketModuleAsDelegator(ctx sdk.Context) error {
+	// withdraw delegation rewards
+	delegator := k.ak.GetModuleAccount(ctx, types.ModuleName).GetAddress()
+	k.mk.RegisterDelegator(ctx, delegator)
+
 	return nil
 }

@@ -472,3 +472,14 @@ func (k Keeper) UnregisterNotEnoughStakeDelegator(ctx sdk.Context, pool types.St
 		}
 	}
 }
+
+func (k Keeper) ClaimRewards(ctx sdk.Context, delegator sdk.AccAddress) sdk.Coins {
+	rewards := k.GetDelegatorRewards(ctx, delegator)
+	err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, authtypes.FeeCollectorName, delegator, rewards)
+	if err != nil {
+		panic(err)
+	}
+
+	k.RemoveDelegatorRewards(ctx, delegator)
+	return rewards
+}

@@ -124,12 +124,12 @@ func (k msgServer) BasketTokenSwap(
 	return &types.MsgBasketTokenSwapResponse{}, nil
 }
 
-// TODO: implement
 func (k msgServer) BasketClaimRewards(
 	goCtx context.Context,
 	msg *types.MsgBasketClaimRewards,
 ) (*types.MsgBasketClaimRewardsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
+
+	k.keeper.RegisterBasketModuleAsDelegator(ctx)
 	return &types.MsgBasketClaimRewardsResponse{}, nil
 }
