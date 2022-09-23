@@ -31,6 +31,10 @@ const (
 	RemoveWhitelistedRolePermissionProposalType    = "RemoveWhitelistedRolePermission"
 	RemoveBlacklistedRolePermissionProposalType    = "RemoveBlacklistedRolePermission"
 	SetProposalDurationsProposalType               = "SetProposalDurationsProposal"
+
+	ProposalTypeCreateBasket          = "CreateBasket"
+	ProposalTypeEditBasket            = "EditBasket"
+	ProposalTypeBasketWithdrawSurplus = "BasketWithdrawSurplus"
 )
 
 var AllProposalTypes []string = []string{

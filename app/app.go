@@ -8,6 +8,9 @@ import (
 
 	customante "github.com/KiraCore/sekai/app/ante"
 	"github.com/KiraCore/sekai/middleware"
+	"github.com/KiraCore/sekai/x/basket"
+	basketkeeper "github.com/KiraCore/sekai/x/basket/keeper"
+	baskettypes "github.com/KiraCore/sekai/x/basket/types"
 	"github.com/KiraCore/sekai/x/distributor"
 	distributorkeeper "github.com/KiraCore/sekai/x/distributor/keeper"
 	distributortypes "github.com/KiraCore/sekai/x/distributor/types"
@@ -99,6 +102,7 @@ var (
 		customgov.AppModuleBasic{},
 		spending.AppModuleBasic{},
 		distributor.AppModuleBasic{},
+		basket.AppModuleBasic{},
 		ubi.AppModuleBasic{},
 		evidence.AppModuleBasic{},
 		tokens.AppModuleBasic{},
@@ -113,6 +117,7 @@ var (
 		minttypes.ModuleName:         {authtypes.Minter},
 		spendingtypes.ModuleName:     nil,
 		distributortypes.ModuleName:  nil,
+		baskettypes.ModuleName:       {authtypes.Minter, authtypes.Burner},
 		multistakingtypes.ModuleName: {authtypes.Burner},
 	}
 
@@ -149,6 +154,7 @@ type SekaiApp struct {
 	SpendingKeeper       spendingkeeper.Keeper
 	UbiKeeper            ubikeeper.Keeper
 	DistrKeeper          distributorkeeper.Keeper
+	BasketKeeper         basketkeeper.Keeper
 	MultiStakingKeeper   multistakingkeeper.Keeper
 
 	// Module Manager
@@ -193,6 +199,7 @@ func NewInitApp(
 		govtypes.ModuleName,
 		spendingtypes.ModuleName,
 		distributortypes.ModuleName,
+		baskettypes.ModuleName,
 		multistakingtypes.ModuleName,
 		ubitypes.ModuleName,
 		tokenstypes.ModuleName,
@@ -250,6 +257,13 @@ func NewInitApp(
 		app.MultiStakingKeeper)
 	app.MultiStakingKeeper.SetDistrKeeper(app.DistrKeeper)
 
+	app.BasketKeeper = basketkeeper.NewKeeper(
+		keys[baskettypes.ModuleName], appCodec,
+		app.AccountKeeper, app.BankKeeper,
+		app.CustomStakingKeeper, app.CustomGovKeeper,
+		app.MultiStakingKeeper,
+	)
+
 	app.UpgradeKeeper = upgradekeeper.NewKeeper(keys[upgradetypes.StoreKey], appCodec, app.CustomStakingKeeper)
 
 	// app.upgradeKeeper.SetUpgradeHandler(
@@ -296,6 +310,9 @@ func NewInitApp(
 			spending.NewApplySpendingPoolWithdrawProposalHandler(app.SpendingKeeper, app.BankKeeper),
 			ubi.NewApplyUpsertUBIProposalHandler(app.UbiKeeper, app.CustomGovKeeper, app.SpendingKeeper),
 			ubi.NewApplyRemoveUBIProposalHandler(app.UbiKeeper),
+			basket.NewApplyCreateBasketProposalHandler(app.BasketKeeper),
+			basket.NewApplyEditBasketProposalHandler(app.BasketKeeper),
+			basket.NewApplyBasketWithdrawSurplusProposalHandler(app.BasketKeeper),
 		})
 
 	app.CustomGovKeeper.SetProposalRouter(proposalRouter)
@@ -320,6 +337,7 @@ func NewInitApp(
 		tokens.NewAppModule(app.TokensKeeper, app.CustomGovKeeper),
 		spending.NewAppModule(app.SpendingKeeper, app.CustomGovKeeper, app.BankKeeper),
 		distributor.NewAppModule(app.DistrKeeper, app.CustomGovKeeper),
+		basket.NewAppModule(app.BasketKeeper, app.CustomGovKeeper),
 		ubi.NewAppModule(app.UbiKeeper, app.CustomGovKeeper),
 		feeprocessing.NewAppModule(app.FeeProcessingKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
@@ -335,6 +353,7 @@ func NewInitApp(
 		evidencetypes.ModuleName, stakingtypes.ModuleName,
 		spendingtypes.ModuleName, ubitypes.ModuleName,
 		distributortypes.ModuleName, multistakingtypes.ModuleName,
+		baskettypes.ModuleName,
 	)
 	app.mm.SetOrderEndBlockers(
 		banktypes.ModuleName, upgradetypes.ModuleName, tokenstypes.ModuleName,
@@ -345,6 +364,7 @@ func NewInitApp(
 		feeprocessingtypes.ModuleName,
 		spendingtypes.ModuleName, ubitypes.ModuleName,
 		distributortypes.ModuleName, multistakingtypes.ModuleName,
+		baskettypes.ModuleName,
 	)
 
 	// NOTE: The genutils moodule must occur after staking so that pools are
@@ -368,6 +388,7 @@ func NewInitApp(
 		paramstypes.ModuleName,
 		distributortypes.ModuleName,
 		multistakingtypes.ModuleName,
+		baskettypes.ModuleName,
 	)
 
 	app.mm.RegisterRoutes(app.Router(), app.QueryRouter(), encodingConfig.Amino)
@@ -581,6 +602,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(stakingtypes.ModuleName)
 	paramsKeeper.Subspace(slashingtypes.ModuleName)
 	paramsKeeper.Subspace(multistakingtypes.ModuleName)
+	paramsKeeper.Subspace(baskettypes.ModuleName)
 
 	return paramsKeeper
 }
