@@ -1,3 +1,3 @@
 Features:
 
-- Resolve genesis import/export on distributor module
+- Add basket module to group tokens
