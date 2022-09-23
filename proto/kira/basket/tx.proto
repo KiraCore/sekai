@@ -33,6 +33,7 @@ service Msg {
 message MsgDisableBasketDeposits {
   string sender = 1;
   uint64 basket_id = 2;
+  bool disabled = 3;
 }
 message MsgDisableBasketDepositsResponse {}
 
@@ -42,6 +43,7 @@ message MsgDisableBasketDepositsResponse {}
 message MsgDisableBasketWithdraws {
   string sender = 1;
   uint64 basket_id = 2;
+  bool disabled = 3;
 }
 message MsgDisableBasketWithdrawsResponse {}
 
@@ -51,6 +53,7 @@ message MsgDisableBasketWithdrawsResponse {}
 message MsgDisableBasketSwaps {
   string sender = 1;
   uint64 basket_id = 2;
+  bool disabled = 3;
 }
 message MsgDisableBasketSwapsResponse {}
 

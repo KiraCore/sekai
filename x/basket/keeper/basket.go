@@ -79,6 +79,9 @@ func (k Keeper) CreateBasket(ctx sdk.Context, basket types.Basket) error {
 	basket.Id = basketId
 	basket.Surplus = sdk.Coins{} // surplus is zero at initial
 
+	if len(basket.Tokens) == 0 {
+		return types.ErrEmptyUnderlyingTokens
+	}
 	usedDenom := make(map[string]bool)
 	for index, token := range basket.Tokens {
 		// ensure tokens amount is zero
@@ -117,6 +120,10 @@ func (k Keeper) EditBasket(ctx sdk.Context, basket types.Basket) error {
 		prevAmounts[token.Denom] = token.Amount
 	}
 
+	if len(basket.Tokens) == 0 {
+		return types.ErrEmptyUnderlyingTokens
+	}
+
 	usedDenom := make(map[string]bool)
 	for index, token := range basket.Tokens {
 		// ensure tokens amount is derivated from previous by denom
@@ -138,5 +145,3 @@ func (k Keeper) EditBasket(ctx sdk.Context, basket types.Basket) error {
 	k.SetBasket(ctx, basket)
 	return nil
 }
-
-// TODO: use FlagSlippageFeeMin

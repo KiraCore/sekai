@@ -55,7 +55,7 @@ func (k Keeper) MintBasketToken(ctx sdk.Context, msg *types.MsgBasketTokenMint) 
 
 	// register action and check mints max
 	k.RegisterMintAction(ctx, msg.BasketId, basketCoin.Amount)
-	if k.GetLimitsPeriodBurnAmount(ctx, msg.BasketId, basket.LimitsPeriod).GT(basket.MintsMax) {
+	if k.GetLimitsPeriodMintAmount(ctx, msg.BasketId, basket.LimitsPeriod).GT(basket.MintsMax) {
 		return types.ErrAmountAboveBaksetMintsMax
 	}
 
@@ -78,6 +78,8 @@ func (k Keeper) MintBasketToken(ctx sdk.Context, msg *types.MsgBasketTokenMint) 
 	if err != nil {
 		return err
 	}
+
+	basket.Amount = basket.Amount.Add(basketCoin.Amount)
 	k.SetBasket(ctx, basket)
 	return nil
 }
@@ -93,7 +95,7 @@ func (k Keeper) BurnBasketToken(ctx sdk.Context, msg *types.MsgBasketTokenBurn) 
 		return types.ErrBurnsDisabledBasket
 	}
 
-	if msg.BurnAmount.Amount.LT(basket.MintsMin) {
+	if msg.BurnAmount.Amount.LT(basket.BurnsMin) {
 		return types.ErrAmountBelowBaksetBurnsMin
 	}
 
@@ -156,6 +158,7 @@ func (k Keeper) BurnBasketToken(ctx sdk.Context, msg *types.MsgBasketTokenBurn) 
 		return err
 	}
 
+	basket.Amount = basket.Amount.Sub(msg.BurnAmount.Amount)
 	k.SetBasket(ctx, basket)
 	return nil
 }
@@ -207,7 +210,7 @@ func (k Keeper) BasketSwap(ctx sdk.Context, msg *types.MsgBasketTokenSwap) error
 	}
 
 	swapValue := msg.InAmount.Amount.ToDec().Mul(inRate).RoundInt()
-	if swapValue.LT(basket.MintsMin) {
+	if swapValue.LT(basket.SwapsMin) {
 		return types.ErrAmountBelowBaksetSwapsMin
 	}
 
@@ -293,10 +296,12 @@ func (k Keeper) BasketWithdrawSurplus(ctx sdk.Context, p types.ProposalBasketWit
 	// withdraw delegation rewards
 	delegator := k.ak.GetModuleAccount(ctx, types.ModuleName).GetAddress()
 	k.mk.RegisterDelegator(ctx, delegator)
-	rewards := k.mk.ClaimRewards(ctx, delegator)
-	err = k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, withdrawTarget, rewards)
-	if err != nil {
-		return err
+	rewards := k.mk.ClaimRewardsFromModule(ctx, types.ModuleName)
+	if rewards.IsAllPositive() {
+		err = k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, withdrawTarget, rewards)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

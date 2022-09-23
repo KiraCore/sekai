@@ -8,10 +8,11 @@ import (
 var _ sdk.Msg = &MsgDisableBasketDeposits{}
 
 // NewMsgDisableBasketDeposits returns an instance of MsgDisableBasketDeposits
-func NewMsgDisableBasketDeposits(proposer sdk.AccAddress, basketId uint64) *MsgDisableBasketDeposits {
+func NewMsgDisableBasketDeposits(proposer sdk.AccAddress, basketId uint64, disabled bool) *MsgDisableBasketDeposits {
 	return &MsgDisableBasketDeposits{
 		Sender:   proposer.String(),
 		BasketId: basketId,
+		Disabled: disabled,
 	}
 }
 
@@ -48,10 +49,11 @@ func (m *MsgDisableBasketDeposits) GetSigners() []sdk.AccAddress {
 var _ sdk.Msg = &MsgDisableBasketWithdraws{}
 
 // NewMsgDisableBasketWithdraws returns an instance of MsgDisableBasketWithdraws
-func NewMsgDisableBasketWithdraws(proposer sdk.AccAddress, basketId uint64) *MsgDisableBasketWithdraws {
+func NewMsgDisableBasketWithdraws(proposer sdk.AccAddress, basketId uint64, disabled bool) *MsgDisableBasketWithdraws {
 	return &MsgDisableBasketWithdraws{
 		Sender:   proposer.String(),
 		BasketId: basketId,
+		Disabled: disabled,
 	}
 }
 
@@ -88,10 +90,11 @@ func (m *MsgDisableBasketWithdraws) GetSigners() []sdk.AccAddress {
 var _ sdk.Msg = &MsgDisableBasketSwaps{}
 
 // NewMsgDisableBasketSwaps returns an instance of MsgDisableBasketSwaps
-func NewMsgDisableBasketSwaps(proposer sdk.AccAddress, basketId uint64) *MsgDisableBasketSwaps {
+func NewMsgDisableBasketSwaps(proposer sdk.AccAddress, basketId uint64, disabled bool) *MsgDisableBasketSwaps {
 	return &MsgDisableBasketSwaps{
 		Sender:   proposer.String(),
 		BasketId: basketId,
+		Disabled: disabled,
 	}
 }
 

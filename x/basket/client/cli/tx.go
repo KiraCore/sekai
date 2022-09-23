@@ -65,9 +65,9 @@ func NewTxCmd() *cobra.Command {
 // GetTxDisableBasketDepositsCmd implement cli command for MsgDisableBasketDeposits
 func GetTxDisableBasketDepositsCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "disable-basket-deposits [basket_id]",
+		Use:   "disable-basket-deposits [basket_id] [disabled]",
 		Short: "Emergency function & permission to disable one or all deposits of one or all token in the basket",
-		Args:  cobra.MinimumNArgs(1),
+		Args:  cobra.MinimumNArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -78,9 +78,16 @@ func GetTxDisableBasketDepositsCmd() *cobra.Command {
 			if err != nil {
 				return err
 			}
+
+			disabled, err := strconv.ParseBool(args[1])
+			if err != nil {
+				return err
+			}
+
 			msg := types.NewMsgDisableBasketDeposits(
 				clientCtx.FromAddress,
 				uint64(basketId),
+				disabled,
 			)
 
 			err = msg.ValidateBasic()
@@ -101,9 +108,9 @@ func GetTxDisableBasketDepositsCmd() *cobra.Command {
 // GetTxDisableBasketWithdrawsCmd implement cli command for MsgDisableBasketWithdraws
 func GetTxDisableBasketWithdrawsCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "disable-basket-withdraws [basket_id]",
+		Use:   "disable-basket-withdraws [basket_id] [disabled]",
 		Short: "Emergency function & permission to disable one or all withdraws of one or all token in the basket",
-		Args:  cobra.MinimumNArgs(1),
+		Args:  cobra.MinimumNArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -114,9 +121,16 @@ func GetTxDisableBasketWithdrawsCmd() *cobra.Command {
 			if err != nil {
 				return err
 			}
+
+			disabled, err := strconv.ParseBool(args[1])
+			if err != nil {
+				return err
+			}
+
 			msg := types.NewMsgDisableBasketWithdraws(
 				clientCtx.FromAddress,
 				uint64(basketId),
+				disabled,
 			)
 
 			err = msg.ValidateBasic()
@@ -137,9 +151,9 @@ func GetTxDisableBasketWithdrawsCmd() *cobra.Command {
 // GetTxDisableBasketSwapsCmd implement cli command for MsgDisableBasketSwaps
 func GetTxDisableBasketSwapsCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "disable-basket-swaps [basket_id]",
+		Use:   "disable-basket-swaps [basket_id] [disabled]",
 		Short: "Emergency function & permission to disable one or all swaps of one or all token in the basket",
-		Args:  cobra.MinimumNArgs(1),
+		Args:  cobra.MinimumNArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -150,9 +164,16 @@ func GetTxDisableBasketSwapsCmd() *cobra.Command {
 			if err != nil {
 				return err
 			}
+
+			disabled, err := strconv.ParseBool(args[1])
+			if err != nil {
+				return err
+			}
+
 			msg := types.NewMsgDisableBasketSwaps(
 				clientCtx.FromAddress,
 				uint64(basketId),
+				disabled,
 			)
 
 			err = msg.ValidateBasic()

@@ -42,4 +42,5 @@ type MultiStakingKeeper interface {
 	IncreasePoolRewards(ctx sdk.Context, pool multistakingtypes.StakingPool, rewards sdk.Coins)
 	RegisterDelegator(ctx sdk.Context, delegator sdk.AccAddress)
 	ClaimRewards(ctx sdk.Context, delegator sdk.AccAddress) sdk.Coins
+	ClaimRewardsFromModule(ctx sdk.Context, module string) sdk.Coins
 }

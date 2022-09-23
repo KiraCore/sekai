@@ -25,4 +25,5 @@ var (
 	ErrTokenWeightShouldNotBeZero     = errors.Register(ModuleName, 19, "token weight should not be zero")
 	ErrDuplicateDenomExistsOnTokens   = errors.Register(ModuleName, 20, "duplicated denom exists on tokens list")
 	ErrTokenExceedingCap              = errors.Register(ModuleName, 21, "token exceeding cap")
+	ErrEmptyUnderlyingTokens          = errors.Register(ModuleName, 22, "empty underlying tokens")
 )

@@ -68,7 +68,7 @@ func (b Basket) ValidateTokensCap() error {
 	}
 
 	for _, token := range b.Tokens {
-		if token.Amount.ToDec().Mul(token.Weight).GTE(totalTokens.Mul(b.TokensCap)) {
+		if token.Amount.ToDec().Mul(token.Weight).GT(totalTokens.Mul(b.TokensCap)) {
 			return sdkerrors.Wrap(ErrTokenExceedingCap, fmt.Sprintf("denom=%s", token.Denom))
 		}
 	}
