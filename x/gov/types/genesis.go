@@ -114,6 +114,9 @@ func DefaultGenesis() *GenesisState {
 			SlashingPeriod:              3600,
 			MaxJailedPercentage:         25,
 			MaxSlashingPercentage:       1,
+			MinCustodyReward:            200,
+			MaxCustodyTxSize:            8192,
+			MaxCustodyBufferSize:        10,
 		},
 		ExecutionFees: []*ExecutionFee{
 			{

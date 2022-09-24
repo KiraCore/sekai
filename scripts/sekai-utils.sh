@@ -66,7 +66,7 @@ function txAwait() {
     local START_TIME="$(date -u +%s)"
     local RAW=""
     local TIMEOUT=""
-    
+
     if (! $(isTxHash "$1")) ; then
         RAW=$(cat)
         TIMEOUT=$1
@@ -1080,3 +1080,121 @@ if declare -f "$1" > /dev/null ; then
   # call arguments verbatim
   "$@"
 fi
+
+# enableCustody
+function enableCustody() {
+  local FROM=$1
+  local MODE=$2
+  local PASSWORD=$3
+  local LIMITS=$4
+  local WHITELIST=$5
+  local FEE_AMOUNT=$6
+  local FEE_DENOM=$7
+  local OKEY=$8
+  local NKEY=$9
+
+  sekaid tx custody create $MODE $PASSWORD $LIMITS $WHITELIST --from=$FROM --keyring-backend=test --chain-id=$NETWORK_NAME --fees="${FEE_AMOUNT}${FEE_DENOM}" --output=json --yes --home=$SEKAID_HOME --okey=$OKEY --nkey=$NKEY | txAwait 180
+}
+
+# enableCustody
+function addCustodians() {
+  local FROM=$1
+  local ADDRESSES=$2
+  local FEE_AMOUNT=$3
+  local FEE_DENOM=$4
+  local OKEY=$5
+  local NKEY=$6
+
+  sekaid tx custody custodians add "$ADDRESSES" --from=$FROM --keyring-backend=test --chain-id=$NETWORK_NAME --fees="${FEE_AMOUNT}${FEE_DENOM}" --output=json --yes --home=$SEKAID_HOME --okey=$OKEY --nkey=$NKEY | txAwait 180
+}
+
+# e.g. getCustodyInfo
+function getCustodyKey() {
+  local FROM=$(showAddress $1)
+  local RESULT=$(sekaid query custody get $FROM --output=json --home=$SEKAID_HOME 2> /dev/null | jsonParse "custody_settings.key" 2> /dev/null || echo -n "")
+
+  echo $RESULT
+}
+
+# e.g. getCustodyInfo
+function getCustodyInfo() {
+  local FROM=$(showAddress $1)
+  local RESULT=$(sekaid query custody get $FROM --output=json --home=$SEKAID_HOME 2> /dev/null | jsonParse "" 2> /dev/null || echo -n "")
+
+  echo $RESULT
+}
+
+# e.g. getCustodyWhitelist
+function getCustodians() {
+  local FROM=$(showAddress $1)
+  local RESULT=$(sekaid query custody custodians get $FROM --output=json --home=$SEKAID_HOME 2> /dev/null | jsonParse "custody_custodians" 2> /dev/null || echo -n "")
+
+  echo $RESULT
+}
+
+# e.g. getCustodyWhitelist
+function getCustodyPool() {
+  local FROM=$(showAddress $1)
+  local RESULT=$(sekaid query custody custodians pool $FROM --output=json --home=$SEKAID_HOME 2> /dev/null | jsonParse "transactions.record" 2> /dev/null || echo -n "")
+
+  echo $RESULT
+}
+
+function getCustodyPoolVotes() {
+  local FROM=$(showAddress $1)
+  local HASH=$2
+
+  local RESULT=$(sekaid query custody custodians pool $FROM --output=json --home=$SEKAID_HOME 2> /dev/null | jsonParse "transactions.record.$HASH.votes" 2> /dev/null || echo -n "")
+
+  echo $RESULT
+}
+
+# e.g. sendTokens faucet kiraXXX...XXX 1000 ukex 100 ukex
+function custodySendTokens() {
+    local SOURCE=$1
+    local DESTINATION=$(showAddress $2)
+    local AMOUNT="$3"
+    local DENOM="$4"
+    local FEE_AMOUNT="$5"
+    local FEE_DENOM="$6"
+    local PASSWORD="$7"
+    local RESULT=""
+
+    ($(isNullOrEmpty $FEE_AMOUNT)) && FEE_AMOUNT=100
+    ($(isNullOrEmpty $FEE_DENOM)) && FEE_DENOM="ukex"
+
+    RESULT=$(sekaid tx custody send $SOURCE $DESTINATION "${AMOUNT}${DENOM}" $PASSWORD --keyring-backend=test --chain-id=$NETWORK_NAME --fees "${FEE_AMOUNT}${FEE_DENOM}" --output=json --yes --home=$SEKAID_HOME 2> /dev/null | jsonParse "txhash" 2> /dev/null || echo -n "")
+
+    echo "$RESULT"
+}
+
+function approveTransaction() {
+    local FROM=$1
+    local ADDRESS=$(showAddress $2)
+    local HASH=$3
+    local FEE_AMOUNT="$4"
+    local FEE_DENOM="$5"
+
+    sekaid tx custody approve --from=$FROM $ADDRESS $HASH --keyring-backend=test --chain-id=$NETWORK_NAME --fees "${FEE_AMOUNT}${FEE_DENOM}" --output=json --yes --home=$SEKAID_HOME | txAwait 180
+}
+
+function declineTransaction() {
+    local FROM=$1
+    local ADDRESS=$(showAddress $2)
+    local HASH=$3
+    local FEE_AMOUNT="$4"
+    local FEE_DENOM="$5"
+
+    sekaid tx custody decline --from=$FROM $ADDRESS $HASH --keyring-backend=test --chain-id=$NETWORK_NAME --fees "${FEE_AMOUNT}${FEE_DENOM}" --output=json --yes --home=$SEKAID_HOME | txAwait 180
+}
+
+function passwordConfirmTransaction() {
+    local FROM=$1
+    local ADDRESS=$(showAddress $2)
+    local HASH=$3
+    local PASSWORD=$4
+    local FEE_AMOUNT="$5"
+    local FEE_DENOM="$6"
+
+    sekaid tx custody confirm --from=$FROM $ADDRESS $HASH $PASSWORD --keyring-backend=test --chain-id=$NETWORK_NAME --fees "${FEE_AMOUNT}${FEE_DENOM}" --output=json --yes --home=$SEKAID_HOME | txAwait 180
+}
