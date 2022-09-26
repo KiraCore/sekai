@@ -1,0 +1,102 @@
+syntax = "proto3";
+package kira.basket;
+
+option go_package = "github.com/KiraCore/sekai/x/basket/types";
+option (gogoproto.equal_all) = true;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/any.proto";
+import "cosmos_proto/cosmos.proto";
+import "kira/basket/basket.proto";
+
+// Msg defines the basket Msg service.
+service Msg {
+  // DisableBasketDeposits - emergency function & permission to disable one or all deposits of one or all token in the basket
+  rpc DisableBasketDeposits(MsgDisableBasketDeposits) returns (MsgDisableBasketDepositsResponse);
+  // DisableBasketWithdraws - emergency function & permission to disable one or all withdrawals of one or all token in the basket
+  rpc DisableBasketWithdraws(MsgDisableBasketWithdraws) returns (MsgDisableBasketWithdrawsResponse);
+  // DisableBasketSwaps - emergency function & permission to disable one or all withdrawals of one or all token in the basket
+  rpc DisableBasketSwaps(MsgDisableBasketSwaps) returns (MsgDisableBasketSwapsResponse);
+  // BasketTokenMint - to mint basket tokens
+  rpc BasketTokenMint(MsgBasketTokenMint) returns (MsgBasketTokenMintResponse);
+  // BasketTokenBurn - to burn basket tokens and redeem underlying aggregate tokens
+  rpc BasketTokenBurn(MsgBasketTokenBurn) returns (MsgBasketTokenBurnResponse);
+  // BasketTokenSwap - to swap one or many of the basket tokens for one or many others
+  rpc BasketTokenSwap(MsgBasketTokenSwap) returns (MsgBasketTokenSwapResponse);
+  // BasketClaimRewards - to force staking derivative `SDB` basket to claim outstanding rewards of one all or many aggregate `V<ID>` tokens
+  rpc BasketClaimRewards(MsgBasketClaimRewards) returns (MsgBasketClaimRewardsResponse);
+}
+
+// - `disable-basket-deposits` - emergency function & permission to disable one or all deposits of one or all token in the basket
+//     - To disable all deposits at once the `mints_max` should be set to `0`
+//     - To disable single token set `deposits` boolean flag to false
+message MsgDisableBasketDeposits {
+  string sender = 1;
+  uint64 basket_id = 2;
+  bool disabled = 3;
+}
+message MsgDisableBasketDepositsResponse {}
+
+// - `disable-basket-withdraws`- emergency function & permission to disable one or all withdrawals of one or all token in the basket
+//     - To disable all withdraws at once the `burns_max` should be set to `0`
+//     - To disable single token set `withdraws` boolean flag to false
+message MsgDisableBasketWithdraws {
+  string sender = 1;
+  uint64 basket_id = 2;
+  bool disabled = 3;
+}
+message MsgDisableBasketWithdrawsResponse {}
+
+// - `disable-basket-swaps`- emergency function & permission to disable one or all swaps of one or all token in the basket
+//     - To disable all swaps at once the `swaps_max` should be set to `0`
+//     - To disable single token set `swaps` boolean flag to false
+message MsgDisableBasketSwaps {
+  string sender = 1;
+  uint64 basket_id = 2;
+  bool disabled = 3;
+}
+message MsgDisableBasketSwapsResponse {}
+
+// - `basket-token-mint` - transaction to mint basket tokens
+message MsgBasketTokenMint {
+  string sender = 1;
+  uint64 basket_id = 2;
+  repeated string deposit = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
+}
+message MsgBasketTokenMintResponse {}
+
+// - `basket-token-burn` - transaction to burn basket tokens and redeem underlying aggregate tokens
+message MsgBasketTokenBurn {
+  string sender = 1;
+  uint64 basket_id = 2;
+  string burn_amount = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
+}
+message MsgBasketTokenBurnResponse {}
+
+// - `basket-token-swap` - transaction to swap one or many of the basket tokens for one or many others
+message MsgBasketTokenSwap {
+  string sender = 1;
+  uint64 basket_id = 2;
+  string in_amount = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
+  string out_token = 4;
+}
+message MsgBasketTokenSwapResponse {}
+
+// - `basket-claim-rewards` - transaction to force staking derivative `SDB` basket to claim outstanding rewards of one all or many aggregate `V<ID>` tokens
+message MsgBasketClaimRewards {
+  string sender = 1;
+  repeated string basket_tokens = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
+}
+message MsgBasketClaimRewardsResponse {}
