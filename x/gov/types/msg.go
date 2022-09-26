@@ -2,13 +2,14 @@ package types
 
 import (
 	"fmt"
+	"gopkg.in/yaml.v2"
+	"time"
 
 	"github.com/KiraCore/sekai/types"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	proto "github.com/gogo/protobuf/proto"
-	"gopkg.in/yaml.v2"
 )
 
 var (
@@ -511,6 +512,89 @@ func (m *MsgVoteProposal) GetSignBytes() []byte {
 }
 
 func (m *MsgVoteProposal) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{
+		m.Voter,
+	}
+}
+
+// NewMsgSubmitProposal creates a new MsgSubmitProposal.
+//nolint:interfacer
+func NewMsgPollCreate(creator sdk.AccAddress, title, description string, reference string, checksum string, pollValues []string, roles []string, valueCount uint64, valueType string, possibleChoices uint64, duration time.Duration) *MsgPollCreate {
+	m := &MsgPollCreate{
+		Creator:         creator,
+		Title:           title,
+		Description:     description,
+		Reference:       reference,
+		Checksum:        checksum,
+		PollValues:      pollValues,
+		Roles:           roles,
+		ValueCount:      valueCount,
+		ValueType:       valueType,
+		PossibleChoices: possibleChoices,
+		Expiry:          time.Now().Add(duration),
+	}
+
+	return m
+}
+
+func (m *MsgPollCreate) GetProposer() sdk.AccAddress {
+	return m.Creator
+}
+
+// Route implements Msg
+func (m MsgPollCreate) Route() string { return RouterKey }
+
+// Type implements Msg
+func (m MsgPollCreate) Type() string { return types.MsgTypeCreatePollProposal }
+
+// ValidateBasic implements Msg
+func (m MsgPollCreate) ValidateBasic() error {
+
+	//Todo: Option types: string , uint , int , float , bool
+	if m.Creator.Empty() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, m.Creator.String())
+	}
+
+	return nil
+}
+
+func (m *MsgPollCreate) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{
+		m.Creator,
+	}
+}
+
+func NewMsgVotePollProposal(proposalID uint64, voter sdk.AccAddress, option PollVoteOption, customValue string) *MsgPollVoteProposal {
+	return &MsgPollVoteProposal{
+		ProposalId:  proposalID,
+		Voter:       voter,
+		Option:      option,
+		CustomValue: customValue,
+	}
+}
+
+func (m *MsgPollVoteProposal) Route() string {
+	return ModuleName
+}
+
+func (m *MsgPollVoteProposal) Type() string {
+	return types.MsgTypeVotePollProposal
+}
+
+func (m *MsgPollVoteProposal) ValidateBasic() error {
+	if m.Voter.Empty() {
+		return ErrEmptyProposerAccAddress
+	}
+
+	return nil
+}
+
+func (m *MsgPollVoteProposal) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *MsgPollVoteProposal) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{
 		m.Voter,
 	}

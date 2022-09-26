@@ -126,6 +126,16 @@ func (k msgServer) VoteProposal(
 	return &types.MsgVoteProposalResponse{}, nil
 }
 
+func (k msgServer) PollCreate(ctx context.Context, create *types.MsgPollCreate) (*types.MsgPollCreateResponse, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (k msgServer) PollVote(ctx context.Context, proposal *types.MsgPollVoteProposal) (*types.MsgPollVoteProposalResponse, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
 // RegisterIdentityRecords defines a method to create identity record
 func (k msgServer) RegisterIdentityRecords(goCtx context.Context, msg *types.MsgRegisterIdentityRecords) (*types.MsgRegisterIdentityRecordsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)

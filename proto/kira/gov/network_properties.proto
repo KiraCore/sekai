@@ -89,4 +89,8 @@ message NetworkProperties {
     uint64 min_custody_reward = 30; // minimum custody reward
     uint64 max_custody_buffer_size = 31; // maximum custody buffer size
     uint64 max_custody_tx_size = 32; // maximum custody tx size to save in buffer
+    uint64 max_proposal_title_size = 33; // maximum title size in the proposal
+    uint64 max_proposal_description_size = 34; // maximum description size in the proposal
+    uint64 max_proposal_poll_option_size = 35; // maximum option size in the proposal
+    uint64 max_proposal_poll_option_count = 36; // maximum possible choices in the proposal
 }

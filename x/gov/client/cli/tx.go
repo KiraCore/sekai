@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -43,6 +44,14 @@ const (
 	FlagTip               = "tip"
 	FlagApprove           = "approve"
 	FlagSlash             = "slash"
+	FlagPollRoles         = "poll-roles"
+	FlagPollOptions       = "poll-options"
+	FlagPollCount         = "poll-count"
+	FlagPollType          = "poll-type"
+	FlagPollChoices       = "poll-choices"
+	FlagPollDuration      = "poll-duration"
+	FlagPollReference     = "poll-reference"
+	FlagPollChecksum      = "poll-checksum"
 )
 
 // NewTxCmd returns a root CLI command handler for all x/bank transaction commands.
@@ -117,6 +126,8 @@ func NewTxProposalCmds() *cobra.Command {
 	proposalCmd.AddCommand(GetTxProposalSetPoorNetworkMessages())
 	proposalCmd.AddCommand(GetTxProposalUpsertDataRegistry())
 	proposalCmd.AddCommand(GetTxProposalSetProposalDurations())
+	proposalCmd.AddCommand(GetTxVotePollCreate())
+	proposalCmd.AddCommand(GetTxVotePollProposal())
 
 	proposalCmd.AddCommand(accountProposalCmd)
 	proposalCmd.AddCommand(roleProposalCmd)
@@ -1913,6 +1924,154 @@ func GetTxCancelIdentityRecordsVerifyRequest() *cobra.Command {
 	return cmd
 }
 
+func GetTxVotePollCreate() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "poll-create",
+		Short: "Create a poll proposal.",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			title, err := cmd.Flags().GetString(FlagTitle)
+			if err != nil {
+				return fmt.Errorf("invalid title: %w", err)
+			}
+
+			description, err := cmd.Flags().GetString(FlagDescription)
+			if err != nil {
+				return fmt.Errorf("invalid description: %w", err)
+			}
+
+			reference, err := cmd.Flags().GetString(FlagPollReference)
+			if err != nil {
+				return fmt.Errorf("invalid reference: %w", err)
+			}
+
+			checksum, err := cmd.Flags().GetString(FlagPollChecksum)
+			if err != nil {
+				return fmt.Errorf("invalid checksum: %w", err)
+			}
+
+			options, err := cmd.Flags().GetStringSlice(FlagPollOptions)
+			if err != nil {
+				return fmt.Errorf("invalid options: %w", err)
+			}
+
+			roles, err := cmd.Flags().GetStringSlice(FlagPollRoles)
+			if err != nil {
+				return fmt.Errorf("invalid roles: %w", err)
+			}
+
+			valueCount, err := cmd.Flags().GetUint64(FlagPollCount)
+			if err != nil {
+				return fmt.Errorf("invalid count: %w", err)
+			}
+
+			valueType, err := cmd.Flags().GetString(FlagPollType)
+			if err != nil {
+				return fmt.Errorf("invalid type: %w", err)
+			}
+
+			possibleChoices, err := cmd.Flags().GetUint64(FlagPollChoices)
+			if err != nil {
+				return fmt.Errorf("invalid choices: %w", err)
+			}
+
+			duration, err := cmd.Flags().GetString(FlagPollDuration)
+			if err != nil {
+				return fmt.Errorf("invalid duration: %w", err)
+			}
+
+			expire, err := time.ParseDuration(duration)
+			if err != nil {
+				return fmt.Errorf("invalid duration: %w", err)
+			}
+
+			msg := types.NewMsgPollCreate(
+				clientCtx.FromAddress,
+				title,
+				description,
+				reference,
+				checksum,
+				options,
+				roles,
+				valueCount,
+				valueType,
+				possibleChoices,
+				expire,
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	cmd.Flags().String(FlagTitle, "", "The title of the proposal.")
+	cmd.MarkFlagRequired(FlagTitle)
+	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be an url, some text, etc.")
+	cmd.MarkFlagRequired(FlagDescription)
+	cmd.Flags().String(FlagPollReference, "", "IPFS CID or URL reference to file describing proposal and voting options in depth.")
+	cmd.Flags().String(FlagPollChecksum, "", "Reference checksum.")
+	cmd.Flags().StringSlice(FlagPollOptions, []string{}, "The options value in the format variant1,variant2.")
+	cmd.MarkFlagRequired(FlagPollOptions)
+	cmd.Flags().StringSlice(FlagPollRoles, []string{}, "List of roles that are allowed to take part in the poll vote in the format role1,role2.")
+	cmd.MarkFlagRequired(FlagPollRoles)
+	cmd.Flags().Uint64(FlagPollCount, 128, "Maximum number of voting options that poll can have.")
+	cmd.MarkFlagRequired(FlagPollCount)
+	cmd.Flags().String(FlagPollType, "", "Type of the options, all user supplied or predefined options must match its type.")
+	cmd.MarkFlagRequired(FlagPollType)
+	cmd.Flags().Uint64(FlagPollChoices, 1, "Should define maximum number of choices that voter can select.")
+	cmd.MarkFlagRequired(FlagPollChoices)
+	cmd.Flags().String(FlagPollDuration, "", "The duration of the poll.")
+	cmd.MarkFlagRequired(FlagPollDuration)
+	cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+func GetTxVotePollProposal() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "vote-poll [proposal-id] [vote-option] [vote-custom]",
+		Short: "Vote a proposal.",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			proposalID, err := strconv.Atoi(args[0])
+			if err != nil {
+				return fmt.Errorf("invalid proposal ID: %w", err)
+			}
+
+			voteOption, err := strconv.Atoi(args[1])
+			if err != nil {
+				return fmt.Errorf("invalid vote option: %w", err)
+			}
+
+			voteCustom := args[2]
+
+			msg := types.NewMsgVotePollProposal(
+				uint64(proposalID),
+				clientCtx.FromAddress,
+				types.PollVoteOption(voteOption),
+				voteCustom,
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
 func parseIdInfoJSON(fs *pflag.FlagSet) ([]types.IdentityInfoEntry, error) {
 	var err error
 	infos := make(map[string]string)
@@ -1950,6 +2109,16 @@ func convertAsPermValues(values []int32) []types.PermValue {
 	var v []types.PermValue
 	for _, perm := range values {
 		v = append(v, types.PermValue(perm))
+	}
+
+	return v
+}
+
+// convertAsPermValues convert array of int32 to PermValue array.
+func convertAsOptionValues(values []int32) []types.PollVoteOption {
+	var v []types.PollVoteOption
+	for _, option := range values {
+		v = append(v, types.PollVoteOption(option))
 	}
 
 	return v

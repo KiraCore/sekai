@@ -7,6 +7,7 @@ import "google/protobuf/any.proto";
 import "kira/gov/actor.proto";
 import "kira/gov/councilor.proto";
 import "kira/gov/proposal.proto";
+import "kira/gov/poll_proposal.proto";
 import "kira/gov/role.proto";
 import "kira/gov/execution_fee.proto";
 import "kira/gov/network_properties.proto";
@@ -17,70 +18,74 @@ option go_package = "github.com/KiraCore/sekai/x/gov/types";
 
 // Msg defines the staking Msg service.
 service Msg {
-    // SubmitProposal defines a method to create new proposal given a content.
-    rpc SubmitProposal(MsgSubmitProposal) returns (MsgSubmitProposalResponse);
-    // WhitelistPermissions defines a method for whitelisting a permission for an address.
-    rpc WhitelistPermissions(MsgWhitelistPermissions) returns (MsgWhitelistPermissionsResponse);
-    // WhitelistPermissions defines a method for removing whitelisted permission for an address.
-    rpc RemoveWhitelistedPermissions(MsgRemoveWhitelistedPermissions) returns (MsgRemoveWhitelistedPermissionsResponse);
-    // BlacklistPermissions defines a method for blacklisting a permission for an address.
-    rpc BlacklistPermissions(MsgBlacklistPermissions) returns (MsgBlacklistPermissionsResponse);
-    // RemoveBlacklistedPermissions defines a method for removing a blacklisted permission for an address.
-    rpc RemoveBlacklistedPermissions(MsgRemoveBlacklistedPermissions) returns (MsgRemoveBlacklistedPermissionsResponse);
-    // ClaimCouncilor defines a method for claiming a councilor
-    rpc ClaimCouncilor(MsgClaimCouncilor) returns (MsgClaimCouncilorResponse);
-    // VoteProposal defines a method for voting a proposal
-    rpc VoteProposal(MsgVoteProposal) returns (MsgVoteProposalResponse);
-    // CreateRole defines a method for creating a role
-    rpc CreateRole(MsgCreateRole) returns (MsgCreateRoleResponse);
-    // AssignRole defines a method for assigning a role to an address
-    rpc AssignRole(MsgAssignRole) returns (MsgAssignRoleResponse);
-    // RemoveRole defines a method for removing a role from an address
-    rpc RemoveRole(MsgRemoveRole) returns (MsgRemoveRoleResponse);
-    // SetNetworkProperties defines a method for setting network properties
-    rpc SetNetworkProperties(MsgSetNetworkProperties) returns (MsgSetNetworkPropertiesResponse);
-    // SetExecutionFee defines a method for setting execution fee
-    rpc SetExecutionFee(MsgSetExecutionFee) returns (MsgSetExecutionFeeResponse);
-    // WhitelistRolePermission defines a method for whitelisting a permission for a role
-    rpc WhitelistRolePermission(MsgWhitelistRolePermission) returns (MsgWhitelistRolePermissionResponse);
-    // BlacklistRolePermission defines a method for blacklisting a permission for a role
-    rpc BlacklistRolePermission(MsgBlacklistRolePermission) returns (MsgBlacklistRolePermissionResponse);
-    // RemoveWhitelistRolePermission defines a method for removing whitelisted permission from a role
-    rpc RemoveWhitelistRolePermission(MsgRemoveWhitelistRolePermission) returns (MsgRemoveWhitelistRolePermissionResponse);
-    // RemoveBlacklistRolePermission defines a method for removing blacklisted permission from a role
-    rpc RemoveBlacklistRolePermission(MsgRemoveBlacklistRolePermission) returns (MsgRemoveBlacklistRolePermissionResponse);
-    // RegisterIdentityRecord defines a method to create identity records for an address
-    rpc RegisterIdentityRecords(MsgRegisterIdentityRecords) returns (MsgRegisterIdentityRecordsResponse);
-    // DeleteIdentityRecords defines a method to delete identity records
-    rpc DeleteIdentityRecords(MsgDeleteIdentityRecords) returns (MsgDeleteIdentityRecordsResponse);
-    // RequestIdentityRecordsVerify defines a method to request verify request from specific verifier
-    rpc RequestIdentityRecordsVerify(MsgRequestIdentityRecordsVerify) returns (MsgRequestIdentityRecordsVerifyResponse);
-    // HandleIdentityRecordsVerifyRequest defines a method to accept or reject verification request
-    rpc HandleIdentityRecordsVerifyRequest(MsgHandleIdentityRecordsVerifyRequest) returns (MsgHandleIdentityRecordsVerifyResponse);
-    // CancelIdentityRecordsVerifyRequest defines a method to cancel verification request
-    rpc CancelIdentityRecordsVerifyRequest(MsgCancelIdentityRecordsVerifyRequest) returns (MsgCancelIdentityRecordsVerifyRequestResponse);
+  // SubmitProposal defines a method to create new proposal given a content.
+  rpc SubmitProposal(MsgSubmitProposal) returns (MsgSubmitProposalResponse);
+  // WhitelistPermissions defines a method for whitelisting a permission for an address.
+  rpc WhitelistPermissions(MsgWhitelistPermissions) returns (MsgWhitelistPermissionsResponse);
+  // WhitelistPermissions defines a method for removing whitelisted permission for an address.
+  rpc RemoveWhitelistedPermissions(MsgRemoveWhitelistedPermissions) returns (MsgRemoveWhitelistedPermissionsResponse);
+  // BlacklistPermissions defines a method for blacklisting a permission for an address.
+  rpc BlacklistPermissions(MsgBlacklistPermissions) returns (MsgBlacklistPermissionsResponse);
+  // RemoveBlacklistedPermissions defines a method for removing a blacklisted permission for an address.
+  rpc RemoveBlacklistedPermissions(MsgRemoveBlacklistedPermissions) returns (MsgRemoveBlacklistedPermissionsResponse);
+  // ClaimCouncilor defines a method for claiming a councilor
+  rpc ClaimCouncilor(MsgClaimCouncilor) returns (MsgClaimCouncilorResponse);
+  // VoteProposal defines a method for voting a proposal
+  rpc VoteProposal(MsgVoteProposal) returns (MsgVoteProposalResponse);
+  // CreateRole defines a method for creating a role
+  rpc CreateRole(MsgCreateRole) returns (MsgCreateRoleResponse);
+  // AssignRole defines a method for assigning a role to an address
+  rpc AssignRole(MsgAssignRole) returns (MsgAssignRoleResponse);
+  // RemoveRole defines a method for removing a role from an address
+  rpc RemoveRole(MsgRemoveRole) returns (MsgRemoveRoleResponse);
+  // SetNetworkProperties defines a method for setting network properties
+  rpc SetNetworkProperties(MsgSetNetworkProperties) returns (MsgSetNetworkPropertiesResponse);
+  // SetExecutionFee defines a method for setting execution fee
+  rpc SetExecutionFee(MsgSetExecutionFee) returns (MsgSetExecutionFeeResponse);
+  // WhitelistRolePermission defines a method for whitelisting a permission for a role
+  rpc WhitelistRolePermission(MsgWhitelistRolePermission) returns (MsgWhitelistRolePermissionResponse);
+  // BlacklistRolePermission defines a method for blacklisting a permission for a role
+  rpc BlacklistRolePermission(MsgBlacklistRolePermission) returns (MsgBlacklistRolePermissionResponse);
+  // RemoveWhitelistRolePermission defines a method for removing whitelisted permission from a role
+  rpc RemoveWhitelistRolePermission(MsgRemoveWhitelistRolePermission) returns (MsgRemoveWhitelistRolePermissionResponse);
+  // RemoveBlacklistRolePermission defines a method for removing blacklisted permission from a role
+  rpc RemoveBlacklistRolePermission(MsgRemoveBlacklistRolePermission) returns (MsgRemoveBlacklistRolePermissionResponse);
+  // RegisterIdentityRecord defines a method to create identity records for an address
+  rpc RegisterIdentityRecords(MsgRegisterIdentityRecords) returns (MsgRegisterIdentityRecordsResponse);
+  // DeleteIdentityRecords defines a method to delete identity records
+  rpc DeleteIdentityRecords(MsgDeleteIdentityRecords) returns (MsgDeleteIdentityRecordsResponse);
+  // RequestIdentityRecordsVerify defines a method to request verify request from specific verifier
+  rpc RequestIdentityRecordsVerify(MsgRequestIdentityRecordsVerify) returns (MsgRequestIdentityRecordsVerifyResponse);
+  // HandleIdentityRecordsVerifyRequest defines a method to accept or reject verification request
+  rpc HandleIdentityRecordsVerifyRequest(MsgHandleIdentityRecordsVerifyRequest) returns (MsgHandleIdentityRecordsVerifyResponse);
+  // CancelIdentityRecordsVerifyRequest defines a method to cancel verification request
+  rpc CancelIdentityRecordsVerifyRequest(MsgCancelIdentityRecordsVerifyRequest) returns (MsgCancelIdentityRecordsVerifyRequestResponse);
+  // PollCreate defines a method to create a new poll proposal
+  rpc PollCreate(MsgPollCreate) returns (MsgPollCreateResponse);
+  // PollVote defines a method for voting a poll proposal
+  rpc PollVote(MsgPollVoteProposal) returns (MsgPollVoteProposalResponse);
 }
 
 
 // MsgSubmitProposal defines an sdk.Msg type that supports submitting arbitrary
 // proposal Content.
 message MsgSubmitProposal {
-    option (gogoproto.equal)            = false;
-    option (gogoproto.goproto_stringer) = false;
-    option (gogoproto.stringer)         = false;
-    option (gogoproto.goproto_getters)  = false;
-  
-    bytes proposer = 1 [
-        (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
-    ];
-    string title = 2;
-    string description = 3;
-    google.protobuf.Any content = 4;
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_stringer) = false;
+  option (gogoproto.stringer) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  bytes proposer = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
+  ];
+  string title = 2;
+  string description = 3;
+  google.protobuf.Any content = 4;
 }
-  
+
 // MsgSubmitProposalResponse defines the Msg/SubmitProposal response type.
 message MsgSubmitProposalResponse {
-    uint64 proposalID = 1;
+  uint64 proposalID = 1;
 }
 
 message MsgWhitelistPermissionsResponse {}
@@ -101,7 +106,11 @@ message MsgRemoveBlacklistRolePermissionResponse {}
 message MsgRegisterIdentityRecordsResponse {}
 message MsgDeleteIdentityRecordsResponse {}
 message MsgRequestIdentityRecordsVerifyResponse {
-    uint64 requestId = 1;
+  uint64 requestId = 1;
 }
 message MsgHandleIdentityRecordsVerifyResponse {}
 message MsgCancelIdentityRecordsVerifyRequestResponse {}
+message MsgPollCreateResponse {
+  uint64 proposalID = 1;
+}
+message MsgPollVoteProposalResponse {}

@@ -83,6 +83,7 @@ func DefaultGenesis() *GenesisState {
 				PermCreateBasketProposal,
 				PermVoteBasketProposal,
 				PermHandleBasketEmergency,
+				PermCreatePollProposal,
 			}, nil),
 			uint64(RoleValidator): NewPermissions([]PermValue{PermClaimValidator}, nil),
 		},

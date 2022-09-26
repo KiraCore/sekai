@@ -38,6 +38,11 @@ func (k Keeper) AllRoles(goCtx context.Context, request *types.AllRolesRequest) 
 	}, nil
 }
 
+func (k Keeper) PollsListByAddress(goCtx context.Context, request *types.QueryPollsListByAddress) (*types.QueryPollsListByAddressResponse, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
 // RolesByAddress return roles associated to an address
 func (k Keeper) RolesByAddress(goCtx context.Context, request *types.RolesByAddressRequest) (*types.RolesByAddressResponse, error) {
 	addr, err := sdk.AccAddressFromBech32(request.Addr)

@@ -9,6 +9,7 @@ import "kira/gov/role.proto";
 import "kira/gov/execution_fee.proto";
 import "kira/gov/network_properties.proto";
 import "kira/gov/proposal.proto";
+import "kira/gov/poll_proposal.proto";
 import "kira/gov/identity_registrar.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
@@ -121,6 +122,21 @@ service Query {
   rpc ProposalDuration(QueryProposalDuration) returns (QueryProposalDurationResponse) {
     option (google.api.http).get = "/kira/gov/proposal_duration/{proposal_type}";
   }
+  //Query list of all polls by address
+  rpc PollsListByAddress(QueryPollsListByAddress) returns (QueryPollsListByAddressResponse) {
+    option (google.api.http).get = "/kira/gov/proposal_polls/{creator}";
+  }
+}
+
+message QueryPollsListByAddress {
+  bytes creator = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"creator\""
+  ];
+}
+
+message QueryPollsListByAddressResponse {
+  repeated kira.gov.PollProposal polls = 1;
 }
 
 message NetworkPropertiesRequest {}
