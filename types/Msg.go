@@ -48,6 +48,15 @@ const (
 	MsgTypeSetCompoundInfo   = "set_compound_info"
 	MsgTypeRegisterDelegator = "register_delegator"
 
+	// basket module
+	MsgTypeDisableBasketDeposits  = "disable-basket-deposits"
+	MsgTypeDisableBasketWithdraws = "disable-basket-withdraws"
+	MsgTypeDisableBasketSwaps     = "disable-basket-swaps"
+	MsgTypeBasketTokenMint        = "basket-token-mint"
+	MsgTypeBasketTokenBurn        = "basket-token-burn"
+	MsgTypeBasketTokenSwap        = "basket-token-swap"
+	MsgTypeBasketClaimRewards     = "basket-claim-rewards"
+
 	// tokens module
 	MsgTypeUpsertTokenAlias = "upsert-token-alias"
 	MsgTypeUpsertTokenRate  = "upsert-token-rate"

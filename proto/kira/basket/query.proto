@@ -1,0 +1,95 @@
+syntax = "proto3";
+package kira.basket;
+
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "gogoproto/gogo.proto";
+import "google/protobuf/any.proto";
+import "google/api/annotations.proto";
+import "kira/basket/basket.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/basket/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  // TokenBasketById queries a single basket by id
+  rpc TokenBasketById(QueryTokenBasketByIdRequest) returns (QueryTokenBasketByIdResponse) {
+    option (google.api.http).get = "/kira/basket/token_basket_by_id/{id}";
+  }
+  // TokenBasketByDenom queries a single basket by denom
+  rpc TokenBasketByDenom(QueryTokenBasketByDenomRequest) returns (QueryTokenBasketByDenomResponse) {
+    option (google.api.http).get = "/kira/basket/token_basket_by_denom/{denom}";
+  }
+  // TokenBaskets queries token baskets by filter
+  rpc TokenBaskets(QueryTokenBasketsRequest) returns (QueryTokenBasketsResponse) {
+    option (google.api.http).get = "/kira/basket/token_baskets/{tokens}/{derivatives_only}";
+  }
+  // BaksetHistoricalMints queries historical mints on a specific basket
+  rpc BaksetHistoricalMints(QueryBasketHistoricalMintsRequest) returns (QueryBasketHistoricalMintsResponse) {
+    option (google.api.http).get = "/kira/basket/historical_mints/{basket_id}";
+  }
+  // BaksetHistoricalBurns queries historical burns on a specific basket
+  rpc BaksetHistoricalBurns(QueryBasketHistoricalBurnsRequest) returns (QueryBasketHistoricalBurnsResponse) {
+    option (google.api.http).get = "/kira/basket/historical_burns/{basket_id}";
+  }
+  // BaksetHistoricalSwaps queries historical swaps on a specific basket
+  rpc BaksetHistoricalSwaps(QueryBasketHistoricalSwapsRequest) returns (QueryBasketHistoricalSwapsResponse) {
+    option (google.api.http).get = "/kira/basket/historical_swaps/{basket_id}";
+  }
+}
+
+// - `query-token-baskets` - list all token baskets. By default return list of all `id`’s
+//     - `--id` - if `id` flag is set return just single result with the full basket info
+//     - `--name` - if `name` flag is set return just single result with the full basket info. Basket name is a combination of `id` and `suffix` for example `B5_ubtc`, in case of staking derivative baskets there would be NO `id` for example `SDB_ubtc`
+
+message QueryTokenBasketByIdRequest {
+    uint64 id = 1;
+}
+message QueryTokenBasketByIdResponse {
+    Basket basket = 1;
+}
+
+message QueryTokenBasketByDenomRequest {
+    string denom = 1;
+}
+message QueryTokenBasketByDenomResponse {
+    Basket basket = 1;
+}
+
+
+message QueryTokenBasketsRequest {
+    repeated string tokens = 1; // if `tokens` flag is set (comma separated array of strings) return list of all `id`'s of all the baskets that accept any of the specified `denom`’s as deposit
+    bool derivatives_only = 2; // if set to `true` return as result only results related to staking-derivatives baskets (can be combined with other flags)
+}
+message QueryTokenBasketsResponse {
+  repeated Basket baskets = 1 [ (gogoproto.nullable) = false ];
+}
+
+message QueryBasketHistoricalMintsRequest {
+  uint64 basket_id = 1;
+}
+message QueryBasketHistoricalMintsResponse {
+  string amount = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryBasketHistoricalBurnsRequest {
+  uint64 basket_id = 1;
+}
+message QueryBasketHistoricalBurnsResponse {
+  string amount = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryBasketHistoricalSwapsRequest {
+  uint64 basket_id = 1;
+}
+message QueryBasketHistoricalSwapsResponse {
+  string amount = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}
