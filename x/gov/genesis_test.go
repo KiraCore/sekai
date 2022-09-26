@@ -66,7 +66,10 @@ func TestSimappExportGenesis(t *testing.T) {
             "min_delegation_pushout": "10",
 			"slashing_period": "3600",
 			"max_jailed_percentage": "25",
-			"max_slashing_percentage": "1"
+			"max_slashing_percentage": "1",
+			"min_custody_reward": "200",
+			"max_custody_buffer_size": "10",
+			"max_custody_tx_size": "8192"
 		},
 		"execution_fees":[],
 		"poor_network_messages":{
@@ -153,6 +156,9 @@ func TestExportInitGenesis(t *testing.T) {
 			SlashingPeriod:              3600,
 			MaxJailedPercentage:         25,
 			MaxSlashingPercentage:       1,
+			MinCustodyReward:            200,
+			MaxCustodyBufferSize:        10,
+			MaxCustodyTxSize:            8192,
 		},
 		ExecutionFees: []*types.ExecutionFee{
 			{
@@ -214,7 +220,10 @@ func TestExportInitGenesis(t *testing.T) {
             "min_delegation_pushout": "10",
 			"slashing_period": "3600",
 			"max_jailed_percentage": "25",
-			"max_slashing_percentage": "1"
+			"max_slashing_percentage": "1",
+			"min_custody_reward": "200",
+			"max_custody_buffer_size": "10",
+			"max_custody_tx_size": "8192"
 		},
 		"execution_fees":[],
 		"poor_network_messages":{

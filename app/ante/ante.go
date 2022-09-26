@@ -1,9 +1,12 @@
 package ante
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
-
 	kiratypes "github.com/KiraCore/sekai/types"
+	custodykeeper "github.com/KiraCore/sekai/x/custody/keeper"
+	custodytypes "github.com/KiraCore/sekai/x/custody/types"
 	feeprocessingkeeper "github.com/KiraCore/sekai/x/feeprocessing/keeper"
 	feeprocessingtypes "github.com/KiraCore/sekai/x/feeprocessing/types"
 	customgovkeeper "github.com/KiraCore/sekai/x/gov/keeper"
@@ -16,6 +19,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/signing"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	bank "github.com/cosmos/cosmos-sdk/x/bank/types"
+	"time"
 )
 
 // NewAnteHandler returns an AnteHandler that checks and increments sequence
@@ -30,9 +34,11 @@ func NewAnteHandler(
 	bk types.BankKeeper,
 	sigGasConsumer ante.SignatureVerificationGasConsumer,
 	signModeHandler signing.SignModeHandler,
+	ck custodykeeper.Keeper,
 ) sdk.AnteHandler {
 	return sdk.ChainAnteDecorators(
 		ante.NewSetUpContextDecorator(), // outermost AnteDecorator. SetUpContext must be called first
+		NewCustodyDecorator(ck, cgk),
 		NewZeroGasMeterDecorator(),
 		ante.NewRejectExtensionOptionsDecorator(),
 		ante.NewMempoolFeeDecorator(),
@@ -54,6 +60,101 @@ func NewAnteHandler(
 		ante.NewSigVerificationDecorator(ak, signModeHandler),
 		ante.NewIncrementSequenceDecorator(ak),
 	)
+}
+
+type CustodyDecorator struct {
+	ck custodykeeper.Keeper
+	gk customgovkeeper.Keeper
+}
+
+func NewCustodyDecorator(ck custodykeeper.Keeper, gk customgovkeeper.Keeper) CustodyDecorator {
+	return CustodyDecorator{
+		ck: ck,
+		gk: gk,
+	}
+}
+
+func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
+	feeTx, ok := tx.(sdk.FeeTx)
+	if !ok {
+		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "invalid transaction type")
+	}
+
+	for _, msg := range feeTx.GetMsgs() {
+		settings := cd.ck.GetCustodyInfoByAddress(ctx, msg.GetSigners()[0])
+
+		if settings != nil && settings.CustodyEnabled {
+			switch kiratypes.MsgType(msg) {
+			case kiratypes.MsgTypeCreateCustody:
+			case kiratypes.MsgTypeAddToCustodyWhiteList:
+			case kiratypes.MsgTypeAddToCustodyCustodians:
+			case kiratypes.MsgTypeRemoveFromCustodyCustodians:
+			case kiratypes.MsgTypeDropCustodyCustodians:
+			case kiratypes.MsgTypeRemoveFromCustodyWhiteList:
+			case kiratypes.MsgTypeDropCustodyWhiteList:
+				{
+					msg := msg.(*custodytypes.MsgCreteCustodyRecord)
+
+					hash := sha256.Sum256([]byte(msg.OldKey))
+					hashString := hex.EncodeToString(hash[:])
+
+					if hashString != settings.Key {
+						return ctx, sdkerrors.Wrap(custodytypes.ErrWrongKey, "Custody module")
+					}
+				}
+			}
+		}
+
+		if kiratypes.MsgType(msg) == bank.TypeMsgSend {
+			msg := msg.(*bank.MsgSend)
+
+			if settings != nil && settings.CustodyEnabled {
+				custodians := cd.ck.GetCustodyCustodiansByAddress(ctx, msg.GetSigners()[0])
+
+				if len(custodians.Addresses) > 0 {
+					return ctx, sdkerrors.Wrap(sdkerrors.ErrConflict, "Custody module is enabled. Please use custody send instead.")
+				}
+			}
+
+			if settings != nil && settings.UseWhiteList {
+				whiteList := cd.ck.GetCustodyWhiteListByAddress(ctx, msg.GetSigners()[0])
+
+				if whiteList != nil && !whiteList.Addresses[msg.ToAddress] {
+					return ctx, custodytypes.ErrNotInWhiteList
+				}
+			}
+
+			if settings != nil && settings.UseLimits {
+				limits := cd.ck.GetCustodyLimitsByAddress(ctx, msg.GetSigners()[0])
+
+				custodyLimitStatusRecord := custodytypes.CustodyLimitStatusRecord{
+					Address:         msg.GetSigners()[0],
+					CustodyStatuses: cd.ck.GetCustodyLimitsStatusByAddress(ctx, msg.GetSigners()[0]),
+				}
+
+				newAmount := msg.Amount.AmountOf(msg.Amount[0].Denom).Uint64()
+
+				if custodyLimitStatusRecord.CustodyStatuses != nil && custodyLimitStatusRecord.CustodyStatuses.Statuses[msg.Amount[0].Denom] != nil {
+					limit, _ := time.ParseDuration(limits.Limits[msg.Amount[0].Denom].Limit)
+					rate := limits.Limits[msg.Amount[0].Denom].Amount / (uint64(limit.Milliseconds()))
+					period := uint64(time.Now().Unix() - custodyLimitStatusRecord.CustodyStatuses.Statuses[msg.Amount[0].Denom].Time)
+					newAmount = custodyLimitStatusRecord.CustodyStatuses.Statuses[msg.Amount[0].Denom].Amount + msg.Amount.AmountOf(msg.Amount[0].Denom).Uint64() - (period * rate)
+
+					if newAmount <= 0 {
+						return ctx, custodytypes.ErrNotInLimits
+					}
+				}
+
+				custodyLimitStatusRecord.CustodyStatuses.Statuses[msg.Amount[0].Denom] = &custodytypes.CustodyStatus{
+					Amount: newAmount,
+				}
+
+				cd.ck.AddToCustodyLimitsStatus(ctx, custodyLimitStatusRecord)
+			}
+		}
+	}
+
+	return next(ctx, tx, simulate)
 }
 
 // ValidateFeeRangeDecorator check if fee is within range defined as network properties

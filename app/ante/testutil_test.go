@@ -69,7 +69,8 @@ func (suite *AnteTestSuite) SetupTest(isCheckTx bool) {
 		suite.app.AccountKeeper,
 		suite.app.BankKeeper,
 		ante.DefaultSigVerificationGasConsumer,
-		encodingConfig.TxConfig.SignModeHandler())
+		encodingConfig.TxConfig.SignModeHandler(),
+		suite.app.CustodyKeeper)
 }
 
 // CreateTestAccounts creates `numAccs` accounts, and return all relevant
