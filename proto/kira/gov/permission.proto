@@ -200,7 +200,15 @@ enum PermValue {
   // PERMISSION_VOTE_SLASH_VALIDATOR_PROPOSAL defines the permission needed to vote a proposal to slash validator.
   PERMISSION_VOTE_SLASH_VALIDATOR_PROPOSAL = 58 [(gogoproto.enumvalue_customname) = "PermVoteSlashValidatorProposal"];
 
-  // PERMISSION_CREATE_POLL_PROPOSAL defines the permission needed to create a poll proposal.
-  PERMISSION_CREATE_POLL_PROPOSAL = 59 [(gogoproto.enumvalue_customname) = "PermCreatePollProposal"];
-}
+  // PERMISSION_CREATE_BASKET_PROPOSAL defines the permission needed to create a proposal related to basket.
+  PERMISSION_CREATE_BASKET_PROPOSAL = 59 [(gogoproto.enumvalue_customname) = "PermCreateBasketProposal"];
 
+  // PERMISSION_VOTE_BASKET_PROPOSAL defines the permission needed to vote a proposal related to basket.
+  PERMISSION_VOTE_BASKET_PROPOSAL = 60 [(gogoproto.enumvalue_customname) = "PermVoteBasketProposal"];
+
+  // PERMISSION_HANDLE_BASKET_EMERGENCY defines the permission needed to handle emergency issues on basket.
+  PERMISSION_HANDLE_BASKET_EMERGENCY = 61 [(gogoproto.enumvalue_customname) = "PermHandleBasketEmergency"];
+
+  // PERMISSION_CREATE_POLL_PROPOSAL defines the permission needed to create a poll proposal.
+  PERMISSION_CREATE_POLL_PROPOSAL = 62 [(gogoproto.enumvalue_customname) = "PermCreatePollProposal"];
+}

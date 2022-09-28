@@ -69,7 +69,11 @@ func TestSimappExportGenesis(t *testing.T) {
 			"max_slashing_percentage": "1",
 			"min_custody_reward": "200",
 			"max_custody_buffer_size": "10",
-			"max_custody_tx_size": "8192"
+			"max_custody_tx_size": "8192",
+			"max_proposal_title_size": "128",
+			"max_proposal_description_size": "1024",
+			"max_proposal_poll_option_size": "64",
+			"max_proposal_poll_option_count": "128"
 		},
 		"execution_fees":[],
 		"poor_network_messages":{
@@ -159,6 +163,10 @@ func TestExportInitGenesis(t *testing.T) {
 			MinCustodyReward:            200,
 			MaxCustodyBufferSize:        10,
 			MaxCustodyTxSize:            8192,
+			MaxProposalTitleSize:        128,
+			MaxProposalDescriptionSize:  1024,
+			MaxProposalPollOptionSize:   64,
+			MaxProposalPollOptionCount:  128,
 		},
 		ExecutionFees: []*types.ExecutionFee{
 			{
@@ -223,7 +231,11 @@ func TestExportInitGenesis(t *testing.T) {
 			"max_slashing_percentage": "1",
 			"min_custody_reward": "200",
 			"max_custody_buffer_size": "10",
-			"max_custody_tx_size": "8192"
+			"max_custody_tx_size": "8192",
+			"max_proposal_title_size": "128",
+			"max_proposal_description_size": "1024",
+			"max_proposal_poll_option_size": "64",
+			"max_proposal_poll_option_count": "128"
 		},
 		"execution_fees":[],
 		"poor_network_messages":{
