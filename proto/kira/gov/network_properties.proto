@@ -47,6 +47,10 @@ enum NetworkProperty {
     MIN_CUSTODY_REWARD = 30 [(gogoproto.enumvalue_customname) = "MinCustodyReward"]; // minimum custody reward
     MAX_CUSTODY_BUFFER_SIZE = 31 [(gogoproto.enumvalue_customname) = "MaxCustodyBufferSize"]; // maximum custody buffer size
     MAX_CUSTODY_TX_SIZE = 32 [(gogoproto.enumvalue_customname) = "MaxCustodyTxSize"]; // maximum custody tx size to save in buffer
+    MAX_PROPOSAL_TITLE_SIZE = 33 [(gogoproto.enumvalue_customname) = "MaxProposalTitleSize"]; // maximum poll title size
+    MAX_PROPOSAL_DESCRIPTION_SIZE = 34 [(gogoproto.enumvalue_customname) = "MaxProposalDescriptionSize"]; // maximum poll description size
+    MAX_PROPOSAL_POLL_OPTION_SIZE = 35 [(gogoproto.enumvalue_customname) = "MaxProposalPollOptionSize"]; // maximum poll option size
+    MAX_PROPOSAL_POLL_OPTION_COUNT = 36 [(gogoproto.enumvalue_customname) = "MaxProposalPollOptionCount"]; // maximum poll option count
 }
 
 message NetworkPropertyValue {

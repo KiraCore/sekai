@@ -121,6 +121,10 @@ func DefaultGenesis() *GenesisState {
 			MinCustodyReward:            200,
 			MaxCustodyTxSize:            8192,
 			MaxCustodyBufferSize:        10,
+			MaxProposalTitleSize:        128,
+			MaxProposalDescriptionSize:  1024,
+			MaxProposalPollOptionSize:   64,
+			MaxProposalPollOptionCount:  128,
 		},
 		ExecutionFees: []*ExecutionFee{
 			{
