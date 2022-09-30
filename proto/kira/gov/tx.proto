@@ -59,6 +59,12 @@ service Msg {
     rpc HandleIdentityRecordsVerifyRequest(MsgHandleIdentityRecordsVerifyRequest) returns (MsgHandleIdentityRecordsVerifyResponse);
     // CancelIdentityRecordsVerifyRequest defines a method to cancel verification request
     rpc CancelIdentityRecordsVerifyRequest(MsgCancelIdentityRecordsVerifyRequest) returns (MsgCancelIdentityRecordsVerifyRequestResponse);
+    // CouncilorPause - signal to the network that Councilor will NOT be present for a prolonged period of time
+    rpc CouncilorPause(MsgCouncilorPauseRequest) returns (MsgCouncilorPauseResponse);
+    // CouncilorUnpause - signal to the network that Councilor wishes to regain voting ability after planned absence
+    rpc CouncilorUnpause(MsgCouncilorUnpauseRequest) returns (MsgCouncilorUnpauseResponse);
+    // CouncilorActivate - signal to the network that Councilor wishes to regain voting ability after unannounced absence
+    rpc CouncilorActivate(MsgCouncilorActivateRequest) returns (MsgCouncilorActivateResponse);
 }
 
 
@@ -105,3 +111,17 @@ message MsgRequestIdentityRecordsVerifyResponse {
 }
 message MsgHandleIdentityRecordsVerifyResponse {}
 message MsgCancelIdentityRecordsVerifyRequestResponse {}
+
+message MsgCouncilorPauseRequest {
+}
+message MsgCouncilorPauseResponse {}
+
+message MsgCouncilorUnpauseRequest {
+
+}
+message MsgCouncilorUnpauseResponse {}
+
+message MsgCouncilorActivateRequest {
+
+}
+message MsgCouncilorActivateResponse {}

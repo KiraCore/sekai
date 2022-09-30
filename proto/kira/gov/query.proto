@@ -121,6 +121,31 @@ service Query {
   rpc ProposalDuration(QueryProposalDuration) returns (QueryProposalDurationResponse) {
     option (google.api.http).get = "/kira/gov/proposal_duration/{proposal_type}";
   }
+  // QueryCouncilorslist - all councilors (waiting or not), including their corresponding statuses,
+  // ranks & abstenation counters - add sub-query to search by specific KIRA address
+  rpc QueryCouncilors(QueryCouncilors) returns (QueryCouncilorsResponse) {
+    option (google.api.http).get = "/kira/gov/councilors";
+  }
+  // QueryNonCouncilors - list all governance members that are NOT Councilors
+  rpc QueryNonCouncilors(QueryNonCouncilors) returns (QueryNonCouncilorsResponse) {
+    option (google.api.http).get = "/kira/gov/non_councilors";
+  }
+  // QueryAddressesByWhitelistedPermission - list all KIRA addresses by a specific whitelisted permission (address does NOT have to be a Councilor)
+  rpc QueryAddressesByWhitelistedPermission(QueryAddressesByWhitelistedPermission) returns (QueryAddressesByWhitelistedPermissionResponse) {
+    option (google.api.http).get = "/kira/gov/addresses_by_whitelisted_permission/{permission}";
+  }
+  // QueryAddressesByBlacklistedPermission - list all KIRA addresses by a specific blacklisted permission (address does NOT have to be a Councilor)
+  rpc QueryAddressesByBlacklistedPermission(QueryAddressesByBlacklistedPermission) returns (QueryAddressesByBlacklistedPermissionResponse) {
+    option (google.api.http).get = "/kira/gov/addresses_by_blacklisted_permission/{permission}";
+  }
+  // QueryAddressesByWhitelistedRole - list all kira addresses by a specific whitelisted role (address does NOT have to be a Councilor)
+  rpc QueryAddressesByWhitelistedRole(QueryAddressesByWhitelistedRole) returns (QueryAddressesByWhitelistedRoleResponse) {
+    option (google.api.http).get = "/kira/gov/addresses_by_whitelisted_role/{role}";
+  }
+  // QueryAddressesByBlacklistedRole - list all kira addresses by a specific whitelisted role (address does NOT have to be a Councilor)
+  rpc QueryAddressesByBlacklistedRole(QueryAddressesByBlacklistedRole) returns (QueryAddressesByBlacklistedRoleResponse) {
+    option (google.api.http).get = "/kira/gov/addresses_by_blacklisted_role/{role}";
+  }
 }
 
 message NetworkPropertiesRequest {}
@@ -365,3 +390,29 @@ message QueryProposalDuration {
 message QueryProposalDurationResponse {
   uint64 duration = 1;
 }
+
+message QueryCouncilors {}
+message QueryCouncilorsResponse {}
+
+message QueryNonCouncilors {}
+message QueryNonCouncilorsResponse {}
+
+message QueryAddressesByWhitelistedPermission {
+  uint32 permission = 1;
+}
+message QueryAddressesByWhitelistedPermissionResponse {}
+
+message QueryAddressesByBlacklistedPermission {
+  uint32 permission = 1;
+}
+message QueryAddressesByBlacklistedPermissionResponse {}
+
+message QueryAddressesByWhitelistedRole {
+  uint32 role = 1;
+}
+message QueryAddressesByWhitelistedRoleResponse {}
+
+message QueryAddressesByBlacklistedRole {
+  uint32 role = 1;
+}
+message QueryAddressesByBlacklistedRoleResponse {}
