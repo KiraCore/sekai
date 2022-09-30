@@ -12,6 +12,7 @@ func DefaultGenesis() *GenesisState {
 				Amount:            500_000,    // 500k KEX
 				Period:            86400 * 30, // 30 days
 				Pool:              "ValidatorBasicRewardsPool",
+				Dynamic:           true,
 			},
 		},
 	}
