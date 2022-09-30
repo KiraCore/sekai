@@ -44,7 +44,10 @@ func (k Keeper) AllocateTokens(
 	}
 
 	// combine fees and inflated tokens for rewards allocation
-	feesCollected := feesAccBalance.Sub(feesTreasury)
+	feesCollected := sdk.Coins{}
+	if feesAccBalance.IsAllGTE(feesTreasury) {
+		feesCollected = feesAccBalance.Sub(feesTreasury)
+	}
 	totalRewards := feesCollected.Add(inflationCoin)
 
 	validatorsFeeShare := k.gk.GetNetworkProperties(ctx).ValidatorsFeeShare

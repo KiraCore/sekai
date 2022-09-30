@@ -11,11 +11,46 @@ import (
 	"github.com/KiraCore/sekai/x/genutil"
 	v01228govtypes "github.com/KiraCore/sekai/x/gov/legacy/v01228"
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
+	v03123upgradetypes "github.com/KiraCore/sekai/x/upgrade/legacy/v03123"
 	upgradetypes "github.com/KiraCore/sekai/x/upgrade/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
 )
+
+func upgradedPlan(plan *v03123upgradetypes.Plan) *upgradetypes.Plan {
+	if plan == nil {
+		return nil
+	}
+
+	return &upgradetypes.Plan{
+		Name:                      plan.Name,
+		Resources:                 upgradedResources(plan.Resources),
+		UpgradeTime:               plan.UpgradeTime,
+		OldChainId:                plan.OldChainId,
+		NewChainId:                plan.NewChainId,
+		RollbackChecksum:          plan.RollbackChecksum,
+		MaxEnrolmentDuration:      plan.MaxEnrolmentDuration,
+		InstateUpgrade:            plan.InstateUpgrade,
+		RebootRequired:            plan.RebootRequired,
+		SkipHandler:               plan.SkipHandler,
+		ProposalID:                plan.ProposalID,
+		ProcessedNoVoteValidators: plan.ProcessedNoVoteValidators,
+	}
+}
+
+func upgradedResources(resources []v03123upgradetypes.Resource) []upgradetypes.Resource {
+	upgraded := []upgradetypes.Resource{}
+	for _, resource := range resources {
+		upgraded = append(upgraded, upgradetypes.Resource{
+			Id:       resource.Id,
+			Url:      resource.Git,
+			Version:  resource.Checkout,
+			Checksum: resource.Checksum,
+		})
+	}
+	return upgraded
+}
 
 // GetNewGenesisFromExportedCmd returns new genesis from exported genesis
 func GetNewGenesisFromExportedCmd(mbm module.BasicManager, txEncCfg client.TxEncodingConfig) *cobra.Command {
@@ -50,6 +85,17 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 
 			if err = mbm.ValidateGenesis(cdc, txEncCfg, genesisState); err != nil {
 				return errors.Wrap(err, "failed to validate genesis state")
+			}
+
+			upgradeGenesisV03123 := v03123upgradetypes.GenesisState{}
+			err = cdc.UnmarshalJSON(genesisState[govtypes.ModuleName], &upgradeGenesisV03123)
+			if err == nil { // which means old upgrade genesis
+				upgradeGenesis := upgradetypes.GenesisState{
+					Version:     "v0.3.1.24",
+					CurrentPlan: upgradedPlan(upgradeGenesisV03123.CurrentPlan),
+					NextPlan:    upgradedPlan(upgradeGenesisV03123.NextPlan),
+				}
+				genesisState[upgradetypes.ModuleName] = cdc.MustMarshalJSON(&upgradeGenesis)
 			}
 
 			upgradeGenesis := upgradetypes.GenesisState{}

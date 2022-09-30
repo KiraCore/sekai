@@ -58,6 +58,13 @@ func (k msgServer) Pause(goCtx context.Context, msg *types.MsgPause) (*types.Msg
 	if valErr != nil {
 		return nil, valErr
 	}
+
+	properties := k.gk.GetNetworkProperties(ctx)
+	validators := k.sk.GetValidatorSet(ctx)
+	if len(validators) <= int(properties.MinValidators) || len(validators) <= 1 {
+		return nil, types.ErrPauseNotAllowedOnPoorNetwork
+	}
+
 	err := k.Keeper.Pause(ctx, valAddr)
 	if err != nil {
 		return nil, err
