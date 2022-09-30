@@ -18,7 +18,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/version"
 )
 
-func upgradedPlan(plan *v03123upgradetypes.Plan) *upgradetypes.Plan {
+func upgradedPlan(plan *v03123upgradetypes.PlanV03123) *upgradetypes.Plan {
 	if plan == nil {
 		return nil
 	}
@@ -39,7 +39,7 @@ func upgradedPlan(plan *v03123upgradetypes.Plan) *upgradetypes.Plan {
 	}
 }
 
-func upgradedResources(resources []v03123upgradetypes.Resource) []upgradetypes.Resource {
+func upgradedResources(resources []v03123upgradetypes.ResourceV03123) []upgradetypes.Resource {
 	upgraded := []upgradetypes.Resource{}
 	for _, resource := range resources {
 		upgraded = append(upgraded, upgradetypes.Resource{
@@ -87,8 +87,8 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 				return errors.Wrap(err, "failed to validate genesis state")
 			}
 
-			upgradeGenesisV03123 := v03123upgradetypes.GenesisState{}
-			err = cdc.UnmarshalJSON(genesisState[govtypes.ModuleName], &upgradeGenesisV03123)
+			upgradeGenesisV03123 := v03123upgradetypes.GenesisStateV03123{}
+			err = cdc.UnmarshalJSON(genesisState[upgradetypes.ModuleName], &upgradeGenesisV03123)
 			if err == nil { // which means old upgrade genesis
 				upgradeGenesis := upgradetypes.GenesisState{
 					Version:     "v0.3.1.24",
@@ -96,6 +96,8 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 					NextPlan:    upgradedPlan(upgradeGenesisV03123.NextPlan),
 				}
 				genesisState[upgradetypes.ModuleName] = cdc.MustMarshalJSON(&upgradeGenesis)
+			} else {
+				fmt.Println("error exists v0.3.1.23 upgrade genesis parsing", err)
 			}
 
 			upgradeGenesis := upgradetypes.GenesisState{}
@@ -189,6 +191,21 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 			if err == nil {
 				govGenesis.RolePermissions[govtypes.RoleSudo] = govtypes.DefaultGenesis().RolePermissions[govtypes.RoleSudo]
 				genesisState[govtypes.ModuleName] = cdc.MustMarshalJSON(&govGenesis)
+			} else {
+				fmt.Println("parse error for latest gov genesis", err)
+				fmt.Println("trying to parse v03123 gov genesis for following error on genesis parsing")
+				govGenesisV03123 := make(map[string]interface{})
+				err = json.Unmarshal(genesisState[govtypes.ModuleName], &govGenesisV03123)
+				if err != nil {
+					panic(err)
+				}
+				govGenesisV03123["proposals"] = []govtypes.Proposal{}
+				govGenesisV03123["votes"] = []govtypes.Vote{}
+				bz, err := json.Marshal(&govGenesisV03123)
+				if err != nil {
+					panic(err)
+				}
+				genesisState[govtypes.ModuleName] = bz
 			}
 
 			appState, err := json.MarshalIndent(genesisState, "", " ")

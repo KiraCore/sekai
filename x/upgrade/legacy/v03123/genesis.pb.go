@@ -23,22 +23,22 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type GenesisState struct {
-	Version     string `protobuf:"bytes,1,opt,name=version,proto3" json:"version,omitempty"`
-	CurrentPlan *Plan  `protobuf:"bytes,2,opt,name=current_plan,json=currentPlan,proto3" json:"current_plan,omitempty"`
-	NextPlan    *Plan  `protobuf:"bytes,3,opt,name=next_plan,json=nextPlan,proto3" json:"next_plan,omitempty"`
+type GenesisStateV03123 struct {
+	Version     string      `protobuf:"bytes,1,opt,name=version,proto3" json:"version,omitempty"`
+	CurrentPlan *PlanV03123 `protobuf:"bytes,2,opt,name=current_plan,json=currentPlan,proto3" json:"current_plan,omitempty"`
+	NextPlan    *PlanV03123 `protobuf:"bytes,3,opt,name=next_plan,json=nextPlan,proto3" json:"next_plan,omitempty"`
 }
 
-func (m *GenesisState) Reset()         { *m = GenesisState{} }
-func (m *GenesisState) String() string { return proto.CompactTextString(m) }
-func (*GenesisState) ProtoMessage()    {}
-func (*GenesisState) Descriptor() ([]byte, []int) {
+func (m *GenesisStateV03123) Reset()         { *m = GenesisStateV03123{} }
+func (m *GenesisStateV03123) String() string { return proto.CompactTextString(m) }
+func (*GenesisStateV03123) ProtoMessage()    {}
+func (*GenesisStateV03123) Descriptor() ([]byte, []int) {
 	return fileDescriptor_af8e84a023ffb915, []int{0}
 }
-func (m *GenesisState) XXX_Unmarshal(b []byte) error {
+func (m *GenesisStateV03123) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *GenesisState) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *GenesisStateV03123) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_GenesisState.Marshal(b, m, deterministic)
 	} else {
@@ -50,33 +50,33 @@ func (m *GenesisState) XXX_Marshal(b []byte, deterministic bool) ([]byte, error)
 		return b[:n], nil
 	}
 }
-func (m *GenesisState) XXX_Merge(src proto.Message) {
+func (m *GenesisStateV03123) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_GenesisState.Merge(m, src)
 }
-func (m *GenesisState) XXX_Size() int {
+func (m *GenesisStateV03123) XXX_Size() int {
 	return m.Size()
 }
-func (m *GenesisState) XXX_DiscardUnknown() {
+func (m *GenesisStateV03123) XXX_DiscardUnknown() {
 	xxx_messageInfo_GenesisState.DiscardUnknown(m)
 }
 
 var xxx_messageInfo_GenesisState proto.InternalMessageInfo
 
-func (m *GenesisState) GetVersion() string {
+func (m *GenesisStateV03123) GetVersion() string {
 	if m != nil {
 		return m.Version
 	}
 	return ""
 }
 
-func (m *GenesisState) GetCurrentPlan() *Plan {
+func (m *GenesisStateV03123) GetCurrentPlan() *PlanV03123 {
 	if m != nil {
 		return m.CurrentPlan
 	}
 	return nil
 }
 
-func (m *GenesisState) GetNextPlan() *Plan {
+func (m *GenesisStateV03123) GetNextPlan() *PlanV03123 {
 	if m != nil {
 		return m.NextPlan
 	}
@@ -84,7 +84,7 @@ func (m *GenesisState) GetNextPlan() *Plan {
 }
 
 func init() {
-	proto.RegisterType((*GenesisState)(nil), "kira.upgrade.GenesisState")
+	proto.RegisterType((*GenesisStateV03123)(nil), "kira.upgrade.GenesisStateV03123")
 }
 
 func init() { proto.RegisterFile("kira/upgrade/genesis.proto", fileDescriptor_af8e84a023ffb915) }
@@ -108,7 +108,7 @@ var fileDescriptor_af8e84a023ffb915 = []byte{
 	0x00, 0x00, 0x00, 0xff, 0xff, 0xba, 0x62, 0x45, 0x6f, 0x39, 0x01, 0x00, 0x00,
 }
 
-func (m *GenesisState) Marshal() (dAtA []byte, err error) {
+func (m *GenesisStateV03123) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -118,12 +118,12 @@ func (m *GenesisState) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *GenesisState) MarshalTo(dAtA []byte) (int, error) {
+func (m *GenesisStateV03123) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *GenesisState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *GenesisStateV03123) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -173,7 +173,7 @@ func encodeVarintGenesis(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *GenesisState) Size() (n int) {
+func (m *GenesisStateV03123) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -200,7 +200,7 @@ func sovGenesis(x uint64) (n int) {
 func sozGenesis(x uint64) (n int) {
 	return sovGenesis(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *GenesisState) Unmarshal(dAtA []byte) error {
+func (m *GenesisStateV03123) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -291,7 +291,7 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.CurrentPlan == nil {
-				m.CurrentPlan = &Plan{}
+				m.CurrentPlan = &PlanV03123{}
 			}
 			if err := m.CurrentPlan.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -327,7 +327,7 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.NextPlan == nil {
-				m.NextPlan = &Plan{}
+				m.NextPlan = &PlanV03123{}
 			}
 			if err := m.NextPlan.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err

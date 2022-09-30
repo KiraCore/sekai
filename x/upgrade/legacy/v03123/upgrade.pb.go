@@ -24,107 +24,23 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type ProposalSoftwareUpgrade struct {
-	Name                 string     `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Resources            []Resource `protobuf:"bytes,2,rep,name=resources,proto3" json:"resources"`
-	UpgradeTime          int64      `protobuf:"varint,3,opt,name=upgrade_time,json=upgradeTime,proto3" json:"upgrade_time,omitempty"`
-	OldChainId           string     `protobuf:"bytes,4,opt,name=old_chain_id,json=oldChainId,proto3" json:"old_chain_id,omitempty"`
-	NewChainId           string     `protobuf:"bytes,5,opt,name=new_chain_id,json=newChainId,proto3" json:"new_chain_id,omitempty"`
-	RollbackChecksum     string     `protobuf:"bytes,6,opt,name=rollback_checksum,json=rollbackChecksum,proto3" json:"rollback_checksum,omitempty"`
-	MaxEnrolmentDuration int64      `protobuf:"varint,7,opt,name=max_enrolment_duration,json=maxEnrolmentDuration,proto3" json:"max_enrolment_duration,omitempty"`
-	Memo                 string     `protobuf:"bytes,8,opt,name=memo,proto3" json:"memo,omitempty"`
-	InstateUpgrade       bool       `protobuf:"varint,9,opt,name=instate_upgrade,json=instateUpgrade,proto3" json:"instate_upgrade,omitempty"`
-	RebootRequired       bool       `protobuf:"varint,10,opt,name=reboot_required,json=rebootRequired,proto3" json:"reboot_required,omitempty"`
-	SkipHandler          bool       `protobuf:"varint,11,opt,name=skip_handler,json=skipHandler,proto3" json:"skip_handler,omitempty"`
-}
-
-func (m *ProposalSoftwareUpgrade) Reset()         { *m = ProposalSoftwareUpgrade{} }
-func (m *ProposalSoftwareUpgrade) String() string { return proto.CompactTextString(m) }
-func (*ProposalSoftwareUpgrade) ProtoMessage()    {}
-func (*ProposalSoftwareUpgrade) Descriptor() ([]byte, []int) {
-	return fileDescriptor_cfa79131e4b330bc, []int{0}
-}
-func (m *ProposalSoftwareUpgrade) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *ProposalSoftwareUpgrade) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ProposalSoftwareUpgrade.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *ProposalSoftwareUpgrade) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ProposalSoftwareUpgrade.Merge(m, src)
-}
-func (m *ProposalSoftwareUpgrade) XXX_Size() int {
-	return m.Size()
-}
-func (m *ProposalSoftwareUpgrade) XXX_DiscardUnknown() {
-	xxx_messageInfo_ProposalSoftwareUpgrade.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ProposalSoftwareUpgrade proto.InternalMessageInfo
-
-type ProposalCancelSoftwareUpgrade struct {
-	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-}
-
-func (m *ProposalCancelSoftwareUpgrade) Reset()         { *m = ProposalCancelSoftwareUpgrade{} }
-func (m *ProposalCancelSoftwareUpgrade) String() string { return proto.CompactTextString(m) }
-func (*ProposalCancelSoftwareUpgrade) ProtoMessage()    {}
-func (*ProposalCancelSoftwareUpgrade) Descriptor() ([]byte, []int) {
-	return fileDescriptor_cfa79131e4b330bc, []int{1}
-}
-func (m *ProposalCancelSoftwareUpgrade) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *ProposalCancelSoftwareUpgrade) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_ProposalCancelSoftwareUpgrade.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *ProposalCancelSoftwareUpgrade) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ProposalCancelSoftwareUpgrade.Merge(m, src)
-}
-func (m *ProposalCancelSoftwareUpgrade) XXX_Size() int {
-	return m.Size()
-}
-func (m *ProposalCancelSoftwareUpgrade) XXX_DiscardUnknown() {
-	xxx_messageInfo_ProposalCancelSoftwareUpgrade.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ProposalCancelSoftwareUpgrade proto.InternalMessageInfo
-
-type Resource struct {
+type ResourceV03123 struct {
 	Id       string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Git      string `protobuf:"bytes,2,opt,name=git,proto3" json:"git,omitempty"`
 	Checkout string `protobuf:"bytes,3,opt,name=checkout,proto3" json:"checkout,omitempty"`
 	Checksum string `protobuf:"bytes,4,opt,name=checksum,proto3" json:"checksum,omitempty"`
 }
 
-func (m *Resource) Reset()         { *m = Resource{} }
-func (m *Resource) String() string { return proto.CompactTextString(m) }
-func (*Resource) ProtoMessage()    {}
-func (*Resource) Descriptor() ([]byte, []int) {
+func (m *ResourceV03123) Reset()         { *m = ResourceV03123{} }
+func (m *ResourceV03123) String() string { return proto.CompactTextString(m) }
+func (*ResourceV03123) ProtoMessage()    {}
+func (*ResourceV03123) Descriptor() ([]byte, []int) {
 	return fileDescriptor_cfa79131e4b330bc, []int{2}
 }
-func (m *Resource) XXX_Unmarshal(b []byte) error {
+func (m *ResourceV03123) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *Resource) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *ResourceV03123) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_Resource.Marshal(b, m, deterministic)
 	} else {
@@ -136,22 +52,20 @@ func (m *Resource) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-func (m *Resource) XXX_Merge(src proto.Message) {
+func (m *ResourceV03123) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Resource.Merge(m, src)
 }
-func (m *Resource) XXX_Size() int {
+func (m *ResourceV03123) XXX_Size() int {
 	return m.Size()
 }
-func (m *Resource) XXX_DiscardUnknown() {
+func (m *ResourceV03123) XXX_DiscardUnknown() {
 	xxx_messageInfo_Resource.DiscardUnknown(m)
 }
 
 var xxx_messageInfo_Resource proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterType((*ProposalSoftwareUpgrade)(nil), "kira.upgrade.ProposalSoftwareUpgrade")
-	proto.RegisterType((*ProposalCancelSoftwareUpgrade)(nil), "kira.upgrade.ProposalCancelSoftwareUpgrade")
-	proto.RegisterType((*Resource)(nil), "kira.upgrade.Resource")
+	proto.RegisterType((*ResourceV03123)(nil), "kira.upgrade.ResourceV03123")
 }
 
 func init() { proto.RegisterFile("kira/upgrade/upgrade.proto", fileDescriptor_cfa79131e4b330bc) }
@@ -192,97 +106,14 @@ var fileDescriptor_cfa79131e4b330bc = []byte{
 	0x56, 0x18, 0x03, 0x00, 0x00,
 }
 
-func (this *ProposalSoftwareUpgrade) Equal(that interface{}) bool {
+func (this *ResourceV03123) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
 	}
 
-	that1, ok := that.(*ProposalSoftwareUpgrade)
+	that1, ok := that.(*ResourceV03123)
 	if !ok {
-		that2, ok := that.(ProposalSoftwareUpgrade)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	if this.Name != that1.Name {
-		return false
-	}
-	if len(this.Resources) != len(that1.Resources) {
-		return false
-	}
-	for i := range this.Resources {
-		if !this.Resources[i].Equal(&that1.Resources[i]) {
-			return false
-		}
-	}
-	if this.UpgradeTime != that1.UpgradeTime {
-		return false
-	}
-	if this.OldChainId != that1.OldChainId {
-		return false
-	}
-	if this.NewChainId != that1.NewChainId {
-		return false
-	}
-	if this.RollbackChecksum != that1.RollbackChecksum {
-		return false
-	}
-	if this.MaxEnrolmentDuration != that1.MaxEnrolmentDuration {
-		return false
-	}
-	if this.Memo != that1.Memo {
-		return false
-	}
-	if this.InstateUpgrade != that1.InstateUpgrade {
-		return false
-	}
-	if this.RebootRequired != that1.RebootRequired {
-		return false
-	}
-	if this.SkipHandler != that1.SkipHandler {
-		return false
-	}
-	return true
-}
-func (this *ProposalCancelSoftwareUpgrade) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*ProposalCancelSoftwareUpgrade)
-	if !ok {
-		that2, ok := that.(ProposalCancelSoftwareUpgrade)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	if this.Name != that1.Name {
-		return false
-	}
-	return true
-}
-func (this *Resource) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*Resource)
-	if !ok {
-		that2, ok := that.(Resource)
+		that2, ok := that.(ResourceV03123)
 		if ok {
 			that1 = &that2
 		} else {
@@ -308,7 +139,8 @@ func (this *Resource) Equal(that interface{}) bool {
 	}
 	return true
 }
-func (m *ProposalSoftwareUpgrade) Marshal() (dAtA []byte, err error) {
+
+func (m *ResourceV03123) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -318,154 +150,12 @@ func (m *ProposalSoftwareUpgrade) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *ProposalSoftwareUpgrade) MarshalTo(dAtA []byte) (int, error) {
+func (m *ResourceV03123) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *ProposalSoftwareUpgrade) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.SkipHandler {
-		i--
-		if m.SkipHandler {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i--
-		dAtA[i] = 0x58
-	}
-	if m.RebootRequired {
-		i--
-		if m.RebootRequired {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i--
-		dAtA[i] = 0x50
-	}
-	if m.InstateUpgrade {
-		i--
-		if m.InstateUpgrade {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i--
-		dAtA[i] = 0x48
-	}
-	if len(m.Memo) > 0 {
-		i -= len(m.Memo)
-		copy(dAtA[i:], m.Memo)
-		i = encodeVarintUpgrade(dAtA, i, uint64(len(m.Memo)))
-		i--
-		dAtA[i] = 0x42
-	}
-	if m.MaxEnrolmentDuration != 0 {
-		i = encodeVarintUpgrade(dAtA, i, uint64(m.MaxEnrolmentDuration))
-		i--
-		dAtA[i] = 0x38
-	}
-	if len(m.RollbackChecksum) > 0 {
-		i -= len(m.RollbackChecksum)
-		copy(dAtA[i:], m.RollbackChecksum)
-		i = encodeVarintUpgrade(dAtA, i, uint64(len(m.RollbackChecksum)))
-		i--
-		dAtA[i] = 0x32
-	}
-	if len(m.NewChainId) > 0 {
-		i -= len(m.NewChainId)
-		copy(dAtA[i:], m.NewChainId)
-		i = encodeVarintUpgrade(dAtA, i, uint64(len(m.NewChainId)))
-		i--
-		dAtA[i] = 0x2a
-	}
-	if len(m.OldChainId) > 0 {
-		i -= len(m.OldChainId)
-		copy(dAtA[i:], m.OldChainId)
-		i = encodeVarintUpgrade(dAtA, i, uint64(len(m.OldChainId)))
-		i--
-		dAtA[i] = 0x22
-	}
-	if m.UpgradeTime != 0 {
-		i = encodeVarintUpgrade(dAtA, i, uint64(m.UpgradeTime))
-		i--
-		dAtA[i] = 0x18
-	}
-	if len(m.Resources) > 0 {
-		for iNdEx := len(m.Resources) - 1; iNdEx >= 0; iNdEx-- {
-			{
-				size, err := m.Resources[iNdEx].MarshalToSizedBuffer(dAtA[:i])
-				if err != nil {
-					return 0, err
-				}
-				i -= size
-				i = encodeVarintUpgrade(dAtA, i, uint64(size))
-			}
-			i--
-			dAtA[i] = 0x12
-		}
-	}
-	if len(m.Name) > 0 {
-		i -= len(m.Name)
-		copy(dAtA[i:], m.Name)
-		i = encodeVarintUpgrade(dAtA, i, uint64(len(m.Name)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *ProposalCancelSoftwareUpgrade) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *ProposalCancelSoftwareUpgrade) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *ProposalCancelSoftwareUpgrade) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Name) > 0 {
-		i -= len(m.Name)
-		copy(dAtA[i:], m.Name)
-		i = encodeVarintUpgrade(dAtA, i, uint64(len(m.Name)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *Resource) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *Resource) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *Resource) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *ResourceV03123) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -512,70 +202,8 @@ func encodeVarintUpgrade(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *ProposalSoftwareUpgrade) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Name)
-	if l > 0 {
-		n += 1 + l + sovUpgrade(uint64(l))
-	}
-	if len(m.Resources) > 0 {
-		for _, e := range m.Resources {
-			l = e.Size()
-			n += 1 + l + sovUpgrade(uint64(l))
-		}
-	}
-	if m.UpgradeTime != 0 {
-		n += 1 + sovUpgrade(uint64(m.UpgradeTime))
-	}
-	l = len(m.OldChainId)
-	if l > 0 {
-		n += 1 + l + sovUpgrade(uint64(l))
-	}
-	l = len(m.NewChainId)
-	if l > 0 {
-		n += 1 + l + sovUpgrade(uint64(l))
-	}
-	l = len(m.RollbackChecksum)
-	if l > 0 {
-		n += 1 + l + sovUpgrade(uint64(l))
-	}
-	if m.MaxEnrolmentDuration != 0 {
-		n += 1 + sovUpgrade(uint64(m.MaxEnrolmentDuration))
-	}
-	l = len(m.Memo)
-	if l > 0 {
-		n += 1 + l + sovUpgrade(uint64(l))
-	}
-	if m.InstateUpgrade {
-		n += 2
-	}
-	if m.RebootRequired {
-		n += 2
-	}
-	if m.SkipHandler {
-		n += 2
-	}
-	return n
-}
 
-func (m *ProposalCancelSoftwareUpgrade) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Name)
-	if l > 0 {
-		n += 1 + l + sovUpgrade(uint64(l))
-	}
-	return n
-}
-
-func (m *Resource) Size() (n int) {
+func (m *ResourceV03123) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -606,431 +234,8 @@ func sovUpgrade(x uint64) (n int) {
 func sozUpgrade(x uint64) (n int) {
 	return sovUpgrade(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *ProposalSoftwareUpgrade) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowUpgrade
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ProposalSoftwareUpgrade: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ProposalSoftwareUpgrade: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowUpgrade
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthUpgrade
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthUpgrade
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Name = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Resources", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowUpgrade
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthUpgrade
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthUpgrade
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Resources = append(m.Resources, Resource{})
-			if err := m.Resources[len(m.Resources)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 3:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field UpgradeTime", wireType)
-			}
-			m.UpgradeTime = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowUpgrade
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.UpgradeTime |= int64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field OldChainId", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowUpgrade
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthUpgrade
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthUpgrade
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.OldChainId = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 5:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field NewChainId", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowUpgrade
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthUpgrade
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthUpgrade
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.NewChainId = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 6:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field RollbackChecksum", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowUpgrade
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthUpgrade
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthUpgrade
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.RollbackChecksum = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 7:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MaxEnrolmentDuration", wireType)
-			}
-			m.MaxEnrolmentDuration = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowUpgrade
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.MaxEnrolmentDuration |= int64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 8:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Memo", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowUpgrade
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthUpgrade
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthUpgrade
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Memo = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 9:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field InstateUpgrade", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowUpgrade
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.InstateUpgrade = bool(v != 0)
-		case 10:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field RebootRequired", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowUpgrade
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.RebootRequired = bool(v != 0)
-		case 11:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field SkipHandler", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowUpgrade
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.SkipHandler = bool(v != 0)
-		default:
-			iNdEx = preIndex
-			skippy, err := skipUpgrade(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthUpgrade
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
 
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *ProposalCancelSoftwareUpgrade) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowUpgrade
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: ProposalCancelSoftwareUpgrade: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ProposalCancelSoftwareUpgrade: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowUpgrade
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthUpgrade
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthUpgrade
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Name = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipUpgrade(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthUpgrade
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *Resource) Unmarshal(dAtA []byte) error {
+func (m *ResourceV03123) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {

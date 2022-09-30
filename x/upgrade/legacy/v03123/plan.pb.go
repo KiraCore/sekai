@@ -23,31 +23,31 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type Plan struct {
-	Name                      string     `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Resources                 []Resource `protobuf:"bytes,2,rep,name=resources,proto3" json:"resources"`
-	UpgradeTime               int64      `protobuf:"varint,3,opt,name=upgrade_time,json=upgradeTime,proto3" json:"upgrade_time,omitempty"`
-	OldChainId                string     `protobuf:"bytes,4,opt,name=old_chain_id,json=oldChainId,proto3" json:"old_chain_id,omitempty"`
-	NewChainId                string     `protobuf:"bytes,5,opt,name=new_chain_id,json=newChainId,proto3" json:"new_chain_id,omitempty"`
-	RollbackChecksum          string     `protobuf:"bytes,6,opt,name=rollback_checksum,json=rollbackChecksum,proto3" json:"rollback_checksum,omitempty"`
-	MaxEnrolmentDuration      int64      `protobuf:"varint,7,opt,name=max_enrolment_duration,json=maxEnrolmentDuration,proto3" json:"max_enrolment_duration,omitempty"`
-	InstateUpgrade            bool       `protobuf:"varint,8,opt,name=instate_upgrade,json=instateUpgrade,proto3" json:"instate_upgrade,omitempty"`
-	RebootRequired            bool       `protobuf:"varint,9,opt,name=reboot_required,json=rebootRequired,proto3" json:"reboot_required,omitempty"`
-	SkipHandler               bool       `protobuf:"varint,10,opt,name=skip_handler,json=skipHandler,proto3" json:"skip_handler,omitempty"`
-	ProposalID                uint64     `protobuf:"varint,11,opt,name=proposalID,proto3" json:"proposalID,omitempty"`
-	ProcessedNoVoteValidators bool       `protobuf:"varint,12,opt,name=processed_no_vote_validators,json=processedNoVoteValidators,proto3" json:"processed_no_vote_validators,omitempty"`
+type PlanV03123 struct {
+	Name                      string           `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Resources                 []ResourceV03123 `protobuf:"bytes,2,rep,name=resources,proto3" json:"resources"`
+	UpgradeTime               int64            `protobuf:"varint,3,opt,name=upgrade_time,json=upgradeTime,proto3" json:"upgrade_time,omitempty"`
+	OldChainId                string           `protobuf:"bytes,4,opt,name=old_chain_id,json=oldChainId,proto3" json:"old_chain_id,omitempty"`
+	NewChainId                string           `protobuf:"bytes,5,opt,name=new_chain_id,json=newChainId,proto3" json:"new_chain_id,omitempty"`
+	RollbackChecksum          string           `protobuf:"bytes,6,opt,name=rollback_checksum,json=rollbackChecksum,proto3" json:"rollback_checksum,omitempty"`
+	MaxEnrolmentDuration      int64            `protobuf:"varint,7,opt,name=max_enrolment_duration,json=maxEnrolmentDuration,proto3" json:"max_enrolment_duration,omitempty"`
+	InstateUpgrade            bool             `protobuf:"varint,8,opt,name=instate_upgrade,json=instateUpgrade,proto3" json:"instate_upgrade,omitempty"`
+	RebootRequired            bool             `protobuf:"varint,9,opt,name=reboot_required,json=rebootRequired,proto3" json:"reboot_required,omitempty"`
+	SkipHandler               bool             `protobuf:"varint,10,opt,name=skip_handler,json=skipHandler,proto3" json:"skip_handler,omitempty"`
+	ProposalID                uint64           `protobuf:"varint,11,opt,name=proposalID,proto3" json:"proposalID,omitempty"`
+	ProcessedNoVoteValidators bool             `protobuf:"varint,12,opt,name=processed_no_vote_validators,json=processedNoVoteValidators,proto3" json:"processed_no_vote_validators,omitempty"`
 }
 
-func (m *Plan) Reset()         { *m = Plan{} }
-func (m *Plan) String() string { return proto.CompactTextString(m) }
-func (*Plan) ProtoMessage()    {}
-func (*Plan) Descriptor() ([]byte, []int) {
+func (m *PlanV03123) Reset()         { *m = PlanV03123{} }
+func (m *PlanV03123) String() string { return proto.CompactTextString(m) }
+func (*PlanV03123) ProtoMessage()    {}
+func (*PlanV03123) Descriptor() ([]byte, []int) {
 	return fileDescriptor_96c9a10c2f596dea, []int{0}
 }
-func (m *Plan) XXX_Unmarshal(b []byte) error {
+func (m *PlanV03123) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *Plan) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *PlanV03123) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_Plan.Marshal(b, m, deterministic)
 	} else {
@@ -59,96 +59,96 @@ func (m *Plan) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-func (m *Plan) XXX_Merge(src proto.Message) {
+func (m *PlanV03123) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_Plan.Merge(m, src)
 }
-func (m *Plan) XXX_Size() int {
+func (m *PlanV03123) XXX_Size() int {
 	return m.Size()
 }
-func (m *Plan) XXX_DiscardUnknown() {
+func (m *PlanV03123) XXX_DiscardUnknown() {
 	xxx_messageInfo_Plan.DiscardUnknown(m)
 }
 
 var xxx_messageInfo_Plan proto.InternalMessageInfo
 
-func (m *Plan) GetName() string {
+func (m *PlanV03123) GetName() string {
 	if m != nil {
 		return m.Name
 	}
 	return ""
 }
 
-func (m *Plan) GetResources() []Resource {
+func (m *PlanV03123) GetResources() []ResourceV03123 {
 	if m != nil {
 		return m.Resources
 	}
 	return nil
 }
 
-func (m *Plan) GetUpgradeTime() int64 {
+func (m *PlanV03123) GetUpgradeTime() int64 {
 	if m != nil {
 		return m.UpgradeTime
 	}
 	return 0
 }
 
-func (m *Plan) GetOldChainId() string {
+func (m *PlanV03123) GetOldChainId() string {
 	if m != nil {
 		return m.OldChainId
 	}
 	return ""
 }
 
-func (m *Plan) GetNewChainId() string {
+func (m *PlanV03123) GetNewChainId() string {
 	if m != nil {
 		return m.NewChainId
 	}
 	return ""
 }
 
-func (m *Plan) GetRollbackChecksum() string {
+func (m *PlanV03123) GetRollbackChecksum() string {
 	if m != nil {
 		return m.RollbackChecksum
 	}
 	return ""
 }
 
-func (m *Plan) GetMaxEnrolmentDuration() int64 {
+func (m *PlanV03123) GetMaxEnrolmentDuration() int64 {
 	if m != nil {
 		return m.MaxEnrolmentDuration
 	}
 	return 0
 }
 
-func (m *Plan) GetInstateUpgrade() bool {
+func (m *PlanV03123) GetInstateUpgrade() bool {
 	if m != nil {
 		return m.InstateUpgrade
 	}
 	return false
 }
 
-func (m *Plan) GetRebootRequired() bool {
+func (m *PlanV03123) GetRebootRequired() bool {
 	if m != nil {
 		return m.RebootRequired
 	}
 	return false
 }
 
-func (m *Plan) GetSkipHandler() bool {
+func (m *PlanV03123) GetSkipHandler() bool {
 	if m != nil {
 		return m.SkipHandler
 	}
 	return false
 }
 
-func (m *Plan) GetProposalID() uint64 {
+func (m *PlanV03123) GetProposalID() uint64 {
 	if m != nil {
 		return m.ProposalID
 	}
 	return 0
 }
 
-func (m *Plan) GetProcessedNoVoteValidators() bool {
+func (m *PlanV03123) GetProcessedNoVoteValidators() bool {
 	if m != nil {
 		return m.ProcessedNoVoteValidators
 	}
@@ -156,7 +156,7 @@ func (m *Plan) GetProcessedNoVoteValidators() bool {
 }
 
 func init() {
-	proto.RegisterType((*Plan)(nil), "kira.upgrade.Plan")
+	proto.RegisterType((*PlanV03123)(nil), "kira.upgrade.PlanV03123")
 }
 
 func init() { proto.RegisterFile("kira/upgrade/plan.proto", fileDescriptor_96c9a10c2f596dea) }
@@ -194,7 +194,7 @@ var fileDescriptor_96c9a10c2f596dea = []byte{
 	0x02, 0x00, 0x00,
 }
 
-func (m *Plan) Marshal() (dAtA []byte, err error) {
+func (m *PlanV03123) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -204,12 +204,12 @@ func (m *Plan) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *Plan) MarshalTo(dAtA []byte) (int, error) {
+func (m *PlanV03123) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *Plan) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *PlanV03123) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -325,7 +325,7 @@ func encodeVarintPlan(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *Plan) Size() (n int) {
+func (m *PlanV03123) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -383,7 +383,7 @@ func sovPlan(x uint64) (n int) {
 func sozPlan(x uint64) (n int) {
 	return sovPlan(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *Plan) Unmarshal(dAtA []byte) error {
+func (m *PlanV03123) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -473,7 +473,7 @@ func (m *Plan) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Resources = append(m.Resources, Resource{})
+			m.Resources = append(m.Resources, ResourceV03123{})
 			if err := m.Resources[len(m.Resources)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
