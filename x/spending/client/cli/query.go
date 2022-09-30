@@ -118,7 +118,7 @@ func GetCmdQueryPoolProposals() *cobra.Command {
 func GetCmdQueryPoolsByAccount() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "pools-by-account [addr]",
-		Short: "Get the token rate by denom",
+		Short: "Query list of pool names where specific kira account can register its claim or otherwise claim tokens from",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
