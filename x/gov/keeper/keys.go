@@ -23,6 +23,9 @@ var (
 	VotesPrefix              = []byte{0x02}
 	ActiveProposalsPrefix    = []byte{0x03}
 	EnactmentProposalsPrefix = []byte{0x04}
+	PollPrefix               = []byte{0x05}
+	NextPollIDPrefix         = []byte{0x06}
+	PollVotesPrefix          = []byte{0x07}
 
 	RolePermissionRegistry          = []byte{0x10}
 	RoleIdToInfo                    = []byte{0x11}

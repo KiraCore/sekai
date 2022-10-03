@@ -7,7 +7,7 @@ import "google/protobuf/any.proto";
 import "kira/gov/actor.proto";
 import "kira/gov/councilor.proto";
 import "kira/gov/proposal.proto";
-import "kira/gov/poll_proposal.proto";
+import "kira/gov/poll.proto";
 import "kira/gov/role.proto";
 import "kira/gov/execution_fee.proto";
 import "kira/gov/network_properties.proto";
@@ -63,7 +63,7 @@ service Msg {
   // PollCreate defines a method to create a new poll proposal
   rpc PollCreate(MsgPollCreate) returns (MsgPollCreateResponse);
   // PollVote defines a method for voting a poll proposal
-  rpc PollVote(MsgPollVoteProposal) returns (MsgPollVoteProposalResponse);
+  rpc PollVote(MsgPollVote) returns (MsgPollVoteResponse);
 }
 
 
@@ -113,4 +113,4 @@ message MsgCancelIdentityRecordsVerifyRequestResponse {}
 message MsgPollCreateResponse {
   uint64 proposalID = 1;
 }
-message MsgPollVoteProposalResponse {}
+message MsgPollVoteResponse {}

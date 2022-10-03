@@ -9,7 +9,7 @@ import "kira/gov/role.proto";
 import "kira/gov/execution_fee.proto";
 import "kira/gov/network_properties.proto";
 import "kira/gov/proposal.proto";
-import "kira/gov/poll_proposal.proto";
+import "kira/gov/poll.proto";
 import "kira/gov/identity_registrar.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
@@ -136,7 +136,7 @@ message QueryPollsListByAddress {
 }
 
 message QueryPollsListByAddressResponse {
-  repeated kira.gov.PollProposal polls = 1;
+  repeated kira.gov.Poll polls = 1;
 }
 
 message NetworkPropertiesRequest {}

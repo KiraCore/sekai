@@ -125,6 +125,8 @@ func DefaultGenesis() *GenesisState {
 			MaxProposalDescriptionSize:  1024,
 			MaxProposalPollOptionSize:   64,
 			MaxProposalPollOptionCount:  128,
+			MaxProposalReferenceSize:    512,
+			MaxProposalChecksumSize:     128,
 		},
 		ExecutionFees: []*ExecutionFee{
 			{

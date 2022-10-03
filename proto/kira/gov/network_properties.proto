@@ -51,6 +51,8 @@ enum NetworkProperty {
     MAX_PROPOSAL_DESCRIPTION_SIZE = 34 [(gogoproto.enumvalue_customname) = "MaxProposalDescriptionSize"]; // maximum poll description size
     MAX_PROPOSAL_POLL_OPTION_SIZE = 35 [(gogoproto.enumvalue_customname) = "MaxProposalPollOptionSize"]; // maximum poll option size
     MAX_PROPOSAL_POLL_OPTION_COUNT = 36 [(gogoproto.enumvalue_customname) = "MaxProposalPollOptionCount"]; // maximum poll option count
+    MAX_PROPOSAL_REFERENCE_SIZE = 37[(gogoproto.enumvalue_customname) = "MaxProposalReferenceSize"]; // maximum poll reference size
+    MAX_PROPOSAL_CHECKSUM_SIZE = 38 [(gogoproto.enumvalue_customname) = "MaxProposalChecksumSize"]; // maximum poll checksum size
 }
 
 message NetworkPropertyValue {
@@ -97,4 +99,6 @@ message NetworkProperties {
     uint64 max_proposal_description_size = 34; // maximum description size in the proposal
     uint64 max_proposal_poll_option_size = 35; // maximum option size in the proposal
     uint64 max_proposal_poll_option_count = 36; // maximum possible choices in the proposal
+    uint64 max_proposal_reference_size = 37; // maximum reference size in the proposal
+    uint64 max_proposal_checksum_size = 38; // maximum checksum size in the proposal
 }

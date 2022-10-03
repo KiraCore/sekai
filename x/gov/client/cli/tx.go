@@ -126,8 +126,8 @@ func NewTxProposalCmds() *cobra.Command {
 	proposalCmd.AddCommand(GetTxProposalSetPoorNetworkMessages())
 	proposalCmd.AddCommand(GetTxProposalUpsertDataRegistry())
 	proposalCmd.AddCommand(GetTxProposalSetProposalDurations())
-	proposalCmd.AddCommand(GetTxVotePollCreate())
-	proposalCmd.AddCommand(GetTxVotePollProposal())
+	proposalCmd.AddCommand(GetTxPollCreate())
+	proposalCmd.AddCommand(GetTxVotePoll())
 
 	proposalCmd.AddCommand(accountProposalCmd)
 	proposalCmd.AddCommand(roleProposalCmd)
@@ -1924,7 +1924,7 @@ func GetTxCancelIdentityRecordsVerifyRequest() *cobra.Command {
 	return cmd
 }
 
-func GetTxVotePollCreate() *cobra.Command {
+func GetTxPollCreate() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "poll-create",
 		Short: "Create a poll proposal.",
@@ -1958,6 +1958,11 @@ func GetTxVotePollCreate() *cobra.Command {
 			options, err := cmd.Flags().GetStringSlice(FlagPollOptions)
 			if err != nil {
 				return fmt.Errorf("invalid options: %w", err)
+			}
+
+			var filteredOptions []string
+			for _, v := range options {
+				filteredOptions = append(filteredOptions, strings.ToLower(strings.TrimSpace(v)))
 			}
 
 			roles, err := cmd.Flags().GetStringSlice(FlagPollRoles)
@@ -1996,7 +2001,7 @@ func GetTxVotePollCreate() *cobra.Command {
 				description,
 				reference,
 				checksum,
-				options,
+				filteredOptions,
 				roles,
 				valueCount,
 				valueType,
@@ -2020,11 +2025,9 @@ func GetTxVotePollCreate() *cobra.Command {
 	cmd.Flags().StringSlice(FlagPollRoles, []string{}, "List of roles that are allowed to take part in the poll vote in the format role1,role2.")
 	cmd.MarkFlagRequired(FlagPollRoles)
 	cmd.Flags().Uint64(FlagPollCount, 128, "Maximum number of voting options that poll can have.")
-	cmd.MarkFlagRequired(FlagPollCount)
 	cmd.Flags().String(FlagPollType, "", "Type of the options, all user supplied or predefined options must match its type.")
 	cmd.MarkFlagRequired(FlagPollType)
 	cmd.Flags().Uint64(FlagPollChoices, 1, "Should define maximum number of choices that voter can select.")
-	cmd.MarkFlagRequired(FlagPollChoices)
 	cmd.Flags().String(FlagPollDuration, "", "The duration of the poll.")
 	cmd.MarkFlagRequired(FlagPollDuration)
 	cmd.MarkFlagRequired(flags.FlagFrom)
@@ -2032,7 +2035,7 @@ func GetTxVotePollCreate() *cobra.Command {
 	return cmd
 }
 
-func GetTxVotePollProposal() *cobra.Command {
+func GetTxVotePoll() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "vote-poll [proposal-id] [vote-option] [vote-custom]",
 		Short: "Vote a proposal.",
@@ -2055,7 +2058,7 @@ func GetTxVotePollProposal() *cobra.Command {
 
 			voteCustom := args[2]
 
-			msg := types.NewMsgVotePollProposal(
+			msg := types.NewMsgVotePoll(
 				uint64(proposalID),
 				clientCtx.FromAddress,
 				types.PollVoteOption(voteOption),

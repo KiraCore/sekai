@@ -517,7 +517,7 @@ func (m *MsgVoteProposal) GetSigners() []sdk.AccAddress {
 	}
 }
 
-// NewMsgSubmitProposal creates a new MsgSubmitProposal.
+// NewMsgPollCreate creates a new MsgPollCreate.
 //nolint:interfacer
 func NewMsgPollCreate(creator sdk.AccAddress, title, description string, reference string, checksum string, pollValues []string, roles []string, valueCount uint64, valueType string, possibleChoices uint64, duration time.Duration) *MsgPollCreate {
 	m := &MsgPollCreate{
@@ -545,12 +545,10 @@ func (m *MsgPollCreate) GetProposer() sdk.AccAddress {
 func (m MsgPollCreate) Route() string { return RouterKey }
 
 // Type implements Msg
-func (m MsgPollCreate) Type() string { return types.MsgTypeCreatePollProposal }
+func (m MsgPollCreate) Type() string { return types.MsgTypeCreatePoll }
 
 // ValidateBasic implements Msg
 func (m MsgPollCreate) ValidateBasic() error {
-
-	//Todo: Option types: string , uint , int , float , bool
 	if m.Creator.Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, m.Creator.String())
 	}
@@ -564,24 +562,24 @@ func (m *MsgPollCreate) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgVotePollProposal(proposalID uint64, voter sdk.AccAddress, option PollVoteOption, customValue string) *MsgPollVoteProposal {
-	return &MsgPollVoteProposal{
-		ProposalId:  proposalID,
+func NewMsgVotePoll(polllID uint64, voter sdk.AccAddress, option PollVoteOption, customValue string) *MsgPollVote {
+	return &MsgPollVote{
+		PollId:      polllID,
 		Voter:       voter,
 		Option:      option,
 		CustomValue: customValue,
 	}
 }
 
-func (m *MsgPollVoteProposal) Route() string {
+func (m *MsgPollVote) Route() string {
 	return ModuleName
 }
 
-func (m *MsgPollVoteProposal) Type() string {
-	return types.MsgTypeVotePollProposal
+func (m *MsgPollVote) Type() string {
+	return types.MsgTypeVotePoll
 }
 
-func (m *MsgPollVoteProposal) ValidateBasic() error {
+func (m *MsgPollVote) ValidateBasic() error {
 	if m.Voter.Empty() {
 		return ErrEmptyProposerAccAddress
 	}
@@ -589,12 +587,12 @@ func (m *MsgPollVoteProposal) ValidateBasic() error {
 	return nil
 }
 
-func (m *MsgPollVoteProposal) GetSignBytes() []byte {
+func (m *MsgPollVote) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(m)
 	return sdk.MustSortJSON(bz)
 }
 
-func (m *MsgPollVoteProposal) GetSigners() []sdk.AccAddress {
+func (m *MsgPollVote) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{
 		m.Voter,
 	}

@@ -73,7 +73,9 @@ func TestSimappExportGenesis(t *testing.T) {
 			"max_proposal_title_size": "128",
 			"max_proposal_description_size": "1024",
 			"max_proposal_poll_option_size": "64",
-			"max_proposal_poll_option_count": "128"
+			"max_proposal_poll_option_count": "128",
+			"max_proposal_reference_size": "512",
+			"max_proposal_checksum_size": "128"
 		},
 		"execution_fees":[],
 		"poor_network_messages":{
@@ -167,6 +169,8 @@ func TestExportInitGenesis(t *testing.T) {
 			MaxProposalDescriptionSize:  1024,
 			MaxProposalPollOptionSize:   64,
 			MaxProposalPollOptionCount:  128,
+			MaxProposalReferenceSize:    512,
+			MaxProposalChecksumSize:     128,
 		},
 		ExecutionFees: []*types.ExecutionFee{
 			{
@@ -235,7 +239,9 @@ func TestExportInitGenesis(t *testing.T) {
 			"max_proposal_title_size": "128",
 			"max_proposal_description_size": "1024",
 			"max_proposal_poll_option_size": "64",
-			"max_proposal_poll_option_count": "128"
+			"max_proposal_poll_option_count": "128",
+			"max_proposal_reference_size": "512",
+			"max_proposal_checksum_size": "128"
 		},
 		"execution_fees":[],
 		"poor_network_messages":{
