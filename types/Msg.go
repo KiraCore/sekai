@@ -11,10 +11,10 @@ const (
 	TypeMsgSubmitEvidence = "submit_evidence"
 
 	// governance
-	MsgTypeSubmitProposal     = "submit-proposal"
-	MsgTypeVoteProposal       = "vote-proposal"
-	MsgTypeCreatePollProposal = "create-poll-proposal"
-	MsgTypeVotePollProposal   = "vote-poll-proposal"
+	MsgTypeSubmitProposal = "submit-proposal"
+	MsgTypeVoteProposal   = "vote-proposal"
+	MsgTypeCreatePoll     = "create-poll-proposal"
+	MsgTypeVotePoll       = "vote-poll-proposal"
 
 	MsgTypeWhitelistPermissions = "whitelist-permissions"
 	MsgTypeBlacklistPermissions = "blacklist-permissions"

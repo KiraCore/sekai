@@ -18,7 +18,7 @@ func NewPoll(pollID uint64, creator sdk.AccAddress, title string, description st
 		Roles:         roles,
 		Options:       options,
 		VotingEndTime: expire,
-		Result:        Pending,
+		Result:        PollPending,
 	}, nil
 }
 
