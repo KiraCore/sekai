@@ -74,6 +74,7 @@ func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
 		cli.GetCmdQueryAllRoles(),
 		cli.GetCmdQueryRolesByAddress(),
 		cli.GetCmdQueryProposals(),
+		cli.GetCmdQueryPolls(),
 		cli.GetCmdQueryCouncilRegistry(),
 		cli.GetCmdQueryProposal(),
 		cli.GetCmdQueryVote(),

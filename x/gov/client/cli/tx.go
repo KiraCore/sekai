@@ -67,6 +67,7 @@ func NewTxCmd() *cobra.Command {
 	txCmd.AddCommand(
 		NewTxCouncilorCmds(),
 		NewTxProposalCmds(),
+		NewTxPollCmds(),
 		NewTxRoleCmds(),
 		NewTxPermissionCmds(),
 		NewTxSetNetworkProperties(),
@@ -79,6 +80,22 @@ func NewTxCmd() *cobra.Command {
 	)
 
 	return txCmd
+}
+
+// NewTxPollCmds returns the subcommands of poll related commands.
+func NewTxPollCmds() *cobra.Command {
+	pollCmd := &cobra.Command{
+		Use:                        "poll",
+		Short:                      "Governance poll management subcommands",
+		DisableFlagParsing:         true,
+		SuggestionsMinimumDistance: 2,
+		RunE:                       client.ValidateCmd,
+	}
+
+	pollCmd.AddCommand(GetTxPollCreate())
+	pollCmd.AddCommand(GetTxVotePoll())
+
+	return pollCmd
 }
 
 // NewTxProposalCmds returns the subcommands of proposal related commands.
@@ -126,8 +143,6 @@ func NewTxProposalCmds() *cobra.Command {
 	proposalCmd.AddCommand(GetTxProposalSetPoorNetworkMessages())
 	proposalCmd.AddCommand(GetTxProposalUpsertDataRegistry())
 	proposalCmd.AddCommand(GetTxProposalSetProposalDurations())
-	proposalCmd.AddCommand(GetTxPollCreate())
-	proposalCmd.AddCommand(GetTxVotePoll())
 
 	proposalCmd.AddCommand(accountProposalCmd)
 	proposalCmd.AddCommand(roleProposalCmd)
@@ -1926,8 +1941,8 @@ func GetTxCancelIdentityRecordsVerifyRequest() *cobra.Command {
 
 func GetTxPollCreate() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "poll-create",
-		Short: "Create a poll proposal.",
+		Use:   "create",
+		Short: "Create a poll.",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -2014,11 +2029,11 @@ func GetTxPollCreate() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
-	cmd.Flags().String(FlagTitle, "", "The title of the proposal.")
+	cmd.Flags().String(FlagTitle, "", "The title of the poll.")
 	cmd.MarkFlagRequired(FlagTitle)
-	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be an url, some text, etc.")
+	cmd.Flags().String(FlagDescription, "", "The description of the poll, it can be an url, some text, etc.")
 	cmd.MarkFlagRequired(FlagDescription)
-	cmd.Flags().String(FlagPollReference, "", "IPFS CID or URL reference to file describing proposal and voting options in depth.")
+	cmd.Flags().String(FlagPollReference, "", "IPFS CID or URL reference to file describing poll and voting options in depth.")
 	cmd.Flags().String(FlagPollChecksum, "", "Reference checksum.")
 	cmd.Flags().StringSlice(FlagPollOptions, []string{}, "The options value in the format variant1,variant2.")
 	cmd.MarkFlagRequired(FlagPollOptions)
@@ -2037,8 +2052,8 @@ func GetTxPollCreate() *cobra.Command {
 
 func GetTxVotePoll() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "vote-poll [proposal-id] [vote-option] [vote-custom]",
-		Short: "Vote a proposal.",
+		Use:   "vote [poll-id] [value]",
+		Short: "Vote a poll.",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -2046,23 +2061,15 @@ func GetTxVotePoll() *cobra.Command {
 				return err
 			}
 
-			proposalID, err := strconv.Atoi(args[0])
+			pollID, err := strconv.Atoi(args[0])
 			if err != nil {
-				return fmt.Errorf("invalid proposal ID: %w", err)
+				return fmt.Errorf("invalid poll ID: %w", err)
 			}
-
-			voteOption, err := strconv.Atoi(args[1])
-			if err != nil {
-				return fmt.Errorf("invalid vote option: %w", err)
-			}
-
-			voteCustom := args[2]
 
 			msg := types.NewMsgVotePoll(
-				uint64(proposalID),
+				uint64(pollID),
 				clientCtx.FromAddress,
-				types.PollVoteOption(voteOption),
-				voteCustom,
+				args[1],
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)

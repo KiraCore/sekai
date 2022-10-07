@@ -44,3 +44,26 @@ func (m *Poll) GetSigners() []sdk.AccAddress {
 		m.Creator,
 	}
 }
+
+func (m *AddressPolls) Route() string {
+	return ModuleName
+}
+
+func (m *AddressPolls) Type() string {
+	return types.MsgTypeAddressPoll
+}
+
+func (m *AddressPolls) ValidateBasic() error {
+	return nil
+}
+
+func (m *AddressPolls) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *AddressPolls) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{
+		m.Address,
+	}
+}

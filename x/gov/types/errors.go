@@ -56,4 +56,5 @@ var (
 	ErrProposalOptionSizeExceeds      = errors.Register(ModuleName, 53, "proposal option size exceeds")
 	ErrProposalTypeNotAllowed         = errors.Register(ModuleName, 54, "proposal type not allowed")
 	ErrProposalOptionOnlyAscii        = errors.Register(ModuleName, 55, "only ascii symbols allowed")
+	ErrPollsNotFount                  = errors.Register(ModuleName, 56, "empty polls")
 )

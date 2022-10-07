@@ -38,9 +38,18 @@ func (k Keeper) AllRoles(goCtx context.Context, request *types.AllRolesRequest) 
 	}, nil
 }
 
+// PollsListByAddress return polls associated to an address
 func (k Keeper) PollsListByAddress(goCtx context.Context, request *types.QueryPollsListByAddress) (*types.QueryPollsListByAddressResponse, error) {
-	//TODO implement me
-	panic("implement me")
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	polls, found := k.GetPollsByAddress(ctx, request.Creator)
+	if !found {
+		return nil, types.ErrPollsNotFount
+	}
+
+	return &types.QueryPollsListByAddressResponse{
+		Polls: polls,
+	}, nil
 }
 
 // RolesByAddress return roles associated to an address

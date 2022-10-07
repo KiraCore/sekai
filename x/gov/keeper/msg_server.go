@@ -3,12 +3,11 @@ package keeper
 import (
 	"context"
 	"fmt"
-	"sort"
-
 	"github.com/KiraCore/sekai/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
 	"golang.org/x/exp/utf8string"
+	"sort"
 )
 
 type msgServer struct {
@@ -182,14 +181,16 @@ func (k msgServer) PollCreate(goCtx context.Context, msg *types.MsgPollCreate) (
 		return nil, types.ErrProposalTypeNotAllowed
 	}
 
-	proposalID, err := k.keeper.PollCreate(ctx, msg)
+	pollID, err := k.keeper.PollCreate(ctx, msg)
 
 	if err != nil {
 		return nil, err
 	}
 
+	k.keeper.AddAddressPoll(ctx, pollID, msg.Creator)
+
 	return &types.MsgPollCreateResponse{
-		ProposalID: proposalID,
+		ProposalID: pollID,
 	}, nil
 }
 
@@ -201,16 +202,16 @@ func (k msgServer) PollVote(goCtx context.Context, msg *types.MsgPollVote) (*typ
 		return nil, types.ErrActorIsNotActive
 	}
 
-	proposal, found := k.keeper.GetPoll(ctx, msg.PollId)
+	poll, found := k.keeper.GetPoll(ctx, msg.PollId)
 	if !found {
 		return nil, types.ErrProposalDoesNotExist
 	}
 
-	if proposal.VotingEndTime.Before(ctx.BlockTime()) {
+	if poll.VotingEndTime.Before(ctx.BlockTime()) {
 		return nil, types.ErrVotingTimeEnded
 	}
 
-	roles := intersection(proposal.Roles, actor.Roles)
+	roles := intersection(poll.Roles, actor.Roles)
 
 	if len(roles) == 0 {
 		return nil, types.ErrNotEnoughPermissions

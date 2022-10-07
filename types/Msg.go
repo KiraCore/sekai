@@ -13,8 +13,9 @@ const (
 	// governance
 	MsgTypeSubmitProposal = "submit-proposal"
 	MsgTypeVoteProposal   = "vote-proposal"
-	MsgTypeCreatePoll     = "create-poll-proposal"
-	MsgTypeVotePoll       = "vote-poll-proposal"
+	MsgTypeCreatePoll     = "create-poll"
+	MsgTypeVotePoll       = "vote-poll"
+	MsgTypeAddressPoll    = "address-poll"
 
 	MsgTypeWhitelistPermissions = "whitelist-permissions"
 	MsgTypeBlacklistPermissions = "blacklist-permissions"

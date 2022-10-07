@@ -324,6 +324,37 @@ $ %s query gov proposals --voter cosmos1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
 	return cmd
 }
 
+// GetCmdQueryPolls implements a query polls command. Command to Get a
+// Proposal Information.
+func GetCmdQueryPolls() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "polls [address]",
+		Short: "Get polls by address",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			accAddr, err := sdk.AccAddressFromBech32(args[0])
+
+			if err != nil {
+				return errors.Wrap(err, "invalid account address")
+			}
+
+			params := &types.QueryPollsListByAddress{Creator: accAddr}
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.PollsListByAddress(context.Background(), params)
+
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
 // GetCmdQueryProposal implements the query proposal command.
 func GetCmdQueryProposal() *cobra.Command {
 	cmd := &cobra.Command{

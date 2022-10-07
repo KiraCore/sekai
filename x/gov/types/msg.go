@@ -562,12 +562,11 @@ func (m *MsgPollCreate) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgVotePoll(polllID uint64, voter sdk.AccAddress, option PollVoteOption, customValue string) *MsgPollVote {
+func NewMsgVotePoll(polllID uint64, voter sdk.AccAddress, value string) *MsgPollVote {
 	return &MsgPollVote{
-		PollId:      polllID,
-		Voter:       voter,
-		Option:      option,
-		CustomValue: customValue,
+		PollId: polllID,
+		Voter:  voter,
+		Value:  value,
 	}
 }
 

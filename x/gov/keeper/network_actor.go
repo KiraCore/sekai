@@ -178,7 +178,7 @@ func (k Keeper) GetNetworkActorsByAbsoluteWhitelistPermission(ctx sdk.Context, p
 	for ; iterator.Valid(); iterator.Next() {
 		if _, ok := duplicateMap[sdk.AccAddress(iterator.Value()).String()]; !ok {
 			duplicateMap[sdk.AccAddress(iterator.Value()).String()] = true
-			actors = append(actors, k.getNetworkActorOrFail(ctx, iterator.Value()))
+			actors = append(actors, k.GetNetworkActorOrFail(ctx, iterator.Value()))
 		}
 	}
 
@@ -191,7 +191,7 @@ func (k Keeper) GetNetworkActorsByAbsoluteWhitelistPermission(ctx sdk.Context, p
 		for ; actorIter.Valid(); actorIter.Next() {
 			if _, ok := duplicateMap[sdk.AccAddress(actorIter.Value()).String()]; !ok {
 				duplicateMap[sdk.AccAddress(actorIter.Value()).String()] = true
-				actors = append(actors, k.getNetworkActorOrFail(ctx, actorIter.Value()))
+				actors = append(actors, k.GetNetworkActorOrFail(ctx, actorIter.Value()))
 			}
 		}
 	}
@@ -199,7 +199,7 @@ func (k Keeper) GetNetworkActorsByAbsoluteWhitelistPermission(ctx sdk.Context, p
 	return actors
 }
 
-func (k Keeper) getNetworkActorOrFail(ctx sdk.Context, addr sdk.AccAddress) types.NetworkActor {
+func (k Keeper) GetNetworkActorOrFail(ctx sdk.Context, addr sdk.AccAddress) types.NetworkActor {
 	actor, found := k.GetNetworkActorByAddress(ctx, addr)
 	if !found {
 		panic("expected network actor not found")
