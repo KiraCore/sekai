@@ -117,6 +117,7 @@ func NewTxProposalCmds() *cobra.Command {
 	proposalCmd.AddCommand(GetTxProposalSetPoorNetworkMessages())
 	proposalCmd.AddCommand(GetTxProposalUpsertDataRegistry())
 	proposalCmd.AddCommand(GetTxProposalSetProposalDurations())
+	proposalCmd.AddCommand(GetTxProposalResetWholeCouncilorRankCmd())
 
 	proposalCmd.AddCommand(accountProposalCmd)
 	proposalCmd.AddCommand(roleProposalCmd)
@@ -1943,6 +1944,51 @@ func parseIdInfoJSON(fs *pflag.FlagSet) ([]types.IdentityInfoEntry, error) {
 	}
 
 	return types.WrapInfos(infos), nil
+}
+
+// GetTxProposalResetWholeCouncilorRankCmd implement cli command for ProposalResetWholeCouncilorRank
+func GetTxProposalResetWholeCouncilorRankCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "proposal-reset-whole-councilor-rank",
+		Short: "Create a proposal to reset whole councilor rank",
+		Args:  cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+			title, err := cmd.Flags().GetString(FlagTitle)
+			if err != nil {
+				return fmt.Errorf("invalid title: %w", err)
+			}
+			description, err := cmd.Flags().GetString(FlagDescription)
+			if err != nil {
+				return fmt.Errorf("invalid description: %w", err)
+			}
+
+			msg, err := types.NewMsgSubmitProposal(
+				clientCtx.FromAddress,
+				title,
+				description,
+				types.NewResetWholeCouncilorRankProposal(clientCtx.FromAddress),
+			)
+			if err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	cmd.Flags().String(FlagTitle, "", "The title of the proposal.")
+	cmd.MarkFlagRequired(FlagTitle)
+	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
+	cmd.MarkFlagRequired(FlagDescription)
+
+	flags.AddTxFlagsToCmd(cmd)
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
 }
 
 // convertAsPermValues convert array of int32 to PermValue array.

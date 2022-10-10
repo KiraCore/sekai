@@ -406,3 +406,23 @@ func (c SetProposalDurationsProposalHandler) Apply(ctx sdk.Context, proposalID u
 	}
 	return nil
 }
+
+type ApplyResetWholeCouncilorRankProposalHandler struct {
+	keeper keeper.Keeper
+}
+
+func NewApplyResetWholeCouncilorRankProposalHandler(keeper keeper.Keeper) *ApplyResetWholeCouncilorRankProposalHandler {
+	return &ApplyResetWholeCouncilorRankProposalHandler{
+		keeper: keeper,
+	}
+}
+
+func (a ApplyResetWholeCouncilorRankProposalHandler) ProposalType() string {
+	return kiratypes.ProposalTypeResetWholeCouncilorRank
+}
+
+func (a ApplyResetWholeCouncilorRankProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash uint64) error {
+	_ = proposal.(*types.ProposalResetWholeCouncilorRank)
+	a.keeper.ResetWholeCouncilorRank(ctx)
+	return nil
+}

@@ -232,3 +232,10 @@ message SetProposalDurationsProposal {
   repeated string typeof_proposals = 1;
   repeated uint64 proposal_durations = 2;
 }
+
+message ProposalResetWholeCouncilorRank {
+  bytes proposer = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
+  ];
+  string description = 2;
+}

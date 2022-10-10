@@ -16,10 +16,6 @@ func GetCouncilorKey(address sdk.AccAddress) []byte {
 	return append(CouncilorsKey, address.Bytes()...)
 }
 
-func GetCouncilorByMonikerKey(moniker string) []byte {
-	return append(CouncilorsByMonikerKey, []byte(moniker)...)
-}
-
 func (k Keeper) SaveCouncilor(ctx sdk.Context, councilor types.Councilor) {
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), CouncilorIdentityRegistryPrefix)
 
@@ -28,7 +24,6 @@ func (k Keeper) SaveCouncilor(ctx sdk.Context, councilor types.Councilor) {
 	councilorKey := GetCouncilorKey(councilor.Address)
 
 	prefixStore.Set(councilorKey, bz)
-	prefixStore.Set(GetCouncilorByMonikerKey(councilor.Moniker), councilorKey)
 }
 
 func (k Keeper) GetCouncilor(ctx sdk.Context, address sdk.AccAddress) (types.Councilor, bool) {
@@ -36,14 +31,13 @@ func (k Keeper) GetCouncilor(ctx sdk.Context, address sdk.AccAddress) (types.Cou
 }
 
 func (k Keeper) GetCouncilorByMoniker(ctx sdk.Context, moniker string) (types.Councilor, bool) {
-	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), CouncilorIdentityRegistryPrefix)
+	addresses := k.GetAddressesByIdRecordKey(ctx, "moniker", moniker)
 
-	councilorKey := prefixStore.Get(GetCouncilorByMonikerKey(moniker))
-	if councilorKey == nil {
+	if len(addresses) != 1 {
 		return types.Councilor{}, false
 	}
 
-	return k.getCouncilorByKey(ctx, councilorKey)
+	return k.GetCouncilor(ctx, addresses[0])
 }
 
 func (k Keeper) getCouncilorByKey(ctx sdk.Context, key []byte) (types.Councilor, bool) {
@@ -56,6 +50,30 @@ func (k Keeper) getCouncilorByKey(ctx sdk.Context, key []byte) (types.Councilor,
 
 	var councilor types.Councilor
 	k.cdc.MustUnmarshal(bz, &councilor)
-
 	return councilor, true
+}
+
+func (k Keeper) GetAllCouncilors(ctx sdk.Context) []types.Councilor {
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), CouncilorIdentityRegistryPrefix)
+
+	iterator := prefixStore.Iterator(nil, nil)
+	defer iterator.Close()
+
+	councilors := []types.Councilor{}
+	for ; iterator.Valid(); iterator.Next() {
+		var councilor types.Councilor
+		k.cdc.MustUnmarshal(iterator.Value(), &councilor)
+		councilors = append(councilors, councilor)
+	}
+
+	return councilors
+}
+
+func (k Keeper) ResetWholeCouncilorRank(ctx sdk.Context) {
+	councilors := k.GetAllCouncilors(ctx)
+	for _, councilor := range councilors {
+		councilor.Status = types.CouncilorActive
+		councilor.Rank = 0
+		k.SaveCouncilor(ctx, councilor)
+	}
 }

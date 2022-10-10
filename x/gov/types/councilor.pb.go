@@ -25,9 +25,53 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+type CouncilorStatus int32
+
+const (
+	// Undefined status
+	CouncilorUndefined CouncilorStatus = 0
+	// Active status
+	CouncilorActive CouncilorStatus = 1
+	// Inactive status
+	CouncilorInactive CouncilorStatus = 2
+	// Paused status
+	CouncilorPaused CouncilorStatus = 3
+	// Jailed status
+	CouncilorJailed CouncilorStatus = 4
+)
+
+var CouncilorStatus_name = map[int32]string{
+	0: "UNDEFINED",
+	1: "ACTIVE",
+	2: "INACTIVE",
+	3: "PAUSED",
+	4: "JAILED",
+}
+
+var CouncilorStatus_value = map[string]int32{
+	"UNDEFINED": 0,
+	"ACTIVE":    1,
+	"INACTIVE":  2,
+	"PAUSED":    3,
+	"JAILED":    4,
+}
+
+func (x CouncilorStatus) String() string {
+	return proto.EnumName(CouncilorStatus_name, int32(x))
+}
+
+func (CouncilorStatus) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_cac0b13545050495, []int{0}
+}
+
 type MsgClaimCouncilor struct {
-	Moniker string                                        `protobuf:"bytes,1,opt,name=moniker,proto3" json:"moniker,omitempty"`
-	Address github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,2,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
+	Address     github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
+	Moniker     string                                        `protobuf:"bytes,2,opt,name=moniker,proto3" json:"moniker,omitempty"`
+	Username    string                                        `protobuf:"bytes,3,opt,name=username,proto3" json:"username,omitempty"`
+	Description string                                        `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
+	Social      string                                        `protobuf:"bytes,5,opt,name=social,proto3" json:"social,omitempty"`
+	Contact     string                                        `protobuf:"bytes,6,opt,name=contact,proto3" json:"contact,omitempty"`
+	Avatar      string                                        `protobuf:"bytes,7,opt,name=avatar,proto3" json:"avatar,omitempty"`
 }
 
 func (m *MsgClaimCouncilor) Reset()         { *m = MsgClaimCouncilor{} }
@@ -63,13 +107,6 @@ func (m *MsgClaimCouncilor) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgClaimCouncilor proto.InternalMessageInfo
 
-func (m *MsgClaimCouncilor) GetMoniker() string {
-	if m != nil {
-		return m.Moniker
-	}
-	return ""
-}
-
 func (m *MsgClaimCouncilor) GetAddress() github_com_cosmos_cosmos_sdk_types.AccAddress {
 	if m != nil {
 		return m.Address
@@ -77,9 +114,52 @@ func (m *MsgClaimCouncilor) GetAddress() github_com_cosmos_cosmos_sdk_types.AccA
 	return nil
 }
 
+func (m *MsgClaimCouncilor) GetMoniker() string {
+	if m != nil {
+		return m.Moniker
+	}
+	return ""
+}
+
+func (m *MsgClaimCouncilor) GetUsername() string {
+	if m != nil {
+		return m.Username
+	}
+	return ""
+}
+
+func (m *MsgClaimCouncilor) GetDescription() string {
+	if m != nil {
+		return m.Description
+	}
+	return ""
+}
+
+func (m *MsgClaimCouncilor) GetSocial() string {
+	if m != nil {
+		return m.Social
+	}
+	return ""
+}
+
+func (m *MsgClaimCouncilor) GetContact() string {
+	if m != nil {
+		return m.Contact
+	}
+	return ""
+}
+
+func (m *MsgClaimCouncilor) GetAvatar() string {
+	if m != nil {
+		return m.Avatar
+	}
+	return ""
+}
+
 type Councilor struct {
-	Moniker string                                        `protobuf:"bytes,1,opt,name=moniker,proto3" json:"moniker,omitempty"`
-	Address github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,2,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
+	Address github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
+	Status  CouncilorStatus                               `protobuf:"varint,2,opt,name=status,proto3,enum=kira.gov.CouncilorStatus" json:"status,omitempty"`
+	Rank    int64                                         `protobuf:"varint,3,opt,name=rank,proto3" json:"rank,omitempty"`
 }
 
 func (m *Councilor) Reset()         { *m = Councilor{} }
@@ -115,13 +195,6 @@ func (m *Councilor) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Councilor proto.InternalMessageInfo
 
-func (m *Councilor) GetMoniker() string {
-	if m != nil {
-		return m.Moniker
-	}
-	return ""
-}
-
 func (m *Councilor) GetAddress() github_com_cosmos_cosmos_sdk_types.AccAddress {
 	if m != nil {
 		return m.Address
@@ -129,7 +202,22 @@ func (m *Councilor) GetAddress() github_com_cosmos_cosmos_sdk_types.AccAddress {
 	return nil
 }
 
+func (m *Councilor) GetStatus() CouncilorStatus {
+	if m != nil {
+		return m.Status
+	}
+	return CouncilorUndefined
+}
+
+func (m *Councilor) GetRank() int64 {
+	if m != nil {
+		return m.Rank
+	}
+	return 0
+}
+
 func init() {
+	proto.RegisterEnum("kira.gov.CouncilorStatus", CouncilorStatus_name, CouncilorStatus_value)
 	proto.RegisterType((*MsgClaimCouncilor)(nil), "kira.gov.MsgClaimCouncilor")
 	proto.RegisterType((*Councilor)(nil), "kira.gov.Councilor")
 }
@@ -137,23 +225,38 @@ func init() {
 func init() { proto.RegisterFile("kira/gov/councilor.proto", fileDescriptor_cac0b13545050495) }
 
 var fileDescriptor_cac0b13545050495 = []byte{
-	// 253 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0xc8, 0xce, 0x2c, 0x4a,
-	0xd4, 0x4f, 0xcf, 0x2f, 0xd3, 0x4f, 0xce, 0x2f, 0xcd, 0x4b, 0xce, 0xcc, 0xc9, 0x2f, 0xd2, 0x2b,
-	0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0x00, 0xc9, 0xe8, 0xa5, 0xe7, 0x97, 0x49, 0x89, 0xa4, 0xe7,
-	0xa7, 0xe7, 0x83, 0x05, 0xf5, 0x41, 0x2c, 0x88, 0xbc, 0xd2, 0x24, 0x46, 0x2e, 0x41, 0xdf, 0xe2,
-	0x74, 0xe7, 0x9c, 0xc4, 0xcc, 0x5c, 0x67, 0x98, 0x5e, 0x21, 0x09, 0x2e, 0xf6, 0xdc, 0xfc, 0xbc,
-	0xcc, 0xec, 0xd4, 0x22, 0x09, 0x46, 0x05, 0x46, 0x0d, 0xce, 0x20, 0x18, 0x57, 0x28, 0x96, 0x8b,
-	0x3d, 0x31, 0x25, 0xa5, 0x28, 0xb5, 0xb8, 0x58, 0x82, 0x49, 0x81, 0x51, 0x83, 0xc7, 0xc9, 0xf9,
-	0xd3, 0x3d, 0x79, 0xbe, 0xca, 0xc4, 0xdc, 0x1c, 0x2b, 0x25, 0xa8, 0x84, 0xd2, 0xaf, 0x7b, 0xf2,
-	0xba, 0xe9, 0x99, 0x25, 0x19, 0xa5, 0x49, 0x7a, 0xc9, 0xf9, 0xb9, 0xfa, 0xc9, 0xf9, 0xc5, 0xb9,
-	0xf9, 0xc5, 0x50, 0x4a, 0xb7, 0x38, 0x25, 0x5b, 0xbf, 0xa4, 0xb2, 0x20, 0xb5, 0x58, 0xcf, 0x31,
-	0x39, 0xd9, 0x11, 0xa2, 0x23, 0x08, 0x66, 0xa6, 0x15, 0xcb, 0x8b, 0x05, 0xf2, 0x8c, 0x4a, 0x2d,
-	0x8c, 0x5c, 0x9c, 0x03, 0xef, 0x18, 0x27, 0xfb, 0x13, 0x8f, 0xe4, 0x18, 0x2f, 0x3c, 0x92, 0x63,
-	0x7c, 0xf0, 0x48, 0x8e, 0x71, 0xc2, 0x63, 0x39, 0x86, 0x0b, 0x8f, 0xe5, 0x18, 0x6e, 0x3c, 0x96,
-	0x63, 0x88, 0x52, 0x45, 0x32, 0xd1, 0x3b, 0xb3, 0x28, 0xd1, 0x39, 0xbf, 0x28, 0x55, 0xbf, 0x38,
-	0x35, 0x3b, 0x31, 0x53, 0xbf, 0x02, 0x1c, 0x0d, 0x60, 0x43, 0x93, 0xd8, 0xc0, 0x61, 0x6c, 0x0c,
-	0x08, 0x00, 0x00, 0xff, 0xff, 0xae, 0xd6, 0xea, 0xc6, 0x9f, 0x01, 0x00, 0x00,
+	// 495 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x93, 0x4f, 0x8b, 0xd3, 0x4e,
+	0x18, 0xc7, 0x3b, 0x6d, 0x7f, 0x69, 0x3b, 0x3f, 0x59, 0xbb, 0xa3, 0x2e, 0x31, 0x87, 0x34, 0x54,
+	0x16, 0x16, 0x61, 0x13, 0xd4, 0xdb, 0x5e, 0x24, 0xdb, 0x56, 0xc8, 0xaa, 0x65, 0xe9, 0x5a, 0x0f,
+	0x82, 0x87, 0xd9, 0xc9, 0x18, 0x87, 0xfc, 0x99, 0x32, 0x33, 0x29, 0xee, 0x3b, 0x90, 0x9e, 0x3c,
+	0x0b, 0x05, 0xc1, 0x57, 0xe0, 0x9b, 0x10, 0x8f, 0x7b, 0xf4, 0xb4, 0x48, 0x7b, 0xf1, 0xec, 0xd1,
+	0x93, 0x74, 0x92, 0xd6, 0xa5, 0x2f, 0xc0, 0x53, 0xe6, 0xfb, 0x7c, 0x3f, 0xcf, 0xf3, 0x84, 0x6f,
+	0x32, 0xd0, 0x8c, 0x99, 0xc0, 0x5e, 0xc4, 0xa7, 0x1e, 0xe1, 0x79, 0x46, 0x58, 0xc2, 0x85, 0x3b,
+	0x11, 0x5c, 0x71, 0xd4, 0x5c, 0x39, 0x6e, 0xc4, 0xa7, 0xd6, 0xed, 0x88, 0x47, 0x5c, 0x17, 0xbd,
+	0xd5, 0xa9, 0xf0, 0xbb, 0x1f, 0xab, 0x70, 0xf7, 0xb9, 0x8c, 0x7a, 0x09, 0x66, 0x69, 0x6f, 0xdd,
+	0x8b, 0x5e, 0xc3, 0x06, 0x0e, 0x43, 0x41, 0xa5, 0x34, 0x81, 0x03, 0x0e, 0x6e, 0x1c, 0xf7, 0x7e,
+	0x5d, 0x75, 0x76, 0x2e, 0x70, 0x9a, 0x1c, 0x75, 0x4b, 0xa3, 0xfb, 0xfb, 0xaa, 0x73, 0x18, 0x31,
+	0xf5, 0x36, 0x3f, 0x77, 0x09, 0x4f, 0x3d, 0xc2, 0x65, 0xca, 0x65, 0xf9, 0x38, 0x94, 0x61, 0xec,
+	0xa9, 0x8b, 0x09, 0x95, 0xae, 0x4f, 0x88, 0x5f, 0x74, 0x8c, 0xd6, 0x33, 0x91, 0x09, 0x1b, 0x29,
+	0xcf, 0x58, 0x4c, 0x85, 0x59, 0x75, 0xc0, 0x41, 0x6b, 0xb4, 0x96, 0xc8, 0x82, 0xcd, 0x5c, 0x52,
+	0x91, 0xe1, 0x94, 0x9a, 0x35, 0x6d, 0x6d, 0x34, 0x72, 0xe0, 0xff, 0x21, 0x95, 0x44, 0xb0, 0x89,
+	0x62, 0x3c, 0x33, 0xeb, 0xda, 0xbe, 0x5e, 0x42, 0x7b, 0xd0, 0x90, 0x9c, 0x30, 0x9c, 0x98, 0xff,
+	0x69, 0xb3, 0x54, 0xab, 0x7d, 0x84, 0x67, 0x0a, 0x13, 0x65, 0x1a, 0xc5, 0xbe, 0x52, 0xae, 0x3a,
+	0xf0, 0x14, 0x2b, 0x2c, 0xcc, 0x46, 0xd1, 0x51, 0xa8, 0xa3, 0xfa, 0xcf, 0x4f, 0x1d, 0xd0, 0xfd,
+	0x02, 0x60, 0xeb, 0x9f, 0x85, 0xf2, 0x00, 0x1a, 0x52, 0x61, 0x95, 0x4b, 0x9d, 0xc9, 0xce, 0xc3,
+	0xbb, 0xee, 0xfa, 0xd3, 0xb9, 0x9b, 0x77, 0x38, 0xd3, 0xc0, 0xa8, 0x04, 0x11, 0x82, 0x75, 0x81,
+	0xb3, 0x58, 0x27, 0x55, 0x1b, 0xe9, 0xf3, 0xfd, 0xaf, 0x00, 0xde, 0xdc, 0xe2, 0xd1, 0x3e, 0x6c,
+	0x8d, 0x87, 0xfd, 0xc1, 0x93, 0x60, 0x38, 0xe8, 0xb7, 0x2b, 0xd6, 0xde, 0x6c, 0xee, 0xa0, 0x0d,
+	0x33, 0xce, 0x42, 0xfa, 0x86, 0x65, 0x34, 0x44, 0x1d, 0x68, 0xf8, 0xbd, 0x17, 0xc1, 0xcb, 0x41,
+	0x1b, 0x58, 0xb7, 0x66, 0x73, 0xe7, 0xef, 0x1c, 0x9f, 0x28, 0x36, 0xa5, 0xe8, 0x1e, 0x6c, 0x06,
+	0xc3, 0x12, 0xa9, 0x5a, 0x77, 0x66, 0x73, 0x67, 0x77, 0x83, 0x04, 0x19, 0x2e, 0xa0, 0x0e, 0x34,
+	0x4e, 0xfd, 0xf1, 0xd9, 0xa0, 0xdf, 0xae, 0x6d, 0x4d, 0x39, 0xc5, 0xb9, 0x2c, 0xd6, 0x9c, 0xf8,
+	0xc1, 0xb3, 0x41, 0xbf, 0x5d, 0xdf, 0x02, 0x4e, 0x30, 0x4b, 0x68, 0x68, 0xd5, 0xdf, 0x7f, 0xb6,
+	0x2b, 0xc7, 0x8f, 0xbf, 0x2d, 0x6c, 0x70, 0xb9, 0xb0, 0xc1, 0x8f, 0x85, 0x0d, 0x3e, 0x2c, 0xed,
+	0xca, 0xe5, 0xd2, 0xae, 0x7c, 0x5f, 0xda, 0x95, 0x57, 0xfb, 0xd7, 0x12, 0x7e, 0xca, 0x04, 0xee,
+	0x71, 0x41, 0x3d, 0x49, 0x63, 0xcc, 0xbc, 0x77, 0xfa, 0x12, 0xe8, 0x90, 0xcf, 0x0d, 0xfd, 0x87,
+	0x3f, 0xfa, 0x13, 0x00, 0x00, 0xff, 0xff, 0x05, 0x67, 0xbb, 0x53, 0x1d, 0x03, 0x00, 0x00,
 }
 
 func (this *MsgClaimCouncilor) Equal(that interface{}) bool {
@@ -175,10 +278,25 @@ func (this *MsgClaimCouncilor) Equal(that interface{}) bool {
 	} else if this == nil {
 		return false
 	}
+	if !bytes.Equal(this.Address, that1.Address) {
+		return false
+	}
 	if this.Moniker != that1.Moniker {
 		return false
 	}
-	if !bytes.Equal(this.Address, that1.Address) {
+	if this.Username != that1.Username {
+		return false
+	}
+	if this.Description != that1.Description {
+		return false
+	}
+	if this.Social != that1.Social {
+		return false
+	}
+	if this.Contact != that1.Contact {
+		return false
+	}
+	if this.Avatar != that1.Avatar {
 		return false
 	}
 	return true
@@ -203,17 +321,52 @@ func (m *MsgClaimCouncilor) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.Address) > 0 {
-		i -= len(m.Address)
-		copy(dAtA[i:], m.Address)
-		i = encodeVarintCouncilor(dAtA, i, uint64(len(m.Address)))
+	if len(m.Avatar) > 0 {
+		i -= len(m.Avatar)
+		copy(dAtA[i:], m.Avatar)
+		i = encodeVarintCouncilor(dAtA, i, uint64(len(m.Avatar)))
 		i--
-		dAtA[i] = 0x12
+		dAtA[i] = 0x3a
+	}
+	if len(m.Contact) > 0 {
+		i -= len(m.Contact)
+		copy(dAtA[i:], m.Contact)
+		i = encodeVarintCouncilor(dAtA, i, uint64(len(m.Contact)))
+		i--
+		dAtA[i] = 0x32
+	}
+	if len(m.Social) > 0 {
+		i -= len(m.Social)
+		copy(dAtA[i:], m.Social)
+		i = encodeVarintCouncilor(dAtA, i, uint64(len(m.Social)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.Description) > 0 {
+		i -= len(m.Description)
+		copy(dAtA[i:], m.Description)
+		i = encodeVarintCouncilor(dAtA, i, uint64(len(m.Description)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Username) > 0 {
+		i -= len(m.Username)
+		copy(dAtA[i:], m.Username)
+		i = encodeVarintCouncilor(dAtA, i, uint64(len(m.Username)))
+		i--
+		dAtA[i] = 0x1a
 	}
 	if len(m.Moniker) > 0 {
 		i -= len(m.Moniker)
 		copy(dAtA[i:], m.Moniker)
 		i = encodeVarintCouncilor(dAtA, i, uint64(len(m.Moniker)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintCouncilor(dAtA, i, uint64(len(m.Address)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -240,17 +393,20 @@ func (m *Councilor) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if m.Rank != 0 {
+		i = encodeVarintCouncilor(dAtA, i, uint64(m.Rank))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.Status != 0 {
+		i = encodeVarintCouncilor(dAtA, i, uint64(m.Status))
+		i--
+		dAtA[i] = 0x10
+	}
 	if len(m.Address) > 0 {
 		i -= len(m.Address)
 		copy(dAtA[i:], m.Address)
 		i = encodeVarintCouncilor(dAtA, i, uint64(len(m.Address)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.Moniker) > 0 {
-		i -= len(m.Moniker)
-		copy(dAtA[i:], m.Moniker)
-		i = encodeVarintCouncilor(dAtA, i, uint64(len(m.Moniker)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -274,11 +430,31 @@ func (m *MsgClaimCouncilor) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovCouncilor(uint64(l))
+	}
 	l = len(m.Moniker)
 	if l > 0 {
 		n += 1 + l + sovCouncilor(uint64(l))
 	}
-	l = len(m.Address)
+	l = len(m.Username)
+	if l > 0 {
+		n += 1 + l + sovCouncilor(uint64(l))
+	}
+	l = len(m.Description)
+	if l > 0 {
+		n += 1 + l + sovCouncilor(uint64(l))
+	}
+	l = len(m.Social)
+	if l > 0 {
+		n += 1 + l + sovCouncilor(uint64(l))
+	}
+	l = len(m.Contact)
+	if l > 0 {
+		n += 1 + l + sovCouncilor(uint64(l))
+	}
+	l = len(m.Avatar)
 	if l > 0 {
 		n += 1 + l + sovCouncilor(uint64(l))
 	}
@@ -291,13 +467,15 @@ func (m *Councilor) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Moniker)
-	if l > 0 {
-		n += 1 + l + sovCouncilor(uint64(l))
-	}
 	l = len(m.Address)
 	if l > 0 {
 		n += 1 + l + sovCouncilor(uint64(l))
+	}
+	if m.Status != 0 {
+		n += 1 + sovCouncilor(uint64(m.Status))
+	}
+	if m.Rank != 0 {
+		n += 1 + sovCouncilor(uint64(m.Rank))
 	}
 	return n
 }
@@ -339,38 +517,6 @@ func (m *MsgClaimCouncilor) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Moniker", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowCouncilor
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthCouncilor
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthCouncilor
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Moniker = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
 			}
 			var byteLen int
@@ -402,6 +548,198 @@ func (m *MsgClaimCouncilor) Unmarshal(dAtA []byte) error {
 			if m.Address == nil {
 				m.Address = []byte{}
 			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Moniker", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCouncilor
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCouncilor
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCouncilor
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Moniker = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Username", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCouncilor
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCouncilor
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCouncilor
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Username = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Description", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCouncilor
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCouncilor
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCouncilor
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Description = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Social", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCouncilor
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCouncilor
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCouncilor
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Social = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Contact", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCouncilor
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCouncilor
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCouncilor
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Contact = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Avatar", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCouncilor
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthCouncilor
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthCouncilor
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Avatar = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -455,38 +793,6 @@ func (m *Councilor) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Moniker", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowCouncilor
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthCouncilor
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthCouncilor
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Moniker = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
 			}
 			var byteLen int
@@ -519,6 +825,44 @@ func (m *Councilor) Unmarshal(dAtA []byte) error {
 				m.Address = []byte{}
 			}
 			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Status", wireType)
+			}
+			m.Status = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCouncilor
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Status |= CouncilorStatus(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Rank", wireType)
+			}
+			m.Rank = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowCouncilor
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Rank |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipCouncilor(dAtA[iNdEx:])

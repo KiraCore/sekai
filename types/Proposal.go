@@ -14,6 +14,7 @@ const (
 	ProposalTypeSpendingPoolWithdraw               = "SpendingPoolWithdrawProposal"
 	ProposalTypeUpsertUBI                          = "UpsertUBIProposal"
 	ProposalTypeRemoveUBI                          = "RemoveUBIProposal"
+	ProposalTypeResetWholeCouncilorRank            = "ResetWholeCouncilorRank"
 	AssignPermissionProposalType                   = "AssignPermission"
 	WhitelistAccountPermissionProposalType         = "WhitelistAccountPermission"
 	BlacklistAccountPermissionProposalType         = "BlacklistAccountPermission"
@@ -46,6 +47,7 @@ var AllProposalTypes []string = []string{
 	ProposalTypeUnjailValidator,
 	ProposalTypeResetWholeValidatorRank,
 	ProposalTypeSlashValidator,
+	ProposalTypeResetWholeCouncilorRank,
 	WhitelistAccountPermissionProposalType,
 	BlacklistAccountPermissionProposalType,
 	RemoveWhitelistedAccountPermissionProposalType,

@@ -60,11 +60,11 @@ service Msg {
     // CancelIdentityRecordsVerifyRequest defines a method to cancel verification request
     rpc CancelIdentityRecordsVerifyRequest(MsgCancelIdentityRecordsVerifyRequest) returns (MsgCancelIdentityRecordsVerifyRequestResponse);
     // CouncilorPause - signal to the network that Councilor will NOT be present for a prolonged period of time
-    rpc CouncilorPause(MsgCouncilorPauseRequest) returns (MsgCouncilorPauseResponse);
+    rpc CouncilorPause(MsgCouncilorPause) returns (MsgCouncilorPauseResponse);
     // CouncilorUnpause - signal to the network that Councilor wishes to regain voting ability after planned absence
-    rpc CouncilorUnpause(MsgCouncilorUnpauseRequest) returns (MsgCouncilorUnpauseResponse);
+    rpc CouncilorUnpause(MsgCouncilorUnpause) returns (MsgCouncilorUnpauseResponse);
     // CouncilorActivate - signal to the network that Councilor wishes to regain voting ability after unannounced absence
-    rpc CouncilorActivate(MsgCouncilorActivateRequest) returns (MsgCouncilorActivateResponse);
+    rpc CouncilorActivate(MsgCouncilorActivate) returns (MsgCouncilorActivateResponse);
 }
 
 
@@ -112,16 +112,17 @@ message MsgRequestIdentityRecordsVerifyResponse {
 message MsgHandleIdentityRecordsVerifyResponse {}
 message MsgCancelIdentityRecordsVerifyRequestResponse {}
 
-message MsgCouncilorPauseRequest {
+message MsgCouncilorPause {
+    string sender = 1;
 }
 message MsgCouncilorPauseResponse {}
 
-message MsgCouncilorUnpauseRequest {
-
+message MsgCouncilorUnpause {
+    string sender = 1;
 }
 message MsgCouncilorUnpauseResponse {}
 
-message MsgCouncilorActivateRequest {
-
+message MsgCouncilorActivate {
+    string sender = 1;
 }
 message MsgCouncilorActivateResponse {}

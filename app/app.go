@@ -298,6 +298,7 @@ func NewInitApp(
 			customgov.NewApplySetNetworkPropertyProposalHandler(app.CustomGovKeeper),
 			customgov.NewApplyUpsertDataRegistryProposalHandler(app.CustomGovKeeper),
 			customgov.NewApplySetPoorNetworkMessagesProposalHandler(app.CustomGovKeeper),
+			customgov.NewApplyResetWholeCouncilorRankProposalHandler(app.CustomGovKeeper),
 			tokens.NewApplyUpsertTokenAliasProposalHandler(app.TokensKeeper),
 			tokens.NewApplyUpsertTokenRatesProposalHandler(app.TokensKeeper),
 			tokens.NewApplyWhiteBlackChangeProposalHandler(app.TokensKeeper),

@@ -158,6 +158,9 @@ func (k Keeper) RegisterIdentityRecords(ctx sdk.Context, address sdk.AccAddress,
 		if infos[i].Key == "moniker" && len(infos[i].Info) > 32 {
 			return stakingtypes.ErrInvalidMonikerLength
 		}
+		if infos[i].Key == "username" && len(infos[i].Info) > 32 {
+			return stakingtypes.ErrInvalidUsernameLength
+		}
 
 		if CheckIfWithinStringArray(infos[i].Key, uniqueKeys) {
 			addrs := k.GetAddressesByIdRecordKey(ctx, infos[i].Key, infos[i].Info)

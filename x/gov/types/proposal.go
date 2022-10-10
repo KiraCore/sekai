@@ -7,6 +7,7 @@ import (
 	kiratypes "github.com/KiraCore/sekai/types"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/gogo/protobuf/proto"
 )
@@ -579,5 +580,28 @@ func (m *SetProposalDurationsProposal) ValidateBasic() error {
 			return fmt.Errorf("zero proposal duration is not allowed")
 		}
 	}
+	return nil
+}
+
+func NewResetWholeCouncilorRankProposal(proposer sdk.AccAddress) *ProposalResetWholeCouncilorRank {
+	return &ProposalResetWholeCouncilorRank{
+		Proposer: proposer,
+	}
+}
+
+func (m *ProposalResetWholeCouncilorRank) ProposalType() string {
+	return kiratypes.ProposalTypeResetWholeValidatorRank
+}
+
+func (m *ProposalResetWholeCouncilorRank) ProposalPermission() PermValue {
+	return PermCreateResetWholeCouncilorRankProposal
+}
+
+func (m *ProposalResetWholeCouncilorRank) VotePermission() PermValue {
+	return PermVoteResetWholeCouncilorRankProposal
+}
+
+// ValidateBasic returns basic validation
+func (m *ProposalResetWholeCouncilorRank) ValidateBasic() error {
 	return nil
 }
