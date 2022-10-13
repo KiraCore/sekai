@@ -239,6 +239,114 @@ func (m *MsgClaimCouncilor) GetSigners() []sdk.AccAddress {
 	}
 }
 
+func NewMsgCouncilorPause(
+	address sdk.AccAddress,
+) *MsgCouncilorPause {
+	return &MsgCouncilorPause{
+		Sender: address.String(),
+	}
+}
+
+func (m *MsgCouncilorPause) Route() string {
+	return ModuleName
+}
+
+func (m *MsgCouncilorPause) Type() string {
+	return types.MsgTypeClaimCouncilor
+}
+
+func (m *MsgCouncilorPause) ValidateBasic() error {
+	if m.Sender == "" {
+		return ErrCouncilorEmptyAddress
+	}
+
+	return nil
+}
+
+func (m *MsgCouncilorPause) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *MsgCouncilorPause) GetSigners() []sdk.AccAddress {
+	addr, _ := sdk.AccAddressFromBech32(m.Sender)
+	return []sdk.AccAddress{
+		addr,
+	}
+}
+
+func NewMsgCouncilorUnpause(
+	address sdk.AccAddress,
+) *MsgCouncilorUnpause {
+	return &MsgCouncilorUnpause{
+		Sender: address.String(),
+	}
+}
+
+func (m *MsgCouncilorUnpause) Route() string {
+	return ModuleName
+}
+
+func (m *MsgCouncilorUnpause) Type() string {
+	return types.MsgTypeClaimCouncilor
+}
+
+func (m *MsgCouncilorUnpause) ValidateBasic() error {
+	if m.Sender == "" {
+		return ErrCouncilorEmptyAddress
+	}
+
+	return nil
+}
+
+func (m *MsgCouncilorUnpause) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *MsgCouncilorUnpause) GetSigners() []sdk.AccAddress {
+	addr, _ := sdk.AccAddressFromBech32(m.Sender)
+	return []sdk.AccAddress{
+		addr,
+	}
+}
+
+func NewMsgCouncilorActivate(
+	address sdk.AccAddress,
+) *MsgCouncilorActivate {
+	return &MsgCouncilorActivate{
+		Sender: address.String(),
+	}
+}
+
+func (m *MsgCouncilorActivate) Route() string {
+	return ModuleName
+}
+
+func (m *MsgCouncilorActivate) Type() string {
+	return types.MsgTypeClaimCouncilor
+}
+
+func (m *MsgCouncilorActivate) ValidateBasic() error {
+	if m.Sender == "" {
+		return ErrCouncilorEmptyAddress
+	}
+
+	return nil
+}
+
+func (m *MsgCouncilorActivate) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *MsgCouncilorActivate) GetSigners() []sdk.AccAddress {
+	addr, _ := sdk.AccAddressFromBech32(m.Sender)
+	return []sdk.AccAddress{
+		addr,
+	}
+}
+
 func NewMsgWhitelistRolePermission(
 	proposer sdk.AccAddress,
 	roleIdentifier string,

@@ -176,7 +176,12 @@ func NewTxCouncilorCmds() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	councilor.AddCommand(GetTxClaimCouncilorSeatCmd())
+	councilor.AddCommand(
+		GetTxClaimCouncilorSeatCmd(),
+		GetTxCouncilorPauseCmd(),
+		GetTxCouncilorUnpauseCmd(),
+		GetTxCouncilorActivateCmd(),
+	)
 
 	return councilor
 }
@@ -1306,6 +1311,81 @@ func GetTxClaimCouncilorSeatCmd() *cobra.Command {
 	cmd.Flags().String(FlagMoniker, "", "the Moniker")
 	cmd.Flags().String(FlagAddress, "", "the address")
 
+	cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+// CouncilorPause - signal to the network that Councilor will NOT be present for a prolonged period of time
+func GetTxCouncilorPauseCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "pause",
+		Short: "Pause councilor",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgCouncilorPause(
+				clientCtx.GetFromAddress(),
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+// CouncilorUnpause - signal to the network that Councilor wishes to regain voting ability after planned absence
+func GetTxCouncilorUnpauseCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "unpause",
+		Short: "Unpause councilor",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgCouncilorUnpause(
+				clientCtx.GetFromAddress(),
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+// CouncilorActivate - signal to the network that Councilor wishes to regain voting ability after planned absence
+func GetTxCouncilorActivateCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "activate",
+		Short: "Activate councilor",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgCouncilorActivate(
+				clientCtx.GetFromAddress(),
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
