@@ -121,7 +121,7 @@ func DefaultGenesis() *GenesisState {
 			MaxCustodyTxSize:            8192,
 			MaxCustodyBufferSize:        10,
 		},
-		ExecutionFees: []*ExecutionFee{
+		ExecutionFees: []ExecutionFee{
 			{
 				TransactionType:   kiratypes.MsgTypeClaimValidator,
 				ExecutionFee:      100,
