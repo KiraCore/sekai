@@ -69,6 +69,57 @@ func (k Keeper) GetAllCouncilors(ctx sdk.Context) []types.Councilor {
 	return councilors
 }
 
+func (k Keeper) OnCouncilorAct(ctx sdk.Context, addr sdk.AccAddress) {
+	councilor, found := k.GetCouncilor(ctx, addr)
+	if !found {
+		return
+	}
+	if councilor.Status == types.CouncilorActive {
+		councilor.AbstentionCounter = 0
+		councilor.Rank++
+		k.SaveCouncilor(ctx, councilor)
+	}
+}
+
+func (k Keeper) OnCouncilorAbsent(ctx sdk.Context, addr sdk.AccAddress) {
+	councilor, found := k.GetCouncilor(ctx, addr)
+	if !found {
+		return
+	}
+	if councilor.Status == types.CouncilorActive {
+		properties := k.GetNetworkProperties(ctx)
+		// increase `abstention counter` by `1`
+		councilor.AbstentionCounter++
+		// decrease rank by `abstention_rank_decrease_amount`
+		if councilor.Rank > int64(properties.AbstentionRankDecreaseAmount) {
+			councilor.Rank -= int64(properties.AbstentionRankDecreaseAmount)
+		} else {
+			councilor.Rank = 0
+		}
+
+		// Counselor **consecutively** did NOT voted on the proposal he had permission to vote more than `max_abstention` number of times while having `active` status
+		// - change status to `inactive`
+		// - set `rank` to `0`
+		if councilor.AbstentionCounter >= int64(properties.MaxAbstention) {
+			councilor.Status = types.CouncilorInactive
+			councilor.Rank = 0
+		}
+
+		k.SaveCouncilor(ctx, councilor)
+	}
+
+}
+
+func (k Keeper) OnCouncilorJail(ctx sdk.Context, addr sdk.AccAddress) {
+	councilor, found := k.GetCouncilor(ctx, addr)
+	if !found {
+		return
+	}
+	councilor.Status = types.CouncilorJailed
+	councilor.Rank = 0
+	k.SaveCouncilor(ctx, councilor)
+}
+
 func (k Keeper) ResetWholeCouncilorRank(ctx sdk.Context) {
 	councilors := k.GetAllCouncilors(ctx)
 	for _, councilor := range councilors {

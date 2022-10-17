@@ -131,34 +131,36 @@ func TestExportInitGenesis(t *testing.T) {
 		},
 		StartingProposalId: 1,
 		NetworkProperties: &types.NetworkProperties{
-			MinTxFee:                    100,
-			MaxTxFee:                    1000000,
-			VoteQuorum:                  33,
-			MinimumProposalEndTime:      300, // 300 seconds / 5 mins
-			ProposalEnactmentTime:       300, // 300 seconds / 5 mins
-			MinProposalEndBlocks:        2,
-			MinProposalEnactmentBlocks:  1,
-			MischanceRankDecreaseAmount: 1,
-			MaxMischance:                1,
-			InactiveRankDecreasePercent: 2,
-			MinValidators:               1,
-			PoorNetworkMaxBankSend:      1,
-			EnableForeignFeePayments:    true,
-			MinIdentityApprovalTip:      200,
-			UniqueIdentityKeys:          "moniker,username",
-			UbiHardcap:                  6000_000,
-			ValidatorsFeeShare:          50,
-			InflationRate:               18,       // 18%
-			InflationPeriod:             31557600, // 1 year
-			UnstakingPeriod:             2629800,  // 1 month
-			MaxDelegators:               100,
-			MinDelegationPushout:        10,
-			SlashingPeriod:              3600,
-			MaxJailedPercentage:         25,
-			MaxSlashingPercentage:       1,
-			MinCustodyReward:            200,
-			MaxCustodyBufferSize:        10,
-			MaxCustodyTxSize:            8192,
+			MinTxFee:                     100,
+			MaxTxFee:                     1000000,
+			VoteQuorum:                   33,
+			MinimumProposalEndTime:       300, // 300 seconds / 5 mins
+			ProposalEnactmentTime:        300, // 300 seconds / 5 mins
+			MinProposalEndBlocks:         2,
+			MinProposalEnactmentBlocks:   1,
+			MischanceRankDecreaseAmount:  1,
+			MaxMischance:                 1,
+			InactiveRankDecreasePercent:  2,
+			MinValidators:                1,
+			PoorNetworkMaxBankSend:       1,
+			EnableForeignFeePayments:     true,
+			MinIdentityApprovalTip:       200,
+			UniqueIdentityKeys:           "moniker,username",
+			UbiHardcap:                   6000_000,
+			ValidatorsFeeShare:           50,
+			InflationRate:                18,       // 18%
+			InflationPeriod:              31557600, // 1 year
+			UnstakingPeriod:              2629800,  // 1 month
+			MaxDelegators:                100,
+			MinDelegationPushout:         10,
+			SlashingPeriod:               3600,
+			MaxJailedPercentage:          25,
+			MaxSlashingPercentage:        1,
+			MinCustodyReward:             200,
+			MaxCustodyBufferSize:         10,
+			MaxCustodyTxSize:             8192,
+			AbstentionRankDecreaseAmount: 1,
+			MaxAbstention:                2,
 		},
 		ExecutionFees: []*types.ExecutionFee{
 			{

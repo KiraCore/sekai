@@ -46,4 +46,5 @@ message Councilor {
   ];
   CouncilorStatus status = 2;
   int64 rank = 3;
+  int64 abstention_counter = 4;
 }

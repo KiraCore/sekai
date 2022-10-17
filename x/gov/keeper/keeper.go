@@ -207,6 +207,16 @@ func (k Keeper) GetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 		return types.NetworkPropertyValue{Value: properties.MaxJailedPercentage}, nil
 	case types.MaxSlashingPercentage:
 		return types.NetworkPropertyValue{Value: properties.MaxSlashingPercentage}, nil
+	case types.MinCustodyReward:
+		return types.NetworkPropertyValue{Value: properties.MinCustodyReward}, nil
+	case types.MaxCustodyBufferSize:
+		return types.NetworkPropertyValue{Value: properties.MaxCustodyBufferSize}, nil
+	case types.MaxCustodyTxSize:
+		return types.NetworkPropertyValue{Value: properties.MaxCustodyTxSize}, nil
+	case types.AbstentionRankDecreaseAmount:
+		return types.NetworkPropertyValue{Value: properties.AbstentionRankDecreaseAmount}, nil
+	case types.MaxAbstention:
+		return types.NetworkPropertyValue{Value: properties.MaxAbstention}, nil
 	default:
 		return types.NetworkPropertyValue{}, errors.New("trying to fetch network property that does not exist")
 	}
@@ -277,6 +287,16 @@ func (k Keeper) SetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 		properties.MaxJailedPercentage = value.Value
 	case types.MaxSlashingPercentage:
 		properties.MaxSlashingPercentage = value.Value
+	case types.MinCustodyReward:
+		properties.MinCustodyReward = value.Value
+	case types.MaxCustodyBufferSize:
+		properties.MaxCustodyBufferSize = value.Value
+	case types.MaxCustodyTxSize:
+		properties.MaxCustodyTxSize = value.Value
+	case types.AbstentionRankDecreaseAmount:
+		properties.AbstentionRankDecreaseAmount = value.Value
+	case types.MaxAbstention:
+		properties.MaxAbstention = value.Value
 	default:
 		return errors.New("trying to set network property that does not exist")
 	}

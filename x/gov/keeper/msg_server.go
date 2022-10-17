@@ -52,6 +52,9 @@ func (k msgServer) SubmitProposal(goCtx context.Context, msg *types.MsgSubmitPro
 		return nil, err
 	}
 
+	// call councilor rank update function
+	k.keeper.OnCouncilorAct(ctx, msg.Proposer)
+
 	cacheCtx, _ := ctx.CacheContext()
 	router := k.keeper.GetProposalRouter()
 	proposal, found := k.keeper.GetProposal(cacheCtx, proposalID)
@@ -115,6 +118,9 @@ func (k msgServer) VoteProposal(
 
 	vote := types.NewVote(msg.ProposalId, msg.Voter, msg.Option, msg.Slash)
 	k.keeper.SaveVote(ctx, vote)
+
+	// call councilor rank update function
+	k.keeper.OnCouncilorAct(ctx, msg.Voter)
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
@@ -708,6 +714,24 @@ func (k msgServer) CouncilorActivate(
 ) (*types.MsgCouncilorActivateResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	_ = ctx
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return nil, err
+	}
+
+	councilor, found := k.keeper.GetCouncilor(ctx, sender)
+	if !found {
+		return nil, types.ErrCouncilorNotFound
+	}
+
+	// cannot be paused if not paused already
+	if councilor.Status != types.CouncilorInactive {
+		return nil, sdkerrors.Wrap(types.ErrCouncilorNotInactivated, "Can NOT activate NOT inactive councilor")
+	}
+
+	councilor.Status = types.CouncilorActive
+	councilor.AbstentionCounter = 0
+	k.keeper.SaveCouncilor(ctx, councilor)
+
 	return &types.MsgCouncilorActivateResponse{}, nil
 }

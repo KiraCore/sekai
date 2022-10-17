@@ -318,7 +318,12 @@ func (m *SetNetworkPropertyProposal) ValidateBasic() error {
 		MinDelegationPushout,
 		SlashingPeriod,
 		MaxJailedPercentage,
-		MaxSlashingPercentage:
+		MaxSlashingPercentage,
+		MinCustodyReward,
+		MaxCustodyBufferSize,
+		MaxCustodyTxSize,
+		AbstentionRankDecreaseAmount,
+		MaxAbstention:
 		return nil
 	default:
 		return ErrInvalidNetworkProperty
