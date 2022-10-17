@@ -161,7 +161,7 @@ func TestNewKeeper_ProcessExecutionFeeReturn(t *testing.T) {
 	app.BankKeeper.MintCoins(ctx, minttypes.ModuleName, coins)
 	app.BankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, addr3, coins)
 
-	app.CustomGovKeeper.SetExecutionFee(ctx, &govtypes.ExecutionFee{
+	app.CustomGovKeeper.SetExecutionFee(ctx, govtypes.ExecutionFee{
 		TransactionType:   kiratypes.MsgTypeUpsertTokenRate,
 		ExecutionFee:      1000,
 		FailureFee:        100,
