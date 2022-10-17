@@ -49,6 +49,10 @@ service Query {
   rpc ExecutionFee (ExecutionFeeRequest) returns (ExecutionFeeResponse) {
     option (google.api.http).get = "/kira/gov/execution_fee/{transaction_type}";
   }
+  // AllExecutionFees returns all execution fees
+  rpc AllExecutionFees(AllExecutionFeesRequest) returns (AllExecutionFeesResponse) {
+    option (google.api.http).get = "/kira/gov/all_execution_fees";
+  }
   // PoorNetworkMessages returns poor network messages
   rpc PoorNetworkMessages (PoorNetworkMessagesRequest) returns (PoorNetworkMessagesResponse) {
     option (google.api.http).get = "/kira/gov/poor_network_messages";
@@ -168,6 +172,12 @@ message ExecutionFeeRequest {
 }
 message ExecutionFeeResponse {
   kira.gov.ExecutionFee fee = 1;
+}
+
+message AllExecutionFeesRequest {}
+message AllExecutionFeesResponse {
+  repeated kira.gov.ExecutionFee fees = 1 [ (gogoproto.nullable) = false ];
+  repeated string tx_types = 2;
 }
 
 message PoorNetworkMessagesRequest {}

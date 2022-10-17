@@ -71,7 +71,78 @@ func TestSimappExportGenesis(t *testing.T) {
 			"max_custody_buffer_size": "10",
 			"max_custody_tx_size": "8192"
 		},
-		"execution_fees":[],
+		"execution_fees":[	
+			{	
+				"transaction_type": "activate",	
+				"execution_fee": "100",	
+				"failure_fee": "1000",	
+				"timeout": "10",	
+				"default_parameters": "0"	
+			},	
+			{	
+				"transaction_type": "claim-councilor",	
+				"execution_fee": "100",	
+				"failure_fee": "1",	
+				"timeout": "10",	
+				"default_parameters": "0"	
+			},	
+			{	
+				"transaction_type": "claim-proposal-type-x",	
+				"execution_fee": "100",	
+				"failure_fee": "1",	
+				"timeout": "10",	
+				"default_parameters": "0"	
+			},	
+			{	
+				"transaction_type": "claim-validator",	
+				"execution_fee": "100",	
+				"failure_fee": "1",	
+				"timeout": "10",	
+				"default_parameters": "0"	
+			},	
+			{	
+				"transaction_type": "pause",	
+				"execution_fee": "100",	
+				"failure_fee": "100",	
+				"timeout": "10",	
+				"default_parameters": "0"	
+			},	
+			{	
+				"transaction_type": "submit-proposal-type-x",	
+				"execution_fee": "10",	
+				"failure_fee": "1",	
+				"timeout": "10",	
+				"default_parameters": "0"	
+			},	
+			{	
+				"transaction_type": "unpause",	
+				"execution_fee": "100",	
+				"failure_fee": "100",	
+				"timeout": "10",	
+				"default_parameters": "0"	
+			},	
+			{	
+				"transaction_type": "upsert-token-alias",	
+				"execution_fee": "100",	
+				"failure_fee": "1",	
+				"timeout": "10",	
+				"default_parameters": "0"	
+			},	
+			{	
+				"transaction_type": "veto-proposal-type-x",	
+				"execution_fee": "100",	
+				"failure_fee": "1",	
+				"timeout": "10",	
+				"default_parameters": "0"	
+			},	
+			{	
+				"transaction_type": "vote-proposal-type-x",	
+				"execution_fee": "100",	
+				"failure_fee": "1",	
+				"timeout": "10",	
+				"default_parameters": "0"	
+			}	
+		],
 		"poor_network_messages":{
 			"messages":[
 				"submit-proposal","set-network-properties","vote-proposal","claim-councilor","whitelist-permissions","blacklist-permissions","create-role","assign-role","remove-role","whitelist-role-permission","blacklist-role-permission","remove-whitelist-role-permission","remove-blacklist-role-permission","claim-validator","activate","pause","unpause","register-identity-records","edit-identity-record","request-identity-records-verify","handle-identity-records-verify-request","cancel-identity-records-verify-request"
@@ -160,7 +231,7 @@ func TestExportInitGenesis(t *testing.T) {
 			MaxCustodyBufferSize:        10,
 			MaxCustodyTxSize:            8192,
 		},
-		ExecutionFees: []*types.ExecutionFee{
+		ExecutionFees: []types.ExecutionFee{
 			{
 				TransactionType:   "claim-validator-seat",
 				ExecutionFee:      10,
@@ -225,7 +296,15 @@ func TestExportInitGenesis(t *testing.T) {
 			"max_custody_buffer_size": "10",
 			"max_custody_tx_size": "8192"
 		},
-		"execution_fees":[],
+		"execution_fees":[	
+			{	
+				"transaction_type": "claim-validator-seat",	
+				"execution_fee": "10",	
+				"failure_fee": "1",	
+				"timeout": "10",	
+				"default_parameters": "0"	
+			}	
+		],
 		"poor_network_messages":{
 			"messages":["set-network-properties"]
 		},
