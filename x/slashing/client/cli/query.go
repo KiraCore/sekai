@@ -27,6 +27,10 @@ func GetQueryCmd() *cobra.Command {
 		GetCmdQuerySigningInfo(),
 		GetCmdQueryParams(),
 		GetCmdQuerySigningInfos(),
+		GetCmdQuerySlashProposals(),
+		GetCmdQuerySlashedStakingPools(),
+		GetCmdQueryActiveStakingPools(),
+		GetCmdQueryInactiveStakingPools(),
 	)
 
 	return slashingQueryCmd
@@ -121,6 +125,126 @@ $ <appd> query slashing params
 			}
 
 			return clientCtx.PrintProto(&res.Params)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// GetCmdQuerySlashProposals implements a command to fetch slash proposals.
+func GetCmdQuerySlashProposals() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "slash-proposals",
+		Short: "Query slash proposals",
+		Args:  cobra.NoArgs,
+		Long: strings.TrimSpace(`Query the slash proposals:
+
+$ <appd> query slashing slash-proposals
+`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			params := &types.QuerySlashProposalsRequest{}
+			res, err := queryClient.SlashProposals(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// GetCmdQuerySlashedStakingPools implements a command to fetch slashed staking pools.
+func GetCmdQuerySlashedStakingPools() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "slashed-staking-pools",
+		Short: "Query slashed staking pools",
+		Args:  cobra.NoArgs,
+		Long: strings.TrimSpace(`Query slashed staking pools:
+
+$ <appd> query slashing slashed-staking-pools
+`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			params := &types.QuerySlashedStakingPoolsRequest{}
+			res, err := queryClient.SlashedStakingPools(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// GetCmdQueryActiveStakingPools implements a command to fetch active staking pools.
+func GetCmdQueryActiveStakingPools() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "active-staking-pools",
+		Short: "Query active staking pools",
+		Args:  cobra.NoArgs,
+		Long: strings.TrimSpace(`Query active staking pools:
+
+$ <appd> query slashing active-staking-pools
+`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			params := &types.QueryActiveStakingPoolsRequest{}
+			res, err := queryClient.ActiveStakingPools(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// GetCmdQueryInactiveStakingPools implements a command to fetch inactive staking pools.
+func GetCmdQueryInactiveStakingPools() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "inactive-staking-pools",
+		Short: "Query inactive staking pools",
+		Args:  cobra.NoArgs,
+		Long: strings.TrimSpace(`Query inactive staking pools:
+
+$ <appd> query slashing inactive-staking-pools
+`),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			params := &types.QueryInactiveStakingPoolsRequest{}
+			res, err := queryClient.InactiveStakingPools(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
 		},
 	}
 

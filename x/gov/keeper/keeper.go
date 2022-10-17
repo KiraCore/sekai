@@ -201,6 +201,12 @@ func (k Keeper) GetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 		return types.NetworkPropertyValue{Value: properties.MaxDelegators}, nil
 	case types.MinDelegationPushout:
 		return types.NetworkPropertyValue{Value: properties.MinDelegationPushout}, nil
+	case types.SlashingPeriod:
+		return types.NetworkPropertyValue{Value: properties.SlashingPeriod}, nil
+	case types.MaxJailedPercentage:
+		return types.NetworkPropertyValue{Value: properties.MaxJailedPercentage}, nil
+	case types.MaxSlashingPercentage:
+		return types.NetworkPropertyValue{Value: properties.MaxSlashingPercentage}, nil
 	default:
 		return types.NetworkPropertyValue{}, errors.New("trying to fetch network property that does not exist")
 	}
@@ -265,6 +271,12 @@ func (k Keeper) SetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 		properties.MaxDelegators = value.Value
 	case types.MinDelegationPushout:
 		properties.MinDelegationPushout = value.Value
+	case types.SlashingPeriod:
+		properties.SlashingPeriod = value.Value
+	case types.MaxJailedPercentage:
+		properties.MaxJailedPercentage = value.Value
+	case types.MaxSlashingPercentage:
+		properties.MaxSlashingPercentage = value.Value
 	default:
 		return errors.New("trying to set network property that does not exist")
 	}

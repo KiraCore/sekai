@@ -78,6 +78,11 @@ func DefaultGenesis() *GenesisState {
 				PermVoteUpsertUBIProposal,
 				PermCreateRemoveUBIProposal,
 				PermVoteRemoveUBIProposal,
+				PermCreateSlashValidatorProposal,
+				PermVoteSlashValidatorProposal,
+				PermCreateBasketProposal,
+				PermVoteBasketProposal,
+				PermHandleBasketEmergency,
 			}, nil),
 			uint64(RoleValidator): NewPermissions([]PermValue{PermClaimValidator}, nil),
 		},
@@ -109,6 +114,12 @@ func DefaultGenesis() *GenesisState {
 			UnstakingPeriod:             2629800,  // 1 month
 			MaxDelegators:               100,
 			MinDelegationPushout:        10,
+			SlashingPeriod:              3600,
+			MaxJailedPercentage:         25,
+			MaxSlashingPercentage:       1,
+			MinCustodyReward:            200,
+			MaxCustodyTxSize:            8192,
+			MaxCustodyBufferSize:        10,
 		},
 		ExecutionFees: []ExecutionFee{
 			{

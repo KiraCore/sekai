@@ -41,6 +41,12 @@ enum NetworkProperty {
     UNSTAKING_PERIOD = 23 [(gogoproto.enumvalue_customname) = "UnstakingPeriod"]; // period of time (in seconds) it takes to unstake any of the staked tokens
     MAX_DELEGATORS = 25 [(gogoproto.enumvalue_customname) = "MaxDelegators"]; // number of delegators limitation on a single pool
     MIN_DELEGATION_PUSHOUT = 26 [(gogoproto.enumvalue_customname) = "MinDelegationPushout"]; // The multiplier (10x) to push out minimum delegation when it exceeds max delegators
+    SLASHING_PERIOD = 27 [(gogoproto.enumvalue_customname) = "SlashingPeriod"]; // (default 3600s) - slashing_period should be smaller than `unstaking_period`
+    MAX_JAILED_PERCENTAGE = 28 [(gogoproto.enumvalue_customname) = "MaxJailedPercentage"]; // (default 25%)
+    MAX_SLASHING_PERCENTAGE = 29 [(gogoproto.enumvalue_customname) = "MaxSlashingPercentage"]; // (default 0.5%) 0% - 100%
+    MIN_CUSTODY_REWARD = 30 [(gogoproto.enumvalue_customname) = "MinCustodyReward"]; // minimum custody reward
+    MAX_CUSTODY_BUFFER_SIZE = 31 [(gogoproto.enumvalue_customname) = "MaxCustodyBufferSize"]; // maximum custody buffer size
+    MAX_CUSTODY_TX_SIZE = 32 [(gogoproto.enumvalue_customname) = "MaxCustodyTxSize"]; // maximum custody tx size to save in buffer
 }
 
 message NetworkPropertyValue {
@@ -77,4 +83,10 @@ message NetworkProperties {
     uint64 unstaking_period = 24; // period of time (in seconds) it takes to unstake any of the staked tokens 
     uint64 max_delegators = 25; // number of delegators limitation on a single pool
     uint64 min_delegation_pushout = 26; // The multiplier (10x) to push out minimum delegation when it exceeds max delegators
+    uint64 slashing_period = 27; // (default 3600s) - slashing_period should be smaller than `unstaking_period`
+    uint64 max_jailed_percentage = 28; // (default 25%)
+    uint64 max_slashing_percentage = 29; // (default 0.5%) 0% - 100%
+    uint64 min_custody_reward = 30; // minimum custody reward
+    uint64 max_custody_buffer_size = 31; // maximum custody buffer size
+    uint64 max_custody_tx_size = 32; // maximum custody tx size to save in buffer
 }

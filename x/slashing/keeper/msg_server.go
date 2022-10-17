@@ -3,7 +3,10 @@ package keeper
 import (
 	"context"
 
+	kiratypes "github.com/KiraCore/sekai/types"
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/slashing/types"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -55,6 +58,13 @@ func (k msgServer) Pause(goCtx context.Context, msg *types.MsgPause) (*types.Msg
 	if valErr != nil {
 		return nil, valErr
 	}
+
+	properties := k.gk.GetNetworkProperties(ctx)
+	validators := k.sk.GetValidatorSet(ctx)
+	if len(validators) <= int(properties.MinValidators) || len(validators) <= 1 {
+		return nil, types.ErrPauseNotAllowedOnPoorNetwork
+	}
+
 	err := k.Keeper.Pause(ctx, valAddr)
 	if err != nil {
 		return nil, err
@@ -95,4 +105,27 @@ func (k msgServer) Unpause(goCtx context.Context, msg *types.MsgUnpause) (*types
 	)
 
 	return &types.MsgUnpauseResponse{}, nil
+}
+
+func (k msgServer) RefuteSlashingProposal(goCtx context.Context, msg *types.MsgRefuteSlashingProposal) (*types.MsgRefuteSlashingProposalResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	proposals, _ := k.gk.GetProposals(ctx)
+	for _, proposal := range proposals {
+		if proposal.Result == govtypes.Pending && proposal.GetContent().ProposalType() == kiratypes.ProposalTypeSlashValidator {
+			content := proposal.GetContent().(*types.ProposalSlashValidator)
+			if content.Offender == msg.Validator {
+				content.Refutation = msg.Refutation
+				any, err := codectypes.NewAnyWithValue(content)
+				if err != nil {
+					return nil, err
+				}
+
+				proposal.Content = any
+				k.gk.SaveProposal(ctx, proposal)
+				return &types.MsgRefuteSlashingProposalResponse{}, nil
+			}
+		}
+	}
+	return nil, types.ErrSlashProposalDoesNotExists
 }

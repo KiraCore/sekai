@@ -4,6 +4,8 @@ import (
 	"context"
 
 	kiratypes "github.com/KiraCore/sekai/types"
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
+	multistakingtypes "github.com/KiraCore/sekai/x/multistaking/types"
 	"github.com/KiraCore/sekai/x/slashing/types"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
@@ -133,5 +135,77 @@ func (k Keeper) SigningInfos(c context.Context, request *types.QuerySigningInfos
 		Info:       signInfos,
 		Validators: validators,
 		Pagination: pageRes,
+	}, nil
+}
+
+func (k Keeper) SlashProposals(c context.Context, request *types.QuerySlashProposalsRequest) (*types.QuerySlashProposalsResponse, error) {
+	if request == nil {
+		return nil, status.Errorf(codes.InvalidArgument, "empty request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	proposals, _ := k.gk.GetProposals(ctx)
+	slashProposals := []govtypes.Proposal{}
+	for _, proposal := range proposals {
+		if proposal.GetContent().ProposalType() == kiratypes.ProposalTypeSlashValidator {
+			slashProposals = append(slashProposals, proposal)
+		}
+	}
+	return &types.QuerySlashProposalsResponse{
+		Proposals: slashProposals,
+	}, nil
+}
+
+func (k Keeper) SlashedStakingPools(c context.Context, request *types.QuerySlashedStakingPoolsRequest) (*types.QuerySlashedStakingPoolsResponse, error) {
+	if request == nil {
+		return nil, status.Errorf(codes.InvalidArgument, "empty request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	pools := k.msk.GetAllStakingPools(ctx)
+	slashedPools := []multistakingtypes.StakingPool{}
+	for _, pool := range pools {
+		if pool.Slashed != 0 {
+			slashedPools = append(slashedPools, pool)
+		}
+	}
+	return &types.QuerySlashedStakingPoolsResponse{
+		Pools: slashedPools,
+	}, nil
+}
+
+func (k Keeper) ActiveStakingPools(c context.Context, request *types.QueryActiveStakingPoolsRequest) (*types.QueryActiveStakingPoolsResponse, error) {
+	if request == nil {
+		return nil, status.Errorf(codes.InvalidArgument, "empty request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	pools := k.msk.GetAllStakingPools(ctx)
+	activePools := []multistakingtypes.StakingPool{}
+	for _, pool := range pools {
+		if pool.Slashed == 0 && pool.Enabled {
+			activePools = append(activePools, pool)
+		}
+	}
+	return &types.QueryActiveStakingPoolsResponse{
+		Pools: activePools,
+	}, nil
+}
+
+func (k Keeper) InactiveStakingPools(c context.Context, request *types.QueryInactiveStakingPoolsRequest) (*types.QueryInactiveStakingPoolsResponse, error) {
+	if request == nil {
+		return nil, status.Errorf(codes.InvalidArgument, "empty request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	pools := k.msk.GetAllStakingPools(ctx)
+	inactivePools := []multistakingtypes.StakingPool{}
+	for _, pool := range pools {
+		if pool.Slashed == 0 && pool.Enabled {
+			inactivePools = append(inactivePools, pool)
+		}
+	}
+	return &types.QueryInactiveStakingPoolsResponse{
+		Pools: inactivePools,
 	}, nil
 }

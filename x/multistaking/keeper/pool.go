@@ -60,11 +60,11 @@ func (k Keeper) SetStakingPool(ctx sdk.Context, pool types.StakingPool) {
 func getPoolPrefix(poolID uint64) string {
 	return fmt.Sprintf("v%d/", poolID)
 }
-func getPoolCoins(poolID uint64, coins sdk.Coins) sdk.Coins {
-	prefix := getPoolPrefix(poolID)
+func getPoolCoins(pool types.StakingPool, coins sdk.Coins) sdk.Coins {
+	prefix := getPoolPrefix(pool.Id)
 	poolCoins := sdk.Coins{}
 	for _, coin := range coins {
-		poolCoins = poolCoins.Add(sdk.NewCoin(prefix+coin.Denom, coin.Amount))
+		poolCoins = poolCoins.Add(sdk.NewCoin(prefix+coin.Denom, coin.Amount.Mul(sdk.NewInt(int64(100))).Quo(sdk.NewInt(int64(100-pool.Slashed)))))
 	}
 	return poolCoins
 }

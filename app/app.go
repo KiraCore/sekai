@@ -8,6 +8,12 @@ import (
 
 	customante "github.com/KiraCore/sekai/app/ante"
 	"github.com/KiraCore/sekai/middleware"
+	"github.com/KiraCore/sekai/x/basket"
+	basketkeeper "github.com/KiraCore/sekai/x/basket/keeper"
+	baskettypes "github.com/KiraCore/sekai/x/basket/types"
+	"github.com/KiraCore/sekai/x/custody"
+	custodykeeper "github.com/KiraCore/sekai/x/custody/keeper"
+	custodytypes "github.com/KiraCore/sekai/x/custody/types"
 	"github.com/KiraCore/sekai/x/distributor"
 	distributorkeeper "github.com/KiraCore/sekai/x/distributor/keeper"
 	distributortypes "github.com/KiraCore/sekai/x/distributor/types"
@@ -99,10 +105,12 @@ var (
 		customgov.AppModuleBasic{},
 		spending.AppModuleBasic{},
 		distributor.AppModuleBasic{},
+		basket.AppModuleBasic{},
 		ubi.AppModuleBasic{},
 		evidence.AppModuleBasic{},
 		tokens.AppModuleBasic{},
 		feeprocessing.AppModuleBasic{},
+		custody.AppModuleBasic{},
 		multistaking.AppModuleBasic{},
 	)
 
@@ -113,6 +121,7 @@ var (
 		minttypes.ModuleName:         {authtypes.Minter},
 		spendingtypes.ModuleName:     nil,
 		distributortypes.ModuleName:  nil,
+		baskettypes.ModuleName:       {authtypes.Minter, authtypes.Burner},
 		multistakingtypes.ModuleName: {authtypes.Burner},
 	}
 
@@ -140,6 +149,7 @@ type SekaiApp struct {
 	UpgradeKeeper upgradekeeper.Keeper
 	ParamsKeeper  paramskeeper.Keeper
 
+	CustodyKeeper        custodykeeper.Keeper
 	CustomGovKeeper      customgovkeeper.Keeper
 	CustomStakingKeeper  customstakingkeeper.Keeper
 	CustomSlashingKeeper customslashingkeeper.Keeper
@@ -149,6 +159,7 @@ type SekaiApp struct {
 	SpendingKeeper       spendingkeeper.Keeper
 	UbiKeeper            ubikeeper.Keeper
 	DistrKeeper          distributorkeeper.Keeper
+	BasketKeeper         basketkeeper.Keeper
 	MultiStakingKeeper   multistakingkeeper.Keeper
 
 	// Module Manager
@@ -193,11 +204,13 @@ func NewInitApp(
 		govtypes.ModuleName,
 		spendingtypes.ModuleName,
 		distributortypes.ModuleName,
+		baskettypes.ModuleName,
 		multistakingtypes.ModuleName,
 		ubitypes.ModuleName,
 		tokenstypes.ModuleName,
 		feeprocessingtypes.ModuleName,
 		evidencetypes.StoreKey,
+		custodytypes.StoreKey,
 	)
 	tKeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 
@@ -225,24 +238,37 @@ func NewInitApp(
 		appCodec, keys[banktypes.StoreKey], app.AccountKeeper, app.GetSubspace(banktypes.ModuleName), app.BlockedAddrs(),
 	)
 
+	app.TokensKeeper = tokenskeeper.NewKeeper(keys[tokenstypes.ModuleName], appCodec)
 	app.CustomGovKeeper = customgovkeeper.NewKeeper(keys[govtypes.ModuleName], appCodec, app.BankKeeper)
 	customStakingKeeper := customstakingkeeper.NewKeeper(keys[stakingtypes.ModuleName], cdc, app.CustomGovKeeper)
+	app.MultiStakingKeeper = multistakingkeeper.NewKeeper(keys[multistakingtypes.ModuleName], appCodec, app.BankKeeper, app.TokensKeeper, app.CustomGovKeeper, customStakingKeeper)
 	app.CustomSlashingKeeper = customslashingkeeper.NewKeeper(
-		appCodec, keys[slashingtypes.StoreKey], &customStakingKeeper, app.CustomGovKeeper, app.GetSubspace(slashingtypes.ModuleName),
+		appCodec,
+		keys[slashingtypes.StoreKey],
+		&customStakingKeeper,
+		app.MultiStakingKeeper,
+		app.CustomGovKeeper,
+		app.GetSubspace(slashingtypes.ModuleName),
 	)
 	app.SpendingKeeper = spendingkeeper.NewKeeper(keys[spendingtypes.ModuleName], appCodec, app.BankKeeper, app.CustomGovKeeper)
 	app.UbiKeeper = ubikeeper.NewKeeper(keys[ubitypes.ModuleName], appCodec, app.BankKeeper, app.SpendingKeeper)
-	app.TokensKeeper = tokenskeeper.NewKeeper(keys[tokenstypes.ModuleName], appCodec)
 	// NOTE: customStakingKeeper above is passed by reference, so that it will contain these hooks
 	app.CustomStakingKeeper = *customStakingKeeper.SetHooks(
 		stakingtypes.NewMultiStakingHooks(app.CustomSlashingKeeper.Hooks()),
 	)
-	app.MultiStakingKeeper = multistakingkeeper.NewKeeper(keys[multistakingtypes.ModuleName], appCodec, app.BankKeeper, app.TokensKeeper, app.CustomGovKeeper, app.CustomStakingKeeper)
 	app.DistrKeeper = distributorkeeper.NewKeeper(
 		keys[distributortypes.ModuleName], appCodec,
 		app.AccountKeeper, app.BankKeeper,
 		app.CustomStakingKeeper, app.CustomGovKeeper,
 		app.MultiStakingKeeper)
+	app.MultiStakingKeeper.SetDistrKeeper(app.DistrKeeper)
+
+	app.BasketKeeper = basketkeeper.NewKeeper(
+		keys[baskettypes.ModuleName], appCodec,
+		app.AccountKeeper, app.BankKeeper,
+		app.CustomStakingKeeper, app.CustomGovKeeper,
+		app.MultiStakingKeeper,
+	)
 
 	app.UpgradeKeeper = upgradekeeper.NewKeeper(keys[upgradetypes.StoreKey], appCodec, app.CustomStakingKeeper)
 
@@ -258,6 +284,8 @@ func NewInitApp(
 	)
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	app.EvidenceKeeper = *evidenceKeeper
+
+	app.CustodyKeeper = custodykeeper.NewKeeper(keys[custodytypes.StoreKey], appCodec, app.CustomGovKeeper, app.BankKeeper)
 
 	proposalRouter := govtypes.NewProposalRouter(
 		[]govtypes.ProposalHandler{
@@ -275,6 +303,7 @@ func NewInitApp(
 			tokens.NewApplyWhiteBlackChangeProposalHandler(app.TokensKeeper),
 			customstaking.NewApplyUnjailValidatorProposalHandler(app.CustomStakingKeeper, app.CustomGovKeeper),
 			customslashing.NewApplyResetWholeValidatorRankProposalHandler(app.CustomSlashingKeeper),
+			customslashing.NewApplySlashValidatorProposalHandler(app.CustomSlashingKeeper),
 			customgov.NewApplyCreateRoleProposalHandler(app.CustomGovKeeper),
 			customgov.NewApplyRemoveRoleProposalHandler(app.CustomGovKeeper),
 			customgov.NewApplyWhitelistRolePermissionProposalHandler(app.CustomGovKeeper),
@@ -289,6 +318,9 @@ func NewInitApp(
 			spending.NewApplySpendingPoolWithdrawProposalHandler(app.SpendingKeeper, app.BankKeeper),
 			ubi.NewApplyUpsertUBIProposalHandler(app.UbiKeeper, app.CustomGovKeeper, app.SpendingKeeper),
 			ubi.NewApplyRemoveUBIProposalHandler(app.UbiKeeper),
+			basket.NewApplyCreateBasketProposalHandler(app.BasketKeeper),
+			basket.NewApplyEditBasketProposalHandler(app.BasketKeeper),
+			basket.NewApplyBasketWithdrawSurplusProposalHandler(app.BasketKeeper),
 		})
 
 	app.CustomGovKeeper.SetProposalRouter(proposalRouter)
@@ -313,9 +345,11 @@ func NewInitApp(
 		tokens.NewAppModule(app.TokensKeeper, app.CustomGovKeeper),
 		spending.NewAppModule(app.SpendingKeeper, app.CustomGovKeeper, app.BankKeeper),
 		distributor.NewAppModule(app.DistrKeeper, app.CustomGovKeeper),
+		basket.NewAppModule(app.BasketKeeper, app.CustomGovKeeper),
 		ubi.NewAppModule(app.UbiKeeper, app.CustomGovKeeper),
 		feeprocessing.NewAppModule(app.FeeProcessingKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
+		custody.NewAppModule(app.CustodyKeeper, app.CustomGovKeeper, app.BankKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -327,7 +361,10 @@ func NewInitApp(
 		upgradetypes.ModuleName, slashingtypes.ModuleName,
 		evidencetypes.ModuleName, stakingtypes.ModuleName,
 		spendingtypes.ModuleName, ubitypes.ModuleName,
-		distributortypes.ModuleName, multistakingtypes.ModuleName,
+		distributortypes.ModuleName, multistakingtypes.ModuleName, custodytypes.ModuleName,
+		baskettypes.ModuleName,
+		distributortypes.ModuleName, multistakingtypes.ModuleName, custodytypes.ModuleName,
+		baskettypes.ModuleName,
 	)
 	app.mm.SetOrderEndBlockers(
 		banktypes.ModuleName, upgradetypes.ModuleName, tokenstypes.ModuleName,
@@ -337,7 +374,8 @@ func NewInitApp(
 		stakingtypes.ModuleName,
 		feeprocessingtypes.ModuleName,
 		spendingtypes.ModuleName, ubitypes.ModuleName,
-		distributortypes.ModuleName, multistakingtypes.ModuleName,
+		distributortypes.ModuleName, multistakingtypes.ModuleName, custodytypes.ModuleName,
+		baskettypes.ModuleName,
 	)
 
 	// NOTE: The genutils moodule must occur after staking so that pools are
@@ -360,7 +398,9 @@ func NewInitApp(
 		ubitypes.ModuleName,
 		paramstypes.ModuleName,
 		distributortypes.ModuleName,
+		custodytypes.ModuleName,
 		multistakingtypes.ModuleName,
+		baskettypes.ModuleName,
 	)
 
 	app.mm.RegisterRoutes(app.Router(), app.QueryRouter(), encodingConfig.Amino)
@@ -400,6 +440,7 @@ func NewInitApp(
 			app.BankKeeper,
 			ante.DefaultSigVerificationGasConsumer,
 			encodingConfig.TxConfig.SignModeHandler(),
+			app.CustodyKeeper,
 		),
 	)
 	app.SetEndBlocker(app.EndBlocker)
@@ -574,6 +615,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(stakingtypes.ModuleName)
 	paramsKeeper.Subspace(slashingtypes.ModuleName)
 	paramsKeeper.Subspace(multistakingtypes.ModuleName)
+	paramsKeeper.Subspace(baskettypes.ModuleName)
 
 	return paramsKeeper
 }

@@ -34,7 +34,7 @@ message Resource {
   option (gogoproto.equal) = true;
 
   string id = 1;
-  string git = 2;
-  string checkout = 3;
+  string url = 2;
+  string version = 3;
   string checksum = 4;
 }

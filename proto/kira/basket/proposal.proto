@@ -1,0 +1,26 @@
+syntax = "proto3";
+package kira.basket;
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+import "google/protobuf/timestamp.proto";
+import "kira/basket/basket.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/basket/types";
+
+// proposal to create a token basket
+message ProposalCreateBasket {
+  Basket basket = 1 [ (gogoproto.nullable) = false ];
+}
+
+// proposal to edit properties of the basket
+message ProposalEditBasket {
+  Basket basket = 1 [ (gogoproto.nullable) = false ];
+}
+
+// proposal to withdraw surplus of one or all tokens in the `surplus` array of
+// the basket to a specific wallet or a spending pool
+message ProposalBasketWithdrawSurplus {
+  repeated uint64 basket_ids = 1;
+  string withdraw_target = 2;
+}

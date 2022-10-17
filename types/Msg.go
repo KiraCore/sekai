@@ -48,6 +48,15 @@ const (
 	MsgTypeSetCompoundInfo   = "set_compound_info"
 	MsgTypeRegisterDelegator = "register_delegator"
 
+	// basket module
+	MsgTypeDisableBasketDeposits  = "disable-basket-deposits"
+	MsgTypeDisableBasketWithdraws = "disable-basket-withdraws"
+	MsgTypeDisableBasketSwaps     = "disable-basket-swaps"
+	MsgTypeBasketTokenMint        = "basket-token-mint"
+	MsgTypeBasketTokenBurn        = "basket-token-burn"
+	MsgTypeBasketTokenSwap        = "basket-token-swap"
+	MsgTypeBasketClaimRewards     = "basket-claim-rewards"
+
 	// tokens module
 	MsgTypeUpsertTokenAlias = "upsert-token-alias"
 	MsgTypeUpsertTokenRate  = "upsert-token-rate"
@@ -64,6 +73,19 @@ const (
 	MsgTypeDepositSpendingPool             = "deposit-spending-pool"
 	MsgTypeRegisterSpendingPoolBeneficiary = "register-spending-pool-beneficiary"
 	MsgTypeClaimSpendingPool               = "claim-spending-pool"
+
+	// custody module
+	MsgTypeCreateCustody               = "create-custody"
+	MsgTypeAddToCustodyWhiteList       = "add-to-custody-whitelist"
+	MsgTypeAddToCustodyCustodians      = "add-to-custody-custodians"
+	MsgTypeRemoveFromCustodyCustodians = "remove-from-custody-custodians"
+	MsgTypeDropCustodyCustodians       = "drop-custody-custodians"
+	MsgTypeRemoveFromCustodyWhiteList  = "remove-from-custody-whitelist"
+	MsgTypeDropCustodyWhiteList        = "drop-custody-whitelist"
+	MsgApproveCustodyTransaction       = "approve-custody-transaction"
+	MsgDeclineCustodyTransaction       = "decline-custody-transaction"
+	MsgPasswordConfirmTransaction      = "password-confirm-transaction"
+	MsgTypeSend                        = "custody-send"
 )
 
 // Msg defines the interface a transaction message must fulfill.
@@ -120,6 +142,16 @@ var MsgFuncIDMapping = map[string]int64{
 	MsgTypeClaimUndelegation: 55,
 	MsgTypeSetCompoundInfo:   56,
 	MsgTypeRegisterDelegator: 57,
+
+	MsgTypeCreateCustody:               61,
+	MsgTypeAddToCustodyWhiteList:       62,
+	MsgTypeAddToCustodyCustodians:      63,
+	MsgTypeRemoveFromCustodyCustodians: 64,
+	MsgTypeDropCustodyCustodians:       65,
+	MsgTypeRemoveFromCustodyWhiteList:  66,
+	MsgTypeDropCustodyWhiteList:        67,
+	MsgApproveCustodyTransaction:       68,
+	MsgDeclineCustodyTransaction:       69,
 }
 
 func MsgType(msg sdk.Msg) string {

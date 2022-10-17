@@ -8,6 +8,7 @@ const (
 	ProposalTypeTokensWhiteBlackChange             = "TokensWhiteBlackChange"
 	ProposalTypeUnjailValidator                    = "UnjailValidator"
 	ProposalTypeResetWholeValidatorRank            = "ResetWholeValidatorRank"
+	ProposalTypeSlashValidator                     = "SlashValidator"
 	ProposalTypeUpdateSpendingPool                 = "UpdateSpendingPoolProposal"
 	ProposalTypeSpendingPoolDistribution           = "SpendingPoolDistributionProposal"
 	ProposalTypeSpendingPoolWithdraw               = "SpendingPoolWithdrawProposal"
@@ -30,6 +31,10 @@ const (
 	RemoveWhitelistedRolePermissionProposalType    = "RemoveWhitelistedRolePermission"
 	RemoveBlacklistedRolePermissionProposalType    = "RemoveBlacklistedRolePermission"
 	SetProposalDurationsProposalType               = "SetProposalDurationsProposal"
+
+	ProposalTypeCreateBasket          = "CreateBasket"
+	ProposalTypeEditBasket            = "EditBasket"
+	ProposalTypeBasketWithdrawSurplus = "BasketWithdrawSurplus"
 )
 
 var AllProposalTypes []string = []string{
@@ -40,6 +45,7 @@ var AllProposalTypes []string = []string{
 	ProposalTypeTokensWhiteBlackChange,
 	ProposalTypeUnjailValidator,
 	ProposalTypeResetWholeValidatorRank,
+	ProposalTypeSlashValidator,
 	WhitelistAccountPermissionProposalType,
 	BlacklistAccountPermissionProposalType,
 	RemoveWhitelistedAccountPermissionProposalType,
