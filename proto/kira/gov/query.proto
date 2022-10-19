@@ -124,7 +124,7 @@ service Query {
   // QueryCouncilorslist - all councilors (waiting or not), including their corresponding statuses,
   // ranks & abstenation counters - add sub-query to search by specific KIRA address
   rpc QueryCouncilors(QueryCouncilors) returns (QueryCouncilorsResponse) {
-    option (google.api.http).get = "/kira/gov/councilors";
+    option (google.api.http).get = "/kira/gov/councilors/{address}";
   }
   // QueryNonCouncilors - list all governance members that are NOT Councilors
   rpc QueryNonCouncilors(QueryNonCouncilors) returns (QueryNonCouncilorsResponse) {
@@ -391,28 +391,42 @@ message QueryProposalDurationResponse {
   uint64 duration = 1;
 }
 
-message QueryCouncilors {}
-message QueryCouncilorsResponse {}
+message QueryCouncilors {
+  string address = 1; // returns full when empty input
+}
+message QueryCouncilorsResponse {
+  repeated Councilor councilors = 1 [ (gogoproto.nullable) = false ];
+}
 
 message QueryNonCouncilors {}
-message QueryNonCouncilorsResponse {}
+message QueryNonCouncilorsResponse {
+  repeated kira.gov.NetworkActor non_councilors = 1 [ (gogoproto.nullable) = false ];
+}
 
 message QueryAddressesByWhitelistedPermission {
   uint32 permission = 1;
 }
-message QueryAddressesByWhitelistedPermissionResponse {}
+message QueryAddressesByWhitelistedPermissionResponse {
+  repeated string addresses = 1;
+}
 
 message QueryAddressesByBlacklistedPermission {
   uint32 permission = 1;
 }
-message QueryAddressesByBlacklistedPermissionResponse {}
+message QueryAddressesByBlacklistedPermissionResponse {
+  repeated string addresses = 1;
+}
 
 message QueryAddressesByWhitelistedRole {
   uint32 role = 1;
 }
-message QueryAddressesByWhitelistedRoleResponse {}
+message QueryAddressesByWhitelistedRoleResponse {
+  repeated string addresses = 1;
+}
 
 message QueryAddressesByBlacklistedRole {
   uint32 role = 1;
 }
-message QueryAddressesByBlacklistedRoleResponse {}
+message QueryAddressesByBlacklistedRoleResponse {
+  repeated string addresses = 1;
+}
