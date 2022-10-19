@@ -1290,16 +1290,9 @@ func GetTxClaimCouncilorSeatCmd() *cobra.Command {
 			}
 
 			moniker, _ := cmd.Flags().GetString(FlagMoniker)
-			address, _ := cmd.Flags().GetString(FlagAddress)
-
-			bech32, err := sdk.AccAddressFromBech32(address)
-			if err != nil {
-				return err
-			}
-
 			msg := types.NewMsgClaimCouncilor(
 				moniker,
-				bech32,
+				clientCtx.FromAddress,
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
