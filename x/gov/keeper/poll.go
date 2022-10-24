@@ -1,10 +1,10 @@
 package keeper
 
 import (
+	"encoding/binary"
+	"fmt"
 	"github.com/KiraCore/sekai/x/gov/types"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"strconv"
 	"time"
 )
 
@@ -22,13 +22,13 @@ func (k Keeper) GetNextPollID(ctx sdk.Context) uint64 {
 		return 1
 	}
 
-	pollID := BytesToProposalID(bz)
+	pollID := sdk.BigEndianToUint64(bz)
 	return pollID
 }
 
 func (k Keeper) SetNextPollID(ctx sdk.Context, pollID uint64) {
 	store := ctx.KVStore(k.storeKey)
-	store.Set(NextPollIDPrefix, ProposalIDToBytes(pollID))
+	store.Set(NextPollIDPrefix, sdk.Uint64ToBigEndian(pollID))
 }
 
 func (k Keeper) PollCreate(ctx sdk.Context, msg *types.MsgPollCreate) (uint64, error) {
@@ -39,6 +39,11 @@ func (k Keeper) PollCreate(ctx sdk.Context, msg *types.MsgPollCreate) (uint64, e
 	options.Type = msg.ValueType
 	options.Count = msg.ValueCount
 	options.Choices = msg.PossibleChoices
+
+	duration, err := time.ParseDuration(msg.Duration)
+	if err != nil {
+		return pollID, fmt.Errorf("invalid duration: %w", err)
+	}
 
 	for _, v := range msg.PollValues {
 		options.Values = append(options.Values, v)
@@ -58,7 +63,7 @@ func (k Keeper) PollCreate(ctx sdk.Context, msg *types.MsgPollCreate) (uint64, e
 		msg.Checksum,
 		roles,
 		options,
-		msg.Expiry,
+		time.Now().Add(duration),
 	)
 
 	if err != nil {
@@ -66,45 +71,42 @@ func (k Keeper) PollCreate(ctx sdk.Context, msg *types.MsgPollCreate) (uint64, e
 	}
 
 	k.SavePoll(ctx, poll)
+	k.AddAddressPoll(ctx, poll)
+	k.AddToActivePolls(ctx, poll)
 
 	return pollID, nil
 }
 
 func (k Keeper) SavePoll(ctx sdk.Context, poll types.Poll) {
 	store := ctx.KVStore(k.storeKey)
-	bz := k.cdc.MustMarshal(&poll)
-
-	store.Set(append(PollPrefix, ProposalIDToBytes(poll.PollId)...), bz)
+	key := append(PollPrefix, sdk.Uint64ToBigEndian(poll.PollId)...)
+	store.Set(key, k.cdc.MustMarshal(&poll))
 }
 
-func (k Keeper) AddAddressPoll(ctx sdk.Context, pollID uint64, address sdk.AccAddress) {
-	addressPolls := types.AddressPolls{
-		Address: address,
-		Ids:     k.GetPollsIdsByAddress(ctx, address),
-	}
-
-	addressPolls.Ids = append(addressPolls.Ids, pollID)
-
+func (k Keeper) AddAddressPoll(ctx sdk.Context, poll types.Poll) {
 	store := ctx.KVStore(k.storeKey)
-	bz := k.cdc.MustMarshal(&addressPolls)
+	addressKey := append(PollPrefix, poll.Creator.Bytes()...)
+	key := append(addressKey, sdk.Uint64ToBigEndian(poll.PollId)...)
+	store.Set(key, sdk.Uint64ToBigEndian(poll.PollId))
+}
 
-	store.Set(append(PollPrefix, address...), bz)
+func (k Keeper) AddToActivePolls(ctx sdk.Context, poll types.Poll) {
+	store := ctx.KVStore(k.storeKey)
+	key := append(PollsByTimeKey(poll.VotingEndTime), sdk.Uint64ToBigEndian(poll.PollId)...)
+	store.Set(key, sdk.Uint64ToBigEndian(poll.PollId))
+}
+
+func (k Keeper) RemoveActivePoll(ctx sdk.Context, poll types.Poll) {
+	store := ctx.KVStore(k.storeKey)
+	key := append(PollsByTimeKey(poll.VotingEndTime), sdk.Uint64ToBigEndian(poll.PollId)...)
+	store.Delete(key)
 }
 
 func (k Keeper) PollVote(ctx sdk.Context, msg *types.MsgPollVote) error {
-	var option types.PollVoteOption
-	value, err := strconv.Atoi(msg.Value)
-
-	if err != nil {
-		option = types.PollOptionCustom
-	} else {
-		option = types.PollVoteOption(value)
-	}
-
 	vote := types.PollVote{
 		Voter:       msg.Voter,
 		PollId:      msg.PollId,
-		Option:      option,
+		Option:      msg.Option,
 		CustomValue: msg.Value,
 	}
 
@@ -115,49 +117,48 @@ func (k Keeper) PollVote(ctx sdk.Context, msg *types.MsgPollVote) error {
 	return nil
 }
 
-func (k Keeper) GetPoll(ctx sdk.Context, pollID uint64) (*types.Poll, bool) {
+func (k Keeper) GetPoll(ctx sdk.Context, pollID uint64) (types.Poll, error) {
 	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(append(PollPrefix, sdk.Uint64ToBigEndian(pollID)...))
 
-	bz := store.Get(append(PollPrefix, ProposalIDToBytes(pollID)...))
 	if bz == nil {
-		return &types.Poll{}, false
+		return types.Poll{}, types.ErrPollsNotFount
 	}
 
-	var poll *types.Poll
-	k.cdc.MustUnmarshal(bz, poll)
+	var poll types.Poll
+	k.cdc.MustUnmarshal(bz, &poll)
 
-	return poll, true
+	return poll, nil
 }
 
 func (k Keeper) GetPollsIdsByAddress(ctx sdk.Context, address sdk.AccAddress) []uint64 {
-	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), PollPrefix)
 	var ids []uint64
+	store := ctx.KVStore(k.storeKey)
+	addressKey := append(PollPrefix, address.Bytes()...)
+	iterator := sdk.KVStorePrefixIterator(store, addressKey)
+	defer iterator.Close()
 
-	bz := prefixStore.Get(address.Bytes())
-	if bz == nil {
-		return ids
+	for ; iterator.Valid(); iterator.Next() {
+		id := binary.BigEndian.Uint64(iterator.Value())
+		ids = append(ids, id)
 	}
 
-	var addressPolls types.AddressPolls
-	k.cdc.MustUnmarshal(bz, &addressPolls)
-
-	return addressPolls.Ids
+	return ids
 }
 
-func (k Keeper) GetPollsByAddress(ctx sdk.Context, address sdk.AccAddress) ([]*types.Poll, bool) {
+func (k Keeper) GetPollsByAddress(ctx sdk.Context, address sdk.AccAddress) ([]types.Poll, error) {
 	ids := k.GetPollsIdsByAddress(ctx, address)
-	var polls []*types.Poll
+	var polls []types.Poll
 
-	for _, id := range ids {
-		poll, found := k.GetPoll(ctx, id)
-		if !found {
-			return polls, false
+	for _, v := range ids {
+		poll, err := k.GetPoll(ctx, v)
+		if err != nil {
+			return nil, err
 		}
-
 		polls = append(polls, poll)
 	}
 
-	return polls, true
+	return polls, nil
 }
 
 func (k Keeper) GetPollVotes(ctx sdk.Context, pollID uint64) types.PollVotes {
@@ -179,18 +180,17 @@ func (k Keeper) GetPollVotesIterator(ctx sdk.Context, pollID uint64) sdk.Iterato
 	return sdk.KVStorePrefixIterator(store, PollVotesKey(pollID))
 }
 
-func PollsByTimeKey(endTime time.Time) []byte {
-	return append(PollPrefix, sdk.FormatTimeBytes(endTime)...)
-}
-
-// GetPollsWithFinishedVotingEndTimeIterator returns the proposals that have endtime finished.
 func (k Keeper) GetPollsWithFinishedVotingEndTimeIterator(ctx sdk.Context, endTime time.Time) sdk.Iterator {
 	store := ctx.KVStore(k.storeKey)
-	return store.Iterator(PollPrefix, sdk.PrefixEndBytes(PollsByTimeKey(endTime)))
+	return store.Iterator(ActivePollPrefix, sdk.PrefixEndBytes(PollsByTimeKey(endTime)))
+}
+
+func PollsByTimeKey(endTime time.Time) []byte {
+	return append(ActivePollPrefix, sdk.FormatTimeBytes(endTime)...)
 }
 
 func PollVotesKey(pollId uint64) []byte {
-	return append(PollVotesPrefix, ProposalIDToBytes(pollId)...)
+	return append(PollVotesPrefix, sdk.Uint64ToBigEndian(pollId)...)
 }
 
 func PollVoteKey(pollId uint64, address sdk.AccAddress) []byte {

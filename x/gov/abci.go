@@ -2,6 +2,7 @@ package gov
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/KiraCore/sekai/x/gov/keeper"
 	"github.com/KiraCore/sekai/x/gov/types"
@@ -23,21 +24,21 @@ func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 		processProposal(ctx, k, keeper.BytesToProposalID(activeIterator.Value()))
 	}
 
-	pollIterator := k.GetPollsWithFinishedVotingEndTimeIterator(ctx, ctx.BlockTime())
+	pollIterator := k.GetPollsWithFinishedVotingEndTimeIterator(ctx, time.Now())
 	defer pollIterator.Close()
 	for ; pollIterator.Valid(); pollIterator.Next() {
-		processPoll(ctx, k, keeper.BytesToProposalID(pollIterator.Value()))
+		processPoll(ctx, k, sdk.BigEndianToUint64(pollIterator.Value()))
 	}
 }
 
 func processPoll(ctx sdk.Context, k keeper.Keeper, pollID uint64) {
 	var totalVoters int
 	var actors []types.NetworkActor
-	var duplicateMap map[string]bool
+	var duplicateMap = make(map[string]bool)
 
-	poll, found := k.GetPoll(ctx, pollID)
-	if !found {
-		panic("proposal was expected to exist")
+	poll, err := k.GetPoll(ctx, pollID)
+	if err != nil {
+		panic(err)
 	}
 
 	for _, role := range poll.Roles {
@@ -69,6 +70,9 @@ func processPoll(ctx sdk.Context, k keeper.Keeper, pollID uint64) {
 	} else {
 		poll.Result = types.PollQuorumNotReached
 	}
+
+	k.SavePoll(ctx, poll)
+	k.RemoveActivePoll(ctx, poll)
 }
 
 func processProposal(ctx sdk.Context, k keeper.Keeper, proposalID uint64) {

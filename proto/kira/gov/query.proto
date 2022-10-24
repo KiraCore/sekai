@@ -126,6 +126,18 @@ service Query {
   rpc PollsListByAddress(QueryPollsListByAddress) returns (QueryPollsListByAddressResponse) {
     option (google.api.http).get = "/kira/gov/proposal_polls/{creator}";
   }
+
+  rpc PollsVotesByPollId(QueryPollsVotesByPollId) returns (QueryPollsVotesByPollIdResponse) {
+    option (google.api.http).get = "/kira/gov/proposal_poll/votes/{poll_id}";
+  }
+}
+
+message QueryPollsVotesByPollId {
+  uint64 poll_id = 1;
+}
+
+message QueryPollsVotesByPollIdResponse {
+  repeated PollVote votes = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryPollsListByAddress {
@@ -136,7 +148,7 @@ message QueryPollsListByAddress {
 }
 
 message QueryPollsListByAddressResponse {
-  repeated kira.gov.Poll polls = 1;
+  repeated kira.gov.Poll polls = 1 [(gogoproto.nullable) = false];
 }
 
 message NetworkPropertiesRequest {}

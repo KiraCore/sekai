@@ -110,7 +110,5 @@ message MsgPollCreate {
   uint64 value_count = 8;
   string value_type = 9;
   uint64 possible_choices = 10;
-
-  google.protobuf.Timestamp expiry = 11
-  [(gogoproto.stdtime) = true, (gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"expiry\""];
+  string duration = 11;
 }

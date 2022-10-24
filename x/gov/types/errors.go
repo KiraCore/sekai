@@ -57,4 +57,5 @@ var (
 	ErrProposalTypeNotAllowed         = errors.Register(ModuleName, 54, "proposal type not allowed")
 	ErrProposalOptionOnlyAscii        = errors.Register(ModuleName, 55, "only ascii symbols allowed")
 	ErrPollsNotFount                  = errors.Register(ModuleName, 56, "empty polls")
+	ErrPollWrongValue                 = errors.Register(ModuleName, 57, "wrong poll value")
 )

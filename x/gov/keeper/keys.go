@@ -26,6 +26,7 @@ var (
 	PollPrefix               = []byte{0x05}
 	NextPollIDPrefix         = []byte{0x06}
 	PollVotesPrefix          = []byte{0x07}
+	ActivePollPrefix         = []byte{0x08}
 
 	RolePermissionRegistry          = []byte{0x10}
 	RoleIdToInfo                    = []byte{0x11}

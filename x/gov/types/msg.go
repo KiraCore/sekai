@@ -2,14 +2,12 @@ package types
 
 import (
 	"fmt"
-	"gopkg.in/yaml.v2"
-	"time"
-
 	"github.com/KiraCore/sekai/types"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	proto "github.com/gogo/protobuf/proto"
+	"gopkg.in/yaml.v2"
 )
 
 var (
@@ -519,7 +517,7 @@ func (m *MsgVoteProposal) GetSigners() []sdk.AccAddress {
 
 // NewMsgPollCreate creates a new MsgPollCreate.
 //nolint:interfacer
-func NewMsgPollCreate(creator sdk.AccAddress, title, description string, reference string, checksum string, pollValues []string, roles []string, valueCount uint64, valueType string, possibleChoices uint64, duration time.Duration) *MsgPollCreate {
+func NewMsgPollCreate(creator sdk.AccAddress, title, description string, reference string, checksum string, pollValues []string, roles []string, valueCount uint64, valueType string, possibleChoices uint64, duration string) *MsgPollCreate {
 	m := &MsgPollCreate{
 		Creator:         creator,
 		Title:           title,
@@ -531,7 +529,7 @@ func NewMsgPollCreate(creator sdk.AccAddress, title, description string, referen
 		ValueCount:      valueCount,
 		ValueType:       valueType,
 		PossibleChoices: possibleChoices,
-		Expiry:          time.Now().Add(duration),
+		Duration:        duration,
 	}
 
 	return m
@@ -562,10 +560,11 @@ func (m *MsgPollCreate) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgVotePoll(polllID uint64, voter sdk.AccAddress, value string) *MsgPollVote {
+func NewMsgVotePoll(polllID uint64, voter sdk.AccAddress, option PollVoteOption, value string) *MsgPollVote {
 	return &MsgPollVote{
 		PollId: polllID,
 		Voter:  voter,
+		Option: option,
 		Value:  value,
 	}
 }

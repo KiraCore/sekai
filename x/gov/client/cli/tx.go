@@ -3,17 +3,15 @@ package cli
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"strconv"
-	"strings"
-	"time"
-
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
+	"io/ioutil"
+	"strconv"
+	"strings"
 
 	"github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/staking/client/cli"
@@ -52,6 +50,7 @@ const (
 	FlagPollDuration      = "poll-duration"
 	FlagPollReference     = "poll-reference"
 	FlagPollChecksum      = "poll-checksum"
+	FlagCustomPollValue   = "poll-custom-value"
 )
 
 // NewTxCmd returns a root CLI command handler for all x/bank transaction commands.
@@ -1943,7 +1942,7 @@ func GetTxPollCreate() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "create",
 		Short: "Create a poll.",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -2005,11 +2004,6 @@ func GetTxPollCreate() *cobra.Command {
 				return fmt.Errorf("invalid duration: %w", err)
 			}
 
-			expire, err := time.ParseDuration(duration)
-			if err != nil {
-				return fmt.Errorf("invalid duration: %w", err)
-			}
-
 			msg := types.NewMsgPollCreate(
 				clientCtx.FromAddress,
 				title,
@@ -2021,7 +2015,7 @@ func GetTxPollCreate() *cobra.Command {
 				valueCount,
 				valueType,
 				possibleChoices,
-				expire,
+				duration,
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
@@ -2052,7 +2046,7 @@ func GetTxPollCreate() *cobra.Command {
 
 func GetTxVotePoll() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "vote [poll-id] [value]",
+		Use:   "vote [poll-id] [poll-option] ",
 		Short: "Vote a poll.",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -2066,10 +2060,21 @@ func GetTxVotePoll() *cobra.Command {
 				return fmt.Errorf("invalid poll ID: %w", err)
 			}
 
+			optionID, err := strconv.Atoi(args[1])
+			if err != nil {
+				return fmt.Errorf("invalid option ID: %w", err)
+			}
+
+			value, err := cmd.Flags().GetString(FlagCustomPollValue)
+			if err != nil {
+				return fmt.Errorf("invalid custom value: %w", err)
+			}
+
 			msg := types.NewMsgVotePoll(
 				uint64(pollID),
 				clientCtx.FromAddress,
-				args[1],
+				types.PollVoteOption(optionID),
+				value,
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
@@ -2077,6 +2082,7 @@ func GetTxVotePoll() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
+	cmd.Flags().String(FlagCustomPollValue, "", "The custom poll value.")
 	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd

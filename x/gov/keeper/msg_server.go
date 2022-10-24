@@ -8,6 +8,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/errors"
 	"golang.org/x/exp/utf8string"
 	"sort"
+	"strconv"
+	"time"
 )
 
 type msgServer struct {
@@ -129,6 +131,7 @@ func (k msgServer) VoteProposal(
 
 func (k msgServer) PollCreate(goCtx context.Context, msg *types.MsgPollCreate) (*types.MsgPollCreateResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+	blockTime := ctx.BlockTime()
 	properties := k.keeper.GetNetworkProperties(ctx)
 	allowedTypes := []string{"string", "uint", "int", "float", "bool"}
 
@@ -155,6 +158,11 @@ func (k msgServer) PollCreate(goCtx context.Context, msg *types.MsgPollCreate) (
 
 	if len(msg.PollValues) > int(properties.MaxProposalPollOptionCount) {
 		return nil, types.ErrProposalOptionCountExceeds
+	}
+
+	duration, err := time.ParseDuration(msg.Duration)
+	if err != nil || blockTime.Add(duration).Before(blockTime) {
+		return nil, fmt.Errorf("invalid duration: %w", err)
 	}
 
 	for _, v := range msg.PollValues {
@@ -187,10 +195,8 @@ func (k msgServer) PollCreate(goCtx context.Context, msg *types.MsgPollCreate) (
 		return nil, err
 	}
 
-	k.keeper.AddAddressPoll(ctx, pollID, msg.Creator)
-
 	return &types.MsgPollCreateResponse{
-		ProposalID: pollID,
+		PollID: pollID,
 	}, nil
 }
 
@@ -202,12 +208,12 @@ func (k msgServer) PollVote(goCtx context.Context, msg *types.MsgPollVote) (*typ
 		return nil, types.ErrActorIsNotActive
 	}
 
-	poll, found := k.keeper.GetPoll(ctx, msg.PollId)
-	if !found {
-		return nil, types.ErrProposalDoesNotExist
+	poll, pErr := k.keeper.GetPoll(ctx, msg.PollId)
+	if pErr != nil {
+		return nil, pErr
 	}
 
-	if poll.VotingEndTime.Before(ctx.BlockTime()) {
+	if poll.VotingEndTime.Before(time.Now()) {
 		return nil, types.ErrVotingTimeEnded
 	}
 
@@ -215,6 +221,38 @@ func (k msgServer) PollVote(goCtx context.Context, msg *types.MsgPollVote) (*typ
 
 	if len(roles) == 0 {
 		return nil, types.ErrNotEnoughPermissions
+	}
+
+	switch poll.Options.Type {
+	case "uint":
+		_, err := strconv.ParseUint(msg.Value, 10, 64)
+		if err != nil {
+			return nil, errors.Wrap(types.ErrPollWrongValue, "Can not be converted to the unsigned integer")
+		}
+	case "int":
+		_, err := strconv.ParseInt(msg.Value, 10, 64)
+		if err != nil {
+			return nil, errors.Wrap(types.ErrPollWrongValue, "Can not be converted to the integer")
+		}
+	case "bool":
+		_, err := strconv.ParseBool(msg.Value)
+		if err != nil {
+			return nil, errors.Wrap(types.ErrPollWrongValue, "Can not be converted to the boolean")
+		}
+	case "float":
+		_, err := strconv.ParseFloat(msg.Value, 64)
+		if err != nil {
+			return nil, errors.Wrap(types.ErrPollWrongValue, "Can not be converted to the float")
+		}
+	}
+
+	if msg.Option == types.PollOptionCustom && poll.Options.Count <= uint64(len(poll.Options.Values)) && !inSlice(poll.Options.Values, msg.Value) {
+		return nil, errors.Wrap(types.ErrPollWrongValue, "Maximum custom values exceeded")
+	}
+
+	if msg.Option == types.PollOptionCustom && poll.Options.Count > uint64(len(poll.Options.Values)) && !inSlice(poll.Options.Values, msg.Value) {
+		poll.Options.Values = append(poll.Options.Values, msg.Value)
+		k.keeper.SavePoll(ctx, poll)
 	}
 
 	err := k.keeper.PollVote(ctx, msg)
@@ -696,4 +734,13 @@ func intersection(first, second []uint64) []uint64 {
 	}
 
 	return out
+}
+
+func inSlice(sl []string, name string) bool {
+	for _, value := range sl {
+		if value == name {
+			return true
+		}
+	}
+	return false
 }

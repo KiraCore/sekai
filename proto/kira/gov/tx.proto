@@ -111,6 +111,6 @@ message MsgRequestIdentityRecordsVerifyResponse {
 message MsgHandleIdentityRecordsVerifyResponse {}
 message MsgCancelIdentityRecordsVerifyRequestResponse {}
 message MsgPollCreateResponse {
-  uint64 proposalID = 1;
+  uint64 pollID = 1;
 }
 message MsgPollVoteResponse {}
