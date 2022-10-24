@@ -203,12 +203,22 @@ func (m *MsgRemoveBlacklistedPermissions) GetSigners() []sdk.AccAddress {
 }
 
 func NewMsgClaimCouncilor(
-	moniker string,
 	address sdk.AccAddress,
+	moniker string,
+	username string,
+	description string,
+	social string,
+	contact string,
+	avatar string,
 ) *MsgClaimCouncilor {
 	return &MsgClaimCouncilor{
-		Moniker: moniker,
-		Address: address,
+		Address:     address,
+		Moniker:     moniker,
+		Username:    username,
+		Description: description,
+		Social:      social,
+		Contact:     contact,
+		Avatar:      avatar,
 	}
 }
 

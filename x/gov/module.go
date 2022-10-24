@@ -96,7 +96,6 @@ func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
 		cli.GetCmdQueryAddressesByWhitelistedPermission(),
 		cli.GetCmdQueryAddressesByBlacklistedPermission(),
 		cli.GetCmdQueryAddressesByWhitelistedRole(),
-		cli.GetCmdQueryAddressesByBlacklistedRole(),
 	)
 
 	return queryCmd

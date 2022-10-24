@@ -33,7 +33,7 @@ func TestSimappExportGenesis(t *testing.T) {
 		"next_role_id":"3",
 		"roles":[{"id":1,"sid":"sudo","description":"Sudo role"},{"id":2,"sid":"validator","description":"Validator role"}],
 		"role_permissions":{
-			"1":{"blacklist":[],"whitelist":[1,2,3,6,8,9,12,13,10,11,14,15,18,19,20,21,22,23,31,32,24,25,16,17,4,5,26,27,28,29,30,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61]},
+			"1":{"blacklist":[],"whitelist":[1,2,3,6,8,9,12,13,10,11,14,15,18,19,20,21,22,23,31,32,24,25,16,17,4,5,26,27,28,29,30,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63]},
 			"2":{"blacklist":[],"whitelist":[2]}
 		},
 		"network_actors":[],
@@ -69,7 +69,9 @@ func TestSimappExportGenesis(t *testing.T) {
 			"max_slashing_percentage": "1",
 			"min_custody_reward": "200",
 			"max_custody_buffer_size": "10",
-			"max_custody_tx_size": "8192"
+			"max_custody_tx_size": "8192",
+			"abstention_rank_decrease_amount": "1",
+			"max_abstention": "2"
 		},
 		"execution_fees":[],
 		"poor_network_messages":{
@@ -225,7 +227,9 @@ func TestExportInitGenesis(t *testing.T) {
 			"max_slashing_percentage": "1",
 			"min_custody_reward": "200",
 			"max_custody_buffer_size": "10",
-			"max_custody_tx_size": "8192"
+			"max_custody_tx_size": "8192",
+			"abstention_rank_decrease_amount": "1",
+			"max_abstention": "2"
 		},
 		"execution_fees":[],
 		"poor_network_messages":{

@@ -722,9 +722,20 @@ func (k Keeper) QueryAddressesByWhitelistedPermission(goCtx context.Context, req
 // QueryAddressesByBlacklistedPermission - list all KIRA addresses by a specific whitelisted permission (address does NOT have to be a Councilor)
 func (k Keeper) QueryAddressesByBlacklistedPermission(goCtx context.Context, req *types.QueryAddressesByBlacklistedPermission) (*types.QueryAddressesByBlacklistedPermissionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
+
+	networkActorsIterator := k.GetNetworkActorsIterator(ctx)
+	defer networkActorsIterator.Close()
+	addrs := []string{}
+	for ; networkActorsIterator.Valid(); networkActorsIterator.Next() {
+		actor := k.GetNetworkActorFromIterator(networkActorsIterator)
+		if actor.Permissions.IsBlacklisted(types.PermValue(req.Permission)) {
+
+			addrs = append(addrs, actor.Address.String())
+		}
+	}
+
 	return &types.QueryAddressesByBlacklistedPermissionResponse{
-		Addresses: []string{},
+		Addresses: addrs,
 	}, nil
 }
 
@@ -741,14 +752,5 @@ func (k Keeper) QueryAddressesByWhitelistedRole(goCtx context.Context, req *type
 
 	return &types.QueryAddressesByWhitelistedRoleResponse{
 		Addresses: addrs,
-	}, nil
-}
-
-// QueryAddressesByBlacklistedRole - list all kira addresses by a specific whitelisted role (address does NOT have to be a Councilor)
-func (k Keeper) QueryAddressesByBlacklistedRole(goCtx context.Context, req *types.QueryAddressesByBlacklistedRole) (*types.QueryAddressesByBlacklistedRoleResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
-	return &types.QueryAddressesByBlacklistedRoleResponse{
-		Addresses: []string{},
 	}, nil
 }

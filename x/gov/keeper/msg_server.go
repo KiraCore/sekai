@@ -659,12 +659,12 @@ func (k msgServer) CouncilorPause(
 		return nil, types.ErrCouncilorNotFound
 	}
 
-	// cannot be paused if not paused already
+	// cannot be paused if not jailed already
 	if councilor.Status == types.CouncilorJailed {
 		return nil, sdkerrors.Wrap(types.ErrCouncilorJailed, "Can NOT pause jailed councilor")
 	}
 
-	// cannot be paused if not paused already
+	// cannot be paused if not inactive already
 	if councilor.Status == types.CouncilorInactive {
 		return nil, sdkerrors.Wrap(types.ErrCouncilorInactivated, "Can NOT pause inactivated councilor")
 	}
@@ -707,7 +707,7 @@ func (k msgServer) CouncilorUnpause(
 	return &types.MsgCouncilorUnpauseResponse{}, nil
 }
 
-// CouncilorUnpause - signal to the network that Councilor wishes to regain voting ability after planned absence
+// CouncilorActivate - signal to the network that Councilor wishes to regain voting ability after planned absence
 func (k msgServer) CouncilorActivate(
 	goCtx context.Context,
 	msg *types.MsgCouncilorActivate,
@@ -724,7 +724,7 @@ func (k msgServer) CouncilorActivate(
 		return nil, types.ErrCouncilorNotFound
 	}
 
-	// cannot be paused if not paused already
+	// cannot be activated if not inactive already
 	if councilor.Status != types.CouncilorInactive {
 		return nil, sdkerrors.Wrap(types.ErrCouncilorNotInactivated, "Can NOT activate NOT inactive councilor")
 	}

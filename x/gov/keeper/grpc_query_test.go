@@ -145,8 +145,8 @@ func TestQuerier_CouncilorByAddress(t *testing.T) {
 	addr2 := addrs[1]
 
 	councilor := types.NewCouncilor(
-		"TheMoniker",
 		addr1,
+		types.CouncilorActive,
 	)
 
 	app.CustomGovKeeper.SaveCouncilor(ctx, councilor)
@@ -156,16 +156,6 @@ func TestQuerier_CouncilorByAddress(t *testing.T) {
 	resp, err := querier.CouncilorByAddress(
 		sdk.WrapSDKContext(ctx),
 		&types.CouncilorByAddressRequest{Addr: addr1.String()},
-	)
-	require.NoError(t, err)
-	require.Equal(t, councilor, resp.Councilor)
-
-	// Councilor by Moniker
-	resp, err = querier.CouncilorByMoniker(
-		sdk.WrapSDKContext(ctx),
-		&types.CouncilorByMonikerRequest{
-			Moniker: councilor.Moniker,
-		},
 	)
 	require.NoError(t, err)
 	require.Equal(t, councilor, resp.Councilor)

@@ -43,6 +43,10 @@ const (
 	FlagTip               = "tip"
 	FlagApprove           = "approve"
 	FlagSlash             = "slash"
+	FlagUsername          = "username"
+	FlagSocial            = "social"
+	FlagContact           = "contact"
+	FlagAvatar            = "avatar"
 )
 
 // NewTxCmd returns a root CLI command handler for all x/bank transaction commands.
@@ -1290,9 +1294,20 @@ func GetTxClaimCouncilorSeatCmd() *cobra.Command {
 			}
 
 			moniker, _ := cmd.Flags().GetString(FlagMoniker)
+			username, _ := cmd.Flags().GetString(FlagUsername)
+			description, _ := cmd.Flags().GetString(FlagDescription)
+			social, _ := cmd.Flags().GetString(FlagSocial)
+			contact, _ := cmd.Flags().GetString(FlagContact)
+			avatar, _ := cmd.Flags().GetString(FlagAvatar)
+
 			msg := types.NewMsgClaimCouncilor(
-				moniker,
 				clientCtx.FromAddress,
+				moniker,
+				username,
+				description,
+				social,
+				contact,
+				avatar,
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
@@ -1301,8 +1316,13 @@ func GetTxClaimCouncilorSeatCmd() *cobra.Command {
 
 	flags.AddTxFlagsToCmd(cmd)
 
-	cmd.Flags().String(FlagMoniker, "", "the Moniker")
 	cmd.Flags().String(FlagAddress, "", "the address")
+	cmd.Flags().String(FlagMoniker, "", "the Moniker")
+	cmd.Flags().String(FlagUsername, "", "the Username")
+	cmd.Flags().String(FlagDescription, "", "the description")
+	cmd.Flags().String(FlagSocial, "", "the social")
+	cmd.Flags().String(FlagContact, "", "the contact")
+	cmd.Flags().String(FlagAvatar, "", "the avatar")
 
 	cmd.MarkFlagRequired(flags.FlagFrom)
 
