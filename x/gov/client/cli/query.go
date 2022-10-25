@@ -55,6 +55,11 @@ func NewQueryCmd() *cobra.Command {
 		GetCmdQueryDataReference(),
 		GetCmdQueryAllProposalDurations(),
 		GetCmdQueryProposalDuration(),
+		GetCmdQueryCouncilors(),
+		GetCmdQueryNonCouncilors(),
+		GetCmdQueryAddressesByWhitelistedPermission(),
+		GetCmdQueryAddressesByBlacklistedPermission(),
+		GetCmdQueryAddressesByWhitelistedRole(),
 	)
 
 	return queryCmd
