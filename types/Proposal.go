@@ -15,6 +15,7 @@ const (
 	ProposalTypeUpsertUBI                          = "UpsertUBIProposal"
 	ProposalTypeRemoveUBI                          = "RemoveUBIProposal"
 	ProposalTypeResetWholeCouncilorRank            = "ResetWholeCouncilorRank"
+	ProposalTypeJailCouncilor                      = "JailCouncilor"
 	AssignPermissionProposalType                   = "AssignPermission"
 	WhitelistAccountPermissionProposalType         = "WhitelistAccountPermission"
 	BlacklistAccountPermissionProposalType         = "BlacklistAccountPermission"

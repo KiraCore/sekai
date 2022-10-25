@@ -438,7 +438,7 @@ func NewApplyJailCouncilorProposalHandler(keeper keeper.Keeper) *ApplyJailCounci
 }
 
 func (a ApplyJailCouncilorProposalHandler) ProposalType() string {
-	return kiratypes.ProposalTypeResetWholeCouncilorRank
+	return kiratypes.ProposalTypeJailCouncilor
 }
 
 func (a ApplyJailCouncilorProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash uint64) error {

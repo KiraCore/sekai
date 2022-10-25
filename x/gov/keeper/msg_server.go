@@ -116,11 +116,13 @@ func (k msgServer) VoteProposal(
 		}
 	}
 
+	// call councilor rank update function when it's the first vote
+	if _, found := k.keeper.GetVote(ctx, msg.ProposalId, msg.Voter); !found {
+		k.keeper.OnCouncilorAct(ctx, msg.Voter)
+	}
+
 	vote := types.NewVote(msg.ProposalId, msg.Voter, msg.Option, msg.Slash)
 	k.keeper.SaveVote(ctx, vote)
-
-	// call councilor rank update function
-	k.keeper.OnCouncilorAct(ctx, msg.Voter)
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
