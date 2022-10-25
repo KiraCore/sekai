@@ -23,4 +23,8 @@ message UBIRecord {
   uint64 period = 6; // <seconds>
   // pool - spending pool name where exact amount of KEX should be deposited
   string pool = 7;
+  // dynamic field (bool, default false) that defines if UBI is dynamic (true) or static (false). 
+  // If the UBI is dynamic then we will only distribute to the spending pool a difference between what is already in the spending pool still waiting to be claimed and what is already there.
+  // If the UBI is NOT dynamic then we just send a fixed amount every time period.
+  bool dynamic = 8;
 }

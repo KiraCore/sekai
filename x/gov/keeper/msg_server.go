@@ -552,7 +552,7 @@ func (k msgServer) SetExecutionFee(
 		return nil, errors.Wrap(types.ErrNotEnoughPermissions, "PermChangeTxFee")
 	}
 
-	k.keeper.SetExecutionFee(ctx, &types.ExecutionFee{
+	k.keeper.SetExecutionFee(ctx, types.ExecutionFee{
 		TransactionType:   msg.TransactionType,
 		ExecutionFee:      msg.ExecutionFee,
 		FailureFee:        msg.FailureFee,

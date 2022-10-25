@@ -61,44 +61,7 @@ func (b AppModuleBasic) GetTxCmd() *cobra.Command {
 
 // GetQueryCmd implement query commands for this module
 func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
-	queryCmd := &cobra.Command{
-		Use:   types.RouterKey,
-		Short: "query commands for the customgov module",
-	}
-	queryCmd.AddCommand(
-		cli.GetCmdQueryPermissions(),
-		cli.GetCmdQueryNetworkProperties(),
-		cli.GetCmdQueryExecutionFee(),
-		cli.GetCmdQueryPoorNetworkMessages(),
-		cli.GetCmdQueryRole(),
-		cli.GetCmdQueryAllRoles(),
-		cli.GetCmdQueryRolesByAddress(),
-		cli.GetCmdQueryProposals(),
-		cli.GetCmdQueryCouncilRegistry(),
-		cli.GetCmdQueryProposal(),
-		cli.GetCmdQueryVote(),
-		cli.GetCmdQueryVotes(),
-		cli.GetCmdQueryWhitelistedProposalVoters(),
-		cli.GetCmdQueryProposerVotersCount(),
-		cli.GetCmdQueryIdentityRecord(),
-		cli.GetCmdQueryIdentityRecordByAddress(),
-		cli.GetCmdQueryAllIdentityRecords(),
-		cli.GetCmdQueryIdentityRecordVerifyRequest(),
-		cli.GetCmdQueryIdentityRecordVerifyRequestsByRequester(),
-		cli.GetCmdQueryIdentityRecordVerifyRequestsByApprover(),
-		cli.GetCmdQueryAllIdentityRecordVerifyRequests(),
-		cli.GetCmdQueryAllDataReferenceKeys(),
-		cli.GetCmdQueryDataReference(),
-		cli.GetCmdQueryAllProposalDurations(),
-		cli.GetCmdQueryProposalDuration(),
-		cli.GetCmdQueryCouncilors(),
-		cli.GetCmdQueryNonCouncilors(),
-		cli.GetCmdQueryAddressesByWhitelistedPermission(),
-		cli.GetCmdQueryAddressesByBlacklistedPermission(),
-		cli.GetCmdQueryAddressesByWhitelistedRole(),
-	)
-
-	return queryCmd
+	return cli.NewQueryCmd()
 }
 
 // AppModule extends the cosmos SDK gov.

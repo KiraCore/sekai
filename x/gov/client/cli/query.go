@@ -22,6 +22,44 @@ const (
 	flagVoter = "voter"
 )
 
+// NewQueryCmd returns a root CLI command handler for all x/tokens transaction commands.
+func NewQueryCmd() *cobra.Command {
+	queryCmd := &cobra.Command{
+		Use:   types.RouterKey,
+		Short: "query commands for the customgov module",
+	}
+	queryCmd.AddCommand(
+		GetCmdQueryPermissions(),
+		GetCmdQueryNetworkProperties(),
+		GetCmdQueryExecutionFee(),
+		GetCmdQueryAllExecutionFees(),
+		GetCmdQueryPoorNetworkMessages(),
+		GetCmdQueryRole(),
+		GetCmdQueryAllRoles(),
+		GetCmdQueryRolesByAddress(),
+		GetCmdQueryProposals(),
+		GetCmdQueryCouncilRegistry(),
+		GetCmdQueryProposal(),
+		GetCmdQueryVote(),
+		GetCmdQueryVotes(),
+		GetCmdQueryWhitelistedProposalVoters(),
+		GetCmdQueryProposerVotersCount(),
+		GetCmdQueryIdentityRecord(),
+		GetCmdQueryIdentityRecordByAddress(),
+		GetCmdQueryAllIdentityRecords(),
+		GetCmdQueryIdentityRecordVerifyRequest(),
+		GetCmdQueryIdentityRecordVerifyRequestsByRequester(),
+		GetCmdQueryIdentityRecordVerifyRequestsByApprover(),
+		GetCmdQueryAllIdentityRecordVerifyRequests(),
+		GetCmdQueryAllDataReferenceKeys(),
+		GetCmdQueryDataReference(),
+		GetCmdQueryAllProposalDurations(),
+		GetCmdQueryProposalDuration(),
+	)
+
+	return queryCmd
+}
+
 // GetCmdQueryPermissions the query delegation command.
 func GetCmdQueryPermissions() *cobra.Command {
 	cmd := &cobra.Command{
@@ -196,6 +234,30 @@ func GetCmdQueryExecutionFee() *cobra.Command {
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 			res, err := queryClient.ExecutionFee(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	return cmd
+}
+
+// GetCmdQueryAllExecutionFees query for all execution fees
+func GetCmdQueryAllExecutionFees() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "all-execution-fees",
+		Short: "Query all execution fees",
+		Args:  cobra.MinimumNArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			params := &types.AllExecutionFeesRequest{}
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.AllExecutionFees(context.Background(), params)
 			if err != nil {
 				return err
 			}

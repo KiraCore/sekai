@@ -1,3 +1,3 @@
 Features:
 
-- Add basket module to group tokens
+- All execution fees query

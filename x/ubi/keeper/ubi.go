@@ -66,6 +66,20 @@ func (k Keeper) ProcessUBIRecord(ctx sdk.Context, record types.UBIRecord) error 
 	k.SetUBIRecord(ctx, record)
 
 	amount := sdk.NewInt(int64(record.Amount)).Mul(sdk.NewInt(1000_000))
+
+	// if dynamic ubi record, mint only missing amount
+	if record.Dynamic {
+		spendingPool := k.sk.GetSpendingPool(ctx, record.Pool)
+		if spendingPool == nil {
+			return types.ErrSpendingPoolDoesNotExist
+		}
+
+		if amount.LTE(spendingPool.Balance) {
+			return nil
+		}
+		amount = amount.Sub(spendingPool.Balance)
+	}
+
 	coin := sdk.NewCoin(k.BondDenom(ctx), amount)
 	err := k.bk.MintCoins(ctx, minttypes.ModuleName, sdk.NewCoins(coin))
 	if err != nil {

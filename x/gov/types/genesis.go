@@ -127,7 +127,7 @@ func DefaultGenesis() *GenesisState {
 			AbstentionRankDecreaseAmount: 1,
 			MaxAbstention:                2,
 		},
-		ExecutionFees: []*ExecutionFee{
+		ExecutionFees: []ExecutionFee{
 			{
 				TransactionType:   kiratypes.MsgTypeClaimValidator,
 				ExecutionFee:      100,
