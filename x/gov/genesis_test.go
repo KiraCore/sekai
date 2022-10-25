@@ -33,7 +33,7 @@ func TestSimappExportGenesis(t *testing.T) {
 		"next_role_id":"3",
 		"roles":[{"id":1,"sid":"sudo","description":"Sudo role"},{"id":2,"sid":"validator","description":"Validator role"}],
 		"role_permissions":{
-			"1":{"blacklist":[],"whitelist":[1,2,3,6,8,9,12,13,10,11,14,15,18,19,20,21,22,23,31,32,24,25,16,17,4,5,26,27,28,29,30,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61]},
+			"1":{"blacklist":[],"whitelist":[1,2,3,6,8,9,12,13,10,11,14,15,18,19,20,21,22,23,31,32,24,25,16,17,4,5,26,27,28,29,30,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65]},
 			"2":{"blacklist":[],"whitelist":[2]}
 		},
 		"network_actors":[],
@@ -69,7 +69,9 @@ func TestSimappExportGenesis(t *testing.T) {
 			"max_slashing_percentage": "1",
 			"min_custody_reward": "200",
 			"max_custody_buffer_size": "10",
-			"max_custody_tx_size": "8192"
+			"max_custody_tx_size": "8192",
+			"abstention_rank_decrease_amount": "1",
+			"max_abstention": "2"
 		},
 		"execution_fees":[	
 			{	
@@ -202,34 +204,36 @@ func TestExportInitGenesis(t *testing.T) {
 		},
 		StartingProposalId: 1,
 		NetworkProperties: &types.NetworkProperties{
-			MinTxFee:                    100,
-			MaxTxFee:                    1000000,
-			VoteQuorum:                  33,
-			MinimumProposalEndTime:      300, // 300 seconds / 5 mins
-			ProposalEnactmentTime:       300, // 300 seconds / 5 mins
-			MinProposalEndBlocks:        2,
-			MinProposalEnactmentBlocks:  1,
-			MischanceRankDecreaseAmount: 1,
-			MaxMischance:                1,
-			InactiveRankDecreasePercent: 2,
-			MinValidators:               1,
-			PoorNetworkMaxBankSend:      1,
-			EnableForeignFeePayments:    true,
-			MinIdentityApprovalTip:      200,
-			UniqueIdentityKeys:          "moniker,username",
-			UbiHardcap:                  6000_000,
-			ValidatorsFeeShare:          50,
-			InflationRate:               18,       // 18%
-			InflationPeriod:             31557600, // 1 year
-			UnstakingPeriod:             2629800,  // 1 month
-			MaxDelegators:               100,
-			MinDelegationPushout:        10,
-			SlashingPeriod:              3600,
-			MaxJailedPercentage:         25,
-			MaxSlashingPercentage:       1,
-			MinCustodyReward:            200,
-			MaxCustodyBufferSize:        10,
-			MaxCustodyTxSize:            8192,
+			MinTxFee:                     100,
+			MaxTxFee:                     1000000,
+			VoteQuorum:                   33,
+			MinimumProposalEndTime:       300, // 300 seconds / 5 mins
+			ProposalEnactmentTime:        300, // 300 seconds / 5 mins
+			MinProposalEndBlocks:         2,
+			MinProposalEnactmentBlocks:   1,
+			MischanceRankDecreaseAmount:  1,
+			MaxMischance:                 1,
+			InactiveRankDecreasePercent:  2,
+			MinValidators:                1,
+			PoorNetworkMaxBankSend:       1,
+			EnableForeignFeePayments:     true,
+			MinIdentityApprovalTip:       200,
+			UniqueIdentityKeys:           "moniker,username",
+			UbiHardcap:                   6000_000,
+			ValidatorsFeeShare:           50,
+			InflationRate:                18,       // 18%
+			InflationPeriod:              31557600, // 1 year
+			UnstakingPeriod:              2629800,  // 1 month
+			MaxDelegators:                100,
+			MinDelegationPushout:         10,
+			SlashingPeriod:               3600,
+			MaxJailedPercentage:          25,
+			MaxSlashingPercentage:        1,
+			MinCustodyReward:             200,
+			MaxCustodyBufferSize:         10,
+			MaxCustodyTxSize:             8192,
+			AbstentionRankDecreaseAmount: 1,
+			MaxAbstention:                2,
 		},
 		ExecutionFees: []types.ExecutionFee{
 			{
@@ -294,7 +298,9 @@ func TestExportInitGenesis(t *testing.T) {
 			"max_slashing_percentage": "1",
 			"min_custody_reward": "200",
 			"max_custody_buffer_size": "10",
-			"max_custody_tx_size": "8192"
+			"max_custody_tx_size": "8192",
+			"abstention_rank_decrease_amount": "1",
+			"max_abstention": "2"
 		},
 		"execution_fees":[	
 			{	

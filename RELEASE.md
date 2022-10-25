@@ -1,3 +1,3 @@
 Features:
 
-- All execution fees query
+- Add councilors management functionalities

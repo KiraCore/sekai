@@ -8,18 +8,43 @@ option go_package = "github.com/KiraCore/sekai/x/gov/types";
 message MsgClaimCouncilor {
   option (gogoproto.equal)            = true;
 
-  string moniker = 1;
-  bytes address = 2 [
+  bytes address = 1 [
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
     (gogoproto.moretags) = "yaml:\"address\""
   ];
+  string moniker = 2;
+  string username = 3; // friendly gov member name, MUST be globally unique (just like moniker)
+  string description = 4; // (optional), a longer description of the councilor
+  string social = 5; // (optional), comma-separated URL list of any social profiles such as Twitter, Telegram, etc…
+  string contact = 6; // (optional), email address, url, or another emergency contact
+  string avatar = 7; // (optional), URL to .SVG image or gif
+}
+
+enum CouncilorStatus {
+  option (gogoproto.goproto_enum_prefix) = false;
+
+  // Waiting status
+  WAITING = 0 [ (gogoproto.enumvalue_customname) = "CouncilorWaiting" ];
+
+  // Active status
+  ACTIVE = 1 [ (gogoproto.enumvalue_customname) = "CouncilorActive" ];
+
+  // Inactive status
+  INACTIVE = 2 [ (gogoproto.enumvalue_customname) = "CouncilorInactive" ];
+
+  // Paused status
+  PAUSED = 3 [ (gogoproto.enumvalue_customname) = "CouncilorPaused" ];
+
+  // Jailed status
+  JAILED = 4 [ (gogoproto.enumvalue_customname) = "CouncilorJailed" ];
 }
 
 message Councilor {
-  string moniker = 1;
-  bytes address = 2 [
+  bytes address = 1 [
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
     (gogoproto.moretags) = "yaml:\"address\""
   ];
+  CouncilorStatus status = 2;
+  int64 rank = 3;
+  int64 abstention_counter = 4;
 }
-
