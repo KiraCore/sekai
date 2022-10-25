@@ -86,6 +86,20 @@ func TestKeeper_AddPermissionToNetworkActor(t *testing.T) {
 	savedNetworkActor, found = app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addr)
 	require.True(t, found)
 	require.True(t, savedNetworkActor.Permissions.IsWhitelisted(types.PermSetPermissions))
+
+	_, found = app.CustomGovKeeper.GetCouncilor(ctx, addr)
+	require.False(t, found)
+
+	// check gov claim permission
+	err = app.CustomGovKeeper.AddWhitelistPermission(ctx, savedNetworkActor, types.PermClaimCouncilor)
+	require.NoError(t, err)
+	savedNetworkActor, found = app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addr)
+	require.True(t, found)
+	require.True(t, savedNetworkActor.Permissions.IsWhitelisted(types.PermClaimCouncilor))
+
+	councilor, found := app.CustomGovKeeper.GetCouncilor(ctx, addr)
+	require.True(t, found)
+	require.Equal(t, councilor.Status, types.CouncilorWaiting)
 }
 
 func TestKeeper_RemoveWhitelistPermission(t *testing.T) {
@@ -111,6 +125,36 @@ func TestKeeper_RemoveWhitelistPermission(t *testing.T) {
 
 	assertAddrsDontHaveWhitelistedPerm(t, app, ctx, []sdk.AccAddress{addrs[0]}, types.PermSetPermissions)
 	assertAddrsHaveWhitelistedPerm(t, app, ctx, []sdk.AccAddress{addrs[1]}, types.PermSetPermissions)
+}
+
+func TestAssignRoleToAccount(t *testing.T) {
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
+	addr := addrs[0]
+
+	networkActor := types.NewNetworkActor(
+		addr,
+		nil,
+		1,
+		nil,
+		types.NewPermissions(nil, nil),
+		1,
+	)
+
+	app.CustomGovKeeper.SaveNetworkActor(ctx, networkActor)
+
+	// check sudo role assign
+	err := app.CustomGovKeeper.AssignRoleToAccount(ctx, addr, types.RoleSudo)
+	require.NoError(t, err)
+	savedNetworkActor, found := app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addr)
+	require.True(t, found)
+	require.True(t, savedNetworkActor.HasRole(types.RoleSudo))
+
+	councilor, found := app.CustomGovKeeper.GetCouncilor(ctx, addr)
+	require.True(t, found)
+	require.Equal(t, councilor.Status, types.CouncilorWaiting)
 }
 
 func TestKeeper_GetActorsByRole(t *testing.T) {

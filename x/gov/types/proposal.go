@@ -610,3 +610,28 @@ func (m *ProposalResetWholeCouncilorRank) VotePermission() PermValue {
 func (m *ProposalResetWholeCouncilorRank) ValidateBasic() error {
 	return nil
 }
+
+func NewJailCouncilorProposal(proposer sdk.AccAddress, description string, councilors []string) *ProposalJailCouncilor {
+	return &ProposalJailCouncilor{
+		Proposer:    proposer,
+		Description: description,
+		Councilors:  councilors,
+	}
+}
+
+func (m *ProposalJailCouncilor) ProposalType() string {
+	return kiratypes.ProposalTypeResetWholeCouncilorRank
+}
+
+func (m *ProposalJailCouncilor) ProposalPermission() PermValue {
+	return PermCreateJailCouncilorProposal
+}
+
+func (m *ProposalJailCouncilor) VotePermission() PermValue {
+	return PermVoteJailCouncilorProposal
+}
+
+// ValidateBasic returns basic validation
+func (m *ProposalJailCouncilor) ValidateBasic() error {
+	return nil
+}

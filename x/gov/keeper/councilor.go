@@ -107,7 +107,6 @@ func (k Keeper) OnCouncilorAbsent(ctx sdk.Context, addr sdk.AccAddress) {
 
 		k.SaveCouncilor(ctx, councilor)
 	}
-
 }
 
 func (k Keeper) OnCouncilorJail(ctx sdk.Context, addr sdk.AccAddress) {
@@ -125,6 +124,7 @@ func (k Keeper) ResetWholeCouncilorRank(ctx sdk.Context) {
 	for _, councilor := range councilors {
 		councilor.Status = types.CouncilorActive
 		councilor.Rank = 0
+		councilor.AbstentionCounter = 0
 		k.SaveCouncilor(ctx, councilor)
 	}
 }

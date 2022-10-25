@@ -122,6 +122,7 @@ func NewTxProposalCmds() *cobra.Command {
 	proposalCmd.AddCommand(GetTxProposalUpsertDataRegistry())
 	proposalCmd.AddCommand(GetTxProposalSetProposalDurations())
 	proposalCmd.AddCommand(GetTxProposalResetWholeCouncilorRankCmd())
+	proposalCmd.AddCommand(GetTxProposalJailCouncilorCmd())
 
 	proposalCmd.AddCommand(accountProposalCmd)
 	proposalCmd.AddCommand(roleProposalCmd)
@@ -2064,6 +2065,53 @@ func GetTxProposalResetWholeCouncilorRankCmd() *cobra.Command {
 				title,
 				description,
 				types.NewResetWholeCouncilorRankProposal(clientCtx.FromAddress),
+			)
+			if err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	cmd.Flags().String(FlagTitle, "", "The title of the proposal.")
+	cmd.MarkFlagRequired(FlagTitle)
+	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
+	cmd.MarkFlagRequired(FlagDescription)
+
+	flags.AddTxFlagsToCmd(cmd)
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+// GetTxProposalJailCouncilorCmd implement cli command for ProposalJailCouncilor
+func GetTxProposalJailCouncilorCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "proposal-jail-councilor [councilors]",
+		Short: "Create a proposal to jail councilors",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+			title, err := cmd.Flags().GetString(FlagTitle)
+			if err != nil {
+				return fmt.Errorf("invalid title: %w", err)
+			}
+			description, err := cmd.Flags().GetString(FlagDescription)
+			if err != nil {
+				return fmt.Errorf("invalid description: %w", err)
+			}
+
+			councilors := strings.Split(args[0], ",")
+
+			msg, err := types.NewMsgSubmitProposal(
+				clientCtx.FromAddress,
+				title,
+				description,
+				types.NewJailCouncilorProposal(clientCtx.FromAddress, description, councilors),
 			)
 			if err != nil {
 				return err

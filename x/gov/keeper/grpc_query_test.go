@@ -167,3 +167,95 @@ func TestQuerier_CouncilorByAddress(t *testing.T) {
 	)
 	require.Error(t, types.ErrCouncilorNotFound)
 }
+
+func TestQuerier_CouncilorQueries(t *testing.T) {
+	app := simapp.Setup(false)
+	ctx := app.NewContext(false, tmproto.Header{})
+
+	addrs := simapp.AddTestAddrsIncremental(app, ctx, 2, sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction))
+	addr1 := addrs[0]
+	addr2 := addrs[1]
+
+	councilor := types.NewCouncilor(
+		addr1,
+		types.CouncilorActive,
+	)
+
+	app.CustomGovKeeper.SaveCouncilor(ctx, councilor)
+
+	networkActor := types.NewNetworkActor(
+		addr2,
+		[]uint64{types.RoleSudo},
+		1,
+		nil,
+		types.NewPermissions(
+			[]types.PermValue{
+				types.PermClaimValidator,
+			},
+			[]types.PermValue{
+				types.PermClaimCouncilor,
+			},
+		),
+		123,
+	)
+	app.CustomGovKeeper.SaveNetworkActor(ctx, networkActor)
+	for _, perm := range networkActor.Permissions.Whitelist {
+		app.CustomGovKeeper.SetWhitelistAddressPermKey(ctx, networkActor, types.PermValue(perm))
+	}
+	for _, role := range networkActor.Roles {
+		app.CustomGovKeeper.AssignRoleToActor(ctx, networkActor, role)
+	}
+
+	querier := app.CustomGovKeeper
+
+	// specific councilor
+	resp, err := querier.QueryCouncilors(
+		sdk.WrapSDKContext(ctx),
+		&types.QueryCouncilors{Address: addr1.String()},
+	)
+	require.NoError(t, err)
+	require.Len(t, resp.Councilors, 1)
+	require.Equal(t, councilor, resp.Councilors[0])
+
+	// all councilors
+	resp, err = querier.QueryCouncilors(
+		sdk.WrapSDKContext(ctx),
+		&types.QueryCouncilors{},
+	)
+	require.NoError(t, err)
+	require.Len(t, resp.Councilors, 1)
+	require.Equal(t, councilor, resp.Councilors[0])
+
+	// non-councilors
+	nresp, err := querier.QueryNonCouncilors(
+		sdk.WrapSDKContext(ctx),
+		&types.QueryNonCouncilors{},
+	)
+	require.NoError(t, err)
+	require.Len(t, nresp.NonCouncilors, 1)
+	require.Equal(t, networkActor, nresp.NonCouncilors[0])
+
+	wresp, err := querier.QueryAddressesByWhitelistedPermission(
+		sdk.WrapSDKContext(ctx),
+		&types.QueryAddressesByWhitelistedPermission{Permission: uint32(types.PermClaimValidator)},
+	)
+	require.NoError(t, err)
+	require.Len(t, wresp.Addresses, 1)
+	require.Equal(t, addr2.String(), wresp.Addresses[0])
+
+	bresp, err := querier.QueryAddressesByBlacklistedPermission(
+		sdk.WrapSDKContext(ctx),
+		&types.QueryAddressesByBlacklistedPermission{Permission: uint32(types.PermClaimCouncilor)},
+	)
+	require.NoError(t, err)
+	require.Len(t, bresp.Addresses, 1)
+	require.Equal(t, addr2.String(), bresp.Addresses[0])
+
+	rresp, err := querier.QueryAddressesByWhitelistedRole(
+		sdk.WrapSDKContext(ctx),
+		&types.QueryAddressesByWhitelistedRole{Role: uint32(types.RoleSudo)},
+	)
+	require.NoError(t, err)
+	require.Len(t, rresp.Addresses, 1)
+	require.Equal(t, addr2.String(), rresp.Addresses[0])
+}
