@@ -406,3 +406,49 @@ func (c SetProposalDurationsProposalHandler) Apply(ctx sdk.Context, proposalID u
 	}
 	return nil
 }
+
+type ApplyResetWholeCouncilorRankProposalHandler struct {
+	keeper keeper.Keeper
+}
+
+func NewApplyResetWholeCouncilorRankProposalHandler(keeper keeper.Keeper) *ApplyResetWholeCouncilorRankProposalHandler {
+	return &ApplyResetWholeCouncilorRankProposalHandler{
+		keeper: keeper,
+	}
+}
+
+func (a ApplyResetWholeCouncilorRankProposalHandler) ProposalType() string {
+	return kiratypes.ProposalTypeResetWholeCouncilorRank
+}
+
+func (a ApplyResetWholeCouncilorRankProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash uint64) error {
+	_ = proposal.(*types.ProposalResetWholeCouncilorRank)
+	a.keeper.ResetWholeCouncilorRank(ctx)
+	return nil
+}
+
+type ApplyJailCouncilorProposalHandler struct {
+	keeper keeper.Keeper
+}
+
+func NewApplyJailCouncilorProposalHandler(keeper keeper.Keeper) *ApplyJailCouncilorProposalHandler {
+	return &ApplyJailCouncilorProposalHandler{
+		keeper: keeper,
+	}
+}
+
+func (a ApplyJailCouncilorProposalHandler) ProposalType() string {
+	return kiratypes.ProposalTypeJailCouncilor
+}
+
+func (a ApplyJailCouncilorProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash uint64) error {
+	p := proposal.(*types.ProposalJailCouncilor)
+	for _, councilor := range p.Councilors {
+		addr, err := sdk.AccAddressFromBech32(councilor)
+		if err != nil {
+			return err
+		}
+		a.keeper.OnCouncilorJail(ctx, addr)
+	}
+	return nil
+}
