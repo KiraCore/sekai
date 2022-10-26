@@ -47,6 +47,8 @@ enum NetworkProperty {
     MIN_CUSTODY_REWARD = 30 [(gogoproto.enumvalue_customname) = "MinCustodyReward"]; // minimum custody reward
     MAX_CUSTODY_BUFFER_SIZE = 31 [(gogoproto.enumvalue_customname) = "MaxCustodyBufferSize"]; // maximum custody buffer size
     MAX_CUSTODY_TX_SIZE = 32 [(gogoproto.enumvalue_customname) = "MaxCustodyTxSize"]; // maximum custody tx size to save in buffer
+    ABSTENTION_RANK_DECREASE_AMOUNT = 33 [(gogoproto.enumvalue_customname) = "AbstentionRankDecreaseAmount"]; // amount of rank decrease when absent
+    MAX_ABSTENTION = 34 [(gogoproto.enumvalue_customname) = "MaxAbstention"]; // max abention count for councilor
 }
 
 message NetworkPropertyValue {
@@ -89,4 +91,6 @@ message NetworkProperties {
     uint64 min_custody_reward = 30; // minimum custody reward
     uint64 max_custody_buffer_size = 31; // maximum custody buffer size
     uint64 max_custody_tx_size = 32; // maximum custody tx size to save in buffer
+    uint64 abstention_rank_decrease_amount = 33; // amount of rank decrease when absent
+    uint64 max_abstention = 34; // max abention count for councilor
 }

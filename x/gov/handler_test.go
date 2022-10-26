@@ -443,7 +443,6 @@ func TestHandler_ClaimCouncilor_HappyPath(t *testing.T) {
 		{
 			name: "all correct",
 			msg: &types.MsgClaimCouncilor{
-				Moniker: "TheMoniker",
 				Address: addr,
 			},
 		},
@@ -463,8 +462,8 @@ func TestHandler_ClaimCouncilor_HappyPath(t *testing.T) {
 			require.NoError(t, err)
 
 			expectedCouncilor := types.NewCouncilor(
-				tt.msg.Moniker,
 				tt.msg.Address,
+				types.CouncilorActive,
 			)
 
 			councilor, found := app.CustomGovKeeper.GetCouncilor(ctx, addr)

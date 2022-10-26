@@ -172,6 +172,8 @@ func (k Keeper) Jail(ctx sdk.Context, valAddress sdk.ValAddress) error {
 	k.setJailValidatorInfo(ctx, validator)
 	k.RemoveReactivatingValidator(ctx, validator)
 
+	k.govkeeper.OnCouncilorJail(ctx, sdk.AccAddress(valAddress))
+
 	return nil
 }
 

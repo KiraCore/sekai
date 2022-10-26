@@ -208,4 +208,16 @@ enum PermValue {
 
   // PERMISSION_HANDLE_BASKET_EMERGENCY defines the permission needed to handle emergency issues on basket.
   PERMISSION_HANDLE_BASKET_EMERGENCY = 61 [(gogoproto.enumvalue_customname) = "PermHandleBasketEmergency"];
+
+  // PERMISSION_CREATE_RESET_WHOLE_COUNCILOR_RANK_PROPOSAL defines the permission needed to create a proposal to reset whole councilor rank
+  PERMISSION_CREATE_RESET_WHOLE_COUNCILOR_RANK_PROPOSAL = 62 [(gogoproto.enumvalue_customname) = "PermCreateResetWholeCouncilorRankProposal"];
+
+  // PERMISSION_VOTE_RESET_WHOLE_COUNCILOR_RANK_PROPOSAL defines the permission needed to vote on reset whole councilor rank proposal
+  PERMISSION_VOTE_RESET_WHOLE_COUNCILOR_RANK_PROPOSAL = 63 [(gogoproto.enumvalue_customname) = "PermVoteResetWholeCouncilorRankProposal"];
+
+  // PERMISSION_CREATE_JAIL_COUNCILOR_PROPOSAL defines the permission needed to create a proposal to jail councilors
+  PERMISSION_CREATE_JAIL_COUNCILOR_PROPOSAL = 64 [(gogoproto.enumvalue_customname) = "PermCreateJailCouncilorProposal"];
+
+  // PERMISSION_VOTE_JAIL_COUNCILOR_PROPOSAL defines the permission needed to vote on jail councilors proposal
+  PERMISSION_VOTE_JAIL_COUNCILOR_PROPOSAL = 65 [(gogoproto.enumvalue_customname) = "PermVoteJailCouncilorProposal"];
 }

@@ -158,6 +158,24 @@ func (k Keeper) RegisterIdentityRecords(ctx sdk.Context, address sdk.AccAddress,
 		if infos[i].Key == "moniker" && len(infos[i].Info) > 32 {
 			return stakingtypes.ErrInvalidMonikerLength
 		}
+		if infos[i].Key == "username" && len(infos[i].Info) > 32 {
+			return stakingtypes.ErrInvalidUsernameLength
+		}
+
+		// check when the user is councilor
+		_, found := k.GetCouncilor(ctx, address)
+		if found {
+			monikerRecordId := k.GetIdentityRecordIdByAddressKey(ctx, address, "moniker")
+			usernameRecordId := k.GetIdentityRecordIdByAddressKey(ctx, address, "username")
+			moniker := k.GetIdentityRecordById(ctx, monikerRecordId)
+			username := k.GetIdentityRecordById(ctx, usernameRecordId)
+			if infos[i].Key == "moniker" && moniker != nil && infos[i].Info != moniker.Value {
+				return types.ErrCouncilorMonikerNotAllowedToBeChanged
+			}
+			if infos[i].Key == "username" && username != nil && infos[i].Info != username.Value {
+				return types.ErrCouncilorUsernameNotAllowedToBeChanged
+			}
+		}
 
 		if CheckIfWithinStringArray(infos[i].Key, uniqueKeys) {
 			addrs := k.GetAddressesByIdRecordKey(ctx, infos[i].Key, infos[i].Info)
