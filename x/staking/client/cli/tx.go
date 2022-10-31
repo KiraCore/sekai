@@ -19,7 +19,6 @@ import (
 )
 
 const (
-	FlagValKey      = "validator-key"
 	FlagTitle       = "title"
 	FlagDescription = "description"
 )
