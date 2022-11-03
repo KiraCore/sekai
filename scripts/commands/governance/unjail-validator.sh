@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # make proposal to unjail validator from jailed_validator
-sekaid tx customstaking proposal proposal-unjail-validator hash reference --from=jailed_validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes
+sekaid tx customstaking proposal unjail-validator hash reference --from=jailed_validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes
 
 # vote on unjail validator proposal
 sekaid tx customgov proposal vote 1 1 --from validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes

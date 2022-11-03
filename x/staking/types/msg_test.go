@@ -7,6 +7,7 @@ import (
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/simapp"
 	"github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -25,13 +26,13 @@ func TestMsgClaimValidator_ValidateBasic(t *testing.T) {
 		{
 			name: "nil val key",
 			constructor: func() (*stakingtypes.MsgClaimValidator, error) {
-				return stakingtypes.NewMsgClaimValidator("me", nil, pubKey)
+				return stakingtypes.NewMsgClaimValidator("me", nil, pubKey, sdk.NewDecWithPrec(5, 2))
 			},
 		},
 		{
 			name: "nil pub key",
 			constructor: func() (*stakingtypes.MsgClaimValidator, error) {
-				return stakingtypes.NewMsgClaimValidator("me", valAddr1, nil)
+				return stakingtypes.NewMsgClaimValidator("me", valAddr1, nil, sdk.NewDecWithPrec(5, 2))
 			},
 		},
 	}

@@ -90,7 +90,7 @@ func GetCmdQueryValidators() *cobra.Command {
 func GetCmdQueryValidator() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "validator [--addr || --val-addr || --moniker] ",
-		Short: "Query a validator based on address",
+		Short: "Query a validator by account address, validator address or moniker",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 

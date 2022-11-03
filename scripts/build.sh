@@ -26,4 +26,4 @@ GO111MODULE=on go mod verify
 env GOOS=$PLATFORM GOARCH=$ARCH go build -ldflags "${ldfName} ${ldfAppName} ${ldfVersion} ${ldfCommit} ${ldfBuildTags}" -o "$OUTPUT" ./cmd/sekaid
 
 ( [ "$PLATFORM" == "$LOCAL_PLATFORM" ] && [ "$ARCH" == "$LOCAL_ARCH" ] && [ -f $OUTPUT ] ) && \
-    echoInfo "INFO: Sucessfully built SEKAI $($OUTPUT version)" || echoInfo "INFO: Sucessfully built SEKAI to '$OUTPUT'"
+    echo "INFO: Sucessfully built SEKAI $($OUTPUT version)" || echo "INFO: Sucessfully built SEKAI to '$OUTPUT'"

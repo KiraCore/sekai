@@ -668,9 +668,9 @@ func GetCmdQueryIdentityRecordByAddress() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "identity-records-by-addr [addr]",
 		Args:  cobra.ExactArgs(1),
-		Short: "Query identity records by owner",
+		Short: "Query identity records by address",
 		Long: strings.TrimSpace(
-			fmt.Sprintf(`Query identity records by owner.
+			fmt.Sprintf(`Query identity records by address.
 
 Example:
 $ %[1]s query gov identity-records-by-addr [addr]
@@ -723,14 +723,14 @@ $ %[1]s query gov identity-records-by-addr [addr]
 // GetCmdQueryAllIdentityRecords implements the command to query all identity records
 func GetCmdQueryAllIdentityRecords() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "all-identity-records",
+		Use:   "identity-records",
 		Args:  cobra.ExactArgs(0),
 		Short: "Query all identity records",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Query all identity records.
 
 Example:
-$ %[1]s query gov all-identity-records
+$ %[1]s query gov identity-records
 `,
 				version.AppName,
 			),
