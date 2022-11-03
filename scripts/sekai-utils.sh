@@ -772,7 +772,7 @@ function unjail() {
     ($(isNullOrEmpty $ACCOUNT)) && echoInfo "INFO: Account was NOT defined '$1'" && return 1
     ($(isNullOrEmpty $ADDRESS)) && echoInfo "INFO: Validator Address to unjail was NOT defined or could NOT be found '$2'" && return 1
     # ($(isNullOrEmpty $REFERENCE)) && echoInfo "INFO: Unjail reference should NOT be empty '$3'" && return 1
-    sekaid tx customstaking proposal proposal-unjail-validator "$ADDRESS" "$REFERENCE" --title="Unjail validator '$ADDRESS'" --description="Proposal to unjail '$ADDRESS' due to his unintentional fault" --from "$ACCOUNT" --chain-id=$NETWORK_NAME --keyring-backend=test  --fees=100ukex --yes --log_format=json --broadcast-mode=async --output=json --home=$SEKAID_HOME | txAwait
+    sekaid tx customstaking proposal unjail-validator "$ADDRESS" "$REFERENCE" --title="Unjail validator '$ADDRESS'" --description="Proposal to unjail '$ADDRESS' due to his unintentional fault" --from "$ACCOUNT" --chain-id=$NETWORK_NAME --keyring-backend=test  --fees=100ukex --yes --log_format=json --broadcast-mode=async --output=json --home=$SEKAID_HOME | txAwait
 }
 
 # showPermissions validator

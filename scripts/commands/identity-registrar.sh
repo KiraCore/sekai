@@ -9,7 +9,7 @@
 sekaid tx customgov register-identity-records --infos-file="id.json" --from=validator --keyring-backend=test --home=$HOME/.sekaid --fees=100ukex --chain-id=testing --yes
 sekaid tx customgov register-identity-records --infos-json='{"moniker":"My Moniker","social":"My Social"}' --from=validator --keyring-backend=test --home=$HOME/.sekaid --fees=100ukex --chain-id=testing --yes
 
-sekaid query customgov all-identity-records
+sekaid query customgov identity-records
 sekaid query customgov identity-record 1
 sekaid query customgov identity-records-by-addr $(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid)
 

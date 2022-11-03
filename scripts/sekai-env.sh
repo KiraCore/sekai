@@ -161,6 +161,45 @@ PermRemoveRoleProposal=51
 # permission needed to vote a proposal to remove a role.
 PermVoteRemoveRoleProposal=52
 
+# permission needed to create proposals to upsert ubi
+PermCreateUpsertUBIProposal=53
+
+# permission that an actor must have in order to vote a proposal to upsert ubi
+PermVoteUpsertUBIProposal=54
+
+# permission needed to create a proposal to remove ubi.
+PermCreateRemoveUBIProposal=55
+
+# permission needed to vote a proposal to remove ubi.
+PermVoteRemoveUBIProposal=56
+
+# permission needed to create a proposal to slash validator.
+PermCreateSlashValidatorProposal=57
+
+# permission needed to vote a proposal to slash validator.
+PermVoteSlashValidatorProposal=58
+
+# permission needed to create a proposal related to basket.
+PermCreateBasketProposal=59
+
+# permission needed to vote a proposal related to basket.
+PermVoteBasketProposal=60
+
+# permission needed to handle emergency issues on basket.
+PermHandleBasketEmergency=61
+
+# permission needed to create a proposal to reset whole councilor rank
+PermCreateResetWholeCouncilorRankProposal=62
+
+# permission needed to vote on reset whole councilor rank proposal
+PermVoteResetWholeCouncilorRankProposal=63
+
+# permission needed to create a proposal to jail councilors
+PermCreateJailCouncilorProposal=64
+
+# permission needed to vote on jail councilors proposal
+PermVoteJailCouncilorProposal=65
+
 ###################################### transaction_types ######################################
 TypeMsgSend="send"
 TypeMsgMultiSend="multisend"
