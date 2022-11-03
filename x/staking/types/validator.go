@@ -10,7 +10,7 @@ import (
 )
 
 // NewValidator generates new Validator.
-func NewValidator(valKey sdk.ValAddress, pubKey cryptotypes.PubKey) (Validator, error) {
+func NewValidator(valKey sdk.ValAddress, pubKey cryptotypes.PubKey, commission sdk.Dec) (Validator, error) {
 
 	pkAny, err := codectypes.NewAnyWithValue(pubKey)
 	if err != nil {
@@ -18,9 +18,10 @@ func NewValidator(valKey sdk.ValAddress, pubKey cryptotypes.PubKey) (Validator, 
 	}
 
 	v := Validator{
-		ValKey: valKey,
-		PubKey: pkAny,
-		Status: Active,
+		ValKey:     valKey,
+		PubKey:     pkAny,
+		Status:     Active,
+		Commission: commission,
 	}
 
 	err = v.Validate()

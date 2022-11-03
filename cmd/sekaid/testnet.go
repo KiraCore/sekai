@@ -209,6 +209,7 @@ func InitTestnet(
 			nodeDirName,
 			valPubKeys[i].Address().Bytes(),
 			valPubKeys[i],
+			sdk.NewDecWithPrec(5, 2), // 5%
 		)
 		if err != nil {
 			return err

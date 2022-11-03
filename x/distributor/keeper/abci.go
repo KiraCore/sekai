@@ -1,11 +1,10 @@
-package distributor
+package keeper
 
 import (
 	"time"
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/KiraCore/sekai/x/distributor/keeper"
 	"github.com/KiraCore/sekai/x/distributor/types"
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -13,7 +12,7 @@ import (
 
 // BeginBlocker sets the proposer for determining distributor during endblock
 // and distribute rewards for the previous block
-func BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock, k keeper.Keeper) {
+func (k Keeper) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) {
 	defer telemetry.ModuleMeasureSince(types.ModuleName, time.Now(), telemetry.MetricKeyBeginBlocker)
 
 	// determine the total power signing the block
@@ -52,4 +51,19 @@ func BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock, k keeper.Keeper) 
 	// record the proposer for when we payout on the next block
 	consAddr := sdk.ConsAddress(req.Header.ProposerAddress)
 	k.SetPreviousProposerConsAddr(ctx, consAddr)
+}
+
+func (k Keeper) EndBlocker(ctx sdk.Context) {
+	snapPeriod := k.GetSnapPeriod(ctx)
+	allVotes := k.GetAllValidatorVotes(ctx)
+
+	for _, vote := range allVotes {
+		if vote.Height+snapPeriod > ctx.BlockHeight() {
+			consAddr, err := sdk.ConsAddressFromBech32(vote.ConsAddr)
+			if err != nil {
+				continue
+			}
+			k.DeleteValidatorVote(ctx, consAddr, vote.Height)
+		}
+	}
 }

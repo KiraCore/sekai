@@ -39,16 +39,16 @@ enum NetworkProperty {
     INFLATION_RATE = 21 [(gogoproto.enumvalue_customname) = "InflationRate"]; // KEX inflation percentage X defined as decimal value.
     INFLATION_PERIOD = 22 [(gogoproto.enumvalue_customname) = "InflationPeriod"]; // period of time (in seconds) over which current KEX supply is inflated by a percentage corresponding to the inflation_rate
     UNSTAKING_PERIOD = 23 [(gogoproto.enumvalue_customname) = "UnstakingPeriod"]; // period of time (in seconds) it takes to unstake any of the staked tokens
-    MAX_DELEGATORS = 25 [(gogoproto.enumvalue_customname) = "MaxDelegators"]; // number of delegators limitation on a single pool
-    MIN_DELEGATION_PUSHOUT = 26 [(gogoproto.enumvalue_customname) = "MinDelegationPushout"]; // The multiplier (10x) to push out minimum delegation when it exceeds max delegators
-    SLASHING_PERIOD = 27 [(gogoproto.enumvalue_customname) = "SlashingPeriod"]; // (default 3600s) - slashing_period should be smaller than `unstaking_period`
-    MAX_JAILED_PERCENTAGE = 28 [(gogoproto.enumvalue_customname) = "MaxJailedPercentage"]; // (default 25%)
-    MAX_SLASHING_PERCENTAGE = 29 [(gogoproto.enumvalue_customname) = "MaxSlashingPercentage"]; // (default 0.5%) 0% - 100%
-    MIN_CUSTODY_REWARD = 30 [(gogoproto.enumvalue_customname) = "MinCustodyReward"]; // minimum custody reward
-    MAX_CUSTODY_BUFFER_SIZE = 31 [(gogoproto.enumvalue_customname) = "MaxCustodyBufferSize"]; // maximum custody buffer size
-    MAX_CUSTODY_TX_SIZE = 32 [(gogoproto.enumvalue_customname) = "MaxCustodyTxSize"]; // maximum custody tx size to save in buffer
-    ABSTENTION_RANK_DECREASE_AMOUNT = 33 [(gogoproto.enumvalue_customname) = "AbstentionRankDecreaseAmount"]; // amount of rank decrease when absent
-    MAX_ABSTENTION = 34 [(gogoproto.enumvalue_customname) = "MaxAbstention"]; // max abention count for councilor
+    MAX_DELEGATORS = 24 [(gogoproto.enumvalue_customname) = "MaxDelegators"]; // number of delegators limitation on a single pool
+    MIN_DELEGATION_PUSHOUT = 25 [(gogoproto.enumvalue_customname) = "MinDelegationPushout"]; // The multiplier (10x) to push out minimum delegation when it exceeds max delegators
+    SLASHING_PERIOD = 26 [(gogoproto.enumvalue_customname) = "SlashingPeriod"]; // (default 3600s) - slashing_period should be smaller than `unstaking_period`
+    MAX_JAILED_PERCENTAGE = 27 [(gogoproto.enumvalue_customname) = "MaxJailedPercentage"]; // (default 25%)
+    MAX_SLASHING_PERCENTAGE = 28 [(gogoproto.enumvalue_customname) = "MaxSlashingPercentage"]; // (default 0.5%) 0% - 100%
+    MIN_CUSTODY_REWARD = 29 [(gogoproto.enumvalue_customname) = "MinCustodyReward"]; // minimum custody reward
+    MAX_CUSTODY_BUFFER_SIZE = 30 [(gogoproto.enumvalue_customname) = "MaxCustodyBufferSize"]; // maximum custody buffer size
+    MAX_CUSTODY_TX_SIZE = 31 [(gogoproto.enumvalue_customname) = "MaxCustodyTxSize"]; // maximum custody tx size to save in buffer
+    ABSTENTION_RANK_DECREASE_AMOUNT = 32 [(gogoproto.enumvalue_customname) = "AbstentionRankDecreaseAmount"]; // amount of rank decrease when absent
+    MAX_ABSTENTION = 33 [(gogoproto.enumvalue_customname) = "MaxAbstention"]; // max abention count for councilor
 }
 
 message NetworkPropertyValue {

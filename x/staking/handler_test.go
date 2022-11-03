@@ -57,6 +57,7 @@ func TestNewHandler_MsgClaimValidator_HappyPath(t *testing.T) {
 		"aMoniker",
 		valAddr1,
 		pubKey,
+		sdk.NewDecWithPrec(5, 2),
 	)
 	require.NoError(t, err)
 
@@ -119,6 +120,7 @@ func TestNewHandler_MsgClaimValidator_Errors(t *testing.T) {
 				validator, err := stakingtypes.NewValidator(
 					valAddr1,
 					pubKey,
+					sdk.NewDecWithPrec(5, 2),
 				)
 				require.NoError(t, err)
 				app.CustomStakingKeeper.AddValidator(ctx, validator)
@@ -150,6 +152,7 @@ func TestNewHandler_MsgClaimValidator_Errors(t *testing.T) {
 				validator, err := stakingtypes.NewValidator(
 					valAddr2,
 					pubKey,
+					sdk.NewDecWithPrec(5, 2),
 				)
 				require.NoError(t, err)
 				app.CustomStakingKeeper.AddValidator(ctx, validator)
@@ -194,6 +197,7 @@ func TestNewHandler_MsgClaimValidator_Errors(t *testing.T) {
 				tt.moniker,
 				valAddr1,
 				pubKey,
+				sdk.NewDecWithPrec(5, 2),
 			)
 			require.NoError(t, err)
 
@@ -224,6 +228,7 @@ func TestNewHandler_SetPermissions_ActorWithRole(t *testing.T) {
 		"aMoniker",
 		valAddr1,
 		pubKey,
+		sdk.NewDecWithPrec(5, 2),
 	)
 	require.NoError(t, err)
 
@@ -269,7 +274,7 @@ func TestHandler_ProposalUnjailValidator_Errors(t *testing.T) {
 				err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerActor, govtypes.PermCreateUnjailValidatorProposal)
 				require.NoError(t, err2)
 
-				val, err := stakingtypes.NewValidator(valAddr, pubKey)
+				val, err := stakingtypes.NewValidator(valAddr, pubKey, sdk.NewDecWithPrec(5, 2))
 				require.NoError(t, err)
 
 				app.CustomStakingKeeper.AddValidator(ctx, val)
@@ -287,7 +292,7 @@ func TestHandler_ProposalUnjailValidator_Errors(t *testing.T) {
 				err2 := app.CustomGovKeeper.AddWhitelistPermission(ctx, proposerActor, govtypes.PermCreateUnjailValidatorProposal)
 				require.NoError(t, err2)
 
-				val, err := stakingtypes.NewValidator(valAddr, pubKey)
+				val, err := stakingtypes.NewValidator(valAddr, pubKey, sdk.NewDecWithPrec(5, 2))
 				require.NoError(t, err)
 
 				app.CustomStakingKeeper.AddValidator(ctx, val)
@@ -352,7 +357,7 @@ func TestHandler_ProposalUnjailValidator(t *testing.T) {
 	properties.MinimumProposalEndTime = 10
 	app.CustomGovKeeper.SetNetworkProperties(ctx, properties)
 
-	val, err := stakingtypes.NewValidator(valAddr, pubKey)
+	val, err := stakingtypes.NewValidator(valAddr, pubKey, sdk.NewDecWithPrec(5, 2))
 	require.NoError(t, err)
 	app.CustomStakingKeeper.AddValidator(ctx, val)
 

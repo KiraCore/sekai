@@ -19,7 +19,6 @@ import (
 )
 
 const (
-	FlagValKey      = "validator-key"
 	FlagTitle       = "title"
 	FlagDescription = "description"
 )
@@ -52,9 +51,18 @@ func GetTxClaimValidatorCmd() *cobra.Command {
 				}
 			}
 
+			commissionStr, err := cmd.Flags().GetString(FlagCommission)
+			if err != nil {
+				return err
+			}
+			commission, err := sdk.NewDecFromStr(commissionStr)
+			if err != nil {
+				return err
+			}
+
 			val := types.ValAddress(clientCtx.GetFromAddress())
 
-			msg, err := stakingtypes.NewMsgClaimValidator(moniker, val, valPubKey)
+			msg, err := stakingtypes.NewMsgClaimValidator(moniker, val, valPubKey, commission)
 			if err != nil {
 				return fmt.Errorf("error creating tx: %w", err)
 			}
@@ -74,7 +82,7 @@ func GetTxClaimValidatorCmd() *cobra.Command {
 // GetTxProposalUnjailValidatorCmd implement cli command for MsgUpsertTokenAlias
 func GetTxProposalUnjailValidatorCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "proposal-unjail-validator val_addr reference",
+		Use:   "unjail-validator [val_addr] [reference]",
 		Short: "Create a proposal to unjail validator (the from address is the validator)",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {

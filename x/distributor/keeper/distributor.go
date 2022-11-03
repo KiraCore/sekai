@@ -48,7 +48,6 @@ func (k Keeper) AllocateTokens(
 	if feesAccBalance.IsAllGTE(feesTreasury) {
 		feesCollected = feesAccBalance.Sub(feesTreasury)
 	}
-	totalRewards := feesCollected.Add(inflationCoin)
 
 	validatorsFeeShare := k.gk.GetNetworkProperties(ctx).ValidatorsFeeShare
 	if validatorsFeeShare > 100 {
@@ -57,22 +56,43 @@ func (k Keeper) AllocateTokens(
 
 	// pay previous proposer
 	proposerValidator, err := k.sk.GetValidatorByConsAddr(ctx, previousProposer)
-
 	if err == nil {
 		// calculate reward based on historical bonded votes of the validator
 		votes := k.GetValidatorVotes(ctx, previousProposer)
 		power := int64(len(votes))
 		snapPeriod := k.GetSnapPeriod(ctx)
-		rewards := sdk.Coins{}
-		for _, r := range totalRewards {
-			reward := r.Amount.Mul(sdk.NewInt(power * int64(validatorsFeeShare))).Quo(sdk.NewInt(snapPeriod * 100))
-			if reward.IsPositive() {
-				rewards = rewards.Add(sdk.NewCoin(r.Denom, reward))
+		validatorRewards := sdk.Coins{}
+		poolRewards := sdk.Coins{}
+
+		// add fee rewards for validator
+		for _, r := range feesCollected {
+			cutAmount := r.Amount.Mul(sdk.NewInt(power)).Quo(sdk.NewInt(snapPeriod))
+			valReward := cutAmount.Mul(sdk.NewInt(int64(validatorsFeeShare))).Quo(sdk.NewInt(100))
+			if valReward.IsPositive() {
+				validatorRewards = validatorRewards.Add(sdk.NewCoin(r.Denom, valReward))
+			}
+			poolReward := cutAmount.Sub(valReward)
+			if poolReward.IsPositive() {
+				poolRewards = poolRewards.Add(sdk.NewCoin(r.Denom, poolReward))
 			}
 		}
 
-		if !rewards.Empty() {
-			k.AllocateTokensToValidator(ctx, proposerValidator, rewards)
+		// add block inflation rewards for validator
+		cutInflationRewards := inflationRewards.Mul(sdk.NewInt(power)).Quo(sdk.NewInt(snapPeriod))
+		inflationCommissionReward := cutInflationRewards.ToDec().Mul(proposerValidator.Commission).RoundInt()
+		validatorRewards = validatorRewards.Add(sdk.NewCoin(totalSupply.Denom, inflationCommissionReward))
+		inflationPoolReward := cutInflationRewards.Sub(inflationCommissionReward)
+		poolRewards = poolRewards.Add(sdk.NewCoin(totalSupply.Denom, inflationPoolReward))
+
+		if !validatorRewards.Empty() {
+			k.AllocateTokensToValidator(ctx, proposerValidator, validatorRewards)
+		}
+
+		if !poolRewards.Empty() {
+			pool, found := k.mk.GetStakingPoolByValidator(ctx, proposerValidator.ValKey.String())
+			if found {
+				k.mk.IncreasePoolRewards(ctx, pool, poolRewards)
+			}
 		}
 	} else {
 		// previous proposer can be unknown if say, the unbonding period is 1 block, so
@@ -85,23 +105,6 @@ func (k Keeper) AllocateTokens(
 				"which generally should not happen except in exceptional circumstances (or fuzz testing). "+
 				"We recommend you investigate immediately.",
 			previousProposer.String()))
-	}
-
-	if validatorsFeeShare < 100 {
-		stakingFeeShare := 100 - validatorsFeeShare
-
-		pool, found := k.mk.GetStakingPoolByValidator(ctx, proposerValidator.ValKey.String())
-		if found {
-			rewards := sdk.Coins{}
-			for _, r := range totalRewards {
-				reward := r.Amount.Mul(sdk.NewInt(int64(stakingFeeShare))).Quo(sdk.NewInt(100))
-				if reward.IsPositive() {
-					rewards = rewards.Add(sdk.NewCoin(r.Denom, reward))
-				}
-			}
-
-			k.mk.IncreasePoolRewards(ctx, pool, rewards)
-		}
 	}
 
 	// give rest of the tokens to community pool
