@@ -1,0 +1,31 @@
+syntax = "proto3";
+package kira.collectives;
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/collectives/types";
+
+// proposal to transfer accumulated donations to a specific account
+message ProposalCollectiveSendDonation {
+  option (cosmos_proto.implements_interface) = "Content";
+  option (gogoproto.equal) = true;
+
+  string name = 1;
+}
+
+// proposal to update staking collective, e.g. change description, owners, contributors, spending-pool list, claim period, etc.
+message ProposalCollectiveUpdate {
+  option (cosmos_proto.implements_interface) = "Content";
+  option (gogoproto.equal) = true;
+
+  string name = 1;
+}
+
+// proposal to remove/delete Staking Collective from registry
+message ProposalCollectiveRemove {
+  option (cosmos_proto.implements_interface) = "Content";
+  option (gogoproto.equal) = true;
+
+  string name = 1;
+}

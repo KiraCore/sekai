@@ -1,0 +1,83 @@
+syntax = "proto3";
+package kira.collectives;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/any.proto";
+import "cosmos_proto/cosmos.proto";
+import "google/protobuf/timestamp.proto";
+import "kira/collectives/proposal.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/collectives/types";
+
+message DepositWhitelist {
+  bool any = 1; // allow/prevent anyone who is not explicitly specified by role or address to bond to this collective
+  repeated uint64 roles = 2; // list of specific roles allowed to deposit to this collective
+  repeated string accounts = 3; // addresses allowed to deposit to this collective
+}
+message OwnersWhitelist {
+  repeated uint64 roles = 1;
+  repeated string accounts = 2;
+}
+message WeightedSpendingPool {
+  string name = 1; // spending pool to which staking rewards will be sent
+  string weight = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ]; // A decimal (0-1) defining what percentage of all rewards should be sent to this specific spending pool
+}
+
+enum CollectiveStatus {
+  option (gogoproto.goproto_enum_prefix) = false;
+
+  // Active status
+  ACTIVE = 0 [ (gogoproto.enumvalue_customname) = "CollectiveActive" ];
+
+  // Inactive status
+  INACTIVE = 1 [ (gogoproto.enumvalue_customname) = "CollectiveInactive" ];
+
+  // Paused status
+  PAUSED = 2 [ (gogoproto.enumvalue_customname) = "CollectivePaused" ];
+}
+
+
+message Collective {
+  option (gogoproto.equal) = true;
+
+  string name = 1;
+  string description = 2; // max 256 characters
+  CollectiveStatus status = 3; // defines whether or not a collective should actively collect and distribute rewards or not
+  DepositWhitelist deposit_whitelist = 4 [(gogoproto.nullable) = false]; // deposit-whitelist defines who is allowed to bond tokens
+  OwnersWhitelist owners_whitelist = 5 [ (gogoproto.nullable) = false ]; // list of accounts/roles controlling the collective via “governance-like” proposals
+  repeated WeightedSpendingPool spending_pools = 6
+      [ (gogoproto.nullable) = false ]; // list of spending pools to which share of rewards
+  uint64 claim_start = 7; // (optional) timestamp defining when rewards claiming should start
+  uint64 claim_period = 8; // (optional) period in seconds defining every what period of time reward claim should be triggered
+  uint64 claim_end = 9;    // (optional) timestamp defining when rewards claiming should end
+  uint64 vote_quorum = 10; // percentage - default: 51%, collective-specific % of owner accounts that must vote YES or NO for any of the collective proposals to be valid
+  uint64 vote_period = 11; // seconds - default: 600s, period of time in seconds that any of the collective proposals must last before passing or being rejected
+  uint64 vote_enactment = 12; // seconds - default: 300s, period of time that must pass before any of the collective proposals is enacted
+  repeated string donations = 13 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ]; // rewards that the collective can control (e.g. transfer)
+  repeated string rewards = 14 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ]; // rewards waiting to be distributed to the spending pool once the claim-period elapses
+  uint64 last_distribution = 15; // timestamp of the block in which tokens were last distributed
+}
+
+message CollectiveContributor {
+  string address = 1;
+  string name = 2;
+  repeated string bonds = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ]; // list of staking DERIVATIVE tokens sent alongside tx (those tokens will be deduced from the user account)
+  uint64 locking = 4; // time at which deposited tokens will become transferable
+  string donation = 5 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ]; // a percentage of rewards that will be re-deposited to the collective
+  bool donation_lock = 6; // defines if changing the donation percentage should not be allowed during the locking period
+}

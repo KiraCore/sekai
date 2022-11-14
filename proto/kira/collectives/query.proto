@@ -1,0 +1,51 @@
+syntax = "proto3";
+package kira.collectives;
+
+import "kira/collectives/collective.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/collectives/types";
+
+// Query defines the gRPC querier service
+service Query {
+  // Collective queries a collective
+  rpc Collective(CollectiveRequest) returns (CollectiveResponse) {}
+
+  // Collectives query list of all staking collectives (output list of names),
+  // if `name` / `id` is specified then output full details of a single collective.
+  rpc Collectives(CollectivesRequest) returns (CollectivesResponse) {}
+
+  // list id of all proposals in regards to staking collectives, 
+  // (or proposals in regards to a specific collective if `name` / `id` is specified in the query)
+  rpc CollectivesProposals(CollectivesProposalsRequest) returns (CollectivesProposalsResponse) {}
+
+  // query list of staking collectives by an individual KIRA address
+  rpc CollectivesByAccount(CollectivesByAccountRequest) returns (CollectivesByAccountResponse) {}
+}
+
+message CollectiveRequest {
+  string name = 1;
+}
+
+message CollectiveResponse {
+  Collective collective = 1 [ (gogoproto.nullable) = false ];
+  repeated kira.collectives.CollectiveContributor contributers = 2
+      [ (gogoproto.nullable) = false ];
+}
+
+message CollectivesRequest {
+}
+
+message CollectivesResponse {
+  repeated Collective collectives = 1 [ (gogoproto.nullable) = false ];
+}
+
+
+message CollectivesProposalsRequest {}
+message CollectivesProposalsResponse {}
+
+message CollectivesByAccountRequest {}
+message CollectivesByAccountResponse {}
