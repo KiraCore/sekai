@@ -10,15 +10,21 @@ import "kira/collectives/proposal.proto";
 option go_package = "github.com/KiraCore/sekai/x/collectives/types";
 
 message DepositWhitelist {
+  option (gogoproto.equal) = true;
+
   bool any = 1; // allow/prevent anyone who is not explicitly specified by role or address to bond to this collective
   repeated uint64 roles = 2; // list of specific roles allowed to deposit to this collective
   repeated string accounts = 3; // addresses allowed to deposit to this collective
 }
 message OwnersWhitelist {
+  option (gogoproto.equal) = true;
+
   repeated uint64 roles = 1;
   repeated string accounts = 2;
 }
 message WeightedSpendingPool {
+  option (gogoproto.equal) = true;
+
   string name = 1; // spending pool to which staking rewards will be sent
   string weight = 2 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
