@@ -31,7 +31,28 @@ func (k msgServer) CreateCollective(
 	msg *types.MsgCreateCollective,
 ) (*types.MsgCreateCollectiveResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
+	collective := k.keeper.GetCollective(ctx, msg.Name)
+	if collective.Name != "" {
+		return nil, types.ErrCollectiveDoesNotExist
+	}
+	k.keeper.SetCollective(ctx, types.Collective{
+		Name:             msg.Name,
+		Description:      msg.Description,
+		Status:           types.CollectiveActive,
+		DepositWhitelist: msg.DepositWhitelist,
+		OwnersWhitelist:  msg.OwnersWhitelist,
+		SpendingPools:    msg.SpendingPools,
+		ClaimStart:       msg.ClaimStart,
+		ClaimPeriod:      msg.ClaimPeriod,
+		ClaimEnd:         msg.ClaimEnd,
+		VoteQuorum:       msg.VoteQuorum,
+		VotePeriod:       msg.VotePeriod,
+		VoteEnactment:    msg.VoteEnactment,
+		Donations:        sdk.NewCoins(),
+		Rewards:          sdk.NewCoins(),
+		LastDistribution: uint64(ctx.BlockTime().Unix()),
+	})
+
 	return &types.MsgCreateCollectiveResponse{}, nil
 }
 
@@ -43,7 +64,30 @@ func (k msgServer) ContributeCollective(
 	msg *types.MsgBondCollective,
 ) (*types.MsgBondCollectiveResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
+
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return nil, err
+	}
+	err = k.keeper.bk.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, msg.Bonds)
+	if err != nil {
+		return nil, err
+	}
+
+	cc := k.keeper.GetCollectiveContributer(ctx, msg.Name, msg.Sender)
+	if cc.Name != "" {
+		cc.Bonds = sdk.NewCoins(cc.Bonds...).Add(msg.Bonds...)
+	} else {
+		cc = types.CollectiveContributor{
+			Address:      msg.Sender,
+			Name:         msg.Name,
+			Bonds:        msg.Bonds,
+			Locking:      0,
+			Donation:     sdk.ZeroDec(),
+			DonationLock: false,
+		}
+	}
+	k.keeper.SetCollectiveContributer(ctx, cc)
 	return &types.MsgBondCollectiveResponse{}, nil
 }
 
@@ -55,7 +99,20 @@ func (k msgServer) DonateCollective(
 	msg *types.MsgDonateCollective,
 ) (*types.MsgDonateCollectiveResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
+	cc := k.keeper.GetCollectiveContributer(ctx, msg.Name, msg.Sender)
+	if cc.Name != "" {
+		return nil, types.ErrNotCollectiveContributer
+	}
+
+	// todo: collective contributer should have donation lock start time
+	if cc.DonationLock {
+		return nil, types.ErrDonationLocked
+	}
+
+	cc.Locking = msg.Locking
+	cc.Donation = msg.Donation
+
+	k.keeper.SetCollectiveContributer(ctx, cc)
 	return &types.MsgDonateCollectiveResponse{}, nil
 }
 
@@ -66,6 +123,19 @@ func (k msgServer) WithdrawCollective(
 	msg *types.MsgWithdrawCollective,
 ) (*types.MsgWithdrawCollectiveResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
+	cc := k.keeper.GetCollectiveContributer(ctx, msg.Name, msg.Sender)
+	if cc.Name != "" {
+		return nil, types.ErrNotCollectiveContributer
+	}
+
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return nil, err
+	}
+	err = k.keeper.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, cc.Bonds)
+	if err != nil {
+		return nil, err
+	}
+	k.keeper.DeleteCollectiveContributer(ctx, msg.Name, msg.Sender)
 	return &types.MsgWithdrawCollectiveResponse{}, nil
 }

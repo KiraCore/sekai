@@ -7,8 +7,8 @@ import (
 
 var _ sdk.Msg = &MsgCreateCollective{}
 
-// MsgCreateCollective returns an instance of MsgCreateCollective
-func NewMMsgCreateCollective(proposer sdk.AccAddress) *MsgCreateCollective {
+// NewMsgCreateCollective returns an instance of MsgCreateCollective
+func NewMsgCreateCollective(proposer sdk.AccAddress) *MsgCreateCollective {
 	return &MsgCreateCollective{
 		Sender: proposer.String(),
 	}

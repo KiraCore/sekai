@@ -20,16 +20,19 @@ var _ types.QueryServer = Querier{}
 // Collective queries a collective
 func (q Querier) Collective(c context.Context, request *types.CollectiveRequest) (*types.CollectiveResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	_ = ctx
-	return &types.CollectiveResponse{}, nil
+	return &types.CollectiveResponse{
+		Collective:   q.keeper.GetCollective(ctx, request.Name),
+		Contributers: q.keeper.GetAllCollectiveContributers(ctx, request.Name),
+	}, nil
 }
 
 // Collectives query list of all staking collectives (output list of names),
 // if `name` / `id` is specified then output full details of a single collective.
 func (q Querier) Collectives(c context.Context, request *types.CollectivesRequest) (*types.CollectivesResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	_ = ctx
-	return &types.CollectivesResponse{}, nil
+	return &types.CollectivesResponse{
+		Collectives: q.keeper.GetAllCollectives(ctx),
+	}, nil
 }
 
 // list id of all proposals in regards to staking collectives,
@@ -37,6 +40,7 @@ func (q Querier) Collectives(c context.Context, request *types.CollectivesReques
 func (q Querier) CollectivesProposals(c context.Context, request *types.CollectivesProposalsRequest) (*types.CollectivesProposalsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 	_ = ctx
+	// TODO:
 	return &types.CollectivesProposalsResponse{}, nil
 }
 
@@ -44,5 +48,6 @@ func (q Querier) CollectivesProposals(c context.Context, request *types.Collecti
 func (q Querier) CollectivesByAccount(c context.Context, request *types.CollectivesByAccountRequest) (*types.CollectivesByAccountResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 	_ = ctx
+	// TODO:
 	return &types.CollectivesByAccountResponse{}, nil
 }

@@ -3,7 +3,6 @@ package collectives
 import (
 	"context"
 	"encoding/json"
-	"time"
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
@@ -97,32 +96,11 @@ func (am AppModule) InitGenesis(
 	var genesisState collectivestypes.GenesisState
 	cdc.MustUnmarshalJSON(data, &genesisState)
 
-	for _, collectives := range genesisState.collectivess {
-		am.collectivesKeeper.Setcollectives(ctx, collectives)
-	}
-
-	for _, amount := range genesisState.HistoricalMints {
-		am.collectivesKeeper.SetMintAmount(ctx, time.Unix(int64(amount.Time), 0), amount.collectivesId, amount.Amount)
-	}
-
-	for _, amount := range genesisState.HistoricalBurns {
-		am.collectivesKeeper.SetBurnAmount(ctx, time.Unix(int64(amount.Time), 0), amount.collectivesId, amount.Amount)
-	}
-
-	for _, amount := range genesisState.HistoricalSwaps {
-		am.collectivesKeeper.SetSwapAmount(ctx, time.Unix(int64(amount.Time), 0), amount.collectivesId, amount.Amount)
-	}
-
 	return nil
 }
 
 func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.RawMessage {
-	genesisState := collectivestypes.GenesisState{
-		collectivess:    am.collectivesKeeper.GetAllcollectivess(ctx),
-		HistoricalMints: am.collectivesKeeper.GetAllMintAmounts(ctx),
-		HistoricalBurns: am.collectivesKeeper.GetAllBurnAmounts(ctx),
-		HistoricalSwaps: am.collectivesKeeper.GetAllSwapAmounts(ctx),
-	}
+	genesisState := collectivestypes.GenesisState{}
 	return cdc.MustMarshalJSON(&genesisState)
 }
 

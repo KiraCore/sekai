@@ -8,60 +8,62 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-type ApplyCreatecollectivesProposalHandler struct {
+type ApplyCollectiveSendDonationProposalHandler struct {
 	keeper keeper.Keeper
 }
 
-func NewApplyCreatecollectivesProposalHandler(keeper keeper.Keeper) *ApplyCreatecollectivesProposalHandler {
-	return &ApplyCreatecollectivesProposalHandler{
+func NewApplyCollectiveSendDonationProposalHandler(keeper keeper.Keeper) *ApplyCollectiveSendDonationProposalHandler {
+	return &ApplyCollectiveSendDonationProposalHandler{
 		keeper: keeper,
 	}
 }
 
-func (a ApplyCreatecollectivesProposalHandler) ProposalType() string {
-	return kiratypes.ProposalTypeCreateCollectives
+func (a ApplyCollectiveSendDonationProposalHandler) ProposalType() string {
+	return kiratypes.ProposalTypeCollectiveSendDonation
 }
 
-func (a ApplyCreatecollectivesProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal govtypes.Content, slash uint64) error {
-	p := proposal.(*types.ProposalCreateCollectives)
-	return a.keeper.Createcollectives(ctx, p.collectives)
+func (a ApplyCollectiveSendDonationProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal govtypes.Content, slash uint64) error {
+	p := proposal.(*types.ProposalCollectiveSendDonation)
+	return a.keeper.SendDonation(ctx, p.Name, p.Address, p.Amount)
 }
 
-type ApplyEditcollectivesProposalHandler struct {
+type ApplyCollectiveUpdateProposalHandler struct {
 	keeper keeper.Keeper
 }
 
-func NewApplyEditcollectivesProposalHandler(keeper keeper.Keeper) *ApplyEditcollectivesProposalHandler {
-	return &ApplyEditcollectivesProposalHandler{
+func NewApplyCollectiveUpdateProposalHandler(keeper keeper.Keeper) *ApplyCollectiveUpdateProposalHandler {
+	return &ApplyCollectiveUpdateProposalHandler{
 		keeper: keeper,
 	}
 }
 
-func (a ApplyEditcollectivesProposalHandler) ProposalType() string {
-	return kiratypes.ProposalTypeEditcollectives
+func (a ApplyCollectiveUpdateProposalHandler) ProposalType() string {
+	return kiratypes.ProposalTypeCollectiveUpdate
 }
 
-func (a ApplyEditcollectivesProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal govtypes.Content, slash uint64) error {
-	p := proposal.(*types.ProposalEditcollectives)
+func (a ApplyCollectiveUpdateProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal govtypes.Content, slash uint64) error {
+	p := proposal.(*types.ProposalCollectiveUpdate)
 
-	return a.keeper.Editcollectives(ctx, p.collectives)
+	a.keeper.SetCollective(ctx, p.Collective)
+	return nil
 }
 
-type ApplycollectivesWithdrawSurplusProposalHandler struct {
+type ApplyCollectiveRemoveProposalHandler struct {
 	keeper keeper.Keeper
 }
 
-func NewApplycollectivesWithdrawSurplusProposalHandler(keeper keeper.Keeper) *ApplycollectivesWithdrawSurplusProposalHandler {
-	return &ApplycollectivesWithdrawSurplusProposalHandler{
+func NewApplyCollectiveRemoveProposalHandler(keeper keeper.Keeper) *ApplyCollectiveRemoveProposalHandler {
+	return &ApplyCollectiveRemoveProposalHandler{
 		keeper: keeper,
 	}
 }
 
-func (a ApplycollectivesWithdrawSurplusProposalHandler) ProposalType() string {
-	return kiratypes.ProposalTypecollectivesWithdrawSurplus
+func (a ApplyCollectiveRemoveProposalHandler) ProposalType() string {
+	return kiratypes.ProposalTypeCollectiveRemove
 }
 
-func (a ApplycollectivesWithdrawSurplusProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal govtypes.Content, slash uint64) error {
-	p := proposal.(*types.ProposalcollectivesWithdrawSurplus)
-	return a.keeper.collectivesWithdrawSurplus(ctx, *p)
+func (a ApplyCollectiveRemoveProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal govtypes.Content, slash uint64) error {
+	p := proposal.(*types.ProposalCollectiveRemove)
+	a.keeper.DeleteCollective(ctx, p.Name)
+	return nil
 }

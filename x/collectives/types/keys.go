@@ -1,9 +1,5 @@
 package types
 
-import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
-)
-
 // constants
 var (
 	ModuleName = "collectives"
@@ -20,6 +16,6 @@ func CollectiveKey(collectiveName string) []byte {
 	return append([]byte(PrefixCollectiveKey), collectiveName...)
 }
 
-func CollectiveContributerKey(collectiveName string, contributer sdk.AccAddress) []byte {
+func CollectiveContributerKey(collectiveName, contributer string) []byte {
 	return append(append([]byte(PrefixCollectiveContributerKey), collectiveName...), contributer...)
 }
