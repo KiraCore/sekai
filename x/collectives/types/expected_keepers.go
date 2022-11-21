@@ -5,6 +5,7 @@ import (
 	multistakingtypes "github.com/KiraCore/sekai/x/multistaking/types"
 	spendingtypes "github.com/KiraCore/sekai/x/spending/types"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
+	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 )
@@ -43,4 +44,9 @@ type MultiStakingKeeper interface {
 	RegisterDelegator(ctx sdk.Context, delegator sdk.AccAddress)
 	ClaimRewards(ctx sdk.Context, delegator sdk.AccAddress) sdk.Coins
 	ClaimRewardsFromModule(ctx sdk.Context, module string) sdk.Coins
+}
+
+// TokensKeeper defines expected interface needed to get token rate
+type TokensKeeper interface {
+	GetTokenRate(ctx sdk.Context, denom string) *tokenstypes.TokenRate
 }

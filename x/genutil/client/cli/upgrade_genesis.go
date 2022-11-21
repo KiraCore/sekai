@@ -168,6 +168,9 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 						MaxCustodyBufferSize:         10,
 						AbstentionRankDecreaseAmount: 1,
 						MaxAbstention:                2,
+						MinCollectiveBond:            100_000, // in KEX
+						MinCollectiveBondingTime:     86400,   // in seconds
+						MaxCollectiveOutputs:         10,
 					},
 					ExecutionFees:               govGenesisV01228.ExecutionFees,
 					PoorNetworkMessages:         govGenesisV01228.PoorNetworkMessages,

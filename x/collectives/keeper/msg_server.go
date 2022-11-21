@@ -33,12 +33,31 @@ func (k msgServer) CreateCollective(
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	collective := k.keeper.GetCollective(ctx, msg.Name)
 	if collective.Name != "" {
-		return nil, types.ErrCollectiveDoesNotExist
+		return nil, types.ErrCollectiveAlreadyExists
 	}
+
+	properties := k.keeper.gk.GetNetworkProperties(ctx)
+	if len(msg.SpendingPools) > int(properties.MaxCollectiveOutputs) {
+		return nil, types.ErrNumberOfSpendingPoolsBiggerThanMaxOutputs
+	}
+
+	bondsValue := k.keeper.GetBondsValue(ctx, msg.Bonds)
+
+	// check if initial bond is lower than 10%
+	minCollectiveBond := sdk.NewDec(int64(properties.MinCollectiveBond)).Mul(sdk.NewDec(1000_000))
+	if bondsValue.LT(minCollectiveBond.Quo(sdk.NewDec(10))) { // MinCollectiveBond is in KEX
+		return nil, types.InitialBondLowerThanTenPercentOfMinimumBond
+	}
+
+	collectiveStatus := types.CollectiveInactive
+	if bondsValue.GTE(minCollectiveBond) {
+		collectiveStatus = types.CollectiveActive
+	}
+
 	k.keeper.SetCollective(ctx, types.Collective{
 		Name:             msg.Name,
 		Description:      msg.Description,
-		Status:           types.CollectiveActive,
+		Status:           collectiveStatus,
 		DepositWhitelist: msg.DepositWhitelist,
 		OwnersWhitelist:  msg.OwnersWhitelist,
 		SpendingPools:    msg.SpendingPools,
@@ -51,6 +70,25 @@ func (k msgServer) CreateCollective(
 		Donations:        sdk.NewCoins(),
 		Rewards:          sdk.NewCoins(),
 		LastDistribution: uint64(ctx.BlockTime().Unix()),
+	})
+
+	// create contribute contributor here
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return nil, err
+	}
+	err = k.keeper.bk.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, msg.Bonds)
+	if err != nil {
+		return nil, err
+	}
+
+	k.keeper.SetCollectiveContributer(ctx, types.CollectiveContributor{
+		Address:      msg.Sender,
+		Name:         msg.Name,
+		Bonds:        msg.Bonds,
+		Locking:      0,
+		Donation:     sdk.ZeroDec(),
+		DonationLock: false,
 	})
 
 	return &types.MsgCreateCollectiveResponse{}, nil
@@ -72,6 +110,34 @@ func (k msgServer) ContributeCollective(
 	err = k.keeper.bk.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, msg.Bonds)
 	if err != nil {
 		return nil, err
+	}
+
+	collective := k.keeper.GetCollective(ctx, msg.Name)
+	if collective.Name == "" {
+		return nil, types.ErrCollectiveDoesNotExist
+	}
+
+	// check if the user is whitelisted user for the collective
+	if !collective.DepositWhitelist.Any {
+		isWhitelisted := false
+		for _, addr := range collective.DepositWhitelist.Accounts {
+			if addr == msg.Sender {
+				isWhitelisted = true
+			}
+		}
+		actor, found := k.keeper.gk.GetNetworkActorByAddress(ctx, sender)
+		if found {
+			for _, role := range collective.DepositWhitelist.Roles {
+				for _, arole := range actor.Roles {
+					if arole == role {
+						isWhitelisted = true
+					}
+				}
+			}
+		}
+		if !isWhitelisted {
+			return nil, types.ErrNotWhitelistedForCollectiveDeposit
+		}
 	}
 
 	cc := k.keeper.GetCollectiveContributer(ctx, msg.Name, msg.Sender)

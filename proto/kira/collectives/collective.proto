@@ -71,6 +71,11 @@ message Collective {
     (gogoproto.nullable) = false
   ]; // rewards waiting to be distributed to the spending pool once the claim-period elapses
   uint64 last_distribution = 15; // timestamp of the block in which tokens were last distributed
+  repeated string bonds = 16 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ]; // total bonds put on the collective
+  uint64 creation_time = 17; // collective creation time
 }
 
 message CollectiveContributor {

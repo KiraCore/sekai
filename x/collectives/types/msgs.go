@@ -26,6 +26,13 @@ func (m *MsgCreateCollective) Type() string {
 
 // ValidateBasic returns basic validation result
 func (m *MsgCreateCollective) ValidateBasic() error {
+	totalWeight := sdk.ZeroDec()
+	for _, wpool := range m.SpendingPools {
+		totalWeight = totalWeight.Add(wpool.Weight)
+	}
+	if !totalWeight.Equal(sdk.OneDec()) {
+		return ErrTotalSpendingPoolWeightShouldBeOne
+	}
 	return nil
 }
 

@@ -119,11 +119,11 @@ func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sd
 }
 
 func (am AppModule) BeginBlock(clientCtx sdk.Context, req abci.RequestBeginBlock) {
-	BeginBlocker(clientCtx, req, am.collectivesKeeper)
+	am.collectivesKeeper.BeginBlocker(clientCtx)
 }
 
 func (am AppModule) EndBlock(ctx sdk.Context, block abci.RequestEndBlock) []abci.ValidatorUpdate {
-	EndBlocker(ctx, am.collectivesKeeper)
+	am.collectivesKeeper.EndBlocker(ctx)
 	return nil
 }
 

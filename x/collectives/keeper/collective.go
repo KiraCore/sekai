@@ -96,3 +96,16 @@ func (k Keeper) SendDonation(ctx sdk.Context, name string, account sdk.AccAddres
 	}
 	return nil
 }
+
+func (k Keeper) GetBondsValue(ctx sdk.Context, bonds sdk.Coins) sdk.Dec {
+	bondsValue := sdk.ZeroDec()
+	for _, bond := range bonds {
+		rate := k.tk.GetTokenRate(ctx, bond.Denom)
+		if rate == nil {
+			continue
+		}
+
+		bondsValue = bondsValue.Add(rate.FeeRate.Mul(bond.Amount.ToDec()))
+	}
+	return bondsValue
+}
