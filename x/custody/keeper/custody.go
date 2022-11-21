@@ -27,6 +27,13 @@ func (k Keeper) SetCustodyRecord(ctx sdk.Context, record types.CustodyRecord) {
 	store.Set(key, k.cdc.MustMarshal(record.CustodySettings))
 }
 
+func (k Keeper) DisableCustodyRecord(ctx sdk.Context, address sdk.AccAddress) {
+	store := ctx.KVStore(k.storeKey)
+	key := append([]byte(types.PrefixKeyCustodyRecord), address...)
+
+	store.Delete(key)
+}
+
 func (k Keeper) SetCustodyRecordKey(ctx sdk.Context, record types.CustodyKeyRecord) {
 	info := k.GetCustodyInfoByAddress(ctx, record.Address)
 	info.Key = record.Key

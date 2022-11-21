@@ -44,6 +44,13 @@ func (s msgServer) CreateCustody(goCtx context.Context, msg *types.MsgCreteCusto
 	return &types.MsgCreteCustodyRecordResponse{}, nil
 }
 
+func (s msgServer) DisableCustody(goCtx context.Context, msg *types.MsgDisableCustodyRecord) (*types.MsgDisableCustodyRecordResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	s.keeper.DisableCustodyRecord(ctx, msg.Address)
+
+	return &types.MsgDisableCustodyRecordResponse{}, nil
+}
+
 func (s msgServer) AddToCustodians(goCtx context.Context, msg *types.MsgAddToCustodyCustodians) (*types.MsgAddToCustodyCustodiansResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	record := types.CustodyCustodiansRecord{
