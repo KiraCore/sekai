@@ -20,7 +20,11 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 		// the default `min_collective_bond` should be equivalent to 100’000 KEX
 		// and configurable in the [Network Properties](https://www.notion.so/de74fe4b731a47df86683f2e9eefa793)
 		minCollectiveBond := sdk.NewDec(int64(properties.MinCollectiveBond)).Mul(sdk.NewDec(1000_000))
-		if bondsValue.LT(minCollectiveBond) && collective.Status == types.CollectiveInactive {
+
+		// To be `active`, ClaimStart time should pass
+		if bondsValue.LT(minCollectiveBond) &&
+			collective.ClaimStart <= uint64(ctx.BlockTime().Unix()) &&
+			collective.Status == types.CollectiveInactive {
 			collective.Status = types.CollectiveActive
 		}
 		k.SetCollective(ctx, collective)
@@ -40,4 +44,7 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 			}
 		}
 	}
+
+	// TODO: claim staking rewards and distribute them to specified spending pool (only for `active` status)
+
 }

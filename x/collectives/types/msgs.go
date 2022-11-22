@@ -111,6 +111,12 @@ func (m *MsgDonateCollective) Type() string {
 
 // ValidateBasic returns basic validation result
 func (m *MsgDonateCollective) ValidateBasic() error {
+
+	// In addition to the locking period, whitelisted contributors should be able to configure their individual intended donation to the collective,
+	// that is a percentage of rewards (value between 0 and 1) that should be deposited and controlled by the collective.
+	if m.Donation.LT(sdk.ZeroDec()) || m.Donation.GT(sdk.OneDec()) {
+		return ErrInvalidDonationValue
+	}
 	return nil
 }
 

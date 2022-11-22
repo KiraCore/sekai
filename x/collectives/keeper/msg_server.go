@@ -170,13 +170,27 @@ func (k msgServer) DonateCollective(
 		return nil, types.ErrNotCollectiveContributer
 	}
 
-	// todo: collective contributer should have donation lock start time
-	if cc.DonationLock {
-		return nil, types.ErrDonationLocked
+	// The maximum time period should be **NO greater than 1 year** from the latest block time **OR** the latest time the locking & donation transaction
+	// was sent.
+	oneYear := 86400 * 365
+	if msg.Locking > uint64(ctx.BlockTime().Unix())+uint64(oneYear) {
+		return nil, types.ErrLockPeriodCannotExceedOneYear
+	}
+
+	// Depositors can always extend the unlock date (indefinitely) but never decrease it.
+	if cc.Locking > msg.Locking {
+		return nil, types.ErrLockPeriodCanOnlyBeIncreased
 	}
 
 	cc.Locking = msg.Locking
-	cc.Donation = msg.Donation
+
+	// Depositors should also have the ability to “lock” the donation amount using a dedicated `donation-lock` field until the “locking” period passes.
+	// If the locking period is extended the “donation lock” should also persist and remain not changeable.
+	if cc.DonationLock && cc.Donation != msg.Donation {
+		return nil, types.ErrDonationLocked
+	}
+
+	// TODO: All donations should be subtracted from the amounts being sent to the spending pools.
 
 	k.keeper.SetCollectiveContributer(ctx, cc)
 	return &types.MsgDonateCollectiveResponse{}, nil
@@ -192,6 +206,14 @@ func (k msgServer) WithdrawCollective(
 	cc := k.keeper.GetCollectiveContributer(ctx, msg.Name, msg.Sender)
 	if cc.Name != "" {
 		return nil, types.ErrNotCollectiveContributer
+	}
+
+	// After the collective has been created, all whitelisted contributors should be allowed to voluntarily “lock”
+	// their staking derivatives for a defined time period by providing the date (UNIX timestamp) at which ALL deposited tokens
+	// can be withdrawn. Once the date is set it should NOT be possible to “unlock”
+	// the tokens until that specific date passes.
+	if cc.Locking > uint64(ctx.BlockTime().Unix()) {
+		return nil, types.ErrBondsLockedOnTheCollective
 	}
 
 	sender, err := sdk.AccAddressFromBech32(msg.Sender)
