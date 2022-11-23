@@ -52,6 +52,7 @@ enum NetworkProperty {
     MIN_COLLECTIVE_BOND = 34 [(gogoproto.enumvalue_customname) = "MinCollectiveBond"]; // minimum bond amount for the collective to be activated, default: 100’000 KEX
     MIN_COLLECTIVE_BONDING_TIME = 35 [(gogoproto.enumvalue_customname) = "MinCollectiveBondingTime"]; // allowed time to reach min_collective_bond default: 86400s
     MAX_COLLECTIVE_OUTPUTS = 36 [(gogoproto.enumvalue_customname) = "MaxCollectiveOutputs"]; // limitation the maximum number of spending pools configuration per collective
+    MIN_COLLECTIVE_CLAIM_PERIOD = 37 [(gogoproto.enumvalue_customname) = "MinCollectiveClaimPeriod"]; // in seconds, default 14400 - 4 hours
 }
 
 message NetworkPropertyValue {
@@ -99,4 +100,5 @@ message NetworkProperties {
     uint64 min_collective_bond = 35; // minimum bond amount for the collective to be activated, default: 100’000 KEX
     uint64 min_collective_bonding_time = 36; // allowed time to reach min_collective_bond default: 86400s
     uint64 max_collective_outputs = 37; // limitation the maximum number of spending pools configuration per collective
+    uint64 min_collective_claim_period = 38; // in seconds, default 14400 - 4 hours
 }

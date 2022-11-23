@@ -152,3 +152,19 @@ func (k Keeper) DepositSpendingPoolFromModule(ctx sdk.Context, moduleName, poolN
 	k.SetSpendingPool(ctx, *pool)
 	return nil
 }
+
+func (k Keeper) DepositSpendingPoolFromAccount(ctx sdk.Context, addr sdk.AccAddress, poolName string, amount sdk.Coin) error {
+	err := k.bk.SendCoinsFromAccountToModule(ctx, addr, types.ModuleName, sdk.Coins{amount})
+	if err != nil {
+		return err
+	}
+
+	pool := k.GetSpendingPool(ctx, poolName)
+	if pool == nil {
+		return types.ErrPoolDoesNotExist
+	}
+
+	pool.Balance = pool.Balance.Add(sdk.Coins{amount}.AmountOf(pool.Token))
+	k.SetSpendingPool(ctx, *pool)
+	return nil
+}

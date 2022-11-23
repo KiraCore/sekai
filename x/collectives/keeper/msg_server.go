@@ -41,6 +41,10 @@ func (k msgServer) CreateCollective(
 		return nil, types.ErrNumberOfSpendingPoolsBiggerThanMaxOutputs
 	}
 
+	if msg.ClaimPeriod < properties.MinCollectiveClaimPeriod {
+		return nil, types.ErrClaimPeriodLowerThanNetworkConfig
+	}
+
 	bondsValue := k.keeper.GetBondsValue(ctx, msg.Bonds)
 
 	// check if initial bond is lower than 10%
@@ -143,6 +147,14 @@ func (k msgServer) ContributeCollective(
 	cc := k.keeper.GetCollectiveContributer(ctx, msg.Name, msg.Sender)
 	if cc.Name != "" {
 		cc.Bonds = sdk.NewCoins(cc.Bonds...).Add(msg.Bonds...)
+		// send donation coins to donation account
+		donationCoins := calcPortion(msg.Bonds, cc.Donation)
+		if donationCoins.IsAllPositive() {
+			err = k.keeper.bk.SendCoinsFromModuleToModule(ctx, types.ModuleName, types.DonationModuleAccount, donationCoins)
+			if err != nil {
+				return nil, err
+			}
+		}
 	} else {
 		cc = types.CollectiveContributor{
 			Address:      msg.Sender,
@@ -182,15 +194,32 @@ func (k msgServer) DonateCollective(
 		return nil, types.ErrLockPeriodCanOnlyBeIncreased
 	}
 
-	cc.Locking = msg.Locking
-
 	// Depositors should also have the ability to “lock” the donation amount using a dedicated `donation-lock` field until the “locking” period passes.
 	// If the locking period is extended the “donation lock” should also persist and remain not changeable.
 	if cc.DonationLock && cc.Donation != msg.Donation {
 		return nil, types.ErrDonationLocked
 	}
 
-	// TODO: All donations should be subtracted from the amounts being sent to the spending pools.
+	// move tokens between donation account and collective account
+	if cc.Donation.GT(msg.Donation) {
+		movingBonds := calcPortion(cc.Bonds, cc.Donation.Sub(msg.Donation))
+		if movingBonds.IsAllPositive() {
+			err := k.keeper.bk.SendCoinsFromModuleToModule(ctx, types.ModuleName, types.DonationModuleAccount, movingBonds)
+			if err != nil {
+				return nil, err
+			}
+		}
+	} else if msg.Donation.GT(cc.Donation) {
+		movingBonds := calcPortion(cc.Bonds, msg.Donation.Sub(cc.Donation))
+		if movingBonds.IsAllPositive() {
+			err := k.keeper.bk.SendCoinsFromModuleToModule(ctx, types.DonationModuleAccount, types.ModuleName, movingBonds)
+			if err != nil {
+				return nil, err
+			}
+		}
+	}
+	cc.Donation = msg.Donation
+	cc.Locking = msg.Locking
 
 	k.keeper.SetCollectiveContributer(ctx, cc)
 	return &types.MsgDonateCollectiveResponse{}, nil
@@ -220,9 +249,21 @@ func (k msgServer) WithdrawCollective(
 	if err != nil {
 		return nil, err
 	}
-	err = k.keeper.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, cc.Bonds)
-	if err != nil {
-		return nil, err
+
+	collectiveBonds := calcPortion(cc.Bonds, sdk.OneDec().Sub(cc.Donation))
+	if collectiveBonds.IsAllPositive() {
+		err = k.keeper.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, collectiveBonds)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	donationBonds := calcPortion(cc.Bonds, cc.Donation)
+	if donationBonds.IsAllPositive() {
+		err = k.keeper.bk.SendCoinsFromModuleToAccount(ctx, types.DonationModuleAccount, sender, donationBonds)
+		if err != nil {
+			return nil, err
+		}
 	}
 	k.keeper.DeleteCollectiveContributer(ctx, msg.Name, msg.Sender)
 	return &types.MsgWithdrawCollectiveResponse{}, nil

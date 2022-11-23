@@ -22,10 +22,15 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 		minCollectiveBond := sdk.NewDec(int64(properties.MinCollectiveBond)).Mul(sdk.NewDec(1000_000))
 
 		// To be `active`, ClaimStart time should pass
-		if bondsValue.LT(minCollectiveBond) &&
-			collective.ClaimStart <= uint64(ctx.BlockTime().Unix()) &&
-			collective.Status == types.CollectiveInactive {
-			collective.Status = types.CollectiveActive
+
+		if collective.ClaimStart <= uint64(ctx.BlockTime().Unix()) &&
+			(collective.ClaimEnd == 0 || collective.ClaimEnd >= uint64(ctx.BlockTime().Unix())) &&
+			collective.Status != types.CollectivePaused {
+			if bondsValue.GTE(minCollectiveBond) {
+				collective.Status = types.CollectiveActive
+			} else {
+				collective.Status = types.CollectiveInactive
+			}
 		}
 		k.SetCollective(ctx, collective)
 
@@ -46,5 +51,38 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 	}
 
 	// TODO: claim staking rewards and distribute them to specified spending pool (only for `active` status)
+	// TODO: All donations should be subtracted from the amounts being sent to the spending pools.
+	collectives = k.GetAllCollectives(ctx)
+	for _, collective := range collectives {
+		if collective.Status != types.CollectiveActive {
+			continue
+		}
 
+		delegator := authtypes.GetModuleAccount(types.ModuleName, collective.Name)
+		k.mk.RegisterDelegator(ctx, delegator)
+		coins := k.mk.ClaimRewards(ctx, delegator)
+
+		// send to spending pools based on weight
+		for _, pool := range collective.SpendingPools {
+			portionCoins := calcPortion(coins, pool.Weight)
+			pool := k.spk.GetSpendingPool(ctx, pool.Name)
+			if pool == nil {
+				continue
+			}
+
+			err := k.spk.DepositSpendingPoolFromAccount(ctx, delegator, pool.Name, portionCoins)
+			if err != nil {
+				panic(err)
+			}
+		}
+
+		delegator = authtypes.GetModuleAccount(types.DonationModuleAccount, collective.Name)
+		k.mk.RegisterDelegator(ctx, delegator)
+		coins = k.mk.ClaimRewards(ctx, delegator)
+		collective.Donations = sdk.Coins(collective.Donations).Add(coins...)
+		err := k.bk.SendCoinsFromAccountToModule(ctx, delegator, types.ModuleName, coins)
+		if err != nil {
+			panic(err)
+		}
+	}
 }

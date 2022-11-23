@@ -223,6 +223,8 @@ func (k Keeper) GetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 		return types.NetworkPropertyValue{Value: properties.MinCollectiveBondingTime}, nil
 	case types.MaxCollectiveOutputs:
 		return types.NetworkPropertyValue{Value: properties.MaxCollectiveOutputs}, nil
+	case types.MinCollectiveClaimPeriod:
+		return types.NetworkPropertyValue{Value: properties.MinCollectiveClaimPeriod}, nil
 	default:
 		return types.NetworkPropertyValue{}, errors.New("trying to fetch network property that does not exist")
 	}
@@ -309,6 +311,8 @@ func (k Keeper) SetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 		properties.MinCollectiveBondingTime = value.Value
 	case types.MaxCollectiveOutputs:
 		properties.MaxCollectiveOutputs = value.Value
+	case types.MinCollectiveClaimPeriod:
+		properties.MinCollectiveClaimPeriod = value.Value
 	default:
 		return errors.New("trying to set network property that does not exist")
 	}
