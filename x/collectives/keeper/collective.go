@@ -109,3 +109,24 @@ func (k Keeper) GetBondsValue(ctx sdk.Context, bonds sdk.Coins) sdk.Dec {
 	}
 	return bondsValue
 }
+
+func (k Keeper) withdrawCollective(ctx sdk.Context, collective types.Collective, cc types.CollectiveContributor) {
+	addr := sdk.MustAccAddressFromBech32(cc.Address)
+	collectiveAddr := collective.GetCollectiveAddress()
+	collectiveDonationAddr := collective.GetCollectiveDonationAddress()
+	collectiveBonds := calcPortion(cc.Bonds, sdk.OneDec().Sub(cc.Donation))
+	if collectiveBonds.IsAllPositive() {
+		err := k.bk.SendCoins(ctx, collectiveAddr, addr, collectiveBonds)
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	donationBonds := calcPortion(cc.Bonds, cc.Donation)
+	if donationBonds.IsAllPositive() {
+		err := k.bk.SendCoins(ctx, collectiveDonationAddr, addr, donationBonds)
+		if err != nil {
+			panic(err)
+		}
+	}
+}

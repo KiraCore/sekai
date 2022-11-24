@@ -2,8 +2,7 @@ package types
 
 // constants
 var (
-	ModuleName            = "collectives"
-	DonationModuleAccount = "donation_module_account"
+	ModuleName = "collectives"
 
 	// RouterKey to be used for routing msgs
 	RouterKey    = ModuleName

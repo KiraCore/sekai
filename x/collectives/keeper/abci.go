@@ -9,9 +9,53 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 
 }
 
+func (k Keeper) distributeCollectiveRewards(ctx sdk.Context, collective types.Collective) {
+	delegator := collective.GetCollectiveAddress()
+	k.mk.RegisterDelegator(ctx, delegator)
+	coins := k.mk.ClaimRewards(ctx, delegator)
+
+	// send to spending pools based on weight
+	for _, pool := range collective.SpendingPools {
+		portionCoins := calcPortion(coins, pool.Weight)
+		pool := k.spk.GetSpendingPool(ctx, pool.Name)
+		if pool == nil {
+			continue
+		}
+
+		err := k.spk.DepositSpendingPoolFromAccount(ctx, delegator, pool.Name, portionCoins)
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	delegator = collective.GetCollectiveDonationAddress()
+	k.mk.RegisterDelegator(ctx, delegator)
+	coins = k.mk.ClaimRewards(ctx, delegator)
+	collective.Donations = sdk.Coins(collective.Donations).Add(coins...)
+	err := k.bk.SendCoinsFromAccountToModule(ctx, delegator, types.ModuleName, coins)
+	if err != nil {
+		panic(err)
+	}
+}
+
 func (k Keeper) EndBlocker(ctx sdk.Context) {
 	collectives := k.GetAllCollectives(ctx)
 	properties := k.gk.GetNetworkProperties(ctx)
+
+	collectives = k.GetAllCollectives(ctx)
+	for _, collective := range collectives {
+		if collective.Status != types.CollectiveActive {
+			continue
+		}
+
+		// Do distribution per interval or just after claim start
+		blockTime := uint64(ctx.BlockTime().Unix())
+		if (collective.ClaimStart >= blockTime && collective.LastDistribution == 0) ||
+			collective.LastDistribution+collective.ClaimPeriod <= blockTime {
+			k.distributeCollectiveRewards(ctx, collective)
+			collective.LastDistribution = uint64(ctx.BlockTime().Unix())
+		}
+	}
 
 	for _, collective := range collectives {
 		bondsValue := k.GetBondsValue(ctx, collective.Bonds)
@@ -22,7 +66,6 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 		minCollectiveBond := sdk.NewDec(int64(properties.MinCollectiveBond)).Mul(sdk.NewDec(1000_000))
 
 		// To be `active`, ClaimStart time should pass
-
 		if collective.ClaimStart <= uint64(ctx.BlockTime().Unix()) &&
 			(collective.ClaimEnd == 0 || collective.ClaimEnd >= uint64(ctx.BlockTime().Unix())) &&
 			collective.Status != types.CollectivePaused {
@@ -35,54 +78,19 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 		k.SetCollective(ctx, collective)
 
 		// if minimum collective bonding time pass
-		if collective.CreationTime <= ctx.BlockTime().Unix()+int64(properties.MinCollectiveBondingTime) {
+		if int64(collective.CreationTime+properties.MinCollectiveBondingTime) <= ctx.BlockTime().Unix() {
 			if bondsValue.LT(minCollectiveBond) {
-				for _, contributer := range k.GetAllCollectiveContributers(ctx, collective.Name) {
-					addr := sdk.MustAccAddressFromBech32(contributer.Address)
-					err := k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, contributer.Bonds)
-					if err != nil {
-						panic(err)
-					}
-					k.DeleteCollectiveContributer(ctx, collective.Name, contributer.Address)
+				// At the time of collective removal, donations and staking rewards
+				// are claimed for a final time and sent to the spending pools.
+				k.distributeCollectiveRewards(ctx, collective)
+
+				for _, cc := range k.GetAllCollectiveContributers(ctx, collective.Name) {
+					k.withdrawCollective(ctx, collective, cc)
+					k.DeleteCollectiveContributer(ctx, collective.Name, cc.Address)
 				}
 				k.DeleteCollective(ctx, collective.Name)
 			}
 		}
 	}
 
-	// TODO: claim staking rewards and distribute them to specified spending pool (only for `active` status)
-	// TODO: All donations should be subtracted from the amounts being sent to the spending pools.
-	collectives = k.GetAllCollectives(ctx)
-	for _, collective := range collectives {
-		if collective.Status != types.CollectiveActive {
-			continue
-		}
-
-		delegator := authtypes.GetModuleAccount(types.ModuleName, collective.Name)
-		k.mk.RegisterDelegator(ctx, delegator)
-		coins := k.mk.ClaimRewards(ctx, delegator)
-
-		// send to spending pools based on weight
-		for _, pool := range collective.SpendingPools {
-			portionCoins := calcPortion(coins, pool.Weight)
-			pool := k.spk.GetSpendingPool(ctx, pool.Name)
-			if pool == nil {
-				continue
-			}
-
-			err := k.spk.DepositSpendingPoolFromAccount(ctx, delegator, pool.Name, portionCoins)
-			if err != nil {
-				panic(err)
-			}
-		}
-
-		delegator = authtypes.GetModuleAccount(types.DonationModuleAccount, collective.Name)
-		k.mk.RegisterDelegator(ctx, delegator)
-		coins = k.mk.ClaimRewards(ctx, delegator)
-		collective.Donations = sdk.Coins(collective.Donations).Add(coins...)
-		err := k.bk.SendCoinsFromAccountToModule(ctx, delegator, types.ModuleName, coins)
-		if err != nil {
-			panic(err)
-		}
-	}
 }

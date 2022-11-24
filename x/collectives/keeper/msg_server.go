@@ -73,7 +73,8 @@ func (k msgServer) CreateCollective(
 		VoteEnactment:    msg.VoteEnactment,
 		Donations:        sdk.NewCoins(),
 		Rewards:          sdk.NewCoins(),
-		LastDistribution: uint64(ctx.BlockTime().Unix()),
+		LastDistribution: 0,
+		CreationTime:     uint64(ctx.BlockTime().Unix()),
 	})
 
 	// create contribute contributor here
@@ -81,7 +82,9 @@ func (k msgServer) CreateCollective(
 	if err != nil {
 		return nil, err
 	}
-	err = k.keeper.bk.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, msg.Bonds)
+
+	collectiveAddr := collective.GetCollectiveAddress()
+	err = k.keeper.bk.SendCoins(ctx, sender, collectiveAddr, msg.Bonds)
 	if err != nil {
 		return nil, err
 	}
@@ -111,14 +114,16 @@ func (k msgServer) ContributeCollective(
 	if err != nil {
 		return nil, err
 	}
-	err = k.keeper.bk.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, msg.Bonds)
-	if err != nil {
-		return nil, err
-	}
 
 	collective := k.keeper.GetCollective(ctx, msg.Name)
 	if collective.Name == "" {
 		return nil, types.ErrCollectiveDoesNotExist
+	}
+
+	collectiveAddr := collective.GetCollectiveAddress()
+	err = k.keeper.bk.SendCoins(ctx, sender, collectiveAddr, msg.Bonds)
+	if err != nil {
+		return nil, err
 	}
 
 	// check if the user is whitelisted user for the collective
@@ -150,7 +155,8 @@ func (k msgServer) ContributeCollective(
 		// send donation coins to donation account
 		donationCoins := calcPortion(msg.Bonds, cc.Donation)
 		if donationCoins.IsAllPositive() {
-			err = k.keeper.bk.SendCoinsFromModuleToModule(ctx, types.ModuleName, types.DonationModuleAccount, donationCoins)
+			collectiveDonationAddr := collective.GetCollectiveDonationAddress()
+			err = k.keeper.bk.SendCoins(ctx, collectiveAddr, collectiveDonationAddr, donationCoins)
 			if err != nil {
 				return nil, err
 			}
@@ -200,11 +206,19 @@ func (k msgServer) DonateCollective(
 		return nil, types.ErrDonationLocked
 	}
 
+	collective := k.keeper.GetCollective(ctx, msg.Name)
+	if collective.Name == "" {
+		return nil, types.ErrCollectiveDoesNotExist
+	}
+
+	collectiveAddr := collective.GetCollectiveAddress()
+	collectiveDonationAddr := collective.GetCollectiveDonationAddress()
+
 	// move tokens between donation account and collective account
 	if cc.Donation.GT(msg.Donation) {
 		movingBonds := calcPortion(cc.Bonds, cc.Donation.Sub(msg.Donation))
 		if movingBonds.IsAllPositive() {
-			err := k.keeper.bk.SendCoinsFromModuleToModule(ctx, types.ModuleName, types.DonationModuleAccount, movingBonds)
+			err := k.keeper.bk.SendCoins(ctx, collectiveAddr, collectiveDonationAddr, movingBonds)
 			if err != nil {
 				return nil, err
 			}
@@ -212,7 +226,7 @@ func (k msgServer) DonateCollective(
 	} else if msg.Donation.GT(cc.Donation) {
 		movingBonds := calcPortion(cc.Bonds, msg.Donation.Sub(cc.Donation))
 		if movingBonds.IsAllPositive() {
-			err := k.keeper.bk.SendCoinsFromModuleToModule(ctx, types.DonationModuleAccount, types.ModuleName, movingBonds)
+			err := k.keeper.bk.SendCoins(ctx, collectiveDonationAddr, collectiveAddr, movingBonds)
 			if err != nil {
 				return nil, err
 			}
@@ -245,26 +259,12 @@ func (k msgServer) WithdrawCollective(
 		return nil, types.ErrBondsLockedOnTheCollective
 	}
 
-	sender, err := sdk.AccAddressFromBech32(msg.Sender)
-	if err != nil {
-		return nil, err
+	collective := k.keeper.GetCollective(ctx, msg.Name)
+	if collective.Name == "" {
+		return nil, types.ErrCollectiveDoesNotExist
 	}
 
-	collectiveBonds := calcPortion(cc.Bonds, sdk.OneDec().Sub(cc.Donation))
-	if collectiveBonds.IsAllPositive() {
-		err = k.keeper.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, collectiveBonds)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	donationBonds := calcPortion(cc.Bonds, cc.Donation)
-	if donationBonds.IsAllPositive() {
-		err = k.keeper.bk.SendCoinsFromModuleToAccount(ctx, types.DonationModuleAccount, sender, donationBonds)
-		if err != nil {
-			return nil, err
-		}
-	}
+	k.keeper.withdrawCollective(ctx, collective, cc)
 	k.keeper.DeleteCollectiveContributer(ctx, msg.Name, msg.Sender)
 	return &types.MsgWithdrawCollectiveResponse{}, nil
 }
