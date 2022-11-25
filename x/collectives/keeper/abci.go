@@ -80,15 +80,7 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 		// if minimum collective bonding time pass
 		if int64(collective.CreationTime+properties.MinCollectiveBondingTime) <= ctx.BlockTime().Unix() {
 			if bondsValue.LT(minCollectiveBond) {
-				// At the time of collective removal, donations and staking rewards
-				// are claimed for a final time and sent to the spending pools.
-				k.distributeCollectiveRewards(ctx, collective)
-
-				for _, cc := range k.GetAllCollectiveContributers(ctx, collective.Name) {
-					k.withdrawCollective(ctx, collective, cc)
-					k.DeleteCollectiveContributer(ctx, collective.Name, cc.Address)
-				}
-				k.DeleteCollective(ctx, collective.Name)
+				k.ExecuteCollectiveRemove(ctx, collective)
 			}
 		}
 	}

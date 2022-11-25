@@ -5,7 +5,6 @@ import "gogoproto/gogo.proto";
 import "google/protobuf/any.proto";
 import "cosmos_proto/cosmos.proto";
 import "google/protobuf/timestamp.proto";
-import "kira/collectives/proposal.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/collectives/types";
 

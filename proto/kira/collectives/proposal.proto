@@ -3,6 +3,7 @@ package kira.collectives;
 
 import "gogoproto/gogo.proto";
 import "cosmos_proto/cosmos.proto";
+import "kira/collectives/collective.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/collectives/types";
 
@@ -12,6 +13,11 @@ message ProposalCollectiveSendDonation {
   option (gogoproto.equal) = true;
 
   string name = 1;
+  string address = 2;
+  repeated string amounts = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
 }
 
 // proposal to update staking collective, e.g. change description, owners, contributors, spending-pool list, claim period, etc.
@@ -20,6 +26,18 @@ message ProposalCollectiveUpdate {
   option (gogoproto.equal) = true;
 
   string name = 1;
+  string description = 2; // max 256 characters
+  CollectiveStatus status = 3; // defines whether or not a collective should actively collect and distribute rewards or not
+  DepositWhitelist deposit_whitelist = 4 [(gogoproto.nullable) = false]; // deposit-whitelist defines who is allowed to bond tokens
+  OwnersWhitelist owners_whitelist = 5 [ (gogoproto.nullable) = false ]; // list of accounts/roles controlling the collective via “governance-like” proposals
+  repeated WeightedSpendingPool spending_pools = 6
+      [ (gogoproto.nullable) = false ]; // list of spending pools to which share of rewards
+  uint64 claim_start = 7; // (optional) timestamp defining when rewards claiming should start
+  uint64 claim_period = 8; // (optional) period in seconds defining every what period of time reward claim should be triggered
+  uint64 claim_end = 9;    // (optional) timestamp defining when rewards claiming should end
+  uint64 vote_quorum = 10; // percentage - default: 51%, collective-specific % of owner accounts that must vote YES or NO for any of the collective proposals to be valid
+  uint64 vote_period = 11; // seconds - default: 600s, period of time in seconds that any of the collective proposals must last before passing or being rejected
+  uint64 vote_enactment = 12; // seconds - default: 300s, period of time that must pass before any of the collective proposals is enacted
 }
 
 // proposal to remove/delete Staking Collective from registry

@@ -53,3 +53,54 @@ func calcPortion(coins sdk.Coins, portion sdk.Dec) sdk.Coins {
 	}
 	return portionCoins
 }
+
+func (k Keeper) IsAllowedAddress(ctx sdk.Context, address sdk.AccAddress, permInfo types.OwnersWhitelist) bool {
+	for _, owner := range permInfo.Accounts {
+		if owner == address.String() {
+			return true
+		}
+	}
+
+	actor, found := k.gk.GetNetworkActorByAddress(ctx, address)
+	if !found {
+		return false
+	}
+
+	flags := make(map[uint64]bool)
+	for _, role := range permInfo.Roles {
+		flags[role] = true
+	}
+
+	for _, role := range actor.Roles {
+		if flags[role] {
+			return true
+		}
+	}
+	return false
+}
+
+func (k Keeper) AllowedAddresses(ctx sdk.Context, permInfo types.OwnersWhitelist) []string {
+	addrs := []string{}
+	flags := make(map[string]bool)
+
+	for _, owner := range permInfo.Accounts {
+		if flags[owner] == false {
+			flags[owner] = true
+			addrs = append(addrs, owner)
+		}
+	}
+
+	for _, role := range permInfo.Roles {
+		actorIter := k.gk.GetNetworkActorsByRole(ctx, role)
+
+		for ; actorIter.Valid(); actorIter.Next() {
+			addr := sdk.AccAddress(actorIter.Value()).String()
+			if flags[addr] == false {
+				flags[addr] = true
+				addrs = append(addrs, addr)
+			}
+		}
+	}
+
+	return addrs
+}

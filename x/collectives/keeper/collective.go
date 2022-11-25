@@ -130,3 +130,15 @@ func (k Keeper) withdrawCollective(ctx sdk.Context, collective types.Collective,
 		}
 	}
 }
+
+func (k Keeper) ExecuteCollectiveRemove(ctx sdk.Context, collective types.Collective) {
+	// At the time of collective removal, donations and staking rewards
+	// are claimed for a final time and sent to the spending pools.
+	k.distributeCollectiveRewards(ctx, collective)
+
+	for _, cc := range k.GetAllCollectiveContributers(ctx, collective.Name) {
+		k.withdrawCollective(ctx, collective, cc)
+		k.DeleteCollectiveContributer(ctx, collective.Name, cc.Address)
+	}
+	k.DeleteCollective(ctx, collective.Name)
+}
