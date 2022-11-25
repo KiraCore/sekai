@@ -20,9 +20,9 @@ message UpdateSpendingPoolProposal {
   uint64 claim_start = 2;
   uint64 claim_end = 3;
   string token = 4;  // name of the token that can be distributed.
-  string rate = 5 [
-    (gogoproto.moretags) = "yaml:\"rate\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+  repeated string rates = 5 [
+    (gogoproto.moretags) = "yaml:\"rates\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.DecCoin",
     (gogoproto.nullable) = false
   ];
   uint64 vote_quorum = 6; // percentage, # default: 51%

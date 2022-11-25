@@ -34,10 +34,10 @@ message MsgCreateSpendingPool {
   uint64 claim_end = 3;
   string token = 4; // name of the token that can be distributed.
   // rate of distribution in the smallest token denomination per 1 second (this value can be a float number, smaller than actual denomination)
-  string rate = 5 [
-    (gogoproto.moretags)   = "yaml:\"rate\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable)   = false
+  repeated string rates = 5 [
+    (gogoproto.moretags) = "yaml:\"rates\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.DecCoin",
+    (gogoproto.nullable) = false
   ];
   // pool specific % of owner accounts that must vote YES or NO for any of the pool proposals to be valid.
   uint64 vote_quorum = 6; // percentage, # default: 51%
