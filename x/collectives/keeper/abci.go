@@ -9,7 +9,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 
 }
 
-func (k Keeper) distributeCollectiveRewards(ctx sdk.Context, collective types.Collective) {
+func (k Keeper) DistributeCollectiveRewards(ctx sdk.Context, collective types.Collective) {
 	delegator := collective.GetCollectiveAddress()
 	k.mk.RegisterDelegator(ctx, delegator)
 	coins := k.mk.ClaimRewards(ctx, delegator)
@@ -52,7 +52,7 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 		blockTime := uint64(ctx.BlockTime().Unix())
 		if (collective.ClaimStart >= blockTime && collective.LastDistribution == 0) ||
 			collective.LastDistribution+collective.ClaimPeriod <= blockTime {
-			k.distributeCollectiveRewards(ctx, collective)
+			k.DistributeCollectiveRewards(ctx, collective)
 			collective.LastDistribution = uint64(ctx.BlockTime().Unix())
 		}
 	}
@@ -80,7 +80,11 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 		// if minimum collective bonding time pass
 		if int64(collective.CreationTime+properties.MinCollectiveBondingTime) <= ctx.BlockTime().Unix() {
 			if bondsValue.LT(minCollectiveBond) {
-				k.ExecuteCollectiveRemove(ctx, collective)
+				cacheCtx, write := ctx.CacheContext()
+				err := k.ExecuteCollectiveRemove(cacheCtx, collective)
+				if err == nil {
+					write()
+				}
 			}
 		}
 	}

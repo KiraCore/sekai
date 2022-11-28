@@ -67,6 +67,7 @@ func (k Keeper) ProcessUBIRecord(ctx sdk.Context, record types.UBIRecord) error 
 
 	amount := sdk.NewInt(int64(record.Amount)).Mul(sdk.NewInt(1000_000))
 
+	bondDenom := k.BondDenom(ctx)
 	// if dynamic ubi record, mint only missing amount
 	if record.Dynamic {
 		spendingPool := k.sk.GetSpendingPool(ctx, record.Pool)
@@ -74,17 +75,19 @@ func (k Keeper) ProcessUBIRecord(ctx sdk.Context, record types.UBIRecord) error 
 			return types.ErrSpendingPoolDoesNotExist
 		}
 
-		if amount.LTE(spendingPool.Balance) {
+		bondDenomBalance := sdk.Coins(spendingPool.Balances).AmountOf(bondDenom)
+
+		if amount.LTE(bondDenomBalance) {
 			return nil
 		}
-		amount = amount.Sub(spendingPool.Balance)
+		amount = amount.Sub(bondDenomBalance)
 	}
 
-	coin := sdk.NewCoin(k.BondDenom(ctx), amount)
+	coin := sdk.NewCoin(bondDenom, amount)
 	err := k.bk.MintCoins(ctx, minttypes.ModuleName, sdk.NewCoins(coin))
 	if err != nil {
 		return err
 	}
 
-	return k.sk.DepositSpendingPoolFromModule(ctx, minttypes.ModuleName, record.Pool, coin)
+	return k.sk.DepositSpendingPoolFromModule(ctx, minttypes.ModuleName, record.Pool, sdk.Coins{coin})
 }

@@ -83,10 +83,15 @@ func (k Keeper) GetAllCollectiveContributers(ctx sdk.Context, name string) []typ
 
 func (k Keeper) SendDonation(ctx sdk.Context, name string, account sdk.AccAddress, coins sdk.Coins) error {
 	collective := k.GetCollective(ctx, name)
+	if collective.Name == "" {
+		return types.ErrCollectiveDoesNotExist
+	}
 
 	donations := sdk.Coins(collective.Donations)
 	if donations.IsAllGTE(coins) {
 		collective.Donations = donations.Sub(coins)
+	} else {
+		return types.ErrNotEnoughDonationRewardsPool
 	}
 	k.SetCollective(ctx, collective)
 
@@ -110,7 +115,7 @@ func (k Keeper) GetBondsValue(ctx sdk.Context, bonds sdk.Coins) sdk.Dec {
 	return bondsValue
 }
 
-func (k Keeper) withdrawCollective(ctx sdk.Context, collective types.Collective, cc types.CollectiveContributor) {
+func (k Keeper) WithdrawCollective(ctx sdk.Context, collective types.Collective, cc types.CollectiveContributor) error {
 	addr := sdk.MustAccAddressFromBech32(cc.Address)
 	collectiveAddr := collective.GetCollectiveAddress()
 	collectiveDonationAddr := collective.GetCollectiveDonationAddress()
@@ -118,7 +123,7 @@ func (k Keeper) withdrawCollective(ctx sdk.Context, collective types.Collective,
 	if collectiveBonds.IsAllPositive() {
 		err := k.bk.SendCoins(ctx, collectiveAddr, addr, collectiveBonds)
 		if err != nil {
-			panic(err)
+			return err
 		}
 	}
 
@@ -126,19 +131,28 @@ func (k Keeper) withdrawCollective(ctx sdk.Context, collective types.Collective,
 	if donationBonds.IsAllPositive() {
 		err := k.bk.SendCoins(ctx, collectiveDonationAddr, addr, donationBonds)
 		if err != nil {
-			panic(err)
+			return err
 		}
 	}
+
+	collective.Bonds = sdk.Coins(collective.Bonds).Sub(collectiveBonds).Sub(donationBonds)
+	k.SetCollective(ctx, collective)
+	k.DeleteCollectiveContributer(ctx, cc.Name, cc.Address)
+	return nil
 }
 
-func (k Keeper) ExecuteCollectiveRemove(ctx sdk.Context, collective types.Collective) {
+func (k Keeper) ExecuteCollectiveRemove(ctx sdk.Context, collective types.Collective) error {
 	// At the time of collective removal, donations and staking rewards
 	// are claimed for a final time and sent to the spending pools.
-	k.distributeCollectiveRewards(ctx, collective)
+	k.DistributeCollectiveRewards(ctx, collective)
 
 	for _, cc := range k.GetAllCollectiveContributers(ctx, collective.Name) {
-		k.withdrawCollective(ctx, collective, cc)
+		err := k.WithdrawCollective(ctx, collective, cc)
+		if err != nil {
+			return err
+		}
 		k.DeleteCollectiveContributer(ctx, collective.Name, cc.Address)
 	}
 	k.DeleteCollective(ctx, collective.Name)
+	return nil
 }

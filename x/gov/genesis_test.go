@@ -71,7 +71,11 @@ func TestSimappExportGenesis(t *testing.T) {
 			"max_custody_buffer_size": "10",
 			"max_custody_tx_size": "8192",
 			"abstention_rank_decrease_amount": "1",
-			"max_abstention": "2"
+			"max_abstention": "2",
+			"min_collective_bond": "100000",
+			"min_collective_bonding_time": "86400",
+			"max_collective_outputs": "10",
+			"min_collective_claim_period": "14400"
 		},
 		"execution_fees":[	
 			{	
@@ -304,7 +308,11 @@ func TestExportInitGenesis(t *testing.T) {
 			"max_custody_buffer_size": "10",
 			"max_custody_tx_size": "8192",
 			"abstention_rank_decrease_amount": "1",
-			"max_abstention": "2"
+			"max_abstention": "2",
+			"min_collective_bond": "100000",
+			"min_collective_bonding_time": "86400",
+			"max_collective_outputs": "10",
+			"min_collective_claim_period": "14400"
 		},
 		"execution_fees":[	
 			{	

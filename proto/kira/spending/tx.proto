@@ -50,6 +50,8 @@ message MsgCreateSpendingPool {
   // defines set of accounts/roles to which funds can be distributed
   WeightedPermInfo beneficiaries = 10 [ (gogoproto.nullable) = false ];
   string sender = 11;
+  bool dynamic_rate = 12;
+  uint64 dynamic_rate_period = 13;
 }
 message MsgCreateSpendingPoolResponse {}
 

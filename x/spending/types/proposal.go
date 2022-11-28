@@ -19,18 +19,22 @@ func NewUpdateSpendingPoolProposal(
 	voteEnactment uint64,
 	owners PermInfo,
 	beneficiaries WeightedPermInfo,
+	dynamicRate bool,
+	dynamicRatePeriod uint64,
 ) *UpdateSpendingPoolProposal {
 	return &UpdateSpendingPoolProposal{
-		Name:          name,
-		ClaimStart:    claimStart,
-		ClaimEnd:      claimEnd,
-		Token:         token,
-		Rates:         rates,
-		VoteQuorum:    voteQuorum,
-		VotePeriod:    votePeriod,
-		VoteEnactment: voteEnactment,
-		Owners:        owners,
-		Beneficiaries: beneficiaries,
+		Name:              name,
+		ClaimStart:        claimStart,
+		ClaimEnd:          claimEnd,
+		Token:             token,
+		Rates:             rates,
+		VoteQuorum:        voteQuorum,
+		VotePeriod:        votePeriod,
+		VoteEnactment:     voteEnactment,
+		Owners:            owners,
+		Beneficiaries:     beneficiaries,
+		DynamicRate:       dynamicRate,
+		DynamicRatePeriod: dynamicRatePeriod,
 	}
 }
 

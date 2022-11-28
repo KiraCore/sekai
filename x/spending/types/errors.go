@@ -14,4 +14,5 @@ var (
 	ErrNotRegisteredForRewards           = errors.Register(ModuleName, 8, "not registered for rewards")
 	ErrNoMoreRewardsToClaim              = errors.Register(ModuleName, 9, "no more rewards to claim")
 	ErrInvalidProposalExists             = errors.Register(ModuleName, 10, "invalid proposal exists")
+	ErrEmptyWeightBeneficiary            = errors.Register(ModuleName, 11, "empty weight beneficiary not allowed")
 )

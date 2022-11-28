@@ -9,15 +9,13 @@ import (
 
 type msgServer struct {
 	keeper Keeper
-	cgk    types.CustomGovKeeper
 }
 
 // NewMsgServerImpl returns an implementation of the bank MsgServer interface
 // for the provided Keeper.
-func NewMsgServerImpl(keeper Keeper, cgk types.CustomGovKeeper) types.MsgServer {
+func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 	return &msgServer{
 		keeper: keeper,
-		cgk:    cgk,
 	}
 }
 
@@ -264,7 +262,10 @@ func (k msgServer) WithdrawCollective(
 		return nil, types.ErrCollectiveDoesNotExist
 	}
 
-	k.keeper.withdrawCollective(ctx, collective, cc)
+	err := k.keeper.WithdrawCollective(ctx, collective, cc)
+	if err != nil {
+		return nil, err
+	}
 	k.keeper.DeleteCollectiveContributer(ctx, msg.Name, msg.Sender)
 	return &types.MsgWithdrawCollectiveResponse{}, nil
 }

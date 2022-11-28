@@ -4,10 +4,8 @@ import (
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	multistakingtypes "github.com/KiraCore/sekai/x/multistaking/types"
 	spendingtypes "github.com/KiraCore/sekai/x/spending/types"
-	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 )
 
 type CustomGovKeeper interface {
@@ -25,19 +23,10 @@ type BankKeeper interface {
 	SendCoinsFromModuleToModule(ctx sdk.Context, senderModule, recipientModule string, amt sdk.Coins) error
 }
 
-type AccountKeeper interface {
-	GetModuleAccount(ctx sdk.Context, moduleName string) authtypes.ModuleAccountI
-}
-
 type SpendingKeeper interface {
 	GetSpendingPool(ctx sdk.Context, name string) *spendingtypes.SpendingPool
 	DepositSpendingPoolFromModule(ctx sdk.Context, moduleName, poolName string, amounts sdk.Coins) error
 	DepositSpendingPoolFromAccount(ctx sdk.Context, addr sdk.AccAddress, poolName string, amounts sdk.Coins) error
-}
-
-type StakingKeeper interface {
-	GetValidatorByConsAddr(ctx sdk.Context, consAddr sdk.ConsAddress) (stakingtypes.Validator, error)
-	GetValidator(sdk.Context, sdk.ValAddress) (stakingtypes.Validator, error)
 }
 
 type MultiStakingKeeper interface {

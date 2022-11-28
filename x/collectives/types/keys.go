@@ -7,6 +7,7 @@ var (
 	// RouterKey to be used for routing msgs
 	RouterKey    = ModuleName
 	QuerierRoute = ModuleName
+	StoreKey     = ModuleName
 
 	PrefixCollectiveKey            = []byte("collective_by_name")
 	PrefixCollectiveContributerKey = []byte("collective_contributer")

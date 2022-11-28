@@ -87,17 +87,19 @@ func (a ApplyUpdateSpendingPoolProposalHandler) Apply(ctx sdk.Context, proposalI
 	}
 
 	a.keeper.SetSpendingPool(ctx, types.SpendingPool{
-		Name:          p.Name,
-		ClaimStart:    p.ClaimStart,
-		ClaimEnd:      p.ClaimEnd,
-		Token:         p.Token,
-		Rates:         p.Rates,
-		VoteQuorum:    p.VoteQuorum,
-		VotePeriod:    p.VotePeriod,
-		VoteEnactment: p.VoteEnactment,
-		Owners:        &p.Owners,
-		Beneficiaries: &p.Beneficiaries,
-		Balances:      pool.Balances,
+		Name:              p.Name,
+		ClaimStart:        p.ClaimStart,
+		ClaimEnd:          p.ClaimEnd,
+		Token:             p.Token,
+		Rates:             p.Rates,
+		VoteQuorum:        p.VoteQuorum,
+		VotePeriod:        p.VotePeriod,
+		VoteEnactment:     p.VoteEnactment,
+		Owners:            &p.Owners,
+		Beneficiaries:     &p.Beneficiaries,
+		Balances:          pool.Balances,
+		DynamicRate:       p.DynamicRate,
+		DynamicRatePeriod: p.DynamicRatePeriod,
 	})
 
 	return nil

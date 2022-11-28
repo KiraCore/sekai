@@ -55,7 +55,7 @@ func GetCmdQueryCollective() *cobra.Command {
 func GetCmdQueryCollectives() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "collectives",
-		Short: "Collectives query list of all staking collectives (output list of names),\nif `name` / `id` is specified then output full details of a single collective.",
+		Short: "Collectives query list of all staking collectives.",
 		Args:  cobra.MinimumNArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
@@ -107,7 +107,9 @@ func GetCmdQueryCollectivesByAccount() *cobra.Command {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			queryClient := types.NewQueryClient(clientCtx)
-			res, err := queryClient.CollectivesByAccount(context.Background(), &types.CollectivesByAccountRequest{})
+			res, err := queryClient.CollectivesByAccount(context.Background(), &types.CollectivesByAccountRequest{
+				Account: args[0],
+			})
 			if err != nil {
 				return err
 			}

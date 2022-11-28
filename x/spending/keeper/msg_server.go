@@ -40,17 +40,20 @@ func (k msgServer) CreateSpendingPool(
 	}
 
 	err := k.keeper.CreateSpendingPool(ctx, types.SpendingPool{
-		Name:          msg.Name,
-		ClaimStart:    msg.ClaimStart,
-		ClaimEnd:      msg.ClaimEnd,
-		Token:         msg.Token,
-		Rates:         msg.Rates,
-		VoteQuorum:    msg.VoteQuorum,
-		VotePeriod:    msg.VotePeriod,
-		VoteEnactment: msg.VoteEnactment,
-		Owners:        &msg.Owners,
-		Beneficiaries: &msg.Beneficiaries,
-		Balances:      sdk.Coins{},
+		Name:                    msg.Name,
+		ClaimStart:              msg.ClaimStart,
+		ClaimEnd:                msg.ClaimEnd,
+		Token:                   msg.Token,
+		Rates:                   msg.Rates,
+		VoteQuorum:              msg.VoteQuorum,
+		VotePeriod:              msg.VotePeriod,
+		VoteEnactment:           msg.VoteEnactment,
+		Owners:                  &msg.Owners,
+		Beneficiaries:           &msg.Beneficiaries,
+		Balances:                sdk.Coins{},
+		DynamicRate:             msg.DynamicRate,
+		DynamicRatePeriod:       msg.DynamicRatePeriod,
+		LastDynamicRateCalcTime: uint64(ctx.BlockTime().Unix()),
 	})
 
 	if err != nil {

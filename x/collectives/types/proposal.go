@@ -3,10 +3,19 @@ package types
 import (
 	kiratypes "github.com/KiraCore/sekai/types"
 	"github.com/KiraCore/sekai/x/gov/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func NewProposalCollectiveSendDonation() *ProposalCollectiveSendDonation {
-	return &ProposalCollectiveSendDonation{}
+func NewProposalCollectiveSendDonation(
+	name string,
+	address string,
+	amounts sdk.Coins,
+) *ProposalCollectiveSendDonation {
+	return &ProposalCollectiveSendDonation{
+		Name:    name,
+		Address: address,
+		Amounts: amounts,
+	}
 }
 
 func (m *ProposalCollectiveSendDonation) ProposalType() string {
@@ -26,8 +35,29 @@ func (m *ProposalCollectiveSendDonation) ValidateBasic() error {
 	return nil
 }
 
-func NewProposalCollectiveUpdate() *ProposalCollectiveUpdate {
-	return &ProposalCollectiveUpdate{}
+func NewProposalCollectiveUpdate(
+	name, description string,
+	status CollectiveStatus,
+	depositWhitelist DepositWhitelist,
+	ownersWhitelist OwnersWhitelist,
+	weightedSpendingPool []WeightedSpendingPool,
+	claimStart, claimPeriod, claimEnd,
+	voteQuorum, votePeriod, voteEnactment uint64,
+) *ProposalCollectiveUpdate {
+	return &ProposalCollectiveUpdate{
+		Name:             name,
+		Description:      description,
+		Status:           status,
+		DepositWhitelist: depositWhitelist,
+		OwnersWhitelist:  ownersWhitelist,
+		SpendingPools:    weightedSpendingPool,
+		ClaimStart:       claimStart,
+		ClaimPeriod:      claimPeriod,
+		ClaimEnd:         claimEnd,
+		VoteQuorum:       voteQuorum,
+		VotePeriod:       votePeriod,
+		VoteEnactment:    voteEnactment,
+	}
 }
 
 func (m *ProposalCollectiveUpdate) ProposalType() string {
@@ -47,8 +77,10 @@ func (m *ProposalCollectiveUpdate) ValidateBasic() error {
 	return nil
 }
 
-func NewProposalCollectiveRemove() *ProposalCollectiveRemove {
-	return &ProposalCollectiveRemove{}
+func NewProposalCollectiveRemove(name string) *ProposalCollectiveRemove {
+	return &ProposalCollectiveRemove{
+		Name: name,
+	}
 }
 
 func (m *ProposalCollectiveRemove) ProposalType() string {

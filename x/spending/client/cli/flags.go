@@ -16,6 +16,8 @@ const (
 	FlagBeneficiaryAccounts       = "beneficiary-accounts"
 	FlagBeneficiaryAccountWeights = "beneficiary-account-weights"
 	FlagAmount                    = "amount"
+	FlagDynamicRate               = "dynamic-rate"
+	FlagDynamicRatePeriod         = "dynamic-rate-period"
 
 	FlagTitle       = "title"
 	FlagDescription = "description"

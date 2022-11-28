@@ -119,6 +119,16 @@ func GetTxCreateSpendingPoolCmd() *cobra.Command {
 				return err
 			}
 
+			dynamicRate, err := cmd.Flags().GetBool(FlagDynamicRate)
+			if err != nil {
+				return fmt.Errorf("invalid dynamic rate: %w", err)
+			}
+
+			dynamicRatePeriod, err := cmd.Flags().GetUint64(FlagDynamicRatePeriod)
+			if err != nil {
+				return fmt.Errorf("invalid dynamic rate: %w", err)
+			}
+
 			msg := types.NewMsgCreateSpendingPool(
 				name, uint64(claimStart), uint64(claimEnd), token, rates,
 				uint64(voteQuorum), uint64(votePeriod), uint64(voteEnactment),
@@ -128,6 +138,8 @@ func GetTxCreateSpendingPoolCmd() *cobra.Command {
 				},
 				beneficiary,
 				clientCtx.GetFromAddress(),
+				dynamicRate,
+				dynamicRatePeriod,
 			)
 
 			err = msg.ValidateBasic()
@@ -156,6 +168,8 @@ func GetTxCreateSpendingPoolCmd() *cobra.Command {
 	cmd.Flags().String(FlagBeneficiaryRoleWeights, "", "beneficiary role weights on the spending pool.")
 	cmd.Flags().String(FlagBeneficiaryAccounts, "", "beneficiary accounts of the spending pool.")
 	cmd.Flags().String(FlagBeneficiaryAccountWeights, "", "beneficiary account weights on the spending pool.")
+	cmd.Flags().String(FlagDynamicRate, "", "flag to dynamically calculate rates on the spending pool.")
+	cmd.Flags().String(FlagDynamicRatePeriod, "", "dynamic rate recalculation period on the spending pool.")
 
 	return cmd
 }
@@ -360,6 +374,16 @@ func GetTxUpdateSpendingPoolProposalCmd() *cobra.Command {
 				return err
 			}
 
+			dynamicRate, err := cmd.Flags().GetBool(FlagDynamicRate)
+			if err != nil {
+				return fmt.Errorf("invalid dynamic rate: %w", err)
+			}
+
+			dynamicRatePeriod, err := cmd.Flags().GetUint64(FlagDynamicRatePeriod)
+			if err != nil {
+				return fmt.Errorf("invalid dynamic rate: %w", err)
+			}
+
 			msg, err := govtypes.NewMsgSubmitProposal(
 				clientCtx.FromAddress,
 				title,
@@ -372,6 +396,8 @@ func GetTxUpdateSpendingPoolProposalCmd() *cobra.Command {
 						OwnerAccounts: ownerAccounts,
 					},
 					beneficiary,
+					dynamicRate,
+					dynamicRatePeriod,
 				),
 			)
 			if err != nil {
@@ -401,6 +427,8 @@ func GetTxUpdateSpendingPoolProposalCmd() *cobra.Command {
 	cmd.Flags().String(FlagBeneficiaryAccounts, "", "beneficiary accounts of the spending pool.")
 	cmd.Flags().String(FlagBeneficiaryRoleWeights, "", "beneficiary role weights on the spending pool.")
 	cmd.Flags().String(FlagBeneficiaryAccountWeights, "", "beneficiary account weights on the spending pool.")
+	cmd.Flags().String(FlagDynamicRate, "", "flag to dynamically calculate rates on the spending pool.")
+	cmd.Flags().String(FlagDynamicRatePeriod, "", "dynamic rate recalculation period on the spending pool.")
 
 	flags.AddTxFlagsToCmd(cmd)
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)

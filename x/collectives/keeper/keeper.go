@@ -12,9 +12,7 @@ import (
 type Keeper struct {
 	cdc      codec.BinaryCodec
 	storeKey sdk.StoreKey
-	ak       types.AccountKeeper
 	bk       types.BankKeeper
-	sk       types.StakingKeeper
 	gk       govkeeper.Keeper
 	mk       types.MultiStakingKeeper
 	tk       types.TokensKeeper
@@ -22,13 +20,11 @@ type Keeper struct {
 }
 
 // NewKeeper returns instance of a keeper
-func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryCodec, ak types.AccountKeeper, bk types.BankKeeper, sk types.StakingKeeper, gk govkeeper.Keeper, mk types.MultiStakingKeeper, tk types.TokensKeeper, spk types.SpendingKeeper) Keeper {
+func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryCodec, bk types.BankKeeper, gk govkeeper.Keeper, mk types.MultiStakingKeeper, tk types.TokensKeeper, spk types.SpendingKeeper) Keeper {
 	return Keeper{
 		cdc:      cdc,
 		storeKey: storeKey,
-		ak:       ak,
 		bk:       bk,
-		sk:       sk,
 		gk:       gk,
 		mk:       mk,
 		tk:       tk,

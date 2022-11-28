@@ -17,19 +17,23 @@ func NewMsgCreateSpendingPool(
 	owners PermInfo,
 	beneficiaries WeightedPermInfo,
 	sender sdk.AccAddress,
+	dynamicRate bool,
+	dynamicRatePeriod uint64,
 ) *MsgCreateSpendingPool {
 	return &MsgCreateSpendingPool{
-		Name:          name,
-		ClaimStart:    claimStart,
-		ClaimEnd:      claimEnd,
-		Token:         token,
-		Rates:         rates,
-		VoteQuorum:    voteQuorum,
-		VotePeriod:    votePeriod,
-		VoteEnactment: voteEnactment,
-		Owners:        owners,
-		Beneficiaries: beneficiaries,
-		Sender:        sender.String(),
+		Name:              name,
+		ClaimStart:        claimStart,
+		ClaimEnd:          claimEnd,
+		Token:             token,
+		Rates:             rates,
+		VoteQuorum:        voteQuorum,
+		VotePeriod:        votePeriod,
+		VoteEnactment:     voteEnactment,
+		Owners:            owners,
+		Beneficiaries:     beneficiaries,
+		Sender:            sender.String(),
+		DynamicRate:       dynamicRate,
+		DynamicRatePeriod: dynamicRatePeriod,
 	}
 }
 
@@ -44,6 +48,16 @@ func (m *MsgCreateSpendingPool) Type() string {
 func (m *MsgCreateSpendingPool) ValidateBasic() error {
 	if m.Sender == "" {
 		return ErrEmptyProposerAccAddress
+	}
+	for _, beneficiary := range m.Beneficiaries.Accounts {
+		if beneficiary.Weight == 0 {
+			return ErrEmptyWeightBeneficiary
+		}
+	}
+	for _, beneficiary := range m.Beneficiaries.Roles {
+		if beneficiary.Weight == 0 {
+			return ErrEmptyWeightBeneficiary
+		}
 	}
 	return nil
 }
