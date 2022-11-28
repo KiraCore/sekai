@@ -29,7 +29,7 @@ message UpdateSpendingPoolProposal {
   uint64 vote_period = 7; // seconds, # default: 600s
   uint64 vote_enactment = 8; // seconds, # default: 300s
   kira.spending.PermInfo owners = 9 [ (gogoproto.nullable) = false ];
-  kira.spending.PermInfo beneficiaries = 10 [ (gogoproto.nullable) = false ];
+  kira.spending.WeightedPermInfo beneficiaries = 10 [ (gogoproto.nullable) = false ];
 }
 
 // SpendingPoolDistributionProposal - force distribution of tokens to all

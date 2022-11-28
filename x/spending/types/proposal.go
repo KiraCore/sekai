@@ -18,7 +18,7 @@ func NewUpdateSpendingPoolProposal(
 	votePeriod uint64,
 	voteEnactment uint64,
 	owners PermInfo,
-	beneficiaries PermInfo,
+	beneficiaries WeightedPermInfo,
 ) *UpdateSpendingPoolProposal {
 	return &UpdateSpendingPoolProposal{
 		Name:          name,

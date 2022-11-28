@@ -71,6 +71,22 @@ func (k Keeper) GetClaimInfo(ctx sdk.Context, poolName string, address sdk.AccAd
 	return &claimInfo
 }
 
+func (k Keeper) GetPoolClaimInfos(ctx sdk.Context, poolName string) []types.ClaimInfo {
+	store := ctx.KVStore(k.storeKey)
+	iterator := sdk.KVStorePrefixIterator(store, types.PoolClaimInfoPrefix(poolName))
+	defer iterator.Close()
+
+	claimInfos := []types.ClaimInfo{}
+	for ; iterator.Valid(); iterator.Next() {
+		claimInfo := types.ClaimInfo{}
+
+		k.cdc.MustUnmarshal(iterator.Value(), &claimInfo)
+		claimInfos = append(claimInfos, claimInfo)
+	}
+
+	return claimInfos
+}
+
 func (k Keeper) GetAllClaimInfos(ctx sdk.Context) []types.ClaimInfo {
 	store := ctx.KVStore(k.storeKey)
 	iterator := sdk.KVStorePrefixIterator(store, []byte(types.KeyPrefixClaimInfo))
@@ -88,13 +104,13 @@ func (k Keeper) GetAllClaimInfos(ctx sdk.Context) []types.ClaimInfo {
 }
 
 func (k Keeper) ClaimSpendingPool(ctx sdk.Context, poolName string, sender sdk.AccAddress) error {
-
 	pool := k.GetSpendingPool(ctx, poolName)
 	if pool == nil {
 		return types.ErrPoolDoesNotExist
 	}
 
-	if !k.IsAllowedAddress(ctx, sender, *pool.Beneficiaries) {
+	weight := k.GetBeneficiaryWeight(ctx, sender, *pool.Beneficiaries)
+	if weight == 0 {
 		return types.ErrNotPoolBeneficiary
 	}
 
@@ -113,18 +129,21 @@ func (k Keeper) ClaimSpendingPool(ctx sdk.Context, poolName string, sender sdk.A
 		claimEnd = int64(pool.ClaimEnd)
 	}
 
-	if claimStart > claimEnd {
+	if claimStart >= claimEnd {
 		return types.ErrNoMoreRewardsToClaim
 	}
 
-	rewards := pool.Rate.Mul(sdk.NewDec(claimEnd - int64(claimStart))).TruncateInt()
+	rewards := sdk.Coins{}
+	for _, rate := range pool.Rates {
+		amount := rate.Amount.Mul(sdk.NewDec((claimEnd - int64(claimStart)) * int64(weight))).RoundInt()
+		rewards = rewards.Add(sdk.NewCoin(rate.Denom, amount))
+	}
 
 	// update pool to reduce pool's balance
-	pool.Balance = pool.Balance.Sub(rewards)
+	pool.Balances = sdk.Coins(pool.Balances).Sub(rewards)
 	k.SetSpendingPool(ctx, *pool)
 
-	coins := sdk.Coins{sdk.NewCoin(pool.Token, rewards)}
-	err := k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, coins)
+	err := k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, rewards)
 	if err != nil {
 		return err
 	}
@@ -170,20 +189,35 @@ func (k Keeper) DepositSpendingPoolFromAccount(ctx sdk.Context, addr sdk.AccAddr
 }
 
 // https://www.notion.so/kira-network/KIP-83-Staking-Collectives-31f72aa35e184978a1a62eb0769ab909
-// TODO: ### Dynamic Distribution Rates
+// ### Dynamic Distribution Rates
 
-// Since the amount of staking rewards deposited from the Staking Collective to the Spending Pool changes unpredictably every `claim-period` (staking rewards vary from block to block) we need to create a mechanism of dynamic token rates to ensure that all staking rewards are spent within some specific time period.
+// Since the amount of staking rewards deposited from the Staking Collective to the Spending Pool changes unpredictably every `claim-period`
+// (staking rewards vary from block to block) we need to create a mechanism of dynamic token rates to ensure that all staking rewards
+// are spent within some specific time period.
 
-// A new boolean field `dynamic-rate` should be included in the spending pool structure to define whether or not dynamically adjusted token rates should be enforced. Once `dynamic-rate` is set to value “true” another field `dynamic-rate-period` should define every what period of time all the “token-rates” should change. If `dynamic-rate` is set to false, then the spending pool should operate in the same way as it would originally in KIP-71 (with the exception that it can support claiming multiple tokens and not just one).
+// A new boolean field `dynamic-rate` should be included in the spending pool structure to define whether or not dynamically adjusted
+// token rates should be enforced. Once `dynamic-rate` is set to value “true” another field `dynamic-rate-period`
+// should define every what period of time all the “token-rates” should change.
+// If `dynamic-rate` is set to false, then the spending pool should operate in the same way as it would originally in KIP-71
+// (with the exception that it can support claiming multiple tokens and not just one).
 
-// In order to calculate new dynamic token rates we will utilize a "token-deposits” table in which all deposits will be collected for the time period equal to `dynamic-rate-period`. We will also need to calculate the total number of beneficiaries (users assigned by account and role) and divide their number by the total distribution rate we want to achieve. As the result, we would allow the fair distribution of all tokens deposited within `dynamic-rate-period` to a set of beneficiaries so that no tokens would be left at the end of the period. There is no need to take into account that the number of beneficiaries might be changing, the only thing that is important is the recalculation of token rates every `dynamic-rate-period`. To get the “total_beneficiaries_count” we will only take into account users in the `claims` table that registered their intent to withdraw tokens.
+// In order to calculate new dynamic token rates we will utilize a "token-deposits” table in which all deposits will be collected
+// for the time period equal to `dynamic-rate-period`.
+// We will also need to calculate the total number of beneficiaries (users assigned by account and role) and
+// divide their number by the total distribution rate we want to achieve.
+// As the result, we would allow the fair distribution of all tokens deposited within `dynamic-rate-period` to a set of beneficiaries
+// so that no tokens would be left at the end of the period.
+// There is no need to take into account that the number of beneficiaries might be changing,
+// the only thing that is important is the recalculation of token rates every `dynamic-rate-period`.
+// To get the “total_beneficiaries_count” we will only take into account users in the `claims`
+// table that registered their intent to withdraw tokens.
 
-// In essence, for each token `x` in `token-deposits` table, the `new_token_rate(x) = ( token_deposits(x) / dynamic_rate_period ) / total_beneficiaries_count`.
+// In essence, for each token `x` in `token-deposits` table, the
+// `new_token_rate(x) = ( token_deposits(x) / dynamic_rate_period ) / total_beneficiaries_count`.
 
-// It might happen that the pool will run out of tokens because the number of beneficiaries suddenly increased. To mitigate that issue we should NOT allow for withdraws of tokens unless the beneficiary is eligible and registered to claim the tokens **BEFORE** the current `dynamic-rate-period` started. This means that new beneficiaries must await after registration for a new claim period before they can start receiving tokens from the pool. If `dynamic-rate` is set to true, then `claim-expire` should be ignored or set to value the same as `dynamic-rate-period` so that the maximum time period for which the user should be able to claim tokens is equal to `dynamic-rate-period`.
-
-// ### Distribution Weights
-
-// One of the new modifications to the Spending Pool should also be [weights](https://en.wikipedia.org/wiki/Weighted_arithmetic_mean) that define individual rates of token distribution. For example, if a person's weight is 2 they should receive tokens at 2x the token-rate, if the rate is 0.5, they should be able to claim the tokens but only at 1/2 the token-rate. By default, all token rates should be set to 1.
-
-// If any of the weights is changed to value different then 1, then token rates should be recalculated accordingly, that is for each token `x` in `token-deposits` table, the `new_token_rate(x) = ( ( token_deposits(x) / dynamic_rate_period ) / total_beneficiaries_count ) *  (weights_sum / total_beneficiaries_count)`
+// It might happen that the pool will run out of tokens because the number of beneficiaries suddenly increased.
+// To mitigate that issue we should NOT allow for withdraws of tokens unless the beneficiary is eligible and registered to claim
+// the tokens **BEFORE** the current `dynamic-rate-period` started.
+// This means that new beneficiaries must await after registration for a new claim period before they can start receiving tokens from the pool.
+// If `dynamic-rate` is set to true, then `claim-expire` should be ignored or set to value the same as `dynamic-rate-period` so that the
+// maximum time period for which the user should be able to claim tokens is equal to `dynamic-rate-period`.

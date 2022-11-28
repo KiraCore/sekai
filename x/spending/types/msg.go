@@ -15,7 +15,7 @@ func NewMsgCreateSpendingPool(
 	votePeriod uint64,
 	voteEnactment uint64,
 	owners PermInfo,
-	beneficiaries PermInfo,
+	beneficiaries WeightedPermInfo,
 	sender sdk.AccAddress,
 ) *MsgCreateSpendingPool {
 	return &MsgCreateSpendingPool{
@@ -107,13 +107,11 @@ func (m *MsgDepositSpendingPool) GetSigners() []sdk.AccAddress {
 
 func NewMsgRegisterSpendingPoolBeneficiary(
 	name string,
-	beneficiary PermInfo,
 	sender sdk.AccAddress,
 ) *MsgRegisterSpendingPoolBeneficiary {
 	return &MsgRegisterSpendingPoolBeneficiary{
-		PoolName:    name,
-		Beneficiary: beneficiary,
-		Sender:      sender.String(),
+		PoolName: name,
+		Sender:   sender.String(),
 	}
 }
 

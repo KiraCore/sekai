@@ -20,7 +20,11 @@ func SpendingPoolKey(name string) []byte {
 }
 
 func ClaimInfoKey(name string, address string) []byte {
-	return append(append([]byte(KeyPrefixClaimInfo), name...), address...)
+	return append(PoolClaimInfoPrefix(name), address...)
+}
+
+func PoolClaimInfoPrefix(name string) []byte {
+	return append([]byte(KeyPrefixClaimInfo), name...)
 }
 
 func ValidateSpendingPoolName(name string) bool {

@@ -20,14 +20,20 @@ message PermInfo {
 }
 
 message WeightedRole {
+  option (gogoproto.equal) = true;
+  
   uint64 role = 1;
   uint64 weight = 2;
 }
 message WeightedAccount {
-  uint64 role = 1;
-  string account = 2;
+  option (gogoproto.equal) = true;
+
+  string account = 1;
+  uint64 weight = 2;
 }
 message WeightedPermInfo {
+  option (gogoproto.equal) = true;
+
   repeated WeightedRole roles = 1 [ (gogoproto.nullable) = false ];
   repeated WeightedAccount accounts = 2 [ (gogoproto.nullable) = false ];
 }
@@ -60,4 +66,5 @@ message SpendingPool {
   ];
   bool dynamic_rate = 12; // (default false) defines if the rate of token distribution should be dynamic
   uint64 dynamic_rate_period = 13; // time in seconds defining every what period dynamic rates are calculated
+  uint64 last_dynamic_rate_calc_time = 14; // timestamp that last dynamic rate was calculated
 }

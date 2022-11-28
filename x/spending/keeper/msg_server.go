@@ -44,13 +44,13 @@ func (k msgServer) CreateSpendingPool(
 		ClaimStart:    msg.ClaimStart,
 		ClaimEnd:      msg.ClaimEnd,
 		Token:         msg.Token,
-		Rate:          msg.Rate,
+		Rates:         msg.Rates,
 		VoteQuorum:    msg.VoteQuorum,
 		VotePeriod:    msg.VotePeriod,
 		VoteEnactment: msg.VoteEnactment,
 		Owners:        &msg.Owners,
 		Beneficiaries: &msg.Beneficiaries,
-		Balance:       sdk.ZeroInt(),
+		Balances:      sdk.Coins{},
 	})
 
 	if err != nil {
@@ -83,7 +83,7 @@ func (k msgServer) DepositSpendingPool(
 		return nil, types.ErrPoolDoesNotExist
 	}
 
-	pool.Balance = pool.Balance.Add(sdk.Coins(msg.Amount).AmountOf(pool.Token))
+	pool.Balances = sdk.Coins(pool.Balances).Add(msg.Amount...)
 	k.keeper.SetSpendingPool(ctx, *pool)
 
 	return &types.MsgDepositSpendingPoolResponse{}, nil
@@ -107,7 +107,7 @@ func (k msgServer) RegisterSpendingPoolBeneficiary(
 		return nil, err
 	}
 
-	if !k.keeper.IsAllowedAddress(ctx, sender, *pool.Beneficiaries) {
+	if !k.keeper.IsAllowedBeneficiary(ctx, sender, *pool.Beneficiaries) {
 		return nil, types.ErrNotPoolOwner
 	}
 

@@ -48,7 +48,7 @@ message MsgCreateSpendingPool {
   // defines a list of accounts/roles controlling the spending pool via “governance-like” proposals
   PermInfo owners = 9 [ (gogoproto.nullable) = false ];
   // defines set of accounts/roles to which funds can be distributed
-  PermInfo beneficiaries = 10 [ (gogoproto.nullable) = false ];
+  WeightedPermInfo beneficiaries = 10 [ (gogoproto.nullable) = false ];
   string sender = 11;
 }
 message MsgCreateSpendingPoolResponse {}
@@ -66,9 +66,6 @@ message MsgDepositSpendingPoolResponse {}
 message MsgRegisterSpendingPoolBeneficiary {
   string sender = 1;
   string pool_name = 2;
-  PermInfo beneficiary = 3 [
-    (gogoproto.nullable) = false
-  ];
 }
 message MsgRegisterSpendingPoolBeneficiaryResponse {}
 

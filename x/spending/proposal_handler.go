@@ -91,13 +91,13 @@ func (a ApplyUpdateSpendingPoolProposalHandler) Apply(ctx sdk.Context, proposalI
 		ClaimStart:    p.ClaimStart,
 		ClaimEnd:      p.ClaimEnd,
 		Token:         p.Token,
-		Rate:          p.Rate,
+		Rates:         p.Rates,
 		VoteQuorum:    p.VoteQuorum,
 		VotePeriod:    p.VotePeriod,
 		VoteEnactment: p.VoteEnactment,
 		Owners:        &p.Owners,
 		Beneficiaries: &p.Beneficiaries,
-		Balance:       pool.Balance,
+		Balances:      pool.Balances,
 	})
 
 	return nil
@@ -180,27 +180,30 @@ func (a ApplySpendingPoolDistributionProposalHandler) Apply(ctx sdk.Context, pro
 
 	pool := a.keeper.GetSpendingPool(ctx, p.PoolName)
 	duplicateMap := map[string]bool{}
-	var beneficiaries []string
+	var beneficiaries []spendingtypes.WeightedAccount
 
-	for _, acc := range pool.Beneficiaries.OwnerAccounts {
-		if _, ok := duplicateMap[acc]; !ok {
-			duplicateMap[acc] = true
+	for _, acc := range pool.Beneficiaries.Accounts {
+		if _, ok := duplicateMap[acc.Account]; !ok {
+			duplicateMap[acc.Account] = true
 			beneficiaries = append(beneficiaries, acc)
 		}
 	}
-	for _, role := range pool.Beneficiaries.OwnerRoles {
-		actorIter := a.gk.GetNetworkActorsByRole(ctx, role)
+	for _, role := range pool.Beneficiaries.Roles {
+		actorIter := a.gk.GetNetworkActorsByRole(ctx, role.Role)
 
 		for ; actorIter.Valid(); actorIter.Next() {
 			if _, ok := duplicateMap[sdk.AccAddress(actorIter.Value()).String()]; !ok {
 				duplicateMap[sdk.AccAddress(actorIter.Value()).String()] = true
-				beneficiaries = append(beneficiaries, sdk.AccAddress(actorIter.Value()).String())
+				beneficiaries = append(beneficiaries, spendingtypes.WeightedAccount{
+					Account: sdk.AccAddress(actorIter.Value()).String(),
+					Weight:  role.Weight,
+				})
 			}
 		}
 	}
 
 	for _, beneficiary := range beneficiaries {
-		beneficiaryAcc, err := sdk.AccAddressFromBech32(beneficiary)
+		beneficiaryAcc, err := sdk.AccAddressFromBech32(beneficiary.Account)
 		if err != nil {
 			return err
 		}
@@ -287,7 +290,6 @@ func (a ApplySpendingPoolWithdrawProposalHandler) VoteEnactment(ctx sdk.Context,
 
 func (a ApplySpendingPoolWithdrawProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal govtypes.Content, slash uint64) error {
 	p := proposal.(*spendingtypes.SpendingPoolWithdrawProposal)
-	_ = p
 
 	pool := a.keeper.GetSpendingPool(ctx, p.PoolName)
 	if pool == nil {
@@ -305,7 +307,7 @@ func (a ApplySpendingPoolWithdrawProposalHandler) Apply(ctx sdk.Context, proposa
 			return err
 		}
 
-		if !a.keeper.IsAllowedAddress(ctx, beneficiaryAcc, *pool.Beneficiaries) {
+		if !a.keeper.IsAllowedBeneficiary(ctx, beneficiaryAcc, *pool.Beneficiaries) {
 			return types.ErrNotPoolBeneficiary
 		}
 
@@ -315,7 +317,7 @@ func (a ApplySpendingPoolWithdrawProposalHandler) Apply(ctx sdk.Context, proposa
 		}
 
 		// update pool to reduce pool's balance
-		pool.Balance = pool.Balance.Sub(sdk.Coins(p.Amounts).AmountOf(pool.Token))
+		pool.Balances = sdk.Coins(pool.Balances).Sub(sdk.Coins(p.Amounts))
 	}
 
 	a.keeper.SetSpendingPool(ctx, *pool)
