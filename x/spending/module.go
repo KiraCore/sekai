@@ -128,9 +128,12 @@ func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sd
 	return nil
 }
 
-func (am AppModule) BeginBlock(clientCtx sdk.Context, block abci.RequestBeginBlock) {}
+func (am AppModule) BeginBlock(ctx sdk.Context, block abci.RequestBeginBlock) {
+	am.spendingKeeper.BeginBlocker(ctx)
+}
 
 func (am AppModule) EndBlock(ctx sdk.Context, block abci.RequestEndBlock) []abci.ValidatorUpdate {
+	am.spendingKeeper.EndBlocker(ctx)
 	return nil
 }
 

@@ -15,11 +15,11 @@ func (suite *KeeperTestSuite) TestProcessUBIRecordDynamic() {
 	// process again and check
 	suite.app.UbiKeeper.ProcessUBIRecord(ctx, records[0])
 	pool2 := suite.app.SpendingKeeper.GetSpendingPool(ctx, records[0].Pool)
-	suite.Require().Equal(pool1.Balance, pool2.Balance)
+	suite.Require().Equal(pool1.Balances, pool2.Balances)
 
 	// update to not dynamic and check
 	records[0].Dynamic = false
 	suite.app.UbiKeeper.ProcessUBIRecord(ctx, records[0])
 	pool3 := suite.app.SpendingKeeper.GetSpendingPool(ctx, records[0].Pool)
-	suite.Require().NotEqual(pool1.Balance, pool3.Balance)
+	suite.Require().NotEqual(pool1.Balances, pool3.Balances)
 }

@@ -111,7 +111,7 @@ func (q Querier) QueryPoolsByAccount(c context.Context, request *types.QueryPool
 	}
 
 	for _, pool := range pools {
-		if q.keeper.IsAllowedAddress(ctx, acc, *pool.Beneficiaries) {
+		if q.keeper.IsAllowedBeneficiary(ctx, acc, *pool.Beneficiaries) {
 			accPools = append(accPools, pool)
 		}
 	}

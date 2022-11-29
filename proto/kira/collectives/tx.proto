@@ -1,0 +1,88 @@
+syntax = "proto3";
+package kira.collectives;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/any.proto";
+import "cosmos_proto/cosmos.proto";
+import "google/protobuf/timestamp.proto";
+import "kira/collectives/collective.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/collectives/types";
+
+// Msg defines the collectives Msg service.
+service Msg {
+  // CreateCollective defines a method for creating collective.
+  // allow ANY user to create Staking Collective even if they have no roles or
+  // permissions enabling that
+  rpc CreateCollective(MsgCreateCollective) returns (MsgCreateCollectiveResponse);
+  // ContributeCollective defines a method for putting bonds on collective.
+  // can be sent by any whitelisted “contributor” account that wants to add
+  // tokens to the Staking Collective during or after creation process
+  rpc ContributeCollective(MsgBondCollective) returns (MsgBondCollectiveResponse);
+  // DonateCollective defines a method to set lock and donation for bonds on the
+  // collection - allows to lock staking derivatives for a specific time period
+  // and donating a defined percentage of staking rewards to the collective.
+  rpc DonateCollective(MsgDonateCollective) returns (MsgDonateCollectiveResponse);
+  // WithdrawCollective can be sent by any whitelisted “contributor” to withdraw
+  // their tokens (unless locking is enabled)
+  rpc WithdrawCollective(MsgWithdrawCollective) returns (MsgWithdrawCollectiveResponse);
+}
+
+message MsgCreateCollective {
+  option (gogoproto.equal) = true;
+
+  string sender = 1;
+  string name = 2; // collective name - unique and follow the same rules as councilor or validator moniker)
+  string description = 3; // max 256 characters
+  repeated string bonds = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ]; // list of staking DERIVATIVE tokens sent alongside tx (those tokens will be deduced from the user account)
+  DepositWhitelist deposit_whitelist = 5 [(gogoproto.nullable) = false]; // deposit-whitelist defines who is allowed to bond tokens
+  OwnersWhitelist owners_whitelist = 6 [ (gogoproto.nullable) = false ]; // list of accounts/roles controlling the collective via “governance-like” proposals
+  repeated WeightedSpendingPool spending_pools = 7
+      [ (gogoproto.nullable) = false ]; // list of spending pools to which share of rewards
+  uint64 claim_start = 8; // (optional) timestamp defining when rewards claiming should start
+  uint64 claim_period = 9; // (optional) period in seconds defining every what period of time reward claim should be triggered
+  uint64 claim_end = 10;    // (optional) timestamp defining when rewards claiming should end
+  uint64 vote_quorum = 11; // percentage - default: 51%, collective-specific % of owner accounts that must vote YES or NO for any of the collective proposals to be valid
+  uint64 vote_period = 12; // seconds - default: 600s, period of time in seconds that any of the collective proposals must last before passing or being rejected
+  uint64 vote_enactment = 13; // seconds - default: 300s, period of time that must pass before any of the collective proposals is enacted
+}
+
+// MsgClaimValidatorResponse defines the Msg/CreateCollective response type.
+message MsgCreateCollectiveResponse {}
+
+message MsgBondCollective {
+  string sender = 1;
+  string name = 2;
+  repeated string bonds = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ]; // list of STAKING tokens sent alongside tx (those tokens will be deduced from the user account)
+}
+
+// MsgBondCollectiveResponse defines the Msg/BondCollective response type.
+message MsgBondCollectiveResponse {}
+
+message MsgDonateCollective {
+  string sender = 1;
+  string name = 2;    // collective name
+  uint64 locking = 3; // time at which deposited tokens will become transferable
+  string donation = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ]; // a percentage of rewards that will be re-deposited to the collective
+  bool donation_lock = 5; // defines if changing the donation percentage should not be allowed during the locking period
+}
+
+// MsgDonateCollectiveResponse defines the Msg/LockBondWithDonation response type.
+message MsgDonateCollectiveResponse {}
+
+message MsgWithdrawCollective {
+  string sender = 1;
+  string name = 2;    // collective name
+}
+
+// MsgWithdrawCollectiveResponse defines the Msg/LockBondWithDonation response type.
+message MsgWithdrawCollectiveResponse {}

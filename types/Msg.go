@@ -86,6 +86,12 @@ const (
 	MsgDeclineCustodyTransaction       = "decline-custody-transaction"
 	MsgPasswordConfirmTransaction      = "password-confirm-transaction"
 	MsgTypeSend                        = "custody-send"
+
+	// collectives module
+	MsgTypeCreateCollective   = "create-collective"
+	MsgTypeBondCollective     = "bond-collective"
+	MsgTypeDonateCollective   = "donate-collective"
+	MsgTypeWithdrawCollective = "withdraw-collective"
 )
 
 // Msg defines the interface a transaction message must fulfill.

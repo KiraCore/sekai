@@ -1,0 +1,13 @@
+syntax = "proto3";
+package kira.collectives;
+
+import "kira/collectives/collective.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/collectives/types";
+
+message GenesisState {
+  repeated kira.collectives.Collective collectives = 1 [ (gogoproto.nullable) = false ];
+  repeated kira.collectives.CollectiveContributor contributers = 2
+      [ (gogoproto.nullable) = false ];
+}

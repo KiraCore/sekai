@@ -6,7 +6,6 @@ import (
 	govkeeper "github.com/KiraCore/sekai/x/gov/keeper"
 	"github.com/KiraCore/sekai/x/multistaking/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 )
 
 type msgServer struct {
@@ -100,14 +99,7 @@ func (k msgServer) ClaimRewards(goCtx context.Context, msg *types.MsgClaimReward
 		return nil, err
 	}
 
-	rewards := k.keeper.GetDelegatorRewards(ctx, delegator)
-	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, authtypes.FeeCollectorName, delegator, rewards)
-	if err != nil {
-		return nil, err
-	}
-
-	k.keeper.RemoveDelegatorRewards(ctx, delegator)
-
+	_ = k.keeper.ClaimRewards(ctx, delegator)
 	return &types.MsgClaimRewardsResponse{}, nil
 }
 

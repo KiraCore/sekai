@@ -1,5 +1,7 @@
 package types
 
+import "strings"
+
 const (
 	// ModuleName is the name of the multistaking
 	ModuleName = "multistaking"
@@ -17,3 +19,11 @@ var (
 	KeyPrefixRewards       = []byte{0x6}
 	KeyPrefixCompoundInfo  = []byte{0x7}
 )
+
+func GetOriginalDenom(denom string) string {
+	if denom == "" || denom[0] != 'v' {
+		return denom
+	}
+	split := strings.Split(denom, "/")
+	return strings.TrimPrefix(denom, split[0]+"/")
+}
