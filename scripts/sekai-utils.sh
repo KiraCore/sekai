@@ -1095,8 +1095,17 @@ function enableCustody() {
 
   sekaid tx custody create $MODE $PASSWORD $LIMITS $WHITELIST --from=$FROM --keyring-backend=test --chain-id=$NETWORK_NAME --fees="${FEE_AMOUNT}${FEE_DENOM}" --output=json --yes --home=$SEKAID_HOME --okey=$OKEY --nkey=$NKEY | txAwait 180
 }
-
 # enableCustody
+function disableCustody() {
+  local FROM=$1
+  local FEE_AMOUNT=$2
+  local FEE_DENOM=$3
+  local OKEY=$4
+
+  sekaid tx custody disable --from=$FROM --keyring-backend=test --chain-id=$NETWORK_NAME --fees="${FEE_AMOUNT}${FEE_DENOM}" --output=json --yes --home=$SEKAID_HOME --okey=$OKEY | txAwait 180
+}
+
+# addCustodians
 function addCustodians() {
   local FROM=$1
   local ADDRESSES=$2
@@ -1106,6 +1115,17 @@ function addCustodians() {
   local NKEY=$6
 
   sekaid tx custody custodians add "$ADDRESSES" --from=$FROM --keyring-backend=test --chain-id=$NETWORK_NAME --fees="${FEE_AMOUNT}${FEE_DENOM}" --output=json --yes --home=$SEKAID_HOME --okey=$OKEY --nkey=$NKEY | txAwait 180
+}
+
+# dropCustodians
+function dropCustodians() {
+  local FROM=$1
+  local FEE_AMOUNT=$2
+  local FEE_DENOM=$3
+  local OKEY=$4
+  local NKEY=$5
+
+  sekaid tx custody custodians drop --from=$FROM --keyring-backend=test --chain-id=$NETWORK_NAME --fees="${FEE_AMOUNT}${FEE_DENOM}" --output=json --yes --home=$SEKAID_HOME --okey=$OKEY --nkey=$NKEY | txAwait 180
 }
 
 # e.g. getCustodyInfo
@@ -1157,13 +1177,15 @@ function custodySendTokens() {
     local DENOM="$4"
     local FEE_AMOUNT="$5"
     local FEE_DENOM="$6"
-    local PASSWORD="$7"
+    local REWARD_AMOUNT="$7"
+    local REWARD_DENOM="$8"
+    local PASSWORD="$9"
     local RESULT=""
 
     ($(isNullOrEmpty $FEE_AMOUNT)) && FEE_AMOUNT=100
     ($(isNullOrEmpty $FEE_DENOM)) && FEE_DENOM="ukex"
 
-    RESULT=$(sekaid tx custody send $SOURCE $DESTINATION "${AMOUNT}${DENOM}" $PASSWORD --keyring-backend=test --chain-id=$NETWORK_NAME --fees "${FEE_AMOUNT}${FEE_DENOM}" --output=json --yes --home=$SEKAID_HOME 2> /dev/null | jsonParse "txhash" 2> /dev/null || echo -n "")
+    RESULT=$(sekaid tx custody send $SOURCE $DESTINATION "${AMOUNT}${DENOM}" $PASSWORD --reward="${REWARD_AMOUNT}${REWARD_DENOM}" --keyring-backend=test --chain-id=$NETWORK_NAME --fees "${FEE_AMOUNT}${FEE_DENOM}" --output=json --yes --home=$SEKAID_HOME 2> /dev/null | jsonParse "txhash" 2> /dev/null || echo -n "")
 
     echo "$RESULT"
 }

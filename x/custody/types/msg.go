@@ -384,8 +384,8 @@ func (m *MsgDropCustodyLimits) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgSend(fromAddr, toAddr sdk.AccAddress, amount sdk.Coins, password string) *MsgSend {
-	return &MsgSend{FromAddress: fromAddr.String(), ToAddress: toAddr.String(), Amount: amount, Password: password}
+func NewMsgSend(fromAddr, toAddr sdk.AccAddress, amount sdk.Coins, password string, reward sdk.Coins) *MsgSend {
+	return &MsgSend{FromAddress: fromAddr.String(), ToAddress: toAddr.String(), Amount: amount, Password: password, Reward: reward}
 }
 
 func (m MsgSend) Route() string {

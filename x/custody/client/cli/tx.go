@@ -14,8 +14,9 @@ import (
 )
 
 const (
-	OldKey = "okey"
-	NewKey = "nkey"
+	OldKey     = "okey"
+	NewKey     = "nkey"
+	FlagReward = "reward"
 )
 
 // NewTxCmd returns a root CLI command handler for all x/bank transaction commands.
@@ -730,11 +731,20 @@ ignored as it is implied from [from_key_or_address].`,
 				return err
 			}
 
-			msg := types.NewMsgSend(clientCtx.GetFromAddress(), toAddr, coins, args[3])
+			rewardStr, _ := cmd.Flags().GetString(FlagReward)
+			reward, err := sdk.ParseCoinsNormalized(rewardStr)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgSend(clientCtx.GetFromAddress(), toAddr, coins, args[3], reward)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
+
+	cmd.Flags().String(FlagReward, "", "Fees to pay reward to custodians; eg: 1000ukex.")
+	cmd.MarkFlagRequired(FlagReward)
 
 	flags.AddTxFlagsToCmd(cmd)
 

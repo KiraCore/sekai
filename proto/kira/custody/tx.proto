@@ -239,6 +239,8 @@ message MsgSend {
   repeated cosmos.base.v1beta1.Coin amount = 3
   [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];
   string   password                        = 4 [(gogoproto.moretags) = "yaml:\"password\""];
+  repeated cosmos.base.v1beta1.Coin reward = 5
+  [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];
 }
 
 message TransactionRecord {
