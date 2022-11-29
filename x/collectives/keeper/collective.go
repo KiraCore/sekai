@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"github.com/KiraCore/sekai/x/collectives/types"
+	multistakingtypes "github.com/KiraCore/sekai/x/multistaking/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -105,7 +106,8 @@ func (k Keeper) SendDonation(ctx sdk.Context, name string, account sdk.AccAddres
 func (k Keeper) GetBondsValue(ctx sdk.Context, bonds sdk.Coins) sdk.Dec {
 	bondsValue := sdk.ZeroDec()
 	for _, bond := range bonds {
-		rate := k.tk.GetTokenRate(ctx, bond.Denom)
+		denom := multistakingtypes.GetOriginalDenom(bond.Denom)
+		rate := k.tk.GetTokenRate(ctx, denom)
 		if rate == nil {
 			continue
 		}
@@ -144,7 +146,10 @@ func (k Keeper) WithdrawCollective(ctx sdk.Context, collective types.Collective,
 func (k Keeper) ExecuteCollectiveRemove(ctx sdk.Context, collective types.Collective) error {
 	// At the time of collective removal, donations and staking rewards
 	// are claimed for a final time and sent to the spending pools.
-	k.DistributeCollectiveRewards(ctx, collective)
+	err := k.DistributeCollectiveRewards(ctx, collective)
+	if err != nil {
+		return err
+	}
 
 	for _, cc := range k.GetAllCollectiveContributers(ctx, collective.Name) {
 		err := k.WithdrawCollective(ctx, collective, cc)

@@ -56,7 +56,7 @@ func (k msgServer) CreateCollective(
 		collectiveStatus = types.CollectiveActive
 	}
 
-	k.keeper.SetCollective(ctx, types.Collective{
+	collective = types.Collective{
 		Name:             msg.Name,
 		Description:      msg.Description,
 		Status:           collectiveStatus,
@@ -73,7 +73,10 @@ func (k msgServer) CreateCollective(
 		Rewards:          sdk.NewCoins(),
 		LastDistribution: 0,
 		CreationTime:     uint64(ctx.BlockTime().Unix()),
-	})
+		Bonds:            msg.Bonds,
+	}
+
+	k.keeper.SetCollective(ctx, collective)
 
 	// create contribute contributor here
 	sender, err := sdk.AccAddressFromBech32(msg.Sender)
@@ -86,6 +89,8 @@ func (k msgServer) CreateCollective(
 	if err != nil {
 		return nil, err
 	}
+
+	k.keeper.mk.RegisterDelegator(ctx, collectiveAddr)
 
 	k.keeper.SetCollectiveContributer(ctx, types.CollectiveContributor{
 		Address:      msg.Sender,
@@ -119,6 +124,7 @@ func (k msgServer) ContributeCollective(
 	}
 
 	collectiveAddr := collective.GetCollectiveAddress()
+	collectiveDonationAddr := collective.GetCollectiveDonationAddress()
 	err = k.keeper.bk.SendCoins(ctx, sender, collectiveAddr, msg.Bonds)
 	if err != nil {
 		return nil, err
@@ -153,7 +159,6 @@ func (k msgServer) ContributeCollective(
 		// send donation coins to donation account
 		donationCoins := calcPortion(msg.Bonds, cc.Donation)
 		if donationCoins.IsAllPositive() {
-			collectiveDonationAddr := collective.GetCollectiveDonationAddress()
 			err = k.keeper.bk.SendCoins(ctx, collectiveAddr, collectiveDonationAddr, donationCoins)
 			if err != nil {
 				return nil, err
@@ -169,7 +174,12 @@ func (k msgServer) ContributeCollective(
 			DonationLock: false,
 		}
 	}
+
+	collective.Bonds = sdk.Coins(collective.Bonds).Add(msg.Bonds...)
+	k.keeper.SetCollective(ctx, collective)
 	k.keeper.SetCollectiveContributer(ctx, cc)
+	k.keeper.mk.RegisterDelegator(ctx, collectiveAddr)
+	k.keeper.mk.RegisterDelegator(ctx, collectiveDonationAddr)
 	return &types.MsgBondCollectiveResponse{}, nil
 }
 
@@ -182,7 +192,7 @@ func (k msgServer) DonateCollective(
 ) (*types.MsgDonateCollectiveResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	cc := k.keeper.GetCollectiveContributer(ctx, msg.Name, msg.Sender)
-	if cc.Name != "" {
+	if cc.Name == "" {
 		return nil, types.ErrNotCollectiveContributer
 	}
 
@@ -216,7 +226,7 @@ func (k msgServer) DonateCollective(
 	if cc.Donation.GT(msg.Donation) {
 		movingBonds := calcPortion(cc.Bonds, cc.Donation.Sub(msg.Donation))
 		if movingBonds.IsAllPositive() {
-			err := k.keeper.bk.SendCoins(ctx, collectiveAddr, collectiveDonationAddr, movingBonds)
+			err := k.keeper.bk.SendCoins(ctx, collectiveDonationAddr, collectiveAddr, movingBonds)
 			if err != nil {
 				return nil, err
 			}
@@ -224,7 +234,7 @@ func (k msgServer) DonateCollective(
 	} else if msg.Donation.GT(cc.Donation) {
 		movingBonds := calcPortion(cc.Bonds, msg.Donation.Sub(cc.Donation))
 		if movingBonds.IsAllPositive() {
-			err := k.keeper.bk.SendCoins(ctx, collectiveDonationAddr, collectiveAddr, movingBonds)
+			err := k.keeper.bk.SendCoins(ctx, collectiveAddr, collectiveDonationAddr, movingBonds)
 			if err != nil {
 				return nil, err
 			}
@@ -232,8 +242,11 @@ func (k msgServer) DonateCollective(
 	}
 	cc.Donation = msg.Donation
 	cc.Locking = msg.Locking
+	cc.DonationLock = msg.DonationLock
 
 	k.keeper.SetCollectiveContributer(ctx, cc)
+	k.keeper.mk.RegisterDelegator(ctx, collectiveAddr)
+	k.keeper.mk.RegisterDelegator(ctx, collectiveDonationAddr)
 	return &types.MsgDonateCollectiveResponse{}, nil
 }
 
@@ -245,7 +258,7 @@ func (k msgServer) WithdrawCollective(
 ) (*types.MsgWithdrawCollectiveResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	cc := k.keeper.GetCollectiveContributer(ctx, msg.Name, msg.Sender)
-	if cc.Name != "" {
+	if cc.Name == "" {
 		return nil, types.ErrNotCollectiveContributer
 	}
 
@@ -266,6 +279,7 @@ func (k msgServer) WithdrawCollective(
 	if err != nil {
 		return nil, err
 	}
-	k.keeper.DeleteCollectiveContributer(ctx, msg.Name, msg.Sender)
+	k.keeper.mk.RegisterDelegator(ctx, collective.GetCollectiveAddress())
+	k.keeper.mk.RegisterDelegator(ctx, collective.GetCollectiveDonationAddress())
 	return &types.MsgWithdrawCollectiveResponse{}, nil
 }

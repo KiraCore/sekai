@@ -9,7 +9,7 @@ func (k Keeper) BeginBlocker(ctx sdk.Context) {
 
 }
 
-func (k Keeper) DistributeCollectiveRewards(ctx sdk.Context, collective types.Collective) {
+func (k Keeper) DistributeCollectiveRewards(ctx sdk.Context, collective types.Collective) error {
 	delegator := collective.GetCollectiveAddress()
 	k.mk.RegisterDelegator(ctx, delegator)
 	coins := k.mk.ClaimRewards(ctx, delegator)
@@ -24,7 +24,7 @@ func (k Keeper) DistributeCollectiveRewards(ctx sdk.Context, collective types.Co
 
 		err := k.spk.DepositSpendingPoolFromAccount(ctx, delegator, pool.Name, portionCoins)
 		if err != nil {
-			panic(err)
+			return err
 		}
 	}
 
@@ -34,8 +34,9 @@ func (k Keeper) DistributeCollectiveRewards(ctx sdk.Context, collective types.Co
 	collective.Donations = sdk.Coins(collective.Donations).Add(coins...)
 	err := k.bk.SendCoinsFromAccountToModule(ctx, delegator, types.ModuleName, coins)
 	if err != nil {
-		panic(err)
+		return err
 	}
+	return nil
 }
 
 func (k Keeper) EndBlocker(ctx sdk.Context) {
@@ -52,7 +53,11 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 		blockTime := uint64(ctx.BlockTime().Unix())
 		if (collective.ClaimStart >= blockTime && collective.LastDistribution == 0) ||
 			collective.LastDistribution+collective.ClaimPeriod <= blockTime {
-			k.DistributeCollectiveRewards(ctx, collective)
+			cacheCtx, write := ctx.CacheContext()
+			err := k.DistributeCollectiveRewards(cacheCtx, collective)
+			if err == nil {
+				write()
+			}
 			collective.LastDistribution = uint64(ctx.BlockTime().Unix())
 		}
 	}
