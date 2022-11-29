@@ -43,7 +43,6 @@ func (k msgServer) CreateSpendingPool(
 		Name:                    msg.Name,
 		ClaimStart:              msg.ClaimStart,
 		ClaimEnd:                msg.ClaimEnd,
-		Token:                   msg.Token,
 		Rates:                   msg.Rates,
 		VoteQuorum:              msg.VoteQuorum,
 		VotePeriod:              msg.VotePeriod,

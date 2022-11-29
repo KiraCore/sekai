@@ -32,26 +32,25 @@ message MsgCreateSpendingPool {
   // claim-start & claim-end - defines the exact time period (Unix timestamps) between which tokens can be claimed from the pool, allowing for a precise funds distribution.
   uint64 claim_start = 2;
   uint64 claim_end = 3;
-  string token = 4; // name of the token that can be distributed.
   // rate of distribution in the smallest token denomination per 1 second (this value can be a float number, smaller than actual denomination)
-  repeated string rates = 5 [
+  repeated string rates = 4 [
     (gogoproto.moretags) = "yaml:\"rates\"",
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.DecCoin",
     (gogoproto.nullable) = false
   ];
   // pool specific % of owner accounts that must vote YES or NO for any of the pool proposals to be valid.
-  uint64 vote_quorum = 6; // percentage, # default: 51%
+  uint64 vote_quorum = 5; // percentage, # default: 51%
   // period of time in seconds that any of the pool proposals must last before passing or being rejected
-  uint64 vote_period = 7; // seconds, # default: 600s
+  uint64 vote_period = 6; // seconds, # default: 600s
   // period of time that must pass before any of the pool proposal is enacted
-  uint64 vote_enactment = 8; // seconds, # default: 300s
+  uint64 vote_enactment = 7; // seconds, # default: 300s
   // defines a list of accounts/roles controlling the spending pool via “governance-like” proposals
-  PermInfo owners = 9 [ (gogoproto.nullable) = false ];
+  PermInfo owners = 8 [ (gogoproto.nullable) = false ];
   // defines set of accounts/roles to which funds can be distributed
-  WeightedPermInfo beneficiaries = 10 [ (gogoproto.nullable) = false ];
-  string sender = 11;
-  bool dynamic_rate = 12;
-  uint64 dynamic_rate_period = 13;
+  WeightedPermInfo beneficiaries = 9 [ (gogoproto.nullable) = false ];
+  string sender = 10;
+  bool dynamic_rate = 11;
+  uint64 dynamic_rate_period = 12;
 }
 message MsgCreateSpendingPoolResponse {}
 

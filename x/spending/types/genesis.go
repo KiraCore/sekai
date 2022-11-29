@@ -13,7 +13,6 @@ func DefaultGenesis() *GenesisState {
 				Name:          "ValidatorBasicRewardsPool",
 				ClaimStart:    0,
 				ClaimEnd:      0,
-				Token:         "ukex",
 				Rates:         sdk.DecCoins{sdk.NewDecCoin("ukex", sdk.NewInt(385))}, // 1k KEX per month per validator
 				VoteQuorum:    33,
 				VotePeriod:    300, // 300s

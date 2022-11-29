@@ -15,7 +15,7 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 		if !pool.DynamicRate {
 			continue
 		}
-		if pool.DynamicRatePeriod+pool.LastDynamicRateCalcTime < uint64(ctx.BlockTime().Unix()) {
+		if pool.DynamicRatePeriod+pool.LastDynamicRateCalcTime > uint64(ctx.BlockTime().Unix()) {
 			continue
 		}
 
@@ -25,6 +25,10 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 			addr := sdk.MustAccAddressFromBech32(info.Account)
 			weight := k.GetBeneficiaryWeight(ctx, addr, *pool.Beneficiaries)
 			totalWeight += weight
+		}
+
+		if totalWeight == 0 {
+			continue
 		}
 
 		// If any of the weights is changed to value different then 1, then token rates should be recalculated accordingly, that is for each token `x`

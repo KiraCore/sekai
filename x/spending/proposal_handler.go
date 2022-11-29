@@ -90,7 +90,6 @@ func (a ApplyUpdateSpendingPoolProposalHandler) Apply(ctx sdk.Context, proposalI
 		Name:              p.Name,
 		ClaimStart:        p.ClaimStart,
 		ClaimEnd:          p.ClaimEnd,
-		Token:             p.Token,
 		Rates:             p.Rates,
 		VoteQuorum:        p.VoteQuorum,
 		VotePeriod:        p.VotePeriod,
@@ -296,11 +295,6 @@ func (a ApplySpendingPoolWithdrawProposalHandler) Apply(ctx sdk.Context, proposa
 	pool := a.keeper.GetSpendingPool(ctx, p.PoolName)
 	if pool == nil {
 		return types.ErrPoolDoesNotExist
-	}
-
-	// amounts should be single token coins object
-	if len(p.Amounts) != 1 || p.Amounts[0].Denom != pool.Token {
-		return types.ErrInvalidSpendingPoolWithdrawAmount
 	}
 
 	for _, beneficiary := range p.Beneficiaries {
