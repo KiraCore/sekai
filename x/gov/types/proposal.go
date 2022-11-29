@@ -323,7 +323,11 @@ func (m *SetNetworkPropertyProposal) ValidateBasic() error {
 		MaxCustodyBufferSize,
 		MaxCustodyTxSize,
 		AbstentionRankDecreaseAmount,
-		MaxAbstention:
+		MaxAbstention,
+		MinCollectiveBond,
+		MinCollectiveBondingTime,
+		MaxCollectiveOutputs,
+		MinCollectiveClaimPeriod:
 		return nil
 	default:
 		return ErrInvalidNetworkProperty

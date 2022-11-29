@@ -126,6 +126,10 @@ func DefaultGenesis() *GenesisState {
 			MaxCustodyBufferSize:         10,
 			AbstentionRankDecreaseAmount: 1,
 			MaxAbstention:                2,
+			MinCollectiveBond:            100_000, // in KEX
+			MinCollectiveBondingTime:     86400,   // in seconds
+			MaxCollectiveOutputs:         10,
+			MinCollectiveClaimPeriod:     14400, // 4hrs
 		},
 		ExecutionFees: []ExecutionFee{
 			{

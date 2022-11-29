@@ -9,27 +9,29 @@ func NewMsgCreateSpendingPool(
 	name string,
 	claimStart uint64,
 	claimEnd uint64,
-	token string,
-	rate sdk.Dec,
+	rates sdk.DecCoins,
 	voteQuorum uint64,
 	votePeriod uint64,
 	voteEnactment uint64,
 	owners PermInfo,
-	beneficiaries PermInfo,
+	beneficiaries WeightedPermInfo,
 	sender sdk.AccAddress,
+	dynamicRate bool,
+	dynamicRatePeriod uint64,
 ) *MsgCreateSpendingPool {
 	return &MsgCreateSpendingPool{
-		Name:          name,
-		ClaimStart:    claimStart,
-		ClaimEnd:      claimEnd,
-		Token:         token,
-		Rate:          rate,
-		VoteQuorum:    voteQuorum,
-		VotePeriod:    votePeriod,
-		VoteEnactment: voteEnactment,
-		Owners:        owners,
-		Beneficiaries: beneficiaries,
-		Sender:        sender.String(),
+		Name:              name,
+		ClaimStart:        claimStart,
+		ClaimEnd:          claimEnd,
+		Rates:             rates,
+		VoteQuorum:        voteQuorum,
+		VotePeriod:        votePeriod,
+		VoteEnactment:     voteEnactment,
+		Owners:            owners,
+		Beneficiaries:     beneficiaries,
+		Sender:            sender.String(),
+		DynamicRate:       dynamicRate,
+		DynamicRatePeriod: dynamicRatePeriod,
 	}
 }
 
@@ -44,6 +46,16 @@ func (m *MsgCreateSpendingPool) Type() string {
 func (m *MsgCreateSpendingPool) ValidateBasic() error {
 	if m.Sender == "" {
 		return ErrEmptyProposerAccAddress
+	}
+	for _, beneficiary := range m.Beneficiaries.Accounts {
+		if beneficiary.Weight == 0 {
+			return ErrEmptyWeightBeneficiary
+		}
+	}
+	for _, beneficiary := range m.Beneficiaries.Roles {
+		if beneficiary.Weight == 0 {
+			return ErrEmptyWeightBeneficiary
+		}
 	}
 	return nil
 }
@@ -107,13 +119,11 @@ func (m *MsgDepositSpendingPool) GetSigners() []sdk.AccAddress {
 
 func NewMsgRegisterSpendingPoolBeneficiary(
 	name string,
-	beneficiary PermInfo,
 	sender sdk.AccAddress,
 ) *MsgRegisterSpendingPoolBeneficiary {
 	return &MsgRegisterSpendingPoolBeneficiary{
-		PoolName:    name,
-		Beneficiary: beneficiary,
-		Sender:      sender.String(),
+		PoolName: name,
+		Sender:   sender.String(),
 	}
 }
 

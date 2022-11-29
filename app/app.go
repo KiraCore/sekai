@@ -11,6 +11,9 @@ import (
 	"github.com/KiraCore/sekai/x/basket"
 	basketkeeper "github.com/KiraCore/sekai/x/basket/keeper"
 	baskettypes "github.com/KiraCore/sekai/x/basket/types"
+	"github.com/KiraCore/sekai/x/collectives"
+	collectiveskeeper "github.com/KiraCore/sekai/x/collectives/keeper"
+	collectivestypes "github.com/KiraCore/sekai/x/collectives/types"
 	"github.com/KiraCore/sekai/x/custody"
 	custodykeeper "github.com/KiraCore/sekai/x/custody/keeper"
 	custodytypes "github.com/KiraCore/sekai/x/custody/types"
@@ -112,6 +115,7 @@ var (
 		feeprocessing.AppModuleBasic{},
 		custody.AppModuleBasic{},
 		multistaking.AppModuleBasic{},
+		collectives.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -123,6 +127,7 @@ var (
 		distributortypes.ModuleName:  nil,
 		baskettypes.ModuleName:       {authtypes.Minter, authtypes.Burner},
 		multistakingtypes.ModuleName: {authtypes.Burner},
+		collectivestypes.ModuleName:  nil,
 	}
 
 	// module accounts that are allowed to receive tokens
@@ -161,6 +166,7 @@ type SekaiApp struct {
 	DistrKeeper          distributorkeeper.Keeper
 	BasketKeeper         basketkeeper.Keeper
 	MultiStakingKeeper   multistakingkeeper.Keeper
+	CollectivesKeeper    collectiveskeeper.Keeper
 
 	// Module Manager
 	mm *module.Manager
@@ -211,6 +217,7 @@ func NewInitApp(
 		feeprocessingtypes.ModuleName,
 		evidencetypes.StoreKey,
 		custodytypes.StoreKey,
+		collectivestypes.ModuleName,
 	)
 	tKeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 
@@ -270,6 +277,15 @@ func NewInitApp(
 		app.MultiStakingKeeper,
 	)
 
+	app.CollectivesKeeper = collectiveskeeper.NewKeeper(
+		keys[collectivestypes.StoreKey], appCodec,
+		app.BankKeeper,
+		app.CustomGovKeeper,
+		app.MultiStakingKeeper,
+		app.TokensKeeper,
+		app.SpendingKeeper,
+	)
+
 	app.UpgradeKeeper = upgradekeeper.NewKeeper(keys[upgradetypes.StoreKey], appCodec, app.CustomStakingKeeper)
 
 	// app.upgradeKeeper.SetUpgradeHandler(
@@ -323,6 +339,9 @@ func NewInitApp(
 			basket.NewApplyCreateBasketProposalHandler(app.BasketKeeper),
 			basket.NewApplyEditBasketProposalHandler(app.BasketKeeper),
 			basket.NewApplyBasketWithdrawSurplusProposalHandler(app.BasketKeeper),
+			collectives.NewApplyCollectiveSendDonationProposalHandler(app.CollectivesKeeper),
+			collectives.NewApplyCollectiveUpdateProposalHandler(app.CollectivesKeeper),
+			collectives.NewApplyCollectiveRemoveProposalHandler(app.CollectivesKeeper),
 		})
 
 	app.CustomGovKeeper.SetProposalRouter(proposalRouter)
@@ -352,6 +371,7 @@ func NewInitApp(
 		feeprocessing.NewAppModule(app.FeeProcessingKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
 		custody.NewAppModule(app.CustodyKeeper, app.CustomGovKeeper, app.BankKeeper),
+		collectives.NewAppModule(app.CollectivesKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -367,6 +387,7 @@ func NewInitApp(
 		baskettypes.ModuleName,
 		distributortypes.ModuleName, multistakingtypes.ModuleName, custodytypes.ModuleName,
 		baskettypes.ModuleName,
+		collectivestypes.ModuleName,
 	)
 	app.mm.SetOrderEndBlockers(
 		banktypes.ModuleName, upgradetypes.ModuleName, tokenstypes.ModuleName,
@@ -378,6 +399,7 @@ func NewInitApp(
 		spendingtypes.ModuleName, ubitypes.ModuleName,
 		distributortypes.ModuleName, multistakingtypes.ModuleName, custodytypes.ModuleName,
 		baskettypes.ModuleName,
+		collectivestypes.ModuleName,
 	)
 
 	// NOTE: The genutils moodule must occur after staking so that pools are
@@ -403,6 +425,7 @@ func NewInitApp(
 		custodytypes.ModuleName,
 		multistakingtypes.ModuleName,
 		baskettypes.ModuleName,
+		collectivestypes.ModuleName,
 	)
 
 	app.mm.RegisterRoutes(app.Router(), app.QueryRouter(), encodingConfig.Amino)
