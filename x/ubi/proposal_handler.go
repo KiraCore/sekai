@@ -36,10 +36,6 @@ func (a ApplyUpsertUBIProposalHandler) Apply(ctx sdk.Context, proposalID uint64,
 		return ubitypes.ErrSpendingPoolDoesNotExist
 	}
 
-	if spendingPool.Token != a.keeper.BondDenom(ctx) {
-		return ubitypes.ErrUBIOnlyAllowedOnBondDenomPools
-	}
-
 	yearSeconds := uint64(31556952)
 	hardcap := a.gk.GetNetworkProperties(ctx).UbiHardcap
 	allRecords := a.keeper.GetUBIRecords(ctx)

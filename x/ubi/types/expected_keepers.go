@@ -24,5 +24,5 @@ type AccountKeeper interface {
 
 type SpendingKeeper interface {
 	GetSpendingPool(ctx sdk.Context, name string) *spendingtypes.SpendingPool
-	DepositSpendingPoolFromModule(ctx sdk.Context, moduleName, poolName string, amount sdk.Coin) error
+	DepositSpendingPoolFromModule(ctx sdk.Context, moduleName, poolName string, amounts sdk.Coins) error
 }
