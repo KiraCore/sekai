@@ -48,7 +48,7 @@ sendTokens validator "$ACCOUNT5_ADDRESS" 1000000000000 ukex 100 ukex
 
   # TEST 1/1
   # Send tokens --->
-  TESTER1_BALANCE_EXPECTED=$((1000000000000 - 150)) # -150 fee -7 sent
+  TESTER1_BALANCE_EXPECTED=$((1000000000000 - 150 - 7)) # -150 fee -7 sent
   TESTER5_BALANCE_EXPECTED=$((1000000000000 + 7)) # +7 received
 
   custodySendTokens tester1 tester5 7 ukex 150 ukex 1000 ukex $PASSWORD
