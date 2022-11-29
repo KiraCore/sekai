@@ -47,7 +47,7 @@ func (m *MsgCreateCollective) Type() string {
 
 // ValidateBasic returns basic validation result
 func (m *MsgCreateCollective) ValidateBasic() error {
-	_, err := sdk.ValAddressFromBech32(m.Sender)
+	_, err := sdk.AccAddressFromBech32(m.Sender)
 	if err != nil {
 		return err
 	}
@@ -127,7 +127,7 @@ func (m *MsgBondCollective) Type() string {
 
 // ValidateBasic returns basic validation result
 func (m *MsgBondCollective) ValidateBasic() error {
-	_, err := sdk.ValAddressFromBech32(m.Sender)
+	_, err := sdk.AccAddressFromBech32(m.Sender)
 	if err != nil {
 		return err
 	}
@@ -188,7 +188,7 @@ func (m *MsgDonateCollective) Type() string {
 
 // ValidateBasic returns basic validation result
 func (m *MsgDonateCollective) ValidateBasic() error {
-	_, err := sdk.ValAddressFromBech32(m.Sender)
+	_, err := sdk.AccAddressFromBech32(m.Sender)
 	if err != nil {
 		return err
 	}
@@ -241,7 +241,7 @@ func (m *MsgWithdrawCollective) Type() string {
 
 // ValidateBasic returns basic validation result
 func (m *MsgWithdrawCollective) ValidateBasic() error {
-	_, err := sdk.ValAddressFromBech32(m.Sender)
+	_, err := sdk.AccAddressFromBech32(m.Sender)
 	if err != nil {
 		return err
 	}

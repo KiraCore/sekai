@@ -162,8 +162,8 @@ func GetTxCreateSpendingPoolCmd() *cobra.Command {
 	cmd.Flags().String(FlagBeneficiaryRoleWeights, "", "beneficiary role weights on the spending pool.")
 	cmd.Flags().String(FlagBeneficiaryAccounts, "", "beneficiary accounts of the spending pool.")
 	cmd.Flags().String(FlagBeneficiaryAccountWeights, "", "beneficiary account weights on the spending pool.")
-	cmd.Flags().String(FlagDynamicRate, "", "flag to dynamically calculate rates on the spending pool.")
-	cmd.Flags().String(FlagDynamicRatePeriod, "", "dynamic rate recalculation period on the spending pool.")
+	cmd.Flags().Bool(FlagDynamicRate, false, "flag to dynamically calculate rates on the spending pool.")
+	cmd.Flags().Uint64(FlagDynamicRatePeriod, 0, "dynamic rate recalculation period on the spending pool.")
 
 	return cmd
 }

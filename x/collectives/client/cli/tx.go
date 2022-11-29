@@ -323,7 +323,7 @@ func GetTxDonateCollectiveCmd() *cobra.Command {
 // their tokens (unless locking is enabled)
 func GetTxWithdrawCollectiveCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "donate-collective",
+		Use:   "withdraw-collective",
 		Short: "sent by any whitelisted “contributor” to withdraw their tokens (unless locking is enabled)",
 		Args:  cobra.MinimumNArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -630,8 +630,8 @@ func GetTxProposalCollectiveUpdateCmd() *cobra.Command {
 // GetTxProposalCollectiveRemoveCmd implement cli command for ProposalCollectiveRemove
 func GetTxProposalCollectiveRemoveCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "proposal-send-donation",
-		Short: "Create a proposal to withdraw donation",
+		Use:   "proposal-remove-collective",
+		Short: "Create a proposal to withdraw collective",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)

@@ -29,7 +29,6 @@ func (q Querier) Collective(c context.Context, request *types.CollectiveRequest)
 }
 
 // Collectives query list of all staking collectives (output list of names),
-// if `name` / `id` is specified then output full details of a single collective.
 func (q Querier) Collectives(c context.Context, request *types.CollectivesRequest) (*types.CollectivesResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 	return &types.CollectivesResponse{
