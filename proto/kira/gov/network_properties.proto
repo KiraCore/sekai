@@ -83,7 +83,10 @@ message NetworkProperties {
     uint64 min_identity_approval_tip = 18; // minimum amount of tip to be paid to the approver per request
     string unique_identity_keys = 19; // manages unique identity keys to be used as an address identifier
     uint64 ubi_hardcap = 20; // a maximum amount of additional KEX that can be created per year
-    uint64 validators_fee_share = 21; // the percentage that validators get from collected fees
+    string validators_fee_share = 21 [
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+      (gogoproto.nullable) = false
+    ]; // the percentage that validators get from collected fees
     uint64 inflation_rate = 22; // KEX inflation percentage X defined as decimal value.
     uint64 inflation_period = 23; // period of time (in seconds) over which current KEX supply is inflated by a percentage corresponding to the inflation_rate
     uint64 unstaking_period = 24; // period of time (in seconds) it takes to unstake any of the staked tokens 

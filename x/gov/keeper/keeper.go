@@ -190,7 +190,7 @@ func (k Keeper) GetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 	case types.UbiHardcap:
 		return types.NetworkPropertyValue{Value: properties.UbiHardcap}, nil
 	case types.ValidatorsFeeShare:
-		return types.NetworkPropertyValue{Value: properties.ValidatorsFeeShare}, nil
+		return types.NetworkPropertyValue{StrValue: properties.ValidatorsFeeShare.String()}, nil
 	case types.InflationRate:
 		return types.NetworkPropertyValue{Value: properties.InflationRate}, nil
 	case types.InflationPeriod:
@@ -278,7 +278,11 @@ func (k Keeper) SetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 	case types.UbiHardcap:
 		properties.UbiHardcap = value.Value
 	case types.ValidatorsFeeShare:
-		properties.ValidatorsFeeShare = value.Value
+		decValue, err := sdk.NewDecFromStr(value.StrValue)
+		if err != nil {
+			return err
+		}
+		properties.ValidatorsFeeShare = decValue
 	case types.InflationRate:
 		properties.InflationRate = value.Value
 	case types.InflationPeriod:

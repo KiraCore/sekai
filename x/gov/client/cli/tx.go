@@ -768,9 +768,12 @@ func GetTxProposalSetNetworkProperty() *cobra.Command {
 			}
 
 			value := types.NetworkPropertyValue{}
-			if property == int32(types.UniqueIdentityKeys) {
+			switch types.NetworkProperty(property) {
+			case types.UniqueIdentityKeys:
 				value.StrValue = args[1]
-			} else {
+			case types.ValidatorsFeeShare:
+				value.StrValue = args[1]
+			default:
 				numVal, err := strconv.Atoi(args[1])
 				if err != nil {
 					return fmt.Errorf("invalid network property value: %w", err)

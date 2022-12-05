@@ -4,18 +4,18 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/pkg/errors"
-	"github.com/spf13/cobra"
-	tmtypes "github.com/tendermint/tendermint/types"
-
 	"github.com/KiraCore/sekai/x/genutil"
 	v01228govtypes "github.com/KiraCore/sekai/x/gov/legacy/v01228"
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	v03123upgradetypes "github.com/KiraCore/sekai/x/upgrade/legacy/v03123"
 	upgradetypes "github.com/KiraCore/sekai/x/upgrade/types"
 	"github.com/cosmos/cosmos-sdk/client"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
+	"github.com/pkg/errors"
+	"github.com/spf13/cobra"
+	tmtypes "github.com/tendermint/tendermint/types"
 )
 
 func upgradedPlan(plan *v03123upgradetypes.PlanV03123) *upgradetypes.Plan {
@@ -154,10 +154,10 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 						MinIdentityApprovalTip:       govGenesisV01228.NetworkProperties.MinIdentityApprovalTip,
 						UniqueIdentityKeys:           govGenesisV01228.NetworkProperties.UniqueIdentityKeys,
 						UbiHardcap:                   6000_000,
-						ValidatorsFeeShare:           50,
-						InflationRate:                18,       // 18%
-						InflationPeriod:              31557600, // 1 year
-						UnstakingPeriod:              2629800,  // 1 month
+						ValidatorsFeeShare:           sdk.NewDecWithPrec(50, 2), // 50%
+						InflationRate:                18,                        // 18%
+						InflationPeriod:              31557600,                  // 1 year
+						UnstakingPeriod:              2629800,                   // 1 month
 						MaxDelegators:                100,
 						MinDelegationPushout:         10,
 						SlashingPeriod:               3600,

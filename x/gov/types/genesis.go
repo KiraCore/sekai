@@ -2,6 +2,7 @@ package types
 
 import (
 	kiratypes "github.com/KiraCore/sekai/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // DefaultGenesis returns the default CustomGo genesis state
@@ -112,10 +113,10 @@ func DefaultGenesis() *GenesisState {
 			MinIdentityApprovalTip:       200,
 			UniqueIdentityKeys:           "moniker,username",
 			UbiHardcap:                   6000_000,
-			ValidatorsFeeShare:           50,
-			InflationRate:                18,       // 18%
-			InflationPeriod:              31557600, // 1 year
-			UnstakingPeriod:              2629800,  // 1 month
+			ValidatorsFeeShare:           sdk.NewDecWithPrec(50, 2), // 50%
+			InflationRate:                18,                        // 18%
+			InflationPeriod:              31557600,                  // 1 year
+			UnstakingPeriod:              2629800,                   // 1 month
 			MaxDelegators:                100,
 			MinDelegationPushout:         10,
 			SlashingPeriod:               3600,

@@ -58,7 +58,7 @@ func TestSimappExportGenesis(t *testing.T) {
 			"min_identity_approval_tip":"200",
 			"unique_identity_keys":"moniker,username",
 			"ubi_hardcap":"6000000",
-            "validators_fee_share": "50",
+            "validators_fee_share": "0.500000000000000000",
             "inflation_rate": "18",	
             "inflation_period": "31557600",	
             "unstaking_period": "2629800",
@@ -224,10 +224,10 @@ func TestExportInitGenesis(t *testing.T) {
 			MinIdentityApprovalTip:       200,
 			UniqueIdentityKeys:           "moniker,username",
 			UbiHardcap:                   6000_000,
-			ValidatorsFeeShare:           50,
-			InflationRate:                18,       // 18%
-			InflationPeriod:              31557600, // 1 year
-			UnstakingPeriod:              2629800,  // 1 month
+			ValidatorsFeeShare:           sdk.NewDecWithPrec(50, 2), // 50%
+			InflationRate:                18,                        // 18%
+			InflationPeriod:              31557600,                  // 1 year
+			UnstakingPeriod:              2629800,                   // 1 month
 			MaxDelegators:                100,
 			MinDelegationPushout:         10,
 			SlashingPeriod:               3600,
@@ -295,7 +295,7 @@ func TestExportInitGenesis(t *testing.T) {
 			"min_identity_approval_tip":"200",
 			"unique_identity_keys":"moniker,username",
 			"ubi_hardcap":"6000000",
-            "validators_fee_share": "50",
+            "validators_fee_share": "0.500000000000000000",
             "inflation_rate": "18",	
             "inflation_period": "31557600",	
             "unstaking_period": "2629800",

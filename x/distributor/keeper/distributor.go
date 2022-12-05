@@ -50,8 +50,8 @@ func (k Keeper) AllocateTokens(
 	}
 
 	validatorsFeeShare := k.gk.GetNetworkProperties(ctx).ValidatorsFeeShare
-	if validatorsFeeShare > 100 {
-		validatorsFeeShare = 100
+	if validatorsFeeShare.GT(sdk.OneDec()) {
+		validatorsFeeShare = sdk.OneDec()
 	}
 
 	// pay previous proposer
@@ -67,7 +67,7 @@ func (k Keeper) AllocateTokens(
 		// add fee rewards for validator
 		for _, r := range feesCollected {
 			cutAmount := r.Amount.Mul(sdk.NewInt(power)).Quo(sdk.NewInt(snapPeriod))
-			valReward := cutAmount.Mul(sdk.NewInt(int64(validatorsFeeShare))).Quo(sdk.NewInt(100))
+			valReward := cutAmount.ToDec().Mul(validatorsFeeShare).RoundInt()
 			if valReward.IsPositive() {
 				validatorRewards = validatorRewards.Add(sdk.NewCoin(r.Denom, valReward))
 			}
