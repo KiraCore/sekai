@@ -9,6 +9,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
+	"math/big"
 	"strings"
 )
 
@@ -101,14 +102,17 @@ func (s msgServer) RemoveFromCustodians(goCtx context.Context, msg *types.MsgRem
 
 func (s msgServer) ApproveTransaction(goCtx context.Context, msg *types.MsgApproveCustodyTransaction) (*types.MsgApproveCustodyTransactionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+	vote := s.keeper.GetApproveCustody(ctx, msg)
+
+	if vote != "0" {
+		return &types.MsgApproveCustodyTransactionResponse{}, nil
+	}
+
 	hash := strings.ToLower(msg.Hash)
 	allowCustodians := true
 	allowPassword := true
 	settings := s.keeper.GetCustodyInfoByAddress(ctx, msg.TargetAddress)
 	custodians := s.keeper.GetCustodyCustodiansByAddress(ctx, msg.TargetAddress)
-
-	//todo: add fee to msg.FromAddress
-	//todo: add ValidateBasic and make possibility to vote only 1 time
 
 	record := types.CustodyPool{
 		Address:      msg.TargetAddress,
@@ -144,13 +148,13 @@ func (s msgServer) ApproveTransaction(goCtx context.Context, msg *types.MsgAppro
 			return nil, err
 		}
 
+		if s.bk.BlockedAddr(to) {
+			return nil, errors.Wrapf(errors.ErrUnauthorized, "%s is not allowed to receive funds", tx.ToAddress)
+		}
+
 		err = s.bk.SendCoins(ctx, from, to, tx.Amount)
 		if err != nil {
 			return nil, err
-		}
-
-		if s.bk.BlockedAddr(to) {
-			return nil, errors.Wrapf(errors.ErrUnauthorized, "%s is not allowed to receive funds", tx.ToAddress)
 		}
 
 		defer func() {
@@ -177,14 +181,76 @@ func (s msgServer) ApproveTransaction(goCtx context.Context, msg *types.MsgAppro
 
 	s.keeper.AddToCustodyPool(ctx, record)
 
+	reward := big.NewInt(1).Div(record.Transactions.Record[hash].Transaction.Reward[0].Amount.BigInt(), big.NewInt(int64(len(custodians.Addresses))))
+	coinReward := sdk.NewInt64Coin(record.Transactions.Record[hash].Transaction.Reward[0].Denom, reward.Int64())
+
+	rew := new(sdk.Coins)
+	rew.Add(coinReward)
+
+	s.keeper.ApproveCustody(ctx, msg)
+	err := s.sendReward(goCtx, msg.TargetAddress, msg.FromAddress, *rew)
+
+	if err != nil {
+		return nil, err
+	}
+
 	return &types.MsgApproveCustodyTransactionResponse{}, nil
 }
 
 func (s msgServer) DeclineTransaction(goCtx context.Context, msg *types.MsgDeclineCustodyTransaction) (*types.MsgDeclineCustodyTransactionResponse, error) {
-	//todo: add fee to msg.FromAddress
-	//todo: make possibility to vote only 1 time
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	vote := s.keeper.GetDeclineCustody(ctx, msg)
+	hash := strings.ToLower(msg.Hash)
+
+	if vote != "0" {
+		return &types.MsgDeclineCustodyTransactionResponse{}, nil
+	}
+
+	settings := s.keeper.GetCustodyInfoByAddress(ctx, msg.TargetAddress)
+	custodians := s.keeper.GetCustodyCustodiansByAddress(ctx, msg.TargetAddress)
+	transactions := s.keeper.GetCustodyPoolByAddress(ctx, msg.TargetAddress)
+
+	if settings == nil || !settings.CustodyEnabled || len(custodians.Addresses) == 0 {
+		return &types.MsgDeclineCustodyTransactionResponse{}, nil
+	}
+
+	if transactions == nil || transactions.Record[hash] == nil {
+		return &types.MsgDeclineCustodyTransactionResponse{}, nil
+	}
+
+	reward := transactions.Record[hash].Transaction.Reward[0].Amount.Int64() / int64(len(custodians.Addresses))
+	coinReward := sdk.NewInt64Coin(transactions.Record[hash].Transaction.Reward[0].Denom, reward)
+
+	rew := new(sdk.Coins)
+	rew.Add(coinReward)
+
+	s.keeper.DeclineCustody(ctx, msg)
+	err := s.sendReward(goCtx, msg.TargetAddress, msg.FromAddress, *rew)
+
+	if err != nil {
+		return nil, err
+	}
 
 	return &types.MsgDeclineCustodyTransactionResponse{}, nil
+}
+
+func (s msgServer) sendReward(goCtx context.Context, FromAddress sdk.AccAddress, ToAddress sdk.AccAddress, Amount sdk.Coins) error {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if err := s.bk.IsSendEnabledCoins(ctx, Amount...); err != nil {
+		return err
+	}
+
+	if s.bk.BlockedAddr(ToAddress) {
+		return errors.Wrapf(errors.ErrUnauthorized, "%s is not allowed to receive funds", ToAddress)
+	}
+
+	err := s.bk.SendCoins(ctx, FromAddress, ToAddress, Amount)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (s msgServer) DropCustodians(goCtx context.Context, msg *types.MsgDropCustodyCustodians) (*types.MsgDropCustodyCustodiansResponse, error) {
@@ -407,13 +473,13 @@ func (s msgServer) PasswordConfirm(goCtx context.Context, msg *types.MsgPassword
 			return nil, err
 		}
 
+		if s.bk.BlockedAddr(to) {
+			return nil, errors.Wrapf(errors.ErrUnauthorized, "%s is not allowed to receive funds", tx.ToAddress)
+		}
+
 		err = s.bk.SendCoins(ctx, from, to, tx.Amount)
 		if err != nil {
 			return nil, err
-		}
-
-		if s.bk.BlockedAddr(to) {
-			return nil, errors.Wrapf(errors.ErrUnauthorized, "%s is not allowed to receive funds", tx.ToAddress)
 		}
 
 		defer func() {

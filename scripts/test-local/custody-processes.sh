@@ -96,8 +96,7 @@ sendTokens validator "$ACCOUNT5_ADDRESS" 1000000000000 ukex 100 ukex
   TESTER1_BALANCE_EXPECTED=$(($TESTER1_BALANCE_EXPECTED - 150)) # -150 fee
   TESTER5_BALANCE_EXPECTED=$TESTER5_BALANCE_EXPECTED # same
 
-  TXHASH=$(custodySendTokens tester1 tester5 7 ukex 150 ukex 1000 ukex $PASSWORD)
-  HASH=${TXHASH,,}
+  HASH=$(custodySendTokens tester1 tester5 7 ukex 150 ukex 100 ukex $PASSWORD)
 
   TESTER1_BALANCE_REAL=$(showBalance tester1 ukex)
   TESTER5_BALANCE_REAL=$(showBalance tester5 ukex)
@@ -188,8 +187,7 @@ sendTokens validator "$ACCOUNT5_ADDRESS" 1000000000000 ukex 100 ukex
   TESTER1_BALANCE_EXPECTED=$(($TESTER1_BALANCE_EXPECTED - 150)) # -150 fee
   TESTER5_BALANCE_EXPECTED=$TESTER5_BALANCE_EXPECTED # same
 
-  TXHASH=$(custodySendTokens tester1 tester5 7 ukex 150 ukex 1000 ukex $PASSWORD)
-  HASH=${TXHASH,,}
+  HASH=$(custodySendTokens tester1 tester5 7 ukex 150 ukex 1000 ukex $PASSWORD)
 
   POOL=$(getCustodyPool tester1)
   TESTER1_BALANCE_REAL=$(showBalance tester1 ukex)
@@ -252,8 +250,7 @@ sendTokens validator "$ACCOUNT5_ADDRESS" 1000000000000 ukex 100 ukex
   TESTER1_BALANCE_EXPECTED=$(($TESTER1_BALANCE_EXPECTED - 150)) # -150 fee
   TESTER5_BALANCE_EXPECTED=$(($TESTER5_BALANCE_EXPECTED)) # same
 
-  TXHASH=$(custodySendTokens tester1 tester5 7 ukex 150 ukex 1000 ukex $PASSWORD)
-  HASH=${TXHASH,,}
+  HASH=$(custodySendTokens tester1 tester5 7 ukex 150 ukex 1000 ukex $PASSWORD)
 
   TESTER1_BALANCE_REAL=$(showBalance tester1 ukex)
   TESTER5_BALANCE_REAL=$(showBalance tester5 ukex)
@@ -281,8 +278,7 @@ sendTokens validator "$ACCOUNT5_ADDRESS" 1000000000000 ukex 100 ukex
   TESTER1_BALANCE_EXPECTED=$(($TESTER1_BALANCE_EXPECTED - 150)) # -150 fee
   TESTER5_BALANCE_EXPECTED=$(($TESTER5_BALANCE_EXPECTED)) # same
 
-  TXHASH=$(custodySendTokens tester1 tester5 7 ukex 150 ukex 1000 ukex $PASSWORD)
-  HASH=${TXHASH,,}
+  HASH=$(custodySendTokens tester1 tester5 7 ukex 150 ukex 1000 ukex $PASSWORD)
 
   TESTER1_BALANCE_REAL=$(showBalance tester1 ukex)
   TESTER5_BALANCE_REAL=$(showBalance tester5 ukex)
@@ -330,8 +326,7 @@ sendTokens validator "$ACCOUNT5_ADDRESS" 1000000000000 ukex 100 ukex
   TESTER1_BALANCE_EXPECTED=$(($TESTER1_BALANCE_EXPECTED - 150)) # -150 fee
   TESTER5_BALANCE_EXPECTED=$(($TESTER5_BALANCE_EXPECTED)) # same
 
-  TXHASH=$(custodySendTokens tester1 tester5 7 ukex 150 ukex 1000 ukex $PASSWORD)
-  HASH=${TXHASH,,}
+  HASH=$(custodySendTokens tester1 tester5 7 ukex 150 ukex 1000 ukex $PASSWORD)
 
   TESTER1_BALANCE_REAL=$(showBalance tester1 ukex)
   TESTER5_BALANCE_REAL=$(showBalance tester5 ukex)

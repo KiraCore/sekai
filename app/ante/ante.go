@@ -102,7 +102,26 @@ func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool,
 						return ctx, sdkerrors.Wrap(custodytypes.ErrWrongKey, "Custody module")
 					}
 				}
+			case kiratypes.MsgTypeSend:
+				{
+					msg := msg.(*custodytypes.MsgSend)
+					properties := cd.gk.GetNetworkProperties(ctx)
+					custodians := cd.ck.GetCustodyCustodiansByAddress(ctx, msg.GetSigners()[0])
+					count := uint64(len(custodians.Addresses))
+
+					if len(msg.Reward) < 1 {
+						return ctx, sdkerrors.Wrap(custodytypes.ErrNotEnoughReward, "no reward")
+					}
+					if (properties.MinCustodyReward*count) < msg.Reward[0].Amount.Uint64() {
+						return ctx, sdkerrors.Wrap(custodytypes.ErrNotEnoughReward, "to small reward")
+					}
+
+					if msg.Reward[0].Denom != cd.ck.BondDenom(ctx) {
+						return ctx, sdkerrors.Wrap(custodytypes.ErrNotEnoughReward, "wrong reward denom")
+					}
+				}
 			}
+
 		}
 
 		if kiratypes.MsgType(msg) == bank.TypeMsgSend {

@@ -11,4 +11,5 @@ var (
 	ErrNotInWhiteList      = errors.Register(ModuleName, 4, "recipient not in the whitelist")
 	ErrNotInLimits         = errors.Register(ModuleName, 5, "denom limit has been reached")
 	ErrWrongKey            = errors.Register(ModuleName, 6, "wrong key")
+	ErrNotEnoughReward     = errors.Register(ModuleName, 7, "not enough custody reward")
 )
