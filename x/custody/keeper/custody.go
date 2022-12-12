@@ -171,11 +171,11 @@ func (k Keeper) GetCustodyPoolByAddress(ctx sdk.Context, address sdk.AccAddress)
 }
 
 func (k Keeper) GetApproveCustody(ctx sdk.Context, msg *types.MsgApproveCustodyTransaction) string {
-	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), []byte(types.PrefixKeyCustodyPool))
+	store := ctx.KVStore(k.storeKey)
 	key1 := append([]byte(types.PrefixKeyCustodyVote), msg.FromAddress...)
 	key2 := append(msg.TargetAddress, msg.Hash...)
 	key := append(key1, key2...)
-	bz := prefixStore.Get(key)
+	bz := store.Get(key)
 
 	if bz == nil {
 		return "0"
@@ -185,11 +185,11 @@ func (k Keeper) GetApproveCustody(ctx sdk.Context, msg *types.MsgApproveCustodyT
 }
 
 func (k Keeper) GetDeclineCustody(ctx sdk.Context, msg *types.MsgDeclineCustodyTransaction) string {
-	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), []byte(types.PrefixKeyCustodyPool))
+	store := ctx.KVStore(k.storeKey)
 	key1 := append([]byte(types.PrefixKeyCustodyVote), msg.FromAddress...)
 	key2 := append(msg.TargetAddress, msg.Hash...)
 	key := append(key1, key2...)
-	bz := prefixStore.Get(key)
+	bz := store.Get(key)
 
 	if bz == nil {
 		return "0"

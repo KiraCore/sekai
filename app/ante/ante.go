@@ -112,7 +112,8 @@ func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool,
 					if len(msg.Reward) < 1 {
 						return ctx, sdkerrors.Wrap(custodytypes.ErrNotEnoughReward, "no reward")
 					}
-					if (properties.MinCustodyReward*count) < msg.Reward[0].Amount.Uint64() {
+
+					if msg.Reward[0].Amount.Uint64() < properties.MinCustodyReward*count {
 						return ctx, sdkerrors.Wrap(custodytypes.ErrNotEnoughReward, "to small reward")
 					}
 

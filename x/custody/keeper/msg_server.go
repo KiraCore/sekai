@@ -9,7 +9,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/telemetry"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
-	"math/big"
 	"strings"
 )
 
@@ -119,6 +118,11 @@ func (s msgServer) ApproveTransaction(goCtx context.Context, msg *types.MsgAppro
 		Transactions: s.keeper.GetCustodyPoolByAddress(ctx, msg.TargetAddress),
 	}
 
+	tx := record.Transactions.Record[hash].Transaction
+	rewardAmount := tx.Reward[0].Amount.Quo(sdk.NewInt(int64(len(custodians.Addresses))))
+	rewardCoin := sdk.NewCoin(tx.Reward[0].Denom, rewardAmount)
+	reward := sdk.NewCoins(rewardCoin)
+
 	if record.Transactions != nil && record.Transactions.Record[hash] != nil {
 		record.Transactions.Record[hash].Votes += 1
 	}
@@ -131,9 +135,14 @@ func (s msgServer) ApproveTransaction(goCtx context.Context, msg *types.MsgAppro
 		allowPassword = record.Transactions.Record[hash].Confirmed
 	}
 
-	if allowCustodians && allowPassword {
-		tx := record.Transactions.Record[hash].Transaction
+	err := s.sendReward(goCtx, msg.TargetAddress, msg.FromAddress, reward)
+	if err != nil {
+		return nil, err
+	}
 
+	s.keeper.ApproveCustody(ctx, msg)
+
+	if allowCustodians && allowPassword {
 		to, err := sdk.AccAddressFromBech32(tx.ToAddress)
 		if err != nil {
 			return nil, err
@@ -181,19 +190,6 @@ func (s msgServer) ApproveTransaction(goCtx context.Context, msg *types.MsgAppro
 
 	s.keeper.AddToCustodyPool(ctx, record)
 
-	reward := big.NewInt(1).Div(record.Transactions.Record[hash].Transaction.Reward[0].Amount.BigInt(), big.NewInt(int64(len(custodians.Addresses))))
-	coinReward := sdk.NewInt64Coin(record.Transactions.Record[hash].Transaction.Reward[0].Denom, reward.Int64())
-
-	rew := new(sdk.Coins)
-	rew.Add(coinReward)
-
-	s.keeper.ApproveCustody(ctx, msg)
-	err := s.sendReward(goCtx, msg.TargetAddress, msg.FromAddress, *rew)
-
-	if err != nil {
-		return nil, err
-	}
-
 	return &types.MsgApproveCustodyTransactionResponse{}, nil
 }
 
@@ -218,14 +214,13 @@ func (s msgServer) DeclineTransaction(goCtx context.Context, msg *types.MsgDecli
 		return &types.MsgDeclineCustodyTransactionResponse{}, nil
 	}
 
-	reward := transactions.Record[hash].Transaction.Reward[0].Amount.Int64() / int64(len(custodians.Addresses))
-	coinReward := sdk.NewInt64Coin(transactions.Record[hash].Transaction.Reward[0].Denom, reward)
-
-	rew := new(sdk.Coins)
-	rew.Add(coinReward)
+	tx := transactions.Record[hash].Transaction
+	rewardAmount := tx.Reward[0].Amount.Quo(sdk.NewInt(int64(len(custodians.Addresses))))
+	rewardCoin := sdk.NewCoin(tx.Reward[0].Denom, rewardAmount)
+	reward := sdk.NewCoins(rewardCoin)
 
 	s.keeper.DeclineCustody(ctx, msg)
-	err := s.sendReward(goCtx, msg.TargetAddress, msg.FromAddress, *rew)
+	err := s.sendReward(goCtx, msg.TargetAddress, msg.FromAddress, reward)
 
 	if err != nil {
 		return nil, err
