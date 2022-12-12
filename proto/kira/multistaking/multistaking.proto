@@ -23,6 +23,11 @@ message StakingPool {
   repeated string total_rewards = 7 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
     (gogoproto.nullable) = false
+  ]; 
+  // percentage (e.g. 0.1 == 10%) commission that the validator charges from all block reward
+  string commission = 8 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
   ];
 }
 

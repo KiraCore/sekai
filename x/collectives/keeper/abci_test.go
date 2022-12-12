@@ -22,7 +22,7 @@ func (suite *KeeperTestSuite) TestDistributeCollectiveRewards() {
 	valAddr := sdk.ValAddress(addr1)
 	pubkeys := simapp.CreateTestPubKeys(1)
 	pubKey := pubkeys[0]
-	val, err := stakingtypes.NewValidator(valAddr, pubKey, sdk.NewDecWithPrec(5, 2))
+	val, err := stakingtypes.NewValidator(valAddr, pubKey)
 	suite.Require().NoError(err)
 
 	properties := suite.app.CustomGovKeeper.GetNetworkProperties(suite.ctx)
@@ -112,7 +112,7 @@ func (suite *KeeperTestSuite) TestEndBlocker() {
 	valAddr := sdk.ValAddress(addr1)
 	pubkeys := simapp.CreateTestPubKeys(1)
 	pubKey := pubkeys[0]
-	val, err := stakingtypes.NewValidator(valAddr, pubKey, sdk.NewDecWithPrec(5, 2))
+	val, err := stakingtypes.NewValidator(valAddr, pubKey)
 	suite.Require().NoError(err)
 
 	properties := suite.app.CustomGovKeeper.GetNetworkProperties(suite.ctx)

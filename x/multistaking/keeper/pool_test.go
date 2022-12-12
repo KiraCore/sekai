@@ -34,14 +34,16 @@ func (suite *KeeperTestSuite) TestStakingPoolGetSet() {
 
 	pools := []types.StakingPool{
 		{
-			Id:        1,
-			Validator: sdk.ValAddress(addr).String(),
-			Enabled:   true,
+			Id:         1,
+			Validator:  sdk.ValAddress(addr).String(),
+			Enabled:    true,
+			Commission: sdk.ZeroDec(),
 		},
 		{
-			Id:        2,
-			Validator: sdk.ValAddress(addr2).String(),
-			Enabled:   true,
+			Id:         2,
+			Validator:  sdk.ValAddress(addr2).String(),
+			Enabled:    true,
+			Commission: sdk.ZeroDec(),
 		},
 	}
 

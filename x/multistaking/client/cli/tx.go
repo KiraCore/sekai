@@ -16,7 +16,8 @@ import (
 
 // define flags
 const (
-	FlagEnabled = "enabled"
+	FlagEnabled    = "enabled"
+	FlagCommission = "commission"
 )
 
 // NewTxCmd returns a root CLI command handler for all x/multistaking transaction commands.
@@ -58,7 +59,15 @@ func GetTxUpsertStakingPool() *cobra.Command {
 				return fmt.Errorf("invalid flag: %w", err)
 			}
 
-			msg := types.NewMsgUpsertStakingPool(clientCtx.FromAddress.String(), args[0], enabled)
+			commissionStr, err := cmd.Flags().GetString(FlagCommission)
+			if err != nil {
+				return err
+			}
+			commission, err := sdk.NewDecFromStr(commissionStr)
+			if err != nil {
+				return err
+			}
+			msg := types.NewMsgUpsertStakingPool(clientCtx.FromAddress.String(), args[0], enabled, commission)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
@@ -67,6 +76,7 @@ func GetTxUpsertStakingPool() *cobra.Command {
 	flags.AddTxFlagsToCmd(cmd)
 
 	cmd.Flags().Bool(FlagEnabled, true, "enabled flag for the pool")
+	cmd.Flags().String(FlagCommission, "", "the commission rate")
 	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd

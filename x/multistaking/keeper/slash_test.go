@@ -42,5 +42,6 @@ func (suite *KeeperTestSuite) TestSlashStakingPool() {
 		TotalStakingTokens: sdk.Coins{sdk.NewInt64Coin("ukex", 900000)},
 		TotalShareTokens:   sdk.Coins{sdk.NewInt64Coin("v1/ukex", 1000000)},
 		TotalRewards:       sdk.Coins(nil),
+		Commission:         sdk.ZeroDec(),
 	})
 }

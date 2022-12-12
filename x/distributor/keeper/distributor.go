@@ -77,22 +77,21 @@ func (k Keeper) AllocateTokens(
 			}
 		}
 
-		// add block inflation rewards for validator
-		cutInflationRewards := inflationRewards.Mul(sdk.NewInt(power)).Quo(sdk.NewInt(snapPeriod))
-		inflationCommissionReward := cutInflationRewards.ToDec().Mul(proposerValidator.Commission).RoundInt()
-		validatorRewards = validatorRewards.Add(sdk.NewCoin(totalSupply.Denom, inflationCommissionReward))
-		inflationPoolReward := cutInflationRewards.Sub(inflationCommissionReward)
-		poolRewards = poolRewards.Add(sdk.NewCoin(totalSupply.Denom, inflationPoolReward))
+		pool, found := k.mk.GetStakingPoolByValidator(ctx, proposerValidator.ValKey.String())
+		if found {
+			// add block inflation rewards for validator
+			cutInflationRewards := inflationRewards.Mul(sdk.NewInt(power)).Quo(sdk.NewInt(snapPeriod))
+			inflationCommissionReward := cutInflationRewards.ToDec().Mul(pool.Commission).RoundInt()
+			validatorRewards = validatorRewards.Add(sdk.NewCoin(totalSupply.Denom, inflationCommissionReward))
+			inflationPoolReward := cutInflationRewards.Sub(inflationCommissionReward)
+			poolRewards = poolRewards.Add(sdk.NewCoin(totalSupply.Denom, inflationPoolReward))
+			if !poolRewards.Empty() {
+				k.mk.IncreasePoolRewards(ctx, pool, poolRewards)
+			}
+		}
 
 		if !validatorRewards.Empty() {
 			k.AllocateTokensToValidator(ctx, proposerValidator, validatorRewards)
-		}
-
-		if !poolRewards.Empty() {
-			pool, found := k.mk.GetStakingPoolByValidator(ctx, proposerValidator.ValKey.String())
-			if found {
-				k.mk.IncreasePoolRewards(ctx, pool, poolRewards)
-			}
 		}
 	} else {
 		// previous proposer can be unknown if say, the unbonding period is 1 block, so

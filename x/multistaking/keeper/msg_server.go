@@ -62,6 +62,7 @@ func (k msgServer) UpsertStakingPool(goCtx context.Context, msg *types.MsgUpsert
 			Id:                 lastPoolId,
 			Enabled:            msg.Enabled,
 			Validator:          msg.Validator,
+			Commission:         msg.Commission,
 			TotalStakingTokens: []sdk.Coin{},
 			TotalShareTokens:   []sdk.Coin{},
 			TotalRewards:       []sdk.Coin{},

@@ -137,7 +137,7 @@ func (suite *KeeperTestSuite) TestIncreasePoolRewards() {
 	pubkeys := simapp.CreateTestPubKeys(1)
 	pubKey := pubkeys[0]
 
-	val, err := stakingtypes.NewValidator(valAddr, pubKey, sdk.NewDecWithPrec(5, 2))
+	val, err := stakingtypes.NewValidator(valAddr, pubKey)
 	suite.Require().NoError(err)
 
 	val.Status = stakingtypes.Active
@@ -286,7 +286,7 @@ func (suite *KeeperTestSuite) TestDelegate() {
 			pubkeys := simapp.CreateTestPubKeys(1)
 			pubKey := pubkeys[0]
 
-			val, err := stakingtypes.NewValidator(valAddr, pubKey, sdk.NewDecWithPrec(5, 2))
+			val, err := stakingtypes.NewValidator(valAddr, pubKey)
 			suite.Require().NoError(err)
 
 			val.Status = tc.valStatus
@@ -358,7 +358,7 @@ func (suite *KeeperTestSuite) TestRegisterDelegator() {
 	pubkeys := simapp.CreateTestPubKeys(1)
 	pubKey := pubkeys[0]
 
-	val, err := stakingtypes.NewValidator(valAddr, pubKey, sdk.NewDecWithPrec(5, 2))
+	val, err := stakingtypes.NewValidator(valAddr, pubKey)
 	suite.Require().NoError(err)
 
 	val.Status = stakingtypes.Active
@@ -444,7 +444,7 @@ func (suite *KeeperTestSuite) TestUndelegate() {
 			pubkeys := simapp.CreateTestPubKeys(1)
 			pubKey := pubkeys[0]
 
-			val, err := stakingtypes.NewValidator(valAddr, pubKey, sdk.NewDecWithPrec(5, 2))
+			val, err := stakingtypes.NewValidator(valAddr, pubKey)
 			suite.Require().NoError(err)
 
 			val.Status = tc.valStatus

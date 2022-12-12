@@ -54,7 +54,7 @@ func (sh *Helper) CreateValidator(addr sdk.ValAddress, pk cryptotypes.PubKey, ok
 
 // ClaimValidatorMsg returns a message used to create validator in this service.
 func (sh *Helper) ClaimValidatorMsg(addr sdk.ValAddress, pk cryptotypes.PubKey) *stakingtypes.MsgClaimValidator {
-	msg, err := stakingtypes.NewMsgClaimValidator("moniker", addr, pk, sdk.NewDecWithPrec(5, 2))
+	msg, err := stakingtypes.NewMsgClaimValidator("moniker", addr, pk)
 	require.NoError(sh.t, err)
 	return msg
 }
@@ -64,7 +64,6 @@ func (sh *Helper) createValidator(addr sdk.ValAddress, pk cryptotypes.PubKey, ok
 		fmt.Sprintf("%s-%d", "moniker", rand.Intn(100)),
 		addr,
 		pk,
-		sdk.NewDecWithPrec(5, 2),
 	)
 	require.NoError(sh.t, err)
 	sh.Handle(msg, ok)

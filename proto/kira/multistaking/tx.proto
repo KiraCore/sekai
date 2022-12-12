@@ -34,6 +34,12 @@ message MsgUpsertStakingPool {
   string sender = 1;
   string validator = 2;
   bool enabled = 3;
+  // percentage (e.g. 0.1 == 10%) commission that the validator charges from all
+  // block reward
+  string commission = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message MsgUpsertStakingPoolResponse {
