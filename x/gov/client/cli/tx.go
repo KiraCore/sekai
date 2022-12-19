@@ -372,8 +372,8 @@ func NewTxSetNetworkProperties() *cobra.Command {
 					ProposalEnactmentTime:       300, // 5min
 					EnableForeignFeePayments:    true,
 					MischanceRankDecreaseAmount: 10,
-					InactiveRankDecreasePercent: 50,      // 50%
-					PoorNetworkMaxBankSend:      1000000, // 1M ukex
+					InactiveRankDecreasePercent: sdk.NewDecWithPrec(50, 2), // 50%
+					PoorNetworkMaxBankSend:      1000000,                   // 1M ukex
 					MinValidators:               minValidators,
 				},
 			)

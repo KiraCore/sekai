@@ -104,8 +104,8 @@ func DefaultGenesis() *GenesisState {
 			MischanceRankDecreaseAmount:  10,
 			MischanceConfidence:          10,
 			MaxMischance:                 110,
-			InactiveRankDecreasePercent:  50,      // 50%
-			PoorNetworkMaxBankSend:       1000000, // 1M ukex
+			InactiveRankDecreasePercent:  sdk.NewDecWithPrec(50, 2), // 50%
+			PoorNetworkMaxBankSend:       1000000,                   // 1M ukex
 			MinValidators:                1,
 			UnjailMaxTime:                600, // 600  seconds / 10 mins
 			EnableTokenWhitelist:         false,
@@ -114,14 +114,14 @@ func DefaultGenesis() *GenesisState {
 			UniqueIdentityKeys:           "moniker,username",
 			UbiHardcap:                   6000_000,
 			ValidatorsFeeShare:           sdk.NewDecWithPrec(50, 2), // 50%
-			InflationRate:                18,                        // 18%
+			InflationRate:                sdk.NewDecWithPrec(18, 2), // 18%
 			InflationPeriod:              31557600,                  // 1 year
 			UnstakingPeriod:              2629800,                   // 1 month
 			MaxDelegators:                100,
 			MinDelegationPushout:         10,
 			SlashingPeriod:               3600,
-			MaxJailedPercentage:          25,
-			MaxSlashingPercentage:        1,
+			MaxJailedPercentage:          sdk.NewDecWithPrec(25, 2),
+			MaxSlashingPercentage:        sdk.NewDecWithPrec(1, 2),
 			MinCustodyReward:             200,
 			MaxCustodyTxSize:             8192,
 			MaxCustodyBufferSize:         10,

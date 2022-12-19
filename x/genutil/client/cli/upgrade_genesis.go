@@ -145,7 +145,7 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 						MischanceRankDecreaseAmount:  govGenesisV01228.NetworkProperties.MischanceRankDecreaseAmount,
 						MaxMischance:                 govGenesisV01228.NetworkProperties.MaxMischance,
 						MischanceConfidence:          govGenesisV01228.NetworkProperties.MischanceConfidence,
-						InactiveRankDecreasePercent:  govGenesisV01228.NetworkProperties.InactiveRankDecreasePercent,
+						InactiveRankDecreasePercent:  sdk.NewDecWithPrec(int64(govGenesisV01228.NetworkProperties.InactiveRankDecreasePercent), 2),
 						MinValidators:                govGenesisV01228.NetworkProperties.MinValidators,
 						PoorNetworkMaxBankSend:       govGenesisV01228.NetworkProperties.PoorNetworkMaxBankSend,
 						UnjailMaxTime:                govGenesisV01228.NetworkProperties.JailMaxTime,
@@ -155,14 +155,14 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 						UniqueIdentityKeys:           govGenesisV01228.NetworkProperties.UniqueIdentityKeys,
 						UbiHardcap:                   6000_000,
 						ValidatorsFeeShare:           sdk.NewDecWithPrec(50, 2), // 50%
-						InflationRate:                18,                        // 18%
+						InflationRate:                sdk.NewDecWithPrec(18, 2), // 18%
 						InflationPeriod:              31557600,                  // 1 year
 						UnstakingPeriod:              2629800,                   // 1 month
 						MaxDelegators:                100,
 						MinDelegationPushout:         10,
 						SlashingPeriod:               3600,
-						MaxJailedPercentage:          25,
-						MaxSlashingPercentage:        1,
+						MaxJailedPercentage:          sdk.NewDecWithPrec(25, 2),
+						MaxSlashingPercentage:        sdk.NewDecWithPrec(1, 2),
 						MinCustodyReward:             200,
 						MaxCustodyTxSize:             8192,
 						MaxCustodyBufferSize:         10,

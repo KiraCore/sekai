@@ -40,7 +40,7 @@ func (k Keeper) Jail(ctx sdk.Context, consAddr sdk.ConsAddress) {
 				}
 			}
 
-			if len(colluderVals) <= numActiveValidators*int(properties.MaxJailedPercentage)/100 {
+			if len(colluderVals) <= int(sdk.NewDec(int64(numActiveValidators)).Mul(properties.MaxJailedPercentage).RoundInt64()) {
 				return
 			}
 

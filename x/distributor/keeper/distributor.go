@@ -29,7 +29,7 @@ func (k Keeper) AllocateTokens(
 	// mint inflated tokens
 	totalSupply := k.bk.GetSupply(ctx, k.BondDenom(ctx))
 	properties := k.gk.GetNetworkProperties(ctx)
-	inflationRewards := totalSupply.Amount.Mul(sdk.NewInt(int64(properties.InflationRate))).Quo(sdk.NewInt(int64(properties.InflationPeriod)))
+	inflationRewards := totalSupply.Amount.ToDec().Mul(properties.InflationRate).Quo(sdk.NewDec(int64(properties.InflationPeriod))).TruncateInt()
 	inflationCoin := sdk.NewCoin(totalSupply.Denom, inflationRewards)
 
 	if inflationRewards.IsPositive() {

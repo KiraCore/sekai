@@ -29,140 +29,245 @@ func TestSimappExportGenesis(t *testing.T) {
 	require.NoError(t, err)
 	buffer := new(bytes.Buffer)
 	err = json.Compact(buffer, []byte(`{
-		"starting_proposal_id":"1",
-		"next_role_id":"3",
-		"roles":[{"id":1,"sid":"sudo","description":"Sudo role"},{"id":2,"sid":"validator","description":"Validator role"}],
-		"role_permissions":{
-			"1":{"blacklist":[],"whitelist":[1,2,3,6,8,9,12,13,10,11,14,15,18,19,20,21,22,23,31,32,24,25,16,17,4,5,26,27,28,29,30,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65]},
-			"2":{"blacklist":[],"whitelist":[2]}
-		},
-		"network_actors":[],
-		"network_properties":{
-			"min_tx_fee":"100",
-			"max_tx_fee":"1000000",
-			"vote_quorum":"33",
-			"minimum_proposal_end_time":"300",
-			"proposal_enactment_time":"300",
-			"min_proposal_end_blocks":"2",
-			"min_proposal_enactment_blocks":"1",
-			"enable_foreign_fee_payments":true,
-			"mischance_rank_decrease_amount":"10",
-			"max_mischance":"110",
-			"mischance_confidence":"10",
-			"inactive_rank_decrease_percent":"50",
-			"min_validators":"1",
-			"poor_network_max_bank_send":"1000000",
-			"unjail_max_time":"600",
-			"enable_token_whitelist":false,
-			"enable_token_blacklist":true,
-			"min_identity_approval_tip":"200",
-			"unique_identity_keys":"moniker,username",
-			"ubi_hardcap":"6000000",
-            "validators_fee_share": "0.500000000000000000",
-            "inflation_rate": "18",	
-            "inflation_period": "31557600",	
-            "unstaking_period": "2629800",
-            "max_delegators": "100",
-            "min_delegation_pushout": "10",
-			"slashing_period": "3600",
-			"max_jailed_percentage": "25",
-			"max_slashing_percentage": "1",
-			"min_custody_reward": "200",
-			"max_custody_buffer_size": "10",
-			"max_custody_tx_size": "8192",
-			"abstention_rank_decrease_amount": "1",
-			"max_abstention": "2",
-			"min_collective_bond": "100000",
-			"min_collective_bonding_time": "86400",
-			"max_collective_outputs": "10",
-			"min_collective_claim_period": "14400"
-		},
-		"execution_fees":[	
-			{	
-				"transaction_type": "activate",	
-				"execution_fee": "100",	
-				"failure_fee": "1000",	
-				"timeout": "10",	
-				"default_parameters": "0"	
-			},	
-			{	
-				"transaction_type": "claim-councilor",	
-				"execution_fee": "100",	
-				"failure_fee": "1",	
-				"timeout": "10",	
-				"default_parameters": "0"	
-			},	
-			{	
-				"transaction_type": "claim-proposal-type-x",	
-				"execution_fee": "100",	
-				"failure_fee": "1",	
-				"timeout": "10",	
-				"default_parameters": "0"	
-			},	
-			{	
-				"transaction_type": "claim-validator",	
-				"execution_fee": "100",	
-				"failure_fee": "1",	
-				"timeout": "10",	
-				"default_parameters": "0"	
-			},	
-			{	
-				"transaction_type": "pause",	
-				"execution_fee": "100",	
-				"failure_fee": "100",	
-				"timeout": "10",	
-				"default_parameters": "0"	
-			},	
-			{	
-				"transaction_type": "submit-proposal-type-x",	
-				"execution_fee": "10",	
-				"failure_fee": "1",	
-				"timeout": "10",	
-				"default_parameters": "0"	
-			},	
-			{	
-				"transaction_type": "unpause",	
-				"execution_fee": "100",	
-				"failure_fee": "100",	
-				"timeout": "10",	
-				"default_parameters": "0"	
-			},	
-			{	
-				"transaction_type": "upsert-token-alias",	
-				"execution_fee": "100",	
-				"failure_fee": "1",	
-				"timeout": "10",	
-				"default_parameters": "0"	
-			},	
-			{	
-				"transaction_type": "veto-proposal-type-x",	
-				"execution_fee": "100",	
-				"failure_fee": "1",	
-				"timeout": "10",	
-				"default_parameters": "0"	
-			},	
-			{	
-				"transaction_type": "vote-proposal-type-x",	
-				"execution_fee": "100",	
-				"failure_fee": "1",	
-				"timeout": "10",	
-				"default_parameters": "0"	
-			}	
-		],
-		"poor_network_messages":{
-			"messages":[
-				"submit-proposal","set-network-properties","vote-proposal","claim-councilor","whitelist-permissions","blacklist-permissions","create-role","assign-role","remove-role","whitelist-role-permission","blacklist-role-permission","remove-whitelist-role-permission","remove-blacklist-role-permission","claim-validator","activate","pause","unpause","register-identity-records","edit-identity-record","request-identity-records-verify","handle-identity-records-verify-request","cancel-identity-records-verify-request"
-			]
-		},
-		"proposals":[],
-		"votes":[],
-		"data_registry":{},
-		"identity_records":[],
-		"last_identity_record_id":"0",
-		"id_records_verify_requests":[],
-		"last_id_record_verify_request_id":"0",
-		"proposal_durations":{}
-	}`))
+  "starting_proposal_id": "1",
+  "next_role_id": "3",
+  "roles": [
+    {
+      "id": 1,
+      "sid": "sudo",
+      "description": "Sudo role"
+    },
+    {
+      "id": 2,
+      "sid": "validator",
+      "description": "Validator role"
+    }
+  ],
+  "role_permissions": {
+    "1": {
+      "blacklist": [],
+      "whitelist": [
+        1,
+        2,
+        3,
+        6,
+        8,
+        9,
+        12,
+        13,
+        10,
+        11,
+        14,
+        15,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        31,
+        32,
+        24,
+        25,
+        16,
+        17,
+        4,
+        5,
+        26,
+        27,
+        28,
+        29,
+        30,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65
+      ]
+    },
+    "2": {
+      "blacklist": [],
+      "whitelist": [
+        2
+      ]
+    }
+  },
+  "network_actors": [],
+  "network_properties": {
+    "min_tx_fee": "100",
+    "max_tx_fee": "1000000",
+    "vote_quorum": "33",
+    "minimum_proposal_end_time": "300",
+    "proposal_enactment_time": "300",
+    "min_proposal_end_blocks": "2",
+    "min_proposal_enactment_blocks": "1",
+    "enable_foreign_fee_payments": true,
+    "mischance_rank_decrease_amount": "10",
+    "max_mischance": "110",
+    "mischance_confidence": "10",
+    "inactive_rank_decrease_percent": "0.500000000000000000",
+    "min_validators": "1",
+    "poor_network_max_bank_send": "1000000",
+    "unjail_max_time": "600",
+    "enable_token_whitelist": false,
+    "enable_token_blacklist": true,
+    "min_identity_approval_tip": "200",
+    "unique_identity_keys": "moniker,username",
+    "ubi_hardcap": "6000000",
+    "validators_fee_share": "0.500000000000000000",
+    "inflation_rate": "0.180000000000000000",
+    "inflation_period": "31557600",
+    "unstaking_period": "2629800",
+    "max_delegators": "100",
+    "min_delegation_pushout": "10",
+    "slashing_period": "3600",
+    "max_jailed_percentage": "0.250000000000000000",
+    "max_slashing_percentage": "0.010000000000000000",
+    "min_custody_reward": "200",
+    "max_custody_buffer_size": "10",
+    "max_custody_tx_size": "8192",
+    "abstention_rank_decrease_amount": "1",
+    "max_abstention": "2",
+    "min_collective_bond": "100000",
+    "min_collective_bonding_time": "86400",
+    "max_collective_outputs": "10",
+    "min_collective_claim_period": "14400"
+  },
+  "execution_fees": [
+    {
+      "transaction_type": "activate",
+      "execution_fee": "100",
+      "failure_fee": "1000",
+      "timeout": "10",
+      "default_parameters": "0"
+    },
+    {
+      "transaction_type": "claim-councilor",
+      "execution_fee": "100",
+      "failure_fee": "1",
+      "timeout": "10",
+      "default_parameters": "0"
+    },
+    {
+      "transaction_type": "claim-proposal-type-x",
+      "execution_fee": "100",
+      "failure_fee": "1",
+      "timeout": "10",
+      "default_parameters": "0"
+    },
+    {
+      "transaction_type": "claim-validator",
+      "execution_fee": "100",
+      "failure_fee": "1",
+      "timeout": "10",
+      "default_parameters": "0"
+    },
+    {
+      "transaction_type": "pause",
+      "execution_fee": "100",
+      "failure_fee": "100",
+      "timeout": "10",
+      "default_parameters": "0"
+    },
+    {
+      "transaction_type": "submit-proposal-type-x",
+      "execution_fee": "10",
+      "failure_fee": "1",
+      "timeout": "10",
+      "default_parameters": "0"
+    },
+    {
+      "transaction_type": "unpause",
+      "execution_fee": "100",
+      "failure_fee": "100",
+      "timeout": "10",
+      "default_parameters": "0"
+    },
+    {
+      "transaction_type": "upsert-token-alias",
+      "execution_fee": "100",
+      "failure_fee": "1",
+      "timeout": "10",
+      "default_parameters": "0"
+    },
+    {
+      "transaction_type": "veto-proposal-type-x",
+      "execution_fee": "100",
+      "failure_fee": "1",
+      "timeout": "10",
+      "default_parameters": "0"
+    },
+    {
+      "transaction_type": "vote-proposal-type-x",
+      "execution_fee": "100",
+      "failure_fee": "1",
+      "timeout": "10",
+      "default_parameters": "0"
+    }
+  ],
+  "poor_network_messages": {
+    "messages": [
+      "submit-proposal",
+      "set-network-properties",
+      "vote-proposal",
+      "claim-councilor",
+      "whitelist-permissions",
+      "blacklist-permissions",
+      "create-role",
+      "assign-role",
+      "remove-role",
+      "whitelist-role-permission",
+      "blacklist-role-permission",
+      "remove-whitelist-role-permission",
+      "remove-blacklist-role-permission",
+      "claim-validator",
+      "activate",
+      "pause",
+      "unpause",
+      "register-identity-records",
+      "edit-identity-record",
+      "request-identity-records-verify",
+      "handle-identity-records-verify-request",
+      "cancel-identity-records-verify-request"
+    ]
+  },
+  "proposals": [],
+  "votes": [],
+  "data_registry": {},
+  "identity_records": [],
+  "last_identity_record_id": "0",
+  "id_records_verify_requests": [],
+  "last_id_record_verify_request_id": "0",
+  "proposal_durations": {}
+}`))
 	require.NoError(t, err)
 	require.Equal(t, string(bz), buffer.String())
 }
@@ -217,7 +322,7 @@ func TestExportInitGenesis(t *testing.T) {
 			MinProposalEnactmentBlocks:   1,
 			MischanceRankDecreaseAmount:  1,
 			MaxMischance:                 1,
-			InactiveRankDecreasePercent:  2,
+			InactiveRankDecreasePercent:  sdk.NewDecWithPrec(2, 2),
 			MinValidators:                1,
 			PoorNetworkMaxBankSend:       1,
 			EnableForeignFeePayments:     true,
@@ -225,14 +330,14 @@ func TestExportInitGenesis(t *testing.T) {
 			UniqueIdentityKeys:           "moniker,username",
 			UbiHardcap:                   6000_000,
 			ValidatorsFeeShare:           sdk.NewDecWithPrec(50, 2), // 50%
-			InflationRate:                18,                        // 18%
+			InflationRate:                sdk.NewDecWithPrec(18, 2), // 18%
 			InflationPeriod:              31557600,                  // 1 year
 			UnstakingPeriod:              2629800,                   // 1 month
 			MaxDelegators:                100,
 			MinDelegationPushout:         10,
 			SlashingPeriod:               3600,
-			MaxJailedPercentage:          25,
-			MaxSlashingPercentage:        1,
+			MaxJailedPercentage:          sdk.NewDecWithPrec(25, 2),
+			MaxSlashingPercentage:        sdk.NewDecWithPrec(1, 2),
 			MinCustodyReward:             200,
 			MaxCustodyBufferSize:         10,
 			MaxCustodyTxSize:             8192,
@@ -265,76 +370,100 @@ func TestExportInitGenesis(t *testing.T) {
 	bz, err := simapp.MakeEncodingConfig().Marshaler.MarshalJSON(genesis)
 	require.NoError(t, err)
 	buffer := new(bytes.Buffer)
-	err = json.Compact(buffer, []byte(`{
-		"starting_proposal_id":"1",
-		"next_role_id":"3",
-		"roles":[{"id":1,"sid":"sudo","description":"Sudo role"},{"id":2,"sid":"validator","description":"Validator role"}],
-		"role_permissions":{
-			"1":{"blacklist":[],"whitelist":[1,2,3,6]},
-			"2":{"blacklist":[],"whitelist":[]}
-		},
-		"network_actors":[],
-		"network_properties":{
-			"min_tx_fee":"100",
-			"max_tx_fee":"1000000",
-			"vote_quorum":"33",
-			"minimum_proposal_end_time":"300",
-			"proposal_enactment_time":"300",
-			"min_proposal_end_blocks":"2",
-			"min_proposal_enactment_blocks":"1",
-			"enable_foreign_fee_payments":true,
-			"mischance_rank_decrease_amount":"1",
-			"max_mischance":"1",
-			"mischance_confidence":"0",
-			"inactive_rank_decrease_percent":"2",
-			"min_validators":"1",
-			"poor_network_max_bank_send":"1",
-			"unjail_max_time":"0",
-			"enable_token_whitelist":false,
-			"enable_token_blacklist":false,
-			"min_identity_approval_tip":"200",
-			"unique_identity_keys":"moniker,username",
-			"ubi_hardcap":"6000000",
-            "validators_fee_share": "0.500000000000000000",
-            "inflation_rate": "18",	
-            "inflation_period": "31557600",	
-            "unstaking_period": "2629800",
-            "max_delegators": "100",
-            "min_delegation_pushout": "10",
-			"slashing_period": "3600",
-			"max_jailed_percentage": "25",
-			"max_slashing_percentage": "1",
-			"min_custody_reward": "200",
-			"max_custody_buffer_size": "10",
-			"max_custody_tx_size": "8192",
-			"abstention_rank_decrease_amount": "1",
-			"max_abstention": "2",
-			"min_collective_bond": "100000",
-			"min_collective_bonding_time": "86400",
-			"max_collective_outputs": "10",
-			"min_collective_claim_period": "14400"
-		},
-		"execution_fees":[	
-			{	
-				"transaction_type": "claim-validator-seat",	
-				"execution_fee": "10",	
-				"failure_fee": "1",	
-				"timeout": "10",	
-				"default_parameters": "0"	
-			}	
-		],
-		"poor_network_messages":{
-			"messages":["set-network-properties"]
-		},
-		"proposals":[],
-		"votes":[],
-		"data_registry":{},
-		"identity_records":[],
-		"last_identity_record_id":"0",
-		"id_records_verify_requests":[],
-		"last_id_record_verify_request_id":"0",
-		"proposal_durations":{}
-	}`))
+	err = json.Compact(buffer, []byte(`	{	
+  "starting_proposal_id": "1",	
+  "next_role_id": "3",	
+  "roles": [	
+    {	
+      "id": 1,	
+      "sid": "sudo",	
+      "description": "Sudo role"	
+    },	
+    {	
+      "id": 2,	
+      "sid": "validator",	
+      "description": "Validator role"	
+    }	
+  ],	
+  "role_permissions": {	
+    "1": {	
+      "blacklist": [],	
+      "whitelist": [	
+        1,	
+        2,	
+        3,	
+        6	
+      ]	
+    },	
+    "2": {	
+      "blacklist": [],	
+      "whitelist": []	
+    }	
+  },	
+  "network_actors": [],	
+  "network_properties": {	
+    "min_tx_fee": "100",	
+    "max_tx_fee": "1000000",	
+    "vote_quorum": "33",	
+    "minimum_proposal_end_time": "300",	
+    "proposal_enactment_time": "300",	
+    "min_proposal_end_blocks": "2",	
+    "min_proposal_enactment_blocks": "1",	
+    "enable_foreign_fee_payments": true,	
+    "mischance_rank_decrease_amount": "1",	
+    "max_mischance": "1",	
+    "mischance_confidence": "0",	
+    "inactive_rank_decrease_percent": "0.020000000000000000",	
+    "min_validators": "1",	
+    "poor_network_max_bank_send": "1",	
+    "unjail_max_time": "0",	
+    "enable_token_whitelist": false,	
+    "enable_token_blacklist": false,	
+    "min_identity_approval_tip": "200",	
+    "unique_identity_keys": "moniker,username",	
+    "ubi_hardcap": "6000000",	
+    "validators_fee_share": "0.500000000000000000",	
+    "inflation_rate": "0.180000000000000000",	
+    "inflation_period": "31557600",	
+    "unstaking_period": "2629800",	
+    "max_delegators": "100",	
+    "min_delegation_pushout": "10",	
+    "slashing_period": "3600",	
+    "max_jailed_percentage": "0.250000000000000000",	
+    "max_slashing_percentage": "0.010000000000000000",	
+    "min_custody_reward": "200",	
+    "max_custody_buffer_size": "10",	
+    "max_custody_tx_size": "8192",	
+    "abstention_rank_decrease_amount": "1",	
+    "max_abstention": "2",	
+    "min_collective_bond": "100000",	
+    "min_collective_bonding_time": "86400",	
+    "max_collective_outputs": "10",	
+    "min_collective_claim_period": "14400"	
+  },	
+  "execution_fees": [	
+    {	
+      "transaction_type": "claim-validator-seat",	
+      "execution_fee": "10",	
+      "failure_fee": "1",	
+      "timeout": "10",	
+      "default_parameters": "0"	
+    }	
+  ],	
+  "poor_network_messages": {	
+    "messages": [	
+      "set-network-properties"	
+    ]	
+  },	
+  "proposals": [],	
+  "votes": [],	
+  "data_registry": {},	
+  "identity_records": [],	
+  "last_identity_record_id": "0",	
+  "id_records_verify_requests": [],	
+  "last_id_record_verify_request_id": "0",	
+  "proposal_durations": {}	
+}`))
 	require.NoError(t, err)
 	require.Equal(t, string(bz), buffer.String())
 }
