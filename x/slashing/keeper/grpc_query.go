@@ -165,7 +165,7 @@ func (k Keeper) SlashedStakingPools(c context.Context, request *types.QuerySlash
 	pools := k.msk.GetAllStakingPools(ctx)
 	slashedPools := []multistakingtypes.StakingPool{}
 	for _, pool := range pools {
-		if pool.Slashed != 0 {
+		if pool.Slashed.IsPositive() {
 			slashedPools = append(slashedPools, pool)
 		}
 	}
@@ -183,7 +183,7 @@ func (k Keeper) ActiveStakingPools(c context.Context, request *types.QueryActive
 	pools := k.msk.GetAllStakingPools(ctx)
 	activePools := []multistakingtypes.StakingPool{}
 	for _, pool := range pools {
-		if pool.Slashed == 0 && pool.Enabled {
+		if pool.Slashed.IsZero() && pool.Enabled {
 			activePools = append(activePools, pool)
 		}
 	}
@@ -201,7 +201,7 @@ func (k Keeper) InactiveStakingPools(c context.Context, request *types.QueryInac
 	pools := k.msk.GetAllStakingPools(ctx)
 	inactivePools := []multistakingtypes.StakingPool{}
 	for _, pool := range pools {
-		if pool.Slashed == 0 && pool.Enabled {
+		if pool.Slashed.IsZero() && pool.Enabled {
 			inactivePools = append(inactivePools, pool)
 		}
 	}

@@ -82,6 +82,6 @@ func (k Keeper) Jail(ctx sdk.Context, consAddr sdk.ConsAddress) {
 	}
 }
 
-func (k Keeper) SlashStakingPool(ctx sdk.Context, proposal *types.ProposalSlashValidator, slash uint64) {
+func (k Keeper) SlashStakingPool(ctx sdk.Context, proposal *types.ProposalSlashValidator, slash sdk.Dec) {
 	k.msk.SlashStakingPool(ctx, proposal.Offender, slash)
 }

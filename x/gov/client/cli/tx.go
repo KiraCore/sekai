@@ -1242,7 +1242,11 @@ func GetTxVoteProposal() *cobra.Command {
 				return fmt.Errorf("invalid vote option: %w", err)
 			}
 
-			slash, err := cmd.Flags().GetUint64(FlagSlash)
+			slashStr, err := cmd.Flags().GetString(FlagSlash)
+			if err != nil {
+				return err
+			}
+			slash, err := sdk.NewDecFromStr(slashStr)
 			if err != nil {
 				return err
 			}
@@ -1260,7 +1264,7 @@ func GetTxVoteProposal() *cobra.Command {
 
 	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
-	cmd.Flags().Uint64(FlagSlash, 0, "slash value on the proposal")
+	cmd.Flags().String(FlagSlash, "0.01", "slash value on the proposal")
 
 	return cmd
 }

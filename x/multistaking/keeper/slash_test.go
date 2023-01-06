@@ -16,7 +16,7 @@ func (suite *KeeperTestSuite) TestSlashStakingPool() {
 		Id:                 1,
 		Validator:          sdk.ValAddress(addr).String(),
 		Enabled:            true,
-		Slashed:            0,
+		Slashed:            sdk.ZeroDec(),
 		TotalStakingTokens: delCoins,
 		TotalShareTokens:   sdk.Coins{sdk.NewInt64Coin("v1/ukex", 1000000)},
 		TotalRewards:       sdk.Coins(nil),
@@ -29,7 +29,7 @@ func (suite *KeeperTestSuite) TestSlashStakingPool() {
 	suite.Require().NoError(err)
 
 	// slash 10%
-	suite.app.MultiStakingKeeper.SlashStakingPool(suite.ctx, pool.Validator, 10)
+	suite.app.MultiStakingKeeper.SlashStakingPool(suite.ctx, pool.Validator, sdk.NewDecWithPrec(10, 2))
 
 	// check pool after slash
 	p, found := suite.app.MultiStakingKeeper.GetStakingPoolByValidator(suite.ctx, pool.Validator)
@@ -38,7 +38,7 @@ func (suite *KeeperTestSuite) TestSlashStakingPool() {
 		Id:                 1,
 		Validator:          sdk.ValAddress(addr).String(),
 		Enabled:            false,
-		Slashed:            10,
+		Slashed:            sdk.NewDecWithPrec(10, 2),
 		TotalStakingTokens: sdk.Coins{sdk.NewInt64Coin("ukex", 900000)},
 		TotalShareTokens:   sdk.Coins{sdk.NewInt64Coin("v1/ukex", 1000000)},
 		TotalRewards:       sdk.Coins(nil),

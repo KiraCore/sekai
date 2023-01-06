@@ -38,12 +38,14 @@ func (suite *KeeperTestSuite) TestStakingPoolGetSet() {
 			Validator:  sdk.ValAddress(addr).String(),
 			Enabled:    true,
 			Commission: sdk.ZeroDec(),
+			Slashed:    sdk.ZeroDec(),
 		},
 		{
 			Id:         2,
 			Validator:  sdk.ValAddress(addr2).String(),
 			Enabled:    true,
 			Commission: sdk.ZeroDec(),
+			Slashed:    sdk.ZeroDec(),
 		},
 	}
 
