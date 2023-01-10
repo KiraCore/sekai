@@ -137,7 +137,7 @@ func (suite *KeeperTestSuite) TestIncreasePoolRewards() {
 	pubkeys := simapp.CreateTestPubKeys(1)
 	pubKey := pubkeys[0]
 
-	val, err := stakingtypes.NewValidator(valAddr, pubKey, sdk.NewDecWithPrec(5, 2))
+	val, err := stakingtypes.NewValidator(valAddr, pubKey)
 	suite.Require().NoError(err)
 
 	val.Status = stakingtypes.Active
@@ -286,16 +286,16 @@ func (suite *KeeperTestSuite) TestDelegate() {
 			pubkeys := simapp.CreateTestPubKeys(1)
 			pubKey := pubkeys[0]
 
-			val, err := stakingtypes.NewValidator(valAddr, pubKey, sdk.NewDecWithPrec(5, 2))
+			val, err := stakingtypes.NewValidator(valAddr, pubKey)
 			suite.Require().NoError(err)
 
 			val.Status = tc.valStatus
 			suite.app.CustomStakingKeeper.AddValidator(suite.ctx, val)
 
 			if tc.poolCreate {
-				slashed := uint64(0)
+				slashed := sdk.ZeroDec()
 				if tc.slashedPool {
-					slashed = 10
+					slashed = sdk.NewDecWithPrec(10, 2)
 				}
 				pool := types.StakingPool{
 					Id:        1,
@@ -358,7 +358,7 @@ func (suite *KeeperTestSuite) TestRegisterDelegator() {
 	pubkeys := simapp.CreateTestPubKeys(1)
 	pubKey := pubkeys[0]
 
-	val, err := stakingtypes.NewValidator(valAddr, pubKey, sdk.NewDecWithPrec(5, 2))
+	val, err := stakingtypes.NewValidator(valAddr, pubKey)
 	suite.Require().NoError(err)
 
 	val.Status = stakingtypes.Active
@@ -444,7 +444,7 @@ func (suite *KeeperTestSuite) TestUndelegate() {
 			pubkeys := simapp.CreateTestPubKeys(1)
 			pubKey := pubkeys[0]
 
-			val, err := stakingtypes.NewValidator(valAddr, pubKey, sdk.NewDecWithPrec(5, 2))
+			val, err := stakingtypes.NewValidator(valAddr, pubKey)
 			suite.Require().NoError(err)
 
 			val.Status = tc.valStatus
@@ -456,7 +456,7 @@ func (suite *KeeperTestSuite) TestUndelegate() {
 					Id:                 1,
 					Validator:          valAddr.String(),
 					Enabled:            true,
-					Slashed:            0,
+					Slashed:            sdk.ZeroDec(),
 					TotalStakingTokens: delCoins,
 					TotalShareTokens:   sdk.Coins{sdk.NewCoin("v1/ukex", tc.delegationCoins)},
 				}
@@ -468,7 +468,7 @@ func (suite *KeeperTestSuite) TestUndelegate() {
 				suite.Require().NoError(err)
 
 				if tc.slashedPool {
-					suite.app.MultiStakingKeeper.SlashStakingPool(suite.ctx, valAddr.String(), 10)
+					suite.app.MultiStakingKeeper.SlashStakingPool(suite.ctx, valAddr.String(), sdk.NewDecWithPrec(10, 2))
 				}
 
 				coins := pool.TotalShareTokens

@@ -27,7 +27,6 @@ func TestItUpdatesTheValidatorSetBasedOnPendingValidators(t *testing.T) {
 	validator1, err := stakingtypes.NewValidator(
 		valAddr1,
 		pubKey,
-		sdk.NewDecWithPrec(5, 2),
 	)
 	require.NoError(t, err)
 	app.CustomStakingKeeper.AddPendingValidator(ctx, validator1)
@@ -110,7 +109,6 @@ func TestItRemovesFromTheValidatorSetWhenInRemovingQueue(t *testing.T) {
 			validator1, err := stakingtypes.NewValidator(
 				valAddr1,
 				pubKey,
-				sdk.NewDecWithPrec(5, 2),
 			)
 			require.NoError(t, err)
 			app.CustomStakingKeeper.AddValidator(ctx, validator1)
@@ -194,7 +192,6 @@ func TestItIncludesItBackToValidatorSetOnceReactivatingIt(t *testing.T) {
 			validator1, err := stakingtypes.NewValidator(
 				valAddr1,
 				pubKey,
-				sdk.NewDecWithPrec(5, 2),
 			)
 			require.NoError(t, err)
 			app.CustomStakingKeeper.AddValidator(ctx, validator1)

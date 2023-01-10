@@ -74,7 +74,10 @@ message NetworkProperties {
     uint64 mischance_rank_decrease_amount = 9; // rank decrease amount per mischance increase (default 10)
     uint64 max_mischance = 10;  // maximum mischance a validator could be in active status, default 110
     uint64 mischance_confidence = 11; // the number of blocks validator miss to start counting mischance, default 10
-    uint64 inactive_rank_decrease_percent = 12; // percentage of decrease per status movement from active to inactive (default 50%)
+    string inactive_rank_decrease_percent = 12[
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+      (gogoproto.nullable) = false
+    ]; // percentage of decrease per status movement from active to inactive (default 50%)
     uint64 min_validators = 13; // minimum number of validators to perform full network actions - otherwise, it's called poor network
     uint64 poor_network_max_bank_send = 14; // maximum amount of transfer on poor network, default 10000ukex
     uint64 unjail_max_time = 15; // maximum jailed status duration in seconds to get back to the validator set again
@@ -83,15 +86,27 @@ message NetworkProperties {
     uint64 min_identity_approval_tip = 18; // minimum amount of tip to be paid to the approver per request
     string unique_identity_keys = 19; // manages unique identity keys to be used as an address identifier
     uint64 ubi_hardcap = 20; // a maximum amount of additional KEX that can be created per year
-    uint64 validators_fee_share = 21; // the percentage that validators get from collected fees
-    uint64 inflation_rate = 22; // KEX inflation percentage X defined as decimal value.
+    string validators_fee_share = 21 [
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+      (gogoproto.nullable) = false
+    ]; // the percentage that validators get from collected fees
+    string inflation_rate = 22 [
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+      (gogoproto.nullable) = false
+    ]; // KEX inflation percentage X defined as decimal value.
     uint64 inflation_period = 23; // period of time (in seconds) over which current KEX supply is inflated by a percentage corresponding to the inflation_rate
     uint64 unstaking_period = 24; // period of time (in seconds) it takes to unstake any of the staked tokens 
     uint64 max_delegators = 25; // number of delegators limitation on a single pool
     uint64 min_delegation_pushout = 26; // The multiplier (10x) to push out minimum delegation when it exceeds max delegators
     uint64 slashing_period = 27; // (default 3600s) - slashing_period should be smaller than `unstaking_period`
-    uint64 max_jailed_percentage = 28; // (default 25%)
-    uint64 max_slashing_percentage = 29; // (default 0.5%) 0% - 100%
+    string max_jailed_percentage = 28 [
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+      (gogoproto.nullable) = false
+    ]; // (default 25%)
+    string max_slashing_percentage = 29 [
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+      (gogoproto.nullable) = false
+    ];                              // (default 0.5%) 0% - 100%
     uint64 min_custody_reward = 30; // minimum custody reward
     uint64 max_custody_buffer_size = 31; // maximum custody buffer size
     uint64 max_custody_tx_size = 32; // maximum custody tx size to save in buffer

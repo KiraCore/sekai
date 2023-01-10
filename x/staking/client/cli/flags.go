@@ -7,18 +7,16 @@ import (
 )
 
 const (
-	FlagMoniker    = "moniker"
-	FlagValAddr    = "val-addr"
-	FlagAddr       = "addr"
-	FlagPubKey     = "pubkey"
-	FlagProposer   = "proposer"
-	FlagStatus     = "status"
-	FlagCommission = "commission"
+	FlagMoniker  = "moniker"
+	FlagValAddr  = "val-addr"
+	FlagAddr     = "addr"
+	FlagPubKey   = "pubkey"
+	FlagProposer = "proposer"
+	FlagStatus   = "status"
 )
 
 // AddValidatorFlags adds the flags needed to create a validator.
 func AddValidatorFlags(cmd *cobra.Command) {
 	cmd.Flags().String(FlagMoniker, "", "the Moniker")
 	cmd.Flags().String(cli.FlagPubKey, "", "the public key")
-	cmd.Flags().String(FlagCommission, "", "the commission rate")
 }

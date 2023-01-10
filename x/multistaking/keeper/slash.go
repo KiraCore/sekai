@@ -6,7 +6,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 )
 
-func (k Keeper) SlashStakingPool(ctx sdk.Context, validator string, slash uint64) {
+func (k Keeper) SlashStakingPool(ctx sdk.Context, validator string, slash sdk.Dec) {
 	pool, found := k.GetStakingPoolByValidator(ctx, validator)
 	if !found {
 		return
@@ -16,7 +16,7 @@ func (k Keeper) SlashStakingPool(ctx sdk.Context, validator string, slash uint64
 
 	totalStakingTokens := sdk.Coins{}
 	for _, stakingToken := range pool.TotalStakingTokens {
-		totalStakingTokens = totalStakingTokens.Add(sdk.NewCoin(stakingToken.Denom, stakingToken.Amount.Mul(sdk.NewInt(int64(100-slash))).Quo(sdk.NewInt(100))))
+		totalStakingTokens = totalStakingTokens.Add(sdk.NewCoin(stakingToken.Denom, stakingToken.Amount.ToDec().Mul(sdk.OneDec().Sub(pool.Slashed)).RoundInt()))
 	}
 	totalSlashedTokens := sdk.Coins(pool.TotalStakingTokens).Sub(totalStakingTokens)
 	pool.TotalStakingTokens = totalStakingTokens

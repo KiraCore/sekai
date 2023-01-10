@@ -22,7 +22,7 @@ func (a ApplySoftwareUpgradeProposalHandler) ProposalType() string {
 	return kiratypes.ProposalTypeSoftwareUpgrade
 }
 
-func (a ApplySoftwareUpgradeProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash uint64) error {
+func (a ApplySoftwareUpgradeProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
 	p := proposal.(*upgradetypes.ProposalSoftwareUpgrade)
 
 	plan := upgradetypes.NewUpgradePlan(
@@ -56,7 +56,7 @@ func (a ApplyCancelSoftwareUpgradeProposalHandler) ProposalType() string {
 	return kiratypes.ProposalTypeCancelSoftwareUpgrade
 }
 
-func (a ApplyCancelSoftwareUpgradeProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash uint64) error {
+func (a ApplyCancelSoftwareUpgradeProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
 	a.keeper.ClearNextPlan(ctx)
 	return nil
 }
