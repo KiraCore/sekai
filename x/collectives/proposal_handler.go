@@ -77,7 +77,7 @@ func (a ApplyCollectiveSendDonationProposalHandler) VoteEnactment(ctx sdk.Contex
 	return collective.VoteEnactment
 }
 
-func (a ApplyCollectiveSendDonationProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal govtypes.Content, slash uint64) error {
+func (a ApplyCollectiveSendDonationProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal govtypes.Content, slash sdk.Dec) error {
 	p := proposal.(*types.ProposalCollectiveSendDonation)
 
 	addr, err := sdk.AccAddressFromBech32(p.Address)
@@ -156,7 +156,7 @@ func (a ApplyCollectiveUpdateProposalHandler) VoteEnactment(ctx sdk.Context, pro
 	return collective.VoteEnactment
 }
 
-func (a ApplyCollectiveUpdateProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal govtypes.Content, slash uint64) error {
+func (a ApplyCollectiveUpdateProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal govtypes.Content, slash sdk.Dec) error {
 	p := proposal.(*types.ProposalCollectiveUpdate)
 
 	collective := a.keeper.GetCollective(ctx, p.Name)
@@ -249,7 +249,7 @@ func (a ApplyCollectiveRemoveProposalHandler) VoteEnactment(ctx sdk.Context, pro
 	return collective.VoteEnactment
 }
 
-func (a ApplyCollectiveRemoveProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal govtypes.Content, slash uint64) error {
+func (a ApplyCollectiveRemoveProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal govtypes.Content, slash sdk.Dec) error {
 	p := proposal.(*types.ProposalCollectiveRemove)
 	collective := a.keeper.GetCollective(ctx, p.Name)
 	if collective.Name == "" {

@@ -12,7 +12,7 @@ import (
 
 // NewValidator is a testing helper method to create validators in tests
 func NewValidator(t *testing.T, operator sdk.ValAddress, pubKey cryptotypes.PubKey) types.Validator {
-	v, err := types.NewValidator(operator, pubKey, sdk.NewDecWithPrec(5, 2))
+	v, err := types.NewValidator(operator, pubKey)
 	require.NoError(t, err)
 	return v
 }

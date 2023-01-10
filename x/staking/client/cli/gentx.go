@@ -13,7 +13,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/server"
 	"github.com/cosmos/cosmos-sdk/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/cosmos/cosmos-sdk/x/staking/client/cli"
 	"github.com/pkg/errors"
@@ -55,7 +54,6 @@ func GenTxClaimCmd(genBalIterator banktypes.GenesisBalancesIterator, defaultNode
 			validator, err := stakingtypes.NewValidator(
 				types.ValAddress(key.GetAddress()),
 				valPubKey,
-				sdk.NewDecWithPrec(5, 2), // 5%
 			)
 			if err != nil {
 				return errors.Wrap(err, "failed to create new validator")
