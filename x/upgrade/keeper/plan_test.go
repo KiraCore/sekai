@@ -181,12 +181,12 @@ func TestNoPlanExecutionBeforeNotVotedValidatorsProcess(t *testing.T) {
 
 	pubkeys := simapp.CreateTestPubKeys(3)
 
-	validator1, err := stakingtypes.NewValidator(sdk.ValAddress(acc1), pubkeys[0], sdk.NewDecWithPrec(5, 2))
+	validator1, err := stakingtypes.NewValidator(sdk.ValAddress(acc1), pubkeys[0])
 	require.NoError(t, err)
 	validator1.Status = stakingtypes.Inactive
 	app.CustomStakingKeeper.AddValidator(ctx, validator1)
 
-	validator2, err := stakingtypes.NewValidator(sdk.ValAddress(acc2), pubkeys[1], sdk.NewDecWithPrec(5, 2))
+	validator2, err := stakingtypes.NewValidator(sdk.ValAddress(acc2), pubkeys[1])
 	require.NoError(t, err)
 	validator2.Status = stakingtypes.Active
 	app.CustomStakingKeeper.AddValidator(ctx, validator2)

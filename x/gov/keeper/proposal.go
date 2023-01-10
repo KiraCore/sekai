@@ -165,20 +165,20 @@ func (k Keeper) GetProposalVotes(ctx sdk.Context, proposalID uint64) types.Votes
 	return votes
 }
 
-func (k Keeper) GetAverageVotesSlash(ctx sdk.Context, proposalID uint64) uint64 {
+func (k Keeper) GetAverageVotesSlash(ctx sdk.Context, proposalID uint64) sdk.Dec {
 	votes := k.GetProposalVotes(ctx, proposalID)
-	totalSlash := uint64(0)
-	totalCount := uint64(0)
+	totalSlash := sdk.ZeroDec()
+	totalCount := int64(0)
 	for _, vote := range votes {
 		if vote.Option == types.OptionYes {
-			totalSlash += vote.Slash
+			totalSlash = totalSlash.Add(vote.Slash)
 			totalCount++
 		}
 	}
 	if totalCount == 0 {
-		return 0
+		return sdk.ZeroDec()
 	}
-	return totalSlash / totalCount
+	return totalSlash.QuoInt64(totalCount)
 }
 
 func (k Keeper) AddToActiveProposals(ctx sdk.Context, proposal types.Proposal) {

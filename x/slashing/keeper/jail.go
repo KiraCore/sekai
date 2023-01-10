@@ -40,7 +40,7 @@ func (k Keeper) Jail(ctx sdk.Context, consAddr sdk.ConsAddress) {
 				}
 			}
 
-			if len(colluderVals) <= numActiveValidators*int(properties.MaxJailedPercentage)/100 {
+			if len(colluderVals) <= int(sdk.NewDec(int64(numActiveValidators)).Mul(properties.MaxJailedPercentage).RoundInt64()) {
 				return
 			}
 
@@ -82,6 +82,6 @@ func (k Keeper) Jail(ctx sdk.Context, consAddr sdk.ConsAddress) {
 	}
 }
 
-func (k Keeper) SlashStakingPool(ctx sdk.Context, proposal *types.ProposalSlashValidator, slash uint64) {
+func (k Keeper) SlashStakingPool(ctx sdk.Context, proposal *types.ProposalSlashValidator, slash sdk.Dec) {
 	k.msk.SlashStakingPool(ctx, proposal.Offender, slash)
 }

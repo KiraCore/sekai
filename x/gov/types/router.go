@@ -84,7 +84,7 @@ func (r ProposalRouter) EnactmentPeriodDynamicProposal(ctx sdk.Context, proposal
 	return dh.VoteEnactment(ctx, proposal)
 }
 
-func (r ProposalRouter) ApplyProposal(ctx sdk.Context, proposalID uint64, proposal Content, slash uint64) error {
+func (r ProposalRouter) ApplyProposal(ctx sdk.Context, proposalID uint64, proposal Content, slash sdk.Dec) error {
 	h, ok := r.routes[proposal.ProposalType()]
 	if !ok {
 		panic("invalid proposal type")
@@ -102,7 +102,7 @@ func (r ProposalRouter) ApplyProposal(ctx sdk.Context, proposalID uint64, propos
 
 type ProposalHandler interface {
 	ProposalType() string
-	Apply(ctx sdk.Context, proposalID uint64, proposal Content, slash uint64) error
+	Apply(ctx sdk.Context, proposalID uint64, proposal Content, slash sdk.Dec) error
 }
 
 type DynamicVoterProposalHandler interface {
@@ -112,5 +112,5 @@ type DynamicVoterProposalHandler interface {
 	VotePeriod(ctx sdk.Context, proposal Content) uint64
 	VoteEnactment(ctx sdk.Context, proposal Content) uint64
 	AllowedAddresses(ctx sdk.Context, proposal Content) []string
-	Apply(ctx sdk.Context, proposalID uint64, proposal Content, slash uint64) error
+	Apply(ctx sdk.Context, proposalID uint64, proposal Content, slash sdk.Dec) error
 }

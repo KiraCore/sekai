@@ -49,7 +49,7 @@ func (k msgServer) UpsertStakingPool(goCtx context.Context, msg *types.MsgUpsert
 	pool, found := k.keeper.GetStakingPoolByValidator(ctx, msg.Validator)
 	if found {
 		pool.Enabled = msg.Enabled
-		if pool.Slashed > 0 {
+		if pool.Slashed.IsPositive() {
 			return nil, types.ErrActionNotSupportedForSlashedPool
 		}
 		k.keeper.SetStakingPool(ctx, pool)
@@ -62,6 +62,7 @@ func (k msgServer) UpsertStakingPool(goCtx context.Context, msg *types.MsgUpsert
 			Id:                 lastPoolId,
 			Enabled:            msg.Enabled,
 			Validator:          msg.Validator,
+			Commission:         msg.Commission,
 			TotalStakingTokens: []sdk.Coin{},
 			TotalShareTokens:   []sdk.Coin{},
 			TotalRewards:       []sdk.Coin{},

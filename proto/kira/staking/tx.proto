@@ -28,12 +28,6 @@ message MsgClaimValidator {
     (cosmos_proto.accepts_interface) = "cosmos.crypto.PubKey",
     (gogoproto.moretags) = "yaml:\"pub_key\""
   ];
-  // percentage (e.g. 0.1 == 10%) commission that the validator charges from all
-  // block reward
-  string commission = 4 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable) = false
-  ];
 }
 
 // MsgClaimValidatorResponse defines the Msg/ClaimValidator response type.

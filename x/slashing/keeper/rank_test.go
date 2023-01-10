@@ -126,7 +126,6 @@ func createValidators(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context, accNu
 		validator, err := stakingtypes.NewValidator(
 			valAddr,
 			pubkey,
-			sdk.NewDecWithPrec(5, 2),
 		)
 		require.NoError(t, err)
 		validators = append(validators, validator)

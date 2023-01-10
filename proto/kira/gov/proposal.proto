@@ -48,7 +48,10 @@ message Vote {
   ];
 
   VoteOption option = 3;
-  uint64 slash = 4;  // Note: SlashProposal requires this field to determine average value
+  string slash = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ]; // Note: SlashProposal requires this field to determine average value
 }
 
 message MsgVoteProposal {
@@ -59,7 +62,10 @@ message MsgVoteProposal {
   ];
 
   VoteOption option      = 3;
-  uint64 slash = 4;  // Note: SlashProposal requires this field to determine average value
+  string slash = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ]; // Note: SlashProposal requires this field to determine average value
 }
 
 
