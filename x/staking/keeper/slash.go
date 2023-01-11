@@ -61,7 +61,7 @@ func (k Keeper) Inactivate(ctx sdk.Context, valAddress sdk.ValAddress) error { /
 
 	networkProperties := k.govkeeper.GetNetworkProperties(ctx)
 	validator.Status = stakingtypes.Inactive
-	validator.Rank = validator.Rank * int64(100-networkProperties.InactiveRankDecreasePercent) / 100
+	validator.Rank = sdk.NewDec(validator.Rank).Mul(sdk.OneDec().Sub(networkProperties.InactiveRankDecreasePercent)).RoundInt64()
 	validator.Streak = 0
 
 	k.AddValidator(ctx, validator)

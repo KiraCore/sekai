@@ -28,16 +28,12 @@ func (a ApplyUpsertUBIProposalHandler) ProposalType() string {
 	return kiratypes.ProposalTypeUpsertUBI
 }
 
-func (a ApplyUpsertUBIProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash uint64) error {
+func (a ApplyUpsertUBIProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
 	p := proposal.(*ubitypes.UpsertUBIProposal)
 
 	spendingPool := a.sk.GetSpendingPool(ctx, p.Pool)
 	if spendingPool == nil {
 		return ubitypes.ErrSpendingPoolDoesNotExist
-	}
-
-	if spendingPool.Token != a.keeper.BondDenom(ctx) {
-		return ubitypes.ErrUBIOnlyAllowedOnBondDenomPools
 	}
 
 	yearSeconds := uint64(31556952)
@@ -80,7 +76,7 @@ func (a ApplyRemoveUBIProposalHandler) ProposalType() string {
 	return kiratypes.ProposalTypeRemoveUBI
 }
 
-func (a ApplyRemoveUBIProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash uint64) error {
+func (a ApplyRemoveUBIProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
 	p := proposal.(*ubitypes.RemoveUBIProposal)
 	return a.keeper.DeleteUBIRecord(ctx, p.UbiName)
 }

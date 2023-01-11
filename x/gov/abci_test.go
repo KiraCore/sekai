@@ -55,7 +55,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 
 					// Only 4 first users vote yes. We reach quorum but not half of the votes are yes.
 					if i < 4 {
-						vote := types.NewVote(proposalID, addr, types.OptionYes, 0)
+						vote := types.NewVote(proposalID, addr, types.OptionYes, sdk.ZeroDec())
 						app.CustomGovKeeper.SaveVote(ctx, vote)
 					}
 				}
@@ -120,7 +120,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 
 					// Only 3 first users vote yes. We dont reach Quorum.
 					if i < 3 {
-						vote := types.NewVote(proposalID, addr, types.OptionYes, 0)
+						vote := types.NewVote(proposalID, addr, types.OptionYes, sdk.ZeroDec())
 						app.CustomGovKeeper.SaveVote(ctx, vote)
 					}
 				}
@@ -180,7 +180,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 
 					// Only 4 first users vote yes. We reach quorum but not half of the votes are yes.
 					if i < 4 {
-						vote := types.NewVote(proposalID, addr, types.OptionYes, 0)
+						vote := types.NewVote(proposalID, addr, types.OptionYes, sdk.ZeroDec())
 						app.CustomGovKeeper.SaveVote(ctx, vote)
 					}
 				}
@@ -551,7 +551,7 @@ func TestEndBlocker_ActiveProposal(t *testing.T) {
 				actor := types.NewDefaultActor(addrs[0])
 				app.CustomGovKeeper.SaveNetworkActor(ctx, actor)
 
-				val, err := stakingtypes.NewValidator(valAddr, pubKey, sdk.NewDecWithPrec(5, 2))
+				val, err := stakingtypes.NewValidator(valAddr, pubKey)
 				require.NoError(t, err)
 				app.CustomStakingKeeper.AddValidator(ctx, val)
 				err = app.CustomStakingKeeper.Jail(ctx, val.ValKey)

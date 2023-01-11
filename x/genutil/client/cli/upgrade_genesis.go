@@ -4,18 +4,18 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/pkg/errors"
-	"github.com/spf13/cobra"
-	tmtypes "github.com/tendermint/tendermint/types"
-
 	"github.com/KiraCore/sekai/x/genutil"
 	v01228govtypes "github.com/KiraCore/sekai/x/gov/legacy/v01228"
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	v03123upgradetypes "github.com/KiraCore/sekai/x/upgrade/legacy/v03123"
 	upgradetypes "github.com/KiraCore/sekai/x/upgrade/types"
 	"github.com/cosmos/cosmos-sdk/client"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
+	"github.com/pkg/errors"
+	"github.com/spf13/cobra"
+	tmtypes "github.com/tendermint/tendermint/types"
 )
 
 func upgradedPlan(plan *v03123upgradetypes.PlanV03123) *upgradetypes.Plan {
@@ -145,7 +145,7 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 						MischanceRankDecreaseAmount:  govGenesisV01228.NetworkProperties.MischanceRankDecreaseAmount,
 						MaxMischance:                 govGenesisV01228.NetworkProperties.MaxMischance,
 						MischanceConfidence:          govGenesisV01228.NetworkProperties.MischanceConfidence,
-						InactiveRankDecreasePercent:  govGenesisV01228.NetworkProperties.InactiveRankDecreasePercent,
+						InactiveRankDecreasePercent:  sdk.NewDecWithPrec(int64(govGenesisV01228.NetworkProperties.InactiveRankDecreasePercent), 2),
 						MinValidators:                govGenesisV01228.NetworkProperties.MinValidators,
 						PoorNetworkMaxBankSend:       govGenesisV01228.NetworkProperties.PoorNetworkMaxBankSend,
 						UnjailMaxTime:                govGenesisV01228.NetworkProperties.JailMaxTime,
@@ -154,20 +154,24 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 						MinIdentityApprovalTip:       govGenesisV01228.NetworkProperties.MinIdentityApprovalTip,
 						UniqueIdentityKeys:           govGenesisV01228.NetworkProperties.UniqueIdentityKeys,
 						UbiHardcap:                   6000_000,
-						ValidatorsFeeShare:           50,
-						InflationRate:                18,       // 18%
-						InflationPeriod:              31557600, // 1 year
-						UnstakingPeriod:              2629800,  // 1 month
+						ValidatorsFeeShare:           sdk.NewDecWithPrec(50, 2), // 50%
+						InflationRate:                sdk.NewDecWithPrec(18, 2), // 18%
+						InflationPeriod:              31557600,                  // 1 year
+						UnstakingPeriod:              2629800,                   // 1 month
 						MaxDelegators:                100,
 						MinDelegationPushout:         10,
 						SlashingPeriod:               3600,
-						MaxJailedPercentage:          25,
-						MaxSlashingPercentage:        1,
+						MaxJailedPercentage:          sdk.NewDecWithPrec(25, 2),
+						MaxSlashingPercentage:        sdk.NewDecWithPrec(1, 2),
 						MinCustodyReward:             200,
 						MaxCustodyTxSize:             8192,
 						MaxCustodyBufferSize:         10,
 						AbstentionRankDecreaseAmount: 1,
 						MaxAbstention:                2,
+						MinCollectiveBond:            100_000, // in KEX
+						MinCollectiveBondingTime:     86400,   // in seconds
+						MaxCollectiveOutputs:         10,
+						MinCollectiveClaimPeriod:     14400, // 4hrs
 					},
 					ExecutionFees:               govGenesisV01228.ExecutionFees,
 					PoorNetworkMessages:         govGenesisV01228.PoorNetworkMessages,

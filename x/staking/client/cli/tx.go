@@ -51,18 +51,9 @@ func GetTxClaimValidatorCmd() *cobra.Command {
 				}
 			}
 
-			commissionStr, err := cmd.Flags().GetString(FlagCommission)
-			if err != nil {
-				return err
-			}
-			commission, err := sdk.NewDecFromStr(commissionStr)
-			if err != nil {
-				return err
-			}
-
 			val := types.ValAddress(clientCtx.GetFromAddress())
 
-			msg, err := stakingtypes.NewMsgClaimValidator(moniker, val, valPubKey, commission)
+			msg, err := stakingtypes.NewMsgClaimValidator(moniker, val, valPubKey)
 			if err != nil {
 				return fmt.Errorf("error creating tx: %w", err)
 			}

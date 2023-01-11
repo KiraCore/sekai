@@ -19,7 +19,6 @@ func NewMsgClaimValidator(
 	moniker string,
 	valKey sdk.ValAddress,
 	pubKey cryptotypes.PubKey,
-	commission sdk.Dec,
 ) (*MsgClaimValidator, error) {
 	if valKey == nil {
 		return nil, fmt.Errorf("validator not set")
@@ -36,10 +35,9 @@ func NewMsgClaimValidator(
 	}
 
 	return &MsgClaimValidator{
-		Moniker:    moniker,
-		ValKey:     valKey,
-		PubKey:     pkAny,
-		Commission: commission,
+		Moniker: moniker,
+		ValKey:  valKey,
+		PubKey:  pkAny,
 	}, nil
 }
 

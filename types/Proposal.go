@@ -37,6 +37,10 @@ const (
 	ProposalTypeCreateBasket          = "CreateBasket"
 	ProposalTypeEditBasket            = "EditBasket"
 	ProposalTypeBasketWithdrawSurplus = "BasketWithdrawSurplus"
+
+	ProposalTypeCollectiveSendDonation = "CollectiveSendDonation"
+	ProposalTypeCollectiveUpdate       = "CollectiveUpdate"
+	ProposalTypeCollectiveRemove       = "CollectiveRemove"
 )
 
 var AllProposalTypes []string = []string{

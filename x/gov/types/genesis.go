@@ -2,6 +2,7 @@ package types
 
 import (
 	kiratypes "github.com/KiraCore/sekai/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // DefaultGenesis returns the default CustomGo genesis state
@@ -103,8 +104,8 @@ func DefaultGenesis() *GenesisState {
 			MischanceRankDecreaseAmount:  10,
 			MischanceConfidence:          10,
 			MaxMischance:                 110,
-			InactiveRankDecreasePercent:  50,      // 50%
-			PoorNetworkMaxBankSend:       1000000, // 1M ukex
+			InactiveRankDecreasePercent:  sdk.NewDecWithPrec(50, 2), // 50%
+			PoorNetworkMaxBankSend:       1000000,                   // 1M ukex
 			MinValidators:                1,
 			UnjailMaxTime:                600, // 600  seconds / 10 mins
 			EnableTokenWhitelist:         false,
@@ -112,20 +113,24 @@ func DefaultGenesis() *GenesisState {
 			MinIdentityApprovalTip:       200,
 			UniqueIdentityKeys:           "moniker,username",
 			UbiHardcap:                   6000_000,
-			ValidatorsFeeShare:           50,
-			InflationRate:                18,       // 18%
-			InflationPeriod:              31557600, // 1 year
-			UnstakingPeriod:              2629800,  // 1 month
+			ValidatorsFeeShare:           sdk.NewDecWithPrec(50, 2), // 50%
+			InflationRate:                sdk.NewDecWithPrec(18, 2), // 18%
+			InflationPeriod:              31557600,                  // 1 year
+			UnstakingPeriod:              2629800,                   // 1 month
 			MaxDelegators:                100,
 			MinDelegationPushout:         10,
 			SlashingPeriod:               3600,
-			MaxJailedPercentage:          25,
-			MaxSlashingPercentage:        1,
+			MaxJailedPercentage:          sdk.NewDecWithPrec(25, 2),
+			MaxSlashingPercentage:        sdk.NewDecWithPrec(1, 2),
 			MinCustodyReward:             200,
 			MaxCustodyTxSize:             8192,
 			MaxCustodyBufferSize:         10,
 			AbstentionRankDecreaseAmount: 1,
 			MaxAbstention:                2,
+			MinCollectiveBond:            100_000, // in KEX
+			MinCollectiveBondingTime:     86400,   // in seconds
+			MaxCollectiveOutputs:         10,
+			MinCollectiveClaimPeriod:     14400, // 4hrs
 		},
 		ExecutionFees: []ExecutionFee{
 			{

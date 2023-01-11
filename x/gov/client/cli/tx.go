@@ -377,8 +377,8 @@ func NewTxSetNetworkProperties() *cobra.Command {
 					ProposalEnactmentTime:       300, // 5min
 					EnableForeignFeePayments:    true,
 					MischanceRankDecreaseAmount: 10,
-					InactiveRankDecreasePercent: 50,      // 50%
-					PoorNetworkMaxBankSend:      1000000, // 1M ukex
+					InactiveRankDecreasePercent: sdk.NewDecWithPrec(50, 2), // 50%
+					PoorNetworkMaxBankSend:      1000000,                   // 1M ukex
 					MinValidators:               minValidators,
 					MinCustodyReward:            minCustodyReward,
 				},
@@ -775,9 +775,12 @@ func GetTxProposalSetNetworkProperty() *cobra.Command {
 			}
 
 			value := types.NetworkPropertyValue{}
-			if property == int32(types.UniqueIdentityKeys) {
+			switch types.NetworkProperty(property) {
+			case types.UniqueIdentityKeys:
 				value.StrValue = args[1]
-			} else {
+			case types.ValidatorsFeeShare:
+				value.StrValue = args[1]
+			default:
 				numVal, err := strconv.Atoi(args[1])
 				if err != nil {
 					return fmt.Errorf("invalid network property value: %w", err)
@@ -1246,7 +1249,11 @@ func GetTxVoteProposal() *cobra.Command {
 				return fmt.Errorf("invalid vote option: %w", err)
 			}
 
-			slash, err := cmd.Flags().GetUint64(FlagSlash)
+			slashStr, err := cmd.Flags().GetString(FlagSlash)
+			if err != nil {
+				return err
+			}
+			slash, err := sdk.NewDecFromStr(slashStr)
 			if err != nil {
 				return err
 			}
@@ -1264,7 +1271,7 @@ func GetTxVoteProposal() *cobra.Command {
 
 	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
-	cmd.Flags().Uint64(FlagSlash, 0, "slash value on the proposal")
+	cmd.Flags().String(FlagSlash, "0.01", "slash value on the proposal")
 
 	return cmd
 }

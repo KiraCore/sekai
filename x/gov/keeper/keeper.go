@@ -98,7 +98,7 @@ func (k Keeper) ValidateNetworkProperties(ctx sdk.Context, properties *types.Net
 	// if properties.InactiveRankDecreasePercent == 0 {
 	// 	return fmt.Errorf("inactive_rank_decrease_percent should not be zero")
 	// }
-	if properties.InactiveRankDecreasePercent > 100 {
+	if !properties.InactiveRankDecreasePercent.IsNil() && properties.InactiveRankDecreasePercent.GT(sdk.OneDec()) {
 		return fmt.Errorf("inactive_rank_decrease_percent should not be lower than 100%%")
 	}
 	// if properties.MinValidators == 0 {
@@ -172,7 +172,7 @@ func (k Keeper) GetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 	case types.MischanceConfidence:
 		return types.NetworkPropertyValue{Value: properties.MischanceConfidence}, nil
 	case types.InactiveRankDecreasePercent:
-		return types.NetworkPropertyValue{Value: properties.InactiveRankDecreasePercent}, nil
+		return types.NetworkPropertyValue{StrValue: properties.InactiveRankDecreasePercent.String()}, nil
 	case types.PoorNetworkMaxBankSend:
 		return types.NetworkPropertyValue{Value: properties.PoorNetworkMaxBankSend}, nil
 	case types.MinValidators:
@@ -190,9 +190,9 @@ func (k Keeper) GetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 	case types.UbiHardcap:
 		return types.NetworkPropertyValue{Value: properties.UbiHardcap}, nil
 	case types.ValidatorsFeeShare:
-		return types.NetworkPropertyValue{Value: properties.ValidatorsFeeShare}, nil
+		return types.NetworkPropertyValue{StrValue: properties.ValidatorsFeeShare.String()}, nil
 	case types.InflationRate:
-		return types.NetworkPropertyValue{Value: properties.InflationRate}, nil
+		return types.NetworkPropertyValue{StrValue: properties.InflationRate.String()}, nil
 	case types.InflationPeriod:
 		return types.NetworkPropertyValue{Value: properties.InflationPeriod}, nil
 	case types.UnstakingPeriod:
@@ -204,9 +204,9 @@ func (k Keeper) GetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 	case types.SlashingPeriod:
 		return types.NetworkPropertyValue{Value: properties.SlashingPeriod}, nil
 	case types.MaxJailedPercentage:
-		return types.NetworkPropertyValue{Value: properties.MaxJailedPercentage}, nil
+		return types.NetworkPropertyValue{StrValue: properties.MaxJailedPercentage.String()}, nil
 	case types.MaxSlashingPercentage:
-		return types.NetworkPropertyValue{Value: properties.MaxSlashingPercentage}, nil
+		return types.NetworkPropertyValue{StrValue: properties.MaxSlashingPercentage.String()}, nil
 	case types.MinCustodyReward:
 		return types.NetworkPropertyValue{Value: properties.MinCustodyReward}, nil
 	case types.MaxCustodyBufferSize:
@@ -217,6 +217,14 @@ func (k Keeper) GetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 		return types.NetworkPropertyValue{Value: properties.AbstentionRankDecreaseAmount}, nil
 	case types.MaxAbstention:
 		return types.NetworkPropertyValue{Value: properties.MaxAbstention}, nil
+	case types.MinCollectiveBond:
+		return types.NetworkPropertyValue{Value: properties.MinCollectiveBond}, nil
+	case types.MinCollectiveBondingTime:
+		return types.NetworkPropertyValue{Value: properties.MinCollectiveBondingTime}, nil
+	case types.MaxCollectiveOutputs:
+		return types.NetworkPropertyValue{Value: properties.MaxCollectiveOutputs}, nil
+	case types.MinCollectiveClaimPeriod:
+		return types.NetworkPropertyValue{Value: properties.MinCollectiveClaimPeriod}, nil
 	default:
 		return types.NetworkPropertyValue{}, errors.New("trying to fetch network property that does not exist")
 	}
@@ -252,7 +260,11 @@ func (k Keeper) SetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 	case types.MischanceConfidence:
 		properties.MischanceConfidence = value.Value
 	case types.InactiveRankDecreasePercent:
-		properties.InactiveRankDecreasePercent = value.Value
+		decValue, err := sdk.NewDecFromStr(value.StrValue)
+		if err != nil {
+			return err
+		}
+		properties.InactiveRankDecreasePercent = decValue
 	case types.PoorNetworkMaxBankSend:
 		properties.PoorNetworkMaxBankSend = value.Value
 	case types.MinValidators:
@@ -270,9 +282,17 @@ func (k Keeper) SetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 	case types.UbiHardcap:
 		properties.UbiHardcap = value.Value
 	case types.ValidatorsFeeShare:
-		properties.ValidatorsFeeShare = value.Value
+		decValue, err := sdk.NewDecFromStr(value.StrValue)
+		if err != nil {
+			return err
+		}
+		properties.ValidatorsFeeShare = decValue
 	case types.InflationRate:
-		properties.InflationRate = value.Value
+		decValue, err := sdk.NewDecFromStr(value.StrValue)
+		if err != nil {
+			return err
+		}
+		properties.InflationRate = decValue
 	case types.InflationPeriod:
 		properties.InflationPeriod = value.Value
 	case types.UnstakingPeriod:
@@ -284,9 +304,17 @@ func (k Keeper) SetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 	case types.SlashingPeriod:
 		properties.SlashingPeriod = value.Value
 	case types.MaxJailedPercentage:
-		properties.MaxJailedPercentage = value.Value
+		decValue, err := sdk.NewDecFromStr(value.StrValue)
+		if err != nil {
+			return err
+		}
+		properties.MaxJailedPercentage = decValue
 	case types.MaxSlashingPercentage:
-		properties.MaxSlashingPercentage = value.Value
+		decValue, err := sdk.NewDecFromStr(value.StrValue)
+		if err != nil {
+			return err
+		}
+		properties.MaxSlashingPercentage = decValue
 	case types.MinCustodyReward:
 		properties.MinCustodyReward = value.Value
 	case types.MaxCustodyBufferSize:
@@ -297,6 +325,14 @@ func (k Keeper) SetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 		properties.AbstentionRankDecreaseAmount = value.Value
 	case types.MaxAbstention:
 		properties.MaxAbstention = value.Value
+	case types.MinCollectiveBond:
+		properties.MinCollectiveBond = value.Value
+	case types.MinCollectiveBondingTime:
+		properties.MinCollectiveBondingTime = value.Value
+	case types.MaxCollectiveOutputs:
+		properties.MaxCollectiveOutputs = value.Value
+	case types.MinCollectiveClaimPeriod:
+		properties.MinCollectiveClaimPeriod = value.Value
 	default:
 		return errors.New("trying to set network property that does not exist")
 	}

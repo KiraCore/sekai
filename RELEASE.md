@@ -1,6 +1,6 @@
 Features:
 
-- Update on CLI help and command name
-- Add commission on validator and add distributor logic
-- Remove stacking data on distribution module for validator performance tracking
-- Remove unused flag ValKey on staking CLI commands
+- update validator fee share from int to dec
+- move commission rewards from validator object to multistaking pool
+- Update fields from int to decimal for inactive_rank_decrease_percent,…
+- convert slash percentage from int to decimal
