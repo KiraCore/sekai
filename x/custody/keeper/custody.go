@@ -27,6 +27,13 @@ func (k Keeper) SetCustodyRecord(ctx sdk.Context, record types.CustodyRecord) {
 	store.Set(key, k.cdc.MustMarshal(record.CustodySettings))
 }
 
+func (k Keeper) DisableCustodyRecord(ctx sdk.Context, address sdk.AccAddress) {
+	store := ctx.KVStore(k.storeKey)
+	key := append([]byte(types.PrefixKeyCustodyRecord), address...)
+
+	store.Delete(key)
+}
+
 func (k Keeper) SetCustodyRecordKey(ctx sdk.Context, record types.CustodyKeyRecord) {
 	info := k.GetCustodyInfoByAddress(ctx, record.Address)
 	info.Key = record.Key
@@ -161,4 +168,50 @@ func (k Keeper) GetCustodyPoolByAddress(ctx sdk.Context, address sdk.AccAddress)
 	k.cdc.MustUnmarshal(bz, info)
 
 	return info
+}
+
+func (k Keeper) GetApproveCustody(ctx sdk.Context, msg *types.MsgApproveCustodyTransaction) string {
+	store := ctx.KVStore(k.storeKey)
+	key1 := append([]byte(types.PrefixKeyCustodyVote), msg.FromAddress...)
+	key2 := append(msg.TargetAddress, msg.Hash...)
+	key := append(key1, key2...)
+	bz := store.Get(key)
+
+	if bz == nil {
+		return "0"
+	}
+
+	return string(bz)
+}
+
+func (k Keeper) GetDeclineCustody(ctx sdk.Context, msg *types.MsgDeclineCustodyTransaction) string {
+	store := ctx.KVStore(k.storeKey)
+	key1 := append([]byte(types.PrefixKeyCustodyVote), msg.FromAddress...)
+	key2 := append(msg.TargetAddress, msg.Hash...)
+	key := append(key1, key2...)
+	bz := store.Get(key)
+
+	if bz == nil {
+		return "0"
+	}
+
+	return string(bz)
+}
+
+func (k Keeper) ApproveCustody(ctx sdk.Context, msg *types.MsgApproveCustodyTransaction) {
+	store := ctx.KVStore(k.storeKey)
+	key1 := append([]byte(types.PrefixKeyCustodyVote), msg.FromAddress...)
+	key2 := append(msg.TargetAddress, msg.Hash...)
+	key := append(key1, key2...)
+
+	store.Set(key, []byte("1"))
+}
+
+func (k Keeper) DeclineCustody(ctx sdk.Context, msg *types.MsgDeclineCustodyTransaction) {
+	store := ctx.KVStore(k.storeKey)
+	key1 := append([]byte(types.PrefixKeyCustodyVote), msg.FromAddress...)
+	key2 := append(msg.TargetAddress, msg.Hash...)
+	key := append(key1, key2...)
+
+	store.Set(key, []byte("-1"))
 }

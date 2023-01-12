@@ -35,6 +35,6 @@ echoInfo "INFO: Testing wallets & transfers..."
 ./scripts/test-local/custody-processes.sh || ( systemctl2 stop sekai && exit 1 )
 
 echoInfo "INFO: Stopping local network..."
-#./scripts/test-local/network-stop.sh || ( systemctl2 stop sekai && exit 1 )
+./scripts/test-local/network-stop.sh || ( systemctl2 stop sekai && exit 1 )
 
 echoInfo "INFO: Success, all local tests passed, elapsed: $(prettyTime $(timerSpan))"

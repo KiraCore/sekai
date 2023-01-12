@@ -14,8 +14,9 @@ import (
 )
 
 const (
-	OldKey = "okey"
-	NewKey = "nkey"
+	OldKey     = "okey"
+	NewKey     = "nkey"
+	FlagReward = "reward"
 )
 
 // NewTxCmd returns a root CLI command handler for all x/bank transaction commands.
@@ -29,6 +30,7 @@ func NewTxCmd() *cobra.Command {
 	}
 
 	txCmd.AddCommand(GetTxCreateCustody())
+	txCmd.AddCommand(GetTxDisableCustody())
 	txCmd.AddCommand(NewCustodiansTxCmd())
 	txCmd.AddCommand(NewWhiteListTxCmd())
 	txCmd.AddCommand(NewLimitsTxCmd())
@@ -535,6 +537,40 @@ func GetTxCreateCustody() *cobra.Command {
 	return cmd
 }
 
+func GetTxDisableCustody() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "disable",
+		Short: "Disable custody settings",
+		Args:  cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			oldKey, err := cmd.Flags().GetString(OldKey)
+			if err != nil {
+				return fmt.Errorf("invalid old key: %w", err)
+			}
+
+			msg := types.NewMsgDisableCustody(
+				clientCtx.FromAddress,
+				oldKey,
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	cmd.Flags().String(OldKey, "", "Previous hash string.")
+	cmd.MarkFlagRequired(OldKey)
+
+	flags.AddTxFlagsToCmd(cmd)
+	cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
 func GetTxAddToCustodyLimits() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "add [addr]",
@@ -695,11 +731,20 @@ ignored as it is implied from [from_key_or_address].`,
 				return err
 			}
 
-			msg := types.NewMsgSend(clientCtx.GetFromAddress(), toAddr, coins, args[3])
+			rewardStr, _ := cmd.Flags().GetString(FlagReward)
+			reward, err := sdk.ParseCoinsNormalized(rewardStr)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgSend(clientCtx.GetFromAddress(), toAddr, coins, args[3], reward)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
+
+	cmd.Flags().String(FlagReward, "", "Fees to pay reward to custodians; eg: 1000ukex.")
+	cmd.MarkFlagRequired(FlagReward)
 
 	flags.AddTxFlagsToCmd(cmd)
 
