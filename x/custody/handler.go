@@ -18,6 +18,9 @@ func NewHandler(ck keeper.Keeper, cgk types.CustomGovKeeper, bk types.BankKeeper
 		case *types.MsgCreteCustodyRecord:
 			res, err := msgServer.CreateCustody(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgDisableCustodyRecord:
+			res, err := msgServer.DisableCustody(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
 		case *types.MsgAddToCustodyCustodians:
 			res, err := msgServer.AddToCustodians(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)

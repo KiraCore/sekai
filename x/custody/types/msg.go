@@ -33,6 +33,33 @@ func (m *MsgCreteCustodyRecord) GetSigners() []sdk.AccAddress {
 	}
 }
 
+func NewMsgDisableCustody(addr sdk.AccAddress, oldKey string) *MsgDisableCustodyRecord {
+	return &MsgDisableCustodyRecord{addr, oldKey}
+}
+
+func (m *MsgDisableCustodyRecord) Route() string {
+	return ModuleName
+}
+
+func (m *MsgDisableCustodyRecord) Type() string {
+	return types.MsgTypeDisableCustody
+}
+
+func (m *MsgDisableCustodyRecord) ValidateBasic() error {
+	return nil
+}
+
+func (m *MsgDisableCustodyRecord) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *MsgDisableCustodyRecord) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{
+		m.Address,
+	}
+}
+
 func NewMsgApproveCustodyTransaction(from sdk.AccAddress, to sdk.AccAddress, hash string) *MsgApproveCustodyTransaction {
 	return &MsgApproveCustodyTransaction{from, to, hash}
 }
@@ -357,8 +384,8 @@ func (m *MsgDropCustodyLimits) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgSend(fromAddr, toAddr sdk.AccAddress, amount sdk.Coins, password string) *MsgSend {
-	return &MsgSend{FromAddress: fromAddr.String(), ToAddress: toAddr.String(), Amount: amount, Password: password}
+func NewMsgSend(fromAddr, toAddr sdk.AccAddress, amount sdk.Coins, password string, reward sdk.Coins) *MsgSend {
+	return &MsgSend{FromAddress: fromAddr.String(), ToAddress: toAddr.String(), Amount: amount, Password: password, Reward: reward}
 }
 
 func (m MsgSend) Route() string {
