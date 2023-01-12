@@ -26,6 +26,7 @@ const (
 	FlagMinTxFee          = "min_tx_fee"
 	FlagMaxTxFee          = "max_tx_fee"
 	FlagMinValidators     = "min_validators"
+	FlagMinCustodyReward  = "min_custody_reward"
 	FlagTxType            = "transaction_type"
 	FlagExecutionFee      = "execution_fee"
 	FlagFailureFee        = "failure_fee"
@@ -360,6 +361,10 @@ func NewTxSetNetworkProperties() *cobra.Command {
 			if err != nil {
 				return fmt.Errorf("invalid min validators")
 			}
+			minCustodyReward, err := cmd.Flags().GetUint64(FlagMinCustodyReward)
+			if err != nil {
+				return fmt.Errorf("invalid min custody reward")
+			}
 
 			// TODO: should set more by flags
 			msg := types.NewMsgSetNetworkProperties(
@@ -375,6 +380,7 @@ func NewTxSetNetworkProperties() *cobra.Command {
 					InactiveRankDecreasePercent: sdk.NewDecWithPrec(50, 2), // 50%
 					PoorNetworkMaxBankSend:      1000000,                   // 1M ukex
 					MinValidators:               minValidators,
+					MinCustodyReward:            minCustodyReward,
 				},
 			)
 
@@ -384,6 +390,7 @@ func NewTxSetNetworkProperties() *cobra.Command {
 	cmd.Flags().Uint64(FlagMinTxFee, 1, "min tx fee")
 	cmd.Flags().Uint64(FlagMaxTxFee, 10000, "max tx fee")
 	cmd.Flags().Uint64(FlagMinValidators, 2, "min validators")
+	cmd.Flags().Uint64(FlagMinCustodyReward, 200, "min custody reward")
 	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
 
