@@ -1,4 +1,4 @@
-package slashing
+package recovery
 
 import (
 	"context"
@@ -13,9 +13,9 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/KiraCore/sekai/x/slashing/client/cli"
-	"github.com/KiraCore/sekai/x/slashing/keeper"
-	"github.com/KiraCore/sekai/x/slashing/types"
+	"github.com/KiraCore/sekai/x/recovery/client/cli"
+	"github.com/KiraCore/sekai/x/recovery/keeper"
+	"github.com/KiraCore/sekai/x/recovery/types"
 	stakingkeeper "github.com/KiraCore/sekai/x/staking/keeper"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -30,19 +30,19 @@ var (
 	_ module.AppModuleBasic = AppModuleBasic{}
 )
 
-// AppModuleBasic defines the basic application module used by the slashing module.
+// AppModuleBasic defines the basic application module used by the recovery module.
 type AppModuleBasic struct {
 	cdc codec.Codec
 }
 
 var _ module.AppModuleBasic = AppModuleBasic{}
 
-// Name returns the slashing module's name.
+// Name returns the recovery module's name.
 func (AppModuleBasic) Name() string {
 	return types.ModuleName
 }
 
-// RegisterLegacyAminoCodec registers the slashing module's types for the given codec.
+// RegisterLegacyAminoCodec registers the recovery module's types for the given codec.
 func (AppModuleBasic) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	types.RegisterLegacyAminoCodec(cdc)
 }
@@ -52,13 +52,13 @@ func (b AppModuleBasic) RegisterInterfaces(registry cdctypes.InterfaceRegistry) 
 	types.RegisterInterfaces(registry)
 }
 
-// DefaultGenesis returns default genesis state as raw bytes for the slashing
+// DefaultGenesis returns default genesis state as raw bytes for the recovery
 // module.
 func (AppModuleBasic) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage {
 	return cdc.MustMarshalJSON(types.DefaultGenesisState())
 }
 
-// ValidateGenesis performs genesis state validation for the slashing module.
+// ValidateGenesis performs genesis state validation for the recovery module.
 func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, config client.TxEncodingConfig, bz json.RawMessage) error {
 	var data types.GenesisState
 	if err := cdc.UnmarshalJSON(bz, &data); err != nil {
@@ -68,7 +68,7 @@ func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, config client.TxEncod
 	return types.ValidateGenesis(data)
 }
 
-// RegisterRESTRoutes registers the REST routes for the slashing module.
+// RegisterRESTRoutes registers the REST routes for the recovery module.
 func (AppModuleBasic) RegisterRESTRoutes(clientCtx client.Context, rtr *mux.Router) {
 }
 
@@ -80,60 +80,58 @@ func (AppModuleBasic) RegisterGRPCRoutes(clientCtx client.Context, serveMux *run
 	types.RegisterQueryHandlerClient(context.Background(), serveMux, types.NewQueryClient(clientCtx))
 }
 
-// GetTxCmd returns the root tx command for the slashing module.
+// GetTxCmd returns the root tx command for the recovery module.
 func (AppModuleBasic) GetTxCmd() *cobra.Command {
 	return cli.NewTxCmd()
 }
 
-// GetQueryCmd returns no root query command for the slashing module.
+// GetQueryCmd returns no root query command for the recovery module.
 func (AppModuleBasic) GetQueryCmd() *cobra.Command {
 	return cli.GetQueryCmd()
 }
 
 //____________________________________________________________________________
 
-// AppModule implements an application module for the slashing module.
+// AppModule implements an application module for the recovery module.
 type AppModule struct {
 	AppModuleBasic
 
 	keeper        keeper.Keeper
 	accountKeeper types.AccountKeeper
-	bankKeeper    types.BankKeeper
 	stakingKeeper stakingkeeper.Keeper
 }
 
 // NewAppModule creates a new AppModule object
-func NewAppModule(cdc codec.Codec, keeper keeper.Keeper, ak types.AccountKeeper, bk types.BankKeeper, sk stakingkeeper.Keeper) AppModule {
+func NewAppModule(cdc codec.Codec, keeper keeper.Keeper, ak types.AccountKeeper, sk stakingkeeper.Keeper) AppModule {
 	return AppModule{
 		AppModuleBasic: AppModuleBasic{cdc: cdc},
 		keeper:         keeper,
 		accountKeeper:  ak,
-		bankKeeper:     bk,
 		stakingKeeper:  sk,
 	}
 }
 
-// Name returns the slashing module's name.
+// Name returns the recovery module's name.
 func (AppModule) Name() string {
 	return types.ModuleName
 }
 
-// RegisterInvariants registers the slashing module invariants.
+// RegisterInvariants registers the recovery module invariants.
 func (am AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
 
-// Route returns the message routing key for the slashing module.
+// Route returns the message routing key for the recovery module.
 func (am AppModule) Route() sdk.Route {
 	return sdk.NewRoute(types.RouterKey, NewHandler(am.keeper))
 }
 
-// QuerierRoute returns the slashing module's querier route name.
+// QuerierRoute returns the recovery module's querier route name.
 func (AppModule) QuerierRoute() string {
 	return types.QuerierRoute
 }
 
-// LegacyQuerierHandler returns the slashing module sdk.Querier.
+// LegacyQuerierHandler returns the recovery module sdk.Querier.
 func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {
-	return keeper.NewQuerier(am.keeper, legacyQuerierCdc)
+	return nil
 }
 
 // RegisterServices registers module services.
@@ -142,7 +140,7 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 	types.RegisterQueryServer(cfg.QueryServer(), am.keeper)
 }
 
-// InitGenesis performs genesis initialization for the slashing module. It returns
+// InitGenesis performs genesis initialization for the recovery module. It returns
 // no validator updates.
 func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.RawMessage) []abci.ValidatorUpdate {
 	var genesisState types.GenesisState
@@ -151,7 +149,7 @@ func (am AppModule) InitGenesis(ctx sdk.Context, cdc codec.JSONCodec, data json.
 	return []abci.ValidatorUpdate{}
 }
 
-// ExportGenesis returns the exported genesis state as raw bytes for the slashing
+// ExportGenesis returns the exported genesis state as raw bytes for the recovery
 // module.
 func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.RawMessage {
 	gs := ExportGenesis(ctx, am.keeper)
@@ -161,12 +159,12 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.Raw
 // ConsensusVersion implements AppModule/ConsensusVersion.
 func (AppModule) ConsensusVersion() uint64 { return 1 }
 
-// BeginBlock returns the begin blocker for the slashing module.
+// BeginBlock returns the begin blocker for the recovery module.
 func (am AppModule) BeginBlock(ctx sdk.Context, req abci.RequestBeginBlock) {
 	BeginBlocker(ctx, req, am.keeper)
 }
 
-// EndBlock returns the end blocker for the slashing module. It returns no validator
+// EndBlock returns the end blocker for the recovery module. It returns no validator
 // updates.
 func (AppModule) EndBlock(_ sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
 	return []abci.ValidatorUpdate{}
@@ -176,7 +174,7 @@ func (AppModule) EndBlock(_ sdk.Context, _ abci.RequestEndBlock) []abci.Validato
 
 // AppModuleSimulation functions
 
-// GenerateGenesisState creates a randomized GenState of the slashing module.
+// GenerateGenesisState creates a randomized GenState of the recovery module.
 func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 }
 
@@ -185,16 +183,16 @@ func (AppModule) ProposalContents(simState module.SimulationState) []simtypes.We
 	return nil
 }
 
-// RandomizedParams creates randomized slashing param changes for the simulator.
+// RandomizedParams creates randomized recovery param changes for the simulator.
 func (AppModule) RandomizedParams(r *rand.Rand) []simtypes.ParamChange {
 	return []simtypes.ParamChange{}
 }
 
-// RegisterStoreDecoder registers a decoder for slashing module's types
+// RegisterStoreDecoder registers a decoder for recovery module's types
 func (am AppModule) RegisterStoreDecoder(sdr sdk.StoreDecoderRegistry) {
 }
 
-// WeightedOperations returns the all the slashing module operations with their respective weights.
+// WeightedOperations returns the all the recovery module operations with their respective weights.
 func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
 	return []simtypes.WeightedOperation{}
 }

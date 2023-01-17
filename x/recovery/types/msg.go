@@ -6,20 +6,23 @@ import (
 )
 
 // verify interface at compile time
-var _ sdk.Msg = &MsgActivate{}
+var _ sdk.Msg = &MsgRegisterRecoverySecret{}
 
-// NewMsgActivate creates a new MsgActivate instance
+// NewMsgRegisterRecoverySecret creates a new MsgRegisterRecoverySecret instance
 //nolint:interfacer
-func NewMsgActivate(validatorAddr sdk.ValAddress) *MsgActivate {
-	return &MsgActivate{
-		ValidatorAddr: validatorAddr.String(),
+func NewMsgRegisterRecoverySecret(addr, challenge, nonce, proof string) *MsgRegisterRecoverySecret {
+	return &MsgRegisterRecoverySecret{
+		Address:   addr,
+		Challenge: challenge,
+		Nonce:     nonce,
+		Proof:     proof,
 	}
 }
 
-func (msg MsgActivate) Route() string { return RouterKey }
-func (msg MsgActivate) Type() string  { return types.MsgTypeActivate }
-func (msg MsgActivate) GetSigners() []sdk.AccAddress {
-	valAddr, err := sdk.ValAddressFromBech32(msg.ValidatorAddr)
+func (msg MsgRegisterRecoverySecret) Route() string { return RouterKey }
+func (msg MsgRegisterRecoverySecret) Type() string  { return types.MsgTypeActivate }
+func (msg MsgRegisterRecoverySecret) GetSigners() []sdk.AccAddress {
+	valAddr, err := sdk.AccAddressFromBech32(msg.Address)
 	if err != nil {
 		panic(err)
 	}
@@ -27,35 +30,37 @@ func (msg MsgActivate) GetSigners() []sdk.AccAddress {
 }
 
 // GetSignBytes gets the bytes for the message signer to sign on
-func (msg MsgActivate) GetSignBytes() []byte {
+func (msg MsgRegisterRecoverySecret) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(&msg)
 	return sdk.MustSortJSON(bz)
 }
 
 // ValidateBasic validity check for the AnteHandler
-func (msg MsgActivate) ValidateBasic() error {
-	if msg.ValidatorAddr == "" {
-		return ErrBadValidatorAddr
+func (msg MsgRegisterRecoverySecret) ValidateBasic() error {
+	if msg.Address == "" {
+		return ErrInvalidAccAddress
 	}
 
 	return nil
 }
 
 // verify interface at compile time
-var _ sdk.Msg = &MsgUnpause{}
+var _ sdk.Msg = &MsgRotateRecoveryAddress{}
 
-// NewMsgUnpause creates a new MsgUnpause instance
+// NewMsgRotateRecoveryAddress creates a new MsgRotateRecoveryAddress instance
 //nolint:interfacer
-func NewMsgUnpause(validatorAddr sdk.ValAddress) *MsgUnpause {
-	return &MsgUnpause{
-		ValidatorAddr: validatorAddr.String(),
+func NewMsgRotateRecoveryAddress(addr, recovery, proof string) *MsgRotateRecoveryAddress {
+	return &MsgRotateRecoveryAddress{
+		Address:  addr,
+		Recovery: recovery,
+		Proof:    proof,
 	}
 }
 
-func (msg MsgUnpause) Route() string { return RouterKey }
-func (msg MsgUnpause) Type() string  { return types.MsgTypeUnpause }
-func (msg MsgUnpause) GetSigners() []sdk.AccAddress {
-	valAddr, err := sdk.ValAddressFromBech32(msg.ValidatorAddr)
+func (msg MsgRotateRecoveryAddress) Route() string { return RouterKey }
+func (msg MsgRotateRecoveryAddress) Type() string  { return types.MsgTypeUnpause }
+func (msg MsgRotateRecoveryAddress) GetSigners() []sdk.AccAddress {
+	valAddr, err := sdk.AccAddressFromBech32(msg.Address)
 	if err != nil {
 		panic(err)
 	}
@@ -63,35 +68,35 @@ func (msg MsgUnpause) GetSigners() []sdk.AccAddress {
 }
 
 // GetSignBytes gets the bytes for the message signer to sign on
-func (msg MsgUnpause) GetSignBytes() []byte {
+func (msg MsgRotateRecoveryAddress) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(&msg)
 	return sdk.MustSortJSON(bz)
 }
 
 // ValidateBasic validity check for the AnteHandler
-func (msg MsgUnpause) ValidateBasic() error {
-	if msg.ValidatorAddr == "" {
-		return ErrBadValidatorAddr
+func (msg MsgRotateRecoveryAddress) ValidateBasic() error {
+	if msg.Address == "" {
+		return ErrInvalidAccAddress
 	}
 
 	return nil
 }
 
 // verify interface at compile time
-var _ sdk.Msg = &MsgPause{}
+var _ sdk.Msg = &MsgIssueRecoveryTokens{}
 
-// NewMsgPause creates a new MsgPause instance
+// NewMsgIssueRecoveryTokens creates a new MsgIssueRecoveryTokens instance
 //nolint:interfacer
-func NewMsgPause(validatorAddr sdk.ValAddress) *MsgPause {
-	return &MsgPause{
-		ValidatorAddr: validatorAddr.String(),
+func NewMsgIssueRecoveryTokens(addr string) *MsgIssueRecoveryTokens {
+	return &MsgIssueRecoveryTokens{
+		Address: addr,
 	}
 }
 
-func (msg MsgPause) Route() string { return RouterKey }
-func (msg MsgPause) Type() string  { return types.MsgTypePause }
-func (msg MsgPause) GetSigners() []sdk.AccAddress {
-	valAddr, err := sdk.ValAddressFromBech32(msg.ValidatorAddr)
+func (msg MsgIssueRecoveryTokens) Route() string { return RouterKey }
+func (msg MsgIssueRecoveryTokens) Type() string  { return types.MsgTypePause }
+func (msg MsgIssueRecoveryTokens) GetSigners() []sdk.AccAddress {
+	valAddr, err := sdk.AccAddressFromBech32(msg.Address)
 	if err != nil {
 		panic(err)
 	}
@@ -99,36 +104,34 @@ func (msg MsgPause) GetSigners() []sdk.AccAddress {
 }
 
 // GetSignBytes gets the bytes for the message signer to sign on
-func (msg MsgPause) GetSignBytes() []byte {
+func (msg MsgIssueRecoveryTokens) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(&msg)
 	return sdk.MustSortJSON(bz)
 }
 
 // ValidateBasic validity check for the AnteHandler
-func (msg MsgPause) ValidateBasic() error {
-	if msg.ValidatorAddr == "" {
-		return ErrBadValidatorAddr
+func (msg MsgIssueRecoveryTokens) ValidateBasic() error {
+	if msg.Address == "" {
+		return ErrInvalidAccAddress
 	}
 
 	return nil
 }
 
 // verify interface at compile time
-var _ sdk.Msg = &MsgRefuteSlashingProposal{}
+var _ sdk.Msg = &MsgBurnRecoveryTokens{}
 
-// NewMsgRefuteSlashingProposal creates a new MsgRefuteSlashingProposal instance
-func NewMsgRefuteSlashingProposal(sender sdk.AccAddress, validatorAddr sdk.ValAddress, refutation string) *MsgRefuteSlashingProposal {
-	return &MsgRefuteSlashingProposal{
-		Sender:     sender.String(),
-		Validator:  validatorAddr.String(),
-		Refutation: refutation,
+// NewMsgBurnRecoveryTokens creates a new MsgBurnRecoveryTokens instance
+func NewMsgBurnRecoveryTokens(sender sdk.AccAddress) *MsgBurnRecoveryTokens {
+	return &MsgBurnRecoveryTokens{
+		Address: sender.String(),
 	}
 }
 
-func (msg MsgRefuteSlashingProposal) Route() string { return RouterKey }
-func (msg MsgRefuteSlashingProposal) Type() string  { return types.MsgTypePause }
-func (msg MsgRefuteSlashingProposal) GetSigners() []sdk.AccAddress {
-	addr, err := sdk.AccAddressFromBech32(msg.Sender)
+func (msg MsgBurnRecoveryTokens) Route() string { return RouterKey }
+func (msg MsgBurnRecoveryTokens) Type() string  { return types.MsgTypePause }
+func (msg MsgBurnRecoveryTokens) GetSigners() []sdk.AccAddress {
+	addr, err := sdk.AccAddressFromBech32(msg.Address)
 	if err != nil {
 		panic(err)
 	}
@@ -136,15 +139,15 @@ func (msg MsgRefuteSlashingProposal) GetSigners() []sdk.AccAddress {
 }
 
 // GetSignBytes gets the bytes for the message signer to sign on
-func (msg MsgRefuteSlashingProposal) GetSignBytes() []byte {
+func (msg MsgBurnRecoveryTokens) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(&msg)
 	return sdk.MustSortJSON(bz)
 }
 
 // ValidateBasic validity check for the AnteHandler
-func (msg MsgRefuteSlashingProposal) ValidateBasic() error {
-	if msg.Validator == "" {
-		return ErrBadValidatorAddr
+func (msg MsgBurnRecoveryTokens) ValidateBasic() error {
+	if msg.Address == "" {
+		return ErrInvalidAccAddress
 	}
 
 	return nil

@@ -1,49 +1,41 @@
 package cli
 
 import (
-	"fmt"
-	"strings"
-	"time"
-
-	govtypes "github.com/KiraCore/sekai/x/gov/types"
-	"github.com/KiraCore/sekai/x/slashing/types"
+	"github.com/KiraCore/sekai/x/recovery/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
 )
 
-// NewTxCmd returns a root CLI command handler for all x/slashing transaction commands.
+// NewTxCmd returns a root CLI command handler for all x/recovery transaction commands.
 func NewTxCmd() *cobra.Command {
-	slashingTxCmd := &cobra.Command{
+	recoveryTxCmd := &cobra.Command{
 		Use:                        types.ModuleName,
-		Short:                      "Slashing transaction subcommands",
+		Short:                      "Recovery transaction subcommands",
 		DisableFlagParsing:         true,
 		SuggestionsMinimumDistance: 2,
 		RunE:                       client.ValidateCmd,
 	}
 
-	slashingTxCmd.AddCommand(
-		NewActivateTxCmd(),
-		NewPauseTxCmd(),
-		NewUnpauseTxCmd(),
-		NewRefuteSlashValidatorProposalTxCmd(),
-		GetTxProposalResetWholeValidatorRankCmd(),
-		GetTxProposalSlashValidatorCmd(),
+	recoveryTxCmd.AddCommand(
+		NewRegisterRecoverySecretTxCmd(),
+		NewRotateRecoveryAddressTxCmd(),
+		NewIssueRecoveryTokensTxCmd(),
+		NewBurnRecoveryTokensTxCmd(),
 	)
-	return slashingTxCmd
+	return recoveryTxCmd
 }
 
-// NewActivateTxCmd defines MsgActivate tx
-func NewActivateTxCmd() *cobra.Command {
+// NewRegisterRecoverySecretTxCmd defines MsgRegisterRecoverySecret tx
+func NewRegisterRecoverySecretTxCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "activate",
-		Args:  cobra.NoArgs,
-		Short: "Activate a validator previously inactivated for downtime",
-		Long: `activate an inactivated validator:
+		Use:   "register-recovery-secret [challenge] [nonce] [proof]",
+		Args:  cobra.ExactArgs(3),
+		Short: "Register recovery secret",
+		Long: `Register recovery secret:
 
-$ <appd> tx slashing activate --from mykey
+$ <appd> tx recovery register-recovery-secret [challenge] [nonce] [proof] --from mykey
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -51,9 +43,7 @@ $ <appd> tx slashing activate --from mykey
 				return err
 			}
 
-			valAddr := clientCtx.GetFromAddress()
-
-			msg := types.NewMsgActivate(sdk.ValAddress(valAddr))
+			msg := types.NewMsgRegisterRecoverySecret(clientCtx.GetFromAddress().String(), args[0], args[1], args[2])
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -67,15 +57,15 @@ $ <appd> tx slashing activate --from mykey
 	return cmd
 }
 
-// NewPauseTxCmd defines MsgPause tx
-func NewPauseTxCmd() *cobra.Command {
+// NewRotateRecoveryAddressTxCmd defines MsgRotateRecoveryAddress tx
+func NewRotateRecoveryAddressTxCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "pause",
-		Args:  cobra.NoArgs,
-		Short: "Pause a validator",
-		Long: `Pause a validator before stopping of a node to avoid automatic inactivation:
+		Use:   "rotate-recovery-address [recovery] [proof]",
+		Args:  cobra.ExactArgs(2),
+		Short: "Rotate an address to recovery address",
+		Long: `Rotate an address to recovery address:
 
-$ <appd> tx customslashing pause --from validator --chain-id=testing --keyring-backend=test --fees=100ukex --home=$HOME/.sekaid --yes
+$ <appd> tx recovery rotate-recovery-address [recovery] [proof] --from validator --chain-id=testing --keyring-backend=test --fees=100ukex --home=$HOME/.sekaid --yes
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -83,9 +73,7 @@ $ <appd> tx customslashing pause --from validator --chain-id=testing --keyring-b
 				return err
 			}
 
-			valAddr := clientCtx.GetFromAddress()
-
-			msg := types.NewMsgPause(sdk.ValAddress(valAddr))
+			msg := types.NewMsgRotateRecoveryAddress(clientCtx.GetFromAddress().String(), args[0], args[1])
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -99,15 +87,15 @@ $ <appd> tx customslashing pause --from validator --chain-id=testing --keyring-b
 	return cmd
 }
 
-// NewUnpauseTxCmd defines MsgUnpause tx
-func NewUnpauseTxCmd() *cobra.Command {
+// NewIssueRecoveryTokensTxCmd defines MsgIssueRecoveryTokens tx
+func NewIssueRecoveryTokensTxCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "unpause",
+		Use:   "issue-recovery-tokens",
 		Args:  cobra.NoArgs,
-		Short: "Unpause a validator previously paused for downtime",
-		Long: `Unpause a paused validator:
+		Short: "Issue recovery tokens",
+		Long: `Issue recovery tokens:
 
-$ <appd> tx slashing unpause --from mykey
+$ <appd> tx recovery issue-recovery-tokens --from mykey
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -115,9 +103,7 @@ $ <appd> tx slashing unpause --from mykey
 				return err
 			}
 
-			valAddr := clientCtx.GetFromAddress()
-
-			msg := types.NewMsgUnpause(sdk.ValAddress(valAddr))
+			msg := types.NewMsgIssueRecoveryTokens(clientCtx.GetFromAddress().String())
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -131,15 +117,15 @@ $ <appd> tx slashing unpause --from mykey
 	return cmd
 }
 
-// NewRefuteSlashValidatorProposalTxCmd defines MsgRefuteSlashValidatorProposal tx
-func NewRefuteSlashValidatorProposalTxCmd() *cobra.Command {
+// NewBurnRecoveryTokensTxCmd defines MsgBurnRecoveryTokens tx
+func NewBurnRecoveryTokensTxCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "refute-slash-validator-proposal",
+		Use:   "burn-recovery-tokens",
 		Args:  cobra.NoArgs,
-		Short: "Refute slash validator proposal",
-		Long: `Refute slash validator proposal:
+		Short: "Burn recovery tokens",
+		Long: `Burn recovery tokens:
 
-$ <appd> tx slashing refute-slash-validator-proposal --from mykey
+$ <appd> tx recovery burn-recovery-tokens --from mykey
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -147,12 +133,7 @@ $ <appd> tx slashing refute-slash-validator-proposal --from mykey
 				return err
 			}
 
-			valAddr := clientCtx.GetFromAddress()
-			refutation, err := cmd.Flags().GetString(FlagRefutation)
-			if err != nil {
-				return fmt.Errorf("invalid refutation: %w", err)
-			}
-			msg := types.NewMsgRefuteSlashingProposal(clientCtx.GetFromAddress(), sdk.ValAddress(valAddr), refutation)
+			msg := types.NewMsgBurnRecoveryTokens(clientCtx.GetFromAddress())
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -162,136 +143,6 @@ $ <appd> tx slashing refute-slash-validator-proposal --from mykey
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
-	cmd.Flags().String(FlagRefutation, "", "Refutation for the proposal.")
-
-	return cmd
-}
-
-// GetTxProposalResetWholeValidatorRankCmd implement cli command for ProposalResetWholeValidatorRank
-func GetTxProposalResetWholeValidatorRankCmd() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "proposal-reset-whole-validator-rank",
-		Short: "Create a proposal to unjail validator (the from address is the validator)",
-		Args:  cobra.ExactArgs(0),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
-			title, err := cmd.Flags().GetString(FlagTitle)
-			if err != nil {
-				return fmt.Errorf("invalid title: %w", err)
-			}
-			description, err := cmd.Flags().GetString(FlagDescription)
-			if err != nil {
-				return fmt.Errorf("invalid description: %w", err)
-			}
-
-			msg, err := govtypes.NewMsgSubmitProposal(
-				clientCtx.FromAddress,
-				title,
-				description,
-				types.NewResetWholeValidatorRankProposal(clientCtx.FromAddress),
-			)
-			if err != nil {
-				return err
-			}
-
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
-		},
-	}
-
-	cmd.Flags().String(FlagTitle, "", "The title of the proposal.")
-	cmd.MarkFlagRequired(FlagTitle)
-	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
-	cmd.MarkFlagRequired(FlagDescription)
-
-	flags.AddTxFlagsToCmd(cmd)
-	_ = cmd.MarkFlagRequired(flags.FlagFrom)
-
-	return cmd
-}
-
-// GetTxProposalSlashValidatorCmd implement cli command for ProposalSlashValidator
-func GetTxProposalSlashValidatorCmd() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "proposal-slash-validator",
-		Short: "Create a proposal to slash validator (the from address is the validator)",
-		Args:  cobra.ExactArgs(0),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
-			title, err := cmd.Flags().GetString(FlagTitle)
-			if err != nil {
-				return fmt.Errorf("invalid title: %w", err)
-			}
-			description, err := cmd.Flags().GetString(FlagDescription)
-			if err != nil {
-				return fmt.Errorf("invalid description: %w", err)
-			}
-
-			offender, err := cmd.Flags().GetString(FlagOffender)
-			if err != nil {
-				return fmt.Errorf("invalid offender: %w", err)
-			}
-			stakingPoolId, err := cmd.Flags().GetUint64(FlagStakingPoolId)
-			if err != nil {
-				return fmt.Errorf("invalid stakingPoolId: %w", err)
-			}
-			misbehaviourTimestamp, err := cmd.Flags().GetUint64(FlagMisbehaviourTime)
-			if err != nil {
-				return fmt.Errorf("invalid misbehaviourTimestamp: %w", err)
-			}
-			misbehaviourTime := time.Unix(int64(misbehaviourTimestamp), 0)
-			misbehaviourType, err := cmd.Flags().GetString(FlagMisBehaviourType)
-			if err != nil {
-				return fmt.Errorf("invalid misbehaviourType: %w", err)
-			}
-			jailPercentage, err := cmd.Flags().GetUint64(FlagJailPercentage)
-			if err != nil {
-				return fmt.Errorf("invalid jailPercentage: %w", err)
-			}
-
-			colludersStr, err := cmd.Flags().GetString(FlagColluders)
-			if err != nil {
-				return fmt.Errorf("invalid colluders: %w", err)
-			}
-			colluders := strings.Split(colludersStr, ",")
-			refutation, err := cmd.Flags().GetString(FlagRefutation)
-			if err != nil {
-				return fmt.Errorf("invalid refutation: %w", err)
-			}
-
-			msg, err := govtypes.NewMsgSubmitProposal(
-				clientCtx.FromAddress,
-				title,
-				description,
-				types.NewSlashValidatorProposal(offender, stakingPoolId, misbehaviourTime, misbehaviourType, jailPercentage, colluders, refutation),
-			)
-			if err != nil {
-				return err
-			}
-
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
-		},
-	}
-
-	cmd.Flags().String(FlagTitle, "", "The title of the proposal.")
-	cmd.MarkFlagRequired(FlagTitle)
-	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
-	cmd.MarkFlagRequired(FlagDescription)
-	cmd.Flags().String(FlagOffender, "", "The offender.")
-	cmd.Flags().Uint64(FlagStakingPoolId, 0, "The staking pool id.")
-	cmd.Flags().Uint64(FlagMisbehaviourTime, 0, "Misbehaviour timestamp.")
-	cmd.Flags().String(FlagMisBehaviourType, "", "Misbehaviour type.")
-	cmd.Flags().Uint64(FlagJailPercentage, 0, "Jail percentage.")
-	cmd.Flags().String(FlagColluders, "", "Colluders.")
-	cmd.Flags().String(FlagRefutation, "", "Refutation for the proposal.")
-
-	flags.AddTxFlagsToCmd(cmd)
-	_ = cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
 }
