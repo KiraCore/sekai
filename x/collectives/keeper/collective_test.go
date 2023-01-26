@@ -116,12 +116,12 @@ func (suite *KeeperTestSuite) TestCollectiveContributerSetGetDelete() {
 		suite.Require().Equal(c, contributer)
 	}
 
-	allContributers := suite.app.CollectivesKeeper.GetAllCollectiveContributers(suite.ctx, contributers[0].Name)
+	allContributers := suite.app.CollectivesKeeper.GetCollectiveContributers(suite.ctx, contributers[0].Name)
 	suite.Require().Len(allContributers, 1)
 
 	suite.app.CollectivesKeeper.DeleteCollectiveContributer(suite.ctx, contributers[0].Name, contributers[0].Address)
 
-	allContributers = suite.app.CollectivesKeeper.GetAllCollectiveContributers(suite.ctx, contributers[0].Name)
+	allContributers = suite.app.CollectivesKeeper.GetCollectiveContributers(suite.ctx, contributers[0].Name)
 	suite.Require().Len(allContributers, 0)
 
 	contributer := suite.app.CollectivesKeeper.GetCollectiveContributer(suite.ctx, contributers[0].Name, contributers[0].Address)

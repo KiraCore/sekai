@@ -15,6 +15,11 @@ message RecoveryRecord {
 }
 
 message RecoveryToken {
-    string address = 1;
-    string token = 2;
+  string address = 1;
+  string token = 2;
+}
+
+message Rotation {
+  string address = 1;
+  string rotated = 2;
 }

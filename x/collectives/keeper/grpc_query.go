@@ -24,7 +24,7 @@ func (q Querier) Collective(c context.Context, request *types.CollectiveRequest)
 	ctx := sdk.UnwrapSDKContext(c)
 	return &types.CollectiveResponse{
 		Collective:   q.keeper.GetCollective(ctx, request.Name),
-		Contributers: q.keeper.GetAllCollectiveContributers(ctx, request.Name),
+		Contributers: q.keeper.GetCollectiveContributers(ctx, request.Name),
 	}, nil
 }
 

@@ -17,15 +17,26 @@ func (k Keeper) GetRecoveryRecord(ctx sdk.Context, address string) (types.Recove
 	return record, nil
 }
 
+func (k Keeper) GetRecoveryAddressFromChallenge(ctx sdk.Context, challenge string) string {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.RecoveryRecordKey(challenge))
+	if bz == nil {
+		return ""
+	}
+	return string(bz)
+}
+
 func (k Keeper) SetRecoveryRecord(ctx sdk.Context, record types.RecoveryRecord) {
 	bz := k.cdc.MustMarshal(&record)
 	store := ctx.KVStore(k.storeKey)
 	store.Set(types.RecoveryRecordKey(record.Address), bz)
+	store.Set(types.RecoveryChallengeKey(record.Challenge), []byte(record.Address))
 }
 
 func (k Keeper) DeleteRecoveryRecord(ctx sdk.Context, record types.RecoveryRecord) {
 	store := ctx.KVStore(k.storeKey)
 	store.Delete(types.RecoveryRecordKey(record.Address))
+	store.Delete(types.RecoveryChallengeKey(record.Challenge))
 }
 
 func (k Keeper) GetAllRecoveryRecords(ctx sdk.Context) []types.RecoveryRecord {

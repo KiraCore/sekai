@@ -14,18 +14,31 @@ import (
 type Keeper struct {
 	storeKey sdk.StoreKey
 	cdc      codec.BinaryCodec
+	ak       types.AccountKeeper
+	bk       types.BankKeeper
 	sk       types.StakingKeeper
 	gk       types.GovKeeper
 	msk      types.MultiStakingKeeper
+	ck       types.CollectivesKeeper
 }
 
 // NewKeeper creates a recovery keeper
-func NewKeeper(cdc codec.BinaryCodec, key sdk.StoreKey, sk types.StakingKeeper) Keeper {
+func NewKeeper(cdc codec.BinaryCodec, key sdk.StoreKey,
+	ak types.AccountKeeper,
+	sk types.StakingKeeper,
+	gk types.GovKeeper,
+	msk types.MultiStakingKeeper,
+	ck types.CollectivesKeeper,
+) Keeper {
 
 	return Keeper{
 		storeKey: key,
 		cdc:      cdc,
+		ak:       ak,
 		sk:       sk,
+		gk:       gk,
+		msk:      msk,
+		ck:       ck,
 	}
 }
 

@@ -15,9 +15,15 @@ const (
 )
 
 var (
-	RecoveryRecordKeyPrefix = []byte{0x01} // Prefix for recovery record
-	RecoveryTokenKeyPrefix  = []byte{0x02} // Prefix for recovery token
+	RecoveryChallengeKeyPrefix = []byte{0x01} // Prefix for recovery challenge
+	RecoveryRecordKeyPrefix    = []byte{0x02} // Prefix for recovery record
+	RecoveryTokenKeyPrefix     = []byte{0x03} // Prefix for recovery token
+	RotationHistoryKeyPrefix   = []byte{0x04} // Prefix for rotation history
 )
+
+func RecoveryChallengeKey(challenge string) []byte {
+	return append(RecoveryChallengeKeyPrefix, challenge...)
+}
 
 func RecoveryRecordKey(address string) []byte {
 	return append(RecoveryRecordKeyPrefix, address...)
@@ -25,4 +31,8 @@ func RecoveryRecordKey(address string) []byte {
 
 func RecoveryTokenKey(address string) []byte {
 	return append(RecoveryTokenKeyPrefix, address...)
+}
+
+func RotationHistoryKey(address string) []byte {
+	return append(RotationHistoryKeyPrefix, address...)
 }
