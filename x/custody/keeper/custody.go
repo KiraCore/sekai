@@ -149,11 +149,23 @@ func (k Keeper) AddToCustodyLimitsStatus(ctx sdk.Context, record types.CustodyLi
 	store.Set(key, k.cdc.MustMarshal(record.CustodyStatuses))
 }
 
+func (k Keeper) DropCustodyLimitsStatus(ctx sdk.Context, addr sdk.AccAddress) {
+	store := ctx.KVStore(k.storeKey)
+	key := append([]byte(types.PrefixKeyCustodyLimitsStatus), addr...)
+	store.Delete(key)
+}
+
 func (k Keeper) AddToCustodyPool(ctx sdk.Context, record types.CustodyPool) {
 	store := ctx.KVStore(k.storeKey)
 	key := append([]byte(types.PrefixKeyCustodyPool), record.Address...)
 
 	store.Set(key, k.cdc.MustMarshal(record.Transactions))
+}
+
+func (k Keeper) DropCustodyPool(ctx sdk.Context, addr sdk.AccAddress) {
+	store := ctx.KVStore(k.storeKey)
+	key := append([]byte(types.PrefixKeyCustodyPool), addr...)
+	store.Delete(key)
 }
 
 func (k Keeper) GetCustodyPoolByAddress(ctx sdk.Context, address sdk.AccAddress) *types.TransactionPool {

@@ -13,6 +13,11 @@ func (k Keeper) SaveNetworkActor(ctx sdk.Context, actor types.NetworkActor) {
 	prefixStore.Set(actor.Address.Bytes(), bz)
 }
 
+func (k Keeper) DeleteNetworkActor(ctx sdk.Context, actor types.NetworkActor) {
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), NetworkActorsPrefix)
+	prefixStore.Delete(actor.Address.Bytes())
+}
+
 func (k Keeper) GetNetworkActorByAddress(ctx sdk.Context, address sdk.AccAddress) (types.NetworkActor, bool) {
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), NetworkActorsPrefix)
 
@@ -42,6 +47,11 @@ func (k Keeper) GetNetworkActorFromIterator(iterator sdk.Iterator) *types.Networ
 func (k Keeper) SetWhitelistAddressPermKey(ctx sdk.Context, actor types.NetworkActor, perm types.PermValue) {
 	store := ctx.KVStore(k.storeKey)
 	store.Set(WhitelistAddressPermKey(actor.Address, perm), actor.Address.Bytes())
+}
+
+func (k Keeper) DeleteWhitelistAddressPermKey(ctx sdk.Context, actor types.NetworkActor, perm types.PermValue) {
+	store := ctx.KVStore(k.storeKey)
+	store.Delete(WhitelistAddressPermKey(actor.Address, perm))
 }
 
 // AddWhitelistPermission whitelist a permission to an address. It saves the actor after it.
@@ -83,10 +93,7 @@ func (k Keeper) RemoveWhitelistedPermission(ctx sdk.Context, actor types.Network
 	}
 
 	k.SaveNetworkActor(ctx, actor)
-
-	store := ctx.KVStore(k.storeKey)
-	store.Delete(WhitelistAddressPermKey(actor.Address, perm))
-
+	k.DeleteWhitelistAddressPermKey(ctx, actor, perm)
 	return nil
 }
 
