@@ -82,19 +82,13 @@ func (k msgServer) RotateRecoveryAddress(goCtx context.Context, msg *types.MsgRo
 
 	// - account module
 	acc := k.ak.GetAccount(ctx, addr)
+	if acc == nil {
+		return nil, types.ErrAccountDoesNotExists
+	}
 	rotatedAcc := k.ak.GetAccount(ctx, rotatedAddr)
 	if rotatedAcc != nil {
 		return nil, types.ErrRotatedAccountAlreadyExists
 	}
-	err = acc.SetPubKey(nil)
-	if err != nil {
-		return nil, err
-	}
-	err = acc.SetAddress(rotatedAddr)
-	if err != nil {
-		return nil, err
-	}
-	k.ak.SetAccount(ctx, acc)
 
 	// - bank module
 	balances := k.bk.GetAllBalances(ctx, addr)
@@ -232,7 +226,7 @@ func (k msgServer) RotateRecoveryAddress(goCtx context.Context, msg *types.MsgRo
 	if settings != nil {
 		k.custodyk.DeleteCustodyRecord(ctx, addr)
 		k.custodyk.SetCustodyRecord(ctx, custodytypes.CustodyRecord{
-			Address:         addr,
+			Address:         rotatedAddr,
 			CustodySettings: settings,
 		})
 	}

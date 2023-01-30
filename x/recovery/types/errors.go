@@ -11,4 +11,5 @@ var (
 	ErrRecoveryTokenDoesNotExist   = sdkerrors.Register(ModuleName, 4, "recovery token does not exist")
 	ErrInvalidProof                = sdkerrors.Register(ModuleName, 5, "invalid proof")
 	ErrRotatedAccountAlreadyExists = sdkerrors.Register(ModuleName, 6, "rotated account already exists")
+	ErrAccountDoesNotExists        = sdkerrors.Register(ModuleName, 7, "account does not exist")
 )
