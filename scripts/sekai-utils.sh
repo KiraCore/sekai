@@ -131,6 +131,70 @@ function txAwait() {
     done
 }
 
+function txAwait2() {
+    local START_TIME="$(date -u +%s)"
+    local RAW=""
+    local TIMEOUT=""
+
+    if (! $(isTxHash "$1")) ; then
+        RAW=$(cat)
+        TIMEOUT=$1
+    else
+        RAW=$1
+        TIMEOUT=$2
+    fi
+
+    (! $(isNaturalNumber $TIMEOUT)) && TIMEOUT=0
+    [[ $TIMEOUT -le 0 ]] && MAX_TIME="∞" || MAX_TIME="$TIMEOUT"
+
+    local TXHASH=""
+    if (! $(isTxHash "$RAW")) ; then
+        # INPUT example: {"height":"0","txhash":"DF8BFCC9730FDBD33AEA184EC3D6C37B4311BC1C0E2296893BC020E4638A0D6F","codespace":"","code":0,"data":"","raw_log":"","logs":[],"info":"","gas_wanted":"0","gas_used":"0","tx":null,"timestamp":""}
+        local VAL=$(echo $RAW | jsonParse "" 2> /dev/null || echo "")
+        if ($(isNullOrEmpty "$VAL")) ; then
+            echoErr "ERROR: Failed to propagate transaction:"
+            echoErr "$RAW"
+            return 1
+        fi
+
+        TXHASH=$(echo $VAL | jsonQuickParse "txhash" 2> /dev/null || echo "")
+        if ($(isNullOrEmpty "$TXHASH")) ; then
+            echoErr "ERROR: Transaction hash 'txhash' was NOT found in the tx propagation response:"
+            echoErr "$RAW"
+            return 1
+        fi
+    else
+        TXHASH="${RAW^^}"
+    fi
+
+    while : ; do
+        local ELAPSED=$(($(date -u +%s) - $START_TIME))
+        local OUT=$(sekaid query tx $TXHASH --output=json --home=$SEKAID_HOME 2> /dev/null | jsonParse "" 2> /dev/null || echo -n "")
+        if [ ! -z "$OUT" ] ; then
+
+            local CODE=$(echo $OUT | jsonQuickParse "code" 2> /dev/null || echo -n "")
+            if [ "$CODE" == "0" ] ; then
+                echo "${TXHASH,,}"
+                return 0
+            else
+                echoErr "ERROR: Transaction failed with exit code '$CODE'"
+                return 1
+            fi
+        fi
+
+        if [[ $TIMEOUT -gt 0 ]] && [[ $ELAPSED -gt $TIMEOUT ]] ; then
+            echoInfo "INFO: Transaction query response was NOT received:"
+            echo $RAW | jq 2> /dev/null || echoErr "$RAW"
+            echoErr "ERROR: Timeout, failed to confirm tx hash '$TXHASH' within ${TIMEOUT} s limit"
+            return 1
+        else
+            sleep 0.5
+        fi
+    done
+
+    echo "${TXHASH,,}"
+}
+
 # e.g. showAddress validator
 function showAddress() {
     ($(isKiraAddress "$1")) && echo "$1" || echo $(sekaid keys show "$1" --keyring-backend=test --output=json --home=$SEKAID_HOME 2> /dev/null | jsonParse "address" 2> /dev/null || echo -n "")
@@ -1095,8 +1159,17 @@ function enableCustody() {
 
   sekaid tx custody create $MODE $PASSWORD $LIMITS $WHITELIST --from=$FROM --keyring-backend=test --chain-id=$NETWORK_NAME --fees="${FEE_AMOUNT}${FEE_DENOM}" --output=json --yes --home=$SEKAID_HOME --okey=$OKEY --nkey=$NKEY | txAwait 180
 }
-
 # enableCustody
+function disableCustody() {
+  local FROM=$1
+  local FEE_AMOUNT=$2
+  local FEE_DENOM=$3
+  local OKEY=$4
+
+  sekaid tx custody disable --from=$FROM --keyring-backend=test --chain-id=$NETWORK_NAME --fees="${FEE_AMOUNT}${FEE_DENOM}" --output=json --yes --home=$SEKAID_HOME --okey=$OKEY | txAwait 180
+}
+
+# addCustodians
 function addCustodians() {
   local FROM=$1
   local ADDRESSES=$2
@@ -1106,6 +1179,17 @@ function addCustodians() {
   local NKEY=$6
 
   sekaid tx custody custodians add "$ADDRESSES" --from=$FROM --keyring-backend=test --chain-id=$NETWORK_NAME --fees="${FEE_AMOUNT}${FEE_DENOM}" --output=json --yes --home=$SEKAID_HOME --okey=$OKEY --nkey=$NKEY | txAwait 180
+}
+
+# dropCustodians
+function dropCustodians() {
+  local FROM=$1
+  local FEE_AMOUNT=$2
+  local FEE_DENOM=$3
+  local OKEY=$4
+  local NKEY=$5
+
+  sekaid tx custody custodians drop --from=$FROM --keyring-backend=test --chain-id=$NETWORK_NAME --fees="${FEE_AMOUNT}${FEE_DENOM}" --output=json --yes --home=$SEKAID_HOME --okey=$OKEY --nkey=$NKEY | txAwait 180
 }
 
 # e.g. getCustodyInfo
@@ -1157,15 +1241,17 @@ function custodySendTokens() {
     local DENOM="$4"
     local FEE_AMOUNT="$5"
     local FEE_DENOM="$6"
-    local PASSWORD="$7"
+    local REWARD_AMOUNT="$7"
+    local REWARD_DENOM="$8"
+    local PASSWORD="$9"
     local RESULT=""
 
     ($(isNullOrEmpty $FEE_AMOUNT)) && FEE_AMOUNT=100
     ($(isNullOrEmpty $FEE_DENOM)) && FEE_DENOM="ukex"
 
-    RESULT=$(sekaid tx custody send $SOURCE $DESTINATION "${AMOUNT}${DENOM}" $PASSWORD --keyring-backend=test --chain-id=$NETWORK_NAME --fees "${FEE_AMOUNT}${FEE_DENOM}" --output=json --yes --home=$SEKAID_HOME 2> /dev/null | jsonParse "txhash" 2> /dev/null || echo -n "")
+    RESULT=$(sekaid tx custody send $SOURCE $DESTINATION "${AMOUNT}${DENOM}" $PASSWORD --reward="${REWARD_AMOUNT}${REWARD_DENOM}" --keyring-backend=test --chain-id=$NETWORK_NAME --fees "${FEE_AMOUNT}${FEE_DENOM}" --output=json --yes --home=$SEKAID_HOME 2> /dev/null | txAwait2 180 2> /dev/null || echo -n "" )
 
-    echo "$RESULT"
+    echo "${RESULT,,}"
 }
 
 function approveTransaction() {

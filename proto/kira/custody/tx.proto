@@ -12,6 +12,7 @@ option go_package = "github.com/KiraCore/sekai/x/custody/types";
 // Msg defines the custody Msg service.
 service Msg {
   rpc CreateCustody(MsgCreteCustodyRecord) returns (MsgCreteCustodyRecordResponse);
+  rpc DisableCustody(MsgDisableCustodyRecord) returns (MsgDisableCustodyRecordResponse);
   rpc AddToCustodians(MsgAddToCustodyCustodians) returns (MsgAddToCustodyCustodiansResponse);
   rpc RemoveFromCustodians(MsgRemoveFromCustodyCustodians) returns (MsgRemoveFromCustodyCustodiansResponse);
   rpc DropCustodians(MsgDropCustodyCustodians) returns (MsgDropCustodyCustodiansResponse);
@@ -40,6 +41,18 @@ message MsgCreteCustodyRecord {
 
   string old_key = 3;
   string new_key = 4;
+}
+
+message MsgDisableCustodyRecord {
+  option (gogoproto.equal)           = false;
+  option (gogoproto.goproto_getters) = false;
+
+  bytes address = 1 [
+    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
+    (gogoproto.moretags) = "yaml:\"address\""
+  ];
+
+  string old_key = 2;
 }
 
 message MsgAddToCustodyCustodians {
@@ -226,6 +239,8 @@ message MsgSend {
   repeated cosmos.base.v1beta1.Coin amount = 3
   [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];
   string   password                        = 4 [(gogoproto.moretags) = "yaml:\"password\""];
+  repeated cosmos.base.v1beta1.Coin reward = 5
+  [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];
 }
 
 message TransactionRecord {
@@ -263,6 +278,7 @@ message MsgPasswordConfirmTransaction {
 }
 
 message MsgCreteCustodyRecordResponse {}
+message MsgDisableCustodyRecordResponse {}
 message MsgAddToCustodyCustodiansResponse {}
 message MsgRemoveFromCustodyCustodiansResponse {}
 message MsgDropCustodyCustodiansResponse {}

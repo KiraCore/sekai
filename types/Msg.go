@@ -82,6 +82,7 @@ const (
 
 	// custody module
 	MsgTypeCreateCustody               = "create-custody"
+	MsgTypeDisableCustody              = "disable-custody"
 	MsgTypeAddToCustodyWhiteList       = "add-to-custody-whitelist"
 	MsgTypeAddToCustodyCustodians      = "add-to-custody-custodians"
 	MsgTypeRemoveFromCustodyCustodians = "remove-from-custody-custodians"
