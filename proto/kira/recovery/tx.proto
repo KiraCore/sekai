@@ -31,9 +31,10 @@ message MsgRegisterRecoverySecret {
 message MsgRegisterRecoverySecretResponse {}
 
 message MsgRotateRecoveryAddress {
-    string address = 1;
-    string recovery = 2;
-    string proof = 3;
+  string fee_payer = 1;
+  string address = 2;
+  string recovery = 3;
+  string proof = 4;
 }
 message MsgRotateRecoveryAddressResponse {}
 

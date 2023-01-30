@@ -20,13 +20,13 @@ func NewMsgRegisterRecoverySecret(addr, challenge, nonce, proof string) *MsgRegi
 }
 
 func (msg MsgRegisterRecoverySecret) Route() string { return RouterKey }
-func (msg MsgRegisterRecoverySecret) Type() string  { return types.MsgTypeActivate }
+func (msg MsgRegisterRecoverySecret) Type() string  { return types.MsgTypeRegisterRecoverySecret }
 func (msg MsgRegisterRecoverySecret) GetSigners() []sdk.AccAddress {
-	valAddr, err := sdk.AccAddressFromBech32(msg.Address)
+	addr, err := sdk.AccAddressFromBech32(msg.Address)
 	if err != nil {
 		panic(err)
 	}
-	return []sdk.AccAddress{valAddr.Bytes()}
+	return []sdk.AccAddress{addr.Bytes()}
 }
 
 // GetSignBytes gets the bytes for the message signer to sign on
@@ -49,8 +49,9 @@ var _ sdk.Msg = &MsgRotateRecoveryAddress{}
 
 // NewMsgRotateRecoveryAddress creates a new MsgRotateRecoveryAddress instance
 //nolint:interfacer
-func NewMsgRotateRecoveryAddress(addr, recovery, proof string) *MsgRotateRecoveryAddress {
+func NewMsgRotateRecoveryAddress(feePayer, addr, recovery, proof string) *MsgRotateRecoveryAddress {
 	return &MsgRotateRecoveryAddress{
+		FeePayer: feePayer,
 		Address:  addr,
 		Recovery: recovery,
 		Proof:    proof,
@@ -58,13 +59,21 @@ func NewMsgRotateRecoveryAddress(addr, recovery, proof string) *MsgRotateRecover
 }
 
 func (msg MsgRotateRecoveryAddress) Route() string { return RouterKey }
-func (msg MsgRotateRecoveryAddress) Type() string  { return types.MsgTypeUnpause }
+func (msg MsgRotateRecoveryAddress) Type() string  { return types.MsgTypeRotateRecoveryAddress }
 func (msg MsgRotateRecoveryAddress) GetSigners() []sdk.AccAddress {
-	valAddr, err := sdk.AccAddressFromBech32(msg.Address)
+	feePayer, err := sdk.AccAddressFromBech32(msg.FeePayer)
 	if err != nil {
 		panic(err)
 	}
-	return []sdk.AccAddress{valAddr.Bytes()}
+	addr, err := sdk.AccAddressFromBech32(msg.Address)
+	if err != nil {
+		panic(err)
+	}
+
+	if msg.Address == msg.FeePayer {
+		return []sdk.AccAddress{addr.Bytes()}
+	}
+	return []sdk.AccAddress{feePayer.Bytes(), addr.Bytes()}
 }
 
 // GetSignBytes gets the bytes for the message signer to sign on
@@ -94,13 +103,13 @@ func NewMsgIssueRecoveryTokens(addr string) *MsgIssueRecoveryTokens {
 }
 
 func (msg MsgIssueRecoveryTokens) Route() string { return RouterKey }
-func (msg MsgIssueRecoveryTokens) Type() string  { return types.MsgTypePause }
+func (msg MsgIssueRecoveryTokens) Type() string  { return types.MsgTypeIssueRecoveryTokens }
 func (msg MsgIssueRecoveryTokens) GetSigners() []sdk.AccAddress {
-	valAddr, err := sdk.AccAddressFromBech32(msg.Address)
+	addr, err := sdk.AccAddressFromBech32(msg.Address)
 	if err != nil {
 		panic(err)
 	}
-	return []sdk.AccAddress{valAddr.Bytes()}
+	return []sdk.AccAddress{addr.Bytes()}
 }
 
 // GetSignBytes gets the bytes for the message signer to sign on
@@ -129,7 +138,7 @@ func NewMsgBurnRecoveryTokens(sender sdk.AccAddress) *MsgBurnRecoveryTokens {
 }
 
 func (msg MsgBurnRecoveryTokens) Route() string { return RouterKey }
-func (msg MsgBurnRecoveryTokens) Type() string  { return types.MsgTypePause }
+func (msg MsgBurnRecoveryTokens) Type() string  { return types.MsgTypeBurnRecoveryTokens }
 func (msg MsgBurnRecoveryTokens) GetSigners() []sdk.AccAddress {
 	addr, err := sdk.AccAddressFromBech32(msg.Address)
 	if err != nil {

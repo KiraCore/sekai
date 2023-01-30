@@ -65,6 +65,11 @@ func (suite *KeeperTestSuite) TestRotateRecoveryAddress() {
 	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, addr1, coins)
 	suite.Require().NoError(err)
 
+	err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, keeper.RecoveryFee)
+	suite.Require().NoError(err)
+	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, addr1, keeper.RecoveryFee)
+	suite.Require().NoError(err)
+
 	// collectives module setup
 	contributer := collectivestypes.CollectiveContributor{
 		Address:      addr1.String(),
@@ -123,11 +128,12 @@ func (suite *KeeperTestSuite) TestRotateRecoveryAddress() {
 
 	// invalid proof
 	msg := types.NewMsgRotateRecoveryAddress(
-		addr1.String(), addr2.String(), "",
+		addr1.String(), addr1.String(), addr2.String(), "",
 	)
 
 	msgServer := keeper.NewMsgServerImpl(suite.app.RecoveryKeeper)
-	_, err = msgServer.RotateRecoveryAddress(sdk.WrapSDKContext(suite.ctx), msg)
+	cacheCtx, _ := suite.ctx.CacheContext()
+	_, err = msgServer.RotateRecoveryAddress(sdk.WrapSDKContext(cacheCtx), msg)
 	suite.Require().Error(err)
 
 	// valid proof

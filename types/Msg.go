@@ -66,6 +66,12 @@ const (
 	MsgTypePause    = "pause"
 	MsgTypeUnpause  = "unpause"
 
+	// recovery module
+	MsgTypeRegisterRecoverySecret = "register-recovery-secret"
+	MsgTypeRotateRecoveryAddress  = "rotate-recovery-address"
+	MsgTypeIssueRecoveryTokens    = "issue-recovery-tokens"
+	MsgTypeBurnRecoveryTokens     = "burn-recovery-tokens"
+
 	//upgrade module
 
 	// spending module

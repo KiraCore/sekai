@@ -23,6 +23,8 @@ func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 
 var _ types.MsgServer = msgServer{}
 
+var RecoveryFee = sdk.Coins{sdk.NewInt64Coin("ukex", 1000_000_000)}
+
 // allow ANY user to register or modify existing recovery secret & verify if the nonce is correct
 func (k msgServer) RegisterRecoverySecret(goCtx context.Context, msg *types.MsgRegisterRecoverySecret) (*types.MsgRegisterRecoverySecretResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
@@ -60,6 +62,13 @@ func (k msgServer) RegisterRecoverySecret(goCtx context.Context, msg *types.MsgR
 // allow ANY KIRA address that knows the recovery secret or has a sufficient number of RR tokens to rotate the address
 func (k msgServer) RotateRecoveryAddress(goCtx context.Context, msg *types.MsgRotateRecoveryAddress) (*types.MsgRotateRecoveryAddressResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	// Pay 1000 KEX
+	feePayer := sdk.MustAccAddressFromBech32(msg.FeePayer)
+	err := k.bk.SendCoinsFromAccountToModule(ctx, feePayer, types.ModuleName, RecoveryFee)
+	if err != nil {
+		return nil, err
+	}
 
 	record, err := k.Keeper.GetRecoveryRecord(ctx, msg.Address)
 	if err != nil {

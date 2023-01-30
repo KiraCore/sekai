@@ -78,7 +78,7 @@ $ <appd> tx recovery rotate-recovery-address [recovery] [proof] --from validator
 				return err
 			}
 
-			msg := types.NewMsgRotateRecoveryAddress(clientCtx.GetFromAddress().String(), args[0], args[1])
+			msg := types.NewMsgRotateRecoveryAddress(clientCtx.GetFromAddress().String(), clientCtx.GetFromAddress().String(), args[0], args[1])
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
