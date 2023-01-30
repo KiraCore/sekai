@@ -1,6 +1,10 @@
 package cli
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
+	"fmt"
+
 	"github.com/KiraCore/sekai/x/recovery/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -23,6 +27,7 @@ func NewTxCmd() *cobra.Command {
 		NewRotateRecoveryAddressTxCmd(),
 		NewIssueRecoveryTokensTxCmd(),
 		NewBurnRecoveryTokensTxCmd(),
+		NewGenerateRecoverySecretCmd(),
 	)
 	return recoveryTxCmd
 }
@@ -143,6 +148,36 @@ $ <appd> tx recovery burn-recovery-tokens --from mykey
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// NewGenerateRecoverySecretCmd generates recovery secret
+func NewGenerateRecoverySecretCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "generate-recovery-secret [key]",
+		Args:  cobra.ExactArgs(1),
+		Short: "Generate recovery secret",
+		Long: `Generate recovery secret:
+
+$ <appd> tx recovery generate-recovery-secret 10a0fbe01030000122300000000000
+`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			privKey, err := hex.DecodeString(args[0])
+			if err != nil {
+				return err
+			}
+
+			proof := sha256.Sum256(privKey)
+			challenge := sha256.Sum256(proof[:])
+
+			fmt.Println("nonce", "00")
+			fmt.Println("proof", hex.EncodeToString(proof[:]))
+			fmt.Println("challenge", hex.EncodeToString(challenge[:]))
+
+			return nil
+		},
+	}
 
 	return cmd
 }
