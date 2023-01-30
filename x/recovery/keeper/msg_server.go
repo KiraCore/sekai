@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 
+	custodytypes "github.com/KiraCore/sekai/x/custody/types"
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/recovery/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -179,19 +180,115 @@ func (k msgServer) RotateRecoveryAddress(goCtx context.Context, msg *types.MsgRo
 		}
 	}
 
-	// TODO:
 	// - multistaking
-	// - slashing
+	info := k.msk.GetCompoundInfoByAddress(ctx, msg.Address)
+	k.msk.RemoveCompoundInfo(ctx, info)
+	info.Delegator = msg.Recovery
+	k.msk.SetCompoundInfo(ctx, info)
+
+	pools := k.msk.GetAllStakingPools(ctx)
+	for _, pool := range pools {
+		isDelegator := k.msk.IsPoolDelegator(ctx, pool.Id, addr)
+		if isDelegator {
+			k.msk.RemovePoolDelegator(ctx, pool.Id, addr)
+			k.msk.SetPoolDelegator(ctx, pool.Id, rotatedAddr)
+		}
+	}
+
+	rewards := k.msk.GetDelegatorRewards(ctx, addr)
+	if !rewards.IsZero() {
+		k.msk.RemoveDelegatorRewards(ctx, addr)
+		k.msk.SetDelegatorRewards(ctx, rotatedAddr, rewards)
+	}
+
+	stpool, found := k.msk.GetStakingPoolByValidator(ctx, sdk.ValAddress(addr).String())
+	if found {
+		k.msk.RemoveStakingPool(ctx, stpool)
+		stpool.Validator = sdk.ValAddress(rotatedAddr).String()
+		k.msk.SetStakingPool(ctx, stpool)
+	}
+
 	// - spending
+	sppools := k.spk.GetAllSpendingPools(ctx)
+	for _, pool := range sppools {
+		info := k.spk.GetClaimInfo(ctx, pool.Name, addr)
+		if info != nil {
+			k.spk.RemoveClaimInfo(ctx, *info)
+			info.Account = msg.Recovery
+			k.spk.SetClaimInfo(ctx, *info)
+		}
+	}
+
 	// - staking
-	// - tokens
-	// - ubi
+	validator, err := k.sk.GetValidator(ctx, sdk.ValAddress(addr))
+	if err == nil {
+		k.sk.RemoveValidator(ctx, validator)
+		validator.ValKey = sdk.ValAddress(rotatedAddr)
+		k.sk.AddValidator(ctx, validator)
+	}
+
 	// - custody
+	settings := k.custodyk.GetCustodyInfoByAddress(ctx, addr)
+	if settings != nil {
+		k.custodyk.DeleteCustodyRecord(ctx, addr)
+		k.custodyk.SetCustodyRecord(ctx, custodytypes.CustodyRecord{
+			Address:         addr,
+			CustodySettings: settings,
+		})
+	}
+
+	custodians := k.custodyk.GetCustodyCustodiansByAddress(ctx, addr)
+	if custodians != nil {
+		k.custodyk.DropCustodyCustodiansByAddress(ctx, addr)
+		k.custodyk.AddToCustodyCustodians(ctx, custodytypes.CustodyCustodiansRecord{
+			Address:           rotatedAddr,
+			CustodyCustodians: custodians,
+		})
+	}
+
+	whitelist := k.custodyk.GetCustodyWhiteListByAddress(ctx, addr)
+	if whitelist != nil {
+		k.custodyk.DropCustodyWhiteListByAddress(ctx, addr)
+		k.custodyk.AddToCustodyWhiteList(ctx, custodytypes.CustodyWhiteListRecord{
+			Address:          rotatedAddr,
+			CustodyWhiteList: whitelist,
+		})
+	}
+
+	limits := k.custodyk.GetCustodyLimitsByAddress(ctx, addr)
+	if limits != nil {
+		k.custodyk.DropCustodyLimitsByAddress(ctx, addr)
+		k.custodyk.AddToCustodyLimits(ctx, custodytypes.CustodyLimitRecord{
+			Address:       rotatedAddr,
+			CustodyLimits: limits,
+		})
+	}
+
+	limitsStatus := k.custodyk.GetCustodyLimitsStatusByAddress(ctx, addr)
+	if limitsStatus != nil {
+		k.custodyk.DropCustodyLimitsStatus(ctx, addr)
+		k.custodyk.AddToCustodyLimitsStatus(ctx, custodytypes.CustodyLimitStatusRecord{
+			Address:         rotatedAddr,
+			CustodyStatuses: limitsStatus,
+		})
+	}
+
+	txPool := k.custodyk.GetCustodyPoolByAddress(ctx, addr)
+	if txPool != nil {
+		k.custodyk.DropCustodyPool(ctx, addr)
+		k.custodyk.AddToCustodyPool(ctx, custodytypes.CustodyPool{
+			Address:      rotatedAddr,
+			Transactions: txPool,
+		})
+	}
 
 	// nothing to do with following modules
 	// - basket
 	// - distributor
 	// - evidence
+	// - slashing
+	// - tokens
+	// - ubi
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(

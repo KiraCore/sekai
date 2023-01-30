@@ -2,8 +2,10 @@ package types
 
 import (
 	collectivestypes "github.com/KiraCore/sekai/x/collectives/types"
+	custodytypes "github.com/KiraCore/sekai/x/custody/types"
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	multistakingtypes "github.com/KiraCore/sekai/x/multistaking/types"
+	spendingtypes "github.com/KiraCore/sekai/x/spending/types"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	auth "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -40,6 +42,8 @@ type StakingKeeper interface {
 	GetValidator(sdk.Context, sdk.ValAddress) (stakingtypes.Validator, error)            // get a particular validator by operator address
 	GetValidatorByConsAddr(sdk.Context, sdk.ConsAddress) (stakingtypes.Validator, error) // get a particular validator by consensus address
 	GetValidatorSet(ctx sdk.Context) []stakingtypes.Validator                            // get all validator set
+	AddValidator(ctx sdk.Context, validator stakingtypes.Validator)
+	RemoveValidator(ctx sdk.Context, validator stakingtypes.Validator)
 
 	// activate/inactivate the validator and delegators of the validator, specifying offence height, offence power, and slash fraction
 	Inactivate(sdk.Context, sdk.ValAddress) error // inactivate a validator
@@ -96,14 +100,59 @@ type GovKeeper interface {
 }
 
 type MultiStakingKeeper interface {
-	GetStakingPoolByValidator(ctx sdk.Context, validator string) (pool multistakingtypes.StakingPool, found bool)
-	IncreasePoolRewards(ctx sdk.Context, pool multistakingtypes.StakingPool, rewards sdk.Coins)
+	GetCompoundInfoByAddress(ctx sdk.Context, addr string) multistakingtypes.CompoundInfo
+	SetCompoundInfo(ctx sdk.Context, info multistakingtypes.CompoundInfo)
+	RemoveCompoundInfo(ctx sdk.Context, info multistakingtypes.CompoundInfo)
+
+	SetPoolDelegator(ctx sdk.Context, poolId uint64, delegator sdk.AccAddress)
+	RemovePoolDelegator(ctx sdk.Context, poolId uint64, delegator sdk.AccAddress)
+	IsPoolDelegator(ctx sdk.Context, poolId uint64, delegator sdk.AccAddress) bool
+
+	SetDelegatorRewards(ctx sdk.Context, delegator sdk.AccAddress, rewards sdk.Coins)
+	RemoveDelegatorRewards(ctx sdk.Context, delegator sdk.AccAddress)
+	GetDelegatorRewards(ctx sdk.Context, delegator sdk.AccAddress) sdk.Coins
+
 	GetAllStakingPools(ctx sdk.Context) []multistakingtypes.StakingPool
-	SlashStakingPool(ctx sdk.Context, validator string, slash sdk.Dec)
+	GetStakingPoolByValidator(ctx sdk.Context, validator string) (pool multistakingtypes.StakingPool, found bool)
+	SetStakingPool(ctx sdk.Context, pool multistakingtypes.StakingPool)
+	RemoveStakingPool(ctx sdk.Context, pool multistakingtypes.StakingPool)
 }
 
 type CollectivesKeeper interface {
 	SetCollectiveContributer(ctx sdk.Context, cc collectivestypes.CollectiveContributor)
 	DeleteCollectiveContributer(ctx sdk.Context, name, address string)
 	GetAllCollectiveContributers(ctx sdk.Context) []collectivestypes.CollectiveContributor
+}
+
+type SpendingKeeper interface {
+	GetAllSpendingPools(ctx sdk.Context) []spendingtypes.SpendingPool
+	SetClaimInfo(ctx sdk.Context, claimInfo spendingtypes.ClaimInfo)
+	RemoveClaimInfo(ctx sdk.Context, claimInfo spendingtypes.ClaimInfo)
+	GetClaimInfo(ctx sdk.Context, poolName string, address sdk.AccAddress) *spendingtypes.ClaimInfo
+}
+
+type CustodyKeeper interface {
+	GetCustodyInfoByAddress(ctx sdk.Context, address sdk.AccAddress) *custodytypes.CustodySettings
+	SetCustodyRecord(ctx sdk.Context, record custodytypes.CustodyRecord)
+	DeleteCustodyRecord(ctx sdk.Context, addr sdk.AccAddress)
+
+	GetCustodyCustodiansByAddress(ctx sdk.Context, address sdk.AccAddress) *custodytypes.CustodyCustodianList
+	AddToCustodyCustodians(ctx sdk.Context, record custodytypes.CustodyCustodiansRecord)
+	DropCustodyCustodiansByAddress(ctx sdk.Context, address sdk.AccAddress)
+
+	GetCustodyWhiteListByAddress(ctx sdk.Context, address sdk.AccAddress) *custodytypes.CustodyWhiteList
+	AddToCustodyWhiteList(ctx sdk.Context, record custodytypes.CustodyWhiteListRecord)
+	DropCustodyWhiteListByAddress(ctx sdk.Context, address sdk.AccAddress)
+
+	GetCustodyLimitsByAddress(ctx sdk.Context, address sdk.AccAddress) *custodytypes.CustodyLimits
+	AddToCustodyLimits(ctx sdk.Context, record custodytypes.CustodyLimitRecord)
+	DropCustodyLimitsByAddress(ctx sdk.Context, address sdk.AccAddress)
+
+	GetCustodyLimitsStatusByAddress(ctx sdk.Context, address sdk.AccAddress) *custodytypes.CustodyStatuses
+	AddToCustodyLimitsStatus(ctx sdk.Context, record custodytypes.CustodyLimitStatusRecord)
+	DropCustodyLimitsStatus(ctx sdk.Context, addr sdk.AccAddress)
+
+	AddToCustodyPool(ctx sdk.Context, record custodytypes.CustodyPool)
+	GetCustodyPoolByAddress(ctx sdk.Context, address sdk.AccAddress) *custodytypes.TransactionPool
+	DropCustodyPool(ctx sdk.Context, addr sdk.AccAddress)
 }

@@ -58,6 +58,11 @@ func (k Keeper) SetClaimInfo(ctx sdk.Context, claimInfo types.ClaimInfo) {
 	store.Set(types.ClaimInfoKey(claimInfo.PoolName, claimInfo.Account), bz)
 }
 
+func (k Keeper) RemoveClaimInfo(ctx sdk.Context, claimInfo types.ClaimInfo) {
+	store := ctx.KVStore(k.storeKey)
+	store.Delete(types.ClaimInfoKey(claimInfo.PoolName, claimInfo.Account))
+}
+
 func (k Keeper) GetClaimInfo(ctx sdk.Context, poolName string, address sdk.AccAddress) *types.ClaimInfo {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.ClaimInfoKey(poolName, address.String()))
