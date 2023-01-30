@@ -117,6 +117,11 @@ func (k Keeper) SaveVote(ctx sdk.Context, vote types.Vote) {
 	store.Set(VoteKey(vote.ProposalId, vote.Voter), bz)
 }
 
+func (k Keeper) DeleteVote(ctx sdk.Context, vote types.Vote) {
+	store := ctx.KVStore(k.storeKey)
+	store.Delete(VoteKey(vote.ProposalId, vote.Voter))
+}
+
 func (k Keeper) GetVote(ctx sdk.Context, proposalID uint64, address sdk.AccAddress) (types.Vote, bool) {
 	store := ctx.KVStore(k.storeKey)
 
