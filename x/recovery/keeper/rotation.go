@@ -16,6 +16,18 @@ func (k Keeper) DeleteRotationHistory(ctx sdk.Context, recovery types.Rotation) 
 	store.Delete(types.RotationHistoryKey(recovery.Address))
 }
 
+func (k Keeper) GetRotationHistory(ctx sdk.Context, address string) types.Rotation {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.RotationHistoryKey(address))
+	if bz == nil {
+		return types.Rotation{}
+	}
+
+	rotation := types.Rotation{}
+	k.cdc.MustUnmarshal(bz, &rotation)
+	return rotation
+}
+
 func (k Keeper) GetAllRotationHistory(ctx sdk.Context) []types.Rotation {
 	store := ctx.KVStore(k.storeKey)
 

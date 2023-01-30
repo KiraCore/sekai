@@ -266,7 +266,13 @@ func NewInitApp(
 	app.RecoveryKeeper = recoverykeeper.NewKeeper(
 		appCodec,
 		keys[slashingtypes.StoreKey],
+		app.AccountKeeper,
 		&customStakingKeeper,
+		app.CustomGovKeeper,
+		app.MultiStakingKeeper,
+		app.CollectivesKeeper,
+		app.SpendingKeeper,
+		app.CustodyKeeper,
 	)
 	app.SpendingKeeper = spendingkeeper.NewKeeper(keys[spendingtypes.ModuleName], appCodec, app.BankKeeper, app.CustomGovKeeper)
 	app.UbiKeeper = ubikeeper.NewKeeper(keys[ubitypes.ModuleName], appCodec, app.BankKeeper, app.SpendingKeeper)

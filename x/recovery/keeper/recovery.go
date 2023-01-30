@@ -19,7 +19,7 @@ func (k Keeper) GetRecoveryRecord(ctx sdk.Context, address string) (types.Recove
 
 func (k Keeper) GetRecoveryAddressFromChallenge(ctx sdk.Context, challenge string) string {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.RecoveryRecordKey(challenge))
+	bz := store.Get(types.RecoveryChallengeKey(challenge))
 	if bz == nil {
 		return ""
 	}
