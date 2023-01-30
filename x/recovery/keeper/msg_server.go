@@ -233,7 +233,7 @@ func (k msgServer) RotateRecoveryAddress(goCtx context.Context, msg *types.MsgRo
 	// - custody
 	settings := k.custodyk.GetCustodyInfoByAddress(ctx, addr)
 	if settings != nil {
-		k.custodyk.DeleteCustodyRecord(ctx, addr)
+		k.custodyk.DisableCustodyRecord(ctx, addr)
 		k.custodyk.SetCustodyRecord(ctx, custodytypes.CustodyRecord{
 			Address:         rotatedAddr,
 			CustodySettings: settings,

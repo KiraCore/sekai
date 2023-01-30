@@ -135,7 +135,7 @@ type SpendingKeeper interface {
 type CustodyKeeper interface {
 	GetCustodyInfoByAddress(ctx sdk.Context, address sdk.AccAddress) *custodytypes.CustodySettings
 	SetCustodyRecord(ctx sdk.Context, record custodytypes.CustodyRecord)
-	DeleteCustodyRecord(ctx sdk.Context, addr sdk.AccAddress)
+	DisableCustodyRecord(ctx sdk.Context, address sdk.AccAddress)
 
 	GetCustodyCustodiansByAddress(ctx sdk.Context, address sdk.AccAddress) *custodytypes.CustodyCustodianList
 	AddToCustodyCustodians(ctx sdk.Context, record custodytypes.CustodyCustodiansRecord)
