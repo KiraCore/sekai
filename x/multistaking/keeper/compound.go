@@ -37,3 +37,9 @@ func (k Keeper) SetCompoundInfo(ctx sdk.Context, info types.CompoundInfo) {
 	key := append(types.KeyPrefixCompoundInfo, []byte(info.Delegator)...)
 	store.Set(key, k.cdc.MustMarshal(&info))
 }
+
+func (k Keeper) RemoveCompoundInfo(ctx sdk.Context, info types.CompoundInfo) {
+	store := ctx.KVStore(k.storeKey)
+	key := append(types.KeyPrefixCompoundInfo, []byte(info.Delegator)...)
+	store.Delete(key)
+}
