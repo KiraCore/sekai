@@ -1,12 +1,16 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
 
 	"github.com/KiraCore/sekai/app"
+	functionmeta "github.com/KiraCore/sekai/function_meta"
 	genutilcli "github.com/KiraCore/sekai/x/genutil/client/cli"
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	customstaking "github.com/KiraCore/sekai/x/staking/client/cli"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -147,6 +151,7 @@ func initRootCmd(rootCmd *cobra.Command, encodingConfig params.EncodingConfig) {
 		genutilcli.CollectGenTxsCmd(banktypes.GenesisBalancesIterator{}, app.DefaultNodeHome),
 		genutilcli.GenTxCmd(app.ModuleBasics, encodingConfig.TxConfig, banktypes.GenesisBalancesIterator{}, app.DefaultNodeHome),
 		genutilcli.GetNewGenesisFromExportedCmd(app.ModuleBasics, encodingConfig.TxConfig),
+		genutilcli.GetStandardGenesisExportedCmd(app.ModuleBasics, encodingConfig.TxConfig),
 		customstaking.GenTxClaimCmd(banktypes.GenesisBalancesIterator{}, app.DefaultNodeHome),
 		genutilcli.ValidateGenesisCmd(app.ModuleBasics),
 		AddGenesisAccountCmd(app.DefaultNodeHome),
@@ -166,6 +171,7 @@ func initRootCmd(rootCmd *cobra.Command, encodingConfig params.EncodingConfig) {
 		keys.Commands(app.DefaultNodeHome),
 		GetValAddressFromAddressCmd(),
 		GetValConsAddressFromAddressCmd(),
+		GetExportMetadataCmd(),
 	)
 
 	// add rosetta
@@ -213,6 +219,29 @@ func GetValAddressFromAddressCmd() *cobra.Command {
 	}
 
 	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func GetExportMetadataCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "export-metadata",
+		Short: "Get metadata for client interaction to the node",
+		Args:  cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			metadata := make(map[string]interface{})
+			metadata["transactions"] = functionmeta.GetFunctionList()
+			metadata["permissions"] = govtypes.PermMetadata
+			metadata["properties"] = govtypes.PropertyMetadata
+
+			bz, err := json.MarshalIndent(metadata, "", " ")
+			if err != nil {
+				return err
+			}
+			fmt.Println(string(bz))
+			return nil
+		},
+	}
 
 	return cmd
 }
