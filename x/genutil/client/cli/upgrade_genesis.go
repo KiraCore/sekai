@@ -15,7 +15,13 @@ import (
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	tmjson "github.com/tendermint/tendermint/libs/json"
+	tmos "github.com/tendermint/tendermint/libs/os"
 	tmtypes "github.com/tendermint/tendermint/types"
+)
+
+const (
+	FlagJsonMinimize = "json-minimize"
 )
 
 func upgradedPlan(plan *v03123upgradetypes.PlanV03123) *upgradetypes.Plan {
@@ -220,12 +226,23 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 			}
 
 			genDoc.AppState = appState
+
+			if jsonMinimize, _ := cmd.Flags().GetBool(FlagJsonMinimize); jsonMinimize {
+
+				genDocBytes, err := tmjson.Marshal(genDoc)
+				if err != nil {
+					return err
+				}
+				return tmos.WriteFile(args[1], genDocBytes, 0644)
+			}
+
 			if err = genutil.ExportGenesisFile(genDoc, args[1]); err != nil {
 				return errors.Wrap(err, "Failed to export genesis file")
 			}
 			return nil
 		},
 	}
+	cmd.Flags().Bool(FlagJsonMinimize, true, "flag to export genesis in minimized version")
 
 	return cmd
 }
