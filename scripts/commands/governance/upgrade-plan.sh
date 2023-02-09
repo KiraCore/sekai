@@ -45,7 +45,7 @@ sekaid query customgov proposals
 
 # upgrade to new json for hard-fork case
 sekaid export > exported-genesis.json
-sekaid new-genesis-from-exported exported-genesis.json new-genesis.json
+sekaid new-genesis-from-exported exported-genesis.json new-genesis.json --json-minimize=true
 
-# export minimized genesis
+# manual minize if required
 sekaid export-minimized-genesis exported-genesis.json minimized.json
