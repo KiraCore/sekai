@@ -4,6 +4,8 @@ import (
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
+	"fmt"
+	"strings"
 
 	custodytypes "github.com/KiraCore/sekai/x/custody/types"
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
@@ -309,11 +311,51 @@ func (k msgServer) RotateRecoveryAddress(goCtx context.Context, msg *types.MsgRo
 func (k msgServer) IssueRecoveryTokens(goCtx context.Context, msg *types.MsgIssueRecoveryTokens) (*types.MsgIssueRecoveryTokensResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// TODO: kex token spend
-	// TODO: check if validator and previously not issued token
+	addr := sdk.MustAccAddressFromBech32(msg.Address)
+
+	// check if validator and previously not issued token
+	_, err := k.Keeper.GetRecoveryToken(ctx, msg.Address)
+	if err == nil {
+		return nil, types.ErrRecoveryTokenAlreadyExists
+	}
+
+	// KEX token spend
+	properties := k.gk.GetNetworkProperties(ctx)
+	amount := sdk.NewInt(int64(properties.ValidatorRecoveryBond)).Mul(sdk.NewInt(1000_000))
+	coins := sdk.NewCoins(sdk.NewCoin("ukex", amount))
+	err = k.bk.SendCoinsFromAccountToModule(ctx, addr, types.ModuleName, coins)
+	if err != nil {
+		return nil, err
+	}
+
+	records, err := k.gk.GetIdRecordsByAddressAndKeys(ctx, addr, []string{"moniker"})
+	if err != nil {
+		return nil, err
+	}
+	if len(records) != 1 {
+		return nil, types.ErrInvalidMoniker
+	}
+
+	denom := fmt.Sprintf("rr_%s", strings.ToLower(records[0].Value))
+
+	// issue 10'000'000 tokens
+	recoveryTokenAmount := sdk.NewInt(10_000_000).Mul(sdk.NewInt(1000_000))
+	recoveryCoins := sdk.NewCoins(sdk.NewCoin(denom, recoveryTokenAmount))
+	err = k.bk.MintCoins(ctx, types.ModuleName, recoveryCoins)
+	if err != nil {
+		return nil, err
+	}
+
+	err = k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, recoveryCoins)
+	if err != nil {
+		return nil, err
+	}
+
 	k.Keeper.SetRecoveryToken(ctx, types.RecoveryToken{
-		Address: msg.Address,
-		Token:   msg.Address,
+		Address:          msg.Address,
+		Token:            denom,
+		RrSupply:         recoveryTokenAmount,
+		UnderlyingTokens: coins,
 	})
 
 	ctx.EventManager().EmitEvent(
@@ -327,15 +369,49 @@ func (k msgServer) IssueRecoveryTokens(goCtx context.Context, msg *types.MsgIssu
 	return &types.MsgIssueRecoveryTokensResponse{}, nil
 }
 
-// burn tokens and redeem KEX
+// burn tokens and redeem underlying tokens
 func (k msgServer) BurnRecoveryTokens(goCtx context.Context, msg *types.MsgBurnRecoveryTokens) (*types.MsgBurnRecoveryTokensResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// TODO: kex token recovvery
-	k.Keeper.DeleteRecoveryToken(ctx, types.RecoveryToken{
-		Address: msg.Address,
-		Token:   msg.Address,
-	})
+	addr := sdk.MustAccAddressFromBech32(msg.Address)
+	recoveryToken, err := k.GetRecoveryTokenByDenom(ctx, msg.RrCoin.Denom)
+	if err != nil {
+		return nil, err
+	}
+
+	redeemAmount := sdk.Coins{}
+	for _, coin := range recoveryToken.UnderlyingTokens {
+		amount := coin.Amount.Mul(msg.RrCoin.Amount).Quo(recoveryToken.RrSupply)
+		if amount.IsPositive() {
+			redeemAmount = redeemAmount.Add(sdk.NewCoin(coin.Denom, amount))
+		}
+	}
+
+	if !redeemAmount.IsZero() {
+		err = k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, redeemAmount)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	err = k.bk.SendCoinsFromAccountToModule(ctx, addr, types.ModuleName, sdk.NewCoins(msg.RrCoin))
+	if err != nil {
+		return nil, err
+	}
+
+	err = k.bk.BurnCoins(ctx, types.ModuleName, sdk.NewCoins(msg.RrCoin))
+	if err != nil {
+		return nil, err
+	}
+
+	recoveryToken.RrSupply = recoveryToken.RrSupply.Sub(msg.RrCoin.Amount)
+	recoveryToken.UnderlyingTokens = sdk.Coins(recoveryToken.UnderlyingTokens).Sub(redeemAmount)
+
+	if recoveryToken.RrSupply.IsZero() {
+		k.Keeper.DeleteRecoveryToken(ctx, recoveryToken)
+	} else {
+		k.Keeper.SetRecoveryToken(ctx, recoveryToken)
+	}
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(

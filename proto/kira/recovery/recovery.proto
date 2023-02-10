@@ -17,6 +17,14 @@ message RecoveryRecord {
 message RecoveryToken {
   string address = 1;
   string token = 2;
+  string rr_supply = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  repeated string underlying_tokens = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message Rotation {

@@ -44,6 +44,10 @@ message MsgIssueRecoveryTokens {
 message MsgIssueRecoveryTokensResponse {}
 
 message MsgBurnRecoveryTokens {
-    string address = 1;
+  string address = 1;
+  string rr_coin = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
 }
 message MsgBurnRecoveryTokensResponse {}
