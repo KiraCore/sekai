@@ -7,6 +7,8 @@ import (
 	"github.com/tendermint/tendermint/crypto/ed25519"
 )
 
+// TODO: TestAllocateTokensToRecoveryTokenValidator()
+
 func (suite *KeeperTestSuite) TestAllocateTokens() {
 	suite.SetupTest()
 	addr1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())

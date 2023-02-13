@@ -88,7 +88,7 @@ func (k Keeper) DeleteRecoveryToken(ctx sdk.Context, recovery types.RecoveryToke
 	store.Delete(types.RecoveryTokenByDenomKey(recovery.Token))
 }
 
-func (k Keeper) IncreaseRoveryTokenUnderlying(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coins) error {
+func (k Keeper) IncreaseRecoveryTokenUnderlying(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coins) error {
 	recoveryToken, err := k.GetRecoveryToken(ctx, addr.String())
 	if err != nil {
 		return err
@@ -102,7 +102,7 @@ func (k Keeper) GetAllRecoveryTokens(ctx sdk.Context) []types.RecoveryToken {
 	store := ctx.KVStore(k.storeKey)
 
 	recoveries := []types.RecoveryToken{}
-	it := sdk.KVStorePrefixIterator(store, types.RecoveryRecordKeyPrefix)
+	it := sdk.KVStorePrefixIterator(store, types.RecoveryTokenKeyPrefix)
 	defer it.Close()
 
 	for ; it.Valid(); it.Next() {

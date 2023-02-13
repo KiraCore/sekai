@@ -3,6 +3,7 @@ package types
 import (
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	multistakingtypes "github.com/KiraCore/sekai/x/multistaking/types"
+	recoverytypes "github.com/KiraCore/sekai/x/recovery/types"
 	spendingtypes "github.com/KiraCore/sekai/x/spending/types"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -40,4 +41,9 @@ type StakingKeeper interface {
 type MultiStakingKeeper interface {
 	GetStakingPoolByValidator(ctx sdk.Context, validator string) (pool multistakingtypes.StakingPool, found bool)
 	IncreasePoolRewards(ctx sdk.Context, pool multistakingtypes.StakingPool, rewards sdk.Coins)
+}
+
+type RecoveryKeeper interface {
+	GetRecoveryToken(ctx sdk.Context, address string) (recoverytypes.RecoveryToken, error)
+	IncreaseRecoveryTokenUnderlying(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coins) error
 }

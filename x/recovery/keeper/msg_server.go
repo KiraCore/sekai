@@ -31,6 +31,12 @@ var RecoveryFee = sdk.Coins{sdk.NewInt64Coin("ukex", 1000_000_000)}
 func (k msgServer) RegisterRecoverySecret(goCtx context.Context, msg *types.MsgRegisterRecoverySecret) (*types.MsgRegisterRecoverySecretResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	// check if validator recovery token exists
+	_, err := k.GetRecoveryToken(ctx, msg.Address)
+	if err == nil {
+		return nil, types.ErrAddressHasValidatorRecoveryToken
+	}
+
 	// check previous recovery and check proof if already exists
 	oldRecord, err := k.Keeper.GetRecoveryRecord(ctx, msg.Address)
 	if err == nil { // recovery record already exists
@@ -65,9 +71,15 @@ func (k msgServer) RegisterRecoverySecret(goCtx context.Context, msg *types.MsgR
 func (k msgServer) RotateRecoveryAddress(goCtx context.Context, msg *types.MsgRotateRecoveryAddress) (*types.MsgRotateRecoveryAddressResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	// check if validator recovery token exists
+	_, err := k.GetRecoveryToken(ctx, msg.Address)
+	if err == nil {
+		return nil, types.ErrAddressHasValidatorRecoveryToken
+	}
+
 	// Pay 1000 KEX
 	feePayer := sdk.MustAccAddressFromBech32(msg.FeePayer)
-	err := k.bk.SendCoinsFromAccountToModule(ctx, feePayer, types.ModuleName, RecoveryFee)
+	err = k.bk.SendCoinsFromAccountToModule(ctx, feePayer, types.ModuleName, RecoveryFee)
 	if err != nil {
 		return nil, err
 	}
@@ -422,3 +434,5 @@ func (k msgServer) BurnRecoveryTokens(goCtx context.Context, msg *types.MsgBurnR
 	)
 	return &types.MsgBurnRecoveryTokensResponse{}, nil
 }
+
+// TODO: possibly add a mechanism to only claim rewards by adding claimed_amount field per user
