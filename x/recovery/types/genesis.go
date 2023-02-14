@@ -4,11 +4,13 @@ package types
 func NewGenesisState(
 	recoveryRecords []RecoveryRecord,
 	recoveryTokens []RecoveryToken,
+	rewards []Rewards,
 ) *GenesisState {
 
 	return &GenesisState{
 		RecoveryRecords: recoveryRecords,
 		RecoveryTokens:  recoveryTokens,
+		Rewards:         rewards,
 	}
 }
 
@@ -17,6 +19,7 @@ func DefaultGenesisState() *GenesisState {
 	return &GenesisState{
 		RecoveryRecords: []RecoveryRecord{},
 		RecoveryTokens:  []RecoveryToken{},
+		Rewards:         []Rewards{},
 	}
 }
 

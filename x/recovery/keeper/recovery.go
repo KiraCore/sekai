@@ -88,12 +88,37 @@ func (k Keeper) DeleteRecoveryToken(ctx sdk.Context, recovery types.RecoveryToke
 	store.Delete(types.RecoveryTokenByDenomKey(recovery.Token))
 }
 
+func calcPortion(coins sdk.Coins, portion sdk.Int, supply sdk.Int) sdk.Coins {
+	portionCoins := sdk.Coins{}
+	for _, coin := range coins {
+		portionCoin := sdk.NewCoin(coin.Denom, coin.Amount.Mul(portion).Quo(supply))
+		portionCoins = portionCoins.Add(portionCoin)
+	}
+	return portionCoins
+}
+
 func (k Keeper) IncreaseRecoveryTokenUnderlying(ctx sdk.Context, addr sdk.AccAddress, amount sdk.Coins) error {
 	recoveryToken, err := k.GetRecoveryToken(ctx, addr.String())
 	if err != nil {
 		return err
 	}
-	recoveryToken.UnderlyingTokens = sdk.Coins(recoveryToken.UnderlyingTokens).Add(amount...)
+
+	k.UnregisterNotEnoughAmountHolder(ctx, recoveryToken.Token)
+
+	supply := k.bk.GetSupply(ctx, recoveryToken.Token).Amount
+
+	holders := k.GetRRTokenHolders(ctx, recoveryToken.Token)
+	totalAllocation := sdk.NewCoins()
+	for _, holder := range holders {
+		balances := k.bk.GetAllBalances(ctx, holder)
+		balance := balances.AmountOf(recoveryToken.Token)
+		allocation := calcPortion(amount, balance, supply)
+		totalAllocation = totalAllocation.Add(allocation...)
+		k.IncreaseRRTokenHolderRewards(ctx, holder, allocation)
+	}
+
+	unallocated := amount.Sub(totalAllocation)
+	recoveryToken.UnderlyingTokens = sdk.Coins(recoveryToken.UnderlyingTokens).Add(unallocated...)
 	k.SetRecoveryToken(ctx, recoveryToken)
 	return nil
 }

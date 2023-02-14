@@ -31,3 +31,11 @@ message Rotation {
   string address = 1;
   string rotated = 2;
 }
+
+message Rewards {
+  string holder = 1;
+  repeated string rewards = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
+}

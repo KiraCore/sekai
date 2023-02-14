@@ -13,4 +13,5 @@ message GenesisState {
       [ (gogoproto.nullable) = false ];
   repeated kira.recovery.RecoveryToken recovery_tokens = 2
       [ (gogoproto.nullable) = false ];
+  repeated kira.recovery.Rewards rewards = 3 [ (gogoproto.nullable) = false ];
 }

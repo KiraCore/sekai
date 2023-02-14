@@ -436,3 +436,21 @@ func (k msgServer) BurnRecoveryTokens(goCtx context.Context, msg *types.MsgBurnR
 }
 
 // TODO: possibly add a mechanism to only claim rewards by adding claimed_amount field per user
+
+// claim RR token holder rewards
+func (k msgServer) ClaimRRHolderRewards(goCtx context.Context, msg *types.MsgClaimRRHolderRewards) (*types.MsgClaimRRHolderRewardsResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	addr := sdk.MustAccAddressFromBech32(msg.Sender)
+	k.ClaimRewards(ctx, addr)
+	return &types.MsgClaimRRHolderRewardsResponse{}, nil
+}
+
+// register RR token holder
+func (k msgServer) RegisterRRTokenHolder(goCtx context.Context, msg *types.MsgRegisterRRTokenHolder) (*types.MsgRegisterRRTokenHolderResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	addr := sdk.MustAccAddressFromBech32(msg.Holder)
+	k.Keeper.RegisterRRTokenHolder(ctx, addr)
+	return &types.MsgRegisterRRTokenHolderResponse{}, nil
+}

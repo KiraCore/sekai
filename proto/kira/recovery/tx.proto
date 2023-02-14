@@ -20,6 +20,10 @@ service Msg {
   rpc IssueRecoveryTokens(MsgIssueRecoveryTokens) returns (MsgIssueRecoveryTokensResponse);
   // burn tokens and redeem KEX
   rpc BurnRecoveryTokens(MsgBurnRecoveryTokens) returns (MsgBurnRecoveryTokensResponse);
+  // claim rewards
+  rpc ClaimRRHolderRewards(MsgClaimRRHolderRewards) returns (MsgClaimRRHolderRewardsResponse);
+  // register RR token holder
+  rpc RegisterRRTokenHolder(MsgRegisterRRTokenHolder) returns (MsgRegisterRRTokenHolderResponse);
 }
 
 message MsgRegisterRecoverySecret {
@@ -51,3 +55,16 @@ message MsgBurnRecoveryTokens {
   ];
 }
 message MsgBurnRecoveryTokensResponse {}
+
+message MsgClaimRRHolderRewards {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string sender = 1;
+}
+message MsgClaimRRHolderRewardsResponse {}
+
+message MsgRegisterRRTokenHolder { 
+  string holder = 1;
+}
+message MsgRegisterRRTokenHolderResponse {}

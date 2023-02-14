@@ -71,6 +71,8 @@ const (
 	MsgTypeRotateRecoveryAddress  = "rotate-recovery-address"
 	MsgTypeIssueRecoveryTokens    = "issue-recovery-tokens"
 	MsgTypeBurnRecoveryTokens     = "burn-recovery-tokens"
+	MsgTypeRegisterRRTokenHolder  = "register-rrtoken-holder"
+	MsgTypeClaimRRHolderRewards   = "claim-rrholder-rewards"
 
 	//upgrade module
 

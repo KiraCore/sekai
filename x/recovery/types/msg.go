@@ -161,3 +161,73 @@ func (msg MsgBurnRecoveryTokens) ValidateBasic() error {
 
 	return nil
 }
+
+// verify interface at compile time
+var _ sdk.Msg = &MsgRegisterRRTokenHolder{}
+
+// NewMsgRegisterRRTokenHolder creates a new MsgRegisterRRTokenHolder instance
+func NewMsgRegisterRRTokenHolder(sender sdk.AccAddress) *MsgRegisterRRTokenHolder {
+	return &MsgRegisterRRTokenHolder{
+		Holder: sender.String(),
+	}
+}
+
+func (msg MsgRegisterRRTokenHolder) Route() string { return RouterKey }
+func (msg MsgRegisterRRTokenHolder) Type() string  { return types.MsgTypeRegisterRRTokenHolder }
+func (msg MsgRegisterRRTokenHolder) GetSigners() []sdk.AccAddress {
+	addr, err := sdk.AccAddressFromBech32(msg.Holder)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{addr}
+}
+
+// GetSignBytes gets the bytes for the message signer to sign on
+func (msg MsgRegisterRRTokenHolder) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(&msg)
+	return sdk.MustSortJSON(bz)
+}
+
+// ValidateBasic validity check for the AnteHandler
+func (msg MsgRegisterRRTokenHolder) ValidateBasic() error {
+	if msg.Holder == "" {
+		return ErrInvalidAccAddress
+	}
+
+	return nil
+}
+
+// verify interface at compile time
+var _ sdk.Msg = &MsgClaimRRHolderRewards{}
+
+// NewMsgClaimRRHolderRewards creates a new MsgClaimRRHolderRewards instance
+func NewMsgClaimRRHolderRewards(sender sdk.AccAddress) *MsgClaimRRHolderRewards {
+	return &MsgClaimRRHolderRewards{
+		Sender: sender.String(),
+	}
+}
+
+func (msg MsgClaimRRHolderRewards) Route() string { return RouterKey }
+func (msg MsgClaimRRHolderRewards) Type() string  { return types.MsgTypeClaimRRHolderRewards }
+func (msg MsgClaimRRHolderRewards) GetSigners() []sdk.AccAddress {
+	addr, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{addr}
+}
+
+// GetSignBytes gets the bytes for the message signer to sign on
+func (msg MsgClaimRRHolderRewards) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(&msg)
+	return sdk.MustSortJSON(bz)
+}
+
+// ValidateBasic validity check for the AnteHandler
+func (msg MsgClaimRRHolderRewards) ValidateBasic() error {
+	if msg.Sender == "" {
+		return ErrInvalidAccAddress
+	}
+
+	return nil
+}

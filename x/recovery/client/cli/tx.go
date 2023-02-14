@@ -28,6 +28,8 @@ func NewTxCmd() *cobra.Command {
 		NewIssueRecoveryTokensTxCmd(),
 		NewBurnRecoveryTokensTxCmd(),
 		NewGenerateRecoverySecretCmd(),
+		NewRegisterRRTokenHolderTxCmd(),
+		NewClaimRRTokenHolderRewardsTxCmd(),
 	)
 	return recoveryTxCmd
 }
@@ -178,6 +180,66 @@ $ <appd> tx recovery generate-recovery-secret 10a0fbe01030000122300000000000
 			return nil
 		},
 	}
+
+	return cmd
+}
+
+// NewRegisterRRTokenHolderTxCmd defines Ms tx
+func NewRegisterRRTokenHolderTxCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "register-rrtoken-holder",
+		Args:  cobra.NoArgs,
+		Short: "Register RR token holder",
+		Long: `Register RR token holder:
+
+$ <appd> tx recovery register-rrtoken-holder --from mykey
+`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgRegisterRRTokenHolder(clientCtx.GetFromAddress())
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// NewClaimRRTokenHolderRewardsTxCmd defines Ms tx
+func NewClaimRRTokenHolderRewardsTxCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "claim-rrtoken-rewards",
+		Args:  cobra.NoArgs,
+		Short: "Claim RR token holder rewards",
+		Long: `Claim RR token holder rewards:
+
+$ <appd> tx recovery claim-rrtoken-rewards --from mykey
+`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgClaimRRHolderRewards(clientCtx.GetFromAddress())
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd
 }

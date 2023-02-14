@@ -20,6 +20,8 @@ var (
 	RecoveryTokenByDenomKeyPrefix = []byte{0x03} // Prefix for recovery token by denom
 	RecoveryTokenKeyPrefix        = []byte{0x04} // Prefix for recovery token
 	RotationHistoryKeyPrefix      = []byte{0x05} // Prefix for rotation history
+	KeyPrefixRewards              = []byte{0x06}
+	KeyPrefixRRTokenHolder        = []byte{0x07}
 )
 
 func RecoveryChallengeKey(challenge string) []byte {
