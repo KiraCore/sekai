@@ -67,6 +67,74 @@ func (k msgServer) RegisterRecoverySecret(goCtx context.Context, msg *types.MsgR
 	return &types.MsgRegisterRecoverySecretResponse{}, nil
 }
 
+func (k msgServer) RotateValidatorByHalfRRTokenHolder(goCtx context.Context, msg *types.MsgRotateValidatorByHalfRRTokenHolder) (*types.MsgRotateValidatorByHalfRRTokenHolderResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	// check if validator recovery token exists
+	recoveryToken, err := k.GetRecoveryToken(ctx, msg.Address)
+	if err != nil {
+		return nil, types.ErrRecoveryTokenDoesNotExist
+	}
+
+	// check rr token amount
+	rrHolder := sdk.MustAccAddressFromBech32(msg.RrHolder)
+	balances := k.bk.GetAllBalances(ctx, rrHolder)
+	rrAmount := balances.AmountOf(recoveryToken.Token)
+	supply := k.bk.GetSupply(ctx, recoveryToken.Token)
+	if rrAmount.Mul(sdk.NewInt(2)).LT(supply.Amount) {
+		return nil, types.ErrNotEnoughRRTokenAmountForRotation
+	}
+
+	addr := sdk.MustAccAddressFromBech32(msg.Address)
+	rotatedAddr := sdk.MustAccAddressFromBech32(msg.Recovery)
+
+	// - multistaking
+	info := k.msk.GetCompoundInfoByAddress(ctx, msg.Address)
+	k.msk.RemoveCompoundInfo(ctx, info)
+	info.Delegator = msg.Recovery
+	k.msk.SetCompoundInfo(ctx, info)
+
+	pools := k.msk.GetAllStakingPools(ctx)
+	for _, pool := range pools {
+		isDelegator := k.msk.IsPoolDelegator(ctx, pool.Id, addr)
+		if isDelegator {
+			k.msk.RemovePoolDelegator(ctx, pool.Id, addr)
+			k.msk.SetPoolDelegator(ctx, pool.Id, rotatedAddr)
+		}
+	}
+
+	rewards := k.msk.GetDelegatorRewards(ctx, addr)
+	if !rewards.IsZero() {
+		k.msk.RemoveDelegatorRewards(ctx, addr)
+		k.msk.SetDelegatorRewards(ctx, rotatedAddr, rewards)
+	}
+
+	stpool, found := k.msk.GetStakingPoolByValidator(ctx, sdk.ValAddress(addr).String())
+	if found {
+		k.msk.RemoveStakingPool(ctx, stpool)
+		stpool.Validator = sdk.ValAddress(rotatedAddr).String()
+		k.msk.SetStakingPool(ctx, stpool)
+	}
+
+	// - staking
+	validator, err := k.sk.GetValidator(ctx, sdk.ValAddress(addr))
+	if err == nil {
+		k.sk.RemoveValidator(ctx, validator)
+		validator.ValKey = sdk.ValAddress(rotatedAddr)
+		k.sk.AddValidator(ctx, validator)
+	}
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.Address),
+		),
+	)
+
+	return &types.MsgRotateValidatorByHalfRRTokenHolderResponse{}, nil
+}
+
 // allow ANY KIRA address that knows the recovery secret or has a sufficient number of RR tokens to rotate the address
 func (k msgServer) RotateRecoveryAddress(goCtx context.Context, msg *types.MsgRotateRecoveryAddress) (*types.MsgRotateRecoveryAddressResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)

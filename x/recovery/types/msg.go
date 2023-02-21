@@ -231,3 +231,44 @@ func (msg MsgClaimRRHolderRewards) ValidateBasic() error {
 
 	return nil
 }
+
+// verify interface at compile time
+var _ sdk.Msg = &MsgRotateValidatorByHalfRRTokenHolder{}
+
+// NewMsgRotateValidatorByHalfRRTokenHolder creates a new MsgRotateValidatorByHalfRRTokenHolder instance
+//nolint:interfacer
+func NewMsgRotateValidatorByHalfRRTokenHolder(rrHolder, addr, recovery string) *MsgRotateValidatorByHalfRRTokenHolder {
+	return &MsgRotateValidatorByHalfRRTokenHolder{
+		RrHolder: rrHolder,
+		Address:  addr,
+		Recovery: recovery,
+	}
+}
+
+func (msg MsgRotateValidatorByHalfRRTokenHolder) Route() string { return RouterKey }
+func (msg MsgRotateValidatorByHalfRRTokenHolder) Type() string {
+	return types.MsgTypeRotateRecoveryAddress
+}
+func (msg MsgRotateValidatorByHalfRRTokenHolder) GetSigners() []sdk.AccAddress {
+	rrHolder, err := sdk.AccAddressFromBech32(msg.RrHolder)
+	if err != nil {
+		panic(err)
+	}
+
+	return []sdk.AccAddress{rrHolder.Bytes()}
+}
+
+// GetSignBytes gets the bytes for the message signer to sign on
+func (msg MsgRotateValidatorByHalfRRTokenHolder) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(&msg)
+	return sdk.MustSortJSON(bz)
+}
+
+// ValidateBasic validity check for the AnteHandler
+func (msg MsgRotateValidatorByHalfRRTokenHolder) ValidateBasic() error {
+	if msg.Address == "" {
+		return ErrInvalidAccAddress
+	}
+
+	return nil
+}

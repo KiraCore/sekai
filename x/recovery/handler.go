@@ -33,6 +33,9 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 		case *types.MsgClaimRRHolderRewards:
 			res, err := msgServer.ClaimRRHolderRewards(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgRotateValidatorByHalfRRTokenHolder:
+			res, err := msgServer.RotateValidatorByHalfRRTokenHolder(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
 		default:
 			return nil, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unrecognized %s message type: %T", types.ModuleName, msg)
 		}

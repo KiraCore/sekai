@@ -30,6 +30,7 @@ func NewTxCmd() *cobra.Command {
 		NewGenerateRecoverySecretCmd(),
 		NewRegisterRRTokenHolderTxCmd(),
 		NewClaimRRTokenHolderRewardsTxCmd(),
+		NewRotateValidatorByHalfRRTokenHolderTxCmd(),
 	)
 	return recoveryTxCmd
 }
@@ -231,6 +232,36 @@ $ <appd> tx recovery claim-rrtoken-rewards --from mykey
 			}
 
 			msg := types.NewMsgClaimRRHolderRewards(clientCtx.GetFromAddress())
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// NewRotateValidatorByHalfRRTokenHolderTxCmd defines MsgRotateValidatorByHalfRRTokenHolderTxCmd tx
+func NewRotateValidatorByHalfRRTokenHolderTxCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "rotate-validator-by-half-rr-holder [address] [recovery]",
+		Args:  cobra.ExactArgs(2),
+		Short: "Rotate a validator with half rr holder",
+		Long: `Rotate a validator with half rr holder:
+
+$ <appd> tx recovery rotate-validator-by-half-rr-holder [address] [recovery] --from validator --chain-id=testing --keyring-backend=test --fees=100ukex --home=$HOME/.sekaid --yes
+`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgRotateValidatorByHalfRRTokenHolder(clientCtx.GetFromAddress().String(), args[0], args[1])
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

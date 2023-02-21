@@ -13,7 +13,7 @@ import "kira/recovery/recovery.proto";
 service Msg {
   // allow ANY user to register or modify existing recovery secret & verify if the nonce is correct
   rpc RegisterRecoverySecret(MsgRegisterRecoverySecret) returns (MsgRegisterRecoverySecretResponse);
-  // allow ANY KIRA address that knows the recovery secret or has a sufficient number of RR tokens to rotate the address
+  // allow ANY KIRA address that knows the recovery secret to rotate the address
   rpc RotateRecoveryAddress(MsgRotateRecoveryAddress) returns (MsgRotateRecoveryAddressResponse);
   // mint `rr_<moniker>` tokens and deposit them to the validator account. 
   // This function will require putting up a bond in the amount of `validator_recovery_bond` otherwise should fail
@@ -24,6 +24,8 @@ service Msg {
   rpc ClaimRRHolderRewards(MsgClaimRRHolderRewards) returns (MsgClaimRRHolderRewardsResponse);
   // register RR token holder
   rpc RegisterRRTokenHolder(MsgRegisterRRTokenHolder) returns (MsgRegisterRRTokenHolderResponse);
+  // allow ANY KIRA address has a sufficient number of RR tokens to rotate the address
+  rpc RotateValidatorByHalfRRTokenHolder(MsgRotateValidatorByHalfRRTokenHolder) returns (MsgRotateValidatorByHalfRRTokenHolderResponse);
 }
 
 message MsgRegisterRecoverySecret {
@@ -68,3 +70,10 @@ message MsgRegisterRRTokenHolder {
   string holder = 1;
 }
 message MsgRegisterRRTokenHolderResponse {}
+
+message MsgRotateValidatorByHalfRRTokenHolder {
+  string rr_holder = 1;
+  string address = 2;
+  string recovery = 3;
+}
+message MsgRotateValidatorByHalfRRTokenHolderResponse {}

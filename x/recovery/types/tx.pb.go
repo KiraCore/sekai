@@ -553,6 +553,106 @@ func (m *MsgRegisterRRTokenHolderResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgRegisterRRTokenHolderResponse proto.InternalMessageInfo
 
+type MsgRotateValidatorByHalfRRTokenHolder struct {
+	RrHolder string `protobuf:"bytes,1,opt,name=rr_holder,json=rrHolder,proto3" json:"rr_holder,omitempty"`
+	Address  string `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
+	Recovery string `protobuf:"bytes,3,opt,name=recovery,proto3" json:"recovery,omitempty"`
+}
+
+func (m *MsgRotateValidatorByHalfRRTokenHolder) Reset()         { *m = MsgRotateValidatorByHalfRRTokenHolder{} }
+func (m *MsgRotateValidatorByHalfRRTokenHolder) String() string { return proto.CompactTextString(m) }
+func (*MsgRotateValidatorByHalfRRTokenHolder) ProtoMessage()    {}
+func (*MsgRotateValidatorByHalfRRTokenHolder) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8b5bb529d56b66ae, []int{12}
+}
+func (m *MsgRotateValidatorByHalfRRTokenHolder) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgRotateValidatorByHalfRRTokenHolder) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgRotateValidatorByHalfRRTokenHolder.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgRotateValidatorByHalfRRTokenHolder) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRotateValidatorByHalfRRTokenHolder.Merge(m, src)
+}
+func (m *MsgRotateValidatorByHalfRRTokenHolder) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgRotateValidatorByHalfRRTokenHolder) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRotateValidatorByHalfRRTokenHolder.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgRotateValidatorByHalfRRTokenHolder proto.InternalMessageInfo
+
+func (m *MsgRotateValidatorByHalfRRTokenHolder) GetRrHolder() string {
+	if m != nil {
+		return m.RrHolder
+	}
+	return ""
+}
+
+func (m *MsgRotateValidatorByHalfRRTokenHolder) GetAddress() string {
+	if m != nil {
+		return m.Address
+	}
+	return ""
+}
+
+func (m *MsgRotateValidatorByHalfRRTokenHolder) GetRecovery() string {
+	if m != nil {
+		return m.Recovery
+	}
+	return ""
+}
+
+type MsgRotateValidatorByHalfRRTokenHolderResponse struct {
+}
+
+func (m *MsgRotateValidatorByHalfRRTokenHolderResponse) Reset() {
+	*m = MsgRotateValidatorByHalfRRTokenHolderResponse{}
+}
+func (m *MsgRotateValidatorByHalfRRTokenHolderResponse) String() string {
+	return proto.CompactTextString(m)
+}
+func (*MsgRotateValidatorByHalfRRTokenHolderResponse) ProtoMessage() {}
+func (*MsgRotateValidatorByHalfRRTokenHolderResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8b5bb529d56b66ae, []int{13}
+}
+func (m *MsgRotateValidatorByHalfRRTokenHolderResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgRotateValidatorByHalfRRTokenHolderResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgRotateValidatorByHalfRRTokenHolderResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgRotateValidatorByHalfRRTokenHolderResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRotateValidatorByHalfRRTokenHolderResponse.Merge(m, src)
+}
+func (m *MsgRotateValidatorByHalfRRTokenHolderResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgRotateValidatorByHalfRRTokenHolderResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRotateValidatorByHalfRRTokenHolderResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgRotateValidatorByHalfRRTokenHolderResponse proto.InternalMessageInfo
+
 func init() {
 	proto.RegisterType((*MsgRegisterRecoverySecret)(nil), "kira.recovery.MsgRegisterRecoverySecret")
 	proto.RegisterType((*MsgRegisterRecoverySecretResponse)(nil), "kira.recovery.MsgRegisterRecoverySecretResponse")
@@ -566,50 +666,56 @@ func init() {
 	proto.RegisterType((*MsgClaimRRHolderRewardsResponse)(nil), "kira.recovery.MsgClaimRRHolderRewardsResponse")
 	proto.RegisterType((*MsgRegisterRRTokenHolder)(nil), "kira.recovery.MsgRegisterRRTokenHolder")
 	proto.RegisterType((*MsgRegisterRRTokenHolderResponse)(nil), "kira.recovery.MsgRegisterRRTokenHolderResponse")
+	proto.RegisterType((*MsgRotateValidatorByHalfRRTokenHolder)(nil), "kira.recovery.MsgRotateValidatorByHalfRRTokenHolder")
+	proto.RegisterType((*MsgRotateValidatorByHalfRRTokenHolderResponse)(nil), "kira.recovery.MsgRotateValidatorByHalfRRTokenHolderResponse")
 }
 
 func init() { proto.RegisterFile("kira/recovery/tx.proto", fileDescriptor_8b5bb529d56b66ae) }
 
 var fileDescriptor_8b5bb529d56b66ae = []byte{
-	// 608 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x55, 0x4d, 0x6f, 0xd3, 0x4c,
-	0x10, 0xb6, 0xdb, 0xb7, 0x5f, 0x23, 0xbd, 0x17, 0xd3, 0x06, 0xd7, 0x14, 0xbb, 0x35, 0x1f, 0xad,
-	0x10, 0xb5, 0x51, 0xb9, 0xc1, 0x89, 0xe4, 0x12, 0x84, 0x22, 0x21, 0xc3, 0x89, 0x4b, 0xe4, 0xd8,
-	0x93, 0x8d, 0x95, 0xc4, 0x1b, 0x76, 0x1d, 0x68, 0xc4, 0x81, 0x03, 0x17, 0x8e, 0xfc, 0x84, 0x1e,
-	0xfb, 0x53, 0x7a, 0xec, 0x11, 0x71, 0xa8, 0x50, 0x72, 0xe1, 0x67, 0x20, 0x7f, 0xe2, 0x28, 0xeb,
-	0xca, 0x27, 0xef, 0x33, 0xf3, 0xec, 0x3c, 0xb3, 0x3b, 0xcf, 0x26, 0xd0, 0x18, 0x06, 0xcc, 0xb5,
-	0x19, 0x7a, 0xf4, 0x13, 0xb2, 0x99, 0x1d, 0x9d, 0x5b, 0x13, 0x46, 0x23, 0xaa, 0xfc, 0x1f, 0xc7,
-	0xad, 0x3c, 0xae, 0xed, 0x12, 0x4a, 0x68, 0x92, 0xb1, 0xe3, 0x55, 0x4a, 0xd2, 0xf6, 0x09, 0xa5,
-	0x64, 0x84, 0x76, 0x82, 0x7a, 0xd3, 0xbe, 0xed, 0x86, 0xb3, 0x3c, 0xe5, 0x51, 0x3e, 0xa6, 0xbc,
-	0x9b, 0xee, 0x49, 0x41, 0x96, 0x3a, 0x58, 0x96, 0xcc, 0x17, 0x69, 0xd6, 0xfc, 0x0a, 0xfb, 0x1d,
-	0x4e, 0x1c, 0x24, 0x01, 0x8f, 0x90, 0x39, 0x59, 0xf2, 0x1d, 0x7a, 0x0c, 0x23, 0x45, 0x85, 0x2d,
-	0xd7, 0xf7, 0x19, 0x72, 0xae, 0xca, 0x87, 0xf2, 0xc9, 0x8e, 0x93, 0x43, 0xe5, 0x00, 0x76, 0xbc,
-	0x81, 0x3b, 0x1a, 0x61, 0x48, 0x50, 0x5d, 0x4b, 0x72, 0xff, 0x02, 0xca, 0x2e, 0x6c, 0x84, 0x34,
-	0xf4, 0x50, 0x5d, 0x4f, 0x32, 0x29, 0x88, 0xa3, 0x13, 0x46, 0x69, 0x5f, 0xfd, 0x2f, 0x8d, 0x26,
-	0xc0, 0x7c, 0x00, 0x47, 0x95, 0x0d, 0x38, 0xc8, 0x27, 0x34, 0xe4, 0x68, 0x7e, 0x93, 0x41, 0x8d,
-	0x59, 0x34, 0x72, 0x23, 0xcc, 0x39, 0xaf, 0xb2, 0x5e, 0xee, 0xc1, 0x4e, 0x1f, 0xb1, 0x3b, 0x71,
-	0x67, 0xc8, 0xb2, 0x3e, 0xb7, 0xfb, 0x88, 0x6f, 0x63, 0x5c, 0x3e, 0xc2, 0xda, 0xf2, 0x11, 0x34,
-	0xd8, 0xce, 0xef, 0x22, 0xeb, 0xb3, 0xc0, 0x15, 0xad, 0x9a, 0x70, 0x58, 0xd5, 0x44, 0xd1, 0xe9,
-	0x19, 0x34, 0x3a, 0x9c, 0xbc, 0xe6, 0x7c, 0x5a, 0x50, 0xde, 0xd3, 0x21, 0x86, 0xbc, 0xfa, 0x32,
-	0xcd, 0x43, 0xd0, 0xc5, 0x7b, 0x8a, 0xaa, 0x5f, 0x60, 0xaf, 0xc3, 0x49, 0x73, 0xca, 0xc2, 0xba,
-	0x45, 0x95, 0x36, 0x6c, 0x31, 0xd6, 0xf5, 0x68, 0x10, 0xa6, 0x07, 0x6f, 0xda, 0x57, 0x37, 0x86,
-	0xf4, 0xeb, 0xc6, 0x38, 0x26, 0x41, 0x34, 0x98, 0xf6, 0x2c, 0x8f, 0x8e, 0x33, 0xa3, 0x64, 0x9f,
-	0x53, 0xee, 0x0f, 0xed, 0x68, 0x36, 0x41, 0x6e, 0xb5, 0x68, 0x10, 0x3a, 0x9b, 0x8c, 0xc5, 0x5f,
-	0xd3, 0x80, 0xfb, 0x42, 0xf1, 0xa2, 0xbb, 0x97, 0x70, 0xb7, 0xc3, 0x49, 0x6b, 0xe4, 0x06, 0x63,
-	0xc7, 0x69, 0xd3, 0x91, 0x1f, 0xcf, 0xf1, 0xb3, 0xcb, 0x7c, 0xae, 0x34, 0x60, 0x93, 0x63, 0xe8,
-	0x17, 0x83, 0xc9, 0xd0, 0x8b, 0xed, 0xef, 0x17, 0x86, 0xf4, 0xe7, 0xc2, 0x90, 0xcc, 0x23, 0x30,
-	0x2a, 0x36, 0x97, 0xee, 0x54, 0x2d, 0x5b, 0xc4, 0x49, 0xe4, 0x53, 0x6a, 0x2c, 0x30, 0x48, 0x56,
-	0xb9, 0x40, 0x8a, 0xf2, 0x59, 0x89, 0xf6, 0xe4, 0x75, 0xcf, 0x2e, 0x37, 0x60, 0xbd, 0xc3, 0x89,
-	0x12, 0x41, 0xa3, 0xe2, 0x01, 0x9c, 0x58, 0x4b, 0xef, 0xd2, 0xaa, 0x74, 0xaa, 0xf6, 0xac, 0x2e,
-	0x33, 0x57, 0x57, 0x3e, 0xc2, 0x9e, 0xd8, 0xcf, 0xc7, 0x82, 0x52, 0x22, 0xa2, 0x66, 0xd7, 0x24,
-	0x16, 0x92, 0x43, 0xb8, 0x23, 0x72, 0xe6, 0xa3, 0xd5, 0x3a, 0x02, 0x9a, 0x76, 0x5a, 0x8b, 0x56,
-	0x88, 0x0d, 0x40, 0x11, 0x18, 0xf6, 0xe1, 0x6a, 0x91, 0x55, 0x96, 0xf6, 0xb4, 0x0e, 0xab, 0x50,
-	0x0a, 0x61, 0x57, 0x68, 0xbe, 0xc7, 0xab, 0x55, 0x44, 0x3c, 0xcd, 0xaa, 0xc7, 0x5b, 0x9a, 0x9c,
-	0xd0, 0x8c, 0xc7, 0xb7, 0x98, 0xa0, 0x4c, 0x14, 0x4e, 0xee, 0x36, 0xab, 0x36, 0xdb, 0x97, 0x73,
-	0x5d, 0xbe, 0x9a, 0xeb, 0xf2, 0xf5, 0x5c, 0x97, 0x7f, 0xcf, 0x75, 0xf9, 0xc7, 0x42, 0x97, 0xae,
-	0x17, 0xba, 0xf4, 0x73, 0xa1, 0x4b, 0x1f, 0x9e, 0x94, 0x9e, 0xf4, 0x9b, 0x80, 0xb9, 0x2d, 0xca,
-	0xd0, 0xe6, 0x38, 0x74, 0x03, 0xfb, 0xbc, 0xf4, 0x67, 0x13, 0x3f, 0xed, 0xde, 0x66, 0xf2, 0xbb,
-	0xff, 0xfc, 0x6f, 0x00, 0x00, 0x00, 0xff, 0xff, 0x5d, 0x48, 0x59, 0x1f, 0x8a, 0x06, 0x00, 0x00,
+	// 671 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x55, 0xbf, 0x6f, 0xd3, 0x4e,
+	0x14, 0x8f, 0xdb, 0xef, 0x37, 0x4d, 0x9e, 0xc4, 0x62, 0xda, 0xe0, 0xba, 0xc5, 0x69, 0x0d, 0xa5,
+	0x15, 0xa2, 0x36, 0x2a, 0x4c, 0xc0, 0x42, 0xba, 0x04, 0xa1, 0x48, 0xc8, 0x20, 0x06, 0x96, 0xe8,
+	0x6a, 0xbf, 0x38, 0x56, 0x5c, 0x5f, 0xb8, 0x73, 0xa0, 0x81, 0x81, 0x81, 0x85, 0x91, 0x91, 0xb1,
+	0x23, 0xff, 0x07, 0x4b, 0xc7, 0x8e, 0x88, 0xa1, 0x42, 0xe9, 0xc2, 0x9f, 0x81, 0xfc, 0x93, 0x44,
+	0x39, 0x47, 0x56, 0x27, 0xdf, 0xbb, 0xf7, 0x79, 0xef, 0xf3, 0xb9, 0x7b, 0xef, 0x9d, 0xa1, 0x31,
+	0xf0, 0x18, 0x31, 0x19, 0xda, 0xf4, 0x1d, 0xb2, 0xb1, 0x19, 0x9e, 0x18, 0x43, 0x46, 0x43, 0x2a,
+	0x5f, 0x8b, 0xf6, 0x8d, 0x6c, 0x5f, 0x5d, 0x75, 0xa9, 0x4b, 0x63, 0x8f, 0x19, 0xad, 0x12, 0x90,
+	0xba, 0xee, 0x52, 0xea, 0xfa, 0x68, 0xc6, 0xd6, 0xd1, 0xa8, 0x67, 0x92, 0x60, 0x9c, 0xb9, 0x6c,
+	0xca, 0x8f, 0x29, 0xef, 0x26, 0x31, 0x89, 0x91, 0xba, 0x36, 0x67, 0x29, 0xb3, 0x45, 0xe2, 0xd5,
+	0x3f, 0xc1, 0x7a, 0x87, 0xbb, 0x16, 0xba, 0x1e, 0x0f, 0x91, 0x59, 0xa9, 0xf3, 0x25, 0xda, 0x0c,
+	0x43, 0x59, 0x81, 0x15, 0xe2, 0x38, 0x0c, 0x39, 0x57, 0xa4, 0x2d, 0x69, 0xaf, 0x6e, 0x65, 0xa6,
+	0xbc, 0x09, 0x75, 0xbb, 0x4f, 0x7c, 0x1f, 0x03, 0x17, 0x95, 0xa5, 0xd8, 0xf7, 0x6f, 0x43, 0x5e,
+	0x85, 0xff, 0x03, 0x1a, 0xd8, 0xa8, 0x2c, 0xc7, 0x9e, 0xc4, 0x88, 0x76, 0x87, 0x8c, 0xd2, 0x9e,
+	0xf2, 0x5f, 0xb2, 0x1b, 0x1b, 0xfa, 0x2d, 0xd8, 0x2e, 0x14, 0x60, 0x21, 0x1f, 0xd2, 0x80, 0xa3,
+	0xfe, 0x59, 0x02, 0x25, 0x42, 0xd1, 0x90, 0x84, 0x98, 0x61, 0x9e, 0xa6, 0x5a, 0x36, 0xa0, 0xde,
+	0x43, 0xec, 0x0e, 0xc9, 0x18, 0x59, 0xaa, 0xb3, 0xd6, 0x43, 0x7c, 0x11, 0xd9, 0xd3, 0x47, 0x58,
+	0x9a, 0x3d, 0x82, 0x0a, 0xb5, 0xec, 0x2e, 0x52, 0x9d, 0xb9, 0x5d, 0x20, 0x55, 0x87, 0xad, 0x22,
+	0x11, 0xb9, 0xd2, 0x03, 0x68, 0x74, 0xb8, 0xfb, 0x8c, 0xf3, 0x51, 0x0e, 0x79, 0x45, 0x07, 0x18,
+	0xf0, 0xe2, 0xcb, 0xd4, 0xb7, 0x40, 0x13, 0xc7, 0xe4, 0x59, 0x3f, 0xc2, 0x5a, 0x87, 0xbb, 0xad,
+	0x11, 0x0b, 0xca, 0x26, 0x95, 0xdb, 0xb0, 0xc2, 0x58, 0xd7, 0xa6, 0x5e, 0x90, 0x1c, 0xbc, 0x65,
+	0x9e, 0x5d, 0x34, 0x2b, 0xbf, 0x2e, 0x9a, 0xbb, 0xae, 0x17, 0xf6, 0x47, 0x47, 0x86, 0x4d, 0x8f,
+	0xd3, 0x46, 0x49, 0x3f, 0xfb, 0xdc, 0x19, 0x98, 0xe1, 0x78, 0x88, 0xdc, 0x38, 0xa4, 0x5e, 0x60,
+	0x55, 0x19, 0x8b, 0xbe, 0x7a, 0x13, 0x6e, 0x0a, 0xc9, 0x73, 0x75, 0x8f, 0xe1, 0x46, 0x87, 0xbb,
+	0x87, 0x3e, 0xf1, 0x8e, 0x2d, 0xab, 0x4d, 0x7d, 0x27, 0xaa, 0xe3, 0x7b, 0xc2, 0x1c, 0x2e, 0x37,
+	0xa0, 0xca, 0x31, 0x70, 0xf2, 0xc2, 0xa4, 0xd6, 0xa3, 0xda, 0x97, 0xd3, 0x66, 0xe5, 0xcf, 0x69,
+	0xb3, 0xa2, 0x6f, 0x43, 0xb3, 0x20, 0x78, 0xea, 0x4e, 0x95, 0xe9, 0x16, 0xb1, 0x62, 0xfa, 0x04,
+	0x1a, 0x11, 0xf4, 0xe3, 0x55, 0x46, 0x90, 0x58, 0x59, 0xad, 0x44, 0x31, 0x79, 0xde, 0x0f, 0xb0,
+	0x93, 0xd7, 0xf3, 0x35, 0xf1, 0x3d, 0x87, 0x84, 0x94, 0xb5, 0xc6, 0x6d, 0xe2, 0xf7, 0x66, 0x49,
+	0x36, 0xa0, 0xce, 0x58, 0x77, 0x86, 0xa7, 0xc6, 0x58, 0xea, 0xbc, 0x52, 0x87, 0xe9, 0x26, 0xec,
+	0x97, 0xe2, 0xce, 0xc4, 0x1e, 0xfc, 0xa8, 0xc2, 0x72, 0x87, 0xbb, 0x72, 0x08, 0x8d, 0x82, 0x69,
+	0xdd, 0x33, 0x66, 0x1e, 0x11, 0xa3, 0x70, 0xac, 0xd4, 0xfb, 0x65, 0x91, 0x19, 0xbb, 0xfc, 0x16,
+	0xd6, 0xc4, 0xc3, 0xb7, 0x2b, 0x48, 0x25, 0x02, 0xaa, 0x66, 0x49, 0x60, 0x4e, 0x39, 0x80, 0xeb,
+	0xa2, 0x31, 0xda, 0x99, 0xcf, 0x23, 0x80, 0xa9, 0xfb, 0xa5, 0x60, 0x39, 0x59, 0x1f, 0x64, 0xc1,
+	0x74, 0xdd, 0x9e, 0x4f, 0x32, 0x8f, 0x52, 0xef, 0x95, 0x41, 0xe5, 0x4c, 0x01, 0xac, 0x0a, 0x27,
+	0xe5, 0xce, 0x7c, 0x16, 0x11, 0x4e, 0x35, 0xca, 0xe1, 0x66, 0x2a, 0x27, 0x9c, 0x9c, 0xdd, 0x05,
+	0x4d, 0x30, 0x0d, 0x14, 0x56, 0x6e, 0xd1, 0x5c, 0xc9, 0xdf, 0x24, 0xd0, 0x4b, 0x4c, 0xd5, 0xc3,
+	0xa2, 0x8e, 0x58, 0x14, 0xa5, 0x3e, 0xb9, 0x4a, 0x54, 0x26, 0xad, 0xd5, 0xfe, 0x3e, 0xd1, 0xa4,
+	0xb3, 0x89, 0x26, 0x9d, 0x4f, 0x34, 0xe9, 0xf7, 0x44, 0x93, 0xbe, 0x5e, 0x6a, 0x95, 0xf3, 0x4b,
+	0xad, 0xf2, 0xf3, 0x52, 0xab, 0xbc, 0xb9, 0x3b, 0xf5, 0x34, 0x3e, 0xf7, 0x18, 0x39, 0xa4, 0x0c,
+	0x4d, 0x8e, 0x03, 0xe2, 0x99, 0x27, 0x53, 0x3f, 0xed, 0xe8, 0x89, 0x3c, 0xaa, 0xc6, 0xff, 0xcf,
+	0x07, 0x7f, 0x03, 0x00, 0x00, 0xff, 0xff, 0xc6, 0x5a, 0x7b, 0x37, 0xd2, 0x07, 0x00, 0x00,
 }
 
 func (this *MsgRegisterRecoverySecret) Equal(that interface{}) bool {
@@ -879,6 +985,57 @@ func (this *MsgRegisterRRTokenHolderResponse) Equal(that interface{}) bool {
 	}
 	return true
 }
+func (this *MsgRotateValidatorByHalfRRTokenHolder) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*MsgRotateValidatorByHalfRRTokenHolder)
+	if !ok {
+		that2, ok := that.(MsgRotateValidatorByHalfRRTokenHolder)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.RrHolder != that1.RrHolder {
+		return false
+	}
+	if this.Address != that1.Address {
+		return false
+	}
+	if this.Recovery != that1.Recovery {
+		return false
+	}
+	return true
+}
+func (this *MsgRotateValidatorByHalfRRTokenHolderResponse) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*MsgRotateValidatorByHalfRRTokenHolderResponse)
+	if !ok {
+		that2, ok := that.(MsgRotateValidatorByHalfRRTokenHolderResponse)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	return true
+}
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ context.Context
@@ -894,7 +1051,7 @@ const _ = grpc.SupportPackageIsVersion4
 type MsgClient interface {
 	// allow ANY user to register or modify existing recovery secret & verify if the nonce is correct
 	RegisterRecoverySecret(ctx context.Context, in *MsgRegisterRecoverySecret, opts ...grpc.CallOption) (*MsgRegisterRecoverySecretResponse, error)
-	// allow ANY KIRA address that knows the recovery secret or has a sufficient number of RR tokens to rotate the address
+	// allow ANY KIRA address that knows the recovery secret to rotate the address
 	RotateRecoveryAddress(ctx context.Context, in *MsgRotateRecoveryAddress, opts ...grpc.CallOption) (*MsgRotateRecoveryAddressResponse, error)
 	// mint `rr_<moniker>` tokens and deposit them to the validator account.
 	// This function will require putting up a bond in the amount of `validator_recovery_bond` otherwise should fail
@@ -905,6 +1062,8 @@ type MsgClient interface {
 	ClaimRRHolderRewards(ctx context.Context, in *MsgClaimRRHolderRewards, opts ...grpc.CallOption) (*MsgClaimRRHolderRewardsResponse, error)
 	// register RR token holder
 	RegisterRRTokenHolder(ctx context.Context, in *MsgRegisterRRTokenHolder, opts ...grpc.CallOption) (*MsgRegisterRRTokenHolderResponse, error)
+	// allow ANY KIRA address has a sufficient number of RR tokens to rotate the address
+	RotateValidatorByHalfRRTokenHolder(ctx context.Context, in *MsgRotateValidatorByHalfRRTokenHolder, opts ...grpc.CallOption) (*MsgRotateValidatorByHalfRRTokenHolderResponse, error)
 }
 
 type msgClient struct {
@@ -969,11 +1128,20 @@ func (c *msgClient) RegisterRRTokenHolder(ctx context.Context, in *MsgRegisterRR
 	return out, nil
 }
 
+func (c *msgClient) RotateValidatorByHalfRRTokenHolder(ctx context.Context, in *MsgRotateValidatorByHalfRRTokenHolder, opts ...grpc.CallOption) (*MsgRotateValidatorByHalfRRTokenHolderResponse, error) {
+	out := new(MsgRotateValidatorByHalfRRTokenHolderResponse)
+	err := c.cc.Invoke(ctx, "/kira.recovery.Msg/RotateValidatorByHalfRRTokenHolder", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
 	// allow ANY user to register or modify existing recovery secret & verify if the nonce is correct
 	RegisterRecoverySecret(context.Context, *MsgRegisterRecoverySecret) (*MsgRegisterRecoverySecretResponse, error)
-	// allow ANY KIRA address that knows the recovery secret or has a sufficient number of RR tokens to rotate the address
+	// allow ANY KIRA address that knows the recovery secret to rotate the address
 	RotateRecoveryAddress(context.Context, *MsgRotateRecoveryAddress) (*MsgRotateRecoveryAddressResponse, error)
 	// mint `rr_<moniker>` tokens and deposit them to the validator account.
 	// This function will require putting up a bond in the amount of `validator_recovery_bond` otherwise should fail
@@ -984,6 +1152,8 @@ type MsgServer interface {
 	ClaimRRHolderRewards(context.Context, *MsgClaimRRHolderRewards) (*MsgClaimRRHolderRewardsResponse, error)
 	// register RR token holder
 	RegisterRRTokenHolder(context.Context, *MsgRegisterRRTokenHolder) (*MsgRegisterRRTokenHolderResponse, error)
+	// allow ANY KIRA address has a sufficient number of RR tokens to rotate the address
+	RotateValidatorByHalfRRTokenHolder(context.Context, *MsgRotateValidatorByHalfRRTokenHolder) (*MsgRotateValidatorByHalfRRTokenHolderResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
@@ -1007,6 +1177,9 @@ func (*UnimplementedMsgServer) ClaimRRHolderRewards(ctx context.Context, req *Ms
 }
 func (*UnimplementedMsgServer) RegisterRRTokenHolder(ctx context.Context, req *MsgRegisterRRTokenHolder) (*MsgRegisterRRTokenHolderResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterRRTokenHolder not implemented")
+}
+func (*UnimplementedMsgServer) RotateValidatorByHalfRRTokenHolder(ctx context.Context, req *MsgRotateValidatorByHalfRRTokenHolder) (*MsgRotateValidatorByHalfRRTokenHolderResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RotateValidatorByHalfRRTokenHolder not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
@@ -1121,6 +1294,24 @@ func _Msg_RegisterRRTokenHolder_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_RotateValidatorByHalfRRTokenHolder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgRotateValidatorByHalfRRTokenHolder)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).RotateValidatorByHalfRRTokenHolder(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.recovery.Msg/RotateValidatorByHalfRRTokenHolder",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).RotateValidatorByHalfRRTokenHolder(ctx, req.(*MsgRotateValidatorByHalfRRTokenHolder))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "kira.recovery.Msg",
 	HandlerType: (*MsgServer)(nil),
@@ -1148,6 +1339,10 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RegisterRRTokenHolder",
 			Handler:    _Msg_RegisterRRTokenHolder_Handler,
+		},
+		{
+			MethodName: "RotateValidatorByHalfRRTokenHolder",
+			Handler:    _Msg_RotateValidatorByHalfRRTokenHolder_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -1524,6 +1719,73 @@ func (m *MsgRegisterRRTokenHolderResponse) MarshalToSizedBuffer(dAtA []byte) (in
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgRotateValidatorByHalfRRTokenHolder) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgRotateValidatorByHalfRRTokenHolder) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgRotateValidatorByHalfRRTokenHolder) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Recovery) > 0 {
+		i -= len(m.Recovery)
+		copy(dAtA[i:], m.Recovery)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Recovery)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.RrHolder) > 0 {
+		i -= len(m.RrHolder)
+		copy(dAtA[i:], m.RrHolder)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.RrHolder)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgRotateValidatorByHalfRRTokenHolderResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgRotateValidatorByHalfRRTokenHolderResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgRotateValidatorByHalfRRTokenHolderResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	offset -= sovTx(v)
 	base := offset
@@ -1685,6 +1947,36 @@ func (m *MsgRegisterRRTokenHolder) Size() (n int) {
 }
 
 func (m *MsgRegisterRRTokenHolderResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgRotateValidatorByHalfRRTokenHolder) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.RrHolder)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Recovery)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgRotateValidatorByHalfRRTokenHolderResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2694,6 +2986,202 @@ func (m *MsgRegisterRRTokenHolderResponse) Unmarshal(dAtA []byte) error {
 		}
 		if fieldNum <= 0 {
 			return fmt.Errorf("proto: MsgRegisterRRTokenHolderResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgRotateValidatorByHalfRRTokenHolder) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgRotateValidatorByHalfRRTokenHolder: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgRotateValidatorByHalfRRTokenHolder: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RrHolder", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RrHolder = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Address = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Recovery", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Recovery = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgRotateValidatorByHalfRRTokenHolderResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgRotateValidatorByHalfRRTokenHolderResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgRotateValidatorByHalfRRTokenHolderResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
