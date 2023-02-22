@@ -109,6 +109,7 @@ type GovKeeper interface {
 	DeleteVote(ctx sdk.Context, vote govtypes.Vote)
 	GetVote(ctx sdk.Context, proposalID uint64, address sdk.AccAddress) (govtypes.Vote, bool)
 	GetProposals(ctx sdk.Context) ([]govtypes.Proposal, error)
+	SaveProposal(ctx sdk.Context, proposal govtypes.Proposal)
 }
 
 type MultiStakingKeeper interface {

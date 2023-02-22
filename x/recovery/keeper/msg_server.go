@@ -10,6 +10,8 @@ import (
 	custodytypes "github.com/KiraCore/sekai/x/custody/types"
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/recovery/types"
+	slashingtypes "github.com/KiraCore/sekai/x/slashing/types"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -133,6 +135,38 @@ func (k msgServer) RotateValidatorByHalfRRTokenHolder(goCtx context.Context, msg
 		k.sk.RemoveValidator(ctx, validator)
 		validator.ValKey = sdk.ValAddress(rotatedAddr)
 		k.sk.AddValidator(ctx, validator)
+	}
+
+	// - gov:proposals
+	proposals, err := k.gk.GetProposals(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, p := range proposals {
+		content, ok := p.GetContent().(*slashingtypes.ProposalSlashValidator)
+		if ok {
+			if content.Offender == sdk.ValAddress(addr).String() {
+				content.Offender = sdk.ValAddress(rotatedAddr).String()
+				any, err := codectypes.NewAnyWithValue(msg)
+				if err != nil {
+					return nil, err
+				}
+
+				p.Content = any
+				k.gk.SaveProposal(ctx, p)
+			}
+		}
+	}
+
+	// - gov:votes
+	for _, p := range proposals {
+		vote, found := k.gk.GetVote(ctx, p.ProposalId, addr)
+		if found {
+			k.gk.DeleteVote(ctx, vote)
+			vote.Voter = rotatedAddr
+			k.gk.SaveVote(ctx, vote)
+		}
 	}
 
 	ctx.EventManager().EmitEvent(
@@ -271,11 +305,29 @@ func (k msgServer) RotateRecoveryAddress(goCtx context.Context, msg *types.MsgRo
 		}
 	}
 
-	// - gov:votes
+	// - gov:proposals
 	proposals, err := k.gk.GetProposals(ctx)
 	if err != nil {
 		return nil, err
 	}
+
+	for _, p := range proposals {
+		content, ok := p.GetContent().(*slashingtypes.ProposalSlashValidator)
+		if ok {
+			if content.Offender == sdk.ValAddress(addr).String() {
+				content.Offender = sdk.ValAddress(rotatedAddr).String()
+				any, err := codectypes.NewAnyWithValue(msg)
+				if err != nil {
+					return nil, err
+				}
+
+				p.Content = any
+				k.gk.SaveProposal(ctx, p)
+			}
+		}
+	}
+
+	// - gov:votes
 	for _, p := range proposals {
 		vote, found := k.gk.GetVote(ctx, p.ProposalId, addr)
 		if found {
