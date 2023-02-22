@@ -85,6 +85,17 @@ func (k msgServer) RotateValidatorByHalfRRTokenHolder(goCtx context.Context, msg
 		return nil, types.ErrNotEnoughRRTokenAmountForRotation
 	}
 
+	rotation := k.GetRotationHistory(ctx, msg.Recovery)
+	if rotation.Rotated != "" {
+		return nil, types.ErrTargetAddressAlreadyHasRotationHistory
+	}
+
+	// set rotation history
+	k.SetRotationHistory(ctx, types.Rotation{
+		Address: msg.Address,
+		Rotated: msg.Recovery,
+	})
+
 	addr := sdk.MustAccAddressFromBech32(msg.Address)
 	rotatedAddr := sdk.MustAccAddressFromBech32(msg.Recovery)
 
@@ -169,7 +180,16 @@ func (k msgServer) RotateRecoveryAddress(goCtx context.Context, msg *types.MsgRo
 	addr := sdk.MustAccAddressFromBech32(msg.Address)
 	rotatedAddr := sdk.MustAccAddressFromBech32(msg.Recovery)
 
-	// TODO: set rotation history or something
+	rotation := k.GetRotationHistory(ctx, msg.Recovery)
+	if rotation.Rotated != "" {
+		return nil, types.ErrTargetAddressAlreadyHasRotationHistory
+	}
+
+	// set rotation history
+	k.SetRotationHistory(ctx, types.Rotation{
+		Address: msg.Address,
+		Rotated: msg.Recovery,
+	})
 
 	// - account module
 	acc := k.ak.GetAccount(ctx, addr)

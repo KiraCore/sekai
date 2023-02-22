@@ -5,12 +5,13 @@ func NewGenesisState(
 	recoveryRecords []RecoveryRecord,
 	recoveryTokens []RecoveryToken,
 	rewards []Rewards,
+	rotations []Rotation,
 ) *GenesisState {
-
 	return &GenesisState{
 		RecoveryRecords: recoveryRecords,
 		RecoveryTokens:  recoveryTokens,
 		Rewards:         rewards,
+		Rotations:       rotations,
 	}
 }
 

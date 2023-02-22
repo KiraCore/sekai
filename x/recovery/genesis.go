@@ -21,6 +21,10 @@ func InitGenesis(ctx sdk.Context, keeper keeper.Keeper, stakingKeeper types.Stak
 		holder := sdk.MustAccAddressFromBech32(rewards.Holder)
 		keeper.SetRRTokenHolderRewards(ctx, holder, rewards.Rewards)
 	}
+
+	for _, rotation := range data.Rotations {
+		keeper.SetRotationHistory(ctx, rotation)
+	}
 }
 
 // ExportGenesis writes the current store values
@@ -30,5 +34,6 @@ func ExportGenesis(ctx sdk.Context, keeper keeper.Keeper) (data *types.GenesisSt
 	records := keeper.GetAllRecoveryRecords(ctx)
 	tokens := keeper.GetAllRecoveryTokens(ctx)
 	rewards := keeper.GetAllRRHolderRewards(ctx)
-	return types.NewGenesisState(records, tokens, rewards)
+	rotations := keeper.GetAllRotationHistory(ctx)
+	return types.NewGenesisState(records, tokens, rewards, rotations)
 }
