@@ -458,7 +458,7 @@ func (k msgServer) RotateRecoveryAddress(goCtx context.Context, msg *types.MsgRo
 	return &types.MsgRotateRecoveryAddressResponse{}, nil
 }
 
-// mint `rr_<moniker>` tokens and deposit them to the validator account.
+// mint `rr/<moniker>` tokens and deposit them to the validator account.
 // This function will require putting up a bond in the amount of `validator_recovery_bond` otherwise should fail
 func (k msgServer) IssueRecoveryTokens(goCtx context.Context, msg *types.MsgIssueRecoveryTokens) (*types.MsgIssueRecoveryTokensResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
@@ -488,7 +488,7 @@ func (k msgServer) IssueRecoveryTokens(goCtx context.Context, msg *types.MsgIssu
 		return nil, types.ErrInvalidMoniker
 	}
 
-	denom := fmt.Sprintf("rr_%s", strings.ToLower(records[0].Value))
+	denom := fmt.Sprintf("rr/%s", strings.ToLower(records[0].Value))
 
 	// issue 10'000'000 tokens
 	recoveryTokenAmount := sdk.NewInt(10_000_000).Mul(sdk.NewInt(1000_000))
@@ -574,8 +574,6 @@ func (k msgServer) BurnRecoveryTokens(goCtx context.Context, msg *types.MsgBurnR
 	)
 	return &types.MsgBurnRecoveryTokensResponse{}, nil
 }
-
-// TODO: possibly add a mechanism to only claim rewards by adding claimed_amount field per user
 
 // claim RR token holder rewards
 func (k msgServer) ClaimRRHolderRewards(goCtx context.Context, msg *types.MsgClaimRRHolderRewards) (*types.MsgClaimRRHolderRewardsResponse, error) {

@@ -131,9 +131,10 @@ func (msg MsgIssueRecoveryTokens) ValidateBasic() error {
 var _ sdk.Msg = &MsgBurnRecoveryTokens{}
 
 // NewMsgBurnRecoveryTokens creates a new MsgBurnRecoveryTokens instance
-func NewMsgBurnRecoveryTokens(sender sdk.AccAddress) *MsgBurnRecoveryTokens {
+func NewMsgBurnRecoveryTokens(sender sdk.AccAddress, rrCoin sdk.Coin) *MsgBurnRecoveryTokens {
 	return &MsgBurnRecoveryTokens{
 		Address: sender.String(),
+		RrCoin:  rrCoin,
 	}
 }
 
@@ -247,7 +248,7 @@ func NewMsgRotateValidatorByHalfRRTokenHolder(rrHolder, addr, recovery string) *
 
 func (msg MsgRotateValidatorByHalfRRTokenHolder) Route() string { return RouterKey }
 func (msg MsgRotateValidatorByHalfRRTokenHolder) Type() string {
-	return types.MsgTypeRotateRecoveryAddress
+	return types.MsgTypeRotateValidatorByHalfRRTokenHolder
 }
 func (msg MsgRotateValidatorByHalfRRTokenHolder) GetSigners() []sdk.AccAddress {
 	rrHolder, err := sdk.AccAddressFromBech32(msg.RrHolder)

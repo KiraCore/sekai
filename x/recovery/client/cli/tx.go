@@ -9,6 +9,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
 )
 
@@ -128,12 +129,12 @@ $ <appd> tx recovery issue-recovery-tokens --from mykey
 // NewBurnRecoveryTokensTxCmd defines MsgBurnRecoveryTokens tx
 func NewBurnRecoveryTokensTxCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "burn-recovery-tokens",
-		Args:  cobra.NoArgs,
+		Use:   "burn-recovery-tokens [coin]",
+		Args:  cobra.ExactArgs(1),
 		Short: "Burn recovery tokens",
 		Long: `Burn recovery tokens:
 
-$ <appd> tx recovery burn-recovery-tokens --from mykey
+$ <appd> tx recovery burn-recovery-tokens [coin] --from mykey
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -141,7 +142,12 @@ $ <appd> tx recovery burn-recovery-tokens --from mykey
 				return err
 			}
 
-			msg := types.NewMsgBurnRecoveryTokens(clientCtx.GetFromAddress())
+			coin, err := sdk.ParseCoinNormalized(args[0])
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgBurnRecoveryTokens(clientCtx.GetFromAddress(), coin)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

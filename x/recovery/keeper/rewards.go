@@ -4,7 +4,6 @@ import (
 	"github.com/KiraCore/sekai/x/recovery/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 )
 
 var MinHoldAmount = sdk.NewInt(1000_000)
@@ -131,7 +130,7 @@ func (k Keeper) UnregisterNotEnoughAmountHolder(ctx sdk.Context, rrToken string)
 
 func (k Keeper) ClaimRewards(ctx sdk.Context, delegator sdk.AccAddress) sdk.Coins {
 	rewards := k.GetRRTokenHolderRewards(ctx, delegator)
-	err := k.bk.SendCoinsFromModuleToAccount(ctx, authtypes.FeeCollectorName, delegator, rewards)
+	err := k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, delegator, rewards)
 	if err != nil {
 		panic(err)
 	}
