@@ -7,6 +7,7 @@ import (
 	context "context"
 	fmt "fmt"
 	_ "github.com/cosmos/cosmos-sdk/codec/types"
+	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/cosmos/cosmos-sdk/types/query"
 	_ "github.com/gogo/protobuf/gogoproto"
 	grpc1 "github.com/gogo/protobuf/grpc"
@@ -207,44 +208,228 @@ func (m *QueryRecoveryTokenResponse) GetToken() RecoveryToken {
 	return RecoveryToken{}
 }
 
+type QueryRRHolderRewardsRequest struct {
+	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+}
+
+func (m *QueryRRHolderRewardsRequest) Reset()         { *m = QueryRRHolderRewardsRequest{} }
+func (m *QueryRRHolderRewardsRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryRRHolderRewardsRequest) ProtoMessage()    {}
+func (*QueryRRHolderRewardsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_1ccd2ab45d9acb75, []int{4}
+}
+func (m *QueryRRHolderRewardsRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryRRHolderRewardsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryRRHolderRewardsRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryRRHolderRewardsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryRRHolderRewardsRequest.Merge(m, src)
+}
+func (m *QueryRRHolderRewardsRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryRRHolderRewardsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryRRHolderRewardsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryRRHolderRewardsRequest proto.InternalMessageInfo
+
+func (m *QueryRRHolderRewardsRequest) GetAddress() string {
+	if m != nil {
+		return m.Address
+	}
+	return ""
+}
+
+type QueryRRHolderRewardsResponse struct {
+	Rewards []github_com_cosmos_cosmos_sdk_types.Coin `protobuf:"bytes,1,rep,name=rewards,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Coin" json:"rewards"`
+}
+
+func (m *QueryRRHolderRewardsResponse) Reset()         { *m = QueryRRHolderRewardsResponse{} }
+func (m *QueryRRHolderRewardsResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryRRHolderRewardsResponse) ProtoMessage()    {}
+func (*QueryRRHolderRewardsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_1ccd2ab45d9acb75, []int{5}
+}
+func (m *QueryRRHolderRewardsResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryRRHolderRewardsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryRRHolderRewardsResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryRRHolderRewardsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryRRHolderRewardsResponse.Merge(m, src)
+}
+func (m *QueryRRHolderRewardsResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryRRHolderRewardsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryRRHolderRewardsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryRRHolderRewardsResponse proto.InternalMessageInfo
+
+type QueryRegisteredRRTokenHoldersRequest struct {
+	RecoveryToken string `protobuf:"bytes,1,opt,name=recovery_token,json=recoveryToken,proto3" json:"recovery_token,omitempty"`
+}
+
+func (m *QueryRegisteredRRTokenHoldersRequest) Reset()         { *m = QueryRegisteredRRTokenHoldersRequest{} }
+func (m *QueryRegisteredRRTokenHoldersRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryRegisteredRRTokenHoldersRequest) ProtoMessage()    {}
+func (*QueryRegisteredRRTokenHoldersRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_1ccd2ab45d9acb75, []int{6}
+}
+func (m *QueryRegisteredRRTokenHoldersRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryRegisteredRRTokenHoldersRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryRegisteredRRTokenHoldersRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryRegisteredRRTokenHoldersRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryRegisteredRRTokenHoldersRequest.Merge(m, src)
+}
+func (m *QueryRegisteredRRTokenHoldersRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryRegisteredRRTokenHoldersRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryRegisteredRRTokenHoldersRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryRegisteredRRTokenHoldersRequest proto.InternalMessageInfo
+
+func (m *QueryRegisteredRRTokenHoldersRequest) GetRecoveryToken() string {
+	if m != nil {
+		return m.RecoveryToken
+	}
+	return ""
+}
+
+type QueryRegisteredRRTokenHoldersResponse struct {
+	Holders []string `protobuf:"bytes,1,rep,name=holders,proto3" json:"holders,omitempty"`
+}
+
+func (m *QueryRegisteredRRTokenHoldersResponse) Reset()         { *m = QueryRegisteredRRTokenHoldersResponse{} }
+func (m *QueryRegisteredRRTokenHoldersResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryRegisteredRRTokenHoldersResponse) ProtoMessage()    {}
+func (*QueryRegisteredRRTokenHoldersResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_1ccd2ab45d9acb75, []int{7}
+}
+func (m *QueryRegisteredRRTokenHoldersResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryRegisteredRRTokenHoldersResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryRegisteredRRTokenHoldersResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryRegisteredRRTokenHoldersResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryRegisteredRRTokenHoldersResponse.Merge(m, src)
+}
+func (m *QueryRegisteredRRTokenHoldersResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryRegisteredRRTokenHoldersResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryRegisteredRRTokenHoldersResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryRegisteredRRTokenHoldersResponse proto.InternalMessageInfo
+
+func (m *QueryRegisteredRRTokenHoldersResponse) GetHolders() []string {
+	if m != nil {
+		return m.Holders
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*QueryRecoveryRecordRequest)(nil), "kira.recovery.QueryRecoveryRecordRequest")
 	proto.RegisterType((*QueryRecoveryRecordResponse)(nil), "kira.recovery.QueryRecoveryRecordResponse")
 	proto.RegisterType((*QueryRecoveryTokenRequest)(nil), "kira.recovery.QueryRecoveryTokenRequest")
 	proto.RegisterType((*QueryRecoveryTokenResponse)(nil), "kira.recovery.QueryRecoveryTokenResponse")
+	proto.RegisterType((*QueryRRHolderRewardsRequest)(nil), "kira.recovery.QueryRRHolderRewardsRequest")
+	proto.RegisterType((*QueryRRHolderRewardsResponse)(nil), "kira.recovery.QueryRRHolderRewardsResponse")
+	proto.RegisterType((*QueryRegisteredRRTokenHoldersRequest)(nil), "kira.recovery.QueryRegisteredRRTokenHoldersRequest")
+	proto.RegisterType((*QueryRegisteredRRTokenHoldersResponse)(nil), "kira.recovery.QueryRegisteredRRTokenHoldersResponse")
 }
 
 func init() { proto.RegisterFile("kira/recovery/query.proto", fileDescriptor_1ccd2ab45d9acb75) }
 
 var fileDescriptor_1ccd2ab45d9acb75 = []byte{
-	// 421 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x92, 0x41, 0x4f, 0xe2, 0x40,
-	0x14, 0xc7, 0x5b, 0xb2, 0xb0, 0xd9, 0xd9, 0xb0, 0x87, 0xc9, 0x1e, 0xa0, 0xcb, 0x76, 0x37, 0x3d,
-	0x01, 0x87, 0xce, 0xc2, 0x46, 0x25, 0xf1, 0x86, 0xde, 0x3c, 0xd9, 0x18, 0x0f, 0x5c, 0xcc, 0x14,
-	0xc6, 0xda, 0x20, 0x9d, 0x32, 0x33, 0x25, 0x12, 0xe3, 0xc5, 0x4f, 0x60, 0xe2, 0xd9, 0x83, 0xdf,
-	0x86, 0xc4, 0x0b, 0x89, 0x17, 0x4f, 0xc6, 0x80, 0x1f, 0xc4, 0x74, 0x3a, 0x0d, 0x96, 0x88, 0x70,
-	0xea, 0x9b, 0xf7, 0xde, 0xff, 0xbd, 0xdf, 0xfc, 0x3b, 0xa0, 0xdc, 0xf7, 0x19, 0x46, 0x8c, 0x74,
-	0xe9, 0x88, 0xb0, 0x31, 0x1a, 0x46, 0x84, 0x8d, 0xed, 0x90, 0x51, 0x41, 0x61, 0x31, 0x2e, 0xd9,
-	0x69, 0xc9, 0xa8, 0x77, 0x29, 0x1f, 0x50, 0x8e, 0x5c, 0xcc, 0x49, 0xd2, 0x87, 0x46, 0x0d, 0x97,
-	0x08, 0xdc, 0x40, 0x21, 0xf6, 0xfc, 0x00, 0x0b, 0x9f, 0x06, 0x89, 0xd4, 0xf8, 0xe9, 0x51, 0x8f,
-	0xca, 0x10, 0xc5, 0x91, 0xca, 0x96, 0x3d, 0x4a, 0xbd, 0x73, 0x82, 0xe4, 0xc9, 0x8d, 0x4e, 0x11,
-	0x0e, 0xd4, 0x2e, 0xa3, 0xa2, 0x4a, 0x38, 0xf4, 0x11, 0x0e, 0x02, 0x2a, 0xe4, 0x34, 0x9e, 0x56,
-	0xb3, 0x90, 0x69, 0x90, 0x54, 0xad, 0x6d, 0x60, 0x1c, 0xc6, 0x38, 0x8e, 0x4a, 0xc7, 0x5f, 0xd6,
-	0x73, 0xc8, 0x30, 0x22, 0x5c, 0xc0, 0x12, 0xf8, 0x8a, 0x7b, 0x3d, 0x46, 0x38, 0x2f, 0xe9, 0x7f,
-	0xf5, 0xea, 0x37, 0x27, 0x3d, 0x5a, 0x1d, 0xf0, 0xeb, 0x43, 0x1d, 0x0f, 0x69, 0xc0, 0x09, 0xdc,
-	0x05, 0x05, 0x26, 0x33, 0x52, 0xf7, 0xbd, 0xf9, 0xdb, 0xce, 0xf8, 0x61, 0x67, 0x65, 0xed, 0x2f,
-	0x93, 0xe7, 0x3f, 0x9a, 0xa3, 0x24, 0xd6, 0x16, 0x28, 0x67, 0x66, 0x1f, 0xd1, 0x3e, 0x09, 0xd6,
-	0x23, 0x1d, 0x2f, 0x5d, 0x45, 0xc9, 0x14, 0x51, 0x0b, 0xe4, 0x45, 0x9c, 0x50, 0x40, 0x95, 0x15,
-	0x40, 0x52, 0xa4, 0x78, 0x12, 0x41, 0xf3, 0x21, 0x07, 0xf2, 0x72, 0x30, 0xbc, 0xd7, 0xc1, 0x8f,
-	0x2c, 0x39, 0xac, 0x2d, 0xcd, 0x59, 0x6d, 0xa6, 0x51, 0xdf, 0xa4, 0x35, 0xa1, 0xb5, 0x5a, 0xd7,
-	0x8f, 0xaf, 0xb7, 0xb9, 0x26, 0xfc, 0x87, 0xb2, 0x7f, 0x2f, 0x7d, 0x34, 0x69, 0xe2, 0x24, 0xb1,
-	0x0c, 0x5d, 0x2a, 0x13, 0xae, 0xe0, 0x9d, 0x0e, 0x8a, 0x99, 0xcb, 0xc0, 0xea, 0x67, 0x7b, 0xdf,
-	0x7b, 0x6b, 0xd4, 0x36, 0xe8, 0x54, 0x80, 0x3b, 0x12, 0xb0, 0x01, 0xd1, 0x3a, 0x40, 0xe9, 0xe1,
-	0x82, 0xaf, 0xbd, 0x3f, 0x99, 0x99, 0xfa, 0x74, 0x66, 0xea, 0x2f, 0x33, 0x53, 0xbf, 0x99, 0x9b,
-	0xda, 0x74, 0x6e, 0x6a, 0x4f, 0x73, 0x53, 0xeb, 0xd4, 0x3d, 0x5f, 0x9c, 0x45, 0xae, 0xdd, 0xa5,
-	0x03, 0x74, 0xe0, 0x33, 0xbc, 0x47, 0x19, 0x41, 0x9c, 0xf4, 0xb1, 0x8f, 0x2e, 0x16, 0x0b, 0xc4,
-	0x38, 0x24, 0xdc, 0x2d, 0xc8, 0xd7, 0xfb, 0xff, 0x2d, 0x00, 0x00, 0xff, 0xff, 0x01, 0x88, 0xa6,
-	0x8e, 0x82, 0x03, 0x00, 0x00,
+	// 606 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x94, 0x4f, 0x6f, 0xd3, 0x3e,
+	0x1c, 0xc6, 0x9b, 0xdf, 0x8f, 0xae, 0xaa, 0x51, 0x87, 0x64, 0x71, 0x68, 0x43, 0xc9, 0xa6, 0x88,
+	0x89, 0xae, 0x88, 0x98, 0x76, 0x40, 0x87, 0x90, 0xf8, 0xd3, 0x21, 0x04, 0x42, 0x1c, 0xb0, 0x10,
+	0x87, 0x5d, 0x26, 0xb7, 0x31, 0x99, 0xd5, 0x2d, 0xee, 0xec, 0x74, 0x50, 0x4d, 0xbb, 0xf0, 0x0a,
+	0x90, 0x38, 0x73, 0xe0, 0xcc, 0x1b, 0x19, 0x07, 0xa4, 0x49, 0x5c, 0x10, 0x87, 0x09, 0xb5, 0xbc,
+	0x10, 0x14, 0xdb, 0xd9, 0x9a, 0xaa, 0x5d, 0xcb, 0x29, 0xf6, 0xd7, 0x7e, 0xec, 0xcf, 0x63, 0x3f,
+	0x0e, 0x28, 0x75, 0x98, 0x20, 0x48, 0xd0, 0x36, 0xdf, 0xa7, 0xa2, 0x8f, 0xf6, 0x7a, 0x54, 0xf4,
+	0xbd, 0xae, 0xe0, 0x11, 0x87, 0x85, 0x78, 0xc8, 0x4b, 0x86, 0xec, 0x6a, 0x9b, 0xcb, 0x5d, 0x2e,
+	0x51, 0x8b, 0x48, 0xaa, 0xe7, 0xa1, 0xfd, 0x5a, 0x8b, 0x46, 0xa4, 0x86, 0xba, 0x24, 0x60, 0x21,
+	0x89, 0x18, 0x0f, 0xb5, 0xd4, 0xbe, 0x1c, 0xf0, 0x80, 0xab, 0x26, 0x8a, 0x5b, 0xa6, 0x5a, 0x0a,
+	0x38, 0x0f, 0x76, 0x28, 0x52, 0xbd, 0x56, 0xef, 0x2d, 0x22, 0xa1, 0xd9, 0xcb, 0x2e, 0x9b, 0x21,
+	0xd2, 0x65, 0x88, 0x84, 0x21, 0x8f, 0xd4, 0x6a, 0x32, 0x19, 0x4d, 0x43, 0x26, 0x0d, 0x3d, 0xea,
+	0xde, 0x05, 0xf6, 0xab, 0x18, 0x07, 0x9b, 0x72, 0xfc, 0x15, 0x3e, 0xa6, 0x7b, 0x3d, 0x2a, 0x23,
+	0x58, 0x04, 0x39, 0xe2, 0xfb, 0x82, 0x4a, 0x59, 0xb4, 0x96, 0xad, 0x4a, 0x1e, 0x27, 0x5d, 0x77,
+	0x13, 0x5c, 0x99, 0xa8, 0x93, 0x5d, 0x1e, 0x4a, 0x0a, 0xef, 0x83, 0x05, 0xa1, 0x2a, 0x4a, 0x77,
+	0xb1, 0x7e, 0xd5, 0x4b, 0x9d, 0x87, 0x97, 0x96, 0x35, 0x2f, 0x1c, 0x9d, 0x2c, 0x65, 0xb0, 0x91,
+	0xb8, 0x77, 0x40, 0x29, 0xb5, 0xf6, 0x6b, 0xde, 0xa1, 0xe1, 0x6c, 0xa4, 0x37, 0x63, 0x56, 0x8c,
+	0xcc, 0x10, 0xad, 0x83, 0x6c, 0x14, 0x17, 0x0c, 0x50, 0x79, 0x0a, 0x90, 0x12, 0x19, 0x1e, 0x2d,
+	0x70, 0x1b, 0x89, 0x55, 0xfc, 0x8c, 0xef, 0xf8, 0x54, 0x60, 0xfa, 0x8e, 0x08, 0x5f, 0xce, 0x06,
+	0x62, 0xa0, 0x3c, 0x59, 0x68, 0x90, 0x9e, 0x83, 0x9c, 0xd0, 0xa5, 0xa2, 0xb5, 0xfc, 0x7f, 0x25,
+	0xdf, 0x44, 0xf1, 0xb6, 0xbf, 0x4e, 0x96, 0xae, 0x07, 0x2c, 0xda, 0xee, 0xb5, 0xbc, 0x36, 0xdf,
+	0x45, 0x26, 0x38, 0xfa, 0x73, 0x53, 0xfa, 0x1d, 0x14, 0xf5, 0xbb, 0x54, 0x7a, 0x1b, 0x9c, 0x85,
+	0x38, 0xd1, 0xbb, 0x2f, 0xc1, 0x35, 0xe3, 0x3d, 0x60, 0x32, 0xa2, 0x82, 0xfa, 0x18, 0x2b, 0x2b,
+	0x7a, 0xe7, 0x53, 0xd8, 0x15, 0xb0, 0x98, 0x58, 0xde, 0x3a, 0x3b, 0x8e, 0x3c, 0x2e, 0x88, 0x51,
+	0xff, 0xee, 0x63, 0xb0, 0x32, 0x63, 0x39, 0x63, 0xa1, 0x08, 0x72, 0xdb, 0xba, 0xa4, 0x2d, 0xe0,
+	0xa4, 0x5b, 0xff, 0x96, 0x05, 0x59, 0xb5, 0x06, 0xfc, 0x62, 0x81, 0xc5, 0xf4, 0x7d, 0xc3, 0xd5,
+	0xb1, 0xd3, 0x9f, 0x1e, 0x41, 0xbb, 0x3a, 0xcf, 0x54, 0x4d, 0xe3, 0xae, 0x7f, 0xf8, 0xf1, 0xe7,
+	0xd3, 0x7f, 0x75, 0x78, 0x0b, 0xa5, 0x33, 0x9f, 0x3c, 0xb5, 0x53, 0xeb, 0x3a, 0x68, 0xe8, 0xc0,
+	0xdc, 0xd4, 0x21, 0xfc, 0x6c, 0x81, 0x42, 0x2a, 0x02, 0xb0, 0x72, 0xde, 0xbe, 0xa3, 0x89, 0xb4,
+	0x57, 0xe7, 0x98, 0x69, 0x00, 0x1b, 0x0a, 0xb0, 0x06, 0xd1, 0x2c, 0x40, 0x75, 0x37, 0x23, 0x7c,
+	0x5f, 0x2d, 0x70, 0x69, 0x2c, 0x46, 0x70, 0xf2, 0xc9, 0x4c, 0x0c, 0xa9, 0x7d, 0x63, 0xae, 0xb9,
+	0x86, 0xf2, 0xa1, 0xa2, 0xbc, 0x07, 0x1b, 0x73, 0x51, 0x6e, 0x99, 0x0c, 0x8e, 0xd0, 0x7e, 0xb7,
+	0x40, 0x71, 0x5a, 0x74, 0xe0, 0xda, 0xe4, 0xe3, 0x3a, 0x37, 0xb7, 0xf6, 0xed, 0x7f, 0x13, 0x19,
+	0x23, 0x4f, 0x95, 0x91, 0x47, 0xf0, 0xc1, 0x7c, 0x46, 0x4c, 0x74, 0xd1, 0x41, 0xba, 0x7e, 0xd8,
+	0x7c, 0x72, 0x34, 0x70, 0xac, 0xe3, 0x81, 0x63, 0xfd, 0x1e, 0x38, 0xd6, 0xc7, 0xa1, 0x93, 0x39,
+	0x1e, 0x3a, 0x99, 0x9f, 0x43, 0x27, 0xb3, 0x59, 0x1d, 0x79, 0xa9, 0x2f, 0x98, 0x20, 0x1b, 0x5c,
+	0x50, 0x24, 0x69, 0x87, 0x30, 0xf4, 0xfe, 0x6c, 0x3f, 0xf5, 0x62, 0x5b, 0x0b, 0xea, 0x8f, 0xbb,
+	0xf6, 0x37, 0x00, 0x00, 0xff, 0xff, 0xc5, 0x12, 0x30, 0x24, 0x36, 0x06, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -262,6 +447,8 @@ type QueryClient interface {
 	// given KIRA public address as parameter return data from the recovery registrar
 	RecoveryRecord(ctx context.Context, in *QueryRecoveryRecordRequest, opts ...grpc.CallOption) (*QueryRecoveryRecordResponse, error)
 	RecoveryToken(ctx context.Context, in *QueryRecoveryTokenRequest, opts ...grpc.CallOption) (*QueryRecoveryTokenResponse, error)
+	RRHolderRewards(ctx context.Context, in *QueryRRHolderRewardsRequest, opts ...grpc.CallOption) (*QueryRRHolderRewardsResponse, error)
+	RegisteredRRTokenHolders(ctx context.Context, in *QueryRegisteredRRTokenHoldersRequest, opts ...grpc.CallOption) (*QueryRegisteredRRTokenHoldersResponse, error)
 }
 
 type queryClient struct {
@@ -290,11 +477,31 @@ func (c *queryClient) RecoveryToken(ctx context.Context, in *QueryRecoveryTokenR
 	return out, nil
 }
 
+func (c *queryClient) RRHolderRewards(ctx context.Context, in *QueryRRHolderRewardsRequest, opts ...grpc.CallOption) (*QueryRRHolderRewardsResponse, error) {
+	out := new(QueryRRHolderRewardsResponse)
+	err := c.cc.Invoke(ctx, "/kira.recovery.Query/RRHolderRewards", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) RegisteredRRTokenHolders(ctx context.Context, in *QueryRegisteredRRTokenHoldersRequest, opts ...grpc.CallOption) (*QueryRegisteredRRTokenHoldersResponse, error) {
+	out := new(QueryRegisteredRRTokenHoldersResponse)
+	err := c.cc.Invoke(ctx, "/kira.recovery.Query/RegisteredRRTokenHolders", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 type QueryServer interface {
 	// given KIRA public address as parameter return data from the recovery registrar
 	RecoveryRecord(context.Context, *QueryRecoveryRecordRequest) (*QueryRecoveryRecordResponse, error)
 	RecoveryToken(context.Context, *QueryRecoveryTokenRequest) (*QueryRecoveryTokenResponse, error)
+	RRHolderRewards(context.Context, *QueryRRHolderRewardsRequest) (*QueryRRHolderRewardsResponse, error)
+	RegisteredRRTokenHolders(context.Context, *QueryRegisteredRRTokenHoldersRequest) (*QueryRegisteredRRTokenHoldersResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -306,6 +513,12 @@ func (*UnimplementedQueryServer) RecoveryRecord(ctx context.Context, req *QueryR
 }
 func (*UnimplementedQueryServer) RecoveryToken(ctx context.Context, req *QueryRecoveryTokenRequest) (*QueryRecoveryTokenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RecoveryToken not implemented")
+}
+func (*UnimplementedQueryServer) RRHolderRewards(ctx context.Context, req *QueryRRHolderRewardsRequest) (*QueryRRHolderRewardsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RRHolderRewards not implemented")
+}
+func (*UnimplementedQueryServer) RegisteredRRTokenHolders(ctx context.Context, req *QueryRegisteredRRTokenHoldersRequest) (*QueryRegisteredRRTokenHoldersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisteredRRTokenHolders not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -348,6 +561,42 @@ func _Query_RecoveryToken_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_RRHolderRewards_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryRRHolderRewardsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).RRHolderRewards(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.recovery.Query/RRHolderRewards",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).RRHolderRewards(ctx, req.(*QueryRRHolderRewardsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_RegisteredRRTokenHolders_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryRegisteredRRTokenHoldersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).RegisteredRRTokenHolders(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kira.recovery.Query/RegisteredRRTokenHolders",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).RegisteredRRTokenHolders(ctx, req.(*QueryRegisteredRRTokenHoldersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "kira.recovery.Query",
 	HandlerType: (*QueryServer)(nil),
@@ -359,6 +608,14 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RecoveryToken",
 			Handler:    _Query_RecoveryToken_Handler,
+		},
+		{
+			MethodName: "RRHolderRewards",
+			Handler:    _Query_RRHolderRewards_Handler,
+		},
+		{
+			MethodName: "RegisteredRRTokenHolders",
+			Handler:    _Query_RegisteredRRTokenHolders_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -491,6 +748,135 @@ func (m *QueryRecoveryTokenResponse) MarshalToSizedBuffer(dAtA []byte) (int, err
 	return len(dAtA) - i, nil
 }
 
+func (m *QueryRRHolderRewardsRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryRRHolderRewardsRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryRRHolderRewardsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryRRHolderRewardsResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryRRHolderRewardsResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryRRHolderRewardsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Rewards) > 0 {
+		for iNdEx := len(m.Rewards) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size := m.Rewards[iNdEx].Size()
+				i -= size
+				if _, err := m.Rewards[iNdEx].MarshalTo(dAtA[i:]); err != nil {
+					return 0, err
+				}
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryRegisteredRRTokenHoldersRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryRegisteredRRTokenHoldersRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryRegisteredRRTokenHoldersRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.RecoveryToken) > 0 {
+		i -= len(m.RecoveryToken)
+		copy(dAtA[i:], m.RecoveryToken)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.RecoveryToken)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryRegisteredRRTokenHoldersResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryRegisteredRRTokenHoldersResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryRegisteredRRTokenHoldersResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Holders) > 0 {
+		for iNdEx := len(m.Holders) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Holders[iNdEx])
+			copy(dAtA[i:], m.Holders[iNdEx])
+			i = encodeVarintQuery(dAtA, i, uint64(len(m.Holders[iNdEx])))
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	offset -= sovQuery(v)
 	base := offset
@@ -547,6 +933,62 @@ func (m *QueryRecoveryTokenResponse) Size() (n int) {
 	_ = l
 	l = m.Token.Size()
 	n += 1 + l + sovQuery(uint64(l))
+	return n
+}
+
+func (m *QueryRRHolderRewardsRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryRRHolderRewardsResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Rewards) > 0 {
+		for _, e := range m.Rewards {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *QueryRegisteredRRTokenHoldersRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.RecoveryToken)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryRegisteredRRTokenHoldersResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Holders) > 0 {
+		for _, s := range m.Holders {
+			l = len(s)
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
 	return n
 }
 
@@ -864,6 +1306,338 @@ func (m *QueryRecoveryTokenResponse) Unmarshal(dAtA []byte) error {
 			if err := m.Token.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryRRHolderRewardsRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryRRHolderRewardsRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryRRHolderRewardsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Address = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryRRHolderRewardsResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryRRHolderRewardsResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryRRHolderRewardsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Rewards", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			var v github_com_cosmos_cosmos_sdk_types.Coin
+			m.Rewards = append(m.Rewards, v)
+			if err := m.Rewards[len(m.Rewards)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryRegisteredRRTokenHoldersRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryRegisteredRRTokenHoldersRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryRegisteredRRTokenHoldersRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RecoveryToken", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RecoveryToken = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryRegisteredRRTokenHoldersResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryRegisteredRRTokenHoldersResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryRegisteredRRTokenHoldersResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Holders", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Holders = append(m.Holders, string(dAtA[iNdEx:postIndex]))
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
