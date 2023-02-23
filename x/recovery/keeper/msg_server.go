@@ -101,6 +101,11 @@ func (k msgServer) RotateValidatorByHalfRRTokenHolder(goCtx context.Context, msg
 	addr := sdk.MustAccAddressFromBech32(msg.Address)
 	rotatedAddr := sdk.MustAccAddressFromBech32(msg.Recovery)
 
+	// - recovery module
+	k.DeleteRecoveryToken(ctx, recoveryToken)
+	recoveryToken.Address = msg.Recovery
+	k.SetRecoveryToken(ctx, recoveryToken)
+
 	// - multistaking
 	info := k.msk.GetCompoundInfoByAddress(ctx, msg.Address)
 	k.msk.RemoveCompoundInfo(ctx, info)
@@ -135,6 +140,57 @@ func (k msgServer) RotateValidatorByHalfRRTokenHolder(goCtx context.Context, msg
 		k.sk.RemoveValidator(ctx, validator)
 		validator.ValKey = sdk.ValAddress(rotatedAddr)
 		k.sk.AddValidator(ctx, validator)
+	}
+
+	// - gov:councilor
+	councilor, found := k.gk.GetCouncilor(ctx, addr)
+	if found {
+		k.gk.DeleteCouncilor(ctx, councilor)
+		councilor.Address = rotatedAddr
+		k.gk.SaveCouncilor(ctx, councilor)
+	}
+
+	// - gov:identity_records
+	records := k.gk.GetIdRecordsByAddress(ctx, addr)
+	for _, record := range records {
+		k.gk.DeleteIdentityRecordById(ctx, record.Id)
+		record.Address = msg.Recovery
+		k.gk.SetIdentityRecord(ctx, record)
+	}
+
+	requests := k.gk.GetIdRecordsVerifyRequestsByRequester(ctx, addr)
+	for _, req := range requests {
+		k.gk.DeleteIdRecordsVerifyRequest(ctx, req.Id)
+		req.Address = msg.Recovery
+		k.gk.SetIdentityRecordsVerifyRequest(ctx, req)
+	}
+
+	requests = k.gk.GetIdRecordsVerifyRequestsByApprover(ctx, addr)
+	for _, req := range requests {
+		k.gk.DeleteIdRecordsVerifyRequest(ctx, req.Id)
+		req.Verifier = msg.Recovery
+		k.gk.SetIdentityRecordsVerifyRequest(ctx, req)
+	}
+
+	// - gov:network_actor
+	actor, found := k.gk.GetNetworkActorByAddress(ctx, addr)
+	if found {
+		k.gk.DeleteNetworkActor(ctx, actor)
+		for _, role := range actor.Roles {
+			k.gk.RemoveRoleFromActor(ctx, actor, role)
+		}
+		for _, perm := range actor.Permissions.Whitelist {
+			k.gk.DeleteWhitelistAddressPermKey(ctx, actor, govtypes.PermValue(perm))
+		}
+
+		actor.Address = rotatedAddr
+		k.gk.SaveNetworkActor(ctx, actor)
+		for _, role := range actor.Roles {
+			k.gk.AssignRoleToActor(ctx, actor, role)
+		}
+		for _, perm := range actor.Permissions.Whitelist {
+			k.gk.SetWhitelistAddressPermKey(ctx, actor, govtypes.PermValue(perm))
+		}
 	}
 
 	// - gov:proposals
