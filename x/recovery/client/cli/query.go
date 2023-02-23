@@ -26,6 +26,8 @@ func GetQueryCmd() *cobra.Command {
 	recoveryQueryCmd.AddCommand(
 		GetCmdQueryRecoveryRecord(),
 		GetCmdQueryRecoveryToken(),
+		GetCmdQueryRRHolderRewards(),
+		GetCmdQueryRRHolders(),
 	)
 
 	return recoveryQueryCmd
@@ -79,6 +81,66 @@ $ <appd> query recovery recovery-token kira15nxzg5lrmyu42vuzlztdnlhq9sngerenu520
 
 			params := &types.QueryRecoveryTokenRequest{Address: args[0]}
 			res, err := queryClient.RecoveryToken(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// GetCmdQueryRRHolderRewards implements the command to query rr holder rewards
+func GetCmdQueryRRHolderRewards() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "rr-holder-rewards [address]",
+		Short: "Query an account's rr holder rewards information",
+		Long: strings.TrimSpace(`Query an account's rr holder rewards information:
+
+$ <appd> query recovery rr-holder-rewards kira15nxzg5lrmyu42vuzlztdnlhq9sngerenu520ey
+`),
+		Args: cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			params := &types.QueryRRHolderRewardsRequest{Address: args[0]}
+			res, err := queryClient.RRHolderRewards(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// GetCmdQueryRRHolders implements the command to query rr holders
+func GetCmdQueryRRHolders() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "rr-holders [rr_token]",
+		Short: "Query registered rr holders",
+		Long: strings.TrimSpace(`Query registered rr holders:
+
+$ <appd> query recovery rr-holders rr/val1
+`),
+		Args: cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+
+			params := &types.QueryRegisteredRRTokenHoldersRequest{RecoveryToken: args[0]}
+			res, err := queryClient.RegisteredRRTokenHolders(context.Background(), params)
 			if err != nil {
 				return err
 			}

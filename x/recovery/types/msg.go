@@ -131,9 +131,10 @@ func (msg MsgIssueRecoveryTokens) ValidateBasic() error {
 var _ sdk.Msg = &MsgBurnRecoveryTokens{}
 
 // NewMsgBurnRecoveryTokens creates a new MsgBurnRecoveryTokens instance
-func NewMsgBurnRecoveryTokens(sender sdk.AccAddress) *MsgBurnRecoveryTokens {
+func NewMsgBurnRecoveryTokens(sender sdk.AccAddress, rrCoin sdk.Coin) *MsgBurnRecoveryTokens {
 	return &MsgBurnRecoveryTokens{
 		Address: sender.String(),
+		RrCoin:  rrCoin,
 	}
 }
 
@@ -155,6 +156,117 @@ func (msg MsgBurnRecoveryTokens) GetSignBytes() []byte {
 
 // ValidateBasic validity check for the AnteHandler
 func (msg MsgBurnRecoveryTokens) ValidateBasic() error {
+	if msg.Address == "" {
+		return ErrInvalidAccAddress
+	}
+
+	return nil
+}
+
+// verify interface at compile time
+var _ sdk.Msg = &MsgRegisterRRTokenHolder{}
+
+// NewMsgRegisterRRTokenHolder creates a new MsgRegisterRRTokenHolder instance
+func NewMsgRegisterRRTokenHolder(sender sdk.AccAddress) *MsgRegisterRRTokenHolder {
+	return &MsgRegisterRRTokenHolder{
+		Holder: sender.String(),
+	}
+}
+
+func (msg MsgRegisterRRTokenHolder) Route() string { return RouterKey }
+func (msg MsgRegisterRRTokenHolder) Type() string  { return types.MsgTypeRegisterRRTokenHolder }
+func (msg MsgRegisterRRTokenHolder) GetSigners() []sdk.AccAddress {
+	addr, err := sdk.AccAddressFromBech32(msg.Holder)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{addr}
+}
+
+// GetSignBytes gets the bytes for the message signer to sign on
+func (msg MsgRegisterRRTokenHolder) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(&msg)
+	return sdk.MustSortJSON(bz)
+}
+
+// ValidateBasic validity check for the AnteHandler
+func (msg MsgRegisterRRTokenHolder) ValidateBasic() error {
+	if msg.Holder == "" {
+		return ErrInvalidAccAddress
+	}
+
+	return nil
+}
+
+// verify interface at compile time
+var _ sdk.Msg = &MsgClaimRRHolderRewards{}
+
+// NewMsgClaimRRHolderRewards creates a new MsgClaimRRHolderRewards instance
+func NewMsgClaimRRHolderRewards(sender sdk.AccAddress) *MsgClaimRRHolderRewards {
+	return &MsgClaimRRHolderRewards{
+		Sender: sender.String(),
+	}
+}
+
+func (msg MsgClaimRRHolderRewards) Route() string { return RouterKey }
+func (msg MsgClaimRRHolderRewards) Type() string  { return types.MsgTypeClaimRRHolderRewards }
+func (msg MsgClaimRRHolderRewards) GetSigners() []sdk.AccAddress {
+	addr, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{addr}
+}
+
+// GetSignBytes gets the bytes for the message signer to sign on
+func (msg MsgClaimRRHolderRewards) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(&msg)
+	return sdk.MustSortJSON(bz)
+}
+
+// ValidateBasic validity check for the AnteHandler
+func (msg MsgClaimRRHolderRewards) ValidateBasic() error {
+	if msg.Sender == "" {
+		return ErrInvalidAccAddress
+	}
+
+	return nil
+}
+
+// verify interface at compile time
+var _ sdk.Msg = &MsgRotateValidatorByHalfRRTokenHolder{}
+
+// NewMsgRotateValidatorByHalfRRTokenHolder creates a new MsgRotateValidatorByHalfRRTokenHolder instance
+//nolint:interfacer
+func NewMsgRotateValidatorByHalfRRTokenHolder(rrHolder, addr, recovery string) *MsgRotateValidatorByHalfRRTokenHolder {
+	return &MsgRotateValidatorByHalfRRTokenHolder{
+		RrHolder: rrHolder,
+		Address:  addr,
+		Recovery: recovery,
+	}
+}
+
+func (msg MsgRotateValidatorByHalfRRTokenHolder) Route() string { return RouterKey }
+func (msg MsgRotateValidatorByHalfRRTokenHolder) Type() string {
+	return types.MsgTypeRotateValidatorByHalfRRTokenHolder
+}
+func (msg MsgRotateValidatorByHalfRRTokenHolder) GetSigners() []sdk.AccAddress {
+	rrHolder, err := sdk.AccAddressFromBech32(msg.RrHolder)
+	if err != nil {
+		panic(err)
+	}
+
+	return []sdk.AccAddress{rrHolder.Bytes()}
+}
+
+// GetSignBytes gets the bytes for the message signer to sign on
+func (msg MsgRotateValidatorByHalfRRTokenHolder) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(&msg)
+	return sdk.MustSortJSON(bz)
+}
+
+// ValidateBasic validity check for the AnteHandler
+func (msg MsgRotateValidatorByHalfRRTokenHolder) ValidateBasic() error {
 	if msg.Address == "" {
 		return ErrInvalidAccAddress
 	}

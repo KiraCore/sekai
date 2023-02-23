@@ -159,7 +159,8 @@ func TestSimappExportGenesis(t *testing.T) {
     "min_collective_bond": "100000",
     "min_collective_bonding_time": "86400",
     "max_collective_outputs": "10",
-    "min_collective_claim_period": "14400"
+    "min_collective_claim_period": "14400",	
+    "validator_recovery_bond": "300000"
   },
   "execution_fees": [
     {
@@ -346,7 +347,8 @@ func TestExportInitGenesis(t *testing.T) {
 			MinCollectiveBond:            100_000, // in KEX
 			MinCollectiveBondingTime:     86400,   // in seconds
 			MaxCollectiveOutputs:         10,
-			MinCollectiveClaimPeriod:     14400, // 4hrs
+			MinCollectiveClaimPeriod:     14400,  // 4hrs
+			ValidatorRecoveryBond:        300000, // 300k KEX
 		},
 		ExecutionFees: []types.ExecutionFee{
 			{
@@ -439,7 +441,8 @@ func TestExportInitGenesis(t *testing.T) {
     "min_collective_bond": "100000",	
     "min_collective_bonding_time": "86400",	
     "max_collective_outputs": "10",	
-    "min_collective_claim_period": "14400"	
+    "min_collective_claim_period": "14400",	
+    "validator_recovery_bond": "300000"
   },	
   "execution_fees": [	
     {	

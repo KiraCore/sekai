@@ -18,6 +18,12 @@ service Query {
   rpc RecoveryToken(QueryRecoveryTokenRequest) returns (QueryRecoveryTokenResponse) {
     option (google.api.http).get = "/kira/recovery/v1beta1/recovery_token/{address}";
   }
+  rpc RRHolderRewards(QueryRRHolderRewardsRequest) returns (QueryRRHolderRewardsResponse) {
+    option (google.api.http).get = "/kira/recovery/v1beta1/recovery_token_rewards/{address}";
+  }
+  rpc RegisteredRRTokenHolders(QueryRegisteredRRTokenHoldersRequest) returns (QueryRegisteredRRTokenHoldersResponse) {
+    option (google.api.http).get = "/kira/recovery/v1beta1/recovery_token_holders/{recovery_token}";
+  }
 }
 
 message QueryRecoveryRecordRequest {
@@ -34,4 +40,21 @@ message QueryRecoveryTokenRequest {
 
 message QueryRecoveryTokenResponse {
   kira.recovery.RecoveryToken token = 1 [ (gogoproto.nullable) = false ];
+}
+
+message QueryRRHolderRewardsRequest { 
+  string address = 1;
+}
+message QueryRRHolderRewardsResponse {
+  repeated string rewards = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message QueryRegisteredRRTokenHoldersRequest {
+  string recovery_token = 1;
+}
+message QueryRegisteredRRTokenHoldersResponse {
+  repeated string holders = 1;
 }
