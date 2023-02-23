@@ -327,7 +327,8 @@ func (m *SetNetworkPropertyProposal) ValidateBasic() error {
 		MinCollectiveBond,
 		MinCollectiveBondingTime,
 		MaxCollectiveOutputs,
-		MinCollectiveClaimPeriod:
+		MinCollectiveClaimPeriod,
+		ValidatorRecoveryBond:
 		return nil
 	default:
 		return ErrInvalidNetworkProperty

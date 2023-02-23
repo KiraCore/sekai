@@ -132,7 +132,7 @@ var (
 		baskettypes.ModuleName:       {authtypes.Minter, authtypes.Burner},
 		multistakingtypes.ModuleName: {authtypes.Burner},
 		collectivestypes.ModuleName:  nil,
-		recoverytypes.ModuleName:     nil,
+		recoverytypes.ModuleName:     {authtypes.Minter, authtypes.Burner},
 	}
 
 	// module accounts that are allowed to receive tokens
@@ -270,12 +270,6 @@ func NewInitApp(
 	app.CustomStakingKeeper = *customStakingKeeper.SetHooks(
 		stakingtypes.NewMultiStakingHooks(app.CustomSlashingKeeper.Hooks()),
 	)
-	app.DistrKeeper = distributorkeeper.NewKeeper(
-		keys[distributortypes.ModuleName], appCodec,
-		app.AccountKeeper, app.BankKeeper,
-		app.CustomStakingKeeper, app.CustomGovKeeper,
-		app.MultiStakingKeeper)
-	app.MultiStakingKeeper.SetDistrKeeper(app.DistrKeeper)
 
 	app.BasketKeeper = basketkeeper.NewKeeper(
 		keys[baskettypes.ModuleName], appCodec,
@@ -322,6 +316,13 @@ func NewInitApp(
 		app.SpendingKeeper,
 		app.CustodyKeeper,
 	)
+
+	app.DistrKeeper = distributorkeeper.NewKeeper(
+		keys[distributortypes.ModuleName], appCodec,
+		app.AccountKeeper, app.BankKeeper,
+		app.CustomStakingKeeper, app.CustomGovKeeper,
+		app.MultiStakingKeeper, app.RecoveryKeeper)
+	app.MultiStakingKeeper.SetDistrKeeper(app.DistrKeeper)
 
 	proposalRouter := govtypes.NewProposalRouter(
 		[]govtypes.ProposalHandler{

@@ -67,10 +67,13 @@ const (
 	MsgTypeUnpause  = "unpause"
 
 	// recovery module
-	MsgTypeRegisterRecoverySecret = "register-recovery-secret"
-	MsgTypeRotateRecoveryAddress  = "rotate-recovery-address"
-	MsgTypeIssueRecoveryTokens    = "issue-recovery-tokens"
-	MsgTypeBurnRecoveryTokens     = "burn-recovery-tokens"
+	MsgTypeRegisterRecoverySecret             = "register-recovery-secret"
+	MsgTypeRotateRecoveryAddress              = "rotate-recovery-address"
+	MsgTypeIssueRecoveryTokens                = "issue-recovery-tokens"
+	MsgTypeBurnRecoveryTokens                 = "burn-recovery-tokens"
+	MsgTypeRegisterRRTokenHolder              = "register-rrtoken-holder"
+	MsgTypeClaimRRHolderRewards               = "claim-rrholder-rewards"
+	MsgTypeRotateValidatorByHalfRRTokenHolder = "rotate-validator-by-half-rr-token-holder"
 
 	//upgrade module
 

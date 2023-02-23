@@ -14,6 +14,8 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgRotateRecoveryAddress{}, "cosmos-sdk/MsgRotateRecoveryAddress", nil)
 	cdc.RegisterConcrete(&MsgIssueRecoveryTokens{}, "cosmos-sdk/MsgIssueRecoveryTokens", nil)
 	cdc.RegisterConcrete(&MsgBurnRecoveryTokens{}, "cosmos-sdk/MsgBurnRecoveryTokens", nil)
+	cdc.RegisterConcrete(&MsgClaimRRHolderRewards{}, "cosmos-sdk/MsgClaimRRHolderRewards", nil)
+	cdc.RegisterConcrete(&MsgRegisterRRTokenHolder{}, "cosmos-sdk/MsgRegisterRRTokenHolder", nil)
 }
 
 // RegisterInterfaces register interfaces on registry
@@ -23,6 +25,8 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgRotateRecoveryAddress{},
 		&MsgIssueRecoveryTokens{},
 		&MsgBurnRecoveryTokens{},
+		&MsgClaimRRHolderRewards{},
+		&MsgRegisterRRTokenHolder{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)

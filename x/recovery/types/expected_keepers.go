@@ -21,8 +21,13 @@ type AccountKeeper interface {
 
 type BankKeeper interface {
 	GetAllBalances(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
+	GetSupply(ctx sdk.Context, denom string) sdk.Coin
 	SendCoins(ctx sdk.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error
+	MintCoins(ctx sdk.Context, moduleName string, amt sdk.Coins) error
+	BurnCoins(ctx sdk.Context, moduleName string, amt sdk.Coins) error
 	SendCoinsFromAccountToModule(ctx sdk.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error
+	SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error
+	SendCoinsFromModuleToModule(ctx sdk.Context, senderModule, recipientModule string, amt sdk.Coins) error
 }
 
 // ParamSubspace defines the expected Subspace interfacace
@@ -73,6 +78,8 @@ type StakingHooks interface {
 
 // GovKeeper expected governance keeper
 type GovKeeper interface {
+	GetNetworkProperties(ctx sdk.Context) *govtypes.NetworkProperties
+
 	SaveCouncilor(ctx sdk.Context, councilor govtypes.Councilor)
 	DeleteCouncilor(ctx sdk.Context, councilor govtypes.Councilor)
 	GetCouncilor(ctx sdk.Context, address sdk.AccAddress) (govtypes.Councilor, bool)
@@ -80,6 +87,10 @@ type GovKeeper interface {
 	GetIdRecordsByAddress(ctx sdk.Context, address sdk.AccAddress) []govtypes.IdentityRecord
 	SetIdentityRecord(ctx sdk.Context, record govtypes.IdentityRecord)
 	DeleteIdentityRecordById(ctx sdk.Context, recordId uint64)
+
+	GetIdentityRecordIdByAddressKey(ctx sdk.Context, address sdk.AccAddress, key string) uint64
+	GetIdentityRecordById(ctx sdk.Context, recordId uint64) *govtypes.IdentityRecord
+	GetIdRecordsByAddressAndKeys(ctx sdk.Context, address sdk.AccAddress, keys []string) ([]govtypes.IdentityRecord, error)
 
 	SetIdentityRecordsVerifyRequest(ctx sdk.Context, request govtypes.IdentityRecordsVerify)
 	DeleteIdRecordsVerifyRequest(ctx sdk.Context, requestId uint64)
@@ -98,6 +109,7 @@ type GovKeeper interface {
 	DeleteVote(ctx sdk.Context, vote govtypes.Vote)
 	GetVote(ctx sdk.Context, proposalID uint64, address sdk.AccAddress) (govtypes.Vote, bool)
 	GetProposals(ctx sdk.Context) ([]govtypes.Proposal, error)
+	SaveProposal(ctx sdk.Context, proposal govtypes.Proposal)
 }
 
 type MultiStakingKeeper interface {

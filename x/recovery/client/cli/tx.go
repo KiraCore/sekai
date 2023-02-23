@@ -9,6 +9,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
 )
 
@@ -28,6 +29,9 @@ func NewTxCmd() *cobra.Command {
 		NewIssueRecoveryTokensTxCmd(),
 		NewBurnRecoveryTokensTxCmd(),
 		NewGenerateRecoverySecretCmd(),
+		NewRegisterRRTokenHolderTxCmd(),
+		NewClaimRRTokenHolderRewardsTxCmd(),
+		NewRotateValidatorByHalfRRTokenHolderTxCmd(),
 	)
 	return recoveryTxCmd
 }
@@ -125,12 +129,12 @@ $ <appd> tx recovery issue-recovery-tokens --from mykey
 // NewBurnRecoveryTokensTxCmd defines MsgBurnRecoveryTokens tx
 func NewBurnRecoveryTokensTxCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "burn-recovery-tokens",
-		Args:  cobra.NoArgs,
+		Use:   "burn-recovery-tokens [coin]",
+		Args:  cobra.ExactArgs(1),
 		Short: "Burn recovery tokens",
 		Long: `Burn recovery tokens:
 
-$ <appd> tx recovery burn-recovery-tokens --from mykey
+$ <appd> tx recovery burn-recovery-tokens [coin] --from mykey
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -138,7 +142,12 @@ $ <appd> tx recovery burn-recovery-tokens --from mykey
 				return err
 			}
 
-			msg := types.NewMsgBurnRecoveryTokens(clientCtx.GetFromAddress())
+			coin, err := sdk.ParseCoinNormalized(args[0])
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgBurnRecoveryTokens(clientCtx.GetFromAddress(), coin)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -178,6 +187,96 @@ $ <appd> tx recovery generate-recovery-secret 10a0fbe01030000122300000000000
 			return nil
 		},
 	}
+
+	return cmd
+}
+
+// NewRegisterRRTokenHolderTxCmd defines Ms tx
+func NewRegisterRRTokenHolderTxCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "register-rrtoken-holder",
+		Args:  cobra.NoArgs,
+		Short: "Register RR token holder",
+		Long: `Register RR token holder:
+
+$ <appd> tx recovery register-rrtoken-holder --from mykey
+`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgRegisterRRTokenHolder(clientCtx.GetFromAddress())
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// NewClaimRRTokenHolderRewardsTxCmd defines Ms tx
+func NewClaimRRTokenHolderRewardsTxCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "claim-rrtoken-rewards",
+		Args:  cobra.NoArgs,
+		Short: "Claim RR token holder rewards",
+		Long: `Claim RR token holder rewards:
+
+$ <appd> tx recovery claim-rrtoken-rewards --from mykey
+`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgClaimRRHolderRewards(clientCtx.GetFromAddress())
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// NewRotateValidatorByHalfRRTokenHolderTxCmd defines MsgRotateValidatorByHalfRRTokenHolderTxCmd tx
+func NewRotateValidatorByHalfRRTokenHolderTxCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "rotate-validator-by-half-rr-holder [address] [recovery]",
+		Args:  cobra.ExactArgs(2),
+		Short: "Rotate a validator with half rr holder",
+		Long: `Rotate a validator with half rr holder:
+
+$ <appd> tx recovery rotate-validator-by-half-rr-holder [address] [recovery] --from validator --chain-id=testing --keyring-backend=test --fees=100ukex --home=$HOME/.sekaid --yes
+`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgRotateValidatorByHalfRRTokenHolder(clientCtx.GetFromAddress().String(), args[0], args[1])
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd
 }
