@@ -5,15 +5,15 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (k Keeper) SetRotationHistory(ctx sdk.Context, recovery types.Rotation) {
-	bz := k.cdc.MustMarshal(&recovery)
+func (k Keeper) SetRotationHistory(ctx sdk.Context, rotation types.Rotation) {
+	bz := k.cdc.MustMarshal(&rotation)
 	store := ctx.KVStore(k.storeKey)
-	store.Set(types.RotationHistoryKey(recovery.Address), bz)
+	store.Set(types.RotationHistoryKey(rotation.Address), bz)
 }
 
-func (k Keeper) DeleteRotationHistory(ctx sdk.Context, recovery types.Rotation) {
+func (k Keeper) DeleteRotationHistory(ctx sdk.Context, rotation types.Rotation) {
 	store := ctx.KVStore(k.storeKey)
-	store.Delete(types.RotationHistoryKey(recovery.Address))
+	store.Delete(types.RotationHistoryKey(rotation.Address))
 }
 
 func (k Keeper) GetRotationHistory(ctx sdk.Context, address string) types.Rotation {

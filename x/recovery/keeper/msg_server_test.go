@@ -3,6 +3,7 @@ package keeper_test
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"time"
 
 	"github.com/KiraCore/sekai/app"
 	collectivestypes "github.com/KiraCore/sekai/x/collectives/types"
@@ -189,4 +190,216 @@ func (suite *KeeperTestSuite) TestRotateRecoveryAddress() {
 	addr2Custody := suite.app.CustodyKeeper.GetCustodyInfoByAddress(suite.ctx, addr2)
 	suite.Require().NotNil(addr2Custody)
 	suite.Require().Equal(*addr2Custody, settings)
+
+	// check rotation history is correctly set after rotation
+	rotation := suite.app.RecoveryKeeper.GetRotationHistory(suite.ctx, addr1.String())
+	suite.Require().Equal(rotation, types.Rotation{
+		Address: addr1.String(),
+		Rotated: addr2.String(),
+	})
+
+	// rotation to already rotated address to fail
+	_, err = msgServer.RotateRecoveryAddress(sdk.WrapSDKContext(suite.ctx), msg)
+	suite.Require().Error(err)
+}
+
+func (suite *KeeperTestSuite) TestIssueRecoveryTokens() {
+	addr1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	valAddr := sdk.ValAddress(addr1)
+	pubkeys := simapp.CreateTestPubKeys(1)
+	pubKey := pubkeys[0]
+	val, err := stakingtypes.NewValidator(valAddr, pubKey)
+	suite.Require().NoError(err)
+
+	suite.app.CustomStakingKeeper.AddValidator(suite.ctx, val)
+	suite.app.CustomGovKeeper.SetIdentityRecord(suite.ctx, govtypes.IdentityRecord{
+		Id:        1,
+		Address:   addr1.String(),
+		Key:       "moniker",
+		Value:     "val1",
+		Date:      time.Now(),
+		Verifiers: []string{},
+	})
+
+	coins := sdk.Coins{sdk.NewInt64Coin("ukex", 300000000000)}
+	err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
+	suite.Require().NoError(err)
+	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, addr1, coins)
+	suite.Require().NoError(err)
+
+	// create recovery token
+	msgServer := keeper.NewMsgServerImpl(suite.app.RecoveryKeeper)
+	msg := types.NewMsgIssueRecoveryTokens(
+		addr1.String(),
+	)
+
+	_, err = msgServer.IssueRecoveryTokens(sdk.WrapSDKContext(suite.ctx), msg)
+	suite.Require().NoError(err)
+
+	// check recovery correctly crteated
+	recoveryToken, err := suite.app.RecoveryKeeper.GetRecoveryToken(suite.ctx, addr1.String())
+	suite.Require().NoError(err)
+	suite.Require().Equal(recoveryToken, types.RecoveryToken{
+		Address:          addr1.String(),
+		Token:            "rr/val1",
+		RrSupply:         sdk.NewInt(10000000000000),
+		UnderlyingTokens: coins,
+	})
+}
+
+func (suite *KeeperTestSuite) TestBurnRecoveryTokens() {
+	addr1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	valAddr := sdk.ValAddress(addr1)
+	pubkeys := simapp.CreateTestPubKeys(1)
+	pubKey := pubkeys[0]
+	val, err := stakingtypes.NewValidator(valAddr, pubKey)
+	suite.Require().NoError(err)
+
+	suite.app.CustomStakingKeeper.AddValidator(suite.ctx, val)
+	suite.app.CustomGovKeeper.SetIdentityRecord(suite.ctx, govtypes.IdentityRecord{
+		Id:        1,
+		Address:   addr1.String(),
+		Key:       "moniker",
+		Value:     "val1",
+		Date:      time.Now(),
+		Verifiers: []string{},
+	})
+
+	coins := sdk.Coins{sdk.NewInt64Coin("ukex", 300000000000)}
+	err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
+	suite.Require().NoError(err)
+	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, addr1, coins)
+	suite.Require().NoError(err)
+
+	// create recovery token
+	msgServer := keeper.NewMsgServerImpl(suite.app.RecoveryKeeper)
+	issueMsg := types.NewMsgIssueRecoveryTokens(
+		addr1.String(),
+	)
+
+	_, err = msgServer.IssueRecoveryTokens(sdk.WrapSDKContext(suite.ctx), issueMsg)
+	suite.Require().NoError(err)
+
+	burnMsg := types.NewMsgBurnRecoveryTokens(
+		addr1, sdk.NewInt64Coin("rr/val1", 10000000000),
+	)
+	_, err = msgServer.BurnRecoveryTokens(sdk.WrapSDKContext(suite.ctx), burnMsg)
+	suite.Require().NoError(err)
+
+	// check recovery correctly created
+	recoveryToken, err := suite.app.RecoveryKeeper.GetRecoveryToken(suite.ctx, addr1.String())
+	suite.Require().NoError(err)
+	suite.Require().Equal(recoveryToken, types.RecoveryToken{
+		Address:          addr1.String(),
+		Token:            "rr/val1",
+		RrSupply:         sdk.NewInt(9990000000000),
+		UnderlyingTokens: sdk.Coins{sdk.NewInt64Coin("ukex", 299700000000)},
+	})
+}
+
+func (suite *KeeperTestSuite) TestClaimRRHolderRewards() {
+	addr1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	valAddr := sdk.ValAddress(addr1)
+	pubkeys := simapp.CreateTestPubKeys(1)
+	pubKey := pubkeys[0]
+	val, err := stakingtypes.NewValidator(valAddr, pubKey)
+	suite.Require().NoError(err)
+
+	suite.app.CustomStakingKeeper.AddValidator(suite.ctx, val)
+	suite.app.CustomGovKeeper.SetIdentityRecord(suite.ctx, govtypes.IdentityRecord{
+		Id:        1,
+		Address:   addr1.String(),
+		Key:       "moniker",
+		Value:     "val1",
+		Date:      time.Now(),
+		Verifiers: []string{},
+	})
+
+	coins := sdk.Coins{sdk.NewInt64Coin("ukex", 300000000000)}
+	err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
+	suite.Require().NoError(err)
+	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, addr1, coins)
+	suite.Require().NoError(err)
+
+	// create recovery token
+	msgServer := keeper.NewMsgServerImpl(suite.app.RecoveryKeeper)
+	issueMsg := types.NewMsgIssueRecoveryTokens(
+		addr1.String(),
+	)
+
+	_, err = msgServer.IssueRecoveryTokens(sdk.WrapSDKContext(suite.ctx), issueMsg)
+	suite.Require().NoError(err)
+
+	registerMsg := types.NewMsgRegisterRRTokenHolder(
+		addr1,
+	)
+	_, err = msgServer.RegisterRRTokenHolder(sdk.WrapSDKContext(suite.ctx), registerMsg)
+	suite.Require().NoError(err)
+
+	rewardCoins := sdk.Coins{sdk.NewInt64Coin("ukex", 1000000)}
+	err = suite.app.BankKeeper.MintCoins(suite.ctx, types.ModuleName, rewardCoins)
+	suite.Require().NoError(err)
+
+	err = suite.app.RecoveryKeeper.IncreaseRecoveryTokenUnderlying(suite.ctx, addr1, rewardCoins)
+	suite.Require().NoError(err)
+
+	claimMsg := types.NewMsgClaimRRHolderRewards(
+		addr1,
+	)
+	_, err = msgServer.ClaimRRHolderRewards(sdk.WrapSDKContext(suite.ctx), claimMsg)
+	suite.Require().NoError(err)
+
+	// check reward already claimed
+	balance := suite.app.BankKeeper.GetBalance(suite.ctx, addr1, "ukex")
+	suite.Require().Equal(balance.String(), rewardCoins.String())
+}
+
+func (suite *KeeperTestSuite) TestRotateValidatorByHalfRRTokenHolder() {
+	addr1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	addr2 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	valAddr := sdk.ValAddress(addr1)
+	pubkeys := simapp.CreateTestPubKeys(1)
+	pubKey := pubkeys[0]
+	val, err := stakingtypes.NewValidator(valAddr, pubKey)
+	suite.Require().NoError(err)
+
+	suite.app.CustomStakingKeeper.AddValidator(suite.ctx, val)
+	suite.app.CustomGovKeeper.SetIdentityRecord(suite.ctx, govtypes.IdentityRecord{
+		Id:        1,
+		Address:   addr1.String(),
+		Key:       "moniker",
+		Value:     "val1",
+		Date:      time.Now(),
+		Verifiers: []string{},
+	})
+
+	coins := sdk.Coins{sdk.NewInt64Coin("ukex", 300000000000)}
+	err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
+	suite.Require().NoError(err)
+	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, addr1, coins)
+	suite.Require().NoError(err)
+
+	// create recovery token
+	msgServer := keeper.NewMsgServerImpl(suite.app.RecoveryKeeper)
+	issueMsg := types.NewMsgIssueRecoveryTokens(
+		addr1.String(),
+	)
+
+	_, err = msgServer.IssueRecoveryTokens(sdk.WrapSDKContext(suite.ctx), issueMsg)
+	suite.Require().NoError(err)
+
+	rotateMsg := types.NewMsgRotateValidatorByHalfRRTokenHolder(
+		addr1.String(),
+		addr1.String(),
+		addr2.String(),
+	)
+	_, err = msgServer.RotateValidatorByHalfRRTokenHolder(sdk.WrapSDKContext(suite.ctx), rotateMsg)
+	suite.Require().NoError(err)
+
+	// check rotation history is correctly set after rotation
+	rotation := suite.app.RecoveryKeeper.GetRotationHistory(suite.ctx, addr1.String())
+	suite.Require().Equal(rotation, types.Rotation{
+		Address: addr1.String(),
+		Rotated: addr2.String(),
+	})
 }

@@ -37,3 +37,28 @@ func (k Keeper) RecoveryToken(c context.Context, req *types.QueryRecoveryTokenRe
 	}
 	return &types.QueryRecoveryTokenResponse{Token: token}, nil
 }
+
+func (k Keeper) RRHolderRewards(c context.Context, req *types.QueryRRHolderRewardsRequest) (*types.QueryRRHolderRewardsResponse, error) {
+	if req == nil {
+		return nil, status.Errorf(codes.InvalidArgument, "empty request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	addr := sdk.MustAccAddressFromBech32(req.Address)
+	coins := k.GetRRTokenHolderRewards(ctx, addr)
+	return &types.QueryRRHolderRewardsResponse{Rewards: coins}, nil
+}
+
+func (k Keeper) RegisteredRRTokenHolders(c context.Context, req *types.QueryRegisteredRRTokenHoldersRequest) (*types.QueryRegisteredRRTokenHoldersResponse, error) {
+	if req == nil {
+		return nil, status.Errorf(codes.InvalidArgument, "empty request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	holders := k.GetRRTokenHolders(ctx, req.RecoveryToken)
+	holderRes := []string{}
+	for _, holder := range holders {
+		holderRes = append(holderRes, holder.String())
+	}
+	return &types.QueryRegisteredRRTokenHoldersResponse{Holders: holderRes}, nil
+}

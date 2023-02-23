@@ -1,4 +1,5 @@
 Features:
 
-- Add minimized json flag for genesis upgrade
-- Add CLI endpoint for exporting metadata for functions, network properties, permissions
+- Implement logic for revenue share on recovery tokens
+- Implement issue/burn/reward claim endpoints for recovery tokens
+- Implement validator key rotation by more than 50% of recovery token holder
