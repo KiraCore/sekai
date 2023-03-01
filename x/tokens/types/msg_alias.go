@@ -17,14 +17,16 @@ func NewMsgUpsertTokenAlias(
 	icon string,
 	decimals uint32,
 	denoms []string,
+	invalidated bool,
 ) *MsgUpsertTokenAlias {
 	return &MsgUpsertTokenAlias{
-		Proposer: proposer,
-		Symbol:   symbol,
-		Name:     name,
-		Icon:     icon,
-		Decimals: decimals,
-		Denoms:   denoms,
+		Proposer:    proposer,
+		Symbol:      symbol,
+		Name:        name,
+		Icon:        icon,
+		Decimals:    decimals,
+		Denoms:      denoms,
+		Invalidated: invalidated,
 	}
 }
 

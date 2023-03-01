@@ -20,13 +20,15 @@ func NewUpsertTokenAliasProposal(
 	icon string,
 	decimals uint32,
 	denoms []string,
+	isInvalidated bool,
 ) *ProposalUpsertTokenAlias {
 	return &ProposalUpsertTokenAlias{
-		Symbol:   symbol,
-		Name:     name,
-		Icon:     icon,
-		Decimals: decimals,
-		Denoms:   denoms,
+		Symbol:      symbol,
+		Name:        name,
+		Icon:        icon,
+		Decimals:    decimals,
+		Denoms:      denoms,
+		Invalidated: isInvalidated,
 	}
 }
 
@@ -54,6 +56,7 @@ func NewUpsertTokenRatesProposal(
 	stakeCap sdk.Dec,
 	stakeMin sdk.Int,
 	stakeToken bool,
+	isInvalidated bool,
 ) *ProposalUpsertTokenRates {
 	return &ProposalUpsertTokenRates{
 		Denom:       denom,
@@ -62,6 +65,7 @@ func NewUpsertTokenRatesProposal(
 		StakeCap:    stakeCap,
 		StakeMin:    stakeMin,
 		StakeToken:  stakeToken,
+		Invalidated: isInvalidated,
 	}
 }
 

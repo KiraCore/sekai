@@ -1,5 +1,5 @@
 Features:
 
-- Implement logic for revenue share on recovery tokens
-- Implement issue/burn/reward claim endpoints for recovery tokens
-- Implement validator key rotation by more than 50% of recovery token holder
+- Add invalidated field on token rate and token alias
+- fixed rate reward claim issue fix for claim expiry on spending pool
+- dynamic rate reward claim issue fix for dynamic period on spending pool

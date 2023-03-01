@@ -553,6 +553,7 @@ func (suite *AnteTestSuite) TestPoorNetworkManagementDecorator() {
 						sdk.ZeroDec(),
 						sdk.ZeroInt(),
 						false,
+						false,
 					),
 				}
 				return msgs, privs[0:1], accNums[0:1], []uint64{0}, sdk.NewCoins(sdk.NewInt64Coin("ukex", 100))

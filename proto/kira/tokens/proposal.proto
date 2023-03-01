@@ -16,6 +16,7 @@ message ProposalUpsertTokenAlias {
   string icon = 3;
   uint32 decimals = 4;
   repeated string denoms = 5;
+  bool invalidated = 6;
 }
 
 message ProposalUpsertTokenRates {
@@ -40,4 +41,5 @@ message ProposalUpsertTokenRates {
     (gogoproto.nullable) = false
   ];
   bool stake_token = 6;
+  bool invalidated = 7;
 }

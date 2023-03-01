@@ -25,7 +25,7 @@ func (a ApplyUpsertTokenAliasProposalHandler) ProposalType() string {
 func (a ApplyUpsertTokenAliasProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
 	p := proposal.(*tokenstypes.ProposalUpsertTokenAlias)
 
-	tokenAlians := tokenstypes.NewTokenAlias(p.Symbol, p.Name, p.Icon, p.Decimals, p.Denoms)
+	tokenAlians := tokenstypes.NewTokenAlias(p.Symbol, p.Name, p.Icon, p.Decimals, p.Denoms, p.Invalidated)
 	return a.keeper.UpsertTokenAlias(ctx, *tokenAlians)
 }
 
@@ -44,7 +44,7 @@ func (a ApplyUpsertTokenRatesProposalHandler) ProposalType() string {
 func (a ApplyUpsertTokenRatesProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
 	p := proposal.(*tokenstypes.ProposalUpsertTokenRates)
 
-	tokenAlians := tokenstypes.NewTokenRate(p.Denom, p.Rate, p.FeePayments, p.StakeCap, p.StakeMin, p.StakeToken)
+	tokenAlians := tokenstypes.NewTokenRate(p.Denom, p.Rate, p.FeePayments, p.StakeCap, p.StakeMin, p.StakeToken, p.Invalidated)
 	return a.keeper.UpsertTokenRate(ctx, *tokenAlians)
 }
 
