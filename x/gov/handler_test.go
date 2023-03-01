@@ -1580,6 +1580,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 						"theIcon",
 						12,
 						[]string{},
+						false,
 					),
 					ctx.BlockTime(),
 					ctx.BlockTime().Add(time.Second*20),
