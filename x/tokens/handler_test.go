@@ -73,6 +73,7 @@ func TestNewHandler_MsgUpsertTokenAlias(t *testing.T) {
 					"icon",
 					6,
 					[]string{"finney"},
+					false,
 				), nil
 			},
 		},
@@ -86,6 +87,7 @@ func TestNewHandler_MsgUpsertTokenAlias(t *testing.T) {
 					"icon",
 					6,
 					[]string{"finney"},
+					false,
 				), nil
 			},
 			handlerErr: "PERMISSION_UPSERT_TOKEN_ALIAS: not enough permissions",
@@ -143,6 +145,7 @@ func TestNewHandler_MsgUpsertTokenRate(t *testing.T) {
 					sdk.ZeroDec(),
 					sdk.ZeroInt(),
 					false,
+					false,
 				), nil
 			},
 		},
@@ -155,6 +158,7 @@ func TestNewHandler_MsgUpsertTokenRate(t *testing.T) {
 					true,
 					sdk.ZeroDec(),
 					sdk.ZeroInt(),
+					false,
 					false,
 				), nil
 			},
@@ -169,6 +173,7 @@ func TestNewHandler_MsgUpsertTokenRate(t *testing.T) {
 					true,
 					sdk.ZeroDec(),
 					sdk.ZeroInt(),
+					false,
 					false,
 				), nil
 			},
@@ -185,6 +190,7 @@ func TestNewHandler_MsgUpsertTokenRate(t *testing.T) {
 					true,
 					sdk.ZeroDec(),
 					sdk.ZeroInt(),
+					false,
 					false,
 				), nil
 			},

@@ -138,9 +138,19 @@ func (k Keeper) ClaimSpendingPool(ctx sdk.Context, poolName string, sender sdk.A
 		return types.ErrNoMoreRewardsToClaim
 	}
 
+	if pool.DynamicRate { // dynamic rate case
+		if claimStart < int64(pool.LastDynamicRateCalcTime) {
+			claimStart = int64(pool.LastDynamicRateCalcTime)
+		}
+	}
+
 	rewards := sdk.Coins{}
 	for _, rate := range pool.Rates {
-		amount := rate.Amount.Mul(sdk.NewDec((claimEnd - int64(claimStart)) * int64(weight))).RoundInt()
+		duration := claimEnd - claimStart
+		if duration > int64(pool.ClaimExpiry) {
+			duration = int64(pool.ClaimExpiry)
+		}
+		amount := rate.Amount.Mul(sdk.NewDec(duration * int64(weight))).RoundInt()
 		rewards = rewards.Add(sdk.NewCoin(rate.Denom, amount))
 	}
 

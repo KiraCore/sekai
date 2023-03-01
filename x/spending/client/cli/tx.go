@@ -152,6 +152,7 @@ func GetTxCreateSpendingPoolCmd() *cobra.Command {
 	cmd.Flags().String(FlagName, "", "The name of the spending pool.")
 	cmd.Flags().Int32(FlagClaimStart, 0, "The claim start timestamp of the spending pool.")
 	cmd.Flags().Int32(FlagClaimEnd, 0, "The claim end timestamp of the spending pool.")
+	cmd.Flags().Uint64(FlagClaimExpiry, 43200, "claim expiry time when the users' rewards cut.")
 	cmd.Flags().String(FlagRates, "", "reward rates of the spending pool.")
 	cmd.Flags().Int32(FlagVoteQuorum, 0, "vote quorum of the spending pool.")
 	cmd.Flags().Int32(FlagVotePeriod, 0, "vote period of the spending pool.")
