@@ -238,6 +238,7 @@ func TestHandler_CreateProposalUpsertTokenAliases_Errors(t *testing.T) {
 				"http://theicon.com",
 				18,
 				[]string{},
+				false,
 			),
 			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {},
 			errors.Wrap(types.ErrNotEnoughPermissions, types.PermCreateUpsertTokenAliasProposal.String()),
@@ -288,6 +289,7 @@ func TestHandler_CreateProposalUpsertTokenAliases(t *testing.T) {
 		[]string{
 			"atom",
 		},
+		false,
 	)
 	msg, err := govtypes.NewMsgSubmitProposal(proposerAddr, "title", "some desc", proposal)
 	require.NoError(t, err)
@@ -314,6 +316,7 @@ func TestHandler_CreateProposalUpsertTokenAliases(t *testing.T) {
 			[]string{
 				"atom",
 			},
+			false,
 		),
 		ctx.BlockTime(),
 		ctx.BlockTime().Add(time.Second*time.Duration(properties.MinimumProposalEndTime)),
@@ -357,6 +360,7 @@ func TestHandler_CreateProposalUpsertTokenRates_Errors(t *testing.T) {
 				false,
 				sdk.ZeroDec(),
 				sdk.ZeroInt(),
+				false,
 				false,
 			),
 			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {},
@@ -407,6 +411,7 @@ func TestHandler_CreateProposalUpsertTokenRates(t *testing.T) {
 		sdk.ZeroDec(),
 		sdk.ZeroInt(),
 		false,
+		false,
 	)
 	msg, err := govtypes.NewMsgSubmitProposal(proposerAddr, "title", "some desc", proposal)
 	require.NoError(t, err)
@@ -431,6 +436,7 @@ func TestHandler_CreateProposalUpsertTokenRates(t *testing.T) {
 			false,
 			sdk.ZeroDec(),
 			sdk.ZeroInt(),
+			false,
 			false,
 		),
 		ctx.BlockTime(),
