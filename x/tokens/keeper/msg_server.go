@@ -46,6 +46,7 @@ func (k msgServer) UpsertTokenAlias(
 		msg.Icon,
 		msg.Decimals,
 		msg.Denoms,
+		msg.Invalidated,
 	))
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
@@ -81,6 +82,7 @@ func (k msgServer) UpsertTokenRate(goCtx context.Context, msg *types.MsgUpsertTo
 		msg.StakeCap,
 		msg.StakeMin,
 		msg.StakeToken,
+		msg.Invalidated,
 	))
 
 	if err != nil {

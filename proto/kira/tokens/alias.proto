@@ -11,6 +11,7 @@ message TokenAlias {
     string icon = 3; // Graphical Symbol (url link to graphics)
     uint32 decimals = 4; // Integer number of max decimals
     repeated string denoms = 5; // An array of token denoms to be aliased
+    bool invalidated = 6; // flag that the token is invalidated or not
 }
 
 message MsgUpsertTokenAlias {
@@ -19,7 +20,8 @@ message MsgUpsertTokenAlias {
     string icon = 3; // Graphical Symbol (url link to graphics)
     uint32 decimals = 4; // Integer number of max decimals
     repeated string denoms = 5; // An array of token denoms to be aliased
-    bytes proposer = 6 [
+    bool invalidated = 6;       // flag that the token is invalidated or not
+    bytes proposer = 7 [
         (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
         (gogoproto.moretags) = "yaml:\"proposer\""
     ];
