@@ -1,10 +1,10 @@
 #!/bin/bash
 
-sekaid tx spending create-spending-pool --name="ValidatorRewardsPool" --claim-start=$(($(date -u +%s))) --claim-end=0 --token="ukex" --rate=0.1 --vote-quorum="33" --vote-period="60" --vote-enactment="30" --owner-roles="" --owner-accounts=$(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --beneficiary-roles="1" --beneficiary-accounts="" --from=validator --chain-id=testing --fees=100ukex --keyring-backend=test --home=$HOME/.sekaid --yes  --broadcast-mode=block 
+sekaid tx spending create-spending-pool --name="ValidatorRewardsPool" --claim-start=$(($(date -u +%s))) --claim-end=0 --claim-expiry=43200 --rates=0.1ukex --vote-quorum="33" --vote-period="60" --vote-enactment="30" --owner-roles="" --owner-accounts=$(sekaid keys show -a validator --keyring-backend=test --home=$HOME/.sekaid) --beneficiary-roles="1" --beneficiary-role-weights="1" --from=validator --chain-id=testing --fees=100ukex --keyring-backend=test --home=$HOME/.sekaid --yes  --broadcast-mode=block 
 
 sekaid tx spending deposit-spending-pool --name="ValidatorRewardsPool" --amount=1000000ukex --from=validator --chain-id=testing --fees=100ukex --keyring-backend=test --home=$HOME/.sekaid --yes --broadcast-mode=block 
 
-sekaid tx spending register-spending-pool-beneficiary --name="ValidatorRewardsPool" --beneficiary-roles="1" --beneficiary-accounts="" --from=validator --chain-id=testing --fees=100ukex --keyring-backend=test --home=$HOME/.sekaid --yes --broadcast-mode=block 
+sekaid tx spending register-spending-pool-beneficiary --name="ValidatorRewardsPool" --from=validator --chain-id=testing --fees=100ukex --keyring-backend=test --home=$HOME/.sekaid --yes --broadcast-mode=block 
  
 sekaid tx spending claim-spending-pool --name="ValidatorRewardsPool" --from=validator --chain-id=testing --fees=100ukex --keyring-backend=test --home=$HOME/.sekaid --yes --broadcast-mode=block 
 

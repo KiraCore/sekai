@@ -1,10 +1,13 @@
 package types
 
-import "github.com/cosmos/cosmos-sdk/types"
+import (
+	"github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+)
 
 type Votes []Vote
 
-func NewVote(proposalID uint64, addr types.AccAddress, option VoteOption, slash uint64) Vote {
+func NewVote(proposalID uint64, addr types.AccAddress, option VoteOption, slash sdk.Dec) Vote {
 	return Vote{
 		ProposalId: proposalID,
 		Voter:      addr,

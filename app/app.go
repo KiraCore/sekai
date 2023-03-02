@@ -11,6 +11,9 @@ import (
 	"github.com/KiraCore/sekai/x/basket"
 	basketkeeper "github.com/KiraCore/sekai/x/basket/keeper"
 	baskettypes "github.com/KiraCore/sekai/x/basket/types"
+	"github.com/KiraCore/sekai/x/collectives"
+	collectiveskeeper "github.com/KiraCore/sekai/x/collectives/keeper"
+	collectivestypes "github.com/KiraCore/sekai/x/collectives/types"
 	"github.com/KiraCore/sekai/x/custody"
 	custodykeeper "github.com/KiraCore/sekai/x/custody/keeper"
 	custodytypes "github.com/KiraCore/sekai/x/custody/types"
@@ -31,6 +34,9 @@ import (
 	"github.com/KiraCore/sekai/x/multistaking"
 	multistakingkeeper "github.com/KiraCore/sekai/x/multistaking/keeper"
 	multistakingtypes "github.com/KiraCore/sekai/x/multistaking/types"
+	recovery "github.com/KiraCore/sekai/x/recovery"
+	recoverykeeper "github.com/KiraCore/sekai/x/recovery/keeper"
+	recoverytypes "github.com/KiraCore/sekai/x/recovery/types"
 	customslashing "github.com/KiraCore/sekai/x/slashing"
 	customslashingkeeper "github.com/KiraCore/sekai/x/slashing/keeper"
 	slashingtypes "github.com/KiraCore/sekai/x/slashing/types"
@@ -101,6 +107,7 @@ var (
 		params.AppModuleBasic{},
 		upgrade.AppModuleBasic{},
 		customslashing.AppModuleBasic{},
+		recovery.AppModuleBasic{},
 		customstaking.AppModuleBasic{},
 		customgov.AppModuleBasic{},
 		spending.AppModuleBasic{},
@@ -112,6 +119,7 @@ var (
 		feeprocessing.AppModuleBasic{},
 		custody.AppModuleBasic{},
 		multistaking.AppModuleBasic{},
+		collectives.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -123,6 +131,8 @@ var (
 		distributortypes.ModuleName:  nil,
 		baskettypes.ModuleName:       {authtypes.Minter, authtypes.Burner},
 		multistakingtypes.ModuleName: {authtypes.Burner},
+		collectivestypes.ModuleName:  nil,
+		recoverytypes.ModuleName:     {authtypes.Minter, authtypes.Burner},
 	}
 
 	// module accounts that are allowed to receive tokens
@@ -153,6 +163,7 @@ type SekaiApp struct {
 	CustomGovKeeper      customgovkeeper.Keeper
 	CustomStakingKeeper  customstakingkeeper.Keeper
 	CustomSlashingKeeper customslashingkeeper.Keeper
+	RecoveryKeeper       recoverykeeper.Keeper
 	TokensKeeper         tokenskeeper.Keeper
 	FeeProcessingKeeper  feeprocessingkeeper.Keeper
 	EvidenceKeeper       evidencekeeper.Keeper
@@ -161,6 +172,7 @@ type SekaiApp struct {
 	DistrKeeper          distributorkeeper.Keeper
 	BasketKeeper         basketkeeper.Keeper
 	MultiStakingKeeper   multistakingkeeper.Keeper
+	CollectivesKeeper    collectiveskeeper.Keeper
 
 	// Module Manager
 	mm *module.Manager
@@ -199,6 +211,7 @@ func NewInitApp(
 		banktypes.StoreKey,
 		paramstypes.StoreKey,
 		upgradetypes.StoreKey,
+		recoverytypes.ModuleName,
 		slashingtypes.ModuleName,
 		stakingtypes.ModuleName,
 		govtypes.ModuleName,
@@ -211,6 +224,7 @@ func NewInitApp(
 		feeprocessingtypes.ModuleName,
 		evidencetypes.StoreKey,
 		custodytypes.StoreKey,
+		collectivestypes.ModuleName,
 	)
 	tKeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 
@@ -256,18 +270,21 @@ func NewInitApp(
 	app.CustomStakingKeeper = *customStakingKeeper.SetHooks(
 		stakingtypes.NewMultiStakingHooks(app.CustomSlashingKeeper.Hooks()),
 	)
-	app.DistrKeeper = distributorkeeper.NewKeeper(
-		keys[distributortypes.ModuleName], appCodec,
-		app.AccountKeeper, app.BankKeeper,
-		app.CustomStakingKeeper, app.CustomGovKeeper,
-		app.MultiStakingKeeper)
-	app.MultiStakingKeeper.SetDistrKeeper(app.DistrKeeper)
 
 	app.BasketKeeper = basketkeeper.NewKeeper(
 		keys[baskettypes.ModuleName], appCodec,
 		app.AccountKeeper, app.BankKeeper,
 		app.CustomStakingKeeper, app.CustomGovKeeper,
 		app.MultiStakingKeeper,
+	)
+
+	app.CollectivesKeeper = collectiveskeeper.NewKeeper(
+		keys[collectivestypes.StoreKey], appCodec,
+		app.BankKeeper,
+		app.CustomGovKeeper,
+		app.MultiStakingKeeper,
+		app.TokensKeeper,
+		app.SpendingKeeper,
 	)
 
 	app.UpgradeKeeper = upgradekeeper.NewKeeper(keys[upgradetypes.StoreKey], appCodec, app.CustomStakingKeeper)
@@ -287,6 +304,26 @@ func NewInitApp(
 
 	app.CustodyKeeper = custodykeeper.NewKeeper(keys[custodytypes.StoreKey], appCodec, app.CustomGovKeeper, app.BankKeeper)
 
+	app.RecoveryKeeper = recoverykeeper.NewKeeper(
+		appCodec,
+		keys[slashingtypes.StoreKey],
+		app.AccountKeeper,
+		app.BankKeeper,
+		&customStakingKeeper,
+		app.CustomGovKeeper,
+		app.MultiStakingKeeper,
+		app.CollectivesKeeper,
+		app.SpendingKeeper,
+		app.CustodyKeeper,
+	)
+
+	app.DistrKeeper = distributorkeeper.NewKeeper(
+		keys[distributortypes.ModuleName], appCodec,
+		app.AccountKeeper, app.BankKeeper,
+		app.CustomStakingKeeper, app.CustomGovKeeper,
+		app.MultiStakingKeeper, app.RecoveryKeeper)
+	app.MultiStakingKeeper.SetDistrKeeper(app.DistrKeeper)
+
 	proposalRouter := govtypes.NewProposalRouter(
 		[]govtypes.ProposalHandler{
 			customgov.NewApplyWhitelistAccountPermissionProposalHandler(app.CustomGovKeeper),
@@ -298,6 +335,8 @@ func NewInitApp(
 			customgov.NewApplySetNetworkPropertyProposalHandler(app.CustomGovKeeper),
 			customgov.NewApplyUpsertDataRegistryProposalHandler(app.CustomGovKeeper),
 			customgov.NewApplySetPoorNetworkMessagesProposalHandler(app.CustomGovKeeper),
+			customgov.NewApplyResetWholeCouncilorRankProposalHandler(app.CustomGovKeeper),
+			customgov.NewApplyJailCouncilorProposalHandler(app.CustomGovKeeper),
 			tokens.NewApplyUpsertTokenAliasProposalHandler(app.TokensKeeper),
 			tokens.NewApplyUpsertTokenRatesProposalHandler(app.TokensKeeper),
 			tokens.NewApplyWhiteBlackChangeProposalHandler(app.TokensKeeper),
@@ -321,6 +360,9 @@ func NewInitApp(
 			basket.NewApplyCreateBasketProposalHandler(app.BasketKeeper),
 			basket.NewApplyEditBasketProposalHandler(app.BasketKeeper),
 			basket.NewApplyBasketWithdrawSurplusProposalHandler(app.BasketKeeper),
+			collectives.NewApplyCollectiveSendDonationProposalHandler(app.CollectivesKeeper),
+			collectives.NewApplyCollectiveUpdateProposalHandler(app.CollectivesKeeper),
+			collectives.NewApplyCollectiveRemoveProposalHandler(app.CollectivesKeeper),
 		})
 
 	app.CustomGovKeeper.SetProposalRouter(proposalRouter)
@@ -339,6 +381,7 @@ func NewInitApp(
 		upgrade.NewAppModule(app.UpgradeKeeper, app.CustomGovKeeper),
 		params.NewAppModule(app.ParamsKeeper),
 		customslashing.NewAppModule(appCodec, app.CustomSlashingKeeper, app.AccountKeeper, app.BankKeeper, app.CustomStakingKeeper),
+		recovery.NewAppModule(appCodec, app.RecoveryKeeper, app.AccountKeeper, app.CustomStakingKeeper),
 		customstaking.NewAppModule(app.CustomStakingKeeper, app.CustomGovKeeper),
 		multistaking.NewAppModule(app.MultiStakingKeeper, app.BankKeeper, app.CustomGovKeeper, app.CustomStakingKeeper),
 		customgov.NewAppModule(app.CustomGovKeeper),
@@ -350,6 +393,7 @@ func NewInitApp(
 		feeprocessing.NewAppModule(app.FeeProcessingKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
 		custody.NewAppModule(app.CustodyKeeper, app.CustomGovKeeper, app.BankKeeper),
+		collectives.NewAppModule(app.CollectivesKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -358,24 +402,26 @@ func NewInitApp(
 	app.mm.SetOrderBeginBlockers(
 		genutiltypes.ModuleName, paramstypes.ModuleName, govtypes.ModuleName, tokenstypes.ModuleName,
 		authtypes.ModuleName, feeprocessingtypes.ModuleName, banktypes.ModuleName,
-		upgradetypes.ModuleName, slashingtypes.ModuleName,
+		upgradetypes.ModuleName, slashingtypes.ModuleName, recoverytypes.ModuleName,
 		evidencetypes.ModuleName, stakingtypes.ModuleName,
 		spendingtypes.ModuleName, ubitypes.ModuleName,
 		distributortypes.ModuleName, multistakingtypes.ModuleName, custodytypes.ModuleName,
 		baskettypes.ModuleName,
 		distributortypes.ModuleName, multistakingtypes.ModuleName, custodytypes.ModuleName,
 		baskettypes.ModuleName,
+		collectivestypes.ModuleName,
 	)
 	app.mm.SetOrderEndBlockers(
 		banktypes.ModuleName, upgradetypes.ModuleName, tokenstypes.ModuleName,
 		evidencetypes.ModuleName, genutiltypes.ModuleName, paramstypes.ModuleName,
-		slashingtypes.ModuleName, authtypes.ModuleName,
+		slashingtypes.ModuleName, authtypes.ModuleName, recoverytypes.ModuleName,
 		govtypes.ModuleName,
 		stakingtypes.ModuleName,
 		feeprocessingtypes.ModuleName,
 		spendingtypes.ModuleName, ubitypes.ModuleName,
 		distributortypes.ModuleName, multistakingtypes.ModuleName, custodytypes.ModuleName,
 		baskettypes.ModuleName,
+		collectivestypes.ModuleName,
 	)
 
 	// NOTE: The genutils moodule must occur after staking so that pools are
@@ -389,6 +435,7 @@ func NewInitApp(
 		govtypes.ModuleName, // staking module is using the moniker identity registrar and gov module should be initialized before
 		stakingtypes.ModuleName,
 		slashingtypes.ModuleName,
+		recoverytypes.ModuleName,
 		tokenstypes.ModuleName,
 		feeprocessingtypes.ModuleName,
 		genutiltypes.ModuleName,
@@ -401,6 +448,7 @@ func NewInitApp(
 		custodytypes.ModuleName,
 		multistakingtypes.ModuleName,
 		baskettypes.ModuleName,
+		collectivestypes.ModuleName,
 	)
 
 	app.mm.RegisterRoutes(app.Router(), app.QueryRouter(), encodingConfig.Amino)
@@ -417,6 +465,7 @@ func NewInitApp(
 		auth.NewAppModule(appCodec, app.AccountKeeper, simulation.RandomGenesisAccounts),
 		bank.NewAppModule(appCodec, app.BankKeeper, app.AccountKeeper),
 		customslashing.NewAppModule(appCodec, app.CustomSlashingKeeper, app.AccountKeeper, app.BankKeeper, app.CustomStakingKeeper),
+		recovery.NewAppModule(appCodec, app.RecoveryKeeper, app.AccountKeeper, app.CustomStakingKeeper),
 		params.NewAppModule(app.ParamsKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
 	)

@@ -10,11 +10,12 @@ var (
 	_ sdk.Msg = &MsgUpsertStakingPool{}
 )
 
-func NewMsgUpsertStakingPool(sender, validator string, enabled bool) *MsgUpsertStakingPool {
+func NewMsgUpsertStakingPool(sender, validator string, enabled bool, commission sdk.Dec) *MsgUpsertStakingPool {
 	return &MsgUpsertStakingPool{
-		Sender:    sender,
-		Validator: validator,
-		Enabled:   enabled,
+		Sender:     sender,
+		Validator:  validator,
+		Enabled:    enabled,
+		Commission: commission,
 	}
 }
 

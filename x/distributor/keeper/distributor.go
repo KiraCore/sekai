@@ -3,6 +3,7 @@ package keeper
 import (
 	"fmt"
 
+	recoverytypes "github.com/KiraCore/sekai/x/recovery/types"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -29,7 +30,7 @@ func (k Keeper) AllocateTokens(
 	// mint inflated tokens
 	totalSupply := k.bk.GetSupply(ctx, k.BondDenom(ctx))
 	properties := k.gk.GetNetworkProperties(ctx)
-	inflationRewards := totalSupply.Amount.Mul(sdk.NewInt(int64(properties.InflationRate))).Quo(sdk.NewInt(int64(properties.InflationPeriod)))
+	inflationRewards := totalSupply.Amount.ToDec().Mul(properties.InflationRate).Quo(sdk.NewDec(int64(properties.InflationPeriod))).TruncateInt()
 	inflationCoin := sdk.NewCoin(totalSupply.Denom, inflationRewards)
 
 	if inflationRewards.IsPositive() {
@@ -44,32 +45,54 @@ func (k Keeper) AllocateTokens(
 	}
 
 	// combine fees and inflated tokens for rewards allocation
-	feesCollected := feesAccBalance.Sub(feesTreasury)
-	totalRewards := feesCollected.Add(inflationCoin)
+	feesCollected := sdk.Coins{}
+	if feesAccBalance.IsAllGTE(feesTreasury) {
+		feesCollected = feesAccBalance.Sub(feesTreasury)
+	}
 
 	validatorsFeeShare := k.gk.GetNetworkProperties(ctx).ValidatorsFeeShare
-	if validatorsFeeShare > 100 {
-		validatorsFeeShare = 100
+	if validatorsFeeShare.GT(sdk.OneDec()) {
+		validatorsFeeShare = sdk.OneDec()
 	}
 
 	// pay previous proposer
 	proposerValidator, err := k.sk.GetValidatorByConsAddr(ctx, previousProposer)
-
 	if err == nil {
 		// calculate reward based on historical bonded votes of the validator
 		votes := k.GetValidatorVotes(ctx, previousProposer)
 		power := int64(len(votes))
 		snapPeriod := k.GetSnapPeriod(ctx)
-		rewards := sdk.Coins{}
-		for _, r := range totalRewards {
-			reward := r.Amount.Mul(sdk.NewInt(power * int64(validatorsFeeShare))).Quo(sdk.NewInt(snapPeriod * 100))
-			if reward.IsPositive() {
-				rewards = rewards.Add(sdk.NewCoin(r.Denom, reward))
+		validatorRewards := sdk.Coins{}
+		poolRewards := sdk.Coins{}
+
+		// add fee rewards for validator
+		for _, r := range feesCollected {
+			cutAmount := r.Amount.Mul(sdk.NewInt(power)).Quo(sdk.NewInt(snapPeriod))
+			valReward := cutAmount.ToDec().Mul(validatorsFeeShare).RoundInt()
+			if valReward.IsPositive() {
+				validatorRewards = validatorRewards.Add(sdk.NewCoin(r.Denom, valReward))
+			}
+			poolReward := cutAmount.Sub(valReward)
+			if poolReward.IsPositive() {
+				poolRewards = poolRewards.Add(sdk.NewCoin(r.Denom, poolReward))
 			}
 		}
 
-		if !rewards.Empty() {
-			k.AllocateTokensToValidator(ctx, proposerValidator, rewards)
+		pool, found := k.mk.GetStakingPoolByValidator(ctx, proposerValidator.ValKey.String())
+		if found {
+			// add block inflation rewards for validator
+			cutInflationRewards := inflationRewards.Mul(sdk.NewInt(power)).Quo(sdk.NewInt(snapPeriod))
+			inflationCommissionReward := cutInflationRewards.ToDec().Mul(pool.Commission).RoundInt()
+			validatorRewards = validatorRewards.Add(sdk.NewCoin(totalSupply.Denom, inflationCommissionReward))
+			inflationPoolReward := cutInflationRewards.Sub(inflationCommissionReward)
+			poolRewards = poolRewards.Add(sdk.NewCoin(totalSupply.Denom, inflationPoolReward))
+			if !poolRewards.Empty() {
+				k.mk.IncreasePoolRewards(ctx, pool, poolRewards)
+			}
+		}
+
+		if !validatorRewards.Empty() {
+			k.AllocateTokensToValidator(ctx, proposerValidator, validatorRewards)
 		}
 	} else {
 		// previous proposer can be unknown if say, the unbonding period is 1 block, so
@@ -84,23 +107,6 @@ func (k Keeper) AllocateTokens(
 			previousProposer.String()))
 	}
 
-	if validatorsFeeShare < 100 {
-		stakingFeeShare := 100 - validatorsFeeShare
-
-		pool, found := k.mk.GetStakingPoolByValidator(ctx, proposerValidator.ValKey.String())
-		if found {
-			rewards := sdk.Coins{}
-			for _, r := range totalRewards {
-				reward := r.Amount.Mul(sdk.NewInt(int64(stakingFeeShare))).Quo(sdk.NewInt(100))
-				if reward.IsPositive() {
-					rewards = rewards.Add(sdk.NewCoin(r.Denom, reward))
-				}
-			}
-
-			k.mk.IncreasePoolRewards(ctx, pool, rewards)
-		}
-	}
-
 	// give rest of the tokens to community pool
 	remainings := k.bk.GetAllBalances(ctx, feeCollector.GetAddress())
 	k.SetFeesTreasury(ctx, remainings)
@@ -108,11 +114,26 @@ func (k Keeper) AllocateTokens(
 
 // AllocateTokensToValidator allocate tokens to a particular validator, splitting according to commission
 func (k Keeper) AllocateTokensToValidator(ctx sdk.Context, val stakingtypes.Validator, tokens sdk.Coins) {
-	// send coins from fee pool to validator account
-	err := k.bk.SendCoinsFromModuleToAccount(ctx, authtypes.FeeCollectorName, sdk.AccAddress(val.GetValKey()), tokens)
-	if err != nil {
-		panic(err)
+	acc := sdk.AccAddress(val.GetValKey())
+	_, err := k.rk.GetRecoveryToken(ctx, acc.String())
+	if err == nil {
+		// send tokens to recovery module in case validator issued recovery token
+		err := k.bk.SendCoinsFromModuleToModule(ctx, authtypes.FeeCollectorName, recoverytypes.ModuleName, tokens)
+		if err != nil {
+			panic(err)
+		}
+		err = k.rk.IncreaseRecoveryTokenUnderlying(ctx, acc, tokens)
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		// send coins from fee pool to validator account
+		err := k.bk.SendCoinsFromModuleToAccount(ctx, authtypes.FeeCollectorName, acc, tokens)
+		if err != nil {
+			panic(err)
+		}
 	}
+
 }
 
 // GetPreviousProposerConsAddr returns the proposer consensus address for the

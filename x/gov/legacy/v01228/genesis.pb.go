@@ -33,7 +33,7 @@ type GenesisStateV01228 struct {
 	// NetworkActors are the actors that are saved from genesis.
 	NetworkActors               []*govtypes.NetworkActor               `protobuf:"bytes,3,rep,name=network_actors,json=networkActors,proto3" json:"network_actors,omitempty"`
 	NetworkProperties           *NetworkPropertiesV0228                `protobuf:"bytes,4,opt,name=network_properties,json=networkProperties,proto3" json:"network_properties,omitempty"`
-	ExecutionFees               []*govtypes.ExecutionFee               `protobuf:"bytes,5,rep,name=execution_fees,json=executionFees,proto3" json:"execution_fees,omitempty"`
+	ExecutionFees               []govtypes.ExecutionFee                `protobuf:"bytes,5,rep,name=execution_fees,json=executionFees,proto3" json:"execution_fees,omitempty"`
 	PoorNetworkMessages         *govtypes.AllowedMessages              `protobuf:"bytes,6,opt,name=poor_network_messages,json=poorNetworkMessages,proto3" json:"poor_network_messages,omitempty"`
 	Proposals                   []govtypes.Proposal                    `protobuf:"bytes,7,rep,name=proposals,proto3" json:"proposals"`
 	Votes                       []govtypes.Vote                        `protobuf:"bytes,8,rep,name=votes,proto3" json:"votes"`
@@ -105,7 +105,7 @@ func (m *GenesisStateV01228) GetNetworkProperties() *NetworkPropertiesV0228 {
 	return nil
 }
 
-func (m *GenesisStateV01228) GetExecutionFees() []*govtypes.ExecutionFee {
+func (m *GenesisStateV01228) GetExecutionFees() []govtypes.ExecutionFee {
 	if m != nil {
 		return m.ExecutionFees
 	}
@@ -783,7 +783,7 @@ func (m *GenesisStateV01228) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.ExecutionFees = append(m.ExecutionFees, &govtypes.ExecutionFee{})
+			m.ExecutionFees = append(m.ExecutionFees, govtypes.ExecutionFee{})
 			if err := m.ExecutionFees[len(m.ExecutionFees)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}

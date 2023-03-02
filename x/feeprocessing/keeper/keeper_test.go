@@ -48,12 +48,13 @@ func TestNewKeeper_Executions(t *testing.T) {
 		sdk.ZeroDec(),
 		sdk.ZeroInt(),
 		false,
+		false,
 	)
 	app.FeeProcessingKeeper.AddExecutionStart(ctx, msg1)
 	executions = app.FeeProcessingKeeper.GetExecutionsStatus(ctx)
 	require.True(t, len(executions) == 1)
 
-	msg2 := tokenstypes.NewMsgUpsertTokenAlias(addr, "KEX", "Kira", "", 10, []string{"ukex"})
+	msg2 := tokenstypes.NewMsgUpsertTokenAlias(addr, "KEX", "Kira", "", 10, []string{"ukex"}, false)
 	app.FeeProcessingKeeper.AddExecutionStart(ctx, msg2)
 	executions = app.FeeProcessingKeeper.GetExecutionsStatus(ctx)
 	require.True(t, len(executions) == 2)
@@ -62,6 +63,7 @@ func TestNewKeeper_Executions(t *testing.T) {
 		addr, "ukex", sdk.NewDec(1), true,
 		sdk.ZeroDec(),
 		sdk.ZeroInt(),
+		false,
 		false,
 	)
 	app.FeeProcessingKeeper.AddExecutionStart(ctx, msg3)
@@ -161,7 +163,7 @@ func TestNewKeeper_ProcessExecutionFeeReturn(t *testing.T) {
 	app.BankKeeper.MintCoins(ctx, minttypes.ModuleName, coins)
 	app.BankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, addr3, coins)
 
-	app.CustomGovKeeper.SetExecutionFee(ctx, &govtypes.ExecutionFee{
+	app.CustomGovKeeper.SetExecutionFee(ctx, govtypes.ExecutionFee{
 		TransactionType:   kiratypes.MsgTypeUpsertTokenRate,
 		ExecutionFee:      1000,
 		FailureFee:        100,
@@ -176,6 +178,7 @@ func TestNewKeeper_ProcessExecutionFeeReturn(t *testing.T) {
 		addr, "ukex", sdk.NewDec(1), true,
 		sdk.ZeroDec(),
 		sdk.ZeroInt(),
+		false,
 		false,
 	)
 	app.FeeProcessingKeeper.AddExecutionStart(ctx, msg)
@@ -208,11 +211,13 @@ func TestNewKeeper_ProcessExecutionFeeReturn(t *testing.T) {
 		sdk.ZeroDec(),
 		sdk.ZeroInt(),
 		false,
+		false,
 	)
 	msg3 := tokenstypes.NewMsgUpsertTokenRate(
 		addr3, "ukex", sdk.NewDec(1), true,
 		sdk.ZeroDec(),
 		sdk.ZeroInt(),
+		false,
 		false,
 	)
 	app.FeeProcessingKeeper.AddExecutionStart(ctx, msg3)

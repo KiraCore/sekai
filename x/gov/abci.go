@@ -91,6 +91,18 @@ func processProposal(ctx sdk.Context, k keeper.Keeper, proposalID uint64) {
 	availableVoters := k.GetNetworkActorsByAbsoluteWhitelistPermission(ctx, proposal.GetContent().VotePermission())
 	totalVoters := len(availableVoters)
 
+	// councilor rank update function on absent
+	voteMap := make(map[string]bool)
+	for _, voter := range availableVoters {
+		voteMap[voter.Address.String()] = true
+	}
+	councilors := k.GetAllCouncilors(ctx)
+	for _, councilor := range councilors {
+		if !voteMap[councilor.Address.String()] {
+			k.OnCouncilorAbsent(ctx, councilor.Address)
+		}
+	}
+
 	// update to spending pool users if it's spending pool proposal
 	content := proposal.GetContent()
 	if content.VotePermission() == types.PermZero {
@@ -142,7 +154,7 @@ func processProposal(ctx sdk.Context, k keeper.Keeper, proposalID uint64) {
 	)
 }
 
-func processEnactmentProposal(ctx sdk.Context, k keeper.Keeper, proposalID uint64, slash uint64) {
+func processEnactmentProposal(ctx sdk.Context, k keeper.Keeper, proposalID uint64, slash sdk.Dec) {
 	router := k.GetProposalRouter()
 	proposal, found := k.GetProposal(ctx, proposalID)
 	if !found {

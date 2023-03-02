@@ -24,6 +24,7 @@ message TokenRate {
     (gogoproto.nullable) = false
   ];
   bool stake_token = 6;
+  bool invalidated = 7; // flag that the token is invalidated or not
 }
 
 message MsgUpsertTokenRate {
@@ -45,7 +46,8 @@ message MsgUpsertTokenRate {
       (gogoproto.nullable) = false
     ];
     bool stake_token = 6;
-    bytes proposer = 7 [
+    bool invalidated = 7; // flag that the token is invalidated or not
+    bytes proposer = 8 [
         (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress",
         (gogoproto.moretags) = "yaml:\"proposer\""
     ];

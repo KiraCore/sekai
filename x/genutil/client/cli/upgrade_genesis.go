@@ -4,18 +4,59 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/pkg/errors"
-	"github.com/spf13/cobra"
-	tmtypes "github.com/tendermint/tendermint/types"
-
 	"github.com/KiraCore/sekai/x/genutil"
 	v01228govtypes "github.com/KiraCore/sekai/x/gov/legacy/v01228"
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
+	v03123upgradetypes "github.com/KiraCore/sekai/x/upgrade/legacy/v03123"
 	upgradetypes "github.com/KiraCore/sekai/x/upgrade/types"
 	"github.com/cosmos/cosmos-sdk/client"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
+	"github.com/pkg/errors"
+	"github.com/spf13/cobra"
+	tmjson "github.com/tendermint/tendermint/libs/json"
+	tmos "github.com/tendermint/tendermint/libs/os"
+	tmtypes "github.com/tendermint/tendermint/types"
 )
+
+const (
+	FlagJsonMinimize = "json-minimize"
+)
+
+func upgradedPlan(plan *v03123upgradetypes.PlanV03123) *upgradetypes.Plan {
+	if plan == nil {
+		return nil
+	}
+
+	return &upgradetypes.Plan{
+		Name:                      plan.Name,
+		Resources:                 upgradedResources(plan.Resources),
+		UpgradeTime:               plan.UpgradeTime,
+		OldChainId:                plan.OldChainId,
+		NewChainId:                plan.NewChainId,
+		RollbackChecksum:          plan.RollbackChecksum,
+		MaxEnrolmentDuration:      plan.MaxEnrolmentDuration,
+		InstateUpgrade:            plan.InstateUpgrade,
+		RebootRequired:            plan.RebootRequired,
+		SkipHandler:               plan.SkipHandler,
+		ProposalID:                plan.ProposalID,
+		ProcessedNoVoteValidators: plan.ProcessedNoVoteValidators,
+	}
+}
+
+func upgradedResources(resources []v03123upgradetypes.ResourceV03123) []upgradetypes.Resource {
+	upgraded := []upgradetypes.Resource{}
+	for _, resource := range resources {
+		upgraded = append(upgraded, upgradetypes.Resource{
+			Id:       resource.Id,
+			Url:      resource.Git,
+			Version:  resource.Checkout,
+			Checksum: resource.Checksum,
+		})
+	}
+	return upgraded
+}
 
 // GetNewGenesisFromExportedCmd returns new genesis from exported genesis
 func GetNewGenesisFromExportedCmd(mbm module.BasicManager, txEncCfg client.TxEncodingConfig) *cobra.Command {
@@ -52,6 +93,19 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 				return errors.Wrap(err, "failed to validate genesis state")
 			}
 
+			upgradeGenesisV03123 := v03123upgradetypes.GenesisStateV03123{}
+			err = cdc.UnmarshalJSON(genesisState[upgradetypes.ModuleName], &upgradeGenesisV03123)
+			if err == nil { // which means old upgrade genesis
+				upgradeGenesis := upgradetypes.GenesisState{
+					Version:     "v0.3.1.24",
+					CurrentPlan: upgradedPlan(upgradeGenesisV03123.CurrentPlan),
+					NextPlan:    upgradedPlan(upgradeGenesisV03123.NextPlan),
+				}
+				genesisState[upgradetypes.ModuleName] = cdc.MustMarshalJSON(&upgradeGenesis)
+			} else {
+				fmt.Println("error exists v0.3.1.23 upgrade genesis parsing", err)
+			}
+
 			upgradeGenesis := upgradetypes.GenesisState{}
 			cdc.MustUnmarshalJSON(genesisState[upgradetypes.ModuleName], &upgradeGenesis)
 			oldVersion := upgradeGenesis.Version
@@ -86,42 +140,49 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 					RolePermissions:    govGenesisV01228.Permissions,
 					NetworkActors:      govGenesisV01228.NetworkActors,
 					NetworkProperties: &govtypes.NetworkProperties{
-						MinTxFee:                    govGenesisV01228.NetworkProperties.MinTxFee,
-						MaxTxFee:                    govGenesisV01228.NetworkProperties.MaxTxFee,
-						VoteQuorum:                  govGenesisV01228.NetworkProperties.VoteQuorum,
-						MinimumProposalEndTime:      govGenesisV01228.NetworkProperties.ProposalEndTime,
-						ProposalEnactmentTime:       govGenesisV01228.NetworkProperties.ProposalEnactmentTime,
-						MinProposalEndBlocks:        govGenesisV01228.NetworkProperties.MinProposalEndBlocks,
-						MinProposalEnactmentBlocks:  govGenesisV01228.NetworkProperties.MinProposalEnactmentBlocks,
-						EnableForeignFeePayments:    govGenesisV01228.NetworkProperties.EnableForeignFeePayments,
-						MischanceRankDecreaseAmount: govGenesisV01228.NetworkProperties.MischanceRankDecreaseAmount,
-						MaxMischance:                govGenesisV01228.NetworkProperties.MaxMischance,
-						MischanceConfidence:         govGenesisV01228.NetworkProperties.MischanceConfidence,
-						InactiveRankDecreasePercent: govGenesisV01228.NetworkProperties.InactiveRankDecreasePercent,
-						MinValidators:               govGenesisV01228.NetworkProperties.MinValidators,
-						PoorNetworkMaxBankSend:      govGenesisV01228.NetworkProperties.PoorNetworkMaxBankSend,
-						UnjailMaxTime:               govGenesisV01228.NetworkProperties.JailMaxTime,
-						EnableTokenWhitelist:        govGenesisV01228.NetworkProperties.EnableTokenWhitelist,
-						EnableTokenBlacklist:        govGenesisV01228.NetworkProperties.EnableTokenBlacklist,
-						MinIdentityApprovalTip:      govGenesisV01228.NetworkProperties.MinIdentityApprovalTip,
-						UniqueIdentityKeys:          govGenesisV01228.NetworkProperties.UniqueIdentityKeys,
-						UbiHardcap:                  6000_000,
-						ValidatorsFeeShare:          50,
-						InflationRate:               18,       // 18%
-						InflationPeriod:             31557600, // 1 year
-						UnstakingPeriod:             2629800,  // 1 month
-						MaxDelegators:               100,
-						MinDelegationPushout:        10,
-						SlashingPeriod:              3600,
-						MaxJailedPercentage:         25,
-						MaxSlashingPercentage:       1,
-						MinCustodyReward:            200,
-						MaxCustodyTxSize:            8192,
-						MaxCustodyBufferSize:        10,
-						MaxProposalTitleSize:        128,
-						MaxProposalDescriptionSize:  1024,
-						MaxProposalPollOptionSize:   64,
-						MaxProposalPollOptionCount:  128,
+						MinTxFee:                     govGenesisV01228.NetworkProperties.MinTxFee,
+						MaxTxFee:                     govGenesisV01228.NetworkProperties.MaxTxFee,
+						VoteQuorum:                   govGenesisV01228.NetworkProperties.VoteQuorum,
+						MinimumProposalEndTime:       govGenesisV01228.NetworkProperties.ProposalEndTime,
+						ProposalEnactmentTime:        govGenesisV01228.NetworkProperties.ProposalEnactmentTime,
+						MinProposalEndBlocks:         govGenesisV01228.NetworkProperties.MinProposalEndBlocks,
+						MinProposalEnactmentBlocks:   govGenesisV01228.NetworkProperties.MinProposalEnactmentBlocks,
+						EnableForeignFeePayments:     govGenesisV01228.NetworkProperties.EnableForeignFeePayments,
+						MischanceRankDecreaseAmount:  govGenesisV01228.NetworkProperties.MischanceRankDecreaseAmount,
+						MaxMischance:                 govGenesisV01228.NetworkProperties.MaxMischance,
+						MischanceConfidence:          govGenesisV01228.NetworkProperties.MischanceConfidence,
+						InactiveRankDecreasePercent:  sdk.NewDecWithPrec(int64(govGenesisV01228.NetworkProperties.InactiveRankDecreasePercent), 2),
+						MinValidators:                govGenesisV01228.NetworkProperties.MinValidators,
+						PoorNetworkMaxBankSend:       govGenesisV01228.NetworkProperties.PoorNetworkMaxBankSend,
+						UnjailMaxTime:                govGenesisV01228.NetworkProperties.JailMaxTime,
+						EnableTokenWhitelist:         govGenesisV01228.NetworkProperties.EnableTokenWhitelist,
+						EnableTokenBlacklist:         govGenesisV01228.NetworkProperties.EnableTokenBlacklist,
+						MinIdentityApprovalTip:       govGenesisV01228.NetworkProperties.MinIdentityApprovalTip,
+						UniqueIdentityKeys:           govGenesisV01228.NetworkProperties.UniqueIdentityKeys,
+						UbiHardcap:                   6000_000,
+						ValidatorsFeeShare:           sdk.NewDecWithPrec(50, 2), // 50%
+						InflationRate:                sdk.NewDecWithPrec(18, 2), // 18%
+						InflationPeriod:              31557600,                  // 1 year
+						UnstakingPeriod:              2629800,                   // 1 month
+						MaxDelegators:                100,
+						MinDelegationPushout:         10,
+						SlashingPeriod:               3600,
+						MaxJailedPercentage:          sdk.NewDecWithPrec(25, 2),
+						MaxSlashingPercentage:        sdk.NewDecWithPrec(1, 2),
+						MinCustodyReward:             200,
+						MaxCustodyTxSize:             8192,
+						MaxCustodyBufferSize:         10,
+						AbstentionRankDecreaseAmount: 1,
+						MaxAbstention:                2,
+						MinCollectiveBond:            100_000, // in KEX
+						MinCollectiveBondingTime:     86400,   // in seconds
+						MaxCollectiveOutputs:         10,
+						MinCollectiveClaimPeriod:     14400,  // 4hrs
+						ValidatorRecoveryBond:        300000, // 300k KEX
+						MaxProposalTitleSize:         128,
+						MaxProposalDescriptionSize:   1024,
+						MaxProposalPollOptionSize:    64,
+						MaxProposalPollOptionCount:   128,
 					},
 					ExecutionFees:               govGenesisV01228.ExecutionFees,
 					PoorNetworkMessages:         govGenesisV01228.PoorNetworkMessages,
@@ -147,6 +208,21 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 			if err == nil {
 				govGenesis.RolePermissions[govtypes.RoleSudo] = govtypes.DefaultGenesis().RolePermissions[govtypes.RoleSudo]
 				genesisState[govtypes.ModuleName] = cdc.MustMarshalJSON(&govGenesis)
+			} else {
+				fmt.Println("parse error for latest gov genesis", err)
+				fmt.Println("trying to parse v03123 gov genesis for following error on genesis parsing")
+				govGenesisV03123 := make(map[string]interface{})
+				err = json.Unmarshal(genesisState[govtypes.ModuleName], &govGenesisV03123)
+				if err != nil {
+					panic(err)
+				}
+				govGenesisV03123["proposals"] = []govtypes.Proposal{}
+				govGenesisV03123["votes"] = []govtypes.Vote{}
+				bz, err := json.Marshal(&govGenesisV03123)
+				if err != nil {
+					panic(err)
+				}
+				genesisState[govtypes.ModuleName] = bz
 			}
 
 			appState, err := json.MarshalIndent(genesisState, "", " ")
@@ -155,12 +231,23 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 			}
 
 			genDoc.AppState = appState
+
+			if jsonMinimize, _ := cmd.Flags().GetBool(FlagJsonMinimize); jsonMinimize {
+
+				genDocBytes, err := tmjson.Marshal(genDoc)
+				if err != nil {
+					return err
+				}
+				return tmos.WriteFile(args[1], genDocBytes, 0644)
+			}
+
 			if err = genutil.ExportGenesisFile(genDoc, args[1]); err != nil {
 				return errors.Wrap(err, "Failed to export genesis file")
 			}
 			return nil
 		},
 	}
+	cmd.Flags().Bool(FlagJsonMinimize, true, "flag to export genesis in minimized version")
 
 	return cmd
 }

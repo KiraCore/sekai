@@ -13,6 +13,11 @@ func (k Keeper) SaveNetworkActor(ctx sdk.Context, actor types.NetworkActor) {
 	prefixStore.Set(actor.Address.Bytes(), bz)
 }
 
+func (k Keeper) DeleteNetworkActor(ctx sdk.Context, actor types.NetworkActor) {
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), NetworkActorsPrefix)
+	prefixStore.Delete(actor.Address.Bytes())
+}
+
 func (k Keeper) GetNetworkActorByAddress(ctx sdk.Context, address sdk.AccAddress) (types.NetworkActor, bool) {
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), NetworkActorsPrefix)
 
@@ -44,6 +49,11 @@ func (k Keeper) SetWhitelistAddressPermKey(ctx sdk.Context, actor types.NetworkA
 	store.Set(WhitelistAddressPermKey(actor.Address, perm), actor.Address.Bytes())
 }
 
+func (k Keeper) DeleteWhitelistAddressPermKey(ctx sdk.Context, actor types.NetworkActor, perm types.PermValue) {
+	store := ctx.KVStore(k.storeKey)
+	store.Delete(WhitelistAddressPermKey(actor.Address, perm))
+}
+
 // AddWhitelistPermission whitelist a permission to an address. It saves the actor after it.
 func (k Keeper) AddWhitelistPermission(ctx sdk.Context, actor types.NetworkActor, perm types.PermValue) error {
 	err := actor.Permissions.AddToWhitelist(perm)
@@ -53,6 +63,13 @@ func (k Keeper) AddWhitelistPermission(ctx sdk.Context, actor types.NetworkActor
 
 	k.SaveNetworkActor(ctx, actor)
 	k.SetWhitelistAddressPermKey(ctx, actor, perm)
+
+	// create waiting councilor if it does not exist
+	_, found := k.GetCouncilor(ctx, actor.Address)
+	if perm == types.PermClaimCouncilor && !found {
+		councilor := types.NewCouncilor(actor.Address, types.CouncilorWaiting)
+		k.SaveCouncilor(ctx, councilor)
+	}
 
 	return nil
 }
@@ -76,10 +93,7 @@ func (k Keeper) RemoveWhitelistedPermission(ctx sdk.Context, actor types.Network
 	}
 
 	k.SaveNetworkActor(ctx, actor)
-
-	store := ctx.KVStore(k.storeKey)
-	store.Delete(WhitelistAddressPermKey(actor.Address, perm))
-
+	k.DeleteWhitelistAddressPermKey(ctx, actor, perm)
 	return nil
 }
 
@@ -95,7 +109,7 @@ func (k Keeper) RemoveBlacklistedPermission(ctx sdk.Context, actor types.Network
 }
 
 func (k Keeper) AssignRoleToAccount(ctx sdk.Context, addr sdk.AccAddress, roleId uint64) error {
-	_, found := k.GetPermissionsForRole(ctx, roleId)
+	permissions, found := k.GetPermissionsForRole(ctx, roleId)
 	if !found {
 		return types.ErrRoleDoesNotExist
 	}
@@ -110,6 +124,17 @@ func (k Keeper) AssignRoleToAccount(ctx sdk.Context, addr sdk.AccAddress, roleId
 	}
 
 	k.AssignRoleToActor(ctx, actor, roleId)
+
+	// create waiting councilor if it does not exist and when permission is given
+	_, found = k.GetCouncilor(ctx, actor.Address)
+	if !found {
+		for _, perm := range permissions.Whitelist {
+			if perm == uint32(types.PermClaimCouncilor) {
+				councilor := types.NewCouncilor(actor.Address, types.CouncilorWaiting)
+				k.SaveCouncilor(ctx, councilor)
+			}
+		}
+	}
 	return nil
 }
 

@@ -9,29 +9,6 @@ import "kira/staking/proposal.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/staking/types";
 
-// Msg defines the staking Msg service.
-service Msg {
-  // ClaimValidator defines a method for claiming a new validator.
-  rpc ClaimValidator(MsgClaimValidator) returns (MsgClaimValidatorResponse);
-
-}
-
-message MsgClaimValidator {
-  option (gogoproto.equal)            = true;
-
-  string moniker = 1;
-  bytes val_key = 2 [
-    (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.ValAddress",
-    (gogoproto.moretags) = "yaml:\"val_key\""
-  ];
-  google.protobuf.Any pub_key = 3
-    [(cosmos_proto.accepts_interface) = "cosmos.crypto.PubKey", (gogoproto.moretags) = "yaml:\"pub_key\""];
-}
-
-// MsgClaimValidatorResponse defines the Msg/ClaimValidator response type.
-message MsgClaimValidatorResponse {}
-
-
 enum ValidatorStatus {
   option (gogoproto.goproto_enum_prefix) = false;
 
@@ -61,7 +38,6 @@ message Validator {
   google.protobuf.Any pub_key = 2
     [(cosmos_proto.accepts_interface) = "cosmos.crypto.PubKey", (gogoproto.moretags) = "yaml:\"pub_key\""];
   ValidatorStatus status = 3;
-
   // To judge validator performance a streak and rank properties should be created (as part of each validator status data).
   // The streak would imply consecutive number of times that given validator managed to successfully propose a block (since the last time he failed) that was accepted into the blockchain state. The streak property should be zeroed every time validator misses to propose a block and the mischance property is incremented. You can treat streak in similar way to kill-streaks in video games - which imply your short term performance.
   // The rank property is a long term statistics implying the "longest" streak that validator ever achieved, it can be expressed as rank = MAX(rank, streak). Under certain circumstances we should however decrease the rank of the validator. If the mischance property is incremented, the rank should be decremented by X (default 10), that is rank = MAX(rank - X, 0). Every time node status changes to inactive the rank should be divided by 2, that is rank = FLOOR(rank / 2)

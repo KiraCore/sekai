@@ -7,11 +7,12 @@ import (
 )
 
 var (
-	ErrInvalidMonikerLength = fmt.Errorf("invalid moniker length (max 32 bytes)")
-	ErrValidatorInactive    = fmt.Errorf("validator is inactive")
-	ErrValidatorPaused      = fmt.Errorf("validator is paused")
-	ErrValidatorJailed      = fmt.Errorf("validator is jailed")
-	ErrValidatorActive      = fmt.Errorf("validator is active")
+	ErrInvalidMonikerLength  = fmt.Errorf("invalid moniker length (max 32 bytes)")
+	ErrInvalidUsernameLength = fmt.Errorf("invalid username length (max 32 bytes)")
+	ErrValidatorInactive     = fmt.Errorf("validator is inactive")
+	ErrValidatorPaused       = fmt.Errorf("validator is paused")
+	ErrValidatorJailed       = fmt.Errorf("validator is jailed")
+	ErrValidatorActive       = fmt.Errorf("validator is active")
 )
 
 var (

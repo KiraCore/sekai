@@ -50,6 +50,10 @@ service Query {
   rpc ExecutionFee (ExecutionFeeRequest) returns (ExecutionFeeResponse) {
     option (google.api.http).get = "/kira/gov/execution_fee/{transaction_type}";
   }
+  // AllExecutionFees returns all execution fees
+  rpc AllExecutionFees(AllExecutionFeesRequest) returns (AllExecutionFeesResponse) {
+    option (google.api.http).get = "/kira/gov/all_execution_fees";
+  }
   // PoorNetworkMessages returns poor network messages
   rpc PoorNetworkMessages (PoorNetworkMessagesRequest) returns (PoorNetworkMessagesResponse) {
     option (google.api.http).get = "/kira/gov/poor_network_messages";
@@ -121,6 +125,27 @@ service Query {
   // Query single proposal duration
   rpc ProposalDuration(QueryProposalDuration) returns (QueryProposalDurationResponse) {
     option (google.api.http).get = "/kira/gov/proposal_duration/{proposal_type}";
+  }
+  // QueryCouncilorslist - all councilors (waiting or not), including their corresponding statuses,
+  // ranks & abstenation counters - add sub-query to search by specific KIRA address
+  rpc QueryCouncilors(QueryCouncilors) returns (QueryCouncilorsResponse) {
+    option (google.api.http).get = "/kira/gov/councilors/{address}";
+  }
+  // QueryNonCouncilors - list all governance members that are NOT Councilors
+  rpc QueryNonCouncilors(QueryNonCouncilors) returns (QueryNonCouncilorsResponse) {
+    option (google.api.http).get = "/kira/gov/non_councilors";
+  }
+  // QueryAddressesByWhitelistedPermission - list all KIRA addresses by a specific whitelisted permission (address does NOT have to be a Councilor)
+  rpc QueryAddressesByWhitelistedPermission(QueryAddressesByWhitelistedPermission) returns (QueryAddressesByWhitelistedPermissionResponse) {
+    option (google.api.http).get = "/kira/gov/addresses_by_whitelisted_permission/{permission}";
+  }
+  // QueryAddressesByBlacklistedPermission - list all KIRA addresses by a specific blacklisted permission (address does NOT have to be a Councilor)
+  rpc QueryAddressesByBlacklistedPermission(QueryAddressesByBlacklistedPermission) returns (QueryAddressesByBlacklistedPermissionResponse) {
+    option (google.api.http).get = "/kira/gov/addresses_by_blacklisted_permission/{permission}";
+  }
+  // QueryAddressesByWhitelistedRole - list all kira addresses by a specific whitelisted role (address does NOT have to be a Councilor)
+  rpc QueryAddressesByWhitelistedRole(QueryAddressesByWhitelistedRole) returns (QueryAddressesByWhitelistedRoleResponse) {
+    option (google.api.http).get = "/kira/gov/addresses_by_whitelisted_role/{role}";
   }
   //Query list of all polls by address
   rpc PollsListByAddress(QueryPollsListByAddress) returns (QueryPollsListByAddressResponse) {
@@ -196,6 +221,12 @@ message ExecutionFeeRequest {
 }
 message ExecutionFeeResponse {
   kira.gov.ExecutionFee fee = 1;
+}
+
+message AllExecutionFeesRequest {}
+message AllExecutionFeesResponse {
+  repeated kira.gov.ExecutionFee fees = 1 [ (gogoproto.nullable) = false ];
+  repeated string tx_types = 2;
 }
 
 message PoorNetworkMessagesRequest {}
@@ -392,4 +423,37 @@ message QueryProposalDuration {
 
 message QueryProposalDurationResponse {
   uint64 duration = 1;
+}
+
+message QueryCouncilors {
+  string address = 1; // returns full when empty input
+}
+message QueryCouncilorsResponse {
+  repeated Councilor councilors = 1 [ (gogoproto.nullable) = false ];
+}
+
+message QueryNonCouncilors {}
+message QueryNonCouncilorsResponse {
+  repeated kira.gov.NetworkActor non_councilors = 1 [ (gogoproto.nullable) = false ];
+}
+
+message QueryAddressesByWhitelistedPermission {
+  uint32 permission = 1;
+}
+message QueryAddressesByWhitelistedPermissionResponse {
+  repeated string addresses = 1;
+}
+
+message QueryAddressesByBlacklistedPermission {
+  uint32 permission = 1;
+}
+message QueryAddressesByBlacklistedPermissionResponse {
+  repeated string addresses = 1;
+}
+
+message QueryAddressesByWhitelistedRole {
+  uint32 role = 1;
+}
+message QueryAddressesByWhitelistedRoleResponse {
+  repeated string addresses = 1;
 }

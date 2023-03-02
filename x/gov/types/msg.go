@@ -202,12 +202,22 @@ func (m *MsgRemoveBlacklistedPermissions) GetSigners() []sdk.AccAddress {
 }
 
 func NewMsgClaimCouncilor(
-	moniker string,
 	address sdk.AccAddress,
+	moniker string,
+	username string,
+	description string,
+	social string,
+	contact string,
+	avatar string,
 ) *MsgClaimCouncilor {
 	return &MsgClaimCouncilor{
-		Moniker: moniker,
-		Address: address,
+		Address:     address,
+		Moniker:     moniker,
+		Username:    username,
+		Description: description,
+		Social:      social,
+		Contact:     contact,
+		Avatar:      avatar,
 	}
 }
 
@@ -235,6 +245,114 @@ func (m *MsgClaimCouncilor) GetSignBytes() []byte {
 func (m *MsgClaimCouncilor) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{
 		m.Address,
+	}
+}
+
+func NewMsgCouncilorPause(
+	address sdk.AccAddress,
+) *MsgCouncilorPause {
+	return &MsgCouncilorPause{
+		Sender: address.String(),
+	}
+}
+
+func (m *MsgCouncilorPause) Route() string {
+	return ModuleName
+}
+
+func (m *MsgCouncilorPause) Type() string {
+	return types.MsgTypeClaimCouncilor
+}
+
+func (m *MsgCouncilorPause) ValidateBasic() error {
+	if m.Sender == "" {
+		return ErrCouncilorEmptyAddress
+	}
+
+	return nil
+}
+
+func (m *MsgCouncilorPause) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *MsgCouncilorPause) GetSigners() []sdk.AccAddress {
+	addr, _ := sdk.AccAddressFromBech32(m.Sender)
+	return []sdk.AccAddress{
+		addr,
+	}
+}
+
+func NewMsgCouncilorUnpause(
+	address sdk.AccAddress,
+) *MsgCouncilorUnpause {
+	return &MsgCouncilorUnpause{
+		Sender: address.String(),
+	}
+}
+
+func (m *MsgCouncilorUnpause) Route() string {
+	return ModuleName
+}
+
+func (m *MsgCouncilorUnpause) Type() string {
+	return types.MsgTypeClaimCouncilor
+}
+
+func (m *MsgCouncilorUnpause) ValidateBasic() error {
+	if m.Sender == "" {
+		return ErrCouncilorEmptyAddress
+	}
+
+	return nil
+}
+
+func (m *MsgCouncilorUnpause) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *MsgCouncilorUnpause) GetSigners() []sdk.AccAddress {
+	addr, _ := sdk.AccAddressFromBech32(m.Sender)
+	return []sdk.AccAddress{
+		addr,
+	}
+}
+
+func NewMsgCouncilorActivate(
+	address sdk.AccAddress,
+) *MsgCouncilorActivate {
+	return &MsgCouncilorActivate{
+		Sender: address.String(),
+	}
+}
+
+func (m *MsgCouncilorActivate) Route() string {
+	return ModuleName
+}
+
+func (m *MsgCouncilorActivate) Type() string {
+	return types.MsgTypeClaimCouncilor
+}
+
+func (m *MsgCouncilorActivate) ValidateBasic() error {
+	if m.Sender == "" {
+		return ErrCouncilorEmptyAddress
+	}
+
+	return nil
+}
+
+func (m *MsgCouncilorActivate) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *MsgCouncilorActivate) GetSigners() []sdk.AccAddress {
+	addr, _ := sdk.AccAddressFromBech32(m.Sender)
+	return []sdk.AccAddress{
+		addr,
 	}
 }
 
@@ -479,7 +597,7 @@ func (m *MsgRemoveRole) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgVoteProposal(proposalID uint64, voter sdk.AccAddress, option VoteOption, slash uint64) *MsgVoteProposal {
+func NewMsgVoteProposal(proposalID uint64, voter sdk.AccAddress, option VoteOption, slash sdk.Dec) *MsgVoteProposal {
 	return &MsgVoteProposal{
 		ProposalId: proposalID,
 		Voter:      voter,

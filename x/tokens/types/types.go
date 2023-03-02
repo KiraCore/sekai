@@ -11,13 +11,15 @@ func NewTokenAlias(
 	icon string,
 	decimals uint32,
 	denoms []string,
+	invalidated bool,
 ) *TokenAlias {
 	return &TokenAlias{
-		Symbol:   symbol,
-		Name:     name,
-		Icon:     icon,
-		Decimals: decimals,
-		Denoms:   denoms,
+		Symbol:      symbol,
+		Name:        name,
+		Icon:        icon,
+		Decimals:    decimals,
+		Denoms:      denoms,
+		Invalidated: invalidated,
 	}
 }
 
@@ -29,6 +31,7 @@ func NewTokenRate(
 	stakeCap sdk.Dec,
 	stakeMin sdk.Int,
 	stakeToken bool,
+	invalidated bool,
 ) *TokenRate {
 	return &TokenRate{
 		Denom:       denom,
@@ -37,5 +40,6 @@ func NewTokenRate(
 		StakeCap:    stakeCap,
 		StakeMin:    stakeMin,
 		StakeToken:  stakeToken,
+		Invalidated: invalidated,
 	}
 }

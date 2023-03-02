@@ -7,6 +7,7 @@ import (
 	kiratypes "github.com/KiraCore/sekai/types"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/gogo/protobuf/proto"
 )
@@ -317,7 +318,17 @@ func (m *SetNetworkPropertyProposal) ValidateBasic() error {
 		MinDelegationPushout,
 		SlashingPeriod,
 		MaxJailedPercentage,
-		MaxSlashingPercentage:
+		MaxSlashingPercentage,
+		MinCustodyReward,
+		MaxCustodyBufferSize,
+		MaxCustodyTxSize,
+		AbstentionRankDecreaseAmount,
+		MaxAbstention,
+		MinCollectiveBond,
+		MinCollectiveBondingTime,
+		MaxCollectiveOutputs,
+		MinCollectiveClaimPeriod,
+		ValidatorRecoveryBond:
 		return nil
 	default:
 		return ErrInvalidNetworkProperty
@@ -579,5 +590,53 @@ func (m *SetProposalDurationsProposal) ValidateBasic() error {
 			return fmt.Errorf("zero proposal duration is not allowed")
 		}
 	}
+	return nil
+}
+
+func NewResetWholeCouncilorRankProposal(proposer sdk.AccAddress) *ProposalResetWholeCouncilorRank {
+	return &ProposalResetWholeCouncilorRank{
+		Proposer: proposer,
+	}
+}
+
+func (m *ProposalResetWholeCouncilorRank) ProposalType() string {
+	return kiratypes.ProposalTypeResetWholeCouncilorRank
+}
+
+func (m *ProposalResetWholeCouncilorRank) ProposalPermission() PermValue {
+	return PermCreateResetWholeCouncilorRankProposal
+}
+
+func (m *ProposalResetWholeCouncilorRank) VotePermission() PermValue {
+	return PermVoteResetWholeCouncilorRankProposal
+}
+
+// ValidateBasic returns basic validation
+func (m *ProposalResetWholeCouncilorRank) ValidateBasic() error {
+	return nil
+}
+
+func NewJailCouncilorProposal(proposer sdk.AccAddress, description string, councilors []string) *ProposalJailCouncilor {
+	return &ProposalJailCouncilor{
+		Proposer:    proposer,
+		Description: description,
+		Councilors:  councilors,
+	}
+}
+
+func (m *ProposalJailCouncilor) ProposalType() string {
+	return kiratypes.ProposalTypeJailCouncilor
+}
+
+func (m *ProposalJailCouncilor) ProposalPermission() PermValue {
+	return PermCreateJailCouncilorProposal
+}
+
+func (m *ProposalJailCouncilor) VotePermission() PermValue {
+	return PermVoteJailCouncilorProposal
+}
+
+// ValidateBasic returns basic validation
+func (m *ProposalJailCouncilor) ValidateBasic() error {
 	return nil
 }

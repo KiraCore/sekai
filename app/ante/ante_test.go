@@ -26,7 +26,7 @@ func (suite *AnteTestSuite) TestCustomAnteHandlerExecutionFee() {
 	suite.SetupTest(false) // reset
 
 	// set execution fee for set network properties
-	suite.app.CustomGovKeeper.SetExecutionFee(suite.ctx, &govtypes.ExecutionFee{
+	suite.app.CustomGovKeeper.SetExecutionFee(suite.ctx, govtypes.ExecutionFee{
 		TransactionType:   types.MsgTypeSetNetworkProperties,
 		ExecutionFee:      10000,
 		FailureFee:        1000,
@@ -337,7 +337,7 @@ func (suite *AnteTestSuite) TestValidateFeeRangeDecorator() {
 		EnableTokenWhitelist:     true,
 	})
 
-	suite.app.CustomGovKeeper.SetExecutionFee(suite.ctx, &govtypes.ExecutionFee{
+	suite.app.CustomGovKeeper.SetExecutionFee(suite.ctx, govtypes.ExecutionFee{
 		TransactionType:   types.MsgTypeSetNetworkProperties,
 		ExecutionFee:      10000,
 		FailureFee:        1000,
@@ -493,7 +493,7 @@ func (suite *AnteTestSuite) TestPoorNetworkManagementDecorator() {
 		PoorNetworkMaxBankSend:   1000,
 	})
 
-	suite.app.CustomGovKeeper.SetExecutionFee(suite.ctx, &govtypes.ExecutionFee{
+	suite.app.CustomGovKeeper.SetExecutionFee(suite.ctx, govtypes.ExecutionFee{
 		TransactionType:   types.MsgTypeSetNetworkProperties,
 		ExecutionFee:      10000,
 		FailureFee:        1000,
@@ -553,6 +553,7 @@ func (suite *AnteTestSuite) TestPoorNetworkManagementDecorator() {
 						sdk.ZeroDec(),
 						sdk.ZeroInt(),
 						false,
+						false,
 					),
 				}
 				return msgs, privs[0:1], accNums[0:1], []uint64{0}, sdk.NewCoins(sdk.NewInt64Coin("ukex", 100))
@@ -589,7 +590,7 @@ func (suite *AnteTestSuite) TestBlackWhiteTokensCheckDecorator() {
 		PoorNetworkMaxBankSend:   1000,
 	})
 
-	suite.app.CustomGovKeeper.SetExecutionFee(suite.ctx, &govtypes.ExecutionFee{
+	suite.app.CustomGovKeeper.SetExecutionFee(suite.ctx, govtypes.ExecutionFee{
 		TransactionType:   types.MsgTypeSetNetworkProperties,
 		ExecutionFee:      10000,
 		FailureFee:        1000,
@@ -666,7 +667,7 @@ func (suite *AnteTestSuite) TestExecutionFeeRegistrationDecorator() {
 		PoorNetworkMaxBankSend:   1000,
 	})
 
-	suite.app.CustomGovKeeper.SetExecutionFee(suite.ctx, &govtypes.ExecutionFee{
+	suite.app.CustomGovKeeper.SetExecutionFee(suite.ctx, govtypes.ExecutionFee{
 		TransactionType:   types.MsgTypeSetNetworkProperties,
 		ExecutionFee:      10000,
 		FailureFee:        1000,

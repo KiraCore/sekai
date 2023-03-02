@@ -28,4 +28,7 @@ type GovKeeper interface {
 	// proposal related functions
 	GetProposal(ctx sdk.Context, proposalID uint64) (govtypes.Proposal, bool)
 	GetProposalVotes(ctx sdk.Context, proposalID uint64) govtypes.Votes
+
+	// councilor related functions
+	OnCouncilorJail(ctx sdk.Context, addr sdk.AccAddress)
 }

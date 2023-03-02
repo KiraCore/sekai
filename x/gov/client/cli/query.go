@@ -22,6 +22,51 @@ const (
 	flagVoter = "voter"
 )
 
+// NewQueryCmd returns a root CLI command handler for all x/tokens transaction commands.
+func NewQueryCmd() *cobra.Command {
+	queryCmd := &cobra.Command{
+		Use:   types.RouterKey,
+		Short: "query commands for the customgov module",
+	}
+	queryCmd.AddCommand(
+		GetCmdQueryPermissions(),
+		GetCmdQueryNetworkProperties(),
+		GetCmdQueryExecutionFee(),
+		GetCmdQueryAllExecutionFees(),
+		GetCmdQueryPoorNetworkMessages(),
+		GetCmdQueryRole(),
+		GetCmdQueryAllRoles(),
+		GetCmdQueryRolesByAddress(),
+		GetCmdQueryProposals(),
+		GetCmdQueryPolls(),
+		GetCmdQueryPollVotes(),
+		GetCmdQueryCouncilRegistry(),
+		GetCmdQueryProposal(),
+		GetCmdQueryVote(),
+		GetCmdQueryVotes(),
+		GetCmdQueryWhitelistedProposalVoters(),
+		GetCmdQueryProposerVotersCount(),
+		GetCmdQueryIdentityRecord(),
+		GetCmdQueryIdentityRecordByAddress(),
+		GetCmdQueryAllIdentityRecords(),
+		GetCmdQueryIdentityRecordVerifyRequest(),
+		GetCmdQueryIdentityRecordVerifyRequestsByRequester(),
+		GetCmdQueryIdentityRecordVerifyRequestsByApprover(),
+		GetCmdQueryAllIdentityRecordVerifyRequests(),
+		GetCmdQueryAllDataReferenceKeys(),
+		GetCmdQueryDataReference(),
+		GetCmdQueryAllProposalDurations(),
+		GetCmdQueryProposalDuration(),
+		GetCmdQueryCouncilors(),
+		GetCmdQueryNonCouncilors(),
+		GetCmdQueryAddressesByWhitelistedPermission(),
+		GetCmdQueryAddressesByBlacklistedPermission(),
+		GetCmdQueryAddressesByWhitelistedRole(),
+	)
+
+	return queryCmd
+}
+
 // GetCmdQueryPermissions the query delegation command.
 func GetCmdQueryPermissions() *cobra.Command {
 	cmd := &cobra.Command{
@@ -196,6 +241,30 @@ func GetCmdQueryExecutionFee() *cobra.Command {
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 			res, err := queryClient.ExecutionFee(context.Background(), params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+	return cmd
+}
+
+// GetCmdQueryAllExecutionFees query for all execution fees
+func GetCmdQueryAllExecutionFees() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "all-execution-fees",
+		Short: "Query all execution fees",
+		Args:  cobra.MinimumNArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			params := &types.AllExecutionFeesRequest{}
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.AllExecutionFees(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -663,9 +732,9 @@ func GetCmdQueryIdentityRecordByAddress() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "identity-records-by-addr [addr]",
 		Args:  cobra.ExactArgs(1),
-		Short: "Query identity records by owner",
+		Short: "Query identity records by address",
 		Long: strings.TrimSpace(
-			fmt.Sprintf(`Query identity records by owner.
+			fmt.Sprintf(`Query identity records by address.
 
 Example:
 $ %[1]s query gov identity-records-by-addr [addr]
@@ -718,14 +787,14 @@ $ %[1]s query gov identity-records-by-addr [addr]
 // GetCmdQueryAllIdentityRecords implements the command to query all identity records
 func GetCmdQueryAllIdentityRecords() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "all-identity-records",
+		Use:   "identity-records",
 		Args:  cobra.ExactArgs(0),
 		Short: "Query all identity records",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Query all identity records.
 
 Example:
-$ %[1]s query gov all-identity-records
+$ %[1]s query gov identity-records
 `,
 				version.AppName,
 			),
@@ -1099,6 +1168,213 @@ $ %[1]s query gov proposal-duration SetNetworkProperty
 				context.Background(),
 				&types.QueryProposalDuration{
 					ProposalType: args[0],
+				},
+			)
+
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// GetCmdQueryCouncilors - all councilors (waiting or not), including their corresponding statuses,
+// ranks & abstenation counters - add sub-query to search by specific KIRA address
+func GetCmdQueryCouncilors() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "councilors",
+		Args:  cobra.ExactArgs(0),
+		Short: "Query councilors",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query councilors.
+
+Example:
+$ %[1]s query gov councilors
+`,
+				version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			queryClient := types.NewQueryClient(clientCtx)
+
+			res, err := queryClient.QueryCouncilors(
+				context.Background(),
+				&types.QueryCouncilors{},
+			)
+
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// GetCmdQueryNonCouncilors - list all governance members that are NOT Councilors
+func GetCmdQueryNonCouncilors() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "non-councilors",
+		Args:  cobra.ExactArgs(0),
+		Short: "Query all governance members that are NOT Councilors",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query all governance members that are NOT Councilors.
+
+Example:
+$ %[1]s query gov non-councilors
+`,
+				version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			queryClient := types.NewQueryClient(clientCtx)
+
+			res, err := queryClient.QueryNonCouncilors(
+				context.Background(),
+				&types.QueryNonCouncilors{},
+			)
+
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// GetCmdQueryAddressesByWhitelistedPermission - list all KIRA addresses by a specific whitelisted permission (address does NOT have to be a Councilor)
+func GetCmdQueryAddressesByWhitelistedPermission() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "whitelisted-permission-addresses [perm]",
+		Args:  cobra.ExactArgs(1),
+		Short: "Query all KIRA addresses by a specific whitelisted permission",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query all KIRA addresses by a specific whitelisted permission.
+
+Example:
+$ %[1]s query gov whitelisted-permission-addresses [perm]
+`,
+				version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			queryClient := types.NewQueryClient(clientCtx)
+
+			perm, err := strconv.Atoi(args[0])
+			if err != nil {
+				return err
+			}
+
+			res, err := queryClient.QueryAddressesByWhitelistedPermission(
+				context.Background(),
+				&types.QueryAddressesByWhitelistedPermission{
+					Permission: uint32(perm),
+				},
+			)
+
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// GetCmdQueryAddressesByBlacklistedPermission - list all KIRA addresses by a specific blacklisted permission (address does NOT have to be a Councilor)
+func GetCmdQueryAddressesByBlacklistedPermission() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "blacklisted-permission-addresses [perm]",
+		Args:  cobra.ExactArgs(1),
+		Short: "Query all KIRA addresses by a specific blacklisted permission",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query all KIRA addresses by a specific blacklisted permission.
+
+Example:
+$ %[1]s query gov blacklisted-permission-addresses [perm]
+`,
+				version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			queryClient := types.NewQueryClient(clientCtx)
+
+			perm, err := strconv.Atoi(args[0])
+			if err != nil {
+				return err
+			}
+
+			res, err := queryClient.QueryAddressesByBlacklistedPermission(
+				context.Background(),
+				&types.QueryAddressesByBlacklistedPermission{
+					Permission: uint32(perm),
+				},
+			)
+
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// GetCmdQueryAddressesByWhitelistedRole - list all kira addresses by a specific whitelisted role (address does NOT have to be a Councilor)
+func GetCmdQueryAddressesByWhitelistedRole() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "whitelisted-role-addresses [role]",
+		Args:  cobra.ExactArgs(1),
+		Short: "Query all kira addresses by a specific whitelisted role (address does NOT have to be a Councilor)",
+		Long: strings.TrimSpace(
+			fmt.Sprintf(`Query all kira addresses by a specific whitelisted role (address does NOT have to be a Councilor).
+
+Example:
+$ %[1]s query gov whitelisted-role-addresses [role]
+`,
+				version.AppName,
+			),
+		),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			queryClient := types.NewQueryClient(clientCtx)
+
+			role, err := strconv.Atoi(args[0])
+			if err != nil {
+				return err
+			}
+
+			res, err := queryClient.QueryAddressesByWhitelistedRole(
+				context.Background(),
+				&types.QueryAddressesByWhitelistedRole{
+					Role: uint32(role),
 				},
 			)
 

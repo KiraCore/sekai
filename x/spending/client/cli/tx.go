@@ -59,18 +59,13 @@ func GetTxCreateSpendingPoolCmd() *cobra.Command {
 				return fmt.Errorf("invalid claim end: %w", err)
 			}
 
-			token, err := cmd.Flags().GetString(FlagToken)
-			if err != nil {
-				return fmt.Errorf("invalid token: %w", err)
-			}
-
-			rateStr, err := cmd.Flags().GetString(FlagRate)
+			ratesStr, err := cmd.Flags().GetString(FlagRates)
 			if err != nil {
 				return fmt.Errorf("invalid rate: %w", err)
 			}
-			rate, err := sdk.NewDecFromStr(rateStr)
+			rates, err := sdk.ParseDecCoins(ratesStr)
 			if err != nil {
-				return fmt.Errorf("invalid rate: %w", err)
+				return fmt.Errorf("invalid rates: %w", err)
 			}
 
 			voteQuorum, err := cmd.Flags().GetInt32(FlagVoteQuorum)
@@ -114,43 +109,32 @@ func GetTxCreateSpendingPoolCmd() *cobra.Command {
 				ownerAccounts = strings.Split(ownerAccountsStr, ",")
 			}
 
-			beneficiaryRolesStr, err := cmd.Flags().GetString(FlagBeneficiaryRoles)
+			beneficiary, err := parseBeneficiaryRolesAndAccounts(cmd)
 			if err != nil {
-				return fmt.Errorf("invalid beneficiary roles: %w", err)
-			}
-			beneficiaryRoles := []uint64{}
-			if len(beneficiaryRolesStr) > 0 {
-				beneficiaryRoleStrArr := strings.Split(beneficiaryRolesStr, ",")
-				for _, roleStr := range beneficiaryRoleStrArr {
-					role, err := strconv.Atoi(roleStr)
-					if err != nil {
-						return err
-					}
-					beneficiaryRoles = append(beneficiaryRoles, uint64(role))
-				}
+				return err
 			}
 
-			beneficiaryAccountsStr, err := cmd.Flags().GetString(FlagBeneficiaryAccounts)
+			dynamicRate, err := cmd.Flags().GetBool(FlagDynamicRate)
 			if err != nil {
-				return fmt.Errorf("invalid beneficiary accounts: %w", err)
+				return fmt.Errorf("invalid dynamic rate: %w", err)
 			}
-			beneficiaryAccounts := []string{}
-			if len(beneficiaryAccountsStr) > 0 {
-				beneficiaryAccounts = strings.Split(beneficiaryAccountsStr, ",")
+
+			dynamicRatePeriod, err := cmd.Flags().GetUint64(FlagDynamicRatePeriod)
+			if err != nil {
+				return fmt.Errorf("invalid dynamic rate: %w", err)
 			}
 
 			msg := types.NewMsgCreateSpendingPool(
-				name, uint64(claimStart), uint64(claimEnd), token, rate,
+				name, uint64(claimStart), uint64(claimEnd), rates,
 				uint64(voteQuorum), uint64(votePeriod), uint64(voteEnactment),
 				types.PermInfo{
 					OwnerRoles:    ownerRoles,
 					OwnerAccounts: ownerAccounts,
 				},
-				types.PermInfo{
-					OwnerRoles:    beneficiaryRoles,
-					OwnerAccounts: beneficiaryAccounts,
-				},
+				beneficiary,
 				clientCtx.GetFromAddress(),
+				dynamicRate,
+				dynamicRatePeriod,
 			)
 
 			err = msg.ValidateBasic()
@@ -168,15 +152,19 @@ func GetTxCreateSpendingPoolCmd() *cobra.Command {
 	cmd.Flags().String(FlagName, "", "The name of the spending pool.")
 	cmd.Flags().Int32(FlagClaimStart, 0, "The claim start timestamp of the spending pool.")
 	cmd.Flags().Int32(FlagClaimEnd, 0, "The claim end timestamp of the spending pool.")
-	cmd.Flags().String(FlagToken, "", "The reward token of the spending pool.")
-	cmd.Flags().String(FlagRate, "", "reward rate of the spending pool.")
+	cmd.Flags().Uint64(FlagClaimExpiry, 43200, "claim expiry time when the users' rewards cut.")
+	cmd.Flags().String(FlagRates, "", "reward rates of the spending pool.")
 	cmd.Flags().Int32(FlagVoteQuorum, 0, "vote quorum of the spending pool.")
 	cmd.Flags().Int32(FlagVotePeriod, 0, "vote period of the spending pool.")
 	cmd.Flags().Int32(FlagVoteEnactment, 0, "vote enactment period of the spending pool.")
 	cmd.Flags().String(FlagOwnerRoles, "", "owner roles of the spending pool.")
 	cmd.Flags().String(FlagOwnerAccounts, "", "owner accounts of the spending pool.")
 	cmd.Flags().String(FlagBeneficiaryRoles, "", "beneficiary roles of the spending pool.")
+	cmd.Flags().String(FlagBeneficiaryRoleWeights, "", "beneficiary role weights on the spending pool.")
 	cmd.Flags().String(FlagBeneficiaryAccounts, "", "beneficiary accounts of the spending pool.")
+	cmd.Flags().String(FlagBeneficiaryAccountWeights, "", "beneficiary account weights on the spending pool.")
+	cmd.Flags().Bool(FlagDynamicRate, false, "flag to dynamically calculate rates on the spending pool.")
+	cmd.Flags().Uint64(FlagDynamicRatePeriod, 0, "dynamic rate recalculation period on the spending pool.")
 
 	return cmd
 }
@@ -238,34 +226,7 @@ func GetTxRegisterSpendingPoolBeneficiaryCmd() *cobra.Command {
 				return fmt.Errorf("invalid name: %w", err)
 			}
 
-			beneficiaryRolesStr, err := cmd.Flags().GetString(FlagBeneficiaryRoles)
-			if err != nil {
-				return fmt.Errorf("invalid beneficiary roles: %w", err)
-			}
-			beneficiaryRoles := []uint64{}
-			if len(beneficiaryRolesStr) > 0 {
-				beneficiaryRoleStrArr := strings.Split(beneficiaryRolesStr, ",")
-				for _, roleStr := range beneficiaryRoleStrArr {
-					role, err := strconv.Atoi(roleStr)
-					if err != nil {
-						return err
-					}
-					beneficiaryRoles = append(beneficiaryRoles, uint64(role))
-				}
-			}
-			beneficiaryAccountsStr, err := cmd.Flags().GetString(FlagBeneficiaryAccounts)
-			if err != nil {
-				return fmt.Errorf("invalid beneficiary accounts: %w", err)
-			}
-			beneficiaryAccounts := []string{}
-			if len(beneficiaryAccountsStr) > 0 {
-				beneficiaryAccounts = strings.Split(beneficiaryAccountsStr, ",")
-			}
-
-			msg := types.NewMsgRegisterSpendingPoolBeneficiary(name, types.PermInfo{
-				OwnerRoles:    beneficiaryRoles,
-				OwnerAccounts: beneficiaryAccounts,
-			}, clientCtx.GetFromAddress())
+			msg := types.NewMsgRegisterSpendingPoolBeneficiary(name, clientCtx.GetFromAddress())
 
 			err = msg.ValidateBasic()
 			if err != nil {
@@ -280,8 +241,6 @@ func GetTxRegisterSpendingPoolBeneficiaryCmd() *cobra.Command {
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)
 
 	cmd.Flags().String(FlagName, "", "The name of the spending pool.")
-	cmd.Flags().String(FlagBeneficiaryRoles, "", "beneficiary roles of the spending pool.")
-	cmd.Flags().String(FlagBeneficiaryAccounts, "", "beneficiary accounts of the spending pool.")
 
 	return cmd
 }
@@ -351,18 +310,13 @@ func GetTxUpdateSpendingPoolProposalCmd() *cobra.Command {
 				return fmt.Errorf("invalid claim end: %w", err)
 			}
 
-			token, err := cmd.Flags().GetString(FlagToken)
+			ratesStr, err := cmd.Flags().GetString(FlagRates)
 			if err != nil {
-				return fmt.Errorf("invalid token: %w", err)
+				return fmt.Errorf("invalid rates: %w", err)
 			}
-
-			rateStr, err := cmd.Flags().GetString(FlagRate)
+			rates, err := sdk.ParseDecCoins(ratesStr)
 			if err != nil {
-				return fmt.Errorf("invalid rate: %w", err)
-			}
-			rate, err := sdk.NewDecFromStr(rateStr)
-			if err != nil {
-				return fmt.Errorf("invalid rate: %w", err)
+				return fmt.Errorf("invalid rates: %w", err)
 			}
 
 			voteQuorum, err := cmd.Flags().GetInt32(FlagVoteQuorum)
@@ -405,29 +359,19 @@ func GetTxUpdateSpendingPoolProposalCmd() *cobra.Command {
 				ownerAccounts = strings.Split(ownerAccountsStr, ",")
 			}
 
-			beneficiaryRolesStr, err := cmd.Flags().GetString(FlagBeneficiaryRoles)
+			beneficiary, err := parseBeneficiaryRolesAndAccounts(cmd)
 			if err != nil {
-				return fmt.Errorf("invalid beneficiary roles: %w", err)
-			}
-			beneficiaryRoles := []uint64{}
-			if len(beneficiaryRolesStr) > 0 {
-				beneficiaryRoleStrArr := strings.Split(beneficiaryRolesStr, ",")
-				for _, roleStr := range beneficiaryRoleStrArr {
-					role, err := strconv.Atoi(roleStr)
-					if err != nil {
-						return err
-					}
-					beneficiaryRoles = append(beneficiaryRoles, uint64(role))
-				}
+				return err
 			}
 
-			beneficiaryAccountsStr, err := cmd.Flags().GetString(FlagBeneficiaryAccounts)
+			dynamicRate, err := cmd.Flags().GetBool(FlagDynamicRate)
 			if err != nil {
-				return fmt.Errorf("invalid beneficiary accounts: %w", err)
+				return fmt.Errorf("invalid dynamic rate: %w", err)
 			}
-			beneficiaryAccounts := []string{}
-			if len(beneficiaryAccountsStr) > 0 {
-				beneficiaryAccounts = strings.Split(beneficiaryAccountsStr, ",")
+
+			dynamicRatePeriod, err := cmd.Flags().GetUint64(FlagDynamicRatePeriod)
+			if err != nil {
+				return fmt.Errorf("invalid dynamic rate: %w", err)
 			}
 
 			msg, err := govtypes.NewMsgSubmitProposal(
@@ -435,16 +379,15 @@ func GetTxUpdateSpendingPoolProposalCmd() *cobra.Command {
 				title,
 				description,
 				types.NewUpdateSpendingPoolProposal(
-					name, uint64(claimStart), uint64(claimEnd), token, rate,
+					name, uint64(claimStart), uint64(claimEnd), rates,
 					uint64(voteQuorum), uint64(votePeriod), uint64(voteEnactment),
 					types.PermInfo{
 						OwnerRoles:    ownerRoles,
 						OwnerAccounts: ownerAccounts,
 					},
-					types.PermInfo{
-						OwnerRoles:    beneficiaryRoles,
-						OwnerAccounts: beneficiaryAccounts,
-					},
+					beneficiary,
+					dynamicRate,
+					dynamicRatePeriod,
 				),
 			)
 			if err != nil {
@@ -463,8 +406,7 @@ func GetTxUpdateSpendingPoolProposalCmd() *cobra.Command {
 	cmd.Flags().String(FlagName, "", "The name of the spending pool.")
 	cmd.Flags().Int32(FlagClaimStart, 0, "The claim start timestamp of the spending pool.")
 	cmd.Flags().Int32(FlagClaimEnd, 0, "The claim end timestamp of the spending pool.")
-	cmd.Flags().String(FlagToken, "", "The reward token of the spending pool.")
-	cmd.Flags().String(FlagRate, "", "reward rate of the spending pool.")
+	cmd.Flags().String(FlagRates, "", "reward rates of the spending pool.")
 	cmd.Flags().Int32(FlagVoteQuorum, 0, "vote quorum of the spending pool.")
 	cmd.Flags().Int32(FlagVotePeriod, 0, "vote period of the spending pool.")
 	cmd.Flags().Int32(FlagVoteEnactment, 0, "vote enactment period of the spending pool.")
@@ -472,6 +414,10 @@ func GetTxUpdateSpendingPoolProposalCmd() *cobra.Command {
 	cmd.Flags().String(FlagOwnerAccounts, "", "owner accounts of the spending pool.")
 	cmd.Flags().String(FlagBeneficiaryRoles, "", "beneficiary roles of the spending pool.")
 	cmd.Flags().String(FlagBeneficiaryAccounts, "", "beneficiary accounts of the spending pool.")
+	cmd.Flags().String(FlagBeneficiaryRoleWeights, "", "beneficiary role weights on the spending pool.")
+	cmd.Flags().String(FlagBeneficiaryAccountWeights, "", "beneficiary account weights on the spending pool.")
+	cmd.Flags().String(FlagDynamicRate, "", "flag to dynamically calculate rates on the spending pool.")
+	cmd.Flags().String(FlagDynamicRatePeriod, "", "dynamic rate recalculation period on the spending pool.")
 
 	flags.AddTxFlagsToCmd(cmd)
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)
@@ -600,4 +546,69 @@ func GetTxSpendingPoolWithdrawProposalCmd() *cobra.Command {
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
+}
+
+func parseBeneficiaryRolesAndAccounts(cmd *cobra.Command) (types.WeightedPermInfo, error) {
+
+	beneficiaryRolesStr, err := cmd.Flags().GetString(FlagBeneficiaryRoles)
+	if err != nil {
+		return types.WeightedPermInfo{}, fmt.Errorf("invalid beneficiary roles: %w", err)
+	}
+	beneficiaryRoleWeightsStr, err := cmd.Flags().GetString(FlagBeneficiaryRoleWeights)
+	if err != nil {
+		return types.WeightedPermInfo{}, fmt.Errorf("invalid beneficiary role weights: %w", err)
+	}
+	beneficiaryRoles := []types.WeightedRole{}
+	if len(beneficiaryRolesStr) > 0 {
+		beneficiaryRoleStrArr := strings.Split(beneficiaryRolesStr, ",")
+		beneficiaryRoleWeightStrArr := strings.Split(beneficiaryRoleWeightsStr, ",")
+		if len(beneficiaryRoleStrArr) != len(beneficiaryRoleWeightStrArr) {
+			return types.WeightedPermInfo{}, fmt.Errorf("beneficiary role and weight count mismatch")
+		}
+		for index, roleStr := range beneficiaryRoleStrArr {
+			role, err := strconv.Atoi(roleStr)
+			if err != nil {
+				return types.WeightedPermInfo{}, err
+			}
+			weight, err := strconv.Atoi(beneficiaryRoleWeightStrArr[index])
+			if err != nil {
+				return types.WeightedPermInfo{}, err
+			}
+			beneficiaryRoles = append(beneficiaryRoles, types.WeightedRole{
+				Role:   uint64(role),
+				Weight: uint64(weight),
+			})
+		}
+	}
+
+	beneficiaryAccountsStr, err := cmd.Flags().GetString(FlagBeneficiaryAccounts)
+	if err != nil {
+		return types.WeightedPermInfo{}, fmt.Errorf("invalid beneficiary accounts: %w", err)
+	}
+	beneficiaryAccountWeightsStr, err := cmd.Flags().GetString(FlagBeneficiaryAccountWeights)
+	if err != nil {
+		return types.WeightedPermInfo{}, fmt.Errorf("invalid beneficiary accounts: %w", err)
+	}
+	beneficiaryAccounts := []types.WeightedAccount{}
+	if len(beneficiaryAccountsStr) > 0 {
+		beneficiaryAccountStrArr := strings.Split(beneficiaryAccountsStr, ",")
+		beneficiaryAccountWeightStrArr := strings.Split(beneficiaryAccountWeightsStr, ",")
+		if len(beneficiaryAccountStrArr) != len(beneficiaryAccountWeightStrArr) {
+			return types.WeightedPermInfo{}, fmt.Errorf("beneficiary account and weight count mismatch")
+		}
+		for index, account := range beneficiaryAccountStrArr {
+			weight, err := strconv.Atoi(beneficiaryAccountWeightStrArr[index])
+			if err != nil {
+				return types.WeightedPermInfo{}, err
+			}
+			beneficiaryAccounts = append(beneficiaryAccounts, types.WeightedAccount{
+				Account: account,
+				Weight:  uint64(weight),
+			})
+		}
+	}
+	return types.WeightedPermInfo{
+		Roles:    beneficiaryRoles,
+		Accounts: beneficiaryAccounts,
+	}, nil
 }

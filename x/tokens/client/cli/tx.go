@@ -31,6 +31,7 @@ const (
 	FlagTokens      = "tokens"
 	FlagTitle       = "title"
 	FlagDescription = "description"
+	FlagInvalidated = "invalidated"
 )
 
 // NewTxCmd returns a root CLI command handler for all x/bank transaction commands.
@@ -94,6 +95,11 @@ func GetTxUpsertTokenAliasCmd() *cobra.Command {
 				}
 			}
 
+			isInvalidated, err := cmd.Flags().GetBool(FlagInvalidated)
+			if err != nil {
+				return fmt.Errorf("invalid invalidated flag: %w", err)
+			}
+
 			msg := types.NewMsgUpsertTokenAlias(
 				clientCtx.FromAddress,
 				symbol,
@@ -101,6 +107,7 @@ func GetTxUpsertTokenAliasCmd() *cobra.Command {
 				icon,
 				decimals,
 				denoms,
+				isInvalidated,
 			)
 
 			err = msg.ValidateBasic()
@@ -117,6 +124,7 @@ func GetTxUpsertTokenAliasCmd() *cobra.Command {
 	cmd.Flags().String(FlagIcon, "", "Graphical Symbol (url link to graphics)")
 	cmd.Flags().Uint32(FlagDecimals, 6, "Integer number of max decimals")
 	cmd.Flags().String(FlagDenoms, "ukex,mkex", "An array of token denoms to be aliased")
+	cmd.Flags().Bool(FlagInvalidated, false, "Flag to show token alias is invalidated or not")
 
 	flags.AddTxFlagsToCmd(cmd)
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)
@@ -157,6 +165,11 @@ func GetTxProposalUpsertTokenAliasCmd() *cobra.Command {
 				return fmt.Errorf("invalid denoms: %w", err)
 			}
 
+			isInvalidated, err := cmd.Flags().GetBool(FlagInvalidated)
+			if err != nil {
+				return fmt.Errorf("invalid invalidated flag: %w", err)
+			}
+
 			title, err := cmd.Flags().GetString(FlagTitle)
 			if err != nil {
 				return fmt.Errorf("invalid title: %w", err)
@@ -177,6 +190,7 @@ func GetTxProposalUpsertTokenAliasCmd() *cobra.Command {
 					icon,
 					decimals,
 					strings.Split(denoms, ","),
+					isInvalidated,
 				),
 			)
 			if err != nil {
@@ -197,6 +211,7 @@ func GetTxProposalUpsertTokenAliasCmd() *cobra.Command {
 	cmd.MarkFlagRequired(FlagDecimals)
 	cmd.Flags().String(FlagDenoms, "ukex,mkex", "An array of token denoms to be aliased")
 	cmd.MarkFlagRequired(FlagDenoms)
+	cmd.Flags().Bool(FlagInvalidated, false, "Flag to show token alias is invalidated or not")
 
 	cmd.Flags().String(FlagTitle, "", "The title of the proposal.")
 	cmd.MarkFlagRequired(FlagTitle)
@@ -275,6 +290,11 @@ func GetTxProposalUpsertTokenRatesCmd() *cobra.Command {
 				return fmt.Errorf("invalid stake min: %s", stakeMinStr)
 			}
 
+			isInvalidated, err := cmd.Flags().GetBool(FlagInvalidated)
+			if err != nil {
+				return fmt.Errorf("invalid invalidated flag: %w", err)
+			}
+
 			msg, err := govtypes.NewMsgSubmitProposal(
 				clientCtx.FromAddress,
 				title,
@@ -286,6 +306,7 @@ func GetTxProposalUpsertTokenRatesCmd() *cobra.Command {
 					stakeCap,
 					stakeMin,
 					stakeToken,
+					isInvalidated,
 				),
 			)
 			if err != nil {
@@ -314,6 +335,7 @@ func GetTxProposalUpsertTokenRatesCmd() *cobra.Command {
 	cmd.Flags().String(FlagStakeCap, "0.1", "rewards to be allocated for the token.")
 	cmd.Flags().String(FlagStakeMin, "1", "min amount to stake at a time.")
 	cmd.Flags().Bool(FlagStakeToken, false, "flag of if staking token or not.")
+	cmd.Flags().Bool(FlagInvalidated, false, "Flag to show token rate is invalidated or not")
 
 	flags.AddTxFlagsToCmd(cmd)
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)
@@ -377,6 +399,11 @@ func GetTxUpsertTokenRateCmd() *cobra.Command {
 				return fmt.Errorf("invalid stake min: %s", stakeMinStr)
 			}
 
+			isInvalidated, err := cmd.Flags().GetBool(FlagInvalidated)
+			if err != nil {
+				return fmt.Errorf("invalid invalidated flag: %w", err)
+			}
+
 			msg := types.NewMsgUpsertTokenRate(
 				clientCtx.FromAddress,
 				denom,
@@ -385,6 +412,7 @@ func GetTxUpsertTokenRateCmd() *cobra.Command {
 				stakeCap,
 				stakeMin,
 				stakeToken,
+				isInvalidated,
 			)
 
 			err = msg.ValidateBasic()
@@ -405,6 +433,7 @@ func GetTxUpsertTokenRateCmd() *cobra.Command {
 	cmd.Flags().String(FlagStakeCap, "0.1", "rewards to be allocated for the token.")
 	cmd.Flags().String(FlagStakeMin, "1", "min amount to stake at a time.")
 	cmd.Flags().Bool(FlagStakeToken, false, "flag of if staking token or not.")
+	cmd.Flags().Bool(FlagInvalidated, false, "Flag to show token rate is invalidated or not")
 
 	flags.AddTxFlagsToCmd(cmd)
 	_ = cmd.MarkFlagRequired(flags.FlagFrom)

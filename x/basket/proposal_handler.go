@@ -22,7 +22,7 @@ func (a ApplyCreateBasketProposalHandler) ProposalType() string {
 	return kiratypes.ProposalTypeCreateBasket
 }
 
-func (a ApplyCreateBasketProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal govtypes.Content, slash uint64) error {
+func (a ApplyCreateBasketProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal govtypes.Content, slash sdk.Dec) error {
 	p := proposal.(*types.ProposalCreateBasket)
 	return a.keeper.CreateBasket(ctx, p.Basket)
 }
@@ -41,7 +41,7 @@ func (a ApplyEditBasketProposalHandler) ProposalType() string {
 	return kiratypes.ProposalTypeEditBasket
 }
 
-func (a ApplyEditBasketProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal govtypes.Content, slash uint64) error {
+func (a ApplyEditBasketProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal govtypes.Content, slash sdk.Dec) error {
 	p := proposal.(*types.ProposalEditBasket)
 
 	return a.keeper.EditBasket(ctx, p.Basket)
@@ -61,7 +61,7 @@ func (a ApplyBasketWithdrawSurplusProposalHandler) ProposalType() string {
 	return kiratypes.ProposalTypeBasketWithdrawSurplus
 }
 
-func (a ApplyBasketWithdrawSurplusProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal govtypes.Content, slash uint64) error {
+func (a ApplyBasketWithdrawSurplusProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal govtypes.Content, slash sdk.Dec) error {
 	p := proposal.(*types.ProposalBasketWithdrawSurplus)
 	return a.keeper.BasketWithdrawSurplus(ctx, *p)
 }

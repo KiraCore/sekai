@@ -3,15 +3,16 @@ package cli
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"strconv"
+	"strings"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
-	"io/ioutil"
-	"strconv"
-	"strings"
 
 	"github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/staking/client/cli"
@@ -25,6 +26,7 @@ const (
 	FlagMinTxFee          = "min_tx_fee"
 	FlagMaxTxFee          = "max_tx_fee"
 	FlagMinValidators     = "min_validators"
+	FlagMinCustodyReward  = "min_custody_reward"
 	FlagTxType            = "transaction_type"
 	FlagExecutionFee      = "execution_fee"
 	FlagFailureFee        = "failure_fee"
@@ -42,6 +44,10 @@ const (
 	FlagTip               = "tip"
 	FlagApprove           = "approve"
 	FlagSlash             = "slash"
+	FlagUsername          = "username"
+	FlagSocial            = "social"
+	FlagContact           = "contact"
+	FlagAvatar            = "avatar"
 	FlagPollRoles         = "poll-roles"
 	FlagPollOptions       = "poll-options"
 	FlagPollCount         = "poll-count"
@@ -142,6 +148,8 @@ func NewTxProposalCmds() *cobra.Command {
 	proposalCmd.AddCommand(GetTxProposalSetPoorNetworkMessages())
 	proposalCmd.AddCommand(GetTxProposalUpsertDataRegistry())
 	proposalCmd.AddCommand(GetTxProposalSetProposalDurations())
+	proposalCmd.AddCommand(GetTxProposalResetWholeCouncilorRankCmd())
+	proposalCmd.AddCommand(GetTxProposalJailCouncilorCmd())
 
 	proposalCmd.AddCommand(accountProposalCmd)
 	proposalCmd.AddCommand(roleProposalCmd)
@@ -200,7 +208,12 @@ func NewTxCouncilorCmds() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	councilor.AddCommand(GetTxClaimCouncilorSeatCmd())
+	councilor.AddCommand(
+		GetTxClaimCouncilorSeatCmd(),
+		GetTxCouncilorPauseCmd(),
+		GetTxCouncilorUnpauseCmd(),
+		GetTxCouncilorActivateCmd(),
+	)
 
 	return councilor
 }
@@ -374,6 +387,10 @@ func NewTxSetNetworkProperties() *cobra.Command {
 			if err != nil {
 				return fmt.Errorf("invalid min validators")
 			}
+			minCustodyReward, err := cmd.Flags().GetUint64(FlagMinCustodyReward)
+			if err != nil {
+				return fmt.Errorf("invalid min custody reward")
+			}
 
 			// TODO: should set more by flags
 			msg := types.NewMsgSetNetworkProperties(
@@ -386,9 +403,10 @@ func NewTxSetNetworkProperties() *cobra.Command {
 					ProposalEnactmentTime:       300, // 5min
 					EnableForeignFeePayments:    true,
 					MischanceRankDecreaseAmount: 10,
-					InactiveRankDecreasePercent: 50,      // 50%
-					PoorNetworkMaxBankSend:      1000000, // 1M ukex
+					InactiveRankDecreasePercent: sdk.NewDecWithPrec(50, 2), // 50%
+					PoorNetworkMaxBankSend:      1000000,                   // 1M ukex
 					MinValidators:               minValidators,
+					MinCustodyReward:            minCustodyReward,
 				},
 			)
 
@@ -398,6 +416,7 @@ func NewTxSetNetworkProperties() *cobra.Command {
 	cmd.Flags().Uint64(FlagMinTxFee, 1, "min tx fee")
 	cmd.Flags().Uint64(FlagMaxTxFee, 10000, "max tx fee")
 	cmd.Flags().Uint64(FlagMinValidators, 2, "min validators")
+	cmd.Flags().Uint64(FlagMinCustodyReward, 200, "min custody reward")
 	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
 
@@ -782,9 +801,12 @@ func GetTxProposalSetNetworkProperty() *cobra.Command {
 			}
 
 			value := types.NetworkPropertyValue{}
-			if property == int32(types.UniqueIdentityKeys) {
+			switch types.NetworkProperty(property) {
+			case types.UniqueIdentityKeys:
 				value.StrValue = args[1]
-			} else {
+			case types.ValidatorsFeeShare:
+				value.StrValue = args[1]
+			default:
 				numVal, err := strconv.Atoi(args[1])
 				if err != nil {
 					return fmt.Errorf("invalid network property value: %w", err)
@@ -1253,7 +1275,11 @@ func GetTxVoteProposal() *cobra.Command {
 				return fmt.Errorf("invalid vote option: %w", err)
 			}
 
-			slash, err := cmd.Flags().GetUint64(FlagSlash)
+			slashStr, err := cmd.Flags().GetString(FlagSlash)
+			if err != nil {
+				return err
+			}
+			slash, err := sdk.NewDecFromStr(slashStr)
 			if err != nil {
 				return err
 			}
@@ -1271,7 +1297,7 @@ func GetTxVoteProposal() *cobra.Command {
 
 	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
-	cmd.Flags().Uint64(FlagSlash, 0, "slash value on the proposal")
+	cmd.Flags().String(FlagSlash, "0.01", "slash value on the proposal")
 
 	return cmd
 }
@@ -1309,16 +1335,20 @@ func GetTxClaimCouncilorSeatCmd() *cobra.Command {
 			}
 
 			moniker, _ := cmd.Flags().GetString(FlagMoniker)
-			address, _ := cmd.Flags().GetString(FlagAddress)
-
-			bech32, err := sdk.AccAddressFromBech32(address)
-			if err != nil {
-				return err
-			}
+			username, _ := cmd.Flags().GetString(FlagUsername)
+			description, _ := cmd.Flags().GetString(FlagDescription)
+			social, _ := cmd.Flags().GetString(FlagSocial)
+			contact, _ := cmd.Flags().GetString(FlagContact)
+			avatar, _ := cmd.Flags().GetString(FlagAvatar)
 
 			msg := types.NewMsgClaimCouncilor(
+				clientCtx.FromAddress,
 				moniker,
-				bech32,
+				username,
+				description,
+				social,
+				contact,
+				avatar,
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
@@ -1327,9 +1357,89 @@ func GetTxClaimCouncilorSeatCmd() *cobra.Command {
 
 	flags.AddTxFlagsToCmd(cmd)
 
-	cmd.Flags().String(FlagMoniker, "", "the Moniker")
 	cmd.Flags().String(FlagAddress, "", "the address")
+	cmd.Flags().String(FlagMoniker, "", "the Moniker")
+	cmd.Flags().String(FlagUsername, "", "the Username")
+	cmd.Flags().String(FlagDescription, "", "the description")
+	cmd.Flags().String(FlagSocial, "", "the social")
+	cmd.Flags().String(FlagContact, "", "the contact")
+	cmd.Flags().String(FlagAvatar, "", "the avatar")
 
+	cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+// CouncilorPause - signal to the network that Councilor will NOT be present for a prolonged period of time
+func GetTxCouncilorPauseCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "pause",
+		Short: "Pause councilor",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgCouncilorPause(
+				clientCtx.GetFromAddress(),
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+// CouncilorUnpause - signal to the network that Councilor wishes to regain voting ability after planned absence
+func GetTxCouncilorUnpauseCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "unpause",
+		Short: "Unpause councilor",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgCouncilorUnpause(
+				clientCtx.GetFromAddress(),
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+// CouncilorActivate - signal to the network that Councilor wishes to regain voting ability after planned absence
+func GetTxCouncilorActivateCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "activate",
+		Short: "Activate councilor",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgCouncilorActivate(
+				clientCtx.GetFromAddress(),
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
@@ -2118,6 +2228,98 @@ func parseIdInfoJSON(fs *pflag.FlagSet) ([]types.IdentityInfoEntry, error) {
 	}
 
 	return types.WrapInfos(infos), nil
+}
+
+// GetTxProposalResetWholeCouncilorRankCmd implement cli command for ProposalResetWholeCouncilorRank
+func GetTxProposalResetWholeCouncilorRankCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "proposal-reset-whole-councilor-rank",
+		Short: "Create a proposal to reset whole councilor rank",
+		Args:  cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+			title, err := cmd.Flags().GetString(FlagTitle)
+			if err != nil {
+				return fmt.Errorf("invalid title: %w", err)
+			}
+			description, err := cmd.Flags().GetString(FlagDescription)
+			if err != nil {
+				return fmt.Errorf("invalid description: %w", err)
+			}
+
+			msg, err := types.NewMsgSubmitProposal(
+				clientCtx.FromAddress,
+				title,
+				description,
+				types.NewResetWholeCouncilorRankProposal(clientCtx.FromAddress),
+			)
+			if err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	cmd.Flags().String(FlagTitle, "", "The title of the proposal.")
+	cmd.MarkFlagRequired(FlagTitle)
+	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
+	cmd.MarkFlagRequired(FlagDescription)
+
+	flags.AddTxFlagsToCmd(cmd)
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+// GetTxProposalJailCouncilorCmd implement cli command for ProposalJailCouncilor
+func GetTxProposalJailCouncilorCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "proposal-jail-councilor [councilors]",
+		Short: "Create a proposal to jail councilors",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+			title, err := cmd.Flags().GetString(FlagTitle)
+			if err != nil {
+				return fmt.Errorf("invalid title: %w", err)
+			}
+			description, err := cmd.Flags().GetString(FlagDescription)
+			if err != nil {
+				return fmt.Errorf("invalid description: %w", err)
+			}
+
+			councilors := strings.Split(args[0], ",")
+
+			msg, err := types.NewMsgSubmitProposal(
+				clientCtx.FromAddress,
+				title,
+				description,
+				types.NewJailCouncilorProposal(clientCtx.FromAddress, description, councilors),
+			)
+			if err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	cmd.Flags().String(FlagTitle, "", "The title of the proposal.")
+	cmd.MarkFlagRequired(FlagTitle)
+	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
+	cmd.MarkFlagRequired(FlagDescription)
+
+	flags.AddTxFlagsToCmd(cmd)
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
 }
 
 // convertAsPermValues convert array of int32 to PermValue array.

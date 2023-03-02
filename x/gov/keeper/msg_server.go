@@ -3,13 +3,15 @@ package keeper
 import (
 	"context"
 	"fmt"
-	"github.com/KiraCore/sekai/x/gov/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/errors"
-	"golang.org/x/exp/utf8string"
 	"sort"
 	"strconv"
 	"time"
+
+	"github.com/KiraCore/sekai/x/gov/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/errors"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"golang.org/x/exp/utf8string"
 )
 
 type msgServer struct {
@@ -54,6 +56,9 @@ func (k msgServer) SubmitProposal(goCtx context.Context, msg *types.MsgSubmitPro
 		return nil, err
 	}
 
+	// call councilor rank update function
+	k.keeper.OnCouncilorAct(ctx, msg.Proposer)
+
 	cacheCtx, _ := ctx.CacheContext()
 	router := k.keeper.GetProposalRouter()
 	proposal, found := k.keeper.GetProposal(cacheCtx, proposalID)
@@ -61,7 +66,7 @@ func (k msgServer) SubmitProposal(goCtx context.Context, msg *types.MsgSubmitPro
 		return nil, types.ErrProposalDoesNotExist
 	}
 
-	err = router.ApplyProposal(cacheCtx, proposalID, proposal.GetContent(), 0)
+	err = router.ApplyProposal(cacheCtx, proposalID, proposal.GetContent(), sdk.ZeroDec())
 	if err != nil {
 		return nil, err
 	}
@@ -113,6 +118,11 @@ func (k msgServer) VoteProposal(
 		if !isAllowed {
 			return nil, errors.Wrap(types.ErrNotEnoughPermissions, content.VotePermission().String())
 		}
+	}
+
+	// call councilor rank update function when it's the first vote
+	if _, found := k.keeper.GetVote(ctx, msg.ProposalId, msg.Voter); !found {
+		k.keeper.OnCouncilorAct(ctx, msg.Voter)
 	}
 
 	vote := types.NewVote(msg.ProposalId, msg.Voter, msg.Option, msg.Slash)
@@ -676,7 +686,7 @@ func (k msgServer) SetExecutionFee(
 		return nil, errors.Wrap(types.ErrNotEnoughPermissions, "PermChangeTxFee")
 	}
 
-	k.keeper.SetExecutionFee(ctx, &types.ExecutionFee{
+	k.keeper.SetExecutionFee(ctx, types.ExecutionFee{
 		TransactionType:   msg.TransactionType,
 		ExecutionFee:      msg.ExecutionFee,
 		FailureFee:        msg.FailureFee,
@@ -708,9 +718,57 @@ func (k msgServer) ClaimCouncilor(
 		return nil, errors.Wrap(types.ErrNotEnoughPermissions, "PermClaimCouncilor")
 	}
 
-	councilor := types.NewCouncilor(msg.Moniker, msg.Address)
-
+	councilor := types.NewCouncilor(msg.Address, types.CouncilorActive)
 	k.keeper.SaveCouncilor(ctx, councilor)
+
+	identityInfo := []types.IdentityInfoEntry{}
+	if msg.Moniker != "" {
+		identityInfo = append(identityInfo, types.IdentityInfoEntry{
+			Key:  "moniker",
+			Info: msg.Moniker,
+		})
+	}
+
+	if msg.Username != "" {
+		identityInfo = append(identityInfo, types.IdentityInfoEntry{
+			Key:  "username",
+			Info: msg.Username,
+		})
+	}
+
+	if msg.Description != "" {
+		identityInfo = append(identityInfo, types.IdentityInfoEntry{
+			Key:  "description",
+			Info: msg.Description,
+		})
+	}
+
+	if msg.Social != "" {
+		identityInfo = append(identityInfo, types.IdentityInfoEntry{
+			Key:  "social",
+			Info: msg.Social,
+		})
+	}
+
+	if msg.Contact != "" {
+		identityInfo = append(identityInfo, types.IdentityInfoEntry{
+			Key:  "contact",
+			Info: msg.Contact,
+		})
+	}
+
+	if msg.Avatar != "" {
+		identityInfo = append(identityInfo, types.IdentityInfoEntry{
+			Key:  "avatar",
+			Info: msg.Avatar,
+		})
+	}
+
+	err := k.keeper.RegisterIdentityRecords(ctx, msg.Address, identityInfo)
+	if err != nil {
+		return nil, err
+	}
+
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
 			types.EventTypeClaimCouncilor,
@@ -718,6 +776,100 @@ func (k msgServer) ClaimCouncilor(
 		),
 	)
 	return &types.MsgClaimCouncilorResponse{}, nil
+}
+
+// CouncilorPause - signal to the network that Councilor will NOT be present for a prolonged period of time
+func (k msgServer) CouncilorPause(
+	goCtx context.Context,
+	msg *types.MsgCouncilorPause,
+) (*types.MsgCouncilorPauseResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return nil, err
+	}
+
+	councilor, found := k.keeper.GetCouncilor(ctx, sender)
+	if !found {
+		return nil, types.ErrCouncilorNotFound
+	}
+
+	// cannot be paused if not jailed already
+	if councilor.Status == types.CouncilorJailed {
+		return nil, sdkerrors.Wrap(types.ErrCouncilorJailed, "Can NOT pause jailed councilor")
+	}
+
+	// cannot be paused if not inactive already
+	if councilor.Status == types.CouncilorInactive {
+		return nil, sdkerrors.Wrap(types.ErrCouncilorInactivated, "Can NOT pause inactivated councilor")
+	}
+
+	// cannot be paused if not paused already
+	if councilor.Status == types.CouncilorPaused {
+		return nil, sdkerrors.Wrap(types.ErrCouncilorPaused, "Can NOT pause already paused councilor")
+	}
+
+	councilor.Status = types.CouncilorPaused
+	k.keeper.SaveCouncilor(ctx, councilor)
+	return &types.MsgCouncilorPauseResponse{}, nil
+}
+
+// CouncilorUnpause - signal to the network that Councilor wishes to regain voting ability after planned absence
+func (k msgServer) CouncilorUnpause(
+	goCtx context.Context,
+	msg *types.MsgCouncilorUnpause,
+) (*types.MsgCouncilorUnpauseResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return nil, err
+	}
+
+	councilor, found := k.keeper.GetCouncilor(ctx, sender)
+	if !found {
+		return nil, types.ErrCouncilorNotFound
+	}
+
+	// cannot be paused if not paused already
+	if councilor.Status != types.CouncilorPaused {
+		return nil, sdkerrors.Wrap(types.ErrCouncilorNotPaused, "Can NOT unpause not paused councilor")
+	}
+
+	councilor.Status = types.CouncilorActive
+	k.keeper.SaveCouncilor(ctx, councilor)
+
+	return &types.MsgCouncilorUnpauseResponse{}, nil
+}
+
+// CouncilorActivate - signal to the network that Councilor wishes to regain voting ability after planned absence
+func (k msgServer) CouncilorActivate(
+	goCtx context.Context,
+	msg *types.MsgCouncilorActivate,
+) (*types.MsgCouncilorActivateResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	sender, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return nil, err
+	}
+
+	councilor, found := k.keeper.GetCouncilor(ctx, sender)
+	if !found {
+		return nil, types.ErrCouncilorNotFound
+	}
+
+	// cannot be activated if not inactive already
+	if councilor.Status != types.CouncilorInactive {
+		return nil, sdkerrors.Wrap(types.ErrCouncilorNotInactivated, "Can NOT activate NOT inactive councilor")
+	}
+
+	councilor.Status = types.CouncilorActive
+	councilor.AbstentionCounter = 0
+	k.keeper.SaveCouncilor(ctx, councilor)
+
+	return &types.MsgCouncilorActivateResponse{}, nil
 }
 
 func intersection(first, second []uint64) []uint64 {

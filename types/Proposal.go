@@ -14,6 +14,8 @@ const (
 	ProposalTypeSpendingPoolWithdraw               = "SpendingPoolWithdrawProposal"
 	ProposalTypeUpsertUBI                          = "UpsertUBIProposal"
 	ProposalTypeRemoveUBI                          = "RemoveUBIProposal"
+	ProposalTypeResetWholeCouncilorRank            = "ResetWholeCouncilorRank"
+	ProposalTypeJailCouncilor                      = "JailCouncilor"
 	AssignPermissionProposalType                   = "AssignPermission"
 	WhitelistAccountPermissionProposalType         = "WhitelistAccountPermission"
 	BlacklistAccountPermissionProposalType         = "BlacklistAccountPermission"
@@ -35,6 +37,10 @@ const (
 	ProposalTypeCreateBasket          = "CreateBasket"
 	ProposalTypeEditBasket            = "EditBasket"
 	ProposalTypeBasketWithdrawSurplus = "BasketWithdrawSurplus"
+
+	ProposalTypeCollectiveSendDonation = "CollectiveSendDonation"
+	ProposalTypeCollectiveUpdate       = "CollectiveUpdate"
+	ProposalTypeCollectiveRemove       = "CollectiveRemove"
 )
 
 var AllProposalTypes []string = []string{
@@ -46,6 +52,7 @@ var AllProposalTypes []string = []string{
 	ProposalTypeUnjailValidator,
 	ProposalTypeResetWholeValidatorRank,
 	ProposalTypeSlashValidator,
+	ProposalTypeResetWholeCouncilorRank,
 	WhitelistAccountPermissionProposalType,
 	BlacklistAccountPermissionProposalType,
 	RemoveWhitelistedAccountPermissionProposalType,

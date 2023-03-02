@@ -32,12 +32,12 @@ message MsgCreateSpendingPool {
   // claim-start & claim-end - defines the exact time period (Unix timestamps) between which tokens can be claimed from the pool, allowing for a precise funds distribution.
   uint64 claim_start = 2;
   uint64 claim_end = 3;
-  string token = 4; // name of the token that can be distributed.
+  uint64 claim_expiry = 4;
   // rate of distribution in the smallest token denomination per 1 second (this value can be a float number, smaller than actual denomination)
-  string rate = 5 [
-    (gogoproto.moretags)   = "yaml:\"rate\"",
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
-    (gogoproto.nullable)   = false
+  repeated string rates = 5 [
+    (gogoproto.moretags) = "yaml:\"rates\"",
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.DecCoin",
+    (gogoproto.nullable) = false
   ];
   // pool specific % of owner accounts that must vote YES or NO for any of the pool proposals to be valid.
   uint64 vote_quorum = 6; // percentage, # default: 51%
@@ -48,8 +48,10 @@ message MsgCreateSpendingPool {
   // defines a list of accounts/roles controlling the spending pool via “governance-like” proposals
   PermInfo owners = 9 [ (gogoproto.nullable) = false ];
   // defines set of accounts/roles to which funds can be distributed
-  PermInfo beneficiaries = 10 [ (gogoproto.nullable) = false ];
+  WeightedPermInfo beneficiaries = 10 [ (gogoproto.nullable) = false ];
   string sender = 11;
+  bool dynamic_rate = 12;
+  uint64 dynamic_rate_period = 13;
 }
 message MsgCreateSpendingPoolResponse {}
 
@@ -66,9 +68,6 @@ message MsgDepositSpendingPoolResponse {}
 message MsgRegisterSpendingPoolBeneficiary {
   string sender = 1;
   string pool_name = 2;
-  PermInfo beneficiary = 3 [
-    (gogoproto.nullable) = false
-  ];
 }
 message MsgRegisterSpendingPoolBeneficiaryResponse {}
 

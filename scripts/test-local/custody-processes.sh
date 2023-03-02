@@ -43,189 +43,372 @@ sendTokens validator "$ACCOUNT3_ADDRESS" 1000000000000 ukex 100 ukex
 sendTokens validator "$ACCOUNT4_ADDRESS" 1000000000000 ukex 100 ukex
 sendTokens validator "$ACCOUNT5_ADDRESS" 1000000000000 ukex 100 ukex
 
-# Send tokens without enabled custodians and password protection
-TESTER5_BALANCE_EXPECTED=1000000000007
-custodySendTokens tester1 tester5 7 ukex 150 ukex $PASSWORD
-TESTER5_BALANCE_REAL=$(showBalance tester5 ukex)
+# TEST 1
+# Send tokens with disabled custodians and disabled password protection --->
 
-[ "$TESTER5_BALANCE_EXPECTED" != "$TESTER5_BALANCE_REAL" ] && echoErr "ERROR: Send tokens without enabled custodians: Expected tester5 account balance to be '$TESTER5_BALANCE_EXPECTED', but got '$TESTER5_BALANCE_REAL'" && exit 1
-# ------------
+  # TEST 1/1
+  # ---> Send tokens
+  TESTER1_BALANCE_EXPECTED=$((1000000000000 - 150 - 7)) # -150 fee -7 sent
+  TESTER5_BALANCE_EXPECTED=$((1000000000000 + 7)) # +7 received
 
-# Enable custodians
-enableCustody tester1 60 0 0 0 150 ukex 0 $KEY11
-CUSTODY_KEY1=$(getCustodyKey tester1)
+  custodySendTokens tester1 tester5 7 ukex 150 ukex 600 ukex $PASSWORD
 
-[ "$CUSTODY_KEY1" != $KEY11 ] && echoErr "ERROR: Expected key to be $KEY11, but got '$CUSTODY_KEY1'" && exit 1
-# ------------
+  TESTER1_BALANCE_REAL=$(showBalance tester1 ukex)
+  TESTER5_BALANCE_REAL=$(showBalance tester5 ukex)
 
-# Add custodians test double SHA protection
-addCustodians tester1 "$INPUT_CUSTODIANS" 150 ukex $KEY1 $KEY21
-CUSTODY_KEY2=$(getCustodyKey tester1)
+  [ "$TESTER1_BALANCE_EXPECTED" != "$TESTER1_BALANCE_REAL" ] && echoErr "ERROR TEST 1/1: Expected tester1 account balance to be '$TESTER1_BALANCE_EXPECTED', but got '$TESTER1_BALANCE_REAL'" && exit 1
+  [ "$TESTER5_BALANCE_EXPECTED" != "$TESTER5_BALANCE_REAL" ] && echoErr "ERROR TEST 1/1: Expected tester5 account balance to be '$TESTER5_BALANCE_EXPECTED', but got '$TESTER5_BALANCE_REAL'" && exit 1
+   # <--- Send tokens
 
-[ "$CUSTODY_KEY2" != $KEY21 ] && echoErr "ERROR: Expected key to be $KEY21, but got '$CUSTODY_KEY2'" && exit 1
-# ------------
+# <--- Send tokens with disabled custodians and enabled password protection
 
-# Send tokens with enabled custodians and not password protection
-TESTER5_BALANCE_EXPECTED=1000000000007
-TXHASH=$(custodySendTokens tester1 tester5 7 ukex 150 ukex $PASSWORD)
-HASH=${TXHASH,,}
-TESTER5_BALANCE_REAL=$(showBalance tester5 ukex)
-POOL=$(getCustodyPool tester1)
+# TEST 2
+# Send tokens with enabled custodians and disabled password protection --->
 
-[ "$POOL" == "null" ] || [ "$POOL" == "{}" ] && echoErr "ERROR: Expected not empty pool" && exit 1
-[ "$TESTER5_BALANCE_EXPECTED" != "$TESTER5_BALANCE_REAL" ] && echoErr "ERROR: Send tokens with enabled custodians: Expected tester5 account balance to be '$TESTER5_BALANCE_EXPECTED', but got '$TESTER5_BALANCE_REAL'" && exit 1
-# ------------
+  # TEST 2/1
+  # Enable custodians --->
+  TESTER1_BALANCE_EXPECTED=$(($TESTER1_BALANCE_EXPECTED - 150)) # -150 fee
 
-# Approve transaction
-approveTransaction tester2 tester1 "$HASH" 150 ukex
-VOTES=$(getCustodyPoolVotes tester1 "$HASH")
+  enableCustody tester1 60 0 0 0 150 ukex 0 $KEY11
 
-[ "$VOTES" != 1 ] && echoErr "ERROR: Expected votes is '1', but got '$VOTES'" && exit 1
-# ------------
+  TESTER1_BALANCE_REAL=$(showBalance tester1 ukex)
+  CUSTODY_KEY1=$(getCustodyKey tester1)
 
-# Decline transaction
-declineTransaction tester3 tester1 "$HASH" 150 ukex
-VOTES=$(getCustodyPoolVotes tester1 "$HASH")
+  [ "$TESTER1_BALANCE_EXPECTED" != "$TESTER1_BALANCE_REAL" ] && echoErr "ERROR TEST 2/1: Expected tester1 account balance to be '$TESTER1_BALANCE_EXPECTED', but got '$TESTER1_BALANCE_REAL'" && exit 1
+  [ "$CUSTODY_KEY1" != $KEY11 ] && echoErr "ERROR TEST 2/1: Expected key to be $KEY11, but got '$CUSTODY_KEY1'" && exit 1
+  # <--- Enable custodians
 
-[ "$VOTES" != 1 ] && echoErr "ERROR: Expected votes is '1', but got '$VOTES'" && exit 1
-# ------------
+  # TEST 2/2
+  # Add custodians test double SHA protection --->
+  TESTER1_BALANCE_EXPECTED=$(($TESTER1_BALANCE_EXPECTED - 150)) # -150 fee
 
-# Approve transaction
-TESTER5_BALANCE_REAL=$(showBalance tester5 ukex)
-approveTransaction tester4 tester1 "$HASH" 150 ukex
-TESTER5_BALANCE_EXPECTED=1000000000014
-TESTER5_BALANCE_REAL=$(showBalance tester5 ukex)
-POOL=$(getCustodyPool tester1)
+  addCustodians tester1 "$INPUT_CUSTODIANS" 150 ukex $KEY1 $KEY21
 
-[ "$POOL" != "null" ] || [ "$POOL" != "{}" ] && echoErr "ERROR: Expected empty pool" && exit 1
-[ "$TESTER5_BALANCE_EXPECTED" != "$TESTER5_BALANCE_REAL" ] && echoErr "ERROR: Send tokens with enabled and approved custodians: Expected tester5 account balance to be '$TESTER5_BALANCE_EXPECTED', but got '$TESTER5_BALANCE_REAL'" && exit 1
-# ------------
+  TESTER1_BALANCE_REAL=$(showBalance tester1 ukex)
+  CUSTODY_KEY2=$(getCustodyKey tester1)
 
-# Disable custodians and enable password protection
-enableCustody tester1 0 1 0 0 150 ukex $KEY2 $KEY31
-CUSTODY_KEY=$(getCustodyKey tester1)
+  [ "$TESTER1_BALANCE_EXPECTED" != "$TESTER1_BALANCE_REAL" ] && echoErr "ERROR TEST 2/2: Expected tester1 account balance to be '$TESTER1_BALANCE_EXPECTED', but got '$TESTER1_BALANCE_REAL'" && exit 1
+  [ "$CUSTODY_KEY2" != $KEY21 ] && echoErr "ERROR TEST 2/2: Expected key to be $KEY21, but got '$CUSTODY_KEY2'" && exit 1
+  # <--- Add custodians test double SHA protection
 
-[ "$CUSTODY_KEY" != $KEY31 ] && echoErr "ERROR: Expected key to be $KEY31, but got '$CUSTODY_KEY'" && exit 1
-# ------------
+  # TEST 2/3
+  # Send tokens --->
+  TESTER1_BALANCE_EXPECTED=$(($TESTER1_BALANCE_EXPECTED - 150)) # -150 fee
+  TESTER5_BALANCE_EXPECTED=$TESTER5_BALANCE_EXPECTED # same
 
-# Send tokens with disabled custodians and password protection
-TESTER5_BALANCE_EXPECTED=1000000000014
-TXHASH=$(custodySendTokens tester1 tester5 7 ukex 150 ukex $PASSWORD)
-HASH=${TXHASH,,}
-TESTER5_BALANCE_REAL=$(showBalance tester5 ukex)
-POOL=$(getCustodyPool tester1)
+  HASH=$(custodySendTokens tester1 tester5 7 ukex 150 ukex 600 ukex $PASSWORD)
 
-[ "$POOL" == "null" ] || [ "$POOL" == "{}" ] && echoErr "ERROR: Expected not empty pool" && exit 1
-[ "$TESTER5_BALANCE_EXPECTED" != "$TESTER5_BALANCE_REAL" ] && echoErr "ERROR: Send tokens with enabled custodians: Expected tester5 account balance to be '$TESTER5_BALANCE_EXPECTED', but got '$TESTER5_BALANCE_REAL'" && exit 1
-# ------------
+  TESTER1_BALANCE_REAL=$(showBalance tester1 ukex)
+  TESTER5_BALANCE_REAL=$(showBalance tester5 ukex)
+  POOL=$(getCustodyPool tester1)
 
-# Password confirm transaction
-TESTER5_BALANCE_REAL=$(showBalance tester5 ukex)
-passwordConfirmTransaction tester4 tester1 "$HASH" "$PASSWORD" 150 ukex
-TESTER5_BALANCE_EXPECTED=1000000000021
-TESTER5_BALANCE_REAL=$(showBalance tester5 ukex)
-POOL=$(getCustodyPool tester1)
+  [ "$TESTER1_BALANCE_EXPECTED" != "$TESTER1_BALANCE_REAL" ] && echoErr "ERROR TEST 2/3: Expected tester1 account balance to be '$TESTER1_BALANCE_EXPECTED', but got '$TESTER1_BALANCE_REAL'" && exit 1
+  [ "$TESTER5_BALANCE_EXPECTED" != "$TESTER5_BALANCE_REAL" ] && echoErr "ERROR TEST 2/3: Expected tester5 account balance to be '$TESTER5_BALANCE_EXPECTED', but got '$TESTER5_BALANCE_REAL'" && exit 1
+  [ "$POOL" == "null" ] || [ "$POOL" == "{}" ] && echoErr "ERROR TEST 2/3: Expected not empty pool" && exit 1
+  # <--- Send tokens
 
-[ "$POOL" == "null" ] || [ "$POOL" == "{}" ] && echoErr "ERROR: Expected empty pool" && exit 1
-[ "$TESTER5_BALANCE_EXPECTED" != "$TESTER5_BALANCE_REAL" ] && echoErr "ERROR: Send tokens with enabled and approved custodians: Expected tester5 account balance to be '$TESTER5_BALANCE_EXPECTED', but got '$TESTER5_BALANCE_REAL'" && exit 1
-# ------------
+  # TEST 2/4
+  # Approve transaction --->
+  TESTER1_BALANCE_EXPECTED=$(($TESTER1_BALANCE_EXPECTED - 200)) # -200 reward
+  TESTER2_BALANCE_EXPECTED=$((1000000000000 - 150 + 200))  # -150 fee + 200 reward
+  TESTER5_BALANCE_EXPECTED=$TESTER5_BALANCE_EXPECTED # same
 
-# Drop custodians
-dropCustodians tester1 150 ukex $KEY3 $KEY41
-CUSTODY_KEY=$(getCustodyKey tester1)
+  approveTransaction tester2 tester1 "$HASH" 150 ukex
 
-[ "$CUSTODY_KEY" != $KEY41 ] && echoErr "ERROR: Expected key to be $KEY41, but got '$CUSTODY_KEY'" && exit 1
-# ------------
+  VOTES=$(getCustodyPoolVotes tester1 "$HASH")
+  TESTER1_BALANCE_REAL=$(showBalance tester1 ukex)
+  TESTER2_BALANCE_REAL=$(showBalance tester2 ukex)
+  TESTER5_BALANCE_REAL=$(showBalance tester5 ukex)
 
-# Enable custodians and password protection
-enableCustody tester1 30 1 0 0 150 ukex $KEY4 $KEY51
-CUSTODY_KEY=$(getCustodyKey tester1)
+  [ "$TESTER1_BALANCE_EXPECTED" != "$TESTER1_BALANCE_REAL" ] && echoErr "ERROR TEST 2/4: Expected tester1 account balance to be '$TESTER1_BALANCE_EXPECTED', but got '$TESTER1_BALANCE_REAL'" && exit 1
+  [ "$TESTER2_BALANCE_EXPECTED" != "$TESTER2_BALANCE_REAL" ] && echoErr "ERROR TEST 2/4: Expected tester2 account balance to be '$TESTER2_BALANCE_EXPECTED', but got '$TESTER2_BALANCE_REAL'" && exit 1
+  [ "$TESTER5_BALANCE_EXPECTED" != "$TESTER5_BALANCE_REAL" ] && echoErr "ERROR TEST 2/4: Expected tester5 account balance to be '$TESTER5_BALANCE_EXPECTED', but got '$TESTER5_BALANCE_REAL'" && exit 1
+  [ "$VOTES" != 1 ] && echoErr "ERROR TEST 2/4: Expected votes is '1', but got '$VOTES'" && exit 1
+  # <--- Approve transaction
 
-[ "$CUSTODY_KEY" != $KEY51 ] && echoErr "ERROR: Expected key to be $KEY51, but got '$CUSTODY_KEY'" && exit 1
-# ------------
+  # TEST 2/4/1
+  # Repeat approve transaction --->
+  TESTER1_BALANCE_EXPECTED=$(($TESTER1_BALANCE_EXPECTED)) # -200 reward
+  TESTER2_BALANCE_EXPECTED=$(($TESTER2_BALANCE_EXPECTED - 150))  # -150 fee + 200 reward
+  TESTER5_BALANCE_EXPECTED=$TESTER5_BALANCE_EXPECTED # same
 
-# Send tokens with enabled custodians and password protection
-TESTER5_BALANCE_EXPECTED=1000000000021
-TXHASH=$(custodySendTokens tester1 tester5 7 ukex 150 ukex $PASSWORD)
-HASH=${TXHASH,,}
-TESTER5_BALANCE_REAL=$(showBalance tester5 ukex)
-POOL=$(getCustodyPool tester1)
+  approveTransaction tester2 tester1 "$HASH" 150 ukex
 
-[ "$POOL" == "null" ] || [ "$POOL" == "{}" ]  && echoErr "ERROR: Expected not empty pool" && exit 1
-[ "$TESTER5_BALANCE_EXPECTED" != "$TESTER5_BALANCE_REAL" ] && echoErr "ERROR: Send tokens with enabled custodians: Expected tester5 account balance to be '$TESTER5_BALANCE_EXPECTED', but got '$TESTER5_BALANCE_REAL'" && exit 1
-# ------------
+  VOTES=$(getCustodyPoolVotes tester1 "$HASH")
+  TESTER1_BALANCE_REAL=$(showBalance tester1 ukex)
+  TESTER2_BALANCE_REAL=$(showBalance tester2 ukex)
+  TESTER5_BALANCE_REAL=$(showBalance tester5 ukex)
 
-# Add custodians
-addCustodians tester1 "$INPUT_CUSTODIANS" 150 ukex $KEY5 $KEY61
-CUSTODY_KEY=$(getCustodyKey tester1)
+  [ "$TESTER1_BALANCE_EXPECTED" != "$TESTER1_BALANCE_REAL" ] && echoErr "ERROR TEST 2/4/1: Expected tester1 account balance to be '$TESTER1_BALANCE_EXPECTED', but got '$TESTER1_BALANCE_REAL'" && exit 1
+  [ "$TESTER2_BALANCE_EXPECTED" != "$TESTER2_BALANCE_REAL" ] && echoErr "ERROR TEST 2/4/1: Expected tester2 account balance to be '$TESTER2_BALANCE_EXPECTED', but got '$TESTER2_BALANCE_REAL'" && exit 1
+  [ "$TESTER5_BALANCE_EXPECTED" != "$TESTER5_BALANCE_REAL" ] && echoErr "ERROR TEST 2/4/1: Expected tester5 account balance to be '$TESTER5_BALANCE_EXPECTED', but got '$TESTER5_BALANCE_REAL'" && exit 1
+  [ "$VOTES" != 1 ] && echoErr "ERROR TEST 2/4/1: Expected votes is '1', but got '$VOTES'" && exit 1
+  # <--- Repeat approve transaction
 
-[ "$CUSTODY_KEY" != $KEY61 ] && echoErr "ERROR: Expected key to be $KEY61, but got '$CUSTODY_KEY6'" && exit 1
-# ------------
+  # TEST 2/5
+  # Decline transaction --->
+  TESTER1_BALANCE_EXPECTED=$(($TESTER1_BALANCE_EXPECTED - 200)) # -200 reward
+  TESTER3_BALANCE_EXPECTED=$((1000000000000 - 150 + 200)) # -150 fee +200 reward
+  TESTER5_BALANCE_EXPECTED=$TESTER5_BALANCE_EXPECTED # same
 
-# Send tokens with enabled custodians and password protection
-TESTER5_BALANCE_EXPECTED=1000000000021
-TXHASH=$(custodySendTokens tester1 tester5 7 ukex 150 ukex $PASSWORD)
-HASH=${TXHASH,,}
-TESTER5_BALANCE_REAL=$(showBalance tester5 ukex)
-POOL=$(getCustodyPool tester1)
+  declineTransaction tester3 tester1 "$HASH" 150 ukex
 
-[ "$POOL" == "null" ] || [ "$POOL" == "{}" ] && echoErr "ERROR: Expected not empty pool" && exit 1
-[ "$TESTER5_BALANCE_EXPECTED" != "$TESTER5_BALANCE_REAL" ] && echoErr "ERROR: Send tokens with enabled custodians: Expected tester5 account balance to be '$TESTER5_BALANCE_EXPECTED', but got '$TESTER5_BALANCE_REAL'" && exit 1
-# ------------
+  VOTES=$(getCustodyPoolVotes tester1 "$HASH")
+  TESTER1_BALANCE_REAL=$(showBalance tester1 ukex)
+  TESTER3_BALANCE_REAL=$(showBalance tester3 ukex)
+  TESTER5_BALANCE_REAL=$(showBalance tester5 ukex)
 
-# Approve transaction
-TESTER5_BALANCE_REAL=$(showBalance tester5 ukex)
-approveTransaction tester4 tester1 "$HASH" 150 ukex
-TESTER5_BALANCE_EXPECTED=1000000000021
-TESTER5_BALANCE_REAL=$(showBalance tester5 ukex)
-POOL=$(getCustodyPool tester1)
+  [ "$TESTER1_BALANCE_EXPECTED" != "$TESTER1_BALANCE_REAL" ] && echoErr "ERROR TEST 2/5: Expected tester1 account balance to be '$TESTER1_BALANCE_EXPECTED', but got '$TESTER1_BALANCE_REAL'" && exit 1
+  [ "$TESTER3_BALANCE_EXPECTED" != "$TESTER3_BALANCE_REAL" ] && echoErr "ERROR TEST 2/5: Expected tester3 account balance to be '$TESTER3_BALANCE_EXPECTED', but got '$TESTER3_BALANCE_REAL'" && exit 1
+  [ "$TESTER5_BALANCE_EXPECTED" != "$TESTER5_BALANCE_REAL" ] && echoErr "ERROR TEST 2/5: Expected tester5 account balance to be '$TESTER5_BALANCE_EXPECTED', but got '$TESTER5_BALANCE_REAL'" && exit 1
+  [ "$VOTES" != 1 ] && echoErr "ERROR TEST 2/5: Expected votes is '1', but got '$VOTES'" && exit 1
+  # <--- Decline transaction
 
-[ "$POOL" != "null" ] || [ "$POOL" != "{}" ] && echoErr "ERROR: Expected empty pool" && exit 1
-[ "$TESTER5_BALANCE_EXPECTED" != "$TESTER5_BALANCE_REAL" ] && echoErr "ERROR: Send tokens with enabled and approved custodians: Expected tester5 account balance to be '$TESTER5_BALANCE_EXPECTED', but got '$TESTER5_BALANCE_REAL'" && exit 1
-# ------------
+  # TEST 2/5/1
+  # Repeat decline transaction --->
+  TESTER1_BALANCE_EXPECTED=$(($TESTER1_BALANCE_EXPECTED)) # same
+  TESTER3_BALANCE_EXPECTED=$(($TESTER3_BALANCE_EXPECTED - 150)) # -150 fee
+  TESTER5_BALANCE_EXPECTED=$TESTER5_BALANCE_EXPECTED # same
 
-# Password confirm transaction
-TESTER5_BALANCE_REAL=$(showBalance tester5 ukex)
-passwordConfirmTransaction tester4 tester1 "$HASH" "$PASSWORD" 150 ukex
-TESTER5_BALANCE_EXPECTED=1000000000028
-TESTER5_BALANCE_REAL=$(showBalance tester5 ukex)
-POOL=$(getCustodyPool tester1)
+  declineTransaction tester3 tester1 "$HASH" 150 ukex
 
-[ "$POOL" == "null" ] || [ "$POOL" == "{}" ] && echoErr "ERROR: Expected empty pool" && exit 1
-[ "$TESTER5_BALANCE_EXPECTED" != "$TESTER5_BALANCE_REAL" ] && echoErr "ERROR: Send tokens with enabled and approved custodians: Expected tester5 account balance to be '$TESTER5_BALANCE_EXPECTED', but got '$TESTER5_BALANCE_REAL'" && exit 1
-# ------------
+  VOTES=$(getCustodyPoolVotes tester1 "$HASH")
+  TESTER1_BALANCE_REAL=$(showBalance tester1 ukex)
+  TESTER3_BALANCE_REAL=$(showBalance tester3 ukex)
+  TESTER5_BALANCE_REAL=$(showBalance tester5 ukex)
 
-# Send tokens with enabled custodians and password protection
-TESTER5_BALANCE_EXPECTED=1000000000028
-TXHASH=$(custodySendTokens tester1 tester5 7 ukex 150 ukex $PASSWORD)
-HASH=${TXHASH,,}
-TESTER5_BALANCE_REAL=$(showBalance tester5 ukex)
-POOL=$(getCustodyPool tester1)
+  [ "$TESTER1_BALANCE_EXPECTED" != "$TESTER1_BALANCE_REAL" ] && echoErr "ERROR TEST 2/5/1: Expected tester1 account balance to be '$TESTER1_BALANCE_EXPECTED', but got '$TESTER1_BALANCE_REAL'" && exit 1
+  [ "$TESTER3_BALANCE_EXPECTED" != "$TESTER3_BALANCE_REAL" ] && echoErr "ERROR TEST 2/5/1: Expected tester3 account balance to be '$TESTER3_BALANCE_EXPECTED', but got '$TESTER3_BALANCE_REAL'" && exit 1
+  [ "$TESTER5_BALANCE_EXPECTED" != "$TESTER5_BALANCE_REAL" ] && echoErr "ERROR TEST 2/5/1: Expected tester5 account balance to be '$TESTER5_BALANCE_EXPECTED', but got '$TESTER5_BALANCE_REAL'" && exit 1
+  [ "$VOTES" != 1 ] && echoErr "ERROR TEST 2/5/1: Expected votes is '1', but got '$VOTES'" && exit 1
+  # <--- Repeat decline transaction
 
-[ "$POOL" == "null" ] || [ "$POOL" == "{}" ] && echoErr "ERROR: Expected not empty pool" && exit 1
-[ "$TESTER5_BALANCE_EXPECTED" != "$TESTER5_BALANCE_REAL" ] && echoErr "ERROR: Send tokens with enabled custodians: Expected tester5 account balance to be '$TESTER5_BALANCE_EXPECTED', but got '$TESTER5_BALANCE_REAL'" && exit 1
-# ------------
+  # TEST 2/6
+  # Last approve transaction --->
+  TESTER1_BALANCE_EXPECTED=$(($TESTER1_BALANCE_EXPECTED - 7 - 200)) # -7 sent -200 reward
+  TESTER4_BALANCE_EXPECTED=$((1000000000000 - 150 + 200)) # -150 fee +200 reward
+  TESTER5_BALANCE_EXPECTED=$(($TESTER5_BALANCE_EXPECTED + 7)) # +7 received
 
-# Password confirm transaction
-TESTER5_BALANCE_REAL=$(showBalance tester5 ukex)
-passwordConfirmTransaction tester4 tester1 "$HASH" "$PASSWORD" 150 ukex
-TESTER5_BALANCE_EXPECTED=1000000000028
-TESTER5_BALANCE_REAL=$(showBalance tester5 ukex)
-POOL=$(getCustodyPool tester1)
+  approveTransaction tester4 tester1 "$HASH" 150 ukex
 
-[ "$POOL" == "null" ] || [ "$POOL" == "{}}" ] && echoErr "ERROR: Expected not empty pool" && exit 1
-[ "$TESTER5_BALANCE_EXPECTED" != "$TESTER5_BALANCE_REAL" ] && echoErr "ERROR: Send tokens with enabled and approved custodians: Expected tester5 account balance to be '$TESTER5_BALANCE_EXPECTED', but got '$TESTER5_BALANCE_REAL'" && exit 1
-# ------------
+  POOL=$(getCustodyPool tester1)
+  TESTER1_BALANCE_REAL=$(showBalance tester1 ukex)
+  TESTER4_BALANCE_REAL=$(showBalance tester4 ukex)
+  TESTER5_BALANCE_REAL=$(showBalance tester5 ukex)
 
-# Approve transaction
-TESTER5_BALANCE_REAL=$(showBalance tester5 ukex)
-approveTransaction tester4 tester1 "$HASH" 150 ukex
-TESTER5_BALANCE_EXPECTED=1000000000035
-TESTER5_BALANCE_REAL=$(showBalance tester5 ukex)
-POOL=$(getCustodyPool tester1)
+  [ "$TESTER1_BALANCE_EXPECTED" != "$TESTER1_BALANCE_REAL" ] && echoErr "ERROR TEST 2/6: Expected tester1 account balance to be '$TESTER1_BALANCE_EXPECTED', but got '$TESTER1_BALANCE_REAL'" && exit 1
+  [ "$TESTER4_BALANCE_EXPECTED" != "$TESTER4_BALANCE_REAL" ] && echoErr "ERROR TEST 2/6: Expected tester4 account balance to be '$TESTER4_BALANCE_EXPECTED', but got '$TESTER4_BALANCE_REAL'" && exit 1
+  [ "$TESTER5_BALANCE_EXPECTED" != "$TESTER5_BALANCE_REAL" ] && echoErr "ERROR TEST 2/6: Expected tester5 account balance to be '$TESTER5_BALANCE_EXPECTED', but got '$TESTER5_BALANCE_REAL'" && exit 1
+  [ "$POOL" != "null" ] && [ "$POOL" != "{}" ] && echoErr "ERROR TEST 2/6: Expected empty pool" && exit 1
+  # <--- Last approve transaction
 
-[ "$POOL" != "null" ] || [ "$POOL" != "{}" ] && echoErr "ERROR: Expected empty pool" && exit 1
-[ "$TESTER5_BALANCE_EXPECTED" != "$TESTER5_BALANCE_REAL" ] && echoErr "ERROR: Send tokens with enabled and approved custodians: Expected tester5 account balance to be '$TESTER5_BALANCE_EXPECTED', but got '$TESTER5_BALANCE_REAL'" && exit 1
-# ------------
+# <--- Send tokens with enabled custodians and disabled password protection
+
+# TEST 3
+# Send tokens with disabled custodians and enabled password protection --->
+
+  # TEST 3/1
+  # Disable custodians and enable password protection --->
+  TESTER1_BALANCE_EXPECTED=$(($TESTER1_BALANCE_EXPECTED - 150)) # -150 fee
+
+  enableCustody tester1 0 1 0 0 150 ukex $KEY2 $KEY31
+
+  TESTER1_BALANCE_REAL=$(showBalance tester1 ukex)
+  CUSTODY_KEY=$(getCustodyKey tester1)
+
+  [ "$TESTER1_BALANCE_EXPECTED" != "$TESTER1_BALANCE_REAL" ] && echoErr "ERROR TEST 3/1: Expected tester1 account balance to be '$TESTER1_BALANCE_EXPECTED', but got '$TESTER1_BALANCE_REAL'" && exit 1
+  [ "$CUSTODY_KEY" != $KEY31 ] && echoErr "ERROR TEST 3/1: Expected key to be $KEY31, but got '$CUSTODY_KEY'" && exit 1
+  # <--- Disable custodians and enable password protection
+
+  # TEST 3/2
+  # Send tokens --->
+  TESTER1_BALANCE_EXPECTED=$(($TESTER1_BALANCE_EXPECTED - 150)) # -150 fee
+  TESTER5_BALANCE_EXPECTED=$TESTER5_BALANCE_EXPECTED # same
+
+  HASH=$(custodySendTokens tester1 tester5 7 ukex 150 ukex 1000 ukex $PASSWORD)
+
+  POOL=$(getCustodyPool tester1)
+  TESTER1_BALANCE_REAL=$(showBalance tester1 ukex)
+  TESTER5_BALANCE_REAL=$(showBalance tester5 ukex)
+
+  [ "$TESTER1_BALANCE_EXPECTED" != "$TESTER1_BALANCE_REAL" ] && echoErr "ERROR TEST 3/2: Expected tester1 account balance to be '$TESTER1_BALANCE_EXPECTED', but got '$TESTER1_BALANCE_REAL'" && exit 1
+  [ "$TESTER5_BALANCE_EXPECTED" != "$TESTER5_BALANCE_REAL" ] && echoErr "ERROR TEST 3/2: Expected tester5 account balance to be '$TESTER5_BALANCE_EXPECTED', but got '$TESTER5_BALANCE_REAL'" && exit 1
+  [ "$POOL" == "null" ] || [ "$POOL" == "{}" ] && echoErr "ERROR TEST 3/2: Expected not empty pool" && exit 1
+  # <--- Send tokens
+
+  # TEST 3/3
+  # Password confirm transaction --->
+  TESTER1_BALANCE_EXPECTED=$(($TESTER1_BALANCE_EXPECTED - 7)) # -7 sent
+  TESTER5_BALANCE_EXPECTED=$(($TESTER5_BALANCE_EXPECTED - 150 + 7)) # -150 fee + 7 received
+
+  passwordConfirmTransaction tester5 tester1 "$HASH" "$PASSWORD" 150 ukex
+
+  POOL=$(getCustodyPool tester1)
+  TESTER1_BALANCE_REAL=$(showBalance tester1 ukex)
+  TESTER5_BALANCE_REAL=$(showBalance tester5 ukex)
+
+  [ "$TESTER1_BALANCE_EXPECTED" != "$TESTER1_BALANCE_REAL" ] && echoErr "ERROR TEST 3/3: Expected tester1 account balance to be '$TESTER1_BALANCE_EXPECTED', but got '$TESTER1_BALANCE_REAL'" && exit 1
+  [ "$TESTER5_BALANCE_EXPECTED" != "$TESTER5_BALANCE_REAL" ] && echoErr "ERROR TEST 3/3: Expected tester5 account balance to be '$TESTER5_BALANCE_EXPECTED', but got '$TESTER5_BALANCE_REAL'" && exit 1
+  [ "$POOL" != "null" ] && [ "$POOL" != "{}" ] && echoErr "ERROR TEST 3/3: Expected empty pool" && exit 1
+  # <--- Password confirm transaction
+
+# <--- Send tokens with disabled custodians and enabled password protection
+
+# TEST 4
+# Send tokens with enabled custodians and enabled password protection --->
+
+  # TEST 4/1
+  # Disable custodians --->
+  TESTER1_BALANCE_EXPECTED=$(($TESTER1_BALANCE_EXPECTED - 150)) # -150 fee
+
+  disableCustody tester1 150 ukex $KEY3
+
+  CUSTODY_KEY=$(getCustodyKey tester1)
+  TESTER1_BALANCE_REAL=$(showBalance tester1 ukex)
+
+  [ "$TESTER1_BALANCE_EXPECTED" != "$TESTER1_BALANCE_REAL" ] && echoErr "ERROR TEST 4/1: Expected tester1 account balance to be '$TESTER1_BALANCE_EXPECTED', but got '$TESTER1_BALANCE_REAL'" && exit 1
+  [ "$CUSTODY_KEY" != '' ] && echoErr "ERROR TEST 4/1: Expected key to be "", but got '$CUSTODY_KEY'" && exit 1
+  # <--- Disable custodians
+
+  # TEST 4/2
+  # Send tokens --->
+  TESTER1_BALANCE_EXPECTED=$(($TESTER1_BALANCE_EXPECTED - 150 - 7)) # -150 fee -7 sent
+  TESTER5_BALANCE_EXPECTED=$(($TESTER5_BALANCE_EXPECTED + 7)) # +7 sent
+
+  HASH=$(custodySendTokens tester1 tester5 7 ukex 150 ukex 600 ukex $PASSWORD)
+
+  TESTER1_BALANCE_REAL=$(showBalance tester1 ukex)
+  TESTER5_BALANCE_REAL=$(showBalance tester5 ukex)
+  POOL=$(getCustodyPool tester1)
+
+  [ "$TESTER1_BALANCE_EXPECTED" != "$TESTER1_BALANCE_REAL" ] && echoErr "ERROR TEST 4/2: Expected tester5 account balance to be '$TESTER1_BALANCE_EXPECTED', but got '$TESTER1_BALANCE_REAL'" && exit 1
+  [ "$TESTER5_BALANCE_EXPECTED" != "$TESTER5_BALANCE_REAL" ] && echoErr "ERROR TEST 4/2: Expected tester5 account balance to be '$TESTER5_BALANCE_EXPECTED', but got '$TESTER5_BALANCE_REAL'" && exit 1
+  [ "$POOL" != "null" ] && [ "$POOL" != "{}" ] && echoErr "ERROR TEST 4/2: Expected empty pool" && exit 1
+  # <--- Send tokens
+
+  # TEST 4/2
+  # Enable custodians and password protection --->
+  TESTER1_BALANCE_EXPECTED=$(($TESTER1_BALANCE_EXPECTED - 150)) # -150 fee
+
+  enableCustody tester1 30 1 0 0 150 ukex 0 $KEY51
+
+  CUSTODY_KEY=$(getCustodyKey tester1)
+  TESTER1_BALANCE_REAL=$(showBalance tester1 ukex)
+
+  [ "$TESTER1_BALANCE_EXPECTED" != "$TESTER1_BALANCE_REAL" ] && echoErr "ERROR TEST 4/2: Expected tester1 account balance to be '$TESTER1_BALANCE_EXPECTED', but got '$TESTER1_BALANCE_REAL'" && exit 1
+  [ "$CUSTODY_KEY" != $KEY51 ] && echoErr "ERROR TEST 4/2: Expected key to be $KEY51, but got '$CUSTODY_KEY'" && exit 1
+  # <--- Enable custodians and password protection
+
+  # TEST 4/3
+  # Add custodians --->
+  TESTER1_BALANCE_EXPECTED=$(($TESTER1_BALANCE_EXPECTED - 150)) # -150 fee
+
+  addCustodians tester1 "$INPUT_CUSTODIANS" 150 ukex $KEY5 $KEY61
+
+  TESTER1_BALANCE_REAL=$(showBalance tester1 ukex)
+  CUSTODY_KEY=$(getCustodyKey tester1)
+
+  [ "$TESTER1_BALANCE_EXPECTED" != "$TESTER1_BALANCE_REAL" ] && echoErr "ERROR TEST 4/3: Expected tester5 account balance to be '$TESTER1_BALANCE_EXPECTED', but got '$TESTER1_BALANCE_REAL'" && exit 1
+  [ "$CUSTODY_KEY" != $KEY61 ] && echoErr "ERROR TEST 4/3: Expected key to be $KEY61, but got '$CUSTODY_KEY'" && exit 1
+  # <--- Add custodians
+
+  # TEST 4/4
+  # Send tokens --->
+  TESTER1_BALANCE_EXPECTED=$(($TESTER1_BALANCE_EXPECTED - 150)) # -150 fee
+  TESTER5_BALANCE_EXPECTED=$(($TESTER5_BALANCE_EXPECTED)) # same
+
+  HASH=$(custodySendTokens tester1 tester5 7 ukex 150 ukex 600 ukex $PASSWORD)
+
+  TESTER1_BALANCE_REAL=$(showBalance tester1 ukex)
+  TESTER5_BALANCE_REAL=$(showBalance tester5 ukex)
+  POOL=$(getCustodyPool tester1)
+
+  [ "$TESTER1_BALANCE_EXPECTED" != "$TESTER1_BALANCE_REAL" ] && echoErr "ERROR TEST 4/4: Expected tester1 account balance to be '$TESTER1_BALANCE_EXPECTED', but got '$TESTER1_BALANCE_REAL'" && exit 1
+  [ "$TESTER5_BALANCE_EXPECTED" != "$TESTER5_BALANCE_REAL" ] && echoErr "ERROR TEST 4/4: Expected tester5 account balance to be '$TESTER5_BALANCE_EXPECTED', but got '$TESTER5_BALANCE_REAL'" && exit 1
+  [ "$POOL" == "null" ] || [ "$POOL" == "{}" ] && echoErr "ERROR TEST 4/4: Expected not empty pool" && exit 1
+  # <--- Send tokens
+
+  # TEST 4/5
+  # Approve transaction --->
+  TESTER1_BALANCE_EXPECTED=$(($TESTER1_BALANCE_EXPECTED - 200)) # -200 reward
+  TESTER4_BALANCE_EXPECTED=$(($TESTER4_BALANCE_EXPECTED - 150 + 200)) # -150 fee + 200 reward
+  TESTER5_BALANCE_EXPECTED=$(($TESTER5_BALANCE_EXPECTED)) # same
+
+  approveTransaction tester4 tester1 "$HASH" 150 ukex
+
+  TESTER1_BALANCE_REAL=$(showBalance tester1 ukex)
+  TESTER4_BALANCE_REAL=$(showBalance tester4 ukex)
+  TESTER5_BALANCE_REAL=$(showBalance tester5 ukex)
+  POOL=$(getCustodyPool tester1)
+
+  [ "$TESTER1_BALANCE_EXPECTED" != "$TESTER1_BALANCE_REAL" ] && echoErr "ERROR TEST 4/5: Expected tester1 account balance to be '$TESTER1_BALANCE_EXPECTED', but got '$TESTER1_BALANCE_REAL'" && exit 1
+  [ "$TESTER4_BALANCE_EXPECTED" != "$TESTER4_BALANCE_REAL" ] && echoErr "ERROR TEST 4/5: Expected tester4 account balance to be '$TESTER4_BALANCE_EXPECTED', but got '$TESTER4_BALANCE_REAL'" && exit 1
+  [ "$TESTER5_BALANCE_EXPECTED" != "$TESTER5_BALANCE_REAL" ] && echoErr "ERROR TEST 4/5: Expected tester5 account balance to be '$TESTER5_BALANCE_EXPECTED', but got '$TESTER5_BALANCE_REAL'" && exit 1
+  [ "$POOL" == "null" ] || [ "$POOL" == "{}" ] && echoErr "ERROR TEST 4/5: Expected not empty pool" && exit 1
+  # <--- Approve transaction
+
+  # TEST 4/6
+  # Password confirm transaction --->
+  TESTER1_BALANCE_EXPECTED=$(($TESTER1_BALANCE_EXPECTED - 7)) # -7 sent
+  TESTER5_BALANCE_EXPECTED=$(($TESTER5_BALANCE_EXPECTED - 150 + 7)) # -150 fee +7 sent
+
+  passwordConfirmTransaction tester5 tester1 "$HASH" "$PASSWORD" 150 ukex
+
+  TESTER1_BALANCE_REAL=$(showBalance tester1 ukex)
+  TESTER5_BALANCE_REAL=$(showBalance tester5 ukex)
+  POOL=$(getCustodyPool tester1)
+
+  [ "$TESTER1_BALANCE_EXPECTED" != "$TESTER1_BALANCE_REAL" ] && echoErr "ERROR TEST 4/6: Expected tester1 account balance to be '$TESTER1_BALANCE_EXPECTED', but got '$TESTER1_BALANCE_REAL'" && exit 1
+  [ "$TESTER5_BALANCE_EXPECTED" != "$TESTER5_BALANCE_REAL" ] && echoErr "ERROR TEST 4/6: Expected tester5 account balance to be '$TESTER5_BALANCE_EXPECTED', but got '$TESTER5_BALANCE_REAL'" && exit 1
+  [ "$POOL" != "null" ] && [ "$POOL" != "{}" ] && echoErr "ERROR TEST 4/6: Expected empty pool" && exit 1
+  # <--- Password confirm transaction
+
+  # TEST 4/7
+  # Send tokens --->
+  TESTER1_BALANCE_EXPECTED=$(($TESTER1_BALANCE_EXPECTED - 150)) # -150 fee
+  TESTER5_BALANCE_EXPECTED=$(($TESTER5_BALANCE_EXPECTED)) # same
+
+  HASH=$(custodySendTokens tester1 tester5 7 ukex 150 ukex 600 ukex $PASSWORD)
+
+  TESTER1_BALANCE_REAL=$(showBalance tester1 ukex)
+  TESTER5_BALANCE_REAL=$(showBalance tester5 ukex)
+  POOL=$(getCustodyPool tester1)
+
+  [ "$TESTER1_BALANCE_EXPECTED" != "$TESTER1_BALANCE_REAL" ] && echoErr "ERROR TEST 4/7: Expected tester1 account balance to be '$TESTER1_BALANCE_EXPECTED', but got '$TESTER1_BALANCE_REAL'" && exit 1
+  [ "$TESTER5_BALANCE_EXPECTED" != "$TESTER5_BALANCE_REAL" ] && echoErr "ERROR TEST 4/7: Expected tester5 account balance to be '$TESTER5_BALANCE_EXPECTED', but got '$TESTER5_BALANCE_REAL'" && exit 1
+  [ "$POOL" == "null" ] || [ "$POOL" == "{}" ] && echoErr "ERROR TEST 4/7: Expected not empty pool 6" && exit 1
+  # <--- Send tokens
+
+  # TEST 4/8
+  # Password confirm transaction --->
+  TESTER5_BALANCE_EXPECTED=$(($TESTER5_BALANCE_EXPECTED - 150)) # same
+
+  passwordConfirmTransaction tester5 tester1 "$HASH" "$PASSWORD" 150 ukex
+
+  TESTER5_BALANCE_REAL=$(showBalance tester5 ukex)
+  POOL=$(getCustodyPool tester1)
+
+  [ "$TESTER5_BALANCE_EXPECTED" != "$TESTER5_BALANCE_REAL" ] && echoErr "ERROR TEST 4/8: Expected tester5 account balance to be '$TESTER5_BALANCE_EXPECTED', but got '$TESTER5_BALANCE_REAL'" && exit 1
+  [ "$POOL" == "null" ] || [ "$POOL" == "{}" ] && echoErr "ERROR TEST 4/8: Expected not empty pool 7" && exit 1
+  # <--- Password confirm transactio
+
+  # TEST 4/9
+  # Last approve transaction --->
+  TESTER1_BALANCE_EXPECTED=$(($TESTER1_BALANCE_EXPECTED - 7 - 200)) # -7 sent -200 reward
+  TESTER4_BALANCE_EXPECTED=$(($TESTER4_BALANCE_EXPECTED - 150 + 200)) # 150 fee +200 reward
+  TESTER5_BALANCE_EXPECTED=$(($TESTER5_BALANCE_EXPECTED + 7)) # +7 received
+
+  approveTransaction tester4 tester1 "$HASH" 150 ukex
+
+  TESTER1_BALANCE_REAL=$(showBalance tester1 ukex)
+  TESTER4_BALANCE_REAL=$(showBalance tester4 ukex)
+  TESTER5_BALANCE_REAL=$(showBalance tester5 ukex)
+  POOL=$(getCustodyPool tester1)
+
+  [ "$TESTER1_BALANCE_EXPECTED" != "$TESTER1_BALANCE_REAL" ] && echoErr "ERROR TEST 4/9: Expected tester1 account balance to be '$TESTER1_BALANCE_EXPECTED', but got '$TESTER1_BALANCE_REAL'" && exit 1
+  [ "$TESTER4_BALANCE_EXPECTED" != "$TESTER4_BALANCE_REAL" ] && echoErr "ERROR TEST 4/9: Expected tester4 account balance to be '$TESTER4_BALANCE_EXPECTED', but got '$TESTER4_BALANCE_REAL'" && exit 1
+  [ "$TESTER5_BALANCE_EXPECTED" != "$TESTER5_BALANCE_REAL" ] && echoErr "ERROR TEST 4/9: Expected tester5 account balance to be '$TESTER5_BALANCE_EXPECTED', but got '$TESTER5_BALANCE_REAL'" && exit 1
+  [ "$POOL" != "null" ] && [ "$POOL" != "{}" ] && echoErr "ERROR TEST 4/9: Expected empty pool 8" && exit 1
+  # <--- Last approve transaction
 
 echoInfo "INFO: $TEST_NAME - Integration Test - END, elapsed: $(prettyTime "$(timerSpan $TEST_NAME)")"

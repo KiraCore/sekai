@@ -454,6 +454,8 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&RemoveWhitelistedRolePermissionProposal{},
 		&RemoveBlacklistedRolePermissionProposal{},
 		&SetProposalDurationsProposal{},
+		&ProposalResetWholeCouncilorRank{},
+		&ProposalJailCouncilor{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)

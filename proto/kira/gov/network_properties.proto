@@ -39,20 +39,27 @@ enum NetworkProperty {
     INFLATION_RATE = 21 [(gogoproto.enumvalue_customname) = "InflationRate"]; // KEX inflation percentage X defined as decimal value.
     INFLATION_PERIOD = 22 [(gogoproto.enumvalue_customname) = "InflationPeriod"]; // period of time (in seconds) over which current KEX supply is inflated by a percentage corresponding to the inflation_rate
     UNSTAKING_PERIOD = 23 [(gogoproto.enumvalue_customname) = "UnstakingPeriod"]; // period of time (in seconds) it takes to unstake any of the staked tokens
-    MAX_DELEGATORS = 25 [(gogoproto.enumvalue_customname) = "MaxDelegators"]; // number of delegators limitation on a single pool
-    MIN_DELEGATION_PUSHOUT = 26 [(gogoproto.enumvalue_customname) = "MinDelegationPushout"]; // The multiplier (10x) to push out minimum delegation when it exceeds max delegators
-    SLASHING_PERIOD = 27 [(gogoproto.enumvalue_customname) = "SlashingPeriod"]; // (default 3600s) - slashing_period should be smaller than `unstaking_period`
-    MAX_JAILED_PERCENTAGE = 28 [(gogoproto.enumvalue_customname) = "MaxJailedPercentage"]; // (default 25%)
-    MAX_SLASHING_PERCENTAGE = 29 [(gogoproto.enumvalue_customname) = "MaxSlashingPercentage"]; // (default 0.5%) 0% - 100%
-    MIN_CUSTODY_REWARD = 30 [(gogoproto.enumvalue_customname) = "MinCustodyReward"]; // minimum custody reward
-    MAX_CUSTODY_BUFFER_SIZE = 31 [(gogoproto.enumvalue_customname) = "MaxCustodyBufferSize"]; // maximum custody buffer size
-    MAX_CUSTODY_TX_SIZE = 32 [(gogoproto.enumvalue_customname) = "MaxCustodyTxSize"]; // maximum custody tx size to save in buffer
-    MAX_PROPOSAL_TITLE_SIZE = 33 [(gogoproto.enumvalue_customname) = "MaxProposalTitleSize"]; // maximum poll title size
-    MAX_PROPOSAL_DESCRIPTION_SIZE = 34 [(gogoproto.enumvalue_customname) = "MaxProposalDescriptionSize"]; // maximum poll description size
-    MAX_PROPOSAL_POLL_OPTION_SIZE = 35 [(gogoproto.enumvalue_customname) = "MaxProposalPollOptionSize"]; // maximum poll option size
-    MAX_PROPOSAL_POLL_OPTION_COUNT = 36 [(gogoproto.enumvalue_customname) = "MaxProposalPollOptionCount"]; // maximum poll option count
-    MAX_PROPOSAL_REFERENCE_SIZE = 37[(gogoproto.enumvalue_customname) = "MaxProposalReferenceSize"]; // maximum poll reference size
-    MAX_PROPOSAL_CHECKSUM_SIZE = 38 [(gogoproto.enumvalue_customname) = "MaxProposalChecksumSize"]; // maximum poll checksum size
+    MAX_DELEGATORS = 24 [(gogoproto.enumvalue_customname) = "MaxDelegators"]; // number of delegators limitation on a single pool
+    MIN_DELEGATION_PUSHOUT = 25 [(gogoproto.enumvalue_customname) = "MinDelegationPushout"]; // The multiplier (10x) to push out minimum delegation when it exceeds max delegators
+    SLASHING_PERIOD = 26 [(gogoproto.enumvalue_customname) = "SlashingPeriod"]; // (default 3600s) - slashing_period should be smaller than `unstaking_period`
+    MAX_JAILED_PERCENTAGE = 27 [(gogoproto.enumvalue_customname) = "MaxJailedPercentage"]; // (default 25%)
+    MAX_SLASHING_PERCENTAGE = 28 [(gogoproto.enumvalue_customname) = "MaxSlashingPercentage"]; // (default 0.5%) 0% - 100%
+    MIN_CUSTODY_REWARD = 29 [(gogoproto.enumvalue_customname) = "MinCustodyReward"]; // minimum custody reward
+    MAX_CUSTODY_BUFFER_SIZE = 30 [(gogoproto.enumvalue_customname) = "MaxCustodyBufferSize"]; // maximum custody buffer size
+    MAX_CUSTODY_TX_SIZE = 31 [(gogoproto.enumvalue_customname) = "MaxCustodyTxSize"]; // maximum custody tx size to save in buffer
+    ABSTENTION_RANK_DECREASE_AMOUNT = 32 [(gogoproto.enumvalue_customname) = "AbstentionRankDecreaseAmount"]; // amount of rank decrease when absent
+    MAX_ABSTENTION = 33 [(gogoproto.enumvalue_customname) = "MaxAbstention"]; // max abention count for councilor
+    MIN_COLLECTIVE_BOND = 34 [(gogoproto.enumvalue_customname) = "MinCollectiveBond"]; // minimum bond amount for the collective to be activated, default: 100’000 KEX
+    MIN_COLLECTIVE_BONDING_TIME = 35 [(gogoproto.enumvalue_customname) = "MinCollectiveBondingTime"]; // allowed time to reach min_collective_bond default: 86400s
+    MAX_COLLECTIVE_OUTPUTS = 36 [(gogoproto.enumvalue_customname) = "MaxCollectiveOutputs"]; // limitation the maximum number of spending pools configuration per collective
+    MIN_COLLECTIVE_CLAIM_PERIOD = 37 [(gogoproto.enumvalue_customname) = "MinCollectiveClaimPeriod"]; // in seconds, default 14400 - 4 hours
+    VALIDATOR_RECOVERY_BOND = 38 [(gogoproto.enumvalue_customname) = "ValidatorRecoveryBond"]; // amount of KEX to spend for issuing validator recovery token
+    MAX_PROPOSAL_TITLE_SIZE = 39 [(gogoproto.enumvalue_customname) = "MaxProposalTitleSize"]; // maximum poll title size
+    MAX_PROPOSAL_DESCRIPTION_SIZE = 40 [(gogoproto.enumvalue_customname) = "MaxProposalDescriptionSize"]; // maximum poll description size
+    MAX_PROPOSAL_POLL_OPTION_SIZE = 41 [(gogoproto.enumvalue_customname) = "MaxProposalPollOptionSize"]; // maximum poll option size
+    MAX_PROPOSAL_POLL_OPTION_COUNT = 42 [(gogoproto.enumvalue_customname) = "MaxProposalPollOptionCount"]; // maximum poll option count
+    MAX_PROPOSAL_REFERENCE_SIZE = 43 [(gogoproto.enumvalue_customname) = "MaxProposalReferenceSize"]; // maximum poll reference size
+    MAX_PROPOSAL_CHECKSUM_SIZE = 44 [(gogoproto.enumvalue_customname) = "MaxProposalChecksumSize"]; // maximum poll checksum size
 }
 
 message NetworkPropertyValue {
@@ -74,7 +81,10 @@ message NetworkProperties {
     uint64 mischance_rank_decrease_amount = 9; // rank decrease amount per mischance increase (default 10)
     uint64 max_mischance = 10;  // maximum mischance a validator could be in active status, default 110
     uint64 mischance_confidence = 11; // the number of blocks validator miss to start counting mischance, default 10
-    uint64 inactive_rank_decrease_percent = 12; // percentage of decrease per status movement from active to inactive (default 50%)
+    string inactive_rank_decrease_percent = 12[
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+      (gogoproto.nullable) = false
+    ]; // percentage of decrease per status movement from active to inactive (default 50%)
     uint64 min_validators = 13; // minimum number of validators to perform full network actions - otherwise, it's called poor network
     uint64 poor_network_max_bank_send = 14; // maximum amount of transfer on poor network, default 10000ukex
     uint64 unjail_max_time = 15; // maximum jailed status duration in seconds to get back to the validator set again
@@ -83,22 +93,41 @@ message NetworkProperties {
     uint64 min_identity_approval_tip = 18; // minimum amount of tip to be paid to the approver per request
     string unique_identity_keys = 19; // manages unique identity keys to be used as an address identifier
     uint64 ubi_hardcap = 20; // a maximum amount of additional KEX that can be created per year
-    uint64 validators_fee_share = 21; // the percentage that validators get from collected fees
-    uint64 inflation_rate = 22; // KEX inflation percentage X defined as decimal value.
+    string validators_fee_share = 21 [
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+      (gogoproto.nullable) = false
+    ]; // the percentage that validators get from collected fees
+    string inflation_rate = 22 [
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+      (gogoproto.nullable) = false
+    ]; // KEX inflation percentage X defined as decimal value.
     uint64 inflation_period = 23; // period of time (in seconds) over which current KEX supply is inflated by a percentage corresponding to the inflation_rate
     uint64 unstaking_period = 24; // period of time (in seconds) it takes to unstake any of the staked tokens 
     uint64 max_delegators = 25; // number of delegators limitation on a single pool
     uint64 min_delegation_pushout = 26; // The multiplier (10x) to push out minimum delegation when it exceeds max delegators
     uint64 slashing_period = 27; // (default 3600s) - slashing_period should be smaller than `unstaking_period`
-    uint64 max_jailed_percentage = 28; // (default 25%)
-    uint64 max_slashing_percentage = 29; // (default 0.5%) 0% - 100%
+    string max_jailed_percentage = 28 [
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+      (gogoproto.nullable) = false
+    ]; // (default 25%)
+    string max_slashing_percentage = 29 [
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+      (gogoproto.nullable) = false
+    ];                              // (default 0.5%) 0% - 100%
     uint64 min_custody_reward = 30; // minimum custody reward
     uint64 max_custody_buffer_size = 31; // maximum custody buffer size
     uint64 max_custody_tx_size = 32; // maximum custody tx size to save in buffer
-    uint64 max_proposal_title_size = 33; // maximum title size in the proposal
-    uint64 max_proposal_description_size = 34; // maximum description size in the proposal
-    uint64 max_proposal_poll_option_size = 35; // maximum option size in the proposal
-    uint64 max_proposal_poll_option_count = 36; // maximum possible choices in the proposal
-    uint64 max_proposal_reference_size = 37; // maximum reference size in the proposal
-    uint64 max_proposal_checksum_size = 38; // maximum checksum size in the proposal
+    uint64 abstention_rank_decrease_amount = 33; // amount of rank decrease when absent
+    uint64 max_abstention = 34; // max abention count for councilor
+    uint64 min_collective_bond = 35; // minimum bond amount for the collective to be activated, default: 100’000 KEX
+    uint64 min_collective_bonding_time = 36; // allowed time to reach min_collective_bond default: 86400s
+    uint64 max_collective_outputs = 37; // limitation the maximum number of spending pools configuration per collective
+    uint64 min_collective_claim_period = 38; // in seconds, default 14400 - 4 hours
+    uint64 validator_recovery_bond = 39; // amount of KEX to spend for issuing validator recovery token
+    uint64 max_proposal_title_size = 40; // maximum title size in the proposal
+    uint64 max_proposal_description_size = 41; // maximum description size in the proposal
+    uint64 max_proposal_poll_option_size = 42; // maximum option size in the proposal
+    uint64 max_proposal_poll_option_count = 43; // maximum possible choices in the proposal
+    uint64 max_proposal_reference_size = 44; // maximum reference size in the proposal
+    uint64 max_proposal_checksum_size = 45; // maximum checksum size in the proposal
 }

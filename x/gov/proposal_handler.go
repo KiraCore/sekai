@@ -23,7 +23,7 @@ func (a ApplyWhitelistAccountPermissionProposalHandler) ProposalType() string {
 	return kiratypes.WhitelistAccountPermissionProposalType
 }
 
-func (a ApplyWhitelistAccountPermissionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash uint64) error {
+func (a ApplyWhitelistAccountPermissionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
 	p := proposal.(*types.WhitelistAccountPermissionProposal)
 
 	actor, found := a.keeper.GetNetworkActorByAddress(ctx, p.Address)
@@ -50,7 +50,7 @@ func (a ApplyBlacklistAccountPermissionProposalHandler) ProposalType() string {
 	return kiratypes.BlacklistAccountPermissionProposalType
 }
 
-func (a ApplyBlacklistAccountPermissionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash uint64) error {
+func (a ApplyBlacklistAccountPermissionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
 	p := proposal.(*types.BlacklistAccountPermissionProposal)
 
 	actor, found := a.keeper.GetNetworkActorByAddress(ctx, p.Address)
@@ -77,7 +77,7 @@ func (a ApplyRemoveWhitelistedAccountPermissionProposalHandler) ProposalType() s
 	return kiratypes.RemoveWhitelistedAccountPermissionProposalType
 }
 
-func (a ApplyRemoveWhitelistedAccountPermissionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash uint64) error {
+func (a ApplyRemoveWhitelistedAccountPermissionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
 	p := proposal.(*types.RemoveWhitelistedAccountPermissionProposal)
 
 	actor, found := a.keeper.GetNetworkActorByAddress(ctx, p.Address)
@@ -104,7 +104,7 @@ func (a ApplyRemoveBlacklistedAccountPermissionProposalHandler) ProposalType() s
 	return kiratypes.RemoveBlacklistedAccountPermissionProposalType
 }
 
-func (a ApplyRemoveBlacklistedAccountPermissionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash uint64) error {
+func (a ApplyRemoveBlacklistedAccountPermissionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
 	p := proposal.(*types.RemoveBlacklistedAccountPermissionProposal)
 
 	actor, found := a.keeper.GetNetworkActorByAddress(ctx, p.Address)
@@ -133,7 +133,7 @@ func (a ApplyAssignRoleToAccountProposalHandler) ProposalType() string {
 	return kiratypes.AssignRoleToAccountProposalType
 }
 
-func (a ApplyAssignRoleToAccountProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash uint64) error {
+func (a ApplyAssignRoleToAccountProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
 	p := proposal.(*types.AssignRoleToAccountProposal)
 
 	roleId, err := a.keeper.GetRoleIdFromIdentifierString(ctx, p.RoleIdentifier)
@@ -156,7 +156,7 @@ func (a ApplyUnassignRoleFromAccountProposalHandler) ProposalType() string {
 	return kiratypes.UnassignRoleFromAccountProposalType
 }
 
-func (a ApplyUnassignRoleFromAccountProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash uint64) error {
+func (a ApplyUnassignRoleFromAccountProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
 	p := proposal.(*types.UnassignRoleFromAccountProposal)
 
 	roleId, err := a.keeper.GetRoleIdFromIdentifierString(ctx, p.RoleIdentifier)
@@ -179,7 +179,7 @@ func (a ApplySetNetworkPropertyProposalHandler) ProposalType() string {
 	return kiratypes.SetNetworkPropertyProposalType
 }
 
-func (a ApplySetNetworkPropertyProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash uint64) error {
+func (a ApplySetNetworkPropertyProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
 	p := proposal.(*types.SetNetworkPropertyProposal)
 
 	property, err := a.keeper.GetNetworkProperty(ctx, p.NetworkProperty)
@@ -205,7 +205,7 @@ func (a ApplyUpsertDataRegistryProposalHandler) ProposalType() string {
 	return kiratypes.UpsertDataRegistryProposalType
 }
 
-func (a ApplyUpsertDataRegistryProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash uint64) error {
+func (a ApplyUpsertDataRegistryProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
 	p := proposal.(*types.UpsertDataRegistryProposal)
 	entry := types.NewDataRegistryEntry(p.Hash, p.Reference, p.Encoding, p.Size_)
 	a.keeper.UpsertDataRegistryEntry(ctx, p.Key, entry)
@@ -224,7 +224,7 @@ func (a ApplySetPoorNetworkMessagesProposalHandler) ProposalType() string {
 	return kiratypes.SetPoorNetworkMessagesProposalType
 }
 
-func (a ApplySetPoorNetworkMessagesProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash uint64) error {
+func (a ApplySetPoorNetworkMessagesProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
 	p := proposal.(*types.SetPoorNetworkMessagesProposal)
 	msgs := types.AllowedMessages{Messages: p.Messages}
 	a.keeper.SavePoorNetworkMessages(ctx, &msgs)
@@ -243,7 +243,7 @@ func (c CreateRoleProposalHandler) ProposalType() string {
 	return kiratypes.CreateRoleProposalType
 }
 
-func (c CreateRoleProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash uint64) error {
+func (c CreateRoleProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
 	p := proposal.(*types.CreateRoleProposal)
 
 	// check sid is good variable naming form
@@ -286,7 +286,7 @@ func (c ApplyRemoveRoleProposalHandler) ProposalType() string {
 	return kiratypes.RemoveRoleProposalType
 }
 
-func (c ApplyRemoveRoleProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash uint64) error {
+func (c ApplyRemoveRoleProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
 	p := proposal.(*types.RemoveRoleProposal)
 	_ = p
 	return fmt.Errorf("remove role proposal is not implemented!")
@@ -304,7 +304,7 @@ func (c ApplyWhitelistRolePermissionProposalHandler) ProposalType() string {
 	return kiratypes.WhitelistRolePermissionProposalType
 }
 
-func (c ApplyWhitelistRolePermissionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash uint64) error {
+func (c ApplyWhitelistRolePermissionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
 	p := proposal.(*types.WhitelistRolePermissionProposal)
 
 	roleId, err := c.keeper.GetRoleIdFromIdentifierString(ctx, p.RoleIdentifier)
@@ -327,7 +327,7 @@ func (c ApplyBlacklistRolePermissionProposalHandler) ProposalType() string {
 	return kiratypes.BlacklistRolePermissionProposalType
 }
 
-func (c ApplyBlacklistRolePermissionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash uint64) error {
+func (c ApplyBlacklistRolePermissionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
 	p := proposal.(*types.BlacklistRolePermissionProposal)
 
 	roleId, err := c.keeper.GetRoleIdFromIdentifierString(ctx, p.RoleIdentifier)
@@ -350,7 +350,7 @@ func (c ApplyRemoveWhitelistedRolePermissionProposalHandler) ProposalType() stri
 	return kiratypes.RemoveWhitelistedRolePermissionProposalType
 }
 
-func (c ApplyRemoveWhitelistedRolePermissionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash uint64) error {
+func (c ApplyRemoveWhitelistedRolePermissionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
 	p := proposal.(*types.RemoveWhitelistedRolePermissionProposal)
 
 	roleId, err := c.keeper.GetRoleIdFromIdentifierString(ctx, p.RoleSid)
@@ -373,7 +373,7 @@ func (c ApplyRemoveBlacklistedRolePermissionProposalHandler) ProposalType() stri
 	return kiratypes.RemoveBlacklistedRolePermissionProposalType
 }
 
-func (c ApplyRemoveBlacklistedRolePermissionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash uint64) error {
+func (c ApplyRemoveBlacklistedRolePermissionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
 	p := proposal.(*types.RemoveBlacklistedRolePermissionProposal)
 
 	roleId, err := c.keeper.GetRoleIdFromIdentifierString(ctx, p.RoleSid)
@@ -396,13 +396,59 @@ func (c SetProposalDurationsProposalHandler) ProposalType() string {
 	return kiratypes.SetProposalDurationsProposalType
 }
 
-func (c SetProposalDurationsProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash uint64) error {
+func (c SetProposalDurationsProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
 	p := proposal.(*types.SetProposalDurationsProposal)
 	for i, pt := range p.TypeofProposals {
 		err := c.keeper.SetProposalDuration(ctx, pt, p.ProposalDurations[i])
 		if err != nil {
 			return nil
 		}
+	}
+	return nil
+}
+
+type ApplyResetWholeCouncilorRankProposalHandler struct {
+	keeper keeper.Keeper
+}
+
+func NewApplyResetWholeCouncilorRankProposalHandler(keeper keeper.Keeper) *ApplyResetWholeCouncilorRankProposalHandler {
+	return &ApplyResetWholeCouncilorRankProposalHandler{
+		keeper: keeper,
+	}
+}
+
+func (a ApplyResetWholeCouncilorRankProposalHandler) ProposalType() string {
+	return kiratypes.ProposalTypeResetWholeCouncilorRank
+}
+
+func (a ApplyResetWholeCouncilorRankProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
+	_ = proposal.(*types.ProposalResetWholeCouncilorRank)
+	a.keeper.ResetWholeCouncilorRank(ctx)
+	return nil
+}
+
+type ApplyJailCouncilorProposalHandler struct {
+	keeper keeper.Keeper
+}
+
+func NewApplyJailCouncilorProposalHandler(keeper keeper.Keeper) *ApplyJailCouncilorProposalHandler {
+	return &ApplyJailCouncilorProposalHandler{
+		keeper: keeper,
+	}
+}
+
+func (a ApplyJailCouncilorProposalHandler) ProposalType() string {
+	return kiratypes.ProposalTypeJailCouncilor
+}
+
+func (a ApplyJailCouncilorProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
+	p := proposal.(*types.ProposalJailCouncilor)
+	for _, councilor := range p.Councilors {
+		addr, err := sdk.AccAddressFromBech32(councilor)
+		if err != nil {
+			return err
+		}
+		a.keeper.OnCouncilorJail(ctx, addr)
 	}
 	return nil
 }

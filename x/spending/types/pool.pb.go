@@ -137,14 +137,170 @@ func (m *PermInfo) GetOwnerAccounts() []string {
 	return nil
 }
 
+type WeightedRole struct {
+	Role   uint64 `protobuf:"varint,1,opt,name=role,proto3" json:"role,omitempty"`
+	Weight uint64 `protobuf:"varint,2,opt,name=weight,proto3" json:"weight,omitempty"`
+}
+
+func (m *WeightedRole) Reset()         { *m = WeightedRole{} }
+func (m *WeightedRole) String() string { return proto.CompactTextString(m) }
+func (*WeightedRole) ProtoMessage()    {}
+func (*WeightedRole) Descriptor() ([]byte, []int) {
+	return fileDescriptor_6027931ab19c9a21, []int{2}
+}
+func (m *WeightedRole) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *WeightedRole) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_WeightedRole.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *WeightedRole) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_WeightedRole.Merge(m, src)
+}
+func (m *WeightedRole) XXX_Size() int {
+	return m.Size()
+}
+func (m *WeightedRole) XXX_DiscardUnknown() {
+	xxx_messageInfo_WeightedRole.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_WeightedRole proto.InternalMessageInfo
+
+func (m *WeightedRole) GetRole() uint64 {
+	if m != nil {
+		return m.Role
+	}
+	return 0
+}
+
+func (m *WeightedRole) GetWeight() uint64 {
+	if m != nil {
+		return m.Weight
+	}
+	return 0
+}
+
+type WeightedAccount struct {
+	Account string `protobuf:"bytes,1,opt,name=account,proto3" json:"account,omitempty"`
+	Weight  uint64 `protobuf:"varint,2,opt,name=weight,proto3" json:"weight,omitempty"`
+}
+
+func (m *WeightedAccount) Reset()         { *m = WeightedAccount{} }
+func (m *WeightedAccount) String() string { return proto.CompactTextString(m) }
+func (*WeightedAccount) ProtoMessage()    {}
+func (*WeightedAccount) Descriptor() ([]byte, []int) {
+	return fileDescriptor_6027931ab19c9a21, []int{3}
+}
+func (m *WeightedAccount) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *WeightedAccount) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_WeightedAccount.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *WeightedAccount) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_WeightedAccount.Merge(m, src)
+}
+func (m *WeightedAccount) XXX_Size() int {
+	return m.Size()
+}
+func (m *WeightedAccount) XXX_DiscardUnknown() {
+	xxx_messageInfo_WeightedAccount.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_WeightedAccount proto.InternalMessageInfo
+
+func (m *WeightedAccount) GetAccount() string {
+	if m != nil {
+		return m.Account
+	}
+	return ""
+}
+
+func (m *WeightedAccount) GetWeight() uint64 {
+	if m != nil {
+		return m.Weight
+	}
+	return 0
+}
+
+type WeightedPermInfo struct {
+	Roles    []WeightedRole    `protobuf:"bytes,1,rep,name=roles,proto3" json:"roles"`
+	Accounts []WeightedAccount `protobuf:"bytes,2,rep,name=accounts,proto3" json:"accounts"`
+}
+
+func (m *WeightedPermInfo) Reset()         { *m = WeightedPermInfo{} }
+func (m *WeightedPermInfo) String() string { return proto.CompactTextString(m) }
+func (*WeightedPermInfo) ProtoMessage()    {}
+func (*WeightedPermInfo) Descriptor() ([]byte, []int) {
+	return fileDescriptor_6027931ab19c9a21, []int{4}
+}
+func (m *WeightedPermInfo) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *WeightedPermInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_WeightedPermInfo.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *WeightedPermInfo) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_WeightedPermInfo.Merge(m, src)
+}
+func (m *WeightedPermInfo) XXX_Size() int {
+	return m.Size()
+}
+func (m *WeightedPermInfo) XXX_DiscardUnknown() {
+	xxx_messageInfo_WeightedPermInfo.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_WeightedPermInfo proto.InternalMessageInfo
+
+func (m *WeightedPermInfo) GetRoles() []WeightedRole {
+	if m != nil {
+		return m.Roles
+	}
+	return nil
+}
+
+func (m *WeightedPermInfo) GetAccounts() []WeightedAccount {
+	if m != nil {
+		return m.Accounts
+	}
+	return nil
+}
+
 type SpendingPool struct {
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// claim-start & claim-end - defines the exact time period (Unix timestamps) between which tokens can be claimed from the pool, allowing for a precise funds distribution.
-	ClaimStart uint64 `protobuf:"varint,2,opt,name=claim_start,json=claimStart,proto3" json:"claim_start,omitempty"`
-	ClaimEnd   uint64 `protobuf:"varint,3,opt,name=claim_end,json=claimEnd,proto3" json:"claim_end,omitempty"`
-	Token      string `protobuf:"bytes,4,opt,name=token,proto3" json:"token,omitempty"`
+	ClaimStart  uint64 `protobuf:"varint,2,opt,name=claim_start,json=claimStart,proto3" json:"claim_start,omitempty"`
+	ClaimEnd    uint64 `protobuf:"varint,3,opt,name=claim_end,json=claimEnd,proto3" json:"claim_end,omitempty"`
+	ClaimExpiry uint64 `protobuf:"varint,4,opt,name=claim_expiry,json=claimExpiry,proto3" json:"claim_expiry,omitempty"`
 	// rate of distribution in the smallest token denomination per 1 second (this value can be a float number, smaller than actual denomination)
-	Rate github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,5,opt,name=rate,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"rate" yaml:"rate"`
+	Rates []github_com_cosmos_cosmos_sdk_types.DecCoin `protobuf:"bytes,5,rep,name=rates,proto3,customtype=github.com/cosmos/cosmos-sdk/types.DecCoin" json:"rates" yaml:"rates"`
 	// pool specific % of owner accounts that must vote YES or NO for any of the pool proposals to be valid.
 	VoteQuorum uint64 `protobuf:"varint,6,opt,name=vote_quorum,json=voteQuorum,proto3" json:"vote_quorum,omitempty"`
 	// period of time in seconds that any of the pool proposals must last before passing or being rejected
@@ -154,15 +310,18 @@ type SpendingPool struct {
 	// defines a list of accounts/roles controlling the spending pool via “governance-like” proposals
 	Owners *PermInfo `protobuf:"bytes,9,opt,name=owners,proto3" json:"owners,omitempty"`
 	// defines set of accounts/roles to which funds can be distributed
-	Beneficiaries *PermInfo                              `protobuf:"bytes,10,opt,name=beneficiaries,proto3" json:"beneficiaries,omitempty"`
-	Balance       github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,11,opt,name=balance,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"balance"`
+	Beneficiaries           *WeightedPermInfo                         `protobuf:"bytes,10,opt,name=beneficiaries,proto3" json:"beneficiaries,omitempty"`
+	Balances                []github_com_cosmos_cosmos_sdk_types.Coin `protobuf:"bytes,11,rep,name=balances,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Coin" json:"balances"`
+	DynamicRate             bool                                      `protobuf:"varint,12,opt,name=dynamic_rate,json=dynamicRate,proto3" json:"dynamic_rate,omitempty"`
+	DynamicRatePeriod       uint64                                    `protobuf:"varint,13,opt,name=dynamic_rate_period,json=dynamicRatePeriod,proto3" json:"dynamic_rate_period,omitempty"`
+	LastDynamicRateCalcTime uint64                                    `protobuf:"varint,14,opt,name=last_dynamic_rate_calc_time,json=lastDynamicRateCalcTime,proto3" json:"last_dynamic_rate_calc_time,omitempty"`
 }
 
 func (m *SpendingPool) Reset()         { *m = SpendingPool{} }
 func (m *SpendingPool) String() string { return proto.CompactTextString(m) }
 func (*SpendingPool) ProtoMessage()    {}
 func (*SpendingPool) Descriptor() ([]byte, []int) {
-	return fileDescriptor_6027931ab19c9a21, []int{2}
+	return fileDescriptor_6027931ab19c9a21, []int{5}
 }
 func (m *SpendingPool) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -212,11 +371,11 @@ func (m *SpendingPool) GetClaimEnd() uint64 {
 	return 0
 }
 
-func (m *SpendingPool) GetToken() string {
+func (m *SpendingPool) GetClaimExpiry() uint64 {
 	if m != nil {
-		return m.Token
+		return m.ClaimExpiry
 	}
-	return ""
+	return 0
 }
 
 func (m *SpendingPool) GetVoteQuorum() uint64 {
@@ -247,57 +406,91 @@ func (m *SpendingPool) GetOwners() *PermInfo {
 	return nil
 }
 
-func (m *SpendingPool) GetBeneficiaries() *PermInfo {
+func (m *SpendingPool) GetBeneficiaries() *WeightedPermInfo {
 	if m != nil {
 		return m.Beneficiaries
 	}
 	return nil
 }
 
+func (m *SpendingPool) GetDynamicRate() bool {
+	if m != nil {
+		return m.DynamicRate
+	}
+	return false
+}
+
+func (m *SpendingPool) GetDynamicRatePeriod() uint64 {
+	if m != nil {
+		return m.DynamicRatePeriod
+	}
+	return 0
+}
+
+func (m *SpendingPool) GetLastDynamicRateCalcTime() uint64 {
+	if m != nil {
+		return m.LastDynamicRateCalcTime
+	}
+	return 0
+}
+
 func init() {
 	proto.RegisterType((*ClaimInfo)(nil), "kira.spending.ClaimInfo")
 	proto.RegisterType((*PermInfo)(nil), "kira.spending.PermInfo")
+	proto.RegisterType((*WeightedRole)(nil), "kira.spending.WeightedRole")
+	proto.RegisterType((*WeightedAccount)(nil), "kira.spending.WeightedAccount")
+	proto.RegisterType((*WeightedPermInfo)(nil), "kira.spending.WeightedPermInfo")
 	proto.RegisterType((*SpendingPool)(nil), "kira.spending.SpendingPool")
 }
 
 func init() { proto.RegisterFile("kira/spending/pool.proto", fileDescriptor_6027931ab19c9a21) }
 
 var fileDescriptor_6027931ab19c9a21 = []byte{
-	// 530 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x93, 0xcf, 0x6e, 0xd3, 0x4c,
-	0x14, 0xc5, 0xe3, 0xc6, 0x6d, 0xe2, 0xc9, 0x97, 0x6f, 0x31, 0xaa, 0xc4, 0xa8, 0x08, 0x3b, 0x8a,
-	0x04, 0x8a, 0x90, 0xb0, 0x25, 0xd8, 0x55, 0xea, 0x82, 0xfe, 0x91, 0xa8, 0x90, 0x50, 0xea, 0x6e,
-	0x10, 0x9b, 0x68, 0xe2, 0xdc, 0x98, 0x51, 0xec, 0x19, 0x33, 0x33, 0x01, 0xfa, 0x16, 0x3c, 0x02,
-	0x8f, 0xd3, 0x65, 0x97, 0x88, 0x45, 0x84, 0x92, 0x0d, 0x0b, 0x56, 0x3c, 0x01, 0x9a, 0x6b, 0x87,
-	0xd2, 0x0d, 0x12, 0x2b, 0xcf, 0xfc, 0xee, 0x99, 0x73, 0x8f, 0xaf, 0xc7, 0x84, 0x2d, 0x84, 0xe6,
-	0x89, 0xa9, 0x40, 0xce, 0x84, 0xcc, 0x93, 0x4a, 0xa9, 0x22, 0xae, 0xb4, 0xb2, 0x8a, 0xf6, 0x5d,
-	0x25, 0xde, 0x56, 0x0e, 0xa2, 0x5c, 0xa9, 0xbc, 0x80, 0x04, 0x8b, 0xd3, 0xe5, 0x3c, 0xb1, 0xa2,
-	0x04, 0x63, 0x79, 0x59, 0xd5, 0xfa, 0x83, 0xfd, 0x5c, 0xe5, 0x0a, 0x97, 0x89, 0x5b, 0xd5, 0x74,
-	0xc8, 0x49, 0x70, 0x52, 0x70, 0x51, 0x9e, 0xcb, 0xb9, 0xa2, 0x8c, 0x74, 0x78, 0x96, 0xa9, 0xa5,
-	0xb4, 0xcc, 0x1b, 0x78, 0xa3, 0x20, 0xdd, 0x6e, 0xe9, 0x7d, 0x12, 0xb8, 0xd6, 0x13, 0xc9, 0x4b,
-	0x60, 0x3b, 0x58, 0xeb, 0x3a, 0xf0, 0x8a, 0x97, 0x40, 0x1f, 0x10, 0x52, 0x70, 0x63, 0x27, 0x99,
-	0x33, 0x62, 0xed, 0x81, 0x37, 0xf2, 0xd3, 0xc0, 0x11, 0x74, 0x1e, 0xbe, 0x26, 0xdd, 0x31, 0xe8,
-	0xba, 0x43, 0x44, 0x7a, 0xea, 0x83, 0x04, 0x3d, 0xd1, 0xaa, 0x00, 0xc3, 0xbc, 0x41, 0x7b, 0xe4,
-	0xa7, 0x04, 0x51, 0xea, 0x08, 0x7d, 0x48, 0xfe, 0xaf, 0x05, 0x4d, 0x67, 0xc3, 0x76, 0x06, 0xed,
-	0x51, 0x90, 0xf6, 0x91, 0x3e, 0x6f, 0xe0, 0xa1, 0xff, 0xfd, 0x73, 0xe4, 0x0d, 0x7f, 0xb4, 0xc9,
-	0x7f, 0x97, 0xcd, 0x00, 0xc6, 0x4a, 0x15, 0x94, 0x12, 0x1f, 0x13, 0xd6, 0xe9, 0x71, 0xed, 0x5a,
-	0x62, 0xb0, 0x89, 0xb1, 0x5c, 0x5b, 0x0c, 0xef, 0xa7, 0x04, 0xd1, 0xa5, 0x23, 0xee, 0xdd, 0x6a,
-	0x01, 0xc8, 0x59, 0x93, 0xbe, 0x8b, 0xe0, 0x4c, 0xce, 0xe8, 0x3e, 0xd9, 0xb5, 0x6a, 0x01, 0x92,
-	0xf9, 0x68, 0x59, 0x6f, 0xe8, 0x05, 0xf1, 0x35, 0xb7, 0xc0, 0x76, 0x1d, 0x3c, 0x3e, 0xba, 0x5e,
-	0x45, 0xad, 0xaf, 0xab, 0xe8, 0x51, 0x2e, 0xec, 0xdb, 0xe5, 0x34, 0xce, 0x54, 0x99, 0x64, 0xca,
-	0x94, 0xca, 0x34, 0x8f, 0x27, 0x66, 0xb6, 0x48, 0xec, 0x55, 0x05, 0x26, 0x3e, 0x85, 0xec, 0xe7,
-	0x2a, 0xea, 0x5d, 0xf1, 0xb2, 0x38, 0x1c, 0x3a, 0x8f, 0x61, 0x8a, 0x56, 0x2e, 0xe6, 0x7b, 0x65,
-	0x61, 0xf2, 0x6e, 0xa9, 0xf4, 0xb2, 0x64, 0x7b, 0x75, 0x4c, 0x87, 0x2e, 0x90, 0xfc, 0x16, 0x54,
-	0xa0, 0x85, 0x9a, 0xb1, 0xce, 0xad, 0x60, 0x8c, 0xc4, 0x8d, 0x0e, 0x05, 0x20, 0x79, 0x66, 0x4b,
-	0x90, 0x96, 0x75, 0x51, 0xd3, 0x77, 0xf4, 0x6c, 0x0b, 0x69, 0x42, 0xf6, 0x70, 0x96, 0x86, 0x05,
-	0x03, 0x6f, 0xd4, 0x7b, 0x7a, 0x2f, 0xbe, 0x73, 0x91, 0xe2, 0xed, 0xb7, 0x4a, 0x1b, 0x19, 0x3d,
-	0x22, 0xfd, 0x29, 0x48, 0x98, 0x8b, 0x4c, 0x70, 0x2d, 0xc0, 0x30, 0xf2, 0xf7, 0x73, 0x77, 0xd5,
-	0xf4, 0x05, 0xe9, 0x4c, 0x79, 0xc1, 0x65, 0x06, 0xac, 0x87, 0xe3, 0x8a, 0xff, 0x61, 0x5c, 0xe7,
-	0xd2, 0xa6, 0xdb, 0xe3, 0xc7, 0xa7, 0xd7, 0xeb, 0xd0, 0xbb, 0x59, 0x87, 0xde, 0xb7, 0x75, 0xe8,
-	0x7d, 0xda, 0x84, 0xad, 0x9b, 0x4d, 0xd8, 0xfa, 0xb2, 0x09, 0x5b, 0x6f, 0x1e, 0xff, 0x61, 0xf5,
-	0x52, 0x68, 0x7e, 0xa2, 0x34, 0x24, 0x06, 0x16, 0x5c, 0x24, 0x1f, 0x6f, 0x7f, 0x1e, 0xb4, 0x9c,
-	0xee, 0xe1, 0xc5, 0x7f, 0xf6, 0x2b, 0x00, 0x00, 0xff, 0xff, 0xad, 0x66, 0xa7, 0x3b, 0x5a, 0x03,
-	0x00, 0x00,
+	// 703 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x54, 0x4d, 0x6b, 0x1b, 0x3b,
+	0x14, 0xf5, 0x24, 0x63, 0xc7, 0x96, 0xed, 0xbc, 0xf7, 0xf4, 0x1e, 0x2f, 0x22, 0xa1, 0xb6, 0x6b,
+	0x28, 0x35, 0x85, 0x7a, 0x20, 0x5d, 0x14, 0x42, 0x17, 0xa9, 0x1d, 0x2f, 0x42, 0xa0, 0xa4, 0x93,
+	0x42, 0x43, 0x37, 0x46, 0x1e, 0x2b, 0x13, 0x91, 0x19, 0x69, 0x3a, 0x92, 0x9b, 0xf8, 0x5f, 0x14,
+	0xba, 0xed, 0xa2, 0x3f, 0x27, 0xcb, 0x2c, 0x4b, 0x17, 0xa1, 0x24, 0x9b, 0xae, 0xfb, 0x0b, 0x8a,
+	0xee, 0x68, 0xfc, 0x51, 0x48, 0xe8, 0xca, 0x9a, 0x73, 0xcf, 0x3d, 0xba, 0x3a, 0x47, 0x16, 0x22,
+	0x67, 0x3c, 0xa5, 0x9e, 0x4a, 0x98, 0x18, 0x73, 0x11, 0x7a, 0x89, 0x94, 0x51, 0x37, 0x49, 0xa5,
+	0x96, 0xb8, 0x6e, 0x2a, 0xdd, 0xbc, 0xb2, 0xd9, 0x0c, 0xa5, 0x0c, 0x23, 0xe6, 0x41, 0x71, 0x34,
+	0x39, 0xf1, 0x34, 0x8f, 0x99, 0xd2, 0x34, 0x4e, 0x32, 0xfe, 0xe6, 0x7f, 0xa1, 0x0c, 0x25, 0x2c,
+	0x3d, 0xb3, 0xca, 0xd0, 0x36, 0x45, 0x95, 0x7e, 0x44, 0x79, 0xbc, 0x2f, 0x4e, 0x24, 0x26, 0x68,
+	0x8d, 0x06, 0x81, 0x9c, 0x08, 0x4d, 0x9c, 0x96, 0xd3, 0xa9, 0xf8, 0xf9, 0x27, 0xde, 0x42, 0x15,
+	0xb3, 0xf5, 0x50, 0xd0, 0x98, 0x91, 0x15, 0xa8, 0x95, 0x0d, 0xf0, 0x8a, 0xc6, 0x0c, 0x3f, 0x40,
+	0x28, 0xa2, 0x4a, 0x0f, 0x03, 0x23, 0x44, 0x56, 0x5b, 0x4e, 0xc7, 0xf5, 0x2b, 0x06, 0x01, 0xe5,
+	0xf6, 0x31, 0x2a, 0x1f, 0xb2, 0x34, 0xdb, 0xa1, 0x89, 0xaa, 0xf2, 0x5c, 0xb0, 0x74, 0x98, 0xca,
+	0x88, 0x29, 0xe2, 0xb4, 0x56, 0x3b, 0xae, 0x8f, 0x00, 0xf2, 0x0d, 0x82, 0x1f, 0xa1, 0xf5, 0x8c,
+	0x60, 0x77, 0x56, 0x64, 0xa5, 0xb5, 0xda, 0xa9, 0xf8, 0x75, 0x40, 0x5f, 0x5a, 0x70, 0xc7, 0xfd,
+	0xf1, 0xa5, 0xe9, 0xb4, 0x77, 0x51, 0xed, 0x2d, 0xe3, 0xe1, 0xa9, 0x66, 0x63, 0xd3, 0x8d, 0x31,
+	0x72, 0x8d, 0x2e, 0x0c, 0xef, 0xfa, 0xb0, 0xc6, 0xff, 0xa3, 0xd2, 0x39, 0x70, 0x60, 0x6c, 0xd7,
+	0xb7, 0x5f, 0x56, 0x61, 0x1f, 0xfd, 0x95, 0x2b, 0x58, 0xed, 0x7b, 0x4c, 0xb8, 0x5f, 0xea, 0x93,
+	0x83, 0xfe, 0xce, 0xb5, 0x66, 0xe7, 0x7d, 0x8e, 0x8a, 0xf3, 0x93, 0x56, 0xb7, 0xb7, 0xba, 0x4b,
+	0xa1, 0x75, 0x17, 0xa7, 0xef, 0xb9, 0x97, 0xd7, 0xcd, 0x82, 0x9f, 0xf1, 0xf1, 0x2e, 0x2a, 0x2f,
+	0x39, 0x50, 0xdd, 0x6e, 0xdc, 0xd1, 0x6b, 0xe7, 0xb6, 0xed, 0xb3, 0x2e, 0x3b, 0xd5, 0xe7, 0x22,
+	0xaa, 0x1d, 0xd9, 0x96, 0x43, 0x29, 0x23, 0xe3, 0x11, 0x84, 0x98, 0x9d, 0x0d, 0xd6, 0x26, 0x15,
+	0xc8, 0x6e, 0xa8, 0x34, 0x4d, 0xf3, 0xd3, 0x21, 0x80, 0x8e, 0x0c, 0x62, 0xe2, 0xcf, 0x08, 0x4c,
+	0x8c, 0x6d, 0xc0, 0x65, 0x00, 0x06, 0x62, 0x8c, 0x1f, 0xa2, 0x9a, 0x2d, 0x5e, 0x24, 0x3c, 0x9d,
+	0x12, 0x17, 0xea, 0x99, 0xe2, 0x00, 0x20, 0x7c, 0x8c, 0x8a, 0x29, 0xd5, 0x4c, 0x91, 0xa2, 0x09,
+	0xb3, 0xd7, 0x33, 0xa3, 0x7e, 0xbb, 0x6e, 0x3e, 0x09, 0xb9, 0x3e, 0x9d, 0x8c, 0xba, 0x81, 0x8c,
+	0xbd, 0x40, 0xaa, 0x58, 0x2a, 0xfb, 0xf3, 0x54, 0x8d, 0xcf, 0x3c, 0x3d, 0x4d, 0x98, 0xea, 0xee,
+	0xb1, 0xa0, 0x2f, 0xb9, 0xf8, 0x79, 0xdd, 0xac, 0x4d, 0x69, 0x1c, 0xed, 0xb4, 0x41, 0xa8, 0xed,
+	0x67, 0x82, 0x66, 0xf4, 0x0f, 0x52, 0xb3, 0xe1, 0xfb, 0x89, 0x4c, 0x27, 0x31, 0x29, 0x65, 0xa3,
+	0x1b, 0xe8, 0x35, 0x20, 0x33, 0x42, 0xc2, 0x52, 0x2e, 0xc7, 0x64, 0x6d, 0x4e, 0x38, 0x04, 0xc4,
+	0xdc, 0x38, 0x20, 0x30, 0x41, 0x03, 0x1d, 0x33, 0xa1, 0x49, 0x19, 0x38, 0x75, 0x83, 0x0e, 0x72,
+	0x10, 0x7b, 0xa8, 0x04, 0x57, 0x50, 0x91, 0x4a, 0xcb, 0xe9, 0x54, 0xb7, 0x37, 0x7e, 0x8b, 0x23,
+	0x8f, 0xdc, 0xb7, 0x34, 0x3c, 0x40, 0xf5, 0x11, 0x13, 0xec, 0x84, 0x07, 0x9c, 0xa6, 0x9c, 0x29,
+	0x82, 0xa0, 0xaf, 0x79, 0x47, 0x8c, 0xb3, 0xfe, 0xe5, 0x2e, 0x7c, 0x80, 0xca, 0x23, 0x1a, 0x51,
+	0x11, 0x30, 0x45, 0xaa, 0xe0, 0x9e, 0x67, 0xdd, 0x7b, 0xfc, 0x07, 0xee, 0x19, 0xeb, 0xfc, 0x99,
+	0x80, 0x89, 0x6a, 0x3c, 0x15, 0x34, 0xe6, 0xc1, 0xd0, 0xd8, 0x47, 0x6a, 0x2d, 0xa7, 0x53, 0xf6,
+	0xab, 0x16, 0xf3, 0xa9, 0x66, 0xb8, 0x8b, 0xfe, 0x5d, 0xa4, 0xe4, 0xbe, 0xd5, 0xc1, 0x93, 0x7f,
+	0x16, 0x98, 0xd6, 0xbe, 0x17, 0x68, 0x0b, 0xfe, 0xfc, 0x4b, 0x4d, 0x01, 0x8d, 0x82, 0xa1, 0x79,
+	0x80, 0xc8, 0x3a, 0xf4, 0x6d, 0x18, 0xca, 0xde, 0xbc, 0xb7, 0x4f, 0xa3, 0xe0, 0x0d, 0x8f, 0x59,
+	0x6f, 0xef, 0xf2, 0xa6, 0xe1, 0x5c, 0xdd, 0x34, 0x9c, 0xef, 0x37, 0x0d, 0xe7, 0xe3, 0x6d, 0xa3,
+	0x70, 0x75, 0xdb, 0x28, 0x7c, 0xbd, 0x6d, 0x14, 0xde, 0x2d, 0xde, 0x8d, 0x03, 0x9e, 0xd2, 0xbe,
+	0x4c, 0x99, 0xa7, 0xd8, 0x19, 0xe5, 0xde, 0xc5, 0xfc, 0x3d, 0x84, 0x53, 0x8e, 0x4a, 0xf0, 0x96,
+	0x3d, 0xfb, 0x15, 0x00, 0x00, 0xff, 0xff, 0xd4, 0x60, 0xba, 0x37, 0x2d, 0x05, 0x00, 0x00,
 }
 
 func (this *PermInfo) Equal(that interface{}) bool {
@@ -332,6 +525,97 @@ func (this *PermInfo) Equal(that interface{}) bool {
 	}
 	for i := range this.OwnerAccounts {
 		if this.OwnerAccounts[i] != that1.OwnerAccounts[i] {
+			return false
+		}
+	}
+	return true
+}
+func (this *WeightedRole) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*WeightedRole)
+	if !ok {
+		that2, ok := that.(WeightedRole)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.Role != that1.Role {
+		return false
+	}
+	if this.Weight != that1.Weight {
+		return false
+	}
+	return true
+}
+func (this *WeightedAccount) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*WeightedAccount)
+	if !ok {
+		that2, ok := that.(WeightedAccount)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.Account != that1.Account {
+		return false
+	}
+	if this.Weight != that1.Weight {
+		return false
+	}
+	return true
+}
+func (this *WeightedPermInfo) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*WeightedPermInfo)
+	if !ok {
+		that2, ok := that.(WeightedPermInfo)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if len(this.Roles) != len(that1.Roles) {
+		return false
+	}
+	for i := range this.Roles {
+		if !this.Roles[i].Equal(&that1.Roles[i]) {
+			return false
+		}
+	}
+	if len(this.Accounts) != len(that1.Accounts) {
+		return false
+	}
+	for i := range this.Accounts {
+		if !this.Accounts[i].Equal(&that1.Accounts[i]) {
 			return false
 		}
 	}
@@ -429,6 +713,125 @@ func (m *PermInfo) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *WeightedRole) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *WeightedRole) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *WeightedRole) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Weight != 0 {
+		i = encodeVarintPool(dAtA, i, uint64(m.Weight))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.Role != 0 {
+		i = encodeVarintPool(dAtA, i, uint64(m.Role))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *WeightedAccount) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *WeightedAccount) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *WeightedAccount) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Weight != 0 {
+		i = encodeVarintPool(dAtA, i, uint64(m.Weight))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Account) > 0 {
+		i -= len(m.Account)
+		copy(dAtA[i:], m.Account)
+		i = encodeVarintPool(dAtA, i, uint64(len(m.Account)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *WeightedPermInfo) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *WeightedPermInfo) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *WeightedPermInfo) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Accounts) > 0 {
+		for iNdEx := len(m.Accounts) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Accounts[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintPool(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	if len(m.Roles) > 0 {
+		for iNdEx := len(m.Roles) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Roles[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintPool(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
 func (m *SpendingPool) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -449,16 +852,40 @@ func (m *SpendingPool) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	{
-		size := m.Balance.Size()
-		i -= size
-		if _, err := m.Balance.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
-		}
-		i = encodeVarintPool(dAtA, i, uint64(size))
+	if m.LastDynamicRateCalcTime != 0 {
+		i = encodeVarintPool(dAtA, i, uint64(m.LastDynamicRateCalcTime))
+		i--
+		dAtA[i] = 0x70
 	}
-	i--
-	dAtA[i] = 0x5a
+	if m.DynamicRatePeriod != 0 {
+		i = encodeVarintPool(dAtA, i, uint64(m.DynamicRatePeriod))
+		i--
+		dAtA[i] = 0x68
+	}
+	if m.DynamicRate {
+		i--
+		if m.DynamicRate {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x60
+	}
+	if len(m.Balances) > 0 {
+		for iNdEx := len(m.Balances) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size := m.Balances[iNdEx].Size()
+				i -= size
+				if _, err := m.Balances[iNdEx].MarshalTo(dAtA[i:]); err != nil {
+					return 0, err
+				}
+				i = encodeVarintPool(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x5a
+		}
+	}
 	if m.Beneficiaries != nil {
 		{
 			size, err := m.Beneficiaries.MarshalToSizedBuffer(dAtA[:i])
@@ -498,22 +925,24 @@ func (m *SpendingPool) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x30
 	}
-	{
-		size := m.Rate.Size()
-		i -= size
-		if _, err := m.Rate.MarshalTo(dAtA[i:]); err != nil {
-			return 0, err
+	if len(m.Rates) > 0 {
+		for iNdEx := len(m.Rates) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size := m.Rates[iNdEx].Size()
+				i -= size
+				if _, err := m.Rates[iNdEx].MarshalTo(dAtA[i:]); err != nil {
+					return 0, err
+				}
+				i = encodeVarintPool(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x2a
 		}
-		i = encodeVarintPool(dAtA, i, uint64(size))
 	}
-	i--
-	dAtA[i] = 0x2a
-	if len(m.Token) > 0 {
-		i -= len(m.Token)
-		copy(dAtA[i:], m.Token)
-		i = encodeVarintPool(dAtA, i, uint64(len(m.Token)))
+	if m.ClaimExpiry != 0 {
+		i = encodeVarintPool(dAtA, i, uint64(m.ClaimExpiry))
 		i--
-		dAtA[i] = 0x22
+		dAtA[i] = 0x20
 	}
 	if m.ClaimEnd != 0 {
 		i = encodeVarintPool(dAtA, i, uint64(m.ClaimEnd))
@@ -588,6 +1017,58 @@ func (m *PermInfo) Size() (n int) {
 	return n
 }
 
+func (m *WeightedRole) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Role != 0 {
+		n += 1 + sovPool(uint64(m.Role))
+	}
+	if m.Weight != 0 {
+		n += 1 + sovPool(uint64(m.Weight))
+	}
+	return n
+}
+
+func (m *WeightedAccount) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Account)
+	if l > 0 {
+		n += 1 + l + sovPool(uint64(l))
+	}
+	if m.Weight != 0 {
+		n += 1 + sovPool(uint64(m.Weight))
+	}
+	return n
+}
+
+func (m *WeightedPermInfo) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Roles) > 0 {
+		for _, e := range m.Roles {
+			l = e.Size()
+			n += 1 + l + sovPool(uint64(l))
+		}
+	}
+	if len(m.Accounts) > 0 {
+		for _, e := range m.Accounts {
+			l = e.Size()
+			n += 1 + l + sovPool(uint64(l))
+		}
+	}
+	return n
+}
+
 func (m *SpendingPool) Size() (n int) {
 	if m == nil {
 		return 0
@@ -604,12 +1085,15 @@ func (m *SpendingPool) Size() (n int) {
 	if m.ClaimEnd != 0 {
 		n += 1 + sovPool(uint64(m.ClaimEnd))
 	}
-	l = len(m.Token)
-	if l > 0 {
-		n += 1 + l + sovPool(uint64(l))
+	if m.ClaimExpiry != 0 {
+		n += 1 + sovPool(uint64(m.ClaimExpiry))
 	}
-	l = m.Rate.Size()
-	n += 1 + l + sovPool(uint64(l))
+	if len(m.Rates) > 0 {
+		for _, e := range m.Rates {
+			l = e.Size()
+			n += 1 + l + sovPool(uint64(l))
+		}
+	}
 	if m.VoteQuorum != 0 {
 		n += 1 + sovPool(uint64(m.VoteQuorum))
 	}
@@ -627,8 +1111,21 @@ func (m *SpendingPool) Size() (n int) {
 		l = m.Beneficiaries.Size()
 		n += 1 + l + sovPool(uint64(l))
 	}
-	l = m.Balance.Size()
-	n += 1 + l + sovPool(uint64(l))
+	if len(m.Balances) > 0 {
+		for _, e := range m.Balances {
+			l = e.Size()
+			n += 1 + l + sovPool(uint64(l))
+		}
+	}
+	if m.DynamicRate {
+		n += 2
+	}
+	if m.DynamicRatePeriod != 0 {
+		n += 1 + sovPool(uint64(m.DynamicRatePeriod))
+	}
+	if m.LastDynamicRateCalcTime != 0 {
+		n += 1 + sovPool(uint64(m.LastDynamicRateCalcTime))
+	}
 	return n
 }
 
@@ -929,6 +1426,313 @@ func (m *PermInfo) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+func (m *WeightedRole) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowPool
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: WeightedRole: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: WeightedRole: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Role", wireType)
+			}
+			m.Role = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPool
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Role |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Weight", wireType)
+			}
+			m.Weight = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPool
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Weight |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipPool(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthPool
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *WeightedAccount) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowPool
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: WeightedAccount: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: WeightedAccount: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Account", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPool
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthPool
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPool
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Account = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Weight", wireType)
+			}
+			m.Weight = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPool
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Weight |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipPool(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthPool
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *WeightedPermInfo) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowPool
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: WeightedPermInfo: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: WeightedPermInfo: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Roles", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPool
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthPool
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthPool
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Roles = append(m.Roles, WeightedRole{})
+			if err := m.Roles[len(m.Roles)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Accounts", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPool
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthPool
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthPool
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Accounts = append(m.Accounts, WeightedAccount{})
+			if err := m.Accounts[len(m.Accounts)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipPool(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthPool
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
 func (m *SpendingPool) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1029,10 +1833,10 @@ func (m *SpendingPool) Unmarshal(dAtA []byte) error {
 				}
 			}
 		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Token", wireType)
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ClaimExpiry", wireType)
 			}
-			var stringLen uint64
+			m.ClaimExpiry = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowPool
@@ -1042,27 +1846,14 @@ func (m *SpendingPool) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				m.ClaimExpiry |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthPool
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthPool
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Token = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
 		case 5:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Rate", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Rates", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1090,7 +1881,9 @@ func (m *SpendingPool) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.Rate.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			var v github_com_cosmos_cosmos_sdk_types.DecCoin
+			m.Rates = append(m.Rates, v)
+			if err := m.Rates[len(m.Rates)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -1217,7 +2010,7 @@ func (m *SpendingPool) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.Beneficiaries == nil {
-				m.Beneficiaries = &PermInfo{}
+				m.Beneficiaries = &WeightedPermInfo{}
 			}
 			if err := m.Beneficiaries.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -1225,7 +2018,7 @@ func (m *SpendingPool) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 11:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Balance", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Balances", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1253,10 +2046,70 @@ func (m *SpendingPool) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.Balance.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			var v github_com_cosmos_cosmos_sdk_types.Coin
+			m.Balances = append(m.Balances, v)
+			if err := m.Balances[len(m.Balances)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
+		case 12:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DynamicRate", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPool
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.DynamicRate = bool(v != 0)
+		case 13:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DynamicRatePeriod", wireType)
+			}
+			m.DynamicRatePeriod = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPool
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.DynamicRatePeriod |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 14:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field LastDynamicRateCalcTime", wireType)
+			}
+			m.LastDynamicRateCalcTime = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPool
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.LastDynamicRateCalcTime |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipPool(dAtA[iNdEx:])

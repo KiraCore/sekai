@@ -3,9 +3,9 @@ package types
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
-
 	"github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/stretchr/testify/require"
 )
 
 func TestVotes_Getters(t *testing.T) {
@@ -13,17 +13,17 @@ func TestVotes_Getters(t *testing.T) {
 	addr := types.AccAddress("some addr")
 
 	votes := Votes{
-		NewVote(proposalID, addr, OptionYes, 0),
-		NewVote(proposalID, addr, OptionYes, 0),
-		NewVote(proposalID, addr, OptionYes, 0),
-		NewVote(proposalID, addr, OptionYes, 0),
-		NewVote(proposalID, addr, OptionYes, 0),
-		NewVote(proposalID, addr, OptionNoWithVeto, 0),
-		NewVote(proposalID, addr, OptionNoWithVeto, 0),
-		NewVote(proposalID, addr, OptionNoWithVeto, 0),
-		NewVote(proposalID, addr, OptionAbstain, 0),
-		NewVote(proposalID, addr, OptionAbstain, 0),
-		NewVote(proposalID, addr, OptionNo, 0),
+		NewVote(proposalID, addr, OptionYes, sdk.ZeroDec()),
+		NewVote(proposalID, addr, OptionYes, sdk.ZeroDec()),
+		NewVote(proposalID, addr, OptionYes, sdk.ZeroDec()),
+		NewVote(proposalID, addr, OptionYes, sdk.ZeroDec()),
+		NewVote(proposalID, addr, OptionYes, sdk.ZeroDec()),
+		NewVote(proposalID, addr, OptionNoWithVeto, sdk.ZeroDec()),
+		NewVote(proposalID, addr, OptionNoWithVeto, sdk.ZeroDec()),
+		NewVote(proposalID, addr, OptionNoWithVeto, sdk.ZeroDec()),
+		NewVote(proposalID, addr, OptionAbstain, sdk.ZeroDec()),
+		NewVote(proposalID, addr, OptionAbstain, sdk.ZeroDec()),
+		NewVote(proposalID, addr, OptionNo, sdk.ZeroDec()),
 	}
 
 	calculatedVotes := CalculateVotes(votes, 3)
@@ -47,16 +47,16 @@ func TestCalculatedVotes_ProcessResult(t *testing.T) {
 		{
 			name: "more than 50% Yes",
 			votes: Votes{
-				NewVote(proposalID, addr, OptionYes, 0),
-				NewVote(proposalID, addr, OptionYes, 0),
-				NewVote(proposalID, addr, OptionYes, 0),
-				NewVote(proposalID, addr, OptionYes, 0),
-				NewVote(proposalID, addr, OptionYes, 0),
-				NewVote(proposalID, addr, OptionYes, 0),
-				NewVote(proposalID, addr, OptionNoWithVeto, 0),
-				NewVote(proposalID, addr, OptionNo, 0),
-				NewVote(proposalID, addr, OptionAbstain, 0),
-				NewVote(proposalID, addr, OptionAbstain, 0),
+				NewVote(proposalID, addr, OptionYes, sdk.ZeroDec()),
+				NewVote(proposalID, addr, OptionYes, sdk.ZeroDec()),
+				NewVote(proposalID, addr, OptionYes, sdk.ZeroDec()),
+				NewVote(proposalID, addr, OptionYes, sdk.ZeroDec()),
+				NewVote(proposalID, addr, OptionYes, sdk.ZeroDec()),
+				NewVote(proposalID, addr, OptionYes, sdk.ZeroDec()),
+				NewVote(proposalID, addr, OptionNoWithVeto, sdk.ZeroDec()),
+				NewVote(proposalID, addr, OptionNo, sdk.ZeroDec()),
+				NewVote(proposalID, addr, OptionAbstain, sdk.ZeroDec()),
+				NewVote(proposalID, addr, OptionAbstain, sdk.ZeroDec()),
 			},
 			actorsWithVeto: 3,
 			result:         Passed,
@@ -64,32 +64,32 @@ func TestCalculatedVotes_ProcessResult(t *testing.T) {
 		{
 			name: "different votes than yes equal or more than 50 : equal 50%",
 			votes: Votes{
-				NewVote(proposalID, addr, OptionYes, 0),
-				NewVote(proposalID, addr, OptionYes, 0),
-				NewVote(proposalID, addr, OptionYes, 0),
-				NewVote(proposalID, addr, OptionYes, 0),
-				NewVote(proposalID, addr, OptionYes, 0),
-				NewVote(proposalID, addr, OptionNoWithVeto, 0),
-				NewVote(proposalID, addr, OptionNo, 0),
-				NewVote(proposalID, addr, OptionNo, 0),
-				NewVote(proposalID, addr, OptionAbstain, 0),
-				NewVote(proposalID, addr, OptionAbstain, 0),
+				NewVote(proposalID, addr, OptionYes, sdk.ZeroDec()),
+				NewVote(proposalID, addr, OptionYes, sdk.ZeroDec()),
+				NewVote(proposalID, addr, OptionYes, sdk.ZeroDec()),
+				NewVote(proposalID, addr, OptionYes, sdk.ZeroDec()),
+				NewVote(proposalID, addr, OptionYes, sdk.ZeroDec()),
+				NewVote(proposalID, addr, OptionNoWithVeto, sdk.ZeroDec()),
+				NewVote(proposalID, addr, OptionNo, sdk.ZeroDec()),
+				NewVote(proposalID, addr, OptionNo, sdk.ZeroDec()),
+				NewVote(proposalID, addr, OptionAbstain, sdk.ZeroDec()),
+				NewVote(proposalID, addr, OptionAbstain, sdk.ZeroDec()),
 			},
 			result: Rejected,
 		},
 		{
 			name: "50% or more of actors with Veto reject by voting No With Veto",
 			votes: Votes{
-				NewVote(proposalID, addr, OptionYes, 0),
-				NewVote(proposalID, addr, OptionYes, 0),
-				NewVote(proposalID, addr, OptionYes, 0),
-				NewVote(proposalID, addr, OptionYes, 0),
-				NewVote(proposalID, addr, OptionYes, 0),
-				NewVote(proposalID, addr, OptionNoWithVeto, 0),
-				NewVote(proposalID, addr, OptionNoWithVeto, 0),
-				NewVote(proposalID, addr, OptionNo, 0),
-				NewVote(proposalID, addr, OptionAbstain, 0),
-				NewVote(proposalID, addr, OptionAbstain, 0),
+				NewVote(proposalID, addr, OptionYes, sdk.ZeroDec()),
+				NewVote(proposalID, addr, OptionYes, sdk.ZeroDec()),
+				NewVote(proposalID, addr, OptionYes, sdk.ZeroDec()),
+				NewVote(proposalID, addr, OptionYes, sdk.ZeroDec()),
+				NewVote(proposalID, addr, OptionYes, sdk.ZeroDec()),
+				NewVote(proposalID, addr, OptionNoWithVeto, sdk.ZeroDec()),
+				NewVote(proposalID, addr, OptionNoWithVeto, sdk.ZeroDec()),
+				NewVote(proposalID, addr, OptionNo, sdk.ZeroDec()),
+				NewVote(proposalID, addr, OptionAbstain, sdk.ZeroDec()),
+				NewVote(proposalID, addr, OptionAbstain, sdk.ZeroDec()),
 			},
 			actorsWithVeto: 3,
 			result:         RejectedWithVeto,

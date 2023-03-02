@@ -443,7 +443,6 @@ func TestHandler_ClaimCouncilor_HappyPath(t *testing.T) {
 		{
 			name: "all correct",
 			msg: &types.MsgClaimCouncilor{
-				Moniker: "TheMoniker",
 				Address: addr,
 			},
 		},
@@ -463,8 +462,8 @@ func TestHandler_ClaimCouncilor_HappyPath(t *testing.T) {
 			require.NoError(t, err)
 
 			expectedCouncilor := types.NewCouncilor(
-				tt.msg.Moniker,
 				tt.msg.Address,
+				types.CouncilorActive,
 			)
 
 			councilor, found := app.CustomGovKeeper.GetCouncilor(ctx, addr)
@@ -1372,7 +1371,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 		{
 			"voting time has finished",
 			types.NewMsgVoteProposal(
-				1, voterAddr, types.OptionAbstain, 0,
+				1, voterAddr, types.OptionAbstain, sdk.ZeroDec(),
 			),
 			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				actor := types.NewNetworkActor(
@@ -1412,7 +1411,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 		{
 			"Voter does not have permission to vote this proposal: Assign Permission",
 			types.NewMsgVoteProposal(
-				1, voterAddr, types.OptionAbstain, 0,
+				1, voterAddr, types.OptionAbstain, sdk.ZeroDec(),
 			),
 			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				actor := types.NewNetworkActor(
@@ -1448,7 +1447,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 		{
 			"Voter does not have permission to vote this proposal: Change Data Registry",
 			types.NewMsgVoteProposal(
-				1, voterAddr, types.OptionAbstain, 0,
+				1, voterAddr, types.OptionAbstain, sdk.ZeroDec(),
 			),
 			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				actor := types.NewNetworkActor(
@@ -1487,7 +1486,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 		{
 			"Proposal does not exist",
 			types.NewMsgVoteProposal(
-				1, voterAddr, types.OptionAbstain, 0,
+				1, voterAddr, types.OptionAbstain, sdk.ZeroDec(),
 			),
 			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				actor := types.NewNetworkActor(
@@ -1507,7 +1506,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 		{
 			"Voter is not active",
 			types.NewMsgVoteProposal(
-				1, voterAddr, types.OptionAbstain, 0,
+				1, voterAddr, types.OptionAbstain, sdk.ZeroDec(),
 			),
 			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				actor := types.NewDefaultActor(voterAddr)
@@ -1521,7 +1520,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 		{
 			"Voter does not have permission to vote this proposal: Change Network Property",
 			types.NewMsgVoteProposal(
-				1, voterAddr, types.OptionAbstain, 0,
+				1, voterAddr, types.OptionAbstain, sdk.ZeroDec(),
 			),
 			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				actor := types.NewNetworkActor(
@@ -1557,7 +1556,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 		{
 			"Voter does not have permission to vote this proposal: UpsertTokenAlias",
 			types.NewMsgVoteProposal(
-				1, voterAddr, types.OptionAbstain, 0,
+				1, voterAddr, types.OptionAbstain, sdk.ZeroDec(),
 			),
 			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
 				actor := types.NewNetworkActor(
@@ -1581,6 +1580,7 @@ func TestHandler_VoteProposal_Errors(t *testing.T) {
 						"theIcon",
 						12,
 						[]string{},
+						false,
 					),
 					ctx.BlockTime(),
 					ctx.BlockTime().Add(time.Second*20),
@@ -1651,14 +1651,14 @@ func TestHandler_VoteProposal(t *testing.T) {
 	require.NoError(t, err)
 	app.CustomGovKeeper.SaveProposal(ctx, proposal)
 
-	msg := types.NewMsgVoteProposal(proposal.ProposalId, voterAddr, types.OptionAbstain, 0)
+	msg := types.NewMsgVoteProposal(proposal.ProposalId, voterAddr, types.OptionAbstain, sdk.ZeroDec())
 	handler := gov.NewHandler(app.CustomGovKeeper)
 	_, err = handler(ctx, msg)
 	require.NoError(t, err)
 
 	vote, found := app.CustomGovKeeper.GetVote(ctx, proposal.ProposalId, voterAddr)
 	require.True(t, found)
-	require.Equal(t, types.NewVote(proposal.ProposalId, voterAddr, types.OptionAbstain, 0), vote)
+	require.Equal(t, types.NewVote(proposal.ProposalId, voterAddr, types.OptionAbstain, sdk.ZeroDec()), vote)
 }
 
 func setPermissionToAddr(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context, addr sdk.AccAddress, perm types.PermValue) error {
@@ -1949,7 +1949,7 @@ func TestHandler_SetProposalDurationsProposal(t *testing.T) {
 	)
 
 	router := app.CustomGovKeeper.GetProposalRouter()
-	err := router.ApplyProposal(ctx, 1, proposal, 0)
+	err := router.ApplyProposal(ctx, 1, proposal, sdk.ZeroDec())
 	require.NoError(t, err)
 
 	duration := app.CustomGovKeeper.GetProposalDuration(ctx, kiratypes.CreateRoleProposalType)

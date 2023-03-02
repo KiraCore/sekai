@@ -46,12 +46,24 @@ func (k Keeper) AddValidator(ctx sdk.Context, validator types.Validator) {
 	k.AddValidatorByConsAddr(ctx, validator)
 }
 
+func (k Keeper) RemoveValidator(ctx sdk.Context, validator types.Validator) {
+	store := ctx.KVStore(k.storeKey)
+	store.Delete(GetValidatorKey(validator.ValKey))
+	k.RemoveValidatorByConsAddr(ctx, validator)
+}
+
 // validator index
 func (k Keeper) AddValidatorByConsAddr(ctx sdk.Context, validator types.Validator) {
 	consPk := validator.GetConsAddr()
 
 	store := ctx.KVStore(k.storeKey)
 	store.Set(GetValidatorByConsAddrKey(consPk), validator.ValKey)
+}
+
+func (k Keeper) RemoveValidatorByConsAddr(ctx sdk.Context, validator types.Validator) {
+	consPk := validator.GetConsAddr()
+	store := ctx.KVStore(k.storeKey)
+	store.Delete(GetValidatorByConsAddrKey(consPk))
 }
 
 func (k Keeper) AddPendingValidator(ctx sdk.Context, validator types.Validator) {

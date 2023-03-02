@@ -24,7 +24,7 @@ message GenesisState {
   repeated NetworkActor network_actors = 5;
 
   NetworkProperties network_properties = 6;
-  repeated ExecutionFee execution_fees = 7;
+  repeated ExecutionFee execution_fees = 7 [ (gogoproto.nullable) = false ];
   AllowedMessages poor_network_messages = 8; 
 
   repeated Proposal proposals = 9 [ (gogoproto.nullable) = false ];

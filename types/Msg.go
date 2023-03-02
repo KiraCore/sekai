@@ -69,6 +69,15 @@ const (
 	MsgTypePause    = "pause"
 	MsgTypeUnpause  = "unpause"
 
+	// recovery module
+	MsgTypeRegisterRecoverySecret             = "register-recovery-secret"
+	MsgTypeRotateRecoveryAddress              = "rotate-recovery-address"
+	MsgTypeIssueRecoveryTokens                = "issue-recovery-tokens"
+	MsgTypeBurnRecoveryTokens                 = "burn-recovery-tokens"
+	MsgTypeRegisterRRTokenHolder              = "register-rrtoken-holder"
+	MsgTypeClaimRRHolderRewards               = "claim-rrholder-rewards"
+	MsgTypeRotateValidatorByHalfRRTokenHolder = "rotate-validator-by-half-rr-token-holder"
+
 	//upgrade module
 
 	// spending module
@@ -79,6 +88,7 @@ const (
 
 	// custody module
 	MsgTypeCreateCustody               = "create-custody"
+	MsgTypeDisableCustody              = "disable-custody"
 	MsgTypeAddToCustodyWhiteList       = "add-to-custody-whitelist"
 	MsgTypeAddToCustodyCustodians      = "add-to-custody-custodians"
 	MsgTypeRemoveFromCustodyCustodians = "remove-from-custody-custodians"
@@ -89,6 +99,12 @@ const (
 	MsgDeclineCustodyTransaction       = "decline-custody-transaction"
 	MsgPasswordConfirmTransaction      = "password-confirm-transaction"
 	MsgTypeSend                        = "custody-send"
+
+	// collectives module
+	MsgTypeCreateCollective   = "create-collective"
+	MsgTypeBondCollective     = "bond-collective"
+	MsgTypeDonateCollective   = "donate-collective"
+	MsgTypeWithdrawCollective = "withdraw-collective"
 )
 
 // Msg defines the interface a transaction message must fulfill.
@@ -138,15 +154,23 @@ var MsgFuncIDMapping = map[string]int64{
 	MsgTypeRegisterSpendingPoolBeneficiary: 43,
 	MsgTypeClaimSpendingPool:               44,
 
-	MsgTypeCreateCustody:               45,
-	MsgTypeAddToCustodyWhiteList:       46,
-	MsgTypeAddToCustodyCustodians:      47,
-	MsgTypeRemoveFromCustodyCustodians: 48,
-	MsgTypeDropCustodyCustodians:       49,
-	MsgTypeRemoveFromCustodyWhiteList:  50,
-	MsgTypeDropCustodyWhiteList:        51,
-	MsgApproveCustodyTransaction:       52,
-	MsgDeclineCustodyTransaction:       53,
+	MsgTypeUpsertStakingPool: 51,
+	MsgTypeDelegate:          52,
+	MsgTypeUndelegate:        53,
+	MsgTypeClaimRewards:      54,
+	MsgTypeClaimUndelegation: 55,
+	MsgTypeSetCompoundInfo:   56,
+	MsgTypeRegisterDelegator: 57,
+
+	MsgTypeCreateCustody:               61,
+	MsgTypeAddToCustodyWhiteList:       62,
+	MsgTypeAddToCustodyCustodians:      63,
+	MsgTypeRemoveFromCustodyCustodians: 64,
+	MsgTypeDropCustodyCustodians:       65,
+	MsgTypeRemoveFromCustodyWhiteList:  66,
+	MsgTypeDropCustodyWhiteList:        67,
+	MsgApproveCustodyTransaction:       68,
+	MsgDeclineCustodyTransaction:       69,
 }
 
 func MsgType(msg sdk.Msg) string {
