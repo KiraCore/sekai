@@ -33,11 +33,11 @@ assignRole validator poll_voter polltester3
 assignRole validator poll_voter polltester4
 assignRole validator poll_voter polltester5
 
-whitelistPermission validator 62 polltester1
-whitelistPermission validator 62 polltester2
-whitelistPermission validator 62 polltester3
-whitelistPermission validator 62 polltester4
-whitelistPermission validator 62 polltester5
+whitelistPermission validator 66 polltester1
+whitelistPermission validator 66 polltester2
+whitelistPermission validator 66 polltester3
+whitelistPermission validator 66 polltester4
+whitelistPermission validator 66 polltester5
 
 #createPoll 1
 createPoll polltester1 poll_voter yes,no,mbe string 1 3 1m
