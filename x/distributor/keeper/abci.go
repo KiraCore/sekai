@@ -66,4 +66,16 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 			k.DeleteValidatorVote(ctx, consAddr, vote.Height)
 		}
 	}
+
+	yearSnapshot := k.GetYearStartSnapshot(ctx)
+	month := int64(86400 * 30)
+	year := month * 12
+	if yearSnapshot.SnapshotTime == 0 || yearSnapshot.SnapshotTime+year < ctx.BlockTime().Unix() {
+		supply := k.bk.GetSupply(ctx, k.BondDenom(ctx))
+		yearSnapshot = types.YearStartSnapshot{
+			SnapshotTime:   ctx.BlockTime().Unix(),
+			SnapshotAmount: supply.Amount,
+		}
+		k.SetYearStartSnapshot(ctx, yearSnapshot)
+	}
 }
