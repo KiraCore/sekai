@@ -160,7 +160,8 @@ func TestSimappExportGenesis(t *testing.T) {
     "min_collective_bonding_time": "86400",
     "max_collective_outputs": "10",
     "min_collective_claim_period": "14400",	
-    "validator_recovery_bond": "300000"
+	  "validator_recovery_bond": "300000",	
+    "max_annual_inflation": "0.350000000000000000"
   },
   "execution_fees": [
     {
@@ -443,7 +444,8 @@ func TestExportInitGenesis(t *testing.T) {
     "min_collective_bonding_time": "86400",	
     "max_collective_outputs": "10",	
     "min_collective_claim_period": "14400",	
-    "validator_recovery_bond": "300000"
+    "validator_recovery_bond": "300000",	
+    "max_annual_inflation": "0.350000000000000000"
   },	
   "execution_fees": [	
     {	
