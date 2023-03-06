@@ -55,3 +55,11 @@ func (q Querier) SnapshotPeriodPerformance(c context.Context, request *types.Que
 		Performance:    performance,
 	}, nil
 }
+
+func (q Querier) YearStartSnapshot(c context.Context, request *types.QueryYearStartSnapshotRequest) (*types.QueryYearStartSnapshotResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+
+	return &types.QueryYearStartSnapshotResponse{
+		Snapshot: q.keeper.GetYearStartSnapshot(ctx),
+	}, nil
+}

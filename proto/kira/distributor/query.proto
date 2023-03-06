@@ -5,6 +5,7 @@ import "cosmos/base/query/v1beta1/pagination.proto";
 import "gogoproto/gogo.proto";
 import "google/protobuf/any.proto";
 import "google/api/annotations.proto";
+import "kira/distributor/genesis.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/distributor/types";
 
@@ -26,6 +27,10 @@ service Query {
   // SnapPeriodPerformance queries number of blocks signed during the snap period
   rpc SnapshotPeriodPerformance(QuerySnapshotPeriodPerformanceRequest) returns (QuerySnapshotPeriodPerformanceResponse) {
     option (google.api.http).get = "/kira/distributor/v1beta1/snapshot_period_performance/{validator_address}";
+  }
+  // Year start snapshot query
+  rpc YearStartSnapshot(QueryYearStartSnapshotRequest) returns (QueryYearStartSnapshotResponse) {
+    option (google.api.http).get = "/kira/distributor/v1beta1/year_start_snapshot";
   }
 }
 
@@ -61,4 +66,9 @@ message QuerySnapshotPeriodPerformanceRequest {
 message QuerySnapshotPeriodPerformanceResponse {
   int64 performance = 1;
   int64 snapshot_period = 2;
+}
+
+message QueryYearStartSnapshotRequest {}
+message QueryYearStartSnapshotResponse {
+  YearStartSnapshot snapshot = 1 [(gogoproto.nullable) = false];
 }

@@ -265,7 +265,6 @@ func NewInitApp(
 		app.GetSubspace(slashingtypes.ModuleName),
 	)
 	app.SpendingKeeper = spendingkeeper.NewKeeper(keys[spendingtypes.ModuleName], appCodec, app.BankKeeper, app.CustomGovKeeper)
-	app.UbiKeeper = ubikeeper.NewKeeper(keys[ubitypes.ModuleName], appCodec, app.BankKeeper, app.SpendingKeeper)
 	// NOTE: customStakingKeeper above is passed by reference, so that it will contain these hooks
 	app.CustomStakingKeeper = *customStakingKeeper.SetHooks(
 		stakingtypes.NewMultiStakingHooks(app.CustomSlashingKeeper.Hooks()),
@@ -323,6 +322,7 @@ func NewInitApp(
 		app.CustomStakingKeeper, app.CustomGovKeeper,
 		app.MultiStakingKeeper, app.RecoveryKeeper)
 	app.MultiStakingKeeper.SetDistrKeeper(app.DistrKeeper)
+	app.UbiKeeper = ubikeeper.NewKeeper(keys[ubitypes.ModuleName], appCodec, app.BankKeeper, app.SpendingKeeper, app.DistrKeeper)
 
 	proposalRouter := govtypes.NewProposalRouter(
 		[]govtypes.ProposalHandler{
