@@ -19,7 +19,9 @@ func (k Keeper) AllocateTokens(
 	ctx sdk.Context, sumPreviousPrecommitPower, totalPreviousPower int64,
 	previousProposer sdk.ConsAddress, bondedVotes []abci.VoteInfo,
 ) {
-
+	if !k.InflationPossible(ctx) {
+		return
+	}
 	// fetch and clear the collected fees for distribution, since this is
 	// called in BeginBlock, collected fees will be from the previous block
 	// (and distributed to the previous proposer)
@@ -33,6 +35,7 @@ func (k Keeper) AllocateTokens(
 	inflationRewards := totalSupply.Amount.ToDec().Mul(properties.InflationRate).Quo(sdk.NewDec(int64(properties.InflationPeriod))).TruncateInt()
 	inflationCoin := sdk.NewCoin(totalSupply.Denom, inflationRewards)
 
+	// XXX inflated here
 	if inflationRewards.IsPositive() {
 		err := k.bk.MintCoins(ctx, minttypes.ModuleName, sdk.Coins{inflationCoin})
 		if err != nil {

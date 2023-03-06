@@ -61,6 +61,9 @@ func (k Keeper) DeleteUBIRecord(ctx sdk.Context, name string) error {
 }
 
 func (k Keeper) ProcessUBIRecord(ctx sdk.Context, record types.UBIRecord) error {
+	if !k.dk.InflationPossible(ctx) {
+		return nil
+	}
 	currUnixTimestamp := uint64(ctx.BlockTime().Unix())
 	record.DistributionLast = currUnixTimestamp
 	k.SetUBIRecord(ctx, record)

@@ -12,15 +12,17 @@ type Keeper struct {
 	storeKey sdk.StoreKey
 	bk       types.BankKeeper
 	sk       types.SpendingKeeper
+	dk       types.DistrKeeper
 }
 
 // NewKeeper returns instance of a keeper
-func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryCodec, bk types.BankKeeper, sk types.SpendingKeeper) Keeper {
+func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryCodec, bk types.BankKeeper, sk types.SpendingKeeper, dk types.DistrKeeper) Keeper {
 	return Keeper{
 		cdc:      cdc,
 		storeKey: storeKey,
 		bk:       bk,
 		sk:       sk,
+		dk:       dk,
 	}
 }
 
