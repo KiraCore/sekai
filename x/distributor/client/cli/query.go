@@ -22,6 +22,7 @@ func NewQueryCmd() *cobra.Command {
 		GetCmdQueryFeesCollected(),
 		GetCmdSnapshotPeriod(),
 		GetCmdValidatorSnapshotPerformance(),
+		GetCmdYearStartSnapshot(),
 	)
 
 	return queryCmd
@@ -108,6 +109,29 @@ func GetCmdValidatorSnapshotPerformance() *cobra.Command {
 			res, err := queryClient.SnapshotPeriodPerformance(context.Background(), &types.QuerySnapshotPeriodPerformanceRequest{
 				ValidatorAddress: args[0],
 			})
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func GetCmdYearStartSnapshot() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "year-start-snapshot",
+		Short: "Year start snapshot",
+		Args:  cobra.MinimumNArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.YearStartSnapshot(context.Background(), &types.QueryYearStartSnapshotRequest{})
 			if err != nil {
 				return err
 			}

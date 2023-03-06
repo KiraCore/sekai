@@ -35,7 +35,6 @@ func (k Keeper) AllocateTokens(
 	inflationRewards := totalSupply.Amount.ToDec().Mul(properties.InflationRate).Quo(sdk.NewDec(int64(properties.InflationPeriod))).TruncateInt()
 	inflationCoin := sdk.NewCoin(totalSupply.Denom, inflationRewards)
 
-	// XXX inflated here
 	if inflationRewards.IsPositive() {
 		err := k.bk.MintCoins(ctx, minttypes.ModuleName, sdk.Coins{inflationCoin})
 		if err != nil {
