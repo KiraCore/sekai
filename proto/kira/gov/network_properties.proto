@@ -54,6 +54,7 @@ enum NetworkProperty {
     MAX_COLLECTIVE_OUTPUTS = 36 [(gogoproto.enumvalue_customname) = "MaxCollectiveOutputs"]; // limitation the maximum number of spending pools configuration per collective
     MIN_COLLECTIVE_CLAIM_PERIOD = 37 [(gogoproto.enumvalue_customname) = "MinCollectiveClaimPeriod"]; // in seconds, default 14400 - 4 hours
     VALIDATOR_RECOVERY_BOND = 38 [(gogoproto.enumvalue_customname) = "ValidatorRecoveryBond"]; // amount of KEX to spend for issuing validator recovery token
+    MAX_ANNUAL_INFLATION = 39 [(gogoproto.enumvalue_customname) = "MaxAnnualInflation"]; // range of 0 and 0.35
 }
 
 message NetworkPropertyValue {
@@ -118,4 +119,8 @@ message NetworkProperties {
     uint64 max_collective_outputs = 37; // limitation the maximum number of spending pools configuration per collective
     uint64 min_collective_claim_period = 38; // in seconds, default 14400 - 4 hours
     uint64 validator_recovery_bond = 39; // amount of KEX to spend for issuing validator recovery token
+    string max_annual_inflation = 40 [
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+      (gogoproto.nullable) = false
+    ]; // maximum % of kex by which supply can increase over the period of 1 year
 }
