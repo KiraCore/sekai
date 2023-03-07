@@ -88,6 +88,7 @@ func DefaultGenesis() *GenesisState {
 				PermVoteResetWholeCouncilorRankProposal,
 				PermCreateJailCouncilorProposal,
 				PermVoteJailCouncilorProposal,
+				PermCreatePollProposal,
 			}, nil),
 			uint64(RoleValidator): NewPermissions([]PermValue{PermClaimValidator}, nil),
 		},
@@ -132,7 +133,13 @@ func DefaultGenesis() *GenesisState {
 			MaxCollectiveOutputs:         10,
 			MinCollectiveClaimPeriod:     14400,                     // 4hrs
 			ValidatorRecoveryBond:        300000,                    // 300k KEX
-			MaxAnnualInflation:           sdk.NewDecWithPrec(35, 2), // 35%
+			MaxAnnualInflation:           sdk.NewDecWithPrec(35, 2), // 35%// 300k KEX
+			MaxProposalTitleSize:        128,
+			MaxProposalDescriptionSize:  1024,
+			MaxProposalPollOptionSize:   64,
+			MaxProposalPollOptionCount:  128,
+			MaxProposalReferenceSize:    512,
+			MaxProposalChecksumSize:     128,
 		},
 		ExecutionFees: []ExecutionFee{
 			{

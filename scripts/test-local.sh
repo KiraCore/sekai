@@ -34,6 +34,9 @@ echoInfo "INFO: Launching local network..."
 echoInfo "INFO: Testing wallets & transfers..."
 ./scripts/test-local/token-transfers.sh || ( systemctl2 stop sekai && exit 1 )
 
+echoInfo "INFO: Testing polls..."
+./scripts/test-local/poll-processes.sh || ( systemctl2 stop sekai && exit 1 )
+
 echoInfo "INFO: Testing account permissions whitelist, blacklist & clear..."
 ./scripts/test-local/account-permissions.sh || ( systemctl2 stop sekai && exit 1 )
 
