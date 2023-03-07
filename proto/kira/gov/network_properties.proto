@@ -55,6 +55,12 @@ enum NetworkProperty {
     MIN_COLLECTIVE_CLAIM_PERIOD = 37 [(gogoproto.enumvalue_customname) = "MinCollectiveClaimPeriod"]; // in seconds, default 14400 - 4 hours
     VALIDATOR_RECOVERY_BOND = 38 [(gogoproto.enumvalue_customname) = "ValidatorRecoveryBond"]; // amount of KEX to spend for issuing validator recovery token
     MAX_ANNUAL_INFLATION = 39 [(gogoproto.enumvalue_customname) = "MaxAnnualInflation"]; // range of 0 and 0.35
+    MAX_PROPOSAL_TITLE_SIZE = 40 [(gogoproto.enumvalue_customname) = "MaxProposalTitleSize"]; // maximum poll title size
+    MAX_PROPOSAL_DESCRIPTION_SIZE = 41 [(gogoproto.enumvalue_customname) = "MaxProposalDescriptionSize"]; // maximum poll description size
+    MAX_PROPOSAL_POLL_OPTION_SIZE = 42 [(gogoproto.enumvalue_customname) = "MaxProposalPollOptionSize"]; // maximum poll option size
+    MAX_PROPOSAL_POLL_OPTION_COUNT = 43 [(gogoproto.enumvalue_customname) = "MaxProposalPollOptionCount"]; // maximum poll option count
+    MAX_PROPOSAL_REFERENCE_SIZE = 44 [(gogoproto.enumvalue_customname) = "MaxProposalReferenceSize"]; // maximum poll reference size
+    MAX_PROPOSAL_CHECKSUM_SIZE = 45 [(gogoproto.enumvalue_customname) = "MaxProposalChecksumSize"]; // maximum poll checksum size
 }
 
 message NetworkPropertyValue {
@@ -123,4 +129,10 @@ message NetworkProperties {
       (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
       (gogoproto.nullable) = false
     ]; // maximum % of kex by which supply can increase over the period of 1 year
+    uint64 max_proposal_title_size = 41; // maximum title size in the proposal
+    uint64 max_proposal_description_size = 42; // maximum description size in the proposal
+    uint64 max_proposal_poll_option_size = 43; // maximum option size in the proposal
+    uint64 max_proposal_poll_option_count = 44; // maximum possible choices in the proposal
+    uint64 max_proposal_reference_size = 45; // maximum reference size in the proposal
+    uint64 max_proposal_checksum_size = 46; // maximum checksum size in the proposal
 }

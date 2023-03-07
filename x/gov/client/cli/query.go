@@ -38,6 +38,8 @@ func NewQueryCmd() *cobra.Command {
 		GetCmdQueryAllRoles(),
 		GetCmdQueryRolesByAddress(),
 		GetCmdQueryProposals(),
+		GetCmdQueryPolls(),
+		GetCmdQueryPollVotes(),
 		GetCmdQueryCouncilRegistry(),
 		GetCmdQueryProposal(),
 		GetCmdQueryVote(),
@@ -387,6 +389,68 @@ $ %s query gov proposals --voter cosmos1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
 	cmd.Flags().String(flagVoter, "", "(optional) filter by proposals voted on by voted")
 	flags.AddQueryFlagsToCmd(cmd)
 	flags.AddPaginationFlagsToCmd(cmd, "customgov")
+
+	return cmd
+}
+
+// GetCmdQueryPolls implements a query polls command. Command to Get a
+// poll ids.
+func GetCmdQueryPolls() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "polls [address]",
+		Short: "Get polls by address",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			accAddr, err := sdk.AccAddressFromBech32(args[0])
+
+			if err != nil {
+				return errors.Wrap(err, "invalid account address")
+			}
+
+			params := &types.QueryPollsListByAddress{Creator: accAddr}
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.PollsListByAddress(context.Background(), params)
+
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// GetCmdQueryPollVotes implements a query poll votes command. Command to Get a
+// poll votes by id.
+func GetCmdQueryPollVotes() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "poll-votes [ID]",
+		Short: "Get poll votes by id",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+			id, err := strconv.Atoi(args[0])
+
+			if err != nil {
+				return errors.Wrap(err, "invalid poll id")
+			}
+
+			params := &types.QueryPollsVotesByPollId{PollId: uint64(id)}
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.PollsVotesByPollId(context.Background(), params)
+
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
 
 	return cmd
 }

@@ -7,6 +7,7 @@ import "google/protobuf/any.proto";
 import "kira/gov/actor.proto";
 import "kira/gov/councilor.proto";
 import "kira/gov/proposal.proto";
+import "kira/gov/poll.proto";
 import "kira/gov/role.proto";
 import "kira/gov/execution_fee.proto";
 import "kira/gov/network_properties.proto";
@@ -65,6 +66,10 @@ service Msg {
     rpc CouncilorUnpause(MsgCouncilorUnpause) returns (MsgCouncilorUnpauseResponse);
     // CouncilorActivate - signal to the network that Councilor wishes to regain voting ability after unannounced absence
     rpc CouncilorActivate(MsgCouncilorActivate) returns (MsgCouncilorActivateResponse);
+    // PollCreate defines a method to create a new poll proposal
+    rpc PollCreate(MsgPollCreate) returns (MsgPollCreateResponse);
+    // PollVote defines a method for voting a poll proposal
+    rpc PollVote(MsgPollVote) returns (MsgPollVoteResponse);
 }
 
 
@@ -75,7 +80,7 @@ message MsgSubmitProposal {
     option (gogoproto.goproto_stringer) = false;
     option (gogoproto.stringer)         = false;
     option (gogoproto.goproto_getters)  = false;
-  
+
     bytes proposer = 1 [
         (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
     ];
@@ -126,3 +131,8 @@ message MsgCouncilorActivate {
     string sender = 1;
 }
 message MsgCouncilorActivateResponse {}
+
+message MsgPollCreateResponse {
+  uint64 pollID = 1;
+}
+message MsgPollVoteResponse {}
