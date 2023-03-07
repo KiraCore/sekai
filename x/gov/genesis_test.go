@@ -161,7 +161,8 @@ func TestSimappExportGenesis(t *testing.T) {
     "min_collective_bonding_time": "86400",
     "max_collective_outputs": "10",
     "min_collective_claim_period": "14400",	
-    "validator_recovery_bond": "300000",
+    "validator_recovery_bond": "300000",	
+    "max_annual_inflation": "0.350000000000000000",
 	"max_proposal_title_size": "128",
 	"max_proposal_description_size": "1024",
 	"max_proposal_poll_option_size": "64",
@@ -354,8 +355,9 @@ func TestExportInitGenesis(t *testing.T) {
 			MinCollectiveBond:            100_000, // in KEX
 			MinCollectiveBondingTime:     86400,   // in seconds
 			MaxCollectiveOutputs:         10,
-			MinCollectiveClaimPeriod:     14400,  // 4hrs
-			ValidatorRecoveryBond:        300000, // 300k KEX
+			MinCollectiveClaimPeriod:     14400,                     // 4hrs
+			ValidatorRecoveryBond:        300000,                    // 300k KEX
+			MaxAnnualInflation:           sdk.NewDecWithPrec(35, 2), // 35%
 			MaxProposalTitleSize:        128,
 			MaxProposalDescriptionSize:  1024,
 			MaxProposalPollOptionSize:   64,
@@ -455,7 +457,8 @@ func TestExportInitGenesis(t *testing.T) {
     "min_collective_bonding_time": "86400",	
     "max_collective_outputs": "10",	
     "min_collective_claim_period": "14400",	
-    "validator_recovery_bond": "300000",
+    "validator_recovery_bond": "300000",	
+    "max_annual_inflation": "0.350000000000000000",
 	"max_proposal_title_size": "128",
 	"max_proposal_description_size": "1024",
 	"max_proposal_poll_option_size": "64",

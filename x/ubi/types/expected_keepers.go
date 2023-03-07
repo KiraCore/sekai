@@ -26,3 +26,7 @@ type SpendingKeeper interface {
 	GetSpendingPool(ctx sdk.Context, name string) *spendingtypes.SpendingPool
 	DepositSpendingPoolFromModule(ctx sdk.Context, moduleName, poolName string, amounts sdk.Coins) error
 }
+
+type DistrKeeper interface {
+	InflationPossible(ctx sdk.Context) bool
+}

@@ -99,6 +99,7 @@ func (am AppModule) InitGenesis(
 	am.distributorKeeper.SetFeesCollected(ctx, genesisState.FeesCollected)
 	am.distributorKeeper.SetFeesTreasury(ctx, genesisState.FeesTreasury)
 	am.distributorKeeper.SetSnapPeriod(ctx, genesisState.SnapPeriod)
+	am.distributorKeeper.SetYearStartSnapshot(ctx, genesisState.YearStartSnapshot)
 
 	for _, vote := range genesisState.ValidatorVotes {
 		consAddr, err := sdk.ConsAddressFromBech32(vote.ConsAddr)
@@ -126,6 +127,7 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.Raw
 	genesisState.SnapPeriod = am.distributorKeeper.GetSnapPeriod(ctx)
 	genesisState.ValidatorVotes = am.distributorKeeper.GetAllValidatorVotes(ctx)
 	genesisState.PreviousProposer = am.distributorKeeper.GetPreviousProposerConsAddr(ctx).String()
+	genesisState.YearStartSnapshot = am.distributorKeeper.GetYearStartSnapshot(ctx)
 	return cdc.MustMarshalJSON(&genesisState)
 }
 
