@@ -72,6 +72,14 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 			res, err := msgServer.VoteProposal(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 
+		// Poll Proposal related
+		case *types.MsgPollCreate:
+			res, err := msgServer.PollCreate(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgPollVote:
+			res, err := msgServer.PollVote(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
+
 		// identity registrar related
 		case *types.MsgRegisterIdentityRecords:
 			res, err := msgServer.RegisterIdentityRecords(sdk.WrapSDKContext(ctx), msg)

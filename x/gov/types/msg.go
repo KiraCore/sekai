@@ -2,7 +2,6 @@ package types
 
 import (
 	"fmt"
-
 	"github.com/KiraCore/sekai/types"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -629,6 +628,87 @@ func (m *MsgVoteProposal) GetSignBytes() []byte {
 }
 
 func (m *MsgVoteProposal) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{
+		m.Voter,
+	}
+}
+
+// NewMsgPollCreate creates a new MsgPollCreate.
+//nolint:interfacer
+func NewMsgPollCreate(creator sdk.AccAddress, title, description string, reference string, checksum string, pollValues []string, roles []string, valueCount uint64, valueType string, possibleChoices uint64, duration string) *MsgPollCreate {
+	m := &MsgPollCreate{
+		Creator:         creator,
+		Title:           title,
+		Description:     description,
+		Reference:       reference,
+		Checksum:        checksum,
+		PollValues:      pollValues,
+		Roles:           roles,
+		ValueCount:      valueCount,
+		ValueType:       valueType,
+		PossibleChoices: possibleChoices,
+		Duration:        duration,
+	}
+
+	return m
+}
+
+func (m *MsgPollCreate) GetProposer() sdk.AccAddress {
+	return m.Creator
+}
+
+// Route implements Msg
+func (m MsgPollCreate) Route() string { return RouterKey }
+
+// Type implements Msg
+func (m MsgPollCreate) Type() string { return types.MsgTypeCreatePoll }
+
+// ValidateBasic implements Msg
+func (m MsgPollCreate) ValidateBasic() error {
+	if m.Creator.Empty() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, m.Creator.String())
+	}
+
+	return nil
+}
+
+func (m *MsgPollCreate) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{
+		m.Creator,
+	}
+}
+
+func NewMsgVotePoll(polllID uint64, voter sdk.AccAddress, option PollVoteOption, value string) *MsgPollVote {
+	return &MsgPollVote{
+		PollId: polllID,
+		Voter:  voter,
+		Option: option,
+		Value:  value,
+	}
+}
+
+func (m *MsgPollVote) Route() string {
+	return ModuleName
+}
+
+func (m *MsgPollVote) Type() string {
+	return types.MsgTypeVotePoll
+}
+
+func (m *MsgPollVote) ValidateBasic() error {
+	if m.Voter.Empty() {
+		return ErrEmptyProposerAccAddress
+	}
+
+	return nil
+}
+
+func (m *MsgPollVote) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *MsgPollVote) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{
 		m.Voter,
 	}

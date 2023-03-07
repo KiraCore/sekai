@@ -180,6 +180,10 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 						MinCollectiveClaimPeriod:     14400,  // 4hrs
 						ValidatorRecoveryBond:        300000, // 300k KEX
 						MaxAnnualInflation:           sdk.NewDecWithPrec(35, 2),
+						MaxProposalTitleSize:         128,
+						MaxProposalDescriptionSize:   1024,
+						MaxProposalPollOptionSize:    64,
+						MaxProposalPollOptionCount:   128,
 					},
 					ExecutionFees:               govGenesisV01228.ExecutionFees,
 					PoorNetworkMessages:         govGenesisV01228.PoorNetworkMessages,

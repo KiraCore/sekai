@@ -3,7 +3,6 @@ package keeper
 import (
 	"context"
 	"fmt"
-
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"google.golang.org/grpc/codes"
@@ -17,6 +16,15 @@ import (
 )
 
 var _ types.QueryServer = Keeper{}
+
+func (k Keeper) PollsVotesByPollId(goCtx context.Context, request *types.QueryPollsVotesByPollId) (*types.QueryPollsVotesByPollIdResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	votes := k.GetPollVotes(ctx, request.PollId)
+
+	return &types.QueryPollsVotesByPollIdResponse{
+		Votes: votes,
+	}, nil
+}
 
 // AllRoles return all roles registered
 func (k Keeper) AllRoles(goCtx context.Context, request *types.AllRolesRequest) (*types.AllRolesResponse, error) {
@@ -35,6 +43,20 @@ func (k Keeper) AllRoles(goCtx context.Context, request *types.AllRolesRequest) 
 
 	return &types.AllRolesResponse{
 		Roles: roleQueries,
+	}, nil
+}
+
+// PollsListByAddress return polls associated to an address
+func (k Keeper) PollsListByAddress(goCtx context.Context, request *types.QueryPollsListByAddress) (*types.QueryPollsListByAddressResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	polls, err := k.GetPollsByAddress(ctx, request.Creator)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryPollsListByAddressResponse{
+		Polls: polls,
 	}, nil
 }
 
@@ -762,7 +784,7 @@ func (k Keeper) QueryAddressesByWhitelistedRole(goCtx context.Context, req *type
 	addrs := []string{}
 	actorIter := k.GetNetworkActorsByRole(ctx, uint64(req.Role))
 	for ; actorIter.Valid(); actorIter.Next() {
-		actor := k.getNetworkActorOrFail(ctx, actorIter.Value())
+		actor := k.GetNetworkActorOrFail(ctx, actorIter.Value())
 		addrs = append(addrs, actor.Address.String())
 	}
 

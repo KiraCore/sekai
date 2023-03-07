@@ -3,11 +3,15 @@ package keeper
 import (
 	"context"
 	"fmt"
+	"sort"
+	"strconv"
+	"time"
 
 	"github.com/KiraCore/sekai/x/gov/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"golang.org/x/exp/utf8string"
 )
 
 type msgServer struct {
@@ -133,6 +137,136 @@ func (k msgServer) VoteProposal(
 		),
 	)
 	return &types.MsgVoteProposalResponse{}, nil
+}
+
+func (k msgServer) PollCreate(goCtx context.Context, msg *types.MsgPollCreate) (*types.MsgPollCreateResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	blockTime := ctx.BlockTime()
+	properties := k.keeper.GetNetworkProperties(ctx)
+	allowedTypes := []string{"string", "uint", "int", "float", "bool"}
+
+	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Creator, types.PermCreatePollProposal)
+	if !isAllowed {
+		return nil, errors.Wrap(types.ErrNotEnoughPermissions, types.PermCreatePollProposal.String())
+	}
+
+	if len(msg.Title) > int(properties.MaxProposalTitleSize) {
+		return nil, types.ErrProposalTitleSizeExceeds
+	}
+
+	if len(msg.Description) > int(properties.MaxProposalDescriptionSize) {
+		return nil, types.ErrProposalDescriptionSizeExceeds
+	}
+
+	if len(msg.Reference) > int(properties.MaxProposalReferenceSize) {
+		return nil, types.ErrProposalTitleSizeExceeds
+	}
+
+	if len(msg.Checksum) > int(properties.MaxProposalChecksumSize) {
+		return nil, types.ErrProposalTitleSizeExceeds
+	}
+
+	if len(msg.PollValues) > int(properties.MaxProposalPollOptionCount) {
+		return nil, types.ErrProposalOptionCountExceeds
+	}
+
+	duration, err := time.ParseDuration(msg.Duration)
+	if err != nil || blockTime.Add(duration).Before(blockTime) {
+		return nil, fmt.Errorf("invalid duration: %w", err)
+	}
+
+	for _, v := range msg.PollValues {
+		if len(v) > int(properties.MaxProposalPollOptionSize) {
+			return nil, types.ErrProposalOptionSizeExceeds
+		}
+
+		if !utf8string.NewString(v).IsASCII() {
+			return nil, types.ErrProposalOptionOnlyAscii
+		}
+	}
+
+	for _, v := range msg.Roles {
+		_, err := k.keeper.GetRoleBySid(ctx, v)
+		if err != nil {
+			return nil, errors.Wrap(types.ErrRoleDoesNotExist, v)
+		}
+	}
+
+	sort.Strings(allowedTypes)
+	i := sort.SearchStrings(allowedTypes, msg.ValueType)
+
+	if i == len(allowedTypes) && allowedTypes[i] != msg.ValueType {
+		return nil, types.ErrProposalTypeNotAllowed
+	}
+
+	pollID, err := k.keeper.PollCreate(ctx, msg)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.MsgPollCreateResponse{
+		PollID: pollID,
+	}, nil
+}
+
+func (k msgServer) PollVote(goCtx context.Context, msg *types.MsgPollVote) (*types.MsgPollVoteResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	actor, found := k.keeper.GetNetworkActorByAddress(ctx, msg.Voter)
+	if !found || !actor.IsActive() {
+		return nil, types.ErrActorIsNotActive
+	}
+
+	poll, pErr := k.keeper.GetPoll(ctx, msg.PollId)
+	if pErr != nil {
+		return nil, pErr
+	}
+
+	if poll.VotingEndTime.Before(time.Now()) {
+		return nil, types.ErrVotingTimeEnded
+	}
+
+	roles := intersection(poll.Roles, actor.Roles)
+
+	if len(roles) == 0 {
+		return nil, types.ErrNotEnoughPermissions
+	}
+
+	switch poll.Options.Type {
+	case "uint":
+		_, err := strconv.ParseUint(msg.Value, 10, 64)
+		if err != nil {
+			return nil, errors.Wrap(types.ErrPollWrongValue, "Can not be converted to the unsigned integer")
+		}
+	case "int":
+		_, err := strconv.ParseInt(msg.Value, 10, 64)
+		if err != nil {
+			return nil, errors.Wrap(types.ErrPollWrongValue, "Can not be converted to the integer")
+		}
+	case "bool":
+		_, err := strconv.ParseBool(msg.Value)
+		if err != nil {
+			return nil, errors.Wrap(types.ErrPollWrongValue, "Can not be converted to the boolean")
+		}
+	case "float":
+		_, err := strconv.ParseFloat(msg.Value, 64)
+		if err != nil {
+			return nil, errors.Wrap(types.ErrPollWrongValue, "Can not be converted to the float")
+		}
+	}
+
+	if msg.Option == types.PollOptionCustom && poll.Options.Count <= uint64(len(poll.Options.Values)) && !inSlice(poll.Options.Values, msg.Value) {
+		return nil, errors.Wrap(types.ErrPollWrongValue, "Maximum custom values exceeded")
+	}
+
+	if msg.Option == types.PollOptionCustom && poll.Options.Count > uint64(len(poll.Options.Values)) && !inSlice(poll.Options.Values, msg.Value) {
+		poll.Options.Values = append(poll.Options.Values, msg.Value)
+		k.keeper.SavePoll(ctx, poll)
+	}
+
+	err := k.keeper.PollVote(ctx, msg)
+	return &types.MsgPollVoteResponse{}, err
 }
 
 // RegisterIdentityRecords defines a method to create identity record
@@ -736,4 +870,29 @@ func (k msgServer) CouncilorActivate(
 	k.keeper.SaveCouncilor(ctx, councilor)
 
 	return &types.MsgCouncilorActivateResponse{}, nil
+}
+
+func intersection(first, second []uint64) []uint64 {
+	out := []uint64{}
+	bucket := map[uint64]bool{}
+
+	for _, i := range first {
+		for _, j := range second {
+			if i == j && !bucket[i] {
+				out = append(out, i)
+				bucket[i] = true
+			}
+		}
+	}
+
+	return out
+}
+
+func inSlice(sl []string, name string) bool {
+	for _, value := range sl {
+		if value == name {
+			return true
+		}
+	}
+	return false
 }

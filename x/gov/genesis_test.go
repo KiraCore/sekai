@@ -110,7 +110,8 @@ func TestSimappExportGenesis(t *testing.T) {
         62,
         63,
         64,
-        65
+        65,
+        66
       ]
     },
     "2": {
@@ -160,8 +161,14 @@ func TestSimappExportGenesis(t *testing.T) {
     "min_collective_bonding_time": "86400",
     "max_collective_outputs": "10",
     "min_collective_claim_period": "14400",	
-	  "validator_recovery_bond": "300000",	
-    "max_annual_inflation": "0.350000000000000000"
+    "validator_recovery_bond": "300000",	
+    "max_annual_inflation": "0.350000000000000000",
+	"max_proposal_title_size": "128",
+	"max_proposal_description_size": "1024",
+	"max_proposal_poll_option_size": "64",
+	"max_proposal_poll_option_count": "128",
+	"max_proposal_reference_size": "512",
+	"max_proposal_checksum_size": "128"
   },
   "execution_fees": [
     {
@@ -351,6 +358,12 @@ func TestExportInitGenesis(t *testing.T) {
 			MinCollectiveClaimPeriod:     14400,                     // 4hrs
 			ValidatorRecoveryBond:        300000,                    // 300k KEX
 			MaxAnnualInflation:           sdk.NewDecWithPrec(35, 2), // 35%
+			MaxProposalTitleSize:        128,
+			MaxProposalDescriptionSize:  1024,
+			MaxProposalPollOptionSize:   64,
+			MaxProposalPollOptionCount:  128,
+			MaxProposalReferenceSize:    512,
+			MaxProposalChecksumSize:     128,
 		},
 		ExecutionFees: []types.ExecutionFee{
 			{
@@ -445,7 +458,13 @@ func TestExportInitGenesis(t *testing.T) {
     "max_collective_outputs": "10",	
     "min_collective_claim_period": "14400",	
     "validator_recovery_bond": "300000",	
-    "max_annual_inflation": "0.350000000000000000"
+    "max_annual_inflation": "0.350000000000000000",
+	"max_proposal_title_size": "128",
+	"max_proposal_description_size": "1024",
+	"max_proposal_poll_option_size": "64",
+	"max_proposal_poll_option_count": "128",
+	"max_proposal_reference_size": "512",
+	"max_proposal_checksum_size": "128"
   },	
   "execution_fees": [	
     {	
