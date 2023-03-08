@@ -1,0 +1,170 @@
+syntax = "proto3";
+package kira.layer2;
+
+option go_package = "github.com/KiraCore/sekai/x/layer2/types";
+option (gogoproto.equal_all) = true;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/any.proto";
+import "cosmos_proto/cosmos.proto";
+import "kira/layer2/layer2.proto";
+
+// Msg defines the layer2 Msg service.
+service Msg {
+  rpc CreateDappProposal(MsgCreateDappProposal) returns (MsgCreateDappProposalResponse);
+  rpc BondDappProposal(MsgBondDappProposal) returns (MsgBondDappProposalResponse);
+  rpc ReclaimDappBondProposal(MsgReclaimDappBondProposal) returns (MsgReclaimDappBondProposalResponse);
+  rpc JoinDappTx(MsgJoinDappTx) returns (MsgJoinDappTxResponse);
+  rpc ExistDapp(MsgExistDapp) returns (MsgExistDappResponse);
+  rpc VoteDappOperatorTx(MsgVoteDappOperatorTx) returns (MsgVoteDappOperatorTxResponse);
+  rpc RedeemDappPoolTx(MsgRedeemDappPoolTx) returns (MsgRedeemDappPoolTxResponse);
+  rpc SwapDappPoolTx(MsgSwapDappPoolTx) returns (MsgSwapDappPoolTxResponse);
+  rpc ConvertDappPoolTx(MsgConvertDappPoolTx) returns (MsgConvertDappPoolTxResponse);
+  rpc PauseDappTx(MsgPauseDappTx) returns (MsgPauseDappTxResponse);
+  rpc UnPauseDappTx(MsgUnPauseDappTx) returns (MsgUnPauseDappTxResponse);
+  rpc ReactivateDappTx(MsgReactivateDappTx) returns (MsgReactivateDappTxResponse);
+  rpc ExecuteDappTx(MsgExecuteDappTx) returns (MsgExecuteDappTxResponse);
+  rpc DenounceLeaderTx(MsgDenounceLeaderTx) returns (MsgDenounceLeaderTxResponse);
+  rpc TransitionDappTx(MsgTransitionDappTx) returns (MsgTransitionDappTxResponse);
+  rpc ApproveDappTransitionTx(MsgApproveDappTransitionTx) returns (MsgApproveDappTransitionTxResponse);
+  rpc RejectDappTransitionTx(MsgRejectDappTransitionTx) returns (MsgRejectDappTransitionTxResponse);
+  rpc UpsertDappProposalTx(MsgUpsertDappProposalTx) returns (MsgUpsertDappProposalTxResponse);
+  rpc VoteUpsertDappProposalTx(MsgVoteUpsertDappProposalTx) returns (MsgVoteUpsertDappProposalTxResponse);
+  rpc TransferDappTx(MsgTransferDappTx) returns (MsgTransferDappTxResponse);
+  rpc MintCreateFtTx(MsgMintCreateFtTx) returns (MsgMintCreateFtTxResponse);
+  rpc MintCreateNftTx(MsgMintCreateNftTx) returns (MsgMintCreateNftTxResponse);
+  rpc MintIssueTx(MsgMintIssueTx) returns (MsgMintIssueTxResponse);
+  rpc MintBurnTx(MsgMintBurnTx) returns (MsgMintBurnTxResponse);
+}
+
+// allow to raise dApp launch proposal using a token
+// bond or with a dedicated permission (where no starting 1% bond needed). Fail
+// proposal if min_dapp_bond is not reached. This proposal does NOT require
+// governance approval only sufficient number of bonded tokens.
+message MsgCreateDappProposal {}
+message MsgCreateDappProposalResponse {}
+
+// allow KEX holders to bond extra tokens to dApp
+// proposal unless max_dapp_bond is reached in which case fail the tx.
+message MsgBondDappProposal {}
+message MsgBondDappProposalResponse {}
+
+// claim your KEX back from dApp proposal, should
+// be possible to execute regardless if the proposal is still ongoing or failed
+message MsgReclaimDappBondProposal {}
+message MsgReclaimDappBondProposalResponse {}
+
+// Allows joining applications as executor or fisherman. By default all
+// executors are also verifiers so it should not be possible to set both
+// executor and verifier flags to true at the same time. This tx MUST also allow
+// to define or update a globally unique INTERX address that will be tasked with
+// operating the application. Tx should also fail if someone already joined
+// application and is applying for a different role, in other words all
+// operators must be unique for each dApp although different applications can
+// have the same operators.
+message MsgJoinDappTx {
+  bool executor = 1; // can only be set by validators, raises proposal that controllers must approve
+  bool verifier = 2; // can be set by anyone, sending this tx does not require any approvals however requires a bond in `lp_<denom>` tokens no less than `dapp_verifier_bond`
+  string interx = 3; // must be set to a valid kira address
+}
+message MsgJoinDappTxResponse {}
+
+// stop being a dApp operator and remove the record in the Execution Registrar.
+// Return bonded funds if the operator is a verifier.
+message MsgExistDapp {}
+message MsgExistDappResponse {}
+
+// accept/reject executor candidate, can only be sent by the controllers,
+// corresponding proposal should be automatically raised once join dApp tx is
+// sent by the validator.
+message MsgVoteDappOperatorTx {}
+message MsgVoteDappOperatorTxResponse {}
+
+// return lp_<denom> tokens to the pool and redeem KEX or dp_<denom> token
+// unless slippage is exceeded then fail the tx.
+message MsgRedeemDappPoolTx {}
+message MsgRedeemDappPoolTxResponse {}
+
+// send KEX and receive dp_<denom> or send dp_<denom> and receive KEX unless
+// slippage is exceeded then fail the tx.
+message MsgSwapDappPoolTx {}
+message MsgSwapDappPoolTxResponse {}
+
+// allow user to convert any dp_<denom> for any other dp_<denom> token unless
+// slippage is exceeded then fail the tx.
+message MsgConvertDappPoolTx {}
+message MsgConvertDappPoolTxResponse {}
+
+// allow executors to change their status to paused. This tx does NOT pause the
+// dApp, it only pauses the ability of an executor to continue running the dApp
+// in the next session. If the executor is currently running the session then he
+// needs to finish it before paused status is applied.
+message MsgPauseDappTx {}
+message MsgPauseDappTxResponse {}
+
+// exit maintenance mode to signal that verifier or executor is ready to operate
+// the dApp again.
+message MsgUnPauseDappTx {}
+message MsgUnPauseDappTxResponse {}
+
+// re-activate deactivated dApp operator
+message MsgReactivateDappTx {}
+message MsgReactivateDappTxResponse {}
+
+// allow next session leader to announce or update his IP address and start
+// execution.
+message MsgExecuteDappTx {}
+message MsgExecuteDappTxResponse {}
+
+//  allow executors to denounce the current session leader, should take a
+//  session id as a parameter as well as a true or false flag to allow vote
+//  change.
+message MsgDenounceLeaderTx {}
+message MsgDenounceLeaderTxResponse {}
+
+// update CURRENT session state (can only be sent by current session leader),
+// this tx MUST include dApp version.
+message MsgTransitionDappTx {}
+message MsgTransitionDappTxResponse {}
+
+// approve CURRENT session state (can only be sent by the verifiers or executors
+// who are NOT a leader), this tx MUST include dApp version.
+message MsgApproveDappTransitionTx {}
+message MsgApproveDappTransitionTxResponse {}
+
+// reject session transition and immediately set the state of the current
+// session to halted, this tx MUST include dApp version and session id.
+message MsgRejectDappTransitionTx {}
+message MsgRejectDappTransitionTxResponse {}
+
+// can only be sent by the dApp controllers, allowing to upgrade binaries,
+// controlled and modify all other properties
+message MsgUpsertDappProposalTx {}
+message MsgUpsertDappProposalTxResponse {}
+
+// can only be voted by the dApp controllers, accept/reject upsert proposal to
+// modify the dApp, executors set or any other properties
+message MsgVoteUpsertDappProposalTx {}
+message MsgVoteUpsertDappProposalTxResponse {}
+
+// allow user to manually deposit/transfer/withdrawal funds to / from / within
+// ABR and communicate with apps by including xam string message.
+message MsgTransferDappTx {}
+message MsgTransferDappTxResponse {}
+
+// create new fungible token record in the minting module
+message MsgMintCreateFtTx {}
+message MsgMintCreateFtTxResponse {}
+
+// create new non-fungible token record in the minting module
+message MsgMintCreateNftTx {}
+message MsgMintCreateNftTxResponse {}
+
+// allow owner to mint new tokens or anyone if the minting-fee is set to value
+// other then 0.
+message MsgMintIssueTx {}
+message MsgMintIssueTxResponse {}
+
+// allow anyone burn the tokens they own
+message MsgMintBurnTx {}
+message MsgMintBurnTxResponse {}

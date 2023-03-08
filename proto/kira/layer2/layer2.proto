@@ -1,0 +1,12 @@
+syntax = "proto3";
+package kira.layer2;
+
+option go_package = "github.com/KiraCore/sekai/x/layer2/types";
+option (gogoproto.equal_all) = true;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+
+message Dapp {
+  uint64 id = 1; // identifier
+}
