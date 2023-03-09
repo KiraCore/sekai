@@ -198,3 +198,31 @@ func (k msgServer) MintBurnTx(goCtx context.Context, msg *types.MsgMintBurnTx) (
 
 	return &types.MsgMintBurnTxResponse{}, nil
 }
+
+// TODO: implement - step1
+//   rpc CreateDappProposal(MsgCreateDappProposal) returns (MsgCreateDappProposalResponse);
+//   rpc BondDappProposal(MsgBondDappProposal) returns (MsgBondDappProposalResponse);
+//   rpc ReclaimDappBondProposal(MsgReclaimDappBondProposal) returns (MsgReclaimDappBondProposalResponse);
+//   rpc JoinDappTx(MsgJoinDappTx) returns (MsgJoinDappTxResponse);
+//   rpc ExitDapp(MsgExitDapp) returns (MsgExitDappResponse);
+//   rpc VoteDappOperatorTx(MsgVoteDappOperatorTx) returns (MsgVoteDappOperatorTxResponse);
+//   rpc ExecuteDappTx(MsgExecuteDappTx) returns (MsgExecuteDappTxResponse);
+//   rpc DenounceLeaderTx(MsgDenounceLeaderTx) returns (MsgDenounceLeaderTxResponse);
+//   rpc TransitionDappTx(MsgTransitionDappTx) returns (MsgTransitionDappTxResponse);
+//   rpc ApproveDappTransitionTx(MsgApproveDappTransitionTx) returns (MsgApproveDappTransitionTxResponse);
+//   rpc RejectDappTransitionTx(MsgRejectDappTransitionTx) returns (MsgRejectDappTransitionTxResponse);
+
+// TODO: implement - step2
+//   rpc PauseDappTx(MsgPauseDappTx) returns (MsgPauseDappTxResponse);
+//   rpc UnPauseDappTx(MsgUnPauseDappTx) returns (MsgUnPauseDappTxResponse);
+//   rpc ReactivateDappTx(MsgReactivateDappTx) returns (MsgReactivateDappTxResponse);
+//   rpc RedeemDappPoolTx(MsgRedeemDappPoolTx) returns (MsgRedeemDappPoolTxResponse);
+//   rpc SwapDappPoolTx(MsgSwapDappPoolTx) returns (MsgSwapDappPoolTxResponse);
+//   rpc ConvertDappPoolTx(MsgConvertDappPoolTx) returns (MsgConvertDappPoolTxResponse);
+//   rpc UpsertDappProposalTx(MsgUpsertDappProposalTx) returns (MsgUpsertDappProposalTxResponse);
+//   rpc VoteUpsertDappProposalTx(MsgVoteUpsertDappProposalTx) returns (MsgVoteUpsertDappProposalTxResponse);
+//   rpc TransferDappTx(MsgTransferDappTx) returns (MsgTransferDappTxResponse);
+//   rpc MintCreateFtTx(MsgMintCreateFtTx) returns (MsgMintCreateFtTxResponse);
+//   rpc MintCreateNftTx(MsgMintCreateNftTx) returns (MsgMintCreateNftTxResponse);
+//   rpc MintIssueTx(MsgMintIssueTx) returns (MsgMintIssueTxResponse);
+//   rpc MintBurnTx(MsgMintBurnTx) returns (MsgMintBurnTxResponse);

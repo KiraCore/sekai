@@ -53,12 +53,16 @@ message MsgCreateDappProposalResponse {}
 
 // allow KEX holders to bond extra tokens to dApp
 // proposal unless max_dapp_bond is reached in which case fail the tx.
-message MsgBondDappProposal {}
+message MsgBondDappProposal {
+  string sender = 1;
+}
 message MsgBondDappProposalResponse {}
 
 // claim your KEX back from dApp proposal, should
 // be possible to execute regardless if the proposal is still ongoing or failed
-message MsgReclaimDappBondProposal {}
+message MsgReclaimDappBondProposal{
+  string sender = 1;
+}
 message MsgReclaimDappBondProposalResponse {}
 
 // Allows joining applications as executor or fisherman. By default all
@@ -78,100 +82,140 @@ message MsgJoinDappTxResponse {}
 
 // stop being a dApp operator and remove the record in the Execution Registrar.
 // Return bonded funds if the operator is a verifier.
-message MsgExitDapp {}
+message MsgExitDapp {
+  string sender = 1;
+}
 message MsgExitDappResponse {}
 
 // accept/reject executor candidate, can only be sent by the controllers,
 // corresponding proposal should be automatically raised once join dApp tx is
 // sent by the validator.
-message MsgVoteDappOperatorTx {}
+message MsgVoteDappOperatorTx {
+  string sender = 1;
+}
 message MsgVoteDappOperatorTxResponse {}
 
 // return lp_<denom> tokens to the pool and redeem KEX or dp_<denom> token
 // unless slippage is exceeded then fail the tx.
-message MsgRedeemDappPoolTx {}
+message MsgRedeemDappPoolTx {
+  string sender = 1;
+}
 message MsgRedeemDappPoolTxResponse {}
 
 // send KEX and receive dp_<denom> or send dp_<denom> and receive KEX unless
 // slippage is exceeded then fail the tx.
-message MsgSwapDappPoolTx {}
+message MsgSwapDappPoolTx {
+  string sender = 1;
+}
 message MsgSwapDappPoolTxResponse {}
 
 // allow user to convert any dp_<denom> for any other dp_<denom> token unless
 // slippage is exceeded then fail the tx.
-message MsgConvertDappPoolTx {}
+message MsgConvertDappPoolTx {
+  string sender = 1;
+}
 message MsgConvertDappPoolTxResponse {}
 
 // allow executors to change their status to paused. This tx does NOT pause the
 // dApp, it only pauses the ability of an executor to continue running the dApp
 // in the next session. If the executor is currently running the session then he
 // needs to finish it before paused status is applied.
-message MsgPauseDappTx {}
+message MsgPauseDappTx {
+  string sender = 1;
+}
 message MsgPauseDappTxResponse {}
 
 // exit maintenance mode to signal that verifier or executor is ready to operate
 // the dApp again.
-message MsgUnPauseDappTx {}
+message MsgUnPauseDappTx {
+  string sender = 1;
+}
 message MsgUnPauseDappTxResponse {}
 
 // re-activate deactivated dApp operator
-message MsgReactivateDappTx {}
+message MsgReactivateDappTx {
+  string sender = 1;
+}
 message MsgReactivateDappTxResponse {}
 
 // allow next session leader to announce or update his IP address and start
 // execution.
-message MsgExecuteDappTx {}
+message MsgExecuteDappTx {
+  string sender = 1;
+}
 message MsgExecuteDappTxResponse {}
 
 //  allow executors to denounce the current session leader, should take a
 //  session id as a parameter as well as a true or false flag to allow vote
 //  change.
-message MsgDenounceLeaderTx {}
+message MsgDenounceLeaderTx {
+  string sender = 1;
+}
 message MsgDenounceLeaderTxResponse {}
 
 // update CURRENT session state (can only be sent by current session leader),
 // this tx MUST include dApp version.
-message MsgTransitionDappTx {}
+message MsgTransitionDappTx {
+  string sender = 1;
+}
 message MsgTransitionDappTxResponse {}
 
 // approve CURRENT session state (can only be sent by the verifiers or executors
 // who are NOT a leader), this tx MUST include dApp version.
-message MsgApproveDappTransitionTx {}
+message MsgApproveDappTransitionTx {
+  string sender = 1;
+}
 message MsgApproveDappTransitionTxResponse {}
 
 // reject session transition and immediately set the state of the current
 // session to halted, this tx MUST include dApp version and session id.
-message MsgRejectDappTransitionTx {}
+message MsgRejectDappTransitionTx {
+  string sender = 1;
+}
 message MsgRejectDappTransitionTxResponse {}
 
 // can only be sent by the dApp controllers, allowing to upgrade binaries,
 // controlled and modify all other properties
-message MsgUpsertDappProposalTx {}
+message MsgUpsertDappProposalTx {
+  string sender = 1;
+}
 message MsgUpsertDappProposalTxResponse {}
 
 // can only be voted by the dApp controllers, accept/reject upsert proposal to
 // modify the dApp, executors set or any other properties
-message MsgVoteUpsertDappProposalTx {}
+message MsgVoteUpsertDappProposalTx {
+  string sender = 1;
+}
 message MsgVoteUpsertDappProposalTxResponse {}
 
 // allow user to manually deposit/transfer/withdrawal funds to / from / within
 // ABR and communicate with apps by including xam string message.
-message MsgTransferDappTx {}
+message MsgTransferDappTx {
+  string sender = 1;
+}
 message MsgTransferDappTxResponse {}
 
 // create new fungible token record in the minting module
-message MsgMintCreateFtTx {}
+message MsgMintCreateFtTx {
+  string sender = 1;
+}
 message MsgMintCreateFtTxResponse {}
 
 // create new non-fungible token record in the minting module
-message MsgMintCreateNftTx {}
+message MsgMintCreateNftTx {
+  string sender = 1;
+}
 message MsgMintCreateNftTxResponse {}
 
 // allow owner to mint new tokens or anyone if the minting-fee is set to value
 // other then 0.
-message MsgMintIssueTx {}
+message MsgMintIssueTx {
+  string sender = 1;
+}
 message MsgMintIssueTxResponse {}
 
 // allow anyone burn the tokens they own
-message MsgMintBurnTx {}
+message MsgMintBurnTx {
+  string sender = 1;
+}
 message MsgMintBurnTxResponse {}
