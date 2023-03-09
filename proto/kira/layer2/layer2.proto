@@ -7,6 +7,54 @@ option (gogoproto.equal_all) = true;
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 
+message AccountRange {
+  repeated string addresses = 1;
+  repeated uint64 roles = 2;
+}
+
+message Controllers {
+  AccountRange whitelist = 1 [ (gogoproto.nullable) = false ];
+  AccountRange blacklist = 2 [ (gogoproto.nullable) = false ];
+}
+
+message BinaryInfo {
+  string name = 1; // filename identifying source such as container, executable, config, finality gadget, etc.
+  string hash = 2; // hash of the file
+  string source = 3; // link to the source (from where the file should be fetched)
+  string reference = 4; // link to github repository or audit
+  string type = 5; // optional file type, e.g. binary, archive, text, image, etc.
+}
+
+message LpPoolConfig {
+  string ratio = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ]; // amount of dp_<denom> to be issued per each 1 KEX contributed
+  string deposit = 2; // spending pool id/name from where lp coins can be claimed
+  uint64 drip = 3; // time over which tokens should be distributed (can not be modified)
+}
+
+message IssuranceConfig {
+  string deposit = 1; // spending pool id/name or kira address for extra dp deposit
+  uint64 premint = 2; // Amount of dp_<denom> to premint (can not be modified)
+  uint64 postmint = 3; // Amount of dp_<denom> to postmint (can not be modified)
+  uint64 time = 4; // unix timestamp when to issue postminted dp tokens (can not be modified)
+}
+
 message Dapp {
-  uint64 id = 1; // identifier
+  string name = 1; // application name, must be globally unique and follow the same safety rules as usernames & validator moniker (can NOT be changed)
+  string denom = 2; // native dApp token denom substring, min 3 and max 8 lowercase alphabetic characters only (a-z)
+  string description = 3; // short description of the dApp, max 512 characters.
+  string website = 4; // official website/info about dApp, max 128 characters.
+  string logo = 5;    // dapp logo url/cid
+  string social = 6;  // comma separated list of official social media urls
+  string docs = 7;    // url to the resources documenting dApp operation
+  Controllers controllers = 8 [ (gogoproto.nullable) = false ]; // list of dApp owners, who can curate the execution record
+  repeated BinaryInfo bin = 9 [ (gogoproto.nullable) = false ]; // array of files & their details essential for launching the dApp
+  LpPoolConfig pool = 10 [ (gogoproto.nullable) = false ]; // lp pool configuration (can not be modified)
+  IssuranceConfig issurance = 11 [ (gogoproto.nullable) = false ]; // extra dApp (dp) token issuance configuration
+  uint64 update_time_max = 12; // maximum time the dApp leader has to update his session (can be no more then 86400 - 24h)
+  uint64 executors_min = 13; // minimum number of validators that will be executing the dApp code (default 1)
+  uint64 executors_max = 14; // maximum number of validators that will be executing the dApp code (default 21)
+  uint64 verifiers_min = 15; // minimum number of nodes that must approve dApp state change
 }

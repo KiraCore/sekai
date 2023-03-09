@@ -15,7 +15,7 @@ service Msg {
   rpc BondDappProposal(MsgBondDappProposal) returns (MsgBondDappProposalResponse);
   rpc ReclaimDappBondProposal(MsgReclaimDappBondProposal) returns (MsgReclaimDappBondProposalResponse);
   rpc JoinDappTx(MsgJoinDappTx) returns (MsgJoinDappTxResponse);
-  rpc ExistDapp(MsgExistDapp) returns (MsgExistDappResponse);
+  rpc ExitDapp(MsgExitDapp) returns (MsgExitDappResponse);
   rpc VoteDappOperatorTx(MsgVoteDappOperatorTx) returns (MsgVoteDappOperatorTxResponse);
   rpc RedeemDappPoolTx(MsgRedeemDappPoolTx) returns (MsgRedeemDappPoolTxResponse);
   rpc SwapDappPoolTx(MsgSwapDappPoolTx) returns (MsgSwapDappPoolTxResponse);
@@ -41,7 +41,14 @@ service Msg {
 // bond or with a dedicated permission (where no starting 1% bond needed). Fail
 // proposal if min_dapp_bond is not reached. This proposal does NOT require
 // governance approval only sufficient number of bonded tokens.
-message MsgCreateDappProposal {}
+message MsgCreateDappProposal {
+  string sender = 1;
+  Dapp dapp = 2 [ (gogoproto.nullable) = false ];
+  string bond = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
+}
 message MsgCreateDappProposalResponse {}
 
 // allow KEX holders to bond extra tokens to dApp
@@ -71,8 +78,8 @@ message MsgJoinDappTxResponse {}
 
 // stop being a dApp operator and remove the record in the Execution Registrar.
 // Return bonded funds if the operator is a verifier.
-message MsgExistDapp {}
-message MsgExistDappResponse {}
+message MsgExitDapp {}
+message MsgExitDappResponse {}
 
 // accept/reject executor candidate, can only be sent by the controllers,
 // corresponding proposal should be automatically raised once join dApp tx is
