@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/layer2/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -23,31 +24,113 @@ var _ types.MsgServer = msgServer{}
 
 func (k msgServer) CreateDappProposal(goCtx context.Context, msg *types.MsgCreateDappProposal) (*types.MsgCreateDappProposalResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
 
-	// TODO: permission check PermCreateDappProposalWithoutBond or Bonds check (1% of properties.MinDappBond)
-	// TODO: send initial bond to module account
-	// TODO: create dapp object
+	properties := k.keeper.gk.GetNetworkProperties(ctx)
+	addr := sdk.MustAccAddressFromBech32(msg.Sender)
+
+	// permission check PermCreateDappProposalWithoutBond
+	isAllowed := k.keeper.CheckIfAllowedPermission(ctx, addr, govtypes.PermCreateDappProposalWithoutBond)
+	if !isAllowed {
+		minDappBond := properties.MinDappBond
+		if msg.Bond.Denom != k.keeper.BondDenom(ctx) {
+			return nil, types.ErrInvalidDappBondDenom
+		}
+		// check 1% of properties.MinDappBond
+		if msg.Bond.Amount.Mul(sdk.NewInt(100)).LT(sdk.NewInt(int64(minDappBond)).Mul(sdk.NewInt(1000_000))) {
+			return nil, types.ErrLowAmountToCreateDappProposal
+		}
+	}
+
+	// send initial bond to module account
+	if msg.Bond.IsPositive() {
+		err := k.keeper.bk.SendCoinsFromAccountToModule(ctx, addr, types.ModuleName, sdk.Coins{msg.Bond})
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	dapp := k.keeper.GetDapp(ctx, msg.Dapp.Name)
+	if dapp.Name != "" {
+		return nil, types.ErrDappAlreadyExists
+	}
+
+	// create dapp object
+	msg.Dapp.TotalBond = msg.Bond
+	k.keeper.SetDapp(ctx, msg.Dapp)
+	k.keeper.SetUserDappBond(ctx, types.UserDappBond{
+		DappName: msg.Dapp.Name,
+		User:     msg.Sender,
+		Bond:     msg.Bond,
+	})
 
 	return &types.MsgCreateDappProposalResponse{}, nil
 }
 
 func (k msgServer) BondDappProposal(goCtx context.Context, msg *types.MsgBondDappProposal) (*types.MsgBondDappProposalResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
 
-	// Since the value of tokens that are required to successfully pass a
-	// proposal is very large, we must make it possible for many people to
-	// collaborate in the dApp proposal submission. We should start with the
-	// deployer having to commit a **minimum of 1%** of the `min_dapp_bond`
-	// while the remaining 99% of the bond can be supplied by ANY other user.
+	dapp := k.keeper.GetDapp(ctx, msg.DappName)
+	if dapp.Name == "" {
+		return nil, types.ErrDappDoesNotExist
+	}
+
+	if k.keeper.BondDenom(ctx) != msg.Bond.Denom {
+		return nil, types.ErrInvalidDappBondDenom
+	}
+
+	// send initial bond to module account
+	addr := sdk.MustAccAddressFromBech32(msg.Sender)
+	err := k.keeper.bk.SendCoinsFromAccountToModule(ctx, addr, types.ModuleName, sdk.Coins{msg.Bond})
+	if err != nil {
+		return nil, err
+	}
+
+	properties := k.keeper.gk.GetNetworkProperties(ctx)
+	if dapp.TotalBond.Amount.GTE(sdk.NewInt(int64(properties.MaxDappBond)).Mul(sdk.NewInt(1000_000))) {
+		return nil, types.ErrMaxDappBondReached
+	}
+
+	dapp.TotalBond = dapp.TotalBond.Add(msg.Bond)
+	k.keeper.SetDapp(ctx, dapp)
+
+	userDappBond := k.keeper.GetUserDappBond(ctx, msg.DappName, msg.Sender)
+	if userDappBond.User != "" {
+		userDappBond.Bond = userDappBond.Bond.Add(msg.Bond)
+	} else {
+		userDappBond = types.UserDappBond{
+			User:     msg.Sender,
+			DappName: msg.DappName,
+			Bond:     msg.Bond,
+		}
+	}
+	k.keeper.SetUserDappBond(ctx, userDappBond)
 
 	return &types.MsgBondDappProposalResponse{}, nil
 }
 
 func (k msgServer) ReclaimDappBondProposal(goCtx context.Context, msg *types.MsgReclaimDappBondProposal) (*types.MsgReclaimDappBondProposalResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
+
+	userDappBond := k.keeper.GetUserDappBond(ctx, msg.DappName, msg.Sender)
+	if userDappBond.DappName == "" {
+		return nil, types.ErrUserDappBondDoesNotExist
+	}
+	if userDappBond.Bond.Denom != msg.Bond.Denom {
+		return nil, types.ErrInvalidDappBondDenom
+	}
+	if userDappBond.Bond.Amount.LT(msg.Bond.Amount) {
+		return nil, types.ErrNotEnoughUserDappBond
+	}
+
+	userDappBond.Bond.Amount = userDappBond.Bond.Amount.Sub(msg.Bond.Amount)
+	k.keeper.SetUserDappBond(ctx, userDappBond)
+
+	// send tokens back to user
+	addr := sdk.MustAccAddressFromBech32(msg.Sender)
+	err := k.keeper.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, sdk.Coins{msg.Bond})
+	if err != nil {
+		return nil, err
+	}
 
 	return &types.MsgReclaimDappBondProposalResponse{}, nil
 }

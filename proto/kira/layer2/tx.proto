@@ -55,6 +55,11 @@ message MsgCreateDappProposalResponse {}
 // proposal unless max_dapp_bond is reached in which case fail the tx.
 message MsgBondDappProposal {
   string sender = 1;
+  string dapp_name = 2;
+  string bond = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
 }
 message MsgBondDappProposalResponse {}
 
@@ -62,6 +67,11 @@ message MsgBondDappProposalResponse {}
 // be possible to execute regardless if the proposal is still ongoing or failed
 message MsgReclaimDappBondProposal{
   string sender = 1;
+  string dapp_name = 2;
+  string bond = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
 }
 message MsgReclaimDappBondProposalResponse {}
 
@@ -74,9 +84,10 @@ message MsgReclaimDappBondProposalResponse {}
 // operators must be unique for each dApp although different applications can
 // have the same operators.
 message MsgJoinDappTx {
-  bool executor = 1; // can only be set by validators, raises proposal that controllers must approve
-  bool verifier = 2; // can be set by anyone, sending this tx does not require any approvals however requires a bond in `lp_<denom>` tokens no less than `dapp_verifier_bond`
-  string interx = 3; // must be set to a valid kira address
+  string sender = 1;
+  bool executor = 2; // can only be set by validators, raises proposal that controllers must approve
+  bool verifier = 3; // can be set by anyone, sending this tx does not require any approvals however requires a bond in `lp_<denom>` tokens no less than `dapp_verifier_bond`
+  string interx = 4; // must be set to a valid kira address
 }
 message MsgJoinDappTxResponse {}
 

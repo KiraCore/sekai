@@ -57,4 +57,17 @@ message Dapp {
   uint64 executors_min = 13; // minimum number of validators that will be executing the dApp code (default 1)
   uint64 executors_max = 14; // maximum number of validators that will be executing the dApp code (default 21)
   uint64 verifiers_min = 15; // minimum number of nodes that must approve dApp state change
+  string total_bond = 16 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ]; // total bonds put on the dapp
+}
+
+message UserDappBond {
+  string user = 1;
+  string dapp_name = 2;
+  string bond = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
 }
