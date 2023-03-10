@@ -95,3 +95,17 @@ func (k Keeper) GetAllUserDappBonds(ctx sdk.Context) []types.UserDappBond {
 	}
 	return bondlist
 }
+
+func (k Keeper) ExecuteDappRemove(ctx sdk.Context, dapp types.Dapp) error {
+	for _, userBond := range k.GetUserDappBonds(ctx, dapp.Name) {
+		// send tokens back to user
+		addr := sdk.MustAccAddressFromBech32(userBond.User)
+		err := k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, sdk.Coins{userBond.Bond})
+		if err != nil {
+			return err
+		}
+		k.DeleteUserDappBond(ctx, dapp.Name, userBond.User)
+	}
+	k.DeleteDapp(ctx, dapp.Name)
+	return nil
+}

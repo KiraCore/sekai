@@ -61,6 +61,7 @@ message Dapp {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
     (gogoproto.nullable) = false
   ]; // total bonds put on the dapp
+  uint64 creation_time = 17; // dapp creation time
 }
 
 message UserDappBond {

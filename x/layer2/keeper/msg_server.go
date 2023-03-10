@@ -56,6 +56,7 @@ func (k msgServer) CreateDappProposal(goCtx context.Context, msg *types.MsgCreat
 
 	// create dapp object
 	msg.Dapp.TotalBond = msg.Bond
+	msg.Dapp.CreationTime = uint64(ctx.BlockTime().Unix())
 	k.keeper.SetDapp(ctx, msg.Dapp)
 	k.keeper.SetUserDappBond(ctx, types.UserDappBond{
 		DappName: msg.Dapp.Name,
