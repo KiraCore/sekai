@@ -134,12 +134,15 @@ func DefaultGenesis() *GenesisState {
 			MinCollectiveClaimPeriod:     14400,                     // 4hrs
 			ValidatorRecoveryBond:        300000,                    // 300k KEX
 			MaxAnnualInflation:           sdk.NewDecWithPrec(35, 2), // 35%// 300k KEX
-			MaxProposalTitleSize:        128,
-			MaxProposalDescriptionSize:  1024,
-			MaxProposalPollOptionSize:   64,
-			MaxProposalPollOptionCount:  128,
-			MaxProposalReferenceSize:    512,
-			MaxProposalChecksumSize:     128,
+			MaxProposalTitleSize:         128,
+			MaxProposalDescriptionSize:   1024,
+			MaxProposalPollOptionSize:    64,
+			MaxProposalPollOptionCount:   128,
+			MaxProposalReferenceSize:     512,
+			MaxProposalChecksumSize:      128,
+			MinDappBond:                  1000000,
+			MaxDappBond:                  10000000,
+			DappBondDuration:             604800,
 		},
 		ExecutionFees: []ExecutionFee{
 			{
