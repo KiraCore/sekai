@@ -316,9 +316,10 @@ var xxx_messageInfo_MsgReclaimDappBondProposalResponse proto.InternalMessageInfo
 // have the same operators.
 type MsgJoinDappTx struct {
 	Sender   string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
-	Executor bool   `protobuf:"varint,2,opt,name=executor,proto3" json:"executor,omitempty"`
-	Verifier bool   `protobuf:"varint,3,opt,name=verifier,proto3" json:"verifier,omitempty"`
-	Interx   string `protobuf:"bytes,4,opt,name=interx,proto3" json:"interx,omitempty"`
+	DappName string `protobuf:"bytes,2,opt,name=dapp_name,json=dappName,proto3" json:"dapp_name,omitempty"`
+	Executor bool   `protobuf:"varint,3,opt,name=executor,proto3" json:"executor,omitempty"`
+	Verifier bool   `protobuf:"varint,4,opt,name=verifier,proto3" json:"verifier,omitempty"`
+	Interx   string `protobuf:"bytes,5,opt,name=interx,proto3" json:"interx,omitempty"`
 }
 
 func (m *MsgJoinDappTx) Reset()         { *m = MsgJoinDappTx{} }
@@ -357,6 +358,13 @@ var xxx_messageInfo_MsgJoinDappTx proto.InternalMessageInfo
 func (m *MsgJoinDappTx) GetSender() string {
 	if m != nil {
 		return m.Sender
+	}
+	return ""
+}
+
+func (m *MsgJoinDappTx) GetDappName() string {
+	if m != nil {
+		return m.DappName
 	}
 	return ""
 }
@@ -421,7 +429,8 @@ var xxx_messageInfo_MsgJoinDappTxResponse proto.InternalMessageInfo
 // stop being a dApp operator and remove the record in the Execution Registrar.
 // Return bonded funds if the operator is a verifier.
 type MsgExitDapp struct {
-	Sender string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	Sender   string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	DappName string `protobuf:"bytes,2,opt,name=dapp_name,json=dappName,proto3" json:"dapp_name,omitempty"`
 }
 
 func (m *MsgExitDapp) Reset()         { *m = MsgExitDapp{} }
@@ -460,6 +469,13 @@ var xxx_messageInfo_MsgExitDapp proto.InternalMessageInfo
 func (m *MsgExitDapp) GetSender() string {
 	if m != nil {
 		return m.Sender
+	}
+	return ""
+}
+
+func (m *MsgExitDapp) GetDappName() string {
+	if m != nil {
+		return m.DappName
 	}
 	return ""
 }
@@ -504,7 +520,8 @@ var xxx_messageInfo_MsgExitDappResponse proto.InternalMessageInfo
 // corresponding proposal should be automatically raised once join dApp tx is
 // sent by the validator.
 type MsgVoteDappOperatorTx struct {
-	Sender string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	Sender   string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	DappName string `protobuf:"bytes,2,opt,name=dapp_name,json=dappName,proto3" json:"dapp_name,omitempty"`
 }
 
 func (m *MsgVoteDappOperatorTx) Reset()         { *m = MsgVoteDappOperatorTx{} }
@@ -543,6 +560,13 @@ var xxx_messageInfo_MsgVoteDappOperatorTx proto.InternalMessageInfo
 func (m *MsgVoteDappOperatorTx) GetSender() string {
 	if m != nil {
 		return m.Sender
+	}
+	return ""
+}
+
+func (m *MsgVoteDappOperatorTx) GetDappName() string {
+	if m != nil {
+		return m.DappName
 	}
 	return ""
 }
@@ -586,7 +610,8 @@ var xxx_messageInfo_MsgVoteDappOperatorTxResponse proto.InternalMessageInfo
 // return lp_<denom> tokens to the pool and redeem KEX or dp_<denom> token
 // unless slippage is exceeded then fail the tx.
 type MsgRedeemDappPoolTx struct {
-	Sender string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	Sender   string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	DappName string `protobuf:"bytes,2,opt,name=dapp_name,json=dappName,proto3" json:"dapp_name,omitempty"`
 }
 
 func (m *MsgRedeemDappPoolTx) Reset()         { *m = MsgRedeemDappPoolTx{} }
@@ -625,6 +650,13 @@ var xxx_messageInfo_MsgRedeemDappPoolTx proto.InternalMessageInfo
 func (m *MsgRedeemDappPoolTx) GetSender() string {
 	if m != nil {
 		return m.Sender
+	}
+	return ""
+}
+
+func (m *MsgRedeemDappPoolTx) GetDappName() string {
+	if m != nil {
+		return m.DappName
 	}
 	return ""
 }
@@ -668,7 +700,8 @@ var xxx_messageInfo_MsgRedeemDappPoolTxResponse proto.InternalMessageInfo
 // send KEX and receive dp_<denom> or send dp_<denom> and receive KEX unless
 // slippage is exceeded then fail the tx.
 type MsgSwapDappPoolTx struct {
-	Sender string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	Sender   string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	DappName string `protobuf:"bytes,2,opt,name=dapp_name,json=dappName,proto3" json:"dapp_name,omitempty"`
 }
 
 func (m *MsgSwapDappPoolTx) Reset()         { *m = MsgSwapDappPoolTx{} }
@@ -707,6 +740,13 @@ var xxx_messageInfo_MsgSwapDappPoolTx proto.InternalMessageInfo
 func (m *MsgSwapDappPoolTx) GetSender() string {
 	if m != nil {
 		return m.Sender
+	}
+	return ""
+}
+
+func (m *MsgSwapDappPoolTx) GetDappName() string {
+	if m != nil {
+		return m.DappName
 	}
 	return ""
 }
@@ -750,7 +790,8 @@ var xxx_messageInfo_MsgSwapDappPoolTxResponse proto.InternalMessageInfo
 // allow user to convert any dp_<denom> for any other dp_<denom> token unless
 // slippage is exceeded then fail the tx.
 type MsgConvertDappPoolTx struct {
-	Sender string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	Sender   string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	DappName string `protobuf:"bytes,2,opt,name=dapp_name,json=dappName,proto3" json:"dapp_name,omitempty"`
 }
 
 func (m *MsgConvertDappPoolTx) Reset()         { *m = MsgConvertDappPoolTx{} }
@@ -789,6 +830,13 @@ var xxx_messageInfo_MsgConvertDappPoolTx proto.InternalMessageInfo
 func (m *MsgConvertDappPoolTx) GetSender() string {
 	if m != nil {
 		return m.Sender
+	}
+	return ""
+}
+
+func (m *MsgConvertDappPoolTx) GetDappName() string {
+	if m != nil {
+		return m.DappName
 	}
 	return ""
 }
@@ -834,7 +882,8 @@ var xxx_messageInfo_MsgConvertDappPoolTxResponse proto.InternalMessageInfo
 // in the next session. If the executor is currently running the session then he
 // needs to finish it before paused status is applied.
 type MsgPauseDappTx struct {
-	Sender string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	Sender   string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	DappName string `protobuf:"bytes,2,opt,name=dapp_name,json=dappName,proto3" json:"dapp_name,omitempty"`
 }
 
 func (m *MsgPauseDappTx) Reset()         { *m = MsgPauseDappTx{} }
@@ -873,6 +922,13 @@ var xxx_messageInfo_MsgPauseDappTx proto.InternalMessageInfo
 func (m *MsgPauseDappTx) GetSender() string {
 	if m != nil {
 		return m.Sender
+	}
+	return ""
+}
+
+func (m *MsgPauseDappTx) GetDappName() string {
+	if m != nil {
+		return m.DappName
 	}
 	return ""
 }
@@ -916,7 +972,8 @@ var xxx_messageInfo_MsgPauseDappTxResponse proto.InternalMessageInfo
 // exit maintenance mode to signal that verifier or executor is ready to operate
 // the dApp again.
 type MsgUnPauseDappTx struct {
-	Sender string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	Sender   string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	DappName string `protobuf:"bytes,2,opt,name=dapp_name,json=dappName,proto3" json:"dapp_name,omitempty"`
 }
 
 func (m *MsgUnPauseDappTx) Reset()         { *m = MsgUnPauseDappTx{} }
@@ -959,6 +1016,13 @@ func (m *MsgUnPauseDappTx) GetSender() string {
 	return ""
 }
 
+func (m *MsgUnPauseDappTx) GetDappName() string {
+	if m != nil {
+		return m.DappName
+	}
+	return ""
+}
+
 type MsgUnPauseDappTxResponse struct {
 }
 
@@ -997,7 +1061,8 @@ var xxx_messageInfo_MsgUnPauseDappTxResponse proto.InternalMessageInfo
 
 // re-activate deactivated dApp operator
 type MsgReactivateDappTx struct {
-	Sender string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	Sender   string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	DappName string `protobuf:"bytes,2,opt,name=dapp_name,json=dappName,proto3" json:"dapp_name,omitempty"`
 }
 
 func (m *MsgReactivateDappTx) Reset()         { *m = MsgReactivateDappTx{} }
@@ -1036,6 +1101,13 @@ var xxx_messageInfo_MsgReactivateDappTx proto.InternalMessageInfo
 func (m *MsgReactivateDappTx) GetSender() string {
 	if m != nil {
 		return m.Sender
+	}
+	return ""
+}
+
+func (m *MsgReactivateDappTx) GetDappName() string {
+	if m != nil {
+		return m.DappName
 	}
 	return ""
 }
@@ -1079,7 +1151,8 @@ var xxx_messageInfo_MsgReactivateDappTxResponse proto.InternalMessageInfo
 // allow next session leader to announce or update his IP address and start
 // execution.
 type MsgExecuteDappTx struct {
-	Sender string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	Sender   string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	DappName string `protobuf:"bytes,2,opt,name=dapp_name,json=dappName,proto3" json:"dapp_name,omitempty"`
 }
 
 func (m *MsgExecuteDappTx) Reset()         { *m = MsgExecuteDappTx{} }
@@ -1118,6 +1191,13 @@ var xxx_messageInfo_MsgExecuteDappTx proto.InternalMessageInfo
 func (m *MsgExecuteDappTx) GetSender() string {
 	if m != nil {
 		return m.Sender
+	}
+	return ""
+}
+
+func (m *MsgExecuteDappTx) GetDappName() string {
+	if m != nil {
+		return m.DappName
 	}
 	return ""
 }
@@ -1162,7 +1242,10 @@ var xxx_messageInfo_MsgExecuteDappTxResponse proto.InternalMessageInfo
 //  session id as a parameter as well as a true or false flag to allow vote
 //  change.
 type MsgDenounceLeaderTx struct {
-	Sender string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	Sender       string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	DappName     string `protobuf:"bytes,2,opt,name=dapp_name,json=dappName,proto3" json:"dapp_name,omitempty"`
+	Leader       string `protobuf:"bytes,3,opt,name=leader,proto3" json:"leader,omitempty"`
+	DenounceText string `protobuf:"bytes,4,opt,name=denounce_text,json=denounceText,proto3" json:"denounce_text,omitempty"`
 }
 
 func (m *MsgDenounceLeaderTx) Reset()         { *m = MsgDenounceLeaderTx{} }
@@ -1201,6 +1284,27 @@ var xxx_messageInfo_MsgDenounceLeaderTx proto.InternalMessageInfo
 func (m *MsgDenounceLeaderTx) GetSender() string {
 	if m != nil {
 		return m.Sender
+	}
+	return ""
+}
+
+func (m *MsgDenounceLeaderTx) GetDappName() string {
+	if m != nil {
+		return m.DappName
+	}
+	return ""
+}
+
+func (m *MsgDenounceLeaderTx) GetLeader() string {
+	if m != nil {
+		return m.Leader
+	}
+	return ""
+}
+
+func (m *MsgDenounceLeaderTx) GetDenounceText() string {
+	if m != nil {
+		return m.DenounceText
 	}
 	return ""
 }
@@ -1244,7 +1348,9 @@ var xxx_messageInfo_MsgDenounceLeaderTxResponse proto.InternalMessageInfo
 // update CURRENT session state (can only be sent by current session leader),
 // this tx MUST include dApp version.
 type MsgTransitionDappTx struct {
-	Sender string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	Sender     string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	DappName   string `protobuf:"bytes,2,opt,name=dapp_name,json=dappName,proto3" json:"dapp_name,omitempty"`
+	StatusHash string `protobuf:"bytes,3,opt,name=status_hash,json=statusHash,proto3" json:"status_hash,omitempty"`
 }
 
 func (m *MsgTransitionDappTx) Reset()         { *m = MsgTransitionDappTx{} }
@@ -1283,6 +1389,20 @@ var xxx_messageInfo_MsgTransitionDappTx proto.InternalMessageInfo
 func (m *MsgTransitionDappTx) GetSender() string {
 	if m != nil {
 		return m.Sender
+	}
+	return ""
+}
+
+func (m *MsgTransitionDappTx) GetDappName() string {
+	if m != nil {
+		return m.DappName
+	}
+	return ""
+}
+
+func (m *MsgTransitionDappTx) GetStatusHash() string {
+	if m != nil {
+		return m.StatusHash
 	}
 	return ""
 }
@@ -1326,7 +1446,8 @@ var xxx_messageInfo_MsgTransitionDappTxResponse proto.InternalMessageInfo
 // approve CURRENT session state (can only be sent by the verifiers or executors
 // who are NOT a leader), this tx MUST include dApp version.
 type MsgApproveDappTransitionTx struct {
-	Sender string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	Sender   string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	DappName string `protobuf:"bytes,2,opt,name=dapp_name,json=dappName,proto3" json:"dapp_name,omitempty"`
 }
 
 func (m *MsgApproveDappTransitionTx) Reset()         { *m = MsgApproveDappTransitionTx{} }
@@ -1365,6 +1486,13 @@ var xxx_messageInfo_MsgApproveDappTransitionTx proto.InternalMessageInfo
 func (m *MsgApproveDappTransitionTx) GetSender() string {
 	if m != nil {
 		return m.Sender
+	}
+	return ""
+}
+
+func (m *MsgApproveDappTransitionTx) GetDappName() string {
+	if m != nil {
+		return m.DappName
 	}
 	return ""
 }
@@ -1408,7 +1536,8 @@ var xxx_messageInfo_MsgApproveDappTransitionTxResponse proto.InternalMessageInfo
 // reject session transition and immediately set the state of the current
 // session to halted, this tx MUST include dApp version and session id.
 type MsgRejectDappTransitionTx struct {
-	Sender string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	Sender   string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	DappName string `protobuf:"bytes,2,opt,name=dapp_name,json=dappName,proto3" json:"dapp_name,omitempty"`
 }
 
 func (m *MsgRejectDappTransitionTx) Reset()         { *m = MsgRejectDappTransitionTx{} }
@@ -1447,6 +1576,13 @@ var xxx_messageInfo_MsgRejectDappTransitionTx proto.InternalMessageInfo
 func (m *MsgRejectDappTransitionTx) GetSender() string {
 	if m != nil {
 		return m.Sender
+	}
+	return ""
+}
+
+func (m *MsgRejectDappTransitionTx) GetDappName() string {
+	if m != nil {
+		return m.DappName
 	}
 	return ""
 }
@@ -1490,7 +1626,8 @@ var xxx_messageInfo_MsgRejectDappTransitionTxResponse proto.InternalMessageInfo
 // can only be sent by the dApp controllers, allowing to upgrade binaries,
 // controlled and modify all other properties
 type MsgUpsertDappProposalTx struct {
-	Sender string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	Sender   string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	DappName string `protobuf:"bytes,2,opt,name=dapp_name,json=dappName,proto3" json:"dapp_name,omitempty"`
 }
 
 func (m *MsgUpsertDappProposalTx) Reset()         { *m = MsgUpsertDappProposalTx{} }
@@ -1529,6 +1666,13 @@ var xxx_messageInfo_MsgUpsertDappProposalTx proto.InternalMessageInfo
 func (m *MsgUpsertDappProposalTx) GetSender() string {
 	if m != nil {
 		return m.Sender
+	}
+	return ""
+}
+
+func (m *MsgUpsertDappProposalTx) GetDappName() string {
+	if m != nil {
+		return m.DappName
 	}
 	return ""
 }
@@ -1572,7 +1716,8 @@ var xxx_messageInfo_MsgUpsertDappProposalTxResponse proto.InternalMessageInfo
 // can only be voted by the dApp controllers, accept/reject upsert proposal to
 // modify the dApp, executors set or any other properties
 type MsgVoteUpsertDappProposalTx struct {
-	Sender string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	Sender   string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	DappName string `protobuf:"bytes,2,opt,name=dapp_name,json=dappName,proto3" json:"dapp_name,omitempty"`
 }
 
 func (m *MsgVoteUpsertDappProposalTx) Reset()         { *m = MsgVoteUpsertDappProposalTx{} }
@@ -1611,6 +1756,13 @@ var xxx_messageInfo_MsgVoteUpsertDappProposalTx proto.InternalMessageInfo
 func (m *MsgVoteUpsertDappProposalTx) GetSender() string {
 	if m != nil {
 		return m.Sender
+	}
+	return ""
+}
+
+func (m *MsgVoteUpsertDappProposalTx) GetDappName() string {
+	if m != nil {
+		return m.DappName
 	}
 	return ""
 }
@@ -1654,7 +1806,8 @@ var xxx_messageInfo_MsgVoteUpsertDappProposalTxResponse proto.InternalMessageInf
 // allow user to manually deposit/transfer/withdrawal funds to / from / within
 // ABR and communicate with apps by including xam string message.
 type MsgTransferDappTx struct {
-	Sender string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	Sender   string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	DappName string `protobuf:"bytes,2,opt,name=dapp_name,json=dappName,proto3" json:"dapp_name,omitempty"`
 }
 
 func (m *MsgTransferDappTx) Reset()         { *m = MsgTransferDappTx{} }
@@ -1697,6 +1850,13 @@ func (m *MsgTransferDappTx) GetSender() string {
 	return ""
 }
 
+func (m *MsgTransferDappTx) GetDappName() string {
+	if m != nil {
+		return m.DappName
+	}
+	return ""
+}
+
 type MsgTransferDappTxResponse struct {
 }
 
@@ -1735,7 +1895,8 @@ var xxx_messageInfo_MsgTransferDappTxResponse proto.InternalMessageInfo
 
 // create new fungible token record in the minting module
 type MsgMintCreateFtTx struct {
-	Sender string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	Sender   string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	DappName string `protobuf:"bytes,2,opt,name=dapp_name,json=dappName,proto3" json:"dapp_name,omitempty"`
 }
 
 func (m *MsgMintCreateFtTx) Reset()         { *m = MsgMintCreateFtTx{} }
@@ -1778,6 +1939,13 @@ func (m *MsgMintCreateFtTx) GetSender() string {
 	return ""
 }
 
+func (m *MsgMintCreateFtTx) GetDappName() string {
+	if m != nil {
+		return m.DappName
+	}
+	return ""
+}
+
 type MsgMintCreateFtTxResponse struct {
 }
 
@@ -1816,7 +1984,8 @@ var xxx_messageInfo_MsgMintCreateFtTxResponse proto.InternalMessageInfo
 
 // create new non-fungible token record in the minting module
 type MsgMintCreateNftTx struct {
-	Sender string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	Sender   string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	DappName string `protobuf:"bytes,2,opt,name=dapp_name,json=dappName,proto3" json:"dapp_name,omitempty"`
 }
 
 func (m *MsgMintCreateNftTx) Reset()         { *m = MsgMintCreateNftTx{} }
@@ -1855,6 +2024,13 @@ var xxx_messageInfo_MsgMintCreateNftTx proto.InternalMessageInfo
 func (m *MsgMintCreateNftTx) GetSender() string {
 	if m != nil {
 		return m.Sender
+	}
+	return ""
+}
+
+func (m *MsgMintCreateNftTx) GetDappName() string {
+	if m != nil {
+		return m.DappName
 	}
 	return ""
 }
@@ -1898,7 +2074,8 @@ var xxx_messageInfo_MsgMintCreateNftTxResponse proto.InternalMessageInfo
 // allow owner to mint new tokens or anyone if the minting-fee is set to value
 // other then 0.
 type MsgMintIssueTx struct {
-	Sender string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	Sender   string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	DappName string `protobuf:"bytes,2,opt,name=dapp_name,json=dappName,proto3" json:"dapp_name,omitempty"`
 }
 
 func (m *MsgMintIssueTx) Reset()         { *m = MsgMintIssueTx{} }
@@ -1941,6 +2118,13 @@ func (m *MsgMintIssueTx) GetSender() string {
 	return ""
 }
 
+func (m *MsgMintIssueTx) GetDappName() string {
+	if m != nil {
+		return m.DappName
+	}
+	return ""
+}
+
 type MsgMintIssueTxResponse struct {
 }
 
@@ -1979,7 +2163,8 @@ var xxx_messageInfo_MsgMintIssueTxResponse proto.InternalMessageInfo
 
 // allow anyone burn the tokens they own
 type MsgMintBurnTx struct {
-	Sender string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	Sender   string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	DappName string `protobuf:"bytes,2,opt,name=dapp_name,json=dappName,proto3" json:"dapp_name,omitempty"`
 }
 
 func (m *MsgMintBurnTx) Reset()         { *m = MsgMintBurnTx{} }
@@ -2018,6 +2203,13 @@ var xxx_messageInfo_MsgMintBurnTx proto.InternalMessageInfo
 func (m *MsgMintBurnTx) GetSender() string {
 	if m != nil {
 		return m.Sender
+	}
+	return ""
+}
+
+func (m *MsgMintBurnTx) GetDappName() string {
+	if m != nil {
+		return m.DappName
 	}
 	return ""
 }
@@ -2112,79 +2304,83 @@ func init() {
 func init() { proto.RegisterFile("kira/layer2/tx.proto", fileDescriptor_c30a928a62b31d6d) }
 
 var fileDescriptor_c30a928a62b31d6d = []byte{
-	// 1143 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x58, 0xdd, 0x6e, 0xdc, 0x44,
-	0x14, 0x8e, 0x69, 0x54, 0x25, 0x27, 0x6a, 0x69, 0x4c, 0x9a, 0x6c, 0x9d, 0xc6, 0x49, 0x36, 0x4d,
-	0xb3, 0xf4, 0x67, 0x0d, 0x29, 0x3c, 0x00, 0x49, 0x1b, 0x09, 0xa8, 0xdb, 0xc8, 0xb4, 0x08, 0x81,
-	0x44, 0xe5, 0xac, 0x27, 0xc6, 0x4d, 0xd6, 0x63, 0xcd, 0x78, 0xb7, 0x9b, 0xa7, 0x80, 0x2b, 0xee,
-	0xb9, 0xe3, 0x51, 0x7a, 0xd9, 0x4b, 0xc4, 0x45, 0x85, 0x92, 0x47, 0xe0, 0x05, 0xd0, 0x8c, 0x77,
-	0x27, 0xf6, 0xfc, 0x78, 0x8d, 0xc4, 0x05, 0x57, 0xc9, 0xf8, 0x7c, 0xe7, 0x9b, 0xcf, 0x33, 0xc7,
-	0xe7, 0x7c, 0x5a, 0x58, 0x3a, 0x49, 0x48, 0xe8, 0x9d, 0x86, 0x67, 0x88, 0xec, 0x7a, 0xf9, 0xa8,
-	0x9b, 0x11, 0x9c, 0x63, 0x7b, 0x81, 0x3d, 0xed, 0x16, 0x4f, 0x9d, 0xa5, 0x18, 0xc7, 0x98, 0x3f,
-	0xf7, 0xd8, 0x7f, 0x05, 0xc4, 0xb9, 0x15, 0x63, 0x1c, 0x9f, 0x22, 0x8f, 0xaf, 0x8e, 0x06, 0xc7,
-	0x5e, 0x98, 0x9e, 0x4d, 0x42, 0x3d, 0x4c, 0xfb, 0x98, 0xbe, 0x2a, 0x72, 0x8a, 0xc5, 0x38, 0xd4,
-	0x2a, 0x6f, 0x57, 0xfc, 0x29, 0x22, 0xed, 0xdf, 0x2c, 0xb8, 0xe9, 0xd3, 0x78, 0x9f, 0xa0, 0x30,
-	0x47, 0x8f, 0xc3, 0x2c, 0x3b, 0x24, 0x38, 0xc3, 0x34, 0x3c, 0xb5, 0x97, 0xe1, 0x2a, 0x45, 0x69,
-	0x84, 0x48, 0xcb, 0xda, 0xb0, 0x3a, 0xf3, 0xc1, 0x78, 0x65, 0xdf, 0x87, 0xd9, 0x28, 0xcc, 0xb2,
-	0xd6, 0x07, 0x1b, 0x56, 0x67, 0x61, 0x77, 0xb1, 0x5b, 0xd2, 0xdc, 0x65, 0x04, 0x7b, 0xb3, 0x6f,
-	0xdf, 0xaf, 0xcf, 0x04, 0x1c, 0x64, 0xef, 0xc3, 0xec, 0x11, 0x4e, 0xa3, 0xd6, 0x15, 0x46, 0xb1,
-	0xe7, 0xb1, 0xc8, 0x9f, 0xef, 0xd7, 0x77, 0xe2, 0x24, 0xff, 0x69, 0x70, 0xd4, 0xed, 0xe1, 0xfe,
-	0x58, 0xe7, 0xf8, 0xcf, 0x43, 0x1a, 0x9d, 0x78, 0xf9, 0x59, 0x86, 0x68, 0x77, 0x1f, 0x27, 0x69,
-	0xc0, 0x93, 0xdb, 0xeb, 0xb0, 0xa6, 0x95, 0x18, 0x20, 0x9a, 0xe1, 0x94, 0xa2, 0xf6, 0xcf, 0x16,
-	0x7c, 0xe4, 0xd3, 0x78, 0x0f, 0xa7, 0x51, 0xa3, 0x57, 0x58, 0x85, 0x79, 0xa6, 0xee, 0x55, 0x1a,
-	0xf6, 0x11, 0x7f, 0x8f, 0xf9, 0x60, 0x8e, 0x3d, 0x78, 0x16, 0xf6, 0xd1, 0x7f, 0x23, 0x79, 0x0d,
-	0x56, 0x35, 0x82, 0x84, 0xe0, 0x5f, 0x2d, 0x70, 0x7c, 0x1a, 0x07, 0xa8, 0x77, 0x1a, 0x26, 0x7d,
-	0x7e, 0x6a, 0x38, 0x8d, 0xfe, 0x07, 0xba, 0xef, 0x40, 0xdb, 0xac, 0x4b, 0xc8, 0x7f, 0x03, 0xd7,
-	0x7c, 0x1a, 0x7f, 0x85, 0x93, 0x94, 0x41, 0x5e, 0x8c, 0x8c, 0x82, 0x1d, 0x98, 0x43, 0x23, 0xd4,
-	0x1b, 0xe4, 0x98, 0x70, 0xbd, 0x73, 0x81, 0x58, 0xb3, 0xd8, 0x10, 0x91, 0xe4, 0x38, 0x41, 0x84,
-	0x6b, 0x9e, 0x0b, 0xc4, 0x9a, 0xf1, 0x25, 0x69, 0x8e, 0xc8, 0xa8, 0x35, 0x5b, 0xf0, 0x15, 0xab,
-	0xf6, 0x0a, 0x2f, 0xd6, 0xcb, 0x8d, 0x85, 0xa2, 0x6d, 0x58, 0xf0, 0x69, 0xfc, 0x64, 0x94, 0xe4,
-	0x2c, 0x60, 0xd2, 0xd3, 0xbe, 0xc9, 0xeb, 0x64, 0x02, 0x13, 0xd9, 0x1e, 0xa7, 0xfd, 0x16, 0x17,
-	0xe5, 0xf5, 0x3c, 0x43, 0x24, 0xcc, 0x31, 0x31, 0xbf, 0xd7, 0xb8, 0x22, 0xd5, 0x04, 0xc1, 0xf8,
-	0x90, 0x6f, 0x14, 0xa0, 0x08, 0x21, 0x7e, 0x8c, 0x87, 0x18, 0x9f, 0xd6, 0xf0, 0x15, 0xe5, 0x22,
-	0xc3, 0x05, 0xdb, 0x7d, 0x58, 0xf4, 0x69, 0xfc, 0xcd, 0x9b, 0x30, 0x6b, 0xc0, 0xb5, 0x0a, 0xb7,
-	0x14, 0xb0, 0x60, 0xea, 0xc2, 0x12, 0xfb, 0x94, 0x70, 0x3a, 0x44, 0x24, 0x6f, 0x40, 0xe6, 0xc2,
-	0x6d, 0x1d, 0x5e, 0xf0, 0x75, 0xe0, 0xba, 0x4f, 0xe3, 0xc3, 0x70, 0x40, 0x51, 0x7d, 0x29, 0xb4,
-	0x5b, 0xb0, 0x5c, 0x45, 0x0a, 0x8e, 0x7b, 0x70, 0xc3, 0xa7, 0xf1, 0xcb, 0xb4, 0x09, 0x8b, 0x03,
-	0x2d, 0x19, 0xab, 0x9c, 0x79, 0xd8, 0xcb, 0x93, 0xe1, 0xb8, 0x55, 0x34, 0x38, 0xf3, 0x2a, 0x5c,
-	0x52, 0xf5, 0x84, 0x57, 0x6b, 0x33, 0x55, 0x15, 0xac, 0xa4, 0xea, 0x31, 0x4a, 0xf1, 0x20, 0xed,
-	0xa1, 0xa7, 0x28, 0x8c, 0x10, 0x99, 0xaa, 0x4a, 0x86, 0x4b, 0x6c, 0x2f, 0x48, 0x98, 0xd2, 0x24,
-	0x4f, 0x70, 0xda, 0xe8, 0x1d, 0x65, 0xb8, 0x60, 0xfb, 0x8c, 0x77, 0xa1, 0x2f, 0xb2, 0x8c, 0xe0,
-	0x61, 0xa1, 0x5b, 0x20, 0x6b, 0x48, 0x8b, 0x1e, 0x61, 0xc8, 0x12, 0xdc, 0x8f, 0x78, 0x19, 0x06,
-	0xe8, 0x35, 0xea, 0xe5, 0x8d, 0xa9, 0xb7, 0x60, 0xd3, 0x98, 0x24, 0x98, 0x3f, 0x85, 0x15, 0x56,
-	0x03, 0x19, 0x9d, 0x94, 0xe4, 0xb8, 0x3d, 0xd5, 0xf0, 0x6e, 0xc2, 0xba, 0x21, 0x45, 0xb0, 0x7e,
-	0xce, 0x8f, 0x8a, 0x7d, 0xd2, 0xff, 0x8a, 0x79, 0x1b, 0xb6, 0x6a, 0xd2, 0xa4, 0x2f, 0x98, 0xbf,
-	0xce, 0x31, 0x22, 0x53, 0x6e, 0xad, 0xf8, 0x82, 0xab, 0x60, 0x89, 0xc9, 0x4f, 0xd2, 0xbc, 0x18,
-	0x88, 0x07, 0xf9, 0x54, 0xa6, 0x2a, 0x58, 0x30, 0x3d, 0x00, 0xbb, 0x12, 0x7c, 0x76, 0x5c, 0x47,
-	0x75, 0x9b, 0xd7, 0x8a, 0x84, 0x96, 0xfa, 0x00, 0x8b, 0x7e, 0x49, 0xe9, 0x00, 0x4d, 0xed, 0x03,
-	0x25, 0xa4, 0xe0, 0xd8, 0xe1, 0x53, 0x85, 0x45, 0xf6, 0x06, 0xa4, 0xae, 0x4a, 0x8a, 0x29, 0x70,
-	0x09, 0x9c, 0x30, 0xec, 0xfe, 0xbd, 0x08, 0x57, 0x7c, 0x1a, 0xdb, 0x11, 0xd8, 0x1a, 0x43, 0xd3,
-	0xae, 0x58, 0x15, 0xad, 0xa3, 0x70, 0xee, 0x4d, 0xc7, 0x4c, 0x76, 0xb3, 0x7f, 0x84, 0x1b, 0x8a,
-	0xe3, 0xd8, 0x90, 0xf3, 0x65, 0x84, 0xd3, 0x99, 0x86, 0x10, 0xfc, 0x14, 0x56, 0x4c, 0x06, 0x61,
-	0x47, 0x26, 0x31, 0x00, 0x1d, 0xaf, 0x21, 0x50, 0x6c, 0xfa, 0x14, 0xa0, 0x34, 0xd7, 0x1d, 0x39,
-	0xfd, 0x32, 0xe6, 0xb4, 0xcd, 0x31, 0xc1, 0x76, 0x00, 0x73, 0x62, 0x26, 0xb7, 0x64, 0xfc, 0x24,
-	0xe2, 0x6c, 0x98, 0x22, 0x82, 0x27, 0x02, 0x5b, 0x33, 0x9d, 0x15, 0x05, 0x2a, 0x46, 0xbd, 0x50,
-	0xf3, 0xd0, 0x66, 0x17, 0xaa, 0x4c, 0xec, 0x0d, 0xf5, 0x00, 0xab, 0x08, 0xf5, 0x42, 0x4d, 0x63,
-	0xdc, 0xfe, 0x0e, 0xae, 0x4b, 0x33, 0xdc, 0x95, 0x73, 0xab, 0x71, 0xe7, 0x6e, 0x7d, 0x5c, 0x30,
-	0x87, 0xb0, 0xa8, 0xce, 0xf4, 0x4d, 0xa5, 0x96, 0x65, 0x88, 0xf3, 0xf1, 0x54, 0x88, 0xd8, 0xe2,
-	0x39, 0x2c, 0x94, 0x07, 0xf4, 0xaa, 0x9c, 0x59, 0x0a, 0x3a, 0x5b, 0x35, 0x41, 0x41, 0xf8, 0x12,
-	0xae, 0x55, 0x67, 0xfe, 0x9a, 0x9c, 0x55, 0x09, 0x3b, 0xdb, 0xb5, 0xe1, 0xea, 0x25, 0x4a, 0x16,
-	0x40, 0x73, 0x89, 0x55, 0x84, 0xee, 0x12, 0xf5, 0xbe, 0x80, 0xc9, 0xae, 0x9a, 0x82, 0x35, 0xb5,
-	0x7a, 0x4b, 0x61, 0x55, 0xb6, 0xd6, 0x26, 0x30, 0xd9, 0x8a, 0x47, 0x50, 0x64, 0xcb, 0x08, 0x55,
-	0xb6, 0xc9, 0x38, 0x30, 0x7e, 0xc5, 0x35, 0x28, 0xfc, 0x32, 0x42, 0xe5, 0x37, 0x59, 0x09, 0xd6,
-	0xac, 0x4c, 0x3e, 0x42, 0x69, 0x56, 0x06, 0xa0, 0xda, 0xac, 0xa6, 0x78, 0x0c, 0x3b, 0x83, 0x65,
-	0x83, 0xc1, 0xb8, 0xab, 0xde, 0xa7, 0x0e, 0xe7, 0x74, 0x9b, 0xe1, 0xc4, 0x8e, 0xaf, 0x61, 0x49,
-	0x6b, 0x0f, 0xee, 0x28, 0xc5, 0xa9, 0x41, 0x39, 0x0f, 0x9a, 0xa0, 0xc4, 0x5e, 0x43, 0x68, 0x19,
-	0xed, 0x48, 0x47, 0xd7, 0xd6, 0xb4, 0x7b, 0x7e, 0xd2, 0x14, 0x59, 0x6e, 0x53, 0x92, 0x51, 0x71,
-	0xb5, 0x65, 0x20, 0xe2, 0x6a, 0x9b, 0xd2, 0x7b, 0x17, 0xc6, 0x2c, 0x19, 0x17, 0x85, 0xb9, 0x1a,
-	0x57, 0x99, 0xf5, 0x5e, 0xc6, 0xfe, 0x01, 0x3e, 0x94, 0x8d, 0xcc, 0xba, 0x39, 0x95, 0x03, 0x9c,
-	0x9d, 0x29, 0x80, 0x72, 0xeb, 0x2b, 0x3b, 0x9b, 0x55, 0x5d, 0xde, 0x38, 0xa8, 0xb6, 0x3e, 0x8d,
-	0xd3, 0x61, 0x43, 0xb6, 0x64, 0x73, 0x1c, 0x5d, 0x4a, 0x11, 0x53, 0x87, 0xac, 0xea, 0x7a, 0xf6,
-	0x0e, 0x7e, 0x3f, 0x77, 0xad, 0xb7, 0xe7, 0xae, 0xf5, 0xee, 0xdc, 0xb5, 0xfe, 0x3a, 0x77, 0xad,
-	0x5f, 0x2e, 0xdc, 0x99, 0x77, 0x17, 0xee, 0xcc, 0x1f, 0x17, 0xee, 0xcc, 0xf7, 0x9d, 0xd2, 0x0f,
-	0x00, 0x5f, 0x27, 0x24, 0xdc, 0xc7, 0x04, 0x79, 0x14, 0x9d, 0x84, 0x89, 0x37, 0x12, 0x3f, 0x40,
-	0x9d, 0x65, 0x88, 0x1e, 0x5d, 0xe5, 0xbf, 0x08, 0x3d, 0xfa, 0x27, 0x00, 0x00, 0xff, 0xff, 0xaa,
-	0x4c, 0xc3, 0x49, 0x9c, 0x12, 0x00, 0x00,
+	// 1214 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x58, 0xcb, 0x52, 0xdc, 0x46,
+	0x14, 0x45, 0x31, 0x71, 0xc1, 0x25, 0x38, 0x46, 0xc1, 0x30, 0x16, 0x66, 0x06, 0x06, 0xdb, 0x90,
+	0xd7, 0x4c, 0x8a, 0x7c, 0x41, 0x86, 0x47, 0xfc, 0x40, 0x98, 0x28, 0x38, 0x95, 0x4a, 0xaa, 0x42,
+	0x35, 0xa3, 0x46, 0xc8, 0x0c, 0x6a, 0x95, 0x5a, 0x43, 0x86, 0x2f, 0xc8, 0x32, 0x59, 0xa4, 0xb2,
+	0xcf, 0x2e, 0x9f, 0xe2, 0xa5, 0x97, 0xa9, 0x2c, 0x5c, 0x29, 0xf8, 0x84, 0xfc, 0x40, 0xaa, 0xbb,
+	0x35, 0x8d, 0xd4, 0xdd, 0x02, 0x6a, 0x86, 0x85, 0x57, 0x20, 0xdd, 0xd3, 0xe7, 0x1c, 0xa9, 0x6f,
+	0x5f, 0x9d, 0x1a, 0x98, 0x3e, 0x0a, 0x13, 0xd4, 0xec, 0xa0, 0x53, 0x9c, 0xac, 0x36, 0xd3, 0x5e,
+	0x23, 0x4e, 0x48, 0x4a, 0xec, 0x09, 0x76, 0xb7, 0x21, 0xee, 0x3a, 0xd3, 0x01, 0x09, 0x08, 0xbf,
+	0xdf, 0x64, 0xff, 0x09, 0x88, 0x73, 0x3f, 0x20, 0x24, 0xe8, 0xe0, 0x26, 0xbf, 0xda, 0xef, 0x1e,
+	0x34, 0x51, 0x74, 0xda, 0x2f, 0xb5, 0x09, 0x3d, 0x26, 0x74, 0x4f, 0xac, 0x11, 0x17, 0x59, 0xa9,
+	0x92, 0x97, 0x13, 0x7f, 0x44, 0xa5, 0xfe, 0xa7, 0x05, 0xf7, 0x5c, 0x1a, 0xac, 0x25, 0x18, 0xa5,
+	0x78, 0x1d, 0xc5, 0xf1, 0x4e, 0x42, 0x62, 0x42, 0x51, 0xc7, 0x9e, 0x81, 0xdb, 0x14, 0x47, 0x3e,
+	0x4e, 0x2a, 0xd6, 0x82, 0xb5, 0x32, 0xee, 0x65, 0x57, 0xf6, 0xa7, 0x30, 0xea, 0xa3, 0x38, 0xae,
+	0xbc, 0xb7, 0x60, 0xad, 0x4c, 0xac, 0x4e, 0x35, 0x72, 0x9e, 0x1b, 0x8c, 0xa0, 0x35, 0xfa, 0xfa,
+	0x6d, 0x6d, 0xc4, 0xe3, 0x20, 0x7b, 0x0d, 0x46, 0xf7, 0x49, 0xe4, 0x57, 0x6e, 0x31, 0x8a, 0x56,
+	0x93, 0x55, 0xfe, 0x79, 0x5b, 0x5b, 0x0e, 0xc2, 0xf4, 0xb0, 0xbb, 0xdf, 0x68, 0x93, 0xe3, 0xcc,
+	0x67, 0xf6, 0xe7, 0x73, 0xea, 0x1f, 0x35, 0xd3, 0xd3, 0x18, 0xd3, 0xc6, 0x1a, 0x09, 0x23, 0x8f,
+	0x2f, 0xae, 0xd7, 0x60, 0xde, 0x68, 0xd1, 0xc3, 0x34, 0x26, 0x11, 0xc5, 0xf5, 0x5f, 0x2d, 0xf8,
+	0xc8, 0xa5, 0x41, 0x8b, 0x44, 0xfe, 0xb5, 0x1e, 0x61, 0x0e, 0xc6, 0x99, 0xbb, 0xbd, 0x08, 0x1d,
+	0x63, 0xfe, 0x1c, 0xe3, 0xde, 0x18, 0xbb, 0xb1, 0x8d, 0x8e, 0xf1, 0xcd, 0x58, 0x9e, 0x87, 0x39,
+	0x83, 0x21, 0x69, 0xf8, 0x0f, 0x0b, 0x1c, 0x97, 0x06, 0x1e, 0x6e, 0x77, 0x50, 0x78, 0xcc, 0xdf,
+	0x1a, 0x89, 0xfc, 0x77, 0xc0, 0xf7, 0x43, 0xa8, 0x97, 0xfb, 0x92, 0xf6, 0x7f, 0xb7, 0x60, 0xd2,
+	0xa5, 0xc1, 0x33, 0x12, 0x46, 0x0c, 0xb3, 0xdb, 0x1b, 0xcc, 0xb1, 0x03, 0x63, 0xb8, 0x87, 0xdb,
+	0xdd, 0x94, 0x24, 0xdc, 0xf5, 0x98, 0x27, 0xaf, 0x59, 0xed, 0x04, 0x27, 0xe1, 0x41, 0x88, 0x93,
+	0xca, 0xa8, 0xa8, 0xf5, 0xaf, 0x99, 0x58, 0x18, 0xa5, 0x38, 0xe9, 0x55, 0xde, 0x17, 0x62, 0xe2,
+	0xaa, 0x3e, 0xcb, 0x5b, 0xf9, 0xc2, 0x95, 0xf4, 0xdb, 0x82, 0x09, 0x97, 0x06, 0x1b, 0xbd, 0x30,
+	0x65, 0x85, 0x81, 0xcc, 0xd6, 0xef, 0xf1, 0x16, 0xeb, 0x73, 0x48, 0xea, 0x2d, 0xae, 0xf9, 0x1d,
+	0x11, 0x9d, 0xf9, 0x22, 0xc6, 0x09, 0x4a, 0x49, 0x32, 0xe0, 0x1b, 0xc9, 0x3a, 0x5d, 0x67, 0x93,
+	0x72, 0xcf, 0xb8, 0x0b, 0x0f, 0xfb, 0x18, 0xf3, 0xed, 0xd9, 0x21, 0xa4, 0x33, 0xa8, 0x98, 0xe8,
+	0x51, 0x95, 0x4b, 0x4a, 0x3d, 0x81, 0x29, 0x97, 0x06, 0xdf, 0xfe, 0x8c, 0xe2, 0x61, 0x85, 0xe6,
+	0xe0, 0xbe, 0xc6, 0x24, 0x65, 0x9e, 0xc3, 0x34, 0x3b, 0xdc, 0x24, 0x3a, 0xc1, 0x49, 0x3a, 0xac,
+	0x52, 0x15, 0x1e, 0x98, 0xc8, 0xa4, 0xd8, 0x06, 0xdc, 0x71, 0x69, 0xb0, 0x83, 0xba, 0x14, 0x0f,
+	0xd1, 0xb8, 0xf5, 0x0a, 0xcc, 0x14, 0x69, 0xa4, 0xc0, 0xd7, 0x70, 0xd7, 0xa5, 0xc1, 0xcb, 0x68,
+	0x68, 0x09, 0x07, 0x2a, 0x2a, 0x91, 0xd6, 0x04, 0xa8, 0x9d, 0x86, 0x27, 0xd9, 0x4c, 0x1c, 0xb6,
+	0x09, 0x8a, 0x5c, 0xca, 0xf3, 0x6c, 0xf0, 0x53, 0x79, 0x03, 0xcf, 0x53, 0x20, 0x92, 0x22, 0xbf,
+	0x88, 0xf1, 0xbd, 0x8e, 0x23, 0xd2, 0x8d, 0xda, 0x78, 0x0b, 0x23, 0x1f, 0x0f, 0x7a, 0x84, 0xd8,
+	0xa2, 0x0e, 0x27, 0x10, 0x83, 0xd0, 0xcb, 0xae, 0xec, 0x25, 0x98, 0xf4, 0x33, 0x81, 0xbd, 0x14,
+	0xf7, 0x52, 0x3e, 0x55, 0xc6, 0xbd, 0x0f, 0xfa, 0x37, 0x77, 0x71, 0x2f, 0xcd, 0xde, 0x86, 0x6a,
+	0x44, 0x1a, 0x3d, 0xe2, 0x3e, 0x77, 0x13, 0x14, 0xd1, 0x30, 0x0d, 0xc9, 0x50, 0xc3, 0xaf, 0x06,
+	0x13, 0x34, 0x45, 0x69, 0x97, 0xee, 0x1d, 0x22, 0x7a, 0x98, 0x99, 0x05, 0x71, 0xeb, 0x09, 0xa2,
+	0x87, 0x99, 0x17, 0x55, 0x4c, 0x7a, 0xf9, 0x86, 0x7f, 0x41, 0xbe, 0x8a, 0xe3, 0x84, 0x9c, 0x88,
+	0x17, 0x2a, 0x91, 0x83, 0xee, 0x91, 0x18, 0xfe, 0x25, 0x94, 0x52, 0x78, 0x87, 0x9f, 0x66, 0x0f,
+	0xbf, 0xc2, 0xed, 0xf4, 0x66, 0x74, 0x97, 0x60, 0xb1, 0x94, 0x51, 0xca, 0x6e, 0xc3, 0x2c, 0x3b,
+	0x10, 0x31, 0xed, 0x9f, 0xec, 0xec, 0xa3, 0x34, 0xa8, 0xe8, 0x22, 0xd4, 0x4a, 0xf8, 0xa4, 0xa4,
+	0xc7, 0x77, 0x80, 0x4d, 0xe3, 0x9b, 0x93, 0x7d, 0x04, 0x4b, 0x97, 0x70, 0x2a, 0xc3, 0x97, 0xbf,
+	0x88, 0x03, 0x9c, 0x0c, 0x73, 0xf0, 0xc4, 0xf0, 0x2d, 0x32, 0x29, 0x32, 0x6e, 0x18, 0xa5, 0x22,
+	0x5d, 0x6d, 0xa6, 0xc3, 0xc9, 0x14, 0x99, 0xa4, 0xcc, 0x53, 0xb0, 0x0b, 0xc5, 0xed, 0x83, 0x81,
+	0x75, 0x1e, 0xf0, 0xb6, 0x57, 0xa8, 0x94, 0xf9, 0xce, 0xaa, 0x4f, 0x29, 0xed, 0xe2, 0xe1, 0xe6,
+	0x7b, 0x8e, 0x46, 0x0a, 0xac, 0xf3, 0xe0, 0xc3, 0x2a, 0xad, 0x6e, 0x32, 0x70, 0xc3, 0x8b, 0xa0,
+	0x72, 0xc1, 0xd2, 0xa7, 0x5f, 0xfd, 0x6f, 0x0a, 0x6e, 0xb9, 0x34, 0xb0, 0x7d, 0xb0, 0x0d, 0x89,
+	0xbc, 0x5e, 0xc8, 0xda, 0xc6, 0x48, 0xec, 0x7c, 0x72, 0x35, 0xa6, 0xaf, 0x66, 0xff, 0x04, 0x77,
+	0xb5, 0xc8, 0xbc, 0xa0, 0xae, 0x57, 0x11, 0xce, 0xca, 0x55, 0x08, 0xc9, 0x4f, 0x61, 0xb6, 0x2c,
+	0xe1, 0x2e, 0xab, 0x24, 0x25, 0x40, 0xa7, 0x79, 0x4d, 0xa0, 0x14, 0xdd, 0x02, 0xc8, 0xe5, 0x52,
+	0x47, 0x5d, 0x7e, 0x51, 0x73, 0xea, 0xe5, 0x35, 0xc9, 0xb6, 0x09, 0x63, 0x32, 0x36, 0x56, 0x54,
+	0x7c, 0xbf, 0xe2, 0x2c, 0x94, 0x55, 0x24, 0x8f, 0x0f, 0xb6, 0x21, 0x23, 0x6a, 0x0e, 0x74, 0x8c,
+	0xbe, 0xa1, 0xe5, 0xe9, 0x90, 0x6d, 0xa8, 0x16, 0x0d, 0x17, 0xf4, 0x17, 0x58, 0x44, 0xe8, 0x1b,
+	0x5a, 0x16, 0x09, 0xed, 0xef, 0xe1, 0x8e, 0x92, 0x07, 0xab, 0xea, 0xda, 0x62, 0xdd, 0x79, 0x7c,
+	0x79, 0x5d, 0x32, 0x23, 0x98, 0xd2, 0x23, 0xe0, 0xa2, 0xd6, 0xcb, 0x2a, 0xc4, 0xf9, 0xf8, 0x4a,
+	0x88, 0x94, 0x78, 0x01, 0x13, 0xf9, 0x54, 0x36, 0xa7, 0xae, 0xcc, 0x15, 0x9d, 0xa5, 0x4b, 0x8a,
+	0x92, 0xf0, 0x25, 0x4c, 0x16, 0x83, 0xde, 0xbc, 0xba, 0xaa, 0x50, 0x76, 0x1e, 0x5d, 0x5a, 0x2e,
+	0x6e, 0xa2, 0x12, 0xed, 0x0c, 0x9b, 0x58, 0x44, 0x98, 0x36, 0xd1, 0x1c, 0xe9, 0x98, 0xed, 0x62,
+	0x9e, 0x9b, 0xd7, 0xbb, 0x37, 0x57, 0xd6, 0x6d, 0x1b, 0x43, 0x1c, 0xb3, 0xad, 0x05, 0x38, 0xcd,
+	0xb6, 0x8a, 0xd0, 0x6d, 0x97, 0x65, 0x2f, 0xc6, 0xaf, 0x05, 0x2f, 0x8d, 0x5f, 0x45, 0xe8, 0xfc,
+	0x65, 0x79, 0x8a, 0x0d, 0xab, 0xb2, 0x30, 0xa5, 0x0d, 0xab, 0x12, 0xa0, 0x3e, 0xac, 0xae, 0xc8,
+	0x52, 0x76, 0x0c, 0x33, 0x25, 0x41, 0xea, 0xb1, 0xbe, 0x9f, 0x26, 0x9c, 0xd3, 0xb8, 0x1e, 0x4e,
+	0x2a, 0xbe, 0x82, 0x69, 0x63, 0x98, 0x79, 0xa8, 0x35, 0xa7, 0x01, 0xe5, 0x7c, 0x76, 0x1d, 0x94,
+	0xd4, 0x3a, 0x81, 0x4a, 0x69, 0x78, 0x5a, 0x31, 0x8d, 0x35, 0xa3, 0xe6, 0x17, 0xd7, 0x45, 0xe6,
+	0xc7, 0x94, 0x92, 0x9c, 0xaa, 0xc6, 0x36, 0x90, 0x75, 0x7d, 0x4c, 0x99, 0xf3, 0x12, 0x63, 0x56,
+	0xc2, 0x92, 0xc6, 0x5c, 0xac, 0xeb, 0xcc, 0xe6, 0x88, 0x64, 0xff, 0x08, 0x1f, 0xaa, 0xf9, 0xa8,
+	0x56, 0xbe, 0x94, 0x03, 0x9c, 0xe5, 0x2b, 0x00, 0xf9, 0xd1, 0x97, 0xcf, 0x44, 0x73, 0xa6, 0x75,
+	0x59, 0x51, 0x1f, 0x7d, 0x86, 0x18, 0xc4, 0x3e, 0xb2, 0xb9, 0x0c, 0xe4, 0x98, 0x96, 0x88, 0x9a,
+	0xfe, 0x91, 0xd5, 0x53, 0x4f, 0x6b, 0xf3, 0xaf, 0xb3, 0xaa, 0xf5, 0xfa, 0xac, 0x6a, 0xbd, 0x39,
+	0xab, 0x5a, 0xff, 0x9e, 0x55, 0xad, 0xdf, 0xce, 0xab, 0x23, 0x6f, 0xce, 0xab, 0x23, 0x7f, 0x9f,
+	0x57, 0x47, 0x7e, 0x58, 0xc9, 0xfd, 0x82, 0xf5, 0x3c, 0x4c, 0xd0, 0x1a, 0x49, 0x70, 0x93, 0xe2,
+	0x23, 0x14, 0x36, 0x7b, 0xf2, 0x17, 0xd4, 0xd3, 0x18, 0xd3, 0xfd, 0xdb, 0xfc, 0x27, 0xcd, 0x2f,
+	0xff, 0x0f, 0x00, 0x00, 0xff, 0xff, 0xe7, 0xd7, 0xfb, 0xb0, 0x5d, 0x15, 0x00, 0x00,
 }
 
 func (this *MsgCreateDappProposal) Equal(that interface{}) bool {
@@ -2362,6 +2558,9 @@ func (this *MsgJoinDappTx) Equal(that interface{}) bool {
 	if this.Sender != that1.Sender {
 		return false
 	}
+	if this.DappName != that1.DappName {
+		return false
+	}
 	if this.Executor != that1.Executor {
 		return false
 	}
@@ -2416,6 +2615,9 @@ func (this *MsgExitDapp) Equal(that interface{}) bool {
 	if this.Sender != that1.Sender {
 		return false
 	}
+	if this.DappName != that1.DappName {
+		return false
+	}
 	return true
 }
 func (this *MsgExitDappResponse) Equal(that interface{}) bool {
@@ -2459,6 +2661,9 @@ func (this *MsgVoteDappOperatorTx) Equal(that interface{}) bool {
 		return false
 	}
 	if this.Sender != that1.Sender {
+		return false
+	}
+	if this.DappName != that1.DappName {
 		return false
 	}
 	return true
@@ -2506,6 +2711,9 @@ func (this *MsgRedeemDappPoolTx) Equal(that interface{}) bool {
 	if this.Sender != that1.Sender {
 		return false
 	}
+	if this.DappName != that1.DappName {
+		return false
+	}
 	return true
 }
 func (this *MsgRedeemDappPoolTxResponse) Equal(that interface{}) bool {
@@ -2549,6 +2757,9 @@ func (this *MsgSwapDappPoolTx) Equal(that interface{}) bool {
 		return false
 	}
 	if this.Sender != that1.Sender {
+		return false
+	}
+	if this.DappName != that1.DappName {
 		return false
 	}
 	return true
@@ -2596,6 +2807,9 @@ func (this *MsgConvertDappPoolTx) Equal(that interface{}) bool {
 	if this.Sender != that1.Sender {
 		return false
 	}
+	if this.DappName != that1.DappName {
+		return false
+	}
 	return true
 }
 func (this *MsgConvertDappPoolTxResponse) Equal(that interface{}) bool {
@@ -2639,6 +2853,9 @@ func (this *MsgPauseDappTx) Equal(that interface{}) bool {
 		return false
 	}
 	if this.Sender != that1.Sender {
+		return false
+	}
+	if this.DappName != that1.DappName {
 		return false
 	}
 	return true
@@ -2686,6 +2903,9 @@ func (this *MsgUnPauseDappTx) Equal(that interface{}) bool {
 	if this.Sender != that1.Sender {
 		return false
 	}
+	if this.DappName != that1.DappName {
+		return false
+	}
 	return true
 }
 func (this *MsgUnPauseDappTxResponse) Equal(that interface{}) bool {
@@ -2729,6 +2949,9 @@ func (this *MsgReactivateDappTx) Equal(that interface{}) bool {
 		return false
 	}
 	if this.Sender != that1.Sender {
+		return false
+	}
+	if this.DappName != that1.DappName {
 		return false
 	}
 	return true
@@ -2776,6 +2999,9 @@ func (this *MsgExecuteDappTx) Equal(that interface{}) bool {
 	if this.Sender != that1.Sender {
 		return false
 	}
+	if this.DappName != that1.DappName {
+		return false
+	}
 	return true
 }
 func (this *MsgExecuteDappTxResponse) Equal(that interface{}) bool {
@@ -2819,6 +3045,15 @@ func (this *MsgDenounceLeaderTx) Equal(that interface{}) bool {
 		return false
 	}
 	if this.Sender != that1.Sender {
+		return false
+	}
+	if this.DappName != that1.DappName {
+		return false
+	}
+	if this.Leader != that1.Leader {
+		return false
+	}
+	if this.DenounceText != that1.DenounceText {
 		return false
 	}
 	return true
@@ -2866,6 +3101,12 @@ func (this *MsgTransitionDappTx) Equal(that interface{}) bool {
 	if this.Sender != that1.Sender {
 		return false
 	}
+	if this.DappName != that1.DappName {
+		return false
+	}
+	if this.StatusHash != that1.StatusHash {
+		return false
+	}
 	return true
 }
 func (this *MsgTransitionDappTxResponse) Equal(that interface{}) bool {
@@ -2909,6 +3150,9 @@ func (this *MsgApproveDappTransitionTx) Equal(that interface{}) bool {
 		return false
 	}
 	if this.Sender != that1.Sender {
+		return false
+	}
+	if this.DappName != that1.DappName {
 		return false
 	}
 	return true
@@ -2956,6 +3200,9 @@ func (this *MsgRejectDappTransitionTx) Equal(that interface{}) bool {
 	if this.Sender != that1.Sender {
 		return false
 	}
+	if this.DappName != that1.DappName {
+		return false
+	}
 	return true
 }
 func (this *MsgRejectDappTransitionTxResponse) Equal(that interface{}) bool {
@@ -2999,6 +3246,9 @@ func (this *MsgUpsertDappProposalTx) Equal(that interface{}) bool {
 		return false
 	}
 	if this.Sender != that1.Sender {
+		return false
+	}
+	if this.DappName != that1.DappName {
 		return false
 	}
 	return true
@@ -3046,6 +3296,9 @@ func (this *MsgVoteUpsertDappProposalTx) Equal(that interface{}) bool {
 	if this.Sender != that1.Sender {
 		return false
 	}
+	if this.DappName != that1.DappName {
+		return false
+	}
 	return true
 }
 func (this *MsgVoteUpsertDappProposalTxResponse) Equal(that interface{}) bool {
@@ -3089,6 +3342,9 @@ func (this *MsgTransferDappTx) Equal(that interface{}) bool {
 		return false
 	}
 	if this.Sender != that1.Sender {
+		return false
+	}
+	if this.DappName != that1.DappName {
 		return false
 	}
 	return true
@@ -3136,6 +3392,9 @@ func (this *MsgMintCreateFtTx) Equal(that interface{}) bool {
 	if this.Sender != that1.Sender {
 		return false
 	}
+	if this.DappName != that1.DappName {
+		return false
+	}
 	return true
 }
 func (this *MsgMintCreateFtTxResponse) Equal(that interface{}) bool {
@@ -3179,6 +3438,9 @@ func (this *MsgMintCreateNftTx) Equal(that interface{}) bool {
 		return false
 	}
 	if this.Sender != that1.Sender {
+		return false
+	}
+	if this.DappName != that1.DappName {
 		return false
 	}
 	return true
@@ -3226,6 +3488,9 @@ func (this *MsgMintIssueTx) Equal(that interface{}) bool {
 	if this.Sender != that1.Sender {
 		return false
 	}
+	if this.DappName != that1.DappName {
+		return false
+	}
 	return true
 }
 func (this *MsgMintIssueTxResponse) Equal(that interface{}) bool {
@@ -3269,6 +3534,9 @@ func (this *MsgMintBurnTx) Equal(that interface{}) bool {
 		return false
 	}
 	if this.Sender != that1.Sender {
+		return false
+	}
+	if this.DappName != that1.DappName {
 		return false
 	}
 	return true
@@ -4441,7 +4709,7 @@ func (m *MsgJoinDappTx) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.Interx)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Interx)))
 		i--
-		dAtA[i] = 0x22
+		dAtA[i] = 0x2a
 	}
 	if m.Verifier {
 		i--
@@ -4451,7 +4719,7 @@ func (m *MsgJoinDappTx) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			dAtA[i] = 0
 		}
 		i--
-		dAtA[i] = 0x18
+		dAtA[i] = 0x20
 	}
 	if m.Executor {
 		i--
@@ -4461,7 +4729,14 @@ func (m *MsgJoinDappTx) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			dAtA[i] = 0
 		}
 		i--
-		dAtA[i] = 0x10
+		dAtA[i] = 0x18
+	}
+	if len(m.DappName) > 0 {
+		i -= len(m.DappName)
+		copy(dAtA[i:], m.DappName)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.DappName)))
+		i--
+		dAtA[i] = 0x12
 	}
 	if len(m.Sender) > 0 {
 		i -= len(m.Sender)
@@ -4516,6 +4791,13 @@ func (m *MsgExitDapp) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.DappName) > 0 {
+		i -= len(m.DappName)
+		copy(dAtA[i:], m.DappName)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.DappName)))
+		i--
+		dAtA[i] = 0x12
+	}
 	if len(m.Sender) > 0 {
 		i -= len(m.Sender)
 		copy(dAtA[i:], m.Sender)
@@ -4569,6 +4851,13 @@ func (m *MsgVoteDappOperatorTx) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.DappName) > 0 {
+		i -= len(m.DappName)
+		copy(dAtA[i:], m.DappName)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.DappName)))
+		i--
+		dAtA[i] = 0x12
+	}
 	if len(m.Sender) > 0 {
 		i -= len(m.Sender)
 		copy(dAtA[i:], m.Sender)
@@ -4622,6 +4911,13 @@ func (m *MsgRedeemDappPoolTx) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.DappName) > 0 {
+		i -= len(m.DappName)
+		copy(dAtA[i:], m.DappName)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.DappName)))
+		i--
+		dAtA[i] = 0x12
+	}
 	if len(m.Sender) > 0 {
 		i -= len(m.Sender)
 		copy(dAtA[i:], m.Sender)
@@ -4675,6 +4971,13 @@ func (m *MsgSwapDappPoolTx) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.DappName) > 0 {
+		i -= len(m.DappName)
+		copy(dAtA[i:], m.DappName)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.DappName)))
+		i--
+		dAtA[i] = 0x12
+	}
 	if len(m.Sender) > 0 {
 		i -= len(m.Sender)
 		copy(dAtA[i:], m.Sender)
@@ -4728,6 +5031,13 @@ func (m *MsgConvertDappPoolTx) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.DappName) > 0 {
+		i -= len(m.DappName)
+		copy(dAtA[i:], m.DappName)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.DappName)))
+		i--
+		dAtA[i] = 0x12
+	}
 	if len(m.Sender) > 0 {
 		i -= len(m.Sender)
 		copy(dAtA[i:], m.Sender)
@@ -4781,6 +5091,13 @@ func (m *MsgPauseDappTx) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.DappName) > 0 {
+		i -= len(m.DappName)
+		copy(dAtA[i:], m.DappName)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.DappName)))
+		i--
+		dAtA[i] = 0x12
+	}
 	if len(m.Sender) > 0 {
 		i -= len(m.Sender)
 		copy(dAtA[i:], m.Sender)
@@ -4834,6 +5151,13 @@ func (m *MsgUnPauseDappTx) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.DappName) > 0 {
+		i -= len(m.DappName)
+		copy(dAtA[i:], m.DappName)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.DappName)))
+		i--
+		dAtA[i] = 0x12
+	}
 	if len(m.Sender) > 0 {
 		i -= len(m.Sender)
 		copy(dAtA[i:], m.Sender)
@@ -4887,6 +5211,13 @@ func (m *MsgReactivateDappTx) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.DappName) > 0 {
+		i -= len(m.DappName)
+		copy(dAtA[i:], m.DappName)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.DappName)))
+		i--
+		dAtA[i] = 0x12
+	}
 	if len(m.Sender) > 0 {
 		i -= len(m.Sender)
 		copy(dAtA[i:], m.Sender)
@@ -4940,6 +5271,13 @@ func (m *MsgExecuteDappTx) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.DappName) > 0 {
+		i -= len(m.DappName)
+		copy(dAtA[i:], m.DappName)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.DappName)))
+		i--
+		dAtA[i] = 0x12
+	}
 	if len(m.Sender) > 0 {
 		i -= len(m.Sender)
 		copy(dAtA[i:], m.Sender)
@@ -4993,6 +5331,27 @@ func (m *MsgDenounceLeaderTx) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.DenounceText) > 0 {
+		i -= len(m.DenounceText)
+		copy(dAtA[i:], m.DenounceText)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.DenounceText)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Leader) > 0 {
+		i -= len(m.Leader)
+		copy(dAtA[i:], m.Leader)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Leader)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.DappName) > 0 {
+		i -= len(m.DappName)
+		copy(dAtA[i:], m.DappName)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.DappName)))
+		i--
+		dAtA[i] = 0x12
+	}
 	if len(m.Sender) > 0 {
 		i -= len(m.Sender)
 		copy(dAtA[i:], m.Sender)
@@ -5046,6 +5405,20 @@ func (m *MsgTransitionDappTx) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.StatusHash) > 0 {
+		i -= len(m.StatusHash)
+		copy(dAtA[i:], m.StatusHash)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.StatusHash)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.DappName) > 0 {
+		i -= len(m.DappName)
+		copy(dAtA[i:], m.DappName)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.DappName)))
+		i--
+		dAtA[i] = 0x12
+	}
 	if len(m.Sender) > 0 {
 		i -= len(m.Sender)
 		copy(dAtA[i:], m.Sender)
@@ -5099,6 +5472,13 @@ func (m *MsgApproveDappTransitionTx) MarshalToSizedBuffer(dAtA []byte) (int, err
 	_ = i
 	var l int
 	_ = l
+	if len(m.DappName) > 0 {
+		i -= len(m.DappName)
+		copy(dAtA[i:], m.DappName)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.DappName)))
+		i--
+		dAtA[i] = 0x12
+	}
 	if len(m.Sender) > 0 {
 		i -= len(m.Sender)
 		copy(dAtA[i:], m.Sender)
@@ -5152,6 +5532,13 @@ func (m *MsgRejectDappTransitionTx) MarshalToSizedBuffer(dAtA []byte) (int, erro
 	_ = i
 	var l int
 	_ = l
+	if len(m.DappName) > 0 {
+		i -= len(m.DappName)
+		copy(dAtA[i:], m.DappName)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.DappName)))
+		i--
+		dAtA[i] = 0x12
+	}
 	if len(m.Sender) > 0 {
 		i -= len(m.Sender)
 		copy(dAtA[i:], m.Sender)
@@ -5205,6 +5592,13 @@ func (m *MsgUpsertDappProposalTx) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	_ = i
 	var l int
 	_ = l
+	if len(m.DappName) > 0 {
+		i -= len(m.DappName)
+		copy(dAtA[i:], m.DappName)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.DappName)))
+		i--
+		dAtA[i] = 0x12
+	}
 	if len(m.Sender) > 0 {
 		i -= len(m.Sender)
 		copy(dAtA[i:], m.Sender)
@@ -5258,6 +5652,13 @@ func (m *MsgVoteUpsertDappProposalTx) MarshalToSizedBuffer(dAtA []byte) (int, er
 	_ = i
 	var l int
 	_ = l
+	if len(m.DappName) > 0 {
+		i -= len(m.DappName)
+		copy(dAtA[i:], m.DappName)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.DappName)))
+		i--
+		dAtA[i] = 0x12
+	}
 	if len(m.Sender) > 0 {
 		i -= len(m.Sender)
 		copy(dAtA[i:], m.Sender)
@@ -5311,6 +5712,13 @@ func (m *MsgTransferDappTx) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.DappName) > 0 {
+		i -= len(m.DappName)
+		copy(dAtA[i:], m.DappName)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.DappName)))
+		i--
+		dAtA[i] = 0x12
+	}
 	if len(m.Sender) > 0 {
 		i -= len(m.Sender)
 		copy(dAtA[i:], m.Sender)
@@ -5364,6 +5772,13 @@ func (m *MsgMintCreateFtTx) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.DappName) > 0 {
+		i -= len(m.DappName)
+		copy(dAtA[i:], m.DappName)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.DappName)))
+		i--
+		dAtA[i] = 0x12
+	}
 	if len(m.Sender) > 0 {
 		i -= len(m.Sender)
 		copy(dAtA[i:], m.Sender)
@@ -5417,6 +5832,13 @@ func (m *MsgMintCreateNftTx) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.DappName) > 0 {
+		i -= len(m.DappName)
+		copy(dAtA[i:], m.DappName)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.DappName)))
+		i--
+		dAtA[i] = 0x12
+	}
 	if len(m.Sender) > 0 {
 		i -= len(m.Sender)
 		copy(dAtA[i:], m.Sender)
@@ -5470,6 +5892,13 @@ func (m *MsgMintIssueTx) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.DappName) > 0 {
+		i -= len(m.DappName)
+		copy(dAtA[i:], m.DappName)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.DappName)))
+		i--
+		dAtA[i] = 0x12
+	}
 	if len(m.Sender) > 0 {
 		i -= len(m.Sender)
 		copy(dAtA[i:], m.Sender)
@@ -5523,6 +5952,13 @@ func (m *MsgMintBurnTx) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.DappName) > 0 {
+		i -= len(m.DappName)
+		copy(dAtA[i:], m.DappName)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.DappName)))
+		i--
+		dAtA[i] = 0x12
+	}
 	if len(m.Sender) > 0 {
 		i -= len(m.Sender)
 		copy(dAtA[i:], m.Sender)
@@ -5659,6 +6095,10 @@ func (m *MsgJoinDappTx) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
+	l = len(m.DappName)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	if m.Executor {
 		n += 2
 	}
@@ -5691,6 +6131,10 @@ func (m *MsgExitDapp) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
+	l = len(m.DappName)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
@@ -5710,6 +6154,10 @@ func (m *MsgVoteDappOperatorTx) Size() (n int) {
 	var l int
 	_ = l
 	l = len(m.Sender)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.DappName)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -5735,6 +6183,10 @@ func (m *MsgRedeemDappPoolTx) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
+	l = len(m.DappName)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
@@ -5754,6 +6206,10 @@ func (m *MsgSwapDappPoolTx) Size() (n int) {
 	var l int
 	_ = l
 	l = len(m.Sender)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.DappName)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -5779,6 +6235,10 @@ func (m *MsgConvertDappPoolTx) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
+	l = len(m.DappName)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
@@ -5798,6 +6258,10 @@ func (m *MsgPauseDappTx) Size() (n int) {
 	var l int
 	_ = l
 	l = len(m.Sender)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.DappName)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -5823,6 +6287,10 @@ func (m *MsgUnPauseDappTx) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
+	l = len(m.DappName)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
@@ -5842,6 +6310,10 @@ func (m *MsgReactivateDappTx) Size() (n int) {
 	var l int
 	_ = l
 	l = len(m.Sender)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.DappName)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -5867,6 +6339,10 @@ func (m *MsgExecuteDappTx) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
+	l = len(m.DappName)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
@@ -5886,6 +6362,18 @@ func (m *MsgDenounceLeaderTx) Size() (n int) {
 	var l int
 	_ = l
 	l = len(m.Sender)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.DappName)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Leader)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.DenounceText)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -5911,6 +6399,14 @@ func (m *MsgTransitionDappTx) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
+	l = len(m.DappName)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.StatusHash)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
@@ -5930,6 +6426,10 @@ func (m *MsgApproveDappTransitionTx) Size() (n int) {
 	var l int
 	_ = l
 	l = len(m.Sender)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.DappName)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -5955,6 +6455,10 @@ func (m *MsgRejectDappTransitionTx) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
+	l = len(m.DappName)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
@@ -5974,6 +6478,10 @@ func (m *MsgUpsertDappProposalTx) Size() (n int) {
 	var l int
 	_ = l
 	l = len(m.Sender)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.DappName)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -5999,6 +6507,10 @@ func (m *MsgVoteUpsertDappProposalTx) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
+	l = len(m.DappName)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
@@ -6018,6 +6530,10 @@ func (m *MsgTransferDappTx) Size() (n int) {
 	var l int
 	_ = l
 	l = len(m.Sender)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.DappName)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -6043,6 +6559,10 @@ func (m *MsgMintCreateFtTx) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
+	l = len(m.DappName)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
@@ -6062,6 +6582,10 @@ func (m *MsgMintCreateNftTx) Size() (n int) {
 	var l int
 	_ = l
 	l = len(m.Sender)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.DappName)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -6087,6 +6611,10 @@ func (m *MsgMintIssueTx) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
+	l = len(m.DappName)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
@@ -6106,6 +6634,10 @@ func (m *MsgMintBurnTx) Size() (n int) {
 	var l int
 	_ = l
 	l = len(m.Sender)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.DappName)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -6784,6 +7316,38 @@ func (m *MsgJoinDappTx) Unmarshal(dAtA []byte) error {
 			m.Sender = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DappName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DappName = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Executor", wireType)
 			}
@@ -6803,7 +7367,7 @@ func (m *MsgJoinDappTx) Unmarshal(dAtA []byte) error {
 				}
 			}
 			m.Executor = bool(v != 0)
-		case 3:
+		case 4:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Verifier", wireType)
 			}
@@ -6823,7 +7387,7 @@ func (m *MsgJoinDappTx) Unmarshal(dAtA []byte) error {
 				}
 			}
 			m.Verifier = bool(v != 0)
-		case 4:
+		case 5:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Interx", wireType)
 			}
@@ -6987,6 +7551,38 @@ func (m *MsgExitDapp) Unmarshal(dAtA []byte) error {
 			}
 			m.Sender = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DappName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DappName = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -7118,6 +7714,38 @@ func (m *MsgVoteDappOperatorTx) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.Sender = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DappName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DappName = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -7251,6 +7879,38 @@ func (m *MsgRedeemDappPoolTx) Unmarshal(dAtA []byte) error {
 			}
 			m.Sender = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DappName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DappName = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -7382,6 +8042,38 @@ func (m *MsgSwapDappPoolTx) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.Sender = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DappName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DappName = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -7515,6 +8207,38 @@ func (m *MsgConvertDappPoolTx) Unmarshal(dAtA []byte) error {
 			}
 			m.Sender = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DappName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DappName = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -7646,6 +8370,38 @@ func (m *MsgPauseDappTx) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.Sender = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DappName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DappName = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -7779,6 +8535,38 @@ func (m *MsgUnPauseDappTx) Unmarshal(dAtA []byte) error {
 			}
 			m.Sender = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DappName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DappName = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -7910,6 +8698,38 @@ func (m *MsgReactivateDappTx) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.Sender = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DappName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DappName = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -8043,6 +8863,38 @@ func (m *MsgExecuteDappTx) Unmarshal(dAtA []byte) error {
 			}
 			m.Sender = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DappName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DappName = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -8174,6 +9026,102 @@ func (m *MsgDenounceLeaderTx) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.Sender = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DappName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DappName = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Leader", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Leader = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DenounceText", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DenounceText = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -8307,6 +9255,70 @@ func (m *MsgTransitionDappTx) Unmarshal(dAtA []byte) error {
 			}
 			m.Sender = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DappName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DappName = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StatusHash", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.StatusHash = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -8438,6 +9450,38 @@ func (m *MsgApproveDappTransitionTx) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.Sender = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DappName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DappName = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -8571,6 +9615,38 @@ func (m *MsgRejectDappTransitionTx) Unmarshal(dAtA []byte) error {
 			}
 			m.Sender = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DappName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DappName = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -8702,6 +9778,38 @@ func (m *MsgUpsertDappProposalTx) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.Sender = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DappName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DappName = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -8835,6 +9943,38 @@ func (m *MsgVoteUpsertDappProposalTx) Unmarshal(dAtA []byte) error {
 			}
 			m.Sender = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DappName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DappName = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -8966,6 +10106,38 @@ func (m *MsgTransferDappTx) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.Sender = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DappName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DappName = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -9099,6 +10271,38 @@ func (m *MsgMintCreateFtTx) Unmarshal(dAtA []byte) error {
 			}
 			m.Sender = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DappName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DappName = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -9230,6 +10434,38 @@ func (m *MsgMintCreateNftTx) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.Sender = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DappName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DappName = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -9363,6 +10599,38 @@ func (m *MsgMintIssueTx) Unmarshal(dAtA []byte) error {
 			}
 			m.Sender = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DappName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DappName = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -9494,6 +10762,38 @@ func (m *MsgMintBurnTx) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.Sender = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DappName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DappName = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

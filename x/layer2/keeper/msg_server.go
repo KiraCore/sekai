@@ -138,14 +138,34 @@ func (k msgServer) ReclaimDappBondProposal(goCtx context.Context, msg *types.Msg
 
 func (k msgServer) JoinDappTx(goCtx context.Context, msg *types.MsgJoinDappTx) (*types.MsgJoinDappTxResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
 
+	candidate := k.keeper.GetDappOperatorCandidate(ctx, msg.DappName, msg.Sender)
+	if candidate.DappName != "" {
+		return nil, types.ErrAlreadyADappCandidate
+	}
+
+	operator := k.keeper.GetDappOperator(ctx, msg.DappName, msg.Sender)
+	if operator.DappName != "" {
+		return nil, types.ErrAlreadyADappOperator
+	}
+
+	k.keeper.SetDappOperatorCandidate(ctx, types.DappOperatorCandidate{
+		DappName:  msg.DappName,
+		Candidate: msg.Sender,
+		Executor:  msg.Executor,
+		Verifier:  msg.Verifier,
+		Interx:    msg.Interx,
+	})
 	return &types.MsgJoinDappTxResponse{}, nil
 }
 
 func (k msgServer) ExitDapp(goCtx context.Context, msg *types.MsgExitDapp) (*types.MsgExitDappResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
+	operator := k.keeper.GetDappOperator(ctx, msg.DappName, msg.Sender)
+	if operator.DappName == "" {
+		return nil, types.ErrNotDappOperator
+	}
+	k.keeper.DeleteDappOperator(ctx, msg.DappName, msg.Sender)
 
 	return &types.MsgExitDappResponse{}, nil
 }
@@ -180,21 +200,36 @@ func (k msgServer) ConvertDappPoolTx(goCtx context.Context, msg *types.MsgConver
 
 func (k msgServer) PauseDappTx(goCtx context.Context, msg *types.MsgPauseDappTx) (*types.MsgPauseDappTxResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
+	dapp := k.keeper.GetDapp(ctx, msg.DappName)
+	if dapp.Status != types.Active {
+		return nil, types.ErrDappNotActive
+	}
+	dapp.Status = types.Paused
+	k.keeper.SetDapp(ctx, dapp)
 
 	return &types.MsgPauseDappTxResponse{}, nil
 }
 
 func (k msgServer) UnPauseDappTx(goCtx context.Context, msg *types.MsgUnPauseDappTx) (*types.MsgUnPauseDappTxResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
+	dapp := k.keeper.GetDapp(ctx, msg.DappName)
+	if dapp.Status != types.Paused {
+		return nil, types.ErrDappNotPaused
+	}
+	dapp.Status = types.Active
+	k.keeper.SetDapp(ctx, dapp)
 
 	return &types.MsgUnPauseDappTxResponse{}, nil
 }
 
 func (k msgServer) ReactivateDappTx(goCtx context.Context, msg *types.MsgReactivateDappTx) (*types.MsgReactivateDappTxResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
+	dapp := k.keeper.GetDapp(ctx, msg.DappName)
+	if dapp.Status != types.Halted {
+		return nil, types.ErrDappNotHalted
+	}
+	dapp.Status = types.Active
+	k.keeper.SetDapp(ctx, dapp)
 
 	return &types.MsgReactivateDappTxResponse{}, nil
 }
@@ -208,28 +243,47 @@ func (k msgServer) ExecuteDappTx(goCtx context.Context, msg *types.MsgExecuteDap
 
 func (k msgServer) DenounceLeaderTx(goCtx context.Context, msg *types.MsgDenounceLeaderTx) (*types.MsgDenounceLeaderTxResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
+	k.keeper.SetDappLeaderDenouncement(ctx, types.DappLeaderDenouncement{
+		DappName:     msg.DappName,
+		Leader:       msg.Leader,
+		Sender:       msg.Sender,
+		Denouncement: msg.DenounceText,
+	})
 
 	return &types.MsgDenounceLeaderTxResponse{}, nil
 }
 
 func (k msgServer) TransitionDappTx(goCtx context.Context, msg *types.MsgTransitionDappTx) (*types.MsgTransitionDappTxResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
+
+	session := k.keeper.GetDappSession(ctx, msg.DappName)
+	if session.DappName == "" {
+		return nil, types.ErrDappSessionDoesNotExist
+	}
+	session.StatusHash = msg.StatusHash
+	k.keeper.SetDappSession(ctx, session)
 
 	return &types.MsgTransitionDappTxResponse{}, nil
 }
 
 func (k msgServer) ApproveDappTransitionTx(goCtx context.Context, msg *types.MsgApproveDappTransitionTx) (*types.MsgApproveDappTransitionTxResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
+	k.keeper.SetDappSessionApproval(ctx, types.DappSessionApproval{
+		DappName:   msg.DappName,
+		Approver:   msg.Sender,
+		IsApproved: true,
+	})
 
 	return &types.MsgApproveDappTransitionTxResponse{}, nil
 }
 
 func (k msgServer) RejectDappTransitionTx(goCtx context.Context, msg *types.MsgRejectDappTransitionTx) (*types.MsgRejectDappTransitionTxResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
+	k.keeper.SetDappSessionApproval(ctx, types.DappSessionApproval{
+		DappName:   msg.DappName,
+		Approver:   msg.Sender,
+		IsApproved: false,
+	})
 
 	return &types.MsgRejectDappTransitionTxResponse{}, nil
 }
@@ -284,22 +338,13 @@ func (k msgServer) MintBurnTx(goCtx context.Context, msg *types.MsgMintBurnTx) (
 }
 
 // TODO: implement - step1
-//   rpc CreateDappProposal(MsgCreateDappProposal) returns (MsgCreateDappProposalResponse);
-//   rpc BondDappProposal(MsgBondDappProposal) returns (MsgBondDappProposalResponse);
-//   rpc ReclaimDappBondProposal(MsgReclaimDappBondProposal) returns (MsgReclaimDappBondProposalResponse);
-//   rpc JoinDappTx(MsgJoinDappTx) returns (MsgJoinDappTxResponse);
-//   rpc ExitDapp(MsgExitDapp) returns (MsgExitDappResponse);
+// accept/reject executor candidate, can only be sent by the controllers,
+// corresponding proposal should be automatically raised once join dApp tx is
+// sent by the validator.
 //   rpc VoteDappOperatorTx(MsgVoteDappOperatorTx) returns (MsgVoteDappOperatorTxResponse);
 //   rpc ExecuteDappTx(MsgExecuteDappTx) returns (MsgExecuteDappTxResponse);
-//   rpc DenounceLeaderTx(MsgDenounceLeaderTx) returns (MsgDenounceLeaderTxResponse);
-//   rpc TransitionDappTx(MsgTransitionDappTx) returns (MsgTransitionDappTxResponse);
-//   rpc ApproveDappTransitionTx(MsgApproveDappTransitionTx) returns (MsgApproveDappTransitionTxResponse);
-//   rpc RejectDappTransitionTx(MsgRejectDappTransitionTx) returns (MsgRejectDappTransitionTxResponse);
 
 // TODO: implement - step2
-//   rpc PauseDappTx(MsgPauseDappTx) returns (MsgPauseDappTxResponse);
-//   rpc UnPauseDappTx(MsgUnPauseDappTx) returns (MsgUnPauseDappTxResponse);
-//   rpc ReactivateDappTx(MsgReactivateDappTx) returns (MsgReactivateDappTxResponse);
 //   rpc RedeemDappPoolTx(MsgRedeemDappPoolTx) returns (MsgRedeemDappPoolTxResponse);
 //   rpc SwapDappPoolTx(MsgSwapDappPoolTx) returns (MsgSwapDappPoolTxResponse);
 //   rpc ConvertDappPoolTx(MsgConvertDappPoolTx) returns (MsgConvertDappPoolTxResponse);

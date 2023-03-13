@@ -85,9 +85,10 @@ message MsgReclaimDappBondProposalResponse {}
 // have the same operators.
 message MsgJoinDappTx {
   string sender = 1;
-  bool executor = 2; // can only be set by validators, raises proposal that controllers must approve
-  bool verifier = 3; // can be set by anyone, sending this tx does not require any approvals however requires a bond in `lp_<denom>` tokens no less than `dapp_verifier_bond`
-  string interx = 4; // must be set to a valid kira address
+  string dapp_name = 2;
+  bool executor = 3; // can only be set by validators, raises proposal that controllers must approve
+  bool verifier = 4; // can be set by anyone, sending this tx does not require any approvals however requires a bond in `lp_<denom>` tokens no less than `dapp_verifier_bond`
+  string interx = 5; // must be set to a valid kira address
 }
 message MsgJoinDappTxResponse {}
 
@@ -95,6 +96,7 @@ message MsgJoinDappTxResponse {}
 // Return bonded funds if the operator is a verifier.
 message MsgExitDapp {
   string sender = 1;
+  string dapp_name = 2;
 }
 message MsgExitDappResponse {}
 
@@ -103,6 +105,7 @@ message MsgExitDappResponse {}
 // sent by the validator.
 message MsgVoteDappOperatorTx {
   string sender = 1;
+  string dapp_name = 2;
 }
 message MsgVoteDappOperatorTxResponse {}
 
@@ -110,6 +113,7 @@ message MsgVoteDappOperatorTxResponse {}
 // unless slippage is exceeded then fail the tx.
 message MsgRedeemDappPoolTx {
   string sender = 1;
+  string dapp_name = 2;
 }
 message MsgRedeemDappPoolTxResponse {}
 
@@ -117,6 +121,7 @@ message MsgRedeemDappPoolTxResponse {}
 // slippage is exceeded then fail the tx.
 message MsgSwapDappPoolTx {
   string sender = 1;
+  string dapp_name = 2;
 }
 message MsgSwapDappPoolTxResponse {}
 
@@ -124,6 +129,7 @@ message MsgSwapDappPoolTxResponse {}
 // slippage is exceeded then fail the tx.
 message MsgConvertDappPoolTx {
   string sender = 1;
+  string dapp_name = 2;
 }
 message MsgConvertDappPoolTxResponse {}
 
@@ -133,6 +139,7 @@ message MsgConvertDappPoolTxResponse {}
 // needs to finish it before paused status is applied.
 message MsgPauseDappTx {
   string sender = 1;
+  string dapp_name = 2;
 }
 message MsgPauseDappTxResponse {}
 
@@ -140,12 +147,14 @@ message MsgPauseDappTxResponse {}
 // the dApp again.
 message MsgUnPauseDappTx {
   string sender = 1;
+  string dapp_name = 2;
 }
 message MsgUnPauseDappTxResponse {}
 
 // re-activate deactivated dApp operator
 message MsgReactivateDappTx {
   string sender = 1;
+  string dapp_name = 2;
 }
 message MsgReactivateDappTxResponse {}
 
@@ -153,6 +162,7 @@ message MsgReactivateDappTxResponse {}
 // execution.
 message MsgExecuteDappTx {
   string sender = 1;
+  string dapp_name = 2;
 }
 message MsgExecuteDappTxResponse {}
 
@@ -161,6 +171,9 @@ message MsgExecuteDappTxResponse {}
 //  change.
 message MsgDenounceLeaderTx {
   string sender = 1;
+  string dapp_name = 2;
+  string leader = 3;
+  string denounce_text = 4;
 }
 message MsgDenounceLeaderTxResponse {}
 
@@ -168,6 +181,8 @@ message MsgDenounceLeaderTxResponse {}
 // this tx MUST include dApp version.
 message MsgTransitionDappTx {
   string sender = 1;
+  string dapp_name = 2;
+  string status_hash = 3;
 }
 message MsgTransitionDappTxResponse {}
 
@@ -175,6 +190,7 @@ message MsgTransitionDappTxResponse {}
 // who are NOT a leader), this tx MUST include dApp version.
 message MsgApproveDappTransitionTx {
   string sender = 1;
+  string dapp_name = 2;
 }
 message MsgApproveDappTransitionTxResponse {}
 
@@ -182,6 +198,7 @@ message MsgApproveDappTransitionTxResponse {}
 // session to halted, this tx MUST include dApp version and session id.
 message MsgRejectDappTransitionTx {
   string sender = 1;
+  string dapp_name = 2;
 }
 message MsgRejectDappTransitionTxResponse {}
 
@@ -189,6 +206,7 @@ message MsgRejectDappTransitionTxResponse {}
 // controlled and modify all other properties
 message MsgUpsertDappProposalTx {
   string sender = 1;
+  string dapp_name = 2;
 }
 message MsgUpsertDappProposalTxResponse {}
 
@@ -196,6 +214,7 @@ message MsgUpsertDappProposalTxResponse {}
 // modify the dApp, executors set or any other properties
 message MsgVoteUpsertDappProposalTx {
   string sender = 1;
+  string dapp_name = 2;
 }
 message MsgVoteUpsertDappProposalTxResponse {}
 
@@ -203,18 +222,21 @@ message MsgVoteUpsertDappProposalTxResponse {}
 // ABR and communicate with apps by including xam string message.
 message MsgTransferDappTx {
   string sender = 1;
+  string dapp_name = 2;
 }
 message MsgTransferDappTxResponse {}
 
 // create new fungible token record in the minting module
 message MsgMintCreateFtTx {
   string sender = 1;
+  string dapp_name = 2;
 }
 message MsgMintCreateFtTxResponse {}
 
 // create new non-fungible token record in the minting module
 message MsgMintCreateNftTx {
   string sender = 1;
+  string dapp_name = 2;
 }
 message MsgMintCreateNftTxResponse {}
 
@@ -222,11 +244,13 @@ message MsgMintCreateNftTxResponse {}
 // other then 0.
 message MsgMintIssueTx {
   string sender = 1;
+  string dapp_name = 2;
 }
 message MsgMintIssueTxResponse {}
 
 // allow anyone burn the tokens they own
 message MsgMintBurnTx {
   string sender = 1;
+  string dapp_name = 2;
 }
 message MsgMintBurnTxResponse {}

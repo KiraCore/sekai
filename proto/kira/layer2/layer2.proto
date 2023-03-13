@@ -7,6 +7,14 @@ option (gogoproto.equal_all) = true;
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 
+enum DappStatus {
+  option (gogoproto.goproto_enum_prefix) = false;
+
+  ACTIVE = 0 [ (gogoproto.enumvalue_customname) = "Active" ];
+  PAUSED = 1 [ (gogoproto.enumvalue_customname) = "Paused" ];
+  HALTED = 2 [ (gogoproto.enumvalue_customname) = "Halted" ];
+}
+
 message AccountRange {
   repeated string addresses = 1;
   repeated uint64 roles = 2;
@@ -62,6 +70,8 @@ message Dapp {
     (gogoproto.nullable) = false
   ]; // total bonds put on the dapp
   uint64 creation_time = 17; // dapp creation time
+  string status_hash = 18; // dapp status hash
+  DappStatus status = 19; // dapp status
 }
 
 message UserDappBond {
@@ -71,4 +81,49 @@ message UserDappBond {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
     (gogoproto.nullable) = false
   ];
+}
+
+message DappOperatorCandidate {
+  string dapp_name = 1;
+  string candidate = 2;
+  bool executor = 3; // can only be set by validators, raises proposal that controllers must approve
+  bool verifier = 4; // can be set by anyone, sending this tx does not require any approvals however requires a bond in `lp_<denom>` tokens no less than `dapp_verifier_bond`
+  string interx = 5; // must be set to a valid kira address
+}
+
+message DappOperator {
+  string dapp_name = 1;
+  string operator = 2;
+  bool executor = 3; // can only be set by validators, raises proposal that controllers must approve
+  bool verifier = 4; // can be set by anyone, sending this tx does not require any approvals however requires a bond in `lp_<denom>` tokens no less than `dapp_verifier_bond`
+  string interx = 5; // must be set to a valid kira address
+}
+
+message DappLeaderDenouncement {
+  string dapp_name = 1;
+  string leader = 2;
+  string sender = 3;
+  string denouncement = 4;
+}
+
+enum SessionStatus {
+  option (gogoproto.goproto_enum_prefix) = false;
+
+  UNSCHEDULED = 0 [ (gogoproto.enumvalue_customname) = "Unscheduled" ];
+  SCHEDULED = 1 [ (gogoproto.enumvalue_customname) = "Scheduled" ];
+  ONGOING = 2 [ (gogoproto.enumvalue_customname) = "Ongoing" ];
+}
+
+message DappSession {
+  string dapp_name = 1;
+  string leader = 2;
+  uint64 start = 3;
+  string status_hash = 4;
+  SessionStatus status = 5;
+}
+
+message DappSessionApproval {
+  string dapp_name = 1;
+  string approver = 2;
+  bool is_approved = 3;
 }
