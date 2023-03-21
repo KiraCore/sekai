@@ -32,3 +32,54 @@ func (k Keeper) BondDenom(ctx sdk.Context) string {
 func (k Keeper) CheckIfAllowedPermission(ctx sdk.Context, addr sdk.AccAddress, permValue govtypes.PermValue) bool {
 	return govkeeper.CheckIfAllowedPermission(ctx, k.gk, addr, govtypes.PermHandleBasketEmergency)
 }
+
+func (k Keeper) IsAllowedAddress(ctx sdk.Context, address sdk.AccAddress, permInfo types.Controllers) bool {
+	for _, owner := range permInfo.Whitelist.Addresses {
+		if owner == address.String() {
+			return true
+		}
+	}
+
+	actor, found := k.gk.GetNetworkActorByAddress(ctx, address)
+	if !found {
+		return false
+	}
+
+	flags := make(map[uint64]bool)
+	for _, role := range permInfo.Whitelist.Roles {
+		flags[role] = true
+	}
+
+	for _, role := range actor.Roles {
+		if flags[role] {
+			return true
+		}
+	}
+	return false
+}
+
+func (k Keeper) AllowedAddresses(ctx sdk.Context, permInfo types.Controllers) []string {
+	addrs := []string{}
+	flags := make(map[string]bool)
+
+	for _, owner := range permInfo.Whitelist.Addresses {
+		if flags[owner] == false {
+			flags[owner] = true
+			addrs = append(addrs, owner)
+		}
+	}
+
+	for _, role := range permInfo.Whitelist.Roles {
+		actorIter := k.gk.GetNetworkActorsByRole(ctx, role)
+
+		for ; actorIter.Valid(); actorIter.Next() {
+			addr := sdk.AccAddress(actorIter.Value()).String()
+			if flags[addr] == false {
+				flags[addr] = true
+				addrs = append(addrs, addr)
+			}
+		}
+	}
+
+	return addrs
+}

@@ -24,14 +24,8 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 		case *types.MsgReclaimDappBondProposal:
 			res, err := msgServer.ReclaimDappBondProposal(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgJoinDappTx:
-			res, err := msgServer.JoinDappTx(sdk.WrapSDKContext(ctx), msg)
-			return sdk.WrapServiceResult(ctx, res, err)
 		case *types.MsgExitDapp:
 			res, err := msgServer.ExitDapp(sdk.WrapSDKContext(ctx), msg)
-			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgVoteDappOperatorTx:
-			res, err := msgServer.VoteDappOperatorTx(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 		case *types.MsgRedeemDappPoolTx:
 			res, err := msgServer.RedeemDappPoolTx(sdk.WrapSDKContext(ctx), msg)
@@ -56,21 +50,6 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 			return sdk.WrapServiceResult(ctx, res, err)
 		case *types.MsgDenounceLeaderTx:
 			res, err := msgServer.DenounceLeaderTx(sdk.WrapSDKContext(ctx), msg)
-			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgTransitionDappTx:
-			res, err := msgServer.TransitionDappTx(sdk.WrapSDKContext(ctx), msg)
-			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgApproveDappTransitionTx:
-			res, err := msgServer.ApproveDappTransitionTx(sdk.WrapSDKContext(ctx), msg)
-			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgRejectDappTransitionTx:
-			res, err := msgServer.RejectDappTransitionTx(sdk.WrapSDKContext(ctx), msg)
-			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgUpsertDappProposalTx:
-			res, err := msgServer.UpsertDappProposalTx(sdk.WrapSDKContext(ctx), msg)
-			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgVoteUpsertDappProposalTx:
-			res, err := msgServer.VoteUpsertDappProposalTx(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 		case *types.MsgTransferDappTx:
 			res, err := msgServer.TransferDappTx(sdk.WrapSDKContext(ctx), msg)

@@ -306,126 +306,6 @@ func (m *MsgReclaimDappBondProposalResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgReclaimDappBondProposalResponse proto.InternalMessageInfo
 
-// Allows joining applications as executor or fisherman. By default all
-// executors are also verifiers so it should not be possible to set both
-// executor and verifier flags to true at the same time. This tx MUST also allow
-// to define or update a globally unique INTERX address that will be tasked with
-// operating the application. Tx should also fail if someone already joined
-// application and is applying for a different role, in other words all
-// operators must be unique for each dApp although different applications can
-// have the same operators.
-type MsgJoinDappTx struct {
-	Sender   string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
-	DappName string `protobuf:"bytes,2,opt,name=dapp_name,json=dappName,proto3" json:"dapp_name,omitempty"`
-	Executor bool   `protobuf:"varint,3,opt,name=executor,proto3" json:"executor,omitempty"`
-	Verifier bool   `protobuf:"varint,4,opt,name=verifier,proto3" json:"verifier,omitempty"`
-	Interx   string `protobuf:"bytes,5,opt,name=interx,proto3" json:"interx,omitempty"`
-}
-
-func (m *MsgJoinDappTx) Reset()         { *m = MsgJoinDappTx{} }
-func (m *MsgJoinDappTx) String() string { return proto.CompactTextString(m) }
-func (*MsgJoinDappTx) ProtoMessage()    {}
-func (*MsgJoinDappTx) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{6}
-}
-func (m *MsgJoinDappTx) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgJoinDappTx) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgJoinDappTx.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgJoinDappTx) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgJoinDappTx.Merge(m, src)
-}
-func (m *MsgJoinDappTx) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgJoinDappTx) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgJoinDappTx.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgJoinDappTx proto.InternalMessageInfo
-
-func (m *MsgJoinDappTx) GetSender() string {
-	if m != nil {
-		return m.Sender
-	}
-	return ""
-}
-
-func (m *MsgJoinDappTx) GetDappName() string {
-	if m != nil {
-		return m.DappName
-	}
-	return ""
-}
-
-func (m *MsgJoinDappTx) GetExecutor() bool {
-	if m != nil {
-		return m.Executor
-	}
-	return false
-}
-
-func (m *MsgJoinDappTx) GetVerifier() bool {
-	if m != nil {
-		return m.Verifier
-	}
-	return false
-}
-
-func (m *MsgJoinDappTx) GetInterx() string {
-	if m != nil {
-		return m.Interx
-	}
-	return ""
-}
-
-type MsgJoinDappTxResponse struct {
-}
-
-func (m *MsgJoinDappTxResponse) Reset()         { *m = MsgJoinDappTxResponse{} }
-func (m *MsgJoinDappTxResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgJoinDappTxResponse) ProtoMessage()    {}
-func (*MsgJoinDappTxResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{7}
-}
-func (m *MsgJoinDappTxResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgJoinDappTxResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgJoinDappTxResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgJoinDappTxResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgJoinDappTxResponse.Merge(m, src)
-}
-func (m *MsgJoinDappTxResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgJoinDappTxResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgJoinDappTxResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgJoinDappTxResponse proto.InternalMessageInfo
-
 // stop being a dApp operator and remove the record in the Execution Registrar.
 // Return bonded funds if the operator is a verifier.
 type MsgExitDapp struct {
@@ -437,7 +317,7 @@ func (m *MsgExitDapp) Reset()         { *m = MsgExitDapp{} }
 func (m *MsgExitDapp) String() string { return proto.CompactTextString(m) }
 func (*MsgExitDapp) ProtoMessage()    {}
 func (*MsgExitDapp) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{8}
+	return fileDescriptor_c30a928a62b31d6d, []int{6}
 }
 func (m *MsgExitDapp) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -487,7 +367,7 @@ func (m *MsgExitDappResponse) Reset()         { *m = MsgExitDappResponse{} }
 func (m *MsgExitDappResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgExitDappResponse) ProtoMessage()    {}
 func (*MsgExitDappResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{9}
+	return fileDescriptor_c30a928a62b31d6d, []int{7}
 }
 func (m *MsgExitDappResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -516,97 +396,6 @@ func (m *MsgExitDappResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgExitDappResponse proto.InternalMessageInfo
 
-// accept/reject executor candidate, can only be sent by the controllers,
-// corresponding proposal should be automatically raised once join dApp tx is
-// sent by the validator.
-type MsgVoteDappOperatorTx struct {
-	Sender   string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
-	DappName string `protobuf:"bytes,2,opt,name=dapp_name,json=dappName,proto3" json:"dapp_name,omitempty"`
-}
-
-func (m *MsgVoteDappOperatorTx) Reset()         { *m = MsgVoteDappOperatorTx{} }
-func (m *MsgVoteDappOperatorTx) String() string { return proto.CompactTextString(m) }
-func (*MsgVoteDappOperatorTx) ProtoMessage()    {}
-func (*MsgVoteDappOperatorTx) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{10}
-}
-func (m *MsgVoteDappOperatorTx) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgVoteDappOperatorTx) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgVoteDappOperatorTx.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgVoteDappOperatorTx) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgVoteDappOperatorTx.Merge(m, src)
-}
-func (m *MsgVoteDappOperatorTx) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgVoteDappOperatorTx) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgVoteDappOperatorTx.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgVoteDappOperatorTx proto.InternalMessageInfo
-
-func (m *MsgVoteDappOperatorTx) GetSender() string {
-	if m != nil {
-		return m.Sender
-	}
-	return ""
-}
-
-func (m *MsgVoteDappOperatorTx) GetDappName() string {
-	if m != nil {
-		return m.DappName
-	}
-	return ""
-}
-
-type MsgVoteDappOperatorTxResponse struct {
-}
-
-func (m *MsgVoteDappOperatorTxResponse) Reset()         { *m = MsgVoteDappOperatorTxResponse{} }
-func (m *MsgVoteDappOperatorTxResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgVoteDappOperatorTxResponse) ProtoMessage()    {}
-func (*MsgVoteDappOperatorTxResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{11}
-}
-func (m *MsgVoteDappOperatorTxResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgVoteDappOperatorTxResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgVoteDappOperatorTxResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgVoteDappOperatorTxResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgVoteDappOperatorTxResponse.Merge(m, src)
-}
-func (m *MsgVoteDappOperatorTxResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgVoteDappOperatorTxResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgVoteDappOperatorTxResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgVoteDappOperatorTxResponse proto.InternalMessageInfo
-
 // return lp_<denom> tokens to the pool and redeem KEX or dp_<denom> token
 // unless slippage is exceeded then fail the tx.
 type MsgRedeemDappPoolTx struct {
@@ -618,7 +407,7 @@ func (m *MsgRedeemDappPoolTx) Reset()         { *m = MsgRedeemDappPoolTx{} }
 func (m *MsgRedeemDappPoolTx) String() string { return proto.CompactTextString(m) }
 func (*MsgRedeemDappPoolTx) ProtoMessage()    {}
 func (*MsgRedeemDappPoolTx) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{12}
+	return fileDescriptor_c30a928a62b31d6d, []int{8}
 }
 func (m *MsgRedeemDappPoolTx) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -668,7 +457,7 @@ func (m *MsgRedeemDappPoolTxResponse) Reset()         { *m = MsgRedeemDappPoolTx
 func (m *MsgRedeemDappPoolTxResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgRedeemDappPoolTxResponse) ProtoMessage()    {}
 func (*MsgRedeemDappPoolTxResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{13}
+	return fileDescriptor_c30a928a62b31d6d, []int{9}
 }
 func (m *MsgRedeemDappPoolTxResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -708,7 +497,7 @@ func (m *MsgSwapDappPoolTx) Reset()         { *m = MsgSwapDappPoolTx{} }
 func (m *MsgSwapDappPoolTx) String() string { return proto.CompactTextString(m) }
 func (*MsgSwapDappPoolTx) ProtoMessage()    {}
 func (*MsgSwapDappPoolTx) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{14}
+	return fileDescriptor_c30a928a62b31d6d, []int{10}
 }
 func (m *MsgSwapDappPoolTx) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -758,7 +547,7 @@ func (m *MsgSwapDappPoolTxResponse) Reset()         { *m = MsgSwapDappPoolTxResp
 func (m *MsgSwapDappPoolTxResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgSwapDappPoolTxResponse) ProtoMessage()    {}
 func (*MsgSwapDappPoolTxResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{15}
+	return fileDescriptor_c30a928a62b31d6d, []int{11}
 }
 func (m *MsgSwapDappPoolTxResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -798,7 +587,7 @@ func (m *MsgConvertDappPoolTx) Reset()         { *m = MsgConvertDappPoolTx{} }
 func (m *MsgConvertDappPoolTx) String() string { return proto.CompactTextString(m) }
 func (*MsgConvertDappPoolTx) ProtoMessage()    {}
 func (*MsgConvertDappPoolTx) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{16}
+	return fileDescriptor_c30a928a62b31d6d, []int{12}
 }
 func (m *MsgConvertDappPoolTx) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -848,7 +637,7 @@ func (m *MsgConvertDappPoolTxResponse) Reset()         { *m = MsgConvertDappPool
 func (m *MsgConvertDappPoolTxResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgConvertDappPoolTxResponse) ProtoMessage()    {}
 func (*MsgConvertDappPoolTxResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{17}
+	return fileDescriptor_c30a928a62b31d6d, []int{13}
 }
 func (m *MsgConvertDappPoolTxResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -890,7 +679,7 @@ func (m *MsgPauseDappTx) Reset()         { *m = MsgPauseDappTx{} }
 func (m *MsgPauseDappTx) String() string { return proto.CompactTextString(m) }
 func (*MsgPauseDappTx) ProtoMessage()    {}
 func (*MsgPauseDappTx) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{18}
+	return fileDescriptor_c30a928a62b31d6d, []int{14}
 }
 func (m *MsgPauseDappTx) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -940,7 +729,7 @@ func (m *MsgPauseDappTxResponse) Reset()         { *m = MsgPauseDappTxResponse{}
 func (m *MsgPauseDappTxResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgPauseDappTxResponse) ProtoMessage()    {}
 func (*MsgPauseDappTxResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{19}
+	return fileDescriptor_c30a928a62b31d6d, []int{15}
 }
 func (m *MsgPauseDappTxResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -980,7 +769,7 @@ func (m *MsgUnPauseDappTx) Reset()         { *m = MsgUnPauseDappTx{} }
 func (m *MsgUnPauseDappTx) String() string { return proto.CompactTextString(m) }
 func (*MsgUnPauseDappTx) ProtoMessage()    {}
 func (*MsgUnPauseDappTx) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{20}
+	return fileDescriptor_c30a928a62b31d6d, []int{16}
 }
 func (m *MsgUnPauseDappTx) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1030,7 +819,7 @@ func (m *MsgUnPauseDappTxResponse) Reset()         { *m = MsgUnPauseDappTxRespon
 func (m *MsgUnPauseDappTxResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgUnPauseDappTxResponse) ProtoMessage()    {}
 func (*MsgUnPauseDappTxResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{21}
+	return fileDescriptor_c30a928a62b31d6d, []int{17}
 }
 func (m *MsgUnPauseDappTxResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1069,7 +858,7 @@ func (m *MsgReactivateDappTx) Reset()         { *m = MsgReactivateDappTx{} }
 func (m *MsgReactivateDappTx) String() string { return proto.CompactTextString(m) }
 func (*MsgReactivateDappTx) ProtoMessage()    {}
 func (*MsgReactivateDappTx) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{22}
+	return fileDescriptor_c30a928a62b31d6d, []int{18}
 }
 func (m *MsgReactivateDappTx) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1119,7 +908,7 @@ func (m *MsgReactivateDappTxResponse) Reset()         { *m = MsgReactivateDappTx
 func (m *MsgReactivateDappTxResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgReactivateDappTxResponse) ProtoMessage()    {}
 func (*MsgReactivateDappTxResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{23}
+	return fileDescriptor_c30a928a62b31d6d, []int{19}
 }
 func (m *MsgReactivateDappTxResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1159,7 +948,7 @@ func (m *MsgExecuteDappTx) Reset()         { *m = MsgExecuteDappTx{} }
 func (m *MsgExecuteDappTx) String() string { return proto.CompactTextString(m) }
 func (*MsgExecuteDappTx) ProtoMessage()    {}
 func (*MsgExecuteDappTx) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{24}
+	return fileDescriptor_c30a928a62b31d6d, []int{20}
 }
 func (m *MsgExecuteDappTx) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1209,7 +998,7 @@ func (m *MsgExecuteDappTxResponse) Reset()         { *m = MsgExecuteDappTxRespon
 func (m *MsgExecuteDappTxResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgExecuteDappTxResponse) ProtoMessage()    {}
 func (*MsgExecuteDappTxResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{25}
+	return fileDescriptor_c30a928a62b31d6d, []int{21}
 }
 func (m *MsgExecuteDappTxResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1252,7 +1041,7 @@ func (m *MsgDenounceLeaderTx) Reset()         { *m = MsgDenounceLeaderTx{} }
 func (m *MsgDenounceLeaderTx) String() string { return proto.CompactTextString(m) }
 func (*MsgDenounceLeaderTx) ProtoMessage()    {}
 func (*MsgDenounceLeaderTx) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{26}
+	return fileDescriptor_c30a928a62b31d6d, []int{22}
 }
 func (m *MsgDenounceLeaderTx) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1316,7 +1105,7 @@ func (m *MsgDenounceLeaderTxResponse) Reset()         { *m = MsgDenounceLeaderTx
 func (m *MsgDenounceLeaderTxResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgDenounceLeaderTxResponse) ProtoMessage()    {}
 func (*MsgDenounceLeaderTxResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{27}
+	return fileDescriptor_c30a928a62b31d6d, []int{23}
 }
 func (m *MsgDenounceLeaderTxResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1345,464 +1134,6 @@ func (m *MsgDenounceLeaderTxResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgDenounceLeaderTxResponse proto.InternalMessageInfo
 
-// update CURRENT session state (can only be sent by current session leader),
-// this tx MUST include dApp version.
-type MsgTransitionDappTx struct {
-	Sender     string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
-	DappName   string `protobuf:"bytes,2,opt,name=dapp_name,json=dappName,proto3" json:"dapp_name,omitempty"`
-	StatusHash string `protobuf:"bytes,3,opt,name=status_hash,json=statusHash,proto3" json:"status_hash,omitempty"`
-}
-
-func (m *MsgTransitionDappTx) Reset()         { *m = MsgTransitionDappTx{} }
-func (m *MsgTransitionDappTx) String() string { return proto.CompactTextString(m) }
-func (*MsgTransitionDappTx) ProtoMessage()    {}
-func (*MsgTransitionDappTx) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{28}
-}
-func (m *MsgTransitionDappTx) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgTransitionDappTx) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgTransitionDappTx.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgTransitionDappTx) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgTransitionDappTx.Merge(m, src)
-}
-func (m *MsgTransitionDappTx) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgTransitionDappTx) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgTransitionDappTx.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgTransitionDappTx proto.InternalMessageInfo
-
-func (m *MsgTransitionDappTx) GetSender() string {
-	if m != nil {
-		return m.Sender
-	}
-	return ""
-}
-
-func (m *MsgTransitionDappTx) GetDappName() string {
-	if m != nil {
-		return m.DappName
-	}
-	return ""
-}
-
-func (m *MsgTransitionDappTx) GetStatusHash() string {
-	if m != nil {
-		return m.StatusHash
-	}
-	return ""
-}
-
-type MsgTransitionDappTxResponse struct {
-}
-
-func (m *MsgTransitionDappTxResponse) Reset()         { *m = MsgTransitionDappTxResponse{} }
-func (m *MsgTransitionDappTxResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgTransitionDappTxResponse) ProtoMessage()    {}
-func (*MsgTransitionDappTxResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{29}
-}
-func (m *MsgTransitionDappTxResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgTransitionDappTxResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgTransitionDappTxResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgTransitionDappTxResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgTransitionDappTxResponse.Merge(m, src)
-}
-func (m *MsgTransitionDappTxResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgTransitionDappTxResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgTransitionDappTxResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgTransitionDappTxResponse proto.InternalMessageInfo
-
-// approve CURRENT session state (can only be sent by the verifiers or executors
-// who are NOT a leader), this tx MUST include dApp version.
-type MsgApproveDappTransitionTx struct {
-	Sender   string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
-	DappName string `protobuf:"bytes,2,opt,name=dapp_name,json=dappName,proto3" json:"dapp_name,omitempty"`
-}
-
-func (m *MsgApproveDappTransitionTx) Reset()         { *m = MsgApproveDappTransitionTx{} }
-func (m *MsgApproveDappTransitionTx) String() string { return proto.CompactTextString(m) }
-func (*MsgApproveDappTransitionTx) ProtoMessage()    {}
-func (*MsgApproveDappTransitionTx) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{30}
-}
-func (m *MsgApproveDappTransitionTx) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgApproveDappTransitionTx) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgApproveDappTransitionTx.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgApproveDappTransitionTx) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgApproveDappTransitionTx.Merge(m, src)
-}
-func (m *MsgApproveDappTransitionTx) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgApproveDappTransitionTx) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgApproveDappTransitionTx.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgApproveDappTransitionTx proto.InternalMessageInfo
-
-func (m *MsgApproveDappTransitionTx) GetSender() string {
-	if m != nil {
-		return m.Sender
-	}
-	return ""
-}
-
-func (m *MsgApproveDappTransitionTx) GetDappName() string {
-	if m != nil {
-		return m.DappName
-	}
-	return ""
-}
-
-type MsgApproveDappTransitionTxResponse struct {
-}
-
-func (m *MsgApproveDappTransitionTxResponse) Reset()         { *m = MsgApproveDappTransitionTxResponse{} }
-func (m *MsgApproveDappTransitionTxResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgApproveDappTransitionTxResponse) ProtoMessage()    {}
-func (*MsgApproveDappTransitionTxResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{31}
-}
-func (m *MsgApproveDappTransitionTxResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgApproveDappTransitionTxResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgApproveDappTransitionTxResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgApproveDappTransitionTxResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgApproveDappTransitionTxResponse.Merge(m, src)
-}
-func (m *MsgApproveDappTransitionTxResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgApproveDappTransitionTxResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgApproveDappTransitionTxResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgApproveDappTransitionTxResponse proto.InternalMessageInfo
-
-// reject session transition and immediately set the state of the current
-// session to halted, this tx MUST include dApp version and session id.
-type MsgRejectDappTransitionTx struct {
-	Sender   string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
-	DappName string `protobuf:"bytes,2,opt,name=dapp_name,json=dappName,proto3" json:"dapp_name,omitempty"`
-}
-
-func (m *MsgRejectDappTransitionTx) Reset()         { *m = MsgRejectDappTransitionTx{} }
-func (m *MsgRejectDappTransitionTx) String() string { return proto.CompactTextString(m) }
-func (*MsgRejectDappTransitionTx) ProtoMessage()    {}
-func (*MsgRejectDappTransitionTx) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{32}
-}
-func (m *MsgRejectDappTransitionTx) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgRejectDappTransitionTx) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgRejectDappTransitionTx.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgRejectDappTransitionTx) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgRejectDappTransitionTx.Merge(m, src)
-}
-func (m *MsgRejectDappTransitionTx) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgRejectDappTransitionTx) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgRejectDappTransitionTx.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgRejectDappTransitionTx proto.InternalMessageInfo
-
-func (m *MsgRejectDappTransitionTx) GetSender() string {
-	if m != nil {
-		return m.Sender
-	}
-	return ""
-}
-
-func (m *MsgRejectDappTransitionTx) GetDappName() string {
-	if m != nil {
-		return m.DappName
-	}
-	return ""
-}
-
-type MsgRejectDappTransitionTxResponse struct {
-}
-
-func (m *MsgRejectDappTransitionTxResponse) Reset()         { *m = MsgRejectDappTransitionTxResponse{} }
-func (m *MsgRejectDappTransitionTxResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgRejectDappTransitionTxResponse) ProtoMessage()    {}
-func (*MsgRejectDappTransitionTxResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{33}
-}
-func (m *MsgRejectDappTransitionTxResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgRejectDappTransitionTxResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgRejectDappTransitionTxResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgRejectDappTransitionTxResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgRejectDappTransitionTxResponse.Merge(m, src)
-}
-func (m *MsgRejectDappTransitionTxResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgRejectDappTransitionTxResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgRejectDappTransitionTxResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgRejectDappTransitionTxResponse proto.InternalMessageInfo
-
-// can only be sent by the dApp controllers, allowing to upgrade binaries,
-// controlled and modify all other properties
-type MsgUpsertDappProposalTx struct {
-	Sender   string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
-	DappName string `protobuf:"bytes,2,opt,name=dapp_name,json=dappName,proto3" json:"dapp_name,omitempty"`
-}
-
-func (m *MsgUpsertDappProposalTx) Reset()         { *m = MsgUpsertDappProposalTx{} }
-func (m *MsgUpsertDappProposalTx) String() string { return proto.CompactTextString(m) }
-func (*MsgUpsertDappProposalTx) ProtoMessage()    {}
-func (*MsgUpsertDappProposalTx) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{34}
-}
-func (m *MsgUpsertDappProposalTx) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgUpsertDappProposalTx) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgUpsertDappProposalTx.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgUpsertDappProposalTx) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgUpsertDappProposalTx.Merge(m, src)
-}
-func (m *MsgUpsertDappProposalTx) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgUpsertDappProposalTx) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgUpsertDappProposalTx.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgUpsertDappProposalTx proto.InternalMessageInfo
-
-func (m *MsgUpsertDappProposalTx) GetSender() string {
-	if m != nil {
-		return m.Sender
-	}
-	return ""
-}
-
-func (m *MsgUpsertDappProposalTx) GetDappName() string {
-	if m != nil {
-		return m.DappName
-	}
-	return ""
-}
-
-type MsgUpsertDappProposalTxResponse struct {
-}
-
-func (m *MsgUpsertDappProposalTxResponse) Reset()         { *m = MsgUpsertDappProposalTxResponse{} }
-func (m *MsgUpsertDappProposalTxResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgUpsertDappProposalTxResponse) ProtoMessage()    {}
-func (*MsgUpsertDappProposalTxResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{35}
-}
-func (m *MsgUpsertDappProposalTxResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgUpsertDappProposalTxResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgUpsertDappProposalTxResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgUpsertDappProposalTxResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgUpsertDappProposalTxResponse.Merge(m, src)
-}
-func (m *MsgUpsertDappProposalTxResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgUpsertDappProposalTxResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgUpsertDappProposalTxResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgUpsertDappProposalTxResponse proto.InternalMessageInfo
-
-// can only be voted by the dApp controllers, accept/reject upsert proposal to
-// modify the dApp, executors set or any other properties
-type MsgVoteUpsertDappProposalTx struct {
-	Sender   string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
-	DappName string `protobuf:"bytes,2,opt,name=dapp_name,json=dappName,proto3" json:"dapp_name,omitempty"`
-}
-
-func (m *MsgVoteUpsertDappProposalTx) Reset()         { *m = MsgVoteUpsertDappProposalTx{} }
-func (m *MsgVoteUpsertDappProposalTx) String() string { return proto.CompactTextString(m) }
-func (*MsgVoteUpsertDappProposalTx) ProtoMessage()    {}
-func (*MsgVoteUpsertDappProposalTx) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{36}
-}
-func (m *MsgVoteUpsertDappProposalTx) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgVoteUpsertDappProposalTx) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgVoteUpsertDappProposalTx.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgVoteUpsertDappProposalTx) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgVoteUpsertDappProposalTx.Merge(m, src)
-}
-func (m *MsgVoteUpsertDappProposalTx) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgVoteUpsertDappProposalTx) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgVoteUpsertDappProposalTx.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgVoteUpsertDappProposalTx proto.InternalMessageInfo
-
-func (m *MsgVoteUpsertDappProposalTx) GetSender() string {
-	if m != nil {
-		return m.Sender
-	}
-	return ""
-}
-
-func (m *MsgVoteUpsertDappProposalTx) GetDappName() string {
-	if m != nil {
-		return m.DappName
-	}
-	return ""
-}
-
-type MsgVoteUpsertDappProposalTxResponse struct {
-}
-
-func (m *MsgVoteUpsertDappProposalTxResponse) Reset()         { *m = MsgVoteUpsertDappProposalTxResponse{} }
-func (m *MsgVoteUpsertDappProposalTxResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgVoteUpsertDappProposalTxResponse) ProtoMessage()    {}
-func (*MsgVoteUpsertDappProposalTxResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{37}
-}
-func (m *MsgVoteUpsertDappProposalTxResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgVoteUpsertDappProposalTxResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgVoteUpsertDappProposalTxResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgVoteUpsertDappProposalTxResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgVoteUpsertDappProposalTxResponse.Merge(m, src)
-}
-func (m *MsgVoteUpsertDappProposalTxResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgVoteUpsertDappProposalTxResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgVoteUpsertDappProposalTxResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgVoteUpsertDappProposalTxResponse proto.InternalMessageInfo
-
 // allow user to manually deposit/transfer/withdrawal funds to / from / within
 // ABR and communicate with apps by including xam string message.
 type MsgTransferDappTx struct {
@@ -1814,7 +1145,7 @@ func (m *MsgTransferDappTx) Reset()         { *m = MsgTransferDappTx{} }
 func (m *MsgTransferDappTx) String() string { return proto.CompactTextString(m) }
 func (*MsgTransferDappTx) ProtoMessage()    {}
 func (*MsgTransferDappTx) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{38}
+	return fileDescriptor_c30a928a62b31d6d, []int{24}
 }
 func (m *MsgTransferDappTx) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1864,7 +1195,7 @@ func (m *MsgTransferDappTxResponse) Reset()         { *m = MsgTransferDappTxResp
 func (m *MsgTransferDappTxResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgTransferDappTxResponse) ProtoMessage()    {}
 func (*MsgTransferDappTxResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{39}
+	return fileDescriptor_c30a928a62b31d6d, []int{25}
 }
 func (m *MsgTransferDappTxResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1903,7 +1234,7 @@ func (m *MsgMintCreateFtTx) Reset()         { *m = MsgMintCreateFtTx{} }
 func (m *MsgMintCreateFtTx) String() string { return proto.CompactTextString(m) }
 func (*MsgMintCreateFtTx) ProtoMessage()    {}
 func (*MsgMintCreateFtTx) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{40}
+	return fileDescriptor_c30a928a62b31d6d, []int{26}
 }
 func (m *MsgMintCreateFtTx) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1953,7 +1284,7 @@ func (m *MsgMintCreateFtTxResponse) Reset()         { *m = MsgMintCreateFtTxResp
 func (m *MsgMintCreateFtTxResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgMintCreateFtTxResponse) ProtoMessage()    {}
 func (*MsgMintCreateFtTxResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{41}
+	return fileDescriptor_c30a928a62b31d6d, []int{27}
 }
 func (m *MsgMintCreateFtTxResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1992,7 +1323,7 @@ func (m *MsgMintCreateNftTx) Reset()         { *m = MsgMintCreateNftTx{} }
 func (m *MsgMintCreateNftTx) String() string { return proto.CompactTextString(m) }
 func (*MsgMintCreateNftTx) ProtoMessage()    {}
 func (*MsgMintCreateNftTx) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{42}
+	return fileDescriptor_c30a928a62b31d6d, []int{28}
 }
 func (m *MsgMintCreateNftTx) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -2042,7 +1373,7 @@ func (m *MsgMintCreateNftTxResponse) Reset()         { *m = MsgMintCreateNftTxRe
 func (m *MsgMintCreateNftTxResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgMintCreateNftTxResponse) ProtoMessage()    {}
 func (*MsgMintCreateNftTxResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{43}
+	return fileDescriptor_c30a928a62b31d6d, []int{29}
 }
 func (m *MsgMintCreateNftTxResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -2082,7 +1413,7 @@ func (m *MsgMintIssueTx) Reset()         { *m = MsgMintIssueTx{} }
 func (m *MsgMintIssueTx) String() string { return proto.CompactTextString(m) }
 func (*MsgMintIssueTx) ProtoMessage()    {}
 func (*MsgMintIssueTx) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{44}
+	return fileDescriptor_c30a928a62b31d6d, []int{30}
 }
 func (m *MsgMintIssueTx) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -2132,7 +1463,7 @@ func (m *MsgMintIssueTxResponse) Reset()         { *m = MsgMintIssueTxResponse{}
 func (m *MsgMintIssueTxResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgMintIssueTxResponse) ProtoMessage()    {}
 func (*MsgMintIssueTxResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{45}
+	return fileDescriptor_c30a928a62b31d6d, []int{31}
 }
 func (m *MsgMintIssueTxResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -2171,7 +1502,7 @@ func (m *MsgMintBurnTx) Reset()         { *m = MsgMintBurnTx{} }
 func (m *MsgMintBurnTx) String() string { return proto.CompactTextString(m) }
 func (*MsgMintBurnTx) ProtoMessage()    {}
 func (*MsgMintBurnTx) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{46}
+	return fileDescriptor_c30a928a62b31d6d, []int{32}
 }
 func (m *MsgMintBurnTx) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -2221,7 +1552,7 @@ func (m *MsgMintBurnTxResponse) Reset()         { *m = MsgMintBurnTxResponse{} }
 func (m *MsgMintBurnTxResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgMintBurnTxResponse) ProtoMessage()    {}
 func (*MsgMintBurnTxResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c30a928a62b31d6d, []int{47}
+	return fileDescriptor_c30a928a62b31d6d, []int{33}
 }
 func (m *MsgMintBurnTxResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -2257,12 +1588,8 @@ func init() {
 	proto.RegisterType((*MsgBondDappProposalResponse)(nil), "kira.layer2.MsgBondDappProposalResponse")
 	proto.RegisterType((*MsgReclaimDappBondProposal)(nil), "kira.layer2.MsgReclaimDappBondProposal")
 	proto.RegisterType((*MsgReclaimDappBondProposalResponse)(nil), "kira.layer2.MsgReclaimDappBondProposalResponse")
-	proto.RegisterType((*MsgJoinDappTx)(nil), "kira.layer2.MsgJoinDappTx")
-	proto.RegisterType((*MsgJoinDappTxResponse)(nil), "kira.layer2.MsgJoinDappTxResponse")
 	proto.RegisterType((*MsgExitDapp)(nil), "kira.layer2.MsgExitDapp")
 	proto.RegisterType((*MsgExitDappResponse)(nil), "kira.layer2.MsgExitDappResponse")
-	proto.RegisterType((*MsgVoteDappOperatorTx)(nil), "kira.layer2.MsgVoteDappOperatorTx")
-	proto.RegisterType((*MsgVoteDappOperatorTxResponse)(nil), "kira.layer2.MsgVoteDappOperatorTxResponse")
 	proto.RegisterType((*MsgRedeemDappPoolTx)(nil), "kira.layer2.MsgRedeemDappPoolTx")
 	proto.RegisterType((*MsgRedeemDappPoolTxResponse)(nil), "kira.layer2.MsgRedeemDappPoolTxResponse")
 	proto.RegisterType((*MsgSwapDappPoolTx)(nil), "kira.layer2.MsgSwapDappPoolTx")
@@ -2279,16 +1606,6 @@ func init() {
 	proto.RegisterType((*MsgExecuteDappTxResponse)(nil), "kira.layer2.MsgExecuteDappTxResponse")
 	proto.RegisterType((*MsgDenounceLeaderTx)(nil), "kira.layer2.MsgDenounceLeaderTx")
 	proto.RegisterType((*MsgDenounceLeaderTxResponse)(nil), "kira.layer2.MsgDenounceLeaderTxResponse")
-	proto.RegisterType((*MsgTransitionDappTx)(nil), "kira.layer2.MsgTransitionDappTx")
-	proto.RegisterType((*MsgTransitionDappTxResponse)(nil), "kira.layer2.MsgTransitionDappTxResponse")
-	proto.RegisterType((*MsgApproveDappTransitionTx)(nil), "kira.layer2.MsgApproveDappTransitionTx")
-	proto.RegisterType((*MsgApproveDappTransitionTxResponse)(nil), "kira.layer2.MsgApproveDappTransitionTxResponse")
-	proto.RegisterType((*MsgRejectDappTransitionTx)(nil), "kira.layer2.MsgRejectDappTransitionTx")
-	proto.RegisterType((*MsgRejectDappTransitionTxResponse)(nil), "kira.layer2.MsgRejectDappTransitionTxResponse")
-	proto.RegisterType((*MsgUpsertDappProposalTx)(nil), "kira.layer2.MsgUpsertDappProposalTx")
-	proto.RegisterType((*MsgUpsertDappProposalTxResponse)(nil), "kira.layer2.MsgUpsertDappProposalTxResponse")
-	proto.RegisterType((*MsgVoteUpsertDappProposalTx)(nil), "kira.layer2.MsgVoteUpsertDappProposalTx")
-	proto.RegisterType((*MsgVoteUpsertDappProposalTxResponse)(nil), "kira.layer2.MsgVoteUpsertDappProposalTxResponse")
 	proto.RegisterType((*MsgTransferDappTx)(nil), "kira.layer2.MsgTransferDappTx")
 	proto.RegisterType((*MsgTransferDappTxResponse)(nil), "kira.layer2.MsgTransferDappTxResponse")
 	proto.RegisterType((*MsgMintCreateFtTx)(nil), "kira.layer2.MsgMintCreateFtTx")
@@ -2304,83 +1621,65 @@ func init() {
 func init() { proto.RegisterFile("kira/layer2/tx.proto", fileDescriptor_c30a928a62b31d6d) }
 
 var fileDescriptor_c30a928a62b31d6d = []byte{
-	// 1214 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x58, 0xcb, 0x52, 0xdc, 0x46,
-	0x14, 0x45, 0x31, 0x71, 0xc1, 0x25, 0x38, 0x46, 0xc1, 0x30, 0x16, 0x66, 0x06, 0x06, 0xdb, 0x90,
-	0xd7, 0x4c, 0x8a, 0x7c, 0x41, 0x86, 0x47, 0xfc, 0x40, 0x98, 0x28, 0x38, 0x95, 0x4a, 0xaa, 0x42,
-	0x35, 0xa3, 0x46, 0xc8, 0x0c, 0x6a, 0x95, 0x5a, 0x43, 0x86, 0x2f, 0xc8, 0x32, 0x59, 0xa4, 0xb2,
-	0xcf, 0x2e, 0x9f, 0xe2, 0xa5, 0x97, 0xa9, 0x2c, 0x5c, 0x29, 0xf8, 0x84, 0xfc, 0x40, 0xaa, 0xbb,
-	0x35, 0x8d, 0xd4, 0xdd, 0x02, 0x6a, 0x86, 0x85, 0x57, 0x20, 0xdd, 0xd3, 0xe7, 0x1c, 0xa9, 0x6f,
-	0x5f, 0x9d, 0x1a, 0x98, 0x3e, 0x0a, 0x13, 0xd4, 0xec, 0xa0, 0x53, 0x9c, 0xac, 0x36, 0xd3, 0x5e,
-	0x23, 0x4e, 0x48, 0x4a, 0xec, 0x09, 0x76, 0xb7, 0x21, 0xee, 0x3a, 0xd3, 0x01, 0x09, 0x08, 0xbf,
-	0xdf, 0x64, 0xff, 0x09, 0x88, 0x73, 0x3f, 0x20, 0x24, 0xe8, 0xe0, 0x26, 0xbf, 0xda, 0xef, 0x1e,
-	0x34, 0x51, 0x74, 0xda, 0x2f, 0xb5, 0x09, 0x3d, 0x26, 0x74, 0x4f, 0xac, 0x11, 0x17, 0x59, 0xa9,
-	0x92, 0x97, 0x13, 0x7f, 0x44, 0xa5, 0xfe, 0xa7, 0x05, 0xf7, 0x5c, 0x1a, 0xac, 0x25, 0x18, 0xa5,
-	0x78, 0x1d, 0xc5, 0xf1, 0x4e, 0x42, 0x62, 0x42, 0x51, 0xc7, 0x9e, 0x81, 0xdb, 0x14, 0x47, 0x3e,
-	0x4e, 0x2a, 0xd6, 0x82, 0xb5, 0x32, 0xee, 0x65, 0x57, 0xf6, 0xa7, 0x30, 0xea, 0xa3, 0x38, 0xae,
-	0xbc, 0xb7, 0x60, 0xad, 0x4c, 0xac, 0x4e, 0x35, 0x72, 0x9e, 0x1b, 0x8c, 0xa0, 0x35, 0xfa, 0xfa,
-	0x6d, 0x6d, 0xc4, 0xe3, 0x20, 0x7b, 0x0d, 0x46, 0xf7, 0x49, 0xe4, 0x57, 0x6e, 0x31, 0x8a, 0x56,
-	0x93, 0x55, 0xfe, 0x79, 0x5b, 0x5b, 0x0e, 0xc2, 0xf4, 0xb0, 0xbb, 0xdf, 0x68, 0x93, 0xe3, 0xcc,
-	0x67, 0xf6, 0xe7, 0x73, 0xea, 0x1f, 0x35, 0xd3, 0xd3, 0x18, 0xd3, 0xc6, 0x1a, 0x09, 0x23, 0x8f,
-	0x2f, 0xae, 0xd7, 0x60, 0xde, 0x68, 0xd1, 0xc3, 0x34, 0x26, 0x11, 0xc5, 0xf5, 0x5f, 0x2d, 0xf8,
-	0xc8, 0xa5, 0x41, 0x8b, 0x44, 0xfe, 0xb5, 0x1e, 0x61, 0x0e, 0xc6, 0x99, 0xbb, 0xbd, 0x08, 0x1d,
-	0x63, 0xfe, 0x1c, 0xe3, 0xde, 0x18, 0xbb, 0xb1, 0x8d, 0x8e, 0xf1, 0xcd, 0x58, 0x9e, 0x87, 0x39,
-	0x83, 0x21, 0x69, 0xf8, 0x0f, 0x0b, 0x1c, 0x97, 0x06, 0x1e, 0x6e, 0x77, 0x50, 0x78, 0xcc, 0xdf,
-	0x1a, 0x89, 0xfc, 0x77, 0xc0, 0xf7, 0x43, 0xa8, 0x97, 0xfb, 0x92, 0xf6, 0x7f, 0xb7, 0x60, 0xd2,
-	0xa5, 0xc1, 0x33, 0x12, 0x46, 0x0c, 0xb3, 0xdb, 0x1b, 0xcc, 0xb1, 0x03, 0x63, 0xb8, 0x87, 0xdb,
-	0xdd, 0x94, 0x24, 0xdc, 0xf5, 0x98, 0x27, 0xaf, 0x59, 0xed, 0x04, 0x27, 0xe1, 0x41, 0x88, 0x93,
-	0xca, 0xa8, 0xa8, 0xf5, 0xaf, 0x99, 0x58, 0x18, 0xa5, 0x38, 0xe9, 0x55, 0xde, 0x17, 0x62, 0xe2,
-	0xaa, 0x3e, 0xcb, 0x5b, 0xf9, 0xc2, 0x95, 0xf4, 0xdb, 0x82, 0x09, 0x97, 0x06, 0x1b, 0xbd, 0x30,
-	0x65, 0x85, 0x81, 0xcc, 0xd6, 0xef, 0xf1, 0x16, 0xeb, 0x73, 0x48, 0xea, 0x2d, 0xae, 0xf9, 0x1d,
-	0x11, 0x9d, 0xf9, 0x22, 0xc6, 0x09, 0x4a, 0x49, 0x32, 0xe0, 0x1b, 0xc9, 0x3a, 0x5d, 0x67, 0x93,
-	0x72, 0xcf, 0xb8, 0x0b, 0x0f, 0xfb, 0x18, 0xf3, 0xed, 0xd9, 0x21, 0xa4, 0x33, 0xa8, 0x98, 0xe8,
-	0x51, 0x95, 0x4b, 0x4a, 0x3d, 0x81, 0x29, 0x97, 0x06, 0xdf, 0xfe, 0x8c, 0xe2, 0x61, 0x85, 0xe6,
-	0xe0, 0xbe, 0xc6, 0x24, 0x65, 0x9e, 0xc3, 0x34, 0x3b, 0xdc, 0x24, 0x3a, 0xc1, 0x49, 0x3a, 0xac,
-	0x52, 0x15, 0x1e, 0x98, 0xc8, 0xa4, 0xd8, 0x06, 0xdc, 0x71, 0x69, 0xb0, 0x83, 0xba, 0x14, 0x0f,
-	0xd1, 0xb8, 0xf5, 0x0a, 0xcc, 0x14, 0x69, 0xa4, 0xc0, 0xd7, 0x70, 0xd7, 0xa5, 0xc1, 0xcb, 0x68,
-	0x68, 0x09, 0x07, 0x2a, 0x2a, 0x91, 0xd6, 0x04, 0xa8, 0x9d, 0x86, 0x27, 0xd9, 0x4c, 0x1c, 0xb6,
-	0x09, 0x8a, 0x5c, 0xca, 0xf3, 0x6c, 0xf0, 0x53, 0x79, 0x03, 0xcf, 0x53, 0x20, 0x92, 0x22, 0xbf,
-	0x88, 0xf1, 0xbd, 0x8e, 0x23, 0xd2, 0x8d, 0xda, 0x78, 0x0b, 0x23, 0x1f, 0x0f, 0x7a, 0x84, 0xd8,
-	0xa2, 0x0e, 0x27, 0x10, 0x83, 0xd0, 0xcb, 0xae, 0xec, 0x25, 0x98, 0xf4, 0x33, 0x81, 0xbd, 0x14,
-	0xf7, 0x52, 0x3e, 0x55, 0xc6, 0xbd, 0x0f, 0xfa, 0x37, 0x77, 0x71, 0x2f, 0xcd, 0xde, 0x86, 0x6a,
-	0x44, 0x1a, 0x3d, 0xe2, 0x3e, 0x77, 0x13, 0x14, 0xd1, 0x30, 0x0d, 0xc9, 0x50, 0xc3, 0xaf, 0x06,
-	0x13, 0x34, 0x45, 0x69, 0x97, 0xee, 0x1d, 0x22, 0x7a, 0x98, 0x99, 0x05, 0x71, 0xeb, 0x09, 0xa2,
-	0x87, 0x99, 0x17, 0x55, 0x4c, 0x7a, 0xf9, 0x86, 0x7f, 0x41, 0xbe, 0x8a, 0xe3, 0x84, 0x9c, 0x88,
-	0x17, 0x2a, 0x91, 0x83, 0xee, 0x91, 0x18, 0xfe, 0x25, 0x94, 0x52, 0x78, 0x87, 0x9f, 0x66, 0x0f,
-	0xbf, 0xc2, 0xed, 0xf4, 0x66, 0x74, 0x97, 0x60, 0xb1, 0x94, 0x51, 0xca, 0x6e, 0xc3, 0x2c, 0x3b,
-	0x10, 0x31, 0xed, 0x9f, 0xec, 0xec, 0xa3, 0x34, 0xa8, 0xe8, 0x22, 0xd4, 0x4a, 0xf8, 0xa4, 0xa4,
-	0xc7, 0x77, 0x80, 0x4d, 0xe3, 0x9b, 0x93, 0x7d, 0x04, 0x4b, 0x97, 0x70, 0x2a, 0xc3, 0x97, 0xbf,
-	0x88, 0x03, 0x9c, 0x0c, 0x73, 0xf0, 0xc4, 0xf0, 0x2d, 0x32, 0x29, 0x32, 0x6e, 0x18, 0xa5, 0x22,
-	0x5d, 0x6d, 0xa6, 0xc3, 0xc9, 0x14, 0x99, 0xa4, 0xcc, 0x53, 0xb0, 0x0b, 0xc5, 0xed, 0x83, 0x81,
-	0x75, 0x1e, 0xf0, 0xb6, 0x57, 0xa8, 0x94, 0xf9, 0xce, 0xaa, 0x4f, 0x29, 0xed, 0xe2, 0xe1, 0xe6,
-	0x7b, 0x8e, 0x46, 0x0a, 0xac, 0xf3, 0xe0, 0xc3, 0x2a, 0xad, 0x6e, 0x32, 0x70, 0xc3, 0x8b, 0xa0,
-	0x72, 0xc1, 0xd2, 0xa7, 0x5f, 0xfd, 0x6f, 0x0a, 0x6e, 0xb9, 0x34, 0xb0, 0x7d, 0xb0, 0x0d, 0x89,
-	0xbc, 0x5e, 0xc8, 0xda, 0xc6, 0x48, 0xec, 0x7c, 0x72, 0x35, 0xa6, 0xaf, 0x66, 0xff, 0x04, 0x77,
-	0xb5, 0xc8, 0xbc, 0xa0, 0xae, 0x57, 0x11, 0xce, 0xca, 0x55, 0x08, 0xc9, 0x4f, 0x61, 0xb6, 0x2c,
-	0xe1, 0x2e, 0xab, 0x24, 0x25, 0x40, 0xa7, 0x79, 0x4d, 0xa0, 0x14, 0xdd, 0x02, 0xc8, 0xe5, 0x52,
-	0x47, 0x5d, 0x7e, 0x51, 0x73, 0xea, 0xe5, 0x35, 0xc9, 0xb6, 0x09, 0x63, 0x32, 0x36, 0x56, 0x54,
-	0x7c, 0xbf, 0xe2, 0x2c, 0x94, 0x55, 0x24, 0x8f, 0x0f, 0xb6, 0x21, 0x23, 0x6a, 0x0e, 0x74, 0x8c,
-	0xbe, 0xa1, 0xe5, 0xe9, 0x90, 0x6d, 0xa8, 0x16, 0x0d, 0x17, 0xf4, 0x17, 0x58, 0x44, 0xe8, 0x1b,
-	0x5a, 0x16, 0x09, 0xed, 0xef, 0xe1, 0x8e, 0x92, 0x07, 0xab, 0xea, 0xda, 0x62, 0xdd, 0x79, 0x7c,
-	0x79, 0x5d, 0x32, 0x23, 0x98, 0xd2, 0x23, 0xe0, 0xa2, 0xd6, 0xcb, 0x2a, 0xc4, 0xf9, 0xf8, 0x4a,
-	0x88, 0x94, 0x78, 0x01, 0x13, 0xf9, 0x54, 0x36, 0xa7, 0xae, 0xcc, 0x15, 0x9d, 0xa5, 0x4b, 0x8a,
-	0x92, 0xf0, 0x25, 0x4c, 0x16, 0x83, 0xde, 0xbc, 0xba, 0xaa, 0x50, 0x76, 0x1e, 0x5d, 0x5a, 0x2e,
-	0x6e, 0xa2, 0x12, 0xed, 0x0c, 0x9b, 0x58, 0x44, 0x98, 0x36, 0xd1, 0x1c, 0xe9, 0x98, 0xed, 0x62,
-	0x9e, 0x9b, 0xd7, 0xbb, 0x37, 0x57, 0xd6, 0x6d, 0x1b, 0x43, 0x1c, 0xb3, 0xad, 0x05, 0x38, 0xcd,
-	0xb6, 0x8a, 0xd0, 0x6d, 0x97, 0x65, 0x2f, 0xc6, 0xaf, 0x05, 0x2f, 0x8d, 0x5f, 0x45, 0xe8, 0xfc,
-	0x65, 0x79, 0x8a, 0x0d, 0xab, 0xb2, 0x30, 0xa5, 0x0d, 0xab, 0x12, 0xa0, 0x3e, 0xac, 0xae, 0xc8,
-	0x52, 0x76, 0x0c, 0x33, 0x25, 0x41, 0xea, 0xb1, 0xbe, 0x9f, 0x26, 0x9c, 0xd3, 0xb8, 0x1e, 0x4e,
-	0x2a, 0xbe, 0x82, 0x69, 0x63, 0x98, 0x79, 0xa8, 0x35, 0xa7, 0x01, 0xe5, 0x7c, 0x76, 0x1d, 0x94,
-	0xd4, 0x3a, 0x81, 0x4a, 0x69, 0x78, 0x5a, 0x31, 0x8d, 0x35, 0xa3, 0xe6, 0x17, 0xd7, 0x45, 0xe6,
-	0xc7, 0x94, 0x92, 0x9c, 0xaa, 0xc6, 0x36, 0x90, 0x75, 0x7d, 0x4c, 0x99, 0xf3, 0x12, 0x63, 0x56,
-	0xc2, 0x92, 0xc6, 0x5c, 0xac, 0xeb, 0xcc, 0xe6, 0x88, 0x64, 0xff, 0x08, 0x1f, 0xaa, 0xf9, 0xa8,
-	0x56, 0xbe, 0x94, 0x03, 0x9c, 0xe5, 0x2b, 0x00, 0xf9, 0xd1, 0x97, 0xcf, 0x44, 0x73, 0xa6, 0x75,
-	0x59, 0x51, 0x1f, 0x7d, 0x86, 0x18, 0xc4, 0x3e, 0xb2, 0xb9, 0x0c, 0xe4, 0x98, 0x96, 0x88, 0x9a,
-	0xfe, 0x91, 0xd5, 0x53, 0x4f, 0x6b, 0xf3, 0xaf, 0xb3, 0xaa, 0xf5, 0xfa, 0xac, 0x6a, 0xbd, 0x39,
-	0xab, 0x5a, 0xff, 0x9e, 0x55, 0xad, 0xdf, 0xce, 0xab, 0x23, 0x6f, 0xce, 0xab, 0x23, 0x7f, 0x9f,
-	0x57, 0x47, 0x7e, 0x58, 0xc9, 0xfd, 0x82, 0xf5, 0x3c, 0x4c, 0xd0, 0x1a, 0x49, 0x70, 0x93, 0xe2,
-	0x23, 0x14, 0x36, 0x7b, 0xf2, 0x17, 0xd4, 0xd3, 0x18, 0xd3, 0xfd, 0xdb, 0xfc, 0x27, 0xcd, 0x2f,
-	0xff, 0x0f, 0x00, 0x00, 0xff, 0xff, 0xe7, 0xd7, 0xfb, 0xb0, 0x5d, 0x15, 0x00, 0x00,
+	// 918 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x57, 0x41, 0x73, 0xdb, 0x44,
+	0x18, 0x8d, 0x68, 0xa6, 0xd3, 0x7c, 0x69, 0x4a, 0x23, 0xd2, 0x56, 0x95, 0x1b, 0xd9, 0xb8, 0x40,
+	0x0c, 0x0c, 0xd6, 0x4c, 0xf8, 0x07, 0x76, 0x12, 0x28, 0xad, 0x4a, 0x46, 0xa4, 0x33, 0x0c, 0xcc,
+	0x90, 0x59, 0x5b, 0x1b, 0xa1, 0x89, 0xad, 0xd5, 0x68, 0xe5, 0xe2, 0xfc, 0x02, 0x8e, 0x70, 0x60,
+	0xb8, 0x73, 0xe3, 0xa7, 0xf4, 0xd8, 0x23, 0xc3, 0xa1, 0xc3, 0x38, 0x7f, 0x84, 0xd9, 0x95, 0xbc,
+	0x68, 0x77, 0xa5, 0xb8, 0x63, 0xe7, 0xc0, 0xc9, 0xd1, 0xbe, 0xef, 0x7b, 0xef, 0x49, 0xfb, 0xad,
+	0x5e, 0x04, 0x3b, 0xe7, 0x51, 0x8a, 0xdc, 0x11, 0xba, 0xc0, 0xe9, 0xbe, 0x9b, 0x4d, 0xbb, 0x49,
+	0x4a, 0x32, 0x62, 0x6e, 0xb2, 0xd5, 0x6e, 0xbe, 0x6a, 0xef, 0x84, 0x24, 0x24, 0x7c, 0xdd, 0x65,
+	0x7f, 0xe5, 0x25, 0xf6, 0xc3, 0x90, 0x90, 0x70, 0x84, 0x5d, 0x7e, 0x35, 0x98, 0x9c, 0xb9, 0x28,
+	0xbe, 0x98, 0x43, 0x43, 0x42, 0xc7, 0x84, 0x9e, 0xe6, 0x3d, 0xf9, 0x45, 0x01, 0x59, 0x65, 0xb9,
+	0xfc, 0x27, 0x47, 0xda, 0x7f, 0x18, 0x70, 0xcf, 0xa3, 0x61, 0x3f, 0xc5, 0x28, 0xc3, 0x07, 0x28,
+	0x49, 0x8e, 0x53, 0x92, 0x10, 0x8a, 0x46, 0xe6, 0x7d, 0xb8, 0x49, 0x71, 0x1c, 0xe0, 0xd4, 0x32,
+	0x5a, 0x46, 0x67, 0xc3, 0x2f, 0xae, 0xcc, 0x4f, 0x61, 0x3d, 0x40, 0x49, 0x62, 0xbd, 0xd3, 0x32,
+	0x3a, 0x9b, 0xfb, 0xdb, 0xdd, 0x92, 0xe7, 0x2e, 0x23, 0xe8, 0xad, 0xbf, 0x7a, 0xd3, 0x5c, 0xf3,
+	0x79, 0x91, 0xd9, 0x87, 0xf5, 0x01, 0x89, 0x03, 0xeb, 0x06, 0xa3, 0xe8, 0xb9, 0x0c, 0xf9, 0xfb,
+	0x4d, 0x73, 0x2f, 0x8c, 0xb2, 0x1f, 0x27, 0x83, 0xee, 0x90, 0x8c, 0x0b, 0x9f, 0xc5, 0xcf, 0x67,
+	0x34, 0x38, 0x77, 0xb3, 0x8b, 0x04, 0xd3, 0x6e, 0x9f, 0x44, 0xb1, 0xcf, 0x9b, 0xdb, 0x4d, 0xd8,
+	0xad, 0xb4, 0xe8, 0x63, 0x9a, 0x90, 0x98, 0xe2, 0xf6, 0x2f, 0x06, 0xbc, 0xe7, 0xd1, 0xb0, 0x47,
+	0xe2, 0xe0, 0xad, 0x6e, 0xa1, 0x01, 0x1b, 0xcc, 0xdd, 0x69, 0x8c, 0xc6, 0x98, 0xdf, 0xc7, 0x86,
+	0x7f, 0x8b, 0x2d, 0x3c, 0x47, 0x63, 0x7c, 0x3d, 0x96, 0x77, 0xa1, 0x51, 0x61, 0x48, 0x18, 0xfe,
+	0xdd, 0x00, 0xdb, 0xa3, 0xa1, 0x8f, 0x87, 0x23, 0x14, 0x8d, 0xf9, 0x53, 0x23, 0x71, 0xf0, 0x3f,
+	0xf0, 0xfd, 0x01, 0xb4, 0xeb, 0x7d, 0x09, 0xfb, 0x3d, 0xd8, 0xf4, 0x68, 0x78, 0x38, 0x8d, 0x32,
+	0x56, 0xb2, 0x94, 0xdd, 0xf6, 0x3d, 0xbe, 0x65, 0x73, 0x0e, 0x41, 0xfd, 0x15, 0x5f, 0xf6, 0x71,
+	0x80, 0x31, 0xd7, 0x3f, 0x26, 0x64, 0x74, 0x32, 0x5d, 0x4e, 0x22, 0xdf, 0x04, 0x95, 0x4b, 0x48,
+	0x7d, 0x09, 0xdb, 0x1e, 0x0d, 0xbf, 0xf9, 0x09, 0x25, 0xab, 0x0a, 0x35, 0xe0, 0xa1, 0xc6, 0x24,
+	0x64, 0x9e, 0xc2, 0x0e, 0x9b, 0x5e, 0x12, 0xbf, 0xc4, 0x69, 0xb6, 0xaa, 0x92, 0x03, 0x8f, 0xaa,
+	0xc8, 0x84, 0xd8, 0x21, 0xdc, 0xf1, 0x68, 0x78, 0x8c, 0x26, 0x94, 0x9f, 0x94, 0x65, 0x65, 0x2c,
+	0xb8, 0x2f, 0xd3, 0x08, 0x81, 0x2f, 0xe0, 0xae, 0x47, 0xc3, 0x17, 0xf1, 0xca, 0x12, 0x36, 0x58,
+	0x2a, 0x91, 0x36, 0x04, 0x68, 0x98, 0x45, 0x2f, 0x8b, 0x43, 0xbf, 0xea, 0x10, 0xc8, 0x5c, 0xca,
+	0xfd, 0x1c, 0x4e, 0xf1, 0x70, 0x92, 0x5d, 0xc3, 0xfd, 0x48, 0x44, 0x42, 0xe4, 0xe7, 0xfc, 0xfd,
+	0x74, 0x80, 0x63, 0x32, 0x89, 0x87, 0xf8, 0x19, 0x46, 0x01, 0x4e, 0x97, 0x14, 0x62, 0x4d, 0x23,
+	0x4e, 0x90, 0x9f, 0x74, 0xbf, 0xb8, 0x32, 0x1f, 0xc3, 0x56, 0x50, 0x08, 0x9c, 0x66, 0x78, 0x9a,
+	0x59, 0xeb, 0x1c, 0xbe, 0x3d, 0x5f, 0x3c, 0xc1, 0xd3, 0xac, 0x78, 0x1a, 0xaa, 0x11, 0xe5, 0x48,
+	0x9c, 0xa4, 0x28, 0xa6, 0x67, 0x38, 0x5d, 0xe5, 0x71, 0xe4, 0x47, 0x42, 0x66, 0x52, 0x64, 0xbc,
+	0x28, 0xce, 0xf2, 0x97, 0xfa, 0x51, 0xb6, 0x9a, 0x8c, 0xcc, 0x24, 0x64, 0x9e, 0x80, 0x29, 0x81,
+	0xcf, 0xcf, 0x96, 0xd6, 0x79, 0xc4, 0xdf, 0xd7, 0x0a, 0x95, 0x72, 0xea, 0x18, 0xfa, 0x84, 0xd2,
+	0x09, 0x5e, 0xed, 0xd4, 0x95, 0x68, 0x84, 0xc0, 0x01, 0x6c, 0x15, 0x48, 0x6f, 0x92, 0xc6, 0xcb,
+	0xf2, 0x3f, 0xe0, 0x51, 0xff, 0x1f, 0xcb, 0x9c, 0x7e, 0xff, 0xb7, 0xdb, 0x70, 0xc3, 0xa3, 0xa1,
+	0x19, 0x80, 0x59, 0xf1, 0x8f, 0x40, 0x5b, 0x8a, 0xf8, 0xca, 0x24, 0xb6, 0x3f, 0x59, 0x5c, 0x33,
+	0x57, 0x33, 0x7f, 0x80, 0xbb, 0x5a, 0x52, 0xb7, 0xd4, 0x7e, 0xb5, 0xc2, 0xee, 0x2c, 0xaa, 0x10,
+	0xfc, 0x14, 0x1e, 0xd4, 0x05, 0xeb, 0x9e, 0x4a, 0x52, 0x53, 0x68, 0xbb, 0x6f, 0x59, 0x28, 0x44,
+	0x8f, 0xe0, 0x96, 0xc8, 0x43, 0x4b, 0x6d, 0x9e, 0x23, 0x76, 0xab, 0x0e, 0x29, 0x3f, 0x1c, 0x2d,
+	0xfc, 0x5a, 0xba, 0x19, 0xb9, 0x42, 0x7f, 0x38, 0x75, 0xa1, 0x67, 0x7e, 0x0b, 0x77, 0x94, 0xc4,
+	0x73, 0xd4, 0x5e, 0x19, 0xb7, 0x3f, 0xba, 0x1a, 0x17, 0xcc, 0x08, 0xb6, 0xf5, 0x90, 0x7b, 0x5f,
+	0x9b, 0x0b, 0xb5, 0xc4, 0xfe, 0x78, 0x61, 0x89, 0x90, 0xf8, 0x1a, 0x36, 0xcb, 0xb9, 0xd3, 0x50,
+	0x3b, 0x4b, 0xa0, 0xfd, 0xf8, 0x0a, 0x50, 0x10, 0xbe, 0x80, 0x2d, 0x39, 0xca, 0x76, 0xd5, 0x2e,
+	0x09, 0xb6, 0x3f, 0xbc, 0x12, 0x96, 0x37, 0x51, 0x09, 0xaf, 0x8a, 0x4d, 0x94, 0x2b, 0xaa, 0x36,
+	0xb1, 0x3a, 0xb4, 0x98, 0x6d, 0x39, 0xb1, 0x76, 0xf5, 0xb9, 0x2a, 0xc1, 0xba, 0xed, 0xca, 0x98,
+	0x62, 0xb6, 0xb5, 0x88, 0xd2, 0x6c, 0xab, 0x15, 0xba, 0xed, 0xba, 0x74, 0x61, 0xb3, 0xa7, 0x44,
+	0x8b, 0x36, 0x7b, 0x32, 0xae, 0xcf, 0x5e, 0x75, 0xa0, 0x30, 0x66, 0x25, 0x4d, 0x34, 0x66, 0x19,
+	0xd7, 0x99, 0xab, 0x33, 0xc4, 0xfc, 0x1e, 0xde, 0x55, 0x03, 0xa4, 0x59, 0xdf, 0xca, 0x0b, 0xec,
+	0xbd, 0x05, 0x05, 0xe5, 0x79, 0x2e, 0x87, 0x46, 0xa3, 0xaa, 0xaf, 0x00, 0xf5, 0x79, 0xae, 0xc8,
+	0x09, 0xf3, 0x19, 0x40, 0x29, 0x24, 0xec, 0xaa, 0x96, 0x1c, 0xb3, 0xdb, 0xf5, 0xd8, 0x9c, 0xad,
+	0x77, 0xf4, 0xe7, 0xcc, 0x31, 0x5e, 0xcd, 0x1c, 0xe3, 0xf5, 0xcc, 0x31, 0xfe, 0x99, 0x39, 0xc6,
+	0xaf, 0x97, 0xce, 0xda, 0xeb, 0x4b, 0x67, 0xed, 0xaf, 0x4b, 0x67, 0xed, 0xbb, 0x4e, 0xe9, 0xcb,
+	0xe2, 0x69, 0x94, 0xa2, 0x3e, 0x49, 0xb1, 0x4b, 0xf1, 0x39, 0x8a, 0xdc, 0xa9, 0xf8, 0xb2, 0x65,
+	0xdf, 0x17, 0x83, 0x9b, 0xfc, 0x53, 0xf3, 0xf3, 0x7f, 0x03, 0x00, 0x00, 0xff, 0xff, 0xff, 0x23,
+	0xfc, 0x46, 0xf5, 0x0e, 0x00, 0x00,
 }
 
 func (this *MsgCreateDappProposal) Equal(that interface{}) bool {
@@ -2536,63 +1835,6 @@ func (this *MsgReclaimDappBondProposalResponse) Equal(that interface{}) bool {
 	}
 	return true
 }
-func (this *MsgJoinDappTx) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*MsgJoinDappTx)
-	if !ok {
-		that2, ok := that.(MsgJoinDappTx)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	if this.Sender != that1.Sender {
-		return false
-	}
-	if this.DappName != that1.DappName {
-		return false
-	}
-	if this.Executor != that1.Executor {
-		return false
-	}
-	if this.Verifier != that1.Verifier {
-		return false
-	}
-	if this.Interx != that1.Interx {
-		return false
-	}
-	return true
-}
-func (this *MsgJoinDappTxResponse) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*MsgJoinDappTxResponse)
-	if !ok {
-		that2, ok := that.(MsgJoinDappTxResponse)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
 func (this *MsgExitDapp) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
@@ -2628,54 +1870,6 @@ func (this *MsgExitDappResponse) Equal(that interface{}) bool {
 	that1, ok := that.(*MsgExitDappResponse)
 	if !ok {
 		that2, ok := that.(MsgExitDappResponse)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *MsgVoteDappOperatorTx) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*MsgVoteDappOperatorTx)
-	if !ok {
-		that2, ok := that.(MsgVoteDappOperatorTx)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	if this.Sender != that1.Sender {
-		return false
-	}
-	if this.DappName != that1.DappName {
-		return false
-	}
-	return true
-}
-func (this *MsgVoteDappOperatorTxResponse) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*MsgVoteDappOperatorTxResponse)
-	if !ok {
-		that2, ok := that.(MsgVoteDappOperatorTxResponse)
 		if ok {
 			that1 = &that2
 		} else {
@@ -3079,249 +2273,6 @@ func (this *MsgDenounceLeaderTxResponse) Equal(that interface{}) bool {
 	}
 	return true
 }
-func (this *MsgTransitionDappTx) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*MsgTransitionDappTx)
-	if !ok {
-		that2, ok := that.(MsgTransitionDappTx)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	if this.Sender != that1.Sender {
-		return false
-	}
-	if this.DappName != that1.DappName {
-		return false
-	}
-	if this.StatusHash != that1.StatusHash {
-		return false
-	}
-	return true
-}
-func (this *MsgTransitionDappTxResponse) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*MsgTransitionDappTxResponse)
-	if !ok {
-		that2, ok := that.(MsgTransitionDappTxResponse)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *MsgApproveDappTransitionTx) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*MsgApproveDappTransitionTx)
-	if !ok {
-		that2, ok := that.(MsgApproveDappTransitionTx)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	if this.Sender != that1.Sender {
-		return false
-	}
-	if this.DappName != that1.DappName {
-		return false
-	}
-	return true
-}
-func (this *MsgApproveDappTransitionTxResponse) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*MsgApproveDappTransitionTxResponse)
-	if !ok {
-		that2, ok := that.(MsgApproveDappTransitionTxResponse)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *MsgRejectDappTransitionTx) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*MsgRejectDappTransitionTx)
-	if !ok {
-		that2, ok := that.(MsgRejectDappTransitionTx)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	if this.Sender != that1.Sender {
-		return false
-	}
-	if this.DappName != that1.DappName {
-		return false
-	}
-	return true
-}
-func (this *MsgRejectDappTransitionTxResponse) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*MsgRejectDappTransitionTxResponse)
-	if !ok {
-		that2, ok := that.(MsgRejectDappTransitionTxResponse)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *MsgUpsertDappProposalTx) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*MsgUpsertDappProposalTx)
-	if !ok {
-		that2, ok := that.(MsgUpsertDappProposalTx)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	if this.Sender != that1.Sender {
-		return false
-	}
-	if this.DappName != that1.DappName {
-		return false
-	}
-	return true
-}
-func (this *MsgUpsertDappProposalTxResponse) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*MsgUpsertDappProposalTxResponse)
-	if !ok {
-		that2, ok := that.(MsgUpsertDappProposalTxResponse)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
-func (this *MsgVoteUpsertDappProposalTx) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*MsgVoteUpsertDappProposalTx)
-	if !ok {
-		that2, ok := that.(MsgVoteUpsertDappProposalTx)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	if this.Sender != that1.Sender {
-		return false
-	}
-	if this.DappName != that1.DappName {
-		return false
-	}
-	return true
-}
-func (this *MsgVoteUpsertDappProposalTxResponse) Equal(that interface{}) bool {
-	if that == nil {
-		return this == nil
-	}
-
-	that1, ok := that.(*MsgVoteUpsertDappProposalTxResponse)
-	if !ok {
-		that2, ok := that.(MsgVoteUpsertDappProposalTxResponse)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		return this == nil
-	} else if this == nil {
-		return false
-	}
-	return true
-}
 func (this *MsgTransferDappTx) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
@@ -3578,9 +2529,7 @@ type MsgClient interface {
 	CreateDappProposal(ctx context.Context, in *MsgCreateDappProposal, opts ...grpc.CallOption) (*MsgCreateDappProposalResponse, error)
 	BondDappProposal(ctx context.Context, in *MsgBondDappProposal, opts ...grpc.CallOption) (*MsgBondDappProposalResponse, error)
 	ReclaimDappBondProposal(ctx context.Context, in *MsgReclaimDappBondProposal, opts ...grpc.CallOption) (*MsgReclaimDappBondProposalResponse, error)
-	JoinDappTx(ctx context.Context, in *MsgJoinDappTx, opts ...grpc.CallOption) (*MsgJoinDappTxResponse, error)
 	ExitDapp(ctx context.Context, in *MsgExitDapp, opts ...grpc.CallOption) (*MsgExitDappResponse, error)
-	VoteDappOperatorTx(ctx context.Context, in *MsgVoteDappOperatorTx, opts ...grpc.CallOption) (*MsgVoteDappOperatorTxResponse, error)
 	RedeemDappPoolTx(ctx context.Context, in *MsgRedeemDappPoolTx, opts ...grpc.CallOption) (*MsgRedeemDappPoolTxResponse, error)
 	SwapDappPoolTx(ctx context.Context, in *MsgSwapDappPoolTx, opts ...grpc.CallOption) (*MsgSwapDappPoolTxResponse, error)
 	ConvertDappPoolTx(ctx context.Context, in *MsgConvertDappPoolTx, opts ...grpc.CallOption) (*MsgConvertDappPoolTxResponse, error)
@@ -3589,11 +2538,6 @@ type MsgClient interface {
 	ReactivateDappTx(ctx context.Context, in *MsgReactivateDappTx, opts ...grpc.CallOption) (*MsgReactivateDappTxResponse, error)
 	ExecuteDappTx(ctx context.Context, in *MsgExecuteDappTx, opts ...grpc.CallOption) (*MsgExecuteDappTxResponse, error)
 	DenounceLeaderTx(ctx context.Context, in *MsgDenounceLeaderTx, opts ...grpc.CallOption) (*MsgDenounceLeaderTxResponse, error)
-	TransitionDappTx(ctx context.Context, in *MsgTransitionDappTx, opts ...grpc.CallOption) (*MsgTransitionDappTxResponse, error)
-	ApproveDappTransitionTx(ctx context.Context, in *MsgApproveDappTransitionTx, opts ...grpc.CallOption) (*MsgApproveDappTransitionTxResponse, error)
-	RejectDappTransitionTx(ctx context.Context, in *MsgRejectDappTransitionTx, opts ...grpc.CallOption) (*MsgRejectDappTransitionTxResponse, error)
-	UpsertDappProposalTx(ctx context.Context, in *MsgUpsertDappProposalTx, opts ...grpc.CallOption) (*MsgUpsertDappProposalTxResponse, error)
-	VoteUpsertDappProposalTx(ctx context.Context, in *MsgVoteUpsertDappProposalTx, opts ...grpc.CallOption) (*MsgVoteUpsertDappProposalTxResponse, error)
 	TransferDappTx(ctx context.Context, in *MsgTransferDappTx, opts ...grpc.CallOption) (*MsgTransferDappTxResponse, error)
 	MintCreateFtTx(ctx context.Context, in *MsgMintCreateFtTx, opts ...grpc.CallOption) (*MsgMintCreateFtTxResponse, error)
 	MintCreateNftTx(ctx context.Context, in *MsgMintCreateNftTx, opts ...grpc.CallOption) (*MsgMintCreateNftTxResponse, error)
@@ -3636,27 +2580,9 @@ func (c *msgClient) ReclaimDappBondProposal(ctx context.Context, in *MsgReclaimD
 	return out, nil
 }
 
-func (c *msgClient) JoinDappTx(ctx context.Context, in *MsgJoinDappTx, opts ...grpc.CallOption) (*MsgJoinDappTxResponse, error) {
-	out := new(MsgJoinDappTxResponse)
-	err := c.cc.Invoke(ctx, "/kira.layer2.Msg/JoinDappTx", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *msgClient) ExitDapp(ctx context.Context, in *MsgExitDapp, opts ...grpc.CallOption) (*MsgExitDappResponse, error) {
 	out := new(MsgExitDappResponse)
 	err := c.cc.Invoke(ctx, "/kira.layer2.Msg/ExitDapp", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *msgClient) VoteDappOperatorTx(ctx context.Context, in *MsgVoteDappOperatorTx, opts ...grpc.CallOption) (*MsgVoteDappOperatorTxResponse, error) {
-	out := new(MsgVoteDappOperatorTxResponse)
-	err := c.cc.Invoke(ctx, "/kira.layer2.Msg/VoteDappOperatorTx", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -3735,51 +2661,6 @@ func (c *msgClient) DenounceLeaderTx(ctx context.Context, in *MsgDenounceLeaderT
 	return out, nil
 }
 
-func (c *msgClient) TransitionDappTx(ctx context.Context, in *MsgTransitionDappTx, opts ...grpc.CallOption) (*MsgTransitionDappTxResponse, error) {
-	out := new(MsgTransitionDappTxResponse)
-	err := c.cc.Invoke(ctx, "/kira.layer2.Msg/TransitionDappTx", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *msgClient) ApproveDappTransitionTx(ctx context.Context, in *MsgApproveDappTransitionTx, opts ...grpc.CallOption) (*MsgApproveDappTransitionTxResponse, error) {
-	out := new(MsgApproveDappTransitionTxResponse)
-	err := c.cc.Invoke(ctx, "/kira.layer2.Msg/ApproveDappTransitionTx", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *msgClient) RejectDappTransitionTx(ctx context.Context, in *MsgRejectDappTransitionTx, opts ...grpc.CallOption) (*MsgRejectDappTransitionTxResponse, error) {
-	out := new(MsgRejectDappTransitionTxResponse)
-	err := c.cc.Invoke(ctx, "/kira.layer2.Msg/RejectDappTransitionTx", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *msgClient) UpsertDappProposalTx(ctx context.Context, in *MsgUpsertDappProposalTx, opts ...grpc.CallOption) (*MsgUpsertDappProposalTxResponse, error) {
-	out := new(MsgUpsertDappProposalTxResponse)
-	err := c.cc.Invoke(ctx, "/kira.layer2.Msg/UpsertDappProposalTx", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *msgClient) VoteUpsertDappProposalTx(ctx context.Context, in *MsgVoteUpsertDappProposalTx, opts ...grpc.CallOption) (*MsgVoteUpsertDappProposalTxResponse, error) {
-	out := new(MsgVoteUpsertDappProposalTxResponse)
-	err := c.cc.Invoke(ctx, "/kira.layer2.Msg/VoteUpsertDappProposalTx", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *msgClient) TransferDappTx(ctx context.Context, in *MsgTransferDappTx, opts ...grpc.CallOption) (*MsgTransferDappTxResponse, error) {
 	out := new(MsgTransferDappTxResponse)
 	err := c.cc.Invoke(ctx, "/kira.layer2.Msg/TransferDappTx", in, out, opts...)
@@ -3830,9 +2711,7 @@ type MsgServer interface {
 	CreateDappProposal(context.Context, *MsgCreateDappProposal) (*MsgCreateDappProposalResponse, error)
 	BondDappProposal(context.Context, *MsgBondDappProposal) (*MsgBondDappProposalResponse, error)
 	ReclaimDappBondProposal(context.Context, *MsgReclaimDappBondProposal) (*MsgReclaimDappBondProposalResponse, error)
-	JoinDappTx(context.Context, *MsgJoinDappTx) (*MsgJoinDappTxResponse, error)
 	ExitDapp(context.Context, *MsgExitDapp) (*MsgExitDappResponse, error)
-	VoteDappOperatorTx(context.Context, *MsgVoteDappOperatorTx) (*MsgVoteDappOperatorTxResponse, error)
 	RedeemDappPoolTx(context.Context, *MsgRedeemDappPoolTx) (*MsgRedeemDappPoolTxResponse, error)
 	SwapDappPoolTx(context.Context, *MsgSwapDappPoolTx) (*MsgSwapDappPoolTxResponse, error)
 	ConvertDappPoolTx(context.Context, *MsgConvertDappPoolTx) (*MsgConvertDappPoolTxResponse, error)
@@ -3841,11 +2720,6 @@ type MsgServer interface {
 	ReactivateDappTx(context.Context, *MsgReactivateDappTx) (*MsgReactivateDappTxResponse, error)
 	ExecuteDappTx(context.Context, *MsgExecuteDappTx) (*MsgExecuteDappTxResponse, error)
 	DenounceLeaderTx(context.Context, *MsgDenounceLeaderTx) (*MsgDenounceLeaderTxResponse, error)
-	TransitionDappTx(context.Context, *MsgTransitionDappTx) (*MsgTransitionDappTxResponse, error)
-	ApproveDappTransitionTx(context.Context, *MsgApproveDappTransitionTx) (*MsgApproveDappTransitionTxResponse, error)
-	RejectDappTransitionTx(context.Context, *MsgRejectDappTransitionTx) (*MsgRejectDappTransitionTxResponse, error)
-	UpsertDappProposalTx(context.Context, *MsgUpsertDappProposalTx) (*MsgUpsertDappProposalTxResponse, error)
-	VoteUpsertDappProposalTx(context.Context, *MsgVoteUpsertDappProposalTx) (*MsgVoteUpsertDappProposalTxResponse, error)
 	TransferDappTx(context.Context, *MsgTransferDappTx) (*MsgTransferDappTxResponse, error)
 	MintCreateFtTx(context.Context, *MsgMintCreateFtTx) (*MsgMintCreateFtTxResponse, error)
 	MintCreateNftTx(context.Context, *MsgMintCreateNftTx) (*MsgMintCreateNftTxResponse, error)
@@ -3866,14 +2740,8 @@ func (*UnimplementedMsgServer) BondDappProposal(ctx context.Context, req *MsgBon
 func (*UnimplementedMsgServer) ReclaimDappBondProposal(ctx context.Context, req *MsgReclaimDappBondProposal) (*MsgReclaimDappBondProposalResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ReclaimDappBondProposal not implemented")
 }
-func (*UnimplementedMsgServer) JoinDappTx(ctx context.Context, req *MsgJoinDappTx) (*MsgJoinDappTxResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method JoinDappTx not implemented")
-}
 func (*UnimplementedMsgServer) ExitDapp(ctx context.Context, req *MsgExitDapp) (*MsgExitDappResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ExitDapp not implemented")
-}
-func (*UnimplementedMsgServer) VoteDappOperatorTx(ctx context.Context, req *MsgVoteDappOperatorTx) (*MsgVoteDappOperatorTxResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method VoteDappOperatorTx not implemented")
 }
 func (*UnimplementedMsgServer) RedeemDappPoolTx(ctx context.Context, req *MsgRedeemDappPoolTx) (*MsgRedeemDappPoolTxResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RedeemDappPoolTx not implemented")
@@ -3898,21 +2766,6 @@ func (*UnimplementedMsgServer) ExecuteDappTx(ctx context.Context, req *MsgExecut
 }
 func (*UnimplementedMsgServer) DenounceLeaderTx(ctx context.Context, req *MsgDenounceLeaderTx) (*MsgDenounceLeaderTxResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DenounceLeaderTx not implemented")
-}
-func (*UnimplementedMsgServer) TransitionDappTx(ctx context.Context, req *MsgTransitionDappTx) (*MsgTransitionDappTxResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method TransitionDappTx not implemented")
-}
-func (*UnimplementedMsgServer) ApproveDappTransitionTx(ctx context.Context, req *MsgApproveDappTransitionTx) (*MsgApproveDappTransitionTxResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ApproveDappTransitionTx not implemented")
-}
-func (*UnimplementedMsgServer) RejectDappTransitionTx(ctx context.Context, req *MsgRejectDappTransitionTx) (*MsgRejectDappTransitionTxResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RejectDappTransitionTx not implemented")
-}
-func (*UnimplementedMsgServer) UpsertDappProposalTx(ctx context.Context, req *MsgUpsertDappProposalTx) (*MsgUpsertDappProposalTxResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpsertDappProposalTx not implemented")
-}
-func (*UnimplementedMsgServer) VoteUpsertDappProposalTx(ctx context.Context, req *MsgVoteUpsertDappProposalTx) (*MsgVoteUpsertDappProposalTxResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method VoteUpsertDappProposalTx not implemented")
 }
 func (*UnimplementedMsgServer) TransferDappTx(ctx context.Context, req *MsgTransferDappTx) (*MsgTransferDappTxResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TransferDappTx not implemented")
@@ -3988,24 +2841,6 @@ func _Msg_ReclaimDappBondProposal_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_JoinDappTx_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgJoinDappTx)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).JoinDappTx(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/kira.layer2.Msg/JoinDappTx",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).JoinDappTx(ctx, req.(*MsgJoinDappTx))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _Msg_ExitDapp_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgExitDapp)
 	if err := dec(in); err != nil {
@@ -4020,24 +2855,6 @@ func _Msg_ExitDapp_Handler(srv interface{}, ctx context.Context, dec func(interf
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).ExitDapp(ctx, req.(*MsgExitDapp))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Msg_VoteDappOperatorTx_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgVoteDappOperatorTx)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).VoteDappOperatorTx(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/kira.layer2.Msg/VoteDappOperatorTx",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).VoteDappOperatorTx(ctx, req.(*MsgVoteDappOperatorTx))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -4186,96 +3003,6 @@ func _Msg_DenounceLeaderTx_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_TransitionDappTx_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgTransitionDappTx)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).TransitionDappTx(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/kira.layer2.Msg/TransitionDappTx",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).TransitionDappTx(ctx, req.(*MsgTransitionDappTx))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Msg_ApproveDappTransitionTx_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgApproveDappTransitionTx)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).ApproveDappTransitionTx(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/kira.layer2.Msg/ApproveDappTransitionTx",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).ApproveDappTransitionTx(ctx, req.(*MsgApproveDappTransitionTx))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Msg_RejectDappTransitionTx_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgRejectDappTransitionTx)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).RejectDappTransitionTx(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/kira.layer2.Msg/RejectDappTransitionTx",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).RejectDappTransitionTx(ctx, req.(*MsgRejectDappTransitionTx))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Msg_UpsertDappProposalTx_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgUpsertDappProposalTx)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).UpsertDappProposalTx(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/kira.layer2.Msg/UpsertDappProposalTx",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).UpsertDappProposalTx(ctx, req.(*MsgUpsertDappProposalTx))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Msg_VoteUpsertDappProposalTx_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgVoteUpsertDappProposalTx)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).VoteUpsertDappProposalTx(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/kira.layer2.Msg/VoteUpsertDappProposalTx",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).VoteUpsertDappProposalTx(ctx, req.(*MsgVoteUpsertDappProposalTx))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _Msg_TransferDappTx_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgTransferDappTx)
 	if err := dec(in); err != nil {
@@ -4383,16 +3110,8 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_ReclaimDappBondProposal_Handler,
 		},
 		{
-			MethodName: "JoinDappTx",
-			Handler:    _Msg_JoinDappTx_Handler,
-		},
-		{
 			MethodName: "ExitDapp",
 			Handler:    _Msg_ExitDapp_Handler,
-		},
-		{
-			MethodName: "VoteDappOperatorTx",
-			Handler:    _Msg_VoteDappOperatorTx_Handler,
 		},
 		{
 			MethodName: "RedeemDappPoolTx",
@@ -4425,26 +3144,6 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DenounceLeaderTx",
 			Handler:    _Msg_DenounceLeaderTx_Handler,
-		},
-		{
-			MethodName: "TransitionDappTx",
-			Handler:    _Msg_TransitionDappTx_Handler,
-		},
-		{
-			MethodName: "ApproveDappTransitionTx",
-			Handler:    _Msg_ApproveDappTransitionTx_Handler,
-		},
-		{
-			MethodName: "RejectDappTransitionTx",
-			Handler:    _Msg_RejectDappTransitionTx_Handler,
-		},
-		{
-			MethodName: "UpsertDappProposalTx",
-			Handler:    _Msg_UpsertDappProposalTx_Handler,
-		},
-		{
-			MethodName: "VoteUpsertDappProposalTx",
-			Handler:    _Msg_VoteUpsertDappProposalTx_Handler,
 		},
 		{
 			MethodName: "TransferDappTx",
@@ -4684,93 +3383,6 @@ func (m *MsgReclaimDappBondProposalResponse) MarshalToSizedBuffer(dAtA []byte) (
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgJoinDappTx) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgJoinDappTx) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgJoinDappTx) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Interx) > 0 {
-		i -= len(m.Interx)
-		copy(dAtA[i:], m.Interx)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Interx)))
-		i--
-		dAtA[i] = 0x2a
-	}
-	if m.Verifier {
-		i--
-		if m.Verifier {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i--
-		dAtA[i] = 0x20
-	}
-	if m.Executor {
-		i--
-		if m.Executor {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i--
-		dAtA[i] = 0x18
-	}
-	if len(m.DappName) > 0 {
-		i -= len(m.DappName)
-		copy(dAtA[i:], m.DappName)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.DappName)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.Sender) > 0 {
-		i -= len(m.Sender)
-		copy(dAtA[i:], m.Sender)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Sender)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *MsgJoinDappTxResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgJoinDappTxResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgJoinDappTxResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
 func (m *MsgExitDapp) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -4824,66 +3436,6 @@ func (m *MsgExitDappResponse) MarshalTo(dAtA []byte) (int, error) {
 }
 
 func (m *MsgExitDappResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *MsgVoteDappOperatorTx) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgVoteDappOperatorTx) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgVoteDappOperatorTx) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.DappName) > 0 {
-		i -= len(m.DappName)
-		copy(dAtA[i:], m.DappName)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.DappName)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.Sender) > 0 {
-		i -= len(m.Sender)
-		copy(dAtA[i:], m.Sender)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Sender)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *MsgVoteDappOperatorTxResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgVoteDappOperatorTxResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgVoteDappOperatorTxResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -5385,313 +3937,6 @@ func (m *MsgDenounceLeaderTxResponse) MarshalToSizedBuffer(dAtA []byte) (int, er
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgTransitionDappTx) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgTransitionDappTx) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgTransitionDappTx) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.StatusHash) > 0 {
-		i -= len(m.StatusHash)
-		copy(dAtA[i:], m.StatusHash)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.StatusHash)))
-		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.DappName) > 0 {
-		i -= len(m.DappName)
-		copy(dAtA[i:], m.DappName)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.DappName)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.Sender) > 0 {
-		i -= len(m.Sender)
-		copy(dAtA[i:], m.Sender)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Sender)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *MsgTransitionDappTxResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgTransitionDappTxResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgTransitionDappTxResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *MsgApproveDappTransitionTx) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgApproveDappTransitionTx) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgApproveDappTransitionTx) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.DappName) > 0 {
-		i -= len(m.DappName)
-		copy(dAtA[i:], m.DappName)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.DappName)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.Sender) > 0 {
-		i -= len(m.Sender)
-		copy(dAtA[i:], m.Sender)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Sender)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *MsgApproveDappTransitionTxResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgApproveDappTransitionTxResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgApproveDappTransitionTxResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *MsgRejectDappTransitionTx) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgRejectDappTransitionTx) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgRejectDappTransitionTx) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.DappName) > 0 {
-		i -= len(m.DappName)
-		copy(dAtA[i:], m.DappName)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.DappName)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.Sender) > 0 {
-		i -= len(m.Sender)
-		copy(dAtA[i:], m.Sender)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Sender)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *MsgRejectDappTransitionTxResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgRejectDappTransitionTxResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgRejectDappTransitionTxResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *MsgUpsertDappProposalTx) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgUpsertDappProposalTx) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgUpsertDappProposalTx) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.DappName) > 0 {
-		i -= len(m.DappName)
-		copy(dAtA[i:], m.DappName)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.DappName)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.Sender) > 0 {
-		i -= len(m.Sender)
-		copy(dAtA[i:], m.Sender)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Sender)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *MsgUpsertDappProposalTxResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgUpsertDappProposalTxResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgUpsertDappProposalTxResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *MsgVoteUpsertDappProposalTx) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgVoteUpsertDappProposalTx) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgVoteUpsertDappProposalTx) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.DappName) > 0 {
-		i -= len(m.DappName)
-		copy(dAtA[i:], m.DappName)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.DappName)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.Sender) > 0 {
-		i -= len(m.Sender)
-		copy(dAtA[i:], m.Sender)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Sender)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *MsgVoteUpsertDappProposalTxResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgVoteUpsertDappProposalTxResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgVoteUpsertDappProposalTxResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
 func (m *MsgTransferDappTx) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -6085,42 +4330,6 @@ func (m *MsgReclaimDappBondProposalResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgJoinDappTx) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Sender)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.DappName)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	if m.Executor {
-		n += 2
-	}
-	if m.Verifier {
-		n += 2
-	}
-	l = len(m.Interx)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	return n
-}
-
-func (m *MsgJoinDappTxResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
 func (m *MsgExitDapp) Size() (n int) {
 	if m == nil {
 		return 0
@@ -6139,32 +4348,6 @@ func (m *MsgExitDapp) Size() (n int) {
 }
 
 func (m *MsgExitDappResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *MsgVoteDappOperatorTx) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Sender)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.DappName)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	return n
-}
-
-func (m *MsgVoteDappOperatorTxResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -6381,140 +4564,6 @@ func (m *MsgDenounceLeaderTx) Size() (n int) {
 }
 
 func (m *MsgDenounceLeaderTxResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *MsgTransitionDappTx) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Sender)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.DappName)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.StatusHash)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	return n
-}
-
-func (m *MsgTransitionDappTxResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *MsgApproveDappTransitionTx) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Sender)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.DappName)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	return n
-}
-
-func (m *MsgApproveDappTransitionTxResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *MsgRejectDappTransitionTx) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Sender)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.DappName)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	return n
-}
-
-func (m *MsgRejectDappTransitionTxResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *MsgUpsertDappProposalTx) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Sender)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.DappName)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	return n
-}
-
-func (m *MsgUpsertDappProposalTxResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
-func (m *MsgVoteUpsertDappProposalTx) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Sender)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.DappName)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	return n
-}
-
-func (m *MsgVoteUpsertDappProposalTxResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -7254,242 +5303,6 @@ func (m *MsgReclaimDappBondProposalResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgJoinDappTx) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgJoinDappTx: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgJoinDappTx: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Sender = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DappName", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.DappName = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Executor", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.Executor = bool(v != 0)
-		case 4:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Verifier", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.Verifier = bool(v != 0)
-		case 5:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Interx", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Interx = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *MsgJoinDappTxResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgJoinDappTxResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgJoinDappTxResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
 func (m *MsgExitDapp) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -7631,170 +5444,6 @@ func (m *MsgExitDappResponse) Unmarshal(dAtA []byte) error {
 		}
 		if fieldNum <= 0 {
 			return fmt.Errorf("proto: MsgExitDappResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *MsgVoteDappOperatorTx) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgVoteDappOperatorTx: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgVoteDappOperatorTx: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Sender = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DappName", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.DappName = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *MsgVoteDappOperatorTxResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgVoteDappOperatorTxResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgVoteDappOperatorTxResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
@@ -9171,858 +6820,6 @@ func (m *MsgDenounceLeaderTxResponse) Unmarshal(dAtA []byte) error {
 		}
 		if fieldNum <= 0 {
 			return fmt.Errorf("proto: MsgDenounceLeaderTxResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *MsgTransitionDappTx) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgTransitionDappTx: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgTransitionDappTx: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Sender = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DappName", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.DappName = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field StatusHash", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.StatusHash = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *MsgTransitionDappTxResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgTransitionDappTxResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgTransitionDappTxResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *MsgApproveDappTransitionTx) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgApproveDappTransitionTx: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgApproveDappTransitionTx: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Sender = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DappName", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.DappName = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *MsgApproveDappTransitionTxResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgApproveDappTransitionTxResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgApproveDappTransitionTxResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *MsgRejectDappTransitionTx) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgRejectDappTransitionTx: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgRejectDappTransitionTx: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Sender = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DappName", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.DappName = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *MsgRejectDappTransitionTxResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgRejectDappTransitionTxResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgRejectDappTransitionTxResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *MsgUpsertDappProposalTx) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgUpsertDappProposalTx: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgUpsertDappProposalTx: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Sender = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DappName", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.DappName = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *MsgUpsertDappProposalTxResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgUpsertDappProposalTxResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgUpsertDappProposalTxResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *MsgVoteUpsertDappProposalTx) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgVoteUpsertDappProposalTx: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgVoteUpsertDappProposalTx: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Sender = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DappName", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.DappName = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *MsgVoteUpsertDappProposalTxResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgVoteUpsertDappProposalTxResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgVoteUpsertDappProposalTxResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:

@@ -1,6 +1,7 @@
 package types
 
 import (
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -18,9 +19,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgCreateDappProposal{},
 		&MsgBondDappProposal{},
 		&MsgReclaimDappBondProposal{},
-		&MsgJoinDappTx{},
 		&MsgExitDapp{},
-		&MsgVoteDappOperatorTx{},
 		&MsgRedeemDappPoolTx{},
 		&MsgSwapDappPoolTx{},
 		&MsgConvertDappPoolTx{},
@@ -29,16 +28,19 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgReactivateDappTx{},
 		&MsgExecuteDappTx{},
 		&MsgDenounceLeaderTx{},
-		&MsgTransitionDappTx{},
-		&MsgApproveDappTransitionTx{},
-		&MsgRejectDappTransitionTx{},
-		&MsgUpsertDappProposalTx{},
-		&MsgVoteUpsertDappProposalTx{},
 		&MsgTransferDappTx{},
 		&MsgMintCreateFtTx{},
 		&MsgMintCreateNftTx{},
 		&MsgMintIssueTx{},
 		&MsgMintBurnTx{},
+	)
+
+	registry.RegisterInterface(
+		"kira.gov.Content",
+		(*govtypes.Content)(nil),
+		&ProposalJoinDapp{},
+		&ProposalTransitionDapp{},
+		&ProposalUpsertDapp{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)

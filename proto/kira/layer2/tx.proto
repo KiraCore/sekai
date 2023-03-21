@@ -14,9 +14,7 @@ service Msg {
   rpc CreateDappProposal(MsgCreateDappProposal) returns (MsgCreateDappProposalResponse);
   rpc BondDappProposal(MsgBondDappProposal) returns (MsgBondDappProposalResponse);
   rpc ReclaimDappBondProposal(MsgReclaimDappBondProposal) returns (MsgReclaimDappBondProposalResponse);
-  rpc JoinDappTx(MsgJoinDappTx) returns (MsgJoinDappTxResponse);
   rpc ExitDapp(MsgExitDapp) returns (MsgExitDappResponse);
-  rpc VoteDappOperatorTx(MsgVoteDappOperatorTx) returns (MsgVoteDappOperatorTxResponse);
   rpc RedeemDappPoolTx(MsgRedeemDappPoolTx) returns (MsgRedeemDappPoolTxResponse);
   rpc SwapDappPoolTx(MsgSwapDappPoolTx) returns (MsgSwapDappPoolTxResponse);
   rpc ConvertDappPoolTx(MsgConvertDappPoolTx) returns (MsgConvertDappPoolTxResponse);
@@ -25,11 +23,6 @@ service Msg {
   rpc ReactivateDappTx(MsgReactivateDappTx) returns (MsgReactivateDappTxResponse);
   rpc ExecuteDappTx(MsgExecuteDappTx) returns (MsgExecuteDappTxResponse);
   rpc DenounceLeaderTx(MsgDenounceLeaderTx) returns (MsgDenounceLeaderTxResponse);
-  rpc TransitionDappTx(MsgTransitionDappTx) returns (MsgTransitionDappTxResponse);
-  rpc ApproveDappTransitionTx(MsgApproveDappTransitionTx) returns (MsgApproveDappTransitionTxResponse);
-  rpc RejectDappTransitionTx(MsgRejectDappTransitionTx) returns (MsgRejectDappTransitionTxResponse);
-  rpc UpsertDappProposalTx(MsgUpsertDappProposalTx) returns (MsgUpsertDappProposalTxResponse);
-  rpc VoteUpsertDappProposalTx(MsgVoteUpsertDappProposalTx) returns (MsgVoteUpsertDappProposalTxResponse);
   rpc TransferDappTx(MsgTransferDappTx) returns (MsgTransferDappTxResponse);
   rpc MintCreateFtTx(MsgMintCreateFtTx) returns (MsgMintCreateFtTxResponse);
   rpc MintCreateNftTx(MsgMintCreateNftTx) returns (MsgMintCreateNftTxResponse);
@@ -75,23 +68,6 @@ message MsgReclaimDappBondProposal{
 }
 message MsgReclaimDappBondProposalResponse {}
 
-// Allows joining applications as executor or fisherman. By default all
-// executors are also verifiers so it should not be possible to set both
-// executor and verifier flags to true at the same time. This tx MUST also allow
-// to define or update a globally unique INTERX address that will be tasked with
-// operating the application. Tx should also fail if someone already joined
-// application and is applying for a different role, in other words all
-// operators must be unique for each dApp although different applications can
-// have the same operators.
-message MsgJoinDappTx {
-  string sender = 1;
-  string dapp_name = 2;
-  bool executor = 3; // can only be set by validators, raises proposal that controllers must approve
-  bool verifier = 4; // can be set by anyone, sending this tx does not require any approvals however requires a bond in `lp_<denom>` tokens no less than `dapp_verifier_bond`
-  string interx = 5; // must be set to a valid kira address
-}
-message MsgJoinDappTxResponse {}
-
 // stop being a dApp operator and remove the record in the Execution Registrar.
 // Return bonded funds if the operator is a verifier.
 message MsgExitDapp {
@@ -99,15 +75,6 @@ message MsgExitDapp {
   string dapp_name = 2;
 }
 message MsgExitDappResponse {}
-
-// accept/reject executor candidate, can only be sent by the controllers,
-// corresponding proposal should be automatically raised once join dApp tx is
-// sent by the validator.
-message MsgVoteDappOperatorTx {
-  string sender = 1;
-  string dapp_name = 2;
-}
-message MsgVoteDappOperatorTxResponse {}
 
 // return lp_<denom> tokens to the pool and redeem KEX or dp_<denom> token
 // unless slippage is exceeded then fail the tx.
@@ -176,47 +143,6 @@ message MsgDenounceLeaderTx {
   string denounce_text = 4;
 }
 message MsgDenounceLeaderTxResponse {}
-
-// update CURRENT session state (can only be sent by current session leader),
-// this tx MUST include dApp version.
-message MsgTransitionDappTx {
-  string sender = 1;
-  string dapp_name = 2;
-  string status_hash = 3;
-}
-message MsgTransitionDappTxResponse {}
-
-// approve CURRENT session state (can only be sent by the verifiers or executors
-// who are NOT a leader), this tx MUST include dApp version.
-message MsgApproveDappTransitionTx {
-  string sender = 1;
-  string dapp_name = 2;
-}
-message MsgApproveDappTransitionTxResponse {}
-
-// reject session transition and immediately set the state of the current
-// session to halted, this tx MUST include dApp version and session id.
-message MsgRejectDappTransitionTx {
-  string sender = 1;
-  string dapp_name = 2;
-}
-message MsgRejectDappTransitionTxResponse {}
-
-// can only be sent by the dApp controllers, allowing to upgrade binaries,
-// controlled and modify all other properties
-message MsgUpsertDappProposalTx {
-  string sender = 1;
-  string dapp_name = 2;
-}
-message MsgUpsertDappProposalTxResponse {}
-
-// can only be voted by the dApp controllers, accept/reject upsert proposal to
-// modify the dApp, executors set or any other properties
-message MsgVoteUpsertDappProposalTx {
-  string sender = 1;
-  string dapp_name = 2;
-}
-message MsgVoteUpsertDappProposalTxResponse {}
 
 // allow user to manually deposit/transfer/withdrawal funds to / from / within
 // ABR and communicate with apps by including xam string message.

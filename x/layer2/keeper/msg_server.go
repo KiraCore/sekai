@@ -136,29 +136,6 @@ func (k msgServer) ReclaimDappBondProposal(goCtx context.Context, msg *types.Msg
 	return &types.MsgReclaimDappBondProposalResponse{}, nil
 }
 
-func (k msgServer) JoinDappTx(goCtx context.Context, msg *types.MsgJoinDappTx) (*types.MsgJoinDappTxResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	candidate := k.keeper.GetDappOperatorCandidate(ctx, msg.DappName, msg.Sender)
-	if candidate.DappName != "" {
-		return nil, types.ErrAlreadyADappCandidate
-	}
-
-	operator := k.keeper.GetDappOperator(ctx, msg.DappName, msg.Sender)
-	if operator.DappName != "" {
-		return nil, types.ErrAlreadyADappOperator
-	}
-
-	k.keeper.SetDappOperatorCandidate(ctx, types.DappOperatorCandidate{
-		DappName:  msg.DappName,
-		Candidate: msg.Sender,
-		Executor:  msg.Executor,
-		Verifier:  msg.Verifier,
-		Interx:    msg.Interx,
-	})
-	return &types.MsgJoinDappTxResponse{}, nil
-}
-
 func (k msgServer) ExitDapp(goCtx context.Context, msg *types.MsgExitDapp) (*types.MsgExitDappResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	operator := k.keeper.GetDappOperator(ctx, msg.DappName, msg.Sender)
@@ -170,11 +147,83 @@ func (k msgServer) ExitDapp(goCtx context.Context, msg *types.MsgExitDapp) (*typ
 	return &types.MsgExitDappResponse{}, nil
 }
 
-func (k msgServer) VoteDappOperatorTx(goCtx context.Context, msg *types.MsgVoteDappOperatorTx) (*types.MsgVoteDappOperatorTxResponse, error) {
+func (k msgServer) PauseDappTx(goCtx context.Context, msg *types.MsgPauseDappTx) (*types.MsgPauseDappTxResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	operator := k.keeper.GetDappOperator(ctx, msg.DappName, msg.Sender)
+	if operator.DappName == "" {
+		return nil, types.ErrNotDappOperator
+	}
+	if operator.Status != types.OperatorActive {
+		return nil, types.ErrDappOperatorNotActive
+	}
+	operator.Status = types.OperatorPaused
+	k.keeper.SetDappOperator(ctx, operator)
+
+	return &types.MsgPauseDappTxResponse{}, nil
+}
+
+func (k msgServer) UnPauseDappTx(goCtx context.Context, msg *types.MsgUnPauseDappTx) (*types.MsgUnPauseDappTxResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	operator := k.keeper.GetDappOperator(ctx, msg.DappName, msg.Sender)
+	if operator.DappName == "" {
+		return nil, types.ErrNotDappOperator
+	}
+	if operator.Status != types.OperatorPaused {
+		return nil, types.ErrDappOperatorNotPaused
+	}
+	operator.Status = types.OperatorActive
+	k.keeper.SetDappOperator(ctx, operator)
+
+	return &types.MsgUnPauseDappTxResponse{}, nil
+}
+
+func (k msgServer) ReactivateDappTx(goCtx context.Context, msg *types.MsgReactivateDappTx) (*types.MsgReactivateDappTxResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	operator := k.keeper.GetDappOperator(ctx, msg.DappName, msg.Sender)
+	if operator.DappName == "" {
+		return nil, types.ErrNotDappOperator
+	}
+	if operator.Status != types.OperatorDeactivatived {
+		return nil, types.ErrDappOperatorNotDeactivated
+	}
+	operator.Status = types.OperatorActive
+	k.keeper.SetDappOperator(ctx, operator)
+
+	return &types.MsgReactivateDappTxResponse{}, nil
+}
+
+func (k msgServer) ExecuteDappTx(goCtx context.Context, msg *types.MsgExecuteDappTx) (*types.MsgExecuteDappTxResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	session := k.keeper.GetDappSession(ctx, msg.DappName)
+	if session.DappName == "" {
+		return nil, types.ErrNoDappSessionExists
+	}
+
+	if session.Leader != msg.Sender {
+		return nil, types.ErrNotDappSessionLeader
+	}
+	session.Status = types.Ongoing
+
+	return &types.MsgExecuteDappTxResponse{}, nil
+}
+
+func (k msgServer) DenounceLeaderTx(goCtx context.Context, msg *types.MsgDenounceLeaderTx) (*types.MsgDenounceLeaderTxResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	k.keeper.SetDappLeaderDenouncement(ctx, types.DappLeaderDenouncement{
+		DappName:     msg.DappName,
+		Leader:       msg.Leader,
+		Sender:       msg.Sender,
+		Denouncement: msg.DenounceText,
+	})
+
+	return &types.MsgDenounceLeaderTxResponse{}, nil
+}
+
+func (k msgServer) TransferDappTx(goCtx context.Context, msg *types.MsgTransferDappTx) (*types.MsgTransferDappTxResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	_ = ctx
 
-	return &types.MsgVoteDappOperatorTxResponse{}, nil
+	return &types.MsgTransferDappTxResponse{}, nil
 }
 
 func (k msgServer) RedeemDappPoolTx(goCtx context.Context, msg *types.MsgRedeemDappPoolTx) (*types.MsgRedeemDappPoolTxResponse, error) {
@@ -196,117 +245,6 @@ func (k msgServer) ConvertDappPoolTx(goCtx context.Context, msg *types.MsgConver
 	_ = ctx
 
 	return &types.MsgConvertDappPoolTxResponse{}, nil
-}
-
-func (k msgServer) PauseDappTx(goCtx context.Context, msg *types.MsgPauseDappTx) (*types.MsgPauseDappTxResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	dapp := k.keeper.GetDapp(ctx, msg.DappName)
-	if dapp.Status != types.Active {
-		return nil, types.ErrDappNotActive
-	}
-	dapp.Status = types.Paused
-	k.keeper.SetDapp(ctx, dapp)
-
-	return &types.MsgPauseDappTxResponse{}, nil
-}
-
-func (k msgServer) UnPauseDappTx(goCtx context.Context, msg *types.MsgUnPauseDappTx) (*types.MsgUnPauseDappTxResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	dapp := k.keeper.GetDapp(ctx, msg.DappName)
-	if dapp.Status != types.Paused {
-		return nil, types.ErrDappNotPaused
-	}
-	dapp.Status = types.Active
-	k.keeper.SetDapp(ctx, dapp)
-
-	return &types.MsgUnPauseDappTxResponse{}, nil
-}
-
-func (k msgServer) ReactivateDappTx(goCtx context.Context, msg *types.MsgReactivateDappTx) (*types.MsgReactivateDappTxResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	dapp := k.keeper.GetDapp(ctx, msg.DappName)
-	if dapp.Status != types.Halted {
-		return nil, types.ErrDappNotHalted
-	}
-	dapp.Status = types.Active
-	k.keeper.SetDapp(ctx, dapp)
-
-	return &types.MsgReactivateDappTxResponse{}, nil
-}
-
-func (k msgServer) ExecuteDappTx(goCtx context.Context, msg *types.MsgExecuteDappTx) (*types.MsgExecuteDappTxResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
-
-	return &types.MsgExecuteDappTxResponse{}, nil
-}
-
-func (k msgServer) DenounceLeaderTx(goCtx context.Context, msg *types.MsgDenounceLeaderTx) (*types.MsgDenounceLeaderTxResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	k.keeper.SetDappLeaderDenouncement(ctx, types.DappLeaderDenouncement{
-		DappName:     msg.DappName,
-		Leader:       msg.Leader,
-		Sender:       msg.Sender,
-		Denouncement: msg.DenounceText,
-	})
-
-	return &types.MsgDenounceLeaderTxResponse{}, nil
-}
-
-func (k msgServer) TransitionDappTx(goCtx context.Context, msg *types.MsgTransitionDappTx) (*types.MsgTransitionDappTxResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	session := k.keeper.GetDappSession(ctx, msg.DappName)
-	if session.DappName == "" {
-		return nil, types.ErrDappSessionDoesNotExist
-	}
-	session.StatusHash = msg.StatusHash
-	k.keeper.SetDappSession(ctx, session)
-
-	return &types.MsgTransitionDappTxResponse{}, nil
-}
-
-func (k msgServer) ApproveDappTransitionTx(goCtx context.Context, msg *types.MsgApproveDappTransitionTx) (*types.MsgApproveDappTransitionTxResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	k.keeper.SetDappSessionApproval(ctx, types.DappSessionApproval{
-		DappName:   msg.DappName,
-		Approver:   msg.Sender,
-		IsApproved: true,
-	})
-
-	return &types.MsgApproveDappTransitionTxResponse{}, nil
-}
-
-func (k msgServer) RejectDappTransitionTx(goCtx context.Context, msg *types.MsgRejectDappTransitionTx) (*types.MsgRejectDappTransitionTxResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	k.keeper.SetDappSessionApproval(ctx, types.DappSessionApproval{
-		DappName:   msg.DappName,
-		Approver:   msg.Sender,
-		IsApproved: false,
-	})
-
-	return &types.MsgRejectDappTransitionTxResponse{}, nil
-}
-
-func (k msgServer) UpsertDappProposalTx(goCtx context.Context, msg *types.MsgUpsertDappProposalTx) (*types.MsgUpsertDappProposalTxResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
-
-	return &types.MsgUpsertDappProposalTxResponse{}, nil
-}
-
-func (k msgServer) VoteUpsertDappProposalTx(goCtx context.Context, msg *types.MsgVoteUpsertDappProposalTx) (*types.MsgVoteUpsertDappProposalTxResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
-
-	return &types.MsgVoteUpsertDappProposalTxResponse{}, nil
-}
-
-func (k msgServer) TransferDappTx(goCtx context.Context, msg *types.MsgTransferDappTx) (*types.MsgTransferDappTxResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
-
-	return &types.MsgTransferDappTxResponse{}, nil
 }
 
 func (k msgServer) MintCreateFtTx(goCtx context.Context, msg *types.MsgMintCreateFtTx) (*types.MsgMintCreateFtTxResponse, error) {
@@ -336,13 +274,6 @@ func (k msgServer) MintBurnTx(goCtx context.Context, msg *types.MsgMintBurnTx) (
 
 	return &types.MsgMintBurnTxResponse{}, nil
 }
-
-// TODO: implement - step1
-// accept/reject executor candidate, can only be sent by the controllers,
-// corresponding proposal should be automatically raised once join dApp tx is
-// sent by the validator.
-//   rpc VoteDappOperatorTx(MsgVoteDappOperatorTx) returns (MsgVoteDappOperatorTxResponse);
-//   rpc ExecuteDappTx(MsgExecuteDappTx) returns (MsgExecuteDappTxResponse);
 
 // TODO: implement - step2
 //   rpc RedeemDappPoolTx(MsgRedeemDappPoolTx) returns (MsgRedeemDappPoolTxResponse);

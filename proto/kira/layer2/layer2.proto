@@ -72,6 +72,9 @@ message Dapp {
   uint64 creation_time = 17; // dapp creation time
   string status_hash = 18; // dapp status hash
   DappStatus status = 19; // dapp status
+  uint64 vote_quorum = 20; // percentage - default: 51%, collective-specific % of owner accounts that must vote YES or NO for any of the collective proposals to be valid
+  uint64 vote_period = 21; // seconds - default: 600s, period of time in seconds that any of the collective proposals must last before passing or being rejected
+  uint64 vote_enactment = 22; // seconds - default: 300s, period of time that must pass before any of the collective proposals is enacted
 }
 
 message UserDappBond {
@@ -83,12 +86,12 @@ message UserDappBond {
   ];
 }
 
-message DappOperatorCandidate {
-  string dapp_name = 1;
-  string candidate = 2;
-  bool executor = 3; // can only be set by validators, raises proposal that controllers must approve
-  bool verifier = 4; // can be set by anyone, sending this tx does not require any approvals however requires a bond in `lp_<denom>` tokens no less than `dapp_verifier_bond`
-  string interx = 5; // must be set to a valid kira address
+enum OperatorStatus {
+  option (gogoproto.goproto_enum_prefix) = false;
+
+  OPERATOR_ACTIVE = 0 [ (gogoproto.enumvalue_customname) = "OperatorActive" ];
+  OPERATOR_PAUSED = 1 [ (gogoproto.enumvalue_customname) = "OperatorPaused" ];
+  OPERATOR_DEACTIVATED = 2 [ (gogoproto.enumvalue_customname) = "OperatorDeactivatived" ];
 }
 
 message DappOperator {
@@ -97,6 +100,7 @@ message DappOperator {
   bool executor = 3; // can only be set by validators, raises proposal that controllers must approve
   bool verifier = 4; // can be set by anyone, sending this tx does not require any approvals however requires a bond in `lp_<denom>` tokens no less than `dapp_verifier_bond`
   string interx = 5; // must be set to a valid kira address
+  OperatorStatus status = 6;
 }
 
 message DappLeaderDenouncement {
