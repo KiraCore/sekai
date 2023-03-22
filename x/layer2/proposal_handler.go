@@ -111,19 +111,19 @@ func (a ApplyTransitionDappProposalHandler) IsAllowedAddress(ctx sdk.Context, ad
 	if dapp.Name == "" {
 		return false
 	}
-
+	// TODO: probably, dapp transition will need to use raw Messages
 	return a.keeper.IsAllowedAddress(ctx, addr, dapp.Controllers)
 }
 
 func (a ApplyTransitionDappProposalHandler) AllowedAddresses(ctx sdk.Context, proposal govtypes.Content) []string {
 	p := proposal.(*types.ProposalTransitionDapp)
 
-	dapp := a.keeper.GetDapp(ctx, p.DappName)
-	if dapp.Name == "" {
-		return []string{}
+	operators := a.keeper.GetDappOperators(ctx, p.DappName)
+	addrs := []string{}
+	for _, operator := range operators {
+		addrs = append(addrs, operator.Operator)
 	}
-
-	return a.keeper.AllowedAddresses(ctx, dapp.Controllers)
+	return addrs
 }
 
 func (a ApplyTransitionDappProposalHandler) Quorum(ctx sdk.Context, proposal govtypes.Content) uint64 {
@@ -134,7 +134,8 @@ func (a ApplyTransitionDappProposalHandler) Quorum(ctx sdk.Context, proposal gov
 		return 0
 	}
 
-	return dapp.VoteQuorum
+	// TODO: probably, dapp transition will need to use raw Messages
+	return dapp.VerifiersMin
 }
 
 func (a ApplyTransitionDappProposalHandler) VotePeriod(ctx sdk.Context, proposal govtypes.Content) uint64 {
@@ -145,6 +146,7 @@ func (a ApplyTransitionDappProposalHandler) VotePeriod(ctx sdk.Context, proposal
 		return 0
 	}
 
+	// TODO: probably, dapp transition will need to use raw Messages
 	return dapp.VotePeriod
 }
 
@@ -156,6 +158,7 @@ func (a ApplyTransitionDappProposalHandler) VoteEnactment(ctx sdk.Context, propo
 		return 0
 	}
 
+	// TODO: probably, dapp transition will need to use raw Messages
 	return dapp.VoteEnactment
 }
 
@@ -169,6 +172,7 @@ func (a ApplyTransitionDappProposalHandler) Apply(ctx sdk.Context, proposalID ui
 
 	dapp.StatusHash = p.StatusHash
 	a.keeper.SetDapp(ctx, dapp)
+	// TODO: probably, dapp transition will need to use raw Messages
 	return nil
 }
 

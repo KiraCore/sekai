@@ -10,9 +10,10 @@ import "google/protobuf/timestamp.proto";
 enum DappStatus {
   option (gogoproto.goproto_enum_prefix) = false;
 
-  ACTIVE = 0 [ (gogoproto.enumvalue_customname) = "Active" ];
-  PAUSED = 1 [ (gogoproto.enumvalue_customname) = "Paused" ];
-  HALTED = 2 [ (gogoproto.enumvalue_customname) = "Halted" ];
+  BOOTSTRAP = 0 [ (gogoproto.enumvalue_customname) = "Bootstrap" ];
+  ACTIVE = 1 [ (gogoproto.enumvalue_customname) = "Active" ];
+  PAUSED = 2 [ (gogoproto.enumvalue_customname) = "Paused" ];
+  HALTED = 3 [ (gogoproto.enumvalue_customname) = "Halted" ];
 }
 
 message AccountRange {
@@ -44,8 +45,14 @@ message LpPoolConfig {
 
 message IssuranceConfig {
   string deposit = 1; // spending pool id/name or kira address for extra dp deposit
-  uint64 premint = 2; // Amount of dp_<denom> to premint (can not be modified)
-  uint64 postmint = 3; // Amount of dp_<denom> to postmint (can not be modified)
+  string premint = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ]; // Amount of dp_<denom> to premint (can not be modified)
+  string postmint = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ]; // Amount of dp_<denom> to postmint (can not be modified)
   uint64 time = 4; // unix timestamp when to issue postminted dp tokens (can not be modified)
 }
 

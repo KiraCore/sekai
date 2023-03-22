@@ -57,6 +57,7 @@ func (k msgServer) CreateDappProposal(goCtx context.Context, msg *types.MsgCreat
 	// create dapp object
 	msg.Dapp.TotalBond = msg.Bond
 	msg.Dapp.CreationTime = uint64(ctx.BlockTime().Unix())
+	msg.Dapp.Status = types.Bootstrap
 	k.keeper.SetDapp(ctx, msg.Dapp)
 	k.keeper.SetUserDappBond(ctx, types.UserDappBond{
 		DappName: msg.Dapp.Name,
@@ -226,6 +227,37 @@ func (k msgServer) TransferDappTx(goCtx context.Context, msg *types.MsgTransferD
 	return &types.MsgTransferDappTxResponse{}, nil
 }
 
+// TODO:
+// ### c**) Team & Investors Incentives**
+// Here are a few examples of ways in which “issuance” and “pool” configuration parameters can be used:
+// - Fair Launch - no extra tokens issued and all LP coins are immediately unlocked (`pool.drip` set to 0).
+// - User Assisted Launch - LP Spending Pool is configured to slowly distribute LP tokens, the `issuance.premint` is set to
+// a small reasonable amount while the `issuance.postmint` is not used.
+// This enables small teams that need to hire a few developers to establish a token treasury
+// and sell their stake to users that are locked in the LP.
+// - Investor Assisted Launch - LP Spending Pool is configured to slowly distribute LP tokens
+// while premint and postmint enable the creation of treasury and sale of SAFT agreements for large-scale projects.
+// The `issuance.time` parameter can be used to clearly define the time when investor tokens will be issued during the “postmint” event
+// while the `issuance.deposit` address can be set up by the team as a Spending Pool to easily distribute tokens to their
+// rightful owners as well as configure an **optional** “drip” if needed to not scare the LP token holders with an immediate increase of
+// the token supply.
+
+// TODO:
+// ### d**) Optional Execution & Operators Incentives**
+
+// While raising the launch proposal the deployers must provide `executors_min` and `executors_max` parameters that
+// define how many validators are needed to run the dApp. For example in the case of the DEX or a game - one or two validators might be sufficient
+// as executors while in the case of the bridge and MPC it would be expected to see at least 21+ validators collaborating on securing BTC or ETH bridge
+// address with ECDSA TSS or a multisig. While there is a limitation in terms of how many nodes might want to run the code
+// there is no limitation in terms of how many nodes might want to participate in verification (fisherman).
+// To make it worth a while for validators to execute the dApp code we will utilize the dApp LP pool to create those incentives.
+// Besides the impermanent loss, the LP token holders will incur a default `1% fee` on all swaps,
+// deposits, and redemptions configurable in the [Network Properties](https://www.notion.so/de74fe4b731a47df86683f2e9eefa793)
+// as `dapp_pool_fee` parameter.
+// The fixed fee will be applied after the swap from where `50%` of the corresponding tokens must be **burned** (deminted),
+// `25%` given as a reward to liquidity providers and the remaining `25%` will be split between **ACTIVE** dApp executors, and verifiers (fisherman).
+// Additionally, the premint and postmint tokens can be used to incentivize operators before dApp starts to generate revenue.
+
 func (k msgServer) RedeemDappPoolTx(goCtx context.Context, msg *types.MsgRedeemDappPoolTx) (*types.MsgRedeemDappPoolTxResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	_ = ctx
@@ -236,6 +268,24 @@ func (k msgServer) RedeemDappPoolTx(goCtx context.Context, msg *types.MsgRedeemD
 func (k msgServer) SwapDappPoolTx(goCtx context.Context, msg *types.MsgSwapDappPoolTx) (*types.MsgSwapDappPoolTxResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	_ = ctx
+
+	dapp := k.keeper.GetDapp(ctx, msg.DappName)
+	if dapp.Name != "" {
+		return nil, types.ErrDappDoesNotExist
+	}
+
+	// TODO: Uniswap v2 like pool implementation
+	// dapp.TotalBond
+	// dapp.Pool.Ratio
+	// dapp.Issurance.Deposit
+	// dapp.Issurance.Premint
+	// dapp.Issurance.Postmint
+	// dapp.Issurance.Time
+
+	// TODO: If the KEX collateral in the pool falls below dapp_liquidation_threshold (by default set to 100’000 KEX)
+	// then the dApp will enter a depreciation phase lasting dapp_liquidation_period (by default set to 2419200, that is ~28d)
+	// after which the execution will be stopped.
+	// On uniswap pool, people will be able to buy some LP tokens?
 
 	return &types.MsgSwapDappPoolTxResponse{}, nil
 }
@@ -274,6 +324,11 @@ func (k msgServer) MintBurnTx(goCtx context.Context, msg *types.MsgMintBurnTx) (
 
 	return &types.MsgMintBurnTxResponse{}, nil
 }
+
+// TODO: implement - step1
+// Until when the Dapp start the session?
+// Should it be by governance?
+// Or until when, should wait for operators to join?
 
 // TODO: implement - step2
 //   rpc RedeemDappPoolTx(MsgRedeemDappPoolTx) returns (MsgRedeemDappPoolTxResponse);
