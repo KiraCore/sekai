@@ -36,14 +36,14 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 					})
 				}
 
-				dappBondLpToken := fmt.Sprintf("lp_%s", dapp.Name)
+				dappBondLpToken := dapp.LpToken()
 				err := sdk.ValidateDenom(dappBondLpToken)
 				if err != nil {
 					continue
 				}
 
-				spendingPoolDeposit := dapp.TotalBond.Amount.ToDec().Mul(dapp.Pool.Ratio).RoundInt()
-				totalSupply := spendingPoolDeposit.Add(dapp.Issurance.Postmint).Add(dapp.Issurance.Premint)
+				spendingPoolDeposit := dapp.GetSpendingPoolLpDeposit()
+				totalSupply := dapp.GetLpTokenSupply()
 				drip := dapp.Pool.Drip
 				if drip == 0 {
 					drip = 1

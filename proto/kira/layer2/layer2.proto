@@ -98,8 +98,16 @@ enum OperatorStatus {
 
   OPERATOR_ACTIVE = 0 [ (gogoproto.enumvalue_customname) = "OperatorActive" ];
   OPERATOR_PAUSED = 1 [ (gogoproto.enumvalue_customname) = "OperatorPaused" ];
-  OPERATOR_DEACTIVATED = 2 [ (gogoproto.enumvalue_customname) = "OperatorDeactivatived" ];
+  OPERATOR_INACTIVE = 2 [ (gogoproto.enumvalue_customname) = "OperatorInactive" ];
+  OPERATOR_EXITING = 3 [ (gogoproto.enumvalue_customname) = "OperatorExiting" ];
+  OPERATOR_JAILED = 4 [ (gogoproto.enumvalue_customname) = "OperatorJailed" ];
 }
+
+// - `active` - the operator is active and ready to run the application
+// - `paused` - the operator is signaling that he is not ready and needs some time for maintenance and is now omitted until his internal issues are resolved. The paused status is also a default status of every operator immediately after being approved to execute or verify the application.
+// - `inactive` - executor missed his dApp session round too many times and is now omitted until his internal issues are resolved
+// - `exiting` - the operator decided to stop running the dApp and is leaving the set of dApp operators completely
+// - `jailed` - verifiers reported that executor published an invalid dApp state or if the verifier is jailed it means that he reported dApp to execute incorrectly and his stake must be slashed. Jailed verifiers can’t be unjailed.
 
 message DappOperator {
   string dapp_name = 1;
@@ -108,6 +116,8 @@ message DappOperator {
   bool verifier = 4; // can be set by anyone, sending this tx does not require any approvals however requires a bond in `lp_<denom>` tokens no less than `dapp_verifier_bond`
   string interx = 5; // must be set to a valid kira address
   OperatorStatus status = 6;
+  int64 rank = 7;
+  int64 streak = 8;
 }
 
 message DappLeaderDenouncement {

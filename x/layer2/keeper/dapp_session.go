@@ -57,3 +57,32 @@ func (k Keeper) GetAllDappSessions(ctx sdk.Context) []types.DappSession {
 	}
 	return sessions
 }
+
+func (k Keeper) CreateNewSession(ctx sdk.Context, name string, prevLeader string) {
+	leader := ""
+	executors := k.GetDappExecutors(ctx, name)
+	if len(executors) > 0 {
+		leader = executors[0].Interx
+		for index, executor := range executors {
+			if executor.Interx == prevLeader {
+				leader = executors[(index+1)%len(executors)].Interx
+			}
+		}
+	}
+	k.SetDappSession(ctx, types.DappSession{
+		DappName:   name,
+		Leader:     leader,
+		Start:      uint64(ctx.BlockTime().Unix()),
+		StatusHash: "",
+		Status:     types.Unscheduled,
+		// Unscheduled
+		// Scheduled
+		// Ongoing
+	})
+
+	// TODO: remove operators exiting when session ends
+	// k.keeper.DeleteDappOperator(ctx, msg.DappName, msg.Sender)
+	// TODO: If the operator leaving the dApp was a verifier then
+	// as the result of the exit tx his LP tokens bond should be returned once the record is deleted.
+	// The bond can only be claimed if and only if the status didn’t change to jailed in the meantime.
+}

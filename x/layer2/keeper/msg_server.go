@@ -143,7 +143,16 @@ func (k msgServer) ExitDapp(goCtx context.Context, msg *types.MsgExitDapp) (*typ
 	if operator.DappName == "" {
 		return nil, types.ErrNotDappOperator
 	}
-	k.keeper.DeleteDappOperator(ctx, msg.DappName, msg.Sender)
+
+	if operator.Status == types.OperatorJailed {
+		return nil, types.ErrOperatorJailed
+	}
+	if operator.Status == types.OperatorExiting {
+		return nil, types.ErrOperatorAlreadyExiting
+	}
+
+	operator.Status = types.OperatorExiting
+	k.keeper.SetDappOperator(ctx, operator)
 
 	return &types.MsgExitDappResponse{}, nil
 }
@@ -159,6 +168,10 @@ func (k msgServer) PauseDappTx(goCtx context.Context, msg *types.MsgPauseDappTx)
 	}
 	operator.Status = types.OperatorPaused
 	k.keeper.SetDappOperator(ctx, operator)
+
+	// TODO: if the validator status changes to paused, inactive or jailed then his executor status for ALL dApps should
+	// also change to the same paused, inactive or jailed status so that all other executors can be informed that
+	// a specific node operator is not available and will miss his execution round.
 
 	return &types.MsgPauseDappTxResponse{}, nil
 }
@@ -184,8 +197,8 @@ func (k msgServer) ReactivateDappTx(goCtx context.Context, msg *types.MsgReactiv
 	if operator.DappName == "" {
 		return nil, types.ErrNotDappOperator
 	}
-	if operator.Status != types.OperatorDeactivatived {
-		return nil, types.ErrDappOperatorNotDeactivated
+	if operator.Status != types.OperatorInactive {
+		return nil, types.ErrDappOperatorNotInActive
 	}
 	operator.Status = types.OperatorActive
 	k.keeper.SetDappOperator(ctx, operator)
