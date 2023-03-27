@@ -82,13 +82,16 @@ sendTokens validator "$ACCOUNT5_ADDRESS" 1000000000000 ukex 100 ukex
   # Add custodians test double SHA protection --->
   TESTER1_BALANCE_EXPECTED=$(($TESTER1_BALANCE_EXPECTED - 150)) # -150 fee
 
-  addCustodians tester1 "$INPUT_CUSTODIANS" 150 ukex $KEY1 $KEY21
+  addCustodiansForce tester1 "$INPUT_CUSTODIANS" 1 ukex $KEY1 $KEY21
+  addCustodiansForce tester1 "$INPUT_CUSTODIANS" 2 ukex $KEY1 $KEY31
+
+  sleep 10
 
   TESTER1_BALANCE_REAL=$(showBalance tester1 ukex)
   CUSTODY_KEY2=$(getCustodyKey tester1)
 
   [ "$TESTER1_BALANCE_EXPECTED" != "$TESTER1_BALANCE_REAL" ] && echoErr "ERROR TEST 2/2: Expected tester1 account balance to be '$TESTER1_BALANCE_EXPECTED', but got '$TESTER1_BALANCE_REAL'" && exit 1
-  [ "$CUSTODY_KEY2" != $KEY21 ] && echoErr "ERROR TEST 2/2: Expected key to be $KEY21, but got '$CUSTODY_KEY2'" && exit 1
+  [ "$CUSTODY_KEY2" != $KEY21 ] && echoErr "ERROR TEST 2/2: Expected key1 to be $KEY21, but got '$CUSTODY_KEY2'" && exit 1
   # <--- Add custodians test double SHA protection
 
   # TEST 2/3
