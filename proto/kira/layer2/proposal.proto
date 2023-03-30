@@ -1,0 +1,34 @@
+syntax = "proto3";
+package kira.layer2;
+
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
+import "kira/layer2/layer2.proto";
+
+option go_package = "github.com/KiraCore/sekai/x/layer2/types";
+
+// Allows joining applications as executor or fisherman. By default all
+// executors are also verifiers so it should not be possible to set both
+// executor and verifier flags to true at the same time. This tx MUST also allow
+// to define or update a globally unique INTERX address that will be tasked with
+// operating the application. Tx should also fail if someone already joined
+// application and is applying for a different role, in other words all
+// operators must be unique for each dApp although different applications can
+// have the same operators.
+message ProposalJoinDapp {
+  option (cosmos_proto.implements_interface) = "Content";
+  option (gogoproto.equal) = true;
+
+  string sender = 1;
+  string dapp_name = 2;
+  bool executor = 3; // can only be set by validators, raises proposal that controllers must approve
+  bool verifier = 4; // can be set by anyone, sending this tx does not require any approvals however requires a bond in `lp_<denom>` tokens no less than `dapp_verifier_bond`
+  string interx = 5; // must be set to a valid kira address
+}
+
+// can only be sent by the dApp controllers, allowing to upgrade binaries,
+// controlled and modify all other properties
+message ProposalUpsertDapp {
+  string sender = 1;
+  Dapp dapp = 2 [ (gogoproto.nullable) = false ];
+}

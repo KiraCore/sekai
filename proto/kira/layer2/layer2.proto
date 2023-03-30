@@ -1,0 +1,164 @@
+syntax = "proto3";
+package kira.layer2;
+
+option go_package = "github.com/KiraCore/sekai/x/layer2/types";
+option (gogoproto.equal_all) = true;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+
+enum DappStatus {
+  option (gogoproto.goproto_enum_prefix) = false;
+
+  BOOTSTRAP = 0 [ (gogoproto.enumvalue_customname) = "Bootstrap" ];
+  ACTIVE = 1 [ (gogoproto.enumvalue_customname) = "Active" ];
+  PAUSED = 2 [ (gogoproto.enumvalue_customname) = "Paused" ];
+  HALTED = 3 [ (gogoproto.enumvalue_customname) = "Halted" ];
+}
+
+message AccountRange {
+  repeated string addresses = 1;
+  repeated uint64 roles = 2;
+}
+
+message Controllers {
+  AccountRange whitelist = 1 [ (gogoproto.nullable) = false ];
+  AccountRange blacklist = 2 [ (gogoproto.nullable) = false ];
+}
+
+message BinaryInfo {
+  string name = 1; // filename identifying source such as container, executable, config, finality gadget, etc.
+  string hash = 2; // hash of the file
+  string source = 3; // link to the source (from where the file should be fetched)
+  string reference = 4; // link to github repository or audit
+  string type = 5; // optional file type, e.g. binary, archive, text, image, etc.
+}
+
+message LpPoolConfig {
+  string ratio = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ]; // amount of dp_<denom> to be issued per each 1 KEX contributed
+  string deposit = 2; // spending pool id/name from where lp coins can be claimed
+  uint64 drip = 3; // time over which tokens should be distributed (can not be modified)
+}
+
+message IssuranceConfig {
+  string deposit = 1; // spending pool id/name or kira address for extra dp deposit
+  string premint = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ]; // Amount of dp_<denom> to premint (can not be modified)
+  string postmint = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ]; // Amount of dp_<denom> to postmint (can not be modified)
+  uint64 time = 4; // unix timestamp when to issue postminted dp tokens (can not be modified)
+}
+
+message Dapp {
+  string name = 1; // application name, must be globally unique and follow the same safety rules as usernames & validator moniker (can NOT be changed)
+  string denom = 2; // native dApp token denom substring, min 3 and max 8 lowercase alphabetic characters only (a-z)
+  string description = 3; // short description of the dApp, max 512 characters.
+  string website = 4; // official website/info about dApp, max 128 characters.
+  string logo = 5;    // dapp logo url/cid
+  string social = 6;  // comma separated list of official social media urls
+  string docs = 7;    // url to the resources documenting dApp operation
+  Controllers controllers = 8 [ (gogoproto.nullable) = false ]; // list of dApp owners, who can curate the execution record
+  repeated BinaryInfo bin = 9 [ (gogoproto.nullable) = false ]; // array of files & their details essential for launching the dApp
+  LpPoolConfig pool = 10 [ (gogoproto.nullable) = false ]; // lp pool configuration (can not be modified)
+  IssuranceConfig issurance = 11 [ (gogoproto.nullable) = false ]; // extra dApp (dp) token issuance configuration
+  uint64 update_time_max = 12; // maximum time the dApp leader has to update his session (can be no more then 86400 - 24h)
+  uint64 executors_min = 13; // minimum number of validators that will be executing the dApp code (default 1)
+  uint64 executors_max = 14; // maximum number of validators that will be executing the dApp code (default 21)
+  uint64 verifiers_min = 15; // minimum number of nodes that must approve dApp state change
+  string total_bond = 16 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ]; // total bonds put on the dapp
+  uint64 creation_time = 17; // dapp creation time
+  DappStatus status = 18; // dapp status
+  uint64 vote_quorum = 19; // percentage - default: 51%, collective-specific % of owner accounts that must vote YES or NO for any of the collective proposals to be valid
+  uint64 vote_period = 20; // seconds - default: 600s, period of time in seconds that any of the collective proposals must last before passing or being rejected
+  uint64 vote_enactment = 21; // seconds - default: 300s, period of time that must pass before any of the collective proposals is enacted
+}
+
+message UserDappBond {
+  string user = 1;
+  string dapp_name = 2;
+  string bond = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
+}
+
+enum OperatorStatus {
+  option (gogoproto.goproto_enum_prefix) = false;
+
+  OPERATOR_ACTIVE = 0 [ (gogoproto.enumvalue_customname) = "OperatorActive" ];
+  OPERATOR_PAUSED = 1 [ (gogoproto.enumvalue_customname) = "OperatorPaused" ];
+  OPERATOR_INACTIVE = 2 [ (gogoproto.enumvalue_customname) = "OperatorInactive" ];
+  OPERATOR_EXITING = 3 [ (gogoproto.enumvalue_customname) = "OperatorExiting" ];
+  OPERATOR_JAILED = 4 [ (gogoproto.enumvalue_customname) = "OperatorJailed" ];
+}
+
+// - `active` - the operator is active and ready to run the application
+// - `paused` - the operator is signaling that he is not ready and needs some time for maintenance and is now omitted until his internal issues are resolved. The paused status is also a default status of every operator immediately after being approved to execute or verify the application.
+// - `inactive` - executor missed his dApp session round too many times and is now omitted until his internal issues are resolved
+// - `exiting` - the operator decided to stop running the dApp and is leaving the set of dApp operators completely
+// - `jailed` - verifiers reported that executor published an invalid dApp state or if the verifier is jailed it means that he reported dApp to execute incorrectly and his stake must be slashed. Jailed verifiers can’t be unjailed.
+
+message DappOperator {
+  string dapp_name = 1;
+  string operator = 2;
+  bool executor = 3; // can only be set by validators, raises proposal that controllers must approve
+  bool verifier = 4; // can be set by anyone, sending this tx does not require any approvals however requires a bond in `lp_<denom>` tokens no less than `dapp_verifier_bond`
+  string interx = 5; // must be set to a valid kira address
+  OperatorStatus status = 6;
+  int64 rank = 7;
+  int64 streak = 8;
+  string bonded_lp_amount = 9 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message DappLeaderDenouncement {
+  string dapp_name = 1;
+  string leader = 2;
+  string sender = 3;
+  string denouncement = 4;
+}
+
+enum SessionStatus {
+  option (gogoproto.goproto_enum_prefix) = false;
+
+  SESSION_UNSCHEDULED = 0 [ (gogoproto.enumvalue_customname) = "SessionUnscheduled" ];
+  SESSION_SCHEDULED = 1 [ (gogoproto.enumvalue_customname) = "SessionScheduled" ];
+  SESSION_ONGOING = 2 [ (gogoproto.enumvalue_customname) = "SessionOngoing" ];
+  SESSION_ACCEPTED = 3 [ (gogoproto.enumvalue_customname) = "SessionAccepted" ];
+  SESSION_DENOUNCED = 4 [ (gogoproto.enumvalue_customname) = "SessionDenounced" ];
+  SESSION_HALTED = 5 [ (gogoproto.enumvalue_customname) = "SessionHalted" ];
+  SESSION_FAILED = 6 [ (gogoproto.enumvalue_customname) = "SessionFailed" ];
+}
+
+message DappSession {
+  string leader = 1;
+  uint64 start = 2;
+  string status_hash = 3;
+  SessionStatus status = 4;
+  string gateway = 5;
+}
+
+message DappSessionApproval {
+  string dapp_name = 1;
+  string approver = 2;
+  bool is_approved = 3;
+}
+
+message ExecutionRegistrar {
+  string dapp_name = 1;
+  DappSession prev_session = 2; // a session that was completed and caused changes to the blockchain
+  DappSession curr_session = 3; // a session that is currently ongoing or was just finalized but is NOT a part of the changes applied to the blockchain state
+  DappSession next_session = 4; // a session that is about to begin after the current session ended
+}
