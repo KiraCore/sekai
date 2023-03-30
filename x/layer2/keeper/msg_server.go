@@ -372,6 +372,12 @@ func (k msgServer) RejectDappTransitionTx(goCtx context.Context, msg *types.MsgR
 	session.CurrSession.Status = types.SessionHalted
 	k.keeper.SetDappSession(ctx, session)
 
+	k.keeper.SetDappSessionApproval(ctx, types.DappSessionApproval{
+		DappName:   msg.DappName,
+		Approver:   msg.Sender,
+		IsApproved: true,
+	})
+
 	return &types.MsgRejectDappTransitionTxResponse{}, nil
 }
 

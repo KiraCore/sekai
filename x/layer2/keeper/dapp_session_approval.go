@@ -16,9 +16,9 @@ func (k Keeper) DeleteDappSessionApproval(ctx sdk.Context, name, session string)
 	store.Delete(types.DappSessionApprovalKey(name, session))
 }
 
-func (k Keeper) GetDappSessionApproval(ctx sdk.Context, name, session string) types.DappSessionApproval {
+func (k Keeper) GetDappSessionApproval(ctx sdk.Context, name, verifier string) types.DappSessionApproval {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.DappSessionApprovalKey(name, session))
+	bz := store.Get(types.DappSessionApprovalKey(name, verifier))
 	if bz == nil {
 		return types.DappSessionApproval{}
 	}

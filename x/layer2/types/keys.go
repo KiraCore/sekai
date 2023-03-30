@@ -40,8 +40,8 @@ func ExecutionRegistrarKey(dappName string) []byte {
 	return append(PrefixDappSessionKey, dappName...)
 }
 
-func DappSessionApprovalKey(dappName string, leader string) []byte {
-	return append(append(PrefixDappSessionApprovalKey, dappName...), leader...)
+func DappSessionApprovalKey(dappName string, verifier string) []byte {
+	return append(append(PrefixDappSessionApprovalKey, dappName...), verifier...)
 }
 
 func DappLeaderDenouncementKey(dappName string, leader string, sender string) []byte {
