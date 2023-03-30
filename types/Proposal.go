@@ -41,6 +41,10 @@ const (
 	ProposalTypeCollectiveSendDonation = "CollectiveSendDonation"
 	ProposalTypeCollectiveUpdate       = "CollectiveUpdate"
 	ProposalTypeCollectiveRemove       = "CollectiveRemove"
+
+	ProposalTypeJoinDapp       = "JoinDapp"
+	ProposalTypeTransitionDapp = "TransitionDapp"
+	ProposalTypeUpsertDapp     = "UpsertDapp"
 )
 
 var AllProposalTypes []string = []string{

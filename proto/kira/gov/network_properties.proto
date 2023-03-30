@@ -61,6 +61,11 @@ enum NetworkProperty {
     MAX_PROPOSAL_POLL_OPTION_COUNT = 43 [(gogoproto.enumvalue_customname) = "MaxProposalPollOptionCount"]; // maximum poll option count
     MAX_PROPOSAL_REFERENCE_SIZE = 44 [(gogoproto.enumvalue_customname) = "MaxProposalReferenceSize"]; // maximum poll reference size
     MAX_PROPOSAL_CHECKSUM_SIZE = 45 [(gogoproto.enumvalue_customname) = "MaxProposalChecksumSize"]; // maximum poll checksum size
+    MIN_DAPP_BOND = 46 [(gogoproto.enumvalue_customname) = "MinDappBond"]; // default 1’000’000 KEX
+    MAX_DAPP_BOND = 47 [(gogoproto.enumvalue_customname) = "MaxDappBond"]; // default 10’000’000 KEX
+    DAPP_BOND_DURATION = 48 [(gogoproto.enumvalue_customname) = "DappBondDuration"]; // default 7d - 604800s
+    DAPP_VERIFIER_BOND = 49 [(gogoproto.enumvalue_customname) = "DappVerifierBond"]; // percentage of lp token supply to be put to be the verifier of the dapp by default 0.1%
+    DAPP_AUTO_DENOUNCE_TIME = 50 [(gogoproto.enumvalue_customname) = "DappAutoDenounceTime"]; // in seconds (default 60), time the dapp leader allowed to send `execute-dapp-tx`
 }
 
 message NetworkPropertyValue {
@@ -135,4 +140,12 @@ message NetworkProperties {
     uint64 max_proposal_poll_option_count = 44; // maximum possible choices in the proposal
     uint64 max_proposal_reference_size = 45; // maximum reference size in the proposal
     uint64 max_proposal_checksum_size = 46; // maximum checksum size in the proposal
+    uint64 min_dapp_bond = 47;                   // default 1’000’000 KEX
+    uint64 max_dapp_bond = 48;                   // default 10’000’000 KEX
+    uint64 dapp_bond_duration = 49;              // default 7d - 604800s
+    string dapp_verifier_bond = 50 [
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+      (gogoproto.nullable) = false
+    ]; // percentage of lp token supply to be put to be the verifier of the dapp by default 0.1%
+    uint64 dapp_auto_denounce_time = 51; // in seconds (default 60), time the dapp leader allowed to send `execute-dapp-tx`
 }
