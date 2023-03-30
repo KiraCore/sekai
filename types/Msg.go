@@ -105,6 +105,32 @@ const (
 	MsgTypeBondCollective     = "bond-collective"
 	MsgTypeDonateCollective   = "donate-collective"
 	MsgTypeWithdrawCollective = "withdraw-collective"
+
+	// layer2 module
+	MsgTypeCreateDappProposal       = "create-dapp-proposal"
+	MsgTypeBondDappProposal         = "bond-dapp-proposal"
+	MsgTypeReclaimDappBondProposal  = "reclaim-dapp-bond-proposal"
+	MsgTypeJoinDappVerifierWithBond = "join-dapp-verifier-with-bond"
+	MsgTypeExitDapp                 = "exit-dapp"
+	MsgTypeVoteDappOperatorTx       = "vote-dapp-operator-tx"
+	MsgTypeRedeemDappPoolTx         = "redeem-dapp-pool-tx"
+	MsgTypeSwapDappPoolTx           = "swap-dapp-pool-tx"
+	MsgTypeConvertDappPoolTx        = "convert-dapp-pool-tx"
+	MsgTypePauseDappTx              = "pause-dapp-tx"
+	MsgTypeUnPauseDappTx            = "unpause-dapp-tx"
+	MsgTypeReactivateDappTx         = "reactivate-dapp-tx"
+	MsgTypeExecuteDappTx            = "execute-dapp-tx"
+	MsgTypeDenounceLeaderTx         = "denounce-leader-tx"
+	MsgTypeTransitionDappTx         = "transition-dapp-tx"
+	MsgTypeApproveDappTransitionTx  = "approve-dapp-transition-tx"
+	MsgTypeRejectDappTransitionTx   = "reject-dapp-transition-tx"
+	MsgTypeUpsertDappProposalTx     = "upsert-dapp-proposal-tx"
+	MsgTypeVoteUpsertDappProposalTx = "vote-upsert-dapp-proposal-tx"
+	MsgTypeTransferDappTx           = "transfer-dapp-tx"
+	MsgTypeMintCreateFtTx           = "mint-create-ft-tx"
+	MsgTypeMintCreateNftTx          = "mint-create-nft-tx"
+	MsgTypeMintIssueTx              = "mint-issue-tx"
+	MsgTypeMintBurnTx               = "mint-burn-tx"
 )
 
 // Msg defines the interface a transaction message must fulfill.

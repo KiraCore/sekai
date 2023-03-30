@@ -329,7 +329,10 @@ func (m *SetNetworkPropertyProposal) ValidateBasic() error {
 		MaxCollectiveOutputs,
 		MinCollectiveClaimPeriod,
 		ValidatorRecoveryBond,
-		MaxAnnualInflation:
+		MaxAnnualInflation,
+		MinDappBond,
+		MaxDappBond,
+		DappBondDuration:
 		return nil
 	default:
 		return ErrInvalidNetworkProperty

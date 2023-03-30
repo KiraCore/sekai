@@ -223,4 +223,7 @@ enum PermValue {
 
   // PERMISSION_CREATE_POLL_PROPOSAL defines the permission needed to create a poll proposal.
   PERMISSION_CREATE_POLL_PROPOSAL = 66 [(gogoproto.enumvalue_customname) = "PermCreatePollProposal"];
+
+  // PERMISSION_CREATE_DAPP_PROPOSAL_WITHOUT_BOND defines the permission needed to create a dapp proposal without bond
+  PERMISSION_CREATE_DAPP_PROPOSAL_WITHOUT_BOND = 67 [(gogoproto.enumvalue_customname) = "PermCreateDappProposalWithoutBond"];
 }
