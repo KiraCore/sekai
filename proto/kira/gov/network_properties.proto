@@ -65,6 +65,7 @@ enum NetworkProperty {
     MAX_DAPP_BOND = 47 [(gogoproto.enumvalue_customname) = "MaxDappBond"]; // default 10’000’000 KEX
     DAPP_BOND_DURATION = 48 [(gogoproto.enumvalue_customname) = "DappBondDuration"]; // default 7d - 604800s
     DAPP_VERIFIER_BOND = 49 [(gogoproto.enumvalue_customname) = "DappVerifierBond"]; // percentage of lp token supply to be put to be the verifier of the dapp by default 0.1%
+    DAPP_AUTO_DENOUNCE_TIME = 50; // in seconds (default 60), time the dapp leader allowed to send `execute-dapp-tx`
 }
 
 message NetworkPropertyValue {
@@ -146,4 +147,5 @@ message NetworkProperties {
       (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
       (gogoproto.nullable) = false
     ]; // percentage of lp token supply to be put to be the verifier of the dapp by default 0.1%
+    uint64 dapp_auto_denounce_time = 51; // in seconds (default 60), time the dapp leader allowed to send `execute-dapp-tx`
 }

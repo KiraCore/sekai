@@ -26,15 +26,6 @@ message ProposalJoinDapp {
   string interx = 5; // must be set to a valid kira address
 }
 
-// update CURRENT session state (can only be sent by current session leader),
-// this tx MUST include dApp version.
-message ProposalTransitionDapp {
-  string sender = 1;
-  string dapp_name = 2;
-  string status_hash = 3;
-  string version = 4;
-}
-
 // can only be sent by the dApp controllers, allowing to upgrade binaries,
 // controlled and modify all other properties
 message ProposalUpsertDapp {

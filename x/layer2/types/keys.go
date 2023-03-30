@@ -36,7 +36,7 @@ func DappOperatorKey(dappName string, operator string) []byte {
 	return append(append(PrefixDappOperatorKey, dappName...), operator...)
 }
 
-func DappSessionKey(dappName string) []byte {
+func ExecutionRegistrarKey(dappName string) []byte {
 	return append(PrefixDappSessionKey, dappName...)
 }
 

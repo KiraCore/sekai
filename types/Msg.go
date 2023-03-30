@@ -110,7 +110,7 @@ const (
 	MsgTypeCreateDappProposal       = "create-dapp-proposal"
 	MsgTypeBondDappProposal         = "bond-dapp-proposal"
 	MsgTypeReclaimDappBondProposal  = "reclaim-dapp-bond-proposal"
-	MsgTypeJoinDappTx               = "join-dapp-tx"
+	MsgTypeJoinDappVerifierWithBond = "join-dapp-verifier-with-bond"
 	MsgTypeExitDapp                 = "exit-dapp"
 	MsgTypeVoteDappOperatorTx       = "vote-dapp-operator-tx"
 	MsgTypeRedeemDappPoolTx         = "redeem-dapp-pool-tx"

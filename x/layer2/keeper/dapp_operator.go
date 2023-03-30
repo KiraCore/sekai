@@ -54,6 +54,17 @@ func (k Keeper) GetDappExecutors(ctx sdk.Context, name string) []types.DappOpera
 	return executors
 }
 
+func (k Keeper) GetDappVerifiers(ctx sdk.Context, name string) []types.DappOperator {
+	operators := k.GetDappOperators(ctx, name)
+	verifiers := []types.DappOperator{}
+	for _, operator := range operators {
+		if operator.Verifier {
+			verifiers = append(verifiers, operator)
+		}
+	}
+	return verifiers
+}
+
 func (k Keeper) GetAllDappOperators(ctx sdk.Context) []types.DappOperator {
 	store := ctx.KVStore(k.storeKey)
 
@@ -75,56 +86,33 @@ func (k Keeper) ExecuteJoinDappProposal(ctx sdk.Context, p *types.ProposalJoinDa
 		return types.ErrDappDoesNotExist
 	}
 
-	if p.Verifier {
-		properties := k.gk.GetNetworkProperties(ctx)
-		verifierBond := properties.DappVerifierBond
-		totalSupply := dapp.GetLpTokenSupply()
-		dappBondLpToken := dapp.LpToken()
-		verifierBondCoins := sdk.NewCoins(sdk.NewCoin(dappBondLpToken, totalSupply.ToDec().Mul(verifierBond).RoundInt()))
-		addr := sdk.MustAccAddressFromBech32(p.Interx)
-		if verifierBondCoins.IsAllPositive() {
-			err := k.bk.SendCoinsFromAccountToModule(ctx, addr, types.ModuleName, verifierBondCoins)
-			if err != nil {
-				return err
-			}
-		}
-	}
-
 	if p.Executor {
 		// TODO: ensure executor is a validator
-
 		executors := k.GetDappExecutors(ctx, p.DappName)
 		if len(executors) >= int(dapp.ExecutorsMax) {
 			return types.ErrNumberOfOperatorsExceedsExecutorsMax
 		}
-
-		k.SetDappOperator(ctx, types.DappOperator{
-			DappName: p.DappName,
-			Operator: p.Sender,
-			Executor: p.Executor,
-			Verifier: p.Verifier,
-			Interx:   p.Interx,
-			Status:   types.OperatorActive,
-		})
-
-		// when executors_min reaches, session is created
-		executors = k.GetDappExecutors(ctx, p.DappName)
-		if len(executors) >= int(dapp.ExecutorsMin) && len(executors) >= 1 {
-			session := k.GetDappSession(ctx, p.DappName)
-			if session.DappName == "" {
-				k.CreateNewSession(ctx, p.DappName, "")
-			}
-		}
-		return nil
 	}
 
 	k.SetDappOperator(ctx, types.DappOperator{
-		DappName: p.DappName,
-		Operator: p.Sender,
-		Executor: p.Executor,
-		Verifier: p.Verifier,
-		Interx:   p.Interx,
-		Status:   types.OperatorActive,
+		DappName:       p.DappName,
+		Operator:       p.Sender,
+		Executor:       p.Executor,
+		Verifier:       p.Verifier,
+		Interx:         p.Interx,
+		Status:         types.OperatorActive,
+		BondedLpAmount: sdk.ZeroInt(),
 	})
+
+	// when executors_min reaches, session is created
+	executors := k.GetDappExecutors(ctx, p.DappName)
+	verifiers := k.GetDappVerifiers(ctx, p.DappName)
+	if len(executors) >= int(dapp.ExecutorsMin) && len(executors) >= 1 && len(verifiers) >= int(dapp.VerifiersMin) {
+		session := k.GetDappSession(ctx, p.DappName)
+		if session.DappName == "" {
+			k.CreateNewSession(ctx, p.DappName, "")
+		}
+	}
+
 	return nil
 }

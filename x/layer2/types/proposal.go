@@ -22,23 +22,6 @@ func (m *ProposalJoinDapp) ValidateBasic() error {
 	return nil
 }
 
-func (m *ProposalTransitionDapp) ProposalType() string {
-	return kiratypes.ProposalTypeTransitionDapp
-}
-
-func (m *ProposalTransitionDapp) ProposalPermission() types.PermValue {
-	return types.PermZero
-}
-
-func (m *ProposalTransitionDapp) VotePermission() types.PermValue {
-	return types.PermZero
-}
-
-// ValidateBasic returns basic validation
-func (m *ProposalTransitionDapp) ValidateBasic() error {
-	return nil
-}
-
 func (m *ProposalUpsertDapp) ProposalType() string {
 	return kiratypes.ProposalTypeUpsertDapp
 }

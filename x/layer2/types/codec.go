@@ -19,6 +19,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgCreateDappProposal{},
 		&MsgBondDappProposal{},
 		&MsgReclaimDappBondProposal{},
+		&MsgJoinDappVerifierWithBond{},
 		&MsgExitDapp{},
 		&MsgRedeemDappPoolTx{},
 		&MsgSwapDappPoolTx{},
@@ -28,6 +29,9 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgReactivateDappTx{},
 		&MsgExecuteDappTx{},
 		&MsgDenounceLeaderTx{},
+		&MsgTransitionDappTx{},
+		&MsgApproveDappTransitionTx{},
+		&MsgRejectDappTransitionTx{},
 		&MsgTransferDappTx{},
 		&MsgMintCreateFtTx{},
 		&MsgMintCreateNftTx{},
@@ -39,7 +43,6 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		"kira.gov.Content",
 		(*govtypes.Content)(nil),
 		&ProposalJoinDapp{},
-		&ProposalTransitionDapp{},
 		&ProposalUpsertDapp{},
 	)
 

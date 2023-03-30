@@ -77,11 +77,10 @@ message Dapp {
     (gogoproto.nullable) = false
   ]; // total bonds put on the dapp
   uint64 creation_time = 17; // dapp creation time
-  string status_hash = 18; // dapp status hash
-  DappStatus status = 19; // dapp status
-  uint64 vote_quorum = 20; // percentage - default: 51%, collective-specific % of owner accounts that must vote YES or NO for any of the collective proposals to be valid
-  uint64 vote_period = 21; // seconds - default: 600s, period of time in seconds that any of the collective proposals must last before passing or being rejected
-  uint64 vote_enactment = 22; // seconds - default: 300s, period of time that must pass before any of the collective proposals is enacted
+  DappStatus status = 18; // dapp status
+  uint64 vote_quorum = 19; // percentage - default: 51%, collective-specific % of owner accounts that must vote YES or NO for any of the collective proposals to be valid
+  uint64 vote_period = 20; // seconds - default: 600s, period of time in seconds that any of the collective proposals must last before passing or being rejected
+  uint64 vote_enactment = 21; // seconds - default: 300s, period of time that must pass before any of the collective proposals is enacted
 }
 
 message UserDappBond {
@@ -118,6 +117,10 @@ message DappOperator {
   OperatorStatus status = 6;
   int64 rank = 7;
   int64 streak = 8;
+  string bonded_lp_amount = 9 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
 }
 
 message DappLeaderDenouncement {
@@ -130,21 +133,32 @@ message DappLeaderDenouncement {
 enum SessionStatus {
   option (gogoproto.goproto_enum_prefix) = false;
 
-  UNSCHEDULED = 0 [ (gogoproto.enumvalue_customname) = "Unscheduled" ];
-  SCHEDULED = 1 [ (gogoproto.enumvalue_customname) = "Scheduled" ];
-  ONGOING = 2 [ (gogoproto.enumvalue_customname) = "Ongoing" ];
+  SESSION_UNSCHEDULED = 0 [ (gogoproto.enumvalue_customname) = "SessionUnscheduled" ];
+  SESSION_SCHEDULED = 1 [ (gogoproto.enumvalue_customname) = "SessionScheduled" ];
+  SESSION_ONGOING = 2 [ (gogoproto.enumvalue_customname) = "SessionOngoing" ];
+  SESSION_ACCEPTED = 3 [ (gogoproto.enumvalue_customname) = "SessionAccepted" ];
+  SESSION_DENOUNCED = 4 [ (gogoproto.enumvalue_customname) = "SessionDenounced" ];
+  SESSION_HALTED = 5 [ (gogoproto.enumvalue_customname) = "SessionHalted" ];
+  SESSION_FAILED = 6 [ (gogoproto.enumvalue_customname) = "SessionFailed" ];
 }
 
 message DappSession {
-  string dapp_name = 1;
-  string leader = 2;
-  uint64 start = 3;
-  string status_hash = 4;
-  SessionStatus status = 5;
+  string leader = 1;
+  uint64 start = 2;
+  string status_hash = 3;
+  SessionStatus status = 4;
+  string gateway = 5;
 }
 
 message DappSessionApproval {
   string dapp_name = 1;
   string approver = 2;
   bool is_approved = 3;
+}
+
+message ExecutionRegistrar {
+  string dapp_name = 1;
+  DappSession prev_session = 2; // a session that was completed and caused changes to the blockchain
+  DappSession curr_session = 3; // a session that is currently ongoing or was just finalized but is NOT a part of the changes applied to the blockchain state
+  DappSession next_session = 4; // a session that is about to begin after the current session ended
 }

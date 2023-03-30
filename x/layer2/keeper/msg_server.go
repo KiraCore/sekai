@@ -137,6 +137,47 @@ func (k msgServer) ReclaimDappBondProposal(goCtx context.Context, msg *types.Msg
 	return &types.MsgReclaimDappBondProposalResponse{}, nil
 }
 
+func (k msgServer) JoinDappVerifierWithBond(goCtx context.Context, msg *types.MsgJoinDappVerifierWithBond) (*types.MsgJoinDappVerifierWithBondResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	dapp := k.keeper.GetDapp(ctx, msg.DappName)
+	operator := k.keeper.GetDappOperator(ctx, msg.DappName, msg.Sender)
+	if operator.DappName != "" && operator.Verifier {
+		return nil, types.ErrAlreadyADappVerifier
+	}
+
+	properties := k.keeper.gk.GetNetworkProperties(ctx)
+	verifierBond := properties.DappVerifierBond
+	totalSupply := dapp.GetLpTokenSupply()
+	dappBondLpToken := dapp.LpToken()
+	lpTokenAmount := totalSupply.ToDec().Mul(verifierBond).RoundInt()
+	verifierBondCoins := sdk.NewCoins(sdk.NewCoin(dappBondLpToken, lpTokenAmount))
+	addr := sdk.MustAccAddressFromBech32(msg.Interx)
+	if verifierBondCoins.IsAllPositive() {
+		err := k.keeper.bk.SendCoinsFromAccountToModule(ctx, addr, types.ModuleName, verifierBondCoins)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if operator.DappName == "" {
+		operator = types.DappOperator{
+			DappName:       msg.DappName,
+			Interx:         msg.Interx,
+			Operator:       msg.Sender,
+			Executor:       false,
+			Verifier:       true,
+			Status:         types.OperatorActive,
+			BondedLpAmount: lpTokenAmount,
+		}
+	} else {
+		operator.Verifier = true
+		operator.BondedLpAmount = lpTokenAmount
+	}
+	k.keeper.SetDappOperator(ctx, operator)
+	return &types.MsgJoinDappVerifierWithBondResponse{}, nil
+}
+
 func (k msgServer) ExitDapp(goCtx context.Context, msg *types.MsgExitDapp) (*types.MsgExitDappResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	operator := k.keeper.GetDappOperator(ctx, msg.DappName, msg.Sender)
@@ -213,16 +254,50 @@ func (k msgServer) ExecuteDappTx(goCtx context.Context, msg *types.MsgExecuteDap
 		return nil, types.ErrNoDappSessionExists
 	}
 
-	if session.Leader != msg.Sender {
+	if session.NextSession.Leader != msg.Sender {
 		return nil, types.ErrNotDappSessionLeader
 	}
-	session.Status = types.Ongoing
+	session.NextSession.Gateway = msg.Gateway
+	session.NextSession.Status = types.SessionOngoing
+
+	if session.CurrSession == nil {
+		session.CurrSession = session.NextSession
+		k.keeper.CreateNewSession(ctx, msg.DappName, session.CurrSession.Leader)
+	}
 
 	return &types.MsgExecuteDappTxResponse{}, nil
 }
 
+func (k msgServer) TransitionDappTx(goCtx context.Context, msg *types.MsgTransitionDappTx) (*types.MsgTransitionDappTxResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	session := k.keeper.GetDappSession(ctx, msg.DappName)
+	if session.DappName == "" {
+		return nil, types.ErrDappSessionDoesNotExist
+	}
+	session.NextSession.StatusHash = msg.StatusHash
+	k.keeper.SetDappSession(ctx, session)
+
+	return &types.MsgTransitionDappTxResponse{}, nil
+}
+
 func (k msgServer) DenounceLeaderTx(goCtx context.Context, msg *types.MsgDenounceLeaderTx) (*types.MsgDenounceLeaderTxResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	operator := k.keeper.GetDappOperator(ctx, msg.DappName, msg.Sender)
+	if !operator.Verifier {
+		return nil, types.ErrNotDappVerifier
+	}
+
+	session := k.keeper.GetDappSession(ctx, msg.DappName)
+	if session.CurrSession == nil || session.CurrSession.StatusHash == "" {
+		return nil, types.ErrVerificationNotAllowedOnEmptySession
+	}
+	if session.CurrSession.Leader == msg.Sender {
+		return nil, types.ErrLeaderCannotEvaluateSelfSubmission
+	}
+	// TODO: version check on the msg and dapp
+	// TODO: update it to be put on session
 	k.keeper.SetDappLeaderDenouncement(ctx, types.DappLeaderDenouncement{
 		DappName:     msg.DappName,
 		Leader:       msg.Leader,
@@ -231,6 +306,73 @@ func (k msgServer) DenounceLeaderTx(goCtx context.Context, msg *types.MsgDenounc
 	})
 
 	return &types.MsgDenounceLeaderTxResponse{}, nil
+}
+
+func (k msgServer) ApproveDappTransitionTx(goCtx context.Context, msg *types.MsgApproveDappTransitionTx) (*types.MsgApproveDappTransitionTxResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	operator := k.keeper.GetDappOperator(ctx, msg.DappName, msg.Sender)
+	if !operator.Verifier {
+		return nil, types.ErrNotDappVerifier
+	}
+
+	session := k.keeper.GetDappSession(ctx, msg.DappName)
+	if session.CurrSession == nil || session.CurrSession.StatusHash == "" {
+		return nil, types.ErrVerificationNotAllowedOnEmptySession
+	}
+	if session.CurrSession.Leader == msg.Sender {
+		return nil, types.ErrLeaderCannotEvaluateSelfSubmission
+	}
+	// TODO: version check on the msg and dapp
+	k.keeper.SetDappSessionApproval(ctx, types.DappSessionApproval{
+		DappName:   msg.DappName,
+		Approver:   msg.Sender,
+		IsApproved: true,
+	})
+
+	// TODO: check after full implementation
+	// The current session status can change to `accepted` if and only if 2/3 of executors who are NOT a leader send
+	// `approve-dapp-transition-tx` and no verifiers submitted the evidence of faults requesting the application to be halted,
+	// additionally the total number of approvals must be no less then `verifiers_min`.
+	// It might happen that the application will only have a single executor,
+	// meaning that there is always an insufficient number of verifiers to approve the transition.
+	// In such cases where only one executor of the dApp exists, the approval of **NO LESS THAN** 2/3 of ALL active verifiers is required
+	// for the session state to change into `accepted` (the `verifiers_min` rule also applies).
+
+	// if more than 2/3 verify, convert to accepted
+	verifiers := k.keeper.GetDappVerifiers(ctx, msg.DappName)
+	approvals := k.keeper.GetDappSessionApprovals(ctx, msg.DappName)
+	if len(verifiers)*2/3 <= len(approvals) {
+		session.CurrSession.Status = types.SessionAccepted
+		k.keeper.SetDappSession(ctx, session)
+		k.keeper.CreateNewSession(ctx, msg.DappName, session.NextSession.Leader)
+	}
+
+	return &types.MsgApproveDappTransitionTxResponse{}, nil
+}
+
+func (k msgServer) RejectDappTransitionTx(goCtx context.Context, msg *types.MsgRejectDappTransitionTx) (*types.MsgRejectDappTransitionTxResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	operator := k.keeper.GetDappOperator(ctx, msg.DappName, msg.Sender)
+	if !operator.Verifier {
+		return nil, types.ErrNotDappVerifier
+	}
+
+	session := k.keeper.GetDappSession(ctx, msg.DappName)
+	if session.CurrSession.Leader == msg.Sender {
+		return nil, types.ErrLeaderCannotEvaluateSelfSubmission
+	}
+	// TODO: version check on the msg and dapp
+
+	if session.CurrSession == nil || session.CurrSession.StatusHash == "" {
+		return nil, types.ErrVerificationNotAllowedOnEmptySession
+	}
+
+	// halt the session
+	session.CurrSession.Status = types.SessionHalted
+	k.keeper.SetDappSession(ctx, session)
+
+	return &types.MsgRejectDappTransitionTxResponse{}, nil
 }
 
 func (k msgServer) TransferDappTx(goCtx context.Context, msg *types.MsgTransferDappTx) (*types.MsgTransferDappTxResponse, error) {
@@ -337,6 +479,78 @@ func (k msgServer) MintBurnTx(goCtx context.Context, msg *types.MsgMintBurnTx) (
 
 	return &types.MsgMintBurnTxResponse{}, nil
 }
+
+// TODO: handle operator rank/streak to be similar to validator rank/streak calculation
+// For both verifiers and executors, we will utilize dApp performance counters in a similar manner
+// to which we are utilizing validator performance counters to determine “inactive” operators
+// and ranks (the difference is that there is no need for a mischance confidence counter,
+// only mischance alone since sending a verification tx will not be probabilistic like
+// in the case of proposing a block).
+
+// **Performance Counters**
+
+// We will begin by defining the following [Network Properties](https://www.notion.so/de74fe4b731a47df86683f2e9eefa793):
+// `dAppMischanceRankDecreaseAmount`, `dAppMaxMischance`, `dAppInactiveRankDecreasePercent`.
+// The ranking and performance counter system will be based on the dApp session change submission and its verification.
+// If the dApp operator participates in the production of a dApp session (sends session or verification tx) his
+// `rank` and `streak` must be increased by `1` while `mischance` re-set to 0,
+// otherwise in the case of failure to participate the `mischance` counter must be increased by `1`,
+// the `streak` re-set to `0` and `rank` decreased by `dAppMischanceRankDecreaseAmount`.
+// If the dApp operator does not enable maintenance mode by using the `pause-dapp-tx` and the `mischance` counter
+// exceeds `dAppMaxMischance` then his ranks should be slashed by `dAppInactiveRankDecreasePercent`.
+// Alongside `rank`, `streak`, and `mischance` we also need to include `verified_sessions_counter` increased by `1`
+//  every time the verifier or executor submits verification tx,  `created_sessions_counter` every time the executor
+//  proposed a new session, and `missed_sessions_counter` whenever verification was missed by the verifier or executor.
+// All the performance counter values must be positive integers, meaning ranks can’t be negative and the smallest possible rank
+// will be `0`.
+
+// 	properties := k.gk.GetNetworkProperties(ctx)
+//     // Update uptime counter
+//     missed := !signed
+//     if missed { // increment counter
+//         signInfo.MissedBlocksCounter++
+//         // increment mischance only when missed blocks are bigger than mischance confidence
+//         if signInfo.MischanceConfidence >= int64(properties.MischanceConfidence) {
+//             signInfo.Mischance++
+//         } else {
+//             signInfo.MischanceConfidence++
+//         }
+//     } else { // set counter to 0
+//         signInfo.Mischance = 0
+//         signInfo.MischanceConfidence = 0
+//         signInfo.ProducedBlocksCounter++
+//         signInfo.LastPresentBlock = ctx.BlockHeight()
+//     }
+
+//     // handle staking module's validator object update actions
+//     k.sk.HandleValidatorSignature(ctx, validator.ValKey, missed, signInfo.Mischance)
+
+//     // HandleValidatorSignature manage rank and streak by block miss / sign result
+// func (k Keeper) HandleValidatorSignature(ctx sdk.Context, valAddress sdk.ValAddress, missed bool, mischance int64) error {
+//     validator, err := k.GetValidator(ctx, valAddress)
+//     if err != nil {
+//         return err
+//     }
+//     networkProperties := k.govkeeper.GetNetworkProperties(ctx)
+//     if missed {
+//         if mischance > 0 { // it means mischance confidence is set, we update streak and rank properties
+//             // set validator streak by 0 and decrease rank by X
+//             validator.Streak = 0
+//             validator.Rank -= int64(networkProperties.MischanceRankDecreaseAmount)
+//             if validator.Rank < 0 {
+//                 validator.Rank = 0
+//             }
+//         }
+//     } else {
+//         // increase streak and reset rank if streak is higher than rank
+//         validator.Streak++
+//         if validator.Streak > validator.Rank {
+//             validator.Rank = validator.Streak
+//         }
+//     }
+//     k.AddValidator(ctx, validator)
+//     return nil
+// }
 
 // TODO: implement - step1
 // Until when the Dapp start the session?

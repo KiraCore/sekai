@@ -14,6 +14,7 @@ service Msg {
   rpc CreateDappProposal(MsgCreateDappProposal) returns (MsgCreateDappProposalResponse);
   rpc BondDappProposal(MsgBondDappProposal) returns (MsgBondDappProposalResponse);
   rpc ReclaimDappBondProposal(MsgReclaimDappBondProposal) returns (MsgReclaimDappBondProposalResponse);
+  rpc JoinDappVerifierWithBond(MsgJoinDappVerifierWithBond) returns (MsgJoinDappVerifierWithBondResponse);
   rpc ExitDapp(MsgExitDapp) returns (MsgExitDappResponse);
   rpc RedeemDappPoolTx(MsgRedeemDappPoolTx) returns (MsgRedeemDappPoolTxResponse);
   rpc SwapDappPoolTx(MsgSwapDappPoolTx) returns (MsgSwapDappPoolTxResponse);
@@ -23,6 +24,9 @@ service Msg {
   rpc ReactivateDappTx(MsgReactivateDappTx) returns (MsgReactivateDappTxResponse);
   rpc ExecuteDappTx(MsgExecuteDappTx) returns (MsgExecuteDappTxResponse);
   rpc DenounceLeaderTx(MsgDenounceLeaderTx) returns (MsgDenounceLeaderTxResponse);
+  rpc TransitionDappTx(MsgTransitionDappTx) returns (MsgTransitionDappTxResponse);
+  rpc ApproveDappTransitionTx(MsgApproveDappTransitionTx) returns (MsgApproveDappTransitionTxResponse);
+  rpc RejectDappTransitionTx(MsgRejectDappTransitionTx) returns (MsgRejectDappTransitionTxResponse);
   rpc TransferDappTx(MsgTransferDappTx) returns (MsgTransferDappTxResponse);
   rpc MintCreateFtTx(MsgMintCreateFtTx) returns (MsgMintCreateFtTxResponse);
   rpc MintCreateNftTx(MsgMintCreateNftTx) returns (MsgMintCreateNftTxResponse);
@@ -67,6 +71,13 @@ message MsgReclaimDappBondProposal{
   ];
 }
 message MsgReclaimDappBondProposalResponse {}
+
+message MsgJoinDappVerifierWithBond {
+  string sender = 1;
+  string dapp_name = 2;
+  string interx = 3; // must be set to a valid kira address
+}
+message MsgJoinDappVerifierWithBondResponse {}
 
 // stop being a dApp operator and remove the record in the Execution Registrar.
 // Return bonded funds if the operator is a verifier.
@@ -130,6 +141,7 @@ message MsgReactivateDappTxResponse {}
 message MsgExecuteDappTx {
   string sender = 1;
   string dapp_name = 2;
+  string gateway = 3;
 }
 message MsgExecuteDappTxResponse {}
 
@@ -141,8 +153,37 @@ message MsgDenounceLeaderTx {
   string dapp_name = 2;
   string leader = 3;
   string denounce_text = 4;
+  string version = 5;
 }
 message MsgDenounceLeaderTxResponse {}
+
+// update CURRENT session state (can only be sent by current session leader),
+// this tx MUST include dApp version.
+message MsgTransitionDappTx {
+  string sender = 1;
+  string dapp_name = 2;
+  string status_hash = 3;
+  string version = 4;
+}
+message MsgTransitionDappTxResponse {}
+
+// approve CURRENT session state (can only be sent by the verifiers or executors
+// who are NOT a leader), this tx MUST include dApp version.
+message MsgApproveDappTransitionTx {
+  string sender = 1;
+  string dapp_name = 2;
+  string version = 3;
+}
+message MsgApproveDappTransitionTxResponse {}
+
+// reject session transition and immediately set the state of the current
+// session to halted, this tx MUST include dApp version and session id.
+message MsgRejectDappTransitionTx {
+  string sender = 1;
+  string dapp_name = 2;
+  string version = 3;
+}
+message MsgRejectDappTransitionTxResponse {}
 
 // allow user to manually deposit/transfer/withdrawal funds to / from / within
 // ABR and communicate with apps by including xam string message.

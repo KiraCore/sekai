@@ -81,7 +81,35 @@ func (m *MsgReclaimDappBondProposal) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(m)
 	return sdk.MustSortJSON(bz)
 }
-func (m *MsgReclaimDappBondProposal) GetSigners() []sdk.AccAddress {
+func (m MsgReclaimDappBondProposal) GetSigners() []sdk.AccAddress {
+	addr, err := sdk.AccAddressFromBech32(m.Sender)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{addr}
+}
+
+var _ sdk.Msg = &MsgJoinDappVerifierWithBond{}
+
+func (m *MsgJoinDappVerifierWithBond) Route() string {
+	return ModuleName
+}
+func (m *MsgJoinDappVerifierWithBond) Type() string {
+	return types.MsgTypeJoinDappVerifierWithBond
+}
+func (m *MsgJoinDappVerifierWithBond) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(m.Sender)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (m *MsgJoinDappVerifierWithBond) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+func (m MsgJoinDappVerifierWithBond) GetSigners() []sdk.AccAddress {
 	addr, err := sdk.AccAddressFromBech32(m.Sender)
 	if err != nil {
 		panic(err)
@@ -334,6 +362,90 @@ func (m *MsgDenounceLeaderTx) GetSignBytes() []byte {
 	return sdk.MustSortJSON(bz)
 }
 func (m *MsgDenounceLeaderTx) GetSigners() []sdk.AccAddress {
+	addr, err := sdk.AccAddressFromBech32(m.Sender)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{addr}
+}
+
+var _ sdk.Msg = &MsgTransitionDappTx{}
+
+func (m *MsgTransitionDappTx) Route() string {
+	return ModuleName
+}
+func (m *MsgTransitionDappTx) Type() string {
+	return types.MsgTypeTransitionDappTx
+}
+func (m *MsgTransitionDappTx) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(m.Sender)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (m *MsgTransitionDappTx) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+func (m *MsgTransitionDappTx) GetSigners() []sdk.AccAddress {
+	addr, err := sdk.AccAddressFromBech32(m.Sender)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{addr}
+}
+
+var _ sdk.Msg = &MsgApproveDappTransitionTx{}
+
+func (m *MsgApproveDappTransitionTx) Route() string {
+	return ModuleName
+}
+func (m *MsgApproveDappTransitionTx) Type() string {
+	return types.MsgTypeApproveDappTransitionTx
+}
+func (m *MsgApproveDappTransitionTx) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(m.Sender)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (m *MsgApproveDappTransitionTx) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+func (m *MsgApproveDappTransitionTx) GetSigners() []sdk.AccAddress {
+	addr, err := sdk.AccAddressFromBech32(m.Sender)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{addr}
+}
+
+var _ sdk.Msg = &MsgRejectDappTransitionTx{}
+
+func (m *MsgRejectDappTransitionTx) Route() string {
+	return ModuleName
+}
+func (m *MsgRejectDappTransitionTx) Type() string {
+	return types.MsgTypeRejectDappTransitionTx
+}
+func (m *MsgRejectDappTransitionTx) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(m.Sender)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (m *MsgRejectDappTransitionTx) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+func (m *MsgRejectDappTransitionTx) GetSigners() []sdk.AccAddress {
 	addr, err := sdk.AccAddressFromBech32(m.Sender)
 	if err != nil {
 		panic(err)

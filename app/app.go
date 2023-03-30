@@ -297,6 +297,7 @@ func NewInitApp(
 		keys[collectivestypes.StoreKey], appCodec,
 		app.BankKeeper,
 		app.CustomGovKeeper,
+		app.SpendingKeeper,
 	)
 
 	app.UpgradeKeeper = upgradekeeper.NewKeeper(keys[upgradetypes.StoreKey], appCodec, app.CustomStakingKeeper)
