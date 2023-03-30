@@ -377,6 +377,8 @@ func NewInitApp(
 			collectives.NewApplyCollectiveSendDonationProposalHandler(app.CollectivesKeeper),
 			collectives.NewApplyCollectiveUpdateProposalHandler(app.CollectivesKeeper),
 			collectives.NewApplyCollectiveRemoveProposalHandler(app.CollectivesKeeper),
+			layer2.NewApplyJoinDappProposalHandler(app.Layer2Keeper),
+			layer2.NewApplyUpsertDappProposalHandler(app.Layer2Keeper),
 		})
 
 	app.CustomGovKeeper.SetProposalRouter(proposalRouter)

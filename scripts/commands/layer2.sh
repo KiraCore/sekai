@@ -13,6 +13,7 @@ sekaid tx layer2 create-dapp-proposal --dapp-name="l2dex" --denom="ul2d" --dapp-
   --bond="1000000ukex" \
   --issurance-config='{"premint":"10000","postmint":"10000","time":"1680044405"}' \
   --lp-pool-config='{"ratio": "1.0", "drip": 86400}' \
+  --executors-min=1 --executors-max=3 --verifiers-min=1 \
   --binary-info='{"name":"layer2dex","hash":"0cc0","source":"github.com","reference":"","type":"exec"}' \
   --from=validator --chain-id=testing --fees=100ukex --keyring-backend=test --home=$HOME/.sekaid --yes --broadcast-mode=block 
 
@@ -45,12 +46,12 @@ sekaid tx layer2 approve-dapp-transition "l2dex" "v1" \
 sekaid tx layer2 reject-dapp-transition "l2dex" "v1" \
   --from=validator --chain-id=testing --fees=100ukex --keyring-backend=test --home=$HOME/.sekaid --yes --broadcast-mode=block
 
-sekaid tx layer2 proposal-join-dapp "l2dex" true true $INTERX --title="title" --description="description"
+sekaid tx layer2 proposal-join-dapp "l2dex" true true $INTERX --title="title" --description="description" \
   --from=validator --chain-id=testing --fees=100ukex --keyring-backend=test --home=$HOME/.sekaid --yes --broadcast-mode=block
 sekaid query customgov proposals
 sekaid tx customgov proposal vote 1 1 --from validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes  --broadcast-mode=block 
 
-sekaid tx layer2 proposal-upsert-dapp "l2dex" true true $INTERX --title="title" --description="description" \
+sekaid tx layer2 proposal-upsert-dapp --title="title" --description="description" \
   --dapp-name="l2dex" --denom="ul2d" --dapp-description="layer2 dex" \
   --website="website" --logo="logo" --social="social" --docs="docs" \
   --controller-roles="1" --controller-accounts="" --vote-quorum=30 --vote-period=86400 --vote-enactment=1000 \

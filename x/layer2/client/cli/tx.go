@@ -536,7 +536,7 @@ func GetTxApproveDappTransitionCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "approve-dapp-transition [dapp-name] [version]",
 		Short: "Send dapp transition approval message",
-		Args:  cobra.MinimumNArgs(3),
+		Args:  cobra.MinimumNArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -569,7 +569,7 @@ func GetTxRejectDappTransitionCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "reject-dapp-transition [dapp-name] [version]",
 		Short: "Send dapp transition reject message",
-		Args:  cobra.MinimumNArgs(3),
+		Args:  cobra.MinimumNArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
