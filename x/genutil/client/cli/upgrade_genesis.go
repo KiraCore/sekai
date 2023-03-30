@@ -187,6 +187,8 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 						MinDappBond:                  1000000,
 						MaxDappBond:                  10000000,
 						DappBondDuration:             604800,
+						DappVerifierBond:             sdk.NewDecWithPrec(1, 3), //0.1%
+						DappAutoDenounceTime:         60,                       // 60s
 					},
 					ExecutionFees:               govGenesisV01228.ExecutionFees,
 					PoorNetworkMessages:         govGenesisV01228.PoorNetworkMessages,

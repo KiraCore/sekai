@@ -235,6 +235,10 @@ func (k Keeper) GetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 		return types.NetworkPropertyValue{Value: properties.MaxDappBond}, nil
 	case types.DappBondDuration:
 		return types.NetworkPropertyValue{Value: properties.DappBondDuration}, nil
+	case types.DappVerifierBond:
+		return types.NetworkPropertyValue{StrValue: properties.DappVerifierBond.String()}, nil
+	case types.DappAutoDenounceTime:
+		return types.NetworkPropertyValue{Value: properties.DappAutoDenounceTime}, nil
 	default:
 		return types.NetworkPropertyValue{}, errors.New("trying to fetch network property that does not exist")
 	}
@@ -357,6 +361,14 @@ func (k Keeper) SetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 		properties.MaxDappBond = value.Value
 	case types.DappBondDuration:
 		properties.DappBondDuration = value.Value
+	case types.DappVerifierBond:
+		decValue, err := sdk.NewDecFromStr(value.StrValue)
+		if err != nil {
+			return err
+		}
+		properties.DappVerifierBond = decValue
+	case types.DappAutoDenounceTime:
+		properties.DappAutoDenounceTime = value.Value
 	default:
 		return errors.New("trying to set network property that does not exist")
 	}

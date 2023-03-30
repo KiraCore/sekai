@@ -143,6 +143,8 @@ func DefaultGenesis() *GenesisState {
 			MinDappBond:                  1000000,
 			MaxDappBond:                  10000000,
 			DappBondDuration:             604800,
+			DappVerifierBond:             sdk.NewDecWithPrec(1, 3), //0.1%
+			DappAutoDenounceTime:         60,                       // 60s
 		},
 		ExecutionFees: []ExecutionFee{
 			{

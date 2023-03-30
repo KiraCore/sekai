@@ -163,12 +163,17 @@ func TestSimappExportGenesis(t *testing.T) {
     "min_collective_claim_period": "14400",	
     "validator_recovery_bond": "300000",	
     "max_annual_inflation": "0.350000000000000000",
-	"max_proposal_title_size": "128",
-	"max_proposal_description_size": "1024",
-	"max_proposal_poll_option_size": "64",
-	"max_proposal_poll_option_count": "128",
-	"max_proposal_reference_size": "512",
-	"max_proposal_checksum_size": "128"
+    "max_proposal_title_size": "128",
+    "max_proposal_description_size": "1024",
+    "max_proposal_poll_option_size": "64",
+    "max_proposal_poll_option_count": "128",
+    "max_proposal_reference_size": "512",
+    "max_proposal_checksum_size": "128",
+  	"min_dapp_bond": "1000000",	
+    "max_dapp_bond": "10000000",	
+    "dapp_bond_duration": "604800",	
+    "dapp_verifier_bond": "0.001000000000000000",	
+    "dapp_auto_denounce_time": "60"
   },
   "execution_fees": [
     {
@@ -367,6 +372,8 @@ func TestExportInitGenesis(t *testing.T) {
 			MinDappBond:                  1000000,
 			MaxDappBond:                  10000000,
 			DappBondDuration:             604800,
+			DappVerifierBond:             sdk.NewDecWithPrec(1, 3), //0.1%
+			DappAutoDenounceTime:         60,                       // 60s
 		},
 		ExecutionFees: []types.ExecutionFee{
 			{
@@ -462,12 +469,17 @@ func TestExportInitGenesis(t *testing.T) {
     "min_collective_claim_period": "14400",	
     "validator_recovery_bond": "300000",	
     "max_annual_inflation": "0.350000000000000000",
-	"max_proposal_title_size": "128",
-	"max_proposal_description_size": "1024",
-	"max_proposal_poll_option_size": "64",
-	"max_proposal_poll_option_count": "128",
-	"max_proposal_reference_size": "512",
-	"max_proposal_checksum_size": "128"
+    "max_proposal_title_size": "128",
+    "max_proposal_description_size": "1024",
+    "max_proposal_poll_option_size": "64",
+    "max_proposal_poll_option_count": "128",
+    "max_proposal_reference_size": "512",
+    "max_proposal_checksum_size": "128",
+    "min_dapp_bond": "1000000",	
+    "max_dapp_bond": "10000000",	
+    "dapp_bond_duration": "604800",	
+    "dapp_verifier_bond": "0.001000000000000000",	
+    "dapp_auto_denounce_time": "60"
   },	
   "execution_fees": [	
     {	
