@@ -28,21 +28,6 @@ func (k Keeper) GetDappSession(ctx sdk.Context, name string) types.ExecutionRegi
 	return sessionInfo
 }
 
-func (k Keeper) GetDappSessions(ctx sdk.Context, name string) []types.ExecutionRegistrar {
-	store := ctx.KVStore(k.storeKey)
-
-	sessions := []types.ExecutionRegistrar{}
-	it := sdk.KVStorePrefixIterator(store, append([]byte(types.PrefixDappSessionKey), name...))
-	defer it.Close()
-
-	for ; it.Valid(); it.Next() {
-		session := types.ExecutionRegistrar{}
-		k.cdc.MustUnmarshal(it.Value(), &session)
-		sessions = append(sessions, session)
-	}
-	return sessions
-}
-
 func (k Keeper) GetAllDappSessions(ctx sdk.Context) []types.ExecutionRegistrar {
 	store := ctx.KVStore(k.storeKey)
 
