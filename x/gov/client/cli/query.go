@@ -1204,7 +1204,7 @@ $ %[1]s query gov councilors
 			clientCtx := client.GetClientContextFromCmd(cmd)
 			queryClient := types.NewQueryClient(clientCtx)
 
-			res, err := queryClient.QueryCouncilors(
+			res, err := queryClient.Councilors(
 				context.Background(),
 				&types.QueryCouncilors{},
 			)
@@ -1241,7 +1241,7 @@ $ %[1]s query gov non-councilors
 			clientCtx := client.GetClientContextFromCmd(cmd)
 			queryClient := types.NewQueryClient(clientCtx)
 
-			res, err := queryClient.QueryNonCouncilors(
+			res, err := queryClient.NonCouncilors(
 				context.Background(),
 				&types.QueryNonCouncilors{},
 			)
@@ -1283,7 +1283,7 @@ $ %[1]s query gov whitelisted-permission-addresses [perm]
 				return err
 			}
 
-			res, err := queryClient.QueryAddressesByWhitelistedPermission(
+			res, err := queryClient.AddressesByWhitelistedPermission(
 				context.Background(),
 				&types.QueryAddressesByWhitelistedPermission{
 					Permission: uint32(perm),
@@ -1327,7 +1327,7 @@ $ %[1]s query gov blacklisted-permission-addresses [perm]
 				return err
 			}
 
-			res, err := queryClient.QueryAddressesByBlacklistedPermission(
+			res, err := queryClient.AddressesByBlacklistedPermission(
 				context.Background(),
 				&types.QueryAddressesByBlacklistedPermission{
 					Permission: uint32(perm),
@@ -1371,7 +1371,7 @@ $ %[1]s query gov whitelisted-role-addresses [role]
 				return err
 			}
 
-			res, err := queryClient.QueryAddressesByWhitelistedRole(
+			res, err := queryClient.AddressesByWhitelistedRole(
 				context.Background(),
 				&types.QueryAddressesByWhitelistedRole{
 					Role: uint32(role),
