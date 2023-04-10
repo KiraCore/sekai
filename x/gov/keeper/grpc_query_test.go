@@ -209,7 +209,7 @@ func TestQuerier_CouncilorQueries(t *testing.T) {
 	querier := app.CustomGovKeeper
 
 	// specific councilor
-	resp, err := querier.QueryCouncilors(
+	resp, err := querier.Councilors(
 		sdk.WrapSDKContext(ctx),
 		&types.QueryCouncilors{Address: addr1.String()},
 	)
@@ -218,7 +218,7 @@ func TestQuerier_CouncilorQueries(t *testing.T) {
 	require.Equal(t, councilor, resp.Councilors[0])
 
 	// all councilors
-	resp, err = querier.QueryCouncilors(
+	resp, err = querier.Councilors(
 		sdk.WrapSDKContext(ctx),
 		&types.QueryCouncilors{},
 	)
@@ -227,7 +227,7 @@ func TestQuerier_CouncilorQueries(t *testing.T) {
 	require.Equal(t, councilor, resp.Councilors[0])
 
 	// non-councilors
-	nresp, err := querier.QueryNonCouncilors(
+	nresp, err := querier.NonCouncilors(
 		sdk.WrapSDKContext(ctx),
 		&types.QueryNonCouncilors{},
 	)
@@ -235,7 +235,7 @@ func TestQuerier_CouncilorQueries(t *testing.T) {
 	require.Len(t, nresp.NonCouncilors, 1)
 	require.Equal(t, networkActor, nresp.NonCouncilors[0])
 
-	wresp, err := querier.QueryAddressesByWhitelistedPermission(
+	wresp, err := querier.AddressesByWhitelistedPermission(
 		sdk.WrapSDKContext(ctx),
 		&types.QueryAddressesByWhitelistedPermission{Permission: uint32(types.PermClaimValidator)},
 	)
@@ -243,7 +243,7 @@ func TestQuerier_CouncilorQueries(t *testing.T) {
 	require.Len(t, wresp.Addresses, 1)
 	require.Equal(t, addr2.String(), wresp.Addresses[0])
 
-	bresp, err := querier.QueryAddressesByBlacklistedPermission(
+	bresp, err := querier.AddressesByBlacklistedPermission(
 		sdk.WrapSDKContext(ctx),
 		&types.QueryAddressesByBlacklistedPermission{Permission: uint32(types.PermClaimCouncilor)},
 	)
@@ -251,7 +251,7 @@ func TestQuerier_CouncilorQueries(t *testing.T) {
 	require.Len(t, bresp.Addresses, 1)
 	require.Equal(t, addr2.String(), bresp.Addresses[0])
 
-	rresp, err := querier.QueryAddressesByWhitelistedRole(
+	rresp, err := querier.AddressesByWhitelistedRole(
 		sdk.WrapSDKContext(ctx),
 		&types.QueryAddressesByWhitelistedRole{Role: uint32(types.RoleSudo)},
 	)
