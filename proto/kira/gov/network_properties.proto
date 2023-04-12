@@ -66,6 +66,9 @@ enum NetworkProperty {
     DAPP_BOND_DURATION = 48 [(gogoproto.enumvalue_customname) = "DappBondDuration"]; // default 7d - 604800s
     DAPP_VERIFIER_BOND = 49 [(gogoproto.enumvalue_customname) = "DappVerifierBond"]; // percentage of lp token supply to be put to be the verifier of the dapp by default 0.1%
     DAPP_AUTO_DENOUNCE_TIME = 50 [(gogoproto.enumvalue_customname) = "DappAutoDenounceTime"]; // in seconds (default 60), time the dapp leader allowed to send `execute-dapp-tx`
+    DAPP_MISCHANCE_RANK_DECREASE_AMOUNT = 51 [(gogoproto.enumvalue_customname) = "DappMischanceRankDecreaseAmount"];
+    DAPP_MAX_MISCHANCE = 52 [(gogoproto.enumvalue_customname) = "DappMaxMischance"];
+    DAPP_INACTIVE_RANK_DECREASE_PERCENT = 53 [(gogoproto.enumvalue_customname) = "DappInactiveRankDecreasePercent"];
 }
 
 message NetworkPropertyValue {
@@ -148,4 +151,7 @@ message NetworkProperties {
       (gogoproto.nullable) = false
     ]; // percentage of lp token supply to be put to be the verifier of the dapp by default 0.1%
     uint64 dapp_auto_denounce_time = 51; // in seconds (default 60), time the dapp leader allowed to send `execute-dapp-tx`
+    uint64 dapp_mischance_rank_decrease_amount = 52;
+    uint64 dapp_max_mischance = 53;
+    uint64 dapp_inactive_rank_decrease_percent = 54;
 }

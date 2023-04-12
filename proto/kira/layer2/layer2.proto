@@ -117,7 +117,10 @@ message DappOperator {
   OperatorStatus status = 6;
   int64 rank = 7;
   int64 streak = 8;
-  string bonded_lp_amount = 9 [
+  int64 mischance = 9;
+  int64 verified_sessions = 10;
+  int64 missed_sessions = 11;
+  string bonded_lp_amount = 12 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
     (gogoproto.nullable) = false
   ];

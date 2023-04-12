@@ -43,7 +43,61 @@ func (k Keeper) GetAllDappSessions(ctx sdk.Context) []types.ExecutionRegistrar {
 	return sessions
 }
 
+// Halt the dapp if verifiers and executors number does not meet on ExitDapp and after Jail operation
+func (k Keeper) HaltDappIfNoEnoughActiveOperators(ctx sdk.Context, dappName string) bool {
+	dapp := k.GetDapp(ctx, dappName)
+	executors := k.GetDappExecutors(ctx, dappName)
+	verifiers := k.GetDappVerifiers(ctx, dappName)
+	// active executors
+	activeExecutors := int(0)
+	for _, executor := range executors {
+		if executor.Status == types.OperatorActive {
+			activeExecutors++
+		}
+	}
+	activeVerifiers := int(0)
+	for _, verifier := range verifiers {
+		if verifier.Status == types.OperatorActive {
+			activeVerifiers++
+		}
+	}
+
+	if activeExecutors < int(dapp.ExecutorsMin) || activeVerifiers < int(dapp.VerifiersMin) {
+		dapp.Status = types.Halted
+		k.SetDapp(ctx, dapp)
+		return true
+	}
+	return false
+}
+
 func (k Keeper) ResetNewSession(ctx sdk.Context, name string, prevLeader string) {
+	operators := k.GetDappOperators(ctx, name)
+	for _, operator := range operators {
+		if operator.Status == types.OperatorExiting {
+			// If the operator leaving the dApp was a verifier then
+			// as the result of the exit tx his LP tokens bond should be returned once the record is deleted.
+			// The bond can only be claimed if and only if the status didn’t change to jailed in the meantime.
+			if operator.BondedLpAmount.IsPositive() {
+				dapp := k.GetDapp(ctx, name)
+				dappLpToken := dapp.LpToken()
+				lpCoins := sdk.NewCoins(sdk.NewCoin(dappLpToken, operator.BondedLpAmount))
+				addr := sdk.MustAccAddressFromBech32(operator.Operator)
+				err := k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, lpCoins)
+				if err != nil {
+					panic(err)
+				}
+			}
+			// remove operators exiting when session ends
+			k.DeleteDappOperator(ctx, name, operator.Operator)
+		}
+	}
+
+	// halt the dapp if operators condition does not meet on session reset
+	halted := k.HaltDappIfNoEnoughActiveOperators(ctx, name)
+	if halted {
+		return
+	}
+
 	leader := ""
 	executors := k.GetDappExecutors(ctx, name)
 	if len(executors) > 0 {
@@ -70,8 +124,6 @@ func (k Keeper) ResetNewSession(ctx sdk.Context, name string, prevLeader string)
 	}
 	k.SetDappSession(ctx, session)
 
-	// TODO: halt the dapp automatically, if verifiers and executors number does not meet on ExitDapp and after Jail operation
-
 	// halt the dapp if next session leader is not available
 	if session.NextSession.Leader == "" {
 		dapp := k.GetDapp(ctx, name)
@@ -86,12 +138,6 @@ func (k Keeper) CreateNewSession(ctx sdk.Context, name string, prevLeader string
 	session.CurrSession = session.NextSession
 	k.SetDappSession(ctx, session)
 	k.ResetNewSession(ctx, name, prevLeader)
-
-	// TODO: remove operators exiting when session ends
-	// k.keeper.DeleteDappOperator(ctx, msg.DappName, msg.Sender)
-	// TODO: If the operator leaving the dApp was a verifier then
-	// as the result of the exit tx his LP tokens bond should be returned once the record is deleted.
-	// The bond can only be claimed if and only if the status didn’t change to jailed in the meantime.
 }
 
 // **Next Session**

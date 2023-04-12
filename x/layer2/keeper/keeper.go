@@ -12,15 +12,17 @@ type Keeper struct {
 	cdc      codec.BinaryCodec
 	storeKey sdk.StoreKey
 	bk       types.BankKeeper
+	sk       types.StakingKeeper
 	gk       govkeeper.Keeper
 	spk      types.SpendingKeeper
 }
 
-func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryCodec, bk types.BankKeeper, gk govkeeper.Keeper, spk types.SpendingKeeper) Keeper {
+func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryCodec, bk types.BankKeeper, sk types.StakingKeeper, gk govkeeper.Keeper, spk types.SpendingKeeper) Keeper {
 	return Keeper{
 		cdc:      cdc,
 		storeKey: storeKey,
 		bk:       bk,
+		sk:       sk,
 		gk:       gk,
 		spk:      spk,
 	}

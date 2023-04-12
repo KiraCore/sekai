@@ -87,7 +87,15 @@ func (k Keeper) ExecuteJoinDappProposal(ctx sdk.Context, p *types.ProposalJoinDa
 	}
 
 	if p.Executor {
-		// TODO: ensure executor is a validator
+		// ensure executor is a validator
+		addr, err := sdk.AccAddressFromBech32(p.Sender)
+		if err != nil {
+			return err
+		}
+		_, err = k.sk.GetValidator(ctx, sdk.ValAddress(addr))
+		if err != nil {
+			return err
+		}
 		executors := k.GetDappExecutors(ctx, p.DappName)
 		if len(executors) >= int(dapp.ExecutorsMax) {
 			return types.ErrNumberOfOperatorsExceedsExecutorsMax
@@ -115,4 +123,35 @@ func (k Keeper) ExecuteJoinDappProposal(ctx sdk.Context, p *types.ProposalJoinDa
 	}
 
 	return nil
+}
+
+func (k Keeper) HandleSessionParticipation(ctx sdk.Context, operator types.DappOperator, participated bool) {
+	properties := k.gk.GetNetworkProperties(ctx)
+	if participated {
+		// If the dApp operator participates in the production of a dApp session (sends session or verification tx) his
+		// `rank` and `streak` must be increased by `1` while `mischance` re-set to 0,
+
+		operator.Rank += 1
+		operator.Streak += 1
+		operator.VerifiedSessions += 1
+		operator.Mischance = 0
+		k.SetDappOperator(ctx, operator)
+	} else if operator.Status == types.OperatorActive {
+		// otherwise in the case of failure to participate the `mischance` counter must be increased by `1`,
+		// the `streak` re-set to `0` and `rank` decreased by `dAppMischanceRankDecreaseAmount`.
+		operator.Rank -= int64(properties.DappMischanceRankDecreaseAmount)
+		if operator.Rank < 0 {
+			operator.Rank = 0
+		}
+		operator.Streak = 0
+		operator.Mischance += 1
+		operator.MissedSessions += 1
+
+		// If the dApp operator does not enable maintenance mode by using the `pause-dapp-tx` and the `mischance` counter
+		// exceeds `dAppMaxMischance` then his ranks should be slashed by `dAppInactiveRankDecreasePercent`.
+		if operator.Mischance > int64(properties.DappMaxMischance) {
+			operator.Rank = operator.Rank * (100 - int64(properties.AbstentionRankDecreaseAmount)) / 100
+		}
+		k.SetDappOperator(ctx, operator)
+	}
 }

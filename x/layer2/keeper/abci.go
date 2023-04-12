@@ -17,8 +17,6 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 	properties := k.gk.GetNetworkProperties(ctx)
 	currTimestamp := uint64(ctx.BlockTime().Unix())
 	for _, dapp := range dapps {
-
-		// TODO: exiting dapp verifier to close on next session and return lp tokens back
 		if dapp.Status == types.Bootstrap && dapp.CreationTime+properties.DappBondDuration <= currTimestamp {
 			k.FinishDappBootstrap(ctx, dapp)
 		}
@@ -35,8 +33,6 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 
 				// update next session with new info
 				k.ResetNewSession(ctx, dapp.Name, session.CurrSession.Leader)
-
-				// TODO: in case
 			}
 		}
 	}
