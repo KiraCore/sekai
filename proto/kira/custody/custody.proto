@@ -13,6 +13,7 @@ message CustodySettings {
   bool   use_white_list  = 4;
   bool   use_limits      = 5;
   string key             = 6;
+  string next_controller = 7;
 }
 
 message CustodyKeyRecord {
@@ -22,6 +23,7 @@ message CustodyKeyRecord {
   ];
 
   string key = 2;
+  string next_controller = 3;
 }
 
 message CustodyRecord {

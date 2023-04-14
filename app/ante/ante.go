@@ -95,6 +95,10 @@ func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool,
 					hash := sha256.Sum256([]byte(msg.OldKey))
 					hashString := hex.EncodeToString(hash[:])
 
+					if msg.TargetAddress != "" && msg.TargetAddress != settings.NextController {
+						return ctx, sdkerrors.Wrap(custodytypes.ErrWrongTargetAddr, "Custody module")
+					}
+
 					if hashString != settings.Key {
 						return ctx, sdkerrors.Wrap(custodytypes.ErrWrongKey, "Custody module")
 					}
@@ -108,6 +112,10 @@ func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool,
 
 					hash := sha256.Sum256([]byte(msg.OldKey))
 					hashString := hex.EncodeToString(hash[:])
+
+					if msg.TargetAddress != "" && msg.TargetAddress != settings.NextController {
+						return ctx, sdkerrors.Wrap(custodytypes.ErrWrongTargetAddr, "Custody module")
+					}
 
 					if hashString != settings.Key {
 						return ctx, sdkerrors.Wrap(custodytypes.ErrWrongKey, "Custody module")
@@ -123,6 +131,10 @@ func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool,
 					hash := sha256.Sum256([]byte(msg.OldKey))
 					hashString := hex.EncodeToString(hash[:])
 
+					if msg.TargetAddress != "" && msg.TargetAddress != settings.NextController {
+						return ctx, sdkerrors.Wrap(custodytypes.ErrWrongTargetAddr, "Custody module")
+					}
+
 					if hashString != settings.Key {
 						return ctx, sdkerrors.Wrap(custodytypes.ErrWrongKey, "Custody module")
 					}
@@ -136,6 +148,10 @@ func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool,
 
 					hash := sha256.Sum256([]byte(msg.OldKey))
 					hashString := hex.EncodeToString(hash[:])
+
+					if msg.TargetAddress != "" && msg.TargetAddress != settings.NextController {
+						return ctx, sdkerrors.Wrap(custodytypes.ErrWrongTargetAddr, "Custody module")
+					}
 
 					if hashString != settings.Key {
 						return ctx, sdkerrors.Wrap(custodytypes.ErrWrongKey, "Custody module")
@@ -151,6 +167,10 @@ func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool,
 					hash := sha256.Sum256([]byte(msg.OldKey))
 					hashString := hex.EncodeToString(hash[:])
 
+					if msg.TargetAddress != "" && msg.TargetAddress != settings.NextController {
+						return ctx, sdkerrors.Wrap(custodytypes.ErrWrongTargetAddr, "Custody module")
+					}
+
 					if hashString != settings.Key {
 						return ctx, sdkerrors.Wrap(custodytypes.ErrWrongKey, "Custody module")
 					}
@@ -165,6 +185,10 @@ func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool,
 					hash := sha256.Sum256([]byte(msg.OldKey))
 					hashString := hex.EncodeToString(hash[:])
 
+					if msg.TargetAddress != "" && msg.TargetAddress != settings.NextController {
+						return ctx, sdkerrors.Wrap(custodytypes.ErrWrongTargetAddr, "Custody module")
+					}
+
 					if hashString != settings.Key {
 						return ctx, sdkerrors.Wrap(custodytypes.ErrWrongKey, "Custody module")
 					}
@@ -178,6 +202,10 @@ func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool,
 
 					hash := sha256.Sum256([]byte(msg.OldKey))
 					hashString := hex.EncodeToString(hash[:])
+
+					if msg.TargetAddress != "" && msg.TargetAddress != settings.NextController {
+						return ctx, sdkerrors.Wrap(custodytypes.ErrWrongTargetAddr, "Custody module")
+					}
 
 					if hashString != settings.Key {
 						return ctx, sdkerrors.Wrap(custodytypes.ErrWrongKey, "Custody module")
