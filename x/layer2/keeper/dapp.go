@@ -109,3 +109,17 @@ func (k Keeper) ExecuteDappRemove(ctx sdk.Context, dapp types.Dapp) error {
 	k.DeleteDapp(ctx, dapp.Name)
 	return nil
 }
+
+func (k Keeper) OnCollectFee(ctx sdk.Context, fee sdk.Coins) error {
+	// TODO: The fixed fee will be applied after the swap from where
+	// - `50%` of the corresponding tokens must be **burned** (deminted)
+	// - `25%` given as a reward to liquidity providers
+	// - `25%` will be split between **ACTIVE** dApp executors, and verifiers (fisherman).
+	// Additionally, the premint and postmint tokens can be used to incentivize operators before
+	// dApp starts to generate revenue.
+	err := k.bk.BurnCoins(ctx, types.ModuleName, fee)
+	if err != nil {
+		return err
+	}
+	return nil
+}

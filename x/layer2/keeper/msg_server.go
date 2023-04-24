@@ -415,22 +415,6 @@ func (k msgServer) TransferDappTx(goCtx context.Context, msg *types.MsgTransferD
 // rightful owners as well as configure an **optional** “drip” if needed to not scare the LP token holders with an immediate increase of
 // the token supply.
 
-// TODO:
-// ### d**) Optional Execution & Operators Incentives**
-
-// While raising the launch proposal the deployers must provide `executors_min` and `executors_max` parameters that
-// define how many validators are needed to run the dApp. For example in the case of the DEX or a game - one or two validators might be sufficient
-// as executors while in the case of the bridge and MPC it would be expected to see at least 21+ validators collaborating on securing BTC or ETH bridge
-// address with ECDSA TSS or a multisig. While there is a limitation in terms of how many nodes might want to run the code
-// there is no limitation in terms of how many nodes might want to participate in verification (fisherman).
-// To make it worth a while for validators to execute the dApp code we will utilize the dApp LP pool to create those incentives.
-// Besides the impermanent loss, the LP token holders will incur a default `1% fee` on all swaps,
-// deposits, and redemptions configurable in the [Network Properties](https://www.notion.so/de74fe4b731a47df86683f2e9eefa793)
-// as `dapp_pool_fee` parameter.
-// The fixed fee will be applied after the swap from where `50%` of the corresponding tokens must be **burned** (deminted),
-// `25%` given as a reward to liquidity providers and the remaining `25%` will be split between **ACTIVE** dApp executors, and verifiers (fisherman).
-// Additionally, the premint and postmint tokens can be used to incentivize operators before dApp starts to generate revenue.
-
 func (k msgServer) RedeemDappPoolTx(goCtx context.Context, msg *types.MsgRedeemDappPoolTx) (*types.MsgRedeemDappPoolTxResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	_ = ctx
@@ -461,6 +445,15 @@ func (k msgServer) SwapDappPoolTx(goCtx context.Context, msg *types.MsgSwapDappP
 	dapp.TotalBond.Amount = totalBondAfterSwap
 	k.keeper.SetDapp(ctx, dapp)
 
+	fee := swapBond.ToDec().Mul(dapp.PoolFee).RoundInt()
+	if fee.IsPositive() {
+		feeCoin := sdk.NewCoin(dapp.TotalBond.Denom, fee)
+		err := k.keeper.OnCollectFee(ctx, sdk.Coins{feeCoin})
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	// send lp tokens to the module account
 	err := k.keeper.bk.SendCoinsFromAccountToModule(ctx, addr, types.ModuleName, sdk.Coins{msg.LpToken})
 	if err != nil {
@@ -468,16 +461,21 @@ func (k msgServer) SwapDappPoolTx(goCtx context.Context, msg *types.MsgSwapDappP
 	}
 
 	// send tokens to user
-	err = k.keeper.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, sdk.Coins{sdk.NewCoin(dapp.TotalBond.Denom, swapBond)})
+	userReceiveCoin := sdk.NewCoin(dapp.TotalBond.Denom, swapBond.Sub(fee))
+	err = k.keeper.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, sdk.Coins{userReceiveCoin})
 	if err != nil {
 		return nil, err
 	}
 
 	properties := k.keeper.gk.GetNetworkProperties(ctx)
-	if dapp.LiquidationStart == 0 && dapp.TotalBond.Amount.LT(properties.DappLiquidationThreshold) {
-		dapp.LiquidationStart = ctx.BlockTime().Unix()
+	threshold := sdk.NewInt(int64(properties.DappLiquidationThreshold)).Mul(sdk.NewInt(1000_000))
+	if dapp.LiquidationStart == 0 && dapp.TotalBond.Amount.LT(threshold) {
+		dapp.LiquidationStart = uint64(ctx.BlockTime().Unix())
 		k.keeper.SetDapp(ctx, dapp)
 	}
+
+	// TODO: how liquidation mechanism work?
+	// TODO: Anyway to buy back LP token from the pool?
 
 	return &types.MsgSwapDappPoolTxResponse{}, nil
 }
