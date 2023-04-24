@@ -1156,8 +1156,10 @@ function enableCustody() {
   local FEE_DENOM=$7
   local OKEY=$8
   local NKEY=$9
+  local NEXT=$(showAddress ${10})
+  local TARGET=$(showAddress ${11})
 
-  sekaid tx custody create $MODE $PASSWORD $LIMITS $WHITELIST --from=$FROM --keyring-backend=test --chain-id=$NETWORK_NAME --fees="${FEE_AMOUNT}${FEE_DENOM}" --output=json --yes --home=$SEKAID_HOME --okey=$OKEY --nkey=$NKEY | txAwait 180
+  sekaid tx custody create $MODE $PASSWORD $LIMITS $WHITELIST --from=$FROM --keyring-backend=test --chain-id=$NETWORK_NAME --fees="${FEE_AMOUNT}${FEE_DENOM}" --output=json --yes --home=$SEKAID_HOME --okey=$OKEY --nkey=$NKEY --next=$NEXT --target=$TARGET | txAwait 180
 }
 # enableCustody
 function disableCustody() {
@@ -1177,8 +1179,10 @@ function addCustodians() {
   local FEE_DENOM=$4
   local OKEY=$5
   local NKEY=$6
+  local NEXT=$(showAddress $7)
+  local TARGET=$(showAddress $8)
 
-  sekaid tx custody custodians add "$ADDRESSES" --from=$FROM --keyring-backend=test --chain-id=$NETWORK_NAME --fees="${FEE_AMOUNT}${FEE_DENOM}" --output=json --yes --home=$SEKAID_HOME --okey=$OKEY --nkey=$NKEY | txAwait 180
+  sekaid tx custody custodians add "$ADDRESSES" --from=$FROM --keyring-backend=test --chain-id=$NETWORK_NAME --fees="${FEE_AMOUNT}${FEE_DENOM}" --output=json --yes --home=$SEKAID_HOME --okey=$OKEY --nkey=$NKEY --next=$NEXT --target=$TARGET | txAwait 180
 }
 
 # addCustodiansForce
