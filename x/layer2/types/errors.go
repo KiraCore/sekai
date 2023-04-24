@@ -31,4 +31,5 @@ var (
 	ErrNotDappVerifier                      = errors.Register(ModuleName, 23, "not a dapp verifier")
 	ErrLeaderCannotEvaluateSelfSubmission   = errors.Register(ModuleName, 24, "leader cannot evaluate self submission")
 	ErrVerificationNotAllowedOnEmptySession = errors.Register(ModuleName, 25, "verification not allowed on empty session")
+	ErrInvalidLpToken                       = errors.Register(ModuleName, 26, "invalid lp token")
 )

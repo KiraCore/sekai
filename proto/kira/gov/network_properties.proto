@@ -63,12 +63,14 @@ enum NetworkProperty {
     MAX_PROPOSAL_CHECKSUM_SIZE = 45 [(gogoproto.enumvalue_customname) = "MaxProposalChecksumSize"]; // maximum poll checksum size
     MIN_DAPP_BOND = 46 [(gogoproto.enumvalue_customname) = "MinDappBond"]; // default 1’000’000 KEX
     MAX_DAPP_BOND = 47 [(gogoproto.enumvalue_customname) = "MaxDappBond"]; // default 10’000’000 KEX
-    DAPP_BOND_DURATION = 48 [(gogoproto.enumvalue_customname) = "DappBondDuration"]; // default 7d - 604800s
-    DAPP_VERIFIER_BOND = 49 [(gogoproto.enumvalue_customname) = "DappVerifierBond"]; // percentage of lp token supply to be put to be the verifier of the dapp by default 0.1%
-    DAPP_AUTO_DENOUNCE_TIME = 50 [(gogoproto.enumvalue_customname) = "DappAutoDenounceTime"]; // in seconds (default 60), time the dapp leader allowed to send `execute-dapp-tx`
-    DAPP_MISCHANCE_RANK_DECREASE_AMOUNT = 51 [(gogoproto.enumvalue_customname) = "DappMischanceRankDecreaseAmount"];
-    DAPP_MAX_MISCHANCE = 52 [(gogoproto.enumvalue_customname) = "DappMaxMischance"];
-    DAPP_INACTIVE_RANK_DECREASE_PERCENT = 53 [(gogoproto.enumvalue_customname) = "DappInactiveRankDecreasePercent"];
+    DAPP_LIQUIDATION_THRESHOLD = 48 [(gogoproto.enumvalue_customname) = "DappLiquidationThreshold"]; // default 100’000 KEX
+    DAPP_LIQUIDATION_PERIOD = 49 [(gogoproto.enumvalue_customname) = "DappLiquidationPeriod"];    // default 2419200, ~28d
+    DAPP_BOND_DURATION = 50 [(gogoproto.enumvalue_customname) = "DappBondDuration"]; // default 7d - 604800s
+    DAPP_VERIFIER_BOND = 51 [(gogoproto.enumvalue_customname) = "DappVerifierBond"]; // percentage of lp token supply to be put to be the verifier of the dapp by default 0.1%
+    DAPP_AUTO_DENOUNCE_TIME = 52 [(gogoproto.enumvalue_customname) = "DappAutoDenounceTime"]; // in seconds (default 60), time the dapp leader allowed to send `execute-dapp-tx`
+    DAPP_MISCHANCE_RANK_DECREASE_AMOUNT = 53 [(gogoproto.enumvalue_customname) = "DappMischanceRankDecreaseAmount"];
+    DAPP_MAX_MISCHANCE = 54 [(gogoproto.enumvalue_customname) = "DappMaxMischance"];
+    DAPP_INACTIVE_RANK_DECREASE_PERCENT = 55 [(gogoproto.enumvalue_customname) = "DappInactiveRankDecreasePercent"];
 }
 
 message NetworkPropertyValue {
@@ -145,13 +147,15 @@ message NetworkProperties {
     uint64 max_proposal_checksum_size = 46; // maximum checksum size in the proposal
     uint64 min_dapp_bond = 47;                   // default 1’000’000 KEX
     uint64 max_dapp_bond = 48;                   // default 10’000’000 KEX
-    uint64 dapp_bond_duration = 49;              // default 7d - 604800s
-    string dapp_verifier_bond = 50 [
+    uint64 dapp_liquidation_threshold = 49;      // default 100’000 KEX
+    uint64 dapp_liquidation_period = 50;         // default 2419200, ~28d
+    uint64 dapp_bond_duration = 51;              // default 7d - 604800s
+    string dapp_verifier_bond = 52 [
       (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
       (gogoproto.nullable) = false
     ]; // percentage of lp token supply to be put to be the verifier of the dapp by default 0.1%
-    uint64 dapp_auto_denounce_time = 51; // in seconds (default 60), time the dapp leader allowed to send `execute-dapp-tx`
-    uint64 dapp_mischance_rank_decrease_amount = 52;
-    uint64 dapp_max_mischance = 53;
-    uint64 dapp_inactive_rank_decrease_percent = 54;
+    uint64 dapp_auto_denounce_time = 53; // in seconds (default 60), time the dapp leader allowed to send `execute-dapp-tx`
+    uint64 dapp_mischance_rank_decrease_amount = 54;
+    uint64 dapp_max_mischance = 55;
+    uint64 dapp_inactive_rank_decrease_percent = 56;
 }

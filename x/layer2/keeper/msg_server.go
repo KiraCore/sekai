@@ -440,25 +440,44 @@ func (k msgServer) RedeemDappPoolTx(goCtx context.Context, msg *types.MsgRedeemD
 
 func (k msgServer) SwapDappPoolTx(goCtx context.Context, msg *types.MsgSwapDappPoolTx) (*types.MsgSwapDappPoolTxResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
 
+	addr := sdk.MustAccAddressFromBech32(msg.Sender)
 	dapp := k.keeper.GetDapp(ctx, msg.DappName)
 	if dapp.Name != "" {
 		return nil, types.ErrDappDoesNotExist
 	}
 
-	// TODO: Uniswap v2 like pool implementation
-	// dapp.TotalBond
-	// dapp.Pool.Ratio
-	// dapp.Issurance.Deposit
-	// dapp.Issurance.Premint
-	// dapp.Issurance.Postmint
-	// dapp.Issurance.Time
+	// 	totalBond * lpSupply = (totalBond - swapBond) * (lpSupply + swapLpAmount)
+	lpToken := dapp.LpToken()
+	if lpToken != msg.LpToken.Denom {
+		return nil, types.ErrInvalidLpToken
+	}
+	lpSupply := k.keeper.bk.GetSupply(ctx, lpToken).Amount
+	totalBond := dapp.TotalBond.Amount
+	swapLpAmount := msg.LpToken.Amount
+	totalBondAfterSwap := totalBond.Mul(lpSupply).Quo(lpSupply.Add(swapLpAmount))
+	swapBond := totalBond.Sub(totalBondAfterSwap)
 
-	// TODO: If the KEX collateral in the pool falls below dapp_liquidation_threshold (by default set to 100’000 KEX)
-	// then the dApp will enter a depreciation phase lasting dapp_liquidation_period (by default set to 2419200, that is ~28d)
-	// after which the execution will be stopped.
-	// On uniswap pool, people will be able to buy some LP tokens?
+	dapp.TotalBond.Amount = totalBondAfterSwap
+	k.keeper.SetDapp(ctx, dapp)
+
+	// send lp tokens to the module account
+	err := k.keeper.bk.SendCoinsFromAccountToModule(ctx, addr, types.ModuleName, sdk.Coins{msg.LpToken})
+	if err != nil {
+		return nil, err
+	}
+
+	// send tokens to user
+	err = k.keeper.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, sdk.Coins{sdk.NewCoin(dapp.TotalBond.Denom, swapBond)})
+	if err != nil {
+		return nil, err
+	}
+
+	properties := k.keeper.gk.GetNetworkProperties(ctx)
+	if dapp.LiquidationStart == 0 && dapp.TotalBond.Amount.LT(properties.DappLiquidationThreshold) {
+		dapp.LiquidationStart = ctx.BlockTime().Unix()
+		k.keeper.SetDapp(ctx, dapp)
+	}
 
 	return &types.MsgSwapDappPoolTxResponse{}, nil
 }
@@ -502,8 +521,6 @@ func (k msgServer) MintBurnTx(goCtx context.Context, msg *types.MsgMintBurnTx) (
 //   rpc RedeemDappPoolTx(MsgRedeemDappPoolTx) returns (MsgRedeemDappPoolTxResponse);
 //   rpc SwapDappPoolTx(MsgSwapDappPoolTx) returns (MsgSwapDappPoolTxResponse);
 //   rpc ConvertDappPoolTx(MsgConvertDappPoolTx) returns (MsgConvertDappPoolTxResponse);
-//   rpc UpsertDappProposalTx(MsgUpsertDappProposalTx) returns (MsgUpsertDappProposalTxResponse);
-//   rpc VoteUpsertDappProposalTx(MsgVoteUpsertDappProposalTx) returns (MsgVoteUpsertDappProposalTxResponse);
 //   rpc TransferDappTx(MsgTransferDappTx) returns (MsgTransferDappTxResponse);
 //   rpc MintCreateFtTx(MsgMintCreateFtTx) returns (MsgMintCreateFtTxResponse);
 //   rpc MintCreateNftTx(MsgMintCreateNftTx) returns (MsgMintCreateNftTxResponse);

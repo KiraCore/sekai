@@ -34,6 +34,14 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 				// update next session with new info
 				k.ResetNewSession(ctx, dapp.Name, session.CurrSession.Leader)
 			}
+
+			// If the KEX collateral in the pool falls below dapp_liquidation_threshold (by default set to 100’000 KEX)
+			// then the dApp will enter a depreciation phase lasting dapp_liquidation_period (by default set to 2419200, that is ~28d)
+			// after which the execution will be stopped.
+			if dapp.LiquidationStart+properties.DappLiquidationPeriod < uint64(ctx.BlockTime().Unix()) {
+				dapp.Status = types.Halted
+				k.SetDapp(ctx, dapp)
+			}
 		}
 	}
 
