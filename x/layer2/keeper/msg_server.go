@@ -400,29 +400,7 @@ func (k msgServer) TransferDappTx(goCtx context.Context, msg *types.MsgTransferD
 	return &types.MsgTransferDappTxResponse{}, nil
 }
 
-// TODO:
-// ### c**) Team & Investors Incentives**
-// Here are a few examples of ways in which “issuance” and “pool” configuration parameters can be used:
-// - Fair Launch - no extra tokens issued and all LP coins are immediately unlocked (`pool.drip` set to 0).
-// - User Assisted Launch - LP Spending Pool is configured to slowly distribute LP tokens, the `issuance.premint` is set to
-// a small reasonable amount while the `issuance.postmint` is not used.
-// This enables small teams that need to hire a few developers to establish a token treasury
-// and sell their stake to users that are locked in the LP.
-// - Investor Assisted Launch - LP Spending Pool is configured to slowly distribute LP tokens
-// while premint and postmint enable the creation of treasury and sale of SAFT agreements for large-scale projects.
-// The `issuance.time` parameter can be used to clearly define the time when investor tokens will be issued during the “postmint” event
-// while the `issuance.deposit` address can be set up by the team as a Spending Pool to easily distribute tokens to their
-// rightful owners as well as configure an **optional** “drip” if needed to not scare the LP token holders with an immediate increase of
-// the token supply.
-
 func (k msgServer) RedeemDappPoolTx(goCtx context.Context, msg *types.MsgRedeemDappPoolTx) (*types.MsgRedeemDappPoolTxResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
-
-	return &types.MsgRedeemDappPoolTxResponse{}, nil
-}
-
-func (k msgServer) SwapDappPoolTx(goCtx context.Context, msg *types.MsgSwapDappPoolTx) (*types.MsgSwapDappPoolTxResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	addr := sdk.MustAccAddressFromBech32(msg.Sender)
@@ -474,8 +452,60 @@ func (k msgServer) SwapDappPoolTx(goCtx context.Context, msg *types.MsgSwapDappP
 		k.keeper.SetDapp(ctx, dapp)
 	}
 
-	// TODO: how liquidation mechanism work?
-	// TODO: Anyway to buy back LP token from the pool?
+	return &types.MsgRedeemDappPoolTxResponse{}, nil
+}
+
+func (k msgServer) SwapDappPoolTx(goCtx context.Context, msg *types.MsgSwapDappPoolTx) (*types.MsgSwapDappPoolTxResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	addr := sdk.MustAccAddressFromBech32(msg.Sender)
+	dapp := k.keeper.GetDapp(ctx, msg.DappName)
+	if dapp.Name != "" {
+		return nil, types.ErrDappDoesNotExist
+	}
+
+	// 	totalBond * lpSupply = (totalBond - swapBond) * (lpSupply + swapLpAmount)
+	lpToken := dapp.LpToken()
+	if msg.Token.Denom != k.keeper.BondDenom(ctx) {
+		return nil, types.ErrInvalidLpToken
+	}
+	lpSupply := k.keeper.bk.GetSupply(ctx, lpToken).Amount
+	totalBond := dapp.TotalBond.Amount
+	swapBondAmount := msg.Token.Amount
+	totalLpAfterSwap := totalBond.Mul(lpSupply).Quo(totalBond.Add(swapBondAmount))
+	swapLpAmount := lpSupply.Sub(totalLpAfterSwap)
+
+	dapp.TotalBond.Amount = dapp.TotalBond.Amount.Add(msg.Token.Amount)
+	k.keeper.SetDapp(ctx, dapp)
+
+	fee := swapLpAmount.ToDec().Mul(dapp.PoolFee).RoundInt()
+	if fee.IsPositive() {
+		feeCoin := sdk.NewCoin(dapp.TotalBond.Denom, fee)
+		err := k.keeper.OnCollectFee(ctx, sdk.Coins{feeCoin})
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	// send lp tokens to the module account
+	err := k.keeper.bk.SendCoinsFromAccountToModule(ctx, addr, types.ModuleName, sdk.Coins{msg.Token})
+	if err != nil {
+		return nil, err
+	}
+
+	// send tokens to user
+	userReceiveCoin := sdk.NewCoin(dapp.TotalBond.Denom, swapLpAmount.Sub(fee))
+	err = k.keeper.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, sdk.Coins{userReceiveCoin})
+	if err != nil {
+		return nil, err
+	}
+
+	properties := k.keeper.gk.GetNetworkProperties(ctx)
+	threshold := sdk.NewInt(int64(properties.DappLiquidationThreshold)).Mul(sdk.NewInt(1000_000))
+	if dapp.LiquidationStart != 0 && dapp.TotalBond.Amount.GTE(threshold) {
+		dapp.LiquidationStart = 0
+		k.keeper.SetDapp(ctx, dapp)
+	}
 
 	return &types.MsgSwapDappPoolTxResponse{}, nil
 }
@@ -515,9 +545,22 @@ func (k msgServer) MintBurnTx(goCtx context.Context, msg *types.MsgMintBurnTx) (
 	return &types.MsgMintBurnTxResponse{}, nil
 }
 
+// TODO:
+// ### c**) Team & Investors Incentives**
+// Here are a few examples of ways in which “issuance” and “pool” configuration parameters can be used:
+// - Fair Launch - no extra tokens issued and all LP coins are immediately unlocked (`pool.drip` set to 0).
+// - User Assisted Launch - LP Spending Pool is configured to slowly distribute LP tokens, the `issuance.premint` is set to
+// a small reasonable amount while the `issuance.postmint` is not used.
+// This enables small teams that need to hire a few developers to establish a token treasury
+// and sell their stake to users that are locked in the LP.
+// - Investor Assisted Launch - LP Spending Pool is configured to slowly distribute LP tokens
+// while premint and postmint enable the creation of treasury and sale of SAFT agreements for large-scale projects.
+// The `issuance.time` parameter can be used to clearly define the time when investor tokens will be issued during the “postmint” event
+// while the `issuance.deposit` address can be set up by the team as a Spending Pool to easily distribute tokens to their
+// rightful owners as well as configure an **optional** “drip” if needed to not scare the LP token holders with an immediate increase of
+// the token supply.
+
 // TODO: implement - step2
-//   rpc RedeemDappPoolTx(MsgRedeemDappPoolTx) returns (MsgRedeemDappPoolTxResponse);
-//   rpc SwapDappPoolTx(MsgSwapDappPoolTx) returns (MsgSwapDappPoolTxResponse);
 //   rpc ConvertDappPoolTx(MsgConvertDappPoolTx) returns (MsgConvertDappPoolTxResponse);
 //   rpc TransferDappTx(MsgTransferDappTx) returns (MsgTransferDappTxResponse);
 //   rpc MintCreateFtTx(MsgMintCreateFtTx) returns (MsgMintCreateFtTxResponse);
