@@ -214,7 +214,7 @@ message MsgRejectDappTransitionTxResponse {}
 // ABR and communicate with apps by including xam string message.
 message MsgTransferDappTx {
   string sender = 1;
-  string dapp_name = 2;
+  repeated XAMRequest requests = 2 [ (gogoproto.nullable) = false ];
 }
 message MsgTransferDappTxResponse {}
 

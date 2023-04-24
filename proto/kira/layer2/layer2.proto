@@ -170,3 +170,115 @@ message ExecutionRegistrar {
   DappSession curr_session = 3; // a session that is currently ongoing or was just finalized but is NOT a part of the changes applied to the blockchain state
   DappSession next_session = 4; // a session that is about to begin after the current session ended
 }
+
+// To signal that dApp expects SEKAI to execute something, a tx as escaped JSON string must be placed in the `xam` field and `dst` set to `0`.
+// Users MUST NOT be allowed to set `xam` by sending `transfer-dapp-tx` with `dst == 0`, this can only be done by the applications themselves
+// and included as part of `xamdata`. 
+// Applications also are NOT allowed to send tx on behalf of other tx, meaning that ABR must interpret all tx with `dst == 0` 
+// as execution requests as long as `xam` is NOT an empty string. 
+// The only difference between user tx and application tx should be that the application tx will not have a signature.
+
+message BridgeRegistrarHelper {
+  uint64 next_user = 1; // default 1, defines what should be the next index of the user or application account
+  uint64 next_xam = 2; // default 1, defines what should be the next cross-application transaction id - xid
+  uint64 next_token = 3; // default 2, defines what should be the next token denom identifier
+}
+
+message BridgeRegistrar {
+  BridgeRegistrarHelper helper = 1; // contains next values for user, xam, token
+  repeated BridgeAccount accounts = 2 [ (gogoproto.nullable) = false ]; // used only on genesis export
+  repeated BridgeToken tokens = 3 [ (gogoproto.nullable) = false ]; // used only on genesis export
+  repeated XAM xams = 4 [ (gogoproto.nullable) = false ]; // used only on genesis export
+}
+
+message BridgeBalance {
+  uint64 bridge_token_index = 1;
+  string amount = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message BridgeAccount {
+  uint64 index = 1;
+  string address = 2;
+  bool is_app = 3; // flag to show if normal user or app account
+  repeated BridgeBalance balances = 4 [ (gogoproto.nullable) = false ];
+}
+
+message BridgeToken {
+  uint64 index = 1;
+  string denom = 2;
+}
+
+message XAMRequest {
+  repeated BridgeBalance amounts = 1 [ (gogoproto.nullable) = false ];; // coin amount - { "333333": "222222" } to send 222222 ubtc
+  string source_dapp = 2;      // source app
+  string source_account = 3;   // source beneficiary
+  string dest_dapp = 4;        // destination app
+  string dest_beneficiary = 5; // destination beneficiary
+  string xam = 6;              // string with message (optional)
+}
+
+message XAM {
+  uint64 xid = 1;
+  XAMRequest req = 2 [ (gogoproto.nullable) = false ];
+  uint64 irc = 3; // Internal error or response code
+  uint64 src = 4; // Source application error or response code
+  uint64 drc = 5; // Destination application error or response code
+  uint64 irm = 6; // Internal response message
+  uint64 srm = 7; // Source response message
+  uint64 drm = 8; // Destination response message
+}
+
+// Application Bridge Registrar Structure Example 
+// {
+// 	"next_index": <uint64>, // default 1, defines what should be the next index of the user or application account
+//   "next_xam": <uint64>, // default 1, defines what should be the next cross-application transaction id - xid
+//   "next_token": <uint64>, // default 2, defines what should be the next token denom identifier
+// 	"users": { // mapping of uint256 identifiers to addresses, value '0' MUST be reserved
+// 		"1":"kiraXXX...XXX",
+//     "2":"kiraYYY...YYY",
+// 		...
+// 	},
+//   "apps": { // mapping of uint64 identifiers to apps dApp, value '0' MUST be reserved
+// 		"1045": "kiraMMM...MMM", 
+// 		...
+// 	},
+//  "tokens": { // mapping of denom to identifiers, index 1 is reserved for KEX
+// 	  "1": "ukex",
+//     "2": "<denom>", ...
+// 	}
+//   "balances": {           // user or application account balances
+// 		"<kiraXXX...XXX>": {  // explicit account address
+// 			"index": <uint64>,  // index as defined as in the users or apps array
+//       "deposits": {
+// 	      "<denom>": {      // dictionary mapping denom to applications by <index> and the corresponding amount locked to that dApp
+// 					"<index>": "<uint256>", ...
+// 					}, ... 
+// 				}
+// 			}, { ... }, ...
+// 	},
+// 	"xams": {                // cross application messages
+// 		"<kiraXXX...XXX>": [   // list of transactions originating from specific kira address (user or application)
+// 			{
+// 				"xid": <uint64>,   // iterative, unique cross-application message identifier
+// 				"val": {           // dictionary of tokens <uint64> and corresponding ammounts <uint256> to be transferred (if any)
+// 					"<uint64>": "<uint256>", ...
+// 				},
+//         "time": <uint32>,  // unix timestamp of the block when the transfer/withdrawl/message was sent
+//         "src": <uint64>,   // source APPlication of funds FROM which application index funds should be moved, if set to 0 implies deposit to ABR
+//         "acc": <uint64>,   // ACCount index FROM which funds should be sent
+//         "dst": <uint64>,   // APPlication TO which funds should be transferred, if set to 0 implies withdrawl from ABR back to KIRA bank module
+//         "ben": <uint64>,   // beneficiary/destination account to which funds must be sent
+//         "irc": <uint16>,   // Internal error or response code 
+// 				"src": <uint16>,   // Source application error or response code
+//         "drc": <uint16>,   // Destination application error or response code
+//         "xam": "<string>", // Cross-application message
+//         "irm": "<string>", // Internal response message
+//         "srm": "<string>", // Source response message
+//         "drm": "<string>"  // Destination response message
+// 			}, { ... }, ...
+// 		]
+// 	}
+// }

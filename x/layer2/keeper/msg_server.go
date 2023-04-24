@@ -395,7 +395,27 @@ func (k msgServer) RejectDappTransitionTx(goCtx context.Context, msg *types.MsgR
 
 func (k msgServer) TransferDappTx(goCtx context.Context, msg *types.MsgTransferDappTx) (*types.MsgTransferDappTxResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
+	helper := k.keeper.GetBridgeRegistrarHelper(ctx)
+	nextXid := helper.NextXam
+	for _, xam := range msg.Requests {
+		// TODO: check accuracy of source in case of user
+		// TODO: transfer of token in case of user
+		// TODO: check accuracy of source in case of dapp
+		// TODO: transfer of token in case of dapp
+		k.keeper.SetXAM(ctx, types.XAM{
+			Xid: nextXid,
+			Req: xam,
+			Irc: 0,
+			Src: 0,
+			Drc: 0,
+			Irm: 0,
+			Srm: 0,
+			Drm: 0,
+		})
+		nextXid += 1
+	}
+	helper.NextXam = nextXid
+	k.keeper.SetBridgeRegistrarHelper(ctx, helper)
 
 	return &types.MsgTransferDappTxResponse{}, nil
 }
@@ -547,8 +567,6 @@ func (k msgServer) MintBurnTx(goCtx context.Context, msg *types.MsgMintBurnTx) (
 // the token supply.
 
 // TODO: implement - step2
-//   rpc ConvertDappPoolTx(MsgConvertDappPoolTx) returns (MsgConvertDappPoolTxResponse);
-//   rpc TransferDappTx(MsgTransferDappTx) returns (MsgTransferDappTxResponse);
 //   rpc MintCreateFtTx(MsgMintCreateFtTx) returns (MsgMintCreateFtTxResponse);
 //   rpc MintCreateNftTx(MsgMintCreateNftTx) returns (MsgMintCreateNftTxResponse);
 //   rpc MintIssueTx(MsgMintIssueTx) returns (MsgMintIssueTxResponse);
