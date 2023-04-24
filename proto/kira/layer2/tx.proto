@@ -96,6 +96,10 @@ message MsgRedeemDappPoolTx {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
     (gogoproto.nullable) = false
   ];
+  string slippage = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
 }
 message MsgRedeemDappPoolTxResponse {}
 
@@ -108,6 +112,10 @@ message MsgSwapDappPoolTx {
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
     (gogoproto.nullable) = false
   ];
+  string slippage = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
 }
 message MsgSwapDappPoolTxResponse {}
 
@@ -116,6 +124,15 @@ message MsgSwapDappPoolTxResponse {}
 message MsgConvertDappPoolTx {
   string sender = 1;
   string dapp_name = 2;
+  string target_dapp_name = 3;
+  string lp_token = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
+  string slippage = 5 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
 }
 message MsgConvertDappPoolTxResponse {}
 

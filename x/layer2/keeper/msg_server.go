@@ -402,54 +402,27 @@ func (k msgServer) TransferDappTx(goCtx context.Context, msg *types.MsgTransferD
 
 func (k msgServer) RedeemDappPoolTx(goCtx context.Context, msg *types.MsgRedeemDappPoolTx) (*types.MsgRedeemDappPoolTxResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-
 	addr := sdk.MustAccAddressFromBech32(msg.Sender)
 	dapp := k.keeper.GetDapp(ctx, msg.DappName)
 	if dapp.Name != "" {
 		return nil, types.ErrDappDoesNotExist
 	}
+	lpTokenPrice := k.keeper.LpTokenPrice(ctx, dapp)
+	withoutSlippage := msg.LpToken.Amount.ToDec().Mul(lpTokenPrice)
 
-	// 	totalBond * lpSupply = (totalBond - swapBond) * (lpSupply + swapLpAmount)
-	lpToken := dapp.LpToken()
-	if lpToken != msg.LpToken.Denom {
-		return nil, types.ErrInvalidLpToken
-	}
-	lpSupply := k.keeper.bk.GetSupply(ctx, lpToken).Amount
-	totalBond := dapp.TotalBond.Amount
-	swapLpAmount := msg.LpToken.Amount
-	totalBondAfterSwap := totalBond.Mul(lpSupply).Quo(lpSupply.Add(swapLpAmount))
-	swapBond := totalBond.Sub(totalBondAfterSwap)
-
-	dapp.TotalBond.Amount = totalBondAfterSwap
-	k.keeper.SetDapp(ctx, dapp)
-
-	fee := swapBond.ToDec().Mul(dapp.PoolFee).RoundInt()
-	if fee.IsPositive() {
-		feeCoin := sdk.NewCoin(dapp.TotalBond.Denom, fee)
-		err := k.keeper.OnCollectFee(ctx, sdk.Coins{feeCoin})
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	// send lp tokens to the module account
-	err := k.keeper.bk.SendCoinsFromAccountToModule(ctx, addr, types.ModuleName, sdk.Coins{msg.LpToken})
-	if err != nil {
-		return nil, err
-	}
-
-	// send tokens to user
-	userReceiveCoin := sdk.NewCoin(dapp.TotalBond.Denom, swapBond.Sub(fee))
-	err = k.keeper.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, sdk.Coins{userReceiveCoin})
+	receiveCoin, err := k.keeper.RedeemDappPoolTx(ctx, addr, dapp, dapp.PoolFee, msg.LpToken)
 	if err != nil {
 		return nil, err
 	}
 
 	properties := k.keeper.gk.GetNetworkProperties(ctx)
-	threshold := sdk.NewInt(int64(properties.DappLiquidationThreshold)).Mul(sdk.NewInt(1000_000))
-	if dapp.LiquidationStart == 0 && dapp.TotalBond.Amount.LT(threshold) {
-		dapp.LiquidationStart = uint64(ctx.BlockTime().Unix())
-		k.keeper.SetDapp(ctx, dapp)
+	maxSlippage := msg.Slippage
+	if maxSlippage.IsZero() {
+		maxSlippage = properties.DappPoolSlippageDefault
+	}
+	slippage := sdk.OneDec().Sub(receiveCoin.Amount.ToDec().Quo(withoutSlippage))
+	if slippage.GT(maxSlippage) {
+		return nil, types.ErrOperationExceedsSlippage
 	}
 
 	return &types.MsgRedeemDappPoolTxResponse{}, nil
@@ -464,47 +437,25 @@ func (k msgServer) SwapDappPoolTx(goCtx context.Context, msg *types.MsgSwapDappP
 		return nil, types.ErrDappDoesNotExist
 	}
 
-	// 	totalBond * lpSupply = (totalBond - swapBond) * (lpSupply + swapLpAmount)
-	lpToken := dapp.LpToken()
-	if msg.Token.Denom != k.keeper.BondDenom(ctx) {
-		return nil, types.ErrInvalidLpToken
+	lpTokenPrice := k.keeper.LpTokenPrice(ctx, dapp)
+	if lpTokenPrice.IsZero() {
+		return nil, types.ErrOperationExceedsSlippage
 	}
-	lpSupply := k.keeper.bk.GetSupply(ctx, lpToken).Amount
-	totalBond := dapp.TotalBond.Amount
-	swapBondAmount := msg.Token.Amount
-	totalLpAfterSwap := totalBond.Mul(lpSupply).Quo(totalBond.Add(swapBondAmount))
-	swapLpAmount := lpSupply.Sub(totalLpAfterSwap)
+	withoutSlippage := msg.Token.Amount.ToDec().Quo(lpTokenPrice)
 
-	dapp.TotalBond.Amount = dapp.TotalBond.Amount.Add(msg.Token.Amount)
-	k.keeper.SetDapp(ctx, dapp)
-
-	fee := swapLpAmount.ToDec().Mul(dapp.PoolFee).RoundInt()
-	if fee.IsPositive() {
-		feeCoin := sdk.NewCoin(dapp.TotalBond.Denom, fee)
-		err := k.keeper.OnCollectFee(ctx, sdk.Coins{feeCoin})
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	// send lp tokens to the module account
-	err := k.keeper.bk.SendCoinsFromAccountToModule(ctx, addr, types.ModuleName, sdk.Coins{msg.Token})
-	if err != nil {
-		return nil, err
-	}
-
-	// send tokens to user
-	userReceiveCoin := sdk.NewCoin(dapp.TotalBond.Denom, swapLpAmount.Sub(fee))
-	err = k.keeper.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, sdk.Coins{userReceiveCoin})
+	receiveCoin, err := k.keeper.SwapDappPoolTx(ctx, addr, dapp, dapp.PoolFee, msg.Token)
 	if err != nil {
 		return nil, err
 	}
 
 	properties := k.keeper.gk.GetNetworkProperties(ctx)
-	threshold := sdk.NewInt(int64(properties.DappLiquidationThreshold)).Mul(sdk.NewInt(1000_000))
-	if dapp.LiquidationStart != 0 && dapp.TotalBond.Amount.GTE(threshold) {
-		dapp.LiquidationStart = 0
-		k.keeper.SetDapp(ctx, dapp)
+	maxSlippage := msg.Slippage
+	if maxSlippage.IsZero() {
+		maxSlippage = properties.DappPoolSlippageDefault
+	}
+	slippage := sdk.OneDec().Sub(receiveCoin.Amount.ToDec().Quo(withoutSlippage))
+	if slippage.GT(maxSlippage) {
+		return nil, types.ErrOperationExceedsSlippage
 	}
 
 	return &types.MsgSwapDappPoolTxResponse{}, nil
@@ -512,7 +463,42 @@ func (k msgServer) SwapDappPoolTx(goCtx context.Context, msg *types.MsgSwapDappP
 
 func (k msgServer) ConvertDappPoolTx(goCtx context.Context, msg *types.MsgConvertDappPoolTx) (*types.MsgConvertDappPoolTxResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
+	addr := sdk.MustAccAddressFromBech32(msg.Sender)
+	dapp1 := k.keeper.GetDapp(ctx, msg.DappName)
+	if dapp1.Name != "" {
+		return nil, types.ErrDappDoesNotExist
+	}
+
+	lpTokenPrice1 := k.keeper.LpTokenPrice(ctx, dapp1)
+	if lpTokenPrice1.IsZero() {
+		return nil, types.ErrOperationExceedsSlippage
+	}
+	dapp2 := k.keeper.GetDapp(ctx, msg.TargetDappName)
+	if dapp2.Name != "" {
+		return nil, types.ErrDappDoesNotExist
+	}
+
+	lpTokenPrice2 := k.keeper.LpTokenPrice(ctx, dapp2)
+	if lpTokenPrice2.IsZero() {
+		return nil, types.ErrOperationExceedsSlippage
+	}
+
+	withoutSlippage := msg.LpToken.Amount.ToDec().Mul(lpTokenPrice1).Quo(lpTokenPrice2)
+
+	receiveCoin, err := k.keeper.ConvertDappPoolTx(ctx, addr, dapp1, dapp2, msg.LpToken)
+	if err != nil {
+		return nil, err
+	}
+
+	properties := k.keeper.gk.GetNetworkProperties(ctx)
+	maxSlippage := msg.Slippage
+	if maxSlippage.IsZero() {
+		maxSlippage = properties.DappPoolSlippageDefault
+	}
+	slippage := sdk.OneDec().Sub(receiveCoin.Amount.ToDec().Quo(withoutSlippage))
+	if slippage.GT(maxSlippage) {
+		return nil, types.ErrOperationExceedsSlippage
+	}
 
 	return &types.MsgConvertDappPoolTxResponse{}, nil
 }

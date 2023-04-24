@@ -32,4 +32,5 @@ var (
 	ErrLeaderCannotEvaluateSelfSubmission   = errors.Register(ModuleName, 24, "leader cannot evaluate self submission")
 	ErrVerificationNotAllowedOnEmptySession = errors.Register(ModuleName, 25, "verification not allowed on empty session")
 	ErrInvalidLpToken                       = errors.Register(ModuleName, 26, "invalid lp token")
+	ErrOperationExceedsSlippage             = errors.Register(ModuleName, 27, "operation exceeds slippage")
 )

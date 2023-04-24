@@ -71,6 +71,7 @@ enum NetworkProperty {
     DAPP_MISCHANCE_RANK_DECREASE_AMOUNT = 53 [(gogoproto.enumvalue_customname) = "DappMischanceRankDecreaseAmount"];
     DAPP_MAX_MISCHANCE = 54 [(gogoproto.enumvalue_customname) = "DappMaxMischance"];
     DAPP_INACTIVE_RANK_DECREASE_PERCENT = 55 [(gogoproto.enumvalue_customname) = "DappInactiveRankDecreasePercent"];
+    DAPP_POOL_SLIPPAGE_DEFAULT = 56 [(gogoproto.enumvalue_customname) = "DappPoolSlippageDefault"];
 }
 
 message NetworkPropertyValue {
@@ -158,4 +159,8 @@ message NetworkProperties {
     uint64 dapp_mischance_rank_decrease_amount = 54;
     uint64 dapp_max_mischance = 55;
     uint64 dapp_inactive_rank_decrease_percent = 56;
+    string dapp_pool_slippage_default = 57 [
+      (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+      (gogoproto.nullable) = false
+    ]; // default 0.1, that is 10%
 }
