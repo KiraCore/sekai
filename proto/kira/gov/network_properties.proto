@@ -72,6 +72,8 @@ enum NetworkProperty {
     DAPP_MAX_MISCHANCE = 54 [(gogoproto.enumvalue_customname) = "DappMaxMischance"];
     DAPP_INACTIVE_RANK_DECREASE_PERCENT = 55 [(gogoproto.enumvalue_customname) = "DappInactiveRankDecreasePercent"];
     DAPP_POOL_SLIPPAGE_DEFAULT = 56 [(gogoproto.enumvalue_customname) = "DappPoolSlippageDefault"];
+    MINTING_FT_FEE = 57 [ (gogoproto.enumvalue_customname) = "MintingFtFee" ];
+    MINTING_NFT_FEE = 58 [ (gogoproto.enumvalue_customname) = "MintingNftFee" ];
 }
 
 message NetworkPropertyValue {
@@ -163,4 +165,6 @@ message NetworkProperties {
       (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
       (gogoproto.nullable) = false
     ]; // default 0.1, that is 10%
+    uint64 minting_ft_fee = 58; // default 100’000’000’000 ukex - 100k KEX
+    uint64 minting_nft_fee = 59; // default 100’000’000’000 ukex - 100k KEX
 }

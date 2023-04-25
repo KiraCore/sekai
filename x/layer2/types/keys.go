@@ -26,6 +26,7 @@ var (
 	PrefixBridgeAccountKey          = []byte("bridge_account_key")
 	PrefixBridgeTokenKey            = []byte("bridge_token_key")
 	PrefixXAMKey                    = []byte("xam_key")
+	PrefixTokenInfoKey              = []byte("token_info")
 )
 
 func DappKey(name string) []byte {
@@ -66,4 +67,8 @@ func BridgeTokenKey(index uint64) []byte {
 
 func XAMKey(xid uint64) []byte {
 	return append(PrefixXAMKey, sdk.Uint64ToBigEndian(xid)...)
+}
+
+func TokenInfoKey(denom string) []byte {
+	return append(PrefixTokenInfoKey, denom...)
 }

@@ -33,4 +33,8 @@ var (
 	ErrVerificationNotAllowedOnEmptySession = errors.Register(ModuleName, 25, "verification not allowed on empty session")
 	ErrInvalidLpToken                       = errors.Register(ModuleName, 26, "invalid lp token")
 	ErrOperationExceedsSlippage             = errors.Register(ModuleName, 27, "operation exceeds slippage")
+	ErrTokenNotRegistered                   = errors.Register(ModuleName, 28, "token not registered")
+	ErrCannotExceedTokenCap                 = errors.Register(ModuleName, 29, "cannot exceed token cap")
+	ErrTokenAlreadyRegistered               = errors.Register(ModuleName, 30, "token already registered")
+	ErrNotAbleToMintCoinsWithoutFee         = errors.Register(ModuleName, 31, "not able to mint coins without fee")
 )

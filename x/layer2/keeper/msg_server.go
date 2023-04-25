@@ -525,28 +525,161 @@ func (k msgServer) ConvertDappPoolTx(goCtx context.Context, msg *types.MsgConver
 
 func (k msgServer) MintCreateFtTx(goCtx context.Context, msg *types.MsgMintCreateFtTx) (*types.MsgMintCreateFtTxResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
+	properties := k.keeper.gk.GetNetworkProperties(ctx)
+	fee := sdk.NewInt64Coin(k.keeper.BondDenom(ctx), int64(properties.MintingFtFee))
+	sender := sdk.MustAccAddressFromBech32(msg.Sender)
+	err := k.keeper.bk.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, sdk.Coins{fee})
+	if err != nil {
+		return nil, err
+	}
+
+	err = k.keeper.bk.BurnCoins(ctx, types.ModuleName, sdk.Coins{fee})
+	if err != nil {
+		return nil, err
+	}
+
+	denom := "ku/" + msg.DenomSuffix
+
+	info := k.keeper.GetTokenInfo(ctx, denom)
+	if info.Denom != "" {
+		return nil, types.ErrTokenAlreadyRegistered
+	}
+
+	k.keeper.SetTokenInfo(ctx, types.TokenInfo{
+		TokenType:   "adr20",
+		Denom:       denom,
+		Name:        msg.Name,
+		Symbol:      msg.Symbol,
+		Icon:        msg.Icon,
+		Description: msg.Description,
+		Website:     msg.Website,
+		Social:      msg.Social,
+		Decimals:    msg.Decimals,
+		Cap:         msg.Cap,
+		Supply:      msg.Supply,
+		Holders:     msg.Holders,
+		Fee:         msg.Fee,
+		Owner:       msg.Owner,
+		Metadata:    "",
+		Hash:        "",
+	})
 
 	return &types.MsgMintCreateFtTxResponse{}, nil
 }
 
 func (k msgServer) MintCreateNftTx(goCtx context.Context, msg *types.MsgMintCreateNftTx) (*types.MsgMintCreateNftTxResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
+	properties := k.keeper.gk.GetNetworkProperties(ctx)
+	fee := sdk.NewInt64Coin(k.keeper.BondDenom(ctx), int64(properties.MintingFtFee))
+	sender := sdk.MustAccAddressFromBech32(msg.Sender)
+	err := k.keeper.bk.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, sdk.Coins{fee})
+	if err != nil {
+		return nil, err
+	}
+
+	err = k.keeper.bk.BurnCoins(ctx, types.ModuleName, sdk.Coins{fee})
+	if err != nil {
+		return nil, err
+	}
+
+	denom := "ku/" + msg.DenomSuffix
+	info := k.keeper.GetTokenInfo(ctx, denom)
+	if info.Denom != "" {
+		return nil, types.ErrTokenAlreadyRegistered
+	}
+
+	k.keeper.SetTokenInfo(ctx, types.TokenInfo{
+		TokenType:   "adr43",
+		Denom:       denom,
+		Name:        msg.Name,
+		Symbol:      msg.Symbol,
+		Icon:        msg.Icon,
+		Description: msg.Description,
+		Website:     msg.Website,
+		Social:      msg.Social,
+		Decimals:    msg.Decimals,
+		Cap:         msg.Cap,
+		Supply:      msg.Supply,
+		Holders:     msg.Holders,
+		Fee:         msg.Fee,
+		Owner:       msg.Owner,
+		Metadata:    msg.Metadata,
+		Hash:        msg.Hash,
+	})
 
 	return &types.MsgMintCreateNftTxResponse{}, nil
 }
 
 func (k msgServer) MintIssueTx(goCtx context.Context, msg *types.MsgMintIssueTx) (*types.MsgMintIssueTxResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
+	sender := sdk.MustAccAddressFromBech32(msg.Sender)
+	tokenInfo := k.keeper.GetTokenInfo(ctx, msg.Denom)
+	if tokenInfo.Denom == "" {
+		return nil, types.ErrTokenNotRegistered
+	}
+
+	if msg.Sender != tokenInfo.Owner {
+		fee := msg.Amount.Mul(tokenInfo.Fee).Quo(Pow10(tokenInfo.Decimals))
+		feeCoins := sdk.Coins{sdk.NewCoin(k.keeper.BondDenom(ctx), fee)}
+		if fee.IsPositive() {
+			if tokenInfo.Owner == "" {
+				err := k.keeper.bk.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, feeCoins)
+				if err != nil {
+					return nil, err
+				}
+			} else {
+				owner := sdk.MustAccAddressFromBech32(tokenInfo.Owner)
+				err := k.keeper.bk.SendCoins(ctx, sender, owner, feeCoins)
+				if err != nil {
+					return nil, err
+				}
+			}
+		} else {
+			return nil, types.ErrNotAbleToMintCoinsWithoutFee
+		}
+	}
+
+	mintCoin := sdk.NewCoin(msg.Denom, msg.Amount)
+	err := k.keeper.bk.MintCoins(ctx, types.ModuleName, sdk.Coins{mintCoin})
+	if err != nil {
+		return nil, err
+	}
+
+	err = k.keeper.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, sdk.Coins{mintCoin})
+	if err != nil {
+		return nil, err
+	}
+
+	tokenInfo.Supply = tokenInfo.Supply.Add(msg.Amount)
+	if tokenInfo.Supply.GT(tokenInfo.Cap) {
+		return nil, types.ErrCannotExceedTokenCap
+	}
+	k.keeper.SetTokenInfo(ctx, tokenInfo)
 
 	return &types.MsgMintIssueTxResponse{}, nil
 }
 
 func (k msgServer) MintBurnTx(goCtx context.Context, msg *types.MsgMintBurnTx) (*types.MsgMintBurnTxResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
+	sender := sdk.MustAccAddressFromBech32(msg.Sender)
+	tokenInfo := k.keeper.GetTokenInfo(ctx, msg.Denom)
+	if tokenInfo.Denom == "" {
+		return nil, types.ErrTokenNotRegistered
+	}
+
+	burnCoin := sdk.NewCoin(msg.Denom, msg.Amount)
+	err := k.keeper.bk.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, sdk.Coins{burnCoin})
+	if err != nil {
+		return nil, err
+	}
+
+	err = k.keeper.bk.BurnCoins(ctx, types.ModuleName, sdk.Coins{burnCoin})
+	if err != nil {
+		return nil, err
+	}
+
+	tokenInfo.Supply = tokenInfo.Supply.Sub(msg.Amount)
+	k.keeper.SetTokenInfo(ctx, tokenInfo)
 
 	return &types.MsgMintBurnTxResponse{}, nil
 }
@@ -565,9 +698,3 @@ func (k msgServer) MintBurnTx(goCtx context.Context, msg *types.MsgMintBurnTx) (
 // while the `issuance.deposit` address can be set up by the team as a Spending Pool to easily distribute tokens to their
 // rightful owners as well as configure an **optional** “drip” if needed to not scare the LP token holders with an immediate increase of
 // the token supply.
-
-// TODO: implement - step2
-//   rpc MintCreateFtTx(MsgMintCreateFtTx) returns (MsgMintCreateFtTxResponse);
-//   rpc MintCreateNftTx(MsgMintCreateNftTx) returns (MsgMintCreateNftTxResponse);
-//   rpc MintIssueTx(MsgMintIssueTx) returns (MsgMintIssueTxResponse);
-//   rpc MintBurnTx(MsgMintBurnTx) returns (MsgMintBurnTxResponse);
