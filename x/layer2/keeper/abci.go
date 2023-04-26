@@ -21,6 +21,20 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 			k.FinishDappBootstrap(ctx, dapp)
 		}
 
+		if dapp.PremintTime+dapp.Pool.Drip < uint64(ctx.BlockTime().Unix()) &&
+			dapp.Issurance.Postmint.IsPositive() &&
+			dapp.Status == types.Active {
+			teamReserve := sdk.MustAccAddressFromBech32(dapp.TeamReserve)
+			dappBondLpToken := dapp.LpToken()
+			premintCoin := sdk.NewCoin(dappBondLpToken, dapp.Issurance.Premint)
+			err := k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, teamReserve, sdk.Coins{premintCoin})
+			if err != nil {
+				panic(err)
+			}
+			dapp.PostMintPaid = true
+			k.SetDapp(ctx, dapp)
+		}
+
 		if dapp.Status == types.Active {
 			session := k.GetDappSession(ctx, dapp.Name)
 			// session not started yet during denounce time
@@ -120,10 +134,21 @@ func (k Keeper) FinishDappBootstrap(ctx sdk.Context, dapp types.Dapp) {
 
 		dapp.Status = types.Halted
 		dapp.Pool.Deposit = spendingPoolName
+		dapp.PremintTime = blockTime
 		k.SetDapp(ctx, dapp)
 
 		for _, userBond := range userBonds {
 			k.DeleteUserDappBond(ctx, dapp.Name, userBond.User)
+		}
+
+		// send premint amount to team reserve
+		if dapp.Issurance.Premint.IsPositive() {
+			teamReserve := sdk.MustAccAddressFromBech32(dapp.TeamReserve)
+			premintCoin := sdk.NewCoin(dappBondLpToken, dapp.Issurance.Premint)
+			err = k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, teamReserve, sdk.Coins{premintCoin})
+			if err != nil {
+				panic(err)
+			}
 		}
 	}
 }
