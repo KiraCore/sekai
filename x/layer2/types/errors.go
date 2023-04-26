@@ -37,4 +37,8 @@ var (
 	ErrCannotExceedTokenCap                 = errors.Register(ModuleName, 29, "cannot exceed token cap")
 	ErrTokenAlreadyRegistered               = errors.Register(ModuleName, 30, "token already registered")
 	ErrNotAbleToMintCoinsWithoutFee         = errors.Register(ModuleName, 31, "not able to mint coins without fee")
+	ErrInvalidBridgeDepositMessage          = errors.Register(ModuleName, 32, "invalid bridge deposit message")
+	ErrInvalidBridgeWithdrawalMessage       = errors.Register(ModuleName, 33, "invalid bridge withdrawal message")
+	ErrNegativeBridgeBalance                = errors.Register(ModuleName, 34, "negative bridge balance")
+	ErrInvalidBridgeSourceAccount           = errors.Register(ModuleName, 35, "invalid bridge source account")
 )

@@ -18,3 +18,7 @@ func (dapp Dapp) GetLpTokenSupply() sdk.Int {
 	totalSupply := spendingPoolDeposit.Add(dapp.Issurance.Postmint).Add(dapp.Issurance.Premint)
 	return totalSupply
 }
+
+func (dapp Dapp) GetAccount() sdk.AccAddress {
+	return sdk.AccAddress(dapp.Name)
+}

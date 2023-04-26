@@ -509,13 +509,9 @@ func GetTxTransitionDappCmd() *cobra.Command {
 				return err
 			}
 
-			msg := &types.MsgTransitionDappTx{
-				Sender:     clientCtx.GetFromAddress().String(),
-				DappName:   args[0],
-				StatusHash: args[1],
-				Version:    args[2],
-			}
-
+			msg := types.NewMsgTransitionDappTx(
+				clientCtx.GetFromAddress().String(), args[0], args[1], args[2], []sdk.Msg{},
+			)
 			err = msg.ValidateBasic()
 			if err != nil {
 				return err

@@ -66,6 +66,9 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 		case *types.MsgTransferDappTx:
 			res, err := msgServer.TransferDappTx(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgAckTransferDappTx:
+			res, err := msgServer.AckTransferDappTx(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
 		case *types.MsgMintCreateFtTx:
 			res, err := msgServer.MintCreateFtTx(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)

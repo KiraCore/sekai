@@ -276,6 +276,7 @@ func (k msgServer) TransitionDappTx(goCtx context.Context, msg *types.MsgTransit
 		return nil, types.ErrDappSessionDoesNotExist
 	}
 	session.NextSession.StatusHash = msg.StatusHash
+	session.NextSession.OnchainMessages = msg.OnchainMessages
 	k.keeper.SetDappSession(ctx, session)
 
 	return &types.MsgTransitionDappTxResponse{}, nil
@@ -393,24 +394,114 @@ func (k msgServer) RejectDappTransitionTx(goCtx context.Context, msg *types.MsgR
 	return &types.MsgRejectDappTransitionTxResponse{}, nil
 }
 
+func (k Keeper) GetCoinsFromBridgeBalance(ctx sdk.Context, balances []types.BridgeBalance) sdk.Coins {
+	coins := sdk.Coins{}
+	for _, balance := range balances {
+		token := k.GetBridgeToken(ctx, balance.BridgeTokenIndex)
+		if token.Denom == "" {
+			continue
+		}
+		coins = coins.Add(sdk.NewCoin(token.Denom, balance.Amount))
+	}
+	return coins
+}
+
+func AddBridgeBalance(balances []types.BridgeBalance, addition []types.BridgeBalance) []types.BridgeBalance {
+	indexMap := make(map[uint64]int)
+	for i, balance := range balances {
+		indexMap[balance.BridgeTokenIndex] = i
+	}
+
+	for _, balance := range addition {
+		i, ok := indexMap[balance.BridgeTokenIndex]
+		if ok {
+			balances[i].Amount = balances[i].Amount.Add(balance.Amount)
+		} else {
+			balances = append(balances, balance)
+		}
+	}
+	return balances
+}
+
+func SubBridgeBalance(balances []types.BridgeBalance, removal []types.BridgeBalance) ([]types.BridgeBalance, error) {
+	indexMap := make(map[uint64]int)
+	for i, balance := range balances {
+		indexMap[balance.BridgeTokenIndex] = i
+	}
+
+	for _, balance := range removal {
+		i, ok := indexMap[balance.BridgeTokenIndex]
+		if ok {
+			balances[i].Amount = balances[i].Amount.Sub(balance.Amount)
+			if balances[i].Amount.IsNegative() {
+				return balances, types.ErrNegativeBridgeBalance
+			}
+		} else {
+			return balances, types.ErrNegativeBridgeBalance
+		}
+	}
+	return balances, nil
+}
+
 func (k msgServer) TransferDappTx(goCtx context.Context, msg *types.MsgTransferDappTx) (*types.MsgTransferDappTxResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+	sender := sdk.MustAccAddressFromBech32(msg.Sender)
 	helper := k.keeper.GetBridgeRegistrarHelper(ctx)
 	nextXid := helper.NextXam
 	for _, xam := range msg.Requests {
-		// TODO: check accuracy of source in case of user
-		// TODO: transfer of token in case of user
-		// TODO: check accuracy of source in case of dapp
-		// TODO: transfer of token in case of dapp
+		coins := k.keeper.GetCoinsFromBridgeBalance(ctx, xam.Amounts)
+		if !coins.Empty() {
+			sa := k.keeper.GetBridgeAccount(ctx, xam.SourceAccount)
+			if xam.SourceDapp == 0 { // direct deposit from user
+				if sa.Address == "" {
+					sa.Address = msg.Sender
+					sa.Index = helper.NextUser
+					sa.DappName = ""
+					helper.NextUser += 1
+					k.keeper.SetBridgeRegistrarHelper(ctx, helper)
+				}
+				if sa.Address != msg.Sender {
+					return nil, types.ErrInvalidBridgeDepositMessage
+				}
+				err := k.keeper.bk.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, coins)
+				if err != nil {
+					return nil, err
+				}
+				sa.Balances = AddBridgeBalance(sa.Balances, xam.Amounts)
+				k.keeper.SetBridgeAccount(ctx, sa)
+			} else if xam.DestDapp == 0 { // withdrawal to user account
+				ba := k.keeper.GetBridgeAccount(ctx, xam.DestBeneficiary)
+				if ba.Address != msg.Sender {
+					return nil, types.ErrInvalidBridgeWithdrawalMessage
+				}
+				err := k.keeper.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, coins)
+				if err != nil {
+					return nil, err
+				}
+				sa.Balances, err = SubBridgeBalance(sa.Balances, xam.Amounts)
+				if err != nil {
+					return nil, err
+				}
+				k.keeper.SetBridgeAccount(ctx, sa)
+			} else {
+				// check accuracy of source in case of dapp
+				sa := k.keeper.GetBridgeAccount(ctx, xam.SourceAccount)
+				if sa.Address != msg.Sender {
+					return nil, types.ErrInvalidBridgeSourceAccount
+				}
+			}
+		}
 		k.keeper.SetXAM(ctx, types.XAM{
-			Xid: nextXid,
 			Req: xam,
-			Irc: 0,
-			Src: 0,
-			Drc: 0,
-			Irm: 0,
-			Srm: 0,
-			Drm: 0,
+			Res: types.XAMResponse{
+				Xid: nextXid,
+				Irc: 0,
+				Src: 0,
+				Drc: 0,
+				Irm: 0,
+				Srm: 0,
+				Drm: 0,
+			},
 		})
 		nextXid += 1
 	}
@@ -418,6 +509,36 @@ func (k msgServer) TransferDappTx(goCtx context.Context, msg *types.MsgTransferD
 	k.keeper.SetBridgeRegistrarHelper(ctx, helper)
 
 	return &types.MsgTransferDappTxResponse{}, nil
+}
+
+func (k msgServer) AckTransferDappTx(goCtx context.Context, msg *types.MsgAckTransferDappTx) (*types.MsgAckTransferDappTxResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	for _, res := range msg.Responses {
+		xam := k.keeper.GetXAM(ctx, res.Xid)
+		if xam.Res.Drc != 0 { // response already set
+			continue
+		}
+		xam.Res = res
+		k.keeper.SetXAM(ctx, xam)
+		// handle token transfer when response is okay
+		if res.Drc == 200 { // status okay
+			var err error
+			sa := k.keeper.GetBridgeAccount(ctx, xam.Req.SourceAccount)
+			sa.Balances, err = SubBridgeBalance(sa.Balances, xam.Req.Amounts)
+			if err != nil {
+				return nil, err
+			}
+			k.keeper.SetBridgeAccount(ctx, sa)
+			da := k.keeper.GetBridgeAccount(ctx, xam.Req.DestBeneficiary)
+			da.Balances = AddBridgeBalance(sa.Balances, xam.Req.Amounts)
+			if err != nil {
+				return nil, err
+			}
+			k.keeper.SetBridgeAccount(ctx, da)
+		}
+	}
+
+	return &types.MsgAckTransferDappTxResponse{}, nil
 }
 
 func (k msgServer) RedeemDappPoolTx(goCtx context.Context, msg *types.MsgRedeemDappPoolTx) (*types.MsgRedeemDappPoolTxResponse, error) {
@@ -683,18 +804,3 @@ func (k msgServer) MintBurnTx(goCtx context.Context, msg *types.MsgMintBurnTx) (
 
 	return &types.MsgMintBurnTxResponse{}, nil
 }
-
-// TODO:
-// ### c**) Team & Investors Incentives**
-// Here are a few examples of ways in which “issuance” and “pool” configuration parameters can be used:
-// - Fair Launch - no extra tokens issued and all LP coins are immediately unlocked (`pool.drip` set to 0).
-// - User Assisted Launch - LP Spending Pool is configured to slowly distribute LP tokens, the `issuance.premint` is set to
-// a small reasonable amount while the `issuance.postmint` is not used.
-// This enables small teams that need to hire a few developers to establish a token treasury
-// and sell their stake to users that are locked in the LP.
-// - Investor Assisted Launch - LP Spending Pool is configured to slowly distribute LP tokens
-// while premint and postmint enable the creation of treasury and sale of SAFT agreements for large-scale projects.
-// The `issuance.time` parameter can be used to clearly define the time when investor tokens will be issued during the “postmint” event
-// while the `issuance.deposit` address can be set up by the team as a Spending Pool to easily distribute tokens to their
-// rightful owners as well as configure an **optional** “drip” if needed to not scare the LP token holders with an immediate increase of
-// the token supply.

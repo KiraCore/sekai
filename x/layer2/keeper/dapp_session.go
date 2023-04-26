@@ -137,6 +137,30 @@ func (k Keeper) CreateNewSession(ctx sdk.Context, name string, prevLeader string
 	session.PrevSession = session.CurrSession
 	session.CurrSession = session.NextSession
 	k.SetDappSession(ctx, session)
+
+	// handle bridge and mint messages
+	msgServer := NewMsgServerImpl(k)
+	for _, msg := range session.PrevSession.OnchainMessages {
+		cacheCtx, write := ctx.CacheContext()
+		var err error
+		switch msg := msg.GetCachedValue().(type) {
+		case *types.MsgTransferDappTx:
+			_, err = msgServer.TransferDappTx(sdk.WrapSDKContext(cacheCtx), msg)
+		case *types.MsgAckTransferDappTx:
+			_, err = msgServer.AckTransferDappTx(sdk.WrapSDKContext(ctx), msg)
+		case *types.MsgMintCreateFtTx:
+			_, err = msgServer.MintCreateFtTx(sdk.WrapSDKContext(ctx), msg)
+		case *types.MsgMintCreateNftTx:
+			_, err = msgServer.MintCreateNftTx(sdk.WrapSDKContext(ctx), msg)
+		case *types.MsgMintIssueTx:
+			_, err = msgServer.MintIssueTx(sdk.WrapSDKContext(ctx), msg)
+		case *types.MsgMintBurnTx:
+			_, err = msgServer.MintBurnTx(sdk.WrapSDKContext(ctx), msg)
+		}
+		if err == nil {
+			write()
+		}
+	}
 	k.ResetNewSession(ctx, name, prevLeader)
 }
 

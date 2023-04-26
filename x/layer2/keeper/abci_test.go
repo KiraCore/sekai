@@ -4,4 +4,5 @@ package keeper_test
 // - finishing bootstrap case on EndBlocker
 // - operator jail case on EndBlocker
 // - liquidation case on EndBlocker
+// - timeout for bridge registrar
 // TODO: add test for FinishDappBootstrap

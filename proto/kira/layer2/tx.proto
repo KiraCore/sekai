@@ -28,6 +28,7 @@ service Msg {
   rpc ApproveDappTransitionTx(MsgApproveDappTransitionTx) returns (MsgApproveDappTransitionTxResponse);
   rpc RejectDappTransitionTx(MsgRejectDappTransitionTx) returns (MsgRejectDappTransitionTxResponse);
   rpc TransferDappTx(MsgTransferDappTx) returns (MsgTransferDappTxResponse);
+  rpc AckTransferDappTx(MsgAckTransferDappTx) returns (MsgAckTransferDappTxResponse);
   rpc MintCreateFtTx(MsgMintCreateFtTx) returns (MsgMintCreateFtTxResponse);
   rpc MintCreateNftTx(MsgMintCreateNftTx) returns (MsgMintCreateNftTxResponse);
   rpc MintIssueTx(MsgMintIssueTx) returns (MsgMintIssueTxResponse);
@@ -188,7 +189,8 @@ message MsgTransitionDappTx {
   string sender = 1;
   string dapp_name = 2;
   string status_hash = 3;
-  string version = 4;
+  repeated google.protobuf.Any onchain_messages = 4; // dapp mints, xam creations, xam accepts
+  string version = 5;
 }
 message MsgTransitionDappTxResponse {}
 
@@ -217,6 +219,13 @@ message MsgTransferDappTx {
   repeated XAMRequest requests = 2 [ (gogoproto.nullable) = false ];
 }
 message MsgTransferDappTxResponse {}
+
+// acknowledgement of transfer dapp tx
+message MsgAckTransferDappTx {
+  string sender = 1;
+  repeated XAMResponse responses = 2 [ (gogoproto.nullable) = false ];
+}
+message MsgAckTransferDappTxResponse {}
 
 // create new fungible token record in the minting module
 message MsgMintCreateFtTx {

@@ -4,6 +4,7 @@ package kira.layer2;
 option go_package = "github.com/KiraCore/sekai/x/layer2/types";
 option (gogoproto.equal_all) = true;
 
+import "google/protobuf/any.proto";
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 
@@ -159,6 +160,7 @@ message DappSession {
   string status_hash = 3;
   SessionStatus status = 4;
   string gateway = 5;
+  repeated google.protobuf.Any onchain_messages = 6; // dapp mints, xam creations, xam accepts
 }
 
 message DappSessionApproval {
@@ -205,7 +207,7 @@ message BridgeBalance {
 message BridgeAccount {
   uint64 index = 1;
   string address = 2;
-  bool is_app = 3; // flag to show if normal user or app account
+  string dapp_name = 3; // set to app name if app account
   repeated BridgeBalance balances = 4 [ (gogoproto.nullable) = false ];
 }
 
@@ -216,22 +218,27 @@ message BridgeToken {
 
 message XAMRequest {
   repeated BridgeBalance amounts = 1 [ (gogoproto.nullable) = false ];; // coin amount - { "333333": "222222" } to send 222222 ubtc
-  string source_dapp = 2;      // source app
-  string source_account = 3;   // source beneficiary
-  string dest_dapp = 4;        // destination app
-  string dest_beneficiary = 5; // destination beneficiary
+  uint64 source_dapp = 2;      // source app
+  uint64 source_account = 3;   // source beneficiary
+  uint64 dest_dapp = 4;        // destination app
+  uint64 dest_beneficiary = 5; // destination beneficiary
   string xam = 6;              // string with message (optional)
 }
 
-message XAM {
+message XAMResponse {
   uint64 xid = 1;
+  uint64 irc = 2; // Internal error or response code
+  uint64 src = 3; // Source application error or response code
+  uint64 drc = 4; // Destination application error or response code
+  uint64 irm = 5; // Internal response message
+  uint64 srm = 6; // Source response message
+  uint64 drm = 7; // Destination response message
+}
+
+message XAM {
+  uint64 req_time = 1;
   XAMRequest req = 2 [ (gogoproto.nullable) = false ];
-  uint64 irc = 3; // Internal error or response code
-  uint64 src = 4; // Source application error or response code
-  uint64 drc = 5; // Destination application error or response code
-  uint64 irm = 6; // Internal response message
-  uint64 srm = 7; // Source response message
-  uint64 drm = 8; // Destination response message
+  XAMResponse res = 3 [ (gogoproto.nullable) = false ];
 }
 
 // Application Bridge Registrar Structure Example 

@@ -22,13 +22,13 @@ func (suite *KeeperTestSuite) TestBridgeAccountSetGet() {
 		{
 			Index:    1,
 			Address:  "kira15ky9du8a2wlstz6fpx3p4mqpjyrm5cgqzp4f3d",
-			IsApp:    false,
+			DappName: "",
 			Balances: []types.BridgeBalance(nil),
 		},
 		{
-			Index:   2,
-			Address: "kira1alzyfq40zjsveat87jlg8jxetwqmr0a29sgd0f",
-			IsApp:   false,
+			Index:    2,
+			Address:  "kira1alzyfq40zjsveat87jlg8jxetwqmr0a29sgd0f",
+			DappName: "dapp1",
 			Balances: []types.BridgeBalance{
 				{
 					BridgeTokenIndex: 1,
@@ -79,24 +79,25 @@ func (suite *KeeperTestSuite) TestBridgeTokenSetGet() {
 func (suite *KeeperTestSuite) TestXAMSetGet() {
 	infos := []types.XAM{
 		{
-			Xid: 1,
 			Req: types.XAMRequest{
 				Amounts:         []types.BridgeBalance(nil),
-				SourceDapp:      "dapp1",
-				SourceAccount:   "",
-				DestDapp:        "dapp2",
-				DestBeneficiary: "",
+				SourceDapp:      1,
+				SourceAccount:   1,
+				DestDapp:        2,
+				DestBeneficiary: 1,
 				Xam:             "",
 			},
-			Irc: 0,
-			Src: 0,
-			Drc: 0,
-			Irm: 0,
-			Srm: 0,
-			Drm: 0,
+			Res: types.XAMResponse{
+				Xid: 1,
+				Irc: 0,
+				Src: 0,
+				Drc: 0,
+				Irm: 0,
+				Srm: 0,
+				Drm: 0,
+			},
 		},
 		{
-			Xid: 2,
 			Req: types.XAMRequest{
 				Amounts: []types.BridgeBalance{
 					{
@@ -104,18 +105,21 @@ func (suite *KeeperTestSuite) TestXAMSetGet() {
 						Amount:           sdk.OneInt(),
 					},
 				},
-				SourceDapp:      "dapp1",
-				SourceAccount:   "",
-				DestDapp:        "dapp2",
-				DestBeneficiary: "",
+				SourceDapp:      1,
+				SourceAccount:   1,
+				DestDapp:        2,
+				DestBeneficiary: 1,
 				Xam:             "",
 			},
-			Irc: 0,
-			Src: 0,
-			Drc: 0,
-			Irm: 0,
-			Srm: 0,
-			Drm: 0,
+			Res: types.XAMResponse{
+				Xid: 2,
+				Irc: 0,
+				Src: 0,
+				Drc: 0,
+				Irm: 0,
+				Srm: 0,
+				Drm: 0,
+			},
 		},
 	}
 
@@ -124,7 +128,7 @@ func (suite *KeeperTestSuite) TestXAMSetGet() {
 	}
 
 	for _, info := range infos {
-		c := suite.app.Layer2Keeper.GetXAM(suite.ctx, info.Xid)
+		c := suite.app.Layer2Keeper.GetXAM(suite.ctx, info.Res.Xid)
 		suite.Require().Equal(c, info)
 	}
 

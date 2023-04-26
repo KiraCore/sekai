@@ -89,10 +89,10 @@ func (k Keeper) GetBridgeTokens(ctx sdk.Context) []types.BridgeToken {
 	return tokens
 }
 
-func (k Keeper) SetXAM(ctx sdk.Context, token types.XAM) {
-	bz := k.cdc.MustMarshal(&token)
+func (k Keeper) SetXAM(ctx sdk.Context, xam types.XAM) {
+	bz := k.cdc.MustMarshal(&xam)
 	store := ctx.KVStore(k.storeKey)
-	store.Set(types.XAMKey(token.Xid), bz)
+	store.Set(types.XAMKey(xam.Res.Xid), bz)
 }
 
 func (k Keeper) GetXAM(ctx sdk.Context, xid uint64) types.XAM {
