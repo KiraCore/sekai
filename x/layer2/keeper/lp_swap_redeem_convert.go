@@ -93,7 +93,7 @@ func (k Keeper) SwapDappPoolTx(ctx sdk.Context, addr sdk.AccAddress, dapp types.
 
 	fee := swapLpAmount.ToDec().Mul(poolFee).RoundInt()
 	if fee.IsPositive() {
-		feeCoin := sdk.NewCoin(dapp.TotalBond.Denom, fee)
+		feeCoin := sdk.NewCoin(lpToken, fee)
 		err := k.OnCollectFee(ctx, sdk.Coins{feeCoin})
 		if err != nil {
 			return sdk.Coin{}, err
@@ -107,7 +107,7 @@ func (k Keeper) SwapDappPoolTx(ctx sdk.Context, addr sdk.AccAddress, dapp types.
 	}
 
 	// send tokens to user
-	userReceiveCoin := sdk.NewCoin(dapp.TotalBond.Denom, swapLpAmount.Sub(fee))
+	userReceiveCoin := sdk.NewCoin(lpToken, swapLpAmount.Sub(fee))
 	err = k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, addr, sdk.Coins{userReceiveCoin})
 	if err != nil {
 		return sdk.Coin{}, err
