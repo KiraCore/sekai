@@ -6,6 +6,7 @@ import "gogoproto/gogo.proto";
 import "google/protobuf/any.proto";
 import "google/api/annotations.proto";
 import "kira/layer2/layer2.proto";
+import "kira/layer2/mint.proto";
 
 option go_package = "github.com/KiraCore/sekai/x/layer2/types";
 
@@ -22,7 +23,7 @@ service Query {
   }
   // query XAMs’ records by either account address, account index, xid or
   // transaction hash in which cross-app transaction was added to the ABR.
-  rpc TransferDapp(QueryTransferDappRequest) returns (QueryTransferDappResponse) {
+  rpc TransferDapps(QueryTransferDappsRequest) returns (QueryTransferDappsResponse) {
     option (google.api.http).get = "/kira/layer2/transfer_dapp";
   }
   // query list of all token denoms on the network including those created in
@@ -48,8 +49,12 @@ message QueryAllDappsResponse {
   repeated Dapp dapps = 1 [ (gogoproto.nullable) = false ];
 }
 
-message QueryTransferDappRequest {}
-message QueryTransferDappResponse {}
+message QueryTransferDappsRequest {}
+message QueryTransferDappsResponse {
+  repeated XAM XAMs = 1 [ (gogoproto.nullable) = false ];
+}
 
 message QueryGlobalTokensRequest {}
-message QueryGlobalTokensResponse {}
+message QueryGlobalTokensResponse {
+  repeated TokenInfo tokens = 1 [ (gogoproto.nullable) = false ];
+}

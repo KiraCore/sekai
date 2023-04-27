@@ -51,6 +51,7 @@ func (suite *KeeperTestSuite) TestDappSetGetDelete() {
 			VerifiersMin:  1,
 			TotalBond:     sdk.NewInt64Coin("ukex", 10000),
 			CreationTime:  0,
+			PoolFee:       sdk.NewDec(1),
 		},
 		{
 			Name:        "dapp2",
@@ -96,6 +97,7 @@ func (suite *KeeperTestSuite) TestDappSetGetDelete() {
 			VerifiersMin:  1,
 			TotalBond:     sdk.NewInt64Coin("ukex", 10000),
 			CreationTime:  0,
+			PoolFee:       sdk.NewDec(1),
 		},
 	}
 

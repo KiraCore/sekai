@@ -33,6 +33,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgApproveDappTransitionTx{},
 		&MsgRejectDappTransitionTx{},
 		&MsgTransferDappTx{},
+		&MsgAckTransferDappTx{},
 		&MsgMintCreateFtTx{},
 		&MsgMintCreateNftTx{},
 		&MsgMintIssueTx{},

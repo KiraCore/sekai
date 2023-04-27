@@ -12,9 +12,11 @@ var _ types.QueryServer = Keeper{}
 func (k Keeper) ExecutionRegistrar(goCtx context.Context, request *types.QueryExecutionRegistrarRequest) (*types.QueryExecutionRegistrarResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	dapp := k.GetDapp(ctx, request.Identifier)
+	registarar := k.GetDappSession(ctx, request.Identifier)
 
 	return &types.QueryExecutionRegistrarResponse{
-		Dapp: &dapp,
+		Dapp:               &dapp,
+		ExecutionRegistrar: &registarar,
 	}, nil
 }
 
@@ -25,16 +27,18 @@ func (k Keeper) AllDapps(goCtx context.Context, request *types.QueryAllDappsRequ
 	}, nil
 }
 
-func (k Keeper) TransferDapp(goCtx context.Context, request *types.QueryTransferDappRequest) (*types.QueryTransferDappResponse, error) {
+func (k Keeper) TransferDapps(goCtx context.Context, request *types.QueryTransferDappsRequest) (*types.QueryTransferDappsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
 
-	return &types.QueryTransferDappResponse{}, nil
+	return &types.QueryTransferDappsResponse{
+		XAMs: k.GetXAMs(ctx),
+	}, nil
 }
 
 func (k Keeper) GlobalTokens(goCtx context.Context, request *types.QueryGlobalTokensRequest) (*types.QueryGlobalTokensResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
 
-	return &types.QueryGlobalTokensResponse{}, nil
+	return &types.QueryGlobalTokensResponse{
+		Tokens: k.GetTokenInfos(ctx),
+	}, nil
 }
