@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
@@ -1120,7 +1119,7 @@ func GetTxReactivateDappTxCmd() *cobra.Command {
 // GetTxTransferDappTxCmd implement cli command for MsgTransferDappTx
 func GetTxTransferDappTxCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "transfer-dapp [requests-json]",
+		Use:   "transfer-dapp [request-json]",
 		Short: "Send transfer dapp message",
 		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -1129,15 +1128,15 @@ func GetTxTransferDappTxCmd() *cobra.Command {
 				return err
 			}
 
-			reqs := []types.XAMRequest{}
-			err = json.Unmarshal([]byte(args[0]), &reqs)
+			req := types.XAMRequest{}
+			err = clientCtx.Codec.UnmarshalJSON([]byte(args[0]), &req)
 			if err != nil {
 				return err
 			}
 
 			msg := &types.MsgTransferDappTx{
 				Sender:   clientCtx.GetFromAddress().String(),
-				Requests: reqs,
+				Requests: []types.XAMRequest{req},
 			}
 
 			err = msg.ValidateBasic()
@@ -1163,12 +1162,6 @@ func GetTxMintCreateFtTxCmd() *cobra.Command {
 		Args:  cobra.MinimumNArgs(12),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
-
-			reqs := []types.XAMRequest{}
-			err = json.Unmarshal([]byte(args[0]), &reqs)
 			if err != nil {
 				return err
 			}
@@ -1232,12 +1225,6 @@ func GetTxMintCreateNftTxCmd() *cobra.Command {
 		Args:  cobra.MinimumNArgs(14),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
-
-			reqs := []types.XAMRequest{}
-			err = json.Unmarshal([]byte(args[0]), &reqs)
 			if err != nil {
 				return err
 			}
