@@ -239,6 +239,19 @@ func (k Keeper) GetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 		return types.NetworkPropertyValue{StrValue: properties.DappVerifierBond.String()}, nil
 	case types.DappAutoDenounceTime:
 		return types.NetworkPropertyValue{Value: properties.DappAutoDenounceTime}, nil
+	case types.DappMischanceRankDecreaseAmount:
+		return types.NetworkPropertyValue{Value: properties.DappMischanceRankDecreaseAmount}, nil
+	case types.DappMaxMischance:
+		return types.NetworkPropertyValue{Value: properties.DappMaxMischance}, nil
+	case types.DappInactiveRankDecreasePercent:
+		return types.NetworkPropertyValue{Value: properties.DappInactiveRankDecreasePercent}, nil
+	case types.DappPoolSlippageDefault:
+		return types.NetworkPropertyValue{StrValue: properties.DappPoolSlippageDefault.String()}, nil
+	case types.MintingFtFee:
+		return types.NetworkPropertyValue{Value: properties.MintingFtFee}, nil
+	case types.MintingNftFee:
+		return types.NetworkPropertyValue{Value: properties.MintingNftFee}, nil
+
 	default:
 		return types.NetworkPropertyValue{}, errors.New("trying to fetch network property that does not exist")
 	}
@@ -369,6 +382,23 @@ func (k Keeper) SetNetworkProperty(ctx sdk.Context, property types.NetworkProper
 		properties.DappVerifierBond = decValue
 	case types.DappAutoDenounceTime:
 		properties.DappAutoDenounceTime = value.Value
+	case types.DappMischanceRankDecreaseAmount:
+		properties.DappMischanceRankDecreaseAmount = value.Value
+	case types.DappMaxMischance:
+		properties.DappMaxMischance = value.Value
+	case types.DappInactiveRankDecreasePercent:
+		properties.DappInactiveRankDecreasePercent = value.Value
+	case types.DappPoolSlippageDefault:
+		decValue, err := sdk.NewDecFromStr(value.StrValue)
+		if err != nil {
+			return err
+		}
+		properties.DappPoolSlippageDefault = decValue
+	case types.MintingFtFee:
+		properties.MintingFtFee = value.Value
+	case types.MintingNftFee:
+		properties.MintingNftFee = value.Value
+
 	default:
 		return errors.New("trying to set network property that does not exist")
 	}

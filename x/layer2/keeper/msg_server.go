@@ -271,11 +271,21 @@ func (k msgServer) ExecuteDappTx(goCtx context.Context, msg *types.MsgExecuteDap
 func (k msgServer) TransitionDappTx(goCtx context.Context, msg *types.MsgTransitionDappTx) (*types.MsgTransitionDappTxResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	dapp := k.keeper.GetDapp(ctx, msg.DappName)
+	if dapp.Name != "" {
+		return nil, types.ErrDappDoesNotExist
+	}
+
+	if msg.Version != dapp.Version() {
+		return nil, types.ErrInvalidDappVersion
+	}
+
 	session := k.keeper.GetDappSession(ctx, msg.DappName)
 	if session.DappName == "" {
 		return nil, types.ErrDappSessionDoesNotExist
 	}
 	session.NextSession.StatusHash = msg.StatusHash
+	session.NextSession.OnchainMessages = msg.OnchainMessages
 	k.keeper.SetDappSession(ctx, session)
 
 	return &types.MsgTransitionDappTxResponse{}, nil
@@ -296,7 +306,16 @@ func (k msgServer) DenounceLeaderTx(goCtx context.Context, msg *types.MsgDenounc
 	if session.CurrSession.Leader == msg.Sender {
 		return nil, types.ErrLeaderCannotEvaluateSelfSubmission
 	}
-	// TODO: version check on the msg and dapp
+
+	dapp := k.keeper.GetDapp(ctx, msg.DappName)
+	if dapp.Name != "" {
+		return nil, types.ErrDappDoesNotExist
+	}
+
+	if msg.Version != dapp.Version() {
+		return nil, types.ErrInvalidDappVersion
+	}
+
 	// TODO: update it to be put on session
 	k.keeper.SetDappLeaderDenouncement(ctx, types.DappLeaderDenouncement{
 		DappName:     msg.DappName,
@@ -311,6 +330,15 @@ func (k msgServer) DenounceLeaderTx(goCtx context.Context, msg *types.MsgDenounc
 func (k msgServer) ApproveDappTransitionTx(goCtx context.Context, msg *types.MsgApproveDappTransitionTx) (*types.MsgApproveDappTransitionTxResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	dapp := k.keeper.GetDapp(ctx, msg.DappName)
+	if dapp.Name != "" {
+		return nil, types.ErrDappDoesNotExist
+	}
+
+	if msg.Version != dapp.Version() {
+		return nil, types.ErrInvalidDappVersion
+	}
+
 	operator := k.keeper.GetDappOperator(ctx, msg.DappName, msg.Sender)
 	if !operator.Verifier {
 		return nil, types.ErrNotDappVerifier
@@ -323,7 +351,6 @@ func (k msgServer) ApproveDappTransitionTx(goCtx context.Context, msg *types.Msg
 	if session.CurrSession.Leader == msg.Sender {
 		return nil, types.ErrLeaderCannotEvaluateSelfSubmission
 	}
-	// TODO: version check on the msg and dapp
 	k.keeper.SetDappSessionApproval(ctx, types.DappSessionApproval{
 		DappName:   msg.DappName,
 		Approver:   msg.Sender,
@@ -346,6 +373,18 @@ func (k msgServer) ApproveDappTransitionTx(goCtx context.Context, msg *types.Msg
 		session.CurrSession.Status = types.SessionAccepted
 		k.keeper.SetDappSession(ctx, session)
 		k.keeper.CreateNewSession(ctx, msg.DappName, session.NextSession.Leader)
+
+		isApprover := make(map[string]bool)
+		for _, approval := range approvals {
+			isApprover[approval.Approver] = true
+		}
+
+		// dapp operator rank management
+		executor := k.keeper.GetDappOperator(ctx, session.DappName, session.CurrSession.Leader)
+		k.keeper.HandleSessionParticipation(ctx, executor, true)
+		for _, verifier := range verifiers {
+			k.keeper.HandleSessionParticipation(ctx, verifier, isApprover[verifier.Operator])
+		}
 	}
 
 	return &types.MsgApproveDappTransitionTxResponse{}, nil
@@ -362,7 +401,15 @@ func (k msgServer) RejectDappTransitionTx(goCtx context.Context, msg *types.MsgR
 	if session.CurrSession.Leader == msg.Sender {
 		return nil, types.ErrLeaderCannotEvaluateSelfSubmission
 	}
-	// TODO: version check on the msg and dapp
+
+	dapp := k.keeper.GetDapp(ctx, msg.DappName)
+	if dapp.Name != "" {
+		return nil, types.ErrDappDoesNotExist
+	}
+
+	if msg.Version != dapp.Version() {
+		return nil, types.ErrInvalidDappVersion
+	}
 
 	if session.CurrSession == nil || session.CurrSession.StatusHash == "" {
 		return nil, types.ErrVerificationNotAllowedOnEmptySession
@@ -381,196 +428,413 @@ func (k msgServer) RejectDappTransitionTx(goCtx context.Context, msg *types.MsgR
 	return &types.MsgRejectDappTransitionTxResponse{}, nil
 }
 
+func (k Keeper) GetCoinsFromBridgeBalance(ctx sdk.Context, balances []types.BridgeBalance) sdk.Coins {
+	coins := sdk.Coins{}
+	for _, balance := range balances {
+		token := k.GetBridgeToken(ctx, balance.BridgeTokenIndex)
+		if token.Denom == "" {
+			continue
+		}
+		coins = coins.Add(sdk.NewCoin(token.Denom, balance.Amount))
+	}
+	return coins
+}
+
+func AddBridgeBalance(balances []types.BridgeBalance, addition []types.BridgeBalance) []types.BridgeBalance {
+	indexMap := make(map[uint64]int)
+	for i, balance := range balances {
+		indexMap[balance.BridgeTokenIndex] = i
+	}
+
+	for _, balance := range addition {
+		i, ok := indexMap[balance.BridgeTokenIndex]
+		if ok {
+			balances[i].Amount = balances[i].Amount.Add(balance.Amount)
+		} else {
+			balances = append(balances, balance)
+		}
+	}
+	return balances
+}
+
+func SubBridgeBalance(balances []types.BridgeBalance, removal []types.BridgeBalance) ([]types.BridgeBalance, error) {
+	indexMap := make(map[uint64]int)
+	for i, balance := range balances {
+		indexMap[balance.BridgeTokenIndex] = i
+	}
+
+	for _, balance := range removal {
+		i, ok := indexMap[balance.BridgeTokenIndex]
+		if ok {
+			balances[i].Amount = balances[i].Amount.Sub(balance.Amount)
+			if balances[i].Amount.IsNegative() {
+				return balances, types.ErrNegativeBridgeBalance
+			}
+		} else {
+			return balances, types.ErrNegativeBridgeBalance
+		}
+	}
+	return balances, nil
+}
+
 func (k msgServer) TransferDappTx(goCtx context.Context, msg *types.MsgTransferDappTx) (*types.MsgTransferDappTxResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
+	sender := sdk.MustAccAddressFromBech32(msg.Sender)
+	helper := k.keeper.GetBridgeRegistrarHelper(ctx)
+	nextXid := helper.NextXam
+	for _, xam := range msg.Requests {
+		coins := k.keeper.GetCoinsFromBridgeBalance(ctx, xam.Amounts)
+		if !coins.Empty() {
+			sa := k.keeper.GetBridgeAccount(ctx, xam.SourceAccount)
+			if xam.SourceDapp == 0 { // direct deposit from user
+				if sa.Address == "" {
+					sa.Address = msg.Sender
+					sa.Index = helper.NextUser
+					sa.DappName = ""
+					helper.NextUser += 1
+					k.keeper.SetBridgeRegistrarHelper(ctx, helper)
+				}
+				if sa.Address != msg.Sender {
+					return nil, types.ErrInvalidBridgeDepositMessage
+				}
+				err := k.keeper.bk.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, coins)
+				if err != nil {
+					return nil, err
+				}
+				sa.Balances = AddBridgeBalance(sa.Balances, xam.Amounts)
+				k.keeper.SetBridgeAccount(ctx, sa)
+			} else if xam.DestDapp == 0 { // withdrawal to user account
+				ba := k.keeper.GetBridgeAccount(ctx, xam.DestBeneficiary)
+				if ba.Address != msg.Sender {
+					return nil, types.ErrInvalidBridgeWithdrawalMessage
+				}
+				err := k.keeper.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, coins)
+				if err != nil {
+					return nil, err
+				}
+				sa.Balances, err = SubBridgeBalance(sa.Balances, xam.Amounts)
+				if err != nil {
+					return nil, err
+				}
+				k.keeper.SetBridgeAccount(ctx, sa)
+			} else {
+				// check accuracy of source in case of dapp
+				sa := k.keeper.GetBridgeAccount(ctx, xam.SourceAccount)
+				if sa.Address != msg.Sender {
+					return nil, types.ErrInvalidBridgeSourceAccount
+				}
+			}
+		}
+		k.keeper.SetXAM(ctx, types.XAM{
+			Req: xam,
+			Res: types.XAMResponse{
+				Xid: nextXid,
+				Irc: 0,
+				Src: 0,
+				Drc: 0,
+				Irm: 0,
+				Srm: 0,
+				Drm: 0,
+			},
+		})
+		nextXid += 1
+	}
+	helper.NextXam = nextXid
+	k.keeper.SetBridgeRegistrarHelper(ctx, helper)
 
 	return &types.MsgTransferDappTxResponse{}, nil
 }
 
-// TODO:
-// ### c**) Team & Investors Incentives**
-// Here are a few examples of ways in which “issuance” and “pool” configuration parameters can be used:
-// - Fair Launch - no extra tokens issued and all LP coins are immediately unlocked (`pool.drip` set to 0).
-// - User Assisted Launch - LP Spending Pool is configured to slowly distribute LP tokens, the `issuance.premint` is set to
-// a small reasonable amount while the `issuance.postmint` is not used.
-// This enables small teams that need to hire a few developers to establish a token treasury
-// and sell their stake to users that are locked in the LP.
-// - Investor Assisted Launch - LP Spending Pool is configured to slowly distribute LP tokens
-// while premint and postmint enable the creation of treasury and sale of SAFT agreements for large-scale projects.
-// The `issuance.time` parameter can be used to clearly define the time when investor tokens will be issued during the “postmint” event
-// while the `issuance.deposit` address can be set up by the team as a Spending Pool to easily distribute tokens to their
-// rightful owners as well as configure an **optional** “drip” if needed to not scare the LP token holders with an immediate increase of
-// the token supply.
+func (k msgServer) AckTransferDappTx(goCtx context.Context, msg *types.MsgAckTransferDappTx) (*types.MsgAckTransferDappTxResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	for _, res := range msg.Responses {
+		xam := k.keeper.GetXAM(ctx, res.Xid)
+		if xam.Res.Drc != 0 { // response already set
+			continue
+		}
+		xam.Res = res
+		k.keeper.SetXAM(ctx, xam)
+		// handle token transfer when response is okay
+		if res.Drc == 200 { // status okay
+			var err error
+			sa := k.keeper.GetBridgeAccount(ctx, xam.Req.SourceAccount)
+			sa.Balances, err = SubBridgeBalance(sa.Balances, xam.Req.Amounts)
+			if err != nil {
+				return nil, err
+			}
+			k.keeper.SetBridgeAccount(ctx, sa)
+			da := k.keeper.GetBridgeAccount(ctx, xam.Req.DestBeneficiary)
+			da.Balances = AddBridgeBalance(sa.Balances, xam.Req.Amounts)
+			if err != nil {
+				return nil, err
+			}
+			k.keeper.SetBridgeAccount(ctx, da)
+		}
+	}
 
-// TODO:
-// ### d**) Optional Execution & Operators Incentives**
-
-// While raising the launch proposal the deployers must provide `executors_min` and `executors_max` parameters that
-// define how many validators are needed to run the dApp. For example in the case of the DEX or a game - one or two validators might be sufficient
-// as executors while in the case of the bridge and MPC it would be expected to see at least 21+ validators collaborating on securing BTC or ETH bridge
-// address with ECDSA TSS or a multisig. While there is a limitation in terms of how many nodes might want to run the code
-// there is no limitation in terms of how many nodes might want to participate in verification (fisherman).
-// To make it worth a while for validators to execute the dApp code we will utilize the dApp LP pool to create those incentives.
-// Besides the impermanent loss, the LP token holders will incur a default `1% fee` on all swaps,
-// deposits, and redemptions configurable in the [Network Properties](https://www.notion.so/de74fe4b731a47df86683f2e9eefa793)
-// as `dapp_pool_fee` parameter.
-// The fixed fee will be applied after the swap from where `50%` of the corresponding tokens must be **burned** (deminted),
-// `25%` given as a reward to liquidity providers and the remaining `25%` will be split between **ACTIVE** dApp executors, and verifiers (fisherman).
-// Additionally, the premint and postmint tokens can be used to incentivize operators before dApp starts to generate revenue.
+	return &types.MsgAckTransferDappTxResponse{}, nil
+}
 
 func (k msgServer) RedeemDappPoolTx(goCtx context.Context, msg *types.MsgRedeemDappPoolTx) (*types.MsgRedeemDappPoolTxResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
+	addr := sdk.MustAccAddressFromBech32(msg.Sender)
+	dapp := k.keeper.GetDapp(ctx, msg.DappName)
+	if dapp.Name != "" {
+		return nil, types.ErrDappDoesNotExist
+	}
+	lpTokenPrice := k.keeper.LpTokenPrice(ctx, dapp)
+	withoutSlippage := msg.LpToken.Amount.ToDec().Mul(lpTokenPrice)
+
+	receiveCoin, err := k.keeper.RedeemDappPoolTx(ctx, addr, dapp, dapp.PoolFee, msg.LpToken)
+	if err != nil {
+		return nil, err
+	}
+
+	properties := k.keeper.gk.GetNetworkProperties(ctx)
+	maxSlippage := msg.Slippage
+	if maxSlippage.IsZero() {
+		maxSlippage = properties.DappPoolSlippageDefault
+	}
+	slippage := sdk.OneDec().Sub(receiveCoin.Amount.ToDec().Quo(withoutSlippage))
+	if slippage.GT(maxSlippage) {
+		return nil, types.ErrOperationExceedsSlippage
+	}
 
 	return &types.MsgRedeemDappPoolTxResponse{}, nil
 }
 
 func (k msgServer) SwapDappPoolTx(goCtx context.Context, msg *types.MsgSwapDappPoolTx) (*types.MsgSwapDappPoolTxResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
 
+	addr := sdk.MustAccAddressFromBech32(msg.Sender)
 	dapp := k.keeper.GetDapp(ctx, msg.DappName)
 	if dapp.Name != "" {
 		return nil, types.ErrDappDoesNotExist
 	}
 
-	// TODO: Uniswap v2 like pool implementation
-	// dapp.TotalBond
-	// dapp.Pool.Ratio
-	// dapp.Issurance.Deposit
-	// dapp.Issurance.Premint
-	// dapp.Issurance.Postmint
-	// dapp.Issurance.Time
+	lpTokenPrice := k.keeper.LpTokenPrice(ctx, dapp)
+	if lpTokenPrice.IsZero() {
+		return nil, types.ErrOperationExceedsSlippage
+	}
+	withoutSlippage := msg.Token.Amount.ToDec().Quo(lpTokenPrice)
 
-	// TODO: If the KEX collateral in the pool falls below dapp_liquidation_threshold (by default set to 100’000 KEX)
-	// then the dApp will enter a depreciation phase lasting dapp_liquidation_period (by default set to 2419200, that is ~28d)
-	// after which the execution will be stopped.
-	// On uniswap pool, people will be able to buy some LP tokens?
+	receiveCoin, err := k.keeper.SwapDappPoolTx(ctx, addr, dapp, dapp.PoolFee, msg.Token)
+	if err != nil {
+		return nil, err
+	}
+
+	properties := k.keeper.gk.GetNetworkProperties(ctx)
+	maxSlippage := msg.Slippage
+	if maxSlippage.IsZero() {
+		maxSlippage = properties.DappPoolSlippageDefault
+	}
+	slippage := sdk.OneDec().Sub(receiveCoin.Amount.ToDec().Quo(withoutSlippage))
+	if slippage.GT(maxSlippage) {
+		return nil, types.ErrOperationExceedsSlippage
+	}
 
 	return &types.MsgSwapDappPoolTxResponse{}, nil
 }
 
 func (k msgServer) ConvertDappPoolTx(goCtx context.Context, msg *types.MsgConvertDappPoolTx) (*types.MsgConvertDappPoolTxResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
+	addr := sdk.MustAccAddressFromBech32(msg.Sender)
+	dapp1 := k.keeper.GetDapp(ctx, msg.DappName)
+	if dapp1.Name != "" {
+		return nil, types.ErrDappDoesNotExist
+	}
+
+	lpTokenPrice1 := k.keeper.LpTokenPrice(ctx, dapp1)
+	if lpTokenPrice1.IsZero() {
+		return nil, types.ErrOperationExceedsSlippage
+	}
+	dapp2 := k.keeper.GetDapp(ctx, msg.TargetDappName)
+	if dapp2.Name != "" {
+		return nil, types.ErrDappDoesNotExist
+	}
+
+	lpTokenPrice2 := k.keeper.LpTokenPrice(ctx, dapp2)
+	if lpTokenPrice2.IsZero() {
+		return nil, types.ErrOperationExceedsSlippage
+	}
+
+	withoutSlippage := msg.LpToken.Amount.ToDec().Mul(lpTokenPrice1).Quo(lpTokenPrice2)
+
+	receiveCoin, err := k.keeper.ConvertDappPoolTx(ctx, addr, dapp1, dapp2, msg.LpToken)
+	if err != nil {
+		return nil, err
+	}
+
+	properties := k.keeper.gk.GetNetworkProperties(ctx)
+	maxSlippage := msg.Slippage
+	if maxSlippage.IsZero() {
+		maxSlippage = properties.DappPoolSlippageDefault
+	}
+	slippage := sdk.OneDec().Sub(receiveCoin.Amount.ToDec().Quo(withoutSlippage))
+	if slippage.GT(maxSlippage) {
+		return nil, types.ErrOperationExceedsSlippage
+	}
 
 	return &types.MsgConvertDappPoolTxResponse{}, nil
 }
 
 func (k msgServer) MintCreateFtTx(goCtx context.Context, msg *types.MsgMintCreateFtTx) (*types.MsgMintCreateFtTxResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
+	properties := k.keeper.gk.GetNetworkProperties(ctx)
+	fee := sdk.NewInt64Coin(k.keeper.BondDenom(ctx), int64(properties.MintingFtFee))
+	sender := sdk.MustAccAddressFromBech32(msg.Sender)
+	err := k.keeper.bk.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, sdk.Coins{fee})
+	if err != nil {
+		return nil, err
+	}
+
+	err = k.keeper.bk.BurnCoins(ctx, types.ModuleName, sdk.Coins{fee})
+	if err != nil {
+		return nil, err
+	}
+
+	denom := "ku/" + msg.DenomSuffix
+
+	info := k.keeper.GetTokenInfo(ctx, denom)
+	if info.Denom != "" {
+		return nil, types.ErrTokenAlreadyRegistered
+	}
+
+	k.keeper.SetTokenInfo(ctx, types.TokenInfo{
+		TokenType:   "adr20",
+		Denom:       denom,
+		Name:        msg.Name,
+		Symbol:      msg.Symbol,
+		Icon:        msg.Icon,
+		Description: msg.Description,
+		Website:     msg.Website,
+		Social:      msg.Social,
+		Decimals:    msg.Decimals,
+		Cap:         msg.Cap,
+		Supply:      msg.Supply,
+		Holders:     msg.Holders,
+		Fee:         msg.Fee,
+		Owner:       msg.Owner,
+		Metadata:    "",
+		Hash:        "",
+	})
 
 	return &types.MsgMintCreateFtTxResponse{}, nil
 }
 
 func (k msgServer) MintCreateNftTx(goCtx context.Context, msg *types.MsgMintCreateNftTx) (*types.MsgMintCreateNftTxResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
+	properties := k.keeper.gk.GetNetworkProperties(ctx)
+	fee := sdk.NewInt64Coin(k.keeper.BondDenom(ctx), int64(properties.MintingFtFee))
+	sender := sdk.MustAccAddressFromBech32(msg.Sender)
+	err := k.keeper.bk.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, sdk.Coins{fee})
+	if err != nil {
+		return nil, err
+	}
+
+	err = k.keeper.bk.BurnCoins(ctx, types.ModuleName, sdk.Coins{fee})
+	if err != nil {
+		return nil, err
+	}
+
+	denom := "ku/" + msg.DenomSuffix
+	info := k.keeper.GetTokenInfo(ctx, denom)
+	if info.Denom != "" {
+		return nil, types.ErrTokenAlreadyRegistered
+	}
+
+	k.keeper.SetTokenInfo(ctx, types.TokenInfo{
+		TokenType:   "adr43",
+		Denom:       denom,
+		Name:        msg.Name,
+		Symbol:      msg.Symbol,
+		Icon:        msg.Icon,
+		Description: msg.Description,
+		Website:     msg.Website,
+		Social:      msg.Social,
+		Decimals:    msg.Decimals,
+		Cap:         msg.Cap,
+		Supply:      msg.Supply,
+		Holders:     msg.Holders,
+		Fee:         msg.Fee,
+		Owner:       msg.Owner,
+		Metadata:    msg.Metadata,
+		Hash:        msg.Hash,
+	})
 
 	return &types.MsgMintCreateNftTxResponse{}, nil
 }
 
 func (k msgServer) MintIssueTx(goCtx context.Context, msg *types.MsgMintIssueTx) (*types.MsgMintIssueTxResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
+	sender := sdk.MustAccAddressFromBech32(msg.Sender)
+	tokenInfo := k.keeper.GetTokenInfo(ctx, msg.Denom)
+	if tokenInfo.Denom == "" {
+		return nil, types.ErrTokenNotRegistered
+	}
+
+	if msg.Sender != tokenInfo.Owner {
+		fee := msg.Amount.Mul(tokenInfo.Fee).Quo(Pow10(tokenInfo.Decimals))
+		feeCoins := sdk.Coins{sdk.NewCoin(k.keeper.BondDenom(ctx), fee)}
+		if fee.IsPositive() {
+			if tokenInfo.Owner == "" {
+				err := k.keeper.bk.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, feeCoins)
+				if err != nil {
+					return nil, err
+				}
+			} else {
+				owner := sdk.MustAccAddressFromBech32(tokenInfo.Owner)
+				err := k.keeper.bk.SendCoins(ctx, sender, owner, feeCoins)
+				if err != nil {
+					return nil, err
+				}
+			}
+		} else {
+			return nil, types.ErrNotAbleToMintCoinsWithoutFee
+		}
+	}
+
+	mintCoin := sdk.NewCoin(msg.Denom, msg.Amount)
+	err := k.keeper.bk.MintCoins(ctx, types.ModuleName, sdk.Coins{mintCoin})
+	if err != nil {
+		return nil, err
+	}
+
+	err = k.keeper.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, sdk.Coins{mintCoin})
+	if err != nil {
+		return nil, err
+	}
+
+	tokenInfo.Supply = tokenInfo.Supply.Add(msg.Amount)
+	if tokenInfo.Supply.GT(tokenInfo.Cap) {
+		return nil, types.ErrCannotExceedTokenCap
+	}
+	k.keeper.SetTokenInfo(ctx, tokenInfo)
 
 	return &types.MsgMintIssueTxResponse{}, nil
 }
 
 func (k msgServer) MintBurnTx(goCtx context.Context, msg *types.MsgMintBurnTx) (*types.MsgMintBurnTxResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_ = ctx
+	sender := sdk.MustAccAddressFromBech32(msg.Sender)
+	tokenInfo := k.keeper.GetTokenInfo(ctx, msg.Denom)
+	if tokenInfo.Denom == "" {
+		return nil, types.ErrTokenNotRegistered
+	}
+
+	burnCoin := sdk.NewCoin(msg.Denom, msg.Amount)
+	err := k.keeper.bk.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, sdk.Coins{burnCoin})
+	if err != nil {
+		return nil, err
+	}
+
+	err = k.keeper.bk.BurnCoins(ctx, types.ModuleName, sdk.Coins{burnCoin})
+	if err != nil {
+		return nil, err
+	}
+
+	tokenInfo.Supply = tokenInfo.Supply.Sub(msg.Amount)
+	k.keeper.SetTokenInfo(ctx, tokenInfo)
 
 	return &types.MsgMintBurnTxResponse{}, nil
 }
-
-// TODO: handle operator rank/streak to be similar to validator rank/streak calculation
-// For both verifiers and executors, we will utilize dApp performance counters in a similar manner
-// to which we are utilizing validator performance counters to determine “inactive” operators
-// and ranks (the difference is that there is no need for a mischance confidence counter,
-// only mischance alone since sending a verification tx will not be probabilistic like
-// in the case of proposing a block).
-
-// **Performance Counters**
-
-// We will begin by defining the following [Network Properties](https://www.notion.so/de74fe4b731a47df86683f2e9eefa793):
-// `dAppMischanceRankDecreaseAmount`, `dAppMaxMischance`, `dAppInactiveRankDecreasePercent`.
-// The ranking and performance counter system will be based on the dApp session change submission and its verification.
-// If the dApp operator participates in the production of a dApp session (sends session or verification tx) his
-// `rank` and `streak` must be increased by `1` while `mischance` re-set to 0,
-// otherwise in the case of failure to participate the `mischance` counter must be increased by `1`,
-// the `streak` re-set to `0` and `rank` decreased by `dAppMischanceRankDecreaseAmount`.
-// If the dApp operator does not enable maintenance mode by using the `pause-dapp-tx` and the `mischance` counter
-// exceeds `dAppMaxMischance` then his ranks should be slashed by `dAppInactiveRankDecreasePercent`.
-// Alongside `rank`, `streak`, and `mischance` we also need to include `verified_sessions_counter` increased by `1`
-//  every time the verifier or executor submits verification tx,  `created_sessions_counter` every time the executor
-//  proposed a new session, and `missed_sessions_counter` whenever verification was missed by the verifier or executor.
-// All the performance counter values must be positive integers, meaning ranks can’t be negative and the smallest possible rank
-// will be `0`.
-
-// 	properties := k.gk.GetNetworkProperties(ctx)
-//     // Update uptime counter
-//     missed := !signed
-//     if missed { // increment counter
-//         signInfo.MissedBlocksCounter++
-//         // increment mischance only when missed blocks are bigger than mischance confidence
-//         if signInfo.MischanceConfidence >= int64(properties.MischanceConfidence) {
-//             signInfo.Mischance++
-//         } else {
-//             signInfo.MischanceConfidence++
-//         }
-//     } else { // set counter to 0
-//         signInfo.Mischance = 0
-//         signInfo.MischanceConfidence = 0
-//         signInfo.ProducedBlocksCounter++
-//         signInfo.LastPresentBlock = ctx.BlockHeight()
-//     }
-
-//     // handle staking module's validator object update actions
-//     k.sk.HandleValidatorSignature(ctx, validator.ValKey, missed, signInfo.Mischance)
-
-//     // HandleValidatorSignature manage rank and streak by block miss / sign result
-// func (k Keeper) HandleValidatorSignature(ctx sdk.Context, valAddress sdk.ValAddress, missed bool, mischance int64) error {
-//     validator, err := k.GetValidator(ctx, valAddress)
-//     if err != nil {
-//         return err
-//     }
-//     networkProperties := k.govkeeper.GetNetworkProperties(ctx)
-//     if missed {
-//         if mischance > 0 { // it means mischance confidence is set, we update streak and rank properties
-//             // set validator streak by 0 and decrease rank by X
-//             validator.Streak = 0
-//             validator.Rank -= int64(networkProperties.MischanceRankDecreaseAmount)
-//             if validator.Rank < 0 {
-//                 validator.Rank = 0
-//             }
-//         }
-//     } else {
-//         // increase streak and reset rank if streak is higher than rank
-//         validator.Streak++
-//         if validator.Streak > validator.Rank {
-//             validator.Rank = validator.Streak
-//         }
-//     }
-//     k.AddValidator(ctx, validator)
-//     return nil
-// }
-
-// TODO: implement - step1
-// Until when the Dapp start the session?
-// Should it be by governance?
-// Or until when, should wait for operators to join?
-
-// TODO: implement - step2
-//   rpc RedeemDappPoolTx(MsgRedeemDappPoolTx) returns (MsgRedeemDappPoolTxResponse);
-//   rpc SwapDappPoolTx(MsgSwapDappPoolTx) returns (MsgSwapDappPoolTxResponse);
-//   rpc ConvertDappPoolTx(MsgConvertDappPoolTx) returns (MsgConvertDappPoolTxResponse);
-//   rpc UpsertDappProposalTx(MsgUpsertDappProposalTx) returns (MsgUpsertDappProposalTxResponse);
-//   rpc VoteUpsertDappProposalTx(MsgVoteUpsertDappProposalTx) returns (MsgVoteUpsertDappProposalTxResponse);
-//   rpc TransferDappTx(MsgTransferDappTx) returns (MsgTransferDappTxResponse);
-//   rpc MintCreateFtTx(MsgMintCreateFtTx) returns (MsgMintCreateFtTxResponse);
-//   rpc MintCreateNftTx(MsgMintCreateNftTx) returns (MsgMintCreateNftTxResponse);
-//   rpc MintIssueTx(MsgMintIssueTx) returns (MsgMintIssueTxResponse);
-//   rpc MintBurnTx(MsgMintBurnTx) returns (MsgMintBurnTxResponse);
