@@ -41,4 +41,5 @@ var (
 	ErrInvalidBridgeWithdrawalMessage       = errors.Register(ModuleName, 33, "invalid bridge withdrawal message")
 	ErrNegativeBridgeBalance                = errors.Register(ModuleName, 34, "negative bridge balance")
 	ErrInvalidBridgeSourceAccount           = errors.Register(ModuleName, 35, "invalid bridge source account")
+	ErrInvalidDappVersion                   = errors.Register(ModuleName, 36, "invalid dapp version")
 )

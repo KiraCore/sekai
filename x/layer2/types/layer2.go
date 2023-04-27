@@ -22,3 +22,10 @@ func (dapp Dapp) GetLpTokenSupply() sdk.Int {
 func (dapp Dapp) GetAccount() sdk.AccAddress {
 	return sdk.AccAddress(dapp.Name)
 }
+
+func (dapp Dapp) Version() string {
+	if len(dapp.Bin) > 0 {
+		return dapp.Bin[0].Hash
+	}
+	return ""
+}

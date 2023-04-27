@@ -271,6 +271,15 @@ func (k msgServer) ExecuteDappTx(goCtx context.Context, msg *types.MsgExecuteDap
 func (k msgServer) TransitionDappTx(goCtx context.Context, msg *types.MsgTransitionDappTx) (*types.MsgTransitionDappTxResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	dapp := k.keeper.GetDapp(ctx, msg.DappName)
+	if dapp.Name != "" {
+		return nil, types.ErrDappDoesNotExist
+	}
+
+	if msg.Version != dapp.Version() {
+		return nil, types.ErrInvalidDappVersion
+	}
+
 	session := k.keeper.GetDappSession(ctx, msg.DappName)
 	if session.DappName == "" {
 		return nil, types.ErrDappSessionDoesNotExist
@@ -297,7 +306,16 @@ func (k msgServer) DenounceLeaderTx(goCtx context.Context, msg *types.MsgDenounc
 	if session.CurrSession.Leader == msg.Sender {
 		return nil, types.ErrLeaderCannotEvaluateSelfSubmission
 	}
-	// TODO: version check on the msg and dapp
+
+	dapp := k.keeper.GetDapp(ctx, msg.DappName)
+	if dapp.Name != "" {
+		return nil, types.ErrDappDoesNotExist
+	}
+
+	if msg.Version != dapp.Version() {
+		return nil, types.ErrInvalidDappVersion
+	}
+
 	// TODO: update it to be put on session
 	k.keeper.SetDappLeaderDenouncement(ctx, types.DappLeaderDenouncement{
 		DappName:     msg.DappName,
@@ -312,6 +330,15 @@ func (k msgServer) DenounceLeaderTx(goCtx context.Context, msg *types.MsgDenounc
 func (k msgServer) ApproveDappTransitionTx(goCtx context.Context, msg *types.MsgApproveDappTransitionTx) (*types.MsgApproveDappTransitionTxResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	dapp := k.keeper.GetDapp(ctx, msg.DappName)
+	if dapp.Name != "" {
+		return nil, types.ErrDappDoesNotExist
+	}
+
+	if msg.Version != dapp.Version() {
+		return nil, types.ErrInvalidDappVersion
+	}
+
 	operator := k.keeper.GetDappOperator(ctx, msg.DappName, msg.Sender)
 	if !operator.Verifier {
 		return nil, types.ErrNotDappVerifier
@@ -324,7 +351,6 @@ func (k msgServer) ApproveDappTransitionTx(goCtx context.Context, msg *types.Msg
 	if session.CurrSession.Leader == msg.Sender {
 		return nil, types.ErrLeaderCannotEvaluateSelfSubmission
 	}
-	// TODO: version check on the msg and dapp
 	k.keeper.SetDappSessionApproval(ctx, types.DappSessionApproval{
 		DappName:   msg.DappName,
 		Approver:   msg.Sender,
@@ -375,7 +401,15 @@ func (k msgServer) RejectDappTransitionTx(goCtx context.Context, msg *types.MsgR
 	if session.CurrSession.Leader == msg.Sender {
 		return nil, types.ErrLeaderCannotEvaluateSelfSubmission
 	}
-	// TODO: version check on the msg and dapp
+
+	dapp := k.keeper.GetDapp(ctx, msg.DappName)
+	if dapp.Name != "" {
+		return nil, types.ErrDappDoesNotExist
+	}
+
+	if msg.Version != dapp.Version() {
+		return nil, types.ErrInvalidDappVersion
+	}
 
 	if session.CurrSession == nil || session.CurrSession.StatusHash == "" {
 		return nil, types.ErrVerificationNotAllowedOnEmptySession
