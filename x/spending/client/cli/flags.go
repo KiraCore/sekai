@@ -17,6 +17,7 @@ const (
 	FlagAmount                    = "amount"
 	FlagDynamicRate               = "dynamic-rate"
 	FlagDynamicRatePeriod         = "dynamic-rate-period"
+	FlagClaimExpiry               = "claim-expiry"
 
 	FlagTitle       = "title"
 	FlagDescription = "description"

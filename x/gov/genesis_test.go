@@ -110,7 +110,8 @@ func TestSimappExportGenesis(t *testing.T) {
         62,
         63,
         64,
-        65
+        65,
+        66
       ]
     },
     "2": {
@@ -159,7 +160,28 @@ func TestSimappExportGenesis(t *testing.T) {
     "min_collective_bond": "100000",
     "min_collective_bonding_time": "86400",
     "max_collective_outputs": "10",
-    "min_collective_claim_period": "14400"
+    "min_collective_claim_period": "14400",	
+    "validator_recovery_bond": "300000",	
+    "max_annual_inflation": "0.350000000000000000",
+    "max_proposal_title_size": "128",
+    "max_proposal_description_size": "1024",
+    "max_proposal_poll_option_size": "64",
+    "max_proposal_poll_option_count": "128",
+    "max_proposal_reference_size": "512",
+    "max_proposal_checksum_size": "128",
+  	"min_dapp_bond": "1000000",	
+    "max_dapp_bond": "10000000",	
+    "dapp_liquidation_threshold": "0",
+    "dapp_liquidation_period": "0",
+    "dapp_bond_duration": "604800",
+    "dapp_verifier_bond": "0.001000000000000000",
+    "dapp_auto_denounce_time": "60",
+    "dapp_mischance_rank_decrease_amount": "1",
+    "dapp_max_mischance": "10",
+    "dapp_inactive_rank_decrease_percent": "10",
+    "dapp_pool_slippage_default": "0.100000000000000000",
+    "minting_ft_fee": "100000000000000",
+    "minting_nft_fee": "100000000000000"
   },
   "execution_fees": [
     {
@@ -313,40 +335,59 @@ func TestExportInitGenesis(t *testing.T) {
 		},
 		StartingProposalId: 1,
 		NetworkProperties: &types.NetworkProperties{
-			MinTxFee:                     100,
-			MaxTxFee:                     1000000,
-			VoteQuorum:                   33,
-			MinimumProposalEndTime:       300, // 300 seconds / 5 mins
-			ProposalEnactmentTime:        300, // 300 seconds / 5 mins
-			MinProposalEndBlocks:         2,
-			MinProposalEnactmentBlocks:   1,
-			MischanceRankDecreaseAmount:  1,
-			MaxMischance:                 1,
-			InactiveRankDecreasePercent:  sdk.NewDecWithPrec(2, 2),
-			MinValidators:                1,
-			PoorNetworkMaxBankSend:       1,
-			EnableForeignFeePayments:     true,
-			MinIdentityApprovalTip:       200,
-			UniqueIdentityKeys:           "moniker,username",
-			UbiHardcap:                   6000_000,
-			ValidatorsFeeShare:           sdk.NewDecWithPrec(50, 2), // 50%
-			InflationRate:                sdk.NewDecWithPrec(18, 2), // 18%
-			InflationPeriod:              31557600,                  // 1 year
-			UnstakingPeriod:              2629800,                   // 1 month
-			MaxDelegators:                100,
-			MinDelegationPushout:         10,
-			SlashingPeriod:               3600,
-			MaxJailedPercentage:          sdk.NewDecWithPrec(25, 2),
-			MaxSlashingPercentage:        sdk.NewDecWithPrec(1, 2),
-			MinCustodyReward:             200,
-			MaxCustodyBufferSize:         10,
-			MaxCustodyTxSize:             8192,
-			AbstentionRankDecreaseAmount: 1,
-			MaxAbstention:                2,
-			MinCollectiveBond:            100_000, // in KEX
-			MinCollectiveBondingTime:     86400,   // in seconds
-			MaxCollectiveOutputs:         10,
-			MinCollectiveClaimPeriod:     14400, // 4hrs
+			MinTxFee:                        100,
+			MaxTxFee:                        1000000,
+			VoteQuorum:                      33,
+			MinimumProposalEndTime:          300, // 300 seconds / 5 mins
+			ProposalEnactmentTime:           300, // 300 seconds / 5 mins
+			MinProposalEndBlocks:            2,
+			MinProposalEnactmentBlocks:      1,
+			MischanceRankDecreaseAmount:     1,
+			MaxMischance:                    1,
+			InactiveRankDecreasePercent:     sdk.NewDecWithPrec(2, 2),
+			MinValidators:                   1,
+			PoorNetworkMaxBankSend:          1,
+			EnableForeignFeePayments:        true,
+			MinIdentityApprovalTip:          200,
+			UniqueIdentityKeys:              "moniker,username",
+			UbiHardcap:                      6000_000,
+			ValidatorsFeeShare:              sdk.NewDecWithPrec(50, 2), // 50%
+			InflationRate:                   sdk.NewDecWithPrec(18, 2), // 18%
+			InflationPeriod:                 31557600,                  // 1 year
+			UnstakingPeriod:                 2629800,                   // 1 month
+			MaxDelegators:                   100,
+			MinDelegationPushout:            10,
+			SlashingPeriod:                  3600,
+			MaxJailedPercentage:             sdk.NewDecWithPrec(25, 2),
+			MaxSlashingPercentage:           sdk.NewDecWithPrec(1, 2),
+			MinCustodyReward:                200,
+			MaxCustodyBufferSize:            10,
+			MaxCustodyTxSize:                8192,
+			AbstentionRankDecreaseAmount:    1,
+			MaxAbstention:                   2,
+			MinCollectiveBond:               100_000, // in KEX
+			MinCollectiveBondingTime:        86400,   // in seconds
+			MaxCollectiveOutputs:            10,
+			MinCollectiveClaimPeriod:        14400,                     // 4hrs
+			ValidatorRecoveryBond:           300000,                    // 300k KEX
+			MaxAnnualInflation:              sdk.NewDecWithPrec(35, 2), // 35%
+			MaxProposalTitleSize:            128,
+			MaxProposalDescriptionSize:      1024,
+			MaxProposalPollOptionSize:       64,
+			MaxProposalPollOptionCount:      128,
+			MaxProposalReferenceSize:        512,
+			MaxProposalChecksumSize:         128,
+			MinDappBond:                     1000000,
+			MaxDappBond:                     10000000,
+			DappBondDuration:                604800,
+			DappVerifierBond:                sdk.NewDecWithPrec(1, 3), //0.1%
+			DappAutoDenounceTime:            60,                       // 60s
+			DappMischanceRankDecreaseAmount: 1,
+			DappMaxMischance:                10,
+			DappInactiveRankDecreasePercent: 10,
+			DappPoolSlippageDefault:         sdk.NewDecWithPrec(1, 1), // 10%
+			MintingFtFee:                    100_000_000_000_000,
+			MintingNftFee:                   100_000_000_000_000,
 		},
 		ExecutionFees: []types.ExecutionFee{
 			{
@@ -439,7 +480,28 @@ func TestExportInitGenesis(t *testing.T) {
     "min_collective_bond": "100000",	
     "min_collective_bonding_time": "86400",	
     "max_collective_outputs": "10",	
-    "min_collective_claim_period": "14400"	
+    "min_collective_claim_period": "14400",	
+    "validator_recovery_bond": "300000",	
+    "max_annual_inflation": "0.350000000000000000",
+    "max_proposal_title_size": "128",
+    "max_proposal_description_size": "1024",
+    "max_proposal_poll_option_size": "64",
+    "max_proposal_poll_option_count": "128",
+    "max_proposal_reference_size": "512",
+    "max_proposal_checksum_size": "128",
+    "min_dapp_bond": "1000000",	
+    "max_dapp_bond": "10000000",	
+    "dapp_liquidation_threshold": "0",
+    "dapp_liquidation_period": "0",
+    "dapp_bond_duration": "604800",
+    "dapp_verifier_bond": "0.001000000000000000",
+    "dapp_auto_denounce_time": "60",
+    "dapp_mischance_rank_decrease_amount": "1",
+    "dapp_max_mischance": "10",
+    "dapp_inactive_rank_decrease_percent": "10",
+    "dapp_pool_slippage_default": "0.100000000000000000",
+    "minting_ft_fee": "100000000000000",
+    "minting_nft_fee": "100000000000000"
   },	
   "execution_fees": [	
     {	

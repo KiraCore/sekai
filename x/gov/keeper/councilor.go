@@ -26,6 +26,12 @@ func (k Keeper) SaveCouncilor(ctx sdk.Context, councilor types.Councilor) {
 	prefixStore.Set(councilorKey, bz)
 }
 
+func (k Keeper) DeleteCouncilor(ctx sdk.Context, councilor types.Councilor) {
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), CouncilorIdentityRegistryPrefix)
+	councilorKey := GetCouncilorKey(councilor.Address)
+	prefixStore.Delete(councilorKey)
+}
+
 func (k Keeper) GetCouncilor(ctx sdk.Context, address sdk.AccAddress) (types.Councilor, bool) {
 	return k.getCouncilorByKey(ctx, GetCouncilorKey(address))
 }

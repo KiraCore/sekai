@@ -20,6 +20,7 @@ func NewMsgUpsertTokenRate(
 	stakeCap sdk.Dec,
 	stakeMin sdk.Int,
 	stakeToken bool,
+	invalidated bool,
 ) *MsgUpsertTokenRate {
 	return &MsgUpsertTokenRate{
 		Proposer:    proposer,
@@ -29,6 +30,7 @@ func NewMsgUpsertTokenRate(
 		StakeCap:    stakeCap,
 		StakeMin:    stakeMin,
 		StakeToken:  stakeToken,
+		Invalidated: invalidated,
 	}
 }
 

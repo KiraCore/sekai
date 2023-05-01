@@ -18,6 +18,15 @@ import (
 
 var _ types.QueryServer = Keeper{}
 
+func (k Keeper) PollsVotesByPollId(goCtx context.Context, request *types.QueryPollsVotesByPollId) (*types.QueryPollsVotesByPollIdResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	votes := k.GetPollVotes(ctx, request.PollId)
+
+	return &types.QueryPollsVotesByPollIdResponse{
+		Votes: votes,
+	}, nil
+}
+
 // AllRoles return all roles registered
 func (k Keeper) AllRoles(goCtx context.Context, request *types.AllRolesRequest) (*types.AllRolesResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
@@ -35,6 +44,20 @@ func (k Keeper) AllRoles(goCtx context.Context, request *types.AllRolesRequest) 
 
 	return &types.AllRolesResponse{
 		Roles: roleQueries,
+	}, nil
+}
+
+// PollsListByAddress return polls associated to an address
+func (k Keeper) PollsListByAddress(goCtx context.Context, request *types.QueryPollsListByAddress) (*types.QueryPollsListByAddressResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	polls, err := k.GetPollsByAddress(ctx, request.Creator)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryPollsListByAddressResponse{
+		Polls: polls,
 	}, nil
 }
 
@@ -676,9 +699,9 @@ func (k Keeper) ProposalDuration(goCtx context.Context, req *types.QueryProposal
 	}, nil
 }
 
-// QueryCouncilors - all councilors (waiting or not), including their corresponding statuses,
+// Councilors - all councilors (waiting or not), including their corresponding statuses,
 // ranks & abstenation counters - add sub-query to search by specific KIRA address
-func (k Keeper) QueryCouncilors(goCtx context.Context, req *types.QueryCouncilors) (*types.QueryCouncilorsResponse, error) {
+func (k Keeper) Councilors(goCtx context.Context, req *types.QueryCouncilors) (*types.QueryCouncilorsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if req.Address == "" {
@@ -700,8 +723,8 @@ func (k Keeper) QueryCouncilors(goCtx context.Context, req *types.QueryCouncilor
 	}, nil
 }
 
-// QueryNonCouncilors - list all governance members that are NOT Councilors
-func (k Keeper) QueryNonCouncilors(goCtx context.Context, req *types.QueryNonCouncilors) (*types.QueryNonCouncilorsResponse, error) {
+// NonCouncilors - list all governance members that are NOT Councilors
+func (k Keeper) NonCouncilors(goCtx context.Context, req *types.QueryNonCouncilors) (*types.QueryNonCouncilorsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	networkActorsIterator := k.GetNetworkActorsIterator(ctx)
@@ -721,8 +744,8 @@ func (k Keeper) QueryNonCouncilors(goCtx context.Context, req *types.QueryNonCou
 	}, nil
 }
 
-// QueryAddressesByWhitelistedPermission - list all KIRA addresses by a specific whitelisted permission (address does NOT have to be a Councilor)
-func (k Keeper) QueryAddressesByWhitelistedPermission(goCtx context.Context, req *types.QueryAddressesByWhitelistedPermission) (*types.QueryAddressesByWhitelistedPermissionResponse, error) {
+// AddressesByWhitelistedPermission - list all KIRA addresses by a specific whitelisted permission (address does NOT have to be a Councilor)
+func (k Keeper) AddressesByWhitelistedPermission(goCtx context.Context, req *types.QueryAddressesByWhitelistedPermission) (*types.QueryAddressesByWhitelistedPermissionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	actors := k.GetNetworkActorsByAbsoluteWhitelistPermission(ctx, types.PermValue(req.Permission))
 
@@ -735,8 +758,8 @@ func (k Keeper) QueryAddressesByWhitelistedPermission(goCtx context.Context, req
 	}, nil
 }
 
-// QueryAddressesByBlacklistedPermission - list all KIRA addresses by a specific whitelisted permission (address does NOT have to be a Councilor)
-func (k Keeper) QueryAddressesByBlacklistedPermission(goCtx context.Context, req *types.QueryAddressesByBlacklistedPermission) (*types.QueryAddressesByBlacklistedPermissionResponse, error) {
+// AddressesByBlacklistedPermission - list all KIRA addresses by a specific whitelisted permission (address does NOT have to be a Councilor)
+func (k Keeper) AddressesByBlacklistedPermission(goCtx context.Context, req *types.QueryAddressesByBlacklistedPermission) (*types.QueryAddressesByBlacklistedPermissionResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	networkActorsIterator := k.GetNetworkActorsIterator(ctx)
@@ -755,14 +778,14 @@ func (k Keeper) QueryAddressesByBlacklistedPermission(goCtx context.Context, req
 	}, nil
 }
 
-// QueryAddressesByWhitelistedRole - list all kira addresses by a specific whitelisted role (address does NOT have to be a Councilor)
-func (k Keeper) QueryAddressesByWhitelistedRole(goCtx context.Context, req *types.QueryAddressesByWhitelistedRole) (*types.QueryAddressesByWhitelistedRoleResponse, error) {
+// AddressesByWhitelistedRole - list all kira addresses by a specific whitelisted role (address does NOT have to be a Councilor)
+func (k Keeper) AddressesByWhitelistedRole(goCtx context.Context, req *types.QueryAddressesByWhitelistedRole) (*types.QueryAddressesByWhitelistedRoleResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	addrs := []string{}
 	actorIter := k.GetNetworkActorsByRole(ctx, uint64(req.Role))
 	for ; actorIter.Valid(); actorIter.Next() {
-		actor := k.getNetworkActorOrFail(ctx, actorIter.Value())
+		actor := k.GetNetworkActorOrFail(ctx, actorIter.Value())
 		addrs = append(addrs, actor.Address.String())
 	}
 

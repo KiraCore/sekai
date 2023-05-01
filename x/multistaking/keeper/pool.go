@@ -57,6 +57,12 @@ func (k Keeper) SetStakingPool(ctx sdk.Context, pool types.StakingPool) {
 	store.Set(key, k.cdc.MustMarshal(&pool))
 }
 
+func (k Keeper) RemoveStakingPool(ctx sdk.Context, pool types.StakingPool) {
+	store := ctx.KVStore(k.storeKey)
+	key := append([]byte(types.KeyPrefixStakingPool), []byte(pool.Validator)...)
+	store.Delete(key)
+}
+
 func getPoolPrefix(poolID uint64) string {
 	return fmt.Sprintf("v%d/", poolID)
 }

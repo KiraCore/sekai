@@ -2,6 +2,7 @@ package gov
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/KiraCore/sekai/x/gov/keeper"
 	"github.com/KiraCore/sekai/x/gov/types"
@@ -22,6 +23,56 @@ func EndBlocker(ctx sdk.Context, k keeper.Keeper) {
 	for ; activeIterator.Valid(); activeIterator.Next() {
 		processProposal(ctx, k, keeper.BytesToProposalID(activeIterator.Value()))
 	}
+
+	pollIterator := k.GetPollsWithFinishedVotingEndTimeIterator(ctx, time.Now())
+	defer pollIterator.Close()
+	for ; pollIterator.Valid(); pollIterator.Next() {
+		processPoll(ctx, k, sdk.BigEndianToUint64(pollIterator.Value()))
+	}
+}
+
+func processPoll(ctx sdk.Context, k keeper.Keeper, pollID uint64) {
+	var totalVoters int
+	var actors []types.NetworkActor
+	var duplicateMap = make(map[string]bool)
+
+	poll, err := k.GetPoll(ctx, pollID)
+	if err != nil {
+		panic(err)
+	}
+
+	for _, role := range poll.Roles {
+		availableVoters := k.GetNetworkActorsByRole(ctx, role)
+
+		for ; availableVoters.Valid(); availableVoters.Next() {
+			if _, ok := duplicateMap[sdk.AccAddress(availableVoters.Value()).String()]; !ok {
+				duplicateMap[sdk.AccAddress(availableVoters.Value()).String()] = true
+				actors = append(actors, k.GetNetworkActorOrFail(ctx, availableVoters.Value()))
+			}
+		}
+	}
+
+	votes := k.GetPollVotes(ctx, pollID)
+	totalVoters += len(actors)
+	numVotes := len(votes)
+	properties := k.GetNetworkProperties(ctx)
+	quorum := properties.VoteQuorum
+
+	isQuorum, err := types.IsQuorum(quorum, uint64(numVotes), uint64(totalVoters))
+	if err != nil {
+		panic(fmt.Sprintf("Invalid quorum on proposal: pollID=%d, err=%+v", pollID, err))
+	}
+
+	if isQuorum {
+		numActorsWithVeto := len(types.GetActorsWithVoteWithVeto(actors))
+		calculatedVote := types.CalculatePollVotes(votes, uint64(numActorsWithVeto))
+		poll.Result = calculatedVote.ProcessResult()
+	} else {
+		poll.Result = types.PollQuorumNotReached
+	}
+
+	k.SavePoll(ctx, poll)
+	k.RemoveActivePoll(ctx, poll)
 }
 
 func processProposal(ctx sdk.Context, k keeper.Keeper, proposalID uint64) {

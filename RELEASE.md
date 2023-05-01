@@ -1,6 +1,9 @@
 Features:
 
-- update validator fee share from int to dec
-- move commission rewards from validator object to multistaking pool
-- Update fields from int to decimal for inactive_rank_decrease_percent,…
-- convert slash percentage from int to decimal
+- Dapp operator performance counter
+- LP token return on verifier exit
+- Liquidation for dapp when fall below threshold
+- Swap, redeem, convert on lp tokens
+- Bridge registrar
+- Minting feature
+- Add CLI commands and unit tests

@@ -3,6 +3,7 @@ package keeper
 import (
 	"fmt"
 
+	recoverytypes "github.com/KiraCore/sekai/x/recovery/types"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -18,7 +19,9 @@ func (k Keeper) AllocateTokens(
 	ctx sdk.Context, sumPreviousPrecommitPower, totalPreviousPower int64,
 	previousProposer sdk.ConsAddress, bondedVotes []abci.VoteInfo,
 ) {
-
+	if !k.InflationPossible(ctx) {
+		return
+	}
 	// fetch and clear the collected fees for distribution, since this is
 	// called in BeginBlock, collected fees will be from the previous block
 	// (and distributed to the previous proposer)
@@ -113,11 +116,26 @@ func (k Keeper) AllocateTokens(
 
 // AllocateTokensToValidator allocate tokens to a particular validator, splitting according to commission
 func (k Keeper) AllocateTokensToValidator(ctx sdk.Context, val stakingtypes.Validator, tokens sdk.Coins) {
-	// send coins from fee pool to validator account
-	err := k.bk.SendCoinsFromModuleToAccount(ctx, authtypes.FeeCollectorName, sdk.AccAddress(val.GetValKey()), tokens)
-	if err != nil {
-		panic(err)
+	acc := sdk.AccAddress(val.GetValKey())
+	_, err := k.rk.GetRecoveryToken(ctx, acc.String())
+	if err == nil {
+		// send tokens to recovery module in case validator issued recovery token
+		err := k.bk.SendCoinsFromModuleToModule(ctx, authtypes.FeeCollectorName, recoverytypes.ModuleName, tokens)
+		if err != nil {
+			panic(err)
+		}
+		err = k.rk.IncreaseRecoveryTokenUnderlying(ctx, acc, tokens)
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		// send coins from fee pool to validator account
+		err := k.bk.SendCoinsFromModuleToAccount(ctx, authtypes.FeeCollectorName, acc, tokens)
+		if err != nil {
+			panic(err)
+		}
 	}
+
 }
 
 // GetPreviousProposerConsAddr returns the proposer consensus address for the

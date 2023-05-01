@@ -1,0 +1,79 @@
+syntax = "proto3";
+package kira.recovery;
+
+option go_package = "github.com/KiraCore/sekai/x/recovery/types";
+option (gogoproto.equal_all) = true;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/any.proto";
+import "cosmos_proto/cosmos.proto";
+import "kira/recovery/recovery.proto";
+
+// Msg defines the recovery Msg service.
+service Msg {
+  // allow ANY user to register or modify existing recovery secret & verify if the nonce is correct
+  rpc RegisterRecoverySecret(MsgRegisterRecoverySecret) returns (MsgRegisterRecoverySecretResponse);
+  // allow ANY KIRA address that knows the recovery secret to rotate the address
+  rpc RotateRecoveryAddress(MsgRotateRecoveryAddress) returns (MsgRotateRecoveryAddressResponse);
+  // mint `rr_<moniker>` tokens and deposit them to the validator account. 
+  // This function will require putting up a bond in the amount of `validator_recovery_bond` otherwise should fail
+  rpc IssueRecoveryTokens(MsgIssueRecoveryTokens) returns (MsgIssueRecoveryTokensResponse);
+  // burn tokens and redeem KEX
+  rpc BurnRecoveryTokens(MsgBurnRecoveryTokens) returns (MsgBurnRecoveryTokensResponse);
+  // claim rewards
+  rpc ClaimRRHolderRewards(MsgClaimRRHolderRewards) returns (MsgClaimRRHolderRewardsResponse);
+  // register RR token holder
+  rpc RegisterRRTokenHolder(MsgRegisterRRTokenHolder) returns (MsgRegisterRRTokenHolderResponse);
+  // allow ANY KIRA address has a sufficient number of RR tokens to rotate the address
+  rpc RotateValidatorByHalfRRTokenHolder(MsgRotateValidatorByHalfRRTokenHolder) returns (MsgRotateValidatorByHalfRRTokenHolderResponse);
+}
+
+message MsgRegisterRecoverySecret {
+  string address = 1; // address registering recovery challenge
+  string challenge = 2; // recovery challenge S_H2, if the same S_H2 already exists then fail tx
+  string nonce = 3;     // nonce must be a valid nonce
+  string proof = 4; // [OPTIONAL] proof of knowing the recovery secret to modify the old challenge
+}
+message MsgRegisterRecoverySecretResponse {}
+
+message MsgRotateRecoveryAddress {
+  string fee_payer = 1;
+  string address = 2;
+  string recovery = 3;
+  string proof = 4;
+}
+message MsgRotateRecoveryAddressResponse {}
+
+message MsgIssueRecoveryTokens {
+    string address = 1;
+}
+message MsgIssueRecoveryTokensResponse {}
+
+message MsgBurnRecoveryTokens {
+  string address = 1;
+  string rr_coin = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
+}
+message MsgBurnRecoveryTokensResponse {}
+
+message MsgClaimRRHolderRewards {
+  option (gogoproto.equal) = false;
+  option (gogoproto.goproto_getters) = false;
+
+  string sender = 1;
+}
+message MsgClaimRRHolderRewardsResponse {}
+
+message MsgRegisterRRTokenHolder { 
+  string holder = 1;
+}
+message MsgRegisterRRTokenHolderResponse {}
+
+message MsgRotateValidatorByHalfRRTokenHolder {
+  string rr_holder = 1;
+  string address = 2;
+  string recovery = 3;
+}
+message MsgRotateValidatorByHalfRRTokenHolderResponse {}

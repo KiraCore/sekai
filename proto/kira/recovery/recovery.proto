@@ -1,0 +1,41 @@
+
+syntax = "proto3";
+package kira.recovery;
+
+option go_package = "github.com/KiraCore/sekai/x/recovery/types";
+option (gogoproto.equal_all) = true;
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+
+message RecoveryRecord {
+  string address = 1; // address registering recovery challenge
+  string challenge = 2; // recovery challenge S_H2, if the same S_H2 already exists then fail tx
+  string nonce = 3;     // nonce must be a valid nonce
+}
+
+message RecoveryToken {
+  string address = 1;
+  string token = 2;
+  string rr_supply = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  repeated string underlying_tokens = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
+}
+
+message Rotation {
+  string address = 1;
+  string rotated = 2;
+}
+
+message Rewards {
+  string holder = 1;
+  repeated string rewards = 2 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
+}

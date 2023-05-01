@@ -1,0 +1,19 @@
+syntax = "proto3";
+package kira.recovery;
+
+option go_package = "github.com/KiraCore/sekai/x/recovery/types";
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/any.proto";
+import "kira/recovery/recovery.proto";
+
+// GenesisState defines the recovery module's genesis state.
+message GenesisState {
+  repeated kira.recovery.RecoveryRecord recovery_records = 1
+      [ (gogoproto.nullable) = false ];
+  repeated kira.recovery.RecoveryToken recovery_tokens = 2
+      [ (gogoproto.nullable) = false ];
+  repeated kira.recovery.Rewards rewards = 3 [ (gogoproto.nullable) = false ];
+  repeated kira.recovery.Rotation rotations = 4
+      [ (gogoproto.nullable) = false ];
+}

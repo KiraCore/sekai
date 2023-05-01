@@ -58,6 +58,11 @@ func (k Keeper) SetClaimInfo(ctx sdk.Context, claimInfo types.ClaimInfo) {
 	store.Set(types.ClaimInfoKey(claimInfo.PoolName, claimInfo.Account), bz)
 }
 
+func (k Keeper) RemoveClaimInfo(ctx sdk.Context, claimInfo types.ClaimInfo) {
+	store := ctx.KVStore(k.storeKey)
+	store.Delete(types.ClaimInfoKey(claimInfo.PoolName, claimInfo.Account))
+}
+
 func (k Keeper) GetClaimInfo(ctx sdk.Context, poolName string, address sdk.AccAddress) *types.ClaimInfo {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.ClaimInfoKey(poolName, address.String()))
@@ -133,9 +138,19 @@ func (k Keeper) ClaimSpendingPool(ctx sdk.Context, poolName string, sender sdk.A
 		return types.ErrNoMoreRewardsToClaim
 	}
 
+	if pool.DynamicRate { // dynamic rate case
+		if claimStart < int64(pool.LastDynamicRateCalcTime) {
+			claimStart = int64(pool.LastDynamicRateCalcTime)
+		}
+	}
+
 	rewards := sdk.Coins{}
 	for _, rate := range pool.Rates {
-		amount := rate.Amount.Mul(sdk.NewDec((claimEnd - int64(claimStart)) * int64(weight))).RoundInt()
+		duration := claimEnd - claimStart
+		if duration > int64(pool.ClaimExpiry) {
+			duration = int64(pool.ClaimExpiry)
+		}
+		amount := rate.Amount.Mul(sdk.NewDec(duration * int64(weight))).RoundInt()
 		rewards = rewards.Add(sdk.NewCoin(rate.Denom, amount))
 	}
 

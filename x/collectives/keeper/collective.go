@@ -67,11 +67,26 @@ func (k Keeper) GetCollectiveContributer(ctx sdk.Context, name string, contribut
 	return cc
 }
 
-func (k Keeper) GetAllCollectiveContributers(ctx sdk.Context, name string) []types.CollectiveContributor {
+func (k Keeper) GetCollectiveContributers(ctx sdk.Context, name string) []types.CollectiveContributor {
 	store := ctx.KVStore(k.storeKey)
 
 	cclist := []types.CollectiveContributor{}
 	it := sdk.KVStorePrefixIterator(store, append([]byte(types.PrefixCollectiveContributerKey), name...))
+	defer it.Close()
+
+	for ; it.Valid(); it.Next() {
+		cc := types.CollectiveContributor{}
+		k.cdc.MustUnmarshal(it.Value(), &cc)
+		cclist = append(cclist, cc)
+	}
+	return cclist
+}
+
+func (k Keeper) GetAllCollectiveContributers(ctx sdk.Context) []types.CollectiveContributor {
+	store := ctx.KVStore(k.storeKey)
+
+	cclist := []types.CollectiveContributor{}
+	it := sdk.KVStorePrefixIterator(store, []byte(types.PrefixCollectiveContributerKey))
 	defer it.Close()
 
 	for ; it.Valid(); it.Next() {
@@ -151,7 +166,7 @@ func (k Keeper) ExecuteCollectiveRemove(ctx sdk.Context, collective types.Collec
 		return err
 	}
 
-	for _, cc := range k.GetAllCollectiveContributers(ctx, collective.Name) {
+	for _, cc := range k.GetCollectiveContributers(ctx, collective.Name) {
 		err := k.WithdrawCollective(ctx, collective, cc)
 		if err != nil {
 			return err

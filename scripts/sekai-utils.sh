@@ -1300,3 +1300,68 @@ function passwordConfirmTransaction() {
 
     sekaid tx custody confirm --from=$FROM $ADDRESS $HASH $PASSWORD --keyring-backend=test --chain-id=$NETWORK_NAME --fees "${FEE_AMOUNT}${FEE_DENOM}" --output=json --yes --home=$SEKAID_HOME | txAwait 180
 }
+
+#createPoll <FROM> <ROLES> <OPTIONS> <TYPE> <CHOICES> <COUNT> <DURATION>
+function createPoll() {
+    local FROM=$1
+    local ROLES=$2
+    local OPTIONS=$3
+    local TYPE=$4
+    local CHOICES=$5
+    local COUNT=$6
+    local DURATION=$7
+
+   sekaid tx customgov poll create --from=$FROM --title="TITLE" --description="DESCRIPTION" --poll-roles=$ROLES --poll-options=$OPTIONS --poll-count=$COUNT --poll-type=$TYPE --poll-choices=$CHOICES --poll-duration=$DURATION --keyring-backend=test --chain-id=$NETWORK_NAME --fees="100ukex" --output=json --yes --home=$SEKAID_HOME 
+}
+
+function getPolls() {
+  local FROM=$1
+  local RESULT=""
+
+  RESULT=$(sekaid query customgov polls $FROM --output=json --home=$SEKAID_HOME 2> /dev/null | jsonParse "polls" 2> /dev/null || echo -n "")
+
+  echo "$RESULT"
+}
+
+function getPollResult() {
+  local FROM=$1
+  local ID=$2
+  local RESULT=""
+
+  RESULT=$(sekaid query customgov polls $FROM --output=json --home=$SEKAID_HOME 2> /dev/null | jsonParse "polls.$ID.result" 2> /dev/null || echo -n "")
+
+  echo "$RESULT"
+}
+
+
+function getPollTimeout() {
+  local FROM=$1
+  local ID=$2
+  local RESULT=""
+
+  RESULT=$(sekaid query customgov polls $FROM --output=json --home=$SEKAID_HOME 2> /dev/null | jsonParse "polls.$ID.voting_end_time" 2> /dev/null || echo -n "")
+
+  echo "$RESULT"
+}
+
+function addVote() {
+  local FROM=$1
+  local ID=$2
+  local VALUE=$3
+  local CVALUE=$4
+  local RESULT=""
+
+  sekaid tx customgov poll vote $ID $VALUE --poll-custom-value=$CVALUE --from=$FROM --keyring-backend=test --chain-id=$NETWORK_NAME --fees="100ukex" --output=json --yes --home=$SEKAID_HOME | txAwait 180
+}
+
+function getPollVotes() {
+  local FROM=$1
+  local ID=$2
+  local RESULT=""
+
+  sekaid query customgov poll-votes $ID --output=json --home=$SEKAID_HOME
+
+  RESULT=$(sekaid query customgov poll-votes $ID --output=json --home=$SEKAID_HOME 2> /dev/null | jsonParse "" 2> /dev/null || echo -n "")
+
+  echo "$RESULT"
+}

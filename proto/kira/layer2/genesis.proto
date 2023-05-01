@@ -1,0 +1,16 @@
+syntax = "proto3";
+package kira.layer2;
+
+option go_package = "github.com/KiraCore/sekai/x/layer2/types";
+
+import "gogoproto/gogo.proto";
+import "kira/layer2/layer2.proto";
+
+// GenesisState defines the layer2 module's genesis state.
+message GenesisState {
+  // dapps registered on the module
+  repeated Dapp dapps = 1 [ (gogoproto.nullable) = false ];
+  BridgeRegistrar bridge = 2 [ (gogoproto.nullable) = false ];
+}
+
+// https://www.notion.so/kira-network/KIP-84-Layer-2-90379a918a3a4394908d814c7455fbdb

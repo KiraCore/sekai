@@ -13,6 +13,9 @@ const (
 	// governance
 	MsgTypeSubmitProposal = "submit-proposal"
 	MsgTypeVoteProposal   = "vote-proposal"
+	MsgTypeCreatePoll     = "create-poll"
+	MsgTypeVotePoll       = "vote-poll"
+	MsgTypeAddressPoll    = "address-poll"
 
 	MsgTypeWhitelistPermissions = "whitelist-permissions"
 	MsgTypeBlacklistPermissions = "blacklist-permissions"
@@ -66,6 +69,15 @@ const (
 	MsgTypePause    = "pause"
 	MsgTypeUnpause  = "unpause"
 
+	// recovery module
+	MsgTypeRegisterRecoverySecret             = "register-recovery-secret"
+	MsgTypeRotateRecoveryAddress              = "rotate-recovery-address"
+	MsgTypeIssueRecoveryTokens                = "issue-recovery-tokens"
+	MsgTypeBurnRecoveryTokens                 = "burn-recovery-tokens"
+	MsgTypeRegisterRRTokenHolder              = "register-rrtoken-holder"
+	MsgTypeClaimRRHolderRewards               = "claim-rrholder-rewards"
+	MsgTypeRotateValidatorByHalfRRTokenHolder = "rotate-validator-by-half-rr-token-holder"
+
 	//upgrade module
 
 	// spending module
@@ -93,6 +105,33 @@ const (
 	MsgTypeBondCollective     = "bond-collective"
 	MsgTypeDonateCollective   = "donate-collective"
 	MsgTypeWithdrawCollective = "withdraw-collective"
+
+	// layer2 module
+	MsgTypeCreateDappProposal       = "create-dapp-proposal"
+	MsgTypeBondDappProposal         = "bond-dapp-proposal"
+	MsgTypeReclaimDappBondProposal  = "reclaim-dapp-bond-proposal"
+	MsgTypeJoinDappVerifierWithBond = "join-dapp-verifier-with-bond"
+	MsgTypeExitDapp                 = "exit-dapp"
+	MsgTypeVoteDappOperatorTx       = "vote-dapp-operator-tx"
+	MsgTypeRedeemDappPoolTx         = "redeem-dapp-pool-tx"
+	MsgTypeSwapDappPoolTx           = "swap-dapp-pool-tx"
+	MsgTypeConvertDappPoolTx        = "convert-dapp-pool-tx"
+	MsgTypePauseDappTx              = "pause-dapp-tx"
+	MsgTypeUnPauseDappTx            = "unpause-dapp-tx"
+	MsgTypeReactivateDappTx         = "reactivate-dapp-tx"
+	MsgTypeExecuteDappTx            = "execute-dapp-tx"
+	MsgTypeDenounceLeaderTx         = "denounce-leader-tx"
+	MsgTypeTransitionDappTx         = "transition-dapp-tx"
+	MsgTypeApproveDappTransitionTx  = "approve-dapp-transition-tx"
+	MsgTypeRejectDappTransitionTx   = "reject-dapp-transition-tx"
+	MsgTypeUpsertDappProposalTx     = "upsert-dapp-proposal-tx"
+	MsgTypeVoteUpsertDappProposalTx = "vote-upsert-dapp-proposal-tx"
+	MsgTypeTransferDappTx           = "transfer-dapp-tx"
+	MsgTypeAckTransferDappTx        = "ack-transfer-dapp-tx"
+	MsgTypeMintCreateFtTx           = "mint-create-ft-tx"
+	MsgTypeMintCreateNftTx          = "mint-create-nft-tx"
+	MsgTypeMintIssueTx              = "mint-issue-tx"
+	MsgTypeMintBurnTx               = "mint-burn-tx"
 )
 
 // Msg defines the interface a transaction message must fulfill.
