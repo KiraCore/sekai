@@ -851,7 +851,7 @@ func GetTxProposalSetNetworkProperty() *cobra.Command {
 
 func GetTxProposalAssignRoleToAccount() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "assign-role role [role_identifier]",
+		Use:   "assign-role [role_identifier]",
 		Short: "Create a proposal to assign a role to an address.",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -905,7 +905,7 @@ func GetTxProposalAssignRoleToAccount() *cobra.Command {
 
 func GetTxProposalUnassignRoleFromAccount() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "unassign-role role",
+		Use:   "unassign-role [role]",
 		Short: "Create a proposal to unassign a role from an address.",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -1607,8 +1607,6 @@ func GetTxProposalWhitelistRolePermission() *cobra.Command {
 	cmd.MarkFlagRequired(FlagTitle)
 	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
 	cmd.MarkFlagRequired(FlagDescription)
-	cmd.Flags().Int32Slice(FlagWhitelistPerms, []int32{}, "the whitelist value in format 1,2,3")
-	cmd.Flags().Int32Slice(FlagBlacklistPerms, []int32{}, "the blacklist values in format 1,2,3")
 	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
@@ -1663,8 +1661,6 @@ func GetTxProposalBlacklistRolePermission() *cobra.Command {
 	cmd.MarkFlagRequired(FlagTitle)
 	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
 	cmd.MarkFlagRequired(FlagDescription)
-	cmd.Flags().Int32Slice(FlagWhitelistPerms, []int32{}, "the whitelist value in format 1,2,3")
-	cmd.Flags().Int32Slice(FlagBlacklistPerms, []int32{}, "the blacklist values in format 1,2,3")
 	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
@@ -1719,8 +1715,6 @@ func GetTxProposalRemoveWhitelistedRolePermission() *cobra.Command {
 	cmd.MarkFlagRequired(FlagTitle)
 	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
 	cmd.MarkFlagRequired(FlagDescription)
-	cmd.Flags().Int32Slice(FlagWhitelistPerms, []int32{}, "the whitelist value in format 1,2,3")
-	cmd.Flags().Int32Slice(FlagBlacklistPerms, []int32{}, "the blacklist values in format 1,2,3")
 	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
@@ -1775,8 +1769,6 @@ func GetTxProposalRemoveBlacklistedRolePermission() *cobra.Command {
 	cmd.MarkFlagRequired(FlagTitle)
 	cmd.Flags().String(FlagDescription, "", "The description of the proposal, it can be a url, some text, etc.")
 	cmd.MarkFlagRequired(FlagDescription)
-	cmd.Flags().Int32Slice(FlagWhitelistPerms, []int32{}, "the whitelist value in format 1,2,3")
-	cmd.Flags().Int32Slice(FlagBlacklistPerms, []int32{}, "the blacklist values in format 1,2,3")
 	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd
