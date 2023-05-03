@@ -425,7 +425,7 @@ func NewTxSetNetworkProperties() *cobra.Command {
 
 func GetTxWhitelistRolePermission() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "whitelist-permission [role_id] [permission_id]",
+		Use:   "whitelist-permission [role_sid] [permission_id]",
 		Short: "Whitelist a permission to a role",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -513,7 +513,7 @@ func NewTxSetExecutionFee() *cobra.Command {
 
 func GetTxBlacklistRolePermission() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "blacklist-permission [role_id] [permission_id]",
+		Use:   "blacklist-permission [role_sid] [permission_id]",
 		Short: "Blacklist a permission for the governance role",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -545,7 +545,7 @@ func GetTxBlacklistRolePermission() *cobra.Command {
 
 func GetTxRemoveWhitelistRolePermission() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "remove-whitelisted-permission [role_id] [permission_id]",
+		Use:   "remove-whitelisted-permission [role_sid] [permission_id]",
 		Short: "Remove a whitelisted permission from a governance role",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -577,7 +577,7 @@ func GetTxRemoveWhitelistRolePermission() *cobra.Command {
 
 func GetTxRemoveBlacklistRolePermission() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "remove-blacklisted-permission [role_id] [permission_id]",
+		Use:   "remove-blacklisted-permission [role_sid] [permission_id]",
 		Short: "Remove a blacklisted permission from a governance role",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -1722,7 +1722,7 @@ func GetTxProposalRemoveWhitelistedRolePermission() *cobra.Command {
 
 func GetTxProposalRemoveBlacklistedRolePermission() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "remove-blacklisted-permission [role_sid] [role_description]",
+		Use:   "remove-blacklisted-permission [role_sid] [permission_id]",
 		Short: "Raise governance proposal to remove a blacklisted permission from a role.",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
