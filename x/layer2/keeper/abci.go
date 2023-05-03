@@ -17,10 +17,22 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 	properties := k.gk.GetNetworkProperties(ctx)
 	currTimestamp := uint64(ctx.BlockTime().Unix())
 	for _, dapp := range dapps {
-
-		// TODO: exiting dapp verifier to close on next session and return lp tokens back
 		if dapp.Status == types.Bootstrap && dapp.CreationTime+properties.DappBondDuration <= currTimestamp {
 			k.FinishDappBootstrap(ctx, dapp)
+		}
+
+		if dapp.PremintTime+dapp.Pool.Drip < uint64(ctx.BlockTime().Unix()) &&
+			dapp.Issurance.Postmint.IsPositive() &&
+			dapp.Status == types.Active {
+			teamReserve := sdk.MustAccAddressFromBech32(dapp.TeamReserve)
+			dappBondLpToken := dapp.LpToken()
+			premintCoin := sdk.NewCoin(dappBondLpToken, dapp.Issurance.Premint)
+			err := k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, teamReserve, sdk.Coins{premintCoin})
+			if err != nil {
+				panic(err)
+			}
+			dapp.PostMintPaid = true
+			k.SetDapp(ctx, dapp)
 		}
 
 		if dapp.Status == types.Active {
@@ -35,11 +47,51 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 
 				// update next session with new info
 				k.ResetNewSession(ctx, dapp.Name, session.CurrSession.Leader)
+			}
 
-				// TODO: in case
+			// If the KEX collateral in the pool falls below dapp_liquidation_threshold (by default set to 100’000 KEX)
+			// then the dApp will enter a depreciation phase lasting dapp_liquidation_period (by default set to 2419200, that is ~28d)
+			// after which the execution will be stopped.
+			if dapp.LiquidationStart+properties.DappLiquidationPeriod < uint64(ctx.BlockTime().Unix()) {
+				dapp.Status = types.Halted
+				k.SetDapp(ctx, dapp)
 			}
 		}
 	}
+
+	// handle bridge xam time outs
+	for _, xam := range k.GetXAMs(ctx) {
+		if xam.Req.SourceDapp != 0 && xam.Res.Src == 0 {
+			account := k.GetBridgeAccount(ctx, xam.Req.SourceDapp)
+			dapp := k.GetDapp(ctx, account.DappName)
+			if xam.ReqTime+2*dapp.UpdateTimeMax < uint64(ctx.BlockTime().Unix()) {
+				xam.Res.Src = 498
+				k.SetXAM(ctx, xam)
+			}
+		}
+
+		if xam.Req.DestDapp != 0 && xam.Res.Drc == 0 {
+			account := k.GetBridgeAccount(ctx, xam.Req.DestDapp)
+			dapp := k.GetDapp(ctx, account.DappName)
+			if xam.ReqTime+2*dapp.UpdateTimeMax < uint64(ctx.BlockTime().Unix()) {
+				xam.Res.Drc = 498
+				k.SetXAM(ctx, xam)
+			}
+		}
+	}
+	// - **Deposit** funds from personal account (source application `src == 0`) to destination `dst` application beneficiary `ben` address.
+	//     - Deposit must be accepted by the `dst` application or funds returned back to the user kira account outside of ABR
+	//     - Max time for accepting deposit is `max(2 blocks,  2 * update_time_max<DstApp>)` after which transaction must fail (internal response `irc` code `522`)
+	// - **Transfer** funds from the source `src` application account `acc` address to another destination `dst` application beneficiary `ben` address
+	//     - Withdrawal from `src` application must be permissionless, the source `src` app does not need to confirm it but can speed it up by setting source response `src` code to `200`
+	//     - Deposit to destination `dst` app must be accepted by the `dst` app with destination app response code `drc` set to `200` or funds **returned through deposit like process**
+	//     - If Deposit fails to `dst` fails then `src` must accept the re-deposit otherwise if re-deposit fails the funds must be returned to the kira account outside of ABR
+	//     - Max time for accepting withdrawal by `src` app must be `max(2 blocks,  2 * update_time_max<SrcApp>)` otherwise the withdrawal must automatically succeed
+	//     - Max time for accepting deposit by `dst` app must be `max(2 blocks,  2 * update_time_max<DstApp>)` otherwise the deposit must automatically fail with internal response `irc` code set to `522`
+	//     - If redeposit must be executed the new transaction must be created with new `xid`. Rules for re-deposit are same as for the deposit (if re-deposit fails funds must be returned to kira address outside of ABR)
+	// - **Withdrawal** funds from the source `src` application account `acc` address to kira address outside the ABR (`dst == 0`) to beneficiary `ben` address
+	//     - Withdrawal from `src` application must be permissionless, the source `src` app does not need to confirm it but can speed it up by setting source response `src` code to `200`
+	//     - Max time for accepting withdrawal by `src` app must be `max(2 blocks,  2 * update_time_max<SrcApp>)` otherwise the withdrawal must automatically succeed
 
 }
 
@@ -116,10 +168,32 @@ func (k Keeper) FinishDappBootstrap(ctx sdk.Context, dapp types.Dapp) {
 
 		dapp.Status = types.Halted
 		dapp.Pool.Deposit = spendingPoolName
+		dapp.PremintTime = blockTime
 		k.SetDapp(ctx, dapp)
+
+		// register bridge account for dapp
+		helper := k.GetBridgeRegistrarHelper(ctx)
+		k.SetBridgeAccount(ctx, types.BridgeAccount{
+			Index:    helper.NextUser,
+			Address:  dapp.GetAccount().String(),
+			DappName: dapp.Name,
+			Balances: []types.BridgeBalance{},
+		})
+		helper.NextUser += 1
+		k.SetBridgeRegistrarHelper(ctx, helper)
 
 		for _, userBond := range userBonds {
 			k.DeleteUserDappBond(ctx, dapp.Name, userBond.User)
+		}
+
+		// send premint amount to team reserve
+		if dapp.Issurance.Premint.IsPositive() {
+			teamReserve := sdk.MustAccAddressFromBech32(dapp.TeamReserve)
+			premintCoin := sdk.NewCoin(dappBondLpToken, dapp.Issurance.Premint)
+			err = k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, teamReserve, sdk.Coins{premintCoin})
+			if err != nil {
+				panic(err)
+			}
 		}
 	}
 }

@@ -1,5 +1,9 @@
 package types
 
+import (
+	sdk "github.com/cosmos/cosmos-sdk/types"
+)
+
 // constants
 const (
 	ModuleName = "layer2"
@@ -18,6 +22,11 @@ var (
 	PrefixDappSessionKey            = []byte("dapp_session_key")
 	PrefixDappSessionApprovalKey    = []byte("dapp_session_approval_key")
 	PrefixDappLeaderDenouncementKey = []byte("dapp_leader_denouncement_key")
+	BridgeRegistrarHelperKey        = []byte("bridge_registrar_helper")
+	PrefixBridgeAccountKey          = []byte("bridge_account_key")
+	PrefixBridgeTokenKey            = []byte("bridge_token_key")
+	PrefixXAMKey                    = []byte("xam_key")
+	PrefixTokenInfoKey              = []byte("token_info")
 )
 
 func DappKey(name string) []byte {
@@ -46,4 +55,20 @@ func DappSessionApprovalKey(dappName string, verifier string) []byte {
 
 func DappLeaderDenouncementKey(dappName string, leader string, sender string) []byte {
 	return append(append(append(PrefixDappLeaderDenouncementKey, dappName...), leader...), sender...)
+}
+
+func BridgeAccountKey(index uint64) []byte {
+	return append(PrefixBridgeAccountKey, sdk.Uint64ToBigEndian(index)...)
+}
+
+func BridgeTokenKey(index uint64) []byte {
+	return append(PrefixBridgeTokenKey, sdk.Uint64ToBigEndian(index)...)
+}
+
+func XAMKey(xid uint64) []byte {
+	return append(PrefixXAMKey, sdk.Uint64ToBigEndian(xid)...)
+}
+
+func TokenInfoKey(denom string) []byte {
+	return append(PrefixTokenInfoKey, denom...)
 }

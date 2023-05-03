@@ -127,6 +127,7 @@ const (
 	MsgTypeUpsertDappProposalTx     = "upsert-dapp-proposal-tx"
 	MsgTypeVoteUpsertDappProposalTx = "vote-upsert-dapp-proposal-tx"
 	MsgTypeTransferDappTx           = "transfer-dapp-tx"
+	MsgTypeAckTransferDappTx        = "ack-transfer-dapp-tx"
 	MsgTypeMintCreateFtTx           = "mint-create-ft-tx"
 	MsgTypeMintCreateNftTx          = "mint-create-nft-tx"
 	MsgTypeMintIssueTx              = "mint-issue-tx"
