@@ -14,9 +14,11 @@ import (
 )
 
 const (
-	OldKey     = "okey"
-	NewKey     = "nkey"
-	FlagReward = "reward"
+	OldKey        = "okey"
+	NewKey        = "nkey"
+	FlagReward    = "reward"
+	NextAddress   = "next"
+	TargetAddress = "target"
 )
 
 // NewTxCmd returns a root CLI command handler for all x/bank transaction commands.
@@ -108,11 +110,23 @@ func GetTxAddToCustodyCustodians() *cobra.Command {
 				return fmt.Errorf("invalid new key: %w", err)
 			}
 
+			nextAddr, err := cmd.Flags().GetString(NextAddress)
+			if err != nil {
+				return fmt.Errorf("invalid next address: %w", err)
+			}
+
+			targetAddr, err := cmd.Flags().GetString(TargetAddress)
+			if err != nil {
+				return fmt.Errorf("invalid next address: %w", err)
+			}
+
 			msg := types.NewMsgAddToCustodyCustodians(
 				clientCtx.FromAddress,
 				newAddr,
 				oldKey,
 				newKey,
+				nextAddr,
+				targetAddr,
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
@@ -124,6 +138,9 @@ func GetTxAddToCustodyCustodians() *cobra.Command {
 
 	cmd.Flags().String(NewKey, "", "Next hash string.")
 	cmd.MarkFlagRequired(NewKey)
+
+	cmd.Flags().String(NextAddress, "", "Next address to control the settings.")
+	cmd.Flags().String(TargetAddress, "", "Target of the control request.")
 
 	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
@@ -157,11 +174,23 @@ func GetTxRemoveFromCustodyCustodians() *cobra.Command {
 				return fmt.Errorf("invalid new key: %w", err)
 			}
 
+			nextAddr, err := cmd.Flags().GetString(NextAddress)
+			if err != nil {
+				return fmt.Errorf("invalid next address: %w", err)
+			}
+
+			targetAddr, err := cmd.Flags().GetString(TargetAddress)
+			if err != nil {
+				return fmt.Errorf("invalid next address: %w", err)
+			}
+
 			msg := types.NewMsgRemoveFromCustodyCustodians(
 				clientCtx.FromAddress,
 				accAddr,
 				oldKey,
 				newKey,
+				nextAddr,
+				targetAddr,
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
@@ -173,6 +202,9 @@ func GetTxRemoveFromCustodyCustodians() *cobra.Command {
 
 	cmd.Flags().String(NewKey, "", "Next hash string.")
 	cmd.MarkFlagRequired(NewKey)
+
+	cmd.Flags().String(NextAddress, "", "Next address to control the settings.")
+	cmd.Flags().String(TargetAddress, "", "Target of the control request.")
 
 	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
@@ -201,10 +233,22 @@ func GetTxDropCustodyCustodians() *cobra.Command {
 				return fmt.Errorf("invalid new key: %w", err)
 			}
 
+			nextAddr, err := cmd.Flags().GetString(NextAddress)
+			if err != nil {
+				return fmt.Errorf("invalid next address: %w", err)
+			}
+
+			targetAddr, err := cmd.Flags().GetString(TargetAddress)
+			if err != nil {
+				return fmt.Errorf("invalid target address: %w", err)
+			}
+
 			msg := types.NewMsgDropCustodyCustodians(
 				clientCtx.FromAddress,
 				oldKey,
 				newKey,
+				nextAddr,
+				targetAddr,
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
@@ -216,6 +260,9 @@ func GetTxDropCustodyCustodians() *cobra.Command {
 
 	cmd.Flags().String(NewKey, "", "Next hash string.")
 	cmd.MarkFlagRequired(NewKey)
+
+	cmd.Flags().String(NextAddress, "", "Next address to control the settings.")
+	cmd.Flags().String(TargetAddress, "", "Target of the control request.")
 
 	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
@@ -367,11 +414,23 @@ func GetTxAddToCustodyWhiteList() *cobra.Command {
 				return fmt.Errorf("invalid new key: %w", err)
 			}
 
+			nextAddr, err := cmd.Flags().GetString(NextAddress)
+			if err != nil {
+				return fmt.Errorf("invalid next address: %w", err)
+			}
+
+			targetAddr, err := cmd.Flags().GetString(TargetAddress)
+			if err != nil {
+				return fmt.Errorf("invalid target address: %w", err)
+			}
+
 			msg := types.NewMsgAddToCustodyWhiteList(
 				clientCtx.FromAddress,
 				newAddr,
 				oldKey,
 				newKey,
+				nextAddr,
+				targetAddr,
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
@@ -383,6 +442,9 @@ func GetTxAddToCustodyWhiteList() *cobra.Command {
 
 	cmd.Flags().String(NewKey, "", "Next hash string.")
 	cmd.MarkFlagRequired(NewKey)
+
+	cmd.Flags().String(NextAddress, "", "Next address to control the settings.")
+	cmd.Flags().String(TargetAddress, "", "Target of the control request.")
 
 	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
@@ -416,11 +478,23 @@ func GetTxRemoveFromCustodyWhiteList() *cobra.Command {
 				return fmt.Errorf("invalid new key: %w", err)
 			}
 
+			nextAddr, err := cmd.Flags().GetString(NextAddress)
+			if err != nil {
+				return fmt.Errorf("invalid next address: %w", err)
+			}
+
+			targetAddr, err := cmd.Flags().GetString(TargetAddress)
+			if err != nil {
+				return fmt.Errorf("invalid target address: %w", err)
+			}
+
 			msg := types.NewMsgRemoveFromCustodyWhiteList(
 				clientCtx.FromAddress,
 				accAddr,
 				oldKey,
 				newKey,
+				nextAddr,
+				targetAddr,
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
@@ -432,6 +506,9 @@ func GetTxRemoveFromCustodyWhiteList() *cobra.Command {
 
 	cmd.Flags().String(NewKey, "", "Next hash string.")
 	cmd.MarkFlagRequired(NewKey)
+
+	cmd.Flags().String(NextAddress, "", "Next address to control the settings.")
+	cmd.Flags().String(TargetAddress, "", "Target of the control request.")
 
 	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
@@ -460,10 +537,22 @@ func GetTxDropCustodyWhiteList() *cobra.Command {
 				return fmt.Errorf("invalid new key: %w", err)
 			}
 
+			nextAddr, err := cmd.Flags().GetString(NextAddress)
+			if err != nil {
+				return fmt.Errorf("invalid next address: %w", err)
+			}
+
+			targetAddr, err := cmd.Flags().GetString(TargetAddress)
+			if err != nil {
+				return fmt.Errorf("invalid target address: %w", err)
+			}
+
 			msg := types.NewMsgDropCustodyWhiteList(
 				clientCtx.FromAddress,
 				oldKey,
 				newKey,
+				nextAddr,
+				targetAddr,
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
@@ -475,6 +564,9 @@ func GetTxDropCustodyWhiteList() *cobra.Command {
 
 	cmd.Flags().String(NewKey, "", "Next hash string.")
 	cmd.MarkFlagRequired(NewKey)
+
+	cmd.Flags().String(NextAddress, "", "Next address to control the settings.")
+	cmd.Flags().String(TargetAddress, "", "Target of the control request.")
 
 	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
@@ -508,6 +600,16 @@ func GetTxCreateCustody() *cobra.Command {
 				return fmt.Errorf("invalid new key: %w", err)
 			}
 
+			nextAddr, err := cmd.Flags().GetString(NextAddress)
+			if err != nil {
+				return fmt.Errorf("invalid next address: %w", err)
+			}
+
+			targetAddr, err := cmd.Flags().GetString(TargetAddress)
+			if err != nil {
+				return fmt.Errorf("invalid next address: %w", err)
+			}
+
 			msg := types.NewMsgCreateCustody(
 				clientCtx.FromAddress,
 				types.CustodySettings{
@@ -519,6 +621,8 @@ func GetTxCreateCustody() *cobra.Command {
 				},
 				oldKey,
 				newKey,
+				nextAddr,
+				targetAddr,
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
@@ -530,6 +634,9 @@ func GetTxCreateCustody() *cobra.Command {
 
 	cmd.Flags().String(NewKey, "", "Next hash string.")
 	cmd.MarkFlagRequired(NewKey)
+
+	cmd.Flags().String(NextAddress, "", "Next address to control the settings.")
+	cmd.Flags().String(TargetAddress, "", "Target of the control request.")
 
 	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
@@ -553,9 +660,15 @@ func GetTxDisableCustody() *cobra.Command {
 				return fmt.Errorf("invalid old key: %w", err)
 			}
 
+			targetAddr, err := cmd.Flags().GetString(TargetAddress)
+			if err != nil {
+				return fmt.Errorf("invalid target address: %w", err)
+			}
+
 			msg := types.NewMsgDisableCustody(
 				clientCtx.FromAddress,
 				oldKey,
+				targetAddr,
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
@@ -564,6 +677,8 @@ func GetTxDisableCustody() *cobra.Command {
 
 	cmd.Flags().String(OldKey, "", "Previous hash string.")
 	cmd.MarkFlagRequired(OldKey)
+
+	cmd.Flags().String(TargetAddress, "", "Target of the control request.")
 
 	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
@@ -597,6 +712,16 @@ func GetTxAddToCustodyLimits() *cobra.Command {
 				return fmt.Errorf("invalid new key: %w", err)
 			}
 
+			nextAddr, err := cmd.Flags().GetString(NextAddress)
+			if err != nil {
+				return fmt.Errorf("invalid next address: %w", err)
+			}
+
+			targetAddr, err := cmd.Flags().GetString(TargetAddress)
+			if err != nil {
+				return fmt.Errorf("invalid target address: %w", err)
+			}
+
 			msg := types.NewMsgAddToCustodyLimits(
 				clientCtx.FromAddress,
 				args[0],
@@ -604,6 +729,8 @@ func GetTxAddToCustodyLimits() *cobra.Command {
 				args[2],
 				oldKey,
 				newKey,
+				nextAddr,
+				targetAddr,
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
@@ -615,6 +742,9 @@ func GetTxAddToCustodyLimits() *cobra.Command {
 
 	cmd.Flags().String(NewKey, "", "Next hash string.")
 	cmd.MarkFlagRequired(NewKey)
+
+	cmd.Flags().String(NextAddress, "", "Next address to control the settings.")
+	cmd.Flags().String(TargetAddress, "", "Target of the control request.")
 
 	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
@@ -643,11 +773,23 @@ func GetTxRemoveFromCustodyLimits() *cobra.Command {
 				return fmt.Errorf("invalid new key: %w", err)
 			}
 
+			nextAddr, err := cmd.Flags().GetString(NextAddress)
+			if err != nil {
+				return fmt.Errorf("invalid next address: %w", err)
+			}
+
+			targetAddr, err := cmd.Flags().GetString(TargetAddress)
+			if err != nil {
+				return fmt.Errorf("invalid target address: %w", err)
+			}
+
 			msg := types.NewMsgRemoveFromCustodyLimits(
 				clientCtx.FromAddress,
 				args[0],
 				oldKey,
 				newKey,
+				nextAddr,
+				targetAddr,
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
@@ -659,6 +801,9 @@ func GetTxRemoveFromCustodyLimits() *cobra.Command {
 
 	cmd.Flags().String(NewKey, "", "Next hash string.")
 	cmd.MarkFlagRequired(NewKey)
+
+	cmd.Flags().String(NextAddress, "", "Next address to control the settings.")
+	cmd.Flags().String(TargetAddress, "", "Target of the control request.")
 
 	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
@@ -687,10 +832,22 @@ func GetTxDropCustodyLimits() *cobra.Command {
 				return fmt.Errorf("invalid new key: %w", err)
 			}
 
+			nextAddr, err := cmd.Flags().GetString(NextAddress)
+			if err != nil {
+				return fmt.Errorf("invalid next address: %w", err)
+			}
+
+			targetAddr, err := cmd.Flags().GetString(TargetAddress)
+			if err != nil {
+				return fmt.Errorf("invalid target address: %w", err)
+			}
+
 			msg := types.NewMsgDropCustodyLimits(
 				clientCtx.FromAddress,
 				oldKey,
 				newKey,
+				nextAddr,
+				targetAddr,
 			)
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
@@ -702,6 +859,9 @@ func GetTxDropCustodyLimits() *cobra.Command {
 
 	cmd.Flags().String(NewKey, "", "Next hash string.")
 	cmd.MarkFlagRequired(NewKey)
+
+	cmd.Flags().String(NextAddress, "", "Next address to control the settings.")
+	cmd.Flags().String(TargetAddress, "", "Target of the control request.")
 
 	flags.AddTxFlagsToCmd(cmd)
 	cmd.MarkFlagRequired(flags.FlagFrom)
