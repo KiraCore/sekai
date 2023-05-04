@@ -3,7 +3,7 @@
 # queries
 sekaid query layer2 all-dapps
 sekaid query layer2 execution-registrar l2dex
-sekaid query layer2 transfer-dapp
+sekaid query layer2 transfer-dapps
 sekaid query layer2 global-tokens
 
 # transactions
@@ -62,3 +62,16 @@ sekaid tx layer2 proposal-upsert-dapp --title="title" --description="description
   --from=validator --chain-id=testing --fees=100ukex --keyring-backend=test --home=$HOME/.sekaid --yes --broadcast-mode=block 
 sekaid query customgov proposals
 sekaid tx customgov proposal vote 2 1 --from validator --keyring-backend=test --home=$HOME/.sekaid --chain-id=testing --fees=100ukex --yes  --broadcast-mode=block 
+
+sekaid tx layer2 redeem-dapp-pool l2dex 10lp/ul2d 0.1 --from=validator --chain-id=testing --fees=100ukex --keyring-backend=test --home=$HOME/.sekaid --yes --broadcast-mode=block 
+sekaid tx layer2 swap-dapp-pool l2dex 10ukex 0.1 --from=validator --chain-id=testing --fees=100ukex --keyring-backend=test --home=$HOME/.sekaid --yes --broadcast-mode=block
+sekaid tx layer2 convert-dapp-pool l2dex l2agg 10lp/ul2d 0.1 --from=validator --chain-id=testing --fees=100ukex --keyring-backend=test --home=$HOME/.sekaid --yes --broadcast-mode=block
+sekaid tx layer2 pause-dapp l2dex --from=validator --chain-id=testing --fees=100ukex --keyring-backend=test --home=$HOME/.sekaid --yes --broadcast-mode=block
+sekaid tx layer2 unpause-dapp l2dex --from=validator --chain-id=testing --fees=100ukex --keyring-backend=test --home=$HOME/.sekaid --yes --broadcast-mode=block
+sekaid tx layer2 reactivate-dapp l2dex --from=validator --chain-id=testing --fees=100ukex --keyring-backend=test --home=$HOME/.sekaid --yes --broadcast-mode=block
+sekaid tx layer2 transfer-dapp '{"amounts":[{"bridge_token_index":"1","amount":"100000"}],"source_dapp":"1","source_account":"1","dest_dapp":"2","dest_beneficiary":"2","xam":""}' --from=validator --chain-id=testing --fees=100ukex --keyring-backend=test --home=$HOME/.sekaid --yes --broadcast-mode=block
+
+sekaid tx layer2 mint-create-ft-tx l2gov "L2 Governance Token" "L2GOV" "" "" "" "" 6 10000000 0 1000 $(sekaid keys show -a validator --keyring-backend=test) --from=validator --chain-id=testing --fees=100ukex --keyring-backend=test --home=$HOME/.sekaid --yes --broadcast-mode=block
+sekaid tx layer2 mint-create-nft-tx l2gov "L2 Governance Token" "L2GOV" "" "" "" "" 6 10000000 0 1000 $(sekaid keys show -a validator --keyring-backend=test) "" "" --from=validator --chain-id=testing --fees=100ukex --keyring-backend=test --home=$HOME/.sekaid --yes --broadcast-mode=block
+sekaid tx layer2 mint-issue-tx ku/l2gov 1000000 $(sekaid keys show -a validator --keyring-backend=test) --from=validator --chain-id=testing --fees=100ukex --keyring-backend=test --home=$HOME/.sekaid --yes --broadcast-mode=block
+sekaid tx layer2 burn-issue-tx ku/l2gov 900000 --from=validator --chain-id=testing --fees=100ukex --keyring-backend=test --home=$HOME/.sekaid --yes --broadcast-mode=block

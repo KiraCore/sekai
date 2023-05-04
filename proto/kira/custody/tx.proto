@@ -41,6 +41,9 @@ message MsgCreteCustodyRecord {
 
   string old_key = 3;
   string new_key = 4;
+
+  string next_address   = 5 ;
+  string target_address = 6 ;
 }
 
 message MsgDisableCustodyRecord {
@@ -53,6 +56,7 @@ message MsgDisableCustodyRecord {
   ];
 
   string old_key = 2;
+  string target_address = 3 ;
 }
 
 message MsgAddToCustodyCustodians {
@@ -71,6 +75,9 @@ message MsgAddToCustodyCustodians {
 
   string old_key = 3;
   string new_key = 4;
+
+  string next_address   = 5 ;
+  string target_address = 6 ;
 }
 
 message MsgRemoveFromCustodyCustodians {
@@ -89,6 +96,9 @@ message MsgRemoveFromCustodyCustodians {
 
   string old_key = 3;
   string new_key = 4;
+
+  string next_address   = 5 ;
+  string target_address = 6 ;
 }
 
 message MsgDropCustodyCustodians {
@@ -102,6 +112,9 @@ message MsgDropCustodyCustodians {
 
   string old_key = 2;
   string new_key = 3;
+
+  string next_address   = 4 ;
+  string target_address = 5 ;
 }
 
 message MsgAddToCustodyWhiteList {
@@ -120,6 +133,9 @@ message MsgAddToCustodyWhiteList {
 
   string old_key = 3;
   string new_key = 4;
+
+  string next_address   = 5 ;
+  string target_address = 6 ;
 }
 
 message MsgRemoveFromCustodyWhiteList {
@@ -138,6 +154,9 @@ message MsgRemoveFromCustodyWhiteList {
 
   string old_key = 3;
   string new_key = 4;
+
+  string next_address   = 5 ;
+  string target_address = 6 ;
 }
 
 message MsgDropCustodyWhiteList {
@@ -149,8 +168,11 @@ message MsgDropCustodyWhiteList {
     (gogoproto.moretags) = "yaml:\"address\""
   ];
 
-  string old_key = 2;
-  string new_key = 3;
+  string old_key = 3;
+  string new_key = 4;
+
+  string next_address   = 5 ;
+  string target_address = 6 ;
 }
 
 message MsgAddToCustodyLimits {
@@ -167,6 +189,9 @@ message MsgAddToCustodyLimits {
   string limit   = 4;
   string old_key = 5;
   string new_key = 6;
+
+  string next_address   = 7;
+  string target_address = 8;
 }
 
 message MsgRemoveFromCustodyLimits {
@@ -181,6 +206,9 @@ message MsgRemoveFromCustodyLimits {
   string denom   = 2;
   string old_key = 3;
   string new_key = 4;
+
+  string next_address   = 5 ;
+  string target_address = 6 ;
 }
 
 message MsgDropCustodyLimits {
@@ -194,6 +222,9 @@ message MsgDropCustodyLimits {
 
   string old_key = 2;
   string new_key = 3;
+
+  string next_address   = 4 ;
+  string target_address = 5 ;
 }
 
 message MsgApproveCustodyTransaction {

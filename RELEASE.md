@@ -1,4 +1,9 @@
 Features:
 
-- Implement layer2 v1 with dapp creation, executors/verifiers management, session management
-- Add CLI commands and unit tests on layer2 v1 features
+- Dapp operator performance counter
+- LP token return on verifier exit
+- Liquidation for dapp when fall below threshold
+- Swap, redeem, convert on lp tokens
+- Bridge registrar
+- Minting feature
+- Add CLI commands and unit tests
