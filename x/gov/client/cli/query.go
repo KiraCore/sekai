@@ -284,7 +284,7 @@ func GetCmdQueryCouncilRegistry() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
-			addr, err := cmd.Flags().GetString(FlagAddress)
+			addr, err := cmd.Flags().GetString(FlagAddr)
 			if err != nil {
 				return err
 			}
@@ -327,7 +327,7 @@ func GetCmdQueryCouncilRegistry() *cobra.Command {
 
 	flags.AddQueryFlagsToCmd(cmd)
 
-	cmd.Flags().String(FlagAddress, "", "the address you want to query information")
+	cmd.Flags().String(FlagAddr, "", "the address you want to query information")
 	cmd.Flags().String(FlagMoniker, "", "the moniker you want to query information")
 
 	return cmd

@@ -33,7 +33,7 @@ const (
 	FlagTimeout           = "timeout"
 	FlagDefaultParameters = "default_parameters"
 	FlagMoniker           = "moniker"
-	FlagAddress           = "address"
+	FlagAddr              = "addr"
 	FlagWhitelistPerms    = "whitelist"
 	FlagBlacklistPerms    = "blacklist"
 	FlagInfosFile         = "infos-file"
@@ -1357,7 +1357,7 @@ func GetTxClaimCouncilorSeatCmd() *cobra.Command {
 
 	flags.AddTxFlagsToCmd(cmd)
 
-	cmd.Flags().String(FlagAddress, "", "the address")
+	cmd.Flags().String(FlagAddr, "", "the address")
 	cmd.Flags().String(FlagMoniker, "", "the Moniker")
 	cmd.Flags().String(FlagUsername, "", "the Username")
 	cmd.Flags().String(FlagDescription, "", "the description")

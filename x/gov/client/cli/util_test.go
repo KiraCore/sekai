@@ -46,7 +46,7 @@ func (s IntegrationTestSuite) SetCouncilor(address sdk.Address) {
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
-		fmt.Sprintf("--%s=%s", cli.FlagAddress, address.String()),
+		fmt.Sprintf("--%s=%s", cli.FlagAddr, address.String()),
 		fmt.Sprintf("--%s=%s", cli.FlagMoniker, val.Moniker),
 	})
 	s.Require().NoError(err)
