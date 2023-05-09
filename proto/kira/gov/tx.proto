@@ -36,8 +36,8 @@ service Msg {
     rpc CreateRole(MsgCreateRole) returns (MsgCreateRoleResponse);
     // AssignRole defines a method for assigning a role to an address
     rpc AssignRole(MsgAssignRole) returns (MsgAssignRoleResponse);
-    // RemoveRole defines a method for removing a role from an address
-    rpc RemoveRole(MsgRemoveRole) returns (MsgRemoveRoleResponse);
+    // UnassignRole defines a method for unassigning a role from an address
+    rpc UnassignRole(MsgUnassignRole) returns (MsgUnassignRoleResponse);
     // SetNetworkProperties defines a method for setting network properties
     rpc SetNetworkProperties(MsgSetNetworkProperties) returns (MsgSetNetworkPropertiesResponse);
     // SetExecutionFee defines a method for setting execution fee
@@ -102,7 +102,7 @@ message MsgClaimCouncilorResponse {}
 message MsgVoteProposalResponse {}
 message MsgCreateRoleResponse {}
 message MsgAssignRoleResponse {}
-message MsgRemoveRoleResponse {}
+message MsgUnassignRoleResponse {}
 message MsgSetNetworkPropertiesResponse {}
 message MsgSetExecutionFeeResponse {}
 message MsgWhitelistRolePermissionResponse {}

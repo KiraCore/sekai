@@ -177,7 +177,7 @@ func (k msgServer) RotateValidatorByHalfRRTokenHolder(goCtx context.Context, msg
 	if found {
 		k.gk.DeleteNetworkActor(ctx, actor)
 		for _, role := range actor.Roles {
-			k.gk.RemoveRoleFromActor(ctx, actor, role)
+			k.gk.UnassignRoleFromActor(ctx, actor, role)
 		}
 		for _, perm := range actor.Permissions.Whitelist {
 			k.gk.DeleteWhitelistAddressPermKey(ctx, actor, govtypes.PermValue(perm))
@@ -345,7 +345,7 @@ func (k msgServer) RotateRecoveryAddress(goCtx context.Context, msg *types.MsgRo
 	if found {
 		k.gk.DeleteNetworkActor(ctx, actor)
 		for _, role := range actor.Roles {
-			k.gk.RemoveRoleFromActor(ctx, actor, role)
+			k.gk.UnassignRoleFromActor(ctx, actor, role)
 		}
 		for _, perm := range actor.Permissions.Whitelist {
 			k.gk.DeleteWhitelistAddressPermKey(ctx, actor, govtypes.PermValue(perm))

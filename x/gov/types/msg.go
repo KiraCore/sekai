@@ -2,6 +2,7 @@ package types
 
 import (
 	"fmt"
+
 	"github.com/KiraCore/sekai/types"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -25,7 +26,7 @@ var (
 	// Roles
 	_ sdk.Msg = &MsgCreateRole{}
 	_ sdk.Msg = &MsgAssignRole{}
-	_ sdk.Msg = &MsgRemoveRole{}
+	_ sdk.Msg = &MsgUnassignRole{}
 
 	_ sdk.Msg = &MsgWhitelistRolePermission{}
 	_ sdk.Msg = &MsgBlacklistRolePermission{}
@@ -562,19 +563,19 @@ func (m *MsgAssignRole) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgRemoveRole(proposer, address sdk.AccAddress, roleId uint32) *MsgRemoveRole {
-	return &MsgRemoveRole{Proposer: proposer, Address: address, RoleId: roleId}
+func NewMsgUnassignRole(proposer, address sdk.AccAddress, roleId uint32) *MsgUnassignRole {
+	return &MsgUnassignRole{Proposer: proposer, Address: address, RoleId: roleId}
 }
 
-func (m *MsgRemoveRole) Route() string {
+func (m *MsgUnassignRole) Route() string {
 	return ModuleName
 }
 
-func (m *MsgRemoveRole) Type() string {
-	return types.MsgTypeRemoveRole
+func (m *MsgUnassignRole) Type() string {
+	return types.MsgTypeUnassignRole
 }
 
-func (m *MsgRemoveRole) ValidateBasic() error {
+func (m *MsgUnassignRole) ValidateBasic() error {
 	if m.Proposer.Empty() {
 		return ErrEmptyProposerAccAddress
 	}
@@ -586,12 +587,12 @@ func (m *MsgRemoveRole) ValidateBasic() error {
 	return nil
 }
 
-func (m *MsgRemoveRole) GetSignBytes() []byte {
+func (m *MsgUnassignRole) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(m)
 	return sdk.MustSortJSON(bz)
 }
 
-func (m *MsgRemoveRole) GetSigners() []sdk.AccAddress {
+func (m *MsgUnassignRole) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{
 		m.Proposer,
 	}

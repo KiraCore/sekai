@@ -288,8 +288,20 @@ func (c ApplyRemoveRoleProposalHandler) ProposalType() string {
 
 func (c ApplyRemoveRoleProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
 	p := proposal.(*types.RemoveRoleProposal)
-	_ = p
-	return fmt.Errorf("remove role proposal is not implemented!")
+
+	role, err := c.keeper.GetRoleBySid(ctx, p.RoleSid)
+	if err == nil {
+		return types.ErrRoleExist
+	}
+
+	c.keeper.DeleteRole(ctx, role)
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeRemoveRole,
+			sdk.NewAttribute(types.AttributeKeyRoleId, fmt.Sprintf("%d", role.Id)),
+		),
+	)
+	return nil
 }
 
 type ApplyWhitelistRolePermissionProposalHandler struct {

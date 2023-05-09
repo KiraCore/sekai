@@ -168,8 +168,8 @@ func NewTxRoleCmds() *cobra.Command {
 	}
 
 	roleCmd.AddCommand(GetTxCreateRole())
-	roleCmd.AddCommand(GetTxRemoveRole())
 	roleCmd.AddCommand(GetTxAssignRole())
+	roleCmd.AddCommand(GetTxUnassignRole())
 
 	roleCmd.AddCommand(GetTxBlacklistRolePermission())
 	roleCmd.AddCommand(GetTxWhitelistRolePermission())
@@ -674,10 +674,10 @@ func GetTxAssignRole() *cobra.Command {
 	return cmd
 }
 
-func GetTxRemoveRole() *cobra.Command {
+func GetTxUnassignRole() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "remove role",
-		Short: "Remove role from account",
+		Use:   "unassign role",
+		Short: "Unassign a role from account",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -695,7 +695,7 @@ func GetTxRemoveRole() *cobra.Command {
 				return fmt.Errorf("error getting address: %w", err)
 			}
 
-			msg := types.NewMsgRemoveRole(
+			msg := types.NewMsgUnassignRole(
 				clientCtx.FromAddress,
 				addr,
 				uint32(role),

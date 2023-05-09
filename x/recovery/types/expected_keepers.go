@@ -101,7 +101,7 @@ type GovKeeper interface {
 	DeleteNetworkActor(ctx sdk.Context, actor govtypes.NetworkActor)
 	GetNetworkActorByAddress(ctx sdk.Context, address sdk.AccAddress) (govtypes.NetworkActor, bool)
 	SetWhitelistAddressPermKey(ctx sdk.Context, actor govtypes.NetworkActor, perm govtypes.PermValue)
-	RemoveRoleFromActor(ctx sdk.Context, actor govtypes.NetworkActor, role uint64)
+	UnassignRoleFromActor(ctx sdk.Context, actor govtypes.NetworkActor, role uint64)
 	AssignRoleToActor(ctx sdk.Context, actor govtypes.NetworkActor, role uint64)
 	DeleteWhitelistAddressPermKey(ctx sdk.Context, actor govtypes.NetworkActor, perm govtypes.PermValue)
 

@@ -228,7 +228,7 @@ func DefaultGenesis() *GenesisState {
 				kiratypes.MsgTypeBlacklistPermissions,
 				kiratypes.MsgTypeCreateRole,
 				kiratypes.MsgTypeAssignRole,
-				kiratypes.MsgTypeRemoveRole,
+				kiratypes.MsgTypeUnassignRole,
 				kiratypes.MsgTypeWhitelistRolePermission,
 				kiratypes.MsgTypeBlacklistRolePermission,
 				kiratypes.MsgTypeRemoveWhitelistRolePermission,
