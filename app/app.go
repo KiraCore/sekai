@@ -280,7 +280,7 @@ func NewInitApp(
 	app.BasketKeeper = basketkeeper.NewKeeper(
 		keys[baskettypes.ModuleName], appCodec,
 		app.AccountKeeper, app.BankKeeper,
-		app.CustomStakingKeeper, app.CustomGovKeeper,
+		app.CustomGovKeeper,
 		app.MultiStakingKeeper,
 	)
 
@@ -394,9 +394,9 @@ func NewInitApp(
 			encodingConfig.TxConfig,
 		),
 		bank.NewAppModule(appCodec, app.BankKeeper, app.AccountKeeper),
-		upgrade.NewAppModule(app.UpgradeKeeper, app.CustomGovKeeper),
+		upgrade.NewAppModule(app.UpgradeKeeper),
 		params.NewAppModule(app.ParamsKeeper),
-		customslashing.NewAppModule(appCodec, app.CustomSlashingKeeper, app.AccountKeeper, app.BankKeeper, app.CustomStakingKeeper),
+		customslashing.NewAppModule(appCodec, app.CustomSlashingKeeper, app.CustomStakingKeeper),
 		recovery.NewAppModule(appCodec, app.RecoveryKeeper, app.AccountKeeper, app.CustomStakingKeeper),
 		customstaking.NewAppModule(app.CustomStakingKeeper, app.CustomGovKeeper),
 		multistaking.NewAppModule(app.MultiStakingKeeper, app.BankKeeper, app.CustomGovKeeper, app.CustomStakingKeeper),
@@ -484,7 +484,7 @@ func NewInitApp(
 	app.sm = module.NewSimulationManager(
 		auth.NewAppModule(appCodec, app.AccountKeeper, simulation.RandomGenesisAccounts),
 		bank.NewAppModule(appCodec, app.BankKeeper, app.AccountKeeper),
-		customslashing.NewAppModule(appCodec, app.CustomSlashingKeeper, app.AccountKeeper, app.BankKeeper, app.CustomStakingKeeper),
+		customslashing.NewAppModule(appCodec, app.CustomSlashingKeeper, app.CustomStakingKeeper),
 		recovery.NewAppModule(appCodec, app.RecoveryKeeper, app.AccountKeeper, app.CustomStakingKeeper),
 		params.NewAppModule(app.ParamsKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),

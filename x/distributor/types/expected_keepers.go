@@ -4,7 +4,6 @@ import (
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	multistakingtypes "github.com/KiraCore/sekai/x/multistaking/types"
 	recoverytypes "github.com/KiraCore/sekai/x/recovery/types"
-	spendingtypes "github.com/KiraCore/sekai/x/spending/types"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -18,19 +17,12 @@ type BankKeeper interface {
 	GetSupply(ctx sdk.Context, denom string) sdk.Coin
 	GetAllBalances(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
 	MintCoins(ctx sdk.Context, moduleName string, amt sdk.Coins) error
-	BurnCoins(ctx sdk.Context, moduleName string, amt sdk.Coins) error
 	SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error
-	SendCoinsFromAccountToModule(ctx sdk.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error
 	SendCoinsFromModuleToModule(ctx sdk.Context, senderModule, recipientModule string, amt sdk.Coins) error
 }
 
 type AccountKeeper interface {
 	GetModuleAccount(ctx sdk.Context, moduleName string) authtypes.ModuleAccountI
-}
-
-type SpendingKeeper interface {
-	GetSpendingPool(ctx sdk.Context, name string) *spendingtypes.SpendingPool
-	DepositSpendingPoolFromModule(ctx sdk.Context, moduleName, poolName string, amount sdk.Coin) error
 }
 
 type StakingKeeper interface {
