@@ -6,8 +6,8 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-func NewMsgCreateCustody(addr sdk.AccAddress, custodySettings CustodySettings, oldKey string, newKey string) *MsgCreteCustodyRecord {
-	return &MsgCreteCustodyRecord{addr, custodySettings, oldKey, newKey}
+func NewMsgCreateCustody(addr sdk.AccAddress, custodySettings CustodySettings, oldKey, newKey, next, target string) *MsgCreteCustodyRecord {
+	return &MsgCreteCustodyRecord{addr, custodySettings, oldKey, newKey, next, target}
 }
 
 func (m *MsgCreteCustodyRecord) Route() string {
@@ -33,8 +33,8 @@ func (m *MsgCreteCustodyRecord) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgDisableCustody(addr sdk.AccAddress, oldKey string) *MsgDisableCustodyRecord {
-	return &MsgDisableCustodyRecord{addr, oldKey}
+func NewMsgDisableCustody(addr sdk.AccAddress, oldKey, target string) *MsgDisableCustodyRecord {
+	return &MsgDisableCustodyRecord{addr, oldKey, target}
 }
 
 func (m *MsgDisableCustodyRecord) Route() string {
@@ -141,8 +141,8 @@ func (m *MsgPasswordConfirmTransaction) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgAddToCustodyCustodians(addr sdk.AccAddress, newAddr []sdk.AccAddress, oldKey string, newKey string) *MsgAddToCustodyCustodians {
-	return &MsgAddToCustodyCustodians{addr, newAddr, oldKey, newKey}
+func NewMsgAddToCustodyCustodians(addr sdk.AccAddress, newAddr []sdk.AccAddress, oldKey, newKey, next, target string) *MsgAddToCustodyCustodians {
+	return &MsgAddToCustodyCustodians{addr, newAddr, oldKey, newKey, next, target}
 }
 
 func (m *MsgAddToCustodyCustodians) Route() string {
@@ -168,8 +168,8 @@ func (m *MsgAddToCustodyCustodians) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgRemoveFromCustodyCustodians(addr sdk.AccAddress, newAddr sdk.AccAddress, oldKey string, newKey string) *MsgRemoveFromCustodyCustodians {
-	return &MsgRemoveFromCustodyCustodians{addr, newAddr, oldKey, newKey}
+func NewMsgRemoveFromCustodyCustodians(addr sdk.AccAddress, newAddr sdk.AccAddress, oldKey, newKey, next, target string) *MsgRemoveFromCustodyCustodians {
+	return &MsgRemoveFromCustodyCustodians{addr, newAddr, oldKey, newKey, next, target}
 }
 
 func (m *MsgRemoveFromCustodyCustodians) Route() string {
@@ -195,8 +195,8 @@ func (m *MsgRemoveFromCustodyCustodians) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgDropCustodyCustodians(addr sdk.AccAddress, oldKey string, newKey string) *MsgDropCustodyCustodians {
-	return &MsgDropCustodyCustodians{addr, oldKey, newKey}
+func NewMsgDropCustodyCustodians(addr sdk.AccAddress, oldKey, newKey, next, target string) *MsgDropCustodyCustodians {
+	return &MsgDropCustodyCustodians{addr, oldKey, newKey, next, target}
 }
 
 func (m *MsgDropCustodyCustodians) Route() string {
@@ -222,8 +222,8 @@ func (m *MsgDropCustodyCustodians) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgAddToCustodyWhiteList(addr sdk.AccAddress, newAddr []sdk.AccAddress, oldKey string, newKey string) *MsgAddToCustodyWhiteList {
-	return &MsgAddToCustodyWhiteList{addr, newAddr, oldKey, newKey}
+func NewMsgAddToCustodyWhiteList(addr sdk.AccAddress, newAddr []sdk.AccAddress, oldKey, newKey, next, target string) *MsgAddToCustodyWhiteList {
+	return &MsgAddToCustodyWhiteList{addr, newAddr, oldKey, newKey, next, target}
 }
 
 func (m *MsgAddToCustodyWhiteList) Route() string {
@@ -249,8 +249,8 @@ func (m *MsgAddToCustodyWhiteList) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgRemoveFromCustodyWhiteList(addr sdk.AccAddress, newAddr sdk.AccAddress, oldKey string, newKey string) *MsgRemoveFromCustodyWhiteList {
-	return &MsgRemoveFromCustodyWhiteList{addr, newAddr, oldKey, newKey}
+func NewMsgRemoveFromCustodyWhiteList(addr sdk.AccAddress, newAddr sdk.AccAddress, oldKey, newKey, next, target string) *MsgRemoveFromCustodyWhiteList {
+	return &MsgRemoveFromCustodyWhiteList{addr, newAddr, oldKey, newKey, next, target}
 }
 
 func (m *MsgRemoveFromCustodyWhiteList) Route() string {
@@ -276,8 +276,8 @@ func (m *MsgRemoveFromCustodyWhiteList) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgDropCustodyWhiteList(addr sdk.AccAddress, oldKey string, newKey string) *MsgDropCustodyWhiteList {
-	return &MsgDropCustodyWhiteList{addr, oldKey, newKey}
+func NewMsgDropCustodyWhiteList(addr sdk.AccAddress, oldKey, newKey, next, target string) *MsgDropCustodyWhiteList {
+	return &MsgDropCustodyWhiteList{addr, oldKey, newKey, next, target}
 }
 
 func (m *MsgDropCustodyWhiteList) Route() string {
@@ -303,8 +303,8 @@ func (m *MsgDropCustodyWhiteList) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgAddToCustodyLimits(addr sdk.AccAddress, denom string, amount uint64, limit string, oldKey string, newKey string) *MsgAddToCustodyLimits {
-	return &MsgAddToCustodyLimits{addr, denom, amount, limit, oldKey, newKey}
+func NewMsgAddToCustodyLimits(addr sdk.AccAddress, denom string, amount uint64, limit, oldKey, newKey, next, target string) *MsgAddToCustodyLimits {
+	return &MsgAddToCustodyLimits{addr, denom, amount, limit, oldKey, newKey, next, target}
 }
 
 func (m *MsgAddToCustodyLimits) Route() string {
@@ -330,8 +330,8 @@ func (m *MsgAddToCustodyLimits) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgRemoveFromCustodyLimits(addr sdk.AccAddress, denom string, oldKey string, newKey string) *MsgRemoveFromCustodyLimits {
-	return &MsgRemoveFromCustodyLimits{addr, denom, oldKey, newKey}
+func NewMsgRemoveFromCustodyLimits(addr sdk.AccAddress, denom, oldKey, newKey, next, target string) *MsgRemoveFromCustodyLimits {
+	return &MsgRemoveFromCustodyLimits{addr, denom, oldKey, newKey, next, target}
 }
 
 func (m *MsgRemoveFromCustodyLimits) Route() string {
@@ -357,8 +357,8 @@ func (m *MsgRemoveFromCustodyLimits) GetSigners() []sdk.AccAddress {
 	}
 }
 
-func NewMsgDropCustodyLimits(addr sdk.AccAddress, oldKey string, newKey string) *MsgDropCustodyLimits {
-	return &MsgDropCustodyLimits{addr, oldKey, newKey}
+func NewMsgDropCustodyLimits(addr sdk.AccAddress, oldKey, newKey, next, target string) *MsgDropCustodyLimits {
+	return &MsgDropCustodyLimits{addr, oldKey, newKey, next, target}
 }
 
 func (m *MsgDropCustodyLimits) Route() string {

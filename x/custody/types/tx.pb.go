@@ -37,6 +37,8 @@ type MsgCreteCustodyRecord struct {
 	CustodySettings CustodySettings                               `protobuf:"bytes,2,opt,name=custody_settings,json=custodySettings,proto3" json:"custody_settings"`
 	OldKey          string                                        `protobuf:"bytes,3,opt,name=old_key,json=oldKey,proto3" json:"old_key,omitempty"`
 	NewKey          string                                        `protobuf:"bytes,4,opt,name=new_key,json=newKey,proto3" json:"new_key,omitempty"`
+	NextAddress     string                                        `protobuf:"bytes,5,opt,name=next_address,json=nextAddress,proto3" json:"next_address,omitempty"`
+	TargetAddress   string                                        `protobuf:"bytes,6,opt,name=target_address,json=targetAddress,proto3" json:"target_address,omitempty"`
 }
 
 func (m *MsgCreteCustodyRecord) Reset()         { *m = MsgCreteCustodyRecord{} }
@@ -73,8 +75,9 @@ func (m *MsgCreteCustodyRecord) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgCreteCustodyRecord proto.InternalMessageInfo
 
 type MsgDisableCustodyRecord struct {
-	Address github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
-	OldKey  string                                        `protobuf:"bytes,2,opt,name=old_key,json=oldKey,proto3" json:"old_key,omitempty"`
+	Address       github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
+	OldKey        string                                        `protobuf:"bytes,2,opt,name=old_key,json=oldKey,proto3" json:"old_key,omitempty"`
+	TargetAddress string                                        `protobuf:"bytes,3,opt,name=target_address,json=targetAddress,proto3" json:"target_address,omitempty"`
 }
 
 func (m *MsgDisableCustodyRecord) Reset()         { *m = MsgDisableCustodyRecord{} }
@@ -111,10 +114,12 @@ func (m *MsgDisableCustodyRecord) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgDisableCustodyRecord proto.InternalMessageInfo
 
 type MsgAddToCustodyCustodians struct {
-	Address    github_com_cosmos_cosmos_sdk_types.AccAddress   `protobuf:"bytes,1,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
-	AddAddress []github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,2,rep,name=add_address,json=addAddress,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"add_address,omitempty" yaml:"address"`
-	OldKey     string                                          `protobuf:"bytes,3,opt,name=old_key,json=oldKey,proto3" json:"old_key,omitempty"`
-	NewKey     string                                          `protobuf:"bytes,4,opt,name=new_key,json=newKey,proto3" json:"new_key,omitempty"`
+	Address       github_com_cosmos_cosmos_sdk_types.AccAddress   `protobuf:"bytes,1,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
+	AddAddress    []github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,2,rep,name=add_address,json=addAddress,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"add_address,omitempty" yaml:"address"`
+	OldKey        string                                          `protobuf:"bytes,3,opt,name=old_key,json=oldKey,proto3" json:"old_key,omitempty"`
+	NewKey        string                                          `protobuf:"bytes,4,opt,name=new_key,json=newKey,proto3" json:"new_key,omitempty"`
+	NextAddress   string                                          `protobuf:"bytes,5,opt,name=next_address,json=nextAddress,proto3" json:"next_address,omitempty"`
+	TargetAddress string                                          `protobuf:"bytes,6,opt,name=target_address,json=targetAddress,proto3" json:"target_address,omitempty"`
 }
 
 func (m *MsgAddToCustodyCustodians) Reset()         { *m = MsgAddToCustodyCustodians{} }
@@ -155,6 +160,8 @@ type MsgRemoveFromCustodyCustodians struct {
 	RemoveAddress github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,2,opt,name=remove_address,json=removeAddress,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"remove_address,omitempty" yaml:"address"`
 	OldKey        string                                        `protobuf:"bytes,3,opt,name=old_key,json=oldKey,proto3" json:"old_key,omitempty"`
 	NewKey        string                                        `protobuf:"bytes,4,opt,name=new_key,json=newKey,proto3" json:"new_key,omitempty"`
+	NextAddress   string                                        `protobuf:"bytes,5,opt,name=next_address,json=nextAddress,proto3" json:"next_address,omitempty"`
+	TargetAddress string                                        `protobuf:"bytes,6,opt,name=target_address,json=targetAddress,proto3" json:"target_address,omitempty"`
 }
 
 func (m *MsgRemoveFromCustodyCustodians) Reset()         { *m = MsgRemoveFromCustodyCustodians{} }
@@ -191,9 +198,11 @@ func (m *MsgRemoveFromCustodyCustodians) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgRemoveFromCustodyCustodians proto.InternalMessageInfo
 
 type MsgDropCustodyCustodians struct {
-	Address github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
-	OldKey  string                                        `protobuf:"bytes,2,opt,name=old_key,json=oldKey,proto3" json:"old_key,omitempty"`
-	NewKey  string                                        `protobuf:"bytes,3,opt,name=new_key,json=newKey,proto3" json:"new_key,omitempty"`
+	Address       github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
+	OldKey        string                                        `protobuf:"bytes,2,opt,name=old_key,json=oldKey,proto3" json:"old_key,omitempty"`
+	NewKey        string                                        `protobuf:"bytes,3,opt,name=new_key,json=newKey,proto3" json:"new_key,omitempty"`
+	NextAddress   string                                        `protobuf:"bytes,4,opt,name=next_address,json=nextAddress,proto3" json:"next_address,omitempty"`
+	TargetAddress string                                        `protobuf:"bytes,5,opt,name=target_address,json=targetAddress,proto3" json:"target_address,omitempty"`
 }
 
 func (m *MsgDropCustodyCustodians) Reset()         { *m = MsgDropCustodyCustodians{} }
@@ -230,10 +239,12 @@ func (m *MsgDropCustodyCustodians) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgDropCustodyCustodians proto.InternalMessageInfo
 
 type MsgAddToCustodyWhiteList struct {
-	Address    github_com_cosmos_cosmos_sdk_types.AccAddress   `protobuf:"bytes,1,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
-	AddAddress []github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,2,rep,name=add_address,json=addAddress,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"add_address,omitempty" yaml:"address"`
-	OldKey     string                                          `protobuf:"bytes,3,opt,name=old_key,json=oldKey,proto3" json:"old_key,omitempty"`
-	NewKey     string                                          `protobuf:"bytes,4,opt,name=new_key,json=newKey,proto3" json:"new_key,omitempty"`
+	Address       github_com_cosmos_cosmos_sdk_types.AccAddress   `protobuf:"bytes,1,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
+	AddAddress    []github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,2,rep,name=add_address,json=addAddress,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"add_address,omitempty" yaml:"address"`
+	OldKey        string                                          `protobuf:"bytes,3,opt,name=old_key,json=oldKey,proto3" json:"old_key,omitempty"`
+	NewKey        string                                          `protobuf:"bytes,4,opt,name=new_key,json=newKey,proto3" json:"new_key,omitempty"`
+	NextAddress   string                                          `protobuf:"bytes,5,opt,name=next_address,json=nextAddress,proto3" json:"next_address,omitempty"`
+	TargetAddress string                                          `protobuf:"bytes,6,opt,name=target_address,json=targetAddress,proto3" json:"target_address,omitempty"`
 }
 
 func (m *MsgAddToCustodyWhiteList) Reset()         { *m = MsgAddToCustodyWhiteList{} }
@@ -274,6 +285,8 @@ type MsgRemoveFromCustodyWhiteList struct {
 	RemoveAddress github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,2,opt,name=remove_address,json=removeAddress,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"remove_address,omitempty" yaml:"address"`
 	OldKey        string                                        `protobuf:"bytes,3,opt,name=old_key,json=oldKey,proto3" json:"old_key,omitempty"`
 	NewKey        string                                        `protobuf:"bytes,4,opt,name=new_key,json=newKey,proto3" json:"new_key,omitempty"`
+	NextAddress   string                                        `protobuf:"bytes,5,opt,name=next_address,json=nextAddress,proto3" json:"next_address,omitempty"`
+	TargetAddress string                                        `protobuf:"bytes,6,opt,name=target_address,json=targetAddress,proto3" json:"target_address,omitempty"`
 }
 
 func (m *MsgRemoveFromCustodyWhiteList) Reset()         { *m = MsgRemoveFromCustodyWhiteList{} }
@@ -310,9 +323,11 @@ func (m *MsgRemoveFromCustodyWhiteList) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgRemoveFromCustodyWhiteList proto.InternalMessageInfo
 
 type MsgDropCustodyWhiteList struct {
-	Address github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
-	OldKey  string                                        `protobuf:"bytes,2,opt,name=old_key,json=oldKey,proto3" json:"old_key,omitempty"`
-	NewKey  string                                        `protobuf:"bytes,3,opt,name=new_key,json=newKey,proto3" json:"new_key,omitempty"`
+	Address       github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
+	OldKey        string                                        `protobuf:"bytes,3,opt,name=old_key,json=oldKey,proto3" json:"old_key,omitempty"`
+	NewKey        string                                        `protobuf:"bytes,4,opt,name=new_key,json=newKey,proto3" json:"new_key,omitempty"`
+	NextAddress   string                                        `protobuf:"bytes,5,opt,name=next_address,json=nextAddress,proto3" json:"next_address,omitempty"`
+	TargetAddress string                                        `protobuf:"bytes,6,opt,name=target_address,json=targetAddress,proto3" json:"target_address,omitempty"`
 }
 
 func (m *MsgDropCustodyWhiteList) Reset()         { *m = MsgDropCustodyWhiteList{} }
@@ -349,12 +364,14 @@ func (m *MsgDropCustodyWhiteList) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgDropCustodyWhiteList proto.InternalMessageInfo
 
 type MsgAddToCustodyLimits struct {
-	Address github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
-	Denom   string                                        `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
-	Amount  uint64                                        `protobuf:"varint,3,opt,name=amount,proto3" json:"amount,omitempty"`
-	Limit   string                                        `protobuf:"bytes,4,opt,name=limit,proto3" json:"limit,omitempty"`
-	OldKey  string                                        `protobuf:"bytes,5,opt,name=old_key,json=oldKey,proto3" json:"old_key,omitempty"`
-	NewKey  string                                        `protobuf:"bytes,6,opt,name=new_key,json=newKey,proto3" json:"new_key,omitempty"`
+	Address       github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
+	Denom         string                                        `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
+	Amount        uint64                                        `protobuf:"varint,3,opt,name=amount,proto3" json:"amount,omitempty"`
+	Limit         string                                        `protobuf:"bytes,4,opt,name=limit,proto3" json:"limit,omitempty"`
+	OldKey        string                                        `protobuf:"bytes,5,opt,name=old_key,json=oldKey,proto3" json:"old_key,omitempty"`
+	NewKey        string                                        `protobuf:"bytes,6,opt,name=new_key,json=newKey,proto3" json:"new_key,omitempty"`
+	NextAddress   string                                        `protobuf:"bytes,7,opt,name=next_address,json=nextAddress,proto3" json:"next_address,omitempty"`
+	TargetAddress string                                        `protobuf:"bytes,8,opt,name=target_address,json=targetAddress,proto3" json:"target_address,omitempty"`
 }
 
 func (m *MsgAddToCustodyLimits) Reset()         { *m = MsgAddToCustodyLimits{} }
@@ -391,10 +408,12 @@ func (m *MsgAddToCustodyLimits) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgAddToCustodyLimits proto.InternalMessageInfo
 
 type MsgRemoveFromCustodyLimits struct {
-	Address github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
-	Denom   string                                        `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
-	OldKey  string                                        `protobuf:"bytes,3,opt,name=old_key,json=oldKey,proto3" json:"old_key,omitempty"`
-	NewKey  string                                        `protobuf:"bytes,4,opt,name=new_key,json=newKey,proto3" json:"new_key,omitempty"`
+	Address       github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
+	Denom         string                                        `protobuf:"bytes,2,opt,name=denom,proto3" json:"denom,omitempty"`
+	OldKey        string                                        `protobuf:"bytes,3,opt,name=old_key,json=oldKey,proto3" json:"old_key,omitempty"`
+	NewKey        string                                        `protobuf:"bytes,4,opt,name=new_key,json=newKey,proto3" json:"new_key,omitempty"`
+	NextAddress   string                                        `protobuf:"bytes,5,opt,name=next_address,json=nextAddress,proto3" json:"next_address,omitempty"`
+	TargetAddress string                                        `protobuf:"bytes,6,opt,name=target_address,json=targetAddress,proto3" json:"target_address,omitempty"`
 }
 
 func (m *MsgRemoveFromCustodyLimits) Reset()         { *m = MsgRemoveFromCustodyLimits{} }
@@ -431,9 +450,11 @@ func (m *MsgRemoveFromCustodyLimits) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgRemoveFromCustodyLimits proto.InternalMessageInfo
 
 type MsgDropCustodyLimits struct {
-	Address github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
-	OldKey  string                                        `protobuf:"bytes,2,opt,name=old_key,json=oldKey,proto3" json:"old_key,omitempty"`
-	NewKey  string                                        `protobuf:"bytes,3,opt,name=new_key,json=newKey,proto3" json:"new_key,omitempty"`
+	Address       github_com_cosmos_cosmos_sdk_types.AccAddress `protobuf:"bytes,1,opt,name=address,proto3,casttype=github.com/cosmos/cosmos-sdk/types.AccAddress" json:"address,omitempty" yaml:"address"`
+	OldKey        string                                        `protobuf:"bytes,2,opt,name=old_key,json=oldKey,proto3" json:"old_key,omitempty"`
+	NewKey        string                                        `protobuf:"bytes,3,opt,name=new_key,json=newKey,proto3" json:"new_key,omitempty"`
+	NextAddress   string                                        `protobuf:"bytes,4,opt,name=next_address,json=nextAddress,proto3" json:"next_address,omitempty"`
+	TargetAddress string                                        `protobuf:"bytes,5,opt,name=target_address,json=targetAddress,proto3" json:"target_address,omitempty"`
 }
 
 func (m *MsgDropCustodyLimits) Reset()         { *m = MsgDropCustodyLimits{} }
@@ -1394,94 +1415,97 @@ func init() {
 func init() { proto.RegisterFile("kira/custody/tx.proto", fileDescriptor_85c0ad3d36de53cc) }
 
 var fileDescriptor_85c0ad3d36de53cc = []byte{
-	// 1390 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xec, 0x59, 0xb1, 0x6f, 0xdb, 0xc6,
-	0x17, 0x36, 0x25, 0xdb, 0x89, 0x9f, 0x1c, 0x3b, 0x61, 0xec, 0x5f, 0x1c, 0x22, 0x11, 0x1d, 0x26,
-	0x71, 0x94, 0x5f, 0x6a, 0x32, 0x51, 0x52, 0xb4, 0x30, 0xba, 0x48, 0x4a, 0xbb, 0x24, 0x2a, 0x02,
-	0x26, 0x40, 0x81, 0xa0, 0x85, 0x41, 0x91, 0x67, 0x9a, 0xb5, 0xc8, 0x13, 0x78, 0x67, 0x3b, 0xea,
-	0x54, 0x74, 0xea, 0x98, 0xbd, 0x1d, 0x02, 0x14, 0x68, 0x81, 0x2e, 0x6d, 0x81, 0x76, 0xea, 0x3f,
-	0x90, 0xa5, 0x40, 0xc6, 0x4e, 0x6a, 0x91, 0x2c, 0x9d, 0x3d, 0x74, 0xe8, 0x54, 0x90, 0x77, 0x22,
-	0x29, 0x89, 0x94, 0x15, 0xc4, 0x52, 0x50, 0x20, 0x93, 0x48, 0xde, 0x77, 0xf7, 0xbd, 0xf7, 0xf1,
-	0xbd, 0xc7, 0xf7, 0x6c, 0x58, 0xde, 0x71, 0x7c, 0x43, 0x33, 0x77, 0x09, 0xc5, 0x56, 0x5b, 0xa3,
-	0x8f, 0xd4, 0x96, 0x8f, 0x29, 0x16, 0xe7, 0x83, 0xc7, 0x2a, 0x7f, 0x2c, 0x2d, 0xd9, 0xd8, 0xc6,
-	0xe1, 0x82, 0x16, 0x5c, 0x31, 0x8c, 0x24, 0xdb, 0x18, 0xdb, 0x4d, 0xa4, 0x85, 0x77, 0x8d, 0xdd,
-	0x2d, 0x8d, 0x3a, 0x2e, 0x22, 0xd4, 0x70, 0x5b, 0x1c, 0x20, 0xf5, 0x9c, 0xcd, 0x7f, 0xf9, 0xda,
-	0xd9, 0xfe, 0xcd, 0x86, 0xd7, 0x5d, 0x2a, 0x9a, 0x98, 0xb8, 0x98, 0x68, 0x0d, 0x83, 0x20, 0x6d,
-	0xef, 0x46, 0x03, 0x51, 0xe3, 0x86, 0x66, 0x62, 0xc7, 0x63, 0xeb, 0xca, 0x17, 0x39, 0x58, 0xae,
-	0x13, 0xbb, 0xe6, 0x23, 0x8a, 0x6a, 0xec, 0x50, 0x1d, 0x99, 0xd8, 0xb7, 0xc4, 0x4f, 0xe0, 0x98,
-	0x61, 0x59, 0x3e, 0x22, 0x64, 0x45, 0x58, 0x15, 0x4a, 0xf3, 0xd5, 0xda, 0x41, 0x47, 0x5e, 0x68,
-	0x1b, 0x6e, 0x73, 0x43, 0xe1, 0x0b, 0xca, 0x3f, 0x1d, 0x79, 0xdd, 0x76, 0xe8, 0xf6, 0x6e, 0x43,
-	0x35, 0xb1, 0xab, 0x71, 0x2e, 0xf6, 0xb3, 0x4e, 0xac, 0x1d, 0x8d, 0xb6, 0x5b, 0x88, 0xa8, 0x15,
-	0xd3, 0xac, 0xb0, 0x1d, 0x7a, 0xf7, 0x4c, 0xf1, 0x43, 0x38, 0xc9, 0x9d, 0xd8, 0x24, 0x88, 0x52,
-	0xc7, 0xb3, 0xc9, 0x4a, 0x6e, 0x55, 0x28, 0x15, 0xca, 0xe7, 0xd5, 0xa4, 0x5e, 0x2a, 0xb7, 0xea,
-	0x3e, 0x07, 0x55, 0xa7, 0x9f, 0x76, 0xe4, 0x29, 0x7d, 0xd1, 0xec, 0x7d, 0x2c, 0x9e, 0x81, 0x63,
-	0xb8, 0x69, 0x6d, 0xee, 0xa0, 0xf6, 0x4a, 0x7e, 0x55, 0x28, 0xcd, 0xe9, 0xb3, 0xb8, 0x69, 0xdd,
-	0x41, 0xed, 0x60, 0xc1, 0x43, 0xfb, 0xe1, 0xc2, 0x34, 0x5b, 0xf0, 0xd0, 0xfe, 0x1d, 0xd4, 0xde,
-	0x38, 0xfe, 0xe5, 0x13, 0x79, 0xea, 0xaf, 0x27, 0xf2, 0x94, 0xf2, 0x95, 0x00, 0x67, 0xea, 0xc4,
-	0xbe, 0xed, 0x10, 0xa3, 0xd1, 0x9c, 0xac, 0x0c, 0x09, 0xb3, 0x73, 0x49, 0xb3, 0x13, 0xd6, 0x7d,
-	0x9d, 0x83, 0xb3, 0x75, 0x62, 0x57, 0x2c, 0xeb, 0x01, 0xe6, 0xb6, 0xb1, 0x1f, 0xc7, 0xf0, 0xc8,
-	0xb8, 0xed, 0xb3, 0xa0, 0x60, 0x58, 0xd6, 0x66, 0x97, 0x22, 0xb7, 0x9a, 0x3f, 0x2a, 0x0a, 0x30,
-	0x2c, 0xab, 0x32, 0xa8, 0xc2, 0x4b, 0xbf, 0xbc, 0xef, 0x72, 0x50, 0xac, 0x13, 0x5b, 0x47, 0x2e,
-	0xde, 0x43, 0x1f, 0xf8, 0xd8, 0x9d, 0xb8, 0x46, 0x9f, 0xc2, 0x82, 0x1f, 0xb2, 0x27, 0x64, 0x3a,
-	0x32, 0x96, 0x13, 0xec, 0xe8, 0xa3, 0x50, 0xea, 0x17, 0x01, 0x56, 0x82, 0x30, 0xf7, 0x71, 0x6b,
-	0xe2, 0x1a, 0x65, 0xc5, 0x79, 0xd2, 0xee, 0x7c, 0x56, 0x7a, 0xe6, 0x42, 0xbb, 0x93, 0x09, 0xf0,
-	0xd1, 0xb6, 0x43, 0xd1, 0x5d, 0x87, 0xd0, 0x37, 0xf1, 0xff, 0x6d, 0x0e, 0xce, 0xa7, 0xc5, 0xff,
-	0xc4, 0x24, 0xfa, 0xaf, 0x84, 0xff, 0xcf, 0xbc, 0xca, 0xc7, 0xe1, 0x3f, 0x31, 0x89, 0x5e, 0x25,
-	0xfa, 0xff, 0x16, 0xc2, 0x2f, 0x74, 0x32, 0xfa, 0xef, 0x3a, 0xae, 0x43, 0xc7, 0x9e, 0xb2, 0x4b,
-	0x30, 0x63, 0x21, 0x0f, 0xbb, 0xdc, 0x64, 0x76, 0x23, 0xfe, 0x0f, 0x66, 0x0d, 0x17, 0xef, 0x7a,
-	0x34, 0x34, 0x78, 0x5a, 0xe7, 0x77, 0x01, 0xba, 0x19, 0x98, 0xc5, 0xe5, 0x67, 0x37, 0x49, 0xc7,
-	0x67, 0xb2, 0x1c, 0x9f, 0xcd, 0x70, 0xfc, 0x37, 0x01, 0xa4, 0xb4, 0xc0, 0x7e, 0x9d, 0xde, 0xbf,
-	0x4a, 0xfc, 0xfd, 0x24, 0xc0, 0x52, 0x6f, 0xfc, 0x4d, 0xc6, 0x93, 0x57, 0x09, 0xbe, 0xc7, 0x39,
-	0x38, 0x17, 0x04, 0x5f, 0xab, 0xe5, 0xe3, 0xbd, 0x6e, 0x67, 0xf4, 0xc0, 0x37, 0x3c, 0x62, 0x98,
-	0xd4, 0xc1, 0x9e, 0xb8, 0x05, 0xf3, 0x5b, 0x3e, 0x76, 0x37, 0xc7, 0xe0, 0x40, 0x21, 0x38, 0xb8,
-	0x12, 0x17, 0x19, 0x6a, 0xf8, 0x36, 0xa2, 0x63, 0x29, 0x32, 0xec, 0xe8, 0x2e, 0x97, 0x08, 0xd3,
-	0xdb, 0x06, 0xd9, 0xe6, 0xa2, 0x84, 0xd7, 0x83, 0x92, 0xdc, 0x46, 0x66, 0xd3, 0xf1, 0xde, 0x48,
-	0x12, 0x48, 0xf2, 0x79, 0x1e, 0x8e, 0xd5, 0x89, 0x7d, 0x1f, 0x79, 0x96, 0xb8, 0x91, 0xe2, 0xfd,
-	0x5c, 0xf5, 0xcc, 0x41, 0x47, 0x3e, 0xcd, 0x6c, 0x4a, 0xae, 0x2a, 0xbd, 0x1e, 0xdd, 0x02, 0xa0,
-	0xb8, 0xc7, 0x9b, 0xb9, 0xea, 0xf2, 0x41, 0x47, 0x3e, 0xc5, 0x76, 0xc6, 0x6b, 0x8a, 0x3e, 0x47,
-	0x71, 0x77, 0x97, 0x99, 0xa8, 0x48, 0xf9, 0x52, 0xa1, 0x7c, 0x56, 0x65, 0x8e, 0xa9, 0xc1, 0xcc,
-	0xa3, 0xf2, 0x99, 0x47, 0xad, 0x61, 0xc7, 0xab, 0x5e, 0x0f, 0x66, 0x87, 0xef, 0xff, 0x90, 0x4b,
-	0x23, 0x88, 0x11, 0x6c, 0x20, 0x51, 0x79, 0xd3, 0xe0, 0x78, 0xcb, 0x20, 0x64, 0x1f, 0xfb, 0x16,
-	0x4b, 0xf0, 0xea, 0xe9, 0x83, 0x8e, 0xbc, 0xc8, 0x0c, 0xeb, 0xae, 0x28, 0x7a, 0x04, 0x0a, 0xac,
-	0xf2, 0xd1, 0xbe, 0xe1, 0x5b, 0x2b, 0x33, 0x63, 0xb0, 0x8a, 0x1d, 0x9d, 0x7c, 0x05, 0x02, 0x9c,
-	0x4a, 0x04, 0x21, 0x1f, 0x5e, 0xde, 0x81, 0x02, 0x8d, 0x1f, 0x86, 0xef, 0xa2, 0x50, 0x5e, 0xee,
-	0x9d, 0xaf, 0xf8, 0x8b, 0xd3, 0x93, 0xc8, 0xa0, 0xfa, 0xed, 0x61, 0x8a, 0xd8, 0x4b, 0x98, 0xd6,
-	0xd9, 0x8d, 0x78, 0x0e, 0xe6, 0x4c, 0xec, 0x6d, 0x39, 0xbe, 0x8b, 0xac, 0x30, 0x14, 0x8e, 0xeb,
-	0xf1, 0x03, 0xe5, 0x47, 0x01, 0x16, 0x13, 0x26, 0xdc, 0xc3, 0xb8, 0x29, 0x56, 0x02, 0x15, 0x02,
-	0x53, 0xc2, 0xce, 0xa9, 0x50, 0xbe, 0xda, 0xcb, 0xdd, 0x07, 0x57, 0x99, 0xd9, 0xef, 0x7b, 0xd4,
-	0x6f, 0xeb, 0x7c, 0xa3, 0xf4, 0x10, 0x0a, 0x89, 0xc7, 0xe2, 0x49, 0xc8, 0x07, 0x05, 0x2b, 0x0c,
-	0x2b, 0x3d, 0xb8, 0x14, 0xdf, 0x86, 0x99, 0x3d, 0xa3, 0xb9, 0x8b, 0xf8, 0xf8, 0x28, 0x67, 0x52,
-	0xb0, 0x63, 0x74, 0x86, 0xde, 0xc8, 0xbd, 0x2b, 0x28, 0x3f, 0x08, 0x50, 0xe0, 0x19, 0x1c, 0x9a,
-	0x3b, 0xe6, 0x4a, 0x5c, 0x81, 0xf9, 0x84, 0xc8, 0x19, 0xf3, 0x6e, 0x9f, 0x26, 0x7a, 0xcf, 0x16,
-	0xe5, 0x1b, 0xd6, 0xed, 0xdd, 0xe3, 0x61, 0x56, 0x63, 0xea, 0xbf, 0xa6, 0xf2, 0x43, 0x90, 0x67,
-	0x21, 0x7f, 0x2c, 0xe5, 0x87, 0x1d, 0x3d, 0xa4, 0xfc, 0x88, 0x52, 0x7f, 0x46, 0xc6, 0xc9, 0xa7,
-	0xc8, 0xa1, 0x48, 0x83, 0x7f, 0xd4, 0xd0, 0x11, 0x69, 0x61, 0x8f, 0x20, 0xe5, 0x02, 0xc8, 0x19,
-	0x03, 0x7f, 0x04, 0xb9, 0x08, 0x17, 0x32, 0xa7, 0xee, 0x08, 0x54, 0x82, 0xb5, 0xe1, 0xb3, 0x67,
-	0x84, 0x54, 0x60, 0x35, 0x6b, 0xf6, 0xea, 0xc3, 0xa4, 0xce, 0x39, 0x11, 0xe6, 0x0a, 0x5c, 0x1e,
-	0xda, 0xed, 0xf7, 0xbb, 0x98, 0xd2, 0xed, 0x46, 0x10, 0x26, 0xd3, 0x60, 0x67, 0x19, 0x01, 0x2e,
-	0x81, 0x92, 0xdd, 0x81, 0x45, 0xa8, 0x22, 0xfb, 0x20, 0xf6, 0xf7, 0x35, 0xd1, 0xfa, 0x1a, 0x5c,
-	0x1a, 0xd6, 0x43, 0xf4, 0xe1, 0x32, 0x3f, 0xac, 0x11, 0xee, 0x14, 0x2c, 0x76, 0x8b, 0x56, 0xaf,
-	0x2a, 0xd9, 0x59, 0xd1, 0x05, 0x96, 0x7f, 0x9d, 0x87, 0x7c, 0x9d, 0xd8, 0xa2, 0x01, 0x27, 0x6a,
-	0x3e, 0x32, 0xa2, 0xf8, 0x10, 0x2f, 0x0e, 0x54, 0xc5, 0xc1, 0xf0, 0x91, 0xae, 0x8d, 0x00, 0xea,
-	0x52, 0x89, 0x5b, 0xb0, 0xd0, 0x1b, 0x60, 0xe2, 0xe5, 0x81, 0xed, 0x69, 0x11, 0x28, 0xad, 0x8f,
-	0x04, 0x8b, 0x78, 0x76, 0x60, 0x31, 0xf1, 0x0a, 0xc3, 0x61, 0xfe, 0xca, 0xc0, 0x09, 0xe9, 0x71,
-	0x2c, 0x69, 0x23, 0x02, 0x23, 0xb2, 0xcf, 0x60, 0xa9, 0x3f, 0x1c, 0x42, 0xc6, 0xb7, 0x06, 0x0e,
-	0x1a, 0x92, 0x14, 0xd2, 0xad, 0x97, 0x41, 0x47, 0xdc, 0xdb, 0xb0, 0x10, 0x07, 0x59, 0xc8, 0xba,
-	0x36, 0xa8, 0x54, 0x5a, 0x82, 0x49, 0xea, 0x68, 0xb8, 0x24, 0x53, 0xa8, 0x43, 0x3c, 0x20, 0xae,
-	0x0d, 0x15, 0x2a, 0xc2, 0xa5, 0x30, 0x0d, 0x4d, 0x67, 0x71, 0x1f, 0x4e, 0xc7, 0xae, 0xc7, 0x74,
-	0xd7, 0x0e, 0x17, 0x28, 0xe6, 0xbc, 0xf9, 0x12, 0xe0, 0x88, 0x18, 0xc1, 0x89, 0x40, 0x83, 0x98,
-	0xf2, 0xf2, 0x30, 0x8d, 0x62, 0xb2, 0xf5, 0x91, 0x60, 0x11, 0xcd, 0x26, 0x14, 0x42, 0x01, 0xf8,
-	0xa8, 0x73, 0x71, 0xa8, 0x3c, 0x0c, 0x94, 0x92, 0x65, 0xd9, 0x25, 0x4a, 0xf4, 0xe0, 0x64, 0xec,
-	0x2d, 0x67, 0x29, 0x1d, 0x2e, 0x08, 0xa7, 0xba, 0x3e, 0x2a, 0x32, 0xe2, 0xfb, 0x18, 0x20, 0x70,
-	0x98, 0x33, 0x29, 0xc3, 0xd4, 0xe0, 0x1c, 0xff, 0x3f, 0x1c, 0x13, 0x9d, 0x4e, 0x41, 0xe4, 0x75,
-	0x32, 0xf9, 0x49, 0x1f, 0x3c, 0x21, 0xb3, 0x98, 0x4a, 0xe5, 0xd1, 0xb1, 0x49, 0x56, 0x5e, 0x75,
-	0x87, 0xb3, 0x66, 0x96, 0xe6, 0x14, 0xd6, 0x43, 0xcb, 0xb8, 0xf8, 0x1e, 0x4c, 0x87, 0x13, 0x43,
-	0x7a, 0x3f, 0x2a, 0x9d, 0x4f, 0x6f, 0x53, 0xbb, 0xbb, 0x09, 0x2c, 0xf6, 0x95, 0xfb, 0x94, 0xa4,
-	0xc9, 0xfe, 0x20, 0xa4, 0x24, 0xcd, 0xe1, 0x5f, 0x8f, 0x6a, 0xed, 0xe9, 0xf3, 0xa2, 0xf0, 0xec,
-	0x79, 0x51, 0xf8, 0xf3, 0x79, 0x51, 0x78, 0xfc, 0xa2, 0x38, 0xf5, 0xec, 0x45, 0x71, 0xea, 0xf7,
-	0x17, 0xc5, 0xa9, 0x87, 0x57, 0x13, 0xfd, 0xcd, 0x1d, 0xc7, 0x37, 0x6a, 0xd8, 0x47, 0x1a, 0x41,
-	0x3b, 0x86, 0xa3, 0x3d, 0x8a, 0xff, 0x23, 0x14, 0xb4, 0x39, 0x8d, 0xd9, 0xf0, 0x3f, 0x2f, 0x37,
-	0xff, 0x0d, 0x00, 0x00, 0xff, 0xff, 0x08, 0x19, 0x7f, 0x89, 0x2e, 0x1a, 0x00, 0x00,
+	// 1437 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xec, 0x59, 0x4d, 0x6c, 0xdc, 0x44,
+	0x14, 0x8e, 0x77, 0x37, 0x7f, 0x6f, 0xf3, 0xd3, 0xba, 0x09, 0x4d, 0xad, 0x76, 0x9d, 0xba, 0x4d,
+	0xba, 0xa5, 0x64, 0xdd, 0xa6, 0x45, 0xa0, 0x88, 0xcb, 0xee, 0x16, 0x2e, 0x6d, 0x50, 0xe5, 0x56,
+	0x42, 0xaa, 0x40, 0x91, 0xb3, 0x9e, 0x38, 0x26, 0x6b, 0xcf, 0xca, 0x33, 0x49, 0x1a, 0x4e, 0x1c,
+	0x39, 0xf6, 0xc6, 0xb5, 0x12, 0x37, 0x2e, 0x70, 0xe7, 0x82, 0x38, 0xf5, 0xc0, 0xa1, 0x47, 0x4e,
+	0x01, 0xb5, 0x02, 0x71, 0x84, 0x1c, 0x41, 0x02, 0x64, 0xcf, 0xac, 0x7f, 0xd6, 0x3f, 0xd9, 0x4a,
+	0xc9, 0x36, 0x12, 0x3d, 0xad, 0x3d, 0xef, 0x9b, 0xf9, 0xe6, 0x7d, 0x7e, 0xef, 0xcd, 0xcf, 0xc2,
+	0xec, 0x96, 0xe5, 0xea, 0x6a, 0x6b, 0x9b, 0x50, 0x6c, 0xec, 0xa9, 0xf4, 0x51, 0xad, 0xe3, 0x62,
+	0x8a, 0xc5, 0x09, 0xaf, 0xb9, 0xc6, 0x9b, 0xa5, 0x19, 0x13, 0x9b, 0xd8, 0x37, 0xa8, 0xde, 0x13,
+	0xc3, 0x48, 0xb2, 0x89, 0xb1, 0xd9, 0x46, 0xaa, 0xff, 0xb6, 0xbe, 0xbd, 0xa1, 0x52, 0xcb, 0x46,
+	0x84, 0xea, 0x76, 0x87, 0x03, 0xa4, 0xd8, 0xd8, 0xfc, 0x97, 0xdb, 0xce, 0xf5, 0x76, 0xd6, 0x9d,
+	0xae, 0xa9, 0xd2, 0xc2, 0xc4, 0xc6, 0x44, 0x5d, 0xd7, 0x09, 0x52, 0x77, 0x6e, 0xac, 0x23, 0xaa,
+	0xdf, 0x50, 0x5b, 0xd8, 0x72, 0x98, 0x5d, 0xf9, 0xb1, 0x00, 0xb3, 0xab, 0xc4, 0x6c, 0xba, 0x88,
+	0xa2, 0x26, 0x1b, 0x54, 0x43, 0x2d, 0xec, 0x1a, 0xe2, 0x27, 0x30, 0xaa, 0x1b, 0x86, 0x8b, 0x08,
+	0x99, 0x13, 0xe6, 0x85, 0xea, 0x44, 0xa3, 0x79, 0xb0, 0x2f, 0x4f, 0xed, 0xe9, 0x76, 0x7b, 0x45,
+	0xe1, 0x06, 0xe5, 0xaf, 0x7d, 0x79, 0xc9, 0xb4, 0xe8, 0xe6, 0xf6, 0x7a, 0xad, 0x85, 0x6d, 0x95,
+	0x73, 0xb1, 0x9f, 0x25, 0x62, 0x6c, 0xa9, 0x74, 0xaf, 0x83, 0x48, 0xad, 0xde, 0x6a, 0xd5, 0x59,
+	0x0f, 0xad, 0x3b, 0xa6, 0xf8, 0x21, 0x9c, 0xe2, 0x4e, 0xac, 0x11, 0x44, 0xa9, 0xe5, 0x98, 0x64,
+	0xae, 0x30, 0x2f, 0x54, 0xcb, 0xcb, 0x17, 0x6a, 0x51, 0xbd, 0x6a, 0x7c, 0x56, 0xf7, 0x39, 0xa8,
+	0x51, 0x7a, 0xba, 0x2f, 0x0f, 0x69, 0xd3, 0xad, 0x78, 0xb3, 0x78, 0x16, 0x46, 0x71, 0xdb, 0x58,
+	0xdb, 0x42, 0x7b, 0x73, 0xc5, 0x79, 0xa1, 0x3a, 0xae, 0x8d, 0xe0, 0xb6, 0x71, 0x07, 0xed, 0x79,
+	0x06, 0x07, 0xed, 0xfa, 0x86, 0x12, 0x33, 0x38, 0x68, 0xd7, 0x33, 0x5c, 0x84, 0x09, 0x07, 0x3d,
+	0xa2, 0x6b, 0x5d, 0x2f, 0x87, 0x7d, 0x6b, 0xd9, 0x6b, 0xe3, 0xb3, 0x15, 0x17, 0x60, 0x8a, 0xea,
+	0xae, 0x89, 0x42, 0xd0, 0x88, 0x0f, 0x9a, 0x64, 0xad, 0x1c, 0xb6, 0x32, 0xf6, 0xc5, 0x13, 0x79,
+	0xe8, 0xf7, 0x27, 0xf2, 0x90, 0xf2, 0x83, 0x00, 0x67, 0x57, 0x89, 0x79, 0xdb, 0x22, 0xfa, 0x7a,
+	0x7b, 0xb0, 0x82, 0x46, 0x04, 0x28, 0xc4, 0x04, 0x48, 0x3a, 0x51, 0xcc, 0x77, 0xe2, 0xb7, 0x02,
+	0x9c, 0x5b, 0x25, 0x66, 0xdd, 0x30, 0x1e, 0x60, 0xee, 0x02, 0xfb, 0xb1, 0x74, 0x87, 0x1c, 0xb7,
+	0x1b, 0x06, 0x94, 0x75, 0xc3, 0x08, 0xa6, 0x5a, 0x98, 0x2f, 0x1e, 0x15, 0x05, 0xe8, 0x86, 0x51,
+	0x4f, 0x8a, 0xf5, 0x0a, 0xa3, 0xe5, 0xcf, 0x02, 0x54, 0x56, 0x89, 0xa9, 0x21, 0x1b, 0xef, 0xa0,
+	0x0f, 0x5c, 0x6c, 0x0f, 0x5c, 0xed, 0x4f, 0x61, 0xca, 0xf5, 0xd9, 0x23, 0x82, 0x1f, 0x19, 0xcb,
+	0x24, 0x1b, 0xfa, 0x64, 0x69, 0xfe, 0xaf, 0x00, 0x73, 0x5e, 0x86, 0xba, 0xb8, 0x33, 0x70, 0xb5,
+	0x33, 0x53, 0x34, 0xa2, 0x40, 0x31, 0x57, 0x81, 0x52, 0x3f, 0x0a, 0x0c, 0xe7, 0x2b, 0xf0, 0x6b,
+	0xc1, 0x57, 0x20, 0x9a, 0xde, 0x1f, 0x6d, 0x5a, 0x14, 0xdd, 0xb5, 0x08, 0x7d, 0x9d, 0xdd, 0x47,
+	0x17, 0x69, 0x7f, 0x14, 0xe0, 0x42, 0x5a, 0x76, 0x0f, 0x4c, 0xec, 0xff, 0x5f, 0x72, 0xff, 0xc3,
+	0x97, 0xdf, 0x30, 0xb9, 0x07, 0x26, 0xf6, 0xc9, 0x10, 0xe0, 0x7b, 0xb6, 0x9d, 0x8b, 0xe6, 0xf6,
+	0x5d, 0xcb, 0xb6, 0xe8, 0xb1, 0x97, 0xb6, 0x19, 0x18, 0x36, 0x90, 0x83, 0x6d, 0x5e, 0xd8, 0xd8,
+	0x8b, 0xf8, 0x06, 0x8c, 0xe8, 0x36, 0xde, 0x76, 0xa8, 0xaf, 0x49, 0x49, 0xe3, 0x6f, 0x1e, 0xba,
+	0xed, 0x4d, 0x8b, 0x2b, 0xc2, 0x5e, 0xa2, 0x12, 0x0e, 0x67, 0x49, 0x38, 0x92, 0x2b, 0xe1, 0x68,
+	0x3f, 0x12, 0x8e, 0xe5, 0x4b, 0xf8, 0x65, 0x01, 0xa4, 0xb4, 0xb4, 0x7d, 0x95, 0x3a, 0x9e, 0x8c,
+	0xe0, 0xfa, 0x5b, 0x80, 0x99, 0x78, 0x76, 0x0d, 0x46, 0x93, 0x93, 0xb1, 0x6c, 0x3e, 0x2e, 0xc0,
+	0x79, 0x2f, 0xb5, 0x3a, 0x1d, 0x17, 0xef, 0x74, 0xb7, 0xf6, 0x0f, 0x5c, 0xdd, 0x21, 0x7a, 0x8b,
+	0x5a, 0xd8, 0x11, 0x37, 0x60, 0x62, 0xc3, 0xc5, 0xf6, 0xda, 0x31, 0x48, 0x51, 0xf6, 0x06, 0xae,
+	0x87, 0x65, 0xbd, 0x67, 0xe6, 0x47, 0x59, 0xd6, 0x63, 0xee, 0x8b, 0x22, 0x94, 0x36, 0x75, 0xb2,
+	0xc9, 0xe5, 0xf5, 0x9f, 0x93, 0x92, 0xdc, 0x46, 0xad, 0xb6, 0xe5, 0xbc, 0x96, 0xc4, 0x93, 0xe4,
+	0xf3, 0x22, 0x8c, 0xae, 0x12, 0xf3, 0x3e, 0x72, 0x0c, 0x71, 0x25, 0xc5, 0xfb, 0xf1, 0xc6, 0xd9,
+	0x83, 0x7d, 0xf9, 0x0c, 0x9b, 0x53, 0xd4, 0xaa, 0xc4, 0x3d, 0xba, 0x05, 0x40, 0x71, 0xcc, 0x9b,
+	0xf1, 0xc6, 0xec, 0xc1, 0xbe, 0x7c, 0x9a, 0xf5, 0x0c, 0x6d, 0x8a, 0x36, 0x4e, 0x71, 0xb7, 0x57,
+	0x2b, 0x52, 0x6f, 0x8b, 0xd5, 0xf2, 0xf2, 0xb9, 0x1a, 0x73, 0xac, 0xe6, 0x1d, 0xff, 0x6b, 0xfc,
+	0xf8, 0x5f, 0x6b, 0x62, 0xcb, 0x69, 0x5c, 0xf7, 0x8e, 0xd1, 0x5f, 0xff, 0x2c, 0x57, 0xfb, 0x10,
+	0xc3, 0xeb, 0x40, 0x82, 0xe2, 0xad, 0xc2, 0x58, 0x47, 0x27, 0x64, 0x17, 0xbb, 0x06, 0x4b, 0xac,
+	0xc6, 0x99, 0x83, 0x7d, 0x79, 0x9a, 0x4d, 0xac, 0x6b, 0x51, 0xb4, 0x00, 0xe4, 0xcd, 0xca, 0x45,
+	0xbb, 0xba, 0x6b, 0xcc, 0x0d, 0x1f, 0xc3, 0xac, 0xd8, 0xd0, 0xd1, 0x4f, 0x20, 0xc0, 0xe9, 0x48,
+	0x10, 0xf2, 0xd3, 0xf7, 0x3b, 0x50, 0xa6, 0x61, 0xa3, 0xff, 0x2d, 0xca, 0xcb, 0xb3, 0xf1, 0xab,
+	0x06, 0xfe, 0xe1, 0xb4, 0x28, 0xd2, 0xab, 0xc8, 0x3b, 0x98, 0x22, 0xf6, 0x11, 0x4a, 0x1a, 0x7b,
+	0x11, 0xcf, 0xc3, 0x78, 0x0b, 0x3b, 0x1b, 0x96, 0x6b, 0x23, 0xc3, 0x0f, 0x85, 0x31, 0x2d, 0x6c,
+	0x50, 0xbe, 0x15, 0x60, 0x3a, 0x32, 0x85, 0x7b, 0x18, 0xb7, 0xc5, 0xba, 0xa7, 0x82, 0x37, 0x15,
+	0x7f, 0xd7, 0x5b, 0x5e, 0xbe, 0x1a, 0xe7, 0xee, 0x81, 0xd7, 0xd8, 0xb4, 0xdf, 0x77, 0xa8, 0xbb,
+	0xa7, 0xf1, 0x8e, 0xd2, 0x43, 0x28, 0x47, 0x9a, 0xc5, 0x53, 0x50, 0xf4, 0x4a, 0x9f, 0x1f, 0x56,
+	0x9a, 0xf7, 0x28, 0xbe, 0x0d, 0xc3, 0x3b, 0x7a, 0x7b, 0x1b, 0xf1, 0x9b, 0x14, 0x39, 0x93, 0x82,
+	0x0d, 0xa3, 0x31, 0xf4, 0x4a, 0xe1, 0x5d, 0x41, 0xf9, 0x46, 0x80, 0x32, 0xcf, 0x60, 0x7f, 0xba,
+	0xc7, 0x5c, 0xd3, 0xeb, 0x30, 0x11, 0x11, 0x39, 0xe3, 0xea, 0xa7, 0x47, 0x13, 0x2d, 0xd6, 0x45,
+	0xf9, 0x8a, 0xed, 0xaf, 0xef, 0xf1, 0x30, 0x6b, 0x32, 0xf5, 0x5f, 0x51, 0xf9, 0x21, 0xc8, 0x31,
+	0x90, 0x7b, 0x2c, 0xe5, 0x87, 0x0d, 0x9d, 0x53, 0x7e, 0x44, 0xa9, 0x37, 0x23, 0xc3, 0xe4, 0x53,
+	0x64, 0x5f, 0xa4, 0xe4, 0xfd, 0x9e, 0x86, 0x48, 0x07, 0x3b, 0x04, 0x29, 0x17, 0x41, 0xce, 0xb8,
+	0xb1, 0x0a, 0x20, 0x97, 0xe0, 0x62, 0xe6, 0x7d, 0x50, 0x00, 0xaa, 0xc2, 0x62, 0xfe, 0x5d, 0x46,
+	0x80, 0x54, 0x60, 0x3e, 0xeb, 0x04, 0xde, 0x83, 0x49, 0x3d, 0xa3, 0x06, 0x98, 0x2b, 0xb0, 0x90,
+	0x7b, 0xbe, 0xea, 0x75, 0x31, 0xe5, 0x54, 0x10, 0x40, 0x98, 0x4c, 0xc9, 0x7d, 0x73, 0x00, 0xb8,
+	0x0c, 0x4a, 0xf6, 0xae, 0x30, 0x40, 0x55, 0xd8, 0x82, 0xd8, 0xbb, 0x43, 0x0a, 0xec, 0x8b, 0x70,
+	0x39, 0x6f, 0x0f, 0xd1, 0x83, 0xcb, 0x5c, 0x58, 0x03, 0xdc, 0x69, 0x98, 0xee, 0x16, 0xad, 0xb8,
+	0x2a, 0xd9, 0x59, 0xd1, 0x05, 0x2e, 0x7f, 0x37, 0x01, 0xc5, 0x55, 0x62, 0x8a, 0x3a, 0x4c, 0x36,
+	0x5d, 0xa4, 0x07, 0xf1, 0x21, 0x5e, 0x4a, 0x54, 0xc5, 0x64, 0xf8, 0x48, 0xd7, 0xfa, 0x00, 0x75,
+	0xa9, 0xc4, 0x0d, 0x98, 0x8a, 0x07, 0x98, 0xb8, 0x90, 0xe8, 0x9e, 0x16, 0x81, 0xd2, 0x52, 0x5f,
+	0xb0, 0x80, 0x67, 0x0b, 0xa6, 0x23, 0x9f, 0xd0, 0xbf, 0xd2, 0xb9, 0x92, 0x18, 0x21, 0x3d, 0x8e,
+	0x25, 0xb5, 0x4f, 0x60, 0x40, 0xf6, 0x19, 0xcc, 0xf4, 0x86, 0x83, 0xcf, 0xf8, 0x56, 0x62, 0xa0,
+	0x9c, 0xa4, 0x90, 0x6e, 0xbd, 0x0c, 0x3a, 0xe0, 0xde, 0x84, 0xa9, 0x30, 0xc8, 0x7c, 0xd6, 0xc5,
+	0xa4, 0x52, 0x69, 0x09, 0x26, 0xd5, 0xfa, 0xc3, 0x45, 0x99, 0x7c, 0x1d, 0xc2, 0x83, 0xf4, 0x62,
+	0xae, 0x50, 0x01, 0x2e, 0x85, 0x29, 0x37, 0x9d, 0xc5, 0x5d, 0x38, 0x13, 0xba, 0x1e, 0xd2, 0x5d,
+	0x3b, 0x5c, 0xa0, 0x90, 0xf3, 0xe6, 0x4b, 0x80, 0x03, 0x62, 0x04, 0x93, 0x9e, 0x06, 0x21, 0xe5,
+	0x42, 0x9e, 0x46, 0x21, 0xd9, 0x52, 0x5f, 0xb0, 0x80, 0x66, 0x0d, 0xca, 0xbe, 0x00, 0xfc, 0xd0,
+	0x74, 0x29, 0x57, 0x1e, 0x06, 0x4a, 0xc9, 0xb2, 0xec, 0x12, 0x25, 0x3a, 0x70, 0x2a, 0xf4, 0x96,
+	0xb3, 0x54, 0x0f, 0x17, 0x84, 0x53, 0x5d, 0xef, 0x17, 0x19, 0xf0, 0x7d, 0x0c, 0xe0, 0x39, 0xcc,
+	0x99, 0x94, 0x3c, 0x35, 0x38, 0xc7, 0x9b, 0x87, 0x63, 0x82, 0xd1, 0x29, 0x88, 0xbc, 0x4e, 0x46,
+	0x97, 0xf4, 0xe4, 0x08, 0x99, 0xc5, 0x54, 0x5a, 0xee, 0x1f, 0x1b, 0x65, 0xe5, 0x55, 0x37, 0x9f,
+	0x35, 0xb3, 0x34, 0xa7, 0xb0, 0x1e, 0x5a, 0xc6, 0xc5, 0xf7, 0xa0, 0xe4, 0x9f, 0x18, 0xd2, 0xf7,
+	0xa3, 0xd2, 0x85, 0xf4, 0x6d, 0x6a, 0xb7, 0x37, 0x81, 0xe9, 0x9e, 0x72, 0x9f, 0x92, 0x34, 0xd9,
+	0x0b, 0x42, 0x4a, 0xd2, 0x1c, 0xbe, 0x7a, 0x34, 0x9a, 0x4f, 0x9f, 0x57, 0x84, 0x67, 0xcf, 0x2b,
+	0xc2, 0x2f, 0xcf, 0x2b, 0xc2, 0xe3, 0x17, 0x95, 0xa1, 0x67, 0x2f, 0x2a, 0x43, 0x3f, 0xbd, 0xa8,
+	0x0c, 0x3d, 0xbc, 0x1a, 0xd9, 0xdf, 0xdc, 0xb1, 0x5c, 0xbd, 0x89, 0x5d, 0xa4, 0x12, 0xb4, 0xa5,
+	0x5b, 0xea, 0xa3, 0xf0, 0xcf, 0x51, 0x6f, 0x9b, 0xb3, 0x3e, 0xe2, 0xff, 0x09, 0x79, 0xf3, 0xbf,
+	0x00, 0x00, 0x00, 0xff, 0xff, 0x82, 0xc7, 0xd1, 0x1e, 0x39, 0x1d, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -2088,6 +2112,20 @@ func (m *MsgCreteCustodyRecord) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.TargetAddress) > 0 {
+		i -= len(m.TargetAddress)
+		copy(dAtA[i:], m.TargetAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.TargetAddress)))
+		i--
+		dAtA[i] = 0x32
+	}
+	if len(m.NextAddress) > 0 {
+		i -= len(m.NextAddress)
+		copy(dAtA[i:], m.NextAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.NextAddress)))
+		i--
+		dAtA[i] = 0x2a
+	}
 	if len(m.NewKey) > 0 {
 		i -= len(m.NewKey)
 		copy(dAtA[i:], m.NewKey)
@@ -2142,6 +2180,13 @@ func (m *MsgDisableCustodyRecord) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	_ = i
 	var l int
 	_ = l
+	if len(m.TargetAddress) > 0 {
+		i -= len(m.TargetAddress)
+		copy(dAtA[i:], m.TargetAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.TargetAddress)))
+		i--
+		dAtA[i] = 0x1a
+	}
 	if len(m.OldKey) > 0 {
 		i -= len(m.OldKey)
 		copy(dAtA[i:], m.OldKey)
@@ -2179,6 +2224,20 @@ func (m *MsgAddToCustodyCustodians) MarshalToSizedBuffer(dAtA []byte) (int, erro
 	_ = i
 	var l int
 	_ = l
+	if len(m.TargetAddress) > 0 {
+		i -= len(m.TargetAddress)
+		copy(dAtA[i:], m.TargetAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.TargetAddress)))
+		i--
+		dAtA[i] = 0x32
+	}
+	if len(m.NextAddress) > 0 {
+		i -= len(m.NextAddress)
+		copy(dAtA[i:], m.NextAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.NextAddress)))
+		i--
+		dAtA[i] = 0x2a
+	}
 	if len(m.NewKey) > 0 {
 		i -= len(m.NewKey)
 		copy(dAtA[i:], m.NewKey)
@@ -2232,6 +2291,20 @@ func (m *MsgRemoveFromCustodyCustodians) MarshalToSizedBuffer(dAtA []byte) (int,
 	_ = i
 	var l int
 	_ = l
+	if len(m.TargetAddress) > 0 {
+		i -= len(m.TargetAddress)
+		copy(dAtA[i:], m.TargetAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.TargetAddress)))
+		i--
+		dAtA[i] = 0x32
+	}
+	if len(m.NextAddress) > 0 {
+		i -= len(m.NextAddress)
+		copy(dAtA[i:], m.NextAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.NextAddress)))
+		i--
+		dAtA[i] = 0x2a
+	}
 	if len(m.NewKey) > 0 {
 		i -= len(m.NewKey)
 		copy(dAtA[i:], m.NewKey)
@@ -2283,6 +2356,20 @@ func (m *MsgDropCustodyCustodians) MarshalToSizedBuffer(dAtA []byte) (int, error
 	_ = i
 	var l int
 	_ = l
+	if len(m.TargetAddress) > 0 {
+		i -= len(m.TargetAddress)
+		copy(dAtA[i:], m.TargetAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.TargetAddress)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.NextAddress) > 0 {
+		i -= len(m.NextAddress)
+		copy(dAtA[i:], m.NextAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.NextAddress)))
+		i--
+		dAtA[i] = 0x22
+	}
 	if len(m.NewKey) > 0 {
 		i -= len(m.NewKey)
 		copy(dAtA[i:], m.NewKey)
@@ -2327,6 +2414,20 @@ func (m *MsgAddToCustodyWhiteList) MarshalToSizedBuffer(dAtA []byte) (int, error
 	_ = i
 	var l int
 	_ = l
+	if len(m.TargetAddress) > 0 {
+		i -= len(m.TargetAddress)
+		copy(dAtA[i:], m.TargetAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.TargetAddress)))
+		i--
+		dAtA[i] = 0x32
+	}
+	if len(m.NextAddress) > 0 {
+		i -= len(m.NextAddress)
+		copy(dAtA[i:], m.NextAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.NextAddress)))
+		i--
+		dAtA[i] = 0x2a
+	}
 	if len(m.NewKey) > 0 {
 		i -= len(m.NewKey)
 		copy(dAtA[i:], m.NewKey)
@@ -2380,6 +2481,20 @@ func (m *MsgRemoveFromCustodyWhiteList) MarshalToSizedBuffer(dAtA []byte) (int, 
 	_ = i
 	var l int
 	_ = l
+	if len(m.TargetAddress) > 0 {
+		i -= len(m.TargetAddress)
+		copy(dAtA[i:], m.TargetAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.TargetAddress)))
+		i--
+		dAtA[i] = 0x32
+	}
+	if len(m.NextAddress) > 0 {
+		i -= len(m.NextAddress)
+		copy(dAtA[i:], m.NextAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.NextAddress)))
+		i--
+		dAtA[i] = 0x2a
+	}
 	if len(m.NewKey) > 0 {
 		i -= len(m.NewKey)
 		copy(dAtA[i:], m.NewKey)
@@ -2431,19 +2546,33 @@ func (m *MsgDropCustodyWhiteList) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	_ = i
 	var l int
 	_ = l
+	if len(m.TargetAddress) > 0 {
+		i -= len(m.TargetAddress)
+		copy(dAtA[i:], m.TargetAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.TargetAddress)))
+		i--
+		dAtA[i] = 0x32
+	}
+	if len(m.NextAddress) > 0 {
+		i -= len(m.NextAddress)
+		copy(dAtA[i:], m.NextAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.NextAddress)))
+		i--
+		dAtA[i] = 0x2a
+	}
 	if len(m.NewKey) > 0 {
 		i -= len(m.NewKey)
 		copy(dAtA[i:], m.NewKey)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.NewKey)))
 		i--
-		dAtA[i] = 0x1a
+		dAtA[i] = 0x22
 	}
 	if len(m.OldKey) > 0 {
 		i -= len(m.OldKey)
 		copy(dAtA[i:], m.OldKey)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.OldKey)))
 		i--
-		dAtA[i] = 0x12
+		dAtA[i] = 0x1a
 	}
 	if len(m.Address) > 0 {
 		i -= len(m.Address)
@@ -2475,6 +2604,20 @@ func (m *MsgAddToCustodyLimits) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.TargetAddress) > 0 {
+		i -= len(m.TargetAddress)
+		copy(dAtA[i:], m.TargetAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.TargetAddress)))
+		i--
+		dAtA[i] = 0x42
+	}
+	if len(m.NextAddress) > 0 {
+		i -= len(m.NextAddress)
+		copy(dAtA[i:], m.NextAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.NextAddress)))
+		i--
+		dAtA[i] = 0x3a
+	}
 	if len(m.NewKey) > 0 {
 		i -= len(m.NewKey)
 		copy(dAtA[i:], m.NewKey)
@@ -2538,6 +2681,20 @@ func (m *MsgRemoveFromCustodyLimits) MarshalToSizedBuffer(dAtA []byte) (int, err
 	_ = i
 	var l int
 	_ = l
+	if len(m.TargetAddress) > 0 {
+		i -= len(m.TargetAddress)
+		copy(dAtA[i:], m.TargetAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.TargetAddress)))
+		i--
+		dAtA[i] = 0x32
+	}
+	if len(m.NextAddress) > 0 {
+		i -= len(m.NextAddress)
+		copy(dAtA[i:], m.NextAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.NextAddress)))
+		i--
+		dAtA[i] = 0x2a
+	}
 	if len(m.NewKey) > 0 {
 		i -= len(m.NewKey)
 		copy(dAtA[i:], m.NewKey)
@@ -2589,6 +2746,20 @@ func (m *MsgDropCustodyLimits) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.TargetAddress) > 0 {
+		i -= len(m.TargetAddress)
+		copy(dAtA[i:], m.TargetAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.TargetAddress)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.NextAddress) > 0 {
+		i -= len(m.NextAddress)
+		copy(dAtA[i:], m.NextAddress)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.NextAddress)))
+		i--
+		dAtA[i] = 0x22
+	}
 	if len(m.NewKey) > 0 {
 		i -= len(m.NewKey)
 		copy(dAtA[i:], m.NewKey)
@@ -3341,6 +3512,14 @@ func (m *MsgCreteCustodyRecord) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
+	l = len(m.NextAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.TargetAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
@@ -3355,6 +3534,10 @@ func (m *MsgDisableCustodyRecord) Size() (n int) {
 		n += 1 + l + sovTx(uint64(l))
 	}
 	l = len(m.OldKey)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.TargetAddress)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -3385,6 +3568,14 @@ func (m *MsgAddToCustodyCustodians) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
+	l = len(m.NextAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.TargetAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
@@ -3410,6 +3601,14 @@ func (m *MsgRemoveFromCustodyCustodians) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
+	l = len(m.NextAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.TargetAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
@@ -3428,6 +3627,14 @@ func (m *MsgDropCustodyCustodians) Size() (n int) {
 		n += 1 + l + sovTx(uint64(l))
 	}
 	l = len(m.NewKey)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.NextAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.TargetAddress)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -3458,6 +3665,14 @@ func (m *MsgAddToCustodyWhiteList) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
+	l = len(m.NextAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.TargetAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
@@ -3483,6 +3698,14 @@ func (m *MsgRemoveFromCustodyWhiteList) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
+	l = len(m.NextAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.TargetAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
@@ -3501,6 +3724,14 @@ func (m *MsgDropCustodyWhiteList) Size() (n int) {
 		n += 1 + l + sovTx(uint64(l))
 	}
 	l = len(m.NewKey)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.NextAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.TargetAddress)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -3536,6 +3767,14 @@ func (m *MsgAddToCustodyLimits) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
+	l = len(m.NextAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.TargetAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
@@ -3561,6 +3800,14 @@ func (m *MsgRemoveFromCustodyLimits) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
+	l = len(m.NextAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.TargetAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
@@ -3579,6 +3826,14 @@ func (m *MsgDropCustodyLimits) Size() (n int) {
 		n += 1 + l + sovTx(uint64(l))
 	}
 	l = len(m.NewKey)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.NextAddress)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.TargetAddress)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -4044,6 +4299,70 @@ func (m *MsgCreteCustodyRecord) Unmarshal(dAtA []byte) error {
 			}
 			m.NewKey = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NextAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.NextAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TargetAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.TargetAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -4159,6 +4478,38 @@ func (m *MsgDisableCustodyRecord) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.OldKey = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TargetAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.TargetAddress = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -4339,6 +4690,70 @@ func (m *MsgAddToCustodyCustodians) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.NewKey = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NextAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.NextAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TargetAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.TargetAddress = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -4522,6 +4937,70 @@ func (m *MsgRemoveFromCustodyCustodians) Unmarshal(dAtA []byte) error {
 			}
 			m.NewKey = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NextAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.NextAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TargetAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.TargetAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -4669,6 +5148,70 @@ func (m *MsgDropCustodyCustodians) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.NewKey = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NextAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.NextAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TargetAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.TargetAddress = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -4849,6 +5392,70 @@ func (m *MsgAddToCustodyWhiteList) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.NewKey = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NextAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.NextAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TargetAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.TargetAddress = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -5032,6 +5639,70 @@ func (m *MsgRemoveFromCustodyWhiteList) Unmarshal(dAtA []byte) error {
 			}
 			m.NewKey = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NextAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.NextAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TargetAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.TargetAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -5116,7 +5787,7 @@ func (m *MsgDropCustodyWhiteList) Unmarshal(dAtA []byte) error {
 				m.Address = []byte{}
 			}
 			iNdEx = postIndex
-		case 2:
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field OldKey", wireType)
 			}
@@ -5148,7 +5819,7 @@ func (m *MsgDropCustodyWhiteList) Unmarshal(dAtA []byte) error {
 			}
 			m.OldKey = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 3:
+		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field NewKey", wireType)
 			}
@@ -5179,6 +5850,70 @@ func (m *MsgDropCustodyWhiteList) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.NewKey = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NextAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.NextAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TargetAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.TargetAddress = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -5411,6 +6146,70 @@ func (m *MsgAddToCustodyLimits) Unmarshal(dAtA []byte) error {
 			}
 			m.NewKey = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NextAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.NextAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 8:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TargetAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.TargetAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -5591,6 +6390,70 @@ func (m *MsgRemoveFromCustodyLimits) Unmarshal(dAtA []byte) error {
 			}
 			m.NewKey = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NextAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.NextAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TargetAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.TargetAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -5738,6 +6601,70 @@ func (m *MsgDropCustodyLimits) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.NewKey = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NextAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.NextAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TargetAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.TargetAddress = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

@@ -12,4 +12,5 @@ var (
 	ErrNotInLimits         = errors.Register(ModuleName, 5, "denom limit has been reached")
 	ErrWrongKey            = errors.Register(ModuleName, 6, "wrong key")
 	ErrNotEnoughReward     = errors.Register(ModuleName, 7, "not enough custody reward")
+	ErrWrongTargetAddr     = errors.Register(ModuleName, 8, "wrong target address")
 )
