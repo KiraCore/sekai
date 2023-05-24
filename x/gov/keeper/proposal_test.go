@@ -357,7 +357,7 @@ func TestKeeper_ProposalDuration(t *testing.T) {
 	require.Equal(t, proposal.VotingEndTime.Unix(), ctx.BlockTime().Unix()+int64(properties.MinimumProposalEndTime))
 
 	// check longer duration proposal
-	app.CustomGovKeeper.SetProposalDuration(ctx, kiratypes.SetProposalDurationsProposalType, 2400)
+	app.CustomGovKeeper.SetProposalDuration(ctx, kiratypes.ProposalTypeSetProposalDurations, 2400)
 	proposalID, err = app.CustomGovKeeper.CreateAndSaveProposalWithContent(ctx, "title", "description", &types.SetProposalDurationsProposal{})
 	require.NoError(t, err)
 	proposal, found = app.CustomGovKeeper.GetProposal(ctx, proposalID)

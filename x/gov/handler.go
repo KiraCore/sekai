@@ -60,8 +60,8 @@ func NewHandler(ck keeper.Keeper) sdk.Handler {
 		case *types.MsgAssignRole:
 			res, err := msgServer.AssignRole(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgRemoveRole:
-			res, err := msgServer.RemoveRole(sdk.WrapSDKContext(ctx), msg)
+		case *types.MsgUnassignRole:
+			res, err := msgServer.UnassignRole(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 
 		// Proposal related

@@ -77,7 +77,7 @@ func NewWhitelistAccountPermissionProposal(
 
 // ProposalType returns proposal's type
 func (m *WhitelistAccountPermissionProposal) ProposalType() string {
-	return kiratypes.WhitelistAccountPermissionProposalType
+	return kiratypes.ProposalTypeWhitelistAccountPermission
 }
 
 // ValidateBasic returns basic validation
@@ -111,7 +111,7 @@ func NewBlacklistAccountPermissionProposal(
 
 // ProposalType returns proposal's type
 func (m *BlacklistAccountPermissionProposal) ProposalType() string {
-	return kiratypes.BlacklistAccountPermissionProposalType
+	return kiratypes.ProposalTypeBlacklistAccountPermission
 }
 
 // ValidateBasic returns basic validation
@@ -145,7 +145,7 @@ func NewRemoveWhitelistedAccountPermissionProposal(
 
 // ProposalType returns proposal's type
 func (m *RemoveWhitelistedAccountPermissionProposal) ProposalType() string {
-	return kiratypes.RemoveWhitelistedAccountPermissionProposalType
+	return kiratypes.ProposalTypeRemoveWhitelistedAccountPermission
 }
 
 // ValidateBasic returns basic validation
@@ -179,7 +179,7 @@ func NewRemoveBlacklistedAccountPermissionProposal(
 
 // ProposalType returns proposal's type
 func (m *RemoveBlacklistedAccountPermissionProposal) ProposalType() string {
-	return kiratypes.RemoveBlacklistedAccountPermissionProposalType
+	return kiratypes.ProposalTypeRemoveBlacklistedAccountPermission
 }
 
 // ValidateBasic returns basic validation
@@ -213,7 +213,7 @@ func NewAssignRoleToAccountProposal(
 
 // ProposalType returns proposal's type
 func (m *AssignRoleToAccountProposal) ProposalType() string {
-	return kiratypes.AssignRoleToAccountProposalType
+	return kiratypes.ProposalTypeAssignRoleToAccount
 }
 
 // ValidateBasic returns basic validation
@@ -245,7 +245,7 @@ func NewUnassignRoleFromAccountProposal(
 
 // ProposalType returns proposal's type
 func (m *UnassignRoleFromAccountProposal) ProposalType() string {
-	return kiratypes.UnassignRoleFromAccountProposalType
+	return kiratypes.ProposalTypeUnassignRoleFromAccount
 }
 
 // ValidateBasic returns basic validation
@@ -277,7 +277,7 @@ func NewSetNetworkPropertyProposal(
 
 // ProposalType returns proposal's type
 func (m *SetNetworkPropertyProposal) ProposalType() string {
-	return kiratypes.SetNetworkPropertyProposalType
+	return kiratypes.ProposalTypeSetNetworkProperty
 }
 
 func (m *SetNetworkPropertyProposal) ProposalPermission() PermValue {
@@ -350,7 +350,7 @@ func NewUpsertDataRegistryProposal(key, hash, reference, encoding string, size u
 }
 
 func (m *UpsertDataRegistryProposal) ProposalType() string {
-	return kiratypes.UpsertDataRegistryProposalType
+	return kiratypes.ProposalTypeUpsertDataRegistry
 }
 
 func (m *UpsertDataRegistryProposal) ProposalPermission() PermValue {
@@ -373,7 +373,7 @@ func NewSetPoorNetworkMessagesProposal(msgs []string) Content {
 }
 
 func (m *SetPoorNetworkMessagesProposal) ProposalType() string {
-	return kiratypes.SetPoorNetworkMessagesProposalType
+	return kiratypes.ProposalTypeSetPoorNetworkMessages
 }
 
 func (m *SetPoorNetworkMessagesProposal) ProposalPermission() PermValue {
@@ -399,7 +399,7 @@ func NewCreateRoleProposal(sid, description string, whitelist []PermValue, black
 }
 
 func (m *CreateRoleProposal) ProposalType() string {
-	return kiratypes.CreateRoleProposalType
+	return kiratypes.ProposalTypeCreateRole
 }
 
 func (m *CreateRoleProposal) ProposalPermission() PermValue {
@@ -429,7 +429,7 @@ func NewRemoveRoleProposal(roleIdentifier string) Content {
 }
 
 func (m *RemoveRoleProposal) ProposalType() string {
-	return kiratypes.RemoveRoleProposalType
+	return kiratypes.ProposalTypeRemoveRole
 }
 
 func (m *RemoveRoleProposal) ProposalPermission() PermValue {
@@ -456,7 +456,7 @@ func NewWhitelistRolePermissionProposal(roleIdentifier string, permission PermVa
 }
 
 func (m *WhitelistRolePermissionProposal) ProposalType() string {
-	return kiratypes.WhitelistRolePermissionProposalType
+	return kiratypes.ProposalTypeWhitelistRolePermission
 }
 
 func (m *WhitelistRolePermissionProposal) ProposalPermission() PermValue {
@@ -483,7 +483,7 @@ func NewBlacklistRolePermissionProposal(roleIdentifier string, permission PermVa
 }
 
 func (m *BlacklistRolePermissionProposal) ProposalType() string {
-	return kiratypes.BlacklistRolePermissionProposalType
+	return kiratypes.ProposalTypeBlacklistRolePermission
 }
 
 func (m *BlacklistRolePermissionProposal) ProposalPermission() PermValue {
@@ -510,7 +510,7 @@ func NewRemoveWhitelistedRolePermissionProposal(roleSid string, permission PermV
 }
 
 func (m *RemoveWhitelistedRolePermissionProposal) ProposalType() string {
-	return kiratypes.RemoveWhitelistedRolePermissionProposalType
+	return kiratypes.ProposalTypeRemoveWhitelistedRolePermission
 }
 
 func (m *RemoveWhitelistedRolePermissionProposal) ProposalPermission() PermValue {
@@ -537,7 +537,7 @@ func NewRemoveBlacklistedRolePermissionProposal(roleSid string, permission PermV
 }
 
 func (m *RemoveBlacklistedRolePermissionProposal) ProposalType() string {
-	return kiratypes.RemoveBlacklistedRolePermissionProposalType
+	return kiratypes.ProposalTypeRemoveBlacklistedRolePermission
 }
 
 func (m *RemoveBlacklistedRolePermissionProposal) ProposalPermission() PermValue {
@@ -565,7 +565,7 @@ func NewSetProposalDurationsProposal(typeofProposals []string, durations []uint6
 }
 
 func (m *SetProposalDurationsProposal) ProposalType() string {
-	return kiratypes.SetProposalDurationsProposalType
+	return kiratypes.ProposalTypeSetProposalDurations
 }
 
 func (m *SetProposalDurationsProposal) ProposalPermission() PermValue {

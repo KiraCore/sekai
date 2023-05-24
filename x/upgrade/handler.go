@@ -8,7 +8,7 @@ import (
 )
 
 // NewHandler returns new instance of handler
-func NewHandler(ck keeper.Keeper, cgk types.CustomGovKeeper) sdk.Handler {
+func NewHandler(ck keeper.Keeper) sdk.Handler {
 	// msgServer := keeper.NewMsgServerImpl(ck, cgk)
 
 	return func(ctx sdk.Context, msg sdk.Msg) (*sdk.Result, error) {

@@ -39,6 +39,16 @@ func (k Keeper) SetRole(ctx sdk.Context, role types.Role) {
 	k.savePermissionsForRole(ctx, uint64(role.Id), perms)
 }
 
+func (k Keeper) DeleteRole(ctx sdk.Context, role types.Role) {
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), RoleIdToInfo)
+	prefixStore.Delete(roleToBytes(uint64(role.Id)))
+
+	prefixStore = prefix.NewStore(ctx.KVStore(k.storeKey), RoleSidToIdRegistry)
+	prefixStore.Delete([]byte(role.Sid))
+
+	k.deletePermissionsForRole(ctx, uint64(role.Id))
+}
+
 func (k Keeper) GetRole(ctx sdk.Context, roleId uint64) (types.Role, error) {
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), RoleIdToInfo)
 	bz := prefixStore.Get(roleToBytes(uint64(roleId)))
@@ -74,6 +84,12 @@ func (k Keeper) CreateRole(ctx sdk.Context, sid, description string) uint64 {
 func (k Keeper) savePermissionsForRole(ctx sdk.Context, role uint64, permissions *types.Permissions) {
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), RolePermissionRegistry)
 	prefixStore.Set(roleToBytes(role), k.cdc.MustMarshal(permissions))
+}
+
+// deletePermissionsForRole delete permissions on the role in the permission Registry.
+func (k Keeper) deletePermissionsForRole(ctx sdk.Context, role uint64) {
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), RolePermissionRegistry)
+	prefixStore.Delete(roleToBytes(role))
 }
 
 func (k Keeper) GetAllRoles(ctx sdk.Context) []types.Role {

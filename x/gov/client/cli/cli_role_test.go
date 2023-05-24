@@ -199,7 +199,7 @@ func (s IntegrationTestSuite) TestCreateRole() {
 	s.Require().NoError(err)
 }
 
-func (s IntegrationTestSuite) TestAssignRoles_AndRemoveRoles() {
+func (s IntegrationTestSuite) TestAssignRoles_AndUnassignRoles() {
 	val := s.network.Validators[0]
 	clientCtx := val.ClientCtx
 
@@ -223,7 +223,7 @@ func (s IntegrationTestSuite) TestAssignRoles_AndRemoveRoles() {
 	err = s.network.WaitForNextBlock()
 	s.Require().NoError(err)
 
-	cmd = cli.GetTxRemoveRole()
+	cmd = cli.GetTxUnassignRole()
 	_, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		"2", // Role created in test
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),

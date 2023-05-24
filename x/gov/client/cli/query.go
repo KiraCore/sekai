@@ -284,7 +284,7 @@ func GetCmdQueryCouncilRegistry() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
-			addr, err := cmd.Flags().GetString(FlagAddress)
+			addr, err := cmd.Flags().GetString(FlagAddr)
 			if err != nil {
 				return err
 			}
@@ -327,7 +327,7 @@ func GetCmdQueryCouncilRegistry() *cobra.Command {
 
 	flags.AddQueryFlagsToCmd(cmd)
 
-	cmd.Flags().String(FlagAddress, "", "the address you want to query information")
+	cmd.Flags().String(FlagAddr, "", "the address you want to query information")
 	cmd.Flags().String(FlagMoniker, "", "the moniker you want to query information")
 
 	return cmd
@@ -649,14 +649,14 @@ $ %[1]s query gov voters 1
 
 func GetCmdQueryProposerVotersCount() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "proposer_voters_count",
+		Use:   "proposer-voters-count",
 		Args:  cobra.ExactArgs(0),
 		Short: "Query proposer and voters count that can create at least a type of proposal",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Query proposer and voters count that can create at least a type of proposal.
 
 Example:
-$ %[1]s query gov proposer_voters_count
+$ %[1]s query gov proposer-voters-count
 `,
 				version.AppName,
 			),

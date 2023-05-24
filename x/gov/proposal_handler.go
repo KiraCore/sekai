@@ -20,7 +20,7 @@ func NewApplyWhitelistAccountPermissionProposalHandler(keeper keeper.Keeper) *Ap
 }
 
 func (a ApplyWhitelistAccountPermissionProposalHandler) ProposalType() string {
-	return kiratypes.WhitelistAccountPermissionProposalType
+	return kiratypes.ProposalTypeWhitelistAccountPermission
 }
 
 func (a ApplyWhitelistAccountPermissionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
@@ -47,7 +47,7 @@ func NewApplyBlacklistAccountPermissionProposalHandler(keeper keeper.Keeper) *Ap
 }
 
 func (a ApplyBlacklistAccountPermissionProposalHandler) ProposalType() string {
-	return kiratypes.BlacklistAccountPermissionProposalType
+	return kiratypes.ProposalTypeBlacklistAccountPermission
 }
 
 func (a ApplyBlacklistAccountPermissionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
@@ -74,7 +74,7 @@ func NewApplyRemoveWhitelistedAccountPermissionProposalHandler(keeper keeper.Kee
 }
 
 func (a ApplyRemoveWhitelistedAccountPermissionProposalHandler) ProposalType() string {
-	return kiratypes.RemoveWhitelistedAccountPermissionProposalType
+	return kiratypes.ProposalTypeRemoveWhitelistedAccountPermission
 }
 
 func (a ApplyRemoveWhitelistedAccountPermissionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
@@ -101,7 +101,7 @@ func NewApplyRemoveBlacklistedAccountPermissionProposalHandler(keeper keeper.Kee
 }
 
 func (a ApplyRemoveBlacklistedAccountPermissionProposalHandler) ProposalType() string {
-	return kiratypes.RemoveBlacklistedAccountPermissionProposalType
+	return kiratypes.ProposalTypeRemoveBlacklistedAccountPermission
 }
 
 func (a ApplyRemoveBlacklistedAccountPermissionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
@@ -130,7 +130,7 @@ func NewApplyAssignRoleToAccountProposalHandler(keeper keeper.Keeper) *ApplyAssi
 }
 
 func (a ApplyAssignRoleToAccountProposalHandler) ProposalType() string {
-	return kiratypes.AssignRoleToAccountProposalType
+	return kiratypes.ProposalTypeAssignRoleToAccount
 }
 
 func (a ApplyAssignRoleToAccountProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
@@ -153,7 +153,7 @@ func NewApplyUnassignRoleFromAccountProposalHandler(keeper keeper.Keeper) *Apply
 }
 
 func (a ApplyUnassignRoleFromAccountProposalHandler) ProposalType() string {
-	return kiratypes.UnassignRoleFromAccountProposalType
+	return kiratypes.ProposalTypeUnassignRoleFromAccount
 }
 
 func (a ApplyUnassignRoleFromAccountProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
@@ -176,7 +176,7 @@ func NewApplySetNetworkPropertyProposalHandler(keeper keeper.Keeper) *ApplySetNe
 }
 
 func (a ApplySetNetworkPropertyProposalHandler) ProposalType() string {
-	return kiratypes.SetNetworkPropertyProposalType
+	return kiratypes.ProposalTypeSetNetworkProperty
 }
 
 func (a ApplySetNetworkPropertyProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
@@ -202,7 +202,7 @@ func NewApplyUpsertDataRegistryProposalHandler(keeper keeper.Keeper) *ApplyUpser
 }
 
 func (a ApplyUpsertDataRegistryProposalHandler) ProposalType() string {
-	return kiratypes.UpsertDataRegistryProposalType
+	return kiratypes.ProposalTypeUpsertDataRegistry
 }
 
 func (a ApplyUpsertDataRegistryProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
@@ -221,7 +221,7 @@ func NewApplySetPoorNetworkMessagesProposalHandler(keeper keeper.Keeper) *ApplyS
 }
 
 func (a ApplySetPoorNetworkMessagesProposalHandler) ProposalType() string {
-	return kiratypes.SetPoorNetworkMessagesProposalType
+	return kiratypes.ProposalTypeSetPoorNetworkMessages
 }
 
 func (a ApplySetPoorNetworkMessagesProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
@@ -240,7 +240,7 @@ func NewApplyCreateRoleProposalHandler(keeper keeper.Keeper) *CreateRoleProposal
 }
 
 func (c CreateRoleProposalHandler) ProposalType() string {
-	return kiratypes.CreateRoleProposalType
+	return kiratypes.ProposalTypeCreateRole
 }
 
 func (c CreateRoleProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
@@ -283,13 +283,25 @@ func NewApplyRemoveRoleProposalHandler(keeper keeper.Keeper) *ApplyRemoveRolePro
 }
 
 func (c ApplyRemoveRoleProposalHandler) ProposalType() string {
-	return kiratypes.RemoveRoleProposalType
+	return kiratypes.ProposalTypeRemoveRole
 }
 
 func (c ApplyRemoveRoleProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
 	p := proposal.(*types.RemoveRoleProposal)
-	_ = p
-	return fmt.Errorf("remove role proposal is not implemented!")
+
+	role, err := c.keeper.GetRoleBySid(ctx, p.RoleSid)
+	if err == nil {
+		return types.ErrRoleExist
+	}
+
+	c.keeper.DeleteRole(ctx, role)
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			types.EventTypeRemoveRole,
+			sdk.NewAttribute(types.AttributeKeyRoleId, fmt.Sprintf("%d", role.Id)),
+		),
+	)
+	return nil
 }
 
 type ApplyWhitelistRolePermissionProposalHandler struct {
@@ -301,7 +313,7 @@ func NewApplyWhitelistRolePermissionProposalHandler(keeper keeper.Keeper) *Apply
 }
 
 func (c ApplyWhitelistRolePermissionProposalHandler) ProposalType() string {
-	return kiratypes.WhitelistRolePermissionProposalType
+	return kiratypes.ProposalTypeWhitelistRolePermission
 }
 
 func (c ApplyWhitelistRolePermissionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
@@ -324,7 +336,7 @@ func NewApplyBlacklistRolePermissionProposalHandler(keeper keeper.Keeper) *Apply
 }
 
 func (c ApplyBlacklistRolePermissionProposalHandler) ProposalType() string {
-	return kiratypes.BlacklistRolePermissionProposalType
+	return kiratypes.ProposalTypeBlacklistRolePermission
 }
 
 func (c ApplyBlacklistRolePermissionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
@@ -347,7 +359,7 @@ func NewApplyRemoveWhitelistedRolePermissionProposalHandler(keeper keeper.Keeper
 }
 
 func (c ApplyRemoveWhitelistedRolePermissionProposalHandler) ProposalType() string {
-	return kiratypes.RemoveWhitelistedRolePermissionProposalType
+	return kiratypes.ProposalTypeRemoveWhitelistedRolePermission
 }
 
 func (c ApplyRemoveWhitelistedRolePermissionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
@@ -370,7 +382,7 @@ func NewApplyRemoveBlacklistedRolePermissionProposalHandler(keeper keeper.Keeper
 }
 
 func (c ApplyRemoveBlacklistedRolePermissionProposalHandler) ProposalType() string {
-	return kiratypes.RemoveBlacklistedRolePermissionProposalType
+	return kiratypes.ProposalTypeRemoveBlacklistedRolePermission
 }
 
 func (c ApplyRemoveBlacklistedRolePermissionProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {
@@ -393,7 +405,7 @@ func NewApplySetProposalDurationsProposalHandler(keeper keeper.Keeper) *SetPropo
 }
 
 func (c SetProposalDurationsProposalHandler) ProposalType() string {
-	return kiratypes.SetProposalDurationsProposalType
+	return kiratypes.ProposalTypeSetProposalDurations
 }
 
 func (c SetProposalDurationsProposalHandler) Apply(ctx sdk.Context, proposalID uint64, proposal types.Content, slash sdk.Dec) error {

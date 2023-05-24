@@ -153,7 +153,7 @@ func (k Keeper) UnassignRoleFromAccount(ctx sdk.Context, addr sdk.AccAddress, ro
 		return types.ErrRoleNotAssigned
 	}
 
-	k.RemoveRoleFromActor(ctx, actor, roleId)
+	k.UnassignRoleFromActor(ctx, actor, roleId)
 	return nil
 }
 
@@ -165,7 +165,7 @@ func (k Keeper) AssignRoleToActor(ctx sdk.Context, actor types.NetworkActor, rol
 	store.Set(roleAddressKey(role, actor.Address), actor.Address.Bytes())
 }
 
-func (k Keeper) RemoveRoleFromActor(ctx sdk.Context, actor types.NetworkActor, role uint64) {
+func (k Keeper) UnassignRoleFromActor(ctx sdk.Context, actor types.NetworkActor, role uint64) {
 	actor.RemoveRole(role)
 	k.SaveNetworkActor(ctx, actor)
 
