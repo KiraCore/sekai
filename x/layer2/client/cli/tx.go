@@ -65,6 +65,17 @@ func NewTxCmd() *cobra.Command {
 		GetTxRejectDappTransitionCmd(),
 		GetTxProposalJoinDappCmd(),
 		GetTxProposalUpsertDappCmd(),
+		GetTxRedeemDappPoolTxCmd(),
+		GetTxSwapDappPoolTxCmd(),
+		GetTxConvertDappPoolTxCmd(),
+		GetTxPauseDappTxCmd(),
+		GetTxUnPauseDappTxCmd(),
+		GetTxReactivateDappTxCmd(),
+		GetTxTransferDappTxCmd(),
+		GetTxMintCreateFtTxCmd(),
+		GetTxMintCreateNftTxCmd(),
+		GetTxMintIssueTxCmd(),
+		GetTxMintBurnTxCmd(),
 	)
 
 	return txCmd
@@ -509,13 +520,9 @@ func GetTxTransitionDappCmd() *cobra.Command {
 				return err
 			}
 
-			msg := &types.MsgTransitionDappTx{
-				Sender:     clientCtx.GetFromAddress().String(),
-				DappName:   args[0],
-				StatusHash: args[1],
-				Version:    args[2],
-			}
-
+			msg := types.NewMsgTransitionDappTx(
+				clientCtx.GetFromAddress().String(), args[0], args[1], args[2], []sdk.Msg{},
+			)
 			err = msg.ValidateBasic()
 			if err != nil {
 				return err
@@ -880,15 +887,474 @@ func parseRolesAccounts(rolesStr, accountsStr string) ([]uint64, []string, error
 	return roles, accounts, nil
 }
 
-// TODO: for step2
-//   rpc RedeemDappPoolTx(MsgRedeemDappPoolTx) returns (MsgRedeemDappPoolTxResponse);
-//   rpc SwapDappPoolTx(MsgSwapDappPoolTx) returns (MsgSwapDappPoolTxResponse);
-//   rpc ConvertDappPoolTx(MsgConvertDappPoolTx) returns (MsgConvertDappPoolTxResponse);
-//   rpc PauseDappTx(MsgPauseDappTx) returns (MsgPauseDappTxResponse);
-//   rpc UnPauseDappTx(MsgUnPauseDappTx) returns (MsgUnPauseDappTxResponse);
-//   rpc ReactivateDappTx(MsgReactivateDappTx) returns (MsgReactivateDappTxResponse);
-//   rpc TransferDappTx(MsgTransferDappTx) returns (MsgTransferDappTxResponse);
-//   rpc MintCreateFtTx(MsgMintCreateFtTx) returns (MsgMintCreateFtTxResponse);
-//   rpc MintCreateNftTx(MsgMintCreateNftTx) returns (MsgMintCreateNftTxResponse);
-//   rpc MintIssueTx(MsgMintIssueTx) returns (MsgMintIssueTxResponse);
-//   rpc MintBurnTx(MsgMintBurnTx) returns (MsgMintBurnTxResponse);
+// GetTxRedeemDappPoolTxCmd implement cli command for MsgRedeemDappPoolTx
+func GetTxRedeemDappPoolTxCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "redeem-dapp-pool [dapp-name] [lp-token] [slippage]",
+		Short: "Send redeem dapp pool message",
+		Args:  cobra.MinimumNArgs(3),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			coin, err := sdk.ParseCoinNormalized(args[1])
+			if err != nil {
+				return err
+			}
+
+			slippage, err := sdk.NewDecFromStr(args[2])
+			if err != nil {
+				return err
+			}
+
+			msg := &types.MsgRedeemDappPoolTx{
+				Sender:   clientCtx.GetFromAddress().String(),
+				DappName: args[0],
+				LpToken:  coin,
+				Slippage: slippage,
+			}
+
+			err = msg.ValidateBasic()
+			if err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+// GetTxSwapDappPoolTxCmd implement cli command for MsgSwapDappPoolTx
+func GetTxSwapDappPoolTxCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "swap-dapp-pool [dapp-name] [token] [slippage]",
+		Short: "Send swap dapp pool message",
+		Args:  cobra.MinimumNArgs(3),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			coin, err := sdk.ParseCoinNormalized(args[1])
+			if err != nil {
+				return err
+			}
+
+			slippage, err := sdk.NewDecFromStr(args[2])
+			if err != nil {
+				return err
+			}
+
+			msg := &types.MsgSwapDappPoolTx{
+				Sender:   clientCtx.GetFromAddress().String(),
+				DappName: args[0],
+				Token:    coin,
+				Slippage: slippage,
+			}
+
+			err = msg.ValidateBasic()
+			if err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+// GetTxConvertDappPoolTxCmd implement cli command for MsgConvertDappPoolTx
+func GetTxConvertDappPoolTxCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "convert-dapp-pool [dapp-name] [target-dapp-name] [token] [slippage]",
+		Short: "Send convert dapp pool message",
+		Args:  cobra.MinimumNArgs(4),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			coin, err := sdk.ParseCoinNormalized(args[2])
+			if err != nil {
+				return err
+			}
+
+			slippage, err := sdk.NewDecFromStr(args[3])
+			if err != nil {
+				return err
+			}
+
+			msg := &types.MsgConvertDappPoolTx{
+				Sender:         clientCtx.GetFromAddress().String(),
+				DappName:       args[0],
+				TargetDappName: args[1],
+				LpToken:        coin,
+				Slippage:       slippage,
+			}
+
+			err = msg.ValidateBasic()
+			if err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+// GetTxPauseDappTxCmd implement cli command for MsgPauseDappTx
+func GetTxPauseDappTxCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "pause-dapp [dapp-name]",
+		Short: "Send pause dapp message",
+		Args:  cobra.MinimumNArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := &types.MsgPauseDappTx{
+				Sender:   clientCtx.GetFromAddress().String(),
+				DappName: args[0],
+			}
+
+			err = msg.ValidateBasic()
+			if err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+// GetTxUnPauseDappTxCmd implement cli command for MsgUnPauseDappTx
+func GetTxUnPauseDappTxCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "unpause-dapp [dapp-name]",
+		Short: "Send unpause dapp message",
+		Args:  cobra.MinimumNArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := &types.MsgUnPauseDappTx{
+				Sender:   clientCtx.GetFromAddress().String(),
+				DappName: args[0],
+			}
+
+			err = msg.ValidateBasic()
+			if err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+// GetTxReactivateDappTxCmd implement cli command for MsgReactivateDappTx
+func GetTxReactivateDappTxCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "reactivate-dapp [dapp-name]",
+		Short: "Send reactivate dapp message",
+		Args:  cobra.MinimumNArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			msg := &types.MsgReactivateDappTx{
+				Sender:   clientCtx.GetFromAddress().String(),
+				DappName: args[0],
+			}
+
+			err = msg.ValidateBasic()
+			if err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+// GetTxTransferDappTxCmd implement cli command for MsgTransferDappTx
+func GetTxTransferDappTxCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "transfer-dapp [request-json]",
+		Short: "Send transfer dapp message",
+		Args:  cobra.MinimumNArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			req := types.XAMRequest{}
+			err = clientCtx.Codec.UnmarshalJSON([]byte(args[0]), &req)
+			if err != nil {
+				return err
+			}
+
+			msg := &types.MsgTransferDappTx{
+				Sender:   clientCtx.GetFromAddress().String(),
+				Requests: []types.XAMRequest{req},
+			}
+
+			err = msg.ValidateBasic()
+			if err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+// GetTxMintCreateFtTxCmd implement cli command for MsgMintCreateFtTx
+func GetTxMintCreateFtTxCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "mint-create-ft-tx [denom-suffix] [name] [symbol] [icon] [description] [website] [social] [decimals] [cap] [supply] [fee] [owner]",
+		Short: "Send create fungible token tx message",
+		Args:  cobra.MinimumNArgs(12),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			decimals, err := strconv.Atoi(args[7])
+			if err != nil {
+				return err
+			}
+
+			cap, ok := sdk.NewIntFromString(args[8])
+			if !ok {
+				return fmt.Errorf("invalid cap")
+			}
+
+			supply, ok := sdk.NewIntFromString(args[9])
+			if !ok {
+				return fmt.Errorf("invalid supply")
+			}
+
+			fee, ok := sdk.NewIntFromString(args[10])
+			if !ok {
+				return fmt.Errorf("invalid fee")
+			}
+
+			msg := &types.MsgMintCreateFtTx{
+				Sender:      clientCtx.GetFromAddress().String(),
+				DenomSuffix: args[0],
+				Name:        args[1],
+				Symbol:      args[2],
+				Icon:        args[3],
+				Description: args[4],
+				Website:     args[5],
+				Social:      args[6],
+				Decimals:    uint64(decimals),
+				Cap:         cap,
+				Supply:      supply,
+				Fee:         fee,
+				Owner:       args[11],
+			}
+
+			err = msg.ValidateBasic()
+			if err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+// GetTxMintCreateNftTxCmd implement cli command for MsgMintCreateNftTx
+func GetTxMintCreateNftTxCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "mint-create-nft-tx [denom-suffix] [name] [symbol] [icon] [description] [website] [social] [decimals] [cap] [supply] [fee] [owner] [metadata] [hash]",
+		Short: "Send create non-fungible token tx message",
+		Args:  cobra.MinimumNArgs(14),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			decimals, err := strconv.Atoi(args[7])
+			if err != nil {
+				return err
+			}
+
+			cap, ok := sdk.NewIntFromString(args[8])
+			if !ok {
+				return fmt.Errorf("invalid cap")
+			}
+
+			supply, ok := sdk.NewIntFromString(args[9])
+			if !ok {
+				return fmt.Errorf("invalid supply")
+			}
+
+			fee, ok := sdk.NewIntFromString(args[10])
+			if !ok {
+				return fmt.Errorf("invalid fee")
+			}
+
+			msg := &types.MsgMintCreateNftTx{
+				Sender:      clientCtx.GetFromAddress().String(),
+				DenomSuffix: args[0],
+				Name:        args[1],
+				Symbol:      args[2],
+				Icon:        args[3],
+				Description: args[4],
+				Website:     args[5],
+				Social:      args[6],
+				Decimals:    uint64(decimals),
+				Cap:         cap,
+				Supply:      supply,
+				Fee:         fee,
+				Owner:       args[11],
+				Metadata:    args[12],
+				Hash:        args[13],
+			}
+
+			err = msg.ValidateBasic()
+			if err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+// GetTxMintIssueTxCmd implement cli command for MsgMintIssueTx
+func GetTxMintIssueTxCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "mint-issue-tx [denom] [amount] [receiver]",
+		Short: "Send mint issue tx message",
+		Args:  cobra.MinimumNArgs(3),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			amount, ok := sdk.NewIntFromString(args[1])
+			if !ok {
+				return fmt.Errorf("invalid amount")
+			}
+
+			msg := &types.MsgMintIssueTx{
+				Sender:   clientCtx.GetFromAddress().String(),
+				Denom:    args[0],
+				Amount:   amount,
+				Receiver: args[2],
+			}
+
+			err = msg.ValidateBasic()
+			if err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+// GetTxMintBurnTxCmd implement cli command for MsgMintBurnTx
+func GetTxMintBurnTxCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "burn-issue-tx [denom] [amount]",
+		Short: "Send burn issue tx message",
+		Args:  cobra.MinimumNArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			amount, ok := sdk.NewIntFromString(args[1])
+			if !ok {
+				return fmt.Errorf("invalid amount")
+			}
+
+			msg := &types.MsgMintBurnTx{
+				Sender: clientCtx.GetFromAddress().String(),
+				Denom:  args[0],
+				Amount: amount,
+			}
+
+			err = msg.ValidateBasic()
+			if err != nil {
+				return err
+			}
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	flags.AddTxFlagsToCmd(cmd)
+	_ = cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}

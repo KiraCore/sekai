@@ -86,17 +86,126 @@ func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool,
 		if settings != nil && settings.CustodyEnabled {
 			switch kiratypes.MsgType(msg) {
 			case kiratypes.MsgTypeCreateCustody:
-			case kiratypes.MsgTypeAddToCustodyWhiteList:
-			case kiratypes.MsgTypeAddToCustodyCustodians:
-			case kiratypes.MsgTypeRemoveFromCustodyCustodians:
-			case kiratypes.MsgTypeDropCustodyCustodians:
-			case kiratypes.MsgTypeRemoveFromCustodyWhiteList:
-			case kiratypes.MsgTypeDropCustodyWhiteList:
 				{
-					msg := msg.(*custodytypes.MsgCreteCustodyRecord)
+					msg, ok := msg.(*custodytypes.MsgCreteCustodyRecord)
+					if !ok {
+						return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreteCustodyRecord")
+					}
 
 					hash := sha256.Sum256([]byte(msg.OldKey))
 					hashString := hex.EncodeToString(hash[:])
+
+					if msg.TargetAddress != "" && msg.TargetAddress != settings.NextController {
+						return ctx, sdkerrors.Wrap(custodytypes.ErrWrongTargetAddr, "Custody module")
+					}
+
+					if hashString != settings.Key {
+						return ctx, sdkerrors.Wrap(custodytypes.ErrWrongKey, "Custody module")
+					}
+				}
+			case kiratypes.MsgTypeAddToCustodyWhiteList:
+				{
+					msg, ok := msg.(*custodytypes.MsgAddToCustodyWhiteList)
+					if !ok {
+						return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreteCustodyRecord")
+					}
+
+					hash := sha256.Sum256([]byte(msg.OldKey))
+					hashString := hex.EncodeToString(hash[:])
+
+					if msg.TargetAddress != "" && msg.TargetAddress != settings.NextController {
+						return ctx, sdkerrors.Wrap(custodytypes.ErrWrongTargetAddr, "Custody module")
+					}
+
+					if hashString != settings.Key {
+						return ctx, sdkerrors.Wrap(custodytypes.ErrWrongKey, "Custody module")
+					}
+				}
+			case kiratypes.MsgTypeAddToCustodyCustodians:
+				{
+					msg, ok := msg.(*custodytypes.MsgAddToCustodyCustodians)
+					if !ok {
+						return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreteCustodyRecord")
+					}
+
+					hash := sha256.Sum256([]byte(msg.OldKey))
+					hashString := hex.EncodeToString(hash[:])
+
+					if msg.TargetAddress != "" && msg.TargetAddress != settings.NextController {
+						return ctx, sdkerrors.Wrap(custodytypes.ErrWrongTargetAddr, "Custody module")
+					}
+
+					if hashString != settings.Key {
+						return ctx, sdkerrors.Wrap(custodytypes.ErrWrongKey, "Custody module")
+					}
+				}
+			case kiratypes.MsgTypeRemoveFromCustodyCustodians:
+				{
+					msg, ok := msg.(*custodytypes.MsgRemoveFromCustodyCustodians)
+					if !ok {
+						return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreteCustodyRecord")
+					}
+
+					hash := sha256.Sum256([]byte(msg.OldKey))
+					hashString := hex.EncodeToString(hash[:])
+
+					if msg.TargetAddress != "" && msg.TargetAddress != settings.NextController {
+						return ctx, sdkerrors.Wrap(custodytypes.ErrWrongTargetAddr, "Custody module")
+					}
+
+					if hashString != settings.Key {
+						return ctx, sdkerrors.Wrap(custodytypes.ErrWrongKey, "Custody module")
+					}
+				}
+			case kiratypes.MsgTypeDropCustodyCustodians:
+				{
+					msg, ok := msg.(*custodytypes.MsgDropCustodyCustodians)
+					if !ok {
+						return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreteCustodyRecord")
+					}
+
+					hash := sha256.Sum256([]byte(msg.OldKey))
+					hashString := hex.EncodeToString(hash[:])
+
+					if msg.TargetAddress != "" && msg.TargetAddress != settings.NextController {
+						return ctx, sdkerrors.Wrap(custodytypes.ErrWrongTargetAddr, "Custody module")
+					}
+
+					if hashString != settings.Key {
+						return ctx, sdkerrors.Wrap(custodytypes.ErrWrongKey, "Custody module")
+					}
+				}
+			case kiratypes.MsgTypeRemoveFromCustodyWhiteList:
+				{
+					msg, ok := msg.(*custodytypes.MsgRemoveFromCustodyWhiteList)
+					if !ok {
+						return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreteCustodyRecord")
+					}
+
+					hash := sha256.Sum256([]byte(msg.OldKey))
+					hashString := hex.EncodeToString(hash[:])
+
+					if msg.TargetAddress != "" && msg.TargetAddress != settings.NextController {
+						return ctx, sdkerrors.Wrap(custodytypes.ErrWrongTargetAddr, "Custody module")
+					}
+
+					if hashString != settings.Key {
+						return ctx, sdkerrors.Wrap(custodytypes.ErrWrongKey, "Custody module")
+					}
+				}
+			case kiratypes.MsgTypeDropCustodyWhiteList:
+				{
+					msg, ok := msg.(*custodytypes.MsgDropCustodyWhiteList)
+					if !ok {
+						return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreteCustodyRecord")
+					}
+
+					hash := sha256.Sum256([]byte(msg.OldKey))
+					hashString := hex.EncodeToString(hash[:])
+
+					if msg.TargetAddress != "" && msg.TargetAddress != settings.NextController {
+						return ctx, sdkerrors.Wrap(custodytypes.ErrWrongTargetAddr, "Custody module")
+					}
 
 					if hashString != settings.Key {
 						return ctx, sdkerrors.Wrap(custodytypes.ErrWrongKey, "Custody module")

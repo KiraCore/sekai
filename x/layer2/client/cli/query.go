@@ -77,14 +77,14 @@ func GetCmdQueryAllDapps() *cobra.Command {
 
 func GetCmdQueryTransferDapp() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "transfer-dapp",
-		Short: "Queries transfer dapp",
+		Use:   "transfer-dapps",
+		Short: "Queries transfer dapps",
 		Args:  cobra.MinimumNArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
 			queryClient := types.NewQueryClient(clientCtx)
-			res, err := queryClient.TransferDapp(context.Background(), &types.QueryTransferDappRequest{})
+			res, err := queryClient.TransferDapps(context.Background(), &types.QueryTransferDappsRequest{})
 			if err != nil {
 				return err
 			}

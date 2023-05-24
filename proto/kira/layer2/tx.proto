@@ -28,6 +28,7 @@ service Msg {
   rpc ApproveDappTransitionTx(MsgApproveDappTransitionTx) returns (MsgApproveDappTransitionTxResponse);
   rpc RejectDappTransitionTx(MsgRejectDappTransitionTx) returns (MsgRejectDappTransitionTxResponse);
   rpc TransferDappTx(MsgTransferDappTx) returns (MsgTransferDappTxResponse);
+  rpc AckTransferDappTx(MsgAckTransferDappTx) returns (MsgAckTransferDappTxResponse);
   rpc MintCreateFtTx(MsgMintCreateFtTx) returns (MsgMintCreateFtTxResponse);
   rpc MintCreateNftTx(MsgMintCreateNftTx) returns (MsgMintCreateNftTxResponse);
   rpc MintIssueTx(MsgMintIssueTx) returns (MsgMintIssueTxResponse);
@@ -92,6 +93,14 @@ message MsgExitDappResponse {}
 message MsgRedeemDappPoolTx {
   string sender = 1;
   string dapp_name = 2;
+  string lp_token = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
+  string slippage = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
 }
 message MsgRedeemDappPoolTxResponse {}
 
@@ -100,6 +109,14 @@ message MsgRedeemDappPoolTxResponse {}
 message MsgSwapDappPoolTx {
   string sender = 1;
   string dapp_name = 2;
+  string token = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
+  string slippage = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
 }
 message MsgSwapDappPoolTxResponse {}
 
@@ -108,6 +125,15 @@ message MsgSwapDappPoolTxResponse {}
 message MsgConvertDappPoolTx {
   string sender = 1;
   string dapp_name = 2;
+  string target_dapp_name = 3;
+  string lp_token = 4 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
+  string slippage = 5 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+    (gogoproto.nullable) = false
+  ];
 }
 message MsgConvertDappPoolTxResponse {}
 
@@ -163,7 +189,8 @@ message MsgTransitionDappTx {
   string sender = 1;
   string dapp_name = 2;
   string status_hash = 3;
-  string version = 4;
+  repeated google.protobuf.Any onchain_messages = 4; // dapp mints, xam creations, xam accepts
+  string version = 5;
 }
 message MsgTransitionDappTxResponse {}
 
@@ -189,21 +216,72 @@ message MsgRejectDappTransitionTxResponse {}
 // ABR and communicate with apps by including xam string message.
 message MsgTransferDappTx {
   string sender = 1;
-  string dapp_name = 2;
+  repeated XAMRequest requests = 2 [ (gogoproto.nullable) = false ];
 }
 message MsgTransferDappTxResponse {}
+
+// acknowledgement of transfer dapp tx
+message MsgAckTransferDappTx {
+  string sender = 1;
+  repeated XAMResponse responses = 2 [ (gogoproto.nullable) = false ];
+}
+message MsgAckTransferDappTxResponse {}
 
 // create new fungible token record in the minting module
 message MsgMintCreateFtTx {
   string sender = 1;
-  string dapp_name = 2;
+  string denom_suffix = 2; // suffix that must be applied to the token, min 3 and max 8 lowercase alphabetic characters only (a-z)
+  string name = 3; // full name, eg. Bitcoin, (can only be changed by the proposal-upsert-alias)
+  string symbol = 4; // symbnol, eg. KEX, BTC, (can only be changed by the proposal-upsert-alias)
+  string icon = 5; // url 256 chars max, (can be changed by owner or proposal-upsert-alias)
+  string description = 6; // 512 chars max, (can be changed by owner or proposal-upsert-alias)
+  string website = 7; // url 256 chars max, (can be changed by owner or proposal-upsert-alias)
+  string social = 8; // url 256 chars max, (can be changed by owner or proposal-upsert-alias)
+  uint64 decimals = 9; // min 0, max 255, (can NOT be changed)
+  string cap = 10 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ]; // maximum supply that can be issued, max 2^256 - 1, (can NOT be INCREASED or decreased below current circulatin supply)
+  string supply = 11 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ]; // current circulating supply can NOT be more then CAP
+  uint64 holders = 12;
+  string fee = 13 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ]; // cost of minting 10^decimals per X ukex, can only increase (can be changed by owner only)
+  string owner = 14; // owner address or "" if noone should be able to modify most important properties
 }
 message MsgMintCreateFtTxResponse {}
 
 // create new non-fungible token record in the minting module
 message MsgMintCreateNftTx {
   string sender = 1;
-  string dapp_name = 2;
+  string denom_suffix = 2; // suffix that must be applied to the token, min 3 and max 8 lowercase alphabetic characters only (a-z)
+  string name = 3; // full name, eg. Bitcoin, (can only be changed by the proposal-upsert-alias)
+  string symbol = 4; // symbnol, eg. KEX, BTC, (can only be changed by the proposal-upsert-alias)
+  string icon = 5; // url 256 chars max, (can be changed by owner or proposal-upsert-alias)
+  string description = 6; // 512 chars max, (can be changed by owner or proposal-upsert-alias)
+  string website = 7; // url 256 chars max, (can be changed by owner or proposal-upsert-alias)
+  string social = 8; // url 256 chars max, (can be changed by owner or proposal-upsert-alias)
+  uint64 decimals = 9; // min 0, max 255, (can NOT be changed)
+  string cap = 10 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ]; // maximum supply that can be issued, max 2^256 - 1, (can NOT be INCREASED or decreased below current circulatin supply)
+  string supply = 11 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ]; // current circulating supply can NOT be more then CAP
+  uint64 holders = 12;
+  string fee = 13 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ]; // cost of minting 10^decimals per X ukex, can only increase (can be changed by owner only)
+  string owner = 14; // owner address or "" if noone should be able to modify most important properties
+  string metadata = 15; // metadata url or CID
+  string hash = 16; // hexadecimal metadata checksum
 }
 message MsgMintCreateNftTxResponse {}
 
@@ -211,13 +289,22 @@ message MsgMintCreateNftTxResponse {}
 // other then 0.
 message MsgMintIssueTx {
   string sender = 1;
-  string dapp_name = 2;
+  string denom = 2;
+  string amount = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
+  string receiver = 4;
 }
 message MsgMintIssueTxResponse {}
 
 // allow anyone burn the tokens they own
 message MsgMintBurnTx {
   string sender = 1;
-  string dapp_name = 2;
+  string denom = 2;
+  string amount = 3 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
+    (gogoproto.nullable) = false
+  ];
 }
 message MsgMintBurnTxResponse {}

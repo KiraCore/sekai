@@ -38,6 +38,7 @@ func (s msgServer) CreateCustody(goCtx context.Context, msg *types.MsgCreteCusto
 	}
 
 	record.CustodySettings.Key = msg.NewKey
+	record.CustodySettings.NextController = msg.NextAddress
 
 	s.keeper.SetCustodyRecord(ctx, record)
 
@@ -53,6 +54,16 @@ func (s msgServer) DisableCustody(goCtx context.Context, msg *types.MsgDisableCu
 
 func (s msgServer) AddToCustodians(goCtx context.Context, msg *types.MsgAddToCustodyCustodians) (*types.MsgAddToCustodyCustodiansResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if msg.TargetAddress != "" {
+		targetAddr, err := sdk.AccAddressFromBech32(msg.TargetAddress)
+		if err != nil {
+			return nil, errors.Wrap(types.ErrWrongTargetAddr, "Can not convert string to address")
+		}
+
+		msg.Address = targetAddr
+	}
+
 	record := types.CustodyCustodiansRecord{
 		Address:           msg.Address,
 		CustodyCustodians: s.keeper.GetCustodyCustodiansByAddress(ctx, msg.Address),
@@ -68,8 +79,9 @@ func (s msgServer) AddToCustodians(goCtx context.Context, msg *types.MsgAddToCus
 	}
 
 	keyRecord := types.CustodyKeyRecord{
-		Address: msg.Address,
-		Key:     msg.NewKey,
+		Address:        msg.Address,
+		Key:            msg.NewKey,
+		NextController: msg.NextAddress,
 	}
 
 	s.keeper.SetCustodyRecordKey(ctx, keyRecord)
@@ -80,6 +92,16 @@ func (s msgServer) AddToCustodians(goCtx context.Context, msg *types.MsgAddToCus
 
 func (s msgServer) RemoveFromCustodians(goCtx context.Context, msg *types.MsgRemoveFromCustodyCustodians) (*types.MsgRemoveFromCustodyCustodiansResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if msg.TargetAddress != "" {
+		targetAddr, err := sdk.AccAddressFromBech32(msg.TargetAddress)
+		if err != nil {
+			return nil, errors.Wrap(types.ErrWrongTargetAddr, "Can not convert string to address")
+		}
+
+		msg.Address = targetAddr
+	}
+
 	record := types.CustodyCustodiansRecord{
 		Address:           msg.Address,
 		CustodyCustodians: s.keeper.GetCustodyCustodiansByAddress(ctx, msg.Address),
@@ -94,6 +116,13 @@ func (s msgServer) RemoveFromCustodians(goCtx context.Context, msg *types.MsgRem
 	}
 
 	record.CustodyCustodians.Addresses[msg.RemoveAddress.String()] = false
+	keyRecord := types.CustodyKeyRecord{
+		Address:        msg.Address,
+		Key:            msg.NewKey,
+		NextController: msg.NextAddress,
+	}
+
+	s.keeper.SetCustodyRecordKey(ctx, keyRecord)
 	s.keeper.AddToCustodyCustodians(ctx, record)
 
 	return &types.MsgRemoveFromCustodyCustodiansResponse{}, nil
@@ -250,6 +279,23 @@ func (s msgServer) sendReward(goCtx context.Context, FromAddress sdk.AccAddress,
 
 func (s msgServer) DropCustodians(goCtx context.Context, msg *types.MsgDropCustodyCustodians) (*types.MsgDropCustodyCustodiansResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if msg.TargetAddress != "" {
+		targetAddr, err := sdk.AccAddressFromBech32(msg.TargetAddress)
+		if err != nil {
+			return nil, errors.Wrap(types.ErrWrongTargetAddr, "Can not convert string to address")
+		}
+
+		msg.Address = targetAddr
+	}
+
+	keyRecord := types.CustodyKeyRecord{
+		Address:        msg.Address,
+		Key:            msg.NewKey,
+		NextController: msg.NextAddress,
+	}
+
+	s.keeper.SetCustodyRecordKey(ctx, keyRecord)
 	s.keeper.DropCustodyCustodiansByAddress(ctx, msg.Address)
 
 	return &types.MsgDropCustodyCustodiansResponse{}, nil
@@ -257,6 +303,16 @@ func (s msgServer) DropCustodians(goCtx context.Context, msg *types.MsgDropCusto
 
 func (s msgServer) AddToWhiteList(goCtx context.Context, msg *types.MsgAddToCustodyWhiteList) (*types.MsgAddToCustodyWhiteListResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if msg.TargetAddress != "" {
+		targetAddr, err := sdk.AccAddressFromBech32(msg.TargetAddress)
+		if err != nil {
+			return nil, errors.Wrap(types.ErrWrongTargetAddr, "Can not convert string to address")
+		}
+
+		msg.Address = targetAddr
+	}
+
 	record := types.CustodyWhiteListRecord{
 		Address:          msg.Address,
 		CustodyWhiteList: s.keeper.GetCustodyWhiteListByAddress(ctx, msg.Address),
@@ -271,6 +327,13 @@ func (s msgServer) AddToWhiteList(goCtx context.Context, msg *types.MsgAddToCust
 		record.CustodyWhiteList.Addresses[address.String()] = true
 	}
 
+	keyRecord := types.CustodyKeyRecord{
+		Address:        msg.Address,
+		Key:            msg.NewKey,
+		NextController: msg.NextAddress,
+	}
+
+	s.keeper.SetCustodyRecordKey(ctx, keyRecord)
 	s.keeper.AddToCustodyWhiteList(ctx, record)
 
 	return &types.MsgAddToCustodyWhiteListResponse{}, nil
@@ -278,6 +341,16 @@ func (s msgServer) AddToWhiteList(goCtx context.Context, msg *types.MsgAddToCust
 
 func (s msgServer) RemoveFromWhiteList(goCtx context.Context, msg *types.MsgRemoveFromCustodyWhiteList) (*types.MsgRemoveFromCustodyWhiteListResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if msg.TargetAddress != "" {
+		targetAddr, err := sdk.AccAddressFromBech32(msg.TargetAddress)
+		if err != nil {
+			return nil, errors.Wrap(types.ErrWrongTargetAddr, "Can not convert string to address")
+		}
+
+		msg.Address = targetAddr
+	}
+
 	record := types.CustodyWhiteListRecord{
 		Address:          msg.Address,
 		CustodyWhiteList: s.keeper.GetCustodyWhiteListByAddress(ctx, msg.Address),
@@ -292,6 +365,13 @@ func (s msgServer) RemoveFromWhiteList(goCtx context.Context, msg *types.MsgRemo
 	}
 
 	record.CustodyWhiteList.Addresses[msg.RemoveAddress.String()] = false
+	keyRecord := types.CustodyKeyRecord{
+		Address:        msg.Address,
+		Key:            msg.NewKey,
+		NextController: msg.NextAddress,
+	}
+
+	s.keeper.SetCustodyRecordKey(ctx, keyRecord)
 	s.keeper.AddToCustodyWhiteList(ctx, record)
 
 	return &types.MsgRemoveFromCustodyWhiteListResponse{}, nil
@@ -299,6 +379,23 @@ func (s msgServer) RemoveFromWhiteList(goCtx context.Context, msg *types.MsgRemo
 
 func (s msgServer) DropWhiteList(goCtx context.Context, msg *types.MsgDropCustodyWhiteList) (*types.MsgDropCustodyWhiteListResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if msg.TargetAddress != "" {
+		targetAddr, err := sdk.AccAddressFromBech32(msg.TargetAddress)
+		if err != nil {
+			return nil, errors.Wrap(types.ErrWrongTargetAddr, "Can not convert string to address")
+		}
+
+		msg.Address = targetAddr
+	}
+
+	keyRecord := types.CustodyKeyRecord{
+		Address:        msg.Address,
+		Key:            msg.NewKey,
+		NextController: msg.NextAddress,
+	}
+
+	s.keeper.SetCustodyRecordKey(ctx, keyRecord)
 	s.keeper.DropCustodyWhiteListByAddress(ctx, msg.Address)
 
 	return &types.MsgDropCustodyWhiteListResponse{}, nil
@@ -306,6 +403,16 @@ func (s msgServer) DropWhiteList(goCtx context.Context, msg *types.MsgDropCustod
 
 func (s msgServer) AddToLimits(goCtx context.Context, msg *types.MsgAddToCustodyLimits) (*types.MsgAddToCustodyLimitsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if msg.TargetAddress != "" {
+		targetAddr, err := sdk.AccAddressFromBech32(msg.TargetAddress)
+		if err != nil {
+			return nil, errors.Wrap(types.ErrWrongTargetAddr, "Can not convert string to address")
+		}
+
+		msg.Address = targetAddr
+	}
+
 	record := types.CustodyLimitRecord{
 		Address:       msg.Address,
 		CustodyLimits: s.keeper.GetCustodyLimitsByAddress(ctx, msg.Address),
@@ -322,6 +429,13 @@ func (s msgServer) AddToLimits(goCtx context.Context, msg *types.MsgAddToCustody
 	}
 
 	record.CustodyLimits.Limits[msg.Denom] = &custodyLimit
+	keyRecord := types.CustodyKeyRecord{
+		Address:        msg.Address,
+		Key:            msg.NewKey,
+		NextController: msg.NextAddress,
+	}
+
+	s.keeper.SetCustodyRecordKey(ctx, keyRecord)
 	s.keeper.AddToCustodyLimits(ctx, record)
 
 	return &types.MsgAddToCustodyLimitsResponse{}, nil
@@ -329,6 +443,16 @@ func (s msgServer) AddToLimits(goCtx context.Context, msg *types.MsgAddToCustody
 
 func (s msgServer) RemoveFromLimits(goCtx context.Context, msg *types.MsgRemoveFromCustodyLimits) (*types.MsgRemoveFromCustodyLimitsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if msg.TargetAddress != "" {
+		targetAddr, err := sdk.AccAddressFromBech32(msg.TargetAddress)
+		if err != nil {
+			return nil, errors.Wrap(types.ErrWrongTargetAddr, "Can not convert string to address")
+		}
+
+		msg.Address = targetAddr
+	}
+
 	record := types.CustodyLimitRecord{
 		Address:       msg.Address,
 		CustodyLimits: s.keeper.GetCustodyLimitsByAddress(ctx, msg.Address),
@@ -343,6 +467,13 @@ func (s msgServer) RemoveFromLimits(goCtx context.Context, msg *types.MsgRemoveF
 	}
 
 	record.CustodyLimits.Limits[msg.Denom] = new(types.CustodyLimit)
+	keyRecord := types.CustodyKeyRecord{
+		Address:        msg.Address,
+		Key:            msg.NewKey,
+		NextController: msg.NextAddress,
+	}
+
+	s.keeper.SetCustodyRecordKey(ctx, keyRecord)
 	s.keeper.AddToCustodyLimits(ctx, record)
 
 	return &types.MsgRemoveFromCustodyLimitsResponse{}, nil
@@ -350,6 +481,23 @@ func (s msgServer) RemoveFromLimits(goCtx context.Context, msg *types.MsgRemoveF
 
 func (s msgServer) DropLimits(goCtx context.Context, msg *types.MsgDropCustodyLimits) (*types.MsgDropCustodyLimitsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if msg.TargetAddress != "" {
+		targetAddr, err := sdk.AccAddressFromBech32(msg.TargetAddress)
+		if err != nil {
+			return nil, errors.Wrap(types.ErrWrongTargetAddr, "Can not convert string to address")
+		}
+
+		msg.Address = targetAddr
+	}
+
+	keyRecord := types.CustodyKeyRecord{
+		Address:        msg.Address,
+		Key:            msg.NewKey,
+		NextController: msg.NextAddress,
+	}
+
+	s.keeper.SetCustodyRecordKey(ctx, keyRecord)
 	s.keeper.DropCustodyLimitsByAddress(ctx, msg.Address)
 
 	return &types.MsgDropCustodyLimitsResponse{}, nil

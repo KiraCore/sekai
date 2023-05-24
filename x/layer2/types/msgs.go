@@ -2,6 +2,7 @@ package types
 
 import (
 	"github.com/KiraCore/sekai/types"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -371,6 +372,24 @@ func (m *MsgDenounceLeaderTx) GetSigners() []sdk.AccAddress {
 
 var _ sdk.Msg = &MsgTransitionDappTx{}
 
+func NewMsgTransitionDappTx(sender, dappName, statusHash, version string, onchainMsgs []sdk.Msg) *MsgTransitionDappTx {
+	msgs := []*codectypes.Any{}
+	for _, om := range onchainMsgs {
+		anyMsg, err := PackTxMsgAny(om)
+		if err != nil {
+			panic(err)
+		}
+		msgs = append(msgs, anyMsg)
+	}
+	return &MsgTransitionDappTx{
+		Sender:          sender,
+		DappName:        dappName,
+		StatusHash:      statusHash,
+		Version:         version,
+		OnchainMessages: msgs,
+	}
+}
+
 func (m *MsgTransitionDappTx) Route() string {
 	return ModuleName
 }
@@ -395,6 +414,19 @@ func (m *MsgTransitionDappTx) GetSigners() []sdk.AccAddress {
 		panic(err)
 	}
 	return []sdk.AccAddress{addr}
+}
+
+// UnpackInterfaces implements codectypes.UnpackInterfacesMessage
+func (m *MsgTransitionDappTx) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
+	var sdkMsg sdk.Msg
+
+	for _, any := range m.OnchainMessages {
+		err := unpacker.UnpackAny(any, &sdkMsg)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 var _ sdk.Msg = &MsgApproveDappTransitionTx{}
@@ -474,6 +506,42 @@ func (m *MsgTransferDappTx) GetSignBytes() []byte {
 	return sdk.MustSortJSON(bz)
 }
 func (m *MsgTransferDappTx) GetSigners() []sdk.AccAddress {
+	addr, err := sdk.AccAddressFromBech32(m.Sender)
+	if err != nil {
+		panic(err)
+	}
+	return []sdk.AccAddress{addr}
+}
+
+var _ sdk.Msg = &MsgAckTransferDappTx{}
+
+// NewMsgAckTransferDappTx creates a new MsgAckTransferDappTx instance
+func NewMsgAckTransferDappTx(sender string, responses []XAMResponse) *MsgAckTransferDappTx {
+	return &MsgAckTransferDappTx{
+		Sender:    sender,
+		Responses: responses,
+	}
+}
+
+func (m *MsgAckTransferDappTx) Route() string {
+	return ModuleName
+}
+func (m *MsgAckTransferDappTx) Type() string {
+	return types.MsgTypeAckTransferDappTx
+}
+func (m *MsgAckTransferDappTx) ValidateBasic() error {
+	_, err := sdk.AccAddressFromBech32(m.Sender)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (m *MsgAckTransferDappTx) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+func (m *MsgAckTransferDappTx) GetSigners() []sdk.AccAddress {
 	addr, err := sdk.AccAddressFromBech32(m.Sender)
 	if err != nil {
 		panic(err)

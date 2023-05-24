@@ -136,7 +136,7 @@ var (
 		baskettypes.ModuleName:       {authtypes.Minter, authtypes.Burner},
 		multistakingtypes.ModuleName: {authtypes.Burner},
 		collectivestypes.ModuleName:  nil,
-		layer2types.ModuleName:       nil,
+		layer2types.ModuleName:       {authtypes.Minter, authtypes.Burner},
 		recoverytypes.ModuleName:     {authtypes.Minter, authtypes.Burner},
 	}
 
@@ -296,6 +296,7 @@ func NewInitApp(
 	app.Layer2Keeper = layer2keeper.NewKeeper(
 		keys[collectivestypes.StoreKey], appCodec,
 		app.BankKeeper,
+		app.CustomStakingKeeper,
 		app.CustomGovKeeper,
 		app.SpendingKeeper,
 	)
