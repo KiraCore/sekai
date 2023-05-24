@@ -89,5 +89,4 @@ message AmountAtTime {
 
 // Params represents the parameters used for by the module.
 message Params {
-  string owner = 1;
 }

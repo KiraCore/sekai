@@ -9,30 +9,29 @@ const (
 	ProposalTypeUnjailValidator                    = "UnjailValidator"
 	ProposalTypeResetWholeValidatorRank            = "ResetWholeValidatorRank"
 	ProposalTypeSlashValidator                     = "SlashValidator"
-	ProposalTypeUpdateSpendingPool                 = "UpdateSpendingPoolProposal"
-	ProposalTypeSpendingPoolDistribution           = "SpendingPoolDistributionProposal"
-	ProposalTypeSpendingPoolWithdraw               = "SpendingPoolWithdrawProposal"
-	ProposalTypeUpsertUBI                          = "UpsertUBIProposal"
-	ProposalTypeRemoveUBI                          = "RemoveUBIProposal"
+	ProposalTypeUpdateSpendingPool                 = "UpdateSpendingPool"
+	ProposalTypeSpendingPoolDistribution           = "SpendingPoolDistribution"
+	ProposalTypeSpendingPoolWithdraw               = "SpendingPoolWithdraw"
+	ProposalTypeUpsertUBI                          = "UpsertUBI"
+	ProposalTypeRemoveUBI                          = "RemoveUBI"
 	ProposalTypeResetWholeCouncilorRank            = "ResetWholeCouncilorRank"
 	ProposalTypeJailCouncilor                      = "JailCouncilor"
-	AssignPermissionProposalType                   = "AssignPermission"
-	WhitelistAccountPermissionProposalType         = "WhitelistAccountPermission"
-	BlacklistAccountPermissionProposalType         = "BlacklistAccountPermission"
-	RemoveWhitelistedAccountPermissionProposalType = "RemoveWhitelistedAccountPermission"
-	RemoveBlacklistedAccountPermissionProposalType = "RemoveBlacklistedAccountPermission"
-	AssignRoleToAccountProposalType                = "AssignRoleToAccount"
-	UnassignRoleFromAccountProposalType            = "UnassignRoleFromAccount"
-	SetNetworkPropertyProposalType                 = "SetNetworkProperty"
-	UpsertDataRegistryProposalType                 = "UpsertDataRegistry"
-	SetPoorNetworkMessagesProposalType             = "SetPoorNetworkMessages"
-	CreateRoleProposalType                         = "CreateRoleProposal"
-	RemoveRoleProposalType                         = "RemoveRoleProposal"
-	WhitelistRolePermissionProposalType            = "WhitelistRolePermission"
-	BlacklistRolePermissionProposalType            = "BlacklistRolePermission"
-	RemoveWhitelistedRolePermissionProposalType    = "RemoveWhitelistedRolePermission"
-	RemoveBlacklistedRolePermissionProposalType    = "RemoveBlacklistedRolePermission"
-	SetProposalDurationsProposalType               = "SetProposalDurationsProposal"
+	ProposalTypeWhitelistAccountPermission         = "WhitelistAccountPermission"
+	ProposalTypeBlacklistAccountPermission         = "BlacklistAccountPermission"
+	ProposalTypeRemoveWhitelistedAccountPermission = "RemoveWhitelistedAccountPermission"
+	ProposalTypeRemoveBlacklistedAccountPermission = "RemoveBlacklistedAccountPermission"
+	ProposalTypeAssignRoleToAccount                = "AssignRoleToAccount"
+	ProposalTypeUnassignRoleFromAccount            = "UnassignRoleFromAccount"
+	ProposalTypeSetNetworkProperty                 = "SetNetworkProperty"
+	ProposalTypeUpsertDataRegistry                 = "UpsertDataRegistry"
+	ProposalTypeSetPoorNetworkMessages             = "SetPoorNetworkMessages"
+	ProposalTypeCreateRole                         = "CreateRole"
+	ProposalTypeRemoveRole                         = "RemoveRole"
+	ProposalTypeWhitelistRolePermission            = "WhitelistRolePermission"
+	ProposalTypeBlacklistRolePermission            = "BlacklistRolePermission"
+	ProposalTypeRemoveWhitelistedRolePermission    = "RemoveWhitelistedRolePermission"
+	ProposalTypeRemoveBlacklistedRolePermission    = "RemoveBlacklistedRolePermission"
+	ProposalTypeSetProposalDurations               = "SetProposalDurations"
 
 	ProposalTypeCreateBasket          = "CreateBasket"
 	ProposalTypeEditBasket            = "EditBasket"
@@ -57,20 +56,20 @@ var AllProposalTypes []string = []string{
 	ProposalTypeResetWholeValidatorRank,
 	ProposalTypeSlashValidator,
 	ProposalTypeResetWholeCouncilorRank,
-	WhitelistAccountPermissionProposalType,
-	BlacklistAccountPermissionProposalType,
-	RemoveWhitelistedAccountPermissionProposalType,
-	RemoveBlacklistedAccountPermissionProposalType,
-	AssignRoleToAccountProposalType,
-	UnassignRoleFromAccountProposalType,
-	SetNetworkPropertyProposalType,
-	UpsertDataRegistryProposalType,
-	SetPoorNetworkMessagesProposalType,
-	CreateRoleProposalType,
-	RemoveRoleProposalType,
-	WhitelistRolePermissionProposalType,
-	BlacklistRolePermissionProposalType,
-	RemoveWhitelistedRolePermissionProposalType,
-	RemoveBlacklistedRolePermissionProposalType,
-	SetProposalDurationsProposalType,
+	ProposalTypeWhitelistAccountPermission,
+	ProposalTypeBlacklistAccountPermission,
+	ProposalTypeRemoveWhitelistedAccountPermission,
+	ProposalTypeRemoveBlacklistedAccountPermission,
+	ProposalTypeAssignRoleToAccount,
+	ProposalTypeUnassignRoleFromAccount,
+	ProposalTypeSetNetworkProperty,
+	ProposalTypeUpsertDataRegistry,
+	ProposalTypeSetPoorNetworkMessages,
+	ProposalTypeCreateRole,
+	ProposalTypeRemoveRole,
+	ProposalTypeWhitelistRolePermission,
+	ProposalTypeBlacklistRolePermission,
+	ProposalTypeRemoveWhitelistedRolePermission,
+	ProposalTypeRemoveBlacklistedRolePermission,
+	ProposalTypeSetProposalDurations,
 }

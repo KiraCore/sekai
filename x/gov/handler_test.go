@@ -1014,7 +1014,7 @@ func TestHandler_AssignRole(t *testing.T) {
 	require.True(t, actor.HasRole(3))
 }
 
-func TestHandler_RemoveRole_Errors(t *testing.T) {
+func TestHandler_UnassignRole_Errors(t *testing.T) {
 	proposerAddr, err := sdk.AccAddressFromBech32("kira1alzyfq40zjsveat87jlg8jxetwqmr0a29sgd0f")
 	require.NoError(t, err)
 
@@ -1023,13 +1023,13 @@ func TestHandler_RemoveRole_Errors(t *testing.T) {
 
 	tests := []struct {
 		name         string
-		msg          *types.MsgRemoveRole
+		msg          *types.MsgUnassignRole
 		preparePerms func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context)
 		expectedErr  error
 	}{
 		{
 			"fails when no perms",
-			types.NewMsgRemoveRole(
+			types.NewMsgUnassignRole(
 				proposerAddr, addr, 3,
 			),
 			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {},
@@ -1037,7 +1037,7 @@ func TestHandler_RemoveRole_Errors(t *testing.T) {
 		},
 		{
 			"fails when role does not exist",
-			types.NewMsgRemoveRole(
+			types.NewMsgUnassignRole(
 				proposerAddr, addr, 3,
 			),
 			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
@@ -1048,7 +1048,7 @@ func TestHandler_RemoveRole_Errors(t *testing.T) {
 		},
 		{
 			"role not assigned",
-			types.NewMsgRemoveRole(
+			types.NewMsgUnassignRole(
 				proposerAddr, addr, 3,
 			),
 			func(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context) {
@@ -1081,7 +1081,7 @@ func TestHandler_RemoveRole_Errors(t *testing.T) {
 	}
 }
 
-func TestHandler_RemoveRoles(t *testing.T) {
+func TestHandler_UnassignRoles(t *testing.T) {
 	proposerAddr, err := sdk.AccAddressFromBech32("kira1alzyfq40zjsveat87jlg8jxetwqmr0a29sgd0f")
 	require.NoError(t, err)
 
@@ -1111,7 +1111,7 @@ func TestHandler_RemoveRoles(t *testing.T) {
 	require.True(t, found)
 	require.True(t, actor.HasRole(3))
 
-	msg := types.NewMsgRemoveRole(proposerAddr, addr, 3)
+	msg := types.NewMsgUnassignRole(proposerAddr, addr, 3)
 	handler := gov.NewHandler(app.CustomGovKeeper)
 	_, err = handler(ctx, msg)
 	require.NoError(t, err)
@@ -1944,7 +1944,7 @@ func TestHandler_SetProposalDurationsProposal(t *testing.T) {
 	})
 
 	proposal := types.NewSetProposalDurationsProposal(
-		[]string{kiratypes.CreateRoleProposalType, kiratypes.SetNetworkPropertyProposalType},
+		[]string{kiratypes.ProposalTypeCreateRole, kiratypes.ProposalTypeSetNetworkProperty},
 		[]uint64{1200, 2400}, // 20 min, 40min
 	)
 
@@ -1952,9 +1952,9 @@ func TestHandler_SetProposalDurationsProposal(t *testing.T) {
 	err := router.ApplyProposal(ctx, 1, proposal, sdk.ZeroDec())
 	require.NoError(t, err)
 
-	duration := app.CustomGovKeeper.GetProposalDuration(ctx, kiratypes.CreateRoleProposalType)
+	duration := app.CustomGovKeeper.GetProposalDuration(ctx, kiratypes.ProposalTypeCreateRole)
 	require.Equal(t, duration, uint64(1200))
 
-	duration = app.CustomGovKeeper.GetProposalDuration(ctx, kiratypes.SetNetworkPropertyProposalType)
+	duration = app.CustomGovKeeper.GetProposalDuration(ctx, kiratypes.ProposalTypeSetNetworkProperty)
 	require.Equal(t, duration, uint64(2400))
 }

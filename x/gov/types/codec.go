@@ -313,9 +313,9 @@ func registerRolesCodec(cdc *codec.LegacyAmino) {
 			}
 		}
 	}`)
-	cdc.RegisterConcrete(&MsgRemoveRole{}, "kiraHub/MsgRemoveRole", nil)
-	functionmeta.AddNewFunction((&MsgRemoveRole{}).Type(), `{
-		"description": "MsgRemoveRole defines a message to remove a role from an address.",
+	cdc.RegisterConcrete(&MsgUnassignRole{}, "kiraHub/MsgUnassignRole", nil)
+	functionmeta.AddNewFunction((&MsgUnassignRole{}).Type(), `{
+		"description": "MsgUnassignRole defines a message to unassign a role from an address.",
 		"parameters": {
 			"proposer": {
 				"type":        "string",
@@ -417,8 +417,8 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgClaimCouncilor{},
 
 		&MsgAssignRole{},
+		&MsgUnassignRole{},
 		&MsgCreateRole{},
-		&MsgRemoveRole{},
 
 		&MsgWhitelistRolePermission{},
 		&MsgBlacklistRolePermission{},

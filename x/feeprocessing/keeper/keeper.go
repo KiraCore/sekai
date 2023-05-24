@@ -157,7 +157,12 @@ func (k Keeper) ProcessExecutionFeeReturn(ctx sdk.Context) {
 				// handle extra fee based on handler result
 				bondDenom := k.BondDenom(ctx)
 				fees := sdk.Coins{sdk.NewInt64Coin(bondDenom, amount)}
-				k.SendCoinsFromModuleToAccount(ctx, authtypes.FeeCollectorName, exec.FeePayer, fees)
+				if fees.IsAllPositive() {
+					err := k.SendCoinsFromModuleToAccount(ctx, authtypes.FeeCollectorName, exec.FeePayer, fees)
+					if err != nil {
+						panic(err)
+					}
+				}
 			}
 		}
 	}
