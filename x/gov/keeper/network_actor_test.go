@@ -171,7 +171,7 @@ func TestKeeper_GetActorsByRole(t *testing.T) {
 	assertAddrsHaveRole(t, app, ctx, addrs, types.RoleSudo)
 }
 
-func TestKeeper_RemoveRole(t *testing.T) {
+func TestKeeper_UnassignRole(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
@@ -188,7 +188,7 @@ func TestKeeper_RemoveRole(t *testing.T) {
 	require.True(t, found)
 	require.True(t, actor.HasRole(types.RoleSudo))
 
-	app.CustomGovKeeper.RemoveRoleFromActor(ctx, actor, types.RoleSudo)
+	app.CustomGovKeeper.UnassignRoleFromActor(ctx, actor, types.RoleSudo)
 
 	actor, found = app.CustomGovKeeper.GetNetworkActorByAddress(ctx, addrs[0])
 	require.True(t, found)

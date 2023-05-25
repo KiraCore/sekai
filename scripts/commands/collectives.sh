@@ -36,7 +36,7 @@ sekaid tx collectives donate-collective --collective-name="userincentives" --loc
 sekaid tx collectives withdraw-collective --collective-name="userincentives" --from=validator --chain-id=testing --fees=100ukex --keyring-backend=test --home=$HOME/.sekaid --yes --broadcast-mode=block
 
 ## donation withdraw proposal
-sekaid tx collectives proposal-send-donation --title="title" --description="description" --collective-name="userincentives" --address="kira1ak6c3jl4svl5vw5y9xu3yrq4susvkckw090kg5" --amounts="100ukex" --from=validator --chain-id=testing --fees=100ukex --keyring-backend=test --home=$HOME/.sekaid --yes --broadcast-mode=block
+sekaid tx collectives proposal-send-donation --title="title" --description="description" --collective-name="userincentives" --addr="kira1ak6c3jl4svl5vw5y9xu3yrq4susvkckw090kg5" --amounts="100ukex" --from=validator --chain-id=testing --fees=100ukex --keyring-backend=test --home=$HOME/.sekaid --yes --broadcast-mode=block
 
 ## collective update proposal
 sekaid tx collectives proposal-collective-update --title="title" --description="description" --collective-name="userincentives" --collective-description="description" --collective-status="ACTIVE" --deposit-any=true --deposit-roles="1" --deposit-accounts="" --owner-roles="1" --owner-accounts="" --weighted-spending-pools="UserIncentivesPool#1" --claim-start=0 --claim-period=43200 --claim-end=86400 --vote-quorum=30 --vote-period=86400 --vote-enactment=1000 --from=validator --chain-id=testing --fees=100ukex --keyring-backend=test --home=$HOME/.sekaid --yes --broadcast-mode=block 

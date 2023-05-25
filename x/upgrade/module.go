@@ -68,14 +68,13 @@ func (b AppModuleBasic) GetQueryCmd() *cobra.Command {
 // AppModule for tokens management
 type AppModule struct {
 	AppModuleBasic
-	upgradeKeeper   keeper.Keeper
-	customGovKeeper types.CustomGovKeeper
+	upgradeKeeper keeper.Keeper
 }
 
 // RegisterQueryService registers a GRPC query service to respond to the
 // module-specific GRPC queries.
 func (am AppModule) RegisterServices(cfg module.Configurator) {
-	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.upgradeKeeper, am.customGovKeeper))
+	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.upgradeKeeper))
 	querier := keeper.NewQuerier(am.upgradeKeeper)
 	types.RegisterQueryServer(cfg.QueryServer(), querier)
 }
@@ -149,16 +148,14 @@ func (am AppModule) Name() string {
 
 // Route returns the message routing key for the staking module.
 func (am AppModule) Route() sdk.Route {
-	return middleware.NewRoute(types.ModuleName, NewHandler(am.upgradeKeeper, am.customGovKeeper))
+	return middleware.NewRoute(types.ModuleName, NewHandler(am.upgradeKeeper))
 }
 
 // NewAppModule returns a new Custom Staking module.
 func NewAppModule(
 	keeper keeper.Keeper,
-	customGovKeeper types.CustomGovKeeper,
 ) AppModule {
 	return AppModule{
-		upgradeKeeper:   keeper,
-		customGovKeeper: customGovKeeper,
+		upgradeKeeper: keeper,
 	}
 }

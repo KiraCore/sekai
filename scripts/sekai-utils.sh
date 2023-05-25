@@ -988,9 +988,9 @@ function assignRole() {
     fi
 }
 
-# removeRole <account> <role-name> <address> <timeout>
-# e.g.: removeRole validator sudo test 180
-function removeRole() {
+# unassignRole <account> <role-name> <address> <timeout>
+# e.g.: unassignRole validator sudo test 180
+function unassignRole() {
     local ACCOUNT="$1"
     local ROLE=$(showRole "$2" 2> /dev/null | jq ".id" 2> /dev/null || echo -n "")
     local ADDRESS=$(showAddress $3)

@@ -5,23 +5,8 @@ import (
 	multistakingtypes "github.com/KiraCore/sekai/x/multistaking/types"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	auth "github.com/cosmos/cosmos-sdk/x/auth/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 )
-
-// AccountKeeper expected account keeper
-type AccountKeeper interface {
-	GetAccount(ctx sdk.Context, addr sdk.AccAddress) auth.AccountI
-	IterateAccounts(ctx sdk.Context, process func(auth.AccountI) (stop bool))
-}
-
-// BankKeeper defines the expected interface needed to retrieve account balances.
-type BankKeeper interface {
-	GetAllBalances(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
-	GetBalance(ctx sdk.Context, addr sdk.AccAddress, denom string) sdk.Coin
-	LockedCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
-	SpendableCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
-}
 
 // ParamSubspace defines the expected Subspace interfacace
 type ParamSubspace interface {
@@ -70,17 +55,13 @@ type StakingHooks interface {
 // GovKeeper expected governance keeper
 type GovKeeper interface {
 	GetNetworkProperties(sdk.Context) *govtypes.NetworkProperties // returns network properties
-	CheckIfAllowedPermission(ctx sdk.Context, addr sdk.AccAddress, permValue govtypes.PermValue) bool
 	GetProposals(ctx sdk.Context) ([]govtypes.Proposal, error)
-	GetNextProposalID(ctx sdk.Context) uint64
 	SaveProposal(ctx sdk.Context, proposal govtypes.Proposal)
-	AddToActiveProposals(ctx sdk.Context, proposal govtypes.Proposal)
 	CreateAndSaveProposalWithContent(ctx sdk.Context, title, description string, content govtypes.Content) (uint64, error)
 }
 
 type MultiStakingKeeper interface {
 	GetStakingPoolByValidator(ctx sdk.Context, validator string) (pool multistakingtypes.StakingPool, found bool)
-	IncreasePoolRewards(ctx sdk.Context, pool multistakingtypes.StakingPool, rewards sdk.Coins)
 	GetAllStakingPools(ctx sdk.Context) []multistakingtypes.StakingPool
 	SlashStakingPool(ctx sdk.Context, validator string, slash sdk.Dec)
 }

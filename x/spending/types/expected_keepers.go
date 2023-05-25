@@ -9,12 +9,6 @@ import (
 type CustomGovKeeper interface {
 	GetNetworkActorsByRole(ctx sdk.Context, role uint64) sdk.Iterator
 	GetNetworkActorByAddress(ctx sdk.Context, address sdk.AccAddress) (govtypes.NetworkActor, bool)
-	CheckIfAllowedPermission(ctx sdk.Context, addr sdk.AccAddress, permValue govtypes.PermValue) bool
-	GetNextProposalIDAndIncrement(ctx sdk.Context) uint64
-	GetNetworkProperties(ctx sdk.Context) *govtypes.NetworkProperties
-	SaveProposal(ctx sdk.Context, proposal govtypes.Proposal)
-	AddToActiveProposals(ctx sdk.Context, proposal govtypes.Proposal)
-	CreateAndSaveProposalWithContent(ctx sdk.Context, title, description string, content govtypes.Content) (uint64, error)
 	GetProposals(ctx sdk.Context) ([]govtypes.Proposal, error)
 }
 
