@@ -272,11 +272,11 @@ sendTokens validator "$ACCOUNT5_ADDRESS" 1000000000000 ukex 100 ukex
 # Send tokens with enabled custodians and enabled password protection --->
 
   # TEST 4/1
-  # Disable custodians --->
+  # Drop custodians --->
   echoInfo "TEST 4/1"
   TESTER1_BALANCE_EXPECTED=$(($TESTER1_BALANCE_EXPECTED - 150)) # -150 fee
 
-  disableCustody tester1 150 ukex $KEY3
+  dropCustody tester1 150 ukex $KEY3
 
   CUSTODY_KEY=$(getCustodyKey tester1)
   TESTER1_BALANCE_REAL=$(showBalance tester1 ukex)
