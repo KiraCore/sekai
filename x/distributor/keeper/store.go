@@ -8,24 +8,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (k Keeper) SetFeesCollected(ctx sdk.Context, coins sdk.Coins) {
-	store := ctx.KVStore(k.storeKey)
-	store.Set(types.FeesCollectedKey, []byte(coins.String()))
-}
-
-func (k Keeper) GetFeesCollected(ctx sdk.Context) sdk.Coins {
-	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.FeesCollectedKey)
-	if bz == nil {
-		return sdk.Coins{}
-	}
-	coins, err := sdk.ParseCoinsNormalized(string(bz))
-	if err != nil {
-		panic(err)
-	}
-	return coins
-}
-
 func (k Keeper) SetFeesTreasury(ctx sdk.Context, coins sdk.Coins) {
 	store := ctx.KVStore(k.storeKey)
 	store.Set(types.FeesTreasuryKey, []byte(coins.String()))

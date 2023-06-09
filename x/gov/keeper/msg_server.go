@@ -773,7 +773,7 @@ func (k msgServer) ClaimCouncilor(
 		})
 	}
 
-	err := k.keeper.RegisterIdentityRecords(ctx, msg.Address, identityInfo)
+	err = k.keeper.RegisterIdentityRecords(ctx, msg.Address, identityInfo)
 	if err != nil {
 		return nil, err
 	}
