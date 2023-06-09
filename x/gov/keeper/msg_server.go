@@ -718,6 +718,15 @@ func (k msgServer) ClaimCouncilor(
 		return nil, errors.Wrap(types.ErrNotEnoughPermissions, "PermClaimCouncilor")
 	}
 
+	actor, found := k.keeper.GetNetworkActorByAddress(ctx, msg.Address)
+	if !found {
+		return nil, errors.Wrap(types.ErrNotEnoughPermissions, "network actor not found")
+	}
+	err := actor.Permissions.AddToWhitelist(types.PermCreatePollProposal)
+	if err == nil {
+		k.keeper.SaveNetworkActor(ctx, actor)
+	}
+
 	councilor := types.NewCouncilor(msg.Address, types.CouncilorActive)
 	k.keeper.SaveCouncilor(ctx, councilor)
 
