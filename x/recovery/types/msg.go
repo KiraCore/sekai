@@ -10,12 +10,13 @@ var _ sdk.Msg = &MsgRegisterRecoverySecret{}
 
 // NewMsgRegisterRecoverySecret creates a new MsgRegisterRecoverySecret instance
 //nolint:interfacer
-func NewMsgRegisterRecoverySecret(addr, challenge, nonce, proof string) *MsgRegisterRecoverySecret {
+func NewMsgRegisterRecoverySecret(addr, challenge, nonce, proof, next string) *MsgRegisterRecoverySecret {
 	return &MsgRegisterRecoverySecret{
-		Address:   addr,
-		Challenge: challenge,
-		Nonce:     nonce,
-		Proof:     proof,
+		Address:     addr,
+		Challenge:   challenge,
+		Nonce:       nonce,
+		Proof:       proof,
+		NextAddress: next,
 	}
 }
 
@@ -49,12 +50,13 @@ var _ sdk.Msg = &MsgRotateRecoveryAddress{}
 
 // NewMsgRotateRecoveryAddress creates a new MsgRotateRecoveryAddress instance
 //nolint:interfacer
-func NewMsgRotateRecoveryAddress(feePayer, addr, recovery, proof string) *MsgRotateRecoveryAddress {
+func NewMsgRotateRecoveryAddress(feePayer, addr, recovery, proof, target string) *MsgRotateRecoveryAddress {
 	return &MsgRotateRecoveryAddress{
-		FeePayer: feePayer,
-		Address:  addr,
-		Recovery: recovery,
-		Proof:    proof,
+		FeePayer:      feePayer,
+		Address:       addr,
+		Recovery:      recovery,
+		Proof:         proof,
+		TargetAddress: target,
 	}
 }
 

@@ -33,6 +33,7 @@ message MsgRegisterRecoverySecret {
   string challenge = 2; // recovery challenge S_H2, if the same S_H2 already exists then fail tx
   string nonce = 3;     // nonce must be a valid nonce
   string proof = 4; // [OPTIONAL] proof of knowing the recovery secret to modify the old challenge
+  string next_address = 5 ;
 }
 message MsgRegisterRecoverySecretResponse {}
 
@@ -41,6 +42,7 @@ message MsgRotateRecoveryAddress {
   string address = 2;
   string recovery = 3;
   string proof = 4;
+  string target_address = 5;
 }
 message MsgRotateRecoveryAddressResponse {}
 

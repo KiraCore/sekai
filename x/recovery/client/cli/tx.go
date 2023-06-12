@@ -39,12 +39,12 @@ func NewTxCmd() *cobra.Command {
 // NewRegisterRecoverySecretTxCmd defines MsgRegisterRecoverySecret tx
 func NewRegisterRecoverySecretTxCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "register-recovery-secret [challenge] [nonce] [proof]",
-		Args:  cobra.ExactArgs(3),
+		Use:   "register-recovery-secret [challenge] [nonce] [proof] [next]",
+		Args:  cobra.ExactArgs(4),
 		Short: "Register recovery secret",
 		Long: `Register recovery secret:
 
-$ <appd> tx recovery register-recovery-secret [challenge] [nonce] [proof] --from mykey
+$ <appd> tx recovery register-recovery-secret [challenge] [nonce] [proof] [next] --from mykey
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -52,7 +52,7 @@ $ <appd> tx recovery register-recovery-secret [challenge] [nonce] [proof] --from
 				return err
 			}
 
-			msg := types.NewMsgRegisterRecoverySecret(clientCtx.GetFromAddress().String(), args[0], args[1], args[2])
+			msg := types.NewMsgRegisterRecoverySecret(clientCtx.GetFromAddress().String(), args[0], args[1], args[2], args[3])
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -69,12 +69,12 @@ $ <appd> tx recovery register-recovery-secret [challenge] [nonce] [proof] --from
 // NewRotateRecoveryAddressTxCmd defines MsgRotateRecoveryAddress tx
 func NewRotateRecoveryAddressTxCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "rotate-recovery-address [recovery] [proof]",
-		Args:  cobra.ExactArgs(2),
+		Use:   "rotate-recovery-address [recovery] [proof] [target]",
+		Args:  cobra.ExactArgs(3),
 		Short: "Rotate an address to recovery address",
 		Long: `Rotate an address to recovery address:
 
-$ <appd> tx recovery rotate-recovery-address [recovery] [proof] --from validator --chain-id=testing --keyring-backend=test --fees=100ukex --home=$HOME/.sekaid --yes
+$ <appd> tx recovery rotate-recovery-address [recovery] [proof] [target] --from validator --chain-id=testing --keyring-backend=test --fees=100ukex --home=$HOME/.sekaid --yes
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -82,7 +82,7 @@ $ <appd> tx recovery rotate-recovery-address [recovery] [proof] --from validator
 				return err
 			}
 
-			msg := types.NewMsgRotateRecoveryAddress(clientCtx.GetFromAddress().String(), clientCtx.GetFromAddress().String(), args[0], args[1])
+			msg := types.NewMsgRotateRecoveryAddress(clientCtx.GetFromAddress().String(), clientCtx.GetFromAddress().String(), args[0], args[1], args[2])
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

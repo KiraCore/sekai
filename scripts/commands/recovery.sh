@@ -10,14 +10,18 @@ CHALLENGE=220c7e47a53ef4c2161035308d4fdc52f619e54f8a657b208ba3708139fdc03d
 sekaid keys add recovery --keyring-backend=test
 RECOVERY=$(sekaid keys show -a recovery --keyring-backend=test)
 
+# commmand to create an account
+sekaid keys add controller --keyring-backend=test
+CONTROLLER=$(sekaid keys show -a controller --keyring-backend=test)
+
 # commands to query
 sekaid query recovery recovery-record $(sekaid keys show -a validator --keyring-backend=test)
 
 # command to register recovery secret
-sekaid tx recovery register-recovery-secret $CHALLENGE $NONCE $PROOF --from=validator --keyring-backend=test --chain-id=testing --fees=1000ukex -y --home=$HOME/.sekaid --broadcast-mode=block
+sekaid tx recovery register-recovery-secret $CHALLENGE $NONCE $PROOF $CONTROLLER --from=validator --keyring-backend=test --chain-id=testing --fees=1000ukex -y --home=$HOME/.sekaid --broadcast-mode=block
 
 # command to rotate
-sekaid tx recovery rotate-recovery-address $RECOVERY $PROOF --from=validator --chain-id=testing --keyring-backend=test --fees=1000ukex -y --home=$HOME/.sekaid --yes --broadcast-mode=block
+sekaid tx recovery rotate-recovery-address $RECOVERY $PROOF $(sekaid keys show -a validator --keyring-backend=test) --from=validator --chain-id=testing --keyring-backend=test --fees=1000ukex -y --home=$HOME/.sekaid --yes --broadcast-mode=block
 
 # command to check validators after rotation
 sekaid query customstaking validators --moniker="" --addr="" --val-addr="" --moniker="" --status="" --pubkey="" --proposer=""

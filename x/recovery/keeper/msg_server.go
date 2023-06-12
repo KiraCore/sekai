@@ -53,9 +53,10 @@ func (k msgServer) RegisterRecoverySecret(goCtx context.Context, msg *types.MsgR
 	}
 
 	k.Keeper.SetRecoveryRecord(ctx, types.RecoveryRecord{
-		Address:   msg.Address,
-		Challenge: msg.Challenge,
-		Nonce:     msg.Nonce,
+		Address:        msg.Address,
+		Challenge:      msg.Challenge,
+		Nonce:          msg.Nonce,
+		NextController: msg.NextAddress,
 	})
 
 	ctx.EventManager().EmitEvent(
@@ -239,6 +240,13 @@ func (k msgServer) RotateValidatorByHalfRRTokenHolder(goCtx context.Context, msg
 // allow ANY KIRA address that knows the recovery secret or has a sufficient number of RR tokens to rotate the address
 func (k msgServer) RotateRecoveryAddress(goCtx context.Context, msg *types.MsgRotateRecoveryAddress) (*types.MsgRotateRecoveryAddressResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+	controller := msg.Address
+
+	if msg.TargetAddress != "" {
+		msg.Address = msg.TargetAddress
+	} else {
+		return nil, types.ErrWrongTargetAddr
+	}
 
 	// check if validator recovery token exists
 	_, err := k.GetRecoveryToken(ctx, msg.Address)
@@ -256,6 +264,10 @@ func (k msgServer) RotateRecoveryAddress(goCtx context.Context, msg *types.MsgRo
 	record, err := k.Keeper.GetRecoveryRecord(ctx, msg.Address)
 	if err != nil {
 		return nil, err
+	}
+
+	if record.NextController != controller {
+		return nil, types.ErrWrongControllerAddr
 	}
 
 	bz, err := hex.DecodeString(msg.Proof)

@@ -17,4 +17,6 @@ var (
 	ErrAddressHasValidatorRecoveryToken       = sdkerrors.Register(ModuleName, 10, "address already has validator recovery token")
 	ErrNotEnoughRRTokenAmountForRotation      = sdkerrors.Register(ModuleName, 11, "not enough rr token amount for rotation")
 	ErrTargetAddressAlreadyHasRotationHistory = sdkerrors.Register(ModuleName, 12, "target address already has rotation history")
+	ErrWrongTargetAddr                        = sdkerrors.Register(ModuleName, 13, "wrong target address")
+	ErrWrongControllerAddr                    = sdkerrors.Register(ModuleName, 14, "wrong controller address")
 )

@@ -12,6 +12,7 @@ message RecoveryRecord {
   string address = 1; // address registering recovery challenge
   string challenge = 2; // recovery challenge S_H2, if the same S_H2 already exists then fail tx
   string nonce = 3;     // nonce must be a valid nonce
+  string next_controller = 4;
 }
 
 message RecoveryToken {
