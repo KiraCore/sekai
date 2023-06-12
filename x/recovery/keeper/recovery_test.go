@@ -9,16 +9,19 @@ import (
 func (suite *KeeperTestSuite) TestRecoveryRecordSetGetDelete() {
 	addr1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 	addr2 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	addr3 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 	records := []types.RecoveryRecord{
 		{
-			Address:   addr1.String(),
-			Challenge: "12345678",
-			Nonce:     "001100110022",
+			Address:        addr1.String(),
+			Challenge:      "12345678",
+			Nonce:          "001100110022",
+			NextController: addr3.String(),
 		},
 		{
-			Address:   addr2.String(),
-			Challenge: "87654321",
-			Nonce:     "001100110022",
+			Address:        addr2.String(),
+			Challenge:      "87654321",
+			Nonce:          "001100110022",
+			NextController: addr3.String(),
 		},
 	}
 

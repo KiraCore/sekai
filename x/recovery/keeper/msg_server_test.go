@@ -26,11 +26,12 @@ func init() {
 
 func (suite *KeeperTestSuite) TestRegisterRecoverySecret() {
 	addr1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+	addr2 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
 	// create recovery record
 	msgServer := keeper.NewMsgServerImpl(suite.app.RecoveryKeeper)
 	msg := types.NewMsgRegisterRecoverySecret(
-		addr1.String(), "123456", "111111", "",
+		addr1.String(), "123456", "111111", "", addr2.String(),
 	)
 
 	_, err := msgServer.RegisterRecoverySecret(sdk.WrapSDKContext(suite.ctx), msg)
@@ -40,9 +41,10 @@ func (suite *KeeperTestSuite) TestRegisterRecoverySecret() {
 	record, err := suite.app.RecoveryKeeper.GetRecoveryRecord(suite.ctx, addr1.String())
 	suite.Require().NoError(err)
 	suite.Require().Equal(record, types.RecoveryRecord{
-		Address:   addr1.String(),
-		Challenge: "123456",
-		Nonce:     "111111",
+		Address:        addr1.String(),
+		Challenge:      "123456",
+		Nonce:          "111111",
+		NextController: addr2.String(),
 	})
 
 	// try another execution without proof
@@ -53,8 +55,10 @@ func (suite *KeeperTestSuite) TestRegisterRecoverySecret() {
 func (suite *KeeperTestSuite) TestRotateRecoveryAddress() {
 	pubkey1 := secp256k1.GenPrivKey().PubKey()
 	pubkey2 := secp256k1.GenPrivKey().PubKey()
+	pubkey3 := secp256k1.GenPrivKey().PubKey()
 	addr1 := sdk.AccAddress(pubkey1.Address())
 	addr2 := sdk.AccAddress(pubkey2.Address())
+	addr3 := sdk.AccAddress(pubkey3.Address())
 
 	acc1 := authtypes.NewBaseAccount(addr1, pubkey1, 0, 0)
 	suite.app.AccountKeeper.SetAccount(suite.ctx, acc1)
@@ -122,14 +126,15 @@ func (suite *KeeperTestSuite) TestRotateRecoveryAddress() {
 	challenge := sha256.Sum256(proof[:])
 
 	suite.app.RecoveryKeeper.SetRecoveryRecord(suite.ctx, types.RecoveryRecord{
-		Address:   addr1.String(),
-		Challenge: hex.EncodeToString(challenge[:]),
-		Nonce:     "111111",
+		Address:        addr1.String(),
+		Challenge:      hex.EncodeToString(challenge[:]),
+		Nonce:          "111111",
+		NextController: addr3.String(),
 	})
 
 	// invalid proof
 	msg := types.NewMsgRotateRecoveryAddress(
-		addr1.String(), addr1.String(), addr2.String(), "",
+		addr3.String(), addr3.String(), addr2.String(), "", addr1.String(),
 	)
 
 	msgServer := keeper.NewMsgServerImpl(suite.app.RecoveryKeeper)
