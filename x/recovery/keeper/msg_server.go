@@ -240,16 +240,13 @@ func (k msgServer) RotateValidatorByHalfRRTokenHolder(goCtx context.Context, msg
 // allow ANY KIRA address that knows the recovery secret or has a sufficient number of RR tokens to rotate the address
 func (k msgServer) RotateRecoveryAddress(goCtx context.Context, msg *types.MsgRotateRecoveryAddress) (*types.MsgRotateRecoveryAddressResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	controller := msg.Address
 
-	if msg.TargetAddress != "" {
-		msg.Address = msg.TargetAddress
-	} else {
+	if msg.TargetAddress == "" {
 		return nil, types.ErrWrongTargetAddr
 	}
 
 	// check if validator recovery token exists
-	_, err := k.GetRecoveryToken(ctx, msg.Address)
+	_, err := k.GetRecoveryToken(ctx, msg.TargetAddress)
 	if err == nil {
 		return nil, types.ErrAddressHasValidatorRecoveryToken
 	}
@@ -261,12 +258,12 @@ func (k msgServer) RotateRecoveryAddress(goCtx context.Context, msg *types.MsgRo
 		return nil, err
 	}
 
-	record, err := k.Keeper.GetRecoveryRecord(ctx, msg.Address)
+	record, err := k.Keeper.GetRecoveryRecord(ctx, msg.TargetAddress)
 	if err != nil {
 		return nil, err
 	}
 
-	if record.NextController != controller {
+	if record.NextController != msg.Address {
 		return nil, types.ErrWrongControllerAddr
 	}
 
@@ -279,7 +276,7 @@ func (k msgServer) RotateRecoveryAddress(goCtx context.Context, msg *types.MsgRo
 		return nil, types.ErrInvalidProof
 	}
 
-	addr := sdk.MustAccAddressFromBech32(msg.Address)
+	addr := sdk.MustAccAddressFromBech32(msg.TargetAddress)
 	rotatedAddr := sdk.MustAccAddressFromBech32(msg.Recovery)
 
 	rotation := k.GetRotationHistory(ctx, msg.Recovery)
@@ -289,7 +286,7 @@ func (k msgServer) RotateRecoveryAddress(goCtx context.Context, msg *types.MsgRo
 
 	// set rotation history
 	k.SetRotationHistory(ctx, types.Rotation{
-		Address: msg.Address,
+		Address: msg.TargetAddress,
 		Rotated: msg.Recovery,
 	})
 
@@ -315,7 +312,7 @@ func (k msgServer) RotateRecoveryAddress(goCtx context.Context, msg *types.MsgRo
 	// - collectives module
 	contributers := k.ck.GetAllCollectiveContributers(ctx)
 	for _, cc := range contributers {
-		if cc.Address == msg.Address {
+		if cc.Address == msg.TargetAddress {
 			k.ck.DeleteCollectiveContributer(ctx, cc.Name, cc.Address)
 			cc.Address = msg.Recovery
 			k.ck.SetCollectiveContributer(ctx, cc)
@@ -406,7 +403,7 @@ func (k msgServer) RotateRecoveryAddress(goCtx context.Context, msg *types.MsgRo
 	}
 
 	// - multistaking
-	info := k.msk.GetCompoundInfoByAddress(ctx, msg.Address)
+	info := k.msk.GetCompoundInfoByAddress(ctx, msg.TargetAddress)
 	k.msk.RemoveCompoundInfo(ctx, info)
 	info.Delegator = msg.Recovery
 	k.msk.SetCompoundInfo(ctx, info)
@@ -519,7 +516,7 @@ func (k msgServer) RotateRecoveryAddress(goCtx context.Context, msg *types.MsgRo
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
-			sdk.NewAttribute(sdk.AttributeKeySender, msg.Address),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.TargetAddress),
 		),
 	)
 

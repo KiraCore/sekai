@@ -134,7 +134,7 @@ func (suite *KeeperTestSuite) TestRotateRecoveryAddress() {
 
 	// invalid proof
 	msg := types.NewMsgRotateRecoveryAddress(
-		addr3.String(), addr3.String(), addr2.String(), "", addr1.String(),
+		addr1.String(), addr3.String(), addr2.String(), "", addr1.String(),
 	)
 
 	msgServer := keeper.NewMsgServerImpl(suite.app.RecoveryKeeper)
