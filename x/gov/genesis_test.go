@@ -388,6 +388,7 @@ func TestExportInitGenesis(t *testing.T) {
 			DappPoolSlippageDefault:         sdk.NewDecWithPrec(1, 1), // 10%
 			MintingFtFee:                    100_000_000_000_000,
 			MintingNftFee:                   100_000_000_000_000,
+			VetoThreshold:                   sdk.NewDecWithPrec(3340, 3), // 33.40%
 		},
 		ExecutionFees: []types.ExecutionFee{
 			{
