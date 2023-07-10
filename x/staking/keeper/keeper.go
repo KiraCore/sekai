@@ -3,6 +3,7 @@ package keeper
 import (
 	"fmt"
 
+	appparams "github.com/KiraCore/sekai/app/params"
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -24,7 +25,7 @@ func NewKeeper(storeKey sdk.StoreKey, cdc *codec.LegacyAmino, govkeeper types.Go
 
 // BondDenom returns the denom that is basically used for fee payment
 func (k Keeper) BondDenom(ctx sdk.Context) string {
-	return "ukex"
+	return appparams.BondDenom
 }
 
 // Set the validator hooks

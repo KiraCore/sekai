@@ -14,28 +14,30 @@ import "kira/gov/identity_registrar.proto";
 option go_package = "github.com/KiraCore/sekai/x/gov/types";
 
 message GenesisState {
+  string bond_denom = 1;
+  string bech32_prefix = 2;
   // starting_proposal_id is the ID of the starting proposal.
-  uint64 starting_proposal_id = 1;
-  uint64 next_role_id = 2;
-  repeated Role roles = 3 [ (gogoproto.nullable) = false ];
+  uint64 starting_proposal_id = 3;
+  uint64 next_role_id = 4;
+  repeated Role roles = 5 [ (gogoproto.nullable) = false ];
   // role_permissions is the roles that are active from genesis.
-  map<uint64, Permissions> role_permissions = 4;
+  map<uint64, Permissions> role_permissions = 6;
   // NetworkActors are the actors that are saved from genesis.
-  repeated NetworkActor network_actors = 5;
+  repeated NetworkActor network_actors = 7;
 
-  NetworkProperties network_properties = 6;
-  repeated ExecutionFee execution_fees = 7 [ (gogoproto.nullable) = false ];
-  AllowedMessages poor_network_messages = 8; 
+  NetworkProperties network_properties = 8;
+  repeated ExecutionFee execution_fees = 9 [ (gogoproto.nullable) = false ];
+  AllowedMessages poor_network_messages = 10; 
 
-  repeated Proposal proposals = 9 [ (gogoproto.nullable) = false ];
-  repeated Vote votes = 10 [ (gogoproto.nullable) = false ];
-  map<string, kira.gov.DataRegistryEntry> data_registry = 11;
+  repeated Proposal proposals = 11 [ (gogoproto.nullable) = false ];
+  repeated Vote votes = 12 [ (gogoproto.nullable) = false ];
+  map<string, kira.gov.DataRegistryEntry> data_registry = 13;
 
-  repeated kira.gov.IdentityRecord identity_records = 12 [ (gogoproto.nullable) = false ];
-  uint64 last_identity_record_id = 13;
+  repeated kira.gov.IdentityRecord identity_records = 14 [ (gogoproto.nullable) = false ];
+  uint64 last_identity_record_id = 15;
 
-  repeated kira.gov.IdentityRecordsVerify id_records_verify_requests = 14 [ (gogoproto.nullable) = false ];
-  uint64 last_id_record_verify_request_id = 15;
+  repeated kira.gov.IdentityRecordsVerify id_records_verify_requests = 16 [ (gogoproto.nullable) = false ];
+  uint64 last_id_record_verify_request_id = 17;
 
-  map<string, uint64> proposal_durations = 16;
+  map<string, uint64> proposal_durations = 18;
 }

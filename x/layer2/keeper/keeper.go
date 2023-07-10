@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	appparams "github.com/KiraCore/sekai/app/params"
 	govkeeper "github.com/KiraCore/sekai/x/gov/keeper"
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/layer2/types"
@@ -30,7 +31,7 @@ func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryCodec, bk types.BankKeeper
 
 // BondDenom returns the denom that is basically used for fee payment
 func (k Keeper) BondDenom(ctx sdk.Context) string {
-	return "ukex"
+	return appparams.BondDenom
 }
 
 func (k Keeper) CheckIfAllowedPermission(ctx sdk.Context, addr sdk.AccAddress, permValue govtypes.PermValue) bool {

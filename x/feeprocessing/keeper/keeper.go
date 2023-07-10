@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 
+	appparams "github.com/KiraCore/sekai/app/params"
 	kiratypes "github.com/KiraCore/sekai/types"
 	"github.com/KiraCore/sekai/x/feeprocessing/types"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -34,7 +35,7 @@ func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryCodec, bk types.BankKeeper
 
 // BondDenom returns the denom that is basically used for fee payment
 func (k Keeper) BondDenom(ctx sdk.Context) string {
-	return "ukex"
+	return appparams.BondDenom
 }
 
 // GetSenderCoinsHistory returns fee payment history of an address

@@ -3,6 +3,7 @@ package types
 import (
 	"errors"
 
+	appparams "github.com/KiraCore/sekai/app/params"
 	"github.com/KiraCore/sekai/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -46,7 +47,7 @@ func (m *MsgUpsertTokenRate) Type() string {
 
 // ValidateBasic returns basic validation result
 func (m *MsgUpsertTokenRate) ValidateBasic() error {
-	if m.Denom == "ukex" {
+	if m.Denom == appparams.BondDenom {
 		return errors.New("bond denom rate is read-only")
 	}
 

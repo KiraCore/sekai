@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/KiraCore/sekai/app"
+	appparams "github.com/KiraCore/sekai/app/params"
 	"github.com/KiraCore/sekai/x/genutil"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -43,9 +44,6 @@ import (
 	dbm "github.com/tendermint/tm-db"
 	"google.golang.org/grpc"
 )
-
-// DefaultBondDenom defines default denom for fee
-var DefaultBondDenom = "ukex"
 
 // package-wide network lock to only allow one test network at a time
 var lock = new(sync.Mutex)
@@ -108,8 +106,8 @@ func DefaultConfig() Config {
 		TimeoutCommit:     2 * time.Second,
 		ChainID:           "chain-" + tmrand.NewRand().Str(6),
 		NumValidators:     4,
-		BondDenom:         DefaultBondDenom,
-		MinGasPrices:      fmt.Sprintf("0.000006%s", DefaultBondDenom),
+		BondDenom:         appparams.BondDenom,
+		MinGasPrices:      fmt.Sprintf("0.000006%s", appparams.BondDenom),
 		AccountTokens:     sdk.TokensFromConsensusPower(1000, sdk.DefaultPowerReduction),
 		StakingTokens:     sdk.TokensFromConsensusPower(500, sdk.DefaultPowerReduction),
 		BondedTokens:      sdk.TokensFromConsensusPower(100, sdk.DefaultPowerReduction),
