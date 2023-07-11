@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	appparams "github.com/KiraCore/sekai/app/params"
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/tokens/types"
 	"github.com/cosmos/cosmos-sdk/client"

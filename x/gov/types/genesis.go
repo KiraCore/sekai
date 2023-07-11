@@ -1,8 +1,12 @@
 package types
 
 import (
+	"encoding/json"
+
 	kiratypes "github.com/KiraCore/sekai/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/cosmos/cosmos-sdk/codec"
 )
 
 // DefaultGenesis returns the default CustomGo genesis state
@@ -253,4 +257,16 @@ func DefaultGenesis() *GenesisState {
 		LastIdentityRecordId:        0,
 		LastIdRecordVerifyRequestId: 0,
 	}
+}
+
+// GetGenesisStateFromAppState returns x/auth GenesisState given raw application
+// genesis state.
+func GetGenesisStateFromAppState(cdc codec.Codec, appState map[string]json.RawMessage) GenesisState {
+	var genesisState GenesisState
+
+	if appState[ModuleName] != nil {
+		cdc.MustUnmarshalJSON(appState[ModuleName], &genesisState)
+	}
+
+	return genesisState
 }
