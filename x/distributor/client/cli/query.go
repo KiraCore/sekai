@@ -19,7 +19,6 @@ func NewQueryCmd() *cobra.Command {
 	}
 	queryCmd.AddCommand(
 		GetCmdQueryFeesTreasury(),
-		GetCmdQueryFeesCollected(),
 		GetCmdSnapshotPeriod(),
 		GetCmdValidatorSnapshotPerformance(),
 		GetCmdYearStartSnapshot(),
@@ -38,29 +37,6 @@ func GetCmdQueryFeesTreasury() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 			res, err := queryClient.FeesTreasury(context.Background(), &types.QueryFeesTreasuryRequest{})
-			if err != nil {
-				return err
-			}
-
-			return clientCtx.PrintProto(res)
-		},
-	}
-
-	flags.AddQueryFlagsToCmd(cmd)
-
-	return cmd
-}
-
-func GetCmdQueryFeesCollected() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "fees-collected",
-		Short: "Get fees collected",
-		Args:  cobra.MinimumNArgs(0),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-
-			queryClient := types.NewQueryClient(clientCtx)
-			res, err := queryClient.FeesCollected(context.Background(), &types.QueryFeesCollectedRequest{})
 			if err != nil {
 				return err
 			}

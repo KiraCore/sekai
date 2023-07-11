@@ -3,7 +3,7 @@
 sekaid query bank balances $(sekaid keys show -a validator --keyring-backend=test)
 sekaid query customstaking validator --addr=$(sekaid keys show -a validator --keyring-backend=test)
 sekaid query multistaking pools
-sekaid query multistaking undelegations
+sekaid query multistaking undelegations "" ""
 sekaid query multistaking outstanding-rewards $(sekaid keys show -a validator --keyring-backend=test)
 sekaid query multistaking compound-info $(sekaid keys show -a validator --keyring-backend=test)
 

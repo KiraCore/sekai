@@ -213,12 +213,11 @@ func (m *MsgBasketTokenBurn) GetSigners() []sdk.AccAddress {
 var _ sdk.Msg = &MsgBasketTokenSwap{}
 
 // NewMsgBasketTokenSwap returns an instance of MsgBasketTokenSwap
-func NewMsgBasketTokenSwap(proposer sdk.AccAddress, basketId uint64, inAmount sdk.Coin, outToken string) *MsgBasketTokenSwap {
+func NewMsgBasketTokenSwap(proposer sdk.AccAddress, basketId uint64, pairs []SwapPair) *MsgBasketTokenSwap {
 	return &MsgBasketTokenSwap{
 		Sender:   proposer.String(),
 		BasketId: basketId,
-		InAmount: inAmount,
-		OutToken: outToken,
+		Pairs:    pairs,
 	}
 }
 
