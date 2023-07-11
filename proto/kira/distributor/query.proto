@@ -16,10 +16,6 @@ service Query {
     option (google.api.http).get =
         "/kira/distributor/v1beta1/fees_treasury";
   }
-  // FeesCollected queries fees collected from genesis
-  rpc FeesCollected(QueryFeesCollectedRequest) returns (QueryFeesCollectedResponse) {
-    option (google.api.http).get = "/kira/distributor/v1beta1/fees_collected";
-  }
   // SnapshotPeriod queries number of blocks considered for reward calculation
   rpc SnapshotPeriod(QuerySnapshotPeriodRequest) returns (QuerySnapshotPeriodResponse) {
     option (google.api.http).get = "/kira/distributor/v1beta1/snapshot_period";
@@ -38,15 +34,6 @@ message QueryFeesTreasuryRequest {
 }
 
 message QueryFeesTreasuryResponse {
-  repeated string coins = 1 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
-    (gogoproto.nullable) = false
-  ];
-}
-
-message QueryFeesCollectedRequest {}
-
-message QueryFeesCollectedResponse {
   repeated string coins = 1 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
     (gogoproto.nullable) = false

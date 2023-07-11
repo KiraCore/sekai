@@ -79,15 +79,19 @@ message MsgBasketTokenBurn {
 }
 message MsgBasketTokenBurnResponse {}
 
+message SwapPair {
+  string in_amount = 1 [
+    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
+    (gogoproto.nullable) = false
+  ];
+  string out_token = 2;
+}
+
 // - `basket-token-swap` - transaction to swap one or many of the basket tokens for one or many others
 message MsgBasketTokenSwap {
   string sender = 1;
   uint64 basket_id = 2;
-  string in_amount = 3 [
-    (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
-    (gogoproto.nullable) = false
-  ];
-  string out_token = 4;
+  repeated SwapPair pairs = 3 [ (gogoproto.nullable) = false ];
 }
 message MsgBasketTokenSwapResponse {}
 

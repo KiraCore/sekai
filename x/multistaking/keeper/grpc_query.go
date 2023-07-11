@@ -40,9 +40,20 @@ func (q Querier) OutstandingRewards(c context.Context, request *types.QueryOutst
 
 func (q Querier) Undelegations(c context.Context, request *types.QueryUndelegationsRequest) (*types.QueryUndelegationsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
+	allUndelegations := q.keeper.GetAllUndelegations(ctx)
+	undelegations := []types.Undelegation{}
+	for _, del := range allUndelegations {
+		if request.Delegator != "" && del.Address != request.Delegator {
+			continue
+		}
+		if request.ValAddress != "" && del.ValAddress != request.ValAddress {
+			continue
+		}
+		undelegations = append(undelegations, del)
+	}
 
 	return &types.QueryUndelegationsResponse{
-		Undelegations: q.keeper.GetAllUndelegations(ctx),
+		Undelegations: undelegations,
 	}, nil
 }
 

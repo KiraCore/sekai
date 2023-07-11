@@ -25,14 +25,6 @@ func (q Querier) FeesTreasury(c context.Context, request *types.QueryFeesTreasur
 	}, nil
 }
 
-func (q Querier) FeesCollected(c context.Context, request *types.QueryFeesCollectedRequest) (*types.QueryFeesCollectedResponse, error) {
-	ctx := sdk.UnwrapSDKContext(c)
-
-	return &types.QueryFeesCollectedResponse{
-		Coins: q.keeper.GetFeesCollected(ctx),
-	}, nil
-}
-
 func (q Querier) SnapshotPeriod(c context.Context, request *types.QuerySnapshotPeriodRequest) (*types.QuerySnapshotPeriodResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 

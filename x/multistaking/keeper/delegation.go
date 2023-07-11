@@ -369,10 +369,11 @@ func (k Keeper) Undelegate(ctx sdk.Context, msg *types.MsgUndelegate) error {
 	k.SetLastUndelegationId(ctx, lastUndelegationId)
 	properties := k.govKeeper.GetNetworkProperties(ctx)
 	k.SetUndelegation(ctx, types.Undelegation{
-		Id:      lastUndelegationId,
-		Address: msg.DelegatorAddress,
-		Expiry:  uint64(ctx.BlockTime().Unix()) + properties.UnstakingPeriod,
-		Amount:  msg.Amounts,
+		Id:         lastUndelegationId,
+		Address:    msg.DelegatorAddress,
+		ValAddress: msg.ValidatorAddress,
+		Expiry:     uint64(ctx.BlockTime().Unix()) + properties.UnstakingPeriod,
+		Amount:     msg.Amounts,
 	})
 
 	balances := k.bankKeeper.GetAllBalances(ctx, delegator)
