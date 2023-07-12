@@ -37,8 +37,9 @@ message StakingPool {
 message Undelegation {
   uint64 id = 1;
   string address = 2;
-  uint64 expiry = 3;
-  repeated string amount = 4 [
+  string val_address =3;
+  uint64 expiry = 4;
+  repeated string amount = 5 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Coin",
     (gogoproto.nullable) = false
   ];

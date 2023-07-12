@@ -45,7 +45,7 @@ func NewTxCmd() *cobra.Command {
 
 func GetTxUpsertStakingPool() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "upsert-staking-pool [validator]",
+		Use:   "upsert-staking-pool [validator-key]",
 		Short: "Submit a transaction to upsert staking pool.",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -61,13 +61,16 @@ func GetTxUpsertStakingPool() *cobra.Command {
 
 			commissionStr, err := cmd.Flags().GetString(FlagCommission)
 			if err != nil {
-				return err
+				return fmt.Errorf("failed to parse commission: %s", err.Error())
 			}
 			commission, err := sdk.NewDecFromStr(commissionStr)
 			if err != nil {
 				return err
 			}
 			msg := types.NewMsgUpsertStakingPool(clientCtx.FromAddress.String(), args[0], enabled, commission)
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
@@ -76,7 +79,8 @@ func GetTxUpsertStakingPool() *cobra.Command {
 	flags.AddTxFlagsToCmd(cmd)
 
 	cmd.Flags().Bool(FlagEnabled, true, "enabled flag for the pool")
-	cmd.Flags().String(FlagCommission, "", "the commission rate")
+	cmd.Flags().String(FlagCommission, "", "the commission rate ranged from 0.01 to 0.5.(1%% to 50%%)")
+	cmd.MarkFlagRequired(FlagCommission)
 	cmd.MarkFlagRequired(flags.FlagFrom)
 
 	return cmd

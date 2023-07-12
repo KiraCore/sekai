@@ -2,6 +2,8 @@ package types
 
 import (
 	"fmt"
+	"strconv"
+	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -59,6 +61,27 @@ func (b Basket) DenomExists(checkTokens []string) bool {
 		}
 	}
 	return false
+}
+
+func (b Basket) DerivativeBasket() bool {
+	for _, token := range b.Tokens {
+		// all the tokens should start with `v%d/` to be a staking derivative basket
+		split := strings.Split(token.Denom, "/")
+		if len(split) == 1 {
+			return false
+		}
+		if len(split[0]) < 2 {
+			return false
+		}
+		if !strings.HasPrefix(split[0], "v") {
+			return false
+		}
+		_, err := strconv.Atoi(split[0][1:])
+		if err != nil {
+			return false
+		}
+	}
+	return true
 }
 
 func (b Basket) ValidateTokensCap() error {

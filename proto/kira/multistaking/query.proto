@@ -45,7 +45,10 @@ message QueryOutstandingRewardsResponse {
   ];
 }
 
-message QueryUndelegationsRequest {}
+message QueryUndelegationsRequest {
+  string delegator = 1;
+  string val_address = 2;
+}
 
 message QueryUndelegationsResponse {
   repeated kira.multistaking.Undelegation undelegations = 1 [(gogoproto.nullable) = false];

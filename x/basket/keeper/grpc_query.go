@@ -50,6 +50,9 @@ func (q Querier) TokenBaskets(c context.Context, request *types.QueryTokenBasket
 		filtered := []types.Basket{}
 		for _, basket := range baskets {
 			if basket.DenomExists(request.Tokens) {
+				if request.DerivativesOnly && !basket.DerivativeBasket() {
+					continue
+				}
 				filtered = append(filtered, basket)
 			}
 		}

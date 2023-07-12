@@ -280,7 +280,7 @@ func GetTxBasketTokenBurnCmd() *cobra.Command {
 // GetTxBasketTokenSwapCmd implement cli command for MsgBasketTokenSwap
 func GetTxBasketTokenSwapCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "swap-basket-tokens [basket_id] [in_amount] [out_token]",
+		Use:   "swap-basket-tokens [basket_id] [in_amount1] [out_token1] [in_amount2] [out_token2] ...",
 		Short: "swap one or many of the basket tokens for one or many others",
 		Args:  cobra.MinimumNArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -291,18 +291,26 @@ func GetTxBasketTokenSwapCmd() *cobra.Command {
 				return err
 			}
 
-			coin, err := sdk.ParseCoinNormalized(args[1])
-			if err != nil {
-				return err
+			pairs := []types.SwapPair{}
+			for i := 1; i < len(args); i += 2 {
+				coin, err := sdk.ParseCoinNormalized(args[i])
+				if err != nil {
+					return err
+				}
+				if i+1 == len(args) {
+					return fmt.Errorf("out token not set for %s", args[i])
+				}
+				pairs = append(pairs, types.SwapPair{
+					InAmount: coin,
+					OutToken: args[i+1],
+				})
 			}
 
 			msg := types.NewMsgBasketTokenSwap(
 				clientCtx.FromAddress,
 				uint64(basketId),
-				coin,
-				args[2],
+				pairs,
 			)
-
 			err = msg.ValidateBasic()
 			if err != nil {
 				return err
