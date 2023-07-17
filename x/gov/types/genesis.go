@@ -270,3 +270,12 @@ func GetGenesisStateFromAppState(cdc codec.Codec, appState map[string]json.RawMe
 
 	return genesisState
 }
+
+func GetBech32PrefixAndBondDenomFromAppState(appState map[string]json.RawMessage) (string, string) {
+	var genesisState map[string]interface{}
+	err := json.Unmarshal(appState[ModuleName], &genesisState)
+	if err != nil {
+		panic(err)
+	}
+	return genesisState["bech32_prefix"].(string), genesisState["bond_denom"].(string)
+}

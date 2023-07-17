@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 
 	"github.com/KiraCore/sekai/app"
+	appparams "github.com/KiraCore/sekai/app/params"
 	functionmeta "github.com/KiraCore/sekai/function_meta"
 	genutilcli "github.com/KiraCore/sekai/x/genutil/client/cli"
 	genutiltypes "github.com/KiraCore/sekai/x/genutil/types"
@@ -88,16 +89,18 @@ func NewRootCmd() (*cobra.Command, params.EncodingConfig) {
 				config.SetRoot(clientCtx.HomeDir)
 
 				appState, _, err := genutiltypes.GenesisStateFromGenFile(config.GenesisFile())
-				if err != nil {
-					fmt.Println("error", err)
-				} else {
-					govGenState := govtypes.GetGenesisStateFromAppState(clientCtx.Codec, appState)
-					fmt.Println("govGenState.Bech32Prefix", govGenState.Bech32Prefix)
-					fmt.Println("govGenState.BondDenom", govGenState.BondDenom)
-					fmt.Println("govGenState.Roles", govGenState.Roles)
+				if err == nil {
+					bech32Prefix, bondDenom := govtypes.GetBech32PrefixAndBondDenomFromAppState(appState)
+					appparams.BondDenom = bondDenom
+					appparams.AccountAddressPrefix = bech32Prefix
+					appparams.AccountPubKeyPrefix = bech32Prefix + "pub"
+					appparams.ValidatorAddressPrefix = bech32Prefix + "valoper"
+					appparams.ValidatorPubKeyPrefix = bech32Prefix + "valoperpub"
+					appparams.ConsNodeAddressPrefix = bech32Prefix + "valcons"
+					appparams.ConsNodePubKeyPrefix = bech32Prefix + "valconspub"
 				}
 
-				app.SetConfig()
+				appparams.SetConfig()
 				cfg := sdk.GetConfig()
 				cfg.Seal()
 			}
