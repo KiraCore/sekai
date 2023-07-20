@@ -722,8 +722,12 @@ func (suite *KeeperTestSuite) TestBasketSwap() {
 			err = suite.app.BasketKeeper.BasketSwap(suite.ctx, &types.MsgBasketTokenSwap{
 				Sender:   addr2.String(),
 				BasketId: tc.basketId,
-				InAmount: tc.swapBalance,
-				OutToken: "ueth",
+				Pairs: []types.SwapPair{
+					{
+						InAmount: tc.swapBalance,
+						OutToken: "ueth",
+					},
+				},
 			})
 
 			if tc.expectErr {

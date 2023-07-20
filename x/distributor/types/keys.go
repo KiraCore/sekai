@@ -7,7 +7,6 @@ var (
 	RouterKey    = ModuleName
 	QuerierRoute = ModuleName
 
-	FeesCollectedKey       = []byte("fees_collected")
 	FeesTreasuryKey        = []byte("fees_treasury")
 	SnapPeriodKey          = []byte("snap_period")
 	ProposerKey            = []byte("proposer_key")

@@ -1,6 +1,8 @@
 package types
 
 import (
+	"fmt"
+
 	"github.com/KiraCore/sekai/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -28,6 +30,12 @@ func (m *MsgUpsertStakingPool) Type() string {
 }
 
 func (m *MsgUpsertStakingPool) ValidateBasic() error {
+	if m.Commission.LT(sdk.NewDecWithPrec(1, 2)) { // 1%
+		return fmt.Errorf("commission should not be less than 1%%")
+	}
+	if m.Commission.GT(sdk.NewDecWithPrec(5, 1)) { // 50%
+		return fmt.Errorf("commission should not be more than 50%%")
+	}
 	return nil
 }
 

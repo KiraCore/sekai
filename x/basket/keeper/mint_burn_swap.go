@@ -181,87 +181,95 @@ func (k Keeper) BasketSwap(ctx sdk.Context, msg *types.MsgBasketTokenSwap) error
 		return err
 	}
 
-	inCoins := sdk.Coins{msg.InAmount}
-	err = k.bk.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, inCoins)
-	if err != nil {
-		return err
-	}
-
-	rates, indexes := basket.RatesAndIndexes()
-
-	inRate, ok := rates[msg.InAmount.Denom]
-	if !ok {
-		return types.ErrInvalidBasketDepositDenom
-	}
-
-	outRate, ok := rates[msg.OutToken]
-	if !ok {
-		return types.ErrInvalidBasketWithdrawDenom
-	}
-
-	inTokenIndex := indexes[msg.InAmount.Denom]
-	if !basket.Tokens[inTokenIndex].Swaps {
-		return types.ErrSwapsDisabledForInToken
-	}
-
-	outTokenIndex := indexes[msg.OutToken]
-	if !basket.Tokens[outTokenIndex].Swaps {
-		return types.ErrSwapsDisabledForOutToken
-	}
-
-	swapValue := msg.InAmount.Amount.ToDec().Mul(inRate).RoundInt()
-	if swapValue.LT(basket.SwapsMin) {
-		return types.ErrAmountBelowBaksetSwapsMin
-	}
-
-	// register action and check swaps max
-	k.RegisterSwapAction(ctx, msg.BasketId, swapValue)
-	if k.GetLimitsPeriodSwapAmount(ctx, msg.BasketId, basket.LimitsPeriod).GT(basket.SwapsMax) {
-		return types.ErrAmountAboveBaksetSwapsMax
-	}
-
-	// calculate out amount considering fees and rates
-	swapAmount := msg.InAmount.Amount.ToDec().Mul(sdk.OneDec().Sub(basket.SwapFee)).RoundInt()
-
-	// pay network for fee
-	feeAmount := msg.InAmount.Amount.Sub(swapAmount)
-	if feeAmount.IsPositive() {
-		err := k.bk.SendCoinsFromModuleToModule(ctx, types.ModuleName, authtypes.FeeCollectorName, sdk.Coins{sdk.NewCoin(msg.InAmount.Denom, feeAmount)})
+	outAmounts := sdk.Coins{}
+	for _, pair := range msg.Pairs {
+		inCoins := sdk.Coins{pair.InAmount}
+		err = k.bk.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, inCoins)
 		if err != nil {
-			return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFunds, err.Error())
+			return err
 		}
-	}
 
-	outAmount := swapAmount.ToDec().Mul(inRate).Quo(outRate).RoundInt()
-	if outAmount.IsZero() {
-		return types.ErrNotAbleToWithdrawAnyTokens
-	}
+		rates, indexes := basket.RatesAndIndexes()
 
-	// increase in tokens
-	basket, err = basket.IncreaseBasketTokens(sdk.Coins{sdk.NewCoin(msg.InAmount.Denom, swapAmount)})
-	if err != nil {
-		return err
-	}
+		inRate, ok := rates[pair.InAmount.Denom]
+		if !ok {
+			return types.ErrInvalidBasketDepositDenom
+		}
 
-	outCoins := sdk.Coins{sdk.NewCoin(msg.OutToken, outAmount)}
-	// decrease out tokens
-	basket, err = basket.DecreaseBasketTokens(outCoins)
-	if err != nil {
-		return err
+		outRate, ok := rates[pair.OutToken]
+		if !ok {
+			return types.ErrInvalidBasketWithdrawDenom
+		}
+
+		inTokenIndex := indexes[pair.InAmount.Denom]
+		if !basket.Tokens[inTokenIndex].Swaps {
+			return types.ErrSwapsDisabledForInToken
+		}
+
+		outTokenIndex := indexes[pair.OutToken]
+		if !basket.Tokens[outTokenIndex].Swaps {
+			return types.ErrSwapsDisabledForOutToken
+		}
+
+		swapValue := pair.InAmount.Amount.ToDec().Mul(inRate).RoundInt()
+		if swapValue.LT(basket.SwapsMin) {
+			return types.ErrAmountBelowBaksetSwapsMin
+		}
+
+		// register action and check swaps max
+		k.RegisterSwapAction(ctx, msg.BasketId, swapValue)
+		if k.GetLimitsPeriodSwapAmount(ctx, msg.BasketId, basket.LimitsPeriod).GT(basket.SwapsMax) {
+			return types.ErrAmountAboveBaksetSwapsMax
+		}
+
+		// calculate out amount considering fees and rates
+		swapAmount := pair.InAmount.Amount.ToDec().Mul(sdk.OneDec().Sub(basket.SwapFee)).RoundInt()
+
+		// pay network for fee
+		feeAmount := pair.InAmount.Amount.Sub(swapAmount)
+		if feeAmount.IsPositive() {
+			err := k.bk.SendCoinsFromModuleToModule(ctx, types.ModuleName, authtypes.FeeCollectorName, sdk.Coins{sdk.NewCoin(pair.InAmount.Denom, feeAmount)})
+			if err != nil {
+				return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFunds, err.Error())
+			}
+		}
+
+		outAmount := swapAmount.ToDec().Mul(inRate).Quo(outRate).RoundInt()
+		if outAmount.IsZero() {
+			return types.ErrNotAbleToWithdrawAnyTokens
+		}
+
+		// increase in tokens
+		basket, err = basket.IncreaseBasketTokens(sdk.Coins{sdk.NewCoin(pair.InAmount.Denom, swapAmount)})
+		if err != nil {
+			return err
+		}
+
+		outCoins := sdk.Coins{sdk.NewCoin(pair.OutToken, outAmount)}
+		// decrease out tokens
+		basket, err = basket.DecreaseBasketTokens(outCoins)
+		if err != nil {
+			return err
+		}
+
+		outAmounts = outAmounts.Add(outCoins...)
 	}
 
 	// calculate slippage fee
 	slippageFee := basket.SlippageFee(oldDisbalance)
-	finalOutAmount := outAmount.ToDec().Mul(sdk.OneDec().Sub(slippageFee)).RoundInt()
-	finalOutCoins := sdk.Coins{sdk.NewCoin(msg.OutToken, finalOutAmount)}
+	finalOutCoins := sdk.Coins{}
+	for _, coin := range outAmounts {
+		finalOutAmount := coin.Amount.ToDec().Mul(sdk.OneDec().Sub(slippageFee)).RoundInt()
+		finalOutCoins = finalOutCoins.Add(sdk.NewCoin(coin.Denom, finalOutAmount))
+	}
 	err = k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, finalOutCoins)
 	if err != nil {
 		return err
 	}
 
 	// increase surplus by slippage fee
-	slippageFeeAmount := outAmount.Sub(finalOutAmount)
-	basket.Surplus = sdk.Coins(basket.Surplus).Add(sdk.NewCoin(msg.OutToken, slippageFeeAmount))
+	slippageFeeAmounts := outAmounts.Sub(finalOutCoins)
+	basket.Surplus = sdk.Coins(basket.Surplus).Add(slippageFeeAmounts...)
 
 	err = basket.ValidateTokensCap()
 	if err != nil {
