@@ -33,6 +33,7 @@ func NewTxCmd() *cobra.Command {
 
 	txCmd.AddCommand(GetTxCreateCustody())
 	txCmd.AddCommand(GetTxDisableCustody())
+	txCmd.AddCommand(GetTxDropCustody())
 	txCmd.AddCommand(NewCustodiansTxCmd())
 	txCmd.AddCommand(NewWhiteListTxCmd())
 	txCmd.AddCommand(NewLimitsTxCmd())
@@ -644,10 +645,10 @@ func GetTxCreateCustody() *cobra.Command {
 	return cmd
 }
 
-func GetTxDisableCustody() *cobra.Command {
+func GetTxDropCustody() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "disable",
-		Short: "Disable custody settings",
+		Use:   "drop",
+		Short: "Drop custody settings",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -665,7 +666,7 @@ func GetTxDisableCustody() *cobra.Command {
 				return fmt.Errorf("invalid target address: %w", err)
 			}
 
-			msg := types.NewMsgDisableCustody(
+			msg := types.NewMsgDropCustody(
 				clientCtx.FromAddress,
 				oldKey,
 				targetAddr,
@@ -678,6 +679,64 @@ func GetTxDisableCustody() *cobra.Command {
 	cmd.Flags().String(OldKey, "", "Previous hash string.")
 	cmd.MarkFlagRequired(OldKey)
 
+	cmd.Flags().String(TargetAddress, "", "Target of the control request.")
+
+	flags.AddTxFlagsToCmd(cmd)
+	cmd.MarkFlagRequired(flags.FlagFrom)
+
+	return cmd
+}
+
+func GetTxDisableCustody() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "disable",
+		Short: "Disable custody settings",
+		Args:  cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			oldKey, err := cmd.Flags().GetString(OldKey)
+			if err != nil {
+				return fmt.Errorf("invalid old key: %w", err)
+			}
+
+			newKey, err := cmd.Flags().GetString(NewKey)
+			if err != nil {
+				return fmt.Errorf("invalid new key: %w", err)
+			}
+
+			nextAddr, err := cmd.Flags().GetString(NextAddress)
+			if err != nil {
+				return fmt.Errorf("invalid next address: %w", err)
+			}
+
+			targetAddr, err := cmd.Flags().GetString(TargetAddress)
+			if err != nil {
+				return fmt.Errorf("invalid target address: %w", err)
+			}
+
+			msg := types.NewMsgDisableCustody(
+				clientCtx.FromAddress,
+				oldKey,
+				newKey,
+				nextAddr,
+				targetAddr,
+			)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+		},
+	}
+
+	cmd.Flags().String(OldKey, "", "Previous hash string.")
+	cmd.MarkFlagRequired(OldKey)
+
+	cmd.Flags().String(NewKey, "", "Next hash string.")
+	cmd.MarkFlagRequired(NewKey)
+
+	cmd.Flags().String(NextAddress, "", "Next address to control the settings.")
 	cmd.Flags().String(TargetAddress, "", "Target of the control request.")
 
 	flags.AddTxFlagsToCmd(cmd)
