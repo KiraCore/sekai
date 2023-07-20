@@ -24,9 +24,9 @@ const (
 	MsgTypeSetNetworkProperties = "set-network-properties"
 	MsgTypeSetExecutionFee      = "set-execution-fee"
 
-	MsgTypeCreateRole = "create-role"
-	MsgTypeAssignRole = "assign-role"
-	MsgTypeRemoveRole = "remove-role"
+	MsgTypeCreateRole   = "create-role"
+	MsgTypeAssignRole   = "assign-role"
+	MsgTypeUnassignRole = "unassign-role"
 
 	MsgTypeWhitelistRolePermission       = "whitelist-role-permission"
 	MsgTypeBlacklistRolePermission       = "blacklist-role-permission"
@@ -165,7 +165,7 @@ var MsgFuncIDMapping = map[string]int64{
 	MsgTypeBlacklistPermissions:          24,
 	MsgTypeCreateRole:                    25,
 	MsgTypeAssignRole:                    26,
-	MsgTypeRemoveRole:                    27,
+	MsgTypeUnassignRole:                  27,
 	MsgTypeWhitelistRolePermission:       28,
 	MsgTypeBlacklistRolePermission:       29,
 	MsgTypeRemoveWhitelistRolePermission: 30,

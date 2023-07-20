@@ -304,10 +304,10 @@ func (k msgServer) CancelIdentityRecordsVerifyRequest(goCtx context.Context, msg
 	return &types.MsgCancelIdentityRecordsVerifyRequestResponse{}, err
 }
 
-func (k msgServer) RemoveRole(
+func (k msgServer) UnassignRole(
 	goCtx context.Context,
-	msg *types.MsgRemoveRole,
-) (*types.MsgRemoveRoleResponse, error) {
+	msg *types.MsgUnassignRole,
+) (*types.MsgUnassignRoleResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	isAllowed := CheckIfAllowedPermission(ctx, k.keeper, msg.Proposer, types.PermUpsertRole)
@@ -321,13 +321,13 @@ func (k msgServer) RemoveRole(
 	}
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
-			types.EventTypeRemoveRole,
+			types.EventTypeUnassignRole,
 			sdk.NewAttribute(types.AttributeKeyProposer, msg.Proposer.String()),
 			sdk.NewAttribute(types.AttributeKeyAddress, msg.Address.String()),
 			sdk.NewAttribute(types.AttributeKeyRoleId, fmt.Sprintf("%d", msg.RoleId)),
 		),
 	)
-	return &types.MsgRemoveRoleResponse{}, nil
+	return &types.MsgUnassignRoleResponse{}, nil
 }
 
 func (k msgServer) AssignRole(

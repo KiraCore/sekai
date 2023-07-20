@@ -81,7 +81,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 // 	cmd = cli.GetCmdQueryCouncilRegistry()
 
 // 	out, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
-// 		fmt.Sprintf("--%s=%s", cli.FlagAddress, val.Address.String()),
+// 		fmt.Sprintf("--%s=%s", cli.FlagAddr, val.Address.String()),
 // 	})
 // 	s.Require().NoError(err)
 

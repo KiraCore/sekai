@@ -24,7 +24,7 @@ message MsgAssignRole {
   uint32 roleId = 3;
 }
 
-message MsgRemoveRole {
+message MsgUnassignRole {
   bytes proposer = 1 [
     (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
   ];

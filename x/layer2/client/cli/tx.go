@@ -38,7 +38,7 @@ const (
 	FlagVoteQuorum         = "vote-quorum"
 	FlagVotePeriod         = "vote-period"
 	FlagVoteEnactment      = "vote-enactment"
-	FlagAddress            = "address"
+	FlagAddr               = "addr"
 	FlagAmount             = "amount"
 )
 

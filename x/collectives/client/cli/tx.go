@@ -36,7 +36,7 @@ const (
 	FlagLocking               = "locking"
 	FlagDonation              = "donation"
 	FlagDonationLock          = "donation-lock"
-	FlagAddress               = "address"
+	FlagAddr                  = "addr"
 	FlagAmounts               = "amounts"
 )
 
@@ -421,7 +421,7 @@ func GetTxProposalCollectiveSendDonationCmd() *cobra.Command {
 			if err != nil {
 				return fmt.Errorf("invalid name: %w", err)
 			}
-			address, err := cmd.Flags().GetString(FlagAddress)
+			address, err := cmd.Flags().GetString(FlagAddr)
 			if err != nil {
 				return fmt.Errorf("invalid address: %w", err)
 			}
@@ -456,7 +456,7 @@ func GetTxProposalCollectiveSendDonationCmd() *cobra.Command {
 	cmd.MarkFlagRequired(FlagDescription)
 
 	cmd.Flags().String(FlagCollectiveName, "", "the name of the collective.")
-	cmd.Flags().String(FlagAddress, "", "The address to receive from donation pool.")
+	cmd.Flags().String(FlagAddr, "", "The address to receive from donation pool.")
 	cmd.Flags().String(FlagAmounts, "", "The amounts to receive from donation pool.")
 
 	flags.AddTxFlagsToCmd(cmd)
