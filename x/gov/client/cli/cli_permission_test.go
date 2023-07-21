@@ -32,7 +32,7 @@ func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions() {
 			fmt.Sprintf("--%s=%s", cli.FlagPermission, "1"),
 			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-			fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
+			fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
 		},
 	)
 	s.Require().NoError(err)
@@ -78,7 +78,7 @@ func (s IntegrationTestSuite) TestGetTxSetBlacklistPermissions() {
 			fmt.Sprintf("--%s=%s", cli.FlagPermission, "1"),
 			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-			fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
+			fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
 		},
 	)
 	s.Require().NoError(err)
@@ -112,7 +112,7 @@ func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions_WithUserThatDoesN
 	// We create some random address where we will give perms.
 	newAccount, _, err := val.ClientCtx.Keyring.NewMnemonic("test", keyring.English, sdk.FullFundraiserPath, keyring.DefaultBIP39Passphrase, hd.Secp256k1)
 	s.Require().NoError(err)
-	s.SendValue(val.ClientCtx, val.Address, newAccount.GetAddress(), sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100)))
+	s.SendValue(val.ClientCtx, val.Address, newAccount.GetAddress(), sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100)))
 
 	// Now we try to set permissions with a user that does not have.
 	cmd := cli.GetTxSetWhitelistPermissions()
@@ -123,7 +123,7 @@ func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions_WithUserThatDoesN
 		fmt.Sprintf("--%s=%s", cli.FlagPermission, "1"),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
 	})
 	s.Require().NoError(err)
 	strings.Contains(out.String(), "SetPermissions: not enough permissions")

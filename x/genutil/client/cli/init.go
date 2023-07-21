@@ -7,6 +7,14 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/KiraCore/sekai/x/genutil"
+	govtypes "github.com/KiraCore/sekai/x/gov/types"
+	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/cosmos/cosmos-sdk/client/input"
+	"github.com/cosmos/cosmos-sdk/server"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/go-bip39"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
@@ -15,14 +23,6 @@ import (
 	tmos "github.com/tendermint/tendermint/libs/os"
 	tmrand "github.com/tendermint/tendermint/libs/rand"
 	"github.com/tendermint/tendermint/types"
-
-	"github.com/KiraCore/sekai/x/genutil"
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/cosmos/cosmos-sdk/client/input"
-	"github.com/cosmos/cosmos-sdk/server"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/module"
 )
 
 const (
@@ -31,6 +31,9 @@ const (
 
 	// FlagSeed defines a flag to initialize the private validator key from a specific seed.
 	FlagRecover = "recover"
+
+	FlagDefaultDenom = "default-denom"
+	FlagBech32Prefix = "bech32-prefix"
 )
 
 type printInfo struct {
@@ -109,10 +112,23 @@ func InitCmd(mbm module.BasicManager, defaultNodeHome string) *cobra.Command {
 			genFile := config.GenesisFile()
 			overwrite, _ := cmd.Flags().GetBool(FlagOverwrite)
 
+			defaultDenom, _ := cmd.Flags().GetString(FlagDefaultDenom)
+			bech32Prefix, _ := cmd.Flags().GetString(FlagBech32Prefix)
+
 			if !overwrite && tmos.FileExists(genFile) {
 				return fmt.Errorf("genesis.json file already exists: %v", genFile)
 			}
-			appState, err := json.MarshalIndent(mbm.DefaultGenesis(cdc), "", " ")
+
+			genesis := mbm.DefaultGenesis(cdc)
+			govGenState := govtypes.GetGenesisStateFromAppState(clientCtx.Codec, genesis)
+			govGenState.Bech32Prefix = bech32Prefix
+			govGenState.DefaultDenom = defaultDenom
+			genesis[govtypes.ModuleName], err = cdc.MarshalJSON(&govGenState)
+			if err != nil {
+				return err
+			}
+
+			appState, err := json.MarshalIndent(genesis, "", " ")
 			if err != nil {
 				return errors.Wrap(err, "Failed to marshall default genesis state")
 			}
@@ -145,6 +161,8 @@ func InitCmd(mbm module.BasicManager, defaultNodeHome string) *cobra.Command {
 
 	cmd.Flags().String(cli.HomeFlag, defaultNodeHome, "node's home directory")
 	cmd.Flags().BoolP(FlagOverwrite, "o", false, "overwrite the genesis.json file")
+	cmd.Flags().String(FlagDefaultDenom, "ukex", "bond denom - default denom of the chain")
+	cmd.Flags().String(FlagBech32Prefix, "kira", "bech32 prefix of the chain addresses")
 	cmd.Flags().Bool(FlagRecover, false, "provide seed phrase to recover existing key instead of creating")
 	cmd.Flags().String(flags.FlagChainID, "", "genesis file chain-id, if left blank will be randomly created")
 

@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/KiraCore/sekai/app"
+	appparams "github.com/KiraCore/sekai/app/params"
 	"github.com/KiraCore/sekai/x/genutil"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -43,9 +44,6 @@ import (
 	dbm "github.com/tendermint/tm-db"
 	"google.golang.org/grpc"
 )
-
-// DefaultBondDenom defines default denom for fee
-var DefaultBondDenom = "ukex"
 
 // package-wide network lock to only allow one test network at a time
 var lock = new(sync.Mutex)
@@ -80,7 +78,7 @@ type Config struct {
 	TimeoutCommit    time.Duration              // the consensus commitment timeout
 	ChainID          string                     // the network chain-id
 	NumValidators    int                        // the total number of validators to create and bond
-	BondDenom        string                     // the staking bond denomination
+	DefaultDenom     string                     // the staking bond denomination
 	MinGasPrices     string                     // the minimum gas prices each validator will accept
 	AccountTokens    sdk.Int                    // the amount of unique validator tokens (e.g. 1000node0)
 	StakingTokens    sdk.Int                    // the amount of tokens each validator has available to stake
@@ -108,8 +106,8 @@ func DefaultConfig() Config {
 		TimeoutCommit:     2 * time.Second,
 		ChainID:           "chain-" + tmrand.NewRand().Str(6),
 		NumValidators:     4,
-		BondDenom:         DefaultBondDenom,
-		MinGasPrices:      fmt.Sprintf("0.000006%s", DefaultBondDenom),
+		DefaultDenom:      appparams.DefaultDenom,
+		MinGasPrices:      fmt.Sprintf("0.000006%s", appparams.DefaultDenom),
 		AccountTokens:     sdk.TokensFromConsensusPower(1000, sdk.DefaultPowerReduction),
 		StakingTokens:     sdk.TokensFromConsensusPower(500, sdk.DefaultPowerReduction),
 		BondedTokens:      sdk.TokensFromConsensusPower(100, sdk.DefaultPowerReduction),
@@ -283,7 +281,7 @@ func New(t *testing.T, cfg Config) *Network {
 
 		balances := sdk.NewCoins(
 			sdk.NewCoin(fmt.Sprintf("%stoken", nodeDirName), cfg.AccountTokens),
-			sdk.NewCoin(cfg.BondDenom, cfg.StakingTokens),
+			sdk.NewCoin(cfg.DefaultDenom, cfg.StakingTokens),
 		)
 
 		genFiles = append(genFiles, tmCfg.GenesisFile())

@@ -28,7 +28,9 @@ func TestSimappExportGenesis(t *testing.T) {
 	bz, err := app.AppCodec().MarshalJSON(genesis)
 	require.NoError(t, err)
 	buffer := new(bytes.Buffer)
-	err = json.Compact(buffer, []byte(`{
+	err = json.Compact(buffer, []byte(`{	
+  "default_denom": "ukex",	
+  "bech32_prefix": "kira",
   "starting_proposal_id": "1",
   "next_role_id": "3",
   "roles": [
@@ -312,7 +314,9 @@ func TestExportInitGenesis(t *testing.T) {
 	k := keeper.NewKeeper(keyGovernance, simapp.MakeEncodingConfig().Marshaler, nil)
 
 	genState := types.GenesisState{
-		NextRoleId: 3,
+		DefaultDenom: "ukex",
+		Bech32Prefix: "kira",
+		NextRoleId:   3,
 		Roles: []types.Role{
 			{
 				Id:          uint32(types.RoleSudo),
@@ -411,7 +415,9 @@ func TestExportInitGenesis(t *testing.T) {
 	bz, err := simapp.MakeEncodingConfig().Marshaler.MarshalJSON(genesis)
 	require.NoError(t, err)
 	buffer := new(bytes.Buffer)
-	err = json.Compact(buffer, []byte(`	{	
+	err = json.Compact(buffer, []byte(`	{
+  "default_denom": "ukex",	
+  "bech32_prefix": "kira",
   "starting_proposal_id": "1",	
   "next_role_id": "3",	
   "roles": [	

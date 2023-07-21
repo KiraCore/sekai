@@ -71,7 +71,7 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 	month := int64(86400 * 30)
 	year := month * 12
 	if yearSnapshot.SnapshotTime == 0 || yearSnapshot.SnapshotTime+year < ctx.BlockTime().Unix() {
-		supply := k.bk.GetSupply(ctx, k.BondDenom(ctx))
+		supply := k.bk.GetSupply(ctx, k.DefaultDenom(ctx))
 		yearSnapshot = types.YearStartSnapshot{
 			SnapshotTime:   ctx.BlockTime().Unix(),
 			SnapshotAmount: supply.Amount,
