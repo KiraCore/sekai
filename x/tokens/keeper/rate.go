@@ -66,7 +66,7 @@ func (k Keeper) UpsertTokenRate(ctx sdk.Context, rate types.TokenRate) error {
 	store := ctx.KVStore(k.storeKey)
 	// we use denom of TokenRate as an ID inside KVStore storage
 	tokenRateStoreID := append([]byte(PrefixKeyTokenRate), []byte(rate.Denom)...)
-	if rate.Denom == k.BondDenom(ctx) && store.Has(tokenRateStoreID) {
+	if rate.Denom == k.DefaultDenom(ctx) && store.Has(tokenRateStoreID) {
 		return errors.New("bond denom rate is read-only")
 	}
 

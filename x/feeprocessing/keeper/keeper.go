@@ -33,9 +33,9 @@ func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryCodec, bk types.BankKeeper
 	}
 }
 
-// BondDenom returns the denom that is basically used for fee payment
-func (k Keeper) BondDenom(ctx sdk.Context) string {
-	return appparams.BondDenom
+// DefaultDenom returns the denom that is basically used for fee payment
+func (k Keeper) DefaultDenom(ctx sdk.Context) string {
+	return appparams.DefaultDenom
 }
 
 // GetSenderCoinsHistory returns fee payment history of an address
@@ -156,8 +156,8 @@ func (k Keeper) ProcessExecutionFeeReturn(ctx sdk.Context) {
 			}
 			if amount > 0 {
 				// handle extra fee based on handler result
-				bondDenom := k.BondDenom(ctx)
-				fees := sdk.Coins{sdk.NewInt64Coin(bondDenom, amount)}
+				defaultDenom := k.DefaultDenom(ctx)
+				fees := sdk.Coins{sdk.NewInt64Coin(defaultDenom, amount)}
 				if fees.IsAllPositive() {
 					err := k.SendCoinsFromModuleToAccount(ctx, authtypes.FeeCollectorName, exec.FeePayer, fees)
 					if err != nil {

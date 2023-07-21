@@ -127,7 +127,7 @@ func SetupWithGenesisValSet(t *testing.T, valSet *tmtypes.ValidatorSet, genAccs 
 	totalSupply := sdk.NewCoins()
 	for _, b := range balances {
 		// add genesis acc tokens and delegated tokens to total supply
-		totalSupply = totalSupply.Add(b.Coins.Add(sdk.NewCoin(appparams.BondDenom, bondAmt))...)
+		totalSupply = totalSupply.Add(b.Coins.Add(sdk.NewCoin(appparams.DefaultDenom, bondAmt))...)
 	}
 
 	// update total supply
@@ -229,7 +229,7 @@ func createIncrementalAccounts(accNum int) []sdk.AccAddress {
 
 // AddTestAddrsFromPubKeys adds the addresses into the SimApp providing only the public keys.
 func AddTestAddrsFromPubKeys(app *SekaiApp, ctx sdk.Context, pubKeys []cryptotypes.PubKey, accAmt sdk.Int) {
-	initCoins := sdk.NewCoins(sdk.NewCoin(app.CustomStakingKeeper.BondDenom(ctx), accAmt))
+	initCoins := sdk.NewCoins(sdk.NewCoin(app.CustomStakingKeeper.DefaultDenom(ctx), accAmt))
 
 	// fill all the addresses with some coins, set the loose pool tokens simultaneously
 	for _, pubKey := range pubKeys {
@@ -252,7 +252,7 @@ func AddTestAddrsIncremental(app *SekaiApp, ctx sdk.Context, accNum int, accAmt 
 func addTestAddrs(app *SekaiApp, ctx sdk.Context, accNum int, accAmt sdk.Int, strategy GenerateAccountStrategy) []sdk.AccAddress {
 	testAddrs := strategy(accNum)
 
-	initCoins := sdk.NewCoins(sdk.NewCoin(app.CustomStakingKeeper.BondDenom(ctx), accAmt))
+	initCoins := sdk.NewCoins(sdk.NewCoin(app.CustomStakingKeeper.DefaultDenom(ctx), accAmt))
 
 	// fill all the addresses with some coins, set the loose pool tokens simultaneously
 	for _, addr := range testAddrs {

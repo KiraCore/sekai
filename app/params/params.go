@@ -12,7 +12,7 @@ var (
 )
 
 var (
-	BondDenom = "ukex"
+	DefaultDenom = "ukex"
 )
 
 func SetConfig() {

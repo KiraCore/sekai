@@ -5,8 +5,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/KiraCore/sekai/app"
 	simapp "github.com/KiraCore/sekai/app"
+	appparams "github.com/KiraCore/sekai/app/params"
 	"github.com/KiraCore/sekai/middleware"
 	"github.com/KiraCore/sekai/types"
 	kiratypes "github.com/KiraCore/sekai/types"
@@ -19,7 +19,7 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	app.SetConfig()
+	appparams.SetConfig()
 	os.Exit(m.Run())
 }
 

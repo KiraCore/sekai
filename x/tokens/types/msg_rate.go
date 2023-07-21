@@ -47,7 +47,7 @@ func (m *MsgUpsertTokenRate) Type() string {
 
 // ValidateBasic returns basic validation result
 func (m *MsgUpsertTokenRate) ValidateBasic() error {
-	if m.Denom == appparams.BondDenom {
+	if m.Denom == appparams.DefaultDenom {
 		return errors.New("bond denom rate is read-only")
 	}
 

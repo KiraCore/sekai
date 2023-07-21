@@ -26,9 +26,9 @@ func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryCodec, gk types.CustomGovK
 	}
 }
 
-// BondDenom returns the denom that is basically used for fee payment
-func (k Keeper) BondDenom(ctx sdk.Context) string {
-	return appparams.BondDenom
+// DefaultDenom returns the denom that is basically used for fee payment
+func (k Keeper) DefaultDenom(ctx sdk.Context) string {
+	return appparams.DefaultDenom
 }
 
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {

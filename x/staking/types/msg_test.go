@@ -3,7 +3,7 @@ package types_test
 import (
 	"testing"
 
-	"github.com/KiraCore/sekai/app"
+	appparams "github.com/KiraCore/sekai/app/params"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/simapp"
 	"github.com/cosmos/cosmos-sdk/types"
@@ -11,7 +11,7 @@ import (
 )
 
 func TestMsgClaimValidator_ValidateBasic(t *testing.T) {
-	app.SetConfig()
+	appparams.SetConfig()
 	valAddr1, err := types.ValAddressFromBech32("kiravaloper15ky9du8a2wlstz6fpx3p4mqpjyrm5cgq38f2fp")
 	require.NoError(t, err)
 

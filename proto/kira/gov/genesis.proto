@@ -14,7 +14,7 @@ import "kira/gov/identity_registrar.proto";
 option go_package = "github.com/KiraCore/sekai/x/gov/types";
 
 message GenesisState {
-  string bond_denom = 1;
+  string default_denom = 1;
   string bech32_prefix = 2;
   // starting_proposal_id is the ID of the starting proposal.
   uint64 starting_proposal_id = 3;

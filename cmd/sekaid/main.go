@@ -90,8 +90,8 @@ func NewRootCmd() (*cobra.Command, params.EncodingConfig) {
 
 				appState, _, err := genutiltypes.GenesisStateFromGenFile(config.GenesisFile())
 				if err == nil {
-					bech32Prefix, bondDenom := govtypes.GetBech32PrefixAndBondDenomFromAppState(appState)
-					appparams.BondDenom = bondDenom
+					bech32Prefix, defaultDenom := govtypes.GetBech32PrefixAndDefaultDenomFromAppState(appState)
+					appparams.DefaultDenom = defaultDenom
 					appparams.AccountAddressPrefix = bech32Prefix
 					appparams.AccountPubKeyPrefix = bech32Prefix + "pub"
 					appparams.ValidatorAddressPrefix = bech32Prefix + "valoper"

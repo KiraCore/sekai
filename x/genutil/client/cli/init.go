@@ -32,7 +32,7 @@ const (
 	// FlagSeed defines a flag to initialize the private validator key from a specific seed.
 	FlagRecover = "recover"
 
-	FlagBondDenom    = "bond-denom"
+	FlagDefaultDenom = "default-denom"
 	FlagBech32Prefix = "bech32-prefix"
 )
 
@@ -112,7 +112,7 @@ func InitCmd(mbm module.BasicManager, defaultNodeHome string) *cobra.Command {
 			genFile := config.GenesisFile()
 			overwrite, _ := cmd.Flags().GetBool(FlagOverwrite)
 
-			bondDenom, _ := cmd.Flags().GetString(FlagBondDenom)
+			defaultDenom, _ := cmd.Flags().GetString(FlagDefaultDenom)
 			bech32Prefix, _ := cmd.Flags().GetString(FlagBech32Prefix)
 
 			if !overwrite && tmos.FileExists(genFile) {
@@ -122,7 +122,7 @@ func InitCmd(mbm module.BasicManager, defaultNodeHome string) *cobra.Command {
 			genesis := mbm.DefaultGenesis(cdc)
 			govGenState := govtypes.GetGenesisStateFromAppState(clientCtx.Codec, genesis)
 			govGenState.Bech32Prefix = bech32Prefix
-			govGenState.BondDenom = bondDenom
+			govGenState.DefaultDenom = defaultDenom
 			genesis[govtypes.ModuleName], err = cdc.MarshalJSON(&govGenState)
 			if err != nil {
 				return err
@@ -161,7 +161,7 @@ func InitCmd(mbm module.BasicManager, defaultNodeHome string) *cobra.Command {
 
 	cmd.Flags().String(cli.HomeFlag, defaultNodeHome, "node's home directory")
 	cmd.Flags().BoolP(FlagOverwrite, "o", false, "overwrite the genesis.json file")
-	cmd.Flags().String(FlagBondDenom, "ukex", "bond denom - default denom of the chain")
+	cmd.Flags().String(FlagDefaultDenom, "ukex", "bond denom - default denom of the chain")
 	cmd.Flags().String(FlagBech32Prefix, "kira", "bech32 prefix of the chain addresses")
 	cmd.Flags().Bool(FlagRecover, false, "provide seed phrase to recover existing key instead of creating")
 	cmd.Flags().String(flags.FlagChainID, "", "genesis file chain-id, if left blank will be randomly created")

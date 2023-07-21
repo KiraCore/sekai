@@ -237,7 +237,7 @@ func GetTxProposalUpsertTokenRatesCmd() *cobra.Command {
 			if err != nil {
 				return fmt.Errorf("invalid denom")
 			}
-			if denom == appparams.BondDenom {
+			if denom == appparams.DefaultDenom {
 				return fmt.Errorf("bond denom rate is read-only")
 			}
 
@@ -356,7 +356,7 @@ func GetTxUpsertTokenRateCmd() *cobra.Command {
 			if err != nil {
 				return fmt.Errorf("invalid denom")
 			}
-			if denom == appparams.BondDenom {
+			if denom == appparams.DefaultDenom {
 				return fmt.Errorf("bond denom rate is read-only")
 			}
 
