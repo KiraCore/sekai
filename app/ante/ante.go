@@ -88,9 +88,9 @@ func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool,
 			switch kiratypes.MsgType(msg) {
 			case kiratypes.MsgTypeCreateCustody:
 				{
-					msg, ok := msg.(*custodytypes.MsgCreteCustodyRecord)
+					msg, ok := msg.(*custodytypes.MsgCreateCustodyRecord)
 					if !ok {
-						return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreteCustodyRecord")
+						return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreateCustodyRecord")
 					}
 
 					hash := sha256.Sum256([]byte(msg.OldKey))
@@ -108,7 +108,7 @@ func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool,
 				{
 					msg, ok := msg.(*custodytypes.MsgAddToCustodyWhiteList)
 					if !ok {
-						return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreteCustodyRecord")
+						return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreateCustodyRecord")
 					}
 
 					hash := sha256.Sum256([]byte(msg.OldKey))
@@ -126,7 +126,7 @@ func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool,
 				{
 					msg, ok := msg.(*custodytypes.MsgAddToCustodyCustodians)
 					if !ok {
-						return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreteCustodyRecord")
+						return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreateCustodyRecord")
 					}
 
 					hash := sha256.Sum256([]byte(msg.OldKey))
@@ -144,7 +144,7 @@ func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool,
 				{
 					msg, ok := msg.(*custodytypes.MsgRemoveFromCustodyCustodians)
 					if !ok {
-						return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreteCustodyRecord")
+						return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreateCustodyRecord")
 					}
 
 					hash := sha256.Sum256([]byte(msg.OldKey))
@@ -162,7 +162,7 @@ func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool,
 				{
 					msg, ok := msg.(*custodytypes.MsgDropCustodyCustodians)
 					if !ok {
-						return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreteCustodyRecord")
+						return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreateCustodyRecord")
 					}
 
 					hash := sha256.Sum256([]byte(msg.OldKey))
@@ -180,7 +180,7 @@ func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool,
 				{
 					msg, ok := msg.(*custodytypes.MsgRemoveFromCustodyWhiteList)
 					if !ok {
-						return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreteCustodyRecord")
+						return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreateCustodyRecord")
 					}
 
 					hash := sha256.Sum256([]byte(msg.OldKey))
@@ -198,7 +198,7 @@ func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool,
 				{
 					msg, ok := msg.(*custodytypes.MsgDropCustodyWhiteList)
 					if !ok {
-						return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreteCustodyRecord")
+						return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreateCustodyRecord")
 					}
 
 					hash := sha256.Sum256([]byte(msg.OldKey))
