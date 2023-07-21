@@ -79,7 +79,7 @@ func (k Keeper) RedeemDappPoolTx(ctx sdk.Context, addr sdk.AccAddress, dapp type
 func (k Keeper) SwapDappPoolTx(ctx sdk.Context, addr sdk.AccAddress, dapp types.Dapp, poolFee sdk.Dec, swapBond sdk.Coin) (sdk.Coin, error) {
 	// 	totalBond * lpSupply = (totalBond + swapBond) * (lpSupply - swapLpAmount)
 	lpToken := dapp.LpToken()
-	if swapBond.Denom != k.BondDenom(ctx) {
+	if swapBond.Denom != k.DefaultDenom(ctx) {
 		return sdk.Coin{}, types.ErrInvalidLpToken
 	}
 	lpSupply := k.bk.GetSupply(ctx, lpToken).Amount

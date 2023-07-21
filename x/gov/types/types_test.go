@@ -4,13 +4,13 @@ import (
 	"os"
 	"testing"
 
-	"github.com/KiraCore/sekai/app"
+	appparams "github.com/KiraCore/sekai/app/params"
 	"github.com/KiraCore/sekai/x/gov/types"
 	"github.com/stretchr/testify/require"
 )
 
 func TestMain(m *testing.M) {
-	app.SetConfig()
+	appparams.SetConfig()
 	os.Exit(m.Run())
 }
 

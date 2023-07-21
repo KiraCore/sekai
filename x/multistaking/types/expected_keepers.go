@@ -8,6 +8,7 @@ import (
 
 // StakingKeeper expected staking keeper
 type StakingKeeper interface {
+	DefaultDenom(sdk.Context) string
 	GetValidator(sdk.Context, sdk.ValAddress) (stakingtypes.Validator, error)
 }
 

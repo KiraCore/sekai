@@ -8,8 +8,10 @@ import (
 	"path/filepath"
 
 	"github.com/KiraCore/sekai/app"
+	appparams "github.com/KiraCore/sekai/app/params"
 	functionmeta "github.com/KiraCore/sekai/function_meta"
 	genutilcli "github.com/KiraCore/sekai/x/genutil/client/cli"
+	genutiltypes "github.com/KiraCore/sekai/x/genutil/types"
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	customstaking "github.com/KiraCore/sekai/x/staking/client/cli"
 	"github.com/cosmos/cosmos-sdk/baseapp"
@@ -77,7 +79,32 @@ func NewRootCmd() (*cobra.Command, params.EncodingConfig) {
 
 			customAppTemplate, customAppConfig := initAppConfig()
 
-			return server.InterceptConfigsPreRunHandler(cmd, customAppTemplate, customAppConfig)
+			err = server.InterceptConfigsPreRunHandler(cmd, customAppTemplate, customAppConfig)
+			{
+				serverCtx := server.GetServerContextFromCmd(cmd)
+				config := serverCtx.Config
+
+				clientCtx := client.GetClientContextFromCmd(cmd)
+
+				config.SetRoot(clientCtx.HomeDir)
+
+				appState, _, err := genutiltypes.GenesisStateFromGenFile(config.GenesisFile())
+				if err == nil {
+					bech32Prefix, defaultDenom := govtypes.GetBech32PrefixAndDefaultDenomFromAppState(appState)
+					appparams.DefaultDenom = defaultDenom
+					appparams.AccountAddressPrefix = bech32Prefix
+					appparams.AccountPubKeyPrefix = bech32Prefix + "pub"
+					appparams.ValidatorAddressPrefix = bech32Prefix + "valoper"
+					appparams.ValidatorPubKeyPrefix = bech32Prefix + "valoperpub"
+					appparams.ConsNodeAddressPrefix = bech32Prefix + "valcons"
+					appparams.ConsNodePubKeyPrefix = bech32Prefix + "valconspub"
+				}
+
+				appparams.SetConfig()
+				cfg := sdk.GetConfig()
+				cfg.Seal()
+			}
+			return err
 		},
 	}
 
@@ -143,8 +170,6 @@ lru_size = 0`
 }
 
 func initRootCmd(rootCmd *cobra.Command, encodingConfig params.EncodingConfig) {
-	cfg := sdk.GetConfig()
-	cfg.Seal()
 
 	rootCmd.AddCommand(
 		genutilcli.InitCmd(app.ModuleBasics, app.DefaultNodeHome),
@@ -179,7 +204,6 @@ func initRootCmd(rootCmd *cobra.Command, encodingConfig params.EncodingConfig) {
 }
 
 func main() {
-	app.SetConfig()
 	rootCmd, _ := NewRootCmd()
 
 	if err := svrcmd.Execute(rootCmd, app.DefaultNodeHome); err != nil {
