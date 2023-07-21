@@ -87,12 +87,16 @@ func GetCmdQueryOutstandingRewards() *cobra.Command {
 // GetCmdQueryUndelegations the query all undelegations
 func GetCmdQueryUndelegations() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "undelegations",
+		Use:   "undelegations [delegator] [val-addr]",
 		Short: "Query all undelegations",
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
-			params := &types.QueryUndelegationsRequest{}
+			params := &types.QueryUndelegationsRequest{
+				Delegator:  args[0],
+				ValAddress: args[1],
+			}
 
 			queryClient := types.NewQueryClient(clientCtx)
 			res, err := queryClient.Undelegations(context.Background(), params)
