@@ -6,35 +6,35 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-func NewMsgCreateCustody(addr sdk.AccAddress, custodySettings CustodySettings, oldKey, newKey, next, target string) *MsgCreteCustodyRecord {
-	return &MsgCreteCustodyRecord{addr, custodySettings, oldKey, newKey, next, target}
+func NewMsgCreateCustody(addr sdk.AccAddress, custodySettings CustodySettings, oldKey, newKey, next, target string) *MsgCreateCustodyRecord {
+	return &MsgCreateCustodyRecord{addr, custodySettings, oldKey, newKey, next, target}
 }
 
-func (m *MsgCreteCustodyRecord) Route() string {
+func (m *MsgCreateCustodyRecord) Route() string {
 	return ModuleName
 }
 
-func (m *MsgCreteCustodyRecord) Type() string {
+func (m *MsgCreateCustodyRecord) Type() string {
 	return types.MsgTypeCreateCustody
 }
 
-func (m *MsgCreteCustodyRecord) ValidateBasic() error {
+func (m *MsgCreateCustodyRecord) ValidateBasic() error {
 	return nil
 }
 
-func (m *MsgCreteCustodyRecord) GetSignBytes() []byte {
+func (m *MsgCreateCustodyRecord) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(m)
 	return sdk.MustSortJSON(bz)
 }
 
-func (m *MsgCreteCustodyRecord) GetSigners() []sdk.AccAddress {
+func (m *MsgCreateCustodyRecord) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{
 		m.Address,
 	}
 }
 
-func NewMsgDisableCustody(addr sdk.AccAddress, oldKey, target string) *MsgDisableCustodyRecord {
-	return &MsgDisableCustodyRecord{addr, oldKey, target}
+func NewMsgDisableCustody(addr sdk.AccAddress, oldKey, newKey, next, target string) *MsgDisableCustodyRecord {
+	return &MsgDisableCustodyRecord{addr, oldKey, newKey, next, target}
 }
 
 func (m *MsgDisableCustodyRecord) Route() string {
@@ -55,6 +55,33 @@ func (m *MsgDisableCustodyRecord) GetSignBytes() []byte {
 }
 
 func (m *MsgDisableCustodyRecord) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{
+		m.Address,
+	}
+}
+
+func NewMsgDropCustody(addr sdk.AccAddress, oldKey, target string) *MsgDropCustodyRecord {
+	return &MsgDropCustodyRecord{addr, oldKey, target}
+}
+
+func (m *MsgDropCustodyRecord) Route() string {
+	return ModuleName
+}
+
+func (m *MsgDropCustodyRecord) Type() string {
+	return types.MsgTypeDropCustody
+}
+
+func (m *MsgDropCustodyRecord) ValidateBasic() error {
+	return nil
+}
+
+func (m *MsgDropCustodyRecord) GetSignBytes() []byte {
+	bz := ModuleCdc.MustMarshalJSON(m)
+	return sdk.MustSortJSON(bz)
+}
+
+func (m *MsgDropCustodyRecord) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{
 		m.Address,
 	}

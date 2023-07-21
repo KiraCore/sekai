@@ -30,7 +30,7 @@ func NewMsgServerImpl(keeper Keeper, cgk types.CustomGovKeeper, bk types.BankKee
 
 var _ types.MsgServer = msgServer{}
 
-func (s msgServer) CreateCustody(goCtx context.Context, msg *types.MsgCreteCustodyRecord) (*types.MsgCreteCustodyRecordResponse, error) {
+func (s msgServer) CreateCustody(goCtx context.Context, msg *types.MsgCreateCustodyRecord) (*types.MsgCreateCustodyRecordResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	record := types.CustodyRecord{
 		Address:         msg.Address,
@@ -42,14 +42,46 @@ func (s msgServer) CreateCustody(goCtx context.Context, msg *types.MsgCreteCusto
 
 	s.keeper.SetCustodyRecord(ctx, record)
 
-	return &types.MsgCreteCustodyRecordResponse{}, nil
+	return &types.MsgCreateCustodyRecordResponse{}, nil
 }
 
 func (s msgServer) DisableCustody(goCtx context.Context, msg *types.MsgDisableCustodyRecord) (*types.MsgDisableCustodyRecordResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	s.keeper.DisableCustodyRecord(ctx, msg.Address)
+
+	if msg.TargetAddress != "" {
+		targetAddr, err := sdk.AccAddressFromBech32(msg.TargetAddress)
+		if err != nil {
+			return nil, errors.Wrap(types.ErrWrongTargetAddr, "Can not convert string to address")
+		}
+
+		msg.Address = targetAddr
+	}
+
+	record := types.CustodyRecord{
+		Address:         msg.Address,
+		CustodySettings: s.keeper.GetCustodyInfoByAddress(ctx, msg.Address),
+	}
+
+	s.keeper.DisableCustodyRecord(ctx, record)
 
 	return &types.MsgDisableCustodyRecordResponse{}, nil
+}
+
+func (s msgServer) DropCustody(goCtx context.Context, msg *types.MsgDropCustodyRecord) (*types.MsgDropCustodyRecordResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	if msg.TargetAddress != "" {
+		targetAddr, err := sdk.AccAddressFromBech32(msg.TargetAddress)
+		if err != nil {
+			return nil, errors.Wrap(types.ErrWrongTargetAddr, "Can not convert string to address")
+		}
+
+		msg.Address = targetAddr
+	}
+
+	s.keeper.DropCustodyRecord(ctx, msg.Address)
+
+	return &types.MsgDropCustodyRecordResponse{}, nil
 }
 
 func (s msgServer) AddToCustodians(goCtx context.Context, msg *types.MsgAddToCustodyCustodians) (*types.MsgAddToCustodyCustodiansResponse, error) {

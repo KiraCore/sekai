@@ -15,11 +15,14 @@ func NewHandler(ck keeper.Keeper, cgk types.CustomGovKeeper, bk types.BankKeeper
 		ctx = ctx.WithEventManager(sdk.NewEventManager())
 
 		switch msg := msg.(type) {
-		case *types.MsgCreteCustodyRecord:
+		case *types.MsgCreateCustodyRecord:
 			res, err := msgServer.CreateCustody(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 		case *types.MsgDisableCustodyRecord:
 			res, err := msgServer.DisableCustody(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgDropCustodyRecord:
+			res, err := msgServer.DropCustody(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 		case *types.MsgAddToCustodyCustodians:
 			res, err := msgServer.AddToCustodians(sdk.WrapSDKContext(ctx), msg)
