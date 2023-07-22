@@ -92,7 +92,7 @@ func (s *IntegrationTestSuite) TestNewActivateTxCmd() {
 				fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync), // sync mode as there are no funds yet
-				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(1000))).String()),
+				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(1000))).String()),
 			},
 			false, &sdk.TxResponse{}, 0,
 		},
@@ -137,7 +137,7 @@ func (s *IntegrationTestSuite) TestTxProposalResetWholeValidatorRankCmd() {
 				fmt.Sprintf("--%s=%s", cli.FlagDescription, "resetvalidators"),
 				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync), // sync mode as there are no funds yet
-				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(1000))).String()),
+				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(1000))).String()),
 			},
 			false, &sdk.TxResponse{}, 0,
 		},
@@ -189,7 +189,7 @@ func (s *IntegrationTestSuite) TestTxProposalSlashValidatorCmd() {
 				fmt.Sprintf("--%s=%s", cli.FlagDescription, "slash validators"),
 				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync), // sync mode as there are no funds yet
-				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(1000))).String()),
+				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(1000))).String()),
 			},
 			false, &sdk.TxResponse{}, 0,
 		},

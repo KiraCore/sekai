@@ -5,7 +5,7 @@ import (
 	"encoding/hex"
 	"time"
 
-	"github.com/KiraCore/sekai/app"
+	appparams "github.com/KiraCore/sekai/app/params"
 	collectivestypes "github.com/KiraCore/sekai/x/collectives/types"
 	custodytypes "github.com/KiraCore/sekai/x/custody/types"
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
@@ -21,7 +21,7 @@ import (
 )
 
 func init() {
-	app.SetConfig()
+	appparams.SetConfig()
 }
 
 func (suite *KeeperTestSuite) TestRegisterRecoverySecret() {

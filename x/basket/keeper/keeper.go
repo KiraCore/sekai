@@ -30,11 +30,6 @@ func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryCodec, ak types.AccountKee
 	}
 }
 
-// BondDenom returns the denom that is basically used for fee payment
-func (k Keeper) BondDenom(ctx sdk.Context) string {
-	return "ukex"
-}
-
 func (k Keeper) CheckIfAllowedPermission(ctx sdk.Context, addr sdk.AccAddress, permValue govtypes.PermValue) bool {
 	return govkeeper.CheckIfAllowedPermission(ctx, k.gk, addr, govtypes.PermHandleBasketEmergency)
 }

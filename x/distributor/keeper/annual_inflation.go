@@ -31,7 +31,7 @@ func (k Keeper) InflationPossible(ctx sdk.Context) bool {
 		return true
 	}
 	yearlyInflation := k.gk.GetNetworkProperties(ctx).MaxAnnualInflation
-	currSupply := k.bk.GetSupply(ctx, k.BondDenom(ctx))
+	currSupply := k.bk.GetSupply(ctx, k.DefaultDenom(ctx))
 
 	month := int64(86400 * 30)
 	currTimeGone := ctx.BlockTime().Unix() - snapshot.SnapshotTime

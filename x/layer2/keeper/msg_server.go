@@ -32,7 +32,7 @@ func (k msgServer) CreateDappProposal(goCtx context.Context, msg *types.MsgCreat
 	isAllowed := k.keeper.CheckIfAllowedPermission(ctx, addr, govtypes.PermCreateDappProposalWithoutBond)
 	if !isAllowed {
 		minDappBond := properties.MinDappBond
-		if msg.Bond.Denom != k.keeper.BondDenom(ctx) {
+		if msg.Bond.Denom != k.keeper.DefaultDenom(ctx) {
 			return nil, types.ErrInvalidDappBondDenom
 		}
 		// check 1% of properties.MinDappBond
@@ -76,7 +76,7 @@ func (k msgServer) BondDappProposal(goCtx context.Context, msg *types.MsgBondDap
 		return nil, types.ErrDappDoesNotExist
 	}
 
-	if k.keeper.BondDenom(ctx) != msg.Bond.Denom {
+	if k.keeper.DefaultDenom(ctx) != msg.Bond.Denom {
 		return nil, types.ErrInvalidDappBondDenom
 	}
 
@@ -681,7 +681,7 @@ func (k msgServer) ConvertDappPoolTx(goCtx context.Context, msg *types.MsgConver
 func (k msgServer) MintCreateFtTx(goCtx context.Context, msg *types.MsgMintCreateFtTx) (*types.MsgMintCreateFtTxResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	properties := k.keeper.gk.GetNetworkProperties(ctx)
-	fee := sdk.NewInt64Coin(k.keeper.BondDenom(ctx), int64(properties.MintingFtFee))
+	fee := sdk.NewInt64Coin(k.keeper.DefaultDenom(ctx), int64(properties.MintingFtFee))
 	sender := sdk.MustAccAddressFromBech32(msg.Sender)
 	err := k.keeper.bk.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, sdk.Coins{fee})
 	if err != nil {
@@ -725,7 +725,7 @@ func (k msgServer) MintCreateFtTx(goCtx context.Context, msg *types.MsgMintCreat
 func (k msgServer) MintCreateNftTx(goCtx context.Context, msg *types.MsgMintCreateNftTx) (*types.MsgMintCreateNftTxResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	properties := k.keeper.gk.GetNetworkProperties(ctx)
-	fee := sdk.NewInt64Coin(k.keeper.BondDenom(ctx), int64(properties.MintingFtFee))
+	fee := sdk.NewInt64Coin(k.keeper.DefaultDenom(ctx), int64(properties.MintingFtFee))
 	sender := sdk.MustAccAddressFromBech32(msg.Sender)
 	err := k.keeper.bk.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, sdk.Coins{fee})
 	if err != nil {
@@ -775,7 +775,7 @@ func (k msgServer) MintIssueTx(goCtx context.Context, msg *types.MsgMintIssueTx)
 
 	if msg.Sender != tokenInfo.Owner {
 		fee := msg.Amount.Mul(tokenInfo.Fee).Quo(Pow10(tokenInfo.Decimals))
-		feeCoins := sdk.Coins{sdk.NewCoin(k.keeper.BondDenom(ctx), fee)}
+		feeCoins := sdk.Coins{sdk.NewCoin(k.keeper.DefaultDenom(ctx), fee)}
 		if fee.IsPositive() {
 			if tokenInfo.Owner == "" {
 				err := k.keeper.bk.SendCoinsFromAccountToModule(ctx, sender, types.ModuleName, feeCoins)

@@ -8,6 +8,7 @@ import (
 
 	"github.com/KiraCore/sekai/app"
 	simapp "github.com/KiraCore/sekai/app"
+	appparams "github.com/KiraCore/sekai/app/params"
 	"github.com/KiraCore/sekai/testutil/network"
 	"github.com/KiraCore/sekai/x/evidence/client/cli"
 	"github.com/cosmos/cosmos-sdk/baseapp"
@@ -25,7 +26,7 @@ type IntegrationTestSuite struct {
 }
 
 func (s *IntegrationTestSuite) SetupSuite() {
-	app.SetConfig()
+	appparams.SetConfig()
 	s.T().Log("setting up integration test suite")
 
 	cfg := network.DefaultConfig()
