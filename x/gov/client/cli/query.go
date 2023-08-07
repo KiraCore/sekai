@@ -343,10 +343,9 @@ func GetCmdQueryProposals() *cobra.Command {
 			fmt.Sprintf(`Query for a all paginated proposals that match optional filters:
 
 Example:
-$ %s query gov proposals --depositor cosmos1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
-$ %s query gov proposals --voter cosmos1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
+$ %s query customgov proposals --voter kira12m2g0dxjx7cekaxlgw8pv39euyfhk2ns54e5pv
 `,
-				version.AppName, version.AppName,
+				version.AppName,
 			),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
