@@ -263,7 +263,7 @@ function voteYes() {
 
 # voteNo $(lastProposal) validator
 function voteNo() {
-    voteProposal "$2" "$1" "0"
+    voteProposal "$2" "$1" "3"
 }
 
 function showNetworkProperties() {
