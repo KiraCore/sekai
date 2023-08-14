@@ -197,4 +197,14 @@ var PropertyMetadata = []PropertyInfo{
 		Format:      "uint64",
 		Description: "The minimum acceptable collective claim period",
 	},
+	{
+		Name:        "ValidatorRecoveryBond",
+		Format:      "uint64",
+		Description: "The amount of KEX to spend for issuing validator recovery token",
+	},
+	{
+		Name:        "MaxAnnualInflation",
+		Format:      "decimal",
+		Description: "The maximum inflation ratio of kex by which supply can increase over the period of 1 year",
+	},
 }
