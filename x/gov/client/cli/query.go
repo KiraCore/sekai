@@ -72,6 +72,7 @@ func GetCmdQueryPermissions() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "permissions [addr]",
 		Short: "Query permissions of an address",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
@@ -127,6 +128,7 @@ func GetCmdQueryRolesByAddress() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "roles [addr]",
 		Short: "Query roles assigned to an address",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
@@ -154,9 +156,10 @@ func GetCmdQueryRolesByAddress() *cobra.Command {
 
 func GetCmdQueryRole() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "role [role_sid | role_id]",
-		Short: "Query role by sid or id",
-		Args:  cobra.MinimumNArgs(1),
+		Use:          "role [role_sid | role_id]",
+		Short:        "Query role by sid or id",
+		Args:         cobra.ExactArgs(1),
+		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
@@ -279,8 +282,10 @@ func GetCmdQueryAllExecutionFees() *cobra.Command {
 
 func GetCmdQueryCouncilRegistry() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "council-registry [--addr || --flagMoniker]",
-		Short: "Query governance registry.",
+		Use:          "council-registry",
+		Short:        "Query governance registry.",
+		Args:         cobra.ExactArgs(0),
+		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
@@ -398,6 +403,7 @@ func GetCmdQueryPolls() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "polls [address]",
 		Short: "Get polls by address",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 			accAddr, err := sdk.AccAddressFromBech32(args[0])
@@ -429,6 +435,7 @@ func GetCmdQueryPollVotes() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "poll-votes [ID]",
 		Short: "Get poll votes by id",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 			id, err := strconv.Atoi(args[0])
