@@ -217,6 +217,17 @@ func (k Keeper) Proposals(goCtx context.Context, request *types.QueryProposalsRe
 		if err != nil {
 			return false, err
 		}
+		if request.Voter != "" {
+			voter, err := sdk.AccAddressFromBech32(request.Voter)
+			if err != nil {
+				return false, err
+			}
+
+			_, found := k.GetVote(c, proposal.ProposalId, voter)
+			if !found {
+				return false, nil
+			}
+		}
 		if accumulate {
 			proposals = append(proposals, proposal)
 		}
