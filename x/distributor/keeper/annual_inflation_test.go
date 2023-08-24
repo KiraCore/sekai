@@ -14,7 +14,7 @@ func (suite *KeeperTestSuite) TestYearStartSnapshot() {
 	snapshot := suite.app.DistrKeeper.GetYearStartSnapshot(ctx)
 	suite.Require().Equal(snapshot.SnapshotTime, int64(0))
 
-	newSnapshot := types.YearStartSnapshot{
+	newSnapshot := types.SupplySnapshot{
 		SnapshotTime:   now.Unix(),
 		SnapshotAmount: sdk.NewInt(1000000),
 	}
