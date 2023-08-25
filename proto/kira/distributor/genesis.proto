@@ -10,7 +10,7 @@ message ValidatorVote {
   int64 height = 2;
 }
 
-message YearStartSnapshot {
+message SupplySnapshot {
   int64 snapshot_time = 1;
   string snapshot_amount = 2 [
     (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Int",
@@ -37,7 +37,9 @@ message GenesisState {
   // previous proposer
   string previous_proposer = 5;
   // year start snapshot
-  YearStartSnapshot year_start_snapshot = 6 [(gogoproto.nullable) = false];
+  SupplySnapshot year_start_snapshot = 6 [ (gogoproto.nullable) = false ];
+  // period start snapshot
+  SupplySnapshot periodic_snapshot = 7 [ (gogoproto.nullable) = false ];
 }
 
 // https://www.notion.so/kira-network/KIP-73-Fee-Reward-Distributor-v1-32b3d1dc90024befa7bb9680c6a425cd

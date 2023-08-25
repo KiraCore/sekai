@@ -28,6 +28,10 @@ service Query {
   rpc YearStartSnapshot(QueryYearStartSnapshotRequest) returns (QueryYearStartSnapshotResponse) {
     option (google.api.http).get = "/kira/distributor/v1beta1/year_start_snapshot";
   }
+  // Periodic snapshot query
+  rpc PeriodicSnapshot(QueryPeriodicSnapshotRequest) returns (QueryPeriodicSnapshotResponse) {
+    option (google.api.http).get = "/kira/distributor/v1beta1/periodic_snapshot";
+  }
 }
 
 message QueryFeesTreasuryRequest {
@@ -57,5 +61,10 @@ message QuerySnapshotPeriodPerformanceResponse {
 
 message QueryYearStartSnapshotRequest {}
 message QueryYearStartSnapshotResponse {
-  YearStartSnapshot snapshot = 1 [(gogoproto.nullable) = false];
+  SupplySnapshot snapshot = 1 [ (gogoproto.nullable) = false ];
+}
+
+message QueryPeriodicSnapshotRequest {}
+message QueryPeriodicSnapshotResponse {
+  SupplySnapshot snapshot = 1 [ (gogoproto.nullable) = false ];
 }
