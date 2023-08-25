@@ -1,6 +1,9 @@
 package keeper_test
 
 import (
+	"time"
+
+	"github.com/KiraCore/sekai/x/distributor/types"
 	recoverytypes "github.com/KiraCore/sekai/x/recovery/types"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/simapp"
@@ -61,10 +64,24 @@ func (suite *KeeperTestSuite) TestAllocateTokens() {
 	suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, coins)
 	suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, addr2, coins)
 
+	supply := suite.app.BankKeeper.GetSupply(suite.ctx, "ukex")
+	suite.Require().Equal(supply.Amount, sdk.NewInt(20000000))
+
+	now := time.Now()
+	suite.ctx = suite.ctx.WithBlockTime(now)
+	suite.app.DistrKeeper.SetPeriodicSnapshot(suite.ctx, types.SupplySnapshot{
+		SnapshotAmount: supply.Amount,
+		SnapshotTime:   now.Unix(),
+	})
+	future := now.Add(time.Hour * 24 * 365)
+	suite.ctx = suite.ctx.WithBlockTime(future)
 	oldTreasury := suite.app.DistrKeeper.GetFeesTreasury(suite.ctx)
 	suite.app.DistrKeeper.AllocateTokens(suite.ctx, 10, 10, consAddr, []abci.VoteInfo{})
 	newTreasury := suite.app.DistrKeeper.GetFeesTreasury(suite.ctx)
 	suite.Require().True(oldTreasury.DenomsSubsetOf(newTreasury))
+
+	supply = suite.app.BankKeeper.GetSupply(suite.ctx, "ukex")
+	suite.Require().Equal(supply.Amount, sdk.NewInt(23597535))
 
 	// TODO: add case for validator exit case
 	// TODO: add case for staking pool exist case
