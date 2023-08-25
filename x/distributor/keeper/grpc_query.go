@@ -55,3 +55,11 @@ func (q Querier) YearStartSnapshot(c context.Context, request *types.QueryYearSt
 		Snapshot: q.keeper.GetYearStartSnapshot(ctx),
 	}, nil
 }
+
+func (q Querier) PeriodicSnapshot(c context.Context, request *types.QueryPeriodicSnapshotRequest) (*types.QueryPeriodicSnapshotResponse, error) {
+	ctx := sdk.UnwrapSDKContext(c)
+
+	return &types.QueryPeriodicSnapshotResponse{
+		Snapshot: q.keeper.GetPeriodicSnapshot(ctx),
+	}, nil
+}
