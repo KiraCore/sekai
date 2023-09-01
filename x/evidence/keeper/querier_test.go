@@ -7,7 +7,7 @@ import (
 	"github.com/KiraCore/sekai/x/evidence/types"
 
 	"github.com/KiraCore/sekai/app"
-	abci "github.com/tendermint/tendermint/abci/types"
+	abci "github.com/cometbft/cometbft/abci/types"
 )
 
 const (

@@ -4,10 +4,10 @@ import (
 	"time"
 
 	"github.com/KiraCore/sekai/x/basket/types"
+	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	"github.com/tendermint/tendermint/crypto/ed25519"
 )
 
 func (suite *KeeperTestSuite) TestMintBasketToken() {

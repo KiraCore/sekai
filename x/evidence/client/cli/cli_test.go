@@ -11,11 +11,11 @@ import (
 	appparams "github.com/KiraCore/sekai/app/params"
 	"github.com/KiraCore/sekai/testutil/network"
 	"github.com/KiraCore/sekai/x/evidence/client/cli"
+	dbm "github.com/cometbft/cometbft-db"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	"github.com/cosmos/cosmos-sdk/store/types"
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
-	dbm "github.com/tendermint/tm-db"
 )
 
 type IntegrationTestSuite struct {

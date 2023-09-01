@@ -3,9 +3,9 @@ package keeper
 import (
 	appparams "github.com/KiraCore/sekai/app/params"
 	"github.com/KiraCore/sekai/x/custody/types"
+	"github.com/cometbft/cometbft/libs/log"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/tendermint/tendermint/libs/log"
 )
 
 // Keeper is for managing token module

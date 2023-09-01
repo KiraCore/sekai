@@ -4,9 +4,9 @@ import (
 	"os"
 	"testing"
 
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	simapp "github.com/KiraCore/sekai/app"
 	appparams "github.com/KiraCore/sekai/app/params"

@@ -4,17 +4,17 @@ import (
 	"github.com/KiraCore/sekai/x/layer2/keeper"
 	"github.com/KiraCore/sekai/x/layer2/types"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
-	"github.com/cosmos/cosmos-sdk/simapp"
+	"github.com/cometbft/cometbft/crypto/ed25519"
+	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	"github.com/tendermint/tendermint/crypto/ed25519"
 )
 
 func (suite *KeeperTestSuite) TestCreateDappProposal() {
 	addr1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
 	valAddr := sdk.ValAddress(addr1)
-	pubkeys := simapp.CreateTestPubKeys(1)
+	pubkeys := simtestutil.CreateTestPubKeys(1)
 	pubKey := pubkeys[0]
 	val, err := stakingtypes.NewValidator(valAddr, pubKey)
 	suite.Require().NoError(err)
@@ -92,7 +92,7 @@ func (suite *KeeperTestSuite) TestBondDappProposal() {
 	addr1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
 	valAddr := sdk.ValAddress(addr1)
-	pubkeys := simapp.CreateTestPubKeys(1)
+	pubkeys := simtestutil.CreateTestPubKeys(1)
 	pubKey := pubkeys[0]
 	val, err := stakingtypes.NewValidator(valAddr, pubKey)
 	suite.Require().NoError(err)
@@ -179,7 +179,7 @@ func (suite *KeeperTestSuite) TestReclaimDappBondProposal() {
 	addr1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
 	valAddr := sdk.ValAddress(addr1)
-	pubkeys := simapp.CreateTestPubKeys(1)
+	pubkeys := simtestutil.CreateTestPubKeys(1)
 	pubKey := pubkeys[0]
 	val, err := stakingtypes.NewValidator(valAddr, pubKey)
 	suite.Require().NoError(err)

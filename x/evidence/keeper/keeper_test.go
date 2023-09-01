@@ -10,6 +10,7 @@ import (
 	"github.com/KiraCore/sekai/x/evidence/keeper"
 	"github.com/KiraCore/sekai/x/evidence/types"
 	"github.com/KiraCore/sekai/x/staking"
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
@@ -17,7 +18,6 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/stretchr/testify/suite"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
 
 var (

@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"time"
 
-	abci "github.com/tendermint/tendermint/abci/types"
-	"github.com/tendermint/tendermint/crypto/tmhash"
-	tmbytes "github.com/tendermint/tendermint/libs/bytes"
+	abci "github.com/cometbft/cometbft/abci/types"
+	"github.com/cometbft/cometbft/crypto/tmhash"
+	tmbytes "github.com/cometbft/cometbft/libs/bytes"
 	"gopkg.in/yaml.v2"
 
 	"github.com/KiraCore/sekai/x/evidence/exported"

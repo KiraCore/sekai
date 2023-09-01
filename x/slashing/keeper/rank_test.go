@@ -7,10 +7,10 @@ import (
 	simapp "github.com/KiraCore/sekai/app"
 	"github.com/KiraCore/sekai/x/slashing/types"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/stretchr/testify/require"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
 
 func TestResetWholeValidatorRank(t *testing.T) {

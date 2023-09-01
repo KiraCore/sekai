@@ -8,11 +8,11 @@ import (
 	appparams "github.com/KiraCore/sekai/app/params"
 	"github.com/KiraCore/sekai/testutil/network"
 	"github.com/KiraCore/sekai/x/gov/types"
+	dbm "github.com/cometbft/cometbft-db"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	"github.com/stretchr/testify/suite"
-	dbm "github.com/tendermint/tm-db"
 )
 
 type IntegrationTestSuite struct {

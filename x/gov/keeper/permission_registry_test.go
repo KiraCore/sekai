@@ -5,8 +5,8 @@ import (
 
 	simapp "github.com/KiraCore/sekai/app"
 	"github.com/KiraCore/sekai/x/gov/types"
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	"github.com/stretchr/testify/require"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
 
 func TestKeeper_CreateRoleAndWhitelistPerm(t *testing.T) {

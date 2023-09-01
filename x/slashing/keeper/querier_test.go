@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	abci "github.com/tendermint/tendermint/abci/types"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+	abci "github.com/cometbft/cometbft/abci/types"
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 
 	simapp "github.com/KiraCore/sekai/app"
 	"github.com/KiraCore/sekai/x/slashing/keeper"

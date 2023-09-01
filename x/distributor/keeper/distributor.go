@@ -5,11 +5,11 @@ import (
 
 	recoverytypes "github.com/KiraCore/sekai/x/recovery/types"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
+	abci "github.com/cometbft/cometbft/abci/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/distribution/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	abci "github.com/tendermint/tendermint/abci/types"
 )
 
 // AllocateTokens handles distribution of the collected fees

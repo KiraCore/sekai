@@ -15,11 +15,11 @@ import (
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	tokens "github.com/KiraCore/sekai/x/tokens"
 	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/require"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
 
 func TestMain(m *testing.M) {

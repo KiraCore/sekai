@@ -12,11 +12,11 @@ import (
 	"github.com/KiraCore/sekai/x/slashing"
 	"github.com/KiraCore/sekai/x/slashing/keeper"
 	"github.com/KiraCore/sekai/x/slashing/types"
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/require"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
 
 func TestMain(m *testing.M) {

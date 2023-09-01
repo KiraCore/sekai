@@ -11,6 +11,7 @@ import (
 	"github.com/KiraCore/sekai/middleware"
 	"github.com/KiraCore/sekai/x/staking/keeper"
 	"github.com/KiraCore/sekai/x/staking/types"
+	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
@@ -18,7 +19,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
-	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/KiraCore/sekai/x/staking/client/cli"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"

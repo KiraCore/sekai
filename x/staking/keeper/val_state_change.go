@@ -4,8 +4,8 @@ import (
 	"errors"
 
 	"github.com/KiraCore/sekai/x/staking/types"
+	abci "github.com/cometbft/cometbft/abci/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	abci "github.com/tendermint/tendermint/abci/types"
 )
 
 // BlockValidatorUpdates calculates the ValidatorUpdates for the current block

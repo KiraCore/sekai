@@ -7,8 +7,8 @@ import (
 
 	gogotypes "github.com/gogo/protobuf/types"
 
-	"github.com/tendermint/tendermint/crypto"
-	"github.com/tendermint/tendermint/libs/log"
+	"github.com/cometbft/cometbft/crypto"
+	"github.com/cometbft/cometbft/libs/log"
 
 	"github.com/KiraCore/sekai/x/slashing/types"
 	"github.com/cosmos/cosmos-sdk/codec"
