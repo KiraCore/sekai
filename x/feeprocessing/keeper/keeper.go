@@ -9,6 +9,7 @@ import (
 	"github.com/KiraCore/sekai/x/feeprocessing/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
+	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 )
@@ -16,14 +17,14 @@ import (
 // Keeper manages module's storage
 type Keeper struct {
 	cdc      codec.BinaryCodec
-	storeKey sdk.StoreKey
+	storeKey storetypes.StoreKey
 	bk       types.BankKeeper
 	tk       types.TokensKeeper
 	cgk      types.CustomGovKeeper
 }
 
 // NewKeeper returns new instance of a keeper
-func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryCodec, bk types.BankKeeper, tk types.TokensKeeper, cgk types.CustomGovKeeper) Keeper {
+func NewKeeper(storeKey storetypes.StoreKey, cdc codec.BinaryCodec, bk types.BankKeeper, tk types.TokensKeeper, cgk types.CustomGovKeeper) Keeper {
 	return Keeper{
 		cdc,
 		storeKey,

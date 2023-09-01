@@ -7,12 +7,13 @@ import (
 
 	"github.com/KiraCore/sekai/x/recovery/types"
 	"github.com/cosmos/cosmos-sdk/codec"
+	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // Keeper of the recovery store
 type Keeper struct {
-	storeKey sdk.StoreKey
+	storeKey storetypes.StoreKey
 	cdc      codec.BinaryCodec
 	ak       types.AccountKeeper
 	bk       types.BankKeeper
@@ -25,7 +26,7 @@ type Keeper struct {
 }
 
 // NewKeeper creates a recovery keeper
-func NewKeeper(cdc codec.BinaryCodec, key sdk.StoreKey,
+func NewKeeper(cdc codec.BinaryCodec, key storetypes.StoreKey,
 	ak types.AccountKeeper,
 	bk types.BankKeeper,
 	sk types.StakingKeeper,

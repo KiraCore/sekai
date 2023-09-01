@@ -7,19 +7,20 @@ import (
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/staking/types"
 	"github.com/cosmos/cosmos-sdk/codec"
+	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // Keeper represents the keeper that maintains the Validator Registry.
 type Keeper struct {
-	storeKey  sdk.StoreKey
+	storeKey  storetypes.StoreKey
 	cdc       *codec.LegacyAmino
 	hooks     types.StakingHooks
 	govkeeper types.GovKeeper
 }
 
 // NewKeeper returns new keeper.
-func NewKeeper(storeKey sdk.StoreKey, cdc *codec.LegacyAmino, govkeeper types.GovKeeper) Keeper {
+func NewKeeper(storeKey storetypes.StoreKey, cdc *codec.LegacyAmino, govkeeper types.GovKeeper) Keeper {
 	return Keeper{storeKey: storeKey, cdc: cdc, govkeeper: govkeeper}
 }
 

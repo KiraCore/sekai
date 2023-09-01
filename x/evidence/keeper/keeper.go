@@ -10,6 +10,7 @@ import (
 	"github.com/KiraCore/sekai/x/evidence/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
+	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -19,7 +20,7 @@ import (
 // module.
 type Keeper struct {
 	cdc            codec.BinaryCodec
-	storeKey       sdk.StoreKey
+	storeKey       storetypes.StoreKey
 	router         types.Router
 	stakingKeeper  types.StakingKeeper
 	slashingKeeper types.SlashingKeeper
@@ -27,7 +28,7 @@ type Keeper struct {
 
 // NewKeeper returns an instance of a keeper
 func NewKeeper(
-	cdc codec.BinaryCodec, storeKey sdk.StoreKey, stakingKeeper types.StakingKeeper,
+	cdc codec.BinaryCodec, storeKey storetypes.StoreKey, stakingKeeper types.StakingKeeper,
 	slashingKeeper types.SlashingKeeper,
 ) *Keeper {
 
