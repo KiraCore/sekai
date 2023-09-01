@@ -155,7 +155,7 @@ func (k Keeper) ClaimSpendingPool(ctx sdk.Context, poolName string, sender sdk.A
 	}
 
 	// update pool to reduce pool's balance
-	pool.Balances = sdk.Coins(pool.Balances).Sub(rewards)
+	pool.Balances = sdk.Coins(pool.Balances).Sub(rewards...)
 	k.SetSpendingPool(ctx, *pool)
 
 	err := k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, rewards)

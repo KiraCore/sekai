@@ -6,7 +6,6 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
-	"github.com/KiraCore/sekai/middleware"
 	ubicli "github.com/KiraCore/sekai/x/ubi/client/cli"
 	ubikeeper "github.com/KiraCore/sekai/x/ubi/keeper"
 	"github.com/KiraCore/sekai/x/ubi/types"
@@ -118,10 +117,6 @@ func (am AppModule) QuerierRoute() string {
 	return ubitypes.QuerierRoute
 }
 
-// LegacyQuerierHandler returns the staking module sdk.Querier.
-func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {
-	return nil
-}
 
 func (am AppModule) BeginBlock(clientCtx sdk.Context, block abci.RequestBeginBlock) {}
 
@@ -133,11 +128,6 @@ func (am AppModule) EndBlock(ctx sdk.Context, block abci.RequestEndBlock) []abci
 
 func (am AppModule) Name() string {
 	return ubitypes.ModuleName
-}
-
-// Route returns the message routing key for the staking module.
-func (am AppModule) Route() sdk.Route {
-	return middleware.NewRoute(ubitypes.ModuleName, NewHandler(am.ubiKeeper, am.customGovKeeper))
 }
 
 // NewAppModule returns a new Custom Staking module.

@@ -6,7 +6,6 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
-	"github.com/KiraCore/sekai/middleware"
 	distributorcli "github.com/KiraCore/sekai/x/distributor/client/cli"
 	distributorkeeper "github.com/KiraCore/sekai/x/distributor/keeper"
 	"github.com/KiraCore/sekai/x/distributor/types"
@@ -140,11 +139,6 @@ func (am AppModule) QuerierRoute() string {
 	return distributortypes.QuerierRoute
 }
 
-// LegacyQuerierHandler returns the staking module sdk.Querier.
-func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {
-	return nil
-}
-
 func (am AppModule) BeginBlock(clientCtx sdk.Context, req abci.RequestBeginBlock) {
 	am.distributorKeeper.BeginBlocker(clientCtx, req)
 }
@@ -156,11 +150,6 @@ func (am AppModule) EndBlock(ctx sdk.Context, block abci.RequestEndBlock) []abci
 
 func (am AppModule) Name() string {
 	return distributortypes.ModuleName
-}
-
-// Route returns the message routing key for the staking module.
-func (am AppModule) Route() sdk.Route {
-	return middleware.NewRoute(distributortypes.ModuleName, NewHandler(am.distributorKeeper, am.customGovKeeper))
 }
 
 // NewAppModule returns a new Custom Staking module.

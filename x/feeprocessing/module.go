@@ -93,10 +93,6 @@ func (am AppModule) RegisterInvariants(registry sdk.InvariantRegistry) {}
 
 func (am AppModule) QuerierRoute() string { return "" }
 
-func (am AppModule) LegacyQuerierHandler(marshaler *codec.LegacyAmino) sdk.Querier {
-	return nil
-}
-
 func (am AppModule) BeginBlock(context sdk.Context, block abci.RequestBeginBlock) {}
 
 func (am AppModule) EndBlock(ctx sdk.Context, block abci.RequestEndBlock) []abci.ValidatorUpdate {
@@ -105,11 +101,6 @@ func (am AppModule) EndBlock(ctx sdk.Context, block abci.RequestEndBlock) []abci
 
 func (am AppModule) Name() string {
 	return feeprocessingtypes.ModuleName
-}
-
-// Route returns the message routing key for the staking module.
-func (am AppModule) Route() sdk.Route {
-	return sdk.NewRoute(feeprocessingtypes.ModuleName, NewHandler(am.keeper))
 }
 
 // RegisterQueryService registers a GRPC query service to respond to the

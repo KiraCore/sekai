@@ -3,7 +3,6 @@ package upgrade
 import (
 	"encoding/json"
 
-	"github.com/KiraCore/sekai/middleware"
 	"github.com/KiraCore/sekai/x/upgrade/client/cli"
 	"github.com/KiraCore/sekai/x/upgrade/keeper"
 	"github.com/KiraCore/sekai/x/upgrade/types"
@@ -129,11 +128,6 @@ func (am AppModule) QuerierRoute() string {
 	return types.QuerierRoute
 }
 
-// LegacyQuerierHandler returns the staking module sdk.Querier.
-func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {
-	return nil
-}
-
 func (am AppModule) BeginBlock(clientCtx sdk.Context, block abci.RequestBeginBlock) {
 	BeginBlocker(am.upgradeKeeper, clientCtx, block)
 }
@@ -144,11 +138,6 @@ func (am AppModule) EndBlock(ctx sdk.Context, block abci.RequestEndBlock) []abci
 
 func (am AppModule) Name() string {
 	return types.ModuleName
-}
-
-// Route returns the message routing key for the staking module.
-func (am AppModule) Route() sdk.Route {
-	return middleware.NewRoute(types.ModuleName, NewHandler(am.upgradeKeeper))
 }
 
 // NewAppModule returns a new Custom Staking module.
