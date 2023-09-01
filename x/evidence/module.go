@@ -187,7 +187,7 @@ func (am AppModule) ProposalContents(simState module.SimulationState) []simtypes
 }
 
 // RandomizedParams creates randomized evidence param changes for the simulator.
-func (AppModule) RandomizedParams(r *rand.Rand) []simtypes.ParamChange {
+func (AppModule) RandomizedParams(r *rand.Rand) []simtypes.LegacyParamChange {
 	return nil
 }
 

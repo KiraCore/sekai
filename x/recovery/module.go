@@ -174,8 +174,8 @@ func (AppModule) ProposalContents(simState module.SimulationState) []simtypes.We
 }
 
 // RandomizedParams creates randomized recovery param changes for the simulator.
-func (AppModule) RandomizedParams(r *rand.Rand) []simtypes.ParamChange {
-	return []simtypes.ParamChange{}
+func (AppModule) RandomizedParams(r *rand.Rand) []simtypes.LegacyParamChange {
+	return []simtypes.LegacyParamChange{}
 }
 
 // RegisterStoreDecoder registers a decoder for recovery module's types
