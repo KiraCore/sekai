@@ -614,7 +614,7 @@ func (k msgServer) BurnRecoveryTokens(goCtx context.Context, msg *types.MsgBurnR
 	}
 
 	recoveryToken.RrSupply = recoveryToken.RrSupply.Sub(msg.RrCoin.Amount)
-	recoveryToken.UnderlyingTokens = sdk.Coins(recoveryToken.UnderlyingTokens).Sub(redeemAmount)
+	recoveryToken.UnderlyingTokens = sdk.Coins(recoveryToken.UnderlyingTokens).Sub(redeemAmount...)
 
 	if recoveryToken.RrSupply.IsZero() {
 		k.Keeper.DeleteRecoveryToken(ctx, recoveryToken)

@@ -105,7 +105,7 @@ func (k Keeper) SendDonation(ctx sdk.Context, name string, account sdk.AccAddres
 
 	donations := sdk.Coins(collective.Donations)
 	if donations.IsAllGTE(coins) {
-		collective.Donations = donations.Sub(coins)
+		collective.Donations = donations.Sub(coins...)
 	} else {
 		return types.ErrNotEnoughDonationRewardsPool
 	}
@@ -152,7 +152,7 @@ func (k Keeper) WithdrawCollective(ctx sdk.Context, collective types.Collective,
 		}
 	}
 
-	collective.Bonds = sdk.Coins(collective.Bonds).Sub(collectiveBonds).Sub(donationBonds)
+	collective.Bonds = sdk.Coins(collective.Bonds).Sub(collectiveBonds...).Sub(donationBonds...)
 	k.SetCollective(ctx, collective)
 	k.DeleteCollectiveContributer(ctx, cc.Name, cc.Address)
 	return nil

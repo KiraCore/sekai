@@ -212,7 +212,7 @@ func (k Keeper) IncreasePoolRewards(ctx sdk.Context, pool types.StakingPool, rew
 				}
 			}
 			if !autoCompoundRewards.IsZero() {
-				k.SetDelegatorRewards(ctx, delegator, rewards.Sub(autoCompoundRewards))
+				k.SetDelegatorRewards(ctx, delegator, rewards.Sub(autoCompoundRewards...))
 			}
 		}
 		if !autoCompoundRewards.IsZero() {
@@ -361,8 +361,8 @@ func (k Keeper) Undelegate(ctx sdk.Context, msg *types.MsgUndelegate) error {
 		return types.ErrInsufficientTotalStakingTokens
 	}
 
-	pool.TotalStakingTokens = sdk.Coins(pool.TotalStakingTokens).Sub(msg.Amounts)
-	pool.TotalShareTokens = sdk.Coins(pool.TotalShareTokens).Sub(poolCoins)
+	pool.TotalStakingTokens = sdk.Coins(pool.TotalStakingTokens).Sub(msg.Amounts...)
+	pool.TotalShareTokens = sdk.Coins(pool.TotalShareTokens).Sub(poolCoins...)
 	k.SetStakingPool(ctx, pool)
 
 	lastUndelegationId := k.GetLastUndelegationId(ctx) + 1
