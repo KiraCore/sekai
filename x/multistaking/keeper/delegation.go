@@ -178,7 +178,7 @@ func (k Keeper) IncreasePoolRewards(ctx sdk.Context, pool types.StakingPool, rew
 		denomAllocation := sdk.Coins{}
 		for _, reward := range rewards {
 			denomAllocation = denomAllocation.Add(
-				sdk.NewCoin(reward.Denom, reward.Amount.ToDec().Mul(rate.StakeCap).RoundInt()),
+				sdk.NewCoin(reward.Denom, sdk.NewDecFromInt(reward.Amount).Mul(rate.StakeCap).RoundInt()),
 			)
 		}
 
@@ -394,7 +394,7 @@ func (k Keeper) GetPoolDelegationValue(ctx sdk.Context, pool types.StakingPool, 
 		}
 		shareToken := getShareDenom(pool.Id, stakingToken.Denom)
 		balance := balances.AmountOf(shareToken)
-		delegationValue = delegationValue.Add(balance.ToDec().Mul(rate.FeeRate).RoundInt())
+		delegationValue = delegationValue.Add(sdk.NewDecFromInt(balance).Mul(rate.FeeRate).RoundInt())
 	}
 	return delegationValue
 }
@@ -406,7 +406,7 @@ func (k Keeper) GetCoinsValue(ctx sdk.Context, coins sdk.Coins) sdk.Int {
 		if rate == nil {
 			continue
 		}
-		delegationValue = delegationValue.Add(coin.Amount.ToDec().Mul(rate.FeeRate).RoundInt())
+		delegationValue = delegationValue.Add(sdk.NewDecFromInt(coin.Amount).Mul(rate.FeeRate).RoundInt())
 	}
 	return delegationValue
 }

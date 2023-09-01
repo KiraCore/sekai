@@ -44,7 +44,7 @@ func (k Keeper) MintBasketToken(ctx sdk.Context, msg *types.MsgBasketTokenMint) 
 		if !basket.Tokens[tokenIndex].Deposits {
 			return sdkerrors.Wrap(types.ErrDepositsDisabledForToken, fmt.Sprintf("denom=%s", token.Denom))
 		}
-		basketTokenAmount = basketTokenAmount.Add(token.Amount.ToDec().Mul(rate))
+		basketTokenAmount = basketTokenAmount.Add(sdk.NewDecFromInt(token.Amount).Mul(rate))
 	}
 
 	basketCoin := sdk.NewCoin(basket.GetBasketDenom(), basketTokenAmount.RoundInt())
@@ -126,14 +126,14 @@ func (k Keeper) BurnBasketToken(ctx sdk.Context, msg *types.MsgBasketTokenBurn) 
 	}
 
 	supply := k.bk.GetSupply(ctx, msg.BurnAmount.Denom)
-	portion := msg.BurnAmount.Amount.ToDec().Quo(supply.Amount.ToDec())
+	portion := sdk.NewDecFromInt(msg.BurnAmount.Amount).Quo(sdk.NewDecFromInt(supply.Amount))
 
 	withdrawCoins := sdk.Coins{}
 	for _, token := range basket.Tokens {
 		if !token.Withdraws {
 			continue
 		}
-		withdrawAmount := token.Amount.ToDec().Mul(portion).RoundInt()
+		withdrawAmount := sdk.NewDecFromInt(token.Amount).Mul(portion).RoundInt()
 		if withdrawAmount.IsPositive() {
 			withdrawCoins = withdrawCoins.Add(sdk.NewCoin(token.Denom, withdrawAmount))
 		}
@@ -211,7 +211,7 @@ func (k Keeper) BasketSwap(ctx sdk.Context, msg *types.MsgBasketTokenSwap) error
 			return types.ErrSwapsDisabledForOutToken
 		}
 
-		swapValue := pair.InAmount.Amount.ToDec().Mul(inRate).RoundInt()
+		swapValue := sdk.NewDecFromInt(pair.InAmount.Amount).Mul(inRate).RoundInt()
 		if swapValue.LT(basket.SwapsMin) {
 			return types.ErrAmountBelowBaksetSwapsMin
 		}
@@ -223,7 +223,7 @@ func (k Keeper) BasketSwap(ctx sdk.Context, msg *types.MsgBasketTokenSwap) error
 		}
 
 		// calculate out amount considering fees and rates
-		swapAmount := pair.InAmount.Amount.ToDec().Mul(sdk.OneDec().Sub(basket.SwapFee)).RoundInt()
+		swapAmount := sdk.NewDecFromInt(pair.InAmount.Amount).Mul(sdk.OneDec().Sub(basket.SwapFee)).RoundInt()
 
 		// pay network for fee
 		feeAmount := pair.InAmount.Amount.Sub(swapAmount)
@@ -234,7 +234,7 @@ func (k Keeper) BasketSwap(ctx sdk.Context, msg *types.MsgBasketTokenSwap) error
 			}
 		}
 
-		outAmount := swapAmount.ToDec().Mul(inRate).Quo(outRate).RoundInt()
+		outAmount := sdk.NewDecFromInt(swapAmount).Mul(inRate).Quo(outRate).RoundInt()
 		if outAmount.IsZero() {
 			return types.ErrNotAbleToWithdrawAnyTokens
 		}
@@ -259,7 +259,7 @@ func (k Keeper) BasketSwap(ctx sdk.Context, msg *types.MsgBasketTokenSwap) error
 	slippageFee := basket.SlippageFee(oldDisbalance)
 	finalOutCoins := sdk.Coins{}
 	for _, coin := range outAmounts {
-		finalOutAmount := coin.Amount.ToDec().Mul(sdk.OneDec().Sub(slippageFee)).RoundInt()
+		finalOutAmount := sdk.NewDecFromInt(coin.Amount).Mul(sdk.OneDec().Sub(slippageFee)).RoundInt()
 		finalOutCoins = finalOutCoins.Add(sdk.NewCoin(coin.Denom, finalOutAmount))
 	}
 	err = k.bk.SendCoinsFromModuleToAccount(ctx, types.ModuleName, sender, finalOutCoins)

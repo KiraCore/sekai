@@ -16,7 +16,7 @@ func (k Keeper) SlashStakingPool(ctx sdk.Context, validator string, slash sdk.De
 
 	totalStakingTokens := sdk.Coins{}
 	for _, stakingToken := range pool.TotalStakingTokens {
-		totalStakingTokens = totalStakingTokens.Add(sdk.NewCoin(stakingToken.Denom, stakingToken.Amount.ToDec().Mul(sdk.OneDec().Sub(pool.Slashed)).RoundInt()))
+		totalStakingTokens = totalStakingTokens.Add(sdk.NewCoin(stakingToken.Denom, sdk.NewDecFromInt(stakingToken.Amount).Mul(sdk.OneDec().Sub(pool.Slashed)).RoundInt()))
 	}
 	totalSlashedTokens := sdk.Coins(pool.TotalStakingTokens).Sub(totalStakingTokens)
 	pool.TotalStakingTokens = totalStakingTokens

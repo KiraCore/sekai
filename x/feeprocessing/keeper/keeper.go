@@ -65,7 +65,7 @@ func (k Keeper) SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule strin
 	for _, coin := range amt {
 		rate := k.tk.GetTokenRate(ctx, coin.Denom)
 		if rate != nil {
-			totalAmount = totalAmount.Add(rate.FeeRate.Mul(coin.Amount.ToDec()))
+			totalAmount = totalAmount.Add(rate.FeeRate.Mul(sdk.NewDecFromInt(coin.Amount)))
 		}
 	}
 
@@ -75,7 +75,7 @@ func (k Keeper) SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule strin
 			continue
 		}
 		toFillAmt := totalAmount.Sub(filledAmount)
-		fillAmt := rate.FeeRate.Mul(coin.Amount.ToDec())
+		fillAmt := rate.FeeRate.Mul(sdk.NewDecFromInt(coin.Amount))
 		if fillAmt.GT(toFillAmt) {
 			// we don't pay back full amount if there's remainder in div operation
 			coinAmt := toFillAmt.BigInt().Div(toFillAmt.BigInt(), rate.FeeRate.BigInt())

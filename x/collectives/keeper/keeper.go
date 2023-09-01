@@ -40,7 +40,7 @@ func (k Keeper) CheckIfAllowedPermission(ctx sdk.Context, addr sdk.AccAddress, p
 func calcPortion(coins sdk.Coins, portion sdk.Dec) sdk.Coins {
 	portionCoins := sdk.Coins{}
 	for _, coin := range coins {
-		portionCoin := sdk.NewCoin(coin.Denom, coin.Amount.ToDec().Mul(portion).RoundInt())
+		portionCoin := sdk.NewCoin(coin.Denom, sdk.NewDecFromInt(coin.Amount).Mul(portion).RoundInt())
 		portionCoins = portionCoins.Add(portionCoin)
 	}
 	return portionCoins

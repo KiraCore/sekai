@@ -127,7 +127,7 @@ func (k Keeper) GetBondsValue(ctx sdk.Context, bonds sdk.Coins) sdk.Dec {
 			continue
 		}
 
-		bondsValue = bondsValue.Add(rate.FeeRate.Mul(bond.Amount.ToDec()))
+		bondsValue = bondsValue.Add(rate.FeeRate.Mul(sdk.NewDecFromInt(bond.Amount)))
 	}
 	return bondsValue
 }

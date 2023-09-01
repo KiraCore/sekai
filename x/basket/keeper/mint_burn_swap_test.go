@@ -762,7 +762,7 @@ func (suite *KeeperTestSuite) TestBasketSwap() {
 				// check correct fee amount
 				feeCollector := suite.app.AccountKeeper.GetModuleAddress(authtypes.FeeCollectorName)
 				feeCollectorBalance := suite.app.BankKeeper.GetBalance(suite.ctx, feeCollector, "ukex")
-				suite.Require().Equal(feeCollectorBalance.Amount, tc.swapBalance.Amount.ToDec().Mul(basket.SwapFee).RoundInt())
+				suite.Require().Equal(feeCollectorBalance.Amount, sdk.NewDecFromInt(tc.swapBalance.Amount).Mul(basket.SwapFee).RoundInt())
 
 				// check correct slippage amount + surplus
 				suite.Require().True(sdk.Coins(savedBasket.Surplus).Sub(basket.Surplus).IsAllPositive())
