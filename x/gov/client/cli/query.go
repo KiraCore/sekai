@@ -62,6 +62,7 @@ func NewQueryCmd() *cobra.Command {
 		GetCmdQueryAddressesByWhitelistedPermission(),
 		GetCmdQueryAddressesByBlacklistedPermission(),
 		GetCmdQueryAddressesByWhitelistedRole(),
+		GetCmdQueryCustomPrefixes(),
 	)
 
 	return queryCmd
@@ -194,6 +195,30 @@ func GetCmdQueryNetworkProperties() *cobra.Command {
 			params := &types.NetworkPropertiesRequest{}
 			queryClient := types.NewQueryClient(clientCtx)
 			res, err := queryClient.NetworkProperties(context.Background(), params)
+			if err != nil {
+				return err
+			}
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// GetCmdQueryCustomPrefixes implement query custom prefixes
+func GetCmdQueryCustomPrefixes() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "custom-prefixes",
+		Short: "Query custom prefixes",
+		Args:  cobra.MinimumNArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			params := &types.QueryCustomPrefixesRequest{}
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.CustomPrefixes(context.Background(), params)
 			if err != nil {
 				return err
 			}
