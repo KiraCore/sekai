@@ -31,7 +31,7 @@ $ %s export-minimized-genesis exported-genesis.json new-genesis.json
 			if err != nil {
 				return err
 			}
-			cdc := clientCtx.JSONCodec
+			cdc := clientCtx.Codec
 
 			genDoc, err := tmtypes.GenesisDocFromFile(args[0])
 			if err != nil {

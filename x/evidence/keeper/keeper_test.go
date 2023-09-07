@@ -91,7 +91,6 @@ func (suite *KeeperTestSuite) SetupTest() {
 	app.EvidenceKeeper = *evidenceKeeper
 
 	suite.ctx = app.BaseApp.NewContext(checkTx, tmproto.Header{Height: 1})
-	suite.querier = keeper.NewQuerier(*evidenceKeeper, app.LegacyAmino())
 	suite.app = app
 
 	for i, addr := range valAddresses {

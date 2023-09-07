@@ -31,7 +31,7 @@ func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions() {
 			fmt.Sprintf("--%s=%s", stakingcli.FlagAddr, addr.String()),
 			fmt.Sprintf("--%s=%s", cli.FlagPermission, "1"),
 			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 			fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
 		},
 	)
@@ -53,7 +53,7 @@ func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions() {
 	s.Require().NoError(err)
 
 	var perms types.Permissions
-	clientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &perms)
+	clientCtx.Codec.MustUnmarshalJSON(out.Bytes(), &perms)
 
 	// Validator 1 has permission to Add Permissions.
 	s.Require().True(perms.IsWhitelisted(types.PermSetPermissions))
@@ -77,7 +77,7 @@ func (s IntegrationTestSuite) TestGetTxSetBlacklistPermissions() {
 			fmt.Sprintf("--%s=%s", stakingcli.FlagAddr, addr.String()),
 			fmt.Sprintf("--%s=%s", cli.FlagPermission, "1"),
 			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 			fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
 		},
 	)
@@ -99,7 +99,7 @@ func (s IntegrationTestSuite) TestGetTxSetBlacklistPermissions() {
 	s.Require().NoError(err)
 
 	var perms types.Permissions
-	clientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &perms)
+	clientCtx.Codec.MustUnmarshalJSON(out.Bytes(), &perms)
 
 	// Validator 1 has permission to Add Permissions.
 	s.Require().True(perms.IsBlacklisted(types.PermSetPermissions))
@@ -122,7 +122,7 @@ func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions_WithUserThatDoesN
 		fmt.Sprintf("--%s=%s", stakingcli.FlagAddr, val.Address.String()),
 		fmt.Sprintf("--%s=%s", cli.FlagPermission, "1"),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
 	})
 	s.Require().NoError(err)

@@ -78,7 +78,7 @@ func (s *IntegrationTestSuite) TestQueryValidator() {
 	s.Require().NoError(err)
 
 	var respValidator customtypes.Validator
-	clientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &respValidator)
+	clientCtx.Codec.MustUnmarshalJSON(out.Bytes(), &respValidator)
 
 	s.Require().Equal(val.ValAddress, respValidator.ValKey)
 
@@ -94,7 +94,7 @@ func (s *IntegrationTestSuite) TestQueryValidator() {
 	})
 	s.Require().NoError(err)
 
-	clientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &respValidator)
+	clientCtx.Codec.MustUnmarshalJSON(out.Bytes(), &respValidator)
 
 	s.Require().Equal(val.ValAddress, respValidator.ValKey)
 
@@ -109,7 +109,7 @@ func (s *IntegrationTestSuite) TestQueryValidator() {
 	})
 	s.Require().NoError(err)
 
-	clientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &respValidator)
+	clientCtx.Codec.MustUnmarshalJSON(out.Bytes(), &respValidator)
 
 	s.Require().Equal(val.ValAddress, respValidator.ValKey)
 
@@ -159,7 +159,7 @@ func (s IntegrationTestSuite) TestCreateProposalUnjailValidator() {
 			fmt.Sprintf("--%s=%s", cli.FlagTitle, "title"),
 			fmt.Sprintf("--%s=%s", cli.FlagDescription, "some desc"),
 			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 			fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
 			val.ValAddress.String(),
 			"theReference",
@@ -177,7 +177,7 @@ func (s IntegrationTestSuite) TestCreateProposalUnjailValidator() {
 			fmt.Sprintf("%d", govtypes.OptionYes),
 			fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 			fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
 		},
 	)

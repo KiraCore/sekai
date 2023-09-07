@@ -24,7 +24,7 @@ func (s IntegrationTestSuite) TestWhitelistRolePermission() {
 	s.Require().NoError(err)
 
 	var roleQuery types.RoleQuery
-	val.ClientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &roleQuery)
+	val.ClientCtx.Codec.MustUnmarshalJSON(out.Bytes(), &roleQuery)
 	s.Require().False(roleQuery.Permissions.IsWhitelisted(types.PermSetPermissions))
 
 	// Send Tx To Whitelist permission
@@ -34,7 +34,7 @@ func (s IntegrationTestSuite) TestWhitelistRolePermission() {
 		"1", // PermSetPermission
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
 	})
 	s.Require().NoError(err)
@@ -47,7 +47,7 @@ func (s IntegrationTestSuite) TestWhitelistRolePermission() {
 	s.Require().NoError(err)
 
 	var newRoleQuery types.RoleQuery
-	val.ClientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &newRoleQuery)
+	val.ClientCtx.Codec.MustUnmarshalJSON(out.Bytes(), &newRoleQuery)
 	s.Require().True(newRoleQuery.Permissions.IsWhitelisted(types.PermSetPermissions))
 }
 
@@ -63,7 +63,7 @@ func (s IntegrationTestSuite) TestBlacklistRolePermission() {
 	s.Require().NoError(err)
 
 	var roleQuery types.RoleQuery
-	val.ClientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &roleQuery)
+	val.ClientCtx.Codec.MustUnmarshalJSON(out.Bytes(), &roleQuery)
 	s.Require().True(roleQuery.Permissions.IsWhitelisted(types.PermClaimValidator))
 	s.Require().False(roleQuery.Permissions.IsBlacklisted(types.PermClaimCouncilor))
 
@@ -74,7 +74,7 @@ func (s IntegrationTestSuite) TestBlacklistRolePermission() {
 		"3", // PermClaimCouncilor
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
 	})
 	s.Require().NoError(err)
@@ -90,7 +90,7 @@ func (s IntegrationTestSuite) TestBlacklistRolePermission() {
 	s.Require().NoError(err)
 
 	var newRoleQuery types.RoleQuery
-	val.ClientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &newRoleQuery)
+	val.ClientCtx.Codec.MustUnmarshalJSON(out.Bytes(), &newRoleQuery)
 	s.Require().True(newRoleQuery.Permissions.IsWhitelisted(types.PermClaimValidator))
 	s.Require().True(newRoleQuery.Permissions.IsBlacklisted(types.PermClaimCouncilor))
 }
@@ -107,7 +107,7 @@ func (s IntegrationTestSuite) TestRemoveWhitelistRolePermission() {
 	s.Require().NoError(err)
 
 	var roleQuery types.RoleQuery
-	val.ClientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &roleQuery)
+	val.ClientCtx.Codec.MustUnmarshalJSON(out.Bytes(), &roleQuery)
 	s.Require().True(roleQuery.Permissions.IsWhitelisted(types.PermClaimValidator))
 
 	// Send Tx To Blacklist permission
@@ -117,7 +117,7 @@ func (s IntegrationTestSuite) TestRemoveWhitelistRolePermission() {
 		"2", // PermClaimValidator
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
 	})
 	s.Require().NoError(err)
@@ -133,7 +133,7 @@ func (s IntegrationTestSuite) TestRemoveWhitelistRolePermission() {
 	s.Require().NoError(err)
 
 	var newRoleQuery types.RoleQuery
-	val.ClientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &newRoleQuery)
+	val.ClientCtx.Codec.MustUnmarshalJSON(out.Bytes(), &newRoleQuery)
 	s.Require().False(newRoleQuery.Permissions.IsWhitelisted(types.PermClaimValidator))
 }
 
@@ -155,7 +155,7 @@ func (s IntegrationTestSuite) TestRemoveBlacklistRolePermission() {
 		"3",    // PermClaimCouncilor
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
 	})
 	s.Require().NoError(err)
@@ -183,7 +183,7 @@ func (s IntegrationTestSuite) TestCreateRole() {
 		"myRole", "myRole", // RoleValidator
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
 	})
 	s.Require().NoError(err)
@@ -212,7 +212,7 @@ func (s IntegrationTestSuite) TestAssignRoles_AndUnassignRoles() {
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=%s", stakingcli.FlagAddr, addr),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
 	})
 	s.Require().NoError(err)
@@ -229,7 +229,7 @@ func (s IntegrationTestSuite) TestAssignRoles_AndUnassignRoles() {
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=%s", stakingcli.FlagAddr, addr),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
 	})
 	s.Require().NoError(err)

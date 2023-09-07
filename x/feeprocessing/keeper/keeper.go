@@ -92,7 +92,7 @@ func (k Keeper) SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule strin
 		}
 	}
 
-	k.SetSenderCoinsHistory(ctx, recipientAddr, recipientSentCoins.Sub(paybackCoins))
+	k.SetSenderCoinsHistory(ctx, recipientAddr, recipientSentCoins.Sub(paybackCoins...))
 	return k.bk.SendCoinsFromModuleToAccount(ctx, senderModule, recipientAddr, paybackCoins)
 }
 

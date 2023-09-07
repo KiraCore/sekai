@@ -141,7 +141,7 @@ func TestNewKeeper_SendCoinsFromModuleToAccount(t *testing.T) {
 	require.True(t, balance.Amount.Int64() == 100-10)
 
 	savedFees := app.FeeProcessingKeeper.GetSenderCoinsHistory(ctx, addr)
-	require.True(t, savedFees.IsEqual(fees.Sub(returnFees)))
+	require.True(t, savedFees.IsEqual(fees.Sub(returnFees...)))
 }
 
 func TestNewKeeper_ProcessExecutionFeeReturn(t *testing.T) {

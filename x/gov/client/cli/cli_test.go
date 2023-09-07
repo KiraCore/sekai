@@ -87,7 +87,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 // 	s.Require().NoError(err)
 
 // 	var councilorByAddress types.Councilor
-// 	err = val.ClientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &councilorByAddress)
+// 	err = val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &councilorByAddress)
 // 	s.Require().NoError(err)
 // 	s.Require().Equal(val.Moniker, councilorByAddress.Moniker)
 // 	s.Require().Equal(val.Address, councilorByAddress.Address)
@@ -100,7 +100,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 // 	s.Require().NoError(err)
 
 // 	var councilorByMoniker types.Councilor
-// 	err = val.ClientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &councilorByMoniker)
+// 	err = val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &councilorByMoniker)
 // 	s.Require().NoError(err)
 // 	s.Require().Equal(val.Moniker, councilorByMoniker.Moniker)
 // 	s.Require().Equal(val.Address, councilorByMoniker.Address)

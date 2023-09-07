@@ -80,7 +80,7 @@ func (s *IntegrationTestSuite) TestUpsertTokenAliasAndQuery() {
 		fmt.Sprintf("--%s=%d", cli.FlagDecimals, 6),
 		fmt.Sprintf("--%s=%s", cli.FlagDenoms, "finney"),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
 	})
 	s.Require().NoError(err)
@@ -96,7 +96,7 @@ func (s *IntegrationTestSuite) TestUpsertTokenAliasAndQuery() {
 	s.Require().NoError(err)
 
 	var tokenAlias tokenstypes.TokenAlias
-	clientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &tokenAlias)
+	clientCtx.Codec.MustUnmarshalJSON(out.Bytes(), &tokenAlias)
 
 	s.Require().Equal(tokenAlias.Symbol, "ETH")
 	s.Require().Equal(tokenAlias.Name, "Ethereum")
@@ -116,7 +116,7 @@ func (s *IntegrationTestSuite) TestUpsertTokenRateAndQuery() {
 		fmt.Sprintf("--%s=%f", cli.FlagRate, 0.00001),
 		fmt.Sprintf("--%s=%s", cli.FlagFeePayments, "true"),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
 	})
 	s.Require().NoError(err)
@@ -132,7 +132,7 @@ func (s *IntegrationTestSuite) TestUpsertTokenRateAndQuery() {
 	s.Require().NoError(err)
 
 	var tokenRate tokenstypes.TokenRate
-	clientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &tokenRate)
+	clientCtx.Codec.MustUnmarshalJSON(out.Bytes(), &tokenRate)
 
 	s.Require().Equal(tokenRate.Denom, "ubtc")
 	s.Require().Equal(tokenRate.FeeRate, sdk.NewDecWithPrec(1, 5))
@@ -148,7 +148,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryTokenBlackWhites() {
 	s.Require().NoError(err)
 
 	var blackWhites tokenstypes.TokenBlackWhitesResponse
-	clientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &blackWhites)
+	clientCtx.Codec.MustUnmarshalJSON(out.Bytes(), &blackWhites)
 
 	s.Require().Equal(blackWhites.Data.Blacklisted, []string{"frozen"})
 	s.Require().Equal(blackWhites.Data.Whitelisted, []string{"ukex"})
@@ -168,7 +168,7 @@ func (s IntegrationTestSuite) TestCreateProposalUpsertTokenRates() {
 		fmt.Sprintf("--%s=%s", cli.FlagFeePayments, "true"),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
 	})
 	s.Require().NoError(err)
@@ -181,7 +181,7 @@ func (s IntegrationTestSuite) TestCreateProposalUpsertTokenRates() {
 		fmt.Sprintf("%d", govtypes.OptionYes),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
 	})
 	s.Require().NoError(err)
@@ -204,7 +204,7 @@ func (s IntegrationTestSuite) TestCreateProposalUpsertTokenAlias() {
 		fmt.Sprintf("--%s=%s", cli.FlagDenoms, "finney"),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
 	})
 	s.Require().NoError(err)
@@ -218,7 +218,7 @@ func (s IntegrationTestSuite) TestCreateProposalUpsertTokenAlias() {
 		fmt.Sprintf("%d", govtypes.OptionYes),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
 	})
 	s.Require().NoError(err)
@@ -240,7 +240,7 @@ func (s IntegrationTestSuite) TestTxProposalTokensBlackWhiteChangeCmd() {
 		fmt.Sprintf("--%s=frozen2", cli.FlagTokens),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
 	})
 
@@ -255,7 +255,7 @@ func (s IntegrationTestSuite) TestTxProposalTokensBlackWhiteChangeCmd() {
 		fmt.Sprintf("%d", govtypes.OptionYes),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
 	})
 	s.Require().NoError(err)
@@ -271,7 +271,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryAllTokenAliases() {
 	s.Require().NoError(err)
 
 	var resp tokenstypes.AllTokenAliasesResponse
-	clientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &resp)
+	clientCtx.Codec.MustUnmarshalJSON(out.Bytes(), &resp)
 
 	s.Require().Greater(len(resp.Data), 0)
 }
@@ -285,7 +285,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryTokenAliasesByDenom() {
 	s.Require().NoError(err)
 
 	var resp tokenstypes.TokenAliasesByDenomResponse
-	clientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &resp)
+	clientCtx.Codec.MustUnmarshalJSON(out.Bytes(), &resp)
 
 	s.Require().Greater(len(resp.Data), 0)
 }
@@ -299,7 +299,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryAllTokenRates() {
 	s.Require().NoError(err)
 
 	var resp tokenstypes.AllTokenRatesResponse
-	clientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &resp)
+	clientCtx.Codec.MustUnmarshalJSON(out.Bytes(), &resp)
 
 	s.Require().Greater(len(resp.Data), 0)
 }
@@ -313,7 +313,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryTokenRatesByDenom() {
 	s.Require().NoError(err)
 
 	var resp tokenstypes.TokenRatesByDenomResponse
-	clientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &resp)
+	clientCtx.Codec.MustUnmarshalJSON(out.Bytes(), &resp)
 
 	s.Require().Greater(len(resp.Data), 0)
 }
