@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 
 	customante "github.com/KiraCore/sekai/app/ante"
-	"github.com/KiraCore/sekai/middleware"
+	posthandler "github.com/KiraCore/sekai/app/posthandler"
 	"github.com/KiraCore/sekai/x/basket"
 	basketkeeper "github.com/KiraCore/sekai/x/basket/keeper"
 	baskettypes "github.com/KiraCore/sekai/x/basket/types"
@@ -529,9 +529,18 @@ func NewInitApp(
 		}
 	}
 
-	middleware.SetKeepers(app.CustomGovKeeper, app.FeeProcessingKeeper)
-
 	return app
+}
+
+func (app *SekaiApp) setPostHandler() {
+	postHandler, err := posthandler.NewPostHandler(
+		posthandler.HandlerOptions{},
+	)
+	if err != nil {
+		panic(err)
+	}
+
+	app.SetPostHandler(postHandler)
 }
 
 // Name returns the name of the App
