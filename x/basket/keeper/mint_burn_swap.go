@@ -268,7 +268,7 @@ func (k Keeper) BasketSwap(ctx sdk.Context, msg *types.MsgBasketTokenSwap) error
 	}
 
 	// increase surplus by slippage fee
-	slippageFeeAmounts := outAmounts.Sub(finalOutCoins)
+	slippageFeeAmounts := outAmounts.Sub(finalOutCoins...)
 	basket.Surplus = sdk.Coins(basket.Surplus).Add(slippageFeeAmounts...)
 
 	err = basket.ValidateTokensCap()
