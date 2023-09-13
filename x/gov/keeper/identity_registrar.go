@@ -242,15 +242,37 @@ func (k Keeper) DeleteIdentityRecords(ctx sdk.Context, address sdk.AccAddress, k
 		}
 	}
 
+	recordIdMap := make(map[uint64]bool)
 	for _, recordId := range recordIds {
 		prevRecord := k.GetIdentityRecordById(ctx, recordId)
 		if prevRecord == nil {
 			return sdkerrors.Wrap(types.ErrInvalidIdentityRecordId, fmt.Sprintf("identity record with specified id does NOT exist: id=%d", recordId))
 		}
 
+		recordIdMap[recordId] = true
 		k.DeleteIdentityRecordById(ctx, recordId)
 	}
 
+	// remove record ids from verification request list
+	requests := k.GetAllIdRecordsVerifyRequests(ctx)
+	for _, request := range requests {
+		recordIds := []uint64{}
+		for _, recordid := range request.RecordIds {
+			if !recordIdMap[recordid] {
+				recordIds = append(recordIds, recordid)
+			}
+		}
+
+		if len(recordIds) == 0 {
+			err := k.CancelIdentityRecordsVerifyRequest(ctx, sdk.MustAccAddressFromBech32(request.Address), request.Id)
+			if err != nil {
+				return err
+			}
+		} else {
+			request.RecordIds = recordIds
+			k.SetIdentityRecordsVerifyRequest(ctx, request)
+		}
+	}
 	return nil
 }
 
