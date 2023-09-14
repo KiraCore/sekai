@@ -74,7 +74,7 @@ func (s IntegrationTestSuite) TestTxRequestIdentityRecordsVerify() {
 		[]string{
 			fmt.Sprintf("--%s=%s", cli.FlagVerifier, val.Address.String()),
 			fmt.Sprintf("--%s=%s", cli.FlagRecordIds, "1"),
-			fmt.Sprintf("--%s=%s", cli.FlagTip, "10stake"),
+			fmt.Sprintf("--%s=%s", cli.FlagVerifierTip, "10stake"),
 			fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
