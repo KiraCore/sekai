@@ -1,36 +1,25 @@
 #!/usr/bin/env bash
-set -x
-set -e
-set -o pipefail
 
-# get protoc executions
-go get github.com/regen-network/cosmos-proto/protoc-gen-gocosmos 2>/dev/null
+set -eo pipefail
 
-# get cosmos sdk from github
-go get github.com/cosmos/cosmos-sdk@v0.45.10 2>/dev/null
+generate_protos() {
+  package="$1"
+  proto_dirs=$(find $package -path -prune -o -name '*.proto' -print0 | xargs -0 -n1 dirname | sort | uniq)
+  for dir in $proto_dirs; do
+    for file in $(find "${dir}" -maxdepth 1 -name '*.proto'); do
+      if grep go_package "$file" &>/dev/null; then
+        buf generate --template buf.gen.gogo.yaml "$file"
+      fi
+    done
+  done
+}
 
-# Get the path of the cosmos-sdk repo from go/pkg/mod
-cosmos_sdk_dir=$(go list -f '{{ .Dir }}' -m github.com/cosmos/cosmos-sdk)
-proto_dirs=$(find ./proto -path -prune -o -name '*.proto' -print0 | xargs -0 -n1 dirname | sort | uniq)
+echo "Generating gogo proto code"
+cd proto
 
-for dir in $proto_dirs; do
-  # generate protobuf bind
-  buf protoc \
-  -I "proto" \
-  -I "$cosmos_sdk_dir/third_party/proto" \
-  -I "$cosmos_sdk_dir/proto" \
-  --gocosmos_out=plugins=interfacetype+grpc,\
-Mgoogle/protobuf/any.proto=github.com/cosmos/cosmos-sdk/codec/types:. \
-  $(find "${dir}" -maxdepth 1 -name '*.proto')
+generate_protos "./kira"
 
-  # generate grpc gateway
-  buf protoc \
-  -I "proto" \
-  -I "$cosmos_sdk_dir/third_party/proto" \
-  -I "$cosmos_sdk_dir/proto" \
-  --grpc-gateway_out=logtostderr=true:. \
-  $(find "${dir}" -maxdepth 1 -name '*.proto')
-done
+cd ..
 
 # move proto files to the right places
 cp -r github.com/KiraCore/sekai/* ./

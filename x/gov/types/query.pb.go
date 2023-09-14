@@ -9,9 +9,9 @@ import (
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/cosmos/cosmos-sdk/types/query"
 	github_com_cosmos_cosmos_sdk_types_query "github.com/cosmos/cosmos-sdk/types/query"
+	_ "github.com/cosmos/gogoproto/gogoproto"
 	grpc1 "github.com/cosmos/gogoproto/grpc"
-	_ "github.com/gogo/protobuf/gogoproto"
-	proto "github.com/gogo/protobuf/proto"
+	proto "github.com/cosmos/gogoproto/proto"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
@@ -3468,7 +3468,7 @@ type QueryClient interface {
 	AddressesByBlacklistedPermission(ctx context.Context, in *QueryAddressesByBlacklistedPermission, opts ...grpc.CallOption) (*QueryAddressesByBlacklistedPermissionResponse, error)
 	// AddressesByWhitelistedRole - list all kira addresses by a specific whitelisted role (address does NOT have to be a Councilor)
 	AddressesByWhitelistedRole(ctx context.Context, in *QueryAddressesByWhitelistedRole, opts ...grpc.CallOption) (*QueryAddressesByWhitelistedRoleResponse, error)
-	//Query list of all polls by address
+	// Query list of all polls by address
 	PollsListByAddress(ctx context.Context, in *QueryPollsListByAddress, opts ...grpc.CallOption) (*QueryPollsListByAddressResponse, error)
 	PollsVotesByPollId(ctx context.Context, in *QueryPollsVotesByPollId, opts ...grpc.CallOption) (*QueryPollsVotesByPollIdResponse, error)
 }
@@ -3854,7 +3854,7 @@ type QueryServer interface {
 	AddressesByBlacklistedPermission(context.Context, *QueryAddressesByBlacklistedPermission) (*QueryAddressesByBlacklistedPermissionResponse, error)
 	// AddressesByWhitelistedRole - list all kira addresses by a specific whitelisted role (address does NOT have to be a Councilor)
 	AddressesByWhitelistedRole(context.Context, *QueryAddressesByWhitelistedRole) (*QueryAddressesByWhitelistedRoleResponse, error)
-	//Query list of all polls by address
+	// Query list of all polls by address
 	PollsListByAddress(context.Context, *QueryPollsListByAddress) (*QueryPollsListByAddressResponse, error)
 	PollsVotesByPollId(context.Context, *QueryPollsVotesByPollId) (*QueryPollsVotesByPollIdResponse, error)
 }
