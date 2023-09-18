@@ -254,7 +254,7 @@ func (k Keeper) DeleteIdentityRecords(ctx sdk.Context, address sdk.AccAddress, k
 	}
 
 	// remove record ids from verification request list
-	requests := k.GetAllIdRecordsVerifyRequests(ctx)
+	requests := k.GetIdRecordsVerifyRequestsByRequester(ctx, address)
 	for _, request := range requests {
 		recordIds := []uint64{}
 		for _, recordid := range request.RecordIds {
@@ -373,6 +373,21 @@ func (k Keeper) SetIdentityRecordsVerifyRequest(ctx sdk.Context, request types.I
 // RequestIdentityRecordsVerify defines a method to request verify request from specific verifier
 func (k Keeper) RequestIdentityRecordsVerify(ctx sdk.Context, address, verifier sdk.AccAddress, recordIds []uint64, tip sdk.Coin) (uint64, error) {
 	requestId := k.GetLastIdRecordVerifyRequestId(ctx) + 1
+	store := ctx.KVStore(k.storeKey)
+	prefix := types.IdentityRecordByAddressPrefix(address.String())
+	iterator := sdk.KVStorePrefixIterator(store, prefix)
+	defer iterator.Close()
+
+	idsMap := make(map[uint64]bool)
+	for ; iterator.Valid(); iterator.Next() {
+		idsMap[sdk.BigEndianToUint64(iterator.Value())] = true
+	}
+
+	for _, recordId := range recordIds {
+		if !idsMap[recordId] {
+			return requestId, sdkerrors.Wrap(types.ErrInvalidIdentityRecordId, fmt.Sprintf("executor is not owner of the identity record: id=%d", recordId))
+		}
+	}
 
 	lastRecordEditDate := time.Time{}
 	for _, recordId := range recordIds {
