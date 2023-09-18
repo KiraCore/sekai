@@ -1,3 +1,3 @@
 Features:
 
-- Add a gov gRPC endpoint & CLI for querying custom prefixes
+- Remove abandoned record ids from request records.
