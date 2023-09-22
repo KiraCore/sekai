@@ -33,7 +33,7 @@ func TestItUpdatesTheValidatorSetBasedOnPendingValidators(t *testing.T) {
 
 	// First checkings
 	validatorSet := app.CustomStakingKeeper.GetValidatorSet(ctx)
-	require.Len(t, validatorSet, 0)
+	require.Len(t, validatorSet, 1)
 	validatorSet = app.CustomStakingKeeper.GetPendingValidatorSet(ctx)
 	require.Len(t, validatorSet, 1)
 
@@ -41,7 +41,7 @@ func TestItUpdatesTheValidatorSetBasedOnPendingValidators(t *testing.T) {
 	require.Len(t, updates, 1)
 
 	validatorSet = app.CustomStakingKeeper.GetValidatorSet(ctx)
-	require.Len(t, validatorSet, 1)
+	require.Len(t, validatorSet, 2)
 	validatorSet = app.CustomStakingKeeper.GetPendingValidatorSet(ctx)
 	require.Len(t, validatorSet, 0)
 }
@@ -52,7 +52,7 @@ func TestItDoesNotReturnUpdatesIfThereIsNoPending(t *testing.T) {
 
 	// First checkings
 	validatorSet := app.CustomStakingKeeper.GetValidatorSet(ctx)
-	require.Len(t, validatorSet, 0)
+	require.Len(t, validatorSet, 1)
 	validatorSet = app.CustomStakingKeeper.GetPendingValidatorSet(ctx)
 	require.Len(t, validatorSet, 0)
 
@@ -60,7 +60,7 @@ func TestItDoesNotReturnUpdatesIfThereIsNoPending(t *testing.T) {
 	require.Len(t, updates, 0)
 
 	validatorSet = app.CustomStakingKeeper.GetValidatorSet(ctx)
-	require.Len(t, validatorSet, 0)
+	require.Len(t, validatorSet, 1)
 	validatorSet = app.CustomStakingKeeper.GetPendingValidatorSet(ctx)
 	require.Len(t, validatorSet, 0)
 }
