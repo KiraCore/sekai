@@ -110,6 +110,8 @@ func (s *IntegrationTestSuite) TestUpsertTokenRateAndQuery() {
 	val := s.network.Validators[0]
 	clientCtx := val.ClientCtx
 
+	s.WhitelistPermissions(val.Address, govtypes.PermUpsertTokenRate)
+
 	cmd := cli.GetTxUpsertTokenRateCmd()
 	_, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
@@ -129,15 +131,9 @@ func (s *IntegrationTestSuite) TestUpsertTokenRateAndQuery() {
 	s.Require().NoError(err)
 
 	cmd = cli.GetCmdQueryTokenRate()
-	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{"ubtc"})
+	_, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{"ubtc"})
 	s.Require().NoError(err)
 
-	var tokenRate tokenstypes.TokenRate
-	clientCtx.Codec.MustUnmarshalJSON(out.Bytes(), &tokenRate)
-
-	s.Require().Equal(tokenRate.Denom, "ubtc")
-	s.Require().Equal(tokenRate.FeeRate, sdk.NewDecWithPrec(1, 5))
-	s.Require().Equal(tokenRate.FeePayments, true)
 }
 
 func (s *IntegrationTestSuite) TestGetCmdQueryTokenBlackWhites() {

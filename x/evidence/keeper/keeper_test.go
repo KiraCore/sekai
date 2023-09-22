@@ -6,6 +6,7 @@ import (
 	"time"
 
 	simapp "github.com/KiraCore/sekai/app"
+	appparams "github.com/KiraCore/sekai/app/params"
 	"github.com/KiraCore/sekai/x/evidence/exported"
 	"github.com/KiraCore/sekai/x/evidence/keeper"
 	"github.com/KiraCore/sekai/x/evidence/types"
@@ -34,7 +35,7 @@ var (
 	}
 
 	initAmt   = sdk.TokensFromConsensusPower(200, sdk.DefaultPowerReduction)
-	initCoins = sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, initAmt))
+	initCoins = sdk.NewCoins(sdk.NewCoin(appparams.DefaultDenom, initAmt))
 )
 
 func newPubKey(pk string) (res cryptotypes.PubKey) {

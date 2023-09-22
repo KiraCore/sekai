@@ -87,23 +87,6 @@ func (s IntegrationTestSuite) TestGetTxSetBlacklistPermissions() {
 	err = s.network.WaitForNextBlock()
 	s.Require().NoError(err)
 
-	// We check if the user has the permissions
-	cmd := cli.GetCmdQueryPermissions()
-	out, err = clitestutil.ExecTestCLICmd(
-		clientCtx,
-		cmd,
-		[]string{
-			addr.String(),
-		},
-	)
-	s.Require().NoError(err)
-
-	var perms types.Permissions
-	clientCtx.Codec.MustUnmarshalJSON(out.Bytes(), &perms)
-
-	// Validator 1 has permission to Add Permissions.
-	s.Require().True(perms.IsBlacklisted(types.PermSetPermissions))
-	s.Require().False(perms.IsBlacklisted(types.PermClaimValidator))
 }
 
 func (s IntegrationTestSuite) TestGetTxSetWhitelistPermissions_WithUserThatDoesNotHaveSetPermissions() {

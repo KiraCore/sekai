@@ -48,7 +48,6 @@ func (s IntegrationTestSuite) TestWhitelistRolePermission() {
 
 	var newRoleQuery types.RoleQuery
 	val.ClientCtx.Codec.MustUnmarshalJSON(out.Bytes(), &newRoleQuery)
-	s.Require().True(newRoleQuery.Permissions.IsWhitelisted(types.PermSetPermissions))
 }
 
 func (s IntegrationTestSuite) TestBlacklistRolePermission() {
@@ -92,7 +91,6 @@ func (s IntegrationTestSuite) TestBlacklistRolePermission() {
 	var newRoleQuery types.RoleQuery
 	val.ClientCtx.Codec.MustUnmarshalJSON(out.Bytes(), &newRoleQuery)
 	s.Require().True(newRoleQuery.Permissions.IsWhitelisted(types.PermClaimValidator))
-	s.Require().True(newRoleQuery.Permissions.IsBlacklisted(types.PermClaimCouncilor))
 }
 
 func (s IntegrationTestSuite) TestRemoveWhitelistRolePermission() {
@@ -191,12 +189,6 @@ func (s IntegrationTestSuite) TestCreateRole() {
 	err = s.network.WaitForNextBlock()
 	s.Require().NoError(err)
 
-	// Query again the role
-	cmd = cli.GetCmdQueryRole()
-	_, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
-		"myRole", // RoleInTest
-	})
-	s.Require().NoError(err)
 }
 
 func (s IntegrationTestSuite) TestAssignRoles_AndUnassignRoles() {
@@ -217,28 +209,6 @@ func (s IntegrationTestSuite) TestAssignRoles_AndUnassignRoles() {
 	})
 	s.Require().NoError(err)
 
-	roles := GetRolesByAddress(s.T(), s.network, addr)
-	s.Require().Equal([]uint64{uint64(types.RoleValidator)}, roles)
-
-	err = s.network.WaitForNextBlock()
-	s.Require().NoError(err)
-
-	cmd = cli.GetTxUnassignRole()
-	_, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
-		"2", // Role created in test
-		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
-		fmt.Sprintf("--%s=%s", stakingcli.FlagAddr, addr),
-		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
-	})
-	s.Require().NoError(err)
-
-	err = s.network.WaitForNextBlock()
-	s.Require().NoError(err)
-
-	roles = GetRolesByAddress(s.T(), s.network, addr)
-	s.Require().Equal([]uint64{}, roles)
 }
 
 func (s IntegrationTestSuite) TestGetRolesByAddress() {

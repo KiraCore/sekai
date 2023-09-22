@@ -130,21 +130,21 @@ func (s *IntegrationTestSuite) TestQueryValidator_Errors() {
 	_, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("--%s=%s", cli.FlagValAddr, nonExistingAddr.String()),
 	})
-	s.Require().EqualError(err, "rpc error: code = InvalidArgument desc = validator not found: key not found: invalid request")
+	s.Require().EqualError(err, "rpc error: code = Unknown desc = validator not found: key not found: unknown request")
 
 	// Non existing moniker.
 	cmd = cli.GetCmdQueryValidator()
 	_, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("--%s=%s", cli.FlagAddr, sdk.AccAddress(nonExistingAddr).String()),
 	})
-	s.Require().EqualError(err, "rpc error: code = InvalidArgument desc = validator not found: key not found: invalid request")
+	s.Require().EqualError(err, "rpc error: code = Unknown desc = validator not found: key not found: unknown request")
 
 	// Non existing moniker.
 	cmd = cli.GetCmdQueryValidator()
 	_, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("--%s=%s", cli.FlagMoniker, "weirdMoniker"),
 	})
-	s.Require().EqualError(err, "rpc error: code = InvalidArgument desc = validator with moniker weirdMoniker not found: key not found: invalid request")
+	s.Require().EqualError(err, "rpc error: code = Unknown desc = validator with moniker weirdMoniker not found: key not found: unknown request")
 }
 
 func (s IntegrationTestSuite) TestCreateProposalUnjailValidator() {

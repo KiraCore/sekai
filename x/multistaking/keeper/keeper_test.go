@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	simapp "github.com/KiraCore/sekai/app"
+	appparams "github.com/KiraCore/sekai/app/params"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
@@ -27,7 +28,7 @@ var (
 	}
 
 	initAmt   = sdk.TokensFromConsensusPower(200, sdk.DefaultPowerReduction)
-	initCoins = sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, initAmt))
+	initCoins = sdk.NewCoins(sdk.NewCoin(appparams.DefaultDenom, initAmt))
 )
 
 func newPubKey(pk string) (res cryptotypes.PubKey) {

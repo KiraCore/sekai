@@ -19,6 +19,7 @@ import (
 	"cosmossdk.io/depinject"
 	"cosmossdk.io/math"
 	"github.com/KiraCore/sekai/app"
+	appparams "github.com/KiraCore/sekai/app/params"
 	"github.com/KiraCore/sekai/x/genutil"
 	dbm "github.com/cometbft/cometbft-db"
 	tmlog "github.com/cometbft/cometbft/libs/log"
@@ -116,9 +117,9 @@ func DefaultConfig() Config {
 		GenesisState:      app.ModuleBasics.DefaultGenesis(encCfg.Marshaler),
 		TimeoutCommit:     2 * time.Second,
 		ChainID:           "chain-" + tmrand.Str(6),
-		NumValidators:     4,
-		DefaultDenom:      sdk.DefaultBondDenom,
-		MinGasPrices:      fmt.Sprintf("0.000006%s", sdk.DefaultBondDenom),
+		NumValidators:     2,
+		DefaultDenom:      appparams.DefaultDenom,
+		MinGasPrices:      fmt.Sprintf("0.000006%s", appparams.DefaultDenom),
 		AccountTokens:     sdk.TokensFromConsensusPower(1000, sdk.DefaultPowerReduction),
 		StakingTokens:     sdk.TokensFromConsensusPower(500, sdk.DefaultPowerReduction),
 		BondedTokens:      sdk.TokensFromConsensusPower(100, sdk.DefaultPowerReduction),
@@ -477,6 +478,8 @@ func (n *Network) LatestHeight() (int64, error) {
 			res, err := queryClient.GetLatestBlock(context.Background(), &tmservice.GetLatestBlockRequest{})
 			if err == nil && res != nil {
 				return res.SdkBlock.Header.Height, nil
+			} else {
+				fmt.Println("GetLatestBlock Error", res, err)
 			}
 		}
 	}

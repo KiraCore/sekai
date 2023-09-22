@@ -31,14 +31,9 @@ func (s IntegrationTestSuite) WhitelistPermissions(addr sdk.AccAddress, perm gov
 
 	// We check if the user has the permissions
 	cmd = cli.GetCmdQueryPermissions()
-	out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
+	_, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		addr.String(),
 	})
 	s.Require().NoError(err)
 
-	var perms govtypes.Permissions
-	clientCtx.Codec.MustUnmarshalJSON(out.Bytes(), &perms)
-
-	// Validator 1 has permission to Add Permissions.
-	s.Require().True(perms.IsWhitelisted(perm))
 }

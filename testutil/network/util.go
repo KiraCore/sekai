@@ -7,6 +7,7 @@ import (
 	"time"
 
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
+	srvtypes "github.com/cosmos/cosmos-sdk/server/types"
 
 	"github.com/pkg/errors"
 
@@ -35,6 +36,10 @@ func startInProcess(cfg Config, val *Validator) error {
 	tmCfg := val.Ctx.Config
 	tmCfg.Instrumentation.Prometheus = false
 
+	if err := val.AppConfig.ValidateBasic(); err != nil {
+		return err
+	}
+
 	nodeKey, err := p2p.LoadOrGenNodeKey(tmCfg.NodeKeyFile())
 	if err != nil {
 		return err
@@ -43,7 +48,8 @@ func startInProcess(cfg Config, val *Validator) error {
 	app := cfg.AppConstructor(*val, cfg.ChainID)
 
 	genDocProvider := node.DefaultGenesisDocProviderFunc(tmCfg)
-	tmNode, err := node.NewNode(
+
+	tmNode, err := node.NewNode( //resleak:notresource
 		tmCfg,
 		pvm.LoadOrGenFilePV(tmCfg.PrivValidatorKeyFile(), tmCfg.PrivValidatorStateFile()),
 		nodeKey,
@@ -60,7 +66,6 @@ func startInProcess(cfg Config, val *Validator) error {
 	if err := tmNode.Start(); err != nil {
 		return err
 	}
-
 	val.tmNode = tmNode
 
 	if val.RPCAddress != "" {
@@ -72,8 +77,9 @@ func startInProcess(cfg Config, val *Validator) error {
 		val.ClientCtx = val.ClientCtx.
 			WithClient(val.RPCClient)
 
-		// Add the tx service in the gRPC router.
 		app.RegisterTxService(val.ClientCtx)
+		app.RegisterTendermintService(val.ClientCtx)
+		app.RegisterNodeService(val.ClientCtx)
 	}
 
 	if val.APIAddress != "" {
@@ -91,7 +97,7 @@ func startInProcess(cfg Config, val *Validator) error {
 		select {
 		case err := <-errCh:
 			return err
-		case <-time.After(5 * time.Second): // assume server started successfully
+		case <-time.After(srvtypes.ServerStartTime): // assume server started successfully
 		}
 
 		val.api = apiSrv
@@ -104,8 +110,14 @@ func startInProcess(cfg Config, val *Validator) error {
 		}
 
 		val.grpc = grpcSrv
-	}
 
+		if val.AppConfig.GRPCWeb.Enable {
+			val.grpcWeb, err = servergrpc.StartGRPCWeb(grpcSrv, *val.AppConfig)
+			if err != nil {
+				return err
+			}
+		}
+	}
 	return nil
 }
 
