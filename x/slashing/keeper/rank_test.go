@@ -70,7 +70,7 @@ func TestResetWholeValidatorRank(t *testing.T) {
 				infos = append(infos, info)
 				return false
 			})
-			require.Len(t, infos, 1)
+			require.Len(t, infos, 2)
 
 			tt.prepareScenario(app, ctx, validators[0])
 
@@ -79,7 +79,7 @@ func TestResetWholeValidatorRank(t *testing.T) {
 				infos = append(infos, info)
 				return false
 			})
-			require.Len(t, infos, 1)
+			require.Len(t, infos, 2)
 
 			err := app.CustomSlashingKeeper.ResetWholeValidatorRank(ctx)
 			require.NoError(t, err)
@@ -89,7 +89,7 @@ func TestResetWholeValidatorRank(t *testing.T) {
 				validators = append(validators, *validator)
 				return false
 			})
-			require.Equal(t, 1, len(validators))
+			require.Equal(t, 2, len(validators))
 			require.Equal(t, stakingtypes.Active, validators[0].Status)
 			require.Equal(t, int64(0), validators[0].Rank)
 			require.Equal(t, int64(0), validators[0].Streak)
@@ -99,7 +99,7 @@ func TestResetWholeValidatorRank(t *testing.T) {
 				infos = append(infos, info)
 				return false
 			})
-			require.Len(t, infos, 1)
+			require.Len(t, infos, 2)
 			require.Equal(t, ctx.BlockHeight(), infos[0].StartHeight)
 			require.Equal(t, time.Unix(0, 0).UTC(), infos[0].InactiveUntil.UTC())
 			require.Equal(t, int64(0), infos[0].MischanceConfidence)
