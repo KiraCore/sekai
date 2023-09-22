@@ -215,13 +215,10 @@ func (k Keeper) GetIdRecordsByAddress(ctx sdk.Context, creator sdk.AccAddress) [
 	return k.govkeeper.GetIdRecordsByAddress(ctx, creator)
 }
 
-func (k Keeper) GetMonikerByAddress(ctx sdk.Context, addr sdk.AccAddress) (string, error) {
+func (k Keeper) GetMonikerByAddress(ctx sdk.Context, addr sdk.AccAddress) string {
 	records, err := k.govkeeper.GetIdRecordsByAddressAndKeys(ctx, addr, []string{"moniker"})
 	if err != nil {
-		return "", err
+		return ""
 	}
-	if len(records) != 1 {
-		return "", fmt.Errorf("failed fetching the field moniker from identity registrar for address=%s", addr.String())
-	}
-	return records[0].Value, nil
+	return records[0].Value
 }

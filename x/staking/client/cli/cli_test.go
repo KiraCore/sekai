@@ -45,13 +45,14 @@ func (s *IntegrationTestSuite) SetupSuite() {
 
 	cfg.NumValidators = 1
 
-	cfg.AppConstructor = func(val network.Validator) servertypes.Application {
+	cfg.AppConstructor = func(val network.Validator, chainId string) servertypes.Application {
 		return app.NewInitApp(
 			val.Ctx.Logger, dbm.NewMemDB(), nil, true, make(map[int64]bool), val.Ctx.Config.RootDir, 0,
-			app.MakeEncodingConfig(),
+			simapp.MakeEncodingConfig(),
 			simapp.EmptyAppOptions{},
 			baseapp.SetPruning(pruningtypes.NewPruningOptionsFromString(val.AppConfig.Pruning)),
 			baseapp.SetMinGasPrices(val.AppConfig.MinGasPrices),
+			baseapp.SetChainID(chainId),
 		)
 	}
 

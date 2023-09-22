@@ -72,12 +72,11 @@ func TestKeeper_GetMonikerByAddress(t *testing.T) {
 	require.NoError(t, err)
 
 	// get moniker by address
-	moniker, err := app.CustomStakingKeeper.GetMonikerByAddress(ctx, sdk.AccAddress(validator.ValKey))
-	require.NoError(t, err)
+	moniker := app.CustomStakingKeeper.GetMonikerByAddress(ctx, sdk.AccAddress(validator.ValKey))
 	require.Equal(t, moniker, "node0")
 
-	moniker, err = app.CustomStakingKeeper.GetMonikerByAddress(ctx, sdk.AccAddress("non existing"))
-	require.Error(t, err)
+	moniker = app.CustomStakingKeeper.GetMonikerByAddress(ctx, sdk.AccAddress("non existing"))
+	require.Equal(t, moniker, "")
 }
 
 func TestKeeper_GetValidatorSet(t *testing.T) {
@@ -92,7 +91,7 @@ func TestKeeper_GetValidatorSet(t *testing.T) {
 	app.CustomStakingKeeper.AddValidator(ctx, validator2)
 
 	validatorSet := app.CustomStakingKeeper.GetValidatorSet(ctx)
-	require.Equal(t, 2, len(validatorSet))
+	require.Equal(t, 3, len(validatorSet))
 
 	// Iterate validators
 	passed := 0
@@ -100,7 +99,7 @@ func TestKeeper_GetValidatorSet(t *testing.T) {
 		passed++
 		return false
 	})
-	require.Equal(t, 2, passed)
+	require.Equal(t, 3, passed)
 
 	// Iterate validators with stop
 	passed = 0

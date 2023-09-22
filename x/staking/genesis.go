@@ -26,10 +26,7 @@ func WriteValidators(ctx sdk.Context, k keeper.Keeper) (vals []tmtypes.GenesisVa
 			return true
 		}
 
-		moniker, err := k.GetMonikerByAddress(ctx, sdk.AccAddress(validator.ValKey))
-		if err != nil {
-			return false
-		}
+		moniker := k.GetMonikerByAddress(ctx, sdk.AccAddress(validator.ValKey))
 		vals = append(vals, tmtypes.GenesisValidator{
 			Address: sdk.ConsAddress(tmPk.Address()).Bytes(),
 			PubKey:  tmPk,

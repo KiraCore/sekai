@@ -55,16 +55,17 @@ var lock = new(sync.Mutex)
 
 // AppConstructor defines a function which accepts a network configuration and
 // creates an ABCI Application to provide to Tendermint.
-type AppConstructor = func(val Validator) servertypes.Application
+type AppConstructor = func(val Validator, chainId string) servertypes.Application
 
 func NewSimApp(encodingCfg app.EncodingConfig) AppConstructor {
-	return func(val Validator) servertypes.Application {
+	return func(val Validator, chainId string) servertypes.Application {
 		return app.NewInitApp(
 			val.Ctx.Logger, dbm.NewMemDB(), nil, true, make(map[int64]bool), val.Ctx.Config.RootDir, 0,
 			encodingCfg,
 			simtestutil.EmptyAppOptions{},
 			baseapp.SetPruning(pruningtypes.NewPruningOptionsFromString(val.GetAppConfig().Pruning)),
 			baseapp.SetMinGasPrices(val.AppConfig.MinGasPrices),
+			baseapp.SetChainID(chainId),
 		)
 	}
 }

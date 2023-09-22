@@ -35,8 +35,7 @@ func TestNewHandler_MsgClaimValidator_HappyPath(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	_, err = app.CustomStakingKeeper.GetMonikerByAddress(ctx, sdk.AccAddress(valAddr1))
-	require.Error(t, err)
+	app.CustomStakingKeeper.GetMonikerByAddress(ctx, sdk.AccAddress(valAddr1))
 
 	// First we give user permissions
 	networkActor := govtypes.NewNetworkActor(
@@ -75,8 +74,7 @@ func TestNewHandler_MsgClaimValidator_HappyPath(t *testing.T) {
 	require.Equal(t, records[0].Key, "moniker")
 	require.Equal(t, records[0].Value, "aMoniker")
 
-	moniker, err := app.CustomStakingKeeper.GetMonikerByAddress(ctx, sdk.AccAddress(valAddr1))
-	require.NoError(t, err)
+	moniker := app.CustomStakingKeeper.GetMonikerByAddress(ctx, sdk.AccAddress(valAddr1))
 	require.Equal(t, moniker, "aMoniker")
 }
 
