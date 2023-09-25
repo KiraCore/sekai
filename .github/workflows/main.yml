@@ -16,7 +16,7 @@ jobs:
       id-token: write
       pull-requests: write
     container: 
-      image: ghcr.io/kiracore/docker/base-image:v0.11.2
+      image: ghcr.io/kiracore/docker/base-image:v0.13.14
     steps:
           # Work around https://github.com/actions/checkout/issues/760
           - name: Add safe.directory
