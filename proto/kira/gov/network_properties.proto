@@ -74,6 +74,7 @@ enum NetworkProperty {
     DAPP_POOL_SLIPPAGE_DEFAULT = 56 [(gogoproto.enumvalue_customname) = "DappPoolSlippageDefault"];
     MINTING_FT_FEE = 57 [ (gogoproto.enumvalue_customname) = "MintingFtFee" ];
     MINTING_NFT_FEE = 58 [ (gogoproto.enumvalue_customname) = "MintingNftFee" ];
+    VETO_THRESHOLD  = 59 [ (gogoproto.enumvalue_customname) = "VetoThreshold" ];
 }
 
 message NetworkPropertyValue {
@@ -167,4 +168,8 @@ message NetworkProperties {
     ]; // default 0.1, that is 10%
     uint64 minting_ft_fee = 58; // default 100’000’000’000 ukex - 100k KEX
     uint64 minting_nft_fee = 59; // default 100’000’000’000 ukex - 100k KEX
+    string veto_threshold = 60 [
+        (gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec",
+        (gogoproto.nullable) = false
+    ];
 }
