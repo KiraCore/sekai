@@ -113,7 +113,7 @@ func TestResetWholeValidatorRank(t *testing.T) {
 func createValidators(t *testing.T, app *simapp.SekaiApp, ctx sdk.Context, accNum int) (validators []stakingtypes.Validator) {
 	pubkeys := simapp.CreateTestPubKeys(accNum)
 	accAmt := sdk.TokensFromConsensusPower(10, sdk.DefaultPowerReduction)
-	initCoins := sdk.NewCoins(sdk.NewCoin(app.CustomStakingKeeper.BondDenom(ctx), accAmt))
+	initCoins := sdk.NewCoins(sdk.NewCoin(app.CustomStakingKeeper.DefaultDenom(ctx), accAmt))
 	for _, pubkey := range pubkeys {
 		addr := sdk.AccAddress(pubkey.Address())
 		acc := app.AccountKeeper.NewAccountWithAddress(ctx, addr)

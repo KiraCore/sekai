@@ -20,6 +20,7 @@ import (
 
 	"github.com/KiraCore/sekai/app"
 	simapp "github.com/KiraCore/sekai/app"
+	appparams "github.com/KiraCore/sekai/app/params"
 	"github.com/KiraCore/sekai/testutil/network"
 	"github.com/KiraCore/sekai/x/staking/client/cli"
 	customtypes "github.com/KiraCore/sekai/x/staking/types"
@@ -34,7 +35,7 @@ type IntegrationTestSuite struct {
 }
 
 func (s *IntegrationTestSuite) SetupSuite() {
-	app.SetConfig()
+	appparams.SetConfig()
 	s.T().Log("setting up integration test suite")
 
 	cfg := network.DefaultConfig()
@@ -159,7 +160,7 @@ func (s IntegrationTestSuite) TestCreateProposalUnjailValidator() {
 			fmt.Sprintf("--%s=%s", cli.FlagDescription, "some desc"),
 			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-			fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
+			fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
 			val.ValAddress.String(),
 			"theReference",
 		},
@@ -177,7 +178,7 @@ func (s IntegrationTestSuite) TestCreateProposalUnjailValidator() {
 			fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-			fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100))).String()),
+			fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
 		},
 	)
 	s.Require().NoError(err)

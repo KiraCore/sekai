@@ -24,11 +24,6 @@ func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryCodec, bk types.BankKeeper
 	}
 }
 
-// BondDenom returns the denom that is basically used for fee payment
-func (k Keeper) BondDenom(ctx sdk.Context) string {
-	return "ukex"
-}
-
 func (k *Keeper) SetProposalRouter(proposalRouter types.ProposalRouter) {
 	k.proposalRouter = proposalRouter
 }

@@ -12,4 +12,5 @@ var (
 	ProposerKey            = []byte("proposer_key")
 	PrefixKeyValidatorVote = []byte("validator_vote_prefix")
 	KeyYearStartSnapshot   = []byte("year_start_snapshot")
+	KeyPeriodicSnapshot    = []byte("periodic_snapshot")
 )

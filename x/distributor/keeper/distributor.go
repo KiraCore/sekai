@@ -30,11 +30,22 @@ func (k Keeper) AllocateTokens(
 	feesTreasury := k.GetFeesTreasury(ctx)
 
 	// mint inflated tokens
-	totalSupply := k.bk.GetSupply(ctx, k.BondDenom(ctx))
+	totalSupply := k.bk.GetSupply(ctx, k.DefaultDenom(ctx))
 	properties := k.gk.GetNetworkProperties(ctx)
-	inflationRewards := totalSupply.Amount.ToDec().Mul(properties.InflationRate).Quo(sdk.NewDec(int64(properties.InflationPeriod))).TruncateInt()
-	inflationCoin := sdk.NewCoin(totalSupply.Denom, inflationRewards)
+	periodicSnapshot := k.GetPeriodicSnapshot(ctx)
+	targetTotalSupply := periodicSnapshot.SnapshotAmount.Add(
+		periodicSnapshot.SnapshotAmount.ToDec().
+			Mul(properties.InflationRate).
+			Mul(sdk.NewDec(int64(ctx.BlockTime().Unix()) - periodicSnapshot.SnapshotTime)).
+			Quo(sdk.NewDec(int64(properties.InflationPeriod))).TruncateInt(),
+	)
 
+	inflationRewards := sdk.ZeroInt()
+	if targetTotalSupply.GT(totalSupply.Amount) {
+		inflationRewards = targetTotalSupply.Sub(totalSupply.Amount)
+	}
+
+	inflationCoin := sdk.NewCoin(totalSupply.Denom, inflationRewards)
 	if inflationRewards.IsPositive() {
 		err := k.bk.MintCoins(ctx, minttypes.ModuleName, sdk.Coins{inflationCoin})
 		if err != nil {

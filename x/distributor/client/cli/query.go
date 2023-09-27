@@ -22,6 +22,7 @@ func NewQueryCmd() *cobra.Command {
 		GetCmdSnapshotPeriod(),
 		GetCmdValidatorSnapshotPerformance(),
 		GetCmdYearStartSnapshot(),
+		GetCmdPeriodicSnapshot(),
 	)
 
 	return queryCmd
@@ -108,6 +109,29 @@ func GetCmdYearStartSnapshot() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 			res, err := queryClient.YearStartSnapshot(context.Background(), &types.QueryYearStartSnapshotRequest{})
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+func GetCmdPeriodicSnapshot() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "periodic-snapshot",
+		Short: "Periodic snapshot",
+		Args:  cobra.MinimumNArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.PeriodicSnapshot(context.Background(), &types.QueryPeriodicSnapshotRequest{})
 			if err != nil {
 				return err
 			}

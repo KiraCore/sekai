@@ -67,12 +67,23 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 		}
 	}
 
+	properties := k.gk.GetNetworkProperties(ctx)
+	periodicSnapshot := k.GetPeriodicSnapshot(ctx)
+	if periodicSnapshot.SnapshotTime == 0 || periodicSnapshot.SnapshotTime+int64(properties.InflationPeriod) < ctx.BlockTime().Unix() {
+		supply := k.bk.GetSupply(ctx, k.DefaultDenom(ctx))
+		periodicSnapshot = types.SupplySnapshot{
+			SnapshotTime:   ctx.BlockTime().Unix(),
+			SnapshotAmount: supply.Amount,
+		}
+		k.SetPeriodicSnapshot(ctx, periodicSnapshot)
+	}
+
 	yearSnapshot := k.GetYearStartSnapshot(ctx)
 	month := int64(86400 * 30)
 	year := month * 12
 	if yearSnapshot.SnapshotTime == 0 || yearSnapshot.SnapshotTime+year < ctx.BlockTime().Unix() {
-		supply := k.bk.GetSupply(ctx, k.BondDenom(ctx))
-		yearSnapshot = types.YearStartSnapshot{
+		supply := k.bk.GetSupply(ctx, k.DefaultDenom(ctx))
+		yearSnapshot = types.SupplySnapshot{
 			SnapshotTime:   ctx.BlockTime().Unix(),
 			SnapshotAmount: supply.Amount,
 		}

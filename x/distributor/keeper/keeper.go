@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	appparams "github.com/KiraCore/sekai/app/params"
 	"github.com/KiraCore/sekai/x/distributor/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -32,7 +33,7 @@ func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryCodec, ak types.AccountKee
 	}
 }
 
-// BondDenom returns the denom that is basically used for fee payment
-func (k Keeper) BondDenom(ctx sdk.Context) string {
-	return "ukex"
+// DefaultDenom returns the denom that is basically used for fee payment
+func (k Keeper) DefaultDenom(ctx sdk.Context) string {
+	return appparams.DefaultDenom
 }

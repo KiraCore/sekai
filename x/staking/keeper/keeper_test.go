@@ -4,8 +4,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/KiraCore/sekai/app"
 	simapp "github.com/KiraCore/sekai/app"
+	appparams "github.com/KiraCore/sekai/app/params"
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/staking/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -14,7 +14,7 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	app.SetConfig()
+	appparams.SetConfig()
 	os.Exit(m.Run())
 }
 

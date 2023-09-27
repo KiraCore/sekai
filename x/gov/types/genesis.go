@@ -1,14 +1,20 @@
 package types
 
 import (
+	"encoding/json"
+
+	appparams "github.com/KiraCore/sekai/app/params"
 	kiratypes "github.com/KiraCore/sekai/types"
+	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // DefaultGenesis returns the default CustomGo genesis state
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
-		NextRoleId: 3,
+		DefaultDenom: appparams.DefaultDenom,
+		Bech32Prefix: appparams.AccountAddressPrefix,
+		NextRoleId:   3,
 		Roles: []Role{
 			{
 				Id:          uint32(RoleSudo),
@@ -254,4 +260,25 @@ func DefaultGenesis() *GenesisState {
 		LastIdentityRecordId:        0,
 		LastIdRecordVerifyRequestId: 0,
 	}
+}
+
+// GetGenesisStateFromAppState returns x/auth GenesisState given raw application
+// genesis state.
+func GetGenesisStateFromAppState(cdc codec.Codec, appState map[string]json.RawMessage) GenesisState {
+	var genesisState GenesisState
+
+	if appState[ModuleName] != nil {
+		cdc.MustUnmarshalJSON(appState[ModuleName], &genesisState)
+	}
+
+	return genesisState
+}
+
+func GetBech32PrefixAndDefaultDenomFromAppState(appState map[string]json.RawMessage) (string, string) {
+	var genesisState map[string]interface{}
+	err := json.Unmarshal(appState[ModuleName], &genesisState)
+	if err != nil {
+		panic(err)
+	}
+	return genesisState["bech32_prefix"].(string), genesisState["default_denom"].(string)
 }

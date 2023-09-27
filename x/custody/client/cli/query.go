@@ -64,6 +64,7 @@ func GetCmdQueryCustodiansByAddress() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "get [addr]",
 		Short: "Query custody custodians assigned to an address",
+		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 			accAddr, err := sdk.AccAddressFromBech32(args[0])
@@ -93,6 +94,7 @@ func GetCmdQueryCustodyPoolByAddress() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "pool [addr]",
 		Short: "Query custody pool",
+		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 			accAddr, err := sdk.AccAddressFromBech32(args[0])
@@ -122,6 +124,7 @@ func GetCmdQueryWhiteListByAddress() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "get [addr]",
 		Short: "Query custody whitelist assigned to an address",
+		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 			accAddr, err := sdk.AccAddressFromBech32(args[0])
@@ -152,6 +155,7 @@ func GetCmdQueryCustodyByAddress() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "get [addr]",
 		Short: "Query custody assigned to an address",
+		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 			accAddr, err := sdk.AccAddressFromBech32(args[0])
@@ -181,6 +185,7 @@ func GetCmdQueryLimitsByAddress() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "get [addr]",
 		Short: "Query custody limits assigned to an address",
+		Args:  cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 			accAddr, err := sdk.AccAddressFromBech32(args[0])

@@ -4,6 +4,8 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+	"time"
+
 	kiratypes "github.com/KiraCore/sekai/types"
 	custodykeeper "github.com/KiraCore/sekai/x/custody/keeper"
 	custodytypes "github.com/KiraCore/sekai/x/custody/types"
@@ -19,7 +21,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/signing"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	bank "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"time"
 )
 
 // NewAnteHandler returns an AnteHandler that checks and increments sequence
@@ -87,9 +88,9 @@ func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool,
 			switch kiratypes.MsgType(msg) {
 			case kiratypes.MsgTypeCreateCustody:
 				{
-					msg, ok := msg.(*custodytypes.MsgCreteCustodyRecord)
+					msg, ok := msg.(*custodytypes.MsgCreateCustodyRecord)
 					if !ok {
-						return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreteCustodyRecord")
+						return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreateCustodyRecord")
 					}
 
 					hash := sha256.Sum256([]byte(msg.OldKey))
@@ -107,7 +108,7 @@ func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool,
 				{
 					msg, ok := msg.(*custodytypes.MsgAddToCustodyWhiteList)
 					if !ok {
-						return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreteCustodyRecord")
+						return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreateCustodyRecord")
 					}
 
 					hash := sha256.Sum256([]byte(msg.OldKey))
@@ -125,7 +126,7 @@ func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool,
 				{
 					msg, ok := msg.(*custodytypes.MsgAddToCustodyCustodians)
 					if !ok {
-						return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreteCustodyRecord")
+						return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreateCustodyRecord")
 					}
 
 					hash := sha256.Sum256([]byte(msg.OldKey))
@@ -143,7 +144,7 @@ func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool,
 				{
 					msg, ok := msg.(*custodytypes.MsgRemoveFromCustodyCustodians)
 					if !ok {
-						return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreteCustodyRecord")
+						return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreateCustodyRecord")
 					}
 
 					hash := sha256.Sum256([]byte(msg.OldKey))
@@ -161,7 +162,7 @@ func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool,
 				{
 					msg, ok := msg.(*custodytypes.MsgDropCustodyCustodians)
 					if !ok {
-						return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreteCustodyRecord")
+						return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreateCustodyRecord")
 					}
 
 					hash := sha256.Sum256([]byte(msg.OldKey))
@@ -179,7 +180,7 @@ func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool,
 				{
 					msg, ok := msg.(*custodytypes.MsgRemoveFromCustodyWhiteList)
 					if !ok {
-						return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreteCustodyRecord")
+						return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreateCustodyRecord")
 					}
 
 					hash := sha256.Sum256([]byte(msg.OldKey))
@@ -197,7 +198,7 @@ func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool,
 				{
 					msg, ok := msg.(*custodytypes.MsgDropCustodyWhiteList)
 					if !ok {
-						return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreteCustodyRecord")
+						return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidType, "Not a MsgCreateCustodyRecord")
 					}
 
 					hash := sha256.Sum256([]byte(msg.OldKey))
@@ -226,7 +227,7 @@ func (cd CustodyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool,
 						return ctx, sdkerrors.Wrap(custodytypes.ErrNotEnoughReward, "to small reward")
 					}
 
-					if msg.Reward[0].Denom != cd.ck.BondDenom(ctx) {
+					if msg.Reward[0].Denom != cd.ck.DefaultDenom(ctx) {
 						return ctx, sdkerrors.Wrap(custodytypes.ErrNotEnoughReward, "wrong reward denom")
 					}
 				}
@@ -317,20 +318,20 @@ func (svd ValidateFeeRangeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 	}
 
 	properties := svd.cgk.GetNetworkProperties(ctx)
-	bondDenom := svd.sk.BondDenom(ctx)
+	defaultDenom := svd.sk.DefaultDenom(ctx)
 
 	feeAmount := sdk.NewDec(0)
 	feeCoins := feeTx.GetFee()
 	tokensBlackWhite := svd.tk.GetTokenBlackWhites(ctx)
 	for _, feeCoin := range feeCoins {
 		rate := svd.tk.GetTokenRate(ctx, feeCoin.Denom)
-		if !properties.EnableForeignFeePayments && feeCoin.Denom != bondDenom {
+		if !properties.EnableForeignFeePayments && feeCoin.Denom != defaultDenom {
 			return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("foreign fee payments is disabled by governance"))
 		}
 		if rate == nil || !rate.FeePayments {
 			return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("currency you are trying to use was not whitelisted as fee payment"))
 		}
-		if tokensBlackWhite.IsFrozen(feeCoin.Denom, bondDenom, properties.EnableTokenBlacklist, properties.EnableTokenWhitelist) {
+		if tokensBlackWhite.IsFrozen(feeCoin.Denom, defaultDenom, properties.EnableTokenBlacklist, properties.EnableTokenWhitelist) {
 			return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("currency you are trying to use as fee is frozen"))
 		}
 		feeAmount = feeAmount.Add(feeCoin.Amount.ToDec().Mul(rate.FeeRate))
@@ -350,11 +351,11 @@ func (svd ValidateFeeRangeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 	}
 
 	if feeAmount.LT(sdk.NewDec(int64(properties.MinTxFee))) || feeAmount.GT(sdk.NewDec(int64(properties.MaxTxFee))) {
-		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("fee %+v(%d) is out of range [%d, %d]%s", feeTx.GetFee(), feeAmount.RoundInt().Int64(), properties.MinTxFee, properties.MaxTxFee, bondDenom))
+		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("fee %+v(%d) is out of range [%d, %d]%s", feeTx.GetFee(), feeAmount.RoundInt().Int64(), properties.MinTxFee, properties.MaxTxFee, defaultDenom))
 	}
 
 	if feeAmount.LT(sdk.NewDec(int64(executionMaxFee))) {
-		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("fee %+v(%d) is less than max execution fee %d%s", feeTx.GetFee(), feeAmount.RoundInt().Int64(), executionMaxFee, bondDenom))
+		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, fmt.Sprintf("fee %+v(%d) is less than max execution fee %d%s", feeTx.GetFee(), feeAmount.RoundInt().Int64(), executionMaxFee, defaultDenom))
 	}
 
 	return next(ctx, tx, simulate)
@@ -436,7 +437,7 @@ func (pnmd PoorNetworkManagementDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx
 		if kiratypes.MsgType(msg) == bank.TypeMsgSend {
 			// on poor network, we introduce POOR_NETWORK_MAX_BANK_TX_SEND network property to limit transaction send amount
 			msg := msg.(*bank.MsgSend)
-			if len(msg.Amount) > 1 || msg.Amount[0].Denom != pnmd.csk.BondDenom(ctx) {
+			if len(msg.Amount) > 1 || msg.Amount[0].Denom != pnmd.csk.DefaultDenom(ctx) {
 				return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "only bond denom is allowed on poor network")
 			}
 			if msg.Amount[0].Amount.Uint64() > pnmd.cgk.GetNetworkProperties(ctx).PoorNetworkMaxBankSend {
@@ -477,14 +478,14 @@ func (pnmd BlackWhiteTokensCheckDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx
 		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "invalid transaction type")
 	}
 
-	bondDenom := pnmd.csk.BondDenom(ctx)
+	defaultDenom := pnmd.csk.DefaultDenom(ctx)
 	tokensBlackWhite := pnmd.tk.GetTokenBlackWhites(ctx)
 	properties := pnmd.cgk.GetNetworkProperties(ctx)
 	for _, msg := range sigTx.GetMsgs() {
 		if kiratypes.MsgType(msg) == bank.TypeMsgSend {
 			msg := msg.(*bank.MsgSend)
 			for _, amt := range msg.Amount {
-				if tokensBlackWhite.IsFrozen(amt.Denom, bondDenom, properties.EnableTokenBlacklist, properties.EnableTokenWhitelist) {
+				if tokensBlackWhite.IsFrozen(amt.Denom, defaultDenom, properties.EnableTokenBlacklist, properties.EnableTokenWhitelist) {
 					return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "token is frozen")
 				}
 			}

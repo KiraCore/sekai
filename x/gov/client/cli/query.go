@@ -62,6 +62,7 @@ func NewQueryCmd() *cobra.Command {
 		GetCmdQueryAddressesByWhitelistedPermission(),
 		GetCmdQueryAddressesByBlacklistedPermission(),
 		GetCmdQueryAddressesByWhitelistedRole(),
+		GetCmdQueryCustomPrefixes(),
 	)
 
 	return queryCmd
@@ -72,6 +73,7 @@ func GetCmdQueryPermissions() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "permissions [addr]",
 		Short: "Query permissions of an address",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
@@ -127,6 +129,7 @@ func GetCmdQueryRolesByAddress() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "roles [addr]",
 		Short: "Query roles assigned to an address",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
@@ -154,9 +157,10 @@ func GetCmdQueryRolesByAddress() *cobra.Command {
 
 func GetCmdQueryRole() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "role [role_sid | role_id]",
-		Short: "Query role by sid or id",
-		Args:  cobra.MinimumNArgs(1),
+		Use:          "role [role_sid | role_id]",
+		Short:        "Query role by sid or id",
+		Args:         cobra.ExactArgs(1),
+		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
@@ -191,6 +195,30 @@ func GetCmdQueryNetworkProperties() *cobra.Command {
 			params := &types.NetworkPropertiesRequest{}
 			queryClient := types.NewQueryClient(clientCtx)
 			res, err := queryClient.NetworkProperties(context.Background(), params)
+			if err != nil {
+				return err
+			}
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// GetCmdQueryCustomPrefixes implement query custom prefixes
+func GetCmdQueryCustomPrefixes() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "custom-prefixes",
+		Short: "Query custom prefixes",
+		Args:  cobra.MinimumNArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx := client.GetClientContextFromCmd(cmd)
+
+			params := &types.QueryCustomPrefixesRequest{}
+			queryClient := types.NewQueryClient(clientCtx)
+			res, err := queryClient.CustomPrefixes(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -279,8 +307,10 @@ func GetCmdQueryAllExecutionFees() *cobra.Command {
 
 func GetCmdQueryCouncilRegistry() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "council-registry [--addr || --flagMoniker]",
-		Short: "Query governance registry.",
+		Use:          "council-registry",
+		Short:        "Query governance registry.",
+		Args:         cobra.ExactArgs(0),
+		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 
@@ -343,10 +373,9 @@ func GetCmdQueryProposals() *cobra.Command {
 			fmt.Sprintf(`Query for a all paginated proposals that match optional filters:
 
 Example:
-$ %s query gov proposals --depositor cosmos1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
-$ %s query gov proposals --voter cosmos1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
+$ %s query customgov proposals --voter kira12m2g0dxjx7cekaxlgw8pv39euyfhk2ns54e5pv
 `,
-				version.AppName, version.AppName,
+				version.AppName,
 			),
 		),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -399,6 +428,7 @@ func GetCmdQueryPolls() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "polls [address]",
 		Short: "Get polls by address",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 			accAddr, err := sdk.AccAddressFromBech32(args[0])
@@ -430,6 +460,7 @@ func GetCmdQueryPollVotes() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "poll-votes [ID]",
 		Short: "Get poll votes by id",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx := client.GetClientContextFromCmd(cmd)
 			id, err := strconv.Atoi(args[0])

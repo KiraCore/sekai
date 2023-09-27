@@ -8,8 +8,8 @@ import (
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/KiraCore/sekai/app"
 	simapp "github.com/KiraCore/sekai/app"
+	appparams "github.com/KiraCore/sekai/app/params"
 	"github.com/KiraCore/sekai/x/slashing/testslashing"
 	"github.com/KiraCore/sekai/x/staking"
 	"github.com/KiraCore/sekai/x/staking/teststaking"
@@ -18,7 +18,7 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	app.SetConfig()
+	appparams.SetConfig()
 	os.Exit(m.Run())
 }
 

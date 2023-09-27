@@ -9,6 +9,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
+	appparams "github.com/KiraCore/sekai/app/params"
 	kiratypes "github.com/KiraCore/sekai/types"
 	"github.com/KiraCore/sekai/x/gov/types"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
@@ -124,6 +125,14 @@ func (k Keeper) NetworkProperties(goCtx context.Context, request *types.NetworkP
 	return &types.NetworkPropertiesResponse{Properties: networkProperties}, nil
 }
 
+// CustomPrefixes return default denom and bech32 prefix
+func (k Keeper) CustomPrefixes(goCtx context.Context, request *types.QueryCustomPrefixesRequest) (*types.QueryCustomPrefixesResponse, error) {
+	return &types.QueryCustomPrefixesResponse{
+		DefaultDenom: appparams.DefaultDenom,
+		Bech32Prefix: appparams.AccountAddressPrefix,
+	}, nil
+}
+
 func (k Keeper) Role(goCtx context.Context, request *types.RoleRequest) (*types.RoleResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	roleId, err := k.GetRoleIdFromIdentifierString(ctx, request.Identifier)
@@ -216,6 +225,17 @@ func (k Keeper) Proposals(goCtx context.Context, request *types.QueryProposalsRe
 		err := k.cdc.Unmarshal(value, &proposal)
 		if err != nil {
 			return false, err
+		}
+		if request.Voter != "" {
+			voter, err := sdk.AccAddressFromBech32(request.Voter)
+			if err != nil {
+				return false, err
+			}
+
+			_, found := k.GetVote(c, proposal.ProposalId, voter)
+			if !found {
+				return false, nil
+			}
 		}
 		if accumulate {
 			proposals = append(proposals, proposal)

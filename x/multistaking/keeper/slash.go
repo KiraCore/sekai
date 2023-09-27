@@ -21,9 +21,9 @@ func (k Keeper) SlashStakingPool(ctx sdk.Context, validator string, slash sdk.De
 	totalSlashedTokens := sdk.Coins(pool.TotalStakingTokens).Sub(totalStakingTokens)
 	pool.TotalStakingTokens = totalStakingTokens
 
-	bondDenom := k.govKeeper.BondDenom(ctx)
-	bondDenomAmount := totalSlashedTokens.AmountOf(bondDenom)
-	burnAmount := sdk.Coins{sdk.NewCoin(bondDenom, bondDenomAmount)}
+	defaultDenom := k.sk.DefaultDenom(ctx)
+	defaultDenomAmount := totalSlashedTokens.AmountOf(defaultDenom)
+	burnAmount := sdk.Coins{sdk.NewCoin(defaultDenom, defaultDenomAmount)}
 	err := k.bankKeeper.BurnCoins(ctx, types.ModuleName, burnAmount)
 	if err != nil {
 		panic(err)

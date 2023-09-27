@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/KiraCore/sekai/app"
 	simapp "github.com/KiraCore/sekai/app"
+	appparams "github.com/KiraCore/sekai/app/params"
 	kiratypes "github.com/KiraCore/sekai/types"
 	"github.com/KiraCore/sekai/x/gov"
 	"github.com/KiraCore/sekai/x/gov/types"
@@ -20,7 +20,7 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	app.SetConfig()
+	appparams.SetConfig()
 	os.Exit(m.Run())
 }
 

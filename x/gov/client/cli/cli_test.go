@@ -5,6 +5,7 @@ import (
 
 	"github.com/KiraCore/sekai/app"
 	simapp "github.com/KiraCore/sekai/app"
+	appparams "github.com/KiraCore/sekai/app/params"
 	"github.com/KiraCore/sekai/testutil/network"
 	"github.com/KiraCore/sekai/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
@@ -22,7 +23,7 @@ type IntegrationTestSuite struct {
 }
 
 func (s *IntegrationTestSuite) SetupSuite() {
-	app.SetConfig()
+	appparams.SetConfig()
 	s.T().Log("setting up integration test suite")
 
 	cfg := network.DefaultConfig()
@@ -150,7 +151,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 // 	s.network.WaitForNextBlock()
 
 // 	// try sending after modification of poor network bank send param
-// 	s.SendValue(val.ClientCtx, val.Address, val.Address, sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100000000)))
+// 	s.SendValue(val.ClientCtx, val.Address, val.Address, sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100000000)))
 // }
 
 // func (s IntegrationTestSuite) TestPoorNetworkRestrictions_HappyPath() {
@@ -170,7 +171,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 // 	s.Require().Contains(result.RawLog, "invalid transaction type on poor network")
 
 // 	// try sending more than allowed amount via bank send
-// 	s.SendValue(val.ClientCtx, val.Address, val.Address, sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(100000000)))
+// 	s.SendValue(val.ClientCtx, val.Address, val.Address, sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100000000)))
 // }
 
 func TestIntegrationTestSuite(t *testing.T) {
