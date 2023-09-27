@@ -183,7 +183,8 @@ func TestSimappExportGenesis(t *testing.T) {
     "dapp_inactive_rank_decrease_percent": "10",
     "dapp_pool_slippage_default": "0.100000000000000000",
     "minting_ft_fee": "100000000000000",
-    "minting_nft_fee": "100000000000000"
+    "minting_nft_fee": "100000000000000",
+    "veto_threshold": "33.400000000000000000"
   },
   "execution_fees": [
     {
@@ -392,6 +393,7 @@ func TestExportInitGenesis(t *testing.T) {
 			DappPoolSlippageDefault:         sdk.NewDecWithPrec(1, 1), // 10%
 			MintingFtFee:                    100_000_000_000_000,
 			MintingNftFee:                   100_000_000_000_000,
+			VetoThreshold:                   sdk.NewDecWithPrec(3340, 2), // 33.40%
 		},
 		ExecutionFees: []types.ExecutionFee{
 			{
@@ -507,7 +509,8 @@ func TestExportInitGenesis(t *testing.T) {
     "dapp_inactive_rank_decrease_percent": "10",
     "dapp_pool_slippage_default": "0.100000000000000000",
     "minting_ft_fee": "100000000000000",
-    "minting_nft_fee": "100000000000000"
+    "minting_nft_fee": "100000000000000",
+    "veto_threshold": "33.400000000000000000"
   },	
   "execution_fees": [	
     {	

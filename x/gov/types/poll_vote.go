@@ -1,17 +1,32 @@
 package types
 
+import (
+	"fmt"
+	"github.com/cosmos/cosmos-sdk/types"
+	"math/big"
+	"strconv"
+)
+
 type PollVotes []PollVote
 
 type CalculatedPollVotes struct {
-	votes          map[PollVoteOption]uint64
+	votes          map[string]uint64
 	actorsWithVeto uint64
 	total          uint64
 }
 
 func CalculatePollVotes(votes PollVotes, actorsWithVeto uint64) CalculatedPollVotes {
-	votesMap := make(map[PollVoteOption]uint64)
+	votesMap := make(map[string]uint64)
 	for _, vote := range votes {
-		votesMap[vote.Option]++
+		var mapValue string
+
+		if vote.Option == PollOptionCustom {
+			mapValue = vote.CustomValue
+		} else {
+			mapValue = vote.Option.String()
+		}
+
+		votesMap[mapValue]++
 	}
 
 	return CalculatedPollVotes{
@@ -26,27 +41,60 @@ func (c CalculatedPollVotes) TotalVotes() uint64 {
 }
 
 func (c CalculatedPollVotes) AbstainVotes() uint64 {
-	return c.votes[PollOptionAbstain]
+	return c.votes[PollOptionAbstain.String()]
 }
 
 func (c CalculatedPollVotes) VetoVotes() uint64 {
-	return c.votes[PollOptionNoWithVeto]
+	return c.votes[PollOptionNoWithVeto.String()]
 }
 
-func (c CalculatedPollVotes) ProcessResult() PollResult {
+func (c CalculatedPollVotes) ProcessResult(properties *NetworkProperties) PollResult {
 	if c.actorsWithVeto != 0 {
-		percentageActorsWithVeto := (float32(c.votes[PollOptionNoWithVeto]) / float32(c.actorsWithVeto)) * 100
-		if percentageActorsWithVeto >= 50 {
+		fmt.Println("voteT", PollOptionNoWithVeto.String())
+		fmt.Println("voteC", c.votes[PollOptionNoWithVeto.String()])
+		fmt.Println("voteV", c.actorsWithVeto)
+		resString := strconv.FormatFloat(float64(c.votes[PollOptionNoWithVeto.String()])/float64(c.actorsWithVeto)*100, 'f', -1, 64)
+
+		fmt.Println("resString", resString)
+		resBig, success := new(big.Int).SetString(resString, 10)
+		if !success {
+			return PollUnknown
+		}
+		fmt.Println("resBig", resBig.String())
+		percentageActorsWithVeto := types.NewDecFromBigIntWithPrec(resBig, 0)
+		fmt.Println("percentageActorsWithVeto", percentageActorsWithVeto.String())
+		fmt.Println("properties.VetoThreshold", properties.VetoThreshold.String())
+		if properties.VetoThreshold.LTE(percentageActorsWithVeto) {
 			return PollRejectedWithVeto
 		}
 	}
 
-	yesPercentage := (float32(c.votes[PollOptionCustom]) / float32(c.total)) * 100
-	if yesPercentage > 50.00 {
-		return PollPassed
+	for _, count := range c.votes {
+		yesPercentage := (float32(count) / float32(c.total)) * 100
+		if yesPercentage > 50.00 {
+			return PollPassed
+		}
 	}
 
-	sumOtherThanYes := c.votes[PollOptionAbstain] + c.votes[PollOptionNoWithVeto]
+	var highestVoteCount uint64 = 0
+	var highestList []string
+
+	for i, votesCount := range c.votes {
+		if votesCount > highestVoteCount {
+			highestVoteCount = votesCount
+			highestList = []string{i}
+		}
+
+		if votesCount == highestVoteCount {
+			highestList = append(highestList, i)
+		}
+	}
+
+	if len(highestList) >= 2 {
+		return PollRejected
+	}
+
+	sumOtherThanYes := c.votes[PollOptionAbstain.String()] + c.votes[PollOptionNoWithVeto.String()]
 	sumPercentage := (float32(sumOtherThanYes) / float32(c.total)) * 100
 
 	if sumPercentage >= 50 {
