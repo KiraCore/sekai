@@ -195,6 +195,7 @@ $ %s new-genesis-from-exported exported-genesis.json new-genesis.json
 						DappPoolSlippageDefault:         sdk.NewDecWithPrec(1, 1), // 10%
 						MintingFtFee:                    100_000_000_000_000,
 						MintingNftFee:                   100_000_000_000_000,
+						VetoThreshold:                   sdk.NewDecWithPrec(3340, 2), //33.40%
 					},
 					ExecutionFees:               govGenesisV01228.ExecutionFees,
 					PoorNetworkMessages:         govGenesisV01228.PoorNetworkMessages,
