@@ -66,7 +66,7 @@ func processPoll(ctx sdk.Context, k keeper.Keeper, pollID uint64) {
 	if isQuorum {
 		numActorsWithVeto := len(types.GetActorsWithVoteWithVeto(actors))
 		calculatedVote := types.CalculatePollVotes(votes, uint64(numActorsWithVeto))
-		poll.Result = calculatedVote.ProcessResult()
+		poll.Result = calculatedVote.ProcessResult(properties)
 	} else {
 		poll.Result = types.PollQuorumNotReached
 	}
