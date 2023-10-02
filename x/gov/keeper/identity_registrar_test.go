@@ -460,9 +460,10 @@ func TestKeeper_IdentityRecordApproveFlow(t *testing.T) {
 	})
 
 	// request id record 2 to addr3 by addr1 again
-	reqId, err = app.CustomGovKeeper.RequestIdentityRecordsVerify(ctx, addr2, addr3, []uint64{2}, sdk.NewInt64Coin(sdk.DefaultBondDenom, 200))
-	require.Equal(t, reqId, uint64(3))
+	reqId, err = app.CustomGovKeeper.RequestIdentityRecordsVerify(ctx, addr2, addr3, []uint64{2}, sdk.NewInt64Coin(appparams.DefaultDenom, 200))
 	require.NoError(t, err)
+	require.Equal(t, reqId, uint64(3))
+
 	coins = app.BankKeeper.GetAllBalances(ctx, addr2)
 	require.Equal(t, coins, sdk.Coins{sdk.NewInt64Coin(appparams.DefaultDenom, 9800)})
 	err = app.CustomGovKeeper.HandleIdentityRecordsVerifyRequest(ctx, addr3, 3, true)
