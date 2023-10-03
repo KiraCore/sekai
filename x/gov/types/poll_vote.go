@@ -1,7 +1,6 @@
 package types
 
 import (
-	"fmt"
 	"github.com/cosmos/cosmos-sdk/types"
 	"math/big"
 	"strconv"
@@ -50,20 +49,14 @@ func (c CalculatedPollVotes) VetoVotes() uint64 {
 
 func (c CalculatedPollVotes) ProcessResult(properties *NetworkProperties) PollResult {
 	if c.actorsWithVeto != 0 {
-		fmt.Println("voteT", PollOptionNoWithVeto.String())
-		fmt.Println("voteC", c.votes[PollOptionNoWithVeto.String()])
-		fmt.Println("voteV", c.actorsWithVeto)
 		resString := strconv.FormatFloat(float64(c.votes[PollOptionNoWithVeto.String()])/float64(c.actorsWithVeto)*100, 'f', -1, 64)
 
-		fmt.Println("resString", resString)
 		resBig, success := new(big.Int).SetString(resString, 10)
 		if !success {
 			return PollUnknown
 		}
-		fmt.Println("resBig", resBig.String())
+
 		percentageActorsWithVeto := types.NewDecFromBigIntWithPrec(resBig, 0)
-		fmt.Println("percentageActorsWithVeto", percentageActorsWithVeto.String())
-		fmt.Println("properties.VetoThreshold", properties.VetoThreshold.String())
 		if properties.VetoThreshold.LTE(percentageActorsWithVeto) {
 			return PollRejectedWithVeto
 		}
