@@ -150,7 +150,7 @@ func (k msgServer) JoinDappVerifierWithBond(goCtx context.Context, msg *types.Ms
 	verifierBond := properties.DappVerifierBond
 	totalSupply := dapp.GetLpTokenSupply()
 	dappBondLpToken := dapp.LpToken()
-	lpTokenAmount := totalSupply.ToDec().Mul(verifierBond).RoundInt()
+	lpTokenAmount := sdk.NewDecFromInt(totalSupply).Mul(verifierBond).RoundInt()
 	verifierBondCoins := sdk.NewCoins(sdk.NewCoin(dappBondLpToken, lpTokenAmount))
 	addr := sdk.MustAccAddressFromBech32(msg.Interx)
 	if verifierBondCoins.IsAllPositive() {
@@ -583,7 +583,7 @@ func (k msgServer) RedeemDappPoolTx(goCtx context.Context, msg *types.MsgRedeemD
 		return nil, types.ErrDappDoesNotExist
 	}
 	lpTokenPrice := k.keeper.LpTokenPrice(ctx, dapp)
-	withoutSlippage := msg.LpToken.Amount.ToDec().Mul(lpTokenPrice)
+	withoutSlippage := sdk.NewDecFromInt(msg.LpToken.Amount).Mul(lpTokenPrice)
 
 	receiveCoin, err := k.keeper.RedeemDappPoolTx(ctx, addr, dapp, dapp.PoolFee, msg.LpToken)
 	if err != nil {
@@ -595,7 +595,7 @@ func (k msgServer) RedeemDappPoolTx(goCtx context.Context, msg *types.MsgRedeemD
 	if maxSlippage.IsZero() {
 		maxSlippage = properties.DappPoolSlippageDefault
 	}
-	slippage := sdk.OneDec().Sub(receiveCoin.Amount.ToDec().Quo(withoutSlippage))
+	slippage := sdk.OneDec().Sub(sdk.NewDecFromInt(receiveCoin.Amount).Quo(withoutSlippage))
 	if slippage.GT(maxSlippage) {
 		return nil, types.ErrOperationExceedsSlippage
 	}
@@ -616,7 +616,7 @@ func (k msgServer) SwapDappPoolTx(goCtx context.Context, msg *types.MsgSwapDappP
 	if lpTokenPrice.IsZero() {
 		return nil, types.ErrOperationExceedsSlippage
 	}
-	withoutSlippage := msg.Token.Amount.ToDec().Quo(lpTokenPrice)
+	withoutSlippage := sdk.NewDecFromInt(msg.Token.Amount).Quo(lpTokenPrice)
 
 	receiveCoin, err := k.keeper.SwapDappPoolTx(ctx, addr, dapp, dapp.PoolFee, msg.Token)
 	if err != nil {
@@ -628,7 +628,7 @@ func (k msgServer) SwapDappPoolTx(goCtx context.Context, msg *types.MsgSwapDappP
 	if maxSlippage.IsZero() {
 		maxSlippage = properties.DappPoolSlippageDefault
 	}
-	slippage := sdk.OneDec().Sub(receiveCoin.Amount.ToDec().Quo(withoutSlippage))
+	slippage := sdk.OneDec().Sub(sdk.NewDecFromInt(receiveCoin.Amount).Quo(withoutSlippage))
 	if slippage.GT(maxSlippage) {
 		return nil, types.ErrOperationExceedsSlippage
 	}
@@ -658,7 +658,7 @@ func (k msgServer) ConvertDappPoolTx(goCtx context.Context, msg *types.MsgConver
 		return nil, types.ErrOperationExceedsSlippage
 	}
 
-	withoutSlippage := msg.LpToken.Amount.ToDec().Mul(lpTokenPrice1).Quo(lpTokenPrice2)
+	withoutSlippage := sdk.NewDecFromInt(msg.LpToken.Amount).Mul(lpTokenPrice1).Quo(lpTokenPrice2)
 
 	receiveCoin, err := k.keeper.ConvertDappPoolTx(ctx, addr, dapp1, dapp2, msg.LpToken)
 	if err != nil {
@@ -670,7 +670,7 @@ func (k msgServer) ConvertDappPoolTx(goCtx context.Context, msg *types.MsgConver
 	if maxSlippage.IsZero() {
 		maxSlippage = properties.DappPoolSlippageDefault
 	}
-	slippage := sdk.OneDec().Sub(receiveCoin.Amount.ToDec().Quo(withoutSlippage))
+	slippage := sdk.OneDec().Sub(sdk.NewDecFromInt(receiveCoin.Amount).Quo(withoutSlippage))
 	if slippage.GT(maxSlippage) {
 		return nil, types.ErrOperationExceedsSlippage
 	}

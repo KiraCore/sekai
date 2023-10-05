@@ -5,13 +5,13 @@ package types
 
 import (
 	fmt "fmt"
+	_ "github.com/cosmos/cosmos-proto"
 	_ "github.com/cosmos/cosmos-sdk/codec/types"
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
-	_ "github.com/gogo/protobuf/gogoproto"
-	proto "github.com/gogo/protobuf/proto"
-	github_com_gogo_protobuf_types "github.com/gogo/protobuf/types"
-	_ "github.com/regen-network/cosmos-proto"
-	_ "google.golang.org/protobuf/types/known/timestamppb"
+	_ "github.com/cosmos/gogoproto/gogoproto"
+	proto "github.com/cosmos/gogoproto/proto"
+	_ "github.com/cosmos/gogoproto/types"
+	github_com_cosmos_gogoproto_types "github.com/cosmos/gogoproto/types"
 	io "io"
 	math "math"
 	math_bits "math/bits"
@@ -706,7 +706,7 @@ func (m *Poll) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x50
 	}
-	n3, err3 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.VotingEndTime, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.VotingEndTime):])
+	n3, err3 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.VotingEndTime, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.VotingEndTime):])
 	if err3 != nil {
 		return 0, err3
 	}
@@ -1053,7 +1053,7 @@ func (m *Poll) Size() (n int) {
 		l = m.Options.Size()
 		n += 1 + l + sovPoll(uint64(l))
 	}
-	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.VotingEndTime)
+	l = github_com_cosmos_gogoproto_types.SizeOfStdTime(m.VotingEndTime)
 	n += 1 + l + sovPoll(uint64(l))
 	if m.Result != 0 {
 		n += 1 + sovPoll(uint64(m.Result))
@@ -1962,7 +1962,7 @@ func (m *Poll) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.VotingEndTime, dAtA[iNdEx:postIndex]); err != nil {
+			if err := github_com_cosmos_gogoproto_types.StdTimeUnmarshal(&m.VotingEndTime, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

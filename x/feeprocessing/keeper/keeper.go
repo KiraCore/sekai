@@ -9,6 +9,7 @@ import (
 	"github.com/KiraCore/sekai/x/feeprocessing/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
+	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 )
@@ -16,14 +17,14 @@ import (
 // Keeper manages module's storage
 type Keeper struct {
 	cdc      codec.BinaryCodec
-	storeKey sdk.StoreKey
+	storeKey storetypes.StoreKey
 	bk       types.BankKeeper
 	tk       types.TokensKeeper
 	cgk      types.CustomGovKeeper
 }
 
 // NewKeeper returns new instance of a keeper
-func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryCodec, bk types.BankKeeper, tk types.TokensKeeper, cgk types.CustomGovKeeper) Keeper {
+func NewKeeper(storeKey storetypes.StoreKey, cdc codec.BinaryCodec, bk types.BankKeeper, tk types.TokensKeeper, cgk types.CustomGovKeeper) Keeper {
 	return Keeper{
 		cdc,
 		storeKey,
@@ -64,7 +65,7 @@ func (k Keeper) SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule strin
 	for _, coin := range amt {
 		rate := k.tk.GetTokenRate(ctx, coin.Denom)
 		if rate != nil {
-			totalAmount = totalAmount.Add(rate.FeeRate.Mul(coin.Amount.ToDec()))
+			totalAmount = totalAmount.Add(rate.FeeRate.Mul(sdk.NewDecFromInt(coin.Amount)))
 		}
 	}
 
@@ -74,7 +75,7 @@ func (k Keeper) SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule strin
 			continue
 		}
 		toFillAmt := totalAmount.Sub(filledAmount)
-		fillAmt := rate.FeeRate.Mul(coin.Amount.ToDec())
+		fillAmt := rate.FeeRate.Mul(sdk.NewDecFromInt(coin.Amount))
 		if fillAmt.GT(toFillAmt) {
 			// we don't pay back full amount if there's remainder in div operation
 			coinAmt := toFillAmt.BigInt().Div(toFillAmt.BigInt(), rate.FeeRate.BigInt())
@@ -91,7 +92,7 @@ func (k Keeper) SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule strin
 		}
 	}
 
-	k.SetSenderCoinsHistory(ctx, recipientAddr, recipientSentCoins.Sub(paybackCoins))
+	k.SetSenderCoinsHistory(ctx, recipientAddr, recipientSentCoins.Sub(paybackCoins...))
 	return k.bk.SendCoinsFromModuleToAccount(ctx, senderModule, recipientAddr, paybackCoins)
 }
 

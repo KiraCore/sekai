@@ -3,6 +3,7 @@ package types
 import (
 	"testing"
 
+	appparams "github.com/KiraCore/sekai/app/params"
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -59,7 +60,7 @@ func TestMsgRequestIdentityRecordsVerify_ValidateBasic(t *testing.T) {
 		Address:   addr1,
 		Verifier:  addr3,
 		RecordIds: []uint64{1},
-		Tip:       sdk.NewInt64Coin(sdk.DefaultBondDenom, 0),
+		Tip:       sdk.NewInt64Coin(appparams.DefaultDenom, 0),
 	}
 	require.NoError(t, msg.ValidateBasic())
 
@@ -67,7 +68,7 @@ func TestMsgRequestIdentityRecordsVerify_ValidateBasic(t *testing.T) {
 		Address:   addr1,
 		Verifier:  addr3,
 		RecordIds: []uint64{},
-		Tip:       sdk.NewInt64Coin(sdk.DefaultBondDenom, 10),
+		Tip:       sdk.NewInt64Coin(appparams.DefaultDenom, 10),
 	}
 	require.Error(t, msg.ValidateBasic())
 
@@ -75,14 +76,14 @@ func TestMsgRequestIdentityRecordsVerify_ValidateBasic(t *testing.T) {
 		Address:   addr1,
 		Verifier:  empty,
 		RecordIds: []uint64{},
-		Tip:       sdk.NewInt64Coin(sdk.DefaultBondDenom, 10),
+		Tip:       sdk.NewInt64Coin(appparams.DefaultDenom, 10),
 	}
 	require.Error(t, msg.ValidateBasic())
 	msg = MsgRequestIdentityRecordsVerify{
 		Address:   empty,
 		Verifier:  addr1,
 		RecordIds: []uint64{},
-		Tip:       sdk.NewInt64Coin(sdk.DefaultBondDenom, 10),
+		Tip:       sdk.NewInt64Coin(appparams.DefaultDenom, 10),
 	}
 	require.Error(t, msg.ValidateBasic())
 
@@ -90,7 +91,7 @@ func TestMsgRequestIdentityRecordsVerify_ValidateBasic(t *testing.T) {
 		Address:   addr1,
 		Verifier:  addr3,
 		RecordIds: []uint64{1},
-		Tip:       sdk.NewInt64Coin(sdk.DefaultBondDenom, 10),
+		Tip:       sdk.NewInt64Coin(appparams.DefaultDenom, 10),
 	}
 	require.NoError(t, msg.ValidateBasic())
 }

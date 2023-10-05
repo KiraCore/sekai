@@ -6,20 +6,20 @@ package types
 import (
 	context "context"
 	fmt "fmt"
-	types1 "github.com/KiraCore/sekai/x/gov/types"
-	types2 "github.com/KiraCore/sekai/x/multistaking/types"
-	types "github.com/KiraCore/sekai/x/staking/types"
+	types2 "github.com/KiraCore/sekai/x/gov/types"
+	types3 "github.com/KiraCore/sekai/x/multistaking/types"
+	types1 "github.com/KiraCore/sekai/x/staking/types"
 	_ "github.com/cosmos/cosmos-sdk/types/query"
 	github_com_cosmos_cosmos_sdk_types_query "github.com/cosmos/cosmos-sdk/types/query"
-	_ "github.com/gogo/protobuf/gogoproto"
-	grpc1 "github.com/gogo/protobuf/grpc"
-	proto "github.com/gogo/protobuf/proto"
-	github_com_gogo_protobuf_types "github.com/gogo/protobuf/types"
+	_ "github.com/cosmos/gogoproto/gogoproto"
+	grpc1 "github.com/cosmos/gogoproto/grpc"
+	proto "github.com/cosmos/gogoproto/proto"
+	_ "github.com/cosmos/gogoproto/types"
+	github_com_cosmos_gogoproto_types "github.com/cosmos/gogoproto/types"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	_ "google.golang.org/protobuf/types/known/timestamppb"
 	io "io"
 	math "math"
 	math_bits "math/bits"
@@ -250,7 +250,7 @@ type QuerySigningInfoResponse struct {
 	// val_signing_info is the signing info of requested val cons address
 	ValSigningInfo ValidatorSigningInfo `protobuf:"bytes,1,opt,name=val_signing_info,json=valSigningInfo,proto3" json:"val_signing_info"`
 	// validator is the main info saved on native validator object
-	Validator types.QueryValidator `protobuf:"bytes,2,opt,name=validator,proto3" json:"validator"`
+	Validator types1.QueryValidator `protobuf:"bytes,2,opt,name=validator,proto3" json:"validator"`
 }
 
 func (m *QuerySigningInfoResponse) Reset()         { *m = QuerySigningInfoResponse{} }
@@ -293,11 +293,11 @@ func (m *QuerySigningInfoResponse) GetValSigningInfo() ValidatorSigningInfo {
 	return ValidatorSigningInfo{}
 }
 
-func (m *QuerySigningInfoResponse) GetValidator() types.QueryValidator {
+func (m *QuerySigningInfoResponse) GetValidator() types1.QueryValidator {
 	if m != nil {
 		return m.Validator
 	}
-	return types.QueryValidator{}
+	return types1.QueryValidator{}
 }
 
 // QuerySigningInfosRequest is the request type for the Query/SigningInfos RPC
@@ -361,7 +361,7 @@ type QuerySigningInfosResponse struct {
 	// info is the signing info of all validators
 	Info []ValidatorSigningInfo `protobuf:"bytes,1,rep,name=info,proto3" json:"info"`
 	// validator is the main info saved on native validator object
-	Validators []types.QueryValidator                                 `protobuf:"bytes,2,rep,name=validators,proto3" json:"validators"`
+	Validators []types1.QueryValidator                                `protobuf:"bytes,2,rep,name=validators,proto3" json:"validators"`
 	Pagination *github_com_cosmos_cosmos_sdk_types_query.PageResponse `protobuf:"bytes,3,opt,name=pagination,proto3,casttype=github.com/cosmos/cosmos-sdk/types/query.PageResponse" json:"pagination,omitempty"`
 }
 
@@ -405,7 +405,7 @@ func (m *QuerySigningInfosResponse) GetInfo() []ValidatorSigningInfo {
 	return nil
 }
 
-func (m *QuerySigningInfosResponse) GetValidators() []types.QueryValidator {
+func (m *QuerySigningInfosResponse) GetValidators() []types1.QueryValidator {
 	if m != nil {
 		return m.Validators
 	}
@@ -457,7 +457,7 @@ func (m *QuerySlashProposalsRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_QuerySlashProposalsRequest proto.InternalMessageInfo
 
 type QuerySlashProposalsResponse struct {
-	Proposals []types1.Proposal `protobuf:"bytes,1,rep,name=proposals,proto3" json:"proposals"`
+	Proposals []types2.Proposal `protobuf:"bytes,1,rep,name=proposals,proto3" json:"proposals"`
 }
 
 func (m *QuerySlashProposalsResponse) Reset()         { *m = QuerySlashProposalsResponse{} }
@@ -493,7 +493,7 @@ func (m *QuerySlashProposalsResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QuerySlashProposalsResponse proto.InternalMessageInfo
 
-func (m *QuerySlashProposalsResponse) GetProposals() []types1.Proposal {
+func (m *QuerySlashProposalsResponse) GetProposals() []types2.Proposal {
 	if m != nil {
 		return m.Proposals
 	}
@@ -538,7 +538,7 @@ func (m *QuerySlashedStakingPoolsRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_QuerySlashedStakingPoolsRequest proto.InternalMessageInfo
 
 type QuerySlashedStakingPoolsResponse struct {
-	Pools []types2.StakingPool `protobuf:"bytes,1,rep,name=pools,proto3" json:"pools"`
+	Pools []types3.StakingPool `protobuf:"bytes,1,rep,name=pools,proto3" json:"pools"`
 }
 
 func (m *QuerySlashedStakingPoolsResponse) Reset()         { *m = QuerySlashedStakingPoolsResponse{} }
@@ -574,7 +574,7 @@ func (m *QuerySlashedStakingPoolsResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QuerySlashedStakingPoolsResponse proto.InternalMessageInfo
 
-func (m *QuerySlashedStakingPoolsResponse) GetPools() []types2.StakingPool {
+func (m *QuerySlashedStakingPoolsResponse) GetPools() []types3.StakingPool {
 	if m != nil {
 		return m.Pools
 	}
@@ -619,7 +619,7 @@ func (m *QueryActiveStakingPoolsRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_QueryActiveStakingPoolsRequest proto.InternalMessageInfo
 
 type QueryActiveStakingPoolsResponse struct {
-	Pools []types2.StakingPool `protobuf:"bytes,1,rep,name=pools,proto3" json:"pools"`
+	Pools []types3.StakingPool `protobuf:"bytes,1,rep,name=pools,proto3" json:"pools"`
 }
 
 func (m *QueryActiveStakingPoolsResponse) Reset()         { *m = QueryActiveStakingPoolsResponse{} }
@@ -655,7 +655,7 @@ func (m *QueryActiveStakingPoolsResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryActiveStakingPoolsResponse proto.InternalMessageInfo
 
-func (m *QueryActiveStakingPoolsResponse) GetPools() []types2.StakingPool {
+func (m *QueryActiveStakingPoolsResponse) GetPools() []types3.StakingPool {
 	if m != nil {
 		return m.Pools
 	}
@@ -701,7 +701,7 @@ func (m *QueryInactiveStakingPoolsRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_QueryInactiveStakingPoolsRequest proto.InternalMessageInfo
 
 type QueryInactiveStakingPoolsResponse struct {
-	Pools []types2.StakingPool `protobuf:"bytes,1,rep,name=pools,proto3" json:"pools"`
+	Pools []types3.StakingPool `protobuf:"bytes,1,rep,name=pools,proto3" json:"pools"`
 }
 
 func (m *QueryInactiveStakingPoolsResponse) Reset()         { *m = QueryInactiveStakingPoolsResponse{} }
@@ -737,7 +737,7 @@ func (m *QueryInactiveStakingPoolsResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryInactiveStakingPoolsResponse proto.InternalMessageInfo
 
-func (m *QueryInactiveStakingPoolsResponse) GetPools() []types2.StakingPool {
+func (m *QueryInactiveStakingPoolsResponse) GetPools() []types3.StakingPool {
 	if m != nil {
 		return m.Pools
 	}
@@ -1274,7 +1274,7 @@ func (m *IdentityRecord) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			dAtA[i] = 0x2a
 		}
 	}
-	n2, err2 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.Date, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.Date):])
+	n2, err2 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.Date, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.Date):])
 	if err2 != nil {
 		return 0, err2
 	}
@@ -1788,7 +1788,7 @@ func (m *IdentityRecord) Size() (n int) {
 			n += mapEntrySize + 1 + sovQuery(uint64(mapEntrySize))
 		}
 	}
-	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.Date)
+	l = github_com_cosmos_gogoproto_types.SizeOfStdTime(m.Date)
 	n += 1 + l + sovQuery(uint64(l))
 	if len(m.Verifiers) > 0 {
 		for _, s := range m.Verifiers {
@@ -2308,7 +2308,7 @@ func (m *IdentityRecord) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.Date, dAtA[iNdEx:postIndex]); err != nil {
+			if err := github_com_cosmos_gogoproto_types.StdTimeUnmarshal(&m.Date, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -2781,7 +2781,7 @@ func (m *QuerySigningInfosResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Validators = append(m.Validators, types.QueryValidator{})
+			m.Validators = append(m.Validators, types1.QueryValidator{})
 			if err := m.Validators[len(m.Validators)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -2951,7 +2951,7 @@ func (m *QuerySlashProposalsResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Proposals = append(m.Proposals, types1.Proposal{})
+			m.Proposals = append(m.Proposals, types2.Proposal{})
 			if err := m.Proposals[len(m.Proposals)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -3085,7 +3085,7 @@ func (m *QuerySlashedStakingPoolsResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Pools = append(m.Pools, types2.StakingPool{})
+			m.Pools = append(m.Pools, types3.StakingPool{})
 			if err := m.Pools[len(m.Pools)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -3219,7 +3219,7 @@ func (m *QueryActiveStakingPoolsResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Pools = append(m.Pools, types2.StakingPool{})
+			m.Pools = append(m.Pools, types3.StakingPool{})
 			if err := m.Pools[len(m.Pools)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -3353,7 +3353,7 @@ func (m *QueryInactiveStakingPoolsResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Pools = append(m.Pools, types2.StakingPool{})
+			m.Pools = append(m.Pools, types3.StakingPool{})
 			if err := m.Pools[len(m.Pools)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}

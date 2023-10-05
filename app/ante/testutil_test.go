@@ -7,6 +7,7 @@ import (
 
 	simapp "github.com/KiraCore/sekai/app"
 	customante "github.com/KiraCore/sekai/app/ante"
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
@@ -19,7 +20,6 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/stretchr/testify/suite"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
 
 // TestAccount represents an account used in the tests in x/auth/ante.
@@ -63,14 +63,18 @@ func (suite *AnteTestSuite) SetupTest(isCheckTx bool) {
 
 	suite.anteHandler = customante.NewAnteHandler(
 		suite.app.CustomStakingKeeper,
+
 		suite.app.CustomGovKeeper,
 		suite.app.TokensKeeper,
 		suite.app.FeeProcessingKeeper,
 		suite.app.AccountKeeper,
 		suite.app.BankKeeper,
+		suite.app.CustodyKeeper,
+		nil,
+		nil,
 		ante.DefaultSigVerificationGasConsumer,
 		encodingConfig.TxConfig.SignModeHandler(),
-		suite.app.CustodyKeeper)
+		nil)
 }
 
 // CreateTestAccounts creates `numAccs` accounts, and return all relevant

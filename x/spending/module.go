@@ -6,12 +6,12 @@ import (
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
-	"github.com/KiraCore/sekai/middleware"
 	spendingcli "github.com/KiraCore/sekai/x/spending/client/cli"
 	spendingkeeper "github.com/KiraCore/sekai/x/spending/keeper"
 	"github.com/KiraCore/sekai/x/spending/types"
 	spendingtypes "github.com/KiraCore/sekai/x/spending/types"
 
+	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
@@ -19,7 +19,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
-	abci "github.com/tendermint/tendermint/abci/types"
 )
 
 var (
@@ -123,11 +122,6 @@ func (am AppModule) QuerierRoute() string {
 	return spendingtypes.QuerierRoute
 }
 
-// LegacyQuerierHandler returns the staking module sdk.Querier.
-func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {
-	return nil
-}
-
 func (am AppModule) BeginBlock(ctx sdk.Context, block abci.RequestBeginBlock) {
 	am.spendingKeeper.BeginBlocker(ctx)
 }
@@ -139,11 +133,6 @@ func (am AppModule) EndBlock(ctx sdk.Context, block abci.RequestEndBlock) []abci
 
 func (am AppModule) Name() string {
 	return spendingtypes.ModuleName
-}
-
-// Route returns the message routing key for the staking module.
-func (am AppModule) Route() sdk.Route {
-	return middleware.NewRoute(spendingtypes.ModuleName, NewHandler(am.spendingKeeper, am.customGovKeeper, am.bankKeeper))
 }
 
 // NewAppModule returns a new Custom Staking module.

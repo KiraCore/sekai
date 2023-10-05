@@ -3,7 +3,7 @@ package keeper
 import (
 	"fmt"
 
-	"github.com/tendermint/tendermint/crypto"
+	"github.com/cometbft/cometbft/crypto"
 
 	"github.com/KiraCore/sekai/x/slashing/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"

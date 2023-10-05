@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	abci "github.com/tendermint/tendermint/abci/types"
+	abci "github.com/cometbft/cometbft/abci/types"
 
 	"github.com/KiraCore/sekai/x/genutil/types"
 	govtypes "github.com/KiraCore/sekai/x/gov/types"

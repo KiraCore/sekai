@@ -4,15 +4,15 @@ import (
 	"encoding/json"
 	"fmt"
 
+	tmtypes "github.com/cometbft/cometbft/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-	tmtypes "github.com/tendermint/tendermint/types"
 
-	tmjson "github.com/tendermint/tendermint/libs/json"
-	tmos "github.com/tendermint/tendermint/libs/os"
+	tmjson "github.com/cometbft/cometbft/libs/json"
+	tmos "github.com/cometbft/cometbft/libs/os"
 )
 
 // GetStandardGenesisExportedCmd returns standard genesis from genesis with spaces
@@ -31,7 +31,7 @@ $ %s export-minimized-genesis exported-genesis.json new-genesis.json
 			if err != nil {
 				return err
 			}
-			cdc := clientCtx.JSONCodec
+			cdc := clientCtx.Codec
 
 			genDoc, err := tmtypes.GenesisDocFromFile(args[0])
 			if err != nil {

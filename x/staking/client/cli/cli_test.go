@@ -10,12 +10,11 @@ import (
 
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 
+	dbm "github.com/cometbft/cometbft-db"
 	"github.com/stretchr/testify/suite"
-	dbm "github.com/tendermint/tm-db"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
-	"github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/KiraCore/sekai/app"
@@ -24,6 +23,7 @@ import (
 	"github.com/KiraCore/sekai/testutil/network"
 	"github.com/KiraCore/sekai/x/staking/client/cli"
 	customtypes "github.com/KiraCore/sekai/x/staking/types"
+	pruningtypes "github.com/cosmos/cosmos-sdk/store/pruning/types"
 	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
 )
 
@@ -45,13 +45,14 @@ func (s *IntegrationTestSuite) SetupSuite() {
 
 	cfg.NumValidators = 1
 
-	cfg.AppConstructor = func(val network.Validator) servertypes.Application {
+	cfg.AppConstructor = func(val network.Validator, chainId string) servertypes.Application {
 		return app.NewInitApp(
 			val.Ctx.Logger, dbm.NewMemDB(), nil, true, make(map[int64]bool), val.Ctx.Config.RootDir, 0,
-			app.MakeEncodingConfig(),
+			simapp.MakeEncodingConfig(),
 			simapp.EmptyAppOptions{},
-			baseapp.SetPruning(types.NewPruningOptionsFromString(val.AppConfig.Pruning)),
+			baseapp.SetPruning(pruningtypes.NewPruningOptionsFromString(val.AppConfig.Pruning)),
 			baseapp.SetMinGasPrices(val.AppConfig.MinGasPrices),
+			baseapp.SetChainID(chainId),
 		)
 	}
 
@@ -78,7 +79,7 @@ func (s *IntegrationTestSuite) TestQueryValidator() {
 	s.Require().NoError(err)
 
 	var respValidator customtypes.Validator
-	clientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &respValidator)
+	clientCtx.Codec.MustUnmarshalJSON(out.Bytes(), &respValidator)
 
 	s.Require().Equal(val.ValAddress, respValidator.ValKey)
 
@@ -94,7 +95,7 @@ func (s *IntegrationTestSuite) TestQueryValidator() {
 	})
 	s.Require().NoError(err)
 
-	clientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &respValidator)
+	clientCtx.Codec.MustUnmarshalJSON(out.Bytes(), &respValidator)
 
 	s.Require().Equal(val.ValAddress, respValidator.ValKey)
 
@@ -109,7 +110,7 @@ func (s *IntegrationTestSuite) TestQueryValidator() {
 	})
 	s.Require().NoError(err)
 
-	clientCtx.JSONCodec.MustUnmarshalJSON(out.Bytes(), &respValidator)
+	clientCtx.Codec.MustUnmarshalJSON(out.Bytes(), &respValidator)
 
 	s.Require().Equal(val.ValAddress, respValidator.ValKey)
 
@@ -129,21 +130,21 @@ func (s *IntegrationTestSuite) TestQueryValidator_Errors() {
 	_, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("--%s=%s", cli.FlagValAddr, nonExistingAddr.String()),
 	})
-	s.Require().EqualError(err, "rpc error: code = InvalidArgument desc = validator not found: key not found: invalid request")
+	s.Require().EqualError(err, "rpc error: code = Unknown desc = validator not found: key not found: unknown request")
 
 	// Non existing moniker.
 	cmd = cli.GetCmdQueryValidator()
 	_, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("--%s=%s", cli.FlagAddr, sdk.AccAddress(nonExistingAddr).String()),
 	})
-	s.Require().EqualError(err, "rpc error: code = InvalidArgument desc = validator not found: key not found: invalid request")
+	s.Require().EqualError(err, "rpc error: code = Unknown desc = validator not found: key not found: unknown request")
 
 	// Non existing moniker.
 	cmd = cli.GetCmdQueryValidator()
 	_, err = clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("--%s=%s", cli.FlagMoniker, "weirdMoniker"),
 	})
-	s.Require().EqualError(err, "rpc error: code = InvalidArgument desc = validator with moniker weirdMoniker not found: key not found: invalid request")
+	s.Require().EqualError(err, "rpc error: code = Unknown desc = validator with moniker weirdMoniker not found: key not found: unknown request")
 }
 
 func (s IntegrationTestSuite) TestCreateProposalUnjailValidator() {
@@ -159,7 +160,7 @@ func (s IntegrationTestSuite) TestCreateProposalUnjailValidator() {
 			fmt.Sprintf("--%s=%s", cli.FlagTitle, "title"),
 			fmt.Sprintf("--%s=%s", cli.FlagDescription, "some desc"),
 			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 			fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
 			val.ValAddress.String(),
 			"theReference",
@@ -177,7 +178,7 @@ func (s IntegrationTestSuite) TestCreateProposalUnjailValidator() {
 			fmt.Sprintf("%d", govtypes.OptionYes),
 			fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 			fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+			fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 			fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
 		},
 	)
