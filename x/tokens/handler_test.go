@@ -15,11 +15,11 @@ import (
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	tokens "github.com/KiraCore/sekai/x/tokens"
 	tokenstypes "github.com/KiraCore/sekai/x/tokens/types"
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/require"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
 
 func TestMain(m *testing.M) {
@@ -34,7 +34,7 @@ func NewAccountByIndex(accNum int) sdk.AccAddress {
 	buffer.WriteString("A58856F0FD53BF058B4909A21AEC019107BA6") //base address string
 
 	buffer.WriteString(numString) //adding on final two digits to make addresses unique
-	res, _ := sdk.AccAddressFromHex(buffer.String())
+	res, _ := sdk.AccAddressFromHexUnsafe(buffer.String())
 	bech := res.String()
 	addr, _ := simapp.TestAddr(buffer.String(), bech)
 	buffer.Reset()

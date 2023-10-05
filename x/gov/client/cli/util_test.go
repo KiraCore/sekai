@@ -29,7 +29,7 @@ func GetRolesByAddress(t *testing.T, network *network.Network, address sdk.AccAd
 	require.NoError(t, err)
 
 	var roles types.RolesByAddressResponse
-	err = val.ClientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &roles)
+	err = val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &roles)
 	require.NoError(t, err)
 
 	return roles.RoleIds
@@ -44,7 +44,7 @@ func (s IntegrationTestSuite) SetCouncilor(address sdk.Address) {
 	_, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, []string{
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
 		fmt.Sprintf("--%s=%s", cli.FlagAddr, address.String()),
 		fmt.Sprintf("--%s=%s", cli.FlagMoniker, val.Moniker),
@@ -63,7 +63,7 @@ func (s IntegrationTestSuite) SendValue(cCtx client.Context, from sdk.AccAddress
 		to.String(),
 		coin.String(),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
 	})
 	s.Require().NoError(err)
@@ -81,7 +81,7 @@ func (s IntegrationTestSuite) WhitelistPermission(address sdk.AccAddress, perm s
 		fmt.Sprintf("--%s=%s", cli.FlagPermission, perm),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
 	})
 	s.Require().NoError(err)
@@ -97,12 +97,12 @@ func (s IntegrationTestSuite) VoteWithValidator0(proposalID uint64, voteOption t
 		fmt.Sprintf("%d", voteOption),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
 	})
 	s.Require().NoError(err)
 	var result sdk.TxResponse
-	s.Require().NoError(val.ClientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &result))
+	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &result))
 	s.Require().NotNil(result.Height)
 }
 
@@ -142,7 +142,7 @@ func (s IntegrationTestSuite) SetPoorNetworkMessages(messages string) sdk.TxResp
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 		fmt.Sprintf("--%s=%s", cli.FlagTitle, "title"),
 		fmt.Sprintf("--%s=%s", cli.FlagDescription, "some desc"),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
 	})
 	s.Require().NoError(err)
@@ -151,7 +151,7 @@ func (s IntegrationTestSuite) SetPoorNetworkMessages(messages string) sdk.TxResp
 	s.Require().NoError(err)
 
 	var result sdk.TxResponse
-	s.Require().NoError(val.ClientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &result))
+	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &result))
 	s.Require().NotNil(result.Height)
 	return result
 }
@@ -166,7 +166,7 @@ func (s IntegrationTestSuite) SetNetworkProperties(minTxFee, maxTxFee, minValida
 		fmt.Sprintf("--%s=%d", cli.FlagMinValidators, minValidators),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
 	})
 	s.Require().NoError(err)
@@ -175,7 +175,7 @@ func (s IntegrationTestSuite) SetNetworkProperties(minTxFee, maxTxFee, minValida
 	s.Require().NoError(err)
 
 	var result sdk.TxResponse
-	s.Require().NoError(val.ClientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &result))
+	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &result))
 	s.Require().NotNil(result.Height)
 	s.Require().Contains(result.RawLog, "MsgSetNetworkProperties")
 }
@@ -191,7 +191,7 @@ func (s IntegrationTestSuite) SetNetworkPropertyProposal(property string, value 
 		fmt.Sprintf("--%s=%s", cli.FlagTitle, "title"),
 		fmt.Sprintf("--%s=%s", cli.FlagDescription, "some desc"),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
 	})
 	s.Require().NoError(err)
@@ -200,7 +200,7 @@ func (s IntegrationTestSuite) SetNetworkPropertyProposal(property string, value 
 	s.Require().NoError(err)
 
 	var result sdk.TxResponse
-	s.Require().NoError(val.ClientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &result))
+	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &result))
 	s.Require().NotNil(result.Height)
 	s.Require().Contains(result.RawLog, "SetNetworkProperty")
 }
@@ -215,7 +215,7 @@ func (s IntegrationTestSuite) UpsertRate(denom string, rate string, flagFeePayme
 		fmt.Sprintf("--%s=%s", tokenscli.FlagFeePayments, strconv.FormatBool(flagFeePayments)),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync),
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.DefaultDenom, sdk.NewInt(100))).String()),
 	})
 	s.Require().NoError(err)
@@ -224,7 +224,7 @@ func (s IntegrationTestSuite) UpsertRate(denom string, rate string, flagFeePayme
 	s.Require().NoError(err)
 
 	var result sdk.TxResponse
-	s.Require().NoError(val.ClientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &result))
+	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &result))
 	s.Require().NotNil(result.Height)
 	return result
 }

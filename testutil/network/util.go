@@ -7,19 +7,20 @@ import (
 	"time"
 
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
+	srvtypes "github.com/cosmos/cosmos-sdk/server/types"
 
 	"github.com/pkg/errors"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	tmos "github.com/tendermint/tendermint/libs/os"
-	"github.com/tendermint/tendermint/node"
-	"github.com/tendermint/tendermint/p2p"
-	pvm "github.com/tendermint/tendermint/privval"
-	"github.com/tendermint/tendermint/proxy"
-	"github.com/tendermint/tendermint/rpc/client/local"
-	"github.com/tendermint/tendermint/types"
-	tmtime "github.com/tendermint/tendermint/types/time"
+	tmos "github.com/cometbft/cometbft/libs/os"
+	"github.com/cometbft/cometbft/node"
+	"github.com/cometbft/cometbft/p2p"
+	pvm "github.com/cometbft/cometbft/privval"
+	"github.com/cometbft/cometbft/proxy"
+	"github.com/cometbft/cometbft/rpc/client/local"
+	"github.com/cometbft/cometbft/types"
+	tmtime "github.com/cometbft/cometbft/types/time"
 
 	"github.com/KiraCore/sekai/x/genutil"
 	genutiltypes "github.com/KiraCore/sekai/x/genutil/types"
@@ -35,15 +36,20 @@ func startInProcess(cfg Config, val *Validator) error {
 	tmCfg := val.Ctx.Config
 	tmCfg.Instrumentation.Prometheus = false
 
+	if err := val.AppConfig.ValidateBasic(); err != nil {
+		return err
+	}
+
 	nodeKey, err := p2p.LoadOrGenNodeKey(tmCfg.NodeKeyFile())
 	if err != nil {
 		return err
 	}
 
-	app := cfg.AppConstructor(*val)
+	app := cfg.AppConstructor(*val, cfg.ChainID)
 
 	genDocProvider := node.DefaultGenesisDocProviderFunc(tmCfg)
-	tmNode, err := node.NewNode(
+
+	tmNode, err := node.NewNode( //resleak:notresource
 		tmCfg,
 		pvm.LoadOrGenFilePV(tmCfg.PrivValidatorKeyFile(), tmCfg.PrivValidatorStateFile()),
 		nodeKey,
@@ -60,7 +66,6 @@ func startInProcess(cfg Config, val *Validator) error {
 	if err := tmNode.Start(); err != nil {
 		return err
 	}
-
 	val.tmNode = tmNode
 
 	if val.RPCAddress != "" {
@@ -72,8 +77,9 @@ func startInProcess(cfg Config, val *Validator) error {
 		val.ClientCtx = val.ClientCtx.
 			WithClient(val.RPCClient)
 
-		// Add the tx service in the gRPC router.
 		app.RegisterTxService(val.ClientCtx)
+		app.RegisterTendermintService(val.ClientCtx)
+		app.RegisterNodeService(val.ClientCtx)
 	}
 
 	if val.APIAddress != "" {
@@ -91,21 +97,27 @@ func startInProcess(cfg Config, val *Validator) error {
 		select {
 		case err := <-errCh:
 			return err
-		case <-time.After(5 * time.Second): // assume server started successfully
+		case <-time.After(srvtypes.ServerStartTime): // assume server started successfully
 		}
 
 		val.api = apiSrv
 	}
 
 	if val.AppConfig.GRPC.Enable {
-		grpcSrv, err := servergrpc.StartGRPCServer(val.ClientCtx, app, val.AppConfig.GRPC.Address)
+		grpcSrv, err := servergrpc.StartGRPCServer(val.ClientCtx, app, val.AppConfig.GRPC)
 		if err != nil {
 			return err
 		}
 
 		val.grpc = grpcSrv
-	}
 
+		if val.AppConfig.GRPCWeb.Enable {
+			val.grpcWeb, err = servergrpc.StartGRPCWeb(grpcSrv, *val.AppConfig)
+			if err != nil {
+				return err
+			}
+		}
+	}
 	return nil
 }
 

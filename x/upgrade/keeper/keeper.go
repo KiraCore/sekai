@@ -3,19 +3,19 @@ package keeper
 import (
 	"github.com/KiraCore/sekai/x/upgrade/types"
 	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 )
 
 // Keeper is for managing upgrade module
 type Keeper struct {
 	cdc             codec.BinaryCodec
-	storeKey        sdk.StoreKey
+	storeKey        storetypes.StoreKey
 	upgradeHandlers map[string]types.UpgradeHandler
 	sk              types.CustomStakingKeeper
 }
 
 // NewKeeper constructs an upgrade Keeper
-func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryCodec, sk types.CustomStakingKeeper) Keeper {
+func NewKeeper(storeKey storetypes.StoreKey, cdc codec.BinaryCodec, sk types.CustomStakingKeeper) Keeper {
 	return Keeper{
 		storeKey:        storeKey,
 		cdc:             cdc,

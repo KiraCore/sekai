@@ -8,11 +8,11 @@ import (
 	appparams "github.com/KiraCore/sekai/app/params"
 	"github.com/KiraCore/sekai/testutil/network"
 	"github.com/KiraCore/sekai/x/gov/types"
+	dbm "github.com/cometbft/cometbft-db"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
+	pruningtypes "github.com/cosmos/cosmos-sdk/store/pruning/types"
 	"github.com/stretchr/testify/suite"
-	dbm "github.com/tendermint/tm-db"
 )
 
 type IntegrationTestSuite struct {
@@ -43,13 +43,14 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	genesis[types.ModuleName] = govGenRaw
 	cfg.GenesisState = genesis
 
-	cfg.AppConstructor = func(val network.Validator) servertypes.Application {
+	cfg.AppConstructor = func(val network.Validator, chainId string) servertypes.Application {
 		return app.NewInitApp(
 			val.Ctx.Logger, dbm.NewMemDB(), nil, true, make(map[int64]bool), val.Ctx.Config.RootDir, 0,
 			simapp.MakeEncodingConfig(),
 			simapp.EmptyAppOptions{},
-			baseapp.SetPruning(storetypes.NewPruningOptionsFromString(val.AppConfig.Pruning)),
+			baseapp.SetPruning(pruningtypes.NewPruningOptionsFromString(val.AppConfig.Pruning)),
 			baseapp.SetMinGasPrices(val.AppConfig.MinGasPrices),
+			baseapp.SetChainID(chainId),
 		)
 	}
 
@@ -87,7 +88,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 // 	s.Require().NoError(err)
 
 // 	var councilorByAddress types.Councilor
-// 	err = val.ClientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &councilorByAddress)
+// 	err = val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &councilorByAddress)
 // 	s.Require().NoError(err)
 // 	s.Require().Equal(val.Moniker, councilorByAddress.Moniker)
 // 	s.Require().Equal(val.Address, councilorByAddress.Address)
@@ -100,7 +101,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 // 	s.Require().NoError(err)
 
 // 	var councilorByMoniker types.Councilor
-// 	err = val.ClientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &councilorByMoniker)
+// 	err = val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &councilorByMoniker)
 // 	s.Require().NoError(err)
 // 	s.Require().Equal(val.Moniker, councilorByMoniker.Moniker)
 // 	s.Require().Equal(val.Address, councilorByMoniker.Address)

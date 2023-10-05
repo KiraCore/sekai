@@ -1,3 +1,5 @@
+DOCKER := $(shell which docker)
+
 .PHONY: all install go.sum test test-local lint proto-gen proto-gen-local build start publish
 
 all: install
@@ -23,15 +25,31 @@ lint:
 	@golangci-lint run
 	@go mod verify
 
-containerProtoVer=v0.2
-containerProtoImage=tendermintdev/sdk-proto-gen:$(containerProtoVer)
-containerProtoGen=cosmos-sdk-proto-gen-$(containerProtoVer)
+containerProtoVer=0.14.0
+containerProtoImage=ghcr.io/cosmos/proto-builder:$(containerProtoVer)
+
+proto-all: proto-format proto-lint proto-gen
 
 proto-gen:
-	docker run --rm --name $(containerProtoGen) -v $(CURDIR):/workspace --workdir /workspace $(containerProtoImage) sh ./scripts/protocgen.sh
+	@echo "Generating Protobuf files"
+	@$(DOCKER) run --user $(id -u):$(id -g) --rm -v $(CURDIR):/workspace --workdir /workspace $(containerProtoImage) \
+		sh ./scripts/protocgen.sh; 
 
-proto-gen-local:
-	./scripts/protogen-local.sh
+proto-format:
+	@echo "Formatting Protobuf files"
+	@$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace tendermintdev/docker-build-proto \
+		find ./proto -name "*.proto" -exec clang-format -i {} \;  
+
+proto-swagger-gen:
+	@echo "Generating Protobuf Swagger"
+	@$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace $(containerProtoImage) \
+		sh ./scripts/protoc-swagger-gen.sh; 
+
+proto-lint:
+	@$(DOCKER_BUF) lint --error-format=json
+
+proto-check-breaking:
+	@$(DOCKER_BUF) breaking --against $(HTTPS_GIT)#branch=main
 
 build:
 	./scripts/build.sh

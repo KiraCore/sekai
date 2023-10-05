@@ -6,19 +6,20 @@ import (
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/layer2/types"
 	"github.com/cosmos/cosmos-sdk/codec"
+	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 type Keeper struct {
 	cdc      codec.BinaryCodec
-	storeKey sdk.StoreKey
+	storeKey storetypes.StoreKey
 	bk       types.BankKeeper
 	sk       types.StakingKeeper
 	gk       govkeeper.Keeper
 	spk      types.SpendingKeeper
 }
 
-func NewKeeper(storeKey sdk.StoreKey, cdc codec.BinaryCodec, bk types.BankKeeper, sk types.StakingKeeper, gk govkeeper.Keeper, spk types.SpendingKeeper) Keeper {
+func NewKeeper(storeKey storetypes.StoreKey, cdc codec.BinaryCodec, bk types.BankKeeper, sk types.StakingKeeper, gk govkeeper.Keeper, spk types.SpendingKeeper) Keeper {
 	return Keeper{
 		cdc:      cdc,
 		storeKey: storeKey,

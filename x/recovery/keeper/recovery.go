@@ -117,7 +117,7 @@ func (k Keeper) IncreaseRecoveryTokenUnderlying(ctx sdk.Context, addr sdk.AccAdd
 		k.IncreaseRRTokenHolderRewards(ctx, holder, allocation)
 	}
 
-	unallocated := amount.Sub(totalAllocation)
+	unallocated := amount.Sub(totalAllocation...)
 	recoveryToken.UnderlyingTokens = sdk.Coins(recoveryToken.UnderlyingTokens).Add(unallocated...)
 	k.SetRecoveryToken(ctx, recoveryToken)
 	return nil

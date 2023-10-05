@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"path/filepath"
 
+	tmtypes "github.com/cometbft/cometbft/types"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-	tmtypes "github.com/tendermint/tendermint/types"
 
 	"github.com/KiraCore/sekai/x/genutil"
 	"github.com/KiraCore/sekai/x/genutil/types"
@@ -27,7 +27,7 @@ func CollectGenTxsCmd(genBalIterator types.GenesisBalancesIterator, defaultNodeH
 			config := serverCtx.Config
 
 			clientCtx := client.GetClientContextFromCmd(cmd)
-			cdc := clientCtx.JSONCodec
+			cdc := clientCtx.Codec
 
 			config.SetRoot(clientCtx.HomeDir)
 

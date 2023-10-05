@@ -27,7 +27,7 @@ func GenTxClaimCmd(genBalIterator banktypes.GenesisBalancesIterator, defaultNode
 		RunE: func(cmd *cobra.Command, args []string) error {
 			serverCtx := server.GetServerContextFromCmd(cmd)
 			clientCtx := client.GetClientContextFromCmd(cmd)
-			cdc := clientCtx.JSONCodec
+			cdc := clientCtx.Codec
 
 			config := serverCtx.Config
 			config.SetRoot(clientCtx.HomeDir)
@@ -50,9 +50,12 @@ func GenTxClaimCmd(genBalIterator banktypes.GenesisBalancesIterator, defaultNode
 			if err != nil {
 				return errors.Wrapf(err, "failed to fetch '%s' from the keyring", name)
 			}
-
+			addr, err := key.GetAddress()
+			if err != nil {
+				return err
+			}
 			validator, err := stakingtypes.NewValidator(
-				types.ValAddress(key.GetAddress()),
+				types.ValAddress(addr),
 				valPubKey,
 			)
 			if err != nil {

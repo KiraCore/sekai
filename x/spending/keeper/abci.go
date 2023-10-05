@@ -36,7 +36,7 @@ func (k Keeper) EndBlocker(ctx sdk.Context) {
 		// `new_token_rate(x) = ( ( token_deposits(x) /  (dynamic_rate_period * weights_sum))`
 		poolRates := sdk.DecCoins{}
 		for _, deposit := range pool.Balances {
-			rate := deposit.Amount.ToDec().Quo(sdk.NewDec(int64(pool.DynamicRatePeriod * totalWeight)))
+			rate := sdk.NewDecFromInt(deposit.Amount).Quo(sdk.NewDec(int64(pool.DynamicRatePeriod * totalWeight)))
 			poolRates = poolRates.Add(sdk.NewDecCoinFromDec(deposit.Denom, rate))
 		}
 		pool.Rates = poolRates

@@ -41,7 +41,7 @@ const (
 	FlagKeys              = "keys"
 	FlagVerifier          = "verifier"
 	FlagRecordIds         = "record-ids"
-	FlagTip               = "tip"
+	FlagVerifierTip       = "verifier-tip"
 	FlagApprove           = "approve"
 	FlagSlash             = "slash"
 	FlagUsername          = "username"
@@ -1938,7 +1938,7 @@ func GetTxRequestIdentityRecordsVerify() *cobra.Command {
 				recordIds = append(recordIds, id)
 			}
 
-			tipStr, err := cmd.Flags().GetString(FlagTip)
+			tipStr, err := cmd.Flags().GetString(FlagVerifierTip)
 			if err != nil {
 				return err
 			}
@@ -1960,7 +1960,7 @@ func GetTxRequestIdentityRecordsVerify() *cobra.Command {
 
 	flags.AddTxFlagsToCmd(cmd)
 
-	cmd.Flags().String(FlagTip, "", "The tip to be given to the verifier.")
+	cmd.Flags().String(FlagVerifierTip, "", "The tip to be given to the verifier.")
 	cmd.Flags().String(FlagRecordIds, "", "Concatenated identity record ids array. e.g. 1,2")
 	cmd.Flags().String(FlagVerifier, "", "The verifier of the record ids")
 	cmd.MarkFlagRequired(FlagRecordIds)

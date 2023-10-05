@@ -6,8 +6,8 @@ import (
 	"github.com/KiraCore/sekai/x/basket/keeper"
 	"github.com/KiraCore/sekai/x/basket/types"
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
+	"github.com/cometbft/cometbft/crypto/ed25519"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/tendermint/tendermint/crypto/ed25519"
 )
 
 func (suite *KeeperTestSuite) TestDisableBasketDeposits() {
