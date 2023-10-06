@@ -12,33 +12,6 @@ import (
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 )
 
-// func (k msgServer) ClaimUndelegation(goCtx context.Context, msg *types.MsgClaimUndelegation) (*types.MsgClaimUndelegationResponse, error) {
-// 	ctx := sdk.UnwrapSDKContext(goCtx)
-
-// 	undelegation, found := k.keeper.GetUndelegationById(ctx, msg.UndelegationId)
-// 	if !found {
-// 		return nil, types.ErrUndelegationNotFound
-// 	}
-
-// 	if uint64(ctx.BlockTime().Unix()) < undelegation.Expiry {
-// 		return nil, types.ErrNotEnoughTimePassed
-// 	}
-
-// 	delegator, err := sdk.AccAddressFromBech32(msg.Sender)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, types.ModuleName, delegator, undelegation.Amount)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	k.keeper.RemoveUndelegation(ctx, undelegation.Id)
-
-// 	return &types.MsgClaimUndelegationResponse{}, nil
-// }
-
 func (suite *KeeperTestSuite) TestClaimUndelegation() {
 	addr1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
