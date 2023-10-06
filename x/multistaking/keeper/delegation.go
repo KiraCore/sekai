@@ -57,6 +57,12 @@ func (k Keeper) SetUndelegation(ctx sdk.Context, undelegation types.Undelegation
 	store.Set(key, k.cdc.MustMarshal(&undelegation))
 }
 
+func (k Keeper) RemoveUndelegation(ctx sdk.Context, id uint64) {
+	store := ctx.KVStore(k.storeKey)
+	key := append(types.KeyPrefixUndelegation, sdk.Uint64ToBigEndian(id)...)
+	store.Delete(key)
+}
+
 func (k Keeper) SetPoolDelegator(ctx sdk.Context, poolId uint64, delegator sdk.AccAddress) {
 	store := ctx.KVStore(k.storeKey)
 	key := append(append(types.KeyPrefixPoolDelegator, sdk.Uint64ToBigEndian(poolId)...), delegator...)
