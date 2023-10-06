@@ -6,12 +6,12 @@ package types
 import (
 	context "context"
 	fmt "fmt"
+	_ "github.com/cosmos/cosmos-proto"
 	_ "github.com/cosmos/cosmos-sdk/codec/types"
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
-	_ "github.com/gogo/protobuf/gogoproto"
-	grpc1 "github.com/gogo/protobuf/grpc"
-	proto "github.com/gogo/protobuf/proto"
-	_ "github.com/regen-network/cosmos-proto"
+	_ "github.com/cosmos/gogoproto/gogoproto"
+	grpc1 "github.com/cosmos/gogoproto/grpc"
+	proto "github.com/cosmos/gogoproto/proto"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -32,8 +32,8 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // - `disable-basket-deposits` - emergency function & permission to disable one or all deposits of one or all token in the basket
-//     - To disable all deposits at once the `mints_max` should be set to `0`
-//     - To disable single token set `deposits` boolean flag to false
+//   - To disable all deposits at once the `mints_max` should be set to `0`
+//   - To disable single token set `deposits` boolean flag to false
 type MsgDisableBasketDeposits struct {
 	Sender   string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
 	BasketId uint64 `protobuf:"varint,2,opt,name=basket_id,json=basketId,proto3" json:"basket_id,omitempty"`
@@ -131,8 +131,8 @@ func (m *MsgDisableBasketDepositsResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgDisableBasketDepositsResponse proto.InternalMessageInfo
 
 // - `disable-basket-withdraws`- emergency function & permission to disable one or all withdrawals of one or all token in the basket
-//     - To disable all withdraws at once the `burns_max` should be set to `0`
-//     - To disable single token set `withdraws` boolean flag to false
+//   - To disable all withdraws at once the `burns_max` should be set to `0`
+//   - To disable single token set `withdraws` boolean flag to false
 type MsgDisableBasketWithdraws struct {
 	Sender   string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
 	BasketId uint64 `protobuf:"varint,2,opt,name=basket_id,json=basketId,proto3" json:"basket_id,omitempty"`
@@ -230,8 +230,8 @@ func (m *MsgDisableBasketWithdrawsResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgDisableBasketWithdrawsResponse proto.InternalMessageInfo
 
 // - `disable-basket-swaps`- emergency function & permission to disable one or all swaps of one or all token in the basket
-//     - To disable all swaps at once the `swaps_max` should be set to `0`
-//     - To disable single token set `swaps` boolean flag to false
+//   - To disable all swaps at once the `swaps_max` should be set to `0`
+//   - To disable single token set `swaps` boolean flag to false
 type MsgDisableBasketSwaps struct {
 	Sender   string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
 	BasketId uint64 `protobuf:"varint,2,opt,name=basket_id,json=basketId,proto3" json:"basket_id,omitempty"`

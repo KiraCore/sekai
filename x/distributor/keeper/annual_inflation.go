@@ -34,7 +34,7 @@ func (k Keeper) InflationPossible(ctx sdk.Context) bool {
 	month := int64(86400 * 30)
 	currTimeGone := ctx.BlockTime().Unix() - snapshot.SnapshotTime
 	monthIndex := (currTimeGone + month - 1) / month
-	currInflation := currSupply.Amount.ToDec().Quo(sdk.Dec(snapshot.SnapshotAmount.ToDec())).Sub(sdk.OneDec())
+	currInflation := sdk.NewDecFromInt(currSupply.Amount).Quo(sdk.NewDecFromInt(snapshot.SnapshotAmount)).Sub(sdk.OneDec())
 	if currInflation.GTE(yearlyInflation.Mul(sdk.NewDec(monthIndex)).Quo(sdk.NewDec(12))) {
 		return false
 	}

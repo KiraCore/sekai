@@ -5,12 +5,12 @@ package types
 
 import (
 	fmt "fmt"
+	_ "github.com/cosmos/cosmos-proto"
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
-	_ "github.com/gogo/protobuf/gogoproto"
-	proto "github.com/gogo/protobuf/proto"
-	github_com_gogo_protobuf_types "github.com/gogo/protobuf/types"
-	_ "github.com/regen-network/cosmos-proto"
-	_ "google.golang.org/protobuf/types/known/timestamppb"
+	_ "github.com/cosmos/gogoproto/gogoproto"
+	proto "github.com/cosmos/gogoproto/proto"
+	_ "github.com/cosmos/gogoproto/types"
+	github_com_cosmos_gogoproto_types "github.com/cosmos/gogoproto/types"
 	io "io"
 	math "math"
 	math_bits "math/bits"
@@ -300,7 +300,7 @@ func (m *ProposalSlashValidator) MarshalToSizedBuffer(dAtA []byte) (int, error) 
 		i--
 		dAtA[i] = 0x22
 	}
-	n1, err1 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.MisbehaviourTime, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.MisbehaviourTime):])
+	n1, err1 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.MisbehaviourTime, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.MisbehaviourTime):])
 	if err1 != nil {
 		return 0, err1
 	}
@@ -364,7 +364,7 @@ func (m *ProposalSlashValidator) Size() (n int) {
 	if m.StakingPoolId != 0 {
 		n += 1 + sovProposal(uint64(m.StakingPoolId))
 	}
-	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.MisbehaviourTime)
+	l = github_com_cosmos_gogoproto_types.SizeOfStdTime(m.MisbehaviourTime)
 	n += 1 + l + sovProposal(uint64(l))
 	l = len(m.MisbehaviourType)
 	if l > 0 {
@@ -617,7 +617,7 @@ func (m *ProposalSlashValidator) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.MisbehaviourTime, dAtA[iNdEx:postIndex]); err != nil {
+			if err := github_com_cosmos_gogoproto_types.StdTimeUnmarshal(&m.MisbehaviourTime, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

@@ -25,6 +25,10 @@ func (g *zeroGasMeter) Limit() sdk.Gas {
 	return 0
 }
 
+func (g *zeroGasMeter) GasRemaining() sdk.Gas {
+	return 0
+}
+
 func (g *zeroGasMeter) ConsumeGas(amount sdk.Gas, descriptor string) {
 }
 

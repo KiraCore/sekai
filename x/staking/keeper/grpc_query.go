@@ -75,11 +75,7 @@ func (q Querier) Validators(ctx context.Context, request *types.ValidatorsReques
 			return false, err
 		}
 
-		moniker, err := q.keeper.GetMonikerByAddress(c, sdk.AccAddress(val.ValKey))
-		if err != nil {
-			return false, err
-		}
-
+		moniker := q.keeper.GetMonikerByAddress(c, sdk.AccAddress(val.ValKey))
 		validator := types.QueryValidator{
 			Address:  sdk.AccAddress(val.ValKey).String(),
 			Valkey:   val.ValKey.String(),

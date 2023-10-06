@@ -12,12 +12,12 @@ import (
 	"github.com/KiraCore/sekai/x/recovery/keeper"
 	"github.com/KiraCore/sekai/x/recovery/types"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
+	"github.com/cometbft/cometbft/crypto/ed25519"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
-	"github.com/cosmos/cosmos-sdk/simapp"
+	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	"github.com/tendermint/tendermint/crypto/ed25519"
 )
 
 func init() {
@@ -94,7 +94,7 @@ func (suite *KeeperTestSuite) TestRotateRecoveryAddress() {
 
 	// staking module
 	valAddr := sdk.ValAddress(addr1)
-	pubkeys := simapp.CreateTestPubKeys(1)
+	pubkeys := simtestutil.CreateTestPubKeys(1)
 	pubKey := pubkeys[0]
 	val, err := stakingtypes.NewValidator(valAddr, pubKey)
 	suite.Require().NoError(err)
@@ -206,7 +206,7 @@ func (suite *KeeperTestSuite) TestRotateRecoveryAddress() {
 func (suite *KeeperTestSuite) TestIssueRecoveryTokens() {
 	addr1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 	valAddr := sdk.ValAddress(addr1)
-	pubkeys := simapp.CreateTestPubKeys(1)
+	pubkeys := simtestutil.CreateTestPubKeys(1)
 	pubKey := pubkeys[0]
 	val, err := stakingtypes.NewValidator(valAddr, pubKey)
 	suite.Require().NoError(err)
@@ -250,7 +250,7 @@ func (suite *KeeperTestSuite) TestIssueRecoveryTokens() {
 func (suite *KeeperTestSuite) TestBurnRecoveryTokens() {
 	addr1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 	valAddr := sdk.ValAddress(addr1)
-	pubkeys := simapp.CreateTestPubKeys(1)
+	pubkeys := simtestutil.CreateTestPubKeys(1)
 	pubKey := pubkeys[0]
 	val, err := stakingtypes.NewValidator(valAddr, pubKey)
 	suite.Require().NoError(err)
@@ -300,7 +300,7 @@ func (suite *KeeperTestSuite) TestBurnRecoveryTokens() {
 func (suite *KeeperTestSuite) TestClaimRRHolderRewards() {
 	addr1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 	valAddr := sdk.ValAddress(addr1)
-	pubkeys := simapp.CreateTestPubKeys(1)
+	pubkeys := simtestutil.CreateTestPubKeys(1)
 	pubKey := pubkeys[0]
 	val, err := stakingtypes.NewValidator(valAddr, pubKey)
 	suite.Require().NoError(err)
@@ -358,7 +358,7 @@ func (suite *KeeperTestSuite) TestRotateValidatorByHalfRRTokenHolder() {
 	addr1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 	addr2 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 	valAddr := sdk.ValAddress(addr1)
-	pubkeys := simapp.CreateTestPubKeys(1)
+	pubkeys := simtestutil.CreateTestPubKeys(1)
 	pubKey := pubkeys[0]
 	val, err := stakingtypes.NewValidator(valAddr, pubKey)
 	suite.Require().NoError(err)

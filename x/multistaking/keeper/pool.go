@@ -70,7 +70,7 @@ func getPoolCoins(pool types.StakingPool, coins sdk.Coins) sdk.Coins {
 	prefix := getPoolPrefix(pool.Id)
 	poolCoins := sdk.Coins{}
 	for _, coin := range coins {
-		poolCoins = poolCoins.Add(sdk.NewCoin(prefix+coin.Denom, coin.Amount.ToDec().Mul(sdk.OneDec().Sub(pool.Slashed)).RoundInt()))
+		poolCoins = poolCoins.Add(sdk.NewCoin(prefix+coin.Denom, sdk.NewDecFromInt(coin.Amount).Mul(sdk.OneDec().Sub(pool.Slashed)).RoundInt()))
 	}
 	return poolCoins
 }

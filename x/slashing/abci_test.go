@@ -4,9 +4,9 @@ import (
 	"testing"
 	"time"
 
+	abci "github.com/cometbft/cometbft/abci/types"
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	"github.com/stretchr/testify/require"
-	abci "github.com/tendermint/tendermint/abci/types"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	simapp "github.com/KiraCore/sekai/app"
 	"github.com/KiraCore/sekai/x/slashing"
@@ -35,7 +35,7 @@ func TestBeginBlocker(t *testing.T) {
 
 	// mark the validator as having signed
 	req := abci.RequestBeginBlock{
-		LastCommitInfo: abci.LastCommitInfo{
+		LastCommitInfo: abci.CommitInfo{
 			Votes: []abci.VoteInfo{{
 				Validator:       val,
 				SignedLastBlock: true,
@@ -61,7 +61,7 @@ func TestBeginBlocker(t *testing.T) {
 	for ; height < 1000; height++ {
 		ctx = ctx.WithBlockHeight(height)
 		req = abci.RequestBeginBlock{
-			LastCommitInfo: abci.LastCommitInfo{
+			LastCommitInfo: abci.CommitInfo{
 				Votes: []abci.VoteInfo{{
 					Validator:       val,
 					SignedLastBlock: true,
@@ -76,7 +76,7 @@ func TestBeginBlocker(t *testing.T) {
 	for ; height < 1500; height++ {
 		ctx = ctx.WithBlockHeight(height)
 		req = abci.RequestBeginBlock{
-			LastCommitInfo: abci.LastCommitInfo{
+			LastCommitInfo: abci.CommitInfo{
 				Votes: []abci.VoteInfo{{
 					Validator:       val,
 					SignedLastBlock: false,

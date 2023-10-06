@@ -5,11 +5,11 @@ import (
 
 	recoverytypes "github.com/KiraCore/sekai/x/recovery/types"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
+	abci "github.com/cometbft/cometbft/abci/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/distribution/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	abci "github.com/tendermint/tendermint/abci/types"
 )
 
 // AllocateTokens handles distribution of the collected fees
@@ -34,7 +34,7 @@ func (k Keeper) AllocateTokens(
 	properties := k.gk.GetNetworkProperties(ctx)
 	periodicSnapshot := k.GetPeriodicSnapshot(ctx)
 	targetTotalSupply := periodicSnapshot.SnapshotAmount.Add(
-		periodicSnapshot.SnapshotAmount.ToDec().
+		sdk.NewDecFromInt(periodicSnapshot.SnapshotAmount).
 			Mul(properties.InflationRate).
 			Mul(sdk.NewDec(int64(ctx.BlockTime().Unix()) - periodicSnapshot.SnapshotTime)).
 			Quo(sdk.NewDec(int64(properties.InflationPeriod))).TruncateInt(),
@@ -60,7 +60,7 @@ func (k Keeper) AllocateTokens(
 	// combine fees and inflated tokens for rewards allocation
 	feesCollected := sdk.Coins{}
 	if feesAccBalance.IsAllGTE(feesTreasury) {
-		feesCollected = feesAccBalance.Sub(feesTreasury)
+		feesCollected = feesAccBalance.Sub(feesTreasury...)
 	}
 
 	validatorsFeeShare := k.gk.GetNetworkProperties(ctx).ValidatorsFeeShare
@@ -81,7 +81,7 @@ func (k Keeper) AllocateTokens(
 		// add fee rewards for validator
 		for _, r := range feesCollected {
 			cutAmount := r.Amount.Mul(sdk.NewInt(power)).Quo(sdk.NewInt(snapPeriod))
-			valReward := cutAmount.ToDec().Mul(validatorsFeeShare).RoundInt()
+			valReward := sdk.NewDecFromInt(cutAmount).Mul(validatorsFeeShare).RoundInt()
 			if valReward.IsPositive() {
 				validatorRewards = validatorRewards.Add(sdk.NewCoin(r.Denom, valReward))
 			}
@@ -95,7 +95,7 @@ func (k Keeper) AllocateTokens(
 		if found {
 			// add block inflation rewards for validator
 			cutInflationRewards := inflationRewards.Mul(sdk.NewInt(power)).Quo(sdk.NewInt(snapPeriod))
-			inflationCommissionReward := cutInflationRewards.ToDec().Mul(pool.Commission).RoundInt()
+			inflationCommissionReward := sdk.NewDecFromInt(cutInflationRewards).Mul(pool.Commission).RoundInt()
 			validatorRewards = validatorRewards.Add(sdk.NewCoin(totalSupply.Denom, inflationCommissionReward))
 			inflationPoolReward := cutInflationRewards.Sub(inflationCommissionReward)
 			poolRewards = poolRewards.Add(sdk.NewCoin(totalSupply.Denom, inflationPoolReward))

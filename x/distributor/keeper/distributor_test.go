@@ -6,11 +6,11 @@ import (
 	"github.com/KiraCore/sekai/x/distributor/types"
 	recoverytypes "github.com/KiraCore/sekai/x/recovery/types"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
-	"github.com/cosmos/cosmos-sdk/simapp"
+	abci "github.com/cometbft/cometbft/abci/types"
+	"github.com/cometbft/cometbft/crypto/ed25519"
+	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
-	abci "github.com/tendermint/tendermint/abci/types"
-	"github.com/tendermint/tendermint/crypto/ed25519"
 )
 
 func (suite *KeeperTestSuite) TestAllocateTokensToRecoveryTokenValidator() {
@@ -19,7 +19,7 @@ func (suite *KeeperTestSuite) TestAllocateTokensToRecoveryTokenValidator() {
 	addr2 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 
 	valAddr := sdk.ValAddress(addr1)
-	pubkeys := simapp.CreateTestPubKeys(1)
+	pubkeys := simtestutil.CreateTestPubKeys(1)
 	pubKey := pubkeys[0]
 	consAddr := sdk.ConsAddress(pubKey.Address())
 	val, err := stakingtypes.NewValidator(valAddr, pubKey)

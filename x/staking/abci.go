@@ -2,8 +2,8 @@ package staking
 
 import (
 	"github.com/KiraCore/sekai/x/staking/keeper"
+	abci "github.com/cometbft/cometbft/abci/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	abci "github.com/tendermint/tendermint/abci/types"
 )
 
 // EndBlocker called every block, update validator set

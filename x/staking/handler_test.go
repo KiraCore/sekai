@@ -13,11 +13,11 @@ import (
 	govtypes "github.com/KiraCore/sekai/x/gov/types"
 	"github.com/KiraCore/sekai/x/staking"
 	stakingtypes "github.com/KiraCore/sekai/x/staking/types"
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	"github.com/cosmos/cosmos-sdk/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/stretchr/testify/require"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
 
 func TestMain(m *testing.M) {
@@ -35,8 +35,7 @@ func TestNewHandler_MsgClaimValidator_HappyPath(t *testing.T) {
 	app := simapp.Setup(false)
 	ctx := app.NewContext(false, tmproto.Header{})
 
-	_, err = app.CustomStakingKeeper.GetMonikerByAddress(ctx, sdk.AccAddress(valAddr1))
-	require.Error(t, err)
+	app.CustomStakingKeeper.GetMonikerByAddress(ctx, sdk.AccAddress(valAddr1))
 
 	// First we give user permissions
 	networkActor := govtypes.NewNetworkActor(
@@ -75,8 +74,7 @@ func TestNewHandler_MsgClaimValidator_HappyPath(t *testing.T) {
 	require.Equal(t, records[0].Key, "moniker")
 	require.Equal(t, records[0].Value, "aMoniker")
 
-	moniker, err := app.CustomStakingKeeper.GetMonikerByAddress(ctx, sdk.AccAddress(valAddr1))
-	require.NoError(t, err)
+	moniker := app.CustomStakingKeeper.GetMonikerByAddress(ctx, sdk.AccAddress(valAddr1))
 	require.Equal(t, moniker, "aMoniker")
 }
 

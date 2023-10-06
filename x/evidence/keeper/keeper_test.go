@@ -6,10 +6,12 @@ import (
 	"time"
 
 	simapp "github.com/KiraCore/sekai/app"
+	appparams "github.com/KiraCore/sekai/app/params"
 	"github.com/KiraCore/sekai/x/evidence/exported"
 	"github.com/KiraCore/sekai/x/evidence/keeper"
 	"github.com/KiraCore/sekai/x/evidence/types"
 	"github.com/KiraCore/sekai/x/staking"
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
@@ -17,7 +19,6 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/stretchr/testify/suite"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 )
 
 var (
@@ -34,7 +35,7 @@ var (
 	}
 
 	initAmt   = sdk.TokensFromConsensusPower(200, sdk.DefaultPowerReduction)
-	initCoins = sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, initAmt))
+	initCoins = sdk.NewCoins(sdk.NewCoin(appparams.DefaultDenom, initAmt))
 )
 
 func newPubKey(pk string) (res cryptotypes.PubKey) {
@@ -69,9 +70,8 @@ func testEquivocationHandler(_ interface{}) types.Handler {
 type KeeperTestSuite struct {
 	suite.Suite
 
-	ctx     sdk.Context
-	querier sdk.Querier
-	app     *simapp.SekaiApp
+	ctx sdk.Context
+	app *simapp.SekaiApp
 
 	queryClient types.QueryClient
 	stakingHdl  sdk.Handler
@@ -92,7 +92,6 @@ func (suite *KeeperTestSuite) SetupTest() {
 	app.EvidenceKeeper = *evidenceKeeper
 
 	suite.ctx = app.BaseApp.NewContext(checkTx, tmproto.Header{Height: 1})
-	suite.querier = keeper.NewQuerier(*evidenceKeeper, app.LegacyAmino())
 	suite.app = app
 
 	for i, addr := range valAddresses {

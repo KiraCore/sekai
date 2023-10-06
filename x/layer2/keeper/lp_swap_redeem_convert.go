@@ -12,7 +12,7 @@ func (k Keeper) LpTokenPrice(ctx sdk.Context, dapp types.Dapp) sdk.Dec {
 	if lpSupply.IsZero() {
 		return sdk.ZeroDec()
 	}
-	return totalBond.ToDec().Quo(lpSupply.ToDec())
+	return sdk.NewDecFromInt(totalBond).Quo(sdk.NewDecFromInt(lpSupply))
 }
 
 func (k Keeper) OnCollectFee(ctx sdk.Context, fee sdk.Coins) error {
@@ -44,7 +44,7 @@ func (k Keeper) RedeemDappPoolTx(ctx sdk.Context, addr sdk.AccAddress, dapp type
 	dapp.TotalBond.Amount = totalBondAfterSwap
 	k.SetDapp(ctx, dapp)
 
-	fee := swapBond.ToDec().Mul(poolFee).RoundInt()
+	fee := sdk.NewDecFromInt(swapBond).Mul(poolFee).RoundInt()
 	if fee.IsPositive() {
 		feeCoin := sdk.NewCoin(dapp.TotalBond.Denom, fee)
 		err := k.OnCollectFee(ctx, sdk.Coins{feeCoin})
@@ -91,7 +91,7 @@ func (k Keeper) SwapDappPoolTx(ctx sdk.Context, addr sdk.AccAddress, dapp types.
 	dapp.TotalBond.Amount = dapp.TotalBond.Amount.Add(swapBond.Amount)
 	k.SetDapp(ctx, dapp)
 
-	fee := swapLpAmount.ToDec().Mul(poolFee).RoundInt()
+	fee := sdk.NewDecFromInt(swapLpAmount).Mul(poolFee).RoundInt()
 	if fee.IsPositive() {
 		feeCoin := sdk.NewCoin(lpToken, fee)
 		err := k.OnCollectFee(ctx, sdk.Coins{feeCoin})

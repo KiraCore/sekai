@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 
 	customante "github.com/KiraCore/sekai/app/ante"
-	"github.com/KiraCore/sekai/middleware"
+	posthandler "github.com/KiraCore/sekai/app/posthandler"
 	"github.com/KiraCore/sekai/x/basket"
 	basketkeeper "github.com/KiraCore/sekai/x/basket/keeper"
 	baskettypes "github.com/KiraCore/sekai/x/basket/types"
@@ -58,40 +58,43 @@ import (
 	"github.com/KiraCore/sekai/x/upgrade"
 	upgradekeeper "github.com/KiraCore/sekai/x/upgrade/keeper"
 	upgradetypes "github.com/KiraCore/sekai/x/upgrade/types"
+	dbm "github.com/cometbft/cometbft-db"
+	abci "github.com/cometbft/cometbft/abci/types"
+	"github.com/cometbft/cometbft/libs/log"
+	tmos "github.com/cometbft/cometbft/libs/os"
 	bam "github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
+	nodeservice "github.com/cosmos/cosmos-sdk/client/grpc/node"
 	"github.com/cosmos/cosmos-sdk/client/grpc/tmservice"
-	"github.com/cosmos/cosmos-sdk/client/rpc"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/codec/types"
+	"github.com/cosmos/cosmos-sdk/server"
 	"github.com/cosmos/cosmos-sdk/server/api"
 	"github.com/cosmos/cosmos-sdk/server/config"
 	servertypes "github.com/cosmos/cosmos-sdk/server/types"
-	simappparams "github.com/cosmos/cosmos-sdk/simapp/params"
+	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	"github.com/cosmos/cosmos-sdk/testutil/testdata"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/auth/ante"
-	authrest "github.com/cosmos/cosmos-sdk/x/auth/client/rest"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
-	"github.com/cosmos/cosmos-sdk/x/auth/simulation"
+	authsims "github.com/cosmos/cosmos-sdk/x/auth/simulation"
 	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/bank"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	consensus "github.com/cosmos/cosmos-sdk/x/consensus"
+	consensusparamkeeper "github.com/cosmos/cosmos-sdk/x/consensus/keeper"
+	consensusparamtypes "github.com/cosmos/cosmos-sdk/x/consensus/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	"github.com/cosmos/cosmos-sdk/x/params"
 	paramskeeper "github.com/cosmos/cosmos-sdk/x/params/keeper"
 	paramstypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/gorilla/mux"
 	"github.com/rakyll/statik/fs"
-	abci "github.com/tendermint/tendermint/abci/types"
-	"github.com/tendermint/tendermint/libs/log"
-	tmos "github.com/tendermint/tendermint/libs/os"
-	dbm "github.com/tendermint/tm-db"
 )
 
 const appName = "Sekai"
@@ -124,6 +127,7 @@ var (
 		multistaking.AppModuleBasic{},
 		collectives.AppModuleBasic{},
 		layer2.AppModuleBasic{},
+		consensus.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -154,9 +158,9 @@ type SekaiApp struct {
 	invCheckPeriod uint
 
 	// keys to access the substores
-	keys    map[string]*sdk.KVStoreKey
-	tKeys   map[string]*sdk.TransientStoreKey
-	memKeys map[string]*sdk.MemoryStoreKey
+	keys    map[string]*storetypes.KVStoreKey
+	tKeys   map[string]*storetypes.TransientStoreKey
+	memKeys map[string]*storetypes.MemoryStoreKey
 
 	// keepers
 	AccountKeeper authkeeper.AccountKeeper
@@ -164,21 +168,22 @@ type SekaiApp struct {
 	UpgradeKeeper upgradekeeper.Keeper
 	ParamsKeeper  paramskeeper.Keeper
 
-	CustodyKeeper        custodykeeper.Keeper
-	CustomGovKeeper      customgovkeeper.Keeper
-	CustomStakingKeeper  customstakingkeeper.Keeper
-	CustomSlashingKeeper customslashingkeeper.Keeper
-	RecoveryKeeper       recoverykeeper.Keeper
-	TokensKeeper         tokenskeeper.Keeper
-	FeeProcessingKeeper  feeprocessingkeeper.Keeper
-	EvidenceKeeper       evidencekeeper.Keeper
-	SpendingKeeper       spendingkeeper.Keeper
-	UbiKeeper            ubikeeper.Keeper
-	DistrKeeper          distributorkeeper.Keeper
-	BasketKeeper         basketkeeper.Keeper
-	MultiStakingKeeper   multistakingkeeper.Keeper
-	CollectivesKeeper    collectiveskeeper.Keeper
-	Layer2Keeper         layer2keeper.Keeper
+	CustodyKeeper         custodykeeper.Keeper
+	CustomGovKeeper       customgovkeeper.Keeper
+	CustomStakingKeeper   customstakingkeeper.Keeper
+	CustomSlashingKeeper  customslashingkeeper.Keeper
+	RecoveryKeeper        recoverykeeper.Keeper
+	TokensKeeper          tokenskeeper.Keeper
+	FeeProcessingKeeper   feeprocessingkeeper.Keeper
+	EvidenceKeeper        evidencekeeper.Keeper
+	SpendingKeeper        spendingkeeper.Keeper
+	UbiKeeper             ubikeeper.Keeper
+	DistrKeeper           distributorkeeper.Keeper
+	BasketKeeper          basketkeeper.Keeper
+	MultiStakingKeeper    multistakingkeeper.Keeper
+	CollectivesKeeper     collectiveskeeper.Keeper
+	Layer2Keeper          layer2keeper.Keeper
+	ConsensusParamsKeeper consensusparamkeeper.Keeper
 
 	// Module Manager
 	mm *module.Manager
@@ -199,9 +204,8 @@ func init() {
 // NewInitApp returns a reference to an initialized App.
 func NewInitApp(
 	logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest bool, skipUpgradeHeights map[int64]bool,
-	homePath string, invCheckPeriod uint, encodingConfig simappparams.EncodingConfig, appOpts servertypes.AppOptions, baseAppOptions ...func(*bam.BaseApp),
+	homePath string, invCheckPeriod uint, encodingConfig EncodingConfig, appOpts servertypes.AppOptions, baseAppOptions ...func(*bam.BaseApp),
 ) *SekaiApp {
-	// TODO: Remove cdc in favor of appCodec once all modules are migrated.
 	appCodec := encodingConfig.Marshaler
 	cdc := encodingConfig.Amino
 	interfaceRegistry := encodingConfig.InterfaceRegistry
@@ -232,6 +236,7 @@ func NewInitApp(
 		custodytypes.StoreKey,
 		collectivestypes.ModuleName,
 		layer2types.ModuleName,
+		consensusparamtypes.StoreKey,
 	)
 	tKeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 
@@ -249,14 +254,18 @@ func NewInitApp(
 	app.ParamsKeeper = initParamsKeeper(appCodec, cdc, keys[paramstypes.StoreKey], tKeys[paramstypes.TStoreKey])
 
 	// set the BaseApp's parameter store
-	app.SetParamStore(app.ParamsKeeper.Subspace(bam.Paramspace).WithKeyTable(paramskeeper.ConsensusParamsKeyTable()))
+	app.ConsensusParamsKeeper = consensusparamkeeper.NewKeeper(appCodec, keys[consensusparamtypes.StoreKey], authtypes.NewModuleAddress(govtypes.ModuleName).String())
+	bApp.SetParamStore(&app.ConsensusParamsKeeper)
 
 	// The AccountKeeper handles address -> account lookups
-	app.AccountKeeper = authkeeper.NewAccountKeeper(
-		appCodec, keys[authtypes.StoreKey], app.GetSubspace(authtypes.ModuleName), authtypes.ProtoBaseAccount, maccPerms,
-	)
+	app.AccountKeeper = authkeeper.NewAccountKeeper(appCodec, keys[authtypes.StoreKey], authtypes.ProtoBaseAccount, maccPerms, sdk.Bech32MainPrefix, authtypes.NewModuleAddress(govtypes.ModuleName).String())
+
 	app.BankKeeper = bankkeeper.NewBaseKeeper(
-		appCodec, keys[banktypes.StoreKey], app.AccountKeeper, app.GetSubspace(banktypes.ModuleName), app.BlockedAddrs(),
+		appCodec,
+		keys[banktypes.StoreKey],
+		app.AccountKeeper,
+		BlockedAddresses(),
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
 	app.TokensKeeper = tokenskeeper.NewKeeper(keys[tokenstypes.ModuleName], appCodec)
@@ -389,12 +398,12 @@ func NewInitApp(
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
 	app.mm = module.NewManager(
-		auth.NewAppModule(appCodec, app.AccountKeeper, simulation.RandomGenesisAccounts),
+		auth.NewAppModule(appCodec, app.AccountKeeper, authsims.RandomGenesisAccounts, app.GetSubspace(authtypes.ModuleName)),
 		genutil.NewAppModule(
 			app.AccountKeeper, app.CustomStakingKeeper, app.BaseApp.DeliverTx,
 			encodingConfig.TxConfig,
 		),
-		bank.NewAppModule(appCodec, app.BankKeeper, app.AccountKeeper),
+		bank.NewAppModule(appCodec, app.BankKeeper, app.AccountKeeper, app.GetSubspace(banktypes.ModuleName)),
 		upgrade.NewAppModule(app.UpgradeKeeper),
 		params.NewAppModule(app.ParamsKeeper),
 		customslashing.NewAppModule(appCodec, app.CustomSlashingKeeper, app.CustomStakingKeeper),
@@ -412,6 +421,7 @@ func NewInitApp(
 		custody.NewAppModule(app.CustodyKeeper, app.CustomGovKeeper, app.BankKeeper),
 		collectives.NewAppModule(app.CollectivesKeeper),
 		layer2.NewAppModule(app.Layer2Keeper),
+		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -429,6 +439,7 @@ func NewInitApp(
 		baskettypes.ModuleName,
 		collectivestypes.ModuleName,
 		layer2types.ModuleName,
+		consensusparamtypes.ModuleName,
 	)
 	app.mm.SetOrderEndBlockers(
 		banktypes.ModuleName, upgradetypes.ModuleName, tokenstypes.ModuleName,
@@ -442,6 +453,7 @@ func NewInitApp(
 		baskettypes.ModuleName,
 		collectivestypes.ModuleName,
 		layer2types.ModuleName,
+		consensusparamtypes.ModuleName,
 	)
 
 	// NOTE: The genutils moodule must occur after staking so that pools are
@@ -470,9 +482,9 @@ func NewInitApp(
 		baskettypes.ModuleName,
 		collectivestypes.ModuleName,
 		layer2types.ModuleName,
+		consensusparamtypes.ModuleName,
 	)
 
-	app.mm.RegisterRoutes(app.Router(), app.QueryRouter(), encodingConfig.Amino)
 	app.mm.RegisterServices(module.NewConfigurator(appCodec, app.MsgServiceRouter(), app.GRPCQueryRouter()))
 
 	// add test gRPC service for testing gRPC queries in isolation
@@ -482,14 +494,10 @@ func NewInitApp(
 	//
 	// NOTE: this is not required apps that don't use the simulator for fuzz testing
 	// transactions
-	app.sm = module.NewSimulationManager(
-		auth.NewAppModule(appCodec, app.AccountKeeper, simulation.RandomGenesisAccounts),
-		bank.NewAppModule(appCodec, app.BankKeeper, app.AccountKeeper),
-		customslashing.NewAppModule(appCodec, app.CustomSlashingKeeper, app.CustomStakingKeeper),
-		recovery.NewAppModule(appCodec, app.RecoveryKeeper, app.AccountKeeper, app.CustomStakingKeeper),
-		params.NewAppModule(app.ParamsKeeper),
-		evidence.NewAppModule(app.EvidenceKeeper),
-	)
+	overrideModules := map[string]module.AppModuleSimulation{
+		authtypes.ModuleName: auth.NewAppModule(app.appCodec, app.AccountKeeper, authsims.RandomGenesisAccounts, app.GetSubspace(authtypes.ModuleName)),
+	}
+	app.sm = module.NewSimulationManagerFromAppModules(app.mm.Modules, overrideModules)
 
 	app.sm.RegisterStoreDecoders()
 
@@ -508,9 +516,12 @@ func NewInitApp(
 			app.FeeProcessingKeeper,
 			app.AccountKeeper,
 			app.BankKeeper,
+			app.CustodyKeeper,
+			nil,
+			nil,
 			ante.DefaultSigVerificationGasConsumer,
 			encodingConfig.TxConfig.SignModeHandler(),
-			app.CustodyKeeper,
+			nil,
 		),
 	)
 	app.SetEndBlocker(app.EndBlocker)
@@ -521,9 +532,18 @@ func NewInitApp(
 		}
 	}
 
-	middleware.SetKeepers(app.CustomGovKeeper, app.FeeProcessingKeeper)
-
 	return app
+}
+
+func (app *SekaiApp) setPostHandler() {
+	postHandler, err := posthandler.NewPostHandler(
+		posthandler.HandlerOptions{},
+	)
+	if err != nil {
+		panic(err)
+	}
+
+	app.SetPostHandler(postHandler)
 }
 
 // Name returns the name of the App
@@ -561,15 +581,17 @@ func (app *SekaiApp) ModuleAccountAddrs() map[string]bool {
 	return modAccAddrs
 }
 
-// BlockedAddrs returns all the app's module account addresses that are not
-// allowed to receive external tokens.
-func (app *SekaiApp) BlockedAddrs() map[string]bool {
-	blockedAddrs := make(map[string]bool)
-	for acc := range maccPerms {
-		blockedAddrs[authtypes.NewModuleAddress(acc).String()] = !allowedReceivingModAcc[acc]
+// BlockedAddresses returns all the app's blocked account addresses.
+func BlockedAddresses() map[string]bool {
+	modAccAddrs := make(map[string]bool)
+	for acc := range GetMaccPerms() {
+		modAccAddrs[authtypes.NewModuleAddress(acc).String()] = true
 	}
 
-	return blockedAddrs
+	// allow the following addresses to receive funds
+	delete(modAccAddrs, authtypes.NewModuleAddress(govtypes.ModuleName).String())
+
+	return modAccAddrs
 }
 
 // Codec returns SimApp's codec.
@@ -596,21 +618,21 @@ func (app *SekaiApp) InterfaceRegistry() types.InterfaceRegistry {
 // GetKey returns the KVStoreKey for the provided store key.
 //
 // NOTE: This is solely to be used for testing purposes.
-func (app *SekaiApp) GetKey(storeKey string) *sdk.KVStoreKey {
+func (app *SekaiApp) GetKey(storeKey string) *storetypes.KVStoreKey {
 	return app.keys[storeKey]
 }
 
 // GetTKey returns the TransientStoreKey for the provided store key.
 //
 // NOTE: This is solely to be used for testing purposes.
-func (app *SekaiApp) GetTKey(storeKey string) *sdk.TransientStoreKey {
+func (app *SekaiApp) GetTKey(storeKey string) *storetypes.TransientStoreKey {
 	return app.tKeys[storeKey]
 }
 
 // GetMemKey returns the MemStoreKey for the provided mem key.
 //
 // NOTE: This is solely used for testing purposes.
-func (app *SekaiApp) GetMemKey(storeKey string) *sdk.MemoryStoreKey {
+func (app *SekaiApp) GetMemKey(storeKey string) *storetypes.MemoryStoreKey {
 	return app.memKeys[storeKey]
 }
 
@@ -631,18 +653,21 @@ func (app *SekaiApp) SimulationManager() *module.SimulationManager {
 // API server.
 func (app *SekaiApp) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig) {
 	clientCtx := apiSvr.ClientCtx
-	rpc.RegisterRoutes(clientCtx, apiSvr.Router)
-	authrest.RegisterTxRoutes(clientCtx, apiSvr.Router)
 	// Register new tx routes from grpc-gateway.
 	authtx.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
 
-	// Register legacy and grpc-gateway routes for all modules.
-	ModuleBasics.RegisterRESTRoutes(clientCtx, apiSvr.Router)
+	// Register new tendermint queries routes from grpc-gateway.
+	tmservice.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
+
+	// Register node gRPC service for grpc-gateway.
+	nodeservice.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
+
+	// Register grpc-gateway routes for all modules.
 	ModuleBasics.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
 
 	// register swagger API from root so that other applications can override easily
-	if apiConfig.Swagger {
-		RegisterSwaggerAPI(clientCtx, apiSvr.Router)
+	if err := server.RegisterSwaggerAPI(apiSvr.ClientCtx, apiSvr.Router, apiConfig.Swagger); err != nil {
+		panic(err)
 	}
 }
 
@@ -653,7 +678,16 @@ func (app *SekaiApp) RegisterTxService(clientCtx client.Context) {
 
 // RegisterTendermintService implements the Application.RegisterTendermintService method.
 func (app *SekaiApp) RegisterTendermintService(clientCtx client.Context) {
-	tmservice.RegisterTendermintService(app.BaseApp.GRPCQueryRouter(), clientCtx, app.interfaceRegistry)
+	tmservice.RegisterTendermintService(
+		clientCtx,
+		app.BaseApp.GRPCQueryRouter(),
+		app.interfaceRegistry,
+		app.Query,
+	)
+}
+
+func (app *SekaiApp) RegisterNodeService(clientCtx client.Context) {
+	nodeservice.RegisterNodeService(clientCtx, app.GRPCQueryRouter())
 }
 
 // RegisterSwaggerAPI registers swagger route with API Server
@@ -677,7 +711,7 @@ func GetMaccPerms() map[string][]string {
 }
 
 // initParamsKeeper init params keeper and its subspaces
-func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino, key, tkey sdk.StoreKey) paramskeeper.Keeper {
+func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino, key, tkey storetypes.StoreKey) paramskeeper.Keeper {
 	paramsKeeper := paramskeeper.NewKeeper(appCodec, legacyAmino, key, tkey)
 
 	paramsKeeper.Subspace(authtypes.ModuleName)

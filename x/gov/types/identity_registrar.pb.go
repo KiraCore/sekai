@@ -6,10 +6,10 @@ package types
 import (
 	fmt "fmt"
 	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
-	_ "github.com/gogo/protobuf/gogoproto"
-	proto "github.com/gogo/protobuf/proto"
-	github_com_gogo_protobuf_types "github.com/gogo/protobuf/types"
-	_ "google.golang.org/protobuf/types/known/timestamppb"
+	_ "github.com/cosmos/gogoproto/gogoproto"
+	proto "github.com/cosmos/gogoproto/proto"
+	_ "github.com/cosmos/gogoproto/types"
+	github_com_cosmos_gogoproto_types "github.com/cosmos/gogoproto/types"
 	io "io"
 	math "math"
 	math_bits "math/bits"
@@ -606,7 +606,7 @@ func (m *IdentityRecord) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			dAtA[i] = 0x32
 		}
 	}
-	n1, err1 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.Date, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.Date):])
+	n1, err1 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.Date, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.Date):])
 	if err1 != nil {
 		return 0, err1
 	}
@@ -783,7 +783,7 @@ func (m *IdentityRecordsVerify) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	n2, err2 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.LastRecordEditDate, dAtA[i-github_com_gogo_protobuf_types.SizeOfStdTime(m.LastRecordEditDate):])
+	n2, err2 := github_com_cosmos_gogoproto_types.StdTimeMarshalTo(m.LastRecordEditDate, dAtA[i-github_com_cosmos_gogoproto_types.SizeOfStdTime(m.LastRecordEditDate):])
 	if err2 != nil {
 		return 0, err2
 	}
@@ -1018,7 +1018,7 @@ func (m *IdentityRecord) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovIdentityRegistrar(uint64(l))
 	}
-	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.Date)
+	l = github_com_cosmos_gogoproto_types.SizeOfStdTime(m.Date)
 	n += 1 + l + sovIdentityRegistrar(uint64(l))
 	if len(m.Verifiers) > 0 {
 		for _, s := range m.Verifiers {
@@ -1110,7 +1110,7 @@ func (m *IdentityRecordsVerify) Size() (n int) {
 	}
 	l = m.Tip.Size()
 	n += 1 + l + sovIdentityRegistrar(uint64(l))
-	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.LastRecordEditDate)
+	l = github_com_cosmos_gogoproto_types.SizeOfStdTime(m.LastRecordEditDate)
 	n += 1 + l + sovIdentityRegistrar(uint64(l))
 	return n
 }
@@ -1355,7 +1355,7 @@ func (m *IdentityRecord) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.Date, dAtA[iNdEx:postIndex]); err != nil {
+			if err := github_com_cosmos_gogoproto_types.StdTimeUnmarshal(&m.Date, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -2011,7 +2011,7 @@ func (m *IdentityRecordsVerify) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.LastRecordEditDate, dAtA[iNdEx:postIndex]); err != nil {
+			if err := github_com_cosmos_gogoproto_types.StdTimeUnmarshal(&m.LastRecordEditDate, dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

@@ -1,9 +1,9 @@
 package feeprocessing
 
 import (
+	abci "github.com/cometbft/cometbft/abci/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/errors"
-	abci "github.com/tendermint/tendermint/abci/types"
 
 	feeprocessingkeeper "github.com/KiraCore/sekai/x/feeprocessing/keeper"
 	"github.com/KiraCore/sekai/x/feeprocessing/types"

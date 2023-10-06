@@ -313,7 +313,7 @@ func (a ApplySpendingPoolWithdrawProposalHandler) Apply(ctx sdk.Context, proposa
 		}
 
 		// update pool to reduce pool's balance
-		pool.Balances = sdk.Coins(pool.Balances).Sub(sdk.Coins(p.Amounts))
+		pool.Balances = sdk.Coins(pool.Balances).Sub(sdk.Coins(p.Amounts)...)
 	}
 
 	a.keeper.SetSpendingPool(ctx, *pool)
