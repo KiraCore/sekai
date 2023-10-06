@@ -126,6 +126,8 @@ func (k msgServer) ClaimUndelegation(goCtx context.Context, msg *types.MsgClaimU
 		return nil, err
 	}
 
+	k.keeper.RemoveUndelegation(ctx, undelegation.Id)
+
 	return &types.MsgClaimUndelegationResponse{}, nil
 }
 
