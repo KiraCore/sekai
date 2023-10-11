@@ -8,6 +8,7 @@ import (
 	"github.com/cometbft/cometbft/crypto/ed25519"
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 )
 
@@ -172,6 +173,26 @@ func (suite *KeeperTestSuite) TestIncreasePoolRewards() {
 	suite.Require().Equal(rewards, sdk.Coins{sdk.NewInt64Coin("ukex", 250000)})
 	rewards = suite.app.MultiStakingKeeper.GetDelegatorRewards(suite.ctx, addr2)
 	suite.Require().Equal(rewards, sdk.Coins{sdk.NewInt64Coin("ukex", 250000)})
+
+	// set autocompound info and try adding rewards
+	suite.app.MultiStakingKeeper.SetCompoundInfo(suite.ctx, types.CompoundInfo{
+		Delegator:      addr1.String(),
+		AllDenom:       true,
+		CompoundDenoms: []string{},
+		LastExecBlock:  0,
+	})
+
+	suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, allocation)
+	suite.app.BankKeeper.SendCoinsFromModuleToModule(suite.ctx, minttypes.ModuleName, authtypes.FeeCollectorName, allocation)
+	properties := suite.app.CustomGovKeeper.GetNetworkProperties(suite.ctx)
+	suite.ctx = suite.ctx.WithBlockHeight(suite.ctx.BlockHeight() + int64(properties.AutocompoundIntervalNumBlocks) + 1)
+	pool, _ = suite.app.MultiStakingKeeper.GetStakingPoolByValidator(suite.ctx, valAddr.String())
+	suite.app.MultiStakingKeeper.IncreasePoolRewards(suite.ctx, pool, allocation)
+
+	rewards = suite.app.MultiStakingKeeper.GetDelegatorRewards(suite.ctx, addr1)
+	suite.Require().Equal(rewards.String(), "")
+	rewards = suite.app.MultiStakingKeeper.GetDelegatorRewards(suite.ctx, addr2)
+	suite.Require().Equal(rewards.String(), sdk.Coins{sdk.NewInt64Coin("ukex", 500000)}.String())
 }
 
 func (suite *KeeperTestSuite) TestDelegate() {
